@@ -1,1 +1,1 @@
-SUBDIRS = wakealarm
+SUBDIRS = wakealarm klog

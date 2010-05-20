@@ -4192,7 +4192,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-          ac_config_files="$ac_config_files Makefile src/Makefile src/lib/Makefile src/lib/src/Makefile src/acpi/Makefile src/acpi/wakealarm/Makefile src/dmi/Makefile src/dmi/dmi_decode/Makefile"
+          ac_config_files="$ac_config_files Makefile src/Makefile src/lib/Makefile src/lib/src/Makefile src/acpi/Makefile src/acpi/wakealarm/Makefile src/acpi/klog/Makefile src/dmi/Makefile src/dmi/dmi_decode/Makefile"
 
           cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4912,6 +4912,7 @@ do
     "src/lib/src/Makefile") CONFIG_FILES="$CONFIG_FILES src/lib/src/Makefile" ;;
     "src/acpi/Makefile") CONFIG_FILES="$CONFIG_FILES src/acpi/Makefile" ;;
     "src/acpi/wakealarm/Makefile") CONFIG_FILES="$CONFIG_FILES src/acpi/wakealarm/Makefile" ;;
+    "src/acpi/klog/Makefile") CONFIG_FILES="$CONFIG_FILES src/acpi/klog/Makefile" ;;
     "src/dmi/Makefile") CONFIG_FILES="$CONFIG_FILES src/dmi/Makefile" ;;
     "src/dmi/dmi_decode/Makefile") CONFIG_FILES="$CONFIG_FILES src/dmi/dmi_decode/Makefile" ;;
 

@@ -15,6 +15,7 @@ AC_INIT([biostestkit], [0.1], [colin.king@canonical.com])
            src/lib/src/Makefile
 	   src/acpi/Makefile
 	   src/acpi/wakealarm/Makefile
+	   src/acpi/klog/Makefile
 	   src/dmi/Makefile
 	   src/dmi/dmi_decode/Makefile
           ])

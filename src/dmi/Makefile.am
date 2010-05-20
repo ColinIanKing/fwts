@@ -1,0 +1,1 @@
+SUBDIRS = dmi_decode

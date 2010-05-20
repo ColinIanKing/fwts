@@ -1,0 +1,14 @@
+
+"Low Hanging Fruit" BIOS tests:
+
+dmidecode parsing	
+	- done 20/05/2010
+wakealarm
+	- done 19/05/2010
+S3 Suspend/Resume
+S4 Hibernate/Resume
+Hotkeys
+Decompile/Compile AML code using iasl
+Semantic checking of AML - code inspection + poking with acpiexec
+Fan
+

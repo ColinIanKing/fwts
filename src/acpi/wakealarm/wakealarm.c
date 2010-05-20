@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2010 Canonical
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -60,6 +78,8 @@ int wakealarm_test1(log *results, framework *fw)
 		fw->passed(fw, test);
 	else
 		fw->failed(fw, test);
+
+	return 0;
 }
 
 int wakealarm_test2(log *results, framework *fw)
@@ -72,20 +92,22 @@ int wakealarm_test2(log *results, framework *fw)
 	if (set("0", wkalarm)) {
 		log_error(results, "Cannot write to %s\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 	if (set("+2", wkalarm)) {
 		log_error(results, "Cannot write to %s\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 	if (!get_alarm_irq_state()) {
 		log_error(results, "Wakealarm %s did not get set\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 
 	fw->passed(fw, test);
+
+	return 0;
 }
 
 int wakealarm_test3(log *results, framework *fw)
@@ -97,27 +119,29 @@ int wakealarm_test3(log *results, framework *fw)
 	if (set("0", wkalarm)) {
 		log_error(results, "Cannot write to %s\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 	if (set("+2", wkalarm)) {
 		log_error(results, "Cannot write to %s\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 	if (!get_alarm_irq_state()) {
 		log_error(results, "Wakealarm %s did not get set\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 	log_info(results, "Wait 3 seconds for alarm to fire\n");
 	sleep(3);
 	if (get_alarm_irq_state()) {
 		log_error(results, "Wakealarm %s did not fire\n", wkalarm);
 		fw->failed(fw, test);
-		return;
+		return 0;
 	}
 
 	fw->passed(fw, test);
+
+	return 0;
 }
 
 int wakealarm_test4(log *results, framework *fw)
@@ -133,29 +157,31 @@ int wakealarm_test4(log *results, framework *fw)
 		if (set("0", wkalarm)) {
 			log_error(results, "Cannot write to %s\n", wkalarm);
 			fw->failed(fw, test);
-			return;
+			return 0;
 		}
 
 		snprintf(seconds, sizeof(seconds), "+%d",i);
 		if (set(seconds, wkalarm)) {
 			log_error(results, "Cannot write to %s\n", wkalarm);
 			fw->failed(fw, test);
-			return;
+			return 0;
 		}
 		if (!get_alarm_irq_state()) {
 			log_error(results, "Wakealarm %s did not get set\n", wkalarm);
 			fw->failed(fw, test);
-			return;
+			return 0;
 		}
 		log_info(results, "Wait %d seconds for %d second alarm to fire\n", i + 1, i);
 		sleep(i + 1);
 		if (get_alarm_irq_state()) {
 			log_error(results, "Wakealarm %s did not fire\n", wkalarm);
 			fw->failed(fw, test);
-			return;
+			return 0;
 		}
 	}
 	fw->passed(fw, test);
+
+	return 0;
 }
 
 framework_tests wakealarm_tests[] = {

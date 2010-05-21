@@ -193,4 +193,4 @@ framework_ops wakealarm_ops = {
 	wakealarm_tests
 };
 
-FRAMEWORK(wakealarm, "wakealarm.log", &wakealarm_ops, &private);
+FRAMEWORK(wakealarm, "wakealarm.log", &wakealarm_ops, NULL);

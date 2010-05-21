@@ -56,6 +56,11 @@ static framework_setting framework_settings[] = {
 
 static void framework_debug(framework* framework, char *fmt, ...);
 
+void framework_underline(framework *framework, const int ch)
+{
+	log_underline(framework->results, ch);
+}
+
 static char *framework_get_env(const int env_id)
 {
 	int i;
@@ -117,10 +122,6 @@ static int framework_summary(framework *framework)
 	}
 }
 
-void framework_underline(framework *framework, const int ch)
-{
-	log_underline(framework->results, ch);
-}
 
 
 int framework_run_test(framework *framework)
@@ -222,6 +223,7 @@ static int framework_args(int argc, char **argv, framework* framework)
 		{ "log-filter", 1, 0, 0 },
 		{ "log-fields", 0, 0, 0 },	
 		{ "log-format", 1, 0, 0 },
+		{ "iasl", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -264,6 +266,9 @@ static int framework_args(int argc, char **argv, framework* framework)
 				break;
 			case 8:
 				log_set_format(optarg);
+				break;	
+			case 9:
+				framework->iasl = strdup(optarg);
 				break;
 			}
 		case '?':

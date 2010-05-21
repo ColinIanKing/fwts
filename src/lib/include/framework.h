@@ -36,6 +36,7 @@ typedef struct framework {
 	log *results;				/* log for test results */
 	char *results_logname;			/* filename of results log */
 	char *debug_logname;			/* filename of framework debug log */
+	char *iasl;				/* path to iasl */
 
 	struct framework_ops const *ops;	
 	int flags;

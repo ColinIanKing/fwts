@@ -31,15 +31,14 @@
 
 
 typedef struct framework {
-	int (*close)(struct framework *);
-	int (*run_test)(struct framework *);
-	int (*passed)(struct framework *, const char *test);
-	int (*failed)(struct framework *, const char *test);
-
 	int magic;				/* identify struct magic */
 	log *debug;				/* log to dump framework debug messages */
 	log *results;				/* log for test results */
+	char *results_logname;			/* filename of results log */
+	char *debug_logname;			/* filename of framework debug log */
+
 	struct framework_ops const *ops;	
+	int flags;
 
 	/* test stats */
 	int tests_passed;		
@@ -61,16 +60,20 @@ typedef struct framework_ops {
 	framework_tests *tests;			/* List of tests to run */
 } framework_ops;
 
-framework *framework_open(const char *name, const char *resultlog, const framework_ops *ops, void *private);
+framework *framework_open(int argc, char **argv, const char *name, const char *resultlog, const framework_ops *ops, void *private);
+void framework_close(framework *);
+int  framework_run_test(framework *);
+void framework_passed(framework *, const char *);
+void framework_failed(framework *, const char *);
 
 /* Standalone */
 
 #define FRAMEWORK(name, resultlog, ops, private)	\
 main(int argc, char **argv) {				\
 	framework *fw;					\
-	fw = framework_open(# name, resultlog, ops, private);\
-	fw->run_test(fw);				\
-	fw->close(fw);					\
+	fw = framework_open(argc, argv, # name, resultlog, ops, private);\
+	framework_run_test(fw);				\
+	framework_close(fw);				\
 }
 
 #endif

@@ -22,8 +22,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <getopt.h>
 
 #include "framework.h"
+
+#define FRAMEWORK_FLAGS_STDOUT_SUMMARY		0x00000001
+#define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG		0x00000002
 
 enum {
 	BIOS_TEST_TOOLKIT_PASSED_TEXT,
@@ -83,7 +87,8 @@ static void framework_debug(framework* framework, char *fmt, ...)
 	static debug = -1;
 
 	if (debug == -1)
-		debug = !strcmp(framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on");
+		debug = !strcmp(framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on") |
+			(framework->flags & FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
 	if (debug == 0)
 		return;
 
@@ -99,10 +104,17 @@ static void framework_debug(framework* framework, char *fmt, ...)
 static int framework_summary(framework *framework)
 {
 	log_summary(framework->results, "%d passed, %d failed, %d aborted\n", framework->tests_passed, framework->tests_failed, framework->tests_aborted);
+
+	if (framework->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
+		if (framework->tests_aborted > 0 || framework->tests_failed)
+			printf("FAILED\n");
+		else 
+			printf("PASSED\n");
+	}
 }
 
 
-static int framework_run_test(framework *framework)
+int framework_run_test(framework *framework)
 {		
 	framework_tests *test;
 
@@ -145,62 +157,121 @@ static int framework_run_test(framework *framework)
 	return 0;
 }
 
-static int framework_close(framework *framework)
+void framework_close(framework *framework)
 {
+	int failed = (framework->tests_aborted > 0 || framework->tests_failed);
+
 	if (framework && (framework->magic == FRAMEWORK_MAGIC)) {
 		free(framework);
 	}
-	return 0;
+	
+	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-static int framework_test_passed(framework *framework, const char *test)
+void framework_passed(framework *framework, const char *test)
 {
 	framework_debug(framework, "test %d passed: %s\n", framework->current_test, test);
 	framework->tests_passed++;
 	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s\n", 
 		framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), framework->current_test, test);
-	return 0;
 }
 
-static int framework_test_failed(framework *framework, const char *test)
+void framework_failed(framework *framework, const char *test)
 {
 	framework_debug(framework, "test %d failed: %s\n", framework->current_test, test);
 	framework->tests_failed++;
 	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s\n", 
 		framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), framework->current_test, test);
-	return 0;
+}
+
+static void framework_syntax(char **argv)
+{
+	printf("Usage %s: [OPTION]\n", argv[0]);
+	printf("Arguments:\n");
+	printf("--framework-debug\tEnable run-time framework debug\n");
+	printf("--help\t\t\tGet help\n");
+	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
+	printf("--results-output=file\tOutput results to a named file. Filename can also be stdout or stderr\n");
+	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");
+}
+
+static int framework_args(int argc, char **argv, framework* framework)
+{
+	struct option long_options[] = {
+		{ "stdout-summary", 0, 0, 0 },		
+		{ "framework-debug", 0, 0, 0 },
+		{ "help", 0, 0, 0 },
+		{ "results-output", 1, 0, 0 },
+		{ "debug-output", 1, 0, 0 },
+		{ 0, 0, 0, 0 }
+	};
+
+	for (;;) {
+		int c;
+		int option_index;
+
+		if ((c = getopt_long(argc, argv, "", long_options, &option_index)) == -1)
+			break;
+	
+		switch (c) {
+		case 0:
+			switch (option_index) {
+			case 0:
+				framework->flags |= FRAMEWORK_FLAGS_STDOUT_SUMMARY;
+				break;	
+			case 1:
+				framework->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				break;		
+			case 2:
+				framework_syntax(argv);
+				exit(EXIT_SUCCESS);
+			case 3:
+				framework->results_logname = strdup(optarg);
+				break;
+			case 4:
+				framework->debug_logname = strdup(optarg);
+				framework->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				break;
+			}
+		case '?':
+			break;
+		}
+	}	
 }
 
 
-framework *framework_open(const char *name, const char *results_log, 
+#define LOGFILE(name1, name2)	\
+	(name1 != NULL) ? name1 : name2
+
+framework *framework_open(int argc, char **argv,
+			  const char *name, 
+			  const char *results_log, 
 			  const framework_ops *ops, void *private)
 {
-	framework *newframework;
+	framework *fw;
+	char *logname;
 
-	if ((newframework = malloc(sizeof(framework))) == NULL) {
+	if ((fw = calloc(1, sizeof(framework))) == NULL) {
 		return NULL;
 	}
 
-	newframework->debug = log_open("framework", "stderr", NULL);
-	framework_debug(newframework, "debug log opened\n");
+	fw->magic = FRAMEWORK_MAGIC;
+	fw->ops = ops;
+	fw->private = private;
+
+	framework_args(argc, argv, fw);
+
+	fw->debug = log_open("framework", LOGFILE(fw->debug_logname, "stderr"), "a+");
+
+	framework_debug(fw, "debug log opened\n");
 
 	if (!ops)
 		return NULL;
 
-	newframework->results = log_open(name, results_log, "a+");
-	newframework->magic = FRAMEWORK_MAGIC;
-	newframework->ops = ops;
-	newframework->private = private;
-	newframework->tests_passed = 0;
-	newframework->tests_failed = 0;
-	newframework->tests_aborted = 0;
 
-	newframework->close = framework_close;
-	newframework->run_test = framework_run_test;
-	newframework->passed = framework_test_passed;
-	newframework->failed = framework_test_failed;
+	fw->results = log_open(name, LOGFILE(fw->results_logname, results_log), "a+");
 
-	framework_debug(newframework, "framework_open completed\n");
+	framework_debug(fw, "framework_open completed\n");
 
-	return newframework;
+	return fw;
 }

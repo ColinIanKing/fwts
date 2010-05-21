@@ -78,9 +78,9 @@ int dmi_decode_test1(log *results, framework *fw)
 {
 	char *test = "Sanity check SMBIOS or DMI entry points";
 	if (text_strstr(dmi_text, "No SMBIOS nor DMI entry point found"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -88,9 +88,9 @@ int dmi_decode_test2(log *results, framework *fw)
 {
 	char *test = "DMI structures count";
 	if (text_strstr(dmi_text, "Wrong DMI structures count"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -98,9 +98,9 @@ int dmi_decode_test3(log *results, framework *fw)
 {
 	char *test = "DMI structures length";
 	if (text_strstr(dmi_text, "Wrong DMI structures length"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -108,9 +108,9 @@ int dmi_decode_test4(log *results, framework *fw)
 {
 	char *test = "Out of spec check";
 	if (text_strstr(dmi_text, "<OUT OF SPEC>"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -118,9 +118,9 @@ int dmi_decode_test5(log *results, framework *fw)
 {
 	char *test = "Bad index check";
 	if (text_strstr(dmi_text, "<BAD INDEX>"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -128,9 +128,9 @@ int dmi_decode_test6(log *results, framework *fw)
 {
 	char *test = "Bad checksum";
 	if (text_strstr(dmi_text, "Bad checksum! Please report."))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -140,9 +140,9 @@ int dmi_decode_test7(log *results, framework *fw)
 	char *text = text_strstr(dmi_text, "Serial Number:");
 
 	if (strstr(text, "0123456789"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -152,9 +152,9 @@ int dmi_decode_test8(log *results, framework *fw)
 	char *text = text_strstr(dmi_text, "Asset Tag:");
 
 	if (strstr(text, "0123456789"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -164,9 +164,9 @@ int dmi_decode_test9(log *results, framework *fw)
 	char *text = text_strstr(dmi_text, "UUID:");
 
 	if (strstr(text, "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A"))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 
@@ -174,9 +174,9 @@ int dmi_decode_test10(log *results, framework *fw)
 {
 	char *test = "Template not updated, incorrect default of \"To Be Filled By O.E.M\"";
 	if (text_strstr(dmi_text, "To Be Filled By O.E.M."))
-		fw->failed(fw, test);	
+		framework_failed(fw, test);	
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 	return 0;
 }
 

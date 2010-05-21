@@ -59,10 +59,10 @@ int klog_test1(log *results, framework *fw)
 	}
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log\n", errors, warnings);
-		fw->failed(fw, test);
+		framework_failed(fw, test);
 	}
 	else
-		fw->passed(fw, test);
+		framework_passed(fw, test);
 
 	return 0;
 }

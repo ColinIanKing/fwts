@@ -28,6 +28,10 @@
 
 #define FRAMEWORK_FLAGS_STDOUT_SUMMARY		0x00000001
 #define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG		0x00000002
+#define FRAMEWORK_RESULTS_SEPARATORS		0x00000004
+
+#define FRAMEWORK_DEFAULT_FLAGS	\
+	(FRAMEWORK_RESULTS_SEPARATORS)
 
 enum {
 	BIOS_TEST_TOOLKIT_PASSED_TEXT,
@@ -103,7 +107,9 @@ static void framework_debug(framework* framework, char *fmt, ...)
 
 static int framework_summary(framework *framework)
 {
+	framework_underline(framework,'-');
 	log_summary(framework->results, "%d passed, %d failed, %d aborted\n", framework->tests_passed, framework->tests_failed, framework->tests_aborted);
+	framework_underline(framework,'=');
 
 	if (framework->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
 		if (framework->tests_aborted > 0 || framework->tests_failed)
@@ -111,6 +117,12 @@ static int framework_summary(framework *framework)
 		else 
 			printf("PASSED\n");
 	}
+}
+
+void framework_underline(framework *framework, const int ch)
+{
+	if (framework->flags & FRAMEWORK_RESULTS_SEPARATORS)
+		log_underline(framework->results, ch);
 }
 
 
@@ -121,8 +133,8 @@ int framework_run_test(framework *framework)
 	framework_debug(framework, "framework_run_test() entered\n");
 
 	if (framework->ops->headline) {
-		framework->ops->headline(framework->results);
-		log_underline(framework->results,'-');
+		framework->ops->headline(framework->results);		
+		framework_underline(framework,'-');
 	}
 
 	framework_debug(framework, "framework_run_test() calling ops->init()\n");
@@ -134,7 +146,6 @@ int framework_run_test(framework *framework)
 			for (test = framework->ops->tests; *test != NULL; test++) {
 				framework->tests_aborted++;
 			}
-			log_underline(framework->results,'=');
 			framework_summary(framework);
 			return 0;
 		}
@@ -143,7 +154,6 @@ int framework_run_test(framework *framework)
 	for (test = framework->ops->tests, framework->current_test = 0; *test != NULL; test++, framework->current_test++) {
 		framework_debug(framework, "exectuting test %d\n", framework->current_test);
 		(*test)(framework->results, framework);
-		log_newline(framework->results);
 	}
 
 	framework_debug(framework, "framework_run_test() calling ops->deinit()\n");
@@ -152,7 +162,6 @@ int framework_run_test(framework *framework)
 	framework_debug(framework, "framework_run_test() complete\n");
 
 	framework_summary(framework);
-	log_underline(framework->results,'=');
 
 	return 0;
 }
@@ -191,8 +200,9 @@ static void framework_syntax(char **argv)
 	printf("--framework-debug\tEnable run-time framework debug\n");
 	printf("--help\t\t\tGet help\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
+	printf("--results-no-separators\tNo horizontal separators in results log\n");
 	printf("--results-output=file\tOutput results to a named file. Filename can also be stdout or stderr\n");
-	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");
+	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");	
 }
 
 static int framework_args(int argc, char **argv, framework* framework)
@@ -202,6 +212,7 @@ static int framework_args(int argc, char **argv, framework* framework)
 		{ "framework-debug", 0, 0, 0 },
 		{ "help", 0, 0, 0 },
 		{ "results-output", 1, 0, 0 },
+		{ "results-no-separators", 0, 0, 0 },
 		{ "debug-output", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
@@ -229,6 +240,9 @@ static int framework_args(int argc, char **argv, framework* framework)
 				framework->results_logname = strdup(optarg);
 				break;
 			case 4:
+				framework->flags &= ~FRAMEWORK_RESULTS_SEPARATORS;
+				break;
+			case 5:
 				framework->debug_logname = strdup(optarg);
 				framework->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
@@ -255,6 +269,7 @@ framework *framework_open(int argc, char **argv,
 	}
 
 	fw->magic = FRAMEWORK_MAGIC;
+	fw->flags = FRAMEWORK_DEFAULT_FLAGS;
 	fw->ops = ops;
 	fw->private = private;
 

@@ -47,7 +47,7 @@ text_list *text_read(FILE *file)
 			text_free(head);
 			return NULL;
 		}
-		if ((item->text = malloc(strlen(buffer)+1)) == NULL) {
+		if ((item->text = strdup(buffer)) == NULL) {
 			text_free(head);
 			return NULL;
 		}

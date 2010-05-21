@@ -116,7 +116,7 @@ static int framework_summary(framework *framework)
 	framework_underline(framework,'=');
 
 	if (framework->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
-		if (framework->tests_aborted > 0 || framework->tests_failed)
+		if ((framework->tests_aborted > 0) || (framework->tests_failed > 0))
 			printf("FAILED\n");
 		else 
 			printf("PASSED\n");
@@ -155,8 +155,10 @@ int framework_run_test(framework *framework)
 		num++;
 
 	for (test = framework->ops->tests, framework->current_test = 0; *test != NULL; test++, framework->current_test++) {
-		if (framework->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS)
-			fprintf(stderr, "Test %d of %d started\n", framework->current_test + 1, num);
+		if (framework->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+			fprintf(stderr, "Test %d of %d started\n", framework->current_test + 1, num);		
+			fflush(stderr);
+		}
 		framework_debug(framework, "exectuting test %d\n", framework->current_test);
 		(*test)(framework->results, framework);
 	}

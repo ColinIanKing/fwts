@@ -24,12 +24,14 @@
 
 #define LOG_MAGIC	0xfe23ab13
 
-#define LOG_RESULT	"RES"
-#define LOG_ERROR	"ERR"
-#define LOG_WARNING	"WRN"
-#define LOG_DEBUG	"DBG"
-#define LOG_INFO	"INF"
-#define LOG_SUMMARY	"SUM"
+typedef enum {
+	LOG_RESULT   = 0x00000001,
+	LOG_ERROR    = 0x00000002,
+	LOG_WARNING  = 0x00000004,
+	LOG_DEBUG    = 0x00000008,
+	LOG_INFO     = 0x00000010,
+	LOG_SUMMARY  = 0x00000020,
+} log_prefix;
 
 typedef struct log_t {
 	int magic;
@@ -39,7 +41,7 @@ typedef struct log_t {
 
 log *log_open(const char* owner, const char *name, const char *mode);
 int  log_close(log *log);
-int  log_printf(log *log, char *prefix, const char *fmt, ...);
+int  log_printf(log *log, log_prefix prefix, const char *fmt, ...);
 void log_newline(log *log);
 void log_underline(log *log, int ch);
 

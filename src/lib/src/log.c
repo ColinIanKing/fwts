@@ -25,7 +25,27 @@
 
 #include "log.h"
 
-int log_printf(log *log, char *prefix, const char *fmt, ...)
+static char *log_prefix_to_str(log_prefix prefix)
+{
+	switch (prefix) {
+	case LOG_RESULT:
+		return "RES";
+	case LOG_ERROR:
+		return "ERR";
+	case LOG_WARNING:
+		return "WRN";
+	case LOG_DEBUG:
+		return "DBG";
+	case LOG_INFO:
+		return "INF";
+	case LOG_SUMMARY:
+		return "SUM";
+	default:
+		return "???";
+	}
+}
+
+int log_printf(log *log, log_prefix prefix, const char *fmt, ...)
 {
 	char buffer[1024];
 	int n = 0;
@@ -46,7 +66,7 @@ int log_printf(log *log, char *prefix, const char *fmt, ...)
 		"%2.2d/%2.2d/%-2.2d %2.2d:%2.2d:%2.2d %s ", 		
 		tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100,
 		tm.tm_hour, tm.tm_min, tm.tm_sec,
-		prefix);
+		log_prefix_to_str(prefix));
 
 	if (log->owner)
 		n += snprintf(buffer+n, sizeof(buffer)-n, "(%s): ", log->owner);

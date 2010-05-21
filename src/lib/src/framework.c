@@ -249,7 +249,6 @@ framework *framework_open(int argc, char **argv,
 			  const framework_ops *ops, void *private)
 {
 	framework *fw;
-	char *logname;
 
 	if ((fw = calloc(1, sizeof(framework))) == NULL) {
 		return NULL;

@@ -28,6 +28,7 @@
 
 #define FRAMEWORK_FLAGS_STDOUT_SUMMARY		0x00000001
 #define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG		0x00000002
+#define FRAMEWORK_FLAGS_SHOW_PROGRESS		0x00000004
 
 #define FRAMEWORK_DEFAULT_FLAGS			0
 
@@ -126,6 +127,7 @@ static int framework_summary(framework *framework)
 
 int framework_run_test(framework *framework)
 {		
+	int num = 0;
 	framework_tests *test;
 
 	framework_debug(framework, "framework_run_test() entered\n");
@@ -148,8 +150,13 @@ int framework_run_test(framework *framework)
 			return 0;
 		}
 	}
-	
+
+	for (test = framework->ops->tests, framework->current_test = 0; *test != NULL; test++)
+		num++;
+
 	for (test = framework->ops->tests, framework->current_test = 0; *test != NULL; test++, framework->current_test++) {
+		if (framework->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS)
+			fprintf(stderr, "Test %d of %d started\n", framework->current_test + 1, num);
 		framework_debug(framework, "exectuting test %d\n", framework->current_test);
 		(*test)(framework->results, framework);
 	}
@@ -209,6 +216,7 @@ static void framework_syntax(char **argv)
 	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): %%text\n");
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
 	printf("\t\t                 %%owner - name of test program, %%text - log text\n");
+	printf("--show-progress\t\tOutput test progress report to stderr\n");
 }
 
 static int framework_args(int argc, char **argv, framework* framework)
@@ -224,6 +232,7 @@ static int framework_args(int argc, char **argv, framework* framework)
 		{ "log-fields", 0, 0, 0 },	
 		{ "log-format", 1, 0, 0 },
 		{ "iasl", 1, 0, 0 },
+		{ "show-progress", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -270,6 +279,9 @@ static int framework_args(int argc, char **argv, framework* framework)
 			case 9:
 				framework->iasl = strdup(optarg);
 				break;
+			case 10:
+				framework->flags |= FRAMEWORK_FLAGS_SHOW_PROGRESS;
+				break;
 			}
 		case '?':
 			break;
@@ -305,7 +317,6 @@ framework *framework_open(int argc, char **argv,
 
 	if (!ops)
 		return NULL;
-
 
 	fw->results = log_open(name, LOGFILE(fw->results_logname, results_log), "a+");
 

@@ -26,12 +26,6 @@
 
 static char *wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 
-typedef struct {
-	int some_private_data;
-} wakealarm_private;
-
-wakealarm_private private;
-
 int get_alarm_irq_state(void)
 {
 	FILE *fp;
@@ -70,7 +64,7 @@ void wakealarm_headline(log *results)
 int wakealarm_test1(log *results, framework *fw)
 {
 	struct stat buf;
-	char *test = "Test1: existance of /sys/class/rtc/rtc0/wakealarm";
+	char *test = "Check existance of /sys/class/rtc/rtc0/wakealarm";
 
 	log_info(results, test);
 
@@ -84,7 +78,7 @@ int wakealarm_test1(log *results, framework *fw)
 
 int wakealarm_test2(log *results, framework *fw)
 {
-	char *test = "Test2: trigger rtc wakealarm";
+	char *test = "Trigger rtc wakealarm";
 	char *wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 
 	log_info(results, test);
@@ -112,7 +106,7 @@ int wakealarm_test2(log *results, framework *fw)
 
 int wakealarm_test3(log *results, framework *fw)
 {
-	char *test = "Test3: check if wakealarm is fired";
+	char *test = "Check if wakealarm is fired";
 
 	log_info(results, test);
 
@@ -147,7 +141,7 @@ int wakealarm_test3(log *results, framework *fw)
 int wakealarm_test4(log *results, framework *fw)
 {
 	int i;
-	char *test = "Test4: multiple wakealarm firing tests";
+	char *test = "Multiple wakealarm firing tests";
 
 	log_info(results, test);
 

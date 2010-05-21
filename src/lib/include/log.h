@@ -32,7 +32,8 @@ typedef enum {
 	LOG_INFO      = 0x00000010,
 	LOG_SUMMARY   = 0x00000020,
 	LOG_SEPARATOR = 0x00000040,
-} log_prefix;
+	LOG_NEWLINE   = 0x00000080,
+} log_field;
 
 typedef struct log_t {
 	int magic;
@@ -42,13 +43,13 @@ typedef struct log_t {
 
 log *log_open(const char* owner, const char *name, const char *mode);
 int  log_close(log *log);
-int  log_printf(log *log, log_prefix prefix, const char *fmt, ...);
+int  log_printf(log *log, log_field field, const char *fmt, ...);
 void log_newline(log *log);
 void log_underline(log *log, int ch);
-void log_set_prefix_filter(char *str);
-void log_print_prefixes(void);
-void log_filter_set_prefix(const log_prefix filter);
-void log_filter_unset_prefix(const log_prefix filter);
+void log_set_field_filter(char *str);
+void log_print_fields(void);
+void log_filter_set_field(const log_field filter);
+void log_filter_unset_field(const log_field filter);
 
 #define log_result(results, fmt, args...)	\
 	log_printf(results, LOG_RESULT, fmt, ## args) 

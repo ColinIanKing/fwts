@@ -106,7 +106,7 @@ static void framework_debug(framework* framework, char *fmt, ...)
 static int framework_summary(framework *framework)
 {
 	framework_underline(framework,'-');
-	log_summary(framework->results, "%d passed, %d failed, %d aborted\n", framework->tests_passed, framework->tests_failed, framework->tests_aborted);
+	log_summary(framework->results, "%d passed, %d failed, %d aborted", framework->tests_passed, framework->tests_failed, framework->tests_aborted);
 	framework_underline(framework,'=');
 
 	if (framework->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
@@ -178,7 +178,7 @@ void framework_passed(framework *framework, const char *test)
 {
 	framework_debug(framework, "test %d passed: %s\n", framework->current_test, test);
 	framework->tests_passed++;
-	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s\n", 
+	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s", 
 		framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), framework->current_test, test);
 }
 
@@ -186,7 +186,7 @@ void framework_failed(framework *framework, const char *test)
 {
 	framework_debug(framework, "test %d failed: %s\n", framework->current_test, test);
 	framework->tests_failed++;
-	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s\n", 
+	log_printf(framework->results, LOG_RESULT, "%s: test %d, %s", 
 		framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), framework->current_test, test);
 }
 
@@ -200,10 +200,14 @@ static void framework_syntax(char **argv)
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
 	printf("--results-output=file\tOutput results to a named file. Filename can also be stdout or stderr\n");
 	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");	
-	printf("--log-prefixes\t\tShow available log filtering prefixes\n");
+	printf("--log-fields\t\tShow available log filtering fields\n");
 	printf("--log-filter=expr\tDefine filters to dump out specific log fields\n");
 	printf("\t\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
 	printf("\t\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
+	printf("--log-format=fields\tDefine output log format\n");
+	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): %%text\n");
+	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
+	printf("\t\t                 %%owner - name of test program, %%text - log text\n");
 }
 
 static int framework_args(int argc, char **argv, framework* framework)
@@ -216,7 +220,8 @@ static int framework_args(int argc, char **argv, framework* framework)
 		{ "results-no-separators", 0, 0, 0 },
 		{ "debug-output", 1, 0, 0 },
 		{ "log-filter", 1, 0, 0 },
-		{ "log-prefixes", 0, 0, 0 },
+		{ "log-fields", 0, 0, 0 },	
+		{ "log-format", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -243,19 +248,22 @@ static int framework_args(int argc, char **argv, framework* framework)
 				framework->results_logname = strdup(optarg);
 				break;
 			case 4:
-				log_filter_unset_prefix(LOG_SEPARATOR);
+				log_filter_unset_field(LOG_SEPARATOR);
 				break;
 			case 5:
 				framework->debug_logname = strdup(optarg);
 				framework->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
 			case 6:
-				log_filter_unset_prefix(~0);
-				log_set_prefix_filter(optarg);
+				log_filter_unset_field(~0);
+				log_set_field_filter(optarg);
 				break;
 			case 7:
-				log_print_prefixes();
+				log_print_fields();
 				exit(EXIT_SUCCESS);
+				break;
+			case 8:
+				log_set_format(optarg);
 				break;
 			}
 		case '?':

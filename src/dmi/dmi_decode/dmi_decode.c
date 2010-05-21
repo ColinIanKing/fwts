@@ -41,12 +41,12 @@ int dmi_decode_init(log *results, framework *fw)
 		return 1;
 
 	if (stat(dmidecode, &buffer)) {
-		log_error(results, "Make sure dmidecode is installed!n");
+		log_error(results, "Make sure dmidecode is installed");
 		return 1;
 	}
 
 	if ((dmidata = popen(dmidecode, "r")) == NULL) {
-		log_error(results, "Failed to execute dmidecode\n");
+		log_error(results, "Failed to execute dmidecode");
 		return 1;
 	}
 
@@ -54,7 +54,7 @@ int dmi_decode_init(log *results, framework *fw)
 	fclose(dmidata);
 
 	if (dmi_text == NULL) {
-		log_error(results, "Failed to read output from dmidecode (out of memory)\n");
+		log_error(results, "Failed to read output from dmidecode (out of memory)");
 		return 1;
 	}	
 
@@ -71,7 +71,7 @@ int dmi_decode_deinit(log *results, framework *fw)
 
 void dmi_decode_headline(log *results)
 {
-	log_info(results, "Test DMI/SMBIOS tables for errors.\n");
+	log_info(results, "Test DMI/SMBIOS tables for errors");
 }
 
 int dmi_decode_test1(log *results, framework *fw)

@@ -64,7 +64,7 @@ int wakealarm_deinit(log *results, framework *fw)
 
 void wakealarm_headline(log *results)
 {
-	log_info(results, "Test ACPI Wakealarm\n");
+	log_info(results, "Test ACPI Wakealarm");
 }
 
 int wakealarm_test1(log *results, framework *fw)
@@ -72,7 +72,7 @@ int wakealarm_test1(log *results, framework *fw)
 	struct stat buf;
 	char *test = "Test1: existance of /sys/class/rtc/rtc0/wakealarm";
 
-	log_info(results, "%s\n", test);
+	log_info(results, test);
 
 	if (stat(wkalarm, &buf) == 0)
 		framework_passed(fw, test);
@@ -87,20 +87,20 @@ int wakealarm_test2(log *results, framework *fw)
 	char *test = "Test2: trigger rtc wakealarm";
 	char *wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 
-	log_info(results, "%s\n", test);
+	log_info(results, test);
 	
 	if (set("0", wkalarm)) {
-		log_error(results, "Cannot write to %s\n", wkalarm);
+		log_error(results, "Cannot write to %s", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
 	if (set("+2", wkalarm)) {
-		log_error(results, "Cannot write to %s\n", wkalarm);
+		log_error(results, "Cannot write to %s", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
 	if (!get_alarm_irq_state()) {
-		log_error(results, "Wakealarm %s did not get set\n", wkalarm);
+		log_error(results, "Wakealarm %s did not get set", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
@@ -114,27 +114,27 @@ int wakealarm_test3(log *results, framework *fw)
 {
 	char *test = "Test3: check if wakealarm is fired";
 
-	log_info(results, "%s\n", test);
+	log_info(results, test);
 
 	if (set("0", wkalarm)) {
-		log_error(results, "Cannot write to %s\n", wkalarm);
+		log_error(results, "Cannot write to %s", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
 	if (set("+2", wkalarm)) {
-		log_error(results, "Cannot write to %s\n", wkalarm);
+		log_error(results, "Cannot write to %s", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
 	if (!get_alarm_irq_state()) {
-		log_error(results, "Wakealarm %s did not get set\n", wkalarm);
+		log_error(results, "Wakealarm %s did not get set", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
-	log_info(results, "Wait 3 seconds for alarm to fire\n");
+	log_info(results, "Wait 3 seconds for alarm to fire");
 	sleep(3);
 	if (get_alarm_irq_state()) {
-		log_error(results, "Wakealarm %s did not fire\n", wkalarm);
+		log_error(results, "Wakealarm %s did not fire", wkalarm);
 		framework_failed(fw, test);
 		return 0;
 	}
@@ -149,32 +149,32 @@ int wakealarm_test4(log *results, framework *fw)
 	int i;
 	char *test = "Test4: multiple wakealarm firing tests";
 
-	log_info(results, "%s\n", test);
+	log_info(results, test);
 
 	for (i=1; i<30; i+= 10) {
 		char seconds[16];
 
 		if (set("0", wkalarm)) {
-			log_error(results, "Cannot write to %s\n", wkalarm);
+			log_error(results, "Cannot write to %s", wkalarm);
 			framework_failed(fw, test);
 			return 0;
 		}
 
 		snprintf(seconds, sizeof(seconds), "+%d",i);
 		if (set(seconds, wkalarm)) {
-			log_error(results, "Cannot write to %s\n", wkalarm);
+			log_error(results, "Cannot write to %s", wkalarm);
 			framework_failed(fw, test);
 			return 0;
 		}
 		if (!get_alarm_irq_state()) {
-			log_error(results, "Wakealarm %s did not get set\n", wkalarm);
+			log_error(results, "Wakealarm %s did not get set", wkalarm);
 			framework_failed(fw, test);
 			return 0;
 		}
-		log_info(results, "Wait %d seconds for %d second alarm to fire\n", i + 1, i);
+		log_info(results, "Wait %d seconds for %d second alarm to fire", i + 1, i);
 		sleep(i + 1);
 		if (get_alarm_irq_state()) {
-			log_error(results, "Wakealarm %s did not fire\n", wkalarm);
+			log_error(results, "Wakealarm %s did not fire", wkalarm);
 			framework_failed(fw, test);
 			return 0;
 		}

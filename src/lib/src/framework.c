@@ -28,10 +28,8 @@
 
 #define FRAMEWORK_FLAGS_STDOUT_SUMMARY		0x00000001
 #define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG		0x00000002
-#define FRAMEWORK_RESULTS_SEPARATORS		0x00000004
 
-#define FRAMEWORK_DEFAULT_FLAGS	\
-	(FRAMEWORK_RESULTS_SEPARATORS)
+#define FRAMEWORK_DEFAULT_FLAGS			0
 
 enum {
 	BIOS_TEST_TOOLKIT_PASSED_TEXT,
@@ -121,8 +119,7 @@ static int framework_summary(framework *framework)
 
 void framework_underline(framework *framework, const int ch)
 {
-	if (framework->flags & FRAMEWORK_RESULTS_SEPARATORS)
-		log_underline(framework->results, ch);
+	log_underline(framework->results, ch);
 }
 
 
@@ -214,6 +211,8 @@ static int framework_args(int argc, char **argv, framework* framework)
 		{ "results-output", 1, 0, 0 },
 		{ "results-no-separators", 0, 0, 0 },
 		{ "debug-output", 1, 0, 0 },
+		{ "log-filter", 1, 0, 0 },
+		{ "log-prefixes", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -240,11 +239,19 @@ static int framework_args(int argc, char **argv, framework* framework)
 				framework->results_logname = strdup(optarg);
 				break;
 			case 4:
-				framework->flags &= ~FRAMEWORK_RESULTS_SEPARATORS;
+				log_filter_unset_prefix(LOG_SEPARATOR);
 				break;
 			case 5:
 				framework->debug_logname = strdup(optarg);
 				framework->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				break;
+			case 6:
+				log_filter_unset_prefix(~0);
+				log_set_prefix_filter(optarg);
+				break;
+			case 7:
+				log_print_prefixes();
+				exit(EXIT_SUCCESS);
 				break;
 			}
 		case '?':

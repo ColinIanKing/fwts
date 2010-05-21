@@ -25,12 +25,13 @@
 #define LOG_MAGIC	0xfe23ab13
 
 typedef enum {
-	LOG_RESULT   = 0x00000001,
-	LOG_ERROR    = 0x00000002,
-	LOG_WARNING  = 0x00000004,
-	LOG_DEBUG    = 0x00000008,
-	LOG_INFO     = 0x00000010,
-	LOG_SUMMARY  = 0x00000020,
+	LOG_RESULT    = 0x00000001,
+	LOG_ERROR     = 0x00000002,
+	LOG_WARNING   = 0x00000004,
+	LOG_DEBUG     = 0x00000008,
+	LOG_INFO      = 0x00000010,
+	LOG_SUMMARY   = 0x00000020,
+	LOG_SEPARATOR = 0x00000040,
 } log_prefix;
 
 typedef struct log_t {
@@ -44,6 +45,10 @@ int  log_close(log *log);
 int  log_printf(log *log, log_prefix prefix, const char *fmt, ...);
 void log_newline(log *log);
 void log_underline(log *log, int ch);
+void log_set_prefix_filter(char *str);
+void log_print_prefixes(void);
+void log_filter_set_prefix(const log_prefix filter);
+void log_filter_unset_prefix(const log_prefix filter);
 
 #define log_result(results, fmt, args...)	\
 	log_printf(results, LOG_RESULT, fmt, ## args) 

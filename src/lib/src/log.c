@@ -25,6 +25,10 @@
 
 #include "log.h"
 
+#define LOG_UNKOWN_PREFIX	"???"
+
+static log_prefix log_filter = ~0;
+
 static char *log_prefix_to_str(log_prefix prefix)
 {
 	switch (prefix) {
@@ -40,8 +44,85 @@ static char *log_prefix_to_str(log_prefix prefix)
 		return "INF";
 	case LOG_SUMMARY:
 		return "SUM";
+	case LOG_SEPARATOR:
+		return "SEP";
 	default:
-		return "???";
+		return LOG_UNKOWN_PREFIX;
+	}
+}
+
+void log_print_prefixes(void)
+{
+	log_prefix prefix = 1;
+	char *str;
+	
+	printf("Available prefixes: ");
+	for (prefix=1; ; prefix <<= 1) {
+		str = log_prefix_to_str(prefix);
+		if (strcmp(str, LOG_UNKOWN_PREFIX) == 0)
+			break;
+		printf("%s%s", prefix == 1 ? "" : ",", str);
+	}
+	printf("\n");
+}
+
+
+static log_prefix log_str_to_prefix(const char *text)
+{
+	int i;
+
+	static struct mapping {
+		char *text;
+		log_prefix prefix;
+	} mappings[] = {
+		{ "RES", LOG_RESULT },
+		{ "ERR", LOG_ERROR },
+		{ "WRN", LOG_WARNING },
+		{ "DBG", LOG_DEBUG },
+		{ "INF", LOG_INFO },
+		{ "SUM", LOG_SUMMARY },
+		{ "SEP", LOG_SEPARATOR },
+		{ "ALL", ~0 },
+		{ NULL, 0 }
+	};
+
+	for (i=0; mappings[i].text != NULL; i++) {
+		if (strcmp(mappings[i].text, text) == 0) {
+			return mappings[i].prefix;
+		}
+	}
+	return 0;
+}
+
+void log_filter_set_prefix(const log_prefix filter)
+{
+	log_filter |= filter;
+}
+
+void log_filter_unset_prefix(const log_prefix filter)
+{
+	log_filter &= ~filter;
+}
+
+void log_set_prefix_filter(char *str)
+{	
+	char *token;
+	char *saveptr;
+	log_prefix prefix;
+
+	for (;; str=NULL) {
+		if ((token = strtok_r(str, ",|", &saveptr)) == NULL)
+			break;
+		if (*token == '^' || *token == '~') {
+			prefix = log_str_to_prefix(token+1);
+			if (prefix)
+				log_filter_unset_prefix(prefix);
+		}
+		else {
+			prefix = log_str_to_prefix(token);
+			if (prefix)
+				log_filter_set_prefix(prefix);
+		}
 	}
 }
 
@@ -51,11 +132,13 @@ int log_printf(log *log, log_prefix prefix, const char *fmt, ...)
 	int n = 0;
 	struct tm tm;
 	time_t now;
+	va_list ap;
 
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return 0;
 
-	va_list ap;
+	if (!(prefix & log_filter))
+		return 0;
 
 	va_start(ap, fmt);
 
@@ -85,14 +168,18 @@ void log_underline(log *log, int ch)
 {
 	int i;
 
+	char buffer[60];
+
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return;
 
-	for (i=0;i<80;i++) {
-		fputc(ch, log->fp);
+	for (i=0;i<58;i++) {	
+		buffer[i] = ch;
 	}
-	fputc('\n', log->fp);
-	fflush(log->fp);
+	buffer[i++] = '\n';
+	buffer[i] = '\0';
+
+	log_printf(log, LOG_SEPARATOR, buffer);
 }
 
 void log_newline(log *log)

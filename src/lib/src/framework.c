@@ -200,6 +200,10 @@ static void framework_syntax(char **argv)
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
 	printf("--results-output=file\tOutput results to a named file. Filename can also be stdout or stderr\n");
 	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");	
+	printf("--log-prefixes\t\tShow available log filtering prefixes\n");
+	printf("--log-filter=expr\tDefine filters to dump out specific log fields\n");
+	printf("\t\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
+	printf("\t\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
 }
 
 static int framework_args(int argc, char **argv, framework* framework)

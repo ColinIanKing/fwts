@@ -29,7 +29,7 @@
 
 static log_field log_filter = ~0;
 
-static char log_format[256] = "%date %time [%field] %owner: %text";
+static char log_format[256] = "%date %time [%field] %owner %text";
 
 static char *log_field_to_str(log_field field)
 {
@@ -230,7 +230,8 @@ void log_underline(log *log, int ch)
 
 void log_newline(log *log)
 {
-	log_printf(log, LOG_NEWLINE, "");
+	fwrite("\n", 1, 1, log->fp);
+	fflush(log->fp);
 }
 
 int log_set_owner(log *log, const char *owner)

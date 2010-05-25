@@ -161,7 +161,7 @@ static void framework_debug(framework* fw, char *fmt, ...)
 
 static int framework_test_summary(framework *fw)
 {
-	framework_underline(fw,'-');
+	framework_underline(fw,'=');
 	log_summary(fw->results, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
 	framework_underline(fw,'=');
 
@@ -171,6 +171,8 @@ static int framework_test_summary(framework *fw)
 		else 
 			printf("PASSED\n");
 	}
+
+	log_newline(fw->results);
 
 	fw->total_tests_aborted += fw->tests_aborted;
 	fw->total_tests_failed  += fw->tests_failed;

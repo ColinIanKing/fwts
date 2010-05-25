@@ -249,19 +249,22 @@ void framework_run_registered_tests(framework *fw)
 	framework_debug(fw, "framework_run_registered_tests() done\n");
 }
 
-void framework_run_registered_test(framework *fw, const char *name)
+int framework_run_registered_test(framework *fw, const char *name)
 {
 	framework_list *item;
+	framework_debug(fw, "framework_run_registered_tests() - run test %s\n",name);
 	for (item = framework_list_head; item != NULL; item = item->next) {
 		if (strcmp(name, item->name) == 0) {
 			framework_debug(fw, "framework_run_registered_tests() - test %s\n",item->name);
 			framework_run_test(fw, item->name, item->ops);
-			return;
+			return 0;
 		}
 	}
 	fw->results = log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
 	log_printf(fw->results, LOG_ERROR, "Test %s does not exist!", name);
 	log_close(fw->results);
+
+	return 1;
 }
 
 void framework_close(framework *fw)
@@ -310,6 +313,7 @@ static void framework_syntax(char **argv)
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
 	printf("\t\t                 %%owner - name of test program, %%text - log text\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");
+	printf("--show-tests\t\tShow available tests\n");
 }
 
 
@@ -401,8 +405,13 @@ int framework_args(int argc, char **argv)
 	fw->results = log_open("framework", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
 
 	if (optind < argc) 
-		while (optind < argc)
-			framework_run_registered_test(fw, argv[optind++]);
+		for (; optind < argc; optind++) {
+			if (framework_run_registered_test(fw, argv[optind])) {
+				fprintf(stderr, "No such test '%s'\n",argv[optind]);
+				framework_show_tests();
+				exit(EXIT_FAILURE);
+			}
+		}
 	else 
 		framework_run_registered_tests(fw);
 

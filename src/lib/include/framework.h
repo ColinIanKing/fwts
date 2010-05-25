@@ -41,14 +41,16 @@ typedef struct framework {
 	struct framework_ops const *ops;	
 	int flags;
 
-	/* test stats */
+	/* per test stats */
 	int tests_passed;		
 	int tests_failed;
 	int tests_aborted;
 	int current_test;
 
-	/* test framework private data */
-	void *private;
+	/* overall test stats */
+	int total_tests_passed;		
+	int total_tests_failed;
+	int total_tests_aborted;
 } framework;
 
 
@@ -61,20 +63,24 @@ typedef struct framework_ops {
 	framework_tests *tests;			/* List of tests to run */
 } framework_ops;
 
-framework *framework_open(int argc, char **argv, const char *name, const char *resultlog, const framework_ops *ops, void *private);
+void framework_add(char *name, const framework_ops *ops);
+
+framework *framework_init(int argc, char **argv,
+                          const char *name,
+                          const char *results_log);
+framework *framework_open(int argc, char **argv, const char *name, const char *resultlog, const framework_ops *op);
 void framework_close(framework *);
-int  framework_run_test(framework *);
+int framework_run_test(framework *framework, const char *name, const framework_ops *ops);
 void framework_passed(framework *, const char *);
 void framework_failed(framework *, const char *);
 
-/* Standalone */
-
-#define FRAMEWORK(name, resultlog, ops, private)	\
-main(int argc, char **argv) {				\
-	framework *fw;					\
-	fw = framework_open(argc, argv, # name, resultlog, ops, private);\
-	framework_run_test(fw);				\
-	framework_close(fw);				\
-}
-
+#define FRAMEWORK(name, ops)				\
+							\
+void name ## init (void) __attribute__ ((constructor));	\
+							\
+void name ## init (void)				\
+{							\
+	framework_add(# name, ops);			\
+}							\
+							
 #endif

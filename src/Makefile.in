@@ -14,6 +14,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -31,6 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+bin_PROGRAMS = testsuite$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -41,8 +43,22 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-SOURCES =
-DIST_SOURCES =
+am__installdirs = "$(DESTDIR)$(bindir)"
+PROGRAMS = $(bin_PROGRAMS)
+am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
+	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) dmi_decode.$(OBJEXT)
+testsuite_OBJECTS = $(am_testsuite_OBJECTS)
+testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
+DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+am__depfiles_maybe = depfiles
+am__mv = mv -f
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+SOURCES = $(testsuite_SOURCES)
+DIST_SOURCES = $(testsuite_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -171,10 +187,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib acpi dmi
+SUBDIRS = lib
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include
+testsuite_SOURCES = main.c acpi/klog/klog.c acpi/wakealarm/wakealarm.c acpi/syntaxcheck/syntaxcheck.c dmi/dmi_decode/dmi_decode.c
+testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
 
 .SUFFIXES:
+.SUFFIXES: .c .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -205,6 +225,128 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p; \
+	  then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	      echo " $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	      $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' `; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+testsuite$(EXEEXT): $(testsuite_OBJECTS) $(testsuite_DEPENDENCIES) 
+	@rm -f testsuite$(EXEEXT)
+	$(LINK) $(testsuite_OBJECTS) $(testsuite_LDADD) $(LIBS)
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT)
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+klog.o: acpi/klog/klog.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT klog.o -MD -MP -MF $(DEPDIR)/klog.Tpo -c -o klog.o `test -f 'acpi/klog/klog.c' || echo '$(srcdir)/'`acpi/klog/klog.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/klog.Tpo $(DEPDIR)/klog.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/klog/klog.c' object='klog.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o klog.o `test -f 'acpi/klog/klog.c' || echo '$(srcdir)/'`acpi/klog/klog.c
+
+klog.obj: acpi/klog/klog.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT klog.obj -MD -MP -MF $(DEPDIR)/klog.Tpo -c -o klog.obj `if test -f 'acpi/klog/klog.c'; then $(CYGPATH_W) 'acpi/klog/klog.c'; else $(CYGPATH_W) '$(srcdir)/acpi/klog/klog.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/klog.Tpo $(DEPDIR)/klog.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/klog/klog.c' object='klog.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o klog.obj `if test -f 'acpi/klog/klog.c'; then $(CYGPATH_W) 'acpi/klog/klog.c'; else $(CYGPATH_W) '$(srcdir)/acpi/klog/klog.c'; fi`
+
+wakealarm.o: acpi/wakealarm/wakealarm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wakealarm.o -MD -MP -MF $(DEPDIR)/wakealarm.Tpo -c -o wakealarm.o `test -f 'acpi/wakealarm/wakealarm.c' || echo '$(srcdir)/'`acpi/wakealarm/wakealarm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/wakealarm.Tpo $(DEPDIR)/wakealarm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/wakealarm/wakealarm.c' object='wakealarm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wakealarm.o `test -f 'acpi/wakealarm/wakealarm.c' || echo '$(srcdir)/'`acpi/wakealarm/wakealarm.c
+
+wakealarm.obj: acpi/wakealarm/wakealarm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT wakealarm.obj -MD -MP -MF $(DEPDIR)/wakealarm.Tpo -c -o wakealarm.obj `if test -f 'acpi/wakealarm/wakealarm.c'; then $(CYGPATH_W) 'acpi/wakealarm/wakealarm.c'; else $(CYGPATH_W) '$(srcdir)/acpi/wakealarm/wakealarm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/wakealarm.Tpo $(DEPDIR)/wakealarm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/wakealarm/wakealarm.c' object='wakealarm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o wakealarm.obj `if test -f 'acpi/wakealarm/wakealarm.c'; then $(CYGPATH_W) 'acpi/wakealarm/wakealarm.c'; else $(CYGPATH_W) '$(srcdir)/acpi/wakealarm/wakealarm.c'; fi`
+
+syntaxcheck.o: acpi/syntaxcheck/syntaxcheck.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT syntaxcheck.o -MD -MP -MF $(DEPDIR)/syntaxcheck.Tpo -c -o syntaxcheck.o `test -f 'acpi/syntaxcheck/syntaxcheck.c' || echo '$(srcdir)/'`acpi/syntaxcheck/syntaxcheck.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/syntaxcheck.Tpo $(DEPDIR)/syntaxcheck.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/syntaxcheck/syntaxcheck.c' object='syntaxcheck.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o syntaxcheck.o `test -f 'acpi/syntaxcheck/syntaxcheck.c' || echo '$(srcdir)/'`acpi/syntaxcheck/syntaxcheck.c
+
+syntaxcheck.obj: acpi/syntaxcheck/syntaxcheck.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT syntaxcheck.obj -MD -MP -MF $(DEPDIR)/syntaxcheck.Tpo -c -o syntaxcheck.obj `if test -f 'acpi/syntaxcheck/syntaxcheck.c'; then $(CYGPATH_W) 'acpi/syntaxcheck/syntaxcheck.c'; else $(CYGPATH_W) '$(srcdir)/acpi/syntaxcheck/syntaxcheck.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/syntaxcheck.Tpo $(DEPDIR)/syntaxcheck.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/syntaxcheck/syntaxcheck.c' object='syntaxcheck.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o syntaxcheck.obj `if test -f 'acpi/syntaxcheck/syntaxcheck.c'; then $(CYGPATH_W) 'acpi/syntaxcheck/syntaxcheck.c'; else $(CYGPATH_W) '$(srcdir)/acpi/syntaxcheck/syntaxcheck.c'; fi`
+
+dmi_decode.o: dmi/dmi_decode/dmi_decode.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.o -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dmi_decode.Tpo $(DEPDIR)/dmi_decode.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmi/dmi_decode/dmi_decode.c' object='dmi_decode.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c
+
+dmi_decode.obj: dmi/dmi_decode/dmi_decode.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.obj -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.obj `if test -f 'dmi/dmi_decode/dmi_decode.c'; then $(CYGPATH_W) 'dmi/dmi_decode/dmi_decode.c'; else $(CYGPATH_W) '$(srcdir)/dmi/dmi_decode/dmi_decode.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dmi_decode.Tpo $(DEPDIR)/dmi_decode.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmi/dmi_decode/dmi_decode.c' object='dmi_decode.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmi_decode.obj `if test -f 'dmi/dmi_decode/dmi_decode.c'; then $(CYGPATH_W) 'dmi/dmi_decode/dmi_decode.c'; else $(CYGPATH_W) '$(srcdir)/dmi/dmi_decode/dmi_decode.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -401,9 +543,12 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile
+all-am: Makefile $(PROGRAMS)
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(bindir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -431,11 +576,13 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-recursive
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-compile distclean-generic \
+	distclean-tags
 
 dvi: dvi-recursive
 
@@ -455,7 +602,7 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-binPROGRAMS
 
 install-html: install-html-recursive
 
@@ -478,12 +625,13 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-generic
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
 
 pdf: pdf-recursive
 
@@ -493,23 +641,25 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-binPROGRAMS
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
 	install-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-am clean clean-generic ctags \
-	ctags-recursive distclean distclean-generic distclean-tags \
-	distdir dvi dvi-am html html-am info info-am install \
-	install-am install-data install-data-am install-dvi \
+	all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic ctags ctags-recursive distclean \
+	distclean-compile distclean-generic distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags \
-	tags-recursive uninstall uninstall-am
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-binPROGRAMS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

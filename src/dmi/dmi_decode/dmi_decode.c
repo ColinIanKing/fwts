@@ -201,4 +201,4 @@ framework_ops dmi_decode_ops = {
 	dmi_decode_tests
 };
 
-FRAMEWORK(dmi_decode, "dmi_decode.log", &dmi_decode_ops, NULL);
+FRAMEWORK(dmi_decode, &dmi_decode_ops);

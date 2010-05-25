@@ -145,7 +145,7 @@ int wakealarm_test4(log *results, framework *fw)
 
 	log_info(results, test);
 
-	for (i=1; i<30; i+= 10) {
+	for (i=1; i<5; i++) {
 		char seconds[16];
 
 		if (set("0", wkalarm)) {
@@ -193,4 +193,4 @@ framework_ops wakealarm_ops = {
 	wakealarm_tests
 };
 
-FRAMEWORK(wakealarm, "wakealarm.log", &wakealarm_ops, NULL);
+FRAMEWORK(wakealarm, &wakealarm_ops);

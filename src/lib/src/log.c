@@ -29,7 +29,7 @@
 
 static log_field log_filter = ~0;
 
-static char log_format[256] = "%date %time [%field] (%owner): %text";
+static char log_format[256] = "%date %time [%field] %owner: %text";
 
 static char *log_field_to_str(log_field field)
 {
@@ -140,11 +140,11 @@ static void log_remove_newlines(char *str)
 {
 	char *ptr1,*ptr2;
 
-	for (ptr1=ptr2=str; *ptr1; ptr1++) {
+	for (ptr1=ptr2=str; *ptr1; ) {
 		if (*ptr1=='\n')
 			ptr1++;
 		else
-			*ptr2++ = *ptr1;
+			*ptr2++ = *ptr1++;
 	}
 	*ptr2 = '\0';
 }
@@ -190,7 +190,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 				ptr+=5;
 			}
 			if (strncmp(ptr,"owner",5)==0 && log->owner) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, "%s", log->owner);
+				n += snprintf(buffer+n, sizeof(buffer)-n, "%-15.15s", log->owner);
 				ptr+=5;
 			}
 			if (strncmp(ptr,"text",4)==0) {	
@@ -231,6 +231,20 @@ void log_underline(log *log, int ch)
 void log_newline(log *log)
 {
 	log_printf(log, LOG_NEWLINE, "");
+}
+
+int log_set_owner(log *log, const char *owner)
+{
+	if (log && (log->magic == LOG_MAGIC)) {
+		char *newowner = strdup(owner);
+		if (newowner) {
+			if (log->owner)
+				free(log->owner);
+			log->owner = newowner;
+			return 0;
+		}
+	}
+	return 1;
 }
 
 log *log_open(const char *owner, const char *name, const char *mode)

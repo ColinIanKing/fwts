@@ -120,7 +120,7 @@ int syntaxcheck_test1(log *log, framework *fw)
 	
 	while ((line = get_next_output_line()) != NULL) {
 		int num;
-		int ch;
+		char ch;
 		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
 			char *nextline = get_next_output_line();
 			if (nextline) {
@@ -163,4 +163,4 @@ framework_ops syntaxcheck_ops = {
 	syntaxcheck_tests
 };
 
-FRAMEWORK(syntaxcheck, "syntaxcheck.log", &syntaxcheck_ops, NULL);
+FRAMEWORK(syntaxcheck, &syntaxcheck_ops);

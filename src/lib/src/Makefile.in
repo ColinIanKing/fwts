@@ -50,7 +50,7 @@ libtestsuite_a_LIBADD =
 am_libtestsuite_a_OBJECTS = framework.$(OBJEXT) get.$(OBJEXT) \
 	log.$(OBJEXT) set.$(OBJEXT) checkeuid.$(OBJEXT) \
 	text_file.$(OBJEXT) scan_dmesg_acpi_warnings.$(OBJEXT) \
-	dsdt.$(OBJEXT) iasl.$(OBJEXT)
+	dsdt.$(OBJEXT) iasl.$(OBJEXT) pipeio.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -154,7 +154,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include 
 noinst_LIBRARIES = libtestsuite.a
-libtestsuite_a_SOURCES = framework.c get.c log.c set.c checkeuid.c text_file.c scan_dmesg_acpi_warnings.c dsdt.c iasl.c
+libtestsuite_a_SOURCES = framework.c get.c log.c set.c checkeuid.c text_file.c scan_dmesg_acpi_warnings.c dsdt.c iasl.c pipeio.c
 all: all-am
 
 .SUFFIXES:
@@ -209,6 +209,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iasl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipeio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scan_dmesg_acpi_warnings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text_file.Po@am__quote@

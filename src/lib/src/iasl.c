@@ -23,43 +23,42 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "framework.h"
 #include "iasl.h"
 
 int iasl_disassemble(log *log, framework *fw, char *src)
 {
-	char tmpbuf[1024];
-	FILE *fp;
+	char tmpbuf[4096];
+	int fd;
 	struct stat buf;
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl ? fw->iasl : IASL, src);
-	fp = popen(tmpbuf, "r");
-	pclose(fp);
+	fd = piperead(tmpbuf);
+	pipeclose(fd);
 
 	return errno;
 }
 
 char *iasl_assemble(log *log, framework *fw, char *src)
 {
-	char tmpbuf[80];
-	FILE *fp;
+	char tmpbuf[4096];
+	int fd;
+ 	int n;
 	char *output = NULL;
 	int len = 0;
 	struct stat buf;
 
 	/* Run iasl with -vs just dumps out line and error output */
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s", fw->iasl ? fw->iasl : IASL, src);
-	fp = popen(tmpbuf, "r");
-	while (!feof(fp)) {
-		int n;
-
-		n = fread(tmpbuf, 1, sizeof(tmpbuf), fp);
+	fd = piperead(tmpbuf);
+	while ((n = read(fd, tmpbuf, sizeof(tmpbuf))) > 0) {
 		output = realloc(output, len + n);
 		memcpy(output + len, tmpbuf, n);
 		len += n;
 	}
-	pclose(fp);
+	pipeclose(fd);
 
 	return output;
 }

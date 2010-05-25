@@ -26,6 +26,7 @@
 #include "helpers.h"
 #include "checkeuid.h"
 #include "text_file.h"
+#include "scan_dmesg_acpi_warnings.h"
 
 #define FRAMEWORK_MAGIC	0x2af61aec
 

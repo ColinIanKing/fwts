@@ -22,6 +22,14 @@
 
 #include "log.h"
 
+int clear_klog(void)
+{
+	if (klogctl(5, NULL, 0) < 0) {
+		return 1;
+	}
+	return 0;
+}
+
 char *read_klog(void)
 {
 	int len;

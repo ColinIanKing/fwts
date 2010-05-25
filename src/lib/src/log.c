@@ -230,8 +230,10 @@ void log_underline(log *log, int ch)
 
 void log_newline(log *log)
 {
-	fwrite("\n", 1, 1, log->fp);
-	fflush(log->fp);
+	if (log && (log->magic == LOG_MAGIC)) {
+		fwrite("\n", 1, 1, log->fp);
+		fflush(log->fp);
+	}
 }
 
 int log_set_owner(log *log, const char *owner)

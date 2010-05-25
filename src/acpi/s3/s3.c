@@ -34,7 +34,7 @@ static char *klog;
 
 int s3_init(log *results, framework *fw)
 {
-	if (clear_klog()) {
+	if (klog_clear()) {
 		log_error(results, "cannot clear kernel log");
 		return 1;
 	}
@@ -57,7 +57,7 @@ int s3_test1(log *results, framework *fw)
 
 	log_info(results, test);
 
-	if ((klog = read_klog()) == NULL) {
+	if ((klog = klog_read()) == NULL) {
 		log_error(results, "cannot read kernel log");
 		return 1;
 	}
@@ -68,7 +68,7 @@ int s3_test1(log *results, framework *fw)
 	pipeclose(fd);
 	*/
 
-	if (check_klog(results, klog, &warnings, &errors)) {
+	if (klog_check(results, klog, &warnings, &errors)) {
 		log_error(results, "error parsing kernel log");
 		return 1;
 	}

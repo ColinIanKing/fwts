@@ -72,8 +72,8 @@ framework *framework_init(int argc, char **argv,
 framework *framework_open(int argc, char **argv, const char *name, const char *resultlog, const framework_ops *op);
 void framework_close(framework *);
 int framework_run_test(framework *framework, const char *name, const framework_ops *ops);
-void framework_passed(framework *, const char *);
-void framework_failed(framework *, const char *);
+void framework_passed(framework *, const char *fmt, ...);
+void framework_failed(framework *, const char *fmt, ...);
 
 #define FRAMEWORK(name, ops)				\
 							\

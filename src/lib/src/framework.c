@@ -278,20 +278,36 @@ void framework_close(framework *fw)
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-void framework_passed(framework *fw, const char *test)
+void framework_passed(framework *fw, const char *fmt, ...)
 {
-	framework_debug(fw, "test %d passed: %s\n", fw->current_test, test);
+	va_list ap;
+	char buffer[1024];
+
+	va_start(ap, fmt);
+
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	framework_debug(fw, "test %d passed: %s\n", fw->current_test, buffer);
 	fw->tests_passed++;
 	log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
-		framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, test);
+		framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, buffer);
+
+	va_end(ap);
 }
 
-void framework_failed(framework *fw, const char *test)
+void framework_failed(framework *fw, const char *fmt, ...)
 {
-	framework_debug(fw, "test %d failed: %s\n", fw->current_test, test);
+	va_list ap;
+	char buffer[1024];
+
+	va_start(ap, fmt);
+
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	framework_debug(fw, "test %d failed: %s\n", fw->current_test, buffer);
 	fw->tests_failed++;
 	log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
-		framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, test);
+		framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
+
+	va_end(ap);
 }
 
 static void framework_syntax(char **argv)

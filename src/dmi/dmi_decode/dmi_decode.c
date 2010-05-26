@@ -94,8 +94,7 @@ dmi_pattern dmi_patterns[] = {
 	{ NULL, NULL, NULL }
 };
 
-const char *dmidecode = "/usr/sbin/dmidecode";
-
+static char *dmidecode = "/usr/sbin/dmidecode";
 
 int dmi_decode_init(log *results, framework *fw)
 {
@@ -104,8 +103,11 @@ int dmi_decode_init(log *results, framework *fw)
 	if (check_root_euid(results))
 		return 1;
 
+	if (fw->dmidecode)
+		dmidecode = fw->dmidecode;
+
 	if (stat(dmidecode, &buffer)) {
-		log_error(results, "Make sure dmidecode is installed");
+		log_error(results, "Cannot find %s, make sure dmidecode is installed", dmidecode);
 		return 1;
 	}
 	return 0;

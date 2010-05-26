@@ -40,6 +40,7 @@ typedef struct framework {
 	char *results_logname;			/* filename of results log */
 	char *debug_logname;			/* filename of framework debug log */
 	char *iasl;				/* path to iasl */
+	char *dmidecode;			/* path to dmidecode */
 	char *dsdt;				/* path to dsdt file */
 	char *klog;				/* path to dump of kernel log */
 

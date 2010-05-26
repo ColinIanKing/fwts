@@ -315,6 +315,8 @@ static void framework_syntax(char **argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
+	printf("--dmidecode\t\tSpecify path to dmidecode\n");
+	printf("--iasl\t\t\tSpecify path to iasl\n");
 	printf("--framework-debug\tEnable run-time framework debug\n");
 	printf("--help\t\t\tGet help\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
@@ -353,6 +355,7 @@ int framework_args(int argc, char **argv)
 		{ "show-tests", 0, 0, 0 },
 		{ "dsdt", 1, 0, 0, },
 		{ "klog", 1, 0, 0, },
+		{ "dmidecode", 1, 0, 0, },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -421,6 +424,9 @@ int framework_args(int argc, char **argv)
 				break;
 			case 13: /* --klog */
 				fw->klog = strdup(optarg);
+				break;
+			case 14: /* --dmidecode */
+				fw->dmidecode = strdup(optarg);
 				break;
 			}
 		case '?':

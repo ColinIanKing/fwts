@@ -18,6 +18,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define DSDT_FILE	"/proc/acpi/dsdt"
 

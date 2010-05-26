@@ -48,6 +48,8 @@ int klog_init(log *results, framework *fw)
 int klog_deinit(log *results, framework *fw)
 {
 	free(klog);
+
+	return 0;
 }
 
 int klog_test1(log *results, framework *fw)

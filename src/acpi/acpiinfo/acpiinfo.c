@@ -131,6 +131,8 @@ int acpiinfo_init(log *results, framework *fw)
 int acpiinfo_deinit(log *results, framework *fw)
 {
 	free(klog);
+
+	return 0;
 }
 
 int acpiinfo_test1(log *results, framework *fw)

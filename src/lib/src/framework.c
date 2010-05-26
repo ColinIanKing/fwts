@@ -72,7 +72,6 @@ static framework_setting framework_settings[] = {
 
 static void framework_debug(framework* framework, char *fmt, ...);
 
-
 void framework_add(char *name, const framework_ops *ops)
 {
 	framework_list *item;
@@ -94,7 +93,7 @@ void framework_add(char *name, const framework_ops *ops)
 	}
 }
 
-void framework_show_tests(void)
+static void framework_show_tests(void)
 {
 	framework_list *item;
 
@@ -107,7 +106,7 @@ void framework_show_tests(void)
 }
 	
 
-void framework_underline(framework *fw, const int ch)
+static void framework_underline(framework *fw, const int ch)
 {
 	log_underline(fw->results, ch);
 }
@@ -185,7 +184,7 @@ static int framework_total_summary(framework *fw)
 	log_summary(fw->results, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
 }
 
-int framework_run_test(framework *fw, const char *name, const framework_ops *ops)
+static int framework_run_test(framework *fw, const char *name, const framework_ops *ops)
 {		
 	int num = 0;
 	framework_tests *test;
@@ -239,7 +238,7 @@ int framework_run_test(framework *fw, const char *name, const framework_ops *ops
 	return 0;
 }
 
-void framework_run_registered_tests(framework *fw)
+static void framework_run_registered_tests(framework *fw)
 {
 	framework_list *item;
 
@@ -251,7 +250,7 @@ void framework_run_registered_tests(framework *fw)
 	framework_debug(fw, "framework_run_registered_tests() done\n");
 }
 
-int framework_run_registered_test(framework *fw, const char *name)
+static int framework_run_registered_test(framework *fw, const char *name)
 {
 	framework_list *item;
 	framework_debug(fw, "framework_run_registered_tests() - run test %s\n",name);
@@ -269,7 +268,7 @@ int framework_run_registered_test(framework *fw, const char *name)
 	return 1;
 }
 
-void framework_close(framework *fw)
+static void framework_close(framework *fw)
 {
 	int failed = (fw->total_tests_aborted > 0 || fw->total_tests_failed);
 

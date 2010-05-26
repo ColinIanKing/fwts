@@ -29,13 +29,77 @@
 
 #include "framework.h"
 
-static text_list *dmi_text;
+typedef struct {
+	char *pat1;
+	char *pat2;
+	char *message;
+} dmi_pattern;
+
+char *dmi_types[] = {
+	"BIOS",
+	"System",
+	"Base Board",
+	"Chassis",
+	"Processor",
+	"Memory Controller",
+	"Memory Module",
+	"Cache",
+	"Port Connector",
+	"System Slots",
+	"On Board Devices",
+	"OEM Strings",
+	"System Configuration Options",
+	"BIOS Language",
+	"Group Associations",
+	"System Event Log",
+	"Physical Memory Array",
+	"Memory Device",
+	"32-bit Memory Error",
+	"Memory Array Mapped Address",
+	"Memory Device Mapped Address",
+	"Built-in Pointing Device",
+	"Portable Battery",
+	"System Reset",
+	"Hardware Security",
+	"System Power Controls",
+	"Voltage Probe",
+	"Cooling Device",
+	"Temperature Probe",
+	"Electrical Current Probe",
+	"Out-of-band Remote Access",
+	"Boot Integrity Services",
+	"System Boot",
+	"64-bit Memory Error",
+	"Management Device",
+	"Management Device Component",
+	"Management Device Threshold Data",
+	"Memory Channel",
+	"IPMI Device",
+	"Power Supply"
+};
+
+
+
+dmi_pattern dmi_patterns[] = {
+	{ "No SMBIOS nor DMI entry point found", NULL, "Check SMBIOS or DMI entry points" },
+	{ "Wrong DMI structures count", NULL, "DMI structures count" },
+	{ "Wrong DMI structures length",NULL, "DMI structures length" },
+	{ "<OUT OF SPEC>", NULL, "Out of spec check" },
+	{ "<BAD INDEX>", NULL, "Bad index check" },
+	{ "Bad checksum! Please report.", "Bad checksum" },
+	{ "Serial Number:", "0123456789", "Template Serial Number not updated" },
+	{ "Asset Tag",  "1234567890", "Template Serial Number not updated" },
+	{ "UUID:", "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A.", "UUID number not updated" },
+	{ "To Be Filled By O.E.M.", "Value not updated" },
+	{ NULL, NULL, NULL }
+};
+
+const char *dmidecode = "/usr/sbin/dmidecode";
+
 
 int dmi_decode_init(log *results, framework *fw)
 {
-	const char *dmidecode = "/usr/sbin/dmidecode";
 	struct stat buffer;
-	FILE *dmidata;
 
 	if (check_root_euid(results))
 		return 1;
@@ -44,28 +108,11 @@ int dmi_decode_init(log *results, framework *fw)
 		log_error(results, "Make sure dmidecode is installed");
 		return 1;
 	}
-
-	if ((dmidata = popen(dmidecode, "r")) == NULL) {
-		log_error(results, "Failed to execute dmidecode");
-		return 1;
-	}
-
-	dmi_text = text_read(dmidata);
-	fclose(dmidata);
-
-	if (dmi_text == NULL) {
-		log_error(results, "Failed to read output from dmidecode (out of memory)");
-		return 1;
-	}	
-
 	return 0;
 }
 
 int dmi_decode_deinit(log *results, framework *fw)
 {
-	if (dmi_text)
-		text_free(dmi_text);
-
 	return 0;
 }
 
@@ -76,121 +123,70 @@ void dmi_decode_headline(log *results)
 
 int dmi_decode_test1(log *results, framework *fw)
 {
-	char *test = "Sanity check SMBIOS or DMI entry points";
-	if (text_strstr(dmi_text, "No SMBIOS nor DMI entry point found"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+	char buffer[4096];
+	char *dmi_text;
+	char *dmi_ptr;
+	int type;
+	int fd;
 
-int dmi_decode_test2(log *results, framework *fw)
-{
-	char *test = "DMI structures count";
-	if (text_strstr(dmi_text, "Wrong DMI structures count"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+	for (type=0; type < 40; type++) {
+		int dumped = 0;
+		int linenum = 0;
+		int failed = 0;
 
-int dmi_decode_test3(log *results, framework *fw)
-{
-	char *test = "DMI structures length";
-	if (text_strstr(dmi_text, "Wrong DMI structures length"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+		sprintf(buffer, "%s -t %d", dmidecode, type);
+		if ((fd = pipe_open(buffer)) < 0) {
+			log_error(results, "Failed to execute dmidecode");
+			return 1;
+		}
+		dmi_ptr = dmi_text = pipe_read(fd);
 
-int dmi_decode_test4(log *results, framework *fw)
-{
-	char *test = "Out of spec check";
-	if (text_strstr(dmi_text, "<OUT OF SPEC>"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+		if (dmi_text == NULL) {
+			log_error(results, "Failed to read output from dmidecode (out of memory)");
+			pipe_close(fd);
+			return 1;
+		}	
 
-int dmi_decode_test5(log *results, framework *fw)
-{
-	char *test = "Bad index check";
-	if (text_strstr(dmi_text, "<BAD INDEX>"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+		while (*dmi_ptr) {
+			char *bufptr = buffer;
+			int i;
 
-int dmi_decode_test6(log *results, framework *fw)
-{
-	char *test = "Bad checksum";
-	if (text_strstr(dmi_text, "Bad checksum! Please report."))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
+			while (*dmi_ptr && *dmi_ptr != '\n' && (bufptr-buffer < sizeof(buffer)))
+				*bufptr++ = *dmi_ptr++;
 
-int dmi_decode_test7(log *results, framework *fw)
-{
-	char *test = "Serial number not updated, should NOT be 0123456789";
-	char *text = text_strstr(dmi_text, "Serial Number:");
+			*bufptr = '\0';	
+			if (*dmi_ptr == '\n')
+				dmi_ptr++;
 
-	if (strstr(text, "0123456789"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
-
-int dmi_decode_test8(log *results, framework *fw)
-{
-	char *test = "Template Asset Tag not updated, should NOT be 0123456789";
-	char *text = text_strstr(dmi_text, "Asset Tag:");
-
-	if (strstr(text, "0123456789"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
-
-int dmi_decode_test9(log *results, framework *fw)
-{
-	char *test = "Template UUID number not updated";
-	char *text = text_strstr(dmi_text, "UUID:");
-
-	if (strstr(text, "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A"))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
-	return 0;
-}
-
-int dmi_decode_test10(log *results, framework *fw)
-{
-	char *test = "Template not updated, incorrect default of \"To Be Filled By O.E.M\"";
-	if (text_strstr(dmi_text, "To Be Filled By O.E.M."))
-		framework_failed(fw, test);	
-	else
-		framework_passed(fw, test);
+			for (i=0; dmi_patterns[i].pat1 != NULL; i++) {
+				int match;
+				if (dmi_patterns[i].pat2 == NULL) 
+					match = (strstr(buffer, dmi_patterns[i].pat1) != NULL);
+				else {
+					match = (strstr(buffer, dmi_patterns[i].pat1) != NULL) &&
+						(strstr(buffer, dmi_patterns[i].pat2) != NULL);
+				}
+				if (match) {		
+					failed++;
+					framework_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
+					if (!dumped) {
+						log_info(results, "%s", dmi_text);
+						dumped = 1;
+					}
+				}
+			}
+		}
+		if (!failed)
+			framework_passed(fw, "DMI type %s", dmi_types[type]);
+		
+		free(dmi_text);
+		pipe_close(fd);
+	}
 	return 0;
 }
 
 framework_tests dmi_decode_tests[] = {
 	dmi_decode_test1,
-	dmi_decode_test2,
-	dmi_decode_test3,	
-	dmi_decode_test4,
-	dmi_decode_test5,
-	dmi_decode_test6,
-	dmi_decode_test7,
-	dmi_decode_test8,
-	dmi_decode_test9,
-	dmi_decode_test10,
 	NULL
 };
 

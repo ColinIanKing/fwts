@@ -28,8 +28,9 @@
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
-int piperead(const char *command)
+int pipe_open(const char *command)
 {
 	int pipefds[2];
 	pid_t pid;
@@ -62,7 +63,30 @@ int piperead(const char *command)
 	}
 }
 
-int pipeclose(int fd)
+char *pipe_read(int fd)
+{
+	char *ptr = NULL;
+	char buffer[32];	
+	int n;
+	int size = 0;
+
+	while ((n = read(fd, buffer, sizeof(buffer))) != 0) {
+		if (n < 0) {
+			if (errno != EINTR && errno != EAGAIN)
+				free(ptr);
+				return NULL;
+		}
+		else {
+			ptr = realloc(ptr, size + n + 1);
+			memcpy(ptr + size, buffer, n);
+			size += n;
+			*(ptr+size) = 0;
+		}
+	}
+	return ptr;
+}
+
+int pipe_close(int fd)
 {
 	int status;
 

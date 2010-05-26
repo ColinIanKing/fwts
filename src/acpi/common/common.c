@@ -57,59 +57,58 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 
 	if (strstr(line, "Temperature above threshold, cpu clock throttled")) {
 		framework_failed(fw,"Test caused overtemperature. Insufficient cooling?");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "ACPI: Handling Garbled _PRT entry")) {
 		framework_failed(fw,"Bios has a garbled _PRT entry; source_name and source_index swapped");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 	
 	if (strstr(line, "BIOS never enumerated boot CPU")) {
 		framework_failed(fw,"The boot processor is not enumerated!"); 
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Return object type is incorrect")) {
 		framework_failed(fw,"Return object type is incorrect: %s", line);
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm") && strstr(line,"_HPP fail")) {
 		framework_failed(fw,"Hotplug _HPP method fails!");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_pciehprm") && strstr(line,"OSHP fail")) {
 		framework_failed(fw,"Hotplug OSHP method fails!");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm:") && strstr(line,"evaluate _BBN fail")) {
 		framework_failed(fw,"Hotplug _BBN method is missing");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "[PBST] Namespace lookup failure, AE_NOT_FOUND")) {
 		framework_failed(fw,"ACPI Namespace lookup failure reported");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method reached maximum reentrancy limit")) {
 		framework_failed(fw,"ACPI method has reached reentrancy limit");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "Error while parsing _PSD domain information")) {
 		framework_failed(fw,"_PSD domain information is corrupt!");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
-
 
 	if (strstr(line, "Wrong _BBN value, reboot and use option 'pci=noacpi'")) {
 		framework_failed(fw,"The BIOS has wrong _BBN value, "
 			"which will make PCI root bridge have wrong bus number"); 
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 			
 	if (strstr(line,"ACPI: lapic on CPU ") && strstr(line, " stops in C2[C2]")) {
@@ -119,7 +118,7 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 				"apic timer to work. The most likely cause of this is that the\n"
 				"firmware uses a hardware C3 or C4 state that is mapped to\n"
 				"the ACPI C2 state.");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "Invalid _PCT data")!=NULL) {
@@ -128,7 +127,7 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 			framework_failed(fw,"The _PCT data of %s is invalid", ptr);
 		else 
 			framework_failed(fw, "The _PCT data is invalid");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method execution failed")) {
@@ -137,7 +136,7 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 			framework_failed(fw,"Method execution of %s failed", ptr);
 		else
 			framework_failed(fw,"Method execution of failed: %s", line);
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "Method parse/execution failed") && strstr(line, "AE_NOT_FOUND")) {
@@ -146,16 +145,17 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 			framework_failed(fw,"Method parsing/execution of %s failed", ptr);
 		else
 			framework_failed(fw,"Method parsing/execution failed");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 		
 	}
+
 	if (strstr(line, "*** Error: Method execution failed") && strstr(line, "AE_AML_METHOD_LIMIT")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr) 
 			framework_failed(fw,"Method %s reached maximum reentrancy limit", ptr);
 		else
 			framework_failed(fw,"Method reached maximum reentrancy limit");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 		
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_OWNER_ID_LIMIT")) {
@@ -164,7 +164,7 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 			framework_failed(fw,"Method %s failed to allocate owner ID", ptr);
 		else
 			framework_failed(fw,"Method failed to allocate owner ID");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_AML_BUFFER_LIMIT")) {
@@ -173,15 +173,14 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 			framework_failed(fw,"Method %s failed: ResourceSourceIndex is present but ResourceSource is not", ptr);
 		else
 			framework_failed(fw,"Method failed: ResourceSourceIndex is present but ResourceSource is not");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 
 	if (strstr(line, "Disabling IRQ")!=NULL) {
 		framework_failed(fw,"The kernel detected an irq storm. IRQ routing bug?");
-		log_info(fw->results, "%s", line);
+		log_info(log, "%s", line);
 	}
 }
-
 
 void dmesg_common_headline(log *results)
 {
@@ -212,7 +211,7 @@ int dmesg_common_test1(log *results, framework *fw)
 	int warnings = 0;
 	int errors = 0;
 
-	log_info(results, test);
+	log_info(results, "This checks for common errors found in the kernel message log");
 
 	if (klog_scan(results, klog, dmesg_common_check, fw, &warnings, &errors)) {
 		log_error(results, "failed to scan kernel log");

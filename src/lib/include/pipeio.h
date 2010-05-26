@@ -20,7 +20,8 @@
 #ifndef __PIPEIO_H__
 #define __PIPEIO_H__
 
-int piperead(const char *program);
-int pipeclose(int fd);
+int   pipe_open(const char *program);
+char *pipe_read(int fd);
+int   pipe_close(int fd);
 
 #endif

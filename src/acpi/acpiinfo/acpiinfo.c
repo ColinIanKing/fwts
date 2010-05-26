@@ -49,62 +49,88 @@ static void acpiinfo_check(log *log, char *line, char *prevline, void *private, 
 		log_info(log,"DSDT was compiled by the %s AML compiler", vendor);
 	}
 
-	if (strstr(line, "Disabling IRQ")!=NULL && prevline && strstr(prevline,"acpi_irq"))
+	if (strstr(line, "Disabling IRQ")!=NULL && prevline && strstr(prevline,"acpi_irq")) {
 		framework_failed(fw, "ACPI interrupt got stuck: level triggered?");
+		log_info(log,"%s", line);
+	}
 
-	if (prevline && strstr(prevline, "*** Error: Return object type is incorrect"))
+	if (prevline && strstr(prevline, "*** Error: Return object type is incorrect")) {
 		framework_failed(fw, "Return object type is incorrect: %s", line);
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line,"ACPI: acpi_ec_space_handler: bit_width is 32, should be"))
+	if (strstr(line,"ACPI: acpi_ec_space_handler: bit_width is 32, should be")) {
 		framework_failed(fw, "Embedded controller bit_width is incorrect: %s", line);
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line,"acpi_ec_space_handler: bit_width should be"))
+	if (strstr(line,"acpi_ec_space_handler: bit_width should be")) {
 		framework_failed(fw, "Embedded controller bit_width is incorrect: %s", line);
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line,"Warning: acpi_table_parse(ACPI_SRAT) returned 0!"))
+	if (strstr(line,"Warning: acpi_table_parse(ACPI_SRAT) returned 0!")) {
 		framework_failed(fw, "SRAT table cannot be found");
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line,"Warning: acpi_table_parse(ACPI_SLIT) returned 0!"))
+	if (strstr(line,"Warning: acpi_table_parse(ACPI_SLIT) returned 0!")) {
 		framework_failed(fw, "SLIT table cannot be found");
+		log_info(log,"%s", line);
+	}
 		
-	if (strstr(line, "WARNING: No sibling found for CPU"))
+	if (strstr(line, "WARNING: No sibling found for CPU")) {
 		framework_failed(fw, "Hyperthreading CPU enumeration fails");
+		log_info(log,"%s", line);
+	}
 
 	if (prevline && strstr(line, ">>> ERROR: Invalid checksum") && strlen(prevline)>11) {
 		char tmp[4096];
 		strncpy(tmp, prevline, sizeof(tmp));
 		tmp[11] = '\0';
 		framework_failed(fw, "ACPI table %s has an invalid checksum", tmp+6);
+		log_info(log,"%s", line);
 	}
 
-	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC"))
+	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC")) {
 		framework_failed(fw, "8254 timer not connected to IO-APIC: %s", line);
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) 
+	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) {
 		framework_failed(fw, line);
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "*** Warning Inconsistent FADT length") && strstr(line, "using FADT V1.0 portion of table"))
+	if (strstr(line, "*** Warning Inconsistent FADT length") && strstr(line, "using FADT V1.0 portion of table")) {
 		framework_failed(fw, "FADT table claims to be of higher revision than it is");
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "thermal_get_trip_point: Invalid active threshold"))
+	if (strstr(line, "thermal_get_trip_point: Invalid active threshold")) {
 		framework_failed(fw, "_AC0 thermal trip point is invalid");
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "MMCONFIG has no entries"))
+	if (strstr(line, "MMCONFIG has no entries")) {
 		framework_failed(fw, "The MCFG table has no entries!");
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "MMCONFIG not in low 4GB of memory"))
+	if (strstr(line, "MMCONFIG not in low 4GB of memory")) {
 		framework_failed(fw, "The MCFG table entries are not in the lower 4Gb of ram");
+		log_info(log,"%s", line);
+	}
 
-	if (strstr(line, "pcie_portdrv_probe->Dev") && strstr(line, "has invalid IRQ. Check vendor BIOS"))
+	if (strstr(line, "pcie_portdrv_probe->Dev") && strstr(line, "has invalid IRQ. Check vendor BIOS")) {
 		framework_failed(fw, "PCI Express port driver reports an invalid IRQ");
+		log_info(log,"%s", line);
+	}
 		
-	if (strstr(line, "BIOS handoff failed (BIOS bug ?)"))
+	if (strstr(line, "BIOS handoff failed (BIOS bug ?)")) {
 		framework_failed(fw, "EHCI BIOS emulation handoff failed");
-
-	/* and do the generic ones as well */
-#if 0
-	//dmesg_common_errors(line,"dmesg://");
-#endif
+		log_info(log,"%s", line);
+	}
 }
 
 
@@ -112,9 +138,6 @@ static void acpiinfo_check(log *log, char *line, char *prevline, void *private, 
 void acpiinfo_headline(log *results)
 {
 	log_info(results, "General ACPI information check");
-	log_info(results, "This test checks the output of the in-kernel ACPI CA against common "
-		 "error messages that indicate a bad interaction with the bios, including "
-		 "those that point at AML syntax errors.");
 }
 
 static char *klog;
@@ -141,13 +164,14 @@ int acpiinfo_test1(log *results, framework *fw)
 	int warnings = 0;
 	int errors = 0;
 
-	log_info(results, test);
+	log_info(results, "This test checks the output of the in-kernel ACPI CA against common\n"
+		 "error messages that indicate a bad interaction with the bios, including\n"
+		 "those that point at AML syntax errors.\n");
 
 	if (klog_scan(results, klog, acpiinfo_check, fw, &warnings, &errors)) {
 		log_error(results, "failed to scan kernel log");
 		return 1;
 	}
-
 
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);

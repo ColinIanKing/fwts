@@ -35,8 +35,8 @@ int iasl_disassemble(log *log, framework *fw, char *src)
 	struct stat buf;
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl ? fw->iasl : IASL, src);
-	fd = piperead(tmpbuf);
-	pipeclose(fd);
+	fd = pipe_open(tmpbuf);
+	pipe_close(fd);
 
 	return errno;
 }
@@ -52,13 +52,13 @@ char *iasl_assemble(log *log, framework *fw, char *src)
 
 	/* Run iasl with -vs just dumps out line and error output */
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s", fw->iasl ? fw->iasl : IASL, src);
-	fd = piperead(tmpbuf);
+	fd = pipe_open(tmpbuf);
 	while ((n = read(fd, tmpbuf, sizeof(tmpbuf))) > 0) {
 		output = realloc(output, len + n);
 		memcpy(output + len, tmpbuf, n);
 		len += n;
 	}
-	pipeclose(fd);
+	pipe_close(fd);
 
 	return output;
 }

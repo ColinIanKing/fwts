@@ -29,7 +29,7 @@
 
 static log_field log_filter = ~0;
 
-static char log_format[256] = "%date %time [%field] %owner %text";
+static char log_format[256] = "%date %time [%field] %owner ";
 
 static char *log_field_to_str(log_field field)
 {
@@ -136,17 +136,25 @@ void log_set_format(char *str)
 	log_format[sizeof(log_format)-1]='\0';
 }
 
-static void log_remove_newlines(char *str)
+static void log_handle_newlines(log *log, char *str, int posn)
 {
 	char *ptr1,*ptr2;
 
-	for (ptr1=ptr2=str; *ptr1; ) {
-		if (*ptr1=='\n')
-			ptr1++;
-		else
-			*ptr2++ = *ptr1++;
+	for (ptr1=ptr2=str+posn; *ptr1; ptr1++) {
+		if (*ptr1=='\n') {
+			fwrite(str,  1, posn, log->fp);
+			fwrite(ptr2, 1, ptr1-ptr2+1, log->fp);
+			fflush(log->fp);
+			ptr2 = ptr1+1;
+		}
 	}
-	*ptr2 = '\0';
+
+	if (ptr1-ptr2) {
+		fwrite(str,  1, posn, log->fp);
+		fwrite(ptr2, 1, ptr1-ptr2, log->fp);
+		fwrite("\n", 1, 1, log->fp);
+		fflush(log->fp);
+	}
 }
 
 int log_printf(log *log, log_field field, const char *fmt, ...)
@@ -193,21 +201,15 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 				n += snprintf(buffer+n, sizeof(buffer)-n, "%-15.15s", log->owner);
 				ptr+=5;
 			}
-			if (strncmp(ptr,"text",4)==0) {	
-				n+= vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
-				ptr+=4;
-			}	
 		}
 		else {
 			n += snprintf(buffer+n, sizeof(buffer)-n, "%c", *ptr);
 			ptr++;
 		}
 	}
+	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
+	log_handle_newlines(log, buffer, n);
 
-	log_remove_newlines(buffer);
-	fwrite(buffer, 1, strlen(buffer), log->fp);
-	fwrite("\n", 1, 1, log->fp);
-	fflush(log->fp);
 
 	va_end(ap);
 

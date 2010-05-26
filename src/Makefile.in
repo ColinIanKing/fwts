@@ -47,7 +47,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
-	acpiinfo.$(OBJEXT) common.$(OBJEXT) dmi_decode.$(OBJEXT)
+	acpiinfo.$(OBJEXT) common.$(OBJEXT) apicedge.$(OBJEXT) \
+	dmi_decode.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -197,6 +198,7 @@ testsuite_SOURCES = main.c \
 	acpi/s3/s3.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/common/common.c \
+	apic/apicedge/apicedge.c \
 	dmi/dmi_decode/dmi_decode.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
@@ -282,6 +284,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpiinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
@@ -387,6 +390,20 @@ common.obj: acpi/common/common.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/common/common.c' object='common.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o common.obj `if test -f 'acpi/common/common.c'; then $(CYGPATH_W) 'acpi/common/common.c'; else $(CYGPATH_W) '$(srcdir)/acpi/common/common.c'; fi`
+
+apicedge.o: apic/apicedge/apicedge.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicedge.o -MD -MP -MF $(DEPDIR)/apicedge.Tpo -c -o apicedge.o `test -f 'apic/apicedge/apicedge.c' || echo '$(srcdir)/'`apic/apicedge/apicedge.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/apicedge.Tpo $(DEPDIR)/apicedge.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apic/apicedge/apicedge.c' object='apicedge.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o apicedge.o `test -f 'apic/apicedge/apicedge.c' || echo '$(srcdir)/'`apic/apicedge/apicedge.c
+
+apicedge.obj: apic/apicedge/apicedge.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicedge.obj -MD -MP -MF $(DEPDIR)/apicedge.Tpo -c -o apicedge.obj `if test -f 'apic/apicedge/apicedge.c'; then $(CYGPATH_W) 'apic/apicedge/apicedge.c'; else $(CYGPATH_W) '$(srcdir)/apic/apicedge/apicedge.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/apicedge.Tpo $(DEPDIR)/apicedge.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apic/apicedge/apicedge.c' object='apicedge.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o apicedge.obj `if test -f 'apic/apicedge/apicedge.c'; then $(CYGPATH_W) 'apic/apicedge/apicedge.c'; else $(CYGPATH_W) '$(srcdir)/apic/apicedge/apicedge.c'; fi`
 
 dmi_decode.o: dmi/dmi_decode/dmi_decode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.o -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c

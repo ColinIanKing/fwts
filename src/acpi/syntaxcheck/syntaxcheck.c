@@ -62,39 +62,55 @@ char *get_next_output_line(void)
 
 int syntaxcheck_init(log *log, framework *fw)
 {
-	char *tmp;
+	char *dsdtfile;
 	char *tmpdsl;
+	char *ptr;
 	int  len;
-	FILE *cmd;
         struct stat buffer;
-
-	tmp = "tmp_dstd";
-	len = strlen(tmp);
-	tmpdsl = malloc(len+5);
-	snprintf(tmpdsl, len+5, "%s.dsl", tmp);
-
-	if (check_root_euid(log))
-		return 1;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
                 log_error(log, "Make sure iasl is installed");
                 return 1;
         }
+
+	if (fw->dsdt) {
+		dsdtfile = fw->dsdt;
+	}
+	else {
+		/* Suck data from DSDT from kernel */
+		dsdtfile = "tmp_dstd";
+
+		if (check_root_euid(log))
+			return 1;
 	
-	if (dsdt_copy(log, tmp)) {
-		log_error(log, "cannot copy DSDT to %s", tmp);
+		if (dsdt_copy(log, dsdtfile)) {
+			log_error(log, "cannot copy DSDT to %s", dsdtfile);
+			return 1;
+		}
+	}
+	ptr = rindex(dsdtfile, '.');
+	if (ptr)
+		len = ptr - dsdtfile;
+	else
+		len = strlen(dsdtfile);
+
+	tmpdsl = malloc(len+5);
+	strncpy(tmpdsl, dsdtfile, len);
+	strcpy(tmpdsl + len, ".dsl");
+
+	printf("FILE: %s\n",tmpdsl);
+
+	if (iasl_disassemble(log, fw, dsdtfile)) {
+		log_error(log, "cannot dissasemble DSDT with iasl", dsdtfile);
 		return 1;
 	}
 
-	if (iasl_disassemble(log, fw, tmp)) {
-		log_error(log, "cannot dissasemble DSDT with iasl", tmp);
-		return 1;
-	}
-
-	unlink(tmp);
+	if (!fw->dsdt)
+		unlink(dsdtfile);
 	
+	/* Get errors from assembly, to be parsed later */
 	if ((error_output = iasl_assemble(log, fw, tmpdsl)) == NULL) {
-		log_error(log, "cannot re-assasemble with iasl", tmp);
+		log_error(log, "cannot re-assasemble with iasl", dsdtfile);
 		return 1;
 	}
 
@@ -107,6 +123,8 @@ int syntaxcheck_deinit(log *log, framework *fw)
 {
 	if (error_output)
 		free(error_output);
+
+	return 0;
 }
 
 int syntaxcheck_test1(log *log, framework *fw)

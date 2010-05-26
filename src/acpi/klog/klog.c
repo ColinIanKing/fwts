@@ -33,7 +33,12 @@ static char *klog;
 
 int klog_init(log *results, framework *fw)
 {
-	if ((klog = klog_read()) == NULL) {
+	if (fw->klog)
+		klog = file_read(fw->klog);
+	else
+		klog = klog_read();
+	
+	if (klog == NULL) {
 		log_error(results, "cannot read kernel log");
 		return 1;
 	}
@@ -57,8 +62,9 @@ int klog_test1(log *results, framework *fw)
 		log_error(results, "error parsing kernel log");
 		return 1;
 	}
+
+	log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
 	if (warnings + errors > 0) {
-		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
 		framework_failed(fw, test);
 	}
 	else

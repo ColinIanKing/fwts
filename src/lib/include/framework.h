@@ -27,6 +27,8 @@
 #include "checkeuid.h"
 #include "text_file.h"
 #include "klog.h"
+#include "pipeio.h"
+#include "fileio.h"
 
 #define FRAMEWORK_MAGIC	0x2af61aec
 
@@ -38,6 +40,8 @@ typedef struct framework {
 	char *results_logname;			/* filename of results log */
 	char *debug_logname;			/* filename of framework debug log */
 	char *iasl;				/* path to iasl */
+	char *dsdt;				/* path to dsdt file */
+	char *klog;				/* path to dump of kernel log */
 
 	struct framework_ops const *ops;	
 	int flags;

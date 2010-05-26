@@ -5,10 +5,13 @@ dmidecode parsing
 	- done 20/05/2010
 wakealarm
 	- done 19/05/2010
+dmesg parsing
+	- done 25/05/2010
 S3 Suspend/Resume
 S4 Hibernate/Resume
-Hotkeys
 Decompile/Compile AML code using iasl
+	- done 
 Semantic checking of AML - code inspection + poking with acpiexec
 Fan
+Hotkeys
 

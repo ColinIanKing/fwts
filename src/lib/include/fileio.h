@@ -17,11 +17,9 @@
  *
  */
 
-#ifndef __DSDT_H__
-#define __DSDT_H__
+#ifndef __FILEIO_H__
+#define __FILEIO_H__
 
-char *dsdt_read(log *);
-int   dsdt_copy(log *log, const char *destination);
-
+char* file_read(const char *file);
 
 #endif

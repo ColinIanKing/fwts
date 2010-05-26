@@ -217,10 +217,10 @@ int framework_run_test(framework *fw, const char *name, const framework_ops *ops
 		}
 	}
 
-	for (test = ops->tests, fw->current_test = 0; *test != NULL; test++)
+	for (test = ops->tests; *test != NULL; test++)
 		num++;
 
-	for (test = ops->tests, fw->current_test = 0; *test != NULL; test++, fw->current_test++) {
+	for (test = ops->tests, fw->current_test = 1; *test != NULL; test++, fw->current_test++) {
 		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%s: Test %d of %d started\n", name, fw->current_test + 1, num);		
 			fflush(stderr);
@@ -322,6 +322,8 @@ static void framework_syntax(char **argv)
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
 	printf("--results-output=file\tOutput results to a named file. Filename can also be stdout or stderr\n");
 	printf("--debug-output=file\tOutput debug to a named file. Filename can also be stdout or stderr\n");	
+	printf("--dsdt=file\t\tSpecify DSDT file rather than reading it from the ACPI table\n");
+	printf("--klog=file\t\tSpecify kernel log file rather than reading it from the kernel\n");
 	printf("--log-fields\t\tShow available log filtering fields\n");
 	printf("--log-filter=expr\tDefine filters to dump out specific log fields\n");
 	printf("\t\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
@@ -350,6 +352,8 @@ int framework_args(int argc, char **argv)
 		{ "iasl", 1, 0, 0 },
 		{ "show-progress", 0, 0, 0 },
 		{ "show-tests", 0, 0, 0 },
+		{ "dsdt", 1, 0, 0, },
+		{ "klog", 1, 0, 0, },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -373,45 +377,51 @@ int framework_args(int argc, char **argv)
 		switch (c) {
 		case 0:
 			switch (option_index) {
-			case 0:
+			case 0: /* --stdout-summary */
 				fw->flags |= FRAMEWORK_FLAGS_STDOUT_SUMMARY;
 				break;	
-			case 1:
+			case 1: /* --framework-debug */
 				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;		
-			case 2:
+			case 2: /* --help */
 				framework_syntax(argv);
 				exit(EXIT_SUCCESS);
-			case 3:
+			case 3: /* --results-output */
 				fw->results_logname = strdup(optarg);
 				break;
-			case 4:
+			case 4: /* --results-no-separators */
 				log_filter_unset_field(LOG_SEPARATOR);
 				break;
-			case 5:
+			case 5: /* --debug-output */
 				fw->debug_logname = strdup(optarg);
 				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
-			case 6:
+			case 6: /* --log-filter */
 				log_filter_unset_field(~0);
 				log_set_field_filter(optarg);
 				break;
-			case 7:
+			case 7: /* --log-fields */
 				log_print_fields();
 				exit(EXIT_SUCCESS);
 				break;
-			case 8:
+			case 8: /* --log-format */
 				log_set_format(optarg);
 				break;	
-			case 9:
+			case 9: /* --iasl */
 				fw->iasl = strdup(optarg);
 				break;
-			case 10:
+			case 10: /* --show-progress */
 				fw->flags |= FRAMEWORK_FLAGS_SHOW_PROGRESS;
 				break;
-			case 11:
+			case 11: /* --show-tests */
 				framework_show_tests();
 				exit(EXIT_SUCCESS);
+				break;
+			case 12: /* --dsdt */
+				fw->dsdt = strdup(optarg);
+				break;
+			case 13: /* --klog */
+				fw->klog = strdup(optarg);
 				break;
 			}
 		case '?':

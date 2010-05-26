@@ -47,7 +47,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
-	acpiinfo.$(OBJEXT) dmi_decode.$(OBJEXT)
+	acpiinfo.$(OBJEXT) common.$(OBJEXT) dmi_decode.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -190,7 +190,15 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall
-testsuite_SOURCES = main.c acpi/klog/klog.c acpi/wakealarm/wakealarm.c acpi/syntaxcheck/syntaxcheck.c acpi/s3/s3.c acpi/acpiinfo/acpiinfo.c dmi/dmi_decode/dmi_decode.c
+testsuite_SOURCES = main.c \
+	acpi/klog/klog.c \
+	acpi/wakealarm/wakealarm.c \
+	acpi/syntaxcheck/syntaxcheck.c \
+	acpi/s3/s3.c \
+	acpi/acpiinfo/acpiinfo.c \
+	acpi/common/common.c \
+	dmi/dmi_decode/dmi_decode.c
+
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
 
@@ -274,6 +282,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpiinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
@@ -364,6 +373,20 @@ acpiinfo.obj: acpi/acpiinfo/acpiinfo.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/acpiinfo/acpiinfo.c' object='acpiinfo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o acpiinfo.obj `if test -f 'acpi/acpiinfo/acpiinfo.c'; then $(CYGPATH_W) 'acpi/acpiinfo/acpiinfo.c'; else $(CYGPATH_W) '$(srcdir)/acpi/acpiinfo/acpiinfo.c'; fi`
+
+common.o: acpi/common/common.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT common.o -MD -MP -MF $(DEPDIR)/common.Tpo -c -o common.o `test -f 'acpi/common/common.c' || echo '$(srcdir)/'`acpi/common/common.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/common.Tpo $(DEPDIR)/common.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/common/common.c' object='common.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o common.o `test -f 'acpi/common/common.c' || echo '$(srcdir)/'`acpi/common/common.c
+
+common.obj: acpi/common/common.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT common.obj -MD -MP -MF $(DEPDIR)/common.Tpo -c -o common.obj `if test -f 'acpi/common/common.c'; then $(CYGPATH_W) 'acpi/common/common.c'; else $(CYGPATH_W) '$(srcdir)/acpi/common/common.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/common.Tpo $(DEPDIR)/common.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/common/common.c' object='common.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o common.obj `if test -f 'acpi/common/common.c'; then $(CYGPATH_W) 'acpi/common/common.c'; else $(CYGPATH_W) '$(srcdir)/acpi/common/common.c'; fi`
 
 dmi_decode.o: dmi/dmi_decode/dmi_decode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.o -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c

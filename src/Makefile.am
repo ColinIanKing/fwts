@@ -3,7 +3,14 @@ SUBDIRS = lib
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall
 
 bin_PROGRAMS = testsuite
-testsuite_SOURCES = main.c acpi/klog/klog.c acpi/wakealarm/wakealarm.c acpi/syntaxcheck/syntaxcheck.c acpi/s3/s3.c acpi/acpiinfo/acpiinfo.c dmi/dmi_decode/dmi_decode.c
+testsuite_SOURCES = main.c \
+	acpi/klog/klog.c \
+	acpi/wakealarm/wakealarm.c \
+	acpi/syntaxcheck/syntaxcheck.c \
+	acpi/s3/s3.c \
+	acpi/acpiinfo/acpiinfo.c \
+	acpi/common/common.c \
+	dmi/dmi_decode/dmi_decode.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 

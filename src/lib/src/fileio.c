@@ -17,11 +17,45 @@
  *
  */
 
-#ifndef __DSDT_H__
-#define __DSDT_H__
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-char *dsdt_read(log *);
-int   dsdt_copy(log *log, const char *destination);
+char* file_read(const char *file)
+{
+	struct stat buf;
+	int fd;
+	char *buffer;
+	char *ptr;
+	int n;
+	int size;
 
+	if (stat(file, &buf) < 0)
+		return NULL;
 
-#endif
+	size = buf.st_size;
+
+	if ((buffer = malloc(size)) == NULL) 
+		return NULL;
+
+	if ((fd = open(file, O_RDONLY)) < 0) {
+		free(buffer);
+		return NULL;
+	}
+
+	ptr = buffer;
+	do {
+		if ((n = read(fd, ptr, size)) < 0) {
+			free(buffer);
+			return NULL;
+		}
+		size -= n;
+		ptr += n;
+	} while (size);
+	
+	close(fd);
+
+	return buffer;
+}

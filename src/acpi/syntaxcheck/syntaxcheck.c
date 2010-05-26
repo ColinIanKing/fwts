@@ -98,8 +98,6 @@ int syntaxcheck_init(log *log, framework *fw)
 	strncpy(tmpdsl, dsdtfile, len);
 	strcpy(tmpdsl + len, ".dsl");
 
-	printf("FILE: %s\n",tmpdsl);
-
 	if (iasl_disassemble(log, fw, dsdtfile)) {
 		log_error(log, "cannot dissasemble DSDT with iasl", dsdtfile);
 		return 1;

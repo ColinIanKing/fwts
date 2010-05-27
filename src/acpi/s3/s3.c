@@ -186,10 +186,8 @@ int s3_test_multiple(log *results, framework *fw)
 }
 
 framework_tests s3_tests[] = {
-/*
 	s3_test_single,
 	s3_test_multiple,
-*/
 	NULL
 };
 

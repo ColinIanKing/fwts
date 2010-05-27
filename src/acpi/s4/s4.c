@@ -122,9 +122,7 @@ int s4_test1(log *results, framework *fw)
 }
 
 framework_tests s4_tests[] = {
-/*
 	s4_test1,
-*/
 	NULL
 };
 

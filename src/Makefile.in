@@ -47,8 +47,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
-	acpiinfo.$(OBJEXT) common.$(OBJEXT) apicedge.$(OBJEXT) \
-	dmi_decode.$(OBJEXT)
+	s4.$(OBJEXT) acpiinfo.$(OBJEXT) common.$(OBJEXT) \
+	apicedge.$(OBJEXT) dmi_decode.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -196,6 +196,7 @@ testsuite_SOURCES = main.c \
 	acpi/wakealarm/wakealarm.c \
 	acpi/syntaxcheck/syntaxcheck.c \
 	acpi/s3/s3.c \
+	acpi/s4/s4.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \
@@ -290,6 +291,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Po@am__quote@
 
@@ -362,6 +364,20 @@ s3.obj: acpi/s3/s3.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s3/s3.c' object='s3.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s3.obj `if test -f 'acpi/s3/s3.c'; then $(CYGPATH_W) 'acpi/s3/s3.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s3/s3.c'; fi`
+
+s4.o: acpi/s4/s4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT s4.o -MD -MP -MF $(DEPDIR)/s4.Tpo -c -o s4.o `test -f 'acpi/s4/s4.c' || echo '$(srcdir)/'`acpi/s4/s4.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/s4.Tpo $(DEPDIR)/s4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s4/s4.c' object='s4.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s4.o `test -f 'acpi/s4/s4.c' || echo '$(srcdir)/'`acpi/s4/s4.c
+
+s4.obj: acpi/s4/s4.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT s4.obj -MD -MP -MF $(DEPDIR)/s4.Tpo -c -o s4.obj `if test -f 'acpi/s4/s4.c'; then $(CYGPATH_W) 'acpi/s4/s4.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s4/s4.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/s4.Tpo $(DEPDIR)/s4.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s4/s4.c' object='s4.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s4.obj `if test -f 'acpi/s4/s4.c'; then $(CYGPATH_W) 'acpi/s4/s4.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s4/s4.c'; fi`
 
 acpiinfo.o: acpi/acpiinfo/acpiinfo.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT acpiinfo.o -MD -MP -MF $(DEPDIR)/acpiinfo.Tpo -c -o acpiinfo.o `test -f 'acpi/acpiinfo/acpiinfo.c' || echo '$(srcdir)/'`acpi/acpiinfo/acpiinfo.c

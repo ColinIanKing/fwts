@@ -8,6 +8,7 @@ testsuite_SOURCES = main.c \
 	acpi/wakealarm/wakealarm.c \
 	acpi/syntaxcheck/syntaxcheck.c \
 	acpi/s3/s3.c \
+	acpi/s4/s4.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \

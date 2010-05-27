@@ -1,6 +1,12 @@
 
 "Low Hanging Fruit" BIOS tests:
 
+klog
+	- dome 25/05/2010
+common kernel errors
+	- done 26/05/2010
+apic irq testing
+	- done 26/05/2010
 dmidecode parsing	
 	- done 20/05/2010
 wakealarm
@@ -8,10 +14,13 @@ wakealarm
 dmesg parsing
 	- done 25/05/2010
 S3 Suspend/Resume
+	- done 26/05/2010
 S4 Hibernate/Resume
+	- done 27/05/2010
 Decompile/Compile AML code using iasl
 	- done 
 Semantic checking of AML - code inspection + poking with acpiexec
+	- 
 Fan
 Hotkeys
 

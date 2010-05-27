@@ -24,6 +24,8 @@
 
 #include "framework.h"
 #include "pipeio.h"
+#include "wakealarm.h"
+#include "klog.h"
 
 void s3_headline(log *results)
 {
@@ -34,10 +36,20 @@ static char *klog;
 
 int s3_init(log *results, framework *fw)
 {
+	int ret;
+
 	if (klog_clear()) {
 		log_error(results, "cannot clear kernel log");
 		return 1;
 	}
+
+	ret = wakealarm_test_firing(results, fw, 1);
+	if (ret != 0) {
+		log_error(results, "cannot automatically wake machine up - aborting S3 test");
+		framework_failed(fw, "check if wakealarm works reliably for S3 tests");
+		return 1;
+	}
+
 	return 0;
 }
 
@@ -50,28 +62,57 @@ int s3_deinit(log *results, framework *fw)
 
 int s3_test1(log *results, framework *fw)
 {	
-	char *test = "kernel log error check";
+	char *test = "S3 suspend/resume test";
 	int warnings = 0;
 	int errors = 0;
-	int fd;
+	char *output;
+	int status;
 
 	log_info(results, test);
 
-	if ((klog = klog_read()) == NULL) {
-		log_error(results, "cannot read kernel log");
+	if (klog_clear()) {
+		log_error(results, "cannot clear kernel log");
+		framework_failed(fw, test);
 		return 1;
 	}
+
+	wakealarm_trigger(results, fw, 30);
 
 	/* Do s3 here */
-	/*
-	fd = piperead("pm-suspend");
-	pipeclose(fd);
-	*/
+	status = pipe_exec("pm-suspend", &output);
+	if (output)
+		free(output);
 
-	if (klog_check(results, klog, &warnings, &errors)) {
-		log_error(results, "error parsing kernel log");
-		return 1;
+	log_info(results, "pm-suspend returned %d", status);
+	
+	if ((klog = klog_read()) == NULL) {
+		log_error(results, "cannot read kernel log");
+		framework_failed(fw, test);
 	}
+
+	if (klog_pm_check(results, klog, &warnings, &errors)) {
+		log_error(results, "error parsing kernel log");
+	}
+
+	if (klog_firmware_check(results, klog, &warnings, &errors)) {
+		log_error(results, "error parsing kernel log");
+	}
+
+	/* Add in error check for pm-suspend status */
+	if ((status > 0) && (status < 128)) {
+		errors++;
+		log_error(results, "pm-action failed before trying to put the system\n"
+				   "in the requested power saving state");
+	} else if (status == 128) {
+		errors++;
+		log_error(results, "pm-action tried to put the machine in the requested\n"
+       				   "power state but failed");
+	} else if (status > 128) {
+		errors++;
+		log_error(results, "pm-action encountered an error and also failed to\n"
+				   "enter the requested power saving state");
+	}
+
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
 		framework_failed(fw, test);

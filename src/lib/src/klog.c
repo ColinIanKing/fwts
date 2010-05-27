@@ -51,14 +51,6 @@ char *klog_read(void)
 	return buffer;
 }
 
-#define KERN_WARNING		0x00000001
-#define KERN_ERROR		0x00000002
-
-typedef struct {
-	char *pattern;
-	int  type;
-} pattern;
-
 typedef void (*scan_callback_t)(log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
 
 int klog_scan(log *log, char *klog, scan_callback_t callback, void *private, int *warnings, int *errors)
@@ -74,7 +66,6 @@ int klog_scan(log *log, char *klog, scan_callback_t callback, void *private, int
 	*prev = '\0';
 
 	while (*klog) {
-		int i;
 		char *bufptr = buffer;
 
 		if ((klog[0] == '<') && (klog[2] == '>'))
@@ -93,19 +84,46 @@ int klog_scan(log *log, char *klog, scan_callback_t callback, void *private, int
 }
 
 /* List of errors and warnings */
-static pattern error_warning_patterns[] = {
-	"ACPI Warning ",	KERN_WARNING,
-	"[Firmware Bug]:",	KERN_ERROR,
-	"PCI: BIOS Bug:",	KERN_ERROR,
-	"ACPI Error ",		KERN_ERROR,
-	NULL,			0,
+static klog_pattern firmware_error_warning_patterns[] = {
+	{ "ACPI Warning ",	KERN_WARNING },
+	{ "[Firmware Bug]:",	KERN_ERROR },
+	{ "PCI: BIOS Bug:",	KERN_ERROR },
+	{ "ACPI Error ",	KERN_ERROR },
+	{ NULL,			0 }
 };
 
-void scan_patterns(log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
+static klog_pattern pm_error_warning_patterns[] = {
+        { "PM: Failed to prepare device", 		KERN_ERROR },
+        { "PM: Some devices failed to power down", 	KERN_ERROR },
+        { "PM: Some system devices failed to power down", KERN_ERROR },
+        { "PM: Error", 					KERN_ERROR },
+        { "PM: Some devices failed to power down", 	KERN_ERROR },
+        { "PM: Restore failed, recovering", 		KERN_ERROR },
+        { "PM: Resume from disk failed", 		KERN_ERROR },
+        { "PM: Not enough free memory", 		KERN_ERROR },
+        { "PM: Memory allocation failed", 		KERN_ERROR },
+        { "PM: Image mismatch", 			KERN_ERROR },
+        { "PM: Some devices failed to power down", 	KERN_ERROR },
+        { "PM: Some devices failed to suspend", 	KERN_ERROR },
+        { "PM: can't read", 				KERN_ERROR },
+        { "PM: can't set", 				KERN_ERROR },
+        { "PM: suspend test failed, error", 		KERN_ERROR },
+        { "PM: can't test ", 				KERN_WARNING },
+        { "PM: no wakealarm-capable RTC driver is ready", KERN_WARNING },
+        { "PM: Adding page to bio failed at", 		KERN_ERROR },
+        { "PM: Swap header not found", 			KERN_ERROR },
+        { "PM: Cannot find swap device", 		KERN_ERROR },
+        { "PM: Not enough free swap", 			KERN_ERROR },
+        { "PM: Image device not initialised", 		KERN_ERROR },
+        { "PM: Please power down manually", 		KERN_ERROR },
+        { NULL,                   0, }
+};
+
+void klog_scan_patterns(log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
 {
 	int i;
 
-	pattern *patterns = (pattern *)private;
+	klog_pattern *patterns = (klog_pattern *)private;
 
 	for (i=0;patterns[i].pattern != NULL;i++) {
 		if (strstr(line, patterns[i].pattern)) {
@@ -118,7 +136,12 @@ void scan_patterns(log *log, char *line, char *prevline, void *private, int *war
 	}
 }
 
-int klog_check(log *log, char *klog, int *warnings, int *errors)
+int klog_firmware_check(log *log, char *klog, int *warnings, int *errors)
 {	
-	return klog_scan(log, klog, scan_patterns, error_warning_patterns, warnings, errors);
+	return klog_scan(log, klog, klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
+}
+
+int klog_pm_check(log *log, char *klog, int *warnings, int *errors)
+{
+	return klog_scan(log, klog, klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
 }

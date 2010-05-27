@@ -30,7 +30,9 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-int pipe_open(const char *command)
+#include "pipeio.h"
+
+int pipe_open(const char *command, pid_t *childpid)
 {
 	int pipefds[2];
 	pid_t pid;
@@ -58,6 +60,7 @@ int pipe_open(const char *command)
 	default:
 		/* Parent */
 		close(pipefds[1]);
+		*childpid = pid;
 	
 		return pipefds[0];
 	}
@@ -69,6 +72,8 @@ char *pipe_read(int fd)
 	char buffer[32];	
 	int n;
 	int size = 0;
+
+	ptr = calloc(1, 1);	/* Empty string! */
 
 	while ((n = read(fd, buffer, sizeof(buffer))) != 0) {
 		if (n < 0) {
@@ -86,10 +91,31 @@ char *pipe_read(int fd)
 	return ptr;
 }
 
-int pipe_close(int fd)
+int pipe_close(int fd, pid_t pid)
 {
 	int status;
 
 	close(fd);
-	wait(&status);
+
+	for (;;) {
+		if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
+
+		if (WIFEXITED(status))
+			return WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			return WTERMSIG(status);
+	}
 }
+
+int pipe_exec(const char *command, char **data)
+{
+	pid_t 	pid;
+	int	fd;
+
+	if ((fd = pipe_open(command, &pid)) < 0) 
+		return -1;
+
+	*data = pipe_read(fd);		/* Null is am error */
+	return pipe_close(fd, pid);
+}
+	

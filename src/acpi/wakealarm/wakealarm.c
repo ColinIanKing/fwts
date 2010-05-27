@@ -60,22 +60,12 @@ int wakealarm_test1(log *results, framework *fw)
 
 int wakealarm_test2(log *results, framework *fw)
 {
-	char *test = "Trigger rtc wakealarm";
+	char *test = "Trigger RTC wakealarm";
 
 	log_info(results, test);
 	
-	if (set("0", wkalarm)) {
-		log_error(results, "Cannot write to %s", wkalarm);
-		framework_failed(fw, test);
-		return 0;
-	}
-	if (set("+2", wkalarm)) {
-		log_error(results, "Cannot write to %s", wkalarm);
-		framework_failed(fw, test);
-		return 0;
-	}
-	if (!wakealarm_get_irq_state()) {
-		log_error(results, "Wakealarm %s did not get set", wkalarm);
+	log_info(results, "Trigger wakealarm for 1 seconds in the future");
+	if (wakealarm_trigger(results, fw, 1)) {
 		framework_failed(fw, test);
 		return 0;
 	}
@@ -96,6 +86,7 @@ int wakealarm_test3(log *results, framework *fw)
 
 	log_info(results, test);
 
+	log_info(results, "Trigger wakealarm for 2 seconds in the future");
 	ret = wakealarm_test_firing(results, fw, 2);
 	if (ret < 0) {
 		framework_failed(fw, test);
@@ -117,6 +108,7 @@ int wakealarm_test4(log *results, framework *fw)
 	log_info(results, test);
 
 	for (i=1; i<5; i++) {
+		log_info("Trigger wakealarm for %d seconds in the future", i);
 		int ret = wakealarm_test_firing(results, fw, i);
 		if (ret < 0) {
 			framework_failed(fw, test);

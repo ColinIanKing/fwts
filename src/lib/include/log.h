@@ -48,6 +48,7 @@ void log_newline(log *log);
 void log_underline(log *log, int ch);
 void log_set_field_filter(char *str);
 int  log_set_owner(log *log, const char *owner);
+void log_set_format(char *str);
 void log_print_fields(void);
 void log_filter_set_field(const log_field filter);
 void log_filter_unset_field(const log_field filter);

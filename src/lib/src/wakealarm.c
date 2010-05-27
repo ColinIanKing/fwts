@@ -47,7 +47,7 @@ int wakealarm_get_irq_state(void)
 	return -1;
 }
 
-int wakealarm_test_firing(log *results, framework *fw, int seconds)
+int wakealarm_trigger(log *results, framework *fw, int seconds)
 {
 	char buffer[32];
 
@@ -65,7 +65,16 @@ int wakealarm_test_firing(log *results, framework *fw, int seconds)
 		log_error(results, "Wakealarm %s did not get set", wkalarm);
 		return -1;
 	}
-	log_info(results, "Sleeping for %d seconds to wait for alarm to fire\n", seconds+1);
+	return 0;
+}
+
+int wakealarm_test_firing(log *results, framework *fw, int seconds)
+{
+	int ret;
+
+	if ((ret = wakealarm_trigger(results, fw, seconds)) != 0)
+		return ret;
+
 	sleep(seconds+1);
 	if (wakealarm_get_irq_state()) {
 		log_error(results, "Wakealarm %s did not fire", wkalarm);

@@ -31,34 +31,32 @@
 int iasl_disassemble(log *log, framework *fw, char *src)
 {
 	char tmpbuf[4096];
-	int fd;
-	struct stat buf;
+	char *output;
+	int ret;
+	char *iasl = fw->iasl ? fw->iasl : IASL;
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl ? fw->iasl : IASL, src);
-	fd = pipe_open(tmpbuf);
-	pipe_close(fd);
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, src);
+	ret = pipe_exec(tmpbuf, &output);
+	if (ret)
+		log_warning(log, "exec of %s returned %d\n", iasl, ret);
+	if (output)
+		free(output);
 
-	return errno;
+	return ret;
 }
 
 char *iasl_assemble(log *log, framework *fw, char *src)
 {
 	char tmpbuf[4096];
-	int fd;
- 	int n;
-	char *output = NULL;
-	int len = 0;
-	struct stat buf;
+	int ret;
+	char *output;
+	char *iasl = fw->iasl ? fw->iasl : IASL;
 
 	/* Run iasl with -vs just dumps out line and error output */
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s", fw->iasl ? fw->iasl : IASL, src);
-	fd = pipe_open(tmpbuf);
-	while ((n = read(fd, tmpbuf, sizeof(tmpbuf))) > 0) {
-		output = realloc(output, len + n);
-		memcpy(output + len, tmpbuf, n);
-		len += n;
-	}
-	pipe_close(fd);
+	ret = pipe_exec(tmpbuf, &output);
+	if (ret)
+		log_warning(log, "exec of %s returned %d\n", iasl, ret);
 
 	return output;
 }

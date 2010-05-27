@@ -64,10 +64,10 @@ typedef struct {
 #define ID_NAME(id)	id, # id
 
 static framework_setting framework_settings[] = {
-	ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),       "PASSED", NULL,
-	ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),	      "FAILED", NULL,
-	ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),        "ERROR",  NULL,
-	ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),   "off",    NULL,
+	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),       "PASSED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),	      "FAILED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),        "ERROR",  NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),   "off",    NULL },
 };
 
 static void framework_debug(framework* framework, char *fmt, ...);
@@ -141,10 +141,10 @@ static void framework_debug(framework* fw, char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];	
-	static debug = -1;
+	static int debug = -1;
 
 	if (debug == -1)
-		debug = !strcmp(framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on") |
+		debug = (!strcmp(framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on")) |
 			(fw->flags & FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
 	if (debug == 0)
 		return;
@@ -176,12 +176,16 @@ static int framework_test_summary(framework *fw)
 	fw->total_tests_aborted += fw->tests_aborted;
 	fw->total_tests_failed  += fw->tests_failed;
 	fw->total_tests_passed  += fw->tests_passed;
+
+	return 0;
 }
 
 static int framework_total_summary(framework *fw)
 {
 	log_set_owner(fw->results, "framework");
 	log_summary(fw->results, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
+
+	return 0;
 }
 
 static int framework_run_test(framework *fw, const char *name, const framework_ops *ops)
@@ -221,11 +225,19 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 
 	for (test = ops->tests, fw->current_test = 1; *test != NULL; test++, fw->current_test++) {
 		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-			fprintf(stderr, "%s: Test %d of %d started\n", name, fw->current_test + 1, num);		
+			fprintf(stderr, "%-20.20s: Test %d of %d started\n", name, fw->current_test, num);		
 			fflush(stderr);
 		}
+
 		framework_debug(fw, "exectuting test %d\n", fw->current_test);
+
 		(*test)(fw->results, fw);
+
+		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+			fprintf(stderr, "%-20.20s: Test %d of %d completed (%d passed, %d failed, %d aborted)\n", 
+				name, fw->current_test, num,
+				fw->tests_passed, fw->tests_failed, fw->tests_aborted);
+		}
 	}
 
 	framework_debug(fw, "framework_run_test() calling ops->deinit()\n");

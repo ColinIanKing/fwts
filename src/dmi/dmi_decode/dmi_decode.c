@@ -129,25 +129,23 @@ int dmi_decode_test1(log *results, framework *fw)
 	char *dmi_text;
 	char *dmi_ptr;
 	int type;
-	int fd;
 
 	for (type=0; type < 40; type++) {
 		int dumped = 0;
-		int linenum = 0;
 		int failed = 0;
 
 		sprintf(buffer, "%s -t %d", dmidecode, type);
-		if ((fd = pipe_open(buffer)) < 0) {
+
+		if (pipe_exec(buffer, &dmi_text)) {
 			log_error(results, "Failed to execute dmidecode");
 			return 1;
 		}
-		dmi_ptr = dmi_text = pipe_read(fd);
-
 		if (dmi_text == NULL) {
 			log_error(results, "Failed to read output from dmidecode (out of memory)");
-			pipe_close(fd);
 			return 1;
 		}	
+
+		dmi_ptr = dmi_text;
 
 		while (*dmi_ptr) {
 			char *bufptr = buffer;
@@ -182,7 +180,6 @@ int dmi_decode_test1(log *results, framework *fw)
 			framework_passed(fw, "DMI type %s", dmi_types[type]);
 		
 		free(dmi_text);
-		pipe_close(fd);
 	}
 	return 0;
 }

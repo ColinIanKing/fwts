@@ -25,5 +25,6 @@
 
 int wakealarm_get_irq_state(void);
 int wakealarm_test_firing(log *results, framework *fw, int sleep);
+int wakealarm_trigger(log *results, framework *fw, int seconds);
 
 #endif

@@ -38,7 +38,7 @@ text_list *text_read(FILE *file)
 {
 	char buffer[4096];
 	text_list *head = NULL;
-	text_list *prev;
+	text_list *prev = NULL;
 
 	while (fgets(buffer, sizeof(buffer)-1, file) != NULL) {		
 		text_list *item;
@@ -64,7 +64,7 @@ text_list *text_read(FILE *file)
 	return head;
 }
 
-text_list text_dump(text_list *head)
+void text_dump(text_list *head)
 {
 	while (head) {
 		printf("%s", head->text);
@@ -81,4 +81,5 @@ char *text_strstr(text_list *head, const char *needle)
 		}
 		head = head->next;
 	}
+	return NULL;
 }

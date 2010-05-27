@@ -60,7 +60,7 @@ int klog_test1(log *results, framework *fw)
 
 	log_info(results, test);
 
-	if (klog_check(results, klog, &warnings, &errors)) {
+	if (klog_firmware_check(results, klog, &warnings, &errors)) {
 		log_error(results, "error parsing kernel log");
 		return 1;
 	}

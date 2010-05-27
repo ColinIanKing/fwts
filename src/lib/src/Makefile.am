@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include 
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include  -Wall
 
 noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \

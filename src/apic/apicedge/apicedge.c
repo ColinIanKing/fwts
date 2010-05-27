@@ -108,4 +108,4 @@ framework_ops apicedge_ops = {
 	apicedge_tests
 };
 
-FRAMEWORK(apicedge, &apicedge_ops);
+FRAMEWORK(apicedge, &apicedge_ops, TEST_ANYTIME);

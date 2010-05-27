@@ -122,7 +122,9 @@ int s4_test1(log *results, framework *fw)
 }
 
 framework_tests s4_tests[] = {
+/*
 	s4_test1,
+*/
 	NULL
 };
 
@@ -133,4 +135,4 @@ framework_ops s4_ops = {
 	s4_tests
 };
 
-FRAMEWORK(s4, &s4_ops);
+FRAMEWORK(s4, &s4_ops, TEST_LAST);

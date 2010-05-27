@@ -195,4 +195,4 @@ framework_ops acpiinfo_ops = {
 	acpiinfo_tests
 };
 
-FRAMEWORK(acpiinfo, &acpiinfo_ops);
+FRAMEWORK(acpiinfo, &acpiinfo_ops, TEST_ANYTIME);

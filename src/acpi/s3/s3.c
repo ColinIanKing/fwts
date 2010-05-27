@@ -186,8 +186,10 @@ int s3_test_multiple(log *results, framework *fw)
 }
 
 framework_tests s3_tests[] = {
+/*
 	s3_test_single,
 	s3_test_multiple,
+*/
 	NULL
 };
 
@@ -198,4 +200,4 @@ framework_ops s3_ops = {
 	s3_tests
 };
 
-FRAMEWORK(s3, &s3_ops);
+FRAMEWORK(s3, &s3_ops, TEST_LATE);

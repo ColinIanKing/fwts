@@ -71,17 +71,22 @@ typedef struct framework_ops {
 } framework_ops;
 
 int  framework_args(int argc, char **argv);
-void framework_add(char *name, const framework_ops *ops);
+void framework_add(char *name, const framework_ops *ops, const int priority);
 void framework_passed(framework *, const char *fmt, ...);
 void framework_failed(framework *, const char *fmt, ...);
 
-#define FRAMEWORK(name, ops)				\
+#define TEST_EARLY	0
+#define TEST_ANYTIME	50
+#define TEST_LATE	75
+#define TEST_LAST	100
+
+#define FRAMEWORK(name, ops, priority)			\
 							\
 void name ## init (void) __attribute__ ((constructor));	\
 							\
 void name ## init (void)				\
 {							\
-	framework_add(# name, ops);			\
+	framework_add(# name, ops, priority);		\
 }							\
 							
 #endif

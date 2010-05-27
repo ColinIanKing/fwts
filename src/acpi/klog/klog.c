@@ -87,4 +87,4 @@ framework_ops klog_ops = {
 	klog_tests
 };
 
-FRAMEWORK(klog, &klog_ops);
+FRAMEWORK(klog, &klog_ops, TEST_ANYTIME);

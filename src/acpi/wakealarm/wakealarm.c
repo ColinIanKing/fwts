@@ -137,4 +137,4 @@ framework_ops wakealarm_ops = {
 	wakealarm_tests
 };
 
-FRAMEWORK(wakealarm, &wakealarm_ops);
+FRAMEWORK(wakealarm, &wakealarm_ops, TEST_ANYTIME);

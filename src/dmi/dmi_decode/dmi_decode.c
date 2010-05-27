@@ -196,4 +196,4 @@ framework_ops dmi_decode_ops = {
 	dmi_decode_tests
 };
 
-FRAMEWORK(dmi_decode, &dmi_decode_ops);
+FRAMEWORK(dmi_decode, &dmi_decode_ops, TEST_ANYTIME);

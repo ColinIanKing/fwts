@@ -179,4 +179,4 @@ framework_ops syntaxcheck_ops = {
 	syntaxcheck_tests
 };
 
-FRAMEWORK(syntaxcheck, &syntaxcheck_ops);
+FRAMEWORK(syntaxcheck, &syntaxcheck_ops, TEST_ANYTIME);

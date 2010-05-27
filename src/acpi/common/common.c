@@ -240,4 +240,4 @@ framework_ops dmesg_common_ops = {
 	dmesg_common_tests
 };
 
-FRAMEWORK(dmesg_common, &dmesg_common_ops);
+FRAMEWORK(dmesg_common, &dmesg_common_ops, TEST_ANYTIME);

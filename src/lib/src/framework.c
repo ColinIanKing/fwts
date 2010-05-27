@@ -48,10 +48,10 @@ typedef struct framework_list {
 	const char *name;
 	const framework_ops *ops;
 	struct framework_list *next;
+	int   priority;
 } framework_list;
 
-static framework_list *framework_list_head;
-static framework_list *framework_list_tail;
+static framework_list *framework_list_head = NULL;
 
 
 typedef struct {
@@ -64,33 +64,47 @@ typedef struct {
 #define ID_NAME(id)	id, # id
 
 static framework_setting framework_settings[] = {
-	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),       "PASSED", NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),	      "FAILED", NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),        "ERROR",  NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),   "off",    NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),      "PASSED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),      "FAILED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",  NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",    NULL },
 };
 
 static void framework_debug(framework* framework, char *fmt, ...);
 
-void framework_add(char *name, const framework_ops *ops)
-{
-	framework_list *item;
 
-	if ((item = malloc(sizeof(framework_list))) == NULL) {
+static void framework_dump_items(framework_list *head)
+{
+	printf("DUMP:\n");
+	while (head) {
+		printf("%p %s %d\n",head, head->name, head->priority);
+		head = head->next;
+	}
+}
+
+void framework_add(char *name, const framework_ops *ops, const int priority)
+{
+	framework_list *newitem;
+	framework_list **list;
+
+	if ((newitem = malloc(sizeof(framework_list))) == NULL) {
 		fprintf(stderr, "FATAL: Could not allocate memory initialising framework\n");		
 		exit(EXIT_FAILURE);
 	}
-	item->name = name;
-	item->ops = ops;
-	item->next = NULL;
-	if (framework_list_head == NULL) {
-		framework_list_head = item;
-		framework_list_tail = item;
-	} 
-	else {
-		framework_list_tail->next = item;
-		framework_list_tail = item;
+	newitem->name = name;
+	newitem->ops  = ops;
+	newitem->next = NULL;
+	newitem->priority = priority;
+
+	for (list = &framework_list_head; *list != NULL; list = &(*list)->next) {
+		if ((*list)->priority >= newitem->priority) {
+			newitem->next = (*list);
+			break;
+		}
 	}
+	*list = newitem;
+
+	/*framework_dump_items(framework_list_head); */
 }
 
 static void framework_show_tests(void)

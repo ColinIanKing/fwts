@@ -47,10 +47,10 @@ AR = ar
 ARFLAGS = cru
 libtestsuite_a_AR = $(AR) $(ARFLAGS)
 libtestsuite_a_LIBADD =
-am_libtestsuite_a_OBJECTS = framework.$(OBJEXT) get.$(OBJEXT) \
-	log.$(OBJEXT) set.$(OBJEXT) checkeuid.$(OBJEXT) \
-	text_file.$(OBJEXT) klog.$(OBJEXT) dsdt.$(OBJEXT) \
-	iasl.$(OBJEXT) pipeio.$(OBJEXT) fileio.$(OBJEXT)
+am_libtestsuite_a_OBJECTS = checkeuid.$(OBJEXT) dsdt.$(OBJEXT) \
+	fileio.$(OBJEXT) framework.$(OBJEXT) get.$(OBJEXT) \
+	iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) \
+	set.$(OBJEXT) text_file.$(OBJEXT) wakealarm.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -154,7 +154,20 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include 
 noinst_LIBRARIES = libtestsuite.a
-libtestsuite_a_SOURCES = framework.c get.c log.c set.c checkeuid.c text_file.c klog.c dsdt.c iasl.c pipeio.c fileio.c
+libtestsuite_a_SOURCES = \
+	checkeuid.c \
+	dsdt.c \
+	fileio.c \
+	framework.c \
+	get.c 	\
+	iasl.c \
+	klog.c \
+	log.c \
+	pipeio.c \
+	set.c \
+	text_file.c \
+	wakealarm.c
+
 all: all-am
 
 .SUFFIXES:
@@ -214,6 +227,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipeio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text_file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

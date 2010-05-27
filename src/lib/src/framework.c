@@ -368,6 +368,7 @@ int framework_args(int argc, char **argv)
 		{ "dsdt", 1, 0, 0, },
 		{ "klog", 1, 0, 0, },
 		{ "dmidecode", 1, 0, 0, },
+		{ "s3-multiple", 1, 0, 0, },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -439,6 +440,9 @@ int framework_args(int argc, char **argv)
 				break;
 			case 14: /* --dmidecode */
 				fw->dmidecode = strdup(optarg);
+				break;
+			case 15: /* --s3-multiple */
+				fw->s3_multiple = atoi(optarg);
 				break;
 			}
 		case '?':

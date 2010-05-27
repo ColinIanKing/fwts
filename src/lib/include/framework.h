@@ -43,6 +43,7 @@ typedef struct framework {
 	char *dmidecode;			/* path to dmidecode */
 	char *dsdt;				/* path to dsdt file */
 	char *klog;				/* path to dump of kernel log */
+	int  s3_multiple;			/* number of s3 multiple tests to run */
 
 	struct framework_ops const *ops;	
 	int flags;

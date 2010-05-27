@@ -32,8 +32,6 @@ void s4_headline(log *results)
 	log_info(results, "S4 hibernate/resume test");
 }
 
-static char *klog;
-
 int s4_init(log *results, framework *fw)
 {
 	int ret;
@@ -55,8 +53,6 @@ int s4_init(log *results, framework *fw)
 
 int s4_deinit(log *results, framework *fw)
 {
-	free(klog);
-
 	return 0;
 }
 
@@ -67,6 +63,7 @@ int s4_test1(log *results, framework *fw)
 	int errors = 0;
 	char *output;
 	int status;
+	char *klog;
 
 	log_info(results, test);
 
@@ -112,6 +109,7 @@ int s4_test1(log *results, framework *fw)
 		log_error(results, "pm-action encountered an error and also failed to\n"
 				   "enter the requested power saving state");
 	}
+	free(klog);
 
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);

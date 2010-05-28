@@ -1,6 +1,6 @@
 SUBDIRS = lib
-
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall
+ 
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall -Werror
 
 bin_PROGRAMS = testsuite
 testsuite_SOURCES = main.c \

@@ -108,7 +108,7 @@ int wakealarm_test4(log *results, framework *fw)
 	log_info(results, test);
 
 	for (i=1; i<5; i++) {
-		log_info("Trigger wakealarm for %d seconds in the future", i);
+		log_info(results, "Trigger wakealarm for %d seconds in the future", i);
 		int ret = wakealarm_test_firing(results, fw, i);
 		if (ret < 0) {
 			framework_failed(fw, test);

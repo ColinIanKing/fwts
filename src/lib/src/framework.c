@@ -73,6 +73,7 @@ static framework_setting framework_settings[] = {
 static void framework_debug(framework* framework, char *fmt, ...);
 
 
+#ifdef FRAMEWORK_DEBUG
 static void framework_dump_items(framework_list *head)
 {
 	printf("DUMP:\n");
@@ -81,6 +82,7 @@ static void framework_dump_items(framework_list *head)
 		head = head->next;
 	}
 }
+#endif
 
 void framework_add(char *name, const framework_ops *ops, const int priority)
 {

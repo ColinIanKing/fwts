@@ -28,12 +28,12 @@
 #include "wakealarm.h"
 #include "klog.h"
 
-void s3_headline(log *results)
+static void s3_headline(log *results)
 {
 	log_info(results, "S3 suspend resume test");
 }
 
-int s3_init(log *results, framework *fw)
+static int s3_init(log *results, framework *fw)
 {
 	int ret;
 
@@ -52,26 +52,19 @@ int s3_init(log *results, framework *fw)
 	return 0;
 }
 
-int s3_deinit(log *results, framework *fw)
+static int s3_deinit(log *results, framework *fw)
 {
 	return 0;
 }
 
-int s3_do_test(log *results, framework *fw, char *message, int *warnings, int *errors, int delay, int *duration)
+static void s3_do_suspend_resume(log *results, framework *fw, int *warnings, int *errors, int delay, int *duration)
 {
 	char *output;
 	int status;
 	time_t t_start;
 	time_t t_end;
-	char *klog;
 
-	log_info(results, message);
-
-	if (klog_clear()) {
-		log_error(results, "cannot clear kernel log");
-		framework_failed(fw, message);
-		return 1;
-	}
+	klog_clear();
 
 	wakealarm_trigger(results, fw, delay);
 
@@ -89,26 +82,13 @@ int s3_do_test(log *results, framework *fw, char *message, int *warnings, int *e
 	log_info(results, "pm-suspend returned %d after %d seconds", status, *duration);
 
 	if ((t_end - t_start) < delay) {
+		errors++;
 		log_error(results, "Unexpected: S3 slept for less than %d seconds", delay);
-		framework_failed(fw, message);
 	}
 	if ((t_end - t_start) > delay*3) {
+		errors++;
 		log_error(results, "Unexpected: S3 much longer than expected (%d seconds)", *duration);
-		framework_failed(fw, message);
 	}
-	
-	if ((klog = klog_read()) == NULL) {
-		log_error(results, "cannot read kernel log");
-	}
-
-	if (klog_pm_check(results, klog, warnings, errors)) {
-		log_error(results, "error parsing kernel log");
-	}
-
-	if (klog_firmware_check(results, klog, warnings, errors)) {
-		log_error(results, "error parsing kernel log");
-	}
-	free(klog);
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
@@ -124,19 +104,51 @@ int s3_do_test(log *results, framework *fw, char *message, int *warnings, int *e
 		log_error(results, "pm-action encountered an error and also failed to\n"
 				   "enter the requested power saving state");
 	}
-
-	return 0;
 }
 
-int s3_test_single(log *results, framework *fw)
+static int s3_test_single(log *results, framework *fw)
 {	
 	char *test = "S3 suspend/resume test (single run)";
 	int warnings = 0;
 	int errors = 0;
-	int ret;
 	int duration;
 
-	ret = s3_do_test(results, fw, test, &warnings, &errors, 30, &duration);
+	log_info(results, test);
+
+	s3_do_suspend_resume(results, fw, &warnings, &errors, 30, &duration);
+	if (warnings + errors > 0) {
+		log_info(results, "Found %d errors doing suspend/resume", errors, warnings);
+		framework_failed(fw, test);
+	}
+	else
+		framework_passed(fw, test);
+
+	return 0;
+}
+
+static int s3_check_log(log *results, framework *fw)
+{
+	char *test = "S3 suspend/resume check kernel log";
+	char *klog;
+	int warnings = 0;
+	int errors = 0;
+
+	log_info(results, test);
+
+	if ((klog = klog_read()) == NULL) {
+		log_error(results, "cannot read kernel log");
+		framework_failed(fw, test);
+		return 1;
+	}
+
+	if (klog_pm_check(results, klog, &warnings, &errors)) {
+		log_error(results, "error parsing kernel log");
+	}
+
+	if (klog_firmware_check(results, klog, &warnings, &errors)) {
+		log_error(results, "error parsing kernel log");
+	}
+	free(klog);
 
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
@@ -145,18 +157,17 @@ int s3_test_single(log *results, framework *fw)
 	else
 		framework_passed(fw, test);
 
-	return ret;
+	return 0;
 }
 
-int s3_test_multiple(log *results, framework *fw)
+static int s3_test_multiple(log *results, framework *fw)
 {	
 	char *test = "S3 suspend/resume test (multiple runs)";
 	int warnings = 0;
 	int errors = 0;
-	int ret = 0;
-	int i;
 	int delay = 30;
-	int duration;
+	int duration = 0;
+	int i;
 
 	if (fw->s3_multiple == 0) {
 		fw->s3_multiple = 2;
@@ -168,26 +179,27 @@ int s3_test_multiple(log *results, framework *fw)
 		int timetaken;
 
 		log_info(results, "S3 cycle %d of %d\n",i+1,fw->s3_multiple);
-		if ((ret = s3_do_test(results, fw, test, &warnings, &errors, delay, &duration)) != 0)
-			break;
+		s3_do_suspend_resume(results, fw, &warnings, &errors, delay, &duration);
 
 		timetaken = duration - delay;
 		delay = timetaken + 10;		/* Shorten test time, plus some slack */
 	}
 
 	if (warnings + errors > 0) {
-		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
+		log_info(results, "Found %d errors doing suspend/resume", errors, warnings);
 		framework_failed(fw, test);
 	}
 	else
 		framework_passed(fw, test);
 
-	return ret;
+	return 0;
 }
 
 framework_tests s3_tests[] = {
 	s3_test_single,
+	s3_check_log,
 	s3_test_multiple,
+	s3_check_log,
 	NULL
 };
 

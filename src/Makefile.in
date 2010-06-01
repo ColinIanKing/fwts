@@ -48,7 +48,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) common.$(OBJEXT) \
-	apicedge.$(OBJEXT) dmi_decode.$(OBJEXT)
+	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) dmi_decode.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -200,6 +200,7 @@ testsuite_SOURCES = main.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \
+	bios/ebda_region/ebda_region.c \
 	dmi/dmi_decode/dmi_decode.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
@@ -288,6 +289,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
@@ -420,6 +422,20 @@ apicedge.obj: apic/apicedge/apicedge.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='apic/apicedge/apicedge.c' object='apicedge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o apicedge.obj `if test -f 'apic/apicedge/apicedge.c'; then $(CYGPATH_W) 'apic/apicedge/apicedge.c'; else $(CYGPATH_W) '$(srcdir)/apic/apicedge/apicedge.c'; fi`
+
+ebda_region.o: bios/ebda_region/ebda_region.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ebda_region.o -MD -MP -MF $(DEPDIR)/ebda_region.Tpo -c -o ebda_region.o `test -f 'bios/ebda_region/ebda_region.c' || echo '$(srcdir)/'`bios/ebda_region/ebda_region.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/ebda_region.Tpo $(DEPDIR)/ebda_region.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebda_region/ebda_region.c' object='ebda_region.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebda_region.o `test -f 'bios/ebda_region/ebda_region.c' || echo '$(srcdir)/'`bios/ebda_region/ebda_region.c
+
+ebda_region.obj: bios/ebda_region/ebda_region.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ebda_region.obj -MD -MP -MF $(DEPDIR)/ebda_region.Tpo -c -o ebda_region.obj `if test -f 'bios/ebda_region/ebda_region.c'; then $(CYGPATH_W) 'bios/ebda_region/ebda_region.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebda_region/ebda_region.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/ebda_region.Tpo $(DEPDIR)/ebda_region.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebda_region/ebda_region.c' object='ebda_region.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebda_region.obj `if test -f 'bios/ebda_region/ebda_region.c'; then $(CYGPATH_W) 'bios/ebda_region/ebda_region.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebda_region/ebda_region.c'; fi`
 
 dmi_decode.o: dmi/dmi_decode/dmi_decode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.o -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c

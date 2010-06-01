@@ -53,6 +53,36 @@ char *klog_read(void)
 
 typedef void (*scan_callback_t)(log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
 
+char *klog_strncmp(char **klog, const char *needle, int needle_len, char *buffer, int len)
+{
+	char *ptr;
+	if (!klog && !*klog)
+		return NULL;
+
+	ptr = *klog;
+
+	while (*ptr) {
+		char *bufptr = buffer;
+		char *ret = ptr;
+
+		if ((ptr[0] == '<') && (ptr[2] == '>'))
+			ptr += 3;
+
+		while (*ptr && *ptr !='\n' && (bufptr-buffer < len))
+			*bufptr++ = *ptr++;
+		*bufptr = '\0';
+		if (*ptr == '\n')
+			ptr++;
+
+		if (strncmp(buffer, needle, needle_len)) {
+			*klog = ptr;
+			return ret;
+		}
+	}
+	*klog = ptr;
+	return NULL;
+}
+
 int klog_scan(log *log, char *klog, scan_callback_t callback, void *private, int *warnings, int *errors)
 {
 	*warnings = 0;

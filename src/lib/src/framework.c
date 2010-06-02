@@ -225,7 +225,8 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 	if (ops->init) {
 		if (ops->init(fw->results, fw)) {
 			/* Init failed, so abort */
-			framework_debug(fw, "framework_run_test() init failed, aborting!\n");
+			log_error(fw->results, "Aborted test, initialisation failed");
+			framework_debug(fw, "framework_run_test() init failed, aborting!");
 			for (test = ops->tests; *test != NULL; test++) {
 				fw->tests_aborted++;
 			}

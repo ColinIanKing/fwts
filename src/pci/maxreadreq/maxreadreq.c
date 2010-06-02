@@ -34,9 +34,9 @@
  */
 
 
-void maxreadreq_headline(log *results)
+char *maxreadreq_headline(void)
 {
-	log_info(results, "Checks if firmware has set PCI Express MaxReadReq to a higher value on non-montherboard devices");
+	return "Checks f/w has set PCI Express MaxReadReq to a higher value on non-montherboard devices";
 }
 
 static char *lspci = "/usr/bin/lspci";

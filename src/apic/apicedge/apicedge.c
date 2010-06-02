@@ -36,9 +36,9 @@
  * acpi interrupt should be LEVEL
  */
 
-void apicedge_headline(log *results)
+char *apicedge_headline(void)
 {
-	log_info(results, "APIC Edge/Level Check");
+	return "APIC Edge/Level Check";
 }
 
 int apicedge_test1(log *results, framework *fw)

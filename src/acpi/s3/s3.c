@@ -28,9 +28,9 @@
 #include "wakealarm.h"
 #include "klog.h"
 
-static void s3_headline(log *results)
+static char *s3_headline(void)
 {
-	log_info(results, "S3 suspend resume test");
+	return "S3 suspend resume test";
 }
 
 static int s3_init(log *results, framework *fw)

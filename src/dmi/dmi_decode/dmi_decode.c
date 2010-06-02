@@ -118,9 +118,9 @@ int dmi_decode_deinit(log *results, framework *fw)
 	return 0;
 }
 
-void dmi_decode_headline(log *results)
+char *dmi_decode_headline(void)
 {
-	log_info(results, "Test DMI/SMBIOS tables for errors");
+	return "Test DMI/SMBIOS tables for errors";
 }
 
 int dmi_decode_test1(log *results, framework *fw)

@@ -24,9 +24,9 @@
 
 #include "framework.h"
 
-void klog_headline(log *results)
+char *klog_headline(void)
 {
-	log_info(results, "Scan kernel log for errors and warnings");
+	return "Scan kernel log for errors and warnings";
 }
 
 static char *klog;

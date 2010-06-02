@@ -27,9 +27,9 @@
 #include "dsdt.h"
 #include "iasl.h"
 
-void syntaxcheck_headline(log *log)
+char *syntaxcheck_headline(void)
 {
-	log_info(log, "Scan kernel log for errors and warnings");
+	return "Scan kernel log for errors and warnings";
 }
 
 static char* error_output;

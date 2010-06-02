@@ -187,9 +187,17 @@ static void do_battery(log *results, framework *fw, char *dir, char *name)
 	
 }
 
-void battery_headline(log *results)
+char *battery_headline(void)
 {
-	log_info(results, "Bettery tests");
+	return "Battery tests";
+}
+
+int battery_test1(log *results, framework *fw)
+{
+	DIR *dir;
+	struct dirent *entry;
+	int battdir = 0;
+
 	log_info(results, 
 	   "This test reports which (if any) batteries there are in the system.\n"
 	   "In addition, for charging or discharging batteries, the test validates\n"
@@ -198,13 +206,6 @@ void battery_headline(log *results)
 	   "This test also stresses the entire battery state reporting codepath\n"
 	   "in the ACPI BIOS, and any warnings given by the ACPI interpreter\n"
 	   "will be reported.");
-}
-
-int battery_test1(log *results, framework *fw)
-{
-	DIR *dir;
-	struct dirent *entry;
-	int battdir = 0;
 
 	if (!(dir = opendir("/proc/acpi/battery/"))) {
 		log_info(results, "No battery information present: cannot test");

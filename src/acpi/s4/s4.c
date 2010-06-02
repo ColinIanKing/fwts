@@ -27,9 +27,9 @@
 #include "wakealarm.h"
 #include "klog.h"
 
-void s4_headline(log *results)
+static char *s4_headline(void)
 {
-	log_info(results, "S4 hibernate/resume test");
+	return "S4 hibernate/resume test";
 }
 
 int s4_init(log *results, framework *fw)

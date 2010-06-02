@@ -182,9 +182,9 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 	}
 }
 
-void dmesg_common_headline(log *results)
+char *dmesg_common_headline(void)
 {
-	log_info(results, "General dmesg common errors check");
+	return "General dmesg common errors check";
 }
 
 static char *klog;

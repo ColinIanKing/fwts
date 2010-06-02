@@ -64,7 +64,7 @@ typedef struct framework {
 typedef int (*framework_tests)(log *results, struct framework *framework);
 
 typedef struct framework_ops {
-	void (*headline)(log *);		/* Headline description of test */
+	char *(*headline)(void);		/* Headline description of test */
 	int (*init)(log *, framework *);	/* Initialise */
 	int (*deinit)(log *, framework *);	/* De-init */		
 	framework_tests *tests;			/* List of tests to run */

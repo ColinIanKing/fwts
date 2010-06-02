@@ -135,9 +135,9 @@ static void acpiinfo_check(log *log, char *line, char *prevline, void *private, 
 
 
 
-void acpiinfo_headline(log *results)
+char *acpiinfo_headline(void)
 {
-	log_info(results, "General ACPI information check");
+	return "General ACPI information check";
 }
 
 static char *klog;

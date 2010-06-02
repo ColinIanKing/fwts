@@ -113,12 +113,10 @@ static void framework_show_tests(void)
 {
 	framework_list *item;
 
-	printf("Available tests: ");
+	printf("Available tests:\n");
 
 	for (item = framework_list_head; item != NULL; item = item->next)
-		printf("%s%s", item == framework_list_head ? "" : " ", item->name);
-
-	printf("\n");
+		printf(" %-13.13s %s\n", item->name, item->ops->headline());
 }
 	
 
@@ -214,7 +212,7 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 	log_set_owner(fw->results, name);
 
 	if (ops->headline) {
-		ops->headline(fw->results);		
+		log_info(fw->results, "%s", ops->headline());
 		framework_underline(fw,'-');
 	}
 

@@ -70,9 +70,9 @@ int ebda_init(log *results, framework *fw)
 	return 0;
 }
 
-void ebda_headline(log *results)
+char *ebda_headline(void)
 {
-	log_info(results, "Validate EBDA region is mapped and reserved in E820 table");
+	return "Validate EBDA region is mapped and reserved in E820 table";
 }
 
 int ebda_test1(log *results, framework *fw)

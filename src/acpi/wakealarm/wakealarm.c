@@ -38,9 +38,9 @@ int wakealarm_deinit(log *results, framework *fw)
 	return 0;
 }
 
-void wakealarm_headline(log *results)
+char *wakealarm_headline(void)
 {
-	log_info(results, "Test ACPI Wakealarm");
+	return "Test ACPI Wakealarm";
 }
 
 int wakealarm_test1(log *results, framework *fw)

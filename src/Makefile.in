@@ -48,7 +48,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) common.$(OBJEXT) \
-	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) dmi_decode.$(OBJEXT)
+	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	maxreadreq.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -201,7 +202,8 @@ testsuite_SOURCES = main.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
-	dmi/dmi_decode/dmi_decode.c
+	dmi/dmi_decode/dmi_decode.c \
+	pci/maxreadreq/maxreadreq.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
@@ -292,6 +294,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
@@ -450,6 +453,20 @@ dmi_decode.obj: dmi/dmi_decode/dmi_decode.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmi/dmi_decode/dmi_decode.c' object='dmi_decode.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmi_decode.obj `if test -f 'dmi/dmi_decode/dmi_decode.c'; then $(CYGPATH_W) 'dmi/dmi_decode/dmi_decode.c'; else $(CYGPATH_W) '$(srcdir)/dmi/dmi_decode/dmi_decode.c'; fi`
+
+maxreadreq.o: pci/maxreadreq/maxreadreq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxreadreq.o -MD -MP -MF $(DEPDIR)/maxreadreq.Tpo -c -o maxreadreq.o `test -f 'pci/maxreadreq/maxreadreq.c' || echo '$(srcdir)/'`pci/maxreadreq/maxreadreq.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/maxreadreq.Tpo $(DEPDIR)/maxreadreq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/maxreadreq/maxreadreq.c' object='maxreadreq.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o maxreadreq.o `test -f 'pci/maxreadreq/maxreadreq.c' || echo '$(srcdir)/'`pci/maxreadreq/maxreadreq.c
+
+maxreadreq.obj: pci/maxreadreq/maxreadreq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxreadreq.obj -MD -MP -MF $(DEPDIR)/maxreadreq.Tpo -c -o maxreadreq.obj `if test -f 'pci/maxreadreq/maxreadreq.c'; then $(CYGPATH_W) 'pci/maxreadreq/maxreadreq.c'; else $(CYGPATH_W) '$(srcdir)/pci/maxreadreq/maxreadreq.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/maxreadreq.Tpo $(DEPDIR)/maxreadreq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/maxreadreq/maxreadreq.c' object='maxreadreq.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o maxreadreq.obj `if test -f 'pci/maxreadreq/maxreadreq.c'; then $(CYGPATH_W) 'pci/maxreadreq/maxreadreq.c'; else $(CYGPATH_W) '$(srcdir)/pci/maxreadreq/maxreadreq.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.

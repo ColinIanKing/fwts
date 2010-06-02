@@ -13,7 +13,9 @@ testsuite_SOURCES = main.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
-	dmi/dmi_decode/dmi_decode.c
+	dmi/dmi_decode/dmi_decode.c \
+	pci/maxreadreq/maxreadreq.c
+
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 

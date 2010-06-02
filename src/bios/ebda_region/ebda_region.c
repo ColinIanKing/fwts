@@ -37,7 +37,7 @@ static unsigned long ebda_addr = BAD_ADDR;
 
 static char *klog;
 
-int ebda_init(log *results, framework *fw)
+static int ebda_init(log *results, framework *fw)
 {
 	int fd;
 	unsigned short addr;
@@ -70,12 +70,12 @@ int ebda_init(log *results, framework *fw)
 	return 0;
 }
 
-char *ebda_headline(void)
+static char *ebda_headline(void)
 {
 	return "Validate EBDA region is mapped and reserved in E820 table";
 }
 
-int ebda_test1(log *results, framework *fw)
+static int ebda_test1(log *results, framework *fw)
 {
 	char buffer[4096];
 	int passed = 0;
@@ -114,12 +114,12 @@ int ebda_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests ebda_tests[] = {
+static framework_tests ebda_tests[] = {
 	ebda_test1,
 	NULL
 };
 
-framework_ops ebda_ops = {
+static framework_ops ebda_ops = {
 	ebda_headline,
 	ebda_init,
 	NULL,

@@ -27,14 +27,14 @@
 #include "dsdt.h"
 #include "iasl.h"
 
-char *syntaxcheck_headline(void)
+static char *syntaxcheck_headline(void)
 {
 	return "Scan kernel log for errors and warnings";
 }
 
 static char* error_output;
 
-char *get_next_output_line(void)
+static char *get_next_output_line(void)
 {
 	char *ret;
 	static char *current_ptr = NULL;
@@ -60,7 +60,7 @@ char *get_next_output_line(void)
 	return ret;
 }
 
-int syntaxcheck_init(log *log, framework *fw)
+static int syntaxcheck_init(log *log, framework *fw)
 {
 	char *dsdtfile;
 	char *tmpdsl;
@@ -117,7 +117,7 @@ int syntaxcheck_init(log *log, framework *fw)
 	return 0;
 }
 
-int syntaxcheck_deinit(log *log, framework *fw)
+static int syntaxcheck_deinit(log *log, framework *fw)
 {
 	if (error_output)
 		free(error_output);
@@ -125,7 +125,7 @@ int syntaxcheck_deinit(log *log, framework *fw)
 	return 0;
 }
 
-int syntaxcheck_test1(log *log, framework *fw)
+static int syntaxcheck_test1(log *log, framework *fw)
 {	
 	char *test = "DSDT re-assembly, syntax check";
 	int warnings = 0;
@@ -167,12 +167,12 @@ int syntaxcheck_test1(log *log, framework *fw)
 	return 0;
 }
 
-framework_tests syntaxcheck_tests[] = {
+static framework_tests syntaxcheck_tests[] = {
 	syntaxcheck_test1,
 	NULL
 };
 
-framework_ops syntaxcheck_ops = {
+static framework_ops syntaxcheck_ops = {
 	syntaxcheck_headline,
 	syntaxcheck_init,	
 	syntaxcheck_deinit,

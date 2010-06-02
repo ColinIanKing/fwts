@@ -182,14 +182,14 @@ static void dmesg_common_check(log *log, char *line, char *prevline, void *priva
 	}
 }
 
-char *dmesg_common_headline(void)
+static char *dmesg_common_headline(void)
 {
 	return "General dmesg common errors check";
 }
 
 static char *klog;
 
-int dmesg_common_init(log *results, framework *fw)
+static int dmesg_common_init(log *results, framework *fw)
 {
 	if ((klog = klog_read()) == NULL) {
 		log_error(results, "cannot read kernel log");
@@ -198,14 +198,14 @@ int dmesg_common_init(log *results, framework *fw)
 	return 0;
 }
 
-int dmesg_common_deinit(log *results, framework *fw)
+static int dmesg_common_deinit(log *results, framework *fw)
 {
 	free(klog);
 
 	return 0;
 }
 
-int dmesg_common_test1(log *results, framework *fw)
+static int dmesg_common_test1(log *results, framework *fw)
 {	
 	char *test = "General dmesg common errors check";
 	int warnings = 0;
@@ -228,12 +228,12 @@ int dmesg_common_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests dmesg_common_tests[] = {
+static framework_tests dmesg_common_tests[] = {
 	dmesg_common_test1,
 	NULL
 };
 
-framework_ops dmesg_common_ops = {
+static framework_ops dmesg_common_ops = {
 	dmesg_common_headline,
 	dmesg_common_init,	
 	dmesg_common_deinit,

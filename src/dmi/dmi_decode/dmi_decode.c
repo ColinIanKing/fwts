@@ -35,7 +35,7 @@ typedef struct {
 	char *message;
 } dmi_pattern;
 
-char *dmi_types[] = {
+static char *dmi_types[] = {
 	"BIOS",
 	"System",
 	"Base Board",
@@ -78,9 +78,7 @@ char *dmi_types[] = {
 	"Power Supply"
 };
 
-
-
-dmi_pattern dmi_patterns[] = {
+static dmi_pattern dmi_patterns[] = {
 	{ "No SMBIOS nor DMI entry point found", NULL, "Check SMBIOS or DMI entry points" },
 	{ "Wrong DMI structures count", NULL, "DMI structures count" },
 	{ "Wrong DMI structures length",NULL, "DMI structures length" },
@@ -96,7 +94,7 @@ dmi_pattern dmi_patterns[] = {
 
 static char *dmidecode = "/usr/sbin/dmidecode";
 
-int dmi_decode_init(log *results, framework *fw)
+static int dmi_decode_init(log *results, framework *fw)
 {
 	struct stat buffer;
 
@@ -113,17 +111,12 @@ int dmi_decode_init(log *results, framework *fw)
 	return 0;
 }
 
-int dmi_decode_deinit(log *results, framework *fw)
-{
-	return 0;
-}
-
-char *dmi_decode_headline(void)
+static char *dmi_decode_headline(void)
 {
 	return "Test DMI/SMBIOS tables for errors";
 }
 
-int dmi_decode_test1(log *results, framework *fw)
+static int dmi_decode_test1(log *results, framework *fw)
 {
 	char buffer[4096];
 	char *dmi_text;
@@ -184,15 +177,15 @@ int dmi_decode_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests dmi_decode_tests[] = {
+static framework_tests dmi_decode_tests[] = {
 	dmi_decode_test1,
 	NULL
 };
 
-framework_ops dmi_decode_ops = {
+static framework_ops dmi_decode_ops = {
 	dmi_decode_headline,
 	dmi_decode_init,
-	dmi_decode_deinit,
+	NULL,
 	dmi_decode_tests
 };
 

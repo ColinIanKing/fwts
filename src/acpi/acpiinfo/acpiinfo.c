@@ -135,14 +135,14 @@ static void acpiinfo_check(log *log, char *line, char *prevline, void *private, 
 
 
 
-char *acpiinfo_headline(void)
+static char *acpiinfo_headline(void)
 {
 	return "General ACPI information check";
 }
 
 static char *klog;
 
-int acpiinfo_init(log *results, framework *fw)
+static int acpiinfo_init(log *results, framework *fw)
 {
 	if ((klog = klog_read()) == NULL) {
 		log_error(results, "cannot read kernel log");
@@ -151,14 +151,14 @@ int acpiinfo_init(log *results, framework *fw)
 	return 0;
 }
 
-int acpiinfo_deinit(log *results, framework *fw)
+static int acpiinfo_deinit(log *results, framework *fw)
 {
 	free(klog);
 
 	return 0;
 }
 
-int acpiinfo_test1(log *results, framework *fw)
+static int acpiinfo_test1(log *results, framework *fw)
 {	
 	char *test = "General ACPI information check";
 	int warnings = 0;
@@ -183,12 +183,12 @@ int acpiinfo_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests acpiinfo_tests[] = {
+static framework_tests acpiinfo_tests[] = {
 	acpiinfo_test1,
 	NULL
 };
 
-framework_ops acpiinfo_ops = {
+static framework_ops acpiinfo_ops = {
 	acpiinfo_headline,
 	acpiinfo_init,	
 	acpiinfo_deinit,

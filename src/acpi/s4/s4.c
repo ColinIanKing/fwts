@@ -32,7 +32,7 @@ static char *s4_headline(void)
 	return "S4 hibernate/resume test";
 }
 
-int s4_init(log *results, framework *fw)
+static int s4_init(log *results, framework *fw)
 {
 	int ret;
 
@@ -51,12 +51,7 @@ int s4_init(log *results, framework *fw)
 	return 0;
 }
 
-int s4_deinit(log *results, framework *fw)
-{
-	return 0;
-}
-
-int s4_test1(log *results, framework *fw)
+static int s4_test1(log *results, framework *fw)
 {	
 	char *test = "S4 hibernate/resume test";
 	int warnings = 0;
@@ -121,15 +116,15 @@ int s4_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests s4_tests[] = {
+static framework_tests s4_tests[] = {
 	s4_test1,
 	NULL
 };
 
-framework_ops s4_ops = {
+static framework_ops s4_ops = {
 	s4_headline,
 	s4_init,	
-	s4_deinit,
+	NULL,
 	s4_tests
 };
 

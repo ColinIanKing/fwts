@@ -34,7 +34,7 @@
  */
 
 
-char *maxreadreq_headline(void)
+static char *maxreadreq_headline(void)
 {
 	return "Checks f/w has set PCI Express MaxReadReq to a higher value on non-montherboard devices";
 }
@@ -42,8 +42,7 @@ char *maxreadreq_headline(void)
 static char *lspci = "/usr/bin/lspci";
 static char *lspci_text;
 
-
-int maxreadreq_init(log *results, framework *fw)
+static int maxreadreq_init(log *results, framework *fw)
 {
 	struct stat buffer;
 
@@ -68,7 +67,7 @@ int maxreadreq_init(log *results, framework *fw)
 	return 0;
 }
 
-int maxreadreq_deinit(log *results, framework *fw)
+static int maxreadreq_deinit(log *results, framework *fw)
 {
 	if (lspci_text)
 		free(lspci_text);
@@ -158,15 +157,15 @@ static int maxreadreq_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests maxreadreq_tests[] = {
+static framework_tests maxreadreq_tests[] = {
 	maxreadreq_test1,
 	NULL
 };
 
-framework_ops maxreadreq_ops = {
+static framework_ops maxreadreq_ops = {
 	maxreadreq_headline,
 	maxreadreq_init,	
-	NULL,
+	maxreadreq_deinit,
 	maxreadreq_tests
 };
 

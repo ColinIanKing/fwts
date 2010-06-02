@@ -195,7 +195,7 @@ static int s3_test_multiple(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests s3_tests[] = {
+static framework_tests s3_tests[] = {
 	s3_test_single,
 	s3_check_log,
 	s3_test_multiple,
@@ -203,7 +203,7 @@ framework_tests s3_tests[] = {
 	NULL
 };
 
-framework_ops s3_ops = {
+static framework_ops s3_ops = {
 	s3_headline,
 	s3_init,	
 	s3_deinit,

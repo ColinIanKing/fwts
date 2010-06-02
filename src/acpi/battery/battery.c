@@ -187,12 +187,12 @@ static void do_battery(log *results, framework *fw, char *dir, char *name)
 	
 }
 
-char *battery_headline(void)
+static char *battery_headline(void)
 {
 	return "Battery tests";
 }
 
-int battery_test1(log *results, framework *fw)
+static int battery_test1(log *results, framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -229,12 +229,12 @@ int battery_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests battery_tests[] = {
+static framework_tests battery_tests[] = {
 	battery_test1,
 	NULL
 };
 
-framework_ops battery_ops = {
+static framework_ops battery_ops = {
 	battery_headline,
 	NULL,
 	NULL,

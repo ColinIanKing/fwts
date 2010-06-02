@@ -24,14 +24,14 @@
 
 #include "framework.h"
 
-char *klog_headline(void)
+static char *klog_headline(void)
 {
 	return "Scan kernel log for errors and warnings";
 }
 
 static char *klog;
 
-int klog_init(log *results, framework *fw)
+static int klog_init(log *results, framework *fw)
 {
 	if (fw->klog)
 		klog = file_read(fw->klog);
@@ -45,14 +45,14 @@ int klog_init(log *results, framework *fw)
 	return 0;
 }
 
-int klog_deinit(log *results, framework *fw)
+static int klog_deinit(log *results, framework *fw)
 {
 	free(klog);
 
 	return 0;
 }
 
-int klog_test1(log *results, framework *fw)
+static int klog_test1(log *results, framework *fw)
 {	
 	char *test = "kernel log error check";
 	int warnings = 0;
@@ -75,12 +75,12 @@ int klog_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests klog_tests[] = {
+static framework_tests klog_tests[] = {
 	klog_test1,
 	NULL
 };
 
-framework_ops klog_ops = {
+static framework_ops klog_ops = {
 	klog_headline,
 	klog_init,	
 	klog_deinit,

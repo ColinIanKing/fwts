@@ -36,12 +36,12 @@
  * acpi interrupt should be LEVEL
  */
 
-char *apicedge_headline(void)
+static char *apicedge_headline(void)
 {
 	return "APIC Edge/Level Check";
 }
 
-int apicedge_test1(log *results, framework *fw)
+static int apicedge_test1(log *results, framework *fw)
 {	
 	FILE *file;
 
@@ -96,12 +96,12 @@ int apicedge_test1(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests apicedge_tests[] = {
+static framework_tests apicedge_tests[] = {
 	apicedge_test1,
 	NULL
 };
 
-framework_ops apicedge_ops = {
+static framework_ops apicedge_ops = {
 	apicedge_headline,
 	NULL,
 	NULL,

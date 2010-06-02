@@ -28,22 +28,17 @@
 
 static char *wkalarm = WAKEALARM;
 
-int wakealarm_init(log *results, framework *fw)
+static int wakealarm_init(log *results, framework *fw)
 {
 	return check_root_euid(results);
 }
 
-int wakealarm_deinit(log *results, framework *fw)
-{
-	return 0;
-}
-
-char *wakealarm_headline(void)
+static char *wakealarm_headline(void)
 {
 	return "Test ACPI Wakealarm";
 }
 
-int wakealarm_test1(log *results, framework *fw)
+static int wakealarm_test1(log *results, framework *fw)
 {
 	struct stat buf;
 	char *test = "Check existance of " WAKEALARM;
@@ -58,7 +53,7 @@ int wakealarm_test1(log *results, framework *fw)
 	return 0;
 }
 
-int wakealarm_test2(log *results, framework *fw)
+static int wakealarm_test2(log *results, framework *fw)
 {
 	char *test = "Trigger RTC wakealarm";
 
@@ -79,7 +74,7 @@ int wakealarm_get_irq_state(void);
 int wakealarm_test_firing(log *results, framework *fw, int sleep);
 
 
-int wakealarm_test3(log *results, framework *fw)
+static int wakealarm_test3(log *results, framework *fw)
 {
 	char *test = "Check if wakealarm is fired";
 	int ret;
@@ -100,7 +95,7 @@ int wakealarm_test3(log *results, framework *fw)
 	return 0;
 }
 
-int wakealarm_test4(log *results, framework *fw)
+static int wakealarm_test4(log *results, framework *fw)
 {
 	int i;
 	char *test = "Multiple wakealarm firing tests";
@@ -122,7 +117,7 @@ int wakealarm_test4(log *results, framework *fw)
 	return 0;
 }
 
-framework_tests wakealarm_tests[] = {
+static framework_tests wakealarm_tests[] = {
 	wakealarm_test1,
 	wakealarm_test2,
 	wakealarm_test3,	
@@ -130,10 +125,10 @@ framework_tests wakealarm_tests[] = {
 	NULL
 };
 
-framework_ops wakealarm_ops = {
+static framework_ops wakealarm_ops = {
 	wakealarm_headline,
 	wakealarm_init,
-	wakealarm_deinit,
+	NULL,
 	wakealarm_tests
 };
 

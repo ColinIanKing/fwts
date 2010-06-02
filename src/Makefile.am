@@ -10,6 +10,7 @@ testsuite_SOURCES = main.c \
 	acpi/s3/s3.c \
 	acpi/s4/s4.c \
 	acpi/acpiinfo/acpiinfo.c \
+	acpi/battery/battery.c \
 	acpi/common/common.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \

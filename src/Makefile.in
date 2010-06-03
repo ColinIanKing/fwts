@@ -48,8 +48,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
-	common.$(OBJEXT) apicedge.$(OBJEXT) ebda_region.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) maxreadreq.$(OBJEXT)
+	common.$(OBJEXT) fadt.$(OBJEXT) apicedge.$(OBJEXT) \
+	ebda_region.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -201,13 +202,13 @@ testsuite_SOURCES = main.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/battery/battery.c \
 	acpi/common/common.c \
+	acpi/fadt/fadt.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
 	dmi/dmi_decode/dmi_decode.c \
+	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c
 
-
-#hpet/hpet_check/hpet_check.c 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
 
@@ -296,6 +297,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fadt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hpet_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
@@ -430,6 +433,20 @@ common.obj: acpi/common/common.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o common.obj `if test -f 'acpi/common/common.c'; then $(CYGPATH_W) 'acpi/common/common.c'; else $(CYGPATH_W) '$(srcdir)/acpi/common/common.c'; fi`
 
+fadt.o: acpi/fadt/fadt.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fadt.o -MD -MP -MF $(DEPDIR)/fadt.Tpo -c -o fadt.o `test -f 'acpi/fadt/fadt.c' || echo '$(srcdir)/'`acpi/fadt/fadt.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/fadt.Tpo $(DEPDIR)/fadt.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/fadt/fadt.c' object='fadt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fadt.o `test -f 'acpi/fadt/fadt.c' || echo '$(srcdir)/'`acpi/fadt/fadt.c
+
+fadt.obj: acpi/fadt/fadt.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fadt.obj -MD -MP -MF $(DEPDIR)/fadt.Tpo -c -o fadt.obj `if test -f 'acpi/fadt/fadt.c'; then $(CYGPATH_W) 'acpi/fadt/fadt.c'; else $(CYGPATH_W) '$(srcdir)/acpi/fadt/fadt.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/fadt.Tpo $(DEPDIR)/fadt.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/fadt/fadt.c' object='fadt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fadt.obj `if test -f 'acpi/fadt/fadt.c'; then $(CYGPATH_W) 'acpi/fadt/fadt.c'; else $(CYGPATH_W) '$(srcdir)/acpi/fadt/fadt.c'; fi`
+
 apicedge.o: apic/apicedge/apicedge.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicedge.o -MD -MP -MF $(DEPDIR)/apicedge.Tpo -c -o apicedge.o `test -f 'apic/apicedge/apicedge.c' || echo '$(srcdir)/'`apic/apicedge/apicedge.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/apicedge.Tpo $(DEPDIR)/apicedge.Po
@@ -471,6 +488,20 @@ dmi_decode.obj: dmi/dmi_decode/dmi_decode.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dmi/dmi_decode/dmi_decode.c' object='dmi_decode.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmi_decode.obj `if test -f 'dmi/dmi_decode/dmi_decode.c'; then $(CYGPATH_W) 'dmi/dmi_decode/dmi_decode.c'; else $(CYGPATH_W) '$(srcdir)/dmi/dmi_decode/dmi_decode.c'; fi`
+
+hpet_check.o: hpet/hpet_check/hpet_check.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT hpet_check.o -MD -MP -MF $(DEPDIR)/hpet_check.Tpo -c -o hpet_check.o `test -f 'hpet/hpet_check/hpet_check.c' || echo '$(srcdir)/'`hpet/hpet_check/hpet_check.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/hpet_check.Tpo $(DEPDIR)/hpet_check.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hpet/hpet_check/hpet_check.c' object='hpet_check.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hpet_check.o `test -f 'hpet/hpet_check/hpet_check.c' || echo '$(srcdir)/'`hpet/hpet_check/hpet_check.c
+
+hpet_check.obj: hpet/hpet_check/hpet_check.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT hpet_check.obj -MD -MP -MF $(DEPDIR)/hpet_check.Tpo -c -o hpet_check.obj `if test -f 'hpet/hpet_check/hpet_check.c'; then $(CYGPATH_W) 'hpet/hpet_check/hpet_check.c'; else $(CYGPATH_W) '$(srcdir)/hpet/hpet_check/hpet_check.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/hpet_check.Tpo $(DEPDIR)/hpet_check.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hpet/hpet_check/hpet_check.c' object='hpet_check.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hpet_check.obj `if test -f 'hpet/hpet_check/hpet_check.c'; then $(CYGPATH_W) 'hpet/hpet_check/hpet_check.c'; else $(CYGPATH_W) '$(srcdir)/hpet/hpet_check/hpet_check.c'; fi`
 
 maxreadreq.o: pci/maxreadreq/maxreadreq.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxreadreq.o -MD -MP -MF $(DEPDIR)/maxreadreq.Tpo -c -o maxreadreq.o `test -f 'pci/maxreadreq/maxreadreq.c' || echo '$(srcdir)/'`pci/maxreadreq/maxreadreq.c

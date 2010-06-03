@@ -13,6 +13,7 @@ testsuite_SOURCES = main.c \
 	acpi/battery/battery.c \
 	acpi/common/common.c \
 	acpi/fadt/fadt.c \
+	acpi/fan/fan.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
 	dmi/dmi_decode/dmi_decode.c \

@@ -35,7 +35,7 @@
 
 static unsigned long ebda_addr = BAD_ADDR;
 
-static char *klog;
+static text_list *klog;
 
 static int ebda_init(log *results, framework *fw)
 {
@@ -70,6 +70,13 @@ static int ebda_init(log *results, framework *fw)
 	return 0;
 }
 
+static int ebda_deinit(log *results, framework *fw)
+{
+	klog_free(klog);
+
+	return 0;
+}
+
 static char *ebda_headline(void)
 {
 	return "Validate EBDA region is mapped and reserved in E820 table";
@@ -77,33 +84,40 @@ static char *ebda_headline(void)
 
 static int ebda_test1(log *results, framework *fw)
 {
-	char buffer[4096];
 	int passed = 0;
-	char *str;
+	text_list_element *item;
 
-	while ((str = klog_strncmp(&klog, "BIOS-e820:", 10, buffer, sizeof(buffer))) != NULL) {
+	if (klog == NULL)
+		return 1;
+
+	item = klog->head;
+
+	for (item = klog->head; item != NULL; item = item->next) {
 		char *tmp;
-		unsigned long long start_addr = 0;
-		unsigned long long end_addr = 0;
-		tmp = strstr(buffer,"BIOS-e820:");
-		if (tmp) {
-			tmp += 11;
-			start_addr = strtoull(tmp + 11, NULL, 16);
-			tmp = strstr(tmp + 11, " - ");
+
+		if ((tmp = strstr(item->text, "BIOS-e820")) != NULL) {
+			unsigned long long start_addr = 0;
+			unsigned long long end_addr = 0;
+			tmp = strstr(tmp,"BIOS-e820:");
 			if (tmp) {
-				tmp += 3;
-				end_addr   = strtoull(tmp, NULL, 16);
+				tmp += 11;
+				start_addr = strtoull(tmp + 11, NULL, 16);
+				tmp = strstr(tmp + 11, " - ");
+				if (tmp) {
+					tmp += 3;
+					end_addr   = strtoull(tmp, NULL, 16);
+				}
+				else {
+					end_addr = 0;
+				}
 			}
-			else {
-				end_addr = 0;
-			}
-		}
-		if (strstr(buffer, "(reserved)") || strstr(buffer, "ACPI")) {
-			if (start_addr <= ebda_addr && end_addr > ebda_addr) {
-				framework_passed(fw, "EBDA region mapped at %lx and reserved in E820 table in region 0x%llx..0x%llx",
-					ebda_addr, start_addr, end_addr);
-				passed = 1;
-				break;
+			if (strstr(tmp, "(reserved)") || strstr(tmp, "ACPI")) {
+				if (start_addr <= ebda_addr && end_addr > ebda_addr) {
+					framework_passed(fw, "EBDA region mapped at %lx and reserved in E820 table in region 0x%llx..0x%llx",
+						ebda_addr, start_addr, end_addr);
+					passed = 1;
+					break;
+				}
 			}
 		}
 	}
@@ -122,7 +136,7 @@ static framework_tests ebda_tests[] = {
 static framework_ops ebda_ops = {
 	ebda_headline,
 	ebda_init,
-	NULL,
+	ebda_deinit,
 	ebda_tests
 };
 

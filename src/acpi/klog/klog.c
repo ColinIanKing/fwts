@@ -29,12 +29,12 @@ static char *klog_headline(void)
 	return "Scan kernel log for errors and warnings";
 }
 
-static char *klog;
+static text_list *klog;
 
 static int klog_init(log *results, framework *fw)
 {
 	if (fw->klog)
-		klog = file_read(fw->klog);
+		klog = file_open_and_read(fw->klog);
 	else
 		klog = klog_read();
 	
@@ -47,7 +47,7 @@ static int klog_init(log *results, framework *fw)
 
 static int klog_deinit(log *results, framework *fw)
 {
-	free(klog);
+	klog_free(klog);
 
 	return 0;
 }

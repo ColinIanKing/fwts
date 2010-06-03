@@ -20,6 +20,9 @@
 #ifndef __FILEIO_H__
 #define __FILEIO_H__
 
-char* file_read(const char *file);
+#include <stdio.h>
+
+text_list* file_read(FILE *fp);
+text_list* file_open_and_read(const char *file);
 
 #endif

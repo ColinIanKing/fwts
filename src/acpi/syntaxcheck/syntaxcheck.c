@@ -26,39 +26,14 @@
 #include "framework.h"
 #include "dsdt.h"
 #include "iasl.h"
+#include "text_list.h"
 
 static char *syntaxcheck_headline(void)
 {
 	return "Scan kernel log for errors and warnings";
 }
 
-static char* error_output;
-
-static char *get_next_output_line(void)
-{
-	char *ret;
-	static char *current_ptr = NULL;
-
-	if (!error_output)
-		return NULL;	/* No text! */
-
-	if (current_ptr == NULL)	/* Initial request */
-		current_ptr = error_output;
-
-	if (*current_ptr == '\0')
-		return NULL;
-
-	ret = current_ptr;
-	while (*current_ptr && *current_ptr != '\n')
-		current_ptr++;
-
-	if (*current_ptr == '\n') {
-		*current_ptr = '\0';
-		current_ptr++;
-	}
-	
-	return ret;
-}
+static text_list* error_output;
 
 static int syntaxcheck_init(log *log, framework *fw)
 {
@@ -120,7 +95,7 @@ static int syntaxcheck_init(log *log, framework *fw)
 static int syntaxcheck_deinit(log *log, framework *fw)
 {
 	if (error_output)
-		free(error_output);
+		text_list_free(error_output);
 
 	return 0;
 }
@@ -130,16 +105,22 @@ static int syntaxcheck_test1(log *log, framework *fw)
 	char *test = "DSDT re-assembly, syntax check";
 	int warnings = 0;
 	int errors = 0;
-	char *line;
+	text_list_element *item;
+
+	if (error_output == NULL)
+		return 1;
 
 	log_info(log, test);
-	
-	while ((line = get_next_output_line()) != NULL) {
+
+	for (item = error_output->head; item != NULL; item = item->next) {
 		int num;
 		char ch;
+		char *line = item->text;
+
 		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
-			char *nextline = get_next_output_line();
-			if (nextline) {
+			item = item->next;
+			if (item != NULL) {
+				char *nextline = item->text;
 				if (!strncmp(nextline, "Error", 5)) {
 					log_info(log, "%s", line);
 					log_info(log, "%s", nextline);

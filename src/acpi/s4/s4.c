@@ -26,6 +26,7 @@
 #include "pipeio.h"
 #include "wakealarm.h"
 #include "klog.h"
+#include "text_list.h"
 
 static char *s4_headline(void)
 {
@@ -56,9 +57,9 @@ static int s4_test1(log *results, framework *fw)
 	char *test = "S4 hibernate/resume test";
 	int warnings = 0;
 	int errors = 0;
-	char *output;
+	text_list *output;
 	int status;
-	char *klog;
+	text_list *klog;
 
 	log_info(results, test);
 
@@ -73,7 +74,7 @@ static int s4_test1(log *results, framework *fw)
 	/* Do s4 here */
 	status = pipe_exec("pm-hibernate", &output);
 	if (output)
-		free(output);
+		text_list_free(output);
 
 	log_info(results, "pm-hibernate returned %d", status);
 	
@@ -104,7 +105,7 @@ static int s4_test1(log *results, framework *fw)
 		log_error(results, "pm-action encountered an error and also failed to\n"
 				   "enter the requested power saving state");
 	}
-	free(klog);
+	klog_free(klog);
 
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);

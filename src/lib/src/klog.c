@@ -19,96 +19,80 @@
 
 #include <sys/klog.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "log.h"
 #include "klog.h"
+#include "text_list.h"
+
+void klog_free(text_list *klog)
+{
+	text_list_free(klog);
+}
 
 int klog_clear(void)
 {
-	if (klogctl(5, NULL, 0) < 0) {
+	if (klogctl(5, NULL, 0) < 0)
 		return 1;
-	}
 	return 0;
 }
 
-char *klog_read(void)
+text_list *klog_read(void)
 {
 	int len;
 	char *buffer;
+	text_list *list;
 
-	if ((len = klogctl(10, NULL, 0)) < 0) {
+	if ((len = klogctl(10, NULL, 0)) < 0)
 		return NULL;
-	}
 
-	if ((buffer = malloc(len)) < 0) {		
+	if ((buffer = malloc(len)) < 0)
 		return NULL;
-	}
 	
-	if (klogctl(3, buffer, len) < 0) {
+	if (klogctl(3, buffer, len) < 0)
 		return NULL;
-	}
 
-	return buffer;
+	list = text_list_from_text(buffer);
+	free(buffer);
+	
+	return list;
 }
 
 typedef void (*scan_callback_t)(log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
 
-char *klog_strncmp(char **klog, const char *needle, int needle_len, char *buffer, int len)
+#if 0
+typedef void (*klog_iterator)(log *log, const char *text, void *private);
+
+void klog_iterate(log *log, text_list *list, klog_iterator iterator, void *private)
 {
-	char *ptr;
-	if (!klog && !*klog)
-		return NULL;
-
-	ptr = *klog;
-
-	while (*ptr) {
-		char *bufptr = buffer;
-		char *ret = ptr;
-
-		if ((ptr[0] == '<') && (ptr[2] == '>'))
-			ptr += 3;
-
-		while (*ptr && *ptr !='\n' && (bufptr-buffer < len))
-			*bufptr++ = *ptr++;
-		*bufptr = '\0';
-		if (*ptr == '\n')
-			ptr++;
-
-		if (strncmp(buffer, needle, needle_len)) {
-			*klog = ptr;
-			return ret;
-		}
+	while (list) {
+		iterator(log, list->text, private);
+		list = list->next;
 	}
-	*klog = ptr;
-	return NULL;
 }
+#endif
 
-int klog_scan(log *log, char *klog, scan_callback_t callback, void *private, int *warnings, int *errors)
+int klog_scan(log *log, text_list *klog, scan_callback_t callback, void *private, int *warnings, int *errors)
 {
 	*warnings = 0;
 	*errors = 0;
-	char prev[4096];
-	char buffer[4096];
+	char *prev;
+	text_list_element *item;
 
 	if (!klog)
 		return 1;
 
-	*prev = '\0';
 
-	while (*klog) {
-		char *bufptr = buffer;
+	prev = "";
 
-		if ((klog[0] == '<') && (klog[2] == '>'))
-			klog += 3;
+	for (item = klog->head; item != NULL; item=item->next) {
+		char *ptr = item->text;
 
-		while (*klog && *klog !='\n' && (bufptr-buffer < sizeof(buffer)))
-			*bufptr++ = *klog++;
-		*bufptr = '\0';
-		if (*klog == '\n')
-			klog++;
+		if ((ptr[0] == '<') && (ptr[2] == '>'))
+			ptr += 3;
 
-		callback(log, buffer, prev, private, warnings, errors);
-		strcpy(prev, buffer);
+		callback(log, ptr, prev, private, warnings, errors);
+		prev = ptr;
 	}
 	return 0;
 }
@@ -166,12 +150,12 @@ void klog_scan_patterns(log *log, char *line, char *prevline, void *private, int
 	}
 }
 
-int klog_firmware_check(log *log, char *klog, int *warnings, int *errors)
+int klog_firmware_check(log *log, text_list *klog, int *warnings, int *errors)
 {	
 	return klog_scan(log, klog, klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
 }
 
-int klog_pm_check(log *log, char *klog, int *warnings, int *errors)
+int klog_pm_check(log *log, text_list *klog, int *warnings, int *errors)
 {
 	return klog_scan(log, klog, klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
 }

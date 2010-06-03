@@ -187,7 +187,7 @@ static char *dmesg_common_headline(void)
 	return "General dmesg common errors check";
 }
 
-static char *klog;
+static text_list *klog;
 
 static int dmesg_common_init(log *results, framework *fw)
 {
@@ -200,7 +200,7 @@ static int dmesg_common_init(log *results, framework *fw)
 
 static int dmesg_common_deinit(log *results, framework *fw)
 {
-	free(klog);
+	klog_free(klog);
 
 	return 0;
 }

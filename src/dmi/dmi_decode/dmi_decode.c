@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include "framework.h"
+#include "text_list.h"
 
 typedef struct {
 	char *pat1;
@@ -118,14 +119,14 @@ static char *dmi_decode_headline(void)
 
 static int dmi_decode_test1(log *results, framework *fw)
 {
-	char buffer[4096];
-	char *dmi_text;
-	char *dmi_ptr;
+	text_list *dmi_text;
+	text_list_element *item;
 	int type;
 
 	for (type=0; type < 40; type++) {
 		int dumped = 0;
 		int failed = 0;
+		char buffer[1024];
 
 		sprintf(buffer, "%s -t %d", dmidecode, type);
 
@@ -138,32 +139,25 @@ static int dmi_decode_test1(log *results, framework *fw)
 			return 1;
 		}	
 
-		dmi_ptr = dmi_text;
-
-		while (*dmi_ptr) {
-			char *bufptr = buffer;
+		for (item = dmi_text->head; item != NULL; item = item->next) {
 			int i;
-
-			while (*dmi_ptr && *dmi_ptr != '\n' && (bufptr-buffer < sizeof(buffer)))
-				*bufptr++ = *dmi_ptr++;
-
-			*bufptr = '\0';	
-			if (*dmi_ptr == '\n')
-				dmi_ptr++;
 
 			for (i=0; dmi_patterns[i].pat1 != NULL; i++) {
 				int match;
 				if (dmi_patterns[i].pat2 == NULL) 
-					match = (strstr(buffer, dmi_patterns[i].pat1) != NULL);
+					match = (strstr(item->text, dmi_patterns[i].pat1) != NULL);
 				else {
-					match = (strstr(buffer, dmi_patterns[i].pat1) != NULL) &&
-						(strstr(buffer, dmi_patterns[i].pat2) != NULL);
+					match = (strstr(item->text, dmi_patterns[i].pat1) != NULL) &&
+						(strstr(item->text, dmi_patterns[i].pat2) != NULL);
 				}
 				if (match) {		
 					failed++;
 					framework_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
-						log_info(results, "%s", dmi_text);
+						log_info(results, "DMI table dump:");
+						text_list_element *dump;
+						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
+							log_info(results, "%s", dump->text);
 						dumped = 1;
 					}
 				}
@@ -172,7 +166,7 @@ static int dmi_decode_test1(log *results, framework *fw)
 		if (!failed)
 			framework_passed(fw, "DMI type %s", dmi_types[type]);
 		
-		free(dmi_text);
+		text_list_free(dmi_text);
 	}
 	return 0;
 }

@@ -25,7 +25,6 @@
 #include "log.h"
 #include "helpers.h"
 #include "checkeuid.h"
-#include "text_file.h"
 #include "klog.h"
 #include "pipeio.h"
 #include "fileio.h"

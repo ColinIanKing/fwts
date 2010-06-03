@@ -30,7 +30,9 @@
 #include <sys/wait.h>
 #include <errno.h>
 
+#include "text_list.h"
 #include "pipeio.h"
+#include "fileio.h"
 
 int pipe_open(const char *command, pid_t *childpid)
 {
@@ -107,15 +109,23 @@ int pipe_close(int fd, pid_t pid)
 	}
 }
 
-int pipe_exec(const char *command, char **data)
+int pipe_exec(const char *command, text_list **list)
 {
 	pid_t 	pid;
 	int	fd;
+	FILE	*fp;
 
 	if ((fd = pipe_open(command, &pid)) < 0) 
 		return -1;
 
-	*data = pipe_read(fd);		/* Null is am error */
+	if ((fp = fdopen(fd, "r")) == NULL) {
+		pipe_close(fd, pid);
+		return -1;
+	}
+
+	*list = file_read(fp);
+	fclose(fp);
+
 	return pipe_close(fd, pid);
 }
 	

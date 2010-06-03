@@ -27,6 +27,7 @@
 #include "pipeio.h"
 #include "wakealarm.h"
 #include "klog.h"
+#include "text_list.h"
 
 static char *s3_headline(void)
 {
@@ -59,7 +60,7 @@ static int s3_deinit(log *results, framework *fw)
 
 static void s3_do_suspend_resume(log *results, framework *fw, int *warnings, int *errors, int delay, int *duration)
 {
-	char *output;
+	text_list *output;
 	int status;
 	time_t t_start;
 	time_t t_end;
@@ -75,7 +76,7 @@ static void s3_do_suspend_resume(log *results, framework *fw, int *warnings, int
 
 	time(&t_end);
 	if (output)
-		free(output);
+		text_list_free(output);
 
 	*duration = (int)(t_end - t_start);
 
@@ -129,7 +130,7 @@ static int s3_test_single(log *results, framework *fw)
 static int s3_check_log(log *results, framework *fw)
 {
 	char *test = "S3 suspend/resume check kernel log";
-	char *klog;
+	text_list *klog;
 	int warnings = 0;
 	int errors = 0;
 
@@ -148,7 +149,7 @@ static int s3_check_log(log *results, framework *fw)
 	if (klog_firmware_check(results, klog, &warnings, &errors)) {
 		log_error(results, "error parsing kernel log");
 	}
-	free(klog);
+	klog_free(klog);
 
 	if (warnings + errors > 0) {
 		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);

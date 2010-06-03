@@ -23,9 +23,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include "text_list.h"
+
 int   pipe_open(const char *command, pid_t *childpid);
 char *pipe_read(int fd);
 int   pipe_close(int fd, pid_t pid);
-int   pipe_exec(const char *command, char **data);
+int   pipe_exec(const char *command, text_list **list);
 
 #endif

@@ -31,7 +31,7 @@
 int iasl_disassemble(log *log, framework *fw, char *src)
 {
 	char tmpbuf[4096];
-	char *output;
+	text_list *output;
 	int ret;
 	char *iasl = fw->iasl ? fw->iasl : IASL;
 
@@ -40,16 +40,16 @@ int iasl_disassemble(log *log, framework *fw, char *src)
 	if (ret)
 		log_warning(log, "exec of %s returned %d\n", iasl, ret);
 	if (output)
-		free(output);
+		text_list_free(output);
 
 	return ret;
 }
 
-char *iasl_assemble(log *log, framework *fw, char *src)
+text_list *iasl_assemble(log *log, framework *fw, char *src)
 {
 	char tmpbuf[4096];
 	int ret;
-	char *output;
+	text_list *output;
 	char *iasl = fw->iasl ? fw->iasl : IASL;
 
 	/* Run iasl with -vs just dumps out line and error output */

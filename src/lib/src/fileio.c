@@ -17,45 +17,43 @@
  *
  */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
 
-char* file_read(const char *file)
+#include "text_list.h"
+#include "fileio.h"
+
+text_list *file_read(FILE *fp)
 {
-	struct stat buf;
-	int fd;
-	char *buffer;
-	char *ptr;
-	int n;
-	int size;
+	text_list *list;
+	char buffer[8192];
 
-	if (stat(file, &buf) < 0)
-		return NULL;
-
-	size = buf.st_size;
-
-	if ((buffer = malloc(size)) == NULL) 
-		return NULL;
-
-	if ((fd = open(file, O_RDONLY)) < 0) {
-		free(buffer);
+	if ((list = text_list_init()) == NULL)  {
+		fclose(fp);
 		return NULL;
 	}
 
-	ptr = buffer;
-	do {
-		if ((n = read(fd, ptr, size)) < 0) {
-			free(buffer);
-			return NULL;
-		}
-		size -= n;
-		ptr += n;
-	} while (size);
-	
-	close(fd);
+	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+		int len = strlen(buffer);
+		buffer[len] = '\0';	/* Chop off "\n" */
+		text_list_append(list, buffer);
+	}
 
-	return buffer;
+	return list;
+}
+
+text_list* file_open_and_read(const char *file)
+{
+	FILE *fp;
+	text_list *list;
+
+	if ((fp = fopen(file, "r")) == NULL)
+		return NULL;
+
+	list = file_read(fp);
+	fclose(fp);
+
+	return list;
 }

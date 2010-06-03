@@ -26,7 +26,7 @@
 #include "text_list.h"
 
 int   pipe_open(const char *command, pid_t *childpid);
-char *pipe_read(int fd);
+char *pipe_read(int fd, int *length);
 int   pipe_close(int fd, pid_t pid);
 int   pipe_exec(const char *command, text_list **list);
 

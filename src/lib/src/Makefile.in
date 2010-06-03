@@ -47,10 +47,11 @@ AR = ar
 ARFLAGS = cru
 libtestsuite_a_AR = $(AR) $(ARFLAGS)
 libtestsuite_a_LIBADD =
-am_libtestsuite_a_OBJECTS = checkeuid.$(OBJEXT) dsdt.$(OBJEXT) \
-	fileio.$(OBJEXT) framework.$(OBJEXT) get.$(OBJEXT) \
-	iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) \
-	set.$(OBJEXT) text_list.$(OBJEXT) wakealarm.$(OBJEXT)
+am_libtestsuite_a_OBJECTS = acpi.$(OBJEXT) checkeuid.$(OBJEXT) \
+	dsdt.$(OBJEXT) fileio.$(OBJEXT) framework.$(OBJEXT) \
+	get.$(OBJEXT) iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) \
+	pipeio.$(OBJEXT) set.$(OBJEXT) text_list.$(OBJEXT) \
+	wakealarm.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -155,6 +156,7 @@ top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include  -Wall -Werror
 noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \
+	acpi.c \
 	checkeuid.c \
 	dsdt.c \
 	fileio.c \
@@ -216,6 +218,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/checkeuid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsdt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileio.Po@am__quote@

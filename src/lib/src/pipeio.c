@@ -68,12 +68,13 @@ int pipe_open(const char *command, pid_t *childpid)
 	}
 }
 
-char *pipe_read(int fd)
+char *pipe_read(int fd, int *length)
 {
 	char *ptr = NULL;
 	char buffer[32];	
 	int n;
 	int size = 0;
+	*length = 0;
 
 	ptr = calloc(1, 1);	/* Empty string! */
 
@@ -90,6 +91,7 @@ char *pipe_read(int fd)
 			*(ptr+size) = 0;
 		}
 	}
+	*length = size;
 	return ptr;
 }
 

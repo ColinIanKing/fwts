@@ -29,23 +29,7 @@
 #include <dirent.h>
 
 #include "framework.h"
-
-static void chop_newline(char *str)
-{
-	int len;
-
-        if (!str)
-                return;
-
-	len = strlen(str);
-	while (len > 0 && str[len-1] == '\n') {
-		str[--len] = '\0';
-	}
-	while (len > 0 && str[len-1] == ' ') {
-		str[--len] = '\0';
-	}
-}
-
+#include "stringextras.h"
 
 static unsigned long get_full(char *dir)
 {

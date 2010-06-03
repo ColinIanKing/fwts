@@ -13,6 +13,7 @@ libtestsuite_a_SOURCES = \
 	log.c \
 	pipeio.c \
 	set.c \
+	stringextras.c \
 	text_list.c \
 	wakealarm.c
 

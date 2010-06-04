@@ -25,20 +25,32 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <limits.h>
 
 #include "framework.h"
 #include "iasl.h"
 
 text_list *iasl_disassemble(log *log, framework *fw, char *table, int which)
 {
-	char tmpbuf[4096];
-	char tmpname[256];
+	char tmpbuf[PATH_MAX+128];
+	char tmpname[PATH_MAX];
+	char cwd[PATH_MAX];
 	int len;
 	int fd;
 	char *iasl = fw->iasl ? fw->iasl : IASL;
 	char *data;
 	pid_t pid;
 	text_list *output;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL) {
+		log_error(log, "Cannot get current working directory");
+		return NULL;
+	}
+
+	if (chdir("/tmp") < 0) {
+		log_error(log, "Cannot change directory to /tmp");
+		return NULL;
+	}
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
 	fd = pipe_open(tmpbuf, &pid);
@@ -49,7 +61,7 @@ text_list *iasl_disassemble(log *log, framework *fw, char *table, int which)
 	data = pipe_read(fd, &len);
 	pipe_close(fd, pid);
 
-	snprintf(tmpname, sizeof(tmpname), "___tmp_iasl_%d_%s", getpid(), table);
+	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		log_error(log, "Cannot create temporary file %s", tmpname);
 		free(data);
@@ -78,13 +90,18 @@ text_list *iasl_disassemble(log *log, framework *fw, char *table, int which)
 	unlink(tmpname);
 	unlink(tmpbuf);
 
+	if (chdir(cwd) < 0) {
+		log_error(log, "Cannot change directory to %s", cwd);
+	}
+
 	return output;
 }
 
 text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 {
-	char tmpbuf[4096];
-	char tmpname[256];
+	char tmpbuf[PATH_MAX+128];
+	char tmpname[PATH_MAX];
+	char cwd[PATH_MAX];
 	text_list *output;
 	int ret;
 	int len;
@@ -92,6 +109,16 @@ text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 	char *iasl = fw->iasl ? fw->iasl : IASL;
 	char *data;
 	pid_t pid;
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL) {
+		log_error(log, "Cannot get current working directory");
+		return NULL;
+	}
+
+	if (chdir("/tmp") < 0) {
+		log_error(log, "Cannot change directory to /tmp");
+		return NULL;
+	}
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
 	fd = pipe_open(tmpbuf, &pid);
@@ -102,7 +129,7 @@ text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 	data = pipe_read(fd, &len);
 	pipe_close(fd, pid);
 
-	snprintf(tmpname, sizeof(tmpname), "___tmp_iasl_%d_%s", getpid(), table);
+	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		log_error(log, "Cannot create temporary file");
 		free(data);
@@ -118,7 +145,6 @@ text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 	close(fd);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
-	printf("-->%s\n",tmpbuf);
 	ret = pipe_exec(tmpbuf, &output);
 	if (ret)
 		log_warning(log, "exec of %s -d %s (disassemble) returned %d\n", iasl, tmpname, ret);
@@ -128,11 +154,15 @@ text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", iasl, tmpname);
 	ret = pipe_exec(tmpbuf, &output);
 	if (ret)
-		log_warning(log, "exec of %s (assemble) returned %d\n", iasl, ret);
+		log_error(log, "exec of %s (assemble) returned %d\n", iasl, ret);
 
 	snprintf(tmpbuf,sizeof(tmpbuf),"%s.dsl", tmpname);
 	unlink(tmpname);
 	unlink(tmpbuf);
+
+	if (chdir(cwd) < 0) {
+		log_error(log, "Cannot change directory to %s", cwd);
+	}
 
 	return output;
 }

@@ -82,9 +82,8 @@ static int syntaxcheck_test1(log *log, framework *fw)
 		char *line = item->text;
 
 		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
-			item = item->next;
-			if (item != NULL) {
-				char *nextline = item->text;
+			if (item->next != NULL) {
+				char *nextline = item->next->text;
 				if (!strncmp(nextline, "Error", 5)) {
 					log_info(log, "%s", line);
 					log_info(log, "%s", nextline);
@@ -95,10 +94,13 @@ static int syntaxcheck_test1(log *log, framework *fw)
 					log_info(log, "%s", nextline);
 					warnings++;
 				}
+				item = item->next;
 			}
 			else {
 				log_info(log, "%s", line);
-				log_error(log, "Could not find parser error message\n");
+				log_error(log, 
+					"Could not find parser error message "
+					"(this can happen if iasl segfaults!)");
 			}
 		}
 	}

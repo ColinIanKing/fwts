@@ -60,7 +60,9 @@ int pipe_open(const char *command, pid_t *childpid)
 			close(pipefds[1]);
 		}
 		close(pipefds[0]);
+		fprintf(stderr,"CHILD EXEC'ing %s\n", command);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
+		fprintf(stderr,"CHILD EXEC FAILED!!\n");
 		_exit(127);
 	default:
 		/* Parent */
@@ -81,7 +83,7 @@ char *pipe_read(int fd, int *length)
 
 	ptr = calloc(1, 1);	/* Empty string! */
 
-	while ((n = read(fd, buffer, sizeof(buffer))) != 0) {
+	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
 		if (n < 0) {
 			if (errno != EINTR && errno != EAGAIN)
 				free(ptr);
@@ -106,7 +108,7 @@ int pipe_close(int fd, pid_t pid)
 
 	for (;;) {
 		if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
-
+			return EXIT_FAILURE;
 		if (WIFEXITED(status))
 			return WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
@@ -118,19 +120,15 @@ int pipe_exec(const char *command, text_list **list)
 {
 	pid_t 	pid;
 	int	fd;
-	FILE	*fp;
+	int 	len;
+	char 	*text;
 
 	if ((fd = pipe_open(command, &pid)) < 0) 
 		return -1;
 
-	if ((fp = fdopen(fd, "r")) == NULL) {
-		pipe_close(fd, pid);
-		return -1;
-	}
-
-	*list = file_read(fp);
-	fclose(fp);
+	text = pipe_read(fd, &len);
+	*list = text_list_from_text(text);
+	free(text);
 
 	return pipe_close(fd, pid);
 }
-	

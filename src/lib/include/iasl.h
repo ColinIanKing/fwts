@@ -25,7 +25,6 @@
 
 #define IASL    "/usr/bin/iasl"
 
-int        iasl_disassemble(log *log, framework *fw, char *src);
-text_list *iasl_assemble(log *log, framework *fw, char *src);
+text_list* iasl_reassemble(log *log, framework *fw, char *table, int which);
 
 #endif

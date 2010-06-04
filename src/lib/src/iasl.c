@@ -24,39 +24,62 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "framework.h"
 #include "iasl.h"
 
-int iasl_disassemble(log *log, framework *fw, char *src)
+text_list* iasl_reassemble(log *log, framework *fw, char *table, int which)
 {
 	char tmpbuf[4096];
+	char tmpname[256];
 	text_list *output;
 	int ret;
+	int len;
+	int fd;
 	char *iasl = fw->iasl ? fw->iasl : IASL;
+	char *data;
+	pid_t pid;
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, src);
+	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
+	fd = pipe_open(tmpbuf, &pid);
+	if (fd < 0) {
+		log_error(log, "exec of %s failed", tmpbuf);
+		return NULL;
+	}
+	data = pipe_read(fd, &len);
+	pipe_close(fd, pid);
+
+	snprintf(tmpname, sizeof(tmpname), "/tmp/iasl_%d_%s", getpid(), table);
+	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
+		log_error(log, "Cannot create temporary file");
+		free(data);
+		return NULL;
+	}
+	if (write(fd, data, len) != len) {
+		log_error(log, "Cannot write all data to temporary file");
+		free(data);
+		close(fd);
+		return NULL;
+	}	
+	free(data);
+	close(fd);
+
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
 	ret = pipe_exec(tmpbuf, &output);
 	if (ret)
-		log_warning(log, "exec of %s returned %d\n", iasl, ret);
+		log_warning(log, "exec of %s -d %s (disassemble) returned %d\n", iasl, tmpname, ret);
 	if (output)
 		text_list_free(output);
 
-	return ret;
-}
-
-text_list *iasl_assemble(log *log, framework *fw, char *src)
-{
-	char tmpbuf[4096];
-	int ret;
-	text_list *output;
-	char *iasl = fw->iasl ? fw->iasl : IASL;
-
-	/* Run iasl with -vs just dumps out line and error output */
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s", fw->iasl ? fw->iasl : IASL, src);
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", iasl, tmpname);
 	ret = pipe_exec(tmpbuf, &output);
 	if (ret)
-		log_warning(log, "exec of %s returned %d\n", iasl, ret);
+		log_warning(log, "exec of %s (assemble) returned %d\n", iasl, ret);
+
+	snprintf(tmpbuf,sizeof(tmpbuf),"%s.dsl", tmpname);
+	unlink(tmpname);
+	unlink(tmpbuf);
 
 	return output;
 }

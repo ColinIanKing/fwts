@@ -51,7 +51,10 @@ int pipe_open(const char *command, pid_t *childpid)
 		return -1;
 	case 0:
 		/* Child */
-		close(STDERR_FILENO);
+		if (freopen("/dev/null", "w", stderr) == NULL) {
+			fprintf(stderr, "Cannot redirect stderr\n");
+		}
+		//close(STDERR_FILENO);
 		if (pipefds[0] != STDOUT_FILENO) {
 			dup2(pipefds[1], STDOUT_FILENO);
 			close(pipefds[1]);
@@ -71,7 +74,7 @@ int pipe_open(const char *command, pid_t *childpid)
 char *pipe_read(int fd, int *length)
 {
 	char *ptr = NULL;
-	char buffer[32];	
+	char buffer[8192];	
 	int n;
 	int size = 0;
 	*length = 0;

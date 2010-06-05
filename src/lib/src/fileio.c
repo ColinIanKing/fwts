@@ -22,6 +22,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "framework.h"
 #include "text_list.h"
 #include "fileio.h"
 

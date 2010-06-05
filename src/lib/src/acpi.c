@@ -22,13 +22,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "framework.h"
 #include "acpi.h"
 #include "pipeio.h"
 #include "log.h"
 
 char *acpidump = "/usr/bin/acpidump";
 
-unsigned char *fwts_get_acpi_table(fwts_log *results, const char *name, unsigned long *size)
+unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigned long *size)
 {
 	char buffer[1024];
 	pid_t pid;
@@ -81,14 +82,14 @@ unsigned char *fwts_get_acpi_table(fwts_log *results, const char *name, unsigned
 	*/
 
 	if (len != hdr.length) {
-		fwts_log_error(results, "ACPI table %s, unexpected table size %d (expected %lu)\n", 
+		fwts_log_error(fw, "ACPI table %s, unexpected table size %d (expected %lu)\n", 
 			name, len, hdr.length);
 		free(data);
 		return NULL;
 	}
 
 	if (strncmp(name, hdr.signature, 4) != 0) {
-		fwts_log_error(results, "ACPI table %s, mismatched table name (got %4.4s)\n", 
+		fwts_log_error(fw, "ACPI table %s, mismatched table name (got %4.4s)\n", 
 			name, hdr.signature);
 		free(data);
 		return NULL;
@@ -99,7 +100,7 @@ unsigned char *fwts_get_acpi_table(fwts_log *results, const char *name, unsigned
 		checksum += data[i];
 
 	if (!checksum) {
-		fwts_log_error(results, "ACPI table %s, bad checksum: %d\n", name, checksum);
+		fwts_log_error(fw, "ACPI table %s, bad checksum: %d\n", name, checksum);
 		free(data);
 		return NULL;
 	}

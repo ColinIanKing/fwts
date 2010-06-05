@@ -20,6 +20,8 @@
 #ifndef __FWTS_CHECKEUID_H__
 #define __FWTS_CHECKEUID_H__
 
-int fwts_check_root_euid(fwts_log *log);
+#include "framework.h"
+
+int fwts_check_root_euid(fwts_framework *fw);
 
 #endif

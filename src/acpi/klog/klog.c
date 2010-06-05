@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include "framework.h"
+#include "klog.h"
 
 static char *klog_headline(void)
 {
@@ -31,7 +32,7 @@ static char *klog_headline(void)
 
 static fwts_text_list *klog;
 
-static int klog_init(fwts_log *results, fwts_framework *fw)
+static int klog_init(fwts_framework *fw)
 {
 	if (fw->klog)
 		klog = fwts_file_open_and_read(fw->klog);
@@ -39,33 +40,33 @@ static int klog_init(fwts_log *results, fwts_framework *fw)
 		klog = fwts_klog_read();
 	
 	if (klog == NULL) {
-		fwts_log_error(results, "cannot read kernel log");
+		fwts_log_error(fw, "cannot read kernel log");
 		return 1;
 	}
 	return 0;
 }
 
-static int klog_deinit(fwts_log *results, fwts_framework *fw)
+static int klog_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
 	return 0;
 }
 
-static int klog_test1(fwts_log *results, fwts_framework *fw)
+static int klog_test1(fwts_framework *fw)
 {	
 	char *test = "kernel log error check";
 	int warnings = 0;
 	int errors = 0;
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 
-	if (fwts_klog_firmware_check(results, klog, &warnings, &errors)) {
-		fwts_log_error(results, "error parsing kernel log");
+	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors)) {
+		fwts_log_error(fw, "error parsing kernel log");
 		return 1;
 	}
 
-	fwts_log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
+	fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
 	if (warnings + errors > 0) {
 		fwts_framework_failed(fw, test);
 	}

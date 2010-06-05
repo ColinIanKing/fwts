@@ -30,7 +30,7 @@
 #include "framework.h"
 #include "iasl.h"
 
-fwts_text_list *fwts_iasl_disassemble(fwts_log *log, fwts_framework *fw, char *table, int which)
+fwts_text_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
@@ -43,19 +43,19 @@ fwts_text_list *fwts_iasl_disassemble(fwts_log *log, fwts_framework *fw, char *t
 	fwts_text_list *output;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		fwts_log_error(log, "Cannot get current working directory");
+		fwts_log_error(fw, "Cannot get current working directory");
 		return NULL;
 	}
 
 	if (chdir("/tmp") < 0) {
-		fwts_log_error(log, "Cannot change directory to /tmp");
+		fwts_log_error(fw, "Cannot change directory to /tmp");
 		return NULL;
 	}
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
 	fd = fwts_pipe_open(tmpbuf, &pid);
 	if (fd < 0) {
-		fwts_log_error(log, "exec of %s failed", tmpbuf);
+		fwts_log_error(fw, "exec of %s failed", tmpbuf);
 		return NULL;
 	}
 	data = fwts_pipe_read(fd, &len);
@@ -63,12 +63,12 @@ fwts_text_list *fwts_iasl_disassemble(fwts_log *log, fwts_framework *fw, char *t
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
-		fwts_log_error(log, "Cannot create temporary file %s", tmpname);
+		fwts_log_error(fw, "Cannot create temporary file %s", tmpname);
 		free(data);
 		return NULL;
 	}
 	if (write(fd, data, len) != len) {
-		fwts_log_error(log, "Cannot write all data to temporary file");
+		fwts_log_error(fw, "Cannot write all data to temporary file");
 		free(data);
 		close(fd);
 		return NULL;
@@ -79,7 +79,7 @@ fwts_text_list *fwts_iasl_disassemble(fwts_log *log, fwts_framework *fw, char *t
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
 	fd = fwts_pipe_open(tmpbuf, &pid);
 	if (fd < 0) {
-		fwts_log_warning(log, "exec of %s -d %s (disassemble) failed\n", iasl, tmpname);
+		fwts_log_warning(fw, "exec of %s -d %s (disassemble) failed\n", iasl, tmpname);
 	}
 	fwts_pipe_close(fd, pid);
 
@@ -91,13 +91,13 @@ fwts_text_list *fwts_iasl_disassemble(fwts_log *log, fwts_framework *fw, char *t
 	unlink(tmpbuf);
 
 	if (chdir(cwd) < 0) {
-		fwts_log_error(log, "Cannot change directory to %s", cwd);
+		fwts_log_error(fw, "Cannot change directory to %s", cwd);
 	}
 
 	return output;
 }
 
-fwts_text_list* fwts_iasl_reassemble(fwts_log *log, fwts_framework *fw, char *table, int which)
+fwts_text_list* fwts_iasl_reassemble(fwts_framework *fw, char *table, int which)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
@@ -111,19 +111,19 @@ fwts_text_list* fwts_iasl_reassemble(fwts_log *log, fwts_framework *fw, char *ta
 	pid_t pid;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
-		fwts_log_error(log, "Cannot get current working directory");
+		fwts_log_error(fw, "Cannot get current working directory");
 		return NULL;
 	}
 
 	if (chdir("/tmp") < 0) {
-		fwts_log_error(log, "Cannot change directory to /tmp");
+		fwts_log_error(fw, "Cannot change directory to /tmp");
 		return NULL;
 	}
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
 	fd = fwts_pipe_open(tmpbuf, &pid);
 	if (fd < 0) {
-		fwts_log_error(log, "exec of %s failed", tmpbuf);
+		fwts_log_error(fw, "exec of %s failed", tmpbuf);
 		return NULL;
 	}
 	data = fwts_pipe_read(fd, &len);
@@ -131,12 +131,12 @@ fwts_text_list* fwts_iasl_reassemble(fwts_log *log, fwts_framework *fw, char *ta
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
-		fwts_log_error(log, "Cannot create temporary file");
+		fwts_log_error(fw, "Cannot create temporary file");
 		free(data);
 		return NULL;
 	}
 	if (write(fd, data, len) != len) {
-		fwts_log_error(log, "Cannot write all data to temporary file");
+		fwts_log_error(fw, "Cannot write all data to temporary file");
 		free(data);
 		close(fd);
 		return NULL;
@@ -147,21 +147,21 @@ fwts_text_list* fwts_iasl_reassemble(fwts_log *log, fwts_framework *fw, char *ta
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
 	ret = fwts_pipe_exec(tmpbuf, &output);
 	if (ret)
-		fwts_log_warning(log, "exec of %s -d %s (disassemble) returned %d\n", iasl, tmpname, ret);
+		fwts_log_warning(fw, "exec of %s -d %s (disassemble) returned %d\n", iasl, tmpname, ret);
 	if (output)
 		fwts_text_list_free(output);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", iasl, tmpname);
 	ret = fwts_pipe_exec(tmpbuf, &output);
 	if (ret)
-		fwts_log_error(log, "exec of %s (assemble) returned %d\n", iasl, ret);
+		fwts_log_error(fw, "exec of %s (assemble) returned %d\n", iasl, ret);
 
 	snprintf(tmpbuf,sizeof(tmpbuf),"%s.dsl", tmpname);
 	unlink(tmpname);
 	unlink(tmpbuf);
 
 	if (chdir(cwd) < 0) {
-		fwts_log_error(log, "Cannot change directory to %s", cwd);
+		fwts_log_error(fw, "Cannot change directory to %s", cwd);
 	}
 
 	return output;

@@ -53,19 +53,19 @@ void      fwts_log_print_fields(void);
 void      fwts_log_filter_set_field(const fwts_log_field filter);
 void      fwts_log_filter_unset_field(const fwts_log_field filter);
 
-#define fwts_log_result(results, fmt, args...)	\
-	fwts_log_printf(results, LOG_RESULT, fmt, ## args) 
+#define fwts_log_result(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_RESULT, fmt, ## args) 
 	
-#define fwts_log_error(results, fmt, args...)	\
-	fwts_log_printf(results, LOG_ERROR, fmt, ## args)
+#define fwts_log_error(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_ERROR, fmt, ## args)
 
-#define fwts_log_warning(results, fmt, args...)	\
-	fwts_log_printf(results, LOG_WARNING, fmt, ## args)
+#define fwts_log_warning(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_WARNING, fmt, ## args)
 
-#define fwts_log_info(results, fmt, args...)	\
-	fwts_log_printf(results, LOG_INFO, fmt, ## args)
+#define fwts_log_info(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_INFO, fmt, ## args)
 
-#define fwts_log_summary(results, fmt, args...)	\
-	fwts_log_printf(results, LOG_SUMMARY, fmt, ## args)
+#define fwts_log_summary(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_SUMMARY, fmt, ## args)
 
 #endif

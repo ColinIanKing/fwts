@@ -174,7 +174,7 @@ static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	fwts_framework_underline(fw,'=');
-	fwts_log_summary(fw->results, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
+	fwts_log_summary(fw, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
@@ -196,7 +196,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
 	fwts_log_set_owner(fw->results, "fwts_framework_");
-	fwts_log_summary(fw->results, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
+	fwts_log_summary(fw, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
 
 	return 0;
 }
@@ -211,7 +211,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fwts_log_set_owner(fw->results, name);
 
 	if (ops->headline) {
-		fwts_log_info(fw->results, "%s", ops->headline());
+		fwts_log_info(fw, "%s", ops->headline());
 		fwts_framework_underline(fw,'-');
 	}
 
@@ -222,9 +222,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fw->tests_passed = 0;
 
 	if (ops->init) {
-		if (ops->init(fw->results, fw)) {
+		if (ops->init(fw)) {
 			/* Init failed, so abort */
-			fwts_log_error(fw->results, "Aborted test, initialisation failed");
+			fwts_log_error(fw, "Aborted test, initialisation failed");
 			fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
 			for (test = ops->tests; *test != NULL; test++) {
 				fw->tests_aborted++;
@@ -245,7 +245,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 		fwts_framework_debug(fw, "exectuting test %d\n", fw->current_test);
 
-		(*test)(fw->results, fw);
+		(*test)(fw);
 
 		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%-20.20s: Test %d of %d completed (%d passed, %d failed, %d aborted)\n", 
@@ -256,7 +256,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->deinit()\n");
 	if (ops->deinit)
-		ops->deinit(fw->results, fw);
+		ops->deinit(fw);
 	fwts_framework_debug(fw, "fwts_framework_run_test() complete\n");
 
 	fwts_framework_test_summary(fw);

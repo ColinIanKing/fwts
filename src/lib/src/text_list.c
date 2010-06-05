@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "framework.h"
 #include "text_list.h"
 
 fwts_text_list *fwts_text_list_init(void)

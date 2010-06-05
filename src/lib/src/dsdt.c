@@ -24,8 +24,9 @@
 #define DSDT_FILE	"/proc/acpi/dsdt"
 
 #include "framework.h"
+#include "dsdt.h"
 
-char *fwts_dsdt_read(fwts_log *log)
+char *fwts_dsdt_read(fwts_framework *fw)
 {
 	FILE *fp;
 	char *dsdt = NULL;
@@ -34,7 +35,7 @@ char *fwts_dsdt_read(fwts_log *log)
 	int error = 0;
 
 	if ((fp = fopen(DSDT_FILE, "r")) == NULL) {
-		fwts_log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
+		fwts_log_error(fw, "Cannot open DSDT file %s\n", DSDT_FILE);
 		return NULL;
 	}
 
@@ -66,7 +67,7 @@ char *fwts_dsdt_read(fwts_log *log)
 	return dsdt;
 }
 
-int fwts_dsdt_copy(fwts_log *log, const char *destination)
+int fwts_dsdt_copy(fwts_framework *fw, const char *destination)
 {
 	FILE *dsdt;
 	FILE *dest;
@@ -74,12 +75,12 @@ int fwts_dsdt_copy(fwts_log *log, const char *destination)
 	int error = 0;
 
 	if ((dsdt = fopen(DSDT_FILE, "r")) == NULL) {
-		fwts_log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
+		fwts_log_error(fw, "Cannot open DSDT file %s\n", DSDT_FILE);
 		return 1;
 	}
 
 	if ((dest = fopen(destination, "w")) == NULL) {
-		fwts_log_error(log, "Cannot open file %s\n", destination);
+		fwts_log_error(fw, "Cannot open file %s\n", destination);
 		return 1;
 	}
 	

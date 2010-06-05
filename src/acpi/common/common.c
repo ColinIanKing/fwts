@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "framework.h"
+#include "klog.h"
 
 static char *dmesg_parse_brackets(char *line)
 {
@@ -51,64 +52,62 @@ static char *dmesg_parse_brackets(char *line)
 	return cptr;
 }
 
-static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
+static void dmesg_common_check(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
 {
-	fwts_framework *fw = (fwts_framework *)private;
-
 	if (strstr(line, "Temperature above threshold, cpu clock throttled")) {
 		fwts_framework_failed(fw,"Test caused overtemperature. Insufficient cooling?");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "ACPI: Handling Garbled _PRT entry")) {
 		fwts_framework_failed(fw,"Bios has a garbled _PRT entry; source_name and source_index swapped");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 	
 	if (strstr(line, "BIOS never enumerated boot CPU")) {
 		fwts_framework_failed(fw,"The boot processor is not enumerated!"); 
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Return object type is incorrect")) {
 		fwts_framework_failed(fw,"Return object type is incorrect: %s", line);
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm") && strstr(line,"_HPP fail")) {
 		fwts_framework_failed(fw,"Hotplug _HPP method fails!");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_pciehprm") && strstr(line,"OSHP fail")) {
 		fwts_framework_failed(fw,"Hotplug OSHP method fails!");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm:") && strstr(line,"evaluate _BBN fail")) {
 		fwts_framework_failed(fw,"Hotplug _BBN method is missing");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "[PBST] Namespace lookup failure, AE_NOT_FOUND")) {
 		fwts_framework_failed(fw,"ACPI Namespace lookup failure reported");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method reached maximum reentrancy limit")) {
 		fwts_framework_failed(fw,"ACPI method has reached reentrancy limit");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Error while parsing _PSD domain information")) {
 		fwts_framework_failed(fw,"_PSD domain information is corrupt!");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Wrong _BBN value, reboot and use option 'pci=noacpi'")) {
 		fwts_framework_failed(fw,"The BIOS has wrong _BBN value, "
 			"which will make PCI root bridge have wrong bus number"); 
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 			
 	if (strstr(line,"ACPI: lapic on CPU ") && strstr(line, " stops in C2[C2]")) {
@@ -118,7 +117,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 				"apic timer to work. The most likely cause of this is that the\n"
 				"firmware uses a hardware C3 or C4 state that is mapped to\n"
 				"the ACPI C2 state.");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Invalid _PCT data")!=NULL) {
@@ -127,7 +126,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"The _PCT data of %s is invalid", ptr);
 		else 
 			fwts_framework_failed(fw, "The _PCT data is invalid");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method execution failed")) {
@@ -136,7 +135,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"Method execution of %s failed", ptr);
 		else
 			fwts_framework_failed(fw,"Method execution of failed: %s", line);
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Method parse/execution failed") && strstr(line, "AE_NOT_FOUND")) {
@@ -145,7 +144,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"Method parsing/execution of %s failed", ptr);
 		else
 			fwts_framework_failed(fw,"Method parsing/execution failed");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 		
 	}
 
@@ -155,7 +154,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"Method %s reached maximum reentrancy limit", ptr);
 		else
 			fwts_framework_failed(fw,"Method reached maximum reentrancy limit");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 		
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_OWNER_ID_LIMIT")) {
@@ -164,7 +163,7 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"Method %s failed to allocate owner ID", ptr);
 		else
 			fwts_framework_failed(fw,"Method failed to allocate owner ID");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_AML_BUFFER_LIMIT")) {
@@ -173,12 +172,12 @@ static void dmesg_common_check(fwts_log *log, char *line, char *prevline, void *
 			fwts_framework_failed(fw,"Method %s failed: ResourceSourceIndex is present but ResourceSource is not", ptr);
 		else
 			fwts_framework_failed(fw,"Method failed: ResourceSourceIndex is present but ResourceSource is not");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Disabling IRQ")!=NULL) {
 		fwts_framework_failed(fw,"The kernel detected an irq storm. IRQ routing bug?");
-		fwts_log_info(log, "%s", line);
+		fwts_log_info(fw, "%s", line);
 	}
 }
 
@@ -189,37 +188,37 @@ static char *dmesg_common_headline(void)
 
 static fwts_text_list *klog;
 
-static int dmesg_common_init(fwts_log *results, fwts_framework *fw)
+static int dmesg_common_init(fwts_framework *fw)
 {
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(results, "cannot read kernel log");
+		fwts_log_error(fw, "cannot read kernel log");
 		return 1;
 	}
 	return 0;
 }
 
-static int dmesg_common_deinit(fwts_log *results, fwts_framework *fw)
+static int dmesg_common_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
 	return 0;
 }
 
-static int dmesg_common_test1(fwts_log *results, fwts_framework *fw)
+static int dmesg_common_test1(fwts_framework *fw)
 {	
 	char *test = "General dmesg common errors check";
 	int warnings = 0;
 	int errors = 0;
 
-	fwts_log_info(results, "This checks for common errors found in the kernel message log");
+	fwts_log_info(fw, "This checks for common errors found in the kernel message log");
 
-	if (fwts_klog_scan(results, klog, dmesg_common_check, fw, &warnings, &errors)) {
-		fwts_log_error(results, "failed to scan kernel log");
+	if (fwts_klog_scan(fw, klog, dmesg_common_check, NULL, &warnings, &errors)) {
+		fwts_log_error(fw, "failed to scan kernel log");
 		return 1;
 	}
 
 	if (warnings + errors > 0) {
-		fwts_log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
+		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
 		fwts_framework_failed(fw, test);
 	}
 	else

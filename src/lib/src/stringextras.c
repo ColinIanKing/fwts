@@ -18,6 +18,8 @@
  */
 
 #include <string.h>
+
+#include "framework.h"
 #include "stringextras.h"
 
 void fwts_chop_newline(char *str)

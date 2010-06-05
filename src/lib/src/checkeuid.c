@@ -21,12 +21,14 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+#include "framework.h"
+#include "checkeuid.h"
 #include "log.h"
 
-int fwts_check_root_euid(fwts_log *log)
+int fwts_check_root_euid(fwts_framework *fw)
 {
 	if (geteuid() != 0) {
-		fwts_log_error(log, "Must be run as root or sudo\n");
+		fwts_log_error(fw, "Must be run as root or sudo\n");
 		return 1;
 	}
 	return 0;

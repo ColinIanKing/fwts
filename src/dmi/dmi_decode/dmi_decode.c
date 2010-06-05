@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include "framework.h"
+#include "checkeuid.h"
 #include "text_list.h"
 
 typedef struct {
@@ -95,18 +96,18 @@ static dmi_pattern dmi_patterns[] = {
 
 static char *dmidecode = "/usr/sbin/dmidecode";
 
-static int dmi_decode_init(fwts_log *results, fwts_framework *fw)
+static int dmi_decode_init(fwts_framework *fw)
 {
 	struct stat buffer;
 
-	if (fwts_check_root_euid(results))
+	if (fwts_check_root_euid(fw))
 		return 1;
 
 	if (fw->dmidecode)
 		dmidecode = fw->dmidecode;
 
 	if (stat(dmidecode, &buffer)) {
-		fwts_log_error(results, "Cannot find %s, make sure dmidecode is installed", dmidecode);
+		fwts_log_error(fw, "Cannot find %s, make sure dmidecode is installed", dmidecode);
 		return 1;
 	}
 	return 0;
@@ -117,7 +118,7 @@ static char *dmi_decode_headline(void)
 	return "Test DMI/SMBIOS tables for errors";
 }
 
-static int dmi_decode_test1(fwts_log *results, fwts_framework *fw)
+static int dmi_decode_test1(fwts_framework *fw)
 {
 	fwts_text_list *dmi_text;
 	fwts_text_list_element *item;
@@ -131,11 +132,11 @@ static int dmi_decode_test1(fwts_log *results, fwts_framework *fw)
 		sprintf(buffer, "%s -t %d", dmidecode, type);
 
 		if (fwts_pipe_exec(buffer, &dmi_text)) {
-			fwts_log_error(results, "Failed to execute dmidecode");
+			fwts_log_error(fw, "Failed to execute dmidecode");
 			return 1;
 		}
 		if (dmi_text == NULL) {
-			fwts_log_error(results, "Failed to read output from dmidecode (out of memory)");
+			fwts_log_error(fw, "Failed to read output from dmidecode (out of memory)");
 			return 1;
 		}	
 
@@ -154,10 +155,10 @@ static int dmi_decode_test1(fwts_log *results, fwts_framework *fw)
 					failed++;
 					fwts_framework_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
-						fwts_log_info(results, "DMI table dump:");
+						fwts_log_info(fw, "DMI table dump:");
 						fwts_text_list_element *dump;
 						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
-							fwts_log_info(results, "%s", dump->text);
+							fwts_log_info(fw, "%s", dump->text);
 						dumped = 1;
 					}
 				}

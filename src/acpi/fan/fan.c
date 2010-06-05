@@ -31,7 +31,7 @@
 #include "framework.h"
 #include "stringextras.h"
 
-static void do_fan(fwts_log *results, fwts_framework *fw, char *dir, char *name)
+static void do_fan(fwts_framework *fw, char *dir, char *name)
 {
 	FILE *file;
 	char path[PATH_MAX];
@@ -72,18 +72,18 @@ static char *fan_headline(void)
 	return "Simple Fan Tests";
 }
 
-static int fan_test1(fwts_log *results, fwts_framework *fw)
+static int fan_test1(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
 	int fandir = 0;
 
-	fwts_log_info(results, 
+	fwts_log_info(fw, 
 		"Test how many fans there are in the system.\n"
 		"Check for the current status of the fan(s).");
 
 	if (!(dir = opendir("/proc/acpi/fan/"))) {
-		fwts_log_info(results, "No fan information present: cannot test");
+		fwts_log_info(fw, "No fan information present: cannot test");
 		return 0;
 	}
 
@@ -93,13 +93,13 @@ static int fan_test1(fwts_log *results, fwts_framework *fw)
 			char batpath[2048];
 
 			sprintf(batpath, "/proc/acpi/fan/%s", entry->d_name);
-			do_fan(results, fw, batpath, entry->d_name);
+			do_fan(fw, batpath, entry->d_name);
 			fandir++;
 		}
 	} while (entry);
 
 	if (fandir == 0)
-		fwts_log_info(results, "No fan information present: cannot test");
+		fwts_log_info(fw, "No fan information present: cannot test");
 
 	return 0;
 }

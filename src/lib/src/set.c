@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "framework.h"
+
 int fwts_set(const char *text, const char *file)
 {	
 	FILE *fp;

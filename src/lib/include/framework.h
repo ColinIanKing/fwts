@@ -24,8 +24,6 @@
 
 #include "log.h"
 #include "helpers.h"
-#include "checkeuid.h"
-#include "klog.h"
 #include "pipeio.h"
 #include "fileio.h"
 
@@ -60,12 +58,12 @@ typedef struct fwts_framework {
 } fwts_framework;
 
 
-typedef int (*fwts_framework_tests)(fwts_log *results, struct fwts_framework *framework);
+typedef int (*fwts_framework_tests)(struct fwts_framework *framework);
 
 typedef struct fwts_framework_ops {
 	char *(*headline)(void);			/* Headline description of test */
-	int (*init)(fwts_log *, fwts_framework *);	/* Initialise */
-	int (*deinit)(fwts_log *, fwts_framework *);	/* De-init */		
+	int (*init)(fwts_framework *);	/* Initialise */
+	int (*deinit)(fwts_framework *);	/* De-init */		
 	fwts_framework_tests *tests;			/* List of tests to run */
 } fwts_framework_ops;
 

@@ -32,6 +32,8 @@
 #include <sys/mman.h>
 
 #include "framework.h"
+#include "checkeuid.h"
+#include "klog.h"
 #include "iasl.h"
 
 static fwts_text_list *klog;
@@ -65,7 +67,7 @@ static void check_hpet_base_hpet(void)
 #endif
 
 /* check_hpet_base_dsdt() -- used to parse the DSDT for HPET base info */
-static void hpet_check_base_acpi_table(fwts_log *results, fwts_framework *fw, char *table, int which)
+static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int which)
 {
 	char *val, *idx;
 	int hpet_found = 0;
@@ -73,7 +75,7 @@ static void hpet_check_base_acpi_table(fwts_log *results, fwts_framework *fw, ch
 	fwts_text_list *output;
 	fwts_text_list_element *item;
 
-	output = fwts_iasl_disassemble(results, fw, table, which);
+	output = fwts_iasl_disassemble(fw, table, which);
 	if (output == NULL)
 		return;
 
@@ -114,19 +116,19 @@ static void hpet_check_base_acpi_table(fwts_log *results, fwts_framework *fw, ch
 }
 
 
-static int hpet_check_init(fwts_log *results, fwts_framework *fw)
+static int hpet_check_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(results))
+	if (fwts_check_root_euid(fw))
 		return 1;
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(results, "Cannot read kernel log");
+		fwts_log_error(fw, "Cannot read kernel log");
 		return 1;
 	}
 	return 0;
 }
 
-static int hpet_check_deinit(fwts_log *results, fwts_framework *fw)
+static int hpet_check_deinit(fwts_framework *fw)
 {
 	if (klog)
 		fwts_text_list_free(klog);
@@ -139,14 +141,14 @@ static char *hpet_check_headline(void)
 	return "HPET configuration test";
 }
 
-static int hpet_check_test1(fwts_log *results, fwts_framework *fw)
+static int hpet_check_test1(fwts_framework *fw)
 {
 	if (klog == NULL)
 		return 1;
 
 	fwts_text_list_element *item;
 
-	fwts_log_info(results,
+	fwts_log_info(fw,
 		   "This test checks the HPET PCI BAR for each timer block in the timer.\n"
 		   "The base address is passed by the firmware via an ACPI table.\n"
 		   "IRQ routing and initialization is also verified by the test.");
@@ -156,7 +158,7 @@ static int hpet_check_test1(fwts_log *results, fwts_framework *fw)
 			char *txt = strstr(item->text, "base: ");
 			if (txt)
 				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
-			fwts_log_warning(results, "HPET driver in the kernel is enabled, inaccurate results follow");
+			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow");
 			fwts_framework_passed(fw, "Found HPET base %x in kernel log\n", hpet_base_p);
 			break;
 		}
@@ -165,14 +167,14 @@ static int hpet_check_test1(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int hpet_check_test2(fwts_log *results, fwts_framework *fw)
+static int hpet_check_test2(fwts_framework *fw)
 {
 	int fd;
 	unsigned long long hpet_id;
 	unsigned long clk_period;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(results, "Cannot open /dev/mem");
+		fwts_log_error(fw, "Cannot open /dev/mem");
 		return 1;
 	}
 	hpet_base_v = 
@@ -180,13 +182,13 @@ static int hpet_check_test2(fwts_log *results, fwts_framework *fw)
 		 hpet_base_p);
 
 	if (hpet_base_v == NULL) {
-		fwts_log_error(results, "Cannot mmap to /dev/mem");
+		fwts_log_error(fw, "Cannot mmap to /dev/mem");
 		return 1;
 	}
 
 	hpet_id = *(unsigned long long *) hpet_base_v;
 
-	fwts_log_info(results, "HPET found, VendorID is: %04X", ((hpet_id & 0xffff0000) >> 16));
+	fwts_log_info(fw, "HPET found, VendorID is: %04X", ((hpet_id & 0xffff0000) >> 16));
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
@@ -197,13 +199,13 @@ static int hpet_check_test2(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int hpet_check_test3(fwts_log *results, fwts_framework *fw)
+static int hpet_check_test3(fwts_framework *fw)
 {
 	int i;
 
-	hpet_check_base_acpi_table(results, fw, "DSDT", 0);
+	hpet_check_base_acpi_table(fw, "DSDT", 0);
 	for (i=0;i<11;i++) {
-		hpet_check_base_acpi_table(results, fw, "SSDT", i);
+		hpet_check_base_acpi_table(fw, "SSDT", i);
 	}
 	return 0;
 }

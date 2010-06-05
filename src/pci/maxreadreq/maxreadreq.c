@@ -27,6 +27,7 @@
 #include <unistd.h>
 
 #include "framework.h"
+#include "checkeuid.h"
 #include "text_list.h"
 
 /* 
@@ -43,32 +44,32 @@ static char *maxreadreq_headline(void)
 static char *lspci = "/usr/bin/lspci";
 static fwts_text_list *lspci_text;
 
-static int maxreadreq_init(fwts_log *results, fwts_framework *fw)
+static int maxreadreq_init(fwts_framework *fw)
 {
 	struct stat buffer;
 
-	if (fwts_check_root_euid(results))
+	if (fwts_check_root_euid(fw))
 		return 1;
 
 	if (stat(lspci, &buffer)) {
-		fwts_log_error(results, "Cannot find %s", lspci);	
+		fwts_log_error(fw, "Cannot find %s", lspci);	
 		return 1;
 	}
 
 	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
-		fwts_log_error(results, "Failed to execute lspci -vvv");
+		fwts_log_error(fw, "Failed to execute lspci -vvv");
 		return 1;
 	}
 
 	if (lspci_text == NULL) {
-		fwts_log_error(results, "Unexpected empty output from lspci -vvv");
+		fwts_log_error(fw, "Unexpected empty output from lspci -vvv");
 		return 1;
 	}
 	
 	return 0;
 }
 
-static int maxreadreq_deinit(fwts_log *results, fwts_framework *fw)
+static int maxreadreq_deinit(fwts_framework *fw)
 {
 	if (lspci_text)
 		fwts_text_list_free(lspci_text);
@@ -76,7 +77,7 @@ static int maxreadreq_deinit(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int maxreadreq_test1(fwts_log *results, fwts_framework *fw)
+static int maxreadreq_test1(fwts_framework *fw)
 {	
 	int warnings = 0;
 	char current_type[512];
@@ -94,7 +95,7 @@ static int maxreadreq_test1(fwts_log *results, fwts_framework *fw)
 
 		if (line[0]!=' ' && line[0] != '\t' && strlen(line)>8) {
 			if (strlen(line) > 500){
-				fwts_log_warning(results, "Too big pci string would overflow"
+				fwts_log_warning(fw, "Too big pci string would overflow"
 					    "current_device buffer Internal plugin,"
 					    " not a firmware" " bug");
 				break;
@@ -118,7 +119,7 @@ static int maxreadreq_test1(fwts_log *results, fwts_framework *fw)
 			c += 11;
 			val = strtoul(c, NULL, 10);
 			if (val <= 128) {
-				fwts_log_warning(results, "MaxReadReq for %s is low (%d) [%s]", current_device, val, current_type);
+				fwts_log_warning(fw, "MaxReadReq for %s is low (%d) [%s]", current_device, val, current_type);
 				warnings++;
 			}
 		}

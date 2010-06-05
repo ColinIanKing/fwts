@@ -20,8 +20,7 @@
 #ifndef __FWTS_DSDT_H__
 #define __FWTS_DSDT_H__
 
-char *fwts_dsdt_read(fwts_log *);
-int   fwts_dsdt_copy(fwts_log *log, const char *destination);
-
+char *fwts_dsdt_read(fwts_framework *fw);
+int   fwts_dsdt_copy(fwts_framework *fw, const char *destination);
 
 #endif

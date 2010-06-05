@@ -23,6 +23,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "framework.h"
 #include "log.h"
 
 #define LOG_UNKOWN_FIELD	"???"

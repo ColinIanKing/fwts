@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "framework.h"
 #include "log.h"
 #include "klog.h"
 #include "text_list.h"
@@ -58,21 +59,9 @@ fwts_text_list *fwts_klog_read(void)
 	return list;
 }
 
-typedef void (*fwts_scan_callback_t)(fwts_log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
+typedef void (*fwts_scan_callback_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);
 
-#if 0
-typedef void (*fwts_klog_iterator)(fwts_log *log, const char *text, void *private);
-
-void fwts_klog_iterate(fwts_log *log, fwts_text_list *list, fwts_klog_iterator iterator, void *private)
-{
-	while (list) {
-		iterator(log, list->text, private);
-		list = list->next;
-	}
-}
-#endif
-
-int fwts_klog_scan(fwts_log *log, fwts_text_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
+int fwts_klog_scan(fwts_framework *fw, fwts_text_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
 {
 	*warnings = 0;
 	*errors = 0;
@@ -91,7 +80,7 @@ int fwts_klog_scan(fwts_log *log, fwts_text_list *klog, fwts_scan_callback_t cal
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
 
-		callback(log, ptr, prev, private, warnings, errors);
+		callback(fw, ptr, prev, private, warnings, errors);
 		prev = ptr;
 	}
 	return 0;
@@ -133,7 +122,7 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
         { NULL,                   0, }
 };
 
-void fwts_klog_scan_patterns(fwts_log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
+void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
 {
 	int i;
 
@@ -141,7 +130,7 @@ void fwts_klog_scan_patterns(fwts_log *log, char *line, char *prevline, void *pr
 
 	for (i=0;patterns[i].pattern != NULL;i++) {
 		if (strstr(line, patterns[i].pattern)) {
-			fwts_log_info(log, "%s\n", line);
+			fwts_log_info(fw, "%s\n", line);
 			if (patterns[i].type & KERN_WARNING)
 				(*warnings)++;
 			if (patterns[i].type & KERN_ERROR)
@@ -150,12 +139,12 @@ void fwts_klog_scan_patterns(fwts_log *log, char *line, char *prevline, void *pr
 	}
 }
 
-int fwts_klog_firmware_check(fwts_log *log, fwts_text_list *klog, int *warnings, int *errors)
+int fwts_klog_firmware_check(fwts_framework *fw, fwts_text_list *klog, int *warnings, int *errors)
 {	
-	return fwts_klog_scan(log, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
 }
 
-int fwts_klog_pm_check(fwts_log *log, fwts_text_list *klog, int *warnings, int *errors)
+int fwts_klog_pm_check(fwts_framework *fw, fwts_text_list *klog, int *warnings, int *errors)
 {
-	return fwts_klog_scan(log, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
 }

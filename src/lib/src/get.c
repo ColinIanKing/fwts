@@ -20,6 +20,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "framework.h"
+//#include "get.h"
+
 int fwts_get(const char *text, const char *file)
 {	
 /*

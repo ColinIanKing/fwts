@@ -20,6 +20,7 @@
 #ifndef __FWTS_ACPI_H__
 #define __FWTS_ACPI_H__
 
+#include "framework.h"
 #include "log.h"
 
 #define GET_UINT64(var, buffer, offset) \
@@ -76,6 +77,6 @@ typedef struct {
 	u32		creator_revision;
 } fwts_acpi_table_header;
 
-unsigned char *fwts_get_acpi_table(fwts_log *results, const char *name, unsigned long *size);
+unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigned long *size);
 
 #endif

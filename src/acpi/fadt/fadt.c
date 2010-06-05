@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "framework.h"
+#include "checkeuid.h"
 #include "acpi.h"
 
 unsigned char *fadt_table;
@@ -155,20 +156,20 @@ static void fadt_get_header(unsigned char *fadt_data, int size, fwts_fadt_versio
 	GET_GAS   (hdr->x_gpe1_blk, data, 232);
 }
 
-static int fadt_init(fwts_log *results, fwts_framework *fw)
+static int fadt_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(results))
+	if (fwts_check_root_euid(fw))
 		return 1;
 
-	if ((fadt_table = fwts_get_acpi_table(results, "FADT", &fadt_size)) == NULL) {
-		fwts_log_error(results, "Failed to read ACPI FADT");
+	if ((fadt_table = fwts_get_acpi_table(fw, "FADT", &fadt_size)) == NULL) {
+		fwts_log_error(fw, "Failed to read ACPI FADT");
 		return 1;
 	}
 
 	return 0;
 }
 
-static int fadt_deinit(fwts_log *results, fwts_framework *fw)
+static int fadt_deinit(fwts_framework *fw)
 {
 	if (fadt_table)
 		free(fadt_table);
@@ -181,18 +182,18 @@ static char *fadt_headline(void)
 	return "Check if FADT SCI_EN bit is enabled";
 }
 
-static int fadt_test1(fwts_log *results, fwts_framework *fw)
+static int fadt_test1(fwts_framework *fw)
 {
 	char *test = "Check SCI_EN bit";
 	fwts_fadt_version_2  fadt;
 	u32 port, width, value;
 	char *profile;
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
-		fwts_log_info(results, "FADT does not exist, this is not necessarily a failure");
+		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure");
 		return 0;
 	}
 
@@ -226,11 +227,11 @@ static int fadt_test1(fwts_log *results, fwts_framework *fw)
 		break;
 	default:
 		profile = "Reserved";
-		fwts_log_warning(results, "FADT Preferred PM Profile is Reserved - this may be incorrect");
+		fwts_log_warning(fw, "FADT Preferred PM Profile is Reserved - this may be incorrect");
 		break;
 	}
 
-	fwts_log_info(results, "FADT Preferred PM Profile: %d (%s)\n", 
+	fwts_log_info(fw, "FADT Preferred PM Profile: %d (%s)\n", 
 		fadt.preferred_pm_profile, profile);
 	
 	port = fadt.pm1a_cnt_blk;
@@ -239,11 +240,11 @@ static int fadt_test1(fwts_log *results, fwts_framework *fw)
 	/* Punt at244 byte FADT is V2 */
 	if (fadt.header.length == 244) {
 		/*  Sanity check sizes with extended address variants */
-		fwts_log_info(results, "FADT is greater than ACPI version 1.0");
+		fwts_log_info(fw, "FADT is greater than ACPI version 1.0");
 		if (port != fadt.x_pm1a_cnt_blk.address) 
-			fwts_log_warning(results, "32 and 64 bit versions of FADT pm1_cnt address do not match");
+			fwts_log_warning(fw, "32 and 64 bit versions of FADT pm1_cnt address do not match");
 		if (width != fadt.x_pm1a_cnt_blk.register_bit_width)
-			fwts_log_warning(results, "32 and 64 bit versions of FADT pm1_cnt size do not match");
+			fwts_log_warning(fw, "32 and 64 bit versions of FADT pm1_cnt size do not match");
 
 		port = fadt.x_pm1a_cnt_blk.address;	
 		width = fadt.x_pm1a_cnt_blk.register_bit_width;

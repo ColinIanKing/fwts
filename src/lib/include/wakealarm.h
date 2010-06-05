@@ -24,7 +24,7 @@
 #define WAKEALARM "/sys/class/rtc/rtc0/wakealarm"
 
 int fwts_wakealarm_get_irq_state(void);
-int fwts_wakealarm_test_firing(fwts_log *results, fwts_framework *fw, int sleep);
-int fwts_wakealarm_trigger(fwts_log *results, fwts_framework *fw, int seconds);
+int fwts_wakealarm_test_firing(fwts_framework *fw, int sleep);
+int fwts_wakealarm_trigger(fwts_framework *fw, int seconds);
 
 #endif

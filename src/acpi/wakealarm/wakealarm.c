@@ -25,12 +25,13 @@
 
 #include "framework.h"
 #include "wakealarm.h"
+#include "checkeuid.h"
 
 static char *wkalarm = WAKEALARM;
 
-static int wakealarm_init(fwts_log *results, fwts_framework *fw)
+static int wakealarm_init(fwts_framework *fw)
 {
-	return fwts_check_root_euid(results);
+	return fwts_check_root_euid(fw);
 }
 
 static char *wakealarm_headline(void)
@@ -38,12 +39,12 @@ static char *wakealarm_headline(void)
 	return "Test ACPI Wakealarm";
 }
 
-static int wakealarm_test1(fwts_log *results, fwts_framework *fw)
+static int wakealarm_test1(fwts_framework *fw)
 {
 	struct stat buf;
 	char *test = "Check existance of " WAKEALARM;
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 
 	if (stat(wkalarm, &buf) == 0)
 		fwts_framework_passed(fw, test);
@@ -53,14 +54,14 @@ static int wakealarm_test1(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int wakealarm_test2(fwts_log *results, fwts_framework *fw)
+static int wakealarm_test2(fwts_framework *fw)
 {
 	char *test = "Trigger RTC wakealarm";
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 	
-	fwts_log_info(results, "Trigger wakealarm for 1 seconds in the future");
-	if (fwts_wakealarm_trigger(results, fw, 1)) {
+	fwts_log_info(fw, "Trigger wakealarm for 1 seconds in the future");
+	if (fwts_wakealarm_trigger(fw, 1)) {
 		fwts_framework_failed(fw, test);
 		return 0;
 	}
@@ -70,15 +71,15 @@ static int wakealarm_test2(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int wakealarm_test3(fwts_log *results, fwts_framework *fw)
+static int wakealarm_test3(fwts_framework *fw)
 {
 	char *test = "Check if wakealarm is fired";
 	int ret;
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 
-	fwts_log_info(results, "Trigger wakealarm for 2 seconds in the future");
-	ret = fwts_wakealarm_test_firing(results, fw, 2);
+	fwts_log_info(fw, "Trigger wakealarm for 2 seconds in the future");
+	ret = fwts_wakealarm_test_firing(fw, 2);
 	if (ret < 0) {
 		fwts_framework_failed(fw, test);
 		return 1;	/* Really went wrong */
@@ -91,16 +92,16 @@ static int wakealarm_test3(fwts_log *results, fwts_framework *fw)
 	return 0;
 }
 
-static int wakealarm_test4(fwts_log *results, fwts_framework *fw)
+static int wakealarm_test4(fwts_framework *fw)
 {
 	int i;
 	char *test = "Multiple wakealarm firing tests";
 
-	fwts_log_info(results, test);
+	fwts_log_info(fw, test);
 
 	for (i=1; i<5; i++) {
-		fwts_log_info(results, "Trigger wakealarm for %d seconds in the future", i);
-		int ret = fwts_wakealarm_test_firing(results, fw, i);
+		fwts_log_info(fw, "Trigger wakealarm for %d seconds in the future", i);
+		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {
 			fwts_framework_failed(fw, test);
 			return 1;	/* Really went wrong */

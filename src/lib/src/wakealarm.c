@@ -25,9 +25,9 @@
 
 #include "framework.h"
 
-char *wkalarm = "/sys/class/rtc/rtc0/wakealarm";
+static char *fwts_wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 
-int wakealarm_get_irq_state(void)
+int fwts_wakealarm_get_irq_state(void)
 {
 	FILE *fp;
 	char field[32];
@@ -47,37 +47,37 @@ int wakealarm_get_irq_state(void)
 	return -1;
 }
 
-int wakealarm_trigger(log *results, framework *fw, int seconds)
+int fwts_wakealarm_trigger(fwts_log *results, fwts_framework *fw, int seconds)
 {
 	char buffer[32];
 
 	snprintf(buffer, sizeof(buffer), "+%d", seconds);
 
-	if (set("0", wkalarm)) {
-		log_error(results, "Cannot write '0' to %s", wkalarm);
+	if (fwts_set("0", fwts_wkalarm)) {
+		fwts_log_error(results, "Cannot write '0' to %s", fwts_wkalarm);
 		return -1;
 	}
-	if (set(buffer, wkalarm)) {
-		log_error(results, "Cannot write '%s' to %s", wkalarm);
+	if (fwts_set(buffer, fwts_wkalarm)) {
+		fwts_log_error(results, "Cannot write '%s' to %s", fwts_wkalarm);
 		return -1;
 	}
-	if (!wakealarm_get_irq_state()) {
-		log_error(results, "Wakealarm %s did not get set", wkalarm);
+	if (!fwts_wakealarm_get_irq_state()) {
+		fwts_log_error(results, "Wakealarm %s did not get set", fwts_wkalarm);
 		return -1;
 	}
 	return 0;
 }
 
-int wakealarm_test_firing(log *results, framework *fw, int seconds)
+int fwts_wakealarm_test_firing(fwts_log *results, fwts_framework *fw, int seconds)
 {
 	int ret;
 
-	if ((ret = wakealarm_trigger(results, fw, seconds)) != 0)
+	if ((ret = fwts_wakealarm_trigger(results, fw, seconds)) != 0)
 		return ret;
 
 	sleep(seconds+1);
-	if (wakealarm_get_irq_state()) {
-		log_error(results, "Wakealarm %s did not fire", wkalarm);
+	if (fwts_wakealarm_get_irq_state()) {
+		fwts_log_error(results, "Wakealarm %s did not fire", fwts_wkalarm);
 		return 1;
 	}
 	return 0;

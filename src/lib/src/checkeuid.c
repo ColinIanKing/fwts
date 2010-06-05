@@ -23,10 +23,10 @@
 
 #include "log.h"
 
-int check_root_euid(log *log)
+int fwts_check_root_euid(fwts_log *log)
 {
 	if (geteuid() != 0) {
-		log_error(log, "Must be run as root or sudo\n");
+		fwts_log_error(log, "Must be run as root or sudo\n");
 		return 1;
 	}
 	return 0;

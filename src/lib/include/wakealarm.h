@@ -16,15 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef __WAKEALARM_H__
-#define __WAKEALARM_H__
+#ifndef __FWTS_WAKEALARM_H__
+#define __FWTS_WAKEALARM_H__
 
 #include "framework.h"
 
 #define WAKEALARM "/sys/class/rtc/rtc0/wakealarm"
 
-int wakealarm_get_irq_state(void);
-int wakealarm_test_firing(log *results, framework *fw, int sleep);
-int wakealarm_trigger(log *results, framework *fw, int seconds);
+int fwts_wakealarm_get_irq_state(void);
+int fwts_wakealarm_test_firing(fwts_log *results, fwts_framework *fw, int sleep);
+int fwts_wakealarm_trigger(fwts_log *results, fwts_framework *fw, int seconds);
 
 #endif

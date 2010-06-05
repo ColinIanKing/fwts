@@ -25,12 +25,12 @@
 #include "text_list.h"
 #include "fileio.h"
 
-text_list *file_read(FILE *fp)
+fwts_text_list *fwts_file_read(FILE *fp)
 {
-	text_list *list;
+	fwts_text_list *list;
 	char buffer[8192];
 
-	if ((list = text_list_init()) == NULL)  {
+	if ((list = fwts_text_list_init()) == NULL)  {
 		fclose(fp);
 		return NULL;
 	}
@@ -38,21 +38,21 @@ text_list *file_read(FILE *fp)
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		int len = strlen(buffer);
 		buffer[len] = '\0';	/* Chop off "\n" */
-		text_list_append(list, buffer);
+		fwts_text_list_append(list, buffer);
 	}
 
 	return list;
 }
 
-text_list* file_open_and_read(const char *file)
+fwts_text_list* fwts_file_open_and_read(const char *file)
 {
 	FILE *fp;
-	text_list *list;
+	fwts_text_list *list;
 
 	if ((fp = fopen(file, "r")) == NULL)
 		return NULL;
 
-	list = file_read(fp);
+	list = fwts_file_read(fp);
 	fclose(fp);
 
 	return list;

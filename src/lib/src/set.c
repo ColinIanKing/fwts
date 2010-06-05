@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int set(const char *text, const char *file)
+int fwts_set(const char *text, const char *file)
 {	
 	FILE *fp;
 

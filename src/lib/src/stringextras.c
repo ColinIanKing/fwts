@@ -20,7 +20,7 @@
 #include <string.h>
 #include "stringextras.h"
 
-void chop_newline(char *str)
+void fwts_chop_newline(char *str)
 {
 	int len;
 

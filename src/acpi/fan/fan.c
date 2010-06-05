@@ -31,7 +31,7 @@
 #include "framework.h"
 #include "stringextras.h"
 
-static void do_fan(log *results, framework *fw, char *dir, char *name)
+static void do_fan(fwts_log *results, fwts_framework *fw, char *dir, char *name)
 {
 	FILE *file;
 	char path[PATH_MAX];
@@ -43,28 +43,28 @@ static void do_fan(log *results, framework *fw, char *dir, char *name)
 
 	sprintf(path, "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
 		return;
 	}
 
 	if (fgets(buffer, 4095, file) == NULL) {
-		framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
 		fclose(file);
 		return;
 	}
 	fclose(file);
 
 	if ((state = strstr(buffer, "status:")) == NULL) {
-		framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
 		return;
 	}
 
 	for (state += 8; (*state == ' ') && (*state != '\n'); state++)
 		;
 
-	chop_newline(state);
+	fwts_chop_newline(state);
 
-	framework_passed(fw, "Fan %s status is '%s'", name, state);
+	fwts_framework_passed(fw, "Fan %s status is '%s'", name, state);
 }
 
 static char *fan_headline(void)
@@ -72,18 +72,18 @@ static char *fan_headline(void)
 	return "Simple Fan Tests";
 }
 
-static int fan_test1(log *results, framework *fw)
+static int fan_test1(fwts_log *results, fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
 	int fandir = 0;
 
-	log_info(results, 
+	fwts_log_info(results, 
 		"Test how many fans there are in the system.\n"
 		"Check for the current status of the fan(s).");
 
 	if (!(dir = opendir("/proc/acpi/fan/"))) {
-		log_info(results, "No fan information present: cannot test");
+		fwts_log_info(results, "No fan information present: cannot test");
 		return 0;
 	}
 
@@ -99,17 +99,17 @@ static int fan_test1(log *results, framework *fw)
 	} while (entry);
 
 	if (fandir == 0)
-		log_info(results, "No fan information present: cannot test");
+		fwts_log_info(results, "No fan information present: cannot test");
 
 	return 0;
 }
 
-static framework_tests fan_tests[] = {
+static fwts_framework_tests fan_tests[] = {
 	fan_test1,
 	NULL
 };
 
-static framework_ops fan_ops = {
+static fwts_framework_ops fan_ops = {
 	fan_headline,
 	NULL,
 	NULL,

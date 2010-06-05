@@ -17,9 +17,9 @@
  *
  */
 
-#ifndef __CHECKEUID_H__
-#define __CHECKEUID_H__
+#ifndef __FWTS_CHECKEUID_H__
+#define __FWTS_CHECKEUID_H__
 
-int check_root_euid(log *log);
+int fwts_check_root_euid(fwts_log *log);
 
 #endif

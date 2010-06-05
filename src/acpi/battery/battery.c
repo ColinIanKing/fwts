@@ -58,7 +58,7 @@ static unsigned long get_full(char *dir)
 	return value;
 }
 
-static void check_charging(framework *fw, char *dir, char *uri, char *name)
+static void check_charging(fwts_framework *fw, char *dir, char *uri, char *name)
 {
 	int i;
 	/* when we get here we KNOW the state is "charging" */
@@ -71,15 +71,15 @@ static void check_charging(framework *fw, char *dir, char *uri, char *name)
 	for (i=1; i<30; i++) {
 		new_value = get_full(dir);
 		if (new_value>initial_value) {
-			framework_passed(fw, "Battery %s charge is incrementing as expected", name);
+			fwts_framework_passed(fw, "Battery %s charge is incrementing as expected", name);
 			return;
 		}		
 		sleep(1);
 	}
-	framework_failed(fw, "Battery %s claims it's charging but no charge is added", name);
+	fwts_framework_failed(fw, "Battery %s claims it's charging but no charge is added", name);
 }
 
-static void check_discharging(framework *fw, char *dir, char *uri, char *name)
+static void check_discharging(fwts_framework *fw, char *dir, char *uri, char *name)
 {
 	int i;
 	/* when we get here we KNOW the state is "discharging" */
@@ -92,16 +92,16 @@ static void check_discharging(framework *fw, char *dir, char *uri, char *name)
 	for (i=1; i<30; i++) {
 		new_value = get_full(dir);
 		if (new_value<initial_value) {
-			framework_passed(fw, "Battery %s charge is decrementing as expected", name);
+			fwts_framework_passed(fw, "Battery %s charge is decrementing as expected", name);
 			return;
 		}		
 		sleep(1);
 	}
-	framework_failed(fw, "Battery %s claims it's discharging but no charge is used", name);
+	fwts_framework_failed(fw, "Battery %s claims it's discharging but no charge is used", name);
 }
 
 
-static void do_battery(log *results, framework *fw, char *dir, char *name)
+static void do_battery(fwts_log *results, fwts_framework *fw, char *dir, char *name)
 {
 	FILE *file;
 	char path[PATH_MAX];
@@ -115,7 +115,7 @@ static void do_battery(log *results, framework *fw, char *dir, char *name)
 
 	sprintf(path, "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		framework_failed(fw, "Battery present but undersupported - no state present");
+		fwts_framework_failed(fw, "Battery present but undersupported - no state present");
 		return;
 	}
 
@@ -135,7 +135,7 @@ static void do_battery(log *results, framework *fw, char *dir, char *name)
 	sprintf(path, "%s/info", dir);
 	file = fopen(path, "r");
 	if (file == NULL) {
-		log_warning(results, "Battery present but undersupported - no info present");
+		fwts_log_warning(results, "Battery present but undersupported - no info present");
 		return;
 	}
 	while (!feof(file)) {
@@ -152,14 +152,14 @@ static void do_battery(log *results, framework *fw, char *dir, char *name)
 	fclose(file);
 
 	if ((state == NULL) || (model == NULL)) {
-		log_warning(results, "Battery present but name or state unsupported");
+		fwts_log_warning(results, "Battery present but name or state unsupported");
 		return;
 	}
 
-	chop_newline(model);
-	chop_newline(state);
+	fwts_chop_newline(model);
+	fwts_chop_newline(state);
 
-	log_info(results, "Battery %s is model %s and is currently %s", name, model, state);
+	fwts_log_info(results, "Battery %s is model %s and is currently %s", name, model, state);
 
 	if (strstr(state,"discharging"))
 		check_discharging(fw, dir, uri, name);
@@ -176,13 +176,13 @@ static char *battery_headline(void)
 	return "Battery tests";
 }
 
-static int battery_test1(log *results, framework *fw)
+static int battery_test1(fwts_log *results, fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
 	int battdir = 0;
 
-	log_info(results, 
+	fwts_log_info(results, 
 	   "This test reports which (if any) batteries there are in the system.\n"
 	   "In addition, for charging or discharging batteries, the test validates\n"
 	   "that the reported 'current capacity' properly increments/decrements\n"
@@ -192,7 +192,7 @@ static int battery_test1(log *results, framework *fw)
 	   "will be reported.");
 
 	if (!(dir = opendir("/proc/acpi/battery/"))) {
-		log_info(results, "No battery information present: cannot test");
+		fwts_log_info(results, "No battery information present: cannot test");
 		return 0;
 	}
 
@@ -208,17 +208,17 @@ static int battery_test1(log *results, framework *fw)
 	} while (entry);
 
 	if (battdir == 0)
-		log_info(results, "No battery information present: cannot test");
+		fwts_log_info(results, "No battery information present: cannot test");
 
 	return 0;
 }
 
-static framework_tests battery_tests[] = {
+static fwts_framework_tests battery_tests[] = {
 	battery_test1,
 	NULL
 };
 
-static framework_ops battery_ops = {
+static fwts_framework_ops battery_ops = {
 	battery_headline,
 	NULL,
 	NULL,

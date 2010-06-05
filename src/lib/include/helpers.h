@@ -17,10 +17,10 @@
  *
  */
 
-#ifndef __HELPERS_H__
-#define __HELPERS_H__
+#ifndef __FWTS_HELPERS_H__
+#define __FWTS_HELPERS_H__
 
-int get(const char *text, const char *file);
-int set(const char *text, const char *file);
+int fwts_get(const char *text, const char *file);
+int fwts_set(const char *text, const char *file);
 
 #endif

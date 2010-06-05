@@ -17,11 +17,11 @@
  *
  */
 
-#ifndef __STRINGEXTRAS_H__
-#define __STRINGEXTRAS_H__
+#ifndef __FWTS_STRINGEXTRAS_H__
+#define __FWTS_STRINGEXTRAS_H__
 
 #include <string.h>
 
-void chop_newline(char *str);
+void fwts_chop_newline(char *str);
 
 #endif

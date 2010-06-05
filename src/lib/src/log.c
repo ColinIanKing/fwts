@@ -27,11 +27,11 @@
 
 #define LOG_UNKOWN_FIELD	"???"
 
-static log_field log_filter = ~0;
+static fwts_log_field fwts_log_filter = ~0;
 
-static char log_format[256] = "%date %time [%field] %owner ";
+static char fwts_log_format[256] = "%date %time [%field] %owner ";
 
-static char *log_field_to_str(log_field field)
+static char *fwts_log_field_to_str(fwts_log_field field)
 {
 	switch (field) {
 	case LOG_RESULT:
@@ -55,14 +55,14 @@ static char *log_field_to_str(log_field field)
 	}
 }
 
-void log_print_fields(void)
+void fwts_log_print_fields(void)
 {
-	log_field field = 1;
+	fwts_log_field field = 1;
 	char *str;
 	
 	printf("Available fields: ");
 	for (field=1; ; field <<= 1) {
-		str = log_field_to_str(field);
+		str = fwts_log_field_to_str(field);
 		if (strcmp(str, LOG_UNKOWN_FIELD) == 0)
 			break;
 		printf("%s%s", field == 1 ? "" : ",", str);
@@ -71,13 +71,13 @@ void log_print_fields(void)
 }
 
 
-static log_field log_str_to_field(const char *text)
+static fwts_log_field fwts_log_str_to_field(const char *text)
 {
 	int i;
 
 	static struct mapping {
 		char *text;
-		log_field field;
+		fwts_log_field field;
 	} mappings[] = {
 		{ "RES", LOG_RESULT },
 		{ "ERR", LOG_ERROR },
@@ -98,45 +98,45 @@ static log_field log_str_to_field(const char *text)
 	return 0;
 }
 
-void log_filter_set_field(const log_field filter)
+void fwts_log_filter_set_field(const fwts_log_field filter)
 {
-	log_filter |= filter;
+	fwts_log_filter |= filter;
 }
 
-void log_filter_unset_field(const log_field filter)
+void fwts_log_filter_unset_field(const fwts_log_field filter)
 {
-	log_filter &= ~filter;
+	fwts_log_filter &= ~filter;
 }
 
-void log_set_field_filter(char *str)
+void fwts_log_set_field_filter(char *str)
 {	
 	char *token;
 	char *saveptr;
-	log_field field;
+	fwts_log_field field;
 
 	for (;; str=NULL) {
 		if ((token = strtok_r(str, ",|", &saveptr)) == NULL)
 			break;
 		if (*token == '^' || *token == '~') {
-			field = log_str_to_field(token+1);
+			field = fwts_log_str_to_field(token+1);
 			if (field)
-				log_filter_unset_field(field);
+				fwts_log_filter_unset_field(field);
 		}
 		else {
-			field = log_str_to_field(token);
+			field = fwts_log_str_to_field(token);
 			if (field)
-				log_filter_set_field(field);
+				fwts_log_filter_set_field(field);
 		}
 	}
 }
 
-void log_set_format(char *str)
+void fwts_log_set_format(char *str)
 {
-	strncpy(log_format, str, sizeof(log_format)-1);	
-	log_format[sizeof(log_format)-1]='\0';
+	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);	
+	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
-static void log_handle_newlines(log *log, char *str, int posn)
+static void fwts_log_handle_newlines(fwts_log *log, char *str, int posn)
 {
 	char *ptr1,*ptr2;
 
@@ -157,7 +157,7 @@ static void log_handle_newlines(log *log, char *str, int posn)
 	}
 }
 
-int log_printf(log *log, log_field field, const char *fmt, ...)
+int fwts_log_printf(fwts_log *log, fwts_log_field field, const char *fmt, ...)
 {
 	char buffer[1024];
 	int n = 0;
@@ -169,7 +169,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return 0;
 
-	if (!(field & log_filter))
+	if (!(field & fwts_log_filter))
 		return 0;
 
 	va_start(ap, fmt);
@@ -177,7 +177,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 	time(&now);
 	localtime_r(&now, &tm);
 
-	for (ptr = log_format; *ptr; ) {
+	for (ptr = fwts_log_format; *ptr; ) {
 		if (*ptr == '%') {
 			ptr++;
 			if (strncmp(ptr,"date",4)==0) {
@@ -194,7 +194,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 			}
 			if (strncmp(ptr,"field",5)==0) {
 				n += snprintf(buffer+n, sizeof(buffer)-n, "%s",
-					log_field_to_str(field));
+					fwts_log_field_to_str(field));
 				ptr+=5;
 			}
 			if (strncmp(ptr,"owner",5)==0 && log->owner) {
@@ -208,7 +208,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 		}
 	}
 	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
-	log_handle_newlines(log, buffer, n);
+	fwts_log_handle_newlines(log, buffer, n);
 
 
 	va_end(ap);
@@ -216,7 +216,7 @@ int log_printf(log *log, log_field field, const char *fmt, ...)
 	return n;
 }
 
-void log_underline(log *log, int ch)
+void fwts_log_underline(fwts_log *log, int ch)
 {
 	int i;
 
@@ -227,10 +227,10 @@ void log_underline(log *log, int ch)
 	}
 	buffer[i] = '\0';
 
-	log_printf(log, LOG_SEPARATOR, buffer);
+	fwts_log_printf(log, LOG_SEPARATOR, buffer);
 }
 
-void log_newline(log *log)
+void fwts_log_newline(fwts_log *log)
 {
 	if (log && (log->magic == LOG_MAGIC)) {
 		fwrite("\n", 1, 1, log->fp);
@@ -238,7 +238,7 @@ void log_newline(log *log)
 	}
 }
 
-int log_set_owner(log *log, const char *owner)
+int fwts_log_set_owner(fwts_log *log, const char *owner)
 {
 	if (log && (log->magic == LOG_MAGIC)) {
 		char *newowner = strdup(owner);
@@ -252,11 +252,11 @@ int log_set_owner(log *log, const char *owner)
 	return 1;
 }
 
-log *log_open(const char *owner, const char *name, const char *mode)
+fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
-	log *newlog;
+	fwts_log *newlog;
 
-	if ((newlog = malloc(sizeof(log))) == NULL) {
+	if ((newlog = malloc(sizeof(fwts_log))) == NULL) {
 		return NULL;
 	}
 
@@ -282,7 +282,7 @@ log *log_open(const char *owner, const char *name, const char *mode)
 	return newlog;
 }
 
-int log_close(log *log)
+int fwts_log_close(fwts_log *log)
 {
 	if (log && (log->magic == LOG_MAGIC)) {
 		if (log->fp && (log->fp != stdout && log->fp != stderr))

@@ -17,12 +17,12 @@
  *
  */
 
-#ifndef __FILEIO_H__
-#define __FILEIO_H__
+#ifndef __FWTS_FILEIO_H__
+#define __FWTS_FILEIO_H__
 
 #include <stdio.h>
 
-text_list* file_read(FILE *fp);
-text_list* file_open_and_read(const char *file);
+fwts_text_list* fwts_file_read(FILE *fp);
+fwts_text_list* fwts_file_open_and_read(const char *file);
 
 #endif

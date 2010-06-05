@@ -25,23 +25,23 @@
 #include "klog.h"
 #include "text_list.h"
 
-void klog_free(text_list *klog)
+void fwts_klog_free(fwts_text_list *klog)
 {
-	text_list_free(klog);
+	fwts_text_list_free(klog);
 }
 
-int klog_clear(void)
+int fwts_klog_clear(void)
 {
 	if (klogctl(5, NULL, 0) < 0)
 		return 1;
 	return 0;
 }
 
-text_list *klog_read(void)
+fwts_text_list *fwts_klog_read(void)
 {
 	int len;
 	char *buffer;
-	text_list *list;
+	fwts_text_list *list;
 
 	if ((len = klogctl(10, NULL, 0)) < 0)
 		return NULL;
@@ -52,18 +52,18 @@ text_list *klog_read(void)
 	if (klogctl(3, buffer, len) < 0)
 		return NULL;
 
-	list = text_list_from_text(buffer);
+	list = fwts_text_list_from_text(buffer);
 	free(buffer);
 	
 	return list;
 }
 
-typedef void (*scan_callback_t)(log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
+typedef void (*fwts_scan_callback_t)(fwts_log *log, char *line, char *prevline, void *private, int *warnings, int *errors);
 
 #if 0
-typedef void (*klog_iterator)(log *log, const char *text, void *private);
+typedef void (*fwts_klog_iterator)(fwts_log *log, const char *text, void *private);
 
-void klog_iterate(log *log, text_list *list, klog_iterator iterator, void *private)
+void fwts_klog_iterate(fwts_log *log, fwts_text_list *list, fwts_klog_iterator iterator, void *private)
 {
 	while (list) {
 		iterator(log, list->text, private);
@@ -72,12 +72,12 @@ void klog_iterate(log *log, text_list *list, klog_iterator iterator, void *priva
 }
 #endif
 
-int klog_scan(log *log, text_list *klog, scan_callback_t callback, void *private, int *warnings, int *errors)
+int fwts_klog_scan(fwts_log *log, fwts_text_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
 {
 	*warnings = 0;
 	*errors = 0;
 	char *prev;
-	text_list_element *item;
+	fwts_text_list_element *item;
 
 	if (!klog)
 		return 1;
@@ -98,7 +98,7 @@ int klog_scan(log *log, text_list *klog, scan_callback_t callback, void *private
 }
 
 /* List of errors and warnings */
-static klog_pattern firmware_error_warning_patterns[] = {
+static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{ "ACPI Warning ",	KERN_WARNING },
 	{ "[Firmware Bug]:",	KERN_ERROR },
 	{ "PCI: BIOS Bug:",	KERN_ERROR },
@@ -106,7 +106,7 @@ static klog_pattern firmware_error_warning_patterns[] = {
 	{ NULL,			0 }
 };
 
-static klog_pattern pm_error_warning_patterns[] = {
+static fwts_klog_pattern pm_error_warning_patterns[] = {
         { "PM: Failed to prepare device", 		KERN_ERROR },
         { "PM: Some devices failed to power down", 	KERN_ERROR },
         { "PM: Some system devices failed to power down", KERN_ERROR },
@@ -133,15 +133,15 @@ static klog_pattern pm_error_warning_patterns[] = {
         { NULL,                   0, }
 };
 
-void klog_scan_patterns(log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
+void fwts_klog_scan_patterns(fwts_log *log, char *line, char *prevline, void *private, int *warnings, int *errors)
 {
 	int i;
 
-	klog_pattern *patterns = (klog_pattern *)private;
+	fwts_klog_pattern *patterns = (fwts_klog_pattern *)private;
 
 	for (i=0;patterns[i].pattern != NULL;i++) {
 		if (strstr(line, patterns[i].pattern)) {
-			log_info(log, "%s\n", line);
+			fwts_log_info(log, "%s\n", line);
 			if (patterns[i].type & KERN_WARNING)
 				(*warnings)++;
 			if (patterns[i].type & KERN_ERROR)
@@ -150,12 +150,12 @@ void klog_scan_patterns(log *log, char *line, char *prevline, void *private, int
 	}
 }
 
-int klog_firmware_check(log *log, text_list *klog, int *warnings, int *errors)
+int fwts_klog_firmware_check(fwts_log *log, fwts_text_list *klog, int *warnings, int *errors)
 {	
-	return klog_scan(log, klog, klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(log, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
 }
 
-int klog_pm_check(log *log, text_list *klog, int *warnings, int *errors)
+int fwts_klog_pm_check(fwts_log *log, fwts_text_list *klog, int *warnings, int *errors)
 {
-	return klog_scan(log, klog, klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(log, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
 }

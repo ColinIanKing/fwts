@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int get(const char *text, const char *file)
+int fwts_get(const char *text, const char *file)
 {	
 /*
 	FILE *fp;

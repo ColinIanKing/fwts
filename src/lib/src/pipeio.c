@@ -34,7 +34,7 @@
 #include "pipeio.h"
 #include "fileio.h"
 
-int pipe_open(const char *command, pid_t *childpid)
+int fwts_pipe_open(const char *command, pid_t *childpid)
 {
 	int pipefds[2];
 	pid_t pid;
@@ -73,7 +73,7 @@ int pipe_open(const char *command, pid_t *childpid)
 	}
 }
 
-char *pipe_read(int fd, int *length)
+char *fwts_pipe_read(int fd, int *length)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
@@ -100,7 +100,7 @@ char *pipe_read(int fd, int *length)
 	return ptr;
 }
 
-int pipe_close(int fd, pid_t pid)
+int fwts_pipe_close(int fd, pid_t pid)
 {
 	int status;
 
@@ -116,19 +116,19 @@ int pipe_close(int fd, pid_t pid)
 	}
 }
 
-int pipe_exec(const char *command, text_list **list)
+int fwts_pipe_exec(const char *command, fwts_text_list **list)
 {
 	pid_t 	pid;
 	int	fd;
 	int 	len;
 	char 	*text;
 
-	if ((fd = pipe_open(command, &pid)) < 0) 
+	if ((fd = fwts_pipe_open(command, &pid)) < 0) 
 		return -1;
 
-	text = pipe_read(fd, &len);
-	*list = text_list_from_text(text);
+	text = fwts_pipe_read(fd, &len);
+	*list = fwts_text_list_from_text(text);
 	free(text);
 
-	return pipe_close(fd, pid);
+	return fwts_pipe_close(fd, pid);
 }

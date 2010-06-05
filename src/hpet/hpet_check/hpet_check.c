@@ -34,7 +34,7 @@
 #include "framework.h"
 #include "iasl.h"
 
-static text_list *klog;
+static fwts_text_list *klog;
 
 #define HPET_REG_SIZE  (0x400)
 #define MAX_CLK_PERIOD (100000000)
@@ -65,15 +65,15 @@ static void check_hpet_base_hpet(void)
 #endif
 
 /* check_hpet_base_dsdt() -- used to parse the DSDT for HPET base info */
-static void hpet_check_base_acpi_table(log *results, framework *fw, char *table, int which)
+static void hpet_check_base_acpi_table(fwts_log *results, fwts_framework *fw, char *table, int which)
 {
 	char *val, *idx;
 	int hpet_found = 0;
 
-	text_list *output;
-	text_list_element *item;
+	fwts_text_list *output;
+	fwts_text_list_element *item;
 
-	output = iasl_disassemble(results, fw, table, which);
+	output = fwts_iasl_disassemble(results, fw, table, which);
 	if (output == NULL)
 		return;
 
@@ -94,12 +94,12 @@ static void hpet_check_base_acpi_table(log *results, framework *fw, char *table,
 
 				if (hpet_base_p != 0) {
 					if (hpet_base_p != address_base)
-						framework_failed(fw, 
+						fwts_framework_failed(fw, 
 			     				"Mismatched HPET base between %s (%lx) and the kernel (%lx)",
 							table,
 			     				(unsigned long)hpet_base_p, (unsigned long)address_base);
 					else
-						framework_passed(fw,
+						fwts_framework_passed(fw,
 							"HPET base matches that between %s and the kernel (%lx)",
 							table,
 							(unsigned long)hpet_base_p);
@@ -110,26 +110,26 @@ static void hpet_check_base_acpi_table(log *results, framework *fw, char *table,
 			}
 		}
 	}
-	text_list_free(output);
+	fwts_text_list_free(output);
 }
 
 
-static int hpet_check_init(log *results, framework *fw)
+static int hpet_check_init(fwts_log *results, fwts_framework *fw)
 {
-	if (check_root_euid(results))
+	if (fwts_check_root_euid(results))
 		return 1;
 
-	if ((klog = klog_read()) == NULL) {
-		log_error(results, "Cannot read kernel log");
+	if ((klog = fwts_klog_read()) == NULL) {
+		fwts_log_error(results, "Cannot read kernel log");
 		return 1;
 	}
 	return 0;
 }
 
-static int hpet_check_deinit(log *results, framework *fw)
+static int hpet_check_deinit(fwts_log *results, fwts_framework *fw)
 {
 	if (klog)
-		text_list_free(klog);
+		fwts_text_list_free(klog);
 
 	return 0;
 }
@@ -139,14 +139,14 @@ static char *hpet_check_headline(void)
 	return "HPET configuration test";
 }
 
-static int hpet_check_test1(log *results, framework *fw)
+static int hpet_check_test1(fwts_log *results, fwts_framework *fw)
 {
 	if (klog == NULL)
 		return 1;
 
-	text_list_element *item;
+	fwts_text_list_element *item;
 
-	log_info(results,
+	fwts_log_info(results,
 		   "This test checks the HPET PCI BAR for each timer block in the timer.\n"
 		   "The base address is passed by the firmware via an ACPI table.\n"
 		   "IRQ routing and initialization is also verified by the test.");
@@ -156,8 +156,8 @@ static int hpet_check_test1(log *results, framework *fw)
 			char *txt = strstr(item->text, "base: ");
 			if (txt)
 				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
-			log_warning(results, "HPET driver in the kernel is enabled, inaccurate results follow");
-			framework_passed(fw, "Found HPET base %x in kernel log\n", hpet_base_p);
+			fwts_log_warning(results, "HPET driver in the kernel is enabled, inaccurate results follow");
+			fwts_framework_passed(fw, "Found HPET base %x in kernel log\n", hpet_base_p);
 			break;
 		}
 	}
@@ -165,14 +165,14 @@ static int hpet_check_test1(log *results, framework *fw)
 	return 0;
 }
 
-static int hpet_check_test2(log *results, framework *fw)
+static int hpet_check_test2(fwts_log *results, fwts_framework *fw)
 {
 	int fd;
 	unsigned long long hpet_id;
 	unsigned long clk_period;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		log_error(results, "Cannot open /dev/mem");
+		fwts_log_error(results, "Cannot open /dev/mem");
 		return 1;
 	}
 	hpet_base_v = 
@@ -180,24 +180,24 @@ static int hpet_check_test2(log *results, framework *fw)
 		 hpet_base_p);
 
 	if (hpet_base_v == NULL) {
-		log_error(results, "Cannot mmap to /dev/mem");
+		fwts_log_error(results, "Cannot mmap to /dev/mem");
 		return 1;
 	}
 
 	hpet_id = *(unsigned long long *) hpet_base_v;
 
-	log_info(results, "HPET found, VendorID is: %04X", ((hpet_id & 0xffff0000) >> 16));
+	fwts_log_info(results, "HPET found, VendorID is: %04X", ((hpet_id & 0xffff0000) >> 16));
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
-		framework_failed(fw, "Invalid clock period %li, must be non-zero and less than 10^8 fs", clk_period);
+		fwts_framework_failed(fw, "Invalid clock period %li, must be non-zero and less than 10^8 fs", clk_period);
 	else
-		framework_passed(fw, "Valid clock period %li", clk_period);
+		fwts_framework_passed(fw, "Valid clock period %li", clk_period);
 
 	return 0;
 }
 
-static int hpet_check_test3(log *results, framework *fw)
+static int hpet_check_test3(fwts_log *results, fwts_framework *fw)
 {
 	int i;
 
@@ -208,14 +208,14 @@ static int hpet_check_test3(log *results, framework *fw)
 	return 0;
 }
 
-static framework_tests hpet_check_tests[] = {
+static fwts_framework_tests hpet_check_tests[] = {
 	hpet_check_test1,
 	hpet_check_test2,
 	hpet_check_test3,
 	NULL
 };
 
-static framework_ops hpet_check_ops = {
+static fwts_framework_ops hpet_check_ops = {
 	hpet_check_headline,
 	hpet_check_init,
 	hpet_check_deinit,

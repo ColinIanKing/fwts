@@ -41,14 +41,14 @@ static char *apicedge_headline(void)
 	return "APIC Edge/Level Check";
 }
 
-static int apicedge_test1(log *results, framework *fw)
+static int apicedge_test1(fwts_log *results, fwts_framework *fw)
 {	
 	FILE *file;
 
-	log_info(results, "Checks if legacy interrupts are edge and PCI interrupts are level triggered");
+	fwts_log_info(results, "Checks if legacy interrupts are edge and PCI interrupts are level triggered");
 		
 	if ((file = fopen("/proc/interrupts", "r")) == NULL) {
-		framework_failed(fw, "Could not open file /proc/interrupts");
+		fwts_framework_failed(fw, "Could not open file /proc/interrupts");
 		return 1;
 	}
 
@@ -80,28 +80,28 @@ static int apicedge_test1(log *results, framework *fw)
 			
 		if (strstr(line,"acpi")) {
 			if (edge==1)
-				framework_failed(fw,"ACPI Interrupt is incorrectly edge triggered");
+				fwts_framework_failed(fw,"ACPI Interrupt is incorrectly edge triggered");
 			continue;	
 		}
 		if ((irq<15) && (edge == 0))
-			framework_failed(fw,"Legacy interrupt %i is incorrectly level triggered", irq);
+			fwts_framework_failed(fw,"Legacy interrupt %i is incorrectly level triggered", irq);
 		if ((irq<15) && (edge == -1))
-			framework_failed(fw,"Non-Legacy interrupt %i is incorrectly level triggered", irq);
+			fwts_framework_failed(fw,"Non-Legacy interrupt %i is incorrectly level triggered", irq);
 	}
 	fclose(file);	
 
 	if (!fw->tests_failed)
-		framework_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered");
+		fwts_framework_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered");
 
 	return 0;
 }
 
-static framework_tests apicedge_tests[] = {
+static fwts_framework_tests apicedge_tests[] = {
 	apicedge_test1,
 	NULL
 };
 
-static framework_ops apicedge_ops = {
+static fwts_framework_ops apicedge_ops = {
 	apicedge_headline,
 	NULL,
 	NULL,

@@ -41,48 +41,48 @@ static char *maxreadreq_headline(void)
 }
 
 static char *lspci = "/usr/bin/lspci";
-static text_list *lspci_text;
+static fwts_text_list *lspci_text;
 
-static int maxreadreq_init(log *results, framework *fw)
+static int maxreadreq_init(fwts_log *results, fwts_framework *fw)
 {
 	struct stat buffer;
 
-	if (check_root_euid(results))
+	if (fwts_check_root_euid(results))
 		return 1;
 
 	if (stat(lspci, &buffer)) {
-		log_error(results, "Cannot find %s", lspci);	
+		fwts_log_error(results, "Cannot find %s", lspci);	
 		return 1;
 	}
 
-	if (pipe_exec("lspci -vvv", &lspci_text)) {
-		log_error(results, "Failed to execute lspci -vvv");
+	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
+		fwts_log_error(results, "Failed to execute lspci -vvv");
 		return 1;
 	}
 
 	if (lspci_text == NULL) {
-		log_error(results, "Unexpected empty output from lspci -vvv");
+		fwts_log_error(results, "Unexpected empty output from lspci -vvv");
 		return 1;
 	}
 	
 	return 0;
 }
 
-static int maxreadreq_deinit(log *results, framework *fw)
+static int maxreadreq_deinit(fwts_log *results, fwts_framework *fw)
 {
 	if (lspci_text)
-		text_list_free(lspci_text);
+		fwts_text_list_free(lspci_text);
 
 	return 0;
 }
 
-static int maxreadreq_test1(log *results, framework *fw)
+static int maxreadreq_test1(fwts_log *results, fwts_framework *fw)
 {	
 	int warnings = 0;
 	char current_type[512];
 	char current_device[512];
 
-	text_list_element *item;
+	fwts_text_list_element *item;
 
 	if (lspci_text == NULL)
 		return 1;
@@ -94,7 +94,7 @@ static int maxreadreq_test1(log *results, framework *fw)
 
 		if (line[0]!=' ' && line[0] != '\t' && strlen(line)>8) {
 			if (strlen(line) > 500){
-				log_warning(results, "Too big pci string would overflow"
+				fwts_log_warning(results, "Too big pci string would overflow"
 					    "current_device buffer Internal plugin,"
 					    " not a firmware" " bug");
 				break;
@@ -118,28 +118,28 @@ static int maxreadreq_test1(log *results, framework *fw)
 			c += 11;
 			val = strtoul(c, NULL, 10);
 			if (val <= 128) {
-				log_warning(results, "MaxReadReq for %s is low (%d) [%s]", current_device, val, current_type);
+				fwts_log_warning(results, "MaxReadReq for %s is low (%d) [%s]", current_device, val, current_type);
 				warnings++;
 			}
 		}
 	}
 
 	if (warnings > 0)
-		framework_failed(fw, "%d devices have low MaxReadReq settings.\n" 
+		fwts_framework_failed(fw, "%d devices have low MaxReadReq settings.\n" 
 				     "Firmware may have configured these too low.",
 				     warnings);
 	else
-		framework_passed(fw, "All devices have MaxReadReq set > 128");
+		fwts_framework_passed(fw, "All devices have MaxReadReq set > 128");
 
 	return 0;
 }
 
-static framework_tests maxreadreq_tests[] = {
+static fwts_framework_tests maxreadreq_tests[] = {
 	maxreadreq_test1,
 	NULL
 };
 
-static framework_ops maxreadreq_ops = {
+static fwts_framework_ops maxreadreq_ops = {
 	maxreadreq_headline,
 	maxreadreq_init,	
 	maxreadreq_deinit,

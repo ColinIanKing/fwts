@@ -25,7 +25,7 @@
 
 #include "framework.h"
 
-char *dsdt_read(log *log)
+char *fwts_dsdt_read(fwts_log *log)
 {
 	FILE *fp;
 	char *dsdt = NULL;
@@ -34,7 +34,7 @@ char *dsdt_read(log *log)
 	int error = 0;
 
 	if ((fp = fopen(DSDT_FILE, "r")) == NULL) {
-		log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
+		fwts_log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
 		return NULL;
 	}
 
@@ -66,7 +66,7 @@ char *dsdt_read(log *log)
 	return dsdt;
 }
 
-int dsdt_copy(log *log, const char *destination)
+int fwts_dsdt_copy(fwts_log *log, const char *destination)
 {
 	FILE *dsdt;
 	FILE *dest;
@@ -74,12 +74,12 @@ int dsdt_copy(log *log, const char *destination)
 	int error = 0;
 
 	if ((dsdt = fopen(DSDT_FILE, "r")) == NULL) {
-		log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
+		fwts_log_error(log, "Cannot open DSDT file %s\n", DSDT_FILE);
 		return 1;
 	}
 
 	if ((dest = fopen(destination, "w")) == NULL) {
-		log_error(log, "Cannot open file %s\n", destination);
+		fwts_log_error(log, "Cannot open file %s\n", destination);
 		return 1;
 	}
 	

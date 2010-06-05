@@ -33,96 +33,94 @@ static char *s4_headline(void)
 	return "S4 hibernate/resume test";
 }
 
-static int s4_init(log *results, framework *fw)
+static int s4_init(fwts_log *results, fwts_framework *fw)
 {
 	int ret;
 
-	if (klog_clear()) {
-		log_error(results, "cannot clear kernel log");
+	if (fwts_klog_clear()) {
+		fwts_log_error(results, "cannot clear kernel log");
 		return 1;
 	}
 
-	ret = wakealarm_test_firing(results, fw, 1);
+	ret = fwts_wakealarm_test_firing(results, fw, 1);
 	if (ret != 0) {
-		log_error(results, "cannot automatically wake machine up - aborting S4 test");
-		framework_failed(fw, "check if wakealarm works reliably for S4 tests");
+		fwts_log_error(results, "cannot automatically wake machine up - aborting S4 test");
+		fwts_framework_failed(fw, "check if wakealarm works reliably for S4 tests");
 		return 1;
 	}
 
 	return 0;
 }
 
-static int s4_test1(log *results, framework *fw)
+static int s4_test1(fwts_log *results, fwts_framework *fw)
 {	
 	char *test = "S4 hibernate/resume test";
 	int warnings = 0;
 	int errors = 0;
-	text_list *output;
+	fwts_text_list *output;
 	int status;
-	text_list *klog;
+	fwts_text_list *klog;
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
-	if (klog_clear()) {
-		log_error(results, "cannot clear kernel log");
-		framework_failed(fw, test);
+	if (fwts_klog_clear()) {
+		fwts_log_error(results, "cannot clear kernel log");
+		fwts_framework_failed(fw, test);
 		return 1;
 	}
 
-	wakealarm_trigger(results, fw, 90);
+	fwts_wakealarm_trigger(results, fw, 90);
 
 	/* Do s4 here */
-	status = pipe_exec("pm-hibernate", &output);
+	status = fwts_pipe_exec("pm-hibernate", &output);
 	if (output)
-		text_list_free(output);
+		fwts_text_list_free(output);
 
-	log_info(results, "pm-hibernate returned %d", status);
+	fwts_log_info(results, "pm-hibernate returned %d", status);
 	
-	if ((klog = klog_read()) == NULL) {
-		log_error(results, "cannot read kernel log");
-		framework_failed(fw, test);
+	if ((klog = fwts_klog_read()) == NULL) {
+		fwts_log_error(results, "cannot read kernel log");
+		fwts_framework_failed(fw, test);
 	}
 
-	if (klog_pm_check(results, klog, &warnings, &errors)) {
-		log_error(results, "error parsing kernel log");
-	}
+	if (fwts_klog_pm_check(results, klog, &warnings, &errors))
+		fwts_log_error(results, "error parsing kernel log");
 
-	if (klog_firmware_check(results, klog, &warnings, &errors)) {
-		log_error(results, "error parsing kernel log");
-	}
+	if (fwts_klog_firmware_check(results, klog, &warnings, &errors))
+		fwts_log_error(results, "error parsing kernel log");
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
 		errors++;
-		log_error(results, "pm-action failed before trying to put the system\n"
+		fwts_log_error(results, "pm-action failed before trying to put the system\n"
 				   "in the requested power saving state");
 	} else if (status == 128) {
 		errors++;
-		log_error(results, "pm-action tried to put the machine in the requested\n"
+		fwts_log_error(results, "pm-action tried to put the machine in the requested\n"
        				   "power state but failed");
 	} else if (status > 128) {
 		errors++;
-		log_error(results, "pm-action encountered an error and also failed to\n"
+		fwts_log_error(results, "pm-action encountered an error and also failed to\n"
 				   "enter the requested power saving state");
 	}
-	klog_free(klog);
+	fwts_klog_free(klog);
 
 	if (warnings + errors > 0) {
-		log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
-		framework_failed(fw, test);
+		fwts_log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
+		fwts_framework_failed(fw, test);
 	}
 	else
-		framework_passed(fw, test);
+		fwts_framework_passed(fw, test);
 
 	return 0;
 }
 
-static framework_tests s4_tests[] = {
+static fwts_framework_tests s4_tests[] = {
 	s4_test1,
 	NULL
 };
 
-static framework_ops s4_ops = {
+static fwts_framework_ops s4_ops = {
 	s4_headline,
 	s4_init,	
 	NULL,

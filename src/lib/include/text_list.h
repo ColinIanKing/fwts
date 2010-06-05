@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2010 Canonical
  *
- * This file was originally part of the Linux-ready Firmware Developer Kit
- *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -19,14 +17,24 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef __FWTS_TEXT_LIST_H__
+#define __FWTS_TEXT_LIST_H__
 
-#include "framework.h"
+typedef struct fwts_text_list_element {
+	char *text;
+	struct fwts_text_list_element *next;
+} fwts_text_list_element;
 
-int main(int argc, char **argv)
-{
-	fwts_framework_args(argc, argv);
+typedef struct {
+	fwts_text_list_element *head;
+	fwts_text_list_element *tail;
+} fwts_text_list;
 
-	exit(EXIT_SUCCESS);
-}
+fwts_text_list *fwts_text_list_init(void);
+void 	        fwts_text_list_free(fwts_text_list *list);
+void	        fwts_text_list_dump(fwts_text_list *list);
+char *	        fwts_text_list_strstr(fwts_text_list *list, const char *needle);
+fwts_text_list *fwts_text_list_from_text(char *list);
+fwts_text_list_element *fwts_text_list_append(fwts_text_list *list, const char *text);
+
+#endif

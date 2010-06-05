@@ -29,58 +29,58 @@ static char *klog_headline(void)
 	return "Scan kernel log for errors and warnings";
 }
 
-static text_list *klog;
+static fwts_text_list *klog;
 
-static int klog_init(log *results, framework *fw)
+static int klog_init(fwts_log *results, fwts_framework *fw)
 {
 	if (fw->klog)
-		klog = file_open_and_read(fw->klog);
+		klog = fwts_file_open_and_read(fw->klog);
 	else
-		klog = klog_read();
+		klog = fwts_klog_read();
 	
 	if (klog == NULL) {
-		log_error(results, "cannot read kernel log");
+		fwts_log_error(results, "cannot read kernel log");
 		return 1;
 	}
 	return 0;
 }
 
-static int klog_deinit(log *results, framework *fw)
+static int klog_deinit(fwts_log *results, fwts_framework *fw)
 {
-	klog_free(klog);
+	fwts_klog_free(klog);
 
 	return 0;
 }
 
-static int klog_test1(log *results, framework *fw)
+static int klog_test1(fwts_log *results, fwts_framework *fw)
 {	
 	char *test = "kernel log error check";
 	int warnings = 0;
 	int errors = 0;
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
-	if (klog_firmware_check(results, klog, &warnings, &errors)) {
-		log_error(results, "error parsing kernel log");
+	if (fwts_klog_firmware_check(results, klog, &warnings, &errors)) {
+		fwts_log_error(results, "error parsing kernel log");
 		return 1;
 	}
 
-	log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
+	fwts_log_info(results, "Found %d errors, %d warnings in kernel log", errors, warnings);
 	if (warnings + errors > 0) {
-		framework_failed(fw, test);
+		fwts_framework_failed(fw, test);
 	}
 	else
-		framework_passed(fw, test);
+		fwts_framework_passed(fw, test);
 
 	return 0;
 }
 
-static framework_tests klog_tests[] = {
+static fwts_framework_tests klog_tests[] = {
 	klog_test1,
 	NULL
 };
 
-static framework_ops klog_ops = {
+static fwts_framework_ops klog_ops = {
 	klog_headline,
 	klog_init,	
 	klog_deinit,

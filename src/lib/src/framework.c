@@ -44,37 +44,36 @@ enum {
 	BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG
 };
 
-typedef struct framework_list {
+typedef struct fwts_framework_list {
 	const char *name;
-	const framework_ops *ops;
-	struct framework_list *next;
+	const fwts_framework_ops *ops;
+	struct fwts_framework_list *next;
 	int   priority;
-} framework_list;
+} fwts_framework_list;
 
-static framework_list *framework_list_head = NULL;
-
+static fwts_framework_list *fwts_framework_list_head = NULL;
 
 typedef struct {
 	int env_id;
 	char *env_name;
 	char *env_default;
 	char *env_value;
-} framework_setting;
+} fwts_framework_setting;
 
 #define ID_NAME(id)	id, # id
 
-static framework_setting framework_settings[] = {
+static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),      "PASSED", NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),      "FAILED", NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",  NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",    NULL },
 };
 
-static void framework_debug(framework* framework, char *fmt, ...);
+static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
 
 
 #ifdef FRAMEWORK_DEBUG
-static void framework_dump_items(framework_list *head)
+static void fwts_framework_dump_items(fwts_framework_list *head)
 {
 	printf("DUMP:\n");
 	while (head) {
@@ -84,13 +83,13 @@ static void framework_dump_items(framework_list *head)
 }
 #endif
 
-void framework_add(char *name, const framework_ops *ops, const int priority)
+void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority)
 {
-	framework_list *newitem;
-	framework_list **list;
+	fwts_framework_list *newitem;
+	fwts_framework_list **list;
 
-	if ((newitem = malloc(sizeof(framework_list))) == NULL) {
-		fprintf(stderr, "FATAL: Could not allocate memory initialising framework\n");		
+	if ((newitem = malloc(sizeof(fwts_framework_list))) == NULL) {
+		fprintf(stderr, "FATAL: Could not allocate memory initialising fwts_framework_\n");		
 		exit(EXIT_FAILURE);
 	}
 	newitem->name = name;
@@ -98,7 +97,7 @@ void framework_add(char *name, const framework_ops *ops, const int priority)
 	newitem->next = NULL;
 	newitem->priority = priority;
 
-	for (list = &framework_list_head; *list != NULL; list = &(*list)->next) {
+	for (list = &fwts_framework_list_head; *list != NULL; list = &(*list)->next) {
 		if ((*list)->priority >= newitem->priority) {
 			newitem->next = (*list);
 			break;
@@ -106,42 +105,42 @@ void framework_add(char *name, const framework_ops *ops, const int priority)
 	}
 	*list = newitem;
 
-	/*framework_dump_items(framework_list_head); */
+	/*fwts_framework_dump_items(fwts_framework_list_head); */
 }
 
-static void framework_show_tests(void)
+static void fwts_framework_show_tests(void)
 {
-	framework_list *item;
+	fwts_framework_list *item;
 
 	printf("Available tests:\n");
 
-	for (item = framework_list_head; item != NULL; item = item->next)
+	for (item = fwts_framework_list_head; item != NULL; item = item->next)
 		printf(" %-13.13s %s\n", item->name, item->ops->headline());
 }
 	
 
-static void framework_underline(framework *fw, const int ch)
+static void fwts_framework_underline(fwts_framework *fw, const int ch)
 {
-	log_underline(fw->results, ch);
+	fwts_log_underline(fw->results, ch);
 }
 
-static char *framework_get_env(const int env_id)
+static char *fwts_framework_get_env(const int env_id)
 {
 	int i;
 
-	for (i=0;i<sizeof(framework_settings)/sizeof(framework_setting);i++) {
-		if (framework_settings[i].env_id == env_id) {
-			if (framework_settings[i].env_value)
-				return framework_settings[i].env_value;
+	for (i=0;i<sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++) {
+		if (fwts_framework_settings[i].env_id == env_id) {
+			if (fwts_framework_settings[i].env_value)
+				return fwts_framework_settings[i].env_value;
 			else {
-				char *value = getenv(framework_settings[i].env_name);
+				char *value = getenv(fwts_framework_settings[i].env_name);
 				if (value == NULL) {
-					value = framework_settings[i].env_default;
+					value = fwts_framework_settings[i].env_default;
 				}
-				framework_settings[i].env_value = malloc(strlen(value)+1);
-				if (framework_settings[i].env_value) {
-					strcpy(framework_settings[i].env_value, value);
-					return framework_settings[i].env_value;
+				fwts_framework_settings[i].env_value = malloc(strlen(value)+1);
+				if (fwts_framework_settings[i].env_value) {
+					strcpy(fwts_framework_settings[i].env_value, value);
+					return fwts_framework_settings[i].env_value;
 				} else {
 					return "";
 				}
@@ -151,14 +150,14 @@ static char *framework_get_env(const int env_id)
 	return "";
 }
 
-static void framework_debug(framework* fw, char *fmt, ...)
+static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];	
 	static int debug = -1;
 
 	if (debug == -1)
-		debug = (!strcmp(framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on")) |
+		debug = (!strcmp(fwts_framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on")) |
 			(fw->flags & FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
 	if (debug == 0)
 		return;
@@ -167,16 +166,16 @@ static void framework_debug(framework* fw, char *fmt, ...)
 
         vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	
-	log_printf(fw->debug, LOG_DEBUG, "%s", buffer);
+	fwts_log_printf(fw->debug, LOG_DEBUG, "%s", buffer);
 
         va_end(ap);
 }
 
-static int framework_test_summary(framework *fw)
+static int fwts_framework_test_summary(fwts_framework *fw)
 {
-	framework_underline(fw,'=');
-	log_summary(fw->results, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
-	framework_underline(fw,'=');
+	fwts_framework_underline(fw,'=');
+	fwts_log_summary(fw->results, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
+	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
 		if ((fw->tests_aborted > 0) || (fw->tests_failed > 0))
@@ -185,7 +184,7 @@ static int framework_test_summary(framework *fw)
 			printf("PASSED\n");
 	}
 
-	log_newline(fw->results);
+	fwts_log_newline(fw->results);
 
 	fw->total_tests_aborted += fw->tests_aborted;
 	fw->total_tests_failed  += fw->tests_failed;
@@ -194,29 +193,29 @@ static int framework_test_summary(framework *fw)
 	return 0;
 }
 
-static int framework_total_summary(framework *fw)
+static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	log_set_owner(fw->results, "framework");
-	log_summary(fw->results, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
+	fwts_log_set_owner(fw->results, "fwts_framework_");
+	fwts_log_summary(fw->results, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
 
 	return 0;
 }
 
-static int framework_run_test(framework *fw, const char *name, const framework_ops *ops)
+static int fwts_framework_run_test(fwts_framework *fw, const char *name, const fwts_framework_ops *ops)
 {		
 	int num = 0;
-	framework_tests *test;
+	fwts_framework_tests *test;
 
-	framework_debug(fw, "framework_run_test() entered\n");
+	fwts_framework_debug(fw, "fwts_framework_run_test() entered\n");
 
-	log_set_owner(fw->results, name);
+	fwts_log_set_owner(fw->results, name);
 
 	if (ops->headline) {
-		log_info(fw->results, "%s", ops->headline());
-		framework_underline(fw,'-');
+		fwts_log_info(fw->results, "%s", ops->headline());
+		fwts_framework_underline(fw,'-');
 	}
 
-	framework_debug(fw, "framework_run_test() calling ops->init()\n");
+	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()\n");
 
 	fw->tests_aborted = 0;
 	fw->tests_failed = 0;
@@ -225,12 +224,12 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 	if (ops->init) {
 		if (ops->init(fw->results, fw)) {
 			/* Init failed, so abort */
-			log_error(fw->results, "Aborted test, initialisation failed");
-			framework_debug(fw, "framework_run_test() init failed, aborting!");
+			fwts_log_error(fw->results, "Aborted test, initialisation failed");
+			fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
 			for (test = ops->tests; *test != NULL; test++) {
 				fw->tests_aborted++;
 			}
-			framework_test_summary(fw);
+			fwts_framework_test_summary(fw);
 			return 0;
 		}
 	}
@@ -244,7 +243,7 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 			fflush(stderr);
 		}
 
-		framework_debug(fw, "exectuting test %d\n", fw->current_test);
+		fwts_framework_debug(fw, "exectuting test %d\n", fw->current_test);
 
 		(*test)(fw->results, fw);
 
@@ -255,47 +254,47 @@ static int framework_run_test(framework *fw, const char *name, const framework_o
 		}
 	}
 
-	framework_debug(fw, "framework_run_test() calling ops->deinit()\n");
+	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->deinit()\n");
 	if (ops->deinit)
 		ops->deinit(fw->results, fw);
-	framework_debug(fw, "framework_run_test() complete\n");
+	fwts_framework_debug(fw, "fwts_framework_run_test() complete\n");
 
-	framework_test_summary(fw);
+	fwts_framework_test_summary(fw);
 
 	return 0;
 }
 
-static void framework_run_registered_tests(framework *fw)
+static void fwts_framework_run_registered_tests(fwts_framework *fw)
 {
-	framework_list *item;
+	fwts_framework_list *item;
 
-	framework_debug(fw, "framework_run_registered_tests()\n");
-	for (item = framework_list_head; item != NULL; item = item->next) {
-		framework_debug(fw, "framework_run_registered_tests() - test %s\n",item->name);
-		framework_run_test(fw, item->name, item->ops);
+	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()\n");
+	for (item = fwts_framework_list_head; item != NULL; item = item->next) {
+		fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s\n",item->name);
+		fwts_framework_run_test(fw, item->name, item->ops);
 	}
-	framework_debug(fw, "framework_run_registered_tests() done\n");
+	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() done\n");
 }
 
-static int framework_run_registered_test(framework *fw, const char *name)
+static int fwts_framework_run_registered_test(fwts_framework *fw, const char *name)
 {
-	framework_list *item;
-	framework_debug(fw, "framework_run_registered_tests() - run test %s\n",name);
-	for (item = framework_list_head; item != NULL; item = item->next) {
+	fwts_framework_list *item;
+	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - run test %s\n",name);
+	for (item = fwts_framework_list_head; item != NULL; item = item->next) {
 		if (strcmp(name, item->name) == 0) {
-			framework_debug(fw, "framework_run_registered_tests() - test %s\n",item->name);
-			framework_run_test(fw, item->name, item->ops);
+			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s\n",item->name);
+			fwts_framework_run_test(fw, item->name, item->ops);
 			return 0;
 		}
 	}
-	fw->results = log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
-	log_printf(fw->results, LOG_ERROR, "Test %s does not exist!", name);
-	log_close(fw->results);
+	fw->results = fwts_log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+	fwts_log_printf(fw->results, LOG_ERROR, "Test %s does not exist!", name);
+	fwts_log_close(fw->results);
 
 	return 1;
 }
 
-static void framework_close(framework *fw)
+static void fwts_framework_close(fwts_framework *fw)
 {
 	int failed = (fw->total_tests_aborted > 0 || fw->total_tests_failed);
 
@@ -306,7 +305,7 @@ static void framework_close(framework *fw)
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
-void framework_passed(framework *fw, const char *fmt, ...)
+void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];
@@ -314,15 +313,15 @@ void framework_passed(framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	framework_debug(fw, "test %d passed: %s\n", fw->current_test, buffer);
+	fwts_framework_debug(fw, "test %d passed: %s\n", fw->current_test, buffer);
 	fw->tests_passed++;
-	log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
-		framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, buffer);
+	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
+		fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, buffer);
 
 	va_end(ap);
 }
 
-void framework_failed(framework *fw, const char *fmt, ...)
+void fwts_framework_failed(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];
@@ -330,21 +329,21 @@ void framework_failed(framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	framework_debug(fw, "test %d failed: %s\n", fw->current_test, buffer);
+	fwts_framework_debug(fw, "test %d failed: %s\n", fw->current_test, buffer);
 	fw->tests_failed++;
-	log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
-		framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
+	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
+		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
 
 	va_end(ap);
 }
 
-static void framework_syntax(char **argv)
+static void fwts_framework_syntax(char **argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
 	printf("--dmidecode\t\tSpecify path to dmidecode\n");
 	printf("--iasl\t\t\tSpecify path to iasl\n");
-	printf("--framework-debug\tEnable run-time framework debug\n");
+	printf("--fwts_framework_-debug\tEnable run-time fwts_framework debug\n");
 	printf("--help\t\t\tGet help\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
@@ -365,11 +364,11 @@ static void framework_syntax(char **argv)
 }
 
 
-int framework_args(int argc, char **argv)
+int fwts_framework_args(int argc, char **argv)
 {
 	struct option long_options[] = {
 		{ "stdout-summary", 0, 0, 0 },		
-		{ "framework-debug", 0, 0, 0 },
+		{ "fwts_framework_-debug", 0, 0, 0 },
 		{ "help", 0, 0, 0 },
 		{ "results-output", 1, 0, 0 },
 		{ "results-no-separators", 0, 0, 0 },
@@ -387,9 +386,9 @@ int framework_args(int argc, char **argv)
 		{ 0, 0, 0, 0 }
 	};
 
-	framework *fw;
+	fwts_framework *fw;
 
-	fw = (framework *)calloc(1, sizeof(framework));
+	fw = (fwts_framework *)calloc(1, sizeof(fwts_framework));
 	if (fw == NULL) {
 		return 1;
 	}
@@ -410,32 +409,32 @@ int framework_args(int argc, char **argv)
 			case 0: /* --stdout-summary */
 				fw->flags |= FRAMEWORK_FLAGS_STDOUT_SUMMARY;
 				break;	
-			case 1: /* --framework-debug */
+			case 1: /* --fwts_framework_-debug */
 				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;		
 			case 2: /* --help */
-				framework_syntax(argv);
+				fwts_framework_syntax(argv);
 				exit(EXIT_SUCCESS);
 			case 3: /* --results-output */
 				fw->results_logname = strdup(optarg);
 				break;
 			case 4: /* --results-no-separators */
-				log_filter_unset_field(LOG_SEPARATOR);
+				fwts_log_filter_unset_field(LOG_SEPARATOR);
 				break;
 			case 5: /* --debug-output */
 				fw->debug_logname = strdup(optarg);
 				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
 			case 6: /* --log-filter */
-				log_filter_unset_field(~0);
-				log_set_field_filter(optarg);
+				fwts_log_filter_unset_field(~0);
+				fwts_log_set_field_filter(optarg);
 				break;
 			case 7: /* --log-fields */
-				log_print_fields();
+				fwts_log_print_fields();
 				exit(EXIT_SUCCESS);
 				break;
 			case 8: /* --log-format */
-				log_set_format(optarg);
+				fwts_log_set_format(optarg);
 				break;	
 			case 9: /* --iasl */
 				fw->iasl = strdup(optarg);
@@ -444,7 +443,7 @@ int framework_args(int argc, char **argv)
 				fw->flags |= FRAMEWORK_FLAGS_SHOW_PROGRESS;
 				break;
 			case 11: /* --show-tests */
-				framework_show_tests();
+				fwts_framework_show_tests();
 				exit(EXIT_SUCCESS);
 				break;
 			case 12: /* --dsdt */
@@ -465,26 +464,26 @@ int framework_args(int argc, char **argv)
 		}
 	}	
 
-	fw->debug = log_open("framework", LOGFILE(fw->debug_logname, "stderr"), "a+");
-	fw->results = log_open("framework", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+	fw->debug = fwts_log_open("fwts_framework_", LOGFILE(fw->debug_logname, "stderr"), "a+");
+	fw->results = fwts_log_open("fwts_framework_", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
 
 	if (optind < argc) 
 		for (; optind < argc; optind++) {
-			if (framework_run_registered_test(fw, argv[optind])) {
+			if (fwts_framework_run_registered_test(fw, argv[optind])) {
 				fprintf(stderr, "No such test '%s'\n",argv[optind]);
-				framework_show_tests();
+				fwts_framework_show_tests();
 				exit(EXIT_FAILURE);
 			}
 		}
 	else 
-		framework_run_registered_tests(fw);
+		fwts_framework_run_registered_tests(fw);
 
-	framework_total_summary(fw);
+	fwts_framework_total_summary(fw);
 
-	log_close(fw->results);
-	log_close(fw->debug);
+	fwts_log_close(fw->results);
+	fwts_log_close(fw->debug);
 
-	framework_close(fw);
+	fwts_framework_close(fw);
 
 	return 0;
 }

@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __LOG_H__
-#define __LOG_H__
+#ifndef __FWTS_LOG_H__
+#define __FWTS_LOG_H__
 
 #include <stdio.h>
 
@@ -33,39 +33,39 @@ typedef enum {
 	LOG_SUMMARY   = 0x00000020,
 	LOG_SEPARATOR = 0x00000040,
 	LOG_NEWLINE   = 0x00000080,
-} log_field;
+} fwts_log_field;
 
 typedef struct log_t {
 	int magic;
 	FILE *fp;	
 	char *owner;
-} log;
+} fwts_log;
 
-log *log_open(const char* owner, const char *name, const char *mode);
-int  log_close(log *log);
-int  log_printf(log *log, log_field field, const char *fmt, ...);
-void log_newline(log *log);
-void log_underline(log *log, int ch);
-void log_set_field_filter(char *str);
-int  log_set_owner(log *log, const char *owner);
-void log_set_format(char *str);
-void log_print_fields(void);
-void log_filter_set_field(const log_field filter);
-void log_filter_unset_field(const log_field filter);
+fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);
+int       fwts_log_close(fwts_log *log);
+int       fwts_log_printf(fwts_log *log, fwts_log_field field, const char *fmt, ...);
+void      fwts_log_newline(fwts_log *log);
+void      fwts_log_underline(fwts_log *log, int ch);
+void      fwts_log_set_field_filter(char *str);
+int       fwts_log_set_owner(fwts_log *log, const char *owner);
+void      fwts_log_set_format(char *str);
+void      fwts_log_print_fields(void);
+void      fwts_log_filter_set_field(const fwts_log_field filter);
+void      fwts_log_filter_unset_field(const fwts_log_field filter);
 
-#define log_result(results, fmt, args...)	\
-	log_printf(results, LOG_RESULT, fmt, ## args) 
+#define fwts_log_result(results, fmt, args...)	\
+	fwts_log_printf(results, LOG_RESULT, fmt, ## args) 
 	
-#define log_error(results, fmt, args...)	\
-	log_printf(results, LOG_ERROR, fmt, ## args)
+#define fwts_log_error(results, fmt, args...)	\
+	fwts_log_printf(results, LOG_ERROR, fmt, ## args)
 
-#define log_warning(results, fmt, args...)	\
-	log_printf(results, LOG_WARNING, fmt, ## args)
+#define fwts_log_warning(results, fmt, args...)	\
+	fwts_log_printf(results, LOG_WARNING, fmt, ## args)
 
-#define log_info(results, fmt, args...)	\
-	log_printf(results, LOG_INFO, fmt, ## args)
+#define fwts_log_info(results, fmt, args...)	\
+	fwts_log_printf(results, LOG_INFO, fmt, ## args)
 
-#define log_summary(results, fmt, args...)	\
-	log_printf(results, LOG_SUMMARY, fmt, ## args)
+#define fwts_log_summary(results, fmt, args...)	\
+	fwts_log_printf(results, LOG_SUMMARY, fmt, ## args)
 
 #endif

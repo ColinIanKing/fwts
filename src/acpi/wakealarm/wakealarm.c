@@ -28,9 +28,9 @@
 
 static char *wkalarm = WAKEALARM;
 
-static int wakealarm_init(log *results, framework *fw)
+static int wakealarm_init(fwts_log *results, fwts_framework *fw)
 {
-	return check_root_euid(results);
+	return fwts_check_root_euid(results);
 }
 
 static char *wakealarm_headline(void)
@@ -38,86 +38,82 @@ static char *wakealarm_headline(void)
 	return "Test ACPI Wakealarm";
 }
 
-static int wakealarm_test1(log *results, framework *fw)
+static int wakealarm_test1(fwts_log *results, fwts_framework *fw)
 {
 	struct stat buf;
 	char *test = "Check existance of " WAKEALARM;
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
 	if (stat(wkalarm, &buf) == 0)
-		framework_passed(fw, test);
+		fwts_framework_passed(fw, test);
 	else
-		framework_failed(fw, test);
+		fwts_framework_failed(fw, test);
 
 	return 0;
 }
 
-static int wakealarm_test2(log *results, framework *fw)
+static int wakealarm_test2(fwts_log *results, fwts_framework *fw)
 {
 	char *test = "Trigger RTC wakealarm";
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 	
-	log_info(results, "Trigger wakealarm for 1 seconds in the future");
-	if (wakealarm_trigger(results, fw, 1)) {
-		framework_failed(fw, test);
+	fwts_log_info(results, "Trigger wakealarm for 1 seconds in the future");
+	if (fwts_wakealarm_trigger(results, fw, 1)) {
+		fwts_framework_failed(fw, test);
 		return 0;
 	}
 
-	framework_passed(fw, test);
+	fwts_framework_passed(fw, test);
 
 	return 0;
 }
 
-int wakealarm_get_irq_state(void);
-int wakealarm_test_firing(log *results, framework *fw, int sleep);
-
-
-static int wakealarm_test3(log *results, framework *fw)
+static int wakealarm_test3(fwts_log *results, fwts_framework *fw)
 {
 	char *test = "Check if wakealarm is fired";
 	int ret;
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
-	log_info(results, "Trigger wakealarm for 2 seconds in the future");
-	ret = wakealarm_test_firing(results, fw, 2);
+	fwts_log_info(results, "Trigger wakealarm for 2 seconds in the future");
+	ret = fwts_wakealarm_test_firing(results, fw, 2);
 	if (ret < 0) {
-		framework_failed(fw, test);
+		fwts_framework_failed(fw, test);
 		return 1;	/* Really went wrong */
 	}
 	if (ret == 0)
-		framework_passed(fw, test);
+		fwts_framework_passed(fw, test);
 	else
-		framework_failed(fw, test);
+		fwts_framework_failed(fw, test);
 		
 	return 0;
 }
 
-static int wakealarm_test4(log *results, framework *fw)
+static int wakealarm_test4(fwts_log *results, fwts_framework *fw)
 {
 	int i;
 	char *test = "Multiple wakealarm firing tests";
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
 	for (i=1; i<5; i++) {
-		log_info(results, "Trigger wakealarm for %d seconds in the future", i);
-		int ret = wakealarm_test_firing(results, fw, i);
+		fwts_log_info(results, "Trigger wakealarm for %d seconds in the future", i);
+		int ret = fwts_wakealarm_test_firing(results, fw, i);
 		if (ret < 0) {
-			framework_failed(fw, test);
+			fwts_framework_failed(fw, test);
 			return 1;	/* Really went wrong */
 		}
 		if (ret != 0)
-			framework_failed(fw, test);
+			fwts_framework_failed(fw, test);
 	}
-	framework_passed(fw, test);
+	fwts_framework_passed(fw, test);
 
 	return 0;
 }
 
-static framework_tests wakealarm_tests[] = {
+static fwts_framework_tests wakealarm_tests[] = {
 	wakealarm_test1,
 	wakealarm_test2,
 	wakealarm_test3,	
@@ -125,7 +121,7 @@ static framework_tests wakealarm_tests[] = {
 	NULL
 };
 
-static framework_ops wakealarm_ops = {
+static fwts_framework_ops wakealarm_ops = {
 	wakealarm_headline,
 	wakealarm_init,
 	NULL,

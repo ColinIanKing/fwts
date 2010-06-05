@@ -17,11 +17,11 @@
  *
  */
 
-#ifndef __DSDT_H__
-#define __DSDT_H__
+#ifndef __FWTS_DSDT_H__
+#define __FWTS_DSDT_H__
 
-char *dsdt_read(log *);
-int   dsdt_copy(log *log, const char *destination);
+char *fwts_dsdt_read(fwts_log *);
+int   fwts_dsdt_copy(fwts_log *log, const char *destination);
 
 
 #endif

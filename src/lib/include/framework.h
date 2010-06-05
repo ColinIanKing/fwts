@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __FRAMEWORK_H__
-#define __FRAMEWORK_H__
+#ifndef __FWTS_FRAMEWORK_H__
+#define __FWTS_FRAMEWORK_H__
 
 #include <stdio.h>
 
@@ -32,10 +32,10 @@
 #define FRAMEWORK_MAGIC	0x2af61aec
 
 
-typedef struct framework {
+typedef struct fwts_framework {
 	int magic;				/* identify struct magic */
-	log *debug;				/* log to dump framework debug messages */
-	log *results;				/* log for test results */
+	fwts_log *debug;			/* log to dump framework debug messages */
+	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
 	char *debug_logname;			/* filename of framework debug log */
 	char *iasl;				/* path to iasl */
@@ -44,7 +44,7 @@ typedef struct framework {
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
 
-	struct framework_ops const *ops;	
+	struct fwts_framework_ops const *ops;	
 	int flags;
 
 	/* per test stats */
@@ -57,22 +57,22 @@ typedef struct framework {
 	int total_tests_passed;		
 	int total_tests_failed;
 	int total_tests_aborted;
-} framework;
+} fwts_framework;
 
 
-typedef int (*framework_tests)(log *results, struct framework *framework);
+typedef int (*fwts_framework_tests)(fwts_log *results, struct fwts_framework *framework);
 
-typedef struct framework_ops {
-	char *(*headline)(void);		/* Headline description of test */
-	int (*init)(log *, framework *);	/* Initialise */
-	int (*deinit)(log *, framework *);	/* De-init */		
-	framework_tests *tests;			/* List of tests to run */
-} framework_ops;
+typedef struct fwts_framework_ops {
+	char *(*headline)(void);			/* Headline description of test */
+	int (*init)(fwts_log *, fwts_framework *);	/* Initialise */
+	int (*deinit)(fwts_log *, fwts_framework *);	/* De-init */		
+	fwts_framework_tests *tests;			/* List of tests to run */
+} fwts_framework_ops;
 
-int  framework_args(int argc, char **argv);
-void framework_add(char *name, const framework_ops *ops, const int priority);
-void framework_passed(framework *, const char *fmt, ...);
-void framework_failed(framework *, const char *fmt, ...);
+int  fwts_framework_args(int argc, char **argv);
+void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority);
+void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
+void fwts_framework_failed(fwts_framework *, const char *fmt, ...);
 
 #define TEST_EARLY	0
 #define TEST_ANYTIME	50
@@ -85,7 +85,7 @@ void name ## init (void) __attribute__ ((constructor));	\
 							\
 void name ## init (void)				\
 {							\
-	framework_add(# name, ops, priority);		\
+	fwts_framework_add(# name, ops, priority);	\
 }							\
 							
 #endif

@@ -33,48 +33,48 @@ static char *syntaxcheck_headline(void)
 	return "Scan kernel log for errors and warnings";
 }
 
-static text_list* error_output;
+static fwts_text_list* error_output;
 
-static int syntaxcheck_init(log *log, framework *fw)
+static int syntaxcheck_init(fwts_log *log, fwts_framework *fw)
 {
 	struct stat buffer;
 
-	if (check_root_euid(log))
+	if (fwts_check_root_euid(log))
 		return 1;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
-                log_error(log, "Make sure iasl is installed");
+                fwts_log_error(log, "Make sure iasl is installed");
                 return 1;
         }
 
-	error_output = iasl_reassemble(log, fw, "DSDT", 0);
+	error_output = fwts_iasl_reassemble(log, fw, "DSDT", 0);
 	if (error_output == NULL) {
-		log_error(log, "cannot re-assasemble with iasl");
+		fwts_log_error(log, "cannot re-assasemble with iasl");
 		return 1;
 	}
 
 	return 0;
 }
 
-static int syntaxcheck_deinit(log *log, framework *fw)
+static int syntaxcheck_deinit(fwts_log *log, fwts_framework *fw)
 {
 	if (error_output)
-		text_list_free(error_output);
+		fwts_text_list_free(error_output);
 
 	return 0;
 }
 
-static int syntaxcheck_test1(log *log, framework *fw)
+static int syntaxcheck_test1(fwts_log *log, fwts_framework *fw)
 {	
 	char *test = "DSDT re-assembly, syntax check";
 	int warnings = 0;
 	int errors = 0;
-	text_list_element *item;
+	fwts_text_list_element *item;
 
 	if (error_output == NULL)
 		return 1;
 
-	log_info(log, test);
+	fwts_log_info(log, test);
 
 	for (item = error_output->head; item != NULL; item = item->next) {
 		int num;
@@ -85,41 +85,41 @@ static int syntaxcheck_test1(log *log, framework *fw)
 			if (item->next != NULL) {
 				char *nextline = item->next->text;
 				if (!strncmp(nextline, "Error", 5)) {
-					log_info(log, "%s", line);
-					log_info(log, "%s", nextline);
+					fwts_log_info(log, "%s", line);
+					fwts_log_info(log, "%s", nextline);
 					errors++;
 				}
 				if (!strncmp(nextline, "Warning", 7)) {
-					log_info(log, "%s", line);
-					log_info(log, "%s", nextline);
+					fwts_log_info(log, "%s", line);
+					fwts_log_info(log, "%s", nextline);
 					warnings++;
 				}
 				item = item->next;
 			}
 			else {
-				log_info(log, "%s", line);
-				log_error(log, 
+				fwts_log_info(log, "%s", line);
+				fwts_log_error(log, 
 					"Could not find parser error message "
 					"(this can happen if iasl segfaults!)");
 			}
 		}
 	}
 	if (warnings + errors > 0) {
-		log_info(log, "Found %d errors, %d warnings in DSDT", errors, warnings);
-		framework_failed(fw, test);
+		fwts_log_info(log, "Found %d errors, %d warnings in DSDT", errors, warnings);
+		fwts_framework_failed(fw, test);
 	}
 	else
-		framework_passed(fw, test);
+		fwts_framework_passed(fw, test);
 
 	return 0;
 }
 
-static framework_tests syntaxcheck_tests[] = {
+static fwts_framework_tests syntaxcheck_tests[] = {
 	syntaxcheck_test1,
 	NULL
 };
 
-static framework_ops syntaxcheck_ops = {
+static fwts_framework_ops syntaxcheck_ops = {
 	syntaxcheck_headline,
 	syntaxcheck_init,	
 	syntaxcheck_deinit,

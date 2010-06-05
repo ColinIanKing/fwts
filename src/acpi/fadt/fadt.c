@@ -36,7 +36,7 @@ unsigned long fadt_size;
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
  */
 typedef struct {
-	acpi_table_header	header;	
+	fwts_acpi_table_header	header;	
 	u32			firmware_control;
 	u32			dsdt;
 	u8			reserved;
@@ -74,25 +74,25 @@ typedef struct {
 	u16			iapc_boot_arch;
 	u8			reserved1;
 	u32			flags;
-	gas			reset_reg;
+	fwts_gas		reset_reg;
 	u8			reset_value;
 	u8			reserved2;
 	u8			reserved3;
 	u8			reserved4;
 	u64			x_firmware_control;
 	u64			x_dsdt;
-	gas			x_pm1a_evt_blk;
-	gas			x_pm1b_evt_blk;
-	gas			x_pm1a_cnt_blk;
-	gas			x_pm1b_cnt_blk;
-	gas			x_pm2_cnt_blk;
-	gas			x_pm_tmr_blk;
-	gas			x_gpe0_blk;
-	gas			x_gpe1_blk;
-} fadt_version_2;
+	fwts_gas		x_pm1a_evt_blk;
+	fwts_gas		x_pm1b_evt_blk;
+	fwts_gas		x_pm1a_cnt_blk;
+	fwts_gas		x_pm1b_cnt_blk;
+	fwts_gas		x_pm2_cnt_blk;
+	fwts_gas		x_pm_tmr_blk;
+	fwts_gas		x_gpe0_blk;
+	fwts_gas		x_gpe1_blk;
+} fwts_fadt_version_2;
 
 
-static void fadt_get_header(unsigned char *fadt_data, int size, fadt_version_2 *hdr)
+static void fadt_get_header(unsigned char *fadt_data, int size, fwts_fadt_version_2 *hdr)
 {
 	u8 data[244];
 
@@ -155,20 +155,20 @@ static void fadt_get_header(unsigned char *fadt_data, int size, fadt_version_2 *
 	GET_GAS   (hdr->x_gpe1_blk, data, 232);
 }
 
-static int fadt_init(log *results, framework *fw)
+static int fadt_init(fwts_log *results, fwts_framework *fw)
 {
-	if (check_root_euid(results))
+	if (fwts_check_root_euid(results))
 		return 1;
 
-	if ((fadt_table = get_acpi_table(results, "FADT", &fadt_size)) == NULL) {
-		log_error(results, "Failed to read ACPI FADT");
+	if ((fadt_table = fwts_get_acpi_table(results, "FADT", &fadt_size)) == NULL) {
+		fwts_log_error(results, "Failed to read ACPI FADT");
 		return 1;
 	}
 
 	return 0;
 }
 
-static int fadt_deinit(log *results, framework *fw)
+static int fadt_deinit(fwts_log *results, fwts_framework *fw)
 {
 	if (fadt_table)
 		free(fadt_table);
@@ -181,18 +181,18 @@ static char *fadt_headline(void)
 	return "Check if FADT SCI_EN bit is enabled";
 }
 
-static int fadt_test1(log *results, framework *fw)
+static int fadt_test1(fwts_log *results, fwts_framework *fw)
 {
 	char *test = "Check SCI_EN bit";
-	fadt_version_2  fadt;
+	fwts_fadt_version_2  fadt;
 	u32 port, width, value;
 	char *profile;
 
-	log_info(results, test);
+	fwts_log_info(results, test);
 
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
-		log_info(results, "FADT does not exist, this is not necessarily a failure");
+		fwts_log_info(results, "FADT does not exist, this is not necessarily a failure");
 		return 0;
 	}
 
@@ -226,11 +226,11 @@ static int fadt_test1(log *results, framework *fw)
 		break;
 	default:
 		profile = "Reserved";
-		log_warning(results, "FADT Preferred PM Profile is Reserved - this may be incorrect");
+		fwts_log_warning(results, "FADT Preferred PM Profile is Reserved - this may be incorrect");
 		break;
 	}
 
-	log_info(results, "FADT Preferred PM Profile: %d (%s)\n", 
+	fwts_log_info(results, "FADT Preferred PM Profile: %d (%s)\n", 
 		fadt.preferred_pm_profile, profile);
 	
 	port = fadt.pm1a_cnt_blk;
@@ -239,11 +239,11 @@ static int fadt_test1(log *results, framework *fw)
 	/* Punt at244 byte FADT is V2 */
 	if (fadt.header.length == 244) {
 		/*  Sanity check sizes with extended address variants */
-		log_info(results, "FADT is greater than ACPI version 1.0");
+		fwts_log_info(results, "FADT is greater than ACPI version 1.0");
 		if (port != fadt.x_pm1a_cnt_blk.address) 
-			log_warning(results, "32 and 64 bit versions of FADT pm1_cnt address do not match");
+			fwts_log_warning(results, "32 and 64 bit versions of FADT pm1_cnt address do not match");
 		if (width != fadt.x_pm1a_cnt_blk.register_bit_width)
-			log_warning(results, "32 and 64 bit versions of FADT pm1_cnt size do not match");
+			fwts_log_warning(results, "32 and 64 bit versions of FADT pm1_cnt size do not match");
 
 		port = fadt.x_pm1a_cnt_blk.address;	
 		width = fadt.x_pm1a_cnt_blk.register_bit_width;
@@ -265,24 +265,24 @@ static int fadt_test1(log *results, framework *fw)
 		break;
 	default:
 		ioperm(port, width/8, 0);
-		framework_failed(fw, "FADT pm1a register has invalid bit width of %d", width);
+		fwts_framework_failed(fw, "FADT pm1a register has invalid bit width of %d", width);
 		return 1;
 	}
 
 	if (value & 0x01)
-		framework_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled");
+		fwts_framework_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled");
 	else
-		framework_passed(fw, "SCI_EN bit in PM1a Control Register Block is not enabled");
+		fwts_framework_passed(fw, "SCI_EN bit in PM1a Control Register Block is not enabled");
 
 	return 0;
 }
 
-static framework_tests fadt_tests[] = {
+static fwts_framework_tests fadt_tests[] = {
 	fadt_test1,
 	NULL
 };
 
-static framework_ops fadt_ops = {
+static fwts_framework_ops fadt_ops = {
 	fadt_headline,
 	fadt_init,
 	fadt_deinit,

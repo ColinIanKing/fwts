@@ -22,11 +22,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "framework.h"
-#include "pipeio.h"
-#include "wakealarm.h"
-#include "klog.h"
-#include "text_list.h"
+#include "fwts.h"
 
 static char *s4_headline(void)
 {

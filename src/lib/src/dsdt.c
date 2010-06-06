@@ -23,8 +23,7 @@
 
 #define DSDT_FILE	"/proc/acpi/dsdt"
 
-#include "framework.h"
-#include "dsdt.h"
+#include "fwts.h"
 
 char *fwts_dsdt_read(fwts_framework *fw)
 {

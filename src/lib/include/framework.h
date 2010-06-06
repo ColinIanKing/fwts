@@ -21,14 +21,9 @@
 #define __FWTS_FRAMEWORK_H__
 
 #include <stdio.h>
-
 #include "log.h"
-#include "helpers.h"
-#include "pipeio.h"
-#include "fileio.h"
 
 #define FRAMEWORK_MAGIC	0x2af61aec
-
 
 typedef struct fwts_framework {
 	int magic;				/* identify struct magic */

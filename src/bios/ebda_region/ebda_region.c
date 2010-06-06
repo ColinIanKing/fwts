@@ -28,9 +28,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "klog.h"
+#include "fwts.h"
 
 #define EBDA_OFFSET	0x40e
 #define BAD_ADDR	0

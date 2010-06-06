@@ -27,8 +27,7 @@
 #include <fcntl.h>
 #include <limits.h>
 
-#include "framework.h"
-#include "iasl.h"
+#include "fwts.h"
 
 fwts_text_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 {

@@ -21,9 +21,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "log.h"
+#include "fwts.h"
 
 int fwts_check_root_euid(fwts_framework *fw)
 {

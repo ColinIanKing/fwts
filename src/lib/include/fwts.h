@@ -17,21 +17,26 @@
  *
  */
 
-#include <stdlib.h>
-#include <stdio.h>
+#ifndef __FWTS_H__
+#define __FWTS_H__
 
+#include "framework.h"
+#include "log.h"
+#include "text_list.h"
+
+#include "set.h"
+#include "get.h"
+
+#include "acpi.h"
+#include "checkeuid.h"
+#include "dsdt.h"
+#include "fileio.h"
 #include "fwts.h"
+#include "helpers.h"
+#include "iasl.h"
+#include "klog.h"
+#include "pipeio.h"
+#include "stringextras.h"
+#include "wakealarm.h"
 
-int fwts_set(const char *text, const char *file)
-{	
-	FILE *fp;
-
-	fp = fopen(file, "w");
-	if (fp != NULL) {
-		fprintf(fp, "%s\n", text);
-		fclose(fp);	
-		return 0;
-	}	
-	else
-		return 1;
-}
+#endif

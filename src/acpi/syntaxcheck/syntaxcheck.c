@@ -23,11 +23,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "dsdt.h"
-#include "iasl.h"
-#include "text_list.h"
+#include "fwts.h"
 
 static char *syntaxcheck_headline(void)
 {

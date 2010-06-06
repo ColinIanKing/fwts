@@ -23,8 +23,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "wakealarm.h"
+#include "fwts.h"
 
 static char *fwts_wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 

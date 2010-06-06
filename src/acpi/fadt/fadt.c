@@ -26,9 +26,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "acpi.h"
+#include "fwts.h"
 
 unsigned char *fadt_table;
 unsigned long fadt_size;

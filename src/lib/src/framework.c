@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <getopt.h>
 
-#include "framework.h"
+#include "fwts.h"
 
 #define RESULTS_LOG	"results.log"
 

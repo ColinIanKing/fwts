@@ -31,10 +31,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "klog.h"
-#include "iasl.h"
+#include "fwts.h"
 
 static fwts_text_list *klog;
 

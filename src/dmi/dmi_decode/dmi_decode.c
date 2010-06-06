@@ -27,9 +27,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "text_list.h"
+#include "fwts.h"
 
 typedef struct {
 	char *pat1;

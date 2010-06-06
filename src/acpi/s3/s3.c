@@ -23,11 +23,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#include "framework.h"
-#include "pipeio.h"
-#include "wakealarm.h"
-#include "klog.h"
-#include "text_list.h"
+#include "fwts.h"
 
 static char *s3_headline(void)
 {

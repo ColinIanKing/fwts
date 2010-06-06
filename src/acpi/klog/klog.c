@@ -22,8 +22,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "framework.h"
-#include "klog.h"
+#include "fwts.h"
 
 static char *klog_headline(void)
 {

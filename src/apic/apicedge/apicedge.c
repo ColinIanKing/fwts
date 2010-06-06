@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
+#include "fwts.h"
 
 /* 
  * This test sanity checks apic irq information

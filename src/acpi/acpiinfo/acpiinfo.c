@@ -26,8 +26,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "klog.h"
+#include "fwts.h"
 
 static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
 {

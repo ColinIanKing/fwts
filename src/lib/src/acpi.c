@@ -22,12 +22,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "framework.h"
-#include "acpi.h"
-#include "pipeio.h"
-#include "log.h"
+#include "fwts.h"
 
-char *acpidump = "/usr/bin/acpidump";
+static char *fwts_acpidump = "/usr/bin/acpidump";
 
 unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigned long *size)
 {
@@ -41,7 +38,7 @@ unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigne
 	int i;
 	unsigned char checksum = 0;
 
-	sprintf(buffer,"%s -t %s -b", acpidump, name);
+	sprintf(buffer,"%s -t %s -b", fwts_acpidump, name);
 	if ((fd = fwts_pipe_open(buffer, &pid)) < 0) {
 		return NULL;
 	}

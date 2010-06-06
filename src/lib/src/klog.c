@@ -21,10 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "framework.h"
-#include "log.h"
-#include "klog.h"
-#include "text_list.h"
+#include "fwts.h"
 
 void fwts_klog_free(fwts_text_list *klog)
 {

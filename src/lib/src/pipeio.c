@@ -30,10 +30,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-#include "framework.h"
-#include "text_list.h"
-#include "pipeio.h"
-#include "fileio.h"
+#include "fwts.h"
 
 int fwts_pipe_open(const char *command, pid_t *childpid)
 {

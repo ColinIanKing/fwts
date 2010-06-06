@@ -19,8 +19,7 @@
 
 #include <string.h>
 
-#include "framework.h"
-#include "stringextras.h"
+#include "fwts.h"
 
 void fwts_chop_newline(char *str)
 {

@@ -26,8 +26,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "klog.h"
+#include "fwts.h"
 
 static char *dmesg_parse_brackets(char *line)
 {

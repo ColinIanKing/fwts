@@ -26,9 +26,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "framework.h"
-#include "checkeuid.h"
-#include "text_list.h"
+#include "fwts.h"
 
 /* 
  * This test checks if MaxReadReq is set > 128 for non-internal stuff

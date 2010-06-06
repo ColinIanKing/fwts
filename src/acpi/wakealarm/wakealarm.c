@@ -23,9 +23,7 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "framework.h"
-#include "wakealarm.h"
-#include "checkeuid.h"
+#include "fwts.h"
 
 static char *wkalarm = WAKEALARM;
 

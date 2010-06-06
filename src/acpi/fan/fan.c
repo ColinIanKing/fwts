@@ -28,8 +28,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-#include "framework.h"
-#include "stringextras.h"
+#include "fwts.h"
 
 static void do_fan(fwts_framework *fw, char *dir, char *name)
 {

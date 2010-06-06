@@ -17,21 +17,11 @@
  *
  */
 
-#include <stdlib.h>
+#ifndef __FWTS_SET_H__
+#define __FWTS_SET_H__
+
 #include <stdio.h>
 
-#include "fwts.h"
+int fwts_set(const char *text, const char *file);
 
-int fwts_set(const char *text, const char *file)
-{	
-	FILE *fp;
-
-	fp = fopen(file, "w");
-	if (fp != NULL) {
-		fprintf(fp, "%s\n", text);
-		fclose(fp);	
-		return 0;
-	}	
-	else
-		return 1;
-}
+#endif

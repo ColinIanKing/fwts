@@ -28,8 +28,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-#include "framework.h"
-#include "stringextras.h"
+#include "fwts.h"
 
 static unsigned long get_full(char *dir)
 {

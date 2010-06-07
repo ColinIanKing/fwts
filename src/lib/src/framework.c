@@ -217,9 +217,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()\n");
 
-	fw->tests_aborted = 0;
-	fw->tests_failed = 0;
-	fw->tests_passed = 0;
 
 	if (ops->init) {
 		if (ops->init(fw)) {
@@ -244,6 +241,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 		}
 
 		fwts_framework_debug(fw, "exectuting test %d\n", fw->current_test);
+
+		fw->tests_aborted = 0;
+		fw->tests_failed = 0;
+		fw->tests_passed = 0;
 
 		(*test)(fw);
 

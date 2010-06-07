@@ -16,6 +16,7 @@ testsuite_SOURCES = main.c \
 	acpi/fan/fan.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
+	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c

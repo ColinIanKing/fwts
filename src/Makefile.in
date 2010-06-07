@@ -49,8 +49,8 @@ am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
 	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
-	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT)
+	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -206,6 +206,7 @@ testsuite_SOURCES = main.c \
 	acpi/fan/fan.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
+	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c
@@ -304,6 +305,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
@@ -490,6 +492,20 @@ ebda_region.obj: bios/ebda_region/ebda_region.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebda_region/ebda_region.c' object='ebda_region.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebda_region.obj `if test -f 'bios/ebda_region/ebda_region.c'; then $(CYGPATH_W) 'bios/ebda_region/ebda_region.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebda_region/ebda_region.c'; fi`
+
+mtrr.o: bios/mtrr/mtrr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mtrr.o -MD -MP -MF $(DEPDIR)/mtrr.Tpo -c -o mtrr.o `test -f 'bios/mtrr/mtrr.c' || echo '$(srcdir)/'`bios/mtrr/mtrr.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mtrr.Tpo $(DEPDIR)/mtrr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/mtrr/mtrr.c' object='mtrr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mtrr.o `test -f 'bios/mtrr/mtrr.c' || echo '$(srcdir)/'`bios/mtrr/mtrr.c
+
+mtrr.obj: bios/mtrr/mtrr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mtrr.obj -MD -MP -MF $(DEPDIR)/mtrr.Tpo -c -o mtrr.obj `if test -f 'bios/mtrr/mtrr.c'; then $(CYGPATH_W) 'bios/mtrr/mtrr.c'; else $(CYGPATH_W) '$(srcdir)/bios/mtrr/mtrr.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mtrr.Tpo $(DEPDIR)/mtrr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/mtrr/mtrr.c' object='mtrr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mtrr.obj `if test -f 'bios/mtrr/mtrr.c'; then $(CYGPATH_W) 'bios/mtrr/mtrr.c'; else $(CYGPATH_W) '$(srcdir)/bios/mtrr/mtrr.c'; fi`
 
 dmi_decode.o: dmi/dmi_decode/dmi_decode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmi_decode.o -MD -MP -MF $(DEPDIR)/dmi_decode.Tpo -c -o dmi_decode.o `test -f 'dmi/dmi_decode/dmi_decode.c' || echo '$(srcdir)/'`dmi/dmi_decode/dmi_decode.c

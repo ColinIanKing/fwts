@@ -27,7 +27,7 @@
 
 static char *s3_headline(void)
 {
-	return "S3 suspend resume test";
+	return "S3 suspend/resume test";
 }
 
 static int s3_init(fwts_framework *fw)

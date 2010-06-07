@@ -31,6 +31,8 @@ Fan test
 	- done 03/06/2010
 FADT checking
 	- done 03/06/2010
+MTRR
+	- done 07/06/2010
 Hotkeys
 	-
 HPET checking

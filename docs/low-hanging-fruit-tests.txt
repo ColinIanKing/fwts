@@ -21,6 +21,19 @@ Decompile/Compile AML code using iasl
 	- done 
 Semantic checking of AML - code inspection + poking with acpiexec
 	- 
-Fan
+EBDA BIOS check
+	- done 01/06/2010
+Battery Charge/Discharge tests
+	- done 02/06/2010
+Maxreadreq test
+	- done 02/06/2010
+Fan test
+	- done 03/06/2010
+FADT checking
+	- done 03/06/2010
 Hotkeys
+	-
+HPET checking
+	- done 04/06/2010
+
 

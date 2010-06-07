@@ -36,6 +36,17 @@ fwts_list *fwts_list_init(void)
 	return list;
 }
 
+void fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private)
+{
+	fwts_list_element *item;
+
+	if (list == NULL)
+		return;
+
+	for (item = list->head; item != NULL; item = item->next)
+		callback(item->data, private);
+}
+
 void fwts_list_free(fwts_list *list, fwlist_element_free element_free)
 {
 	fwts_list_element *item;
@@ -50,6 +61,7 @@ void fwts_list_free(fwts_list *list, fwlist_element_free element_free)
 			element_free(item->data);
 		free(item);
 	}
+
 	free(list);
 }
 

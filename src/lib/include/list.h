@@ -36,9 +36,11 @@ typedef struct {
 } fwts_list;
 
 typedef void (*fwlist_element_free)(void *);
+typedef void (*fwts_list_foreach_callback)(void *data, void *private);
 
 fwts_list         *fwts_list_init(void);
 void               fwts_list_free(fwts_list *list, fwlist_element_free element_free);
+void               fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private);
 fwts_list_element *fwts_list_append(fwts_list *list, void *data);
 
 #endif

@@ -35,7 +35,7 @@
 
 static unsigned long ebda_addr = BAD_ADDR;
 
-static fwts_text_list *klog;
+static fwts_list *klog;
 
 static int ebda_init(fwts_framework *fw)
 {
@@ -85,17 +85,15 @@ static char *ebda_headline(void)
 static int ebda_test1(fwts_framework *fw)
 {
 	int passed = 0;
-	fwts_text_list_element *item;
+	fwts_list_element *item;
 
 	if (klog == NULL)
 		return 1;
 
-	item = klog->head;
-
 	for (item = klog->head; item != NULL; item = item->next) {
 		char *tmp;
 
-		if ((tmp = strstr(item->text, "BIOS-e820")) != NULL) {
+		if ((tmp = strstr(fwts_text_list_text(item), "BIOS-e820")) != NULL) {
 			unsigned long long start_addr = 0;
 			unsigned long long end_addr = 0;
 			tmp = strstr(tmp,"BIOS-e820:");

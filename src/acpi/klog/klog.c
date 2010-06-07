@@ -29,7 +29,7 @@ static char *klog_headline(void)
 	return "Scan kernel log for errors and warnings";
 }
 
-static fwts_text_list *klog;
+static fwts_list *klog;
 
 static int klog_init(fwts_framework *fw)
 {

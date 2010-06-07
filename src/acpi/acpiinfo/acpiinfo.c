@@ -138,7 +138,7 @@ static char *acpiinfo_headline(void)
 	return "General ACPI information check";
 }
 
-static fwts_text_list *klog;
+static fwts_list *klog;
 
 static int acpiinfo_init(fwts_framework *fw)
 {

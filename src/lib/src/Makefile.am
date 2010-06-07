@@ -2,6 +2,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include  -Wall -Werror
 
 noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \
+	list.c \
 	acpi.c \
 	checkeuid.c \
 	dsdt.c \

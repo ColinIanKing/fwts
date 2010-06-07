@@ -114,7 +114,7 @@ int fwts_pipe_close(int fd, pid_t pid)
 	}
 }
 
-int fwts_pipe_exec(const char *command, fwts_text_list **list)
+int fwts_pipe_exec(const char *command, fwts_list **list)
 {
 	pid_t 	pid;
 	int	fd;
@@ -125,7 +125,7 @@ int fwts_pipe_exec(const char *command, fwts_text_list **list)
 		return -1;
 
 	text = fwts_pipe_read(fd, &len);
-	*list = fwts_text_list_from_text(text);
+	*list = fwts_list_from_text(text);
 	free(text);
 
 	return fwts_pipe_close(fd, pid);

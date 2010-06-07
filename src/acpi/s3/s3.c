@@ -56,7 +56,7 @@ static int s3_deinit(fwts_framework *fw)
 
 static void s3_do_suspend_resume(fwts_framework *fw, int *warnings, int *errors, int delay, int *duration)
 {
-	fwts_text_list *output;
+	fwts_list *output;
 	int status;
 	time_t t_start;
 	time_t t_end;
@@ -126,7 +126,7 @@ static int s3_test_single(fwts_framework *fw)
 static int s3_check_log(fwts_framework *fw)
 {
 	char *test = "S3 suspend/resume check kernel log";
-	fwts_text_list *klog;
+	fwts_list *klog;
 	int warnings = 0;
 	int errors = 0;
 

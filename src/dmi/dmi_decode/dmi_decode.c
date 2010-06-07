@@ -118,8 +118,8 @@ static char *dmi_decode_headline(void)
 
 static int dmi_decode_test1(fwts_framework *fw)
 {
-	fwts_text_list *dmi_text;
-	fwts_text_list_element *item;
+	fwts_list *dmi_text;
+	fwts_list_element *item;
 	int type;
 
 	for (type=0; type < 40; type++) {
@@ -143,20 +143,21 @@ static int dmi_decode_test1(fwts_framework *fw)
 
 			for (i=0; dmi_patterns[i].pat1 != NULL; i++) {
 				int match;
+				char *text = fwts_text_list_text(item);
 				if (dmi_patterns[i].pat2 == NULL) 
-					match = (strstr(item->text, dmi_patterns[i].pat1) != NULL);
+					match = (strstr(text, dmi_patterns[i].pat1) != NULL);
 				else {
-					match = (strstr(item->text, dmi_patterns[i].pat1) != NULL) &&
-						(strstr(item->text, dmi_patterns[i].pat2) != NULL);
+					match = (strstr(text, dmi_patterns[i].pat1) != NULL) &&
+						(strstr(text, dmi_patterns[i].pat2) != NULL);
 				}
 				if (match) {		
 					failed++;
 					fwts_framework_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
-						fwts_text_list_element *dump;
+						fwts_list_element *dump;
 						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
-							fwts_log_info(fw, "%s", dump->text);
+							fwts_log_info(fw, "%s", fwts_text_list_text(dump));
 						dumped = 1;
 					}
 				}

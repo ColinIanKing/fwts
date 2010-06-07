@@ -22,6 +22,8 @@
 
 #include "framework.h"
 #include "log.h"
+#include "list.h"
+
 #include "text_list.h"
 
 #include "set.h"

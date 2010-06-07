@@ -30,7 +30,7 @@ static char *syntaxcheck_headline(void)
 	return "Scan kernel log for errors and warnings";
 }
 
-static fwts_text_list* error_output;
+static fwts_list* error_output;
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
@@ -66,7 +66,7 @@ static int syntaxcheck_test1(fwts_framework *fw)
 	char *test = "DSDT re-assembly, syntax check";
 	int warnings = 0;
 	int errors = 0;
-	fwts_text_list_element *item;
+	fwts_list_element *item;
 
 	if (error_output == NULL)
 		return 1;
@@ -76,11 +76,11 @@ static int syntaxcheck_test1(fwts_framework *fw)
 	for (item = error_output->head; item != NULL; item = item->next) {
 		int num;
 		char ch;
-		char *line = item->text;
+		char *line = fwts_text_list_text(item);
 
 		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
 			if (item->next != NULL) {
-				char *nextline = item->next->text;
+				char *nextline = fwts_text_list_text(item->next);
 				if (!strncmp(nextline, "Error", 5)) {
 					fwts_log_info(fw, "%s", line);
 					fwts_log_info(fw, "%s", nextline);

@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-fwts_text_list* fwts_file_read(FILE *fp);
-fwts_text_list* fwts_file_open_and_read(const char *file);
+fwts_list* fwts_file_read(FILE *fp);
+fwts_list* fwts_file_open_and_read(const char *file);
 
 #endif

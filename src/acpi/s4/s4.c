@@ -53,9 +53,9 @@ static int s4_test1(fwts_framework *fw)
 	char *test = "S4 hibernate/resume test";
 	int warnings = 0;
 	int errors = 0;
-	fwts_text_list *output;
+	fwts_list *output;
 	int status;
-	fwts_text_list *klog;
+	fwts_list *klog;
 
 	fwts_log_info(fw, test);
 

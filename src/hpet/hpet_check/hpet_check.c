@@ -33,7 +33,7 @@
 
 #include "fwts.h"
 
-static fwts_text_list *klog;
+static fwts_list *klog;
 
 #define HPET_REG_SIZE  (0x400)
 #define MAX_CLK_PERIOD (100000000)
@@ -69,8 +69,8 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 	char *val, *idx;
 	int hpet_found = 0;
 
-	fwts_text_list *output;
-	fwts_text_list_element *item;
+	fwts_list *output;
+	fwts_list_element *item;
 
 	output = fwts_iasl_disassemble(fw, table, which);
 	if (output == NULL)
@@ -78,11 +78,11 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 
 	for (item = output->head; item != NULL; item = item->next) {
 		if (!hpet_found) {
-			if (strstr(item->text, "Device (HPET)") != NULL)
+			if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
 				hpet_found = 1;
 		} else {
 			/* HPET section is found, looking for base */
-			val = strstr(item->text, "0x");
+			val = strstr(fwts_text_list_text(item), "0x");
 			if (val != NULL) {
 				unsigned long long address_base;
 				idx = index(val, ',');
@@ -143,7 +143,7 @@ static int hpet_check_test1(fwts_framework *fw)
 	if (klog == NULL)
 		return 1;
 
-	fwts_text_list_element *item;
+	fwts_list_element *item;
 
 	fwts_log_info(fw,
 		   "This test checks the HPET PCI BAR for each timer block in the timer.\n"
@@ -151,8 +151,8 @@ static int hpet_check_test1(fwts_framework *fw)
 		   "IRQ routing and initialization is also verified by the test.");
 
 	for (item = klog->head; item != NULL; item = item->next) {
-		if ((strstr(item->text, "ACPI: HPET id:")) != NULL) {
-			char *txt = strstr(item->text, "base: ");
+		if ((strstr(fwts_text_list_text(item), "ACPI: HPET id:")) != NULL) {
+			char *txt = strstr(fwts_text_list_text(item), "base: ");
 			if (txt)
 				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
 			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow");

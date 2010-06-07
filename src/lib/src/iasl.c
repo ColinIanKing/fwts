@@ -29,7 +29,7 @@
 
 #include "fwts.h"
 
-fwts_text_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
+fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
@@ -39,7 +39,7 @@ fwts_text_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which
 	char *iasl = fw->iasl ? fw->iasl : IASL;
 	char *data;
 	pid_t pid;
-	fwts_text_list *output;
+	fwts_list *output;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
@@ -96,12 +96,12 @@ fwts_text_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which
 	return output;
 }
 
-fwts_text_list* fwts_iasl_reassemble(fwts_framework *fw, char *table, int which)
+fwts_list* fwts_iasl_reassemble(fwts_framework *fw, char *table, int which)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
 	char cwd[PATH_MAX];
-	fwts_text_list *output;
+	fwts_list *output;
 	int ret;
 	int len;
 	int fd;

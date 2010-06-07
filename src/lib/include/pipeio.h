@@ -23,11 +23,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "text_list.h"
+#include "fwts.h"
 
 int   fwts_pipe_open(const char *command, pid_t *childpid);
 char *fwts_pipe_read(int fd, int *length);
 int   fwts_pipe_close(int fd, pid_t pid);
-int   fwts_pipe_exec(const char *command, fwts_text_list **list);
+int   fwts_pipe_exec(const char *command, fwts_list **list);
 
 #endif

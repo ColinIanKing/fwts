@@ -40,7 +40,7 @@ static char *maxreadreq_headline(void)
 }
 
 static char *lspci = "/usr/bin/lspci";
-static fwts_text_list *lspci_text;
+static fwts_list *lspci_text;
 
 static int maxreadreq_init(fwts_framework *fw)
 {
@@ -81,13 +81,13 @@ static int maxreadreq_test1(fwts_framework *fw)
 	char current_type[512];
 	char current_device[512];
 
-	fwts_text_list_element *item;
+	fwts_list_element *item;
 
 	if (lspci_text == NULL)
 		return 1;
 
 	for (item = lspci_text->head; item != NULL; item = item->next) {
-		char *line = item->text;
+		char *line = fwts_text_list_text(item);
 		int val = 0;
 		char *c;
 

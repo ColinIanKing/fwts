@@ -20,39 +20,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "fwts.h"
 
-fwts_list *fwts_file_read(FILE *fp)
+fwts_list *fwts_list_init(void)
 {
 	fwts_list *list;
-	char buffer[8192];
 
-	if ((list = fwts_list_init()) == NULL)  {
-		fclose(fp);
+	if ((list = malloc(sizeof(fwts_list))) == NULL)
 		return NULL;
-	}
 
-	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		int len = strlen(buffer);
-		buffer[len] = '\0';	/* Chop off "\n" */
-		fwts_text_list_append(list, buffer);
-	}
+	list->head = NULL;
+	list->tail = NULL;
 
 	return list;
 }
 
-fwts_list* fwts_file_open_and_read(const char *file)
+void fwts_list_free(fwts_list *list, fwlist_element_free element_free)
 {
-	FILE *fp;
-	fwts_list *list;
+	fwts_list_element *item;
+	fwts_list_element *next;
 
-	if ((fp = fopen(file, "r")) == NULL)
+	if (list == NULL)
+		return;
+
+	for (item = list->head; item != NULL; item = next) {
+		next = item->next;
+		if (item->data)
+			element_free(item->data);
+		free(item);
+	}
+	free(list);
+}
+
+fwts_list_element *fwts_list_append(fwts_list *list, void *data)
+{
+	fwts_list_element *element;
+
+	if (list == NULL)
 		return NULL;
 
-	list = fwts_file_read(fp);
-	fclose(fp);
+	if ((element = calloc(sizeof(fwts_list_element),1)) == NULL)
+		return NULL;
 
-	return list;
+	element->data = data;
+
+	if (list->head == NULL) {
+		list->head = element;
+		list->tail = element;
+	} else {
+		list->tail->next = element;
+		list->tail = element;
+	}
+	return element;
 }

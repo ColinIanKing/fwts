@@ -16,15 +16,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#ifndef __FWTS_LIST_H__
+#define __FWTS_LIST_H__
 
-#ifndef __IASL_H__
-#define __IASL_H__
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "fwts.h"
 
-#define IASL    "/usr/bin/iasl"
+typedef struct fwts_list_element {
+	void *data;
+	struct fwts_list_element *next;
+} fwts_list_element;
 
-fwts_list* fwts_iasl_disassemble(fwts_framework *fw, char *table, int which);
-fwts_list* fwts_iasl_reassemble(fwts_framework *fw, char *table, int which);
+typedef struct {
+	fwts_list_element *head;
+	fwts_list_element *tail;
+} fwts_list;
+
+typedef void (*fwlist_element_free)(void *);
+
+fwts_list         *fwts_list_init(void);
+void               fwts_list_free(fwts_list *list, fwlist_element_free element_free);
+fwts_list_element *fwts_list_append(fwts_list *list, void *data);
 
 #endif

@@ -185,7 +185,7 @@ static char *dmesg_common_headline(void)
 	return "General dmesg common errors check";
 }
 
-static fwts_text_list *klog;
+static fwts_list *klog;
 
 static int dmesg_common_init(fwts_framework *fw)
 {

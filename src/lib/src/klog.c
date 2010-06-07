@@ -23,7 +23,7 @@
 
 #include "fwts.h"
 
-void fwts_klog_free(fwts_text_list *klog)
+void fwts_klog_free(fwts_list *klog)
 {
 	fwts_text_list_free(klog);
 }
@@ -35,11 +35,11 @@ int fwts_klog_clear(void)
 	return 0;
 }
 
-fwts_text_list *fwts_klog_read(void)
+fwts_list *fwts_klog_read(void)
 {
 	int len;
 	char *buffer;
-	fwts_text_list *list;
+	fwts_list *list;
 
 	if ((len = klogctl(10, NULL, 0)) < 0)
 		return NULL;
@@ -50,7 +50,7 @@ fwts_text_list *fwts_klog_read(void)
 	if (klogctl(3, buffer, len) < 0)
 		return NULL;
 
-	list = fwts_text_list_from_text(buffer);
+	list = fwts_list_from_text(buffer);
 	free(buffer);
 	
 	return list;
@@ -58,12 +58,12 @@ fwts_text_list *fwts_klog_read(void)
 
 typedef void (*fwts_scan_callback_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);
 
-int fwts_klog_scan(fwts_framework *fw, fwts_text_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
+int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
 {
 	*warnings = 0;
 	*errors = 0;
 	char *prev;
-	fwts_text_list_element *item;
+	fwts_list_element *item;
 
 	if (!klog)
 		return 1;
@@ -72,7 +72,7 @@ int fwts_klog_scan(fwts_framework *fw, fwts_text_list *klog, fwts_scan_callback_
 	prev = "";
 
 	for (item = klog->head; item != NULL; item=item->next) {
-		char *ptr = item->text;
+		char *ptr = (char *)item->data;
 
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
@@ -136,12 +136,12 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	}
 }
 
-int fwts_klog_firmware_check(fwts_framework *fw, fwts_text_list *klog, int *warnings, int *errors)
+int fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors)
 {	
 	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
 }
 
-int fwts_klog_pm_check(fwts_framework *fw, fwts_text_list *klog, int *warnings, int *errors)
+int fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors)
 {
 	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
 }

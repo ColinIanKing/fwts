@@ -48,7 +48,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
-	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
+	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
 	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
 	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
@@ -204,6 +204,7 @@ testsuite_SOURCES = main.c \
 	acpi/common/common.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
+	acpi/mcfg/mcfg.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
@@ -305,6 +306,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcfg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
@@ -464,6 +466,20 @@ fan.obj: acpi/fan/fan.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/fan/fan.c' object='fan.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o fan.obj `if test -f 'acpi/fan/fan.c'; then $(CYGPATH_W) 'acpi/fan/fan.c'; else $(CYGPATH_W) '$(srcdir)/acpi/fan/fan.c'; fi`
+
+mcfg.o: acpi/mcfg/mcfg.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcfg.o -MD -MP -MF $(DEPDIR)/mcfg.Tpo -c -o mcfg.o `test -f 'acpi/mcfg/mcfg.c' || echo '$(srcdir)/'`acpi/mcfg/mcfg.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mcfg.Tpo $(DEPDIR)/mcfg.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/mcfg/mcfg.c' object='mcfg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcfg.o `test -f 'acpi/mcfg/mcfg.c' || echo '$(srcdir)/'`acpi/mcfg/mcfg.c
+
+mcfg.obj: acpi/mcfg/mcfg.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mcfg.obj -MD -MP -MF $(DEPDIR)/mcfg.Tpo -c -o mcfg.obj `if test -f 'acpi/mcfg/mcfg.c'; then $(CYGPATH_W) 'acpi/mcfg/mcfg.c'; else $(CYGPATH_W) '$(srcdir)/acpi/mcfg/mcfg.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mcfg.Tpo $(DEPDIR)/mcfg.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/mcfg/mcfg.c' object='mcfg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcfg.obj `if test -f 'acpi/mcfg/mcfg.c'; then $(CYGPATH_W) 'acpi/mcfg/mcfg.c'; else $(CYGPATH_W) '$(srcdir)/acpi/mcfg/mcfg.c'; fi`
 
 apicedge.o: apic/apicedge/apicedge.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicedge.o -MD -MP -MF $(DEPDIR)/apicedge.Tpo -c -o apicedge.o `test -f 'apic/apicedge/apicedge.c' || echo '$(srcdir)/'`apic/apicedge/apicedge.c

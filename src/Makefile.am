@@ -14,6 +14,7 @@ testsuite_SOURCES = main.c \
 	acpi/common/common.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
+	acpi/mcfg/mcfg.c \
 	apic/apicedge/apicedge.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \

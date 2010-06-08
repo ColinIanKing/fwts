@@ -129,7 +129,7 @@ static char *fwts_framework_get_env(const int env_id)
 	int i;
 
 	for (i=0;i<sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++) {
-		if (fwts_framework_settings[i].env_id == env_id) {
+		if (fwts_framework_settings[i].env_id == env_id) {	
 			if (fwts_framework_settings[i].env_value)
 				return fwts_framework_settings[i].env_value;
 			else {
@@ -179,9 +179,9 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 	if (fw->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
 		if ((fw->tests_aborted > 0) || (fw->tests_failed > 0))
-			printf("FAILED\n");
+			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT));
 		else 
-			printf("PASSED\n");
+			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT));
 	}
 
 	fwts_log_newline(fw->results);
@@ -344,7 +344,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("Arguments:\n");
 	printf("--dmidecode\t\tSpecify path to dmidecode\n");
 	printf("--iasl\t\t\tSpecify path to iasl\n");
-	printf("--fwts_framework_-debug\tEnable run-time fwts_framework debug\n");
+	printf("--fwts_framework_debug\tEnable run-time fwts_framework debug\n");
 	printf("--help\t\t\tGet help\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
@@ -369,7 +369,7 @@ int fwts_framework_args(int argc, char **argv)
 {
 	struct option long_options[] = {
 		{ "stdout-summary", 0, 0, 0 },		
-		{ "fwts_framework_-debug", 0, 0, 0 },
+		{ "fwts_framework_debug", 0, 0, 0 },
 		{ "help", 0, 0, 0 },
 		{ "results-output", 1, 0, 0 },
 		{ "results-no-separators", 0, 0, 0 },

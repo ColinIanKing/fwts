@@ -48,10 +48,11 @@ ARFLAGS = cru
 libtestsuite_a_AR = $(AR) $(ARFLAGS)
 libtestsuite_a_LIBADD =
 am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
-	checkeuid.$(OBJEXT) dsdt.$(OBJEXT) fileio.$(OBJEXT) \
-	framework.$(OBJEXT) get.$(OBJEXT) iasl.$(OBJEXT) \
-	klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) set.$(OBJEXT) \
-	stringextras.$(OBJEXT) text_list.$(OBJEXT) wakealarm.$(OBJEXT)
+	checkeuid.$(OBJEXT) dsdt.$(OBJEXT) e820.$(OBJEXT) \
+	fileio.$(OBJEXT) framework.$(OBJEXT) get.$(OBJEXT) \
+	iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) \
+	set.$(OBJEXT) stringextras.$(OBJEXT) text_list.$(OBJEXT) \
+	wakealarm.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -160,6 +161,7 @@ libtestsuite_a_SOURCES = \
 	acpi.c \
 	checkeuid.c \
 	dsdt.c \
+	e820.c \
 	fileio.c \
 	framework.c \
 	get.c 	\
@@ -223,6 +225,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/checkeuid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsdt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e820.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/framework.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get.Po@am__quote@

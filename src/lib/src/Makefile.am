@@ -6,6 +6,7 @@ libtestsuite_a_SOURCES = \
 	acpi.c \
 	checkeuid.c \
 	dsdt.c \
+	e820.c \
 	fileio.c \
 	framework.c \
 	get.c 	\

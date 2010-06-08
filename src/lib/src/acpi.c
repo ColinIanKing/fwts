@@ -26,7 +26,7 @@
 
 static char *fwts_acpidump = "/usr/bin/acpidump";
 
-unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigned long *size)
+uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, unsigned long *size)
 {
 	char buffer[1024];
 	pid_t pid;

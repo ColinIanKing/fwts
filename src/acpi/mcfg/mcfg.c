@@ -95,7 +95,7 @@ static int mcfg_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return 1;
 
-	if ((mcfg_table = fwts_get_acpi_table(fw, "MCFG", &mcfg_size)) == NULL) {
+	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", &mcfg_size)) == NULL) {
 		fwts_log_error(fw, "No MCFG ACPI table found. This table is required for PCI Express*");
 		return 1;
 	}
@@ -123,7 +123,7 @@ static int mcfg_test1(fwts_framework *fw)
 {
 	int fd;
 	int nr, i;
-	char *table_ptr, *table_page;
+	uint8 *table_ptr, *table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
 	

@@ -118,8 +118,6 @@ static int get_mtrrs(void)
 		if (strstr(line, "write-combining"))
 			entry->type = WRITECOMBINING;
 
-		printf("XXXX: %s %d\n", line, entry->type);
-
 		fwts_list_append(mtrr_list, entry);		
 	}
 	fclose(file);

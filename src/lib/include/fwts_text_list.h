@@ -20,6 +20,8 @@
 #ifndef __FWTS_TEXT_LIST_H__
 #define __FWTS_TEXT_LIST_H__
 
+#include "fwts_list.h"
+
 fwts_list         *fwts_text_list_init(void);
 void 	           fwts_text_list_free(fwts_list *list);
 void	           fwts_text_list_dump(fwts_list *list);

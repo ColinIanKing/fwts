@@ -23,8 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fwts.h"
-
 typedef struct fwts_list_element {
 	void *data;
 	struct fwts_list_element *next;

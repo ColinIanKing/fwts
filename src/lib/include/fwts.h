@@ -33,6 +33,7 @@
 
 #include "fwts_acpi.h"
 #include "fwts_checkeuid.h"
+#include "fwts_e820.h"
 #include "fwts_dsdt.h"
 #include "fwts_fileio.h"
 #include "fwts_helpers.h"

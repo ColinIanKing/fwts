@@ -17,10 +17,11 @@
  *
  */
 
-#ifndef __FWTS_SCAN_KLOG_H__
-#define __FWTS_SCAN_KLOG_H__
+#ifndef __FWTS_KLOG_H__
+#define __FWTS_KLOG_H__
 
-#include "fwts.h"
+#include "fwts_list.h"
+#include "fwts_framework.h"
 
 #define KERN_WARNING            0x00000001
 #define KERN_ERROR              0x00000002

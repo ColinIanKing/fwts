@@ -40,9 +40,9 @@ static fwts_list *mtrr_list;
 #define DEFAULT		16
 
 struct mtrr_entry {
-	unsigned long long start;
-	unsigned long long end;
-	int		type;
+	uint64 start;
+	uint64 end;
+	uint8  type;
 };
 
 char *mtrr_resource = NULL;
@@ -125,7 +125,7 @@ static int get_mtrrs(void)
 	return 0;
 }
 
-static int cache_types(unsigned long long start, unsigned long long end)
+static int cache_types(uint64 start, uint64 end)
 {
 	fwts_list_element *list;
 	struct mtrr_entry *entry;
@@ -160,7 +160,7 @@ restart:
 	return type;
 }
 
-static int is_prefetchable(char *device, unsigned long long address)
+static int is_prefetchable(char *device, uint64 address)
 {
 	int pref = 0;
 	char line[4096];
@@ -179,10 +179,10 @@ static int is_prefetchable(char *device, unsigned long long address)
 	for (item=lspci_output->head; item != NULL; item = item->next) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str) {
-			unsigned long long this;
+			uint64 addr;
 			str += 10;
-			this = strtoull(str, NULL, 16);
-			if (this == address) {
+			addr = strtoull(str, NULL, 16);
+			if (addr == address) {
 				if (strstr(line,"non-prefetchable")) 
 					pref = 0;
 				else if (strstr(line,"(prefetchable"))
@@ -197,7 +197,7 @@ static int is_prefetchable(char *device, unsigned long long address)
 	return pref;
 }
 
-static void guess_cache_type(char *string, int *must, int *mustnot, unsigned long long address)
+static void guess_cache_type(char *string, int *must, int *mustnot, uint64 address)
 {
 	*must = 0;
 	*mustnot = 0;
@@ -231,7 +231,8 @@ static int validate_iomem(fwts_framework *fw)
 		return 1;
 
 	while (!feof(file)) {
-		unsigned long long start, end;
+		uint64 start;
+		uint64 end;
 		int type, type_must, type_mustnot;
 		char *c, *c2;
 		int i;

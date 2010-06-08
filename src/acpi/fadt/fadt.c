@@ -36,50 +36,50 @@ unsigned long fadt_size;
  */
 typedef struct {
 	fwts_acpi_table_header	header;	
-	u32			firmware_control;
-	u32			dsdt;
-	u8			reserved;
-	u8			preferred_pm_profile;
-	u16			sci_int;
-	u16			smi_cmd;
-	u8			acpi_enable;
-	u8			acpi_disable;
-	u8			s4bios_req;
-	u8			pstate_cnt;
-	u32			pm1a_evt_blk;
-	u32			pm1b_evt_blk;
-	u32			pm1a_cnt_blk;
-	u32			pm1b_cnt_blk;
-	u32			pm2_cnt_blk;
-	u32			pm_tmr_blk;
-	u32			gpe0_blk;
-	u32			gpe1_blk;
-	u8			pm1_evt_len;
-	u8			pm1_cnt_len;
-	u8			pm2_cnt_len;
-	u8			pm_tmr_len;
-	u8			gpe0_blk_len;
-	u8			gpe1_blk_len;
-	u8			cst_cnt;
-	u16			p_lvl2_lat;
-	u16			p_lvl3_lat;
-	u16			flush_size;
-	u16			flush_stride;
-	u8			duty_offset;
-	u8			duty_width;
-	u8			day_alrm;
-	u8			mon_alrm;
-	u8			century;
-	u16			iapc_boot_arch;
-	u8			reserved1;
-	u32			flags;
+	uint32			firmware_control;
+	uint32			dsdt;
+	uint8			reserved;
+	uint8			preferred_pm_profile;
+	uint16			sci_int;
+	uint16			smi_cmd;
+	uint8			acpi_enable;
+	uint8			acpi_disable;
+	uint8			s4bios_req;
+	uint8			pstate_cnt;
+	uint32			pm1a_evt_blk;
+	uint32			pm1b_evt_blk;
+	uint32			pm1a_cnt_blk;
+	uint32			pm1b_cnt_blk;
+	uint32			pm2_cnt_blk;
+	uint32			pm_tmr_blk;
+	uint32			gpe0_blk;
+	uint32			gpe1_blk;
+	uint8			pm1_evt_len;
+	uint8			pm1_cnt_len;
+	uint8			pm2_cnt_len;
+	uint8			pm_tmr_len;
+	uint8			gpe0_blk_len;
+	uint8			gpe1_blk_len;
+	uint8			cst_cnt;
+	uint16			p_lvl2_lat;
+	uint16			p_lvl3_lat;
+	uint16			flush_size;
+	uint16			flush_stride;
+	uint8			duty_offset;
+	uint8			duty_width;
+	uint8			day_alrm;
+	uint8			mon_alrm;
+	uint8			century;
+	uint16			iapc_boot_arch;
+	uint8			reserved1;
+	uint32			flags;
 	fwts_gas		reset_reg;
-	u8			reset_value;
-	u8			reserved2;
-	u8			reserved3;
-	u8			reserved4;
-	u64			x_firmware_control;
-	u64			x_dsdt;
+	uint8			reset_value;
+	uint8			reserved2;
+	uint8			reserved3;
+	uint8			reserved4;
+	uint64			x_firmware_control;
+	uint64			x_dsdt;
 	fwts_gas		x_pm1a_evt_blk;
 	fwts_gas		x_pm1b_evt_blk;
 	fwts_gas		x_pm1a_cnt_blk;
@@ -93,7 +93,7 @@ typedef struct {
 
 static void fadt_get_header(unsigned char *fadt_data, int size, fwts_fadt_version_2 *hdr)
 {
-	u8 data[244];
+	uint8 data[244];
 
 	/* Copy to a V2 sized buffer incase we have read in a V1 smaller sized one */
 	memset(data, 0, sizeof(data));
@@ -184,7 +184,7 @@ static int fadt_test1(fwts_framework *fw)
 {
 	char *test = "Check SCI_EN bit";
 	fwts_fadt_version_2  fadt;
-	u32 port, width, value;
+	uint32 port, width, value;
 	char *profile;
 
 	fwts_log_info(fw, test);

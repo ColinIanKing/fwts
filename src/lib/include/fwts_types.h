@@ -17,30 +17,17 @@
  *
  */
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#ifndef __FWTS_TYPES_H__
+#define __FWTS_TYPES_H__
 
-#include "fwts_types.h"
+typedef unsigned char		uint8;
+typedef unsigned short		uint16;
+typedef unsigned long		uint32;
+typedef unsigned long long 	uint64;
 
-#include "framework.h"
-#include "log.h"
-#include "list.h"
-
-#include "text_list.h"
-
-#include "set.h"
-#include "get.h"
-
-#include "acpi.h"
-#include "checkeuid.h"
-#include "dsdt.h"
-#include "fileio.h"
-#include "fwts.h"
-#include "helpers.h"
-#include "iasl.h"
-#include "klog.h"
-#include "pipeio.h"
-#include "stringextras.h"
-#include "wakealarm.h"
+typedef signed char		int8;
+typedef signed short		int16;
+typedef signed long		int32;
+typedef signed long long 	int64;
 
 #endif

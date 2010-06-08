@@ -94,8 +94,8 @@ static int ebda_test1(fwts_framework *fw)
 		char *tmp;
 
 		if ((tmp = strstr(fwts_text_list_text(item), "BIOS-e820")) != NULL) {
-			unsigned long long start_addr = 0;
-			unsigned long long end_addr = 0;
+			uint64 start_addr = 0;
+			uint64 end_addr = 0;
 			tmp = strstr(tmp,"BIOS-e820:");
 			if (tmp) {
 				tmp += 11;

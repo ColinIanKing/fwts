@@ -31,7 +31,7 @@ unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigne
 	char buffer[1024];
 	pid_t pid;
 	int fd;
-	u8 *data;
+	uint8 *data;
 	fwts_acpi_table_header hdr;
 	*size = 0;
 	int len;
@@ -42,7 +42,7 @@ unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigne
 	if ((fd = fwts_pipe_open(buffer, &pid)) < 0) {
 		return NULL;
 	}
-	data = (u8*) fwts_pipe_read(fd, &len);
+	data = (uint8*) fwts_pipe_read(fd, &len);
 	fwts_pipe_close(fd, pid);
 
 	if (data == NULL)

@@ -33,6 +33,8 @@ FADT checking
 	- done 03/06/2010
 MTRR
 	- done 07/06/2010
+MCFG	
+	- done 08/07/2010
 Hotkeys
 	-
 HPET checking

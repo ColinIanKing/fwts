@@ -1,0 +1,184 @@
+README for the fireware test suite
+==================================
+
+Well, you got this far, which is a good thing.  
+
+Quick Start Guide
+=================
+
+To build and install:
+
+./configure
+make
+sudo make install
+
+I hope to get this into a PPA once I've got the code into a more
+stable form.
+
+To get help:
+
+testsuite --help
+
+To run all the tests (including S3 and S4 suspend/resume hibernate/resume tests) use:
+
+testsuite
+
+..this will dump the results into results.log
+
+
+Advanced Options Guide
+======================
+
+Running Specific Tests
+----------------------
+
+Run specific tests, e.g. check syntax of DSDT:
+
+sudo testsuite syntaxcheck
+
+You can run multiple tests too:
+
+sudo testsuite syntaxcheck fan batttery
+
+To see all the available tests:
+
+sudo testsuite --show-tests
+
+Changing the output
+-------------------
+
+To dump the results to another file:
+
+sudo testsuite --results-output=myresults.log
+
+or to stderr or stdout and redirect:
+
+sudo testsuite --results-output=stderr
+sudo testsuite --results-output=stdout > mylog.log
+
+The log has various fields:
+
+05/05/10 19:33:41 [INF] wakealarm       Test ACPI Wakealarm
+05/05/10 19:33:41 [SEP] wakealarm       -----------------------------------------------------------
+05/05/10 19:33:41 [INF] wakealarm       Check existance of /sys/class/rtc/rtc0/wakealarm
+05/05/10 19:33:41 [RES] wakealarm       PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm
+05/05/10 19:33:41 [INF] wakealarm       Trigger RTC wakealarm
+05/05/10 19:33:41 [INF] wakealarm       Trigger wakealarm for 1 seconds in the future
+05/05/10 19:33:41 [RES] wakealarm       PASSED: test 2, Trigger RTC wakealarm
+05/05/10 19:33:41 [INF] wakealarm       Check if wakealarm is fired
+05/05/10 19:33:41 [INF] wakealarm       Trigger wakealarm for 2 seconds in the future
+05/05/10 19:33:44 [RES] wakealarm       PASSED: test 3, Check if wakealarm is fired
+05/05/10 19:33:44 [INF] wakealarm       Multiple wakealarm firing tests
+05/05/10 19:33:44 [INF] wakealarm       Trigger wakealarm for 1 seconds in the future
+05/05/10 19:33:46 [INF] wakealarm       Trigger wakealarm for 2 seconds in the future
+05/05/10 19:33:49 [INF] wakealarm       Trigger wakealarm for 3 seconds in the future
+05/05/10 19:33:53 [INF] wakealarm       Trigger wakealarm for 4 seconds in the future
+05/05/10 19:33:58 [RES] wakealarm       PASSED: test 4, Multiple wakealarm firing tests
+05/05/10 19:33:58 [SEP] wakealarm       ===========================================================
+05/05/10 19:33:58 [SUM] wakealarm       4 passed, 0 failed, 0 aborted
+05/05/10 19:33:58 [SEP] wakealarm       ===========================================================
+                    ^
+                    |
+INF = information fields
+SEP = separator (just pretty printing)
+RES = result (PASSED or FAILED)
+SUM = summary
+ERR = error (something fatal happened!)
+WRN = warning (not a critical failure, but may need looking at)
+DBG = debug output
+NLN = new line (empty field)
+
+use testsuite --log-fields to show all available fields
+
+One can filter on these fields using --log-filter, e.g.
+
+sudo testsuite --log-filter=RES,SUM  
+    .. just collect results and summary of tests
+
+sudo testsuite --log-filter=ALL,~SEP
+    .. all fields except the separators
+
+..it's quite flexible!
+
+One can also re-arrange or modify the log format using --log-format, e.g.
+
+sudo testsuite --log-format="%field %time %date: "  mtrr
+
+this produces:
+
+INF 18:40:50 08/05/10: MTRR validation
+SEP 18:40:50 08/05/10: -----------------------------------------------------------
+INF 18:40:50 08/05/10: MTRR overview
+INF 18:40:50 08/05/10: -------------
+INF 18:40:50 08/05/10: 0x00000000 - 0x80000000   write-back  
+INF 18:40:50 08/05/10: 0x80000000 - 0xc0000000   write-back  
+INF 18:40:50 08/05/10: 0xbf700000 - 0xbf800000   uncached  
+INF 18:40:50 08/05/10: 0xbf800000 - 0xc0000000   uncached  
+INF 18:40:50 08/05/10: 0xd0000000 - 0xe0000000   write-combining  
+INF 18:40:50 08/05/10: 
+INF 18:40:50 08/05/10: This test validates the MTRR iomem setup
+RES 18:40:50 08/05/10: FAILED: test 1, Memory range 0xd0000000 to 0xdfffffff (0000:00:02.0) has incorrect attribute write-combining 
+INF 18:40:50 08/05/10: This test validates the MTRR setup across all processors
+RES 18:40:50 08/05/10: PASSED: test 2, All processors have the MTRR setup
+SEP 18:40:50 08/05/10: ===========================================================
+SUM 18:40:50 08/05/10: 1 passed, 0 failed, 0 aborted
+SEP 18:40:50 08/05/10: ===========================================================
+
+Available fields are:
+
+%time	- current time
+%date 	- current date
+%owner  - name of the test program (the owner of the the current test)
+%field  - the 3 letter record identifier field (e.g. SEP, RES, etc..)
+%text   - log text (now deprecated)
+
+
+Test Progress Feedback
+======================
+
+Use the --show-progress to dump out the test progress to stderr. Output is as follows:
+
+mtrr                : Test 1 of 2 started
+mtrr                : Test 1 of 2 completed (0 passed, 1 failed, 0 aborted)
+mtrr                : Test 2 of 2 started
+mtrr                : Test 2 of 2 completed (1 passed, 0 failed, 0 aborted)
+  ^
+  test name            ^ progress info
+
+It's a bit crude at the moment!
+
+
+PASSED or FAILED?
+=================
+
+The --stdout-summary flag outputs to stdout PASSED or FAILED if test(s) passed or failed. It's essentially
+for one-shot test modes where you want to run one test and see if it passed or failed without having to
+look at the results log, e.g.
+
+sudo testsuite mtrr --stdout-summary
+
+One can override the text using the following environment variables:
+
+BIOS_TEST_TOOLKIT_PASSED_TEXT
+BIOS_TEST_TOOLKIT_FAILED_TEXT
+
+e.g.
+
+sudo BIOS_TEST_TOOLKIT_PASSED_TEXT="yay" ./src/testsuite mtrr --stdout-summary
+yay
+
+Finally, the exit code returns 1 for test failure and 0 for test success, so the
+test suite can be run from a shell script and one can detect if the test worked or not, e.g.
+
+#!/bin/bash
+LOG=stdout
+sudo ./src/testsuite dmi_decode --results-output=$LOG
+failed=$?
+
+Misc
+====
+
+Debug mode.. shows what the controlling test suite framework is doing. It's for
+the developer only!
+
+testsuite --fwts_framework_debug

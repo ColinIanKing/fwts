@@ -96,10 +96,12 @@ unsigned char *fwts_get_acpi_table(fwts_framework *fw, const char *name, unsigne
 	for (i=0; i<hdr.length; i++) 
 		checksum += data[i];
 
-	if (!checksum) {
+	if (checksum) {
 		fwts_log_error(fw, "ACPI table %s, bad checksum: %d\n", name, checksum);
+#if 0
 		free(data);
 		return NULL;
+#endif
 	}
 
 	*size = hdr.length;

@@ -19,7 +19,7 @@
 #ifndef __FWTS_WAKEALARM_H__
 #define __FWTS_WAKEALARM_H__
 
-#include "framework.h"
+#include "fwts_framework.h"
 
 #define WAKEALARM "/sys/class/rtc/rtc0/wakealarm"
 

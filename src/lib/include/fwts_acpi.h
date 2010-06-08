@@ -21,8 +21,8 @@
 #define __FWTS_ACPI_H__
 
 #include "fwts_types.h"
-#include "framework.h"
-#include "log.h"
+#include "fwts_framework.h"
+#include "fwts_log.h"
 
 #define GET_UINT64(var, buffer, offset) \
 	var = 				\

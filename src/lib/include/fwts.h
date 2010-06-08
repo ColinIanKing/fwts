@@ -22,25 +22,24 @@
 
 #include "fwts_types.h"
 
-#include "framework.h"
-#include "log.h"
-#include "list.h"
+#include "fwts_framework.h"
+#include "fwts_log.h"
+#include "fwts_list.h"
 
-#include "text_list.h"
+#include "fwts_text_list.h"
 
-#include "set.h"
-#include "get.h"
+#include "fwts_set.h"
+#include "fwts_get.h"
 
-#include "acpi.h"
-#include "checkeuid.h"
-#include "dsdt.h"
-#include "fileio.h"
-#include "fwts.h"
-#include "helpers.h"
-#include "iasl.h"
-#include "klog.h"
-#include "pipeio.h"
-#include "stringextras.h"
-#include "wakealarm.h"
+#include "fwts_acpi.h"
+#include "fwts_checkeuid.h"
+#include "fwts_dsdt.h"
+#include "fwts_fileio.h"
+#include "fwts_helpers.h"
+#include "fwts_iasl.h"
+#include "fwts_klog.h"
+#include "fwts_pipeio.h"
+#include "fwts_stringextras.h"
+#include "fwts_wakealarm.h"
 
 #endif

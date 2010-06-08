@@ -21,7 +21,7 @@
 #define __FWTS_FRAMEWORK_H__
 
 #include <stdio.h>
-#include "log.h"
+#include "fwts_log.h"
 
 #define FRAMEWORK_MAGIC	0x2af61aec
 

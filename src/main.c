@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "framework.h"
+#include "fwts.h"
 
 int main(int argc, char **argv)
 {

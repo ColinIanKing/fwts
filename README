@@ -181,4 +181,4 @@ Misc
 Debug mode.. shows what the controlling test suite framework is doing. It's for
 the developer only!
 
-testsuite --fwts_framework_debug
+testsuite --fwts_debug

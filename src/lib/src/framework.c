@@ -344,7 +344,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("Arguments:\n");
 	printf("--dmidecode\t\tSpecify path to dmidecode\n");
 	printf("--iasl\t\t\tSpecify path to iasl\n");
-	printf("--fwts_framework_debug\tEnable run-time fwts_framework debug\n");
+	printf("--fwts_debug\t\tEnable run-time test suite framework debug\n");
 	printf("--help\t\t\tGet help\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests\n");
 	printf("--results-no-separators\tNo horizontal separators in results log\n");
@@ -357,9 +357,9 @@ static void fwts_framework_syntax(char **argv)
 	printf("\t\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
 	printf("\t\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
 	printf("--log-format=fields\tDefine output log format\n");
-	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): %%text\n");
+	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): \n");
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
-	printf("\t\t                 %%owner - name of test program, %%text - log text\n");
+	printf("\t\t                 %%owner - name of test program\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");
 	printf("--show-tests\t\tShow available tests\n");
 }
@@ -465,8 +465,8 @@ int fwts_framework_args(int argc, char **argv)
 		}
 	}	
 
-	fw->debug = fwts_log_open("fwts_framework_", LOGFILE(fw->debug_logname, "stderr"), "a+");
-	fw->results = fwts_log_open("fwts_framework_", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+	fw->debug = fwts_log_open("fwts", LOGFILE(fw->debug_logname, "stderr"), "a+");
+	fw->results = fwts_log_open("fwts", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
 
 	if (optind < argc) 
 		for (; optind < argc; optind++) {

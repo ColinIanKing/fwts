@@ -27,7 +27,7 @@
 
 static char *syntaxcheck_headline(void)
 {
-	return "Scan kernel log for errors and warnings";
+	return "Re-assemble DSDT and find syntax errors and warnings";
 }
 
 static fwts_list* error_output;

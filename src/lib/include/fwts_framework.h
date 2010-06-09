@@ -40,16 +40,21 @@ typedef struct fwts_framework {
 	struct fwts_framework_ops const *ops;	
 	int flags;
 
-	/* per test stats */
-	int tests_passed;		
-	int tests_failed;
-	int tests_aborted;
 	int current_test;
 
+	/* per test stats */
+	int passed_sub_tests;
+	int failed_sub_tests;
+	int aborted_sub_tests;
+
+	int passed_test_run;
+	int failed_test_run;
+	int aborted_test_run;
+
 	/* overall test stats */
-	int total_tests_passed;		
-	int total_tests_failed;
-	int total_tests_aborted;
+	int passed_total;
+	int failed_total;
+	int aborted_total;
 } fwts_framework;
 
 

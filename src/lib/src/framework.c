@@ -174,11 +174,12 @@ static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	fwts_framework_underline(fw,'=');
-	fwts_log_summary(fw, "%d passed, %d failed, %d aborted", fw->tests_passed, fw->tests_failed, fw->tests_aborted);
+	fwts_log_summary(fw, "%d passed, %d failed, %d aborted", 
+		fw->passed_test_run, fw->failed_test_run, fw->aborted_test_run);
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
-		if ((fw->tests_aborted > 0) || (fw->tests_failed > 0))
+		if ((fw->aborted_test_run > 0) || (fw->failed_test_run > 0))
 			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT));
 		else 
 			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT));
@@ -186,9 +187,6 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 	fwts_log_newline(fw->results);
 
-	fw->total_tests_aborted += fw->tests_aborted;
-	fw->total_tests_failed  += fw->tests_failed;
-	fw->total_tests_passed  += fw->tests_passed;
 
 	return 0;
 }
@@ -196,7 +194,8 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
 	fwts_log_set_owner(fw->results, "fwts_framework_");
-	fwts_log_summary(fw, "All tests: %d passed, %d failed, %d aborted", fw->total_tests_passed, fw->total_tests_failed, fw->total_tests_aborted);
+	fwts_log_summary(fw, "SUMMARY: %d passed, %d failed, %d aborted", 
+		fw->passed_total, fw->failed_total, fw->aborted_total);
 
 	return 0;
 }
@@ -208,6 +207,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() entered\n");
 
+	fw->aborted_test_run = 0;
+	fw->failed_test_run  = 0;
+	fw->passed_test_run  = 0;
+
 	fwts_log_set_owner(fw->results, name);
 
 	if (ops->headline) {
@@ -217,14 +220,18 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()\n");
 
-
 	if (ops->init) {
 		if (ops->init(fw)) {
+			if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+				fprintf(stderr, "%-20.20s: Test aborted\n", name);		
+				fflush(stderr);
+			}
 			/* Init failed, so abort */
 			fwts_log_error(fw, "Aborted test, initialisation failed");
 			fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
 			for (test = ops->tests; *test != NULL; test++) {
-				fw->tests_aborted++;
+				fw->aborted_test_run++;
+				fw->aborted_total++;
 			}
 			fwts_framework_test_summary(fw);
 			return 0;
@@ -242,18 +249,25 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 		fwts_framework_debug(fw, "exectuting test %d\n", fw->current_test);
 
-		fw->tests_aborted = 0;
-		fw->tests_failed = 0;
-		fw->tests_passed = 0;
+		fw->aborted_sub_tests = 0;
+		fw->failed_sub_tests  = 0;
+		fw->passed_sub_tests  = 0;
 
 		(*test)(fw);
+	
+		fw->aborted_test_run += fw->aborted_sub_tests;
+		fw->failed_test_run  += fw->failed_sub_tests;
+		fw->passed_test_run  += fw->passed_sub_tests;
 
 		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%-20.20s: Test %d of %d completed (%d passed, %d failed, %d aborted)\n", 
 				name, fw->current_test, num,
-				fw->tests_passed, fw->tests_failed, fw->tests_aborted);
+				fw->passed_sub_tests, fw->failed_sub_tests, fw->aborted_sub_tests);
 		}
 	}
+	fw->aborted_total += fw->aborted_test_run;
+	fw->failed_total  += fw->failed_test_run;
+	fw->passed_total  += fw->passed_test_run;
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->deinit()\n");
 	if (ops->deinit)
@@ -297,7 +311,7 @@ static int fwts_framework_run_registered_test(fwts_framework *fw, const char *na
 
 static void fwts_framework_close(fwts_framework *fw)
 {
-	int failed = (fw->total_tests_aborted > 0 || fw->total_tests_failed);
+	int failed = (fw->aborted_total > 0 || fw->failed_total);
 
 	if (fw && (fw->magic == FRAMEWORK_MAGIC)) {
 		free(fw);
@@ -315,7 +329,7 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d passed: %s\n", fw->current_test, buffer);
-	fw->tests_passed++;
+	fw->passed_sub_tests++;
 	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, buffer);
 
@@ -331,7 +345,7 @@ void fwts_framework_failed(fwts_framework *fw, const char *fmt, ...)
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d failed: %s\n", fw->current_test, buffer);
-	fw->tests_failed++;
+	fw->failed_sub_tests++;
 	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
 

@@ -16,6 +16,7 @@ testsuite_SOURCES = main.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \
 	apic/apicedge/apicedge.c \
+	acpi/osilinux/osilinux.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \

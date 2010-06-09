@@ -42,5 +42,6 @@
 #include "fwts_pipeio.h"
 #include "fwts_stringextras.h"
 #include "fwts_wakealarm.h"
+#include "fwts_virt.h"
 
 #endif

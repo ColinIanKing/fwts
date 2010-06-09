@@ -39,7 +39,8 @@ Hotkeys
 	-
 HPET checking
 	- done 04/06/2010
-
+Virt extentions checks
+	- done 09/06/2010
 
 Other ideas of tests:
 

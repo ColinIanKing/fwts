@@ -50,7 +50,8 @@ am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	s4.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
 	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
 	apicedge.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT)
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -210,7 +211,8 @@ testsuite_SOURCES = main.c \
 	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
-	pci/maxreadreq/maxreadreq.c
+	pci/maxreadreq/maxreadreq.c \
+	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
@@ -311,6 +313,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt_svm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt_vmx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Po@am__quote@
 
 .c.o:
@@ -564,6 +569,48 @@ maxreadreq.obj: pci/maxreadreq/maxreadreq.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/maxreadreq/maxreadreq.c' object='maxreadreq.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o maxreadreq.obj `if test -f 'pci/maxreadreq/maxreadreq.c'; then $(CYGPATH_W) 'pci/maxreadreq/maxreadreq.c'; else $(CYGPATH_W) '$(srcdir)/pci/maxreadreq/maxreadreq.c'; fi`
+
+virt.o: cpu/virt/virt.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt.o -MD -MP -MF $(DEPDIR)/virt.Tpo -c -o virt.o `test -f 'cpu/virt/virt.c' || echo '$(srcdir)/'`cpu/virt/virt.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt.Tpo $(DEPDIR)/virt.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt.c' object='virt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt.o `test -f 'cpu/virt/virt.c' || echo '$(srcdir)/'`cpu/virt/virt.c
+
+virt.obj: cpu/virt/virt.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt.obj -MD -MP -MF $(DEPDIR)/virt.Tpo -c -o virt.obj `if test -f 'cpu/virt/virt.c'; then $(CYGPATH_W) 'cpu/virt/virt.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt.Tpo $(DEPDIR)/virt.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt.c' object='virt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt.obj `if test -f 'cpu/virt/virt.c'; then $(CYGPATH_W) 'cpu/virt/virt.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt.c'; fi`
+
+virt_svm.o: cpu/virt/virt_svm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt_svm.o -MD -MP -MF $(DEPDIR)/virt_svm.Tpo -c -o virt_svm.o `test -f 'cpu/virt/virt_svm.c' || echo '$(srcdir)/'`cpu/virt/virt_svm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt_svm.Tpo $(DEPDIR)/virt_svm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_svm.c' object='virt_svm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_svm.o `test -f 'cpu/virt/virt_svm.c' || echo '$(srcdir)/'`cpu/virt/virt_svm.c
+
+virt_svm.obj: cpu/virt/virt_svm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt_svm.obj -MD -MP -MF $(DEPDIR)/virt_svm.Tpo -c -o virt_svm.obj `if test -f 'cpu/virt/virt_svm.c'; then $(CYGPATH_W) 'cpu/virt/virt_svm.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_svm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt_svm.Tpo $(DEPDIR)/virt_svm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_svm.c' object='virt_svm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_svm.obj `if test -f 'cpu/virt/virt_svm.c'; then $(CYGPATH_W) 'cpu/virt/virt_svm.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_svm.c'; fi`
+
+virt_vmx.o: cpu/virt/virt_vmx.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt_vmx.o -MD -MP -MF $(DEPDIR)/virt_vmx.Tpo -c -o virt_vmx.o `test -f 'cpu/virt/virt_vmx.c' || echo '$(srcdir)/'`cpu/virt/virt_vmx.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt_vmx.Tpo $(DEPDIR)/virt_vmx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_vmx.c' object='virt_vmx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_vmx.o `test -f 'cpu/virt/virt_vmx.c' || echo '$(srcdir)/'`cpu/virt/virt_vmx.c
+
+virt_vmx.obj: cpu/virt/virt_vmx.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT virt_vmx.obj -MD -MP -MF $(DEPDIR)/virt_vmx.Tpo -c -o virt_vmx.obj `if test -f 'cpu/virt/virt_vmx.c'; then $(CYGPATH_W) 'cpu/virt/virt_vmx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_vmx.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/virt_vmx.Tpo $(DEPDIR)/virt_vmx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_vmx.c' object='virt_vmx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_vmx.obj `if test -f 'cpu/virt/virt_vmx.c'; then $(CYGPATH_W) 'cpu/virt/virt_vmx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_vmx.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.

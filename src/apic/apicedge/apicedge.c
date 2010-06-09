@@ -90,7 +90,7 @@ static int apicedge_test1(fwts_framework *fw)
 	}
 	fclose(file);	
 
-	if (!fw->tests_failed)
+	if (!fw->failed_sub_tests)
 		fwts_framework_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered");
 
 	return 0;

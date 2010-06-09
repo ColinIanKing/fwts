@@ -382,7 +382,7 @@ static int mtrr_test2(fwts_framework *fw)
 
 	if (klog != NULL) {
 		fwts_list_foreach(klog, check_line, fw);
-		if (!fw->tests_failed)
+		if (!fw->failed_sub_tests)
 			fwts_framework_passed(fw, "All processors have the MTRR setup");
 	} else
 		fwts_log_error(fw, "No boot dmesg found.\n");

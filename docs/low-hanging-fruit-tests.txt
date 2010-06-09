@@ -41,3 +41,7 @@ HPET checking
 	- done 04/06/2010
 
 
+Other ideas of tests:
+
+ * Extract available _OSI configs from DSDT and run tests over all these configs
+ * Check for _OSI Linux

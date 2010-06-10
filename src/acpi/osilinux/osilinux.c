@@ -73,7 +73,7 @@ static int osilinux_test1(fwts_framework *fw)
 		return 1;
 
 	fwts_log_info(fw, 
-		"Disassemble DSDT to check for _OSI(\"Linux\"\n"
+		"Disassemble DSDT to check for _OSI(\"Linux\")\n"
 		"This is not strictly a failure mode, it just alerts\n"
 		"one that this has been defined in the DSDT and probably\n"
 		"should be avoided since the Linux ACPI driver matches\n"

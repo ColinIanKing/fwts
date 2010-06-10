@@ -168,6 +168,7 @@ static int hpet_check_test2(fwts_framework *fw)
 {
 	int fd;
 	uint64 hpet_id;
+	uint32 vendor_id;
 	uint32 clk_period;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
@@ -184,8 +185,13 @@ static int hpet_check_test2(fwts_framework *fw)
 	}
 
 	hpet_id = *(uint64*) hpet_base_v;
+	vendor_id = (hpet_id & 0xffff0000) >> 16;
 
-	fwts_log_info(fw, "HPET found, VendorID is: %04X", ((hpet_id & 0xffff0000) >> 16));
+	
+	if (vendor_id == 0xffff)
+		fwts_failed(fw, "Invalid Vendor ID: %04x - this should be configured", vendor_id);
+	else
+		fwts_passed(fw, "Vendor ID looks sane: %04x", vendor_id);
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))

@@ -87,40 +87,22 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *warnings, int *errors,
 		fwts_log_error(fw, "Unexpected: S3 much longer than expected (%d seconds)", *duration);
 	}
 
+	fwts_log_info(fw, "pm-suspend returned status: %d", status);
+
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		errors++;
-		fwts_log_error(fw, "pm-action failed before trying to put the system\n"
+		fwts_log_warning(fw, "pm-action failed before trying to put the system\n"
 				   "in the requested power saving state");
 	} else if (status == 128) {
 		errors++;
-		fwts_log_error(fw, "pm-action tried to put the machine in the requested\n"
+		fwts_log_warning(fw, "pm-action tried to put the machine in the requested\n"
        				   "power state but failed");
 	} else if (status > 128) {
 		errors++;
-		fwts_log_error(fw, "pm-action encountered an error and also failed to\n"
+		fwts_log_warning(fw, "pm-action encountered an error and also failed to\n"
 				   "enter the requested power saving state");
 	}
-}
-
-static int s3_test_single(fwts_framework *fw)
-{	
-	char *test = "S3 suspend/resume test (single run)";
-	int warnings = 0;
-	int errors = 0;
-	int duration;
-
-	fwts_log_info(fw, test);
-
-	s3_do_suspend_resume(fw, &warnings, &errors, 30, &duration);
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
-		fwts_failed(fw, test);
-	}
-	else
-		fwts_passed(fw, test);
-
-	return 0;
 }
 
 static int s3_check_log(fwts_framework *fw)
@@ -156,6 +138,26 @@ static int s3_check_log(fwts_framework *fw)
 	return 0;
 }
 
+static int s3_test_single(fwts_framework *fw)
+{	
+	char *test = "S3 suspend/resume test (single run)";
+	int warnings = 0;
+	int errors = 0;
+	int duration;
+
+	fwts_log_info(fw, test);
+
+	s3_do_suspend_resume(fw, &warnings, &errors, 30, &duration);
+	if (warnings + errors > 0) {
+		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
+		fwts_failed(fw, test);
+	}
+	else
+		fwts_passed(fw, test);
+
+	return s3_check_log(fw);
+}
+
 static int s3_test_multiple(fwts_framework *fw)
 {	
 	char *test = "S3 suspend/resume test (multiple runs)";
@@ -164,6 +166,8 @@ static int s3_test_multiple(fwts_framework *fw)
 	int delay = 30;
 	int duration = 0;
 	int i;
+
+	fwts_log_info(fw, test);
 
 	if (fw->s3_multiple == 0) {
 		fw->s3_multiple = 2;
@@ -188,14 +192,12 @@ static int s3_test_multiple(fwts_framework *fw)
 	else
 		fwts_passed(fw, test);
 
-	return 0;
+	return s3_check_log(fw);
 }
 
 static fwts_framework_tests s3_tests[] = {
 	s3_test_single,
-	s3_check_log,
 	s3_test_multiple,
-	s3_check_log,
 	NULL
 };
 

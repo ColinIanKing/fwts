@@ -131,11 +131,11 @@ static int dmi_decode_test1(fwts_framework *fw)
 
 		if (fwts_pipe_exec(buffer, &dmi_text)) {
 			fwts_log_error(fw, "Failed to execute dmidecode");
-			return 1;
+			continue;
 		}
 		if (dmi_text == NULL) {
 			fwts_log_error(fw, "Failed to read output from dmidecode (out of memory)");
-			return 1;
+			continue;
 		}	
 
 		for (item = dmi_text->head; item != NULL; item = item->next) {
@@ -162,7 +162,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 				}
 			}
 		}
-		if (fwts_tests_passed(fw))
+		if (!dumped)
 			fwts_passed(fw, "DMI type %s", dmi_types[type]);
 		
 		fwts_text_list_free(dmi_text);

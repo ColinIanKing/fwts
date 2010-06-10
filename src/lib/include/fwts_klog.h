@@ -29,6 +29,7 @@
 typedef struct {
         char *pattern;
         int  type;
+	char *advice;
 } fwts_klog_pattern;
 
 typedef void (*fwts_klog_scan_func_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);

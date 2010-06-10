@@ -33,6 +33,7 @@ typedef enum {
 	LOG_SUMMARY   = 0x00000020,
 	LOG_SEPARATOR = 0x00000040,
 	LOG_NEWLINE   = 0x00000080,
+	LOG_ADVICE    = 0x00000100,
 } fwts_log_field;
 
 typedef struct log_t {
@@ -67,5 +68,11 @@ void      fwts_log_filter_unset_field(const fwts_log_field filter);
 
 #define fwts_log_summary(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_SUMMARY, fmt, ## args)
+
+#define fwts_log_advice(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_ADVICE, fmt, ## args)
+
+#define fwts_log_nl(fw) \
+	fwts_log_printf(fw->results, LOG_NEWLINE, "\n");
 
 #endif

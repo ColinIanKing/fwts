@@ -50,6 +50,8 @@ static char *fwts_log_field_to_str(fwts_log_field field)
 		return "SEP";
 	case LOG_NEWLINE:
 		return "NLN";
+	case LOG_ADVICE:
+		return "ADV";
 	default:
 		return LOG_UNKOWN_FIELD;
 	}
@@ -86,6 +88,7 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 		{ "INF", LOG_INFO },
 		{ "SUM", LOG_SUMMARY },
 		{ "SEP", LOG_SEPARATOR },
+		{ "ADV", LOG_ADVICE },
 		{ "ALL", ~0 },
 		{ NULL, 0 }
 	};

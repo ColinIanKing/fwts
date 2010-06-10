@@ -58,8 +58,6 @@ static int klog_test1(fwts_framework *fw)
 	int warnings = 0;
 	int errors = 0;
 
-	fwts_log_info(fw, test);
-
 	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors)) {
 		fwts_log_error(fw, "error parsing kernel log");
 		return 1;

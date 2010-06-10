@@ -74,6 +74,6 @@ typedef struct {
 	uint32		creator_revision;
 } fwts_acpi_table_header;
 
-uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, unsigned long *size);
+uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int *size);
 
 #endif

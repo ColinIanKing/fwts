@@ -26,7 +26,7 @@
 
 static char *fwts_acpidump = "/usr/bin/acpidump";
 
-uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, unsigned long *size)
+uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int *size)
 {
 	char buffer[1024];
 	pid_t pid;
@@ -38,7 +38,7 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, unsigned long 
 	int i;
 	unsigned char checksum = 0;
 
-	sprintf(buffer,"%s -t %s -b", fwts_acpidump, name);
+	sprintf(buffer,"%s -t %s -b -s %d", fwts_acpidump, name, which);
 	if ((fd = fwts_pipe_open(buffer, &pid)) < 0) {
 		return NULL;
 	}

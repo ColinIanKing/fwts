@@ -29,7 +29,7 @@
 #include "fwts.h"
 
 uint8 *fadt_table;
-unsigned long fadt_size;
+int    fadt_size;
 
 /*
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
@@ -159,7 +159,7 @@ static int fadt_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return 1;
 
-	if ((fadt_table = fwts_acpi_table_load(fw, "FADT", &fadt_size)) == NULL) {
+	if ((fadt_table = fwts_acpi_table_load(fw, "FADT", 0, &fadt_size)) == NULL) {
 		fwts_log_error(fw, "Failed to read ACPI FADT");
 		return 1;
 	}

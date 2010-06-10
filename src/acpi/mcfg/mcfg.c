@@ -33,7 +33,7 @@
 
 static fwts_list *e820_list;
 static void *mcfg_table;
-static unsigned long mcfg_size;
+static int mcfg_size;
 
 /* Defined in PCI Firmware Specification 3.0 */
 struct mcfg_entry {
@@ -95,7 +95,7 @@ static int mcfg_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return 1;
 
-	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", &mcfg_size)) == NULL) {
+	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", 0, &mcfg_size)) == NULL) {
 		fwts_log_error(fw, "No MCFG ACPI table found. This table is required for PCI Express*");
 		return 1;
 	}

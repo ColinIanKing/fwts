@@ -41,7 +41,7 @@ static int s4_init(fwts_framework *fw)
 	ret = fwts_wakealarm_test_firing(fw, 1);
 	if (ret != 0) {
 		fwts_log_error(fw, "cannot automatically wake machine up - aborting S4 test");
-		fwts_framework_failed(fw, "check if wakealarm works reliably for S4 tests");
+		fwts_failed(fw, "check if wakealarm works reliably for S4 tests");
 		return 1;
 	}
 
@@ -61,7 +61,7 @@ static int s4_test1(fwts_framework *fw)
 
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "cannot clear kernel log");
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 		return 1;
 	}
 
@@ -76,7 +76,7 @@ static int s4_test1(fwts_framework *fw)
 	
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "cannot read kernel log");
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 
 	if (fwts_klog_pm_check(fw, klog, &warnings, &errors))
@@ -103,10 +103,10 @@ static int s4_test1(fwts_framework *fw)
 
 	if (warnings + errors > 0) {
 		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }

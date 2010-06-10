@@ -124,11 +124,11 @@ static int maxreadreq_test1(fwts_framework *fw)
 	}
 
 	if (warnings > 0)
-		fwts_framework_failed(fw, "%d devices have low MaxReadReq settings.\n" 
+		fwts_failed(fw, "%d devices have low MaxReadReq settings.\n" 
 				     "Firmware may have configured these too low.",
 				     warnings);
 	else
-		fwts_framework_passed(fw, "All devices have MaxReadReq set > 128");
+		fwts_passed(fw, "All devices have MaxReadReq set > 128");
 
 	return 0;
 }

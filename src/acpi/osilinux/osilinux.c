@@ -99,6 +99,7 @@ static int osilinux_test1(fwts_framework *fw)
 					dumpitem = dumpitem->next;
 				}
 				dumpdepth = 0;
+				fwts_warning(fw, "DSDT implements a deprecated _OSI(\"Linux\") test");
 			}
 		}
 		if ((str = strstr(line, "_OSI")) != NULL) {
@@ -108,7 +109,7 @@ static int osilinux_test1(fwts_framework *fw)
 	}
 
 	if (!found)
-		fwts_framework_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test");
+		fwts_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test");
 
 	return 0;
 }

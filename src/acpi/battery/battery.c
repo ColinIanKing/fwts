@@ -70,12 +70,12 @@ static void check_charging(fwts_framework *fw, char *dir, char *uri, char *name)
 	for (i=1; i<30; i++) {
 		new_value = get_full(dir);
 		if (new_value>initial_value) {
-			fwts_framework_passed(fw, "Battery %s charge is incrementing as expected", name);
+			fwts_passed(fw, "Battery %s charge is incrementing as expected", name);
 			return;
 		}		
 		sleep(1);
 	}
-	fwts_framework_failed(fw, "Battery %s claims it's charging but no charge is added", name);
+	fwts_failed(fw, "Battery %s claims it's charging but no charge is added", name);
 }
 
 static void check_discharging(fwts_framework *fw, char *dir, char *uri, char *name)
@@ -91,12 +91,12 @@ static void check_discharging(fwts_framework *fw, char *dir, char *uri, char *na
 	for (i=1; i<30; i++) {
 		new_value = get_full(dir);
 		if (new_value<initial_value) {
-			fwts_framework_passed(fw, "Battery %s charge is decrementing as expected", name);
+			fwts_passed(fw, "Battery %s charge is decrementing as expected", name);
 			return;
 		}		
 		sleep(1);
 	}
-	fwts_framework_failed(fw, "Battery %s claims it's discharging but no charge is used", name);
+	fwts_failed(fw, "Battery %s claims it's discharging but no charge is used", name);
 }
 
 
@@ -114,7 +114,7 @@ static void do_battery(fwts_framework *fw, char *dir, char *name)
 
 	sprintf(path, "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_framework_failed(fw, "Battery present but undersupported - no state present");
+		fwts_failed(fw, "Battery present but undersupported - no state present");
 		return;
 	}
 

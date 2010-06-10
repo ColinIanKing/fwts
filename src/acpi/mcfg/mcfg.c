@@ -78,10 +78,10 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		if (strncmp(line, "00: ",4)==0) {
 			if (strcmp(&line[4], compare_line)) {
 				fwts_log_info(fw, "%s is read from MMCONFIG, but traditional gives :\n-%s-\n", &line[4]);
-				fwts_framework_failed(fw, "PCI config space appears to not work");
+				fwts_failed(fw, "PCI config space appears to not work");
 				return;
 			} else {
-				fwts_framework_passed(fw, "PCI config space verified");
+				fwts_passed(fw, "PCI config space verified");
 				return;
 			}
 		}
@@ -144,18 +144,18 @@ static int mcfg_test1(fwts_framework *fw)
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
 	if ((int)mcfg_size<0) {
-		fwts_framework_failed(fw, "Invalid MCFG ACPI table size");
+		fwts_failed(fw, "Invalid MCFG ACPI table size");
 		return 1;
 	}
 	nr = mcfg_size / sizeof(struct mcfg_entry);
 
 	if (!nr) {
-		fwts_framework_failed(fw, "No MCFG ACPI table entries");
+		fwts_failed(fw, "No MCFG ACPI table entries");
 		return 1;
 	}
 
 	if ((nr * sizeof(struct mcfg_entry)) != mcfg_size) {
-		fwts_framework_failed(fw, "MCFG table is not a multiple of record size");
+		fwts_failed(fw, "MCFG table is not a multiple of record size");
 		return 1;
 	}
 
@@ -165,7 +165,7 @@ static int mcfg_test1(fwts_framework *fw)
 	table_page = table_ptr = mcfg_table;
 
 	if (table_page==NULL) {
-		fwts_framework_failed(fw, "Invalid MCFG ACPI table");
+		fwts_failed(fw, "Invalid MCFG ACPI table");
 		return 1;
 	}
 
@@ -175,13 +175,13 @@ static int mcfg_test1(fwts_framework *fw)
 	firstentry = *table;
 
 	if (e820_list == NULL)
-		fwts_framework_failed(fw, "Cannot check MCFG mmio space against E820 table because E820 table could not load");
+		fwts_failed(fw, "Cannot check MCFG mmio space against E820 table because E820 table could not load");
 
 	for (i = 0; i<nr; i++) {
 		fwts_log_info(fw, "Entry address : %x\n", table->low_address);
 
 		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
-			fwts_framework_failed(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+			fwts_failed(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
 			failed++;
 		}
 
@@ -193,7 +193,7 @@ static int mcfg_test1(fwts_framework *fw)
 		table++;
 	}
 	if (!failed)
-		fwts_framework_passed(fw, "MCFG mmio config space is reserved in E820 table");
+		fwts_passed(fw, "MCFG mmio config space is reserved in E820 table");
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem");

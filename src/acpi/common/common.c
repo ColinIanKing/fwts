@@ -54,63 +54,63 @@ static char *dmesg_parse_brackets(char *line)
 static void dmesg_common_check(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
 {
 	if (strstr(line, "Temperature above threshold, cpu clock throttled")) {
-		fwts_framework_failed(fw,"Test caused overtemperature. Insufficient cooling?");
+		fwts_failed(fw,"Test caused overtemperature. Insufficient cooling?");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "ACPI: Handling Garbled _PRT entry")) {
-		fwts_framework_failed(fw,"Bios has a garbled _PRT entry; source_name and source_index swapped");
+		fwts_failed(fw,"Bios has a garbled _PRT entry; source_name and source_index swapped");
 		fwts_log_info(fw, "%s", line);
 	}
 	
 	if (strstr(line, "BIOS never enumerated boot CPU")) {
-		fwts_framework_failed(fw,"The boot processor is not enumerated!"); 
+		fwts_failed(fw,"The boot processor is not enumerated!"); 
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Return object type is incorrect")) {
-		fwts_framework_failed(fw,"Return object type is incorrect: %s", line);
+		fwts_failed(fw,"Return object type is incorrect: %s", line);
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm") && strstr(line,"_HPP fail")) {
-		fwts_framework_failed(fw,"Hotplug _HPP method fails!");
+		fwts_failed(fw,"Hotplug _HPP method fails!");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_pciehprm") && strstr(line,"OSHP fail")) {
-		fwts_framework_failed(fw,"Hotplug OSHP method fails!");
+		fwts_failed(fw,"Hotplug OSHP method fails!");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "shpchp: acpi_shpchprm:") && strstr(line,"evaluate _BBN fail")) {
-		fwts_framework_failed(fw,"Hotplug _BBN method is missing");
+		fwts_failed(fw,"Hotplug _BBN method is missing");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "[PBST] Namespace lookup failure, AE_NOT_FOUND")) {
-		fwts_framework_failed(fw,"ACPI Namespace lookup failure reported");
+		fwts_failed(fw,"ACPI Namespace lookup failure reported");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method reached maximum reentrancy limit")) {
-		fwts_framework_failed(fw,"ACPI method has reached reentrancy limit");
+		fwts_failed(fw,"ACPI method has reached reentrancy limit");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Error while parsing _PSD domain information")) {
-		fwts_framework_failed(fw,"_PSD domain information is corrupt!");
+		fwts_failed(fw,"_PSD domain information is corrupt!");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Wrong _BBN value, reboot and use option 'pci=noacpi'")) {
-		fwts_framework_failed(fw,"The BIOS has wrong _BBN value, "
+		fwts_failed(fw,"The BIOS has wrong _BBN value, "
 			"which will make PCI root bridge have wrong bus number"); 
 		fwts_log_info(fw, "%s", line);
 	}
 			
 	if (strstr(line,"ACPI: lapic on CPU ") && strstr(line, " stops in C2[C2]")) {
-		fwts_framework_failed(fw,"The local apic timer incorrectly stops during C2 idle state\n",
+		fwts_failed(fw,"The local apic timer incorrectly stops during C2 idle state\n",
 				"The local apic timer incorrectly stops during C2 idle state.\n"
 				"The ACPI specification forbids this and Linux needs the local\n"
 				"apic timer to work. The most likely cause of this is that the\n"
@@ -122,27 +122,27 @@ static void dmesg_common_check(fwts_framework *fw, char *line, char *prevline, v
 	if (strstr(line, "Invalid _PCT data")!=NULL) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr)
-			fwts_framework_failed(fw,"The _PCT data of %s is invalid", ptr);
+			fwts_failed(fw,"The _PCT data of %s is invalid", ptr);
 		else 
-			fwts_framework_failed(fw, "The _PCT data is invalid");
+			fwts_failed(fw, "The _PCT data is invalid");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "*** Error: Method execution failed")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr)
-			fwts_framework_failed(fw,"Method execution of %s failed", ptr);
+			fwts_failed(fw,"Method execution of %s failed", ptr);
 		else
-			fwts_framework_failed(fw,"Method execution of failed: %s", line);
+			fwts_failed(fw,"Method execution of failed: %s", line);
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Method parse/execution failed") && strstr(line, "AE_NOT_FOUND")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr) 
-			fwts_framework_failed(fw,"Method parsing/execution of %s failed", ptr);
+			fwts_failed(fw,"Method parsing/execution of %s failed", ptr);
 		else
-			fwts_framework_failed(fw,"Method parsing/execution failed");
+			fwts_failed(fw,"Method parsing/execution failed");
 		fwts_log_info(fw, "%s", line);
 		
 	}
@@ -150,32 +150,32 @@ static void dmesg_common_check(fwts_framework *fw, char *line, char *prevline, v
 	if (strstr(line, "*** Error: Method execution failed") && strstr(line, "AE_AML_METHOD_LIMIT")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr) 
-			fwts_framework_failed(fw,"Method %s reached maximum reentrancy limit", ptr);
+			fwts_failed(fw,"Method %s reached maximum reentrancy limit", ptr);
 		else
-			fwts_framework_failed(fw,"Method reached maximum reentrancy limit");
+			fwts_failed(fw,"Method reached maximum reentrancy limit");
 		fwts_log_info(fw, "%s", line);
 	}
 		
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_OWNER_ID_LIMIT")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr) 
-			fwts_framework_failed(fw,"Method %s failed to allocate owner ID", ptr);
+			fwts_failed(fw,"Method %s failed to allocate owner ID", ptr);
 		else
-			fwts_framework_failed(fw,"Method failed to allocate owner ID");
+			fwts_failed(fw,"Method failed to allocate owner ID");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Method execution failed") && strstr(line, "AE_AML_BUFFER_LIMIT")) {
 		char *ptr = dmesg_parse_brackets(line);
 		if (ptr) 
-			fwts_framework_failed(fw,"Method %s failed: ResourceSourceIndex is present but ResourceSource is not", ptr);
+			fwts_failed(fw,"Method %s failed: ResourceSourceIndex is present but ResourceSource is not", ptr);
 		else
-			fwts_framework_failed(fw,"Method failed: ResourceSourceIndex is present but ResourceSource is not");
+			fwts_failed(fw,"Method failed: ResourceSourceIndex is present but ResourceSource is not");
 		fwts_log_info(fw, "%s", line);
 	}
 
 	if (strstr(line, "Disabling IRQ")!=NULL) {
-		fwts_framework_failed(fw,"The kernel detected an irq storm. IRQ routing bug?");
+		fwts_failed(fw,"The kernel detected an irq storm. IRQ routing bug?");
 		fwts_log_info(fw, "%s", line);
 	}
 }
@@ -218,10 +218,10 @@ static int dmesg_common_test1(fwts_framework *fw)
 
 	if (warnings + errors > 0) {
 		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }

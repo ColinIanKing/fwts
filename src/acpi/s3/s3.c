@@ -42,7 +42,7 @@ static int s3_init(fwts_framework *fw)
 	ret = fwts_wakealarm_test_firing(fw, 1);
 	if (ret != 0) {
 		fwts_log_error(fw, "cannot automatically wake machine up - aborting S3 test");
-		fwts_framework_failed(fw, "check if wakealarm works reliably for S3 tests");
+		fwts_failed(fw, "check if wakealarm works reliably for S3 tests");
 		return 1;
 	}
 
@@ -115,10 +115,10 @@ static int s3_test_single(fwts_framework *fw)
 	s3_do_suspend_resume(fw, &warnings, &errors, 30, &duration);
 	if (warnings + errors > 0) {
 		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }
@@ -134,7 +134,7 @@ static int s3_check_log(fwts_framework *fw)
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "cannot read kernel log");
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 		return 1;
 	}
 
@@ -148,10 +148,10 @@ static int s3_check_log(fwts_framework *fw)
 
 	if (warnings + errors > 0) {
 		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }
@@ -183,10 +183,10 @@ static int s3_test_multiple(fwts_framework *fw)
 
 	if (warnings + errors > 0) {
 		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }

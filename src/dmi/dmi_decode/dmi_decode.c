@@ -124,7 +124,6 @@ static int dmi_decode_test1(fwts_framework *fw)
 
 	for (type=0; type < 40; type++) {
 		int dumped = 0;
-		int failed = 0;
 		char buffer[1024];
 
 		sprintf(buffer, "%s -t %d", dmidecode, type);
@@ -151,8 +150,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 						(strstr(text, dmi_patterns[i].pat2) != NULL);
 				}
 				if (match) {		
-					failed++;
-					fwts_framework_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
+					fwts_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
 						fwts_list_element *dump;
@@ -163,8 +161,8 @@ static int dmi_decode_test1(fwts_framework *fw)
 				}
 			}
 		}
-		if (!failed)
-			fwts_framework_passed(fw, "DMI type %s", dmi_types[type]);
+		if (fwts_tests_passed(fw))
+			fwts_passed(fw, "DMI type %s", dmi_types[type]);
 		
 		fwts_text_list_free(dmi_text);
 	}

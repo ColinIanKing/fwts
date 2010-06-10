@@ -48,7 +48,7 @@ static int apicedge_test1(fwts_framework *fw)
 	fwts_log_info(fw, "Checks if legacy interrupts are edge and PCI interrupts are level triggered");
 		
 	if ((file = fopen("/proc/interrupts", "r")) == NULL) {
-		fwts_framework_failed(fw, "Could not open file /proc/interrupts");
+		fwts_failed(fw, "Could not open file /proc/interrupts");
 		return 1;
 	}
 
@@ -80,18 +80,18 @@ static int apicedge_test1(fwts_framework *fw)
 			
 		if (strstr(line,"acpi")) {
 			if (edge==1)
-				fwts_framework_failed(fw,"ACPI Interrupt is incorrectly edge triggered");
+				fwts_failed(fw,"ACPI Interrupt is incorrectly edge triggered");
 			continue;	
 		}
 		if ((irq<15) && (edge == 0))
-			fwts_framework_failed(fw,"Legacy interrupt %i is incorrectly level triggered", irq);
+			fwts_failed(fw,"Legacy interrupt %i is incorrectly level triggered", irq);
 		if ((irq<15) && (edge == -1))
-			fwts_framework_failed(fw,"Non-Legacy interrupt %i is incorrectly level triggered", irq);
+			fwts_failed(fw,"Non-Legacy interrupt %i is incorrectly level triggered", irq);
 	}
 	fclose(file);	
 
-	if (!fw->failed_sub_tests)
-		fwts_framework_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered");
+	if (fwts_tests_passed(fw))
+		fwts_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered");
 
 	return 0;
 }

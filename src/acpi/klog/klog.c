@@ -67,10 +67,10 @@ static int klog_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
 	if (warnings + errors > 0) {
-		fwts_framework_failed(fw, test);
+		fwts_failed(fw, test);
 	}
 	else
-		fwts_framework_passed(fw, test);
+		fwts_passed(fw, test);
 
 	return 0;
 }

@@ -42,19 +42,19 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 
 	sprintf(path, "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present");
 		return;
 	}
 
 	if (fgets(buffer, 4095, file) == NULL) {
-		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present");
 		fclose(file);
 		return;
 	}
 	fclose(file);
 
 	if ((state = strstr(buffer, "status:")) == NULL) {
-		fwts_framework_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present");
 		return;
 	}
 
@@ -63,7 +63,7 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 
 	fwts_chop_newline(state);
 
-	fwts_framework_passed(fw, "Fan %s status is '%s'", name, state);
+	fwts_passed(fw, "Fan %s status is '%s'", name, state);
 }
 
 static char *fan_headline(void)

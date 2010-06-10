@@ -115,7 +115,7 @@ void virt_check_svm(fwts_framework *fw)
 		fwts_log_info(fw, "Processor does not support Virtualization extensions");
 	else 
 		if (vt_locked_by_bios())
-			fwts_framework_failed(fw, "Virtualization extensions supported but disabled by BIOS");
+			fwts_failed(fw, "Virtualization extensions supported but disabled by BIOS");
 		else
-			fwts_framework_passed(fw, "Virtualization extensions supported and enabled by BIOS");
+			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS");
 }

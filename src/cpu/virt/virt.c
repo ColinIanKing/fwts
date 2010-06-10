@@ -87,13 +87,13 @@ static int virt_test1(fwts_framework *fw)
 	fwts_log_info(fw, "Check if CPU is an AMD or Intel");
 	if (is_AMD()) {
 		cpu = CPU_AMD;
-		fwts_framework_passed(fw, "CPU is an AMD");
+		fwts_passed(fw, "CPU is an AMD");
 	} else if (is_Intel()) {
 		cpu = CPU_INTEL;
-		fwts_framework_passed(fw, "CPU is an Intel");
+		fwts_passed(fw, "CPU is an Intel");
 	} else {
 		cpu = CPU_UNKNOWN;
-		fwts_framework_failed(fw, "CPU is unknown");
+		fwts_warning(fw, "CPU is unknown");
 	}
 	return 0;
 }
@@ -111,7 +111,7 @@ static int virt_test2(fwts_framework *fw)
 		virt_check_vmx(fw);
 		break;
 	default:
-		fwts_log_warning(fw, "Cannot test virtualisation extentiosn - unknown CPU");
+		fwts_warning(fw, "Cannot test virtualisation extentiosn - unknown CPU");
 		break;
 	}
 	return 0;

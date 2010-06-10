@@ -25,7 +25,14 @@
 
 #define FRAMEWORK_MAGIC	0x2af61aec
 
-typedef struct fwts_framework {
+typedef struct {
+	int passed;
+	int failed;
+	int aborted;
+	int warning;
+} fwts_results;
+
+typedef struct {
 	int magic;				/* identify struct magic */
 	fwts_log *debug;			/* log to dump framework debug messages */
 	fwts_log *results;			/* log for test results */
@@ -43,34 +50,36 @@ typedef struct fwts_framework {
 	int current_test;
 
 	/* per test stats */
-	int passed_sub_tests;
-	int failed_sub_tests;
-	int aborted_sub_tests;
-
-	int passed_test_run;
-	int failed_test_run;
-	int aborted_test_run;
-
-	/* overall test stats */
-	int passed_total;
-	int failed_total;
-	int aborted_total;
+	fwts_results	sub_tests;
+	fwts_results	test_run;
+	fwts_results	total;
 } fwts_framework;
 
-
-typedef int (*fwts_framework_tests)(struct fwts_framework *framework);
+typedef int (*fwts_framework_tests)(fwts_framework *framework);
 
 typedef struct fwts_framework_ops {
-	char *(*headline)(void);			/* Headline description of test */
+	char *(*headline)(void);	/* Headline description of test */
 	int (*init)(fwts_framework *);	/* Initialise */
-	int (*deinit)(fwts_framework *);	/* De-init */		
-	fwts_framework_tests *tests;			/* List of tests to run */
+	int (*deinit)(fwts_framework *);/* De-init */		
+	fwts_framework_tests *tests;	/* List of tests to run */
 } fwts_framework_ops;
 
 int  fwts_framework_args(int argc, char **argv);
 void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, const char *fmt, ...);
+void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
+
+#define fwts_passed(fw, args...)	fwts_framework_passed(fw, ## args)
+#define fwts_failed(fw, args...)	fwts_framework_failed(fw, ## args)
+#define fwts_warning(fw, args...)	fwts_framework_warning(fw, ## args)
+
+static inline int fwts_tests_passed(fwts_framework *fw)
+{
+	return ((fw->sub_tests.failed + 
+		 fw->sub_tests.warning + 
+		 fw->sub_tests.aborted) == 0);
+}
 
 #define TEST_EARLY	0
 #define TEST_ANYTIME	50

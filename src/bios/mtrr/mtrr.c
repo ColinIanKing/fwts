@@ -284,7 +284,7 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_framework_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute %s", start, end, c2,
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute %s", start, end, c2,
 				cache_to_string(type & type_mustnot));
 			if (type_must == UNCACHED)
 				skiperror = 1;
@@ -296,7 +296,7 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_framework_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute %s", start, end, c2,
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute %s", start, end, c2,
 				cache_to_string( (type & type_must) ^ type_must));
 		}
 		
@@ -304,7 +304,7 @@ static int validate_iomem(fwts_framework *fw)
 	fclose(file);
 
 	if (!failed) {
-		fwts_framework_passed(fw, "Memory ranges seem to have correct attributes");
+		fwts_passed(fw, "Memory ranges seem to have correct attributes");
 	}
 
 	return 0;
@@ -331,7 +331,7 @@ static void check_line(void *data, void *private)
 	fwts_framework *fw = (fwts_framework *)private;
 
 	if (strstr(line, "mtrr: probably your BIOS does not setup all CPUs."))
-		fwts_framework_failed(fw, "Not all processors have the MTRR set up");
+		fwts_failed(fw, "Not all processors have the MTRR set up");
 }
 
 static int mtrr_init(fwts_framework *fw)
@@ -382,8 +382,8 @@ static int mtrr_test2(fwts_framework *fw)
 
 	if (klog != NULL) {
 		fwts_list_foreach(klog, check_line, fw);
-		if (!fw->failed_sub_tests)
-			fwts_framework_passed(fw, "All processors have the MTRR setup");
+		if (fwts_tests_passed(fw))
+			fwts_passed(fw, "All processors have the MTRR setup");
 	} else
 		fwts_log_error(fw, "No boot dmesg found.\n");
 		

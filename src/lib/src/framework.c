@@ -284,6 +284,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_test_summary(fw);
 
+	fwts_log_info(fw, "");
+
 	return 0;
 }
 

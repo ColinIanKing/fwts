@@ -39,7 +39,7 @@ static unsigned long get_full(char *dir)
 	if (!dir)
 		return 0;
 	
-	sprintf(path, "%s/state", dir);
+	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL)
 		return 0;
 	
@@ -112,7 +112,7 @@ static void do_battery(fwts_framework *fw, char *dir, char *name)
 	if (!dir)
 		return;
 
-	sprintf(path, "%s/state", dir);
+	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
 		fwts_failed(fw, "Battery present but undersupported - no state present");
 		return;
@@ -131,7 +131,7 @@ static void do_battery(fwts_framework *fw, char *dir, char *name)
 	}
 	fclose(file);
 
-	sprintf(path, "%s/info", dir);
+	snprintf(path, sizeof(path), "%s/info", dir);
 	file = fopen(path, "r");
 	if (file == NULL) {
 		fwts_log_warning(fw, "Battery present but undersupported - no info present");
@@ -200,7 +200,7 @@ static int battery_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			char batpath[2048];
 
-			sprintf(batpath, "/proc/acpi/battery/%s", entry->d_name);
+			snprintf(batpath, sizeof(batpath), "/proc/acpi/battery/%s", entry->d_name);
 			do_battery(fw, batpath, entry->d_name);
 			battdir++;
 		}

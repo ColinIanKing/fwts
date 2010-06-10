@@ -54,7 +54,7 @@ static uint64 readmsr(int cpu, unsigned long offset)
 	int ret;
 
 	msr_value_buf = (unsigned char *)&msr_value;
-	sprintf(buffer, "/dev/msr%i", cpu);
+	snprintf(buffer, sizeof(buffer), "/dev/msr%i", cpu);
 	file = fopen(buffer, "r");
 	if (!file) {
 		printf("Error: fopen failed \n");

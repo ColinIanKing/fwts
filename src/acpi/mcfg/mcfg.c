@@ -62,7 +62,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		space[8],  space[9],  space[10], space[11],
 		space[12], space[13], space[14], space[15]);
 
-	sprintf(command, "%s -vxxx -s %i:%i", lspci_cmd, segment, device);
+	snprintf(command, sizeof(command), "%s -vxxx -s %i:%i", lspci_cmd, segment, device);
 
 	fwts_pipe_exec(command, &lspci_output);
 	if (lspci_output == NULL) {

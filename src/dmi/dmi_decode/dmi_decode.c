@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include "fwts.h"
 
@@ -124,9 +125,9 @@ static int dmi_decode_test1(fwts_framework *fw)
 
 	for (type=0; type < 40; type++) {
 		int dumped = 0;
-		char buffer[1024];
+		char buffer[PATH_MAX];
 
-		sprintf(buffer, "%s -t %d", dmidecode, type);
+		snprintf(buffer, sizeof(buffer), "%s -t %d", dmidecode, type);
 
 		if (fwts_pipe_exec(buffer, &dmi_text)) {
 			fwts_log_error(fw, "Failed to execute dmidecode");

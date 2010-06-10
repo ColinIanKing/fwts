@@ -171,7 +171,7 @@ static int is_prefetchable(char *device, uint64 address)
 	memset(line,0,4096);
 	
 	lspci_cmd = "/usr/bin/lspci";
-	sprintf(line,"%s -v -s %s", lspci_cmd, device);
+	snprintf(line, sizeof(line), "%s -v -s %s", lspci_cmd, device);
 	fwts_pipe_exec(line, &lspci_output);
 	if (lspci_output == NULL)
 		return pref;

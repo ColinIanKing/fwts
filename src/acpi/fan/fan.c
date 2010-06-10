@@ -40,13 +40,13 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 	if (!dir)
 		return;
 
-	sprintf(path, "%s/state", dir);
+	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
 		fwts_failed(fw, "Fan present but is undersupported - no state present");
 		return;
 	}
 
-	if (fgets(buffer, 4095, file) == NULL) {
+	if (fgets(buffer, sizeof(buffer)-1, file) == NULL) {
 		fwts_failed(fw, "Fan present but is undersupported - no state present");
 		fclose(file);
 		return;
@@ -91,7 +91,7 @@ static int fan_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			char batpath[2048];
 
-			sprintf(batpath, "/proc/acpi/fan/%s", entry->d_name);
+			snprintf(batpath, sizeof(batpath), "/proc/acpi/fan/%s", entry->d_name);
 			do_fan(fw, batpath, entry->d_name);
 			fandir++;
 		}

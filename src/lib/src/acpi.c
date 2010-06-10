@@ -38,7 +38,7 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	int i;
 	unsigned char checksum = 0;
 
-	sprintf(buffer,"%s -t %s -b -s %d", fwts_acpidump, name, which);
+	snprintf(buffer, sizeof(buffer), "%s -t %s -b -s %d", fwts_acpidump, name, which);
 	if ((fd = fwts_pipe_open(buffer, &pid)) < 0) {
 		return NULL;
 	}

@@ -6,7 +6,13 @@ Well, you got this far, which is a good thing.
 Quick Start Guide
 =================
 
-To build and install:
+1) Dependencies: iasl, acpidump
+
+Please first install iasl and acpidump:
+
+sudo apt-get install iasl acpidump
+
+2) To build and install:
 
 ./configure
 make

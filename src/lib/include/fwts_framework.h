@@ -75,11 +75,13 @@ typedef struct fwts_framework_ops {
 int  fwts_framework_args(int argc, char **argv);
 void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
-void fwts_framework_failed(fwts_framework *, const char *fmt, ...);
+void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
 
 #define fwts_passed(fw, args...)	fwts_framework_passed(fw, ## args)
-#define fwts_failed(fw, args...)	fwts_framework_failed(fw, ## args)
+#define fwts_failed(fw, args...)	fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)
+#define fwts_failed_level(fw, level, args...) \
+					fwts_framework_failed(fw, level, ## args)
 #define fwts_warning(fw, args...)	fwts_framework_warning(fw, ## args)
 
 static inline int fwts_tests_passed(fwts_framework *fw)

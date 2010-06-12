@@ -162,7 +162,7 @@ static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
 
         vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	
-	fwts_log_printf(fw->debug, LOG_DEBUG, "%s", buffer);
+	fwts_log_printf(fw->debug, LOG_DEBUG, LOG_LEVEL_NONE, "%s", buffer);
 
         va_end(ap);
 }
@@ -307,7 +307,7 @@ static int fwts_framework_run_registered_test(fwts_framework *fw, const char *na
 		}
 	}
 	fw->results = fwts_log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
-	fwts_log_printf(fw->results, LOG_ERROR, "Test %s does not exist!", name);
+	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_CRITICAL, "Test %s does not exist!", name);
 	fwts_log_close(fw->results);
 
 	return 1;
@@ -336,13 +336,13 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d PASSED: %s\n", fw->current_test, buffer);
 	fw->sub_tests.passed++;
-	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_test, buffer);
 
 	va_end(ap);
 }
 
-void fwts_framework_failed(fwts_framework *fw, const char *fmt, ...)
+void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];
@@ -352,7 +352,7 @@ void fwts_framework_failed(fwts_framework *fw, const char *fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d FAILED: %s\n", fw->current_test, buffer);
 	fw->sub_tests.failed++;
-	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, level, "%s: test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
 
 	va_end(ap);
@@ -368,7 +368,7 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d WARNING: %s\n", fw->current_test, buffer);
 	fw->sub_tests.warning++;
-	fwts_log_printf(fw->results, LOG_RESULT, "%s: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_WARNING_TEXT), fw->current_test, buffer);
 
 	va_end(ap);
@@ -395,7 +395,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("--log-format=fields\tDefine output log format\n");
 	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): \n");
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
-	printf("\t\t                 %%owner - name of test program\n");
+	printf("\t\t                 %%owner - name of test program, %%level failed test level\n");
 	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests\n");
 	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");

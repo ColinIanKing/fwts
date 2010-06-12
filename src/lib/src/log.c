@@ -29,7 +29,7 @@
 
 static fwts_log_field fwts_log_filter = ~0;
 
-static char fwts_log_format[256] = "%date %time [%field] %owner ";
+static char fwts_log_format[256] = "%date %time [%field %level] %owner ";
 
 static char *fwts_log_field_to_str(fwts_log_field field)
 {
@@ -54,6 +54,23 @@ static char *fwts_log_field_to_str(fwts_log_field field)
 		return "ADV";
 	default:
 		return LOG_UNKOWN_FIELD;
+	}
+}
+
+static char *fwts_log_level_to_str(fwts_log_level level)
+{
+	switch (level) {
+	case LOG_LEVEL_CRITICAL:
+		return "CRIT";
+	case LOG_LEVEL_HIGH:
+		return "HIGH";
+	case LOG_LEVEL_MEDIUM:
+		return "MEDM";
+	case LOG_LEVEL_LOW:
+		return "LOW ";
+	case LOG_LEVEL_NONE:
+	default:
+		return "    ";
 	}
 }
 
@@ -160,7 +177,7 @@ static void fwts_log_handle_newlines(fwts_log *log, char *str, int posn)
 	}
 }
 
-int fwts_log_printf(fwts_log *log, fwts_log_field field, const char *fmt, ...)
+int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,const char *fmt, ...)
 {
 	char buffer[1024];
 	int n = 0;
@@ -200,6 +217,11 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, const char *fmt, ...)
 					fwts_log_field_to_str(field));
 				ptr+=5;
 			}
+			if (strncmp(ptr,"level",5)==0) {
+				n += snprintf(buffer+n, sizeof(buffer)-n, "%s",
+					fwts_log_level_to_str(level));
+				ptr+=5;
+			}
 			if (strncmp(ptr,"owner",5)==0 && log->owner) {
 				n += snprintf(buffer+n, sizeof(buffer)-n, "%-15.15s", log->owner);
 				ptr+=5;
@@ -230,7 +252,7 @@ void fwts_log_underline(fwts_log *log, int ch)
 	}
 	buffer[i] = '\0';
 
-	fwts_log_printf(log, LOG_SEPARATOR, buffer);
+	fwts_log_printf(log, LOG_SEPARATOR, LOG_LEVEL_NONE, buffer);
 }
 
 void fwts_log_newline(fwts_log *log)

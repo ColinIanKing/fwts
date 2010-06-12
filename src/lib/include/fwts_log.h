@@ -25,16 +25,24 @@
 #define LOG_MAGIC	0xfe23ab13
 
 typedef enum {
-	LOG_RESULT    = 0x00000001,
-	LOG_ERROR     = 0x00000002,
-	LOG_WARNING   = 0x00000004,
-	LOG_DEBUG     = 0x00000008,
-	LOG_INFO      = 0x00000010,
-	LOG_SUMMARY   = 0x00000020,
-	LOG_SEPARATOR = 0x00000040,
-	LOG_NEWLINE   = 0x00000080,
-	LOG_ADVICE    = 0x00000100,
+	LOG_RESULT	    = 0x00000001,
+	LOG_ERROR           = 0x00000002,
+	LOG_WARNING         = 0x00000004,
+	LOG_DEBUG           = 0x00000008,
+	LOG_INFO            = 0x00000010,
+	LOG_SUMMARY         = 0x00000020,
+	LOG_SEPARATOR       = 0x00000040,
+	LOG_NEWLINE         = 0x00000080,
+	LOG_ADVICE          = 0x00000100,
 } fwts_log_field;
+
+typedef enum {
+	LOG_LEVEL_NONE	    = 0x00000000,
+	LOG_LEVEL_CRITICAL  = 0x00000001,
+	LOG_LEVEL_HIGH      = 0x00000002,
+	LOG_LEVEL_MEDIUM    = 0x00000004,
+	LOG_LEVEL_LOW       = 0x00000008,
+} fwts_log_level;
 
 typedef struct log_t {
 	int magic;
@@ -44,7 +52,7 @@ typedef struct log_t {
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);
 int       fwts_log_close(fwts_log *log);
-int       fwts_log_printf(fwts_log *log, fwts_log_field field, const char *fmt, ...);
+int       fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level, const char *fmt, ...);
 void      fwts_log_newline(fwts_log *log);
 void      fwts_log_underline(fwts_log *log, int ch);
 void      fwts_log_set_field_filter(char *str);
@@ -55,24 +63,24 @@ void      fwts_log_filter_set_field(const fwts_log_field filter);
 void      fwts_log_filter_unset_field(const fwts_log_field filter);
 
 #define fwts_log_result(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_RESULT, fmt, ## args) 
-	
-#define fwts_log_error(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_ERROR, fmt, ## args)
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, fmt, ## args) 
 
 #define fwts_log_warning(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_WARNING, fmt, ## args)
+	fwts_log_printf(fw->results, LOG_WARNING, LOG_LEVEL_NONE, fmt, ## args) 
+	
+#define fwts_log_error(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_info(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_INFO, fmt, ## args)
+	fwts_log_printf(fw->results, LOG_INFO, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_summary(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_SUMMARY, fmt, ## args)
+	fwts_log_printf(fw->results, LOG_SUMMARY, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_advice(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_ADVICE, fmt, ## args)
+	fwts_log_printf(fw->results, LOG_ADVICE, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_nl(fw) \
-	fwts_log_printf(fw->results, LOG_NEWLINE, "\n");
+	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "\n");
 
 #endif

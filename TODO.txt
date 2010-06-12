@@ -1,11 +1,21 @@
 Todo
 
 * Read in and parse acpxtract flat ascii for off-line analysis
-* Prefix fwts lib headers with fwts_
+* Prefix fwts lib headers with fwts_			DONE
 * Add FIX fields to explain how to workaround or fix a problem
 * Add 300 second hpet delay check to s3/s4 issues
 * ACPI hotkey handling
 * ACPI lid handling
 * ACPI semantic checks of DSDT etc
-* Syntax check on all AML code
+* Syntax check on all AML code				DONE
 * Progress meter callback plug-ins
+
+* Add failure 'levels':
+	CRITICAL
+	HIGH
+	MEDIUM
+	LOW
+	WARNING
+
+* Add summary to reduce "noise"
+		

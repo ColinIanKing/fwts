@@ -46,3 +46,4 @@ Other ideas of tests:
 
  * Extract available _OSI configs from DSDT and run tests over all these configs
  * Check for _OSI Linux - if so, give warning
+	- done 10/06/2010

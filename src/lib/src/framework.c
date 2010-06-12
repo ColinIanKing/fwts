@@ -31,12 +31,6 @@
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
 
-#define FRAMEWORK_FLAGS_STDOUT_SUMMARY		0x00000001
-#define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG		0x00000002
-#define FRAMEWORK_FLAGS_SHOW_PROGRESS		0x00000004
-
-#define FRAMEWORK_DEFAULT_FLAGS			0
-
 enum {
 	BIOS_TEST_TOOLKIT_PASSED_TEXT,
 	BIOS_TEST_TOOLKIT_FAILED_TEXT,
@@ -402,6 +396,8 @@ static void fwts_framework_syntax(char **argv)
 	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): \n");
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
 	printf("\t\t                 %%owner - name of test program\n");
+	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests\n");
+	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");
 	printf("--show-tests\t\tShow available tests\n");
 }
@@ -426,6 +422,8 @@ int fwts_framework_args(int argc, char **argv)
 		{ "klog", 1, 0, 0, },
 		{ "dmidecode", 1, 0, 0, },
 		{ "s3-multiple", 1, 0, 0, },
+		{ "no-s3", 0, 0, 0 },
+		{ "no-s4", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -437,7 +435,7 @@ int fwts_framework_args(int argc, char **argv)
 	}
 
 	fw->magic = FRAMEWORK_MAGIC;
-	fw->flags = FRAMEWORK_DEFAULT_FLAGS;
+	fw->flags = FRAMEWORK_FLAGS_DEFAULT;
 
 	for (;;) {
 		int c;
@@ -500,6 +498,12 @@ int fwts_framework_args(int argc, char **argv)
 				break;
 			case 15: /* --s3-multiple */
 				fw->s3_multiple = atoi(optarg);
+				break;
+			case 16: /* --no-s3 */
+				fw->flags |= FRAMEWORK_FLAGS_NO_S3;
+				break;
+			case 17: /* --no-s4 */
+				fw->flags |= FRAMEWORK_FLAGS_NO_S4;
 				break;
 			}
 		case '?':

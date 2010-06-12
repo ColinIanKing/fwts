@@ -25,6 +25,14 @@
 
 #define FRAMEWORK_MAGIC	0x2af61aec
 
+#define FRAMEWORK_FLAGS_STDOUT_SUMMARY          0x00000001
+#define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG         0x00000002
+#define FRAMEWORK_FLAGS_SHOW_PROGRESS           0x00000004
+#define FRAMEWORK_FLAGS_NO_S3                   0x00000008
+#define FRAMEWORK_FLAGS_NO_S4                   0x00000010
+
+#define FRAMEWORK_FLAGS_DEFAULT			0
+
 typedef struct {
 	int passed;
 	int failed;

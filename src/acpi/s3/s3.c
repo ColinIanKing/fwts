@@ -34,6 +34,11 @@ static int s3_init(fwts_framework *fw)
 {
 	int ret;
 
+	if (fw->flags & FRAMEWORK_FLAGS_NO_S3) {
+		fwts_log_info(fw, "Skipping S3 tests"); 
+		return 1;
+	}
+
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "cannot clear kernel log");
 		return 1;

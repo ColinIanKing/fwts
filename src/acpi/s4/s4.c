@@ -31,15 +31,17 @@ static char *s4_headline(void)
 
 static int s4_init(fwts_framework *fw)
 {
-	int ret;
+	if (fw->flags & FRAMEWORK_FLAGS_NO_S4) {
+		fwts_log_info(fw, "Skipping S4 tests");
+		return 1;
+	}
 
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "cannot clear kernel log");
 		return 1;
 	}
 
-	ret = fwts_wakealarm_test_firing(fw, 1);
-	if (ret != 0) {
+	if (fwts_wakealarm_test_firing(fw, 1)) {
 		fwts_log_error(fw, "cannot automatically wake machine up - aborting S4 test");
 		fwts_failed(fw, "check if wakealarm works reliably for S4 tests");
 		return 1;

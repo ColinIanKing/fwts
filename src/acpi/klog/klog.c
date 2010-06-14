@@ -54,7 +54,7 @@ static int klog_deinit(fwts_framework *fw)
 
 static int klog_test1(fwts_framework *fw)
 {	
-	char *test = "kernel log error check";
+	char *test = "Kernel log error check.";
 	int warnings = 0;
 	int errors = 0;
 

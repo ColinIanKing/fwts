@@ -158,7 +158,7 @@ static int acpiinfo_deinit(fwts_framework *fw)
 
 static int acpiinfo_test1(fwts_framework *fw)
 {	
-	char *test = "General ACPI information check";
+	char *test = "General ACPI information check.";
 	int warnings = 0;
 	int errors = 0;
 

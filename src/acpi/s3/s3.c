@@ -35,7 +35,7 @@ static int s3_init(fwts_framework *fw)
 	int ret;
 
 	if (fw->flags & FRAMEWORK_FLAGS_NO_S3) {
-		fwts_log_info(fw, "Skipping S3 tests"); 
+		fwts_log_info(fw, "Skipping S3 tests."); 
 		return 1;
 	}
 
@@ -145,7 +145,7 @@ static int s3_check_log(fwts_framework *fw)
 
 static int s3_test_single(fwts_framework *fw)
 {	
-	char *test = "S3 suspend/resume test (single run)";
+	char *test = "S3 suspend/resume test (single run).";
 	int warnings = 0;
 	int errors = 0;
 	int duration;
@@ -165,7 +165,7 @@ static int s3_test_single(fwts_framework *fw)
 
 static int s3_test_multiple(fwts_framework *fw)
 {	
-	char *test = "S3 suspend/resume test (multiple runs)";
+	char *test = "S3 suspend/resume test (multiple runs).";
 	int warnings = 0;
 	int errors = 0;
 	int delay = 30;

@@ -205,11 +205,11 @@ static int dmesg_common_deinit(fwts_framework *fw)
 
 static int dmesg_common_test1(fwts_framework *fw)
 {	
-	char *test = "General dmesg common errors check";
+	char *test = "General dmesg common errors check.";
 	int warnings = 0;
 	int errors = 0;
 
-	fwts_log_info(fw, "This checks for common errors found in the kernel message log");
+	fwts_log_info(fw, "This checks for common errors found in the kernel message log.");
 
 	if (fwts_klog_scan(fw, klog, dmesg_common_check, NULL, &warnings, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log");

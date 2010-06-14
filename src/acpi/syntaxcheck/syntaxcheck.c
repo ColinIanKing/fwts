@@ -52,7 +52,7 @@ static int syntaxcheck_deinit(fwts_framework *fw)
 	return 0;
 }
 
-static int syntaxcheck_table(fwts_framework *fw, char *test, char *table, int which)
+static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 {
 	fwts_list_element *item;
 	int errors = 0;
@@ -108,20 +108,18 @@ static int syntaxcheck_table(fwts_framework *fw, char *test, char *table, int wh
 	fwts_text_list_free(error_output);
 
 	if (errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in %s.", errors, warnings, table);
-		fwts_failed(fw, test);
+		fwts_failed_high(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings.", table, which, errors, warnings);
 	} else if (warnings > 0) {
-		fwts_log_info(fw, "Found 0 errors, %d warnings in %s.", warnings, table);
-		fwts_warning(fw, test);
+		fwts_failed_low(fw, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", table, which, warnings);
 	} else 
-		fwts_passed(fw, test);
+		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", table, which);
 
 	return 0;
 }
 
 static int syntaxcheck_DSDT(fwts_framework *fw)
 {
-	return syntaxcheck_table(fw, "DSDT table reassembly (syntax check)", "DSDT", 0);
+	return syntaxcheck_table(fw, "DSDT", 0);
 }
 
 static int syntaxcheck_SSDT(fwts_framework *fw)
@@ -129,9 +127,7 @@ static int syntaxcheck_SSDT(fwts_framework *fw)
 	int i;
 
 	for (i=0; i < 100; i++) {
-		char buffer[256];
-		snprintf(buffer, sizeof(buffer), "SSTD table #%d reassembly (syntax check).", i);
-		int ret = syntaxcheck_table(fw, buffer, "SSDT", i);
+		int ret = syntaxcheck_table(fw, "SSDT", i);
 		if (ret == 2)
 			return 0;	/* Hit the last table */
 		if (ret != 0)

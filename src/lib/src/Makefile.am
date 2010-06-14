@@ -19,6 +19,7 @@ libtestsuite_a_SOURCES = \
 	stringextras.c \
 	text_list.c \
 	wakealarm.c \
+	summary.c \
 	virt.c
 
 

@@ -56,6 +56,7 @@ typedef struct {
 	int flags;
 
 	int current_test;
+	char *current_test_name;
 
 	/* per test stats */
 	fwts_results	sub_tests;

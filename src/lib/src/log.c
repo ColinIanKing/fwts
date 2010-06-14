@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#define LOG_LINE_WIDTH 104
+#define LOG_LINE_WIDTH 130
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,9 +28,24 @@
 
 #define LOG_UNKOWN_FIELD	"???"
 
+static int log_line_width = LOG_LINE_WIDTH;
+
+static int fwts_log_line = 1;
+
 static fwts_log_field fwts_log_filter = ~0;
 
-static char fwts_log_format[256] = "%date %time [%field %level] %owner ";
+static char fwts_log_format[256] = "%line %date %time %field %owner ";
+
+void fwts_log_set_line_width(int width)
+{
+	if ((width >= 80) && (width <= 256))
+		log_line_width = width;
+}
+
+int fwts_log_line_number(void)
+{
+	return fwts_log_line;
+}
 
 static char *fwts_log_field_to_str(fwts_log_field field)
 {
@@ -58,20 +73,20 @@ static char *fwts_log_field_to_str(fwts_log_field field)
 	}
 }
 
-static char *fwts_log_level_to_str(fwts_log_level level)
+char *fwts_log_level_to_str(fwts_log_level level)
 {
 	switch (level) {
 	case LOG_LEVEL_CRITICAL:
-		return "CRIT";
+		return "CRITICAL";
 	case LOG_LEVEL_HIGH:
 		return "HIGH";
 	case LOG_LEVEL_MEDIUM:
-		return "MEDM";
+		return "MEDIUM";
 	case LOG_LEVEL_LOW:
-		return "LOW ";
+		return "LOW";
 	case LOG_LEVEL_NONE:
 	default:
-		return "    ";
+		return "   ";
 	}
 }
 
@@ -157,14 +172,64 @@ void fwts_log_set_format(char *str)
 	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
+static int fwts_log_header(fwts_log *log, char *buffer, int len, fwts_log_field field, fwts_log_level level)
+{
+	char *ptr;
+	int n = 0;
+	struct tm tm;
+	time_t now;
+
+	time(&now);
+	localtime_r(&now, &tm);
+
+	for (ptr = fwts_log_format; *ptr; ) {
+		if (*ptr == '%') {
+			ptr++;
+			if (strncmp(ptr,"line",4)==0) {
+				n += snprintf(buffer+n, len-n,
+					"%5.5d", fwts_log_line);
+				ptr+=4;
+			}
+			if (strncmp(ptr,"date",4)==0) {
+				n += snprintf(buffer+n, len-n, 
+					"%2.2d/%2.2d/%-2.2d", 		
+					tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100);
+				ptr+=4;
+			}
+			if (strncmp(ptr,"time",4)==0) {
+				n += snprintf(buffer+n, len-n, 
+					"%2.2d:%2.2d:%2.2d", 		
+					tm.tm_hour, tm.tm_min, tm.tm_sec);
+				ptr+=4;
+			}
+			if (strncmp(ptr,"field",5)==0) {
+				n += snprintf(buffer+n, len-n, "%s",
+					fwts_log_field_to_str(field));
+				ptr+=5;
+			}
+			if (strncmp(ptr,"level",5)==0) {
+				n += snprintf(buffer+n, len-n, "%1.1s",
+					fwts_log_level_to_str(level));
+				ptr+=5;
+			}
+			if (strncmp(ptr,"owner",5)==0 && log->owner) {
+				n += snprintf(buffer+n, len-n, "%-15.15s", log->owner);
+				ptr+=5;
+			}
+		}
+		else {
+			n += snprintf(buffer+n, len-n, "%c", *ptr);
+			ptr++;
+		}
+	}
+	return n;
+}
+
 int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,const char *fmt, ...)
 {
 	char buffer[4096];
 	int n = 0;
-	struct tm tm;
-	time_t now;
 	va_list ap;
-	char *ptr;
 
 	fwts_list *lines;
 	fwts_list_element *item;
@@ -177,45 +242,9 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 
 	va_start(ap, fmt);
 
-	time(&now);
-	localtime_r(&now, &tm);
-
-	for (ptr = fwts_log_format; *ptr; ) {
-		if (*ptr == '%') {
-			ptr++;
-			if (strncmp(ptr,"date",4)==0) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, 
-					"%2.2d/%2.2d/%-2.2d", 		
-					tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100);
-				ptr+=4;
-			}
-			if (strncmp(ptr,"time",4)==0) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, 
-					"%2.2d:%2.2d:%2.2d", 		
-					tm.tm_hour, tm.tm_min, tm.tm_sec);
-				ptr+=4;
-			}
-			if (strncmp(ptr,"field",5)==0) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, "%s",
-					fwts_log_field_to_str(field));
-				ptr+=5;
-			}
-			if (strncmp(ptr,"level",5)==0) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, "%s",
-					fwts_log_level_to_str(level));
-				ptr+=5;
-			}
-			if (strncmp(ptr,"owner",5)==0 && log->owner) {
-				n += snprintf(buffer+n, sizeof(buffer)-n, "%-15.15s", log->owner);
-				ptr+=5;
-			}
-		}
-		else {
-			n += snprintf(buffer+n, sizeof(buffer)-n, "%c", *ptr);
-			ptr++;
-		}
-	}
-	
+	/* This is a pain, we neen to find out how big the leading log
+	   message is, so format one up. */
+	n = fwts_log_header(log, buffer, sizeof(buffer), field, level);
 
 	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
 
@@ -223,14 +252,18 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 	if (field & LOG_VERBATUM)
 		lines = fwts_list_from_text(buffer+n);
 	else
-		lines = format_text(buffer+n, LOG_LINE_WIDTH-n);
+		lines = format_text(buffer+n, log_line_width-n);
 
 	for (item = lines->head; item != NULL; item = item->next) {
 		char *text = fwts_text_list_text(item);
+		/* Re-format up a log heading with current line number which
+	 	   may increment with multiple line log messages */
+		fwts_log_header(log, buffer, sizeof(buffer), field, level);
 		fwrite(buffer, 1, n, log->fp);
 		fwrite(text, 1, strlen(text), log->fp);
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);
+		fwts_log_line++;
 	}
 	fwts_text_list_free(lines);
 	
@@ -242,15 +275,21 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 void fwts_log_underline(fwts_log *log, int ch)
 {
 	int i;
+	int n;
 
-	char buffer[60];
+	char buffer[1024];
 
-	for (i=0;i<59;i++) {	
+	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
+
+	for (i=n;i<log_line_width-1;i++) {	
 		buffer[i] = ch;
 	}
+	buffer[i++] = '\n';
 	buffer[i] = '\0';
 
-	fwts_log_printf(log, LOG_SEPARATOR, LOG_LEVEL_NONE, buffer);
+	fwrite(buffer, 1, log_line_width, log->fp);
+	fflush(log->fp);
+	fwts_log_line++;
 }
 
 void fwts_log_newline(fwts_log *log)
@@ -258,6 +297,7 @@ void fwts_log_newline(fwts_log *log)
 	if (log && (log->magic == LOG_MAGIC)) {
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);
+		fwts_log_line++;
 	}
 }
 

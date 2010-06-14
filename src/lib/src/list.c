@@ -32,8 +32,17 @@ fwts_list *fwts_list_init(void)
 
 	list->head = NULL;
 	list->tail = NULL;
+	list->len = 0;
 
 	return list;
+}
+
+int fwts_list_len(fwts_list *list)
+{
+	if (list != NULL)
+		return list->len;
+	else
+		return 0;
 }
 
 void fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private)
@@ -84,5 +93,7 @@ fwts_list_element *fwts_list_append(fwts_list *list, void *data)
 		list->tail->next = element;
 		list->tail = element;
 	}
+	list->len++;
+
 	return element;
 }

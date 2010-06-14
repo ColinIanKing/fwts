@@ -16,31 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#ifndef __FWTS_LIST_H__
-#define __FWTS_LIST_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef __FWTS_FORMATTING_H__
+#define __FWTS_FORMATTING_H__
 
-typedef struct fwts_list_element {
-	void *data;
-	struct fwts_list_element *next;
-} fwts_list_element;
+#include "fwts_list.h"
 
-typedef struct {
-	fwts_list_element *head;
-	fwts_list_element *tail;
-	int len;
-} fwts_list;
-
-typedef void (*fwlist_element_free)(void *);
-typedef void (*fwts_list_foreach_callback)(void *data, void *private);
-
-fwts_list         *fwts_list_init(void);
-int 		   fwts_list_len(fwts_list *list);
-void               fwts_list_free(fwts_list *list, fwlist_element_free element_free);
-void               fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private);
-fwts_list_element *fwts_list_append(fwts_list *list, void *data);
+fwts_list *format_text(char *text, const int width);
 
 #endif

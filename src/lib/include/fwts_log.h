@@ -65,6 +65,11 @@ void      fwts_log_set_format(char *str);
 void      fwts_log_print_fields(void);
 void      fwts_log_filter_set_field(const fwts_log_field filter);
 void      fwts_log_filter_unset_field(const fwts_log_field filter);
+char     *fwts_log_level_to_str(fwts_log_level level);
+int 	  fwts_log_line_number(void);
+void	  fwts_log_set_line_width(int width);
+
+
 
 #define fwts_log_result(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, fmt, ## args) 
@@ -90,10 +95,13 @@ void      fwts_log_filter_unset_field(const fwts_log_field filter);
 #define fwts_log_summary(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_SUMMARY, LOG_LEVEL_NONE, fmt, ## args)
 
+#define fwts_log_summary_verbatum(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_SUMMARY | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
+
 #define fwts_log_advice(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_ADVICE, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_nl(fw) \
-	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "\n");
+	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "");
 
 #endif

@@ -190,8 +190,8 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	fwts_log_set_owner(fw->results, "fwts_framework");
-	fwts_log_summary(fw, "SUMMARY: %d passed, %d failed, %d warnings, %d aborted.", 
+	fwts_log_set_owner(fw->results, "fwts");
+	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted.", 
 		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted);
 
 	return 0;
@@ -210,6 +210,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fw->test_run.warning = 0;
 
 	fwts_log_set_owner(fw->results, name);
+
+	fw->current_test_name = strdup(name);
 
 	if (ops->headline) {
 		fwts_log_info(fw, "%s", ops->headline());
@@ -278,7 +280,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	fwts_framework_test_summary(fw);
 
-	fwts_log_info(fw, "");
+	fwts_log_set_owner(fw->results, "fwts");
+
+	free(fw->current_test_name);
 
 	return 0;
 }
@@ -350,10 +354,14 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 	va_start(ap, fmt);
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d FAILED: %s.", fw->current_test, buffer);
+
+	fwts_summary_add(fw->current_test_name, level, buffer);
+
+	fwts_framework_debug(fw, "test %d FAILED [%s]: %s.", fw->current_test, fwts_log_level_to_str(level), buffer);
 	fw->sub_tests.failed++;
-	fwts_log_printf(fw->results, LOG_RESULT, level, "%s: test %d, %s", 
-		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fw->current_test, buffer);
+	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: test %d, %s", 
+		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fwts_log_level_to_str(level), fw->current_test, buffer);
+
 
 	va_end(ap);
 }
@@ -424,6 +432,7 @@ int fwts_framework_args(int argc, char **argv)
 		{ "s3-multiple", 1, 0, 0, },
 		{ "no-s3", 0, 0, 0 },
 		{ "no-s4", 0, 0, 0 },
+		{ "log-width", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -436,6 +445,8 @@ int fwts_framework_args(int argc, char **argv)
 
 	fw->magic = FRAMEWORK_MAGIC;
 	fw->flags = FRAMEWORK_FLAGS_DEFAULT;
+
+	fwts_summary_init();
 
 	for (;;) {
 		int c;
@@ -505,6 +516,9 @@ int fwts_framework_args(int argc, char **argv)
 			case 17: /* --no-s4 */
 				fw->flags |= FRAMEWORK_FLAGS_NO_S4;
 				break;
+			case 18: /* --log-width=N */
+				fwts_log_set_line_width(atoi(optarg));
+				break;
 			}
 		case '?':
 			break;
@@ -525,7 +539,12 @@ int fwts_framework_args(int argc, char **argv)
 	else 
 		fwts_framework_run_registered_tests(fw);
 
+	fwts_log_set_owner(fw->results, "fwts");
+	fwts_log_summary(fw, "");
 	fwts_framework_total_summary(fw);
+	fwts_log_summary(fw, "");
+	fwts_summary_report(fw);
+	fwts_summary_deinit();
 
 	fwts_log_close(fw->results);
 	fwts_log_close(fw->debug);

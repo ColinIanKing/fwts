@@ -35,11 +35,12 @@ static char *format_line(char *start, char *end, int width)
 	if (maxlen < width)
 		maxlen = width;
 
-	bufptr = buffer = malloc(maxlen + 1);
+	if ((bufptr = buffer = malloc(maxlen + 1)) == NULL)
+		return NULL;
 
-	while (*start && start < end) {
+	while (*start && start < end)
 		*bufptr++ = *start++;
-	}
+
 	*bufptr = '\0';
 
 	return buffer;
@@ -50,7 +51,8 @@ static char *format_remove_multiple_spaces(char *text)
 	char *buffer;
 	char *bufptr1, *bufptr2;
 
-	bufptr1 = bufptr2 = buffer = strdup(text);
+	if ((bufptr1 = bufptr2 = buffer = strdup(text)) == NULL)
+		return NULL;
 
 	while (*bufptr1) {
 		if (isspace(*bufptr1)) {
@@ -80,7 +82,11 @@ fwts_list *format_text(char *text, const int width)
 	if ((list = fwts_text_list_init()) == NULL)
 		return NULL;
 
-	textptr = tidied_text = format_remove_multiple_spaces(text);
+	if ((textptr = tidied_text = format_remove_multiple_spaces(text)) == NULL) {
+		fwts_list_free(list, free);
+		return NULL;
+	}
+	
 	linestart = tidied_text;
 
 	while (*textptr) {
@@ -101,7 +107,6 @@ fwts_list *format_text(char *text, const int width)
 				lastspace = NULL;
 			}
 
-
 		textptr++;
 		linelen++;
 	}
@@ -111,7 +116,6 @@ fwts_list *format_text(char *text, const int width)
 	}
 	fwts_text_list_append(list, tmp);
 	free(tmp);
-	
 	free(tidied_text);
 	
 	return list;

@@ -59,7 +59,7 @@ static int s3_deinit(fwts_framework *fw)
 	return 0;
 }
 
-static void s3_do_suspend_resume(fwts_framework *fw, int *warnings, int *errors, int delay, int *duration)
+static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
 {
 	fwts_list *output;
 	int status;
@@ -84,28 +84,28 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *warnings, int *errors,
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, *duration);
 
 	if ((t_end - t_start) < delay) {
-		errors++;
-		fwts_log_error(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
+		(*errors)++;
+		fwts_failed_medium(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
 	}
 	if ((t_end - t_start) > delay*3) {
-		errors++;
-		fwts_log_error(fw, "Unexpected: S3 much longer than expected (%d seconds).", *duration);
+		(*errors)++;
+		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", *duration);
 	}
 
 	fwts_log_info(fw, "pm-suspend returned status: %d.", status);
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
-		errors++;
-		fwts_log_warning(fw, "pm-action failed before trying to put the system "
+		(*errors)++;
+		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
 	} else if (status == 128) {
-		errors++;
-		fwts_log_warning(fw, "pm-action tried to put the machine in the requested "
+		(*errors)++;
+		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
 	} else if (status > 128) {
-		errors++;
-		fwts_log_warning(fw, "pm-action encountered an error and also failed to "
+		(*errors)++;
+		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 	}
 }
@@ -114,7 +114,6 @@ static int s3_check_log(fwts_framework *fw)
 {
 	char *test = "S3 suspend/resume check kernel log.";
 	fwts_list *klog;
-	int warnings = 0;
 	int errors = 0;
 
 	fwts_log_info(fw, test);
@@ -125,18 +124,19 @@ static int s3_check_log(fwts_framework *fw)
 		return 1;
 	}
 
-	if (fwts_klog_pm_check(fw, klog, &warnings, &errors))
+	if (fwts_klog_pm_check(fw, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors))
+	if (fwts_klog_firmware_check(fw, klog, &errors))
+		fwts_log_error(fw, "Error parsing kernel log.");
+
+	if (fwts_klog_common_check(fw, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 	fwts_klog_free(klog);
 
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
-		fwts_failed(fw, test);
-	}
+	if (errors > 0)
+		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
 		fwts_passed(fw, test);
 
@@ -146,15 +146,14 @@ static int s3_check_log(fwts_framework *fw)
 static int s3_test_single(fwts_framework *fw)
 {	
 	char *test = "S3 suspend/resume test (single run).";
-	int warnings = 0;
 	int errors = 0;
 	int duration;
 
 	fwts_log_info(fw, test);
 
-	s3_do_suspend_resume(fw, &warnings, &errors, 30, &duration);
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
+	s3_do_suspend_resume(fw, &errors, 30, &duration);
+	if (errors > 0) {
+		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors);
 		fwts_failed(fw, test);
 	}
 	else
@@ -166,7 +165,6 @@ static int s3_test_single(fwts_framework *fw)
 static int s3_test_multiple(fwts_framework *fw)
 {	
 	char *test = "S3 suspend/resume test (multiple runs).";
-	int warnings = 0;
 	int errors = 0;
 	int delay = 30;
 	int duration = 0;
@@ -184,16 +182,14 @@ static int s3_test_multiple(fwts_framework *fw)
 		int timetaken;
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,fw->s3_multiple);
-		s3_do_suspend_resume(fw, &warnings, &errors, delay, &duration);
+		s3_do_suspend_resume(fw, &errors, delay, &duration);
 
 		timetaken = duration - delay;
 		delay = timetaken + 10;		/* Shorten test time, plus some slack */
 	}
 
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors, warnings);
-		fwts_failed(fw, test);
-	}
+	if (errors > 0)
+		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors);
 	else
 		fwts_passed(fw, test);
 

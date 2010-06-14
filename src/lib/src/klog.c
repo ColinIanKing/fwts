@@ -56,11 +56,10 @@ fwts_list *fwts_klog_read(void)
 	return list;
 }
 
-typedef void (*fwts_scan_callback_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);
+typedef void (*fwts_scan_callback_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
 
-int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t callback, void *private, int *warnings, int *errors)
+int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t callback, void *private, int *errors)
 {
-	*warnings = 0;
 	*errors = 0;
 	char *prev;
 	fwts_list_element *item;
@@ -76,7 +75,7 @@ int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t cal
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
 
-		callback(fw, ptr, prev, private, warnings, errors);
+		callback(fw, ptr, prev, private, errors);
 		prev = ptr;
 	}
 	return 0;
@@ -84,136 +83,440 @@ int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t cal
 
 #define FW_BUG	"[Firmware Bug]: "
 
+/* List of common errors and warnings */
+
+static fwts_klog_pattern common_error_warning_patterns[] = {
+	{
+		LOG_LEVEL_HIGH,
+		"Temperature above threshold, cpu clock throttled",	
+		NULL,
+		"Test caused CPU temperature above critical threshold. Insufficient cooling?"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI: Handling Garbled _PRT entry",
+		NULL,
+		"BIOS has a garbled _PRT entry; source_name and source_index swapped."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"BIOS never enumerated boot CPU",
+		NULL,
+		"The boot processor is not enumerated!"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"*** Error: Return object type is incorrect",
+		NULL,
+		"Return object type is not the correct type, this is an AML error in the DSDT or SSDT"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"acpi_shpchprm",
+		"_HPP fail",
+		"Hotplug _HPP method failed"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"shpchp: acpi_pciehprm",
+		"OSHP fail",
+		"ACPI Hotplug OSHP method failed"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"shpchp: acpi_shpchprm:",
+		"evaluate _BBN fail",
+		"Hotplug _BBN method is missing"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"[PBST] Namespace lookup failure, AE_NOT_FOUND",
+		NULL,
+		"ACPI Namespace lookup failure reported"
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"*** Error: Method reached maximum reentrancy limit",
+		NULL,
+		"ACPI method has reached reentrancy limit, this is a recursion bug in the AML"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"Error while parsing _PSD domain information",
+		NULL,
+		"_PSD domain information is corrupt!"
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"Wrong _BBN value, reboot and use option 'pci=noacpi'",
+		NULL,
+		"The BIOS has wrong _BBN value, which will make PCI root bridge have wrong bus number"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI: lapic on CPU ",
+		" stops in C2[C2]",
+		"The local apic timer incorrectly stops during C2 idle state."
+		"The ACPI specification forbids this and Linux needs the local "
+		"APIC timer to work. The most likely cause of this is that the "
+		"firmware uses a hardware C3 or C4 state that is mapped to "
+		"the ACPI C2 state."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"Invalid _PCT data",
+		NULL,
+		"The ACPI _PCT data is invalid."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"*** Error: Method execution failed",
+		NULL,
+		"Execution of an ACPI AML method failed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"Method parse/execution failed",
+		"AE_NOT_FOUND",
+		"Method parsing/execution failed."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"*** Error: Method execution failed",
+		"AE_AML_METHOD_LIMIT",
+		"ACPI method reached maximum reentrancy limit - infinite recursion in AML in DSTD or SSDT",
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"Method execution failed",
+		"AE_OWNER_ID_LIMIT",
+		"Method failed to allocate owner ID."
+	},
+	{		
+		LOG_LEVEL_HIGH,
+		"Method execution failed",
+		"AE_AML_BUFFER_LIMIT",
+		"Method failed: ResourceSourceIndex is present but ResourceSource is not."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"Disabling IRQ",
+		NULL,
+		"The kernel detected an irq storm. This is most probably an IRQ routing bug."
+	}
+};
+
 /* List of errors and warnings */
 static fwts_klog_pattern firmware_error_warning_patterns[] = {
-	{ "ACPI Warning ",					KERN_WARNING, 
+	{ 
+		LOG_LEVEL_HIGH,	
+		"ACPI Warning ", 
+		NULL,
 		"ACPI AML intepreter has found some non-conforming AML code. "
-		"This should be investigated and fixed." },
-	{ FW_BUG "ACPI: Invalid physical address in GAR",   	KERN_ERROR, 
-		"ACPI Generic Address is invalid" },
-	{ FW_BUG "ACPI: Invalid bit width in GAR",   		KERN_ERROR, 
-		"ACPI Generic Address width must be 8, 16, 32 or 64" },
-	{ FW_BUG "ACPI: Invalid address space type in GAR",   	KERN_ERROR, 
-		"ACPI Generic Address space type must be system memory or system IO space." },
-	{ FW_BUG "ACPI: no secondary bus range in _CRS",   	KERN_WARNING,
+		"This should be investigated and fixed." 
+	},
+	{ 
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "ACPI: Invalid physical address in GAR", 
+		NULL,
+		"ACPI Generic Address is invalid" 
+	},
+	{
+		LOG_LEVEL_MEDIUM,	
+		FW_BUG "ACPI: Invalid bit width in GAR", 
+		NULL,
+		"ACPI Generic Address width must be 8, 16, 32 or 64" 
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "ACPI: Invalid address space type in GAR", 
+		NULL,
+		"ACPI Generic Address space type must be system memory or system IO space."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "ACPI: no secondary bus range in _CRS", 
+		NULL,
 		"_CRS Method should return a secondary bus address for the "
 		"status/command port. The kernel is having to guess this "
-		"based on the _BBN or assume it's 0x00-0xff." },
-	{ FW_BUG "ACPI: Invalid BIOS _PSS frequency", 		KERN_ERROR,
+		"based on the _BBN or assume it's 0x00-0xff." 
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "ACPI: Invalid BIOS _PSS frequency", 
+		NULL,
 		"_PSS (Performance Supported States) package has an incorrectly "
-		"define core frequency (first DWORD entry in the _PSS package)." },
-	{ FW_BUG "BIOS needs update for CPU frequency support", KERN_WARNING,
+		"define core frequency (first DWORD entry in the _PSS package)." 
+	},
+	{
+		LOG_LEVEL_HIGH,
+		FW_BUG "BIOS needs update for CPU frequency support", 
+		NULL,
 		"Having _PPC but missing frequencies (_PSS, _PCT) is a good hint "
 		"that the BIOS is older than the CPU and does not know the CPU "
-		"frequencies." },
-	{ FW_BUG "Invalid critical threshold", 			KERN_WARNING, 
+		"frequencies."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		FW_BUG "Invalid critical threshold",
+		NULL,
 		"ACPI _CRT (Critical Trip Point) is returning a threshold "
-		"lower than zero degrees Celsius which is clearly incorrect." },
-	{ FW_BUG "No valid trip found", 			KERN_WARNING, 
-		"No valud ACPI _CRT (Critical Trip Point) was found" },
-	{ FW_BUG "_BCQ is usef instead of _BQC", 		KERN_WARNING,
+		"lower than zero degrees Celsius which is clearly incorrect."
+	},
+	{
+		LOG_LEVEL_CRITICAL,	
+		FW_BUG "No valid trip found",
+		NULL,
+		"No valud ACPI _CRT (Critical Trip Point) was found."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		FW_BUG "_BCQ is usef instead of _BQC",
+		NULL,
 		"ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed."
-		"however the kernel has detected this and is working around this typo." },
-	{ "defines _DOD but not _DOS", 				KERN_WARNING,
+		"however the kernel has detected this and is working around this typo."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"defines _DOD but not _DOS", 
 		"ACPI Method _DOD (Enumerate all devices attached to display adapter) "
 		"is defined but we should also have _DOS (Enable/Disable output switching) "
-		"defined but it's been omitted. This can cause display switching issues." },
-	{ FW_BUG "Duplicate ACPI video bus", 			KERN_WARNING,
-		"Try video module parameter video.allow_duplicates=1 if "
-		"the current driver does't work." },
-	{ "[Firmware Bug]:",					KERN_ERROR, 
-		"The kernel has detected a bug in the BIOS or ACPI which needs "
-		"investigating and fixing." },
-	{ "PCI: BIOS Bug:",					KERN_ERROR,   NULL },
-	{ "ACPI Error ",					KERN_ERROR,
+		"defined but it's been omitted. This can cause display switching issues."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "Duplicate ACPI video bus",
+		NULL,
+		"Try video module parameter video.allow_duplicates=1 if the current driver does't work."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"[Firmware Bug]:",
+		NULL,
+		"The kernel has detected a bug in the BIOS or ACPI which needs investigating and fixing."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"PCI: BIOS Bug:",
+		NULL,
+		NULL
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error ",
+		NULL,
 		"The kernel has most probably detected an error while exeucting ACPI AML "
 		"The error lists the ACPI driver module and the line number where the "
-		"bug has been caught." },
-	{ NULL,			0,            NULL }
+		"bug has been caught."
+	},
+	{
+		0,
+		NULL,
+		NULL,			
+		NULL
+	}
 };
 
 static fwts_klog_pattern pm_error_warning_patterns[] = {
-        { "PM: Failed to prepare device", 			KERN_ERROR, 
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Failed to prepare device",
+		NULL,
 		"dpm_prepare() failed to prepare all non-sys devices for "
 		"a system PM transition. The device should be listed in the "
-		"error message." },
-        { "PM: Some devices failed to power down", 		KERN_ERROR,
-		"dpm_suspend_noirq failed because some devices did not power down " },
-        { "PM: Some system devices failed to power down", 	KERN_ERROR,
-		"sysdev_suspend failed because some system devices did not power down." },
-        { "PM: Error", 						KERN_ERROR, NULL },
-        { "PM: Some devices failed to power down", 		KERN_ERROR, NULL },
-        { "PM: Restore failed, recovering", 			KERN_ERROR, 
-		"A resume from hibernate failed when calling hibernation_restore()" },
-        { "PM: Resume from disk failed", 			KERN_ERROR, NULL },
-        { "PM: Not enough free memory", 			KERN_ERROR, 
+		"error message."
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Some devices failed to power down",
+		NULL,
+		"dpm_suspend_noirq failed because some devices did not power down "
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Some system devices failed to power down",
+		NULL,
+		"sysdev_suspend failed because some system devices did not power down."
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Error",
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Some devices failed to power down",
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Restore failed, recovering", 
+		NULL,
+		"A resume from hibernate failed when calling hibernation_restore()"
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Resume from disk failed",
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Not enough free memory",
+		NULL,
 		"There was not enough physical memory to be able to "
-		"generate a hibernation image before dumping it to disc." },
-        { "PM: Memory allocation failed", 			KERN_ERROR,
+		"generate a hibernation image before dumping it to disc."
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Memory allocation failed",
+		NULL,
 		"swusp_alloc() failed trying to allocate highmem and failing "
 		"that non-highmem pages for the suspend image. There is "
-		"probably just not enough free physcial memory available." },
-        { "PM: Image mismatch", 				KERN_ERROR,
+		"probably just not enough free physcial memory available."
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Image mismatch",
+		NULL,
 		"Mismatch in kernel version, system type, kernel release "
 		"version or machine id between suspended kernel and resumed "
-		"kernel." },
-        { "PM: Some devices failed to power down", 		KERN_ERROR, NULL },
-        { "PM: Some devices failed to suspend", 		KERN_ERROR, NULL },
-        { "PM: can't read", 					KERN_ERROR, 
-		"Testing suspend cannot read RTC" },
-        { "PM: can't set", 					KERN_ERROR,
-		"Testing suspend cannot set RTC" },
-        { "PM: suspend test failed, error", 			KERN_ERROR, NULL },
-        { "PM: can't test ", 					KERN_WARNING, NULL },
-        { "PM: no wakealarm-capable RTC driver is ready", KERN_WARNING, NULL },
-        { "PM: Adding page to bio failed at", 			KERN_ERROR, NULL },
-        { "PM: Swap header not found", 				KERN_ERROR, NULL },
-        { "PM: Cannot find swap device", 			KERN_ERROR, NULL },
-        { "PM: Not enough free swap", 				KERN_ERROR, 
-		"Hibernate failed because the swap parition was probably too small." },
-        { "PM: Image device not initialised", 			KERN_ERROR, NULL },
-        { "PM: Please power down manually", 			KERN_ERROR, NULL },
-	{ "check_for_bios_corruption", 				KERN_WARNING,
+		"kernel."
+	},
+        { 
+		LOG_LEVEL_CRITICAL,
+	  	"PM: Some devices failed to power down",
+		NULL,
+		NULL,
+	},
+        { 
+		LOG_LEVEL_CRITICAL,
+		"PM: Some devices failed to suspend", 
+		NULL,
+		NULL,
+	},
+        { 
+		LOG_LEVEL_MEDIUM,
+		"PM: can't read",
+		NULL,
+		"Testing suspend cannot read RTC"
+	},
+        {
+		LOG_LEVEL_MEDIUM,
+		"PM: can't set",
+		NULL,
+		"Testing suspend cannot set RTC"
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: suspend test failed, error",
+		NULL,
+		NULL
+	},
+        {	
+		LOG_LEVEL_HIGH,
+		"PM: can't test ", 						
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_MEDIUM,
+		"PM: no wakealarm-capable RTC driver is ready",
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Adding page to bio failed at",
+		NULL,
+		NULL
+	},
+        {	
+		LOG_LEVEL_CRITICAL,
+		"PM: Swap header not found", 
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Cannot find swap device", 
+		NULL,
+		NULL,
+	},
+        {
+		LOG_LEVEL_CRITICAL,
+		"PM: Not enough free swap",
+		NULL,
+		"Hibernate failed because the swap parition was probably too small."
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Image device not initialised",
+		NULL,
+		NULL
+	},
+        {
+		LOG_LEVEL_HIGH,
+		"PM: Please power down manually",
+		NULL,
+		NULL
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"check_for_bios_corruption", 
+		NULL,
 		"The BIOS seems to be corrupting the first 64K of memory "
 		"when doing suspend/resume. Setting bios_corruption_check=0 "
-		"will disable this check." },
-        { NULL,                   0,  NULL }
+		"will disable this check."
+	},
+	{	
+		0,
+		NULL,
+		NULL,
+		NULL
+	}
+
 };
 
-void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
+void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
 	int i;
 
 	fwts_klog_pattern *patterns = (fwts_klog_pattern *)private;
 
-	for (i=0;patterns[i].pattern != NULL;i++) {
-		if (strstr(line, patterns[i].pattern)) {
-			if (patterns[i].type & KERN_WARNING) {
-				fwts_log_info_verbatum(fw, "Kernel warning: %s", line);
-				(*warnings)++;
-				if (patterns[i].advice != NULL) {
-					fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
-					fwts_log_nl(fw);
-				}
-			}
-			if (patterns[i].type & KERN_ERROR) {
-				fwts_log_info_verbatum(fw, "Kernel error: %s", line);
-				(*errors)++;
-				if (patterns[i].advice != NULL) {
-					fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
-					fwts_log_nl(fw);
-				}
+	for (i=0;patterns[i].pat1 != NULL;i++) {
+		int match = 0;
+
+		if (patterns[i].pat2 == NULL)
+			match = (strstr(line, patterns[i].pat1) != NULL);
+		else
+			match = (strstr(line, patterns[i].pat1) != NULL) &&
+				(strstr(line, patterns[i].pat2) != NULL);
+		
+		if (match) {
+			fwts_failed_level(fw, patterns[i].level, "Kernel message: %s", line);
+			(*errors)++;
+			if (patterns[i].advice != NULL) {
+				fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
+				fwts_log_nl(fw);
 			}
 		}
 	}
 }
 
-int fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors)
+int fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *errors)
 {	
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, errors);
 }
 
-int fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors)
+int fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *errors)
 {
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, warnings, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, errors);
+}
+
+int fwts_klog_common_check(fwts_framework *fw, fwts_list *klog, int *errors)
+{
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, common_error_warning_patterns, errors);
 }

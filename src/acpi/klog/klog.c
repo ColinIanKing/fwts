@@ -55,17 +55,16 @@ static int klog_deinit(fwts_framework *fw)
 static int klog_test1(fwts_framework *fw)
 {	
 	char *test = "Kernel log error check.";
-	int warnings = 0;
 	int errors = 0;
 
-	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors)) {
+	if (fwts_klog_firmware_check(fw, klog, &errors)) {
 		fwts_log_error(fw, "Error parsing kernel log.");
 		return 1;
 	}
 
-	fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
-	if (warnings + errors > 0)
-		fwts_failed(fw, test);
+	if (errors > 0) 	
+		/* Checks will log errors as failures automatically */
+		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
 		fwts_passed(fw, test);
 
@@ -84,4 +83,4 @@ static fwts_framework_ops klog_ops = {
 	klog_tests
 };
 
-FRAMEWORK(klog, &klog_ops, TEST_ANYTIME);
+FRAMEWORK(klog, &klog_ops, TEST_EARLY);

@@ -22,26 +22,29 @@
 
 #include "fwts_list.h"
 #include "fwts_framework.h"
+#include "fwts_log.h"
 
 #define KERN_WARNING            0x00000001
 #define KERN_ERROR              0x00000002
 
 typedef struct {
-        char *pattern;
-        int  type;
+	fwts_log_level level;
+        char *pat1;
+        char *pat2;
 	char *advice;
 } fwts_klog_pattern;
 
-typedef void (*fwts_klog_scan_func_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);
+typedef void (*fwts_klog_scan_func_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
 
-int        fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_klog_scan_func_t callback, void *private, int *warnings, int *errors);
-void       fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors);
+int        fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_klog_scan_func_t callback, void *private, int *errors);
+void       fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
 fwts_list *fwts_klog_read(void);
 void       fwts_klog_free(fwts_list *list);
 
 int        fwts_klog_clear(void);
 
-int        fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors);
-int        fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *warnings, int *errors);
+int        fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *errors);
+int        fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *errors);
+int        fwts_klog_common_check(fwts_framework *fw, fwts_list *klog, int *errors);
 
 #endif

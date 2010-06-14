@@ -28,7 +28,7 @@
 
 #include "fwts.h"
 
-static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *warnings, int *errors)
+static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
 	if (strstr(line, "ACPI: Subsystem revision")!=NULL) {
 		char *version = strstr(line,"sion ");
@@ -159,22 +159,19 @@ static int acpiinfo_deinit(fwts_framework *fw)
 static int acpiinfo_test1(fwts_framework *fw)
 {	
 	char *test = "General ACPI information check.";
-	int warnings = 0;
 	int errors = 0;
 
 	fwts_log_info(fw, "This test checks the output of the in-kernel ACPI CA against common "
 		 "error messages that indicate a bad interaction with the bios, including "
 		 "those that point at AML syntax errors.");
 
-	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, &warnings, &errors)) {
+	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log.");
 		return 1;
 	}
 
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
-		fwts_failed(fw, test);
-	}
+	if (errors > 0)
+		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
 		fwts_passed(fw, test);
 
@@ -193,4 +190,4 @@ static fwts_framework_ops acpiinfo_ops = {
 	acpiinfo_tests
 };
 
-FRAMEWORK(acpiinfo, &acpiinfo_ops, TEST_ANYTIME);
+FRAMEWORK(acpiinfo, &acpiinfo_ops, TEST_EARLY);

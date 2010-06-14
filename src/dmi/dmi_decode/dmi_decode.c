@@ -31,6 +31,7 @@
 #include "fwts.h"
 
 typedef struct {
+	fwts_log_level level;
 	char *pat1;
 	char *pat2;
 	char *message;
@@ -80,17 +81,17 @@ static char *dmi_types[] = {
 };
 
 static dmi_pattern dmi_patterns[] = {
-	{ "No SMBIOS nor DMI entry point found", NULL, "Check SMBIOS or DMI entry points" },
-	{ "Wrong DMI structures count", NULL, "DMI structures count" },
-	{ "Wrong DMI structures length",NULL, "DMI structures length" },
-	{ "<OUT OF SPEC>", NULL, "Out of spec check" },
-	{ "<BAD INDEX>", NULL, "Bad index check" },
-	{ "Bad checksum! Please report.", "Bad checksum" },
-	{ "Serial Number:", "0123456789", "Template Serial Number not updated" },
-	{ "Asset Tag",  "1234567890", "Template Serial Number not updated" },
-	{ "UUID:", "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A.", "UUID number not updated" },
-	{ "To Be Filled By O.E.M.", "Value not updated" },
-	{ NULL, NULL, NULL }
+	{ LOG_LEVEL_HIGH,    "No SMBIOS nor DMI entry point found", NULL, "Check SMBIOS or DMI entry points" },
+	{ LOG_LEVEL_HIGH,    "Wrong DMI structures count", NULL, "DMI structures count" },
+	{ LOG_LEVEL_HIGH,    "Wrong DMI structures length",NULL, "DMI structures length" },
+	{ LOG_LEVEL_MEDIUM,  "<OUT OF SPEC>", NULL, "Out of spec check" },
+	{ LOG_LEVEL_MEDIUM,  "<BAD INDEX>", NULL, "Bad index check" },
+	{ LOG_LEVEL_HIGH,    "Bad checksum! Please report.", "Bad checksum" },
+	{ LOG_LEVEL_LOW,     "Serial Number:", "0123456789", "Template Serial Number not updated" },
+	{ LOG_LEVEL_LOW,     "Asset Tag",  "1234567890", "Template Serial Number not updated" },
+	{ LOG_LEVEL_LOW,     "UUID:", "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A.", "UUID number not updated" },
+	{ LOG_LEVEL_LOW,     "To Be Filled By O.E.M.", "Value not updated" },
+	{ 0, NULL, NULL, NULL }
 };
 
 static char *dmidecode = "/usr/sbin/dmidecode";
@@ -151,12 +152,12 @@ static int dmi_decode_test1(fwts_framework *fw)
 						(strstr(text, dmi_patterns[i].pat2) != NULL);
 				}
 				if (match) {		
-					fwts_failed(fw, "DMI type %s: %s.", dmi_types[type],dmi_patterns[i].message);
+					fwts_failed_level(fw, dmi_patterns[i].level, "DMI type %s: %s.", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
 						fwts_list_element *dump;
 						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
-							fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(dump));
+							fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(dump));			
 						dumped = 1;
 					}
 				}

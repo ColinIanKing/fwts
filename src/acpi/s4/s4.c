@@ -53,7 +53,6 @@ static int s4_init(fwts_framework *fw)
 static int s4_test1(fwts_framework *fw)
 {	
 	char *test = "S4 hibernate/resume test.";
-	int warnings = 0;
 	int errors = 0;
 	fwts_list *output;
 	int status;
@@ -81,34 +80,33 @@ static int s4_test1(fwts_framework *fw)
 		fwts_failed(fw, test);
 	}
 
-	if (fwts_klog_pm_check(fw, klog, &warnings, &errors))
+	if (fwts_klog_pm_check(fw, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors))
+	if (fwts_klog_firmware_check(fw, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
+
+	if (fwts_klog_common_check(fw, klog, &errors))
+		fwts_log_error(fw, "Error parsing kernel log.");
+
+	fwts_klog_free(klog);
+
+	if (errors > 0) 
+		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
+	else
+		fwts_passed(fw, test);
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
-		errors++;
-		fwts_log_error(fw, "pm-action failed before trying to put the system "
+		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				   "in the requested power saving state.");
 	} else if (status == 128) {
-		errors++;
-		fwts_log_error(fw, "pm-action tried to put the machine in the requested "
+		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				   "power state but failed.");
 	} else if (status > 128) {
-		errors++;
-		fwts_log_error(fw, "pm-action encountered an error and also failed to "
+		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				   "enter the requested power saving state.");
 	}
-	fwts_klog_free(klog);
-
-	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
-		fwts_failed(fw, test);
-	}
-	else
-		fwts_passed(fw, test);
 
 	return 0;
 }

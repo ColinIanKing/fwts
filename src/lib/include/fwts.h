@@ -43,5 +43,6 @@
 #include "fwts_stringextras.h"
 #include "fwts_wakealarm.h"
 #include "fwts_virt.h"
+#include "fwts_formatting.h"
 
 #endif

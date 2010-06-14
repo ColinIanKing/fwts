@@ -94,12 +94,12 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 				if (hpet_base_p != 0) {
 					if (hpet_base_p != address_base)
 						fwts_failed(fw, 
-			     				"Mismatched HPET base between %s (%lx) and the kernel (%lx)",
+			     				"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
 							table,
 			     				(unsigned long)hpet_base_p, (unsigned long)address_base);
 					else
 						fwts_passed(fw,
-							"HPET base matches that between %s and the kernel (%lx)",
+							"HPET base matches that between %s and the kernel (%lx).",
 							table,
 							(unsigned long)hpet_base_p);
 					break;
@@ -119,7 +119,7 @@ static int hpet_check_init(fwts_framework *fw)
 		return 1;
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Cannot read kernel log");
+		fwts_log_error(fw, "Cannot read kernel log.");
 		return 1;
 	}
 	return 0;
@@ -135,7 +135,7 @@ static int hpet_check_deinit(fwts_framework *fw)
 
 static char *hpet_check_headline(void)
 {
-	return "HPET configuration test";
+	return "HPET configuration test.";
 }
 
 static int hpet_check_test1(fwts_framework *fw)
@@ -146,8 +146,8 @@ static int hpet_check_test1(fwts_framework *fw)
 	fwts_list_element *item;
 
 	fwts_log_info(fw,
-		   "This test checks the HPET PCI BAR for each timer block in the timer.\n"
-		   "The base address is passed by the firmware via an ACPI table.\n"
+		   "This test checks the HPET PCI BAR for each timer block in the timer. "
+		   "The base address is passed by the firmware via an ACPI table. "
 		   "IRQ routing and initialization is also verified by the test.");
 
 	for (item = klog->head; item != NULL; item = item->next) {
@@ -155,8 +155,8 @@ static int hpet_check_test1(fwts_framework *fw)
 			char *txt = strstr(fwts_text_list_text(item), "base: ");
 			if (txt)
 				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
-			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow");
-			fwts_passed(fw, "Found HPET base %x in kernel log\n", hpet_base_p);
+			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow.");
+			fwts_passed(fw, "Found HPET base %x in kernel log.", hpet_base_p);
 			break;
 		}
 	}
@@ -172,7 +172,7 @@ static int hpet_check_test2(fwts_framework *fw)
 	uint32 clk_period;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem");
+		fwts_log_error(fw, "Cannot open /dev/mem.");
 		return 1;
 	}
 	hpet_base_v = 
@@ -180,7 +180,7 @@ static int hpet_check_test2(fwts_framework *fw)
 		 hpet_base_p);
 
 	if (hpet_base_v == NULL) {
-		fwts_log_error(fw, "Cannot mmap to /dev/mem");
+		fwts_log_error(fw, "Cannot mmap to /dev/mem.");
 		return 1;
 	}
 
@@ -189,15 +189,15 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	
 	if (vendor_id == 0xffff)
-		fwts_failed(fw, "Invalid Vendor ID: %04x - this should be configured", vendor_id);
+		fwts_failed(fw, "Invalid Vendor ID: %04x - this should be configured.", vendor_id);
 	else
-		fwts_passed(fw, "Vendor ID looks sane: %04x", vendor_id);
+		fwts_passed(fw, "Vendor ID looks sane: %04x.", vendor_id);
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
-		fwts_failed(fw, "Invalid clock period %li, must be non-zero and less than 10^8 fs", clk_period);
+		fwts_failed(fw, "Invalid clock period %li, must be non-zero and less than 10^8.", clk_period);
 	else
-		fwts_passed(fw, "Valid clock period %li", clk_period);
+		fwts_passed(fw, "Valid clock period %li.", clk_period);
 
 	return 0;
 }

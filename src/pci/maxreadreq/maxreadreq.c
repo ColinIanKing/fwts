@@ -36,7 +36,7 @@
 
 static char *maxreadreq_headline(void)
 {
-	return "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices";
+	return "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.";
 }
 
 static char *lspci = "/usr/bin/lspci";
@@ -50,17 +50,17 @@ static int maxreadreq_init(fwts_framework *fw)
 		return 1;
 
 	if (stat(lspci, &buffer)) {
-		fwts_log_error(fw, "Cannot find %s", lspci);	
+		fwts_log_error(fw, "Cannot find %s.", lspci);	
 		return 1;
 	}
 
 	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
-		fwts_log_error(fw, "Failed to execute lspci -vvv");
+		fwts_log_error(fw, "Failed to execute lspci -vvv.");
 		return 1;
 	}
 
 	if (lspci_text == NULL) {
-		fwts_log_error(fw, "Unexpected empty output from lspci -vvv");
+		fwts_log_error(fw, "Unexpected empty output from lspci -vvv.");
 		return 1;
 	}
 	
@@ -93,9 +93,9 @@ static int maxreadreq_test1(fwts_framework *fw)
 
 		if (line[0]!=' ' && line[0] != '\t' && strlen(line)>8) {
 			if (strlen(line) > 500){
-				fwts_log_warning(fw, "Too big pci string would overflow"
-					    "current_device buffer Internal plugin,"
-					    " not a firmware" " bug");
+				fwts_log_warning(fw, "Too big pci string would overflow "
+					    "current_device buffer Internal plugin, "
+					    "not a firmware bug.");
 				break;
 			}
 			snprintf(current_device, sizeof(current_device), "pci://00:%s", line);
@@ -117,18 +117,18 @@ static int maxreadreq_test1(fwts_framework *fw)
 			c += 11;
 			val = strtoul(c, NULL, 10);
 			if (val <= 128) {
-				fwts_log_warning(fw, "MaxReadReq for %s is low (%d) [%s]", current_device, val, current_type);
+				fwts_log_warning(fw, "MaxReadReq for %s is low (%d) [%s].", current_device, val, current_type);
 				warnings++;
 			}
 		}
 	}
 
 	if (warnings > 0)
-		fwts_failed(fw, "%d devices have low MaxReadReq settings.\n" 
-				     "Firmware may have configured these too low.",
-				     warnings);
+		fwts_failed(fw, "%d devices have low MaxReadReq settings. " 
+				"Firmware may have configured these too low.",
+				 warnings);
 	else
-		fwts_passed(fw, "All devices have MaxReadReq set > 128");
+		fwts_passed(fw, "All devices have MaxReadReq set > 128.");
 
 	return 0;
 }

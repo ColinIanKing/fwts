@@ -82,6 +82,15 @@ void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
 #define fwts_failed(fw, args...)	fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)
 #define fwts_failed_level(fw, level, args...) \
 					fwts_framework_failed(fw, level, ## args)
+#define fwts_failed_critical(fw, args...)	\
+					fwts_framework_failed(fw, LOG_LEVEL_CRITICAL, ## args)
+#define fwts_failed_high(fw, args...)	\
+					fwts_framework_failed(fw, LOG_LEVEL_HIGH, ## args)
+#define fwts_failed_medium(fw, args...)	\
+					fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)
+#define fwts_failed_low(fw, args...)	\
+					fwts_framework_failed(fw, LOG_LEVEL_LOW, ## args)
+
 #define fwts_warning(fw, args...)	fwts_framework_warning(fw, ## args)
 
 static inline int fwts_tests_passed(fwts_framework *fw)

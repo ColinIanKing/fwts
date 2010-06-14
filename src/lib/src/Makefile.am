@@ -9,6 +9,7 @@ libtestsuite_a_SOURCES = \
 	e820.c \
 	fileio.c \
 	framework.c \
+	formatting.c \
 	get.c 	\
 	iasl.c \
 	klog.c \

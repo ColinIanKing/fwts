@@ -34,6 +34,10 @@ typedef enum {
 	LOG_SEPARATOR       = 0x00000040,
 	LOG_NEWLINE         = 0x00000080,
 	LOG_ADVICE          = 0x00000100,
+
+	LOG_FIELD_MASK	    = 0x0000ffff,
+
+	LOG_VERBATUM	    = 0x10000000,
 } fwts_log_field;
 
 typedef enum {
@@ -67,12 +71,21 @@ void      fwts_log_filter_unset_field(const fwts_log_field filter);
 
 #define fwts_log_warning(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_WARNING, LOG_LEVEL_NONE, fmt, ## args) 
+
+#define fwts_log_warning_verbatum(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args) 
 	
 #define fwts_log_error(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_NONE, fmt, ## args)
 
+#define fwts_log_error_verbatum(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_ERROR | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
+
 #define fwts_log_info(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_INFO, LOG_LEVEL_NONE, fmt, ## args)
+
+#define fwts_log_info_verbatum(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_INFO | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_summary(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_SUMMARY, LOG_LEVEL_NONE, fmt, ## args)

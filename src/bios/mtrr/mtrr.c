@@ -315,11 +315,12 @@ static void do_mtrr_resource(fwts_framework *fw)
 	fwts_list_element *list;
 	struct mtrr_entry *entry;
 
-	fwts_log_info(fw,"MTRR overview\n-------------\n");
+	fwts_log_info(fw,"MTRR overview");
+	fwts_log_info(fw,"-------------");
 
 	for (list = mtrr_list->head; list != NULL; list = list->next) {
 		entry = (struct mtrr_entry*)list->data;
-		fwts_log_info(fw, "0x%08llx - 0x%08llx   %s \n", entry->start, entry->end, cache_to_string(entry->type));
+		fwts_log_info_verbatum(fw, "0x%08llx - 0x%08llx   %s \n", entry->start, entry->end, cache_to_string(entry->type));
 	}
 	fwts_log_info(fw,"\n");
 }
@@ -331,7 +332,7 @@ static void check_line(void *data, void *private)
 	fwts_framework *fw = (fwts_framework *)private;
 
 	if (strstr(line, "mtrr: probably your BIOS does not setup all CPUs."))
-		fwts_failed(fw, "Not all processors have the MTRR set up");
+		fwts_failed(fw, "Not all processors have the MTRR set up.");
 }
 
 static int mtrr_init(fwts_framework *fw)
@@ -340,13 +341,13 @@ static int mtrr_init(fwts_framework *fw)
 		return 1;
 
 	if (get_mtrrs())
-		fwts_log_error(fw, "Failed to read /proc/mtrr");
+		fwts_log_error(fw, "Failed to read /proc/mtrr.");
 
 	if (access("/proc/mtrr", R_OK))
 		return 1;
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Failed to read kernel log");
+		fwts_log_error(fw, "Failed to read kernel log.");
 		return 1;
 	}
 
@@ -364,13 +365,13 @@ static int mtrr_deinit(fwts_framework *fw)
 
 static char *mtrr_headline(void)
 {
-	return "MTRR validation";
+	return "MTRR validation.";
 }
 
 static int mtrr_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
-		"This test validates the MTRR iomem setup");
+		"This test validates the MTRR IOMEM setup.");
 
 	return validate_iomem(fw);
 }
@@ -378,7 +379,7 @@ static int mtrr_test1(fwts_framework *fw)
 static int mtrr_test2(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
-		"This test validates the MTRR setup across all processors");
+		"This test validates the MTRR setup across all processors.");
 
 	if (klog != NULL) {
 		fwts_list_foreach(klog, check_line, fw);

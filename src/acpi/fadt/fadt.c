@@ -177,7 +177,7 @@ static int fadt_deinit(fwts_framework *fw)
 
 static char *fadt_headline(void)
 {
-	return "Check if FADT SCI_EN bit is enabled";
+	return "Check if FADT SCI_EN bit is enabled.";
 }
 
 static int fadt_test1(fwts_framework *fw)
@@ -191,7 +191,7 @@ static int fadt_test1(fwts_framework *fw)
 
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
-		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure");
+		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure.");
 		return 0;
 	}
 
@@ -225,7 +225,7 @@ static int fadt_test1(fwts_framework *fw)
 		break;
 	default:
 		profile = "Reserved";
-		fwts_log_warning(fw, "FADT Preferred PM Profile is Reserved - this may be incorrect");
+		fwts_log_warning(fw, "FADT Preferred PM Profile is Reserved - this may be incorrect.");
 		break;
 	}
 
@@ -240,9 +240,9 @@ static int fadt_test1(fwts_framework *fw)
 		/*  Sanity check sizes with extended address variants */
 		fwts_log_info(fw, "FADT is greater than ACPI version 1.0");
 		if (port != fadt.x_pm1a_cnt_blk.address) 
-			fwts_log_warning(fw, "32 and 64 bit versions of FADT pm1_cnt address do not match");
+			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt address do not match.");
 		if (width != fadt.x_pm1a_cnt_blk.register_bit_width)
-			fwts_log_warning(fw, "32 and 64 bit versions of FADT pm1_cnt size do not match");
+			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt size do not match.");
 
 		port = fadt.x_pm1a_cnt_blk.address;	
 		width = fadt.x_pm1a_cnt_blk.register_bit_width;
@@ -264,14 +264,14 @@ static int fadt_test1(fwts_framework *fw)
 		break;
 	default:
 		ioperm(port, width/8, 0);
-		fwts_failed(fw, "FADT pm1a register has invalid bit width of %d", width);
+		fwts_failed_high(fw, "FADT pm1a register has invalid bit width of %d.", width);
 		return 1;
 	}
 
 	if (value & 0x01)
-		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled");
+		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled.");
 	else
-		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is not enabled");
+		fwts_failed_high(fw, "SCI_EN bit in PM1a Control Register Block is not enabled.");
 
 	return 0;
 }

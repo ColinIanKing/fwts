@@ -189,7 +189,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	for (i=0;patterns[i].pattern != NULL;i++) {
 		if (strstr(line, patterns[i].pattern)) {
 			if (patterns[i].type & KERN_WARNING) {
-				fwts_log_info(fw, "Kernel warning: %s", line);
+				fwts_log_info_verbatum(fw, "Kernel warning: %s", line);
 				(*warnings)++;
 				if (patterns[i].advice != NULL) {
 					fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
@@ -197,7 +197,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 				}
 			}
 			if (patterns[i].type & KERN_ERROR) {
-				fwts_log_info(fw, "Kernel error: %s", line);
+				fwts_log_info_verbatum(fw, "Kernel error: %s", line);
 				(*errors)++;
 				if (patterns[i].advice != NULL) {
 					fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);

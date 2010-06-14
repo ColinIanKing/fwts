@@ -46,21 +46,21 @@ static int ebda_init(fwts_framework *fw)
 		return 1;
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Failed to read kernel log");
+		fwts_log_error(fw, "Failed to read kernel log.");
 		return 1;
 	}
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Failed to open /dev/mem");
+		fwts_log_error(fw, "Failed to open /dev/mem.");
 		return 1;
 	}
 
 	if (lseek(fd, EBDA_OFFSET, SEEK_SET) < 0) {
-		fwts_log_error(fw, "Failed to seek to EBDA offset 0x%x", EBDA_OFFSET);
+		fwts_log_error(fw, "Failed to seek to EBDA offset 0x%x.", EBDA_OFFSET);
 		return 1;
 	}
 	if (read(fd, &addr, sizeof(unsigned short)) <= 0) {
-		fwts_log_error(fw, "Failed to read EBDA address");
+		fwts_log_error(fw, "Failed to read EBDA address.");
 		return 1;
 	}
 	close(fd);
@@ -79,7 +79,7 @@ static int ebda_deinit(fwts_framework *fw)
 
 static char *ebda_headline(void)
 {
-	return "Validate EBDA region is mapped and reserved in E820 table";
+	return "Validate EBDA region is mapped and reserved in E820 table.";
 }
 
 static int ebda_test1(fwts_framework *fw)
@@ -111,7 +111,7 @@ static int ebda_test1(fwts_framework *fw)
 			}
 			if (strstr(tmp, "(reserved)") || strstr(tmp, "ACPI")) {
 				if (start_addr <= ebda_addr && end_addr > ebda_addr) {
-					fwts_passed(fw, "EBDA region mapped at %lx and reserved in E820 table in region 0x%llx..0x%llx",
+					fwts_passed(fw, "EBDA region mapped at %lx and reserved in E820 table in region 0x%llx..0x%llx.",
 						ebda_addr, start_addr, end_addr);
 					passed = 1;
 					break;
@@ -121,7 +121,7 @@ static int ebda_test1(fwts_framework *fw)
 	}
 
 	if (!passed)
-		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in E820 table", ebda_addr);
+		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in E820 table.", ebda_addr);
 		
 	return 0;
 }

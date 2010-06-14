@@ -26,7 +26,7 @@
 
 static char *klog_headline(void)
 {
-	return "Scan kernel log for errors and warnings";
+	return "Scan kernel log for errors and warnings.";
 }
 
 static fwts_list *klog;
@@ -39,7 +39,7 @@ static int klog_init(fwts_framework *fw)
 		klog = fwts_klog_read();
 	
 	if (klog == NULL) {
-		fwts_log_error(fw, "cannot read kernel log");
+		fwts_log_error(fw, "Cannot read kernel log.");
 		return 1;
 	}
 	return 0;
@@ -59,14 +59,13 @@ static int klog_test1(fwts_framework *fw)
 	int errors = 0;
 
 	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors)) {
-		fwts_log_error(fw, "error parsing kernel log");
+		fwts_log_error(fw, "Error parsing kernel log.");
 		return 1;
 	}
 
-	fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
-	if (warnings + errors > 0) {
+	fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
+	if (warnings + errors > 0)
 		fwts_failed(fw, test);
-	}
 	else
 		fwts_passed(fw, test);
 

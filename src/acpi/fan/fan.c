@@ -42,19 +42,19 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present.");
 		return;
 	}
 
 	if (fgets(buffer, sizeof(buffer)-1, file) == NULL) {
-		fwts_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present.");
 		fclose(file);
 		return;
 	}
 	fclose(file);
 
 	if ((state = strstr(buffer, "status:")) == NULL) {
-		fwts_failed(fw, "Fan present but is undersupported - no state present");
+		fwts_failed(fw, "Fan present but is undersupported - no state present.");
 		return;
 	}
 
@@ -68,7 +68,7 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 
 static char *fan_headline(void)
 {
-	return "Simple Fan Tests";
+	return "Simple Fan Tests.";
 }
 
 static int fan_test1(fwts_framework *fw)
@@ -78,11 +78,11 @@ static int fan_test1(fwts_framework *fw)
 	int fandir = 0;
 
 	fwts_log_info(fw, 
-		"Test how many fans there are in the system.\n"
+		"Test how many fans there are in the system. "
 		"Check for the current status of the fan(s).");
 
 	if (!(dir = opendir("/proc/acpi/fan/"))) {
-		fwts_log_info(fw, "No fan information present: cannot test");
+		fwts_failed_low(fw, "No fan information present: cannot test.");
 		return 0;
 	}
 
@@ -98,7 +98,7 @@ static int fan_test1(fwts_framework *fw)
 	} while (entry);
 
 	if (fandir == 0)
-		fwts_log_info(fw, "No fan information present: cannot test");
+		fwts_failed_low(fw, "No fan information present: cannot test.");
 
 	return 0;
 }

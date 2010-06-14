@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#define LOG_LINE_WIDTH 104
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,7 +34,7 @@ static char fwts_log_format[256] = "%date %time [%field %level] %owner ";
 
 static char *fwts_log_field_to_str(fwts_log_field field)
 {
-	switch (field) {
+	switch (field & LOG_FIELD_MASK) {
 	case LOG_RESULT:
 		return "RES";
 	case LOG_ERROR:
@@ -156,35 +157,17 @@ void fwts_log_set_format(char *str)
 	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
-static void fwts_log_handle_newlines(fwts_log *log, char *str, int posn)
-{
-	char *ptr1,*ptr2;
-
-	for (ptr1=ptr2=str+posn; *ptr1; ptr1++) {
-		if (*ptr1=='\n') {
-			fwrite(str,  1, posn, log->fp);
-			fwrite(ptr2, 1, ptr1-ptr2+1, log->fp);
-			fflush(log->fp);
-			ptr2 = ptr1+1;
-		}
-	}
-
-	if (ptr1-ptr2) {
-		fwrite(str,  1, posn, log->fp);
-		fwrite(ptr2, 1, ptr1-ptr2, log->fp);
-		fwrite("\n", 1, 1, log->fp);
-		fflush(log->fp);
-	}
-}
-
 int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,const char *fmt, ...)
 {
-	char buffer[1024];
+	char buffer[4096];
 	int n = 0;
 	struct tm tm;
 	time_t now;
 	va_list ap;
 	char *ptr;
+
+	fwts_list *lines;
+	fwts_list_element *item;
 
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return 0;
@@ -232,10 +215,25 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 			ptr++;
 		}
 	}
+	
+
 	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
-	fwts_log_handle_newlines(log, buffer, n);
 
+	/* Break text into multi-lines if necessary */
+	if (field & LOG_VERBATUM)
+		lines = fwts_list_from_text(buffer+n);
+	else
+		lines = format_text(buffer+n, LOG_LINE_WIDTH-n);
 
+	for (item = lines->head; item != NULL; item = item->next) {
+		char *text = fwts_text_list_text(item);
+		fwrite(buffer, 1, n, log->fp);
+		fwrite(text, 1, strlen(text), log->fp);
+		fwrite("\n", 1, 1, log->fp);
+		fflush(log->fp);
+	}
+	fwts_text_list_free(lines);
+	
 	va_end(ap);
 
 	return n;

@@ -27,7 +27,7 @@
 
 static char *s3_headline(void)
 {
-	return "S3 suspend/resume test";
+	return "S3 suspend/resume test.";
 }
 
 static int s3_init(fwts_framework *fw)
@@ -40,14 +40,14 @@ static int s3_init(fwts_framework *fw)
 	}
 
 	if (fwts_klog_clear()) {
-		fwts_log_error(fw, "cannot clear kernel log");
+		fwts_log_error(fw, "Cannot clear kernel log.");
 		return 1;
 	}
 
 	ret = fwts_wakealarm_test_firing(fw, 1);
 	if (ret != 0) {
-		fwts_log_error(fw, "cannot automatically wake machine up - aborting S3 test");
-		fwts_failed(fw, "check if wakealarm works reliably for S3 tests");
+		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
+		fwts_failed(fw, "Check if wakealarm works reliably for S3 tests.");
 		return 1;
 	}
 
@@ -81,38 +81,38 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *warnings, int *errors,
 
 	*duration = (int)(t_end - t_start);
 
-	fwts_log_info(fw, "pm-suspend returned %d after %d seconds", status, *duration);
+	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, *duration);
 
 	if ((t_end - t_start) < delay) {
 		errors++;
-		fwts_log_error(fw, "Unexpected: S3 slept for less than %d seconds", delay);
+		fwts_log_error(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
 	}
 	if ((t_end - t_start) > delay*3) {
 		errors++;
-		fwts_log_error(fw, "Unexpected: S3 much longer than expected (%d seconds)", *duration);
+		fwts_log_error(fw, "Unexpected: S3 much longer than expected (%d seconds).", *duration);
 	}
 
-	fwts_log_info(fw, "pm-suspend returned status: %d", status);
+	fwts_log_info(fw, "pm-suspend returned status: %d.", status);
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		errors++;
-		fwts_log_warning(fw, "pm-action failed before trying to put the system\n"
-				   "in the requested power saving state");
+		fwts_log_warning(fw, "pm-action failed before trying to put the system "
+				     "in the requested power saving state.");
 	} else if (status == 128) {
 		errors++;
-		fwts_log_warning(fw, "pm-action tried to put the machine in the requested\n"
-       				   "power state but failed");
+		fwts_log_warning(fw, "pm-action tried to put the machine in the requested "
+       				     "power state but failed.");
 	} else if (status > 128) {
 		errors++;
-		fwts_log_warning(fw, "pm-action encountered an error and also failed to\n"
-				   "enter the requested power saving state");
+		fwts_log_warning(fw, "pm-action encountered an error and also failed to "
+				     "enter the requested power saving state.");
 	}
 }
 
 static int s3_check_log(fwts_framework *fw)
 {
-	char *test = "S3 suspend/resume check kernel log";
+	char *test = "S3 suspend/resume check kernel log.";
 	fwts_list *klog;
 	int warnings = 0;
 	int errors = 0;
@@ -120,21 +120,21 @@ static int s3_check_log(fwts_framework *fw)
 	fwts_log_info(fw, test);
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "cannot read kernel log");
+		fwts_log_error(fw, "Cannot read kernel log.");
 		fwts_failed(fw, test);
 		return 1;
 	}
 
 	if (fwts_klog_pm_check(fw, klog, &warnings, &errors))
-		fwts_log_error(fw, "error parsing kernel log");
+		fwts_log_error(fw, "Error parsing kernel log.");
 
 	if (fwts_klog_firmware_check(fw, klog, &warnings, &errors))
-		fwts_log_error(fw, "error parsing kernel log");
+		fwts_log_error(fw, "Error parsing kernel log.");
 
 	fwts_klog_free(klog);
 
 	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
+		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
 		fwts_failed(fw, test);
 	}
 	else

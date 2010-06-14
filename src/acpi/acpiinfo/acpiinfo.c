@@ -34,7 +34,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 		char *version = strstr(line,"sion ");
 		if (version) {
 			version+=5;
-			fwts_log_info(fw, "Linux ACPI interpreter version %s", version);
+			fwts_log_info(fw, "Linux ACPI interpreter version %s.", version);
 		}
 	}
 
@@ -44,90 +44,90 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 			vendor="Microsoft";
 		if (strstr(line,"INTL"))
 			vendor="Intel";
-		fwts_log_info(fw,"DSDT was compiled by the %s AML compiler", vendor);
+		fwts_log_info(fw,"DSDT was compiled by the %s AML compiler.", vendor);
 	}
 
 	if (strstr(line, "Disabling IRQ")!=NULL && prevline && strstr(prevline,"acpi_irq")) {
 		fwts_failed(fw, "ACPI interrupt got stuck: level triggered?");
-		fwts_log_info(fw,"%s", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (prevline && strstr(prevline, "*** Error: Return object type is incorrect")) {
-		fwts_failed(fw, "Return object type is incorrect: %s", line);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "Return object type is incorrect: %s.", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"ACPI: acpi_ec_space_handler: bit_width is 32, should be")) {
-		fwts_failed(fw, "Embedded controller bit_width is incorrect: %s", line);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"acpi_ec_space_handler: bit_width should be")) {
-		fwts_failed(fw, "Embedded controller bit_width is incorrect: %s", line);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SRAT) returned 0!")) {
 		fwts_failed(fw, "SRAT table cannot be found");
-		fwts_log_info(fw,"%s", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SLIT) returned 0!")) {
 		fwts_failed(fw, "SLIT table cannot be found");
-		fwts_log_info(fw,"%s", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
 	if (strstr(line, "WARNING: No sibling found for CPU")) {
-		fwts_failed(fw, "Hyperthreading CPU enumeration fails");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed(fw, "Hyperthreading CPU enumeration fails.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (prevline && strstr(line, ">>> ERROR: Invalid checksum") && strlen(prevline)>11) {
 		char tmp[4096];
 		strncpy(tmp, prevline, sizeof(tmp));
 		tmp[11] = '\0';
-		fwts_failed(fw, "ACPI table %s has an invalid checksum", tmp+6);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "ACPI table %s has an invalid checksum.", tmp+6);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC")) {
-		fwts_failed(fw, "8254 timer not connected to IO-APIC: %s", line);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "8254 timer not connected to IO-APIC: %s.", line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) {
-		fwts_failed(fw, line);
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, line);
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "*** Warning Inconsistent FADT length") && strstr(line, "using FADT V1.0 portion of table")) {
-		fwts_failed(fw, "FADT table claims to be of higher revision than it is");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "FADT table claims to be of higher revision than it is.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "thermal_get_trip_point: Invalid active threshold")) {
-		fwts_failed(fw, "_AC0 thermal trip point is invalid");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_critical(fw, "_AC0 thermal trip point is invalid.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MMCONFIG has no entries")) {
-		fwts_failed(fw, "The MCFG table has no entries!");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "The MCFG table has no entries!");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MMCONFIG not in low 4GB of memory")) {
-		fwts_failed(fw, "The MCFG table entries are not in the lower 4Gb of ram");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed(fw, "The MCFG table entries are not in the lower 4Gb of RAM.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "pcie_portdrv_probe->Dev") && strstr(line, "has invalid IRQ. Check vendor BIOS")) {
-		fwts_failed(fw, "PCI Express port driver reports an invalid IRQ");
-		fwts_log_info(fw,"%s", line);
+		fwts_failed_high(fw, "PCI Express port driver reports an invalid IRQ.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
-	if (strstr(line, "BIOS handoff failed (BIOS bug ?)")) {
-		fwts_failed(fw, "EHCI BIOS emulation handoff failed");
-		fwts_log_info(fw,"%s", line);
+	if (strstr(line, "BIOS handoff failed (BIOS bug")) {
+		fwts_failed(fw, "EHCI BIOS emulation handoff failed.");
+		fwts_log_info_verbatum(fw,"%s", line);
 	}
 }
 
@@ -135,7 +135,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 
 static char *acpiinfo_headline(void)
 {
-	return "General ACPI information check";
+	return "General ACPI information check.";
 }
 
 static fwts_list *klog;
@@ -143,7 +143,7 @@ static fwts_list *klog;
 static int acpiinfo_init(fwts_framework *fw)
 {
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "cannot read kernel log");
+		fwts_log_error(fw, "Cannot read kernel log.");
 		return 1;
 	}
 	return 0;
@@ -162,17 +162,17 @@ static int acpiinfo_test1(fwts_framework *fw)
 	int warnings = 0;
 	int errors = 0;
 
-	fwts_log_info(fw, "This test checks the output of the in-kernel ACPI CA against common\n"
-		 "error messages that indicate a bad interaction with the bios, including\n"
-		 "those that point at AML syntax errors.\n");
+	fwts_log_info(fw, "This test checks the output of the in-kernel ACPI CA against common "
+		 "error messages that indicate a bad interaction with the bios, including "
+		 "those that point at AML syntax errors.");
 
 	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, &warnings, &errors)) {
-		fwts_log_error(fw, "failed to scan kernel log");
+		fwts_log_error(fw, "failed to scan kernel log.");
 		return 1;
 	}
 
 	if (warnings + errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log", errors, warnings);
+		fwts_log_info(fw, "Found %d errors, %d warnings in kernel log.", errors, warnings);
 		fwts_failed(fw, test);
 	}
 	else

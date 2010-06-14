@@ -49,7 +49,7 @@ static uint64 readmsr(int cpu, unsigned long offset)
 	snprintf(buffer, sizeof(buffer), "/dev/msr%i", cpu);
 	file = fopen(buffer, "r");
 	if (!file) {
-		printf("Error: fopen failed \n");
+		printf("Error: fopen failed.");
 		return -1;
 	}
 	fd = fileno(file);
@@ -57,7 +57,7 @@ static uint64 readmsr(int cpu, unsigned long offset)
 	ret = pread(fd, msr_value_buf, 8, offset);	
 	fclose(file);
 	if (ret<0) {
-		printf("Error: pread failed %d\n, errno=%d", ret, errno);
+		printf("Error: pread failed %d\n, errno=%d.", ret, errno);
 		return -2;
 	}
 
@@ -70,7 +70,7 @@ int cpu_has_svm(void)
 	fwts_list *cpuinfo;
 	fwts_list_element *item;
 
-	if ((cpuinfo = fwts_file_open_and_read("/proc/cpuinfo")) == NULL)
+	if ((cpuinfo = fwts_file_open_and_read("/proc/cpuinfo.")) == NULL)
 		return 0;
 
 	for (item = cpuinfo->head; item != NULL; item = item->next) {
@@ -109,13 +109,13 @@ int vt_locked_by_bios(void)
 
 void virt_check_svm(fwts_framework *fw)
 {
-	fwts_log_info(fw, "Check SVM Virtualization extensions are set up correctly");
+	fwts_log_info(fw, "Check SVM Virtualization extensions are set up correctly.");
 		
 	if (!cpu_has_svm()) 
-		fwts_log_info(fw, "Processor does not support Virtualization extensions");
+		fwts_log_info(fw, "Processor does not support Virtualization extensions.");
 	else 
 		if (vt_locked_by_bios())
-			fwts_failed(fw, "Virtualization extensions supported but disabled by BIOS");
+			fwts_failed(fw, "Virtualization extensions supported but disabled by BIOS.");
 		else
-			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS");
+			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");
 }

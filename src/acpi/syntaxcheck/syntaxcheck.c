@@ -27,7 +27,7 @@
 
 static char *syntaxcheck_headline(void)
 {
-	return "Re-assemble DSDT and find syntax errors and warnings";
+	return "Re-assemble DSDT and find syntax errors and warnings.";
 }
 
 static fwts_list* error_output;
@@ -40,7 +40,7 @@ static int syntaxcheck_init(fwts_framework *fw)
 		return 1;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
-                fwts_log_error(fw, "Make sure iasl is installed");
+                fwts_log_error(fw, "Make sure iasl is installed.");
                 return 1;
         }
 
@@ -73,7 +73,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *test, char *table, int wh
 	error_output = fwts_iasl_reassemble(fw, tabledata, size);
 	free(tabledata);
 	if (error_output == NULL) {
-		fwts_log_error(fw, "cannot re-assasemble with iasl");
+		fwts_log_error(fw, "Cannot re-assasemble with iasl.");
 		return 1;
 	}
 
@@ -86,13 +86,13 @@ static int syntaxcheck_table(fwts_framework *fw, char *test, char *table, int wh
 			if (item->next != NULL) {
 				char *nextline = fwts_text_list_text(item->next);
 				if (!strncmp(nextline, "Error", 5)) {
-					fwts_log_info(fw, "%s", line);
-					fwts_log_info(fw, "%s", nextline);
+					fwts_log_info_verbatum(fw, "%s", line);
+					fwts_log_info_verbatum(fw, "%s", nextline);
 					errors++;
 				}
 				if (!strncmp(nextline, "Warning", 7)) {
-					fwts_log_info(fw, "%s", line);
-					fwts_log_info(fw, "%s", nextline);
+					fwts_log_info_verbatum(fw, "%s", line);
+					fwts_log_info_verbatum(fw, "%s", nextline);
 					warnings++;
 				}
 				item = item->next;
@@ -108,14 +108,13 @@ static int syntaxcheck_table(fwts_framework *fw, char *test, char *table, int wh
 	fwts_text_list_free(error_output);
 
 	if (errors > 0) {
-		fwts_log_info(fw, "Found %d errors, %d warnings in %s", errors, warnings, table);
+		fwts_log_info(fw, "Found %d errors, %d warnings in %s.", errors, warnings, table);
 		fwts_failed(fw, test);
 	} else if (warnings > 0) {
-		fwts_log_info(fw, "Found 0 errors, %d warnings in %s", warnings, table);
+		fwts_log_info(fw, "Found 0 errors, %d warnings in %s.", warnings, table);
 		fwts_warning(fw, test);
-	} else {
+	} else 
 		fwts_passed(fw, test);
-	}
 
 	return 0;
 }
@@ -131,7 +130,7 @@ static int syntaxcheck_SSDT(fwts_framework *fw)
 
 	for (i=0; i < 100; i++) {
 		char buffer[256];
-		snprintf(buffer, sizeof(buffer), "SSTD table #%d reassembly (syntax check)", i);
+		snprintf(buffer, sizeof(buffer), "SSTD table #%d reassembly (syntax check).", i);
 		int ret = syntaxcheck_table(fw, buffer, "SSDT", i);
 		if (ret == 2)
 			return 0;	/* Hit the last table */

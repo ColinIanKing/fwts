@@ -106,7 +106,7 @@ static int dmi_decode_init(fwts_framework *fw)
 		dmidecode = fw->dmidecode;
 
 	if (stat(dmidecode, &buffer)) {
-		fwts_log_error(fw, "Cannot find %s, make sure dmidecode is installed", dmidecode);
+		fwts_log_error(fw, "Cannot find %s, make sure dmidecode is installed.", dmidecode);
 		return 1;
 	}
 	return 0;
@@ -114,7 +114,7 @@ static int dmi_decode_init(fwts_framework *fw)
 
 static char *dmi_decode_headline(void)
 {
-	return "Test DMI/SMBIOS tables for errors";
+	return "Test DMI/SMBIOS tables for errors.";
 }
 
 static int dmi_decode_test1(fwts_framework *fw)
@@ -130,11 +130,11 @@ static int dmi_decode_test1(fwts_framework *fw)
 		snprintf(buffer, sizeof(buffer), "%s -t %d", dmidecode, type);
 
 		if (fwts_pipe_exec(buffer, &dmi_text)) {
-			fwts_log_error(fw, "Failed to execute dmidecode");
+			fwts_log_error(fw, "Failed to execute dmidecode.");
 			continue;
 		}
 		if (dmi_text == NULL) {
-			fwts_log_error(fw, "Failed to read output from dmidecode (out of memory)");
+			fwts_log_error(fw, "Failed to read output from dmidecode (out of memory).");
 			continue;
 		}	
 
@@ -151,19 +151,19 @@ static int dmi_decode_test1(fwts_framework *fw)
 						(strstr(text, dmi_patterns[i].pat2) != NULL);
 				}
 				if (match) {		
-					fwts_failed(fw, "DMI type %s: %s", dmi_types[type],dmi_patterns[i].message);
+					fwts_failed(fw, "DMI type %s: %s.", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
 						fwts_list_element *dump;
 						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
-							fwts_log_info(fw, "%s", fwts_text_list_text(dump));
+							fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(dump));
 						dumped = 1;
 					}
 				}
 			}
 		}
 		if (!dumped)
-			fwts_passed(fw, "DMI type %s", dmi_types[type]);
+			fwts_passed(fw, "DMI type %s.", dmi_types[type]);
 		
 		fwts_text_list_free(dmi_text);
 	}

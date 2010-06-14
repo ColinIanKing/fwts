@@ -27,7 +27,7 @@
 
 static char *osilinux_headline(void)
 {
-	return "Disassemble DSDT to check for _OSI(\"Linux\")";
+	return "Disassemble DSDT to check for _OSI(\"Linux\").";
 }
 
 static fwts_list* disassembly;
@@ -40,13 +40,13 @@ static int osilinux_init(fwts_framework *fw)
 		return 1;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
-                fwts_log_error(fw, "Make sure iasl is installed");
+                fwts_log_error(fw, "Make sure iasl is installed.");
                 return 1;
         }
 
 	disassembly = fwts_iasl_disassemble(fw, "DSDT", 0);
 	if (disassembly == NULL) {
-		fwts_log_error(fw, "Cannot disassemble with iasl");
+		fwts_log_error(fw, "Cannot disassemble with iasl.");
 		return 1;
 	}
 
@@ -73,10 +73,10 @@ static int osilinux_test1(fwts_framework *fw)
 		return 1;
 
 	fwts_log_info(fw, 
-		"Disassemble DSDT to check for _OSI(\"Linux\")\n"
-		"This is not strictly a failure mode, it just alerts\n"
-		"one that this has been defined in the DSDT and probably\n"
-		"should be avoided since the Linux ACPI driver matches\n"
+		"Disassemble DSDT to check for _OSI(\"Linux\"). "
+		"This is not strictly a failure mode, it just alerts "
+		"one that this has been defined in the DSDT and probably "
+		"should be avoided since the Linux ACPI driver matches "
 		"onto the Windows _OSI strings");
 
 	for (item = disassembly->head; item != NULL; item = item->next) {
@@ -92,14 +92,14 @@ static int osilinux_test1(fwts_framework *fw)
 		if (strstr(line, "}")) {
 			depth--;
 			if (dumpdepth != 0 && dumpdepth != depth) {
-				fwts_log_warning(fw, "WARNING: Found _OSI(\"Linux\")");
+				fwts_log_warning(fw, "WARNING: Found _OSI(\"Linux\").");
 				found++;
 				while (dumpitem != NULL && dumpitem != item->next) {
-					fwts_log_warning(fw, fwts_text_list_text(dumpitem));
+					fwts_log_warning_verbatum(fw, fwts_text_list_text(dumpitem));
 					dumpitem = dumpitem->next;
 				}
 				dumpdepth = 0;
-				fwts_warning(fw, "DSDT implements a deprecated _OSI(\"Linux\") test");
+				fwts_warning(fw, "DSDT implements a deprecated _OSI(\"Linux\") test.");
 			}
 		}
 		if ((str = strstr(line, "_OSI")) != NULL) {
@@ -109,7 +109,7 @@ static int osilinux_test1(fwts_framework *fw)
 	}
 
 	if (!found)
-		fwts_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test");
+		fwts_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test.");
 
 	return 0;
 }

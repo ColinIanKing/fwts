@@ -68,6 +68,8 @@ static char *fwts_log_field_to_str(fwts_log_field field)
 		return "NLN";
 	case LOG_ADVICE:
 		return "ADV";
+	case LOG_HEADING:
+		return "HED";
 	default:
 		return LOG_UNKOWN_FIELD;
 	}
@@ -122,6 +124,7 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 		{ "SUM", LOG_SUMMARY },
 		{ "SEP", LOG_SEPARATOR },
 		{ "ADV", LOG_ADVICE },
+		{ "HED", LOG_HEADING },
 		{ "ALL", ~0 },
 		{ NULL, 0 }
 	};
@@ -237,7 +240,7 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return 0;
 
-	if (!(field & fwts_log_filter))
+	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
 	va_start(ap, fmt);
@@ -278,6 +281,9 @@ void fwts_log_underline(fwts_log *log, int ch)
 	int n;
 
 	char buffer[1024];
+
+	if (!((LOG_SEPARATOR & LOG_FIELD_MASK) & fwts_log_filter))
+		return;
 
 	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
 

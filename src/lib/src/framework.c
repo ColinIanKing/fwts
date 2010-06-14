@@ -213,7 +213,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fw->current_test_name = strdup(name);
 
 	if (ops->headline) {
-		fwts_log_info(fw, "%s", ops->headline());
+		fwts_log_heading(fw, "%s", ops->headline());
 		fwts_framework_underline(fw,'-');
 	}
 
@@ -399,10 +399,12 @@ static void fwts_framework_syntax(char **argv)
 	printf("--log-filter=expr\tDefine filters to dump out specific log fields\n");
 	printf("\t\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
 	printf("\t\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
+	printf("--log-width=N\t\tDefine the output log width in characters\n");
 	printf("--log-format=fields\tDefine output log format\n");
 	printf("\t\te.g. --log-format=%%date %%time [%%field] (%%owner): \n");
 	printf("\t\t     fields are: %%date - date, %%time - time, %%field log filter field\n");
 	printf("\t\t                 %%owner - name of test program, %%level failed test level\n");
+	printf("\t\t                 %%line - log line number\n");
 	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests\n");
 	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");

@@ -190,7 +190,6 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	fwts_log_set_owner(fw->results, "fwts");
 	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted.", 
 		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted);
 
@@ -539,7 +538,7 @@ int fwts_framework_args(int argc, char **argv)
 	else 
 		fwts_framework_run_registered_tests(fw);
 
-	fwts_log_set_owner(fw->results, "fwts");
+	fwts_log_set_owner(fw->results, "summary");
 	fwts_log_summary(fw, "");
 	fwts_framework_total_summary(fw);
 	fwts_log_summary(fw, "");

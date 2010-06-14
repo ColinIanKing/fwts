@@ -127,7 +127,7 @@ int fwts_summary_report(fwts_framework *fw)
 
 			for (item = fwts_summaries[i]->head; item != NULL; item = item->next) {
 				fwts_summary_item *summary_item = (fwts_summary_item*)item->data;
-				fwts_log_summary_verbatum(fw, " %s test at log line %d", 
+				fwts_log_summary_verbatum(fw, " %s test at log line %d:", 
 					summary_item->test, 
 					summary_item->log_line);
 				fwts_log_summary_verbatum(fw, "  \"%s\"",

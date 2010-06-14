@@ -101,7 +101,8 @@ static inline int fwts_tests_passed(fwts_framework *fw)
 		 fw->sub_tests.aborted) == 0);
 }
 
-#define TEST_EARLY	0
+#define TEST_FIRST	0
+#define TEST_EARLY	10
 #define TEST_ANYTIME	50
 #define TEST_LATE	75
 #define TEST_LAST	100

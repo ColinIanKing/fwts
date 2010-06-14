@@ -22,7 +22,8 @@ testsuite_SOURCES = main.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c \
-	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c
+	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
+	kernel/version/version.c
 
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a

@@ -22,6 +22,6 @@
 
 #include <stdio.h>
 
-int fwts_get(const char *text, const char *file);
+char *fwts_get(const char *file);
 
 #endif

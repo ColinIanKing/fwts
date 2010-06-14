@@ -52,7 +52,7 @@ am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
 	apicedge.$(OBJEXT) osilinux.$(OBJEXT) ebda_region.$(OBJEXT) \
 	mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
 	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT)
+	virt_vmx.$(OBJEXT) version.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -214,7 +214,8 @@ testsuite_SOURCES = main.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c \
-	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c
+	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
+	kernel/version/version.c
 
 testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
@@ -316,6 +317,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt_svm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt_vmx.Po@am__quote@
@@ -628,6 +630,20 @@ virt_vmx.obj: cpu/virt/virt_vmx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_vmx.c' object='virt_vmx.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_vmx.obj `if test -f 'cpu/virt/virt_vmx.c'; then $(CYGPATH_W) 'cpu/virt/virt_vmx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_vmx.c'; fi`
+
+version.o: kernel/version/version.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT version.o -MD -MP -MF $(DEPDIR)/version.Tpo -c -o version.o `test -f 'kernel/version/version.c' || echo '$(srcdir)/'`kernel/version/version.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/version.Tpo $(DEPDIR)/version.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/version/version.c' object='version.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o version.o `test -f 'kernel/version/version.c' || echo '$(srcdir)/'`kernel/version/version.c
+
+version.obj: kernel/version/version.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT version.obj -MD -MP -MF $(DEPDIR)/version.Tpo -c -o version.obj `if test -f 'kernel/version/version.c'; then $(CYGPATH_W) 'kernel/version/version.c'; else $(CYGPATH_W) '$(srcdir)/kernel/version/version.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/version.Tpo $(DEPDIR)/version.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/version/version.c' object='version.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o version.obj `if test -f 'kernel/version/version.c'; then $(CYGPATH_W) 'kernel/version/version.c'; else $(CYGPATH_W) '$(srcdir)/kernel/version/version.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.

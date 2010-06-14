@@ -19,11 +19,23 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "fwts.h"
 
-int fwts_get(const char *text, const char *file)
+char *fwts_get(const char *file)
 {	
-	/* To be implemented! */
-	return 1;
+	FILE *fp;
+	char buffer[4096];
+
+	if ((fp = fopen(file, "r")) == NULL)
+		return NULL;
+
+	
+	if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+		return NULL;
+	}
+	fclose(fp);
+	
+	return strdup(buffer);
 }

@@ -36,7 +36,6 @@
 #include "fwts_e820.h"
 #include "fwts_dsdt.h"
 #include "fwts_fileio.h"
-#include "fwts_helpers.h"
 #include "fwts_iasl.h"
 #include "fwts_klog.h"
 #include "fwts_pipeio.h"

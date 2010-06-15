@@ -39,13 +39,12 @@ static int s3_init(fwts_framework *fw)
 		return 1;
 	}
 
+	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		return 1;
 	}
-
-	ret = fwts_wakealarm_test_firing(fw, 1);
-	if (ret != 0) {
+	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
 		fwts_failed(fw, "Check if wakealarm works reliably for S3 tests.");
 		return 1;
@@ -58,6 +57,7 @@ static int s3_deinit(fwts_framework *fw)
 {
 	return 0;
 }
+
 
 static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
 {
@@ -88,8 +88,19 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 		fwts_failed_medium(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
 	}
 	if ((t_end - t_start) > delay*3) {
+		int s3_C1E_enabled;
 		(*errors)++;
 		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", *duration);
+
+		s3_C1E_enabled = fwts_cpu_has_c1e();
+		if (s3_C1E_enabled == -1)
+			fwts_log_error(fw, "Cannot read C1E bit\n");
+		else if (s3_C1E_enabled == 1)
+			fwts_log_advice(fw, "Detected AMD with C1E enabled. The AMD C1E idle wait can sometimes "
+					    "produce long delays on resume.  This is a known issue with the "
+					    "failed delivery of intettupts while in deep C states. "
+					    "If you have a BIOS option to disable C1E please disable this and retry. "
+					    "Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
 	}
 
 	fwts_log_info(fw, "pm-suspend returned status: %d.", status);
@@ -152,10 +163,8 @@ static int s3_test_single(fwts_framework *fw)
 	fwts_log_info(fw, test);
 
 	s3_do_suspend_resume(fw, &errors, 30, &duration);
-	if (errors > 0) {
+	if (errors > 0)
 		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors);
-		fwts_failed(fw, test);
-	}
 	else
 		fwts_passed(fw, test);
 

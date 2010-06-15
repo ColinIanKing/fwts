@@ -472,6 +472,16 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		"will disable this check."
 	},
 	{	
+		LOG_LEVEL_HIGH,
+		"WARNING: at",
+		"hpet_next_event+",
+		"Possibly an Intel I/O controller hub HPET Write Timing issue: "
+		"A read transaction that immediately follows a write transaction "
+		"to the HPET TIMn_COMP Timer 0 (108h), HPET MAIN_CNT (0F0h), or "
+		"TIMn_CONF.bit 6 (100h) may return an incorrect value.  This is "
+		"known to cause issues when coming out of S3."
+	},
+	{	
 		0,
 		NULL,
 		NULL,

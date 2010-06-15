@@ -34,7 +34,8 @@ typedef enum {
 	CPU_INTEL,
 } cpu_type;
 
-cpu_type cpu = CPU_UNKNOWN;
+static cpu_type cpu = CPU_UNKNOWN;
+fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
 #define CPUID_NUM_FEATURES	0x00000000L
 
@@ -42,6 +43,19 @@ static int virt_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
 		return 1;
+
+	if ((fwts_virt_cpuinfo = fwts_cpu_get_info()) == NULL) {
+		fwts_log_error(fw, "Cannot get CPU info");
+		return 1;
+	}
+
+	return 0;
+}
+
+static int virt_deinit(fwts_framework *fw)
+{
+	if (fwts_virt_cpuinfo)
+		fwts_cpu_free_info(fwts_virt_cpuinfo);
 
 	return 0;
 }
@@ -55,17 +69,10 @@ static int virt_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw, "Check if CPU is an AMD or Intel.");
 
-	fwts_cpuinfo_x86 *cpuinfo;
-
-	if ((cpuinfo = fwts_cpu_get_info()) == NULL) {
-		fwts_log_error(fw, "Cannot get CPU info");
-		return 1;
-	}
-
-	if (strstr(cpuinfo->vendor_id, "AMD") != NULL) {
+	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL) {
 		cpu = CPU_AMD;
 		fwts_passed(fw, "CPU is an AMD.");
-	} else if (strstr(cpuinfo->vendor_id, "Intel") != NULL) {
+	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {
 		cpu = CPU_INTEL;
 		fwts_passed(fw, "CPU is an Intel.");
 	} else {
@@ -73,7 +80,6 @@ static int virt_test1(fwts_framework *fw)
 		fwts_warning(fw, "CPU is unknown.");
 	}
 
-	fwts_cpu_free_info(cpuinfo);
 
 	return 0;
 }
@@ -107,7 +113,7 @@ static fwts_framework_tests virt_tests[] = {
 static fwts_framework_ops virt_ops = {
 	virt_headline,
 	virt_init,
-	NULL,
+	virt_deinit,
 	virt_tests
 };
 

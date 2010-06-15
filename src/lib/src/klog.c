@@ -481,6 +481,14 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		"TIMn_CONF.bit 6 (100h) may return an incorrect value.  This is "
 		"known to cause issues when coming out of S3."
 	},
+	{
+		LOG_LEVEL_HIGH,
+		"BUG: soft lockup",
+		"stuck for 0s!",
+		"Softlock errors that occur when coming out of S3 may be tripped "
+		"by TSC warping.  It may be worth trying the notsc kernel parameter "
+		"and repeating S3 tests to see if this solves the problem."
+	},
 	{	
 		0,
 		NULL,

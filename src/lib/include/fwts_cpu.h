@@ -17,33 +17,10 @@
  *
  */
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#ifndef __FWTS_CPU_H__
+#define __FWTS_CPU_H__
 
-#include "fwts_types.h"
-
-#include "fwts_framework.h"
-#include "fwts_log.h"
-#include "fwts_list.h"
-
-#include "fwts_text_list.h"
-
-#include "fwts_set.h"
-#include "fwts_get.h"
-
-#include "fwts_acpi.h"
-#include "fwts_checkeuid.h"
-#include "fwts_cpu.h"
-#include "fwts_e820.h"
-#include "fwts_dsdt.h"
-#include "fwts_fileio.h"
-#include "fwts_iasl.h"
-#include "fwts_klog.h"
-#include "fwts_pipeio.h"
-#include "fwts_stringextras.h"
-#include "fwts_wakealarm.h"
-#include "fwts_virt.h"
-#include "fwts_formatting.h"
-#include "fwts_summary.h"
+int fwts_cpu_enumerate(void);
+int fwts_cpu_consume(const int seconds);
 
 #endif

@@ -20,6 +20,21 @@
 #ifndef __FWTS_CPU_H__
 #define __FWTS_CPU_H__
 
+typedef struct cpuinfo_x86 {
+	char *vendor_id;	/* Vendor ID */
+	int x86;		/* CPU family */
+	int x86_model;		/* Model */
+	char *model_name;	/* Model name */
+	int stepping;		/* Stepping */
+	char *flags;		/* String containing flags */
+} fwts_cpuinfo_x86;
+
+int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val);
+
+int fwts_cpu_has_c1e(void);
+fwts_cpuinfo_x86 *fwts_cpu_get_info(void);
+void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu);
+
 int fwts_cpu_enumerate(void);
 int fwts_cpu_consume(const int seconds);
 

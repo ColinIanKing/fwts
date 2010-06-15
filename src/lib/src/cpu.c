@@ -16,18 +16,186 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#define _FILE_OFFSET_BITS 64
+
+#define _GNU_SOURCE
 
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <fcntl.h>
+
+#include "fwts_types.h"
+#include "fwts_cpu.h"
+#include "fwts_pipeio.h"
 
 static int fwts_cpu_num;
 static pid_t *fwts_cpu_pids;
+
+#define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
+#define MSR_AMD64_OSVW_STATUS		0xc0010141
+
+int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val)
+{
+	struct stat statbuf;
+	char buffer[PATH_MAX];
+	uint64 value;
+	int fd;
+	int ret;
+
+	value = 0;
+
+	snprintf(buffer, sizeof(buffer), "/dev/cpu/%d/msr", cpu);
+
+	if (stat(buffer, &statbuf)) {
+		/* Hrm, msr not there, so force modprove msr and see what happens */
+		pid_t pid;
+		if ((fd = fwts_pipe_open("modprobe msr", &pid)) < 0)
+			return 1;
+		fwts_pipe_close(fd, pid);
+
+		if (stat(buffer, &statbuf))
+			return 1; /* Really failed */
+	}
+	
+	if ((fd = open(buffer, O_RDONLY)) < 0)
+                return 1;
+
+	ret = pread(fd, &value, 8, reg);
+	close(fd);
+
+	*val = value;
+
+	if (ret<0)
+		return 1;
+
+	return 0;
+}
+
+void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
+{
+	if (cpu) {
+		free(cpu->vendor_id);
+		free(cpu->model_name);
+		free(cpu->flags);
+	}
+	free(cpu);
+}
+
+fwts_cpuinfo_x86 *fwts_cpu_get_info(void)
+{
+	FILE *fp;
+	char buffer[1024];
+	fwts_cpuinfo_x86 *cpu;
+
+	if ((cpu = (fwts_cpuinfo_x86*)calloc(1, sizeof(fwts_cpuinfo_x86))) == NULL)
+		return NULL;
+
+	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
+		return NULL;
+
+	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+		char *ptr = strstr(buffer, ":");
+		if (ptr)
+			ptr += 2;
+
+		buffer[strlen(buffer)-1] = '\0';
+
+		if (ptr && (!strncmp(buffer, "processor", 9))) {
+			int n;
+			sscanf(ptr, "%d", &n);
+			if (n > 0) 
+				break;
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "vendor_id", 9))) {
+			cpu->vendor_id = strdup(ptr);
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "cpu family",10))) {
+			sscanf(ptr, "%d", &cpu->x86);
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "model name", 10))) {
+			cpu->model_name = strdup(ptr);
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "model", 5))) {
+			sscanf(ptr, "%d", &cpu->x86_model);
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "stepping", 8))) {
+			sscanf(ptr, "%d", &cpu->stepping);
+			continue;
+		}
+		if (ptr && (!strncmp(buffer, "flags", 4))) {
+			cpu->flags = strdup(ptr);
+			continue;
+		}
+	}
+	fclose(fp);
+
+	/*
+	printf("vendor_id : %s\n", cpu->vendor_id);
+	printf("cpu family: %d\n", cpu->x86);
+	printf("model     : %d\n", cpu->x86_model);
+	printf("model name: %s\n", cpu->model_name);
+	printf("stepping  : %d\n", cpu->stepping);
+	printf("flags     : %s\n", cpu->flags);
+	*/
+
+	return cpu;
+}
+
+
+int fwts_cpu_has_c1e(void)
+{
+	uint64 val;
+
+	fwts_cpuinfo_x86 *cpu;
+
+	if ((cpu = fwts_cpu_get_info()) == NULL)
+		return -1;
+	
+        if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {
+		fwts_cpu_free_info(cpu);
+		return 0;
+	}
+
+        /* Family 0x0f models < rev F do not have C1E */
+        if (cpu->x86 == 0x0F && cpu->x86_model >= 0x40) {
+		fwts_cpu_free_info(cpu);
+                return 1;
+	}
+
+        if (cpu->x86 == 0x10) {
+                /*
+                 * check OSVW bit for CPUs that are not affected
+                 * by erratum #400
+                 */
+		if (strstr(cpu->flags, "osvw") != NULL) {
+			fwts_cpu_readmsr(0, MSR_AMD64_OSVW_ID_LENGTH, &val);
+                        if (val >= 2) {
+                                fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val);
+                                if (!(val & 2)) {
+					fwts_cpu_free_info(cpu);
+					return 0;
+				}
+                        }
+                }
+		fwts_cpu_free_info(cpu);
+                return 1;
+        }
+	fwts_cpu_free_info(cpu);
+	return 0;
+}
 
 int fwts_cpu_enumerate(void)
 {

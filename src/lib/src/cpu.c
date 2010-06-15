@@ -26,6 +26,9 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+static int fwts_cpu_num;
+static pid_t *fwts_cpu_pids;
+
 int fwts_cpu_enumerate(void)
 {
 	DIR *dir;
@@ -44,15 +47,15 @@ int fwts_cpu_enumerate(void)
 	return cpus;
 }
 
-static void fwts_cpu_consume_kill(pid_t *pids, int num)
+static void fwts_cpu_consume_kill(void)
 {
 	int i;
 	siginfo_t info;
 
-	for (i=0;i<num;i++) {
-		if (pids[i] != 0) {
-			kill(pids[i], SIGUSR1);
-			waitid(P_PID, pids[i], &info, WEXITED);
+	for (i=0;i<fwts_cpu_num;i++) {
+		if (fwts_cpu_pids[i] != 0) {
+			kill(fwts_cpu_pids[i], SIGUSR1);
+			waitid(P_PID, fwts_cpu_pids[i], &info, WEXITED);
 		}
 	}
 }
@@ -62,12 +65,18 @@ static void fwts_cpu_consume_sighandler(int dummy)
 	exit(0);
 }
 
+static void fwts_cpu_sigint_handler(int dummy)
+{
+	fwts_cpu_consume_kill();
+	exit(0);
+}
+
 static void fwts_cpu_consume_cycles(void)
 {
 	signal(SIGUSR1, fwts_cpu_consume_sighandler);
 
 	float dummy = 0.000001;
-	unsigned long i = 0;
+	unsigned long long i = 0;
 
 	while (dummy > 0.0) {
 		dummy += 0.0000037;
@@ -75,19 +84,25 @@ static void fwts_cpu_consume_cycles(void)
 	}
 }
 
+static void fwts_cpu_consume_cleanup(void)
+{
+	fwts_cpu_consume_kill();
+	free(fwts_cpu_pids);	
+}
+
 int fwts_cpu_consume(const int seconds)
 {
 	int i;
-	int cpus;
-	pid_t *pids;
-	
-	if ((cpus = fwts_cpu_enumerate()) < 0) 
+
+	if ((fwts_cpu_num = fwts_cpu_enumerate()) < 0) 
 		return 1;
 
-	if ((pids = (pid_t*)calloc(cpus, sizeof(pid_t))) == NULL)
+	if ((fwts_cpu_pids = (pid_t*)calloc(fwts_cpu_num, sizeof(pid_t))) == NULL)
 		return 1;
 
-	for (i=0;i<cpus;i++) {
+	signal(SIGINT, fwts_cpu_sigint_handler);
+
+	for (i=0;i<fwts_cpu_num;i++) {
 		pid_t pid;
 
 		pid = fork();
@@ -97,18 +112,16 @@ int fwts_cpu_consume(const int seconds)
 			break;
 		case -1:
 			/* Went wrong */
-			fwts_cpu_consume_kill(pids, cpus);
-			free(pids);	
+			fwts_cpu_consume_cleanup();
 			return 1;
 		default:
-			pids[i] = pid;
+			fwts_cpu_pids[i] = pid;
 			break;
 		}
 	}
 	sleep(seconds);
 
-	fwts_cpu_consume_kill(pids, cpus);
-	free(pids);
+	fwts_cpu_consume_cleanup();
 
 	return 0;
 }

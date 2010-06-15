@@ -67,7 +67,7 @@ static void check_charging(fwts_framework *fw, char *dir, char *uri, char *name)
 		return;
 
 	initial_value = get_full(dir);
-	for (i=1; i<30; i++) {
+	for (i=1; i<120; i++) {
 		new_value = get_full(dir);
 		if (new_value>initial_value) {
 			fwts_passed(fw, "Battery %s charge is incrementing as expected.", name);
@@ -88,13 +88,13 @@ static void check_discharging(fwts_framework *fw, char *dir, char *uri, char *na
 		return;
 
 	initial_value = get_full(dir);
-	for (i=1; i<30; i++) {
+	for (i=1; i<24; i++) {
 		new_value = get_full(dir);
 		if (new_value<initial_value) {
 			fwts_passed(fw, "Battery %s charge is decrementing as expected.", name);
 			return;
 		}		
-		sleep(1);
+		fwts_cpu_consume(5);
 	}
 	fwts_failed(fw, "Battery %s claims it is discharging but no charge is used.", name);
 }

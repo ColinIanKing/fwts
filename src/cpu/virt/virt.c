@@ -38,37 +38,6 @@ cpu_type cpu = CPU_UNKNOWN;
 
 #define CPUID_NUM_FEATURES	0x00000000L
 
-static int is_AMD()
-{
-	char stramd[64];
-
-	memset(stramd, 0, 64);
-
-	cpu_registers regs;
-	exec_cpuid(CURRENT_CPU, CPUID_NUM_FEATURES, &regs);
-	
-	memcpy(stramd, &regs.ebx, 4 );
-	memcpy(stramd + 4, &regs.edx, 4);
-	memcpy(stramd + 8, &regs.ecx, 4);
-
-	return (!strcmp("AuthenticAMD", stramd));
-}
-
-static int is_Intel()
-{
-	char strintel[64];
-	memset( strintel, 0, 64 );
-
-	cpu_registers regs;
-	exec_cpuid(CURRENT_CPU, CPUID_NUM_FEATURES, &regs);
-	
-	memcpy(strintel, &regs.ebx, 4);
-	memcpy(strintel + 4, &regs.edx, 4);
-	memcpy(strintel + 8, &regs.ecx, 4);
-
-	return (!strcmp("GenuineIntel", strintel));
-}
-
 static int virt_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
@@ -85,16 +54,27 @@ static char *virt_headline(void)
 static int virt_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw, "Check if CPU is an AMD or Intel.");
-	if (is_AMD()) {
+
+	fwts_cpuinfo_x86 *cpuinfo;
+
+	if ((cpuinfo = fwts_cpu_get_info()) == NULL) {
+		fwts_log_error(fw, "Cannot get CPU info");
+		return 1;
+	}
+
+	if (strstr(cpuinfo->vendor_id, "AMD") != NULL) {
 		cpu = CPU_AMD;
 		fwts_passed(fw, "CPU is an AMD.");
-	} else if (is_Intel()) {
+	} else if (strstr(cpuinfo->vendor_id, "Intel") != NULL) {
 		cpu = CPU_INTEL;
 		fwts_passed(fw, "CPU is an Intel.");
 	} else {
 		cpu = CPU_UNKNOWN;
 		fwts_warning(fw, "CPU is unknown.");
 	}
+
+	fwts_cpu_free_info(cpuinfo);
+
 	return 0;
 }
 

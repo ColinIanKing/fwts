@@ -135,12 +135,6 @@ static fwts_klog_pattern common_error_warning_patterns[] = {
 		"ACPI Namespace lookup failure reported"
 	},
 	{
-		LOG_LEVEL_CRITICAL,
-		"*** Error: Method reached maximum reentrancy limit",
-		NULL,
-		"ACPI method has reached reentrancy limit, this is a recursion bug in the AML"
-	},
-	{
 		LOG_LEVEL_HIGH,
 		"Error while parsing _PSD domain information",
 		NULL,
@@ -167,24 +161,6 @@ static fwts_klog_pattern common_error_warning_patterns[] = {
 		"Invalid _PCT data",
 		NULL,
 		"The ACPI _PCT data is invalid."
-	},
-	{
-		LOG_LEVEL_HIGH,
-		"*** Error: Method execution failed",
-		NULL,
-		"Execution of an ACPI AML method failed."
-	},
-	{
-		LOG_LEVEL_HIGH,
-		"Method parse/execution failed",
-		"AE_NOT_FOUND",
-		"Method parsing/execution failed."
-	},
-	{
-		LOG_LEVEL_CRITICAL,
-		"*** Error: Method execution failed",
-		"AE_AML_METHOD_LIMIT",
-		"ACPI method reached maximum reentrancy limit - infinite recursion in AML in DSTD or SSDT",
 	},
 	{
 		LOG_LEVEL_HIGH,
@@ -250,11 +226,35 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	},
 	{
 		LOG_LEVEL_HIGH,
+		FW_BUG "ACPI:",
+		"brightness control misses _BQC function",
+		"_BQC (Brightness Query Current level) seems to be missing. "
+		"This method returns the current brightness level of a "
+		"built-in display output device."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		FW_BUG "ACPI:",
+		NULL,
+		"ACPI driver has detected an ACPI bug. This generally points to a "
+		"bug in an ACPI table. Examine the kernel log for more details."
+	},
+	{
+		LOG_LEVEL_HIGH,
 		FW_BUG "BIOS needs update for CPU frequency support", 
 		NULL,
 		"Having _PPC but missing frequencies (_PSS, _PCT) is a good hint "
 		"that the BIOS is older than the CPU and does not know the CPU "
 		"frequencies."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		FW_BUG "ERST: ERST table is invalid",
+		NULL,
+		"The Error Record Serialization Table (ERST) seems to be invalid. "
+		"This normally indicates that the ERST table header size is too "
+		"small, or the table size (excluding header) is not a multiple of "
+		"the ERST entries."
 	},
 	{
 		LOG_LEVEL_CRITICAL,
@@ -290,10 +290,23 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"Try video module parameter video.allow_duplicates=1 if the current driver does't work."
 	},
 	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "PCI: MMCONFIG",
+		"not reserved in ACPI motherboard resources",
+		"It appears that PCI config space has been configured for a specific device "
+		"but does not appear to be reserved by the ACPI motherboard resources."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "PCI: ",
+		"not reserved in ACPI motherboard resources",
+		"PCI firmware bug. Please see the kernel log for more details."
+	},
+	{
 		LOG_LEVEL_HIGH,
-		"[Firmware Bug]:",
+		FW_BUG,			/* Fall through to something vague */
 		NULL,
-		"The kernel has detected a bug in the BIOS or ACPI which needs investigating and fixing."
+		"The kernel has detected a Firmware bug in the BIOS or ACPI which needs investigating and fixing."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
@@ -303,11 +316,43 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Error ",
+		"ACPI Error",
+		"Namespace lookup failure, AE_NOT_FOUND",
+		"The kernel has detected an error trying to execute an Method and it cannot "
+		"find an object. This is indicates a bug in the DSDT or SSDT AML code."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error",
+		"psparse",
+		"The ACPI parser has failed in executing some AML. "
+		"The error message above lists the method that caused this error."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error",
 		NULL,
-		"The kernel has most probably detected an error while exeucting ACPI AML "
+		"The kernel has most probably detected an error while executing ACPI AML. "
 		"The error lists the ACPI driver module and the line number where the "
-		"bug has been caught."
+		"bug has been caught and the method that caused the error."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"*** Error: Method execution failed",
+		NULL,
+		"Execution of an ACPI AML method failed."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"*** Error: Method execution failed",
+		"AE_AML_METHOD_LIMIT",
+		"ACPI method reached maximum reentrancy limit of 255 - infinite recursion in AML in DSTD or SSDT",
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"*** Error: Method reached maximum reentrancy limit",
+		NULL,
+		"ACPI method has reached reentrancy limit, this is a recursion bug in the AML"
 	},
 	{
 		0,
@@ -520,6 +565,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 				fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
 				fwts_log_nl(fw);
 			}
+			return;
 		}
 	}
 }

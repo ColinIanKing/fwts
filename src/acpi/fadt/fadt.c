@@ -157,14 +157,14 @@ static void fadt_get_header(unsigned char *fadt_data, int size, fwts_fadt_versio
 static int fadt_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((fadt_table = fwts_acpi_table_load(fw, "FADT", 0, &fadt_size)) == NULL) {
 		fwts_log_error(fw, "Failed to read ACPI FADT");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int fadt_deinit(fwts_framework *fw)
@@ -172,7 +172,7 @@ static int fadt_deinit(fwts_framework *fw)
 	if (fadt_table)
 		free(fadt_table);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *fadt_headline(void)
@@ -192,7 +192,7 @@ static int fadt_test1(fwts_framework *fw)
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
 		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure.");
-		return 0;
+		return FWTS_OK;
 	}
 
 	fadt_get_header(fadt_table, fadt_size, &fadt);
@@ -265,7 +265,7 @@ static int fadt_test1(fwts_framework *fw)
 	default:
 		ioperm(port, width/8, 0);
 		fwts_failed_high(fw, "FADT pm1a register has invalid bit width of %d.", width);
-		return 1;
+		return FWTS_OK;
 	}
 
 	if (value & 0x01)
@@ -273,7 +273,7 @@ static int fadt_test1(fwts_framework *fw)
 	else
 		fwts_failed_high(fw, "SCI_EN bit in PM1a Control Register Block is not enabled.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests fadt_tests[] = {

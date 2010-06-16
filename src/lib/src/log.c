@@ -232,6 +232,7 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 {
 	char buffer[4096];
 	int n = 0;
+	int len = 0;
 	va_list ap;
 
 	fwts_list *lines;
@@ -257,6 +258,8 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 	else
 		lines = format_text(buffer+n, log_line_width-n);
 
+	len = n;
+
 	for (item = lines->head; item != NULL; item = item->next) {
 		char *text = fwts_text_list_text(item);
 		/* Re-format up a log heading with current line number which
@@ -267,12 +270,13 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);
 		fwts_log_line++;
+		len += strlen(text) + 1;
 	}
 	fwts_text_list_free(lines);
 	
 	va_end(ap);
 
-	return n;
+	return len;
 }
 
 void fwts_log_underline(fwts_log *log, int ch)
@@ -315,10 +319,10 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 			if (log->owner)
 				free(log->owner);
 			log->owner = newowner;
-			return 0;
+			return FWTS_OK;
 		}
 	}
-	return 1;
+	return FWTS_ERROR;
 }
 
 fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
@@ -360,5 +364,5 @@ int fwts_log_close(fwts_log *log)
 			free(log->owner);
 		free(log);
 	}
-	return 0;
+	return FWTS_OK;
 }

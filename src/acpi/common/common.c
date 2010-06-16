@@ -39,16 +39,16 @@ static int dmesg_common_init(fwts_framework *fw)
 {
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "cannot read kernel log");
-		return 1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static int dmesg_common_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int dmesg_common_test1(fwts_framework *fw)
@@ -59,7 +59,7 @@ static int dmesg_common_test1(fwts_framework *fw)
 
 	if (fwts_klog_common_check(fw, klog, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (errors > 0) 
@@ -68,7 +68,7 @@ static int dmesg_common_test1(fwts_framework *fw)
 	else
 		fwts_passed(fw, "No common error messages found in kernel message log.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests dmesg_common_tests[] = {

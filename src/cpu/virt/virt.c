@@ -42,14 +42,14 @@ fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 static int virt_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((fwts_virt_cpuinfo = fwts_cpu_get_info()) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int virt_deinit(fwts_framework *fw)
@@ -57,7 +57,7 @@ static int virt_deinit(fwts_framework *fw)
 	if (fwts_virt_cpuinfo)
 		fwts_cpu_free_info(fwts_virt_cpuinfo);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *virt_headline(void)
@@ -80,8 +80,7 @@ static int virt_test1(fwts_framework *fw)
 		fwts_warning(fw, "CPU is unknown.");
 	}
 
-
-	return 0;
+	return FWTS_OK;
 }
 
 static int virt_test2(fwts_framework *fw)
@@ -100,7 +99,8 @@ static int virt_test2(fwts_framework *fw)
 		fwts_warning(fw, "Cannot test virtualisation extentions - unknown CPU.");
 		break;
 	}
-	return 0;
+
+	return FWTS_OK;
 }
 	
 
@@ -116,7 +116,6 @@ static fwts_framework_ops virt_ops = {
 	virt_deinit,
 	virt_tests
 };
-
  
 /* 
  * This test checks if the virtual machine setup is done correctly by the BIOS

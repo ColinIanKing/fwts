@@ -49,7 +49,7 @@ static int wakealarm_test1(fwts_framework *fw)
 	else
 		fwts_failed(fw, test);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int wakealarm_test2(fwts_framework *fw)
@@ -61,12 +61,12 @@ static int wakealarm_test2(fwts_framework *fw)
 	fwts_log_info(fw, "Trigger wakealarm for 1 seconds in the future.");
 	if (fwts_wakealarm_trigger(fw, 1)) {
 		fwts_failed(fw, test);
-		return 0;
+		return FWTS_OK;
 	}
 
 	fwts_passed(fw, test);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int wakealarm_test3(fwts_framework *fw)
@@ -80,14 +80,14 @@ static int wakealarm_test3(fwts_framework *fw)
 	ret = fwts_wakealarm_test_firing(fw, 2);
 	if (ret < 0) {
 		fwts_failed(fw, test);
-		return 1;	/* Really went wrong */
+		return FWTS_ERROR;	/* Really went wrong */
 	}
 	if (ret == 0)
 		fwts_passed(fw, test);
 	else
 		fwts_failed(fw, test);
 		
-	return 0;
+	return FWTS_OK;
 }
 
 static int wakealarm_test4(fwts_framework *fw)
@@ -103,7 +103,7 @@ static int wakealarm_test4(fwts_framework *fw)
 		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {
 			fwts_failed(fw, test);
-			return 1;	/* Really went wrong */
+			return FWTS_ERROR;	/* Really went wrong */
 		}
 		if (ret != 0) {
 			fwts_failed(fw, test);	
@@ -113,7 +113,7 @@ static int wakealarm_test4(fwts_framework *fw)
 	if (failed == 0)
 		fwts_passed(fw, test);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests wakealarm_tests[] = {

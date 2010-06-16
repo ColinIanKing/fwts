@@ -34,7 +34,7 @@ int fwts_wakealarm_get_irq_state(void)
 	char value[32];
 
 	if ((fp = fopen("/proc/driver/rtc", "r")) == NULL) {
-		return -1;
+		return FWTS_ERROR;
 	}
 	while (fscanf(fp, "%s : %s\n", field, value) != EOF) {	
 		if (!strcmp(field, "alarm_IRQ")) {
@@ -44,7 +44,7 @@ int fwts_wakealarm_get_irq_state(void)
 	}
 	fclose(fp);
 	
-	return -1;
+	return FWTS_ERROR;
 }
 
 int fwts_wakealarm_trigger(fwts_framework *fw, int seconds)
@@ -55,17 +55,17 @@ int fwts_wakealarm_trigger(fwts_framework *fw, int seconds)
 
 	if (fwts_set("0", fwts_wkalarm)) {
 		fwts_log_error(fw, "Cannot write '0' to %s", fwts_wkalarm);
-		return -1;
+		return FWTS_ERROR;
 	}
 	if (fwts_set(buffer, fwts_wkalarm)) {
 		fwts_log_error(fw, "Cannot write '%s' to %s", fwts_wkalarm);
-		return -1;
+		return FWTS_ERROR;
 	}
 	if (!fwts_wakealarm_get_irq_state()) {
 		fwts_log_error(fw, "Wakealarm %s did not get set", fwts_wkalarm);
-		return -1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 int fwts_wakealarm_test_firing(fwts_framework *fw, int seconds)
@@ -78,7 +78,7 @@ int fwts_wakealarm_test_firing(fwts_framework *fw, int seconds)
 	sleep(seconds+1);
 	if (fwts_wakealarm_get_irq_state()) {
 		fwts_log_error(fw, "Wakealarm %s did not fire", fwts_wkalarm);
-		return 1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }

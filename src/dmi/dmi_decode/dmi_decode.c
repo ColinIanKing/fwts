@@ -101,16 +101,16 @@ static int dmi_decode_init(fwts_framework *fw)
 	struct stat buffer;
 
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if (fw->dmidecode)
 		dmidecode = fw->dmidecode;
 
 	if (stat(dmidecode, &buffer)) {
 		fwts_log_error(fw, "Cannot find %s, make sure dmidecode is installed.", dmidecode);
-		return 1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static char *dmi_decode_headline(void)
@@ -168,7 +168,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 		
 		fwts_text_list_free(dmi_text);
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests dmi_decode_tests[] = {

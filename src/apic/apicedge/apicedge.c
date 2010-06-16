@@ -49,7 +49,7 @@ static int apicedge_test1(fwts_framework *fw)
 		
 	if ((file = fopen("/proc/interrupts", "r")) == NULL) {
 		fwts_failed(fw, "Could not open file /proc/interrupts.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	while (!feof(file)) {
@@ -93,7 +93,7 @@ static int apicedge_test1(fwts_framework *fw)
 	if (fwts_tests_passed(fw))
 		fwts_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests apicedge_tests[] = {

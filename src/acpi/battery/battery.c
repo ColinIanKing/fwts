@@ -192,7 +192,7 @@ static int battery_test1(fwts_framework *fw)
 
 	if (!(dir = opendir("/proc/acpi/battery/"))) {
 		fwts_log_info(fw, "No battery information present: cannot test.");
-		return 0;
+		return FWTS_OK;
 	}
 
 	do {
@@ -209,7 +209,7 @@ static int battery_test1(fwts_framework *fw)
 	if (battdir == 0)
 		fwts_log_info(fw, "No battery information present: cannot test.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests battery_tests[] = {

@@ -37,19 +37,14 @@ static int syntaxcheck_init(fwts_framework *fw)
 	struct stat buffer;
 
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
                 fwts_log_error(fw, "Make sure iasl is installed.");
-                return 1;
+		return FWTS_ERROR;
         }
 
-	return 0;
-}
-
-static int syntaxcheck_deinit(fwts_framework *fw)
-{
-	return 0;
+	return FWTS_OK;
 }
 
 static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
@@ -66,7 +61,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 
 	if (tabledata == NULL) {
 		fwts_log_error(fw, "Failed to load table for some reason!");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 
@@ -74,7 +69,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 	free(tabledata);
 	if (error_output == NULL) {
 		fwts_log_error(fw, "Cannot re-assasemble with iasl.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	for (item = error_output->head; item != NULL; item = item->next) {
@@ -114,7 +109,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 	} else 
 		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", table, which);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int syntaxcheck_DSDT(fwts_framework *fw)
@@ -129,12 +124,12 @@ static int syntaxcheck_SSDT(fwts_framework *fw)
 	for (i=0; i < 100; i++) {
 		int ret = syntaxcheck_table(fw, "SSDT", i);
 		if (ret == 2)
-			return 0;	/* Hit the last table */
-		if (ret != 0)
-			return 1;	/* Error! */
+			return FWTS_OK;	/* Hit the last table */
+		if (ret != FWTS_OK)
+			return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests syntaxcheck_tests[] = {
@@ -146,7 +141,7 @@ static fwts_framework_tests syntaxcheck_tests[] = {
 static fwts_framework_ops syntaxcheck_ops = {
 	syntaxcheck_headline,
 	syntaxcheck_init,	
-	syntaxcheck_deinit,
+	NULL,
 	syntaxcheck_tests
 };
 

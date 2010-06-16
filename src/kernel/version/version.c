@@ -47,7 +47,7 @@ static int version_test1(fwts_framework *fw)
 		fwts_passed(fw, "Gathered kernel version info");
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 

@@ -83,7 +83,7 @@ static int fan_test1(fwts_framework *fw)
 
 	if (!(dir = opendir("/proc/acpi/fan/"))) {
 		fwts_failed_low(fw, "No fan information present: cannot test.");
-		return 0;
+		return FWTS_OK;
 	}
 
 	do {
@@ -100,7 +100,7 @@ static int fan_test1(fwts_framework *fw)
 	if (fandir == 0)
 		fwts_failed_low(fw, "No fan information present: cannot test.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests fan_tests[] = {

@@ -43,38 +43,38 @@ static int ebda_init(fwts_framework *fw)
 	unsigned short addr;
 
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Failed to read kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Failed to open /dev/mem.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (lseek(fd, EBDA_OFFSET, SEEK_SET) < 0) {
 		fwts_log_error(fw, "Failed to seek to EBDA offset 0x%x.", EBDA_OFFSET);
-		return 1;
+		return FWTS_ERROR;
 	}
 	if (read(fd, &addr, sizeof(unsigned short)) <= 0) {
 		fwts_log_error(fw, "Failed to read EBDA address.");
-		return 1;
+		return FWTS_ERROR;
 	}
 	close(fd);
 
 	ebda_addr = ((unsigned long)addr) << 4;
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int ebda_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *ebda_headline(void)
@@ -88,7 +88,7 @@ static int ebda_test1(fwts_framework *fw)
 	fwts_list_element *item;
 
 	if (klog == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	for (item = klog->head; item != NULL; item = item->next) {
 		char *tmp;
@@ -123,7 +123,7 @@ static int ebda_test1(fwts_framework *fw)
 	if (!passed)
 		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in E820 table.", ebda_addr);
 		
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests ebda_tests[] = {

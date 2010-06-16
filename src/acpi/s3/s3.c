@@ -36,26 +36,26 @@ static int s3_init(fwts_framework *fw)
 
 	if (fw->flags & FRAMEWORK_FLAGS_NO_S3) {
 		fwts_log_info(fw, "Skipping S3 tests."); 
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
 	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
 		fwts_failed(fw, "Check if wakealarm works reliably for S3 tests.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int s3_deinit(fwts_framework *fw)
 {
-	return 0;
+	return FWTS_OK;
 }
 
 
@@ -132,7 +132,7 @@ static int s3_check_log(fwts_framework *fw)
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		fwts_failed(fw, test);
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (fwts_klog_pm_check(fw, klog, &errors))
@@ -151,7 +151,7 @@ static int s3_check_log(fwts_framework *fw)
 	else
 		fwts_passed(fw, test);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int s3_test_single(fwts_framework *fw)
@@ -184,7 +184,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	if (fw->s3_multiple == 0) {
 		fw->s3_multiple = 2;
 		fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s3-multiple=N to run more S3 cycles\n");
-		return 0;
+		return FWTS_OK;
 	}
 
 	for (i=0; i<fw->s3_multiple; i++) {

@@ -30,8 +30,8 @@ int fwts_set(const char *text, const char *file)
 	if (fp != NULL) {
 		fprintf(fp, "%s\n", text);
 		fclose(fp);	
-		return 0;
+		return FWTS_OK;
 	}	
 	else
-		return 1;
+		return FWTS_ERROR;
 }

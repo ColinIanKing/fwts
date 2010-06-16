@@ -76,7 +76,7 @@ static int get_mtrrs(void)
 	mtrr_list = fwts_list_init();
 
 	if ((file = fopen("/proc/mtrr", "r")) == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	while (!feof(file)) {
 		char *c, *c2;
@@ -122,7 +122,7 @@ static int get_mtrrs(void)
 	}
 	fclose(file);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int cache_types(uint64 start, uint64 end)
@@ -228,7 +228,7 @@ static int validate_iomem(fwts_framework *fw)
 	int failed = 0;
 
 	if ((file = fopen("/proc/iomem", "r")) == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	while (!feof(file)) {
 		uint64 start;
@@ -307,7 +307,7 @@ static int validate_iomem(fwts_framework *fw)
 		fwts_passed(fw, "Memory ranges seem to have correct attributes");
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static void do_mtrr_resource(fwts_framework *fw)
@@ -338,29 +338,29 @@ static void check_line(void *data, void *private)
 static int mtrr_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if (get_mtrrs())
 		fwts_log_error(fw, "Failed to read /proc/mtrr.");
 
 	if (access("/proc/mtrr", R_OK))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Failed to read kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	do_mtrr_resource(fw);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int mtrr_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *mtrr_headline(void)
@@ -388,7 +388,7 @@ static int mtrr_test2(fwts_framework *fw)
 	} else
 		fwts_log_error(fw, "No boot dmesg found.\n");
 		
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests mtrr_tests[] = {

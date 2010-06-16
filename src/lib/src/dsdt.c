@@ -71,16 +71,16 @@ int fwts_dsdt_copy(fwts_framework *fw, const char *destination)
 	FILE *dsdt;
 	FILE *dest;
 	char buffer[4096];
-	int error = 0;
+	int ret = FWTS_OK;
 
 	if ((dsdt = fopen(DSDT_FILE, "r")) == NULL) {
 		fwts_log_error(fw, "Cannot open DSDT file %s\n", DSDT_FILE);
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if ((dest = fopen(destination, "w")) == NULL) {
 		fwts_log_error(fw, "Cannot open file %s\n", destination);
-		return 1;
+		return FWTS_ERROR;
 	}
 	
 	while (!feof(dsdt)) {
@@ -88,13 +88,13 @@ int fwts_dsdt_copy(fwts_framework *fw, const char *destination)
 
 		if ((n = fread(buffer, 1, sizeof(buffer), dsdt)) == 0) {
 			if (ferror(dsdt)) {
-				error = 1;
+				ret = FWTS_ERROR;
 				break;
 			}
 			
 		}
 		if (n != fwrite(buffer, 1, n, dest)) {
-			error = 1;
+			ret = FWTS_ERROR;
 			break;
 		}
 	}
@@ -102,8 +102,8 @@ int fwts_dsdt_copy(fwts_framework *fw, const char *destination)
 	fclose(dsdt);
 	fclose(dest);
 
-	if (error)
+	if (ret)
 		unlink(destination);
 		
-	return error;
+	return FWTS_ERROR;
 }

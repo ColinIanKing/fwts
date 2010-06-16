@@ -37,20 +37,20 @@ static int osilinux_init(fwts_framework *fw)
 	struct stat buffer;
 
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
         if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
                 fwts_log_error(fw, "Make sure iasl is installed.");
-                return 1;
+                return FWTS_ERROR;
         }
 
 	disassembly = fwts_iasl_disassemble(fw, "DSDT", 0);
 	if (disassembly == NULL) {
 		fwts_log_error(fw, "Cannot disassemble with iasl.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int osilinux_deinit(fwts_framework *fw)
@@ -58,7 +58,7 @@ static int osilinux_deinit(fwts_framework *fw)
 	if (disassembly)
 		fwts_text_list_free(disassembly);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int osilinux_test1(fwts_framework *fw)
@@ -70,7 +70,7 @@ static int osilinux_test1(fwts_framework *fw)
 	int found = 0;
 
 	if (disassembly == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	fwts_log_info(fw, 
 		"Disassemble DSDT to check for _OSI(\"Linux\"). "
@@ -111,7 +111,7 @@ static int osilinux_test1(fwts_framework *fw)
 	if (!found)
 		fwts_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests osilinux_tests[] = {

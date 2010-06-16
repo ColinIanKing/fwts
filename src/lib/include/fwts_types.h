@@ -20,6 +20,20 @@
 #ifndef __FWTS_TYPES_H__
 #define __FWTS_TYPES_H__
 
+typedef enum {
+	FWTS_OK    = 0,
+	FWTS_ERROR = -1
+} fwts_status;
+
+typedef enum {
+	FWTS_FALSE = 0,
+	FWTS_TRUE  = 1,
+	FWTS_BOOL_ERROR = -1
+} fwts_bool;
+
+/*
+ *  Some standard types
+ */
 typedef unsigned char		uint8;
 typedef unsigned short		uint16;
 typedef unsigned long		uint32;

@@ -116,13 +116,13 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 static int hpet_check_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static int hpet_check_deinit(fwts_framework *fw)
@@ -130,7 +130,7 @@ static int hpet_check_deinit(fwts_framework *fw)
 	if (klog)
 		fwts_text_list_free(klog);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *hpet_check_headline(void)
@@ -141,7 +141,7 @@ static char *hpet_check_headline(void)
 static int hpet_check_test1(fwts_framework *fw)
 {
 	if (klog == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	fwts_list_element *item;
 
@@ -161,7 +161,7 @@ static int hpet_check_test1(fwts_framework *fw)
 		}
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int hpet_check_test2(fwts_framework *fw)
@@ -173,7 +173,7 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");
-		return 1;
+		return FWTS_ERROR;
 	}
 	hpet_base_v = 
 	    mmap(NULL, HPET_REG_SIZE, PROT_READ, MAP_SHARED, fd,
@@ -181,7 +181,8 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	if (hpet_base_v == NULL) {
 		fwts_log_error(fw, "Cannot mmap to /dev/mem.");
-		return 1;
+		close(fd);
+		return FWTS_ERROR;
 	}
 
 	hpet_id = *(uint64*) hpet_base_v;
@@ -199,7 +200,10 @@ static int hpet_check_test2(fwts_framework *fw)
 	else
 		fwts_passed(fw, "Valid clock period %li.", clk_period);
 
-	return 0;
+	munmap(hpet_base_v, HPET_REG_SIZE);
+	close(fd);
+
+	return FWTS_OK;
 }
 
 static int hpet_check_test3(fwts_framework *fw)
@@ -210,7 +214,7 @@ static int hpet_check_test3(fwts_framework *fw)
 	for (i=0;i<11;i++) {
 		hpet_check_base_acpi_table(fw, "SSDT", i);
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests hpet_check_tests[] = {

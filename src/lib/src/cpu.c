@@ -58,15 +58,15 @@ int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val)
 		/* Hrm, msr not there, so force modprove msr and see what happens */
 		pid_t pid;
 		if ((fd = fwts_pipe_open("modprobe msr", &pid)) < 0)
-			return 1;
+			return FWTS_ERROR;
 		fwts_pipe_close(fd, pid);
 
 		if (stat(buffer, &statbuf))
-			return 1; /* Really failed */
+			return FWTS_ERROR; /* Really failed */
 	}
 	
 	if ((fd = open(buffer, O_RDONLY)) < 0)
-                return 1;
+                return FWTS_ERROR;
 
 	ret = pread(fd, &value, 8, reg);
 	close(fd);
@@ -74,9 +74,9 @@ int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val)
 	*val = value;
 
 	if (ret<0)
-		return 1;
+		return FWTS_ERROR;
 
-	return 0;
+	return FWTS_OK;
 }
 
 void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
@@ -155,24 +155,24 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(void)
 }
 
 
-int fwts_cpu_has_c1e(void)
+fwts_bool fwts_cpu_has_c1e(void)
 {
 	uint64 val;
 
 	fwts_cpuinfo_x86 *cpu;
 
 	if ((cpu = fwts_cpu_get_info()) == NULL)
-		return -1;
+		return FWTS_BOOL_ERROR;
 	
         if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {
 		fwts_cpu_free_info(cpu);
-		return 0;
+		return FWTS_FALSE;
 	}
 
         /* Family 0x0f models < rev F do not have C1E */
         if (cpu->x86 == 0x0F && cpu->x86_model >= 0x40) {
 		fwts_cpu_free_info(cpu);
-                return 1;
+                return FWTS_TRUE;
 	}
 
         if (cpu->x86 == 0x10) {
@@ -186,15 +186,15 @@ int fwts_cpu_has_c1e(void)
                                 fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val);
                                 if (!(val & 2)) {
 					fwts_cpu_free_info(cpu);
-					return 0;
+					return FWTS_FALSE;
 				}
                         }
                 }
 		fwts_cpu_free_info(cpu);
-                return 1;
+                return FWTS_TRUE;
         }
 	fwts_cpu_free_info(cpu);
-	return 0;
+	return FWTS_FALSE;
 }
 
 int fwts_cpu_enumerate(void)
@@ -204,7 +204,7 @@ int fwts_cpu_enumerate(void)
 	struct dirent *directory;
 
 	if ((dir = opendir("/proc/acpi/processor")) == NULL)
-		return -1;
+		return FWTS_ERROR;
 
 	while ((directory = readdir(dir)) != NULL)
 		if (strncmp(directory->d_name, "CPU", 3) == 0)
@@ -263,10 +263,10 @@ int fwts_cpu_consume(const int seconds)
 	int i;
 
 	if ((fwts_cpu_num = fwts_cpu_enumerate()) < 0) 
-		return 1;
+		return FWTS_ERROR;
 
 	if ((fwts_cpu_pids = (pid_t*)calloc(fwts_cpu_num, sizeof(pid_t))) == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	signal(SIGINT, fwts_cpu_sigint_handler);
 
@@ -281,7 +281,7 @@ int fwts_cpu_consume(const int seconds)
 		case -1:
 			/* Went wrong */
 			fwts_cpu_consume_cleanup();
-			return 1;
+			return FWTS_ERROR;
 		default:
 			fwts_cpu_pids[i] = pid;
 			break;
@@ -291,5 +291,5 @@ int fwts_cpu_consume(const int seconds)
 
 	fwts_cpu_consume_cleanup();
 
-	return 0;
+	return FWTS_OK;
 }

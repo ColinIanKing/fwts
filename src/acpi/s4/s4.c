@@ -33,21 +33,21 @@ static int s4_init(fwts_framework *fw)
 {
 	if (fw->flags & FRAMEWORK_FLAGS_NO_S4) {
 		fwts_log_info(fw, "Skipping S4 tests.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (fwts_wakealarm_test_firing(fw, 1)) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S4 test.");
 		fwts_failed(fw, "Check if wakealarm works reliably for S4 tests.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int s4_test1(fwts_framework *fw)
@@ -63,7 +63,7 @@ static int s4_test1(fwts_framework *fw)
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		fwts_failed(fw, test);
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	fwts_wakealarm_trigger(fw, 90);
@@ -78,6 +78,7 @@ static int s4_test1(fwts_framework *fw)
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		fwts_failed(fw, test);
+		return FWTS_ERROR;
 	}
 
 	if (fwts_klog_pm_check(fw, klog, &errors))
@@ -108,7 +109,7 @@ static int s4_test1(fwts_framework *fw)
 				   "enter the requested power saving state.");
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests s4_tests[] = {

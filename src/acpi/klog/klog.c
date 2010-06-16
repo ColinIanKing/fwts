@@ -40,16 +40,16 @@ static int klog_init(fwts_framework *fw)
 	
 	if (klog == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 static int klog_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int klog_test1(fwts_framework *fw)
@@ -59,7 +59,7 @@ static int klog_test1(fwts_framework *fw)
 
 	if (fwts_klog_firmware_check(fw, klog, &errors)) {
 		fwts_log_error(fw, "Error parsing kernel log.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (errors > 0) 	
@@ -68,7 +68,7 @@ static int klog_test1(fwts_framework *fw)
 	else
 		fwts_passed(fw, test);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests klog_tests[] = {

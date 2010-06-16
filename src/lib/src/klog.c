@@ -31,8 +31,8 @@ void fwts_klog_free(fwts_list *klog)
 int fwts_klog_clear(void)
 {
 	if (klogctl(5, NULL, 0) < 0)
-		return 1;
-	return 0;
+		return FWTS_ERROR;
+	return FWTS_OK;
 }
 
 fwts_list *fwts_klog_read(void)
@@ -65,7 +65,7 @@ int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t cal
 	fwts_list_element *item;
 
 	if (!klog)
-		return 1;
+		return FWTS_ERROR;
 
 	prev = "";
 
@@ -78,7 +78,7 @@ int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t cal
 		callback(fw, ptr, prev, private, errors);
 		prev = ptr;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 #define FW_BUG	"[Firmware Bug]: "

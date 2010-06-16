@@ -93,14 +93,14 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 static int mcfg_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", 0, &mcfg_size)) == NULL) {
 		fwts_log_error(fw, "No MCFG ACPI table found. This table is required for PCI Express*");
-		return 1;
+		return FWTS_ERROR;
 	}
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int mcfg_deinit(fwts_framework *fw)
@@ -111,7 +111,7 @@ static int mcfg_deinit(fwts_framework *fw)
 	if (e820_list)
 		fwts_e820_table_free(e820_list);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static char *mcfg_headline(void)
@@ -145,18 +145,18 @@ static int mcfg_test1(fwts_framework *fw)
 
 	if ((int)mcfg_size<0) {
 		fwts_failed(fw, "Invalid MCFG ACPI table size");
-		return 1;
+		return FWTS_ERROR;
 	}
 	nr = mcfg_size / sizeof(struct mcfg_entry);
 
 	if (!nr) {
 		fwts_failed(fw, "No MCFG ACPI table entries");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if ((nr * sizeof(struct mcfg_entry)) != mcfg_size) {
 		fwts_failed(fw, "MCFG table is not a multiple of record size");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	fwts_log_info(fw, "MCFG table found, size is %i bytes (%i entries).", 
@@ -166,7 +166,7 @@ static int mcfg_test1(fwts_framework *fw)
 
 	if (table_page==NULL) {
 		fwts_failed(fw, "Invalid MCFG ACPI table");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	table_ptr += 36 + 8; /* 36 for the acpi header, 8 for padding */
@@ -197,24 +197,26 @@ static int mcfg_test1(fwts_framework *fw)
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if ((table_page = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, firstentry.low_address)) == NULL) {
 		fwts_log_error(fw, "Cannot mmap onto /dev/mem.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
         if (table_page==(void*)-1) {
 		fwts_log_error(fw, "Cannot mmap onto /dev/mem.");
-                return 1;
+		close(fd);
+                return FWTS_ERROR;
         }
 
 	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)table_page);
 
 	munmap(table_page, getpagesize());
+	close(fd);
 	
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests mcfg_tests[] = {

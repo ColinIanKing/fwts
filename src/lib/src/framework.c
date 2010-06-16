@@ -185,7 +185,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 	fwts_log_newline(fw->results);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int fwts_framework_total_summary(fwts_framework *fw)
@@ -193,7 +193,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted.", 
 		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int fwts_framework_run_test(fwts_framework *fw, const char *name, const fwts_framework_ops *ops)
@@ -233,7 +233,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 				fw->total.aborted++;
 			}
 			fwts_framework_test_summary(fw);
-			return 0;
+			return FWTS_OK;
 		}
 	}
 
@@ -283,7 +283,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	free(fw->current_test_name);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static void fwts_framework_run_registered_tests(fwts_framework *fw)
@@ -306,14 +306,14 @@ static int fwts_framework_run_registered_test(fwts_framework *fw, const char *na
 		if (strcmp(name, item->name) == 0) {
 			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",item->name);
 			fwts_framework_run_test(fw, item->name, item->ops);
-			return 0;
+			return FWTS_OK;
 		}
 	}
 	fw->results = fwts_log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_CRITICAL, "Test %s does not exist!", name);
 	fwts_log_close(fw->results);
 
-	return 1;
+	return FWTS_ERROR;
 }
 
 static void fwts_framework_close(fwts_framework *fw)
@@ -440,10 +440,8 @@ int fwts_framework_args(int argc, char **argv)
 
 	fwts_framework *fw;
 
-	fw = (fwts_framework *)calloc(1, sizeof(fwts_framework));
-	if (fw == NULL) {
-		return 1;
-	}
+	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
+		return FWTS_ERROR;
 
 	fw->magic = FRAMEWORK_MAGIC;
 	fw->flags = FRAMEWORK_FLAGS_DEFAULT;
@@ -553,6 +551,6 @@ int fwts_framework_args(int argc, char **argv)
 
 	fwts_framework_close(fw);
 
-	return 0;
+	return FWTS_OK;
 }
 

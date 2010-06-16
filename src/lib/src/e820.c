@@ -46,16 +46,16 @@ static int fwts_register_e820_line(fwts_list *e820_list, uint64 start, uint64 en
 	e820_entry *entry;
 
 	if ((entry = calloc(1, sizeof(e820_entry))) == NULL)
-		return 1;
+		return FWTS_ERROR;
 	
 	entry->start_address = start;
 	entry->end_address   = end;
 	entry->type          = type;
 
 	if (fwts_list_append(e820_list, entry) == NULL)
-		return 1;
+		return FWTS_ERROR;
 
-	return 0;
+	return FWTS_OK;
 }
 
 
@@ -77,25 +77,26 @@ int fwts_e820_type(fwts_list *e820_list, uint64 memory)
 	return result;
 }
 
-int fwts_e820_is_reserved(fwts_list *e820_list, uint64 memory)
+fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, uint64 memory)
 {
 	int result = E820_UNKNOWN;
 
 	/* when we don't have E820 info, assume all is fair */
 	if (e820_list == NULL)
-		return 1; 
+		return FWTS_TRUE; 
 	
 	/* bios data area is always reserved */
 	if ((memory >= 640 * 1024) && (memory <= 1024*1024))
-		return 1;
+		return FWTS_TRUE;
 
 	result = fwts_e820_type(e820_list, memory);
 
 	if (result == E820_RESERVED)
-		return 1;
+		return FWTS_TRUE;
 	if (result == E820_ACPI)
-		return 1;
-	return 0;
+		return FWTS_TRUE;
+
+	return FWTS_FALSE;
 }
 
 /* checks dmesg for useful e820 info */

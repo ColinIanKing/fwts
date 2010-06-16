@@ -58,10 +58,10 @@ int fwts_summary_init(void)
 	for (i=0;i<SUMMARY_MAX;i++)
 		if ((fwts_summaries[i] = fwts_list_init()) == NULL) {
 			fwts_summary_deinit();
-			return 1;
+			return FWTS_ERROR;
 		}
 
-	return 0;
+	return FWTS_OK;
 }
 
 void fwts_summary_deinit(void)
@@ -78,16 +78,16 @@ int fwts_summary_add(char *test, fwts_log_level level, char *text)
 	fwts_summary_item *item;
 
 	if ((item = malloc(sizeof(fwts_summary_item))) == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	if ((item->test = strdup(test)) == NULL) {
 		free(item);
-		return 1;
+		return FWTS_ERROR;
 	}
 	if ((item->text = strdup(text)) == NULL) {
 		free(item->test);	
 		free(item);	
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	item->log_line = fwts_log_line_number();
@@ -109,7 +109,7 @@ int fwts_summary_add(char *test, fwts_log_level level, char *text)
 		fwts_list_append(fwts_summaries[SUMMARY_UNKNOWN], item);
 		break;
 	}
-	return 0;
+	return FWTS_OK;
 }
 
 int fwts_summary_report(fwts_framework *fw)
@@ -140,5 +140,5 @@ int fwts_summary_report(fwts_framework *fw)
 		fwts_log_summary(fw, "");
 	}
 
-	return 0;
+	return FWTS_OK;
 }

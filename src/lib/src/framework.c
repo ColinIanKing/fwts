@@ -407,6 +407,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("\t\t                 %%line - log line number\n");
 	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests\n");
 	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests\n");
+	printf("--s3-multiple=N\t\tRun S3 tests N times\n");
 	printf("--show-progress\t\tOutput test progress report to stderr\n");
 	printf("--show-tests\t\tShow available tests\n");
 }

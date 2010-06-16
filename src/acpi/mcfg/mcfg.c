@@ -64,8 +64,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 
 	snprintf(command, sizeof(command), "%s -vxxx -s %i:%i", lspci_cmd, segment, device);
 
-	fwts_pipe_exec(command, &lspci_output);
-	if (lspci_output == NULL) {
+	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
 		fwts_log_warning(fw, "Could not execute %s", command);
 		return;
 	}
@@ -96,7 +95,7 @@ static int mcfg_init(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", 0, &mcfg_size)) == NULL) {
-		fwts_log_error(fw, "No MCFG ACPI table found. This table is required for PCI Express*");
+		fwts_log_error(fw, "MCFG ACPI table not loaded. This table is required to check for PCI Express*");
 		return FWTS_ERROR;
 	}
 
@@ -161,7 +160,7 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "MCFG table found, size is %i bytes (%i entries).", 
+	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).", 
 			mcfg_size, nr);
 
 	table_page = table_ptr = mcfg_table;
@@ -183,7 +182,7 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_log_info(fw, "Entry address : %x\n", table->low_address);
 
 		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
-			fwts_failed(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+			fwts_failed_high(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
 			failed++;
 		}
 

@@ -61,7 +61,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		fprintf(stderr,"CHILD EXEC'ing %s\n", command);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
 		fprintf(stderr,"CHILD EXEC FAILED!!\n");
-		_exit(127);
+		_exit(FWTS_EXEC_ERROR);
 	default:
 		/* Parent */
 		close(pipefds[1]);
@@ -120,6 +120,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 	int	fd;
 	int 	len;
 	char 	*text;
+	int	ret;
 
 	if ((fd = fwts_pipe_open(command, &pid)) < 0) 
 		return -1;
@@ -128,5 +129,12 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 	*list = fwts_list_from_text(text);
 	free(text);
 
-	return fwts_pipe_close(fd, pid);
+	ret = fwts_pipe_close(fd, pid);
+
+	if (ret == FWTS_EXEC_ERROR) {
+		fwts_list_free(*list, free);
+		*list = NULL;
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
 }

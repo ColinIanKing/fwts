@@ -58,7 +58,12 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 		return NULL;
 	}
 	data = fwts_pipe_read(fd, &len);
-	fwts_pipe_close(fd, pid);
+	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
+		if (data)
+			free(data);
+		fwts_log_error(fw, "Could not exec %s, is iasl installed?");
+		return NULL;
+	}
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {

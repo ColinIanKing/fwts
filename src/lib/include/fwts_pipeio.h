@@ -25,6 +25,8 @@
 
 #include "fwts.h"
 
+#define FWTS_EXEC_ERROR		(127)
+
 int   fwts_pipe_open(const char *command, pid_t *childpid);
 char *fwts_pipe_read(int fd, int *length);
 int   fwts_pipe_close(int fd, pid_t pid);

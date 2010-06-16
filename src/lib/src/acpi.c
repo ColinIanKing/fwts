@@ -43,7 +43,12 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 		return NULL;
 	}
 	data = (uint8*) fwts_pipe_read(fd, &len);
-	fwts_pipe_close(fd, pid);
+	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
+		fwts_log_error(fw, "Could not exec %s, is acpidump installed?", fwts_acpidump);
+		if (data)
+			free(data);
+		return NULL;
+	}
 
 	if (data == NULL)
 		return NULL;

@@ -134,9 +134,9 @@ int fwts_summary_report(fwts_framework *fw)
 					summary_item->text);
 			}
 		}
-		else {
+		else
 			fwts_log_summary(fw, "%s failures: NONE", summary_names[i]);
-		}
+
 		fwts_log_summary(fw, "");
 	}
 

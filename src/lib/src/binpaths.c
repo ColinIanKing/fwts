@@ -17,35 +17,27 @@
  *
  */
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "fwts_types.h"
-
-#include "fwts_binpaths.h"
-
 #include "fwts_framework.h"
-#include "fwts_log.h"
-#include "fwts_list.h"
 
-#include "fwts_text_list.h"
+#define FLAGS	(S_IROTH | S_IXOTH)
 
-#include "fwts_set.h"
-#include "fwts_get.h"
 
-#include "fwts_acpi.h"
-#include "fwts_checkeuid.h"
-#include "fwts_cpu.h"
-#include "fwts_e820.h"
-#include "fwts_dsdt.h"
-#include "fwts_fileio.h"
-#include "fwts_iasl.h"
-#include "fwts_klog.h"
-#include "fwts_pipeio.h"
-#include "fwts_stringextras.h"
-#include "fwts_wakealarm.h"
-#include "fwts_virt.h"
-#include "fwts_formatting.h"
-#include "fwts_summary.h"
+int fwts_check_executable(fwts_framework *fw, const char *path, const char *name)
+{
+	struct stat statbuf;
 
-#endif
+	if (stat(fw->iasl, &statbuf)) {
+		fwts_log_error(fw, "ERROR: Cannot find %s, make sure %s is installed.", path, name);
+		return FWTS_ERROR;
+	}
+	if ((statbuf.st_mode & FLAGS) != FLAGS) {
+		fwts_log_error(fw, "ERROR: Cannot read/execute %s.", path);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}

@@ -26,7 +26,8 @@
 
 int main(int argc, char **argv)
 {
-	fwts_framework_args(argc, argv);
-
-	exit(EXIT_SUCCESS);
+	if (fwts_framework_args(argc, argv) == FWTS_OK)
+		exit(EXIT_SUCCESS);
+	else
+		exit(EXIT_FAILURE);
 }

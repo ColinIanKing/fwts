@@ -118,6 +118,12 @@ static int hpet_check_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
+	if (fwts_check_executable(fw, fw->iasl, "iasl"))
+		return FWTS_ERROR;
+
+	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+		return FWTS_ERROR;
+
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		return FWTS_ERROR;

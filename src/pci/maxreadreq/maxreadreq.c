@@ -39,20 +39,15 @@ static char *maxreadreq_headline(void)
 	return "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.";
 }
 
-static char *lspci = "/usr/bin/lspci";
 static fwts_list *lspci_text;
 
 static int maxreadreq_init(fwts_framework *fw)
 {
-	struct stat buffer;
-
 	if (fwts_check_root_euid(fw))
 		return 1;
 
-	if (stat(lspci, &buffer)) {
-		fwts_log_error(fw, "Cannot find %s.", lspci);	
+	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return 1;
-	}
 
 	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
 		fwts_log_error(fw, "Failed to execute lspci -vvv.");

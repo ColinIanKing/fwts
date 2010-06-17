@@ -415,6 +415,8 @@ static void fwts_framework_syntax(char **argv)
 
 int fwts_framework_args(int argc, char **argv)
 {
+	int ret = FWTS_OK;
+
 	struct option long_options[] = {
 		{ "stdout-summary", 0, 0, 0 },		
 		{ "fwts_framework_debug", 0, 0, 0 },
@@ -435,6 +437,8 @@ int fwts_framework_args(int argc, char **argv)
 		{ "no-s3", 0, 0, 0 },
 		{ "no-s4", 0, 0, 0 },
 		{ "log-width", 1, 0, 0 },
+		{ "lspci", 1, 0, 0, },
+		{ "acpidump", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -519,21 +523,46 @@ int fwts_framework_args(int argc, char **argv)
 			case 18: /* --log-width=N */
 				fwts_log_set_line_width(atoi(optarg));
 				break;
+			case 19: /* --lspci=pathtolspci */
+				fw->lspci = strdup(optarg);
+				break;
+			case 20: /* --acpidump=pathtoacpidump */
+				fw->acpidump= strdup(optarg);
+				break;
 			}
 		case '?':
 			break;
 		}
 	}	
 
+	if (!fw->iasl)
+		fw->iasl = strdup(FWTS_IASL_PATH);
+	if (!fw->acpidump)
+		fw->acpidump = strdup(FWTS_ACPIDUMP_PATH);
+	if (!fw->dmidecode)
+		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
+	if (!fw->lspci)
+		fw->lspci = strdup(FWTS_LSPCI_PATH);
+
 	fw->debug = fwts_log_open("fwts", LOGFILE(fw->debug_logname, "stderr"), "a+");
 	fw->results = fwts_log_open("fwts", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+
+	if ((fw->iasl == NULL) ||
+	    (fw->acpidump == NULL) ||
+	    (fw->dmidecode == NULL) ||
+	    (fw->lspci == NULL)) {
+		ret = FWTS_ERROR;
+		fwts_log_error(fw, "Memory allocation failure.");
+		goto tidy;
+	}
 
 	if (optind < argc) 
 		for (; optind < argc; optind++) {
 			if (fwts_framework_run_registered_test(fw, argv[optind])) {
 				fprintf(stderr, "No such test '%s'\n",argv[optind]);
 				fwts_framework_show_tests();
-				exit(EXIT_FAILURE);
+				ret = FWTS_ERROR;
+				goto tidy;
 			}
 		}
 	else 
@@ -546,11 +575,12 @@ int fwts_framework_args(int argc, char **argv)
 	fwts_summary_report(fw);
 	fwts_summary_deinit();
 
+tidy:
 	fwts_log_close(fw->results);
 	fwts_log_close(fw->debug);
 
 	fwts_framework_close(fw);
 
-	return FWTS_OK;
+	return ret;
 }
 

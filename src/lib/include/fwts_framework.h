@@ -46,8 +46,12 @@ typedef struct {
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
 	char *debug_logname;			/* filename of framework debug log */
+
 	char *iasl;				/* path to iasl */
 	char *dmidecode;			/* path to dmidecode */
+	char *acpidump;				/* path to acpidump */
+	char *lspci;				/* path to lspci */
+
 	char *dsdt;				/* path to dsdt file */
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */

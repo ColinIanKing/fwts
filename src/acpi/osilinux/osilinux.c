@@ -34,15 +34,14 @@ static fwts_list* disassembly;
 
 static int osilinux_init(fwts_framework *fw)
 {
-	struct stat buffer;
-
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-        if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
-                fwts_log_error(fw, "Make sure iasl is installed.");
-                return FWTS_ERROR;
-        }
+	if (fwts_check_executable(fw, fw->iasl, "iasl"))
+		return FWTS_ERROR;
+
+	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+		return FWTS_ERROR;
 
 	disassembly = fwts_iasl_disassemble(fw, "DSDT", 0);
 	if (disassembly == NULL) {

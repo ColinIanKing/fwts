@@ -36,7 +36,6 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	char cwd[PATH_MAX];
 	int len;
 	int fd;
-	char *iasl = fw->iasl ? fw->iasl : IASL;
 	char *data;
 	pid_t pid;
 	fwts_list *output;
@@ -51,7 +50,13 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 		return NULL;
 	}
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "acpidump -b -t %s -s %d", table, which);
+	if (fwts_check_executable(fw, fw->iasl, "iasl"))
+                return NULL;
+
+	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+                return NULL;
+
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s -b -t %s -s %d", fw->acpidump, table, which);
 	fd = fwts_pipe_open(tmpbuf, &pid);
 	if (fd < 0) {
 		fwts_log_error(fw, "exec of %s failed", tmpbuf);
@@ -61,7 +66,7 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
 		if (data)
 			free(data);
-		fwts_log_error(fw, "Could not exec %s, is iasl installed?");
+		fwts_log_error(fw, "Could not exec %s", fw->acpidump);
 		return NULL;
 	}
 
@@ -80,10 +85,10 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	free(data);
 	close(fd);
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);
 	fd = fwts_pipe_open(tmpbuf, &pid);
 	if (fd < 0) {
-		fwts_log_warning(fw, "exec of %s -d %s (disassemble) failed\n", iasl, tmpname);
+		fwts_log_warning(fw, "exec of %s -d %s (disassemble) failed\n", fw->iasl, tmpname);
 	}
 	fwts_pipe_close(fd, pid);
 
@@ -109,7 +114,6 @@ fwts_list* fwts_iasl_reassemble(fwts_framework *fw, uint8 *data, int len)
 	fwts_list *output;
 	int ret;
 	int fd;
-	char *iasl = fw->iasl ? fw->iasl : IASL;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
@@ -133,17 +137,17 @@ fwts_list* fwts_iasl_reassemble(fwts_framework *fw, uint8 *data, int len)
 	}	
 	close(fd);
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", iasl, tmpname);
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);
 	ret = fwts_pipe_exec(tmpbuf, &output);
 	if (ret)
-		fwts_log_warning(fw, "exec of %s -d %s (disassemble) returned %d\n", iasl, tmpname, ret);
+		fwts_log_warning(fw, "exec of %s -d %s (disassemble) returned %d\n", fw->iasl, tmpname, ret);
 	if (output)
 		fwts_text_list_free(output);
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", iasl, tmpname);
+	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", fw->iasl, tmpname);
 	ret = fwts_pipe_exec(tmpbuf, &output);
 	if (ret)
-		fwts_log_error(fw, "exec of %s (assemble) returned %d\n", iasl, ret);
+		fwts_log_error(fw, "exec of %s (assemble) returned %d\n", fw->iasl, ret);
 
 	snprintf(tmpbuf,sizeof(tmpbuf),"%s.dsl", tmpname);
 	unlink(tmpname);

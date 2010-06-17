@@ -34,15 +34,14 @@ static fwts_list* error_output;
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
-	struct stat buffer;
-
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-        if (stat(fw->iasl ? fw->iasl : IASL, &buffer)) {
-                fwts_log_error(fw, "Make sure iasl is installed.");
+	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
-        }
+
+	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+		return FWTS_ERROR;
 
 	return FWTS_OK;
 }

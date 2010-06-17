@@ -160,18 +160,16 @@ restart:
 	return type;
 }
 
-static int is_prefetchable(char *device, uint64 address)
+static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 {
 	int pref = 0;
 	char line[4096];
-	char *lspci_cmd;
 	fwts_list *lspci_output;
 	fwts_list_element *item;
 
 	memset(line,0,4096);
 	
-	lspci_cmd = "/usr/bin/lspci";
-	snprintf(line, sizeof(line), "%s -v -s %s", lspci_cmd, device);
+	snprintf(line, sizeof(line), "%s -v -s %s", fw->lspci, device);
 	fwts_pipe_exec(line, &lspci_output);
 	if (lspci_output == NULL)
 		return pref;
@@ -197,7 +195,7 @@ static int is_prefetchable(char *device, uint64 address)
 	return pref;
 }
 
-static void guess_cache_type(char *string, int *must, int *mustnot, uint64 address)
+static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *mustnot, uint64 address)
 {
 	*must = 0;
 	*mustnot = 0;
@@ -209,7 +207,7 @@ static void guess_cache_type(char *string, int *must, int *mustnot, uint64 addre
 	}
 	/* if it's PCI mmio -> uncached typically except for video */
 	if (strstr(string, "0000:")) {
-		if (is_prefetchable(string, address)) {
+		if (is_prefetchable(fw, string, address)) {
 			*must = 0;
 			*mustnot = WRITEBACK | UNCACHED;
 		} else {
@@ -280,7 +278,7 @@ static int validate_iomem(fwts_framework *fw)
 		
 		type = cache_types(start, end);
 
-		guess_cache_type(c2, &type_must, &type_mustnot, start);
+		guess_cache_type(fw, c2, &type_must, &type_mustnot, start);
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
@@ -338,6 +336,9 @@ static void check_line(void *data, void *private)
 static int mtrr_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
+		return FWTS_ERROR;
+
+	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
 	if (get_mtrrs())

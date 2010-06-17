@@ -94,22 +94,14 @@ static dmi_pattern dmi_patterns[] = {
 	{ 0, NULL, NULL, NULL }
 };
 
-static char *dmidecode = "/usr/sbin/dmidecode";
-
 static int dmi_decode_init(fwts_framework *fw)
 {
-	struct stat buffer;
-
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-	if (fw->dmidecode)
-		dmidecode = fw->dmidecode;
-
-	if (stat(dmidecode, &buffer)) {
-		fwts_log_error(fw, "Cannot find %s, make sure dmidecode is installed.", dmidecode);
+	if (fwts_check_executable(fw, fw->dmidecode, "dmidecode"))
 		return FWTS_ERROR;
-	}
+
 	return FWTS_OK;
 }
 
@@ -128,7 +120,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 		int dumped = 0;
 		char buffer[PATH_MAX];
 
-		snprintf(buffer, sizeof(buffer), "%s -t %d", dmidecode, type);
+		snprintf(buffer, sizeof(buffer), "%s -t %d", fw->dmidecode, type);
 
 		if (fwts_pipe_exec(buffer, &dmi_text)) {
 			fwts_log_error(fw, "Failed to execute dmidecode.");

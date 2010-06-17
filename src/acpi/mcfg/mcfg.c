@@ -53,7 +53,6 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 
 	char command[PATH_MAX];
 	char compare_line[1024];
-	char *lspci_cmd = "/usr/bin/lspci";
 
 	snprintf(compare_line, sizeof(compare_line), 
 		"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
@@ -62,7 +61,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		space[8],  space[9],  space[10], space[11],
 		space[12], space[13], space[14], space[15]);
 
-	snprintf(command, sizeof(command), "%s -vxxx -s %i:%i", lspci_cmd, segment, device);
+	snprintf(command, sizeof(command), "%s -vxxx -s %i:%i", fw->lspci, segment, device);
 
 	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
 		fwts_log_warning(fw, "Could not execute %s", command);
@@ -92,6 +91,9 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 static int mcfg_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
+		return FWTS_ERROR;
+
+	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
 	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", 0, &mcfg_size)) == NULL) {

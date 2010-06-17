@@ -30,11 +30,10 @@ char *fwts_get(const char *file)
 
 	if ((fp = fopen(file, "r")) == NULL)
 		return NULL;
-
 	
-	if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+	if (fgets(buffer, sizeof(buffer), fp) == NULL)
 		return NULL;
-	}
+
 	fclose(fp);
 	
 	return strdup(buffer);

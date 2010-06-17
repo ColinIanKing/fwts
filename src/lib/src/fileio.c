@@ -29,10 +29,8 @@ fwts_list *fwts_file_read(FILE *fp)
 	fwts_list *list;
 	char buffer[8192];
 
-	if ((list = fwts_list_init()) == NULL)  {
-		fclose(fp);
+	if ((list = fwts_list_init()) == NULL)
 		return NULL;
-	}
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		int len = strlen(buffer);

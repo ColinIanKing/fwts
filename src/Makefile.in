@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = testsuite$(EXEEXT)
+bin_PROGRAMS = fwts$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,16 +45,16 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_testsuite_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) \
-	wakealarm.$(OBJEXT) syntaxcheck.$(OBJEXT) s3.$(OBJEXT) \
-	s4.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
-	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
-	apicedge.$(OBJEXT) osilinux.$(OBJEXT) ebda_region.$(OBJEXT) \
-	mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) version.$(OBJEXT)
-testsuite_OBJECTS = $(am_testsuite_OBJECTS)
-testsuite_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
+am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
+	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
+	acpiinfo.$(OBJEXT) battery.$(OBJEXT) common.$(OBJEXT) \
+	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
+	osilinux.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
+	version.$(OBJEXT)
+fwts_OBJECTS = $(am_fwts_OBJECTS)
+fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -63,8 +63,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(testsuite_SOURCES)
-DIST_SOURCES = $(testsuite_SOURCES)
+SOURCES = $(fwts_SOURCES)
+DIST_SOURCES = $(fwts_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -195,7 +195,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = lib
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall -Werror
-testsuite_SOURCES = main.c \
+fwts_SOURCES = main.c \
 	acpi/klog/klog.c \
 	acpi/wakealarm/wakealarm.c \
 	acpi/syntaxcheck/syntaxcheck.c \
@@ -217,7 +217,7 @@ testsuite_SOURCES = main.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
 	kernel/version/version.c
 
-testsuite_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
+fwts_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 all: all-recursive
 
 .SUFFIXES:
@@ -289,9 +289,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-testsuite$(EXEEXT): $(testsuite_OBJECTS) $(testsuite_DEPENDENCIES) 
-	@rm -f testsuite$(EXEEXT)
-	$(LINK) $(testsuite_OBJECTS) $(testsuite_LDADD) $(LIBS)
+fwts$(EXEEXT): $(fwts_OBJECTS) $(fwts_DEPENDENCIES) 
+	@rm -f fwts$(EXEEXT)
+	$(LINK) $(fwts_OBJECTS) $(fwts_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

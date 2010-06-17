@@ -6,13 +6,13 @@ Well, you got this far, which is a good thing.
 Quick Start Guide
 =================
 
-1) Dependencies: iasl, acpidump
+1) Dependencies: iasl, acpidump pciutils dmidecode
 
 Please first install iasl and acpidump:
 
-sudo apt-get install iasl acpidump
+sudo apt-get install iasl acpidump pciutils dmidecode
 
-2) To build and install:
+2) To build and install (only if building from source)
 
 ./configure
 make
@@ -23,11 +23,11 @@ stable form.
 
 To get help:
 
-testsuite --help
+fwts --help
 
 To run all the tests (including S3 and S4 suspend/resume hibernate/resume tests) use:
 
-testsuite
+fwts
 
 ..this will dump the results into results.log
 
@@ -40,51 +40,90 @@ Running Specific Tests
 
 Run specific tests, e.g. check syntax of DSDT:
 
-sudo testsuite syntaxcheck
+sudo fwts syntaxcheck
 
 You can run multiple tests too:
 
-sudo testsuite syntaxcheck fan batttery
+sudo fwts syntaxcheck fan batttery
 
 To see all the available tests:
 
-sudo testsuite --show-tests
+sudo fwts --show-tests
 
 Changing the output
 -------------------
 
 To dump the results to another file:
 
-sudo testsuite --results-output=myresults.log
+sudo fwts --results-output=myresults.log
 
 or to stderr or stdout and redirect:
 
-sudo testsuite --results-output=stderr
-sudo testsuite --results-output=stdout > mylog.log
+sudo fwts --results-output=stderr
+sudo fwts --results-output=stdout > mylog.log
 
-The log has various fields:
+The log has various columns:
 
-05/05/10 19:33:41 [INF] wakealarm       Test ACPI Wakealarm
-05/05/10 19:33:41 [SEP] wakealarm       -----------------------------------------------------------
-05/05/10 19:33:41 [INF] wakealarm       Check existance of /sys/class/rtc/rtc0/wakealarm
-05/05/10 19:33:41 [RES] wakealarm       PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm
-05/05/10 19:33:41 [INF] wakealarm       Trigger RTC wakealarm
-05/05/10 19:33:41 [INF] wakealarm       Trigger wakealarm for 1 seconds in the future
-05/05/10 19:33:41 [RES] wakealarm       PASSED: test 2, Trigger RTC wakealarm
-05/05/10 19:33:41 [INF] wakealarm       Check if wakealarm is fired
-05/05/10 19:33:41 [INF] wakealarm       Trigger wakealarm for 2 seconds in the future
-05/05/10 19:33:44 [RES] wakealarm       PASSED: test 3, Check if wakealarm is fired
-05/05/10 19:33:44 [INF] wakealarm       Multiple wakealarm firing tests
-05/05/10 19:33:44 [INF] wakealarm       Trigger wakealarm for 1 seconds in the future
-05/05/10 19:33:46 [INF] wakealarm       Trigger wakealarm for 2 seconds in the future
-05/05/10 19:33:49 [INF] wakealarm       Trigger wakealarm for 3 seconds in the future
-05/05/10 19:33:53 [INF] wakealarm       Trigger wakealarm for 4 seconds in the future
-05/05/10 19:33:58 [RES] wakealarm       PASSED: test 4, Multiple wakealarm firing tests
-05/05/10 19:33:58 [SEP] wakealarm       ===========================================================
-05/05/10 19:33:58 [SUM] wakealarm       4 passed, 0 failed, 0 aborted
-05/05/10 19:33:58 [SEP] wakealarm       ===========================================================
+0001 17/05/10 15:00:48 wakealarm       Test ACPI Wakealarm.
+0002 17/05/10 15:00:48 wakealarm       ------------------------------------------------------------------------------------------
+0003 17/05/10 15:00:48 wakealarm       Check existance of /sys/class/rtc/rtc0/wakealarm.
+0004 17/05/10 15:00:48 wakealarm       PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm.
+0005 17/05/10 15:00:48 wakealarm       Trigger RTC wakealarm.
+0006 17/05/10 15:00:48 wakealarm       Trigger wakealarm for 1 seconds in the future.
+0007 17/05/10 15:00:48 wakealarm       PASSED: test 2, Trigger RTC wakealarm.
+0008 17/05/10 15:00:48 wakealarm       Check if wakealarm is fired.
+0009 17/05/10 15:00:48 wakealarm       Trigger wakealarm for 2 seconds in the future.
+0010 17/05/10 15:00:51 wakealarm       PASSED: test 3, Check if wakealarm is fired.
+0011 17/05/10 15:00:51 wakealarm       Multiple wakealarm firing tests.
+0012 17/05/10 15:00:51 wakealarm       Trigger wakealarm for 1 seconds in the future.
+0013 17/05/10 15:00:53 wakealarm       Trigger wakealarm for 2 seconds in the future.
+0014 17/05/10 15:00:56 wakealarm       Trigger wakealarm for 3 seconds in the future.
+0015 17/05/10 15:01:00 wakealarm       Trigger wakealarm for 4 seconds in the future.
+0016 17/05/10 15:01:05 wakealarm       PASSED: test 4, Multiple wakealarm firing tests.
+0017 17/05/10 15:01:05 wakealarm       ==========================================================================================
+0018 17/05/10 15:01:05 wakealarm       4 passed, 0 failed, 0 warnings, 0 aborted.
+0019 17/05/10 15:01:05 wakealarm       ==========================================================================================
+
+^    ^        ^        ^
+|    |        |        |
+|    |        |        +--- %owner (name of test that ran)
+|    |        |
+|    |        +--- %time
+|    |
+|    +--- %date 
+|
++--- %line (line number)
+
+Also, there is an optional %field that indicates the type of message being logged:
+
+sudo fwts wakealarm --log-format="%line %data %time %field %owner"
+
+generates results.log containing:
+
+0001 data 15:05:13 HED wakealarm      Test ACPI Wakealarm.
+0002 data 15:05:13 SEP wakealarm      -------------------------------------------------------------------------------------------
+0003 data 15:05:13 INF wakealarm      Check existance of /sys/class/rtc/rtc0/wakealarm.
+0004 data 15:05:13 RES wakealarm      PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm.
+0005 data 15:05:13 INF wakealarm      Trigger RTC wakealarm.
+0006 data 15:05:13 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
+0007 data 15:05:13 RES wakealarm      PASSED: test 2, Trigger RTC wakealarm.
+0008 data 15:05:13 INF wakealarm      Check if wakealarm is fired.
+0009 data 15:05:13 INF wakealarm      Trigger wakealarm for 2 seconds in the future.
+0010 data 15:05:16 RES wakealarm      PASSED: test 3, Check if wakealarm is fired.
+0011 data 15:05:16 INF wakealarm      Multiple wakealarm firing tests.
+0012 data 15:05:16 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
+0013 data 15:05:18 INF wakealarm      Trigger wakealarm for 2 seconds in the future.
+0014 data 15:05:21 INF wakealarm      Trigger wakealarm for 3 seconds in the future.
+0015 data 15:05:25 INF wakealarm      Trigger wakealarm for 4 seconds in the future.
+0016 data 15:05:30 RES wakealarm      PASSED: test 4, Multiple wakealarm firing tests.
+0017 data 15:05:30 SEP wakealarm      ===========================================================================================
+0018 data 15:05:30 SUM wakealarm      4 passed, 0 failed, 0 warnings, 0 aborted.
+0019 data 15:05:30 SEP wakealarm      ===========================================================================================
                     ^
                     |
+ +------------------+
+ |
+HED = heading
 INF = information fields
 SEP = separator (just pretty printing)
 RES = result (PASSED or FAILED)
@@ -94,50 +133,51 @@ WRN = warning (not a critical failure, but may need looking at)
 DBG = debug output
 NLN = new line (empty field)
 
-use testsuite --log-fields to show all available fields
+use fwts --log-fields to show all available fields
 
 One can filter on these fields using --log-filter, e.g.
 
-sudo testsuite --log-filter=RES,SUM  
+sudo fwts --log-filter=RES,SUM  
     .. just collect results and summary of tests
 
-sudo testsuite --log-filter=ALL,~SEP
+sudo fwts --log-filter=ALL,~SEP
     .. all fields except the separators
 
 ..it's quite flexible!
 
 One can also re-arrange or modify the log format using --log-format, e.g.
 
-sudo testsuite --log-format="%field %time %date: "  mtrr
+sudo fwts --log-format="%line %field %time: "  mtrr
 
 this produces:
 
-INF 18:40:50 08/05/10: MTRR validation
-SEP 18:40:50 08/05/10: -----------------------------------------------------------
-INF 18:40:50 08/05/10: MTRR overview
-INF 18:40:50 08/05/10: -------------
-INF 18:40:50 08/05/10: 0x00000000 - 0x80000000   write-back  
-INF 18:40:50 08/05/10: 0x80000000 - 0xc0000000   write-back  
-INF 18:40:50 08/05/10: 0xbf700000 - 0xbf800000   uncached  
-INF 18:40:50 08/05/10: 0xbf800000 - 0xc0000000   uncached  
-INF 18:40:50 08/05/10: 0xd0000000 - 0xe0000000   write-combining  
-INF 18:40:50 08/05/10: 
-INF 18:40:50 08/05/10: This test validates the MTRR iomem setup
-RES 18:40:50 08/05/10: FAILED: test 1, Memory range 0xd0000000 to 0xdfffffff (0000:00:02.0) has incorrect attribute write-combining 
-INF 18:40:50 08/05/10: This test validates the MTRR setup across all processors
-RES 18:40:50 08/05/10: PASSED: test 2, All processors have the MTRR setup
-SEP 18:40:50 08/05/10: ===========================================================
-SUM 18:40:50 08/05/10: 1 passed, 0 failed, 0 aborted
-SEP 18:40:50 08/05/10: ===========================================================
+0001 HED 15:08:38: MTRR validation.
+0002 SEP 15:08:38: --------------------------------------------------------------------------------------------------------------
+0003 INF 15:08:38: MTRR overview
+0004 INF 15:08:38: -------------
+0005 INF 15:08:38: 0x00000000 - 0x80000000   write-back
+0006 INF 15:08:38: 0x80000000 - 0xc0000000   write-back
+0007 INF 15:08:38: 0xbf700000 - 0xbf800000   uncached
+0008 INF 15:08:38: 0xbf800000 - 0xc0000000   uncached
+0009 INF 15:08:38: 0xd0000000 - 0xe0000000   write-combining
+0010 INF 15:08:38:
+0011 INF 15:08:38: This test validates the MTRR IOMEM setup.
+0012 RES 15:08:38: FAILED [MEDIUM]: test 1, Memory range 0xd0000000 to 0xdfffffff (0000:00:02.0) has incorrect attribute
+0013 RES 15:08:38: write-combining
+0014 INF 15:08:39: This test validates the MTRR setup across all processors.
+0015 RES 15:08:39: PASSED: test 2, All processors have the MTRR setup
+0016 SEP 15:08:39: ==============================================================================================================
+0017 SUM 15:08:39: 1 passed, 1 failed, 0 warnings, 0 aborted.
+0018 SEP 15:08:39: ==============================================================================================================
+
 
 Available fields are:
 
+%line   - log line number
 %time	- current time
 %date 	- current date
 %owner  - name of the test program (the owner of the the current test)
 %field  - the 3 letter record identifier field (e.g. SEP, RES, etc..)
-%text   - log text (now deprecated)
-
 
 Test Progress Feedback
 ======================
@@ -161,7 +201,7 @@ The --stdout-summary flag outputs to stdout PASSED or FAILED if test(s) passed o
 for one-shot test modes where you want to run one test and see if it passed or failed without having to
 look at the results log, e.g.
 
-sudo testsuite mtrr --stdout-summary
+sudo fwts mtrr --stdout-summary
 
 One can override the text using the following environment variables:
 
@@ -170,7 +210,7 @@ BIOS_TEST_TOOLKIT_FAILED_TEXT
 
 e.g.
 
-sudo BIOS_TEST_TOOLKIT_PASSED_TEXT="yay" ./src/testsuite mtrr --stdout-summary
+sudo BIOS_TEST_TOOLKIT_PASSED_TEXT="yay" fwts mtrr --stdout-summary
 yay
 
 Finally, the exit code returns 1 for test failure and 0 for test success, so the
@@ -178,7 +218,7 @@ test suite can be run from a shell script and one can detect if the test worked 
 
 #!/bin/bash
 LOG=stdout
-sudo ./src/testsuite dmi_decode --results-output=$LOG
+sudo fwts dmi_decode --results-output=$LOG
 failed=$?
 
 Misc
@@ -187,4 +227,4 @@ Misc
 Debug mode.. shows what the controlling test suite framework is doing. It's for
 the developer only!
 
-testsuite --fwts_debug
+fwts --fwts_debug

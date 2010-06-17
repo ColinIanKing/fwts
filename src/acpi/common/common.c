@@ -37,7 +37,12 @@ static fwts_list *klog;
 
 static int dmesg_common_init(fwts_framework *fw)
 {
-	if ((klog = fwts_klog_read()) == NULL) {
+	if (fw->klog)
+		klog = fwts_file_open_and_read(fw->klog);
+	else
+		klog = fwts_klog_read();
+
+	if (klog == NULL) {
 		fwts_log_error(fw, "cannot read kernel log");
 		return FWTS_ERROR;
 	}

@@ -44,22 +44,22 @@ static fwts_list *lspci_text;
 static int maxreadreq_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
-		return 1;
+		return FWTS_ERROR;
 
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
-		return 1;
+		return FWTS_ERROR;
 
 	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
 		fwts_log_error(fw, "Failed to execute lspci -vvv.");
-		return 1;
+		return FWTS_ERROR;
 	}
 
 	if (lspci_text == NULL) {
 		fwts_log_error(fw, "Unexpected empty output from lspci -vvv.");
-		return 1;
+		return FWTS_ERROR;
 	}
 	
-	return 0;
+	return FWTS_OK;
 }
 
 static int maxreadreq_deinit(fwts_framework *fw)
@@ -67,7 +67,7 @@ static int maxreadreq_deinit(fwts_framework *fw)
 	if (lspci_text)
 		fwts_text_list_free(lspci_text);
 
-	return 0;
+	return FWTS_OK;
 }
 
 static int maxreadreq_test1(fwts_framework *fw)
@@ -79,7 +79,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 	fwts_list_element *item;
 
 	if (lspci_text == NULL)
-		return 1;
+		return FWTS_ERROR;
 
 	for (item = lspci_text->head; item != NULL; item = item->next) {
 		char *line = fwts_text_list_text(item);
@@ -125,7 +125,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 	else
 		fwts_passed(fw, "All devices have MaxReadReq set > 128.");
 
-	return 0;
+	return FWTS_OK;
 }
 
 static fwts_framework_tests maxreadreq_tests[] = {

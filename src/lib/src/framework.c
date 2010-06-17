@@ -309,7 +309,7 @@ static int fwts_framework_run_registered_test(fwts_framework *fw, const char *na
 			return FWTS_OK;
 		}
 	}
-	fw->results = fwts_log_open(name, LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+	fwts_log_set_owner(fw->results, name);
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_CRITICAL, "Test %s does not exist!", name);
 	fwts_log_close(fw->results);
 
@@ -543,17 +543,34 @@ int fwts_framework_args(int argc, char **argv)
 		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
 	if (!fw->lspci)
 		fw->lspci = strdup(FWTS_LSPCI_PATH);
-
-	fw->debug = fwts_log_open("fwts", LOGFILE(fw->debug_logname, "stderr"), "a+");
-	fw->results = fwts_log_open("fwts", LOGFILE(fw->results_logname, RESULTS_LOG), "a+");
+	if (!fw->debug_logname)
+		fw->debug_logname = strdup("stderr");
+	if (!fw->results_logname)
+		fw->results_logname = strdup(RESULTS_LOG);
 
 	if ((fw->iasl == NULL) ||
 	    (fw->acpidump == NULL) ||
 	    (fw->dmidecode == NULL) ||
-	    (fw->lspci == NULL)) {
+	    (fw->lspci == NULL) || 
+	    (fw->debug_logname == NULL) ||
+	    (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
-		fwts_log_error(fw, "Memory allocation failure.");
-		goto tidy;
+		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
+		goto tidy_close;
+	}
+
+	if ((fw->debug = fwts_log_open("fwts", 
+			fw->debug_logname, "a+")) == NULL) {
+		ret = FWTS_ERROR;
+		fprintf(stderr, "%s: Cannot open debug log.\n", argv[0]);
+		goto tidy_close;
+	}
+	
+	if ((fw->results = fwts_log_open("fwts", 
+			fw->results_logname, "a+")) == NULL) {
+		ret = FWTS_ERROR;
+		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
+		goto tidy_close;
 	}
 
 	if (optind < argc) 
@@ -579,6 +596,7 @@ tidy:
 	fwts_log_close(fw->results);
 	fwts_log_close(fw->debug);
 
+tidy_close:
 	fwts_framework_close(fw);
 
 	return ret;

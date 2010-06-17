@@ -46,8 +46,8 @@ char *fwts_dsdt_read(fwts_framework *fw)
 				error = 1;
 				break;
 			}
-			
 		}
+			
 		if ((dsdt = realloc(dsdt, len + n)) == NULL) {
 			error = 1;
 			break;

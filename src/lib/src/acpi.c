@@ -39,9 +39,9 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	unsigned char checksum = 0;
 
 	snprintf(buffer, sizeof(buffer), "%s -t %s -b -s %d", fwts_acpidump, name, which);
-	if ((fd = fwts_pipe_open(buffer, &pid)) < 0) {
+	if ((fd = fwts_pipe_open(buffer, &pid)) < 0)
 		return NULL;
-	}
+
 	data = (uint8*) fwts_pipe_read(fd, &len);
 	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
 		fwts_log_error(fw, "Could not exec %s, is acpidump installed?", fwts_acpidump);
@@ -71,7 +71,7 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	GET_UINT32(hdr.creator_revision, data, 32);
 	memcpy(&hdr.oem_tbl_id, data+16, 6);
 	
-	/*
+#if DEBUG
 	printf("sig: %4.4s\n", hdr.signature);
 	printf("len: %lu\n", hdr.length);
 	printf("rev: %d\n", hdr.revision);
@@ -81,7 +81,7 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	printf("oem_rev: %lu\n", hdr.oem_revision);
 	printf("comp_id: %4.4s\n", hdr.creator_id);
 	printf("comp_rev: %lu\n", hdr.creator_revision);
-	*/
+#endif
 
 	if (len != hdr.length) {
 		fwts_log_error(fw, "ACPI table %s, unexpected table size %d (expected %lu)\n", 
@@ -101,13 +101,8 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	for (i=0; i<hdr.length; i++) 
 		checksum += data[i];
 
-	if (checksum) {
+	if (checksum)
 		fwts_log_error(fw, "ACPI table %s, bad checksum: %d\n", name, checksum);
-#if 0
-		free(data);
-		return NULL;
-#endif
-	}
 
 	*size = hdr.length;
 

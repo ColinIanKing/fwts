@@ -129,11 +129,9 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 		{ NULL, 0 }
 	};
 
-	for (i=0; mappings[i].text != NULL; i++) {
-		if (strcmp(mappings[i].text, text) == 0) {
+	for (i=0; mappings[i].text != NULL; i++)
+		if (strcmp(mappings[i].text, text) == 0)
 			return mappings[i].field;
-		}
-	}
 	return 0;
 }
 
@@ -291,9 +289,9 @@ void fwts_log_underline(fwts_log *log, int ch)
 
 	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
 
-	for (i=n;i<log_line_width-1;i++) {	
+	for (i=n;i<log_line_width-1;i++)
 		buffer[i] = ch;
-	}
+
 	buffer[i++] = '\n';
 	buffer[i] = '\0';
 
@@ -329,9 +327,8 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
 	fwts_log *newlog;
 
-	if ((newlog = malloc(sizeof(fwts_log))) == NULL) {
+	if ((newlog = malloc(sizeof(fwts_log))) == NULL)
 		return NULL;
-	}
 
 	newlog->magic = LOG_MAGIC;
 
@@ -343,11 +340,11 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 		strcpy(newlog->owner, owner);
 	}
 
-	if (strcmp("stderr", name) == 0) {
+	if (strcmp("stderr", name) == 0)
 		newlog->fp = stderr;
-	} else if (strcmp("stdout", name) == 0) {
+	else if (strcmp("stdout", name) == 0)
 		newlog->fp = stdout;
-	} else if ((newlog->fp = fopen(name, mode)) == NULL) {
+	else if ((newlog->fp = fopen(name, mode)) == NULL) {
 		free(newlog);
 		return NULL;
 	}

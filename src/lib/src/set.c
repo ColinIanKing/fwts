@@ -26,12 +26,11 @@ int fwts_set(const char *text, const char *file)
 {	
 	FILE *fp;
 
-	fp = fopen(file, "w");
-	if (fp != NULL) {
-		fprintf(fp, "%s\n", text);
-		fclose(fp);	
-		return FWTS_OK;
-	}	
-	else
+	if ((fp = fopen(file, "w")) == NULL)
 		return FWTS_ERROR;
+
+	fprintf(fp, "%s\n", text);
+	fclose(fp);	
+
+	return FWTS_OK;
 }

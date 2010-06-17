@@ -54,7 +54,7 @@ int cpu_has_vmx(void)
 
 static int vt_locked_by_bios(void)
 {
-	uint64_t msr;
+	uint64 msr;
 
 	if (fwts_cpu_readmsr(0, MSR_FEATURE_CONTROL, &msr))
 		return -1;

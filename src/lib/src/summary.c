@@ -89,6 +89,7 @@ int fwts_summary_add(char *test, fwts_log_level level, char *text)
 		free(item);	
 		return FWTS_ERROR;
 	}
+	fwts_chop_newline(item->text);
 
 	item->log_line = fwts_log_line_number();
 

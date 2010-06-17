@@ -132,7 +132,7 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 	for (i=0; mappings[i].text != NULL; i++)
 		if (strcmp(mappings[i].text, text) == 0)
 			return mappings[i].field;
-	return 0;
+	return FWTS_OK;
 }
 
 void fwts_log_filter_set_field(const fwts_log_field filter)

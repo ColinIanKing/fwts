@@ -27,7 +27,7 @@ fwts_list *fwts_list_init(void)
 {
 	fwts_list *list;
 
-	if ((list = malloc(sizeof(fwts_list))) == NULL)
+	if ((list = calloc(1, sizeof(fwts_list))) == NULL)
 		return NULL;
 
 	list->head = NULL;

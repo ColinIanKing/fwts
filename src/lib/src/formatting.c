@@ -35,7 +35,7 @@ static char *format_line(char *start, char *end, int width)
 	if (maxlen < width)
 		maxlen = width;
 
-	if ((bufptr = buffer = malloc(maxlen + 1)) == NULL)
+	if ((bufptr = buffer = calloc(1, maxlen + 1)) == NULL)
 		return NULL;
 
 	while (*start && start < end)

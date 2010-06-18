@@ -327,13 +327,13 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
 	fwts_log *newlog;
 
-	if ((newlog = malloc(sizeof(fwts_log))) == NULL)
+	if ((newlog = calloc(1, sizeof(fwts_log))) == NULL)
 		return NULL;
 
 	newlog->magic = LOG_MAGIC;
 
 	if (owner) {
-		if ((newlog->owner = malloc(strlen(owner)+1)) == NULL) {		
+		if ((newlog->owner = calloc(1, strlen(owner)+1)) == NULL) {		
 			free(newlog);
 			return NULL;
 		}

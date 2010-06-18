@@ -83,7 +83,7 @@ static int get_mtrrs(void)
 		if (fgets(line, 4095, file)==NULL)
 			break;
 
-		entry = malloc(sizeof(struct mtrr_entry));
+		entry = calloc(1, sizeof(struct mtrr_entry));
 		if (!entry)
 			break;
 		memset(entry, 0, sizeof(struct mtrr_entry));

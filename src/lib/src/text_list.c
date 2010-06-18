@@ -99,7 +99,7 @@ fwts_list *fwts_list_from_text(char *text)
 		if (*ptr == '\n')
 			ptr++;
 
-		if ((str = malloc(len + 1)) == NULL) {
+		if ((str = calloc(1, len + 1)) == NULL) {
 			fwts_text_list_free(list);
 			return NULL;
 		}

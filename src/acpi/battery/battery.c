@@ -206,6 +206,8 @@ static int battery_test1(fwts_framework *fw)
 		}
 	} while (entry);
 
+	closedir(dir);
+
 	if (battdir == 0)
 		fwts_log_info(fw, "No battery information present: cannot test.");
 

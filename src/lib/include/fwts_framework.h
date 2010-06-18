@@ -78,7 +78,7 @@ typedef struct fwts_framework_ops {
 } fwts_framework_ops;
 
 int  fwts_framework_args(int argc, char **argv);
-void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority);
+void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
@@ -117,7 +117,7 @@ void name ## init (void) __attribute__ ((constructor));	\
 							\
 void name ## init (void)				\
 {							\
-	fwts_framework_add(# name, ops, priority);	\
+	fwts_framework_test_add(# name, ops, priority);	\
 }							\
 							
 #endif

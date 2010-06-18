@@ -39,14 +39,13 @@ enum {
 	BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG
 };
 
-typedef struct fwts_framework_list {
+typedef struct fwts_framework_test {
 	const char *name;
-	const fwts_framework_ops *ops;
-	struct fwts_framework_list *next;
-	int   priority;
-} fwts_framework_list;
+	const 	    fwts_framework_ops *ops;
+	int   	    priority;
+} fwts_framework_test;
 
-static fwts_framework_list *fwts_framework_list_head = NULL;
+static fwts_list *fwts_framework_test_list;
 
 typedef struct {
 	int env_id;
@@ -79,39 +78,59 @@ static void fwts_framework_dump_items(fwts_framework_list *head)
 }
 #endif
 
-void fwts_framework_add(char *name, const fwts_framework_ops *ops, const int priority)
+void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority)
 {
-	fwts_framework_list *newitem;
-	fwts_framework_list **list;
+	fwts_framework_test *new_test;
+	fwts_list_element   *new_list_item;
+	fwts_list_element   **list_item;
 
-	if ((newitem = malloc(sizeof(fwts_framework_list))) == NULL) {
-		fprintf(stderr, "FATAL: Could not allocate memory initialising fwts_framework_\n");		
+	if (fwts_framework_test_list == NULL) {
+		fwts_framework_test_list = fwts_list_init();
+		if (fwts_framework_test_list == NULL) {
+			fprintf(stderr, "FATAL: Could not allocate memory setting up test framework\n");		
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	/* This happens early, so if it goes wrong, bail out */
+	new_test = calloc(1, sizeof(fwts_framework_test));
+	new_list_item = calloc(1, sizeof(fwts_list_element));
+
+	if (new_test == NULL || new_list_item == NULL) {
+		fprintf(stderr, "FATAL: Could not allocate memory adding tests to test framework\n");		
 		exit(EXIT_FAILURE);
 	}
-	newitem->name = name;
-	newitem->ops  = ops;
-	newitem->next = NULL;
-	newitem->priority = priority;
 
-	for (list = &fwts_framework_list_head; *list != NULL; list = &(*list)->next) {
-		if ((*list)->priority >= newitem->priority) {
-			newitem->next = (*list);
+	new_list_item->data = (void*)new_test;
+
+	new_test->name = name;
+	new_test->ops  = ops;
+	new_test->priority = priority;
+
+	/* Insert into list based on order of priority */
+	for (list_item = &fwts_framework_test_list->head; *list_item != NULL; list_item = &(*list_item)->next) {
+		fwts_framework_test *test = (fwts_framework_test *)(*list_item)->data;
+		if (test->priority >= new_test->priority) {
+			new_list_item->next = (*list_item);
 			break;
 		}
 	}
-	*list = newitem;
+	if (new_list_item->next == NULL)
+		fwts_framework_test_list->tail = new_list_item;
 
-	/*fwts_framework_dump_items(fwts_framework_list_head); */
+	*list_item = new_list_item;
 }
 
 static void fwts_framework_show_tests(void)
 {
-	fwts_framework_list *item;
+	fwts_list_element *item;
 
 	printf("Available tests:\n");
 
-	for (item = fwts_framework_list_head; item != NULL; item = item->next)
-		printf(" %-13.13s %s\n", item->name, item->ops->headline());
+	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+		fwts_framework_test *test = (fwts_framework_test*)item->data;
+		printf(" %-13.13s %s\n", test->name, test->ops->headline());
+	}
 }
 	
 
@@ -295,24 +314,27 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 static void fwts_framework_run_registered_tests(fwts_framework *fw)
 {
-	fwts_framework_list *item;
+	fwts_list_element *item;
 
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()");
-	for (item = fwts_framework_list_head; item != NULL; item = item->next) {
-		fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",item->name);
-		fwts_framework_run_test(fw, item->name, item->ops);
+	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+		fwts_framework_test *test = (fwts_framework_test*)item->data;
+		fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
+		fwts_framework_run_test(fw, test->name, test->ops);
 	}
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() done");
 }
 
 static int fwts_framework_run_registered_test(fwts_framework *fw, const char *name)
 {
-	fwts_framework_list *item;
+	fwts_list_element *item;
+
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - run test %s",name);
-	for (item = fwts_framework_list_head; item != NULL; item = item->next) {
-		if (strcmp(name, item->name) == 0) {
-			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",item->name);
-			fwts_framework_run_test(fw, item->name, item->ops);
+	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+		fwts_framework_test *test = (fwts_framework_test*)item->data;
+		if (strcmp(name, test->name) == 0) {
+			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
+			fwts_framework_run_test(fw, test->name, test->ops);
 			return FWTS_OK;
 		}
 	}
@@ -337,6 +359,8 @@ static void fwts_framework_close(fwts_framework *fw)
 	free(fw->results_logname);
 
 	fwts_framework_free_env();
+
+	fwts_list_free(fwts_framework_test_list, free);
 
 	if (fw && (fw->magic == FRAMEWORK_MAGIC))
 		free(fw);

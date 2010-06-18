@@ -184,9 +184,53 @@ static fwts_klog_pattern common_error_warning_patterns[] = {
 
 /* List of errors and warnings */
 static fwts_klog_pattern firmware_error_warning_patterns[] = {
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning: Optional field",
+		"has zero address or length",
+		"An ACPI table contains Generic Address Structure that has an address "
+		"that is incorrectly set to zero, or a zero length. This needs to be "
+		"fixed. "
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"ACPI Warning: 32/64X length mismatch in",
+		"tbfadt",
+		"The FADT table contains Generic Address Structure that has a mismatch "
+		"between the 32 bit and 64 bit versions of an address. This should be "
+		"fixed so there are no mismatches. "
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"ACPI Warning: 32/64X length mismatch in",
+		NULL,
+		"An ACPI table (referenced above) contains Generic Address Structure that has a mismatch "
+		"between the 32 bit and 64 bit versions of an address. This should be "
+		"fixed so there are no mismatches. "
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning",
+		"Return Package type mismatch",
+		"ACPI AML interpreter executed a Method that returned a package with incorrectly typed data. "
+		"The offending method needs to be fixed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning",
+		"Return Package has no elements",
+		"ACPI AML interpreter executed a Method that returned a package with no elements inside it. "
+		"This is most probably a bug in the Method and needs to be fixed."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"ACPI Warning",
+		"Incorrect checksum in table",
+		"The ACPI table listed above has an incorrect checksum, this could be a BIOS bug or due to table corruption."
+	},
 	{ 
 		LOG_LEVEL_HIGH,	
-		"ACPI Warning ", 
+		"ACPI Warning", 
 		NULL,
 		"ACPI AML intepreter has found some non-conforming AML code. "
 		"This should be investigated and fixed." 
@@ -196,6 +240,22 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		FW_BUG "ACPI: Invalid physical address in GAR", 
 		NULL,
 		"ACPI Generic Address is invalid" 
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "powernow-k8",
+		"No PSB or ACPI _PSS objects",
+		"The _PSS object (Performance Supported States) is an optional "
+		"object that indicates the number of supported processor performance states. "
+		"The powernow-k8 driver source states: "
+         	"If you see this message, complain to BIOS manufacturer. If "
+         	"he tells you \"we do not support Linux\" or some similar "
+         	"nonsense, remember that Windows 2000 uses the same legacy "
+         	"mechanism that the old Linux PSB driver uses. Tell them it "
+         	"is broken with Windows 2000. "
+		"The reference to the AMD documentation is chapter 9 in the "
+         	"BIOS and Kernel Developer's Guide, which is available on "
+         	"www.amd.com."
 	},
 	{
 		LOG_LEVEL_MEDIUM,	
@@ -279,6 +339,7 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		LOG_LEVEL_HIGH,
 		"defines _DOD but not _DOS", 
+		NULL,
 		"ACPI Method _DOD (Enumerate all devices attached to display adapter) "
 		"is defined but we should also have _DOS (Enable/Disable output switching) "
 		"defined but it's been omitted. This can cause display switching issues."

@@ -125,9 +125,19 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
-	if (strstr(line, "BIOS handoff failed (BIOS bug")) {
+	if (strstr(line, "OCHI: BIOS handoff failed (BIOS bug")) {
+		fwts_failed(fw, "OHCI BIOS emulation handoff failed.");
+		fwts_log_info_verbatum(fw,"%s", line);
+		fwts_log_advice(fw, "Generally this means that the EHCI driver was unable to take "
+				    "control of the USB controller away from the BIOS. "
+				    "Disabling USB legacy mode in the BIOS may help.");
+	}
+	if (strstr(line, "EHCI: BIOS handoff failed (BIOS bug")) {
 		fwts_failed(fw, "EHCI BIOS emulation handoff failed.");
 		fwts_log_info_verbatum(fw,"%s", line);
+		fwts_log_advice(fw, "Generally this means that the EHCI driver was unable to take "
+				    "control of the USB controller away from the BIOS. "
+				    "Disabling USB legacy mode in the BIOS may help.");
 	}
 }
 

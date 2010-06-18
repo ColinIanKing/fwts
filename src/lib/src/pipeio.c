@@ -79,7 +79,7 @@ char *fwts_pipe_read(int fd, int *length)
 	int size = 0;
 	*length = 0;
 
-	ptr = calloc(1, 1);	/* Empty string! */
+	ptr = NULL;
 
 	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
 		if (n < 0) {

@@ -78,7 +78,7 @@ fwts_list *fwts_list_from_text(char *text)
 	char *ptr;
         fwts_list *list;
 
-	if (!text && !*text)
+	if (text == NULL)
 		return NULL;
 
 	if ((list = fwts_list_init()) == NULL)

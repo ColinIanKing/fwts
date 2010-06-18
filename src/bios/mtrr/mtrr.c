@@ -49,7 +49,7 @@ char *mtrr_resource = NULL;
 
 static char *cache_to_string(int type)
 {
-	char str[1024];
+	static char str[1024];
 	memset(str, 0, 1024);
 
 	if (type & UNCACHED || type==0)
@@ -62,7 +62,7 @@ static char *cache_to_string(int type)
 		strcat(str,"write-through ");
 	if (type & DEFAULT)
 		strcat(str,"default ");
-	return strdup(str);
+	return str;
 }
 
 static int get_mtrrs(void)
@@ -360,6 +360,7 @@ static int mtrr_init(fwts_framework *fw)
 static int mtrr_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
+	fwts_list_free(mtrr_list, free);
 
 	return FWTS_OK;
 }

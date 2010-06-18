@@ -64,20 +64,29 @@ int fwts_summary_init(void)
 	return FWTS_OK;
 }
 
+static void fwts_summary_item_free(void *data)
+{
+	fwts_summary_item *item = (fwts_summary_item *)data;
+
+	free(item->test);
+	free(item->text);
+	free(item);
+}
+
 void fwts_summary_deinit(void)
 {
 	int i;
 
 	for (i=0;i<SUMMARY_MAX;i++)
 		if (fwts_summaries[i])
-			fwts_list_free(fwts_summaries[i], free);
+			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }
 
 int fwts_summary_add(char *test, fwts_log_level level, char *text)
 {
 	fwts_summary_item *item;
 
-	if ((item = malloc(sizeof(fwts_summary_item))) == NULL)
+	if ((item = calloc(1, sizeof(fwts_summary_item))) == NULL)
 		return FWTS_ERROR;
 
 	if ((item->test = strdup(test)) == NULL) {

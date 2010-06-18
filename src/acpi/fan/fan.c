@@ -97,6 +97,8 @@ static int fan_test1(fwts_framework *fw)
 		}
 	} while (entry);
 
+	closedir(dir);
+
 	if (fandir == 0)
 		fwts_failed_low(fw, "No fan information present: cannot test.");
 

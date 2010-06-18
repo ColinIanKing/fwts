@@ -58,11 +58,11 @@ typedef struct {
 #define ID_NAME(id)	id, # id
 
 static fwts_framework_setting fwts_framework_settings[] = {
-	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),      "PASSED", NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),      "FAILED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_PASSED_TEXT),      "PASSED",  NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),      "FAILED",  NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_WARNING_TEXT),     "WARNING", NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",  NULL },
-	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",    NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",   NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",     NULL },
 };
 
 static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
@@ -133,17 +133,24 @@ static char *fwts_framework_get_env(const int env_id)
 				if (value == NULL) {
 					value = fwts_framework_settings[i].env_default;
 				}
-				fwts_framework_settings[i].env_value = malloc(strlen(value)+1);
-				if (fwts_framework_settings[i].env_value) {
-					strcpy(fwts_framework_settings[i].env_value, value);
+				fwts_framework_settings[i].env_value = strdup(value);
+				if (fwts_framework_settings[i].env_value)
 					return fwts_framework_settings[i].env_value;
-				} else {
+				else
 					return "";
-				}
 			}
 		}
 	}
 	return "";
+}
+
+static void fwts_framework_free_env(void)
+{
+	int i;
+
+	for (i=0;i<sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++)
+		if (fwts_framework_settings[i].env_value)
+			free(fwts_framework_settings[i].env_value);
 }
 
 static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
@@ -322,9 +329,17 @@ static void fwts_framework_close(fwts_framework *fw)
 		      (fw->total.failed > 0) || 
 		      (fw->total.warning > 0));
 
-	if (fw && (fw->magic == FRAMEWORK_MAGIC)) {
+	free(fw->iasl);
+	free(fw->acpidump);
+	free(fw->dmidecode);
+	free(fw->lspci);
+	free(fw->debug_logname);
+	free(fw->results_logname);
+
+	fwts_framework_free_env();
+
+	if (fw && (fw->magic == FRAMEWORK_MAGIC))
 		free(fw);
-	}
 	
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }

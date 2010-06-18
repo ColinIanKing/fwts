@@ -468,7 +468,7 @@ int fwts_framework_args(int argc, char **argv)
 
 	struct option long_options[] = {
 		{ "stdout-summary", 0, 0, 0 },		
-		{ "fwts_framework_debug", 0, 0, 0 },
+		{ "fwts-debug", 0, 0, 0 },
 		{ "help", 0, 0, 0 },
 		{ "results-output", 1, 0, 0 },
 		{ "results-no-separators", 0, 0, 0 },

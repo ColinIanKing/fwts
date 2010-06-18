@@ -227,4 +227,4 @@ Misc
 Debug mode.. shows what the controlling test suite framework is doing. It's for
 the developer only!
 
-fwts --fwts_debug
+fwts --fwts-debug

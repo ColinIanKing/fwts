@@ -63,7 +63,6 @@ static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 		return FWTS_ERROR;
 	}
 
-
 	error_output = fwts_iasl_reassemble(fw, tabledata, size);
 	free(tabledata);
 	if (error_output == NULL) {

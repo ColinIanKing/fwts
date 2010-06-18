@@ -225,7 +225,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 static int fwts_framework_run_test(fwts_framework *fw, const char *name, const fwts_framework_ops *ops)
 {		
 	int num = 0;
-	fwts_framework_tests *test;
+	fwts_framework_tests *test;	
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() entered");
 
@@ -259,6 +259,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 				fw->total.aborted++;
 			}
 			fwts_framework_test_summary(fw);
+			free(fw->current_test_name);
 			return FWTS_OK;
 		}
 	}

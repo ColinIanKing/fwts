@@ -106,7 +106,7 @@ void	  fwts_log_set_line_width(int width);
 	fwts_log_printf(fw->results, LOG_HEADING, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_nl(fw) \
-	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "");
+	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "")
 
 
 #endif

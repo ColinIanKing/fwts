@@ -36,6 +36,7 @@ enum {
 	BIOS_TEST_TOOLKIT_FAILED_TEXT,
 	BIOS_TEST_TOOLKIT_WARNING_TEXT,
 	BIOS_TEST_TOOLKIT_ERROR_TEXT,
+	BIOS_TEST_TOOLKIT_ADVICE_TEXT,
 	BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG
 };
 
@@ -61,6 +62,7 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FAILED_TEXT),      "FAILED",  NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_WARNING_TEXT),     "WARNING", NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",   NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_ADVICE_TEXT),      "ADVICE",  NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",     NULL },
 };
 
@@ -369,10 +371,27 @@ static void fwts_framework_close(fwts_framework *fw)
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
+void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
+{
+	va_list ap;
+	char buffer[4096];
+
+	va_start(ap, fmt);
+
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	fwts_framework_debug(fw, "test %d ADVICE: %s.", fw->current_test, buffer);
+	fwts_log_nl(fw);
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s", 
+		fwts_framework_get_env(BIOS_TEST_TOOLKIT_ADVICE_TEXT), buffer);
+	fwts_log_nl(fw);
+
+	va_end(ap);
+}
+
 void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
-	char buffer[1024];
+	char buffer[4096];
 
 	va_start(ap, fmt);
 
@@ -388,7 +407,7 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char *fmt, ...)
 {
 	va_list ap;
-	char buffer[1024];
+	char buffer[4096];
 
 	va_start(ap, fmt);
 

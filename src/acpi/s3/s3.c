@@ -96,11 +96,11 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 		if (s3_C1E_enabled == -1)
 			fwts_log_error(fw, "Cannot read C1E bit\n");
 		else if (s3_C1E_enabled == 1)
-			fwts_log_advice(fw, "Detected AMD with C1E enabled. The AMD C1E idle wait can sometimes "
-					    "produce long delays on resume.  This is a known issue with the "
-					    "failed delivery of intettupts while in deep C states. "
-					    "If you have a BIOS option to disable C1E please disable this and retry. "
-					    "Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
+			fwts_advice(fw, "Detected AMD with C1E enabled. The AMD C1E idle wait can sometimes "
+					"produce long delays on resume.  This is a known issue with the "
+					"failed delivery of intettupts while in deep C states. "
+					"If you have a BIOS option to disable C1E please disable this and retry. "
+					"Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
 	}
 
 	fwts_log_info(fw, "pm-suspend returned status: %d.", status);

@@ -81,75 +81,49 @@ int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t cal
 	return FWTS_OK;
 }
 
-#define FW_BUG	"[Firmware Bug]: "
+#define FW_BUG	"\\[Firmware Bug\\]: "
 
 /* List of common errors and warnings */
 
 static fwts_klog_pattern common_error_warning_patterns[] = {
 	{
-		LOG_LEVEL_HIGH,
+		LOG_LEVEL_CRITICAL,
 		"Temperature above threshold, cpu clock throttled",	
-		NULL,
 		"Test caused CPU temperature above critical threshold. Insufficient cooling?"
-	},
-	{
-		LOG_LEVEL_HIGH,
-		"ACPI: Handling Garbled _PRT entry",
-		NULL,
-		"BIOS has a garbled _PRT entry; source_name and source_index swapped."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
 		"BIOS never enumerated boot CPU",
-		NULL,
 		"The boot processor is not enumerated!"
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"*** Error: Return object type is incorrect",
-		NULL,
-		"Return object type is not the correct type, this is an AML error in the DSDT or SSDT"
-	},
-	{
-		LOG_LEVEL_HIGH,
-		"acpi_shpchprm",
-		"_HPP fail",
+		"acpi_shpchprm.*_HPP fail",
 		"Hotplug _HPP method failed"
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"shpchp: acpi_pciehprm",
-		"OSHP fail",
+		"shpchp.*acpi_pciehprm.*OSHP fail",
 		"ACPI Hotplug OSHP method failed"
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"shpchp: acpi_shpchprm:",
-		"evaluate _BBN fail",
+		"shpchp.*acpi_shpchprm.*evaluate _BBN fail",
 		"Hotplug _BBN method is missing"
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"[PBST] Namespace lookup failure, AE_NOT_FOUND",
-		NULL,
-		"ACPI Namespace lookup failure reported"
-	},
-	{
-		LOG_LEVEL_HIGH,
 		"Error while parsing _PSD domain information",
-		NULL,
 		"_PSD domain information is corrupt!"
 	},
 	{
 		LOG_LEVEL_CRITICAL,
 		"Wrong _BBN value, reboot and use option 'pci=noacpi'",
-		NULL,
 		"The BIOS has wrong _BBN value, which will make PCI root bridge have wrong bus number"
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI: lapic on CPU ",
-		" stops in C2[C2]",
+		"ACPI.*apic on CPU.* stops in C2",
 		"The local apic timer incorrectly stops during C2 idle state."
 		"The ACPI specification forbids this and Linux needs the local "
 		"APIC timer to work. The most likely cause of this is that the "
@@ -157,94 +131,326 @@ static fwts_klog_pattern common_error_warning_patterns[] = {
 		"the ACPI C2 state."
 	},
 	{
-		LOG_LEVEL_MEDIUM,
-		"Invalid _PCT data",
-		NULL,
-		"The ACPI _PCT data is invalid."
-	},
-	{
-		LOG_LEVEL_HIGH,
-		"Method execution failed",
-		"AE_OWNER_ID_LIMIT",
-		"Method failed to allocate owner ID."
-	},
-	{		
-		LOG_LEVEL_HIGH,
-		"Method execution failed",
-		"AE_AML_BUFFER_LIMIT",
-		"Method failed: ResourceSourceIndex is present but ResourceSource is not."
-	},
-	{
 		LOG_LEVEL_CRITICAL,
 		"Disabling IRQ",
-		NULL,
 		"The kernel detected an irq storm. This is most probably an IRQ routing bug."
 	}
 };
+
 
 /* List of errors and warnings */
 static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Warning: Optional field",
-		"has zero address or length",
+		"ACPI.*Handling Garbled _PRT entry",
+		"BIOS has a garbled _PRT entry; source_name and source_index swapped."
+	},
+	{
+		LOG_LEVEL_MEDIUM,
+		"Invalid _PCT data",
+		"The ACPI _PCT data is invalid."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*ACPI path has too many parent prefixes",
+		"A path to an ACPI obejct has too many ^ parent prefixes and references "
+		"passed the top of the root node. Please check AML for all ^ prefixed ACPI path names."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Error.*A valid RSDP was not found",
+		"An ACPI-compatible system must provide an RSDP (Root System Description Pointer " 
+		"in the system’s low address space. This structure’s only purpose is to provide "
+		"the physical address of the RSDT and XSDT."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Error.*Cannot release Mutex",
+		"Attempted to release of a Mutex that was not previous acquired. This needs "
+		"fixing as it could lead to race conditions when operating on a resource that "
+		"needs to be proteced by a Mutex."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Could not disable .* event",	
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Could not enable .* event",	
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Current brightness invalid",
+		"ACPI video driver has encountered a brightness level that is outside the expected range."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Namespace lookup failure, AE_ALREADY_EXISTS",
+		NULL,
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Error.*Field.*exceeds Buffer",
+		"The field exceeds the allocated buffer size. This can lead to unexpected results when "
+	 	"fetching data outside this region."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Error.*Illegal I/O port address/length above 64K",
+		"A port address or length has exceeded the maximum allowed 64K address limit. This "
+		"will lead to unpredicable errors."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Incorrect return type",
+		"An ACPI Method has returned an unexpected and incorrect return type."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Needed .*\\[Buffer/String/Package\\], found \\[Integer\\]",
+		"An ACPI Method has returned an Integer type when a Buffer, String or Package was expected."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Needed .*\\[Reference\\], found \\[Device\\]",
+		"An ACPI Method has returned an Device type when a Reference type was expected."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*No handler for Region",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Region .* has no handler",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Missing expected return value",
+		"The ACPI Method did not return a value and was expected too. This is a bug and needs fixing."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"Package List length.*larger than.*truncated",
+		"A Method has returned a Package List that was larger than expected."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Result stack is empty!",
+		NULL,
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Error.*Found unknown opcode",
+		"An illegal AML opcode has been found and is ignored. This indicates either badly compiled "
+		"code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. "
+		"Recommend disassembing using iasl to find any offending code."
+	},
+	{
+		LOG_LEVEL_CRITICAL,
+		"ACPI Warning.*Detected an unsupported executable opcode",
+		"An illegal AML opcode has been found and is ignored. This indicates either badly compiled "
+		"code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. "
+		"Recommend disassembing using iasl to find any offending code."
+	},
+
+	/* Method parse/execution failures */
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method parse/execution failed.*AE_AML_NO_RETURN_VALUE",
+		"The ACPI Method was expected to return a value and did not."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_ALREADY_EXISTS",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_INVALID_TABLE_LENGTH",
+		"The ACPI Method returned a table of the incorrect length. This can lead to unexepected results."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_BUFFER_LIMIT",
+		"Method failed: ResourceSourceIndex is present but ResourceSource is not."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_NOT_EXIST",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_NOT_FOUND",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_LIMIT",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_OPERAND_TYPE",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_TIME",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_PACKAGE_LIMIT",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_OWNER_ID_LIMIT",
+		"Method failed to allocate owner ID."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_MUTEX_NOT_ACQUIRED",
+		"A Mutex acquire failed, which could possibly indicate that it was previously acquired "
+		"and not released, or a race has occurred. Some AML code fails to miss Mutex acquire "
+		"failures, so it is a good idea to verify all Mutex Acquires using the syntaxcheck test."
+	},
+
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Error.*SMBus or IPMI write requires Buffer of",
+		"An incorrect SMBus or IPMI write buffer size was used."
+	},
+	{		
+		LOG_LEVEL_HIGH,
+		"ACPI (Warning|Error).*Evaluating .* failed",
+		"Executing the ACPI Method leaded in an execution failure. This needs investigating."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Optional field.*has zero address or length",
 		"An ACPI table contains Generic Address Structure that has an address "
 		"that is incorrectly set to zero, or a zero length. This needs to be "
 		"fixed. "
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		"ACPI Warning: 32/64X length mismatch in",
-		"tbfadt",
+		"ACPI (Warning|Error).*32/64.*(length|address) mismatch in.*tbfadt",
 		"The FADT table contains Generic Address Structure that has a mismatch "
 		"between the 32 bit and 64 bit versions of an address. This should be "
 		"fixed so there are no mismatches. "
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		"ACPI Warning: 32/64X length mismatch in",
-		NULL,
-		"An ACPI table (referenced above) contains Generic Address Structure that has a mismatch "
+		"ACPI (Warning|Error).*32/64.*(length|address) mismatch in",
+		"A table contains Generic Address Structure that has a mismatch "
 		"between the 32 bit and 64 bit versions of an address. This should be "
 		"fixed so there are no mismatches. "
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Warning",
-		"Return Package type mismatch",
+		"ACPI Warning.*Return Package type mismatch",
 		"ACPI AML interpreter executed a Method that returned a package with incorrectly typed data. "
 		"The offending method needs to be fixed."
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Warning",
-		"Return Package has no elements",
+		"ACPI Warning.*Return Package has no elements",
 		"ACPI AML interpreter executed a Method that returned a package with no elements inside it. "
 		"This is most probably a bug in the Method and needs to be fixed."
 	},
 	{
-		LOG_LEVEL_MEDIUM,
-		"ACPI Warning",
-		"Incorrect checksum in table",
-		"The ACPI table listed above has an incorrect checksum, this could be a BIOS bug or due to table corruption."
-	},
-	{ 
-		LOG_LEVEL_HIGH,	
-		"ACPI Warning", 
-		NULL,
-		"ACPI AML intepreter has found some non-conforming AML code. "
-		"This should be investigated and fixed." 
-	},
-	{ 
-		LOG_LEVEL_MEDIUM,
-		FW_BUG "ACPI: Invalid physical address in GAR", 
-		NULL,
-		"ACPI Generic Address is invalid" 
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Return Package is too small",
+		"ACPI AML interpreter executed a Method that returned a package with too few elements inside it. "
+		"This is most probably a bug in the Method and needs to be fixed."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "powernow-k8",
-		"No PSB or ACPI _PSS objects",
+		"ACPI Warning.*Incorrect checksum in table",
+		"The ACPI table listed above has an incorrect checksum, this could be a BIOS bug or due to table corruption."
+	},
+	{
+		LOG_LEVEL_HIGH,	
+		"ACPI Warning.*_BQC returned an invalid level",
+		"Method _BQC (Brightness Query Current) returned an invalid display brightness level."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Could not enable fixed event",
+		NULL,
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Return type mismatch",
+		"The ACPI Method returned an incorrect type, this should be fixed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Parameter count mismatch",
+		"The ACPI Method was executing with a different number of parameters than the "
+		"Method expected. This should be fixed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Insufficient arguments",
+		"The ACPI Method has not enough arguments as expected. "
+		"This should be fixed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Package has no elements",
+		"The ACPI Method returned a package with no elements in it, and some were exepected."
+		"This should be fixed."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Converted Buffer to expected String",
+		"Method returned a Buffer type instead of a String type and ACPI driver automatically "
+		"converted it to a String.  It is worth fixing this in the DSDT or SSDT even if the "
+		"kernel fixes it at run time."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Return Package type mistmatch at index",
+		"The ACPI Method returned a package that contained data of the incorrect data type. "
+		"This data type needs fixing."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Invalid length for.*fadt",
+		"This item in the FADT is the incorrect length. Should be corrected."
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"ACPI Warning.*Invalid throttling state",
+		NULL,
+	},
+
+	/* Catch all warning */
+	{ 
+		LOG_LEVEL_HIGH,	
+		"ACPI Warning", 
+		"ACPI AML intepreter has found some non-conforming AML code. "
+		"This should be investigated and fixed." 
+	},
+
+
+	{ 
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "ACPI.*Invalid physical address in GAR", 
+		"ACPI Generic Address is invalid" 
+	},
+
+	/* powernow-k8 bugs */
+	{
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "powernow-k8.*(No PSB or ACPI _PSS objects|No compatible ACPI _PSS|Your BIOS does not provide ACPI _PSS objects)",
 		"The _PSS object (Performance Supported States) is an optional "
 		"object that indicates the number of supported processor performance states. "
 		"The powernow-k8 driver source states: "
@@ -258,36 +464,37 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
          	"www.amd.com."
 	},
 	{
-		LOG_LEVEL_MEDIUM,	
-		FW_BUG "ACPI: Invalid bit width in GAR", 
+		LOG_LEVEL_MEDIUM,
+		FW_BUG "powernow-k8.*Try again with latest",
 		NULL,
+	},
+
+	{
+		LOG_LEVEL_MEDIUM,	
+		FW_BUG "ACPI.*Invalid bit width in GAR", 
 		"ACPI Generic Address width must be 8, 16, 32 or 64" 
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "ACPI: Invalid address space type in GAR", 
-		NULL,
+		FW_BUG "ACPI.*Invalid address space type in GAR", 
 		"ACPI Generic Address space type must be system memory or system IO space."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "ACPI: no secondary bus range in _CRS", 
-		NULL,
+		FW_BUG "ACPI.*no secondary bus range in _CRS", 
 		"_CRS Method should return a secondary bus address for the "
 		"status/command port. The kernel is having to guess this "
 		"based on the _BBN or assume it's 0x00-0xff." 
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "ACPI: Invalid BIOS _PSS frequency", 
-		NULL,
+		FW_BUG "ACPI.*Invalid BIOS _PSS frequency", 
 		"_PSS (Performance Supported States) package has an incorrectly "
 		"define core frequency (first DWORD entry in the _PSS package)." 
 	},
 	{
 		LOG_LEVEL_HIGH,
-		FW_BUG "ACPI:",
-		"brightness control misses _BQC function",
+		FW_BUG "ACPI.*brightness control misses _BQC function",
 		"_BQC (Brightness Query Current level) seems to be missing. "
 		"This method returns the current brightness level of a "
 		"built-in display output device."
@@ -295,22 +502,19 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		LOG_LEVEL_HIGH,
 		FW_BUG "ACPI:",
-		NULL,
 		"ACPI driver has detected an ACPI bug. This generally points to a "
 		"bug in an ACPI table. Examine the kernel log for more details."
 	},
 	{
 		LOG_LEVEL_HIGH,
 		FW_BUG "BIOS needs update for CPU frequency support", 
-		NULL,
 		"Having _PPC but missing frequencies (_PSS, _PCT) is a good hint "
 		"that the BIOS is older than the CPU and does not know the CPU "
 		"frequencies."
 	},
 	{
 		LOG_LEVEL_HIGH,
-		FW_BUG "ERST: ERST table is invalid",
-		NULL,
+		FW_BUG "ERST.*ERST table is invalid",
 		"The Error Record Serialization Table (ERST) seems to be invalid. "
 		"This normally indicates that the ERST table header size is too "
 		"small, or the table size (excluding header) is not a multiple of "
@@ -319,27 +523,23 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		LOG_LEVEL_CRITICAL,
 		FW_BUG "Invalid critical threshold",
-		NULL,
 		"ACPI _CRT (Critical Trip Point) is returning a threshold "
 		"lower than zero degrees Celsius which is clearly incorrect."
 	},
 	{
 		LOG_LEVEL_CRITICAL,	
 		FW_BUG "No valid trip found",
-		NULL,
 		"No valud ACPI _CRT (Critical Trip Point) was found."
 	},
 	{
 		LOG_LEVEL_HIGH,
 		FW_BUG "_BCQ is usef instead of _BQC",
-		NULL,
 		"ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed."
 		"however the kernel has detected this and is working around this typo."
 	},
 	{
 		LOG_LEVEL_HIGH,
 		"defines _DOD but not _DOS", 
-		NULL,
 		"ACPI Method _DOD (Enumerate all devices attached to display adapter) "
 		"is defined but we should also have _DOS (Enable/Disable output switching) "
 		"defined but it's been omitted. This can cause display switching issues."
@@ -347,87 +547,83 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		LOG_LEVEL_MEDIUM,
 		FW_BUG "Duplicate ACPI video bus",
-		NULL,
 		"Try video module parameter video.allow_duplicates=1 if the current driver does't work."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "PCI: MMCONFIG",
-		"not reserved in ACPI motherboard resources",
+		FW_BUG "PCI.*MMCONFIG.*not reserved in ACPI motherboard resources",
 		"It appears that PCI config space has been configured for a specific device "
 		"but does not appear to be reserved by the ACPI motherboard resources."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		FW_BUG "PCI: ",
-		"not reserved in ACPI motherboard resources",
+		FW_BUG "PCI.*not reserved in ACPI motherboard resources",
 		"PCI firmware bug. Please see the kernel log for more details."
 	},
 	{
 		LOG_LEVEL_HIGH,
 		FW_BUG,			/* Fall through to something vague */
-		NULL,
 		"The kernel has detected a Firmware bug in the BIOS or ACPI which needs investigating and fixing."
 	},
 	{
 		LOG_LEVEL_MEDIUM,
-		"PCI: BIOS Bug:",
-		NULL,
+		"PCI.*BIOS Bug:",
 		NULL
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Error",
-		"Namespace lookup failure, AE_NOT_FOUND",
+		"ACPI Error.*Namespace lookup failure, AE_NOT_FOUND",
 		"The kernel has detected an error trying to execute an Method and it cannot "
 		"find an object. This is indicates a bug in the DSDT or SSDT AML code."
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"ACPI Error",
-		"psparse",
+		"ACPI Error.*psparse",
 		"The ACPI parser has failed in executing some AML. "
 		"The error message above lists the method that caused this error."
 	},
 	{
 		LOG_LEVEL_HIGH,
 		"ACPI Error",
-		NULL,
 		"The kernel has most probably detected an error while executing ACPI AML. "
 		"The error lists the ACPI driver module and the line number where the "
 		"bug has been caught and the method that caused the error."
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"*** Error: Method execution failed",
-		NULL,
+		"\\*\\*\\* Error.*Method execution failed",
 		"Execution of an ACPI AML method failed."
 	},
 	{
 		LOG_LEVEL_CRITICAL,
-		"*** Error: Method execution failed",
-		"AE_AML_METHOD_LIMIT",
+		"\\*\\*\\* Error.*Method execution failed.*AE_AML_METHOD_LIMIT",
 		"ACPI method reached maximum reentrancy limit of 255 - infinite recursion in AML in DSTD or SSDT",
 	},
 	{
 		LOG_LEVEL_CRITICAL,
-		"*** Error: Method reached maximum reentrancy limit",
-		NULL,
+		"\\*\\*\\* Error.*Method reached maximum reentrancy limit"
 		"ACPI method has reached reentrancy limit, this is a recursion bug in the AML"
+	},
+	{
+		LOG_LEVEL_HIGH,
+		"\\*\\*\\* Error.*Return object type is incorrect",
+		"Return object type is not the correct type, this is an AML error in the DSDT or SSDT"
 	},
 	{
 		0,
 		NULL,
-		NULL,			
 		NULL
 	}
 };
 
+
+/*
+ *  Power management warnings
+ */
 static fwts_klog_pattern pm_error_warning_patterns[] = {
         {
 		LOG_LEVEL_HIGH,
 		"PM: Failed to prepare device",
-		NULL,
 		"dpm_prepare() failed to prepare all non-sys devices for "
 		"a system PM transition. The device should be listed in the "
 		"error message."
@@ -435,50 +631,42 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
         {
 		LOG_LEVEL_HIGH,
 		"PM: Some devices failed to power down",
-		NULL,
 		"dpm_suspend_noirq failed because some devices did not power down "
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: Some system devices failed to power down",
-		NULL,
 		"sysdev_suspend failed because some system devices did not power down."
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: Error",
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: Some devices failed to power down",
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Restore failed, recovering", 
-		NULL,
 		"A resume from hibernate failed when calling hibernation_restore()"
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Resume from disk failed",
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Not enough free memory",
-		NULL,
 		"There was not enough physical memory to be able to "
 		"generate a hibernation image before dumping it to disc."
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Memory allocation failed",
-		NULL,
 		"swusp_alloc() failed trying to allocate highmem and failing "
 		"that non-highmem pages for the suspend image. There is "
 		"probably just not enough free physcial memory available."
@@ -486,7 +674,6 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Image mismatch",
-		NULL,
 		"Mismatch in kernel version, system type, kernel release "
 		"version or machine id between suspended kernel and resumed "
 		"kernel."
@@ -495,92 +682,77 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		LOG_LEVEL_CRITICAL,
 	  	"PM: Some devices failed to power down",
 		NULL,
-		NULL,
 	},
         { 
 		LOG_LEVEL_CRITICAL,
 		"PM: Some devices failed to suspend", 
 		NULL,
-		NULL,
 	},
         { 
 		LOG_LEVEL_MEDIUM,
 		"PM: can't read",
-		NULL,
 		"Testing suspend cannot read RTC"
 	},
         {
 		LOG_LEVEL_MEDIUM,
 		"PM: can't set",
-		NULL,
 		"Testing suspend cannot set RTC"
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: suspend test failed, error",
-		NULL,
 		NULL
 	},
         {	
 		LOG_LEVEL_HIGH,
 		"PM: can't test ", 						
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_MEDIUM,
 		"PM: no wakealarm-capable RTC driver is ready",
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Adding page to bio failed at",
-		NULL,
 		NULL
 	},
         {	
 		LOG_LEVEL_CRITICAL,
 		"PM: Swap header not found", 
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Cannot find swap device", 
 		NULL,
-		NULL,
 	},
         {
 		LOG_LEVEL_CRITICAL,
 		"PM: Not enough free swap",
-		NULL,
 		"Hibernate failed because the swap parition was probably too small."
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: Image device not initialised",
-		NULL,
 		NULL
 	},
         {
 		LOG_LEVEL_HIGH,
 		"PM: Please power down manually",
-		NULL,
 		NULL
 	},
 	{
 		LOG_LEVEL_HIGH,
 		"check_for_bios_corruption", 
-		NULL,
 		"The BIOS seems to be corrupting the first 64K of memory "
 		"when doing suspend/resume. Setting bios_corruption_check=0 "
 		"will disable this check."
 	},
 	{	
 		LOG_LEVEL_HIGH,
-		"WARNING: at",
-		"hpet_next_event+",
+		"WARNING: at.*hpet_next_event",
 		"Possibly an Intel I/O controller hub HPET Write Timing issue: "
 		"A read transaction that immediately follows a write transaction "
 		"to the HPET TIMn_COMP Timer 0 (108h), HPET MAIN_CNT (0F0h), or "
@@ -589,8 +761,7 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 	},
 	{
 		LOG_LEVEL_HIGH,
-		"BUG: soft lockup",
-		"stuck for 0s!",
+		"BUG: soft lockup.*stuck for 0s",
 		"Softlock errors that occur when coming out of S3 may be tripped "
 		"by TSC warping.  It may be worth trying the notsc kernel parameter "
 		"and repeating S3 tests to see if this solves the problem."
@@ -598,36 +769,45 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 	{	
 		0,
 		NULL,
-		NULL,
 		NULL
 	}
 
 };
 
+enum {
+	REGEX_NOT_COMPILED = 0,
+	REGEX_COMPILED1    = 1,
+	REGEX_ERROR1       = 2,
+	REGEX_COMPILED2    = 4,
+	REGEX_ERROR2       = 8,
+};
+
 void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
-	int i;
+	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
 
-	fwts_klog_pattern *patterns = (fwts_klog_pattern *)private;
+	while (pattern->pattern != NULL) {
+		regmatch_t matches[1];
+		regex_t pbuf;
 
-	for (i=0;patterns[i].pat1 != NULL;i++) {
-		int match = 0;
-
-		if (patterns[i].pat2 == NULL)
-			match = (strstr(line, patterns[i].pat1) != NULL);
-		else
-			match = (strstr(line, patterns[i].pat1) != NULL) &&
-				(strstr(line, patterns[i].pat2) != NULL);
-		
-		if (match) {
-			fwts_failed_level(fw, patterns[i].level, "Kernel message: %s", line);
-			(*errors)++;
-			if (patterns[i].advice != NULL) {
-				fwts_log_advice(fw, "Advice:\n%s", patterns[i].advice);
-				fwts_log_nl(fw);
-			}
-			return;
+		if (regcomp(&pbuf, pattern->pattern, REG_EXTENDED | REG_NOSUB) != 0) {
+			fwts_log_error(fw, "Regex %s failed to compile.", pattern->pattern);
 		}
+		else {
+			if (regexec(&pbuf, line, 1, matches, 0) == 0) {
+				fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
+				(*errors)++;
+				if (pattern->advice != NULL) {
+					fwts_advice(fw, "%s", pattern->advice);
+				} else  {
+					fwts_advice(fw, "This is a bug picked up by the kernel, but as yet, the "
+							"firmware test suite has no diagnostic advice for this particular problem.");
+				}
+				return;
+			}
+			regfree(&pbuf);
+		}
+		pattern++;
 	}
 }
 

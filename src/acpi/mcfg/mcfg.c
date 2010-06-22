@@ -146,8 +146,8 @@ static int mcfg_test1(fwts_framework *fw)
 
 	if ((int)mcfg_size<0) {
 		fwts_failed(fw, "Invalid MCFG ACPI table size: got %d bytes expecting more", mcfg_size + 36 + 8);
-		fwts_log_advice(fw, "MCFG table must be least %d bytes (header size) with multiples of %d"
-				    "bytes for each MCFG entry.", 36+8, sizeof(struct mcfg_entry));
+		fwts_advice(fw, "MCFG table must be least %d bytes (header size) with multiples of %d"
+				"bytes for each MCFG entry.", 36+8, sizeof(struct mcfg_entry));
 		return FWTS_ERROR;
 	}
 	nr = mcfg_size / sizeof(struct mcfg_entry);

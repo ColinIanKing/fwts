@@ -20,6 +20,9 @@
 #ifndef __FWTS_KLOG_H__
 #define __FWTS_KLOG_H__
 
+#include <sys/types.h>
+#include "regex.h"
+
 #include "fwts_list.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"
@@ -29,8 +32,7 @@
 
 typedef struct {
 	fwts_log_level level;
-        char *pat1;
-        char *pat2;
+        char *pattern;
 	char *advice;
 } fwts_klog_pattern;
 

@@ -177,7 +177,7 @@ static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
 
 	if (debug == -1)
 		debug = (!strcmp(fwts_framework_get_env(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),"on")) |
-			(fw->flags & FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
+			(fw->flags & FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
 	if (debug == 0)
 		return;
 
@@ -197,7 +197,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 		fw->test_run.passed, fw->test_run.failed, fw->test_run.warning, fw->test_run.aborted);
 	fwts_framework_underline(fw,'=');
 
-	if (fw->flags & FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
 		if ((fw->test_run.aborted > 0) || (fw->test_run.failed > 0))
 			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT));
 		else if (fw->test_run.warning > 0)
@@ -244,7 +244,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 	if (ops->init) {
 		if (ops->init(fw)) {
-			if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+			if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 				fprintf(stderr, "%-20.20s: Test aborted.\n", name);		
 				fflush(stderr);
 			}
@@ -265,7 +265,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 		num++;
 
 	for (test = ops->tests, fw->current_test = 1; *test != NULL; test++, fw->current_test++) {
-		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%-20.20s: Test %d of %d started.\n", name, fw->current_test, num);		
 			fflush(stderr);
 		}
@@ -284,7 +284,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 		fw->test_run.passed  += fw->sub_tests.passed;
 		fw->test_run.warning += fw->sub_tests.warning;
 
-		if (fw->flags & FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%-20.20s: Test %d of %d completed (%d passed, %d failed, %d warnings, %d aborted).\n", 
 				name, fw->current_test, num,
 				fw->sub_tests.passed, fw->sub_tests.failed, 
@@ -360,7 +360,7 @@ static void fwts_framework_close(fwts_framework *fw)
 
 	fwts_list_free(fwts_framework_test_list, free);
 
-	if (fw && (fw->magic == FRAMEWORK_MAGIC))
+	if (fw && (fw->magic == FWTS_FRAMEWORK_MAGIC))
 		free(fw);
 	
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -510,8 +510,8 @@ int fwts_framework_args(int argc, char **argv)
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
 
-	fw->magic = FRAMEWORK_MAGIC;
-	fw->flags = FRAMEWORK_FLAGS_DEFAULT;
+	fw->magic = FWTS_FRAMEWORK_MAGIC;
+	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT;
 
 	fwts_summary_init();
 
@@ -526,10 +526,10 @@ int fwts_framework_args(int argc, char **argv)
 		case 0:
 			switch (option_index) {
 			case 0: /* --stdout-summary */
-				fw->flags |= FRAMEWORK_FLAGS_STDOUT_SUMMARY;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY;
 				break;	
 			case 1: /* --fwts_framework_-debug */
-				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;		
 			case 2: /* --help */
 				fwts_framework_syntax(argv);
@@ -542,7 +542,7 @@ int fwts_framework_args(int argc, char **argv)
 				break;
 			case 5: /* --debug-output */
 				fw->debug_logname = strdup(optarg);
-				fw->flags |= FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
 			case 6: /* --log-filter */
 				fwts_log_filter_unset_field(~0);
@@ -559,7 +559,7 @@ int fwts_framework_args(int argc, char **argv)
 				fw->iasl = strdup(optarg);
 				break;
 			case 10: /* --show-progress */
-				fw->flags |= FRAMEWORK_FLAGS_SHOW_PROGRESS;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 				break;
 			case 11: /* --show-tests */
 				fwts_framework_show_tests();
@@ -578,10 +578,10 @@ int fwts_framework_args(int argc, char **argv)
 				fw->s3_multiple = atoi(optarg);
 				break;
 			case 16: /* --no-s3 */
-				fw->flags |= FRAMEWORK_FLAGS_NO_S3;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_NO_S3;
 				break;
 			case 17: /* --no-s4 */
-				fw->flags |= FRAMEWORK_FLAGS_NO_S4;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_NO_S4;
 				break;
 			case 18: /* --log-width=N */
 				fwts_log_set_line_width(atoi(optarg));

@@ -31,7 +31,7 @@ static char *s4_headline(void)
 
 static int s4_init(fwts_framework *fw)
 {
-	if (fw->flags & FRAMEWORK_FLAGS_NO_S4) {
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_NO_S4) {
 		fwts_log_info(fw, "Skipping S4 tests.");
 		return FWTS_ERROR;
 	}

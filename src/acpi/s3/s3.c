@@ -34,7 +34,7 @@ static int s3_init(fwts_framework *fw)
 {
 	int ret;
 
-	if (fw->flags & FRAMEWORK_FLAGS_NO_S3) {
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_NO_S3) {
 		fwts_log_info(fw, "Skipping S3 tests."); 
 		return FWTS_ERROR;
 	}

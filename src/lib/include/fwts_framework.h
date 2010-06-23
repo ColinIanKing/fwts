@@ -23,16 +23,20 @@
 #include <stdio.h>
 #include "fwts_log.h"
 
-#define FRAMEWORK_MAGIC	0x2af61aec
+#define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
-#define FRAMEWORK_FLAGS_STDOUT_SUMMARY          0x00000001
-#define FRAMEWORK_FLAGS_FRAMEWORK_DEBUG         0x00000002
-#define FRAMEWORK_FLAGS_SHOW_PROGRESS           0x00000004
-#define FRAMEWORK_FLAGS_NO_S3                   0x00000008
-#define FRAMEWORK_FLAGS_NO_S4                   0x00000010
+typedef enum {
+	FWTS_FRAMEWORK_FLAGS_DEFAULT	      = 0x00000000,
+	FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY   = 0x00000001,
+	FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG  = 0x00000002,
+	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS    = 0x00000004,
+	FWTS_FRAMEWORK_FLAGS_NO_S3            = 0x00000008,
+	FWTS_FRAMEWORK_FLAGS_NO_S4            = 0x00000010
+} fwts_framework_flags;
 
-#define FRAMEWORK_FLAGS_DEFAULT			0
-
+/*
+ *  Test results
+ */
 typedef struct {
 	int passed;
 	int failed;
@@ -57,24 +61,24 @@ typedef struct {
 	int  s3_multiple;			/* number of s3 multiple tests to run */
 
 	struct fwts_framework_ops const *ops;	
-	int flags;
+	fwts_framework_flags flags;
 
-	int current_test;
-	char *current_test_name;
+	int current_test;			/* Nth test being run in a test module */
+	char *current_test_name;		/* name of current test */
 
 	/* per test stats */
-	fwts_results	sub_tests;
-	fwts_results	test_run;
-	fwts_results	total;
+	fwts_results	sub_tests;		/* results for each test in test module */
+	fwts_results	test_run;		/* totals over all the tests (1 or more) in a module */
+	fwts_results	total;			/* totals over all tests */
 } fwts_framework;
 
 typedef int (*fwts_framework_tests)(fwts_framework *framework);
 
 typedef struct fwts_framework_ops {
-	char *(*headline)(void);	/* Headline description of test */
-	int (*init)(fwts_framework *);	/* Initialise */
-	int (*deinit)(fwts_framework *);/* De-init */		
-	fwts_framework_tests *tests;	/* List of tests to run */
+	char *(*headline)(void);		/* Headline description of test */
+	int (*init)(fwts_framework *);		/* Initialise */
+	int (*deinit)(fwts_framework *);	/* De-init */		
+	fwts_framework_tests *tests;		/* List of tests to run */
 } fwts_framework_ops;
 
 int  fwts_framework_args(int argc, char **argv);
@@ -108,12 +112,18 @@ static inline int fwts_tests_passed(fwts_framework *fw)
 		 fw->sub_tests.aborted) == 0);
 }
 
-#define FWTS_TEST_FIRST		0
+/*
+ *  Where to schedule a test, priority sorted lowest first, highest last
+ */
+#define FWTS_TEST_FIRST		0		
 #define FWTS_TEST_EARLY		10
 #define FWTS_TEST_ANYTIME	50
 #define FWTS_TEST_LATE		75
 #define FWTS_TEST_LAST		100
 
+/*
+ *  Batch (run w/o interaction) or interactive (requires user interaction) flags
+ */
 #define FWTS_BATCH 		0x00000001
 #define FWTS_INTERACTIVE 	0x00000002
 

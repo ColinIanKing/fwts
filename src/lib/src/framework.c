@@ -619,8 +619,6 @@ int fwts_framework_args(int argc, char **argv)
 	     FWTS_FRAMEWORK_FLAGS_INTERACTIVE)) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 
-	printf("FLAGS: %x %x %x\n", fw->flags, FWTS_FRAMEWORK_FLAGS_BATCH, FWTS_FRAMEWORK_FLAGS_INTERACTIVE);
-
 	if (!fw->iasl)
 		fw->iasl = strdup(FWTS_IASL_PATH);
 	if (!fw->acpidump)

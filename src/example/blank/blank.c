@@ -64,7 +64,7 @@ static int example_test1(fwts_framework *fw)
 	 *	FWTS_ERROR - failed, abort test 
 	 *	FWTS_OK    - success, do tests 
 	 */
-	return FWTS_OK
+	return FWTS_OK;
 }
 
 

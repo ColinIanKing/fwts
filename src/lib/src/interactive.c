@@ -16,39 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#include "fwts.h"
 
-#include "fwts_types.h"
+int fwts_printf(fwts_framework *fw, char *fmt, ...)
+{
+	int len;
+	va_list ap;
 
-#include "fwts_binpaths.h"
+	va_start(ap, fmt);
+	len = vfprintf(stdout, fmt, ap);
+	va_end(ap);
 
-#include "fwts_framework.h"
-#include "fwts_log.h"
-#include "fwts_list.h"
+	return len;
+}
 
-#include "fwts_text_list.h"
-
-#include "fwts_set.h"
-#include "fwts_get.h"
-
-#include "fwts_acpi.h"
-#include "fwts_acpid.h"
-#include "fwts_checkeuid.h"
-#include "fwts_cpu.h"
-#include "fwts_e820.h"
-#include "fwts_dsdt.h"
-#include "fwts_fileio.h"
-#include "fwts_iasl.h"
-#include "fwts_klog.h"
-#include "fwts_pipeio.h"
-#include "fwts_stringextras.h"
-#include "fwts_wakealarm.h"
-#include "fwts_virt.h"
-#include "fwts_formatting.h"
-#include "fwts_summary.h"
-
-#include "fwts_interactive.h"
-
-#endif
+int fwts_press_enter(fwts_framework *fw)
+{
+	fprintf(stdout, "Press <Enter> to continue");
+	
+	while (getchar() != '\n')
+		;
+	
+	return FWTS_OK;
+}

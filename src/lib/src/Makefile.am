@@ -4,6 +4,8 @@ noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \
 	list.c \
 	acpi.c \
+	acpid.c \
+	interactive.c \
 	binpaths.c \
 	cpu.c \
 	checkeuid.c \

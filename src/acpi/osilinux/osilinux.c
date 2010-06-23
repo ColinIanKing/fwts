@@ -125,4 +125,4 @@ static fwts_framework_ops osilinux_ops = {
 	osilinux_tests
 };
 
-FRAMEWORK(osilinux, &osilinux_ops, TEST_ANYTIME);
+FWTS_REGISTER(osilinux, &osilinux_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

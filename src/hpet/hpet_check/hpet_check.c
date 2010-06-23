@@ -237,4 +237,4 @@ static fwts_framework_ops hpet_check_ops = {
 	hpet_check_tests
 };
 
-FRAMEWORK(hpet_check, &hpet_check_ops, TEST_ANYTIME);
+FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

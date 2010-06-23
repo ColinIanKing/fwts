@@ -78,7 +78,7 @@ typedef struct fwts_framework_ops {
 } fwts_framework_ops;
 
 int  fwts_framework_args(int argc, char **argv);
-void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority);
+void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority, int flags);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
@@ -108,19 +108,22 @@ static inline int fwts_tests_passed(fwts_framework *fw)
 		 fw->sub_tests.aborted) == 0);
 }
 
-#define TEST_FIRST	0
-#define TEST_EARLY	10
-#define TEST_ANYTIME	50
-#define TEST_LATE	75
-#define TEST_LAST	100
+#define FWTS_TEST_FIRST		0
+#define FWTS_TEST_EARLY		10
+#define FWTS_TEST_ANYTIME	50
+#define FWTS_TEST_LATE		75
+#define FWTS_TEST_LAST		100
 
-#define FRAMEWORK(name, ops, priority)			\
-							\
-void name ## init (void) __attribute__ ((constructor));	\
-							\
-void name ## init (void)				\
-{							\
-	fwts_framework_test_add(# name, ops, priority);	\
-}							\
+#define FWTS_BATCH 		0x00000001
+#define FWTS_INTERACTIVE 	0x00000002
+
+#define FWTS_REGISTER(name, ops, priority, flags)		\
+								\
+void name ## init (void) __attribute__ ((constructor));		\
+								\
+void name ## init (void)					\
+{								\
+	fwts_framework_test_add(# name, ops, priority, flags);	\
+}								\
 							
 #endif

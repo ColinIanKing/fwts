@@ -83,4 +83,4 @@ static fwts_framework_ops klog_ops = {
 	klog_tests
 };
 
-FRAMEWORK(klog, &klog_ops, TEST_EARLY);
+FWTS_REGISTER(klog, &klog_ops, FWTS_TEST_EARLY, FWTS_BATCH);

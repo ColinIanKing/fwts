@@ -175,4 +175,4 @@ static fwts_framework_ops dmi_decode_ops = {
 	dmi_decode_tests
 };
 
-FRAMEWORK(dmi_decode, &dmi_decode_ops, TEST_ANYTIME);
+FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

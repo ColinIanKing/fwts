@@ -406,4 +406,4 @@ static fwts_framework_ops mtrr_ops = {
 	mtrr_tests
 };
 
-FRAMEWORK(mtrr, &mtrr_ops, TEST_ANYTIME);
+FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

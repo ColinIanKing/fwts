@@ -67,4 +67,4 @@ static fwts_framework_ops version_ops = {
 	version_tests
 };
 
-FRAMEWORK(version, &version_ops, TEST_FIRST);
+FWTS_REGISTER(version, &version_ops, FWTS_TEST_FIRST, FWTS_BATCH);

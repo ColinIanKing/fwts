@@ -120,4 +120,4 @@ static fwts_framework_ops virt_ops = {
 /* 
  * This test checks if the virtual machine setup is done correctly by the BIOS
  */
-FRAMEWORK(virt, &virt_ops, TEST_ANYTIME);
+FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

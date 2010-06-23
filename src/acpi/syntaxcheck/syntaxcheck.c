@@ -143,4 +143,4 @@ static fwts_framework_ops syntaxcheck_ops = {
 	syntaxcheck_tests
 };
 
-FRAMEWORK(syntaxcheck, &syntaxcheck_ops, TEST_ANYTIME);
+FWTS_REGISTER(syntaxcheck, &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

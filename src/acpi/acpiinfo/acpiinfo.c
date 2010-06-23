@@ -205,4 +205,4 @@ static fwts_framework_ops acpiinfo_ops = {
 	acpiinfo_tests
 };
 
-FRAMEWORK(acpiinfo, &acpiinfo_ops, TEST_EARLY);
+FWTS_REGISTER(acpiinfo, &acpiinfo_ops, FWTS_TEST_EARLY, FWTS_BATCH);

@@ -138,4 +138,4 @@ static fwts_framework_ops ebda_ops = {
 	ebda_tests
 };
 
-FRAMEWORK(ebda, &ebda_ops, TEST_ANYTIME);
+FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

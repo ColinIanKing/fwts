@@ -140,4 +140,4 @@ static fwts_framework_ops maxreadreq_ops = {
 	maxreadreq_tests
 };
 
-FRAMEWORK(maxreadreq, &maxreadreq_ops, TEST_ANYTIME);
+FWTS_REGISTER(maxreadreq, &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

@@ -226,4 +226,4 @@ static fwts_framework_ops battery_ops = {
 	battery_tests
 };
 
-FRAMEWORK(battery, &battery_ops, TEST_ANYTIME);
+FWTS_REGISTER(battery, &battery_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

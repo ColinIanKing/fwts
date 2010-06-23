@@ -117,4 +117,4 @@ static fwts_framework_ops fan_ops = {
 	fan_tests
 };
 
-FRAMEWORK(fan, &fan_ops, TEST_ANYTIME);
+FWTS_REGISTER(fan, &fan_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

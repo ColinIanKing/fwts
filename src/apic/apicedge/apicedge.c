@@ -108,4 +108,4 @@ static fwts_framework_ops apicedge_ops = {
 	apicedge_tests
 };
 
-FRAMEWORK(apicedge, &apicedge_ops, TEST_ANYTIME);
+FWTS_REGISTER(apicedge, &apicedge_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

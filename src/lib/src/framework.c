@@ -44,6 +44,7 @@ typedef struct fwts_framework_test {
 	const char *name;
 	const 	    fwts_framework_ops *ops;
 	int   	    priority;
+	int	    flags;
 } fwts_framework_test;
 
 static fwts_list *fwts_framework_test_list;
@@ -68,23 +69,16 @@ static fwts_framework_setting fwts_framework_settings[] = {
 
 static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
 
-
-#ifdef FRAMEWORK_DEBUG
-static void fwts_framework_dump_items(fwts_framework_list *head)
-{
-	printf("DUMP:\n");
-	while (head) {
-		printf("%p %s %d\n",head, head->name, head->priority);
-		head = head->next;
-	}
-}
-#endif
-
-void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority)
+void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority, int flags)
 {
 	fwts_framework_test *new_test;
 	fwts_list_element   *new_list_item;
 	fwts_list_element   **list_item;
+
+	if (flags & ~(FWTS_BATCH | FWTS_INTERACTIVE)) {
+		fprintf(stderr, "Test %s flags must be FWTS_BATCH or FWTS_INTERACTIVE, got %x\n",name,flags);
+		exit(EXIT_FAILURE);
+	}
 
 	if (fwts_framework_test_list == NULL) {
 		fwts_framework_test_list = fwts_list_init();
@@ -108,6 +102,7 @@ void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const in
 	new_test->name = name;
 	new_test->ops  = ops;
 	new_test->priority = priority;
+	new_test->flags = flags;
 
 	/* Insert into list based on order of priority */
 	for (list_item = &fwts_framework_test_list->head; *list_item != NULL; list_item = &(*list_item)->next) {

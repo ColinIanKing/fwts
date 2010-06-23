@@ -88,4 +88,4 @@ static fwts_framework_ops dmesg_common_ops = {
 	dmesg_common_tests
 };
 
-FRAMEWORK(dmesg_common, &dmesg_common_ops, TEST_EARLY);
+FWTS_REGISTER(dmesg_common, &dmesg_common_ops, FWTS_TEST_EARLY, FWTS_BATCH);

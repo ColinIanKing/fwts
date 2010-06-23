@@ -288,4 +288,4 @@ static fwts_framework_ops fadt_ops = {
 	fadt_tests
 };
 
-FRAMEWORK(fadt, &fadt_ops, TEST_ANYTIME);
+FWTS_REGISTER(fadt, &fadt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

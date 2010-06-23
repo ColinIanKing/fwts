@@ -234,4 +234,4 @@ static fwts_framework_ops mcfg_ops = {
 	mcfg_tests
 };
 
-FRAMEWORK(mcfg, &mcfg_ops, TEST_ANYTIME);
+FWTS_REGISTER(mcfg, &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

@@ -131,4 +131,4 @@ static fwts_framework_ops wakealarm_ops = {
 	wakealarm_tests
 };
 
-FRAMEWORK(wakealarm, &wakealarm_ops, TEST_ANYTIME);
+FWTS_REGISTER(wakealarm, &wakealarm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

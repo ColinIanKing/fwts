@@ -124,4 +124,4 @@ static fwts_framework_ops s4_ops = {
 	s4_tests
 };
 
-FRAMEWORK(s4, &s4_ops, TEST_LAST);
+FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_BATCH);

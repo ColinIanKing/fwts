@@ -84,4 +84,7 @@ static fwts_framework_ops example_ops = {
 	example_tests
 };
 
-FRAMEWORK(example, &example_ops, TEST_ANYTIME);
+/*
+ *   See fwts_framework.h for flags,
+ */
+FWTS_REGISTER(example, &example_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

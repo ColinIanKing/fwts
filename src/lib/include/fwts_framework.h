@@ -31,7 +31,9 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG  = 0x00000002,
 	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS    = 0x00000004,
 	FWTS_FRAMEWORK_FLAGS_NO_S3            = 0x00000008,
-	FWTS_FRAMEWORK_FLAGS_NO_S4            = 0x00000010
+	FWTS_FRAMEWORK_FLAGS_NO_S4            = 0x00000010,
+	FWTS_FRAMEWORK_FLAGS_BATCH	      = 0x00001000,
+	FWTS_FRAMEWORK_FLAGS_INTERACTIVE      = 0x00002000,
 } fwts_framework_flags;
 
 /*
@@ -124,8 +126,8 @@ static inline int fwts_tests_passed(fwts_framework *fw)
 /*
  *  Batch (run w/o interaction) or interactive (requires user interaction) flags
  */
-#define FWTS_BATCH 		0x00000001
-#define FWTS_INTERACTIVE 	0x00000002
+#define FWTS_BATCH 		FWTS_FRAMEWORK_FLAGS_BATCH
+#define FWTS_INTERACTIVE 	FWTS_FRAMEWORK_FLAGS_INTERACTIVE
 
 #define FWTS_REGISTER(name, ops, priority, flags)		\
 								\

@@ -319,8 +319,12 @@ static void fwts_framework_run_registered_tests(fwts_framework *fw)
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()");
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
-		fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
-		fwts_framework_run_test(fw, test->name, test->ops);
+		if (fw->flags & test->flags & (FWTS_BATCH | FWTS_INTERACTIVE)) {
+			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
+			fwts_framework_run_test(fw, test->name, test->ops);
+		}
+		else 
+			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - skipping %s, does not match batch/interactive test flags",test->name);
 	}
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() done");
 }
@@ -442,6 +446,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
 	printf("--acpidump=path\t\tSpecify path to acpidump.\n");
+	printf("--batch\t\t\tJust run non-interactive tests.\n");
 	printf("--debug-output=file\tOutput debug to a named file.\n");
 	printf("\t\t\tFilename can also be stdout or stderr.\n");	
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
@@ -450,6 +455,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
 	printf("--help\t\t\tGet this help.\n");
 	printf("--iasl=path\t\tSpecify path to iasl.\n");
+	printf("--interactive\t\tJust run interactive tests.\n");
 	printf("--klog=file\t\tSpecify kernel log file rather than reading it\n");
 	printf("\t\t\tfrom the kernel.\n");
 	printf("--log-fields\t\tShow available log filtering fields.\n");
@@ -504,6 +510,8 @@ int fwts_framework_args(int argc, char **argv)
 		{ "log-width", 1, 0, 0 },
 		{ "lspci", 1, 0, 0, },
 		{ "acpidump", 1, 0, 0 },
+		{ "batch", 0, 0, 0 },
+		{ "interactive", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -594,11 +602,24 @@ int fwts_framework_args(int argc, char **argv)
 			case 20: /* --acpidump=pathtoacpidump */
 				fw->acpidump= strdup(optarg);
 				break;
+			case 21: /* --batch */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+				break;
+			case 22: /* --interactive */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+				break;
 			}
 		case '?':
 			break;
 		}
 	}	
+
+	if ((fw->flags & 
+	    (FWTS_FRAMEWORK_FLAGS_BATCH | 
+	     FWTS_FRAMEWORK_FLAGS_INTERACTIVE)) == 0)
+		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+
+	printf("FLAGS: %x %x %x\n", fw->flags, FWTS_FRAMEWORK_FLAGS_BATCH, FWTS_FRAMEWORK_FLAGS_INTERACTIVE);
 
 	if (!fw->iasl)
 		fw->iasl = strdup(FWTS_IASL_PATH);

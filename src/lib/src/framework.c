@@ -243,9 +243,11 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()");
 
 	if (ops->init) {
-		if (ops->init(fw)) {
+		int ret;
+		if ((ret = ops->init(fw)) != FWTS_OK) {
 			if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-				fprintf(stderr, "%-20.20s: Test aborted.\n", name);		
+				fprintf(stderr, "%-20.20s: Test %s.\n", name,
+					ret == FWTS_SKIP ? "skipped" : "aborted");		
 				fflush(stderr);
 			}
 			/* Init failed, so abort */

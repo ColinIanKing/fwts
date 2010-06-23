@@ -36,7 +36,7 @@ static int s3_init(fwts_framework *fw)
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_NO_S3) {
 		fwts_log_info(fw, "Skipping S3 tests."); 
-		return FWTS_ERROR;
+		return FWTS_SKIP;
 	}
 
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */

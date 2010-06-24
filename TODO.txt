@@ -22,3 +22,6 @@ Todo
 							DONE
 * Add pretty printing formatting of over long lines
 							DONE
+
+* Add check for MTRRs not enabled on video aparture	
+	allows for faster grub rendering

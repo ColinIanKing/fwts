@@ -138,7 +138,6 @@ static int cache_types(uint64 start, uint64 end)
 			type |= entry->type;
 	}
 
-
 	/* now to see if there is any part of the range that isn't covered by an mtrr,
 	   since it's UNCACHED if so */
 restart:
@@ -176,18 +175,13 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 
 	for (item=lspci_output->head; item != NULL; item = item->next) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
-		if (str) {
-			uint64 addr;
-			str += 10;
-			addr = strtoull(str, NULL, 16);
-			if (addr == address) {
-				if (strstr(line,"non-prefetchable")) 
-					pref = 0;
-				else if (strstr(line,"(prefetchable"))
-					pref = 1;
-				else if (strstr(line,", prefetchable"))
-					pref = 1;
-			}				
+		if (str && strtoull(str+10, NULL, 16) == address) {
+			if (strstr(str, "non-prefetchable")) 
+				pref = 0;
+			else if (strstr(str, "(prefetchable"))
+				pref = 1;
+			else if (strstr(str, ", prefetchable"))
+				pref = 1;
 		}
 	}
 	fwts_list_free(lspci_output, free);

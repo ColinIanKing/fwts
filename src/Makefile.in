@@ -47,12 +47,12 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
-	acpiinfo.$(OBJEXT) battery.$(OBJEXT) common.$(OBJEXT) \
-	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
-	osilinux.$(OBJEXT) lid.$(OBJEXT) ebda_region.$(OBJEXT) \
-	mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) version.$(OBJEXT)
+	acpiinfo.$(OBJEXT) battery.$(OBJEXT) brightness.$(OBJEXT) \
+	common.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
+	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
+	ebda_region.$(OBJEXT) mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -203,6 +203,7 @@ fwts_SOURCES = main.c \
 	acpi/s4/s4.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/battery/battery.c \
+	acpi/brightness/brightness.c \
 	acpi/common/common.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
@@ -303,6 +304,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpiinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brightness.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
@@ -436,6 +438,20 @@ battery.obj: acpi/battery/battery.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/battery/battery.c' object='battery.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o battery.obj `if test -f 'acpi/battery/battery.c'; then $(CYGPATH_W) 'acpi/battery/battery.c'; else $(CYGPATH_W) '$(srcdir)/acpi/battery/battery.c'; fi`
+
+brightness.o: acpi/brightness/brightness.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT brightness.o -MD -MP -MF $(DEPDIR)/brightness.Tpo -c -o brightness.o `test -f 'acpi/brightness/brightness.c' || echo '$(srcdir)/'`acpi/brightness/brightness.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/brightness.Tpo $(DEPDIR)/brightness.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/brightness/brightness.c' object='brightness.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o brightness.o `test -f 'acpi/brightness/brightness.c' || echo '$(srcdir)/'`acpi/brightness/brightness.c
+
+brightness.obj: acpi/brightness/brightness.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT brightness.obj -MD -MP -MF $(DEPDIR)/brightness.Tpo -c -o brightness.obj `if test -f 'acpi/brightness/brightness.c'; then $(CYGPATH_W) 'acpi/brightness/brightness.c'; else $(CYGPATH_W) '$(srcdir)/acpi/brightness/brightness.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/brightness.Tpo $(DEPDIR)/brightness.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/brightness/brightness.c' object='brightness.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o brightness.obj `if test -f 'acpi/brightness/brightness.c'; then $(CYGPATH_W) 'acpi/brightness/brightness.c'; else $(CYGPATH_W) '$(srcdir)/acpi/brightness/brightness.c'; fi`
 
 common.o: acpi/common/common.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT common.o -MD -MP -MF $(DEPDIR)/common.Tpo -c -o common.o `test -f 'acpi/common/common.c' || echo '$(srcdir)/'`acpi/common/common.c

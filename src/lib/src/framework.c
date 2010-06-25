@@ -446,23 +446,24 @@ static void fwts_framework_syntax(char **argv)
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
 	printf("--acpidump=path\t\tSpecify path to acpidump.\n");
-	printf("--batch\t\t\tJust run non-interactive tests.\n");
+	printf("-b, --batch\t\tJust run non-interactive tests.\n");
 	printf("--debug-output=file\tOutput debug to a named file.\n");
 	printf("\t\t\tFilename can also be stdout or stderr.\n");	
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
 	printf("--dsdt=file\t\tSpecify DSDT file rather than reading it from the ACPI\n");
 	printf("\t\t\ttable on the machine.\n");
+	printf("-f, --force-clean\tForce a clean results log file\n");
 	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
-	printf("--help\t\t\tGet this help.\n");
+	printf("-h, --help\t\tGet this help.\n");
 	printf("--iasl=path\t\tSpecify path to iasl.\n");
-	printf("--interactive\t\tJust run interactive tests.\n");
+	printf("-i, --interactive\tJust run interactive tests.\n");
 	printf("--klog=file\t\tSpecify kernel log file rather than reading it\n");
 	printf("\t\t\tfrom the kernel.\n");
 	printf("--log-fields\t\tShow available log filtering fields.\n");
 	printf("--log-filter=expr\tDefine filters to dump out specific log fields:\n");
 	printf("\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
 	printf("\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
-	printf("--log-width=N\t\tDefine the output log width in characters.\n");
+	printf("-w, --log-width=N\t\tDefine the output log width in characters.\n");
 	printf("--log-format=fields\tDefine output log format.\n");
 	printf("\te.g. --log-format=\"%%date %%time [%%field] (%%owner): \"\n");
 	printf("\tfields: %%date  - date\n");
@@ -478,8 +479,8 @@ static void fwts_framework_syntax(char **argv)
 	printf("--results-output=file\tOutput results to a named file. Filename can also be\n");
 	printf("\t\t\tstdout or stderr.\n");
 	printf("--s3-multiple=N\t\tRun S3 tests N times.\n");
-	printf("--show-progress\t\tOutput test progress report to stderr.\n");
-	printf("--show-tests\t\tShow available tests.\n");
+	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
+	printf("-s, --show-tests\tShow available tests.\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
 }
 
@@ -529,7 +530,7 @@ int fwts_framework_args(int argc, char **argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?fhbipsw:", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -608,8 +609,34 @@ int fwts_framework_args(int argc, char **argv)
 			case 22: /* --interactive */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
 				break;
+			case 23: /* --force-clean */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
+				break;
 			}
+			break;
+		case 'f':
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
+			break;
+		case 'h':
 		case '?':
+			fwts_framework_syntax(argv);
+			exit(EXIT_SUCCESS);
+			break;
+		case 'b': /* --batch */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+			break;
+		case 'i': /* --interactive */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+			break;
+		case 'p': /* --show-progress */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+			break;
+		case 's': /* --show-tests */
+			fwts_framework_show_tests();
+			exit(EXIT_SUCCESS);
+			break;
+		case 'w': /* --log-width=N */
+			fwts_log_set_line_width(atoi(optarg));
 			break;
 		}
 	}	
@@ -651,7 +678,8 @@ int fwts_framework_args(int argc, char **argv)
 	}
 	
 	if ((fw->results = fwts_log_open("fwts", 
-			fw->results_logname, "a+")) == NULL) {
+			fw->results_logname, 
+			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a")) == NULL) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
 		goto tidy_close;

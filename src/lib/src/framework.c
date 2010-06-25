@@ -476,7 +476,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests.\n");
 	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests.\n");
 	printf("--results-no-separators\tNo horizontal separators in results log.\n");
-	printf("--results-output=file\tOutput results to a named file. Filename can also be\n");
+	printf("-r, --results-output=file\n\t\t\tOutput results to a named file. Filename can also be\n");
 	printf("\t\t\tstdout or stderr.\n");
 	printf("--s3-multiple=N\t\tRun S3 tests N times.\n");
 	printf("-p, --show-progress\tOutput test progress report to stderr.\n");

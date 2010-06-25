@@ -63,14 +63,14 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	memset(&hdr, 0xff, sizeof(fwts_acpi_table_header));
 
 	memcpy(&hdr.signature, data, 4);
-	GET_UINT32(hdr.length, data, 4);
-	GET_UINT8 (hdr.revision, data, 8);
-	GET_UINT8 (hdr.checksum, data, 9);
+	FWTS_GET_UINT32(hdr.length, data, 4);
+	FWTS_GET_UINT8 (hdr.revision, data, 8);
+	FWTS_GET_UINT8 (hdr.checksum, data, 9);
 	memcpy(&hdr.oem_id, data+10, 6);
 	memcpy(&hdr.oem_tbl_id, data+16, 8);
-	GET_UINT32(hdr.oem_revision, data, 22);
+	FWTS_GET_UINT32(hdr.oem_revision, data, 22);
 	memcpy(&hdr.creator_id, data+28, 4);
-	GET_UINT32(hdr.creator_revision, data, 32);
+	FWTS_GET_UINT32(hdr.creator_revision, data, 32);
 	memcpy(&hdr.oem_tbl_id, data+16, 6);
 	
 #if DEBUG

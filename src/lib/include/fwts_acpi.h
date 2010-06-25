@@ -24,7 +24,7 @@
 #include "fwts_framework.h"
 #include "fwts_log.h"
 
-#define GET_UINT64(var, buffer, offset) \
+#define FWTS_GET_UINT64(var, buffer, offset) \
 	var = 				\
         ( ((uint64)data[offset+3] << 56) |      \
           ((uint64)data[offset+2] << 48) |      \
@@ -35,23 +35,24 @@
           ((uint64)data[offset+1] << 8)  |      \
           ((uint64)data[offset]) )
 
-#define GET_UINT32(var, buffer, offset) \
+#define FWTS_GET_UINT32(var, buffer, offset) \
 	var = 				\
         ( (data[offset+3] << 24) |      \
           (data[offset+2] << 16) |      \
           (data[offset+1] << 8)  |      \
           (data[offset]) )
 
-#define GET_UINT16(var, buffer, offset) \
+#define FWTS_GET_UINT16(var, buffer, offset) \
 	var =				\
         ( ((uint16)data[offset+1] << 8)  |      \
           ((uint16)data[offset]) )
 
-#define GET_UINT8(var, buffer, offset)	\
+#define FWTS_GET_UINT8(var, buffer, offset)	\
 	var = 				\
         ( ((uint8)data[offset]) )
 
-#define GET_GAS(var, buffer, offset)
+/* FIX ME - this needs implementing */
+#define FWTS_GET_GAS(var, buffer, offset)
 
 
 typedef struct {

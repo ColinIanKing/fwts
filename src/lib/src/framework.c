@@ -530,7 +530,7 @@ int fwts_framework_args(int argc, char **argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?fhbipsw:", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:fhbipsw:", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -637,6 +637,9 @@ int fwts_framework_args(int argc, char **argv)
 			break;
 		case 'w': /* --log-width=N */
 			fwts_log_set_line_width(atoi(optarg));
+			break;
+		case 'r': /* --results-output */
+			fw->results_logname = strdup(optarg);
 			break;
 		}
 	}	

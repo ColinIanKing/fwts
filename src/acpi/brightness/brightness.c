@@ -299,19 +299,24 @@ static int brightness_wait_event(fwts_framework *fw)
 	int events = 0;
 	char *buffer;
 	int len;
+	int i;
+	
 
 	if ((fd = acpi_even_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
-	while ((buffer = acpi_event_read(fd, &len, 20)) != NULL) {
-		if (strstr(buffer, "video")) {
-			events++;
-			break;
-		}
-		free(buffer);
+	
+	for (i=0;i<=20;i++) {
+		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL)
+			if (strstr(buffer, "video")) {
+				free(buffer);
+				events++;
+				break;
+			}
+
+		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	free(buffer);
 
 	acpi_even_close(fd);
 

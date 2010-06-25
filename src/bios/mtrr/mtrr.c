@@ -159,6 +159,135 @@ restart:
 	return type;
 }
 
+static fwts_list *get_klog_bios_mtrr(void)
+{
+	fwts_list *mtrr_bios_list;
+	fwts_list_element *item;
+	int scan = 0;
+
+	if ((mtrr_bios_list = fwts_list_init()) == NULL)
+		return NULL;
+
+	for (item=klog->head; item != NULL; item = item->next) {
+		char *str = fwts_text_list_text(item);
+
+		if (strstr(str, "MTRR variable ranges enabled")) {
+			scan = 1;
+			continue;
+		}
+	
+		if (scan) {
+			char *base = strstr(str, "base");
+			char *disabled = strstr(str, "disabled");
+
+			if ((base == NULL) && (disabled == NULL))
+				scan = 0;
+			
+			if (base) {	
+				uint64 start = strtoull(base+6, NULL, 16);
+				str = strstr(base, "mask");
+				if (str) {
+					struct mtrr_entry *mtrr;
+
+					mtrr = calloc(1, sizeof(struct mtrr_entry));
+					mtrr->type = 0;
+
+					uint64 mask = strtoull(str+5, NULL, 16);
+					uint64 pat = 0x8000000000000000ULL;
+					while ((mask & pat) == 0) {
+						mask |= pat;
+						pat >>= 1;
+					}
+
+					mtrr->start = start;
+					mtrr->end = start + ~mask;
+				
+					fwts_list_append(mtrr_bios_list, mtrr);
+				}
+			}
+		}
+	}
+
+	return mtrr_bios_list;
+}
+
+static int check_vga_controller_address(fwts_framework *fw)
+{
+	char line[4096];
+	fwts_list *lspci_output;
+	fwts_list_element *item;
+	fwts_list *mtrr_bios_list;
+	int vga = 0;
+	int found = 0;
+
+	memset(line,0,4096);
+
+	if ((mtrr_bios_list = get_klog_bios_mtrr()) == NULL)
+		return FWTS_ERROR;
+	
+	snprintf(line, sizeof(line), "%s -v", fw->lspci);
+	fwts_pipe_exec(line, &lspci_output);
+	if (lspci_output == NULL)
+		return FWTS_ERROR;
+
+	for (item=lspci_output->head; (item != NULL) && !found; item = item->next) {
+		char *str = fwts_text_list_text(item);
+		if (strstr(str, "VGA compatible controller"))
+			vga = 1;
+		if (*str == '\0')
+			vga = 0;
+		if (vga) {
+			if ((str = strstr(str, "Memory at ")) != NULL) {
+				fwts_list_element *item;
+				struct mtrr_entry *mtrr;
+				uint64 start = strtoull(str+10, NULL, 16);
+				uint64 size = 0;
+#if 0
+				int pref = 0;
+				if (strstr(str, "non-prefetchable")) 
+					pref = 0;
+				else if (strstr(str, "(prefetchable"))
+					pref = 1;
+				else if (strstr(str, ", prefetchable"))
+					pref = 1;
+#endif
+				if ((str = strstr(str + 10, "size=")) != NULL) {
+					size = strtoull(str+5, NULL, 10);
+					if (strstr(str + 5, "K]"))
+						size *= 1024;
+					if (strstr(str + 5, "M]"))
+						size *= (1024*1024);
+					size--;
+				}
+
+				if (size > 1024*1024) {
+					for (item = mtrr_bios_list->head; item != NULL; item = item->next) {
+						mtrr = (struct mtrr_entry *)item->data;
+						if (start >= mtrr->start && (start+size)<= mtrr->end) {
+							found = 1;
+							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %llx - %llx\n",
+								mtrr->start, mtrr->end);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (!found) {
+		fwts_failed_low(fw, "Did not find a BIOS configured MTRR for VGA memory region. ");
+		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
+				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
+				"and this will slow the boot speed. "
+				"It is probably worth asking the BIOS vendor to map in VGA write-combiningg region.\n");
+	}
+	fwts_list_free(mtrr_bios_list, free);
+	fwts_list_free(lspci_output, free);
+
+	return FWTS_OK;
+}
+
 static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 {
 	int pref = 0;
@@ -367,12 +496,20 @@ static char *mtrr_headline(void)
 static int mtrr_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
-		"This test validates the MTRR IOMEM setup.");
+		"This test validates the kernel MTRR IOMEM setup.");
 
 	return validate_iomem(fw);
 }
 
 static int mtrr_test2(fwts_framework *fw)
+{
+	fwts_log_info(fw, 
+		"This test validates the BIOS provided boot time MTRR IOMEM setup.");
+
+	return check_vga_controller_address(fw);
+}
+
+static int mtrr_test3(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
 		"This test validates the MTRR setup across all processors.");
@@ -390,6 +527,7 @@ static int mtrr_test2(fwts_framework *fw)
 static fwts_framework_tests mtrr_tests[] = {
 	mtrr_test1,
 	mtrr_test2,
+	mtrr_test3,
 	NULL
 };
 
@@ -400,4 +538,4 @@ static fwts_framework_ops mtrr_ops = {
 	mtrr_tests
 };
 
-FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_EARLY, FWTS_BATCH);

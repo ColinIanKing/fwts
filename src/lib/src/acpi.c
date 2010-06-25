@@ -24,7 +24,6 @@
 
 #include "fwts.h"
 
-static char *fwts_acpidump = "/usr/bin/acpidump";
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int *size)
 {
@@ -38,13 +37,16 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	int i;
 	unsigned char checksum = 0;
 
-	snprintf(buffer, sizeof(buffer), "%s -t %s -b -s %d", fwts_acpidump, name, which);
+	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+		return NULL;
+
+	snprintf(buffer, sizeof(buffer), "%s -t %s -b -s %d", fw->acpidump, name, which);
 	if ((fd = fwts_pipe_open(buffer, &pid)) < 0)
 		return NULL;
 
 	data = (uint8*) fwts_pipe_read(fd, &len);
 	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
-		fwts_log_error(fw, "Could not exec %s, is acpidump installed?", fwts_acpidump);
+		fwts_log_error(fw, "Could not exec %s, is acpidump installed?", fw->acpidump);
 		if (data)
 			free(data);
 		return NULL;

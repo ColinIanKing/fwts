@@ -20,8 +20,32 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "fwts.h"
+
+static int fwts_getchar(void)
+{
+	struct termios oldterm;
+	struct termios newterm;
+	int ch;
+	int fd = fileno(stdin);
+
+	tcgetattr(fd, &oldterm);
+	memcpy(&newterm, &oldterm, sizeof(struct termios));
+
+	newterm.c_lflag &= ~(ECHO | ICANON);
+	newterm.c_cc[VMIN] = 1;
+	newterm.c_cc[VTIME] = 0;
+	tcsetattr(fd, TCSANOW, &newterm);
+
+	ch = getchar();
+	
+	tcsetattr(fd, TCSANOW, &oldterm);
+
+	return ch;
+}
 
 int fwts_printf(fwts_framework *fw, char *fmt, ...)
 {
@@ -30,6 +54,7 @@ int fwts_printf(fwts_framework *fw, char *fmt, ...)
 
 	va_start(ap, fmt);
 	len = vfprintf(stdout, fmt, ap);
+	fflush(stdout);
 	va_end(ap);
 
 	return len;
@@ -38,9 +63,28 @@ int fwts_printf(fwts_framework *fw, char *fmt, ...)
 int fwts_press_enter(fwts_framework *fw)
 {
 	fprintf(stdout, "Press <Enter> to continue");
+	fflush(stdout);
 	
-	while (getchar() != '\n')
+	while (fwts_getchar() != '\n')
 		;
+	fprintf(stdout, "\n");
+	fflush(stdout);
 	
 	return FWTS_OK;
 }
+
+int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
+{
+	int ch;
+
+	fprintf(stdout, "%s", message);
+	fflush(stdout);
+
+	while (index(options, (ch = fwts_getchar())) == NULL)
+		;
+	fprintf(stdout, "\n");
+	fflush(stdout);
+
+	return ch;
+}
+

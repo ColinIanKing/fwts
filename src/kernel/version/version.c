@@ -27,8 +27,6 @@ static char *version_headline(void)
 
 static int version_test1(fwts_framework *fw)
 {
-	/* Do your test */
-
 	char *str;
 
 	/* Following is Ubuntu specific, so don't fail */
@@ -45,6 +43,14 @@ static int version_test1(fwts_framework *fw)
 		fwts_log_info(fw, "Version: %s", str);
 		free(str);
 		fwts_passed(fw, "Gathered kernel version info");
+	}
+
+	if ((str = fwts_get("/proc/acpi/info")) == NULL) 
+		fwts_failed_low(fw,"Cannot get ACPI version info from /proc/acpi/info");
+	else {
+		fwts_log_info(fw, "ACPI Version: %s", str);
+		free(str);
+		fwts_passed(fw, "Gathered ACPI kernel version info");
 	}
 
 	return FWTS_OK;

@@ -9,6 +9,7 @@ fwts_SOURCES = main.c \
 	acpi/syntaxcheck/syntaxcheck.c \
 	acpi/s3/s3.c \
 	acpi/s4/s4.c \
+	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \

@@ -51,7 +51,7 @@ static int ac_adapter_deinit(fwts_framework *fw)
 
 static char *ac_adapter_headline(void)
 {
-	return "Interactive ac_adapter button test.";
+	return "Interactive ac_adapter power test.";
 }
 
 void ac_adapter_check_field(char *field, char *contents, int *matching, int *not_matching)

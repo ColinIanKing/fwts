@@ -50,10 +50,10 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
 	brightness.$(OBJEXT) common.$(OBJEXT) fadt.$(OBJEXT) \
 	fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
-	osilinux.$(OBJEXT) lid.$(OBJEXT) ebda_region.$(OBJEXT) \
-	mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) version.$(OBJEXT)
+	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
+	ebda_region.$(OBJEXT) mtrr.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -213,6 +213,7 @@ fwts_SOURCES = main.c \
 	apic/apicedge/apicedge.c \
 	acpi/osilinux/osilinux.c \
 	acpi/lid/lid.c \
+	acpi/powerbutton/powerbutton.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \
@@ -321,6 +322,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcfg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osilinux.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
@@ -567,6 +569,20 @@ lid.obj: acpi/lid/lid.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/lid/lid.c' object='lid.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o lid.obj `if test -f 'acpi/lid/lid.c'; then $(CYGPATH_W) 'acpi/lid/lid.c'; else $(CYGPATH_W) '$(srcdir)/acpi/lid/lid.c'; fi`
+
+powerbutton.o: acpi/powerbutton/powerbutton.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT powerbutton.o -MD -MP -MF $(DEPDIR)/powerbutton.Tpo -c -o powerbutton.o `test -f 'acpi/powerbutton/powerbutton.c' || echo '$(srcdir)/'`acpi/powerbutton/powerbutton.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/powerbutton.Tpo $(DEPDIR)/powerbutton.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/powerbutton/powerbutton.c' object='powerbutton.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o powerbutton.o `test -f 'acpi/powerbutton/powerbutton.c' || echo '$(srcdir)/'`acpi/powerbutton/powerbutton.c
+
+powerbutton.obj: acpi/powerbutton/powerbutton.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT powerbutton.obj -MD -MP -MF $(DEPDIR)/powerbutton.Tpo -c -o powerbutton.obj `if test -f 'acpi/powerbutton/powerbutton.c'; then $(CYGPATH_W) 'acpi/powerbutton/powerbutton.c'; else $(CYGPATH_W) '$(srcdir)/acpi/powerbutton/powerbutton.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/powerbutton.Tpo $(DEPDIR)/powerbutton.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/powerbutton/powerbutton.c' object='powerbutton.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o powerbutton.obj `if test -f 'acpi/powerbutton/powerbutton.c'; then $(CYGPATH_W) 'acpi/powerbutton/powerbutton.c'; else $(CYGPATH_W) '$(srcdir)/acpi/powerbutton/powerbutton.c'; fi`
 
 ebda_region.o: bios/ebda_region/ebda_region.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ebda_region.o -MD -MP -MF $(DEPDIR)/ebda_region.Tpo -c -o ebda_region.o `test -f 'bios/ebda_region/ebda_region.c' || echo '$(srcdir)/'`bios/ebda_region/ebda_region.c

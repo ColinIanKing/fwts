@@ -1,6 +1,7 @@
 SUBDIRS = lib
  
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall -Werror
+AM_LDFLAGS = -lm
 
 bin_PROGRAMS = fwts
 fwts_SOURCES = main.c \
@@ -14,6 +15,7 @@ fwts_SOURCES = main.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \
 	acpi/common/common.c \
+	acpi/cstates/cstates.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \

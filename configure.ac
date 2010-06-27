@@ -1,4 +1,4 @@
-AC_INIT([biostestkit], [0.1], [colin.king@canonical.com])
+AC_INIT([biostestkit],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
           AC_PROG_CC
 	  AC_PROG_RANLIB

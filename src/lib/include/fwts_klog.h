@@ -30,7 +30,13 @@
 #define KERN_WARNING            0x00000001
 #define KERN_ERROR              0x00000002
 
+typedef enum {
+	FWTS_COMPARE_REGEX = 'r',
+	FWTS_COMPARE_STRING = 's',
+} fwts_compare_mode;
+
 typedef struct {
+	fwts_compare_mode mode;
 	fwts_log_level level;
         char *pattern;
 	char *advice;

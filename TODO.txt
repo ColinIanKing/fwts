@@ -30,3 +30,5 @@ Todo
 	allows for faster grub rendering
 
 * Add in DMI decode on version info, so we can track BIOS version
+
+* --show-tests, output should be in sorted order

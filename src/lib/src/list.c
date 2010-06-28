@@ -66,7 +66,7 @@ void fwts_list_free(fwts_list *list, fwlist_element_free element_free)
 
 	for (item = list->head; item != NULL; item = next) {
 		next = item->next;
-		if (item->data)
+		if ((item->data != NULL) && (element_free != NULL))
 			element_free(item->data);
 		free(item);
 	}
@@ -96,4 +96,29 @@ fwts_list_element *fwts_list_append(fwts_list *list, void *data)
 	list->len++;
 
 	return element;
+}
+
+fwts_list_element *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare)
+{
+	fwts_list_element   *new_list_item;
+	fwts_list_element   **list_item;
+
+	if ((new_list_item = calloc(1, sizeof(fwts_list_element))) == NULL)
+		return NULL;
+
+	new_list_item->data = new_data;
+
+	for (list_item = &list->head; *list_item != NULL; list_item = &(*list_item)->next) {
+		void *data = (void *)(*list_item)->data;
+		if (compare(data, new_data) >= 0) {
+			new_list_item->next = (*list_item);
+			break;
+		}
+	}
+	if (new_list_item->next == NULL)
+		list->tail = new_list_item;
+
+	*list_item = new_list_item;
+
+	return new_list_item;
 }

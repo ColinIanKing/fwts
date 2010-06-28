@@ -474,6 +474,11 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
+static void fwts_framework_show_version(char **argv)
+{
+	printf("%s, Version %s, %s\n", argv[0], FWTS_VERSION, FWTS_DATE);
+}
+
 static void fwts_framework_syntax(char **argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
@@ -515,6 +520,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
 	printf("-s, --show-tests\tShow available tests.\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
+	printf("-v, --version\t\tShow version.\n");
 }
 
 
@@ -546,6 +552,8 @@ int fwts_framework_args(int argc, char **argv)
 		{ "acpidump", 1, 0, 0 },
 		{ "batch", 0, 0, 0 },
 		{ "interactive", 0, 0, 0 },
+		{ "force-clean", 0, 0, 0 },
+		{ "version", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -563,7 +571,7 @@ int fwts_framework_args(int argc, char **argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:fhbipsw:", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -645,6 +653,10 @@ int fwts_framework_args(int argc, char **argv)
 			case 23: /* --force-clean */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
 				break;
+			case 24: /* --version */
+				fwts_framework_show_version(argv);
+				exit(EXIT_SUCCESS);
+				break;
 			}
 			break;
 		case 'f':
@@ -673,6 +685,10 @@ int fwts_framework_args(int argc, char **argv)
 			break;
 		case 'r': /* --results-output */
 			fw->results_logname = strdup(optarg);
+			break;
+		case 'v': /* --version */
+			fwts_framework_show_version(argv);
+			exit(EXIT_SUCCESS);
 			break;
 		}
 	}	
@@ -749,4 +765,3 @@ tidy_close:
 
 	return ret;
 }
-

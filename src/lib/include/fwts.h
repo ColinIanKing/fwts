@@ -20,6 +20,8 @@
 #ifndef __FWTS_H__
 #define __FWTS_H__
 
+#include "fwts_version.h"
+
 #include "fwts_types.h"
 
 #include "fwts_binpaths.h"

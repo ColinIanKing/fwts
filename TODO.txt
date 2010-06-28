@@ -27,8 +27,8 @@ Todo
 							DONE
 
 * Add check for MTRRs not enabled on video aparture	
-	allows for faster grub rendering
+	allows for faster grub rendering		DONE 26/06/2010
 
 * Add in DMI decode on version info, so we can track BIOS version
 
-* --show-tests, output should be in sorted order
+* --show-tests, output should be in sorted order	DONE 28/06/2010

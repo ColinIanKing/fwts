@@ -69,11 +69,17 @@ static fwts_framework_setting fwts_framework_settings[] = {
 
 static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
 
+static int fwts_framework_compare_priority(void *data1, void *data2)
+{
+	fwts_framework_test *test1 = (fwts_framework_test *)data1;
+	fwts_framework_test *test2 = (fwts_framework_test *)data2;
+
+	return (test1->priority - test2->priority);
+}
+
 void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int priority, int flags)
 {
 	fwts_framework_test *new_test;
-	fwts_list_element   *new_list_item;
-	fwts_list_element   **list_item;
 
 	if (flags & ~(FWTS_BATCH | FWTS_INTERACTIVE)) {
 		fprintf(stderr, "Test %s flags must be FWTS_BATCH or FWTS_INTERACTIVE, got %x\n",name,flags);
@@ -89,48 +95,52 @@ void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int prio
 	}
 
 	/* This happens early, so if it goes wrong, bail out */
-	new_test = calloc(1, sizeof(fwts_framework_test));
-	new_list_item = calloc(1, sizeof(fwts_list_element));
-
-	if (new_test == NULL || new_list_item == NULL) {
+	if ((new_test = calloc(1, sizeof(fwts_framework_test))) == NULL) {
 		fprintf(stderr, "FATAL: Could not allocate memory adding tests to test framework\n");
 		exit(EXIT_FAILURE);
 	}
 
-	new_list_item->data = (void*)new_test;
+	for (ops->total_tests = 0; ops->tests[ops->total_tests] != NULL; ops->total_tests++)
+		;
 
 	new_test->name = name;
 	new_test->ops  = ops;
 	new_test->priority = priority;
 	new_test->flags = flags;
 
-	for (ops->total_tests = 0; ops->tests[ops->total_tests] != NULL; ops->total_tests++)
-		;
+	fwts_list_add_ordered(fwts_framework_test_list, new_test, fwts_framework_compare_priority);
+}
 
-	/* Insert into list based on order of priority */
-	for (list_item = &fwts_framework_test_list->head; *list_item != NULL; list_item = &(*list_item)->next) {
-		fwts_framework_test *test = (fwts_framework_test *)(*list_item)->data;
-		if (test->priority >= new_test->priority) {
-			new_list_item->next = (*list_item);
-			break;
-		}
-	}
-	if (new_list_item->next == NULL)
-		fwts_framework_test_list->tail = new_list_item;
+static int fwts_framework_compare_name(void *data1, void *data2)
+{
+	fwts_framework_test *test1 = (fwts_framework_test *)data1;
+	fwts_framework_test *test2 = (fwts_framework_test *)data2;
 
-	*list_item = new_list_item;
+	return strcmp(test1->name, test2->name);
 }
 
 static void fwts_framework_show_tests(void)
 {
 	fwts_list_element *item;
+	fwts_list *sorted;
+
+	if ((sorted = fwts_list_init()) == NULL) {
+		fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
+		exit(EXIT_FAILURE);
+	}
 
 	printf("Available tests:\n");
 
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+		fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
+	}
+	
+	for (item = sorted->head; item != NULL; item = item->next) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 		printf(" %-13.13s %s\n", test->name, test->ops->headline());
 	}
+
+	fwts_list_free(sorted, NULL);
 }
 
 void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent)

@@ -23,6 +23,7 @@ fwts_SOURCES = main.c \
 	acpi/osilinux/osilinux.c \
 	acpi/lid/lid.c \
 	acpi/powerbutton/powerbutton.c \
+	acpi/wmi/wmi.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
 	dmi/dmi_decode/dmi_decode.c \

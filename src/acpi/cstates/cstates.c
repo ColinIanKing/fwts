@@ -151,9 +151,9 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 		fwts_progress(fw, 100 * (i+ (TOTAL_WAIT_TIME*nth))/(cpus * TOTAL_WAIT_TIME));
 
 		if (i < 4)
-			keep_busy_for_one_second(cpu);
-		else
 			sleep(1);
+		else
+			keep_busy_for_one_second(cpu);
 
 		get_cstates(dir, &current);
 		for (j=MIN_CSTATE; j<MAX_CSTATE;j++) {

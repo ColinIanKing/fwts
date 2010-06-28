@@ -69,7 +69,7 @@ static fwts_framework_setting fwts_framework_settings[] = {
 
 static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
 
-void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority, int flags)
+void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int priority, int flags)
 {
 	fwts_framework_test *new_test;
 	fwts_list_element   *new_list_item;
@@ -83,7 +83,7 @@ void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const in
 	if (fwts_framework_test_list == NULL) {
 		fwts_framework_test_list = fwts_list_init();
 		if (fwts_framework_test_list == NULL) {
-			fprintf(stderr, "FATAL: Could not allocate memory setting up test framework\n");		
+			fprintf(stderr, "FATAL: Could not allocate memory setting up test framework\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -93,7 +93,7 @@ void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const in
 	new_list_item = calloc(1, sizeof(fwts_list_element));
 
 	if (new_test == NULL || new_list_item == NULL) {
-		fprintf(stderr, "FATAL: Could not allocate memory adding tests to test framework\n");		
+		fprintf(stderr, "FATAL: Could not allocate memory adding tests to test framework\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -103,6 +103,9 @@ void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const in
 	new_test->ops  = ops;
 	new_test->priority = priority;
 	new_test->flags = flags;
+
+	for (ops->total_tests = 0; ops->tests[ops->total_tests] != NULL; ops->total_tests++)
+		;
 
 	/* Insert into list based on order of priority */
 	for (list_item = &fwts_framework_test_list->head; *list_item != NULL; list_item = &(*list_item)->next) {
@@ -129,7 +132,22 @@ static void fwts_framework_show_tests(void)
 		printf(" %-13.13s %s\n", test->name, test->ops->headline());
 	}
 }
+
+void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent)
+{
+	if (percent >=0 && percent <=100)
+		fw->sub_test_progress = percent;
+
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+		int percent;
+
+		percent = (100 * (fw->current_test-1) / fw->current_ops->total_tests) + 
+			  (fw->sub_test_progress / fw->current_ops->total_tests);
+		fprintf(stderr, "%-20.20s: %3d%%\r", fw->current_test_name, percent);
+		fflush(stderr);
 	
+	}
+}
 
 static void fwts_framework_underline(fwts_framework *fw, const int ch)
 {
@@ -221,7 +239,6 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 
 static int fwts_framework_run_test(fwts_framework *fw, const char *name, const fwts_framework_ops *ops)
 {		
-	int num = 0;
 	fwts_framework_tests *test;	
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() entered");
@@ -234,6 +251,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 	fwts_log_set_owner(fw->results, name);
 
 	fw->current_test_name = strdup(name);
+	fw->current_ops = ops;
+	fw->current_test = 1;
+
+	fwts_framework_sub_test_progress(fw, 0);
 
 	if (ops->headline) {
 		fwts_log_heading(fw, "%s", ops->headline());
@@ -263,14 +284,14 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 		}
 	}
 
-	for (test = ops->tests; *test != NULL; test++)
-		num++;
 
-	for (test = ops->tests, fw->current_test = 1; *test != NULL; test++, fw->current_test++) {
+	for (test = ops->tests; *test != NULL; test++, fw->current_test++) {
+#if 0
 		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-			fprintf(stderr, "%-20.20s: Test %d of %d started.\n", name, fw->current_test, num);		
+			fprintf(stderr, "%-20.20s: Test %d of %d started.\n", name, fw->current_test, ops->total_tests);		
 			fflush(stderr);
 		}
+#endif
 
 		fwts_framework_debug(fw, "exectuting test %d", fw->current_test);
 
@@ -279,7 +300,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 		fw->sub_tests.passed  = 0;
 		fw->sub_tests.warning = 0;
 
+		fwts_framework_sub_test_progress(fw, 0);
 		(*test)(fw);
+		fwts_framework_sub_test_progress(fw, 100);
 	
 		fw->test_run.aborted += fw->sub_tests.aborted;
 		fw->test_run.failed  += fw->sub_tests.failed;
@@ -288,7 +311,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 			fprintf(stderr, "%-20.20s: Test %d of %d completed (%d passed, %d failed, %d warnings, %d aborted).\n", 
-				name, fw->current_test, num,
+				name, fw->current_test, ops->total_tests,
 				fw->sub_tests.passed, fw->sub_tests.failed, 
 				fw->sub_tests.warning, fw->sub_tests.aborted);
 		}

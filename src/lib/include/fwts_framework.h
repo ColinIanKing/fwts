@@ -63,16 +63,18 @@ typedef struct {
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
 
-	struct fwts_framework_ops const *ops;	
 	fwts_framework_flags flags;
 
 	int current_test;			/* Nth test being run in a test module */
 	char *current_test_name;		/* name of current test */
+	struct fwts_framework_ops const *current_ops;	
 
 	/* per test stats */
 	fwts_results	sub_tests;		/* results for each test in test module */
 	fwts_results	test_run;		/* totals over all the tests (1 or more) in a module */
 	fwts_results	total;			/* totals over all tests */
+
+	int sub_test_progress;			/* Percentage completion of current test */
 } fwts_framework;
 
 typedef int (*fwts_framework_tests)(fwts_framework *framework);
@@ -82,14 +84,18 @@ typedef struct fwts_framework_ops {
 	int (*init)(fwts_framework *);		/* Initialise */
 	int (*deinit)(fwts_framework *);	/* De-init */		
 	fwts_framework_tests *tests;		/* List of tests to run */
+	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;
 
 int  fwts_framework_args(int argc, char **argv);
-void fwts_framework_test_add(char *name, const fwts_framework_ops *ops, const int priority, int flags);
+void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int priority, int flags);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
 void fwts_framework_advice(fwts_framework *, const char *fmt, ...);
+void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent);
+
+#define fwts_progress(fw, percent)	fwts_framework_sub_test_progress(fw, percent)
 
 #define fwts_passed(fw, args...)	fwts_framework_passed(fw, ## args)
 #define fwts_failed(fw, args...)	fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)

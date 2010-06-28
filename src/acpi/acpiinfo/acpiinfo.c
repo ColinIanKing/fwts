@@ -180,7 +180,7 @@ static int acpiinfo_test1(fwts_framework *fw)
 		 "error messages that indicate a bad interaction with the bios, including "
 		 "those that point at AML syntax errors.");
 
-	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, &errors)) {
+	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log.");
 		return FWTS_ERROR;
 	}

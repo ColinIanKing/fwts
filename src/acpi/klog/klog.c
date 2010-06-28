@@ -52,12 +52,17 @@ static int klog_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static void klog_progress(fwts_framework *fw, int progress)
+{
+	fwts_progress(fw, progress);
+}
+
 static int klog_test1(fwts_framework *fw)
 {	
 	char *test = "Kernel log error check.";
 	int errors = 0;
 
-	if (fwts_klog_firmware_check(fw, klog, &errors)) {
+	if (fwts_klog_firmware_check(fw, klog_progress, klog, &errors)) {
 		fwts_log_error(fw, "Error parsing kernel log.");
 		return FWTS_ERROR;
 	}

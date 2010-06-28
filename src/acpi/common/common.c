@@ -62,7 +62,7 @@ static int dmesg_common_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "This checks for common errors found in the kernel message log.");
 
-	if (fwts_klog_common_check(fw, klog, &errors)) {
+	if (fwts_klog_common_check(fw, NULL, klog, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log");
 		return FWTS_ERROR;
 	}

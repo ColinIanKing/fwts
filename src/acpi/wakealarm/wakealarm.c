@@ -109,6 +109,7 @@ static int wakealarm_test4(fwts_framework *fw)
 			fwts_failed(fw, test);	
 			failed++;
 		}
+		fwts_progress(fw, 25 * i);
 	}
 	if (failed == 0)
 		fwts_passed(fw, test);

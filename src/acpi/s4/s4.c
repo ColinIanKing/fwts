@@ -81,13 +81,13 @@ static int s4_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, klog, &errors))
+	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, klog, &errors))
+	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_common_check(fw, klog, &errors))
+	if (fwts_klog_common_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 	fwts_klog_free(klog);

@@ -56,26 +56,32 @@ fwts_list *fwts_klog_read(void)
 	return list;
 }
 
-typedef void (*fwts_scan_callback_t)(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
-
-int fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_scan_callback_t callback, void *private, int *errors)
+int fwts_klog_scan(fwts_framework *fw, 
+		   fwts_list *klog, 
+		   fwts_klog_scan_func scan_func,
+		   fwts_klog_progress_func progress_func,
+		   void *private, 
+		   int *errors)
 {
 	*errors = 0;
 	char *prev;
 	fwts_list_element *item;
+	int i;
 
 	if (!klog)
 		return FWTS_ERROR;
 
 	prev = "";
 
-	for (item = klog->head; item != NULL; item=item->next) {
+	for (i=0,item = klog->head; item != NULL; item=item->next,i++) {
 		char *ptr = (char *)item->data;
 
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
 
-		callback(fw, ptr, prev, private, errors);
+		scan_func(fw, ptr, prev, private, errors);
+		if (progress_func  && ((i % 25) == 0))
+			progress_func(fw, 100 * i / fwts_list_len(klog));
 		prev = ptr;
 	}
 	return FWTS_OK;
@@ -947,17 +953,20 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	}
 }
 
-int fwts_klog_firmware_check(fwts_framework *fw, fwts_list *klog, int *errors)
+int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {	
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, firmware_error_warning_patterns, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
+			      progress, firmware_error_warning_patterns, errors);
 }
 
-int fwts_klog_pm_check(fwts_framework *fw, fwts_list *klog, int *errors)
+int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, pm_error_warning_patterns, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
+			      progress, pm_error_warning_patterns, errors);
 }
 
-int fwts_klog_common_check(fwts_framework *fw, fwts_list *klog, int *errors)
+int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, common_error_warning_patterns, errors);
+	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
+			      progress, common_error_warning_patterns, errors);
 }

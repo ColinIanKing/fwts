@@ -50,7 +50,7 @@ typedef struct {
 int statecount = -1;
 int firstcpu = -1;
 
-static void keep_busy_for_one_second(int cpunr)
+static void keep_busy_for_one_second(int cpu)
 {
 	cpu_set_t mask, oldset;
 	time_t current;
@@ -61,7 +61,7 @@ static void keep_busy_for_one_second(int cpunr)
 	sched_getaffinity(0, sizeof(oldset), &oldset);
 
 	CPU_ZERO(&mask);
-	CPU_SET(cpunr, &mask);
+	CPU_SET(cpu, &mask);
 	sched_setaffinity(0, sizeof(mask), &mask);
 	current = time(NULL);
 
@@ -124,14 +124,14 @@ static void get_cstates(char *dir, fwts_cstates *state)
 			state->counts[nr] = count;
 			state->used[nr] = active;
 		}
-		
 	}
 
 	fclose(file);
-
 }
 
-static void do_cpu(fwts_framework *fw, int cpunr, char *dir)
+#define TOTAL_WAIT_TIME		20
+
+static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 {
 	fwts_cstates initial, current;
 	int  count;
@@ -140,15 +140,18 @@ static void do_cpu(fwts_framework *fw, int cpunr, char *dir)
 	int  keepgoing = 1;
 	int  first = 1;
 	int  i;
-	int warned = 0;
+	int  warned = 0;
 
 	memset(&initial, 0, sizeof(fwts_cstates));
 	get_cstates(dir, &initial);
 
-	for (i=0; (i < 10) && keepgoing; i++) {
+	for (i=0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
 		int j;
+
+		fwts_progress(fw, 100 * (i+ (TOTAL_WAIT_TIME*nth))/(cpus * TOTAL_WAIT_TIME));
+
 		if (i < 4)
-			keep_busy_for_one_second(cpunr);
+			keep_busy_for_one_second(cpu);
 		else
 			sleep(1);
 
@@ -171,7 +174,7 @@ static void do_cpu(fwts_framework *fw, int cpunr, char *dir)
 	}
 
 	if (warned) {
-		sprintf(buffer, "Processor %i doesn't increment C-state count in all C-states, failed in ", cpunr);
+		sprintf(buffer, "Processor %i doesn't increment C-state count in all C-states, failed in ", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE; i++) {
 			if ((initial.used[i]>0) && (initial.warned[i] != 0))  {
 				sprintf(tmp, "C%i ",i);
@@ -182,7 +185,7 @@ static void do_cpu(fwts_framework *fw, int cpunr, char *dir)
 	}
 #if 0
 	else {
-		sprintf(buffer, "Processor %i incremented C-states ", cpunr);
+		sprintf(buffer, "Processor %i incremented C-states ", cpu);
 		for (i=0; i<MAX_CSTATE; i++) {
 printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 			if ((initial.used[i]>0) && (initial.warned[i] == 0))  {
@@ -196,7 +199,7 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 
 	if (keepgoing) {
 		/* Not a failure, but not a pass either! */
-		sprintf(buffer,"Processor %i has not reached ", cpunr);
+		sprintf(buffer,"Processor %i has not reached ", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
 			sprintf(tmp, "C%i ", i);
 			if (initial.used[i] == 0)
@@ -205,7 +208,7 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 		strcat(buffer, "during tests. This is not a failure, but also it is not a complete and thorough test.");
 		fwts_log_info(fw, "%s", buffer);
 	} else {
-		sprintf(buffer,"Processor %i has reached all C-states", cpunr);
+		sprintf(buffer,"Processor %i has reached all C-states", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
 			sprintf(tmp, "C%i ", i);
 			if (initial.used[i]==0) {
@@ -227,12 +230,12 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 		statecount = count;
 	
 	if (statecount != count)
-		fwts_failed_high(fw, "Processor %i is expected to have %i C-states but has %i.", cpunr, statecount, count);
+		fwts_failed_high(fw, "Processor %i is expected to have %i C-states but has %i.", cpu, statecount, count);
 	else
 		if (firstcpu == -1) 
-			firstcpu = cpunr;
+			firstcpu = cpu;
 		else
-			fwts_passed(fw, "Processor %i has the same number of C-states as processor %d", cpunr, firstcpu);
+			fwts_passed(fw, "Processor %i has the same number of C-states as processor %d", cpu, firstcpu);
 }
 
 static char *cstates_headline(void)
@@ -244,6 +247,8 @@ static int cstates_test1(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
+	int cpus = 0;
+	int i;
 
 	fwts_log_info(fw, "This test checks if all processors have the same number of C-states, "
 			  "if the C-state counter works and if C-state transitions happen.");
@@ -253,16 +258,22 @@ static int cstates_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	do {
-		int cpunr;
-		char cpupath[2048];
-		entry = readdir(dir);
+	while ((entry = readdir(dir)) != NULL) 
+		if (entry && strlen(entry->d_name)>3)
+			cpus++;
+
+	rewinddir(dir);
+
+	for (i=0;(entry = readdir(dir)) != NULL;) {
 		if (entry && strlen(entry->d_name)>3) {
+			char cpupath[PATH_MAX];
+			int cpu;
 			sprintf(cpupath, "%s/%s", PROCESSOR_PATH, entry->d_name);
-			cpunr = strtoul(entry->d_name+3,NULL,10);
-			do_cpu(fw, cpunr, cpupath);
+			cpu = strtoul(entry->d_name+3,NULL,10);
+			do_cpu(fw, i, cpus, cpu, cpupath);
+			i++;
 		}
-	} while (entry);
+	} 
 
 	closedir(dir);
 

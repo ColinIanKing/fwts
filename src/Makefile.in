@@ -54,7 +54,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
 	bios_info.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
 	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) version.$(OBJEXT)
+	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -225,6 +225,7 @@ fwts_SOURCES = main.c \
 	hpet/hpet_check/hpet_check.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
+	cpu/maxfreq/maxfreq.c \
 	kernel/version/version.c
 
 fwts_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
@@ -325,6 +326,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxfreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcfg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
@@ -745,6 +747,20 @@ virt_vmx.obj: cpu/virt/virt_vmx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/virt/virt_vmx.c' object='virt_vmx.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o virt_vmx.obj `if test -f 'cpu/virt/virt_vmx.c'; then $(CYGPATH_W) 'cpu/virt/virt_vmx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/virt/virt_vmx.c'; fi`
+
+maxfreq.o: cpu/maxfreq/maxfreq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxfreq.o -MD -MP -MF $(DEPDIR)/maxfreq.Tpo -c -o maxfreq.o `test -f 'cpu/maxfreq/maxfreq.c' || echo '$(srcdir)/'`cpu/maxfreq/maxfreq.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/maxfreq.Tpo $(DEPDIR)/maxfreq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/maxfreq/maxfreq.c' object='maxfreq.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o maxfreq.o `test -f 'cpu/maxfreq/maxfreq.c' || echo '$(srcdir)/'`cpu/maxfreq/maxfreq.c
+
+maxfreq.obj: cpu/maxfreq/maxfreq.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxfreq.obj -MD -MP -MF $(DEPDIR)/maxfreq.Tpo -c -o maxfreq.obj `if test -f 'cpu/maxfreq/maxfreq.c'; then $(CYGPATH_W) 'cpu/maxfreq/maxfreq.c'; else $(CYGPATH_W) '$(srcdir)/cpu/maxfreq/maxfreq.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/maxfreq.Tpo $(DEPDIR)/maxfreq.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/maxfreq/maxfreq.c' object='maxfreq.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o maxfreq.obj `if test -f 'cpu/maxfreq/maxfreq.c'; then $(CYGPATH_W) 'cpu/maxfreq/maxfreq.c'; else $(CYGPATH_W) '$(srcdir)/cpu/maxfreq/maxfreq.c'; fi`
 
 version.o: kernel/version/version.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT version.o -MD -MP -MF $(DEPDIR)/version.Tpo -c -o version.o `test -f 'kernel/version/version.c' || echo '$(srcdir)/'`kernel/version/version.c

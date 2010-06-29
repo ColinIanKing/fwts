@@ -32,3 +32,13 @@ Todo
 * Add in DMI decode on version info, so we can track BIOS version
 
 * --show-tests, output should be in sorted order	DONE 28/06/2010
+
+* lot of systems w/ atom N280 CPU have a BIOS that doesn't report all possible CPU speeds (bug 422858). Is that something the fw kit can detect?
+
+Hotkey testing:
+- Get the OEM name from dmidecode such as Dell, Lenovo, Acer...
+- Get the keymap from /lib/udev/keymaps/ according to the OEM name
+- Ask user to press hotkey
+- Capture the scancode and compare to the default one in OEM keymap
+- If it is the same function, it passes. Otherwise, it fails
+- If it fails, normally BIOS generates wrong scancode. We need BIOS to fix that.

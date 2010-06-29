@@ -1,7 +1,7 @@
 SUBDIRS = lib
  
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -Wall -Werror
-AM_LDFLAGS = -lm
+AM_LDFLAGS = -lm -lpcre
 
 bin_PROGRAMS = fwts
 fwts_SOURCES = main.c \

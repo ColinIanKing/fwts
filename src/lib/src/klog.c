@@ -20,6 +20,9 @@
 #include <sys/klog.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+
+#include <pcre.h>
 
 #include "fwts.h"
 
@@ -668,7 +671,7 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		FWTS_COMPARE_REGEX,
 		LOG_LEVEL_HIGH,
-		"ACPI Error.*psparse",
+		"ACPI Error.+psparse",
 		"The ACPI parser has failed in executing some AML. "
 		"The error message above lists the method that caused this error."
 	},
@@ -908,8 +911,11 @@ enum {
 void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
-	regmatch_t matches[1];
-	regex_t pbuf;
+	const char *error;
+	int erroffset;
+	pcre *re;
+	int rc;
+	int vector[1];
 	static char *advice = 
 		"This is a bug picked up by the kernel, but as yet, the "
 		"firmware test suite has no diagnostic advice for this particular problem.";
@@ -917,11 +923,12 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	while (pattern->pattern != NULL) {
 		switch (pattern->mode) {
 		case FWTS_COMPARE_REGEX:
-			if (regcomp(&pbuf, pattern->pattern, REG_EXTENDED | REG_NOSUB) != 0) {
-				fwts_log_error(fw, "Regex %s failed to compile.", pattern->pattern);
-			}
+			re = pcre_compile(pattern->pattern, 0, &error, &erroffset, NULL);
+			if (re == NULL)
+				fwts_log_error(fw, "Regex %s failed to compile: %s.", pattern->pattern);
 			else {
-				if (regexec(&pbuf, line, 1, matches, 0) == 0) {
+				rc = pcre_exec(re, NULL, line, strlen(line), 0, 0, vector, 1);		
+				if (rc == 0) {
 					fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
 					(*errors)++;
 					if (pattern->advice != NULL) {
@@ -931,22 +938,20 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 					}
 					return;
 				}
-				regfree(&pbuf);
+				pcre_free(re);
 			}
 			break;
 		case FWTS_COMPARE_STRING:
 		default:
 			if (strstr(line, pattern->pattern) != NULL) {
-				if (regexec(&pbuf, line, 1, matches, 0) == 0) {
-					fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
-					(*errors)++;
-					if (pattern->advice != NULL) {
-						fwts_advice(fw, "%s", pattern->advice);
-					} else {
-						fwts_advice(fw, advice);
-					}
-					return;	
+				fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
+				(*errors)++;
+				if (pattern->advice != NULL) {
+					fwts_advice(fw, "%s", pattern->advice);
+				} else {
+					fwts_advice(fw, advice);
 				}
+				return;	
 			}
 		}
 		pattern++;

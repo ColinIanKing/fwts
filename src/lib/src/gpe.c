@@ -121,13 +121,9 @@ void fwts_gpe_test(fwts_framework *fw, fwts_gpe *gpes_start, fwts_gpe *gpes_end,
 	}
 	free(deltas);
 	
-	if (sci > 0)
-		fwts_passed(fw, "Detected %d SCI interrupts.", sci);
-	else
+	if (sci == 0)
 		fwts_failed_high(fw, "Did not detect any SCI interrupts.");
 
-	if (gpe > 0)
-		fwts_passed(fw, "Detected %d GPE interrupts.", gpe);
-	else
+	if (gpe == 0)
 		fwts_failed_high(fw, "Did not detect any GPE interrupts.");
 }

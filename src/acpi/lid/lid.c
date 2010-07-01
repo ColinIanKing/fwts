@@ -198,9 +198,9 @@ static int lid_test3(fwts_framework *fw)
 
 	fwts_printf(fw, "==== Please close laptop lid for 2 seconds and then re-open. ====\n");
 
-	if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
-		return ret;
 	if ((ret = lid_test_state(fw, "close")) != FWTS_OK)
+		return ret;
+	if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
 		return ret;
 
 	return FWTS_OK;
@@ -216,9 +216,9 @@ static int lid_test4(fwts_framework *fw)
 	for (i=1;i<=3;i++) {
 		fwts_printf(fw, "==== %d of %d: Please close laptop lid for 2 seconds and then re-open. ====\n", i,3);
 
-		if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
-			return ret;
 		if ((ret = lid_test_state(fw, "close")) != FWTS_OK)
+			return ret;
+		if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
 			return ret;
 	}
 

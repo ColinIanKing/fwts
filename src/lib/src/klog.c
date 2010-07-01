@@ -64,9 +64,9 @@ int fwts_klog_scan(fwts_framework *fw,
 		   fwts_klog_scan_func scan_func,
 		   fwts_klog_progress_func progress_func,
 		   void *private, 
-		   int *errors)
+		   int *match)
 {
-	*errors = 0;
+	*match= 0;
 	char *prev;
 	fwts_list_element *item;
 	int i;
@@ -82,7 +82,7 @@ int fwts_klog_scan(fwts_framework *fw,
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
 
-		scan_func(fw, ptr, prev, private, errors);
+		scan_func(fw, ptr, prev, private, match);
 		if (progress_func  && ((i % 25) == 0))
 			progress_func(fw, 100 * i / fwts_list_len(klog));
 		prev = ptr;
@@ -974,4 +974,30 @@ int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress,
 {
 	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
 			      progress, common_error_warning_patterns, errors);
+}
+
+static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, char *prev, void *pattern, int *match)
+{
+	const char *error;
+	int erroffset;
+	pcre *re;
+	int rc;
+	int vector[1];
+
+	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
+	if (re != NULL) {
+		rc = pcre_exec(re, NULL, line, strlen(line), 0, 0, vector, 1);
+		if (rc == 0)
+			(*match)++;
+		pcre_free(re);
+	}
+}
+
+int fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern)
+{
+	int found = 0;
+
+	fwts_klog_scan(fw, klog, fwts_klog_regex_find_callback, NULL, pattern, &found);
+
+	return found;
 }

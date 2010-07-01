@@ -55,5 +55,7 @@ int        fwts_klog_clear(void);
 int        fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
 int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
 int        fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
+int	   fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern);
+
 
 #endif

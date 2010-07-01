@@ -51,10 +51,10 @@ am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
 	acpid.$(OBJEXT) interactive.$(OBJEXT) binpaths.$(OBJEXT) \
 	cpu.$(OBJEXT) checkeuid.$(OBJEXT) dsdt.$(OBJEXT) \
 	e820.$(OBJEXT) fileio.$(OBJEXT) framework.$(OBJEXT) \
-	formatting.$(OBJEXT) get.$(OBJEXT) iasl.$(OBJEXT) \
-	klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) set.$(OBJEXT) \
-	stringextras.$(OBJEXT) text_list.$(OBJEXT) wakealarm.$(OBJEXT) \
-	summary.$(OBJEXT) virt.$(OBJEXT)
+	formatting.$(OBJEXT) get.$(OBJEXT) gpe.$(OBJEXT) \
+	iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) \
+	set.$(OBJEXT) stringextras.$(OBJEXT) text_list.$(OBJEXT) \
+	wakealarm.$(OBJEXT) summary.$(OBJEXT) virt.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -172,6 +172,7 @@ libtestsuite_a_SOURCES = \
 	framework.c \
 	formatting.c \
 	get.c 	\
+	gpe.c \
 	iasl.c \
 	klog.c \
 	log.c \
@@ -242,6 +243,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formatting.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/framework.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iasl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interactive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@

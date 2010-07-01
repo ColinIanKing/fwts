@@ -17,41 +17,26 @@
  *
  */
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <dirent.h>
 
-#include "fwts_version.h"
+#ifndef __FWTS_GPE_H__
+#define __FWTS_GPE_H__
 
-#include "fwts_types.h"
+#define FWTS_GPE_PATH	"/sys/firmware/acpi/interrupts"
 
-#include "fwts_binpaths.h"
+typedef struct {
+	char *name;
+	int count;
+} fwts_gpe;
 
-#include "fwts_framework.h"
-#include "fwts_log.h"
-#include "fwts_list.h"
-
-#include "fwts_text_list.h"
-
-#include "fwts_set.h"
-#include "fwts_get.h"
-
-#include "fwts_acpi.h"
-#include "fwts_acpid.h"
-#include "fwts_checkeuid.h"
-#include "fwts_cpu.h"
-#include "fwts_e820.h"
-#include "fwts_dsdt.h"
-#include "fwts_fileio.h"
-#include "fwts_gpe.h"
-#include "fwts_iasl.h"
-#include "fwts_klog.h"
-#include "fwts_pipeio.h"
-#include "fwts_stringextras.h"
-#include "fwts_wakealarm.h"
-#include "fwts_virt.h"
-#include "fwts_formatting.h"
-#include "fwts_summary.h"
-
-#include "fwts_interactive.h"
+void fwts_gpe_free(fwts_gpe *gpe, int count);
+int  fwts_gpe_read(fwts_gpe **gpes);
+int  fwts_gpe_delta(int **gpe_delta, fwts_gpe *start, fwts_gpe *end, int n);
+void fwts_gpe_test(fwts_framework *fw, fwts_gpe *start, fwts_gpe *end, int n);
 
 #endif

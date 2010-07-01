@@ -15,6 +15,7 @@ libtestsuite_a_SOURCES = \
 	framework.c \
 	formatting.c \
 	get.c 	\
+	gpe.c \
 	iasl.c \
 	klog.c \
 	log.c \

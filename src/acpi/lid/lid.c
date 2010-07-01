@@ -54,6 +54,7 @@ static char *lid_headline(void)
 	return "Interactive lid button test.";
 }
 
+
 void lid_check_field(char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -77,6 +78,24 @@ void lid_check_field(char *field, char *contents, int *matching, int *not_matchi
 	} while (entry);
 }
 
+void lid_check_field_poll(char *field, char *contents, int *matching, int *not_matching)
+{
+	int i;
+
+	int tmp_matching = 0;
+	int tmp_not_matching = 0;
+
+	for (i=0;i<100;i++) {
+		lid_check_field(field, contents, &tmp_matching, &tmp_not_matching);
+		usleep(10);
+	
+		if (tmp_matching != 0)
+			break;
+	}
+	*matching = tmp_matching;
+	*not_matching = tmp_not_matching;
+}
+
 static int lid_test1(fwts_framework *fw)
 {
 	int matching = 0;
@@ -84,7 +103,7 @@ static int lid_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "Test LID buttons are reporting they are really Lid Switches.");
 
-	lid_check_field("info", "Lid Switch", &matching, &not_matching);
+	lid_check_field_poll("info", "Lid Switch", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
 		fwts_failed_low(fw, "Failed to detect a Lid Switch in LID info field.");
@@ -104,76 +123,104 @@ static int lid_test2(fwts_framework *fw)
 	fwts_printf(fw, "==== Make sure laptop lid is open. ====\n");
 	fwts_press_enter(fw);
 
-	lid_check_field("state", "open", &matching, &not_matching);
+	lid_check_field_poll("state", "open", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed_high(fw, "Detected a closed LID state.");
+		fwts_failed_high(fw, "Detected a closed LID state in %s.", LID_PATH);
 	else
-		fwts_passed(fw, "Detected open LID state.");
+		fwts_passed(fw, "Detected open LID state in %s.", LID_PATH);
 
 	return FWTS_OK;
 }
 
-static int lid_test3(fwts_framework *fw)
+static int lid_test_state(fwts_framework *fw, char *state)
 {
+	int gpe_count = 0;
 	int fd;
+	int matching = 0;
+	int not_matching = 0;
+	int events = 0;
 	int len;
 	char *buffer;
-	int matching;
-	int not_matching;
-	int events;
+	int i;
 
-	fwts_log_info(fw, "Test LID buttons report close correcly.");
+	fwts_gpe *gpes_start;
+	fwts_gpe *gpes_end;
 
-	fwts_printf(fw, "==== Please close laptop lid and then re-open. ====\n");
+	if ((gpe_count = fwts_gpe_read(&gpes_start)) == FWTS_ERROR) {
+		fwts_log_error(fw, "Cannot read GPEs.");
+		return FWTS_ERROR;
+	}
 
 	if ((fd = acpi_even_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
 
-	events = 0;
-	matching = 0;
-	not_matching = 0;
-
-	while ((buffer = acpi_event_read(fd, &len, 20)) != NULL) {
-		if (strstr(buffer, "button/lid")) {
-			events++;
-			lid_check_field("state", "closed", &matching, &not_matching);
-			break;
+	for (i=0;i<=20;i++) {
+		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL) {
+			if (strstr(buffer, "button/lid")) {
+				events++;
+				lid_check_field_poll("state", state, &matching, &not_matching);
+				break;
+			}
+			free(buffer);
 		}
-		free(buffer);
+		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	if (events == 0)
-		fwts_failed_high(fw, "Did not detect any ACPI LID events while waiting for LID close.");
-	else 
-		if ((matching == 0) || (not_matching > 0))
-			fwts_failed_high(fw, "Could not detect lid closed state.");
-		else
-			fwts_passed(fw, "Detected lid closed state.");
-
-	events = 0;
-	matching = 0;
-	not_matching = 0;
-
-	while ((buffer = acpi_event_read(fd, &len, 10)) != NULL) {
-		events++;
-		if (strstr(buffer, "button/lid")) {
-			events++;
-			lid_check_field("state", "open", &matching, &not_matching);
-			break;
-		}
-		free(buffer);
-	}
-	if (events == 0)
-		fwts_failed_high(fw, "Did not detect any ACPI LID events while waiting for LID open.");
-	else
-		if ((matching == 0) || (not_matching > 0))
-			fwts_failed_high(fw, "Could not detect lid re-opening state.");
-		else
-			fwts_passed(fw, "Detected lid re-opening state.");
-
 	acpi_even_close(fd);
+
+	if ((gpe_count = fwts_gpe_read(&gpes_end)) == FWTS_ERROR) {
+		fwts_log_error(fw, "Cannot read GPEs.");
+	}
+
+	fwts_gpe_test(fw, gpes_start, gpes_end, gpe_count);
+	fwts_gpe_free(gpes_start, gpe_count);
+	fwts_gpe_free(gpes_end, gpe_count);
+
+	if (events == 0)
+		fwts_failed_high(fw, "Did not detect any ACPI LID events while waiting for to LID %s.", state);
+	else 
+		fwts_passed(fw, "Detected ACPI LID events while waiting for LID to %s.", state);
+		if ((matching == 0) || (not_matching > 0))
+			fwts_failed_high(fw, "Could not detect lid %s state in %s.", state, LID_PATH);
+		else
+			fwts_passed(fw, "Detected lid %s state.", state, LID_PATH);
+
+	return FWTS_OK;
+}
+
+
+static int lid_test3(fwts_framework *fw)
+{
+	int ret;
+	fwts_log_info(fw, "Test LID buttons on a single open/close.");
+
+	fwts_printf(fw, "==== Please close laptop lid for 2 seconds and then re-open. ====\n");
+
+	if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
+		return ret;
+	if ((ret = lid_test_state(fw, "close")) != FWTS_OK)
+		return ret;
+
+	return FWTS_OK;
+}
+
+static int lid_test4(fwts_framework *fw)
+{
+	int ret;
+	int i;
+	fwts_log_info(fw, "Test LID buttons on multiple open/close events.");
+	fwts_log_info(fw, "Some machines may have EC or ACPI faults that cause detection of multiple open/close events to fail.");
+
+	for (i=1;i<=3;i++) {
+		fwts_printf(fw, "==== %d of %d: Please close laptop lid for 2 seconds and then re-open. ====\n", i,3);
+
+		if ((ret = lid_test_state(fw, "open")) != FWTS_OK)
+			return ret;
+		if ((ret = lid_test_state(fw, "close")) != FWTS_OK)
+			return ret;
+	}
 
 	return FWTS_OK;
 }
@@ -182,6 +229,7 @@ static fwts_framework_tests lid_tests[] = {
 	lid_test1,
 	lid_test2,
 	lid_test3,
+	lid_test4,
 	NULL
 };
 

@@ -843,7 +843,7 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		"PM: Swap header not found", 
 		"An attempt to write a hibernate image to disk failed because "
 		"a valid swap device header could not be found. Make sure there is a "
-		"formatted swap device on the machine."
+		"formatted swap device on the machine and it is added using swapon -a."
 	},
         {
 		FWTS_COMPARE_STRING,
@@ -851,7 +851,7 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		"PM: Cannot find swap device", 
 		"An attempt to write a hibernate image to disk failed because "
 		"the swap device could not be found. Make sure there is a "
-		"formatted swap device on the machine."
+		"formatted swap device on the machine and it is added using swapon -a."
 	},
         {
 		FWTS_COMPARE_STRING,

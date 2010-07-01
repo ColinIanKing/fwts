@@ -833,19 +833,25 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 		FWTS_COMPARE_STRING,
 		LOG_LEVEL_CRITICAL,
 		"PM: Adding page to bio failed at",
-		NULL
+		"An attempt to write the hibernate image to disk failed "
+		"because a write BIO operation failed. This is usually "
+		"a result of some physical hardware problem."
 	},
         {	
 		FWTS_COMPARE_STRING,
 		LOG_LEVEL_CRITICAL,
 		"PM: Swap header not found", 
-		NULL
+		"An attempt to write a hibernate image to disk failed because "
+		"a valid swap device header could not be found. Make sure there is a "
+		"formatted swap device on the machine."
 	},
         {
 		FWTS_COMPARE_STRING,
 		LOG_LEVEL_CRITICAL,
 		"PM: Cannot find swap device", 
-		NULL,
+		"An attempt to write a hibernate image to disk failed because "
+		"the swap device could not be found. Make sure there is a "
+		"formatted swap device on the machine."
 	},
         {
 		FWTS_COMPARE_STRING,

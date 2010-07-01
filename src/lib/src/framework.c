@@ -325,6 +325,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 				fw->sub_tests.passed, fw->sub_tests.failed, 
 				fw->sub_tests.warning, fw->sub_tests.aborted);
 		}
+		fwts_log_nl(fw);
 	}
 	fw->total.aborted += fw->test_run.aborted;
 	fw->total.failed  += fw->test_run.failed;

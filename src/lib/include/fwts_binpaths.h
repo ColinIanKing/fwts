@@ -23,7 +23,6 @@
 #define	FWTS_LSPCI_PATH		"/usr/bin/lspci"
 #define	FWTS_DMIDECODE_PATH	"/usr/sbin/dmidecode"
 #define FWTS_IASL_PATH		"/usr/bin/iasl"
-#define FWTS_ACPIDUMP_PATH	"/usr/bin/acpidump"
 
 #include "fwts_framework.h"
 

@@ -53,9 +53,6 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
                 return NULL;
 
-	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
-                return NULL;
-
 	if ((data = fwts_acpi_table_load(fw, table, which, &len)) == NULL)
 		return NULL;
 

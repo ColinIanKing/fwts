@@ -390,7 +390,6 @@ static void fwts_framework_close(fwts_framework *fw)
 		      (fw->total.warning > 0));
 
 	free(fw->iasl);
-	free(fw->acpidump);
 	free(fw->dmidecode);
 	free(fw->lspci);
 	free(fw->debug_logname);
@@ -484,7 +483,6 @@ static void fwts_framework_syntax(char **argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
-	printf("--acpidump=path\t\tSpecify path to acpidump.\n");
 	printf("-b, --batch\t\tJust run non-interactive tests.\n");
 	printf("--debug-output=file\tOutput debug to a named file.\n");
 	printf("\t\t\tFilename can also be stdout or stderr.\n");	
@@ -550,7 +548,6 @@ int fwts_framework_args(int argc, char **argv)
 		{ "no-s4", 0, 0, 0 },
 		{ "log-width", 1, 0, 0 },
 		{ "lspci", 1, 0, 0, },
-		{ "acpidump", 1, 0, 0 },
 		{ "batch", 0, 0, 0 },
 		{ "interactive", 0, 0, 0 },
 		{ "force-clean", 0, 0, 0 },
@@ -642,19 +639,16 @@ int fwts_framework_args(int argc, char **argv)
 			case 19: /* --lspci=pathtolspci */
 				fw->lspci = strdup(optarg);
 				break;
-			case 20: /* --acpidump=pathtoacpidump */
-				fw->acpidump= strdup(optarg);
-				break;
-			case 21: /* --batch */
+			case 20: /* --batch */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 				break;
-			case 22: /* --interactive */
+			case 21: /* --interactive */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
 				break;
-			case 23: /* --force-clean */
+			case 22: /* --force-clean */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
 				break;
-			case 24: /* --version */
+			case 23: /* --version */
 				fwts_framework_show_version(argv);
 				exit(EXIT_SUCCESS);
 				break;
@@ -701,8 +695,6 @@ int fwts_framework_args(int argc, char **argv)
 
 	if (!fw->iasl)
 		fw->iasl = strdup(FWTS_IASL_PATH);
-	if (!fw->acpidump)
-		fw->acpidump = strdup(FWTS_ACPIDUMP_PATH);
 	if (!fw->dmidecode)
 		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
 	if (!fw->lspci)
@@ -713,7 +705,6 @@ int fwts_framework_args(int argc, char **argv)
 		fw->results_logname = strdup(RESULTS_LOG);
 
 	if ((fw->iasl == NULL) ||
-	    (fw->acpidump == NULL) ||
 	    (fw->dmidecode == NULL) ||
 	    (fw->lspci == NULL) || 
 	    (fw->debug_logname == NULL) ||

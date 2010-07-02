@@ -40,9 +40,6 @@ static int syntaxcheck_init(fwts_framework *fw)
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
 
-	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
-		return FWTS_ERROR;
-
 	return FWTS_OK;
 }
 

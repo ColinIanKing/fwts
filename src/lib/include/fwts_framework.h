@@ -56,7 +56,6 @@ typedef struct {
 
 	char *iasl;				/* path to iasl */
 	char *dmidecode;			/* path to dmidecode */
-	char *acpidump;				/* path to acpidump */
 	char *lspci;				/* path to lspci */
 
 	char *dsdt;				/* path to dsdt file */

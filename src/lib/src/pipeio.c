@@ -83,9 +83,10 @@ char *fwts_pipe_read(int fd, int *length)
 
 	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
 		if (n < 0) {
-			if (errno != EINTR && errno != EAGAIN)
+			if (errno != EINTR && errno != EAGAIN) {
 				free(ptr);
 				return NULL;
+			}
 		}
 		else {
 			ptr = realloc(ptr, size + n + 1);

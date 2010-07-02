@@ -36,7 +36,7 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	char cwd[PATH_MAX];
 	int len;
 	int fd;
-	char *data;
+	uint8 *data;
 	pid_t pid;
 	fwts_list *output;
 
@@ -56,19 +56,8 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, char *table, int which)
 	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
                 return NULL;
 
-	snprintf(tmpbuf, sizeof(tmpbuf), "%s -b -t %s -s %d", fw->acpidump, table, which);
-	fd = fwts_pipe_open(tmpbuf, &pid);
-	if (fd < 0) {
-		fwts_log_error(fw, "exec of %s failed", tmpbuf);
+	if ((data = fwts_acpi_table_load(fw, table, which, &len)) == NULL)
 		return NULL;
-	}
-	data = fwts_pipe_read(fd, &len);
-	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
-		if (data)
-			free(data);
-		fwts_log_error(fw, "Could not exec %s", fw->acpidump);
-		return NULL;
-	}
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {

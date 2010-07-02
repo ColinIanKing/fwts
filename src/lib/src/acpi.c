@@ -21,36 +21,81 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include "fwts.h"
 
+#define FWTS_ACPI_TABLES_PATH	"/sys/firmware/acpi/tables"
+
+static int fwts_acpi_table_open(const char *name, int which)
+{
+	char filename[PATH_MAX];
+	int fd;
+
+	if (which > 0)
+		snprintf(filename, sizeof(filename), "%s/dynamic/%s%d", 
+			FWTS_ACPI_TABLES_PATH, name, which);
+	else		
+		snprintf(filename, sizeof(filename), "%s/%s", 
+			FWTS_ACPI_TABLES_PATH, name);
+
+	if ((fd = open(filename, O_RDONLY)) < 0) {
+		if (which > 0) {
+			/* may not be in dynamic directory, try again */
+			snprintf(filename, sizeof(filename), "%s/%s%d", 
+				FWTS_ACPI_TABLES_PATH, name, which);
+			fd = open(filename, O_RDONLY);
+		}
+	}
+	return fd;
+}
+
+static uint8 *fwts_acpi_table_read(int fd, int *length)
+{
+	uint8 *ptr = NULL;
+	int n;
+	int size = 0;
+	char buffer[4096];	
+
+	*length = 0;
+	ptr = NULL;
+
+	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
+		if (n < 0) {
+			if (errno != EINTR && errno != EAGAIN) {
+				free(ptr);
+				return NULL;
+			}
+		}
+		else {
+			ptr = (uint8*)realloc(ptr, size + n + 1);
+			memcpy(ptr + size, buffer, n);
+			size += n;
+			*(ptr+size) = 0;
+		}
+	}
+	*length = size;
+	return ptr;
+}
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int *size)
 {
-	char buffer[1024];
-	pid_t pid;
 	int fd;
 	uint8 *data;
-	fwts_acpi_table_header hdr;
 	*size = 0;
 	int len;
 	int i;
-	unsigned char checksum = 0;
+	uint8 checksum = 0;
+	fwts_acpi_table_header hdr;
 
-	if (fwts_check_executable(fw, fw->acpidump, "acpidump"))
+	if ((fd = fwts_acpi_table_open(name, which)) < 0)
 		return NULL;
 
-	snprintf(buffer, sizeof(buffer), "%s -t %s -b -s %d", fw->acpidump, name, which);
-	if ((fd = fwts_pipe_open(buffer, &pid)) < 0)
-		return NULL;
-
-	data = (uint8*) fwts_pipe_read(fd, &len);
-	if (fwts_pipe_close(fd, pid) == FWTS_EXEC_ERROR) {
-		fwts_log_error(fw, "Could not exec %s, is acpidump installed?", fw->acpidump);
-		if (data)
-			free(data);
-		return NULL;
-	}
+	data = fwts_acpi_table_read(fd, &len);
+	close(fd);
 
 	if (data == NULL)
 		return NULL;

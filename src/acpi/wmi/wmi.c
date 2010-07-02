@@ -49,12 +49,10 @@ typedef struct {
 	uint8	flags;				/* fwts_wmi_flags */
 } __attribute__ ((packed)) fwts_guid_info;
 
-
 static char *wmi_headline(void)
 {
 	return "Extract and analyse Windows Management Instrumentation (WMI).";
 }
-
 
 static int wmi_init(fwts_framework *fw)
 {
@@ -96,6 +94,7 @@ char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
 {
 	int i;
+	int advice_given = 0;
 
 	fwts_guid_info *info = (fwts_guid_info *)wdg_data;
 
@@ -114,16 +113,19 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
 			fwts_log_info(fw, "Found WMI method WM%c%c with GUID %s\n", info->obj_id[0], info->obj_id[1], guidstr);
 		} else if (info->flags & FWTS_WMI_EVENT) {
 			fwts_log_info(fw, "Found WMI event with GUID: %s\n", guidstr);
-			fwts_log_nl(fw);
-			fwts_log_advice(fw, 	
-				"ADVICE: A WMI driver probably needs to be written for this event.");
-			fwts_log_advice(fw,
-				"It can checked for using: wmi_has_guid(\"%s\").\n", guidstr);
-			fwts_log_advice(fw, 
-				"One can install a notify handler using wmi_install_notify_handler(\"%s\", handler, NULL).  ", guidstr);
-			fwts_log_advice(fw, 
-				"http://lwn.net/Articles/391230 describes how to write an appropriate driver.");
-			fwts_log_nl(fw);
+			if (!advice_given) {
+				advice_given = 1;
+				fwts_log_nl(fw);
+				fwts_log_advice(fw, 	
+					"ADVICE: A WMI driver probably needs to be written for this event.");
+				fwts_log_advice(fw,
+					"It can checked for using: wmi_has_guid(\"%s\").\n", guidstr);
+				fwts_log_advice(fw, 
+					"One can install a notify handler using wmi_install_notify_handler(\"%s\", handler, NULL).  ", guidstr);
+				fwts_log_advice(fw, 
+					"http://lwn.net/Articles/391230 describes how to write an appropriate driver.");
+				fwts_log_nl(fw);
+			}
 		} else {
 			char *flags = wmi_wdg_flags_to_text(info->flags);
 			fwts_log_info(fw, "Found WMI object ID %c%c, notifier ID: %02X, GUID %s\n", 

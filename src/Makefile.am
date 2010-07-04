@@ -32,6 +32,7 @@ fwts_SOURCES = main.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
 	cpu/maxfreq/maxfreq.c \
+	cpu/cpufreq/cpufreq.c \
 	kernel/version/version.c
 
 fwts_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a

@@ -64,7 +64,7 @@ int fwts_gpe_read(fwts_gpe **gpes)
 				if (((*gpes)[n].name  = strdup(entry->d_name)) == NULL)
 					goto error;
 				
-				sprintf(path, "%s/%s", FWTS_GPE_PATH, entry->d_name);
+				snprintf(path, sizeof(path), "%s/%s", FWTS_GPE_PATH, entry->d_name);
 				data = fwts_get(path);
 				if (data)
 					(*gpes)[n].count = atoi(data);

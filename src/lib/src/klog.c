@@ -152,6 +152,12 @@ static fwts_klog_pattern common_error_warning_patterns[] = {
 		LOG_LEVEL_CRITICAL,
 		"Disabling IRQ",
 		"The kernel detected an irq storm. This is most probably an IRQ routing bug."
+	},
+	{
+		FWTS_COMPARE_STRING,
+		0,
+		NULL,
+		NULL
 	}
 };
 

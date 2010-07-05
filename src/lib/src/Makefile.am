@@ -25,6 +25,7 @@ libtestsuite_a_SOURCES = \
 	text_list.c \
 	wakealarm.c \
 	summary.c \
+	microcode.c \
 	virt.c
 
 

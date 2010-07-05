@@ -101,7 +101,7 @@ static void get_cstates(char *dir, fwts_cstates *state)
 	for (i=0; i<MAX_CSTATE; i++)
 		state->used[i] = -1;
 
-	sprintf(path, "%s/power", dir);
+	snprintf(path, sizeof(path), "%s/power", dir);
 	if ((file = fopen(path, "r")) == NULL)
 		return;
 
@@ -174,10 +174,11 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 	}
 
 	if (warned) {
-		sprintf(buffer, "Processor %i doesn't increment C-state count in all C-states, failed in ", cpu);
+		snprintf(buffer, sizeof(buffer),
+			"Processor %i doesn't increment C-state count in all C-states, failed in ", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE; i++) {
 			if ((initial.used[i]>0) && (initial.warned[i] != 0))  {
-				sprintf(tmp, "C%i ",i);
+				snprintf(tmp, sizeof(tmp), "C%i ",i);
 				strcat(buffer, tmp);
 			}
 		}
@@ -185,11 +186,11 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 	}
 #if 0
 	else {
-		sprintf(buffer, "Processor %i incremented C-states ", cpu);
+		snprintf(buffer, sizeof(buffer), "Processor %i incremented C-states ", cpu);
 		for (i=0; i<MAX_CSTATE; i++) {
 printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 			if ((initial.used[i]>0) && (initial.warned[i] == 0))  {
-				sprintf(tmp, "C%i ",i);
+				snprintf(tmp, sizeof(tmp), "C%i ",i);
 				strcat(buffer, tmp);
 			}
 		}
@@ -199,18 +200,18 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 
 	if (keepgoing) {
 		/* Not a failure, but not a pass either! */
-		sprintf(buffer,"Processor %i has not reached ", cpu);
+		snprintf(buffer, sizeof(buffer), "Processor %i has not reached ", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
-			sprintf(tmp, "C%i ", i);
+			snprintf(tmp, sizeof(tmp), "C%i ", i);
 			if (initial.used[i] == 0)
 				strcat(buffer, tmp);
 		}
 		strcat(buffer, "during tests. This is not a failure, but also it is not a complete and thorough test.");
 		fwts_log_info(fw, "%s", buffer);
 	} else {
-		sprintf(buffer,"Processor %i has reached all C-states", cpu);
+		snprintf(buffer, sizeof(buffer), "Processor %i has reached all C-states", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
-			sprintf(tmp, "C%i ", i);
+			snprintf(tmp, sizeof(tmp), "C%i ", i);
 			if (initial.used[i]==0) {
 				if (first)
 					strcat(buffer, ": ");
@@ -268,7 +269,7 @@ static int cstates_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>3) {
 			char cpupath[PATH_MAX];
 			int cpu;
-			sprintf(cpupath, "%s/%s", PROCESSOR_PATH, entry->d_name);
+			snprintf(cpupath, sizeof(cpupath), "%s/%s", PROCESSOR_PATH, entry->d_name);
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			do_cpu(fw, i, cpus, cpu, cpupath);
 			i++;

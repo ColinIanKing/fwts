@@ -31,13 +31,8 @@
 
 #include "fwts.h"
 
-#define BUFFER_SIZE	4096
-#define MICROCODE_SIZE (128*1024) 	/* initial size, expanded as needed */
-#define FILENAME_MAXLEN 2048
-
-#define MICROCODE_DEVICE_DEFAULT	"/dev/cpu/microcode"
-#define MICROCODE_FILE_DEFAULT		"/usr/share/misc/intel-microcode.dat"
-
+#define BUFFER_SIZE	(4096)
+#define MICROCODE_SIZE 	(128*1024) 	/* initial size, expanded as needed */
 
 int fwts_update_microcode(fwts_framework *fw, const char *device, const char *filename)
 {
@@ -66,7 +61,7 @@ int fwts_update_microcode(fwts_framework *fw, const char *device, const char *fi
 		if (microcode_size < pos + 4) {
                     microcode_size *= 2;
                     microcode = realloc(microcode,
-                                       microcode_size * sizeof(unsigned));
+                                       microcode_size * sizeof(unsigned int));
 			if (microcode == NULL) {
 				fwts_log_error(fw, "Cannot allocate memory.");
 				fclose(fp);
@@ -78,7 +73,7 @@ int fwts_update_microcode(fwts_framework *fw, const char *device, const char *fi
 		 * lines start with a 0
 		 */
 		if (*line_buffer == '0') {
-                     int scanned;
+			int scanned;
 			scanned = sscanf(line_buffer, "%x, %x, %x, %x",
 					microcode + pos,
 					microcode + pos + 1,
@@ -93,10 +88,9 @@ int fwts_update_microcode(fwts_framework *fw, const char *device, const char *fi
 			pos += 4;
 		}
 	}
-
 	fclose(fp);
 
-	length = pos * sizeof(unsigned);
+	length = pos * sizeof(unsigned int);
 
 	if ((fd = open(device, O_WRONLY)) == -1) {
 		fwts_log_error(fw, "Cannot open %s for writing errno=%d (%s)\n",

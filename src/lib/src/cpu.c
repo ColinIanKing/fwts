@@ -252,13 +252,13 @@ static void fwts_cpu_consume_cycles(void)
 	}
 }
 
-static void fwts_cpu_consume_cleanup(void)
+void fwts_cpu_consume_complete(void)
 {
 	fwts_cpu_consume_kill();
 	free(fwts_cpu_pids);	
 }
 
-int fwts_cpu_consume(const int seconds)
+int fwts_cpu_consume_start(void)
 {
 	int i;
 
@@ -280,16 +280,24 @@ int fwts_cpu_consume(const int seconds)
 			break;
 		case -1:
 			/* Went wrong */
-			fwts_cpu_consume_cleanup();
+			fwts_cpu_consume_complete();
 			return FWTS_ERROR;
 		default:
 			fwts_cpu_pids[i] = pid;
 			break;
 		}
 	}
+	return FWTS_OK;
+}
+
+int fwts_cpu_consume(const int seconds)
+{
+	if (fwts_cpu_consume_start() != FWTS_OK)
+		return FWTS_ERROR;
+
 	sleep(seconds);
 
-	fwts_cpu_consume_cleanup();
+	fwts_cpu_consume_complete();
 
 	return FWTS_OK;
 }

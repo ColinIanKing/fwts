@@ -37,5 +37,7 @@ void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu);
 
 int fwts_cpu_enumerate(void);
 int fwts_cpu_consume(const int seconds);
+int fwts_cpu_consume_start(void);
+void fwts_cpu_consume_complete(void);
 
 #endif

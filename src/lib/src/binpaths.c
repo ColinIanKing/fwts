@@ -31,7 +31,7 @@ int fwts_check_executable(fwts_framework *fw, const char *path, const char *name
 {
 	struct stat statbuf;
 
-	if (stat(fw->iasl, &statbuf)) {
+	if (stat(path, &statbuf)) {
 		fwts_log_error(fw, "ERROR: Cannot find %s, make sure %s is installed.", path, name);
 		return FWTS_ERROR;
 	}

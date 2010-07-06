@@ -21,7 +21,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-
 #include <pcre.h>
 
 #include "fwts.h"
@@ -912,21 +911,9 @@ static fwts_klog_pattern pm_error_warning_patterns[] = {
 
 };
 
-enum {
-	REGEX_NOT_COMPILED = 0,
-	REGEX_COMPILED1    = 1,
-	REGEX_ERROR1       = 2,
-	REGEX_COMPILED2    = 4,
-	REGEX_ERROR2       = 8,
-};
-
 void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
-	const char *error;
-	int erroffset;
-	pcre *re;
-	int rc;
 	int vector[1];
 	static char *advice = 
 		"This is a bug picked up by the kernel, but as yet, the "
@@ -935,22 +922,14 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	while (pattern->pattern != NULL) {
 		switch (pattern->mode) {
 		case FWTS_COMPARE_REGEX:
-			re = pcre_compile(pattern->pattern, 0, &error, &erroffset, NULL);
-			if (re == NULL)
-				fwts_log_error(fw, "Regex %s failed to compile: %s.", pattern->pattern);
-			else {
-				rc = pcre_exec(re, NULL, line, strlen(line), 0, 0, vector, 1);		
-				if (rc == 0) {
-					fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
-					(*errors)++;
-					if (pattern->advice != NULL) {
-						fwts_advice(fw, "%s", pattern->advice);
-					} else {
-						fwts_advice(fw, advice);
-					}
-					return;
-				}
-				pcre_free(re);
+			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
+				fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
+				(*errors)++;
+				if (pattern->advice != NULL)
+					fwts_advice(fw, "%s", pattern->advice);
+				else
+					fwts_advice(fw, advice);
+				return;
 			}
 			break;
 		case FWTS_COMPARE_STRING:
@@ -958,11 +937,10 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 			if (strstr(line, pattern->pattern) != NULL) {
 				fwts_failed_level(fw, pattern->level, "Kernel message: %s", line);
 				(*errors)++;
-				if (pattern->advice != NULL) {
+				if (pattern->advice != NULL)
 					fwts_advice(fw, "%s", pattern->advice);
-				} else {
+				else
 					fwts_advice(fw, advice);
-				}
 				return;	
 			}
 		}
@@ -970,22 +948,52 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	}
 }
 
+static void fwts_klog_compile(fwts_framework *fw, fwts_klog_pattern *pattern)
+{
+	const char *error;
+	int erroffset;
+
+	while (pattern->pattern != NULL) {
+		if (pattern->re == NULL)
+			if ((pattern->re = pcre_compile(pattern->pattern, 0, &error, &erroffset, NULL)) == NULL)
+				fwts_log_error(fw, "Regex %s failed to compile: %s.", pattern->pattern, error);
+		pattern++;
+	}
+}
+
+static void fwts_klog_compile_free(fwts_klog_pattern *pattern)
+{
+	while (pattern->pattern != NULL) {
+		pcre_free(pattern->re);
+		pattern->re = NULL;
+		pattern++;
+	}
+}
+
+static int fwts_klog_check(fwts_framework *fw, fwts_klog_pattern *pattern, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
+{
+	int ret;
+
+	fwts_klog_compile(fw, pattern);
+	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, pattern, errors);
+	fwts_klog_compile_free(pattern);
+	
+	return ret;
+}
+
 int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {	
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
-			      progress, firmware_error_warning_patterns, errors);
+	return fwts_klog_check(fw, firmware_error_warning_patterns, progress, klog, errors);
 }
 
 int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
-			      progress, pm_error_warning_patterns, errors);
+	return fwts_klog_check(fw, pm_error_warning_patterns, progress, klog, errors);
 }
 
 int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors)
 {
-	return fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, 
-			      progress, common_error_warning_patterns, errors);
+	return fwts_klog_check(fw, common_error_warning_patterns, progress, klog, errors);
 }
 
 static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, char *prev, void *pattern, int *match)

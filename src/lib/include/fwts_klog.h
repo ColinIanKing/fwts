@@ -21,7 +21,7 @@
 #define __FWTS_KLOG_H__
 
 #include <sys/types.h>
-#include "regex.h"
+#include <pcre.h>
 
 #include "fwts_list.h"
 #include "fwts_framework.h"
@@ -29,6 +29,7 @@
 
 #define KERN_WARNING            0x00000001
 #define KERN_ERROR              0x00000002
+
 
 typedef enum {
 	FWTS_COMPARE_REGEX = 'r',
@@ -40,6 +41,7 @@ typedef struct {
 	fwts_log_level level;
         char *pattern;
 	char *advice;
+	pcre *re;
 } fwts_klog_pattern;
 
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);

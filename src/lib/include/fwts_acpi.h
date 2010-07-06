@@ -20,6 +20,8 @@
 #ifndef __FWTS_ACPI_H__
 #define __FWTS_ACPI_H__
 
+#define FWTS_ACPI_TABLES_PATH   "/sys/firmware/acpi/tables"
+
 #include "fwts_types.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"

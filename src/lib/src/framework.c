@@ -489,6 +489,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
 	printf("--dsdt=file\t\tSpecify DSDT file rather than reading it from the ACPI\n");
 	printf("\t\t\ttable on the machine.\n");
+	printf("-d, --dump\t\tDump out logs.\n");
 	printf("-f, --force-clean\tForce a clean results log file\n");
 	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
 	printf("-h, --help\t\tGet this help.\n");
@@ -552,6 +553,7 @@ int fwts_framework_args(int argc, char **argv)
 		{ "interactive", 0, 0, 0 },
 		{ "force-clean", 0, 0, 0 },
 		{ "version", 0, 0, 0 },
+		{ "dump", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -565,11 +567,22 @@ int fwts_framework_args(int argc, char **argv)
 
 	fwts_summary_init();
 
+	if (!fw->iasl)
+		fw->iasl = strdup(FWTS_IASL_PATH);
+	if (!fw->dmidecode)
+		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
+	if (!fw->lspci)
+		fw->lspci = strdup(FWTS_LSPCI_PATH);
+	if (!fw->debug_logname)
+		fw->debug_logname = strdup("stderr");
+	if (!fw->results_logname)
+		fw->results_logname = strdup(RESULTS_LOG);
+
 	for (;;) {
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:d", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -606,6 +619,7 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_log_set_format(optarg);
 				break;	
 			case 9: /* --iasl */
+				free(fw->iasl);
 				fw->iasl = strdup(optarg);
 				break;
 			case 10: /* --show-progress */
@@ -622,6 +636,7 @@ int fwts_framework_args(int argc, char **argv)
 				fw->klog = strdup(optarg);
 				break;
 			case 14: /* --dmidecode */
+				free(fw->dmidecode);
 				fw->dmidecode = strdup(optarg);
 				break;
 			case 15: /* --s3-multiple */
@@ -637,6 +652,7 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_log_set_line_width(atoi(optarg));
 				break;
 			case 19: /* --lspci=pathtolspci */
+				free(fw->lspci);
 				fw->lspci = strdup(optarg);
 				break;
 			case 20: /* --batch */
@@ -652,7 +668,15 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_framework_show_version(argv);
 				exit(EXIT_SUCCESS);
 				break;
+			case 24: /* --dump */
+				fwts_dump_info(fw, NULL);
+				exit(EXIT_SUCCESS);
+				break;
 			}
+			break;
+		case 'd': /* --dump */
+			fwts_dump_info(fw, NULL);
+			exit(EXIT_SUCCESS);
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -692,17 +716,6 @@ int fwts_framework_args(int argc, char **argv)
 	    (FWTS_FRAMEWORK_FLAGS_BATCH | 
 	     FWTS_FRAMEWORK_FLAGS_INTERACTIVE)) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
-
-	if (!fw->iasl)
-		fw->iasl = strdup(FWTS_IASL_PATH);
-	if (!fw->dmidecode)
-		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
-	if (!fw->lspci)
-		fw->lspci = strdup(FWTS_LSPCI_PATH);
-	if (!fw->debug_logname)
-		fw->debug_logname = strdup("stderr");
-	if (!fw->results_logname)
-		fw->results_logname = strdup(RESULTS_LOG);
 
 	if ((fw->iasl == NULL) ||
 	    (fw->dmidecode == NULL) ||

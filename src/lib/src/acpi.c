@@ -28,8 +28,6 @@
 
 #include "fwts.h"
 
-#define FWTS_ACPI_TABLES_PATH	"/sys/firmware/acpi/tables"
-
 static int fwts_acpi_table_open(const char *name, int which)
 {
 	char filename[PATH_MAX];

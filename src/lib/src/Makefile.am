@@ -9,7 +9,6 @@ libtestsuite_a_SOURCES = \
 	binpaths.c \
 	cpu.c \
 	checkeuid.c \
-	dsdt.c \
 	e820.c \
 	fileio.c \
 	framework.c \

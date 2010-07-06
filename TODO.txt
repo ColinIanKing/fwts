@@ -34,6 +34,7 @@ Todo
 * --show-tests, output should be in sorted order	DONE 28/06/2010
 
 * lot of systems w/ atom N280 CPU have a BIOS that doesn't report all possible CPU speeds (bug 422858). Is that something the fw kit can detect?
+							DONE
 
 Hotkey testing:
 - Get the OEM name from dmidecode such as Dell, Lenovo, Acer...

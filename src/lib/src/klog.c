@@ -46,11 +46,15 @@ fwts_list *fwts_klog_read(void)
 	if ((len = klogctl(10, NULL, 0)) < 0)
 		return NULL;
 
-	if ((buffer = calloc(1, len)) < 0)
+	if ((buffer = calloc(1, len)) < 0) {
+		free(buffer);
 		return NULL;
+	}
 	
-	if (klogctl(3, buffer, len) < 0)
+	if (klogctl(3, buffer, len) < 0) {
+		free(buffer);
 		return NULL;
+	}
 
 	list = fwts_list_from_text(buffer);
 	free(buffer);

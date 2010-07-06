@@ -88,7 +88,7 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 	DIR *dir;
 	struct dirent *entry;
 	char path[PATH_MAX];
-	fwts_list_element *item;
+	fwts_list_link *item;
 	int failed = 0;
 	int passed = 0;
 	char *data;

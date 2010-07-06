@@ -53,7 +53,7 @@ static char *bios_fields[] = {
 static int bios_info_test1(fwts_framework *fw)
 {
 	fwts_list *dmi_text;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	char buffer[PATH_MAX];
 	int fields = 0;
 

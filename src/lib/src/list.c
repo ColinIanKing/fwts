@@ -47,7 +47,7 @@ int fwts_list_len(fwts_list *list)
 
 void fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	if (list == NULL)
 		return;
@@ -56,32 +56,32 @@ void fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, voi
 		callback(item->data, private);
 }
 
-void fwts_list_free(fwts_list *list, fwlist_element_free element_free)
+void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 {
-	fwts_list_element *item;
-	fwts_list_element *next;
+	fwts_list_link *item;
+	fwts_list_link *next;
 
 	if (list == NULL)
 		return;
 
 	for (item = list->head; item != NULL; item = next) {
 		next = item->next;
-		if ((item->data != NULL) && (element_free != NULL))
-			element_free(item->data);
+		if ((item->data != NULL) && (data_free != NULL))
+			data_free(item->data);
 		free(item);
 	}
 
 	free(list);
 }
 
-fwts_list_element *fwts_list_append(fwts_list *list, void *data)
+fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 {
-	fwts_list_element *element;
+	fwts_list_link *element;
 
 	if (list == NULL)
 		return NULL;
 
-	if ((element = calloc(sizeof(fwts_list_element),1)) == NULL)
+	if ((element = calloc(sizeof(fwts_list_link),1)) == NULL)
 		return NULL;
 
 	element->data = data;
@@ -98,12 +98,12 @@ fwts_list_element *fwts_list_append(fwts_list *list, void *data)
 	return element;
 }
 
-fwts_list_element *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare)
+fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare)
 {
-	fwts_list_element   *new_list_item;
-	fwts_list_element   **list_item;
+	fwts_list_link   *new_list_item;
+	fwts_list_link   **list_item;
 
-	if ((new_list_item = calloc(1, sizeof(fwts_list_element))) == NULL)
+	if ((new_list_item = calloc(1, sizeof(fwts_list_link))) == NULL)
 		return NULL;
 
 	new_list_item->data = new_data;

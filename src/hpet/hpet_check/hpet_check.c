@@ -70,7 +70,7 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 	int hpet_found = 0;
 
 	fwts_list *output;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	output = fwts_iasl_disassemble(fw, table, which);
 	if (output == NULL)
@@ -146,7 +146,7 @@ static int hpet_check_test1(fwts_framework *fw)
 	if (klog == NULL)
 		return FWTS_ERROR;
 
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	fwts_log_info(fw,
 		   "This test checks the HPET PCI BAR for each timer block in the timer. "

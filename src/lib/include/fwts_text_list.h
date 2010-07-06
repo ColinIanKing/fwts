@@ -27,11 +27,11 @@ void 	           fwts_text_list_free(fwts_list *list);
 void	           fwts_text_list_dump(fwts_list *list);
 char              *fwts_text_list_strstr(fwts_list *list, const char *needle);
 fwts_list         *fwts_list_from_text(char *list);
-fwts_list_element *fwts_text_list_append(fwts_list *list, const char *text);
+fwts_list_link    *fwts_text_list_append(fwts_list *list, const char *text);
 
-static inline char *fwts_text_list_text(fwts_list_element *element)
+static inline char *fwts_text_list_text(fwts_list_link *item)
 {
-	return (char *)element->data;
+	return (char *)item->data;
 }
 
 #endif

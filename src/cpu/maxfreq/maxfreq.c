@@ -72,7 +72,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	struct dirent *entry;
 	int cpus;
 	int cpu;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	fwts_list *cpuinfo;
 	int *cpufreq;
 	int failed = 0;

@@ -121,7 +121,7 @@ static int fwts_framework_compare_name(void *data1, void *data2)
 
 static void fwts_framework_show_tests(void)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 	fwts_list *sorted;
 
 	if ((sorted = fwts_list_init()) == NULL) {
@@ -348,7 +348,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 static void fwts_framework_run_registered_tests(fwts_framework *fw)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()");
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
@@ -365,7 +365,7 @@ static void fwts_framework_run_registered_tests(fwts_framework *fw)
 
 static int fwts_framework_run_registered_test(fwts_framework *fw, const char *name)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - run test %s",name);
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {

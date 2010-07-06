@@ -45,7 +45,7 @@ static int syntaxcheck_init(fwts_framework *fw)
 
 static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 	int errors = 0;
 	int warnings = 0;
 	uint8 *tabledata;

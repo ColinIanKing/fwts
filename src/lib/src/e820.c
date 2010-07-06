@@ -63,7 +63,7 @@ int fwts_e820_type(fwts_list *e820_list, uint64 memory)
 {
 	int result = E820_UNKNOWN;
 	e820_entry *entry;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	for (item = e820_list->head; item != NULL; item = item->next) {
 		entry = (e820_entry*)item->data;

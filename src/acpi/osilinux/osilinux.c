@@ -59,8 +59,8 @@ static int osilinux_deinit(fwts_framework *fw)
 
 static int osilinux_test1(fwts_framework *fw)
 {	
-	fwts_list_element *item;
-	fwts_list_element *dumpitem = NULL;
+	fwts_list_link *item;
+	fwts_list_link *dumpitem = NULL;
 	int depth = 0;
 	int dumpdepth = 0;
 	int found = 0;

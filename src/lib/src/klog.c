@@ -67,7 +67,7 @@ int fwts_klog_scan(fwts_framework *fw,
 {
 	*match= 0;
 	char *prev;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	int i;
 
 	if (!klog)

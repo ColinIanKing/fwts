@@ -113,7 +113,7 @@ static char *dmi_decode_headline(void)
 static int dmi_decode_test1(fwts_framework *fw)
 {
 	fwts_list *dmi_text;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	int type;
 
 	for (type=0; type < 40; type++) {
@@ -147,7 +147,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 					fwts_failed_level(fw, dmi_patterns[i].level, "DMI type %s: %s.", dmi_types[type],dmi_patterns[i].message);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
-						fwts_list_element *dump;
+						fwts_list_link *dump;
 						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
 							fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(dump));			
 						dumped = 1;

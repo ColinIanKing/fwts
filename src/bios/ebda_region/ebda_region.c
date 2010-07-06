@@ -85,7 +85,7 @@ static char *ebda_headline(void)
 static int ebda_test1(fwts_framework *fw)
 {
 	int passed = 0;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	if (klog == NULL)
 		return FWTS_ERROR;

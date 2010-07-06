@@ -23,26 +23,26 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct fwts_list_element {
+typedef struct fwts_list_link {
 	void *data;
-	struct fwts_list_element *next;
-} fwts_list_element;
+	struct fwts_list_link *next;
+} fwts_list_link;
 
 typedef struct {
-	fwts_list_element *head;
-	fwts_list_element *tail;
+	fwts_list_link *head;
+	fwts_list_link *tail;
 	int len;
 } fwts_list;
 
-typedef void (*fwlist_element_free)(void *);
+typedef void (*fwts_list_link_free)(void *);
 typedef void (*fwts_list_foreach_callback)(void *data, void *private);
 typedef int  (fwts_list_compare)(void *data1, void *data2);
 
 fwts_list         *fwts_list_init(void);
 int 		   fwts_list_len(fwts_list *list);
-void               fwts_list_free(fwts_list *list, fwlist_element_free element_free);
+void               fwts_list_free(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private);
-fwts_list_element *fwts_list_append(fwts_list *list, void *data);
-fwts_list_element *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare);
+fwts_list_link 	  *fwts_list_append(fwts_list *list, void *data);
+fwts_list_link    *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare);
 
 #endif

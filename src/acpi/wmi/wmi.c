@@ -133,7 +133,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
 	}
 }
 
-static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_element *item, int size, uint8 *wdg_data)
+static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size, uint8 *wdg_data)
 {
 	char *str;
 	uint8 *data = wdg_data;
@@ -173,7 +173,7 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_element *item, int si
 	return;
 }
 
-static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_element *item)
+static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 {
 	uint8 *wdg_data;
 	int size;
@@ -236,7 +236,7 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_element *item)
 
 static int wmi_table(fwts_framework *fw, char *table, int which)
 {
-	fwts_list_element *item;
+	fwts_list_link *item;
 	fwts_list* iasl_output;
 
 	iasl_output = fwts_iasl_disassemble(fw, table, which);

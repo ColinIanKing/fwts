@@ -49,7 +49,7 @@ struct mcfg_entry {
 static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space) 
 {
 	fwts_list *lspci_output;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	char command[PATH_MAX];
 	char compare_line[1024];

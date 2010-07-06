@@ -76,7 +76,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 	char current_type[512];
 	char current_device[512];
 
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	if (lspci_text == NULL)
 		return FWTS_ERROR;

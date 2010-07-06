@@ -132,7 +132,7 @@ int fwts_summary_report(fwts_framework *fw)
 
 	for (i=0;i<SUMMARY_MAX;i++) {
 		if (fwts_summaries[i]->len) {
-			fwts_list_element *item;
+			fwts_list_link *item;
 			fwts_log_summary(fw, "%s failures: %d", summary_names[i], fwts_summaries[i]->len);
 
 			for (item = fwts_summaries[i]->head; item != NULL; item = item->next) {

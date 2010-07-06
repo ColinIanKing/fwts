@@ -127,7 +127,7 @@ static int get_mtrrs(void)
 
 static int cache_types(uint64 start, uint64 end)
 {
-	fwts_list_element *list;
+	fwts_list_link *list;
 	struct mtrr_entry *entry;
 	int type = 0;
 	
@@ -162,7 +162,7 @@ restart:
 static fwts_list *get_klog_bios_mtrr(void)
 {
 	fwts_list *mtrr_bios_list;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	int scan = 0;
 
 	if ((mtrr_bios_list = fwts_list_init()) == NULL)
@@ -215,7 +215,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 {
 	char line[4096];
 	fwts_list *lspci_output;
-	fwts_list_element *item;
+	fwts_list_link *item;
 	fwts_list *mtrr_bios_list;
 	int vga = 0;
 	int found = 0;
@@ -238,7 +238,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 			vga = 0;
 		if (vga) {
 			if ((str = strstr(str, "Memory at ")) != NULL) {
-				fwts_list_element *item;
+				fwts_list_link *item;
 				struct mtrr_entry *mtrr;
 				uint64 start = strtoull(str+10, NULL, 16);
 				uint64 size = 0;
@@ -293,7 +293,7 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 	int pref = 0;
 	char line[4096];
 	fwts_list *lspci_output;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	memset(line,0,4096);
 	
@@ -433,7 +433,7 @@ static int validate_iomem(fwts_framework *fw)
 
 static void do_mtrr_resource(fwts_framework *fw)
 {
-	fwts_list_element *list;
+	fwts_list_link *list;
 	struct mtrr_entry *entry;
 
 	fwts_log_info(fw,"MTRR overview");

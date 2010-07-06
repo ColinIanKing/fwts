@@ -76,7 +76,7 @@ static char *thermal_trip_headline(void)
 static int thermal_trip_get_temp(char *field, fwts_list *data)
 {
 	int len = strlen(field);
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	if (data == NULL)
 		return 0;
@@ -106,7 +106,7 @@ static int thermal_trip_get_throttling(fwts_framework *fw, const int warn)
                 if (entry && strlen(entry->d_name)>3) {
 			snprintf(path, sizeof(path), "%s/%s/throttling", FWTS_PROC_PROCESSOR_PATH, entry->d_name);
 			if ((data = fwts_file_open_and_read(path)) != NULL) {
-				fwts_list_element *item;
+				fwts_list_link *item;
 				for (item = data->head; item != NULL; item = item->next) {
 					char *text = fwts_text_list_text(item);
 					if (strstr(text, "<not supported>")) {

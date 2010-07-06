@@ -234,7 +234,7 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 	va_list ap;
 
 	fwts_list *lines;
-	fwts_list_element *item;
+	fwts_list_link *item;
 
 	if ((!log) || (log && log->magic != LOG_MAGIC))
 		return 0;

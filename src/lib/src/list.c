@@ -76,26 +76,26 @@ void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 
 fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 {
-	fwts_list_link *element;
+	fwts_list_link *link;
 
 	if (list == NULL)
 		return NULL;
 
-	if ((element = calloc(sizeof(fwts_list_link),1)) == NULL)
+	if ((link = calloc(sizeof(fwts_list_link),1)) == NULL)
 		return NULL;
 
-	element->data = data;
+	link->data = data;
 
 	if (list->head == NULL) {
-		list->head = element;
-		list->tail = element;
+		list->head = link;
+		list->tail = link;
 	} else {
-		list->tail->next = element;
-		list->tail = element;
+		list->tail->next = link;
+		list->tail = link;
 	}
 	list->len++;
 
-	return element;
+	return link;
 }
 
 fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare)

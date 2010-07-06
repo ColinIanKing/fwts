@@ -111,7 +111,7 @@ void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent);
 
 #define fwts_warning(fw, args...)	fwts_framework_warning(fw, ## args)
 
-#define fwts_advice(fw, args...)	fwts_framework_advice(fw, ## args);
+#define fwts_advice(fw, args...)	fwts_framework_advice(fw, ## args)
 
 static inline int fwts_tests_passed(fwts_framework *fw)
 {

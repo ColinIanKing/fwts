@@ -31,8 +31,10 @@ char *fwts_get(const char *file)
 	if ((fp = fopen(file, "r")) == NULL)
 		return NULL;
 	
-	if (fgets(buffer, sizeof(buffer), fp) == NULL)
+	if (fgets(buffer, sizeof(buffer), fp) == NULL) {
+		fclose(fp);
 		return NULL;
+	}
 
 	fclose(fp);
 	

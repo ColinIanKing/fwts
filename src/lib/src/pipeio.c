@@ -52,15 +52,12 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		if (freopen("/dev/null", "w", stderr) == NULL) {
 			fprintf(stderr, "Cannot redirect stderr\n");
 		}
-		//close(STDERR_FILENO);
 		if (pipefds[0] != STDOUT_FILENO) {
 			dup2(pipefds[1], STDOUT_FILENO);
 			close(pipefds[1]);
 		}
 		close(pipefds[0]);
-		fprintf(stderr,"CHILD EXEC'ing %s\n", command);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
-		fprintf(stderr,"CHILD EXEC FAILED!!\n");
 		_exit(FWTS_EXEC_ERROR);
 	default:
 		/* Parent */

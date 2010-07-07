@@ -29,64 +29,48 @@ static char *bios_info_headline(void)
 	return "Gather BIOS information.";
 }
 
-static int bios_info_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
+typedef struct {
+	char *dmi_field;
+	char *label;
+} fwts_bios_info;
 
-	if (fwts_check_executable(fw, fw->dmidecode, "dmidecode"))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
-static char *bios_fields[] = {
-	"Vendor",
-	"Version",
-	"Release Date",
-	"Address",
-	"ROM Size",
-	"BIOS Revision",
-	NULL,
+static fwts_bios_info bios_info[] = {
+	{ "bios_vendor",	"BIOS Vendor" },
+	{ "bios_version", 	"BIOS Version" },
+	{ "bios_date",		"BIOS Release Date" },
+	{ "board_name",		"Board Name" },
+	{ "board_serial",	"Board Serial #" },
+	{ "board_version",	"Board Version" },
+	{ "board_asset_tag",	"Board Asset Tag" },
+	{ "chassis_serial", 	"Chassis Serial #" },
+	{ "chassis_type",	"Chassis Type " },
+	{ "chassis_vendor",	"Chassis Vendor" },
+	{ "chassis_version",	"Chassis Version" },
+	{ "chassis_asset_tag",	"Chassic Asset Tag" },
+	{ "product_name",	"Product Name" },
+	{ "product_serial"	"Product Serial #" },
+	{ "product_uuid",	"Product UUID " },
+	{ "product_version",	"Product Version" },
+	{ "sys_vendor",		"System Vendor" },
+	{ NULL, NULL }
 };
 
 static int bios_info_test1(fwts_framework *fw)
 {
-	fwts_list *dmi_text;
-	fwts_list_link *item;
-	char buffer[PATH_MAX];
-	int fields = 0;
+	char path[PATH_MAX];
+	int i;
 
-	snprintf(buffer, sizeof(buffer), "%s -t 0", fw->dmidecode);
+	snprintf(path, sizeof(path), "%s -t 0", fw->dmidecode);
 
-	if (fwts_pipe_exec(buffer, &dmi_text)) {
-		fwts_log_error(fw, "Failed to execute dmidecode.");
-		return FWTS_ERROR;
-	}
-	if (dmi_text == NULL) {
-		fwts_log_error(fw, "Failed to read output from dmidecode.");
-		return FWTS_ERROR;
-	}	
-
-	for (item = dmi_text->head; item != NULL; item = item->next) {
-		char *text = fwts_text_list_text(item);
-		char *str;
-		int i;
-
-		for (i=0;bios_fields[i]!=NULL;i++) {
-			if ((str = strstr(text, bios_fields[i])) != NULL) {
-				str += strlen(bios_fields[i]) + 2;
-				fwts_log_info_verbatum(fw, "%-14.14s: %s", bios_fields[i],str);
-				fields++;
-				break;
-			}
+	for (i=0; bios_info[i].dmi_field != NULL; i++) {
+		char *data;
+		snprintf(path, sizeof(path), "/sys/class/dmi/id/%s", bios_info[i].dmi_field);
+		if ((data = fwts_get(path)) != NULL) {
+			fwts_log_info_verbatum(fw, "%-18.18s: %s", bios_info[i].label, data);
+			free(data);
 		}
 	}
 
-	if (fields == ((sizeof(bios_fields) / sizeof(char *))) - 1) 
-		fwts_passed(fw, "Got all fields\n");
-
-	fwts_text_list_free(dmi_text);
 	return FWTS_OK;
 }
 
@@ -97,7 +81,7 @@ static fwts_framework_tests bios_info_tests[] = {
 
 static fwts_framework_ops bios_info_ops = {
 	bios_info_headline,
-	bios_info_init,
+	NULL,
 	NULL,
 	bios_info_tests
 };

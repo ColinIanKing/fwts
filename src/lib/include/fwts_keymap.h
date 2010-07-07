@@ -17,42 +17,19 @@
  *
  */
 
-#ifndef __FWTS_H__
-#define __FWTS_H__
+#ifndef __FWTS_KEYMAP_H__
+#define __FWTS_KEYMAP_H__
 
-#include "fwts_version.h"
+#define FWTS_KEYMAP_PATH	"/lib/udev/keymaps"
 
-#include "fwts_types.h"
+typedef struct {
+	int	scancode;
+	char	*keyname;
+	char 	*keytext;
+} fwts_keycode;
 
-#include "fwts_binpaths.h"
-
-#include "fwts_framework.h"
-#include "fwts_log.h"
-#include "fwts_list.h"
-
-#include "fwts_text_list.h"
-
-#include "fwts_set.h"
-#include "fwts_get.h"
-
-#include "fwts_acpi.h"
-#include "fwts_acpid.h"
-#include "fwts_checkeuid.h"
-#include "fwts_cpu.h"
-#include "fwts_dump.h"
-#include "fwts_e820.h"
-#include "fwts_fileio.h"
-#include "fwts_gpe.h"
-#include "fwts_iasl.h"
-#include "fwts_klog.h"
-#include "fwts_pipeio.h"
-#include "fwts_stringextras.h"
-#include "fwts_wakealarm.h"
-#include "fwts_virt.h"
-#include "fwts_formatting.h"
-#include "fwts_summary.h"
-#include "fwts_microcode.h"
-#include "fwts_interactive.h"
-#include "fwts_keymap.h"
+void fwts_keymap_free(fwts_list *keylist);
+fwts_list *fwts_keymap_load(const char *machine);
+fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, int scancode);
 
 #endif

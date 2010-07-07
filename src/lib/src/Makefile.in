@@ -52,10 +52,10 @@ am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
 	cpu.$(OBJEXT) checkeuid.$(OBJEXT) dump.$(OBJEXT) \
 	e820.$(OBJEXT) fileio.$(OBJEXT) framework.$(OBJEXT) \
 	formatting.$(OBJEXT) get.$(OBJEXT) gpe.$(OBJEXT) \
-	iasl.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) \
-	set.$(OBJEXT) stringextras.$(OBJEXT) text_list.$(OBJEXT) \
-	wakealarm.$(OBJEXT) summary.$(OBJEXT) microcode.$(OBJEXT) \
-	virt.$(OBJEXT)
+	iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) \
+	pipeio.$(OBJEXT) set.$(OBJEXT) stringextras.$(OBJEXT) \
+	text_list.$(OBJEXT) wakealarm.$(OBJEXT) summary.$(OBJEXT) \
+	microcode.$(OBJEXT) virt.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -175,6 +175,7 @@ libtestsuite_a_SOURCES = \
 	get.c 	\
 	gpe.c \
 	iasl.c \
+	keymap.c \
 	klog.c \
 	log.c \
 	pipeio.c \
@@ -248,6 +249,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iasl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interactive.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/keymap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@

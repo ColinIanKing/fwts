@@ -17,6 +17,7 @@ libtestsuite_a_SOURCES = \
 	get.c 	\
 	gpe.c \
 	iasl.c \
+	keymap.c \
 	klog.c \
 	log.c \
 	pipeio.c \

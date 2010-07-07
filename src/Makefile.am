@@ -35,6 +35,7 @@ fwts_SOURCES = main.c \
 	cpu/cpufreq/cpufreq.c \
 	cpu/thermal_trip/thermal_trip.c \
 	cpu/microcode/microcode.c \
+	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c
 
 fwts_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a

@@ -40,3 +40,5 @@ fwts_SOURCES = main.c \
 
 fwts_LDADD = $(top_srcdir)/src/lib/src/libtestsuite.a
 
+man_MANS = ../doc/fwts.1
+

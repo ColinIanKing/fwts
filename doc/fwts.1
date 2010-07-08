@@ -1,0 +1,228 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH FWTS 1 "July 8, 2010"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+fwts \- a firmware test suite to identify firmware bugs.
+.br
+
+.SH SYNOPSIS
+.B fwts
+.RI [ options ]
+.RI [ test(s) ]
+.br
+
+.SH DESCRIPTION
+This manual page documents briefly the
+.B fwts
+firmware test suite. 
+The tool
+.B fwts
+is comprised of over thirty tests that are designed to exercise and test
+different aspects of a machine's firmwarm.  Many of these tests need super user
+access to extract tables and interact with the firmware and ACPI, so running
+.B
+fwts
+using sudo is required.
+.br
+Running
+.B
+fwts
+with no options will run through all the batch tests that require no user interaction.
+However, one can specify the tests one wants to test and also run interactive tests 
+(such as checking for hotkey events, lid open/close events, etc) if required.
+.P
+By default
+.B
+fwts
+outputs the test results into the log file
+.B
+results.log
+however a different log file name can be specified and if required, output to stderr or stdout can be
+selected.
+.P
+Note that there a variety of tests, including tests that can potentially a machine (such as a suspend/hibernate/resume).
+
+.SH OPTIONS
+fwts options are as follow:
+.TP
+.B \-b, \-\-batch
+run the non-interactive batch tests. Batch tests require no user interaction.
+.TP
+.B \-\-debug\-output=file
+when running with \-\-fwts\-debug this option specifies where the debug output will be written to. One
+can also specify stdout and stderr to redirect to these output streams.
+.TP
+.B \-\-dmidecode=file
+specify the full path and filename to the the dmidecode binary.
+.TP
+.B \-\-dsdt=file
+specify DSDT file rather than reading it from the ACPI table on the machine. Deprecated.
+.TP
+.B \-d, \-\-dump
+extracts firmware data and dumps it into log files. This generates:
+.br
+acpidump.log \- containing a hex dump of the ACPI tables (which can be read using acpixtract).
+.br
+dmesg.log \- containing the current kernel log messages.
+.br
+dmidecode.log \- containing the output from dmidecode.
+.br
+lspci.log \- containing the output from lspci \-vv \-nn
+.br
+README.txt \- containing a timestamp and kernel version information.
+.TP
+.B \-f, \-\-force\-clean
+creates a new results log file, rather than just appending to any existing one (default).
+.TP
+.B \-fwts\-\-debug
+enable the internal debugger. This dumps debug information to stderr.
+.TP
+.B \-h, \-\-help
+outputs the internal help page.
+.TP
+.B \-\-iasl
+specify the full path and filename to the the iasl binary.
+.TP
+.B \-i, \-\-interactive
+run the interactive tests. These tests require user interaction.
+.TP
+.B \-\-klog=file
+read the kernel log from the specified file rather than from the kernel log ring buffer. This
+allows one to run the kernel log scanning tests such as klog against pre-gathered log data.
+.TP
+.B \-\-log\-fields
+show the available log filtering fields. Specifying these fields with \-\-log\-filter to
+select which fields one wants to log.
+.TP
+.B \-\-log\-filter
+specify which particular types of log data to be output into the log file. Each line of
+log data is tagged with a special marker depending on what type of log information is being
+output. The available types can be see by using \-\-log-\fields. Specify the desired log types
+with comma separated list. To disable a field, prefix the name with ~, for example:
+.br
+\-\-log\-filer=RES,SUM  logs just the results and summary lines.
+.br
+\-\-log\-filer=ALL,~INF  logs all lines except for the information lines.
+.TP
+.B \-\-log\-format
+specify the information in each log line. The following specifiers are available:
+.br
+%data  \- date
+.br
+%time  \- time
+.br
+%field \- log\-filter fields
+.br
+%owner \- name of the test routine
+.br
+%level \- test failure level
+.br
+%line  \- log line
+.br
+e.g. \-\-log\-format="%date %time [%field] (%owner): "
+.TP
+.B \-\-lspci=path
+specify the full path and filename to the the lspci binary.
+.TP
+.B \-\-no\-s3
+do not run the S3 suspend/resume tests
+.TP
+.B \-\-no\-s4
+do not run the S4 hibernate/resume tests
+.TP
+.B \-\-results\-no\-separators
+no pretty printing of horizontal separators in the results log file.
+.TP
+.B \-r, \-\-results\-output
+specify the results output log file.
+One can also specify stdout and stderr to redirect to these output streams.
+.TP
+.B \-\-s3\-multiple=N
+specified the number of multiple S3 suspend/resume tests to run. The default
+is 2 tests.
+.TP
+.B \-\-s4\-multiple=N
+specified the number of multiple S4 hibernate/resume tests to run. The default
+is 2 tests.
+.TP
+.B \-p, \-\-show\-progress
+show the progress of the tests being run. Each test will identified as it is being
+run. For long tests, a percentage of completion time will be displayed.
+.TP
+.B \-s, \-\-show\-tests
+show the names of all the available tests
+.TP
+.B \--stdout\-summary
+output SUCCESS or FAILED to stdout at end of tests.
+.TP
+.B \-v, \--version
+output version number and build date of the
+.B
+.fwts 
+tool.
+
+.SH EXAMPLES
+.LP
+Run all the batch tests except for S3 and S4 tests and append the results into
+the default log results.log:
+.RS 8
+fwts \-\-no\-s3 \-\-no\-s4 
+.RE
+.LP
+Run all the interactive tests and start a clean results log called interactive.log:
+.RS 8
+fwts \-i \-f \-r interactive.log
+.br
+.RE
+.LP
+Run all the tests, interactive and batch:
+.RS 8
+fwts \-i \-b
+.RE
+.LP
+Run just the battery and cpufreq tests:
+.RS 8
+fwts battery cpufreq
+.RE
+.LP
+Run all the batch tests and define a new log format using just the date and line number:
+.RS 8
+fwts \-\-log\-format="%date %line: "
+.RE
+.LP
+Run all the interative tests and log just the results, info and summary data:
+.RS 8
+fwts \-i \-\-log\-filter=RES,INF,SUM
+.RE
+.LP
+Dump all the interesting firmware information into log files for analysis later:
+.RS 8
+fwts \-\-dump
+.RE
+
+.SH SEE ALSO
+.BR iasl (1), 
+.BR acpixtract (1), 
+.BR acpidump (1), 
+.BR dmidecode (8), 
+.BR lspci (8)
+.SH AUTHOR
+fwts was written by Colin King <colin.king@canoical.com> with a lot of the
+original test code derived from the Intel Linux Firmware test kit.
+.PP
+This manual page was written by Colin King <colin.king@canonical.com>,
+for the Ubuntu project (but may be used by others).

@@ -1,2 +1,2 @@
-#define FWTS_VERSION "0.14.1"
-#define FWTS_DATE    "Mon Jun 28 12:49:26 BST 2010"
+#define FWTS_VERSION "V0.15.9"
+#define FWTS_DATE    "Thu Jul 8 09:25:17 BST 2010"

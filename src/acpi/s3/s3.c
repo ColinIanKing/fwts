@@ -191,6 +191,7 @@ static int s3_test_multiple(fwts_framework *fw)
 		int timetaken;
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,fw->s3_multiple);
+		fwts_progress(fw, ((i+1) * 100) / fw->s3_multiple);
 		s3_do_suspend_resume(fw, &errors, delay, &duration);
 
 		timetaken = duration - delay;

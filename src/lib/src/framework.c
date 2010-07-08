@@ -478,6 +478,16 @@ static void fwts_framework_show_version(char **argv)
 	printf("%s, Version %s, %s\n", argv[0], FWTS_VERSION, FWTS_DATE);
 }
 
+static void fwts_framework_strdup(char **ptr, char *str)
+{
+	if (ptr == NULL)
+		return;
+
+	if (*ptr)
+		free(*ptr);
+	*ptr = strdup(str);
+}
+
 static void fwts_framework_syntax(char **argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
@@ -566,16 +576,11 @@ int fwts_framework_args(int argc, char **argv)
 
 	fwts_summary_init();
 
-	if (!fw->iasl)
-		fw->iasl = strdup(FWTS_IASL_PATH);
-	if (!fw->dmidecode)
-		fw->dmidecode = strdup(FWTS_DMIDECODE_PATH);
-	if (!fw->lspci)
-		fw->lspci = strdup(FWTS_LSPCI_PATH);
-	if (!fw->debug_logname)
-		fw->debug_logname = strdup("stderr");
-	if (!fw->results_logname)
-		fw->results_logname = strdup(RESULTS_LOG);
+	fwts_framework_strdup(&fw->iasl, FWTS_IASL_PATH);
+	fwts_framework_strdup(&fw->dmidecode, FWTS_DMIDECODE_PATH);
+	fwts_framework_strdup(&fw->lspci, FWTS_LSPCI_PATH);
+	fwts_framework_strdup(&fw->debug_logname, "stderr");
+	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
 
 	for (;;) {
 		int c;
@@ -603,6 +608,8 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_log_filter_unset_field(LOG_SEPARATOR);
 				break;
 			case 5: /* --debug-output */
+				if (fw->debug_logname)
+					free(fw->debug_logname);
 				fw->debug_logname = strdup(optarg);
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
@@ -618,8 +625,7 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_log_set_format(optarg);
 				break;	
 			case 9: /* --iasl */
-				free(fw->iasl);
-				fw->iasl = strdup(optarg);
+				fwts_framework_strdup(&fw->iasl, optarg);
 				break;
 			case 10: /* --show-progress */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
@@ -629,10 +635,10 @@ int fwts_framework_args(int argc, char **argv)
 				goto tidy_close;
 				break;
 			case 12: /* --dsdt */
-				fw->dsdt = strdup(optarg);
+				fwts_framework_strdup(&fw->dsdt, optarg);
 				break;
 			case 13: /* --klog */
-				fw->klog = strdup(optarg);
+				fwts_framework_strdup(&fw->klog, optarg);
 				break;
 			case 14: /* --dmidecode */
 				free(fw->dmidecode);
@@ -651,8 +657,7 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_log_set_line_width(atoi(optarg));
 				break;
 			case 19: /* --lspci=pathtolspci */
-				free(fw->lspci);
-				fw->lspci = strdup(optarg);
+				fwts_framework_strdup(&fw->lspci, optarg);
 				break;
 			case 20: /* --batch */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
@@ -702,7 +707,7 @@ int fwts_framework_args(int argc, char **argv)
 			fwts_log_set_line_width(atoi(optarg));
 			break;
 		case 'r': /* --results-output */
-			fw->results_logname = strdup(optarg);
+			fwts_framework_strdup(&fw->results_logname, optarg);
 			break;
 		case 'v': /* --version */
 			fwts_framework_show_version(argv);

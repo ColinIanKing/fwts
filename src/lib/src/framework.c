@@ -378,7 +378,6 @@ static int fwts_framework_run_registered_test(fwts_framework *fw, const char *na
 	}
 	fwts_log_set_owner(fw->results, name);
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_CRITICAL, "Test %s does not exist!", name);
-	fwts_log_close(fw->results);
 
 	return FWTS_ERROR;
 }
@@ -596,7 +595,7 @@ int fwts_framework_args(int argc, char **argv)
 				break;		
 			case 2: /* --help */
 				fwts_framework_syntax(argv);
-				exit(EXIT_SUCCESS);
+				goto tidy_close;
 			case 3: /* --results-output */
 				fw->results_logname = strdup(optarg);
 				break;
@@ -613,7 +612,7 @@ int fwts_framework_args(int argc, char **argv)
 				break;
 			case 7: /* --log-fields */
 				fwts_log_print_fields();
-				exit(EXIT_SUCCESS);
+				goto tidy_close;
 				break;
 			case 8: /* --log-format */
 				fwts_log_set_format(optarg);
@@ -627,7 +626,7 @@ int fwts_framework_args(int argc, char **argv)
 				break;
 			case 11: /* --show-tests */
 				fwts_framework_show_tests();
-				exit(EXIT_SUCCESS);
+				goto tidy_close;
 				break;
 			case 12: /* --dsdt */
 				fw->dsdt = strdup(optarg);
@@ -666,17 +665,17 @@ int fwts_framework_args(int argc, char **argv)
 				break;
 			case 23: /* --version */
 				fwts_framework_show_version(argv);
-				exit(EXIT_SUCCESS);
+				goto tidy_close;
 				break;
 			case 24: /* --dump */
 				fwts_dump_info(fw, NULL);
-				exit(EXIT_SUCCESS);
+				goto tidy_close;
 				break;
 			}
 			break;
 		case 'd': /* --dump */
 			fwts_dump_info(fw, NULL);
-			exit(EXIT_SUCCESS);
+			goto tidy_close;
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -684,7 +683,7 @@ int fwts_framework_args(int argc, char **argv)
 		case 'h':
 		case '?':
 			fwts_framework_syntax(argv);
-			exit(EXIT_SUCCESS);
+			goto tidy_close;
 			break;
 		case 'b': /* --batch */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
@@ -697,7 +696,7 @@ int fwts_framework_args(int argc, char **argv)
 			break;
 		case 's': /* --show-tests */
 			fwts_framework_show_tests();
-			exit(EXIT_SUCCESS);
+			goto tidy_close;
 			break;
 		case 'w': /* --log-width=N */
 			fwts_log_set_line_width(atoi(optarg));
@@ -707,7 +706,7 @@ int fwts_framework_args(int argc, char **argv)
 			break;
 		case 'v': /* --version */
 			fwts_framework_show_version(argv);
-			exit(EXIT_SUCCESS);
+			goto tidy_close;
 			break;
 		}
 	}	
@@ -759,13 +758,13 @@ int fwts_framework_args(int argc, char **argv)
 	fwts_framework_total_summary(fw);
 	fwts_log_summary(fw, "");
 	fwts_summary_report(fw);
-	fwts_summary_deinit();
 
 tidy:
 	fwts_log_close(fw->results);
 	fwts_log_close(fw->debug);
 
 tidy_close:
+	fwts_summary_deinit();
 	fwts_framework_close(fw);
 
 	return ret;

@@ -66,9 +66,10 @@ int fwts_gpe_read(fwts_gpe **gpes)
 				
 				snprintf(path, sizeof(path), "%s/%s", FWTS_GPE_PATH, entry->d_name);
 				data = fwts_get(path);
-				if (data)
+				if (data) {
 					(*gpes)[n].count = atoi(data);
-				else
+					free(data);
+				} else
 					goto error;
 
 				n++;

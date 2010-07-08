@@ -228,10 +228,11 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 	item = item->next;
 	if (item == NULL) return;
 
-	wdg_data = calloc(1, size);
-		
-	wmi_get_wdg_data(fw, item, size, wdg_data);
-	wmi_parse_wdg_data(fw, size, wdg_data);
+	if ((wdg_data = calloc(1, size)) != NULL) {
+		wmi_get_wdg_data(fw, item, size, wdg_data);
+		wmi_parse_wdg_data(fw, size, wdg_data);
+		free(wdg_data);
+	}
 }
 
 static int wmi_table(fwts_framework *fw, char *table, int which)
@@ -241,7 +242,6 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 
 	iasl_output = fwts_iasl_disassemble(fw, table, which);
 	if (iasl_output == NULL) {
-		//fwts_log_error(fw, "Cannot dis-assasemble %s with iasl.", table);
 		return FWTS_ERROR;
 	}
 

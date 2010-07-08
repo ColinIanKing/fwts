@@ -588,7 +588,7 @@ static void check_sw_any(fwts_framework *fw)
 static char *cpufreq_headline(void)
 {
 	/* Return the name of the test scenario */
-	return "CPU frequency scaling tests (takes ~1-2 mins)";
+	return "CPU frequency scaling tests (takes ~1-2 mins).";
 }
 
 static int cpufreq_test1(fwts_framework *fw)

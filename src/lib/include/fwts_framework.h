@@ -61,6 +61,7 @@ typedef struct {
 	char *dsdt;				/* path to dsdt file */
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
+	int  s4_multiple;			/* number of s4 multiple tests to run */
 
 	fwts_framework_flags flags;
 

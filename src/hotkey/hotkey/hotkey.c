@@ -177,7 +177,7 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 	char buffer[1024];
 	char *keymap = NULL;
 
-	snprintf(buffer, sizeof(buffer), "sudo udevadm test /class/%s 2>&1", device);
+	snprintf(buffer, sizeof(buffer), "udevadm test /class/%s 2>&1", device);
 	if (fwts_pipe_exec(buffer, &output) != FWTS_OK)
 		return NULL;
 
@@ -200,6 +200,8 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 
 static int hotkey_init(fwts_framework *fw)
 {
+	if (fwts_check_root_euid(fw) != FWTS_OK)
+		return FWTS_ERROR;
 
 	hotkey_dev = hotkey_find_keyboard(fw, "/sys/devices/platform");
 

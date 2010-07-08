@@ -526,6 +526,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("-r, --results-output=file\n\t\t\tOutput results to a named file. Filename can also be\n");
 	printf("\t\t\tstdout or stderr.\n");
 	printf("--s3-multiple=N\t\tRun S3 tests N times.\n");
+	printf("--s4-multiple=N\t\tRun S4 tests N times.\n");
 	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
 	printf("-s, --show-tests\tShow available tests.\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
@@ -563,6 +564,7 @@ int fwts_framework_args(int argc, char **argv)
 		{ "force-clean", 0, 0, 0 },
 		{ "version", 0, 0, 0 },
 		{ "dump", 0, 0, 0 },
+		{ "s4-multiple", 1, 0, 0, },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -675,6 +677,9 @@ int fwts_framework_args(int argc, char **argv)
 			case 24: /* --dump */
 				fwts_dump_info(fw, NULL);
 				goto tidy_close;
+				break;
+			case 25: /* --s4-multiple */
+				fw->s4_multiple = atoi(optarg);
 				break;
 			}
 			break;

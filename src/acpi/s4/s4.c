@@ -24,6 +24,8 @@
 
 #include "fwts.h"
 
+#define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
+
 static char *s4_headline(void)
 {
 	return "S4 hibernate/resume test.";
@@ -50,9 +52,8 @@ static int s4_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int s4_test1(fwts_framework *fw)
+static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 {	
-	char *test = "S4 hibernate/resume test.";
 	int errors = 0;
 	fwts_list *output;
 	int status;
@@ -124,10 +125,12 @@ static int s4_test1(fwts_framework *fw)
 	else		
 		fwts_failed_high(fw, "Failed to freeze devices.");
 
-	if (fwts_klog_regex_find(fw, klog, "Preallocating image memory.*done") > 0)
-		fwts_passed(fw, "Allocated hibernate image memory.");
-	else		
-		fwts_failed_high(fw, "Failed to allocate hibernate image memory.");
+	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") > 0)
+		fwts_passed(fw, "Allocated memory for hibernate image.");
+	else {
+		fwts_failed_high(fw, "Failed to allocate memory for hibernate image.");
+		*failed_alloc_image = 1;
+	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") > 0)
 		fwts_passed(fw, "Hibernate image restored successfully.");
@@ -144,8 +147,72 @@ static int s4_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+
+static int s4_test1(fwts_framework *fw)
+{
+	int failed_alloc_image = 0;
+
+	if (s4_hibernate(fw, "S4 hibernate/resume test.", &failed_alloc_image) != FWTS_OK)
+		return FWTS_ERROR;
+
+	if (failed_alloc_image) {
+		char tmp[32];
+		int size;
+		if (fwts_get_int(FWTS_TRACING_BUFFER_SIZE, &size) != FWTS_OK) {
+			fwts_log_error(fw, "Could not get size from %s.", FWTS_TRACING_BUFFER_SIZE);
+		} else {
+			if (size > 4096) {
+				int ret;
+				fwts_failed_medium(fw, 
+					"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
+					"may cause hibernate to fail. Programs such as ureadahead may have "
+					"set this enable fast boot and not freed up the tracing buffer.", size);
+	
+				fwts_log_info(fw, "Setting tracing buffer size to 1K for this test.");
+	
+				fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
+				failed_alloc_image = 0;
+	
+				ret = s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &failed_alloc_image);
+			
+				/* Restore tracking buffer size */
+				snprintf(tmp, sizeof(tmp), "%d", size);
+				fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
+
+				if (ret != FWTS_OK)
+					return FWTS_ERROR;
+			}
+		}
+	}
+	return FWTS_OK;
+}
+
+static int s4_test2(fwts_framework *fw)
+{
+	int i;
+
+        if (fw->s4_multiple == 0) {
+                fw->s4_multiple = 2;
+                fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s4-multiple=N to run more S4 cycles\n");
+                return FWTS_OK;
+        }
+
+	for (i=0; i<fw->s4_multiple; i++) {
+		int failed_alloc_image = 0;
+		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,fw->s4_multiple);
+		fwts_progress(fw, ((i+1) * 100) / fw->s4_multiple);
+
+		if (s4_hibernate(fw, "Multiple S4 hibernate/resume test.", &failed_alloc_image) != FWTS_OK) {
+			fwts_log_error(fw, "Aborting S4 multiple tests.");
+			return FWTS_ERROR;
+		}
+	}
+	return FWTS_OK;
+}
+
 static fwts_framework_tests s4_tests[] = {
 	s4_test1,
+	s4_test2,
 	NULL
 };
 

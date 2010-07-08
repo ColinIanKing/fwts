@@ -23,5 +23,6 @@
 #include <stdio.h>
 
 char *fwts_get(const char *file);
+int fwts_get_int(const char *file, int *value);
 
 #endif

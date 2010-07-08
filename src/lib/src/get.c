@@ -40,3 +40,20 @@ char *fwts_get(const char *file)
 	
 	return strdup(buffer);
 }
+
+int fwts_get_int(const char *file, int *value)
+{
+	char *data;
+
+	value = 0;
+	
+	if ((data = fwts_get(file)) == NULL) {
+		*value = 0;
+		return FWTS_ERROR;
+	} 
+
+	*value = atoi(data);
+	free(data);
+
+	return FWTS_OK;
+}

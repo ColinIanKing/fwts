@@ -78,6 +78,7 @@ static int dump_exec(char *path, char *filename, char *command)
 	pid_t pid;
 	int len;
 	char *data;
+	int ret;
 
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return FWTS_ERROR;
@@ -89,7 +90,11 @@ static int dump_exec(char *path, char *filename, char *command)
 
 	fwts_pipe_close(fd, pid);
 	
-	return dump_data(path, filename, data, len);
+	ret = dump_data(path, filename, data, len);
+
+	free(data);
+
+	return ret;
 }
 
 static int dump_dmidecode(fwts_framework *fw, char *path, char *filename)
@@ -133,7 +138,6 @@ static int dump_acpi_table(const char *pathname, const char *tablename, FILE *fp
 	unsigned char data[16];
 
 	if ((fpin = fopen(pathname, "r")) == NULL) {
-		fclose(fpout);
 		unlink(pathname);
 		return FWTS_ERROR;
 	}
@@ -152,7 +156,7 @@ static int dump_acpi_table(const char *pathname, const char *tablename, FILE *fp
 	if (i != 0)
 		dump_acpi_data(fpout, data, i);
 
-	fprintf(fpout, "\n");
+	fprintf(fpin, "\n");
 
 	return FWTS_OK;
 }

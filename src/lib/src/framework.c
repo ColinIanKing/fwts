@@ -510,7 +510,6 @@ static void fwts_framework_syntax(char **argv)
 	printf("--log-filter=expr\tDefine filters to dump out specific log fields:\n");
 	printf("\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
 	printf("\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
-	printf("-w, --log-width=N\t\tDefine the output log width in characters.\n");
 	printf("--log-format=fields\tDefine output log format.\n");
 	printf("\te.g. --log-format=\"%%date %%time [%%field] (%%owner): \"\n");
 	printf("\tfields: %%date  - date\n");
@@ -531,6 +530,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("-s, --show-tests\tShow available tests.\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
 	printf("-v, --version\t\tShow version.\n");
+	printf("-w, --log-width=N\tDefine the output log width in characters.\n");
 }
 
 

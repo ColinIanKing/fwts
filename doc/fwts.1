@@ -43,7 +43,7 @@ Running
 fwts
 with no options will run through all the batch tests that require no user interaction.
 However, one can specify the tests one wants to test and also run interactive tests 
-(such as checking for hotkey events, lid open/close events, etc) if required.
+(such as checking for hotkey events, lid open/close events, etc.) if required.
 .P
 By default
 .B
@@ -51,10 +51,9 @@ fwts
 outputs the test results into the log file
 .B
 results.log
-however a different log file name can be specified and if required, output to stderr or stdout can be
-selected.
+however a different log file name can be specified and if required, output to stderr or stdout can be selected.
 .P
-Note that there a variety of tests, including tests that can potentially a machine (such as a suspend/hibernate/resume).
+Note that there a variety of tests, including tests that can potentially hang a machine (such as a suspend/hibernate/resume).
 
 .SH OPTIONS
 fwts options are as follow:
@@ -88,7 +87,7 @@ README.txt \- containing a timestamp and kernel version information.
 .B \-f, \-\-force\-clean
 creates a new results log file, rather than just appending to any existing one (default).
 .TP
-.B \-fwts\-\-debug
+.B \-\-fwts\-debug
 enable the internal debugger. This dumps debug information to stderr.
 .TP
 .B \-h, \-\-help
@@ -114,9 +113,9 @@ log data is tagged with a special marker depending on what type of log informati
 output. The available types can be see by using \-\-log-\fields. Specify the desired log types
 with comma separated list. To disable a field, prefix the name with ~, for example:
 .br
-\-\-log\-filer=RES,SUM  logs just the results and summary lines.
+\-\-log\-filter=RES,SUM  logs just the results and summary lines.
 .br
-\-\-log\-filer=ALL,~INF  logs all lines except for the information lines.
+\-\-log\-filter=ALL,~INF  logs all lines except for the information lines.
 .TP
 .B \-\-log\-format
 specify the information in each log line. The following specifiers are available:
@@ -147,7 +146,7 @@ do not run the S4 hibernate/resume tests
 .B \-\-results\-no\-separators
 no pretty printing of horizontal separators in the results log file.
 .TP
-.B \-r, \-\-results\-output
+.B \-r, \-\-results\-output=filename
 specify the results output log file.
 One can also specify stdout and stderr to redirect to these output streams.
 .TP
@@ -174,44 +173,52 @@ output version number and build date of the
 .B
 .fwts 
 tool.
+.TP
+.B \-w, \--width=N
+specify the width in characters of the output logfile. The default is 130.
 
 .SH EXAMPLES
 .LP
 Run all the batch tests except for S3 and S4 tests and append the results into
 the default log results.log:
 .RS 8
-fwts \-\-no\-s3 \-\-no\-s4 
+sudo fwts \-\-no\-s3 \-\-no\-s4 
 .RE
 .LP
 Run all the interactive tests and start a clean results log called interactive.log:
 .RS 8
-fwts \-i \-f \-r interactive.log
+sudo fwts \-i \-f \-r interactive.log
 .br
 .RE
 .LP
 Run all the tests, interactive and batch:
 .RS 8
-fwts \-i \-b
+sudo fwts \-i \-b
 .RE
 .LP
 Run just the battery and cpufreq tests:
 .RS 8
-fwts battery cpufreq
+sudo fwts battery cpufreq
 .RE
 .LP
 Run all the batch tests and define a new log format using just the date and line number:
 .RS 8
-fwts \-\-log\-format="%date %line: "
+sudo fwts \-\-log\-format="%date %line: "
 .RE
 .LP
 Run all the interative tests and log just the results, info and summary data:
 .RS 8
-fwts \-i \-\-log\-filter=RES,INF,SUM
+sudo fwts \-i \-\-log\-filter=RES,INF,SUM
 .RE
 .LP
 Dump all the interesting firmware information into log files for analysis later:
 .RS 8
-fwts \-\-dump
+sudo fwts \-\-dump
+.RE
+.LP
+View kernel and ACPI driver version and BIOS information:
+.RS 8
+sudo fwts  -w 80 -r stdout  version bios_info --log-filter=INF --log-format=""
 .RE
 
 .SH SEE ALSO

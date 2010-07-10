@@ -604,15 +604,13 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_framework_syntax(argv);
 				goto tidy_close;
 			case 3: /* --results-output */
-				fw->results_logname = strdup(optarg);
+				fwts_framework_strdup(&fw->results_logname, optarg);
 				break;
 			case 4: /* --results-no-separators */
 				fwts_log_filter_unset_field(LOG_SEPARATOR);
 				break;
 			case 5: /* --debug-output */
-				if (fw->debug_logname)
-					free(fw->debug_logname);
-				fw->debug_logname = strdup(optarg);
+				fwts_framework_strdup(&fw->debug_logname, optarg);
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
 				break;
 			case 6: /* --log-filter */
@@ -640,8 +638,7 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_framework_strdup(&fw->klog, optarg);
 				break;
 			case 13: /* --dmidecode */
-				free(fw->dmidecode);
-				fw->dmidecode = strdup(optarg);
+				fwts_framework_strdup(&fw->dmidecode, optarg);
 				break;
 			case 14: /* --s3-multiple */
 				fw->s3_multiple = atoi(optarg);

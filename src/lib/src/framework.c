@@ -496,7 +496,6 @@ static void fwts_framework_syntax(char **argv)
 	printf("--debug-output=file\tOutput debug to a named file.\n");
 	printf("\t\t\tFilename can also be stdout or stderr.\n");	
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
-	printf("--dsdt=file\t\tSpecify DSDT file rather than reading it from the ACPI\n");
 	printf("\t\t\ttable on the machine.\n");
 	printf("-d, --dump\t\tDump out logs.\n");
 	printf("-f, --force-clean\tForce a clean results log file\n");
@@ -529,6 +528,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
 	printf("-s, --show-tests\tShow available tests.\n");
 	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
+	printf("--table-path=path\tPath to ACPI tables.\n");
 	printf("-v, --version\t\tShow version.\n");
 	printf("-w, --log-width=N\tDefine the output log width in characters.\n");
 }
@@ -551,7 +551,6 @@ int fwts_framework_args(int argc, char **argv)
 		{ "iasl", 1, 0, 0 },
 		{ "show-progress", 0, 0, 0 },
 		{ "show-tests", 0, 0, 0 },
-		{ "dsdt", 1, 0, 0, },
 		{ "klog", 1, 0, 0, },
 		{ "dmidecode", 1, 0, 0, },
 		{ "s3-multiple", 1, 0, 0, },
@@ -565,6 +564,7 @@ int fwts_framework_args(int argc, char **argv)
 		{ "version", 0, 0, 0 },
 		{ "dump", 0, 0, 0 },
 		{ "s4-multiple", 1, 0, 0, },
+		{ "table-path", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -636,50 +636,50 @@ int fwts_framework_args(int argc, char **argv)
 				fwts_framework_show_tests();
 				goto tidy_close;
 				break;
-			case 12: /* --dsdt */
-				fwts_framework_strdup(&fw->dsdt, optarg);
-				break;
-			case 13: /* --klog */
+			case 12: /* --klog */
 				fwts_framework_strdup(&fw->klog, optarg);
 				break;
-			case 14: /* --dmidecode */
+			case 13: /* --dmidecode */
 				free(fw->dmidecode);
 				fw->dmidecode = strdup(optarg);
 				break;
-			case 15: /* --s3-multiple */
+			case 14: /* --s3-multiple */
 				fw->s3_multiple = atoi(optarg);
 				break;
-			case 16: /* --no-s3 */
+			case 15: /* --no-s3 */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_NO_S3;
 				break;
-			case 17: /* --no-s4 */
+			case 16: /* --no-s4 */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_NO_S4;
 				break;
-			case 18: /* --log-width=N */
+			case 17: /* --log-width=N */
 				fwts_log_set_line_width(atoi(optarg));
 				break;
-			case 19: /* --lspci=pathtolspci */
+			case 18: /* --lspci=pathtolspci */
 				fwts_framework_strdup(&fw->lspci, optarg);
 				break;
-			case 20: /* --batch */
+			case 19: /* --batch */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 				break;
-			case 21: /* --interactive */
+			case 20: /* --interactive */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
 				break;
-			case 22: /* --force-clean */
+			case 21: /* --force-clean */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
 				break;
-			case 23: /* --version */
+			case 22: /* --version */
 				fwts_framework_show_version(argv);
 				goto tidy_close;
 				break;
-			case 24: /* --dump */
+			case 23: /* --dump */
 				fwts_dump_info(fw, NULL);
 				goto tidy_close;
 				break;
-			case 25: /* --s4-multiple */
+			case 24: /* --s4-multiple */
 				fw->s4_multiple = atoi(optarg);
+				break;
+			case 25: /* --table-path */
+				fwts_framework_strdup(&fw->acpi_table_path, optarg);
 				break;
 			}
 			break;

@@ -28,23 +28,28 @@
 
 #include "fwts.h"
 
-static int fwts_acpi_table_open(const char *name, int which)
+static int fwts_acpi_table_open(fwts_framework *fw, const char *name, int which)
 {
 	char filename[PATH_MAX];
 	int fd;
+	char *path;
+	char *suffix;
+
+	path = (fw->acpi_table_path == NULL) ? FWTS_ACPI_TABLES_PATH : fw->acpi_table_path;
+	suffix = (fw->acpi_table_path == NULL) ? "" : ".dat";
 
 	if (which > 0)
-		snprintf(filename, sizeof(filename), "%s/dynamic/%s%d", 
-			FWTS_ACPI_TABLES_PATH, name, which);
+		snprintf(filename, sizeof(filename), "%s/dynamic/%s%d%s", 
+			path, name, which, suffix);
 	else		
-		snprintf(filename, sizeof(filename), "%s/%s", 
-			FWTS_ACPI_TABLES_PATH, name);
+		snprintf(filename, sizeof(filename), "%s/%s%s", 
+			path, name, suffix);
 
 	if ((fd = open(filename, O_RDONLY)) < 0) {
 		if (which > 0) {
 			/* may not be in dynamic directory, try again */
-			snprintf(filename, sizeof(filename), "%s/%s%d", 
-				FWTS_ACPI_TABLES_PATH, name, which);
+			snprintf(filename, sizeof(filename), "%s/%s%d%s", 
+				path, name, which, suffix);
 			fd = open(filename, O_RDONLY);
 		}
 	}
@@ -89,7 +94,7 @@ uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int
 	uint8 checksum = 0;
 	fwts_acpi_table_header hdr;
 
-	if ((fd = fwts_acpi_table_open(name, which)) < 0)
+	if ((fd = fwts_acpi_table_open(fw, name, which)) < 0)
 		return NULL;
 
 	data = fwts_acpi_table_read(fd, &len);

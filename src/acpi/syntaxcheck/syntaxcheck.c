@@ -34,8 +34,9 @@ static fwts_list* error_output;
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
+	if (fw->acpi_table_path == NULL)
+		if (fwts_check_root_euid(fw))
+			return FWTS_ERROR;
 
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;

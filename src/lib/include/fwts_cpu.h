@@ -29,7 +29,7 @@ typedef struct cpuinfo_x86 {
 	char *flags;		/* String containing flags */
 } fwts_cpuinfo_x86;
 
-int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val);
+int fwts_cpu_readmsr(const int cpu, const uint32 reg, uint64 *val);
 
 int fwts_cpu_has_c1e(void);
 fwts_cpuinfo_x86 *fwts_cpu_get_info(void);

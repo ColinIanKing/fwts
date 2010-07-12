@@ -42,7 +42,7 @@ static pid_t *fwts_cpu_pids;
 #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
 #define MSR_AMD64_OSVW_STATUS		0xc0010141
 
-int fwts_cpu_readmsr(int cpu, uint32 reg, uint64 *val)
+int fwts_cpu_readmsr(const int cpu, const uint32 reg, uint64 *val)
 {
 	struct stat statbuf;
 	char buffer[PATH_MAX];

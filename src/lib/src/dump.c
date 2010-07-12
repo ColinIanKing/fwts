@@ -30,7 +30,7 @@
 
 #include "fwts.h"
 
-static int dump_data(char *path, char *filename, char *data, int len)
+static int dump_data(const char *path, const char *filename, char *data, const int len)
 {
 	FILE *fp;
 	char name[PATH_MAX];
@@ -49,7 +49,7 @@ static int dump_data(char *path, char *filename, char *data, int len)
 }
 
 
-static int dump_dmesg(char *path, char *filename)
+static int dump_dmesg(const char *path, const char *filename)
 {
 	int len;
 	char *data;
@@ -72,7 +72,7 @@ static int dump_dmesg(char *path, char *filename)
 	return ret;
 }
 
-static int dump_exec(char *path, char *filename, char *command)
+static int dump_exec(const char *path, const char *filename, const char *command)
 {
 	int fd;
 	pid_t pid;
@@ -97,12 +97,12 @@ static int dump_exec(char *path, char *filename, char *command)
 	return ret;
 }
 
-static int dump_dmidecode(fwts_framework *fw, char *path, char *filename)
+static int dump_dmidecode(fwts_framework *fw, const char *path, const char *filename)
 {
 	return dump_exec(path, filename, fw->dmidecode);
 }
 
-static int dump_lspci(fwts_framework *fw, char *path, char *filename)
+static int dump_lspci(fwts_framework *fw, const char *path, const char *filename)
 {
 	char command[1024];
 	
@@ -111,7 +111,7 @@ static int dump_lspci(fwts_framework *fw, char *path, char *filename)
 	return dump_exec(path, filename, command);
 }
 
-static void dump_acpi_data(FILE *fp, unsigned char *data, int n)
+static void dump_acpi_data(FILE *fp, const unsigned char *data, const int n)
 {
 	int i;
 
@@ -161,7 +161,7 @@ static int dump_acpi_table(const char *pathname, const char *tablename, FILE *fp
 	return FWTS_OK;
 }
 
-static int dump_all_acpi_tables(char *tablepath, FILE *fpout)
+static int dump_all_acpi_tables(const char *tablepath, FILE *fpout)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -189,7 +189,7 @@ static int dump_all_acpi_tables(char *tablepath, FILE *fpout)
 	return FWTS_OK;
 }
 
-static int dump_acpi_tables(char *path)
+static int dump_acpi_tables(const char *path)
 {
 	char filename[PATH_MAX];
 	FILE *fp;
@@ -206,7 +206,7 @@ static int dump_acpi_tables(char *path)
 	return FWTS_OK;
 }
 
-static int dump_readme(char *path)
+static int dump_readme(const char *path)
 {
 	char filename[PATH_MAX];
 	time_t now = time(NULL);
@@ -239,7 +239,7 @@ static int dump_readme(char *path)
 	return FWTS_OK;
 }
 
-int fwts_dump_info(fwts_framework *fw, char *path)
+int fwts_dump_info(fwts_framework *fw, const char *path)
 {
 	if (path == NULL)
 		path = "./";

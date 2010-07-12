@@ -47,7 +47,7 @@ static int fwts_getchar(void)
 	return ch;
 }
 
-int fwts_printf(fwts_framework *fw, char *fmt, ...)
+int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 {
 	int len;
 	va_list ap;

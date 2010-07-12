@@ -22,7 +22,7 @@
 
 #include "fwts_framework.h"
 
-int fwts_printf(fwts_framework *fw, char *fmt, ...);
+int fwts_printf(fwts_framework *fw, const char *fmt, ...);
 int fwts_press_enter(fwts_framework *fw);
 int fwts_get_reply(fwts_framework *fw, const char *message, const char *options);
 

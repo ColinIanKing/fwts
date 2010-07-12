@@ -30,6 +30,6 @@ typedef struct {
 
 void fwts_keymap_free(fwts_list *keylist);
 fwts_list *fwts_keymap_load(const char *machine);
-fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, int scancode);
+fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode);
 
 #endif

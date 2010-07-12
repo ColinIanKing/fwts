@@ -107,7 +107,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 	return keymap_list;
 }
 
-fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, int scancode)
+fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode)
 {
 	fwts_list_link *link;
 

@@ -41,7 +41,7 @@ typedef struct {
 	int	type;
 } e820_entry;
 
-static int fwts_register_e820_line(fwts_list *e820_list, uint64 start, uint64 end, int type)
+static int fwts_register_e820_line(fwts_list *e820_list, const uint64 start, const uint64 end, const int type)
 {
 	e820_entry *entry;
 
@@ -59,7 +59,7 @@ static int fwts_register_e820_line(fwts_list *e820_list, uint64 start, uint64 en
 }
 
 
-int fwts_e820_type(fwts_list *e820_list, uint64 memory)
+int fwts_e820_type(fwts_list *e820_list, const uint64 memory)
 {
 	int result = E820_UNKNOWN;
 	e820_entry *entry;
@@ -77,7 +77,7 @@ int fwts_e820_type(fwts_list *e820_list, uint64 memory)
 	return result;
 }
 
-fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, uint64 memory)
+fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64 memory)
 {
 	int result = E820_UNKNOWN;
 

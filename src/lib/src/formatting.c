@@ -25,7 +25,7 @@
 
 #include "fwts.h"
 
-static char *format_line(char *start, char *end, int width)
+static char *format_line(char *start, const char *end, const int width)
 {
 	int maxlen;
 	char *buffer;

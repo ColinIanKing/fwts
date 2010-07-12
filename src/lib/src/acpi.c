@@ -28,7 +28,7 @@
 
 #include "fwts.h"
 
-static int fwts_acpi_table_open(fwts_framework *fw, const char *name, int which)
+static int fwts_acpi_table_open(fwts_framework *fw, const char *name, const int which)
 {
 	char filename[PATH_MAX];
 	int fd;
@@ -56,7 +56,7 @@ static int fwts_acpi_table_open(fwts_framework *fw, const char *name, int which)
 	return fd;
 }
 
-static uint8 *fwts_acpi_table_read(int fd, int *length)
+static uint8 *fwts_acpi_table_read(const int fd, int *length)
 {
 	uint8 *ptr = NULL;
 	int n;
@@ -84,7 +84,7 @@ static uint8 *fwts_acpi_table_read(int fd, int *length)
 	return ptr;
 }
 
-uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, int which, int *size)
+uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size)
 {
 	int fd;
 	uint8 *data;

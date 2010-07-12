@@ -73,7 +73,7 @@ char *fwts_text_list_strstr(fwts_list *list, const char *needle)
 	return NULL;
 }
 
-fwts_list *fwts_list_from_text(char *text)
+fwts_list *fwts_list_from_text(const char *text)
 {
 	char *ptr;
         fwts_list *list;
@@ -84,7 +84,7 @@ fwts_list *fwts_list_from_text(char *text)
 	if ((list = fwts_list_init()) == NULL)
 		return NULL;
 
-	ptr = text;
+	ptr = (char*)text;
 
 	while (*ptr) {
 		char *start = ptr;

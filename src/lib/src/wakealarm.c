@@ -47,7 +47,7 @@ int fwts_wakealarm_get_irq_state(void)
 	return FWTS_ERROR;
 }
 
-int fwts_wakealarm_trigger(fwts_framework *fw, int seconds)
+int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 {
 	char buffer[32];
 
@@ -68,7 +68,7 @@ int fwts_wakealarm_trigger(fwts_framework *fw, int seconds)
 	return FWTS_OK;
 }
 
-int fwts_wakealarm_test_firing(fwts_framework *fw, int seconds)
+int fwts_wakealarm_test_firing(fwts_framework *fw, const int seconds)
 {
 	int ret;
 

@@ -16,6 +16,7 @@ fwts_SOURCES = main.c \
 	acpi/brightness/brightness.c \
 	acpi/common/common.c \
 	acpi/cstates/cstates.c \
+	acpi/dmar/dmar.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \

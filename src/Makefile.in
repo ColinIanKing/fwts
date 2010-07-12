@@ -49,14 +49,14 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
 	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
 	brightness.$(OBJEXT) common.$(OBJEXT) cstates.$(OBJEXT) \
-	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
-	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
-	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
-	bios_info.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
-	thermal_trip.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
-	version.$(OBJEXT)
+	dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
+	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
+	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
+	mtrr.$(OBJEXT) bios_info.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) microcode.$(OBJEXT) \
+	hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -236,6 +236,7 @@ fwts_SOURCES = main.c \
 	acpi/brightness/brightness.c \
 	acpi/common/common.c \
 	acpi/cstates/cstates.c \
+	acpi/dmar/dmar.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \
@@ -350,6 +351,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpufreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstates.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fadt.Po@am__quote@
@@ -544,6 +546,20 @@ cstates.obj: acpi/cstates/cstates.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/cstates/cstates.c' object='cstates.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o cstates.obj `if test -f 'acpi/cstates/cstates.c'; then $(CYGPATH_W) 'acpi/cstates/cstates.c'; else $(CYGPATH_W) '$(srcdir)/acpi/cstates/cstates.c'; fi`
+
+dmar.o: acpi/dmar/dmar.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmar.o -MD -MP -MF $(DEPDIR)/dmar.Tpo -c -o dmar.o `test -f 'acpi/dmar/dmar.c' || echo '$(srcdir)/'`acpi/dmar/dmar.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dmar.Tpo $(DEPDIR)/dmar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/dmar/dmar.c' object='dmar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmar.o `test -f 'acpi/dmar/dmar.c' || echo '$(srcdir)/'`acpi/dmar/dmar.c
+
+dmar.obj: acpi/dmar/dmar.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dmar.obj -MD -MP -MF $(DEPDIR)/dmar.Tpo -c -o dmar.obj `if test -f 'acpi/dmar/dmar.c'; then $(CYGPATH_W) 'acpi/dmar/dmar.c'; else $(CYGPATH_W) '$(srcdir)/acpi/dmar/dmar.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dmar.Tpo $(DEPDIR)/dmar.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/dmar/dmar.c' object='dmar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dmar.obj `if test -f 'acpi/dmar/dmar.c'; then $(CYGPATH_W) 'acpi/dmar/dmar.c'; else $(CYGPATH_W) '$(srcdir)/acpi/dmar/dmar.c'; fi`
 
 fadt.o: acpi/fadt/fadt.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT fadt.o -MD -MP -MF $(DEPDIR)/fadt.Tpo -c -o fadt.o `test -f 'acpi/fadt/fadt.c' || echo '$(srcdir)/'`acpi/fadt/fadt.c

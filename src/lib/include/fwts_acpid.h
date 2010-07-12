@@ -21,7 +21,7 @@
 #define __FWTS_ACPID_H__
 
 int acpi_even_open(void);
-char *acpi_event_read(int fd, int *length, int timeout);
-void acpi_even_close(int fd);
+char *acpi_event_read(const int fd, int *length, const int timeout);
+void acpi_even_close(const int fd);
 
 #endif

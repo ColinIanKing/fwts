@@ -61,7 +61,7 @@ int acpi_even_open(void)
         return fd;
 }
 
-char *acpi_event_read(int fd, int *length, int timeout)
+char *acpi_event_read(const int fd, int *length, const int timeout)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
@@ -104,7 +104,7 @@ char *acpi_event_read(int fd, int *length, int timeout)
 	return ptr;
 }
 
-void acpi_even_close(int fd)
+void acpi_even_close(const int fd)
 {
 	close(fd);
 }

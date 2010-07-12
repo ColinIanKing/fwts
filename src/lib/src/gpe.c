@@ -26,7 +26,7 @@
 
 #include "fwts.h"
 
-void fwts_gpe_free(fwts_gpe *gpe, int count)
+void fwts_gpe_free(fwts_gpe *gpe, const int count)
 {
 	int i;
 
@@ -87,7 +87,7 @@ error:
 	return FWTS_ERROR;
 }
 
-int fwts_gpe_delta(int **gpe_delta, fwts_gpe *start, fwts_gpe *end, int n)
+int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, const int n)
 {	
 	int i;
 	if (((*gpe_delta) = calloc(n, sizeof(int))) == NULL)
@@ -101,7 +101,7 @@ int fwts_gpe_delta(int **gpe_delta, fwts_gpe *start, fwts_gpe *end, int n)
 }
 
 
-void fwts_gpe_test(fwts_framework *fw, fwts_gpe *gpes_start, fwts_gpe *gpes_end, int gpe_count)
+void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gpe *gpes_end, const int gpe_count)
 {
 	int *deltas = NULL;
 	int sci = 0;

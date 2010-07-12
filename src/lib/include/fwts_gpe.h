@@ -34,9 +34,9 @@ typedef struct {
 	int count;
 } fwts_gpe;
 
-void fwts_gpe_free(fwts_gpe *gpe, int count);
+void fwts_gpe_free(fwts_gpe *gpe, const int count);
 int  fwts_gpe_read(fwts_gpe **gpes);
-int  fwts_gpe_delta(int **gpe_delta, fwts_gpe *start, fwts_gpe *end, int n);
-void fwts_gpe_test(fwts_framework *fw, fwts_gpe *start, fwts_gpe *end, int n);
+int  fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, const int n);
+void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *start, const fwts_gpe *end, const int n);
 
 #endif

@@ -47,7 +47,7 @@ int fwts_log_line_number(void)
 	return fwts_log_line;
 }
 
-static char *fwts_log_field_to_str(fwts_log_field field)
+static char *fwts_log_field_to_str(const fwts_log_field field)
 {
 	switch (field & LOG_FIELD_MASK) {
 	case LOG_RESULT:
@@ -75,7 +75,7 @@ static char *fwts_log_field_to_str(fwts_log_field field)
 	}
 }
 
-char *fwts_log_level_to_str(fwts_log_level level)
+char *fwts_log_level_to_str(const fwts_log_level level)
 {
 	switch (level) {
 	case LOG_LEVEL_CRITICAL:
@@ -145,14 +145,14 @@ void fwts_log_filter_unset_field(const fwts_log_field filter)
 	fwts_log_filter &= ~filter;
 }
 
-void fwts_log_set_field_filter(char *str)
+void fwts_log_set_field_filter(const char *str)
 {	
 	char *token;
 	char *saveptr;
 	fwts_log_field field;
 
 	for (;; str=NULL) {
-		if ((token = strtok_r(str, ",|", &saveptr)) == NULL)
+		if ((token = strtok_r((char*)str, ",|", &saveptr)) == NULL)
 			break;
 		if (*token == '^' || *token == '~') {
 			field = fwts_log_str_to_field(token+1);
@@ -167,13 +167,13 @@ void fwts_log_set_field_filter(char *str)
 	}
 }
 
-void fwts_log_set_format(char *str)
+void fwts_log_set_format(const char *str)
 {
 	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);	
 	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
-static int fwts_log_header(fwts_log *log, char *buffer, int len, fwts_log_field field, fwts_log_level level)
+static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwts_log_field field, const fwts_log_level level)
 {
 	char *ptr;
 	int n = 0;
@@ -226,7 +226,7 @@ static int fwts_log_header(fwts_log *log, char *buffer, int len, fwts_log_field 
 	return n;
 }
 
-int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,const char *fmt, ...)
+int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...)
 {
 	char buffer[4096];
 	int n = 0;
@@ -277,7 +277,7 @@ int fwts_log_printf(fwts_log *log, fwts_log_field field, fwts_log_level level,co
 	return len;
 }
 
-void fwts_log_underline(fwts_log *log, int ch)
+void fwts_log_underline(fwts_log *log, const int ch)
 {
 	int i;
 	int n;

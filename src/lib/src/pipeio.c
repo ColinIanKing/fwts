@@ -68,7 +68,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 	}
 }
 
-char *fwts_pipe_read(int fd, int *length)
+char *fwts_pipe_read(const int fd, int *length)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
@@ -96,7 +96,7 @@ char *fwts_pipe_read(int fd, int *length)
 	return ptr;
 }
 
-int fwts_pipe_close(int fd, pid_t pid)
+int fwts_pipe_close(const int fd, const pid_t pid)
 {
 	int status;
 

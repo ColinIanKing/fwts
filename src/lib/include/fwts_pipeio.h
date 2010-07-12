@@ -28,8 +28,8 @@
 #define FWTS_EXEC_ERROR		(127)
 
 int   fwts_pipe_open(const char *command, pid_t *childpid);
-char *fwts_pipe_read(int fd, int *length);
-int   fwts_pipe_close(int fd, pid_t pid);
+char *fwts_pipe_read(const int fd, int *length);
+int   fwts_pipe_close(const int fd, const pid_t pid);
 int   fwts_pipe_exec(const char *command, fwts_list **list);
 
 #endif

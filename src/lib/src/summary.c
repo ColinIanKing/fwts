@@ -39,7 +39,7 @@ enum {
 	SUMMARY_MAX = SUMMARY_UNKNOWN+1
 };
 
-char *summary_names[] = {
+const char *summary_names[] = {
 	"Critical",
 	"High",
 	"Medium",

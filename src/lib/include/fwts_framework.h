@@ -35,6 +35,7 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN      = 0x00000020,
 	FWTS_FRAMEWORK_FLAGS_BATCH	      = 0x00001000,
 	FWTS_FRAMEWORK_FLAGS_INTERACTIVE      = 0x00002000,
+	FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL     = 0x00004000,
 } fwts_framework_flags;
 
 /*
@@ -135,6 +136,7 @@ static inline int fwts_tests_passed(fwts_framework *fw)
  */
 #define FWTS_BATCH 		FWTS_FRAMEWORK_FLAGS_BATCH
 #define FWTS_INTERACTIVE 	FWTS_FRAMEWORK_FLAGS_INTERACTIVE
+#define FWTS_EXPERIMENTAL	FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL
 
 #define FWTS_REGISTER(name, ops, priority, flags)		\
 								\

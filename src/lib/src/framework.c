@@ -28,6 +28,11 @@
 
 #define RESULTS_LOG	"results.log"
 
+#define FWTS_RUN_FLAGS		\
+	(FWTS_BATCH |		\
+	 FWTS_INTERACTIVE |	\
+	 FWTS_EXPERIMENTAL)
+
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
 
@@ -81,8 +86,8 @@ void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int prio
 {
 	fwts_framework_test *new_test;
 
-	if (flags & ~(FWTS_BATCH | FWTS_INTERACTIVE)) {
-		fprintf(stderr, "Test %s flags must be FWTS_BATCH or FWTS_INTERACTIVE, got %x\n",name,flags);
+	if (flags & ~FWTS_RUN_FLAGS) {
+		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE or FWTS_EXPERIMENTAL, got %x\n",name,flags);
 		exit(EXIT_FAILURE);
 	}
 
@@ -123,24 +128,43 @@ static void fwts_framework_show_tests(void)
 {
 	fwts_list_link *item;
 	fwts_list *sorted;
+	int i;
 
-	if ((sorted = fwts_list_init()) == NULL) {
-		fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
-		exit(EXIT_FAILURE);
-	}
+	typedef struct {
+		char *title;
+		int  flag;
+	} fwts_categories;
 
-	printf("Available tests:\n");
+	fwts_categories categories[] = {
+		{ "Batch",		FWTS_BATCH },
+		{ "Interactive",	FWTS_INTERACTIVE },
+		{ "Experimental",	FWTS_EXPERIMENTAL },
+		{ NULL,			0 },
+	};
 
-	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
-		fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
-	}
+	for (i=0; categories[i].title != NULL; i++) {
+		fwts_framework_test *test;
+		if ((sorted = fwts_list_init()) == NULL) {
+			fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
+			exit(EXIT_FAILURE);
+		}
+
+		printf("%s tests:\n", categories[i].title);
+
+		for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+			test = (fwts_framework_test*)item->data;
+			if (test->flags & categories[i].flag)
+				fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
+		}
 	
-	for (item = sorted->head; item != NULL; item = item->next) {
-		fwts_framework_test *test = (fwts_framework_test*)item->data;
-		printf(" %-13.13s %s\n", test->name, test->ops->headline());
+		for (item = sorted->head; item != NULL; item = item->next) {
+			test = (fwts_framework_test*)item->data;
+	
+			printf(" %-13.13s %s\n", test->name, test->ops->headline());
+		}
+		fwts_list_free(sorted, NULL);
+		printf("\n");
 	}
-
-	fwts_list_free(sorted, NULL);
 }
 
 void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent)
@@ -353,7 +377,7 @@ static void fwts_framework_run_registered_tests(fwts_framework *fw)
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()");
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
-		if (fw->flags & test->flags & (FWTS_BATCH | FWTS_INTERACTIVE)) {
+		if (fw->flags & test->flags & FWTS_RUN_FLAGS) {
 			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
 			fwts_framework_run_test(fw, test->name, test->ops);
 		}
@@ -498,6 +522,7 @@ static void fwts_framework_syntax(char **argv)
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
 	printf("\t\t\ttable on the machine.\n");
 	printf("-d, --dump\t\tDump out logs.\n");
+	printf("-e, experimental\tJust run Experimental tests.\n");
 	printf("-f, --force-clean\tForce a clean results log file\n");
 	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
 	printf("-h, --help\t\tGet this help.\n");
@@ -565,6 +590,7 @@ int fwts_framework_args(int argc, char **argv)
 		{ "dump", 0, 0, 0 },
 		{ "s4-multiple", 1, 0, 0, },
 		{ "table-path", 1, 0, 0 },
+		{ "experimental", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -678,11 +704,17 @@ int fwts_framework_args(int argc, char **argv)
 			case 25: /* --table-path */
 				fwts_framework_strdup(&fw->acpi_table_path, optarg);
 				break;
+			case 26: /* --experimental */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL;
+				break;
 			}
 			break;
 		case 'd': /* --dump */
 			fwts_dump_info(fw, NULL);
 			goto tidy_close;
+			break;
+		case 'e': /* --experimental */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL;
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -718,9 +750,7 @@ int fwts_framework_args(int argc, char **argv)
 		}
 	}	
 
-	if ((fw->flags & 
-	    (FWTS_FRAMEWORK_FLAGS_BATCH | 
-	     FWTS_FRAMEWORK_FLAGS_INTERACTIVE)) == 0)
+	if ((fw->flags & FWTS_RUN_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 
 	if ((fw->iasl == NULL) ||

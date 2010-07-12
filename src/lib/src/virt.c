@@ -27,7 +27,7 @@
 
 #include "fwts.h"
 
-void exec_cpuid(int cpu, uint32 cmd, cpu_registers*  regs) 
+void exec_cpuid(const int cpu, const uint32 cmd, cpu_registers* regs) 
 {
 	cpu_set_t mask, oldmask;
 

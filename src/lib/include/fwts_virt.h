@@ -34,6 +34,6 @@ typedef struct __cpu_registers
 	uint32 edx;
 } cpu_registers;
 
-void exec_cpuid(int cpu, uint32 cmd, cpu_registers* regs);
+void exec_cpuid(const int cpu, const uint32 cmd, cpu_registers* regs);
 
 #endif

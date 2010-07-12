@@ -22,7 +22,7 @@
 
 #include "fwts.h"
 
-fwts_list* fwts_iasl_disassemble(fwts_framework *fw, char *table, int which);
-fwts_list* fwts_iasl_reassemble(fwts_framework *fw, uint8 *data, int len);
+fwts_list* fwts_iasl_disassemble(fwts_framework *fw, const char *table, const int which);
+fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8 *data, const int len);
 
 #endif

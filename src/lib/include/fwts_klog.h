@@ -37,10 +37,10 @@ typedef enum {
 } fwts_compare_mode;
 
 typedef struct {
-	fwts_compare_mode mode;
-	fwts_log_level level;
-        char *pattern;
-	char *advice;
+	const fwts_compare_mode mode;
+	const fwts_log_level level;
+        const char *pattern;
+	const char *advice;
 	pcre *re;
 } fwts_klog_pattern;
 

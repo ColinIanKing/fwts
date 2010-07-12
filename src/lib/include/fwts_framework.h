@@ -88,8 +88,8 @@ typedef struct fwts_framework_ops {
 	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;
 
-int  fwts_framework_args(int argc, char **argv);
-void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int priority, int flags);
+int  fwts_framework_args(const int argc, char * const *argv);
+void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
@@ -115,7 +115,7 @@ void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent);
 
 #define fwts_advice(fw, args...)	fwts_framework_advice(fw, ## args)
 
-static inline int fwts_tests_passed(fwts_framework *fw)
+static inline int fwts_tests_passed(const fwts_framework *fw)
 {
 	return ((fw->sub_tests.failed + 
 		 fw->sub_tests.warning + 

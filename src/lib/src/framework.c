@@ -47,7 +47,7 @@ enum {
 
 typedef struct fwts_framework_test {
 	const char *name;
-	const 	    fwts_framework_ops *ops;
+	const       fwts_framework_ops *ops;
 	int   	    priority;
 	int	    flags;
 } fwts_framework_test;
@@ -55,9 +55,9 @@ typedef struct fwts_framework_test {
 static fwts_list *fwts_framework_test_list;
 
 typedef struct {
-	int env_id;
-	char *env_name;
-	char *env_default;
+	const int env_id;
+	const char *env_name;
+	const char *env_default;
 	char *env_value;
 } fwts_framework_setting;
 
@@ -72,7 +72,7 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",     NULL },
 };
 
-static void fwts_framework_debug(fwts_framework* framework, char *fmt, ...);
+static void fwts_framework_debug(fwts_framework* framework, const char *fmt, ...);
 
 static int fwts_framework_compare_priority(void *data1, void *data2)
 {
@@ -82,7 +82,10 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
 	return (test1->priority - test2->priority);
 }
 
-void fwts_framework_test_add(char *name, fwts_framework_ops *ops, const int priority, int flags)
+void fwts_framework_test_add(const char *name, 
+			     fwts_framework_ops *ops, 
+			     const int priority, 
+			     const int flags)
 {
 	fwts_framework_test *new_test;
 
@@ -131,8 +134,8 @@ static void fwts_framework_show_tests(void)
 	int i;
 
 	typedef struct {
-		char *title;
-		int  flag;
+		const char *title;
+		const int  flag;
 	} fwts_categories;
 
 	fwts_categories categories[] = {
@@ -197,7 +200,7 @@ static char *fwts_framework_get_env(const int env_id)
 			if (fwts_framework_settings[i].env_value)
 				return fwts_framework_settings[i].env_value;
 			else {
-				char *value = getenv(fwts_framework_settings[i].env_name);
+				const char *value = getenv(fwts_framework_settings[i].env_name);
 				if (value == NULL) {
 					value = fwts_framework_settings[i].env_default;
 				}
@@ -221,7 +224,7 @@ static void fwts_framework_free_env(void)
 			free(fwts_framework_settings[i].env_value);
 }
 
-static void fwts_framework_debug(fwts_framework* fw, char *fmt, ...)
+static void fwts_framework_debug(fwts_framework* fw, const char *fmt, ...)
 {
 	va_list ap;
 	char buffer[1024];	
@@ -320,13 +323,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 
 
 	for (test = ops->tests; *test != NULL; test++, fw->current_test++) {
-#if 0
-		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-			fprintf(stderr, "%-20.20s: Test %d of %d started.\n", name, fw->current_test, ops->total_tests);		
-			fflush(stderr);
-		}
-#endif
-
 		fwts_framework_debug(fw, "exectuting test %d", fw->current_test);
 
 		fw->sub_tests.aborted = 0;
@@ -497,12 +493,12 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
-static void fwts_framework_show_version(char **argv)
+static void fwts_framework_show_version(char * const *argv)
 {
 	printf("%s, Version %s, %s\n", argv[0], FWTS_VERSION, FWTS_DATE);
 }
 
-static void fwts_framework_strdup(char **ptr, char *str)
+static void fwts_framework_strdup(char **ptr, const char *str)
 {
 	if (ptr == NULL)
 		return;
@@ -512,7 +508,7 @@ static void fwts_framework_strdup(char **ptr, char *str)
 	*ptr = strdup(str);
 }
 
-static void fwts_framework_syntax(char **argv)
+static void fwts_framework_syntax(char * const *argv)
 {
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
@@ -559,7 +555,7 @@ static void fwts_framework_syntax(char **argv)
 }
 
 
-int fwts_framework_args(int argc, char **argv)
+int fwts_framework_args(const int argc, char * const *argv)
 {
 	int ret = FWTS_OK;
 

@@ -308,9 +308,14 @@ static int fwts_framework_run_test(fwts_framework *fw, const char *name, const f
 					ret == FWTS_SKIP ? "skipped" : "aborted");		
 				fflush(stderr);
 			}
-			/* Init failed, so abort */
-			fwts_log_error(fw, "Aborted test, initialisation failed.");
-			fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
+			/* Init failed or skipped, so abort */
+			if (ret == FWTS_SKIP) {
+				/* fwts_log_info(fw, "Skipping test."); */
+				fwts_framework_debug(fw, "fwts_framework_run_test() init returned skipped, skip test.");
+			} else {
+				fwts_log_error(fw, "Aborted test, initialisation failed.");
+				fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
+			}
 			for (test = ops->tests; *test != NULL; test++) {
 				fw->test_run.aborted++;
 				fw->total.aborted++;

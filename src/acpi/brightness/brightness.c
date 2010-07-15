@@ -210,8 +210,9 @@ static int brightness_test3(fwts_framework *fw)
 				if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) == FWTS_OK) {
 					int ch;
 
-					fwts_printf(fw, "==== Setting backlight to lowest level ====\n");
-					set_setting(entry->d_name, "brightness", 0);
+					fwts_printf(fw, "==== Setting backlight to a low level ====\n");
+					/* Setting it to zero on some machines turns off the backlight, so set to a low value instead */
+					set_setting(entry->d_name, "brightness", 1);
 					ch = fwts_get_reply(fw, "==== Is the Backlight now set to a dim level? [Y/N]: ", "ynYN");
 					if (ch == 'y' || ch == 'Y')
 						fwts_passed(fw, "Backlight %s set to dim level.", entry->d_name);
@@ -339,7 +340,7 @@ static int brightness_test5(fwts_framework *fw)
 			} else {
 				int tmp;
 
-				set_setting(entry->d_name, "brightness", 0);
+				set_setting(entry->d_name, "brightness", 1);
 				fwts_printf(fw, "==== Press the brightness UP hotkey for %s ====\n", entry->d_name);
 
 				if (brightness_wait_event(fw) == 0)

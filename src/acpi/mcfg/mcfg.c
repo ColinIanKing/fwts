@@ -184,7 +184,14 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_log_info(fw, "Entry address : %x\n", table->low_address);
 
 		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
-			fwts_failed_high(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+			fwts_failed_medium(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+			fwts_advice(fw, "The PCI Express specification states that the PCI Express configuration space should "
+					"be defined in the MCFG table and *maybe* optionally defined in the E820 table "
+					"if ACPI MCFG is present. "
+					"Linux checks if the region is reserved in the E820 table and will reject the "
+					"MMCONFIG if there is a discrepency between MCFG and the E820 table for the "
+					"PCI Express region.  [See arch/x86/pci/mmconfig-shared.c pci_mmcfg_reject_broken()]. "
+					"It is recommended that this is defined in the E820 table for Linux.");
 			failed++;
 		}
 

@@ -280,7 +280,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
 				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
 				"and this will slow the boot speed. "
-				"It is probably worth asking the BIOS vendor to map in VGA write-combiningg region.\n");
+				"It is probably worth asking the BIOS vendor to map in VGA write-combining region.\n");
 	}
 	fwts_list_free(mtrr_bios_list, free);
 	fwts_list_free(lspci_output, free);

@@ -302,7 +302,7 @@ static int brightness_wait_event(fwts_framework *fw)
 	int i;
 	
 
-	if ((fd = acpi_even_open()) < 0) {
+	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
@@ -318,7 +318,7 @@ static int brightness_wait_event(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 
-	acpi_even_close(fd);
+	acpi_event_close(fd);
 
 	return events;
 }

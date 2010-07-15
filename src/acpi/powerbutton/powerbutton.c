@@ -108,7 +108,7 @@ static int power_button_test2(fwts_framework *fw)
 
 	fwts_printf(fw, "==== Please press the laptop power button. ====\n");
 
-	if ((fd = acpi_even_open()) < 0) {
+	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
@@ -135,7 +135,7 @@ static int power_button_test2(fwts_framework *fw)
 		fwts_passed(fw, "Detected %s power button event.", button);
 	}
 
-	acpi_even_close(fd);
+	acpi_event_close(fd);
 
 	return FWTS_OK;
 }

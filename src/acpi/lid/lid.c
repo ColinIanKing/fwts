@@ -152,7 +152,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		return FWTS_ERROR;
 	}
 
-	if ((fd = acpi_even_open()) < 0) {
+	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
@@ -168,7 +168,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		}
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	acpi_even_close(fd);
+	acpi_event_close(fd);
 
 	if ((gpe_count = fwts_gpe_read(&gpes_end)) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot read GPEs.");

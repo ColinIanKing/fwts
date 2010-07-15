@@ -127,7 +127,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 	fwts_log_info(fw, "Test ac_adapter state changes.");
 
 
-	if ((fd = acpi_even_open()) < 0) {
+	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
@@ -183,7 +183,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 		else
 			fwts_passed(fw, "Detected ac_adapter on-line state.");
 
-	acpi_even_close(fd);
+	acpi_event_close(fd);
 
 	return FWTS_OK;
 }

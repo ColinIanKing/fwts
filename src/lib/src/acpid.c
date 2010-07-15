@@ -38,7 +38,7 @@
 
 #define ACPID_SOCKET	"/var/run/acpid.socket"
 
-int acpi_even_open(void)
+int acpi_event_open(void)
 {
 	struct sockaddr_un addr;
 	int ret;
@@ -104,7 +104,7 @@ char *acpi_event_read(const int fd, int *length, const int timeout)
 	return ptr;
 }
 
-void acpi_even_close(const int fd)
+void acpi_event_close(const int fd)
 {
 	close(fd);
 }

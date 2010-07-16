@@ -90,6 +90,10 @@ static int ebda_test1(fwts_framework *fw)
 	if (klog == NULL)
 		return FWTS_ERROR;
 
+	fwts_log_info(fw, "The Extended BIOS Data Area (EBDA) is normally located at the end of the "
+			  "low 640K region and is typically 2-4K in size. It should be reserved in "
+			  "the E820 table.");
+
 	for (item = klog->head; item != NULL; item = item->next) {
 		char *tmp;
 

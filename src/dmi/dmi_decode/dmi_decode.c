@@ -90,7 +90,7 @@ static dmi_pattern dmi_patterns[] = {
 	{ LOG_LEVEL_LOW,     "Serial Number:", "0123456789", "Template Serial Number not updated" },
 	{ LOG_LEVEL_LOW,     "Asset Tag",  "1234567890", "Template Serial Number not updated" },
 	{ LOG_LEVEL_LOW,     "UUID:", "0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A.", "UUID number not updated" },
-	{ LOG_LEVEL_LOW,     "To Be Filled By O.E.M.", "Value not updated" },
+	{ LOG_LEVEL_LOW,     "To Be Filled By O.E.M.", NULL, "Value not updated" },
 	{ 0, NULL, NULL, NULL }
 };
 

@@ -55,8 +55,8 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	mtrr.$(OBJEXT) bios_info.$(OBJEXT) dmi_decode.$(OBJEXT) \
 	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
 	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
-	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) microcode.$(OBJEXT) \
-	hotkey.$(OBJEXT) version.$(OBJEXT)
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
+	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -255,6 +255,7 @@ fwts_SOURCES = main.c \
 	cpu/maxfreq/maxfreq.c \
 	cpu/cpufreq/cpufreq.c \
 	cpu/thermal_trip/thermal_trip.c \
+	cpu/nx/nx.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c
@@ -366,6 +367,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcfg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osilinux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
@@ -840,6 +842,20 @@ thermal_trip.obj: cpu/thermal_trip/thermal_trip.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/thermal_trip/thermal_trip.c' object='thermal_trip.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o thermal_trip.obj `if test -f 'cpu/thermal_trip/thermal_trip.c'; then $(CYGPATH_W) 'cpu/thermal_trip/thermal_trip.c'; else $(CYGPATH_W) '$(srcdir)/cpu/thermal_trip/thermal_trip.c'; fi`
+
+nx.o: cpu/nx/nx.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT nx.o -MD -MP -MF $(DEPDIR)/nx.Tpo -c -o nx.o `test -f 'cpu/nx/nx.c' || echo '$(srcdir)/'`cpu/nx/nx.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/nx.Tpo $(DEPDIR)/nx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/nx/nx.c' object='nx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o nx.o `test -f 'cpu/nx/nx.c' || echo '$(srcdir)/'`cpu/nx/nx.c
+
+nx.obj: cpu/nx/nx.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT nx.obj -MD -MP -MF $(DEPDIR)/nx.Tpo -c -o nx.obj `if test -f 'cpu/nx/nx.c'; then $(CYGPATH_W) 'cpu/nx/nx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/nx/nx.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/nx.Tpo $(DEPDIR)/nx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/nx/nx.c' object='nx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o nx.obj `if test -f 'cpu/nx/nx.c'; then $(CYGPATH_W) 'cpu/nx/nx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/nx/nx.c'; fi`
 
 microcode.o: cpu/microcode/microcode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT microcode.o -MD -MP -MF $(DEPDIR)/microcode.Tpo -c -o microcode.o `test -f 'cpu/microcode/microcode.c' || echo '$(srcdir)/'`cpu/microcode/microcode.c

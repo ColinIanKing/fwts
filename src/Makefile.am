@@ -35,6 +35,7 @@ fwts_SOURCES = main.c \
 	cpu/maxfreq/maxfreq.c \
 	cpu/cpufreq/cpufreq.c \
 	cpu/thermal_trip/thermal_trip.c \
+	cpu/nx/nx.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c

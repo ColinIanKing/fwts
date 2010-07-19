@@ -89,11 +89,12 @@ void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
 	free(cpu);
 }
 
-fwts_cpuinfo_x86 *fwts_cpu_get_info(void)
+fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 {
 	FILE *fp;
 	char buffer[1024];
 	fwts_cpuinfo_x86 *cpu;
+	int cpu_num = -1;
 
 	if ((cpu = (fwts_cpuinfo_x86*)calloc(1, sizeof(fwts_cpuinfo_x86))) == NULL)
 		return NULL;
@@ -105,37 +106,42 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(void)
 		char *ptr = strstr(buffer, ":");
 		if (ptr)
 			ptr += 2;
+		else
+			continue;
 
 		buffer[strlen(buffer)-1] = '\0';
 
-		if (ptr && (!strncmp(buffer, "processor", 9))) {
-			int n;
-			sscanf(ptr, "%d", &n);
-			if (n > 0) 
+		if (!strncmp(buffer, "processor", 9)) {
+			sscanf(ptr, "%d", &cpu_num);
+			if (cpu_num > which_cpu) 
 				break;
 			continue;
+		} else {
+			if (cpu_num != which_cpu)
+				continue;
 		}
-		if (ptr && (!strncmp(buffer, "vendor_id", 9))) {
+
+		if (!strncmp(buffer, "vendor_id", 9)) {
 			cpu->vendor_id = strdup(ptr);
 			continue;
 		}
-		if (ptr && (!strncmp(buffer, "cpu family",10))) {
+		if (!strncmp(buffer, "cpu family",10)) {
 			sscanf(ptr, "%d", &cpu->x86);
 			continue;
 		}
-		if (ptr && (!strncmp(buffer, "model name", 10))) {
+		if (!strncmp(buffer, "model name", 10)) {
 			cpu->model_name = strdup(ptr);
 			continue;
 		}
-		if (ptr && (!strncmp(buffer, "model", 5))) {
+		if (!strncmp(buffer, "model", 5)) {
 			sscanf(ptr, "%d", &cpu->x86_model);
 			continue;
 		}
-		if (ptr && (!strncmp(buffer, "stepping", 8))) {
+		if (!strncmp(buffer, "stepping", 8)) {
 			sscanf(ptr, "%d", &cpu->stepping);
 			continue;
 		}
-		if (ptr && (!strncmp(buffer, "flags", 4))) {
+		if (!strncmp(buffer, "flags", 4)) {
 			cpu->flags = strdup(ptr);
 			continue;
 		}
@@ -161,7 +167,7 @@ fwts_bool fwts_cpu_has_c1e(void)
 
 	fwts_cpuinfo_x86 *cpu;
 
-	if ((cpu = fwts_cpu_get_info()) == NULL)
+	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_BOOL_ERROR;
 	
         if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {

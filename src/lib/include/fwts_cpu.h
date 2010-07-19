@@ -32,7 +32,7 @@ typedef struct cpuinfo_x86 {
 int fwts_cpu_readmsr(const int cpu, const uint32 reg, uint64 *val);
 
 int fwts_cpu_has_c1e(void);
-fwts_cpuinfo_x86 *fwts_cpu_get_info(void);
+fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu);
 void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu);
 
 int fwts_cpu_enumerate(void);

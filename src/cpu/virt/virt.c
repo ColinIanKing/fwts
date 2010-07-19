@@ -44,7 +44,7 @@ static int virt_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-	if ((fwts_virt_cpuinfo = fwts_cpu_get_info()) == NULL) {
+	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}

@@ -81,7 +81,7 @@ static int nx_test2(fwts_framework *fw)
 	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 	int i;
 	int n;
-	int cpu0_has_nx;
+	int cpu0_has_nx = 0;
 	int failed = 0;
 
 	fwts_log_info(fw, 
@@ -99,28 +99,79 @@ static int nx_test2(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
-		fwts_log_error(fw, "Cannot get CPU info");
-		return FWTS_ERROR;
-	}
-	cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
-	fwts_cpu_free_info(fwts_nx_cpuinfo);
-
-	for (i=1; i<n; i++) {
+	for (i=0; i<n; i++) {
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 			fwts_failed(fw, "Cannot get CPU%d info", i);
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
-		if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
-			fwts_failed(fw, "CPU%d has different NX flags to CPU0.");
-			failed++;
+		if (i == 0) {
+			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
+		} else {
+			if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
+				fwts_failed(fw, "CPU%d has different NX flags to CPU0.");
+				failed++;
+			}
 		}
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 	}
 
 	if (!failed) 
-		fwts_passed(fw, "All %d CPUs have the same NX flag.", n);
+		fwts_passed(fw, "All %d CPUs have the same NX flag %s.", n, cpu0_has_nx ? "set" :  "cleared");
+
+	return FWTS_OK;
+}
+
+static int nx_test3(fwts_framework *fw)
+{
+	int n;
+	int i;
+	int failed = 0;
+	uint64 msr_value = 0;
+	const uint64 nx_bit = 1ULL << 34;
+	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
+
+	fwts_log_info(fw, 
+		"This test verifies that all CPUs have the same NX flag setting by examining the per CPU MSR register 0x1a0.");
+
+	if (fwts_check_root_euid(fw)) {
+		fwts_log_error(fw, "This test needs to be run as root to access MSR registers");
+		return FWTS_ERROR;
+	}
+
+	if ((n = fwts_cpu_enumerate()) == FWTS_ERROR) {
+		fwts_log_error(fw, "Cannot determine number of CPUs");
+		return FWTS_ERROR;
+	}
+
+	for (i=0; i<n; i++) {
+		uint64 val;
+		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+			fwts_log_error(fw, "Cannot get CPU info");
+			return FWTS_ERROR;
+		}
+		if (strstr(fwts_nx_cpuinfo->vendor_id, "Intel") == NULL) {
+			fwts_log_info(fw, "Non-Intel CPU, skipping test.");
+			fwts_cpu_free_info(fwts_nx_cpuinfo);
+			return FWTS_OK;
+		}
+		if (fwts_cpu_readmsr(i, 0x1a0, &val) != FWTS_OK) {
+			fwts_log_error(fw, "Cannot read msr 0x1a0 on CPU%d", i);
+			return FWTS_ERROR;
+		}
+		if (i == 0) {
+			msr_value = val;
+		} else {
+			if ((msr_value & nx_bit) != (val & nx_bit)) {
+				fwts_failed(fw, "CPU%d has different NX flags to CPU0.");
+				failed++;
+			}
+		}
+		fwts_cpu_free_info(fwts_nx_cpuinfo);
+	}
+
+	if (!failed) 
+		fwts_passed(fw, "All %d CPUs have the NX flag in MSR 0x1a0 %s.", n, (msr_value & nx_bit) == 0 ? "set" : "cleared");
 
 	return FWTS_OK;
 }
@@ -128,6 +179,7 @@ static int nx_test2(fwts_framework *fw)
 static fwts_framework_tests nx_tests[] = {
 	nx_test1,
 	nx_test2,
+	nx_test3,
 	NULL
 };
 

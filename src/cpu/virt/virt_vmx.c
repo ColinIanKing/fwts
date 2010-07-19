@@ -67,7 +67,7 @@ void virt_check_vmx(fwts_framework *fw)
 	fwts_log_info(fw, "Check VT/VMX Virtualization extensions are set up correctly.");
 
 	if (!cpu_has_vmx()) 
-		fwts_log_info(fw, "Processor does not support Virtualization extensions.");
+		fwts_log_info(fw, "Processor does not support Virtualization extensions, won't test BIOS configuration, skipping test.");
 	else  {
 		int ret = vt_locked_by_bios();
 		switch (ret) {

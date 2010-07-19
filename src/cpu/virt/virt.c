@@ -34,7 +34,6 @@ typedef enum {
 	CPU_INTEL,
 } cpu_type;
 
-static cpu_type cpu = CPU_UNKNOWN;
 fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
 #define CPUID_NUM_FEATURES	0x00000000L
@@ -67,37 +66,15 @@ static char *virt_headline(void)
 
 static int virt_test1(fwts_framework *fw)
 {
-	fwts_log_info(fw, "Check if CPU is an AMD or Intel.");
-
-	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL) {
-		cpu = CPU_AMD;
-		fwts_passed(fw, "CPU is an AMD.");
-	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {
-		cpu = CPU_INTEL;
-		fwts_passed(fw, "CPU is an Intel.");
-	} else {
-		cpu = CPU_UNKNOWN;
-		fwts_warning(fw, "CPU is unknown.");
-	}
-
-	return FWTS_OK;
-}
-
-static int virt_test2(fwts_framework *fw)
-{
 	extern void virt_check_svm(fwts_framework *);
 	extern void virt_check_vmx(fwts_framework *);
 
-	switch (cpu) {
-	case CPU_AMD:
+	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL) {
 		virt_check_svm(fw);
-		break;
-	case CPU_INTEL:
+	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {
 		virt_check_vmx(fw);
-		break;
-	default:
+	} else {
 		fwts_warning(fw, "Cannot test virtualisation extentions - unknown CPU.");
-		break;
 	}
 
 	return FWTS_OK;
@@ -106,7 +83,6 @@ static int virt_test2(fwts_framework *fw)
 
 static fwts_framework_tests virt_tests[] = {
 	virt_test1,
-	virt_test2,
 	NULL
 };
 

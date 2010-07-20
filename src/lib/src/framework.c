@@ -127,11 +127,12 @@ static int fwts_framework_compare_name(void *data1, void *data2)
 	return strcmp(test1->name, test2->name);
 }
 
-static void fwts_framework_show_tests(void)
+static void fwts_framework_show_tests(fwts_framework *fw)
 {
 	fwts_list_link *item;
 	fwts_list *sorted;
 	int i;
+	int need_nl = 0;
 
 	typedef struct {
 		const char *title;
@@ -152,21 +153,28 @@ static void fwts_framework_show_tests(void)
 			exit(EXIT_FAILURE);
 		}
 
-		printf("%s tests:\n", categories[i].title);
 
-		for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
-			test = (fwts_framework_test*)item->data;
-			if (test->flags & categories[i].flag)
-				fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
-		}
+		if (((fw->flags & FWTS_RUN_FLAGS) == 0) || ((categories[i].flag & fw->flags & FWTS_RUN_FLAGS) != 0)) {
+			if (need_nl)
+				printf("\n");
+
+			printf("%s tests:\n", categories[i].title);
+
+			for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+				test = (fwts_framework_test*)item->data;
+				if (test->flags & categories[i].flag)
+					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
+			}
 	
-		for (item = sorted->head; item != NULL; item = item->next) {
-			test = (fwts_framework_test*)item->data;
+			for (item = sorted->head; item != NULL; item = item->next) {
+				test = (fwts_framework_test*)item->data;
 	
-			printf(" %-13.13s %s\n", test->name, test->ops->headline());
+				printf(" %-13.13s %s\n", test->name, test->ops->headline());
+			}
+			fwts_list_free(sorted, NULL);
+
+			need_nl = 1;
 		}
-		fwts_list_free(sorted, NULL);
-		printf("\n");
 	}
 }
 
@@ -658,8 +666,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 				break;
 			case 11: /* --show-tests */
-				fwts_framework_show_tests();
-				goto tidy_close;
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
 				break;
 			case 12: /* --klog */
 				fwts_framework_strdup(&fw->klog, optarg);
@@ -735,8 +742,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 			break;
 		case 's': /* --show-tests */
-			fwts_framework_show_tests();
-			goto tidy_close;
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
 			break;
 		case 'w': /* --log-width=N */
 			fwts_log_set_line_width(atoi(optarg));
@@ -750,6 +756,11 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		}
 	}	
+
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
+		fwts_framework_show_tests(fw);
+		goto tidy_close;
+	}
 
 	if ((fw->flags & FWTS_RUN_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
@@ -787,7 +798,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		for (; optind < argc; optind++) {
 			if (fwts_framework_run_registered_test(fw, argv[optind])) {
 				fprintf(stderr, "No such test '%s'\n",argv[optind]);
-				fwts_framework_show_tests();
+				fwts_framework_show_tests(fw);
 				ret = FWTS_ERROR;
 				goto tidy;
 			}

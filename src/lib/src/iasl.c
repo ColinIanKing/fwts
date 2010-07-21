@@ -72,10 +72,9 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *table, const in
 	close(fd);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);
-	fd = fwts_pipe_open(tmpbuf, &pid);
-	if (fd < 0) {
+	if ((fd = fwts_pipe_open(tmpbuf, &pid)) < 0) 
 		fwts_log_warning(fw, "exec of %s -d %s (disassemble) failed\n", fw->iasl, tmpname);
-	}
+
 	fwts_pipe_close(fd, pid);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s.dsl", tmpname);
@@ -85,9 +84,8 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *table, const in
 	unlink(tmpname);
 	unlink(tmpbuf);
 
-	if (chdir(cwd) < 0) {
+	if (chdir(cwd) < 0)
 		fwts_log_error(fw, "Cannot change directory to %s", cwd);
-	}
 
 	return output;
 }
@@ -124,24 +122,21 @@ fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8 *data, const int
 	close(fd);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);
-	ret = fwts_pipe_exec(tmpbuf, &output);
-	if (ret)
+	if ((ret = fwts_pipe_exec(tmpbuf, &output)))
 		fwts_log_warning(fw, "exec of %s -d %s (disassemble) returned %d\n", fw->iasl, tmpname, ret);
 	if (output)
 		fwts_text_list_free(output);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s %s.dsl", fw->iasl, tmpname);
-	ret = fwts_pipe_exec(tmpbuf, &output);
-	if (ret)
+	if ((ret = fwts_pipe_exec(tmpbuf, &output)));
 		fwts_log_error(fw, "exec of %s (assemble) returned %d\n", fw->iasl, ret);
 
 	snprintf(tmpbuf,sizeof(tmpbuf),"%s.dsl", tmpname);
 	unlink(tmpname);
 	unlink(tmpbuf);
 
-	if (chdir(cwd) < 0) {
+	if (chdir(cwd) < 0)
 		fwts_log_error(fw, "Cannot change directory to %s", cwd);
-	}
 
 	return output;
 }

@@ -120,5 +120,7 @@ fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list
 
 	*list_item = new_list_item;
 
+	list->len++;
+
 	return new_list_item;
 }

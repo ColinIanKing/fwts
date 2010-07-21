@@ -28,10 +28,11 @@
 
 #define RESULTS_LOG	"results.log"
 
-#define FWTS_RUN_FLAGS		\
-	(FWTS_BATCH |		\
-	 FWTS_INTERACTIVE |	\
-	 FWTS_EXPERIMENTAL)
+#define FWTS_RUN_FLAGS			\
+	(FWTS_BATCH |			\
+	 FWTS_INTERACTIVE |		\
+	 FWTS_BATCH_EXPERIMENTAL |	\
+	 FWTS_INTERACTIVE_EXPERIMENTAL)
 
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
@@ -90,7 +91,8 @@ void fwts_framework_test_add(const char *name,
 	fwts_framework_test *new_test;
 
 	if (flags & ~FWTS_RUN_FLAGS) {
-		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE or FWTS_EXPERIMENTAL, got %x\n",name,flags);
+		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL\n"
+			        " or FWTS_INTERACTIVE_EXPERIMENTAL got %x\n",name,flags);
 		exit(EXIT_FAILURE);
 	}
 
@@ -140,40 +142,41 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	} fwts_categories;
 
 	fwts_categories categories[] = {
-		{ "Batch",		FWTS_BATCH },
-		{ "Interactive",	FWTS_INTERACTIVE },
-		{ "Experimental",	FWTS_EXPERIMENTAL },
+		{ "Batch",			FWTS_BATCH },
+		{ "Interactive",		FWTS_INTERACTIVE },
+		{ "Batch Experimental",		FWTS_BATCH_EXPERIMENTAL },
+		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
 		{ NULL,			0 },
 	};
 
 	for (i=0; categories[i].title != NULL; i++) {
 		fwts_framework_test *test;
-		if ((sorted = fwts_list_init()) == NULL) {
-			fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
-			exit(EXIT_FAILURE);
-		}
 
-
-		if (((fw->flags & FWTS_RUN_FLAGS) == 0) || ((categories[i].flag & fw->flags & FWTS_RUN_FLAGS) != 0)) {
-			if (need_nl)
-				printf("\n");
-
-			printf("%s tests:\n", categories[i].title);
-
+		if (((fw->flags & FWTS_RUN_FLAGS) == 0) ||
+		    ((fw->flags & FWTS_RUN_FLAGS) & categories[i].flag)) {
+			if ((sorted = fwts_list_init()) == NULL) {
+				fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
+				exit(EXIT_FAILURE);
+			}
 			for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
 				test = (fwts_framework_test*)item->data;
-				if (test->flags & categories[i].flag)
+				if ((test->flags & FWTS_RUN_FLAGS) == categories[i].flag)
 					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
 			}
+
+			if (fwts_list_len(sorted) > 0) {
+				if (need_nl)
+					printf("\n");
+				need_nl = 1;
+				printf("%s tests:\n", categories[i].title);
 	
-			for (item = sorted->head; item != NULL; item = item->next) {
-				test = (fwts_framework_test*)item->data;
-	
-				printf(" %-13.13s %s\n", test->name, test->ops->headline());
+				for (item = sorted->head; item != NULL; item = item->next) {
+					test = (fwts_framework_test*)item->data;
+		
+					printf(" %-13.13s %s\n", test->name, test->ops->headline());
+				}
 			}
 			fwts_list_free(sorted, NULL);
-
-			need_nl = 1;
 		}
 	}
 }
@@ -526,17 +529,18 @@ static void fwts_framework_syntax(char * const *argv)
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 	printf("Arguments:\n");
 	printf("-b, --batch\t\tJust run non-interactive tests.\n");
+	printf("--batch-experimental\tJust run Batch Experimental tests.\n");
 	printf("--debug-output=file\tOutput debug to a named file.\n");
 	printf("\t\t\tFilename can also be stdout or stderr.\n");	
 	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
 	printf("\t\t\ttable on the machine.\n");
 	printf("-d, --dump\t\tDump out logs.\n");
-	printf("-e, experimental\tJust run Experimental tests.\n");
 	printf("-f, --force-clean\tForce a clean results log file\n");
 	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
 	printf("-h, --help\t\tGet this help.\n");
 	printf("--iasl=path\t\tSpecify path to iasl.\n");
 	printf("-i, --interactive\tJust run interactive tests.\n");
+	printf("--interactive-experimental\tJust run Interactive Experimental tests.\n");
 	printf("--klog=file\t\tSpecify kernel log file rather than reading it\n");
 	printf("\t\t\tfrom the kernel.\n");
 	printf("--log-fields\t\tShow available log filtering fields.\n");
@@ -599,7 +603,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "dump", 0, 0, 0 },
 		{ "s4-multiple", 1, 0, 0, },
 		{ "table-path", 1, 0, 0 },
-		{ "experimental", 0, 0, 0 },
+		{ "batch-experimental", 0, 0, 0 },
+		{ "interactive-experimental", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -712,17 +717,17 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 25: /* --table-path */
 				fwts_framework_strdup(&fw->acpi_table_path, optarg);
 				break;
-			case 26: /* --experimental */
-				fw->flags |= FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL;
+			case 26: /* --batch-experimental */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL;
+				break;
+			case 27: /* --interactive-experimental */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL;
 				break;
 			}
 			break;
 		case 'd': /* --dump */
 			fwts_dump_info(fw, NULL);
 			goto tidy_close;
-			break;
-		case 'e': /* --experimental */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_EXPERIMENTAL;
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -791,7 +796,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 
-	fwts_log_info(fw, "Results generated by fwts: Version %s (build %s).", FWTS_VERSION, FWTS_DATE);
+	fwts_log_info(fw, "Results generated by fwts: Version %s (built %s).", FWTS_VERSION, FWTS_DATE);
 	fwts_log_nl(fw);
 
 	if (optind < argc) 

@@ -61,6 +61,9 @@ fwts options are as follow:
 .B \-b, \-\-batch
 run the non-interactive batch tests. Batch tests require no user interaction.
 .TP
+.B \-\-batch-experimental
+run only batch experimental tests.
+.TP
 .B \-\-debug\-output=file
 when running with \-\-fwts\-debug this option specifies where the debug output will be written to. One
 can also specify stdout and stderr to redirect to these output streams.
@@ -84,9 +87,6 @@ lspci.log \- containing the output from lspci \-vv \-nn
 .br
 README.txt \- containing a timestamp and kernel version information.
 .TP
-.B \-\-experimental
-run only experimental tests.
-.TP
 .B \-f, \-\-force\-clean
 creates a new results log file, rather than just appending to any existing one (default).
 .TP
@@ -101,6 +101,9 @@ specify the full path and filename to the the iasl binary.
 .TP
 .B \-i, \-\-interactive
 run the interactive tests. These tests require user interaction.
+.TP
+.B \-\-interactive-experimental
+run only interactive experimental tests.
 .TP
 .B \-\-klog=file
 read the kernel log from the specified file rather than from the kernel log ring buffer. This
@@ -166,7 +169,8 @@ show the progress of the tests being run. Each test will identified as it is bei
 run. For long tests, a percentage of completion time will be displayed.
 .TP
 .B \-s, \-\-show\-tests
-show the names of all the available tests
+show the names of all the available tests. By default will show all tests. Use the --batch, --interactive, --batch-experimental, --interactive-experimental
+options to show these specific tests.
 .TP
 .B \--stdout\-summary
 output SUCCESS or FAILED to stdout at end of tests.
@@ -226,6 +230,11 @@ sudo fwts \-\-dump
 View kernel and ACPI driver version and BIOS information:
 .RS 8
 sudo fwts  -w 80 -r stdout  version bios_info --log-filter=INF --log-format=""
+.RE
+.LP
+show the batch and batch experimental tests:
+.RS 8
+fwts --show-tests --batch --batch-experimental
 .RE
 
 .SH SEE ALSO

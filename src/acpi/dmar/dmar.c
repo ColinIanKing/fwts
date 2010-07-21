@@ -312,4 +312,4 @@ static fwts_framework_ops dmar_ops = {
 	dmar_tests
 };
 
-FWTS_REGISTER(dmar, &dmar_ops, FWTS_TEST_ANYTIME, FWTS_EXPERIMENTAL);
+FWTS_REGISTER(dmar, &dmar_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);

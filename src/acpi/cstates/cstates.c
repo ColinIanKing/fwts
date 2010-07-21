@@ -293,4 +293,4 @@ static fwts_framework_ops cstates_ops = {
 	cstates_tests
 };
 
-FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME, FWTS_EXPERIMENTAL);
+FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME,  FWTS_BATCH_EXPERIMENTAL);

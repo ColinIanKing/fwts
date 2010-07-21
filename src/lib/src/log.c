@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#define LOG_LINE_WIDTH 130
+#define LOG_LINE_WIDTH 100
 
 #include <stdlib.h>
 #include <stdio.h>

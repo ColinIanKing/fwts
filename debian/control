@@ -9,7 +9,8 @@ Package: fwts
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, pciutils, iasl
 Description: FirmWare Test Suite
- This is a firmware test suite that performs sanity checks on Intel/AMD PC firmware. It
- is intended to identify BIOS and ACPI errors and if appropriate it will try to explain
- the errors and give advice to help workaround or fix firmware bugs.  It is primarily
- indended to be a Linux-centric firmware troubleshooting tool.
+ This is a firmware test suite that performs sanity checks on Intel/AMD 
+ PC firmware. It is intended to identify BIOS and ACPI errors and 
+ if appropriate it will try to explain the errors and give advice to 
+ help workaround or fix firmware bugs.  It is primarily intended to 
+ be a Linux-centric firmware troubleshooting tool.

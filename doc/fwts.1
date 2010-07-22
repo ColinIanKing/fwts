@@ -61,7 +61,7 @@ fwts options are as follow:
 .B \-b, \-\-batch
 run the non-interactive batch tests. Batch tests require no user interaction.
 .TP
-.B \-\-batch-experimental
+.B \-\-batch\-experimental
 run only batch experimental tests.
 .TP
 .B \-\-debug\-output=file
@@ -102,7 +102,7 @@ specify the full path and filename to the the iasl binary.
 .B \-i, \-\-interactive
 run the interactive tests. These tests require user interaction.
 .TP
-.B \-\-interactive-experimental
+.B \-\-interactive\-experimental
 run only interactive experimental tests.
 .TP
 .B \-\-klog=file
@@ -116,7 +116,7 @@ select which fields one wants to log.
 .B \-\-log\-filter
 specify which particular types of log data to be output into the log file. Each line of
 log data is tagged with a special marker depending on what type of log information is being
-output. The available types can be see by using \-\-log-\fields. Specify the desired log types
+output. The available types can be see by using \-\-log\-fields. Specify the desired log types
 with comma separated list. To disable a field, prefix the name with ~, for example:
 .br
 \-\-log\-filter=RES,SUM  logs just the results and summary lines.
@@ -169,23 +169,23 @@ show the progress of the tests being run. Each test will identified as it is bei
 run. For long tests, a percentage of completion time will be displayed.
 .TP
 .B \-s, \-\-show\-tests
-show the names of all the available tests. By default will show all tests. Use the --batch, --interactive, --batch-experimental, --interactive-experimental
+show the names of all the available tests. By default will show all tests. Use the \-\-batch, \-\-interactive, \-\-batch\-experimental, \-\-interactive\-experimental
 options to show these specific tests.
 .TP
-.B \--stdout\-summary
+.B \-\-stdout\-summary
 output SUCCESS or FAILED to stdout at end of tests.
 .TP
-.B \--table\-path=path
+.B \-\-table\-path=path
 specify the path containing ACPI tables. These tables need to be named in the format: tablename.dat,
 for example DSDT.dat, for example, as extracted using acpidump or fwts \-\-dump and then acpixtract.
 .TP
-.B \-v, \--version
+.B \-v, \-\-version
 output version number and build date of the
 .B
-.fwts 
+fwts 
 tool.
 .TP
-.B \-w, \--width=N
+.B \-w, \-\-width=N
 specify the width in characters of the output logfile. The default is 130.
 
 .SH EXAMPLES
@@ -229,12 +229,12 @@ sudo fwts \-\-dump
 .LP
 View kernel and ACPI driver version and BIOS information:
 .RS 8
-sudo fwts  -w 80 -r stdout  version bios_info --log-filter=INF --log-format=""
+sudo fwts  \-w 80 \-r stdout  version bios_info \-\-log\-filter=INF \-\-log\-format=""
 .RE
 .LP
 show the batch and batch experimental tests:
 .RS 8
-fwts --show-tests --batch --batch-experimental
+fwts \-\-show\-tests \-\-batch \-\-batch\-experimental
 .RE
 
 .SH SEE ALSO

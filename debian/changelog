@@ -1,238 +1,244 @@
-fwts (0.16.11-0ubuntu1) maverick; urgency=low
+fwts (0.16.12) maverick; urgency=low
+ 
+  * New upstream version V0.16.12
+ 
+ -- Colin King <colin.king@canonical.com>  Wed, 21 Jul 2010 10:54:20 +0200
+
+fwts (0.16.11) maverick; urgency=low
  
   * New upstream version V0.16.11
  
  -- Colin King <colin.king@canonical.com>  Wed, 21 Jul 2010 10:54:20 +0200
  
-fwts (0.16.10-0ubuntu1) maverick; urgency=low
+fwts (0.16.10) maverick; urgency=low
  
   * New upstream version V0.16.10
  
  -- Colin King <colin.king@canonical.com>  Mon, 19 Jul 2010 14:11:26 +0100
  
-fwts (0.16.09-0ubuntu1) maverick; urgency=low
+fwts (0.16.09) maverick; urgency=low
  
   * New upstream version V0.16.09
  
  -- Colin King <colin.king@canonical.com>  Sat, 17 Jul 2010 14:55:38 +0100
  
-fwts (0.16.08-0ubuntu1) maverick; urgency=low
+fwts (0.16.08) maverick; urgency=low
  
   * New upstream version V0.16.08
  
  -- Colin King <colin.king@canonical.com>  Fri, 16 Jul 2010 11:22:17 +0100
  
-fwts (0.16.07-0ubuntu1) maverick; urgency=low
+fwts (0.16.07) maverick; urgency=low
  
   * New upstream version V0.16.07
  
  -- Colin King <colin.king@canonical.com>  Thu, 15 Jul 2010 15:25:44 +0100
  
-fwts (0.16.06-0ubuntu1) maverick; urgency=low
+fwts (0.16.06) maverick; urgency=low
  
   * New upstream version V0.16.06
  
  -- Colin King <colin.king@canonical.com>  Thu, 15 Jul 2010 10:07:43 +0100
  
-fwts (0.16.05-0ubuntu1) maverick; urgency=low
+fwts (0.16.05) maverick; urgency=low
  
   * New upstream version V0.16.05
  
  -- Colin King <colin.king@canonical.com>  Mon, 12 Jul 2010 10:22:40 +0100
  
-fwts (0.16.04-0ubuntu1) maverick; urgency=low
+fwts (0.16.04) maverick; urgency=low
  
   * New upstream version V0.16.04
  
  -- Colin King <colin.king@canonical.com>  Sat, 10 Jul 2010 19:22:54 +0100
  
-fwts (0.16.03-0ubuntu1) maverick; urgency=low
+fwts (0.16.03) maverick; urgency=low
  
   * New upstream version V0.16.03
  
  -- Colin King <colin.king@canonical.com>  Fri, 9 Jul 2010 18:41:53 +0100
  
-fwts (0.16.02-0ubuntu1) maverick; urgency=low
+fwts (0.16.02) maverick; urgency=low
  
   * New upstream version V0.16.02
  
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 19:29:36 +0100
  
-fwts (0.16.01-0ubuntu1) maverick; urgency=low
+fwts (0.16.01) maverick; urgency=low
  
   * New upstream version V0.16.01
  
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 13:59:51 +0100
  
-fwts (0.16.0-0ubuntu1) maverick; urgency=low
+fwts (0.16.0) maverick; urgency=low
  
   * New upstream version V0.16.0
  
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 10:49:04 +0100
  
-fwts (0.15.9-0ubuntu1) maverick; urgency=low
+fwts (0.15.9) maverick; urgency=low
  
   * New upstream version V0.15.9
  
  -- Colin King <colin.king@canonical.com>  Thu, 8 Jul 2010 09:25:17 +0100
  
-fwts (0.15.8-0ubuntu1) maverick; urgency=low
+fwts (0.15.8) maverick; urgency=low
  
   * New upstream version V0.15.8
  
  -- Colin King <colin.king@canonical.com>  Wed, 7 Jul 2010 20:00:03 +0100
  
-fwts (0.15.7-0ubuntu1) maverick; urgency=low
+fwts (0.15.7) maverick; urgency=low
  
   * New upstream version V0.15.7
  
  -- Colin King <colin.king@canonical.com>  Tue, 6 Jul 2010 19:50:01 +0100
  
-fwts (0.15.6-0ubuntu1) maverick; urgency=low
+fwts (0.15.6) maverick; urgency=low
  
   * New upstream version V0.15.6
  
  -- Colin King <colin.king@canonical.com>  Tue, 6 Jul 2010 10:13:06 +0100
  
-fwts (0.15.5-0ubuntu1) maverick; urgency=low
+fwts (0.15.5) maverick; urgency=low
  
   * New upstream version V0.15.5
  
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 18:23:47 +0100
  
-fwts (0.15.4-0ubuntu1) maverick; urgency=low
+fwts (0.15.4) maverick; urgency=low
  
   * New upstream version V0.15.4
  
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 17:05:00 +0100
  
-fwts (0.15.3-0ubuntu1) maverick; urgency=low
+fwts (0.15.3) maverick; urgency=low
  
   * New upstream version V0.15.3
  
  -- Colin King <colin.king@canonical.com>  Mon, 5 Jul 2010 12:22:25 +0100
  
-fwts (0.15.2-0ubuntu1) maverick; urgency=low
+fwts (0.15.2) maverick; urgency=low
  
   * New upstream version V0.15.2
  
  -- Colin King <colin.king@canonical.com>  Sun, 4 Jul 2010 15:33:27 +0100
  
-fwts (0.15.1-0ubuntu1) maverick; urgency=low
+fwts (0.15.1) maverick; urgency=low
  
   * New upstream version V0.15.1
  
  -- Colin King <colin.king@canonical.com>  Fri, 2 Jul 2010 06:15:03 +0100
  
-fwts (0.15.0-0ubuntu1) maverick; urgency=low
+fwts (0.15.0) maverick; urgency=low
  
   * New upstream version V0.15.0
  
  -- Colin King <colin.king@canonical.com>  Thu, 1 Jul 2010 12:45:32 +0100
  
-fwts (0.14.8-0ubuntu1) maverick; urgency=low
+fwts (0.14.8) maverick; urgency=low
  
   * New upstream version V0.14.8
  
  -- Colin King <colin.king@canonical.com>  Tue, 29 Jun 2010 17:55:26 +0100
  
-fwts (0.14.7-0ubuntu1) maverick; urgency=low
+fwts (0.14.7) maverick; urgency=low
  
   * New upstream version V0.14.7
  
  -- Colin King <colin.king@canonical.com>  Tue, 29 Jun 2010 10:59:02 +0100
  
-fwts (0.14.6-0ubuntu1) maverick; urgency=low
+fwts (0.14.6) maverick; urgency=low
  
   * New upstream version V0.14.6
  
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 16:49:19 +0100
  
-fwts (0.14.5-0ubuntu1) maverick; urgency=low
+fwts (0.14.5) maverick; urgency=low
  
   * New upstream version V0.14.5
  
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 15:54:19 +0100
  
-fwts (0.14.4-0ubuntu1) maverick; urgency=low
+fwts (0.14.4) maverick; urgency=low
  
   * New upstream version V0.14.4
  
  -- Colin King <colin.king@canonical.com>  Mon, 28 Jun 2010 12:52:25 +0100
  
-fwts (0.14.3-0ubuntu1) maverick; urgency=low
+fwts (0.14.3) maverick; urgency=low
  
   * New upstream version V0.14.3
  
  -- Colin King <colin.king@canonical.com>  Sun, 27 Jun 2010 11:52:50 +0100
  
-fwts (0.14.2-0ubuntu1) maverick; urgency=low
+fwts (0.14.2) maverick; urgency=low
  
   * New upstream version V0.14.2
  
  -- Colin King <colin.king@canonical.com>  Sat, 26 Jun 2010 20:09:37 +0100
  
-fwts (0.14.1-0ubuntu1) maverick; urgency=low
+fwts (0.14.1) maverick; urgency=low
  
   * New upstream version V0.14.1
  
  -- Colin King <colin.king@canonical.com>  Fri, 25 Jun 2010 17:11:49 +0100
  
-fwts (0.14-0ubuntu1) maverick; urgency=low
+fwts (0.14) maverick; urgency=low
  
   * New upstream version V0.14
  
  -- Colin King <colin.king@canonical.com>  Fri, 25 Jun 2010 10:40:02 +0100
  
-fwts (0.13.1-0ubuntu1) maverick; urgency=low
+fwts (0.13.1) maverick; urgency=low
  
   * New upstream version V0.13.1
  
  -- Colin King <colin.king@canonical.com>  Fri, 18 Jun 2010 15:26:53 +0100
  
-fwts (0.13-0ubuntu1) maverick; urgency=low
+fwts (0.13) maverick; urgency=low
  
   * New upstream version V0.13
  
  -- Colin King <colin.king@canonical.com>  Fri, 18 Jun 2010 10:48:50 +0100
  
-fwts (0.12.4-0ubuntu1) maverick; urgency=low
+fwts (0.12.4) maverick; urgency=low
  
   * New upstream version V0.12.4
  
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 17:55:01 +0100
  
-fwts (0.12.3-0ubuntu1) maverick; urgency=low
+fwts (0.12.3) maverick; urgency=low
  
   * New upstream version V0.12.3
  
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 14:09:35 +0100
  
-fwts (0.12.2-0ubuntu1) maverick; urgency=low
+fwts (0.12.2) maverick; urgency=low
  
   * New upstream version V0.12.2
  
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 12:18:16 +0100
  
-fwts (0.12.1-0ubuntu1) maverick; urgency=low
+fwts (0.12.1) maverick; urgency=low
  
   * New upstream version V0.12.1
  
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 11:40:43 +0100
  
-fwts (0.12-0ubuntu1) maverick; urgency=low
+fwts (0.12) maverick; urgency=low
  
   * New upstream version V0.12
  
  -- Colin King <colin.king@canonical.com>  Thu, 17 Jun 2010 10:01:08 +0100
  
-fwts (0.11-0ubuntu1) maverick; urgency=low
+fwts (0.11) maverick; urgency=low
  
   * New upstream version V0.11
  
  -- Colin King <colin.king@canonical.com>  Mon, 7 Jun 2010 09:04:13 +0100
  
-fwts (0.1-0ubuntu1) maverick; urgency=low
+fwts (0.1) maverick; urgency=low
  
   * New upstream version V0.1
  

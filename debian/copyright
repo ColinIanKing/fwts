@@ -1,0 +1,38 @@
+Files: *
+Copyright: 2010, Canonical Ltd
+License: GPL-2
+
+Files: src/acpi/acpiinfo/acpiinfo.c
+       src/acpi/battery/battery.c
+       src/acpi/common/common.c
+       src/acpi/cstates/cstates.c
+       src/acpi/dmar/dmar.c
+       src/acpi/fan/fan.c
+       src/apic/apicedge/apicedge.c
+       src/bios/ebda_region/ebda_region.c
+       src/bios/mtrr/mtrr.c
+       src/cpu/cpufreq/cpufreq.c
+       src/cpu/microcode/microcode.c
+       src/dmi/dmi_decode/dmi_decode.c
+       src/hpet/hpet_check/hpet_check.c
+       src/lib/include/fwts_e820.h
+       src/lib/src/e820.c
+       src/pci/maxreadreq/maxreadreq.c
+Copyright: 2010, Canonical Ltd
+           2006, Intel Corporation
+License: GPL-2
+
+Files: src/cpu/virt/virt.c
+       src/lib/include/fwts_virt.h
+       src/lib/src/virt.c
+Copyright: 2010, Canonical Ltd
+           2007, AMD Inc
+           2006, Intel Corporation
+License: GPL-2
+
+Files: src/cpu/virt/virt_svm.c
+       src/cpu/virt/virt_vmx.c
+Copyright: 2010, Canonical Ltd
+           2007, AMD Inc
+           2006, Intel Corporation
+License: LGPL

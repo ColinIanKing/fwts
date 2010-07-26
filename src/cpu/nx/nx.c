@@ -109,7 +109,7 @@ static int nx_test2(fwts_framework *fw)
 			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
 		} else {
 			if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
-				fwts_failed(fw, "CPU%d has different NX flags to CPU0.");
+				fwts_failed(fw, "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}

@@ -64,6 +64,9 @@ typedef struct {
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
+	int  s3_min_delay;			/* minimum time between resume and next suspend */
+	int  s3_max_delay;			/* maximum time between resume and next suspend */
+	float s3_delay_delta;			/* amount to add to delay between each S3 tests */
 	int  s4_multiple;			/* number of s4 multiple tests to run */
 
 	fwts_framework_flags flags;

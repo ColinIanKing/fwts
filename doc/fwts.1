@@ -156,6 +156,15 @@ no pretty printing of horizontal separators in the results log file.
 specify the results output log file.
 One can also specify stdout and stderr to redirect to these output streams.
 .TP
+.B \-\-s3\-delay\-delta=N
+time to be added onto delay between each S3 iteration.
+.TP
+.B \-\-s3\-min\-delay=N
+minimum time between S3 iterations.
+.TP
+.B \-\-s3\-max\-delay=N
+maximum time between S3 iterations.
+.TP
 .B \-\-s3\-multiple=N
 specified the number of multiple S3 suspend/resume tests to run. The default
 is 2 tests.
@@ -232,10 +241,14 @@ View kernel and ACPI driver version and BIOS information:
 sudo fwts  \-w 80 \-r stdout  version bios_info \-\-log\-filter=INF \-\-log\-format=""
 .RE
 .LP
-show the batch and batch experimental tests:
+Show the batch and batch experimental tests:
 .RS 8
 fwts \-\-show\-tests \-\-batch \-\-batch\-experimental
 .RE
+.LP
+Run multiple S3 tests with delay between each test ranging from 1 second to 10 seconds with a delay delta per test of 0.2 seconds
+.RS 8
+sudo fwts s3 \-\-s3\-multiple=100 \-\-s3\-min\-delay=1 \-\-s3\-max\-delay=10 \-\-s3\-delay\-delta=0.2
 
 .SH SEE ALSO
 .BR iasl (1), 

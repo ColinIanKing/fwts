@@ -61,6 +61,7 @@ static int s3_deinit(fwts_framework *fw)
 
 static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
 {
+#if 0
 	fwts_list *output;
 	int status;
 	time_t t_start;
@@ -119,6 +120,7 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 	}
+#endif
 }
 
 static int s3_check_log(fwts_framework *fw)
@@ -178,6 +180,8 @@ static int s3_test_multiple(fwts_framework *fw)
 	int delay = 30;
 	int duration = 0;
 	int i;
+	int awake_delay = fw->s3_min_delay * 1000;
+	int delta = (int)(fw->s3_delay_delta * 1000.0);
 
 	fwts_log_info(fw, test);
 
@@ -189,6 +193,7 @@ static int s3_test_multiple(fwts_framework *fw)
 
 	for (i=0; i<fw->s3_multiple; i++) {
 		int timetaken;
+		struct timeval tv;
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,fw->s3_multiple);
 		fwts_progress(fw, ((i+1) * 100) / fw->s3_multiple);
@@ -196,6 +201,16 @@ static int s3_test_multiple(fwts_framework *fw)
 
 		timetaken = duration - delay;
 		delay = timetaken + 10;		/* Shorten test time, plus some slack */
+
+		tv.tv_sec  = awake_delay / 1000;
+		tv.tv_usec = (awake_delay % 1000)*1000;
+
+		select(0, NULL, NULL, NULL, &tv);
+		
+		awake_delay += delta;
+		if (awake_delay > (fw->s3_max_delay * 1000))
+			awake_delay = fw->s3_min_delay * 1000;
+
 	}
 
 	if (errors > 0)

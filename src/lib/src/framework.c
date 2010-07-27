@@ -561,6 +561,9 @@ static void fwts_framework_syntax(char * const *argv)
 	printf("--results-no-separators\tNo horizontal separators in results log.\n");
 	printf("-r, --results-output=file\n\t\t\tOutput results to a named file. Filename can also be\n");
 	printf("\t\t\tstdout or stderr.\n");
+	printf("--s3-delay-delta=N\tTime to be added to delay between S3 iterations.\n");
+	printf("--s3-min-delay=N\tMinimum time between S3 iterations.\n");
+	printf("--s3-max-delay=N\tMaximum time between S3 iterations.\n");
 	printf("--s3-multiple=N\t\tRun S3 tests N times.\n");
 	printf("--s4-multiple=N\t\tRun S4 tests N times.\n");
 	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
@@ -605,6 +608,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "table-path", 1, 0, 0 },
 		{ "batch-experimental", 0, 0, 0 },
 		{ "interactive-experimental", 0, 0, 0 },
+		{ "s3-min-delay", 1, 0, 0 },
+		{ "s3-max-delay", 1, 0, 0 },
+		{ "s3-delay-delta", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -615,6 +621,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 	fw->magic = FWTS_FRAMEWORK_MAGIC;
 	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT;
+
+	fw->s3_min_delay = 0;
+	fw->s3_max_delay = 30;
+	fw->s3_delay_delta = 0.5;
 
 	fwts_summary_init();
 
@@ -723,6 +733,15 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 27: /* --interactive-experimental */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL;
 				break;
+			case 28: /* --s3-min-delay */
+				fw->s3_min_delay = atoi(optarg);
+				break;
+			case 29: /* --s3-max-delay */
+				fw->s3_max_delay = atoi(optarg);
+				break;
+			case 30: /* --s3-delay-delta */
+				fw->s3_delay_delta = atof(optarg);
+				break;
 			}
 			break;
 		case 'd': /* --dump */
@@ -761,6 +780,19 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		}
 	}	
+
+	if ((fw->s3_min_delay < 0) || (fw->s3_min_delay > 3600)) {
+		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
+		goto tidy_close;
+	}
+	if (fw->s3_max_delay < fw->s3_min_delay || fw->s3_max_delay > 3600)  {
+		fprintf(stderr, "--s3-max-delay cannot be less than --s3-min-delay or more than 1 hour!\n");
+		goto tidy_close;
+	}
+	if (fw->s3_delay_delta <= 0.001) {
+		fprintf(stderr, "--s3-delay_delta cannot be less than 0.001\n");
+		goto tidy_close;
+	}
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
 		fwts_framework_show_tests(fw);

@@ -71,6 +71,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	DIR *dir;
 	struct dirent *entry;
 	int cpus;
+	int cpufreqs_read = 0;
 	int cpu;
 	fwts_list_link *item;
 	fwts_list *cpuinfo;
@@ -90,9 +91,10 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 
 	/* Pass 1, figure out number of CPUs */
-	for (cpus=0, item = cpuinfo->head; item != NULL; item = item->next)
+	for (cpus=0, item = cpuinfo->head; item != NULL; item = item->next) {
 		if (strstr(fwts_text_list_text(item), "model name"))
 			cpus++;
+	}
 
 	if ((cpufreq = calloc(1, sizeof(int)*cpus)) == NULL) {
 		fwts_log_error(fw, "Cannot create cpu frequency array.");
@@ -103,17 +105,27 @@ static int maxfreq_test1(fwts_framework *fw)
 	for (cpu=0, item = cpuinfo->head; item != NULL; item = item->next) {
 		char *str = fwts_text_list_text(item);
 		if (strstr(str, "model name")) {
-			str = strstr(str, "@");
-			double freq = atof(str+1);
-			if (strstr(str, "GHz"))
-				freq *= 1000000.0;
-			if (strstr(str, "MHz"))
-				freq *= 1000.0;
-			cpufreq[cpu] = (int)freq;
+			if ((str = strstr(str, "@")) != NULL) {
+				double freq = atof(str+1);
+				if (strstr(str, "GHz"))
+					freq *= 1000000.0;
+				if (strstr(str, "MHz"))
+					freq *= 1000.0;
+				cpufreq[cpu] = (int)freq;
+				cpufreqs_read++;
+			}
+			else
+				cpufreq[cpu] = -1;
+
 			cpu++;
 		}
 	}
 	fwts_list_free(cpuinfo, free);
+
+	if (cpufreqs_read == 0) {
+		fwts_log_info(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
+		return FWTS_SKIP;
+	}
 		
 	if (!(dir = opendir(CPU_FREQ_PATH))) {
 		fwts_failed_low(fw, "No %s directory available: cannot test.", CPU_FREQ_PATH);

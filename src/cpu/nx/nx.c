@@ -69,7 +69,7 @@ static int nx_test1(fwts_framework *fw)
 			"https://wiki.ubuntu.com/Security/CPUFeatures");
 	} else
 		fwts_passed(fw, 
-			"The CPU is family %d, model %s and does not have NX capabilities.",
+			"The CPU is family %d, model %d and does not have NX capabilities.",
 			fwts_nx_cpuinfo->x86, fwts_nx_cpuinfo->x86_model);
 
 	fwts_cpu_free_info(fwts_nx_cpuinfo);

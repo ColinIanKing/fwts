@@ -63,11 +63,66 @@ static void check_hpet_base_hpet(void)
 }
 #endif
 
+static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_link *item)
+{
+	char *val, *idx;
+
+	if ((val = strstr(fwts_text_list_text(item), "0x")) != NULL) {
+		uint64 address_base;
+		idx = index(val, ',');
+		if (idx)
+			*idx = '\0';
+
+		address_base = strtoul(val, NULL, 0x10);
+			
+		if (hpet_base_p != 0) {
+			if (hpet_base_p != address_base)
+				fwts_failed(fw, 
+			     		"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
+					table,
+			     		(unsigned long)hpet_base_p, (unsigned long)address_base);
+			else
+				fwts_passed(fw,
+					"HPET base matches that between %s and the kernel (%lx).",
+					table,
+					(unsigned long)hpet_base_p);
+		}
+	}
+}
+
+static void hpet_parse_device_hpet(fwts_framework *fw, char *table, fwts_list_link *item)
+{
+	for (;item != NULL; item = item->next) {
+		if ((strstr(fwts_text_list_text(item), "Name") != NULL) &&
+                    (strstr(fwts_text_list_text(item), "ResourceTemplate") != NULL)) {
+			fwts_list_link *tmp_item = item->next;
+			for (; tmp_item != NULL; tmp_item = tmp_item->next) {
+				if (strstr(fwts_text_list_text(tmp_item), "Memory32Fixed") != NULL) {
+					tmp_item = tmp_item->next;
+					if (tmp_item != NULL) {
+						hpet_parse_check_base(fw, table, tmp_item);
+						return;
+					}
+				}
+				if (strstr(fwts_text_list_text(tmp_item), "DWordMemory") != NULL) {
+					tmp_item = tmp_item->next;	
+					if (tmp_item != NULL) {
+						tmp_item = tmp_item->next;	
+						if (tmp_item != NULL) {
+							/* HPET section is found, get base */
+							hpet_parse_check_base(fw, table, tmp_item);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 /* check_hpet_base_dsdt() -- used to parse the DSDT for HPET base info */
 static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int which)
 {
-	char *val, *idx;
-	int hpet_found = 0;
 
 	fwts_list *output;
 	fwts_list_link *item;
@@ -77,37 +132,8 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 		return;
 
 	for (item = output->head; item != NULL; item = item->next) {
-		if (!hpet_found) {
-			if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
-				hpet_found = 1;
-		} else {
-			/* HPET section is found, looking for base */
-			val = strstr(fwts_text_list_text(item), "0x");
-			if (val != NULL) {
-				uint64 address_base;
-				idx = index(val, ',');
-				if (idx)
-					*idx = '\0';
-
-				address_base = strtoul(val, NULL, 0x10);
-
-				if (hpet_base_p != 0) {
-					if (hpet_base_p != address_base)
-						fwts_failed(fw, 
-			     				"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
-							table,
-			     				(unsigned long)hpet_base_p, (unsigned long)address_base);
-					else
-						fwts_passed(fw,
-							"HPET base matches that between %s and the kernel (%lx).",
-							table,
-							(unsigned long)hpet_base_p);
-					break;
-				}
-				/*hpet_base_p = address_base;*/
-				hpet_found = 0;
-			}
-		}
+		if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
+			hpet_parse_device_hpet(fw, table, item);
 	}
 	fwts_text_list_free(output);
 }

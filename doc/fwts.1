@@ -58,6 +58,9 @@ Note that there a variety of tests, including tests that can potentially hang a 
 .SH OPTIONS
 fwts options are as follow:
 .TP
+.B \-a, \-\-all
+run all the tests.
+.TP
 .B \-b, \-\-batch
 run the non-interactive batch tests. Batch tests require no user interaction.
 .TP
@@ -148,6 +151,9 @@ do not run the S3 suspend/resume tests
 .TP
 .B \-\-no\-s4
 do not run the S4 hibernate/resume tests
+.TP
+.B \-P, \-\-power\-states
+run S3 and S4 power state tests (s3, s4 tests)
 .TP
 .B \-\-results\-no\-separators
 no pretty printing of horizontal separators in the results log file.

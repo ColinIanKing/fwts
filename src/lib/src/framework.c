@@ -28,7 +28,7 @@
 
 #define RESULTS_LOG	"results.log"
 
-#define FWTS_RUN_FLAGS			\
+#define FWTS_RUN_ALL_FLAGS		\
 	(FWTS_BATCH |			\
 	 FWTS_INTERACTIVE |		\
 	 FWTS_BATCH_EXPERIMENTAL |	\
@@ -91,7 +91,7 @@ void fwts_framework_test_add(const char *name,
 {
 	fwts_framework_test *new_test;
 
-	if (flags & ~FWTS_RUN_FLAGS) {
+	if (flags & ~FWTS_RUN_ALL_FLAGS) {
 		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL, \n"
 			        "FWTS_INTERACTIVE_EXPERIMENTAL or FWTS_POWER_STATES, got %x\n", name, flags);
 		exit(EXIT_FAILURE);
@@ -154,15 +154,15 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	for (i=0; categories[i].title != NULL; i++) {
 		fwts_framework_test *test;
 
-		if (((fw->flags & FWTS_RUN_FLAGS) == 0) ||
-		    ((fw->flags & FWTS_RUN_FLAGS) & categories[i].flag)) {
+		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
+		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
 			if ((sorted = fwts_list_init()) == NULL) {
 				fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
 				exit(EXIT_FAILURE);
 			}
 			for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
 				test = (fwts_framework_test*)item->data;
-				if ((test->flags & FWTS_RUN_FLAGS) == categories[i].flag)
+				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
 					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
 			}
 
@@ -391,7 +391,7 @@ static void fwts_framework_run_registered_tests(fwts_framework *fw)
 	fwts_framework_debug(fw, "fwts_framework_run_registered_tests()");
 	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
-		if (fw->flags & test->flags & FWTS_RUN_FLAGS) {
+		if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS) {
 			fwts_framework_debug(fw, "fwts_framework_run_registered_tests() - test %s",test->name);
 			fwts_framework_run_test(fw, test->name, test->ops);
 		}
@@ -536,6 +536,7 @@ static void fwts_framework_syntax(char * const *argv)
 
 	static fwts_syntax_info syntax_help[] = {
 		{ "Arguments:",			NULL },
+		{ "-a, --all",			"Run all tests." },
 		{ "-b, --batch",		"Just run non-interactive tests." },
 		{ "--batch-experimental",	"Just run Batch Experimental tests." },
 		{ "--debug-output=file",	"Output debug to a named file." },
@@ -630,6 +631,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "s3-max-delay", 1, 0, 0 },
 		{ "s3-delay-delta", 1, 0, 0 },
 		{ "power-states", 0, 0, 0 },
+		{ "all", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -657,7 +659,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:dP", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:dPa", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -764,7 +766,13 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 31: /* --power-states */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
 				break;
+			case 32: /* --all-tests */
+				fw->flags |= FWTS_RUN_ALL_FLAGS;
+				break;
 			}
+			break;
+		case 'a': /* --all-tests */
+			fw->flags |= FWTS_RUN_ALL_FLAGS;
 			break;
 		case 'd': /* --dump */
 			fwts_dump_info(fw, NULL);
@@ -824,7 +832,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 
-	if ((fw->flags & FWTS_RUN_FLAGS) == 0)
+	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 
 	if ((fw->iasl == NULL) ||

@@ -16,11 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctype.h>
-
-#include "fwts.h"
 
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
@@ -201,6 +203,4 @@ static fwts_framework_ops maxfreq_ops = {
  */
 FWTS_REGISTER(maxfreq, &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
-
-
-
+#endif

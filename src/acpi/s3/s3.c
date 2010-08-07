@@ -16,14 +16,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-
-#include "fwts.h"
 
 static char *s3_headline(void)
 {
@@ -235,3 +237,5 @@ static fwts_framework_ops s3_ops = {
 };
 
 FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);
+
+#endif

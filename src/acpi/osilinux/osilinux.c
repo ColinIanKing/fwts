@@ -16,14 +16,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-
-#include "fwts.h"
 
 static char *osilinux_headline(void)
 {
@@ -123,3 +125,5 @@ static fwts_framework_ops osilinux_ops = {
 };
 
 FWTS_REGISTER(osilinux, &osilinux_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

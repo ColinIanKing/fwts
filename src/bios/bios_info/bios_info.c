@@ -16,12 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-
-#include "fwts.h"
 
 static char *bios_info_headline(void)
 {
@@ -87,3 +88,5 @@ static fwts_framework_ops bios_info_ops = {
 };
 
 FWTS_REGISTER(bios_info, &bios_info_ops, FWTS_TEST_FIRST, FWTS_BATCH);
+
+#endif

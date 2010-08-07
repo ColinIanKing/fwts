@@ -19,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +30,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
-
-#include "fwts.h"
 
 typedef struct {
 	fwts_log_level level;
@@ -176,3 +177,5 @@ static fwts_framework_ops dmi_decode_ops = {
 };
 
 FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -24,8 +28,6 @@
 #include <string.h>
 #include <limits.h>
 #include <dirent.h>
-
-#include "fwts.h"
 
 DIR *liddir;
 
@@ -241,3 +243,5 @@ static fwts_framework_ops lid_ops = {
 };
 
 FWTS_REGISTER(lid, &lid_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);
+
+#endif

@@ -27,11 +27,13 @@
 
 #define _GNU_SOURCE
 
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <unistd.h>
 #include <limits.h>
 #include <errno.h>
-
-#include "fwts.h"
 
 #define CPUID_FAM_REV 0x1
 #define MSR_FEATURE_CONTROL	0xC0000080
@@ -82,3 +84,5 @@ void virt_check_svm(fwts_framework *fw)
 		}
 	}
 }
+
+#endif

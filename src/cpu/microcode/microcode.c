@@ -23,17 +23,18 @@
  *
  */
 
-
 /* 
  * This test checks if the microcode in the processor has 
  * recent enough microcode loaded.
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctype.h>
-
-#include "fwts.h"
 
 typedef struct {
 	char cpu[16];
@@ -207,3 +208,5 @@ static fwts_framework_ops microcode_ops = {
 };
 
 FWTS_REGISTER(microcode, &microcode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

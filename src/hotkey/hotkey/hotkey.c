@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -25,8 +29,6 @@
 #include <fcntl.h>
 
 #define AT_KEYBOARD	"AT Translated Set 2 keyboard"
-
-#include "fwts.h"
 
 static fwts_list *hotkeys;
 static char *hotkey_dev;
@@ -258,3 +260,5 @@ static fwts_framework_ops hotkey_ops = {
 };
 
 FWTS_REGISTER(hotkey, &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);
+
+#endif

@@ -20,13 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
- #define _GNU_SOURCE
-#include <sched.h>
-
-#include <string.h>
-#include <stdint.h>
+#define _GNU_SOURCE
 
 #include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
+#include <sched.h>
+#include <string.h>
+#include <stdint.h>
 
 typedef enum {
 	CPU_UNKNOWN,
@@ -97,3 +99,5 @@ static fwts_framework_ops virt_ops = {
  * This test checks if the virtual machine setup is done correctly by the BIOS
  */
 FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

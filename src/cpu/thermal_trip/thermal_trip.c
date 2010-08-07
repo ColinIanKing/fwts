@@ -20,12 +20,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
-
-#include "fwts.h"
 
 #define FWTS_THERM_ZONE_PATH		"/proc/acpi/thermal_zone"
 #define FWTS_PROC_PROCESSOR_PATH	"/proc/acpi/processor"
@@ -299,3 +300,5 @@ static fwts_framework_ops thermal_trip_ops = {
 };
 
 FWTS_REGISTER(thermal_trip, &thermal_trip_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

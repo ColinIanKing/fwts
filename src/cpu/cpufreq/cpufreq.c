@@ -19,8 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
 #define _GNU_SOURCE
+
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,8 +38,6 @@
 #include <math.h>
 
 #define FWTS_CPU_PATH	"/sys/devices/system/cpu"
-
-#include "fwts.h"
 
 typedef struct {
 	unsigned long	Hz;
@@ -682,3 +683,5 @@ static fwts_framework_ops cpufreq_ops = {
 };
 
 FWTS_REGISTER(cpufreq, &cpufreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

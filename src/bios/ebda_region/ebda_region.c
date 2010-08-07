@@ -19,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +30,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#include "fwts.h"
 
 #define EBDA_OFFSET	0x40e
 #define BAD_ADDR	0
@@ -143,3 +144,5 @@ static fwts_framework_ops ebda_ops = {
 };
 
 FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

@@ -19,13 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
-#define PROCESSOR_PATH	"/proc/acpi/processor"
-
 #define _GNU_SOURCE	/* for sched_setaffinity */
 
-
 #include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
+#define PROCESSOR_PATH	"/proc/acpi/processor"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -294,3 +294,5 @@ static fwts_framework_ops cstates_ops = {
 };
 
 FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME,  FWTS_BATCH_EXPERIMENTAL);
+
+#endif

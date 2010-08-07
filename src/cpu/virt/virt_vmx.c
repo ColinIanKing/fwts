@@ -27,6 +27,10 @@
 
 #define _GNU_SOURCE
 
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -39,8 +43,6 @@
 #include <math.h>
 #include <assert.h>
 #include <errno.h>
-
-#include "fwts.h"
 
 #define MSR_FEATURE_CONTROL	0x03a
 
@@ -83,3 +85,5 @@ void virt_check_vmx(fwts_framework *fw)
 		}
 	}
 }
+
+#endif

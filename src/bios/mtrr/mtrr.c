@@ -19,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,8 +30,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#include "fwts.h"
 
 static fwts_list *klog;
 static fwts_list *mtrr_list;
@@ -539,3 +540,5 @@ static fwts_framework_ops mtrr_ops = {
 };
 
 FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_EARLY, FWTS_BATCH);
+
+#endif

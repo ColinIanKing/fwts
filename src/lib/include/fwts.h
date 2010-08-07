@@ -16,25 +16,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
 #ifndef __FWTS_H__
 #define __FWTS_H__
 
+#if defined(__x86_64__) || defined(__x86_64) || defined(__i386__) || defined(__i386)
+#define FWTS_ARCH_INTEL	1
+#endif
+
 #include "fwts_version.h"
-
 #include "fwts_types.h"
-
 #include "fwts_binpaths.h"
-
 #include "fwts_framework.h"
 #include "fwts_log.h"
 #include "fwts_list.h"
-
 #include "fwts_text_list.h"
-
 #include "fwts_set.h"
 #include "fwts_get.h"
-
 #include "fwts_acpi.h"
 #include "fwts_acpid.h"
 #include "fwts_checkeuid.h"

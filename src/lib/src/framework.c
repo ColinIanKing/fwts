@@ -32,7 +32,8 @@
 	(FWTS_BATCH |			\
 	 FWTS_INTERACTIVE |		\
 	 FWTS_BATCH_EXPERIMENTAL |	\
-	 FWTS_INTERACTIVE_EXPERIMENTAL)
+	 FWTS_INTERACTIVE_EXPERIMENTAL |\
+	 FWTS_POWER_STATES)
 
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
@@ -91,8 +92,8 @@ void fwts_framework_test_add(const char *name,
 	fwts_framework_test *new_test;
 
 	if (flags & ~FWTS_RUN_FLAGS) {
-		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL\n"
-			        " or FWTS_INTERACTIVE_EXPERIMENTAL got %x\n",name,flags);
+		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL, \n"
+			        "FWTS_INTERACTIVE_EXPERIMENTAL or FWTS_POWER_STATES, got %x\n", name, flags);
 		exit(EXIT_FAILURE);
 	}
 
@@ -146,6 +147,7 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 		{ "Interactive",		FWTS_INTERACTIVE },
 		{ "Batch Experimental",		FWTS_BATCH_EXPERIMENTAL },
 		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
+		{ "Power States",		FWTS_POWER_STATES },
 		{ NULL,			0 },
 	};
 
@@ -526,52 +528,68 @@ static void fwts_framework_strdup(char **ptr, const char *str)
 
 static void fwts_framework_syntax(char * const *argv)
 {
+	int i;
+	typedef struct {
+		char *opt;
+		char *info;
+	} fwts_syntax_info;
+
+	static fwts_syntax_info syntax_help[] = {
+		{ "Arguments:",			NULL },
+		{ "-b, --batch",		"Just run non-interactive tests." },
+		{ "--batch-experimental",	"Just run Batch Experimental tests." },
+		{ "--debug-output=file",	"Output debug to a named file." },
+		{ "",				"Filename can also be stdout or stderr." },
+		{ "--dmidecode=path",		"Specify path to dmidecode table." },
+		{ "-d, --dump",			"Dump out logs." },
+		{ "-f, --force-clean",		"Force a clean results log file." },
+		{ "--fwts-debug",		"Enable run-time test suite framework debug." },
+		{ "-h, --help",			"Print this help." },
+		{ "--iasl=path",		"Specify path to iasl." },
+		{ "-i, --interactive",		"Just run interactive tests." },
+		{ "--interactive-experimental",	"Just run Interactive Experimental tests." },
+		{ "--klog=file",		"Specify kernel log file rather than reading it" },
+		{ "",				"from the kernel." },
+		{ "--log-fields",		"Show available log filtering fields." },
+		{ "--log-filter=expr",		"Define filters to dump out specific log fields:" },
+		{ "\te.g. --log-filter=RES,SUM  - dump out results and summary.", NULL },
+		{ "\t     --log-filter=ALL,~INF - dump out all fields except info fields.", NULL },
+		{ "--log-format=fields",	"Define output log format." },
+		{ "\te.g. --log-format=\"\%date \%time [\%field] (\%owner): \"", NULL },
+		{ "\tfields: \%date  - date",	NULL },
+		{ "\t\t\%time  - time", 	NULL },
+		{ "\t\t\%field - log filter field",	NULL },
+		{ "\t\t\%owner - name of test program",	NULL },
+		{ "\t\t\%level - failure test level",	NULL },
+		{ "\t\t\%line  - log line number",	NULL },
+		{ "--lspci=path",		"Specify path to lspci." },
+		{ "--no-s3",			"Don't run S3 suspend/resume tests." },
+		{ "--no-s4",			"Don't run S4 hibernate/resume tests." },
+		{ "-P, --power-states",		"Test S3, S4 power states." },
+		{ "--results-no-separators",	"No horizontal separators in results log." },
+		{ "-r, --results-output=file",	"Output results to a named file. Filename can" },
+		{ "",				"also be stdout or stderr." },
+		{ "--s3-delay-delta=N",		"Time to be added to delay between S3 iterations." },
+		{ "--s3-min-delay=N",		"Minimum time between S3 iterations." },
+		{ "--s3-max-delay=N",		"tMaximum time between S3 iterations." },
+		{ "--s3-multiple=N",		"Run S3 tests N times." },
+		{ "--s4-multiple=N",		"Run S4 tests N times." },
+		{ "-p, --show-progress",	"Output test progress report to stderr." },
+		{ "-s, --show-tests",		"Show available tests." },
+		{ "--stdout-summary",		"Output SUCCESS or FAILED to stdout at end of tests." },
+		{ "--table-path=path",		"Path to ACPI tables." },
+		{ "-v, --version",		"Show version." },
+		{ "-w, --log-width=N",		"Define the output log width in characters." },
+		{ NULL, NULL }
+	};
+
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
-	printf("Arguments:\n");
-	printf("-b, --batch\t\tJust run non-interactive tests.\n");
-	printf("--batch-experimental\tJust run Batch Experimental tests.\n");
-	printf("--debug-output=file\tOutput debug to a named file.\n");
-	printf("\t\t\tFilename can also be stdout or stderr.\n");	
-	printf("--dmidecode=path\tSpecify path to dmidecode.\n");
-	printf("\t\t\ttable on the machine.\n");
-	printf("-d, --dump\t\tDump out logs.\n");
-	printf("-f, --force-clean\tForce a clean results log file\n");
-	printf("--fwts-debug\t\tEnable run-time test suite framework debug.\n");
-	printf("-h, --help\t\tGet this help.\n");
-	printf("--iasl=path\t\tSpecify path to iasl.\n");
-	printf("-i, --interactive\tJust run interactive tests.\n");
-	printf("--interactive-experimental\tJust run Interactive Experimental tests.\n");
-	printf("--klog=file\t\tSpecify kernel log file rather than reading it\n");
-	printf("\t\t\tfrom the kernel.\n");
-	printf("--log-fields\t\tShow available log filtering fields.\n");
-	printf("--log-filter=expr\tDefine filters to dump out specific log fields:\n");
-	printf("\te.g. --log-filter=RES,SUM  - dump out results and summary\n");
-	printf("\t     --log-filter=ALL,~INF - dump out all fields except info fields\n");
-	printf("--log-format=fields\tDefine output log format.\n");
-	printf("\te.g. --log-format=\"%%date %%time [%%field] (%%owner): \"\n");
-	printf("\tfields: %%date  - date\n");
-	printf("\t\t%%time  - time\n");
-	printf("\t\t%%field - log filter field\n");
-	printf("\t\t%%owner - name of test program\n");
-	printf("\t\t%%level - failure test level\n");
-	printf("\t\t%%line  - log line number\n");
-	printf("--lspci=path\t\tSpecify path to lspci.\n");
-	printf("--no-s3\t\t\tDon't run S3 suspend/resume tests.\n");
-	printf("--no-s4\t\t\tDon't run S4 hibernate/resume tests.\n");
-	printf("--results-no-separators\tNo horizontal separators in results log.\n");
-	printf("-r, --results-output=file\n\t\t\tOutput results to a named file. Filename can also be\n");
-	printf("\t\t\tstdout or stderr.\n");
-	printf("--s3-delay-delta=N\tTime to be added to delay between S3 iterations.\n");
-	printf("--s3-min-delay=N\tMinimum time between S3 iterations.\n");
-	printf("--s3-max-delay=N\tMaximum time between S3 iterations.\n");
-	printf("--s3-multiple=N\t\tRun S3 tests N times.\n");
-	printf("--s4-multiple=N\t\tRun S4 tests N times.\n");
-	printf("-p, --show-progress\tOutput test progress report to stderr.\n");
-	printf("-s, --show-tests\tShow available tests.\n");
-	printf("--stdout-summary\tOutput SUCCESS or FAILED to stdout at end of tests.\n");
-	printf("--table-path=path\tPath to ACPI tables.\n");
-	printf("-v, --version\t\tShow version.\n");
-	printf("-w, --log-width=N\tDefine the output log width in characters.\n");
+	for (i=0; syntax_help[i].opt != NULL; i++) 
+		if (syntax_help[i].info) 
+			printf("%-28.28s %s\n", syntax_help[i].opt, syntax_help[i].info);
+		else
+			printf("%s\n", syntax_help[i].opt);
+
 }
 
 
@@ -611,6 +629,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "s3-min-delay", 1, 0, 0 },
 		{ "s3-max-delay", 1, 0, 0 },
 		{ "s3-delay-delta", 1, 0, 0 },
+		{ "power-states", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -638,7 +657,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:d", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:dP", long_options, &option_index)) == -1)
 			break;
 	
 		switch (c) {
@@ -742,6 +761,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 30: /* --s3-delay-delta */
 				fw->s3_delay_delta = atof(optarg);
 				break;
+			case 31: /* --power-states */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
+				break;
 			}
 			break;
 		case 'd': /* --dump */
@@ -773,6 +795,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		case 'r': /* --results-output */
 			fwts_framework_strdup(&fw->results_logname, optarg);
+			break;
+		case 'P': /* --power-states */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
 			break;
 		case 'v': /* --version */
 			fwts_framework_show_version(argv);

@@ -234,4 +234,4 @@ static fwts_framework_ops s3_ops = {
 	s3_tests
 };
 
-FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_BATCH);
+FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);

@@ -63,7 +63,6 @@ static int s3_deinit(fwts_framework *fw)
 
 static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
 {
-#if 0
 	fwts_list *output;
 	int status;
 	time_t t_start;
@@ -122,7 +121,6 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 	}
-#endif
 }
 
 static int s3_check_log(fwts_framework *fw)

@@ -1,14 +1,63 @@
-AC_INIT([biostestkit],[0.1],[colin.king@canonical.com])
+AC_INIT([fwts],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
           AC_PROG_CC
 	  AC_PROG_RANLIB
+	  AC_C_INLINE
   	  AC_CHECK_FUNCS([localtime_r])
+	  AC_CHECK_FUNCS([dup2])
+	  AC_CHECK_FUNCS([getcwd])
+	  AC_CHECK_FUNCS([getpagesize])
+	  AC_CHECK_FUNCS([memset])
+	  AC_CHECK_FUNCS([mkdir])
+	  AC_CHECK_FUNCS([munmap])
+	  AC_CHECK_FUNCS([select])
+	  AC_CHECK_FUNCS([socket])
+	  AC_CHECK_FUNCS([sqrt])
+	  AC_CHECK_FUNCS([strchr])
+	  AC_CHECK_FUNCS([strdup])
+	  AC_CHECK_FUNCS([strerror])
+	  AC_CHECK_FUNCS([strstr])
+	  AC_CHECK_FUNCS([strtoul])
+	  AC_CHECK_FUNCS([strtoull])
+	  AC_CHECK_HEADERS([assert.h])
+	  AC_CHECK_HEADERS([ctype.h])
+	  AC_CHECK_HEADERS([errno.h])
+	  AC_CHECK_HEADERS([fcntl.h])
+	  AC_CHECK_HEADERS([getopt.h])
+	  AC_CHECK_HEADERS([limits.h])
+	  AC_CHECK_HEADERS([linux/input.h])
+	  AC_CHECK_HEADERS([math.h])
+	  AC_CHECK_HEADERS([paths.h])
+	  AC_CHECK_HEADERS([pcre.h])
+	  AC_CHECK_HEADERS([sched.h])
+	  AC_CHECK_HEADERS([signal.h])
+	  AC_CHECK_HEADERS([stdarg.h])
+	  AC_CHECK_HEADERS([stdint.h])
+	  AC_CHECK_HEADERS([stdio.h])
 	  AC_CHECK_HEADERS([stdlib.h])
 	  AC_CHECK_HEADERS([string.h])
-	  AC_CHECK_HEADERS([unistd.h])
+	  AC_CHECK_HEADERS([sys/io.h])
+	  AC_CHECK_HEADERS([sys/klog.h])
+	  AC_CHECK_HEADERS([sys/mman.h])
+	  AC_CHECK_HEADERS([sys/param.h])
+	  AC_CHECK_HEADERS([sys/select.h])
+	  AC_CHECK_HEADERS([sys/socket.h])
+	  AC_CHECK_HEADERS([sys/stat.h])
+	  AC_CHECK_HEADERS([sys/type.h])
+	  AC_CHECK_HEADERS([sys/un.h])
+	  AC_CHECK_HEADERS([sys/wait.h])
+	  AC_CHECK_HEADERS([termios.h])
+	  AC_CHECK_HEADERS([time.h])
+	  AC_CHECK_LIB(pcre, pcre_compile)
 	  AC_FUNC_MALLOC
+	  AC_FUNC_FORK
+	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
+	  AC_FUNC_MMAP
+	  AC_FUNC_REALLOC
+	  AC_TYPE_PID_T
+	  AC_TYPE_SIZE_T
           AC_CONFIG_HEADERS([config.h])
-          AC_CONFIG_FILES([
+	  AC_CONFIG_FILES([
            Makefile
            src/Makefile
            src/lib/Makefile

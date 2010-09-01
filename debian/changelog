@@ -1,3 +1,10 @@
+fwts (0.18.02) maverick; urgency=low
+ 
+  * FADT test read correct ACPI table from /sys/firmware (closes: #627959)
+  * New upstream version 0.18.02
+
+ -- Colin King <colin.king@canonical.com>  Wed, 1 Sep 2010 11:11:20 +0100
+ 
 fwts (0.18.01) maverick; urgency=low
  
   * New upstream version 0.18.01

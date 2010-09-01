@@ -184,12 +184,9 @@ static char *fadt_headline(void)
 
 static int fadt_test1(fwts_framework *fw)
 {
-	char *test = "Check SCI_EN bit";
 	fwts_fadt_version_2  fadt;
 	uint32 port, width, value;
 	char *profile;
-
-	fwts_log_info(fw, test);
 
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
@@ -227,7 +224,7 @@ static int fadt_test1(fwts_framework *fw)
 		break;
 	default:
 		profile = "Reserved";
-		fwts_log_warning(fw, "FADT Preferred PM Profile is Reserved - this may be incorrect.");
+		fwts_failed_low(fw, "FADT Preferred PM Profile is Reserved - this may be incorrect.");
 		break;
 	}
 
@@ -237,14 +234,14 @@ static int fadt_test1(fwts_framework *fw)
 	port = fadt.pm1a_cnt_blk;
 	width = fadt.pm1_cnt_len * 8;	/* In bits */
 
-	/* Punt at244 byte FADT is V2 */
+	/* Punt at 244 byte FADT is V2 */
 	if (fadt.header.length == 244) {
 		/*  Sanity check sizes with extended address variants */
 		fwts_log_info(fw, "FADT is greater than ACPI version 1.0");
-		if (port != fadt.x_pm1a_cnt_blk.address) 
-			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt address do not match.");
+		if ((uint64)port != fadt.x_pm1a_cnt_blk.address) 
+			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt address do not match (0x%8.8x vs 0x%16.16llx).", port, fadt.x_pm1a_cnt_blk.address);
 		if (width != fadt.x_pm1a_cnt_blk.register_bit_width)
-			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt size do not match.");
+			fwts_failed_medium(fw, "32 and 64 bit versions of FADT pm1_cnt size do not match (0x%x vs 0x%x).", width, fadt.x_pm1a_cnt_blk.register_bit_width);
 
 		port = fadt.x_pm1a_cnt_blk.address;	
 		width = fadt.x_pm1a_cnt_blk.register_bit_width;

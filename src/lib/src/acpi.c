@@ -56,7 +56,7 @@ static int fwts_acpi_table_open(fwts_framework *fw, const char *name, const int 
 	return fd;
 }
 
-static uint8 *fwts_acpi_table_read(const int fd, int *length)
+uint8 *fwts_acpi_table_read(const int fd, int *length)
 {
 	uint8 *ptr = NULL;
 	int n;
@@ -82,6 +82,22 @@ static uint8 *fwts_acpi_table_read(const int fd, int *length)
 	}
 	*length = size;
 	return ptr;
+}
+
+void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8 *data)
+{
+	memset(hdr, 0x00, sizeof(fwts_acpi_table_header));
+
+	memcpy(&hdr->signature, data, 4);
+	FWTS_GET_UINT32(hdr->length, data, 4);
+	FWTS_GET_UINT8 (hdr->revision, data, 8);
+	FWTS_GET_UINT8 (hdr->checksum, data, 9);
+	memcpy(&hdr->oem_id, data+10, 6);
+	memcpy(&hdr->oem_tbl_id, data+16, 8);
+	FWTS_GET_UINT32(hdr->oem_revision, data, 22);
+	memcpy(&hdr->creator_id, data+28, 4);
+	FWTS_GET_UINT32(hdr->creator_revision, data, 32);
+	memcpy(&hdr->oem_tbl_id, data+16, 6);
 }
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size)

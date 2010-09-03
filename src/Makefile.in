@@ -48,15 +48,16 @@ PROGRAMS = $(bin_PROGRAMS)
 am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
 	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) battery.$(OBJEXT) \
-	brightness.$(OBJEXT) common.$(OBJEXT) cstates.$(OBJEXT) \
-	dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
-	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
-	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
-	mtrr.$(OBJEXT) bios_info.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
-	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
-	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
-	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
+	brightness.$(OBJEXT) checksum.$(OBJEXT) common.$(OBJEXT) \
+	cstates.$(OBJEXT) dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
+	mcfg.$(OBJEXT) apicedge.$(OBJEXT) osilinux.$(OBJEXT) \
+	lid.$(OBJEXT) powerbutton.$(OBJEXT) wmi.$(OBJEXT) \
+	ebda_region.$(OBJEXT) mtrr.$(OBJEXT) bios_info.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
+	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
+	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
+	version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -234,6 +235,7 @@ fwts_SOURCES = main.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \
+	acpi/checksum/checksum.c \
 	acpi/common/common.c \
 	acpi/cstates/cstates.c \
 	acpi/dmar/dmar.c \
@@ -349,6 +351,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bios_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brightness.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/checksum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpufreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstates.Po@am__quote@
@@ -520,6 +523,20 @@ brightness.obj: acpi/brightness/brightness.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/brightness/brightness.c' object='brightness.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o brightness.obj `if test -f 'acpi/brightness/brightness.c'; then $(CYGPATH_W) 'acpi/brightness/brightness.c'; else $(CYGPATH_W) '$(srcdir)/acpi/brightness/brightness.c'; fi`
+
+checksum.o: acpi/checksum/checksum.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT checksum.o -MD -MP -MF $(DEPDIR)/checksum.Tpo -c -o checksum.o `test -f 'acpi/checksum/checksum.c' || echo '$(srcdir)/'`acpi/checksum/checksum.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/checksum.Tpo $(DEPDIR)/checksum.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/checksum/checksum.c' object='checksum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o checksum.o `test -f 'acpi/checksum/checksum.c' || echo '$(srcdir)/'`acpi/checksum/checksum.c
+
+checksum.obj: acpi/checksum/checksum.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT checksum.obj -MD -MP -MF $(DEPDIR)/checksum.Tpo -c -o checksum.obj `if test -f 'acpi/checksum/checksum.c'; then $(CYGPATH_W) 'acpi/checksum/checksum.c'; else $(CYGPATH_W) '$(srcdir)/acpi/checksum/checksum.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/checksum.Tpo $(DEPDIR)/checksum.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/checksum/checksum.c' object='checksum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o checksum.obj `if test -f 'acpi/checksum/checksum.c'; then $(CYGPATH_W) 'acpi/checksum/checksum.c'; else $(CYGPATH_W) '$(srcdir)/acpi/checksum/checksum.c'; fi`
 
 common.o: acpi/common/common.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT common.o -MD -MP -MF $(DEPDIR)/common.Tpo -c -o common.o `test -f 'acpi/common/common.c' || echo '$(srcdir)/'`acpi/common/common.c

@@ -132,5 +132,7 @@ typedef struct {
 } fwts_acpi_madt_interrupt_override;
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size);
+uint8 *fwts_acpi_table_read(const int fd, int *length);
+void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8 *data);
 
 #endif

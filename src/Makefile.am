@@ -12,6 +12,7 @@ fwts_SOURCES = main.c \
 	acpi/s4/s4.c \
 	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \
+	acpi/acpidump/acpidump.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \
 	acpi/checksum/checksum.c \

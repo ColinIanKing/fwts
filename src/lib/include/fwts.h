@@ -51,5 +51,6 @@
 #include "fwts_microcode.h"
 #include "fwts_interactive.h"
 #include "fwts_keymap.h"
+#include "fwts_cmos.h"
 
 #endif

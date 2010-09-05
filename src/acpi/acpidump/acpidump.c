@@ -55,23 +55,6 @@ static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr)
 	fwts_log_info_verbatum(fw, "Creator Revision: 0x%lx (%lu)", hdr->creator_revision, hdr->creator_revision);
 }
 
-static uint8 fwts_cmos_read(int offset)
-{
-	uint8 value;
-
-	ioperm(0x70, 2, 1);
-	ioperm(0x80, 1, 1);
-
-	outb(offset, 0x70);
-	outb(0, 0x80);	/* Delay */
-	value = inb(0x71);
-
-	ioperm(0x80, 1, 0);
-	ioperm(0x70, 2, 0);
-
-	return value;
-}
-
 static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_acpi_table_boot *boot;

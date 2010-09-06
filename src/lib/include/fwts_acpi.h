@@ -202,6 +202,18 @@ typedef struct {
 	fwts_acpi_mcfg_configuration configuration[0];
 } __attribute__ ((packed)) fwts_acpi_table_mcfg;
 
+
+/* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32		event_timer_block_id;
+	fwts_gas	base_address;
+	uint8		hpet_number;
+	uint16		main_counter_minimum;
+	uint8		page_prot_and_oem_attribute;
+} __attribute__ ((packed)) fwts_acpi_table_hpet;
+
 typedef struct {
 	uint8		type;
 	uint8		length;

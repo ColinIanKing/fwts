@@ -42,6 +42,16 @@ static char *acpidump_headline(void)
 	return "Check ACPI table acpidump.";
 }
 
+static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_gas *gas)
+{
+	fwts_log_info_verbatum(fw, "%s:", str);
+	fwts_log_info_verbatum(fw, "  addr_space_id:  0x%x", gas->address_space_id);
+	fwts_log_info_verbatum(fw, "  reg_bit_width:  0x%x", gas->register_bit_width);
+	fwts_log_info_verbatum(fw, "  reg_bit_offset: 0x%x", gas->register_bit_offset);
+	fwts_log_info_verbatum(fw, "  access_width:   0x%x", gas->access_width);
+	fwts_log_info_verbatum(fw, "  address:        0x%llx", gas->address);
+}
+
 static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr)
 {
 	fwts_log_info_verbatum(fw, "Signature:        \"%4.4s\"", hdr->signature);
@@ -92,15 +102,45 @@ static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "OSPM Flags        0x%lx", facs->ospm_flags);
 }
 
-static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_gas *gas)
+static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_log_info_verbatum(fw, "%s:", str);
-	fwts_log_info_verbatum(fw, "  addr_space_id:  0x%x", gas->address_space_id);
-	fwts_log_info_verbatum(fw, "  reg_bit_width:  0x%x", gas->register_bit_width);
-	fwts_log_info_verbatum(fw, "  reg_bit_offset: 0x%x", gas->register_bit_offset);
-	fwts_log_info_verbatum(fw, "  access_width:   0x%x", gas->access_width);
-	fwts_log_info_verbatum(fw, "  address:        0x%llx", gas->address);
+	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)data;
+
+	static char *prot_attr[] = {
+		"No guarantee for page protection",
+		"4K page protected",
+		"64K page protected",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved",
+		"Reserved"
+	};
+
+	fwts_log_info_verbatum(fw, "Event Timer ID:   0x%lx", hpet->event_timer_block_id);
+	fwts_log_info_verbatum(fw, "  Hardware Rev:   0x%x", hpet->event_timer_block_id & 0xff);
+	fwts_log_info_verbatum(fw, "  Num Comparitors:0x%x", (hpet->event_timer_block_id >> 8) & 0x31);
+	fwts_log_info_verbatum(fw, "  Count Size Cap: 0x%x", (hpet->event_timer_block_id >> 13) & 0x1);
+	fwts_log_info_verbatum(fw, "  IRQ Routing Cap:0x%x", (hpet->event_timer_block_id >> 15) & 0x1);
+	fwts_log_info_verbatum(fw, "  PCI Vendor ID:  0x%x", (hpet->event_timer_block_id >> 16) & 0xffff);
+	acpi_dump_gas(fw, "Base Address", &hpet->base_address);
+	fwts_log_info_verbatum(fw, "HPET Number:      0x%lx", hpet->hpet_number);
+	fwts_log_info_verbatum(fw, "Main Counter Min: 0x%lx", hpet->main_counter_minimum);
+	fwts_log_info_verbatum(fw, "Page Prot Attr:   0x%x", hpet->page_prot_and_oem_attribute);
+	fwts_log_info_verbatum(fw, "  Page Protection:0x%x (%s)", hpet->page_prot_and_oem_attribute & 0xf,
+		prot_attr[hpet->page_prot_and_oem_attribute & 0xf]);
+	fwts_log_info_verbatum(fw, "  OEM Attr:      :0x%x", hpet->page_prot_and_oem_attribute >> 4);
+	
 }
+
 
 static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 {
@@ -265,6 +305,8 @@ static int acpidump_table(fwts_framework *fw, const char *filename, const char *
 		acpidump_boot(fw, data, length);
 	if (strncmp(hdr.signature, "FACP", 4) == 0)
 		acpidump_fadt(fw, data, length);
+	if (strncmp(hdr.signature, "HPET", 4) == 0)
+		acpidump_hpet(fw, data, length);
 	if (strncmp(hdr.signature, "MCFG", 4) == 0)
 		acpidump_mcfg(fw, data, length);
 	if (strncmp(hdr.signature, "XSDT", 4) == 0)

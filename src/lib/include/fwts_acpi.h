@@ -75,7 +75,6 @@ typedef struct {
         uint64 	address;
 } __attribute__ ((packed)) fwts_gas;
 
-
 typedef struct {
 	char		signature[4];
 	uint32		length;
@@ -186,6 +185,22 @@ typedef struct {
 	fwts_gas	x_gpe0_blk;
 	fwts_gas	x_gpe1_blk;
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
+
+typedef struct {
+	uint32		base_address;
+	uint32		base_reserved;
+	uint16		pci_segment_group_number;
+	uint8		start_bus_number;
+	uint8		end_bus_number;
+	uint8		reserved[4];
+}  __attribute__ ((packed)) fwts_acpi_mcfg_configuration;
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32		base_address;
+	uint32		base_reserved;
+	fwts_acpi_mcfg_configuration configuration[0];
+} __attribute__ ((packed)) fwts_acpi_table_mcfg;
 
 typedef struct {
 	uint8		type;

@@ -174,9 +174,6 @@ static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_gas(fw, "X_PM_TMR_BLK", &fadt->x_pm_tmr_blk);
 	acpi_dump_gas(fw, "X_GPE0_BLK", &fadt->x_gpe0_blk);
 	acpi_dump_gas(fw, "X_GPE1_BLK", &fadt->x_gpe1_blk);
-	//fwts_log_info_verbatum(fw, "P_LVL2_LAT      : 0x%x (%u)", fadt->, fadt->);
-	
-	
 }
 
 static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
@@ -195,6 +192,26 @@ static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 		rsdp->reserved[0], rsdp->reserved[1], rsdp->reserved[2]);
 }
 
+static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)data;
+	int n;
+	int i;
+
+	fwts_log_info_verbatum(fw, "Base Address:     0x%lx", mcfg->base_address);
+	fwts_log_info_verbatum(fw, "Base Reserved:    0x%lx", mcfg->base_reserved);
+
+	n = length - sizeof(fwts_acpi_table_mcfg);
+
+	for (i=0; i<n/sizeof(fwts_acpi_mcfg_configuration); i++) {
+		fwts_log_info_verbatum(fw, "Configuration #%d", i+1);
+		fwts_log_info_verbatum(fw, "  Base Address:   0x%lx", mcfg[i].configuration->base_address);
+		fwts_log_info_verbatum(fw, "  Base Reserved:  0x%lx", mcfg[i].configuration->base_reserved);
+		fwts_log_info_verbatum(fw, "  PCI Seg Grp Num:0x%lx", mcfg[i].configuration->pci_segment_group_number);
+		fwts_log_info_verbatum(fw, "  Start Bus Num:  0x%lx", mcfg[i].configuration->start_bus_number);
+		fwts_log_info_verbatum(fw, "  End Bus Num:    0x%lx", mcfg[i].configuration->end_bus_number);
+	}
+}
 
 static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 {
@@ -248,6 +265,8 @@ static int acpidump_table(fwts_framework *fw, const char *filename, const char *
 		acpidump_boot(fw, data, length);
 	if (strncmp(hdr.signature, "FACP", 4) == 0)
 		acpidump_fadt(fw, data, length);
+	if (strncmp(hdr.signature, "MCFG", 4) == 0)
+		acpidump_mcfg(fw, data, length);
 	if (strncmp(hdr.signature, "XSDT", 4) == 0)
 		acpidump_xsdt(fw, data, length);
 

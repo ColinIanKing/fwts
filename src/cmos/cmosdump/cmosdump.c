@@ -190,6 +190,8 @@ static int cmosdump_test1(fwts_framework *fw)
 
 	fwts_log_info_verbatum(fw, "CMOS Shutdown Status: (CMOS 0x0f): 0x%2.2x (%s)", data[15],
 			data[15] < 0xb ? cmos_shutdown_status[data[15]] : "Perform power-on reset");
+	fwts_log_nl(fw);
+
 	fwts_log_info_verbatum(fw, "Floppy Disk Type: (CMOS 0x10): 0x%2.2x", data[16]);
 	fwts_log_info_verbatum(fw, "  Drive 0: %s", floppy_disk[((data[16] >> 4) & 0xf)]);
 	fwts_log_info_verbatum(fw, "  Drive 1: %s", floppy_disk[((data[16] >> 0) & 0xf)]);

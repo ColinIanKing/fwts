@@ -26,6 +26,11 @@
 #include "fwts_framework.h"
 #include "fwts_log.h"
 
+extern char *fwts_acpi_fadt_preferred_pm_profile[];
+
+#define FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(x)		\
+	((x) > 7) ? "Reserved" : fwts_acpi_fadt_preferred_pm_profile[x]
+
 #define FWTS_GET_UINT64(var, buffer, offset) 	\
 	var = 					\
         ( ((uint64)data[offset+7] << 56) |      \
@@ -68,7 +73,7 @@ typedef struct {
         uint8 	register_bit_offset;
         uint8 	access_width;
         uint64 	address;
-} fwts_gas;
+} __attribute__ ((packed)) fwts_gas;
 
 
 typedef struct {
@@ -81,9 +86,10 @@ typedef struct {
 	uint32		oem_revision;
 	char		creator_id[4];
 	uint32		creator_revision;
-} fwts_acpi_table_header;
+} __attribute__ ((packed)) fwts_acpi_table_header;
 
 typedef struct {
+	fwts_acpi_table_header	header;	
 	uint8		cmos_index;
 	uint8		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_boot;
@@ -97,15 +103,100 @@ typedef enum {
 } ftws_acpi_cmos_boot_register;
 
 typedef struct {
+	char		signature[4];
+	uint32		length;
+	uint32		hardware_signature;
+	uint32		firmware_waking_vector;
+	uint32		global_lock;
+	uint32		flags;
+	uint64		x_firmware_waking_vector;
+	uint8		version;
+	uint8		reserved[3];
+	uint32		ospm_flags;
+	uint8		reserved2[24];
+} __attribute__ ((packed)) fwts_acpi_table_facs;
+
+typedef struct {
+	char		signature[8];
+	uint8		checksum;
+	char		oem_id[6];
+	uint8		revision;
+	uint32		rsdt_address;
+	uint32		length;
+	uint32		xsdt_address;
+	uint8		extended_checksum;
+	uint8		reserved[3];
+} __attribute__ ((packed)) fwts_acpi_table_rsdp;
+
+
+/*
+ *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
+ */
+typedef struct {
+	fwts_acpi_table_header	header;	
+	uint32		firmware_control;
+	uint32		dsdt;
+	uint8		reserved;
+	uint8		preferred_pm_profile;
+	uint16		sci_int;
+	uint32		smi_cmd;
+	uint8		acpi_enable;
+	uint8		acpi_disable;
+	uint8		s4bios_req;
+	uint8		pstate_cnt;
+	uint32		pm1a_evt_blk;
+	uint32		pm1b_evt_blk;
+	uint32		pm1a_cnt_blk;
+	uint32		pm1b_cnt_blk;
+	uint32		pm2_cnt_blk;
+	uint32		pm_tmr_blk;
+	uint32		gpe0_blk;
+	uint32		gpe1_blk;
+	uint8		gpe1_base;
+	uint8		pm1_evt_len;
+	uint8		pm1_cnt_len;
+	uint8		pm2_cnt_len;
+	uint8		pm_tmr_len;
+	uint8		gpe0_blk_len;
+	uint8		gpe1_blk_len;
+	uint8		cst_cnt;
+	uint16		p_lvl2_lat;
+	uint16		p_lvl3_lat;
+	uint16		flush_size;
+	uint16		flush_stride;
+	uint8		duty_offset;
+	uint8		duty_width;
+	uint8		day_alrm;
+	uint8		mon_alrm;
+	uint8		century;
+	uint16		iapc_boot_arch;
+	uint8		reserved1;
+	uint32		flags;
+	fwts_gas	reset_reg;
+	uint8		reset_value;
+	uint8		reserved2[3];
+	uint64		x_firmware_ctrl;
+	uint64		x_dsdt;
+	fwts_gas	x_pm1a_evt_blk;
+	fwts_gas	x_pm1b_evt_blk;
+	fwts_gas	x_pm1a_cnt_blk;
+	fwts_gas	x_pm1b_cnt_blk;
+	fwts_gas	x_pm2_cnt_blk;
+	fwts_gas	x_pm_tmr_blk;
+	fwts_gas	x_gpe0_blk;
+	fwts_gas	x_gpe1_blk;
+} __attribute__ ((packed)) fwts_acpi_table_fadt;
+
+typedef struct {
 	uint8		type;
 	uint8		length;
-} fwts_acpi_sub_table_header;
+} __attribute__ ((packed)) fwts_acpi_sub_table_header;
 
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32		lapic_address;
 	uint32		flags;
-} fwts_acpi_table_madt;
+} __attribute__ ((packed)) fwts_acpi_table_madt;
 
 typedef enum {
         FWTS_ACPI_MADT_LOCAL_APIC = 0,
@@ -127,7 +218,7 @@ typedef struct {
 	uint8		processor_id;
 	uint8		lapic_id;
 	uint32		lapic_flags;
-} fwts_acpi_madt_local_apic;
+} __attribute__ ((packed)) fwts_acpi_madt_local_apic;
 
 typedef struct {
 	fwts_acpi_sub_table_header	header;
@@ -135,7 +226,7 @@ typedef struct {
 	uint8		reserved;
 	uint32		apic_phys_address;
 	uint32		global_irq_base;
-} fwts_acpi_madt_io_apic;
+} __attribute__ ((packed)) fwts_acpi_madt_io_apic;
 
 typedef struct {
 	fwts_acpi_sub_table_header	header;
@@ -143,7 +234,7 @@ typedef struct {
 	uint8		source_irq;
 	uint32		global_irq;
 	uint16		int_flags;
-} fwts_acpi_madt_interrupt_override;
+} __attribute__ ((packed)) fwts_acpi_madt_interrupt_override;
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size);
 uint8 *fwts_acpi_table_read(const int fd, int *length);

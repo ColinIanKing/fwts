@@ -28,6 +28,17 @@
 
 #include "fwts.h"
 
+char *fwts_acpi_fadt_preferred_pm_profile[] = {
+	"Unspecified",
+	"Desktop",
+	"Mobile",
+	"Workstation",
+	"Enterprise Server",
+	"SOHO Server",
+	"Appliance PC",
+	"Performance Server",
+};
+
 static int fwts_acpi_table_open(fwts_framework *fw, const char *name, const int which)
 {
 	char filename[PATH_MAX];

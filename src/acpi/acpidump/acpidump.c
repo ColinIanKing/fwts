@@ -232,6 +232,158 @@ static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 		rsdp->reserved[0], rsdp->reserved[1], rsdp->reserved[2]);
 }
 
+static void acpidump_madt(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)data;
+	int i = 0;
+	int n;
+
+	fwts_log_info_verbatum(fw, "Local APIC Addr:  0x%lx", madt->lapic_address);
+	fwts_log_info_verbatum(fw, "Flags:            0x%lx", madt->flags);
+	fwts_log_info_verbatum(fw, "  PCAT_COMPAT     0x%1.1x", madt->flags & 1);
+	
+	data += sizeof(fwts_acpi_table_madt);	
+	length -= sizeof(fwts_acpi_table_madt);
+
+	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
+		fwts_acpi_madt_processor_local_apic *proc_local_apic;
+		fwts_acpi_madt_io_apic              *io_apic;
+		fwts_acpi_madt_interrupt_override   *interrupt_override;
+		fwts_acpi_madt_nmi                  *nmi;
+		fwts_acpi_madt_local_apic_nmi       *local_apic_nmi;
+		fwts_acpi_madt_local_apic_addr_override *local_apic_addr_override;
+		fwts_acpi_madt_io_sapic 	    *io_sapic;
+		fwts_acpi_madt_local_sapic	    *local_sapic;
+		fwts_acpi_madt_platform_int_source  *platform_int_source;
+		fwts_acpi_madt_local_x2apic         *local_x2apic;
+		fwts_acpi_madt_local_x2apic_nmi	    *local_x2apic_nmi;
+		
+
+		data += sizeof(fwts_acpi_madt_sub_table_header);
+		length -= sizeof(fwts_acpi_madt_sub_table_header);
+		
+		fwts_log_info_verbatum(fw, "APIC Structure #%d:", ++i);
+		/*
+		fwts_log_info_verbatum(fw, " Type:            0x%2.2x", hdr->type);
+		fwts_log_info_verbatum(fw, " Size:            0x%2.2x", hdr->length);
+		*/
+		switch (hdr->type) {
+		case 0: 
+			proc_local_apic = (fwts_acpi_madt_processor_local_apic*)data;
+			fwts_log_info_verbatum(fw, " Processor Local APIC:");
+			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%2.2x", proc_local_apic->acpi_processor_id);
+			fwts_log_info_verbatum(fw, "  APIC ID:        0x%2.2x", proc_local_apic->apic_id);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", proc_local_apic->flags);
+			fwts_log_info_verbatum(fw, "   Enabled:       0x%x", proc_local_apic->flags & 1);
+			data += sizeof(fwts_acpi_madt_processor_local_apic);
+			length -= sizeof(fwts_acpi_madt_processor_local_apic);
+			break;
+		case 1:
+			io_apic = (fwts_acpi_madt_io_apic*)data;
+			fwts_log_info_verbatum(fw, " I/O APIC:");
+			fwts_log_info_verbatum(fw, "  I/O APIC ID:    0x%2.2x", io_apic->io_apic_id);
+			fwts_log_info_verbatum(fw, "  I/O APIC Addr:  0x%lx", io_apic->io_apic_phys_address);
+			fwts_log_info_verbatum(fw, "  Global IRQ Base:0x%lx", io_apic->io_apic_phys_address);
+			data += sizeof(fwts_acpi_madt_io_apic);
+			length -= sizeof(fwts_acpi_madt_io_apic);
+			break;
+		case 2:
+			interrupt_override = (fwts_acpi_madt_interrupt_override*)data;
+			fwts_log_info_verbatum(fw, " Interrupt Source Override:");
+			fwts_log_info_verbatum(fw, "  Bus:            0x%2.2x", interrupt_override->bus);
+			fwts_log_info_verbatum(fw, "  Source:         0x%2.2x", interrupt_override->source);
+			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", interrupt_override->gsi);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", interrupt_override->flags);
+			break;
+		case 3:
+			nmi = (fwts_acpi_madt_nmi*)data;
+			fwts_log_info_verbatum(fw, " Non-maskable Interrupt Source (NMI):");
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", nmi->flags);
+			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", nmi->gsi);
+			data += sizeof(fwts_acpi_madt_nmi);
+			length -= sizeof(fwts_acpi_madt_nmi);
+			break;
+		case 4:
+			local_apic_nmi = (fwts_acpi_madt_local_apic_nmi *)data;
+			fwts_log_info_verbatum(fw, " Local APIC NMI:");
+			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%x", local_apic_nmi->acpi_processor_id);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_apic_nmi->flags);
+			fwts_log_info_verbatum(fw, "  Local APIC LINT:0x%x", local_apic_nmi->local_apic_lint);
+	
+			data += sizeof(fwts_acpi_madt_local_apic_nmi);
+			length -= sizeof(fwts_acpi_madt_local_apic_nmi);
+			break;
+		case 5:
+			local_apic_addr_override = (fwts_acpi_madt_local_apic_addr_override*)data;
+			fwts_log_info_verbatum(fw, " Local APIC Address Override:");
+			fwts_log_info_verbatum(fw, "  Local APIC Addr:0x%x", local_apic_addr_override->address);
+			data += sizeof(fwts_acpi_madt_local_apic_addr_override);
+			length -= sizeof(fwts_acpi_madt_local_apic_addr_override);
+			
+			break;
+		case 6:
+			io_sapic = (fwts_acpi_madt_io_sapic *)data;
+			fwts_log_info_verbatum(fw, " I/O SAPIC:");
+			fwts_log_info_verbatum(fw, "  I/O SAPIC ID:   0x%x", io_sapic->io_sapic_id);
+			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", io_sapic->gsi);
+			fwts_log_info_verbatum(fw, "  I/O SAPIC Addr: 0x%llx", io_sapic->address);
+			data += sizeof(fwts_acpi_madt_io_sapic);
+			length -= sizeof(fwts_acpi_madt_io_sapic);
+			break;
+		case 7:
+			local_sapic = (fwts_acpi_madt_local_sapic*)data;
+			fwts_log_info_verbatum(fw, " Local SAPIC:");
+			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%x", local_sapic->acpi_processor_id);
+			fwts_log_info_verbatum(fw, "  Local SAPIC ID: 0x%x", local_sapic->local_sapic_id);
+			fwts_log_info_verbatum(fw, "  Local SAPIC EID:0x%x", local_sapic->local_sapic_eid);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_sapic->flags);
+			fwts_log_info_verbatum(fw, "  UID Value:      0x%x", local_sapic->uid_value);
+		
+			fwts_log_info_verbatum(fw, "  UID String:     %s", local_sapic->uid_string);
+			
+			n = strlen(local_sapic->uid_string) + 1;
+			data += (sizeof(fwts_acpi_madt_io_sapic) + n);
+			length -= (sizeof(fwts_acpi_madt_io_sapic) + n);
+			break;
+		case 8:
+			platform_int_source = (fwts_acpi_madt_platform_int_source*)data;
+			fwts_log_info_verbatum(fw, " Platform Interrupt Sources:");
+			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", platform_int_source->flags);
+			fwts_log_info_verbatum(fw, "  Type:           0x%x", platform_int_source->type);
+			fwts_log_info_verbatum(fw, "  Processor ID:   0x%x", platform_int_source->processor_id);
+			fwts_log_info_verbatum(fw, "  Processor EID:  0x%x", platform_int_source->processor_eid);
+			fwts_log_info_verbatum(fw, "  IO SAPIC Vector:0x%lx", platform_int_source->io_sapic_vector);
+			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", platform_int_source->gsi);
+			fwts_log_info_verbatum(fw, "  PIS Flags:      0x%x", platform_int_source->pis_flags);
+			data += (sizeof(fwts_acpi_madt_platform_int_source));
+			length += (sizeof(fwts_acpi_madt_platform_int_source));
+			break;
+		case 9:
+			local_x2apic = (fwts_acpi_madt_local_x2apic*)data;
+			fwts_log_info_verbatum(fw, " Processor Local x2APIC:");
+			fwts_log_info_verbatum(fw, "  x2APIC ID       0x%lx", local_x2apic->x2apic_id);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", local_x2apic->flags);
+			fwts_log_info_verbatum(fw, "  Processor UID:  0x%lx", local_x2apic->processor_uid);
+			data += (sizeof(fwts_acpi_madt_local_x2apic));
+			length += (sizeof(fwts_acpi_madt_local_x2apic));
+			break;
+		case 10:
+			local_x2apic_nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
+			fwts_log_info_verbatum(fw, " Local x2APIC NMI:");
+			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_x2apic_nmi->flags);
+			fwts_log_info_verbatum(fw, "  Processor UID:  0x%lx", local_x2apic_nmi->processor_uid);
+			fwts_log_info_verbatum(fw, "  LINT#           :0x%lx", local_x2apic_nmi->local_x2apic_lint);
+			data += (sizeof(fwts_acpi_madt_local_x2apic_nmi));
+			length += (sizeof(fwts_acpi_madt_local_x2apic_nmi));
+			break;
+		default:
+			fwts_log_info_verbatum(fw, " Reserved for OEM use:");
+			break;
+		}
+	}
+}
+
 static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)data;
@@ -301,6 +453,8 @@ static int acpidump_table(fwts_framework *fw, const char *filename, const char *
 	fwts_acpi_table_get_header(&hdr, data);
 	acpidump_hdr(fw, &hdr);
 
+	if (strncmp(hdr.signature, "APIC", 4) == 0)
+		acpidump_madt(fw, data, length);
 	if (strncmp(hdr.signature, "BOOT", 4) == 0)
 		acpidump_boot(fw, data, length);
 	if (strncmp(hdr.signature, "FACP", 4) == 0)

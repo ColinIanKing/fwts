@@ -214,10 +214,13 @@ typedef struct {
 	uint8		page_prot_and_oem_attribute;
 } __attribute__ ((packed)) fwts_acpi_table_hpet;
 
+
+/* MADT, Section 5.2.12 of ACPI spec, Multiple APIC Description Table */
+
 typedef struct {
 	uint8		type;
 	uint8		length;
-} __attribute__ ((packed)) fwts_acpi_sub_table_header;
+} __attribute__ ((packed)) fwts_acpi_madt_sub_table_header;
 
 typedef struct {
 	fwts_acpi_table_header	header;
@@ -241,27 +244,82 @@ typedef enum {
 } fwts_acpi_madt_type;
 
 typedef struct {
-	fwts_acpi_sub_table_header	header;
-	uint8		processor_id;
-	uint8		lapic_id;
-	uint32		lapic_flags;
-} __attribute__ ((packed)) fwts_acpi_madt_local_apic;
+	uint8		acpi_processor_id;
+	uint8		apic_id;
+	uint32		flags;
+}  __attribute__ ((packed)) fwts_acpi_madt_processor_local_apic;
 
 typedef struct {
-	fwts_acpi_sub_table_header	header;
 	uint8		io_apic_id;
 	uint8		reserved;
-	uint32		apic_phys_address;
+	uint32		io_apic_phys_address;
 	uint32		global_irq_base;
 } __attribute__ ((packed)) fwts_acpi_madt_io_apic;
 
 typedef struct {
-	fwts_acpi_sub_table_header	header;
 	uint8		bus;
-	uint8		source_irq;
-	uint32		global_irq;
-	uint16		int_flags;
+	uint8		source;
+	uint32		gsi;
+	uint16		flags;
 } __attribute__ ((packed)) fwts_acpi_madt_interrupt_override;
+
+typedef struct {
+	uint16		flags;	
+	uint32		gsi;
+} __attribute__ ((packed)) fwts_acpi_madt_nmi;
+
+typedef struct {
+	uint8		acpi_processor_id;
+	uint16		flags;	
+	uint8		local_apic_lint;
+} __attribute__ ((packed)) fwts_acpi_madt_local_apic_nmi;
+
+typedef struct {
+	uint16		reserved;
+	uint64		address;
+} __attribute__ ((packed)) fwts_acpi_madt_local_apic_addr_override;
+
+typedef struct {
+	uint8		io_sapic_id;
+	uint8		reserved;
+	uint32		gsi;
+	uint64		address;
+} __attribute__ ((packed)) fwts_acpi_madt_io_sapic;
+
+typedef struct {
+	uint8		acpi_processor_id;
+	uint8		local_sapic_id;
+	uint8		local_sapic_eid;
+	uint8		reserved;
+	uint32		flags;
+	uint32		uid_value;
+	char		uid_string[0];
+} __attribute__ ((packed)) fwts_acpi_madt_local_sapic;
+
+typedef struct {
+	uint16		flags;
+	uint8		type;
+	uint8		processor_id;
+	uint8		processor_eid;
+	uint8		io_sapic_vector;
+	uint32		gsi;
+	uint32		pis_flags;
+} __attribute__ ((packed)) fwts_acpi_madt_platform_int_source;
+
+typedef struct {
+	uint16		reserved;
+	uint32		x2apic_id;
+	uint32		flags;
+	uint32		processor_uid;
+} __attribute__ ((packed)) fwts_acpi_madt_local_x2apic;
+
+typedef struct {
+	uint16		flags;
+	uint32		processor_uid;
+	uint8		local_x2apic_lint;
+	uint8		reserved[3];
+} __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
+
 
 uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size);
 uint8 *fwts_acpi_table_read(const int fd, int *length);

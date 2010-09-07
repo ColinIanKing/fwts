@@ -67,13 +67,14 @@ extern char *fwts_acpi_fadt_preferred_pm_profile[];
 		FWTS_GET_UINT64(var.address, buffer, (offset+4));		\
 	} while (0)
 
+/* 5.2.3.1 Generic Address Structure */
 typedef struct {
 	uint8 	address_space_id;
 	uint8	register_bit_width;
         uint8 	register_bit_offset;
         uint8 	access_width;
         uint64 	address;
-} __attribute__ ((packed)) fwts_gas;
+} __attribute__ ((packed)) fwts_acpi_gas;
 
 typedef struct {
 	char		signature[4];
@@ -171,19 +172,19 @@ typedef struct {
 	uint16		iapc_boot_arch;
 	uint8		reserved1;
 	uint32		flags;
-	fwts_gas	reset_reg;
+	fwts_acpi_gas	reset_reg;
 	uint8		reset_value;
 	uint8		reserved2[3];
 	uint64		x_firmware_ctrl;
 	uint64		x_dsdt;
-	fwts_gas	x_pm1a_evt_blk;
-	fwts_gas	x_pm1b_evt_blk;
-	fwts_gas	x_pm1a_cnt_blk;
-	fwts_gas	x_pm1b_cnt_blk;
-	fwts_gas	x_pm2_cnt_blk;
-	fwts_gas	x_pm_tmr_blk;
-	fwts_gas	x_gpe0_blk;
-	fwts_gas	x_gpe1_blk;
+	fwts_acpi_gas	x_pm1a_evt_blk;
+	fwts_acpi_gas	x_pm1b_evt_blk;
+	fwts_acpi_gas	x_pm1a_cnt_blk;
+	fwts_acpi_gas	x_pm1b_cnt_blk;
+	fwts_acpi_gas	x_pm2_cnt_blk;
+	fwts_acpi_gas	x_pm_tmr_blk;
+	fwts_acpi_gas	x_gpe0_blk;
+	fwts_acpi_gas	x_gpe1_blk;
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
 
 typedef struct {
@@ -208,7 +209,7 @@ typedef struct {
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32		event_timer_block_id;
-	fwts_gas	base_address;
+	fwts_acpi_gas	base_address;
 	uint8		hpet_number;
 	uint16		main_counter_minimum;
 	uint8		page_prot_and_oem_attribute;

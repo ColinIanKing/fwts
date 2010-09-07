@@ -42,13 +42,65 @@ static char *acpidump_headline(void)
 	return "Check ACPI table acpidump.";
 }
 
-static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_gas *gas)
-{
+static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_acpi_gas *gas)
+{	
+	char *txt;
 	fwts_log_info_verbatum(fw, "%s:", str);
-	fwts_log_info_verbatum(fw, "  addr_space_id:  0x%x", gas->address_space_id);
+
+	switch (gas->address_space_id) {
+	case 0x00:	
+		txt = "System Memory";
+		break;
+	case 0x01:
+		txt = "System I/O";
+		break;
+	case 0x02:
+		txt = "PCI Configuration Space";
+		break;
+	case 0x03:
+		txt = "Embedded Controller";
+		break;
+	case 0x04:
+		txt = "SMBus";
+		break;
+	case 0x05 ... 0x7e:
+	case 0x80 ... 0xbf:
+		txt = "Reserved";
+		break;
+	case 0x7f:
+		txt = "Functional Fixed Hardware";
+		break;
+	case 0xc0 ... 0xff:
+		txt = "OEM Defined";
+		break;
+	default:
+		txt = "Unknown";
+		break;
+	}
+	fwts_log_info_verbatum(fw, "  addr_space_id:  0x%x (%s)", gas->address_space_id, txt);
 	fwts_log_info_verbatum(fw, "  reg_bit_width:  0x%x", gas->register_bit_width);
 	fwts_log_info_verbatum(fw, "  reg_bit_offset: 0x%x", gas->register_bit_offset);
-	fwts_log_info_verbatum(fw, "  access_width:   0x%x", gas->access_width);
+	switch (gas->access_width) {
+	case 0x00:
+		txt = "Undefined (legacy reasons)";
+		break;
+	case 0x01:
+		txt = "Byte Access";
+		break;
+	case 0x02:
+		txt = "Word Access";
+		break;
+	case 0x03:
+		txt = "DWord Access";
+		break;
+	case 0x04:
+		txt = "QWord Access";
+		break;
+	default:
+		txt = "Unknown";
+		break;
+	}
+	fwts_log_info_verbatum(fw, "  access_width:   0x%x (%s)", gas->access_width, txt);
 	fwts_log_info_verbatum(fw, "  address:        0x%llx", gas->address);
 }
 

@@ -33,80 +33,42 @@ static int checksum_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
 static char *checksum_headline(void)
 {
 	return "Check ACPI table checksum.";
 }
 
-static int checksum_table(fwts_framework *fw, const char *filename, const char *basename)
+static int checksum_scan_tables(fwts_framework *fw)
 {
-	int fd;
-	uint8 *data;
-	fwts_acpi_table_header hdr;
 	int i;
-	uint8 checksum = 0;
-	int length;
+	fwts_acpi_table_info *table;
 
-	if ((fd = open(filename, O_RDONLY)) < 0) {
-		fwts_failed_low(fw, "Cannot read table %s.", basename);
-		return FWTS_ERROR;
-	}
+	for (i=0; (table = fwts_acpi_get_table(i)) != NULL; i++) {
+		int j;
 
-	if ((data = fwts_acpi_table_read(fd, &length)) == NULL) {
-		fwts_failed_low(fw, "Cannot read table %s.", basename);
-		return FWTS_ERROR;
-	}
+		if (strcmp("RSDP", table->name) == 0)
+			continue;
+		if (strcmp("FACS", table->name) == 0)
+			continue;
+
+		fwts_acpi_table_header *hdr = (fwts_acpi_table_header*)table->data;
+		uint8 *data = (uint8*) table->data;
+		uint8 checksum = 0;
+
+		for (j=0; j<hdr->length; j++) 
+			checksum += data[j];
 	
-	fwts_acpi_table_get_header(&hdr, data);
-
-	if (length < sizeof(fwts_acpi_table_header)) {
-		fwts_failed_high(fw, "Table %s is shorter than the ACPI table header.", basename);
-		return FWTS_ERROR;
-	}
-
-	for (i=0; i<hdr.length; i++) 
-		checksum += data[i];
-
-	if (checksum == 0)
-		fwts_passed(fw, "Table %s has correct checksum 0x%x.", basename, hdr.checksum);
-	else
-		fwts_failed_low(fw, "Table %s has incorrect checksum, expected 0x%x, got 0x%x.", basename, 256-checksum, hdr.checksum);
-
-	return FWTS_OK;
-}
-
-static int checksum_scan_tables(fwts_framework *fw, const char *path)
-{
-	DIR *dir;
-	struct dirent *entry;
-
-	if ((dir = opendir(path)) == NULL) 
-		return FWTS_ERROR;
-
-	while ((entry = readdir(dir)) != NULL) {
-		if (strlen(entry->d_name) > 2) {
-			struct stat buf;
-			char pathname[PATH_MAX];
-
-			snprintf(pathname, sizeof(pathname), "%s/%s", path, entry->d_name);
-			if (stat(pathname, &buf) != 0)
-				continue;
-			if (S_ISDIR(buf.st_mode))
-				checksum_scan_tables(fw, pathname);
-			else
-				checksum_table(fw, pathname, entry->d_name);
-		}
+		if (checksum == 0)
+			fwts_passed(fw, "Table %s has correct checksum 0x%x.", table->name, hdr->checksum);
+		else
+			fwts_failed_low(fw, "Table %s has incorrect checksum, expected 0x%x, got 0x%x.", table->name, 256-checksum, hdr->checksum);
 	}
 	return FWTS_OK;
 }
 
 static int checksum_test1(fwts_framework *fw)
 {
-	char *path = (fw->acpi_table_path == NULL) ? 
-		FWTS_ACPI_TABLES_PATH : fw->acpi_table_path;
-
-	checksum_scan_tables(fw, path);
+	checksum_scan_tables(fw);
 
 	return FWTS_OK;
 }

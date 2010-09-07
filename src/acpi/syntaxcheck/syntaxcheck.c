@@ -46,25 +46,18 @@ static int syntaxcheck_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int syntaxcheck_table(fwts_framework *fw, char *table, int which)
+static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 {
 	fwts_list_link *item;
 	int errors = 0;
 	int warnings = 0;
-	uint8 *tabledata;
-	int size;
+	fwts_acpi_table_info *table;
 
-	tabledata = fwts_acpi_table_load(fw, table, which, &size);
-	if (size == 0)
+	if ((table = fwts_acpi_find_table(tablename, which)) == NULL) 
 		return 2;		/* Table does not exist */
 
-	if (tabledata == NULL) {
-		fwts_log_error(fw, "Failed to load table for some reason!");
-		return FWTS_ERROR;
-	}
+	error_output = fwts_iasl_reassemble(fw, table->data, table->length);
 
-	error_output = fwts_iasl_reassemble(fw, tabledata, size);
-	free(tabledata);
 	if (error_output == NULL) {
 		fwts_log_error(fw, "Cannot re-assasemble with iasl.");
 		return FWTS_ERROR;

@@ -34,8 +34,7 @@
 #include <limits.h>
 
 static fwts_list *e820_list;
-static void *mcfg_table;
-static int mcfg_size;
+static fwts_acpi_table_info *mcfg_table;
 
 /* Defined in PCI Firmware Specification 3.0 */
 struct mcfg_entry {
@@ -98,7 +97,7 @@ static int mcfg_init(fwts_framework *fw)
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
-	if ((mcfg_table = fwts_acpi_table_load(fw, "MCFG", 0, &mcfg_size)) == NULL) {
+	if ((mcfg_table = fwts_acpi_find_table("MCFG", 0)) == NULL) {
 		fwts_log_error(fw, "MCFG ACPI table not loaded. This table is required to check for PCI Express*");
 		return FWTS_ERROR;
 	}
@@ -108,9 +107,6 @@ static int mcfg_init(fwts_framework *fw)
 
 static int mcfg_deinit(fwts_framework *fw)
 {
-	if (mcfg_table)
-		free(mcfg_table);
-
 	if (e820_list)
 		fwts_e820_table_free(e820_list);
 
@@ -129,6 +125,7 @@ static int mcfg_test1(fwts_framework *fw)
 	uint8 *table_ptr, *table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
+	int mcfg_size;
 	
 	fwts_log_info(fw,
 		"This test tries to validate the MCFG table by comparing the first "
@@ -143,6 +140,7 @@ static int mcfg_test1(fwts_framework *fw)
 	}
 	fwts_log_info(fw, "\n");
 
+	mcfg_size = mcfg_table->length; 
 	mcfg_size -= 36; /* general ACPI header */
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
@@ -167,7 +165,7 @@ static int mcfg_test1(fwts_framework *fw)
 	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).", 
 			mcfg_size, nr);
 
-	table_page = table_ptr = mcfg_table;
+	table_page = table_ptr = mcfg_table->data;
 
 	if (table_page==NULL) {
 		fwts_failed(fw, "Invalid MCFG ACPI table");

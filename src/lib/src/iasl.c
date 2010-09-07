@@ -29,16 +29,16 @@
 
 #include "fwts.h"
 
-fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *table, const int which)
+fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int which)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
 	char cwd[PATH_MAX];
-	int len;
 	int fd;
-	uint8 *data;
 	pid_t pid;
 	fwts_list *output;
+	fwts_acpi_table_info *table;
+
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
@@ -53,22 +53,19 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *table, const in
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
                 return NULL;
 
-	if ((data = fwts_acpi_table_load(fw, table, which, &len)) == NULL)
+	if ((table = fwts_acpi_find_table(tablename, which)) == NULL)
 		return NULL;
 
-	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), table);
+	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), tablename);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file %s", tmpname);
-		free(data);
 		return NULL;
 	}
-	if (write(fd, data, len) != len) {
+	if (write(fd, table->data, table->length) != table->length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
-		free(data);
 		close(fd);
 		return NULL;
 	}	
-	free(data);
 	close(fd);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);

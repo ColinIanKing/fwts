@@ -35,21 +35,17 @@ static int fadt_size;
 
 static int fadt_init(fwts_framework *fw)
 {
+	fwts_acpi_table_info *table;
+
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-	if ((fadt = (fwts_acpi_table_fadt *)fwts_acpi_table_load(fw, "FACP", 0, &fadt_size)) == NULL) {
-		fwts_log_error(fw, "Failed to read ACPI FADT");
+	if ((table = fwts_acpi_find_table("FADT", 0)) == NULL) {
+		fwts_log_error(fw, "Failed to load ACPI FADT");
 		return FWTS_ERROR;
 	}
-
-	return FWTS_OK;
-}
-
-static int fadt_deinit(fwts_framework *fw)
-{
-	if (fadt)
-		free(fadt);
+	fadt = table->data;
+	fadt_size = table->length;
 
 	return FWTS_OK;
 }
@@ -125,7 +121,7 @@ static fwts_framework_tests fadt_tests[] = {
 static fwts_framework_ops fadt_ops = {
 	fadt_headline,
 	fadt_init,
-	fadt_deinit,
+	NULL,
 	fadt_tests
 };
 

@@ -461,14 +461,14 @@ static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 {
 	int n;
 	int i;
-	uint32 *entry;
+	uint64 *entry;
 
 	if (length < (sizeof(fwts_acpi_table_header))) {
 		fwts_log_info(fw, "Boot table too short\n");
 		return;
 	}
-	n = (length - sizeof(fwts_acpi_table_header)) / 4;
-	entry = (uint32*)(data + sizeof(fwts_acpi_table_header));
+	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64);
+	entry = (uint64*)(data + sizeof(fwts_acpi_table_header));
 
 	for (i=0; i<n; i++) {
 		fwts_log_info_verbatum(fw, "Description Hdr:  0x%x", *entry++);
@@ -476,22 +476,14 @@ static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 }
 
 
-static int acpidump_table(fwts_framework *fw, const char *filename, const char *basename)
+static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 {
-	int fd;
 	uint8 *data;
 	fwts_acpi_table_header hdr;
 	int length;
 
-	if ((fd = open(filename, O_RDONLY)) < 0) {
-		fwts_failed_low(fw, "Cannot read table %s.", basename);
-		return FWTS_ERROR;
-	}
-
-	if ((data = fwts_acpi_table_read(fd, &length)) == NULL) {
-		fwts_failed_low(fw, "Cannot read table %s.", basename);
-		return FWTS_ERROR;
-	}
+	data = table->data;
+	length = table->length;
 
 	if (strncmp((char *)data, "RSD PTR ", 8) == 0) {
 		acpidump_rsdp(fw, data, length);
@@ -521,39 +513,16 @@ static int acpidump_table(fwts_framework *fw, const char *filename, const char *
 	return FWTS_OK;
 }
 
-static int acpidump_all_tables(fwts_framework *fw, const char *path)
-{
-	DIR *dir;
-	struct dirent *entry;
-
-	if ((dir = opendir(path)) == NULL) 
-		return FWTS_ERROR;
-
-	while ((entry = readdir(dir)) != NULL) {
-		if (strlen(entry->d_name) > 2) {
-			struct stat buf;
-			char pathname[PATH_MAX];
-
-			snprintf(pathname, sizeof(pathname), "%s/%s", path, entry->d_name);
-			if (stat(pathname, &buf) != 0)
-				continue;
-			if (S_ISDIR(buf.st_mode))
-				acpidump_all_tables(fw, pathname);
-			else {
-				acpidump_table(fw, pathname, entry->d_name);
-				fwts_log_nl(fw);
-			}
-		}
-	}
-	return FWTS_OK;
-}
-
 static int acpidump_test1(fwts_framework *fw)
 {
-	char *path = (fw->acpi_table_path == NULL) ? 
-		FWTS_ACPI_TABLES_PATH : fw->acpi_table_path;
+	int i;
 
-	acpidump_all_tables(fw, path);
+	fwts_acpi_table_info *table;
+
+	for (i=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
+		acpidump_table(fw, table);
+		fwts_log_nl(fw);
+	}
 
 	return FWTS_OK;
 }

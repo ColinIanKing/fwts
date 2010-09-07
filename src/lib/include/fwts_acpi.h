@@ -128,6 +128,15 @@ typedef struct {
 	uint8		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_rsdp;
 
+typedef struct {
+	fwts_acpi_table_header header;
+	uint64		entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_xsdt;
+
+typedef struct {
+	fwts_acpi_table_header header;
+	uint32		entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_rsdt;
 
 /*
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
@@ -321,9 +330,6 @@ typedef struct {
 	uint8		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
-
-uint8 *fwts_acpi_table_load(fwts_framework *fw, const char *name, const int which, int *size);
-uint8 *fwts_acpi_table_read(const int fd, int *length);
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8 *data);
 
 #endif

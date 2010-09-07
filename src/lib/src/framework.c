@@ -887,6 +887,7 @@ tidy:
 	fwts_log_close(fw->debug);
 
 tidy_close:
+	fwts_acpi_free_tables();
 	fwts_summary_deinit();
 	fwts_framework_close(fw);
 

@@ -5,6 +5,7 @@ libtestsuite_a_SOURCES = \
 	list.c \
 	acpi.c \
 	acpid.c \
+	acpi_tables.c \
 	interactive.c \
 	binpaths.c \
 	cpu.c \

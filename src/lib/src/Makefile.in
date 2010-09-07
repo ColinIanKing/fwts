@@ -48,9 +48,9 @@ ARFLAGS = cru
 libtestsuite_a_AR = $(AR) $(ARFLAGS)
 libtestsuite_a_LIBADD =
 am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
-	acpid.$(OBJEXT) interactive.$(OBJEXT) binpaths.$(OBJEXT) \
-	cpu.$(OBJEXT) checkeuid.$(OBJEXT) cmos.$(OBJEXT) \
-	dump.$(OBJEXT) e820.$(OBJEXT) fileio.$(OBJEXT) \
+	acpid.$(OBJEXT) acpi_tables.$(OBJEXT) interactive.$(OBJEXT) \
+	binpaths.$(OBJEXT) cpu.$(OBJEXT) checkeuid.$(OBJEXT) \
+	cmos.$(OBJEXT) dump.$(OBJEXT) e820.$(OBJEXT) fileio.$(OBJEXT) \
 	framework.$(OBJEXT) formatting.$(OBJEXT) get.$(OBJEXT) \
 	gpe.$(OBJEXT) iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) \
 	log.$(OBJEXT) pipeio.$(OBJEXT) set.$(OBJEXT) \
@@ -163,6 +163,7 @@ libtestsuite_a_SOURCES = \
 	list.c \
 	acpi.c \
 	acpid.c \
+	acpi_tables.c \
 	interactive.c \
 	binpaths.c \
 	cpu.c \
@@ -237,6 +238,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpi_tables.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/binpaths.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/checkeuid.Po@am__quote@

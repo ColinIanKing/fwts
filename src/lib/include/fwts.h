@@ -33,6 +33,7 @@
 #include "fwts_set.h"
 #include "fwts_get.h"
 #include "fwts_acpi.h"
+#include "fwts_acpi_tables.h"
 #include "fwts_acpid.h"
 #include "fwts_checkeuid.h"
 #include "fwts_cpu.h"

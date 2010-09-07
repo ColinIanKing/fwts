@@ -154,7 +154,8 @@ static void *fwts_acpi_load_table(uint32 addr)
 	len = hdr->length;
 	fwts_acpi_munmap(hdr, sizeof(fwts_acpi_table_header));
 
-	table = malloc(len);
+	if ((table = malloc(len)) == NULL)
+		return NULL;
 
 	if ((mem = fwts_acpi_mmap(addr, len)) == MAP_FAILED)
 		return NULL;
@@ -170,8 +171,11 @@ static void fwts_acpi_add_table(char *name, void *table, uint64 addr, int length
 	int i;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
-		if (tables[i].addr == addr)
+		if (tables[i].addr == addr) {
+			/* We don't need it, it's a duplicate, so free and return */
+			free(table);
 			return;
+		}
 		if (tables[i].data == NULL) {
 			strncpy(tables[i].name, name, 4);
 			tables[i].name[4] = 0;
@@ -195,15 +199,15 @@ void fwts_acpi_free_tables(void)
 	}
 }
 
-void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 addr32, uint64 addr64)
+void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 *addr32, uint64 *addr64)
 {
 	uint32 addr;
 	fwts_acpi_table_header *header;
 
 	if ((addr64 != 0) && (fadt->header.length >= 140)) 
-		addr = addr64;
+		addr = *addr64;
 	else if ((addr32 !=0) && (fadt->header.length >= 44)) 
-		addr = addr32;
+		addr = *addr32;
 	else addr = 0;
 
 	if (addr) {
@@ -214,8 +218,8 @@ void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 addr32, uin
 
 void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt)
 {
-	fwts_acpi_handle_fadt_tables(fadt, fadt->dsdt, fadt->x_dsdt);
-	fwts_acpi_handle_fadt_tables(fadt, fadt->firmware_control, fadt->x_firmware_ctrl);
+	fwts_acpi_handle_fadt_tables(fadt, &fadt->dsdt, &fadt->x_dsdt);
+	fwts_acpi_handle_fadt_tables(fadt, &fadt->firmware_control, &fadt->x_firmware_ctrl);
 }
 
 /*

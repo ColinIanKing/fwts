@@ -193,7 +193,6 @@ static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
 	
 }
 
-
 static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)data;
@@ -282,6 +281,34 @@ static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "Extended Checksum:0x%x (%d)", rsdp->extended_checksum, rsdp->extended_checksum);
 	fwts_log_info_verbatum(fw, "Reserved:         0x%2.2x 0x%2.2x 0x%2.2x", 
 		rsdp->reserved[0], rsdp->reserved[1], rsdp->reserved[2]);
+}
+
+static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
+{
+	int i;
+	int n;
+	fwts_acpi_table_rsdt *rsdt = (fwts_acpi_table_rsdt*)data;
+
+	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint32);
+	for (i=0; i<n; i++)  {
+		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr((uint64)rsdt->entries[i]);
+		char *name = table == NULL ? "unknown" : table->name;
+		fwts_log_info_verbatum(fw, "Entry %2.2d          0x%8.8lx (%s)", i, rsdt->entries[i], name);
+	}
+}
+
+static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
+{
+	int i;
+	int n;
+	fwts_acpi_table_xsdt *xsdt = (fwts_acpi_table_xsdt*)data;
+
+	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64);
+	for (i=0; i<n; i++)  {
+		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr(xsdt->entries[i]);
+		char *name = table == NULL ? "unknown" : table->name;
+		fwts_log_info_verbatum(fw, "Entry %2.2d          0x%16.16llx (%s)", i, xsdt->entries[i], name);
+	}
 }
 
 static void acpidump_madt(fwts_framework *fw, uint8 *data, int length)
@@ -457,24 +484,6 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
-static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
-{
-	int n;
-	int i;
-	uint64 *entry;
-
-	if (length < (sizeof(fwts_acpi_table_header))) {
-		fwts_log_info(fw, "Boot table too short\n");
-		return;
-	}
-	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64);
-	entry = (uint64*)(data + sizeof(fwts_acpi_table_header));
-
-	for (i=0; i<n; i++) {
-		fwts_log_info_verbatum(fw, "Description Hdr:  0x%x", *entry++);
-	}
-}
-
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, uint8 *data, int length);
@@ -483,13 +492,14 @@ typedef struct {
 
 
 acpidump_table_vec table_vec[] = {
-	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
-	{ "FACS", 	acpidump_facs, 	0 },
 	{ "APIC", 	acpidump_madt, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "FACP", 	acpidump_fadt, 	1 },
+	{ "FACS", 	acpidump_facs, 	0 },
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },
+	{ "RSDT", 	acpidump_rsdt, 	1 },
+	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },
 	{ NULL,		NULL,		0 },
 };

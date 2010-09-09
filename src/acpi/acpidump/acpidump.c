@@ -139,6 +139,11 @@ static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "  Parity:   %x", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 }
 
+static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
+}
+
 static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_acpi_table_facs *facs = (fwts_acpi_table_facs*)data;
@@ -494,12 +499,14 @@ typedef struct {
 acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
+	{ "DSDT", 	acpidump_amlcode, 1 },
 	{ "FACP", 	acpidump_fadt, 	1 },
 	{ "FACS", 	acpidump_facs, 	0 },
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },
 	{ "RSDT", 	acpidump_rsdt, 	1 },
 	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
+	{ "SSDT", 	acpidump_amlcode, 1 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },
 	{ NULL,		NULL,		0 },
 };
@@ -539,6 +546,8 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 
 	for (i=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
+		fwts_log_info_verbatum(fw, "%s @ %16.16llx", table->name, (uint64)table->addr);
+		fwts_log_info_verbatum(fw, "-----------------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);
 	}

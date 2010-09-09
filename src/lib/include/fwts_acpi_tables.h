@@ -31,6 +31,7 @@ void fwts_acpi_load_tables(void);
 void fwts_acpi_free_tables(void);
 
 fwts_acpi_table_info *fwts_acpi_find_table(const char *name, const int which);
+fwts_acpi_table_info *fwts_acpi_find_table_by_addr(const uint64 addr);
 fwts_acpi_table_info *fwts_acpi_get_table(const int index);
 
 #endif

@@ -291,6 +291,25 @@ fwts_acpi_table_info *fwts_acpi_find_table(const char *name, const int which)
 }
 
 /*
+ *  Search for an ACPI table by address.
+ */
+fwts_acpi_table_info *fwts_acpi_find_table_by_addr(const uint64 addr)
+{
+	int i;
+	
+	if (!acpi_tables_loaded)
+		fwts_acpi_load_tables();
+
+	for (i=0;i<ACPI_MAX_TABLES;i++) {
+		if (tables[i].data == NULL)
+			break;
+		if (tables[i].addr == addr)
+			return &tables[i];
+	}
+	return NULL;
+}
+
+/*
  *  Get an ACPI table.
  */
 fwts_acpi_table_info *fwts_acpi_get_table(const int index)

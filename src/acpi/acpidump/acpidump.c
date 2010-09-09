@@ -42,6 +42,42 @@ static char *acpidump_headline(void)
 	return "Check ACPI table acpidump.";
 }
 
+static void acpi_dump_raw_data(fwts_framework *fw, const uint8 *data, const int offset, const int bytes)
+{
+        int i;
+	int n = 0;
+	char buffer[128];
+
+	n = snprintf(buffer, sizeof(buffer), "  %4.4x: ", offset);
+
+        for (i=0;i<bytes;i++)
+                n += snprintf(buffer + n, sizeof(buffer) - n, "%2.2x ", data[i]);
+
+        for (;i<16;i++)
+                n += snprintf(buffer + n, sizeof(buffer) -n , "   ");
+
+        n += snprintf(buffer + n, sizeof(buffer) -n , " ");
+
+        for (i=0;i<bytes;i++)
+		buffer[n++] = (data[i] < 32 || data[i] > 126) ? '.' : data[i];
+	buffer[n] = 0;
+
+	fwts_log_info_verbatum(fw, "%s", buffer);
+}
+
+static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
+{
+        int n;
+
+	fwts_log_nl(fw);
+
+        for (n = 0; n < length; n+=16) {
+                int left = length - n;
+                acpi_dump_raw_data(fw, data + n, n, left > 16 ? 16 : left);
+        }
+}
+
+
 static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_acpi_gas *gas)
 {	
 	char *txt;
@@ -496,17 +532,42 @@ typedef struct {
 } acpidump_table_vec;
 
 
+/* To be implemented */
+#define acpidump_bert		acpi_dump_raw_table
+#define acpidump_cpep		acpi_dump_raw_table
+#define acpidump_ecdt		acpi_dump_raw_table
+#define acpidump_einj		acpi_dump_raw_table
+#define acpidump_erst		acpi_dump_raw_table
+#define acpidump_hest		acpi_dump_raw_table
+#define acpidump_msct		acpi_dump_raw_table
+#define acpidump_psdt		acpi_dump_raw_table
+#define acpidump_sbst		acpi_dump_raw_table
+#define acpidump_slit		acpi_dump_raw_table
+#define acpidump_srat		acpi_dump_raw_table
+
+
 acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
+	{ "BERT", 	acpidump_bert, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
+	{ "CPEP", 	acpidump_cpep, 	1 },
 	{ "DSDT", 	acpidump_amlcode, 1 },
+	{ "ECDT", 	acpidump_ecdt, 	1 },
+	{ "EINJ", 	acpidump_einj, 	1 },
+	{ "ERST", 	acpidump_erst, 	1 },
 	{ "FACP", 	acpidump_fadt, 	1 },
 	{ "FACS", 	acpidump_facs, 	0 },
+	{ "HEST", 	acpidump_hest, 	1 },
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },
+	{ "MSCT", 	acpidump_msct, 	1 },
+	{ "PSDT", 	acpidump_psdt, 	1 },
 	{ "RSDT", 	acpidump_rsdt, 	1 },
 	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
+	{ "SBST", 	acpidump_sbst,  1 },
 	{ "SSDT", 	acpidump_amlcode, 1 },
+	{ "SLIT", 	acpidump_slit,  1 },
+	{ "SRAT", 	acpidump_srat,  1 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },
 	{ NULL,		NULL,		0 },
 };
@@ -535,6 +596,7 @@ static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 	/* Cannot find, assume standard table header */
 	fwts_acpi_table_get_header(&hdr, data);
 	acpidump_hdr(fw, &hdr);
+	acpi_dump_raw_table(fw, data, length);
 
 	return FWTS_OK;
 }

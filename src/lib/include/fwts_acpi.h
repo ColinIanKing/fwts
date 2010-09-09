@@ -106,6 +106,20 @@ typedef struct {
 	uint8		generic_error_data[0];
 } __attribute__ ((packed)) fwts_acpi_table_bert;
 
+typedef struct {
+	uint8		type;
+	uint8		length;
+	uint8		processor_id;
+	uint8		processor_eid;
+	uint32		polling_interval;
+} __attribute__ ((packed)) fwts_acpi_cpep_processor_info;
+
+typedef struct {
+	fwts_acpi_table_header	header;	
+	uint8		reserved[8];
+	fwts_acpi_cpep_processor_info	cpep_info[0];
+} __attribute__ ((packed)) fwts_acpi_table_cpep;
+
 typedef enum {
 	FTWS_BOOT_REGISTER_PNPOS	= 0x01,
 	FWTS_BOOT_REGISTER_BOOTING	= 0x02,

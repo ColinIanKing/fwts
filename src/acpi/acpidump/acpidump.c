@@ -203,6 +203,22 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
+static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_cpep *cpep = (fwts_acpi_table_cpep*)data;
+	int i;
+	int n = (length - sizeof(fwts_acpi_table_bert)) / sizeof(fwts_acpi_cpep_processor_info);
+
+	for (i=0; i<n; i++) {
+		fwts_log_info_verbatum(fw, "CPEP #%d\n", i);
+		fwts_log_info_verbatum(fw, "  Type:           0x%x", cpep->cpep_info[i].type);
+		fwts_log_info_verbatum(fw, "  Length:         0x%x", cpep->cpep_info[i].length);
+		fwts_log_info_verbatum(fw, "  Processor ID:   0x%x", cpep->cpep_info[i].processor_id);
+		fwts_log_info_verbatum(fw, "  Processor EID:  0x%x", cpep->cpep_info[i].processor_eid);
+		fwts_log_info_verbatum(fw, "  Poll Interval   0x%lx ms", cpep->cpep_info[i].polling_interval);
+	}
+}
+
 static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
@@ -561,7 +577,6 @@ typedef struct {
 
 
 /* To be implemented */
-#define acpidump_cpep		acpi_dump_raw_table
 #define acpidump_ecdt		acpi_dump_raw_table
 #define acpidump_einj		acpi_dump_raw_table
 #define acpidump_erst		acpi_dump_raw_table

@@ -94,6 +94,18 @@ typedef struct {
 	uint8		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_boot;
 
+typedef struct {
+	fwts_acpi_table_header	header;	
+	uint32		boot_error_region_length;
+	uint64		boot_error_region;
+	uint32		boot_status;
+	uint32		raw_data_offset;
+	uint32		raw_data_length;
+	uint32		data_length;
+	uint32		error_severity;
+	uint8		generic_error_data[0];
+} __attribute__ ((packed)) fwts_acpi_table_bert;
+
 typedef enum {
 	FTWS_BOOT_REGISTER_PNPOS	= 0x01,
 	FWTS_BOOT_REGISTER_BOOTING	= 0x02,

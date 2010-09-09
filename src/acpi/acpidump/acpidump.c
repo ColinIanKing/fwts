@@ -175,6 +175,34 @@ static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "  Parity:   %x", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 }
 
+static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_bert *bert = (fwts_acpi_table_bert*)data;
+	static char *error_severity[] = {
+		"Correctable",
+		"Fatal",
+		"Corrected",
+		"None",
+		"Uknown"
+	};
+
+	int i;
+	int n = length - sizeof(fwts_acpi_table_bert);
+
+	fwts_log_info_verbatum(fw, "Region Length:    0x%lx", bert->boot_error_region_length);
+	fwts_log_info_verbatum(fw, "Region Addr:      0x%llx", bert->boot_error_region);
+	fwts_log_info_verbatum(fw, "Boot Status:      0x%lx", bert->boot_status);
+	fwts_log_info_verbatum(fw, "Raw Data Offset:  0x%lx", bert->raw_data_offset);
+	fwts_log_info_verbatum(fw, "Raw Data Length:  0x%lx", bert->raw_data_length);
+	fwts_log_info_verbatum(fw, "Error Severity:   0x%lx (%s)", bert->error_severity, 
+		error_severity[bert->error_severity > 3 ? 4 : bert->error_severity]);
+	fwts_log_info_verbatum(fw, "Generic Error Data:");
+	for (i=0; i<n; i+= 16) {
+		int left = length - n;
+		acpi_dump_raw_data(fw, &bert->generic_error_data[i], i, left > 16 ? 16 : left);
+	}
+}
+
 static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
@@ -533,7 +561,6 @@ typedef struct {
 
 
 /* To be implemented */
-#define acpidump_bert		acpi_dump_raw_table
 #define acpidump_cpep		acpi_dump_raw_table
 #define acpidump_ecdt		acpi_dump_raw_table
 #define acpidump_einj		acpi_dump_raw_table

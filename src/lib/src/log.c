@@ -34,7 +34,7 @@ static int fwts_log_line = 1;
 
 static fwts_log_field fwts_log_filter = ~0;
 
-static char fwts_log_format[256] = "%line %date %time %owner ";
+static char fwts_log_format[256] = "%line %owner ";
 
 void fwts_log_set_line_width(int width)
 {

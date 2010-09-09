@@ -596,12 +596,91 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
+static void acpidump_slit(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_slit *slit = (fwts_acpi_table_slit*)data;
+	int i;
+	int j = 0;
+	int k = 0;
+	int n = length - sizeof(fwts_acpi_table_slit);
+	uint8 *entry;
+
+	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%lx (%lu)", slit->num_of_system_localities, 
+								    slit->num_of_system_localities);
+	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
+		fwts_log_info_verbatum(fw,"Expecting %d bytes, got only %d", 
+			slit->num_of_system_localities * slit->num_of_system_localities, n);
+	}
+	else {
+		entry = data + sizeof(fwts_acpi_table_slit);
+		for (i=0; i<n; i++) {
+			fwts_log_info_verbatum(fw, "Entry[%2.2d][%2.2d]: %2.2x", j, k, *entry++);
+			k++; 
+			if (k >= slit->num_of_system_localities) {
+				k = 0;
+				j++;
+			}
+		}
+	}
+};
+
+
+static void acpidump_srat(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_slit_local_apic_sapic_affinity *lasa;
+	fwts_acpi_table_slit_memory_affinity	       *ma;
+	fwts_acpi_table_slit_local_x2apic_affinity     *xa;
+	uint8 *ptr;
+
+	ptr = data + sizeof(fwts_acpi_table_srat);
+
+	while (ptr < data + length) {
+		switch (*ptr) {
+		case 0:
+			lasa = (fwts_acpi_table_slit_local_apic_sapic_affinity*)ptr;
+			fwts_log_info_verbatum(fw, " Processor Local APIC/SAPID Affinity Structure:");
+			fwts_log_info_verbatum(fw, "  Proximity [7:0] 0x%2.2x", lasa->proximity_domain_0);
+			fwts_log_info_verbatum(fw, "  APIC ID:        0x%2.2x", lasa->apic_id);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", lasa->flags);
+			fwts_log_info_verbatum(fw, "  L_SAPIC_EID:    0x%2.2x", lasa->local_sapic_eid);
+			fwts_log_info_verbatum(fw, "  Proximity [31:8]0x%2.2x%2.2x%2.2x", 
+				lasa->proximity_domain_1, lasa->proximity_domain_2, lasa->proximity_domain_3);
+			fwts_log_info_verbatum(fw, "  Clock Domain:   0x%lx", lasa->clock_domain);
+			ptr += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
+			break;
+		case 1:
+			ma = (fwts_acpi_table_slit_memory_affinity*)ptr;
+			fwts_log_info_verbatum(fw, " Memory Affinity Structure:");
+			fwts_log_info_verbatum(fw, "  Prox. Domain:   0x%lx", ma->proximity_domain);
+			fwts_log_info_verbatum(fw, "  Base Addr Lo:   0x%lx", ma->base_addr_lo);
+			fwts_log_info_verbatum(fw, "  Base Addr Hi:   0x%lx", ma->base_addr_hi);
+			fwts_log_info_verbatum(fw, "  Length Lo:      0x%lx", ma->length_lo);
+			fwts_log_info_verbatum(fw, "  Length Hi:      0x%lx", ma->length_hi);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", ma->flags);
+			ptr += sizeof(fwts_acpi_table_slit_memory_affinity);
+			break;
+		case 2:
+			xa = (fwts_acpi_table_slit_local_x2apic_affinity*)ptr;
+			fwts_log_info_verbatum(fw, " Processor Local x2APIC Affinit Structure:");
+			fwts_log_info_verbatum(fw, "  Prox. Domain:   0x%lx", xa->proximity_domain);
+			fwts_log_info_verbatum(fw, "  X2APIC ID:      0x%lx", xa->x2apic_id);
+			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", xa->flags);
+			fwts_log_info_verbatum(fw, "  Clock Domain:   0x%lx", xa->clock_domain);
+			ptr += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
+			break;
+		default:
+			ptr = data + length; /* force abort */
+			break;
+		}
+	}
+}
+
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, uint8 *data, int length);
 	int  standard_header;
 } acpidump_table_vec;
-
 
 /* To be implemented */
 #define acpidump_einj		acpi_dump_raw_table
@@ -609,9 +688,6 @@ typedef struct {
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
 #define acpidump_psdt		acpi_dump_raw_table
-#define acpidump_slit		acpi_dump_raw_table
-#define acpidump_srat		acpi_dump_raw_table
-
 
 acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },

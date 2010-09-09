@@ -253,6 +253,55 @@ typedef struct {
 	fwts_acpi_mcfg_configuration configuration[0];
 } __attribute__ ((packed)) fwts_acpi_table_mcfg;
 
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint64		num_of_system_localities;
+	/* matrix follows */
+} __attribute__ ((packed)) fwts_acpi_table_slit;
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32		reserved1;
+	uint64		reserved2;
+} __attribute__ ((packed)) fwts_acpi_table_srat;
+
+typedef struct {
+	uint8		type;
+	uint8		length;
+	uint8		proximity_domain_0;
+	uint8		apic_id;
+	uint32		flags;
+	uint8		local_sapic_eid;
+	uint8		proximity_domain_1;
+	uint8		proximity_domain_2;
+	uint8		proximity_domain_3;
+	uint32		clock_domain;
+} __attribute__ ((packed)) fwts_acpi_table_slit_local_apic_sapic_affinity;
+
+typedef struct {
+	uint8		type;
+	uint8		length;
+	uint32		proximity_domain;
+	uint16		reserved1;
+	uint32		base_addr_lo;
+	uint32		base_addr_hi;
+	uint32		length_lo;
+	uint32		length_hi;
+	uint32		reserved2;
+	uint32		flags;
+	uint64		reserved3;
+} __attribute__ ((packed)) fwts_acpi_table_slit_memory_affinity;
+
+typedef struct {
+	uint8		type;
+	uint8		length;
+	uint16		reserved1;
+	uint32		proximity_domain;
+	uint32		x2apic_id;
+	uint32		flags;
+	uint32		clock_domain;
+	uint32		reserved2;
+} __attribute__ ((packed)) fwts_acpi_table_slit_local_x2apic_affinity;
 
 /* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
 

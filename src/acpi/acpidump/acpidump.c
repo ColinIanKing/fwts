@@ -475,40 +475,49 @@ static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
+typedef struct {
+	char *name;
+	void (*func)(fwts_framework *fw, uint8 *data, int length);
+	int  standard_header;
+} acpidump_table_vec;
+
+
+acpidump_table_vec table_vec[] = {
+	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
+	{ "FACS", 	acpidump_facs, 	0 },
+	{ "APIC", 	acpidump_madt, 	1 },
+	{ "BOOT", 	acpidump_boot, 	1 },
+	{ "FACP", 	acpidump_fadt, 	1 },
+	{ "HPET", 	acpidump_hpet, 	1 },
+	{ "MCFG", 	acpidump_mcfg, 	1 },
+	{ "XSDT", 	acpidump_xsdt, 	1 },
+	{ NULL,		NULL,		0 },
+};
 
 static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	uint8 *data;
 	fwts_acpi_table_header hdr;
 	int length;
+	int i;
 
 	data = table->data;
 	length = table->length;
 
-	if (strncmp((char *)data, "RSD PTR ", 8) == 0) {
-		acpidump_rsdp(fw, data, length);
-		return FWTS_OK;
+	for (i=0; table_vec[i].name != NULL; i++) {
+		if (strncmp(table_vec[i].name, (char*)data, strlen(table_vec[i].name)) == 0) {
+			if (table_vec[i].standard_header) {
+				fwts_acpi_table_get_header(&hdr, data);
+				acpidump_hdr(fw, &hdr);
+			}
+			table_vec[i].func(fw, data, length);
+			return FWTS_OK;
+		}
 	}
-	if (strncmp((char *)data, "FACS", 4) == 0) {
-		acpidump_facs(fw, data, length);
-		return FWTS_OK;
-	}
-	
+
+	/* Cannot find, assume standard table header */
 	fwts_acpi_table_get_header(&hdr, data);
 	acpidump_hdr(fw, &hdr);
-
-	if (strncmp(hdr.signature, "APIC", 4) == 0)
-		acpidump_madt(fw, data, length);
-	if (strncmp(hdr.signature, "BOOT", 4) == 0)
-		acpidump_boot(fw, data, length);
-	if (strncmp(hdr.signature, "FACP", 4) == 0)
-		acpidump_fadt(fw, data, length);
-	if (strncmp(hdr.signature, "HPET", 4) == 0)
-		acpidump_hpet(fw, data, length);
-	if (strncmp(hdr.signature, "MCFG", 4) == 0)
-		acpidump_mcfg(fw, data, length);
-	if (strncmp(hdr.signature, "XSDT", 4) == 0)
-		acpidump_xsdt(fw, data, length);
 
 	return FWTS_OK;
 }

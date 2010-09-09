@@ -173,6 +173,12 @@ typedef struct {
 	uint32		entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_rsdt;
 
+typedef struct {
+	fwts_acpi_table_header header;
+	uint32		warning_energy_level;
+	uint32		low_energy_level;
+	uint32		critical_energy_level;
+} __attribute__ ((packed)) fwts_acpi_table_sbst;
 /*
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
  */

@@ -400,6 +400,15 @@ static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
+static void acpidump_sbst(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)data;
+
+	fwts_log_info_verbatum(fw, "Warn. Energy Lvl: 0x%lx", sbst->warning_energy_level);
+	fwts_log_info_verbatum(fw, "Low  Energy Lvl:  0x%lx", sbst->low_energy_level);
+	fwts_log_info_verbatum(fw, "Crit. Energy Lvl: 0x%lx", sbst->critical_energy_level);
+}
+
 static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 {
 	int i;
@@ -600,7 +609,6 @@ typedef struct {
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
 #define acpidump_psdt		acpi_dump_raw_table
-#define acpidump_sbst		acpi_dump_raw_table
 #define acpidump_slit		acpi_dump_raw_table
 #define acpidump_srat		acpi_dump_raw_table
 

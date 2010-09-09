@@ -48,7 +48,6 @@ static int dump_data(const char *path, const char *filename, char *data, const i
 	return FWTS_OK;
 }
 
-
 static int dump_dmesg(const char *path, const char *filename)
 {
 	int len;
@@ -111,9 +110,11 @@ static int dump_lspci(fwts_framework *fw, const char *path, const char *filename
 	return dump_exec(path, filename, command);
 }
 
-static void dump_acpi_data(FILE *fp, const unsigned char *data, const int n)
+static void dump_acpi_data(FILE *fp, const uint8 *data, const int offset, const int n)
 {
 	int i;
+
+	fprintf(fp, "  %4.4x: ", offset);
 
 	for (i=0;i<n;i++)
 		fprintf(fp, "%2.2x ", data[i]);
@@ -129,62 +130,17 @@ static void dump_acpi_data(FILE *fp, const unsigned char *data, const int n)
 	fprintf(fp, "\n");
 }
 
-static int dump_acpi_table(const char *pathname, const char *tablename, FILE *fpout)
+static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 {
-	FILE *fpin;
-	int ch;
-	int n = 0;
-	int i = 0;
-	unsigned char data[16];
+	int n;
 
-	if ((fpin = fopen(pathname, "r")) == NULL) {
-		unlink(pathname);
-		return FWTS_ERROR;
+	fprintf(fp, "%s @ 0x%lx\n", table->name, (uint32)table->addr);
+
+	for (n = 0; n < table->length; n+=16) {
+		int left = table->length - n;
+		dump_acpi_data(fp, table->data + n, n, left > 16 ? 16 : left);
 	}
-
-	fprintf(fpout, "%s @ 0x00000000\n", tablename);
-
-	while ((ch = fgetc(fpin)) != EOF) {
-		data[i] = ch;
-		if (i == 0)
-			fprintf(fpout, "  %4.4x: ", n);
-		if (i == 15)
-			dump_acpi_data(fpout, data, 16);
-		n++;
-		i = n & 15;
-	}
-	if (i != 0)
-		dump_acpi_data(fpout, data, i);
-
-	fprintf(fpin, "\n");
-
-	return FWTS_OK;
-}
-
-static int dump_all_acpi_tables(const char *tablepath, FILE *fpout)
-{
-	DIR *dir;
-	struct dirent *entry;
-	struct stat buf;
-
-	if ((dir = opendir(tablepath)) == NULL) {
-		return FWTS_ERROR;
-	}
-	
-	while ((entry = readdir(dir)) != NULL) {
-		if (strlen(entry->d_name) > 2) {
-			char pathname[PATH_MAX];
-
-			snprintf(pathname, sizeof(pathname), "%s/%s", tablepath, entry->d_name);
-			if (stat(pathname, &buf) != 0)
-				continue;
-			if (S_ISDIR(buf.st_mode))
-				dump_all_acpi_tables(pathname, fpout);
-			else
-				dump_acpi_table(pathname, entry->d_name, fpout);
-		}
-	}
-	closedir(dir);
+	fprintf(fp, "\n");
 
 	return FWTS_OK;
 }
@@ -192,14 +148,16 @@ static int dump_all_acpi_tables(const char *tablepath, FILE *fpout)
 static int dump_acpi_tables(const char *path)
 {
 	char filename[PATH_MAX];
+	fwts_acpi_table_info *table;
 	FILE *fp;
+	int i;
 
 	snprintf(filename, sizeof(filename), "%s/acpidump.log", path);
-
 	if ((fp = fopen(filename, "w")) == NULL)
 		return FWTS_ERROR;
-		
-	dump_all_acpi_tables(FWTS_ACPI_TABLES_PATH, fp);
+
+	for (i=0; (table = fwts_acpi_get_table(i)) != NULL; i++)
+		dump_acpi_table(table, fp);
 
 	fclose(fp);
 		
@@ -249,14 +207,28 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 
 	if (dump_readme(path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump README.txt.\n");
+	else
+		printf("Created README.txt\n");
+
 	if (dump_dmesg(path, "dmesg.log") != FWTS_OK) 
 		fprintf(stderr, "Failed to dump kernel log.\n");
+	else
+		printf("Dumping dmesg to dmesg.log\n");
+
 	if (dump_dmidecode(fw, path, "dmidecode.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from dmidecode.\n");
+	else
+		printf("Dumped DMI data to dmidecode.log\n");
+
 	if (dump_lspci(fw, path, "lspci.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from lspci.\n");
+	else
+		printf("Dumped lspci data to lspic.log\n");
+
 	if (dump_acpi_tables(path) != FWTS_OK) 
 		fprintf(stderr, "Failed to dump ACPI tables.\n");
+	else
+		printf("Dumped ACPI tables to acpidump.log\n");
 
 	return FWTS_OK;
 }

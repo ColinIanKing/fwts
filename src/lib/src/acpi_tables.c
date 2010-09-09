@@ -169,6 +169,7 @@ static void *fwts_acpi_load_table(uint32 addr)
 static void fwts_acpi_add_table(char *name, void *table, uint64 addr, int length)
 {
 	int i;
+	int which = 0;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].addr == addr) {
@@ -176,12 +177,15 @@ static void fwts_acpi_add_table(char *name, void *table, uint64 addr, int length
 			free(table);
 			return;
 		}
+		if (strncmp(tables[i].name, name, 4) == 0) 
+			which++;
 		if (tables[i].data == NULL) {
 			strncpy(tables[i].name, name, 4);
 			tables[i].name[4] = 0;
 			tables[i].data = table;
 			tables[i].addr = addr;
 			tables[i].length = length;
+			tables[i].which = which;
 			return;
 		}
 	}
@@ -272,7 +276,6 @@ void fwts_acpi_load_tables(void)
  */
 fwts_acpi_table_info *fwts_acpi_find_table(const char *name, const int which)
 {
-	int count = 0;
 	int i;
 
 	if (!acpi_tables_loaded)
@@ -281,11 +284,9 @@ fwts_acpi_table_info *fwts_acpi_find_table(const char *name, const int which)
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
 			break;
-		if (strcmp(tables[i].name, name) == 0) {
-			if (count == which)
-				return &tables[i];
-			count++;
-		}
+		if ((strcmp(tables[i].name, name) == 0) && 
+	            (tables[i].which == which))
+			return &tables[i];
 	}
 	return NULL;
 }

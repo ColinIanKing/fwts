@@ -219,6 +219,24 @@ static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
+static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
+{
+	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)data;
+	int i;
+	int n = length - sizeof(fwts_acpi_table_ecdt);
+
+	acpi_dump_gas(fw, "EC_CONTROL", &ecdt->ec_control);
+	acpi_dump_gas(fw, "EC_DATA", &ecdt->ec_data);
+	fwts_log_info_verbatum(fw, "UID:              0x%lx", ecdt->uid);
+	fwts_log_info_verbatum(fw, "GPE_BIT:          0x%x", ecdt->uid);
+	fwts_log_info_verbatum(fw, "EC_ID:");
+
+	for (i=0; i<n; i+= 16) {
+		int left = length - n;
+		acpi_dump_raw_data(fw, &ecdt->ec_id[i], i, left > 16 ? 16 : left);
+	}
+}
+
 static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
@@ -577,7 +595,6 @@ typedef struct {
 
 
 /* To be implemented */
-#define acpidump_ecdt		acpi_dump_raw_table
 #define acpidump_einj		acpi_dump_raw_table
 #define acpidump_erst		acpi_dump_raw_table
 #define acpidump_hest		acpi_dump_raw_table

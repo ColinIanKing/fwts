@@ -120,6 +120,15 @@ typedef struct {
 	fwts_acpi_cpep_processor_info	cpep_info[0];
 } __attribute__ ((packed)) fwts_acpi_table_cpep;
 
+typedef struct {
+	fwts_acpi_table_header	header;	
+	fwts_acpi_gas	ec_control;
+	fwts_acpi_gas	ec_data;
+	uint32		uid;
+	uint8		gpe_bit;
+	uint8		ec_id[0];
+} __attribute__ ((packed)) fwts_acpi_table_ecdt;
+
 typedef enum {
 	FTWS_BOOT_REGISTER_PNPOS	= 0x01,
 	FWTS_BOOT_REGISTER_BOOTING	= 0x02,

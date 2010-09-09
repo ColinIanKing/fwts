@@ -40,8 +40,8 @@ static int fadt_init(fwts_framework *fw)
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-	if ((table = fwts_acpi_find_table("FADT", 0)) == NULL) {
-		fwts_log_error(fw, "Failed to load ACPI FADT");
+	if ((table = fwts_acpi_find_table("FACP", 0)) == NULL) {
+		fwts_log_error(fw, "Failed to read ACPI table FACP");
 		return FWTS_ERROR;
 	}
 	fadt = table->data;

@@ -82,7 +82,7 @@ void fwts_summary_deinit(void)
 			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }
 
-int fwts_summary_add(char *test, fwts_log_level level, char *text)
+int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 {
 	fwts_summary_item *item;
 

@@ -34,6 +34,7 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_NO_S4                     = 0x00000010,
 	FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN               = 0x00000020,
 	FWTS_FRAMEWORK_FLAGS_SHOW_TESTS	               = 0x00000040,
+	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG      = 0x00000080,
 	FWTS_FRAMEWORK_FLAGS_BATCH	               = 0x00001000,
 	FWTS_FRAMEWORK_FLAGS_INTERACTIVE               = 0x00002000,
 	FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL        = 0x00004000,
@@ -50,6 +51,7 @@ typedef struct {
 	int aborted;
 	int warning;
 } fwts_results;
+
 
 typedef struct {
 	int magic;				/* identify struct magic */
@@ -72,17 +74,21 @@ typedef struct {
 
 	fwts_framework_flags flags;
 
-	int current_test;			/* Nth test being run in a test module */
-	char *current_test_name;		/* name of current test */
+	int current_minor_test_num;		/* Nth minor test being run in a test module */
+	int current_major_test_num;		/* Nth major test being currently run */
+	int major_tests_total;			/* Total number of major tests */
+
+	struct fwts_framework_test *current_major_test; /* current test */
 	struct fwts_framework_ops const *current_ops;	
 
 	/* per test stats */
-	fwts_results	sub_tests;		/* results for each test in test module */
-	fwts_results	test_run;		/* totals over all the tests (1 or more) in a module */
+	fwts_results	minor_tests;		/* results for each test in test module */
+	fwts_results	major_tests;		/* totals over all the tests (1 or more) in a module */
 	fwts_results	total;			/* totals over all tests */
 
-	int sub_test_progress;			/* Percentage completion of current test */
+	int minor_test_progress;		/* Percentage completion of current test */
 } fwts_framework;
+
 
 typedef int (*fwts_framework_tests)(fwts_framework *framework);
 
@@ -94,15 +100,22 @@ typedef struct fwts_framework_ops {
 	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;
 
+typedef struct fwts_framework_test {
+	const char *name;
+	const       fwts_framework_ops *ops;
+	int         priority;
+	int         flags;
+} fwts_framework_test;
+
 int  fwts_framework_args(const int argc, char * const *argv);
 void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
 void fwts_framework_advice(fwts_framework *, const char *fmt, ...);
-void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent);
+void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 
-#define fwts_progress(fw, percent)	fwts_framework_sub_test_progress(fw, percent)
+#define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent)
 
 #define fwts_passed(fw, args...)	fwts_framework_passed(fw, ## args)
 #define fwts_failed(fw, args...)	fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)
@@ -123,9 +136,9 @@ void fwts_framework_sub_test_progress(fwts_framework *fw, const int percent);
 
 static inline int fwts_tests_passed(const fwts_framework *fw)
 {
-	return ((fw->sub_tests.failed + 
-		 fw->sub_tests.warning + 
-		 fw->sub_tests.aborted) == 0);
+	return ((fw->minor_tests.failed + 
+		 fw->minor_tests.warning + 
+		 fw->minor_tests.aborted) == 0);
 }
 
 /*

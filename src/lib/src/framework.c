@@ -596,6 +596,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--s3-multiple=N",		"Run S3 tests N times." },
 		{ "--s4-multiple=N",		"Run S4 tests N times." },
 		{ "-p, --show-progress",	"Output test progress report to stderr." },
+		{ "-D, --show-progess-dialog",	"Output test progress for use in dialog tool." },
 		{ "-s, --show-tests",		"Show available tests." },
 		{ "--stdout-summary",		"Output SUCCESS or FAILED to stdout at end of tests." },
 		{ "--table-path=path",		"Path to ACPI tables." },

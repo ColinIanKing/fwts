@@ -24,6 +24,9 @@
 
 static int cmosdump_init(fwts_framework *fw)
 {
+	if (fwts_check_root_euid(fw))
+		return FWTS_ERROR;
+
 	return FWTS_OK;
 }
 

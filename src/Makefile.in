@@ -53,11 +53,12 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
 	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
 	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
-	bios_info.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
-	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
-	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
-	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
+	bios_info.$(OBJEXT) romdump.$(OBJEXT) cmosdump.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
+	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
+	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
+	version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -251,6 +252,7 @@ fwts_SOURCES = main.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
 	bios/bios_info/bios_info.c \
+	bios/romdump/romdump.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
@@ -377,6 +379,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osilinux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/romdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
@@ -751,6 +754,20 @@ bios_info.obj: bios/bios_info/bios_info.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/bios_info/bios_info.c' object='bios_info.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o bios_info.obj `if test -f 'bios/bios_info/bios_info.c'; then $(CYGPATH_W) 'bios/bios_info/bios_info.c'; else $(CYGPATH_W) '$(srcdir)/bios/bios_info/bios_info.c'; fi`
+
+romdump.o: bios/romdump/romdump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT romdump.o -MD -MP -MF $(DEPDIR)/romdump.Tpo -c -o romdump.o `test -f 'bios/romdump/romdump.c' || echo '$(srcdir)/'`bios/romdump/romdump.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/romdump.Tpo $(DEPDIR)/romdump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/romdump/romdump.c' object='romdump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o romdump.o `test -f 'bios/romdump/romdump.c' || echo '$(srcdir)/'`bios/romdump/romdump.c
+
+romdump.obj: bios/romdump/romdump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT romdump.obj -MD -MP -MF $(DEPDIR)/romdump.Tpo -c -o romdump.obj `if test -f 'bios/romdump/romdump.c'; then $(CYGPATH_W) 'bios/romdump/romdump.c'; else $(CYGPATH_W) '$(srcdir)/bios/romdump/romdump.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/romdump.Tpo $(DEPDIR)/romdump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/romdump/romdump.c' object='romdump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o romdump.obj `if test -f 'bios/romdump/romdump.c'; then $(CYGPATH_W) 'bios/romdump/romdump.c'; else $(CYGPATH_W) '$(srcdir)/bios/romdump/romdump.c'; fi`
 
 cmosdump.o: cmos/cmosdump/cmosdump.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cmosdump.o -MD -MP -MF $(DEPDIR)/cmosdump.Tpo -c -o cmosdump.o `test -f 'cmos/cmosdump/cmosdump.c' || echo '$(srcdir)/'`cmos/cmosdump/cmosdump.c

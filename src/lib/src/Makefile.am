@@ -12,6 +12,7 @@ libtestsuite_a_SOURCES = \
 	checkeuid.c \
 	cmos.c \
 	dump.c \
+	dump_data.c \
 	e820.c \
 	fileio.c \
 	framework.c \

@@ -50,12 +50,13 @@ libtestsuite_a_LIBADD =
 am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
 	acpid.$(OBJEXT) acpi_tables.$(OBJEXT) interactive.$(OBJEXT) \
 	binpaths.$(OBJEXT) cpu.$(OBJEXT) checkeuid.$(OBJEXT) \
-	cmos.$(OBJEXT) dump.$(OBJEXT) e820.$(OBJEXT) fileio.$(OBJEXT) \
-	framework.$(OBJEXT) formatting.$(OBJEXT) get.$(OBJEXT) \
-	gpe.$(OBJEXT) iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) \
-	log.$(OBJEXT) pipeio.$(OBJEXT) set.$(OBJEXT) \
-	stringextras.$(OBJEXT) text_list.$(OBJEXT) wakealarm.$(OBJEXT) \
-	summary.$(OBJEXT) microcode.$(OBJEXT) virt.$(OBJEXT)
+	cmos.$(OBJEXT) dump.$(OBJEXT) dump_data.$(OBJEXT) \
+	e820.$(OBJEXT) fileio.$(OBJEXT) framework.$(OBJEXT) \
+	formatting.$(OBJEXT) get.$(OBJEXT) gpe.$(OBJEXT) \
+	iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) log.$(OBJEXT) \
+	pipeio.$(OBJEXT) set.$(OBJEXT) stringextras.$(OBJEXT) \
+	text_list.$(OBJEXT) wakealarm.$(OBJEXT) summary.$(OBJEXT) \
+	microcode.$(OBJEXT) virt.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -170,6 +171,7 @@ libtestsuite_a_SOURCES = \
 	checkeuid.c \
 	cmos.c \
 	dump.c \
+	dump_data.c \
 	e820.c \
 	fileio.c \
 	framework.c \
@@ -245,6 +247,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmos.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump_data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e820.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formatting.Po@am__quote@

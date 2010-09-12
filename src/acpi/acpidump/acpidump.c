@@ -42,29 +42,6 @@ static char *acpidump_headline(void)
 	return "Check ACPI table acpidump.";
 }
 
-static void acpi_dump_raw_data(fwts_framework *fw, const uint8 *data, const int offset, const int bytes)
-{
-        int i;
-	int n = 0;
-	char buffer[128];
-
-	n = snprintf(buffer, sizeof(buffer), "  %4.4x: ", offset);
-
-        for (i=0;i<bytes;i++)
-                n += snprintf(buffer + n, sizeof(buffer) - n, "%2.2x ", data[i]);
-
-        for (;i<16;i++)
-                n += snprintf(buffer + n, sizeof(buffer) -n , "   ");
-
-        n += snprintf(buffer + n, sizeof(buffer) -n , " ");
-
-        for (i=0;i<bytes;i++)
-		buffer[n++] = (data[i] < 32 || data[i] > 126) ? '.' : data[i];
-	buffer[n] = 0;
-
-	fwts_log_info_verbatum(fw, "%s", buffer);
-}
-
 static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
 {
         int n;
@@ -73,7 +50,9 @@ static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
 
         for (n = 0; n < length; n+=16) {
                 int left = length - n;
-                acpi_dump_raw_data(fw, data + n, n, left > 16 ? 16 : left);
+		char buffer[128];
+		fwts_dump_raw_data(buffer, sizeof(buffer), data + n, n, left > 16 ? 16 : left);
+		fwts_log_info_verbatum(fw, "%s", buffer);
         }
 }
 
@@ -186,7 +165,6 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 		"Uknown"
 	};
 
-	int i;
 	int n = length - sizeof(fwts_acpi_table_bert);
 
 	fwts_log_info_verbatum(fw, "Region Length:    0x%lx", bert->boot_error_region_length);
@@ -197,10 +175,8 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "Error Severity:   0x%lx (%s)", bert->error_severity, 
 		error_severity[bert->error_severity > 3 ? 4 : bert->error_severity]);
 	fwts_log_info_verbatum(fw, "Generic Error Data:");
-	for (i=0; i<n; i+= 16) {
-		int left = length - n;
-		acpi_dump_raw_data(fw, &bert->generic_error_data[i], i, left > 16 ? 16 : left);
-	}
+
+	acpi_dump_raw_table(fw, bert->generic_error_data, n);
 }
 
 static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
@@ -222,7 +198,6 @@ static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
 static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)data;
-	int i;
 	int n = length - sizeof(fwts_acpi_table_ecdt);
 
 	acpi_dump_gas(fw, "EC_CONTROL", &ecdt->ec_control);
@@ -231,10 +206,7 @@ static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "GPE_BIT:          0x%x", ecdt->uid);
 	fwts_log_info_verbatum(fw, "EC_ID:");
 
-	for (i=0; i<n; i+= 16) {
-		int left = length - n;
-		acpi_dump_raw_data(fw, &ecdt->ec_id[i], i, left > 16 ? 16 : left);
-	}
+	acpi_dump_raw_table(fw, ecdt->ec_id, n);
 }
 
 static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)

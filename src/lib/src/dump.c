@@ -110,35 +110,17 @@ static int dump_lspci(fwts_framework *fw, const char *path, const char *filename
 	return dump_exec(path, filename, command);
 }
 
-static void dump_acpi_data(FILE *fp, const uint8 *data, const int offset, const int n)
-{
-	int i;
-
-	fprintf(fp, "  %4.4x: ", offset);
-
-	for (i=0;i<n;i++)
-		fprintf(fp, "%2.2x ", data[i]);
-
-	for (;i<16;i++)
-		fprintf(fp, "   ");
-
-	fprintf(fp, " ");
-
-	for (i=0;i<n;i++)
-		fprintf(fp, "%c", (data[i] < 32 || data[i] > 126) ? '.' : data[i]);
-
-	fprintf(fp, "\n");
-}
-
 static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 {
+	char buffer[128];
 	int n;
 
 	fprintf(fp, "%s @ 0x%lx\n", table->name, (uint32)table->addr);
 
 	for (n = 0; n < table->length; n+=16) {
 		int left = table->length - n;
-		dump_acpi_data(fp, table->data + n, n, left > 16 ? 16 : left);
+		fwts_dump_raw_data(buffer, sizeof(buffer), table->data + n, n, left > 16 ? 16 : left);
+		fprintf(fp, "%s\n", buffer);
 	}
 	fprintf(fp, "\n");
 

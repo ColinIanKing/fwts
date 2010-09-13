@@ -315,6 +315,25 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hpet;
 
 
+typedef struct {
+	uint8		serialization_action;
+	uint8		instruction;
+	uint8		flags;
+	uint8		reserved;
+	fwts_acpi_gas	register_region;
+	uint64		value;
+	uint64		mask;
+} __attribute__ ((packed)) fwts_acpi_serialization_instruction_entries;
+
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32		serialization_header_size;
+	uint32		reserved;
+	uint32		instruction_entry_count;
+	fwts_acpi_serialization_instruction_entries	entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_erst;
+
+
 /* MADT, Section 5.2.12 of ACPI spec, Multiple APIC Description Table */
 
 typedef struct {

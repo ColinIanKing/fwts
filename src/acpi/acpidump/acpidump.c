@@ -209,6 +209,80 @@ static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_raw_table(fw, ecdt->ec_id, n);
 }
 
+static void acpidump_erst(fwts_framework *fw, uint8 *data, int length)
+{
+	int i;
+
+	static char *serialization_actions[] = {
+		"BEGIN_WRITE_OPERATION",
+		"BEGIN_READ_OPERATION",
+		"BEGIN_CLEAR_OPERATION",
+		"END_OPERATION",
+		
+		"SET_RECORD_OFFSET",
+		"EXECUTE_OPERATION",
+		"CHECK_BUSY_STATUS",
+		"GET_COMMAND_STATUS",
+
+		"GET_RECORD_IDENTIFIER",
+		"SET_RECORD_IDENTIFIER",
+		"GET_RECOERD_COUNT",		
+		"BEGIN_DUMMY_WRITE_OPERATION",
+		
+		"RESERVED",
+		"GET_ERROR_LOG_ADDRESS_RANGE",
+		"GET_ERROR_LOG_ADDRESS_RANGE_LENGTH",
+		"GET_ERROR_LOG_ADDRESS_RANGE_ATTRIBUTES"
+	};
+
+	static char *instructions[] = {
+		"READ_REGISTER",
+		"READ_REGISTER_VALUE",
+		"WRITE_REGISTER",
+		"WRITE_REGISTER_VALUE",
+
+		"NOOP",
+		"LOAD_VAR1",
+		"LOAD_VAR2",
+		"STORE_VAR1",	
+	
+		"ADD",
+		"SUBTRACT",
+		"ADD_VALUE",
+		"SUBTRACT_VALUE",
+
+		"STALL",
+		"STALL_WHILE_TRUE",
+		"SKIP_NEXT_INSTRUCTION_IF_TRUE",
+		"GOTO",
+
+		"SET_SRC_ADDRESS_BASE",
+		"SET_DST_ADDRESS_BASE",
+		"MOVE_DATA"
+	};
+
+	fwts_acpi_table_erst *erst = (fwts_acpi_table_erst*)data;
+
+	fwts_log_info_verbatum(fw, "Ser. Hdr. Size:   0x%lx", erst->serialization_header_size);
+	fwts_log_info_verbatum(fw, "Insr. Entry Count:0x%lx", erst->instruction_entry_count);
+	
+	for (i=0; i<erst->instruction_entry_count; i++) {
+		fwts_log_info_verbatum(fw, "Entry #%d%", i+1);
+		fwts_log_info_verbatum(fw, "  Action:         0x%x (%s)", 
+			erst->entries[i].serialization_action,
+			erst->entries[i].serialization_action > 0x10 ? "Unknown" :
+				serialization_actions[erst->entries[i].serialization_action]);
+		fwts_log_info_verbatum(fw, "  Instruction::   0x%x (%s)", 
+			erst->entries[i].instruction,
+			erst->entries[i].instruction > 0x12 ? "Unknown" :
+				instructions[erst->entries[i].instruction]);
+		fwts_log_info_verbatum(fw, "  Flags:          0x%x", erst->entries[i].flags);
+		acpi_dump_gas(fw, "Resgister region", &erst->entries[i].register_region);
+		fwts_log_info_verbatum(fw, "  Value:          0x%llx", erst->entries[i].value);
+		fwts_log_info_verbatum(fw, "  Mask:           0x%llx", erst->entries[i].mask);
+	}
+}
+
 static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
 {
 	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
@@ -656,10 +730,8 @@ typedef struct {
 
 /* To be implemented */
 #define acpidump_einj		acpi_dump_raw_table
-#define acpidump_erst		acpi_dump_raw_table
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
-#define acpidump_psdt		acpi_dump_raw_table
 
 acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
@@ -676,7 +748,7 @@ acpidump_table_vec table_vec[] = {
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },
 	{ "MSCT", 	acpidump_msct, 	1 },
-	{ "PSDT", 	acpidump_psdt, 	1 },
+	{ "PSDT", 	acpidump_amlcode, 1 },
 	{ "RSDT", 	acpidump_rsdt, 	1 },
 	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
 	{ "SBST", 	acpidump_sbst,  1 },

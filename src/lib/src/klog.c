@@ -520,6 +520,14 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"This should be investigated and fixed." 
 	},
 
+	{	FWTS_COMPARE_REGEX,	
+		LOG_LEVEL_HIGH,
+		"ACPI.*BIOS bug: multiple APIC/MADT found, using",
+		"The kernel has detected more than one ACPI Multiple APIC Description Table (MADT) ("
+		"these tables have the \"APIC\" signature). "
+		"There should only be one MADT and the kernel will by default select the first one. "
+		"However, one can override this and select the Nth MADT using acpi_apic_instance=N.",
+	},
 
 	{ 
 		FWTS_COMPARE_REGEX,

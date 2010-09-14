@@ -20,6 +20,8 @@
 #ifndef __FWTS_TYPES_H__
 #define __FWTS_TYPES_H__
 
+#include <stdint.h>
+
 typedef enum {
 	FWTS_OK    = 0,
 	FWTS_ERROR = -1,
@@ -35,14 +37,14 @@ typedef enum {
 /*
  *  Some standard types
  */
-typedef unsigned char		uint8;
-typedef unsigned short		uint16;
-typedef unsigned long		uint32;
-typedef unsigned long long 	uint64;
+typedef uint8_t		uint8;
+typedef uint16_t	uint16;
+typedef uint32_t	uint32;
+typedef uint64_t	uint64;
 
-typedef signed char		int8;
-typedef signed short		int16;
-typedef signed long		int32;
-typedef signed long long 	int64;
+typedef int8_t		int8;
+typedef int16_t		int16;
+typedef int32_t		int32;
+typedef int64_t		int64;
 
 #endif

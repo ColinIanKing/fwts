@@ -80,9 +80,12 @@ static void *fwts_acpi_mmap(unsigned long start, unsigned long size)
 	unsigned long offset = start & (PAGE_SIZE-1);
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0)
-		return NULL;
+		return MAP_FAILED;
 
-	mem = mmap(NULL, size + offset, PROT_READ, MAP_PRIVATE, fd, start - offset);
+	if ((mem = mmap(NULL, size + offset, PROT_READ, MAP_PRIVATE, fd, start - offset)) == MAP_FAILED) {
+		close(fd);
+		return MAP_FAILED;
+	}
 	close(fd);
 
 	return (mem + offset);

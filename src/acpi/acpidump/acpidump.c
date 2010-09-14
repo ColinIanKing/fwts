@@ -795,7 +795,7 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 
 	for (i=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
-		fwts_log_info_verbatum(fw, "%s @ %16.16llx", table->name, (uint64)table->addr);
+		fwts_log_info_verbatum(fw, "%s @ %lx", table->name, table->addr);
 		fwts_log_info_verbatum(fw, "-----------------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);

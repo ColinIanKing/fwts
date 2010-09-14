@@ -73,16 +73,17 @@ static uint8 fwts_acpi_rsdp_checksum(uint8 *data, const int length)
 	return checksum;
 }
 
-static void *fwts_acpi_mmap(unsigned long start, unsigned long size)
+static void *fwts_acpi_mmap(off_t start, size_t size)
 {
 	int fd;
 	void *mem;
-	unsigned long offset = start & (PAGE_SIZE-1);
+	off_t offset = ((size_t)start) & (PAGE_SIZE-1);
+	size_t length = (size_t)size + offset;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0)
 		return MAP_FAILED;
 
-	if ((mem = mmap(NULL, size + offset, PROT_READ, MAP_PRIVATE, fd, start - offset)) == MAP_FAILED) {
+	if ((mem = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, start - offset)) == MAP_FAILED) {
 		close(fd);
 		return MAP_FAILED;
 	}
@@ -144,14 +145,14 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32 addr)
 	return rsdp;
 }
 
-static void *fwts_acpi_load_table(uint32 addr)
+static void *fwts_acpi_load_table(off_t addr)
 {
 	fwts_acpi_table_header *hdr;
 	void *mem;
 	void *table;
 	int len;
 	
-	if ((hdr = fwts_acpi_mmap(addr, sizeof(fwts_acpi_table_header))) == MAP_FAILED)
+	if ((hdr = fwts_acpi_mmap((off_t)addr, sizeof(fwts_acpi_table_header))) == MAP_FAILED)
 		return NULL;
 
 	len = hdr->length;
@@ -160,7 +161,7 @@ static void *fwts_acpi_load_table(uint32 addr)
 	if ((table = malloc(len)) == NULL)
 		return NULL;
 
-	if ((mem = fwts_acpi_mmap(addr, len)) == MAP_FAILED)
+	if ((mem = fwts_acpi_mmap((off_t)addr, len)) == MAP_FAILED)
 		return NULL;
 
 	memcpy(table, mem, len);
@@ -208,13 +209,13 @@ void fwts_acpi_free_tables(void)
 
 void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 *addr32, uint64 *addr64)
 {
-	uint32 addr;
+	off_t addr;
 	fwts_acpi_table_header *header;
 
 	if ((addr64 != 0) && (fadt->header.length >= 140)) 
-		addr = *addr64;
+		addr = (off_t)*addr64;
 	else if ((addr32 !=0) && (fadt->header.length >= 44)) 
-		addr = *addr32;
+		addr = (off_t)*addr32;
 	else addr = 0;
 
 	if (addr) {
@@ -239,7 +240,7 @@ void fwts_acpi_load_tables(void)
 	fwts_acpi_table_rsdt *rsdt;
 	fwts_acpi_table_header *header;
 
-	uint32	rsdp_addr;
+	uint64	rsdp_addr;
 	int num_entries;
 	int i;
 
@@ -250,24 +251,32 @@ void fwts_acpi_load_tables(void)
 	rsdp = fwts_acpi_get_rsdp(rsdp_addr);
 	fwts_acpi_add_table("RSDP", rsdp, (uint64)rsdp_addr, sizeof(fwts_acpi_table_rsdp));
 
-	rsdt = fwts_acpi_load_table(rsdp->rsdt_address);
-	fwts_acpi_add_table("RSDT", rsdt, (uint64)rsdp->rsdt_address, rsdt->header.length);
-	num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
-	for (i=0; i<num_entries; i++) {
-		header = fwts_acpi_load_table(rsdt->entries[i]);
-		if (strncmp("FACP", header->signature, 4) == 0)
-			fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-		fwts_acpi_add_table(header->signature, header, (uint64)rsdt->entries[i], header->length);
+	if (rsdp->rsdt_address) {
+		rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address);
+		fwts_acpi_add_table("RSDT", rsdt, (uint64)rsdp->rsdt_address, rsdt->header.length);
+		num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
+		for (i=0; i<num_entries; i++) {
+			if (rsdt->entries[i]) {
+				header = fwts_acpi_load_table((off_t)rsdt->entries[i]);
+				if (strncmp("FACP", header->signature, 4) == 0)
+					fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+				fwts_acpi_add_table(header->signature, header, (uint64)rsdt->entries[i], header->length);
+			}
+		}
 	}
 
-	xsdt = fwts_acpi_load_table(rsdp->xsdt_address);
-	fwts_acpi_add_table("XSDT", xsdt, (uint64)rsdp->xsdt_address, xsdt->header.length);
-	num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
-	for (i=0; i<num_entries; i++) {
-		header = fwts_acpi_load_table(xsdt->entries[i]);
-		if (strncmp("FACP", header->signature, 4) == 0)
-			fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-		fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+	if (rsdp->xsdt_address) {
+		xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address);
+		fwts_acpi_add_table("XSDT", xsdt, (uint64)rsdp->xsdt_address, xsdt->header.length);
+		num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
+		for (i=0; i<num_entries; i++) {
+			if (xsdt->entries[i]) {
+				header = fwts_acpi_load_table((off_t)xsdt->entries[i]);
+				if (strncmp("FACP", header->signature, 4) == 0)
+					fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+				fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+			}
+		}
 	}
 
 	acpi_tables_loaded = 1;

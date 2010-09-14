@@ -54,11 +54,11 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
 	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
 	bios_info.$(OBJEXT) romdump.$(OBJEXT) cmosdump.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) maxreadreq.$(OBJEXT) \
-	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
-	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
-	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
-	version.$(OBJEXT)
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
+	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
+	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
+	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
+	hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -256,6 +256,7 @@ fwts_SOURCES = main.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
+	pci/crs/crs.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
 	cpu/maxfreq/maxfreq.c \
@@ -360,6 +361,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmosdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpufreq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/crs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstates.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
@@ -810,6 +812,20 @@ hpet_check.obj: hpet/hpet_check/hpet_check.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hpet/hpet_check/hpet_check.c' object='hpet_check.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hpet_check.obj `if test -f 'hpet/hpet_check/hpet_check.c'; then $(CYGPATH_W) 'hpet/hpet_check/hpet_check.c'; else $(CYGPATH_W) '$(srcdir)/hpet/hpet_check/hpet_check.c'; fi`
+
+crs.o: pci/crs/crs.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT crs.o -MD -MP -MF $(DEPDIR)/crs.Tpo -c -o crs.o `test -f 'pci/crs/crs.c' || echo '$(srcdir)/'`pci/crs/crs.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/crs.Tpo $(DEPDIR)/crs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/crs/crs.c' object='crs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o crs.o `test -f 'pci/crs/crs.c' || echo '$(srcdir)/'`pci/crs/crs.c
+
+crs.obj: pci/crs/crs.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT crs.obj -MD -MP -MF $(DEPDIR)/crs.Tpo -c -o crs.obj `if test -f 'pci/crs/crs.c'; then $(CYGPATH_W) 'pci/crs/crs.c'; else $(CYGPATH_W) '$(srcdir)/pci/crs/crs.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/crs.Tpo $(DEPDIR)/crs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/crs/crs.c' object='crs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o crs.obj `if test -f 'pci/crs/crs.c'; then $(CYGPATH_W) 'pci/crs/crs.c'; else $(CYGPATH_W) '$(srcdir)/pci/crs/crs.c'; fi`
 
 maxreadreq.o: pci/maxreadreq/maxreadreq.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT maxreadreq.o -MD -MP -MF $(DEPDIR)/maxreadreq.Tpo -c -o maxreadreq.o `test -f 'pci/maxreadreq/maxreadreq.c' || echo '$(srcdir)/'`pci/maxreadreq/maxreadreq.c

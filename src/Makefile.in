@@ -48,17 +48,17 @@ PROGRAMS = $(bin_PROGRAMS)
 am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
 	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) acpidump.$(OBJEXT) \
-	battery.$(OBJEXT) brightness.$(OBJEXT) checksum.$(OBJEXT) \
-	common.$(OBJEXT) cstates.$(OBJEXT) dmar.$(OBJEXT) \
-	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) apicedge.$(OBJEXT) \
-	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
-	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
-	bios_info.$(OBJEXT) romdump.$(OBJEXT) cmosdump.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
-	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
-	hotkey.$(OBJEXT) version.$(OBJEXT)
+	apicinstance.$(OBJEXT) battery.$(OBJEXT) brightness.$(OBJEXT) \
+	checksum.$(OBJEXT) common.$(OBJEXT) cstates.$(OBJEXT) \
+	dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
+	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
+	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
+	mtrr.$(OBJEXT) bios_info.$(OBJEXT) romdump.$(OBJEXT) \
+	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
+	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
+	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -235,6 +235,7 @@ fwts_SOURCES = main.c \
 	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/acpidump/acpidump.c \
+	acpi/apicinstance/apicinstance.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \
 	acpi/checksum/checksum.c \
@@ -354,6 +355,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpidump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpiinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicinstance.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bios_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brightness.Po@am__quote@
@@ -518,6 +520,20 @@ acpidump.obj: acpi/acpidump/acpidump.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/acpidump/acpidump.c' object='acpidump.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o acpidump.obj `if test -f 'acpi/acpidump/acpidump.c'; then $(CYGPATH_W) 'acpi/acpidump/acpidump.c'; else $(CYGPATH_W) '$(srcdir)/acpi/acpidump/acpidump.c'; fi`
+
+apicinstance.o: acpi/apicinstance/apicinstance.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicinstance.o -MD -MP -MF $(DEPDIR)/apicinstance.Tpo -c -o apicinstance.o `test -f 'acpi/apicinstance/apicinstance.c' || echo '$(srcdir)/'`acpi/apicinstance/apicinstance.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/apicinstance.Tpo $(DEPDIR)/apicinstance.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/apicinstance/apicinstance.c' object='apicinstance.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o apicinstance.o `test -f 'acpi/apicinstance/apicinstance.c' || echo '$(srcdir)/'`acpi/apicinstance/apicinstance.c
+
+apicinstance.obj: acpi/apicinstance/apicinstance.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicinstance.obj -MD -MP -MF $(DEPDIR)/apicinstance.Tpo -c -o apicinstance.obj `if test -f 'acpi/apicinstance/apicinstance.c'; then $(CYGPATH_W) 'acpi/apicinstance/apicinstance.c'; else $(CYGPATH_W) '$(srcdir)/acpi/apicinstance/apicinstance.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/apicinstance.Tpo $(DEPDIR)/apicinstance.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/apicinstance/apicinstance.c' object='apicinstance.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o apicinstance.obj `if test -f 'acpi/apicinstance/apicinstance.c'; then $(CYGPATH_W) 'acpi/apicinstance/apicinstance.c'; else $(CYGPATH_W) '$(srcdir)/acpi/apicinstance/apicinstance.c'; fi`
 
 battery.o: acpi/battery/battery.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT battery.o -MD -MP -MF $(DEPDIR)/battery.Tpo -c -o battery.o `test -f 'acpi/battery/battery.c' || echo '$(srcdir)/'`acpi/battery/battery.c

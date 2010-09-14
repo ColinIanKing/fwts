@@ -281,7 +281,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
 				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
 				"and this will slow the boot speed. "
-				"It is probably worth asking the BIOS vendor to map in VGA write-combining region.\n");
+				"It is probably worth asking the BIOS vendor to map in the VGA write-combining region.\n");
 	}
 	fwts_list_free(mtrr_bios_list, free);
 	fwts_list_free(lspci_output, free);
@@ -447,16 +447,6 @@ static void do_mtrr_resource(fwts_framework *fw)
 	fwts_log_info(fw,"\n");
 }
 
-
-static void check_line(void *data, void *private)
-{
-	char *line = (char *)data;
-	fwts_framework *fw = (fwts_framework *)private;
-
-	if (strstr(line, "mtrr: probably your BIOS does not setup all CPUs."))
-		fwts_failed(fw, "Not all processors have the MTRR set up.");
-}
-
 static int mtrr_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw))
@@ -497,7 +487,7 @@ static char *mtrr_headline(void)
 static int mtrr_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
-		"This test validates the kernel MTRR IOMEM setup.");
+		"Validate the kernel MTRR IOMEM setup.");
 
 	return validate_iomem(fw);
 }
@@ -505,30 +495,70 @@ static int mtrr_test1(fwts_framework *fw)
 static int mtrr_test2(fwts_framework *fw)
 {
 	fwts_log_info(fw, 
-		"This test validates the BIOS provided boot time MTRR IOMEM setup.");
-
-	return check_vga_controller_address(fw);
-}
-
-static int mtrr_test3(fwts_framework *fw)
-{
-	fwts_log_info(fw, 
-		"This test validates the MTRR setup across all processors.");
+		"Validate the MTRR setup across all processors.");
 
 	if (klog != NULL) {
-		fwts_list_foreach(klog, check_line, fw);
-		if (fwts_tests_passed(fw))
-			fwts_passed(fw, "All processors have the MTRR setup");
+		int failed = 0;
+
+		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent fixed MTRR settings") > 0) {
+			fwts_log_info(fw, "Detected CPUs with inconsitent fixed MTRR settings which the kernel fixed.");
+			failed = 1;
+		}
+		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent variable MTRR settings") > 0) {
+			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			failed = 1;
+		}
+		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent MTRRdefType") > 0) {
+			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			failed = 1;
+		}
+
+		if (failed) 
+			fwts_failed(fw, "It is probable that the BIOS does not set up all the CPUs correctly and "
+					"the kernel has now corrected this misconfiguration.");
+		else
+			fwts_passed(fw, "All processors have the a consistent MTRR setup.");
 	} else
 		fwts_log_error(fw, "No boot dmesg found.\n");
 		
 	return FWTS_OK;
 }
 
+static int mtrr_test3(fwts_framework *fw)
+{
+	fwts_log_info(fw, 
+		"Check for AMD MtrrFixDramModEn being cleared by the BIOS.");
+
+	if (klog != NULL) {
+		if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
+			fwts_failed_medium(fw, "The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
+ 					"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
+ 					"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
+ 					"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
+ 					"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
+ 					"0 for operation.\"");
+		}
+		else {
+			fwts_passed(fw, "No MtrrFixDramModEn error detected.");
+		}
+	}
+
+	return FWTS_OK;
+}
+
+static int mtrr_test4(fwts_framework *fw)
+{
+	fwts_log_info(fw, 
+		"Validate the BIOS provided boot time MTRR IOMEM setup.");
+
+	return check_vga_controller_address(fw);
+}
+
 static fwts_framework_tests mtrr_tests[] = {
 	mtrr_test1,
 	mtrr_test2,
 	mtrr_test3,
+	mtrr_test4,
 	NULL
 };
 

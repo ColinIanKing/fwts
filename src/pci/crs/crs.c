@@ -126,6 +126,9 @@ static int crs_test1(fwts_framework *fw)
 		}
 	}
 
+	fwts_list_free(klog, free);
+	free(cmdline);
+
 	return FWTS_OK;
 }
 

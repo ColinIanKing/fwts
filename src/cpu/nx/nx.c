@@ -165,7 +165,7 @@ static int nx_test3(fwts_framework *fw)
 			msr_value = val;
 		} else {
 			if ((msr_value & nx_bit) != (val & nx_bit)) {
-				fwts_failed(fw, "CPU%d has different NX flags to CPU0.");
+				fwts_failed(fw, "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}

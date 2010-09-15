@@ -583,7 +583,7 @@ static void check_sw_any(fwts_framework *fw)
 		fwts_progress(fw, (75 * performedtests)/totaltests);
 	}
 	if (!once)
-		fwts_passed(fw, "P-state coordination done by Harware.");
+		fwts_passed(fw, "P-state coordination done by Hardware.");
 }
 
 static char *cpufreq_headline(void)

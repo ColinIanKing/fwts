@@ -7,7 +7,7 @@ fwts (0.18.04) maverick; urgency=low
 
 fwts (0.18.03) maverick; urgency=low
  
-  * Log correct CPU number when NX text finds a failure (closes: LP#638783)
+  * Log correct CPU number when NX text finds a failure (LP: #638783)
   * cpufreq: fix typo, Harware to Hardware
   * New upstream version 0.18.03
 
@@ -15,7 +15,7 @@ fwts (0.18.03) maverick; urgency=low
  
 fwts (0.18.02) maverick; urgency=low
  
-  * FADT test read correct ACPI table from /sys/firmware (closes: LP#627959)
+  * FADT test read correct ACPI table from /sys/firmware (LP: #627959)
   * New upstream version 0.18.02
 
  -- Colin King <colin.king@canonical.com>  Wed, 1 Sep 2010 11:11:20 +0100

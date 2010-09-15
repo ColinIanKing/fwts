@@ -1,3 +1,10 @@
+fwts (0.18.04) maverick; urgency=low
+ 
+  * fix build issues with bad cpufreq fix
+  * New upstream version 0.18.04
+
+ -- Colin King <colin.king@canonical.com>  Wed, 15 Sep 2010 10:41:34 +0100
+
 fwts (0.18.03) maverick; urgency=low
  
   * Log correct CPU number when NX text finds a failure (closes: LP#638783)

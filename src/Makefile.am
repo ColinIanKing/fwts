@@ -19,7 +19,6 @@ fwts_SOURCES = main.c \
 	acpi/dmar/dmar.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
-	acpi/madt/madt.c \
 	acpi/mcfg/mcfg.c \
 	apic/apicedge/apicedge.c \
 	acpi/osilinux/osilinux.c \
@@ -31,7 +30,6 @@ fwts_SOURCES = main.c \
 	bios/bios_info/bios_info.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
-	pci/crs/crs.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
 	cpu/maxfreq/maxfreq.c \

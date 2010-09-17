@@ -1009,8 +1009,11 @@ int fwts_framework_args(const int argc, char * const *argv)
 		}
 	}
 
-	fwts_framework_heading_info(fw, tests_to_run);
+	printf("Running %d tests, results written to %s\n", 
+		fwts_list_len(tests_to_run),
+		fw->results_logname);
 
+	fwts_framework_heading_info(fw, tests_to_run);
 	fwts_framework_tests_run(fw, tests_to_run);
 
 	fwts_log_set_owner(fw->results, "summary");

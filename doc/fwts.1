@@ -147,10 +147,10 @@ e.g. \-\-log\-format="%date %time [%field] (%owner): "
 specify the full path and filename to the the lspci binary.
 .TP
 .B \-\-no\-s3
-do not run the S3 suspend/resume tests
+do not run the S3 suspend/resume tests. Deprecated, now use \-\-skip\-test=s3
 .TP
 .B \-\-no\-s4
-do not run the S4 hibernate/resume tests
+do not run the S4 hibernate/resume tests. Deprecated, now use \-\-skip\-test=s4
 .TP
 .B \-P, \-\-power\-states
 run S3 and S4 power state tests (s3, s4 tests)
@@ -191,6 +191,9 @@ dialog tool with the --gauge option.
 show the names of all the available tests. By default will show all tests. Use the \-\-batch, \-\-interactive, \-\-batch\-experimental, \-\-interactive\-experimental
 options to show these specific tests.
 .TP
+.B \-s, \-\-skip\-test=test[,test..]
+specify tests to skip over and not run. List must be comma separated.
+.TP
 .B \-\-stdout\-summary
 output SUCCESS or FAILED to stdout at end of tests.
 .TP
@@ -209,10 +212,9 @@ specify the width in characters of the output logfile. The default is 130.
 
 .SH EXAMPLES
 .LP
-Run all the batch tests except for S3 and S4 tests and append the results into
-the default log results.log:
+Run all the batch tests and append the results into the default log results.log:
 .RS 8
-sudo fwts \-\-no\-s3 \-\-no\-s4 
+sudo fwts
 .RE
 .LP
 Run all the interactive tests and start a clean results log called interactive.log:

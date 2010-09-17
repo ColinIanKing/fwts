@@ -35,11 +35,6 @@ static char *s4_headline(void)
 
 static int s4_init(fwts_framework *fw)
 {
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_NO_S4) {
-		fwts_log_info(fw, "Skipping S4 tests.");
-		return FWTS_SKIP;
-	}
-
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		return FWTS_ERROR;

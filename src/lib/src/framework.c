@@ -654,7 +654,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 
 		fwts_log_info(fw, "Running tests: %s.\n", 
 			fwts_list_len(tests_to_run) == 0 ? "None" : tests);
-		fwts_log_nl(fw);
+		fwts_log_newline(fw->results);
 		free(tests);
 	}
 }

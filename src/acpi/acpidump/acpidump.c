@@ -3,9 +3,6 @@
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,6 +38,160 @@ static char *acpidump_headline(void)
 {
 	return "Check ACPI table acpidump.";
 }
+
+struct fwts_acpidump_field;
+
+typedef void (*fwts_acpidump_field_func)(fwts_framework *fw, struct fwts_acpidump_field *info, void *data);
+
+typedef struct fwts_acpidump_field {
+	char *label;
+	int   size;
+	int   offset;
+	fwts_acpidump_field_func func;
+	uint8  bit_field_nbits;
+	uint8  bit_field_shift;
+	char  **strings;
+	int   strings_len;
+} fwts_acpidump_field;
+
+#define OFFSET(type, field)				\
+	(int)&(((type*)(0))->field)
+
+#define FIELD(text, type, field, func, bit_field_nbits, bit_field_shift, strings, strings_len) \
+	{						\
+	text,						\
+	sizeof(((type*)0)->field),			\
+	OFFSET(type, field),				\
+	func,						\
+	bit_field_nbits,				\
+	bit_field_shift,				\
+	strings,					\
+	strings_len					\
+	}
+
+#define FIELD_UINT(text, type, field)			\
+	FIELD(text, type, field, acpi_dump_uint, 0, 0, NULL, 0)
+
+#define FIELD_STR(text, type, field)			\
+	FIELD(text, type, field, acpi_dump_str, 0, 0, NULL, 0)
+
+#define FIELD_STRS(text, type, field, strings, strings_len)			\
+	FIELD(text, type, field, acpi_dump_strings, 0, 0, strings, strings_len)
+
+#define FIELD_GAS(text, type, field)			\
+	FIELD(text, type, field, __acpi_dump_gas, 0, 0, NULL, 0)
+
+#define FIELD_BITF(text, type, field, nbits, shift)			\
+	FIELD(text, type, field, acpi_dump_uint, nbits, shift, NULL, 0)
+
+#define FIELD_END { NULL, 0, 0, NULL, 0, 0, NULL, 0}
+
+static char *acpi_dump_field_info(char *label, int size, int offset)
+{
+	static char buffer[1024];
+
+	snprintf(buffer, sizeof(buffer), "[%3.3x %4.4d %2d] %25.25s: ",
+		offset, offset, size, label);
+
+	return buffer;
+}
+
+static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+{
+	fwts_log_info_verbatum(fw, "%s %*.*s", 
+		acpi_dump_field_info(info->label, info->size, info->offset), info->size, info->size,(char*)data);
+}
+
+static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+{
+	uint8	val8, mask8;
+	uint16	val16,mask16;
+	uint32	val32,mask32;
+	uint64  val64,mask64;
+	int i;
+
+	switch (info->size) {
+	case 1:
+		val8 = *(uint8*)data;
+		mask8 = (1<<info->bit_field_nbits) - 1;
+		fwts_log_info_verbatum(fw, "%s 0x%2.2x", acpi_dump_field_info(info->label, info->size, info->offset), 
+			info->bit_field_nbits ? (val8 >> info->bit_field_shift) & mask8 : val8);
+		break;
+	case 2:
+		val16 = *(uint16*)data;
+		mask16 = (1<<info->bit_field_nbits) - 1;
+		fwts_log_info_verbatum(fw, "%s 0x%4.4x", acpi_dump_field_info(info->label, info->size, info->offset),
+			info->bit_field_nbits ? (val16 >> info->bit_field_shift) & mask16 : val16);
+		break;
+	case 4:
+		val32 = *(uint32*)data;
+		mask32 = (1<<info->bit_field_nbits) - 1;
+		fwts_log_info_verbatum(fw, "%s 0x%8.8x", acpi_dump_field_info(info->label, info->size, info->offset),
+			info->bit_field_nbits ? (val32 >> info->bit_field_shift) & mask32 : val32);
+		break;
+	case 8:
+		val64 = *(uint64*)data;
+		mask64 = (1<<info->bit_field_nbits) - 1;
+		fwts_log_info_verbatum(fw, "%s 0x%16.16llx", acpi_dump_field_info(info->label, info->size, info->offset),
+			info->bit_field_nbits ? (val64 >> info->bit_field_shift) & mask64 : val64);
+		break;
+	default:		
+		for (i=0; i<info->size; i++) {
+			val8 = *(uint8*)data;
+			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info(info->label, info->size, info->offset), val8, i);
+			data++;
+		}
+		break;
+	}
+}
+
+static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+{
+	uint8	val8;
+	uint16	val16;
+	uint32	val32;
+	uint64  val64;
+
+	switch (info->size) {
+	case 1:
+		val8 = *(uint8*)data;
+		fwts_log_info_verbatum(fw, "%s 0x%2.2x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val8,
+			val8 > info->strings_len ? "unknown" : info->strings[val8]);
+		break;
+	case 2:
+		val16 = *(uint16*)data;
+		fwts_log_info_verbatum(fw, "%s 0x%4.4x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val16,
+			val16 > info->strings_len ? "unknown" : info->strings[val16]);
+		break;
+	case 4:
+		val32 = *(uint32*)data;
+		fwts_log_info_verbatum(fw, "%s 0x%8.8x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val32,
+			val32 > info->strings_len ? "unknown" : info->strings[val32]);
+		break;
+	case 8:
+		val64 = *(uint64*)data;
+		fwts_log_info_verbatum(fw, "%s 0x%16.16x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val64,
+			val64 > info->strings_len ? "unknown" : info->strings[val64]);
+		break;
+	}
+}
+
+static void acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidump_field *fields)
+{
+	fwts_acpidump_field *field = fields;
+
+	for (field = fields; field->label != NULL; field++)
+		field->func(fw, field, data + field->offset);
+}
+
+#if 0
+static void acpi_dump_fill_table(void *table, const uint *data, 
+				 const int given_length, const int expected_length)
+{
+	memset(table, 0, expected_length);
+	memcpy(table, data, given_length);
+}
+#endif
 
 static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
 {
@@ -119,35 +270,49 @@ static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_acpi_g
 	fwts_log_info_verbatum(fw, "  address:        0x%llx", gas->address);
 }
 
+static void __acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+{
+	acpi_dump_gas(fw, info->label, (fwts_acpi_gas *)data);
+}
+
 static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr)
 {
-	fwts_log_info_verbatum(fw, "Signature:        \"%4.4s\"", hdr->signature);
-	fwts_log_info_verbatum(fw, "Length:           0x%lx (%lu)", hdr->length, hdr->length);
-	fwts_log_info_verbatum(fw, "Revision:         0x%x (%d)", hdr->revision, hdr->revision);
-	fwts_log_info_verbatum(fw, "Checksum:         0x%x (%d)", hdr->checksum, hdr->checksum);
-	fwts_log_info_verbatum(fw, "OEM ID:           \"%6.6s\"", hdr->oem_id);
-	fwts_log_info_verbatum(fw, "OEM Table ID:     \"%6.6s\"", hdr->oem_tbl_id);
-	fwts_log_info_verbatum(fw, "OEM Revision:     0x%lx (%lu)", hdr->oem_revision, hdr->oem_revision);
-	fwts_log_info_verbatum(fw, "Creator ID:       \"%4.4s\"", hdr->creator_id);
-	fwts_log_info_verbatum(fw, "Creator Revision: 0x%lx (%lu)", hdr->creator_revision, hdr->creator_revision);
+	fwts_acpidump_field fields[] = {
+		FIELD_STR ("Signature", 	fwts_acpi_table_header, signature),
+		FIELD_UINT("Length", 		fwts_acpi_table_header, length),
+		FIELD_UINT("Revision", 		fwts_acpi_table_header, revision),
+		FIELD_UINT("Checksum", 		fwts_acpi_table_header, checksum),
+		FIELD_STR ("OEM ID", 		fwts_acpi_table_header, oem_id),
+		FIELD_UINT("OEM Table ID", 	fwts_acpi_table_header, oem_tbl_id),
+		FIELD_UINT("OEM Revision", 	fwts_acpi_table_header, oem_revision),
+		FIELD_STR ("Creator ID", 	fwts_acpi_table_header, creator_id),
+		FIELD_UINT("Creator Revision", 	fwts_acpi_table_header, creator_revision),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, (uint8*)hdr, fields);
 }
 
 static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_boot *boot = (fwts_acpi_table_boot*)data;
 	uint8 cmos_data;
+	fwts_acpi_table_boot *boot = (fwts_acpi_table_boot*)data;
+
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("CMOS offset", 	fwts_acpi_table_boot, cmos_index),
+		FIELD_END
+	};
 
 	if (length < (sizeof(fwts_acpi_table_header) + 4)) {
 		fwts_log_info(fw, "Boot table too short\n");
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "CMOS offset: 0x%lx", boot->cmos_index);
+	acpi_dump_table_fields(fw, data, fields);
 
 	cmos_data = fwts_cmos_read(boot->cmos_index);
-
 	fwts_log_info_verbatum(fw, "Boot Register: 0x%x", cmos_data);
-	fwts_log_info_verbatum(fw, "  PNP-OS:   %x", (cmos_data & FTWS_BOOT_REGISTER_PNPOS) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "  PNP-OS:   %x", (cmos_data & FWTS_BOOT_REGISTER_PNPOS) ? 1 : 0);
 	fwts_log_info_verbatum(fw, "  Booting:  %x", (cmos_data & FWTS_BOOT_REGISTER_BOOTING) ? 1 : 0);
 	fwts_log_info_verbatum(fw, "  Diag:     %x", (cmos_data & FWTS_BOOT_REGISTER_DIAG) ? 1 : 0);
 	fwts_log_info_verbatum(fw, "  Suppress: %x", (cmos_data & FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY) ? 1 : 0);
@@ -161,20 +326,23 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 		"Correctable",
 		"Fatal",
 		"Corrected",
-		"None",
-		"Uknown"
+		"None"
 	};
 
 	int n = length - sizeof(fwts_acpi_table_bert);
 
-	fwts_log_info_verbatum(fw, "Region Length:    0x%lx", bert->boot_error_region_length);
-	fwts_log_info_verbatum(fw, "Region Addr:      0x%llx", bert->boot_error_region);
-	fwts_log_info_verbatum(fw, "Boot Status:      0x%lx", bert->boot_status);
-	fwts_log_info_verbatum(fw, "Raw Data Offset:  0x%lx", bert->raw_data_offset);
-	fwts_log_info_verbatum(fw, "Raw Data Length:  0x%lx", bert->raw_data_length);
-	fwts_log_info_verbatum(fw, "Error Severity:   0x%lx (%s)", bert->error_severity, 
-		error_severity[bert->error_severity > 3 ? 4 : bert->error_severity]);
-	fwts_log_info_verbatum(fw, "Generic Error Data:");
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Region Length", 	fwts_acpi_table_bert, boot_error_region_length),
+		FIELD_UINT("Region Addr", 	fwts_acpi_table_bert, boot_error_region),
+		FIELD_UINT("Boot Status", 	fwts_acpi_table_bert, boot_status),
+		FIELD_UINT("Raw Data Offset", 	fwts_acpi_table_bert, raw_data_offset),
+		FIELD_UINT("Raw Data Length", 	fwts_acpi_table_bert, raw_data_length),
+		FIELD_UINT("Error Severity", 	fwts_acpi_table_bert, error_severity),
+		FIELD_STRS("Generic Error Data",fwts_acpi_table_bert, generic_error_data, error_severity, 4),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields);
 
 	acpi_dump_raw_table(fw, bert->generic_error_data, n);
 }
@@ -200,12 +368,18 @@ static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)data;
 	int n = length - sizeof(fwts_acpi_table_ecdt);
 
-	acpi_dump_gas(fw, "EC_CONTROL", &ecdt->ec_control);
-	acpi_dump_gas(fw, "EC_DATA", &ecdt->ec_data);
-	fwts_log_info_verbatum(fw, "UID:              0x%lx", ecdt->uid);
-	fwts_log_info_verbatum(fw, "GPE_BIT:          0x%x", ecdt->uid);
-	fwts_log_info_verbatum(fw, "EC_ID:");
 
+	fwts_acpidump_field fields[] = {
+		FIELD_GAS ("EC_CONTROL", fwts_acpi_table_ecdt,   ec_control),
+		FIELD_GAS ("EC_DATA", 	fwts_acpi_table_ecdt,   ec_data),
+		FIELD_UINT("UID", 	fwts_acpi_table_ecdt,	uid),
+		FIELD_UINT("GPE_BIT", 	fwts_acpi_table_ecdt,	gpe_bit),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields);
+
+	fwts_log_info_verbatum(fw, "EC_ID:");
 	acpi_dump_raw_table(fw, ecdt->ec_id, n);
 }
 
@@ -290,146 +464,138 @@ static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
 
 static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_facs *facs = (fwts_acpi_table_facs*)data;
+	fwts_acpidump_field fields[] = {
+		FIELD_STR ("Signature", 	fwts_acpi_table_facs, 	signature),
+		FIELD_UINT("Length", 		fwts_acpi_table_facs,	length),
+		FIELD_UINT("H/W Signature", 	fwts_acpi_table_facs,	hardware_signature),
+		FIELD_UINT("Waking Vector", 	fwts_acpi_table_facs,	firmware_waking_vector),
+		FIELD_UINT("Global Lock", 	fwts_acpi_table_facs,	global_lock),
+		FIELD_UINT("Flags", 		fwts_acpi_table_facs,	flags),
+		FIELD_UINT("X Waking Vector:", 	fwts_acpi_table_facs,	x_firmware_waking_vector),
+		FIELD_UINT("Version:", 		fwts_acpi_table_facs,	version),
+		FIELD_UINT("OSPM Flags", 	fwts_acpi_table_facs,	ospm_flags),
+		FIELD_END
+	};
 
-	fwts_log_info_verbatum(fw, "Signature:        \"%4.4s\"", facs->signature);
-	fwts_log_info_verbatum(fw, "Length:           0x%lx (%lu)", facs->length, facs->length);
-	fwts_log_info_verbatum(fw, "H/W Signature:    0x%lx", facs->hardware_signature);
-	fwts_log_info_verbatum(fw, "Waking Vector:    0x%lx", facs->firmware_waking_vector);
-	fwts_log_info_verbatum(fw, "Global Lock       0x%lx", facs->global_lock);
-	fwts_log_info_verbatum(fw, "Flags             0x%lx", facs->flags);
-	fwts_log_info_verbatum(fw, "X Waking Vector:  0x%llx", facs->x_firmware_waking_vector);
-	fwts_log_info_verbatum(fw, "Version:          0x%x (%u)", facs->version, facs->version);
-	fwts_log_info_verbatum(fw, "OSPM Flags        0x%lx", facs->ospm_flags);
+	acpi_dump_table_fields(fw, data, fields);
 }
 
 static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)data;
-
-	static char *prot_attr[] = {
-		"No guarantee for page protection",
-		"4K page protected",
-		"64K page protected",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved",
-		"Reserved"
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Event Timer ID", 	fwts_acpi_table_hpet, event_timer_block_id),
+		FIELD_BITF("  Hardware Rev", 	fwts_acpi_table_hpet, event_timer_block_id, 8, 0),
+		FIELD_BITF("  Num Comparitors", fwts_acpi_table_hpet, event_timer_block_id, 5, 8),
+		FIELD_BITF("  Count Size Cap", 	fwts_acpi_table_hpet, event_timer_block_id, 1, 13),
+		FIELD_BITF("  Reserved", 	fwts_acpi_table_hpet, event_timer_block_id, 1, 14),
+		FIELD_BITF("  IRQ Routing Cap", fwts_acpi_table_hpet, event_timer_block_id, 1, 15),
+		FIELD_BITF("  PCI Vendor ID", 	fwts_acpi_table_hpet, event_timer_block_id, 16, 16),
+		FIELD_GAS ("Base Address", 	fwts_acpi_table_hpet, base_address),
+		FIELD_UINT("HPET Number", 	fwts_acpi_table_hpet, hpet_number),
+		FIELD_UINT("Main Counter Min", 	fwts_acpi_table_hpet, main_counter_minimum),
+		FIELD_UINT("Page Prot Attr", 	fwts_acpi_table_hpet, page_prot_and_oem_attribute),
+		FIELD_BITF("  Page Protection", fwts_acpi_table_hpet, page_prot_and_oem_attribute, 4, 0),
+		FIELD_BITF("  OEM Attr", 	fwts_acpi_table_hpet, page_prot_and_oem_attribute, 4, 4),
+		FIELD_END
 	};
 
-	fwts_log_info_verbatum(fw, "Event Timer ID:   0x%lx", hpet->event_timer_block_id);
-	fwts_log_info_verbatum(fw, "  Hardware Rev:   0x%x", hpet->event_timer_block_id & 0xff);
-	fwts_log_info_verbatum(fw, "  Num Comparitors:0x%x", (hpet->event_timer_block_id >> 8) & 0x31);
-	fwts_log_info_verbatum(fw, "  Count Size Cap: 0x%x", (hpet->event_timer_block_id >> 13) & 0x1);
-	fwts_log_info_verbatum(fw, "  IRQ Routing Cap:0x%x", (hpet->event_timer_block_id >> 15) & 0x1);
-	fwts_log_info_verbatum(fw, "  PCI Vendor ID:  0x%x", (hpet->event_timer_block_id >> 16) & 0xffff);
-	acpi_dump_gas(fw, "Base Address", &hpet->base_address);
-	fwts_log_info_verbatum(fw, "HPET Number:      0x%lx", hpet->hpet_number);
-	fwts_log_info_verbatum(fw, "Main Counter Min: 0x%lx", hpet->main_counter_minimum);
-	fwts_log_info_verbatum(fw, "Page Prot Attr:   0x%x", hpet->page_prot_and_oem_attribute);
-	fwts_log_info_verbatum(fw, "  Page Protection:0x%x (%s)", hpet->page_prot_and_oem_attribute & 0xf,
-		prot_attr[hpet->page_prot_and_oem_attribute & 0xf]);
-	fwts_log_info_verbatum(fw, "  OEM Attr:      :0x%x", hpet->page_prot_and_oem_attribute >> 4);
-	
+	acpi_dump_table_fields(fw, data, fields);
 }
 
 static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)data;
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("FACS Address", 	fwts_acpi_table_fadt, firmware_control),
+		FIELD_UINT("DSDT Address", 	fwts_acpi_table_fadt, dsdt),
+		FIELD_UINT("Model",		fwts_acpi_table_fadt, reserved),
+		FIELD_STRS("PM Profile",	fwts_acpi_table_fadt, preferred_pm_profile, fwts_acpi_fadt_preferred_pm_profile, 8),
+		FIELD_UINT("SCI_INT, IRQ 0x", 	fwts_acpi_table_fadt, sci_int),
+		FIELD_UINT("SMI_CMD", 		fwts_acpi_table_fadt, smi_cmd),
+		FIELD_UINT("ACPI_ENABLE", 	fwts_acpi_table_fadt, acpi_enable),
+		FIELD_UINT("ACPI_DISABLE", 	fwts_acpi_table_fadt, acpi_disable),
+		FIELD_UINT("S4BIOS_REQ", 	fwts_acpi_table_fadt, s4bios_req),
+		FIELD_UINT("PSTATE_CNT", 	fwts_acpi_table_fadt, pstate_cnt),
+		FIELD_UINT("PM1a_EVT_BLK", 	fwts_acpi_table_fadt, pm1a_evt_blk),
+		FIELD_UINT("PM1b_EVT_BLK", 	fwts_acpi_table_fadt, pm1b_evt_blk),
+		FIELD_UINT("PM1a_CNT_BLK", 	fwts_acpi_table_fadt, pm1a_cnt_blk),
+		FIELD_UINT("PM1b_CNT_BLK", 	fwts_acpi_table_fadt, pm1b_cnt_blk),
+		FIELD_UINT("PM2_CNT_BLK", 	fwts_acpi_table_fadt, pm2_cnt_blk),
+		FIELD_UINT("PM_TMR_BLK", 	fwts_acpi_table_fadt, pm_tmr_blk),
+		FIELD_UINT("GPE0_BLK", 		fwts_acpi_table_fadt, gpe0_blk),
+		FIELD_UINT("GPE1_BLK", 		fwts_acpi_table_fadt, gpe1_blk),
+		FIELD_UINT("PM1_EVT_LEN", 	fwts_acpi_table_fadt, pm1_evt_len),
+		FIELD_UINT("PM1_CNT_LEN", 	fwts_acpi_table_fadt, pm1_cnt_len),
+		FIELD_UINT("PM2_CNT_LEN", 	fwts_acpi_table_fadt, pm2_cnt_len),
+		FIELD_UINT("GPE0_BLK_LEN", 	fwts_acpi_table_fadt, gpe0_blk_len),
+		FIELD_UINT("GPE1_BLK_LEN", 	fwts_acpi_table_fadt, gpe1_blk_len),
+		FIELD_UINT("_CST Support", 	fwts_acpi_table_fadt, cst_cnt),
+		FIELD_UINT("C2 Latency", 	fwts_acpi_table_fadt, p_lvl2_lat),
+		FIELD_UINT("C3 Latency", 	fwts_acpi_table_fadt, p_lvl3_lat),
+		FIELD_UINT("FLUSH_SIZE", 	fwts_acpi_table_fadt, flush_size),
+		FIELD_UINT("FLUSH_STRIDE", 	fwts_acpi_table_fadt, flush_stride),
+		FIELD_UINT("DUTY_OFFSET", 	fwts_acpi_table_fadt, duty_offset),
+		FIELD_UINT("DUTY_WIDTH", 	fwts_acpi_table_fadt, duty_width),
+		FIELD_UINT("DAY_ALRM", 		fwts_acpi_table_fadt, day_alrm),
+		FIELD_UINT("MON_ALRM", 		fwts_acpi_table_fadt, mon_alrm),
+		FIELD_UINT("CENTURY", 		fwts_acpi_table_fadt, century),
+		FIELD_UINT("IAPC_BOOT_ARCH", 	fwts_acpi_table_fadt, iapc_boot_arch),
+		FIELD_UINT("Flags", 		fwts_acpi_table_fadt, flags),
+		FIELD_BITF("  WBINVD", 		fwts_acpi_table_fadt, flags, 1, 0),
+		FIELD_BITF("  WBINVD_FLUSH", 	fwts_acpi_table_fadt, flags, 1, 1),
+		FIELD_BITF("  PROC_C1", 	fwts_acpi_table_fadt, flags, 1, 2),
+		FIELD_BITF("  P_LVL2_UP", 	fwts_acpi_table_fadt, flags, 1, 3),
+		FIELD_BITF("  PWR_BUTTON", 	fwts_acpi_table_fadt, flags, 1, 4),
+		FIELD_BITF("  SLP_BUTTON", 	fwts_acpi_table_fadt, flags, 1, 5),
+		FIELD_BITF("  FIX_RTC", 	fwts_acpi_table_fadt, flags, 1, 6),
+		FIELD_BITF("  RTC_S4", 		fwts_acpi_table_fadt, flags, 1, 7),
+		FIELD_BITF("  TMR_VAL_EXT", 	fwts_acpi_table_fadt, flags, 1, 8),
+		FIELD_BITF("  DCK_CAP", 	fwts_acpi_table_fadt, flags, 1, 9),
+		FIELD_BITF("  RESET_REG_SUP", 	fwts_acpi_table_fadt, flags, 1, 10),
+		FIELD_BITF("  SEALED_CASE", 	fwts_acpi_table_fadt, flags, 1, 11),
+		FIELD_BITF("  HEADLESS", 	fwts_acpi_table_fadt, flags, 1, 12),
+		FIELD_BITF("  CPU_WS_SLP", 	fwts_acpi_table_fadt, flags, 1, 13),
+		FIELD_BITF("  PCI_EXP_WAK", 	fwts_acpi_table_fadt, flags, 1, 14),
+		FIELD_BITF("  USE_PLATFORM_CLOCK", fwts_acpi_table_fadt, flags, 1, 15),
+		FIELD_BITF("  S4_RTC_STS_VALID", fwts_acpi_table_fadt, flags, 1, 16),
+		FIELD_BITF("  REMOTE_POWER_ON_CAPABLE", fwts_acpi_table_fadt, flags, 1, 17),
+		FIELD_BITF("  FORCE_APIC_CLUSTER_MODEL", fwts_acpi_table_fadt, flags, 1, 18),
+		FIELD_BITF("  FORCE_APIC_PYS_DEST_MODE", fwts_acpi_table_fadt, flags, 1, 19),
+		FIELD_BITF("  RESERVED", 	fwts_acpi_table_fadt, flags, 12, 20),
+		FIELD_GAS ("RESET_REG", 	fwts_acpi_table_fadt, reset_reg),
+		FIELD_UINT("RESET_VALUE", 	fwts_acpi_table_fadt, reset_value),
+		FIELD_UINT("X_FIRMWARE_CTRL", 	fwts_acpi_table_fadt, x_firmware_ctrl),
+		FIELD_UINT("X_DSDT", 		fwts_acpi_table_fadt, x_dsdt),
+		FIELD_GAS ("X_PM1a_EVT_BLK", 	fwts_acpi_table_fadt, x_pm1a_evt_blk),
+		FIELD_GAS ("X_PM1b_EVT_BLK", 	fwts_acpi_table_fadt, x_pm1b_evt_blk),
+		FIELD_GAS ("X_PM1a_CNT_BLK", 	fwts_acpi_table_fadt, x_pm1a_cnt_blk),
+		FIELD_GAS ("X_PM1b_CNT_BLK", 	fwts_acpi_table_fadt, x_pm1b_cnt_blk),
+		FIELD_GAS ("X_PM2_CNT_BLK", 	fwts_acpi_table_fadt, x_pm2_cnt_blk),
+		FIELD_GAS ("X_PM_TMR_BLK", 	fwts_acpi_table_fadt, x_pm_tmr_blk),
+		FIELD_GAS ("X_GPE0_BLK", 	fwts_acpi_table_fadt, x_gpe0_blk),
+		FIELD_GAS ("X_GPE1_BLK", 	fwts_acpi_table_fadt, x_gpe1_blk),
+		FIELD_END
+	};
 
-	fwts_log_info_verbatum(fw, "Firmware Conrtrol:0x%lx", fadt->firmware_control);
-	fwts_log_info_verbatum(fw, "DSDT:             0x%lx", fadt->dsdt);
-	fwts_log_info_verbatum(fw, "Pref. PM Profile: 0x%x (%u) (%s)", fadt->preferred_pm_profile, fadt->preferred_pm_profile,
-			FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile) );
-	fwts_log_info_verbatum(fw, "SCI_INT:          IRQ 0x%x (%u)", fadt->sci_int, fadt->sci_int);
-	fwts_log_info_verbatum(fw, "SMI_CMD:          Port 0x%x (%u)", fadt->smi_cmd, fadt->smi_cmd);
-	fwts_log_info_verbatum(fw, "ACPI_ENABLE:      0x%x (%u)", fadt->acpi_enable, fadt->acpi_enable);
-	fwts_log_info_verbatum(fw, "ACPI_DISABLE:     0x%x (%u)", fadt->acpi_disable, fadt->acpi_disable);
-	fwts_log_info_verbatum(fw, "S4BIOS_REQ:       0x%x (%u)", fadt->s4bios_req, fadt->s4bios_req);
-	fwts_log_info_verbatum(fw, "PSTATE_CNT:       0x%x (%u)", fadt->pstate_cnt, fadt->pstate_cnt);
-	fwts_log_info_verbatum(fw, "PM1a_EVT_BLK:     0x%x (%u)", fadt->pm1a_evt_blk, fadt->pm1a_evt_blk);
-	fwts_log_info_verbatum(fw, "PM1b_EVT_BLK:     0x%x (%u)", fadt->pm1b_evt_blk, fadt->pm1b_evt_blk);
-	fwts_log_info_verbatum(fw, "PM1a_CNT_BLK:     0x%x (%u)", fadt->pm1a_cnt_blk, fadt->pm1a_cnt_blk);
-	fwts_log_info_verbatum(fw, "PM1b_CNT_BLK:     0x%x (%u)", fadt->pm1b_cnt_blk, fadt->pm1b_cnt_blk);
-	fwts_log_info_verbatum(fw, "PM2_CNT_BLK:      0x%x (%u)", fadt->pm2_cnt_blk, fadt->pm2_cnt_blk);
-	fwts_log_info_verbatum(fw, "PM_TMR_BLK:       0x%x (%u)", fadt->pm_tmr_blk, fadt->pm_tmr_blk);
-	fwts_log_info_verbatum(fw, "GPE0_BLK:         0x%x (%u)", fadt->gpe0_blk, fadt->gpe0_blk);
-	fwts_log_info_verbatum(fw, "GPE1_BLK:         0x%x (%u)", fadt->gpe1_blk, fadt->gpe1_blk);
-	fwts_log_info_verbatum(fw, "PM1_EVT_LEN:      0x%x (%u)", fadt->pm1_evt_len, fadt->pm1_evt_len);
-	fwts_log_info_verbatum(fw, "PM1_CNT_LEN:      0x%x (%u)", fadt->pm1_cnt_len, fadt->pm1_cnt_len);
-	fwts_log_info_verbatum(fw, "PM2_CNT_LEN:      0x%x (%u)", fadt->pm2_cnt_len, fadt->pm2_cnt_len);
-	fwts_log_info_verbatum(fw, "GPE0_BLK_LEN:     0x%x (%u)", fadt->gpe0_blk_len, fadt->gpe0_blk_len);
-	fwts_log_info_verbatum(fw, "GPE1_BLK_LEN:     0x%x (%u)", fadt->gpe1_blk_len, fadt->gpe1_blk_len);
-	fwts_log_info_verbatum(fw, "CST_CNT:          0x%x (%u)", fadt->cst_cnt, fadt->cst_cnt);
-	fwts_log_info_verbatum(fw, "P_LVL2_LAT:       0x%x (%u)", fadt->p_lvl2_lat, fadt->p_lvl2_lat);
-	fwts_log_info_verbatum(fw, "P_LVL3_LAT:       0x%x (%u)", fadt->p_lvl3_lat, fadt->p_lvl3_lat);
-	fwts_log_info_verbatum(fw, "FLUSH_SIZE:       0x%x (%u)", fadt->flush_size, fadt->flush_size);
-	fwts_log_info_verbatum(fw, "FLUSH_STRIDE:     0x%x (%u)", fadt->flush_stride, fadt->flush_stride);
-	fwts_log_info_verbatum(fw, "DUTY_OFFSET:      0x%x (%u)", fadt->duty_offset, fadt->duty_offset);
-	fwts_log_info_verbatum(fw, "DUTY_WIDTH:       0x%x (%u)", fadt->duty_width, fadt->duty_width);
-	fwts_log_info_verbatum(fw, "DAY_ALRM:         0x%x (%u)", fadt->day_alrm, fadt->day_alrm);
-	fwts_log_info_verbatum(fw, "MON_ALRM:         0x%x (%u)", fadt->mon_alrm, fadt->mon_alrm);
-	fwts_log_info_verbatum(fw, "CENTURY:          0x%x (%u)", fadt->century, fadt->century);
-	fwts_log_info_verbatum(fw, "IAPC_BOOT_ARCH:   0x%x (%u)", fadt->iapc_boot_arch, fadt->iapc_boot_arch);
-	fwts_log_info_verbatum(fw, "Flags:            0x%x (%u)", fadt->flags, fadt->flags);
-	fwts_log_info_verbatum(fw, "  WBINVD:                  0x%1.1x", (fadt->flags >> 0) & 1);
-	fwts_log_info_verbatum(fw, "  WBINVD_FLUSH:            0x%1.1x", (fadt->flags >> 1) & 1);
-	fwts_log_info_verbatum(fw, "  PROC_C1:                 0x%1.1x", (fadt->flags >> 2) & 1);
-	fwts_log_info_verbatum(fw, "  P_LVL2_UP:               0x%1.1x", (fadt->flags >> 3) & 1);
-	fwts_log_info_verbatum(fw, "  PWR_BUTTON:              0x%1.1x", (fadt->flags >> 4) & 1);
-	fwts_log_info_verbatum(fw, "  SLP_BUTTON:              0x%1.1x", (fadt->flags >> 5) & 1);
-	fwts_log_info_verbatum(fw, "  FIX_RTC:                 0x%1.1x", (fadt->flags >> 6) & 1);
-	fwts_log_info_verbatum(fw, "  RTC_S4:                  0x%1.1x", (fadt->flags >> 7) & 1);
-	fwts_log_info_verbatum(fw, "  TMR_VAL_EXT:             0x%1.1x", (fadt->flags >> 8) & 1);
-	fwts_log_info_verbatum(fw, "  DCK_CAP:                 0x%1.1x", (fadt->flags >> 9) & 1);
-	fwts_log_info_verbatum(fw, "  RESET_REG_SUP:           0x%1.1x", (fadt->flags >> 10) & 1);
-	fwts_log_info_verbatum(fw, "  SEALED_CASE:             0x%1.1x", (fadt->flags >> 11) & 1);
-	fwts_log_info_verbatum(fw, "  HEADLESS:                0x%1.1x", (fadt->flags >> 12) & 1);
-	fwts_log_info_verbatum(fw, "  CPU_WS_SLP:              0x%1.1x", (fadt->flags >> 13) & 1);
-	fwts_log_info_verbatum(fw, "  PCI_EXP_WAK:             0x%1.1x", (fadt->flags >> 14) & 1);
-	fwts_log_info_verbatum(fw, "  USE_PLATFORM_CLOCK:      0x%1.1x", (fadt->flags >> 15) & 1);
-	fwts_log_info_verbatum(fw, "  S4_RTC_STS_VALID:        0x%1.1x", (fadt->flags >> 16) & 1);
-	fwts_log_info_verbatum(fw, "  REMOTE_POWER_ON_CAPABLE: 0x%1.1x", (fadt->flags >> 17) & 1);
-	fwts_log_info_verbatum(fw, "  FORCE_APIC_CLUSTER_MODEL:0x%1.1x", (fadt->flags >> 18) & 1);
-	fwts_log_info_verbatum(fw, "  FORCE_APIC_PYS_DEST_MODE:0x%1.1x", (fadt->flags >> 19) & 1);
-	fwts_log_info_verbatum(fw, "  RESERVED:                0x%2.2x", (fadt->flags >> 20));
-	fwts_log_info_verbatum(fw, "RESET_REG       : 0x%x (%u)", fadt->reset_reg, fadt->reset_reg);
-	fwts_log_info_verbatum(fw, "RESET_VALUE     : 0x%x (%u)", fadt->reset_value, fadt->reset_value);
-	fwts_log_info_verbatum(fw, "X_FIRMWARE_CTRL : 0x%llx (%llu)", fadt->x_firmware_ctrl, fadt->x_firmware_ctrl);
-	fwts_log_info_verbatum(fw, "X_DSDT          : 0x%llx (%llu)", fadt->x_dsdt, fadt->x_dsdt);
-	acpi_dump_gas(fw, "X_PM1a_EVT_BLK", &fadt->x_pm1a_evt_blk);
-	acpi_dump_gas(fw, "X_PM1b_EVT_BLK", &fadt->x_pm1b_evt_blk);
-	acpi_dump_gas(fw, "X_PM1a_CNT_BLK", &fadt->x_pm1a_cnt_blk);
-	acpi_dump_gas(fw, "X_PM1b_CNT_BLK", &fadt->x_pm1b_cnt_blk);
-	acpi_dump_gas(fw, "X_PM2_CNT_BLK", &fadt->x_pm2_cnt_blk);
-	acpi_dump_gas(fw, "X_PM_TMR_BLK", &fadt->x_pm_tmr_blk);
-	acpi_dump_gas(fw, "X_GPE0_BLK", &fadt->x_gpe0_blk);
-	acpi_dump_gas(fw, "X_GPE1_BLK", &fadt->x_gpe1_blk);
+	acpi_dump_table_fields(fw, data, fields);
+
 }
 
 static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_rsdp *rsdp = (fwts_acpi_table_rsdp*)data;
+	fwts_acpidump_field fields[] = {
+		FIELD_STR ("Signature", 	fwts_acpi_table_rsdp, signature),
+		FIELD_UINT("Checksum", 		fwts_acpi_table_rsdp, checksum),
+		FIELD_STR ("OEM ID", 		fwts_acpi_table_rsdp, oem_id),
+		FIELD_UINT("Revision", 		fwts_acpi_table_rsdp, revision),
+		FIELD_UINT("RsdtAddress", 	fwts_acpi_table_rsdp, rsdt_address),
+		FIELD_UINT("Length", 		fwts_acpi_table_rsdp, length),
+		FIELD_UINT("XsdtAddress", 	fwts_acpi_table_rsdp, xsdt_address),
+		FIELD_UINT("Extended Checksum", fwts_acpi_table_rsdp, extended_checksum),
+		FIELD_UINT("Reserved",		fwts_acpi_table_rsdp, reserved),
+		FIELD_END
+	};
 
-	fwts_log_info_verbatum(fw, "Signature:        \"%8.8s\"", rsdp->signature);
-	fwts_log_info_verbatum(fw, "Checksum:         0x%x (%d)", rsdp->checksum, rsdp->checksum);
-	fwts_log_info_verbatum(fw, "OEM ID:           \"%6.6s\"", rsdp->oem_id);
-	fwts_log_info_verbatum(fw, "Revision:         0x%lx (%lu)", rsdp->revision, rsdp->revision);
-	fwts_log_info_verbatum(fw, "RsdtAddress:      0x%lx", rsdp->rsdt_address);
-	fwts_log_info_verbatum(fw, "Length:           0x%lx (%lu)", rsdp->length, rsdp->length);
-	fwts_log_info_verbatum(fw, "XsdtAddress:      0x%lx", rsdp->xsdt_address);
-	fwts_log_info_verbatum(fw, "Extended Checksum:0x%x (%d)", rsdp->extended_checksum, rsdp->extended_checksum);
-	fwts_log_info_verbatum(fw, "Reserved:         0x%2.2x 0x%2.2x 0x%2.2x", 
-		rsdp->reserved[0], rsdp->reserved[1], rsdp->reserved[2]);
+	acpi_dump_table_fields(fw, data, fields);
 }
 
 static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
@@ -440,19 +606,26 @@ static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
 
 	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint32);
 	for (i=0; i<n; i++)  {
+		char label[80];
 		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr((uint64)rsdt->entries[i]);
 		char *name = table == NULL ? "unknown" : table->name;
-		fwts_log_info_verbatum(fw, "Entry %2.2d          0x%8.8lx (%s)", i, rsdt->entries[i], name);
+		snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
+		fwts_log_info_verbatum(fw, "%s 0x%8.8x", 
+			acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])), 
+			rsdt->entries[i]);
 	}
 }
 
 static void acpidump_sbst(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)data;
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Warn. Energy Level", 	fwts_acpi_table_sbst,	warning_energy_level),
+		FIELD_UINT("Low  Energy Level", 	fwts_acpi_table_sbst,	low_energy_level),
+		FIELD_UINT("Crit. Energy Level", 	fwts_acpi_table_sbst,	critical_energy_level),
+		FIELD_END
+	};
 
-	fwts_log_info_verbatum(fw, "Warn. Energy Lvl: 0x%lx", sbst->warning_energy_level);
-	fwts_log_info_verbatum(fw, "Low  Energy Lvl:  0x%lx", sbst->low_energy_level);
-	fwts_log_info_verbatum(fw, "Crit. Energy Lvl: 0x%lx", sbst->critical_energy_level);
+	acpi_dump_table_fields(fw, data, fields);
 }
 
 static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
@@ -627,18 +800,30 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 	int n;
 	int i;
 
-	fwts_log_info_verbatum(fw, "Base Address:     0x%lx", mcfg->base_address);
-	fwts_log_info_verbatum(fw, "Base Reserved:    0x%lx", mcfg->base_reserved);
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Base Address", 	fwts_acpi_table_mcfg, 	base_address),
+		FIELD_UINT("Base Reserved", 	fwts_acpi_table_mcfg,	base_reserved),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields);
 
 	n = length - sizeof(fwts_acpi_table_mcfg);
+	fwts_acpi_mcfg_configuration *config = mcfg->configuration;
 
 	for (i=0; i<n/sizeof(fwts_acpi_mcfg_configuration); i++) {
-		fwts_log_info_verbatum(fw, "Configuration #%d", i+1);
-		fwts_log_info_verbatum(fw, "  Base Address:   0x%lx", mcfg[i].configuration->base_address);
-		fwts_log_info_verbatum(fw, "  Base Reserved:  0x%lx", mcfg[i].configuration->base_reserved);
-		fwts_log_info_verbatum(fw, "  PCI Seg Grp Num:0x%lx", mcfg[i].configuration->pci_segment_group_number);
-		fwts_log_info_verbatum(fw, "  Start Bus Num:  0x%lx", mcfg[i].configuration->start_bus_number);
-		fwts_log_info_verbatum(fw, "  End Bus Num:    0x%lx", mcfg[i].configuration->end_bus_number);
+		fwts_acpidump_field fields_config[] = {
+			FIELD_UINT("  Base Address", 	fwts_acpi_table_mcfg,	configuration[i].base_address),
+			FIELD_UINT("  Base Address", 	fwts_acpi_table_mcfg,	configuration[i].base_address),
+			FIELD_UINT("  Base Reserved", 	fwts_acpi_table_mcfg,	configuration[i].base_reserved),
+			FIELD_UINT("  PCI Seg Grp Num", fwts_acpi_table_mcfg,	configuration[i].pci_segment_group_number),
+			FIELD_UINT("  Start Bus Num", 	fwts_acpi_table_mcfg,	configuration[i].start_bus_number),
+			FIELD_UINT("  End Bus Num", 	fwts_acpi_table_mcfg,	configuration[i].end_bus_number),
+			FIELD_END
+		};
+		fwts_log_info_verbatum(fw, "Configuration #%d:", i+1);
+		acpi_dump_table_fields(fw, (uint8*)config, fields_config);
+		config++;
 	}
 }
 

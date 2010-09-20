@@ -130,7 +130,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_ecdt;
 
 typedef enum {
-	FTWS_BOOT_REGISTER_PNPOS	= 0x01,
+	FWTS_BOOT_REGISTER_PNPOS	= 0x01,
 	FWTS_BOOT_REGISTER_BOOTING	= 0x02,
 	FWTS_BOOT_REGISTER_DIAG		= 0x04,
 	FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY = 0x08,

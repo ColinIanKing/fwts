@@ -41,7 +41,8 @@ static char *acpidump_headline(void)
 
 struct fwts_acpidump_field;
 
-typedef void (*fwts_acpidump_field_func)(fwts_framework *fw, struct fwts_acpidump_field *info, void *data);
+typedef void (*fwts_acpidump_field_func)(fwts_framework *fw, struct fwts_acpidump_field *info, void *data, int offset);
+typedef char *(*fwts_acpidump_str_func)(uint64 val);
 
 typedef struct fwts_acpidump_field {
 	char *label;
@@ -52,12 +53,13 @@ typedef struct fwts_acpidump_field {
 	uint8  bit_field_shift;
 	char  **strings;
 	int   strings_len;
+	fwts_acpidump_str_func str_func;
 } fwts_acpidump_field;
 
 #define OFFSET(type, field)				\
 	(int)&(((type*)(0))->field)
 
-#define FIELD(text, type, field, func, bit_field_nbits, bit_field_shift, strings, strings_len) \
+#define FIELD(text, type, field, func, bit_field_nbits, bit_field_shift, strings, strings_len, str_func) \
 	{						\
 	text,						\
 	sizeof(((type*)0)->field),			\
@@ -66,122 +68,129 @@ typedef struct fwts_acpidump_field {
 	bit_field_nbits,				\
 	bit_field_shift,				\
 	strings,					\
-	strings_len					\
+	strings_len,					\
+	str_func					\
 	}
 
 #define FIELD_UINT(text, type, field)			\
-	FIELD(text, type, field, acpi_dump_uint, 0, 0, NULL, 0)
+	FIELD(text, type, field, acpi_dump_uint, 0, 0, NULL, 0, NULL)
 
 #define FIELD_STR(text, type, field)			\
-	FIELD(text, type, field, acpi_dump_str, 0, 0, NULL, 0)
+	FIELD(text, type, field, acpi_dump_str, 0, 0, NULL, 0, NULL)
 
 #define FIELD_STRS(text, type, field, strings, strings_len)			\
-	FIELD(text, type, field, acpi_dump_strings, 0, 0, strings, strings_len)
+	FIELD(text, type, field, acpi_dump_strings, 0, 0, strings, strings_len, NULL)
+
+#define FIELD_STRF(text, type, field, str_func)			\
+	FIELD(text, type, field, acpi_dump_string_func, 0, 0, NULL, 0, str_func)
 
 #define FIELD_GAS(text, type, field)			\
-	FIELD(text, type, field, __acpi_dump_gas, 0, 0, NULL, 0)
+	FIELD(text, type, field, acpi_dump_gas, 0, 0, NULL, 0, NULL)
 
 #define FIELD_BITF(text, type, field, nbits, shift)			\
-	FIELD(text, type, field, acpi_dump_uint, nbits, shift, NULL, 0)
+	FIELD(text, type, field, acpi_dump_uint, nbits, shift, NULL, 0, NULL)
 
-#define FIELD_END { NULL, 0, 0, NULL, 0, 0, NULL, 0}
+#define FIELD_END { NULL, 0, 0, NULL, 0, 0, NULL, 0, NULL}
 
 static char *acpi_dump_field_info(char *label, int size, int offset)
 {
 	static char buffer[1024];
 
-	snprintf(buffer, sizeof(buffer), "[%3.3x %4.4d %2d] %25.25s: ",
+	snprintf(buffer, sizeof(buffer), "[0x%3.3x %4.4d %2d] %25.25s:",
 		offset, offset, size, label);
 
 	return buffer;
 }
 
-static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
 	fwts_log_info_verbatum(fw, "%s %*.*s", 
-		acpi_dump_field_info(info->label, info->size, info->offset), info->size, info->size,(char*)data);
+		acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+		info->size, info->size,(char*)data);
 }
 
-static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+static uint64 apci_dump_get_uint64(fwts_acpidump_field *info, void *data)
 {
-	uint8	val8, mask8;
-	uint16	val16,mask16;
-	uint32	val32,mask32;
-	uint64  val64,mask64;
+	uint64	ret;
+	uint64	mask = (1<<info->bit_field_nbits) - 1;
 	int i;
 
 	switch (info->size) {
 	case 1:
-		val8 = *(uint8*)data;
-		mask8 = (1<<info->bit_field_nbits) - 1;
-		fwts_log_info_verbatum(fw, "%s 0x%2.2x", acpi_dump_field_info(info->label, info->size, info->offset), 
-			info->bit_field_nbits ? (val8 >> info->bit_field_shift) & mask8 : val8);
+		ret  = (uint64)*(uint8*)data;
 		break;
 	case 2:
-		val16 = *(uint16*)data;
-		mask16 = (1<<info->bit_field_nbits) - 1;
-		fwts_log_info_verbatum(fw, "%s 0x%4.4x", acpi_dump_field_info(info->label, info->size, info->offset),
-			info->bit_field_nbits ? (val16 >> info->bit_field_shift) & mask16 : val16);
+		ret  = (uint64)*(uint16*)data;
 		break;
 	case 4:
-		val32 = *(uint32*)data;
-		mask32 = (1<<info->bit_field_nbits) - 1;
-		fwts_log_info_verbatum(fw, "%s 0x%8.8x", acpi_dump_field_info(info->label, info->size, info->offset),
-			info->bit_field_nbits ? (val32 >> info->bit_field_shift) & mask32 : val32);
+		ret  = (uint64)*(uint32*)data;
 		break;
 	case 8:
-		val64 = *(uint64*)data;
-		mask64 = (1<<info->bit_field_nbits) - 1;
-		fwts_log_info_verbatum(fw, "%s 0x%16.16llx", acpi_dump_field_info(info->label, info->size, info->offset),
-			info->bit_field_nbits ? (val64 >> info->bit_field_shift) & mask64 : val64);
+		ret  = (uint64)*(uint64*)data;
+		break;
+	default:		
+		ret = 0;
+		for (i=0;(i<info->size) && (i<8); i++) {
+			uint8 val8 = *(uint8*)data++;
+			ret = (ret << 8) | val8;
+		}
+		break;
+	}
+	return mask ? (ret >> info->bit_field_shift) & mask : ret;
+}
+
+
+static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
+{
+	int i;
+	int hexdigits = info->size << 1;
+	uint64 val = apci_dump_get_uint64(info, data);
+
+	switch (info->size) {
+	case 1:
+	case 2:
+	case 4:
+	case 8:
+		fwts_log_info_verbatum(fw, "%s 0x%*.*llx", 
+			acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+			hexdigits, hexdigits,
+			val);
 		break;
 	default:		
 		for (i=0; i<info->size; i++) {
-			val8 = *(uint8*)data;
-			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info(info->label, info->size, info->offset), val8, i);
-			data++;
+			uint8 val8 = *(uint8*)data++;
+			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info(info->label, info->size, info->offset + offset), val8, i);
 		}
 		break;
 	}
 }
 
-static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, void *data)
+static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
-	uint8	val8;
-	uint16	val16;
-	uint32	val32;
-	uint64  val64;
+	int hexdigits = info->size << 1;
+	uint64 val = apci_dump_get_uint64(info, data);
 
-	switch (info->size) {
-	case 1:
-		val8 = *(uint8*)data;
-		fwts_log_info_verbatum(fw, "%s 0x%2.2x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val8,
-			val8 > info->strings_len ? "unknown" : info->strings[val8]);
-		break;
-	case 2:
-		val16 = *(uint16*)data;
-		fwts_log_info_verbatum(fw, "%s 0x%4.4x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val16,
-			val16 > info->strings_len ? "unknown" : info->strings[val16]);
-		break;
-	case 4:
-		val32 = *(uint32*)data;
-		fwts_log_info_verbatum(fw, "%s 0x%8.8x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val32,
-			val32 > info->strings_len ? "unknown" : info->strings[val32]);
-		break;
-	case 8:
-		val64 = *(uint64*)data;
-		fwts_log_info_verbatum(fw, "%s 0x%16.16x (%s)", acpi_dump_field_info(info->label, info->size, info->offset), val64,
-			val64 > info->strings_len ? "unknown" : info->strings[val64]);
-		break;
-	}
+	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+		hexdigits, hexdigits,
+		val, val > info->strings_len ? "Unknown" : info->strings[val]);
 }
 
-static void acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidump_field *fields)
+static void acpi_dump_string_func(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
+{
+	int hexdigits = info->size << 1;
+	uint64 val = apci_dump_get_uint64(info, data);
+
+	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+		hexdigits, hexdigits,
+		val, info->str_func(val));
+}
+
+static void acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidump_field *fields, int offset)
 {
 	fwts_acpidump_field *field = fields;
 
 	for (field = fields; field->label != NULL; field++)
-		field->func(fw, field, data + field->offset);
+		field->func(fw, field, data + field->offset, offset);
 }
 
 #if 0
@@ -207,13 +216,11 @@ static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
         }
 }
 
-
-static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_acpi_gas *gas)
-{	
+static char *acpi_dump_gas_address_space_id(uint64 index)
+{
 	char *txt;
-	fwts_log_info_verbatum(fw, "%s:", str);
 
-	switch (gas->address_space_id) {
+	switch (index) {
 	case 0x00:	
 		txt = "System Memory";
 		break;
@@ -243,37 +250,36 @@ static void acpi_dump_gas(fwts_framework *fw, const char *str, const fwts_acpi_g
 		txt = "Unknown";
 		break;
 	}
-	fwts_log_info_verbatum(fw, "  addr_space_id:  0x%x (%s)", gas->address_space_id, txt);
-	fwts_log_info_verbatum(fw, "  reg_bit_width:  0x%x", gas->register_bit_width);
-	fwts_log_info_verbatum(fw, "  reg_bit_offset: 0x%x", gas->register_bit_offset);
-	switch (gas->access_width) {
-	case 0x00:
-		txt = "Undefined (legacy reasons)";
-		break;
-	case 0x01:
-		txt = "Byte Access";
-		break;
-	case 0x02:
-		txt = "Word Access";
-		break;
-	case 0x03:
-		txt = "DWord Access";
-		break;
-	case 0x04:
-		txt = "QWord Access";
-		break;
-	default:
-		txt = "Unknown";
-		break;
-	}
-	fwts_log_info_verbatum(fw, "  access_width:   0x%x (%s)", gas->access_width, txt);
-	fwts_log_info_verbatum(fw, "  address:        0x%llx", gas->address);
+	
+	return txt;
 }
 
-static void __acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *data)
-{
-	acpi_dump_gas(fw, info->label, (fwts_acpi_gas *)data);
+static void acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
+{	
+	static char *access_width[] = {
+		"Undefined (legacy reasons)",
+		"Byte Access",
+		"Word Access",
+		"DWord Access",
+		"QWord Access",
+		"Unknown",
+	};
+
+	fwts_acpidump_field fields[] = {
+		FIELD_STRF("  addr_space_id", 	fwts_acpi_gas, address_space_id, acpi_dump_gas_address_space_id),
+		FIELD_UINT("  reg_bit_width", 	fwts_acpi_gas, register_bit_width),
+		FIELD_UINT("  reg_bit_offset",	fwts_acpi_gas, register_bit_offset),
+		FIELD_STRS("  access_width", 	fwts_acpi_gas, access_width, access_width, 6),
+		FIELD_UINT("  address", 	fwts_acpi_gas, address),
+		FIELD_END
+	};
+
+	fwts_log_info_verbatum(fw, "%s",
+		acpi_dump_field_info(info->label, info->size, info->offset));
+	
+	acpi_dump_table_fields(fw, data, fields, info->offset);
 }
+
 
 static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr)
 {
@@ -283,14 +289,14 @@ static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr)
 		FIELD_UINT("Revision", 		fwts_acpi_table_header, revision),
 		FIELD_UINT("Checksum", 		fwts_acpi_table_header, checksum),
 		FIELD_STR ("OEM ID", 		fwts_acpi_table_header, oem_id),
-		FIELD_UINT("OEM Table ID", 	fwts_acpi_table_header, oem_tbl_id),
+		FIELD_STR ("OEM Table ID", 	fwts_acpi_table_header, oem_tbl_id),
 		FIELD_UINT("OEM Revision", 	fwts_acpi_table_header, oem_revision),
 		FIELD_STR ("Creator ID", 	fwts_acpi_table_header, creator_id),
 		FIELD_UINT("Creator Revision", 	fwts_acpi_table_header, creator_revision),
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, (uint8*)hdr, fields);
+	acpi_dump_table_fields(fw, (uint8*)hdr, fields, 0);
 }
 
 static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
@@ -308,15 +314,15 @@ static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 		return;
 	}
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 
 	cmos_data = fwts_cmos_read(boot->cmos_index);
-	fwts_log_info_verbatum(fw, "Boot Register: 0x%x", cmos_data);
-	fwts_log_info_verbatum(fw, "  PNP-OS:   %x", (cmos_data & FWTS_BOOT_REGISTER_PNPOS) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "  Booting:  %x", (cmos_data & FWTS_BOOT_REGISTER_BOOTING) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "  Diag:     %x", (cmos_data & FWTS_BOOT_REGISTER_DIAG) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "  Suppress: %x", (cmos_data & FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "  Parity:   %x", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%41.41s: 0x%x", "Boot Register", cmos_data);
+	fwts_log_info_verbatum(fw, "%41.41s: %x",  "PNP-OS", (cmos_data & FWTS_BOOT_REGISTER_PNPOS) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Booting", (cmos_data & FWTS_BOOT_REGISTER_BOOTING) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Diag", (cmos_data & FWTS_BOOT_REGISTER_DIAG) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Suppress", (cmos_data & FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Parity", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 }
 
 static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
@@ -342,25 +348,27 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
-
+	acpi_dump_table_fields(fw, data, fields, 0);
 	acpi_dump_raw_table(fw, bert->generic_error_data, n);
 }
 
 static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_cpep *cpep = (fwts_acpi_table_cpep*)data;
 	int i;
 	int n = (length - sizeof(fwts_acpi_table_bert)) / sizeof(fwts_acpi_cpep_processor_info);
 
 	for (i=0; i<n; i++) {
+		fwts_acpidump_field fields[] = {
+			FIELD_UINT("  Type", 		fwts_acpi_table_cpep, cpep_info[i].type),
+			FIELD_UINT("  Length", 		fwts_acpi_table_cpep, cpep_info[i].length),
+			FIELD_UINT("  Processor ID", 	fwts_acpi_table_cpep, cpep_info[i].processor_id),
+			FIELD_UINT("  Processor EID", 	fwts_acpi_table_cpep, cpep_info[i].processor_eid),
+			FIELD_UINT("  Poll Interval (ms)",fwts_acpi_table_cpep, cpep_info[i].polling_interval),
+			FIELD_END
+		};
 		fwts_log_info_verbatum(fw, "CPEP #%d\n", i);
-		fwts_log_info_verbatum(fw, "  Type:           0x%x", cpep->cpep_info[i].type);
-		fwts_log_info_verbatum(fw, "  Length:         0x%x", cpep->cpep_info[i].length);
-		fwts_log_info_verbatum(fw, "  Processor ID:   0x%x", cpep->cpep_info[i].processor_id);
-		fwts_log_info_verbatum(fw, "  Processor EID:  0x%x", cpep->cpep_info[i].processor_eid);
-		fwts_log_info_verbatum(fw, "  Poll Interval   0x%lx ms", cpep->cpep_info[i].polling_interval);
-	}
+		acpi_dump_table_fields(fw, data, fields, 0);
+	};
 }
 
 static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
@@ -370,14 +378,14 @@ static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 
 
 	fwts_acpidump_field fields[] = {
-		FIELD_GAS ("EC_CONTROL", fwts_acpi_table_ecdt,   ec_control),
+		FIELD_GAS ("EC_CONTROL",fwts_acpi_table_ecdt,   ec_control),
 		FIELD_GAS ("EC_DATA", 	fwts_acpi_table_ecdt,   ec_data),
 		FIELD_UINT("UID", 	fwts_acpi_table_ecdt,	uid),
 		FIELD_UINT("GPE_BIT", 	fwts_acpi_table_ecdt,	gpe_bit),
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 
 	fwts_log_info_verbatum(fw, "EC_ID:");
 	acpi_dump_raw_table(fw, ecdt->ec_id, n);
@@ -437,23 +445,26 @@ static void acpidump_erst(fwts_framework *fw, uint8 *data, int length)
 
 	fwts_acpi_table_erst *erst = (fwts_acpi_table_erst*)data;
 
-	fwts_log_info_verbatum(fw, "Ser. Hdr. Size:   0x%lx", erst->serialization_header_size);
-	fwts_log_info_verbatum(fw, "Insr. Entry Count:0x%lx", erst->instruction_entry_count);
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Serialization Hdr. Size", fwts_acpi_table_erst, serialization_header_size),
+		FIELD_UINT("Insrtuction Entry Count", fwts_acpi_table_erst, instruction_entry_count),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields, 0);
 	
 	for (i=0; i<erst->instruction_entry_count; i++) {
+		fwts_acpidump_field entry_fields[] = {
+			FIELD_STRS("  Action", 		fwts_acpi_table_erst, entries[i].serialization_action, serialization_actions, 16),
+			FIELD_STRS("  Instruction", 	fwts_acpi_table_erst, entries[i].instruction, instructions, 19),
+			FIELD_UINT("  Flags", 		fwts_acpi_table_erst, entries[i].flags),
+			FIELD_GAS ("  Register region", fwts_acpi_table_erst, entries[i].register_region),
+			FIELD_UINT("  Value", 		fwts_acpi_table_erst, entries[i].value),
+			FIELD_UINT("  Mask", 		fwts_acpi_table_erst, entries[i].mask),
+			FIELD_END
+		};
 		fwts_log_info_verbatum(fw, "Entry #%d%", i+1);
-		fwts_log_info_verbatum(fw, "  Action:         0x%x (%s)", 
-			erst->entries[i].serialization_action,
-			erst->entries[i].serialization_action > 0x10 ? "Unknown" :
-				serialization_actions[erst->entries[i].serialization_action]);
-		fwts_log_info_verbatum(fw, "  Instruction::   0x%x (%s)", 
-			erst->entries[i].instruction,
-			erst->entries[i].instruction > 0x12 ? "Unknown" :
-				instructions[erst->entries[i].instruction]);
-		fwts_log_info_verbatum(fw, "  Flags:          0x%x", erst->entries[i].flags);
-		acpi_dump_gas(fw, "Resgister region", &erst->entries[i].register_region);
-		fwts_log_info_verbatum(fw, "  Value:          0x%llx", erst->entries[i].value);
-		fwts_log_info_verbatum(fw, "  Mask:           0x%llx", erst->entries[i].mask);
+		acpi_dump_table_fields(fw, data, entry_fields, 0);
 	}
 }
 
@@ -471,13 +482,13 @@ static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
 		FIELD_UINT("Waking Vector", 	fwts_acpi_table_facs,	firmware_waking_vector),
 		FIELD_UINT("Global Lock", 	fwts_acpi_table_facs,	global_lock),
 		FIELD_UINT("Flags", 		fwts_acpi_table_facs,	flags),
-		FIELD_UINT("X Waking Vector:", 	fwts_acpi_table_facs,	x_firmware_waking_vector),
-		FIELD_UINT("Version:", 		fwts_acpi_table_facs,	version),
+		FIELD_UINT("X Waking Vector", 	fwts_acpi_table_facs,	x_firmware_waking_vector),
+		FIELD_UINT("Version", 		fwts_acpi_table_facs,	version),
 		FIELD_UINT("OSPM Flags", 	fwts_acpi_table_facs,	ospm_flags),
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 }
 
 static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
@@ -499,7 +510,7 @@ static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 }
 
 static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
@@ -576,7 +587,7 @@ static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 
 }
 
@@ -595,7 +606,7 @@ static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 }
 
 static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
@@ -625,7 +636,7 @@ static void acpidump_sbst(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 }
 
 static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
@@ -636,161 +647,193 @@ static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 
 	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64);
 	for (i=0; i<n; i++)  {
+		char label[80];
 		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr(xsdt->entries[i]);
 		char *name = table == NULL ? "unknown" : table->name;
-		fwts_log_info_verbatum(fw, "Entry %2.2d          0x%16.16llx (%s)", i, xsdt->entries[i], name);
+		snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
+		fwts_log_info_verbatum(fw, "%s 0x%16.16x", 
+			acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
+			xsdt->entries[i]);
 	}
 }
 
 static void acpidump_madt(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)data;
 	int i = 0;
 	int n;
+	int offset = 0;
 
-	fwts_log_info_verbatum(fw, "Local APIC Addr:  0x%lx", madt->lapic_address);
-	fwts_log_info_verbatum(fw, "Flags:            0x%lx", madt->flags);
-	fwts_log_info_verbatum(fw, "  PCAT_COMPAT     0x%1.1x", madt->flags & 1);
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Local APIC Address", 	fwts_acpi_table_madt, lapic_address),
+		FIELD_UINT("Flags", 			fwts_acpi_table_madt, flags),
+		FIELD_BITF("  PCAT_COMPAT", 		fwts_acpi_table_madt, flags, 1, 0),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields, 0);
 	
 	data += sizeof(fwts_acpi_table_madt);	
 	length -= sizeof(fwts_acpi_table_madt);
 
 	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+		int skip = 0;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
-		fwts_acpi_madt_processor_local_apic *proc_local_apic;
-		fwts_acpi_madt_io_apic              *io_apic;
-		fwts_acpi_madt_interrupt_override   *interrupt_override;
-		fwts_acpi_madt_nmi                  *nmi;
-		fwts_acpi_madt_local_apic_nmi       *local_apic_nmi;
-		fwts_acpi_madt_local_apic_addr_override *local_apic_addr_override;
-		fwts_acpi_madt_io_sapic 	    *io_sapic;
-		fwts_acpi_madt_local_sapic	    *local_sapic;
-		fwts_acpi_madt_platform_int_source  *platform_int_source;
-		fwts_acpi_madt_local_x2apic         *local_x2apic;
-		fwts_acpi_madt_local_x2apic_nmi	    *local_x2apic_nmi;
-		
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
+		offset += sizeof(fwts_acpi_madt_sub_table_header);
 		
 		fwts_log_info_verbatum(fw, "APIC Structure #%d:", ++i);
-		/*
-		fwts_log_info_verbatum(fw, " Type:            0x%2.2x", hdr->type);
-		fwts_log_info_verbatum(fw, " Size:            0x%2.2x", hdr->length);
-		*/
+
 		switch (hdr->type) {
-		case 0: 
-			proc_local_apic = (fwts_acpi_madt_processor_local_apic*)data;
-			fwts_log_info_verbatum(fw, " Processor Local APIC:");
-			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%2.2x", proc_local_apic->acpi_processor_id);
-			fwts_log_info_verbatum(fw, "  APIC ID:        0x%2.2x", proc_local_apic->apic_id);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", proc_local_apic->flags);
-			fwts_log_info_verbatum(fw, "   Enabled:       0x%x", proc_local_apic->flags & 1);
-			data += sizeof(fwts_acpi_madt_processor_local_apic);
-			length -= sizeof(fwts_acpi_madt_processor_local_apic);
+		case 0: {
+				fwts_acpidump_field fields_processor_local_apic[] = {
+					FIELD_UINT("  ACPI CPU ID", fwts_acpi_madt_processor_local_apic, acpi_processor_id),
+					FIELD_UINT("  APIC ID",     fwts_acpi_madt_processor_local_apic, apic_id),
+					FIELD_UINT("  Flags:",      fwts_acpi_madt_processor_local_apic, flags),
+					FIELD_BITF("   Enabled",    fwts_acpi_madt_processor_local_apic, flags, 1, 0),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Processor Local APIC:");
+				acpi_dump_table_fields(fw, data, fields_processor_local_apic, offset);
+				skip = sizeof(fwts_acpi_madt_processor_local_apic);
+			}
 			break;
-		case 1:
-			io_apic = (fwts_acpi_madt_io_apic*)data;
-			fwts_log_info_verbatum(fw, " I/O APIC:");
-			fwts_log_info_verbatum(fw, "  I/O APIC ID:    0x%2.2x", io_apic->io_apic_id);
-			fwts_log_info_verbatum(fw, "  I/O APIC Addr:  0x%lx", io_apic->io_apic_phys_address);
-			fwts_log_info_verbatum(fw, "  Global IRQ Base:0x%lx", io_apic->io_apic_phys_address);
-			data += sizeof(fwts_acpi_madt_io_apic);
-			length -= sizeof(fwts_acpi_madt_io_apic);
+		case 1: {
+				fwts_acpidump_field fields_io_apic[] = {
+					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
+					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
+					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, io_apic_phys_address),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " I/O APIC:");
+				acpi_dump_table_fields(fw, data, fields_io_apic, offset);
+				skip = sizeof(fwts_acpi_madt_io_apic);
+			}
 			break;
-		case 2:
-			interrupt_override = (fwts_acpi_madt_interrupt_override*)data;
-			fwts_log_info_verbatum(fw, " Interrupt Source Override:");
-			fwts_log_info_verbatum(fw, "  Bus:            0x%2.2x", interrupt_override->bus);
-			fwts_log_info_verbatum(fw, "  Source:         0x%2.2x", interrupt_override->source);
-			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", interrupt_override->gsi);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", interrupt_override->flags);
+		case 2: {
+				fwts_acpidump_field fields_madt_interrupt_override[] = {
+					FIELD_UINT("  Bus", 		fwts_acpi_madt_interrupt_override, bus),
+					FIELD_UINT("  Source", 		fwts_acpi_madt_interrupt_override, source),
+					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_interrupt_override, gsi),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_interrupt_override, flags),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Interrupt Source Override:");
+				acpi_dump_table_fields(fw, data, fields_madt_interrupt_override, offset);
+				skip = sizeof(fwts_acpi_madt_interrupt_override);
+			}
 			break;
-		case 3:
-			nmi = (fwts_acpi_madt_nmi*)data;
-			fwts_log_info_verbatum(fw, " Non-maskable Interrupt Source (NMI):");
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", nmi->flags);
-			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", nmi->gsi);
-			data += sizeof(fwts_acpi_madt_nmi);
-			length -= sizeof(fwts_acpi_madt_nmi);
+		case 3: {
+				fwts_acpidump_field fields_madt_nmi[] = {
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_nmi, flags),
+					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_nmi, gsi),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Non-maskable Interrupt Source (NMI):");
+				acpi_dump_table_fields(fw, data, fields_madt_nmi, offset);
+				skip = sizeof(fwts_acpi_madt_nmi);
+			}
 			break;
-		case 4:
-			local_apic_nmi = (fwts_acpi_madt_local_apic_nmi *)data;
-			fwts_log_info_verbatum(fw, " Local APIC NMI:");
-			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%x", local_apic_nmi->acpi_processor_id);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_apic_nmi->flags);
-			fwts_log_info_verbatum(fw, "  Local APIC LINT:0x%x", local_apic_nmi->local_apic_lint);
-	
-			data += sizeof(fwts_acpi_madt_local_apic_nmi);
-			length -= sizeof(fwts_acpi_madt_local_apic_nmi);
+		case 4: {
+				fwts_acpidump_field fields_madt_local_apic_nmi[] = {
+					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_apic_nmi, acpi_processor_id),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_apic_nmi, flags),
+					FIELD_UINT("  Local APIC LINT", fwts_acpi_madt_local_apic_nmi, local_apic_lint),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Local APIC NMI:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_apic_nmi, offset);
+				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
+			}
 			break;
-		case 5:
-			local_apic_addr_override = (fwts_acpi_madt_local_apic_addr_override*)data;
-			fwts_log_info_verbatum(fw, " Local APIC Address Override:");
-			fwts_log_info_verbatum(fw, "  Local APIC Addr:0x%x", local_apic_addr_override->address);
-			data += sizeof(fwts_acpi_madt_local_apic_addr_override);
-			length -= sizeof(fwts_acpi_madt_local_apic_addr_override);
-			
+		case 5: {
+				fwts_acpidump_field fields_madt_local_apic_addr_override[] = {
+					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Local APIC Address Override:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_apic_addr_override, offset);
+				skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
+			}
 			break;
-		case 6:
-			io_sapic = (fwts_acpi_madt_io_sapic *)data;
-			fwts_log_info_verbatum(fw, " I/O SAPIC:");
-			fwts_log_info_verbatum(fw, "  I/O SAPIC ID:   0x%x", io_sapic->io_sapic_id);
-			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", io_sapic->gsi);
-			fwts_log_info_verbatum(fw, "  I/O SAPIC Addr: 0x%llx", io_sapic->address);
-			data += sizeof(fwts_acpi_madt_io_sapic);
-			length -= sizeof(fwts_acpi_madt_io_sapic);
+		case 6: {
+				fwts_acpidump_field fields_madt_io_sapic[] = {
+					FIELD_UINT("  I/O SAPIC ID", 	fwts_acpi_madt_io_sapic, io_sapic_id),
+					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_io_sapic, gsi),
+					FIELD_UINT("  I/O SAPIC Addr", 	fwts_acpi_madt_io_sapic, address),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " I/O SAPIC:");
+				acpi_dump_table_fields(fw, data, fields_madt_io_sapic, offset);
+				skip = sizeof(fwts_acpi_madt_io_sapic);
+			}
 			break;
-		case 7:
-			local_sapic = (fwts_acpi_madt_local_sapic*)data;
-			fwts_log_info_verbatum(fw, " Local SAPIC:");
-			fwts_log_info_verbatum(fw, "  ACPI CPU ID:    0x%x", local_sapic->acpi_processor_id);
-			fwts_log_info_verbatum(fw, "  Local SAPIC ID: 0x%x", local_sapic->local_sapic_id);
-			fwts_log_info_verbatum(fw, "  Local SAPIC EID:0x%x", local_sapic->local_sapic_eid);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_sapic->flags);
-			fwts_log_info_verbatum(fw, "  UID Value:      0x%x", local_sapic->uid_value);
-		
-			fwts_log_info_verbatum(fw, "  UID String:     %s", local_sapic->uid_string);
-			
-			n = strlen(local_sapic->uid_string) + 1;
-			data += (sizeof(fwts_acpi_madt_io_sapic) + n);
-			length -= (sizeof(fwts_acpi_madt_io_sapic) + n);
+		case 7: {
+				fwts_acpi_madt_local_sapic *local_sapic = (fwts_acpi_madt_local_sapic*)data;
+				fwts_acpidump_field fields_madt_local_sapic[] = {
+					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_sapic, acpi_processor_id),
+					FIELD_UINT("  Local SAPIC ID", 	fwts_acpi_madt_local_sapic, local_sapic_id),
+					FIELD_UINT("  Local SAPIC EID",	fwts_acpi_madt_local_sapic, local_sapic_eid),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_sapic, flags),
+					FIELD_UINT("  UID Value", 	fwts_acpi_madt_local_sapic, uid_value),
+					FIELD_UINT("  UID String", 	fwts_acpi_madt_local_sapic, uid_string),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Local SAPIC:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
+				n = strlen(local_sapic->uid_string) + 1;
+				skip = (sizeof(fwts_acpi_madt_local_sapic) + n);
+			}
 			break;
-		case 8:
-			platform_int_source = (fwts_acpi_madt_platform_int_source*)data;
-			fwts_log_info_verbatum(fw, " Platform Interrupt Sources:");
-			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", platform_int_source->flags);
-			fwts_log_info_verbatum(fw, "  Type:           0x%x", platform_int_source->type);
-			fwts_log_info_verbatum(fw, "  Processor ID:   0x%x", platform_int_source->processor_id);
-			fwts_log_info_verbatum(fw, "  Processor EID:  0x%x", platform_int_source->processor_eid);
-			fwts_log_info_verbatum(fw, "  IO SAPIC Vector:0x%lx", platform_int_source->io_sapic_vector);
-			fwts_log_info_verbatum(fw, "  Gbl Sys Int:    0x%lx", platform_int_source->gsi);
-			fwts_log_info_verbatum(fw, "  PIS Flags:      0x%x", platform_int_source->pis_flags);
-			data += (sizeof(fwts_acpi_madt_platform_int_source));
-			length += (sizeof(fwts_acpi_madt_platform_int_source));
+		case 8: {
+				fwts_acpidump_field fields_madt_local_sapic[] = {
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_platform_int_source, flags),
+					FIELD_UINT("  Type", 		fwts_acpi_madt_platform_int_source, type),
+					FIELD_UINT("  Processor ID", 	fwts_acpi_madt_platform_int_source, processor_id),
+					FIELD_UINT("  Processor EID", 	fwts_acpi_madt_platform_int_source, processor_eid),
+					FIELD_UINT("  IO SAPIC Vector", fwts_acpi_madt_platform_int_source, io_sapic_vector),
+					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_platform_int_source, gsi),
+					FIELD_UINT("  PIS Flags", 	fwts_acpi_madt_platform_int_source, pis_flags),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Platform Interrupt Sources:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
+				skip = (sizeof(fwts_acpi_madt_platform_int_source));
+			}
 			break;
-		case 9:
-			local_x2apic = (fwts_acpi_madt_local_x2apic*)data;
-			fwts_log_info_verbatum(fw, " Processor Local x2APIC:");
-			fwts_log_info_verbatum(fw, "  x2APIC ID       0x%lx", local_x2apic->x2apic_id);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", local_x2apic->flags);
-			fwts_log_info_verbatum(fw, "  Processor UID:  0x%lx", local_x2apic->processor_uid);
-			data += (sizeof(fwts_acpi_madt_local_x2apic));
-			length += (sizeof(fwts_acpi_madt_local_x2apic));
+		case 9: {
+				fwts_acpidump_field fields_madt_local_x2apic[] = {
+					FIELD_UINT("  x2APIC ID", 	fwts_acpi_madt_local_x2apic, x2apic_id),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic, flags),
+					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic, processor_uid),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Processor Local x2APIC:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_x2apic, offset);
+				skip = (sizeof(fwts_acpi_madt_local_x2apic));
+			}
 			break;
-		case 10:
-			local_x2apic_nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
-			fwts_log_info_verbatum(fw, " Local x2APIC NMI:");
-			fwts_log_info_verbatum(fw, "  Flags:          0x%x", local_x2apic_nmi->flags);
-			fwts_log_info_verbatum(fw, "  Processor UID:  0x%lx", local_x2apic_nmi->processor_uid);
-			fwts_log_info_verbatum(fw, "  LINT#           :0x%lx", local_x2apic_nmi->local_x2apic_lint);
-			data += (sizeof(fwts_acpi_madt_local_x2apic_nmi));
-			length += (sizeof(fwts_acpi_madt_local_x2apic_nmi));
+		case 10: {
+				fwts_acpidump_field fields_madt_local_x2apic_nmi[] = {
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic_nmi, flags),
+					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic_nmi, processor_uid),
+					FIELD_UINT("  LINT#", 		fwts_acpi_madt_local_x2apic_nmi, local_x2apic_lint),
+					FIELD_END
+				};
+				fwts_log_info_verbatum(fw, " Local x2APIC NMI:");
+				acpi_dump_table_fields(fw, data, fields_madt_local_x2apic_nmi, offset);
+				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
+			}
 			break;
 		default:
 			fwts_log_info_verbatum(fw, " Reserved for OEM use:");
+			skip = 0;
 			break;
 		}
+		data   += skip;
+		offset += skip;
+		length -= skip;
 	}
 }
 
@@ -806,7 +849,7 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields);
+	acpi_dump_table_fields(fw, data, fields, 0);
 
 	n = length - sizeof(fwts_acpi_table_mcfg);
 	fwts_acpi_mcfg_configuration *config = mcfg->configuration;
@@ -822,7 +865,7 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 			FIELD_END
 		};
 		fwts_log_info_verbatum(fw, "Configuration #%d:", i+1);
-		acpi_dump_table_fields(fw, (uint8*)config, fields_config);
+		acpi_dump_table_fields(fw, (uint8*)config, fields_config, 0);
 		config++;
 	}
 }
@@ -858,46 +901,61 @@ static void acpidump_slit(fwts_framework *fw, uint8 *data, int length)
 
 static void acpidump_srat(fwts_framework *fw, uint8 *data, int length)
 {
-	fwts_acpi_table_slit_local_apic_sapic_affinity *lasa;
-	fwts_acpi_table_slit_memory_affinity	       *ma;
-	fwts_acpi_table_slit_local_x2apic_affinity     *xa;
 	uint8 *ptr;
+	int   offset;
 
 	ptr = data + sizeof(fwts_acpi_table_srat);
+	offset = sizeof(fwts_acpi_table_srat);
 
 	while (ptr < data + length) {
 		switch (*ptr) {
-		case 0:
-			lasa = (fwts_acpi_table_slit_local_apic_sapic_affinity*)ptr;
-			fwts_log_info_verbatum(fw, " Processor Local APIC/SAPID Affinity Structure:");
-			fwts_log_info_verbatum(fw, "  Proximity [7:0] 0x%2.2x", lasa->proximity_domain_0);
-			fwts_log_info_verbatum(fw, "  APIC ID:        0x%2.2x", lasa->apic_id);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", lasa->flags);
-			fwts_log_info_verbatum(fw, "  L_SAPIC_EID:    0x%2.2x", lasa->local_sapic_eid);
-			fwts_log_info_verbatum(fw, "  Proximity [31:8]0x%2.2x%2.2x%2.2x", 
-				lasa->proximity_domain_1, lasa->proximity_domain_2, lasa->proximity_domain_3);
-			fwts_log_info_verbatum(fw, "  Clock Domain:   0x%lx", lasa->clock_domain);
-			ptr += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
+		case 0:	{
+				fwts_acpidump_field fields_lasa[] = {
+					FIELD_UINT("  Proximity [7:0]", fwts_acpi_table_slit_local_apic_sapic_affinity, proximity_domain_0),
+					FIELD_UINT("  APIC ID", fwts_acpi_table_slit_local_apic_sapic_affinity, apic_id),
+					FIELD_UINT("  Flags", fwts_acpi_table_slit_local_apic_sapic_affinity, flags),
+					FIELD_UINT("  L_SAPIC_EID", fwts_acpi_table_slit_local_apic_sapic_affinity, local_sapic_eid),
+					FIELD_UINT("  Proximity [31:24]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_3),
+					FIELD_UINT("  Proximity [23:16]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_2),
+					FIELD_UINT("  Proximity [15:8]",fwts_acpi_table_slit_local_apic_sapic_affinity,   proximity_domain_1),
+					FIELD_UINT("  Clock Domain:   0x%lx", fwts_acpi_table_slit_local_apic_sapic_affinity, clock_domain),
+					FIELD_END,
+				};
+				fwts_log_info_verbatum(fw, " Processor Local APIC/SAPID Affinity Structure:");
+				acpi_dump_table_fields(fw, ptr, fields_lasa, offset);
+				ptr += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
+				offset += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
+			}
 			break;
-		case 1:
-			ma = (fwts_acpi_table_slit_memory_affinity*)ptr;
-			fwts_log_info_verbatum(fw, " Memory Affinity Structure:");
-			fwts_log_info_verbatum(fw, "  Prox. Domain:   0x%lx", ma->proximity_domain);
-			fwts_log_info_verbatum(fw, "  Base Addr Lo:   0x%lx", ma->base_addr_lo);
-			fwts_log_info_verbatum(fw, "  Base Addr Hi:   0x%lx", ma->base_addr_hi);
-			fwts_log_info_verbatum(fw, "  Length Lo:      0x%lx", ma->length_lo);
-			fwts_log_info_verbatum(fw, "  Length Hi:      0x%lx", ma->length_hi);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", ma->flags);
-			ptr += sizeof(fwts_acpi_table_slit_memory_affinity);
+		case 1:	{
+				fwts_acpidump_field fields_ma[] = {
+					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_memory_affinity, proximity_domain),
+					FIELD_UINT("  Base Addr Lo", fwts_acpi_table_slit_memory_affinity, base_addr_lo),
+					FIELD_UINT("  Base Addr Hi", fwts_acpi_table_slit_memory_affinity, base_addr_hi),
+					FIELD_UINT("  Length Lo", fwts_acpi_table_slit_memory_affinity, length_lo),
+					FIELD_UINT("  Length Hi", fwts_acpi_table_slit_memory_affinity, length_hi),
+					FIELD_UINT("  Flags", fwts_acpi_table_slit_memory_affinity, flags),
+					FIELD_END,
+				};
+				fwts_log_info_verbatum(fw, " Memory Affinity Structure:");
+				acpi_dump_table_fields(fw, ptr, fields_ma, offset);
+				ptr += sizeof(fwts_acpi_table_slit_memory_affinity);
+				offset += sizeof(fwts_acpi_table_slit_memory_affinity);
+			}
 			break;
-		case 2:
-			xa = (fwts_acpi_table_slit_local_x2apic_affinity*)ptr;
-			fwts_log_info_verbatum(fw, " Processor Local x2APIC Affinit Structure:");
-			fwts_log_info_verbatum(fw, "  Prox. Domain:   0x%lx", xa->proximity_domain);
-			fwts_log_info_verbatum(fw, "  X2APIC ID:      0x%lx", xa->x2apic_id);
-			fwts_log_info_verbatum(fw, "  Flags:          0x%lx", xa->flags);
-			fwts_log_info_verbatum(fw, "  Clock Domain:   0x%lx", xa->clock_domain);
-			ptr += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
+		case 2: {
+				fwts_acpidump_field fields_xa[] = {
+					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_local_x2apic_affinity, proximity_domain),
+					FIELD_UINT("  X2APIC ID",    fwts_acpi_table_slit_local_x2apic_affinity, x2apic_id),
+					FIELD_UINT("  Flags",        fwts_acpi_table_slit_local_x2apic_affinity, flags),
+					FIELD_UINT("  Clock Domain", fwts_acpi_table_slit_local_x2apic_affinity, clock_domain),
+					FIELD_END,
+				};
+				fwts_log_info_verbatum(fw, " Processor Local x2APIC Affinit Structure:");
+				acpi_dump_table_fields(fw, ptr, fields_xa, offset);
+				ptr += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
+				offset += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
+			}
 			break;
 		default:
 			ptr = data + length; /* force abort */
@@ -980,8 +1038,8 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 
 	for (i=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
-		fwts_log_info_verbatum(fw, "%s @ %lx", table->name, table->addr);
-		fwts_log_info_verbatum(fw, "-----------------------");
+		fwts_log_info_verbatum(fw, "%s @ %8.8lx", table->name, table->addr);
+		fwts_log_info_verbatum(fw, "---------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);
 	}

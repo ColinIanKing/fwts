@@ -31,6 +31,7 @@ fwts_SOURCES = main.c \
 	bios/ebda_region/ebda_region.c \
 	bios/mtrr/mtrr.c \
 	bios/bios_info/bios_info.c \
+	bios/hdaaudio/hdaaudio.c \
 	bios/romdump/romdump.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \

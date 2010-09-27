@@ -322,12 +322,12 @@ static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 
 	cmos_data = fwts_cmos_read(boot->cmos_index);
-	fwts_log_info_verbatum(fw, "%41.41s: 0x%x", "Boot Register", cmos_data);
-	fwts_log_info_verbatum(fw, "%41.41s: %x",  "PNP-OS", (cmos_data & FWTS_BOOT_REGISTER_PNPOS) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Booting", (cmos_data & FWTS_BOOT_REGISTER_BOOTING) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Diag", (cmos_data & FWTS_BOOT_REGISTER_DIAG) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Suppress", (cmos_data & FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY) ? 1 : 0);
-	fwts_log_info_verbatum(fw, "%41.41s: %x",  "Parity", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%56.56s: 0x%x", "Boot Register", cmos_data);
+	fwts_log_info_verbatum(fw, "%56.56s: %x",  "PNP-OS", (cmos_data & FWTS_BOOT_REGISTER_PNPOS) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%56.56s: %x",  "Booting", (cmos_data & FWTS_BOOT_REGISTER_BOOTING) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%56.56s: %x",  "Diag", (cmos_data & FWTS_BOOT_REGISTER_DIAG) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%56.56s: %x",  "Suppress", (cmos_data & FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY) ? 1 : 0);
+	fwts_log_info_verbatum(fw, "%56.56s: %x",  "Parity", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 }
 
 static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)

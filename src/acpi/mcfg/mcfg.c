@@ -132,13 +132,15 @@ static int mcfg_test1(fwts_framework *fw)
 		"16 bytes in the MMIO mapped config space with the 'traditional' config "
 		"space of the first PCI device (root bridge). The MCFG data is only "
 		"trusted if it is marked reserved in the E820 table.");
-	fwts_log_info(fw, "\n");
+	fwts_log_nl(fw);
 
 	if ((e820_list = fwts_e820_table_load(fw)) == NULL) {
 		/* Not fatal, just means test will be less comprehensive */
 		fwts_log_warning(fw, "No E820 table found");
+	} else {
+		fwts_e820_table_dump(fw, e820_list);
+		fwts_log_nl(fw);
 	}
-	fwts_log_info(fw, "\n");
 
 	mcfg_size = mcfg_table->length; 
 	mcfg_size -= 36; /* general ACPI header */

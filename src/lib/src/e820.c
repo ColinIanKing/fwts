@@ -160,6 +160,14 @@ static void fwts_e820_dump_info(void *data, void *private)
 	fwts_log_info(fw, "%016llx - %016llx  %s", entry->start_address, entry->end_address, type);
 }
 
+void fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list)
+{
+	fwts_log_info(fw, "E820 memory layout");
+	fwts_log_info(fw, "------------------");
+
+	fwts_list_foreach(e820_list, fwts_e820_dump_info, fw);
+}
+
 fwts_list *fwts_e820_table_load(fwts_framework *fw)
 {
 	fwts_list *klog;
@@ -174,10 +182,6 @@ fwts_list *fwts_e820_table_load(fwts_framework *fw)
 	fwts_list_foreach(klog, fwts_e820_dmesg_info, e820_list);
 	fwts_klog_free(klog);
 
-	fwts_log_info(fw, "E820 memory layout");
-	fwts_log_info(fw, "------------------");
-
-	fwts_list_foreach(e820_list, fwts_e820_dump_info, fw);
 
 	return e820_list;
 }

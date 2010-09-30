@@ -35,5 +35,6 @@ int        fwts_e820_type(fwts_list *e820_list, const uint64 memory);
 int        fwts_e820_is_reserved(fwts_list *e820_list, const uint64 memory);
 fwts_list *fwts_e820_table_load(fwts_framework *fw);
 void       fwts_e820_table_free(fwts_list *e820_list);
+void       fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list);
 
 #endif

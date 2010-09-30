@@ -35,7 +35,8 @@
 	 FWTS_INTERACTIVE |		\
 	 FWTS_BATCH_EXPERIMENTAL |	\
 	 FWTS_INTERACTIVE_EXPERIMENTAL |\
-	 FWTS_POWER_STATES)
+	 FWTS_POWER_STATES |		\
+	 FWTS_UTILS)
 
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
@@ -143,6 +144,7 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 		{ "Batch Experimental",		FWTS_BATCH_EXPERIMENTAL },
 		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
 		{ "Power States",		FWTS_POWER_STATES },
+		{ "Utilities",			FWTS_UTILS },
 		{ NULL,			0 },
 	};
 
@@ -165,7 +167,8 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 				if (need_nl)
 					printf("\n");
 				need_nl = 1;
-				printf("%s tests:\n", categories[i].title);
+				printf("%s%s:\n", categories[i].title,
+					categories[i].flag & FWTS_UTILS ? "" : " tests");
 	
 				for (item = sorted->head; item != NULL; item = item->next) {
 					test = (fwts_framework_test*)item->data;
@@ -332,6 +335,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fwts_framework_minor_test_progress(fw, 0);
 
+	/* Not a utility test?, then we require a test summary at end of the test run */
+	if (!(test->flags & FWTS_UTILS))
+		fw->print_summary = 1;
+
 	if (test->ops->headline) {
 		fwts_log_heading(fw, "%s", test->ops->headline());
 		fwts_framework_underline(fw,'-');
@@ -359,7 +366,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 				fw->major_tests.aborted++;
 				fw->total.aborted++;
 			}
-			fwts_framework_test_summary(fw);
+			if (!(test->flags & FWTS_UTILS))
+				fwts_framework_test_summary(fw);
 			return FWTS_OK;
 		}
 	}
@@ -400,7 +408,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		test->ops->deinit(fw);
 	fwts_framework_debug(fw, "fwts_framework_run_test() complete");
 
-	fwts_framework_test_summary(fw);
+	if (!(test->flags & FWTS_UTILS))
+		fwts_framework_test_summary(fw);
 
 	fwts_log_set_owner(fw->results, "fwts");
 
@@ -1016,11 +1025,13 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fwts_framework_heading_info(fw, tests_to_run);
 	fwts_framework_tests_run(fw, tests_to_run);
 
-	fwts_log_set_owner(fw->results, "summary");
-	fwts_log_summary(fw, "");
-	fwts_framework_total_summary(fw);
-	fwts_log_summary(fw, "");
-	fwts_summary_report(fw);
+	if (fw->print_summary) {
+		fwts_log_set_owner(fw->results, "summary");
+		fwts_log_summary(fw, "");
+		fwts_framework_total_summary(fw);
+		fwts_log_summary(fw, "");
+		fwts_summary_report(fw);
+	}
 
 tidy:
 	fwts_list_free(tests_to_skip, NULL);

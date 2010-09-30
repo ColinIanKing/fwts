@@ -565,6 +565,7 @@ static void fwts_framework_syntax(char * const *argv)
 
 	static fwts_syntax_info syntax_help[] = {
 		{ "Arguments:",			NULL },
+		{ "-",				"Output results to stdout." },
 		{ "-a, --all",			"Run all tests." },
 		{ "-b, --batch",		"Just run non-interactive tests." },
 		{ "--batch-experimental",	"Just run Batch Experimental tests." },
@@ -700,6 +701,7 @@ static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, f
 int fwts_framework_args(const int argc, char * const *argv)
 {
 	int ret = FWTS_OK;
+	int i;
 
 	struct option long_options[] = {
 		{ "stdout-summary", 0, 0, 0 },		
@@ -775,7 +777,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:dDPaS:", long_options, &option_index)) == -1)
 			break;
-	
+
 		switch (c) {
 		case 0:
 			switch (option_index) {
@@ -944,6 +946,12 @@ int fwts_framework_args(const int argc, char * const *argv)
 		}
 	}	
 
+	for (i=optind; i<argc; i++)
+		if (!strcmp(argv[i], "-")) {
+			fwts_framework_strdup(&fw->results_logname, "stdout");
+			break;
+		}
+
 	if ((fw->s3_min_delay < 0) || (fw->s3_min_delay > 3600)) {
 		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
 		goto tidy_close;
@@ -982,7 +990,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 
-	
 	if ((fw->results = fwts_log_open("fwts", 
 			fw->results_logname, 
 			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a")) == NULL) {
@@ -995,6 +1002,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if (optind < argc)  {
 		/* Run specified tests */
 		for (; optind < argc; optind++) {
+			if (!strcmp(argv[optind], "-"))
+				continue;
+
 			fwts_framework_test *test = fwts_framework_test_find(fw, argv[optind]);
 
 			if (test == NULL) {
@@ -1007,7 +1017,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			if (fwts_framework_skip_test(tests_to_skip, test) == NULL) 
 				fwts_list_append(tests_to_run, test);
 		}
-	} else  {
+	}
+
+	if (fwts_list_len(tests_to_run) == 0) {
 		/* Find tests that are eligible for running */
 		fwts_list_link *item;
 		for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {

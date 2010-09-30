@@ -188,7 +188,7 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 			ptr++;
 			if (strncmp(ptr,"line",4)==0) {
 				n += snprintf(buffer+n, len-n,
-					"%4.4d", fwts_log_line);
+					"%5.5d", fwts_log_line);
 				ptr+=4;
 			}
 			if (strncmp(ptr,"date",4)==0) {

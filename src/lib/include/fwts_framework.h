@@ -41,6 +41,7 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_TEST_BIOS		       = 0x01000000,
 	FWTS_FRAMEWORK_FLAGS_TEST_UEFI		       = 0x02000000,
 	FWTS_FRAMEWORK_FLAGS_TEST_ACPI		       = 0x04000000,
+	FWTS_FRAMEWORK_FLAGS_UTILS     	       	       = 0x08000000,
 } fwts_framework_flags;
 
 #define FWTS_FRAMEWORK_FLAGS_TEST_MASK		\
@@ -93,6 +94,7 @@ typedef struct {
 	fwts_results	total;			/* totals over all tests */
 
 	int minor_test_progress;		/* Percentage completion of current test */
+	int print_summary;			/* Print summary of results at end of test runs */
 } fwts_framework;
 
 
@@ -164,6 +166,7 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 #define FWTS_BATCH_EXPERIMENTAL		FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL
 #define FWTS_INTERACTIVE_EXPERIMENTAL	FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL
 #define FWTS_POWER_STATES		FWTS_FRAMEWORK_FLAGS_POWER_STATES
+#define FWTS_UTILS			FWTS_FRAMEWORK_FLAGS_UTILS
 
 #define FWTS_TEST_BIOS			FWTS_FRAMEWORK_FLAGS_TEST_BIOS
 #define FWTS_TEST_UEFI			FWTS_FRAMEWORK_FLAGS_TEST_UEFI

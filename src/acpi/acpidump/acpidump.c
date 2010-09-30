@@ -1071,4 +1071,4 @@ static fwts_framework_ops acpidump_ops = {
 	acpidump_tests
 };
 
-FWTS_REGISTER(acpidump, &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);
+FWTS_REGISTER(acpidump, &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

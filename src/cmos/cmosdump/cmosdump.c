@@ -327,4 +327,4 @@ static fwts_framework_ops cmosdump_ops = {
 	cmosdump_tests
 };
 
-FWTS_REGISTER(cmosdump, &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);
+FWTS_REGISTER(cmosdump, &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

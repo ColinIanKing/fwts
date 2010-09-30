@@ -106,4 +106,4 @@ static fwts_framework_ops romdump_ops = {
 	romdump_tests
 };
 
-FWTS_REGISTER(romdump, &romdump_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);
+FWTS_REGISTER(romdump, &romdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

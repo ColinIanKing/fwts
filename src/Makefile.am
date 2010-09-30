@@ -33,6 +33,7 @@ fwts_SOURCES = main.c \
 	bios/bios_info/bios_info.c \
 	bios/hdaaudio/hdaaudio.c \
 	bios/romdump/romdump.c \
+	bios/os2gap/os2gap.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \

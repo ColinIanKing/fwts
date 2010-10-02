@@ -54,12 +54,12 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
 	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
 	mtrr.$(OBJEXT) bios_info.$(OBJEXT) hdaaudio.$(OBJEXT) \
-	romdump.$(OBJEXT) os2gap.$(OBJEXT) cmosdump.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
-	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
-	hotkey.$(OBJEXT) version.$(OBJEXT)
+	romdump.$(OBJEXT) os2gap.$(OBJEXT) e820dump.$(OBJEXT) \
+	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
+	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
+	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -257,6 +257,7 @@ fwts_SOURCES = main.c \
 	bios/hdaaudio/hdaaudio.c \
 	bios/romdump/romdump.c \
 	bios/os2gap/os2gap.c \
+	bios/e820dump/e820dump.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
@@ -370,6 +371,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstates.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e820dump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fadt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fan.Po@am__quote@
@@ -819,6 +821,20 @@ os2gap.obj: bios/os2gap/os2gap.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/os2gap/os2gap.c' object='os2gap.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o os2gap.obj `if test -f 'bios/os2gap/os2gap.c'; then $(CYGPATH_W) 'bios/os2gap/os2gap.c'; else $(CYGPATH_W) '$(srcdir)/bios/os2gap/os2gap.c'; fi`
+
+e820dump.o: bios/e820dump/e820dump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT e820dump.o -MD -MP -MF $(DEPDIR)/e820dump.Tpo -c -o e820dump.o `test -f 'bios/e820dump/e820dump.c' || echo '$(srcdir)/'`bios/e820dump/e820dump.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/e820dump.Tpo $(DEPDIR)/e820dump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/e820dump/e820dump.c' object='e820dump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o e820dump.o `test -f 'bios/e820dump/e820dump.c' || echo '$(srcdir)/'`bios/e820dump/e820dump.c
+
+e820dump.obj: bios/e820dump/e820dump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT e820dump.obj -MD -MP -MF $(DEPDIR)/e820dump.Tpo -c -o e820dump.obj `if test -f 'bios/e820dump/e820dump.c'; then $(CYGPATH_W) 'bios/e820dump/e820dump.c'; else $(CYGPATH_W) '$(srcdir)/bios/e820dump/e820dump.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/e820dump.Tpo $(DEPDIR)/e820dump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/e820dump/e820dump.c' object='e820dump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o e820dump.obj `if test -f 'bios/e820dump/e820dump.c'; then $(CYGPATH_W) 'bios/e820dump/e820dump.c'; else $(CYGPATH_W) '$(srcdir)/bios/e820dump/e820dump.c'; fi`
 
 cmosdump.o: cmos/cmosdump/cmosdump.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT cmosdump.o -MD -MP -MF $(DEPDIR)/cmosdump.Tpo -c -o cmosdump.o `test -f 'cmos/cmosdump/cmosdump.c' || echo '$(srcdir)/'`cmos/cmosdump/cmosdump.c

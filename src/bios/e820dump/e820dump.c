@@ -22,53 +22,36 @@
 
 #include "fwts.h"
 
-static fwts_list *e820dump_e820_info;
-
 static char *e820dump_headline(void)
 {
-	return "Dump INT 15 E820 memmap";
+	return "Dump INT 15 E820 memmap.";
 }
 
-static int e820dump_init(fwts_framework *fw)
+static int e820dump_util(fwts_framework *fw)
 {
+	fwts_list *e820dump_e820_info;
+
 	if ((e820dump_e820_info = fwts_e820_table_load(fw)) == NULL) {
-		fwts_log_warning(fw, "No E820 table found");
+		fwts_log_warning(fw, "Cannot load E820 table from /sys/firmware/memmap or kernel log.");
 		return FWTS_ERROR;
 	}
-	return FWTS_OK;
-}
 
-
-static int e820dump_deinit(fwts_framework *fw)
-{
-	if (e820dump_e820_info)
-		fwts_e820_table_free(e820dump_e820_info);
-
-	return FWTS_OK;
-}
-
-static int e820dump_test1(fwts_framework *fw)
-{
 	fwts_e820_table_dump(fw, e820dump_e820_info);
+	fwts_e820_table_free(e820dump_e820_info);
 
 	return FWTS_OK;
 }
 
-
-/*
- *  Null terminated array of tests to run, in this
- *  scenario, we just have one test.
- */
-static fwts_framework_tests e820dump_tests[] = {
-	e820dump_test1,
+static fwts_framework_tests e820dump_utils[] = {
+	e820dump_util,
 	NULL
 };
 
 static fwts_framework_ops e820dump_ops = {
 	e820dump_headline,
-	e820dump_init,
-	e820dump_deinit,
-	e820dump_tests
+	NULL,
+	NULL,
+	e820dump_utils
 };
 
 FWTS_REGISTER(e820dump, &e820dump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

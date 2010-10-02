@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010 Canonical
  *
  * This code was originally part of the Linux-ready Firmware Developer Kit

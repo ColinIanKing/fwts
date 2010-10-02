@@ -26,14 +26,7 @@
 #include <unistd.h>
 #include <stdint.h>
 
-#include "fwts_types.h"
-#include "fwts_list.h"
-#include "fwts_log.h"
-#include "fwts_klog.h"
-#include "fwts_framework.h"
-#include "fwts_e820.h"
-
-unsigned long RSDP_ADDRESS;
+#include "fwts.h"
 
 typedef struct {
 	uint64	start_address;
@@ -105,13 +98,6 @@ static void fwts_e820_dmesg_info(void *data, void *private)
 	char *str;
 	char *line = (char *)data;
 	fwts_list *e820_list = (fwts_list *)private;
-
-	if (strstr(line, "ACPI") && strstr(line,"RSDP")) {
-		char *c;
-		c = strstr(line, "@ 0x");
-		if (c) 
-			RSDP_ADDRESS = strtoul(c+4, NULL, 16);
-	}
 
 	if ((str = strstr(line,"BIOS-e820:")) != NULL) {
 		uint64 start;

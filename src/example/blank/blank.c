@@ -78,10 +78,10 @@ static fwts_framework_tests example_tests[] = {
 };
 
 static fwts_framework_ops example_ops = {
-	example_headline,
-	example_init,	/* Can be NULL if not required */
-	example_deinit,	/* Can be NULL if not required */
-	example_tests
+	.headline = example_headline,
+	.init     = example_init,	/* Can be NULL if not required */
+	.deinit   = example_deinit,	/* Can be NULL if not required */
+	.tests    = example_tests
 };
 
 /*

@@ -21,6 +21,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 static char *e820dump_headline(void)
 {
 	return "Dump INT 15 E820 memmap.";
@@ -52,3 +54,5 @@ static fwts_framework_ops e820dump_ops = {
 };
 
 FWTS_REGISTER(e820dump, &e820dump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+
+#endif

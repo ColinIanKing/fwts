@@ -116,8 +116,10 @@ static int ebda_test1(fwts_framework *fw)
 			}
 			if (strstr(tmp, "(reserved)") || strstr(tmp, "ACPI")) {
 				if (start_addr <= ebda_addr && end_addr > ebda_addr) {
-					fwts_passed(fw, "EBDA region mapped at %lx and reserved in E820 table in region 0x%llx..0x%llx.",
-						ebda_addr, start_addr, end_addr);
+					fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %lldK region in E820 table at 0x%llx..0x%llx.",
+						ebda_addr, 
+						(end_addr - start_addr) / 1024,
+						start_addr, end_addr);
 					passed = 1;
 					break;
 				}

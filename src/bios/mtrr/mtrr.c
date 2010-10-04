@@ -54,15 +54,15 @@ static char *cache_to_string(int type)
 	memset(str, 0, 1024);
 
 	if (type & UNCACHED || type==0)
-		strcat(str,"uncached ");
+		strcat(str," Uncached");
 	if (type & WRITECOMBINING)
-		strcat(str,"write-combining ");
+		strcat(str," Write-Combining");
 	if (type & WRITEBACK)
-		strcat(str,"write-back ");
+		strcat(str," Write-Back");
 	if (type & WRITETHROUGH)
-		strcat(str,"write-through ");
+		strcat(str," Write-Through");
 	if (type & DEFAULT)
-		strcat(str,"default ");
+		strcat(str," Default");
 	return str;
 }
 
@@ -110,13 +110,13 @@ static int get_mtrrs(void)
 		
 		entry->end += entry->start;
 
-		if (strstr(line, "write-back"))
+		if (strstr(line, "Write-Back"))
 			entry->type = WRITEBACK;
-		if (strstr(line, "uncachable"))
+		if (strstr(line, "Uncachable"))
 			entry->type = UNCACHED;
-		if (strstr(line, "write-through"))
+		if (strstr(line, "Write-Through"))
 			entry->type = WRITETHROUGH;
-		if (strstr(line, "write-combining"))
+		if (strstr(line, "Write-Combining"))
 			entry->type = WRITECOMBINING;
 
 		fwts_list_append(mtrr_list, entry);		
@@ -306,11 +306,11 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 	for (item=lspci_output->head; item != NULL; item = item->next) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
-			if (strstr(str, "non-prefetchable")) 
+			if (strstr(str, "Non-Prefetchable")) 
 				pref = 0;
-			else if (strstr(str, "(prefetchable"))
+			else if (strstr(str, "(Prefetchable"))
 				pref = 1;
-			else if (strstr(str, ", prefetchable"))
+			else if (strstr(str, ", Prefetchable"))
 				pref = 1;
 		}
 	}
@@ -406,7 +406,7 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute %s", start, end, c2,
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.", start, end, c2,
 				cache_to_string(type & type_mustnot));
 			if (type_must == UNCACHED)
 				skiperror = 1;
@@ -418,16 +418,15 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute %s", start, end, c2,
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.", start, end, c2,
 				cache_to_string( (type & type_must) ^ type_must));
 		}
 		
 	}
 	fclose(file);
 
-	if (!failed) {
-		fwts_passed(fw, "Memory ranges seem to have correct attributes");
-	}
+	if (!failed)
+		fwts_passed(fw, "Memory ranges seem to have correct attributes.");
 
 	return FWTS_OK;
 }
@@ -513,7 +512,7 @@ static int mtrr_test2(fwts_framework *fw)
 		else
 			fwts_passed(fw, "All processors have the a consistent MTRR setup.");
 	} else
-		fwts_log_error(fw, "No boot dmesg found.\n");
+		fwts_log_error(fw, "No boot dmesg found.");
 		
 	return FWTS_OK;
 }

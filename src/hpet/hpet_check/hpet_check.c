@@ -39,7 +39,7 @@ static fwts_list *klog;
 #define HPET_REG_SIZE  (0x400)
 #define MAX_CLK_PERIOD (100000000)
 
-static uint64	hpet_base_p = 0;
+static uint64_t	hpet_base_p = 0;
 static void     *hpet_base_v = 0;
 
 #if 0
@@ -69,7 +69,7 @@ static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_lin
 	char *val, *idx;
 
 	if ((val = strstr(fwts_text_list_text(item), "0x")) != NULL) {
-		uint64 address_base;
+		uint64_t address_base;
 		idx = index(val, ',');
 		if (idx)
 			*idx = '\0';
@@ -197,9 +197,9 @@ static int hpet_check_test1(fwts_framework *fw)
 static int hpet_check_test2(fwts_framework *fw)
 {
 	int fd;
-	uint64 hpet_id;
-	uint32 vendor_id;
-	uint32 clk_period;
+	uint64_t hpet_id;
+	uint32_t vendor_id;
+	uint32_t clk_period;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");
@@ -215,7 +215,7 @@ static int hpet_check_test2(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	hpet_id = *(uint64*) hpet_base_v;
+	hpet_id = *(uint64_t*) hpet_base_v;
 	vendor_id = (hpet_id & 0xffff0000) >> 16;
 
 	

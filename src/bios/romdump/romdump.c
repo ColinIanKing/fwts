@@ -47,7 +47,7 @@ static char *romdump_headline(void)
 	return "Dump ROM data.";
 }
 
-static void romdump_data(fwts_framework *fw, uint8 *data, int offset, int length)
+static void romdump_data(fwts_framework *fw, uint8_t *data, int offset, int length)
 {
 	char buffer[128];
 	int i;
@@ -61,7 +61,7 @@ static void romdump_data(fwts_framework *fw, uint8 *data, int offset, int length
 static int romdump_test1(fwts_framework *fw)
 {
 	int fd;
-	uint8 *mem;
+	uint8_t *mem;
 	int i;
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {

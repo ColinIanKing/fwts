@@ -122,7 +122,7 @@ static int mcfg_test1(fwts_framework *fw)
 {
 	int fd;
 	int nr, i;
-	uint8 *table_ptr, *table_page;
+	uint8_t *table_ptr, *table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
 	int mcfg_size;

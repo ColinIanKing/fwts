@@ -129,8 +129,8 @@ static int nx_test3(fwts_framework *fw)
 	int n;
 	int i;
 	int failed = 0;
-	uint64 msr_value = 0;
-	const uint64 nx_bit = 1ULL << 34;
+	uint64_t msr_value = 0;
+	const uint64_t nx_bit = 1ULL << 34;
 	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 
 	fwts_log_info(fw, 
@@ -147,7 +147,7 @@ static int nx_test3(fwts_framework *fw)
 	}
 
 	for (i=0; i<n; i++) {
-		uint64 val;
+		uint64_t val;
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 			fwts_log_error(fw, "Cannot get CPU info");
 			return FWTS_ERROR;

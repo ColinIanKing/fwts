@@ -29,8 +29,8 @@
 #include "fwts.h"
 
 typedef struct {
-	uint64	start_address;
-	uint64	end_address;
+	uint64_t	start_address;
+	uint64_t	end_address;
 	int	type;
 } e820_entry;
 
@@ -84,7 +84,7 @@ static char *fwts_e820_type_to_str(int type)
 	}
 }
 
-static int fwts_register_e820_line(fwts_list *e820_list, const uint64 start, const uint64 end, const int type)
+static int fwts_register_e820_line(fwts_list *e820_list, const uint64_t start, const uint64_t end, const int type)
 {
 	e820_entry *entry;
 
@@ -101,7 +101,7 @@ static int fwts_register_e820_line(fwts_list *e820_list, const uint64 start, con
 	return FWTS_OK;
 }
 
-int fwts_e820_type(fwts_list *e820_list, const uint64 memory)
+int fwts_e820_type(fwts_list *e820_list, const uint64_t memory)
 {
 	e820_entry *entry;
 	fwts_list_link *item;
@@ -115,7 +115,7 @@ int fwts_e820_type(fwts_list *e820_list, const uint64 memory)
 	return E820_UNKNOWN;
 }
 
-fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64 memory)
+fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory)
 {
 	int result = E820_UNKNOWN;
 
@@ -145,8 +145,8 @@ static void fwts_e820_dmesg_info(void *data, void *private)
 	fwts_list *e820_list = (fwts_list *)private;
 
 	if ((str = strstr(line,"BIOS-e820:")) != NULL) {
-		uint64 start;
-		uint64 end;
+		uint64_t start;
+		uint64_t end;
 
 		start = strtoull(str+10, NULL, 16);
 		str = strstr(line," - ");

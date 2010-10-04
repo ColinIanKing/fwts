@@ -39,7 +39,7 @@ char *fwts_acpi_fadt_preferred_pm_profile[] = {
 	"Performance Server",
 };
 
-void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8 *data)
+void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data)
 {
 	memcpy(hdr, data, sizeof(fwts_acpi_table_header));
 }

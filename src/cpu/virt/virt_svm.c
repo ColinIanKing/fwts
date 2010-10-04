@@ -52,7 +52,7 @@ static int can_lock_with_msr(void)
 
 int vt_locked_by_bios(void)
 {
-	uint64 msr;
+	uint64_t msr;
 	
 	if (!can_lock_with_msr())
 		return 0;

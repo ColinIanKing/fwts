@@ -22,6 +22,6 @@
 
 #include "fwts.h"
 
-void fwts_dump_raw_data(char *buffer, const int len, const uint8 *data, const int where, const int bytes);
+void fwts_dump_raw_data(char *buffer, const int len, const uint8_t *data, const int where, const int bytes);
 
 #endif

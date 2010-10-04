@@ -31,8 +31,8 @@
 #define E820_ACPI       2
 #define E820_USABLE     16
 
-int        fwts_e820_type(fwts_list *e820_list, const uint64 memory);
-int        fwts_e820_is_reserved(fwts_list *e820_list, const uint64 memory);
+int        fwts_e820_type(fwts_list *e820_list, const uint64_t memory);
+int        fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory);
 fwts_list *fwts_e820_table_load(fwts_framework *fw);
 void       fwts_e820_table_free(fwts_list *e820_list);
 void       fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list);

@@ -42,15 +42,15 @@ static char *acpidump_headline(void)
 struct fwts_acpidump_field;
 
 typedef void (*fwts_acpidump_field_func)(fwts_framework *fw, struct fwts_acpidump_field *info, void *data, int offset);
-typedef char *(*fwts_acpidump_str_func)(uint64 val);
+typedef char *(*fwts_acpidump_str_func)(uint64_t val);
 
 typedef struct fwts_acpidump_field {
 	char *label;
 	int   size;
 	int   offset;
 	fwts_acpidump_field_func func;
-	uint8  bit_field_nbits;
-	uint8  bit_field_shift;
+	uint8_t  bit_field_nbits;
+	uint8_t  bit_field_shift;
 	char  **strings;
 	int   strings_len;
 	fwts_acpidump_str_func str_func;
@@ -109,29 +109,29 @@ static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *d
 		info->size, info->size,(char*)data);
 }
 
-static uint64 apci_dump_get_uint64(fwts_acpidump_field *info, void *data)
+static uint64_t apci_dump_get_uint64_t(fwts_acpidump_field *info, void *data)
 {
-	uint64	ret;
-	uint64	mask = (1<<info->bit_field_nbits) - 1;
+	uint64_t	ret;
+	uint64_t	mask = (1<<info->bit_field_nbits) - 1;
 	int i;
 
 	switch (info->size) {
 	case 1:
-		ret  = (uint64)*(uint8*)data;
+		ret  = (uint64_t)*(uint8_t*)data;
 		break;
 	case 2:
-		ret  = (uint64)*(uint16*)data;
+		ret  = (uint64_t)*(uint16_t*)data;
 		break;
 	case 4:
-		ret  = (uint64)*(uint32*)data;
+		ret  = (uint64_t)*(uint32_t*)data;
 		break;
 	case 8:
-		ret  = (uint64)*(uint64*)data;
+		ret  = (uint64_t)*(uint64_t*)data;
 		break;
 	default:		
 		ret = 0;
 		for (i=0;(i<info->size) && (i<8); i++) {
-			uint8 val8 = *(uint8*)data++;
+			uint8_t val8 = *(uint8_t*)data++;
 			ret = (ret << 8) | val8;
 		}
 		break;
@@ -144,7 +144,7 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 {
 	int i;
 	int hexdigits = info->size << 1;
-	uint64 val = apci_dump_get_uint64(info, data);
+	uint64_t val = apci_dump_get_uint64_t(info, data);
 
 	switch (info->size) {
 	case 1:
@@ -162,7 +162,7 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 		break;
 	default:		
 		for (i=0; i<info->size; i++) {
-			uint8 val8 = *(uint8*)data++;
+			uint8_t val8 = *(uint8_t*)data++;
 			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info(info->label, info->size, info->offset + offset), val8, i);
 		}
 		break;
@@ -172,7 +172,7 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
 	int hexdigits = info->size << 1;
-	uint64 val = apci_dump_get_uint64(info, data);
+	uint64_t val = apci_dump_get_uint64_t(info, data);
 
 	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
 		hexdigits, hexdigits,
@@ -182,14 +182,14 @@ static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, voi
 static void acpi_dump_string_func(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
 	int hexdigits = info->size << 1;
-	uint64 val = apci_dump_get_uint64(info, data);
+	uint64_t val = apci_dump_get_uint64_t(info, data);
 
 	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
 		hexdigits, hexdigits,
 		val, info->str_func(val));
 }
 
-static void acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidump_field *fields, int offset, int table_len)
+static void acpi_dump_table_fields(fwts_framework *fw, uint8_t *data, fwts_acpidump_field *fields, int offset, int table_len)
 {
 	fwts_acpidump_field *field = fields;
 
@@ -198,7 +198,7 @@ static void acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidum
 			field->func(fw, field, data + field->offset, offset);
 }
 
-static void __acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpidump_field *fields, int offset)
+static void __acpi_dump_table_fields(fwts_framework *fw, uint8_t *data, fwts_acpidump_field *fields, int offset)
 {
 	fwts_acpidump_field *field = fields;
 
@@ -206,7 +206,7 @@ static void __acpi_dump_table_fields(fwts_framework *fw, uint8 *data, fwts_acpid
 		field->func(fw, field, data + field->offset, offset);
 }
 
-static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
+static void acpi_dump_raw_table(fwts_framework *fw, uint8_t *data, int length)
 {
         int n;
 
@@ -220,7 +220,7 @@ static void acpi_dump_raw_table(fwts_framework *fw, uint8 *data, int length)
         }
 }
 
-static char *acpi_dump_gas_address_space_id(uint64 index)
+static char *acpi_dump_gas_address_space_id(uint64_t index)
 {
 	char *txt;
 
@@ -301,12 +301,12 @@ static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr, int le
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, (uint8*)hdr, fields, 0, length);
+	acpi_dump_table_fields(fw, (uint8_t*)hdr, fields, 0, length);
 }
 
-static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_boot(fwts_framework *fw, uint8_t *data, int length)
 {
-	uint8 cmos_data;
+	uint8_t cmos_data;
 	fwts_acpi_table_boot *boot = (fwts_acpi_table_boot*)data;
 
 	fwts_acpidump_field fields[] = {
@@ -330,7 +330,7 @@ static void acpidump_boot(fwts_framework *fw, uint8 *data, int length)
 	fwts_log_info_verbatum(fw, "%56.56s: %x",  "Parity", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 }
 
-static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_bert(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpi_table_bert *bert = (fwts_acpi_table_bert*)data;
 	static char *error_severity[] = {
@@ -357,7 +357,7 @@ static void acpidump_bert(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_raw_table(fw, bert->generic_error_data, n);
 }
 
-static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_cpep(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i;
 	int n = (length - sizeof(fwts_acpi_table_bert)) / sizeof(fwts_acpi_cpep_processor_info);
@@ -376,7 +376,7 @@ static void acpidump_cpep(fwts_framework *fw, uint8 *data, int length)
 	};
 }
 
-static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_ecdt(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)data;
 	int n = length - sizeof(fwts_acpi_table_ecdt);
@@ -396,7 +396,7 @@ static void acpidump_ecdt(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_raw_table(fw, ecdt->ec_id, n);
 }
 
-static void acpidump_erst(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_erst(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i;
 
@@ -473,12 +473,12 @@ static void acpidump_erst(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
-static void acpidump_amlcode(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_amlcode(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
 }
 
-static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_facs(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpidump_field fields[] = {
 		FIELD_STR ("Signature", 	fwts_acpi_table_facs, 	signature),
@@ -496,7 +496,7 @@ static void acpidump_facs(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 }
 
-static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_hpet(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpidump_field fields[] = {
 		FIELD_UINT("Event Timer ID", 	fwts_acpi_table_hpet, event_timer_block_id),
@@ -518,7 +518,7 @@ static void acpidump_hpet(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 }
 
-static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_fadt(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpidump_field fields[] = {
 		FIELD_UINT("FACS Address", 	fwts_acpi_table_fadt, firmware_control),
@@ -601,7 +601,7 @@ static void acpidump_fadt(fwts_framework *fw, uint8 *data, int length)
 
 }
 
-static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_rsdp(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpidump_field fields[] = {
 		FIELD_STR ("Signature", 	fwts_acpi_table_rsdp, signature),
@@ -619,16 +619,16 @@ static void acpidump_rsdp(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 }
 
-static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_rsdt(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i;
 	int n;
 	fwts_acpi_table_rsdt *rsdt = (fwts_acpi_table_rsdt*)data;
 
-	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint32);
+	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint32_t);
 	for (i=0; i<n; i++)  {
 		char label[80];
-		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr((uint64)rsdt->entries[i]);
+		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr((uint64_t)rsdt->entries[i]);
 		char *name = table == NULL ? "unknown" : table->name;
 		snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
 		fwts_log_info_verbatum(fw, "%s 0x%8.8x", 
@@ -637,7 +637,7 @@ static void acpidump_rsdt(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
-static void acpidump_sbst(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_sbst(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpidump_field fields[] = {
 		FIELD_UINT("Warn. Energy Level", 	fwts_acpi_table_sbst,	warning_energy_level),
@@ -649,13 +649,13 @@ static void acpidump_sbst(fwts_framework *fw, uint8 *data, int length)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 }
 
-static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i;
 	int n;
 	fwts_acpi_table_xsdt *xsdt = (fwts_acpi_table_xsdt*)data;
 
-	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64);
+	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64_t);
 	for (i=0; i<n; i++)  {
 		char label[80];
 		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr(xsdt->entries[i]);
@@ -667,7 +667,7 @@ static void acpidump_xsdt(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
-static void acpidump_madt(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_madt(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i = 0;
 	int n;
@@ -848,7 +848,7 @@ static void acpidump_madt(fwts_framework *fw, uint8 *data, int length)
 	}
 }
 
-static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_mcfg(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)data;
 	int n;
@@ -876,19 +876,19 @@ static void acpidump_mcfg(fwts_framework *fw, uint8 *data, int length)
 			FIELD_END
 		};
 		fwts_log_info_verbatum(fw, "Configuration #%d:", i+1);
-		acpi_dump_table_fields(fw, (uint8*)config, fields_config, 0, length);
+		acpi_dump_table_fields(fw, (uint8_t*)config, fields_config, 0, length);
 		config++;
 	}
 }
 
-static void acpidump_slit(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_slit(fwts_framework *fw, uint8_t *data, int length)
 {
 	fwts_acpi_table_slit *slit = (fwts_acpi_table_slit*)data;
 	int i;
 	int j = 0;
 	int k = 0;
 	int n = length - sizeof(fwts_acpi_table_slit);
-	uint8 *entry;
+	uint8_t *entry;
 
 	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%lx (%lu)", slit->num_of_system_localities, 
 								    slit->num_of_system_localities);
@@ -910,9 +910,9 @@ static void acpidump_slit(fwts_framework *fw, uint8 *data, int length)
 };
 
 
-static void acpidump_srat(fwts_framework *fw, uint8 *data, int length)
+static void acpidump_srat(fwts_framework *fw, uint8_t *data, int length)
 {
-	uint8 *ptr;
+	uint8_t *ptr;
 	int   offset;
 
 	ptr = data + sizeof(fwts_acpi_table_srat);
@@ -978,7 +978,7 @@ static void acpidump_srat(fwts_framework *fw, uint8 *data, int length)
 
 typedef struct {
 	char *name;
-	void (*func)(fwts_framework *fw, uint8 *data, int length);
+	void (*func)(fwts_framework *fw, uint8_t *data, int length);
 	int  standard_header;
 } acpidump_table_vec;
 
@@ -1015,7 +1015,7 @@ acpidump_table_vec table_vec[] = {
 
 static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 {
-	uint8 *data;
+	uint8_t *data;
 	fwts_acpi_table_header hdr;
 	int length;
 	int i;
@@ -1049,7 +1049,7 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 
 	for (i=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
-		fwts_log_info_verbatum(fw, "%s @ %4.4lx (%d bytes)", table->name, (uint32)table->addr, table->length);
+		fwts_log_info_verbatum(fw, "%s @ %4.4lx (%d bytes)", table->name, (uint32_t)table->addr, table->length);
 		fwts_log_info_verbatum(fw, "---------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);

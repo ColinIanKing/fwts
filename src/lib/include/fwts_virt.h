@@ -28,12 +28,12 @@
 
 typedef struct __cpu_registers
 {
-	uint32 eax;
-	uint32 ebx;
-	uint32 ecx;
-	uint32 edx;
+	uint32_t eax;
+	uint32_t ebx;
+	uint32_t ecx;
+	uint32_t edx;
 } cpu_registers;
 
-void exec_cpuid(const int cpu, const uint32 cmd, cpu_registers* regs);
+void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs);
 
 #endif

@@ -39,16 +39,16 @@ typedef enum {
  *  Packed WMI WDG data 
  */
 typedef struct {
-	uint8	guid[16];			/* GUID */
+	uint8_t	guid[16];			/* GUID */
 	union {
-		uint8 	obj_id[2];		/* Object Identifier */
+		uint8_t 	obj_id[2];		/* Object Identifier */
 		struct {
-			uint8	notify_id;	/* Notify Identifier */
-			uint8	reserved;	/* Reserved? */
+			uint8_t	notify_id;	/* Notify Identifier */
+			uint8_t	reserved;	/* Reserved? */
 		};
 	};
-	uint8	instance;			/* Instance */
-	uint8	flags;				/* fwts_wmi_flags */
+	uint8_t	instance;			/* Instance */
+	uint8_t	flags;				/* fwts_wmi_flags */
 } __attribute__ ((packed)) fwts_guid_info;
 
 static char *wmi_headline(void)
@@ -91,7 +91,7 @@ char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 	return buffer;
 }
 
-static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
+static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 {
 	int i;
 	int advice_given = 0;
@@ -99,7 +99,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
 	fwts_guid_info *info = (fwts_guid_info *)wdg_data;
 
 	for (i=0; i<(size / sizeof(fwts_guid_info)); i++) {
-		uint8 *guid = info->guid;
+		uint8_t *guid = info->guid;
 		char guidstr[37];
 
 		snprintf(guidstr, sizeof(guidstr),
@@ -136,10 +136,10 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8 *wdg_data)
 	}
 }
 
-static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size, uint8 *wdg_data)
+static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size, uint8_t *wdg_data)
 {
 	char *str;
-	uint8 *data = wdg_data;
+	uint8_t *data = wdg_data;
 
 	for (;item != NULL; item=item->next) {
 		int i;
@@ -178,7 +178,7 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 
 static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 {
-	uint8 *wdg_data;
+	uint8_t *wdg_data;
 	int size;
 	char *str = fwts_text_list_text(item);
 

@@ -22,8 +22,8 @@
 #include "fwts.h"
 
 typedef struct {
-	uint16	pin;
-	uint32	setting;
+	uint16_t	pin;
+	uint32_t	setting;
 } hda_audio_pin_setting;
 
 static int hda_audio_init(fwts_framework *fw)
@@ -45,8 +45,8 @@ static fwts_list *hda_audio_read_pins(fwts_framework *fw, const char *path, cons
 {
 	FILE *fp;
 	fwts_list *settings;
-	uint16	pin;
-	uint32	setting;
+	uint16_t	pin;
+	uint32_t	setting;
 	hda_audio_pin_setting *pin_setting;
 	char name[PATH_MAX];
 

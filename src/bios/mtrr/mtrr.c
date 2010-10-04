@@ -41,9 +41,9 @@ static fwts_list *mtrr_list;
 #define DEFAULT		16
 
 struct mtrr_entry {
-	uint64 start;
-	uint64 end;
-	uint8  type;
+	uint64_t start;
+	uint64_t end;
+	uint8_t  type;
 };
 
 char *mtrr_resource = NULL;
@@ -126,7 +126,7 @@ static int get_mtrrs(void)
 	return FWTS_OK;
 }
 
-static int cache_types(uint64 start, uint64 end)
+static int cache_types(uint64_t start, uint64_t end)
 {
 	fwts_list_link *list;
 	struct mtrr_entry *entry;
@@ -185,7 +185,7 @@ static fwts_list *get_klog_bios_mtrr(void)
 				scan = 0;
 			
 			if (base) {	
-				uint64 start = strtoull(base+6, NULL, 16);
+				uint64_t start = strtoull(base+6, NULL, 16);
 				str = strstr(base, "mask");
 				if (str) {
 					struct mtrr_entry *mtrr;
@@ -193,8 +193,8 @@ static fwts_list *get_klog_bios_mtrr(void)
 					mtrr = calloc(1, sizeof(struct mtrr_entry));
 					mtrr->type = 0;
 
-					uint64 mask = strtoull(str+5, NULL, 16);
-					uint64 pat = 0x8000000000000000ULL;
+					uint64_t mask = strtoull(str+5, NULL, 16);
+					uint64_t pat = 0x8000000000000000ULL;
 					while ((mask & pat) == 0) {
 						mask |= pat;
 						pat >>= 1;
@@ -241,8 +241,8 @@ static int check_vga_controller_address(fwts_framework *fw)
 			if ((str = strstr(str, "Memory at ")) != NULL) {
 				fwts_list_link *item;
 				struct mtrr_entry *mtrr;
-				uint64 start = strtoull(str+10, NULL, 16);
-				uint64 size = 0;
+				uint64_t start = strtoull(str+10, NULL, 16);
+				uint64_t size = 0;
 #if 0
 				int pref = 0;
 				if (strstr(str, "non-prefetchable")) 
@@ -289,7 +289,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
+static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 {
 	int pref = 0;
 	char line[4096];
@@ -319,7 +319,7 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64 address)
 	return pref;
 }
 
-static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *mustnot, uint64 address)
+static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *mustnot, uint64_t address)
 {
 	*must = 0;
 	*mustnot = 0;
@@ -353,8 +353,8 @@ static int validate_iomem(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	while (!feof(file)) {
-		uint64 start;
-		uint64 end;
+		uint64_t start;
+		uint64_t end;
 		int type, type_must, type_mustnot;
 		char *c, *c2;
 		int i;

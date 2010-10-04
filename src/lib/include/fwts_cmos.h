@@ -22,6 +22,6 @@
 
 #include <stdio.h>
 
-uint8 fwts_cmos_read(int offset);
+uint8_t fwts_cmos_read(int offset);
 
 #endif

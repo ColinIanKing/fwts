@@ -87,7 +87,7 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, cons
 	return output;
 }
 
-fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8 *data, const int len)
+fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];

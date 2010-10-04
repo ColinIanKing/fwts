@@ -22,9 +22,9 @@
 
 #include "fwts.h"
 
-uint8 fwts_cmos_read(int offset)
+uint8_t fwts_cmos_read(int offset)
 {
-	uint8 value;
+	uint8_t value;
 
 	ioperm(0x70, 2, 1);
 	ioperm(0x80, 1, 1);

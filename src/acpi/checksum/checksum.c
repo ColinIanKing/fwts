@@ -52,8 +52,8 @@ static int checksum_scan_tables(fwts_framework *fw)
 			continue;
 
 		fwts_acpi_table_header *hdr = (fwts_acpi_table_header*)table->data;
-		uint8 *data = (uint8*) table->data;
-		uint8 checksum = 0;
+		uint8_t *data = (uint8_t*) table->data;
+		uint8_t checksum = 0;
 
 		for (j=0; j<hdr->length; j++) 
 			checksum += data[j];

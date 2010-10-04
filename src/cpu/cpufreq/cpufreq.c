@@ -388,7 +388,7 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 {
 	char path[PATH_MAX];
 	char *line;
-	uint64 Hz;
+	uint64_t Hz;
 	char *c, *c2;
 	int i; 
 	unsigned long highspeed=0;
@@ -533,7 +533,7 @@ static void check_sw_any(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
-	uint64 low_perf, high_perf, newhigh_perf;
+	uint64_t low_perf, high_perf, newhigh_perf;
 	static int once = 0;
 	int max_cpu = 0, i,j;
 	int cpu;

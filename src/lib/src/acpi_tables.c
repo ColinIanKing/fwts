@@ -41,7 +41,7 @@ static int acpi_tables_loaded = 0;
 /*
  *  Get RSDP address from EFI if possible
  */
-static uint32 fwts_acpi_find_rsdp_efi(void)
+static uint32_t fwts_acpi_find_rsdp_efi(void)
 {
 	FILE *systab;
 	char text[1024];
@@ -62,10 +62,10 @@ static uint32 fwts_acpi_find_rsdp_efi(void)
 /*
  *  RSDP checksum
  */
-static uint8 fwts_acpi_rsdp_checksum(uint8 *data, const int length)
+static uint8_t fwts_acpi_rsdp_checksum(uint8_t *data, const int length)
 {
 	int i;
-	uint8 checksum = 0;
+	uint8_t checksum = 0;
 
 	for (i=0; i<length; i++) {
 		checksum += *data++;
@@ -102,10 +102,10 @@ static void fwts_acpi_munmap(void *mem, unsigned long size)
 /*
  *  Find RSDP address by scanning BIOS memory
  */
-static uint32 fwts_acpi_find_rsdp_bios(void)
+static uint32_t fwts_acpi_find_rsdp_bios(void)
 {
-	uint8 *bios;
-	uint8 *ptr;
+	uint8_t *bios;
+	uint8_t *ptr;
 	fwts_acpi_table_rsdp *rsdp;
 	unsigned long addr = 0;
 
@@ -128,9 +128,9 @@ static uint32 fwts_acpi_find_rsdp_bios(void)
 	return addr;
 }
 
-static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32 addr)
+static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
 {
-	uint8 *mem;
+	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp;
 
 	if ((rsdp = (fwts_acpi_table_rsdp*)malloc(sizeof(fwts_acpi_table_rsdp))) == NULL) 
@@ -170,7 +170,7 @@ static void *fwts_acpi_load_table(off_t addr)
 	return table;
 }
 
-static void fwts_acpi_add_table(char *name, void *table, uint64 addr, int length)
+static void fwts_acpi_add_table(char *name, void *table, uint64_t addr, int length)
 {
 	int i;
 	int which = 0;
@@ -207,7 +207,7 @@ void fwts_acpi_free_tables(void)
 	}
 }
 
-void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 *addr32, uint64 *addr64)
+void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32_t *addr32, uint64_t *addr64)
 {
 	off_t addr;
 	fwts_acpi_table_header *header;
@@ -220,7 +220,7 @@ void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32 *addr32, ui
 
 	if (addr) {
 		header = fwts_acpi_load_table(addr);
-		fwts_acpi_add_table(header->signature, header, (uint64)addr, header->length);
+		fwts_acpi_add_table(header->signature, header, (uint64_t)addr, header->length);
 	}
 }
 
@@ -240,7 +240,7 @@ void fwts_acpi_load_tables(void)
 	fwts_acpi_table_rsdt *rsdt;
 	fwts_acpi_table_header *header;
 
-	uint64	rsdp_addr;
+	uint64_t	rsdp_addr;
 	int num_entries;
 	int i;
 
@@ -249,25 +249,25 @@ void fwts_acpi_load_tables(void)
 			return;
 
 	rsdp = fwts_acpi_get_rsdp(rsdp_addr);
-	fwts_acpi_add_table("RSDP", rsdp, (uint64)rsdp_addr, sizeof(fwts_acpi_table_rsdp));
+	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)rsdp_addr, sizeof(fwts_acpi_table_rsdp));
 
 	if (rsdp->rsdt_address) {
 		rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address);
-		fwts_acpi_add_table("RSDT", rsdt, (uint64)rsdp->rsdt_address, rsdt->header.length);
+		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address, rsdt->header.length);
 		num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
 		for (i=0; i<num_entries; i++) {
 			if (rsdt->entries[i]) {
 				header = fwts_acpi_load_table((off_t)rsdt->entries[i]);
 				if (strncmp("FACP", header->signature, 4) == 0)
 					fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-				fwts_acpi_add_table(header->signature, header, (uint64)rsdt->entries[i], header->length);
+				fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
 			}
 		}
 	}
 
 	if (rsdp->xsdt_address) {
 		xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address);
-		fwts_acpi_add_table("XSDT", xsdt, (uint64)rsdp->xsdt_address, xsdt->header.length);
+		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address, xsdt->header.length);
 		num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
 		for (i=0; i<num_entries; i++) {
 			if (xsdt->entries[i]) {
@@ -306,7 +306,7 @@ fwts_acpi_table_info *fwts_acpi_find_table(const char *name, const int which)
 /*
  *  Search for an ACPI table by address.
  */
-fwts_acpi_table_info *fwts_acpi_find_table_by_addr(const uint64 addr)
+fwts_acpi_table_info *fwts_acpi_find_table_by_addr(const uint64_t addr)
 {
 	int i;
 	

@@ -33,14 +33,14 @@ extern char *fwts_acpi_fadt_preferred_pm_profile[];
 
 #define FWTS_GET_UINT64(var, buffer, offset) 	\
 	var = 					\
-        ( ((uint64)data[offset+7] << 56) |      \
-          ((uint64)data[offset+6] << 48) |      \
-          ((uint64)data[offset+5] << 40) |      \
-          ((uint64)data[offset+4] << 32) |      \
-          ((uint64)data[offset+3] << 24) |      \
-          ((uint64)data[offset+2] << 16) |      \
-          ((uint64)data[offset+1] << 8)  |      \
-          ((uint64)data[offset]) )
+        ( ((uint64_t)data[offset+7] << 56) |      \
+          ((uint64_t)data[offset+6] << 48) |      \
+          ((uint64_t)data[offset+5] << 40) |      \
+          ((uint64_t)data[offset+4] << 32) |      \
+          ((uint64_t)data[offset+3] << 24) |      \
+          ((uint64_t)data[offset+2] << 16) |      \
+          ((uint64_t)data[offset+1] << 8)  |      \
+          ((uint64_t)data[offset]) )
 
 #define FWTS_GET_UINT32(var, buffer, offset) 	\
 	var = 					\
@@ -51,12 +51,12 @@ extern char *fwts_acpi_fadt_preferred_pm_profile[];
 
 #define FWTS_GET_UINT16(var, buffer, offset) 	\
 	var =					\
-        ( ((uint16)data[offset+1] << 8)  |      \
-          ((uint16)data[offset]) )
+        ( ((uint16_t)data[offset+1] << 8)  |      \
+          ((uint16_t)data[offset]) )
 
 #define FWTS_GET_UINT8(var, buffer, offset)	\
 	var = 					\
-        ( ((uint8)data[offset]) )
+        ( ((uint8_t)data[offset]) )
 
 #define FWTS_GET_GAS(var, buffer, offset)					\
 	do { 									\
@@ -69,54 +69,54 @@ extern char *fwts_acpi_fadt_preferred_pm_profile[];
 
 /* 5.2.3.1 Generic Address Structure */
 typedef struct {
-	uint8 	address_space_id;
-	uint8	register_bit_width;
-        uint8 	register_bit_offset;
-        uint8 	access_width;
-        uint64 	address;
+	uint8_t 	address_space_id;
+	uint8_t	register_bit_width;
+        uint8_t 	register_bit_offset;
+        uint8_t 	access_width;
+        uint64_t 	address;
 } __attribute__ ((packed)) fwts_acpi_gas;
 
 typedef struct {
 	char		signature[4];
-	uint32		length;
-	uint8		revision;
-	uint8		checksum;
+	uint32_t	length;
+	uint8_t		revision;
+	uint8_t		checksum;
 	char		oem_id[6];
 	char		oem_tbl_id[8];
-	uint32		oem_revision;
+	uint32_t	oem_revision;
 	char		creator_id[4];
-	uint32		creator_revision;
+	uint32_t	creator_revision;
 } __attribute__ ((packed)) fwts_acpi_table_header;
 
 typedef struct {
 	fwts_acpi_table_header	header;	
-	uint8		cmos_index;
-	uint8		reserved[3];
+	uint8_t		cmos_index;
+	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_boot;
 
 typedef struct {
 	fwts_acpi_table_header	header;	
-	uint32		boot_error_region_length;
-	uint64		boot_error_region;
-	uint32		boot_status;
-	uint32		raw_data_offset;
-	uint32		raw_data_length;
-	uint32		data_length;
-	uint32		error_severity;
-	uint8		generic_error_data[0];
+	uint32_t	boot_error_region_length;
+	uint64_t	boot_error_region;
+	uint32_t	boot_status;
+	uint32_t	raw_data_offset;
+	uint32_t	raw_data_length;
+	uint32_t	data_length;
+	uint32_t	error_severity;
+	uint8_t		generic_error_data[0];
 } __attribute__ ((packed)) fwts_acpi_table_bert;
 
 typedef struct {
-	uint8		type;
-	uint8		length;
-	uint8		processor_id;
-	uint8		processor_eid;
-	uint32		polling_interval;
+	uint8_t		type;
+	uint8_t		length;
+	uint8_t		processor_id;
+	uint8_t		processor_eid;
+	uint32_t	polling_interval;
 } __attribute__ ((packed)) fwts_acpi_cpep_processor_info;
 
 typedef struct {
 	fwts_acpi_table_header	header;	
-	uint8		reserved[8];
+	uint8_t		reserved[8];
 	fwts_acpi_cpep_processor_info	cpep_info[0];
 } __attribute__ ((packed)) fwts_acpi_table_cpep;
 
@@ -124,9 +124,9 @@ typedef struct {
 	fwts_acpi_table_header	header;	
 	fwts_acpi_gas	ec_control;
 	fwts_acpi_gas	ec_data;
-	uint32		uid;
-	uint8		gpe_bit;
-	uint8		ec_id[0];
+	uint32_t	uid;
+	uint8_t		gpe_bit;
+	uint8_t		ec_id[0];
 } __attribute__ ((packed)) fwts_acpi_table_ecdt;
 
 typedef enum {
@@ -139,94 +139,94 @@ typedef enum {
 
 typedef struct {
 	char		signature[4];
-	uint32		length;
-	uint32		hardware_signature;
-	uint32		firmware_waking_vector;
-	uint32		global_lock;
-	uint32		flags;
-	uint64		x_firmware_waking_vector;
-	uint8		version;
-	uint8		reserved[3];
-	uint32		ospm_flags;
-	uint8		reserved2[24];
+	uint32_t	length;
+	uint32_t	hardware_signature;
+	uint32_t	firmware_waking_vector;
+	uint32_t	global_lock;
+	uint32_t	flags;
+	uint64_t	x_firmware_waking_vector;
+	uint8_t		version;
+	uint8_t		reserved[3];
+	uint32_t	ospm_flags;
+	uint8_t		reserved2[24];
 } __attribute__ ((packed)) fwts_acpi_table_facs;
 
 typedef struct {
 	char		signature[8];
-	uint8		checksum;
+	uint8_t		checksum;
 	char		oem_id[6];
-	uint8		revision;
-	uint32		rsdt_address;
-	uint32		length;
-	uint32		xsdt_address;
-	uint8		extended_checksum;
-	uint8		reserved[3];
+	uint8_t		revision;
+	uint32_t	rsdt_address;
+	uint32_t	length;
+	uint32_t	xsdt_address;
+	uint8_t		extended_checksum;
+	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_rsdp;
 
 typedef struct {
 	fwts_acpi_table_header header;
-	uint64		entries[0];
+	uint64_t	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_xsdt;
 
 typedef struct {
 	fwts_acpi_table_header header;
-	uint32		entries[0];
+	uint32_t	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_rsdt;
 
 typedef struct {
 	fwts_acpi_table_header header;
-	uint32		warning_energy_level;
-	uint32		low_energy_level;
-	uint32		critical_energy_level;
+	uint32_t	warning_energy_level;
+	uint32_t	low_energy_level;
+	uint32_t	critical_energy_level;
 } __attribute__ ((packed)) fwts_acpi_table_sbst;
 /*
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
  */
 typedef struct {
 	fwts_acpi_table_header	header;	
-	uint32		firmware_control;
-	uint32		dsdt;
-	uint8		reserved;
-	uint8		preferred_pm_profile;
-	uint16		sci_int;
-	uint32		smi_cmd;
-	uint8		acpi_enable;
-	uint8		acpi_disable;
-	uint8		s4bios_req;
-	uint8		pstate_cnt;
-	uint32		pm1a_evt_blk;
-	uint32		pm1b_evt_blk;
-	uint32		pm1a_cnt_blk;
-	uint32		pm1b_cnt_blk;
-	uint32		pm2_cnt_blk;
-	uint32		pm_tmr_blk;
-	uint32		gpe0_blk;
-	uint32		gpe1_blk;
-	uint8		gpe1_base;
-	uint8		pm1_evt_len;
-	uint8		pm1_cnt_len;
-	uint8		pm2_cnt_len;
-	uint8		pm_tmr_len;
-	uint8		gpe0_blk_len;
-	uint8		gpe1_blk_len;
-	uint8		cst_cnt;
-	uint16		p_lvl2_lat;
-	uint16		p_lvl3_lat;
-	uint16		flush_size;
-	uint16		flush_stride;
-	uint8		duty_offset;
-	uint8		duty_width;
-	uint8		day_alrm;
-	uint8		mon_alrm;
-	uint8		century;
-	uint16		iapc_boot_arch;
-	uint8		reserved1;
-	uint32		flags;
+	uint32_t	firmware_control;
+	uint32_t	dsdt;
+	uint8_t		reserved;
+	uint8_t		preferred_pm_profile;
+	uint16_t	sci_int;
+	uint32_t	smi_cmd;
+	uint8_t		acpi_enable;
+	uint8_t		acpi_disable;
+	uint8_t		s4bios_req;
+	uint8_t		pstate_cnt;
+	uint32_t	pm1a_evt_blk;
+	uint32_t	pm1b_evt_blk;
+	uint32_t	pm1a_cnt_blk;
+	uint32_t	pm1b_cnt_blk;
+	uint32_t	pm2_cnt_blk;
+	uint32_t	pm_tmr_blk;
+	uint32_t	gpe0_blk;
+	uint32_t	gpe1_blk;
+	uint8_t		gpe1_base;
+	uint8_t		pm1_evt_len;
+	uint8_t		pm1_cnt_len;
+	uint8_t		pm2_cnt_len;
+	uint8_t		pm_tmr_len;
+	uint8_t		gpe0_blk_len;
+	uint8_t		gpe1_blk_len;
+	uint8_t		cst_cnt;
+	uint16_t	p_lvl2_lat;
+	uint16_t	p_lvl3_lat;
+	uint16_t	flush_size;
+	uint16_t	flush_stride;
+	uint8_t		duty_offset;
+	uint8_t		duty_width;
+	uint8_t		day_alrm;
+	uint8_t		mon_alrm;
+	uint8_t		century;
+	uint16_t	iapc_boot_arch;
+	uint8_t		reserved1;
+	uint32_t	flags;
 	fwts_acpi_gas	reset_reg;
-	uint8		reset_value;
-	uint8		reserved2[3];
-	uint64		x_firmware_ctrl;
-	uint64		x_dsdt;
+	uint8_t		reset_value;
+	uint8_t		reserved2[3];
+	uint64_t	x_firmware_ctrl;
+	uint64_t	x_dsdt;
 	fwts_acpi_gas	x_pm1a_evt_blk;
 	fwts_acpi_gas	x_pm1b_evt_blk;
 	fwts_acpi_gas	x_pm1a_cnt_blk;
@@ -238,98 +238,98 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
 
 typedef struct {
-	uint32		base_address;
-	uint32		base_reserved;
-	uint16		pci_segment_group_number;
-	uint8		start_bus_number;
-	uint8		end_bus_number;
-	uint8		reserved[4];
+	uint32_t	base_address;
+	uint32_t	base_reserved;
+	uint16_t	pci_segment_group_number;
+	uint8_t		start_bus_number;
+	uint8_t		end_bus_number;
+	uint8_t		reserved[4];
 }  __attribute__ ((packed)) fwts_acpi_mcfg_configuration;
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32		base_address;
-	uint32		base_reserved;
+	uint32_t	base_address;
+	uint32_t	base_reserved;
 	fwts_acpi_mcfg_configuration configuration[0];
 } __attribute__ ((packed)) fwts_acpi_table_mcfg;
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint64		num_of_system_localities;
+	uint64_t	num_of_system_localities;
 	/* matrix follows */
 } __attribute__ ((packed)) fwts_acpi_table_slit;
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32		reserved1;
-	uint64		reserved2;
+	uint32_t	reserved1;
+	uint64_t	reserved2;
 } __attribute__ ((packed)) fwts_acpi_table_srat;
 
 typedef struct {
-	uint8		type;
-	uint8		length;
-	uint8		proximity_domain_0;
-	uint8		apic_id;
-	uint32		flags;
-	uint8		local_sapic_eid;
-	uint8		proximity_domain_1;
-	uint8		proximity_domain_2;
-	uint8		proximity_domain_3;
-	uint32		clock_domain;
+	uint8_t		type;
+	uint8_t		length;
+	uint8_t		proximity_domain_0;
+	uint8_t		apic_id;
+	uint32_t	flags;
+	uint8_t		local_sapic_eid;
+	uint8_t		proximity_domain_1;
+	uint8_t		proximity_domain_2;
+	uint8_t		proximity_domain_3;
+	uint32_t		clock_domain;
 } __attribute__ ((packed)) fwts_acpi_table_slit_local_apic_sapic_affinity;
 
 typedef struct {
-	uint8		type;
-	uint8		length;
-	uint32		proximity_domain;
-	uint16		reserved1;
-	uint32		base_addr_lo;
-	uint32		base_addr_hi;
-	uint32		length_lo;
-	uint32		length_hi;
-	uint32		reserved2;
-	uint32		flags;
-	uint64		reserved3;
+	uint8_t		type;
+	uint8_t		length;
+	uint32_t	proximity_domain;
+	uint16_t	reserved1;
+	uint32_t	base_addr_lo;
+	uint32_t	base_addr_hi;
+	uint32_t	length_lo;
+	uint32_t	length_hi;
+	uint32_t	reserved2;
+	uint32_t	flags;
+	uint64_t	reserved3;
 } __attribute__ ((packed)) fwts_acpi_table_slit_memory_affinity;
 
 typedef struct {
-	uint8		type;
-	uint8		length;
-	uint16		reserved1;
-	uint32		proximity_domain;
-	uint32		x2apic_id;
-	uint32		flags;
-	uint32		clock_domain;
-	uint32		reserved2;
+	uint8_t		type;
+	uint8_t		length;
+	uint16_t	reserved1;
+	uint32_t	proximity_domain;
+	uint32_t	x2apic_id;
+	uint32_t	flags;
+	uint32_t	clock_domain;
+	uint32_t	reserved2;
 } __attribute__ ((packed)) fwts_acpi_table_slit_local_x2apic_affinity;
 
 /* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32		event_timer_block_id;
+	uint32_t	event_timer_block_id;
 	fwts_acpi_gas	base_address;
-	uint8		hpet_number;
-	uint16		main_counter_minimum;
-	uint8		page_prot_and_oem_attribute;
+	uint8_t		hpet_number;
+	uint16_t	main_counter_minimum;
+	uint8_t		page_prot_and_oem_attribute;
 } __attribute__ ((packed)) fwts_acpi_table_hpet;
 
 
 typedef struct {
-	uint8		serialization_action;
-	uint8		instruction;
-	uint8		flags;
-	uint8		reserved;
+	uint8_t		serialization_action;
+	uint8_t		instruction;
+	uint8_t		flags;
+	uint8_t		reserved;
 	fwts_acpi_gas	register_region;
-	uint64		value;
-	uint64		mask;
+	uint64_t	value;
+	uint64_t	mask;
 } __attribute__ ((packed)) fwts_acpi_serialization_instruction_entries;
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32		serialization_header_size;
-	uint32		reserved;
-	uint32		instruction_entry_count;
+	uint32_t	serialization_header_size;
+	uint32_t	reserved;
+	uint32_t	instruction_entry_count;
 	fwts_acpi_serialization_instruction_entries	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_erst;
 
@@ -337,14 +337,14 @@ typedef struct {
 /* MADT, Section 5.2.12 of ACPI spec, Multiple APIC Description Table */
 
 typedef struct {
-	uint8		type;
-	uint8		length;
+	uint8_t		type;
+	uint8_t		length;
 } __attribute__ ((packed)) fwts_acpi_madt_sub_table_header;
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32		lapic_address;
-	uint32		flags;
+	uint32_t	lapic_address;
+	uint32_t	flags;
 } __attribute__ ((packed)) fwts_acpi_table_madt;
 
 typedef enum {
@@ -363,82 +363,82 @@ typedef enum {
 } fwts_acpi_madt_type;
 
 typedef struct {
-	uint8		acpi_processor_id;
-	uint8		apic_id;
-	uint32		flags;
+	uint8_t		acpi_processor_id;
+	uint8_t		apic_id;
+	uint32_t	flags;
 }  __attribute__ ((packed)) fwts_acpi_madt_processor_local_apic;
 
 typedef struct {
-	uint8		io_apic_id;
-	uint8		reserved;
-	uint32		io_apic_phys_address;
-	uint32		global_irq_base;
+	uint8_t		io_apic_id;
+	uint8_t		reserved;
+	uint32_t	io_apic_phys_address;
+	uint32_t	global_irq_base;
 } __attribute__ ((packed)) fwts_acpi_madt_io_apic;
 
 typedef struct {
-	uint8		bus;
-	uint8		source;
-	uint32		gsi;
-	uint16		flags;
+	uint8_t		bus;
+	uint8_t		source;
+	uint32_t	gsi;
+	uint16_t	flags;
 } __attribute__ ((packed)) fwts_acpi_madt_interrupt_override;
 
 typedef struct {
-	uint16		flags;	
-	uint32		gsi;
+	uint16_t	flags;	
+	uint32_t	gsi;
 } __attribute__ ((packed)) fwts_acpi_madt_nmi;
 
 typedef struct {
-	uint8		acpi_processor_id;
-	uint16		flags;	
-	uint8		local_apic_lint;
+	uint8_t		acpi_processor_id;
+	uint16_t	flags;	
+	uint8_t		local_apic_lint;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_nmi;
 
 typedef struct {
-	uint16		reserved;
-	uint64		address;
+	uint16_t	reserved;
+	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_addr_override;
 
 typedef struct {
-	uint8		io_sapic_id;
-	uint8		reserved;
-	uint32		gsi;
-	uint64		address;
+	uint8_t		io_sapic_id;
+	uint8_t		reserved;
+	uint32_t	gsi;
+	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_io_sapic;
 
 typedef struct {
-	uint8		acpi_processor_id;
-	uint8		local_sapic_id;
-	uint8		local_sapic_eid;
-	uint8		reserved;
-	uint32		flags;
-	uint32		uid_value;
+	uint8_t		acpi_processor_id;
+	uint8_t		local_sapic_id;
+	uint8_t		local_sapic_eid;
+	uint8_t		reserved;
+	uint32_t	flags;
+	uint32_t	uid_value;
 	char		uid_string[0];
 } __attribute__ ((packed)) fwts_acpi_madt_local_sapic;
 
 typedef struct {
-	uint16		flags;
-	uint8		type;
-	uint8		processor_id;
-	uint8		processor_eid;
-	uint8		io_sapic_vector;
-	uint32		gsi;
-	uint32		pis_flags;
+	uint16_t	flags;
+	uint8_t		type;
+	uint8_t		processor_id;
+	uint8_t		processor_eid;
+	uint8_t		io_sapic_vector;
+	uint32_t	gsi;
+	uint32_t	pis_flags;
 } __attribute__ ((packed)) fwts_acpi_madt_platform_int_source;
 
 typedef struct {
-	uint16		reserved;
-	uint32		x2apic_id;
-	uint32		flags;
-	uint32		processor_uid;
+	uint16_t	reserved;
+	uint32_t	x2apic_id;
+	uint32_t	flags;
+	uint32_t	processor_uid;
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic;
 
 typedef struct {
-	uint16		flags;
-	uint32		processor_uid;
-	uint8		local_x2apic_lint;
-	uint8		reserved[3];
+	uint16_t	flags;
+	uint32_t	processor_uid;
+	uint8_t		local_x2apic_lint;
+	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
-void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8 *data);
+void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

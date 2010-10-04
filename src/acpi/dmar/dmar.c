@@ -34,17 +34,17 @@
 
 /* DMA Remapping Reporting Table (DMAR) */
 struct acpi_table_dmar {
-	uint8 head[36];
-	uint8 haw;
-	uint8 flags;
-	uint8 reserved[10];
+	uint8_t head[36];
+	uint8_t haw;
+	uint8_t flags;
+	uint8_t reserved[10];
 } __attribute__((packed));
 
 #define DMAR_HEADER_SIZE sizeof(struct acpi_table_dmar)
 
 struct acpi_dmar_entry_header {
-	uint16     type;
-	uint16     length;
+	uint16_t     type;
+	uint16_t     length;
 } __attribute__((packed));
 
 enum acpi_dmar_entry_type {
@@ -56,18 +56,18 @@ enum acpi_dmar_entry_type {
 
 struct acpi_table_drhd {
 	struct acpi_dmar_entry_header header;
-	uint8      flags;  	/* BIT0: INCLUDE_ALL */
-	uint8      reserved;
-	uint16     segment;
-	uint64     address; 	/* register base address for this drhd */
+	uint8_t      flags;  	/* BIT0: INCLUDE_ALL */
+	uint8_t      reserved;
+	uint16_t     segment;
+	uint64_t     address; 	/* register base address for this drhd */
 } __attribute__ ((packed));
 
 struct acpi_table_rmrr {
 	struct acpi_dmar_entry_header header;
-	uint16     reserved;
-	uint16     segment;
-	uint64     base_address;
-	uint64     end_address;
+	uint16_t     reserved;
+	uint16_t     segment;
+	uint64_t     base_address;
+	uint64_t     end_address;
 } __attribute__ ((packed));
 
 enum acpi_dev_scope_type {
@@ -79,16 +79,16 @@ enum acpi_dev_scope_type {
 };
 
 struct acpi_dev_scope {
-	uint8      dev_type;
-	uint8      length;
-	uint16     reserved;
-	uint8      enumeration_id;
-	uint8      start_bus;
+	uint8_t      dev_type;
+	uint8_t      length;
+	uint16_t     reserved;
+	uint8_t      enumeration_id;
+	uint8_t      start_bus;
 } __attribute__((packed));
 
 struct acpi_pci_path {
-	uint8      dev;
-	uint8      fn;
+	uint8_t      dev;
+	uint8_t      fn;
 } __attribute__((packed));
 
 #define MIN_SCOPE_LEN (sizeof(struct acpi_pci_path) + \
@@ -99,9 +99,9 @@ struct acpi_pci_path {
  * = 0, normal pci device
  * = 1, pci bridge, sec_bus gets set
  */
-static int read_pci_device_secondary_bus_number(uint8 seg,
-	uint8 bus, uint8 dev,
-	uint8 fn, uint8 *sec_bus)
+static int read_pci_device_secondary_bus_number(uint8_t seg,
+	uint8_t bus, uint8_t dev,
+	uint8_t fn, uint8_t *sec_bus)
 {
 	FILE *file;
 	char path[PATH_MAX];
@@ -129,8 +129,8 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw, struct acpi_dev_scope *s
 {
 	struct acpi_pci_path *path;
 	int count;
-	uint8 bus;
-	uint8 sec_bus = 0;
+	uint8_t bus;
+	uint8_t sec_bus = 0;
 	int dev_type;
 
 	if (scope->length < MIN_SCOPE_LEN) {
@@ -232,7 +232,7 @@ static int acpi_parse_one_rmrr(fwts_framework *fw, struct acpi_dmar_entry_header
 
 static int dmar_acpi_table_check(fwts_framework *fw)
 {
-	uint8 *table_ptr;
+	uint8_t *table_ptr;
 	struct acpi_dmar_entry_header *header;
 	fwts_acpi_table_info *table;
 	int failed = 0;
@@ -242,7 +242,7 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	table_ptr = (uint8*)table->data;
+	table_ptr = (uint8_t*)table->data;
 	if (table->length <= DMAR_HEADER_SIZE) {
 		fwts_failed(fw, "Invalid DMAR ACPI table.");
 		return FWTS_ERROR;

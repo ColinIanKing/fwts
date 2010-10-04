@@ -52,7 +52,7 @@ static int fadt_init(fwts_framework *fw)
 
 static char *fadt_headline(void)
 {
-	return "Check if FADT SCI_EN bit is enabled.";
+	return "FADT SCI_EN enabled check.";
 }
 
 static int fadt_test1(fwts_framework *fw)
@@ -113,16 +113,15 @@ static int fadt_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests fadt_tests[] = {
-	fadt_test1,
-	NULL
+static fwts_framework_minor_test fadt_tests[] = {
+	{ fadt_test1, "Check FADT SCI_EN bit is enabled." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops fadt_ops = {
-	fadt_headline,
-	fadt_init,
-	NULL,
-	fadt_tests
+	.headline    = fadt_headline,
+	.init        = fadt_init,
+	.minor_tests = fadt_tests
 };
 
 FWTS_REGISTER(fadt, &fadt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

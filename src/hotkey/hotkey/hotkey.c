@@ -247,16 +247,16 @@ static int hotkey_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests hotkey_tests[] = {
-	hotkey_test1,
-	NULL
+static fwts_framework_minor_test hotkey_tests[] = {
+	{ hotkey_test1, "Hotkey keypress checks." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops hotkey_ops = {
-	hotkey_headline,
-	hotkey_init,
-	hotkey_deinit,
-	hotkey_tests
+	.headline    = hotkey_headline,
+	.init        = hotkey_init,
+	.deinit      = hotkey_deinit,
+	.minor_tests = hotkey_tests
 };
 
 FWTS_REGISTER(hotkey, &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

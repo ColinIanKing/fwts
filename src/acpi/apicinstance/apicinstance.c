@@ -67,16 +67,15 @@ static int apicinstance_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests apicinstance_tests[] = {
-	apicinstance_test1,
-	NULL
+static fwts_framework_minor_test apicinstance_tests[] = {
+	{ apicinstance_test1, "Check single instance of APIC/MADT table." },
+	{ NULL, NULL } 
 };
 
 static fwts_framework_ops apicinstance_ops = {
-	apicinstance_headline,
-	apicinstance_init,
-	NULL,
-	apicinstance_tests
+	.headline    = apicinstance_headline,
+	.init        = apicinstance_init,
+	.minor_tests = apicinstance_tests
 };
 
 FWTS_REGISTER(apicinstance, &apicinstance_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

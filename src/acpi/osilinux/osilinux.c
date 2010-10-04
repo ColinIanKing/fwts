@@ -71,7 +71,6 @@ static int osilinux_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	fwts_log_info(fw, 
-		"Disassemble DSDT to check for _OSI(\"Linux\"). "
 		"This is not strictly a failure mode, it just alerts "
 		"one that this has been defined in the DSDT and probably "
 		"should be avoided since the Linux ACPI driver matches "
@@ -112,16 +111,16 @@ static int osilinux_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests osilinux_tests[] = {
-	osilinux_test1,
-	NULL
+static fwts_framework_minor_test osilinux_tests[] = {
+	{ osilinux_test1, "Disassemble DSDT to check for _OSI(\"Linux\")." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops osilinux_ops = {
-	osilinux_headline,
-	osilinux_init,	
-	osilinux_deinit,
-	osilinux_tests
+	.headline    = osilinux_headline,
+	.init        = osilinux_init,	
+	.deinit      = osilinux_deinit,
+	.minor_tests = osilinux_tests
 };
 
 FWTS_REGISTER(osilinux, &osilinux_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

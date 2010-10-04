@@ -131,16 +131,16 @@ static int ebda_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests ebda_tests[] = {
-	ebda_test1,
-	NULL
+static fwts_framework_minor_test ebda_tests[] = {
+	{ ebda_test1, "Check EBDA is reserved in E820 table." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops ebda_ops = {
-	ebda_headline,
-	ebda_init,
-	ebda_deinit,
-	ebda_tests
+	.headline    = ebda_headline,
+	.init        = ebda_init,
+	.deinit      = ebda_deinit,
+	.minor_tests = ebda_tests
 };
 
 FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

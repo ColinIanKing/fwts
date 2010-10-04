@@ -47,8 +47,6 @@ static int apicedge_test1(fwts_framework *fw)
 {	
 	FILE *file;
 
-	fwts_log_info(fw, "Checks if legacy interrupts are edge and PCI interrupts are level triggered.");
-		
 	if ((file = fopen("/proc/interrupts", "r")) == NULL) {
 		fwts_failed(fw, "Could not open file /proc/interrupts.");
 		return FWTS_ERROR;
@@ -98,16 +96,14 @@ static int apicedge_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests apicedge_tests[] = {
-	apicedge_test1,
-	NULL
+static fwts_framework_minor_test apicedge_tests[] = {
+	{ apicedge_test1, "Legacy and PCI Interrupt Edge/Level trigger checks." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops apicedge_ops = {
-	apicedge_headline,
-	NULL,
-	NULL,
-	apicedge_tests
+	.headline    = apicedge_headline,
+	.minor_tests = apicedge_tests
 };
 
 FWTS_REGISTER(apicedge, &apicedge_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

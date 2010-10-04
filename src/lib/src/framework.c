@@ -107,7 +107,7 @@ void fwts_framework_test_add(const char *name,
 		exit(EXIT_FAILURE);
 	}
 
-	for (ops->total_tests = 0; ops->tests[ops->total_tests] != NULL; ops->total_tests++)
+	for (ops->total_tests = 0; ops->minor_tests[ops->total_tests].test_func != NULL; ops->total_tests++)
 		;
 
 	new_test->name = name;
@@ -319,7 +319,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 
 static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, const fwts_framework_test *test)
 {		
-	fwts_framework_tests *minor_test;	
+	fwts_framework_minor_test *minor_test;	
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() entered");
 
@@ -362,7 +362,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
 				fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
 			}
-			for (minor_test = test->ops->tests; *minor_test != NULL; minor_test++) {
+			for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
 				fw->major_tests.aborted++;
 				fw->total.aborted++;
 			}
@@ -372,7 +372,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		}
 	}
 
-	for (minor_test = test->ops->tests; *minor_test != NULL; minor_test++, fw->current_minor_test_num++) {
+	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
 		fwts_framework_debug(fw, "exectuting test %d", fw->current_minor_test_num);
 
 		fw->minor_tests.aborted = 0;
@@ -380,8 +380,13 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fw->minor_tests.passed  = 0;
 		fw->minor_tests.warning = 0;
 
+		if (minor_test->name != NULL)
+			fwts_log_info(fw, "Test %d of %d: %s", 
+				fw->current_minor_test_num, 
+				test->ops->total_tests, minor_test->name);
+
 		fwts_framework_minor_test_progress(fw, 0);
-		(*minor_test)(fw);
+		(*minor_test->test_func)(fw);
 		fwts_framework_minor_test_progress(fw, 100);
 	
 		fw->major_tests.aborted += fw->minor_tests.aborted;
@@ -479,7 +484,7 @@ void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d ADVICE: %s.", fw->current_minor_test_num, buffer);
+	fwts_framework_debug(fw, "Test %d ADVICE: %s.", fw->current_minor_test_num, buffer);
 	fwts_log_nl(fw);
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_ADVICE_TEXT), buffer);
@@ -498,7 +503,7 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d PASSED: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.passed++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: Test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_PASSED_TEXT), fw->current_minor_test_num, buffer);
 
 	va_end(ap);
@@ -517,7 +522,7 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 
 	fwts_framework_debug(fw, "test %d FAILED [%s]: %s.", fw->current_minor_test_num, fwts_log_level_to_str(level), buffer);
 	fw->minor_tests.failed++;
-	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT), fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
 
 
@@ -534,7 +539,7 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_framework_debug(fw, "test %d WARNING: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.warning++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(BIOS_TEST_TOOLKIT_WARNING_TEXT), fw->current_minor_test_num, buffer);
 
 	va_end(ap);

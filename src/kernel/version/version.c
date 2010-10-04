@@ -56,21 +56,14 @@ static int version_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-/*
- *  Null terminated array of tests to run, in this
- *  scenario, we just have one test.
- */
-static fwts_framework_tests version_tests[] = {
-	version_test1,
-	NULL
+static fwts_framework_minor_test version_tests[] = {
+	{ version_test1, "Gather kernel system information." },
+	{ NULL, NULL },
 };
 
 static fwts_framework_ops version_ops = {
-	version_headline,
-	NULL,
-	NULL,
-	version_tests
+	.headline    = version_headline,
+	.minor_tests = version_tests
 };
 
 FWTS_REGISTER(version, &version_ops, FWTS_TEST_FIRST, FWTS_BATCH);

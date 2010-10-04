@@ -281,16 +281,14 @@ static int cstates_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests cstates_tests[] = {
-	cstates_test1,
-	NULL
+static fwts_framework_minor_test cstates_tests[] = {
+	{ cstates_test1, "Check all CPUs C-states." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops cstates_ops = {
-	cstates_headline,
-	NULL,
-	NULL,
-	cstates_tests
+	.headline    = cstates_headline,
+	.minor_tests = cstates_tests
 };
 
 FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME,  FWTS_BATCH_EXPERIMENTAL);

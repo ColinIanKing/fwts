@@ -59,7 +59,9 @@ typedef struct {
 	int warning;
 } fwts_results;
 
-
+/*
+ *  Test framework context
+ */
 typedef struct {
 	int magic;				/* identify struct magic */
 	fwts_log *debug;			/* log to dump framework debug messages */
@@ -97,14 +99,18 @@ typedef struct {
 	int print_summary;			/* Print summary of results at end of test runs */
 } fwts_framework;
 
+typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);
 
-typedef int (*fwts_framework_tests)(fwts_framework *framework);
+typedef struct {
+	fwts_framework_minor_test_func test_func;/* Minor test to run */
+	const char  *name;			/* Name of minor test */
+} fwts_framework_minor_test;
 
 typedef struct fwts_framework_ops {
 	char *(*headline)(void);		/* Headline description of test */
 	int (*init)(fwts_framework *);		/* Initialise */
 	int (*deinit)(fwts_framework *);	/* De-init */		
-	fwts_framework_tests *tests;		/* List of tests to run */
+	fwts_framework_minor_test *minor_tests;	/* NULL terminated array of minor tests to run */
 	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;
 

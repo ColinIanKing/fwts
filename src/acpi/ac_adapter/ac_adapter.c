@@ -84,8 +84,6 @@ static int ac_adapter_test1(fwts_framework *fw)
 	int matching = 0;
 	int not_matching = 0;
 
-	fwts_log_info(fw, "Test ACPI ac_adapter state.");
-
 	ac_adapter_check_field("state", "state:", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
@@ -100,8 +98,6 @@ static int ac_adapter_test2(fwts_framework *fw)
 {
 	int matching = 0;
 	int not_matching = 0;
-
-	fwts_log_info(fw, "Test ac_adapter initial on-line state.");
 
 	fwts_printf(fw, "==== Make sure laptop is connected to the mains power. ====\n");
 	fwts_press_enter(fw);
@@ -125,9 +121,6 @@ static int ac_adapter_test3(fwts_framework *fw)
 	int not_matching;
 	int events;
 	int i;
-
-	fwts_log_info(fw, "Test ac_adapter state changes.");
-
 
 	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
@@ -190,11 +183,11 @@ static int ac_adapter_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests ac_adapter_tests[] = {
-	ac_adapter_test1,
-	ac_adapter_test2,
-	ac_adapter_test3,
-	NULL
+static fwts_framework_minor_test ac_adapter_tests[] = { 
+	{ ac_adapter_test1, "Test ACPI ac_adapter state." }, 
+	{ ac_adapter_test2, "Test ac_adapter initial on-line state." },
+	{ ac_adapter_test3, "Test ac_adapter state changes." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops ac_adapter_ops = {

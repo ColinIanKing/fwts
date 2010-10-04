@@ -83,21 +83,18 @@ static int virt_test1(fwts_framework *fw)
 }
 	
 
-static fwts_framework_tests virt_tests[] = {
-	virt_test1,
-	NULL
+static fwts_framework_minor_test virt_tests[] = {
+	{ virt_test1, "Check CPU Virtualisation Configuration." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops virt_ops = {
-	virt_headline,
-	virt_init,
-	virt_deinit,
-	virt_tests
+	.headline    = virt_headline,
+	.init        = virt_init,
+	.deinit      = virt_deinit,
+	.minor_tests = virt_tests
 };
  
-/* 
- * This test checks if the virtual machine setup is done correctly by the BIOS
- */
 FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

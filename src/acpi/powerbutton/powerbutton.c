@@ -86,8 +86,6 @@ static int power_button_test1(fwts_framework *fw)
 	int matching = 0;
 	int not_matching = 0;
 
-	fwts_log_info(fw, "Test power button(s) report they are really Power Buttons.");
-
 	power_button_check_field(fw, "info", "Power Button", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
@@ -105,8 +103,6 @@ static int power_button_test2(fwts_framework *fw)
 	char *buffer;
 	int matching;
 	int i;
-
-	fwts_log_info(fw, "Test press of power button and ACPI event.");
 
 	fwts_printf(fw, "==== Please press the laptop power button. ====\n");
 
@@ -142,17 +138,17 @@ static int power_button_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests power_button_tests[] = {
-	power_button_test1,
-	power_button_test2,
-	NULL
+static fwts_framework_minor_test power_button_tests[] = {
+	{ power_button_test1, "Test power button(s) report they are really Power Buttons." },
+	{ power_button_test2, "Test press of power button and ACPI event." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops power_button_ops = {
-	power_button_headline,
-	power_button_init,
-	power_button_deinit,
-	power_button_tests
+	.headline    = power_button_headline,
+	.init        = power_button_init,
+	.deinit      = power_button_deinit,
+	.minor_tests = power_button_tests
 };
 
 FWTS_REGISTER(power_button, &power_button_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

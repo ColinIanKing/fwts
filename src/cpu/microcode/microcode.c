@@ -195,16 +195,15 @@ static int microcode_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests microcode_tests[] = {
-	microcode_test1,
-	NULL
+static fwts_framework_minor_test microcode_tests[] = {
+	{ microcode_test1, "Check for most recent microcode being loaded." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops microcode_ops = {
-	microcode_headline,
-	microcode_init,
-	NULL,
-	microcode_tests
+	.headline    = microcode_headline,
+	.init        = microcode_init,
+	.minor_tests = microcode_tests
 };
 
 FWTS_REGISTER(microcode, &microcode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

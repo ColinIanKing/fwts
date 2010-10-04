@@ -231,16 +231,16 @@ static int mcfg_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests mcfg_tests[] = {
-	mcfg_test1,
-	NULL
+static fwts_framework_minor_test mcfg_tests[] = {
+	{ mcfg_test1, "Validate MCFG table." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops mcfg_ops = {
-	mcfg_headline,
-	mcfg_init,
-	mcfg_deinit,
-	mcfg_tests
+	.headline    = mcfg_headline,
+	.init        = mcfg_init,
+	.deinit      = mcfg_deinit,
+	.minor_tests = mcfg_tests
 };
 
 FWTS_REGISTER(mcfg, &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

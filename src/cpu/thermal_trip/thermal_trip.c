@@ -287,16 +287,15 @@ static int thermal_trip_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests thermal_trip_tests[] = {
-	thermal_trip_test1,
-	NULL
+static fwts_framework_minor_test thermal_trip_tests[] = {
+	{ thermal_trip_test1, "Test ACPI passive thermal trip points." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops thermal_trip_ops = {
-	thermal_trip_headline,
-	thermal_trip_init,
-	NULL,
-	thermal_trip_tests
+	.headline    = thermal_trip_headline,
+	.init        = thermal_trip_init,
+	.minor_tests = thermal_trip_tests
 };
 
 FWTS_REGISTER(thermal_trip, &thermal_trip_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

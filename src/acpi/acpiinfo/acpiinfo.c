@@ -175,7 +175,6 @@ static int acpiinfo_deinit(fwts_framework *fw)
 
 static int acpiinfo_test1(fwts_framework *fw)
 {	
-	char *test = "General ACPI information check.";
 	int errors = 0;
 
 	fwts_log_info(fw, "This test checks the output of the in-kernel ACPI CA against common "
@@ -190,14 +189,14 @@ static int acpiinfo_test1(fwts_framework *fw)
 	if (errors > 0)
 		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "Found no errors in kernel log.");
 
 	return FWTS_OK;
 }
 
-static fwts_framework_tests acpiinfo_tests[] = {
-	acpiinfo_test1,
-	NULL
+static fwts_framework_minor_test acpiinfo_tests[] = {
+	{ acpiinfo_test1, "General ACPI information check." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpiinfo_ops = {

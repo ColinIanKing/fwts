@@ -132,17 +132,14 @@ static int crs_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-static fwts_framework_tests crs_tests[] = {
-	crs_test1,
-	NULL
+static fwts_framework_minor_test crs_tests[] = {
+	{ crs_test1, "Check PCI host bridge configuration using _CRS." },
+	{ NULL, NULL },
 };
 
 static fwts_framework_ops crs_ops = {
-	crs_headline,
-	NULL,
-	NULL,
-	crs_tests
+	.headline    = crs_headline,
+	.minor_tests = crs_tests
 };
 
 FWTS_REGISTER(crs, &crs_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

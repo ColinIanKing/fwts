@@ -181,26 +181,18 @@ static int maxfreq_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-/*
- *  Null terminated array of tests to run, in this
- *  scenario, we just have one test.
- */
-static fwts_framework_tests maxfreq_tests[] = {
-	maxfreq_test1,
-	NULL
+static fwts_framework_minor_test maxfreq_tests[] = {
+	{ maxfreq_test1, "Maximum CPU frequency check." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops maxfreq_ops = {
-	maxfreq_headline,
-	maxfreq_init,	/* Can be NULL if not required */
-	maxfreq_deinit,	/* Can be NULL if not required */
-	maxfreq_tests
+	.headline    = maxfreq_headline,
+	.init        = maxfreq_init,
+	.deinit      = maxfreq_deinit,
+	.minor_tests = maxfreq_tests
 };
 
-/*
- *   See fwts_framework.h for flags,
- */
 FWTS_REGISTER(maxfreq, &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

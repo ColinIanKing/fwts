@@ -164,16 +164,15 @@ static int dmi_decode_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests dmi_decode_tests[] = {
-	dmi_decode_test1,
-	NULL
+static fwts_framework_minor_test dmi_decode_tests[] = {
+	{ dmi_decode_test1, "Test DMI/SMBIOS tables for errors." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops dmi_decode_ops = {
-	dmi_decode_headline,
-	dmi_decode_init,
-	NULL,
-	dmi_decode_tests
+	.headline    = dmi_decode_headline,
+	.init        = dmi_decode_init,
+	.minor_tests = dmi_decode_tests
 };
 
 FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

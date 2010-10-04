@@ -41,7 +41,6 @@ static int os2gap_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
 static int os2gap_deinit(fwts_framework *fw)
 {
 	if (os2gap_e820_info)
@@ -52,8 +51,6 @@ static int os2gap_deinit(fwts_framework *fw)
 
 static int os2gap_test1(fwts_framework *fw)
 {
-	fwts_log_info(fw, "This test checks if the OS/2 15Mb memory hole is absent");
-
 	if (fwts_e820_is_reserved(os2gap_e820_info, OS2_GAP_ADDRESS)) {
 		fwts_failed_high(fw, "The memory map has OS/2 memory hole at %p..%p.",
 			(void*)OS2_GAP_ADDRESS,
@@ -66,21 +63,16 @@ static int os2gap_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-/*
- *  Null terminated array of tests to run, in this
- *  scenario, we just have one test.
- */
-static fwts_framework_tests os2gap_tests[] = {
-	os2gap_test1,
-	NULL
+static fwts_framework_minor_test os2gap_tests[] = {
+	{ os2gap_test1, "Check the OS/2 15Mb memory hole is absent." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops os2gap_ops = {
-	os2gap_headline,
-	os2gap_init,
-	os2gap_deinit,
-	os2gap_tests
+	.headline    = os2gap_headline,
+	.init        = os2gap_init,
+	.deinit      = os2gap_deinit,
+	.minor_tests = os2gap_tests
 };
 
 FWTS_REGISTER(os2gap, &os2gap_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

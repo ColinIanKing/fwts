@@ -289,16 +289,14 @@ static int battery_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests battery_tests[] = {
-	battery_test1,
-	NULL
+static fwts_framework_minor_test battery_tests[] = {
+	{ battery_test1, "Check batteries." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops battery_ops = {
-	battery_headline,
-	NULL,
-	NULL,
-	battery_tests
+	.headline    = battery_headline,
+	.minor_tests = battery_tests
 };
 
 FWTS_REGISTER(battery, &battery_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

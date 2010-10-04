@@ -42,52 +42,41 @@ static char *wakealarm_headline(void)
 static int wakealarm_test1(fwts_framework *fw)
 {
 	struct stat buf;
-	char *test = "Check existance of " WAKEALARM ".";
-
-	fwts_log_info(fw, test);
 
 	if (stat(wkalarm, &buf) == 0)
-		fwts_passed(fw, test);
+		fwts_passed(fw, WAKEALARM " found.");
 	else
-		fwts_failed(fw, test);
+		fwts_failed(fw, "Could not find " WAKEALARM ".");
 
 	return FWTS_OK;
 }
 
 static int wakealarm_test2(fwts_framework *fw)
 {
-	char *test = "Trigger RTC wakealarm.";
-
-	fwts_log_info(fw, test);
-	
 	fwts_log_info(fw, "Trigger wakealarm for 1 seconds in the future.");
 	if (fwts_wakealarm_trigger(fw, 1)) {
-		fwts_failed(fw, test);
+		fwts_failed(fw, "RTC wakealarm did not trigger.");
 		return FWTS_OK;
 	}
 
-	fwts_passed(fw, test);
+	fwts_passed(fw, "RTC wakealarm was triggered successfully.");
 
 	return FWTS_OK;
 }
 
 static int wakealarm_test3(fwts_framework *fw)
 {
-	char *test = "Check if wakealarm is fired.";
 	int ret;
 
-	fwts_log_info(fw, test);
-
-	fwts_log_info(fw, "Trigger wakealarm for 2 seconds in the future.");
 	ret = fwts_wakealarm_test_firing(fw, 2);
 	if (ret < 0) {
-		fwts_failed(fw, test);
+		fwts_failed(fw, "Failed to trigger and fire wakealarm.");
 		return FWTS_ERROR;	/* Really went wrong */
 	}
 	if (ret == 0)
-		fwts_passed(fw, test);
+		fwts_passed(fw, "RTC wakealarm triggered and fired successfully.");
 	else
-		fwts_failed(fw, test);
+		fwts_failed(fw, "RTC wakealarm was triggered but did not fire.");
 		
 	return FWTS_OK;
 }
@@ -95,36 +84,33 @@ static int wakealarm_test3(fwts_framework *fw)
 static int wakealarm_test4(fwts_framework *fw)
 {
 	int i;
-	char *test = "Multiple wakealarm firing tests.";
-
-	fwts_log_info(fw, test);
 	int failed = 0;
 
 	for (i=1; i<5; i++) {
 		fwts_log_info(fw, "Trigger wakealarm for %d seconds in the future.", i);
 		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {
-			fwts_failed(fw, test);
+			fwts_failed(fw, "Failed to trigger and fire wakealarm.");
 			return FWTS_ERROR;	/* Really went wrong */
 		}
 		if (ret != 0) {
-			fwts_failed(fw, test);	
+			fwts_failed(fw, "RTC wakealarm was triggered but did not fire.");
 			failed++;
 		}
 		fwts_progress(fw, 25 * i);
 	}
 	if (failed == 0)
-		fwts_passed(fw, test);
+		fwts_passed(fw, "RTC wakealarm triggered and fired successfully.");
 
 	return FWTS_OK;
 }
 
-static fwts_framework_tests wakealarm_tests[] = {
-	wakealarm_test1,
-	wakealarm_test2,
-	wakealarm_test3,	
-	wakealarm_test4,
-	NULL
+static fwts_framework_minor_test wakealarm_tests[] = {
+	{ wakealarm_test1, "Check existance of " WAKEALARM "." },
+	{ wakealarm_test2, "Trigger wakealarm for 1 seconds in the future." },
+	{ wakealarm_test3, "Check if wakealarm is fired." },
+	{ wakealarm_test4, "Multiple wakealarm firing tests." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops wakealarm_ops = {

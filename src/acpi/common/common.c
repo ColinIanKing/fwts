@@ -78,16 +78,16 @@ static int dmesg_common_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests dmesg_common_tests[] = {
-	dmesg_common_test1,
-	NULL
+static fwts_framework_minor_test dmesg_common_tests[] = {
+	{ dmesg_common_test1, "Check common errors in kernel log." },
+	{ NULL, NULL },
 };
 
 static fwts_framework_ops dmesg_common_ops = {
-	dmesg_common_headline,
-	dmesg_common_init,	
-	dmesg_common_deinit,
-	dmesg_common_tests
+	.headline    = dmesg_common_headline,
+	.init        = dmesg_common_init,	
+	.deinit      = dmesg_common_deinit,
+	.minor_tests = dmesg_common_tests
 };
 
 FWTS_REGISTER(dmesg_common, &dmesg_common_ops, FWTS_TEST_EARLY, FWTS_BATCH);

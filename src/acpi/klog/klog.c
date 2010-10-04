@@ -61,7 +61,6 @@ static void klog_progress(fwts_framework *fw, int progress)
 
 static int klog_test1(fwts_framework *fw)
 {	
-	char *test = "Kernel log error check.";
 	int errors = 0;
 
 	if (fwts_klog_firmware_check(fw, klog_progress, klog, &errors)) {
@@ -73,21 +72,21 @@ static int klog_test1(fwts_framework *fw)
 		/* Checks will log errors as failures automatically */
 		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "Found no errors in kernel log.");
 
 	return FWTS_OK;
 }
 
-static fwts_framework_tests klog_tests[] = {
-	klog_test1,
-	NULL
+static fwts_framework_minor_test klog_tests[] = {
+	{ klog_test1, "Kernel log error check." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops klog_ops = {
-	klog_headline,
-	klog_init,	
-	klog_deinit,
-	klog_tests
+	.headline    = klog_headline,
+	.init        = klog_init,	
+	.deinit      = klog_deinit,
+	.minor_tests = klog_tests
 };
 
 FWTS_REGISTER(klog, &klog_ops, FWTS_TEST_EARLY, FWTS_BATCH);

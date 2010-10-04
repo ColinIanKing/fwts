@@ -27,7 +27,7 @@
 static char *bios_info_headline(void)
 {
 	/* Return the name of the test scenario */
-	return "Gather BIOS information.";
+	return "Gather BIOS DMI information.";
 }
 
 typedef struct {
@@ -75,16 +75,14 @@ static int bios_info_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests bios_info_tests[] = {
-	bios_info_test1,
-	NULL
+static fwts_framework_minor_test bios_info_tests[] = {
+	{ bios_info_test1, "Gather BIOS DMI information" },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops bios_info_ops = {
-	bios_info_headline,
-	NULL,
-	NULL,
-	bios_info_tests
+	.headline    = bios_info_headline,
+	.minor_tests = bios_info_tests
 };
 
 FWTS_REGISTER(bios_info, &bios_info_ops, FWTS_TEST_FIRST, FWTS_BATCH);

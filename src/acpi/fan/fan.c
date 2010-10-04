@@ -107,16 +107,14 @@ static int fan_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests fan_tests[] = {
-	fan_test1,
-	NULL
+static fwts_framework_minor_test fan_tests[] = {
+	{ fan_test1, "Check fan status." },
+	{ NULL, NULL} 
 };
 
 static fwts_framework_ops fan_ops = {
-	fan_headline,
-	NULL,
-	NULL,
-	fan_tests
+	.headline    = fan_headline,
+	.minor_tests = fan_tests
 };
 
 FWTS_REGISTER(fan, &fan_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

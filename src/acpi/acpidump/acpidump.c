@@ -1059,16 +1059,15 @@ static int acpidump_test1(fwts_framework *fw)
 }
 
 
-static fwts_framework_tests acpidump_tests[] = {
-	acpidump_test1,
-	NULL
+static fwts_framework_minor_test acpidump_tests[] = {
+	{ acpidump_test1, "Dump ACPI tables." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpidump_ops = {
-	acpidump_headline,
-	acpidump_init,
-	NULL,
-	acpidump_tests
+	.headline    = acpidump_headline,
+	.init        = acpidump_init,
+	.minor_tests = acpidump_tests
 };
 
 FWTS_REGISTER(acpidump, &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

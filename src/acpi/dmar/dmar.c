@@ -303,16 +303,14 @@ static int dmar_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests dmar_tests[] = {
-	dmar_test1,
-	NULL
+static fwts_framework_minor_test dmar_tests[] = {
+	{ dmar_test1, "Check DMA Remapping." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops dmar_ops = {
-	dmar_headline,
-	NULL,
-	NULL,
-	dmar_tests
+	.headline    = dmar_headline,
+	.minor_tests = dmar_tests
 };
 
 FWTS_REGISTER(dmar, &dmar_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);

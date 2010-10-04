@@ -41,16 +41,14 @@ static int e820dump_util(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests e820dump_utils[] = {
-	e820dump_util,
-	NULL
+static fwts_framework_minor_test e820dump_utils[] = {
+	{ e820dump_util, "Dump INT 15 E820 memmap." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops e820dump_ops = {
-	e820dump_headline,
-	NULL,
-	NULL,
-	e820dump_utils
+	.headline    = e820dump_headline,
+	.minor_tests = e820dump_utils
 };
 
 FWTS_REGISTER(e820dump, &e820dump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

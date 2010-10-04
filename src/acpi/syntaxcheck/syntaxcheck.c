@@ -123,17 +123,16 @@ static int syntaxcheck_SSDT(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests syntaxcheck_tests[] = {
-	syntaxcheck_DSDT,
-	syntaxcheck_SSDT,
-	NULL
+static fwts_framework_minor_test syntaxcheck_tests[] = {
+	{ syntaxcheck_DSDT, "Disassemble and reassemble DSDT" },
+	{ syntaxcheck_SSDT, "Disassemble and reassemble SSDT" },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops syntaxcheck_ops = {
-	syntaxcheck_headline,
-	syntaxcheck_init,	
-	NULL,
-	syntaxcheck_tests
+	.headline    = syntaxcheck_headline,
+	.init        = syntaxcheck_init,	
+	.minor_tests = syntaxcheck_tests
 };
 
 FWTS_REGISTER(syntaxcheck, &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

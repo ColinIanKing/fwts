@@ -56,7 +56,6 @@ static char *lid_headline(void)
 	return "Interactive lid button test.";
 }
 
-
 void lid_check_field(char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -103,8 +102,6 @@ static int lid_test1(fwts_framework *fw)
 	int matching = 0;
 	int not_matching = 0;
 
-	fwts_log_info(fw, "Test LID buttons are reporting they are really Lid Switches.");
-
 	lid_check_field_poll("info", "Lid Switch", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
@@ -119,8 +116,6 @@ static int lid_test2(fwts_framework *fw)
 {
 	int matching = 0;
 	int not_matching = 0;
-
-	fwts_log_info(fw, "Test LID buttons report open correcly.");
 
 	fwts_printf(fw, "==== Make sure laptop lid is open. ====\n");
 	fwts_press_enter(fw);
@@ -196,7 +191,6 @@ static int lid_test_state(fwts_framework *fw, char *state)
 static int lid_test3(fwts_framework *fw)
 {
 	int ret;
-	fwts_log_info(fw, "Test LID buttons on a single open/close.");
 
 	fwts_printf(fw, "==== Please close laptop lid for 2 seconds and then re-open. ====\n");
 
@@ -212,7 +206,6 @@ static int lid_test4(fwts_framework *fw)
 {
 	int ret;
 	int i;
-	fwts_log_info(fw, "Test LID buttons on multiple open/close events.");
 	fwts_log_info(fw, "Some machines may have EC or ACPI faults that cause detection of multiple open/close events to fail.");
 
 	for (i=1;i<=3;i++) {
@@ -227,19 +220,19 @@ static int lid_test4(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests lid_tests[] = {
-	lid_test1,
-	lid_test2,
-	lid_test3,
-	lid_test4,
-	NULL
+static fwts_framework_minor_test lid_tests[] = {
+	{ lid_test1, "Test LID buttons are reporting they are really Lid Switches." },
+	{ lid_test2, "Test LID buttons report open correctly." },
+	{ lid_test3, "Test LID buttons on a single open/close." },
+	{ lid_test4, "Test LID buttons on multiple open/close events." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops lid_ops = {
-	lid_headline,
-	lid_init,
-	lid_deinit,
-	lid_tests
+	.headline    = lid_headline,
+	.init        = lid_init,
+	.deinit      = lid_deinit,
+	.minor_tests = lid_tests
 };
 
 FWTS_REGISTER(lid, &lid_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

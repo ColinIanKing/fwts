@@ -486,17 +486,11 @@ static char *mtrr_headline(void)
 
 static int mtrr_test1(fwts_framework *fw)
 {
-	fwts_log_info(fw, 
-		"Validate the kernel MTRR IOMEM setup.");
-
 	return validate_iomem(fw);
 }
 
 static int mtrr_test2(fwts_framework *fw)
 {
-	fwts_log_info(fw, 
-		"Validate the MTRR setup across all processors.");
-
 	if (klog != NULL) {
 		int failed = 0;
 
@@ -526,9 +520,6 @@ static int mtrr_test2(fwts_framework *fw)
 
 static int mtrr_test3(fwts_framework *fw)
 {
-	fwts_log_info(fw, 
-		"Check for AMD MtrrFixDramModEn being cleared by the BIOS.");
-
 	if (klog != NULL) {
 		if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
 			fwts_failed_medium(fw, "The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
@@ -548,25 +539,22 @@ static int mtrr_test3(fwts_framework *fw)
 
 static int mtrr_test4(fwts_framework *fw)
 {
-	fwts_log_info(fw, 
-		"Validate the BIOS provided boot time MTRR IOMEM setup.");
-
 	return check_vga_controller_address(fw);
 }
 
-static fwts_framework_tests mtrr_tests[] = {
-	mtrr_test1,
-	mtrr_test2,
-	mtrr_test3,
-	mtrr_test4,
-	NULL
+static fwts_framework_minor_test mtrr_tests[] = {
+	{ mtrr_test1, "Validate the kernel MTRR IOMEM setup." },
+	{ mtrr_test2, "Validate the MTRR setup across all processors." },
+	{ mtrr_test3, "Check for AMD MtrrFixDramModEn being cleared by the BIOS." },
+	{ mtrr_test4, "Validate the BIOS providided boot time MTRR IOMEM setup." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops mtrr_ops = {
-	mtrr_headline,
-	mtrr_init,
-	mtrr_deinit,
-	mtrr_tests
+	.headline    = mtrr_headline,
+	.init        = mtrr_init,
+	.deinit      = mtrr_deinit,
+	.minor_tests = mtrr_tests
 };
 
 FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_EARLY, FWTS_BATCH);

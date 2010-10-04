@@ -72,16 +72,16 @@ static int example_test1(fwts_framework *fw)
  *  Null terminated array of tests to run, in this
  *  scenario, we just have one test.
  */
-static fwts_framework_tests example_tests[] = {
-	example_test1,
-	NULL
+static fwts_framework_minor_test example_tests[] = {
+	{ example_test1, "Example text name." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops example_ops = {
-	.headline = example_headline,
-	.init     = example_init,	/* Can be NULL if not required */
-	.deinit   = example_deinit,	/* Can be NULL if not required */
-	.tests    = example_tests
+	.headline    = example_headline,
+	.init        = example_init,	/* Can be NULL if not required */
+	.deinit      = example_deinit,	/* Can be NULL if not required */
+	.minor_tests = example_tests    /* Array of tests to run */
 };
 
 /*

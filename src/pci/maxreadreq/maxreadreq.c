@@ -129,16 +129,16 @@ static int maxreadreq_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests maxreadreq_tests[] = {
-	maxreadreq_test1,
-	NULL
+static fwts_framework_minor_test maxreadreq_tests[] = {
+	{ maxreadreq_test1, "Check firmware settings MaxReadReq for PCI Express devices." },
+	{ NULL, NULL },
 };
 
 static fwts_framework_ops maxreadreq_ops = {
-	maxreadreq_headline,
-	maxreadreq_init,	
-	maxreadreq_deinit,
-	maxreadreq_tests
+	.headline    = maxreadreq_headline,
+	.init        = maxreadreq_init,	
+	.deinit      = maxreadreq_deinit,
+	.minor_tests = maxreadreq_tests
 };
 
 FWTS_REGISTER(maxreadreq, &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

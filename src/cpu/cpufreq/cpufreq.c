@@ -670,16 +670,14 @@ static int cpufreq_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests cpufreq_tests[] = {
-	cpufreq_test1,
-	NULL
+static fwts_framework_minor_test cpufreq_tests[] = {
+	{ cpufreq_test1, "CPU P-State Checks." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops cpufreq_ops = {
-	cpufreq_headline,
-	NULL,
-	NULL,
-	cpufreq_tests
+	.headline    = cpufreq_headline,
+	.minor_tests = cpufreq_tests
 };
 
 FWTS_REGISTER(cpufreq, &cpufreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

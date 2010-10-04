@@ -315,16 +315,15 @@ static int cmosdump_test1(fwts_framework *fw)
 }
 
 
-static fwts_framework_tests cmosdump_tests[] = {
-	cmosdump_test1,
-	NULL
+static fwts_framework_minor_test cmosdump_tests[] = {
+	{ cmosdump_test1, "Dump CMOS Memory." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops cmosdump_ops = {
-	cmosdump_headline,
-	cmosdump_init,
-	NULL,
-	cmosdump_tests
+	.headline    = cmosdump_headline,
+	.init        = cmosdump_init,
+	.minor_tests = cmosdump_tests
 };
 
 FWTS_REGISTER(cmosdump, &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);

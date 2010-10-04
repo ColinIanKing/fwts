@@ -207,17 +207,16 @@ static int s4_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests s4_tests[] = {
-	s4_test1,
-	s4_test2,
-	NULL
+static fwts_framework_minor_test s4_tests[] = {
+	{ s4_test1, "S4 hibernate/resume test (single run)." },
+	{ s4_test2, "S4 hibernate/resume test (multiple runs)." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops s4_ops = {
-	s4_headline,
-	s4_init,	
-	NULL,
-	s4_tests
+	.headline    = s4_headline,
+	.init        = s4_init,
+	.minor_tests = s4_tests
 };
 
 FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_POWER_STATES);

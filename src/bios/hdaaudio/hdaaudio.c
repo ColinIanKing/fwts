@@ -174,24 +174,16 @@ static int hda_audio_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-/*
- *  Null terminated array of tests to run, in this
- *  scenario, we just have one test.
- */
-static fwts_framework_tests hda_audio_tests[] = {
-	hda_audio_test1,
-	NULL
+static fwts_framework_minor_test hda_audio_tests[] = {
+	{ hda_audio_test1, "Check HDA Audio Pin Configs." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops hda_audio_ops = {
-	hda_audio_headline,
-	hda_audio_init,	/* Can be NULL if not required */
-	hda_audio_deinit,	/* Can be NULL if not required */
-	hda_audio_tests
+	.headline    = hda_audio_headline,
+	.init        = hda_audio_init,	
+	.deinit      = hda_audio_deinit,
+	.minor_tests = hda_audio_tests
 };
 
-/*
- *   See fwts_framework.h for flags,
- */
 FWTS_REGISTER(hda_audio, &hda_audio_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

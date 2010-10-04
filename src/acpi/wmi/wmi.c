@@ -276,17 +276,16 @@ static int wmi_SSDT(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests wmi_tests[] = {
-	wmi_DSDT,
-	wmi_SSDT,
-	NULL
+static fwts_framework_minor_test wmi_tests[] = {
+	{ wmi_DSDT, "Check Windows Management Instrumentation in DSDT" },
+	{ wmi_SSDT, "Check Windows Management Instrumentation in SSDT" },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops wmi_ops = {
-	wmi_headline,
-	wmi_init,	
-	NULL,
-	wmi_tests
+	.headline    = wmi_headline,
+	.init        = wmi_init,	
+	.minor_tests = wmi_tests
 };
 
 FWTS_REGISTER(wmi, &wmi_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

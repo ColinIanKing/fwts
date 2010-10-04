@@ -102,8 +102,6 @@ static int brightness_test1(fwts_framework *fw)
 	int actual_brightness;
 	int max_brightness;
 
-	fwts_log_info(fw, "Check for maximum and actual brightness.");
-
 	skip_tests = 1;
 
 	rewinddir(brightnessdir);
@@ -141,8 +139,6 @@ static int brightness_test2(fwts_framework *fw)
 	int max_brightness;
 	int actual_brightness;
 	int saved_brightness;
-
-	fwts_log_info(fw, "Change actual brightness.");
 
 	if (skip_tests)	{
 		fwts_log_info(fw, "Test skipped because previous test failed.");
@@ -191,8 +187,6 @@ static int brightness_test3(fwts_framework *fw)
 	struct dirent *entry;
 	int max_brightness;
 	int saved_brightness;
-
-	fwts_log_info(fw, "Observe all brightness changes.");
 
 	if (skip_tests)	{
 		fwts_log_info(fw, "Test skipped because previous test failed.");
@@ -245,8 +239,6 @@ static int brightness_test4(fwts_framework *fw)
 	struct dirent *entry;
 	int max_brightness;
 	int saved_brightness;
-
-	fwts_log_info(fw, "Observe min, max brightness changes.");
 
 	if (skip_tests)	{
 		fwts_log_info(fw, "Test skipped because previous test failed.");
@@ -303,7 +295,6 @@ static int brightness_wait_event(fwts_framework *fw)
 	char *buffer;
 	int len;
 	int i;
-	
 
 	if ((fd = acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
@@ -330,8 +321,6 @@ static int brightness_test5(fwts_framework *fw)
 {
 	struct dirent *entry;
 	int saved_brightness;
-
-	fwts_log_info(fw, "Check brightness hotkeys.");
 
 	rewinddir(brightnessdir);
 	do {
@@ -381,24 +370,23 @@ static int brightness_test5(fwts_framework *fw)
 		}
 	} while (entry);
 
-
 	return FWTS_OK;
 }
 
-static fwts_framework_tests brightness_tests[] = {
-	brightness_test1,
-	brightness_test2,
-	brightness_test3,
-	brightness_test4,
-	brightness_test5,
-	NULL
+static fwts_framework_minor_test brightness_tests[] = {
+	{ brightness_test1, "Check for maximum and actual brightness." },
+	{ brightness_test2, "Change actual brightness." },
+	{ brightness_test3, "Observe all brightness changes." },
+	{ brightness_test4, "Observe min, max brightness changes." },
+	{ brightness_test5, "Check brightness hotkeys." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops brightness_ops = {
-	brightness_headline,
-	brightness_init,
-	brightness_deinit,
-	brightness_tests
+	.headline    = brightness_headline,
+	.init        = brightness_init,
+	.deinit      = brightness_deinit,
+	.minor_tests = brightness_tests
 };
 
 FWTS_REGISTER(brightness, &brightness_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

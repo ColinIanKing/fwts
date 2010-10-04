@@ -120,15 +120,12 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 
 static int s3_check_log(fwts_framework *fw)
 {
-	char *test = "S3 suspend/resume check kernel log.";
 	fwts_list *klog;
 	int errors = 0;
 
-	fwts_log_info(fw, test);
-
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, test);
+		fwts_failed(fw, "Unable to check kernel log for S3 suspend/resume test.");
 		return FWTS_ERROR;
 	}
 
@@ -146,39 +143,33 @@ static int s3_check_log(fwts_framework *fw)
 	if (errors > 0)
 		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "Found no errors in kernel log.");
 
 	return FWTS_OK;
 }
 
 static int s3_test_single(fwts_framework *fw)
 {	
-	char *test = "S3 suspend/resume test (single run).";
 	int errors = 0;
 	int duration;
 
-	fwts_log_info(fw, test);
-
 	s3_do_suspend_resume(fw, &errors, 30, &duration);
 	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors);
+		fwts_log_info(fw, "Found %d errors doing suspend/resume.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "Found no errors doing suspend/resume.");
 
 	return s3_check_log(fw);
 }
 
 static int s3_test_multiple(fwts_framework *fw)
 {	
-	char *test = "S3 suspend/resume test (multiple runs).";
 	int errors = 0;
 	int delay = 30;
 	int duration = 0;
 	int i;
 	int awake_delay = fw->s3_min_delay * 1000;
 	int delta = (int)(fw->s3_delay_delta * 1000.0);
-
-	fwts_log_info(fw, test);
 
 	if (fw->s3_multiple == 0) {
 		fw->s3_multiple = 2;
@@ -209,17 +200,17 @@ static int s3_test_multiple(fwts_framework *fw)
 	}
 
 	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors doing suspend/resume", errors);
+		fwts_log_info(fw, "Found %d errors doing suspend/resume.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "Found no errors doing suspend/resume.");
 
 	return s3_check_log(fw);
 }
 
-static fwts_framework_tests s3_tests[] = {
-	s3_test_single,
-	s3_test_multiple,
-	NULL
+static fwts_framework_minor_test s3_tests[] = {
+	{ s3_test_single,   "S3 suspend/resume test (single run)." },
+	{ s3_test_multiple, "S3 suspend/resume test (multiple runs)." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops s3_ops = {

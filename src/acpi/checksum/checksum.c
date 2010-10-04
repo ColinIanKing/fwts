@@ -74,16 +74,15 @@ static int checksum_test1(fwts_framework *fw)
 }
 
 
-static fwts_framework_tests checksum_tests[] = {
-	checksum_test1,
-	NULL
+static fwts_framework_minor_test checksum_tests[] = {
+	{ checksum_test1, "Check ACPI table checksums." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops checksum_ops = {
-	checksum_headline,
-	checksum_init,
-	NULL,
-	checksum_tests
+	.headline    = checksum_headline,
+	.init        = checksum_init,
+	.minor_tests = checksum_tests
 };
 
 FWTS_REGISTER(checksum, &checksum_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

@@ -178,18 +178,16 @@ static int nx_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_tests nx_tests[] = {
-	nx_test1,
-	nx_test2,
-	nx_test3,
-	NULL
+static fwts_framework_minor_test nx_tests[] = {
+	{ nx_test1, "Check CPU NX capability." },
+	{ nx_test2, "Check all CPUs have same BIOS set NX flag." },
+	{ nx_test3, "Check all CPUs have same msr setting in MSR 0x1a0." },
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops nx_ops = {
-	nx_headline,
-	NULL,
-	NULL,
-	nx_tests
+	.headline    = nx_headline,
+	.minor_tests = nx_tests
 };
  
 FWTS_REGISTER(nx, &nx_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

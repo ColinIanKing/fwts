@@ -57,7 +57,7 @@ typedef struct fwts_acpidump_field {
 } fwts_acpidump_field;
 
 #define OFFSET(type, field)				\
-	(int)&(((type*)(0))->field)
+	((void*)&(((type*)(0))->field) - (void*)0)
 
 #define FIELD(text, type, field, func, bit_field_nbits, bit_field_shift, strings, strings_len, str_func) \
 	{						\

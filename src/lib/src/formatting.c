@@ -90,7 +90,11 @@ fwts_list *fwts_format_text(char *text, const int width)
 	linestart = tidied_text;
 
 	while (*textptr) {
-		if (isspace(*textptr) || *textptr == '/' || *textptr == ':' || *textptr == ';' || *textptr == ',')
+		if (isspace(*textptr) || 
+		    ((lastspace != NULL) && (*(textptr-1) != '/') && (*textptr == '/')) ||
+		    (*textptr == ':') || 
+		    (*textptr == ';') || 
+		    (*textptr == ','))
 			lastspace = textptr;
 
 		if (linelen >= width)
@@ -101,8 +105,9 @@ fwts_list *fwts_format_text(char *text, const int width)
 				}
 				fwts_text_list_append(list, tmp);
 				free(tmp);
+
 				
-				linestart = lastspace+1;
+				linestart = lastspace + ((isspace(*lastspace)) ? 1 : 0);
 				linelen = textptr - linestart;
 				lastspace = NULL;
 			}

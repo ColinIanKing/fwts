@@ -58,7 +58,7 @@ static int apicinstance_test1(fwts_framework *fw)
 
 	if (count > 1) {
 		char buffer[32];
-		fwts_failed(fw, "Found %d APIC/MADT tables, the kernel expects just one.", count);
+		fwts_failed_high(fw, "Found %d APIC/MADT tables, the kernel expects just one.", count);
 		snprintf(buffer, sizeof(buffer), " (or up to %d)", count);
 		fwts_log_advice(fw, "If you find any APIC issues, perhaps try using acpi_apic_instance=2%s.",
 			count > 2 ? buffer : "");

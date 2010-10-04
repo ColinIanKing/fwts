@@ -183,7 +183,7 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_failed(fw, "Cannot check MCFG mmio space against E820 table because E820 table could not load.");
 
 	for (i = 0; i<nr; i++) {
-		fwts_log_info(fw, "Entry address : %x\n", table->low_address);
+		fwts_log_info(fw, "Entry address : 0x%x\n", table->low_address);
 
 		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
 			fwts_failed_medium(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
@@ -197,7 +197,7 @@ static int mcfg_test1(fwts_framework *fw)
 			failed++;
 		}
 
-		fwts_log_info_verbatum(fw, "High  address : %x \n", table->high_address);
+		fwts_log_info_verbatum(fw, "High  address : 0x%x \n", table->high_address);
 		fwts_log_info_verbatum(fw, "Segment       : %i \n", table->segment);
 		fwts_log_info_verbatum(fw, "Start bus     : %i \n", table->start_bus);
 		fwts_log_info_verbatum(fw, "End bus       : %i \n", table->end_bus);
@@ -212,16 +212,11 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((table_page = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, firstentry.low_address)) == NULL) {
-		fwts_log_error(fw, "Cannot mmap onto /dev/mem.");
-		return FWTS_ERROR;
-	}
-
-        if (table_page==(void*)-1) {
+	if ((table_page = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, firstentry.low_address)) == MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap onto /dev/mem.");
 		close(fd);
-                return FWTS_ERROR;
-        }
+		return FWTS_ERROR;
+	}
 
 	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)table_page);
 

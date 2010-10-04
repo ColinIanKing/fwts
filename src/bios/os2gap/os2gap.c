@@ -22,6 +22,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 #define OS2_GAP_ADDRESS 	(15*1024*1024)
 #define OS2_GAP_SIZE		(1024*1024)
 
@@ -29,7 +31,7 @@ static fwts_list *os2gap_e820_info;
 
 static char *os2gap_headline(void)
 {
-	return "OS/2 memory hole test";
+	return "OS/2 memory hole test.";
 }
 
 static int os2gap_init(fwts_framework *fw)
@@ -76,3 +78,5 @@ static fwts_framework_ops os2gap_ops = {
 };
 
 FWTS_REGISTER(os2gap, &os2gap_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+
+#endif

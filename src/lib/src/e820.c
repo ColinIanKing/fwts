@@ -206,7 +206,7 @@ static e820_entry *fwts_e820_table_read_entry(const char *which)
 		free(entry);
 		return NULL;
 	}
-	sscanf(data, "0x%llx", &entry->start_address);
+	sscanf(data, "0x%llx", (unsigned long long*)&entry->start_address);
 	free(data);
 
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/end", which);
@@ -214,7 +214,7 @@ static e820_entry *fwts_e820_table_read_entry(const char *which)
 		free(entry);
 		return NULL;
 	}
-	sscanf(data, "0x%llx", &entry->end_address);
+	sscanf(data, "0x%llx", (unsigned long long*)&entry->end_address);
 	free(data);
 	
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/type", which);

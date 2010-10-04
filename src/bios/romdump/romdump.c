@@ -23,6 +23,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#ifdef FWTS_ARCH_INTEL
+
 #include "fwts.h"
 
 #define BIOS_ROM_REGION_START	(0x000c0000)
@@ -106,3 +108,5 @@ static fwts_framework_ops romdump_ops = {
 };
 
 FWTS_REGISTER(romdump, &romdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+
+#endif

@@ -254,7 +254,7 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
 	if (field & LOG_VERBATUM)
 		lines = fwts_list_from_text(buffer+n);
 	else
-		lines = format_text(buffer+n, log_line_width-n);
+		lines = fwts_format_text(buffer+n, log_line_width-n);
 
 	len = n;
 

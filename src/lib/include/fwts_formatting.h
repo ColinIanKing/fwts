@@ -22,6 +22,6 @@
 
 #include "fwts_list.h"
 
-fwts_list *format_text(char *text, const int width);
+fwts_list *fwts_format_text(char *text, const int width);
 
 #endif

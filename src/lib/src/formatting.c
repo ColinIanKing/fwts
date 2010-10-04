@@ -68,7 +68,7 @@ static char *format_remove_multiple_spaces(char *text)
 	return buffer;
 }
 
-fwts_list *format_text(char *text, const int width)
+fwts_list *fwts_format_text(char *text, const int width)
 {
 	int linelen = 0;
 	char *lastspace = NULL;

@@ -31,33 +31,45 @@ static int version_test1(fwts_framework *fw)
 
 	/* Following is Ubuntu specific, so don't fail */
 	if ((str = fwts_get("/proc/version_signature")) == NULL)
-		fwts_log_error(fw,"Cannot get version signature info from /proc/version_signature");
+		fwts_log_error(fw,"Cannot get version signature info from /proc/version_signature (This is Ubuntu specific, and not necessarily a failure).");
 	else {
-		fwts_log_info(fw, "Signature: %s", str);
+		fwts_passed(fw, "Signature: %s", str);
 		free(str);
 	}
+	return FWTS_OK;
+}
+
+static int version_test2(fwts_framework *fw)
+{
+	char *str;
+
 
 	if ((str = fwts_get("/proc/version")) == NULL) 
 		fwts_failed_low(fw,"Cannot get version info from /proc/version");
 	else {
-		fwts_log_info(fw, "Version: %s", str);
+		fwts_passed(fw, "Kernel Version: %s", str);
 		free(str);
-		fwts_passed(fw, "Gathered kernel version info");
 	}
+	return FWTS_OK;
+}
+
+static int version_test3(fwts_framework *fw)
+{
+	char *str;
 
 	if ((str = fwts_get("/proc/acpi/info")) == NULL) 
 		fwts_failed_low(fw,"Cannot get ACPI version info from /proc/acpi/info");
 	else {
-		fwts_log_info(fw, "ACPI Version: %s", str);
+		fwts_passed(fw, "ACPI Version: %s", str);
 		free(str);
-		fwts_passed(fw, "Gathered ACPI kernel version info");
 	}
-
 	return FWTS_OK;
 }
 
 static fwts_framework_minor_test version_tests[] = {
-	{ version_test1, "Gather kernel system information." },
+	{ version_test1, "Gather kernel signature." },
+	{ version_test2, "Gather kernel system information." },
+	{ version_test3, "Gather APCI driver version." },
 	{ NULL, NULL },
 };
 

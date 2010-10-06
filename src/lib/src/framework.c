@@ -617,7 +617,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "-s, --show-tests",		"Show available tests." },
 		{ "-S, --skip_test=t1[,t2]",	"Ship tests named t1, t2.." },
 		{ "--stdout-summary",		"Output SUCCESS or FAILED to stdout at end of tests." },
-		{ "--table-path=path",		"Path to ACPI tables." },
+		{ "-t, --table-path=path",	"Path to ACPI tables." },
 		{ "-v, --version",		"Show version." },
 		{ "-w, --log-width=N",		"Define the output log width in characters." },
 		{ NULL, NULL }
@@ -780,7 +780,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "abdDfhik:pPr:sS:vw:?", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "abdDfhik:pPr:sS:t:vw:?", long_options, &option_index)) == -1)
 			break;
 
 		switch (c) {
@@ -943,6 +943,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 		case 'S': /* --skip-test */
 			if (fwts_framework_skip_test_parse(fw, optarg, tests_to_skip) != FWTS_OK)
 				goto tidy_close;
+			break;
+		case 't': /* --table-path */
+			fwts_framework_strdup(&fw->acpi_table_path, optarg);
 			break;
 		case 'v': /* --version */
 			fwts_framework_show_version(argv);

@@ -510,11 +510,11 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"ACPI Warning.*Invalid throttling state",
 		NULL,
 	},
-
+	
 	/* Catch all warning */
 	{ 
-		LOG_LEVEL_HIGH,	
 		FWTS_COMPARE_STRING,
+		LOG_LEVEL_HIGH,	
 		"ACPI Warning", 
 		"ACPI AML intepreter has found some non-conforming AML code. "
 		"This should be investigated and fixed." 

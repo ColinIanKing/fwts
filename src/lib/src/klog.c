@@ -510,6 +510,18 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"ACPI Warning.*Invalid throttling state",
 		NULL,
 	},
+
+	/* ACPI Exceptions */
+	{
+		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,
+		"ACPI Exception:.*AE_TIME.*Returned by Handler for.*[EmbeddedControl]",
+		"This is most probably caused by when a read or write operation to the EC memory "
+		"has failed because of a timeout waiting for the Embedded Controller to complete "
+		"the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller "
+		"status port to indicate that a transaction is complete, but in this case it has not "
+		"and a AE_TIME error has been returned. "
+	},
 	
 	/* Catch all warning */
 	{ 

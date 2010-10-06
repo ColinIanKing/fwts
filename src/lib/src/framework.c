@@ -584,7 +584,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--iasl=path",		"Specify path to iasl." },
 		{ "-i, --interactive",		"Just run interactive tests." },
 		{ "--interactive-experimental",	"Just run Interactive Experimental tests." },
-		{ "--klog=file",		"Specify kernel log file rather than reading it" },
+		{ "-k, --klog=file",		"Specify kernel log file rather than reading it" },
 		{ "",				"from the kernel." },
 		{ "--log-fields",		"Show available log filtering fields." },
 		{ "--log-filter=expr",		"Define filters to dump out specific log fields:" },
@@ -780,7 +780,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:vfhbipsw:dDPaS:", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "?r:vfhbik:psw:dDPaS:", long_options, &option_index)) == -1)
 			break;
 
 		switch (c) {
@@ -915,6 +915,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 		case '?':
 			fwts_framework_syntax(argv);
 			goto tidy_close;
+			break;
+		case 'k': /* --klog */
+			fwts_framework_strdup(&fw->klog, optarg);
 			break;
 		case 'b': /* --batch */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;

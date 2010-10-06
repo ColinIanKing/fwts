@@ -23,9 +23,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#ifdef FWTS_ARCH_INTEL
-
 #include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 #define BIOS_ROM_REGION_START	(0x000c0000)
 #define BIOS_ROM_REGION_END  	(0x000fffff)

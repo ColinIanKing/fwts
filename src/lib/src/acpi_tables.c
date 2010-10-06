@@ -314,9 +314,10 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *direntry;
+	int count = 0;
 
 	if ((dir = opendir(fw->acpi_table_path)) == NULL) {
-		fwts_log_error(fw, "Cannot open directory %s to read ACPI tables.", 
+		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.", 
 			fw->acpi_table_path);
 		return;
 	}
@@ -331,15 +332,19 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				uint8_t *table;
 				int length;
 				char name[PATH_MAX];
+
+				count++;
 				strcpy(name, direntry->d_name);
 				name[strlen(name)-4] = '\0';
-				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
+				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL) 
 					fwts_acpi_add_table(name, table, (uint64_t)0, length);
 				close(fd);
 			} else
-				fwts_log_error(fw, "Cannot load ACPI table from file %s\n", path);
+				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);
 		}
 	}
+	if (count == 0)
+		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
 
 	closedir(dir);
 }

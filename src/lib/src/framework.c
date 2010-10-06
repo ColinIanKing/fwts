@@ -780,7 +780,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "?r:vfhbik:psw:dDPaS:", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "abdDfhik:pPr:sS:vw:?", long_options, &option_index)) == -1)
 			break;
 
 		switch (c) {
@@ -904,9 +904,15 @@ int fwts_framework_args(const int argc, char * const *argv)
 		case 'a': /* --all */
 			fw->flags |= FWTS_RUN_ALL_FLAGS;
 			break;
+		case 'b': /* --batch */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+			break;
 		case 'd': /* --dump */
 			fwts_dump_info(fw, NULL);
 			goto tidy_close;
+			break;
+		case 'D': /* --show-progress-dialog */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -916,20 +922,20 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fwts_framework_syntax(argv);
 			goto tidy_close;
 			break;
-		case 'k': /* --klog */
-			fwts_framework_strdup(&fw->klog, optarg);
-			break;
-		case 'b': /* --batch */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
-			break;
 		case 'i': /* --interactive */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+			break;
+		case 'k': /* --klog */
+			fwts_framework_strdup(&fw->klog, optarg);
 			break;
 		case 'p': /* --show-progress */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 			break;
-		case 'D': /* --show-progress-dialog */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
+		case 'P': /* --power-states */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
+			break;
+		case 'r': /* --results-output */
+			fwts_framework_strdup(&fw->results_logname, optarg);
 			break;
 		case 's': /* --show-tests */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
@@ -938,18 +944,12 @@ int fwts_framework_args(const int argc, char * const *argv)
 			if (fwts_framework_skip_test_parse(fw, optarg, tests_to_skip) != FWTS_OK)
 				goto tidy_close;
 			break;
-		case 'w': /* --log-width=N */
-			fwts_log_set_line_width(atoi(optarg));
-			break;
-		case 'r': /* --results-output */
-			fwts_framework_strdup(&fw->results_logname, optarg);
-			break;
-		case 'P': /* --power-states */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
-			break;
 		case 'v': /* --version */
 			fwts_framework_show_version(argv);
 			goto tidy_close;
+			break;
+		case 'w': /* --log-width=N */
+			fwts_log_set_line_width(atoi(optarg));
 			break;
 		}
 	}	

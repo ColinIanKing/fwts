@@ -305,6 +305,23 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"Recommend disassembing using iasl to find any offending code."
 	},
 
+	/* BIOS32 error messages */
+	{
+		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,
+		"bios32_service.*not present",
+		"The BIOS has found a BIOS32 Service Directory but the BIOS has returned error 0x80 on "
+		"calling the service, which indicates that the requested service has not been implemented in "
+		"the firmware."
+	},
+	{
+		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,
+		"bios32_service.*BIOS bug",
+		"The BIOS has found a BIOS32 Service Directory but the BIOS has returned an error on "
+		"calling the service, which is unexpected and usually means the firmware is broken."
+	},
+
 	/* Method parse/execution failures */
 	{
 		FWTS_COMPARE_REGEX,

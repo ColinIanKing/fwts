@@ -39,7 +39,7 @@ static int apicinstance_test1(fwts_framework *fw)
 	int i;
 	int count;
 
-	for (i=0, count=0; (table = fwts_acpi_get_table(i)) !=NULL; i++) {
+	for (i=0, count=0; (table = fwts_acpi_get_table(fw, i)) !=NULL; i++) {
 		if (strcmp(table->name, "APIC") == 0)  {
 			fwts_log_info(fw, "Found APIC/MADT table %s @ %llx, length 0x%d\n",
 				table->name, table->addr, table->length);

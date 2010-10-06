@@ -43,7 +43,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 	int i;
 	fwts_acpi_table_info *table;
 
-	for (i=0; (table = fwts_acpi_get_table(i)) != NULL; i++) {
+	for (i=0; (table = fwts_acpi_get_table(fw, i)) != NULL; i++) {
 		int j;
 
 		if (strcmp("RSDP", table->name) == 0)

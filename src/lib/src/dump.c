@@ -127,7 +127,7 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 	return FWTS_OK;
 }
 
-static int dump_acpi_tables(const char *path)
+static int dump_acpi_tables(fwts_framework *fw, const char *path)
 {
 	char filename[PATH_MAX];
 	fwts_acpi_table_info *table;
@@ -138,7 +138,7 @@ static int dump_acpi_tables(const char *path)
 	if ((fp = fopen(filename, "w")) == NULL)
 		return FWTS_ERROR;
 
-	for (i=0; (table = fwts_acpi_get_table(i)) != NULL; i++)
+	for (i=0; (table = fwts_acpi_get_table(fw, i)) != NULL; i++)
 		dump_acpi_table(table, fp);
 
 	fclose(fp);
@@ -207,7 +207,7 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	else
 		printf("Dumped lspci data to lspic.log\n");
 
-	if (dump_acpi_tables(path) != FWTS_OK) 
+	if (dump_acpi_tables(fw, path) != FWTS_OK) 
 		fprintf(stderr, "Failed to dump ACPI tables.\n");
 	else
 		printf("Dumped ACPI tables to acpidump.log\n");

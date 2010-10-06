@@ -53,7 +53,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	int warnings = 0;
 	fwts_acpi_table_info *table;
 
-	if ((table = fwts_acpi_find_table(tablename, which)) == NULL) 
+	if ((table = fwts_acpi_find_table(fw, tablename, which)) == NULL) 
 		return 2;		/* Table does not exist */
 
 	error_output = fwts_iasl_reassemble(fw, table->data, table->length);

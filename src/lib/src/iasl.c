@@ -53,7 +53,7 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, cons
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
                 return NULL;
 
-	if ((table = fwts_acpi_find_table(tablename, which)) == NULL)
+	if ((table = fwts_acpi_find_table(fw, tablename, which)) == NULL)
 		return NULL;
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), tablename);

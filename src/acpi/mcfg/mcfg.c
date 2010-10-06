@@ -97,7 +97,7 @@ static int mcfg_init(fwts_framework *fw)
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
-	if ((mcfg_table = fwts_acpi_find_table("MCFG", 0)) == NULL) {
+	if ((mcfg_table = fwts_acpi_find_table(fw, "MCFG", 0)) == NULL) {
 		fwts_log_error(fw, "MCFG ACPI table not loaded. This table is required to check for PCI Express*");
 		return FWTS_ERROR;
 	}

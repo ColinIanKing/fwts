@@ -321,6 +321,12 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 		"The BIOS has found a BIOS32 Service Directory but the BIOS has returned an error on "
 		"calling the service, which is unexpected and usually means the firmware is broken."
 	},
+	{	
+		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,
+		"PCI: Error.*when fetching IRQ routing table",
+		"The BIOS has been interrogated for the PCI IRQ routing table but the BIOS returned an error."
+	},
 
 	/* Method parse/execution failures */
 	{

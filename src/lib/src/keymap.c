@@ -109,10 +109,10 @@ fwts_list *fwts_keymap_load(const char *machine)
 
 fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode)
 {
-	fwts_list_link *link;
+	fwts_list_link *item;
 
-	for (link = keymap->head; link != NULL; link = link->next) {
-		fwts_keycode *keycode = (fwts_keycode*)link->data;
+	fwts_list_foreach(item, keymap) {
+		fwts_keycode *keycode = (fwts_keycode*)item->data;
 		if (keycode->scancode == scancode)
 			return keycode;
 	}

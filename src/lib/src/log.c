@@ -258,7 +258,7 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
 
 	len = n;
 
-	for (item = lines->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, lines) {
 		char *text = fwts_text_list_text(item);
 		/* Re-format up a log heading with current line number which
 	 	   may increment with multiple line log messages */

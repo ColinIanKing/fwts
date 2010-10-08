@@ -106,7 +106,7 @@ int fwts_e820_type(fwts_list *e820_list, const uint64_t memory)
 	e820_entry *entry;
 	fwts_list_link *item;
 
-	for (item = e820_list->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, e820_list) {
 		entry = (e820_entry*)item->data;
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry->type;
@@ -171,7 +171,7 @@ void fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list)
 	fwts_log_info(fw, "E820 memory layout");
 	fwts_log_info(fw, "------------------");
 
-	fwts_list_foreach(e820_list, fwts_e820_dump_info, fw);
+	fwts_list_iterate(e820_list, fwts_e820_dump_info, fw);
 }
 
 fwts_list *fwts_e820_table_load_from_klog(fwts_framework *fw)
@@ -185,7 +185,7 @@ fwts_list *fwts_e820_table_load_from_klog(fwts_framework *fw)
 	if ((e820_list = fwts_list_init()) == NULL)
 		return NULL;
 	
-	fwts_list_foreach(klog, fwts_e820_dmesg_info, e820_list);
+	fwts_list_iterate(klog, fwts_e820_dmesg_info, e820_list);
 	fwts_klog_free(klog);
 
 

@@ -135,7 +135,7 @@ int fwts_summary_report(fwts_framework *fw)
 			fwts_list_link *item;
 			fwts_log_summary(fw, "%s failures: %d", summary_names[i], fwts_summaries[i]->len);
 
-			for (item = fwts_summaries[i]->head; item != NULL; item = item->next) {
+			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = (fwts_summary_item*)item->data;
 				fwts_log_summary_verbatum(fw, " %s test at log line %d:", 
 					summary_item->test, 

@@ -45,14 +45,14 @@ int fwts_list_len(fwts_list *list)
 		return 0;
 }
 
-void fwts_list_foreach(fwts_list *list, fwts_list_foreach_callback callback, void *private)
+void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, void *private)
 {
 	fwts_list_link *item;
 
 	if (list == NULL)
 		return;
 
-	for (item = list->head; item != NULL; item = item->next)
+	fwts_list_foreach(item, list)
 		callback(item->data, private);
 }
 
@@ -64,7 +64,7 @@ void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 	if (list == NULL)
 		return;
 
-	for (item = list->head; item != NULL; item = next) {
+	fwts_list_foreach(item, list) {
 		next = item->next;
 		if ((item->data != NULL) && (data_free != NULL))
 			data_free(item->data);

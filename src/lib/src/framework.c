@@ -157,7 +157,7 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 				fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
 				exit(EXIT_FAILURE);
 			}
-			for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+			fwts_list_foreach(item, fwts_framework_test_list) {
 				test = (fwts_framework_test*)item->data;
 				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
 					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
@@ -430,7 +430,7 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 	fw->current_major_test_num = 1;
 	fw->major_tests_total  = fwts_list_len(tests_to_run);
 
-	for (item = tests_to_run->head; item != NULL; item = item->next) {		
+	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 
 		fw->current_major_test = test;
@@ -445,7 +445,8 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
 {
 	fwts_list_link *item;
 
-	for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+	
+	fwts_list_foreach(item, fwts_framework_test_list) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 		if (strcmp(name, test->name) == 0)
 			return test;
@@ -654,13 +655,13 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 		buf.sysname, buf.nodename, buf.release, buf.version, buf.machine);
 	fwts_log_nl(fw);
 	
-	for (item = tests_to_run->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 		len += strlen(test->name) + 1;
 	}
 
 	if ((tests = calloc(len, 1)) != NULL) {
-		for (item = tests_to_run->head; item != NULL; item = item->next) {
+		fwts_list_foreach(item, tests_to_run) {
 			fwts_framework_test *test = (fwts_framework_test*)item->data;
 			if (item != tests_to_run->head) 
 				strcat(tests, " ");
@@ -678,7 +679,7 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
 {
 	fwts_list_link *item;
 
-	for (item = tests_to_skip->head; item != NULL; item = item->next)
+	fwts_list_foreach(item, tests_to_skip) 
 		if (test == (fwts_framework_test*)item->data)
 			return test;
 
@@ -1033,7 +1034,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if (fwts_list_len(tests_to_run) == 0) {
 		/* Find tests that are eligible for running */
 		fwts_list_link *item;
-		for (item = fwts_framework_test_list->head; item != NULL; item = item->next) {
+		fwts_list_foreach(item, fwts_framework_test_list) {
 			fwts_framework_test *test = (fwts_framework_test*)item->data;
 			if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS)
 				if (fwts_framework_skip_test(tests_to_skip, test) == NULL) 

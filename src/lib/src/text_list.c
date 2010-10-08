@@ -50,7 +50,7 @@ void fwts_text_list_dump(fwts_list *list)
 	if (list == NULL)
 		return;
 
-	for (item = list->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, list) {
 		char *str = (char *)item->data;
 		printf("DUMP: %s\n", str);
 	}
@@ -64,7 +64,7 @@ char *fwts_text_list_strstr(fwts_list *list, const char *needle)
 	if (list == NULL)
 		return NULL;
 
-	for (item = list->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, list) {
 		char *str = (char *)item->data;
 		if ((match = strstr(str, needle)) != NULL)
 			return match;

@@ -45,7 +45,7 @@ static int crs_get_bios_date(fwts_framework *fw, int *day, int *mon, int *year)
 		return FWTS_ERROR;
 	}
 
-	for (item = dmi_text->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, dmi_text) {
 		char *ptr;
 		char *text = fwts_text_list_text(item);
 		char *pattern = "Release Date: ";

@@ -132,7 +132,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 			continue;
 		}	
 
-		for (item = dmi_text->head; item != NULL; item = item->next) {
+		fwts_list_foreach(item, dmi_text) {
 			int i;
 
 			for (i=0; dmi_patterns[i].pat1 != NULL; i++) {
@@ -149,7 +149,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
 						fwts_list_link *dump;
-						for (dump = dmi_text->head; dump != item->next; dump = dump->next)
+						fwts_list_foreach(dump, dmi_text)
 							fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(dump));			
 						dumped = 1;
 					}

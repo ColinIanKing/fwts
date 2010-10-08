@@ -82,7 +82,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 	if (lspci_text == NULL)
 		return FWTS_ERROR;
 
-	for (item = lspci_text->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, lspci_text) {
 		char *line = fwts_text_list_text(item);
 		int val = 0;
 		char *c;

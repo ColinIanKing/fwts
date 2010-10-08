@@ -63,7 +63,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		return FWTS_ERROR;
 	}
 
-	for (item = error_output->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, error_output) {
 		int num;
 		char ch;
 		char *line = fwts_text_list_text(item);

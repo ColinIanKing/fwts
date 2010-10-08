@@ -95,7 +95,7 @@ static int ebda_test1(fwts_framework *fw)
 			  "low 640K region and is typically 2-4K in size. It should be reserved in "
 			  "the E820 table.");
 
-	for (item = klog->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, klog) {
 		char *tmp;
 
 		if ((tmp = strstr(fwts_text_list_text(item), "BIOS-e820")) != NULL) {

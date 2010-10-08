@@ -69,7 +69,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		return;
 	}
 
-	for (item = lspci_output->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, lspci_output) {
 		char *line = fwts_text_list_text(item);
 
 		fwts_chop_newline(line);

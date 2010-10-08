@@ -37,7 +37,7 @@ static char *hotkey_keymap;
 static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_list *hotkeys)
 {
 	static int scancode = 0;
-	fwts_list_link *link;
+	fwts_list_link *item;
 	int found = 0;
 
 	if ((ev->code == MSC_SCAN) && 
@@ -46,8 +46,8 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 
 	if ((ev->type == EV_KEY) &&
 	    (ev->value != 0)) {
-		for (link = hotkeys->head; link != NULL; link = link->next) {
-			fwts_keycode *keycode = (fwts_keycode*)link->data;
+		fwts_list_foreach(item, hotkeys) {
+			fwts_keycode *keycode = (fwts_keycode*)item->data;
 			if (keycode->scancode == scancode) {
 				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n", 
 					scancode, ev->code,	
@@ -174,7 +174,7 @@ static char *hotkey_find_keyboard(fwts_framework *fw, char *path)
 static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 {
 	fwts_list *output;
-	fwts_list_link *link;
+	fwts_list_link *item;
 	
 	char buffer[1024];
 	char *keymap = NULL;
@@ -184,8 +184,8 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 		return NULL;
 
 	snprintf(buffer, sizeof(buffer), "keymap %s", device);
-	for (link = output->head; link != NULL; link = link->next) {
-		char *text = fwts_text_list_text(link);
+	fwts_list_foreach(item, output) {
+		char *text = fwts_text_list_text(item);
 		if ((text = strstr(text, buffer)) != NULL) {
 			char *ptr;
 			text += strlen(buffer) + 1;

@@ -76,7 +76,7 @@ static int osilinux_test1(fwts_framework *fw)
 		"should be avoided since the Linux ACPI driver matches "
 		"onto the Windows _OSI strings");
 
-	for (item = disassembly->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, disassembly) {
 		char *line = fwts_text_list_text(item);
 		char *str;
 

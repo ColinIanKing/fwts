@@ -248,9 +248,9 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 		return FWTS_ERROR;
 	}
 
-	for (item = iasl_output->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, iasl_output)
 		wmi_parse_for_wdg(fw, item);
-	}
+
 	fwts_text_list_free(iasl_output);
 
 	return FWTS_OK;

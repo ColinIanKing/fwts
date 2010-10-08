@@ -128,12 +128,12 @@ static int get_mtrrs(void)
 
 static int cache_types(uint64_t start, uint64_t end)
 {
-	fwts_list_link *list;
+	fwts_list_link *item;
 	struct mtrr_entry *entry;
 	int type = 0;
 	
-	for (list = mtrr_list->head; list != NULL; list = list->next) {
-		entry = (struct mtrr_entry*)list->data;
+	fwts_list_foreach(item, mtrr_list) {
+		entry = (struct mtrr_entry*)item->data;
 
 		if (entry->end > start && entry->start < end)
 			type |= entry->type;
@@ -142,8 +142,8 @@ static int cache_types(uint64_t start, uint64_t end)
 	/* now to see if there is any part of the range that isn't covered by an mtrr,
 	   since it's UNCACHED if so */
 restart:
-	for (list = mtrr_list->head; list != NULL; list = list->next) {
-		entry = (struct mtrr_entry*)list->data;
+	fwts_list_foreach(item, mtrr_list) {
+		entry = (struct mtrr_entry*)item->data;
 
 		if (entry->end >= end && entry->start < end) {
 			end = entry->start;
@@ -169,7 +169,7 @@ static fwts_list *get_klog_bios_mtrr(void)
 	if ((mtrr_bios_list = fwts_list_init()) == NULL)
 		return NULL;
 
-	for (item=klog->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, klog) {
 		char *str = fwts_text_list_text(item);
 
 		if (strstr(str, "MTRR variable ranges enabled")) {
@@ -303,7 +303,7 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 	if (lspci_output == NULL)
 		return pref;
 
-	for (item=lspci_output->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, lspci_output) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
 			if (strstr(str, "Non-Prefetchable")) 
@@ -439,7 +439,7 @@ static void do_mtrr_resource(fwts_framework *fw)
 	fwts_log_info(fw,"MTRR overview");
 	fwts_log_info(fw,"-------------");
 
-	for (list = mtrr_list->head; list != NULL; list = list->next) {
+	fwts_list_foreach(list, mtrr_list) {
 		entry = (struct mtrr_entry*)list->data;
 		fwts_log_info_verbatum(fw, "0x%08llx - 0x%08llx   %s \n", entry->start, entry->end, cache_to_string(entry->type));
 	}

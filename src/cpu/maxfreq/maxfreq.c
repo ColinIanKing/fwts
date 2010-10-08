@@ -93,7 +93,8 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 
 	/* Pass 1, figure out number of CPUs */
-	for (cpus=0, item = cpuinfo->head; item != NULL; item = item->next) {
+	cpus = 0;
+	fwts_list_foreach(item, cpuinfo) {
 		if (strstr(fwts_text_list_text(item), "model name"))
 			cpus++;
 	}
@@ -104,7 +105,8 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 
 	/* Pass 2, get speed */
-	for (cpu=0, item = cpuinfo->head; item != NULL; item = item->next) {
+	cpu = 0;
+	fwts_list_foreach(item, cpuinfo) {
 		char *str = fwts_text_list_text(item);
 		if (strstr(str, "model name")) {
 			if ((str = strstr(str, "@")) != NULL) {

@@ -38,7 +38,7 @@ typedef struct {
 	uint8_t		length;
 	uint8_t		checksum;
 	uint8_t		reserved[5];
-} fwts_bios32_service_directory;
+}  __attribute__ ((packed)) fwts_bios32_service_directory;
 
 static int bios32_init(fwts_framework *fw)
 {

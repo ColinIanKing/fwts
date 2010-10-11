@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <math.h>
 
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
@@ -150,10 +151,13 @@ static int maxfreq_test1(fwts_framework *fw)
 					fwts_failed(fw, "Cannot read cpu frequency from %s for CPU %s\n", CPU_FREQ_PATH, entry->d_name);
 					failed++;
 				} else {
-					if (cpufreq[cpunum] != maxfreq) {
+					double maxfreq_ghz = (double)maxfreq/1000000.0;
+					double cpufreq_ghz = (double)cpufreq[cpunum] / 1000000.0;
+
+					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
 						failed++;
 						fwts_failed(fw, "Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n", 
-								(double)maxfreq/1000000.0, (double)cpufreq[cpunum]/1000000.0);	
+							maxfreq_ghz, cpufreq_ghz);
 						if (!advice)  {
 							advice++;
 							fwts_advice(fw, 

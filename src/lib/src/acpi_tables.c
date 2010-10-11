@@ -280,8 +280,6 @@ static void fwts_acpi_load_tables_from_firmware(void)
 			}
 		}
 	}
-
-	acpi_tables_loaded = 1;
 }
 
 static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
@@ -326,6 +324,7 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 		if (strstr(direntry->d_name, ".dat")) {
 			char path[PATH_MAX];
 			int fd;
+printf("LOAD %s\n", direntry->d_name);
 			snprintf(path, sizeof(path), "%s/%s",
 				fw->acpi_table_path, direntry->d_name);
 			if ((fd = open(path, O_RDONLY)) >= 0) {
@@ -356,6 +355,8 @@ void fwts_acpi_load_tables(fwts_framework *fw)
 		fwts_acpi_load_tables_from_firmware();
 	else
 		fwts_acpi_load_tables_from_file(fw);
+
+	acpi_tables_loaded = 1;
 }
 
 /*

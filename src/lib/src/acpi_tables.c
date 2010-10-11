@@ -324,7 +324,6 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 		if (strstr(direntry->d_name, ".dat")) {
 			char path[PATH_MAX];
 			int fd;
-printf("LOAD %s\n", direntry->d_name);
 			snprintf(path, sizeof(path), "%s/%s",
 				fw->acpi_table_path, direntry->d_name);
 			if ((fd = open(path, O_RDONLY)) >= 0) {

@@ -55,7 +55,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 		uint8_t *data = (uint8_t*) table->data;
 		uint8_t checksum = 0;
 
-		for (j=0; j<hdr->length; j++) 
+		for (j=0; j<table->length; j++) 
 			checksum += data[j];
 	
 		if (checksum == 0)

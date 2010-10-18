@@ -28,21 +28,28 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <asm/mtrr.h>
 
 static fwts_list *klog;
 static fwts_list *mtrr_list;
 
-#define UNCACHED	1
-#define	WRITEBACK	2
-#define	WRITECOMBINING	4
-#define WRITETHROUGH	8
-#define DEFAULT		16
+#define UNCACHED	0x0001
+#define	WRITE_BACK	0x0002
+#define	WRITE_COMBINING	0x0004
+#define WRITE_THROUGH	0x0008
+#define WRITE_PROTECT	0x0010
+#define DEFAULT		0x0020
+#define DISABLED	0x0040
+#define UNKNOWN		0x0080
 
 struct mtrr_entry {
+	uint8_t  reg;
 	uint64_t start;
 	uint64_t end;
+	uint64_t size;
 	uint8_t  type;
 };
 
@@ -55,73 +62,73 @@ static char *cache_to_string(int type)
 
 	if (type & UNCACHED || type==0)
 		strcat(str," Uncached");
-	if (type & WRITECOMBINING)
-		strcat(str," Write-Combining");
-	if (type & WRITEBACK)
+	if (type & WRITE_BACK)
 		strcat(str," Write-Back");
-	if (type & WRITETHROUGH)
+	if (type & WRITE_COMBINING)
+		strcat(str," Write-Combining");
+	if (type & WRITE_THROUGH)
 		strcat(str," Write-Through");
+	if (type & WRITE_PROTECT)
+		strcat(str," Write-Protect");
 	if (type & DEFAULT)
 		strcat(str," Default");
+	if (type & UNKNOWN)
+		strcat(str," Unknown");
 	return str;
 }
 
 static int get_mtrrs(void)
 {
+	struct mtrr_gentry gentry;
 	struct mtrr_entry *entry;
-	FILE *file;
+	int fd;
 	char line[4096];
 	
 	memset(line, 0, 4096);
 
 	mtrr_list = fwts_list_init();
 
-	if ((file = fopen("/proc/mtrr", "r")) == NULL)
+	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0) 
 		return FWTS_ERROR;
 
-	while (!feof(file)) {
-		char *c, *c2;
-		if (fgets(line, 4095, file)==NULL)
-			break;
+	for (gentry.regnum = 0; 
+		ioctl (fd, MTRRIOC_GET_ENTRY, &gentry) == 0;
+         	++gentry.regnum) {
+		if ((entry = calloc(1, sizeof(struct mtrr_entry))) != NULL) {
+			entry->reg = gentry.regnum;
+			if (gentry.size > 0) {
+				entry->start = gentry.base;
+				entry->size  = gentry.size;
+				entry->end   = gentry.base + gentry.size;
+				switch (gentry.type) {
+				case 0:  /* uncachable */
+					entry->type = UNCACHED;
+					break;
+				case 1: /* write combining */
+					entry->type = WRITE_COMBINING;
+					break;
+				case 4: /* write through */
+					entry->type = WRITE_THROUGH;
+					break;
+				case 5: /* write protect */
+					entry->type = WRITE_PROTECT;
+					break;
+				case 6: /* write combining */
+					entry->type = WRITE_BACK;
+					break;
+				default: /* unknown */
+					entry->type = UNKNOWN;
+					break;
+				}
+			}
+			else {
+				entry->type = DISABLED;
+			}
 
-		entry = calloc(1, sizeof(struct mtrr_entry));
-		if (!entry)
-			break;
-		memset(entry, 0, sizeof(struct mtrr_entry));
-
-		c = strstr(line, "base=0x");
-		if (c==NULL)
-			continue;
-		c+=5;
-		entry->start = strtoull(c, NULL, 16);
-		c = strstr(line, "size=");
-		if (!c)
-			continue;
-		c+=5;
-		entry->end = strtoull(c, &c2, 10);
-		if (c2 && *c2=='M')
-			entry->end = entry->end * 1024 * 1024;
-		if (c2 && *c2=='K')
-			entry->end = entry->end * 1024;
-		if (c2 && *c2=='m')
-			entry->end = entry->end * 1024 * 1024;
-		if (c2 && *c2=='k')
-			entry->end = entry->end * 1024;
-		
-		entry->end += entry->start;
-
-		if (strstr(line, "Write-Back"))
-			entry->type = WRITEBACK;
-		if (strstr(line, "Uncachable"))
-			entry->type = UNCACHED;
-		if (strstr(line, "Write-Through"))
-			entry->type = WRITETHROUGH;
-		if (strstr(line, "Write-Combining"))
-			entry->type = WRITECOMBINING;
-
-		fwts_list_append(mtrr_list, entry);		
+			fwts_list_append(mtrr_list, entry);		
+		}
 	}
-	fclose(file);
+	close(fd);
 
 	return FWTS_OK;
 }
@@ -325,18 +332,18 @@ static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *m
 	*mustnot = 0;
 
 	if (strstr(string, "System RAM")) {
-		*must = WRITEBACK;
-		*mustnot = ~*must;
+		*must = WRITE_BACK;
+		*mustnot = ~WRITE_BACK;
 		return;
 	}
 	/* if it's PCI mmio -> uncached typically except for video */
 	if (strstr(string, "0000:")) {
 		if (is_prefetchable(fw, string, address)) {
 			*must = 0;
-			*mustnot = WRITEBACK | UNCACHED;
+			*mustnot = WRITE_BACK | UNCACHED;
 		} else {
 			*must = UNCACHED;
-			*mustnot = (~*must) & ~DEFAULT;
+			*mustnot = (~UNCACHED) & (~DEFAULT);
 		}
 	}
 }
@@ -441,7 +448,13 @@ static void do_mtrr_resource(fwts_framework *fw)
 
 	fwts_list_foreach(list, mtrr_list) {
 		entry = (struct mtrr_entry*)list->data;
-		fwts_log_info_verbatum(fw, "0x%08llx - 0x%08llx   %s \n", entry->start, entry->end, cache_to_string(entry->type));
+		if (entry->type & DISABLED)
+			fwts_log_info_verbatum(fw, "Reg %d: disabled\n", entry->reg);
+		else
+			fwts_log_info_verbatum(fw, "Reg %d: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n", entry->reg,
+				entry->start, entry->end, 
+				entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024),
+				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
 	fwts_log_info(fw,"\n");
 }

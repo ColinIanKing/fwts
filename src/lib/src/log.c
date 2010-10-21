@@ -226,12 +226,24 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 	return n;
 }
 
+
 int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...)
+{
+	va_list	args;
+	int ret;
+
+	va_start(args, fmt);
+	ret = fwts_log_vprintf(log, field, level, fmt, args);
+	va_end(args);
+
+	return ret;
+}
+
+int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, va_list args)
 {
 	char buffer[4096];
 	int n = 0;
 	int len = 0;
-	va_list ap;
 
 	fwts_list *lines;
 	fwts_list_link *item;
@@ -242,13 +254,11 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
-	va_start(ap, fmt);
-
 	/* This is a pain, we neen to find out how big the leading log
 	   message is, so format one up. */
 	n = fwts_log_header(log, buffer, sizeof(buffer), field, level);
 
-	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, ap);
+	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, args);
 
 	/* Break text into multi-lines if necessary */
 	if (field & LOG_VERBATUM)
@@ -272,8 +282,6 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
 	}
 	fwts_text_list_free(lines);
 	
-	va_end(ap);
-
 	return len;
 }
 

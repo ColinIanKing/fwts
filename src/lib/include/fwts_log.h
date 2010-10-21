@@ -57,7 +57,8 @@ typedef struct log_t {
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);
 int       fwts_log_close(fwts_log *log);
-int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level, const char *fmt, ...);
+int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...);
+int       fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, va_list args);
 void      fwts_log_newline(fwts_log *log);
 void      fwts_log_underline(fwts_log *log, const int ch);
 void      fwts_log_set_field_filter(const char *str);

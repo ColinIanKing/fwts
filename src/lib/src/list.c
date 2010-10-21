@@ -64,7 +64,7 @@ void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 	if (list == NULL)
 		return;
 
-	fwts_list_foreach(item, list) {
+	for (item = list->head; item != NULL; item = next) {
 		next = item->next;
 		if ((item->data != NULL) && (data_free != NULL))
 			data_free(item->data);

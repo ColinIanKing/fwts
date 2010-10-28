@@ -605,6 +605,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--no-s4",			"Don't run S4 hibernate/resume tests." },
 		{ "",				"  deprecated, use --skip_test=s4 instead." },
 		{ "-P, --power-states",		"Test S3, S4 power states." },
+		{ "-q, --quiet",		"Run quietly." },
 		{ "--results-no-separators",	"No horizontal separators in results log." },
 		{ "-r, --results-output=file",	"Output results to a named file. Filename can" },
 		{ "",				"also be stdout or stderr." },
@@ -745,6 +746,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "all", 0, 0, 0 },
 		{ "show-progress-dialog", 0, 0, 0 },
 		{ "skip-test", 1, 0, 0 },
+		{ "quiet", 0, 0, 0},
 		{ 0, 0, 0, 0 }
 	};
 
@@ -756,7 +758,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 		return FWTS_ERROR;
 
 	fw->magic = FWTS_FRAMEWORK_MAGIC;
-	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT;
+	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
+		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 
 	fw->s3_min_delay = 0;
 	fw->s3_max_delay = 30;
@@ -781,7 +784,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "abdDfhik:pPr:sS:t:vw:?", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "abdDfhik:pPqr:sS:t:vw:?", long_options, &option_index)) == -1)
 			break;
 
 		switch (c) {
@@ -821,7 +824,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_framework_strdup(&fw->iasl, optarg);
 				break;
 			case 10: /* --show-progress */
-				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+				fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 				break;
 			case 11: /* --show-tests */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
@@ -893,12 +897,19 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 32: /* --all */
 				fw->flags |= FWTS_RUN_ALL_FLAGS;
 				break;
-			case 33: /* --show-progress */
-				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
+			case 33: /* --show-progress-dialog */
+				fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 				break;
 			case 34: /* --skip-test */
 				if (fwts_framework_skip_test_parse(fw, optarg, tests_to_skip) != FWTS_OK)
 					goto tidy_close;
+				break;
+			case 35: /* --quiet */
+				fw->flags = (fw->flags &
+						~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
+						  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
+						| FWTS_FRAMEWORK_FLAGS_QUIET;
 				break;
 			}
 			break;
@@ -913,7 +924,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 			goto tidy_close;
 			break;
 		case 'D': /* --show-progress-dialog */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
+			fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
 		case 'f':
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
@@ -930,10 +942,17 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fwts_framework_strdup(&fw->klog, optarg);
 			break;
 		case 'p': /* --show-progress */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+			fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 			break;
 		case 'P': /* --power-states */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
+			break;
+		case 'q': /* --quiet */
+			fw->flags = (fw->flags &
+					~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
+					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
+					| FWTS_FRAMEWORK_FLAGS_QUIET;
 			break;
 		case 'r': /* --results-output */
 			fwts_framework_strdup(&fw->results_logname, optarg);
@@ -1042,9 +1061,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 		}
 	}
 
-	printf("Running %d tests, results written to %s\n", 
-		fwts_list_len(tests_to_run),
-		fw->results_logname);
+	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET))
+		printf("Running %d tests, results written to %s\n", 
+			fwts_list_len(tests_to_run),
+			fw->results_logname);
 
 	fwts_framework_heading_info(fw, tests_to_run);
 	fwts_framework_tests_run(fw, tests_to_run);

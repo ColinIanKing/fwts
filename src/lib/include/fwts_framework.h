@@ -58,6 +58,7 @@ typedef struct {
 	int failed;
 	int aborted;
 	int warning;
+	int skipped;
 } fwts_results;
 
 /*
@@ -85,6 +86,7 @@ typedef struct {
 	fwts_framework_flags flags;
 
 	int current_minor_test_num;		/* Nth minor test being run in a test module */
+	const char *current_minor_test_name;	/* Name of current minor test being run */
 	int current_major_test_num;		/* Nth major test being currently run */
 	int major_tests_total;			/* Total number of major tests */
 

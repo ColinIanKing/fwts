@@ -181,6 +181,49 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	}
 }
 
+static void fwts_framework_strtrunc(char *dest, const char *src, int max)
+{
+	strncpy(dest, src, max);
+
+	if (strlen(src) > max && max > 3) {
+		dest[max-1] = 0;
+		dest[max-2] = '.';
+		dest[max-3] = '.';
+	}
+}
+
+static void fwts_framework_format_results(char *buffer, int buflen, fwts_results *results)
+{
+	int n = 0;
+
+	if (buflen)
+		*buffer = 0;
+
+	if (results->passed && buflen > 0) {
+		n += snprintf(buffer, buflen, "%d passed", results->passed);
+		buffer += n;
+		buflen -= n;
+	}
+	if (results->failed && buflen > 0) {
+		n += snprintf(buffer, buflen, "%s%d failed", n > 0 ? ", " : "", results->failed);
+		buffer += n;
+		buflen -= n;
+	}
+	if (results->warning && buflen > 0) {
+		n += snprintf(buffer, buflen, "%s%d warnings", n > 0 ? ", " : "", results->warning);
+		buffer += n;
+		buflen -= n;
+	}
+	if (results->aborted && buflen > 0) {
+		n += snprintf(buffer, buflen, "%s%d aborted", n > 0 ? ", " : "", results->aborted);
+		buffer += n;
+		buflen -= n;
+	}
+	if (results->skipped && buflen > 0) {
+		n += snprintf(buffer, buflen, "%s%d skipped", n > 0 ? ", " : "", results->skipped);
+	}
+}
+
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 {
 	float major_percent;
@@ -201,10 +244,13 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 		int percent;
+		char buf[55];
+
+		fwts_framework_strtrunc(buf, fw->current_minor_test_name, sizeof(buf));
 
 		percent = (100 * (fw->current_minor_test_num-1) / fw->current_ops->total_tests) + 
 			  (fw->minor_test_progress / fw->current_ops->total_tests);
-		fprintf(stderr, "%-20.20s: %3.0f%%\r", fw->current_major_test->name, progress);
+		fprintf(stderr, "  %-55.55s: %3.0f%%\r", buf, progress);
 		fflush(stderr);
 	}
 
@@ -213,11 +259,12 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG) {
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
-		fprintf(stdout, "Sofar: %d passes, %d failures, %d warnings, %d aborted\n\n",
+		fprintf(stdout, "Sofar: %d passes, %d failures, %d warnings, %d aborted, %d skipped\n\n",
 			fw->total.passed,
 			fw->total.failed,
 			fw->total.warning,
-			fw->total.aborted);
+			fw->total.aborted,
+			fw->total.skipped);
 		fprintf(stdout, "Running test #%d '%s': (%d of %d)\n", 
 			fw->current_major_test_num,
 			fw->current_major_test->name,
@@ -291,8 +338,8 @@ static void fwts_framework_debug(fwts_framework* fw, const char *fmt, ...)
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	fwts_framework_underline(fw,'=');
-	fwts_log_summary(fw, "%d passed, %d failed, %d warnings, %d aborted.", 
-		fw->major_tests.passed, fw->major_tests.failed, fw->major_tests.warning, fw->major_tests.aborted);
+	fwts_log_summary(fw, "%d passed, %d failed, %d warnings, %d aborted, %d skipped.", 
+		fw->major_tests.passed, fw->major_tests.failed, fw->major_tests.warning, fw->major_tests.aborted, fw->major_tests.skipped);
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
@@ -311,8 +358,8 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted.", 
-		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted);
+	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted, %d skipped.", 
+		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted, fw->total.skipped);
 
 	return FWTS_OK;
 }
@@ -323,17 +370,18 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() entered");
 
+	fw->current_minor_test_name = "";
+
 	fw->major_tests.aborted = 0;
 	fw->major_tests.failed  = 0;
 	fw->major_tests.passed  = 0;
 	fw->major_tests.warning = 0;
+	fw->major_tests.skipped = 0;
 
 	fwts_log_set_owner(fw->results, test->name);
 
 	fw->current_ops = test->ops;
 	fw->current_minor_test_num = 1;
-
-	fwts_framework_minor_test_progress(fw, 0);
 
 	/* Not a utility test?, then we require a test summary at end of the test run */
 	if (!(test->flags & FWTS_UTILS))
@@ -342,29 +390,40 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	if (test->ops->headline) {
 		fwts_log_heading(fw, "%s", test->ops->headline());
 		fwts_framework_underline(fw,'-');
+		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+			char buf[70];
+			fwts_framework_strtrunc(buf, test->ops->headline(), sizeof(buf));
+			fprintf(stderr, "Test: %-70.70s\n", buf);
+		}
 	}
+
+	fwts_framework_minor_test_progress(fw, 0);
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()");
 
 	if (test->ops->init) {
 		int ret;
 		if ((ret = test->ops->init(fw)) != FWTS_OK) {
-			if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-				fprintf(stderr, "%-20.20s Test %s.\n", test->name,
-					ret == FWTS_SKIP ? "skipped" : "aborted");		
-				fflush(stderr);
-			}
 			/* Init failed or skipped, so abort */
 			if (ret == FWTS_SKIP) {
 				/* fwts_log_info(fw, "Skipping test."); */
 				fwts_framework_debug(fw, "fwts_framework_run_test() init returned skipped, skip test.");
+				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
+					fw->major_tests.skipped++;
+					fw->total.skipped++;
+				}
+				if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)
+					fprintf(stderr, " Test skipped.\n");
+
 			} else {
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
 				fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
-			}
-			for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-				fw->major_tests.aborted++;
-				fw->total.aborted++;
+				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
+					fw->major_tests.aborted++;
+					fw->total.aborted++;
+				}
+				if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)
+					fprintf(stderr, " Test aborted.\n");
 			}
 			if (!(test->flags & FWTS_UTILS))
 				fwts_framework_test_summary(fw);
@@ -373,12 +432,14 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	}
 
 	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
+		fw->current_minor_test_name = minor_test->name;
 		fwts_framework_debug(fw, "exectuting test %d", fw->current_minor_test_num);
 
 		fw->minor_tests.aborted = 0;
 		fw->minor_tests.failed  = 0;
 		fw->minor_tests.passed  = 0;
 		fw->minor_tests.warning = 0;
+		fw->minor_tests.skipped = 0;
 
 		if (minor_test->name != NULL)
 			fwts_log_info(fw, "Test %d of %d: %s", 
@@ -393,12 +454,15 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fw->major_tests.failed  += fw->minor_tests.failed;
 		fw->major_tests.passed  += fw->minor_tests.passed;
 		fw->major_tests.warning += fw->minor_tests.warning;
+		fw->major_tests.skipped += fw->minor_tests.skipped;
 
 		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-			fprintf(stderr, "%-20.20s Test %d of %d completed (%d passed, %d failed, %d warnings, %d aborted).\n", 
-				test->name, fw->current_minor_test_num, test->ops->total_tests,
-				fw->minor_tests.passed, fw->minor_tests.failed, 
-				fw->minor_tests.warning, fw->minor_tests.aborted);
+			char resbuf[80];
+			char namebuf[55];
+			fwts_framework_format_results(resbuf, sizeof(resbuf), &fw->minor_tests);
+			fwts_framework_strtrunc(namebuf, minor_test->name, sizeof(namebuf));
+			fprintf(stderr, "  %-55.55s %s\n", namebuf,
+				*resbuf ? resbuf : "     ");
 		}
 		fwts_log_nl(fw);
 	}
@@ -407,6 +471,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	fw->total.failed  += fw->major_tests.failed;
 	fw->total.passed  += fw->major_tests.passed;
 	fw->total.warning += fw->major_tests.warning;
+	fw->total.skipped += fw->major_tests.skipped;
 
 	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->deinit()");
 	if (test->ops->deinit)

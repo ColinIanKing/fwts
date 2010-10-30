@@ -1,3 +1,9 @@
+fwts (0.19.09) maverick; urgency=low
+ 
+  * New upstream version 0.19.09
+
+ -- Colin King <colin.king@canonical.com>  Sat, 30 Oct 2010 13:30:13 +0100
+
 fwts (0.19.08) maverick; urgency=low
  
   * New upstream version 0.19.08

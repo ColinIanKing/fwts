@@ -50,6 +50,7 @@ int fwts_wakealarm_get_irq_state(void)
 int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 {
 	char buffer[32];
+	int ret;
 
 	snprintf(buffer, sizeof(buffer), "+%d", seconds);
 
@@ -61,6 +62,9 @@ int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 		fwts_log_error(fw, "Cannot write '%s' to %s", fwts_wkalarm);
 		return FWTS_ERROR;
 	}
+	if ((ret = fwts_wakealarm_get_irq_state()) == FWTS_ERROR) 
+		return FWTS_ERROR;
+
 	if (!fwts_wakealarm_get_irq_state()) {
 		fwts_log_error(fw, "Wakealarm %s did not get set", fwts_wkalarm);
 		return FWTS_ERROR;
@@ -72,11 +76,11 @@ int fwts_wakealarm_test_firing(fwts_framework *fw, const int seconds)
 {
 	int ret;
 
-	if ((ret = fwts_wakealarm_trigger(fw, seconds)) != 0)
-		return ret;
+	if ((ret = fwts_wakealarm_trigger(fw, seconds)) != FWTS_OK)
+		return FWTS_ERROR;
 
 	sleep(seconds+1);
-	if (fwts_wakealarm_get_irq_state()) {
+	if (fwts_wakealarm_get_irq_state() != FWTS_OK) {
 		fwts_log_error(fw, "Wakealarm %s did not fire", fwts_wkalarm);
 		return FWTS_ERROR;
 	}

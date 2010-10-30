@@ -61,7 +61,7 @@ static int thermal_trip_init(fwts_framework *fw)
         closedir(dir);
 
 	if (zones == 0) {
-		fwts_log_warning(fw, "No thermal zones found on this machine.");
+		fwts_skipped(fw, "No thermal zones found on this machine.");
 		return FWTS_SKIP;
 	}
 

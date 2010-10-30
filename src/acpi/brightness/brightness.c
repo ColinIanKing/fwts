@@ -141,7 +141,7 @@ static int brightness_test2(fwts_framework *fw)
 	int saved_brightness;
 
 	if (skip_tests)	{
-		fwts_log_info(fw, "Test skipped because previous test failed.");
+		fwts_skipped(fw, "Test skipped because previous test failed.");
 		return FWTS_SKIP;
 	}
 
@@ -189,7 +189,7 @@ static int brightness_test3(fwts_framework *fw)
 	int saved_brightness;
 
 	if (skip_tests)	{
-		fwts_log_info(fw, "Test skipped because previous test failed.");
+		fwts_skipped(fw, "Test skipped because previous test failed.");
 		return FWTS_SKIP;
 	}
 
@@ -241,7 +241,7 @@ static int brightness_test4(fwts_framework *fw)
 	int saved_brightness;
 
 	if (skip_tests)	{
-		fwts_log_info(fw, "Test skipped because previous test failed.");
+		fwts_skipped(fw, "Test skipped because previous test failed.");
 		return FWTS_SKIP;
 	}
 

@@ -84,7 +84,7 @@ static int fan_test1(fwts_framework *fw)
 		"Check for the current status of the fan(s).");
 
 	if (!(dir = opendir("/proc/acpi/fan/"))) {
-		fwts_log_info(fw, "No fan information present: cannot test.");
+		fwts_skipped(fw, "No fan information present: cannot test.");
 		return FWTS_SKIP;
 	}
 
@@ -102,7 +102,7 @@ static int fan_test1(fwts_framework *fw)
 	closedir(dir);
 
 	if (fandir == 0) {
-		fwts_log_info(fw, "No fan information present: cannot test.");
+		fwts_skipped(fw, "No fan information present: cannot test.");
 		return FWTS_SKIP;
 	}
 

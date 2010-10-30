@@ -128,7 +128,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	fwts_list_free(cpuinfo, free);
 
 	if (cpufreqs_read == 0) {
-		fwts_log_info(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
+		fwts_skipped(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
 		return FWTS_SKIP;
 	}
 		

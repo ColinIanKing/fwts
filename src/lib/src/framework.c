@@ -267,12 +267,10 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 			fw->total.warning,
 			fw->total.aborted,
 			fw->total.skipped);
-		fprintf(stdout, "Running test #%d '%s': (%d of %d)\n", 
+		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->headline());
+		fprintf(stdout, "Running test #%d: %s\n", 
 			fw->current_major_test_num,
-			fw->current_major_test->name,
-			fw->current_minor_test_num, fw->current_ops->total_tests);
-		fprintf(stdout, "\n");
-		fprintf(stdout, "Purpose: %s\n", fw->current_major_test->ops->headline());
+			fw->current_minor_test_name);
 		fprintf(stdout, "XXX\n");
 		fflush(stdout);
 	}
@@ -894,8 +892,11 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_framework_strdup(&fw->iasl, optarg);
 				break;
 			case 10: /* --show-progress */
-				fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+				fw->flags = (fw->flags & 
+						~(FWTS_FRAMEWORK_FLAGS_QUIET |
+					  	  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+			break;
 				break;
 			case 11: /* --show-tests */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
@@ -968,7 +969,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fw->flags |= FWTS_RUN_ALL_FLAGS;
 				break;
 			case 33: /* --show-progress-dialog */
-				fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+				fw->flags = (fw->flags & 
+						~(FWTS_FRAMEWORK_FLAGS_QUIET |
+						  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)) 
 						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 				break;
 			case 34: /* --skip-test */
@@ -994,7 +997,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			goto tidy_close;
 			break;
 		case 'D': /* --show-progress-dialog */
-			fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+			fw->flags = (fw->flags & 
+					~(FWTS_FRAMEWORK_FLAGS_QUIET |
+					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)) 
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
 		case 'f':
@@ -1012,7 +1017,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fwts_framework_strdup(&fw->klog, optarg);
 			break;
 		case 'p': /* --show-progress */
-			fw->flags = (fw->flags & ~FWTS_FRAMEWORK_FLAGS_QUIET)
+			fw->flags = (fw->flags & 
+					~(FWTS_FRAMEWORK_FLAGS_QUIET |
+					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 			break;
 		case 'P': /* --power-states */

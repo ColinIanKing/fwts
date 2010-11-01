@@ -76,6 +76,7 @@ typedef struct {
 	char *lspci;				/* path to lspci */
 
 	char *acpi_table_path;			/* path to raw ACPI tables */
+	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
 	int  s3_min_delay;			/* minimum time between resume and next suspend */

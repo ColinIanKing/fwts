@@ -93,6 +93,11 @@ lspci.log \- containing the output from lspci \-vv \-nn
 .br
 README.txt \- containing a timestamp and kernel version information.
 .TP
+.B \-\-dumpfile=acpidump.log
+Load ACPI tables from output generated from acpidump or from sudo fwts --dump.  The
+latter is preferred as fwts --dump is able to dump more tables than acpidump. This
+allows one to dump tables from one machine and processes them with fwts on another machine.
+.TP
 .B \-f, \-\-force\-clean
 creates a new results log file, rather than just appending to any existing one (default).
 .TP

@@ -284,6 +284,65 @@ static void fwts_acpi_load_tables_from_firmware(void)
 	}
 }
 
+
+
+static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_t *addr, int *size)
+{
+	uint32_t offset;
+	uint8_t  data[16];
+	char buffer[80];
+	uint8_t *table = NULL;
+	int len = 0;
+
+	*size = 0;
+
+	if (fscanf(fp, "%s @ 0x%llx\n", name, addr) < 2)
+		return NULL;
+
+	while (fgets(buffer, sizeof(buffer), fp) ) {
+		int n;
+		if ((n = sscanf(buffer,"  %x: %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx",
+			&offset, 
+			&data[0], &data[1], &data[2], &data[3],
+			&data[4], &data[5], &data[6], &data[7],
+			&data[8], &data[9], &data[10], &data[11],
+			&data[12], &data[13], &data[14], &data[15])) < 1)
+			break;
+
+		len += (n - 1);
+		table = realloc(table, len);
+		memcpy(table + offset, data, n-1);
+	}
+
+	*size = len;
+	return table;
+}
+
+static void fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
+{
+	FILE *fp;
+
+	if ((fp = fopen(fw->acpi_table_acpidump_file, "r")) == NULL) {
+		fwts_log_error(fw, "Cannot open '%s' to read ACPI tables.", 
+			fw->acpi_table_acpidump_file);
+		return;
+	}
+
+	while (!feof(fp)) {
+		uint64_t addr;		
+		uint8_t *table;
+		int length;
+		char name[16];
+
+		if ((table = fwts_acpi_load_table_from_acpidump(fp, name, &addr, &length)) != NULL)
+			fwts_acpi_add_table(name, table, addr, length);
+		else
+			break;
+	}
+
+	fclose(fp);
+}
+
 static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
 {
 	uint8_t *ptr = NULL;
@@ -352,10 +411,12 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 void fwts_acpi_load_tables(fwts_framework *fw)
 {
 	/* Load from firmware or from files in a specified directory */
-	if (fw->acpi_table_path == NULL)
-		fwts_acpi_load_tables_from_firmware();
-	else
+	if (fw->acpi_table_path != NULL)
 		fwts_acpi_load_tables_from_file(fw);
+	else if (fw->acpi_table_acpidump_file != NULL)
+		fwts_acpi_load_tables_from_acpidump(fw);
+	else
+		fwts_acpi_load_tables_from_firmware();
 
 	acpi_tables_loaded = 1;
 }

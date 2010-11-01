@@ -293,11 +293,14 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	char buffer[80];
 	uint8_t *table = NULL;
 	int len = 0;
+	unsigned long long table_addr;
 
 	*size = 0;
 
-	if (fscanf(fp, "%s @ 0x%llx\n", name, addr) < 2)
+	if (fscanf(fp, "%s @ 0x%Lx\n", name, &table_addr) < 2)
 		return NULL;
+
+	*addr = (uint64_t)table_addr;
 
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		int n;

@@ -254,29 +254,31 @@ static void fwts_acpi_load_tables_from_firmware(void)
 	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)rsdp_addr, sizeof(fwts_acpi_table_rsdp));
 
 	if (rsdp->rsdt_address) {
-		rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address);
-		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address, rsdt->header.length);
-		num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
-		for (i=0; i<num_entries; i++) {
-			if (rsdt->entries[i]) {
-				header = fwts_acpi_load_table((off_t)rsdt->entries[i]);
-				if (strncmp("FACP", header->signature, 4) == 0)
-					fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-				fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
+		if ((rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address)) != NULL) {
+			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address, rsdt->header.length);
+			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
+			for (i=0; i<num_entries; i++) {
+				if (rsdt->entries[i]) {
+					header = fwts_acpi_load_table((off_t)rsdt->entries[i]);
+					if (strncmp("FACP", header->signature, 4) == 0)
+						fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+					fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
+				}
 			}
 		}
 	}
 
 	if (rsdp->xsdt_address) {
-		xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address);
-		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address, xsdt->header.length);
-		num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
-		for (i=0; i<num_entries; i++) {
-			if (xsdt->entries[i]) {
-				header = fwts_acpi_load_table((off_t)xsdt->entries[i]);
-				if (strncmp("FACP", header->signature, 4) == 0)
-					fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-				fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+		if ((xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address)) != NULL) {
+			fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address, xsdt->header.length);
+			num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
+			for (i=0; i<num_entries; i++) {
+				if (xsdt->entries[i]) {
+					header = fwts_acpi_load_table((off_t)xsdt->entries[i]);
+					if (strncmp("FACP", header->signature, 4) == 0)
+						fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+					fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+				}
 			}
 		}
 	}
@@ -376,6 +378,7 @@ fwts_acpi_table_info *fwts_acpi_find_table(fwts_framework *fw, const char *name,
 	            (tables[i].which == which))
 			return &tables[i];
 	}
+
 	return NULL;
 }
 

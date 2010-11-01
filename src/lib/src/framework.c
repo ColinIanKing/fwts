@@ -1062,6 +1062,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 	for (i=optind; i<argc; i++)
 		if (!strcmp(argv[i], "-")) {
 			fwts_framework_strdup(&fw->results_logname, "stdout");
+			fw->flags = (fw->flags &
+					~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
+					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
+					| FWTS_FRAMEWORK_FLAGS_QUIET;
 			break;
 		}
 

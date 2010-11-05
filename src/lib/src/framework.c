@@ -668,6 +668,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "\t\t\%owner - name of test program",	NULL },
 		{ "\t\t\%level - failure test level",	NULL },
 		{ "\t\t\%line  - log line number",	NULL },
+		{ "--lp-tags",			"Output LaunchPad bug tags." },
 		{ "--lspci=path",		"Specify path to lspci." },
 		{ "--no-s3",			"Don't run S3 suspend/resume tests." },
 		{ "",				"  deprecated, use --skip_test=s3 instead." },
@@ -817,6 +818,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "skip-test", 1, 0, 0 },
 		{ "quiet", 0, 0, 0},
 		{ "dumpfile", 1, 0, 0 },
+		{ "lp-tags", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -989,6 +991,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 36: /* --dumpfile */
 				fw->acpi_table_acpidump_file = strdup(optarg);
 				break;
+			case 37: /* --lp-flags */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
+				break;
 			}
 			break;
 		case 'a': /* --all */
@@ -1020,6 +1025,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		case 'k': /* --klog */
 			fwts_framework_strdup(&fw->klog, optarg);
+			break;
+		case 'l': /* --lp-flags */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
 			break;
 		case 'p': /* --show-progress */
 			fw->flags = (fw->flags & 

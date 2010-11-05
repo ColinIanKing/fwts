@@ -43,6 +43,7 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_TEST_ACPI		       = 0x04000000,
 	FWTS_FRAMEWORK_FLAGS_UTILS     	       	       = 0x08000000,
 	FWTS_FRAMEWORK_FLAGS_QUIET		       = 0x10000000,
+	FWTS_FRAMEWORK_FLAGS_LP_TAGS                   = 0x20000000,
 } fwts_framework_flags;
 
 #define FWTS_FRAMEWORK_FLAGS_TEST_MASK		\

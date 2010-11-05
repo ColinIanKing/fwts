@@ -70,6 +70,8 @@ static char *fwts_log_field_to_str(const fwts_log_field field)
 		return "ADV";
 	case LOG_HEADING:
 		return "HED";
+	case LOG_TAG:
+		return "TAG";
 	default:
 		return LOG_UNKOWN_FIELD;
 	}
@@ -125,6 +127,7 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 		{ "SEP", LOG_SEPARATOR },
 		{ "ADV", LOG_ADVICE },
 		{ "HED", LOG_HEADING },
+		{ "TAG", LOG_TAG },
 		{ "ALL", ~0 },
 		{ NULL, 0 }
 	};

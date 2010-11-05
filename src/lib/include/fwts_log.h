@@ -35,6 +35,7 @@ typedef enum {
 	LOG_NEWLINE         = 0x00000080,
 	LOG_ADVICE          = 0x00000100,
 	LOG_HEADING	    = 0x00000200,
+	LOG_TAG		    = 0x00000400,
 
 	LOG_FIELD_MASK	    = 0x0000ffff,
 
@@ -105,6 +106,9 @@ void	  fwts_log_set_line_width(const int width);
 
 #define fwts_log_heading(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_HEADING, LOG_LEVEL_NONE, fmt, ## args)
+
+#define fwts_log_tag(fw, fmt, args...)	\
+	fwts_log_printf(fw->results, LOG_TAG | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_nl(fw) \
 	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "")

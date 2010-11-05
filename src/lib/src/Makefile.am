@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include  -Wall -Werror
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 
 noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \
@@ -30,7 +30,8 @@ libtestsuite_a_SOURCES = \
 	wakealarm.c \
 	summary.c \
 	microcode.c \
-	virt.c
+	virt.c \
+	tag.c
 
 
 

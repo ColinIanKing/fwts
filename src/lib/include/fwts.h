@@ -25,6 +25,7 @@
 
 #include "fwts_version.h"
 #include "fwts_types.h"
+#include "fwts_tag.h"
 #include "fwts_binpaths.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"
@@ -54,5 +55,6 @@
 #include "fwts_interactive.h"
 #include "fwts_keymap.h"
 #include "fwts_cmos.h"
+
 
 #endif

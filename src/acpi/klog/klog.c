@@ -62,11 +62,22 @@ static void klog_progress(fwts_framework *fw, int progress)
 static int klog_test1(fwts_framework *fw)
 {	
 	int errors = 0;
+	fwts_list *taglist;
+	char *tags;
 
-	if (fwts_klog_firmware_check(fw, klog_progress, klog, &errors)) {
+	taglist = fwts_list_init();
+
+	if (fwts_klog_firmware_check(fw, klog_progress, klog, &errors, taglist)) {
 		fwts_log_error(fw, "Error parsing kernel log.");
 		return FWTS_ERROR;
 	}
+
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS) {
+		tags = fwts_tag_list_to_str(taglist);
+		fwts_log_tag(fw, "Tags: %s", tags);
+		free(tags);
+	}
+	fwts_list_free(taglist, free);
 
 	if (errors > 0) 	
 		/* Checks will log errors as failures automatically */

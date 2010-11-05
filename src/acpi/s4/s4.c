@@ -79,13 +79,13 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
+	if (fwts_klog_pm_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
+	if (fwts_klog_firmware_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_common_check(fw, NULL, klog, &errors))
+	if (fwts_klog_common_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 

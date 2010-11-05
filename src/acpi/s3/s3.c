@@ -129,13 +129,13 @@ static int s3_check_log(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
+	if (fwts_klog_pm_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
+	if (fwts_klog_firmware_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_common_check(fw, NULL, klog, &errors))
+	if (fwts_klog_common_check(fw, NULL, klog, &errors, NULL))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 	fwts_klog_free(klog);

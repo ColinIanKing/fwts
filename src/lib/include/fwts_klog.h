@@ -39,24 +39,25 @@ typedef enum {
 typedef struct {
 	const fwts_compare_mode mode;
 	const fwts_log_level level;
+	const fwts_tag tag;
         const char *pattern;
 	const char *advice;
 	pcre *re;
 } fwts_klog_pattern;
 
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);
-typedef void (*fwts_klog_scan_func)(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
+typedef void (*fwts_klog_scan_func)(fwts_framework *fw, char *line, char *prevline, void *private, int *errors, fwts_list *taglist);
 
-int        fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_klog_scan_func callback, fwts_klog_progress_func progress, void *private, int *errors);
-void       fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors);
+int        fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_klog_scan_func callback, fwts_klog_progress_func progress, void *private, int *errors, fwts_list *taglist);
+void       fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors, fwts_list *taglist);
 fwts_list *fwts_klog_read(void);
 void       fwts_klog_free(fwts_list *list);
 
 int        fwts_klog_clear(void);
 
-int        fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
-int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
-int        fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
+int        fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors, fwts_list *taglist);
+int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors, fwts_list *taglist);
+int        fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors, fwts_list *taglist);
 int	   fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern);
 
 

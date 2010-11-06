@@ -23,6 +23,11 @@
 
 #include "fwts.h"
 
+
+/*
+ *  fwts_get()
+ *	get a string from a file. used to gather text from /proc or /sys entries
+ */
 char *fwts_get(const char *file)
 {	
 	FILE *fp;
@@ -41,6 +46,10 @@ char *fwts_get(const char *file)
 	return strdup(buffer);
 }
 
+/*
+ *  fwts_get_int()
+ *	get an int from a file. used to gather int values from /proc or /sys entries
+ */
 int fwts_get_int(const char *file, int *value)
 {
 	char *data;

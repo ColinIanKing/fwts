@@ -74,6 +74,10 @@ static fwts_framework_setting fwts_framework_settings[] = {
 
 static void fwts_framework_debug(fwts_framework* framework, const char *fmt, ...);
 
+/*
+ *  fwts_framework_compare_priority()
+ *	used to register tests sorted on run priority
+ */
 static int fwts_framework_compare_priority(void *data1, void *data2)
 {
 	fwts_framework_test *test1 = (fwts_framework_test *)data1;
@@ -82,10 +86,14 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
 	return (test1->priority - test2->priority);
 }
 
+/*
+ * fwts_framework_test_add()  
+ *    register a test, called by FWTS_REGISTER() macro
+ */
 void fwts_framework_test_add(const char *name, 
-			     fwts_framework_ops *ops, 
-			     const int priority, 
-			     const int flags)
+	fwts_framework_ops *ops, 
+	const int priority, 
+	const int flags)
 {
 	fwts_framework_test *new_test;
 
@@ -109,6 +117,7 @@ void fwts_framework_test_add(const char *name,
 		exit(EXIT_FAILURE);
 	}
 
+	/* Total up minor tests in this test */
 	for (ops->total_tests = 0; ops->minor_tests[ops->total_tests].test_func != NULL; ops->total_tests++)
 		;
 
@@ -117,9 +126,14 @@ void fwts_framework_test_add(const char *name,
 	new_test->priority = priority;
 	new_test->flags = flags;
 
+	/* Add test, sorted on run order priority */
 	fwts_list_add_ordered(fwts_framework_test_list, new_test, fwts_framework_compare_priority);
 }
 
+/*
+ *  fwts_framework_compare_name()
+ *	for sorting tests in name order
+ */
 static int fwts_framework_compare_name(void *data1, void *data2)
 {
 	fwts_framework_test *test1 = (fwts_framework_test *)data1;
@@ -128,6 +142,10 @@ static int fwts_framework_compare_name(void *data1, void *data2)
 	return strcmp(test1->name, test2->name);
 }
 
+/* 
+ *  fwts_framework_show_tests()
+ *	dump out registered tests.
+ */
 static void fwts_framework_show_tests(fwts_framework *fw)
 {
 	fwts_list_link *item;
@@ -136,8 +154,8 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	int need_nl = 0;
 
 	typedef struct {
-		const char *title;
-		const int  flag;
+		const char *title;	/* Test category */
+		const int  flag;	/* Mask of category */
 	} fwts_categories;
 
 	fwts_categories categories[] = {
@@ -150,9 +168,12 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 		{ NULL,			0 },
 	};
 
+	/* Dump out tests registered under all categories */
 	for (i=0; categories[i].title != NULL; i++) {
 		fwts_framework_test *test;
 
+		/* If no category flags are set, or category matches user requested
+		   category go and dump name and purpose of tests */
 		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
 		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
 			if ((sorted = fwts_list_init()) == NULL) {
@@ -172,9 +193,8 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 				printf("%s%s:\n", categories[i].title,
 					categories[i].flag & FWTS_UTILS ? "" : " tests");
 	
-				for (item = sorted->head; item != NULL; item = item->next) {
+				fwts_list_foreach(item, sorted) {
 					test = (fwts_framework_test*)item->data;
-		
 					printf(" %-13.13s %s\n", test->name, test->ops->headline());
 				}
 			}
@@ -183,17 +203,26 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	}
 }
 
+
+/*
+ *  fwts_framework_strtrunc()
+ *	truncate overlong string 
+ */
 static void fwts_framework_strtrunc(char *dest, const char *src, int max)
 {
 	strncpy(dest, src, max);
 
-	if (strlen(src) > max && max > 3) {
+	if ((strlen(src) > max) && (max > 3)) {
 		dest[max-1] = 0;
 		dest[max-2] = '.';
 		dest[max-3] = '.';
 	}
 }
 
+/*
+ *  fwts_framework_format_results()
+ *	format results into human readable summary.
+ */
 static void fwts_framework_format_results(char *buffer, int buflen, fwts_results *results)
 {
 	int n = 0;
@@ -226,6 +255,12 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 	}
 }
 
+/*
+ *  fwts_framework_minor_test_progress()
+ *	output per test progress report or progress that can be pipe'd into
+ *	dialog --guage
+ *
+ */
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 {
 	float major_percent;
@@ -244,6 +279,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	progress += (float)(fw->current_minor_test_num-1) * minor_percent;
 	progress += (float)(percent) * process_percent;
 
+	/* Feedback required? */
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
 		int percent;
 		char buf[55];
@@ -257,7 +293,6 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	}
 
 	/* Output for the dialog tool, dialog --title "fwts" --gauge "" 12 80 0 */
-
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG) {
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
@@ -276,11 +311,22 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	}
 }
 
-static void fwts_framework_underline(fwts_framework *fw, const int ch)
+
+/*
+ *  fwts_framework_underline()
+ *	underlining into log
+ */
+static inline void fwts_framework_underline(fwts_framework *fw, const int ch)
 {
 	fwts_log_underline(fw->results, ch);
 }
 
+/*
+ *  fwts_framework_get_env()
+ *	get a variable - if already fetched return cached value, otherwise
+ *	try to gather from environment. If not in environment, return 
+ *	predefined default.
+ */
 static char *fwts_framework_get_env(const int env_id)
 {
 	int i;
@@ -305,6 +351,10 @@ static char *fwts_framework_get_env(const int env_id)
 	return "";
 }
 
+/*
+ *  fwts_framework_free_env()
+ *	free alloc'd environment variables
+ */
 static void fwts_framework_free_env(void)
 {
 	int i;
@@ -314,6 +364,11 @@ static void fwts_framework_free_env(void)
 			free(fwts_framework_settings[i].env_value);
 }
 
+
+/*
+ *  fwts_framework_debug()
+ *	print debug to debug stream
+ */
 static void fwts_framework_debug(fwts_framework* fw, const char *fmt, ...)
 {
 	va_list ap;
@@ -486,6 +541,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_tests_run()
+ *	
+ */
 static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run)
 {
 	fwts_list_link *item;
@@ -506,6 +565,10 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 	fwts_framework_debug(fw, "fwts_framework_major_tests() done");
 }
 
+/*
+ *  fwts_framework_test_find()
+ *	find a named test, return test if found, NULL otherwise
+ */
 static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const char *name)
 {
 	fwts_list_link *item;
@@ -542,6 +605,10 @@ static void fwts_framework_close(fwts_framework *fw)
 	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
+/*
+ *  fwts_framework_failed()
+ *	log advice message
+ */
 void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
@@ -557,6 +624,10 @@ void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
+/*
+ *  fwts_framework_failed()
+ *	log a passed test message
+ */
 void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
@@ -571,6 +642,10 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
+/*
+ *  fwts_framework_failed()
+ *	log a failed test message
+ */
 void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char *fmt, ...)
 {
 	va_list ap;
@@ -586,6 +661,10 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 	va_end(ap);
 }
 
+/*
+ *  fwts_framework_skipped()
+ *	log a warning message
+ */
 void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
@@ -600,6 +679,10 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
+/*
+ *  fwts_framework_skipped()
+ *	log a skipped test message
+ */
 void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
 {
 	va_list ap;
@@ -614,11 +697,20 @@ void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
 	va_end(ap);
 }
 
+/*
+ *  fwts_framework_show_version()
+ *	dump version of fwts
+ */
 static void fwts_framework_show_version(char * const *argv)
 {
 	printf("%s, Version %s, %s\n", argv[0], FWTS_VERSION, FWTS_DATE);
 }
 
+
+/*
+ *  fwts_framework_strdup()
+ *	dup a string. if it's already allocated, free previous allocation before duping
+ */
 static void fwts_framework_strdup(char **ptr, const char *str)
 {
 	if (ptr == NULL)
@@ -629,12 +721,16 @@ static void fwts_framework_strdup(char **ptr, const char *str)
 	*ptr = strdup(str);
 }
 
+/*
+ *  fwts_framework_syntax()
+ *	dump some help
+ */
 static void fwts_framework_syntax(char * const *argv)
 {
 	int i;
 	typedef struct {
-		char *opt;
-		char *info;
+		char *opt;	/* option */
+		char *info;	/* what it does */
 	} fwts_syntax_info;
 
 	static fwts_syntax_info syntax_help[] = {
@@ -704,6 +800,10 @@ static void fwts_framework_syntax(char * const *argv)
 
 }
 
+/* 
+ * fwts_framework_heading_info()
+ *	log basic system info so we can track the tests
+ */
 static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_run)
 {
 	struct tm tm;
@@ -746,6 +846,10 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	}
 }
 
+/*
+ *  fwts_framework_skip_test()
+ *	try to find a test in list of tests to be skipped, return NULL of cannot be found
+ */
 static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, fwts_framework_test *test)
 {
 	fwts_list_link *item;
@@ -757,6 +861,10 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
 	return NULL;
 }
 
+/*
+ *  fwts_framework_skip_test_parse()
+ *	parse optarg of comma separated list of tests to skip
+ */
 static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, fwts_list *tests_to_skip)
 {
 	char *str;
@@ -775,6 +883,10 @@ static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, f
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_args()
+ *	parse args and run tests
+ */
 int fwts_framework_args(const int argc, char * const *argv)
 {
 	int ret = FWTS_OK;
@@ -1077,6 +1189,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		}
 
+	/* S3 test options */
 	if ((fw->s3_min_delay < 0) || (fw->s3_min_delay > 3600)) {
 		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
 		goto tidy_close;
@@ -1108,6 +1221,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 
+	/* Debug log */
 	if ((fw->debug = fwts_log_open("fwts", 
 			fw->debug_logname, "a+")) == NULL) {
 		ret = FWTS_ERROR;
@@ -1115,6 +1229,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 
+	/* Results log */
 	if ((fw->results = fwts_log_open("fwts", 
 			fw->results_logname, 
 			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a")) == NULL) {

@@ -23,6 +23,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_list_init()
+ *	allocate and initialise a list header, return NULL if failed
+ */
 fwts_list *fwts_list_init(void)
 {
 	fwts_list *list;
@@ -37,6 +41,10 @@ fwts_list *fwts_list_init(void)
 	return list;
 }
 
+/*
+ *  fwts_list_len()
+ *	return list length, return 0 if list is NULL
+ */
 int fwts_list_len(fwts_list *list)
 {
 	if (list != NULL)
@@ -45,6 +53,11 @@ int fwts_list_len(fwts_list *list)
 		return 0;
 }
 
+/*
+ *  fwts_list_iterate()
+ *	iterate over items in list, call callback function to operate on each
+ *	item, and pass private data over to callback. private may be NULL if not used
+ */
 void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, void *private)
 {
 	fwts_list_link *item;
@@ -56,6 +69,12 @@ void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, voi
 		callback(item->data, private);
 }
 
+/*
+ *  fwts_list_free()
+ *	free list. provide free() func pointer data_free() to 
+ *	free individual items in list. If func is null, don't
+ * 	free items.
+ */
 void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 {
 	fwts_list_link *item;
@@ -74,6 +93,10 @@ void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 	free(list);
 }
 
+/*
+ *  fwts_list_append()
+ *	add new data to end of list
+ */
 fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 {
 	fwts_list_link *link;
@@ -98,6 +121,10 @@ fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 	return link;
 }
 
+/*
+ *  fwts_list_add_ordered()
+ *	add new data into list, based on order from callback func compare().
+ */
 fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare)
 {
 	fwts_list_link   *new_list_item;

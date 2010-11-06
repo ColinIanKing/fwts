@@ -146,12 +146,13 @@ static int fwts_framework_compare_name(void *data1, void *data2)
  *  fwts_framework_show_tests()
  *	dump out registered tests.
  */
-static void fwts_framework_show_tests(fwts_framework *fw)
+static void fwts_framework_show_tests(fwts_framework *fw, int full)
 {
 	fwts_list_link *item;
 	fwts_list *sorted;
 	int i;
 	int need_nl = 0;
+	int total = 0;
 
 	typedef struct {
 		const char *title;	/* Test category */
@@ -195,12 +196,25 @@ static void fwts_framework_show_tests(fwts_framework *fw)
 	
 				fwts_list_foreach(item, sorted) {
 					test = (fwts_framework_test*)item->data;
-					printf(" %-13.13s %s\n", test->name, test->ops->headline());
+					if (full == FWTS_TRUE) {
+						int j;
+						printf(" %-13.13s (%d test%s):\n", 
+							test->name, test->ops->total_tests,
+							test->ops->total_tests > 1 ? "s" : "");
+						for (j=0; j<test->ops->total_tests;j++)
+							printf("  %s\n", test->ops->minor_tests[j].name);
+						total += test->ops->total_tests;
+					}
+					else {
+						printf(" %-13.13s %s\n", test->name, test->ops->headline());
+					}
 				}
 			}
 			fwts_list_free(sorted, NULL);
 		}
 	}
+	if (full == FWTS_TRUE)
+		printf("\nTotal of %d tests\n", total);
 }
 
 
@@ -783,6 +797,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "-p, --show-progress",	"Output test progress report to stderr." },
 		{ "-D, --show-progess-dialog",	"Output test progress for use in dialog tool." },
 		{ "-s, --show-tests",		"Show available tests." },
+		{ "--show-tests-full",		"Show available tests including all minor tests." },
 		{ "-S, --skip_test=t1[,t2]",	"Ship tests named t1, t2.." },
 		{ "--stdout-summary",		"Output SUCCESS or FAILED to stdout at end of tests." },
 		{ "-t, --table-path=path",	"Path to ACPI tables." },
@@ -931,6 +946,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "quiet", 0, 0, 0},
 		{ "dumpfile", 1, 0, 0 },
 		{ "lp-tags", 0, 0, 0 },
+		{ "show-tests-full", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -1106,6 +1122,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 37: /* --lp-flags */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
 				break;
+			case 38: /* --show-tests-full */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL;
+				break;
 			}
 			break;
 		case 'a': /* --all */
@@ -1204,9 +1223,14 @@ int fwts_framework_args(const int argc, char * const *argv)
 	}
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
-		fwts_framework_show_tests(fw);
+		fwts_framework_show_tests(fw, FWTS_FALSE);
 		goto tidy_close;
 	}
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL) {
+		fwts_framework_show_tests(fw, FWTS_TRUE);
+		goto tidy_close;
+	}
+
 
 	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
@@ -1249,7 +1273,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 			if (test == NULL) {
 				fprintf(stderr, "No such test '%s'\n",argv[optind]);
-				fwts_framework_show_tests(fw);
+				fwts_framework_show_tests(fw, FWTS_FALSE);
 				ret = FWTS_ERROR;
 				goto tidy;
 			}

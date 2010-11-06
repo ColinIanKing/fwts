@@ -36,17 +36,29 @@ static fwts_log_field fwts_log_filter = ~0;
 
 static char fwts_log_format[256] = "%line %owner ";
 
+/* 
+ *  fwts_log_set_line_width()
+ * 	set width of a log
+ */
 void fwts_log_set_line_width(int width)
 {
 	if ((width >= 80) && (width <= 256))
 		log_line_width = width;
 }
 
+/* 
+ *  fwts_log_line_number()
+ * 	get current line number of log
+ */
 int fwts_log_line_number(void)
 {
 	return fwts_log_line;
 }
 
+/*
+ *  fwts_log_field_to_str()
+ *	return string name of log field
+ */
 static char *fwts_log_field_to_str(const fwts_log_field field)
 {
 	switch (field & LOG_FIELD_MASK) {
@@ -77,6 +89,10 @@ static char *fwts_log_field_to_str(const fwts_log_field field)
 	}
 }
 
+/*
+ *  fwts_log_level_to_str()
+ *	return string name of log level
+ */
 char *fwts_log_level_to_str(const fwts_log_level level)
 {
 	switch (level) {
@@ -94,6 +110,10 @@ char *fwts_log_level_to_str(const fwts_log_level level)
 	}
 }
 
+/*
+ *  fwts_log_print_fields()
+ *	dump out available log field names
+ */
 void fwts_log_print_fields(void)
 {
 	fwts_log_field field = 1;
@@ -110,6 +130,10 @@ void fwts_log_print_fields(void)
 }
 
 
+/*
+ *  fwts_log_str_to_field()
+ *	return log field of a given string, 0 if not matching
+ */
 static fwts_log_field fwts_log_str_to_field(const char *text)
 {
 	int i;
@@ -135,7 +159,7 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 	for (i=0; mappings[i].text != NULL; i++)
 		if (strcmp(mappings[i].text, text) == 0)
 			return mappings[i].field;
-	return FWTS_OK;
+	return 0;
 }
 
 void fwts_log_filter_set_field(const fwts_log_field filter)
@@ -176,6 +200,10 @@ void fwts_log_set_format(const char *str)
 	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
+/*
+ *  fwts_log_header()
+ *	format up a tabulated log heading
+ */
 static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwts_log_field field, const fwts_log_level level)
 {
 	char *ptr;
@@ -230,6 +258,10 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 }
 
 
+/*
+ *  fwts_log_vprintf()
+ *	printf to a log
+ */
 int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...)
 {
 	va_list	args;
@@ -242,6 +274,10 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
 	return ret;
 }
 
+/*
+ *  fwts_log_vprintf()
+ *	vprintf to a log
+ */
 int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, va_list args)
 {
 	char buffer[4096];
@@ -288,6 +324,10 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
 	return len;
 }
 
+/*
+ *  fwts_log_underline()
+ *	write an underline across log, using character ch as the underline
+ */
 void fwts_log_underline(fwts_log *log, const int ch)
 {
 	int i;
@@ -298,6 +338,7 @@ void fwts_log_underline(fwts_log *log, const int ch)
 	if (!((LOG_SEPARATOR & LOG_FIELD_MASK) & fwts_log_filter))
 		return;
 
+	/* Get width of log line, based on how wide the heading is */
 	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
 
 	for (i=n;i<log_line_width-1;i++)
@@ -311,6 +352,10 @@ void fwts_log_underline(fwts_log *log, const int ch)
 	fwts_log_line++;
 }
 
+/*
+ *  fwts_log_newline()
+ *	write newline to log
+ */
 void fwts_log_newline(fwts_log *log)
 {
 	if (log && (log->magic == LOG_MAGIC)) {
@@ -334,6 +379,11 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 	return FWTS_ERROR;
 }
 
+/*
+ *  fwts_log_open()
+ *	open a log file. if name is stderr or stdout, then attach log to these
+ *	streams.
+ */
 fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
 	fwts_log *newlog;
@@ -363,6 +413,10 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 	return newlog;
 }
 
+/*
+ *  fwts_log_close()
+ *	close a log file
+ */
 int fwts_log_close(fwts_log *log)
 {
 	if (log && (log->magic == LOG_MAGIC)) {

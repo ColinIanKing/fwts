@@ -533,6 +533,24 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	},
 	{
 		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,	
+		FWTS_TAG_ACPI_BRIGHTNESS,
+		"ACPI Error.*Found unordered _BCL package",
+		"Method _BCL (Query List of Brightness Control Levels Supported) has a "
+		"maximum brightness value which is not the last value in the returned package. "
+		"Values returned must be in ascending order."
+	},
+	{
+		FWTS_COMPARE_REGEX,
+		LOG_LEVEL_HIGH,	
+		FWTS_TAG_ACPI_BRIGHTNESS,
+		"ACPI Error.*Too many duplicates in _BCL package",
+		"Method _BCL (Query List of Brightness Control Levels Supported) "
+		"contains too many duplicated brightness levels in the returned package "
+		"and this is non-standard."
+	},
+	{
+		FWTS_COMPARE_REGEX,
 		LOG_LEVEL_HIGH,
 		FWTS_TAG_ACPI,
 		"ACPI Warning.*Could not enable fixed event",
@@ -702,7 +720,7 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		FWTS_COMPARE_REGEX,
 		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
+		FWTS_TAG_ACPI_BRIGHTNESS,
 		FW_BUG "ACPI.*brightness control misses _BQC function",
 		"_BQC (Brightness Query Current level) seems to be missing. "
 		"This method returns the current brightness level of a "
@@ -753,7 +771,7 @@ static fwts_klog_pattern firmware_error_warning_patterns[] = {
 	{
 		FWTS_COMPARE_STRING,
 		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
+		FWTS_TAG_ACPI_BRIGHTNESS,
 		FW_BUG "_BCQ is usef instead of _BQC",
 		"ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed."
 		"however the kernel has detected this and is working around this typo."

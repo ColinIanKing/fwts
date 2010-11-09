@@ -119,7 +119,7 @@ static int crs_test1(fwts_framework *fw)
 			}
 		}
 		else {
-			fwts_passed(fw, "The kernel has detected a BIOS older than the end of 2007 (%d/%d/%d) "
+			fwts_passed(fw, "The kernel has detected a BIOS newer than the end of 2007 (%d/%d/%d) "
 				    "and has assumed that your BIOS can correctly "
 				    "specify the host bridge MMIO aperture using _CRS.  If this does not work "
 				    "correctly you can override this by booting with \"pci=nocrs\".", mon, day, year);

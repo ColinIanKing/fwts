@@ -48,6 +48,7 @@ enum {
 	FWTS_ERROR_TEXT,
 	FWTS_ADVICE_TEXT,
 	FWTS_SKIPPED_TEXT,
+	FWTS_ABORTED_TEXT,
 	FWTS_FRAMEWORK_DEBUG
 };
 
@@ -69,6 +70,7 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(FWTS_ERROR_TEXT),       "ERROR",   NULL },
 	{ ID_NAME(FWTS_ADVICE_TEXT),      "ADVICE",  NULL },
 	{ ID_NAME(FWTS_SKIPPED_TEXT),     "SKIPPED", NULL },
+	{ ID_NAME(FWTS_ABORTED_TEXT),     "ABORTED", NULL },
 	{ ID_NAME(FWTS_FRAMEWORK_DEBUG),  "off",     NULL },
 };
 
@@ -708,6 +710,24 @@ void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
 	fw->minor_tests.skipped++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_SKIPPED_TEXT), fw->current_minor_test_num, buffer);
+	va_end(ap);
+}
+
+/*
+ *  fwts_framework_aborted()
+ *	log an aborted test message
+ */
+void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
+{
+	va_list ap;
+	char buffer[1024];
+
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	fwts_framework_debug(fw, "test %d ABORTED: %s.", fw->current_minor_test_num, buffer);
+	fw->minor_tests.skipped++;
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
+		fwts_framework_get_env(FWTS_ABORTED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
 

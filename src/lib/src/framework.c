@@ -44,6 +44,8 @@ enum {
 	BIOS_TEST_TOOLKIT_WARNING_TEXT,
 	BIOS_TEST_TOOLKIT_ERROR_TEXT,
 	BIOS_TEST_TOOLKIT_ADVICE_TEXT,
+	BIOS_TEST_TOOLKIT_SKIPPED_TEXT,
+	BIOS_TEST_TOOLKIT_ABORTED_TEXT,
 	BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG
 };
 
@@ -71,6 +73,8 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(BIOS_TEST_TOOLKIT_WARNING_TEXT),     "WARNING", NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_ERROR_TEXT),       "ERROR",   NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_ADVICE_TEXT),      "ADVICE",  NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_SKIPPED_TEXT),     "SKIPPED", NULL },
+	{ ID_NAME(BIOS_TEST_TOOLKIT_ABORTED_TEXT),     "ABORTED", NULL },
 	{ ID_NAME(BIOS_TEST_TOOLKIT_FRAMEWORK_DEBUG),  "off",     NULL },
 };
 
@@ -266,7 +270,9 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
-		if ((fw->test_run.aborted > 0) || (fw->test_run.failed > 0))
+		if (fw->test_run.aborted > 0)
+			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_ABORTED_TEXT));
+		else if (fw->test_run.aborted > 0)
 			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_FAILED_TEXT));
 		else if (fw->test_run.warning > 0)
 			printf("%s\n", fwts_framework_get_env(BIOS_TEST_TOOLKIT_WARNING_TEXT));

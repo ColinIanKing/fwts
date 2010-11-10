@@ -28,11 +28,10 @@
 typedef enum {
 	FWTS_FRAMEWORK_FLAGS_DEFAULT	               = 0x00000000,
 	FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY            = 0x00000001,
-	FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG           = 0x00000002,
-	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS             = 0x00000004,
-	FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN               = 0x00000008,
-	FWTS_FRAMEWORK_FLAGS_SHOW_TESTS	               = 0x00000010,
-	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG      = 0x00000020,
+	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS             = 0x00000002,
+	FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN               = 0x00000004,
+	FWTS_FRAMEWORK_FLAGS_SHOW_TESTS	               = 0x00000008,
+	FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG      = 0x00000010,
 	FWTS_FRAMEWORK_FLAGS_BATCH	               = 0x00001000,
 	FWTS_FRAMEWORK_FLAGS_INTERACTIVE               = 0x00002000,
 	FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL        = 0x00004000,
@@ -68,10 +67,8 @@ typedef struct {
  */
 typedef struct {
 	int magic;				/* identify struct magic */
-	fwts_log *debug;			/* log to dump framework debug messages */
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
-	char *debug_logname;			/* filename of framework debug log */
 
 	char *iasl;				/* path to iasl */
 	char *dmidecode;			/* path to dmidecode */

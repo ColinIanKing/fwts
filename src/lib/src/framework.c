@@ -82,8 +82,6 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(FWTS_FRAMEWORK_DEBUG),	"off",     NULL },
 };
 
-static void fwts_framework_debug(fwts_framework* framework, const char *fmt, ...);
-
 /*
  *  fwts_framework_compare_priority()
  *	used to register tests sorted on run priority
@@ -388,32 +386,6 @@ static void fwts_framework_free_env(void)
 			free(fwts_framework_settings[i].env_value);
 }
 
-
-/*
- *  fwts_framework_debug()
- *	print debug to debug stream
- */
-static void fwts_framework_debug(fwts_framework* fw, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[1024];	
-	static int debug = -1;
-
-	if (debug == -1)
-		debug = (!strcmp(fwts_framework_get_env(FWTS_FRAMEWORK_DEBUG),"on")) |
-			(fw->flags & FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG);
-	if (debug == 0)
-		return;
-
-	va_start(ap, fmt);
-
-        vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	
-	fwts_log_printf(fw->debug, LOG_DEBUG, LOG_LEVEL_NONE, "%s", buffer);
-
-        va_end(ap);
-}
-
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	fwts_framework_underline(fw,'=');
@@ -461,8 +433,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 {		
 	fwts_framework_minor_test *minor_test;	
 
-	fwts_framework_debug(fw, "fwts_framework_run_test() entered");
-
 	fw->current_minor_test_name = "";
 
 	fw->major_tests.aborted = 0;
@@ -493,15 +463,11 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fwts_framework_minor_test_progress(fw, 0);
 
-	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->init()");
-
 	if (test->ops->init) {
 		int ret;
 		if ((ret = test->ops->init(fw)) != FWTS_OK) {
 			/* Init failed or skipped, so abort */
 			if (ret == FWTS_SKIP) {
-				/* fwts_log_info(fw, "Skipping test."); */
-				fwts_framework_debug(fw, "fwts_framework_run_test() init returned skipped, skip test.");
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
 					fw->major_tests.skipped++;
 					fw->total.skipped++;
@@ -511,7 +477,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 			} else {
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
-				fwts_framework_debug(fw, "fwts_framework_run_test() init failed, aborting!");
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
 					fw->major_tests.aborted++;
 					fw->total.aborted++;
@@ -527,7 +492,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
 		fw->current_minor_test_name = minor_test->name;
-		fwts_framework_debug(fw, "exectuting test %d", fw->current_minor_test_num);
 
 		fw->minor_tests.aborted = 0;
 		fw->minor_tests.failed  = 0;
@@ -567,10 +531,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	fw->total.warning += fw->major_tests.warning;
 	fw->total.skipped += fw->major_tests.skipped;
 
-	fwts_framework_debug(fw, "fwts_framework_run_test() calling ops->deinit()");
 	if (test->ops->deinit)
 		test->ops->deinit(fw);
-	fwts_framework_debug(fw, "fwts_framework_run_test() complete");
 
 	if (!(test->flags & FWTS_UTILS))
 		fwts_framework_test_summary(fw);
@@ -588,8 +550,6 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 {
 	fwts_list_link *item;
 
-	fwts_framework_debug(fw, "fwts_framework_major_tests()");
-
 	fw->current_major_test_num = 1;
 	fw->major_tests_total  = fwts_list_len(tests_to_run);
 
@@ -597,11 +557,9 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 
 		fw->current_major_test = test;
-		fwts_framework_debug(fw, "fwts_framework_major_tests() - test %s",test->name);
 		fwts_framework_run_test(fw, fwts_list_len(tests_to_run), test);
 		fw->current_major_test_num++;
 	}
-	fwts_framework_debug(fw, "fwts_framework_major_tests() done");
 }
 
 /*
@@ -631,7 +589,6 @@ static void fwts_framework_close(fwts_framework *fw)
 	free(fw->iasl);
 	free(fw->dmidecode);
 	free(fw->lspci);
-	free(fw->debug_logname);
 	free(fw->results_logname);
 
 	fwts_framework_free_env();
@@ -655,7 +612,6 @@ void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "Test %d ADVICE: %s.", fw->current_minor_test_num, buffer);
 	fwts_log_nl(fw);
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s", 
 		fwts_framework_get_env(FWTS_ADVICE_TEXT), buffer);
@@ -674,7 +630,6 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d PASSED: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.passed++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_PASSED_TEXT), fw->current_minor_test_num, buffer);
@@ -695,7 +650,6 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_summary_add(fw->current_major_test->name, level, buffer);
-	fwts_framework_debug(fw, "test %d FAILED [%s]: %s.", fw->current_minor_test_num, fwts_log_level_to_str(level), buffer);
 	fw->minor_tests.failed++;
 	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s", 
 		fwts_framework_get_env(FWTS_FAILED_TEXT), fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
@@ -713,7 +667,6 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d WARNING: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.warning++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_WARNING_TEXT), fw->current_minor_test_num, buffer);
@@ -731,7 +684,6 @@ void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d SKIPPED: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.skipped++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_SKIPPED_TEXT), fw->current_minor_test_num, buffer);
@@ -749,7 +701,6 @@ void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_framework_debug(fw, "test %d ABORTED: %s.", fw->current_minor_test_num, buffer);
 	fw->minor_tests.skipped++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_ABORTED_TEXT), fw->current_minor_test_num, buffer);
@@ -798,13 +749,10 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "-a, --all",			"Run all tests." },
 		{ "-b, --batch",		"Just run non-interactive tests." },
 		{ "--batch-experimental",	"Just run Batch Experimental tests." },
-		{ "--debug-output=file",	"Output debug to a named file." },
-		{ "",				"Filename can also be stdout or stderr." },
 		{ "--dmidecode=path",		"Specify path to dmidecode table." },
 		{ "-d, --dump",			"Dump out logs." },
 		{ "--dumpfile",			"Output file generated by acpidump or acpidump.log from fwts --dump." },
 		{ "-f, --force-clean",		"Force a clean results log file." },
-		{ "--fwts-debug",		"Enable run-time test suite framework debug." },
 		{ "-h, --help",			"Print this help." },
 		{ "--iasl=path",		"Specify path to iasl." },
 		{ "-i, --interactive",		"Just run interactive tests." },
@@ -1015,7 +963,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fwts_framework_strdup(&fw->iasl, FWTS_IASL_PATH);
 	fwts_framework_strdup(&fw->dmidecode, FWTS_DMIDECODE_PATH);
 	fwts_framework_strdup(&fw->lspci, FWTS_LSPCI_PATH);
-	fwts_framework_strdup(&fw->debug_logname, "stderr");
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
 
 	tests_to_run  = fwts_list_init();
@@ -1038,8 +985,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 0: /* --stdout-summary */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY;
 				break;	
-			case 1: /* --fwts_framework_-debug */
-				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+			case 1: /* --fwts-debug */
+				fprintf(stderr, "--fwts-debug has been deprecated\n");
+				goto tidy_close;
 				break;		
 			case 2: /* --help */
 				fwts_framework_syntax(argv);
@@ -1051,8 +999,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_log_filter_unset_field(LOG_SEPARATOR);
 				break;
 			case 5: /* --debug-output */
-				fwts_framework_strdup(&fw->debug_logname, optarg);
-				fw->flags |= FWTS_FRAMEWORK_FLAGS_FRAMEWORK_DEBUG;
+				fprintf(stderr, "--debug-output has been deprecated\n");
+				goto tidy_close;
 				break;
 			case 6: /* --log-filter */
 				fwts_log_filter_unset_field(~0);
@@ -1283,18 +1231,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if ((fw->iasl == NULL) ||
 	    (fw->dmidecode == NULL) ||
 	    (fw->lspci == NULL) || 
-	    (fw->debug_logname == NULL) ||
 	    (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
-		goto tidy_close;
-	}
-
-	/* Debug log */
-	if ((fw->debug = fwts_log_open("fwts", 
-			fw->debug_logname, "a+")) == NULL) {
-		ret = FWTS_ERROR;
-		fprintf(stderr, "%s: Cannot open debug log.\n", argv[0]);
 		goto tidy_close;
 	}
 
@@ -1359,7 +1298,6 @@ tidy:
 	fwts_list_free(tests_to_skip, NULL);
 	fwts_list_free(tests_to_run, NULL);
 	fwts_log_close(fw->results);
-	fwts_log_close(fw->debug);
 
 tidy_close:
 	fwts_acpi_free_tables();

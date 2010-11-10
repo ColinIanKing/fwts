@@ -1,3 +1,10 @@
+fwts (0.18.05) maverick; urgency=low
+ 
+  * fix --stdout-summary not printing ABORTED on an aborted test (LP: #673422)
+  * New upstream version 0.18.05
+
+ -- Colin King <colin.king@canonical.com>  Wed, 10 Nov 2010 09:47:47 +0100
+
 fwts (0.18.04) maverick; urgency=low
  
   * fix build issues with bad cpufreq fix

@@ -22,13 +22,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
 #include <time.h>
 
 #include "fwts.h"
 
 #define LOG_UNKOWN_FIELD	"???"
 
-static int log_line_width = LOG_LINE_WIDTH;
+static int log_line_width = 0;
 
 static int fwts_log_line = 1;
 
@@ -303,7 +305,7 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
 	if (field & LOG_VERBATUM)
 		lines = fwts_list_from_text(buffer+n);
 	else
-		lines = fwts_format_text(buffer+n, log_line_width-n);
+		lines = fwts_format_text(buffer+n, log->line_width-n);
 
 	len = n;
 
@@ -341,13 +343,13 @@ void fwts_log_underline(fwts_log *log, const int ch)
 	/* Get width of log line, based on how wide the heading is */
 	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
 
-	for (i=n;i<log_line_width-1;i++)
+	for (i=n;i<log->line_width-1;i++)
 		buffer[i] = ch;
 
 	buffer[i++] = '\n';
 	buffer[i] = '\0';
 
-	fwrite(buffer, 1, log_line_width, log->fp);
+	fwrite(buffer, 1, log->line_width, log->fp);
 	fflush(log->fp);
 	fwts_log_line++;
 }
@@ -387,6 +389,7 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
 	fwts_log *newlog;
+	int fd;
 
 	if ((newlog = calloc(1, sizeof(fwts_log))) == NULL)
 		return NULL;
@@ -408,6 +411,23 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 	else if ((newlog->fp = fopen(name, mode)) == NULL) {
 		free(newlog);
 		return NULL;
+	}
+
+	fd = fileno(newlog->fp);
+	if (log_line_width) {
+		/* User has specified width, so use it */
+		newlog->line_width = log_line_width;
+	} else {
+		struct winsize ws;
+#if TIOCGWINSZ
+		if (isatty(fd) &&
+		    (ioctl(fd, TIOCGWINSZ, &ws) != -1) &&
+		    (0 < ws.ws_col) && 
+		    (ws.ws_col == (size_t)ws.ws_col)) 
+			newlog->line_width = ws.ws_col;
+		else
+#endif
+			newlog->line_width = LOG_LINE_WIDTH;
 	}
 
 	return newlog;

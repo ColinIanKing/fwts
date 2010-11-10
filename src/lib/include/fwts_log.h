@@ -54,6 +54,7 @@ typedef struct log_t {
 	int magic;
 	FILE *fp;	
 	char *owner;
+	int line_width;
 } fwts_log;
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);

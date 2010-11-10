@@ -620,7 +620,7 @@ static void fwts_framework_close(fwts_framework *fw)
 }
 
 /*
- *  fwts_framework_failed()
+ *  fwts_framework_advice()
  *	log advice message
  */
 void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
@@ -639,7 +639,7 @@ void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 }
 
 /*
- *  fwts_framework_failed()
+ *  fwts_framework_passed()
  *	log a passed test message
  */
 void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
@@ -676,7 +676,7 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 }
 
 /*
- *  fwts_framework_skipped()
+ *  fwts_framework_warning()
  *	log a warning message
  */
 void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)

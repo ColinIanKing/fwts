@@ -580,26 +580,6 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
 	return NULL;
 }
 
-static void fwts_framework_close(fwts_framework *fw)
-{
-	int failed = ((fw->total.aborted > 0) || 
-		      (fw->total.failed > 0) || 
-		      (fw->total.warning > 0));
-
-	free(fw->iasl);
-	free(fw->dmidecode);
-	free(fw->lspci);
-	free(fw->results_logname);
-
-	fwts_framework_free_env();
-
-	fwts_list_free(fwts_framework_test_list, free);
-
-	if (fw && (fw->magic == FWTS_FRAMEWORK_MAGIC))
-		free(fw);
-	
-	exit(failed ? EXIT_FAILURE : EXIT_SUCCESS);
-}
 
 /*
  *  fwts_framework_advice()
@@ -1302,7 +1282,20 @@ tidy:
 tidy_close:
 	fwts_acpi_free_tables();
 	fwts_summary_deinit();
-	fwts_framework_close(fw);
 
+	free(fw->iasl);
+	free(fw->dmidecode);
+	free(fw->lspci);
+	free(fw->results_logname);
+	fwts_framework_free_env();
+	fwts_list_free(fwts_framework_test_list, free);
+
+	/* Failed tests flagged an error */
+	if ((fw->total.failed > 0) || 
+	    (fw->total.warning > 0))	
+		ret = FWTS_ERROR;
+
+	free(fw);
+	
 	return ret;
 }

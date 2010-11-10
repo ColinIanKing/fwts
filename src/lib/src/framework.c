@@ -44,6 +44,10 @@
 enum {
 	FWTS_PASSED_TEXT,
 	FWTS_FAILED_TEXT,
+	FWTS_FAILED_LOW_TEXT,
+	FWTS_FAILED_HIGH_TEXT,
+	FWTS_FAILED_MEDIUM_TEXT,
+	FWTS_FAILED_CRITICAL_TEXT,
 	FWTS_WARNING_TEXT,
 	FWTS_ERROR_TEXT,
 	FWTS_ADVICE_TEXT,
@@ -64,14 +68,18 @@ typedef struct {
 #define ID_NAME(id)	id, # id
 
 static fwts_framework_setting fwts_framework_settings[] = {
-	{ ID_NAME(FWTS_PASSED_TEXT),      "PASSED",  NULL },
-	{ ID_NAME(FWTS_FAILED_TEXT),      "FAILED",  NULL },
-	{ ID_NAME(FWTS_WARNING_TEXT),     "WARNING", NULL },
-	{ ID_NAME(FWTS_ERROR_TEXT),       "ERROR",   NULL },
-	{ ID_NAME(FWTS_ADVICE_TEXT),      "ADVICE",  NULL },
-	{ ID_NAME(FWTS_SKIPPED_TEXT),     "SKIPPED", NULL },
-	{ ID_NAME(FWTS_ABORTED_TEXT),     "ABORTED", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_DEBUG),  "off",     NULL },
+	{ ID_NAME(FWTS_PASSED_TEXT),		"PASSED",  NULL },
+	{ ID_NAME(FWTS_FAILED_TEXT),		"FAILED",  NULL },
+	{ ID_NAME(FWTS_FAILED_LOW_TEXT),	"FAILED_LOW", NULL },
+	{ ID_NAME(FWTS_FAILED_HIGH_TEXT),	"FAILED_HIGH", NULL },
+	{ ID_NAME(FWTS_FAILED_MEDIUM_TEXT),	"FAILED_MEDIUM", NULL },
+	{ ID_NAME(FWTS_FAILED_CRITICAL_TEXT),	"FAILED_CRITICAL", NULL },
+	{ ID_NAME(FWTS_WARNING_TEXT),		"WARNING", NULL },
+	{ ID_NAME(FWTS_ERROR_TEXT),		"ERROR",   NULL },
+	{ ID_NAME(FWTS_ADVICE_TEXT),		"ADVICE",  NULL },
+	{ ID_NAME(FWTS_SKIPPED_TEXT),		"SKIPPED", NULL },
+	{ ID_NAME(FWTS_ABORTED_TEXT),		"ABORTED", NULL },
+	{ ID_NAME(FWTS_FRAMEWORK_DEBUG),	"off",     NULL },
 };
 
 static void fwts_framework_debug(fwts_framework* framework, const char *fmt, ...);
@@ -418,8 +426,18 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 			printf("%s\n", fwts_framework_get_env(FWTS_ABORTED_TEXT));
 		else if (fw->major_tests.skipped > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_SKIPPED_TEXT));
-		else if (fw->major_tests.failed > 0)
-			printf("%s\n", fwts_framework_get_env(FWTS_FAILED_TEXT));
+		else if (fw->major_tests.failed > 0) {
+			/* We intentionally report the highest logged error level */
+			if (fw->failed_level & LOG_LEVEL_CRITICAL)
+				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_CRITICAL_TEXT));
+			else if (fw->failed_level & LOG_LEVEL_HIGH)
+				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_HIGH_TEXT));
+			else if (fw->failed_level & LOG_LEVEL_MEDIUM)
+				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_MEDIUM_TEXT));
+			else if (fw->failed_level & LOG_LEVEL_LOW)
+				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_LOW_TEXT));
+			else printf("%s\n", fwts_framework_get_env(FWTS_FAILED_TEXT));
+		}
 		else if (fw->major_tests.warning > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_WARNING_TEXT));
 		else
@@ -452,6 +470,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	fw->major_tests.passed  = 0;
 	fw->major_tests.warning = 0;
 	fw->major_tests.skipped = 0;
+	fw->failed_level = 0;
 
 	fwts_log_set_owner(fw->results, test->name);
 
@@ -670,6 +689,8 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 {
 	va_list ap;
 	char buffer[4096];
+
+	fw->failed_level |= level;
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);

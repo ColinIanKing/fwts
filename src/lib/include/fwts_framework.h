@@ -103,6 +103,7 @@ typedef struct {
 
 	int minor_test_progress;		/* Percentage completion of current test */
 	int print_summary;			/* Print summary of results at end of test runs */
+	int failed_level;			/* Bit mask of failed levels in test run */
 } fwts_framework;
 
 typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);
@@ -156,6 +157,8 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 #define fwts_advice(fw, args...)	fwts_framework_advice(fw, ## args)
 
 #define fwts_skipped(fw, args...)	fwts_framework_skipped(fw, ## args)
+
+#define fwts_aborted(fw, args...)	fwts_framework_aborted(fw, ## args)
 
 static inline int fwts_tests_passed(const fwts_framework *fw)
 {

@@ -414,7 +414,11 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
-		if ((fw->major_tests.aborted > 0) || (fw->major_tests.failed > 0))
+		if (fw->major_tests.aborted > 0)
+			printf("%s\n", fwts_framework_get_env(FWTS_ABORTED_TEXT));
+		else if (fw->major_tests.skipped > 0)
+			printf("%s\n", fwts_framework_get_env(FWTS_SKIPPED_TEXT));
+		else if (fw->major_tests.failed > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_FAILED_TEXT));
 		else if (fw->major_tests.warning > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_WARNING_TEXT));

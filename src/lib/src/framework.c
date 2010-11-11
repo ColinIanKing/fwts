@@ -318,7 +318,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG) {
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
-		fprintf(stdout, "Sofar: %d passes, %d failures, %d warnings, %d aborted, %d skipped\n\n",
+		fprintf(stdout, "So far: %d passes, %d failures, %d warnings, %d aborted, %d skipped\n\n",
 			fw->total.passed,
 			fw->total.failed,
 			fw->total.warning,

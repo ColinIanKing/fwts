@@ -69,6 +69,7 @@ void      fwts_log_set_format(const char *str);
 void      fwts_log_print_fields(void);
 void      fwts_log_filter_set_field(const fwts_log_field filter);
 void      fwts_log_filter_unset_field(const fwts_log_field filter);
+int       fwts_log_str_to_level(const char *str);
 char     *fwts_log_level_to_str(const fwts_log_level level);
 int 	  fwts_log_line_number(void);
 void	  fwts_log_set_line_width(const int width);

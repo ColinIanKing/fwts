@@ -25,6 +25,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_getchar()
+ *	read a char from tty, no echo canonical mode
+ */
 static int fwts_getchar(void)
 {
 	struct termios oldterm;
@@ -47,6 +51,10 @@ static int fwts_getchar(void)
 	return ch;
 }
 
+/*
+ *  fwts_printf()
+ *	plain old printf() wrapped for fwts
+ */ 
 int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 {
 	int len;
@@ -60,6 +68,10 @@ int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 	return len;
 }
 
+/*
+ *  fwts_press_entrer()
+ *	prompt and wait for enter key
+ */
 int fwts_press_enter(fwts_framework *fw)
 {
 	fprintf(stdout, "Press <Enter> to continue");
@@ -73,6 +85,10 @@ int fwts_press_enter(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_get_reply()
+ *	prompt and wait for a given reply that matches given options string
+ */
 int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
 {
 	int ch;

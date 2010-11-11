@@ -32,6 +32,11 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_pipe_open()
+ *	execl a command, return pid in *childpid and
+ *	return fd. fd < 0 indicates error.
+ */
 int fwts_pipe_open(const char *command, pid_t *childpid)
 {
 	int pipefds[2];
@@ -68,6 +73,12 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 	}
 }
 
+/*
+ *  fwts_pipe_read()
+ *	read output from fwts_pipe_open(), *length is
+ *	set to the number of chars read and we return
+ *	a buffer of read data.
+ */
 char *fwts_pipe_read(const int fd, int *length)
 {
 	char *ptr = NULL;
@@ -96,6 +107,10 @@ char *fwts_pipe_read(const int fd, int *length)
 	return ptr;
 }
 
+/*
+ *  fwts_pipe_close()
+ *	close fd, wait for child of given pid to exit
+ */
 int fwts_pipe_close(const int fd, const pid_t pid)
 {
 	int status;
@@ -112,6 +127,11 @@ int fwts_pipe_close(const int fd, const pid_t pid)
 	}
 }
 
+/*
+ *  fwts_pipe_exec()
+ *	execute a command, return a list containing lines
+ *	of the stdout output from the command.
+ */
 int fwts_pipe_exec(const char *command, fwts_list **list)
 {
 	pid_t 	pid;

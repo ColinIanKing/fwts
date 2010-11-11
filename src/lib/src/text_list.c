@@ -23,16 +23,28 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_text_list_init()
+ *	initialise a text list
+ */
 fwts_list *fwts_text_list_init(void)
 {
 	return fwts_list_init();
 }
 
+/*
+ *  fwts_text_list_free()
+ *	free a text list
+ */
 void fwts_text_list_free(fwts_list *list)
 {
 	fwts_list_free(list, free);
 }
 
+/*
+ *  fwts_text_list_append()
+ *	append a string to a text list
+ */
 fwts_list_link *fwts_text_list_append(fwts_list *list, const char *text)
 {
 	char *str;
@@ -43,6 +55,10 @@ fwts_list_link *fwts_text_list_append(fwts_list *list, const char *text)
 		return fwts_list_append(list, str);
 }
 
+/*
+ *  fwts_text_list_dump()
+ *	dump a text list (debug)
+ */
 void fwts_text_list_dump(fwts_list *list)
 {
 	fwts_list_link *item;
@@ -56,6 +72,11 @@ void fwts_text_list_dump(fwts_list *list)
 	}
 }
 
+/*
+ *  fwts_text_list_strstr()
+ *	check if string needle exists in the text list, returns
+ *	the position in the string if found, NULL if not found
+ */
 char *fwts_text_list_strstr(fwts_list *list, const char *needle)
 {
 	fwts_list_link *item;
@@ -73,6 +94,11 @@ char *fwts_text_list_strstr(fwts_list *list, const char *needle)
 	return NULL;
 }
 
+/*
+ *  fwts_list_from_text()
+ *	turn a string containing lines of text into
+ *	a text list
+ */
 fwts_list *fwts_list_from_text(const char *text)
 {
 	char *ptr;

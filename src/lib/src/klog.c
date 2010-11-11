@@ -185,8 +185,8 @@ static const char *fwts_json_str(fwts_framework *fw, const char *table, int inde
 {
 	const char *str;
 
-	if ((str = json_object_get_string(json_object_object_get(obj, "compare_mode"))) == NULL) {
-		fwts_log_error(fw, "Cannot fetch compare_mode val from item %d, table %s.", index, table);
+	if ((str = json_object_get_string(json_object_object_get(obj, key))) == NULL) {
+		fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.", key, index, table);
 		return NULL;
 	}
 	return str;
@@ -256,7 +256,6 @@ static int fwts_klog_check(fwts_framework *fw,
 		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL)
 			fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
 	}
-
 	/* We've now collected up the scan patterns, lets scan the log for errors */
 	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors, taglist);
 

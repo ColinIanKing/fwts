@@ -1,3 +1,10 @@
+fwts (0.19.17) maverick; urgency=low
+ 
+  * klog data now in json formatted datafile
+  * New upstream version 0.19.17
+
+ -- Colin King <colin.king@canonical.com>  Wed, 11 Nov 2010 14:59:02 +0000
+
 fwts (0.19.16) maverick; urgency=low
  
   * New upstream version 0.19.16

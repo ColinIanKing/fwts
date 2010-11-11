@@ -22,6 +22,11 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_set()
+ *	write text to a given file, used to set
+ *	values in /sys or /proc
+ */
 int fwts_set(const char *text, const char *file)
 {	
 	FILE *fp;

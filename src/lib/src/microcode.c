@@ -34,6 +34,10 @@
 #define BUFFER_SIZE	(4096)
 #define MICROCODE_SIZE 	(128*1024) 	/* initial size, expanded as needed */
 
+/*
+ *  fwts_update_microcode()
+ * 	load given microcode file into a processor
+ */
 int fwts_update_microcode(fwts_framework *fw, const char *device, const char *filename)
 {
 	FILE *fp;

@@ -23,7 +23,7 @@
 #include "fwts_list.h"
 
 typedef enum {
-	FWTS_TAG_NONE,
+	FWTS_TAG_NONE = 1,
 	FWTS_TAG_ERROR_CRITICAL,
 	FWTS_TAG_ERROR_HIGH,
 	FWTS_TAG_ERROR_MEDIUM,
@@ -39,6 +39,7 @@ typedef enum {
 	FWTS_TAG_ACPI_BUFFER_OVERFLOW,
 	FWTS_TAG_ACPI_AML_OPCODE,
 	FWTS_TAG_ACPI_NAMESPACE_LOOKUP,
+	FWTS_TAG_ACPI_PCI_EXPRESS,
 	FWTS_TAG_ACPI_BAD_RESULT,
 	FWTS_TAG_ACPI_NO_HANDLER,
 	FWTS_TAG_ACPI_PACKAGE_LIST,
@@ -62,13 +63,13 @@ typedef enum {
 	FWTS_TAG_ACPI_HOTPLUG,
 	FWTS_TAG_ACPI_RSDP,
 	FWTS_TAG_ACPI_MUTEX,
-	FWTS_TAG_ACPI_PCI_EXPRESS,
 	FWTS_TAG_ACPI_THERMAL,
 	FWTS_TAG_EMBEDDED_CONTROLLER,
 	FWTS_TAG_POWER_MANAGEMENT,
 } fwts_tag;
 
-char *fwts_tag_to_str(fwts_tag tag);
+fwts_tag fwts_tag_id_str_to_tag(const char *tag);
+const char *fwts_tag_to_str(fwts_tag tag);
 void fwts_tag_add(fwts_list *taglist, const char *tag);
 char *fwts_tag_list_to_str(fwts_list *taglist);
 

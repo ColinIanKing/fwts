@@ -22,57 +22,81 @@
 
 #include "fwts.h"
 
-static char *fwts_tag_strings[] = {
-	"",
-	"error_critical",
-	"error_high",
-	"error_medium",
-	"error_low",
-	"bios",
-	"bios_thermal",
-	"bios_irq",
-	"bios_amd_powernow",
-	"bios_mmconfig",
-	"acpi",
-	"acpi_io_port",
-	"acpi_invalid_table",
-	"acpi_buffer_overflow",
-	"acpi_aml_opcode",
-	"acpi_namespace_lookup",
-	"acpi_pci_express"
-	"acpi_bad_result",
-	"acpi_no_handler",
-	"acpi_package_list",
-	"acpi_parse_exec_fail",
-	"acpi_eval",
-	"acpi_bad_length",
-	"acpi_bad_address",
-	"acpi_method_return",
-	"acpi_brightness",
-	"acpi_button",
-	"acpi_event",
-	"acpi_parameter",
-	"acpi_throttling",
-	"acpi_exception",
-	"acpi_package",
-	"acpi_apic",
-	"acpi_display",
-	"acpi_multiple_facs",
-	"acpi_pointer_mismatch",
-	"acpi_table_checksum",
-	"acpi_hotplug",
-	"acpi_rsdp",
-	"acpi_mutex",
-	"acpi_pci_express",
-	"acpi_thermal",
-	"embedded_controller",
-	"power_management",
-	NULL,
+typedef struct {
+	fwts_tag	tag;
+	const char	*tag_id;
+	const char 	*tag_str;
+} fwts_tag_info;
+
+#define FWTS_TAG(tag, str)	\
+	{ tag, #tag, str }
+
+static fwts_tag_info fwts_tags[] = {
+	FWTS_TAG(FWTS_TAG_NONE,	 		""),
+	FWTS_TAG(FWTS_TAG_ERROR_CRITICAL,	"error-critical"),
+	FWTS_TAG(FWTS_TAG_ERROR_HIGH,		"error-high"),
+	FWTS_TAG(FWTS_TAG_ERROR_MEDIUM,		"error-medium"),
+	FWTS_TAG(FWTS_TAG_ERROR_LOW,		"error-low"),
+	FWTS_TAG(FWTS_TAG_BIOS,			"bios"),
+	FWTS_TAG(FWTS_TAG_BIOS_THERMAL,		"bios-thermal"),
+	FWTS_TAG(FWTS_TAG_BIOS_IRQ,		"bios-irq"),
+	FWTS_TAG(FWTS_TAG_BIOS_AMD_POWERNOW,	"bios-amd-powernow"),
+	FWTS_TAG(FWTS_TAG_BIOS_MMCONFIG,	"bios-mmconfig"),
+	FWTS_TAG(FWTS_TAG_ACPI,			"acpi"),
+	FWTS_TAG(FWTS_TAG_ACPI_IO_PORT,		"acpi-io-port"),
+	FWTS_TAG(FWTS_TAG_ACPI_INVALID_TABLE,	"acpi-invalid-table"),
+	FWTS_TAG(FWTS_TAG_ACPI_BUFFER_OVERFLOW,	"acpi-buffer-overflow"),
+	FWTS_TAG(FWTS_TAG_ACPI_AML_OPCODE,	"acpi-aml-opcode"),
+	FWTS_TAG(FWTS_TAG_ACPI_NAMESPACE_LOOKUP,"acpi-namespace-lookup"),
+	FWTS_TAG(FWTS_TAG_ACPI_PCI_EXPRESS,	"acpi-pci-express"),
+	FWTS_TAG(FWTS_TAG_ACPI_BAD_RESULT,	"acpi-bad-result"),
+	FWTS_TAG(FWTS_TAG_ACPI_NO_HANDLER,	"acpi-no-handler"),
+	FWTS_TAG(FWTS_TAG_ACPI_PACKAGE_LIST	,"acpi-package-list"),
+	FWTS_TAG(FWTS_TAG_ACPI_PARSE_EXEC_FAIL,	"acpi-parse-exec-fail"),
+	FWTS_TAG(FWTS_TAG_ACPI_EVAL,		"acpi-eval"),
+	FWTS_TAG(FWTS_TAG_ACPI_BAD_LENGTH,	"acpi-bad-length"),
+	FWTS_TAG(FWTS_TAG_ACPI_BAD_ADDRESS,	"acpi-bad-address"),
+	FWTS_TAG(FWTS_TAG_ACPI_METHOD_RETURN,	"acpi-method-return"),
+	FWTS_TAG(FWTS_TAG_ACPI_BRIGHTNESS,	"acpi-brightness"),
+	FWTS_TAG(FWTS_TAG_ACPI_BUTTON,		"acpi-button"),
+	FWTS_TAG(FWTS_TAG_ACPI_EVENT,		"acpi-event"),
+	FWTS_TAG(FWTS_TAG_ACPI_PARAMETER,	"acpi-parameter"),
+	FWTS_TAG(FWTS_TAG_ACPI_THROTTLING,	"acpi-throttling"),
+	FWTS_TAG(FWTS_TAG_ACPI_EXCEPTION,	"acpi-exception"),
+	FWTS_TAG(FWTS_TAG_ACPI_PACKAGE,		"acpi-package"),
+	FWTS_TAG(FWTS_TAG_ACPI_APIC,		"acpi-apic"),
+	FWTS_TAG(FWTS_TAG_ACPI_DISPLAY,		"acpi-display"),
+	FWTS_TAG(FWTS_TAG_ACPI_MULTIPLE_FACS,	"acpi-multiple-facs"),
+	FWTS_TAG(FWTS_TAG_ACPI_POINTER_MISMATCH,"acpi-pointer-mismatch"),
+	FWTS_TAG(FWTS_TAG_ACPI_TABLE_CHECKSUM,	"acpi-table-checksum"),
+	FWTS_TAG(FWTS_TAG_ACPI_HOTPLUG,		"acpi-hotplug"),
+	FWTS_TAG(FWTS_TAG_ACPI_RSDP,		"acpi-rsdp"),
+	FWTS_TAG(FWTS_TAG_ACPI_MUTEX,		"acpi-mutex"),
+	FWTS_TAG(FWTS_TAG_ACPI_THERMAL,		"acpi-thermal"),
+	FWTS_TAG(FWTS_TAG_EMBEDDED_CONTROLLER,	"embedded-controller"),
+	FWTS_TAG(FWTS_TAG_POWER_MANAGEMENT,	"power-management"),
+	{ 0, NULL, NULL }
 };
 
-char *fwts_tag_to_str(fwts_tag tag)
+fwts_tag fwts_tag_id_str_to_tag(const char *tag)
 {
-	return fwts_tag_strings[tag];
+	int i;
+
+	for (i=0; fwts_tags[i].tag_id != NULL; i++)
+		if (strcmp(tag, fwts_tags[i].tag_id) == 0)
+			return fwts_tags[i].tag;
+	return FWTS_TAG_NONE;
+}
+
+const char *fwts_tag_to_str(fwts_tag tag)
+{
+	int i;
+	static const char *none = "";
+
+	for (i=0; fwts_tags[i].tag_id != NULL; i++)
+		if (fwts_tags[i].tag == tag)
+			return fwts_tags[i].tag_str;
+	return none;
 }
 
 static int fwts_tag_compare(void *data1, void *data2)

@@ -51,7 +51,7 @@ static fwts_tag_info fwts_tags[] = {
 	FWTS_TAG(FWTS_TAG_ACPI_PCI_EXPRESS,	"acpi-pci-express"),
 	FWTS_TAG(FWTS_TAG_ACPI_BAD_RESULT,	"acpi-bad-result"),
 	FWTS_TAG(FWTS_TAG_ACPI_NO_HANDLER,	"acpi-no-handler"),
-	FWTS_TAG(FWTS_TAG_ACPI_PACKAGE_LIST	,"acpi-package-list"),
+	FWTS_TAG(FWTS_TAG_ACPI_PACKAGE_LIST,	"acpi-package-list"),
 	FWTS_TAG(FWTS_TAG_ACPI_PARSE_EXEC_FAIL,	"acpi-parse-exec-fail"),
 	FWTS_TAG(FWTS_TAG_ACPI_EVAL,		"acpi-eval"),
 	FWTS_TAG(FWTS_TAG_ACPI_BAD_LENGTH,	"acpi-bad-length"),

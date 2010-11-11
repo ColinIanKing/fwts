@@ -31,9 +31,13 @@
 typedef struct {
 	uint64_t	start_address;
 	uint64_t	end_address;
-	int	type;
+	int		type;
 } e820_entry;
 
+/*
+ *  fwts_e820_entry_compare()
+ *	callback used to sort e820 entries on start address
+ */
 static int fwts_e820_entry_compare(void *data1, void *data2)
 {
         e820_entry *entry1 = (e820_entry *)data1;
@@ -47,6 +51,10 @@ static int fwts_e820_entry_compare(void *data1, void *data2)
 		return 0;
 }
 
+/*
+ *  fwts_e820_str_to_type()
+ *	convert E820 memory strings into type values
+ */
 static int fwts_e820_str_to_type(const char *str)
 {
 	/* Strings from /sys/firmware/memmap/x/type */
@@ -70,6 +78,10 @@ static int fwts_e820_str_to_type(const char *str)
 	return E820_UNKNOWN;
 }
 
+/*
+ *  fwts_e820_type_to_str()
+ *	convert E280 type values to strings
+ */
 static char *fwts_e820_type_to_str(int type)
 {
 	switch (type) {
@@ -84,6 +96,10 @@ static char *fwts_e820_type_to_str(int type)
 	}
 }
 
+/*
+ *  fwts_register_e820_line()
+ *	add e820 line entry into a list ordered on start address
+ */
 static int fwts_register_e820_line(fwts_list *e820_list, const uint64_t start, const uint64_t end, const int type)
 {
 	e820_entry *entry;
@@ -101,6 +117,10 @@ static int fwts_register_e820_line(fwts_list *e820_list, const uint64_t start, c
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_e820_type()
+ *	figure out memory region type on a given memory address
+ */
 int fwts_e820_type(fwts_list *e820_list, const uint64_t memory)
 {
 	e820_entry *entry;
@@ -115,6 +135,10 @@ int fwts_e820_type(fwts_list *e820_list, const uint64_t memory)
 	return E820_UNKNOWN;
 }
 
+/*
+ *  fwts_e820_is_reserved()
+ *	determine if a memory region is marked as reserved or not.
+ */
 fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory)
 {
 	int result = E820_UNKNOWN;
@@ -137,7 +161,10 @@ fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory)
 	return FWTS_FALSE;
 }
 
-/* checks dmesg for useful e820 info */
+/* 
+ *  fwts_e820_dmesg_info()
+ *	callback to check dmesg for e820 info
+ */
 static void fwts_e820_dmesg_info(void *data, void *private)
 {
 	char *str;
@@ -158,6 +185,10 @@ static void fwts_e820_dmesg_info(void *data, void *private)
 	}
 }
 
+/*
+ *  fwts_e820_dump_info()
+ *	callback to dump E820 region
+ */
 static void fwts_e820_dump_info(void *data, void *private)
 {
 	e820_entry *entry = (e820_entry *)data;
@@ -166,6 +197,10 @@ static void fwts_e820_dump_info(void *data, void *private)
 	fwts_log_info(fw, "%016llx - %016llx  %s", entry->start_address, entry->end_address, fwts_e820_type_to_str(entry->type));
 }
 
+/*
+ *  fwts_e820_table_dump()
+ *	dump E820 region
+ */
 void fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list)
 {
 	fwts_log_info(fw, "E820 memory layout");
@@ -174,6 +209,10 @@ void fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list)
 	fwts_list_iterate(e820_list, fwts_e820_dump_info, fw);
 }
 
+/*
+ *  fwts_e820_table_load_from_klog()
+ *	load e820 data from the kernel log
+ */
 fwts_list *fwts_e820_table_load_from_klog(fwts_framework *fw)
 {
 	fwts_list *klog;
@@ -188,10 +227,13 @@ fwts_list *fwts_e820_table_load_from_klog(fwts_framework *fw)
 	fwts_list_iterate(klog, fwts_e820_dmesg_info, e820_list);
 	fwts_klog_free(klog);
 
-
 	return e820_list;
 }
 
+/*
+ *  fwts_e820_table_read_entry()
+ *	load individual e820 entry from /sys/firmware/memmap/
+ */
 static e820_entry *fwts_e820_table_read_entry(const char *which)
 {
 	char path[PATH_MAX];
@@ -228,6 +270,10 @@ static e820_entry *fwts_e820_table_read_entry(const char *which)
 	return entry;
 }
 
+/*
+ *  fwts_e820_table_load()
+ *	load e820 table from /sys/firmware/memmap/
+ */
 fwts_list *fwts_e820_table_load(fwts_framework *fw)
 {
 	DIR *dir;
@@ -255,6 +301,10 @@ fwts_list *fwts_e820_table_load(fwts_framework *fw)
 	return e820_list;
 }
 
+/*
+ *  fwts_e820_table_free()
+ *	free e820 list
+ */
 void fwts_e820_table_free(fwts_list *e820_list)
 {
 	fwts_list_free(e820_list, free);

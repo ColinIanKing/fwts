@@ -42,6 +42,10 @@ static pid_t *fwts_cpu_pids;
 #define MSR_AMD64_OSVW_ID_LENGTH	0xc0010140
 #define MSR_AMD64_OSVW_STATUS		0xc0010141
 
+/*
+ *  fwts_cpu_readmsr()
+ *	Read a given msr on a specificied CPU
+ */
 int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 {
 	struct stat statbuf;
@@ -55,7 +59,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 	snprintf(buffer, sizeof(buffer), "/dev/cpu/%d/msr", cpu);
 
 	if (stat(buffer, &statbuf)) {
-		/* Hrm, msr not there, so force modprove msr and see what happens */
+		/* Hrm, msr not there, so force modprobe msr and see what happens */
 		pid_t pid;
 		if ((fd = fwts_pipe_open("modprobe msr", &pid)) < 0)
 			return FWTS_ERROR;
@@ -79,6 +83,10 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_cpu_free_info()
+ *	free CPU information 
+ */
 void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
 {
 	if (cpu) {
@@ -89,6 +97,10 @@ void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
 	free(cpu);
 }
 
+/*
+ *  fwts_cpu_get_info()
+ *	get CPU information for specified CPU
+ */
 fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 {
 	FILE *fp;
@@ -148,19 +160,14 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 	}
 	fclose(fp);
 
-	/*
-	printf("vendor_id : %s\n", cpu->vendor_id);
-	printf("cpu family: %d\n", cpu->x86);
-	printf("model     : %d\n", cpu->x86_model);
-	printf("model name: %s\n", cpu->model_name);
-	printf("stepping  : %d\n", cpu->stepping);
-	printf("flags     : %s\n", cpu->flags);
-	*/
-
 	return cpu;
 }
 
 
+/*
+ *  fwts_cpu_has_c1e()
+ *	check if CPU has C1E bit
+ */
 fwts_bool fwts_cpu_has_c1e(void)
 {
 	uint64_t val;
@@ -203,6 +210,10 @@ fwts_bool fwts_cpu_has_c1e(void)
 	return FWTS_FALSE;
 }
 
+/*
+ *  fwts_cpu_enumerate()
+ *	enumerate all CPUs
+ */
 int fwts_cpu_enumerate(void)
 {
 	DIR *dir;
@@ -221,6 +232,10 @@ int fwts_cpu_enumerate(void)
 	return cpus;
 }
 
+/*
+ *  fwts_cpu_consume_kill()
+ *	kill CPU consumer processes as created by fwts_cpu_consume_cycles()
+ */
 static void fwts_cpu_consume_kill(void)
 {
 	int i;
@@ -234,17 +249,29 @@ static void fwts_cpu_consume_kill(void)
 	}
 }
 
+/*
+ *  fwts_cpu_consume_sighandler()
+ *	CPU consumer processes signal handler
+ */
 static void fwts_cpu_consume_sighandler(int dummy)
 {
 	exit(0);
 }
 
+/*
+ *  fwts_cpu_sigint_handler()
+ *	kill all CPU consumer processes and die
+ */
 static void fwts_cpu_sigint_handler(int dummy)
 {
 	fwts_cpu_consume_kill();
 	exit(0);
 }
 
+/*
+ *  fwts_cpu_consume_cycles()
+ *	eat up CPU cycles
+ */
 static void fwts_cpu_consume_cycles(void)
 {
 	signal(SIGUSR1, fwts_cpu_consume_sighandler);
@@ -258,12 +285,21 @@ static void fwts_cpu_consume_cycles(void)
 	}
 }
 
+
+/*
+ *  fwts_cpu_consume_complete()
+ *	kill all CPU consumes, free up pid info
+ */
 void fwts_cpu_consume_complete(void)
 {
 	fwts_cpu_consume_kill();
 	free(fwts_cpu_pids);	
 }
 
+/*
+ *  fwts_cpu_consume_start()
+ *	kick off per CPU tasks to eat up CPU
+ */
 int fwts_cpu_consume_start(void)
 {
 	int i;
@@ -296,6 +332,11 @@ int fwts_cpu_consume_start(void)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_cpu_consume()
+ *	consume a specified amount of CPU time
+ *	on all CPUs
+ */
 int fwts_cpu_consume(const int seconds)
 {
 	if (fwts_cpu_consume_start() != FWTS_OK)

@@ -30,6 +30,15 @@
 
 #include "fwts.h"
 
+/*
+ *  Utilities for the fwts --dump option
+ */
+
+
+/*
+ *  dump_data()
+ *	dump to path/filename a chunk of data of length len
+ */
 static int dump_data(const char *path, const char *filename, char *data, const int len)
 {
 	FILE *fp;
@@ -48,6 +57,10 @@ static int dump_data(const char *path, const char *filename, char *data, const i
 	return FWTS_OK;
 }
 
+/*
+ *  dump_dmesg()
+ *	read kernel log, dump to path/filename
+ */
 static int dump_dmesg(const char *path, const char *filename)
 {
 	int len;
@@ -71,6 +84,11 @@ static int dump_dmesg(const char *path, const char *filename)
 	return ret;
 }
 
+
+/*
+ *  dump_exec()
+ *  	Execute command, dump output to path/filename
+ */
 static int dump_exec(const char *path, const char *filename, const char *command)
 {
 	int fd;
@@ -96,11 +114,19 @@ static int dump_exec(const char *path, const char *filename, const char *command
 	return ret;
 }
 
+/*
+ *  dump_dmidecode()
+ *	run dmidecode, dump output to path/filename
+ */
 static int dump_dmidecode(fwts_framework *fw, const char *path, const char *filename)
 {
 	return dump_exec(path, filename, fw->dmidecode);
 }
 
+/*
+ *  dump_lspci()
+ *	run lspci, dump output to path/filename
+ */
 static int dump_lspci(fwts_framework *fw, const char *path, const char *filename)
 {
 	char command[1024];
@@ -110,6 +136,10 @@ static int dump_lspci(fwts_framework *fw, const char *path, const char *filename
 	return dump_exec(path, filename, command);
 }
 
+/*
+ *  dump_acpi_table()
+ *	hex dump of a ACPI table
+ */
 static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 {
 	char buffer[128];
@@ -127,6 +157,10 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 	return FWTS_OK;
 }
 
+/*
+ *  dump_acpi_tables()
+ *	hex dump all ACPI tables
+ */
 static int dump_acpi_tables(fwts_framework *fw, const char *path)
 {
 	char filename[PATH_MAX];
@@ -146,6 +180,10 @@ static int dump_acpi_tables(fwts_framework *fw, const char *path)
 	return FWTS_OK;
 }
 
+/*
+ *  dump_readme()
+ *	dump README file containing some system info
+ */
 static int dump_readme(const char *path)
 {
 	char filename[PATH_MAX];
@@ -179,6 +217,12 @@ static int dump_readme(const char *path)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_dump_info()
+ *	dump various system specific information:
+ *	kernel log, dmidecode output, lspci output,
+ *	ACPI tables
+ */
 int fwts_dump_info(fwts_framework *fw, const char *path)
 {
 	if (path == NULL)

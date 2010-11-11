@@ -26,7 +26,10 @@
 
 #define FLAGS	(S_IROTH | S_IXOTH)
 
-
+/*
+ *  fwts_check_executable()
+ *	check if given file is an executable
+ */
 int fwts_check_executable(fwts_framework *fw, const char *path, const char *name)
 {
 	struct stat statbuf;

@@ -1,3 +1,10 @@
+fwts (0.19.18) maverick; urgency=low
+ 
+  * Update makefile 
+  * New upstream version 0.19.18
+
+ -- Colin King <colin.king@canonical.com>  Wed, 11 Nov 2010 15:37:53 +0000
+
 fwts (0.19.17) maverick; urgency=low
  
   * klog data now in json formatted datafile

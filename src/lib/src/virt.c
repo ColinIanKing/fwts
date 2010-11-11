@@ -20,13 +20,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
- #define _GNU_SOURCE
+#define _GNU_SOURCE
 #include <sched.h>
 #include <string.h>
 #include <stdint.h>
 
 #include "fwts.h"
 
+/*
+ *  exec_cpuid()
+ *	execute cpuid instruction on a given CPU
+ */
 void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs) 
 {
 	cpu_set_t mask, oldmask;
@@ -35,6 +39,7 @@ void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
 		sched_getaffinity(0, sizeof(oldmask), &oldmask);
 		CPU_ZERO(&mask);
 		CPU_SET(cpu, &mask);
+		/* Select CPU */
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 

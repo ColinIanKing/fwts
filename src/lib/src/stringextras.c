@@ -21,6 +21,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_chop_newline()
+ *	strip off trailing \n and ' ' from end of a string
+ */
 void fwts_chop_newline(char *str)
 {
 	int len;

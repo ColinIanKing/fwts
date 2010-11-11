@@ -22,14 +22,29 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <pcre.h>
+#include <json/json.h>
 
 #include "fwts.h"
 
+/*
+ *  klog pattern matching strings data file, data stored in json format
+ */
+#define KLOG_DATA_JSON_PATH		"/usr/share/fwts/klog.json"
+
+
+/*
+ *  fwts_klog_free()
+ *	free kernel log list
+ */
 void fwts_klog_free(fwts_list *klog)
 {
 	fwts_text_list_free(klog);
 }
 
+/*
+ *  fwts_klog_clear()
+ *	clear messages out of kernel log
+ */
 int fwts_klog_clear(void)
 {
 	if (klogctl(5, NULL, 0) < 0)
@@ -37,6 +52,10 @@ int fwts_klog_clear(void)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_klog_read()
+ *	read kernel log and return as list of lines
+ */
 fwts_list *fwts_klog_read(void)
 {
 	int len;
@@ -95,1013 +114,12 @@ int fwts_klog_scan(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-#define FW_BUG	"\\[Firmware Bug\\]: "
-
-/* List of common errors and warnings */
-
-static fwts_klog_pattern common_error_warning_patterns[] = {
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_BIOS_THERMAL,
-		"Temperature above threshold, cpu clock throttled",	
-		"Test caused CPU temperature above critical threshold. Insufficient cooling?"
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_BIOS,
-		"BIOS never enumerated boot CPU",
-		"The boot processor is not enumerated!"
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_HOTPLUG,
-		"acpi_shpchprm.*_HPP fail",
-		"Hotplug _HPP method failed"
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_HOTPLUG,
-		"shpchp.*acpi_pciehprm.*OSHP fail",
-		"ACPI Hotplug OSHP method failed"
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_HOTPLUG,
-		"shpchp.*acpi_shpchprm.*evaluate _BBN fail",
-		"Hotplug _BBN method is missing"
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"Error while parsing _PSD domain information",
-		"_PSD domain information is corrupt!"
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI,
-		"Wrong _BBN value, reboot and use option 'pci=noacpi'",
-		"The BIOS has wrong _BBN value, which will make PCI root bridge have wrong bus number"
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_APIC,
-		"ACPI.*apic on CPU.* stops in C2",
-		"The local apic timer incorrectly stops during C2 idle state."
-		"The ACPI specification forbids this and Linux needs the local "
-		"APIC timer to work. The most likely cause of this is that the "
-		"firmware uses a hardware C3 or C4 state that is mapped to "
-		"the ACPI C2 state."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_BIOS_IRQ,
-		"Disabling IRQ",
-		"The kernel detected an irq storm. This is most probably an IRQ routing bug."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		0,
-		FWTS_TAG_NONE,
-		NULL,
-		NULL
-	}
-};
-
-
-/* List of errors and warnings */
-static fwts_klog_pattern firmware_error_warning_patterns[] = {
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"ACPI.*Handling Garbled _PRT entry",
-		"BIOS has a garbled _PRT entry; source_name and source_index swapped."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI,
-		"Invalid _PCT data",
-		"The ACPI _PCT data is invalid."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"ACPI Error.*ACPI path has too many parent prefixes",
-		"A path to an ACPI obejct has too many ^ parent prefixes and references "
-		"passed the top of the root node. Please check AML for all ^ prefixed ACPI path names."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_RSDP,
-		"ACPI Error.*A valid RSDP was not found",
-		"An ACPI-compatible system must provide an RSDP (Root System Description Pointer " 
-		"in the system’s low address space. This structure’s only purpose is to provide "
-		"the physical address of the RSDT and XSDT."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_MUTEX,
-		"ACPI Error.*Cannot release Mutex",
-		"Attempted to release of a Mutex that was not previous acquired. This needs "
-		"fixing as it could lead to race conditions when operating on a resource that "
-		"needs to be proteced by a Mutex."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_EVENT,
-		"ACPI Error.*Could not disable .* event",	
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_EVENT,
-		"ACPI Error.*Could not enable .* event",	
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_BRIGHTNESS,
-		"ACPI Error.*Current brightness invalid",
-		"ACPI video driver has encountered a brightness level that is outside the expected range."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_NAMESPACE_LOOKUP,
-		"ACPI Error.*Namespace lookup failure, AE_ALREADY_EXISTS",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_BUFFER_OVERFLOW,
-		"ACPI Error.*Field.*exceeds Buffer",
-		"The field exceeds the allocated buffer size. This can lead to unexpected results when "
-	 	"fetching data outside this region."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_IO_PORT,
-		"ACPI Error.*Illegal I/O port address/length above 64K",
-		"A port address or length has exceeded the maximum allowed 64K address limit. This "
-		"will lead to unpredicable errors."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Error.*Incorrect return type",
-		"An ACPI Method has returned an unexpected and incorrect return type."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Error.*Needed .*\\[Buffer/String/Package\\], found \\[Integer\\]",
-		"An ACPI Method has returned an Integer type when a Buffer, String or Package was expected."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Error.*Needed .*\\[Reference\\], found \\[Device\\]",
-		"An ACPI Method has returned an Device type when a Reference type was expected."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_NO_HANDLER,
-		"ACPI Error.*No handler for Region",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_NO_HANDLER,
-		"ACPI Error.*Region .* has no handler",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Error.*Missing expected return value",
-		"The ACPI Method did not return a value and was expected too. This is a bug and needs fixing."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"Package List length.*larger than.*truncated",
-		"A Method has returned a Package List that was larger than expected."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Error.*Result stack is empty!",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_AML_OPCODE,
-		"ACPI Error.*Found unknown opcode",
-		"An illegal AML opcode has been found and is ignored. This indicates either badly compiled "
-		"code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. "
-		"Recommend disassembing using iasl to find any offending code."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_AML_OPCODE,
-		"ACPI Warning.*Detected an unsupported executable opcode",
-		"An illegal AML opcode has been found and is ignored. This indicates either badly compiled "
-		"code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. "
-		"Recommend disassembing using iasl to find any offending code."
-	},
-
-	/* BIOS32 error messages */
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_BIOS,
-		"bios32_service.*not present",
-		"The BIOS has found a BIOS32 Service Directory but the BIOS has returned error 0x80 on "
-		"calling the service, which indicates that the requested service has not been implemented in "
-		"the firmware."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_BIOS,
-		"bios32_service.*BIOS bug",
-		"The BIOS has found a BIOS32 Service Directory but the BIOS has returned an error on "
-		"calling the service, which is unexpected and usually means the firmware is broken."
-	},
-	{	
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_BIOS_IRQ,
-		"PCI: Error.*when fetching IRQ routing table",
-		"The BIOS has been interrogated for the PCI IRQ routing table but the BIOS returned an error."
-	},
-
-	/* Method parse/execution failures */
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method parse/execution failed.*AE_AML_NO_RETURN_VALUE",
-		"The ACPI Method was expected to return a value and did not."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_ALREADY_EXISTS",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_INVALID_TABLE_LENGTH",
-		"The ACPI Method returned a table of the incorrect length. This can lead to unexepected results."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_BUFFER_LIMIT",
-		"Method failed: ResourceSourceIndex is present but ResourceSource is not."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_NOT_EXIST",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_NOT_FOUND",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_LIMIT",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_OPERAND_TYPE",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_TIME",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_PACKAGE_LIMIT",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_OWNER_ID_LIMIT",
-		"Method failed to allocate owner ID."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.*Method (execution|parse/execution) failed.*AE_AML_MUTEX_NOT_ACQUIRED",
-		"A Mutex acquire failed, which could possibly indicate that it was previously acquired "
-		"and not released, or a race has occurred. Some AML code fails to miss Mutex acquire "
-		"failures, so it is a good idea to verify all Mutex Acquires using the syntaxcheck test."
-	},
-
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"ACPI Error.*SMBus or IPMI write requires Buffer of",
-		"An incorrect SMBus or IPMI write buffer size was used."
-	},
-	{		
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_EVAL,
-		"ACPI (Warning|Error).*Evaluating .* failed",
-		"Executing the ACPI Method leaded in an execution failure. This needs investigating."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		"ACPI Warning.*Optional field.*has zero address or length",
-		"An ACPI table contains Generic Address Structure that has an address "
-		"that is incorrectly set to zero, or a zero length. This needs to be "
-		"fixed. "
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		"ACPI (Warning|Error).*32/64.*(length|address) mismatch in.*tbfadt",
-		"The FADT table contains Generic Address Structure that has a mismatch "
-		"between the 32 bit and 64 bit versions of an address. This should be "
-		"fixed so there are no mismatches. "
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		"ACPI (Warning|Error).*32/64.*(length|address) mismatch in",
-		"A table contains Generic Address Structure that has a mismatch "
-		"between the 32 bit and 64 bit versions of an address. This should be "
-		"fixed so there are no mismatches. "
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*Return Package type mismatch",
-		"ACPI AML interpreter executed a Method that returned a package with incorrectly typed data. "
-		"The offending method needs to be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*Return Package has no elements",
-		"ACPI AML interpreter executed a Method that returned a package with no elements inside it. "
-		"This is most probably a bug in the Method and needs to be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*Return Package is too small",
-		"ACPI AML interpreter executed a Method that returned a package with too few elements inside it. "
-		"This is most probably a bug in the Method and needs to be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_TABLE_CHECKSUM,
-		"ACPI Warning.*Incorrect checksum in table",
-		"The ACPI table listed above has an incorrect checksum, this could be a BIOS bug or due to table corruption."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,	
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*_BQC returned an invalid level",
-		"Method _BQC (Brightness Query Current) returned an invalid display brightness level."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,	
-		FWTS_TAG_ACPI_BRIGHTNESS,
-		"ACPI Error.*Found unordered _BCL package",
-		"Method _BCL (Query List of Brightness Control Levels Supported) has a "
-		"maximum brightness value which is not the last value in the returned package. "
-		"Values returned must be in ascending order."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,	
-		FWTS_TAG_ACPI_BRIGHTNESS,
-		"ACPI Error.*Too many duplicates in _BCL package",
-		"Method _BCL (Query List of Brightness Control Levels Supported) "
-		"contains too many duplicated brightness levels in the returned package "
-		"and this is non-standard."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"ACPI Warning.*Could not enable fixed event",
-		NULL,
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*Return type mismatch",
-		"The ACPI Method returned an incorrect type, this should be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARAMETER,
-		"ACPI Warning.*Parameter count mismatch",
-		"The ACPI Method was executing with a different number of parameters than the "
-		"Method expected. This should be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARAMETER,
-		"ACPI Warning.*Insufficient arguments",
-		"The ACPI Method has not enough arguments as expected. "
-		"This should be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PACKAGE,
-		"ACPI Warning.*Package has no elements",
-		"The ACPI Method returned a package with no elements in it, and some were exepected."
-		"This should be fixed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"ACPI Warning.*Converted Buffer to expected String",
-		"Method returned a Buffer type instead of a String type and ACPI driver automatically "
-		"converted it to a String.  It is worth fixing this in the DSDT or SSDT even if the "
-		"kernel fixes it at run time."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PACKAGE,
-		"ACPI Warning.*Return Package type mistmatch at index",
-		"The ACPI Method returned a package that contained data of the incorrect data type. "
-		"This data type needs fixing."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_BAD_LENGTH,
-		"ACPI Warning.*Invalid length for.*fadt",
-		"This item in the FADT is the incorrect length. Should be corrected."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_THROTTLING,
-		"ACPI Warning.*Invalid throttling state",
-		NULL,
-	},
-
-	/* ACPI Exceptions */
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_EMBEDDED_CONTROLLER,
-		"ACPI Exception:.*AE_TIME.*Returned by Handler for.*[EmbeddedControl]",
-		"This is most probably caused by when a read or write operation to the EC memory "
-		"has failed because of a timeout waiting for the Embedded Controller to complete "
-		"the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller "
-		"status port to indicate that a transaction is complete, but in this case it has not "
-		"and a AE_TIME error has been returned. "
-	},
-	
-	/* Catch all warning */
-	{ 
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,	
-		FWTS_TAG_ACPI,
-		"ACPI Warning", 
-		"ACPI AML intepreter has found some non-conforming AML code. "
-		"This should be investigated and fixed." 
-	},
-
-	{	FWTS_COMPARE_REGEX,	
-		LOG_LEVEL_HIGH,	
-		FWTS_TAG_ACPI_APIC,
-		"ACPI.*BIOS bug: multiple APIC/MADT found, using",
-		"The kernel has detected more than one ACPI Multiple APIC Description Table (MADT) ("
-		"these tables have the \"APIC\" signature). "
-		"There should only be one MADT and the kernel will by default select the first one. "
-		"However, one can override this and select the Nth MADT using acpi_apic_instance=N.",
-	},
-
-	{ 
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		FW_BUG "ACPI.*Invalid physical address in GAR", 
-		"ACPI Generic Address is invalid" 
-	},
-
-	/* powernow-k8 bugs */
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_BIOS_AMD_POWERNOW,
-		FW_BUG "powernow-k8.*(No PSB or ACPI _PSS objects|No compatible ACPI _PSS|Your BIOS does not provide ACPI _PSS objects)",
-		"The _PSS object (Performance Supported States) is an optional "
-		"object that indicates the number of supported processor performance states. "
-		"The powernow-k8 driver source states: "
-         	"If you see this message, complain to BIOS manufacturer. If "
-         	"he tells you \"we do not support Linux\" or some similar "
-         	"nonsense, remember that Windows 2000 uses the same legacy "
-         	"mechanism that the old Linux PSB driver uses. Tell them it "
-         	"is broken with Windows 2000. "
-		"The reference to the AMD documentation is chapter 9 in the "
-         	"BIOS and Kernel Developer's Guide, which is available on "
-         	"www.amd.com."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_BIOS_AMD_POWERNOW,
-		FW_BUG "powernow-k8.*Try again with latest",
-		NULL,
-	},
-
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,	
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		FW_BUG "ACPI.*Invalid bit width in GAR", 
-		"ACPI Generic Address width must be 8, 16, 32 or 64" 
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		FW_BUG "ACPI.*Invalid address space type in GAR", 
-		"ACPI Generic Address space type must be system memory or system IO space."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_BAD_ADDRESS,
-		FW_BUG "ACPI.*no secondary bus range in _CRS", 
-		"_CRS Method should return a secondary bus address for the "
-		"status/command port. The kernel is having to guess this "
-		"based on the _BBN or assume it's 0x00-0xff." 
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI,
-		FW_BUG "ACPI.*Invalid BIOS _PSS frequency", 
-		"_PSS (Performance Supported States) package has an incorrectly "
-		"define core frequency (first DWORD entry in the _PSS package)." 
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_BRIGHTNESS,
-		FW_BUG "ACPI.*brightness control misses _BQC function",
-		"_BQC (Brightness Query Current level) seems to be missing. "
-		"This method returns the current brightness level of a "
-		"built-in display output device."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		FW_BUG "ACPI:",
-		"ACPI driver has detected an ACPI bug. This generally points to a "
-		"bug in an ACPI table. Examine the kernel log for more details."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		FW_BUG "BIOS needs update for CPU frequency support", 
-		"Having _PPC but missing frequencies (_PSS, _PCT) is a good hint "
-		"that the BIOS is older than the CPU and does not know the CPU "
-		"frequencies."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		FW_BUG "ERST.*ERST table is invalid",
-		"The Error Record Serialization Table (ERST) seems to be invalid. "
-		"This normally indicates that the ERST table header size is too "
-		"small, or the table size (excluding header) is not a multiple of "
-		"the ERST entries."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_THERMAL,
-		FW_BUG "Invalid critical threshold",
-		"ACPI _CRT (Critical Trip Point) is returning a threshold "
-		"lower than zero degrees Celsius which is clearly incorrect."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,	
-		FWTS_TAG_ACPI_THERMAL,
-		FW_BUG "No valid trip found",
-		"No valud ACPI _CRT (Critical Trip Point) was found."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_BRIGHTNESS,
-		FW_BUG "_BCQ is usef instead of _BQC",
-		"ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed."
-		"however the kernel has detected this and is working around this typo."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"defines _DOD but not _DOS", 
-		"ACPI Method _DOD (Enumerate all devices attached to display adapter) "
-		"is defined but we should also have _DOS (Enable/Disable output switching) "
-		"defined but it's been omitted. This can cause display switching issues."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI,
-		FW_BUG "Duplicate ACPI video bus",
-		"Try video module parameter video.allow_duplicates=1 if the current driver does't work."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI_PCI_EXPRESS,
-		FW_BUG "PCI.*MMCONFIG.*not reserved in ACPI motherboard resources",
-		"It appears that PCI config space has been configured for a specific device "
-		"but does not appear to be reserved by the ACPI motherboard resources."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_ACPI,
-		FW_BUG "PCI.*not reserved in ACPI motherboard resources",
-		"PCI firmware bug. Please see the kernel log for more details."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		FW_BUG,			/* Fall through to something vague */
-		"The kernel has detected a Firmware bug in the BIOS or ACPI which needs investigating and fixing."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_BIOS,
-		"PCI.*BIOS Bug:",
-		NULL
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_NAMESPACE_LOOKUP,
-		"ACPI Error.*Namespace lookup failure, AE_NOT_FOUND",
-		"The kernel has detected an error trying to execute an Method and it cannot "
-		"find an object. This is indicates a bug in the DSDT or SSDT AML code."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"ACPI Error.+psparse",
-		"The ACPI parser has failed in executing some AML. "
-		"The error message above lists the method that caused this error."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI,
-		"ACPI Error",
-		"The kernel has most probably detected an error while executing ACPI AML. "
-		"The error lists the ACPI driver module and the line number where the "
-		"bug has been caught and the method that caused the error."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"\\*\\*\\* Error.*Method execution failed",
-		"Execution of an ACPI AML method failed."
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"\\*\\*\\* Error.*Method execution failed.*AE_AML_METHOD_LIMIT",
-		"ACPI method reached maximum reentrancy limit of 255 - infinite recursion in AML in DSTD or SSDT",
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_ACPI_PARSE_EXEC_FAIL,
-		"\\*\\*\\* Error.*Method reached maximum reentrancy limit"
-		"ACPI method has reached reentrancy limit, this is a recursion bug in the AML"
-	},
-	{
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_ACPI_METHOD_RETURN,
-		"\\*\\*\\* Error.*Return object type is incorrect",
-		"Return object type is not the correct type, this is an AML error in the DSDT or SSDT"
-	},
-	{
-		FWTS_COMPARE_STRING,
-		0,
-		FWTS_TAG_NONE,
-		NULL,
-		NULL
-	}
-};
-
-
-/*
- *  Power management warnings
- */
-static fwts_klog_pattern pm_error_warning_patterns[] = {
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Failed to prepare device",
-		"dpm_prepare() failed to prepare all non-sys devices for "
-		"a system PM transition. The device should be listed in the "
-		"error message."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Some devices failed to power down",
-		"dpm_suspend_noirq failed because some devices did not power down "
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Some system devices failed to power down",
-		"sysdev_suspend failed because some system devices did not power down."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Error",
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_NONE,
-		"PM: Some devices failed to power down",
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Restore failed, recovering", 
-		"A resume from hibernate failed when calling hibernation_restore()"
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Resume from disk failed",
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Not enough free memory",
-		"There was not enough physical memory to be able to "
-		"generate a hibernation image before dumping it to disc."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Memory allocation failed",
-		"swusp_alloc() failed trying to allocate highmem and failing "
-		"that non-highmem pages for the suspend image. There is "
-		"probably just not enough free physcial memory available."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Image mismatch",
-		"Mismatch in kernel version, system type, kernel release "
-		"version or machine id between suspended kernel and resumed "
-		"kernel."
-	},
-        { 
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-	  	"PM: Some devices failed to power down",
-		NULL,
-	},
-        { 
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Some devices failed to suspend", 
-		NULL,
-	},
-        { 
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: can't read",
-		"Testing suspend cannot read RTC"
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: can't set",
-		"Testing suspend cannot set RTC"
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: suspend test failed, error",
-		NULL
-	},
-        {	
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: can't test ", 						
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_MEDIUM,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: no wakealarm-capable RTC driver is ready",
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Adding page to bio failed at",
-		"An attempt to write the hibernate image to disk failed "
-		"because a write BIO operation failed. This is usually "
-		"a result of some physical hardware problem."
-	},
-        {	
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Swap header not found", 
-		"An attempt to write a hibernate image to disk failed because "
-		"a valid swap device header could not be found. Make sure there is a "
-		"formatted swap device on the machine and it is added using swapon -a."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Cannot find swap device", 
-		"An attempt to write a hibernate image to disk failed because "
-		"the swap device could not be found. Make sure there is a "
-		"formatted swap device on the machine and it is added using swapon -a."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_CRITICAL,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Not enough free swap",
-		"Hibernate failed because the swap parition was probably too small."
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Image device not initialised",
-		NULL
-	},
-        {
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"PM: Please power down manually",
-		NULL
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"check_for_bios_corruption", 
-		"The BIOS seems to be corrupting the first 64K of memory "
-		"when doing suspend/resume. Setting bios_corruption_check=0 "
-		"will disable this check."
-	},
-	{	
-		FWTS_COMPARE_REGEX,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"WARNING: at.*hpet_next_event",
-		"Possibly an Intel I/O controller hub HPET Write Timing issue: "
-		"A read transaction that immediately follows a write transaction "
-		"to the HPET TIMn_COMP Timer 0 (108h), HPET MAIN_CNT (0F0h), or "
-		"TIMn_CONF.bit 6 (100h) may return an incorrect value.  This is "
-		"known to cause issues when coming out of S3."
-	},
-	{
-		FWTS_COMPARE_STRING,
-		LOG_LEVEL_HIGH,
-		FWTS_TAG_POWER_MANAGEMENT,
-		"BUG: soft lockup.*stuck for 0s",
-		"Softlock errors that occur when coming out of S3 may be tripped "
-		"by TSC warping.  It may be worth trying the notsc kernel parameter "
-		"and repeating S3 tests to see if this solves the problem."
-	},
-	{	
-		FWTS_COMPARE_STRING,
-		0,
-		FWTS_TAG_NONE,
-		NULL,
-		NULL
-	}
-
-};
-
-void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, void *private, int *errors, fwts_list *taglist)
+void fwts_klog_scan_patterns(fwts_framework *fw, 
+	char *line, 
+	char *prevline, 
+	void *private, 
+	int *errors, 
+	fwts_list *taglist)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
 	int vector[1];
@@ -1110,7 +128,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 		"firmware test suite has no diagnostic advice for this particular problem.";
 
 	while (pattern->pattern != NULL) {
-		switch (pattern->mode) {
+		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
 			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
 				if (taglist)
@@ -1142,35 +160,113 @@ void fwts_klog_scan_patterns(fwts_framework *fw, char *line, char *prevline, voi
 	}
 }
 
-static void fwts_klog_compile(fwts_framework *fw, fwts_klog_pattern *pattern)
+/*
+ *  fwts_klog_compare_mode_str_to_val()
+ *	convert compare mode strings (from json database) to compare_mode values
+ */
+static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
 {
-	const char *error;
-	int erroffset;
+	if (strcmp(str, "regex") == 0)
+		return FWTS_COMPARE_REGEX;
+	else if (strcmp(str, "string") == 0)
+		return FWTS_COMPARE_STRING;
+	else
+		return FWTS_COMPARE_UNKNOWN;
+}
+		
+#define JSON_ERROR	((json_object*)-1)
 
-	while (pattern->pattern != NULL) {
-		if (pattern->re == NULL)
-			if ((pattern->re = pcre_compile(pattern->pattern, 0, &error, &erroffset, NULL)) == NULL)
-				fwts_log_error(fw, "Regex %s failed to compile: %s.", pattern->pattern, error);
-		pattern++;
+/*
+ *  fwts_json_str()
+ *	given a key, fetch the string value associated with this object
+ *	and report an error if it cannot be found.
+ */
+static const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key)
+{
+	const char *str;
+
+	if ((str = json_object_get_string(json_object_object_get(obj, "compare_mode"))) == NULL) {
+		fwts_log_error(fw, "Cannot fetch compare_mode val from item %d, table %s.", index, table);
+		return NULL;
 	}
+	return str;
 }
 
-static void fwts_klog_compile_free(fwts_klog_pattern *pattern)
+static int fwts_klog_check(fwts_framework *fw,
+	const char *table,
+	fwts_klog_progress_func progress,
+	fwts_list *klog,
+	int *errors,
+	fwts_list *taglist)
 {
-	while (pattern->pattern != NULL) {
-		pcre_free(pattern->re);
-		pattern->re = NULL;
-		pattern++;
+	int ret = FWTS_ERROR;
+	int n;
+	int i;
+	json_object *klog_objs;
+	json_object *klog_table;
+	fwts_klog_pattern *patterns;
+
+	if ((klog_objs = json_object_from_file(KLOG_DATA_JSON_PATH)) == JSON_ERROR) {
+		fwts_log_error(fw, "Cannot load klog data from %s.", KLOG_DATA_JSON_PATH);
+		return FWTS_ERROR;
 	}
-}
+		
+	if ((klog_table = json_object_object_get(klog_objs, table)) == JSON_ERROR) {
+		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, KLOG_DATA_JSON_PATH);
+		goto fail_put;
+	}
+		
+	n = json_object_array_length(klog_table);
 
-static int fwts_klog_check(fwts_framework *fw, fwts_klog_pattern *pattern, fwts_klog_progress_func progress, fwts_list *klog, int *errors, fwts_list *taglist)
-{
-	int ret;
+	/* Last entry is null to indicate end, so alloc n+1 items */
+	if ((patterns = calloc(n+1, sizeof(fwts_klog_pattern))) == NULL) {
+		fwts_log_error(fw, "Cannot allocate pattern table.");
+		goto fail_put;
+	}
 
-	fwts_klog_compile(fw, pattern);
-	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, pattern, errors, taglist);
-	fwts_klog_compile_free(pattern);
+	/* Now fetch json objects and compile regex */
+	for (i=0; i<n; i++) {
+		const char *error;
+		int erroffset;
+		const char *str;
+		json_object *obj;
+
+		if ((obj = json_object_array_get_idx(klog_table, i)) == JSON_ERROR) {
+			fwts_log_error(fw, "Cannot fetch %d item from table %s.", i, table);
+			goto fail;
+		}
+		if ((str = fwts_json_str(fw, table, i, obj, "compare_mode")) == NULL)
+			goto fail;
+		patterns[i].compare_mode = fwts_klog_compare_mode_str_to_val(str);
+
+		if ((str = fwts_json_str(fw, table, i, obj, "log_level")) == NULL)
+			goto fail;
+		patterns[i].level   = fwts_log_str_to_level(str);
+
+		if ((str = fwts_json_str(fw, table, i, obj, "tag")) == NULL)
+			goto fail;
+		patterns[i].tag     = fwts_tag_id_str_to_tag(str);
+
+		if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern")) == NULL)
+			goto fail;
+
+		if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice")) == NULL)
+			goto fail;
+
+		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL)
+			fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
+	}
+
+	/* We've now collected up the scan patterns, lets scan the log for errors */
+	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors, taglist);
+
+fail:
+	for (i=0; i<n; i++)
+		if (patterns[i].re)
+			pcre_free(patterns[i].re);
+	free(patterns);
+fail_put:
+	json_object_put(klog_objs);
 	
 	return ret;
 }
@@ -1178,19 +274,22 @@ static int fwts_klog_check(fwts_framework *fw, fwts_klog_pattern *pattern, fwts_
 int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, 
 	fwts_list *klog, int *errors, fwts_list *taglist)
 {	
-	return fwts_klog_check(fw, firmware_error_warning_patterns, progress, klog, errors, taglist);
+	return fwts_klog_check(fw, "firmware_error_warning_patterns", 
+		progress, klog, errors, taglist);
 }
 
 int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, 
 	fwts_list *klog, int *errors, fwts_list *taglist)
 {
-	return fwts_klog_check(fw, pm_error_warning_patterns, progress, klog, errors, taglist);
+	return fwts_klog_check(fw, "pm_error_warning_patterns", 
+		progress, klog, errors, taglist);
 }
 
 int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, 
 	fwts_list *klog, int *errors, fwts_list *taglist)
 {
-	return fwts_klog_check(fw, common_error_warning_patterns, progress, klog, errors, taglist);
+	return fwts_klog_check(fw, "common_error_warning_patterns", 
+		progress, klog, errors, taglist);
 }
 
 static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, 
@@ -1211,6 +310,11 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line,
 	}
 }
 
+/*
+ * fwts_klog_regex_find()
+ * 	scan a kernel log list of lines for a given regex pattern
+ *	uses fwts_klog_regex_find_callback() callback
+ */
 int fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern)
 {
 	int found = 0;

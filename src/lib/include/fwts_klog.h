@@ -34,12 +34,13 @@
 typedef enum {
 	FWTS_COMPARE_REGEX = 'r',
 	FWTS_COMPARE_STRING = 's',
+	FWTS_COMPARE_UNKNOWN = 'u',
 } fwts_compare_mode;
 
 typedef struct {
-	const fwts_compare_mode mode;
-	const fwts_log_level level;
-	const fwts_tag tag;
+	fwts_compare_mode compare_mode;
+	fwts_log_level level;
+	fwts_tag tag;
         const char *pattern;
 	const char *advice;
 	pcre *re;

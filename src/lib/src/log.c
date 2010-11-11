@@ -91,6 +91,22 @@ static char *fwts_log_field_to_str(const fwts_log_field field)
 	}
 }
 
+int fwts_log_str_to_level(const char *str)
+{
+	if (str) {
+		if (strstr(str, "CRITICAL"))
+			return LOG_LEVEL_CRITICAL;
+		if (strstr(str, "HIGH"))
+			return LOG_LEVEL_HIGH;
+		if (strstr(str, "MEDIUM"))
+			return LOG_LEVEL_MEDIUM;
+		if (strstr(str, "LOW"))
+			return LOG_LEVEL_LOW;
+	}
+
+	return LOG_LEVEL_MEDIUM;	/* Default */
+}
+
 /*
  *  fwts_log_level_to_str()
  *	return string name of log level

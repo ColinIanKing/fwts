@@ -78,6 +78,11 @@ static fwts_tag_info fwts_tags[] = {
 	{ 0, NULL, NULL }
 };
 
+
+/*
+ *  fwts_tag_id_str_to_tag()
+ *	given a tag string, return the tag
+ */
 fwts_tag fwts_tag_id_str_to_tag(const char *tag)
 {
 	int i;
@@ -88,6 +93,10 @@ fwts_tag fwts_tag_id_str_to_tag(const char *tag)
 	return FWTS_TAG_NONE;
 }
 
+/*
+ *  fwts_tag_to_str()
+ *	given a tag, return the human readable tag name
+ */
 const char *fwts_tag_to_str(fwts_tag tag)
 {
 	int i;
@@ -99,11 +108,19 @@ const char *fwts_tag_to_str(fwts_tag tag)
 	return none;
 }
 
+/*
+ *  fwts_tag_compare()
+ *	callback to enable tag name sorting
+ */
 static int fwts_tag_compare(void *data1, void *data2)
 {
 	return strcmp((char *)data1, (char*)data2);
 }
 
+/*
+ *  fwts_tag_add()
+ *	add a tag name to a list of tag names, ordered alphabetically
+ */
 void fwts_tag_add(fwts_list *taglist, const char *tag)
 {
 	fwts_list_link	*item;
@@ -118,6 +135,11 @@ void fwts_tag_add(fwts_list *taglist, const char *tag)
 		fwts_list_add_ordered(taglist, str, fwts_tag_compare);
 }
 
+/*
+ *  fwts_tag_list_to_str()
+ *	given a list of tag names return a space delimited string
+ *	containing the the tag names
+ */
 char *fwts_tag_list_to_str(fwts_list *taglist)
 {
 	fwts_list_link	*item;

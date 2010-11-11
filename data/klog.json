@@ -1,0 +1,865 @@
+{
+ "common_error_warning_patterns": 
+ [ 
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS_THERMAL",
+   "pattern": "Temperature above threshold, cpu clock throttled",
+   "advice": "Test caused CPU temperature above critical threshold. Insufficient cooling?"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "BIOS never enumerated boot CPU",
+   "advice": "The boot processor is not enumerated!"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_HOTPLUG",
+   "pattern": "acpi_shpchprm.*_HPP fail",
+   "advice": "Hotplug _HPP method failed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_HOTPLUG",
+   "pattern": "shpchp.*acpi_pciehprm.*OSHP fail",
+   "advice": "ACPI Hotplug OSHP method failed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_HOTPLUG",
+   "pattern": "shpchp.*acpi_shpchprm.*evaluate _BBN fail",
+   "advice": "Hotplug _BBN method is missing"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error while parsing _PSD domain information",
+   "advice": "_PSD domain information is corrupt!"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Wrong _BBN value, reboot and use option 'pci=noacpi'",
+   "advice": "The BIOS has wrong _BBN value, which will make PCI root bridge have wrong bus number"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_APIC",
+   "pattern": "ACPI.*apic on CPU.* stops in C2",
+   "advice": "The local apic timer incorrectly stops during C2 idle state.The ACPI specification forbids this and Linux needs the local APIC timer to work. The most likely cause of this is that the firmware uses a hardware C3 or C4 state that is mapped to the ACPI C2 state."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "Disabling IRQ",
+   "advice": "The kernel detected an irq storm. This is most probably an IRQ routing bug."
+  }
+ ],
+ "firmware_error_warning_patterns":
+ [
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Handling Garbled _PRT entry",
+   "advice": "BIOS has a garbled _PRT entry; source_name and source_index swapped."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _PCT data",
+   "advice": "The ACPI _PCT data is invalid."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Error.*ACPI path has too many parent prefixes",
+   "advice": "A path to an ACPI obejct has too many ^ parent prefixes and references passed the top of the root node. Please check AML for all ^ prefixed ACPI path names."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_RSDP",
+   "pattern": "ACPI Error.*A valid RSDP was not found",
+   "advice": "An ACPI-compatible system must provide an RSDP (Root System Description Pointer in the system’s low address space. This structure’s only purpose is to provide the physical address of the RSDT and XSDT."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_MUTEX",
+   "pattern": "ACPI Error.*Cannot release Mutex",
+   "advice": "Attempted to release of a Mutex that was not previous acquired. This needs fixing as it could lead to race conditions when operating on a resource that needs to be proteced by a Mutex."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_EVENT",
+   "pattern": "ACPI Error.*Could not disable .* event",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_EVENT",
+   "pattern": "ACPI Error.*Could not enable .* event",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "ACPI Error.*Current brightness invalid",
+   "advice": "ACPI video driver has encountered a brightness level that is outside the expected range."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NAMESPACE_LOOKUP",
+   "pattern": "ACPI Error.*Namespace lookup failure, AE_ALREADY_EXISTS",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_BUFFER_OVERFLOW",
+   "pattern": "ACPI Error.*Field.*exceeds Buffer",
+   "advice": "The field exceeds the allocated buffer size. This can lead to unexpected results when fetching data outside this region."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_IO_PORT",
+   "pattern": "ACPI Error.*Illegal I\/O port address\/length above 64K",
+   "advice": "A port address or length has exceeded the maximum allowed 64K address limit. This will lead to unpredicable errors."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Error.*Incorrect return type",
+   "advice": "An ACPI Method has returned an unexpected and incorrect return type."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Error.*Needed .*\\[Buffer\/String\/Package\\], found \\[Integer\\]",
+   "advice": "An ACPI Method has returned an Integer type when a Buffer, String or Package was expected."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Error.*Needed .*\\[Reference\\], found \\[Device\\]",
+   "advice": "An ACPI Method has returned an Device type when a Reference type was expected."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NO_HANDLER",
+   "pattern": "ACPI Error.*No handler for Region",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NO_HANDLER",
+   "pattern": "ACPI Error.*Region .* has no handler",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Error.*Missing expected return value",
+   "advice": "The ACPI Method did not return a value and was expected too. This is a bug and needs fixing."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "Package List length.*larger than.*truncated",
+   "advice": "A Method has returned a Package List that was larger than expected."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Error.*Result stack is empty!",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_AML_OPCODE",
+   "pattern": "ACPI Error.*Found unknown opcode",
+   "advice": "An illegal AML opcode has been found and is ignored. This indicates either badly compiled code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. Recommend disassembing using iasl to find any offending code."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_AML_OPCODE",
+   "pattern": "ACPI Warning.*Detected an unsupported executable opcode",
+   "advice": "An illegal AML opcode has been found and is ignored. This indicates either badly compiled code or opcode corruption in the DSDT or SSDT tables or a bug in the ACPI execution engine. Recommend disassembing using iasl to find any offending code."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "bios32_service.*not present",
+   "advice": "The BIOS has found a BIOS32 Service Directory but the BIOS has returned error 0x80 on calling the service, which indicates that the requested service has not been implemented in the firmware."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "bios32_service.*BIOS bug",
+   "advice": "The BIOS has found a BIOS32 Service Directory but the BIOS has returned an error on calling the service, which is unexpected and usually means the firmware is broken."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "PCI: Error.*when fetching IRQ routing table",
+   "advice": "The BIOS has been interrogated for the PCI IRQ routing table but the BIOS returned an error."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method parse\/execution failed.*AE_AML_NO_RETURN_VALUE",
+   "advice": "The ACPI Method was expected to return a value and did not."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_ALREADY_EXISTS",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_INVALID_TABLE_LENGTH",
+   "advice": "The ACPI Method returned a table of the incorrect length. This can lead to unexepected results."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_BUFFER_LIMIT",
+   "advice": "Method failed: ResourceSourceIndex is present but ResourceSource is not."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_NOT_EXIST",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_NOT_FOUND",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_LIMIT",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_OPERAND_TYPE",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_TIME",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_PACKAGE_LIMIT",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_OWNER_ID_LIMIT",
+   "advice": "Method failed to allocate owner ID."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_MUTEX_NOT_ACQUIRED",
+   "advice": "A Mutex acquire failed, which could possibly indicate that it was previously acquired and not released, or a race has occurred. Some AML code fails to miss Mutex acquire failures, so it is a good idea to verify all Mutex Acquires using the syntaxcheck test."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Error.*SMBus or IPMI write requires Buffer of",
+   "advice": "An incorrect SMBus or IPMI write buffer size was used."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_EVAL",
+   "pattern": "ACPI (Warning|Error).*Evaluating .* failed",
+   "advice": "Executing the ACPI Method leaded in an execution failure. This needs investigating."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "ACPI Warning.*Optional field.*has zero address or length",
+   "advice": "An ACPI table contains Generic Address Structure that has an address that is incorrectly set to zero, or a zero length. This needs to be fixed. "
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "ACPI (Warning|Error).*32\/64.*(length|address) mismatch in.*tbfadt",
+   "advice": "The FADT table contains Generic Address Structure that has a mismatch between the 32 bit and 64 bit versions of an address. This should be fixed so there are no mismatches. "
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "ACPI (Warning|Error).*32\/64.*(length|address) mismatch in",
+   "advice": "A table contains Generic Address Structure that has a mismatch between the 32 bit and 64 bit versions of an address. This should be fixed so there are no mismatches. "
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*Return Package type mismatch",
+   "advice": "ACPI AML interpreter executed a Method that returned a package with incorrectly typed data. The offending method needs to be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*Return Package has no elements",
+   "advice": "ACPI AML interpreter executed a Method that returned a package with no elements inside it. This is most probably a bug in the Method and needs to be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*Return Package is too small",
+   "advice": "ACPI AML interpreter executed a Method that returned a package with too few elements inside it. This is most probably a bug in the Method and needs to be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_TABLE_CHECKSUM",
+   "pattern": "ACPI Warning.*Incorrect checksum in table",
+   "advice": "The ACPI table listed above has an incorrect checksum, this could be a BIOS bug or due to table corruption."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*_BQC returned an invalid level",
+   "advice": "Method _BQC (Brightness Query Current) returned an invalid display brightness level."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "ACPI Error.*Found unordered _BCL package",
+   "advice": "Method _BCL (Query List of Brightness Control Levels Supported) has a maximum brightness value which is not the last value in the returned package. Values returned must be in ascending order."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "ACPI Error.*Too many duplicates in _BCL package",
+   "advice": "Method _BCL (Query List of Brightness Control Levels Supported) contains too many duplicated brightness levels in the returned package and this is non-standard."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Warning.*Could not enable fixed event",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*Return type mismatch",
+   "advice": "The ACPI Method returned an incorrect type, this should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARAMETER",
+   "pattern": "ACPI Warning.*Parameter count mismatch",
+   "advice": "The ACPI Method was executing with a different number of parameters than the Method expected. This should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARAMETER",
+   "pattern": "ACPI Warning.*Insufficient arguments",
+   "advice": "The ACPI Method has not enough arguments as expected. This should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PACKAGE",
+   "pattern": "ACPI Warning.*Package has no elements",
+   "advice": "The ACPI Method returned a package with no elements in it, and some were exepected.This should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "ACPI Warning.*Converted Buffer to expected String",
+   "advice": "Method returned a Buffer type instead of a String type and ACPI driver automatically converted it to a String.  It is worth fixing this in the DSDT or SSDT even if the kernel fixes it at run time."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PACKAGE",
+   "pattern": "ACPI Warning.*Return Package type mistmatch at index",
+   "advice": "The ACPI Method returned a package that contained data of the incorrect data type. This data type needs fixing."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BAD_LENGTH",
+   "pattern": "ACPI Warning.*Invalid length for.*fadt",
+   "advice": "This item in the FADT is the incorrect length. Should be corrected."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THROTTLING",
+   "pattern": "ACPI Warning.*Invalid throttling state",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
+   "pattern": "ACPI Exception:.*AE_TIME.*Returned by Handler for.*[EmbeddedControl]",
+   "advice": "This is most probably caused by when a read or write operation to the EC memory has failed because of a timeout waiting for the Embedded Controller to complete the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller status port to indicate that a transaction is complete, but in this case it has not and a AE_TIME error has been returned. "
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Warning",
+   "advice": "ACPI AML intepreter has found some non-conforming AML code. This should be investigated and fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_APIC",
+   "pattern": "ACPI.*BIOS bug: multiple APIC\/MADT found, using",
+   "advice": "The kernel has detected more than one ACPI Multiple APIC Description Table (MADT) (these tables have the \"APIC\" signature). There should only be one MADT and the kernel will by default select the first one. However, one can override this and select the Nth MADT using acpi_apic_instance=N."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*Invalid physical address in GAR",
+   "advice": "ACPI Generic Address is invalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS_AMD_POWERNOW",
+   "pattern": "\\[Firmware Bug\\]: powernow-k8.*(No PSB or ACPI _PSS objects|No compatible ACPI _PSS|Your BIOS does not provide ACPI _PSS objects)",
+   "advice": "The _PSS object (Performance Supported States) is an optional object that indicates the number of supported processor performance states. The powernow-k8 driver source states: If you see this message, complain to BIOS manufacturer. If he tells you \"we do not support Linux\" or some similar nonsense, remember that Windows 2000 uses the same legacy mechanism that the old Linux PSB driver uses. Tell them it is broken with Windows 2000. The reference to the AMD documentation is chapter 9 in the BIOS and Kernel Developer's Guide, which is available on www.amd.com."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS_AMD_POWERNOW",
+   "pattern": "\\[Firmware Bug\\]: powernow-k8.*Try again with latest",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*Invalid bit width in GAR",
+   "advice": "ACPI Generic Address width must be 8, 16, 32 or 64"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*Invalid address space type in GAR",
+   "advice": "ACPI Generic Address space type must be system memory or system IO space."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*no secondary bus range in _CRS",
+   "advice": "_CRS Method should return a secondary bus address for the status\/command port. The kernel is having to guess this based on the _BBN or assume it's 0x00-0xff."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*Invalid BIOS _PSS frequency",
+   "advice": "_PSS (Performance Supported States) package has an incorrectly define core frequency (first DWORD entry in the _PSS package)."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*brightness control misses _BQC function",
+   "advice": "_BQC (Brightness Query Current level) seems to be missing. This method returns the current brightness level of a built-in display output device."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: ACPI:",
+   "advice": "ACPI driver has detected an ACPI bug. This generally points to a bug in an ACPI table. Examine the kernel log for more details."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: BIOS needs update for CPU frequency support",
+   "advice": "Having _PPC but missing frequencies (_PSS, _PCT) is a good hint that the BIOS is older than the CPU and does not know the CPU frequencies."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: ERST.*ERST table is invalid",
+   "advice": "The Error Record Serialization Table (ERST) seems to be invalid. This normally indicates that the ERST table header size is too small, or the table size (excluding header) is not a multiple of the ERST entries."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "\\[Firmware Bug\\]: Invalid critical threshold",
+   "advice": "ACPI _CRT (Critical Trip Point) is returning a threshold lower than zero degrees Celsius which is clearly incorrect."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "\\[Firmware Bug\\]: No valid trip found",
+   "advice": "No valud ACPI _CRT (Critical Trip Point) was found."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "\\[Firmware Bug\\]: _BCQ is usef instead of _BQC",
+   "advice": "ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed.however the kernel has detected this and is working around this typo."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "defines _DOD but not _DOS",
+   "advice": "ACPI Method _DOD (Enumerate all devices attached to display adapter) is defined but we should also have _DOS (Enable\/Disable output switching) defined but it's been omitted. This can cause display switching issues."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: Duplicate ACPI video bus",
+   "advice": "Try video module parameter video.allow_duplicates=1 if the current driver does't work."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_PCI_EXPRESS",
+   "pattern": "\\[Firmware Bug\\]: PCI.*MMCONFIG.*not reserved in ACPI motherboard resources",
+   "advice": "It appears that PCI config space has been configured for a specific device but does not appear to be reserved by the ACPI motherboard resources."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: PCI.*not reserved in ACPI motherboard resources",
+   "advice": "PCI firmware bug. Please see the kernel log for more details."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: ",
+   "advice": "The kernel has detected a Firmware bug in the BIOS or ACPI which needs investigating and fixing."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "PCI.*BIOS Bug:",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NAMESPACE_LOOKUP",
+   "pattern": "ACPI Error.*Namespace lookup failure, AE_NOT_FOUND",
+   "advice": "The kernel has detected an error trying to execute an Method and it cannot find an object. This is indicates a bug in the DSDT or SSDT AML code."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.+psparse",
+   "advice": "The ACPI parser has failed in executing some AML. The error message above lists the method that caused this error."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Error",
+   "advice": "The kernel has most probably detected an error while executing ACPI AML. The error lists the ACPI driver module and the line number where the bug has been caught and the method that caused the error."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "\\*\\*\\* Error.*Method execution failed",
+   "advice": "Execution of an ACPI AML method failed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "\\*\\*\\* Error.*Method execution failed.*AE_AML_METHOD_LIMIT",
+   "advice": "ACPI method reached maximum reentrancy limit of 255 - infinite recursion in AML in DSTD or SSDT"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "\\*\\*\\* Error.*Method reached maximum reentrancy limitACPI method has reached reentrancy limit, this is a recursion bug in the AML",
+   "advice": ""
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
+   "pattern": "\\*\\*\\* Error.*Return object type is incorrect",
+   "advice": "Return object type is not the correct type, this is an AML error in the DSDT or SSDT"
+  } 
+ ], 
+ "pm_error_warning_patterns":
+ [
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Failed to prepare device",
+   "advice": "dpm_prepare() failed to prepare all non-sys devices for a system PM transition. The device should be listed in the error message."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Some devices failed to power down",
+   "advice": "dpm_suspend_noirq failed because some devices did not power down "
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Some system devices failed to power down",
+   "advice": "sysdev_suspend failed because some system devices did not power down."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Error",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_NONE",
+   "pattern": "PM: Some devices failed to power down",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Restore failed, recovering",
+   "advice": "A resume from hibernate failed when calling hibernation_restore()"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Resume from disk failed",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Not enough free memory",
+   "advice": "There was not enough physical memory to be able to generate a hibernation image before dumping it to disc."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Memory allocation failed",
+   "advice": "swusp_alloc() failed trying to allocate highmem and failing that non-highmem pages for the suspend image. There is probably just not enough free physcial memory available."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Image mismatch",
+   "advice": "Mismatch in kernel version, system type, kernel release version or machine id between suspended kernel and resumed kernel."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Some devices failed to power down",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Some devices failed to suspend",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: can't read",
+   "advice": "Testing suspend cannot read RTC"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: can't set",
+   "advice": "Testing suspend cannot set RTC"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: suspend test failed, error",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: can't test ",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: no wakealarm-capable RTC driver is ready",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Adding page to bio failed at",
+   "advice": "An attempt to write the hibernate image to disk failed because a write BIO operation failed. This is usually a result of some physical hardware problem."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Swap header not found",
+   "advice": "An attempt to write a hibernate image to disk failed because a valid swap device header could not be found. Make sure there is a formatted swap device on the machine and it is added using swapon -a."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Cannot find swap device",
+   "advice": "An attempt to write a hibernate image to disk failed because the swap device could not be found. Make sure there is a formatted swap device on the machine and it is added using swapon -a."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Not enough free swap",
+   "advice": "Hibernate failed because the swap parition was probably too small."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Image device not initialised",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "PM: Please power down manually",
+   "advice": ""
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "check_for_bios_corruption",
+   "advice": "The BIOS seems to be corrupting the first 64K of memory when doing suspend\/resume. Setting bios_corruption_check=0 will disable this check."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "WARNING: at.*hpet_next_event",
+   "advice": "Possibly an Intel I\/O controller hub HPET Write Timing issue: A read transaction that immediately follows a write transaction to the HPET TIMn_COMP Timer 0 (108h), HPET MAIN_CNT (0F0h), or TIMn_CONF.bit 6 (100h) may return an incorrect value.  This is known to cause issues when coming out of S3."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_POWER_MANAGEMENT",
+   "pattern": "BUG: soft lockup.*stuck for 0s",
+   "advice": "Softlock errors that occur when coming out of S3 may be tripped by TSC warping.  It may be worth trying the notsc kernel parameter and repeating S3 tests to see if this solves the problem."
+  }
+ ] 
+}

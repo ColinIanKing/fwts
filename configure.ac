@@ -19,6 +19,8 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CHECK_FUNCS([strstr])
 	  AC_CHECK_FUNCS([strtoul])
 	  AC_CHECK_FUNCS([strtoull])
+	  AC_CHECK_FUNCS([gettimeofday])
+	  AC_CHECK_FUNCS([uname])
 	  AC_CHECK_HEADERS([assert.h])
 	  AC_CHECK_HEADERS([ctype.h])
 	  AC_CHECK_HEADERS([errno.h])
@@ -48,8 +50,11 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CHECK_HEADERS([sys/wait.h])
 	  AC_CHECK_HEADERS([termios.h])
 	  AC_CHECK_HEADERS([time.h])
+	  AC_CHECK_HEADERS([sys/ioctl.h])
+	  AC_CHECK_HEADERS([sys/time.h])
 	  AC_CHECK_HEADERS([json/json.h])
-	  AC_CHECK_LIB(pcre, pcre_compile, json)
+	  AC_CHECK_LIB(pcre, pcre_compile)
+	  AC_CHECK_LIB(json)
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK
 	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
@@ -57,6 +62,11 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_FUNC_REALLOC
 	  AC_TYPE_PID_T
 	  AC_TYPE_SIZE_T
+	  AC_TYPE_OFF_T
+	  AC_TYPE_UINT16_T
+	  AC_TYPE_UINT32_T
+	  AC_TYPE_UINT64_T
+	  AC_TYPE_UINT8_T
           AC_CONFIG_HEADERS([config.h])
 	  AC_CONFIG_FILES([
            Makefile

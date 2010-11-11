@@ -23,6 +23,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_check_root_euid()
+ *	Check if user has priviledges to access ports, memory, etc
+ */
 int fwts_check_root_euid(fwts_framework *fw)
 {
 	if (geteuid() != 0) {

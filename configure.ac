@@ -48,7 +48,8 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CHECK_HEADERS([sys/wait.h])
 	  AC_CHECK_HEADERS([termios.h])
 	  AC_CHECK_HEADERS([time.h])
-	  AC_CHECK_LIB(pcre, pcre_compile)
+	  AC_CHECK_HEADERS([json/json.h])
+	  AC_CHECK_LIB(pcre, pcre_compile, json)
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK
 	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK

@@ -25,7 +25,12 @@
 
 #include "fwts.h"
 
-static char *format_line(char *start, const char *end, const int width)
+/*
+ *  dup_line()
+ *	duplicate a portion of a line of text, from start to end upto
+ *	a maximum of width characters
+ */
+static char *dup_line(char *start, const char *end, const int width)
 {
 	int maxlen;
 	char *buffer;
@@ -46,7 +51,12 @@ static char *format_line(char *start, const char *end, const int width)
 	return buffer;
 }
 
-static char *format_remove_multiple_spaces(char *text)
+/*
+ *  format_remove_multiple_whitespaces()
+ *	Clone text string but remove whitespaces. Returns
+ *	NULL if failed to clone.
+ */
+static char *format_remove_multiple_whitespaces(char *text)
 {
 	char *buffer;
 	char *bufptr1, *bufptr2;
@@ -68,6 +78,11 @@ static char *format_remove_multiple_spaces(char *text)
 	return buffer;
 }
 
+/*
+ *  fwts_format_text()
+ * 	given a text string, format it into a list of lines of
+ *	text to a given width.
+ */
 fwts_list *fwts_format_text(char *text, const int width)
 {
 	int linelen = 0;
@@ -82,7 +97,7 @@ fwts_list *fwts_format_text(char *text, const int width)
 	if ((list = fwts_text_list_init()) == NULL)
 		return NULL;
 
-	if ((textptr = tidied_text = format_remove_multiple_spaces(text)) == NULL) {
+	if ((textptr = tidied_text = format_remove_multiple_whitespaces(text)) == NULL) {
 		fwts_list_free(list, free);
 		return NULL;
 	}
@@ -90,6 +105,7 @@ fwts_list *fwts_format_text(char *text, const int width)
 	linestart = tidied_text;
 
 	while (*textptr) {
+		/* find line break points */
 		if (isspace(*textptr) || 
 		    ((lastspace != NULL) && (*(textptr-1) != '/') && (*textptr == '/')) ||
 		    (*textptr == ':') || 
@@ -97,25 +113,24 @@ fwts_list *fwts_format_text(char *text, const int width)
 		    (*textptr == ','))
 			lastspace = textptr;
 
-		if (linelen >= width)
+		if (linelen >= width) {
 			if (lastspace != NULL) {
-				if ((tmp = format_line(linestart, lastspace, width)) == NULL) {
+				if ((tmp = dup_line(linestart, lastspace, width)) == NULL) {
 					fwts_text_list_free(list);
 					return NULL;
 				}
 				fwts_text_list_append(list, tmp);
 				free(tmp);
-
 				
 				linestart = lastspace + ((isspace(*lastspace)) ? 1 : 0);
 				linelen = textptr - linestart;
 				lastspace = NULL;
 			}
-
+		}
 		textptr++;
 		linelen++;
 	}
-	if ((tmp = format_line(linestart, textptr, width)) == NULL) {
+	if ((tmp = dup_line(linestart, textptr, width)) == NULL) {
 		fwts_text_list_free(list);
 		return NULL;
 	}

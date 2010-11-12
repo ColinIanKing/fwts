@@ -48,19 +48,19 @@ PROGRAMS = $(bin_PROGRAMS)
 am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
 	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) acpidump.$(OBJEXT) \
-	apicinstance.$(OBJEXT) battery.$(OBJEXT) brightness.$(OBJEXT) \
-	checksum.$(OBJEXT) common.$(OBJEXT) cstates.$(OBJEXT) \
-	dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) \
-	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
-	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
-	mtrr.$(OBJEXT) bios_info.$(OBJEXT) bios32.$(OBJEXT) \
-	hdaaudio.$(OBJEXT) romdump.$(OBJEXT) os2gap.$(OBJEXT) \
-	e820dump.$(OBJEXT) smbios.$(OBJEXT) cmosdump.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
-	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
-	hotkey.$(OBJEXT) version.$(OBJEXT)
+	acpitables.$(OBJEXT) apicinstance.$(OBJEXT) battery.$(OBJEXT) \
+	brightness.$(OBJEXT) checksum.$(OBJEXT) common.$(OBJEXT) \
+	cstates.$(OBJEXT) dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
+	mcfg.$(OBJEXT) apicedge.$(OBJEXT) osilinux.$(OBJEXT) \
+	lid.$(OBJEXT) powerbutton.$(OBJEXT) wmi.$(OBJEXT) \
+	ebda_region.$(OBJEXT) mtrr.$(OBJEXT) bios_info.$(OBJEXT) \
+	bios32.$(OBJEXT) hdaaudio.$(OBJEXT) romdump.$(OBJEXT) \
+	os2gap.$(OBJEXT) e820dump.$(OBJEXT) smbios.$(OBJEXT) \
+	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
+	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
+	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -237,6 +237,7 @@ fwts_SOURCES = main.c \
 	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \
 	acpi/acpidump/acpidump.c \
+	acpi/acpitables/acpitables.c \
 	acpi/apicinstance/apicinstance.c \
 	acpi/battery/battery.c \
 	acpi/brightness/brightness.c \
@@ -363,6 +364,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ac_adapter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpidump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpiinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpitables.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicinstance.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
@@ -534,6 +536,20 @@ acpidump.obj: acpi/acpidump/acpidump.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/acpidump/acpidump.c' object='acpidump.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o acpidump.obj `if test -f 'acpi/acpidump/acpidump.c'; then $(CYGPATH_W) 'acpi/acpidump/acpidump.c'; else $(CYGPATH_W) '$(srcdir)/acpi/acpidump/acpidump.c'; fi`
+
+acpitables.o: acpi/acpitables/acpitables.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT acpitables.o -MD -MP -MF $(DEPDIR)/acpitables.Tpo -c -o acpitables.o `test -f 'acpi/acpitables/acpitables.c' || echo '$(srcdir)/'`acpi/acpitables/acpitables.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/acpitables.Tpo $(DEPDIR)/acpitables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/acpitables/acpitables.c' object='acpitables.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o acpitables.o `test -f 'acpi/acpitables/acpitables.c' || echo '$(srcdir)/'`acpi/acpitables/acpitables.c
+
+acpitables.obj: acpi/acpitables/acpitables.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT acpitables.obj -MD -MP -MF $(DEPDIR)/acpitables.Tpo -c -o acpitables.obj `if test -f 'acpi/acpitables/acpitables.c'; then $(CYGPATH_W) 'acpi/acpitables/acpitables.c'; else $(CYGPATH_W) '$(srcdir)/acpi/acpitables/acpitables.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/acpitables.Tpo $(DEPDIR)/acpitables.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/acpitables/acpitables.c' object='acpitables.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o acpitables.obj `if test -f 'acpi/acpitables/acpitables.c'; then $(CYGPATH_W) 'acpi/acpitables/acpitables.c'; else $(CYGPATH_W) '$(srcdir)/acpi/acpitables/acpitables.c'; fi`
 
 apicinstance.o: acpi/apicinstance/apicinstance.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicinstance.o -MD -MP -MF $(DEPDIR)/apicinstance.Tpo -c -o apicinstance.o `test -f 'acpi/apicinstance/apicinstance.c' || echo '$(srcdir)/'`acpi/apicinstance/apicinstance.c

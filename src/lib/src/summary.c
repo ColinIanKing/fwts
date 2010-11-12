@@ -24,9 +24,9 @@
 #include "fwts.h"
 
 typedef struct {
-	char *test;
-	char *text;
-	int  log_line;
+	char *test;	/* test that found the error */
+	char *text;	/* text of failure message */
+	int  log_line;	/* line where failure was reported */
 } fwts_summary_item;
 
 enum {
@@ -39,7 +39,7 @@ enum {
 	SUMMARY_MAX = SUMMARY_UNKNOWN+1
 };
 
-const char *summary_names[] = {
+static const char *summary_names[] = {
 	"Critical",
 	"High",
 	"Medium",
@@ -47,14 +47,20 @@ const char *summary_names[] = {
 	"Other"
 };
 
-fwts_list *fwts_summaries[SUMMARY_MAX];
+/* list of summary items per error level */
+static fwts_list *fwts_summaries[SUMMARY_MAX];
 
 void fwts_summary_deinit(void);
 
+/*
+ *  fwts_summary_init()
+ *	initialise 
+ */
 int fwts_summary_init(void)
 {
 	int i;
 
+	/* initialise list of summary items for all error levels */
 	for (i=0;i<SUMMARY_MAX;i++)
 		if ((fwts_summaries[i] = fwts_list_init()) == NULL) {
 			fwts_summary_deinit();
@@ -64,6 +70,10 @@ int fwts_summary_init(void)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_summary_item_free()
+ *	free a summary item
+ */
 static void fwts_summary_item_free(void *data)
 {
 	fwts_summary_item *item = (fwts_summary_item *)data;
@@ -73,6 +83,10 @@ static void fwts_summary_item_free(void *data)
 	free(item);
 }
 
+/*
+ *  fwts_summary_init()
+ *	free up summary lists
+ */
 void fwts_summary_deinit(void)
 {
 	int i;
@@ -82,6 +96,11 @@ void fwts_summary_deinit(void)
 			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }
 
+/*
+ *  fwts_summary_add()
+ *	add an error summary for a test with error message text at given
+ *	error level to the list of summaries.
+ */
 int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 {
 	fwts_summary_item *item;
@@ -122,6 +141,10 @@ int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_summary_report()
+ *  	report test failure summary, sorted by error levels
+ */
 int fwts_summary_report(fwts_framework *fw)
 {
 	int i;
@@ -149,6 +172,5 @@ int fwts_summary_report(fwts_framework *fw)
 
 		fwts_log_summary(fw, "");
 	}
-
 	return FWTS_OK;
 }

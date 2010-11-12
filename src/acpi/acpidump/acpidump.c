@@ -542,6 +542,7 @@ static void acpidump_fadt(fwts_framework *fw, uint8_t *data, int length)
 		FIELD_UINT("PM1 Event Block Length", 			fwts_acpi_table_fadt, pm1_evt_len),
 		FIELD_UINT("PM1 Control Block Length", 			fwts_acpi_table_fadt, pm1_cnt_len),
 		FIELD_UINT("PM2 Control Block Length", 			fwts_acpi_table_fadt, pm2_cnt_len),
+		FIELD_UINT("PM Timer Block Length",			fwts_acpi_table_fadt, pm_tmr_len),
 		FIELD_UINT("GPE0 Block Length", 			fwts_acpi_table_fadt, gpe0_blk_len),
 		FIELD_UINT("GPE1 Block Length", 			fwts_acpi_table_fadt, gpe1_blk_len),
 		FIELD_UINT("_CST Support", 				fwts_acpi_table_fadt, cst_cnt),

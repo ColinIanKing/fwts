@@ -22,22 +22,30 @@
 
 #include "fwts.h"
 
-void fwts_dump_raw_data(char *buffer, const int len, const uint8_t *data, const int where, const int bytes)
+/*
+ *  fwts_dump_raw_data()
+ *	print raw uint8 data of length `nbytes` into a buffer (length len) as a hex dump. nbytes must
+ *	be no more than 16. The address/offset of the buffer in memory is annotated by addr.
+ */
+void fwts_dump_raw_data(char *buffer, const int len, const uint8_t *data, const int addr, const int nbytes)
 {
         int i;
 	int n = 0;
 
-	n = snprintf(buffer, len, "  %4.4x: ", where);
+	n = snprintf(buffer, len, "  %4.4x: ", addr);
 
-        for (i=0;i<bytes;i++)
+	/* Hex dump */
+        for (i=0;i<nbytes;i++)
                 n += snprintf(buffer + n, len - n, "%2.2x ", data[i]);
 
+	/* Padding */
         for (;i<16;i++)
-                n += snprintf(buffer + n, len -n , "   ");
+                n += snprintf(buffer + n, len - n, "   ");
 
-        n += snprintf(buffer + n, len -n , " ");
+        n += snprintf(buffer + n, len - n, " ");
 
-        for (i=0;i<bytes;i++)
+	/* printable ASCII dump */
+        for (i=0;i<nbytes;i++)
 		buffer[n++] = (data[i] < 32 || data[i] > 126) ? '.' : data[i];
-	buffer[n] = 0;
+	buffer[n] = '\0';
 }

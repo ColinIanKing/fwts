@@ -35,7 +35,7 @@ static int acpi_table_check_init(fwts_framework *fw)
 
 static char *acpi_table_check_headline(void)
 {
-	return "Check ACPI tables.";
+	return "ACPI table settings sanity checks.";
 }
 
 static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -473,4 +473,4 @@ static fwts_framework_ops acpi_table_check_ops = {
 	.minor_tests = acpi_table_check_tests
 };
 
-FWTS_REGISTER(acpi_tables, &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(acpitables, &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

@@ -26,20 +26,28 @@
 
 #include "fwts.h"
 
+/* 
+ *  fwts_gpe_free()
+ *	free an allocated array of GPE data, length count items
+ */
 void fwts_gpe_free(fwts_gpe *gpe, const int count)
 {
 	int i;
 
-	if (gpe == NULL)
-		return;
-
-	for (i=0;i<count;i++) {
-		if (gpe[i].name)
-			free(gpe[i].name);
+	if (gpe) {
+		for (i=0;i<count;i++) {
+			if (gpe[i].name)
+				free(gpe[i].name);
+		}
+		free(gpe);
 	}
-	free(gpe);
 }
 
+/*
+ *  fwts_gpe_read()
+ *	read in GPE data from /sys/firmware/acpi/interrupts and populate
+ *	an array. Last entry is zero as an array terminator.
+ */
 int fwts_gpe_read(fwts_gpe **gpes)
 {
 	DIR *dir;
@@ -48,9 +56,8 @@ int fwts_gpe_read(fwts_gpe **gpes)
 	*gpes = NULL;
 	int n = 0;
 
-	if ((dir = opendir(FWTS_GPE_PATH)) == NULL) {
+	if ((dir = opendir(FWTS_GPE_PATH)) == NULL)
 		return FWTS_ERROR;
-	}
 	
 	while ((entry = readdir(dir)) != NULL) {
 		if ((strncmp(entry->d_name, "gpe", 3) == 0) ||
@@ -65,8 +72,7 @@ int fwts_gpe_read(fwts_gpe **gpes)
 					goto error;
 				
 				snprintf(path, sizeof(path), "%s/%s", FWTS_GPE_PATH, entry->d_name);
-				data = fwts_get(path);
-				if (data) {
+				if ((data = fwts_get(path)) != NULL) {
 					(*gpes)[n].count = atoi(data);
 					free(data);
 				} else
@@ -87,6 +93,11 @@ error:
 	return FWTS_ERROR;
 }
 
+/*
+ *  fwts_gpe_delta()
+ *	calculate count differences between two sets of before and after GPE arrays and
+ * 	update the result in gpe_delta. 
+ */
 int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, const int n)
 {	
 	int i;
@@ -101,6 +112,10 @@ int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, 
 }
 
 
+/*
+ *  fwts_gpe_test()
+ *	test for GPE changes between start and end GPE samples
+ */
 void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gpe *gpes_end, const int gpe_count)
 {
 	int *deltas = NULL;

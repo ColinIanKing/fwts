@@ -172,7 +172,7 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 	return;
 }
 
-static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
+static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item, int *count)
 {
 	uint8_t *wdg_data;
 	int size;
@@ -228,16 +228,18 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 	if (item == NULL) return;
 
 	if ((wdg_data = calloc(1, size)) != NULL) {
+		(*count)++ ;
 		wmi_get_wdg_data(fw, item, size, wdg_data);
 		wmi_parse_wdg_data(fw, size, wdg_data);
-		free(wdg_data);
+		free(wdg_data);	
 	}
 }
 
-static int wmi_table(fwts_framework *fw, char *table, int which)
+static int wmi_table(fwts_framework *fw, char *table, int which, char *name)
 {
 	fwts_list_link *item;
 	fwts_list* iasl_output;
+	int count = 0;
 
 	if (fwts_iasl_disassemble(fw, table, which, &iasl_output) != FWTS_OK) {
 		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
@@ -247,7 +249,10 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 		return FWTS_NO_TABLE;
 
 	fwts_list_foreach(item, iasl_output)
-		wmi_parse_for_wdg(fw, item);
+		wmi_parse_for_wdg(fw, item, &count);
+
+	if (count == 0)
+		fwts_log_info(fw, "No WMI data found in table  %s.", name);
 
 	fwts_text_list_free(iasl_output);
 
@@ -256,15 +261,18 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 
 static int wmi_DSDT(fwts_framework *fw)
 {
-	return wmi_table(fw, "DSDT", 0);
+	return wmi_table(fw, "DSDT", 0, "DSDT");
 }
 
 static int wmi_SSDT(fwts_framework *fw)
 {
 	int i;
 
-	for (i=0; i < 100; i++) {
-		int ret = wmi_table(fw, "SSDT", i);
+	for (i=0; i < 16; i++) {
+		char buffer[10];
+		sprintf(buffer,"SSDT%d", i+1);
+
+		int ret = wmi_table(fw, "SSDT", i, buffer);
 		if (ret == FWTS_NO_TABLE)
 			return FWTS_OK;	/* Hit the last table */
 		if (ret != FWTS_OK)

@@ -34,7 +34,7 @@ static int apicinstance_test1(fwts_framework *fw)
 		fwts_acpi_table_info *table;
 
 		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK) {
-			fwts_log_error(fw, "Cannot load ACPI table.");
+			fwts_aborted(fw, "Cannot load ACPI table.");
 			return FWTS_ERROR;
 		}
 

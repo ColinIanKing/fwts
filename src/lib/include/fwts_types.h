@@ -23,12 +23,14 @@
 #include <stdint.h>
 
 typedef enum {
-	FWTS_OK    = 0,
+	FWTS_OK       = 0,
+
 	FWTS_ERROR = -1,
 	FWTS_SKIP  = -2,
 	FWTS_ABORTED = -3,
 	FWTS_ERROR_NO_PRIV = -4,
 	FWTS_NULL_POINTER = -5,
+	FWTS_NO_TABLE = -6,
 } fwts_status;
 
 typedef enum {

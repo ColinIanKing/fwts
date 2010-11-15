@@ -107,16 +107,16 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 			guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
 
 		if (info->flags & FWTS_WMI_METHOD) {
-			fwts_log_info(fw, "Found WMI method WM%c%c with GUID %s\n", info->obj_id[0], info->obj_id[1], guidstr);
+			fwts_log_info(fw, "Found WMI Method WM%c%c with GUID: %s, Instance 0x%2.2x", info->obj_id[0], info->obj_id[1], guidstr, info->instance);
 		} else if (info->flags & FWTS_WMI_EVENT) {
-			fwts_log_info(fw, "Found WMI event with GUID: %s\n", guidstr);
+			fwts_log_info(fw, "Found WMI Event, Notifier ID: 0x%2.2x, GUID: %s, Instance 0x%2.2x", info->notify_id, guidstr, info->instance);
 			if (!advice_given) {
 				advice_given = 1;
 				fwts_log_nl(fw);
 				fwts_log_advice(fw, 	
 					"ADVICE: A WMI driver probably needs to be written for this event.");
 				fwts_log_advice(fw,
-					"It can checked for using: wmi_has_guid(\"%s\").\n", guidstr);
+					"It can checked for using: wmi_has_guid(\"%s\").", guidstr);
 				fwts_log_advice(fw, 
 					"One can install a notify handler using wmi_install_notify_handler(\"%s\", handler, NULL).  ", guidstr);
 				fwts_log_advice(fw, 
@@ -125,8 +125,8 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 			}
 		} else {
 			char *flags = wmi_wdg_flags_to_text(info->flags);
-			fwts_log_info(fw, "Found WMI object ID %c%c, notifier ID: %02X, GUID %s\n", 
-				info->obj_id[0], info->obj_id[1], info->notify_id, guidstr, flags);
+			fwts_log_info(fw, "Found WMI Object, Object ID %c%c, GUID: %s, Instance 0x%2.2x, Flags: %2.2x %s", 
+				info->obj_id[0], info->obj_id[1], guidstr, info->instance, info->flags, flags);
 		}
 		info++;
 	}
@@ -191,8 +191,6 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 	if (*str != '(') return;
 	str++;
 
-//printf("Got Name %s\n", str);
-
 	CONSUME_WHITESPACE(str);
 
 	if (strncmp(str, "_WDG",4))
@@ -245,6 +243,8 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
 		return FWTS_ERROR;
 	}
+	if (iasl_output == NULL) 
+		return FWTS_NO_TABLE;
 
 	fwts_list_foreach(item, iasl_output)
 		wmi_parse_for_wdg(fw, item);
@@ -265,7 +265,7 @@ static int wmi_SSDT(fwts_framework *fw)
 
 	for (i=0; i < 100; i++) {
 		int ret = wmi_table(fw, "SSDT", i);
-		if (ret == 2)
+		if (ret == FWTS_NO_TABLE)
 			return FWTS_OK;	/* Hit the last table */
 		if (ret != FWTS_OK)
 			return FWTS_ERROR;

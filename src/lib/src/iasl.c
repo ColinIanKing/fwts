@@ -47,6 +47,9 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK)
 		return FWTS_ERROR;
 
+	if (table == NULL)
+		return FWTS_OK;
+
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
 		return FWTS_ERROR;
@@ -60,14 +63,12 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
                 return FWTS_ERROR;
 		
-	if (table == NULL)
-		return FWTS_ERROR;
-
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), tablename);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file %s", tmpname);
 		return FWTS_ERROR;
 	}
+
 	if (write(fd, table->data, table->length) != table->length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);

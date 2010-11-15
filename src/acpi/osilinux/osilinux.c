@@ -63,8 +63,10 @@ static int osilinux_test1(fwts_framework *fw)
 	int dumpdepth = 0;
 	int found = 0;
 
-	if (disassembly == NULL)
+	if (disassembly == NULL) {
+		fwts_failed(fw, "Could not read ACPI DSDT table.");
 		return FWTS_ERROR;
+	}
 
 	fwts_log_info(fw, 
 		"This is not strictly a failure mode, it just alerts "

@@ -27,8 +27,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#define FWTS_NO_TABLE	(2)
-
 static char *syntaxcheck_headline(void)
 {
 	return "Re-assemble DSDT and find syntax errors and warnings.";

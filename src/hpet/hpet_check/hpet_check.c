@@ -130,6 +130,8 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 
 	if (fwts_iasl_disassemble(fw, table, which, &output) != FWTS_OK)
 		return;
+	if (output == NULL)
+		return;
 
 	for (item = output->head; item != NULL; item = item->next) {
 		if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)

@@ -44,6 +44,9 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 
 	*iasl_output = NULL;
 
+	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK)
+		return FWTS_ERROR;
+
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
 		return FWTS_ERROR;
@@ -56,9 +59,6 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
                 return FWTS_ERROR;
-
-	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK)
-		return FWTS_ERROR;
 		
 	if (table == NULL)
 		return FWTS_ERROR;

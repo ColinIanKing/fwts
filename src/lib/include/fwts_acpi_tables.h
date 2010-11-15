@@ -30,11 +30,11 @@ typedef struct {
 	uint64_t addr;
 } fwts_acpi_table_info;
 
-void fwts_acpi_load_tables(fwts_framework *fw);
-void fwts_acpi_free_tables(void);
+int fwts_acpi_load_tables(fwts_framework *fw);
+int fwts_acpi_free_tables(void);
 
-fwts_acpi_table_info *fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which);
-fwts_acpi_table_info *fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr);
-fwts_acpi_table_info *fwts_acpi_get_table(fwts_framework *fw, const int index);
+int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info);
+int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info);
+int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info);
 
 #endif

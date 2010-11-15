@@ -229,7 +229,7 @@ static void fwts_acpi_add_table(char *name, void *table, uint64_t addr, int leng
  *  fwts_acpi_free_tables()
  *	free up the cached copies of the ACPI tables
  */
-void fwts_acpi_free_tables(void)
+int fwts_acpi_free_tables(void)
 {
 	int i;
 
@@ -239,6 +239,7 @@ void fwts_acpi_free_tables(void)
 			memset(&tables[i], 0, sizeof(fwts_acpi_table_info));
 		}
 	}
+	return FWTS_OK;
 }
 
 /*
@@ -273,7 +274,7 @@ static void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt)
  *  fwts_acpi_load_tables_from_firmware()
  *  	Load up cached copies of all the ACPI tables
  */
-static void fwts_acpi_load_tables_from_firmware(void)
+static int fwts_acpi_load_tables_from_firmware(void)
 {
 	fwts_acpi_table_rsdp *rsdp;
 	fwts_acpi_table_xsdt *xsdt;
@@ -287,10 +288,11 @@ static void fwts_acpi_load_tables_from_firmware(void)
 	/* Check for RSDP in EFI, then BIOS, if not found, give up */
 	if ((rsdp_addr = fwts_acpi_find_rsdp_efi()) == 0)
 		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == 0) 
-			return;
+			return FWTS_ERROR;
 
 	/* Load and save cached RSDP */
-	rsdp = fwts_acpi_get_rsdp(rsdp_addr);
+	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr)) == NULL)
+		return FWTS_ERROR;
 	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)rsdp_addr, sizeof(fwts_acpi_table_rsdp));
 
 	/* Load any tables from RSDT if it's valid */
@@ -324,6 +326,8 @@ static void fwts_acpi_load_tables_from_firmware(void)
 			}
 		}
 	}
+
+	return FWTS_OK;
 }
 
 
@@ -372,14 +376,14 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
  *  fwts_acpi_load_tables_from_acpidump()
  *	Load in all ACPI tables from output of acpidump or fwts --dump
  */
-static void fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
+static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 {
 	FILE *fp;
 
 	if ((fp = fopen(fw->acpi_table_acpidump_file, "r")) == NULL) {
 		fwts_log_error(fw, "Cannot open '%s' to read ACPI tables.", 
 			fw->acpi_table_acpidump_file);
-		return;
+		return FWTS_ERROR;
 	}
 
 	while (!feof(fp)) {
@@ -395,6 +399,8 @@ static void fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	}
 
 	fclose(fp);
+
+	return FWTS_OK;
 }
 
 static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
@@ -423,7 +429,7 @@ static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
 	return ptr;
 }
 
-static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
+static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *direntry;
@@ -432,7 +438,7 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 	if ((dir = opendir(fw->acpi_table_path)) == NULL) {
 		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.", 
 			fw->acpi_table_path);
-		return;
+		return FWTS_ERROR;
 	}
 
 	while ((direntry = readdir(dir)) != NULL) {
@@ -456,26 +462,36 @@ static void fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);
 		}
 	}
-	if (count == 0)
-		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
-
 	closedir(dir);
+
+	if (count == 0) {
+		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
 }
 
 /* 
  *  fwts_acpi_load_tables()
  *	Load from firmware or from files in a specified directory
  */
-void fwts_acpi_load_tables(fwts_framework *fw)
+int fwts_acpi_load_tables(fwts_framework *fw)
 {
-	if (fw->acpi_table_path != NULL)
-		fwts_acpi_load_tables_from_file(fw);
-	else if (fw->acpi_table_acpidump_file != NULL)
-		fwts_acpi_load_tables_from_acpidump(fw);
-	else
-		fwts_acpi_load_tables_from_firmware();
+	int ret = FWTS_ERROR;
 
-	acpi_tables_loaded = 1;
+	if (fw->acpi_table_path != NULL)
+		ret = fwts_acpi_load_tables_from_file(fw);
+	else if (fw->acpi_table_acpidump_file != NULL)
+		ret = fwts_acpi_load_tables_from_acpidump(fw);
+	else if (fwts_check_root_euid(fw) == FWTS_OK)
+		ret = fwts_acpi_load_tables_from_firmware();
+	else 
+		ret = FWTS_ERROR_NO_PRIV;
+
+	if (ret == FWTS_OK)
+		acpi_tables_loaded = 1;
+
+	return ret;
 }
 
 /*
@@ -483,58 +499,80 @@ void fwts_acpi_load_tables(fwts_framework *fw)
  *  	Search for an ACPI table. There may be more than one, so
  *  	specify the one using which.
  */
-fwts_acpi_table_info *fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which)
+int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info)
 {
 	int i;
 
+	if (info == NULL)
+		return FWTS_NULL_POINTER;
+
+	*info = NULL;
+
 	if (!acpi_tables_loaded)
-		fwts_acpi_load_tables(fw);
+		if (fwts_acpi_load_tables(fw) != FWTS_OK)
+			return FWTS_ERROR;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
 			break;
 		if ((strcmp(tables[i].name, name) == 0) && 
-	            (tables[i].which == which))
-			return &tables[i];
+	            (tables[i].which == which)) {
+			*info = &tables[i];
+			return FWTS_OK;
+		}
 	}
-
-	return NULL;
+	return FWTS_OK;
 }
 
 /*
  *  fwts_acpi_find_table_by_addr()
  *  	Search for a cached ACPI table given it's original physical address
  */
-fwts_acpi_table_info *fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr)
+int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info)
 {
 	int i;
 	
+	if (info == NULL)
+		return FWTS_NULL_POINTER;
+
+	*info = NULL;
+
 	if (!acpi_tables_loaded)
-		fwts_acpi_load_tables(fw);
+		if (fwts_acpi_load_tables(fw) != FWTS_OK)
+			return FWTS_ERROR;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
 			break;
-		if (tables[i].addr == addr)
-			return &tables[i];
+		if (tables[i].addr == addr) {
+			*info = &tables[i];
+			return FWTS_OK;
+		}
 	}
-	return NULL;
+	return FWTS_OK;
 }
 
 /*
  *  fwts_acpi_get_table()
  *  	Get the Nth cached ACPI table.
  */
-fwts_acpi_table_info *fwts_acpi_get_table(fwts_framework *fw, const int index)
+int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info)
 {
+	if (info == NULL)
+		return FWTS_NULL_POINTER;
+
+	*info = NULL;
+
 	if ((index < 0) || (index >= ACPI_MAX_TABLES))
-		return NULL;
+		return FWTS_ERROR;
 
 	if (!acpi_tables_loaded)
-		fwts_acpi_load_tables(fw);
+		if (fwts_acpi_load_tables(fw) != FWTS_OK)
+			return FWTS_ERROR;
 
 	if (tables[index].data == NULL)
-		return NULL;
+		return FWTS_OK;
 
-	return &tables[index];
+	*info = &tables[index];
+	return FWTS_OK;
 }

@@ -32,25 +32,11 @@ static char *osilinux_headline(void)
 	return "Disassemble DSDT to check for _OSI(\"Linux\").";
 }
 
-static fwts_list* disassembly;
 
 static int osilinux_init(fwts_framework *fw)
 {
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
-
-	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot disassemble with iasl.");
-		return FWTS_ERROR;
-	}
-
-	return FWTS_OK;
-}
-
-static int osilinux_deinit(fwts_framework *fw)
-{
-	if (disassembly)
-		fwts_text_list_free(disassembly);
 
 	return FWTS_OK;
 }
@@ -59,9 +45,15 @@ static int osilinux_test1(fwts_framework *fw)
 {	
 	fwts_list_link *item;
 	fwts_list_link *dumpitem = NULL;
+	fwts_list* disassembly;
 	int depth = 0;
 	int dumpdepth = 0;
 	int found = 0;
+
+	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
+		fwts_aborted(fw, "Cannot disassemble DSDT with iasl.");
+		return FWTS_ERROR;
+	}
 
 	if (disassembly == NULL) {
 		fwts_failed(fw, "Could not read ACPI DSDT table.");
@@ -102,6 +94,7 @@ static int osilinux_test1(fwts_framework *fw)
 				dumpdepth = depth;
 		}
 	}
+	fwts_text_list_free(disassembly);
 
 	if (!found)
 		fwts_passed(fw, "DSDT does not implement a deprecated _OSI(\"Linux\") test.");
@@ -117,7 +110,6 @@ static fwts_framework_minor_test osilinux_tests[] = {
 static fwts_framework_ops osilinux_ops = {
 	.headline    = osilinux_headline,
 	.init        = osilinux_init,	
-	.deinit      = osilinux_deinit,
 	.minor_tests = osilinux_tests
 };
 

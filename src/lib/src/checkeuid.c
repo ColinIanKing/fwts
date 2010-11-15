@@ -30,7 +30,7 @@
 int fwts_check_root_euid(fwts_framework *fw)
 {
 	if (geteuid() != 0) {
-		fwts_log_error(fw, "Must be run as root or sudo.");
+		fwts_log_error(fw, "Must be run as root or sudo to be able to read system information.");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;

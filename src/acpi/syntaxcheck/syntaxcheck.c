@@ -49,14 +49,16 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	int warnings = 0;
 	fwts_acpi_table_info *table;
 
-	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK) 
+	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK) {
+		fwts_aborted(fw, "Cannot load ACPI table %s.", tablename);
 		return FWTS_ERROR;
+	}
 
 	if (table == NULL) 
 		return FWTS_NO_TABLE;		/* Table does not exist */
 
 	if (fwts_iasl_reassemble(fw, table->data, table->length, &error_output) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot re-assasemble with iasl.");
+		fwts_aborted(fw, "Cannot re-assasemble with iasl.");
 		return FWTS_ERROR;
 	}
 

@@ -442,8 +442,9 @@ static int acpi_table_check_test1(fwts_framework *fw)
 		fwts_acpi_table_info *table;
 
 		if (fwts_acpi_find_table(fw, check_table[i].name, 0, &table) != FWTS_OK) {
-			fwts_log_info(fw, "Cannot load ACPI table %s\n", check_table[i].name);
-			continue;
+			fwts_aborted(fw, "Cannot load ACPI tables.", check_table[i].name);
+			/* If this fails, we cannot load any subsequent tables so abort */
+			break;
 		}
 
 		if (table) {

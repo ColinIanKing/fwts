@@ -25,15 +25,6 @@
 
 #include "fwts.h"
 
-static int acpidump_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
-
 static char *acpidump_headline(void)
 {
 	return "Check ACPI table acpidump.";
@@ -629,12 +620,15 @@ static void acpidump_rsdt(fwts_framework *fw, uint8_t *data, int length)
 	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint32_t);
 	for (i=0; i<n; i++)  {
 		char label[80];
-		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i]);
-		char *name = table == NULL ? "unknown" : table->name;
-		snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-		fwts_log_info_verbatum(fw, "%s 0x%8.8x", 
-			acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])), 
-			rsdt->entries[i]);
+		fwts_acpi_table_info *table;
+
+		if (fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i], &table) == FWTS_OK) {
+			char *name = table == NULL ? "unknown" : table->name;
+			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
+			fwts_log_info_verbatum(fw, "%s 0x%8.8x", 
+				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])), 
+				rsdt->entries[i]);
+		}
 	}
 }
 
@@ -659,12 +653,15 @@ static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 	n = (length - sizeof(fwts_acpi_table_header)) / sizeof(uint64_t);
 	for (i=0; i<n; i++)  {
 		char label[80];
-		fwts_acpi_table_info *table = fwts_acpi_find_table_by_addr(fw, xsdt->entries[i]);
-		char *name = table == NULL ? "unknown" : table->name;
-		snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-		fwts_log_info_verbatum(fw, "%s 0x%16.16x", 
-			acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
-			xsdt->entries[i]);
+		fwts_acpi_table_info *table;
+
+		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table) == FWTS_OK) {
+			char *name = table == NULL ? "unknown" : table->name;
+			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
+			fwts_log_info_verbatum(fw, "%s 0x%16.16x", 
+				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
+				xsdt->entries[i]);
+		}
 	}
 }
 
@@ -1049,7 +1046,7 @@ static int acpidump_test1(fwts_framework *fw)
 
 	fwts_acpi_table_info *table;
 
-	for (i=0; (table = fwts_acpi_get_table(fw, i)) !=NULL; i++) {
+	for (i=0; (fwts_acpi_get_table(fw, i, &table) == FWTS_OK) && (table !=NULL); i++) {
 		fwts_log_info_verbatum(fw, "%s @ %4.4lx (%d bytes)", table->name, (uint32_t)table->addr, table->length);
 		fwts_log_info_verbatum(fw, "---------------");
 		acpidump_table(fw, table);
@@ -1067,7 +1064,6 @@ static fwts_framework_minor_test acpidump_tests[] = {
 
 static fwts_framework_ops acpidump_ops = {
 	.headline    = acpidump_headline,
-	.init        = acpidump_init,
 	.minor_tests = acpidump_tests
 };
 

@@ -26,8 +26,9 @@ typedef enum {
 	FWTS_OK    = 0,
 	FWTS_ERROR = -1,
 	FWTS_SKIP  = -2,
-	FWTS_ERROR_NO_PRIV = -3,
-	FWTS_NULL_POINTER = -4,
+	FWTS_ABORTED = -3,
+	FWTS_ERROR_NO_PRIV = -4,
+	FWTS_NULL_POINTER = -5,
 } fwts_status;
 
 typedef enum {

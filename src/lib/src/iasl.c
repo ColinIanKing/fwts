@@ -29,7 +29,7 @@
 
 #include "fwts.h"
 
-fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int which)
+int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int which, fwts_list **iasl_output)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
@@ -39,32 +39,39 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, cons
 	fwts_list *output;
 	fwts_acpi_table_info *table;
 
+	if (iasl_output == NULL)
+		return FWTS_ERROR;
+
+	*iasl_output = NULL;
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
-		return NULL;
+		return FWTS_ERROR;
 	}
 
 	if (chdir("/tmp") < 0) {
 		fwts_log_error(fw, "Cannot change directory to /tmp");
-		return NULL;
+		return FWTS_ERROR;
 	}
 
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
-                return NULL;
+                return FWTS_ERROR;
 
-	if ((table = fwts_acpi_find_table(fw, tablename, which)) == NULL)
-		return NULL;
+	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK)
+		return FWTS_ERROR;
+		
+	if (table == NULL)
+		return FWTS_ERROR;
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d_%s", getpid(), tablename);
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file %s", tmpname);
-		return NULL;
+		return FWTS_ERROR;
 	}
 	if (write(fd, table->data, table->length) != table->length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);
-		return NULL;
+		return FWTS_ERROR;
 	}	
 	close(fd);
 
@@ -81,13 +88,18 @@ fwts_list *fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, cons
 	unlink(tmpname);
 	unlink(tmpbuf);
 
-	if (chdir(cwd) < 0)
+	if (chdir(cwd) < 0) {
 		fwts_log_error(fw, "Cannot change directory to %s", cwd);
+		fwts_list_free(output, free);
+		return FWTS_ERROR;
+	}
 
-	return output;
+	*iasl_output = output;
+
+	return FWTS_OK;
 }
 
-fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len)
+int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len, fwts_list **iasl_output)
 {
 	char tmpbuf[PATH_MAX+128];
 	char tmpname[PATH_MAX];
@@ -96,25 +108,30 @@ fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const i
 	int ret;
 	int fd;
 
+	if (iasl_output == NULL)
+		return FWTS_ERROR;
+
+	*iasl_output = NULL;
+
 	if (getcwd(cwd, sizeof(cwd)) == NULL) {
 		fwts_log_error(fw, "Cannot get current working directory");
-		return NULL;
+		return FWTS_ERROR;
 	}
 
 	if (chdir("/tmp") < 0) {
 		fwts_log_error(fw, "Cannot change directory to /tmp");
-		return NULL;
+		return FWTS_ERROR;
 	}
 
 	snprintf(tmpname, sizeof(tmpname), "tmp_iasl_%d", getpid());
 	if ((fd = open(tmpname, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file");
-		return NULL;
+		return FWTS_ERROR;
 	}
 	if (write(fd, data, len) != len) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);
-		return NULL;
+		return FWTS_ERROR;
 	}	
 	close(fd);
 
@@ -132,8 +149,13 @@ fwts_list* fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const i
 	unlink(tmpname);
 	unlink(tmpbuf);
 
-	if (chdir(cwd) < 0)
+	if (chdir(cwd) < 0) {
 		fwts_log_error(fw, "Cannot change directory to %s", cwd);
+		fwts_list_free(output, free);
+		return FWTS_ERROR;
+	}
+	
+	*iasl_output = output;
 
-	return output;
+	return FWTS_OK;
 }

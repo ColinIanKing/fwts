@@ -36,14 +36,10 @@ static fwts_list* disassembly;
 
 static int osilinux_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
 
-	disassembly = fwts_iasl_disassemble(fw, "DSDT", 0);
-	if (disassembly == NULL) {
+	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot disassemble with iasl.");
 		return FWTS_ERROR;
 	}

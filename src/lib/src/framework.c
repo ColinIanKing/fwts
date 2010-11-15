@@ -680,7 +680,7 @@ void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
 
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fw->minor_tests.skipped++;
+	fw->minor_tests.aborted++;
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
 		fwts_framework_get_env(FWTS_ABORTED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);

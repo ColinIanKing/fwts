@@ -25,14 +25,6 @@
 
 #include "fwts.h"
 
-static int checksum_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static char *checksum_headline(void)
 {
 	return "Check ACPI table checksum.";
@@ -41,10 +33,17 @@ static char *checksum_headline(void)
 static int checksum_scan_tables(fwts_framework *fw)
 {
 	int i;
-	fwts_acpi_table_info *table;
 
-	for (i=0; (table = fwts_acpi_get_table(fw, i)) != NULL; i++) {
+	for (i=0;; i++) {
+		fwts_acpi_table_info *table;
 		int j;
+		
+		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK) {
+			fwts_aborted(fw, "Cannot load ACPI tables.");
+			return FWTS_ABORTED;
+		}
+		if (table == NULL)
+			break;
 
 		if (strcmp("RSDP", table->name) == 0)
 			continue;
@@ -68,11 +67,8 @@ static int checksum_scan_tables(fwts_framework *fw)
 
 static int checksum_test1(fwts_framework *fw)
 {
-	checksum_scan_tables(fw);
-
-	return FWTS_OK;
+	return checksum_scan_tables(fw);
 }
-
 
 static fwts_framework_minor_test checksum_tests[] = {
 	{ checksum_test1, "Check ACPI table checksums." },
@@ -81,7 +77,6 @@ static fwts_framework_minor_test checksum_tests[] = {
 
 static fwts_framework_ops checksum_ops = {
 	.headline    = checksum_headline,
-	.init        = checksum_init,
 	.minor_tests = checksum_tests
 };
 

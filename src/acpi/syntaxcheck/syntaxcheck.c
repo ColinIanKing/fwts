@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#define FWTS_NO_TABLE	(2)
+
 static char *syntaxcheck_headline(void)
 {
 	return "Re-assemble DSDT and find syntax errors and warnings.";
@@ -36,10 +38,6 @@ static fwts_list* error_output;
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
-	if (fw->acpi_table_path == NULL)
-		if (fwts_check_root_euid(fw))
-			return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
 
@@ -53,12 +51,13 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	int warnings = 0;
 	fwts_acpi_table_info *table;
 
-	if ((table = fwts_acpi_find_table(fw, tablename, which)) == NULL) 
-		return 2;		/* Table does not exist */
+	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK) 
+		return FWTS_ERROR;
 
-	error_output = fwts_iasl_reassemble(fw, table->data, table->length);
+	if (table == NULL) 
+		return FWTS_NO_TABLE;		/* Table does not exist */
 
-	if (error_output == NULL) {
+	if (fwts_iasl_reassemble(fw, table->data, table->length, &error_output) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot re-assasemble with iasl.");
 		return FWTS_ERROR;
 	}
@@ -114,7 +113,7 @@ static int syntaxcheck_SSDT(fwts_framework *fw)
 
 	for (i=0; i < 100; i++) {
 		int ret = syntaxcheck_table(fw, "SSDT", i);
-		if (ret == 2)
+		if (ret == FWTS_NO_TABLE)
 			return FWTS_OK;	/* Hit the last table */
 		if (ret != FWTS_OK)
 			return FWTS_ERROR;

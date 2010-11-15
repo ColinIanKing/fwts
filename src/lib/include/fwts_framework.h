@@ -132,6 +132,7 @@ void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *f
 void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
 void fwts_framework_advice(fwts_framework *, const char *fmt, ...);
 void fwts_framework_skipped(fwts_framework *, const char *fmt, ...);
+void fwts_framework_aborted(fwts_framework *, const char *fmt, ...);
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 
 #define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent)

@@ -128,8 +128,7 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 	fwts_list *output;
 	fwts_list_link *item;
 
-	output = fwts_iasl_disassemble(fw, table, which);
-	if (output == NULL)
+	if (fwts_iasl_disassemble(fw, table, which, &output) != FWTS_OK)
 		return;
 
 	for (item = output->head; item != NULL; item = item->next) {

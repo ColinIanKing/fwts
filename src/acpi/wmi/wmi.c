@@ -58,10 +58,6 @@ static char *wmi_headline(void)
 
 static int wmi_init(fwts_framework *fw)
 {
-	if (fw->acpi_table_path == NULL)
-		if (fwts_check_root_euid(fw))
-			return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->iasl, "iasl"))
 		return FWTS_ERROR;
 
@@ -195,6 +191,8 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item)
 	if (*str != '(') return;
 	str++;
 
+//printf("Got Name %s\n", str);
+
 	CONSUME_WHITESPACE(str);
 
 	if (strncmp(str, "_WDG",4))
@@ -243,8 +241,8 @@ static int wmi_table(fwts_framework *fw, char *table, int which)
 	fwts_list_link *item;
 	fwts_list* iasl_output;
 
-	iasl_output = fwts_iasl_disassemble(fw, table, which);
-	if (iasl_output == NULL) {
+	if (fwts_iasl_disassemble(fw, table, which, &iasl_output) != FWTS_OK) {
+		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
 		return FWTS_ERROR;
 	}
 

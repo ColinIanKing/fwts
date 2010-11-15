@@ -19,14 +19,6 @@
 
 #include "fwts.h"
 
-static int apicinstance_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static char *apicinstance_headline(void)
 {
 	return "Check for single instance of APIC/MADT table.";
@@ -34,12 +26,21 @@ static char *apicinstance_headline(void)
 
 static int apicinstance_test1(fwts_framework *fw)
 {
-	fwts_acpi_table_info *table;
 	fwts_acpi_table_info *first_madt_table = NULL;
 	int i;
 	int count;
 
-	for (i=0, count=0; (table = fwts_acpi_get_table(fw, i)) !=NULL; i++) {
+	for (i=0, count=0;; i++) {
+		fwts_acpi_table_info *table;
+
+		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK) {
+			fwts_log_error(fw, "Cannot load ACPI table.");
+			return FWTS_ERROR;
+		}
+
+		if (table == NULL)
+			break;
+		
 		if (strcmp(table->name, "APIC") == 0)  {
 			fwts_log_info(fw, "Found APIC/MADT table %s @ %llx, length 0x%d\n",
 				table->name, table->addr, table->length);
@@ -74,7 +75,6 @@ static fwts_framework_minor_test apicinstance_tests[] = {
 
 static fwts_framework_ops apicinstance_ops = {
 	.headline    = apicinstance_headline,
-	.init        = apicinstance_init,
 	.minor_tests = apicinstance_tests
 };
 

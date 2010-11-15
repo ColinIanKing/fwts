@@ -25,14 +25,6 @@
 
 #include "fwts.h"
 
-static int acpi_table_check_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static char *acpi_table_check_headline(void)
 {
 	return "ACPI table settings sanity checks.";
@@ -102,11 +94,11 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	} else {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl != 0) {
-				fwts_failed(fw, "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero."
+				fwts_failed(fw, "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero. "
 						"Section 5.2.9 of the ACPI specification states that if the FIRMWARE_CONTROL is non-zero "
 						"then X_FIRMWARE_CONTROL must be set to zero.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
-					fwts_failed(fw, "FIRMWARE_CONTROL is %lx and differs from X_FIRMWARE_CONTROL %llx",
+					fwts_failed(fw, "FIRMWARE_CONTROL is 0x%lx and differs from X_FIRMWARE_CONTROL 0x%llx",
 						fadt->firmware_control, fadt->x_firmware_ctrl);
 				}
 			}
@@ -119,7 +111,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if (fadt->x_dsdt == 0) 
 			fwts_failed(fw, "FADT X_DSDT address is null.");
 		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) 
-			fwts_failed(fw, "FADT 32 bit DSDT (%lx) does not point to same physical address as 64 bit X_DSDT (%llx).",
+			fwts_failed(fw, "FADT 32 bit DSDT (0x%lx) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
 				fadt->dsdt, fadt->x_dsdt);
 	}
 
@@ -445,12 +437,16 @@ static int acpi_table_check_test1(fwts_framework *fw)
 {
 	int i;
 
-	fwts_acpi_table_info *table;
-
 	for (i=0; check_table[i].name != NULL; i++) {
 		int failed = fw->minor_tests.failed;
+		fwts_acpi_table_info *table;
 
-		if ((table = fwts_acpi_find_table(fw, check_table[i].name, 0)) != NULL) {
+		if (fwts_acpi_find_table(fw, check_table[i].name, 0, &table) != FWTS_OK) {
+			fwts_log_info(fw, "Cannot load ACPI table %s\n", check_table[i].name);
+			continue;
+		}
+
+		if (table) {
 			check_table[i].func(fw, table);
 			if (failed == fw->minor_tests.failed)
 				fwts_passed(fw, "Table %s passed.", check_table[i].name);
@@ -469,7 +465,6 @@ static fwts_framework_minor_test acpi_table_check_tests[] = {
 
 static fwts_framework_ops acpi_table_check_ops = {
 	.headline    = acpi_table_check_headline,
-	.init        = acpi_table_check_init,
 	.minor_tests = acpi_table_check_tests
 };
 

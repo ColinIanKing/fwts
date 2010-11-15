@@ -237,8 +237,13 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 	int failed = 0;
 
-	if ((table = fwts_acpi_find_table(fw, "DMAR", 0)) == NULL) {
-		fwts_log_info(fw, "Cannot load DMAR table. This is not necessarily a failure as most systems do not have this table.");
+	
+	if (fwts_acpi_find_table(fw, "DMAR", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot load ACPI table.");
+		return FWTS_ERROR;
+	}
+	if (table == NULL) {
+		fwts_log_info(fw, "No DMAR table. This is not necessarily a failure as most systems do not have this table.");
 		return FWTS_ERROR;
 	}
 

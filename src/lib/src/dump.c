@@ -164,7 +164,6 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 static int dump_acpi_tables(fwts_framework *fw, const char *path)
 {
 	char filename[PATH_MAX];
-	fwts_acpi_table_info *table;
 	FILE *fp;
 	int i;
 
@@ -172,9 +171,19 @@ static int dump_acpi_tables(fwts_framework *fw, const char *path)
 	if ((fp = fopen(filename, "w")) == NULL)
 		return FWTS_ERROR;
 
-	for (i=0; (table = fwts_acpi_get_table(fw, i)) != NULL; i++)
-		dump_acpi_table(table, fp);
+	for (i=0;;i++) {
+		fwts_acpi_table_info *table;
 
+		if (fwts_acpi_get_table(fw, i, &table) == FWTS_ERROR) {
+			fprintf(stderr, "Cannot read ACPI tables.\n");
+			fclose(fp);
+			return FWTS_ERROR;
+		}
+		if (table == NULL)
+			break;
+
+		dump_acpi_table(table, fp);
+	}
 	fclose(fp);
 		
 	return FWTS_OK;

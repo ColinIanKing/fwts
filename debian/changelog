@@ -1,3 +1,11 @@
+fwts (0.19.22) maverick; urgency=low
+ 
+  * Add \_SB_._OSC buffer overflow checking
+  * Add more graceful ACPI table load failure error handling
+  * New upstream version 0.19.22
+
+ -- Colin King <colin.king@canonical.com>  Thu, 18 Nov 2010 13:48:03 +0000
+
 fwts (0.19.21) maverick; urgency=low
  
   * Fix wmi and hpet test breakage

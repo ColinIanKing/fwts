@@ -134,6 +134,13 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_BUFFER_OVERFLOW",
+   "pattern": "ACPI Error.*_SB_._OSC.*AE_AML_BUFFER_LIMIT",
+   "advice": "Section 6.2.10.2 of V4.0a of the ACPI specification states that the _OSC Method should be passed an 8 byte buffer of 2 x 32 DWORDs, however it appears that the method is possibly trying to access data outside this buffer. This is a bug in the _OSC method."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_BUFFER_OVERFLOW",
    "pattern": "ACPI Error.*Field.*exceeds Buffer",
    "advice": "The field exceeds the allocated buffer size. This can lead to unexpected results when fetching data outside this region."
   },

@@ -1,3 +1,10 @@
+fwts (0.19.23) maverick; urgency=low
+ 
+  * More intelligent advice for FADT pointer mismatches to FACS
+  * New upstream version 0.19.23
+
+ -- Colin King <colin.king@canonical.com>  Fri, 19 Nov 2010 18:36:56 +0000
+
 fwts (0.19.22) maverick; urgency=low
  
   * Add \_SB_._OSC buffer overflow checking

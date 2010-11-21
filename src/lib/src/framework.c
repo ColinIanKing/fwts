@@ -1250,7 +1250,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	}
 
 	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET))
-		printf("Running %d tests, results written to %s\n", 
+		printf("Running %d tests, results appended to %s\n", 
 			fwts_list_len(tests_to_run),
 			fw->results_logname);
 

@@ -1,3 +1,10 @@
+fwts (0.19.24) maverick; urgency=low
+ 
+  * Minor changes in help text and better CMOS error detection.
+  * New upstream version 0.19.24
+
+ -- Colin King <colin.king@canonical.com>  Sun, 21 Nov 2010 12:22:21 +0000
+
 fwts (0.19.23) maverick; urgency=low
  
   * More intelligent advice for FADT pointer mismatches to FACS

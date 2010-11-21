@@ -53,7 +53,6 @@ enum {
 	FWTS_ADVICE_TEXT,
 	FWTS_SKIPPED_TEXT,
 	FWTS_ABORTED_TEXT,
-	FWTS_FRAMEWORK_DEBUG
 };
 
 static fwts_list *fwts_framework_test_list;
@@ -79,7 +78,6 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(FWTS_ADVICE_TEXT),		"ADVICE",  NULL },
 	{ ID_NAME(FWTS_SKIPPED_TEXT),		"SKIPPED", NULL },
 	{ ID_NAME(FWTS_ABORTED_TEXT),		"ABORTED", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_DEBUG),	"off",     NULL },
 };
 
 /*

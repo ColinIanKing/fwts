@@ -26,19 +26,19 @@
  *  fwts_cmos_read()
  *	read a byte from cmos memory at a given offset
  */
-uint8_t fwts_cmos_read(int offset)
+int fwts_cmos_read(int offset, uint8_t *value)
 {
-	uint8_t value;
-
-	ioperm(0x70, 2, 1);
-	ioperm(0x80, 1, 1);
+	if (ioperm(0x70, 2, 1) < 0)
+		return FWTS_ERROR;
+	if (ioperm(0x80, 1, 1) < 0)
+		return FWTS_ERROR;
 
 	outb(offset, 0x70);	/* specify offset to read */
-	outb(0, 0x80);	/* Small Delay */
-	value = inb(0x71);	/* get the value */
+	outb(0, 0x80);		/* Small Delay */
+	*value = inb(0x71);	/* get the value */
 
 	ioperm(0x80, 1, 0);
 	ioperm(0x70, 2, 0);
 
-	return value;
+	return FWTS_OK;
 }

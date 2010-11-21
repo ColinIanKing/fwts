@@ -20,8 +20,9 @@
 #ifndef __FWTS_CMOS_H__
 #define __FWTS_CMOS_H__
 
+#include <stdint.h>
 #include <stdio.h>
 
-uint8_t fwts_cmos_read(int offset);
+int fwts_cmos_read(int offset, uint8_t *value);
 
 #endif

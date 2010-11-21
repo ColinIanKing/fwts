@@ -21,6 +21,8 @@
 #define __FWTS_FRAMEWORK_H__
 
 #include <stdio.h>
+#include <string.h>
+
 #include "fwts_log.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
@@ -61,6 +63,11 @@ typedef struct {
 	int warning;
 	int skipped;
 } fwts_results;
+
+static inline void fwts_results_zero(fwts_results *results)
+{
+	memset(results, 0, sizeof(fwts_results));
+}
 
 /*
  *  Test framework context

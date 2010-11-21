@@ -433,11 +433,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fw->current_minor_test_name = "";
 
-	fw->major_tests.aborted = 0;
-	fw->major_tests.failed  = 0;
-	fw->major_tests.passed  = 0;
-	fw->major_tests.warning = 0;
-	fw->major_tests.skipped = 0;
+	fwts_results_zero(&fw->major_tests);
+
 	fw->failed_level = 0;
 
 	fwts_log_set_owner(fw->results, test->name);
@@ -491,11 +488,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
 		fw->current_minor_test_name = minor_test->name;
 
-		fw->minor_tests.aborted = 0;
-		fw->minor_tests.failed  = 0;
-		fw->minor_tests.passed  = 0;
-		fw->minor_tests.warning = 0;
-		fw->minor_tests.skipped = 0;
+		fwts_results_zero(&fw->minor_tests);
 
 		if (minor_test->name != NULL)
 			fwts_log_info(fw, "Test %d of %d: %s", 

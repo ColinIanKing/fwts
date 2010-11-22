@@ -51,18 +51,20 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	acpitables.$(OBJEXT) apicinstance.$(OBJEXT) battery.$(OBJEXT) \
 	brightness.$(OBJEXT) checksum.$(OBJEXT) common.$(OBJEXT) \
 	cstates.$(OBJEXT) dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
-	mcfg.$(OBJEXT) apicedge.$(OBJEXT) osilinux.$(OBJEXT) \
-	lid.$(OBJEXT) powerbutton.$(OBJEXT) wmi.$(OBJEXT) \
-	ebda_region.$(OBJEXT) mtrr.$(OBJEXT) bios_info.$(OBJEXT) \
-	bios32.$(OBJEXT) hdaaudio.$(OBJEXT) romdump.$(OBJEXT) \
-	os2gap.$(OBJEXT) e820dump.$(OBJEXT) smbios.$(OBJEXT) \
-	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
-	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
-	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
-	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT)
+	mcfg.$(OBJEXT) method.$(OBJEXT) apicedge.$(OBJEXT) \
+	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
+	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
+	bios_info.$(OBJEXT) bios32.$(OBJEXT) hdaaudio.$(OBJEXT) \
+	romdump.$(OBJEXT) os2gap.$(OBJEXT) e820dump.$(OBJEXT) \
+	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
+	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
+	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
+	version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
-fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a
+fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/libtestsuite.a \
+	$(top_srcdir)/src/acpica/libacpica.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -225,7 +227,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib
+SUBDIRS = lib acpica
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 AM_LDFLAGS = -ljson -lm -lpcre -lpthread -Xlinker --allow-multiple-definition
 fwts_SOURCES = main.c \
@@ -248,6 +250,7 @@ fwts_SOURCES = main.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \
+	acpi/method/method.c \
 	apic/apicedge/apicedge.c \
 	acpi/osilinux/osilinux.c \
 	acpi/lid/lid.c \
@@ -277,7 +280,8 @@ fwts_SOURCES = main.c \
 	kernel/version/version.c
 
 fwts_LDADD = \
-             $(top_srcdir)/src/lib/src/libtestsuite.a
+	$(top_srcdir)/src/lib/src/libtestsuite.a \
+	$(top_srcdir)/src/acpica/libacpica.a
 
 man_MANS = ../doc/fwts.1
 all: all-recursive
@@ -392,6 +396,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxfreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxreadreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mcfg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/method.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
@@ -690,6 +695,20 @@ mcfg.obj: acpi/mcfg/mcfg.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/mcfg/mcfg.c' object='mcfg.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mcfg.obj `if test -f 'acpi/mcfg/mcfg.c'; then $(CYGPATH_W) 'acpi/mcfg/mcfg.c'; else $(CYGPATH_W) '$(srcdir)/acpi/mcfg/mcfg.c'; fi`
+
+method.o: acpi/method/method.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT method.o -MD -MP -MF $(DEPDIR)/method.Tpo -c -o method.o `test -f 'acpi/method/method.c' || echo '$(srcdir)/'`acpi/method/method.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/method.Tpo $(DEPDIR)/method.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/method/method.c' object='method.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o method.o `test -f 'acpi/method/method.c' || echo '$(srcdir)/'`acpi/method/method.c
+
+method.obj: acpi/method/method.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT method.obj -MD -MP -MF $(DEPDIR)/method.Tpo -c -o method.obj `if test -f 'acpi/method/method.c'; then $(CYGPATH_W) 'acpi/method/method.c'; else $(CYGPATH_W) '$(srcdir)/acpi/method/method.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/method.Tpo $(DEPDIR)/method.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/method/method.c' object='method.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o method.obj `if test -f 'acpi/method/method.c'; then $(CYGPATH_W) 'acpi/method/method.c'; else $(CYGPATH_W) '$(srcdir)/acpi/method/method.c'; fi`
 
 apicedge.o: apic/apicedge/apicedge.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT apicedge.o -MD -MP -MF $(DEPDIR)/apicedge.Tpo -c -o apicedge.o `test -f 'apic/apicedge/apicedge.c' || echo '$(srcdir)/'`apic/apicedge/apicedge.c

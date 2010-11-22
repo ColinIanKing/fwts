@@ -1,4 +1,4 @@
-SUBDIRS = lib
+SUBDIRS = lib acpica
  
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 AM_LDFLAGS = -ljson -lm -lpcre -lpthread -Xlinker --allow-multiple-definition
@@ -24,6 +24,7 @@ fwts_SOURCES = main.c \
 	acpi/fadt/fadt.c \
 	acpi/fan/fan.c \
 	acpi/mcfg/mcfg.c \
+	acpi/method/method.c \
 	apic/apicedge/apicedge.c \
 	acpi/osilinux/osilinux.c \
 	acpi/lid/lid.c \
@@ -53,7 +54,8 @@ fwts_SOURCES = main.c \
 	kernel/version/version.c
 
 fwts_LDADD = \
-             $(top_srcdir)/src/lib/src/libtestsuite.a
+	$(top_srcdir)/src/lib/src/libtestsuite.a \
+	$(top_srcdir)/src/acpica/libacpica.a
 
 man_MANS = ../doc/fwts.1
 

@@ -229,6 +229,7 @@ static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 		fwts_passed(fw, "%s returned no values as expected.", name);
 }
 
+#if 0
 static void method_test_OSI_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
@@ -245,6 +246,7 @@ static int method_test_OSI(fwts_framework *fw)
 
 	return method_execute_method(fw, METHOD_MANDITORY, "\\_OSI", arg, 1, method_test_OSI_return, NULL);
 }
+#endif
 
 static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
@@ -795,7 +797,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BTP, "Check _BTP (Battery Trip Point) Method." },
 	{ method_test_BTM, "Check _BTM (Battery Time) Method." },
 	{ method_test_PCL, "Check _PCL (Power Consumer List) Method." },
-	{ method_test_OSI, "Check _OSI Method." },
+	/* { method_test_OSI, "Check _OSI Method." }, */
 	{ method_test_BFS, "Check _BFS (Back from Sleep) Method." },
 	{ method_test_PTS, "Check _PTS (Prepare to Sleep) Method." },
 	{ method_test_GTS, "Check _GTS (Going to Sleep) Method." },

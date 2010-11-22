@@ -4,6 +4,7 @@ noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \
 	list.c \
 	acpi.c \
+	acpica.c \
 	acpid.c \
 	acpi_tables.c \
 	interactive.c \
@@ -32,6 +33,3 @@ libtestsuite_a_SOURCES = \
 	microcode.c \
 	virt.c \
 	tag.c
-
-
-

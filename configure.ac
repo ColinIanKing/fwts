@@ -71,6 +71,7 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CONFIG_FILES([
            Makefile
            src/Makefile
+	   src/acpica/Makefile
            src/lib/Makefile
            src/lib/src/Makefile
           ])

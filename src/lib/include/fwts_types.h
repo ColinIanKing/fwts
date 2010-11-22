@@ -31,6 +31,7 @@ typedef enum {
 	FWTS_ERROR_NO_PRIV = -4,
 	FWTS_NULL_POINTER = -5,
 	FWTS_NO_TABLE = -6,
+	FWTS_NOT_EXIST = -7,
 } fwts_status;
 
 typedef enum {

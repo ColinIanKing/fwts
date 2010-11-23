@@ -1,3 +1,10 @@
+fwts (0.19.26) maverick; urgency=low
+ 
+  * Add more ACPI method tests
+  * New upstream version 0.19.26
+
+ -- Colin King <colin.king@canonical.com>  Tue, 23 Nov 2010 15:41:34 +0000
+
 fwts (0.19.25) maverick; urgency=low
  
   * Add in ACPICA core + ACPI method tests

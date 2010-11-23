@@ -107,7 +107,7 @@ void fwts_acpica_simulate_sem_timeout(int flag)
 
 static int hash_sem_handle(sem_t *sem)
 {	
-	int i = ((int)sem) % MAX_SEMAPHORES;
+	int i = (int)((long)sem % MAX_SEMAPHORES);
 	int j;
 
 	for (j=0;j<MAX_SEMAPHORES;j++) {

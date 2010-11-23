@@ -4852,57 +4852,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcre_pcre_compile" >&5
 $as_echo "$ac_cv_lib_pcre_pcre_compile" >&6; }
 if test "x$ac_cv_lib_pcre_pcre_compile" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPCRE 1
-_ACEOF
-
-  LIBS="-lpcre $LIBS"
-
-fi
-
-	  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for  in -ljson" >&5
-$as_echo_n "checking for  in -ljson... " >&6; }
-if test "${ac_cv_lib_json_+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ljson  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char  ();
-int
-main ()
-{
-return  ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_json_=yes
-else
-  ac_cv_lib_json_=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_json_" >&5
-$as_echo "$ac_cv_lib_json_" >&6; }
-if test "x$ac_cv_lib_json_" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBJSON 1
-_ACEOF
-
-  LIBS="-ljson $LIBS"
-
+  json
 fi
 
 	  for ac_header in stdlib.h

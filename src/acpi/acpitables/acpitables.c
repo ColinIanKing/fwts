@@ -140,7 +140,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->p_lvl2_lat > 100)
 		fwts_warning(fw, "FADT P_LVL2_LAT is %d, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
 	if (fadt->p_lvl3_lat > 1000)
-		fwts_warning(fw, "FADT P_LVL3_LAT is %d, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl2_lat);
+		fwts_warning(fw, "FADT P_LVL3_LAT is %d, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl3_lat);
 	/*
 	if (fadt->day_alrm == 0)
 		fwts_warning(fw, "FADT DAY_ALRM is zero, OS will not be able to program day of month alarm.");

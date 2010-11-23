@@ -51,30 +51,40 @@
 #define MAX_SEMAPHORES		(1009)
 
 typedef struct {
-	sem_t		*sem;
-	int		count;
+	sem_t		*sem;	/* Semaphore handle */
+	int		count;	/* count > 0 if acquired */
 } sem_hash;
 
 BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
 
+/*
+ *  Hash table of semaphore handles
+ */
 static sem_hash			sem_hash_table[MAX_SEMAPHORES];
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];
 
+/*
+ *  Static copies of ACPI tables used by ACPICA execution engine
+ */
 static ACPI_TABLE_XSDT 		*fwts_acpica_XSDT;
 static ACPI_TABLE_RSDT          *fwts_acpica_RSDT;
 static ACPI_TABLE_RSDP		*fwts_acpica_RSDP;
 static ACPI_TABLE_FADT		*fwts_acpica_FADT;
 static void *			*fwts_acpica_DSDT;
-static fwts_framework		*fwts_acpica_fw;
-static int			fwts_acpica_force_sem_timeout;
-static int 			fwts_acpica_init_called;
-static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;
-static fwts_framework 	        *fwts_acpica_log_callback_fw = NULL;
+
+static fwts_framework		*fwts_acpica_fw;			/* acpica context copy of fw */
+static int			fwts_acpica_force_sem_timeout;		/* > 0, forces a semaphore timeout */
+static int 			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
+static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
 
 /* Semaphore Tracking */
 
+/*
+ *  fwts_acpica_sem_count_clear()
+ *	clear refs to semaphores and per semaphore count
+ */
 void fwts_acpica_sem_count_clear(void)
 {
 	int i;
@@ -85,6 +95,11 @@ void fwts_acpica_sem_count_clear(void)
 	}
 }
 
+/*
+ *  fwts_acpica_sem_count_get()
+ *	collect up number of semaphores that were acquire and release
+ *	during a method evaluation
+ */
 void fwts_acpica_sem_count_get(int *acquired, int *released)
 {
 	int i;
@@ -100,11 +115,21 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 	}
 }
 
-void fwts_acpica_simulate_sem_timeout(int flag)
+/*
+ *  fwts_acpica_simulate_sem_timeout()
+ *	force a timeout on next semaphore acuire to see if
+ *	we can break ACPI methods during testing.
+ */
+void fwts_acpica_simulate_sem_timeout(int timeout)
 {
-	fwts_acpica_force_sem_timeout = flag;
+	fwts_acpica_force_sem_timeout = timeout;
 }
 
+
+/*
+ *  hash_sem_handle()
+ *	generate a simple hash based on semaphore handle
+ */
 static int hash_sem_handle(sem_t *sem)
 {	
 	int i = (int)((long)sem % MAX_SEMAPHORES);
@@ -120,6 +145,10 @@ static int hash_sem_handle(sem_t *sem)
 	return -1;
 }
 
+/*
+ *  hash_sem_inc_count()
+ *	increment semaphore counter
+ */
 static void hash_sem_inc_count(sem_t *sem) 
 {
 	int i = hash_sem_handle(sem);
@@ -129,6 +158,10 @@ static void hash_sem_inc_count(sem_t *sem)
 	}
 }
 
+/*
+ *  hash_sem_dec_count()
+ *	decrement semaphore counter
+ */
 static void hash_sem_dec_count(sem_t *sem) 
 {
 	int i = hash_sem_handle(sem);
@@ -138,7 +171,12 @@ static void hash_sem_dec_count(sem_t *sem)
 	}
 }
 
-/* Handlers */
+/* ACPICA Handlers */
+
+/*
+ *  fwtsNotifyHandler()
+ *	Notify handler
+ */
 static void fwtsNotifyHandler(ACPI_HANDLE Device, UINT32 Value, void *Context)
 {
 	fwts_log_info(fwts_acpica_fw, "Received a notify 0x%X", Value);
@@ -191,23 +229,38 @@ AeRegionHandler (
     void                    *HandlerContext,
     void                    *RegionContext);
 
+/*
+ *  AeLocalGetRootPointer()
+ *	override ACPICA AeLocalGetRootPointer to return a local copy of the RSDP
+ */
 ACPI_PHYSICAL_ADDRESS AeLocalGetRootPointer(void)
 {
 	return ((ACPI_PHYSICAL_ADDRESS) fwts_acpica_RSDP);
 }
 
+/*
+ *  fwts_acpica_set_log_callback()
+ *	define logging callback function as used by fwts_acpica_vprintf()
+ */
 void fwts_acpica_set_log_callback(fwts_framework *fw, fwts_acpica_log_callback func)
 {
-	fwts_acpica_log_callback_fw   = fw;
 	fwts_acpica_log_callback_func = func;
 }
 
+/*
+ *  fwts_acpica_debug_command()
+ *	run a debugging command, requires a logging callback function (or set to NULL for none).
+ */
 void fwts_acpica_debug_command(fwts_framework *fw, fwts_acpica_log_callback func, char *command)
 {
 	fwts_acpica_set_log_callback(fw, func);
 	AcpiDbCommandDispatch(command, NULL, NULL);
 }
 
+/*
+ *  fwts_acpica_vprintf()
+ *	accumulate prints from ACPICA engine, emit them when we hit terminal '\n'
+ */
 void fwts_acpica_vprintf(const char *fmt, va_list args)
 {
 	static char *buffer;
@@ -231,12 +284,17 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 	
 	if (index(buffer, '\n') != NULL) {
 		if (fwts_acpica_log_callback_func)
-			fwts_acpica_log_callback_func(fwts_acpica_log_callback_fw, buffer);
+			fwts_acpica_log_callback_func(fwts_acpica_fw, buffer);
 		free(buffer);
 		buffer_len = 0;
 	}
 }
 
+/*
+ *  AcpiOsPrintf()
+ *	Override ACPICA AcpiOsPrintf to write printfs to the fwts log
+ *	rather than to stdout
+ */
 void ACPI_INTERNAL_VAR_XFACE AcpiOsPrintf (const char *fmt, ...)
 {
 	va_list	args;
@@ -246,11 +304,21 @@ void ACPI_INTERNAL_VAR_XFACE AcpiOsPrintf (const char *fmt, ...)
 	va_end(args);
 }
 
+/*
+ *  AcpiOsVprintf()
+ *	Override ACPICA AcpiOsVprintf to write printfs to the fwts log
+ *	rather than to stdout
+ */
 void AcpiOsVprintf(const char *fmt, va_list args)
 {
 	fwts_acpica_vprintf(fmt, args);
 }
 
+/*
+ *  AcpiOsWaitSemaphore()
+ *	Override ACPICA AcpiOsWaitSemaphore to keep track of semaphore acquires
+ *	so that we can see if any methods are sloppy in their releases.
+ */
 ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout)
 {
 	sem_t	*sem = (sem_t *)handle;
@@ -284,6 +352,11 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 	return AE_OK;
 }
 
+/*
+ *  AcpiOsSignalSemaphore()
+ *	Override ACPICA AcpiOsSignalSemaphore to keep track of semaphore releases
+ *	so that we can see if any methods are sloppy in their releases.
+ */
 ACPI_STATUS AcpiOsSignalSemaphore (ACPI_HANDLE handle, UINT32 Units)
 {
 	sem_t *sem = (sem_t *)handle;
@@ -299,6 +372,10 @@ ACPI_STATUS AcpiOsSignalSemaphore (ACPI_HANDLE handle, UINT32 Units)
 	return AE_OK;
 }
 
+/*
+ *  AcpiOsReadPort()
+ *	Override ACPICA AcpiOsReadPort to fake port reads
+ */
 ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 {
 	switch (width) {
@@ -323,6 +400,10 @@ void AeTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTa
 		*NewTable = (ACPI_TABLE_HEADER*)fwts_acpica_DSDT;
 }
 
+/* 
+ *  fwts_acpica_init()
+ *	Initialise ACPICA core engine
+ */
 int fwts_acpica_init(fwts_framework *fw)
 {
 	ACPI_HANDLE handle;
@@ -332,6 +413,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 	ACPI_ADR_SPACE_TYPE SpaceIdList[] = {0, 1, 3, 4, 5, 6, 7, 0x80};
 
+	/* Abort if already initialised */
 	if (fwts_acpica_init_called > 0)
 		return FWTS_ERROR;
 
@@ -547,6 +629,10 @@ int fwts_acpica_init(fwts_framework *fw)
 		x = NULL;	\
 	}			\
 
+/* 
+ *  fwts_acpica_deinit()
+ *	De-initialise ACPICA core engine
+ */
 int fwts_acpica_deinit(void)
 {
 	if (fwts_acpica_init_called == 0)
@@ -565,6 +651,12 @@ int fwts_acpica_deinit(void)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_acpi_walk_for_object_names()
+ *  	append to list (passed in context) objects names that match a given
+ * 	type, (callback from fwts_acpica_get_object_names())
+ *
+ */
 static ACPI_STATUS fwts_acpi_walk_for_object_names(
 	ACPI_HANDLE	objHandle,
 	UINT32		nestingLevel,
@@ -585,6 +677,10 @@ static ACPI_STATUS fwts_acpi_walk_for_object_names(
 	return AE_OK;
 }
 
+/*
+ *  fwts_acpica_get_object_names()
+ *	fetch a list of object names that match a specified type
+ */
 fwts_list *fwts_acpica_get_object_names(int type)
 {
 	fwts_list *list;

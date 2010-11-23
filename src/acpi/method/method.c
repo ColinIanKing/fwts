@@ -33,6 +33,13 @@
 #define method_check_type(fw, name, buf, type) \
 	method_check_type__(fw, name, buf, type, #type)
 
+#define method_test_integer(name, type)			\
+static int method_test ## name(fwts_framework *fw)	\
+{ 							\
+	return method_execute_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
+}   
+
+
 typedef void (*method_test_return)(fwts_framework *fw, char *name, ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
 
 static fwts_list *methods;
@@ -229,6 +236,18 @@ static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 		fwts_passed(fw, "%s returned no values as expected.", name);
 }
 
+static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	char *method = (char *)private;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		unsigned int val = (uint32_t)obj->Integer.Value;
+		if ((val == 0) || (val == 1))
+			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x.", method, val);
+		else 
+			fwts_failed(fw, "%s returnd 0x%8.8x, should return 1 (success) or 0 (failed).", method, val);
+	}
+}
+
 #if 0
 static void method_test_OSI_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
@@ -247,6 +266,41 @@ static int method_test_OSI(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_MANDITORY, "\\_OSI", arg, 1, method_test_OSI_return, NULL);
 }
 #endif
+
+
+
+/* Section 10.1.1.1 Smart Battery */
+
+static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	static char *sbs_info[] = {
+		"Maximum 1 Smart Battery, system manager/selector not present",
+		"Maximum 1 Smart Battery, system manager/selector present",
+		"Maximum 2 Smart Batteries, system manager/selector present",
+		"Maximum 3 Smart Batteries, system manager/selector present",
+		"Maximum 4 Smart Batteries, system manager/selector present"
+	};
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		switch (obj->Integer.Value) {
+		case 0 ... 4:
+			fwts_passed(fw, "_SBS correctly returned value %d %s", 
+				(uint32_t)obj->Integer.Value,
+				sbs_info[obj->Integer.Value]);
+		default:	
+			fwts_failed(fw, "_SBS returned %d, should be between 0 and 4.",
+				(uint32_t)obj->Integer.Value);
+		}
+	}
+}
+
+static int method_test_SBS(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL);
+}
+
+
+/* Section 10.2.2 Battery Control Methods */
 
 static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
@@ -407,6 +461,21 @@ static int method_test_BIX(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL);
 }
 
+static int method_test_BMA(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+	return method_execute_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
+}
+
+static int method_test_BMS(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+	return method_execute_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
+}
 
 static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
@@ -448,6 +517,50 @@ static int method_test_BST(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL);
 }
 
+static int method_test_BTP(fwts_framework *fw)
+{
+	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
+	int i;
+
+	for (i=0;i<5;i++) {
+		ACPI_OBJECT arg[1];
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = values[i];
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
+					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			break;
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+
+static void method_test_PCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	/* FIXME */
+}
+
+static int method_test_PCL(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
+}
+
+static int method_test_BTM(fwts_framework *fw)
+{
+	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
+	int i;
+
+	for (i=0;i<5;i++) {
+		ACPI_OBJECT arg[1];
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = values[i];
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
+					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			break;
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+
 static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
@@ -476,8 +589,24 @@ static int method_test_BMD(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL);
 }
 
-/* section 7.3 OEM-Supplied System-Level Control Methods */
-/* _BFS, _PTS, _GTS, _S0 .. _S5, _TTS, _WAK */
+static int method_test_BMC(fwts_framework *fw)
+{
+	static int values[] = { 0, 1, 2, 4 };
+	int i;
+
+	for (i=0;i<4;i++) {
+		ACPI_OBJECT arg[1];
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = values[i];
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
+					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			break;
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+	
+/* Section 15, Waking and Sleeping */
 
 static int method_test_BFS(fwts_framework *fw)
 {
@@ -493,6 +622,7 @@ static int method_test_BFS(fwts_framework *fw)
 			if (method_execute_method(fw, METHOD_OPTIONAL, "_BFS", arg, 1,
 			  			  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
+			fwts_log_nl(fw);
 		}
 	}
 	else {
@@ -517,6 +647,7 @@ static int method_test_PTS(fwts_framework *fw)
 		if (method_execute_method(fw, METHOD_MANDITORY, "_PTS", arg, 1,
 					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
+		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
 }
@@ -537,6 +668,7 @@ static int method_test_GTS(fwts_framework *fw)
 			if (method_execute_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1, 
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
+			fwts_log_nl(fw);
 		}
 	}
 	else {
@@ -561,6 +693,7 @@ static int method_test_TTS(fwts_framework *fw)
 			if (method_execute_method(fw, METHOD_MANDITORY, "_TTS", arg, 1,
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
+			fwts_log_nl(fw);
 		}
 	}
 	else {
@@ -569,11 +702,39 @@ static int method_test_TTS(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static void method_test_Sx_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	char *method = (char *)private;
+
+	method_dump_package(fw, obj);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
+		if (obj->Package.Count != 3) {
+			fwts_failed(fw, "%s should return package of 3 integers, got %d elements instead.", method,
+				obj->Package.Count);
+		}
+	}
+}
+
+#define method_test_Sx(name)				\
+static int method_test ## name(fwts_framework *fw)	\
+{							\
+	return method_execute_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_Sx_return, # name); \
+}			
+
+method_test_Sx(_S0)
+method_test_Sx(_S1)
+method_test_Sx(_S2)
+method_test_Sx(_S3)
+method_test_Sx(_S4)
+method_test_Sx(_S5)
+
 static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
-	method_dump_package(fw, obj);
 	uint32_t Sstate = *(uint32_t*)private;
 	int failed = 0;
+
+	method_dump_package(fw, obj);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		if (obj->Package.Count != 2) {
@@ -615,9 +776,12 @@ static int method_test_WAK(fwts_framework *fw)
 		if (method_execute_method(fw, METHOD_MANDITORY, "_WAK", arg, 1,
 					  method_test_WAK_return, &i) == FWTS_NOT_EXIST)
 			break;
+		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
 }
+
+/* Section 10.3 AC Adapters and Power Sources Objects */
 
 static void method_test_PSR_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
@@ -629,12 +793,39 @@ static void method_test_PSR_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	}
 }
 
-/* Section 10.3 AC Adapters and Power Sources Objects */
-
 static int method_test_PSR(fwts_framework *fw)
 {
 	return method_execute_method(fw, METHOD_MANDITORY, "_PSR", NULL, 0, method_test_PSR_return, NULL);
 }
+
+static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	method_dump_package(fw, obj);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
+		if (obj->Package.Count != 6) {
+			fwts_failed(fw, "_PIF should return package of 6 elements, got %d elements instead.", 
+				obj->Package.Count);
+		} else {
+			if ((obj->Package.Elements[0].Type != ACPI_TYPE_BUFFER) ||
+			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[3].Type != ACPI_TYPE_STRING) ||
+			    (obj->Package.Elements[4].Type != ACPI_TYPE_STRING) ||
+			    (obj->Package.Elements[5].Type != ACPI_TYPE_STRING)) {
+				fwts_failed(fw, "_PIF should return package of 1 buffer, 2 integers and 3 strings.");
+			} else {
+				fwts_passed(fw, "_PIF correctly returned sane looking package.");
+			}
+		}
+	}
+}
+
+static int method_test_PIF(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_PIF", NULL, 0, method_test_PIF_return, NULL);
+}
+
 
 /* Section 9.4.1 Lid control */
 
@@ -649,6 +840,68 @@ static int method_test_LID(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL);
 }
 
+/* Section 11.3 Fan Devices */
+
+static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	method_dump_package(fw, obj);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
+		if (obj->Package.Count != 4) {
+			fwts_failed(fw, "_FIF should return package of 4 elements, got %d elements instead.", 
+				obj->Package.Count);
+		} else {
+			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[3].Type != ACPI_TYPE_INTEGER)) {
+				fwts_failed(fw, "_FIF should return package of 4 integers.");
+			} else {
+				fwts_passed(fw, "_FIF correctly returned sane looking package.");
+			}
+		}
+	}
+}
+
+static int method_test_FIF(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_FIF", NULL, 0, method_test_FIF_return, NULL);
+}
+
+static int method_test_FSL(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 50;
+
+	return method_execute_method(fw, METHOD_OPTIONAL, "_FSL", NULL, 0, method_test_NULL_return, NULL);
+}
+
+static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	method_dump_package(fw, obj);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
+		if (obj->Package.Count != 3) {
+			fwts_failed(fw, "_FST should return package of 3 elements, got %d elements instead.", 
+				obj->Package.Count);
+		} else {
+			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER)) {
+				fwts_failed(fw, "_FST should return package of 3 integers.");
+			} else {
+				fwts_passed(fw, "_FST correctly returned sane looking package.");
+			}
+		}
+	}
+}
+
+static int method_test_FST(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_FST", NULL, 0, method_test_FST_return, NULL);
+}
+
 /* Section 11.4 Thermal */
 
 static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -661,7 +914,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
 		else 
-			fwts_passed(fw, "%s correctly returned value below 0 degrees C: 0x%8.8x (%5.1f degrees K)", 
+			fwts_failed(fw, "%s returned a debious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)", 
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
@@ -680,11 +933,81 @@ method_test_THERM(_HOT, METHOD_OPTIONAL)
 method_test_THERM(_TMP, METHOD_OPTIONAL)
 method_test_THERM(_NTT, METHOD_OPTIONAL)
 method_test_THERM(_PSV, METHOD_OPTIONAL)
+method_test_THERM(_TST, METHOD_OPTIONAL)
+
+static void method_test_TCx_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		char *method = (char *)private;
+		fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x", method, (uint32_t)obj->Integer.Value);
+	}
+}
+
+static int method_test_TC1(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TC1", NULL, 0, method_test_TCx_return, "_TC1");
+}
+
+static int method_test_TC2(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TC2", NULL, 0, method_test_TCx_return, "_TC1");
+}
+
+static int method_test_ACx(fwts_framework *fw)
+{
+	int i;
+
+	for (i=0;i<10;i++) {
+		char buffer[5];
+		snprintf(buffer, sizeof(buffer), "AC%d", i);
+		method_execute_method(fw, METHOD_OPTIONAL, buffer, NULL, 0, method_test_THERM_return, buffer);
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+
+static int method_test_DTI(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 2732 + 800; /* 80 degrees C */
+	return method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL);
+}
+
+static int method_test_SCP(fwts_framework *fw)
+{
+	int i;
+
+	for (i=0;i<2;i++) {
+		ACPI_OBJECT arg[3];
+
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = i;		/* Mode */
+		arg[1].Type = ACPI_TYPE_INTEGER;
+		arg[1].Integer.Value = 5;		/* Acoustic limit */
+		arg[2].Type = ACPI_TYPE_INTEGER;
+		arg[2].Integer.Value = 5;		/* Power limit */
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			break;
+		fwts_log_nl(fw);
+
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = i;		/* Mode */
+		arg[1].Type = ACPI_TYPE_INTEGER;
+		arg[1].Integer.Value = 1;		/* Acoustic limit */
+		arg[2].Type = ACPI_TYPE_INTEGER;
+		arg[2].Integer.Value = 1;		/* Power limit */
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			break;
+	}
+	return FWTS_OK;
+}
+
 
 static void method_test_RTV_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw, "_RTV`correctly returned sane looking value 0x%8.8x", (uint32_t)obj->Integer.Value);
+		fwts_passed(fw, "_RTV correctly returned sane looking value 0x%8.8x", (uint32_t)obj->Integer.Value);
 }
 
 static int method_test_RTV(fwts_framework *fw)
@@ -692,126 +1015,233 @@ static int method_test_RTV(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_RTV", NULL, 0, method_test_RTV_return, "_RTV");
 }
 
-#define method_test_integer(name, type)			\
-static int method_test ## name(fwts_framework *fw)	\
-{							\
-	return method_execute_method(fw, type, # name, NULL, 0, method_test_integer_return, # name);				\
-}			
+static int method_test_TPT(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 2732 + 900; /* 90 degrees C */
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TPT", arg, 1, method_test_NULL_return, NULL);
+}
+
+static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		char *method = (char *)private;
+		if (obj->Integer.Value < 36000) {
+			fwts_passed(fw, "%s correctly returned sane looking value %f seconds", 
+				method, (float)obj->Integer.Value / 10.0);
+		} else {
+			fwts_failed(fw, "%s returned a value %f seconds > (1 hour) which is probably incorrect.", 
+				method, (float)obj->Integer.Value / 10.0);
+		}
+	}
+}
+
+static int method_test_TSP(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TSP", NULL, 0, method_test_polling_return, "_TSP");
+}
+
+static int method_test_TZP(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TZP", NULL, 0, method_test_polling_return, "_TZP");
+}
+
+/* Section 9.2, Ambient Light Sensor Device */
 
 method_test_integer(_ALC, METHOD_OPTIONAL)
 method_test_integer(_ALI, METHOD_OPTIONAL)
 method_test_integer(_ALT, METHOD_OPTIONAL)
+
+/* TODO _ALR */
+
+static int method_test_ALP(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_ALP", NULL, 0, method_test_polling_return, "_ALP");
+}
+
+
+/* Section 6.5 Other Objects and Control Methods */
+
 method_test_integer(_BBN, METHOD_OPTIONAL)
 method_test_integer(_BDN, METHOD_OPTIONAL)
 
-static int method_test_BMA(fwts_framework *fw)
+static int method_test_DCK(fwts_framework *fw)
+{
+	int i;
+
+	for (i=1;i>0;i--) {	/* Dock, Undock */
+		ACPI_OBJECT arg[1];
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = i;
+		if (method_execute_method(fw, METHOD_OPTIONAL, "_DCK", NULL, 0, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+			break;
+		fwts_log_nl(fw);
+	}
+	return FWTS_OK;
+}
+
+/* Section 9.18 Wake Alarm Device */
+
+
+static int method_test_STP(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[2];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;	/* DC timer */
+	arg[1].Type = ACPI_TYPE_INTEGER;
+	arg[1].Integer.Value = 0;	/* wake up instantly */
+	
+	return method_execute_method(fw, METHOD_OPTIONAL, "_STP", NULL, 0, method_test_passed_failed_return, "_STP");
+}
+
+static int method_test_STV(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[2];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;	/* DC timer */
+	arg[1].Type = ACPI_TYPE_INTEGER;
+	arg[1].Integer.Value = 100;	/* timer value */
+	
+	return method_execute_method(fw, METHOD_OPTIONAL, "_STV", NULL, 0, method_test_passed_failed_return, "_STV");
+}
+
+static int method_test_TIP(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
+
 	arg[0].Type = ACPI_TYPE_INTEGER;
-	arg[0].Integer.Value = 1;
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
+	arg[0].Integer.Value = 1;	/* DC timer */
+	
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TIP", NULL, 0, method_test_integer_return, NULL);
 }
 
-static int method_test_BMS(fwts_framework *fw)
+static int method_test_TIV(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
+
 	arg[0].Type = ACPI_TYPE_INTEGER;
-	arg[0].Integer.Value = 1;
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
-}
-
-static int method_test_BTP(fwts_framework *fw)
-{
-	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
-	int i;
-
-	for (i=0;i<5;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-	}
-	return FWTS_OK;
-}
-
-static int method_test_BTM(fwts_framework *fw)
-{
-	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
-	int i;
-
-	for (i=0;i<5;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-	}
-	return FWTS_OK;
-}
-
-static int method_test_BMC(fwts_framework *fw)
-{
-	static int values[] = { 0, 1, 2, 4 };
-	int i;
-
-	for (i=0;i<4;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-	}
-	return FWTS_OK;
-}
-
-static void method_test_PCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
-{
-	/* FIXME */
-}
-
-static int method_test_PCL(fwts_framework *fw)
-{
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
+	arg[0].Integer.Value = 1;	/* DC timer */
+	
+	return method_execute_method(fw, METHOD_OPTIONAL, "_TIV", NULL, 0, method_test_integer_return, NULL);
 }
 
 /* Tests */
 
 static fwts_framework_minor_test method_tests[] = {
 	{ method_name_check, "Check Method Names." },
+
+	/* Section 9.2 Ambient Light Sensor Device */
+
 	{ method_test_ALC, "Check _ALC Ambient Light Colour Chromaticity." },
 	{ method_test_ALI, "Check _ALI Ambient Light Illuminance." },
 	{ method_test_ALT, "Check _ALT Ambient Light Temperature." },
-	{ method_test_BBN, "Check _BBN Base Bus Number." },
-	{ method_test_BDN, "Check _BDN BIOS Dock Name." },
+	{ method_test_ALP, "Check _ALP Ambient Light Polling. "},
+
+	/* Section 9.4 Lid Device */
+
+	{ method_test_LID, "Check _LID (Lid Ststus) Method." },
+
+	/* Section 9.8 ATA Controllers */
+
+	/* Section 9.9 Floppy Controllers */
+
+	/* Section 9.18 Wake Alarm Device */
+
+	{ method_test_STP, "Check _STP (Set Expired Timer Wake Policy) Method." },
+	{ method_test_STV, "Check _STV (Set Timer Value) Method." },
+	{ method_test_TIP, "Check _TIP (Expired Timer Wake Polcy) Method." },
+	{ method_test_TIV, "Check _TIV (Timer Values) Method." },
+
+	/* Section 10.1.1.1 Smart Battery */
+
+	{ method_test_SBS, "Check _SBS (Smart Battery Subsystem) Method." },
+
+	/* Section 10.2.2 Battery Control Methods */
+
 	{ method_test_BIF, "Check _BIF (Battery Information) Method." },
 	{ method_test_BIX, "Check _BIX (Battery Information Extended) Method." },
 	{ method_test_BMA, "Check _BMA (Battery Measurement Averaging) Method." },
 	{ method_test_BMS, "Check _BMS (Battery Measurement Sampling Time) Method." },
-	{ method_test_BMD, "Check _BMD (Battery Maintenance Data) Method." },
-	{ method_test_BMC, "Check _BMC (Battery Maintenance Control) Method." },
 	{ method_test_BST, "Check _BST (Battery Status) Method." },
 	{ method_test_BTP, "Check _BTP (Battery Trip Point) Method." },
-	{ method_test_BTM, "Check _BTM (Battery Time) Method." },
 	{ method_test_PCL, "Check _PCL (Power Consumer List) Method." },
-	/* { method_test_OSI, "Check _OSI Method." }, */
+	{ method_test_BTM, "Check _BTM (Battery Time) Method." },
+	{ method_test_BMD, "Check _BMD (Battery Maintenance Data) Method." },
+	{ method_test_BMC, "Check _BMC (Battery Maintenance Control) Method." },
+
+	/* Section 10.3, AC Adapters and Power Source Objects */
+
+	{ method_test_PSR, "Check _PSR (Power Source) Method." },
+	{ method_test_PIF, "Check _PIF (Power Source Information) Object." },
+
+	/* Section 11.3 Fan Devices */
+	
+	{ method_test_FIF, "Check _FIF (Fan Information) Method." },
+	/* { method_test_FPS, "Check _FPS (Fan Performance States) Method." }, */
+	{ method_test_FSL, "Check _FSL (Fan Set Level) Method." },
+	{ method_test_FST, "Check _FST (Fan Status) Method." },
+
+	/* Section 11.4 Thermal */
+	{ method_test_ACx, "Check _ACx Active Cooling." },
+	{ method_test_CRT, "Check _CRT (Critical Trip Point) Method." },
+	{ method_test_DTI, "Check _DTI Device Temperature Indication." },
+	{ method_test_HOT, "Check _HOT (Hot Temperature) Method." },
+	{ method_test_NTT, "Check _NTT (Notification Temp Threshold) Method." },
+	{ method_test_PSV, "Check _PSV (Passive Temp) Method." },
+	{ method_test_RTV, "Check _RTV (Relative Temp Values) Method." },
+	{ method_test_SCP, "Check _SCP (Set Cooling Policy) Method." },
+	{ method_test_TMP, "Check _TMP (Thermal Zone Current Temp) Method." },
+	{ method_test_TC1, "Check _TC1 (Thermal Constant 1) Object." },
+	{ method_test_TC2, "Check _TC2 (Thermal Constant 2) Object." },
+	{ method_test_TPT, "Check _TPT (Trip Point Temperature) Method." },
+	{ method_test_TSP, "Check _TSP (Thermal Sampling Period) Object." },
+	{ method_test_TST, "Check _TST (Temperature Sensor Threshold) Object." },
+	{ method_test_TZP, "Check _TZP (Thermal Zone Polling) Object." },
+
+	/* Section 6.5 Other Objects and Control Methods */
+	
+	{ method_test_DCK, "Check _DCK (Dock) Method." },
+	{ method_test_BDN, "Check _BDN (BIOS Dock Name) Method." },
+	{ method_test_BBN, "Check _BBN (Base Bus Number) Method." },
+
+	/* Section 15, Waking and Sleeping */
 	{ method_test_BFS, "Check _BFS (Back from Sleep) Method." },
 	{ method_test_PTS, "Check _PTS (Prepare to Sleep) Method." },
 	{ method_test_GTS, "Check _GTS (Going to Sleep) Method." },
 	{ method_test_TTS, "Check _TTS (Trasition to State) Method." },
+	{ method_test_S0,  "Check _S0  (System S0 State) Object." },
+	{ method_test_S1,  "Check _S1  (System S1 State) Object." },
+	{ method_test_S2,  "Check _S2  (System S2 State) Object." },
+	{ method_test_S3,  "Check _S3  (System S3 State) Object." },
+	{ method_test_S4,  "Check _S4  (System S4 State) Object." },
+	{ method_test_S5,  "Check _S5  (System S5 State) Object." },
 	{ method_test_WAK, "Check _WAK (System Wake Method)." },
-	{ method_test_PSR, "Check _PSR (Power Source) Method." },
-	{ method_test_LID, "Check _LID (Lid Ststus) Method." },
-	{ method_test_CRT, "Check _CRT (Critical Trip Point) Method." },
-	{ method_test_HOT, "Check _HOT (Hot Temperature) Method." },
-	{ method_test_TMP, "Check _TMP (Thermal Zone Current Temp) Method." },
-	{ method_test_NTT, "Check _NTT (Notification Temp Threshold) Method." },
-	{ method_test_PSV, "Check _PSV (Passive Temp) Method." },
-	{ method_test_RTV, "Check _RTV (Relative Temp Values) Method." },
-	/* { method_test_SCP, "Check _SCP (Set Cooling Policy) Method." }, */
+
+	/* Appendix B, ACPI Extensions for Display Adapters */
+	
+	/*
+	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching) Method." },
+	{ method_test_DOD, "Check _DOD (Enumerate All Devices Attached to Display Adapter) Method." },
+	{ method_test_ROM, "Check _ROM (Get ROM Data) Object." },
+	{ method_test_GPD, "Check _GPD (Get POST Device) Method." },
+	{ method_test_SPD, "Check _SPD (Set POST Device) Method." },
+	{ method_test_VPO, "Check _VPO (Video POST Options) Method." },
+	{ method_test_ADR, "Check _ADR (Return Unique ID for Device) Method." },
+	{ method_test_BCL, "Check _BCL (Query List of Brightness Control Levels Supported) Method." },
+	{ method_test_BCM, "Check _BCM (Set Brightness Level) Method." },
+	{ method_test_BQC, "Check _BQC (Brightness Query Current Level) Method." },
+	{ method_test_DDC, "Check _DDC (Return the EDID for this Device) Method." },
+	{ method_test_DCS, "Check _DCS (Return the Status of Output Device) Method." },
+	{ method_test_DGS, "Check _DGS (Query Graphics State) Method." },
+	{ method_test_DSS, "Check _DSS (Device Set State) Method." },
+	
+	*/
+
+	/* { method_test_OSI, "Check _OSI Method." }, */
+
 	{ NULL, NULL }
 };
 

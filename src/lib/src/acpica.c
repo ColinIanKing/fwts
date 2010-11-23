@@ -179,7 +179,7 @@ static void hash_sem_dec_count(sem_t *sem)
  */
 static void fwtsNotifyHandler(ACPI_HANDLE Device, UINT32 Value, void *Context)
 {
-	fwts_log_info(fwts_acpica_fw, "Received a notify 0x%X", Value);
+	/* fwts_log_info(fwts_acpica_fw, "Received a notify 0x%X", Value); */
 }
 
 static UINT32 fwtsInterfaceHandler(ACPI_STRING InterfaceName, UINT32 Supported)

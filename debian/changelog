@@ -1,3 +1,10 @@
+fwts (0.19.25) maverick; urgency=low
+ 
+  * Add in ACPICA core + ACPI method tests
+  * New upstream version 0.19.25
+
+ -- Colin King <colin.king@canonical.com>  Tue, 23 Nov 2010 10:02:10 +0000
+
 fwts (0.19.24) maverick; urgency=low
  
   * Minor changes in help text and better CMOS error detection.

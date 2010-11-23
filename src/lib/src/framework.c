@@ -778,8 +778,8 @@ static void fwts_framework_syntax(char * const *argv)
 			printf("%s\n", syntax_help[i].opt);
 	
 	/* Tag on copyright info */
-	printf("Some of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.\n");
-	printf("Some of this work - Copyright (c) 1999 - 2010, Canonical.\n");
+	printf("\nSome of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.\n");
+	printf("Some of this work - Copyright (c) 2010, Canonical.\n");
 }
 
 /* 

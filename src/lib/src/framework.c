@@ -1266,9 +1266,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 	if (fw->print_summary) {
 		fwts_log_set_owner(fw->results, "summary");
-		fwts_log_summary(fw, "");
+		fwts_log_nl(fw);
 		fwts_framework_total_summary(fw);
-		fwts_log_summary(fw, "");
+		fwts_log_nl(fw);
 		fwts_summary_report(fw);
 	}
 

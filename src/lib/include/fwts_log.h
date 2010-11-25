@@ -21,6 +21,7 @@
 #define __FWTS_LOG_H__
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #define LOG_MAGIC	0xfe23ab13
 

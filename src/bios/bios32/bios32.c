@@ -62,7 +62,7 @@ static int bios32_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "This test tries to find and sanity check the BIOS32 Service Directory as "
 			  "defined in theStandard BIOS 32-bit Service Directory Proposal, "
-			  "Revision 0.4 May 24, 1993, Phoenix Technologies Ltd and also the ",
+			  "Revision 0.4 May 24, 1993, Phoenix Technologies Ltd and also the "
  			  "PCI BIOS specification.");
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {

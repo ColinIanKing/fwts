@@ -271,7 +271,7 @@ static int cmosdump_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	fwts_log_info_verbatum(fw, "Century Date: (CMOS 0x32):%2.2x", data[50]);
-	fwts_log_info_verbatum(fw, "");
+	fwts_log_nl(fw);
 	fwts_log_info_verbatum(fw, "POST Information Flag (CMOS 0x33):");
 	fwts_log_info_verbatum(fw, "  POST cache test:        0x%1.1x %s", (data[51] >> 0) & 1, (data[51] >> 0) & 1 ? "Failed" : "Passed");
 	fwts_log_info_verbatum(fw, "  BIOS size:              0x%1.1x %s", (data[51] >> 7) & 1, (data[51] >> 7) & 1 ? "128KB" : "64KB");

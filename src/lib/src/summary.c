@@ -151,7 +151,7 @@ int fwts_summary_report(fwts_framework *fw)
 
 	fwts_log_summary(fw, "Test Failure Summary");
 	fwts_log_summary(fw, "====================");
-	fwts_log_summary(fw, "");
+	fwts_log_nl(fw);
 
 	for (i=0;i<SUMMARY_MAX;i++) {
 		if (fwts_summaries[i]->len) {
@@ -170,7 +170,7 @@ int fwts_summary_report(fwts_framework *fw)
 		else
 			fwts_log_summary(fw, "%s failures: NONE", summary_names[i]);
 
-		fwts_log_summary(fw, "");
+		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
 }

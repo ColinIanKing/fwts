@@ -89,7 +89,7 @@ static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
 	for (i=0;i<obj->Package.Count;i++) {
 		switch (obj->Package.Elements[i].Type) {
 		case ACPI_TYPE_INTEGER:
-			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8x", i, obj->Package.Elements[i].Integer.Value);
+			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i, obj->Package.Elements[i].Integer.Value);
 			break;
 		case ACPI_TYPE_STRING:
 			fwts_log_info_verbatum(fw, "    %2.2d: STRING:  0x%s", i, obj->Package.Elements[i].String.Pointer);
@@ -1381,14 +1381,14 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 9.2 Ambient Light Sensor Device */
 
-	{ method_test_ALC, "Check _ALC Ambient Light Colour Chromaticity." },
-	{ method_test_ALI, "Check _ALI Ambient Light Illuminance." },
-	{ method_test_ALT, "Check _ALT Ambient Light Temperature." },
-	{ method_test_ALP, "Check _ALP Ambient Light Polling. "},
+	{ method_test_ALC, "Check _ALC (Ambient Light Colour Chromaticity)." },
+	{ method_test_ALI, "Check _ALI (Ambient Light Illuminance)." },
+	{ method_test_ALT, "Check _ALT (Ambient Light Temperature)." },
+	{ method_test_ALP, "Check _ALP (Ambient Light Polling). "},
 
 	/* Section 9.4 Lid Device */
 
-	{ method_test_LID, "Check _LID (Lid Ststus) Method." },
+	{ method_test_LID, "Check _LID (Lid Status)." },
 
 	/* Section 9.8 ATA Controllers */
 
@@ -1396,94 +1396,94 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 9.18 Wake Alarm Device */
 
-	{ method_test_STP, "Check _STP (Set Expired Timer Wake Policy) Method." },
-	{ method_test_STV, "Check _STV (Set Timer Value) Method." },
-	{ method_test_TIP, "Check _TIP (Expired Timer Wake Polcy) Method." },
-	{ method_test_TIV, "Check _TIV (Timer Values) Method." },
+	{ method_test_STP, "Check _STP (Set Expired Timer Wake Policy)." },
+	{ method_test_STV, "Check _STV (Set Timer Value)." },
+	{ method_test_TIP, "Check _TIP (Expired Timer Wake Policy)." },
+	{ method_test_TIV, "Check _TIV (Timer Values)." },
 
 	/* Section 10.1.1.1 Smart Battery */
 
-	{ method_test_SBS, "Check _SBS (Smart Battery Subsystem) Method." },
+	{ method_test_SBS, "Check _SBS (Smart Battery Subsystem)." },
 
-	/* Section 10.2.2 Battery Control Methods */
+	/* Section 10.2.2 Battery Controls */
 
-	{ method_test_BIF, "Check _BIF (Battery Information) Method." },
-	{ method_test_BIX, "Check _BIX (Battery Information Extended) Method." },
-	{ method_test_BMA, "Check _BMA (Battery Measurement Averaging) Method." },
-	{ method_test_BMS, "Check _BMS (Battery Measurement Sampling Time) Method." },
-	{ method_test_BST, "Check _BST (Battery Status) Method." },
-	{ method_test_BTP, "Check _BTP (Battery Trip Point) Method." },
-	{ method_test_PCL, "Check _PCL (Power Consumer List) Method." },
-	{ method_test_BTM, "Check _BTM (Battery Time) Method." },
-	{ method_test_BMD, "Check _BMD (Battery Maintenance Data) Method." },
-	{ method_test_BMC, "Check _BMC (Battery Maintenance Control) Method." },
+	{ method_test_BIF, "Check _BIF (Battery Information)." },
+	{ method_test_BIX, "Check _BIX (Battery Information Extended)." },
+	{ method_test_BMA, "Check _BMA (Battery Measurement Averaging)." },
+	{ method_test_BMS, "Check _BMS (Battery Measurement Sampling Time)." },
+	{ method_test_BST, "Check _BST (Battery Status)." },
+	{ method_test_BTP, "Check _BTP (Battery Trip Point)." },
+	{ method_test_PCL, "Check _PCL (Power Consumer List)." },
+	{ method_test_BTM, "Check _BTM (Battery Time)." },
+	{ method_test_BMD, "Check _BMD (Battery Maintenance Data)." },
+	{ method_test_BMC, "Check _BMC (Battery Maintenance Control)." },
 
 	/* Section 10.3, AC Adapters and Power Source Objects */
 
-	{ method_test_PSR, "Check _PSR (Power Source) Method." },
+	{ method_test_PSR, "Check _PSR (Power Source)." },
 	{ method_test_PIF, "Check _PIF (Power Source Information) Object." },
 
 	/* Section 11.3 Fan Devices */
 	
-	{ method_test_FIF, "Check _FIF (Fan Information) Method." },
-	/* { method_test_FPS, "Check _FPS (Fan Performance States) Method." }, */
-	{ method_test_FSL, "Check _FSL (Fan Set Level) Method." },
-	{ method_test_FST, "Check _FST (Fan Status) Method." },
+	{ method_test_FIF, "Check _FIF (Fan Information)." },
+	/* { method_test_FPS, "Check _FPS (Fan Performance States)." }, */
+	{ method_test_FSL, "Check _FSL (Fan Set Level)." },
+	{ method_test_FST, "Check _FST (Fan Status)." },
 
 	/* Section 11.4 Thermal */
 	{ method_test_ACx, "Check _ACx Active Cooling." },
-	{ method_test_CRT, "Check _CRT (Critical Trip Point) Method." },
+	{ method_test_CRT, "Check _CRT (Critical Trip Point)." },
 	{ method_test_DTI, "Check _DTI Device Temperature Indication." },
-	{ method_test_HOT, "Check _HOT (Hot Temperature) Method." },
-	{ method_test_NTT, "Check _NTT (Notification Temp Threshold) Method." },
-	{ method_test_PSV, "Check _PSV (Passive Temp) Method." },
-	{ method_test_RTV, "Check _RTV (Relative Temp Values) Method." },
-	{ method_test_SCP, "Check _SCP (Set Cooling Policy) Method." },
-	{ method_test_TMP, "Check _TMP (Thermal Zone Current Temp) Method." },
+	{ method_test_HOT, "Check _HOT (Hot Temperature)." },
+	{ method_test_NTT, "Check _NTT (Notification Temp Threshold)." },
+	{ method_test_PSV, "Check _PSV (Passive Temp)." },
+	{ method_test_RTV, "Check _RTV (Relative Temp Values)." },
+	{ method_test_SCP, "Check _SCP (Set Cooling Policy)." },
+	{ method_test_TMP, "Check _TMP (Thermal Zone Current Temp)." },
 	{ method_test_TC1, "Check _TC1 (Thermal Constant 1) Object." },
 	{ method_test_TC2, "Check _TC2 (Thermal Constant 2) Object." },
-	{ method_test_TPT, "Check _TPT (Trip Point Temperature) Method." },
+	{ method_test_TPT, "Check _TPT (Trip Point Temperature)." },
 	{ method_test_TSP, "Check _TSP (Thermal Sampling Period) Object." },
 	{ method_test_TST, "Check _TST (Temperature Sensor Threshold) Object." },
 	{ method_test_TZP, "Check _TZP (Thermal Zone Polling) Object." },
 
-	/* Section 6.5 Other Objects and Control Methods */
+	/* Section 6.5 Other Objects and Controls */
 	
-	{ method_test_DCK, "Check _DCK (Dock) Method." },
-	{ method_test_BDN, "Check _BDN (BIOS Dock Name) Method." },
-	{ method_test_BBN, "Check _BBN (Base Bus Number) Method." },
+	{ method_test_DCK, "Check _DCK (Dock)." },
+	{ method_test_BDN, "Check _BDN (BIOS Dock Name)." },
+	{ method_test_BBN, "Check _BBN (Base Bus Number)." },
 
 	/* Section 15, Waking and Sleeping */
-	{ method_test_BFS, "Check _BFS (Back from Sleep) Method." },
-	{ method_test_PTS, "Check _PTS (Prepare to Sleep) Method." },
-	{ method_test_GTS, "Check _GTS (Going to Sleep) Method." },
-	{ method_test_TTS, "Check _TTS (Trasition to State) Method." },
+	{ method_test_BFS, "Check _BFS (Back from Sleep)." },
+	{ method_test_PTS, "Check _PTS (Prepare to Sleep)." },
+	{ method_test_GTS, "Check _GTS (Going to Sleep)." },
+	{ method_test_TTS, "Check _TTS (Transition to State)." },
 	{ method_test_S0,  "Check _S0  (System S0 State) Object." },
 	{ method_test_S1,  "Check _S1  (System S1 State) Object." },
 	{ method_test_S2,  "Check _S2  (System S2 State) Object." },
 	{ method_test_S3,  "Check _S3  (System S3 State) Object." },
 	{ method_test_S4,  "Check _S4  (System S4 State) Object." },
 	{ method_test_S5,  "Check _S5  (System S5 State) Object." },
-	{ method_test_WAK, "Check _WAK (System Wake Method)." },
+	{ method_test_WAK, "Check _WAK (System Wake)." },
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
 	
-	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching) Method." },
-	{ method_test_DOD, "Check _DOD (Enumerate All Devices Attached to Display Adapter) Method." },
+	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching)." },
+	{ method_test_DOD, "Check _DOD (Enumerate All Devices Attached to Display Adapter)." },
 	{ method_test_ROM, "Check _ROM (Get ROM Data) Object." },
-	{ method_test_GPD, "Check _GPD (Get POST Device) Method." },
-	{ method_test_SPD, "Check _SPD (Set POST Device) Method." },
-	{ method_test_VPO, "Check _VPO (Video POST Options) Method." },
-	{ method_test_ADR, "Check _ADR (Return Unique ID for Device) Method." },
-	{ method_test_BCL, "Check _BCL (Query List of Brightness Control Levels Supported) Method." },
-	{ method_test_BCM, "Check _BCM (Set Brightness Level) Method." },
-	{ method_test_BQC, "Check _BQC (Brightness Query Current Level) Method." },
-	{ method_test_DDC, "Check _DDC (Return the EDID for this Device) Method." },
-	{ method_test_DCS, "Check _DCS (Return the Status of Output Device) Method." },
-	{ method_test_DGS, "Check _DGS (Query Graphics State) Method." },
-	{ method_test_DSS, "Check _DSS (Device Set State) Method." },
+	{ method_test_GPD, "Check _GPD (Get POST Device)." },
+	{ method_test_SPD, "Check _SPD (Set POST Device)." },
+	{ method_test_VPO, "Check _VPO (Video POST Options)." },
+	{ method_test_ADR, "Check _ADR (Return Unique ID for Device)." },
+	{ method_test_BCL, "Check _BCL (Query List of Brightness Control Levels Supported)." },
+	{ method_test_BCM, "Check _BCM (Set Brightness Level)." },
+	{ method_test_BQC, "Check _BQC (Brightness Query Current Level)." },
+	{ method_test_DDC, "Check _DDC (Return the EDID for this Device)." },
+	{ method_test_DCS, "Check _DCS (Return the Status of Output Device)." },
+	{ method_test_DGS, "Check _DGS (Query Graphics State)." },
+	{ method_test_DSS, "Check _DSS (Device Set State)." },
 
-	/* { method_test_OSI, "Check _OSI Method." }, */
+	/* { method_test_OSI, "Check _OSI." }, */
 
 	{ NULL, NULL }
 };

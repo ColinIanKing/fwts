@@ -60,7 +60,8 @@ typedef struct log_t {
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);
 int       fwts_log_close(fwts_log *log);
-int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...);
+int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...)
+	__attribute__((format(printf, 4, 5)));
 int       fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, va_list args);
 void      fwts_log_newline(fwts_log *log);
 void      fwts_log_underline(fwts_log *log, const int ch);
@@ -74,8 +75,6 @@ int       fwts_log_str_to_level(const char *str);
 char     *fwts_log_level_to_str(const fwts_log_level level);
 int 	  fwts_log_line_number(void);
 void	  fwts_log_set_line_width(const int width);
-
-
 
 #define fwts_log_result(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, fmt, ## args) 
@@ -114,7 +113,6 @@ void	  fwts_log_set_line_width(const int width);
 	fwts_log_printf(fw->results, LOG_TAG | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_nl(fw) \
-	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "")
-
+	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "%s", "")
 
 #endif

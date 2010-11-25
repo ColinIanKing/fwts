@@ -56,7 +56,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	int status;
 	fwts_list *klog;
 
-	fwts_log_info(fw, test);
+	fwts_log_info(fw, "%s", test);
 
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");

@@ -82,7 +82,7 @@ static int osilinux_test1(fwts_framework *fw)
 				fwts_log_warning(fw, "WARNING: Found _OSI(\"Linux\").");
 				found++;
 				while (dumpitem != NULL && dumpitem != item->next) {
-					fwts_log_warning_verbatum(fw, fwts_text_list_text(dumpitem));
+					fwts_log_warning_verbatum(fw, "%s", fwts_text_list_text(dumpitem));
 					dumpitem = dumpitem->next;
 				}
 				dumpdepth = 0;

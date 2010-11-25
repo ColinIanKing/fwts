@@ -59,7 +59,7 @@ int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 		return FWTS_ERROR;
 	}
 	if (fwts_set(buffer, fwts_wkalarm)) {
-		fwts_log_error(fw, "Cannot write '%s' to %s", fwts_wkalarm);
+		fwts_log_error(fw, "Cannot write '%s' to %s", buffer, fwts_wkalarm);
 		return FWTS_ERROR;
 	}
 	if ((ret = fwts_wakealarm_get_irq_state()) == FWTS_ERROR) 

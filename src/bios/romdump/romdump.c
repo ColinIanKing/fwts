@@ -81,13 +81,13 @@ static int romdump_test1(fwts_framework *fw)
 		if ((*(mem+i) == 0x55) && (*(mem+i+1) == 0xaa)) {
 			int length = *(mem+i+2) << 9;
 		
-			fwts_log_info(fw, "Found ROM: %lx..%lx (%d bytes)", BIOS_ROM_REGION_START+i, BIOS_ROM_REGION_START+i+length, length);
+			fwts_log_info(fw, "Found ROM: %x..%x (%d bytes)", BIOS_ROM_REGION_START+i, BIOS_ROM_REGION_START+i+length, length);
 			romdump_data(fw, mem+i, BIOS_ROM_REGION_START+i, length);
 			fwts_log_nl(fw);
 		}
 	}
 
-	fwts_log_info(fw, "BIOS ROM: %lx..%lx (%d bytes)", BIOS_ROM_START, BIOS_ROM_END, BIOS_ROM_SIZE);
+	fwts_log_info(fw, "BIOS ROM: %x..%x (%d bytes)", BIOS_ROM_START, BIOS_ROM_END, BIOS_ROM_SIZE);
 	
 	romdump_data(fw, mem+BIOS_ROM_OFFSET, BIOS_ROM_START, BIOS_ROM_SIZE);
 

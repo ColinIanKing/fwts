@@ -462,7 +462,7 @@ static void acpidump_erst(fwts_framework *fw, uint8_t *data, int length)
 			FIELD_UINT("  Mask", 		fwts_acpi_table_erst, entries[i].mask),
 			FIELD_END
 		};
-		fwts_log_info_verbatum(fw, "Entry #%d%", i+1);
+		fwts_log_info_verbatum(fw, "Entry #%d", i+1);
 		__acpi_dump_table_fields(fw, data, entry_fields, 0);
 	}
 }
@@ -661,7 +661,7 @@ static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table) == FWTS_OK) {
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-			fwts_log_info_verbatum(fw, "%s 0x%16.16x", 
+			fwts_log_info_verbatum(fw, "%s 0x%16.16llx", 
 				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
 				xsdt->entries[i]);
 		}
@@ -891,10 +891,10 @@ static void acpidump_slit(fwts_framework *fw, uint8_t *data, int length)
 	int n = length - sizeof(fwts_acpi_table_slit);
 	uint8_t *entry;
 
-	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%lx (%lu)", slit->num_of_system_localities, 
+	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%llx (%llu)", slit->num_of_system_localities, 
 								    slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
-		fwts_log_info_verbatum(fw,"Expecting %d bytes, got only %d", 
+		fwts_log_info_verbatum(fw,"Expecting %lld bytes, got only %d", 
 			slit->num_of_system_localities * slit->num_of_system_localities, n);
 	}
 	else {
@@ -1050,7 +1050,7 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 
 	for (i=0; (fwts_acpi_get_table(fw, i, &table) == FWTS_OK) && (table !=NULL); i++) {
-		fwts_log_info_verbatum(fw, "%s @ %4.4lx (%d bytes)", table->name, (uint32_t)table->addr, table->length);
+		fwts_log_info_verbatum(fw, "%s @ %4.4x (%d bytes)", table->name, (uint32_t)table->addr, table->length);
 		fwts_log_info_verbatum(fw, "---------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);

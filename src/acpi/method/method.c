@@ -116,8 +116,21 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 	buf.Pointer = NULL;
 
 	ret = AcpiEvaluateObject(NULL, name, arg_list, &buf);
-	if (ACPI_FAILURE(ret))
-		fwts_log_error(fw, "Failed to execute %s.", name);
+	if (ACPI_FAILURE(ret) != FWTS_OK) {
+		switch (ret) {
+		case AE_AML_INFINITE_LOOP:
+			fwts_failed_medium(fw, "Detected an infinite loop when executing method '%s'. ", name);
+			fwts_advice(fw, "This may occur because we are emulating the execution "
+					"in this test environment and cannot handshake with "
+					"the embedded controller or jump to the BIOS via SMIs. "
+					"However, the fact that AML code spins forever means that "
+					"lockup conditions are not being checked for in the AML bytecode.");
+			break;
+		default:
+			fwts_log_error(fw, "Failed to execute %s.", name);
+			break;
+		}
+	}
 	else {
 		if (check_func != NULL) {
 			ACPI_OBJECT *obj = buf.Pointer;

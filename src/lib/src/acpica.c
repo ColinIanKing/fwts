@@ -201,6 +201,10 @@ static ACPI_STATUS fwtsExceptionHandler(ACPI_STATUS AmlStatus, ACPI_NAME Name,
 		fwts_log_info(fwts_acpica_fw, "[AcpiExec] Exception %s during execution of method %4.4s", exception, (char*)&Name);
 	else
 		fwts_log_info(fwts_acpica_fw, "[AcpiExec] Exception %s during execution at module level (table load)", exception);
+
+	if (AmlStatus == AE_AML_INFINITE_LOOP)
+		return AmlStatus;
+
    	return AE_OK;
 }
 

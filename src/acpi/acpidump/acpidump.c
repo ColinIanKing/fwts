@@ -715,7 +715,7 @@ static void acpidump_madt(fwts_framework *fw, uint8_t *data, int length)
 				fwts_acpidump_field fields_io_apic[] = {
 					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
 					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
-					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, io_apic_phys_address),
+					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, global_irq_base),
 					FIELD_END
 				};
 				fwts_log_info_verbatum(fw, " I/O APIC:");

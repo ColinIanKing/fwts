@@ -89,7 +89,8 @@ static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
 	for (i=0;i<obj->Package.Count;i++) {
 		switch (obj->Package.Elements[i].Type) {
 		case ACPI_TYPE_INTEGER:
-			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i, obj->Package.Elements[i].Integer.Value);
+			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i, 
+				(unsigned long long)obj->Package.Elements[i].Integer.Value);
 			break;
 		case ACPI_TYPE_STRING:
 			fwts_log_info_verbatum(fw, "    %2.2d: STRING:  0x%s", i, obj->Package.Elements[i].String.Pointer);

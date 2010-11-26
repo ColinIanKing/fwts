@@ -452,8 +452,9 @@ static void do_mtrr_resource(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "Reg %d: disabled\n", entry->reg);
 		else
 			fwts_log_info_verbatum(fw, "Reg %d: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n", entry->reg,
-				entry->start, entry->end, 
-				entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024),
+				(unsigned long long)entry->start,
+				(unsigned long long)entry->end, 
+				(unsigned long long)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
 				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
 	fwts_log_info(fw,"\n");

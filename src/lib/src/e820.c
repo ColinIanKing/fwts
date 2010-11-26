@@ -194,7 +194,10 @@ static void fwts_e820_dump_info(void *data, void *private)
 	e820_entry *entry = (e820_entry *)data;
 	fwts_framework *fw = (fwts_framework *)private;
 
-	fwts_log_info(fw, "%016llx - %016llx  %s", entry->start_address, entry->end_address, fwts_e820_type_to_str(entry->type));
+	fwts_log_info(fw, "%016llx - %016llx  %s", 
+			(unsigned long long)entry->start_address,
+			(unsigned long long)entry->end_address,
+			fwts_e820_type_to_str(entry->type));
 }
 
 /*

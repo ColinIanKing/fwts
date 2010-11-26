@@ -145,11 +145,11 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 		if (info->bit_field_nbits) {
 			hexdigits = (3+info->bit_field_nbits) / 4;
 			fwts_log_info_verbatum(fw, "%56.56s: 0x%*.*llx", info->label,
-				hexdigits, hexdigits, val);
+				hexdigits, hexdigits, (unsigned long long)val);
 		} else
 			fwts_log_info_verbatum(fw, "%s 0x%*.*llx", 
 				acpi_dump_field_info(info->label, info->size, info->offset + offset), 
-				hexdigits, hexdigits, val);
+				hexdigits, hexdigits, (unsigned long long)val);
 		break;
 	default:		
 		for (i=0; i<info->size; i++) {
@@ -167,7 +167,7 @@ static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, voi
 
 	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
 		hexdigits, hexdigits,
-		val, val > info->strings_len ? "Unknown" : info->strings[val]);
+		(unsigned long long)val, val > info->strings_len ? "Unknown" : info->strings[val]);
 }
 
 static void acpi_dump_string_func(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
@@ -177,7 +177,7 @@ static void acpi_dump_string_func(fwts_framework *fw, fwts_acpidump_field *info,
 
 	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
 		hexdigits, hexdigits,
-		val, info->str_func(val));
+		(unsigned long long)val, info->str_func(val));
 }
 
 static void acpi_dump_table_fields(fwts_framework *fw, uint8_t *data, fwts_acpidump_field *fields, int offset, int table_len)
@@ -469,7 +469,7 @@ static void acpidump_erst(fwts_framework *fw, uint8_t *data, int length)
 
 static void acpidump_amlcode(fwts_framework *fw, uint8_t *data, int length)
 {
-	fwts_log_info_verbatum(fw, "Contains 0x%x byes of AML byte code", length-sizeof(fwts_acpi_table_header));
+	fwts_log_info_verbatum(fw, "Contains 0x%lx bytes of AML byte code", (int long)length-sizeof(fwts_acpi_table_header));
 }
 
 static void acpidump_facs(fwts_framework *fw, uint8_t *data, int length)
@@ -663,7 +663,7 @@ static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%16.16llx", 
 				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
-				xsdt->entries[i]);
+				(unsigned long long)xsdt->entries[i]);
 		}
 	}
 }
@@ -891,11 +891,12 @@ static void acpidump_slit(fwts_framework *fw, uint8_t *data, int length)
 	int n = length - sizeof(fwts_acpi_table_slit);
 	uint8_t *entry;
 
-	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%llx (%llu)", slit->num_of_system_localities, 
-								    slit->num_of_system_localities);
+	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%llx (%llu)",
+				(unsigned long long)slit->num_of_system_localities, 
+				(unsigned long long)slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
 		fwts_log_info_verbatum(fw,"Expecting %lld bytes, got only %d", 
-			slit->num_of_system_localities * slit->num_of_system_localities, n);
+			(unsigned long long)(slit->num_of_system_localities * slit->num_of_system_localities), n);
 	}
 	else {
 		entry = data + sizeof(fwts_acpi_table_slit);

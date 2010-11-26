@@ -1,3 +1,11 @@
+fwts (0.19.28) maverick; urgency=low
+ 
+  * Add in acpitable MADT checks for APICs
+  * dump out global_irq_base from MADT IO APIC correctly
+  * New upstream version 0.19.28
+
+ -- Colin King <colin.king@canonical.com>  Fri, 26 Nov 2010 18:43:01 +0000
+
 fwts (0.19.27) maverick; urgency=low
  
   * Fix GCC warnings now that we're checking log printf() args

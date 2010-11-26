@@ -224,187 +224,115 @@ static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
-#if 0
-	/* FIXME, to be done later */
-
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)table->data;
+	void *data = table->data;
+	int length = table->length;
 	int i = 0;
-	int n;
-	int offset = 0;
-
-	fwts_acpi_table_check_field fields[] = {
-		FIELD_UINT("Local APIC Address", 	fwts_acpi_table_madt, lapic_address),
-		FIELD_UINT("Flags", 			fwts_acpi_table_madt, flags),
-		FIELD_BITF("  PCAT_COMPAT", 		fwts_acpi_table_madt, flags, 1, 0),
-		FIELD_END
-	};
-
-	acpi_dump_table_fields(fw, data, fields, 0, length);
 	
+	if (madt->flags & 0xfffffffe)
+		fwts_failed(fw, "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
+			madt->flags);
+
 	data += sizeof(fwts_acpi_table_madt);	
 	length -= sizeof(fwts_acpi_table_madt);
-
+	
 	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
 		int skip = 0;
+		i++;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
-		offset += sizeof(fwts_acpi_madt_sub_table_header);
 		
-		fwts_log_nl(fw);
-		fwts_log_info_verbatum(fw, "APIC Structure #%d:", ++i);
-
 		switch (hdr->type) {
 		case 0: {
-				fwts_acpi_table_check_field fields_processor_local_apic[] = {
-					FIELD_UINT("  ACPI CPU ID", fwts_acpi_madt_processor_local_apic, acpi_processor_id),
-					FIELD_UINT("  APIC ID",     fwts_acpi_madt_processor_local_apic, apic_id),
-					FIELD_UINT("  Flags",       fwts_acpi_madt_processor_local_apic, flags),
-					FIELD_BITF("   Enabled",    fwts_acpi_madt_processor_local_apic, flags, 1, 0),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Processor Local APIC:");
-				__acpi_dump_table_fields(fw, data, fields_processor_local_apic, offset);
+				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;
+				if (lapic->flags & 0xfffffffe) 
+					fwts_failed(fw, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", lapic->flags);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
 			break;
 		case 1: {
-				fwts_acpi_table_check_field fields_io_apic[] = {
-					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
-					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
-					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, io_apic_phys_address),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " I/O APIC:");
-				__acpi_dump_table_fields(fw, data, fields_io_apic, offset);
+				fwts_acpi_madt_io_apic *ioapic = (fwts_acpi_madt_io_apic*)data;
+				if (ioapic->io_apic_phys_address == 0)
+					fwts_failed(fw, "MADT IO APIC address is zero, appears not to be defined.");
+				/*
+				if (ioapic->global_irq_base == 0)
+					fwts_failed(fw, "MADT IO APIC global IRQ base is zero, appears not to be defined.");
+				*/
 				skip = sizeof(fwts_acpi_madt_io_apic);
 			}
 			break;
 		case 2: {
-				fwts_acpi_table_check_field fields_madt_interrupt_override[] = {
-					FIELD_UINT("  Bus", 		fwts_acpi_madt_interrupt_override, bus),
-					FIELD_UINT("  Source", 		fwts_acpi_madt_interrupt_override, source),
-					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_interrupt_override, gsi),
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_interrupt_override, flags),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Interrupt Source Override:");
-				__acpi_dump_table_fields(fw, data, fields_madt_interrupt_override, offset);
+				fwts_acpi_madt_interrupt_override *int_override = (fwts_acpi_madt_interrupt_override*)data;
+				if (int_override->bus != 0) 
+					fwts_failed(fw, "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
+				if (int_override->flags & 0xfffffff0)
+					fwts_failed(fw, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", int_override->flags);
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
 			break;
 		case 3: {
-				fwts_acpi_table_check_field fields_madt_nmi[] = {
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_nmi, flags),
-					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_nmi, gsi),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Non-maskable Interrupt Source (NMI):");
-				__acpi_dump_table_fields(fw, data, fields_madt_nmi, offset);
+				fwts_acpi_madt_nmi *nmi = (fwts_acpi_madt_nmi*)data;
+				if (nmi->flags & 0xfffffff0)
+					fwts_failed(fw, "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
 			break;
 		case 4: {
-				fwts_acpi_table_check_field fields_madt_local_apic_nmi[] = {
-					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_apic_nmi, acpi_processor_id),
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_apic_nmi, flags),
-					FIELD_UINT("  Local APIC LINT", fwts_acpi_madt_local_apic_nmi, local_apic_lint),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Local APIC NMI:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_apic_nmi, offset);
+				fwts_acpi_madt_local_apic_nmi *nmi = (fwts_acpi_madt_local_apic_nmi*)data;
+				if (nmi->flags & 0xfffffff0)
+					fwts_failed(fw, "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
 		case 5: {
-				fwts_acpi_table_check_field fields_madt_local_apic_addr_override[] = {
-					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Local APIC Address Override:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_apic_addr_override, offset);
+				//fwts_acpi_madt_local_apic_addr_override *override = (fwts_acpi_madt_local_apic_addr_override*)data;
 				skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
 			}
 			break;
 		case 6: {
-				fwts_acpi_table_check_field fields_madt_io_sapic[] = {
-					FIELD_UINT("  I/O SAPIC ID", 	fwts_acpi_madt_io_sapic, io_sapic_id),
-					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_io_sapic, gsi),
-					FIELD_UINT("  I/O SAPIC Addr", 	fwts_acpi_madt_io_sapic, address),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " I/O SAPIC:");
-				__acpi_dump_table_fields(fw, data, fields_madt_io_sapic, offset);
+				fwts_acpi_madt_io_sapic *sapic = (fwts_acpi_madt_io_sapic*)data;
+				if (sapic->address == 0)
+					fwts_failed(fw, "MADT I/O SAPIC address is zero, appears not to be defined.");
 				skip = sizeof(fwts_acpi_madt_io_sapic);
 			}
 			break;
 		case 7: {
 				fwts_acpi_madt_local_sapic *local_sapic = (fwts_acpi_madt_local_sapic*)data;
-				fwts_acpi_table_check_field fields_madt_local_sapic[] = {
-					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_sapic, acpi_processor_id),
-					FIELD_UINT("  Local SAPIC ID", 	fwts_acpi_madt_local_sapic, local_sapic_id),
-					FIELD_UINT("  Local SAPIC EID",	fwts_acpi_madt_local_sapic, local_sapic_eid),
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_sapic, flags),
-					FIELD_UINT("  UID Value", 	fwts_acpi_madt_local_sapic, uid_value),
-					FIELD_UINT("  UID String", 	fwts_acpi_madt_local_sapic, uid_string),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Local SAPIC:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
-				n = strlen(local_sapic->uid_string) + 1;
-				skip = (sizeof(fwts_acpi_madt_local_sapic) + n);
+				skip = sizeof(fwts_acpi_madt_local_sapic) + strlen(local_sapic->uid_string) + 1;
 			}
 			break;
 		case 8: {
-				fwts_acpi_table_check_field fields_madt_local_sapic[] = {
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_platform_int_source, flags),
-					FIELD_UINT("  Type", 		fwts_acpi_madt_platform_int_source, type),
-					FIELD_UINT("  Processor ID", 	fwts_acpi_madt_platform_int_source, processor_id),
-					FIELD_UINT("  Processor EID", 	fwts_acpi_madt_platform_int_source, processor_eid),
-					FIELD_UINT("  IO SAPIC Vector", fwts_acpi_madt_platform_int_source, io_sapic_vector),
-					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_platform_int_source, gsi),
-					FIELD_UINT("  PIS Flags", 	fwts_acpi_madt_platform_int_source, pis_flags),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Platform Interrupt Sources:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
+				fwts_acpi_madt_platform_int_source *src = (fwts_acpi_madt_platform_int_source*)data;
+				if (src->flags & 0xfffffff0)
+					fwts_failed(fw, "MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", src->flags);
+				if (src->type > 3)
+					fwts_failed(fw, "MADT Platform Interrupt Source, type field is %d, should be 1..3.", src->type);
+				if (src->io_sapic_vector == 0)
+					fwts_failed(fw, "MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");
+				if (src->pis_flags & 0xfffffffe)
+					fwts_failed(fw, "MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", src->pis_flags);
 				skip = (sizeof(fwts_acpi_madt_platform_int_source));
 			}
 			break;
-		case 9: {
-				fwts_acpi_table_check_field fields_madt_local_x2apic[] = {
-					FIELD_UINT("  x2APIC ID", 	fwts_acpi_madt_local_x2apic, x2apic_id),
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic, flags),
-					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic, processor_uid),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Processor Local x2APIC:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic, offset);
-				skip = (sizeof(fwts_acpi_madt_local_x2apic));
-			}
+		case 9:
+			skip = (sizeof(fwts_acpi_madt_local_x2apic));
 			break;
 		case 10: {
-				fwts_acpi_table_check_field fields_madt_local_x2apic_nmi[] = {
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic_nmi, flags),
-					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic_nmi, processor_uid),
-					FIELD_UINT("  LINT#", 		fwts_acpi_madt_local_x2apic_nmi, local_x2apic_lint),
-					FIELD_END
-				};
-				fwts_log_info_verbatum(fw, " Local x2APIC NMI:");
-				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic_nmi, offset);
+				fwts_acpi_madt_local_x2apic_nmi *nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
+				if (nmi->flags & 0xfffffff0)
+					fwts_failed(fw, "MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, " Reserved for OEM use:");
 			skip = 0;
 			break;
 		}
 		data   += skip;
-		offset += skip;
 		length -= skip;
 	}
-#endif
 }
 
 static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)

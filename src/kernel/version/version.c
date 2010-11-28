@@ -31,7 +31,7 @@ static int version_test1(fwts_framework *fw)
 
 	/* Following is Ubuntu specific, so don't fail */
 	if ((str = fwts_get("/proc/version_signature")) == NULL)
-		fwts_log_error(fw,"Cannot get version signature info from /proc/version_signature (This is Ubuntu specific, and not necessarily a failure).");
+		fwts_warning(fw,"Cannot get version signature info from /proc/version_signature (This is Ubuntu specific, and not necessarily a failure).");
 	else {
 		fwts_passed(fw, "Signature: %s", str);
 		free(str);
@@ -57,8 +57,9 @@ static int version_test3(fwts_framework *fw)
 {
 	char *str;
 
-	if ((str = fwts_get("/proc/acpi/info")) == NULL) 
-		fwts_failed_low(fw,"Cannot get ACPI version info from /proc/acpi/info");
+        if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
+	    ((str = fwts_get("/proc/acpi/info")) == NULL))
+		fwts_failed_low(fw,"Cannot get ACPI version info from /sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
 	else {
 		fwts_passed(fw, "ACPI Version: %s", str);
 		free(str);

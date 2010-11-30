@@ -1,3 +1,11 @@
+fwts (0.19.29) maverick; urgency=low
+ 
+  * Fix 64 bit build warnings
+  * Add more advice into method test
+  * New upstream version 0.19.29
+
+ -- Colin King <colin.king@canonical.com>  Mon, 30 Nov 2010 14:26:23 +0000
+
 fwts (0.19.28) maverick; urgency=low
  
   * Add in acpitable MADT checks for APICs

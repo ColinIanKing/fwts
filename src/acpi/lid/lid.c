@@ -182,7 +182,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		if ((matching == 0) || (not_matching > 0))
 			fwts_failed_high(fw, "Could not detect lid %s state in %s.", state, LID_PATH);
 		else
-			fwts_passed(fw, "Detected lid %s state.", state, LID_PATH);
+			fwts_passed(fw, "Detected lid %s state.", state);
 
 	return FWTS_OK;
 }

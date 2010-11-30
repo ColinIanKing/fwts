@@ -110,7 +110,7 @@ static int crs_test1(fwts_framework *fw)
 				fwts_failed_medium(fw, "The BIOS does not seem to have release data, hence pci=use_crs was required.");
 			} else if (year < 2008) {
 				fwts_passed(fw, "The BIOS is relatively old (%d/%d/%d) and hence pci=use_crs was required to "
-						"enable host bridge windows _CRS settings from ACPI.");
+						"enable host bridge windows _CRS settings from ACPI.", mon, day, year);
 			} else {
 				fwts_failed_low(fw, "Kernel was booted with pci=use_crs but this may be uncessary as "
 						"the BIOS is new enough to support automatic bridge windows configuring using _CRS from ACPI. "

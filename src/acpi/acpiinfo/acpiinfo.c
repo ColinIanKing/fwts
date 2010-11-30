@@ -98,7 +98,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 	}
 
 	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) {
-		fwts_failed_high(fw, line);
+		fwts_failed_high(fw, "%s", line);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 

@@ -187,7 +187,7 @@ static int hpet_check_test1(fwts_framework *fw)
 			if (txt)
 				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
 			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow.");
-			fwts_passed(fw, "Found HPET base %x in kernel log.", hpet_base_p);
+			fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
 			break;
 		}
 	}
@@ -227,9 +227,9 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
-		fwts_failed(fw, "Invalid clock period %lu, must be non-zero and less than 10^8.", clk_period);
+		fwts_failed(fw, "Invalid clock period %u, must be non-zero and less than 10^8.", clk_period);
 	else
-		fwts_passed(fw, "Valid clock period %lu.", clk_period);
+		fwts_passed(fw, "Valid clock period %u.", clk_period);
 
 	munmap(hpet_base_v, HPET_REG_SIZE);
 	close(fd);

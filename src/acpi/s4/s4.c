@@ -60,7 +60,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
-		fwts_failed(fw, test);
+		fwts_failed(fw, "%s", test);
 		return FWTS_ERROR;
 	}
 
@@ -75,7 +75,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, test);
+		fwts_failed(fw, "%s", test);
 		return FWTS_ERROR;
 	}
 
@@ -92,7 +92,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	if (errors > 0) 
 		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
-		fwts_passed(fw, test);
+		fwts_passed(fw, "%s", test);
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {

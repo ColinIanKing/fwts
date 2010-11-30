@@ -35,6 +35,9 @@
 
 static fwts_list *klog;
 static fwts_list *mtrr_list;
+static fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
+
+
 
 #define UNCACHED	0x0001
 #define	WRITE_BACK	0x0002
@@ -484,6 +487,11 @@ static int mtrr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+		fwts_log_error(fw, "Cannot get CPU info");
+		return FWTS_ERROR;
+	}
+
 	do_mtrr_resource(fw);
 
 	return FWTS_OK;
@@ -493,6 +501,8 @@ static int mtrr_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 	fwts_list_free(mtrr_list, free);
+	if (fwts_virt_cpuinfo)
+		fwts_cpu_free_info(fwts_virt_cpuinfo);
 
 	return FWTS_OK;
 }
@@ -538,19 +548,22 @@ static int mtrr_test2(fwts_framework *fw)
 
 static int mtrr_test3(fwts_framework *fw)
 {
-	if (klog != NULL) {
-		if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
-			fwts_failed_medium(fw, "The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
- 					"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
- 					"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
- 					"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
- 					"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
- 					"0 for operation.\"");
+	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD")) {
+		if (klog != NULL) {
+			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
+				fwts_failed_medium(fw, "The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
+ 						"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
+ 						"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
+ 						"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
+ 						"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
+ 						"0 for operation.\"");
+			}
+			else {
+				fwts_passed(fw, "No MtrrFixDramModEn error detected.");
+			}
 		}
-		else {
-			fwts_passed(fw, "No MtrrFixDramModEn error detected.");
-		}
-	}
+	} else
+		fwts_skipped(fw, "CPU is not an AMD, cannot test.");
 
 	return FWTS_OK;
 }

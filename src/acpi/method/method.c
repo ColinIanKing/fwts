@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 /* acpica headers */
 #include "acpi.h"
@@ -140,10 +141,17 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 	if (buf.Length && buf.Pointer)
 		free(buf.Pointer);
 
+	/* Seen ACPICA core not release locks quickly, so put a delay in. Urgh. */
+	usleep(100000);
+
 	fwts_acpica_sem_count_get(&sem_acquired, &sem_released);
-	if (sem_acquired != sem_released)
+	if (sem_acquired != sem_released) {
 		fwts_failed(fw, "%s left %d locks in an acquired state.", name, sem_acquired - sem_released);
-	else
+		fwts_advice(fw, "Locks left in an acquired state generally indicates that the AML code is not "
+				"releasing a lock. This can sometimes occur when a method hits an error condition "
+				"and exits prematurely without releasing an acquired lock. It may be occurring in the "
+				"method being tested or other methods used while executing the method.");
+	} else
  		if ((sem_acquired + sem_released) > 0) 
 			fwts_passed(fw, "%s correctly acquired and released locks %d times.", name, sem_acquired);
 
@@ -213,7 +221,7 @@ static int method_name_check(fwts_framework *fw)
 			     (*ptr == '_') ||
 			     (isdigit(*ptr)) ||
 			     (isupper(*ptr))) ) {
-				fwts_failed(fw, "Method %s contains an illegal character: '%c'.", (char *)item->data, *ptr);
+				fwts_failed_high(fw, "Method %s contains an illegal character: '%c'. This should be corrected.", (char *)item->data, *ptr);
 				failed++;
 				break;
 			}
@@ -244,9 +252,11 @@ static void method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFF
 
 static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
-	if (buf->Length && buf->Pointer)
+	if (buf->Length && buf->Pointer) {
 		fwts_failed(fw, "%s returned values, but was expected to return nothing.", name);
-	else
+		fwts_advice(fw, "This probably won't cause any errors, but it should be fixed as the AML code is "
+				"not conforming to the expected behaviour as described in the ACPI specification.");
+	} else
 		fwts_passed(fw, "%s returned no values as expected.", name);
 }
 
@@ -257,8 +267,12 @@ static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACP
 		unsigned int val = (uint32_t)obj->Integer.Value;
 		if ((val == 0) || (val == 1))
 			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x.", method, val);
-		else 
-			fwts_failed(fw, "%s returnd 0x%8.8x, should return 1 (success) or 0 (failed).", method, val);
+		else {
+			fwts_failed(fw, "%s returned 0x%8.8x, should return 1 (success) or 0 (failed).", method, val);
+			fwts_advice(fw, "Method %s should be returning the correct 1/0 success/failed return values. "
+					"Unexpected behaviour may occur becauses of this error, the AML code does not "
+					"conform to the ACPI specification and should be fixed.", method);
+		}
 	}
 }
 
@@ -301,9 +315,13 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_passed(fw, "_SBS correctly returned value %d %s", 
 				(uint32_t)obj->Integer.Value,
 				sbs_info[obj->Integer.Value]);
+			break;
 		default:	
 			fwts_failed(fw, "_SBS returned %d, should be between 0 and 4.",
 				(uint32_t)obj->Integer.Value);
+			fwts_advice(fw, "Smart Battery _SBS is incorrectly informing the OS about the smart battery "
+					"configuration. This is a bug and needs to be fixed.");
+			break;
 		}
 	}
 }
@@ -327,7 +345,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		if (obj->Package.Count != 13) {
 			fwts_failed(fw, "_BIF package should return 13 elements, got %d instead.",
 				obj->Package.Count);
-}
+		}
 
 		for (i=0;(i<9) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
@@ -345,45 +363,49 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIF: Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity (Element 1) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Voltage (Element 4) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity Warning (Element 5) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			failed++;
 		}
-		if (!failed)
+		if (failed)
+			fwts_advice(fw, "Battery _BIF package contains errors. It is worth running the "
+					"firmware test suite interactive 'battery' test to see if this "
+					"is problematic.  This is a bug an needs to be fixed.");
+		else
 			fwts_passed(fw, "Battery _BIF package looks sane.");
 	}
 }
@@ -422,51 +444,55 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIX: Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity (Element 2) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIX: Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Voltage (Element 5) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Design Capacity Warning (Element 7) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[7].Integer.Value);
 			failed++;
 		}
 		/* Cycle Count */
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "Cycle Count (Element 10) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[10].Integer.Value);
 			failed++;
 		}
-		if (!failed)
+		if (failed)
+			fwts_advice(fw, "Battery _BIX package contains errors. It is worth running the "
+					"firmware test suite interactive 'battery' test to see if this "
+					"is problematic.  This is a bug an needs to be fixed.");
+		else
 			fwts_passed(fw, "Battery _BIX package looks sane.");
 	}
 }
@@ -506,7 +532,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, "_BIF package element %d is not of type DWORD Integer.", i);
+				fwts_failed(fw, "_BST package element %d is not of type DWORD Integer.", i);
 				failed++;
 			}
 		}
@@ -514,14 +540,18 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Battery State */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.", 
+			fwts_failed(fw, "_BST: Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.", 
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			failed++;
 		}
 		/* Battery Present Rate - cannot check, pulled from EC */
 		/* Battery Remaining Capacity - cannot check, pulled from EC */
 		/* Battery Present Voltage - cannot check, pulled from EC */
-		if (!failed)
+		if (failed)
+			fwts_advice(fw, "Battery _BST package contains errors. It is worth running the "
+					"firmware test suite interactive 'battery' test to see if this "
+					"is problematic.  This is a bug an needs to be fixed.");
+		else
 			fwts_passed(fw, "Battery _BST package looks sane.");
 	}
 }
@@ -659,8 +689,14 @@ static int method_test_PTS(fwts_framework *fw)
 		fwts_log_info(fw, "Test _PTS(%d).", i);
 
 		if (method_execute_method(fw, METHOD_MANDITORY, "_PTS", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST) {
+			fwts_advice(fw, "Could not find _PTS. This method provides a mechanism to "
+					"do housekeeping functions, such as write sleep state to the "
+					"embedded controller before entering a sleep state. If the "
+					"machine cannot suspend (S3), hibernate (S4) or shutdown (S5) "
+					"then it could be because _PTS is missing.");
 			break;
+		}
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
@@ -670,7 +706,7 @@ static int method_test_GTS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exits("_BFS")) {
+	if (method_exits("_GTS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 	
@@ -748,7 +784,6 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	uint32_t Sstate = *(uint32_t*)private;
 	int failed = 0;
 
-
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		method_dump_package(fw, obj);
 
@@ -763,13 +798,22 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			}
 			else {
 				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-					fwts_failed(fw, "Expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.", 
+					fwts_failed(fw, "_WAK: expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.", 
 						(uint32_t)obj->Package.Elements[0].Integer.Value);
 					failed++;
 				}
-				if (obj->Package.Elements[1].Integer.Value != Sstate) {	
-					fwts_failed(fw, "Expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.", 
+				if (!(
+				    ((obj->Package.Elements[1].Integer.Value == Sstate) && (obj->Package.Elements[0].Integer.Value == 0)) ||
+                                    ((obj->Package.Elements[1].Integer.Value == 0) && (obj->Package.Elements[0].Integer.Value != 0)) )) {
+					fwts_failed(fw, "_WAK: expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.", 
 						Sstate, (uint32_t)obj->Package.Elements[0].Integer.Value);
+					fwts_advice(fw, "_WAK should return 0 if the wake failed and was unsuccessful (i.e. element[0] "
+							"is non-zero) OR should return the S-state. "
+							"This can confuse the operating system as this _WAK return indicates that the "
+							"S-state was not entered because of too much current being drawn from the "
+							"power supply, however, the BIOS may have actually entered this state and the "
+							"_WAK method is misinforming the operating system.");
+				
 					failed++;
 				}
 				if (!failed)
@@ -872,6 +916,9 @@ static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[3].Type != ACPI_TYPE_INTEGER)) {
 				fwts_failed(fw, "_FIF should return package of 4 integers.");
+				fwts_advice(fw, "_FIF is not returning the correct fan information. "
+						"It may be worth running the firmware test suite interactive 'fan' test "
+						"to see if this affects the control and operation of the fan.");
 			} else {
 				fwts_passed(fw, "_FIF correctly returned sane looking package.");
 			}
@@ -906,6 +953,9 @@ static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER)) {
 				fwts_failed(fw, "_FST should return package of 3 integers.");
+				fwts_advice(fw, "_FST is not returning the correct fan status information. "
+						"It may be worth running the firmware test suite interactive 'fan' test "
+						"to see if this affects the control and operation of the fan.");
 			} else {
 				fwts_passed(fw, "_FST correctly returned sane looking package.");
 			}
@@ -934,7 +984,10 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
-
+			fwts_advice(fw, "An incorrect value could be because the method requires interaction with "
+					"I/O ports or the embedded controller and this test frame work is spoofing "
+					"these operations. However, it is worth sanity checking these values in "
+					"/proc/acpi/thermal_zone.");
 	}
 }
 
@@ -1049,6 +1102,8 @@ static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFF
 		} else {
 			fwts_failed(fw, "%s returned a value %f seconds > (1 hour) which is probably incorrect.", 
 				method, (float)obj->Integer.Value / 10.0);
+			fwts_advice(fw, "The method is returning a polling interval which is very long and hence "
+					"most probably incorrect.");
 		}
 	}
 }
@@ -1302,9 +1357,13 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 						failed++;
 					}
 				}
-				if (!failed) {
-					fwts_passed(fw, "Method _DOD retuned a sane package of %d integers.", obj->Package.Count);
-				}
+				if (failed)
+					fwts_advice(fw, "Method _BCL seems to be misconfigured and is returning incorrect brightness levels."
+							"It is worth sanity checking this with the firmware test suite interactive test "
+							"'brightness' to see how broken this is. As it is, _BCL is broken and needs to be "
+							"fixed.");
+				else
+					fwts_passed(fw, "Method _BCL returned a sane package of %d integers.", obj->Package.Count);
 			}
 		}
 	}

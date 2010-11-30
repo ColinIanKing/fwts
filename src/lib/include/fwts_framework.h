@@ -134,12 +134,18 @@ typedef struct fwts_framework_test {
 
 int  fwts_framework_args(const int argc, char * const *argv);
 void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
-void fwts_framework_passed(fwts_framework *, const char *fmt, ...);
-void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...);
-void fwts_framework_warning(fwts_framework *, const char *fmt, ...);
-void fwts_framework_advice(fwts_framework *, const char *fmt, ...);
-void fwts_framework_skipped(fwts_framework *, const char *fmt, ...);
-void fwts_framework_aborted(fwts_framework *, const char *fmt, ...);
+void fwts_framework_passed(fwts_framework *, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3)));
+void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...)
+	__attribute__((format(printf, 3, 4)));
+void fwts_framework_warning(fwts_framework *, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3)));
+void fwts_framework_advice(fwts_framework *, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3)));
+void fwts_framework_skipped(fwts_framework *, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3)));
+void fwts_framework_aborted(fwts_framework *, const char *fmt, ...)
+	__attribute__((format(printf, 2, 3)));
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 
 #define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent)

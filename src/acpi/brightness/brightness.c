@@ -120,7 +120,7 @@ static int brightness_test1(fwts_framework *fw)
 							fwts_passed(fw, "Actual brightness for %s is %d which is in range 0..%d.", entry->d_name, actual_brightness, max_brightness);
 						}
 						else
-							fwts_failed_high(fw, "Actual brightness for %s not in range 0..%d%.", entry->d_name, max_brightness);
+							fwts_failed_high(fw, "Actual brightness for %s not in range 0..%d.", entry->d_name, max_brightness);
 					else
 						fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
 				}

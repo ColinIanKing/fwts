@@ -213,7 +213,7 @@ static int method_name_check(fwts_framework *fw)
 			     (*ptr == '_') ||
 			     (isdigit(*ptr)) ||
 			     (isupper(*ptr))) ) {
-				fwts_failed(fw, "Method %s contains an illegal character: '%c'.", item->data, *ptr);
+				fwts_failed(fw, "Method %s contains an illegal character: '%c'.", (char *)item->data, *ptr);
 				failed++;
 				break;
 			}
@@ -331,7 +331,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		for (i=0;(i<9) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, "_BIF package element %d is not of type DWORD Integer.");
+				fwts_failed(fw, "_BIF package element %d is not of type DWORD Integer.", i);
 				failed++;
 			}
 		}
@@ -346,41 +346,41 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Power Unit */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
 			fwts_failed(fw, "Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
-					obj->Package.Elements[0].Integer.Value);
+					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity (Element 1) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[1].Integer.Value);
+					(uint32_t)obj->Package.Elements[1].Integer.Value);
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[2].Integer.Value);
+					(uint32_t)obj->Package.Elements[2].Integer.Value);
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {	
 			fwts_failed(fw, "Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
-					obj->Package.Elements[3].Integer.Value);
+					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Voltage (Element 4) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[4].Integer.Value);
+					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity Warning (Element 5) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[5].Integer.Value);
+					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[6].Integer.Value);
+					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			failed++;
 		}
 		if (!failed)
@@ -408,7 +408,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		for (i=0;(i<16) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, "_BIX package element %d is not of type DWORD Integer.");
+				fwts_failed(fw, "_BIX package element %d is not of type DWORD Integer.", i);
 				failed++;
 			}
 		}
@@ -423,47 +423,47 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Power Unit */
 		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {	
 			fwts_failed(fw, "Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
-					obj->Package.Elements[1].Integer.Value);
+					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity (Element 2) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[2].Integer.Value);
+					(uint32_t)obj->Package.Elements[2].Integer.Value);
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[3].Integer.Value);
+					(uint32_t)obj->Package.Elements[3].Integer.Value);
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {	
 			fwts_failed(fw, "Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
-					obj->Package.Elements[4].Integer.Value);
+					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Voltage (Element 5) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[5].Integer.Value);
+					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[6].Integer.Value);
+					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Design Capacity Warning (Element 7) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[7].Integer.Value);
+					(uint32_t)obj->Package.Elements[7].Integer.Value);
 			failed++;
 		}
 		/* Cycle Count */
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {	
 			fwts_failed_low(fw, "Cycle Count (Element 10) is unknown: 0x%8.8x.", 
-					obj->Package.Elements[10].Integer.Value);
+					(uint32_t)obj->Package.Elements[10].Integer.Value);
 			failed++;
 		}
 		if (!failed)
@@ -506,7 +506,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, "_BIF package element %d is not of type DWORD Integer.");
+				fwts_failed(fw, "_BIF package element %d is not of type DWORD Integer.", i);
 				failed++;
 			}
 		}
@@ -515,7 +515,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Battery State */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
 			fwts_failed(fw, "Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.", 
-					obj->Package.Elements[0].Integer.Value);
+					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			failed++;
 		}
 		/* Battery Present Rate - cannot check, pulled from EC */
@@ -590,7 +590,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, "_BMD package element %d is not of type DWORD Integer.");
+				fwts_failed(fw, "_BMD package element %d is not of type DWORD Integer.", i);
 				failed++;
 			}
 		}
@@ -758,18 +758,18 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		} else {
 			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER))  {
-				fwts_failed(fw, "_WAK should return package of 2 integers.", 
+				fwts_failed(fw, "_WAK should return package of 2 integers, got %d instead.", 
 					obj->Package.Count);
 			}
 			else {
 				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
 					fwts_failed(fw, "Expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.", 
-						obj->Package.Elements[0].Integer.Value);
+						(uint32_t)obj->Package.Elements[0].Integer.Value);
 					failed++;
 				}
 				if (obj->Package.Elements[1].Integer.Value != Sstate) {	
 					fwts_failed(fw, "Expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.", 
-						Sstate, obj->Package.Elements[0].Integer.Value);
+						Sstate, (uint32_t)obj->Package.Elements[0].Integer.Value);
 					failed++;
 				}
 				if (!failed)
@@ -1287,8 +1287,8 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				    obj->Package.Elements[1].Integer.Value) {
 					fwts_failed(fw, "Brightness level when on full power (%d) is less than "
 						 	"brightness level when on battery power (%d).",
-						obj->Package.Elements[0].Integer.Value,
-						obj->Package.Elements[1].Integer.Value);
+						(uint32_t)obj->Package.Elements[0].Integer.Value,
+						(uint32_t)obj->Package.Elements[1].Integer.Value);
 						failed++;
 				}
 
@@ -1297,8 +1297,8 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 					    obj->Package.Elements[i+1].Integer.Value) {
 						fwts_failed(fw, "Brightness level %d (index %d) is greater than "
 						 		"brightness level %d (index %d), should be in ascending order.",
-						obj->Package.Elements[i].Integer.Value, i,
-						obj->Package.Elements[i+1].Integer.Value, i+1);
+						(uint32_t)obj->Package.Elements[i].Integer.Value, i,
+						(uint32_t)obj->Package.Elements[i+1].Integer.Value, i+1);
 						failed++;
 					}
 				}

@@ -99,7 +99,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 						"then X_FIRMWARE_CONTROL must be set to zero.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
 					fwts_failed(fw, "FIRMWARE_CONTROL is 0x%lx and differs from X_FIRMWARE_CONTROL 0x%llx",
-						fadt->firmware_control, fadt->x_firmware_ctrl);
+						(unsigned long int)fadt->firmware_control, fadt->x_firmware_ctrl);
 				}
 			}
 		}
@@ -112,7 +112,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			fwts_failed(fw, "FADT X_DSDT address is null.");
 		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) 
 			fwts_failed(fw, "FADT 32 bit DSDT (0x%lx) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
-				fadt->dsdt, fadt->x_dsdt);
+				(unsigned long int)fadt->dsdt, fadt->x_dsdt);
 	}
 
 	
@@ -231,7 +231,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	
 	if (madt->flags & 0xfffffffe)
 		fwts_failed(fw, "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
-			madt->flags);
+			(unsigned long int)madt->flags);
 
 	data += sizeof(fwts_acpi_table_madt);	
 	length -= sizeof(fwts_acpi_table_madt);
@@ -248,7 +248,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 0: {
 				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;
 				if (lapic->flags & 0xfffffffe) 
-					fwts_failed(fw, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", lapic->flags);
+					fwts_failed(fw, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)lapic->flags);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
 			break;
@@ -268,21 +268,21 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				if (int_override->bus != 0) 
 					fwts_failed(fw, "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
 				if (int_override->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", int_override->flags);
+					fwts_failed(fw, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)int_override->flags);
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
 			break;
 		case 3: {
 				fwts_acpi_madt_nmi *nmi = (fwts_acpi_madt_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
+					fwts_failed(fw, "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
 			break;
 		case 4: {
 				fwts_acpi_madt_local_apic_nmi *nmi = (fwts_acpi_madt_local_apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
+					fwts_failed(fw, "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
@@ -306,13 +306,13 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 8: {
 				fwts_acpi_madt_platform_int_source *src = (fwts_acpi_madt_platform_int_source*)data;
 				if (src->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", src->flags);
+					fwts_failed(fw, "MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->flags);
 				if (src->type > 3)
 					fwts_failed(fw, "MADT Platform Interrupt Source, type field is %d, should be 1..3.", src->type);
 				if (src->io_sapic_vector == 0)
 					fwts_failed(fw, "MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");
 				if (src->pis_flags & 0xfffffffe)
-					fwts_failed(fw, "MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", src->pis_flags);
+					fwts_failed(fw, "MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->pis_flags);
 				skip = (sizeof(fwts_acpi_madt_platform_int_source));
 			}
 			break;
@@ -322,7 +322,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 10: {
 				fwts_acpi_madt_local_x2apic_nmi *nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", nmi->flags);
+					fwts_failed(fw, "MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;
@@ -370,7 +370,7 @@ static int acpi_table_check_test1(fwts_framework *fw)
 		fwts_acpi_table_info *table;
 
 		if (fwts_acpi_find_table(fw, check_table[i].name, 0, &table) != FWTS_OK) {
-			fwts_aborted(fw, "Cannot load ACPI tables.", check_table[i].name);
+			fwts_aborted(fw, "Cannot load ACPI table %s.", check_table[i].name);
 			/* If this fails, we cannot load any subsequent tables so abort */
 			break;
 		}

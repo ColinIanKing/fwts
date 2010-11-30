@@ -98,8 +98,8 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 						"Section 5.2.9 of the ACPI specification states that if the FIRMWARE_CONTROL is non-zero "
 						"then X_FIRMWARE_CONTROL must be set to zero.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
-					fwts_failed(fw, "FIRMWARE_CONTROL is 0x%lx and differs from X_FIRMWARE_CONTROL 0x%llx",
-						(unsigned long int)fadt->firmware_control, fadt->x_firmware_ctrl);
+					fwts_failed(fw, "FIRMWARE_CONTROL is 0x%x and differs from X_FIRMWARE_CONTROL 0x%llx",
+						(unsigned int)fadt->firmware_control, (unsigned long long int)fadt->x_firmware_ctrl);
 				}
 			}
 		}
@@ -111,8 +111,8 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if (fadt->x_dsdt == 0) 
 			fwts_failed(fw, "FADT X_DSDT address is null.");
 		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) 
-			fwts_failed(fw, "FADT 32 bit DSDT (0x%lx) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
-				(unsigned long int)fadt->dsdt, fadt->x_dsdt);
+			fwts_failed(fw, "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
+				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
 	}
 
 	

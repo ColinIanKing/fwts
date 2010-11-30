@@ -133,12 +133,12 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
 				if (taglist)
 					fwts_tag_add(taglist, fwts_tag_to_str(pattern->tag));
-				fwts_failed_level(fw, pattern->level, "%s [%x] Kernel message: %s", fwts_log_level_to_str(pattern->level), pattern, line);
+				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 				if (pattern->advice != NULL)
 					fwts_advice(fw, "%s", pattern->advice);
 				else
-					fwts_advice(fw, advice);
+					fwts_advice(fw, "%s", advice);
 				return;
 			}
 			break;
@@ -147,12 +147,12 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 			if (strstr(line, pattern->pattern) != NULL) {
 				if (taglist)
 					fwts_tag_add(taglist, fwts_tag_to_str(pattern->tag));
-				fwts_failed_level(fw, pattern->level, "%s [%x] Kernel message: %s", fwts_log_level_to_str(pattern->level), pattern, line);
+				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 				if (pattern->advice != NULL)
 					fwts_advice(fw, "%s", pattern->advice);
 				else
-					fwts_advice(fw, advice);
+					fwts_advice(fw, "%s", advice);
 				return;	
 			}
 		}

@@ -274,7 +274,8 @@ static int check_vga_controller_address(fwts_framework *fw)
 						if (start >= mtrr->start && (start+size)<= mtrr->end) {
 							found = 1;
 							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %llx - %llx\n",
-								mtrr->start, mtrr->end);
+								(unsigned long long int)mtrr->start,
+								(unsigned long long int)mtrr->end);
 							break;
 						}
 					}
@@ -413,8 +414,10 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.", start, end, c2,
-				cache_to_string(type & type_mustnot));
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
+					(unsigned long long int)start,
+					(unsigned long long int)end,
+					c2, cache_to_string(type & type_mustnot));
 			if (type_must == UNCACHED)
 				skiperror = 1;
 		}
@@ -425,8 +428,10 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.", start, end, c2,
-				cache_to_string( (type & type_must) ^ type_must));
+			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
+					(unsigned long long int)start,
+					(unsigned long long int)end,
+					c2, cache_to_string( (type & type_must) ^ type_must));
 		}
 		
 	}
@@ -452,9 +457,9 @@ static void do_mtrr_resource(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "Reg %d: disabled\n", entry->reg);
 		else
 			fwts_log_info_verbatum(fw, "Reg %d: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n", entry->reg,
-				(unsigned long long)entry->start,
-				(unsigned long long)entry->end, 
-				(unsigned long long)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
+				(unsigned long long int)entry->start,
+				(unsigned long long int)entry->end, 
+				(unsigned long long int)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
 				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
 	fwts_log_info(fw,"\n");

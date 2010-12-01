@@ -1,3 +1,10 @@
+fwts (0.20.00) natty; urgency=low
+ 
+  * Add -u, --utils option
+  * New upstream version 0.20.00
+
+ -- Colin King <colin.king@canonical.com>  Wed, 1 Dec 2010 16:27:37 +0000
+
 fwts (0.19.29) maverick; urgency=low
  
   * Fix 64 bit build warnings

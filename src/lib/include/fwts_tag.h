@@ -21,6 +21,7 @@
 #define __FWTS_TAG__
 
 #include "fwts_list.h"
+#include "fwts_framework.h"
 
 typedef enum {
 	FWTS_TAG_NONE = 1,
@@ -33,6 +34,7 @@ typedef enum {
 	FWTS_TAG_BIOS_IRQ,
 	FWTS_TAG_BIOS_AMD_POWERNOW,
 	FWTS_TAG_BIOS_MMCONFIG,
+	FWTS_TAG_BIOS_DMI,
 	FWTS_TAG_ACPI,
 	FWTS_TAG_ACPI_IO_PORT,
 	FWTS_TAG_ACPI_INVALID_TABLE,
@@ -64,6 +66,8 @@ typedef enum {
 	FWTS_TAG_ACPI_RSDP,
 	FWTS_TAG_ACPI_MUTEX,
 	FWTS_TAG_ACPI_THERMAL,
+	FWTS_TAG_ACPI_LID,
+	FWTS_TAG_ACPI_METHOD,
 	FWTS_TAG_EMBEDDED_CONTROLLER,
 	FWTS_TAG_POWER_MANAGEMENT,
 } fwts_tag;
@@ -72,5 +76,7 @@ fwts_tag fwts_tag_id_str_to_tag(const char *tag);
 const char *fwts_tag_to_str(fwts_tag tag);
 void fwts_tag_add(fwts_list *taglist, const char *tag);
 char *fwts_tag_list_to_str(fwts_list *taglist);
+void fwts_tag_report(fwts_framework *fw, fwts_list *taglist);
+void fwts_tag_failed(fwts_framework *fw, fwts_tag tag);
 
 #endif

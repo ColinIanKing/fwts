@@ -165,6 +165,7 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 			data++;
 			if (data > wdg_data + size) {
 				fwts_failed_high(fw, "_WDG buffer was more than %d bytes long!", size);
+				fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_LENGTH);
 				return;
 			}
 		}

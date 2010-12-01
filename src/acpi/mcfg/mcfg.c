@@ -151,7 +151,8 @@ static int mcfg_test1(fwts_framework *fw)
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
 	if ((int)mcfg_size<0) {
-		fwts_failed(fw, "Invalid MCFG ACPI table size: got %d bytes expecting more", mcfg_size + 36 + 8);
+		fwts_failed_high(fw, "Invalid MCFG ACPI table size: got %d bytes expecting more", mcfg_size + 36 + 8);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw, "MCFG table must be least %d bytes (header size) with multiples of %d"
 				"bytes for each MCFG entry.", 36+8, (int)sizeof(struct mcfg_entry));
 		return FWTS_ERROR;
@@ -164,7 +165,8 @@ static int mcfg_test1(fwts_framework *fw)
 	}
 
 	if ((nr * sizeof(struct mcfg_entry)) != mcfg_size) {
-		fwts_failed(fw, "MCFG table is not a multiple of record size");
+		fwts_failed_high(fw, "MCFG table is not a multiple of record size");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
@@ -173,8 +175,9 @@ static int mcfg_test1(fwts_framework *fw)
 
 	table_page = table_ptr = mcfg_table->data;
 
-	if (table_page==NULL) {
-		fwts_failed(fw, "Invalid MCFG ACPI table");
+	if (table_page == NULL) {
+		fwts_failed_high(fw, "Invalid MCFG ACPI table");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
@@ -191,6 +194,7 @@ static int mcfg_test1(fwts_framework *fw)
 
 		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
 			fwts_failed_medium(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			fwts_advice(fw, "The PCI Express specification states that the PCI Express configuration space should "
 					"be defined in the MCFG table and *maybe* optionally defined in the E820 table "
 					"if ACPI MCFG is present. "

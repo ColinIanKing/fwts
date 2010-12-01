@@ -42,6 +42,7 @@ static fwts_tag_info fwts_tags[] = {
 	FWTS_TAG(FWTS_TAG_BIOS_IRQ,		"bios-irq"),
 	FWTS_TAG(FWTS_TAG_BIOS_AMD_POWERNOW,	"bios-amd-powernow"),
 	FWTS_TAG(FWTS_TAG_BIOS_MMCONFIG,	"bios-mmconfig"),
+	FWTS_TAG(FWTS_TAG_BIOS_DMI,		"bios-dmi"),
 	FWTS_TAG(FWTS_TAG_ACPI,			"acpi"),
 	FWTS_TAG(FWTS_TAG_ACPI_IO_PORT,		"acpi-io-port"),
 	FWTS_TAG(FWTS_TAG_ACPI_INVALID_TABLE,	"acpi-invalid-table"),
@@ -73,6 +74,8 @@ static fwts_tag_info fwts_tags[] = {
 	FWTS_TAG(FWTS_TAG_ACPI_RSDP,		"acpi-rsdp"),
 	FWTS_TAG(FWTS_TAG_ACPI_MUTEX,		"acpi-mutex"),
 	FWTS_TAG(FWTS_TAG_ACPI_THERMAL,		"acpi-thermal"),
+	FWTS_TAG(FWTS_TAG_ACPI_LID,		"acpi-lid"),
+	FWTS_TAG(FWTS_TAG_ACPI_METHOD,		"acpi-method"),
 	FWTS_TAG(FWTS_TAG_EMBEDDED_CONTROLLER,	"embedded-controller"),
 	FWTS_TAG(FWTS_TAG_POWER_MANAGEMENT,	"power-management"),
 	{ 0, NULL, NULL }
@@ -161,4 +164,29 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
 		}
 	}
 	return str;
+}
+
+void fwts_tag_report(fwts_framework *fw, fwts_list *taglist)
+{
+	if ((fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS) &&
+	    (taglist != NULL) && 
+	    (fwts_list_len(taglist) > 0)) {
+		char *tags;
+
+		tags = fwts_tag_list_to_str(taglist);
+		fwts_log_tag(fw, "Tags: %s", tags);
+		free(tags);
+	}
+}
+
+void fwts_tag_failed(fwts_framework *fw, fwts_tag tag)
+{
+	const char *text = fwts_tag_to_str(tag);
+
+	if (*text) {
+		if (fw->test_taglist)
+			fwts_tag_add(fw->test_taglist, text);
+		if (fw->total_taglist)
+			fwts_tag_add(fw->total_taglist, text);
+	}
 }

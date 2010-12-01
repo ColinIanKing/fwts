@@ -83,6 +83,7 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 	if ((t_end - t_start) < delay) {
 		(*errors)++;
 		fwts_failed_medium(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	if ((t_end - t_start) > delay*3) {
 		int s3_C1E_enabled;
@@ -107,14 +108,17 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 		(*errors)++;
 		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		(*errors)++;
 		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		(*errors)++;
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 }
 
@@ -129,13 +133,13 @@ static int s3_check_log(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_common_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_common_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 	fwts_klog_free(klog);

@@ -30,7 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 
-static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors, fwts_list *taglist)
+static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
 	if (strstr(line, "ACPI: Subsystem revision")!=NULL) {
 		char *version = strstr(line,"sion ");
@@ -51,31 +51,38 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 
 	if (strstr(line, "Disabling IRQ")!=NULL && prevline && strstr(prevline,"acpi_irq")) {
 		fwts_failed(fw, "ACPI interrupt got stuck: level triggered?");
+		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
+
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (prevline && strstr(prevline, "*** Error: Return object type is incorrect")) {
 		fwts_failed_high(fw, "Return object type is incorrect: %s.", line);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"ACPI: acpi_ec_space_handler: bit_width is 32, should be")) {
 		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"acpi_ec_space_handler: bit_width should be")) {
 		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SRAT) returned 0!")) {
 		fwts_failed(fw, "SRAT table cannot be found");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SLIT) returned 0!")) {
 		fwts_failed(fw, "SLIT table cannot be found");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
@@ -89,46 +96,55 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 		strncpy(tmp, prevline, sizeof(tmp));
 		tmp[11] = '\0';
 		fwts_failed_high(fw, "ACPI table %s has an invalid checksum.", tmp+6);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC")) {
 		fwts_failed_high(fw, "8254 timer not connected to IO-APIC: %s.", line);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_APIC);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) {
 		fwts_failed_high(fw, "%s", line);
+		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "*** Warning Inconsistent FADT length") && strstr(line, "using FADT V1.0 portion of table")) {
 		fwts_failed_high(fw, "FADT table claims to be of higher revision than it is.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "thermal_get_trip_point: Invalid active threshold")) {
 		fwts_failed_critical(fw, "_AC0 thermal trip point is invalid.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_THERMAL);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MMCONFIG has no entries")) {
 		fwts_failed_high(fw, "The MCFG table has no entries!");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MMCONFIG not in low 4GB of memory")) {
-		fwts_failed(fw, "The MCFG table entries are not in the lower 4Gb of RAM.");
+		fwts_failed(fw, "The MCFG table entries are not in the lower 4Gb of RAM.");	
+		fwts_tag_failed(fw, FWTS_TAG_BIOS_MMCONFIG);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "pcie_portdrv_probe->Dev") && strstr(line, "has invalid IRQ. Check vendor BIOS")) {
 		fwts_failed_high(fw, "PCI Express port driver reports an invalid IRQ.");
+		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
 	if (strstr(line, "OCHI: BIOS handoff failed (BIOS bug")) {
 		fwts_failed(fw, "OHCI BIOS emulation handoff failed.");
+		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_info_verbatum(fw,"%s", line);
 		fwts_advice(fw, "Generally this means that the EHCI driver was unable to take "
 			  	"control of the USB controller away from the BIOS. "
@@ -136,6 +152,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void 
 	}
 	if (strstr(line, "EHCI: BIOS handoff failed (BIOS bug")) {
 		fwts_failed(fw, "EHCI BIOS emulation handoff failed.");
+		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_info_verbatum(fw,"%s", line);
 		fwts_advice(fw, "Generally this means that the EHCI driver was unable to take "
 				"control of the USB controller away from the BIOS. "
@@ -181,7 +198,7 @@ static int acpiinfo_test1(fwts_framework *fw)
 		 "error messages that indicate a bad interaction with the bios, including "
 		 "those that point at AML syntax errors.");
 
-	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors, NULL)) {
+	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors)) {
 		fwts_log_error(fw, "failed to scan kernel log.");
 		return FWTS_ERROR;
 	}

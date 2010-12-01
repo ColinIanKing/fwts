@@ -421,6 +421,7 @@ static int validate_iomem(fwts_framework *fw)
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string(type & type_mustnot));
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			if (type_must == UNCACHED)
 				skiperror = 1;
 		}
@@ -435,6 +436,7 @@ static int validate_iomem(fwts_framework *fw)
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string( (type & type_must) ^ type_must));
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		}
 		
 	}
@@ -524,14 +526,17 @@ static int mtrr_test2(fwts_framework *fw)
 
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent fixed MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsitent fixed MTRR settings which the kernel fixed.");
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent variable MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent MTRRdefType") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}
 
@@ -557,6 +562,7 @@ static int mtrr_test3(fwts_framework *fw)
  						"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
  						"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
  						"0 for operation.\"");
+				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			}
 			else {
 				fwts_passed(fw, "No MtrrFixDramModEn error detected.");

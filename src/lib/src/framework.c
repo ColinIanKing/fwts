@@ -432,6 +432,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	fwts_framework_minor_test *minor_test;	
 
 	fw->current_minor_test_name = "";
+	fw->test_taglist = fwts_list_init();
 
 	fwts_results_zero(&fw->major_tests);
 
@@ -524,6 +525,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	if (test->ops->deinit)
 		test->ops->deinit(fw);
+
+	fwts_tag_report(fw, fw->test_taglist);
+	fwts_list_free(fw->test_taglist, free);
+	fw->test_taglist = NULL;
 
 	if (!(test->flags & FWTS_UTILS))
 		fwts_framework_test_summary(fw);
@@ -937,6 +942,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fw->s3_min_delay = 0;
 	fw->s3_max_delay = 30;
 	fw->s3_delay_delta = 0.5;
+	fw->total_taglist = fwts_list_init();
 
 	fwts_summary_init();
 
@@ -1275,6 +1281,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if (fw->print_summary) {
 		fwts_log_set_owner(fw->results, "summary");
 		fwts_log_nl(fw);
+		fwts_tag_report(fw, fw->total_taglist);
+		fwts_list_free(fw->test_taglist, free);
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
 		fwts_summary_report(fw);

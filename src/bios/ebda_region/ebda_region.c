@@ -127,8 +127,10 @@ static int ebda_test1(fwts_framework *fw)
 		}
 	}
 
-	if (!passed)
+	if (!passed) {
 		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in E820 table.", ebda_addr);
+		fwts_tag_failed(fw, FWTS_TAG_BIOS);
+	}
 		
 	return FWTS_OK;
 }

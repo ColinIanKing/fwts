@@ -79,14 +79,20 @@ static int apicedge_test1(fwts_framework *fw)
 			edge = 0;
 			
 		if (strstr(line,"acpi")) {
-			if (edge==1)
+			if (edge==1) {
 				fwts_failed(fw,"ACPI Interrupt is incorrectly edge triggered.");
+				fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
+			}
 			continue;	
 		}
-		if ((irq<15) && (edge == 0))
+		if ((irq<15) && (edge == 0)) {
 			fwts_failed(fw,"Legacy interrupt %i is incorrectly level triggered.", irq);
-		if ((irq<15) && (edge == -1))
+			fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
+		}
+		if ((irq<15) && (edge == -1)) {
 			fwts_failed(fw,"Non-Legacy interrupt %i is incorrectly level triggered.", irq);
+			fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
+		}
 	}
 	fclose(file);	
 

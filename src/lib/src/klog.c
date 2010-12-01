@@ -86,8 +86,7 @@ int fwts_klog_scan(fwts_framework *fw,
 		   fwts_klog_scan_func scan_func,
 		   fwts_klog_progress_func progress_func,
 		   void *private, 
-		   int *match,
-		   fwts_list *taglist)
+		   int *match)
 {
 	*match= 0;
 	char *prev;
@@ -105,7 +104,7 @@ int fwts_klog_scan(fwts_framework *fw,
 		if ((ptr[0] == '<') && (ptr[2] == '>'))
 			ptr += 3;
 
-		scan_func(fw, ptr, prev, private, match, taglist);
+		scan_func(fw, ptr, prev, private, match);
 		if (progress_func  && ((i % 25) == 0))
 			progress_func(fw, 100 * i / fwts_list_len(klog));
 		prev = ptr;
@@ -118,8 +117,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 	char *line, 
 	char *prevline, 
 	void *private, 
-	int *errors, 
-	fwts_list *taglist)
+	int *errors)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
 	int vector[1];
@@ -131,8 +129,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
 			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
-				if (taglist)
-					fwts_tag_add(taglist, fwts_tag_to_str(pattern->tag));
+				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 				if (pattern->advice != NULL)
@@ -145,8 +142,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		case FWTS_COMPARE_STRING:
 		default:
 			if (strstr(line, pattern->pattern) != NULL) {
-				if (taglist)
-					fwts_tag_add(taglist, fwts_tag_to_str(pattern->tag));
+				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 				if (pattern->advice != NULL)
@@ -196,8 +192,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	const char *table,
 	fwts_klog_progress_func progress,
 	fwts_list *klog,
-	int *errors,
-	fwts_list *taglist)
+	int *errors)
 {
 	int ret = FWTS_ERROR;
 	int n;
@@ -257,7 +252,7 @@ static int fwts_klog_check(fwts_framework *fw,
 			fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
 	}
 	/* We've now collected up the scan patterns, lets scan the log for errors */
-	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors, taglist);
+	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors);
 
 fail:
 	for (i=0; i<n; i++)
@@ -271,28 +266,28 @@ fail_put:
 }
 
 int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, 
-	fwts_list *klog, int *errors, fwts_list *taglist)
+	fwts_list *klog, int *errors)
 {	
 	return fwts_klog_check(fw, "firmware_error_warning_patterns", 
-		progress, klog, errors, taglist);
+		progress, klog, errors);
 }
 
 int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, 
-	fwts_list *klog, int *errors, fwts_list *taglist)
+	fwts_list *klog, int *errors)
 {
 	return fwts_klog_check(fw, "pm_error_warning_patterns", 
-		progress, klog, errors, taglist);
+		progress, klog, errors);
 }
 
 int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, 
-	fwts_list *klog, int *errors, fwts_list *taglist)
+	fwts_list *klog, int *errors)
 {
 	return fwts_klog_check(fw, "common_error_warning_patterns", 
-		progress, klog, errors, taglist);
+		progress, klog, errors);
 }
 
 static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, 
-	char *prev, void *pattern, int *match, fwts_list *taglist)
+	char *prev, void *pattern, int *match)
 {
 	const char *error;
 	int erroffset;
@@ -318,7 +313,7 @@ int fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern)
 {
 	int found = 0;
 
-	fwts_klog_scan(fw, klog, fwts_klog_regex_find_callback, NULL, pattern, &found, NULL);
+	fwts_klog_scan(fw, klog, fwts_klog_regex_find_callback, NULL, pattern, &found);
 
 	return found;
 }

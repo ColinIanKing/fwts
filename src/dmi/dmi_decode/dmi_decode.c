@@ -146,6 +146,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 				}
 				if (match) {		
 					fwts_failed_level(fw, dmi_patterns[i].level, "DMI type %s: %s.", dmi_types[type],dmi_patterns[i].message);
+					fwts_tag_failed(fw, FWTS_TAG_BIOS_DMI);
 					if (!dumped) {
 						fwts_log_info(fw, "DMI table dump:");
 						fwts_list_link *dump;

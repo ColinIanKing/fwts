@@ -57,6 +57,7 @@ static int os2gap_test1(fwts_framework *fw)
 		fwts_failed_high(fw, "The memory map has OS/2 memory hole at %p..%p.",
 			(void*)OS2_GAP_ADDRESS,
 			(void*)(OS2_GAP_ADDRESS + OS2_GAP_SIZE));
+		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_nl(fw);
 		fwts_e820_table_dump(fw, os2gap_e820_info);
 	} else

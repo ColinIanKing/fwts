@@ -24,6 +24,8 @@
 #include <string.h>
 
 #include "fwts_log.h"
+#include "fwts_list.h"
+#include "fwts_framework.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
@@ -108,6 +110,9 @@ typedef struct {
 	int minor_test_progress;		/* Percentage completion of current test */
 	int print_summary;			/* Print summary of results at end of test runs */
 	int failed_level;			/* Bit mask of failed levels in test run */
+
+	fwts_list *test_taglist;		/* List of tags found when running all minor tests */
+	fwts_list *total_taglist;		/* List of tags found when running all tests */
 } fwts_framework;
 
 typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);

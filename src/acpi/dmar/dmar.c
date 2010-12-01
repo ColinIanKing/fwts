@@ -250,6 +250,7 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	table_ptr = (uint8_t*)table->data;
 	if (table->length <= DMAR_HEADER_SIZE) {
 		fwts_failed(fw, "Invalid DMAR ACPI table.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
@@ -275,7 +276,7 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors, fwts_list *taglist)
+static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
 {
         if (strstr(line, "DMAR:[fault reason")) 
 		fwts_failed(fw, "Found DMAR error: %s", line);
@@ -296,7 +297,7 @@ static int dmar_test1(fwts_framework *fw)
                 	fwts_log_error(fw, "Cannot read kernel log.");
                 	return FWTS_ERROR;
         	}
-		if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors, NULL)) {
+		if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors)) {
                 	fwts_log_error(fw, "Failed to scan kernel log.");
                 	return FWTS_ERROR;
 		}

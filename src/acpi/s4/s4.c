@@ -79,13 +79,13 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_common_check(fw, NULL, klog, &errors, NULL))
+	if (fwts_klog_common_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 
@@ -98,46 +98,60 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	if ((status > 0) && (status < 128)) {
 		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				   "in the requested power saving state.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				   "power state but failed.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				   "enter the requested power saving state.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") > 0)
 		fwts_passed(fw, "User space processes successfully frozen.");
-	else		
+	else {
 		fwts_failed_high(fw, "Failed to freeze user space processes.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") > 0)
 		fwts_passed(fw, "Remaining non-user spaces tasks successfully frozen.");
-	else		
+	else {
 		fwts_failed_high(fw, "Failed to freeze remaining non-user space processes.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+	}
 
 	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") > 0) &&
 	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") > 0))
 		fwts_passed(fw, "Successfully frozen devices.");
-	else		
+	else {
 		fwts_failed_high(fw, "Failed to freeze devices.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") > 0)
 		fwts_passed(fw, "Allocated memory for hibernate image.");
 	else {
 		fwts_failed_high(fw, "Failed to allocate memory for hibernate image.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") > 0)
 		fwts_passed(fw, "Hibernate image restored successfully.");
-	else		
+	else {
 		fwts_failed_high(fw, "Failed to restore hibernate image.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+	}
 	
 	if (fwts_klog_regex_find(fw, klog, "Restarting tasks.*done") > 0)
 		fwts_passed(fw, "Tasks restarted successfully.");
-	else		
+	else {
 		fwts_failed_high(fw, "Failed to restart tasks.");
+		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+	}
 
 	fwts_klog_free(klog);
 

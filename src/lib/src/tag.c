@@ -123,12 +123,14 @@ static int fwts_tag_compare(void *data1, void *data2)
 /*
  *  fwts_tag_add()
  *	add a tag name to a list of tag names, ordered alphabetically
+ * 	tag is added if it does already exist in the tag list
  */
 void fwts_tag_add(fwts_list *taglist, const char *tag)
 {
 	fwts_list_link	*item;
 	char *str;
 
+	/* Exists already? then don't bother */
 	fwts_list_foreach(item, taglist)
 		if (strcmp((char*)item->data, tag) == 0)
 			return;
@@ -166,6 +168,10 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
 	return str;
 }
 
+/*
+ *  fwts_tag_report()
+ *	report to the log the tags found in the taglist
+ */
 void fwts_tag_report(fwts_framework *fw, fwts_list *taglist)
 {
 	if ((fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS) &&
@@ -179,6 +185,12 @@ void fwts_tag_report(fwts_framework *fw, fwts_list *taglist)
 	}
 }
 
+/*
+ *  fwts_tag_failed()
+ *	add to the tag lists the tag:
+ *	per test (this is emptied at end of each test)
+ * 	all tests (this is total for all tests run)
+ */
 void fwts_tag_failed(fwts_framework *fw, fwts_tag tag)
 {
 	const char *text = fwts_tag_to_str(tag);

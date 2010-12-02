@@ -18,6 +18,8 @@
  */
 #include <stdio.h>
 
+#ifdef FWTS_ARCH_INTEL
+
 #include "fwts.h"
 
 /* Some CMOS information from http://www-ivs.cs.uni-magdeburg.de/~zbrog/asm/cmos.html */
@@ -330,3 +332,5 @@ static fwts_framework_ops cmosdump_ops = {
 };
 
 FWTS_REGISTER(cmosdump, &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+
+#endif

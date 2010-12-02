@@ -554,18 +554,25 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "\\[Firmware Bug\\]: ACPI.*No _BQC method",
+   "advice": "_BQC (Brightness Query Current level) seems to be missing. This method returns the current brightness level of a built-in display output device."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
    "pattern": "\\[Firmware Bug\\]: ACPI.*brightness control misses _BQC function",
    "advice": "_BQC (Brightness Query Current level) seems to be missing. This method returns the current brightness level of a built-in display output device."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "\\[Firmware Bug\\]: ACPI:",
    "advice": "ACPI driver has detected an ACPI bug. This generally points to a bug in an ACPI table. Examine the kernel log for more details."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "\\[Firmware Bug\\]: BIOS needs update for CPU frequency support",
@@ -579,45 +586,45 @@
    "advice": "The Error Record Serialization Table (ERST) seems to be invalid. This normally indicates that the ERST table header size is too small, or the table size (excluding header) is not a multiple of the ERST entries."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_THERMAL",
-   "pattern": "\\[Firmware Bug\\]: Invalid critical threshold",
+   "pattern": "\\[Firmware Bug\\]:.*Invalid critical threshold",
    "advice": "ACPI _CRT (Critical Trip Point) is returning a threshold lower than zero degrees Celsius which is clearly incorrect."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_THERMAL",
-   "pattern": "\\[Firmware Bug\\]: No valid trip found",
+   "pattern": "\\[Firmware Bug\\]:.*No valid trip found",
    "advice": "No valud ACPI _CRT (Critical Trip Point) was found."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "\\[Firmware Bug\\]: _BCQ is usef instead of _BQC",
+   "pattern": "\\[Firmware Bug\\]:.*_BCQ is used instead of _BQC",
    "advice": "ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed.however the kernel has detected this and is working around this typo."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "defines _DOD but not _DOS",
+   "pattern": ".*defines _DOD but not _DOS",
    "advice": "ACPI Method _DOD (Enumerate all devices attached to display adapter) is defined but we should also have _DOS (Enable\/Disable output switching) defined but it's been omitted. This can cause display switching issues."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "\\[Firmware Bug\\]: Duplicate ACPI video bus",
+   "pattern": "\\[Firmware Bug\\]:.*Duplicate ACPI video bus",
    "advice": "Try video module parameter video.allow_duplicates=1 if the current driver does't work."
   },
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI_PCI_EXPRESS",
-   "pattern": "\\[Firmware Bug\\]: PCI.*MMCONFIG.*not reserved in ACPI motherboard resources",
+   "pattern": "\\[Firmware Bug\\]:.*PCI.*MMCONFIG.*not reserved in ACPI motherboard resources",
    "advice": "It appears that PCI config space has been configured for a specific device but does not appear to be reserved by the ACPI motherboard resources."
   },
   {
@@ -628,10 +635,10 @@
    "advice": "PCI firmware bug. Please see the kernel log for more details."
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "\\[Firmware Bug\\]: ",
+   "pattern": "\\[Firmware Bug\\]:.*",
    "advice": "The kernel has detected a Firmware bug in the BIOS or ACPI which needs investigating and fixing."
   },
   {

@@ -435,7 +435,7 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 		newlog->line_width = log_line_width;
 	} else {
 		struct winsize ws;
-#if TIOCGWINSZ
+#ifdef TIOCGWINSZ
 		if (isatty(fd) &&
 		    (ioctl(fd, TIOCGWINSZ, &ws) != -1) &&
 		    (0 < ws.ws_col) && 

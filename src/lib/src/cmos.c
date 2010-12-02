@@ -18,10 +18,11 @@
  */
 
 #include <unistd.h> 
-#include <sys/io.h>
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+#include <sys/io.h>
 /*
  *  fwts_cmos_read()
  *	read a byte from cmos memory at a given offset
@@ -42,3 +43,9 @@ int fwts_cmos_read(int offset, uint8_t *value)
 
 	return FWTS_OK;
 }
+#else
+int fwts_cmos_read(int offset, uint8_t *value)
+{
+	return FWTS_ERROR;
+}
+#endif

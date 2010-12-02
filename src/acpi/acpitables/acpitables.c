@@ -21,7 +21,6 @@
 #include <dirent.h>
 #include <ctype.h>
 #include <unistd.h> 
-#include <sys/io.h> 
 
 #include "fwts.h"
 

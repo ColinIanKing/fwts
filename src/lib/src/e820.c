@@ -326,7 +326,7 @@ const char *fwts_memory_map_name(int type)
 	case FWTS_FIRMWARE_BIOS:
 		return "Int 15 AX=E820 BIOS memory map";
 	case FWTS_FIRMWARE_UEFI:
-		return "UEFI time service memory map";
+		return "UEFI run-time service memory map";
 	default:
 		return "Unknown memory map";
 	}

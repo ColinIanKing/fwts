@@ -14,7 +14,6 @@ libtestsuite_a_SOURCES = \
 	cmos.c \
 	dump.c \
 	dump_data.c \
-	e820.c \
 	fileio.c \
 	firmware.c \
 	framework.c \
@@ -25,6 +24,7 @@ libtestsuite_a_SOURCES = \
 	keymap.c \
 	klog.c \
 	log.c \
+	memorymap.c \
 	pipeio.c \
 	set.c \
 	stringextras.c \

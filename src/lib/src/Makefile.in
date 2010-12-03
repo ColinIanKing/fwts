@@ -53,13 +53,13 @@ am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
 	acpica.$(OBJEXT) acpid.$(OBJEXT) acpi_tables.$(OBJEXT) \
 	interactive.$(OBJEXT) binpaths.$(OBJEXT) cpu.$(OBJEXT) \
 	checkeuid.$(OBJEXT) cmos.$(OBJEXT) dump.$(OBJEXT) \
-	dump_data.$(OBJEXT) e820.$(OBJEXT) fileio.$(OBJEXT) \
-	firmware.$(OBJEXT) framework.$(OBJEXT) formatting.$(OBJEXT) \
-	get.$(OBJEXT) gpe.$(OBJEXT) iasl.$(OBJEXT) keymap.$(OBJEXT) \
-	klog.$(OBJEXT) log.$(OBJEXT) pipeio.$(OBJEXT) set.$(OBJEXT) \
-	stringextras.$(OBJEXT) text_list.$(OBJEXT) wakealarm.$(OBJEXT) \
-	summary.$(OBJEXT) microcode.$(OBJEXT) virt.$(OBJEXT) \
-	tag.$(OBJEXT)
+	dump_data.$(OBJEXT) fileio.$(OBJEXT) firmware.$(OBJEXT) \
+	framework.$(OBJEXT) formatting.$(OBJEXT) get.$(OBJEXT) \
+	gpe.$(OBJEXT) iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) \
+	log.$(OBJEXT) memorymap.$(OBJEXT) pipeio.$(OBJEXT) \
+	set.$(OBJEXT) stringextras.$(OBJEXT) text_list.$(OBJEXT) \
+	wakealarm.$(OBJEXT) summary.$(OBJEXT) microcode.$(OBJEXT) \
+	virt.$(OBJEXT) tag.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -184,7 +184,6 @@ libtestsuite_a_SOURCES = \
 	cmos.c \
 	dump.c \
 	dump_data.c \
-	e820.c \
 	fileio.c \
 	firmware.c \
 	framework.c \
@@ -195,6 +194,7 @@ libtestsuite_a_SOURCES = \
 	keymap.c \
 	klog.c \
 	log.c \
+	memorymap.c \
 	pipeio.c \
 	set.c \
 	stringextras.c \
@@ -263,7 +263,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dump_data.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e820.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/firmware.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formatting.Po@am__quote@
@@ -276,6 +275,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memorymap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pipeio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/set.Po@am__quote@

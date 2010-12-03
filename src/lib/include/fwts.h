@@ -40,7 +40,7 @@
 #include "fwts_cpu.h"
 #include "fwts_dump.h"
 #include "fwts_dump_data.h"
-#include "fwts_e820.h"
+#include "fwts_memorymap.h"
 #include "fwts_fileio.h"
 #include "fwts_firmware.h"
 #include "fwts_gpe.h"

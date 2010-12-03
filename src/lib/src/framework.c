@@ -935,6 +935,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
 
+	fw->firmware_type = fwts_firmware_detect();
+
 	fw->magic = FWTS_FRAMEWORK_MAGIC;
 	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
 		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;

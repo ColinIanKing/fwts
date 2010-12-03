@@ -113,6 +113,8 @@ typedef struct {
 
 	fwts_list *test_taglist;		/* List of tags found when running all minor tests */
 	fwts_list *total_taglist;		/* List of tags found when running all tests */
+
+	int firmware_type;			/* Type of firmware */
 } fwts_framework;
 
 typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);

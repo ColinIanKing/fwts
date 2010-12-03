@@ -25,7 +25,7 @@
 
 static char *memory_mapdump_headline(void)
 {
-	return "Dump INT 15 E820 memmap.";
+	return "Dump system memory map.";
 }
 
 static int memory_mapdump_util(fwts_framework *fw)
@@ -33,7 +33,7 @@ static int memory_mapdump_util(fwts_framework *fw)
 	fwts_list *memory_mapdump_memory_map_info;
 
 	if ((memory_mapdump_memory_map_info = fwts_memory_map_table_load(fw)) == NULL) {
-		fwts_log_warning(fw, "Cannot load E820 table from /sys/firmware/memmap or kernel log.");
+		fwts_log_warning(fw, "Cannot memory map table from /sys/firmware/memmap or kernel log.");
 		return FWTS_ERROR;
 	}
 
@@ -44,7 +44,7 @@ static int memory_mapdump_util(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test memory_mapdump_utils[] = {
-	{ memory_mapdump_util, "Dump INT 15 E820 memmap." },
+	{ memory_mapdump_util, "Dump system memory map." },
 	{ NULL, NULL }
 };
 
@@ -53,6 +53,6 @@ static fwts_framework_ops memory_mapdump_ops = {
 	.minor_tests = memory_mapdump_utils
 };
 
-FWTS_REGISTER(e820dump, &memory_mapdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(memmapdump, &memory_mapdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
 
 #endif

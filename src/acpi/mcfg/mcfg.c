@@ -33,7 +33,7 @@
 #include <fcntl.h>
 #include <limits.h>
 
-static fwts_list *e820_list;
+static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
 
 /* Defined in PCI Firmware Specification 3.0 */
@@ -111,8 +111,8 @@ static int mcfg_init(fwts_framework *fw)
 
 static int mcfg_deinit(fwts_framework *fw)
 {
-	if (e820_list)
-		fwts_e820_table_free(e820_list);
+	if (memory_map_list)
+		fwts_memory_map_table_free(memory_map_list);
 
 	return FWTS_OK;
 }
@@ -130,19 +130,23 @@ static int mcfg_test1(fwts_framework *fw)
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
 	int mcfg_size;
+	const char *memory_map_name;
+
+	memory_map_name = fwts_memory_map_name(fw->firmware_type);
 	
 	fwts_log_info(fw,
 		"This test tries to validate the MCFG table by comparing the first "
 		"16 bytes in the MMIO mapped config space with the 'traditional' config "
 		"space of the first PCI device (root bridge). The MCFG data is only "
-		"trusted if it is marked reserved in the E820 table.");
+		"trusted if it is marked reserved in the %s", 
+		memory_map_name);
 	fwts_log_nl(fw);
 
-	if ((e820_list = fwts_e820_table_load(fw)) == NULL) {
+	if ((memory_map_list = fwts_memory_map_table_load(fw)) == NULL) {
 		/* Not fatal, just means test will be less comprehensive */
-		fwts_log_warning(fw, "No E820 table found");
+		fwts_log_warning(fw, "No memory map table found");
 	} else {
-		fwts_e820_table_dump(fw, e820_list);
+		fwts_memory_map_table_dump(fw, memory_map_list);
 		fwts_log_nl(fw);
 	}
 
@@ -186,22 +190,24 @@ static int mcfg_test1(fwts_framework *fw)
 
 	firstentry = *table;
 
-	if (e820_list == NULL)
-		fwts_failed(fw, "Cannot check MCFG mmio space against E820 table because E820 table could not load.");
+	if (memory_map_list == NULL)
+		fwts_failed(fw, "Cannot check MCFG mmio space against memory map table: could not read memory map table.");
 
 	for (i = 0; i<nr; i++) {
 		fwts_log_info(fw, "Entry address : 0x%x\n", table->low_address);
 
-		if ((e820_list != NULL) && (!fwts_e820_is_reserved(e820_list, table->low_address))) {
-			fwts_failed_medium(fw, "E820: MCFG mmio config space at 0x%x is not reserved in the E820 table", table->low_address);
+		if ((memory_map_list != NULL) && (!fwts_memory_map_is_reserved(memory_map_list, table->low_address))) {
+			
+			fwts_failed_medium(fw, "MCFG mmio config space at 0x%x is not reserved in the memory map table", table->low_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			fwts_advice(fw, "The PCI Express specification states that the PCI Express configuration space should "
-					"be defined in the MCFG table and *maybe* optionally defined in the E820 table "
+					"be defined in the MCFG table and *maybe* optionally defined in the %s "
 					"if ACPI MCFG is present. "
-					"Linux checks if the region is reserved in the E820 table and will reject the "
-					"MMCONFIG if there is a discrepency between MCFG and the E820 table for the "
+					"Linux checks if the region is reserved in the memory map table and will reject the "
+					"MMCONFIG if there is a discrepency between MCFG and the memory map table for the "
 					"PCI Express region.  [See arch/x86/pci/mmconfig-shared.c pci_mmcfg_reject_broken()]. "
-					"It is recommended that this is defined in the E820 table for Linux.");
+					"It is recommended that this is defined in the %s table for Linux.",
+					memory_map_name, memory_map_name);
 			failed++;
 		}
 
@@ -213,7 +219,7 @@ static int mcfg_test1(fwts_framework *fw)
 		table++;
 	}
 	if (!failed)
-		fwts_passed(fw, "MCFG mmio config space is reserved in E820 table.");
+		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");

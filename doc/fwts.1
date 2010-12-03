@@ -200,7 +200,7 @@ output the progress of tests being run in a form that can be piped into the
 dialog tool with the --gauge option.
 .TP
 .B \-s, \-\-show\-tests
-show the names of available tests. By default will show all tests. Use the \-\-batch, \-\-interactive, \-\-batch\-experimental, \-\-interactive\-experimental
+show the names of available tests. By default will show all tests. Use the \-\-batch, \-\-interactive, \-\-batch\-experimental, \-\-interactive\-experimental, \-\-utils 
 options to show these specific tests.
 .TP
 .B \-s, \-\-show\-tests\-full
@@ -216,6 +216,10 @@ output SUCCESS or FAILED to stdout at end of tests.
 .B \-t, \-\-table\-path=path
 specify the path containing ACPI tables. These tables need to be named in the format: tablename.dat,
 for example DSDT.dat, for example, as extracted using acpidump or fwts \-\-dump and then acpixtract.
+.TP
+.B \-u, \-\-utils
+run utilities. Designed to dump system information, such as annotated ACPI tables, CMOS memory,
+Int 15 E820 memory map, firmware ROM data.
 .TP
 .B \-v, \-\-version
 output version number and build date of the

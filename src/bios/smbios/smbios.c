@@ -61,12 +61,43 @@ static char *smbios_headline(void)
 	return "Check SMBIOS.";
 }
 
-static int fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+{
+	fwts_list *systab;
+	fwts_list_link *item;
+	int ret = FWTS_ERROR;
+
+	*addr = 0;
+
+	if (((systab = fwts_file_open_and_read("/sys/firmware/efi/systab")) == NULL) &&
+	    ((systab = fwts_file_open_and_read("/proc/efi/systab")) == NULL)) {
+		fwts_log_error(fw, "Cannot read UEFI systab file.");
+		return FWTS_ERROR;
+	}
+
+	fwts_list_foreach(item, systab) {
+		char *str = (char *)item->data;
+		if (strstr(str, "SMBIOS")) {
+			char *ptr = strstr(str, "=");
+			if (ptr) {
+				*addr = (uint32_t)strtoul(ptr+1, NULL, 0);
+				ret = FWTS_OK;
+				break;
+			}
+		}
+	}	
+	fwts_list_free(systab, free);
+
+	return ret;
+}
+
+static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
 {
 	int fd;
 	int ret = FWTS_ERROR;
 	uint8_t *mem;
 	int i;
+
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");
@@ -104,9 +135,24 @@ static int fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, 
 	return ret;
 }
 
+static int fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+{
+	switch (fw->firmware_type) {
+	case FWTS_FIRMWARE_BIOS:
+		return fwts_smbios_find_entry_in_bios(fw, entry, addr);
+		break;
+	case FWTS_FIRMWARE_UEFI:
+		return fwts_smbios_find_entry_in_uefi(fw, entry, addr);
+		break;
+	default:
+		return FWTS_ERROR;
+		break;
+	}
+}
+
 static int smbios_test1(fwts_framework *fw)
 {
-	uint32_t addr;
+	uint32_t addr = 0;
 	fwts_smbios_entry entry;
 
 	fwts_log_info(fw, "This test tries to find and sanity check the SMBIOS data structures.");
@@ -114,8 +160,7 @@ static int smbios_test1(fwts_framework *fw)
 		fwts_log_info(fw, "Could not find SMBIOS Table Entry Point.");
 	else {
 		fwts_log_info(fw, "Found SMBIOS Table Entry Point at 0x%8.8x", addr);
-
-		//if (strncmp(entry.anchor_string, "_DMI_", 
+		/* TODO: Dump out table */
 	}
 
 	return FWTS_OK;

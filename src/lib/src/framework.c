@@ -770,7 +770,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "-S, --skip-test=t1[,t2]",	"Ship tests named t1, t2.." },
 		{ "--stdout-summary",		"Output SUCCESS or FAILED to stdout at end of tests." },
 		{ "-t, --table-path=path",	"Path to ACPI tables." },
-		{ "-t, --utils",		"Run Utility 'tests'. " },
+		{ "-u, --utils",		"Run Utility 'tests'. " },
 		{ "-v, --version",		"Show version (" FWTS_VERSION ")." },
 		{ "-w, --log-width=N",		"Define the output log width in characters." },
 		{ NULL, NULL }

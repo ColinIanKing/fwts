@@ -1,3 +1,10 @@
+fwts (0.20.03) natty; urgency=low
+
+  * Changes to run successfully on UEFI systems.
+  * New upstream version 0.20.03
+
+ -- Colin King <colin.king@canonical.com>  Fri, 3 Dec 2010 15:48:57 +0000
+
 fwts (0.20.02) natty; urgency=low
 
   * Fix help and update man page for -u, --utils option

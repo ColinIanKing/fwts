@@ -18,9 +18,9 @@
  */
 #include <stdio.h>
 
-#ifdef FWTS_ARCH_INTEL
-
 #include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 /* Some CMOS information from http://www-ivs.cs.uni-magdeburg.de/~zbrog/asm/cmos.html */
 

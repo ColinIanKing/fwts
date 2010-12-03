@@ -42,6 +42,7 @@
 #include "fwts_dump_data.h"
 #include "fwts_e820.h"
 #include "fwts_fileio.h"
+#include "fwts_firmware.h"
 #include "fwts_gpe.h"
 #include "fwts_iasl.h"
 #include "fwts_klog.h"

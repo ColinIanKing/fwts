@@ -1,3 +1,10 @@
+fwts (0.20.01) natty; urgency=low
+
+  * Fix PowerPC and ARM FTBFS issues (LP: #684663)
+  * New upstream version 0.20.01
+
+ -- Colin King <colin.king@canonical.com>  Fri, 3 Dec 2010 11:09:49 +0000
+
 fwts (0.20.00) natty; urgency=low
  
   * Add -u, --utils option

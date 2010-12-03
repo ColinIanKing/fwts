@@ -36,18 +36,23 @@
 
 static unsigned long ebda_addr = BAD_ADDR;
 
-static fwts_list *klog;
+static fwts_list *memory_map;
 
 static int ebda_init(fwts_framework *fw)
 {
 	int fd;
 	unsigned short addr;
 
+	if (fw->firmware_type != FWTS_FIRMWARE_BIOS) {
+		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
+		return FWTS_SKIP;
+	}
+
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
-	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Failed to read kernel log.");
+	if ((memory_map = fwts_memory_map_table_load(fw)) == NULL) {
+		fwts_log_error(fw, "Failed to read memory map.");
 		return FWTS_ERROR;
 	}
 
@@ -73,62 +78,40 @@ static int ebda_init(fwts_framework *fw)
 
 static int ebda_deinit(fwts_framework *fw)
 {
-	fwts_klog_free(klog);
+	fwts_klog_free(memory_map);
 
 	return FWTS_OK;
 }
 
 static char *ebda_headline(void)
 {
-	return "Validate EBDA region is mapped and reserved in E820 table.";
+	return "Validate EBDA region is mapped and reserved in memory map table.";
 }
 
 static int ebda_test1(fwts_framework *fw)
 {
-	int passed = 0;
-	fwts_list_link *item;
+	const char *memory_map_name = fwts_memory_map_name(fw->firmware_type);
+	fwts_memory_map_entry *entry;
 
-	if (klog == NULL)
+	if (memory_map == NULL)
 		return FWTS_ERROR;
 
 	fwts_log_info(fw, "The Extended BIOS Data Area (EBDA) is normally located at the end of the "
 			  "low 640K region and is typically 2-4K in size. It should be reserved in "
-			  "the E820 table.");
+			  "the %s table.", memory_map_name);
 
-	fwts_list_foreach(item, klog) {
-		char *tmp;
-
-		if ((tmp = strstr(fwts_text_list_text(item), "BIOS-e820")) != NULL) {
-			uint64_t start_addr = 0;
-			uint64_t end_addr = 0;
-			tmp = strstr(tmp,"BIOS-e820:");
-			if (tmp) {
-				tmp += 11;
-				start_addr = strtoull(tmp + 11, NULL, 16);
-				tmp = strstr(tmp + 11, " - ");
-				if (tmp) {
-					tmp += 3;
-					end_addr   = strtoull(tmp, NULL, 16);
-				}
-				else {
-					end_addr = 0;
-				}
-			}
-			if (strstr(tmp, "(reserved)") || strstr(tmp, "ACPI")) {
-				if (start_addr <= ebda_addr && end_addr > ebda_addr) {
-					fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %lldK region in E820 table at 0x%llx..0x%llx.",
-						ebda_addr, 
-						(unsigned long long int)(end_addr - start_addr) / 1024,
-						(unsigned long long int)start_addr, (unsigned long long int)end_addr);
-					passed = 1;
-					break;
-				}
-			}
-		}
-	}
-
-	if (!passed) {
-		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in E820 table.", ebda_addr);
+	entry = fwts_memory_map_info(memory_map, (uint64_t)ebda_addr);
+	if ((entry != NULL) &&
+	    (entry->type == FWTS_MEMORY_MAP_RESERVED || 
+	     entry->type == FWTS_MEMORY_MAP_ACPI)) {
+		fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %lldK region in the %s table at 0x%llx..0x%llx.",
+			ebda_addr, 
+			(unsigned long long int)(entry->end_address - entry->start_address) / 1024,
+			memory_map_name,
+			(unsigned long long int)entry->start_address,
+			(unsigned long long int)entry->end_address);
+	} else {
+		fwts_failed(fw, "EBDA region mapped at 0x%lx but not reserved in the %s table.", ebda_addr, memory_map_name);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 		

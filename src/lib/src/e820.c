@@ -28,20 +28,14 @@
 
 #include "fwts.h"
 
-typedef struct {
-	uint64_t	start_address;
-	uint64_t	end_address;
-	int		type;
-} e820_entry;
-
 /*
- *  fwts_e820_entry_compare()
- *	callback used to sort e820 entries on start address
+ *  fwts_fwts_memory_map_entry_compare()
+ *	callback used to sort memory_map entries on start address
  */
-static int fwts_e820_entry_compare(void *data1, void *data2)
+static int fwts_fwts_memory_map_entry_compare(void *data1, void *data2)
 {
-        e820_entry *entry1 = (e820_entry *)data1;
-        e820_entry *entry2 = (e820_entry *)data2;
+        fwts_memory_map_entry *entry1 = (fwts_memory_map_entry *)data1;
+        fwts_memory_map_entry *entry2 = (fwts_memory_map_entry *)data2;
 
 	if (entry1->start_address < entry2->start_address)
 		return -1;
@@ -52,44 +46,44 @@ static int fwts_e820_entry_compare(void *data1, void *data2)
 }
 
 /*
- *  fwts_e820_str_to_type()
- *	convert E820 memory strings into type values
+ *  fwts_memory_map_str_to_type()
+ *	convert memory strings into type values
  */
-static int fwts_e820_str_to_type(const char *str)
+static int fwts_memory_map_str_to_type(const char *str)
 {
 	/* Strings from /sys/firmware/memmap/x/type */
 
 	if (strstr(str, "System RAM"))
-		return E820_USABLE;
+		return FWTS_MEMORY_MAP_USABLE;
 	if (strstr(str, "reserved"))
-		return E820_RESERVED;
+		return FWTS_MEMORY_MAP_RESERVED;
 	if (strstr(str, "ACPI Non-volatile Storage"))
-		return E820_ACPI;
+		return FWTS_MEMORY_MAP_ACPI;
 
 	/* Strings from kernel log */
 
 	if (strstr(str, "(usable)"))
-		return E820_USABLE;
+		return FWTS_MEMORY_MAP_USABLE;
 	if (strstr(str, "(reserved)"))
-		return E820_RESERVED;
+		return FWTS_MEMORY_MAP_RESERVED;
 	if (strstr(str, "ACPI"))
-		return E820_ACPI;
+		return FWTS_MEMORY_MAP_ACPI;
 
-	return E820_UNKNOWN;
+	return FWTS_MEMORY_MAP_UNKNOWN;
 }
 
 /*
- *  fwts_e820_type_to_str()
+ *  fwts_memory_map_type_to_str()
  *	convert E280 type values to strings
  */
-static char *fwts_e820_type_to_str(int type)
+static char *fwts_memory_map_type_to_str(int type)
 {
 	switch (type) {
-	case E820_RESERVED:
+	case FWTS_MEMORY_MAP_RESERVED:
 		return "(reserved)";
-	case E820_ACPI:
+	case FWTS_MEMORY_MAP_ACPI:
 		return "(ACPI Non-volatile Storage)";
-	case E820_USABLE:
+	case FWTS_MEMORY_MAP_USABLE:
 		return "(System RAM)";
 	default:
 		return "(UNKNOWN)";
@@ -97,81 +91,94 @@ static char *fwts_e820_type_to_str(int type)
 }
 
 /*
- *  fwts_register_e820_line()
- *	add e820 line entry into a list ordered on start address
+ *  fwts_register_memory_map_line()
+ *	add memory_map line entry into a list ordered on start address
  */
-static int fwts_register_e820_line(fwts_list *e820_list, const uint64_t start, const uint64_t end, const int type)
+static int fwts_register_memory_map_line(fwts_list *memory_map_list, const uint64_t start, const uint64_t end, const int type)
 {
-	e820_entry *entry;
+	fwts_memory_map_entry *entry;
 
-	if ((entry = calloc(1, sizeof(e820_entry))) == NULL)
+	if ((entry = calloc(1, sizeof(fwts_memory_map_entry))) == NULL)
 		return FWTS_ERROR;
 	
 	entry->start_address = start;
 	entry->end_address   = end;
 	entry->type          = type;
 
-	if (fwts_list_add_ordered(e820_list, entry, fwts_e820_entry_compare) == NULL)
+	if (fwts_list_add_ordered(memory_map_list, entry, fwts_fwts_memory_map_entry_compare) == NULL)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
 }
 
 /*
- *  fwts_e820_type()
+ *  fwts_memory_map_type()
  *	figure out memory region type on a given memory address
  */
-int fwts_e820_type(fwts_list *e820_list, const uint64_t memory)
+int fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory)
 {
-	e820_entry *entry;
+	fwts_memory_map_entry *entry;
 	fwts_list_link *item;
 
-	fwts_list_foreach(item, e820_list) {
-		entry = (e820_entry*)item->data;
+	fwts_list_foreach(item, memory_map_list) {
+		entry = (fwts_memory_map_entry*)item->data;
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry->type;
 	}
 
-	return E820_UNKNOWN;
+	return FWTS_MEMORY_MAP_UNKNOWN;
+}
+
+fwts_memory_map_entry *fwts_memory_map_info(fwts_list *memory_map_list, const uint64_t memory)
+{
+	fwts_memory_map_entry *entry;
+	fwts_list_link *item;
+
+	fwts_list_foreach(item, memory_map_list) {
+		entry = (fwts_memory_map_entry*)item->data;
+		if (entry->start_address <= memory && entry->end_address > memory)
+			return entry;
+	}
+	return NULL;
 }
 
 /*
- *  fwts_e820_is_reserved()
+ *  fwts_memory_map_is_reserved()
  *	determine if a memory region is marked as reserved or not.
  */
-fwts_bool fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory)
+fwts_bool fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t memory)
 {
-	int result = E820_UNKNOWN;
+	int result = FWTS_MEMORY_MAP_UNKNOWN;
 
-	/* when we don't have E820 info, assume all is fair */
-	if (e820_list == NULL)
+	/* when we don't have FWTS_MEMORY_MAP info, assume all is fair */
+	if (memory_map_list == NULL)
 		return FWTS_TRUE; 
 	
 	/* bios data area is always reserved */
 	if ((memory >= 640 * 1024) && (memory <= 1024*1024))
 		return FWTS_TRUE;
 
-	result = fwts_e820_type(e820_list, memory);
+	result = fwts_memory_map_type(memory_map_list, memory);
 
-	if (result == E820_RESERVED)
+	if (result == FWTS_MEMORY_MAP_RESERVED)
 		return FWTS_TRUE;
-	if (result == E820_ACPI)
+	if (result == FWTS_MEMORY_MAP_ACPI)
 		return FWTS_TRUE;
 
 	return FWTS_FALSE;
 }
 
 /* 
- *  fwts_e820_dmesg_info()
- *	callback to check dmesg for e820 info
+ *  fwts_memory_map_dmesg_info()
+ *	callback to check dmesg for memory_map info
  */
-static void fwts_e820_dmesg_info(void *data, void *private)
+static void fwts_memory_map_dmesg_info(void *data, void *private)
 {
 	char *str;
 	char *line = (char *)data;
-	fwts_list *e820_list = (fwts_list *)private;
+	fwts_list *memory_map_list = (fwts_list *)private;
 
-	if ((str = strstr(line,"BIOS-e820:")) != NULL) {
+	if ((str = strstr(line,"BIOS-memory_map:")) != NULL) {
 		uint64_t start;
 		uint64_t end;
 
@@ -181,69 +188,69 @@ static void fwts_e820_dmesg_info(void *data, void *private)
 			str += 3;
 		end   = strtoull(str, NULL, 16) - 1;
 
-		fwts_register_e820_line(e820_list, start, end, fwts_e820_str_to_type(line));
+		fwts_register_memory_map_line(memory_map_list, start, end, fwts_memory_map_str_to_type(line));
 	}
 }
 
 /*
- *  fwts_e820_dump_info()
- *	callback to dump E820 region
+ *  fwts_memory_map_dump_info()
+ *	callback to dump FWTS_MEMORY_MAP region
  */
-static void fwts_e820_dump_info(void *data, void *private)
+static void fwts_memory_map_dump_info(void *data, void *private)
 {
-	e820_entry *entry = (e820_entry *)data;
+	fwts_memory_map_entry *entry = (fwts_memory_map_entry *)data;
 	fwts_framework *fw = (fwts_framework *)private;
 
 	fwts_log_info(fw, "%016llx - %016llx  %s", 
 			(unsigned long long)entry->start_address,
 			(unsigned long long)entry->end_address,
-			fwts_e820_type_to_str(entry->type));
+			fwts_memory_map_type_to_str(entry->type));
 }
 
 /*
- *  fwts_e820_table_dump()
- *	dump E820 region
+ *  fwts_memory_map_table_dump()
+ *	dump FWTS_MEMORY_MAP region
  */
-void fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list)
+void fwts_memory_map_table_dump(fwts_framework *fw, fwts_list *memory_map_list)
 {
-	fwts_log_info(fw, "E820 memory layout");
-	fwts_log_info(fw, "------------------");
+	fwts_log_info(fw, "Memory Map Layout");
+	fwts_log_info(fw, "-----------------");
 
-	fwts_list_iterate(e820_list, fwts_e820_dump_info, fw);
+	fwts_list_iterate(memory_map_list, fwts_memory_map_dump_info, fw);
 }
 
 /*
- *  fwts_e820_table_load_from_klog()
- *	load e820 data from the kernel log
+ *  fwts_memory_map_table_load_from_klog()
+ *	load memory_map data from the kernel log
  */
-fwts_list *fwts_e820_table_load_from_klog(fwts_framework *fw)
+fwts_list *fwts_memory_map_table_load_from_klog(fwts_framework *fw)
 {
 	fwts_list *klog;
-	fwts_list *e820_list;
+	fwts_list *memory_map_list;
 
 	if ((klog = fwts_klog_read()) == NULL)
 		return NULL;
 
-	if ((e820_list = fwts_list_init()) == NULL)
+	if ((memory_map_list = fwts_list_init()) == NULL)
 		return NULL;
 	
-	fwts_list_iterate(klog, fwts_e820_dmesg_info, e820_list);
+	fwts_list_iterate(klog, fwts_memory_map_dmesg_info, memory_map_list);
 	fwts_klog_free(klog);
 
-	return e820_list;
+	return memory_map_list;
 }
 
 /*
- *  fwts_e820_table_read_entry()
- *	load individual e820 entry from /sys/firmware/memmap/
+ *  fwts_memory_map_table_read_entry()
+ *	load individual memory_map entry from /sys/firmware/memmap/
  */
-static e820_entry *fwts_e820_table_read_entry(const char *which)
+static fwts_memory_map_entry *fwts_memory_map_table_read_entry(const char *which)
 {
 	char path[PATH_MAX];
 	char *data;
-	e820_entry *entry;
+	fwts_memory_map_entry *entry;
 
-	if ((entry = calloc(1, sizeof(e820_entry))) == NULL)
+	if ((entry = calloc(1, sizeof(fwts_memory_map_entry))) == NULL)
 		return NULL;
 
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/start", which);
@@ -267,48 +274,60 @@ static e820_entry *fwts_e820_table_read_entry(const char *which)
 		free(entry);
 		return NULL;
 	}
-	entry->type = fwts_e820_str_to_type(data);
+	entry->type = fwts_memory_map_str_to_type(data);
 	free(data);
 
 	return entry;
 }
 
 /*
- *  fwts_e820_table_load()
- *	load e820 table from /sys/firmware/memmap/
+ *  fwts_memory_map_table_load()
+ *	load memory_map table from /sys/firmware/memmap/
  */
-fwts_list *fwts_e820_table_load(fwts_framework *fw)
+fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *directory;
-	fwts_list *e820_list;
+	fwts_list *memory_map_list;
 
 	/* Try to load from /sys/firmware/memmap, but if we fail, try
 	   scanning the kernel log as a fallback */
 	if ((dir = opendir("/sys/firmware/memmap/")) == NULL)
-		return fwts_e820_table_load_from_klog(fw);
+		return fwts_memory_map_table_load_from_klog(fw);
 
-	if ((e820_list = fwts_list_init()) == NULL) {
+	if ((memory_map_list = fwts_list_init()) == NULL) {
 		closedir(dir);
 		return NULL;
 	}
 
 	while ((directory = readdir(dir)) != NULL) {
 		if (strncmp(directory->d_name, ".", 1)) {
-			e820_entry *entry = fwts_e820_table_read_entry(directory->d_name);
-			fwts_list_add_ordered(e820_list, entry, fwts_e820_entry_compare);
+			fwts_memory_map_entry *entry = fwts_memory_map_table_read_entry(directory->d_name);
+			fwts_list_add_ordered(memory_map_list, entry, fwts_fwts_memory_map_entry_compare);
 		}
 	}
 	closedir(dir);
 
-	return e820_list;
+	return memory_map_list;
 }
 
 /*
- *  fwts_e820_table_free()
- *	free e820 list
+ *  fwts_memory_map_table_free()
+ *	free memory_map list
  */
-void fwts_e820_table_free(fwts_list *e820_list)
+void fwts_memory_map_table_free(fwts_list *memory_map_list)
 {
-	fwts_list_free(e820_list, free);
+	fwts_list_free(memory_map_list, free);
+}
+
+const char *fwts_memory_map_name(int type)
+{
+	switch (type) {
+	case FWTS_FIRMWARE_BIOS:
+		return "Int 15 AX=E820 BIOS memory map";
+	case FWTS_FIRMWARE_UEFI:
+		return "UEFI time service memory map";
+	default:
+		return "Unknown memory map";
+	}
 }

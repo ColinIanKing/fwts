@@ -19,22 +19,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __FWTS_E820_H__
-#define __FWTS_E820_H__
+#ifndef __FWTS_FWTS_MEMORY_MAP_H__
+#define __FWTS_FWTS_MEMORY_MAP_H__
 
 #include "fwts_types.h"
 #include "fwts_list.h"
 #include "fwts_framework.h"
 
-#define E820_UNKNOWN    0
-#define E820_RESERVED   1
-#define E820_ACPI       2
-#define E820_USABLE     16
+#define FWTS_MEMORY_MAP_UNKNOWN    0
+#define FWTS_MEMORY_MAP_RESERVED   1
+#define FWTS_MEMORY_MAP_ACPI       2
+#define FWTS_MEMORY_MAP_USABLE     16
 
-int        fwts_e820_type(fwts_list *e820_list, const uint64_t memory);
-int        fwts_e820_is_reserved(fwts_list *e820_list, const uint64_t memory);
-fwts_list *fwts_e820_table_load(fwts_framework *fw);
-void       fwts_e820_table_free(fwts_list *e820_list);
-void       fwts_e820_table_dump(fwts_framework *fw, fwts_list *e820_list);
+typedef struct {
+	uint64_t        start_address;
+	uint64_t        end_address;
+	int             type;
+} fwts_memory_map_entry;
+
+int        fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory);
+int        fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t memory);
+fwts_list *fwts_memory_map_table_load(fwts_framework *fw);
+void       fwts_memory_map_table_free(fwts_list *memory_map_list);
+void       fwts_memory_map_table_dump(fwts_framework *fw, fwts_list *memory_map_list);
+const char *fwts_memory_map_name(int type);
+fwts_memory_map_entry *fwts_memory_map_info(fwts_list *memory_map_list, const uint64_t memory);
 
 #endif

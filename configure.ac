@@ -1,5 +1,6 @@
 AC_INIT([fwts],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+	  AC_CANONICAL_HOST
           AC_PROG_CC
 	  AC_PROG_RANLIB
 	  AC_C_INLINE
@@ -66,6 +67,9 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_TYPE_UINT32_T
 	  AC_TYPE_UINT64_T
 	  AC_TYPE_UINT8_T
+	  case $host in
+	  arm*) CFLAGS="$CFLAGS -marm" ;;
+	  esac
           AC_CONFIG_HEADERS([config.h])
 	  AC_CONFIG_FILES([
            Makefile

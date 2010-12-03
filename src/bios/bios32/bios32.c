@@ -42,6 +42,10 @@ typedef struct {
 
 static int bios32_init(fwts_framework *fw)
 {
+	if (fw->firmware_type != FWTS_FIRMWARE_BIOS) {
+		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
+		return FWTS_SKIP;
+	}
 	if (fwts_check_root_euid(fw))
 		return FWTS_ERROR;
 
@@ -61,7 +65,7 @@ static int bios32_test1(fwts_framework *fw)
 	int found = 0;
 
 	fwts_log_info(fw, "This test tries to find and sanity check the BIOS32 Service Directory as "
-			  "defined in theStandard BIOS 32-bit Service Directory Proposal, "
+			  "defined in the Standard BIOS 32-bit Service Directory Proposal, "
 			  "Revision 0.4 May 24, 1993, Phoenix Technologies Ltd and also the "
  			  "PCI BIOS specification.");
 

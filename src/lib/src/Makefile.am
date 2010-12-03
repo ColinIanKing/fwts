@@ -16,6 +16,7 @@ libtestsuite_a_SOURCES = \
 	dump_data.c \
 	e820.c \
 	fileio.c \
+	firmware.c \
 	framework.c \
 	formatting.c \
 	get.c 	\

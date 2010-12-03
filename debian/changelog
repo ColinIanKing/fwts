@@ -1,3 +1,10 @@
+fwts (0.20.02) natty; urgency=low
+
+  * Fix help and update man page for -u, --utils option
+  * New upstream version 0.20.02
+
+ -- Colin King <colin.king@canonical.com>  Fri, 3 Dec 2010 11:56:01 +0000
+
 fwts (0.20.01) natty; urgency=low
 
   * Fix PowerPC and ARM FTBFS issues (LP: #684663)

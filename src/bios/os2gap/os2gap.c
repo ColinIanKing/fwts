@@ -27,7 +27,7 @@
 #define OS2_GAP_ADDRESS 	(15*1024*1024)
 #define OS2_GAP_SIZE		(1024*1024)
 
-static fwts_list *os2gap_e820_info;
+static fwts_list *os2gap_memory_map_info;
 
 static char *os2gap_headline(void)
 {
@@ -36,8 +36,8 @@ static char *os2gap_headline(void)
 
 static int os2gap_init(fwts_framework *fw)
 {
-	if ((os2gap_e820_info = fwts_e820_table_load(fw)) == NULL) {
-		fwts_log_warning(fw, "No E820 table found");
+	if ((os2gap_memory_map_info = fwts_memory_map_table_load(fw)) == NULL) {
+		fwts_log_warning(fw, "No memory map table found");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -45,21 +45,21 @@ static int os2gap_init(fwts_framework *fw)
 
 static int os2gap_deinit(fwts_framework *fw)
 {
-	if (os2gap_e820_info)
-		fwts_e820_table_free(os2gap_e820_info);
+	if (os2gap_memory_map_info)
+		fwts_memory_map_table_free(os2gap_memory_map_info);
 
 	return FWTS_OK;
 }
 
 static int os2gap_test1(fwts_framework *fw)
 {
-	if (fwts_e820_is_reserved(os2gap_e820_info, OS2_GAP_ADDRESS)) {
+	if (fwts_memory_map_is_reserved(os2gap_memory_map_info, OS2_GAP_ADDRESS)) {
 		fwts_failed_high(fw, "The memory map has OS/2 memory hole at %p..%p.",
 			(void*)OS2_GAP_ADDRESS,
 			(void*)(OS2_GAP_ADDRESS + OS2_GAP_SIZE));
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_nl(fw);
-		fwts_e820_table_dump(fw, os2gap_e820_info);
+		fwts_memory_map_table_dump(fw, os2gap_memory_map_info);
 	} else
 		fwts_passed(fw, "No OS/2 memory hole found.");
 

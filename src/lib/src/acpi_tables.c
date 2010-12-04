@@ -346,7 +346,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 	*size = 0;
 
-	if (fscanf(fp, "%s @ 0x%Lx\n", name, &table_addr) < 2)
+	if (fscanf(fp, "%15s @ 0x%Lx\n", name, &table_addr) < 2)
 		return NULL;
 
 	*addr = (uint64_t)table_addr;
@@ -394,8 +394,6 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 
 		if ((table = fwts_acpi_load_table_from_acpidump(fp, name, &addr, &length)) != NULL)
 			fwts_acpi_add_table(name, table, addr, length);
-		else
-			break;
 	}
 
 	fclose(fp);

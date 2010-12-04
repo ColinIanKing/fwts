@@ -414,7 +414,8 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 			printf("%s\n", fwts_framework_get_env(FWTS_PASSED_TEXT));
 	}
 
-	fwts_log_newline(fw->results);
+	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
+		fwts_log_newline(fw->results);
 
 	return FWTS_OK;
 }
@@ -526,7 +527,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	if (test->ops->deinit)
 		test->ops->deinit(fw);
 
-	fwts_tag_report(fw, fw->test_taglist);
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
+		fwts_tag_report(fw, LOG_TAG, fw->test_taglist);
+
 	fwts_list_free(fw->test_taglist, free);
 	fw->test_taglist = NULL;
 
@@ -748,7 +751,8 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "\t\t\%owner - name of test program",	NULL },
 		{ "\t\t\%level - failure test level",	NULL },
 		{ "\t\t\%line  - log line number",	NULL },
-		{ "--lp-tags",			"Output LaunchPad bug tags." },
+		{ "--lp-tags",			"Output just LaunchPad bug tags." },
+		{ "--lp-tags-log",		"Output LaunchPad bug tags in results log." },
 		{ "--lspci=path",		"Specify path to lspci." },
 		{ "--no-s3",			"Don't run S3 suspend/resume tests." },
 		{ "",				"  deprecated, use --skip-test=s3 instead." },
@@ -834,7 +838,8 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 
 		fwts_log_info(fw, "Running tests: %s.\n", 
 			fwts_list_len(tests_to_run) == 0 ? "None" : tests);
-		fwts_log_newline(fw->results);
+		if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
+			fwts_log_newline(fw->results);
 		free(tests);
 	}
 }
@@ -927,6 +932,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "show-tests-full", 0, 0, 0 },
 		{ "utils", 0, 0, 0 },
 		{ "json-data-path", 1, 0, 0 },
+		{ "lp-tags-log", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -1102,8 +1108,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 36: /* --dumpfile */
 				fwts_framework_strdup(&fw->acpi_table_acpidump_file, optarg);
 				break;
-			case 37: /* --lp-flags */
+			case 37: /* --lp-tags */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
+				fwts_log_filter_unset_field(~0);
+				fwts_log_filter_set_field(LOG_TAG);
 				break;
 			case 38: /* --show-tests-full */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL;
@@ -1113,6 +1121,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 				break;
 			case 40: /* --json-data-path */
 				fwts_framework_strdup(&fw->json_data_path, optarg);
+				break;
+			case 41: /* --lp-tags-log */
+				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG;
 				break;
 			}
 			break;
@@ -1291,12 +1302,16 @@ int fwts_framework_args(const int argc, char * const *argv)
 	if (fw->print_summary) {
 		fwts_log_set_owner(fw->results, "summary");
 		fwts_log_nl(fw);
-		fwts_tag_report(fw, fw->total_taglist);
+		if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
+			fwts_tag_report(fw, LOG_SUMMARY, fw->total_taglist);
 		fwts_list_free(fw->test_taglist, free);
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
 		fwts_summary_report(fw);
 	}
+
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)
+		fwts_tag_report(fw, LOG_TAG | LOG_NO_FIELDS, fw->total_taglist);
 
 tidy:
 	fwts_list_free(tests_to_skip, NULL);

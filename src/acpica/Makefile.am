@@ -7,7 +7,7 @@ ACPICA_OSL =    $(ACPICA_SRC)/os_specific/service_layers
 
 ACPICA_COMP =   $(ACPICA_SRC)/components
 
-AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall $(CFLAGS)
+AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
 
 noinst_LIBRARIES = libacpica.a
 libacpica_a_SOURCES = \

@@ -4935,7 +4935,12 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcre_pcre_compile" >&5
 $as_echo "$ac_cv_lib_pcre_pcre_compile" >&6; }
 if test "x$ac_cv_lib_pcre_pcre_compile" = x""yes; then :
-  json
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPCRE 1
+_ACEOF
+
+  LIBS="-lpcre $LIBS"
+
 fi
 
 	  for ac_header in stdlib.h

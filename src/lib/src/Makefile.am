@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror $(CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 
 noinst_LIBRARIES = libtestsuite.a
 libtestsuite_a_SOURCES = \

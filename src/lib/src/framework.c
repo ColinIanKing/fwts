@@ -733,6 +733,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--iasl=path",		"Specify path to iasl." },
 		{ "-i, --interactive",		"Just run Interactive tests." },
 		{ "--interactive-experimental",	"Just run Interactive Experimental tests." },
+		{ "-j, --json-data-path",	"Path to fwts json data files." },
 		{ "-k, --klog=file",		"Specify kernel log file rather than reading it" },
 		{ "",				"from the kernel." },
 		{ "--log-fields",		"Show available log filtering fields." },
@@ -925,6 +926,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "lp-tags", 0, 0, 0 },
 		{ "show-tests-full", 0, 0, 0 },
 		{ "utils", 0, 0, 0 },
+		{ "json-data-path", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -952,6 +954,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fwts_framework_strdup(&fw->dmidecode, FWTS_DMIDECODE_PATH);
 	fwts_framework_strdup(&fw->lspci, FWTS_LSPCI_PATH);
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
+	fwts_framework_strdup(&fw->json_data_path, FWTS_JSON_DATA_PATH);
 
 	tests_to_run  = fwts_list_init();
 	tests_to_skip = fwts_list_init();
@@ -964,7 +967,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		int c;
 		int option_index;
 
-		if ((c = getopt_long(argc, argv, "abdDfhik:pPqr:sS:t:uvw:?", long_options, &option_index)) == -1)
+		if ((c = getopt_long(argc, argv, "abdDfhij:k:pPqr:sS:t:uvw:?", long_options, &option_index)) == -1)
 			break;
 
 		switch (c) {
@@ -1009,7 +1012,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 						~(FWTS_FRAMEWORK_FLAGS_QUIET |
 					  	  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
-			break;
 				break;
 			case 11: /* --show-tests */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
@@ -1098,7 +1100,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 						| FWTS_FRAMEWORK_FLAGS_QUIET;
 				break;
 			case 36: /* --dumpfile */
-				fw->acpi_table_acpidump_file = strdup(optarg);
+				fwts_framework_strdup(&fw->acpi_table_acpidump_file, optarg);
 				break;
 			case 37: /* --lp-flags */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
@@ -1108,6 +1110,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 				break;
 			case 39: /* --utils */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
+				break;
+			case 40: /* --json-data-path */
+				fwts_framework_strdup(&fw->json_data_path, optarg);
 				break;
 			}
 			break;
@@ -1137,6 +1142,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			break;
 		case 'i': /* --interactive */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+			break;
+		case 'j': /* --json-data-path */
+			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
 		case 'k': /* --klog */
 			fwts_framework_strdup(&fw->klog, optarg);

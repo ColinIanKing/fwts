@@ -86,6 +86,7 @@ typedef struct {
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
+	char *json_data_path;			/* path to application json data files, e.g. json klog data */
 	int  s3_multiple;			/* number of s3 multiple tests to run */
 	int  s3_min_delay;			/* minimum time between resume and next suspend */
 	int  s3_max_delay;			/* maximum time between resume and next suspend */

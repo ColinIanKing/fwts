@@ -116,6 +116,10 @@ run the interactive tests. These tests require user interaction.
 .B \-\-interactive\-experimental
 run only interactive experimental tests.
 .TP
+.B \-j, \-\-json\-data\-path
+specifies the path to the fwts json data files. These files contain json formatted
+configuation tables, for example klog scanning patterns.
+.TP
 .B \-k, \-\-klog=file
 read the kernel log from the specified file rather than from the kernel log ring buffer. This
 allows one to run the kernel log scanning tests such as klog against pre-gathered log data.

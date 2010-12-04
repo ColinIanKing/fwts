@@ -29,7 +29,7 @@
 /*
  *  klog pattern matching strings data file, data stored in json format
  */
-#define KLOG_DATA_JSON_PATH		"/usr/share/fwts/klog.json"
+#define KLOG_DATA_JSON_FILE		"klog.json"
 
 
 /*
@@ -200,14 +200,17 @@ static int fwts_klog_check(fwts_framework *fw,
 	json_object *klog_objs;
 	json_object *klog_table;
 	fwts_klog_pattern *patterns;
+	char json_data_path[PATH_MAX];
 
-	if ((klog_objs = json_object_from_file(KLOG_DATA_JSON_PATH)) == JSON_ERROR) {
-		fwts_log_error(fw, "Cannot load klog data from %s.", KLOG_DATA_JSON_PATH);
+	snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, KLOG_DATA_JSON_FILE);
+
+	if ((klog_objs = json_object_from_file(json_data_path)) == JSON_ERROR) {
+		fwts_log_error(fw, "Cannot load klog data from %s.", json_data_path);
 		return FWTS_ERROR;
 	}
 		
 	if ((klog_table = json_object_object_get(klog_objs, table)) == JSON_ERROR) {
-		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, KLOG_DATA_JSON_PATH);
+		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
 		goto fail_put;
 	}
 		

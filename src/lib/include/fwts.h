@@ -23,6 +23,8 @@
 #define FWTS_ARCH_INTEL	1
 #endif
 
+#define FWTS_JSON_DATA_PATH	"/usr/share/fwts"
+
 #include "fwts_version.h"
 #include "fwts_types.h"
 #include "fwts_tag.h"
@@ -57,6 +59,5 @@
 #include "fwts_keymap.h"
 #include "fwts_cmos.h"
 #include "fwts_acpica.h"
-
 
 #endif

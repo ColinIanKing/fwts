@@ -1,3 +1,11 @@
+fwts (0.20.05) natty; urgency=low
+
+  * Add --lp-tags-log option to log LP tags into the results log
+  * Make --lp-tags just dump out all LP tags found in testing
+  * New upstream version 0.20.04
+
+ -- Colin King <colin.king@canonical.com>  Sat, 4 Dec 2010 19:22:39 +0000
+
 fwts (0.20.04) natty; urgency=low
 
   * Fix stack smashing on corrupt ACPI dumped data input

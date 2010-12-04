@@ -41,6 +41,7 @@ typedef enum {
 	LOG_FIELD_MASK	    = 0x0000ffff,
 
 	LOG_VERBATUM	    = 0x10000000,
+	LOG_NO_FIELDS	    = 0x20000000,
 } fwts_log_field;
 
 typedef enum {

@@ -327,10 +327,13 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
 
 	fwts_list_foreach(item, lines) {
 		char *text = fwts_text_list_text(item);
-		/* Re-format up a log heading with current line number which
-	 	   may increment with multiple line log messages */
-		fwts_log_header(log, buffer, sizeof(buffer), field, level);
-		fwrite(buffer, 1, n, log->fp);
+
+		if (!(field & LOG_NO_FIELDS)) {
+			/* Re-format up a log heading with current line number which
+	 		   may increment with multiple line log messages */
+			fwts_log_header(log, buffer, sizeof(buffer), field, level);
+			fwrite(buffer, 1, n, log->fp);
+		}
 		fwrite(text, 1, strlen(text), log->fp);
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);

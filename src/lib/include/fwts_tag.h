@@ -76,7 +76,7 @@ fwts_tag fwts_tag_id_str_to_tag(const char *tag);
 const char *fwts_tag_to_str(fwts_tag tag);
 void fwts_tag_add(fwts_list *taglist, const char *tag);
 char *fwts_tag_list_to_str(fwts_list *taglist);
-void fwts_tag_report(fwts_framework *fw, fwts_list *taglist);
+void fwts_tag_report(fwts_framework *fw, fwts_log_field field, fwts_list *taglist);
 void fwts_tag_failed(fwts_framework *fw, fwts_tag tag);
 
 #endif

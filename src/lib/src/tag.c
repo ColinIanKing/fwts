@@ -172,16 +172,17 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
  *  fwts_tag_report()
  *	report to the log the tags found in the taglist
  */
-void fwts_tag_report(fwts_framework *fw, fwts_list *taglist)
+void fwts_tag_report(fwts_framework *fw, fwts_log_field field, fwts_list *taglist)
 {
-	if ((fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS) &&
-	    (taglist != NULL) && 
-	    (fwts_list_len(taglist) > 0)) {
-		char *tags;
-
-		tags = fwts_tag_list_to_str(taglist);
-		fwts_log_tag(fw, "Tags: %s", tags);
-		free(tags);
+	if ((taglist != NULL) && (fwts_list_len(taglist) > 0)) {
+		char *tags = fwts_tag_list_to_str(taglist);
+		if (tags) {
+			//if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
+				fwts_log_printf(fw->results, field | LOG_VERBATUM, LOG_LEVEL_NONE, "Tags: %s", tags);
+			//if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)
+				//fprintf(fw->results->fp, "Tags: %s\n", tags);
+			free(tags);
+		}
 	}
 }
 

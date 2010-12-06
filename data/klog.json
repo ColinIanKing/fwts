@@ -605,6 +605,27 @@
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
    "pattern": "\\[Firmware Bug\\]:.*_BCQ is used instead of _BQC",
    "advice": "ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed.however the kernel has detected this and is working around this typo."
+  }, 
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "BIOS bug.*timer not connected to IO-APIC",
+   "advice": "The BIOS is reporting the ExtINTA I/O APIC input from the cascaded 8259A as the timer interrupt input.  The kernel has detected just one pin, so it has to check the timer directly and through the 8259A because of the broken BIOS reporting."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "BIOS bug,.*IO-APIC.*ID is.*in the MPC table.*",
+   "advice": "The IO-APIC id in the MPC table is wrong and the kernel has detected this and attempted to fix it. The MPC table in the firmware needs to be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "BIOS bug,.*IO-APIC.*ID is already used!",
+   "advice": "The IO-APIC id has been defined more than once in the MPC table, which is a firmware bug and should be fixed. The kernel has detected this and skopped this duplication to avoid stuck on smp_invalidate_needed IPI wait' messages."
   },
   {
    "compare_mode": "regex",
@@ -612,6 +633,20 @@
    "tag": "FWTS_TAG_ACPI",
    "pattern": ".*defines _DOD but not _DOS",
    "advice": "ACPI Method _DOD (Enumerate all devices attached to display adapter) is defined but we should also have _DOS (Enable\/Disable output switching) defined but it's been omitted. This can cause display switching issues."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "WARNING:.*bogus zero IO-APIC address found in MPTABLE",
+   "advice": "An IO-APIC address of zero has been found in the MPTABLE and is thus treated as misconfigured or bogus. I/O APIC support has been disabled. This is considered a firmware bug and the MPTABLE needs to be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "WARNING:.*Bogus.*APIC address found in table",
+   "advice": "An IO-APIC address of zero has been found in the MPTABLE and is thus treated as misconfigured or bogus. I/O APIC support has been disabled. This is considered a firmware bug and the MPTABLE needs to be fixed."
   },
   {
    "compare_mode": "regex",

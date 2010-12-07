@@ -304,7 +304,7 @@ static void acpidump_boot(fwts_framework *fw, uint8_t *data, int length)
 		FIELD_END
 	};
 
-	if (length < (sizeof(fwts_acpi_table_header) + 4)) {
+	if (length < (int)(sizeof(fwts_acpi_table_header) + 4)) {
 		fwts_log_info(fw, "Boot table too short\n");
 		return;
 	}
@@ -685,7 +685,7 @@ static void acpidump_madt(fwts_framework *fw, uint8_t *data, int length)
 	data += sizeof(fwts_acpi_table_madt);	
 	length -= sizeof(fwts_acpi_table_madt);
 
-	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+	while (length > (int)sizeof(fwts_acpi_madt_sub_table_header)) {
 		int skip = 0;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
 

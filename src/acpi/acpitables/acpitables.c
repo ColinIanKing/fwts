@@ -235,7 +235,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	data += sizeof(fwts_acpi_table_madt);	
 	length -= sizeof(fwts_acpi_table_madt);
 	
-	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+	while (length > (int)sizeof(fwts_acpi_madt_sub_table_header)) {
 		int skip = 0;
 		i++;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;

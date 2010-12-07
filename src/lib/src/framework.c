@@ -351,7 +351,7 @@ static char *fwts_framework_get_env(const int env_id)
 {
 	int i;
 
-	for (i=0;i<sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++) {
+	for (i=0;i<(int)sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++) {
 		if (fwts_framework_settings[i].env_id == env_id) {	
 			if (fwts_framework_settings[i].env_value)
 				return fwts_framework_settings[i].env_value;
@@ -379,7 +379,7 @@ static void fwts_framework_free_env(void)
 {
 	int i;
 
-	for (i=0;i<sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++)
+	for (i=0;i<(int)sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++)
 		if (fwts_framework_settings[i].env_value)
 			free(fwts_framework_settings[i].env_value);
 }

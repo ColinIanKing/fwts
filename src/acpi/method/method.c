@@ -857,7 +857,9 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 							"This can confuse the operating system as this _WAK return indicates that the "
 							"S-state was not entered because of too much current being drawn from the "
 							"power supply, however, the BIOS may have actually entered this state and the "
-							"_WAK method is misinforming the operating system.");
+							"_WAK method is misinforming the operating system. Currently Linux does not "
+							"check for the return type from _WAK, so it should theoretically not affect the "
+							"operation of suspend/resume.");
 				
 					failed++;
 				}

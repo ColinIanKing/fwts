@@ -16,5 +16,5 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#define FWTS_VERSION "V0.20.05"
-#define FWTS_DATE    "Sat Dec 4 19:22:34 GMT 2010"
+#define FWTS_VERSION "V0.20.06"
+#define FWTS_DATE    "Tue Dec 7 11:56:12 GMT 2010"

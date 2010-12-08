@@ -132,7 +132,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
-				if (pattern->advice != NULL)
+				if ((pattern->advice) != NULL && (*pattern->advice))
 					fwts_advice(fw, "%s", pattern->advice);
 				else
 					fwts_advice(fw, "%s", advice);
@@ -145,7 +145,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
-				if (pattern->advice != NULL)
+				if ((pattern->advice) != NULL && (*pattern->advice))
 					fwts_advice(fw, "%s", pattern->advice);
 				else
 					fwts_advice(fw, "%s", advice);

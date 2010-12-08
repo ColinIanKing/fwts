@@ -111,6 +111,30 @@ int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, 
 	return FWTS_OK;
 }
 
+int fwts_gpe_delta_get(fwts_framework *fw, 
+	const fwts_gpe *gpes_start, const fwts_gpe *gpes_end, const int gpe_count,
+	int *sci, int *gpe)
+{
+	int *deltas = NULL;
+	*sci = 0;
+	*gpe = 0;
+
+	if (fwts_gpe_delta(&deltas, gpes_start, gpes_end, gpe_count) == FWTS_ERROR) {
+		fwts_log_error(fw, "Cannot calculate GPE delta, out of memory.");
+		return FWTS_ERROR;
+	} else {
+		int i;
+		for (i=0;i<gpe_count;i++) {
+			if ((strcmp(gpes_end[i].name, "sci") == 0) && (deltas[i] > 0))
+				*sci += deltas[i];
+			if ((strncmp(gpes_end[i].name, "gpe", 3) == 0) && (deltas[i] > 0))
+				*gpe += deltas[i];
+		}
+	}
+	free(deltas);
+
+	return FWTS_OK;
+}
 
 /*
  *  fwts_gpe_test()
@@ -127,8 +151,10 @@ void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gp
 	else {
 		int i;
 		for (i=0;i<gpe_count;i++) {
-			if ((strcmp(gpes_end[i].name, "sci") == 0) && (deltas[i] > 0))
+			if ((strcmp(gpes_end[i].name, "sci") == 0) && (deltas[i] > 0)) {
+				fwts_log_info(fw, "Got %d SCI interrupt(s).", deltas[i]);
 				sci += deltas[i];
+			}
 			if ((strncmp(gpes_end[i].name, "gpe", 3) == 0) && (deltas[i] > 0)) {
 				fwts_log_info(fw, "Got %d interrupt(s) on GPE %s.", deltas[i], gpes_end[i].name);
 				gpe += deltas[i];

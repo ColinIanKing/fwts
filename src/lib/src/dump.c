@@ -258,7 +258,7 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	if (dump_lspci(fw, path, "lspci.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from lspci.\n");
 	else
-		printf("Dumped lspci data to lspic.log\n");
+		printf("Dumped lspci data to lspci.log\n");
 
 	if (dump_acpi_tables(fw, path) != FWTS_OK) 
 		fprintf(stderr, "Failed to dump ACPI tables.\n");

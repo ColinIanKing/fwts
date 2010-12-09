@@ -237,7 +237,14 @@ static int method_name_check(fwts_framework *fw)
 
 static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf, int type, char *type_name)
 {
-	ACPI_OBJECT *obj = buf->Pointer;
+	ACPI_OBJECT *obj;
+
+	if ((buf == NULL) || (buf->Pointer == NULL)){
+		fwts_failed(fw, "Method %s returned a NULL object, and did not return %s.", name, type_name);
+		return FWTS_ERROR;
+	}
+
+	obj = buf->Pointer;
 
 	if (obj->Type != type) {
 		fwts_failed(fw, "Method %s did not return %s.", name, type_name);

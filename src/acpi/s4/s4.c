@@ -35,17 +35,27 @@ static char *s4_headline(void)
 
 static int s4_init(fwts_framework *fw)
 {
+	fwts_list* swap_devs;
+
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		return FWTS_ERROR;
 	}
+
+	swap_devs = fwts_file_open_and_read("/proc/swaps");
+	if (fwts_text_list_strstr(swap_devs, "/dev/") == NULL) {
+		fwts_list_free(swap_devs, free);
+		fwts_failed(fw, "Cannot run hibernate test - machine appears to have NO swap.");
+		return FWTS_ERROR;
+	}
+	fwts_list_free(swap_devs, free);
 
 	if (fwts_wakealarm_test_firing(fw, 1)) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S4 test.");
 		fwts_failed(fw, "Check if wakealarm works reliably for S4 tests.");
 		return FWTS_ERROR;
 	}
-
+	
 	return FWTS_OK;
 }
 

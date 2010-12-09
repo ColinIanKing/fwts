@@ -1,3 +1,10 @@
+fwts (0.20.08) natty; urgency=low
+
+  * method test: check for null object returns.
+  * New upstream version 0.20.08
+
+ -- Colin King <colin.king@canonical.com>  Thu, 9 Dec 2010 15:05:44 +0000
+
 fwts (0.20.07) natty; urgency=low
 
   * s4 test: only attempt to hibernate if swap is available

@@ -1,8 +1,17 @@
+fwts (0.20.07) natty; urgency=low
+
+  * s4 test: only attempt to hibernate if swap is available
+  * klog test: only dump advice if it's available.
+  * More info in _WAK test failure
+  * New upstream version 0.20.07
+
+ -- Colin King <colin.king@canonical.com>  Thu, 9 Dec 2010 09:15:00 +0000
+
 fwts (0.20.06) natty; urgency=low
 
   * Fix hangs on corrupt input ACPI table data
   * Add some IO APIC kernel log scanning checks
-  * New upstream version 0.20.05
+  * New upstream version 0.20.06
 
  -- Colin King <colin.king@canonical.com>  Tue, 7 Dec 2010 11:53:00 +0000
 

@@ -29,6 +29,7 @@ libtestsuite_a_SOURCES = \
 	set.c \
 	stringextras.c \
 	text_list.c \
+	tty.c \
 	wakealarm.c \
 	summary.c \
 	microcode.c \

@@ -58,8 +58,8 @@ am_libtestsuite_a_OBJECTS = list.$(OBJEXT) acpi.$(OBJEXT) \
 	gpe.$(OBJEXT) iasl.$(OBJEXT) keymap.$(OBJEXT) klog.$(OBJEXT) \
 	log.$(OBJEXT) memorymap.$(OBJEXT) pipeio.$(OBJEXT) \
 	set.$(OBJEXT) stringextras.$(OBJEXT) text_list.$(OBJEXT) \
-	wakealarm.$(OBJEXT) summary.$(OBJEXT) microcode.$(OBJEXT) \
-	virt.$(OBJEXT) tag.$(OBJEXT)
+	tty.$(OBJEXT) wakealarm.$(OBJEXT) summary.$(OBJEXT) \
+	microcode.$(OBJEXT) virt.$(OBJEXT) tag.$(OBJEXT)
 libtestsuite_a_OBJECTS = $(am_libtestsuite_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -199,6 +199,7 @@ libtestsuite_a_SOURCES = \
 	set.c \
 	stringextras.c \
 	text_list.c \
+	tty.c \
 	wakealarm.c \
 	summary.c \
 	microcode.c \
@@ -283,6 +284,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/summary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tag.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text_list.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tty.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Po@am__quote@
 

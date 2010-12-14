@@ -17,7 +17,6 @@
  *
  */
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -223,7 +222,6 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 		printf("\nTotal of %d tests\n", total);
 }
 
-
 /*
  *  fwts_framework_strtrunc()
  *	truncate overlong string 
@@ -330,7 +328,6 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 		fflush(stdout);
 	}
 }
-
 
 /*
  *  fwts_framework_underline()
@@ -1229,7 +1226,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fprintf(stderr, "--s3-delay_delta cannot be less than 0.001\n");
 		goto tidy_close;
 	}
-
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
 		fwts_framework_show_tests(fw, FWTS_FALSE);
 		goto tidy_close;
@@ -1238,11 +1234,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fwts_framework_show_tests(fw, FWTS_TRUE);
 		goto tidy_close;
 	}
-
-
 	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
-
 	if ((fw->iasl == NULL) ||
 	    (fw->dmidecode == NULL) ||
 	    (fw->lspci == NULL) || 
@@ -1260,7 +1253,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
 		goto tidy_close;
 	}
-
 
 	if (optind < argc)  {
 		/* Run specified tests */

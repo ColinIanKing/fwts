@@ -300,7 +300,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	progress += (float)(percent) * process_percent;
 
 	/* Feedback required? */
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+	if (fw->show_progress) {
 		int percent;
 		char buf[55];
 
@@ -443,6 +443,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fw->current_ops = test->ops;
 	fw->current_minor_test_num = 1;
+	fw->show_progress = (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) &&
+			    (FWTS_TEST_INTERACTIVE(test->flags) == 0);
 
 	/* Not a utility test?, then we require a test summary at end of the test run */
 	if (!(test->flags & FWTS_UTILS))
@@ -451,7 +453,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	if (test->ops->headline) {
 		fwts_log_heading(fw, "%s", test->ops->headline());
 		fwts_framework_underline(fw,'-');
-		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
+		if (fw->show_progress) {
 			char buf[70];
 			fwts_framework_strtrunc(buf, test->ops->headline(), sizeof(buf));
 			fprintf(stderr, "Test: %-70.70s\n", buf);
@@ -469,7 +471,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 					fw->major_tests.skipped++;
 					fw->total.skipped++;
 				}
-				if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)
+				if (fw->show_progress) 
 					fprintf(stderr, " Test skipped.\n");
 
 			} else {
@@ -478,7 +480,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 					fw->major_tests.aborted++;
 					fw->total.aborted++;
 				}
-				if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)
+				if (fw->show_progress)
 					fprintf(stderr, " Test aborted.\n");
 			}
 			if (!(test->flags & FWTS_UTILS))
@@ -507,8 +509,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fw->major_tests.warning += fw->minor_tests.warning;
 		fw->major_tests.skipped += fw->minor_tests.skipped;
 
-		if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) {
-			char resbuf[80];
+		if (fw->show_progress) {
+			char resbuf[128];
 			char namebuf[55];
 			fwts_framework_format_results(resbuf, sizeof(resbuf), &fw->minor_tests);
 			fwts_framework_strtrunc(namebuf, minor_test->name, sizeof(namebuf));

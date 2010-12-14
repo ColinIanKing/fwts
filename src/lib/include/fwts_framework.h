@@ -117,6 +117,7 @@ typedef struct {
 	fwts_list *total_taglist;		/* List of tags found when running all tests */
 
 	int firmware_type;			/* Type of firmware */
+	int show_progress;			/* Show progress while running current test */
 } fwts_framework;
 
 typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);
@@ -209,6 +210,10 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 #define FWTS_TEST_BIOS			FWTS_FRAMEWORK_FLAGS_TEST_BIOS
 #define FWTS_TEST_UEFI			FWTS_FRAMEWORK_FLAGS_TEST_UEFI
 #define FWTS_TEST_ACPI			FWTS_FRAMEWORK_FLAGS_TEST_ACPI
+
+#define FWTS_TEST_INTERACTIVE(flags)	\
+	(flags & (FWTS_FRAMEWORK_FLAGS_INTERACTIVE | \
+		  FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL)) 
 
 #define FWTS_REGISTER(name, ops, priority, flags)		\
 								\

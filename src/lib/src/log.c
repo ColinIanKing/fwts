@@ -408,7 +408,6 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 {
 	fwts_log *newlog;
-	int fd;
 
 	if ((newlog = calloc(1, sizeof(fwts_log))) == NULL)
 		return NULL;
@@ -432,21 +431,11 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 		return NULL;
 	}
 
-	fd = fileno(newlog->fp);
 	if (log_line_width) {
 		/* User has specified width, so use it */
 		newlog->line_width = log_line_width;
 	} else {
-		struct winsize ws;
-#ifdef TIOCGWINSZ
-		if (isatty(fd) &&
-		    (ioctl(fd, TIOCGWINSZ, &ws) != -1) &&
-		    (0 < ws.ws_col) && 
-		    (ws.ws_col == (size_t)ws.ws_col)) 
-			newlog->line_width = ws.ws_col;
-		else
-#endif
-			newlog->line_width = LOG_LINE_WIDTH;
+		newlog->line_width = fwts_tty_width(fileno(newlog->fp), LOG_LINE_WIDTH);
 	}
 
 	return newlog;

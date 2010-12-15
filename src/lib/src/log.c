@@ -102,6 +102,8 @@ int fwts_log_str_to_level(const char *str)
 			return LOG_LEVEL_MEDIUM;
 		if (strstr(str, "LOW"))
 			return LOG_LEVEL_LOW;
+		if (strstr(str, "INFO"))
+			return LOG_LEVEL_INFO;
 	}
 
 	return LOG_LEVEL_MEDIUM;	/* Default */
@@ -122,9 +124,11 @@ char *fwts_log_level_to_str(const fwts_log_level level)
 		return "MEDIUM";
 	case LOG_LEVEL_LOW:
 		return "LOW";
+	case LOG_LEVEL_INFO:
+		return "INFO";
 	case LOG_LEVEL_NONE:
 	default:
-		return "   ";
+		return " ";
 	}
 }
 

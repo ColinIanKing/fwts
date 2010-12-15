@@ -568,13 +568,6 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "\\[Firmware Bug\\]: ACPI:",
-   "advice": "ACPI driver has detected an ACPI bug. This generally points to a bug in an ACPI table. Examine the kernel log for more details."
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI",
    "pattern": "\\[Firmware Bug\\]: BIOS needs update for CPU frequency support",
    "advice": "Having _PPC but missing frequencies (_PSS, _PCT) is a good hint that the BIOS is older than the CPU and does not know the CPU frequencies."
   },
@@ -668,6 +661,20 @@
    "tag": "FWTS_TAG_ACPI",
    "pattern": "\\[Firmware Bug\\]: PCI.*not reserved in ACPI motherboard resources",
    "advice": "PCI firmware bug. Please see the kernel log for more details."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]:.*_OSI.*Linux.*ignored",
+   "advice": "This is not exactly a failure mode but a warning from the kernel. The _OSI() method has implemented a match to the 'Linux' query in the DSDT and this is redundant because the ACPI driver matches onto the Windows _OSI strings by default."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "\\[Firmware Bug\\]: ACPI:",
+   "advice": "ACPI driver has detected an ACPI bug. This generally points to a bug in an ACPI table. Examine the kernel log for more details."
   },
   {
    "compare_mode": "regex",

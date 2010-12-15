@@ -129,9 +129,13 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
 			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
-				fwts_tag_failed(fw, pattern->tag);
-				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
-				(*errors)++;
+				if (pattern->level == LOG_LEVEL_INFO)
+					fwts_log_info(fw, "Kernel message: %s", line);
+				else {
+					fwts_tag_failed(fw, pattern->tag);
+					fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
+					(*errors)++;
+				}
 				if ((pattern->advice) != NULL && (*pattern->advice))
 					fwts_advice(fw, "%s", pattern->advice);
 				else

@@ -50,6 +50,7 @@ typedef enum {
 	LOG_LEVEL_HIGH      = 0x00000002,
 	LOG_LEVEL_MEDIUM    = 0x00000004,
 	LOG_LEVEL_LOW       = 0x00000008,
+	LOG_LEVEL_INFO      = 0x00000010,
 } fwts_log_level;
 
 typedef struct log_t {

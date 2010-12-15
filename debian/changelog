@@ -1,3 +1,15 @@
+fwts (0.20.10) natty; urgency=low
+
+  * New version for release (LP: #690598)
+  * Fix a couple of memory leaks
+  * Add MTRR misconfiguration klog checks
+  * oscilinux: make test a warning rather than a low failure
+  * klog, only scan unique error messages and report repeats, reduces noise
+  * _OSI(Linux) klog errors logged as just information rather than an error
+  * New upstream version 0.20.10
+
+ -- Colin King <colin.king@canonical.com>  Wed, 15 Dec 2010 11:27:27 +0000
+
 fwts (0.20.09) natty; urgency=low
 
   * show available tests in short form

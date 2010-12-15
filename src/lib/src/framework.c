@@ -1263,8 +1263,25 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fwts_framework_test *test = fwts_framework_test_find(fw, argv[optind]);
 
 			if (test == NULL) {
-				fprintf(stderr, "No such test '%s'\n",argv[optind]);
-				fwts_framework_show_tests(fw, FWTS_FALSE);
+				int width = fwts_tty_width(fileno(stderr), 80);
+				int n = 0;
+				fwts_list_link *item;
+				fprintf(stderr, "No such test '%s', available tests:\n",argv[optind]);
+
+				fwts_list_foreach(item, fwts_framework_test_list) {
+					int len;
+					fwts_framework_test *test = (fwts_framework_test*)item->data;
+					len = strlen(test->name) + 1;
+					if ((n + len) > width)  {
+						fprintf(stderr, "\n");
+						n = 0;
+					}
+					
+					fprintf(stderr, "%s ", test->name);
+					n += len;
+				}
+				fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
+				
 				ret = FWTS_ERROR;
 				goto tidy;
 			}

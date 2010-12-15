@@ -1,3 +1,11 @@
+fwts (0.20.09) natty; urgency=low
+
+  * show available tests in short form
+  * don't display progress on interactive tests
+  * New upstream version 0.20.09
+
+ -- Colin King <colin.king@canonical.com>  Wed, 15 Dec 2010 00:01:23 +0000
+
 fwts (0.20.08) natty; urgency=low
 
   * method test: check for null object returns.

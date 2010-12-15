@@ -622,6 +622,13 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "WARNING.*BIOS bug.*CPU MTRRs don't cover all of memory, losing",
+   "advice": "The Memory Type Range Registers (MTRRs) which define memory caching policy are misconfigued by the BIOS and don't appear to cover all available physical memory. The kernel has detected this and has reduced the amount of memory available to be safe. Either check that the BIOS memory caching options are set correctly or contact your BIOS vendor to get this fixed."
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": ".*defines _DOD but not _DOS",

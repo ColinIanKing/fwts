@@ -1337,7 +1337,10 @@ tidy_close:
 	free(fw->dmidecode);
 	free(fw->lspci);
 	free(fw->results_logname);
+	free(fw->klog);
+	free(fw->json_data_path);
 	fwts_framework_free_env();
+	fwts_list_free(fw->total_taglist, free);
 	fwts_list_free(fwts_framework_test_list, free);
 
 	/* Failed tests flagged an error */

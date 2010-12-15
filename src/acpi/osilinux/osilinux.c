@@ -79,14 +79,13 @@ static int osilinux_test1(fwts_framework *fw)
 		if (strstr(line, "}")) {
 			depth--;
 			if (dumpdepth != 0 && dumpdepth != depth) {
-				fwts_log_warning(fw, "WARNING: Found _OSI(\"Linux\").");
 				found++;
 				while (dumpitem != NULL && dumpitem != item->next) {
 					fwts_log_warning_verbatum(fw, "%s", fwts_text_list_text(dumpitem));
 					dumpitem = dumpitem->next;
 				}
 				dumpdepth = 0;
-				fwts_failed_low(fw, "DSDT implements a deprecated _OSI(\"Linux\") test.");
+				fwts_warning(fw, "DSDT implements a deprecated _OSI(\"Linux\") test.");
 			}
 		}
 		if ((str = strstr(line, "_OSI")) != NULL) {

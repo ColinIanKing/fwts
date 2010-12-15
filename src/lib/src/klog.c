@@ -81,6 +81,22 @@ fwts_list *fwts_klog_read(void)
 	return list;
 }
 
+static char *remove_timestamp(char *text)
+{
+	char *ptr = text;
+
+	if ((ptr[0] == '<') && (ptr[2] == '>'))
+		ptr += 3;
+
+	if (*ptr == '[')
+		while (*ptr && *ptr !=']')
+			ptr++;
+		if (*ptr == ']')
+			ptr+=2;	/* Skip ] and trailing space */
+
+	return ptr;
+}
+
 int fwts_klog_scan(fwts_framework *fw, 
 		   fwts_list *klog, 
 		   fwts_klog_scan_func scan_func,
@@ -88,33 +104,82 @@ int fwts_klog_scan(fwts_framework *fw,
 		   void *private, 
 		   int *match)
 {
+	typedef struct {
+		char *line;
+		int repeated;
+	} klog_reduced_item;
+
 	*match= 0;
 	char *prev;
 	fwts_list_link *item;
+	fwts_list *klog_reduced;
 	int i;
 
 	if (!klog)
 		return FWTS_ERROR;
 
+	if ((klog_reduced = fwts_list_init()) == NULL) 
+		return FWTS_ERROR;
+
+	/*
+	 *  Form a reduced log by stripping out repeated kernel warnings
+	 */
+	fwts_list_foreach(item, klog) {
+		char *newline = remove_timestamp((char *)item->data);
+		if (*newline) {
+			int matched = 0;
+			fwts_list_link *l;
+			fwts_list_foreach(l, klog_reduced) {	
+				char *line;
+				klog_reduced_item *reduced = (klog_reduced_item *)l->data;
+				
+				line = remove_timestamp(reduced->line);
+				if (strcmp(newline, line) == 0) {
+					reduced->repeated++;
+					matched = 1;
+					break;
+				}
+			}
+			if (!matched) {
+				klog_reduced_item *new;
+	
+				if ((new = calloc(1, sizeof(klog_reduced_item))) == NULL) {
+					fwts_list_free(klog_reduced, free);
+					return FWTS_ERROR;
+				}
+				new->line = (char *)item->data;
+				new->repeated = 0;
+
+				fwts_list_append(klog_reduced, new);
+			}
+		}
+	}
+
 	prev = "";
 
-	for (i=0,item = klog->head; item != NULL; item=item->next,i++) {
-		char *ptr = (char *)item->data;
+	i = 0;
+	fwts_list_foreach(item, klog_reduced) {
+		klog_reduced_item *reduced = (klog_reduced_item *)item->data;
+		char *line = reduced->line;
 
-		if ((ptr[0] == '<') && (ptr[2] == '>'))
-			ptr += 3;
+		if ((line[0] == '<') && (line[2] == '>'))
+			line += 3;
 
-		scan_func(fw, ptr, prev, private, match);
+		scan_func(fw, line, reduced->repeated, prev, private, match);
 		if (progress_func  && ((i % 25) == 0))
 			progress_func(fw, 100 * i / fwts_list_len(klog));
-		prev = ptr;
+		prev = line;
+		i++;
 	}
+
+	fwts_list_free(klog_reduced, free);
 
 	return FWTS_OK;
 }
 
 void fwts_klog_scan_patterns(fwts_framework *fw, 
 	char *line, 
+	int  repeated,
 	char *prevline, 
 	void *private, 
 	int *errors)
@@ -126,35 +191,33 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		"firmware test suite has no diagnostic advice for this particular problem.";
 
 	while (pattern->pattern != NULL) {
+		int matched = 0;
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
-			if (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0) {
-				if (pattern->level == LOG_LEVEL_INFO)
-					fwts_log_info(fw, "Kernel message: %s", line);
-				else {
-					fwts_tag_failed(fw, pattern->tag);
-					fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
-					(*errors)++;
-				}
-				if ((pattern->advice) != NULL && (*pattern->advice))
-					fwts_advice(fw, "%s", pattern->advice);
-				else
-					fwts_advice(fw, "%s", advice);
-				return;
-			}
+			matched = (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0);
 			break;
 		case FWTS_COMPARE_STRING:
 		default:
-			if (strstr(line, pattern->pattern) != NULL) {
+			matched = (strstr(line, pattern->pattern) != NULL) ;
+			break;
+		}
+
+		if (matched) {
+			if (pattern->level == LOG_LEVEL_INFO)
+				fwts_log_info(fw, "Kernel message: %s", line);
+			else {
 				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
-				if ((pattern->advice) != NULL && (*pattern->advice))
-					fwts_advice(fw, "%s", pattern->advice);
-				else
-					fwts_advice(fw, "%s", advice);
-				return;	
 			}
+			if (repeated)
+				fwts_log_info(fw, "Message repeated %d times.", repeated);
+
+			if ((pattern->advice) != NULL && (*pattern->advice))
+				fwts_advice(fw, "%s", pattern->advice);
+			else
+				fwts_advice(fw, "%s", advice);
+			return;
 		}
 		pattern++;
 	}
@@ -293,7 +356,7 @@ int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress,
 		progress, klog, errors);
 }
 
-static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, 
+static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int repeated,
 	char *prev, void *pattern, int *match)
 {
 	const char *error;

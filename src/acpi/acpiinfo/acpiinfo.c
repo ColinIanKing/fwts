@@ -30,7 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 
-static void acpiinfo_check(fwts_framework *fw, char *line, char *prevline, void *private, int *errors)
+static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors)
 {
 	if (strstr(line, "ACPI: Subsystem revision")!=NULL) {
 		char *version = strstr(line,"sion ");

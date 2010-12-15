@@ -70,7 +70,7 @@ static int klog_test1(fwts_framework *fw)
 
 	if (errors > 0) 	
 		/* Checks will log errors as failures automatically */
-		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
+		fwts_log_info(fw, "Found %d unique errors in kernel log.", errors);
 	else
 		fwts_passed(fw, "Found no errors in kernel log.");
 

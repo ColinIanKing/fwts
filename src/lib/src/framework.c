@@ -40,6 +40,9 @@
 #define LOGFILE(name1, name2)	\
 	(name1 != NULL) ? name1 : name2
 
+#define FWTS_ARGS_WIDTH 	28
+#define FWTS_MIN_TTY_WIDTH	50
+
 enum {
 	FWTS_PASSED_TEXT,
 	FWTS_FAILED_TEXT,
@@ -715,6 +718,9 @@ static void fwts_framework_strdup(char **ptr, const char *str)
 static void fwts_framework_syntax(char * const *argv)
 {
 	int i;
+	int width;
+
+
 	typedef struct {
 		char *opt;	/* option */
 		char *info;	/* what it does */
@@ -722,7 +728,7 @@ static void fwts_framework_syntax(char * const *argv)
 
 	static fwts_syntax_info syntax_help[] = {
 		{ "Arguments:",			NULL },
-		{ "-",				"Output results to stdout, same a -r stdout." },
+		{ "-",				"Output results to stdout, same as -r stdout." },
 		{ "-a, --all",			"Run all tests." },
 		{ "-b, --batch",		"Run non-Interactive tests." },
 		{ "--batch-experimental",	"Run Batch Experimental tests." },
@@ -740,8 +746,8 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "",				"from the kernel." },
 		{ "--log-fields",		"Show available log filtering fields." },
 		{ "--log-filter=expr",		"Define filters to dump out specific log fields:" },
-		{ "\te.g. --log-filter=RES,SUM  - dump out results and summary.", NULL },
-		{ "\t     --log-filter=ALL,~INF - dump out all fields except info fields.", NULL },
+		{ "  e.g. --log-filter=RES,SUM", "- dump out results and summary." },
+		{ "       --log-filter=ALL,~INF","- dump out all fields except info fields." },
 		{ "--log-format=fields",	"Define output log format." },
 		{ "\te.g. --log-format=\"\%date \%time [\%field] (\%owner): \"", NULL },
 		{ "\tfields: \%date  - date",	NULL },
@@ -754,9 +760,9 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--lp-tags-log",		"Output LaunchPad bug tags in results log." },
 		{ "--lspci=path",		"Specify path to lspci." },
 		{ "--no-s3",			"Don't run S3 suspend/resume tests." },
-		{ "",				"  deprecated, use --skip-test=s3 instead." },
+		{ "",				"(deprecated, use --skip-test=s3 instead)." },
 		{ "--no-s4",			"Don't run S4 hibernate/resume tests." },
-		{ "",				"  deprecated, use --skip-test=s4 instead." },
+		{ "",				"(deprecated, use --skip-test=s4 instead.)" },
 		{ "-P, --power-states",		"Test S3, S4 power states." },
 		{ "-q, --quiet",		"Run quietly." },
 		{ "--results-no-separators",	"No horizontal separators in results log." },
@@ -780,12 +786,34 @@ static void fwts_framework_syntax(char * const *argv)
 		{ NULL, NULL }
 	};
 
+	width = fwts_tty_width(fileno(stderr), FWTS_MIN_TTY_WIDTH);
+	if ((width - (FWTS_ARGS_WIDTH + 1)) < 0)
+		width = FWTS_MIN_TTY_WIDTH;
+
+	width -= (FWTS_ARGS_WIDTH + 1);
+
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
-	for (i=0; syntax_help[i].opt != NULL; i++) 
-		if (syntax_help[i].info) 
-			printf("%-28.28s %s\n", syntax_help[i].opt, syntax_help[i].info);
+	for (i=0; syntax_help[i].opt != NULL; i++) {
+		fwts_list_link *item;
+		fwts_list *text;
+
+		if (syntax_help[i].info) {
+			int lineno = 0;
+
+			text = fwts_format_text(syntax_help[i].info, 
+				width < 0 ? (FWTS_MIN_TTY_WIDTH - FWTS_ARGS_WIDTH-1) : width);
+			fwts_list_foreach(item, text) {
+				printf("%-*.*s %s\n", 
+					FWTS_ARGS_WIDTH, 
+					FWTS_ARGS_WIDTH, 
+					lineno++ == 0 ? syntax_help[i].opt : "", 
+					(char*)item->data);
+			}
+			fwts_list_free(text, free);
+		}
 		else
 			printf("%s\n", syntax_help[i].opt);
+	}
 	
 	/* Tag on copyright info */
 	printf("\nSome of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.\n");

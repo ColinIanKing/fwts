@@ -72,6 +72,16 @@ static inline void fwts_results_zero(fwts_results *results)
 	memset(results, 0, sizeof(fwts_results));
 }
 
+
+static inline void fwts_framework_summate_results(fwts_results *total, fwts_results *increment)
+{
+	total->aborted += increment->aborted;
+	total->failed  += increment->failed;
+	total->passed  += increment->passed;
+	total->warning += increment->warning;
+	total->skipped += increment->skipped;
+}
+
 /*
  *  Test framework context
  */

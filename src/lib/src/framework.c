@@ -508,12 +508,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fwts_framework_minor_test_progress(fw, 0);
 		(*minor_test->test_func)(fw);
 		fwts_framework_minor_test_progress(fw, 100);
-	
-		fw->major_tests.aborted += fw->minor_tests.aborted;
-		fw->major_tests.failed  += fw->minor_tests.failed;
-		fw->major_tests.passed  += fw->minor_tests.passed;
-		fw->major_tests.warning += fw->minor_tests.warning;
-		fw->major_tests.skipped += fw->minor_tests.skipped;
+		fwts_framework_summate_results(&fw->major_tests, &fw->minor_tests);
 
 		if (fw->show_progress) {
 			char resbuf[128];
@@ -526,11 +521,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fwts_log_nl(fw);
 	}
 
-	fw->total.aborted += fw->major_tests.aborted;
-	fw->total.failed  += fw->major_tests.failed;
-	fw->total.passed  += fw->major_tests.passed;
-	fw->total.warning += fw->major_tests.warning;
-	fw->total.skipped += fw->major_tests.skipped;
+	fwts_framework_summate_results(&fw->total, &fw->major_tests);
 
 	if (test->ops->deinit)
 		test->ops->deinit(fw);

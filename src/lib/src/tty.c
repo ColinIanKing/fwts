@@ -19,11 +19,17 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+/*
+ *  fwts_tty_width()
+ *	try and find width of tty. If it cannot be determined
+ *	then simply return the default_width
+ */
 int fwts_tty_width(const int fd, const int default_width)
 {
 #ifdef TIOCGWINSZ
 	struct winsize ws;
 
+	/* if tty and we can get a sane width, return it */
 	if (isatty(fd) &&
 	    (ioctl(fd, TIOCGWINSZ, &ws) != -1) &&
 	    (0 < ws.ws_col) &&
@@ -31,5 +37,6 @@ int fwts_tty_width(const int fd, const int default_width)
 		return ws.ws_col;
 	else
 #endif
+	/* not supported or failed to get, return default */
 	return default_width;
 }

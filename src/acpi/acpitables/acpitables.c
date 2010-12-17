@@ -20,7 +20,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <ctype.h>
-#include <unistd.h> 
+#include <unistd.h>
 
 #include "fwts.h"
 
@@ -34,15 +34,15 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)table->data;
 
 	if ((ecdt->ec_control.address_space_id != 0) &&
-            (ecdt->ec_control.address_space_id != 1)) 
+            (ecdt->ec_control.address_space_id != 1))
 		fwts_failed(fw, "ECDT EC_CONTROL address space id = %d, "
-				"should be 0 or 1 (System I/O Space or System Memory Space)", 
+				"should be 0 or 1 (System I/O Space or System Memory Space)",
 			ecdt->ec_control.address_space_id);
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
-            (ecdt->ec_data.address_space_id != 1)) 
+            (ecdt->ec_data.address_space_id != 1))
 		fwts_failed(fw, "ECDT EC_CONTROL address space id = %d, "
-				"should be 0 or 1 (System I/O Space or System Memory Space", 
+				"should be 0 or 1 (System I/O Space or System Memory Space",
 			ecdt->ec_data.address_space_id);
 }
 
@@ -72,7 +72,7 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 {
 	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)table->data;
 
-	if (hpet->base_address.address == 0) 
+	if (hpet->base_address.address == 0)
 		fwts_failed(fw, "HPET base is 0x000000000000, which is invalid.");
 	
 	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0)
@@ -107,9 +107,9 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->dsdt == 0)
 		fwts_failed(fw, "FADT DSDT address is null.");
 	if (table->length >= 148) {
-		if (fadt->x_dsdt == 0) 
+		if (fadt->x_dsdt == 0)
 			fwts_failed(fw, "FADT X_DSDT address is null.");
-		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) 
+		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
 			fwts_failed(fw, "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
 				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
 	}
@@ -118,8 +118,8 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->sci_int == 0)
 		fwts_failed(fw, "FADT SCI Interrupt is 0x00, should be defined.");
 	if (fadt->smi_cmd == 0) {
-		if ((fadt->acpi_enable == 0) && 
-		    (fadt->acpi_disable == 0) && 
+		if ((fadt->acpi_enable == 0) &&
+		    (fadt->acpi_disable == 0) &&
 		    (fadt->s4bios_req == 0) &&
 		    (fadt->pstate_cnt == 0) &&
 		    (fadt->cst_cnt == 0))
@@ -152,7 +152,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (table->length>=129) {
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&
-		    (fadt->reset_reg.address_space_id != 2)) 
+		    (fadt->reset_reg.address_space_id != 2))
 			fwts_failed(fw, "FADT RESET_REG was %d, must be System I/O space, System Memory space "
 				"or PCI configuration spaces.",
 				fadt->reset_reg.address_space_id);
@@ -175,7 +175,7 @@ static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (!passed)
 		fwts_failed(fw, "RSDP: oem_id does not contain any alpha numeric characters.");
 
-	if (rsdp->revision > 2) 
+	if (rsdp->revision > 2)
 		fwts_failed(fw, "RSDP: revision is %d, expected value less than 2.", rsdp->revision);
 }
 
@@ -196,11 +196,11 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 {
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
 	
-	if (sbst->critical_energy_level > sbst->low_energy_level) 
+	if (sbst->critical_energy_level > sbst->low_energy_level)
 		fwts_failed(fw, "SBST Critical Energy Level (%d) is greater than the Low Energy Level (%d).",
 			sbst->critical_energy_level, sbst->low_energy_level);
 
-	if (sbst->low_energy_level > sbst->warning_energy_level) 
+	if (sbst->low_energy_level > sbst->warning_energy_level)
 		fwts_failed(fw, "SBST Low Energy Energy Level (%d) is greater than the Warning Energy Level (%d).",
 			sbst->low_energy_level, sbst->warning_energy_level);
 
@@ -246,7 +246,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		switch (hdr->type) {
 		case 0: {
 				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;
-				if (lapic->flags & 0xfffffffe) 
+				if (lapic->flags & 0xfffffffe)
 					fwts_failed(fw, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)lapic->flags);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
@@ -264,7 +264,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			break;
 		case 2: {
 				fwts_acpi_madt_interrupt_override *int_override = (fwts_acpi_madt_interrupt_override*)data;
-				if (int_override->bus != 0) 
+				if (int_override->bus != 0)
 					fwts_failed(fw, "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
 				if (int_override->flags & 0xfffffff0)
 					fwts_failed(fw, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)int_override->flags);

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010 Canonical
  *
- * This was originally from the thermal_trip.sh script form the  
+ * This was originally from the thermal_trip.sh script form the
  * Linux Firmware Test Kit.
- * thermal_trip.sh was Copyright (C) 2006 SUSE Linux Products GmbH 
+ * thermal_trip.sh was Copyright (C) 2006 SUSE Linux Products GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

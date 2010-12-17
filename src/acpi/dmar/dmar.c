@@ -256,12 +256,12 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 
 	header = (struct acpi_dmar_entry_header *)(table_ptr+DMAR_HEADER_SIZE);
 	while ((unsigned long)header < (unsigned long)(table_ptr + table->length)) {		
-		if ((header->type == ACPI_DMAR_DRHD) && 
+		if ((header->type == ACPI_DMAR_DRHD) &&
 		    (acpi_parse_one_drhd(fw, header) != FWTS_OK)) {
 			failed++;
 			break;
 		}
-		if ((header->type == ACPI_DMAR_RMRR) && 
+		if ((header->type == ACPI_DMAR_RMRR) &&
 		    (acpi_parse_one_rmrr(fw, header) != FWTS_OK)) {
 			failed++;
 			break;
@@ -278,7 +278,7 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 
 static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors)
 {
-        if (strstr(line, "DMAR:[fault reason")) 
+        if (strstr(line, "DMAR:[fault reason"))
 		fwts_failed(fw, "Found DMAR error: %s", line);
 }
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2010 Canonical
  *
  * from ideas in check-bios-nx
@@ -51,7 +51,7 @@ static int nx_test1(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	if ((fwts_nx_cpuinfo->x86 == -1) || 
+	if ((fwts_nx_cpuinfo->x86 == -1) ||
 	    (fwts_nx_cpuinfo->x86_model == -1)) {
 		fwts_failed_high(fw, "No model or family found for this CPU. Please check /proc/cpuinfo.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
@@ -70,7 +70,7 @@ static int nx_test1(fwts_framework *fw)
 			"is enabled in the BIOS. For more information please consult "
 			"https://wiki.ubuntu.com/Security/CPUFeatures");
 	} else
-		fwts_passed(fw, 
+		fwts_passed(fw,
 			"The CPU is family %d, model %d and does not have NX capabilities.",
 			fwts_nx_cpuinfo->x86, fwts_nx_cpuinfo->x86_model);
 
@@ -86,7 +86,7 @@ static int nx_test2(fwts_framework *fw)
 	int cpu0_has_nx = 0;
 	int failed = 0;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"This test verifies that all CPUs have the same NX flag setting. "
 		"Although rare, BIOS may set the NX flag differently "
 		"per CPU. ");
@@ -118,7 +118,7 @@ static int nx_test2(fwts_framework *fw)
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 	}
 
-	if (!failed) 
+	if (!failed)
 		fwts_passed(fw, "All %d CPUs have the same NX flag %s.", n, cpu0_has_nx ? "set" :  "cleared");
 
 	return FWTS_OK;
@@ -133,7 +133,7 @@ static int nx_test3(fwts_framework *fw)
 	const uint64_t nx_bit = 1ULL << 34;
 	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"This test verifies that all CPUs have the same NX flag setting by examining the per CPU MSR register 0x1a0.");
 
 	if (fwts_check_root_euid(fw)) {
@@ -172,7 +172,7 @@ static int nx_test3(fwts_framework *fw)
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 	}
 
-	if (!failed) 
+	if (!failed)
 		fwts_passed(fw, "All %d CPUs have the NX flag in MSR 0x1a0 %s.", n, (msr_value & nx_bit) == 0 ? "set" : "cleared");
 
 	return FWTS_OK;
@@ -189,7 +189,7 @@ static fwts_framework_ops nx_ops = {
 	.headline    = nx_headline,
 	.minor_tests = nx_tests
 };
- 
+
 FWTS_REGISTER(nx, &nx_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

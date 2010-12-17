@@ -102,10 +102,10 @@ static int ebda_test1(fwts_framework *fw)
 
 	entry = fwts_memory_map_info(memory_map, (uint64_t)ebda_addr);
 	if ((entry != NULL) &&
-	    (entry->type == FWTS_MEMORY_MAP_RESERVED || 
+	    (entry->type == FWTS_MEMORY_MAP_RESERVED ||
 	     entry->type == FWTS_MEMORY_MAP_ACPI)) {
 		fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %lldK region in the %s table at 0x%llx..0x%llx.",
-			ebda_addr, 
+			ebda_addr,
 			(unsigned long long int)(entry->end_address - entry->start_address) / 1024,
 			memory_map_name,
 			(unsigned long long int)entry->start_address,

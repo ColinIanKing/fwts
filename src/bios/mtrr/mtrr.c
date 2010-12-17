@@ -91,10 +91,10 @@ static int get_mtrrs(void)
 
 	mtrr_list = fwts_list_init();
 
-	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0) 
+	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0)
 		return FWTS_ERROR;
 
-	for (gentry.regnum = 0; 
+	for (gentry.regnum = 0;
 		ioctl (fd, MTRRIOC_GET_ENTRY, &gentry) == 0;
          	++gentry.regnum) {
 		if ((entry = calloc(1, sizeof(struct mtrr_entry))) != NULL) {
@@ -159,7 +159,7 @@ restart:
 			end = entry->start;
 			if (end<start)
 				end = start;
-			else 
+			else
 				goto restart;
 		}
 	}
@@ -255,7 +255,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 				uint64_t size = 0;
 #if 0
 				int pref = 0;
-				if (strstr(str, "non-prefetchable")) 
+				if (strstr(str, "non-prefetchable"))
 					pref = 0;
 				else if (strstr(str, "(prefetchable"))
 					pref = 1;
@@ -317,7 +317,7 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 	fwts_list_foreach(item, lspci_output) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
-			if (strstr(str, "Non-Prefetchable")) 
+			if (strstr(str, "Non-Prefetchable"))
 				pref = 0;
 			else if (strstr(str, "(Prefetchable"))
 				pref = 1;
@@ -396,7 +396,7 @@ static int validate_iomem(fwts_framework *fw)
 		
 		start = strtoull(c, NULL, 16);
 		c2 = strchr(c, '-');
-		if (!c2) 
+		if (!c2)
 			continue;
 		c2++;
 		end = strtoull(c2, NULL, 16);
@@ -463,7 +463,7 @@ static void do_mtrr_resource(fwts_framework *fw)
 		else
 			fwts_log_info_verbatum(fw, "Reg %d: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n", entry->reg,
 				(unsigned long long int)entry->start,
-				(unsigned long long int)entry->end, 
+				(unsigned long long int)entry->end,
 				(unsigned long long int)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
 				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
@@ -540,7 +540,7 @@ static int mtrr_test2(fwts_framework *fw)
 			failed = 1;
 		}
 
-		if (failed) 
+		if (failed)
 			fwts_failed(fw, "It is probable that the BIOS does not set up all the CPUs correctly and "
 					"the kernel has now corrected this misconfiguration.");
 		else

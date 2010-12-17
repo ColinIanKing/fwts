@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2006, Intel Corp
  * Copyright (C) 2007, AMD Inc
  * Copyright (C) 2010 Canonical
@@ -94,7 +94,7 @@ static fwts_framework_ops virt_ops = {
 	.deinit      = virt_deinit,
 	.minor_tests = virt_tests
 };
- 
+
 FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

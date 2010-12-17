@@ -69,7 +69,7 @@ static void keep_busy_for_one_second(int cpu)
 		double A, B;	
 		int i;
 		A = 1.234567;
-		B = 3.121213; 
+		B = 3.121213;
 		for (i=0; i<100; i++) {
 			A = A * B;
 			B = A * A;
@@ -168,8 +168,8 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 		}
 
 		keepgoing = 0;
-		for (j=MIN_CSTATE; j<MAX_CSTATE; j++) 
-			if (initial.used[j]==0) 
+		for (j=MIN_CSTATE; j<MAX_CSTATE; j++)
+			if (initial.used[j]==0)
 				keepgoing = 1;
 	}
 
@@ -223,7 +223,7 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 	}
 
 	count = 0;
-	for (i=1; i<MAX_CSTATE; i++) 
+	for (i=1; i<MAX_CSTATE; i++)
 		if (initial.used[i] >= 0)
 			count++;
 
@@ -233,7 +233,7 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 	if (statecount != count)
 		fwts_failed_high(fw, "Processor %i is expected to have %i C-states but has %i.", cpu, statecount, count);
 	else
-		if (firstcpu == -1) 
+		if (firstcpu == -1)
 			firstcpu = cpu;
 		else
 			fwts_passed(fw, "Processor %i has the same number of C-states as processor %d", cpu, firstcpu);
@@ -259,7 +259,7 @@ static int cstates_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	while ((entry = readdir(dir)) != NULL) 
+	while ((entry = readdir(dir)) != NULL)
 		if (entry && strlen(entry->d_name)>3)
 			cpus++;
 
@@ -274,7 +274,7 @@ static int cstates_test1(fwts_framework *fw)
 			do_cpu(fw, i, cpus, cpu, cpupath);
 			i++;
 		}
-	} 
+	}
 
 	closedir(dir);
 

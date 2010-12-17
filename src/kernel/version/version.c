@@ -44,7 +44,7 @@ static int version_test2(fwts_framework *fw)
 	char *str;
 
 
-	if ((str = fwts_get("/proc/version")) == NULL) 
+	if ((str = fwts_get("/proc/version")) == NULL)
 		fwts_failed_low(fw,"Cannot get version info from /proc/version");
 	else {
 		fwts_passed(fw, "Kernel Version: %s", str);

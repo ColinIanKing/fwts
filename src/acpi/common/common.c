@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010 Canonical
- * 
+ *
  * This file was originally part of the Linux-ready Firmware Developer Kit
  *
  * This program is free software; you can redistribute it and/or
@@ -67,7 +67,7 @@ static int dmesg_common_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (errors > 0) 
+	if (errors > 0)
 		/* Already logged these errors if found */
 		fwts_log_info(fw, "Found %d errors in kernel log", errors);
 	else

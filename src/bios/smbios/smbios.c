@@ -110,7 +110,7 @@ static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry 
         close(fd);
 
 	for (i=0; i<SMBIOS_REGION_SIZE; i+= 16) {
-		if ((*(mem+i)   == '_') && 
+		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&
 		    (*(mem+i+2) == 'M') &&
 		    (*(mem+i+3) == '_')) {
@@ -118,7 +118,7 @@ static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry 
 			uint8_t checksum = 0;
 			int j;
 
-			for (j=i;j<i+16;j++) 
+			for (j=i;j<i+16;j++)
 				checksum += *(mem+j);
 
 			smbios = (fwts_smbios_entry*)(mem+i);

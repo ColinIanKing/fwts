@@ -82,7 +82,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	int failed = 0;
 	int advice = 0;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"This test checks the maximum CPU frequency as detected by the kernel for "
 		"each CPU against maxiumum frequency as specified by the BIOS frequency "
 		"scaling settings.");
@@ -156,24 +156,24 @@ static int maxfreq_test1(fwts_framework *fw)
 
 					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
 						failed++;
-						fwts_failed(fw, "Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n", 
+						fwts_failed(fw, "Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n",
 							maxfreq_ghz, cpufreq_ghz);
 						if (!advice)  {
 							advice++;
-							fwts_advice(fw, 
+							fwts_advice(fw,
 								"The maximum scaling frequency %f GHz for CPU %d configured by the BIOS in %s "
 								"does not match the expected maximum CPU frequency %f GHz "
 								"that the CPU can run at. This usually indicates a misconfiguration of "
 								"the ACPI _PSS (Performance Supported States) object. This is described in "
 								"section 8.4.4.2 of the APCI specification.",
-								(double)maxfreq/1000000.0, cpunum, path, 
+								(double)maxfreq/1000000.0, cpunum, path,
 								(double)cpufreq[cpunum]/1000000.0);	
 						}
-						else 
+						else
 							fwts_advice(fw, "See advice for previous CPU.");
 					}
 				}
-			} 
+			}
 			free(data);
 		}
 	} while (entry);

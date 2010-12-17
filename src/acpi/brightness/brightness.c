@@ -112,7 +112,7 @@ static int brightness_test1(fwts_framework *fw)
 				if (max_brightness <= 0)
 					fwts_failed_high(fw, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 				else {
-					fwts_passed(fw, "Maximum brightness for %s is %d which is sane.", entry->d_name, max_brightness); 
+					fwts_passed(fw, "Maximum brightness for %s is %d which is sane.", entry->d_name, max_brightness);
 					skip_tests = 0;
 
 					if (get_setting(entry->d_name, "actual_brightness", &actual_brightness) == FWTS_OK)
@@ -124,7 +124,7 @@ static int brightness_test1(fwts_framework *fw)
 					else
 						fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
 				}
-			} else 
+			} else
 				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
@@ -169,12 +169,12 @@ static int brightness_test2(fwts_framework *fw)
 					}
 					if (failed)
 						fwts_failed_medium(fw, "Actual brightness %d does not match the brightnesss level %d just set for backlight %s.", actual_brightness, i, entry->d_name);
-					else 
+					else
 						fwts_passed(fw, "Actual brightness match the brightnesss level for backlight %s.", entry->d_name);
 					/* Restore */
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
-			} else 
+			} else
 				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
@@ -226,7 +226,7 @@ static int brightness_test3(fwts_framework *fw)
 					/* Restore */
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
-			} else 
+			} else
 				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
@@ -262,7 +262,7 @@ static int brightness_test4(fwts_framework *fw)
 					long delay = 5000000/max_brightness;
 					int ch;
 		
-					if (delay > 1000000) 
+					if (delay > 1000000)
 						delay = 1000000;
 
 					for (i=0;i<=max_brightness;i++) {
@@ -280,7 +280,7 @@ static int brightness_test4(fwts_framework *fw)
 					/* Restore */
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
-			} else 
+			} else
 				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);

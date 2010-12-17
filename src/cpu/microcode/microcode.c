@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010 Canonical
- * 
+ *
  * This file is derived from part of the Linux-ready Firmware Developer Kit
  *
- * This was originally from microcode.c from the  
+ * This was originally from microcode.c from the
  * Linux Firmware Test Kit.
  *
  * This program is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@
  *
  */
 
-/* 
- * This test checks if the microcode in the processor has 
+/*
+ * This test checks if the microcode in the processor has
  * recent enough microcode loaded.
  */
 #include "fwts.h"
@@ -52,8 +52,8 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 		return;
 
 	while ((entry = readdir(dir)) != NULL) {
-	        if (entry && 
-		    (strlen(entry->d_name)>3) && 
+	        if (entry &&
+		    (strlen(entry->d_name)>3) &&
 		    (strncmp(entry->d_name,"cpu",3) == 0) &&
 		    (isdigit(entry->d_name[3]))) {
 			char *data;
@@ -62,7 +62,7 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 	        	snprintf(path, sizeof(path), "/sys/devices/system/cpu/%s/microcode/version", entry->d_name);
 			if ((data = fwts_get(path)) == NULL) {
 				if (!warned) {
-					fwts_failed_low(fw, 
+					fwts_failed_low(fw,
 						"The kernel does not export microcode version. "
 						"This test needs a 2.6.19-rc1 kernel or later to function");
 					warned++;
@@ -99,8 +99,8 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 		return;
 
 	while ((entry = readdir(dir)) != NULL) {
-	        if (entry && 
-		    (strlen(entry->d_name)>3) && 
+	        if (entry &&
+		    (strlen(entry->d_name)>3) &&
 		    (strncmp(entry->d_name,"cpu",3) == 0) &&
 		    (isdigit(entry->d_name[3]))) {
 
@@ -116,7 +116,7 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 						else {
 							failed++;
 							fwts_failed_low(fw,
-								"Cpu %s has outdated microcode (version %x while version %x is available)", 
+								"Cpu %s has outdated microcode (version %x while version %x is available)",
 								cpu->cpu, cpu->version, version);
 						}
 					}
@@ -150,7 +150,7 @@ static int microcode_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_check_executable(fw, "/sbin/modprobe", "modprobe") != FWTS_OK) 
+	if (fwts_check_executable(fw, "/sbin/modprobe", "modprobe") != FWTS_OK)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
@@ -162,7 +162,7 @@ static int microcode_test1(fwts_framework *fw)
 	pid_t pid;
 	int fd;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"This test verifies if the firmware has put a recent version "
 		"of the microcode into the processor at boot time. Recent "
 		"microcode is important to have all the required "

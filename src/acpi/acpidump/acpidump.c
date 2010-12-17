@@ -20,7 +20,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 
-#include <unistd.h> 
+#include <unistd.h>
 
 #include "fwts.h"
 
@@ -94,8 +94,8 @@ static char *acpi_dump_field_info(char *label, int size, int offset)
 
 static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
-	fwts_log_info_verbatum(fw, "%s %*.*s", 
-		acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+	fwts_log_info_verbatum(fw, "%s %*.*s",
+		acpi_dump_field_info(info->label, info->size, info->offset + offset),
 		info->size, info->size,(char*)data);
 }
 
@@ -146,8 +146,8 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 			fwts_log_info_verbatum(fw, "%56.56s: 0x%*.*llx", info->label,
 				hexdigits, hexdigits, (unsigned long long)val);
 		} else
-			fwts_log_info_verbatum(fw, "%s 0x%*.*llx", 
-				acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+			fwts_log_info_verbatum(fw, "%s 0x%*.*llx",
+				acpi_dump_field_info(info->label, info->size, info->offset + offset),
 				hexdigits, hexdigits, (unsigned long long)val);
 		break;
 	default:		
@@ -164,7 +164,7 @@ static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, voi
 	int hexdigits = info->size << 1;
 	uint64_t val = apci_dump_get_uint64_t(info, data);
 
-	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset),
 		hexdigits, hexdigits,
 		(unsigned long long)val, val > info->strings_len ? "Unknown" : info->strings[val]);
 }
@@ -174,7 +174,7 @@ static void acpi_dump_string_func(fwts_framework *fw, fwts_acpidump_field *info,
 	int hexdigits = info->size << 1;
 	uint64_t val = apci_dump_get_uint64_t(info, data);
 
-	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset), 
+	fwts_log_info_verbatum(fw, "%s 0x%*.*llx (%s)", acpi_dump_field_info(info->label, info->size, info->offset + offset),
 		hexdigits, hexdigits,
 		(unsigned long long)val, info->str_func(val));
 }
@@ -627,8 +627,8 @@ static void acpidump_rsdt(fwts_framework *fw, uint8_t *data, int length)
 		if (fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i], &table) == FWTS_OK) {
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-			fwts_log_info_verbatum(fw, "%s 0x%8.8x", 
-				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])), 
+			fwts_log_info_verbatum(fw, "%s 0x%8.8x",
+				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])),
 				rsdt->entries[i]);
 		}
 	}
@@ -660,8 +660,8 @@ static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table) == FWTS_OK) {
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-			fwts_log_info_verbatum(fw, "%s 0x%16.16llx", 
-				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])), 
+			fwts_log_info_verbatum(fw, "%s 0x%16.16llx",
+				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])),
 				(unsigned long long)xsdt->entries[i]);
 		}
 	}
@@ -891,17 +891,17 @@ static void acpidump_slit(fwts_framework *fw, uint8_t *data, int length)
 	uint8_t *entry;
 
 	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%llx (%llu)",
-				(unsigned long long)slit->num_of_system_localities, 
+				(unsigned long long)slit->num_of_system_localities,
 				(unsigned long long)slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
-		fwts_log_info_verbatum(fw,"Expecting %lld bytes, got only %d", 
+		fwts_log_info_verbatum(fw,"Expecting %lld bytes, got only %d",
 			(unsigned long long)(slit->num_of_system_localities * slit->num_of_system_localities), n);
 	}
 	else {
 		entry = data + sizeof(fwts_acpi_table_slit);
 		for (i=0; i<n; i++) {
 			fwts_log_info_verbatum(fw, "Entry[%2.2d][%2.2d]: %2.2x", j, k, *entry++);
-			k++; 
+			k++;
 			if (k >= slit->num_of_system_localities) {
 				k = 0;
 				j++;

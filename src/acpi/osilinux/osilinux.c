@@ -60,7 +60,7 @@ static int osilinux_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"This is not strictly a failure mode, it just alerts "
 		"one that this has been defined in the DSDT and probably "
 		"should be avoided since the Linux ACPI driver matches "

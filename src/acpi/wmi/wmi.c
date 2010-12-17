@@ -36,7 +36,7 @@ typedef enum {
 } fwts_wmi_flags;
 
 /*
- *  Packed WMI WDG data 
+ *  Packed WMI WDG data
  */
 typedef struct {
 	uint8_t	guid[16];			/* GUID */
@@ -99,7 +99,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 		char guidstr[37];
 
 		snprintf(guidstr, sizeof(guidstr),
-			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02x%02X-%02X%02X%02X%02X%02X%02X", 
+			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02x%02X-%02X%02X%02X%02X%02X%02X",
 			guid[3], guid[2], guid[1], guid[0],
 			guid[5], guid[4],
 			guid[7], guid[6],
@@ -117,15 +117,15 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 					"ADVICE: A WMI driver probably needs to be written for this event.");
 				fwts_log_advice(fw,
 					"It can checked for using: wmi_has_guid(\"%s\").", guidstr);
-				fwts_log_advice(fw, 
+				fwts_log_advice(fw,
 					"One can install a notify handler using wmi_install_notify_handler(\"%s\", handler, NULL).  ", guidstr);
-				fwts_log_advice(fw, 
+				fwts_log_advice(fw,
 					"http://lwn.net/Articles/391230 describes how to write an appropriate driver.");
 				fwts_log_nl(fw);
 			}
 		} else {
 			char *flags = wmi_wdg_flags_to_text(info->flags);
-			fwts_log_info(fw, "Found WMI Object, Object ID %c%c, GUID: %s, Instance 0x%2.2x, Flags: %2.2x %s", 
+			fwts_log_info(fw, "Found WMI Object, Object ID %c%c, GUID: %s, Instance 0x%2.2x, Flags: %2.2x %s",
 				info->obj_id[0], info->obj_id[1], guidstr, info->instance, info->flags, flags);
 		}
 		info++;
@@ -246,7 +246,7 @@ static int wmi_table(fwts_framework *fw, char *table, int which, char *name)
 		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
 		return FWTS_ERROR;
 	}
-	if (iasl_output == NULL) 
+	if (iasl_output == NULL)
 		return FWTS_NO_TABLE;
 
 	fwts_list_foreach(item, iasl_output)

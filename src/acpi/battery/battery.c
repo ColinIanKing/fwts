@@ -119,9 +119,9 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 
 	if (events == 0)
 		fwts_failed_high(fw, "Did not detect any ACPI battery events.");
-	else 
+	else
 		fwts_passed(fw, "Detected ACPI battery events.");
-		if (matching == 0) 
+		if (matching == 0)
 			fwts_failed_high(fw, "Could not detect ACPI events for battery %s.", name);
 		else
 			fwts_passed(fw, "Detected ACPI event for battery %s.", name);
@@ -256,7 +256,7 @@ static int battery_test1(fwts_framework *fw)
 	struct dirent *entry;
 	int battdir = 0;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 	   "This test reports which (if any) batteries there are in the system. "
 	   "In addition, for charging or discharging batteries, the test validates "
 	   "that the reported 'current capacity' properly increments/decrements "

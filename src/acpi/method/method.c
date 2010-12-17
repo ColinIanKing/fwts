@@ -38,7 +38,7 @@
 static int method_test ## name(fwts_framework *fw)	\
 { 							\
 	return method_execute_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
-}   
+}
 
 
 typedef void (*method_test_return)(fwts_framework *fw, char *name, ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
@@ -90,7 +90,7 @@ static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
 	for (i=0;i<obj->Package.Count;i++) {
 		switch (obj->Package.Elements[i].Type) {
 		case ACPI_TYPE_INTEGER:
-			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i, 
+			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i,
 				(unsigned long long)obj->Package.Elements[i].Integer.Value);
 			break;
 		case ACPI_TYPE_STRING:
@@ -103,7 +103,7 @@ static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
 	}
 }
 
-static void method_execute_found_method(fwts_framework *fw, char *name, 
+static void method_execute_found_method(fwts_framework *fw, char *name,
 	method_test_return check_func,
 	void *private,
 	ACPI_OBJECT_LIST *arg_list)
@@ -153,16 +153,16 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 				"and exits prematurely without releasing an acquired lock. It may be occurring in the "
 				"method being tested or other methods used while executing the method.");
 	} else
- 		if ((sem_acquired + sem_released) > 0) 
+ 		if ((sem_acquired + sem_released) > 0)
 			fwts_passed(fw, "%s correctly acquired and released locks %d times.", name, sem_acquired);
 
 }
 
 static int method_execute_method(fwts_framework *fw,
 	int test_type,  /* Manditory or optional */
-	char *name, 
-	ACPI_OBJECT *args, 
-	int num_args, 
+	char *name,
+	ACPI_OBJECT *args,
+	int num_args,
 	method_test_return check_func,
 	void *private)
 {
@@ -323,7 +323,7 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		switch (obj->Integer.Value) {
 		case 0 ... 4:
-			fwts_passed(fw, "_SBS correctly returned value %d %s", 
+			fwts_passed(fw, "_SBS correctly returned value %d %s",
 				(uint32_t)obj->Integer.Value,
 				sbs_info[obj->Integer.Value]);
 			break;
@@ -378,49 +378,49 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "_BIF: Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIF: Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -472,56 +472,56 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "_BIX: Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIX: Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Battery Technology */
 		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "_BIX: Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.", 
+			fwts_failed(fw, "_BIX: Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[7].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Cycle Count */
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.", 
+			fwts_failed_low(fw, "_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[10].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -581,7 +581,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		/* Sanity check each field */
 		/* Battery State */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-			fwts_failed(fw, "_BST: Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.", 
+			fwts_failed(fw, "_BST: Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -760,7 +760,7 @@ static int method_test_GTS(fwts_framework *fw)
 
 			fwts_log_info(fw, "Test _GTS(%d) (Going To Sleep, State S%d.", i, i);
 
-			if (method_execute_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1, 
+			if (method_execute_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1,
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
 			fwts_log_nl(fw);
@@ -834,21 +834,21 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 2) {
-			fwts_failed(fw, "_WAK should return package of 2 integers, got %d elements instead.", 
+			fwts_failed(fw, "_WAK should return package of 2 integers, got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		} else {
 			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER))  {
-				fwts_failed(fw, "_WAK should return package of 2 integers, got %d instead.", 
+				fwts_failed(fw, "_WAK should return package of 2 integers, got %d instead.",
 					obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
 			else {
 				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
-					fwts_failed(fw, "_WAK: expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.", 
+					fwts_failed(fw, "_WAK: expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.",
 						(uint32_t)obj->Package.Elements[0].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					failed++;
@@ -856,7 +856,7 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				if (!(
 				    ((obj->Package.Elements[1].Integer.Value == Sstate) && (obj->Package.Elements[0].Integer.Value == 0)) ||
                                     ((obj->Package.Elements[1].Integer.Value == 0) && (obj->Package.Elements[0].Integer.Value != 0)) )) {
-					fwts_failed(fw, "_WAK: expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.", 
+					fwts_failed(fw, "_WAK: expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.",
 						Sstate, (uint32_t)obj->Package.Elements[0].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					fwts_advice(fw, "_WAK should return 0 if the wake failed and was unsuccessful (i.e. element[0] "
@@ -919,7 +919,7 @@ static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 	
 		if (obj->Package.Count != 6) {
-			fwts_failed(fw, "_PIF should return package of 6 elements, got %d elements instead.", 
+			fwts_failed(fw, "_PIF should return package of 6 elements, got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -965,7 +965,7 @@ static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 4) {
-			fwts_failed(fw, "_FIF should return package of 4 elements, got %d elements instead.", 
+			fwts_failed(fw, "_FIF should return package of 4 elements, got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -1005,7 +1005,7 @@ static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 3) {
-			fwts_failed(fw, "_FST should return package of 3 elements, got %d elements instead.", 
+			fwts_failed(fw, "_FST should return package of 3 elements, got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -1036,12 +1036,12 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char*)private;
 		if (obj->Integer.Value >= 2732)
-			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x (%5.1f degrees K)", 
+			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x (%5.1f degrees K)",
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
-		else 
-			fwts_failed(fw, "%s returned a debious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)", 
+		else
+			fwts_failed(fw, "%s returned a debious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)",
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
@@ -1159,10 +1159,10 @@ static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFF
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char *)private;
 		if (obj->Integer.Value < 36000) {
-			fwts_passed(fw, "%s correctly returned sane looking value %f seconds", 
+			fwts_passed(fw, "%s correctly returned sane looking value %f seconds",
 				method, (float)obj->Integer.Value / 10.0);
 		} else {
-			fwts_failed(fw, "%s returned a value %f seconds > (1 hour) which is probably incorrect.", 
+			fwts_failed(fw, "%s returned a value %f seconds > (1 hour) which is probably incorrect.",
 				method, (float)obj->Integer.Value / 10.0);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			fwts_advice(fw, "The method is returning a polling interval which is very long and hence "
@@ -1316,7 +1316,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				} else {
 					fwts_log_info_verbatum(fw, "  Instance:                %d", val & 0xf);
 					fwts_log_info_verbatum(fw, "  Display port attachment: %d", (val >> 4) & 0xf);
-					fwts_log_info_verbatum(fw, "  Type of display:         %d (%s)", 
+					fwts_log_info_verbatum(fw, "  Type of display:         %d (%s)",
 						(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
 					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %d", (val >> 16) & 1);
 					fwts_log_info_verbatum(fw, "  Non-VGA device:          %d", (val >> 17) & 1);
@@ -1474,7 +1474,7 @@ static void method_test_DDC_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 					"and instead returned an error status.",
 				obj->Buffer.Length);
 		break;
-	default: 
+	default:
 		fwts_failed(fw, "Method _DDC did not return a buffer or an integer.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		break;

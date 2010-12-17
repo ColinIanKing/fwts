@@ -79,7 +79,7 @@ static int fan_test1(fwts_framework *fw)
 	struct dirent *entry;
 	int fandir = 0;
 
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"Test how many fans there are in the system. "
 		"Check for the current status of the fan(s).");
 
@@ -111,7 +111,7 @@ static int fan_test1(fwts_framework *fw)
 
 static fwts_framework_minor_test fan_tests[] = {
 	{ fan_test1, "Check fan status." },
-	{ NULL, NULL} 
+	{ NULL, NULL}
 };
 
 static fwts_framework_ops fan_ops = {

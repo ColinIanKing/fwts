@@ -52,7 +52,7 @@ static fwts_list *hda_audio_read_pins(fwts_framework *fw, const char *path, cons
 
 	snprintf(name, sizeof(name), "%s/%s", path, file);
 
-	if ((fp = fopen(name, "r")) == NULL) 
+	if ((fp = fopen(name, "r")) == NULL)
 		return NULL;
 
 	if ((settings = fwts_list_init()) == NULL) {

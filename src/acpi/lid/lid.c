@@ -73,7 +73,7 @@ void lid_check_field(char *field, char *contents, int *matching, int *not_matchi
 					(*matching)++;
 				else
 					(*not_matching)++;
-			} 
+			}
 			free(data);
 		}
 	} while (entry);
@@ -181,7 +181,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		fwts_failed_high(fw, "Did not detect any ACPI LID events while waiting for to LID %s.", state);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
-	} else 
+	} else
 		fwts_passed(fw, "Detected ACPI LID events while waiting for LID to %s.", state);
 		if ((matching == 0) || (not_matching > 0)) {
 			fwts_failed_high(fw, "Could not detect lid %s state in %s.", state, LID_PATH);

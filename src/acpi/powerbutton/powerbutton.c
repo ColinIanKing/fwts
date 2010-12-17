@@ -75,7 +75,7 @@ void power_button_check_field(fwts_framework *fw, char *field, char *contents, i
 				}
 				else
 					(*not_matching)++;
-			} 
+			}
 			free(data);
 		}
 	} while (entry);

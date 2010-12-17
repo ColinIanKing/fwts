@@ -73,7 +73,7 @@ void ac_adapter_check_field(char *field, char *contents, int *matching, int *not
 					(*matching)++;
 				else
 					(*not_matching)++;
-			} 
+			}
 			free(data);
 		}
 	} while (entry);
@@ -146,7 +146,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 	}
 	if (events == 0)
 		fwts_failed_high(fw, "Did not detect any ACPI ac-adapter events while waiting for power to be disconnected.");
-	else 
+	else
 		if ((matching == 0) || (not_matching > 0))
 			fwts_failed_high(fw, "Could not detect ac_adapter off-line state.");
 		else
@@ -183,8 +183,8 @@ static int ac_adapter_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_minor_test ac_adapter_tests[] = { 
-	{ ac_adapter_test1, "Test ACPI ac_adapter state." }, 
+static fwts_framework_minor_test ac_adapter_tests[] = {
+	{ ac_adapter_test1, "Test ACPI ac_adapter state." },
 	{ ac_adapter_test2, "Test ac_adapter initial on-line state." },
 	{ ac_adapter_test3, "Test ac_adapter state changes." },
 	{ NULL, NULL }

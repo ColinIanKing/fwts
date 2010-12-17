@@ -146,7 +146,7 @@ static unsigned long  get_performance(const int cpu)
 		double A, B;	
 		int i;
 		A = 1.234567;
-		B = 3.121213; 
+		B = 3.121213;
 		for (i=0; i<100; i++) {
 			A = A * B;
 			B = A * A;
@@ -257,7 +257,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	fwts_cpu_freq freqs[32];
 	FILE *file;
 	char *c, *c2;
-	int i, delta; 
+	int i, delta;
 	int speedcount;
 	static int warned=0;
 	int warned_PSS = 0;
@@ -279,7 +279,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		return;
 	fclose(file);
 
-	if (totaltests==1) 
+	if (totaltests==1)
 		totaltests = (2+count_ints(line)) * sysconf(_SC_NPROCESSORS_CONF) + 2;
 	
 	c = line;
@@ -307,7 +307,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	speedcount = i;
 
 	fwts_log_info_verbatum(fw, " Frequency | Speed \n-----------+---------\n");
-	for (i=0; i < speedcount; i++) 
+	for (i=0; i < speedcount; i++)
 		fwts_log_info_verbatum(fw, "%9s | %5.1f %%\n", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/topspeed);
 	
 	if (nrspeeds == -1)  {
@@ -338,7 +338,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	}
 
 	/* now check for 1) increasing HZ and 2) increasing speed */
-	for (i=0; i<speedcount-1; i++) { 
+	for (i=0; i<speedcount-1; i++) {
 		if (freqs[i].Hz == freqs[i+1].Hz && !warned++)
 			fwts_failed_medium(fw, "Duplicate frequency reported.");
 		if (freqs[i].speed > freqs[i+1].speed)
@@ -357,7 +357,7 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 	char *line;
 	unsigned long Hz;
 	char *c, *c2;
-	int i; 
+	int i;
 	unsigned long lowspeed=0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
@@ -371,7 +371,7 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 		if (c2) {
 			*c2 = 0;
 			c2++;
-		} else 
+		} else
 			c2 = NULL;
 
 		Hz = strtoull(c, NULL, 10);
@@ -390,7 +390,7 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 	char *line;
 	uint64_t Hz;
 	char *c, *c2;
-	int i; 
+	int i;
 	unsigned long highspeed=0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
@@ -460,7 +460,7 @@ static void do_sw_all_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, 
+		fwts_failed(fw,
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ALL "
 			"instead?");
@@ -522,7 +522,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, 
+		fwts_failed(fw,
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ANY "
 			"instead?.");
@@ -548,7 +548,7 @@ static void check_sw_any(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>3) {
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			lowest_speed(fw, cpu);
-			if (cpu > max_cpu) 
+			if (cpu > max_cpu)
 				max_cpu = cpu;
 		}
 	}
@@ -599,7 +599,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	int cpu;
 
 	/* Do your test */
-	fwts_log_info(fw, 
+	fwts_log_info(fw,
 		"For each processor in the system, this test steps through the "
 		"various frequency states (P-states) that the BIOS advertises "
 		"for the processor. For each processor/frequency combination, "
@@ -610,7 +610,7 @@ static int cpufreq_test1(fwts_framework *fw)
 		"  3) No duplicate frequency values are reported by the BIOS\n"
 		"  4) Is BIOS wrongly doing Sw_All P-state coordination across cores\n"
 		"  5) Is BIOS wrongly doing Sw_Any P-state coordination across cores\n");
-	 
+	
 
 	/* First set all processors to their lowest speed */
 	if ((dir = opendir(FWTS_CPU_PATH)) == NULL) {
@@ -623,7 +623,7 @@ static int cpufreq_test1(fwts_framework *fw)
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			lowest_speed(fw, cpu);
 		}
-	} 
+	}
 	rewinddir(dir);
 
 	/* then do the benchmark */
@@ -636,7 +636,7 @@ static int cpufreq_test1(fwts_framework *fw)
 			if (no_cpufreq)
 				break;
 		}
-	} 
+	}
 	rewinddir(dir);
 
 	/* set everything back to the highest speed again */
@@ -654,7 +654,7 @@ static int cpufreq_test1(fwts_framework *fw)
 
 	/*
 	 * Check for more than one CPU and more than one frequency and
-	 * then do the benchmark set 2 
+	 * then do the benchmark set 2
 	 */
 	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && nrspeeds > 1) {
 		do_sw_all_test(fw);

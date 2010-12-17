@@ -138,7 +138,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 			for (i=0; dmi_patterns[i].pat1 != NULL; i++) {
 				int match;
 				char *text = fwts_text_list_text(item);
-				if (dmi_patterns[i].pat2 == NULL) 
+				if (dmi_patterns[i].pat2 == NULL)
 					match = (strstr(text, dmi_patterns[i].pat1) != NULL);
 				else {
 					match = (strstr(text, dmi_patterns[i].pat1) != NULL) &&

@@ -54,7 +54,7 @@ static void check_hpet_base_hpet(void)
 	if (locate_acpi_table("HPET", &address, &size))
 		return;
 
-        if (address == 0 || address == -1) 
+        if (address == 0 || address == -1)
                 return;
 
         table = (struct hpet_table *) address;
@@ -78,7 +78,7 @@ static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_lin
 			
 		if (hpet_base_p != 0) {
 			if (hpet_base_p != address_base)
-				fwts_failed(fw, 
+				fwts_failed(fw,
 			     		"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
 					table,
 			     		(unsigned long)hpet_base_p, (unsigned long)address_base);
@@ -206,7 +206,7 @@ static int hpet_check_test2(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot open /dev/mem.");
 		return FWTS_ERROR;
 	}
-	hpet_base_v = 
+	hpet_base_v =
 	    mmap(NULL, HPET_REG_SIZE, PROT_READ, MAP_SHARED, fd,
 		 hpet_base_p);
 
@@ -252,7 +252,7 @@ static fwts_framework_minor_test hpet_check_tests[] = {
 	{ hpet_check_test1, "Check HPET base in kernel log." },
 	{ hpet_check_test2, "Sanity check HPET configuration." },
 	{ hpet_check_test3, "Check HPET base in DSDT and/or SSDT. "},
-	{ NULL, NULL } 
+	{ NULL, NULL }
 };
 
 static fwts_framework_ops hpet_check_ops = {

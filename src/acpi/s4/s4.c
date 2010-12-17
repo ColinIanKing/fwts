@@ -99,7 +99,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 
-	if (errors > 0) 
+	if (errors > 0)
 		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
 	else
 		fwts_passed(fw, "%s", test);
@@ -184,7 +184,7 @@ static int s4_test1(fwts_framework *fw)
 		} else {
 			if (size > 4096) {
 				int ret;
-				fwts_failed_medium(fw, 
+				fwts_failed_medium(fw,
 					"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
 					"may cause hibernate to fail. Programs such as ureadahead may have "
 					"set this enable fast boot and not freed up the tracing buffer.", size);

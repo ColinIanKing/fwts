@@ -40,7 +40,7 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 	fwts_list_link *item;
 	int found = 0;
 
-	if ((ev->code == MSC_SCAN) && 
+	if ((ev->code == MSC_SCAN) &&
 	    (ev->type == EV_MSC))
 		scancode = ev->value;
 
@@ -49,7 +49,7 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 		fwts_list_foreach(item, hotkeys) {
 			fwts_keycode *keycode = (fwts_keycode*)item->data;
 			if (keycode->scancode == scancode) {
-				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n", 
+				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n",
 					scancode, ev->code,	
 					keycode->keyname, keycode->keytext);
 				found = 1;
@@ -57,7 +57,7 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 			}
 		}
 		if (!found)
-			fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x\n", 
+			fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x\n",
 				scancode, ev->code);
 	}
 	return FWTS_OK;
@@ -92,11 +92,11 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 			do_test = 0;
 			break;
 		default:
-			if ((ev.type == EV_KEY) && 
-		 	    (ev.code == KEY_ESC) && 
+			if ((ev.type == EV_KEY) &&
+		 	    (ev.code == KEY_ESC) &&
 			    (ev.value == 0))
 				do_test = 0;
-			else 
+			else
 				hotkey_check_key(fw, &ev, hotkeys);
 			break;
 		}

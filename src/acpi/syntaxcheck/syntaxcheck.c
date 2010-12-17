@@ -54,7 +54,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		return FWTS_ERROR;
 	}
 
-	if (table == NULL) 
+	if (table == NULL)
 		return FWTS_NO_TABLE;		/* Table does not exist */
 
 	if (fwts_iasl_reassemble(fw, table->data, table->length, &error_output) != FWTS_OK) {
@@ -84,7 +84,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 			}
 			else {
 				fwts_log_info(fw, "%s", line);
-				fwts_log_error(fw, 
+				fwts_log_error(fw,
 					"Could not find parser error message "
 					"(this can happen if iasl segfaults!)");
 			}
@@ -96,7 +96,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		fwts_failed_high(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
 	} else if (warnings > 0) {
 		fwts_failed_low(fw, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
-	} else 
+	} else
 		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", tablename, which);
 
 	return FWTS_OK;

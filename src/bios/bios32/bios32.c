@@ -81,7 +81,7 @@ static int bios32_test1(fwts_framework *fw)
         close(fd);
 
 	for (i=0; i<BIOS32_SD_REGION_SIZE; i+= 16) {
-		if ((*(mem+i)   == '_') && 
+		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == '3') &&
 		    (*(mem+i+2) == '2') &&
 		    (*(mem+i+3) == '_')) {
@@ -89,7 +89,7 @@ static int bios32_test1(fwts_framework *fw)
 			uint8_t checksum = 0;
 			int j;
 
-			for (j=i;j<i+16;j++) 
+			for (j=i;j<i+16;j++)
 				checksum += *(mem+j);
 
 			bios32 = (fwts_bios32_service_directory*)(mem+i);

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/io.h> 
+#include <sys/io.h>
 #include <unistd.h>
 #include <string.h>
 
@@ -69,8 +69,8 @@ static int fadt_test1(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	fwts_log_info(fw, "FADT Preferred PM Profile: %d (%s)\n", 
-		fadt->preferred_pm_profile, 
+	fwts_log_info(fw, "FADT Preferred PM Profile: %d (%s)\n",
+		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
 	
 	port = fadt->pm1a_cnt_blk;

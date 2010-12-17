@@ -107,7 +107,7 @@ static int cmosdump_test1(fwts_framework *fw)
 		"unknown",
 	};
 
-	static char *rate_selection[16] = { 
+	static char *rate_selection[16] = {
 		"none",
 		"unknown",
 		"unknown",

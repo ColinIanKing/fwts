@@ -24,8 +24,8 @@ static int example_init(fwts_framework *fw)
 	/* Put pre-test initialistion code here */
 
 	/* Returns:
-	 *	FWTS_ERROR - failed, abort test 
-	 *	FWTS_OK    - success, do tests 
+	 *	FWTS_ERROR - failed, abort test
+	 *	FWTS_OK    - success, do tests
 	 */
 	return FWTS_OK;
 }
@@ -35,8 +35,8 @@ static int example_deinit(fwts_framework *fw)
 	/* Put post-test de-initialistion code here */
 
 	/* Returns:
-	 *	FWTS_ERROR - failed, abort test 
-	 *	FWTS_OK    - success, do tests 
+	 *	FWTS_ERROR - failed, abort test
+	 *	FWTS_OK    - success, do tests
 	 */
 	return FWTS_OK;
 }
@@ -50,7 +50,7 @@ static char *example_headline(void)
 static int example_test1(fwts_framework *fw)
 {
 	/* Do your test */
-	 
+	
 	/* Log success or failure */
 	fwts_passed(fw, "Test passed, hurrah!");
 	/*
@@ -61,8 +61,8 @@ static int example_test1(fwts_framework *fw)
 	*/
 
 	/* Returns:
-	 *	FWTS_ERROR - failed, abort test 
-	 *	FWTS_OK    - success, do tests 
+	 *	FWTS_ERROR - failed, abort test
+	 *	FWTS_OK    - success, do test
 	 */
 	return FWTS_OK;
 }

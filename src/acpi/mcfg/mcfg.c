@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/io.h> 
+#include <sys/io.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -47,7 +47,7 @@ struct mcfg_entry {
 } __attribute__ ((packed));
 
 
-static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space) 
+static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space)
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;
@@ -55,7 +55,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 	char command[PATH_MAX];
 	char compare_line[1024];
 
-	snprintf(compare_line, sizeof(compare_line), 
+	snprintf(compare_line, sizeof(compare_line),
 		"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
 		space[0],  space[1],  space[2],  space[3],
 		space[4],  space[5],  space[6],  space[7],
@@ -138,7 +138,7 @@ static int mcfg_test1(fwts_framework *fw)
 		"This test tries to validate the MCFG table by comparing the first "
 		"16 bytes in the MMIO mapped config space with the 'traditional' config "
 		"space of the first PCI device (root bridge). The MCFG data is only "
-		"trusted if it is marked reserved in the %s", 
+		"trusted if it is marked reserved in the %s",
 		memory_map_name);
 	fwts_log_nl(fw);
 
@@ -150,7 +150,7 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_log_nl(fw);
 	}
 
-	mcfg_size = mcfg_table->length; 
+	mcfg_size = mcfg_table->length;
 	mcfg_size -= 36; /* general ACPI header */
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
@@ -174,7 +174,7 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).", 
+	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).",
 			mcfg_size, nr);
 
 	table_page = table_ptr = mcfg_table->data;

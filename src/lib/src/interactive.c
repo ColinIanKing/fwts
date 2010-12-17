@@ -54,7 +54,7 @@ static int fwts_getchar(void)
 /*
  *  fwts_printf()
  *	plain old printf() wrapped for fwts
- */ 
+ */
 int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 {
 	int len;

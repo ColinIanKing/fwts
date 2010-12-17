@@ -97,11 +97,11 @@ static char *remove_timestamp(char *text)
 	return ptr;
 }
 
-int fwts_klog_scan(fwts_framework *fw, 
-		   fwts_list *klog, 
+int fwts_klog_scan(fwts_framework *fw,
+		   fwts_list *klog,
 		   fwts_klog_scan_func scan_func,
 		   fwts_klog_progress_func progress_func,
-		   void *private, 
+		   void *private,
 		   int *match)
 {
 	typedef struct {
@@ -118,7 +118,7 @@ int fwts_klog_scan(fwts_framework *fw,
 	if (!klog)
 		return FWTS_ERROR;
 
-	if ((klog_reduced = fwts_list_init()) == NULL) 
+	if ((klog_reduced = fwts_list_init()) == NULL)
 		return FWTS_ERROR;
 
 	/*
@@ -177,16 +177,16 @@ int fwts_klog_scan(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-void fwts_klog_scan_patterns(fwts_framework *fw, 
-	char *line, 
+void fwts_klog_scan_patterns(fwts_framework *fw,
+	char *line,
 	int  repeated,
-	char *prevline, 
-	void *private, 
+	char *prevline,
+	void *private,
 	int *errors)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
 	int vector[1];
-	static char *advice = 
+	static char *advice =
 		"This is a bug picked up by the kernel, but as yet, the "
 		"firmware test suite has no diagnostic advice for this particular problem.";
 
@@ -335,24 +335,24 @@ fail_put:
 	return ret;
 }
 
-int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, 
+int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress,
 	fwts_list *klog, int *errors)
 {	
-	return fwts_klog_check(fw, "firmware_error_warning_patterns", 
+	return fwts_klog_check(fw, "firmware_error_warning_patterns",
 		progress, klog, errors);
 }
 
-int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, 
+int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress,
 	fwts_list *klog, int *errors)
 {
-	return fwts_klog_check(fw, "pm_error_warning_patterns", 
+	return fwts_klog_check(fw, "pm_error_warning_patterns",
 		progress, klog, errors);
 }
 
-int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress, 
+int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress,
 	fwts_list *klog, int *errors)
 {
-	return fwts_klog_check(fw, "common_error_warning_patterns", 
+	return fwts_klog_check(fw, "common_error_warning_patterns",
 		progress, klog, errors);
 }
 

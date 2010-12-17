@@ -59,7 +59,7 @@ int fwts_get_int(const char *file, int *value)
 	if ((data = fwts_get(file)) == NULL) {
 		*value = 0;
 		return FWTS_ERROR;
-	} 
+	}
 
 	*value = atoi(data);
 	free(data);

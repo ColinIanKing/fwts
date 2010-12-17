@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2006, Intel Corp
  * Copyright (C) 2007, AMD Inc
  * Copyright (C) 2010 Canonical
@@ -31,7 +31,7 @@
  *  exec_cpuid()
  *	execute cpuid instruction on a given CPU
  */
-void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs) 
+void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
 {
 	cpu_set_t mask, oldmask;
 
@@ -49,14 +49,14 @@ void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
 				"movl %%ebx,%%esi \n\t"
 				"popl %%ebx \n\t"
 			   	: "=a"(regs->eax),"=S"(regs->ebx),
-                             	"=c"(regs->ecx),"=d"(regs->edx) 
+                             	"=c"(regs->ecx),"=d"(regs->edx)
 			   	: "a"(cmd)
 	);
 #elif defined (__x86_64__)
-    	__asm__ __volatile__ ( "cpuid \n\t" 
+    	__asm__ __volatile__ ( "cpuid \n\t"
 			   : "=a"(regs->eax),"=b"(regs->ebx),
-                             "=c"(regs->ecx),"=d"(regs->edx) 
-			   : "a"(cmd) 
+                             "=c"(regs->ecx),"=d"(regs->edx)
+			   : "a"(cmd)
 	);
 #endif
 	

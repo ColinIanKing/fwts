@@ -77,7 +77,7 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 	close(fd);
 
 	snprintf(tmpbuf, sizeof(tmpbuf), "%s -d %s", fw->iasl, tmpname);
-	if ((fd = fwts_pipe_open(tmpbuf, &pid)) < 0) 
+	if ((fd = fwts_pipe_open(tmpbuf, &pid)) < 0)
 		fwts_log_warning(fw, "exec of %s -d %s (disassemble) failed\n", fw->iasl, tmpname);
 
 	fwts_pipe_close(fd, pid);

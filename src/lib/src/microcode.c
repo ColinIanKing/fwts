@@ -1,11 +1,11 @@
 /*
-*
-* Copyright 2000 (c) Simon Trimmer, Tigran Aivazian.
-* Copyright (C) 2010 Canonical
-* 
-* Originally microcode_ctl.c
-* Manipulate /dev/cpu/microcode under Linux
-*
+ *
+ * Copyright 2000 (c) Simon Trimmer, Tigran Aivazian.
+ * Copyright (C) 2010 Canonical
+ *
+ * Originally microcode_ctl.c
+ * Manipulate /dev/cpu/microcode under Linux
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2

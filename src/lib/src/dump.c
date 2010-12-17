@@ -245,7 +245,7 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	else
 		printf("Created README.txt\n");
 
-	if (dump_dmesg(path, "dmesg.log") != FWTS_OK) 
+	if (dump_dmesg(path, "dmesg.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump kernel log.\n");
 	else
 		printf("Dumping dmesg to dmesg.log\n");
@@ -260,7 +260,7 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
-	if (dump_acpi_tables(fw, path) != FWTS_OK) 
+	if (dump_acpi_tables(fw, path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump ACPI tables.\n");
 	else
 		printf("Dumped ACPI tables to acpidump.log\n");

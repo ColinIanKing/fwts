@@ -95,12 +95,12 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
 }
 
 /*
- * fwts_framework_test_add()  
+ * fwts_framework_test_add()
  *    register a test, called by FWTS_REGISTER() macro
  */
-void fwts_framework_test_add(const char *name, 
-	fwts_framework_ops *ops, 
-	const int priority, 
+void fwts_framework_test_add(const char *name,
+	fwts_framework_ops *ops,
+	const int priority,
 	const int flags)
 {
 	fwts_framework_test *new_test;
@@ -150,7 +150,7 @@ static int fwts_framework_compare_name(void *data1, void *data2)
 	return strcmp(test1->name, test2->name);
 }
 
-/* 
+/*
  *  fwts_framework_show_tests()
  *	dump out registered tests.
  */
@@ -206,7 +206,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 					test = (fwts_framework_test*)item->data;
 					if (full == FWTS_TRUE) {
 						int j;
-						printf(" %-13.13s (%d test%s):\n", 
+						printf(" %-13.13s (%d test%s):\n",
 							test->name, test->ops->total_tests,
 							test->ops->total_tests > 1 ? "s" : "");
 						for (j=0; j<test->ops->total_tests;j++)
@@ -227,7 +227,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 
 /*
  *  fwts_framework_strtrunc()
- *	truncate overlong string 
+ *	truncate overlong string
  */
 static void fwts_framework_strtrunc(char *dest, const char *src, int max)
 {
@@ -307,7 +307,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 
 		fwts_framework_strtrunc(buf, fw->current_minor_test_name, sizeof(buf));
 
-		percent = (100 * (fw->current_minor_test_num-1) / fw->current_ops->total_tests) + 
+		percent = (100 * (fw->current_minor_test_num-1) / fw->current_ops->total_tests) +
 			  (fw->minor_test_progress / fw->current_ops->total_tests);
 		fprintf(stderr, "  %-55.55s: %3.0f%%\r", buf, progress);
 		fflush(stderr);
@@ -324,7 +324,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 			fw->total.aborted,
 			fw->total.skipped);
 		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->headline());
-		fprintf(stdout, "Running test #%d: %s\n", 
+		fprintf(stdout, "Running test #%d: %s\n",
 			fw->current_major_test_num,
 			fw->current_minor_test_name);
 		fprintf(stdout, "XXX\n");
@@ -344,7 +344,7 @@ static inline void fwts_framework_underline(fwts_framework *fw, const int ch)
 /*
  *  fwts_framework_get_env()
  *	get a variable - if already fetched return cached value, otherwise
- *	try to gather from environment. If not in environment, return 
+ *	try to gather from environment. If not in environment, return
  *	predefined default.
  */
 static char *fwts_framework_get_env(const int env_id)
@@ -387,7 +387,7 @@ static void fwts_framework_free_env(void)
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	fwts_framework_underline(fw,'=');
-	fwts_log_summary(fw, "%d passed, %d failed, %d warnings, %d aborted, %d skipped.", 
+	fwts_log_summary(fw, "%d passed, %d failed, %d warnings, %d aborted, %d skipped.",
 		fw->major_tests.passed, fw->major_tests.failed, fw->major_tests.warning, fw->major_tests.aborted, fw->major_tests.skipped);
 	fwts_framework_underline(fw,'=');
 
@@ -422,7 +422,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted, %d skipped.", 
+	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted, %d skipped.",
 		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted, fw->total.skipped);
 
 	return FWTS_OK;
@@ -471,7 +471,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 					fw->major_tests.skipped++;
 					fw->total.skipped++;
 				}
-				if (fw->show_progress) 
+				if (fw->show_progress)
 					fprintf(stderr, " Test skipped.\n");
 
 			} else {
@@ -495,8 +495,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fwts_results_zero(&fw->minor_tests);
 
 		if (minor_test->name != NULL)
-			fwts_log_info(fw, "Test %d of %d: %s", 
-				fw->current_minor_test_num, 
+			fwts_log_info(fw, "Test %d of %d: %s",
+				fw->current_minor_test_num,
 				test->ops->total_tests, minor_test->name);
 
 		fwts_framework_minor_test_progress(fw, 0);
@@ -593,7 +593,7 @@ void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_log_nl(fw);
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s",
 		fwts_framework_get_env(FWTS_ADVICE_TEXT), buffer);
 	fwts_log_nl(fw);
 	va_end(ap);
@@ -611,7 +611,7 @@ void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fw->minor_tests.passed++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: Test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: Test %d, %s",
 		fwts_framework_get_env(FWTS_PASSED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
@@ -631,7 +631,7 @@ void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char 
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fwts_summary_add(fw->current_major_test->name, level, buffer);
 	fw->minor_tests.failed++;
-	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s",
 		fwts_framework_get_env(FWTS_FAILED_TEXT), fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
@@ -648,7 +648,7 @@ void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fw->minor_tests.warning++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
 		fwts_framework_get_env(FWTS_WARNING_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
@@ -665,7 +665,7 @@ void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fw->minor_tests.skipped++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
 		fwts_framework_get_env(FWTS_SKIPPED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
@@ -682,7 +682,7 @@ void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
 	va_start(ap, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, ap);
 	fw->minor_tests.aborted++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s", 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
 		fwts_framework_get_env(FWTS_ABORTED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
 }
@@ -800,13 +800,13 @@ static void fwts_framework_syntax(char * const *argv)
 		if (syntax_help[i].info) {
 			int lineno = 0;
 
-			text = fwts_format_text(syntax_help[i].info, 
+			text = fwts_format_text(syntax_help[i].info,
 				width < 0 ? (FWTS_MIN_TTY_WIDTH - FWTS_ARGS_WIDTH-1) : width);
 			fwts_list_foreach(item, text) {
-				printf("%-*.*s %s\n", 
-					FWTS_ARGS_WIDTH, 
-					FWTS_ARGS_WIDTH, 
-					lineno++ == 0 ? syntax_help[i].opt : "", 
+				printf("%-*.*s %s\n",
+					FWTS_ARGS_WIDTH,
+					FWTS_ARGS_WIDTH,
+					lineno++ == 0 ? syntax_help[i].opt : "",
 					(char*)item->data);
 			}
 			fwts_list_free(text, free);
@@ -820,7 +820,7 @@ static void fwts_framework_syntax(char * const *argv)
 	printf("Some of this work - Copyright (c) 2010, Canonical.\n");
 }
 
-/* 
+/*
  * fwts_framework_heading_info()
  *	log basic system info so we can track the tests
  */
@@ -858,12 +858,12 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	if ((tests = calloc(len, 1)) != NULL) {
 		fwts_list_foreach(item, tests_to_run) {
 			fwts_framework_test *test = (fwts_framework_test*)item->data;
-			if (item != tests_to_run->head) 
+			if (item != tests_to_run->head)
 				strcat(tests, " ");
 			strcat(tests, test->name);
 		}
 
-		fwts_log_info(fw, "Running tests: %s.\n", 
+		fwts_log_info(fw, "Running tests: %s.\n",
 			fwts_list_len(tests_to_run) == 0 ? "None" : tests);
 		if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
 			fwts_log_newline(fw->results);
@@ -879,7 +879,7 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
 {
 	fwts_list_link *item;
 
-	fwts_list_foreach(item, tests_to_skip) 
+	fwts_list_foreach(item, tests_to_skip)
 		if (test == (fwts_framework_test*)item->data)
 			return test;
 
@@ -1041,7 +1041,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_framework_strdup(&fw->iasl, optarg);
 				break;
 			case 10: /* --show-progress */
-				fw->flags = (fw->flags & 
+				fw->flags = (fw->flags &
 						~(FWTS_FRAMEWORK_FLAGS_QUIET |
 					  	  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
@@ -1117,9 +1117,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fw->flags |= FWTS_RUN_ALL_FLAGS;
 				break;
 			case 33: /* --show-progress-dialog */
-				fw->flags = (fw->flags & 
+				fw->flags = (fw->flags &
 						~(FWTS_FRAMEWORK_FLAGS_QUIET |
-						  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)) 
+						  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS))
 						| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 				break;
 			case 34: /* --skip-test */
@@ -1165,9 +1165,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			goto tidy_close;
 			break;
 		case 'D': /* --show-progress-dialog */
-			fw->flags = (fw->flags & 
+			fw->flags = (fw->flags &
 					~(FWTS_FRAMEWORK_FLAGS_QUIET |
-					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS)) 
+					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS))
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
 		case 'f':
@@ -1191,7 +1191,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
 			break;
 		case 'p': /* --show-progress */
-			fw->flags = (fw->flags & 
+			fw->flags = (fw->flags &
 					~(FWTS_FRAMEWORK_FLAGS_QUIET |
 					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
@@ -1266,7 +1266,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 	if ((fw->iasl == NULL) ||
 	    (fw->dmidecode == NULL) ||
-	    (fw->lspci == NULL) || 
+	    (fw->lspci == NULL) ||
 	    (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
@@ -1274,8 +1274,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 	}
 
 	/* Results log */
-	if ((fw->results = fwts_log_open("fwts", 
-			fw->results_logname, 
+	if ((fw->results = fwts_log_open("fwts",
+			fw->results_logname,
 			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a")) == NULL) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
@@ -1314,7 +1314,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 				goto tidy;
 			}
 
-			if (fwts_framework_skip_test(tests_to_skip, test) == NULL) 
+			if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
 				fwts_list_append(tests_to_run, test);
 		}
 	}
@@ -1325,13 +1325,13 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fwts_list_foreach(item, fwts_framework_test_list) {
 			fwts_framework_test *test = (fwts_framework_test*)item->data;
 			if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS)
-				if (fwts_framework_skip_test(tests_to_skip, test) == NULL) 
+				if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
 					fwts_list_append(tests_to_run, test);
 		}
 	}
 
 	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET))
-		printf("Running %d tests, results appended to %s\n", 
+		printf("Running %d tests, results appended to %s\n",
 			fwts_list_len(tests_to_run),
 			fw->results_logname);
 
@@ -1372,7 +1372,7 @@ tidy_close:
 	fwts_list_free(fwts_framework_test_list, free);
 
 	/* Failed tests flagged an error */
-	if ((fw->total.failed > 0) || 
+	if ((fw->total.failed > 0) ||
 	    (fw->total.warning > 0))	
 		ret = FWTS_ERROR;
 

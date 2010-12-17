@@ -26,7 +26,7 @@
 
 #include "fwts.h"
 
-/* 
+/*
  *  fwts_gpe_free()
  *	free an allocated array of GPE data, length count items
  */
@@ -96,7 +96,7 @@ error:
 /*
  *  fwts_gpe_delta()
  *	calculate count differences between two sets of before and after GPE arrays and
- * 	update the result in gpe_delta. 
+ * 	update the result in gpe_delta.
  */
 int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, const int n)
 {	
@@ -111,7 +111,7 @@ int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, 
 	return FWTS_OK;
 }
 
-int fwts_gpe_delta_get(fwts_framework *fw, 
+int fwts_gpe_delta_get(fwts_framework *fw,
 	const fwts_gpe *gpes_start, const fwts_gpe *gpes_end, const int gpe_count,
 	int *sci, int *gpe)
 {

@@ -71,7 +71,7 @@ void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, voi
 
 /*
  *  fwts_list_free()
- *	free list. provide free() func pointer data_free() to 
+ *	free list. provide free() func pointer data_free() to
  *	free individual items in list. If func is null, don't
  * 	free items.
  */

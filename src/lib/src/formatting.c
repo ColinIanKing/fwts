@@ -106,10 +106,10 @@ fwts_list *fwts_format_text(char *text, const int width)
 
 	while (*textptr) {
 		/* find line break points */
-		if (isspace(*textptr) || 
+		if (isspace(*textptr) ||
 		    ((lastspace != NULL) && (*(textptr-1) != '/') && (*textptr == '/')) ||
-		    (*textptr == ':') || 
-		    (*textptr == ';') || 
+		    (*textptr == ':') ||
+		    (*textptr == ';') ||
 		    (*textptr == ','))
 			lastspace = textptr;
 

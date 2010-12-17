@@ -1,7 +1,7 @@
-/* 
+/*
  * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010 Canonical
- * 
+ *
  * This file was originally part of the Linux-ready Firmware Developer Kit
  *
  * This program is free software; you can redistribute it and/or
@@ -152,7 +152,7 @@ fwts_bool fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t
 
 	/* when we don't have FWTS_MEMORY_MAP info, assume all is fair */
 	if (memory_map_list == NULL)
-		return FWTS_TRUE; 
+		return FWTS_TRUE;
 	
 	/* bios data area is always reserved */
 	if ((memory >= 640 * 1024) && (memory <= 1024*1024))
@@ -168,7 +168,7 @@ fwts_bool fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t
 	return FWTS_FALSE;
 }
 
-/* 
+/*
  *  fwts_memory_map_dmesg_info()
  *	callback to check dmesg for memory_map info
  */
@@ -184,7 +184,7 @@ static void fwts_memory_map_dmesg_info(void *data, void *private)
 
 		start = strtoull(str+10, NULL, 16);
 		str = strstr(line," - ");
-		if (str) 
+		if (str)
 			str += 3;
 		end   = strtoull(str, NULL, 16) - 1;
 
@@ -201,7 +201,7 @@ static void fwts_memory_map_dump_info(void *data, void *private)
 	fwts_memory_map_entry *entry = (fwts_memory_map_entry *)data;
 	fwts_framework *fw = (fwts_framework *)private;
 
-	fwts_log_info(fw, "%016llx - %016llx  %s", 
+	fwts_log_info(fw, "%016llx - %016llx  %s",
 			(unsigned long long)entry->start_address,
 			(unsigned long long)entry->end_address,
 			fwts_memory_map_type_to_str(entry->type));

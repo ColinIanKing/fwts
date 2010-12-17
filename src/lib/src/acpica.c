@@ -149,7 +149,7 @@ static int hash_sem_handle(sem_t *sem)
  *  hash_sem_inc_count()
  *	increment semaphore counter
  */
-static void hash_sem_inc_count(sem_t *sem) 
+static void hash_sem_inc_count(sem_t *sem)
 {
 	int i = hash_sem_handle(sem);
 	if (i != -1) {
@@ -162,7 +162,7 @@ static void hash_sem_inc_count(sem_t *sem)
  *  hash_sem_dec_count()
  *	decrement semaphore counter
  */
-static void hash_sem_dec_count(sem_t *sem) 
+static void hash_sem_dec_count(sem_t *sem)
 {
 	int i = hash_sem_handle(sem);
 	if (i != -1) {
@@ -404,7 +404,7 @@ void AeTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTa
 		*NewTable = (ACPI_TABLE_HEADER*)fwts_acpica_DSDT;
 }
 
-/* 
+/*
  *  fwts_acpica_init()
  *	Initialise ACPICA core engine
  */
@@ -633,7 +633,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		x = NULL;	\
 	}			\
 
-/* 
+/*
  *  fwts_acpica_deinit()
  *	De-initialise ACPICA core engine
  */

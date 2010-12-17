@@ -42,7 +42,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 	int pipefds[2];
 	pid_t pid;
 	
-	if (pipe(pipefds) < 0) 
+	if (pipe(pipefds) < 0)
 		return -1;
 
 	pid = fork();
@@ -140,7 +140,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 	char 	*text;
 	int	ret;
 
-	if ((fd = fwts_pipe_open(command, &pid)) < 0) 
+	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return -1;
 
 	text = fwts_pipe_read(fd, &len);

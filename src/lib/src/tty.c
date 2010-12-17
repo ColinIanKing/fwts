@@ -19,7 +19,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-int fwts_tty_width(const int fd, const int default_width) 
+int fwts_tty_width(const int fd, const int default_width)
 {
 #ifdef TIOCGWINSZ
 	struct winsize ws;

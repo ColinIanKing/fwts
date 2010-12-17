@@ -153,7 +153,7 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
 	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp;
 
-	if ((rsdp = (fwts_acpi_table_rsdp*)malloc(sizeof(fwts_acpi_table_rsdp))) == NULL) 
+	if ((rsdp = (fwts_acpi_table_rsdp*)malloc(sizeof(fwts_acpi_table_rsdp))) == NULL)
 		return NULL;
 
 	if ((mem = fwts_acpi_mmap(addr, sizeof(fwts_acpi_table_rsdp))) == MAP_FAILED)
@@ -211,7 +211,7 @@ static void fwts_acpi_add_table(char *name, void *table, uint64_t addr, int leng
 			free(table);
 			return;
 		}
-		if (strncmp(tables[i].name, name, 4) == 0) 
+		if (strncmp(tables[i].name, name, 4) == 0)
 			which++;
 		if (tables[i].data == NULL) {
 			strncpy(tables[i].name, name, 4);
@@ -252,9 +252,9 @@ static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32_t *a
 	off_t addr;
 	fwts_acpi_table_header *header;
 
-	if ((addr64 != 0) && (fadt->header.length >= 140)) 
+	if ((addr64 != 0) && (fadt->header.length >= 140))
 		addr = (off_t)*addr64;
-	else if ((addr32 !=0) && (fadt->header.length >= 44)) 
+	else if ((addr32 !=0) && (fadt->header.length >= 44))
 		addr = (off_t)*addr32;
 	else addr = 0;
 
@@ -287,7 +287,7 @@ static int fwts_acpi_load_tables_from_firmware(void)
 
 	/* Check for RSDP in EFI, then BIOS, if not found, give up */
 	if ((rsdp_addr = fwts_acpi_find_rsdp_efi()) == 0)
-		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == 0) 
+		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == 0)
 			return FWTS_ERROR;
 
 	/* Load and save cached RSDP */
@@ -355,7 +355,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		int n;
 		if ((n = sscanf(buffer,"  %x: %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx",
-			&offset, 
+			&offset,
 			&data[0], &data[1], &data[2], &data[3],
 			&data[4], &data[5], &data[6], &data[7],
 			&data[8], &data[9], &data[10], &data[11],
@@ -381,7 +381,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	FILE *fp;
 
 	if ((fp = fopen(fw->acpi_table_acpidump_file, "r")) == NULL) {
-		fwts_log_error(fw, "Cannot open '%s' to read ACPI tables.", 
+		fwts_log_error(fw, "Cannot open '%s' to read ACPI tables.",
 			fw->acpi_table_acpidump_file);
 		return FWTS_ERROR;
 	}
@@ -434,7 +434,7 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 	int count = 0;
 
 	if ((dir = opendir(fw->acpi_table_path)) == NULL) {
-		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.", 
+		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.",
 			fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
@@ -453,7 +453,7 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				count++;
 				strcpy(name, direntry->d_name);
 				name[strlen(name)-4] = '\0';
-				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL) 
+				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
 					fwts_acpi_add_table(name, table, (uint64_t)0, length);
 				close(fd);
 			} else
@@ -469,7 +469,7 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-/* 
+/*
  *  fwts_acpi_load_tables()
  *	Load from firmware or from files in a specified directory
  */
@@ -483,7 +483,7 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
 	else if (fwts_check_root_euid(fw) == FWTS_OK)
 		ret = fwts_acpi_load_tables_from_firmware();
-	else 
+	else
 		ret = FWTS_ERROR_NO_PRIV;
 
 	if (ret == FWTS_OK)
@@ -513,7 +513,7 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
 			break;
-		if ((strcmp(tables[i].name, name) == 0) && 
+		if ((strcmp(tables[i].name, name) == 0) &&
 	            (tables[i].which == which)) {
 			*info = &tables[i];
 			return FWTS_OK;

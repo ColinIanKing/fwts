@@ -38,7 +38,7 @@ static fwts_log_field fwts_log_filter = ~0;
 
 static char fwts_log_format[256] = "%line %owner ";
 
-/* 
+/*
  *  fwts_log_set_line_width()
  * 	set width of a log
  */
@@ -48,7 +48,7 @@ void fwts_log_set_line_width(int width)
 		log_line_width = width;
 }
 
-/* 
+/*
  *  fwts_log_line_number()
  * 	get current line number of log
  */
@@ -245,13 +245,13 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 				ptr+=4;
 			}
 			if (strncmp(ptr,"date",4)==0) {
-				n += snprintf(buffer+n, len-n, 
+				n += snprintf(buffer+n, len-n,
 					"%2.2d/%2.2d/%-2.2d", 		
 					tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100);
 				ptr+=4;
 			}
 			if (strncmp(ptr,"time",4)==0) {
-				n += snprintf(buffer+n, len-n, 
+				n += snprintf(buffer+n, len-n,
 					"%2.2d:%2.2d:%2.2d", 		
 					tm.tm_hour, tm.tm_min, tm.tm_sec);
 				ptr+=4;

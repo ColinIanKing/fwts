@@ -85,7 +85,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 
 /*
  *  fwts_cpu_free_info()
- *	free CPU information 
+ *	free CPU information
  */
 void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
 {
@@ -125,7 +125,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 
 		if (!strncmp(buffer, "processor", 9)) {
 			sscanf(ptr, "%d", &cpu_num);
-			if (cpu_num > which_cpu) 
+			if (cpu_num > which_cpu)
 				break;
 			continue;
 		} else {
@@ -304,7 +304,7 @@ int fwts_cpu_consume_start(void)
 {
 	int i;
 
-	if ((fwts_cpu_num = fwts_cpu_enumerate()) < 0) 
+	if ((fwts_cpu_num = fwts_cpu_enumerate()) < 0)
 		return FWTS_ERROR;
 
 	if ((fwts_cpu_pids = (pid_t*)calloc(fwts_cpu_num, sizeof(pid_t))) == NULL)

@@ -54,7 +54,7 @@ void fwts_summary_deinit(void);
 
 /*
  *  fwts_summary_init()
- *	initialise 
+ *	initialise
  */
 int fwts_summary_init(void)
 {
@@ -160,8 +160,8 @@ int fwts_summary_report(fwts_framework *fw)
 
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = (fwts_summary_item*)item->data;
-				fwts_log_summary_verbatum(fw, " %s test at log line %d:", 
-					summary_item->test, 
+				fwts_log_summary_verbatum(fw, " %s test at log line %d:",
+					summary_item->test,
 					summary_item->log_line);
 				fwts_log_summary_verbatum(fw, "  \"%s\"",
 					summary_item->text);

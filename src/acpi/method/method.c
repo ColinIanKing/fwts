@@ -287,27 +287,6 @@ static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACP
 	}
 }
 
-#if 0
-static void method_test_OSI_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
-{
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_log_info(fw, "_OSI returned 0x%8.8x\n", (uint32_t)obj->Integer.Value);
-}
-
-static int method_test_OSI(fwts_framework *fw)
-{
-	ACPI_OBJECT arg[1];
-
-	arg[0].Type = ACPI_TYPE_STRING;
-	arg[0].String.Pointer = "Windows 2001";
-	arg[0].String.Length = strlen(arg[0].String.Pointer);
-
-	return method_execute_method(fw, METHOD_MANDITORY, "\\_OSI", arg, 1, method_test_OSI_return, NULL);
-}
-#endif
-
-
-
 /* Section 10.1.1.1 Smart Battery */
 
 static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1626,7 +1605,6 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_DGS, "Check _DGS (Query Graphics State)." },
 	{ method_test_DSS, "Check _DSS (Device Set State)." },
 
-	/* { method_test_OSI, "Check _OSI." }, */
 
 	{ NULL, NULL }
 };

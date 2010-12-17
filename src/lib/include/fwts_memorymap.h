@@ -1,7 +1,7 @@
-/* 
+/*
  * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010 Canonical
- * 
+ *
  * This file was originally part of the Linux-ready Firmware Developer Kit
  *
  * This program is free software; you can redistribute it and/or

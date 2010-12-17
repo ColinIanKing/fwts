@@ -79,13 +79,13 @@ int 	  fwts_log_line_number(void);
 void	  fwts_log_set_line_width(const int width);
 
 #define fwts_log_result(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, fmt, ## args) 
+	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_warning(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_WARNING, LOG_LEVEL_NONE, fmt, ## args) 
+	fwts_log_printf(fw->results, LOG_WARNING, LOG_LEVEL_NONE, fmt, ## args)
 
 #define fwts_log_warning_verbatum(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args) 
+	fwts_log_printf(fw->results, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, fmt, ## args)
 	
 #define fwts_log_error(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_NONE, fmt, ## args)

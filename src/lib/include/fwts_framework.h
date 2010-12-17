@@ -183,8 +183,8 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 
 static inline int fwts_tests_passed(const fwts_framework *fw)
 {
-	return ((fw->minor_tests.failed + 
-		 fw->minor_tests.warning + 
+	return ((fw->minor_tests.failed +
+		 fw->minor_tests.warning +
 		 fw->minor_tests.aborted) == 0);
 }
 
@@ -213,7 +213,7 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 
 #define FWTS_TEST_INTERACTIVE(flags)	\
 	(flags & (FWTS_FRAMEWORK_FLAGS_INTERACTIVE | \
-		  FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL)) 
+		  FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL))
 
 #define FWTS_REGISTER(name, ops, priority, flags)		\
 								\

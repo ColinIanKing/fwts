@@ -489,9 +489,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 				if (fw->show_progress)
 					fprintf(stderr, " Test aborted.\n");
 			}
-			if (!(test->flags & FWTS_UTILS))
-				fwts_framework_test_summary(fw);
-			return FWTS_OK;
+			goto done;
 		}
 	}
 
@@ -529,6 +527,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
 		fwts_tag_report(fw, LOG_TAG, fw->test_taglist);
 
+done:
 	fwts_list_free(fw->test_taglist, free);
 	fw->test_taglist = NULL;
 

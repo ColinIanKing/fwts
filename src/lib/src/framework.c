@@ -394,7 +394,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	char buffer[128];
 
-	fwts_results const *results = &fw->current_major_test->ops->results;
+	fwts_results const *results = &fw->current_major_test->results;
 
 	fwts_framework_underline(fw,'=');
 	fwts_framework_format_results(buffer, sizeof(buffer), results, true);
@@ -440,7 +440,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test const *test)
+static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test *test)
 {		
 	fwts_framework_minor_test *minor_test;	
 
@@ -448,7 +448,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	fw->current_minor_test_name = "";
 	fw->test_taglist = fwts_list_init();
 
-	fwts_results_zero(&fw->current_major_test->ops->results);
+	fwts_results_zero(&fw->current_major_test->results);
 
 	fw->failed_level = 0;
 
@@ -480,7 +480,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			/* Init failed or skipped, so abort */
 			if (ret == FWTS_SKIP) {
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->current_major_test->ops->results.skipped++;
+					fw->current_major_test->results.skipped++;
 					fw->total.skipped++;
 				}
 				if (fw->show_progress)
@@ -489,7 +489,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			} else {
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->current_major_test->ops->results.aborted++;
+					fw->current_major_test->results.aborted++;
 					fw->total.aborted++;
 				}
 				if (fw->show_progress)
@@ -512,7 +512,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		fwts_framework_minor_test_progress(fw, 0);
 		(*minor_test->test_func)(fw);
 		fwts_framework_minor_test_progress(fw, 100);
-		fwts_framework_summate_results(&fw->current_major_test->ops->results, &fw->minor_tests);
+		fwts_framework_summate_results(&fw->current_major_test->results, &fw->minor_tests);
 
 		if (fw->show_progress) {
 			char resbuf[128];
@@ -525,7 +525,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		fwts_log_nl(fw);
 	}
 
-	fwts_framework_summate_results(&fw->total, &fw->current_major_test->ops->results);
+	fwts_framework_summate_results(&fw->total, &fw->current_major_test->results);
 
 	if (test->ops->deinit)
 		test->ops->deinit(fw);

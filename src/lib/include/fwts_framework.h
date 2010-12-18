@@ -110,7 +110,7 @@ typedef struct {
 	int current_major_test_num;		/* Nth major test being currently run */
 	int major_tests_total;			/* Total number of major tests */
 
-	struct fwts_framework_test const *current_major_test; /* current test */
+	struct fwts_framework_test *current_major_test; /* current test */
 
 	fwts_results	minor_tests;		/* results for each minor test */
 	fwts_results	total;			/* totals over all tests */
@@ -139,7 +139,6 @@ typedef struct fwts_framework_ops {
 	int (*deinit)(fwts_framework *);	/* De-init */		
 	fwts_framework_minor_test *minor_tests;	/* NULL terminated array of minor tests to run */
 	int total_tests;			/* Number of tests to run */
-	fwts_results results;			/* Per test results */
 } fwts_framework_ops;
 
 typedef struct fwts_framework_test {
@@ -147,6 +146,8 @@ typedef struct fwts_framework_test {
 	fwts_framework_ops *ops;
 	int         priority;
 	int         flags;
+	fwts_results results;			/* Per test results */
+	int	    was_run;
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char * const *argv);

@@ -60,11 +60,11 @@ typedef enum {
  *  Test results
  */
 typedef struct {
-	int passed;
-	int failed;
-	int aborted;
-	int warning;
-	int skipped;
+	uint32_t passed;
+	uint32_t failed;
+	uint32_t aborted;
+	uint32_t warning;
+	uint32_t skipped;
 } fwts_results;
 
 static inline void fwts_results_zero(fwts_results *results)

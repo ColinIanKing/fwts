@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <time.h>
 #include <getopt.h>
 #include <sys/utsname.h>
@@ -250,35 +251,35 @@ static void fwts_framework_strtrunc(char *dest, const char *src, int max)
  *  fwts_framework_format_results()
  *	format results into human readable summary.
  */
-static void fwts_framework_format_results(char *buffer, int buflen, fwts_results *results)
+static void fwts_framework_format_results(char *buffer, int buflen, fwts_results *results, bool include_zero_results)
 {
 	int n = 0;
 
 	if (buflen)
 		*buffer = 0;
 
-	if (results->passed && buflen > 0) {
-		n += snprintf(buffer, buflen, "%d passed", results->passed);
+	if ((include_zero_results || (results->passed > 0)) && (buflen > 0)) {
+		n = snprintf(buffer, buflen, "%u passed", results->passed);
 		buffer += n;
 		buflen -= n;
 	}
-	if (results->failed && buflen > 0) {
-		n += snprintf(buffer, buflen, "%s%d failed", n > 0 ? ", " : "", results->failed);
+	if ((include_zero_results || (results->failed > 0)) && (buflen > 0)) {
+		n = snprintf(buffer, buflen, "%s%u failed", n > 0 ? ", " : "", results->failed);
 		buffer += n;
 		buflen -= n;
 	}
-	if (results->warning && buflen > 0) {
-		n += snprintf(buffer, buflen, "%s%d warnings", n > 0 ? ", " : "", results->warning);
+	if ((include_zero_results || (results->warning > 0)) && (buflen > 0)) {
+		n = snprintf(buffer, buflen, "%s%u warnings", n > 0 ? ", " : "", results->warning);
 		buffer += n;
 		buflen -= n;
 	}
-	if (results->aborted && buflen > 0) {
-		n += snprintf(buffer, buflen, "%s%d aborted", n > 0 ? ", " : "", results->aborted);
+	if ((include_zero_results || (results->aborted > 0)) && (buflen > 0)) {
+		n = snprintf(buffer, buflen, "%s%u aborted", n > 0 ? ", " : "", results->aborted);
 		buffer += n;
 		buflen -= n;
 	}
-	if (results->skipped && buflen > 0) {
-		n += snprintf(buffer, buflen, "%s%d skipped", n > 0 ? ", " : "", results->skipped);
+	if ((include_zero_results || (results->skipped > 0)) && (buflen > 0)) {
+		snprintf(buffer, buflen, "%s%u skipped", n > 0 ? ", " : "", results->skipped);
 	}
 }
 
@@ -321,14 +322,13 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 
 	/* Output for the dialog tool, dialog --title "fwts" --gauge "" 12 80 0 */
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG) {
+		char buffer[128];
+
+		fwts_framework_format_results(buffer, sizeof(buffer), &fw->total, true);
+
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
-		fprintf(stdout, "So far: %d passes, %d failures, %d warnings, %d aborted, %d skipped\n\n",
-			fw->total.passed,
-			fw->total.failed,
-			fw->total.warning,
-			fw->total.aborted,
-			fw->total.skipped);
+		fprintf(stdout, "So far: %s\n\n", buffer);
 		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->headline());
 		fprintf(stdout, "Running test #%d: %s\n",
 			fw->current_major_test_num,
@@ -392,9 +392,11 @@ static void fwts_framework_free_env(void)
 
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
+	char buffer[128];
+
 	fwts_framework_underline(fw,'=');
-	fwts_log_summary(fw, "%d passed, %d failed, %d warnings, %d aborted, %d skipped.",
-		fw->major_tests.passed, fw->major_tests.failed, fw->major_tests.warning, fw->major_tests.aborted, fw->major_tests.skipped);
+	fwts_framework_format_results(buffer, sizeof(buffer), &fw->major_tests, true);
+	fwts_log_summary(fw, "%s.", buffer);
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
@@ -428,8 +430,10 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 static int fwts_framework_total_summary(fwts_framework *fw)
 {
-	fwts_log_summary(fw, "Summary: %d passed, %d failed, %d warnings, %d aborted, %d skipped.",
-		fw->total.passed, fw->total.failed, fw->total.warning, fw->total.aborted, fw->total.skipped);
+	char buffer[128];
+
+	fwts_framework_format_results(buffer, sizeof(buffer), &fw->total, true);
+	fwts_log_summary(fw, "%s.", buffer);
 
 	return FWTS_OK;
 }
@@ -511,7 +515,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		if (fw->show_progress) {
 			char resbuf[128];
 			char namebuf[55];
-			fwts_framework_format_results(resbuf, sizeof(resbuf), &fw->minor_tests);
+			fwts_framework_format_results(resbuf, sizeof(resbuf), &fw->minor_tests, false);
 			fwts_framework_strtrunc(namebuf, minor_test->name, sizeof(namebuf));
 			fprintf(stderr, "  %-55.55s %s\n", namebuf,
 				*resbuf ? resbuf : "     ");

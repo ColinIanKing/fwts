@@ -28,6 +28,6 @@
 int fwts_summary_init(void);
 void fwts_summary_deinit(void);
 int fwts_summary_add(const char *test, fwts_log_level level, char *text);
-int fwts_summary_report(fwts_framework *fw);
+int fwts_summary_report(fwts_framework *fw, fwts_list *test_list);
 
 #endif

@@ -149,7 +149,7 @@ void fwts_framework_test_add(const char *name,
  *  fwts_framework_compare_name()
  *	for sorting tests in name order
  */
-static int fwts_framework_compare_name(void *data1, void *data2)
+int fwts_framework_compare_test_name(void *data1, void *data2)
 {
 	fwts_framework_test *test1 = (fwts_framework_test *)data1;
 	fwts_framework_test *test2 = (fwts_framework_test *)data2;
@@ -199,7 +199,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 			fwts_list_foreach(item, fwts_framework_test_list) {
 				test = (fwts_framework_test*)item->data;
 				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
-					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_name);
+					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_test_name);
 			}
 
 			if (fwts_list_len(sorted) > 0) {
@@ -447,6 +447,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	fw->current_major_test = test;
 	fw->current_minor_test_name = "";
 	fw->test_taglist = fwts_list_init();
+
+	test->was_run = true;
+	fw->total_run++;
 
 	fwts_results_zero(&fw->current_major_test->results);
 
@@ -1349,7 +1352,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fwts_list_free(fw->test_taglist, free);
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
-		fwts_summary_report(fw);
+		fwts_summary_report(fw, fwts_framework_test_list);
 	}
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)

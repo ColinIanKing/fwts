@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "fwts_log.h"
 #include "fwts_list.h"
@@ -115,6 +116,8 @@ typedef struct {
 	fwts_results	minor_tests;		/* results for each minor test */
 	fwts_results	total;			/* totals over all tests */
 
+	uint32_t	total_run;		/* total number of major tests run */
+
 	int minor_test_progress;		/* Percentage completion of current test */
 	int print_summary;			/* Print summary of results at end of test runs */
 	int failed_level;			/* Bit mask of failed levels in test run */
@@ -147,11 +150,13 @@ typedef struct fwts_framework_test {
 	int         priority;
 	int         flags;
 	fwts_results results;			/* Per test results */
-	int	    was_run;
+	bool	    was_run;
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char * const *argv);
 void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
+int  fwts_framework_compare_test_name(void *, void *);
+
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
 void fwts_framework_failed(fwts_framework *, fwts_log_level level, const char *fmt, ...)

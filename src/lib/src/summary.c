@@ -141,13 +141,24 @@ int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 	return FWTS_OK;
 }
 
+static void fwts_summary_format_field(char *buffer, int buflen, uint32_t value)
+{
+	if (value)
+		snprintf(buffer, buflen, "%7u", value);
+	else
+		*buffer = '\0';
+}
+
+
 /*
  *  fwts_summary_report()
  *  	report test failure summary, sorted by error levels
  */
-int fwts_summary_report(fwts_framework *fw)
+int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 {
 	int i;
+	fwts_list      *sorted;
+	fwts_list_link *item;
 
 	fwts_log_summary(fw, "Test Failure Summary");
 	fwts_log_summary(fw, "====================");
@@ -171,6 +182,37 @@ int fwts_summary_report(fwts_framework *fw)
 			fwts_log_summary(fw, "%s failures: NONE", summary_names[i]);
 
 		fwts_log_nl(fw);
+	}
+
+	if (fw->total_run > 0) {		
+		sorted = fwts_list_init();
+		fwts_list_foreach(item, test_list) {
+			fwts_list_add_ordered(sorted, (fwts_framework_test*)item->data, fwts_framework_compare_test_name);
+		}
+
+		fwts_log_summary_verbatum(fw, "Test           |Passed |Failed |Aborted|Warning|Skipped|");
+		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+");
+		fwts_list_foreach(item, sorted) {
+			fwts_framework_test *test = (fwts_framework_test*)item->data;
+			if (test->was_run) {
+				char passed[8];
+				char failed[8];
+				char aborted[8];
+				char warning[8];
+				char skipped[8];
+
+				fwts_summary_format_field(passed, sizeof(passed), test->results.passed);
+				fwts_summary_format_field(failed, sizeof(failed), test->results.failed);
+				fwts_summary_format_field(aborted, sizeof(aborted), test->results.aborted);
+				fwts_summary_format_field(warning, sizeof(warning), test->results.warning);
+				fwts_summary_format_field(skipped, sizeof(skipped), test->results.skipped);
+
+				fwts_log_summary_verbatum(fw, "%-15.15s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|",
+					test->name, passed, failed, aborted, warning, skipped);
+			}
+		}
+		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+");
+		fwts_list_free(sorted, NULL);
 	}
 	return FWTS_OK;
 }

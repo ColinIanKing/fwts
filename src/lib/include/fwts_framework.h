@@ -111,8 +111,7 @@ typedef struct {
 	int current_major_test_num;		/* Nth major test being currently run */
 	int major_tests_total;			/* Total number of major tests */
 
-	struct fwts_framework_test *current_major_test; /* current test */
-	struct fwts_framework_ops const *current_ops;	
+	struct fwts_framework_test const *current_major_test; /* current test */
 
 	/* per test stats */
 	fwts_results	minor_tests;		/* results for each test in test module */

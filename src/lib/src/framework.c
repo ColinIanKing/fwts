@@ -299,7 +299,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 		fw->minor_test_progress = percent;
 
 	major_percent = (float)100.0 / (float)fw->major_tests_total;
-	minor_percent = ((float)major_percent / (float)fw->current_ops->total_tests);
+	minor_percent = ((float)major_percent / (float)fw->current_major_test->ops->total_tests);
 	process_percent = ((float)minor_percent / 100.0);
 
 	progress = (float)(fw->current_major_test_num-1) * major_percent;
@@ -313,8 +313,8 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 
 		fwts_framework_strtrunc(buf, fw->current_minor_test_name, sizeof(buf));
 
-		percent = (100 * (fw->current_minor_test_num-1) / fw->current_ops->total_tests) +
-			  (fw->minor_test_progress / fw->current_ops->total_tests);
+		percent = (100 * (fw->current_minor_test_num-1) / fw->current_major_test->ops->total_tests) +
+			  (fw->minor_test_progress / fw->current_major_test->ops->total_tests);
 		fprintf(stderr, "  %-55.55s: %3.0f%%\r", buf, progress);
 		fflush(stderr);
 	}
@@ -438,6 +438,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 {		
 	fwts_framework_minor_test *minor_test;	
 
+	fw->current_major_test = test;
 	fw->current_minor_test_name = "";
 	fw->test_taglist = fwts_list_init();
 
@@ -447,7 +448,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 
 	fwts_log_set_owner(fw->results, test->name);
 
-	fw->current_ops = test->ops;
 	fw->current_minor_test_num = 1;
 	fw->show_progress = (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) &&
 			    (FWTS_TEST_INTERACTIVE(test->flags) == 0);
@@ -553,7 +553,6 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = (fwts_framework_test*)item->data;
 
-		fw->current_major_test = test;
 		fwts_framework_run_test(fw, fwts_list_len(tests_to_run), test);
 		fw->current_major_test_num++;
 	}

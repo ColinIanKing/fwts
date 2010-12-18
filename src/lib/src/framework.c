@@ -251,7 +251,7 @@ static void fwts_framework_strtrunc(char *dest, const char *src, int max)
  *  fwts_framework_format_results()
  *	format results into human readable summary.
  */
-static void fwts_framework_format_results(char *buffer, int buflen, fwts_results *results, bool include_zero_results)
+static void fwts_framework_format_results(char *buffer, int buflen, fwts_results const *results, bool include_zero_results)
 {
 	int n = 0;
 
@@ -394,17 +394,19 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	char buffer[128];
 
+	fwts_results const *results = &fw->current_major_test->ops->results;
+
 	fwts_framework_underline(fw,'=');
-	fwts_framework_format_results(buffer, sizeof(buffer), &fw->major_tests, true);
+	fwts_framework_format_results(buffer, sizeof(buffer), results, true);
 	fwts_log_summary(fw, "%s.", buffer);
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
-		if (fw->major_tests.aborted > 0)
+		if (results->aborted > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_ABORTED_TEXT));
-		else if (fw->major_tests.skipped > 0)
+		else if (results->skipped > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_SKIPPED_TEXT));
-		else if (fw->major_tests.failed > 0) {
+		else if (results->failed > 0) {
 			/* We intentionally report the highest logged error level */
 			if (fw->failed_level & LOG_LEVEL_CRITICAL)
 				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_CRITICAL_TEXT));
@@ -416,7 +418,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 				printf("%s\n", fwts_framework_get_env(FWTS_FAILED_LOW_TEXT));
 			else printf("%s\n", fwts_framework_get_env(FWTS_FAILED_TEXT));
 		}
-		else if (fw->major_tests.warning > 0)
+		else if (results->warning > 0)
 			printf("%s\n", fwts_framework_get_env(FWTS_WARNING_TEXT));
 		else
 			printf("%s\n", fwts_framework_get_env(FWTS_PASSED_TEXT));
@@ -438,7 +440,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, const fwts_framework_test *test)
+static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test const *test)
 {		
 	fwts_framework_minor_test *minor_test;	
 
@@ -446,7 +448,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 	fw->current_minor_test_name = "";
 	fw->test_taglist = fwts_list_init();
 
-	fwts_results_zero(&fw->major_tests);
+	fwts_results_zero(&fw->current_major_test->ops->results);
 
 	fw->failed_level = 0;
 
@@ -478,7 +480,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 			/* Init failed or skipped, so abort */
 			if (ret == FWTS_SKIP) {
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->major_tests.skipped++;
+					fw->current_major_test->ops->results.skipped++;
 					fw->total.skipped++;
 				}
 				if (fw->show_progress)
@@ -487,7 +489,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 			} else {
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->major_tests.aborted++;
+					fw->current_major_test->ops->results.aborted++;
 					fw->total.aborted++;
 				}
 				if (fw->show_progress)
@@ -510,7 +512,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fwts_framework_minor_test_progress(fw, 0);
 		(*minor_test->test_func)(fw);
 		fwts_framework_minor_test_progress(fw, 100);
-		fwts_framework_summate_results(&fw->major_tests, &fw->minor_tests);
+		fwts_framework_summate_results(&fw->current_major_test->ops->results, &fw->minor_tests);
 
 		if (fw->show_progress) {
 			char resbuf[128];
@@ -523,7 +525,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, cons
 		fwts_log_nl(fw);
 	}
 
-	fwts_framework_summate_results(&fw->total, &fw->major_tests);
+	fwts_framework_summate_results(&fw->total, &fw->current_major_test->ops->results);
 
 	if (test->ops->deinit)
 		test->ops->deinit(fw);

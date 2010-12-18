@@ -93,7 +93,6 @@ typedef struct {
 	char *iasl;				/* path to iasl */
 	char *dmidecode;			/* path to dmidecode */
 	char *lspci;				/* path to lspci */
-
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
@@ -113,9 +112,7 @@ typedef struct {
 
 	struct fwts_framework_test const *current_major_test; /* current test */
 
-	/* per test stats */
-	fwts_results	minor_tests;		/* results for each test in test module */
-	fwts_results	major_tests;		/* totals over all the tests (1 or more) in a module */
+	fwts_results	minor_tests;		/* results for each minor test */
 	fwts_results	total;			/* totals over all tests */
 
 	int minor_test_progress;		/* Percentage completion of current test */
@@ -142,11 +139,12 @@ typedef struct fwts_framework_ops {
 	int (*deinit)(fwts_framework *);	/* De-init */		
 	fwts_framework_minor_test *minor_tests;	/* NULL terminated array of minor tests to run */
 	int total_tests;			/* Number of tests to run */
+	fwts_results results;			/* Per test results */
 } fwts_framework_ops;
 
 typedef struct fwts_framework_test {
 	const char *name;
-	const       fwts_framework_ops *ops;
+	fwts_framework_ops *ops;
 	int         priority;
 	int         flags;
 } fwts_framework_test;

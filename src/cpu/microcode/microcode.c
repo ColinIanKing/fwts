@@ -109,7 +109,7 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 				version = strtoul(data, NULL, 16);	
 				free(data);
 				fwts_list_foreach(item, cpus) {
-					fwts_microcode_info *cpu = (fwts_microcode_info*)item->data;
+					fwts_microcode_info *cpu = fwts_list_data(fwts_microcode_info*, item);
 					if (strcmp(entry->d_name, cpu->cpu) == 0) {
 						if (version == cpu->version)
 							passed++;

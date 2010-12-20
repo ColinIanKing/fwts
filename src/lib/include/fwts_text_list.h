@@ -31,7 +31,7 @@ fwts_list_link    *fwts_text_list_append(fwts_list *list, const char *text);
 
 static inline char *fwts_text_list_text(fwts_list_link *item)
 {
-	return (char *)item->data;
+	return fwts_list_data(char *, item);
 }
 
 #endif

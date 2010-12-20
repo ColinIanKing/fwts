@@ -71,7 +71,7 @@ static int method_exits(char *name)
 	fwts_list_link	*item;
 
 	fwts_list_foreach(item, methods) {
-		char *method_name = (char*)item->data;
+		char *method_name = fwts_list_data(char*, item);
 		int len = strlen(method_name);
 
 		if (strncmp(name, method_name + len - name_len, name_len) == 0)
@@ -173,7 +173,7 @@ static int method_execute_method(fwts_framework *fw,
 	fwts_acpica_sem_count_clear();
 
 	fwts_list_foreach(item, methods) {
-		char *method_name = (char*)item->data;
+		char *method_name = fwts_list_data(char*, item);
 		int len = strlen(method_name);
 		if (strncmp(name, method_name + len - name_len, name_len) == 0) {
 			ACPI_OBJECT_LIST  arg_list;
@@ -216,13 +216,14 @@ static int method_name_check(fwts_framework *fw)
 	fwts_list_foreach(item, methods) {
 		char *ptr;
 
-		for (ptr = item->data; *ptr; ptr++) {
+		for (ptr = fwts_list_data(char *, item); *ptr; ptr++) {
 			if (!((*ptr == '\\') ||
 			     (*ptr == '.') ||
 			     (*ptr == '_') ||
 			     (isdigit(*ptr)) ||
 			     (isupper(*ptr))) ) {
-				fwts_failed_high(fw, "Method %s contains an illegal character: '%c'. This should be corrected.", (char *)item->data, *ptr);
+				fwts_failed_high(fw, "Method %s contains an illegal character: '%c'. This should be corrected.", 
+					fwts_list_data(char *, item), *ptr);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
 				failed++;
 				break;

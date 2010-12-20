@@ -125,13 +125,13 @@ int fwts_klog_scan(fwts_framework *fw,
 	 *  Form a reduced log by stripping out repeated kernel warnings
 	 */
 	fwts_list_foreach(item, klog) {
-		char *newline = remove_timestamp((char *)item->data);
+		char *newline = remove_timestamp(fwts_list_data(char *, item));
 		if (*newline) {
 			int matched = 0;
 			fwts_list_link *l;
 			fwts_list_foreach(l, klog_reduced) {	
 				char *line;
-				klog_reduced_item *reduced = (klog_reduced_item *)l->data;
+				klog_reduced_item *reduced = fwts_list_data(klog_reduced_item *, l);
 				
 				line = remove_timestamp(reduced->line);
 				if (strcmp(newline, line) == 0) {
@@ -147,7 +147,7 @@ int fwts_klog_scan(fwts_framework *fw,
 					fwts_list_free(klog_reduced, free);
 					return FWTS_ERROR;
 				}
-				new->line = (char *)item->data;
+				new->line = fwts_list_data(char *, item);
 				new->repeated = 0;
 
 				fwts_list_append(klog_reduced, new);
@@ -159,7 +159,7 @@ int fwts_klog_scan(fwts_framework *fw,
 
 	i = 0;
 	fwts_list_foreach(item, klog_reduced) {
-		klog_reduced_item *reduced = (klog_reduced_item *)item->data;
+		klog_reduced_item *reduced = fwts_list_data(klog_reduced_item *, item);
 		char *line = reduced->line;
 
 		if ((line[0] == '<') && (line[2] == '>'))

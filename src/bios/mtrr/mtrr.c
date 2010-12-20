@@ -143,7 +143,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	int type = 0;
 	
 	fwts_list_foreach(item, mtrr_list) {
-		entry = (struct mtrr_entry*)item->data;
+		entry = fwts_list_data(struct mtrr_entry*, item);
 
 		if (entry->end > start && entry->start < end)
 			type |= entry->type;
@@ -153,7 +153,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	   since it's UNCACHED if so */
 restart:
 	fwts_list_foreach(item, mtrr_list) {
-		entry = (struct mtrr_entry*)item->data;
+		entry = fwts_list_data(struct mtrr_entry*, item);
 
 		if (entry->end >= end && entry->start < end) {
 			end = entry->start;
@@ -273,7 +273,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 
 				if (size > 1024*1024) {
 					for (item = mtrr_bios_list->head; item != NULL; item = item->next) {
-						mtrr = (struct mtrr_entry *)item->data;
+						mtrr = fwts_list_data(struct mtrr_entry *, item);
 						if (start >= mtrr->start && (start+size)<= mtrr->end) {
 							found = 1;
 							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %llx - %llx\n",
@@ -450,14 +450,14 @@ static int validate_iomem(fwts_framework *fw)
 
 static void do_mtrr_resource(fwts_framework *fw)
 {
-	fwts_list_link *list;
+	fwts_list_link *item;
 	struct mtrr_entry *entry;
 
 	fwts_log_info(fw,"MTRR overview");
 	fwts_log_info(fw,"-------------");
 
-	fwts_list_foreach(list, mtrr_list) {
-		entry = (struct mtrr_entry*)list->data;
+	fwts_list_foreach(item, mtrr_list) {
+		entry = fwts_list_data(struct mtrr_entry *, item);
 		if (entry->type & DISABLED)
 			fwts_log_info_verbatum(fw, "Reg %d: disabled\n", entry->reg);
 		else

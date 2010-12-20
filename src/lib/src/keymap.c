@@ -112,7 +112,7 @@ fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode)
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, keymap) {
-		fwts_keycode *keycode = (fwts_keycode*)item->data;
+		fwts_keycode *keycode = fwts_list_data(fwts_keycode*, item);
 		if (keycode->scancode == scancode)
 			return keycode;
 	}

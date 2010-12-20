@@ -197,9 +197,10 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 				exit(EXIT_FAILURE);
 			}
 			fwts_list_foreach(item, fwts_framework_test_list) {
-				test = (fwts_framework_test*)item->data;
+				test = fwts_list_data(fwts_framework_test *, item);
 				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
-					fwts_list_add_ordered(sorted, item->data, fwts_framework_compare_test_name);
+					fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *, item), 
+								fwts_framework_compare_test_name);
 			}
 
 			if (fwts_list_len(sorted) > 0) {
@@ -210,7 +211,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 					categories[i].flag & FWTS_UTILS ? "" : " tests");
 	
 				fwts_list_foreach(item, sorted) {
-					test = (fwts_framework_test*)item->data;
+					test = fwts_list_data(fwts_framework_test *, item);
 					if (full) {
 						int j;
 						printf(" %-13.13s (%d test%s):\n",
@@ -560,8 +561,7 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 	fw->major_tests_total  = fwts_list_len(tests_to_run);
 
 	fwts_list_foreach(item, tests_to_run) {
-		fwts_framework_test *test = (fwts_framework_test*)item->data;
-
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		fwts_framework_run_test(fw, fwts_list_len(tests_to_run), test);
 		fw->current_major_test_num++;
 	}
@@ -574,10 +574,9 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const char *name)
 {
 	fwts_list_link *item;
-
 	
 	fwts_list_foreach(item, fwts_framework_test_list) {
-		fwts_framework_test *test = (fwts_framework_test*)item->data;
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		if (strcmp(name, test->name) == 0)
 			return test;
 	}
@@ -811,7 +810,7 @@ static void fwts_framework_syntax(char * const *argv)
 					FWTS_ARGS_WIDTH,
 					FWTS_ARGS_WIDTH,
 					lineno++ == 0 ? syntax_help[i].opt : "",
-					(char*)item->data);
+					fwts_list_data(char *, item));
 			}
 			fwts_list_free(text, free);
 		}
@@ -857,13 +856,13 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	fwts_log_nl(fw);
 	
 	fwts_list_foreach(item, tests_to_run) {
-		fwts_framework_test *test = (fwts_framework_test*)item->data;
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		len += strlen(test->name) + 1;
 	}
 
 	if ((tests = calloc(len, 1)) != NULL) {
 		fwts_list_foreach(item, tests_to_run) {
-			fwts_framework_test *test = (fwts_framework_test*)item->data;
+			fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 			if (item != tests_to_run->head)
 				strcat(tests, " ");
 			strcat(tests, test->name);
@@ -886,7 +885,7 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, tests_to_skip)
-		if (test == (fwts_framework_test*)item->data)
+		if (test == fwts_list_data(fwts_framework_test *, item))
 			return test;
 
 	return NULL;
@@ -1304,7 +1303,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 				fwts_list_foreach(item, fwts_framework_test_list) {
 					int len;
-					fwts_framework_test *test = (fwts_framework_test*)item->data;
+					fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
 					len = strlen(test->name) + 1;
 					if ((n + len) > width)  {
 						fprintf(stderr, "\n");
@@ -1329,7 +1328,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		/* Find tests that are eligible for running */
 		fwts_list_link *item;
 		fwts_list_foreach(item, fwts_framework_test_list) {
-			fwts_framework_test *test = (fwts_framework_test*)item->data;
+			fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
 			if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS)
 				if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
 					fwts_list_append(tests_to_run, test);

@@ -121,7 +121,7 @@ int fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory)
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, memory_map_list) {
-		entry = (fwts_memory_map_entry*)item->data;
+		entry = fwts_list_data(fwts_memory_map_entry*, item);
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry->type;
 	}
@@ -135,7 +135,7 @@ fwts_memory_map_entry *fwts_memory_map_info(fwts_list *memory_map_list, const ui
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, memory_map_list) {
-		entry = (fwts_memory_map_entry*)item->data;
+		entry = fwts_list_data(fwts_memory_map_entry*, item);
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry;
 	}

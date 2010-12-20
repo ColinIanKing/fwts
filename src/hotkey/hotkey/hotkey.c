@@ -47,7 +47,7 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 	if ((ev->type == EV_KEY) &&
 	    (ev->value != 0)) {
 		fwts_list_foreach(item, hotkeys) {
-			fwts_keycode *keycode = (fwts_keycode*)item->data;
+			fwts_keycode *keycode = fwts_list_data(fwts_keycode*, item);
 			if (keycode->scancode == scancode) {
 				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n",
 					scancode, ev->code,	

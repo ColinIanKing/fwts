@@ -132,7 +132,7 @@ void fwts_tag_add(fwts_list *taglist, const char *tag)
 
 	/* Exists already? then don't bother */
 	fwts_list_foreach(item, taglist)
-		if (strcmp((char*)item->data, tag) == 0)
+		if (strcmp(fwts_list_data(char *,item), tag) == 0)
 			return;
 
 	str = strdup(tag);
@@ -152,7 +152,7 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
 	int len = 0;
 
 	fwts_list_foreach(item, taglist) {
-		char *tag = (char *)item->data;
+		char *tag = fwts_list_data(char *, item);
 		int taglen = strlen(tag);
 		len += taglen + 1;
 

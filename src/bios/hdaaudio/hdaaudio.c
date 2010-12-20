@@ -84,7 +84,7 @@ static void hda_audio_dump_pins(fwts_framework *fw, const char *config, fwts_lis
 
 		fwts_log_info_verbatum(fw, "  Pin  Setting");
 		fwts_list_foreach(item, settings) {
-			hda_audio_pin_setting *pin_setting = (hda_audio_pin_setting *)item->data;
+			hda_audio_pin_setting *pin_setting = fwts_list_data(hda_audio_pin_setting *, item);
 	
 			fwts_log_info_verbatum(fw, "  0x%hx 0x%8.8x", pin_setting->pin, pin_setting->setting);
 		}

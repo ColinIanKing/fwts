@@ -38,8 +38,11 @@ typedef void (*fwts_list_link_free)(void *);
 typedef void (*fwts_list_foreach_callback)(void *data, void *private);
 typedef int  (fwts_list_compare)(void *data1, void *data2);
 
-#define		   fwts_list_foreach(iterator, list)		\
+#define fwts_list_foreach(iterator, list) \
 		for (iterator = list->head; iterator != NULL; iterator = iterator->next)
+
+#define fwts_list_data(type, link) \
+		((type)link->data)
 
 fwts_list         *fwts_list_init(void);
 int 		   fwts_list_len(fwts_list *list);

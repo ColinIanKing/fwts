@@ -170,7 +170,7 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 			fwts_log_summary(fw, "%s failures: %d", summary_names[i], fwts_summaries[i]->len);
 
 			fwts_list_foreach(item, fwts_summaries[i]) {
-				fwts_summary_item *summary_item = (fwts_summary_item*)item->data;
+				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
 				fwts_log_summary_verbatum(fw, " %s test at log line %d:",
 					summary_item->test,
 					summary_item->log_line);
@@ -186,14 +186,13 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 
 	if (fw->total_run > 0) {		
 		sorted = fwts_list_init();
-		fwts_list_foreach(item, test_list) {
-			fwts_list_add_ordered(sorted, (fwts_framework_test*)item->data, fwts_framework_compare_test_name);
-		}
+		fwts_list_foreach(item, test_list)
+			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 
 		fwts_log_summary_verbatum(fw, "Test           |Passed |Failed |Aborted|Warning|Skipped|");
 		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+");
 		fwts_list_foreach(item, sorted) {
-			fwts_framework_test *test = (fwts_framework_test*)item->data;
+			fwts_framework_test *test = fwts_list_data(fwts_framework_test*,item);
 			if (test->was_run) {
 				char passed[8];
 				char failed[8];

@@ -76,7 +76,7 @@ static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry 
 	}
 
 	fwts_list_foreach(item, systab) {
-		char *str = (char *)item->data;
+		char *str = fwts_list_data(char *, item);
 		if (strstr(str, "SMBIOS")) {
 			char *ptr = strstr(str, "=");
 			if (ptr) {

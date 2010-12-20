@@ -66,10 +66,8 @@ void fwts_text_list_dump(fwts_list *list)
 	if (list == NULL)
 		return;
 
-	fwts_list_foreach(item, list) {
-		char *str = (char *)item->data;
-		printf("DUMP: %s\n", str);
-	}
+	fwts_list_foreach(item, list)
+		printf("DUMP: %s\n", fwts_list_data(char *, item));
 }
 
 /*
@@ -85,11 +83,9 @@ char *fwts_text_list_strstr(fwts_list *list, const char *needle)
 	if (list == NULL)
 		return NULL;
 
-	fwts_list_foreach(item, list) {
-		char *str = (char *)item->data;
-		if ((match = strstr(str, needle)) != NULL)
+	fwts_list_foreach(item, list)
+		if ((match = strstr(fwts_list_data(char *, item), needle)) != NULL)
 			return match;
-	}
 
 	return NULL;
 }

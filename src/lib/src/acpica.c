@@ -49,6 +49,7 @@
 #define AEXEC_NUM_REGIONS   	(8)
 
 #define MAX_SEMAPHORES		(1009)
+#define HASH_FULL		(0xffffffff)
 
 typedef struct {
 	sem_t		*sem;	/* Semaphore handle */
@@ -76,7 +77,7 @@ static void *			*fwts_acpica_DSDT;
 
 static fwts_framework		*fwts_acpica_fw;			/* acpica context copy of fw */
 static int			fwts_acpica_force_sem_timeout;		/* > 0, forces a semaphore timeout */
-static int 			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
+static bool			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
 static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
 
 /* Semaphore Tracking */
@@ -142,7 +143,7 @@ static int hash_sem_handle(sem_t *sem)
 			return i;
 		i = (i+1) % MAX_SEMAPHORES;
 	}
-	return -1;
+	return HASH_FULL;
 }
 
 /*
@@ -152,7 +153,7 @@ static int hash_sem_handle(sem_t *sem)
 static void hash_sem_inc_count(sem_t *sem)
 {
 	int i = hash_sem_handle(sem);
-	if (i != -1) {
+	if (i != HASH_FULL) {
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count++;
 	}
@@ -165,7 +166,7 @@ static void hash_sem_inc_count(sem_t *sem)
 static void hash_sem_dec_count(sem_t *sem)
 {
 	int i = hash_sem_handle(sem);
-	if (i != -1) {
+	if (i != HASH_FULL) {
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count--;
 	}
@@ -418,7 +419,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	ACPI_ADR_SPACE_TYPE SpaceIdList[] = {0, 1, 3, 4, 5, 6, 7, 0x80};
 
 	/* Abort if already initialised */
-	if (fwts_acpica_init_called > 0)
+	if (fwts_acpica_init_called)
 		return FWTS_ERROR;
 
 	fwts_acpica_fw = fw;
@@ -624,6 +625,8 @@ int fwts_acpica_init(fwts_framework *fw)
 
 	AcpiDbCommandDispatch ("methods", NULL, NULL);
 
+	fwts_acpica_init_called = true;
+
 	return FWTS_OK;
 }
 
@@ -639,7 +642,7 @@ int fwts_acpica_init(fwts_framework *fw)
  */
 int fwts_acpica_deinit(void)
 {
-	if (fwts_acpica_init_called == 0)
+	if (!fwts_acpica_init_called)
 		return FWTS_ERROR;
 
 	AcpiTerminate();
@@ -648,9 +651,8 @@ int fwts_acpica_deinit(void)
 	FWTS_ACPICA_FREE(fwts_acpica_RSDT);
 	FWTS_ACPICA_FREE(fwts_acpica_RSDP);
 	FWTS_ACPICA_FREE(fwts_acpica_FADT);
-	FWTS_ACPICA_FREE(fwts_acpica_DSDT);
 
-	fwts_acpica_init_called = 0;
+	fwts_acpica_init_called = false;
 
 	return FWTS_OK;
 }

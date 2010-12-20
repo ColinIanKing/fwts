@@ -161,7 +161,7 @@ int fwts_framework_compare_test_name(void *data1, void *data2)
  *  fwts_framework_show_tests()
  *	dump out registered tests.
  */
-static void fwts_framework_show_tests(fwts_framework *fw, int full)
+static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 {
 	fwts_list_link *item;
 	fwts_list *sorted;
@@ -211,7 +211,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 	
 				fwts_list_foreach(item, sorted) {
 					test = (fwts_framework_test*)item->data;
-					if (full == FWTS_TRUE) {
+					if (full) {
 						int j;
 						printf(" %-13.13s (%d test%s):\n",
 							test->name, test->ops->total_tests,
@@ -228,7 +228,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, int full)
 			fwts_list_free(sorted, NULL);
 		}
 	}
-	if (full == FWTS_TRUE)
+	if (full)
 		printf("\nTotal of %d tests\n", total);
 }
 
@@ -1261,11 +1261,11 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
-		fwts_framework_show_tests(fw, FWTS_FALSE);
+		fwts_framework_show_tests(fw, false);
 		goto tidy_close;
 	}
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL) {
-		fwts_framework_show_tests(fw, FWTS_TRUE);
+		fwts_framework_show_tests(fw, true);
 		goto tidy_close;
 	}
 	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)

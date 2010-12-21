@@ -1,3 +1,19 @@
+fwts (0.20.11) natty; urgency=low
+
+  * Add and use fwts_list_data() to access list data more abstractly
+  * acpica: fix init/deinit bug, avoid double free'ing of DSDT
+  * framework: add per test pass/fail/abort/warn/skip summary
+  * framework: move per test results to fwts_framework_ops so we can tabulate in summary
+  * framework: remove current_ops
+  * framework: fix memory leak detected with valgrind
+  * method: remove unwanted _OSI cruft
+  * remove trailing whitespaces from sources
+  * framework: pretty print -h, --help output to tty width
+  * framework: fix typos in help
+  * New upstream version 0.20.11
+
+ -- Colin King <colin.king@canonical.com>  Tue, 21 Dec 2010 14:55:58 +0000
+
 fwts (0.20.10) natty; urgency=low
 
   * New version for release (LP: #690598)

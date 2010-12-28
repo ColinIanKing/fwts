@@ -66,6 +66,7 @@ evrgnini.c
 evsci.c
 evxface.c
 evxfevnt.c
+evxfgpe.c 
 evxfregn.c
 
 src/acpica/source/components/executer:

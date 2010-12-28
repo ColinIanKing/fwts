@@ -45,6 +45,7 @@ libacpica_a_SOURCES = \
 	$(ACPICA_COMP)/events/evgpeblk.c \
 	$(ACPICA_COMP)/events/evgpeinit.c \
 	$(ACPICA_COMP)/events/evgpeutil.c \
+	$(ACPICA_COMP)/events/evxfgpe.c \
 	$(ACPICA_COMP)/events/evmisc.c \
 	$(ACPICA_COMP)/events/evregion.c \
 	$(ACPICA_COMP)/events/evrgnini.c \

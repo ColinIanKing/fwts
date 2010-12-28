@@ -60,42 +60,43 @@ am_libacpica_a_OBJECTS = dbcmds.$(OBJEXT) dbdisply.$(OBJEXT) \
 	dsopcode.$(OBJEXT) dsutils.$(OBJEXT) dswexec.$(OBJEXT) \
 	dswload.$(OBJEXT) dswscope.$(OBJEXT) dswstate.$(OBJEXT) \
 	evevent.$(OBJEXT) evgpe.$(OBJEXT) evgpeblk.$(OBJEXT) \
-	evgpeinit.$(OBJEXT) evgpeutil.$(OBJEXT) evmisc.$(OBJEXT) \
-	evregion.$(OBJEXT) evrgnini.$(OBJEXT) evsci.$(OBJEXT) \
-	evxface.$(OBJEXT) evxfevnt.$(OBJEXT) evxfregn.$(OBJEXT) \
-	exfield.$(OBJEXT) exfldio.$(OBJEXT) exmisc.$(OBJEXT) \
-	exmutex.$(OBJEXT) exnames.$(OBJEXT) exoparg1.$(OBJEXT) \
-	exoparg2.$(OBJEXT) exoparg3.$(OBJEXT) exoparg6.$(OBJEXT) \
-	exprep.$(OBJEXT) exregion.$(OBJEXT) exresnte.$(OBJEXT) \
-	exresolv.$(OBJEXT) exresop.$(OBJEXT) exstore.$(OBJEXT) \
-	exstoren.$(OBJEXT) exstorob.$(OBJEXT) exsystem.$(OBJEXT) \
-	exutils.$(OBJEXT) exconvrt.$(OBJEXT) excreate.$(OBJEXT) \
-	exdump.$(OBJEXT) exdebug.$(OBJEXT) exconfig.$(OBJEXT) \
-	hwacpi.$(OBJEXT) hwgpe.$(OBJEXT) hwpci.$(OBJEXT) \
-	hwregs.$(OBJEXT) hwsleep.$(OBJEXT) hwvalid.$(OBJEXT) \
-	hwxface.$(OBJEXT) nsaccess.$(OBJEXT) nsalloc.$(OBJEXT) \
-	nsdump.$(OBJEXT) nsdumpdv.$(OBJEXT) nseval.$(OBJEXT) \
-	nsinit.$(OBJEXT) nsload.$(OBJEXT) nsnames.$(OBJEXT) \
-	nsobject.$(OBJEXT) nsparse.$(OBJEXT) nspredef.$(OBJEXT) \
-	nsrepair.$(OBJEXT) nsrepair2.$(OBJEXT) nssearch.$(OBJEXT) \
-	nsutils.$(OBJEXT) nswalk.$(OBJEXT) nsxfeval.$(OBJEXT) \
-	nsxfname.$(OBJEXT) nsxfobj.$(OBJEXT) psargs.$(OBJEXT) \
-	psloop.$(OBJEXT) psopcode.$(OBJEXT) psparse.$(OBJEXT) \
-	psscope.$(OBJEXT) pstree.$(OBJEXT) psutils.$(OBJEXT) \
-	pswalk.$(OBJEXT) psxface.$(OBJEXT) rsaddr.$(OBJEXT) \
-	rscalc.$(OBJEXT) rscreate.$(OBJEXT) rsdump.$(OBJEXT) \
-	rsio.$(OBJEXT) rsinfo.$(OBJEXT) rsirq.$(OBJEXT) \
-	rslist.$(OBJEXT) rsmemory.$(OBJEXT) rsmisc.$(OBJEXT) \
-	rsutils.$(OBJEXT) rsxface.$(OBJEXT) tbfadt.$(OBJEXT) \
-	tbfind.$(OBJEXT) tbinstal.$(OBJEXT) tbutils.$(OBJEXT) \
-	tbxface.$(OBJEXT) tbxfroot.$(OBJEXT) utalloc.$(OBJEXT) \
-	utcache.$(OBJEXT) utcopy.$(OBJEXT) utdebug.$(OBJEXT) \
-	utdelete.$(OBJEXT) uteval.$(OBJEXT) utglobal.$(OBJEXT) \
-	utids.$(OBJEXT) utinit.$(OBJEXT) utlock.$(OBJEXT) \
-	utmath.$(OBJEXT) utmisc.$(OBJEXT) utmutex.$(OBJEXT) \
-	utobject.$(OBJEXT) utresrc.$(OBJEXT) utstate.$(OBJEXT) \
-	uttrack.$(OBJEXT) utosi.$(OBJEXT) utxferror.$(OBJEXT) \
-	utxface.$(OBJEXT) aehandlers.$(OBJEXT) osunixxf.$(OBJEXT)
+	evgpeinit.$(OBJEXT) evgpeutil.$(OBJEXT) evxfgpe.$(OBJEXT) \
+	evmisc.$(OBJEXT) evregion.$(OBJEXT) evrgnini.$(OBJEXT) \
+	evsci.$(OBJEXT) evxface.$(OBJEXT) evxfevnt.$(OBJEXT) \
+	evxfregn.$(OBJEXT) exfield.$(OBJEXT) exfldio.$(OBJEXT) \
+	exmisc.$(OBJEXT) exmutex.$(OBJEXT) exnames.$(OBJEXT) \
+	exoparg1.$(OBJEXT) exoparg2.$(OBJEXT) exoparg3.$(OBJEXT) \
+	exoparg6.$(OBJEXT) exprep.$(OBJEXT) exregion.$(OBJEXT) \
+	exresnte.$(OBJEXT) exresolv.$(OBJEXT) exresop.$(OBJEXT) \
+	exstore.$(OBJEXT) exstoren.$(OBJEXT) exstorob.$(OBJEXT) \
+	exsystem.$(OBJEXT) exutils.$(OBJEXT) exconvrt.$(OBJEXT) \
+	excreate.$(OBJEXT) exdump.$(OBJEXT) exdebug.$(OBJEXT) \
+	exconfig.$(OBJEXT) hwacpi.$(OBJEXT) hwgpe.$(OBJEXT) \
+	hwpci.$(OBJEXT) hwregs.$(OBJEXT) hwsleep.$(OBJEXT) \
+	hwvalid.$(OBJEXT) hwxface.$(OBJEXT) nsaccess.$(OBJEXT) \
+	nsalloc.$(OBJEXT) nsdump.$(OBJEXT) nsdumpdv.$(OBJEXT) \
+	nseval.$(OBJEXT) nsinit.$(OBJEXT) nsload.$(OBJEXT) \
+	nsnames.$(OBJEXT) nsobject.$(OBJEXT) nsparse.$(OBJEXT) \
+	nspredef.$(OBJEXT) nsrepair.$(OBJEXT) nsrepair2.$(OBJEXT) \
+	nssearch.$(OBJEXT) nsutils.$(OBJEXT) nswalk.$(OBJEXT) \
+	nsxfeval.$(OBJEXT) nsxfname.$(OBJEXT) nsxfobj.$(OBJEXT) \
+	psargs.$(OBJEXT) psloop.$(OBJEXT) psopcode.$(OBJEXT) \
+	psparse.$(OBJEXT) psscope.$(OBJEXT) pstree.$(OBJEXT) \
+	psutils.$(OBJEXT) pswalk.$(OBJEXT) psxface.$(OBJEXT) \
+	rsaddr.$(OBJEXT) rscalc.$(OBJEXT) rscreate.$(OBJEXT) \
+	rsdump.$(OBJEXT) rsio.$(OBJEXT) rsinfo.$(OBJEXT) \
+	rsirq.$(OBJEXT) rslist.$(OBJEXT) rsmemory.$(OBJEXT) \
+	rsmisc.$(OBJEXT) rsutils.$(OBJEXT) rsxface.$(OBJEXT) \
+	tbfadt.$(OBJEXT) tbfind.$(OBJEXT) tbinstal.$(OBJEXT) \
+	tbutils.$(OBJEXT) tbxface.$(OBJEXT) tbxfroot.$(OBJEXT) \
+	utalloc.$(OBJEXT) utcache.$(OBJEXT) utcopy.$(OBJEXT) \
+	utdebug.$(OBJEXT) utdelete.$(OBJEXT) uteval.$(OBJEXT) \
+	utglobal.$(OBJEXT) utids.$(OBJEXT) utinit.$(OBJEXT) \
+	utlock.$(OBJEXT) utmath.$(OBJEXT) utmisc.$(OBJEXT) \
+	utmutex.$(OBJEXT) utobject.$(OBJEXT) utresrc.$(OBJEXT) \
+	utstate.$(OBJEXT) uttrack.$(OBJEXT) utosi.$(OBJEXT) \
+	utxferror.$(OBJEXT) utxface.$(OBJEXT) aehandlers.$(OBJEXT) \
+	osunixxf.$(OBJEXT)
 libacpica_a_OBJECTS = $(am_libacpica_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -248,6 +249,7 @@ libacpica_a_SOURCES = \
 	$(ACPICA_COMP)/events/evgpeblk.c \
 	$(ACPICA_COMP)/events/evgpeinit.c \
 	$(ACPICA_COMP)/events/evgpeutil.c \
+	$(ACPICA_COMP)/events/evxfgpe.c \
 	$(ACPICA_COMP)/events/evmisc.c \
 	$(ACPICA_COMP)/events/evregion.c \
 	$(ACPICA_COMP)/events/evrgnini.c \
@@ -444,6 +446,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evsci.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evxface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evxfevnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evxfgpe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evxfregn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exconfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exconvrt.Po@am__quote@
@@ -1033,6 +1036,20 @@ evgpeutil.obj: $(ACPICA_COMP)/events/evgpeutil.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMP)/events/evgpeutil.c' object='evgpeutil.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o evgpeutil.obj `if test -f '$(ACPICA_COMP)/events/evgpeutil.c'; then $(CYGPATH_W) '$(ACPICA_COMP)/events/evgpeutil.c'; else $(CYGPATH_W) '$(srcdir)/$(ACPICA_COMP)/events/evgpeutil.c'; fi`
+
+evxfgpe.o: $(ACPICA_COMP)/events/evxfgpe.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT evxfgpe.o -MD -MP -MF $(DEPDIR)/evxfgpe.Tpo -c -o evxfgpe.o `test -f '$(ACPICA_COMP)/events/evxfgpe.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/events/evxfgpe.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/evxfgpe.Tpo $(DEPDIR)/evxfgpe.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMP)/events/evxfgpe.c' object='evxfgpe.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o evxfgpe.o `test -f '$(ACPICA_COMP)/events/evxfgpe.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/events/evxfgpe.c
+
+evxfgpe.obj: $(ACPICA_COMP)/events/evxfgpe.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT evxfgpe.obj -MD -MP -MF $(DEPDIR)/evxfgpe.Tpo -c -o evxfgpe.obj `if test -f '$(ACPICA_COMP)/events/evxfgpe.c'; then $(CYGPATH_W) '$(ACPICA_COMP)/events/evxfgpe.c'; else $(CYGPATH_W) '$(srcdir)/$(ACPICA_COMP)/events/evxfgpe.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/evxfgpe.Tpo $(DEPDIR)/evxfgpe.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMP)/events/evxfgpe.c' object='evxfgpe.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o evxfgpe.obj `if test -f '$(ACPICA_COMP)/events/evxfgpe.c'; then $(CYGPATH_W) '$(ACPICA_COMP)/events/evxfgpe.c'; else $(CYGPATH_W) '$(srcdir)/$(ACPICA_COMP)/events/evxfgpe.c'; fi`
 
 evmisc.o: $(ACPICA_COMP)/events/evmisc.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT evmisc.o -MD -MP -MF $(DEPDIR)/evmisc.Tpo -c -o evmisc.o `test -f '$(ACPICA_COMP)/events/evmisc.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/events/evmisc.c

@@ -1,3 +1,10 @@
+fwts (0.20.12) natty; urgency=low
+
+  * Update with latest ACPICA sources
+  * New upstream version 0.20.12
+
+ -- Colin King <colin.king@canonical.com>  Tue, 28 Dec 2010 16:55:43 +0000
+
 fwts (0.20.11) natty; urgency=low
 
   * Add and use fwts_list_data() to access list data more abstractly

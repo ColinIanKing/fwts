@@ -1,7 +1,9 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 
-noinst_LIBRARIES = libtestsuite.a
-libtestsuite_a_SOURCES = \
+lib_LTLIBRARIES = libfwts.la
+libfwts_la_LDFLAGS = -lpthread -ljson -static
+
+libfwts_la_SOURCES = \
 	list.c \
 	acpi.c \
 	acpica.c \

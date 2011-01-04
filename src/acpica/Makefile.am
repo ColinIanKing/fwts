@@ -4,13 +4,16 @@ ACPICA_COMMON = $(ACPICA_SRC)/common
 ACPICA_CORE =   $(ACPICA_SRC)
 ACPICA_TOOLS =  $(ACPICA_SRC)/tools
 ACPICA_OSL =    $(ACPICA_SRC)/os_specific/service_layers
-
 ACPICA_COMP =   $(ACPICA_SRC)/components
 
+#
+# -DACPI_EXEC_APP is specific to making ACPICA for the fwts method test
+#
 AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
 
-noinst_LIBRARIES = libacpica.a
-libacpica_a_SOURCES = \
+lib_LTLIBRARIES = libfwtsacpica.la
+libfwtsacpica_la_LDFLAGS = -lpthread -static
+libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \

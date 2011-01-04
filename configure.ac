@@ -1,8 +1,9 @@
 AC_INIT([fwts],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 	  AC_CANONICAL_HOST
+	  AC_CONFIG_MACRO_DIR([m4])
           AC_PROG_CC
-	  AC_PROG_RANLIB
+	  AC_PROG_LIBTOOL
 	  AC_C_INLINE
   	  AC_CHECK_FUNCS([localtime_r])
 	  AC_CHECK_FUNCS([dup2])

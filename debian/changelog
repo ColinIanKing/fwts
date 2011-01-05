@@ -1,3 +1,11 @@
+fwts (0.20.15) natty; urgency=low
+
+  * Disable case sensitivity in lex scanner
+  * Tidy up iasl specific code
+  * New upstream version 0.20.15
+
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 19:07:59 +0000
+
 fwts (0.20.14) natty; urgency=low
 
   * Add debian/libfwtsiasl1.install

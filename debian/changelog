@@ -1,3 +1,10 @@
+fwts (0.20.14) natty; urgency=low
+
+  * Add debian/libfwtsiasl1.install
+  * New upstream version 0.20.14
+
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 14:14:05 +0000
+
 fwts (0.20.13) natty; urgency=low
 
   * Include ACPICA iasl compiler into a library

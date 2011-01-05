@@ -68,8 +68,9 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
 	version.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
-fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.a \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.a
+fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.la \
+	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -181,6 +182,9 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -209,6 +213,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+YACC = @YACC@
+YFLAGS = @YFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -314,8 +320,9 @@ fwts_SOURCES = main.c \
 	kernel/version/version.c
 
 fwts_LDADD = \
-	$(top_srcdir)/src/lib/src/.libs/libfwts.a \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.a \
+	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
+	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la \
 	-ljson -lm -lpcre -lpthread
 
 man_MANS = ../doc/fwts.1

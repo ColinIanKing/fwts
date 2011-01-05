@@ -131,6 +131,9 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -159,6 +162,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+YACC = @YACC@
+YFLAGS = @YFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -211,7 +216,12 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src/lib/include \
+	-I$(top_srcdir)/src/acpica/source/include \
+	-I$(top_srcdir)/src/acpica/source/compiler \
+	-Wall -Werror
+
 lib_LTLIBRARIES = libfwts.la
 libfwts_la_LDFLAGS = -lpthread -ljson -static
 libfwts_la_SOURCES = \

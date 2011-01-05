@@ -54,9 +54,9 @@ fwts_SOURCES = main.c \
 	kernel/version/version.c
 
 fwts_LDADD = \
-	$(top_srcdir)/src/lib/src/.libs/libfwts.a \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.a \
+	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
+	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la \
 	-ljson -lm -lpcre -lpthread
 
 man_MANS = ../doc/fwts.1
-

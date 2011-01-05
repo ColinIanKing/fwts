@@ -86,7 +86,7 @@ NM="/usr/bin/nm -B"
 LN_S="ln -s"
 
 # What is the maximum length of a command?
-max_cmd_len=805306365
+max_cmd_len=1572864
 
 # Object file suffix (normally "o").
 objext=o
@@ -234,10 +234,10 @@ finish_eval=""
 hardcode_into_libs=yes
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="/usr/lib/gcc/i686-linux-gnu/4.4.5 /usr/lib /lib /usr/lib/i686-linux-gnu"
+sys_lib_search_path_spec="/usr/lib/gcc/i686-linux-gnu/4.5.2 /usr/lib /lib"
 
 # Run-time system search path for libraries.
-sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/mesa /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/lib/alsa-lib /usr/local/lib "
+sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/mesa /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/local/lib "
 
 # Whether dlopen is supported.
 dlopen_support=unknown

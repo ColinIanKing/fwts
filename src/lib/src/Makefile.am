@@ -1,4 +1,8 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src/lib/include \
+	-I$(top_srcdir)/src/acpica/source/include \
+	-I$(top_srcdir)/src/acpica/source/compiler \
+	-Wall -Werror
 
 lib_LTLIBRARIES = libfwts.la
 libfwts_la_LDFLAGS = -lpthread -ljson -static

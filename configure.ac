@@ -1,8 +1,10 @@
-AC_INIT([fwts],[0.1],[colin.king@canonical.com])
+	  AC_INIT([fwts],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 	  AC_CANONICAL_HOST
 	  AC_CONFIG_MACRO_DIR([m4])
           AC_PROG_CC
+	  AC_PROG_LEX
+	  AC_PROG_YACC
 	  AC_PROG_LIBTOOL
 	  AC_C_INLINE
   	  AC_CHECK_FUNCS([localtime_r])
@@ -55,7 +57,7 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CHECK_HEADERS([sys/ioctl.h])
 	  AC_CHECK_HEADERS([sys/time.h])
 	  AC_CHECK_HEADERS([json/json.h])
-	  AC_CHECK_LIB(pcre, pcre_compile)
+	  #AC_CHECK_LIB(pcre, pcre_compile)
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK
 	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
@@ -75,6 +77,7 @@ AC_INIT([fwts],[0.1],[colin.king@canonical.com])
 	  AC_CONFIG_FILES([
            Makefile
            src/Makefile
+	   src/acpica/source/compiler/Makefile
 	   src/acpica/Makefile
            src/lib/Makefile
            src/lib/src/Makefile

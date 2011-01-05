@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Colin King <colin.king@ubuntu.com>
 Standards-Version: 3.9.1
-Build-Depends: debhelper (>= 7), libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9)
+Build-Depends: debhelper (>= 7), libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9), flex, bison
 
 Package: fwts
 Architecture: any
@@ -14,3 +14,10 @@ Description: FirmWare Test Suite
  if appropriate it will try to explain the errors and give advice to 
  help workaround or fix firmware bugs.  It is primarily intended to 
  be a Linux-centric firmware troubleshooting tool.
+
+Package: libfwtsiasl1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: ACPICA core built in iasl mode
+ This is the ACPICA core built into a library to support iasl functionality.
+

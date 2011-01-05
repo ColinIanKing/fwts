@@ -1,3 +1,4 @@
+SUBDIRS = source/compiler
 
 ACPICA_SRC =    source
 ACPICA_COMMON = $(ACPICA_SRC)/common

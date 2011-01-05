@@ -34,14 +34,6 @@ static char *syntaxcheck_headline(void)
 
 static fwts_list* error_output;
 
-static int syntaxcheck_init(fwts_framework *fw)
-{
-	if (fwts_check_executable(fw, fw->iasl, "iasl"))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 {
 	fwts_list_link *item;
@@ -130,7 +122,6 @@ static fwts_framework_minor_test syntaxcheck_tests[] = {
 
 static fwts_framework_ops syntaxcheck_ops = {
 	.headline    = syntaxcheck_headline,
-	.init        = syntaxcheck_init,	
 	.minor_tests = syntaxcheck_tests
 };
 

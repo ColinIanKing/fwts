@@ -1,1 +1,3 @@
 data/klog.json usr/share/fwts
+debian/tmp/usr/bin/fwts usr/bin
+debian/tmp/usr/share/man/man1/fwts.1 usr/share/man/man1

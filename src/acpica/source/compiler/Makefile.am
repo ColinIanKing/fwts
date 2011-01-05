@@ -2,7 +2,7 @@
 # We need to build this as a seperate shared library with the iasl functionality built in. We
 # just export the fwts_* interface.
 #
-AM_CPPFLAGS = -Wall -D_LINUX -DACPI_ASL_COMPILER $(CFLAGS) -I$(top_srcdir)/src/acpica/source/include
+AM_CPPFLAGS = -Wall -Wstrict-prototypes -D_LINUX -DACPI_ASL_COMPILER $(CFLAGS) -I$(top_srcdir)/src/acpica/source/include
 
 ACPICA_COMPILER     = .
 ACPICA_COMMON       = ../common
@@ -18,6 +18,11 @@ ACPICA_TABLES       = $(ACPICA_COMPONENTS)/tables
 ACPICA_SERVICE      = ../os_specific/service_layers
 
 AM_YFLAGS = -v -d -y -pAslCompiler
+
+#
+# Case in-sensitive scanning
+#
+AM_LFLAGS = -i
 
 aslcompilerparse.c: aslcompiler.y
 	${YACC} ${AM_YFLAGS} aslcompiler.y

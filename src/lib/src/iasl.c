@@ -50,8 +50,9 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 		return FWTS_OK;
 
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d_%s.dsl", pid, tablename);
-	snprintf(amlfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d_%s.dat", pid, tablename);
+	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d_%s.dat", pid, tablename);
 
+	/* Dump the AML bytecode into a tempoary file so we can disassemble it */
 	if ((fd = open(amlfile, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file %s", amlfile);
 		return FWTS_ERROR;
@@ -60,20 +61,20 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 	if (write(fd, table->data, table->length) != table->length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);
-		unlink(amlfile);
+		(void)unlink(amlfile);
 		return FWTS_ERROR;
 	}	
 	close(fd);
 
 	if (fwts_iasl_disassemble_aml(amlfile, tmpfile) < 0) {
-		unlink(tmpfile);
-		unlink(amlfile);
+		(void)unlink(tmpfile);
+		(void)unlink(amlfile);
 		return FWTS_ERROR;
 	}
 
-	unlink(amlfile);
+	(void)unlink(amlfile);
 	*iasl_output = fwts_file_open_and_read(tmpfile);
-	unlink(tmpfile);
+	(void)unlink(tmpfile);
 
 	return FWTS_OK;
 }
@@ -92,8 +93,9 @@ int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len,
 	*iasl_output = NULL;
 
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.dsl", pid);
-	snprintf(amlfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.dat", pid);
+	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d.dat", pid);
 
+	/* Dump the AML bytecode into a tempoary file so we can disassemble it */
 	if ((fd = open(amlfile, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
 		fwts_log_error(fw, "Cannot create temporary file %s", amlfile);
 		return FWTS_ERROR;
@@ -102,25 +104,35 @@ int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len,
 	if (write(fd, data, len) != len) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);
-		unlink(amlfile);
+		(void)unlink(amlfile);
 		return FWTS_ERROR;
 	}	
 	close(fd);
 
 	if (fwts_iasl_disassemble_aml(amlfile, tmpfile) < 0) {
-		unlink(tmpfile);
-		unlink(amlfile);
+		(void)unlink(tmpfile);
+		(void)unlink(amlfile);
 		return FWTS_ERROR;
 	}
-	unlink(amlfile);
+	(void)unlink(amlfile);
+
+	/* Now we have a disassembled source in tmpfile, so let's assemble it */
 
 	if (fwts_iasl_assemble_aml(tmpfile, &output) < 0) {
-		unlink(tmpfile);
+		(void)unlink(tmpfile);
+		(void)unlink(tmpfile);
 		free(output);
 		return FWTS_ERROR;
 	}
 
-	unlink(tmpfile);
+	(void)unlink(tmpfile);
+
+	/* For some reason that I've not yet fathomed the ACPICA assembler 
+	   leaves a .src file lying around so let's remove it to be tidy */
+
+	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.src", pid);
+	(void)unlink(tmpfile);
+
 	*iasl_output = fwts_list_from_text(output);
 	free(output);
 

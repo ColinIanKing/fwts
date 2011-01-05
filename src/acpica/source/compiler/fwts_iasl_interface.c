@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2011 Canonical
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
+
 #define _DECLARE_GLOBALS
 
 #include <sys/types.h>
@@ -41,6 +60,7 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
         	Gbl_OutputFilenamePrefix = (char*)outputfile;
         	Gbl_UseDefaultAmlFilename = FALSE;
 
+		/* Throw away noisy errors */
 		freopen("/dev/null", "w", stderr);
 
 		status = AslDoOnePathname(aml, AslDoOneFile);
@@ -50,7 +70,7 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		/* Parent */
 		waitpid(pid, &status, WUNTRACED | WCONTINUED);
 	}
-		
+
 	return 0;
 }
 
@@ -63,6 +83,7 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 	int	n;
 	int 	len = 0;
 	int	status;	
+	FILE 	*fp;
 
 	if (pipe(pipefds) < 0)
 		return -1;
@@ -75,13 +96,13 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 		return -1;
 	case 0:
 		/* Child */
+		init_asl_core();
+
 		if (pipefds[0] != STDOUT_FILENO) {
 			dup2(pipefds[1], STDOUT_FILENO);
 			close(pipefds[1]);
 		}
 		close(pipefds[0]);
-
-		init_asl_core();
 
 		Gbl_DisasmFlag = FALSE;
         	Gbl_DoCompile = TRUE;

@@ -91,9 +91,9 @@ typedef struct {
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
 
-	char *iasl;				/* path to iasl */
 	char *dmidecode;			/* path to dmidecode */
 	char *lspci;				/* path to lspci */
+
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */

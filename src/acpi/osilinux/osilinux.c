@@ -32,15 +32,6 @@ static char *osilinux_headline(void)
 	return "Disassemble DSDT to check for _OSI(\"Linux\").";
 }
 
-
-static int osilinux_init(fwts_framework *fw)
-{
-	if (fwts_check_executable(fw, fw->iasl, "iasl"))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static int osilinux_test1(fwts_framework *fw)
 {	
 	fwts_list_link *item;
@@ -108,7 +99,6 @@ static fwts_framework_minor_test osilinux_tests[] = {
 
 static fwts_framework_ops osilinux_ops = {
 	.headline    = osilinux_headline,
-	.init        = osilinux_init,	
 	.minor_tests = osilinux_tests
 };
 

@@ -56,14 +56,6 @@ static char *wmi_headline(void)
 	return "Extract and analyse Windows Management Instrumentation (WMI).";
 }
 
-static int wmi_init(fwts_framework *fw)
-{
-	if (fwts_check_executable(fw, fw->iasl, "iasl"))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 #define CONSUME_WHITESPACE(str)		\
 	while (*str && isspace(*str))	\
 		str++;			\
@@ -291,7 +283,6 @@ static fwts_framework_minor_test wmi_tests[] = {
 
 static fwts_framework_ops wmi_ops = {
 	.headline    = wmi_headline,
-	.init        = wmi_init,	
 	.minor_tests = wmi_tests
 };
 

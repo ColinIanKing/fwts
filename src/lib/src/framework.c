@@ -741,7 +741,6 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "",				"or acpidump.log from fwts --dump." },
 		{ "-f, --force-clean",		"Force a clean results log file." },
 		{ "-h, --help",			"Print this help." },
-		{ "--iasl=path",		"Specify path to iasl." },
 		{ "-i, --interactive",		"Just run Interactive tests." },
 		{ "--interactive-experimental",	"Just run Interactive Experimental tests." },
 		{ "-j, --json-data-path",	"Path to fwts json data files." },
@@ -988,7 +987,6 @@ int fwts_framework_args(const int argc, char * const *argv)
 
 	fwts_summary_init();
 
-	fwts_framework_strdup(&fw->iasl, FWTS_IASL_PATH);
 	fwts_framework_strdup(&fw->dmidecode, FWTS_DMIDECODE_PATH);
 	fwts_framework_strdup(&fw->lspci, FWTS_LSPCI_PATH);
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
@@ -1043,7 +1041,8 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_log_set_format(optarg);
 				break;	
 			case 9: /* --iasl */
-				fwts_framework_strdup(&fw->iasl, optarg);
+				fprintf(stderr, "--iasl has been deprecated\n");
+				goto tidy_close;
 				break;
 			case 10: /* --show-progress */
 				fw->flags = (fw->flags &
@@ -1269,8 +1268,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	}
 	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
-	if ((fw->iasl == NULL) ||
-	    (fw->dmidecode == NULL) ||
+	if ((fw->dmidecode == NULL) ||
 	    (fw->lspci == NULL) ||
 	    (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
@@ -1366,7 +1364,6 @@ tidy_close:
 	fwts_acpi_free_tables();
 	fwts_summary_deinit();
 
-	free(fw->iasl);
 	free(fw->dmidecode);
 	free(fw->lspci);
 	free(fw->results_logname);

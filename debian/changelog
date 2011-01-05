@@ -1,3 +1,12 @@
+fwts (0.20.13) natty; urgency=low
+
+  * Include ACPICA iasl compiler into a library
+  * Remove --iasl option
+  * Remove need to check for existance of iasl tool
+  * New upstream version 0.20.13
+
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 13:18:02 +0000
+
 fwts (0.20.12) natty; urgency=low
 
   * Update with latest ACPICA sources

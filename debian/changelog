@@ -1,3 +1,10 @@
+fwts (0.20.16) natty; urgency=low
+
+  * Dump out AML source with error message on syntaxcheck test
+  * New upstream version 0.20.16
+
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2010 11:47:47 +0000
+
 fwts (0.20.15) natty; urgency=low
 
   * Disable case sensitivity in lex scanner

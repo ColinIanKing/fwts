@@ -210,7 +210,7 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 
 	for (i=0; adviceinfo[i].advice != NULL; i++) {
 		if (adviceinfo[i].error == error_number) {
-			fwts_advice(fw, "(for %s #%d): %s.",
+			fwts_advice(fw, "(for %s #%d): %s",
 				error_levels[error_level], error_code, adviceinfo[i].advice);
 			break;
 		}

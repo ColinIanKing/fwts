@@ -1,0 +1,21 @@
+{
+ "erroradvice": 
+ [ 
+  {
+   "error": 114,
+   "advice": "The minimum, maximum addresses and length must be a multiple of the alignment, which must be a power of 2."
+  },
+  {
+   "error": 116,
+   "advice": "The minimum address is greater than the maximum address. This is illegal."
+  },
+  {
+   "error": 117,
+   "advice": "The specified length is greater than the range specified between the minimum and maximum address."
+  },
+  {
+   "error": 122,
+   "advice": "This occurs if the length is zero and just one of the resource MIF/MAF flags are set, or the length is non-zero and resource MIF/MAF flags are both set. These are illegal combinations and need to be fixed."
+  }
+ ]
+}

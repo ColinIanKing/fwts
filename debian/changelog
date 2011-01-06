@@ -1,3 +1,11 @@
+fwts (0.20.17) natty; urgency=low
+
+  * Add --s4-sleep-delay=N option to specify delays during hibernate
+  * Add syntaxcheck advise from a json lookup table
+  * New upstream version 0.20.17
+
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2010 19:17:02 +0000
+
 fwts (0.20.16) natty; urgency=low
 
   * Dump out AML source with error message on syntaxcheck test

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,7 +30,10 @@
 #include "fwts.h"
 #include "fwts_iasl_interface.h"
 
-int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int which, fwts_list **iasl_output)
+int fwts_iasl_disassemble(fwts_framework *fw,
+	const char *tablename,
+	const int which,
+	fwts_list **iasl_output)
 {
 	fwts_acpi_table_info *table;
 	char tmpfile[PATH_MAX];
@@ -79,18 +82,22 @@ int fwts_iasl_disassemble(fwts_framework *fw, const char *tablename, const int w
 	return FWTS_OK;
 }
 
-int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len, fwts_list **iasl_output)
+int fwts_iasl_reassemble(fwts_framework *fw,
+	const uint8_t *data, 
+	const int len,
+	fwts_list **iasl_disassembly,
+	fwts_list **iasl_errors)
 {
 	char tmpfile[PATH_MAX];
 	char amlfile[PATH_MAX];
-	char *output = NULL;
+	char *output_text = NULL;
 	int fd;
 	int pid = getpid();
 
-	if (iasl_output == NULL)
+	if ((iasl_disassembly  == NULL) || (iasl_errors == NULL))
 		return FWTS_ERROR;
 
-	*iasl_output = NULL;
+	*iasl_disassembly = NULL;
 
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.dsl", pid);
 	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d.dat", pid);
@@ -116,12 +123,15 @@ int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len,
 	}
 	(void)unlink(amlfile);
 
+	/* Read in the disassembled text to return later */
+	*iasl_disassembly = fwts_file_open_and_read(tmpfile);
+
 	/* Now we have a disassembled source in tmpfile, so let's assemble it */
 
-	if (fwts_iasl_assemble_aml(tmpfile, &output) < 0) {
+	if (fwts_iasl_assemble_aml(tmpfile, &output_text) < 0) {
 		(void)unlink(tmpfile);
 		(void)unlink(tmpfile);
-		free(output);
+		free(output_text);
 		return FWTS_ERROR;
 	}
 
@@ -133,8 +143,8 @@ int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len,
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.src", pid);
 	(void)unlink(tmpfile);
 
-	*iasl_output = fwts_list_from_text(output);
-	free(output);
+	*iasl_errors = fwts_list_from_text(output_text);
+	free(output_text);
 
 	return FWTS_OK;
 }

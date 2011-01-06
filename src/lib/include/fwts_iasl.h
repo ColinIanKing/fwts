@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,15 @@
 
 #include "fwts.h"
 
-int fwts_iasl_disassemble(fwts_framework *fw, const char *table, const int which, fwts_list **ias_output);
-int fwts_iasl_reassemble(fwts_framework *fw, const uint8_t *data, const int len, fwts_list **ias_output);
+int fwts_iasl_disassemble(fwts_framework *fw, 
+	const char *table,
+	const int which,
+	fwts_list **ias_output);
+
+int fwts_iasl_reassemble(fwts_framework *fw,
+	const uint8_t *data,
+	const int len,
+	fwts_list **iasl_disassembly,
+	fwts_list **iasl_errors);
 
 #endif

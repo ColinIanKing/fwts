@@ -157,8 +157,6 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 
 		adviceinfo[i].error = json_object_get_int(json_object_object_get(obj, "error"));
 		adviceinfo[i].advice = strdup(str);
-
-		printf("%d: %s\n", adviceinfo[i].error, adviceinfo[i].advice);
 	}
 
 	ret = FWTS_OK;

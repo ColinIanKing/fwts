@@ -74,7 +74,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 		return FWTS_ERROR;
 	}
 
-	fwts_wakealarm_trigger(fw, 90);
+	fwts_wakealarm_trigger(fw, fw->s4_sleep_delay);
 
 	/* Do s4 here */
 	status = fwts_pipe_exec("pm-hibernate", &output);

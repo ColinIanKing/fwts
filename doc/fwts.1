@@ -197,6 +197,11 @@ is 2 tests.
 specified the number of multiple S4 hibernate/resume tests to run. The default
 is 2 tests.
 .TP
+.B \-\-s4\-sleep\-delay=N
+sleep N seconds from the start of the hibernate to the wakeup time. Note that this
+time MUST be longer than the time it takes to hibernate the machine otherwise the
+wakeup timer will fire during the hibernate state. The default is currently 90 seconds.
+.TP
 .B \-p, \-\-show\-progress
 show the progress of the tests being run. Each test will identified as it is being
 run. For long tests, a percentage of completion time will be displayed. As of fwts 

@@ -775,6 +775,7 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--s3-max-delay=N",		"Maximum time between S3 iterations." },
 		{ "--s3-multiple=N",		"Run S3 tests N times." },
 		{ "--s4-multiple=N",		"Run S4 tests N times." },
+		{ "--s4-sleep-delay=N",		"Sleep N seconds between start of hibernate and wakeup." },
 		{ "-p, --show-progress",	"Output test progress report to stderr." },
 		{ "-D, --show-progress-dialog",	"Output test progress for use in dialog tool." },
 		{ "-s, --show-tests",		"Show available tests." },
@@ -964,6 +965,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "utils", 0, 0, 0 },
 		{ "json-data-path", 1, 0, 0 },
 		{ "lp-tags-log", 0, 0, 0 },
+		{ "s4-sleep-delay", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -983,6 +985,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fw->s3_min_delay = 0;
 	fw->s3_max_delay = 30;
 	fw->s3_delay_delta = 0.5;
+	fw->s4_sleep_delay = 90;
 	fw->total_taglist = fwts_list_init();
 
 	fwts_summary_init();
@@ -1156,6 +1159,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 			case 41: /* --lp-tags-log */
 				fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG;
 				break;
+			case 42: /* --s4-sleep-delay */
+				fw->s4_sleep_delay = atoi(optarg);
+				break;
 			}
 			break;
 		case 'a': /* --all */
@@ -1258,6 +1264,12 @@ int fwts_framework_args(const int argc, char * const *argv)
 		fprintf(stderr, "--s3-delay_delta cannot be less than 0.001\n");
 		goto tidy_close;
 	}
+	/* S4 test options */
+	if ((fw->s4_sleep_delay < 10) || (fw->s4_sleep_delay > 3600)) {
+		fprintf(stderr, "--s4-sleep_delay cannot be less than 10 or more than 1 hour!\n");
+		goto tidy_close;
+	}
+
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
 		fwts_framework_show_tests(fw, false);
 		goto tidy_close;

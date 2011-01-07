@@ -198,7 +198,7 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 		"warning level 0",
 		"warning level 1",
 		"warning level 2",
-		"error"
+		"error",
 		"unknown",
 	};
 

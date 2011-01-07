@@ -71,12 +71,32 @@ static char *syntaxcheck_headline(void)
 	return "Re-assemble DSDT and find syntax errors and warnings.";
 }
 
+static const char *syntaxcheck_error_level(uint32_t error_code)
+{
+	/* iasl encodes error_level as follows: */
+	uint16_t error_level  = (error_code / 1000) - 1;
+
+	static char *error_levels[] = {
+		"warning level 0",
+		"warning level 1",
+		"warning level 2",
+		"error",
+		"unknown",
+	};
+
+	if (error_level > 3)
+		error_level = 4;
+
+	return error_levels[error_level];
+}
+
 /*
  *  syntaxcheck_dump_code()
  *	output a block of source around where the error is reported
  */
 static void syntaxcheck_dump_code(fwts_framework *fw,
 	int error_code,
+	int carat_offset,
 	char *error_message,
 	fwts_list* iasl_disassembly,
 	int error_line,
@@ -94,8 +114,11 @@ static void syntaxcheck_dump_code(fwts_framework *fw,
 			break;
 		if (i > error_line - (howmany / 2)) {
 			fwts_log_info_verbatum(fw, "%5.5d| %s\n", i, fwts_text_list_text(item));
-			if (i == error_line)
-				fwts_log_info_verbatum(fw, "     | %s (Error %d)\n", error_message, error_code);
+			if (i == error_line) {
+				fwts_log_info_verbatum(fw, "     | %*.*s", carat_offset, carat_offset, "^");
+				fwts_log_info_verbatum(fw, "     | %s %d: %s\n", 
+					syntaxcheck_error_level(error_code), error_code, error_message);
+			}
 		}
 	}
 	fwts_log_underline(fw->results, '=');
@@ -191,27 +214,16 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 {
 	int i;
 	/* iasl encodes error_codes as follows: */
-	uint16_t error_level  = (error_code / 1000) - 1;
 	uint16_t error_number = (error_code % 1000);
-
-	static char *error_levels[] = {
-		"warning level 0",
-		"warning level 1",
-		"warning level 2",
-		"error",
-		"unknown",
-	};
 
 	if (adviceinfo == NULL)
 		return;	/* No advice! */
 
-	if (error_level > 3)
-		error_level = 4;
-
 	for (i=0; adviceinfo[i].advice != NULL; i++) {
 		if (adviceinfo[i].error == error_number) {
 			fwts_advice(fw, "(for %s #%d): %s",
-				error_levels[error_level], error_code, adviceinfo[i].advice);
+				syntaxcheck_error_level(error_code),
+				error_code, adviceinfo[i].advice);
 			break;
 		}
 	}
@@ -253,24 +265,45 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 
 		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
 			if (item->next != NULL) {
-				char *nextline = fwts_text_list_text(item->next);
-				int iasl_error = (strstr(nextline, "Error") != NULL);
-				int iasl_warning = (strstr(nextline, "Warning") != NULL);
+				char *error_text = fwts_text_list_text(item->next);
+				int iasl_error = (strstr(error_text, "Error") != NULL);
+				int iasl_warning = (strstr(error_text, "Warning") != NULL);
 				int error_code;
 
-				sscanf(nextline, "%*s %d", &error_code);
+				sscanf(error_text, "%*s %d", &error_code);
 				
 				/* Valid error or warning, go and report */
 				if (iasl_error || iasl_warning) {
 					char *colon = strstr(line, ":");
-					int offset;
-					offset = (colon == NULL) ? 20 : colon - line + 2;
-					
-					syntaxcheck_dump_code(fw, error_code, nextline + offset, 
-								iasl_disassembly, num, 8);
+					char *carat = strstr(error_text, "^");
+					char *ptr;
+					int colon_offset = (colon == NULL) ? 0 : colon + 1 - line;
+					int carat_offset = (carat == NULL) ? 0 : carat - error_text;
+
+					/* trim */
+					fwts_chop_newline(error_text);
+
+					/* Strip out the ^ from the error message */
+					for (ptr = error_text; *ptr; ptr++)
+						if (*ptr == '^') 
+							*ptr = ' ';
+		
+					/* Look for error message after: "Error:  4042 - " prefix */
+					ptr = strstr(error_text, "-");
+					if (ptr)
+						ptr += 2;
+					else
+						ptr = error_text;	/* Urgh, none found, default */
+
+					/* Skip over leading white space */
+					while (*ptr == ' ')
+						ptr++;
+
+					syntaxcheck_dump_code(fw, error_code, 
+						carat_offset - colon_offset, ptr, 
+						iasl_disassembly, num, 8);
 					syntaxcheck_give_advice(fw, error_code);
 				}
-
 				errors += iasl_error;
 				warnings += iasl_warning;
 				item = item->next;

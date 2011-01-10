@@ -74,6 +74,10 @@ run only batch experimental tests.
 when running with \-\-fwts\-debug this option specifies where the debug output will be written to. One
 can also specify stdout and stderr to redirect to these output streams.
 .TP
+.B \-\-disassemble\-aml
+Disassemble AML (ACPI machine language) byte code. This attempts to disassemble AML in DSDT and SSDT
+tables and generates DSDT.dsl and SSDTx.dsl (where x the Nth SSDT table) sources.
+.TP
 .B \-\-dmidecode=file
 specify the full path and filename to the the dmidecode binary.
 .TP

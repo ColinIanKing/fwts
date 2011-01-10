@@ -966,6 +966,7 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "json-data-path", 1, 0, 0 },
 		{ "lp-tags-log", 0, 0, 0 },
 		{ "s4-sleep-delay", 1, 0, 0 },
+		{ "disassemble-aml", 0, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -1161,6 +1162,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 				break;
 			case 42: /* --s4-sleep-delay */
 				fw->s4_sleep_delay = atoi(optarg);
+				break;
+			case 43: /* --disassemble-aml */
+				fwts_iasl_disassemble_all_to_file(fw);
+				goto tidy_close;
 				break;
 			}
 			break;

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006, Intel Corporation
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This code was originally part of the Linux-ready Firmware Developer Kit
  *
@@ -241,7 +241,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 	if (lspci_output == NULL)
 		return FWTS_ERROR;
 
-	for (item=lspci_output->head; (item != NULL) && !found; item = item->next) {
+	fwts_list_foreach(item, lspci_output) {
 		char *str = fwts_text_list_text(item);
 		if (strstr(str, "VGA compatible controller"))
 			vga = 1;

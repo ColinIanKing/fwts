@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,6 +43,12 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 
 #define fwts_list_data(type, link) \
 		((type)link->data)
+
+#define fwts_list_head(list)	\
+		((list)->head)
+
+#define fwts_list_tail(list)	\
+		((list)->tail)
 
 fwts_list         *fwts_list_init(void);
 int 		   fwts_list_len(fwts_list *list);

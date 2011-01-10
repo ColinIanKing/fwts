@@ -31,42 +31,6 @@ extern char *fwts_acpi_fadt_preferred_pm_profile[];
 #define FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(x)		\
 	((x) > 7) ? "Reserved" : fwts_acpi_fadt_preferred_pm_profile[x]
 
-#define FWTS_GET_UINT64(var, buffer, offset) 	\
-	var = 					\
-        ( ((uint64_t)data[offset+7] << 56) |      \
-          ((uint64_t)data[offset+6] << 48) |      \
-          ((uint64_t)data[offset+5] << 40) |      \
-          ((uint64_t)data[offset+4] << 32) |      \
-          ((uint64_t)data[offset+3] << 24) |      \
-          ((uint64_t)data[offset+2] << 16) |      \
-          ((uint64_t)data[offset+1] << 8)  |      \
-          ((uint64_t)data[offset]) )
-
-#define FWTS_GET_UINT32(var, buffer, offset) 	\
-	var = 					\
-        ( (data[offset+3] << 24) |      	\
-          (data[offset+2] << 16) |      	\
-          (data[offset+1] << 8)  |      	\
-          (data[offset]) )
-
-#define FWTS_GET_UINT16(var, buffer, offset) 	\
-	var =					\
-        ( ((uint16_t)data[offset+1] << 8)  |      \
-          ((uint16_t)data[offset]) )
-
-#define FWTS_GET_UINT8(var, buffer, offset)	\
-	var = 					\
-        ( ((uint8_t)data[offset]) )
-
-#define FWTS_GET_GAS(var, buffer, offset)					\
-	do { 									\
-		FWTS_GET_UINT8(var.address_space_id, buffer, offset);		\
-		FWTS_GET_UINT8(var.register_bit_width, buffer, (offset+1));	\
-		FWTS_GET_UINT8(var.register_bit_offset, buffer, (offset+2));	\
-		FWTS_GET_UINT8(var.access_width, buffer, (offset+3));		\
-		FWTS_GET_UINT64(var.address, buffer, (offset+4));		\
-	} while (0)
-
 /* 5.2.3.1 Generic Address Structure */
 typedef struct {
 	uint8_t 	address_space_id;

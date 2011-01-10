@@ -133,10 +133,10 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 	if (output == NULL)
 		return;
 
-	for (item = output->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, output)
 		if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
 			hpet_parse_device_hpet(fw, table, item);
-	}
+
 	fwts_text_list_free(output);
 }
 

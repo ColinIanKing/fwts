@@ -124,6 +124,11 @@
    "advice": "Data mutex synchronization level is too large, should be 0..15.  See section 18.5.79 Mutex (Declare Synchronization/Mutex Object) of version 4.0a of the ACPI specification for more details."
   },
   {
+   "error": 96,
+   "id": "ASL_MSG_SYNTAX",
+   "advice": "The disassembled code cannot be reassembled using the strict IASL compiler as it contains syntax errors."
+  },
+  {
    "error": 97,
    "id": "ASL_MSG_TABLE_SIGNATURE",
    "advice": "Table signature must be 4 characters long and must contain alphanumeric characters."
@@ -159,6 +164,11 @@
    "advice": "The minimum, maximum addresses and length must be a multiple of the alignment, which must be a power of 2."
   },
   {
+   "error": 117,
+   "id": "ASL_MSG_INVALID_LENGTH",
+   "advice": "This needs to be fixed as the length specified is greater than the window size specified by the Min/Max fields - this is clealy ambiguous."
+  },
+  {
    "error": 118,
    "id": "ASL_MSG_INVALID_LENGTH_FIXED",
    "advice": "The minimum address is greater than the maximum address. This is illegal."
@@ -166,7 +176,17 @@
   {
    "error": 119,
    "id": "ASL_MSG_INVALID_GRANULARITY",
-   "advice": "This occurs if the length is zero and just one of the resource MIF/MAF flags are set, or the length is non-zero and resource MIF/MAF flags are both set. These are illegal combinations and need to be fixed."
+   "advice": "This occurs if the specified granularity is non-zero and not a power-of-two minus one in value."
+  },
+  {
+   "error": 122,
+   "id": "ASL_MSG_INVALID_ADDR_FLAGS",
+   "advice": "This occurs if the length is zero and just one of the resource MIF/MAF flags are set, or the length is non-zero and resource MIF/MAF flags are both set. These are illegal combinations and need to be fixed. See section 6.4.3.5 Address Space Resource Descriptors of version 4.0a of the ACPI specification for more details."
+  },
+  {
+   "error": 123,
+   "id": "ASL_MSG_NULL_DESCRIPTOR",
+   "advice": "A 'null descriptor' (where most fields are set to zero) has been found. Usually, these are updated or completed at run time using BufferFields, but to do so one requires a resource tag and this descriptor does not have one, hence it cannot be referenced to allow it to be updated.  This is most probably a bug and needs to be fixed."
   },
   {
    "error": 125,

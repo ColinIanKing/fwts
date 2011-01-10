@@ -22,6 +22,8 @@
 
 #include "fwts.h"
 
+int fwts_iasl_disassemble_all_to_file(fwts_framework *fw);
+
 int fwts_iasl_disassemble(fwts_framework *fw, 
 	const char *table,
 	const int which,

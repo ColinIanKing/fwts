@@ -30,30 +30,9 @@
 #include "fwts.h"
 #include "fwts_iasl_interface.h"
 
-int fwts_iasl_disassemble(fwts_framework *fw,
-	const char *tablename,
-	const int which,
-	fwts_list **iasl_output)
+static int fwts_iasl_dump_aml_to_file(fwts_framework *fw, const uint8_t *data, const int length, const char *amlfile)
 {
-	fwts_acpi_table_info *table;
-	char tmpfile[PATH_MAX];
-	char amlfile[PATH_MAX];
 	int fd;
-	int pid = getpid();
-
-	if (iasl_output == NULL)
-		return FWTS_ERROR;
-
-	*iasl_output = NULL;
-
-	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK)
-		return FWTS_ERROR;
-
-	if (table == NULL)
-		return FWTS_OK;
-
-	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d_%s.dsl", pid, tablename);
-	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d_%s.dat", pid, tablename);
 
 	/* Dump the AML bytecode into a tempoary file so we can disassemble it */
 	if ((fd = open(amlfile, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
@@ -61,7 +40,7 @@ int fwts_iasl_disassemble(fwts_framework *fw,
 		return FWTS_ERROR;
 	}
 
-	if (write(fd, table->data, table->length) != table->length) {
+	if (write(fd, data, length) != length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
 		close(fd);
 		(void)unlink(amlfile);
@@ -69,15 +48,87 @@ int fwts_iasl_disassemble(fwts_framework *fw,
 	}	
 	close(fd);
 
-	if (fwts_iasl_disassemble_aml(amlfile, tmpfile) < 0) {
-		(void)unlink(tmpfile);
+	return FWTS_OK;
+}
+
+int fwts_iasl_disassemble_to_file(fwts_framework *fw,
+	const char *tablename,
+	const int which,
+	const char *filename)
+{
+	fwts_acpi_table_info *table;
+	char amlfile[PATH_MAX];
+	int pid = getpid();
+	int ret;
+
+	if ((ret = fwts_acpi_find_table(fw, tablename, which, &table)) != FWTS_OK)
+		return ret;
+
+	if (table == NULL)
+		return FWTS_NO_TABLE;
+
+	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d_%s.dat", pid, tablename);
+
+	/* Dump the AML bytecode into a tempoary file so we can disassemble it */
+	if (fwts_iasl_dump_aml_to_file(fw, table->data, table->length, amlfile) != FWTS_OK)
+		return FWTS_ERROR;
+
+	if (fwts_iasl_disassemble_aml(amlfile, filename) < 0) {
 		(void)unlink(amlfile);
 		return FWTS_ERROR;
 	}
 
 	(void)unlink(amlfile);
+
+	return FWTS_OK;
+}
+
+int fwts_iasl_disassemble(fwts_framework *fw,
+	const char *tablename,
+	const int which,
+	fwts_list **iasl_output)
+{
+	char tmpfile[PATH_MAX];
+	int pid = getpid();
+	int ret;
+
+	if (iasl_output == NULL)
+		return FWTS_ERROR;
+
+	*iasl_output = NULL;
+
+	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d_%s.dsl", pid, tablename);
+
+	if ((ret = fwts_iasl_disassemble_to_file(fw, tablename, which, tmpfile)) != FWTS_OK)
+		return ret;
+
 	*iasl_output = fwts_file_open_and_read(tmpfile);
 	(void)unlink(tmpfile);
+
+	return FWTS_OK;
+}
+
+int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
+{
+	int i;
+	int ret;
+
+	ret = fwts_iasl_disassemble_to_file(fw, "DSDT", 0, "DSDT.dsl");
+	if (ret == FWTS_ERROR_NO_PRIV) {
+		fprintf(stderr, "Need to have root privilege to read ACPI tables from memory! Re-run using sudo.\n");
+		return FWTS_ERROR;
+	}
+	if (ret == FWTS_OK)
+		printf("Disassembled DSTD to DSDT.dsl\n");
+
+	for (i=0; ;i++) {
+		char filename[PATH_MAX];
+
+		snprintf(filename, sizeof(filename), "SSDT%d.dsl", i);
+		if (fwts_iasl_disassemble_to_file(fw, "SSDT", i, filename) != FWTS_OK)
+			break;
+		printf("Disassembled SSDT %d to SSDT%d.dsl\n", i, i);
+	}
 
 	return FWTS_OK;
 }
@@ -91,7 +142,6 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	char tmpfile[PATH_MAX];
 	char amlfile[PATH_MAX];
 	char *output_text = NULL;
-	int fd;
 	int pid = getpid();
 
 	if ((iasl_disassembly  == NULL) || (iasl_errors == NULL))
@@ -103,18 +153,8 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	snprintf(amlfile, sizeof(amlfile), "/tmp/fwts_iasl_%d.dat", pid);
 
 	/* Dump the AML bytecode into a tempoary file so we can disassemble it */
-	if ((fd = open(amlfile, O_WRONLY | O_CREAT | O_EXCL, S_IWUSR | S_IRUSR)) < 0) {
-		fwts_log_error(fw, "Cannot create temporary file %s", amlfile);
+	if (fwts_iasl_dump_aml_to_file(fw, data, len, amlfile) != FWTS_OK)
 		return FWTS_ERROR;
-	}
-
-	if (write(fd, data, len) != len) {
-		fwts_log_error(fw, "Cannot write all data to temporary file");
-		close(fd);
-		(void)unlink(amlfile);
-		return FWTS_ERROR;
-	}	
-	close(fd);
 
 	if (fwts_iasl_disassemble_aml(amlfile, tmpfile) < 0) {
 		(void)unlink(tmpfile);
@@ -148,3 +188,4 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 
 	return FWTS_OK;
 }
+

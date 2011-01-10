@@ -249,7 +249,6 @@ static int check_vga_controller_address(fwts_framework *fw)
 			vga = 0;
 		if (vga) {
 			if ((str = strstr(str, "Memory at ")) != NULL) {
-				fwts_list_link *item;
 				struct mtrr_entry *mtrr;
 				uint64_t start = strtoull(str+10, NULL, 16);
 				uint64_t size = 0;
@@ -272,8 +271,10 @@ static int check_vga_controller_address(fwts_framework *fw)
 				}
 
 				if (size > 1024*1024) {
-					for (item = mtrr_bios_list->head; item != NULL; item = item->next) {
-						mtrr = fwts_list_data(struct mtrr_entry *, item);
+					fwts_list_link *mtrr_bios_item;
+
+					fwts_list_foreach(mtrr_bios_item, mtrr_bios_list) {
+						mtrr = fwts_list_data(struct mtrr_entry *, mtrr_bios_item);
 						if (start >= mtrr->start && (start+size)<= mtrr->end) {
 							found = 1;
 							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %llx - %llx\n",

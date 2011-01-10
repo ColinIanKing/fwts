@@ -863,7 +863,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	if ((tests = calloc(len, 1)) != NULL) {
 		fwts_list_foreach(item, tests_to_run) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
-			if (item != tests_to_run->head)
+			if (item != fwts_list_head(tests_to_run))
 				strcat(tests, " ");
 			strcat(tests, test->name);
 		}

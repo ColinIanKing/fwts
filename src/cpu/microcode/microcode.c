@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2006, Intel Corporation
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This file is derived from part of the Linux-ready Firmware Developer Kit
  *

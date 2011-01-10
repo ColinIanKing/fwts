@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This was originally from the thermal_trip.sh script form the
  * Linux Firmware Test Kit.

@@ -1,8 +1,9 @@
 /*
  * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2007, AMD Inc
+ * Copyright (C) 2010-2011 Canonical
  *
- * This file is part of the Linux-ready Firmware Developer Kit
+ * This file was originall part of the Linux-ready Firmware Developer Kit
  *
  * This program file is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the

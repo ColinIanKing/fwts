@@ -1,7 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
- *
- * This code was originally part of the Linux-ready Firmware Developer Kit
+ * Copyright (C) 2010-2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

@@ -178,7 +178,7 @@ static int hpet_check_test1(fwts_framework *fw)
 		   "The base address is passed by the firmware via an ACPI table. "
 		   "IRQ routing and initialization is also verified by the test.");
 
-	for (item = klog->head; item != NULL; item = item->next) {
+	fwts_list_foreach(item, klog) {
 		if ((strstr(fwts_text_list_text(item), "ACPI: HPET id:")) != NULL) {
 			char *txt = strstr(fwts_text_list_text(item), "base: ");
 			if (txt)

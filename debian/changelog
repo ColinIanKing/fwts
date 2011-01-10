@@ -1,3 +1,11 @@
+fwts (0.20.18) natty; urgency=low
+
+  * Add --disassemble-aml to disassemble AML in DSDT and SSDT tables
+  * Add more syntaxcheck advise
+  * New upstream version 0.20.18
+
+ -- Colin King <colin.king@canonical.com>  Mon, 10 Jan 2010 16:11:52 +0000
+
 fwts (0.20.17) natty; urgency=low
 
   * Add --s4-sleep-delay=N option to specify delays during hibernate

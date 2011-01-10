@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Canonical
+ * Copyright (C) 2010-2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -500,6 +500,7 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info)
 {
 	int i;
+	int ret;
 
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
@@ -507,8 +508,8 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 	*info = NULL;
 
 	if (!acpi_tables_loaded)
-		if (fwts_acpi_load_tables(fw) != FWTS_OK)
-			return FWTS_ERROR;
+		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
+			return ret;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
@@ -529,6 +530,7 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info)
 {
 	int i;
+	int ret;
 	
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
@@ -536,8 +538,8 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 	*info = NULL;
 
 	if (!acpi_tables_loaded)
-		if (fwts_acpi_load_tables(fw) != FWTS_OK)
-			return FWTS_ERROR;
+		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
+			return ret;
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
@@ -556,6 +558,8 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
  */
 int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info)
 {
+	int ret;
+
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
 
@@ -565,8 +569,8 @@ int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_inf
 		return FWTS_ERROR;
 
 	if (!acpi_tables_loaded)
-		if (fwts_acpi_load_tables(fw) != FWTS_OK)
-			return FWTS_ERROR;
+		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
+			return ret;
 
 	if (tables[index].data == NULL)
 		return FWTS_OK;

@@ -1,3 +1,19 @@
+fwts (0.20.19) natty; urgency=low
+
+  * New version for release (LP: #701843)
+  * lib: framework: add --disassemble-aml to help.
+  * lib: fwts_acpi.h: remove old FWTS_GET_* macros.
+  * all: update copyright date.
+  * lib: framework: use list head macro.
+  * lib: list: include list head and tail macros
+  * hpet: hpet_check: use list iterator (for klog scanning).
+  * bios: mtrr: minor rewrite to stop scoping of item confusion when 
+    doing mtrr_bios_list scanning
+  * bios: mtrr: use list iterator
+  * New upstream version 0.20.19
+
+ -- Colin King <colin.king@canonical.com>  Wed, 12 Jan 2010 09:58:07 +0000
+
 fwts (0.20.18) natty; urgency=low
 
   * Add --disassemble-aml to disassemble AML in DSDT and SSDT tables

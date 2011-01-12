@@ -851,7 +851,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	fwts_log_nl(fw);
 
 	fwts_log_info(fw, "This test run on %2.2d/%2.2d/%-2.2d at %2.2d:%2.2d:%2.2d on host %s %s %s %s %s.",
-		tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100,
+		tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100,
 		tm.tm_hour, tm.tm_min, tm.tm_sec,
 		buf.sysname, buf.nodename, buf.release, buf.version, buf.machine);
 	fwts_log_nl(fw);

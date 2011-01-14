@@ -1,3 +1,11 @@
+fwts (0.20.20) natty; urgency=low
+
+  * acpi: wmi: handle "table not found" correctly.
+  * doc: manpage. fix --disassemble-aml text.
+  * lib: framework: report month correctly (offset by 1)
+
+ -- Colin King <colin.king@canonical.com>  Fri, 14 Jan 2011 09:28:00 +0000
+
 fwts (0.20.19) natty; urgency=low
 
   * New version for release (LP: #701843)
@@ -12,7 +20,7 @@ fwts (0.20.19) natty; urgency=low
   * bios: mtrr: use list iterator
   * New upstream version 0.20.19
 
- -- Colin King <colin.king@canonical.com>  Wed, 12 Jan 2010 09:58:07 +0000
+ -- Colin King <colin.king@canonical.com>  Wed, 12 Jan 2011 09:58:07 +0000
 
 fwts (0.20.18) natty; urgency=low
 
@@ -20,7 +28,7 @@ fwts (0.20.18) natty; urgency=low
   * Add more syntaxcheck advise
   * New upstream version 0.20.18
 
- -- Colin King <colin.king@canonical.com>  Mon, 10 Jan 2010 16:11:52 +0000
+ -- Colin King <colin.king@canonical.com>  Mon, 10 Jan 2011 16:11:52 +0000
 
 fwts (0.20.17) natty; urgency=low
 
@@ -28,14 +36,14 @@ fwts (0.20.17) natty; urgency=low
   * Add syntaxcheck advise from a json lookup table
   * New upstream version 0.20.17
 
- -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2010 19:17:02 +0000
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2011 19:17:02 +0000
 
 fwts (0.20.16) natty; urgency=low
 
   * Dump out AML source with error message on syntaxcheck test
   * New upstream version 0.20.16
 
- -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2010 11:47:47 +0000
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Jan 2011 11:47:47 +0000
 
 fwts (0.20.15) natty; urgency=low
 
@@ -43,14 +51,14 @@ fwts (0.20.15) natty; urgency=low
   * Tidy up iasl specific code
   * New upstream version 0.20.15
 
- -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 19:07:59 +0000
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2011 19:07:59 +0000
 
 fwts (0.20.14) natty; urgency=low
 
   * Add debian/libfwtsiasl1.install
   * New upstream version 0.20.14
 
- -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 14:14:05 +0000
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2011 14:14:05 +0000
 
 fwts (0.20.13) natty; urgency=low
 
@@ -59,7 +67,7 @@ fwts (0.20.13) natty; urgency=low
   * Remove need to check for existance of iasl tool
   * New upstream version 0.20.13
 
- -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2010 13:18:02 +0000
+ -- Colin King <colin.king@canonical.com>  Wed, 5 Jan 2011 13:18:02 +0000
 
 fwts (0.20.12) natty; urgency=low
 

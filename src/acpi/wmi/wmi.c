@@ -233,13 +233,15 @@ static int wmi_table(fwts_framework *fw, char *table, int which, char *name)
 	fwts_list_link *item;
 	fwts_list* iasl_output;
 	int count = 0;
+	int ret;
 
-	if (fwts_iasl_disassemble(fw, table, which, &iasl_output) != FWTS_OK) {
+	ret = fwts_iasl_disassemble(fw, table, which, &iasl_output);	
+	if (ret == FWTS_NO_TABLE)	/* Nothing more to do */
+		return ret;
+	if (ret != FWTS_OK) {
 		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
 		return FWTS_ERROR;
 	}
-	if (iasl_output == NULL)
-		return FWTS_NO_TABLE;
 
 	fwts_list_foreach(item, iasl_output)
 		wmi_parse_for_wdg(fw, item, &count);

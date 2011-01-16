@@ -38,8 +38,8 @@ int fwts_cmos_read(int offset, uint8_t *value)
 	outb(0, 0x80);		/* Small Delay */
 	*value = inb(0x71);	/* get the value */
 
-	ioperm(0x80, 1, 0);
-	ioperm(0x70, 2, 0);
+	(void)ioperm(0x80, 1, 0);
+	(void)ioperm(0x70, 2, 0);
 
 	return FWTS_OK;
 }

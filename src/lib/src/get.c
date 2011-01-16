@@ -54,7 +54,7 @@ int fwts_get_int(const char *file, int *value)
 {
 	char *data;
 
-	value = 0;
+	*value = 0;
 	
 	if ((data = fwts_get(file)) == NULL) {
 		*value = 0;

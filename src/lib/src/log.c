@@ -91,6 +91,10 @@ static char *fwts_log_field_to_str(const fwts_log_field field)
 	}
 }
 
+/*
+ *  fwts_log_str_to_level()
+ *	return log level mapped from the given string
+ */
 int fwts_log_str_to_level(const char *str)
 {
 	if (str) {
@@ -184,16 +188,30 @@ static fwts_log_field fwts_log_str_to_field(const char *text)
 	return 0;
 }
 
+/*
+ *  fwts_log_filter_set_field
+ *	set a filter bit map
+ */
 void fwts_log_filter_set_field(const fwts_log_field filter)
 {
 	fwts_log_filter |= filter;
 }
 
+/*
+ *  fwts_log_filter_unset_field
+ *	clear a filter bit map
+ */
 void fwts_log_filter_unset_field(const fwts_log_field filter)
 {
 	fwts_log_filter &= ~filter;
 }
 
+/*
+ *  fwts_log_set_field_filter
+ *	set/clear filter bit map based on a comma separated
+ *	list of field names. ~ or ^ prefix to a field name
+ *	clears a bit.
+ */
 void fwts_log_set_field_filter(const char *str)
 {	
 	char *token;
@@ -216,6 +234,10 @@ void fwts_log_set_field_filter(const char *str)
 	}
 }
 
+/*
+ *  fwts_log_set_format()
+ *	set the log format string
+ */
 void fwts_log_set_format(const char *str)
 {
 	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);	

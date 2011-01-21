@@ -104,6 +104,9 @@ typedef struct {
 	float s3_delay_delta;			/* amount to add to delay between each S3 tests */
 	int  s4_multiple;			/* number of s4 multiple tests to run */
 	int  s4_sleep_delay;			/* number of seconds to sleep before waking up */
+	int  s4_min_delay;			/* minimum time between resume and next hibernate */
+	int  s4_max_delay;			/* maximum time between resume and next hibernate */
+	float s4_delay_delta;			/* amount to add to delay between each S4 tests */
 
 	fwts_framework_flags flags;
 

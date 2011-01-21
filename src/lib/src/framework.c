@@ -504,6 +504,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	}
 
 	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
+		int ret;
+
 		fw->current_minor_test_name = minor_test->name;
 
 		fwts_results_zero(&fw->minor_tests);
@@ -514,7 +516,16 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 				test->ops->total_tests, minor_test->name);
 
 		fwts_framework_minor_test_progress(fw, 0);
-		(*minor_test->test_func)(fw);
+		ret = (*minor_test->test_func)(fw);
+
+		/* Something went horribly wrong, abort all other tests too */
+		if (ret == FWTS_ABORTED)  {
+			for (; *minor_test->test_func != NULL; minor_test++) {
+				fw->current_major_test->results.aborted++;
+				fw->total.aborted++;
+			}
+			break;
+		}
 		fwts_framework_minor_test_progress(fw, 100);
 		fwts_framework_summate_results(&fw->current_major_test->results, &fw->minor_tests);
 
@@ -775,6 +786,11 @@ static void fwts_framework_syntax(char * const *argv)
 		{ "--s3-min-delay=N",		"Minimum time between S3 iterations." },
 		{ "--s3-max-delay=N",		"Maximum time between S3 iterations." },
 		{ "--s3-multiple=N",		"Run S3 tests N times." },
+		{ "--s4-delay-delta=N",		"Time to be added to delay between S4 iterations." },
+		{ "--s4-min-delay=N",		"Minimum time between S4 iterations." },
+		{ "--s4-max-delay=N",		"Maximum time between S4 iterations." },
+		{ "  e.g. sudo fwts s4 --s4-min-delay=1 --s4-max-delay=20 --s4-delay-delta=0.5" },
+		{ "",				"This will delay between each hibernate cycle by 1..20 seconds, and increment by 0.5 seconds per cycle." },
 		{ "--s4-multiple=N",		"Run S4 tests N times." },
 		{ "--s4-sleep-delay=N",		"Sleep N seconds between start of hibernate and wakeup." },
 		{ "-p, --show-progress",	"Output test progress report to stderr." },
@@ -968,6 +984,9 @@ int fwts_framework_args(const int argc, char * const *argv)
 		{ "lp-tags-log", 0, 0, 0 },
 		{ "s4-sleep-delay", 1, 0, 0 },
 		{ "disassemble-aml", 0, 0, 0 },
+		{ "s4-min-delay", 1, 0, 0 },
+		{ "s4-max-delay", 1, 0, 0 },
+		{ "s4-delay-delta", 1, 0, 0 },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -987,6 +1006,10 @@ int fwts_framework_args(const int argc, char * const *argv)
 	fw->s3_min_delay = 0;
 	fw->s3_max_delay = 30;
 	fw->s3_delay_delta = 0.5;
+
+	fw->s4_min_delay = 2;
+	fw->s4_max_delay = 4;
+	fw->s4_delay_delta = 0.5;
 	fw->s4_sleep_delay = 90;
 	fw->total_taglist = fwts_list_init();
 
@@ -1168,6 +1191,15 @@ int fwts_framework_args(const int argc, char * const *argv)
 				fwts_iasl_disassemble_all_to_file(fw);
 				goto tidy_close;
 				break;
+			case 44: /* --s4-min-delay */
+				fw->s4_min_delay = atoi(optarg);
+				break;
+			case 45: /* --s4-max-delay */
+				fw->s4_max_delay = atoi(optarg);
+				break;
+			case 46: /* --s4-delay-delta */
+				fw->s4_delay_delta = atof(optarg);
+				break;
 			}
 			break;
 		case 'a': /* --all */
@@ -1267,12 +1299,24 @@ int fwts_framework_args(const int argc, char * const *argv)
 		goto tidy_close;
 	}
 	if (fw->s3_delay_delta <= 0.001) {
-		fprintf(stderr, "--s3-delay_delta cannot be less than 0.001\n");
+		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
 		goto tidy_close;
 	}
 	/* S4 test options */
 	if ((fw->s4_sleep_delay < 10) || (fw->s4_sleep_delay > 3600)) {
 		fprintf(stderr, "--s4-sleep_delay cannot be less than 10 or more than 1 hour!\n");
+		goto tidy_close;
+	}
+	if ((fw->s4_min_delay < 0) || (fw->s4_min_delay > 3600)) {
+		fprintf(stderr, "--s4-min-delay cannot be less than zero or more than 1 hour!\n");
+		goto tidy_close;
+	}
+	if (fw->s4_max_delay < fw->s4_min_delay || fw->s4_max_delay > 3600)  {
+		fprintf(stderr, "--s4-max-delay cannot be less than --s4-min-delay or more than 1 hour!\n");
+		goto tidy_close;
+	}
+	if (fw->s4_delay_delta <= 0.001) {
+		fprintf(stderr, "--s4-delay-delta cannot be less than 0.001\n");
 		goto tidy_close;
 	}
 

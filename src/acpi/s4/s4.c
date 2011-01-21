@@ -177,12 +177,12 @@ static int s4_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	if (failed_alloc_image) {
-		char tmp[32];
 		int size;
 		if (fwts_get_int(FWTS_TRACING_BUFFER_SIZE, &size) != FWTS_OK) {
 			fwts_log_error(fw, "Could not get size from %s.", FWTS_TRACING_BUFFER_SIZE);
 		} else {
 			if (size > 4096) {
+				char tmp[32];
 				int ret;
 				fwts_failed_medium(fw,
 					"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
@@ -200,17 +200,26 @@ static int s4_test1(fwts_framework *fw)
 				snprintf(tmp, sizeof(tmp), "%d", size);
 				fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
 
+				/* Still failed to allocate S4 hibernate image - abort all further testing! */
+				if (failed_alloc_image)
+					return FWTS_ABORTED;
+
 				if (ret != FWTS_OK)
 					return FWTS_ERROR;
 			}
 		}
 	}
+
+	/* We put a small delay in between test1 and test2 */
+	sleep(2);
 	return FWTS_OK;
 }
 
 static int s4_test2(fwts_framework *fw)
 {
 	int i;
+	int awake_delay = fw->s4_min_delay * 1000;
+	int delta = (int)(fw->s4_delay_delta * 1000.0);
 
         if (fw->s4_multiple == 0) {
                 fw->s4_multiple = 2;
@@ -219,7 +228,9 @@ static int s4_test2(fwts_framework *fw)
         }
 
 	for (i=0; i<fw->s4_multiple; i++) {
+		struct timeval tv;
 		int failed_alloc_image = 0;
+
 		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,fw->s4_multiple);
 		fwts_progress(fw, ((i+1) * 100) / fw->s4_multiple);
 
@@ -227,6 +238,15 @@ static int s4_test2(fwts_framework *fw)
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
 		}
+
+		tv.tv_sec  = awake_delay / 1000;
+		tv.tv_usec = (awake_delay % 1000)*1000;
+
+		select(0, NULL, NULL, NULL, &tv);
+
+		awake_delay += delta;
+		if (awake_delay > (fw->s4_max_delay * 1000))
+			awake_delay = fw->s4_min_delay * 1000;
 	}
 	return FWTS_OK;
 }

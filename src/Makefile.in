@@ -66,7 +66,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
 	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
 	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
-	version.$(OBJEXT)
+	version.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
@@ -317,7 +317,8 @@ fwts_SOURCES = main.c \
 	cpu/nx/nx.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
-	kernel/version/version.c
+	kernel/version/version.c \
+	uefi/uefidump/uefidump.c
 
 fwts_LDADD = \
 	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
@@ -457,6 +458,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smbios.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thermal_trip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uefidump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt_svm.Po@am__quote@
@@ -1170,6 +1172,20 @@ version.obj: kernel/version/version.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/version/version.c' object='version.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o version.obj `if test -f 'kernel/version/version.c'; then $(CYGPATH_W) 'kernel/version/version.c'; else $(CYGPATH_W) '$(srcdir)/kernel/version/version.c'; fi`
+
+uefidump.o: uefi/uefidump/uefidump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT uefidump.o -MD -MP -MF $(DEPDIR)/uefidump.Tpo -c -o uefidump.o `test -f 'uefi/uefidump/uefidump.c' || echo '$(srcdir)/'`uefi/uefidump/uefidump.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/uefidump.Tpo $(DEPDIR)/uefidump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='uefi/uefidump/uefidump.c' object='uefidump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o uefidump.o `test -f 'uefi/uefidump/uefidump.c' || echo '$(srcdir)/'`uefi/uefidump/uefidump.c
+
+uefidump.obj: uefi/uefidump/uefidump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT uefidump.obj -MD -MP -MF $(DEPDIR)/uefidump.Tpo -c -o uefidump.obj `if test -f 'uefi/uefidump/uefidump.c'; then $(CYGPATH_W) 'uefi/uefidump/uefidump.c'; else $(CYGPATH_W) '$(srcdir)/uefi/uefidump/uefidump.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/uefidump.Tpo $(DEPDIR)/uefidump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='uefi/uefidump/uefidump.c' object='uefidump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o uefidump.obj `if test -f 'uefi/uefidump/uefidump.c'; then $(CYGPATH_W) 'uefi/uefidump/uefidump.c'; else $(CYGPATH_W) '$(srcdir)/uefi/uefidump/uefidump.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

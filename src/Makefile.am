@@ -51,7 +51,8 @@ fwts_SOURCES = main.c \
 	cpu/nx/nx.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
-	kernel/version/version.c
+	kernel/version/version.c \
+	uefi/uefidump/uefidump.c
 
 fwts_LDADD = \
 	$(top_srcdir)/src/lib/src/.libs/libfwts.la \

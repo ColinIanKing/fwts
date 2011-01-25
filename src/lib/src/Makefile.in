@@ -73,7 +73,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwts_la_LIBADD =
 am_libfwts_la_OBJECTS = list.lo acpi.lo acpica.lo acpid.lo \
 	acpi_tables.lo interactive.lo binpaths.lo cpu.lo checkeuid.lo \
-	cmos.lo dump.lo dump_data.lo fileio.lo firmware.lo \
+	cmos.lo dump.lo dump_data.lo uefi.lo fileio.lo firmware.lo \
 	framework.lo formatting.lo get.lo gpe.lo iasl.lo keymap.lo \
 	klog.lo log.lo memorymap.lo pipeio.lo set.lo stringextras.lo \
 	text_list.lo tty.lo wakealarm.lo summary.lo microcode.lo \
@@ -237,6 +237,7 @@ libfwts_la_SOURCES = \
 	cmos.c \
 	dump.c \
 	dump_data.c \
+	uefi.c \
 	fileio.c \
 	firmware.c \
 	framework.c \
@@ -364,6 +365,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/text_list.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tty.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/uefi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/virt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wakealarm.Plo@am__quote@
 

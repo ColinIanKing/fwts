@@ -20,6 +20,7 @@ libfwts_la_SOURCES = \
 	cmos.c \
 	dump.c \
 	dump_data.c \
+	uefi.c \
 	fileio.c \
 	firmware.c \
 	framework.c \

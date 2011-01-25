@@ -25,12 +25,18 @@
 typedef void (*uefidump_func)(fwts_framework *fw, fwts_uefi_var *var);
 
 typedef struct {
-	char *description;
-	uefidump_func	func;
+	char *description;		/* UEFI var */
+	uefidump_func	func;		/* Function to dump this variable */
 } uefidump_info;
 
 static char *uefidump_vprintf(char *str, const char *fmt, ...) __attribute__((format(printf, 2, 3)));
 
+/*
+ *  uefidump_vprintf()
+ *	printf() to str: if str NULL - allocate buffer and print into it,
+ *	otherwise allocate more space and append new text to end of existing
+ *	string.  Return new string, or NULL if failed.
+ */
 static char *uefidump_vprintf(char *str, const char *fmt, ...)
 {
 	va_list args;
@@ -51,6 +57,10 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
 	return str;
 }
 
+/*
+ *  uefidump_build_dev_path()
+ *	recursively scan dev_path and build up a human readable path name
+ */
 static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 {
 	switch (dev_path->type & 0x7f) {
@@ -373,7 +383,6 @@ static void uefidump_info_lang(fwts_framework *fw, fwts_uefi_var *var)
 static void uefidump_info_langcodes(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char buffer[2048];
-
 	char *dst = buffer;
 	char *data = (char*)var->data;
 
@@ -471,6 +480,7 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	len = fwts_uefi_str16len(load_option->description);
 	fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
 
+	/* Skip over description to get to packed path, unpack path and print */
 	path = (char *)var->data + sizeof(load_option->attributes) +
 		sizeof(load_option->file_path_list_length) + 
 		(sizeof(uint16_t) * (len + 1));
@@ -509,6 +519,10 @@ static int uefidump_true_filter(const struct dirent *d)
 	return 1;
 }
 
+/*
+ *  uefidump_attribute()
+ *	convert attribute into a human readable form
+ */
 static char *uefidump_attribute(uint32_t attr)
 {
 	static char str[50];
@@ -550,6 +564,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 			var->guid[12], var->guid[13], var->guid[14], var->guid[15]);
 	fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes, uefidump_attribute(var->attributes));
 
+	/* If we've got an appropriate per variable dump mechanism, use this */
 	for (info = uefidump_info_table; info->description != NULL; info++) {
 		if (strncmp(varname, info->description, strlen(info->description)) == 0) {
 			info->func(fw, var);
@@ -557,6 +572,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 		}
 	}
 
+	/* otherwise just do a plain old hex dump */
 	fwts_log_info_verbatum(fw,  "  Size: %d bytes of data.", (int)var->datalen);
 	data = (uint8_t*)&var->data;
 
@@ -575,7 +591,7 @@ static int uefidump_init(fwts_framework *fw)
 		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
 		return FWTS_ABORTED;
 	}
-	if (fwts_check_root_euid(fw))
+	if (fwts_check_root_euid(fw))	/* need to be root to read data */
 		return FWTS_ERROR;
 
 	return FWTS_OK;
@@ -605,7 +621,6 @@ static int uefidump_test1(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-
 
 static fwts_framework_minor_test uefidump_tests[] = {
 	{ uefidump_test1, "Dump UEFI Variables." },

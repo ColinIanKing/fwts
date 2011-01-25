@@ -1554,9 +1554,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_FST, "Check _FST (Fan Status)." },
 
 	/* Section 11.4 Thermal */
-	{ method_test_ACx, "Check _ACx Active Cooling." },
+	{ method_test_ACx, "Check _ACx (Active Cooling)." },
 	{ method_test_CRT, "Check _CRT (Critical Trip Point)." },
-	{ method_test_DTI, "Check _DTI Device Temperature Indication." },
+	{ method_test_DTI, "Check _DTI (Device Temperature Indication)." },
 	{ method_test_HOT, "Check _HOT (Hot Temperature)." },
 	{ method_test_NTT, "Check _NTT (Notification Temp Threshold)." },
 	{ method_test_PSV, "Check _PSV (Passive Temp)." },

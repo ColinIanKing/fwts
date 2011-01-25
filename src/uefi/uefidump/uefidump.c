@@ -543,7 +543,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 
 	fwts_log_info_verbatum(fw, "Name: %s.", varname);
-	fwts_log_info_verbatum(fw, "  GUID: %02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x)",
+	fwts_log_info_verbatum(fw, "  GUID: %02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
 			var->guid[3], var->guid[2], var->guid[1], var->guid[0],
 			var->guid[5], var->guid[4], var->guid[7], var->guid[6],
 			var->guid[8], var->guid[9], var->guid[10], var->guid[11],

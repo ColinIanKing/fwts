@@ -244,6 +244,13 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Denied AML access to port",
+   "advice": "AML code was accessing an I/O port that was banned from accesses. Ports 0x20-0x21 (PIC0), 0xa0-0xa1 (PIC1), 0x4d0-0x4d1 (ELCR) are always banned. For _OSI() greater or equal to 'Windows 2001' (Windows XP) ports 0x00-0x0f (DMA), 0x40-0x43 (PIT1), 0x48-0x4b (PIT2), 0x70-0x71 (RTC), 0x81-0x83 (DMA1), 0x87 (DMA1L), 0x89-0x8b (DMA2), 0x8f (DMA2L), 0x90-0x91 (ARBC), 0x93-0x94 (SETUP), 0x96-0x97 (POS), 0xc0-0xdf (ISA DMA) and 0xcf8-0xcff (PCI config) are banned.  Since the AML code has been banned from accessing these ports you will get undefined behaviour and the AML code should be fixed."
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "ACPI Error.*Method parse\/execution failed.*AE_AML_NO_RETURN_VALUE",

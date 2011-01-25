@@ -33,6 +33,10 @@ static inline void fwts_uefi_set_filename(char *filename, int len, const char *v
 	snprintf(filename, len, "/sys/firmware/efi/vars/%s/raw_var", varname);
 }
 
+/*
+ *  fwts_uefi_str16_to_str()
+ *	convert 16 bit string to 8 bit C string.
+ */
 void fwts_uefi_str16_to_str(char *dst, int len, uint16_t *src)
 {
 	while ((*src) && (len > 1)) {
@@ -42,6 +46,10 @@ void fwts_uefi_str16_to_str(char *dst, int len, uint16_t *src)
 	*dst = '\0';
 }
 
+/*
+ *  fwts_uefi_str16len()
+ *	16 bit version of strlen()
+ */
 int fwts_uefi_str16len(uint16_t *str)
 {
 	int i;
@@ -51,11 +59,19 @@ int fwts_uefi_str16len(uint16_t *str)
 	return i;
 }
 
+/*
+ *  fwts_uefi_get_varname()
+ *	fetch the UEFI variable name in terms of a 8 bit C string
+ */
 void fwts_uefi_get_varname(char *varname, int len, fwts_uefi_var *var)
 {
 	fwts_uefi_str16_to_str(varname, len, var->varname);
 }
 
+/*
+ *  fwts_uefi_get_variable()
+ *	fetch a UEFI variable given its name.
+ */
 int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var)
 {
 	int  fd;
@@ -81,6 +97,10 @@ int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var)
 	return ret;
 }
 
+/*
+ *  fwts_uefi_set_variable()
+ *	write back a UEFI variable given its name and contents in var.
+ */
 int fwts_uefi_set_variable(const char *varname, fwts_uefi_var *var)
 {
 	int  fd;

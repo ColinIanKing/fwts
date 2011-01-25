@@ -1,3 +1,12 @@
+fwts (0.21.03) natty; urgency=low
+
+  * Add uefidump to dump UEFI variables
+  * Fix cmosdump - was dumping too much data in hex dump.
+  * Add klog check for banned ioport operations from AML.
+  * New upstream version 0.21.03
+
+ -- Colin King <colin.king@canonical.com>  Tue, 25 Jan 2011 15:05:05 +0000
+
 fwts (0.21.02) natty; urgency=low
 
   * Add --s4-min-delay, --s4-max-delay, --s4-delay-delta S4 delay options

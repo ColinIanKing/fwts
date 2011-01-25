@@ -137,7 +137,7 @@ static int cmosdump_test1(fwts_framework *fw)
 	}
 
 	fwts_log_info_verbatum(fw, "CMOS Memory Dump:");
-	for (i=0;i<(int)sizeof(data); i+= 8) {
+	for (i=0;i<(int)sizeof(data); i+= 16) {
 		char buffer[128];
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, 16);
 		fwts_log_info_verbatum(fw, "%s", buffer);

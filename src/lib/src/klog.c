@@ -81,7 +81,7 @@ fwts_list *fwts_klog_read(void)
 	return list;
 }
 
-static char *remove_timestamp(char *text)
+char *fwts_klog_remove_timestamp(char *text)
 {
 	char *ptr = text;
 
@@ -125,7 +125,7 @@ int fwts_klog_scan(fwts_framework *fw,
 	 *  Form a reduced log by stripping out repeated kernel warnings
 	 */
 	fwts_list_foreach(item, klog) {
-		char *newline = remove_timestamp(fwts_list_data(char *, item));
+		char *newline = fwts_klog_remove_timestamp(fwts_list_data(char *, item));
 		if (*newline) {
 			int matched = 0;
 			fwts_list_link *l;
@@ -133,7 +133,7 @@ int fwts_klog_scan(fwts_framework *fw,
 				char *line;
 				klog_reduced_item *reduced = fwts_list_data(klog_reduced_item *, l);
 				
-				line = remove_timestamp(reduced->line);
+				line = fwts_klog_remove_timestamp(reduced->line);
 				if (strcmp(newline, line) == 0) {
 					reduced->repeated++;
 					matched = 1;

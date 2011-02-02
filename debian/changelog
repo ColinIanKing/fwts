@@ -1,3 +1,13 @@
+fwts (0.21.04) natty; urgency=low
+
+  * s3, s4: multiple tests must run at least twice if multiples not specified.
+  * s4, s4: scan log for oopsing to catch driver/kernel breakages.
+  * oops: Add test to scan for random kernel oopsing.
+  * manpage - fix data/date typo.
+  * New upstream version 0.21.04
+
+ -- Colin King <colin.king@canonical.com>  Wed, 2 Feb 2011 12:03:03 +0000
+
 fwts (0.21.03) natty; urgency=low
 
   * Add uefidump to dump UEFI variables

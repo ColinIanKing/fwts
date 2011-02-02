@@ -227,7 +227,6 @@ static int s4_test2(fwts_framework *fw)
         if (fw->s4_multiple == 0) {
                 fw->s4_multiple = 2;
                 fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s4-multiple=N to run more S4 cycles\n");
-		return FWTS_OK;
         }
 
 	for (i=0; i<fw->s4_multiple; i++) {

@@ -181,7 +181,6 @@ static int s3_test_multiple(fwts_framework *fw)
 	if (fw->s3_multiple == 0) {
 		fw->s3_multiple = 2;
 		fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s3-multiple=N to run more S3 cycles\n");
-		return FWTS_OK;
 	}
 
 	for (i=0; i<fw->s3_multiple; i++) {

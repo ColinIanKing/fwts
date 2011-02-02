@@ -52,6 +52,7 @@ fwts_SOURCES = main.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c \
+	kernel/oops/oops.c \
 	uefi/uefidump/uefidump.c
 
 fwts_LDADD = \

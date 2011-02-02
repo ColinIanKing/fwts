@@ -66,7 +66,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
 	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
 	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
-	version.$(OBJEXT) uefidump.$(OBJEXT)
+	version.$(OBJEXT) oops.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
@@ -318,6 +318,7 @@ fwts_SOURCES = main.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c \
+	kernel/oops/oops.c \
 	uefi/uefidump/uefidump.c
 
 fwts_LDADD = \
@@ -449,6 +450,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/os2gap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osilinux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
@@ -1172,6 +1174,20 @@ version.obj: kernel/version/version.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/version/version.c' object='version.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o version.obj `if test -f 'kernel/version/version.c'; then $(CYGPATH_W) 'kernel/version/version.c'; else $(CYGPATH_W) '$(srcdir)/kernel/version/version.c'; fi`
+
+oops.o: kernel/oops/oops.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT oops.o -MD -MP -MF $(DEPDIR)/oops.Tpo -c -o oops.o `test -f 'kernel/oops/oops.c' || echo '$(srcdir)/'`kernel/oops/oops.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/oops.Tpo $(DEPDIR)/oops.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/oops/oops.c' object='oops.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o oops.o `test -f 'kernel/oops/oops.c' || echo '$(srcdir)/'`kernel/oops/oops.c
+
+oops.obj: kernel/oops/oops.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT oops.obj -MD -MP -MF $(DEPDIR)/oops.Tpo -c -o oops.obj `if test -f 'kernel/oops/oops.c'; then $(CYGPATH_W) 'kernel/oops/oops.c'; else $(CYGPATH_W) '$(srcdir)/kernel/oops/oops.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/oops.Tpo $(DEPDIR)/oops.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/oops/oops.c' object='oops.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o oops.obj `if test -f 'kernel/oops/oops.c'; then $(CYGPATH_W) 'kernel/oops/oops.c'; else $(CYGPATH_W) '$(srcdir)/kernel/oops/oops.c'; fi`
 
 uefidump.o: uefi/uefidump/uefidump.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT uefidump.o -MD -MP -MF $(DEPDIR)/uefidump.Tpo -c -o uefidump.o `test -f 'uefi/uefidump/uefidump.c' || echo '$(srcdir)/'`uefi/uefidump/uefidump.c

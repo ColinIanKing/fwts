@@ -32,6 +32,7 @@ libfwts_la_SOURCES = \
 	klog.c \
 	log.c \
 	memorymap.c \
+	oops.c \
 	pipeio.c \
 	set.c \
 	stringextras.c \

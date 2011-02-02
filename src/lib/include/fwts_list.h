@@ -41,6 +41,9 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 #define fwts_list_foreach(iterator, list) \
 		for (iterator = list->head; iterator != NULL; iterator = iterator->next)
 
+#define fwts_list_foreach_continue(iterator) \
+		for (; iterator != NULL; iterator = iterator->next)
+
 #define fwts_list_data(type, link) \
 		((type)link->data)
 

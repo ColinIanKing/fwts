@@ -55,7 +55,6 @@ static int s3_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
 static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
 {
 	fwts_list *output;
@@ -126,6 +125,7 @@ static int s3_check_log(fwts_framework *fw)
 {
 	fwts_list *klog;
 	int errors = 0;
+	int oopses = 0;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
@@ -142,10 +142,13 @@ static int s3_check_log(fwts_framework *fw)
 	if (fwts_klog_common_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
+	if (fwts_oops_check(fw, klog, &oopses))
+		fwts_log_error(fw, "Error parsing kernel log.");
+
 	fwts_klog_free(klog);
 
-	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
+	if (errors + oopses > 0)
+		fwts_log_info(fw, "Found %d errors and %d oopses in kernel log.", errors, oopses);
 	else
 		fwts_passed(fw, "Found no errors in kernel log.");
 

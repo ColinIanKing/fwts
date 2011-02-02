@@ -61,7 +61,8 @@ static int s4_init(fwts_framework *fw)
 
 static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 {	
-	int errors = 0;
+	int errors = 0;	
+	int oopses = 0;
 	fwts_list *output;
 	int status;
 	fwts_list *klog;
@@ -98,9 +99,11 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	if (fwts_klog_common_check(fw, NULL, klog, &errors))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
+	if (fwts_oops_check(fw, klog, &oopses))
+		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
+	if (errors + oopses > 0)
+		fwts_log_info(fw, "Found %d errors and %d oopses in kernel log.", errors, oopses);
 	else
 		fwts_passed(fw, "%s", test);
 
@@ -224,7 +227,7 @@ static int s4_test2(fwts_framework *fw)
         if (fw->s4_multiple == 0) {
                 fw->s4_multiple = 2;
                 fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s4-multiple=N to run more S4 cycles\n");
-                return FWTS_OK;
+		return FWTS_OK;
         }
 
 	for (i=0; i<fw->s4_multiple; i++) {

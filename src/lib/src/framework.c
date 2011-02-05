@@ -38,9 +38,6 @@
 	 FWTS_POWER_STATES |		\
 	 FWTS_UTILS)
 
-#define LOGFILE(name1, name2)	\
-	(name1 != NULL) ? name1 : name2
-
 #define FWTS_ARGS_WIDTH 	28
 #define FWTS_MIN_TTY_WIDTH	50
 

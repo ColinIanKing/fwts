@@ -217,10 +217,10 @@ static fwts_framework_minor_test acpiinfo_tests[] = {
 };
 
 static fwts_framework_ops acpiinfo_ops = {
-	acpiinfo_headline,
-	acpiinfo_init,	
-	acpiinfo_deinit,
-	acpiinfo_tests
+	.headline    = acpiinfo_headline,
+	.init        = acpiinfo_init,	
+	.deinit      = acpiinfo_deinit,
+	.minor_tests = acpiinfo_tests
 };
 
 FWTS_REGISTER(acpiinfo, &acpiinfo_ops, FWTS_TEST_EARLY, FWTS_BATCH);

@@ -220,10 +220,10 @@ static fwts_framework_minor_test s3_tests[] = {
 };
 
 static fwts_framework_ops s3_ops = {
-	s3_headline,
-	s3_init,	
-	s3_deinit,
-	s3_tests
+	.headline    = s3_headline,
+	.init        = s3_init,	
+	.deinit      = s3_deinit,
+	.minor_tests = s3_tests
 };
 
 FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);

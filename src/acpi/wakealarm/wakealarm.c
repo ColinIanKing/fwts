@@ -120,10 +120,9 @@ static fwts_framework_minor_test wakealarm_tests[] = {
 };
 
 static fwts_framework_ops wakealarm_ops = {
-	wakealarm_headline,
-	wakealarm_init,
-	NULL,
-	wakealarm_tests
+	.headline    =  wakealarm_headline,
+	.init        =  wakealarm_init,
+	.minor_tests = wakealarm_tests
 };
 
 FWTS_REGISTER(wakealarm, &wakealarm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);

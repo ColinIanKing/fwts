@@ -191,10 +191,10 @@ static fwts_framework_minor_test ac_adapter_tests[] = {
 };
 
 static fwts_framework_ops ac_adapter_ops = {
-	ac_adapter_headline,
-	ac_adapter_init,
-	ac_adapter_deinit,
-	ac_adapter_tests
+	.headline    = ac_adapter_headline,
+	.init        = ac_adapter_init,
+	.deinit      = ac_adapter_deinit,
+	.minor_tests = ac_adapter_tests
 };
 
 FWTS_REGISTER(ac_adapter, &ac_adapter_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);

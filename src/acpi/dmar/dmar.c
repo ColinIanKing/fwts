@@ -268,7 +268,6 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 		}
 		header = ((void *)header) + header->length;
 	}
-	free(table_ptr);
 
 	if (!failed)
 		fwts_passed(fw, "DMAR ACPI table has passed test.");

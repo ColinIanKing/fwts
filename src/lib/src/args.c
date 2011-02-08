@@ -132,7 +132,8 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 	}
 
 	for (;;) {
-		if ((c = getopt_long(argc, argv, short_options, long_options, &option_index)) == -1)
+		c = getopt_long(argc, argv, short_options, long_options, &option_index);
+		if (c == -1)
 			break;
 		fwts_list_foreach(item, options_list) {
 			options_table = fwts_list_data(fwts_options_table *, item);
@@ -152,7 +153,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 			/*  Found an option, then run the appropriate handler */
 			if (found) {
 				ret = options_table->optarg_handler(fw, argc, argv, c, option_index);
-				if (ret != FWTS_OK);
+				if (ret != FWTS_OK)
 					goto exit;
 				break;
 			} else {

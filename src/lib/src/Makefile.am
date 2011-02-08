@@ -42,4 +42,5 @@ libfwts_la_SOURCES = \
 	summary.c \
 	microcode.c \
 	virt.c \
+	args.c \
 	tag.c

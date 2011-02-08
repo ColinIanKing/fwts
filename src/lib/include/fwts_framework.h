@@ -98,15 +98,6 @@ typedef struct {
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
 	char *json_data_path;			/* path to application json data files, e.g. json klog data */
-	int  s3_multiple;			/* number of s3 multiple tests to run */
-	int  s3_min_delay;			/* minimum time between resume and next suspend */
-	int  s3_max_delay;			/* maximum time between resume and next suspend */
-	float s3_delay_delta;			/* amount to add to delay between each S3 tests */
-	int  s4_multiple;			/* number of s4 multiple tests to run */
-	int  s4_sleep_delay;			/* number of seconds to sleep before waking up */
-	int  s4_min_delay;			/* minimum time between resume and next hibernate */
-	int  s4_max_delay;			/* maximum time between resume and next hibernate */
-	float s4_delay_delta;			/* amount to add to delay between each S4 tests */
 
 	fwts_framework_flags flags;
 
@@ -133,6 +124,11 @@ typedef struct {
 	int show_progress;			/* Show progress while running current test */
 } fwts_framework;
 
+typedef struct {
+	char *opt;	/* option */
+	char *info;	/* what it does */
+} fwts_syntax_info;
+
 typedef int (*fwts_framework_minor_test_func)(fwts_framework *framework);
 
 typedef struct {
@@ -140,10 +136,15 @@ typedef struct {
 	const char  *name;			/* Name of minor test */
 } fwts_framework_minor_test;
 
+#include "fwts_args.h"
+
 typedef struct fwts_framework_ops {
 	char *(*headline)(void);		/* Headline description of test */
 	int (*init)(fwts_framework *);		/* Initialise */
 	int (*deinit)(fwts_framework *);	/* De-init */		
+	int (*getopts)(fwts_framework *, int argc, char **argv);	/* Arg handling */
+	fwts_option *options;
+	fwts_args_optarg_handler options_handler;
 	fwts_framework_minor_test *minor_tests;	/* NULL terminated array of minor tests to run */
 	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;
@@ -157,7 +158,7 @@ typedef struct fwts_framework_test {
 	bool	    was_run;
 } fwts_framework_test;
 
-int  fwts_framework_args(const int argc, char * const *argv);
+int  fwts_framework_args(const int argc, char **argv);
 void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
 int  fwts_framework_compare_test_name(void *, void *);
 

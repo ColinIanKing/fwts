@@ -28,6 +28,12 @@
 
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
+static int  s4_multiple;	/* number of S4 multiple tests to run */
+static int  s4_min_delay;	/* min time between resume and next suspend */
+static int  s4_max_delay;	/* max time between resume and next suspend */
+static float s4_delay_delta;	/* amount to add to delay between each S4 tests */
+static int  s4_sleep_delay;	/* delay between initiating S4 and wakeup */
+
 static char *s4_headline(void)
 {
 	return "S4 hibernate/resume test.";
@@ -75,7 +81,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 		return FWTS_ERROR;
 	}
 
-	fwts_wakealarm_trigger(fw, fw->s4_sleep_delay);
+	fwts_wakealarm_trigger(fw, s4_sleep_delay);
 
 	/* Do s4 here */
 	status = fwts_pipe_exec("pm-hibernate", &output);
@@ -221,20 +227,20 @@ static int s4_test1(fwts_framework *fw)
 static int s4_test2(fwts_framework *fw)
 {
 	int i;
-	int awake_delay = fw->s4_min_delay * 1000;
-	int delta = (int)(fw->s4_delay_delta * 1000.0);
+	int awake_delay = s4_min_delay * 1000;
+	int delta = (int)(s4_delay_delta * 1000.0);
 
-        if (fw->s4_multiple == 0) {
-                fw->s4_multiple = 2;
+        if (s4_multiple == 0) {
+                s4_multiple = 2;
                 fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s4-multiple=N to run more S4 cycles\n");
         }
 
-	for (i=0; i<fw->s4_multiple; i++) {
+	for (i=0; i<s4_multiple; i++) {
 		struct timeval tv;
 		int failed_alloc_image = 0;
 
-		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,fw->s4_multiple);
-		fwts_progress(fw, ((i+1) * 100) / fw->s4_multiple);
+		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,s4_multiple);
+		fwts_progress(fw, ((i+1) * 100) / s4_multiple);
 
 		if (s4_hibernate(fw, "Multiple S4 hibernate/resume test.", &failed_alloc_image) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
@@ -247,11 +253,69 @@ static int s4_test2(fwts_framework *fw)
 		select(0, NULL, NULL, NULL, &tv);
 
 		awake_delay += delta;
-		if (awake_delay > (fw->s4_max_delay * 1000))
-			awake_delay = fw->s4_min_delay * 1000;
+		if (awake_delay > (s4_max_delay * 1000))
+			awake_delay = s4_min_delay * 1000;
 	}
 	return FWTS_OK;
 }
+
+static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
+{
+	s4_multiple = 0;
+	s4_min_delay = 2;
+        s4_max_delay = 4;
+        s4_delay_delta = 0.5;
+	s4_sleep_delay = 90;
+
+        switch (option_char) {
+        case 0:
+                switch (long_index) {
+		case 0:
+			s4_multiple = atoi(optarg);	
+			printf("HERE! multiple = %d\n", s4_multiple);
+			break;
+		case 1:
+			s4_min_delay = atoi(optarg);
+			break;
+		case 2:
+			s4_max_delay = atoi(optarg);
+			break;
+		case 3:
+			s4_delay_delta = atof(optarg);
+			break;
+		case 4:
+			s4_sleep_delay = atoi(optarg);
+			break;
+		}
+	}
+
+	if ((s4_sleep_delay < 10) || (s4_sleep_delay > 3600)) {
+		fprintf(stderr, "--s4-sleep_delay cannot be less than 10 or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if ((s4_min_delay < 0) || (s4_min_delay > 3600)) {
+		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if (s4_max_delay < s4_min_delay || s4_max_delay > 3600)  {
+		fprintf(stderr, "--s3-max-delay cannot be less than --s3-min-delay or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if (s4_delay_delta <= 0.001) {
+		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+static fwts_option s4_options[] = {
+	{ "s4-multiple",        "", 1, "Time to be added to delay between S4 iterations." },
+	{ "s4-min-delay",       "", 1, "Minimum time between S4 iterations." },
+	{ "s4-max-delay",       "", 1, "Maximum time between S4 iterations." },
+	{ "s4-delay-delta",     "", 1, "Run S4 tests N times." },
+	{ "s4-sleep-delay",	"", 1, "Sleep N seconds between start of hibernate and wakeup." },
+        { NULL, NULL, 0, NULL }
+};
 
 static fwts_framework_minor_test s4_tests[] = {
 	{ s4_test1, "S4 hibernate/resume test (single run)." },
@@ -262,7 +326,9 @@ static fwts_framework_minor_test s4_tests[] = {
 static fwts_framework_ops s4_ops = {
 	.headline    = s4_headline,
 	.init        = s4_init,
-	.minor_tests = s4_tests
+	.minor_tests = s4_tests,
+	.options     = s4_options,
+	.options_handler = s4_options_handler
 };
 
 FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_POWER_STATES);

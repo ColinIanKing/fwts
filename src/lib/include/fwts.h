@@ -61,5 +61,6 @@
 #include "fwts_cmos.h"
 #include "fwts_acpica.h"
 #include "fwts_oops.h"
+#include "fwts_args.h"
 
 #endif

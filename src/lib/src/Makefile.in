@@ -77,7 +77,7 @@ am_libfwts_la_OBJECTS = list.lo acpi.lo acpica.lo acpid.lo \
 	framework.lo formatting.lo get.lo gpe.lo iasl.lo keymap.lo \
 	klog.lo log.lo memorymap.lo oops.lo pipeio.lo set.lo \
 	stringextras.lo text_list.lo tty.lo wakealarm.lo summary.lo \
-	microcode.lo virt.lo tag.lo
+	microcode.lo virt.lo args.lo tag.lo
 libfwts_la_OBJECTS = $(am_libfwts_la_OBJECTS)
 libfwts_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -259,6 +259,7 @@ libfwts_la_SOURCES = \
 	summary.c \
 	microcode.c \
 	virt.c \
+	args.c \
 	tag.c
 
 all: all-am
@@ -339,6 +340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpi_tables.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpica.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpid.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/args.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/binpaths.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/checkeuid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cmos.Plo@am__quote@

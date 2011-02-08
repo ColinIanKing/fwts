@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2011 Canonical
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
+
+#ifndef __FWTS_ARGS_H__
+#define __FWTS_ARGS_H__
+
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <getopt.h>
+
+typedef struct {
+	char		*long_name;	/* e.g. "quiet", long name */
+	char		*short_name;	/* e.g. "q", short help info */
+	int		has_arg;
+	char		*explanation;	/* explanation: "Enabled quiet mode..." */
+} fwts_option;
+
+#include "fwts.h"
+
+typedef int (*fwts_args_optarg_handler)(fwts_framework *framework, int argc, char * const argv[], int option_char, int long_index);
+
+int fwts_args_init(void);
+int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler);
+int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[]);
+void fwts_args_show_options(void);
+int fwts_args_free(void);
+
+#endif

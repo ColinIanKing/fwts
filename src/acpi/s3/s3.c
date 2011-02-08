@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <getopt.h>
+
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
@@ -26,6 +28,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+
+
+static int  s3_multiple;	/* number of s3 multiple tests to run */
+static int  s3_min_delay;	/* min time between resume and next suspend */
+static int  s3_max_delay;	/* max time between resume and next suspend */
+static float s3_delay_delta;	/* amount to add to delay between each S3 tests */
 
 static char *s3_headline(void)
 {
@@ -175,20 +183,20 @@ static int s3_test_multiple(fwts_framework *fw)
 	int delay = 30;
 	int duration = 0;
 	int i;
-	int awake_delay = fw->s3_min_delay * 1000;
-	int delta = (int)(fw->s3_delay_delta * 1000.0);
+	int awake_delay = s3_min_delay * 1000;
+	int delta = (int)(s3_delay_delta * 1000.0);
 
-	if (fw->s3_multiple == 0) {
-		fw->s3_multiple = 2;
+	if (s3_multiple == 0) {
+		s3_multiple = 2;
 		fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s3-multiple=N to run more S3 cycles\n");
 	}
 
-	for (i=0; i<fw->s3_multiple; i++) {
+	for (i=0; i<s3_multiple; i++) {
 		int timetaken;
 		struct timeval tv;
 
-		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,fw->s3_multiple);
-		fwts_progress(fw, ((i+1) * 100) / fw->s3_multiple);
+		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
+		fwts_progress(fw, ((i+1) * 100) / s3_multiple);
 		s3_do_suspend_resume(fw, &errors, delay, &duration);
 
 		timetaken = duration - delay;
@@ -200,8 +208,8 @@ static int s3_test_multiple(fwts_framework *fw)
 		select(0, NULL, NULL, NULL, &tv);
 		
 		awake_delay += delta;
-		if (awake_delay > (fw->s3_max_delay * 1000))
-			awake_delay = fw->s3_min_delay * 1000;
+		if (awake_delay > (s3_max_delay * 1000))
+			awake_delay = s3_min_delay * 1000;
 
 	}
 
@@ -213,6 +221,57 @@ static int s3_test_multiple(fwts_framework *fw)
 	return s3_check_log(fw);
 }
 
+static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
+{
+	s3_multiple = 0;
+	s3_min_delay = 0;
+        s3_max_delay = 30;
+        s3_delay_delta = 0.5;
+
+	printf("In S3 handler\n");
+
+        switch (option_char) {
+        case 0:
+                switch (long_index) {
+		case 0:
+			s3_multiple = atoi(optarg);	
+			printf("HERE! multiple = %d\n", s3_multiple);
+			break;
+		case 1:
+			s3_min_delay = atoi(optarg);
+			break;
+		case 2:
+			s3_max_delay = atoi(optarg);
+			break;
+		case 3:
+			s3_delay_delta = atof(optarg);
+			break;
+		}
+	}
+
+	if ((s3_min_delay < 0) || (s3_min_delay > 3600)) {
+		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if (s3_max_delay < s3_min_delay || s3_max_delay > 3600)  {
+		fprintf(stderr, "--s3-max-delay cannot be less than --s3-min-delay or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if (s3_delay_delta <= 0.001) {
+		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+static fwts_option s3_options[] = {
+	{ "s3-multiple", 	"", 1, "Time to be added to delay between S3 iterations." },
+	{ "s3-min-delay", 	"", 1, "Minimum time between S3 iterations." },
+	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterations." },
+	{ "s3-delay-delta", 	"", 1, "Run S3 tests N times." },
+	{ NULL, NULL, 0, NULL }
+};
+
 static fwts_framework_minor_test s3_tests[] = {
 	{ s3_test_single,   "S3 suspend/resume test (single run)." },
 	{ s3_test_multiple, "S3 suspend/resume test (multiple runs)." },
@@ -223,7 +282,9 @@ static fwts_framework_ops s3_ops = {
 	.headline    = s3_headline,
 	.init        = s3_init,	
 	.deinit      = s3_deinit,
-	.minor_tests = s3_tests
+	.minor_tests = s3_tests,
+	.options     = s3_options,
+	.options_handler = s3_options_handler,
 };
 
 FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);

@@ -1109,7 +1109,7 @@ int fwts_framework_args(const int argc, char **argv)
 	if (fwts_args_parse(fw, argc, argv) != FWTS_OK)
 		goto tidy_close;
 
-	for (i=optind; i<argc; i++)
+	for (i=1; i<argc; i++)
 		if (!strcmp(argv[i], "-")) {
 			fwts_framework_strdup(&fw->results_logname, "stdout");
 			fw->flags = (fw->flags &
@@ -1146,41 +1146,39 @@ int fwts_framework_args(const int argc, char **argv)
 		goto tidy_close;
 	}
 
-	if (optind < argc)  {
-		/* Run specified tests */
-		for (; optind < argc; optind++) {
-			if (!strcmp(argv[optind], "-"))
-				continue;
+	/* Run specified tests */
+	for (i=1; i < argc; i++) {
+		if (*argv[i] == '-')
+			continue;
 
-			fwts_framework_test *test = fwts_framework_test_find(fw, argv[optind]);
+		fwts_framework_test *test = fwts_framework_test_find(fw, argv[i]);
 
-			if (test == NULL) {
-				int width = fwts_tty_width(fileno(stderr), 80);
-				int n = 0;
-				fwts_list_link *item;
-				fprintf(stderr, "No such test '%s', available tests:\n",argv[optind]);
+		if (test == NULL) {
+			int width = fwts_tty_width(fileno(stderr), 80);
+			int n = 0;
+			fwts_list_link *item;
+			fprintf(stderr, "No such test '%s', available tests:\n",argv[i]);
 
-				fwts_list_foreach(item, fwts_framework_test_list) {
-					int len;
-					fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
-					len = strlen(test->name) + 1;
-					if ((n + len) > width)  {
-						fprintf(stderr, "\n");
-						n = 0;
-					}
-					
-					fprintf(stderr, "%s ", test->name);
-					n += len;
+			fwts_list_foreach(item, fwts_framework_test_list) {
+				int len;
+				fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
+				len = strlen(test->name) + 1;
+				if ((n + len) > width)  {
+					fprintf(stderr, "\n");
+					n = 0;
 				}
-				fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
 				
-				ret = FWTS_ERROR;
-				goto tidy;
+				fprintf(stderr, "%s ", test->name);
+				n += len;
 			}
-
-			if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
-				fwts_list_append(tests_to_run, test);
+			fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
+			
+			ret = FWTS_ERROR;
+			goto tidy;
 		}
+
+		if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
+			fwts_list_append(tests_to_run, test);
 	}
 
 	if (fwts_list_len(tests_to_run) == 0) {

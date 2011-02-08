@@ -30,10 +30,10 @@
 #include <time.h>
 
 
-static int  s3_multiple;	/* number of s3 multiple tests to run */
-static int  s3_min_delay;	/* min time between resume and next suspend */
-static int  s3_max_delay;	/* max time between resume and next suspend */
-static float s3_delay_delta;	/* amount to add to delay between each S3 tests */
+static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
+static int  s3_min_delay = 0;		/* min time between resume and next suspend */
+static int  s3_max_delay = 30;		/* max time between resume and next suspend */
+static float s3_delay_delta = 0.5;	/* amount to add to delay between each S3 tests */
 
 static char *s3_headline(void)
 {
@@ -63,10 +63,11 @@ static int s3_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int *duration)
+static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 {
 	fwts_list *output;
 	int status;
+	int duration;
 	time_t t_start;
 	time_t t_end;
 
@@ -83,19 +84,19 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 	if (output)
 		fwts_text_list_free(output);
 
-	*duration = (int)(t_end - t_start);
+	duration = (int)(t_end - t_start);
 
-	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, *duration);
+	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
-	if ((t_end - t_start) < delay) {
+	if (duration < delay) {
 		(*errors)++;
-		fwts_failed_medium(fw, "Unexpected: S3 slept for less than %d seconds.", delay);
+		fwts_failed_medium(fw, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
-	if ((t_end - t_start) > delay*3) {
+	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*errors)++;
-		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", *duration);
+		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
 		if (s3_C1E_enabled == -1)
@@ -129,11 +130,11 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int
 	}
 }
 
-static int s3_check_log(fwts_framework *fw)
+static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 {
 	fwts_list *klog;
-	int errors = 0;
-	int oopses = 0;
+	int error;
+	int oops;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
@@ -141,66 +142,48 @@ static int s3_check_log(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
+	if (fwts_klog_pm_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_klog_firmware_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_klog_common_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_oops_check(fw, klog, &oops))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (fwts_klog_common_check(fw, NULL, klog, &errors))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (fwts_oops_check(fw, klog, &oopses))
-		fwts_log_error(fw, "Error parsing kernel log.");
+	*oopses += oops;
 
 	fwts_klog_free(klog);
 
-	if (errors + oopses > 0)
-		fwts_log_info(fw, "Found %d errors and %d oopses in kernel log.", errors, oopses);
-	else
-		fwts_passed(fw, "Found no errors in kernel log.");
-
 	return FWTS_OK;
-}
-
-static int s3_test_single(fwts_framework *fw)
-{	
-	int errors = 0;
-	int duration;
-
-	s3_do_suspend_resume(fw, &errors, 30, &duration);
-	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors doing suspend/resume.", errors);
-	else
-		fwts_passed(fw, "Found no errors doing suspend/resume.");
-
-	return s3_check_log(fw);
 }
 
 static int s3_test_multiple(fwts_framework *fw)
 {	
 	int errors = 0;
+	int oopses = 0;
 	int delay = 30;
-	int duration = 0;
 	int i;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
 
-	if (s3_multiple == 0) {
-		s3_multiple = 2;
-		fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s3-multiple=N to run more S3 cycles\n");
-	}
+	if (s3_multiple == 1)
+		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
 
 	for (i=0; i<s3_multiple; i++) {
-		int timetaken;
 		struct timeval tv;
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
 		fwts_progress(fw, ((i+1) * 100) / s3_multiple);
-		s3_do_suspend_resume(fw, &errors, delay, &duration);
 
-		timetaken = duration - delay;
-		delay = timetaken + 10;		/* Shorten test time, plus some slack */
+		s3_do_suspend_resume(fw, &errors, delay);
+		s3_check_log(fw, &errors, &oopses);
 
 		tv.tv_sec  = awake_delay / 1000;
 		tv.tv_usec = (awake_delay % 1000)*1000;
@@ -210,24 +193,19 @@ static int s3_test_multiple(fwts_framework *fw)
 		awake_delay += delta;
 		if (awake_delay > (s3_max_delay * 1000))
 			awake_delay = s3_min_delay * 1000;
-
 	}
 
-	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors doing suspend/resume.", errors);
-	else
-		fwts_passed(fw, "Found no errors doing suspend/resume.");
+	if ((errors + oopses) > 0) {
+		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).", 
+			errors, oopses, s3_multiple);
+	} else
+		fwts_passed(fw, "Found no errors doing %d suspend/resume cycle(s).", s3_multiple);
 
-	return s3_check_log(fw);
+	return FWTS_OK;
 }
 
 static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
-	s3_multiple = 0;
-	s3_min_delay = 0;
-        s3_max_delay = 30;
-        s3_delay_delta = 0.5;
-
         switch (option_char) {
         case 0:
                 switch (long_index) {
@@ -246,6 +224,10 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		}
 	}
 
+	if ((s3_multiple < 0) || (s3_multiple > 100000)) {
+		fprintf(stderr, "--s3-multiple should be 1..100000\n");
+		return FWTS_ERROR;
+	}
 	if ((s3_min_delay < 0) || (s3_min_delay > 3600)) {
 		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
 		return FWTS_ERROR;
@@ -270,8 +252,7 @@ static fwts_option s3_options[] = {
 };
 
 static fwts_framework_minor_test s3_tests[] = {
-	{ s3_test_single,   "S3 suspend/resume test (single run)." },
-	{ s3_test_multiple, "S3 suspend/resume test (multiple runs)." },
+	{ s3_test_multiple, "S3 suspend/resume test." },
 	{ NULL, NULL }
 };
 

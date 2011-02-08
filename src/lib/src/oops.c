@@ -85,6 +85,7 @@ void fwts_oops_dump(fwts_framework *fw, fwts_list_link *bug_item, int *oopses)
 int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses)
 {
 	fwts_list_link *item;
+	*oopses = 0;
 
 	if ((fw == NULL) || (oopses == NULL) || (klog == NULL))
 		return FWTS_ERROR;

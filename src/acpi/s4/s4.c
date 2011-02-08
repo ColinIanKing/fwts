@@ -28,11 +28,11 @@
 
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
-static int  s4_multiple;	/* number of S4 multiple tests to run */
-static int  s4_min_delay;	/* min time between resume and next suspend */
-static int  s4_max_delay;	/* max time between resume and next suspend */
-static float s4_delay_delta;	/* amount to add to delay between each S4 tests */
-static int  s4_sleep_delay;	/* delay between initiating S4 and wakeup */
+static int  s4_multiple = 1;		/* number of S4 multiple tests to run */
+static int  s4_min_delay = 2;		/* min time between resume and next suspend */
+static int  s4_max_delay = 4;		/* max time between resume and next suspend */
+static float s4_delay_delta = 0.5;	/* amount to add to delay between each S4 tests */
+static int  s4_sleep_delay = 90;	/* delay between initiating S4 and wakeup */
 
 static char *s4_headline(void)
 {
@@ -65,13 +65,34 @@ static int s4_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
+static void s4_check_log(fwts_framework *fw, fwts_list *klog, int *errors, int *oopses)
+{
+	int error;
+	int oops;
+
+	/* Check for kernel errors reported in the log */
+	if (fwts_klog_pm_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_klog_firmware_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_klog_common_check(fw, NULL, klog, &error))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*errors += error;
+
+	if (fwts_oops_check(fw, klog, &oops))
+		fwts_log_error(fw, "Error parsing kernel log.");
+	*oopses += oops;
+}
+
+static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses, int *failed_alloc_image)
 {	
-	int errors = 0;	
-	int oopses = 0;
 	fwts_list *output;
-	int status;
 	fwts_list *klog;
+	int status;
 
 	fwts_log_info(fw, "%s", test);
 
@@ -88,88 +109,68 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	if (output)
 		fwts_text_list_free(output);
 
-	fwts_log_info(fw, "pm-hibernate returned %d.", status);
-	
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		fwts_failed(fw, "%s", test);
 		return FWTS_ERROR;
 	}
-
-	if (fwts_klog_pm_check(fw, NULL, klog, &errors))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (fwts_klog_firmware_check(fw, NULL, klog, &errors))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (fwts_klog_common_check(fw, NULL, klog, &errors))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (fwts_oops_check(fw, klog, &oopses))
-		fwts_log_error(fw, "Error parsing kernel log.");
-
-	if (errors + oopses > 0)
-		fwts_log_info(fw, "Found %d errors and %d oopses in kernel log.", errors, oopses);
-	else
-		fwts_passed(fw, "%s", test);
+	
+	s4_check_log(fw, klog, errors, oopses);
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
 		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				   "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	} else if (status == 128) {
 		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				   "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	} else if (status > 128) {
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				   "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") > 0)
-		fwts_passed(fw, "User space processes successfully frozen.");
-	else {
+	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
 		fwts_failed_high(fw, "Failed to freeze user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") > 0)
-		fwts_passed(fw, "Remaining non-user spaces tasks successfully frozen.");
-	else {
+	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
 		fwts_failed_high(fw, "Failed to freeze remaining non-user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 
-	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") > 0) &&
-	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") > 0))
-		fwts_passed(fw, "Successfully frozen devices.");
-	else {
+	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") < 1) &&
+	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
 		fwts_failed_high(fw, "Failed to freeze devices.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") > 0)
-		fwts_passed(fw, "Allocated memory for hibernate image.");
-	else {
+	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
 		fwts_failed_high(fw, "Failed to allocate memory for hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
+		(*errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") > 0)
-		fwts_passed(fw, "Hibernate image restored successfully.");
-	else {
+	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
 		fwts_failed_high(fw, "Failed to restore hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 	
-	if (fwts_klog_regex_find(fw, klog, "Restarting tasks.*done") > 0)
-		fwts_passed(fw, "Tasks restarted successfully.");
-	else {
+	if (fwts_klog_regex_find(fw, klog, "Restarting tasks.*done") < 1) {
 		fwts_failed_high(fw, "Failed to restart tasks.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
+		(*errors)++;
 	}
 
 	fwts_klog_free(klog);
@@ -177,63 +178,20 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *failed_alloc_image)
 	return FWTS_OK;
 }
 
-
-static int s4_test1(fwts_framework *fw)
-{
-	int failed_alloc_image = 0;
-
-	if (s4_hibernate(fw, "S4 hibernate/resume test.", &failed_alloc_image) != FWTS_OK)
-		return FWTS_ERROR;
-
-	if (failed_alloc_image) {
-		int size;
-		if (fwts_get_int(FWTS_TRACING_BUFFER_SIZE, &size) != FWTS_OK) {
-			fwts_log_error(fw, "Could not get size from %s.", FWTS_TRACING_BUFFER_SIZE);
-		} else {
-			if (size > 4096) {
-				char tmp[32];
-				int ret;
-				fwts_failed_medium(fw,
-					"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
-					"may cause hibernate to fail. Programs such as ureadahead may have "
-					"set this enable fast boot and not freed up the tracing buffer.", size);
-	
-				fwts_log_info(fw, "Setting tracing buffer size to 1K for this test.");
-	
-				fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
-				failed_alloc_image = 0;
-	
-				ret = s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &failed_alloc_image);
-			
-				/* Restore tracking buffer size */
-				snprintf(tmp, sizeof(tmp), "%d", size);
-				fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
-
-				/* Still failed to allocate S4 hibernate image - abort all further testing! */
-				if (failed_alloc_image)
-					return FWTS_ABORTED;
-
-				if (ret != FWTS_OK)
-					return FWTS_ERROR;
-			}
-		}
-	}
-
-	/* We put a small delay in between test1 and test2 */
-	sleep(2);
-	return FWTS_OK;
-}
-
-static int s4_test2(fwts_framework *fw)
+static int s4_test_multiple(fwts_framework *fw)
 {
 	int i;
+	int errors = 0;
+	int oopses = 0;
 	int awake_delay = s4_min_delay * 1000;
 	int delta = (int)(s4_delay_delta * 1000.0);
+	int tracing_buffer_size = -1;
+	int ret = FWTS_OK;
+	bool retried = false;
+	char tmp[32];
 
-        if (s4_multiple == 0) {
-                s4_multiple = 2;
-                fwts_log_info(fw, "Defaulted to run 2 multiple tests, run --s4-multiple=N to run more S4 cycles\n");
-        }
+        if (s4_multiple == 1)
+                fwts_log_info(fw, "Defaulted to run 1 test, run --s4-multiple=N to run more S4 cycles\n");
 
 	for (i=0; i<s4_multiple; i++) {
 		struct timeval tv;
@@ -242,9 +200,42 @@ static int s4_test2(fwts_framework *fw)
 		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,s4_multiple);
 		fwts_progress(fw, ((i+1) * 100) / s4_multiple);
 
-		if (s4_hibernate(fw, "Multiple S4 hibernate/resume test.", &failed_alloc_image) != FWTS_OK) {
+
+		if (s4_hibernate(fw, "Multiple S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
+		}
+
+		/* Sometimes we just fail at the first S4 cycle, so
+		   shrink tracing buffer size and retry */
+		if (failed_alloc_image) {
+			if (fwts_get_int(FWTS_TRACING_BUFFER_SIZE, &tracing_buffer_size) != FWTS_OK) {
+				fwts_log_error(fw, "Could not get size from %s.", FWTS_TRACING_BUFFER_SIZE);
+			} else {
+				if ((!retried) && (tracing_buffer_size > 4096)) {
+					retried = true;
+
+					fwts_failed_medium(fw,
+						"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
+						"may cause hibernate to fail. Programs such as ureadahead may have "
+						"set this enable fast boot and not freed up the tracing buffer.", tracing_buffer_size);
+	
+					fwts_log_info(fw, "Setting tracing buffer size to 1K for subsequent tests.");
+	
+					fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
+					failed_alloc_image = 0;
+	
+					if (s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
+						ret = FWTS_ABORTED;
+						break;
+					};
+				
+					if (failed_alloc_image) {
+						ret = FWTS_ABORTED;
+						break;
+					}
+				}
+			}
 		}
 
 		tv.tv_sec  = awake_delay / 1000;
@@ -256,16 +247,25 @@ static int s4_test2(fwts_framework *fw)
 		if (awake_delay > (s4_max_delay * 1000))
 			awake_delay = s4_min_delay * 1000;
 	}
-	return FWTS_OK;
+
+	if (tracing_buffer_size > 0) {
+		/* Restore tracking buffer size */
+		snprintf(tmp, sizeof(tmp), "%d", tracing_buffer_size);
+		fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
+	}
+
+	/* Really passed or failed? */
+	if (errors + oopses > 0) {
+                fwts_log_info(fw, "Found %d errors and %d oopses doing %d hibernate/resume cycle(s).",
+			errors, oopses, s4_multiple);
+	} else
+		fwts_passed(fw, "Found no errors doing %d hibernate/resume cycle(s).", s4_multiple);
+
+	return ret;
 }
 
 static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
-	s4_multiple = 0;
-	s4_min_delay = 2;
-        s4_max_delay = 4;
-        s4_delay_delta = 0.5;
-	s4_sleep_delay = 90;
 
         switch (option_char) {
         case 0:
@@ -288,8 +288,12 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		}
 	}
 
+	if ((s4_multiple < 0) || (s4_multiple > 100000)) {
+		fprintf(stderr, "--s4-multiple be 1..100000\n");
+		return FWTS_ERROR;
+	}
 	if ((s4_sleep_delay < 10) || (s4_sleep_delay > 3600)) {
-		fprintf(stderr, "--s4-sleep_delay cannot be less than 10 or more than 1 hour!\n");
+		fprintf(stderr, "--s4-sleep-delay cannot be less than 10 or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	if ((s4_min_delay < 0) || (s4_min_delay > 3600)) {
@@ -317,8 +321,7 @@ static fwts_option s4_options[] = {
 };
 
 static fwts_framework_minor_test s4_tests[] = {
-	{ s4_test1, "S4 hibernate/resume test (single run)." },
-	{ s4_test2, "S4 hibernate/resume test (multiple runs)." },
+	{ s4_test_multiple, "S4 hibernate/resume test." },
 	{ NULL, NULL }
 };
 

@@ -109,8 +109,6 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 					"Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
 	}
 
-	fwts_log_info(fw, "pm-suspend returned status: %d.", status);
-
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		(*errors)++;

@@ -1,3 +1,10 @@
+fwts (0.21.05) natty; urgency=low
+
+  * acpi: dmar: don't free table as it's a cached copy.
+  * New upstream version 0.21.05
+
+ -- Colin King <colin.king@canonical.com>  Tue, 8 Feb 2011 13:38:31 +0000
+
 fwts (0.21.04) natty; urgency=low
 
   * s3, s4: multiple tests must run at least twice if multiples not specified.

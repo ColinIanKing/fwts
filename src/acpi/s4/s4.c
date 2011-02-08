@@ -272,7 +272,6 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
                 switch (long_index) {
 		case 0:
 			s4_multiple = atoi(optarg);	
-			printf("HERE! multiple = %d\n", s4_multiple);
 			break;
 		case 1:
 			s4_min_delay = atoi(optarg);

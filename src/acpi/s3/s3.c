@@ -228,14 +228,11 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
         s3_max_delay = 30;
         s3_delay_delta = 0.5;
 
-	printf("In S3 handler\n");
-
         switch (option_char) {
         case 0:
                 switch (long_index) {
 		case 0:
 			s3_multiple = atoi(optarg);	
-			printf("HERE! multiple = %d\n", s3_multiple);
 			break;
 		case 1:
 			s3_min_delay = atoi(optarg);

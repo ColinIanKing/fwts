@@ -29,11 +29,12 @@
 #include <unistd.h>
 #include <time.h>
 
-
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
 static int  s3_max_delay = 30;		/* max time between resume and next suspend */
 static float s3_delay_delta = 0.5;	/* amount to add to delay between each S3 tests */
+static int  s3_sleep_delay = 30;	/* time between start of suspend and wakeup */
+static bool s3_device_check = false;	/* check for device config changes */
 
 static char *s3_headline(void)
 {
@@ -66,8 +67,10 @@ static int s3_deinit(fwts_framework *fw)
 static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 {
 	fwts_list *output;
+	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
 	int duration;
+	int differences;
 	time_t t_start;
 	time_t t_end;
 
@@ -75,18 +78,31 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 
 	fwts_wakealarm_trigger(fw, delay);
 
+	if (s3_device_check)
+		fwts_hwinfo_get(fw, &hwinfo1);
 	time(&t_start);
 
 	/* Do S3 here */
 	status = fwts_pipe_exec("pm-suspend", &output);
+	fwts_text_list_free(output);
 
 	time(&t_end);
-	if (output)
-		fwts_text_list_free(output);
-
 	duration = (int)(t_end - t_start);
-
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
+
+	if (s3_device_check) {
+		sleep(15);
+		fwts_hwinfo_get(fw, &hwinfo2);
+	}
+
+	if (s3_device_check) {
+		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
+		fwts_hwinfo_free(&hwinfo1);
+		fwts_hwinfo_free(&hwinfo2);	
+	}
+
+	if (s3_device_check && (differences > 0))
+		fwts_failed_high(fw, "Found %d differences in device configuation during S3 cycle.", differences);
 
 	if (duration < delay) {
 		(*errors)++;
@@ -166,7 +182,6 @@ static int s3_test_multiple(fwts_framework *fw)
 {	
 	int errors = 0;
 	int oopses = 0;
-	int delay = 30;
 	int i;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
@@ -180,7 +195,7 @@ static int s3_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
 		fwts_progress(fw, ((i+1) * 100) / s3_multiple);
 
-		s3_do_suspend_resume(fw, &errors, delay);
+		s3_do_suspend_resume(fw, &errors, s3_sleep_delay);
 		s3_check_log(fw, &errors, &oopses);
 
 		tv.tv_sec  = awake_delay / 1000;
@@ -219,6 +234,12 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 3:
 			s3_delay_delta = atof(optarg);
 			break;
+		case 4:
+			s3_sleep_delay = atoi(optarg);
+			break;
+		case 5:
+			s3_device_check = true;
+			break;
 		}
 	}
 
@@ -238,6 +259,10 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
 		return FWTS_ERROR;
 	}
+	if ((s3_sleep_delay < 5) || (s3_sleep_delay > 3600)) {
+		fprintf(stderr, "--s3-sleep-delay cannot be less than 5 or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
 	return FWTS_OK;
 }
 
@@ -246,6 +271,8 @@ static fwts_option s3_options[] = {
 	{ "s3-min-delay", 	"", 1, "Minimum time between S3 iterations." },
 	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterations." },
 	{ "s3-delay-delta", 	"", 1, "Run S3 tests N times." },
+	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup." },
+	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add 15 seconds to allow wifi to re-associate." },
 	{ NULL, NULL, 0, NULL }
 };
 

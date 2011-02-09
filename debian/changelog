@@ -1,9 +1,11 @@
 fwts (0.21.08) natty; urgency=low
 
   * Ensure all tests log a passed/failed/skipped/aborted/infoonly state (LP: #715755)
+  * Add --s3-device-check-delay option
+  * Add --s4-device-check-delay option
   * New upstream version 0.21.08
 
- -- Colin King <colin.king@canonical.com>  Wed, 9 Feb 2011 14:43:20 +0000
+ -- Colin King <colin.king@canonical.com>  Wed, 9 Feb 2011 15:08:20 +0000
 
 fwts (0.21.07) natty; urgency=low
 

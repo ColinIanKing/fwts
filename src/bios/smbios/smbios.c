@@ -157,9 +157,9 @@ static int smbios_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "This test tries to find and sanity check the SMBIOS data structures.");
 	if (fwts_smbios_find_entry(fw, &entry, &addr) != FWTS_OK)
-		fwts_log_info(fw, "Could not find SMBIOS Table Entry Point.");
+		fwts_failed(fw, "Could not find SMBIOS Table Entry Point.");
 	else {
-		fwts_log_info(fw, "Found SMBIOS Table Entry Point at 0x%8.8x", addr);
+		fwts_passed(fw, "Found SMBIOS Table Entry Point at 0x%8.8x", addr);
 		/* TODO: Dump out table */
 	}
 

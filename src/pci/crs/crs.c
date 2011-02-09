@@ -83,7 +83,7 @@ static int crs_test1(fwts_framework *fw)
 
         if (fwts_klog_regex_find(fw, klog, "PCI: Ignoring host bridge windows from ACPI;") > 0) {
 		if (strstr(cmdline, "pci=nocrs") != NULL) {
-			fwts_log_info(fw, "Kernel was booted with pci=nocrs, Ignoring host bridge windows _CRS settings from ACPI.");
+			fwts_skipped(fw, "Kernel was booted with pci=nocrs, Ignoring host bridge windows _CRS settings from ACPI, skipping test.");
 		}
 		else {
 			if (year == 0) {
@@ -106,8 +106,7 @@ static int crs_test1(fwts_framework *fw)
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			}
 		}
-	}
-        if (fwts_klog_regex_find(fw, klog, "PCI: Using host bridge windows from ACPI;") > 0) {
+	} else if (fwts_klog_regex_find(fw, klog, "PCI: Using host bridge windows from ACPI;") > 0) {
 		if (strstr(cmdline, "pci=use_crs") != NULL) {
 			if (year == 0)  {
 				fwts_failed_medium(fw, "The BIOS does not seem to have release data, hence pci=use_crs was required.");
@@ -130,6 +129,8 @@ static int crs_test1(fwts_framework *fw)
 				    "specify the host bridge MMIO aperture using _CRS.  If this does not work "
 				    "correctly you can override this by booting with \"pci=nocrs\".", mon, day, year);
 		}
+	} else {
+		fwts_skipped(fw, "Cannot find host bridge message in kernel log, skipping test.");
 	}
 
 	fwts_list_free(klog, free);

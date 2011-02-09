@@ -182,6 +182,11 @@ time to be added onto delay between each S3 iteration.
 check differences between device configurations over a S3 cycle. Note this adds 15 seconds delay after each
 s3 resume to allow wifi to re-associate.
 .TP
+.B \-\-s3\-device\-check\-delay
+specify the time to wait while devices re-configure (e.g. wifi to re-associate, ethernet to connect..)
+before a device configuration check is run. The default is 15 seconds.  If this option is used the
+device checking is assumed so one does not also need to use the \-\-s3\-device\-check flag.
+.TP
 .B \-\-s3\-min\-delay=N
 minimum time between S3 iterations.
 .TP
@@ -206,6 +211,11 @@ time to be added onto delay between each S4 iteration.
 .B \-\-s4\-device\-check
 check differences between device configurations over a S4 cycle. Note this adds 15 seconds delay after each
 s3 resume to allow wifi to re-associate.
+.TP
+.B \-\-s4\-device\-check\-delay
+specify the time to wait while devices re-configure (e.g. wifi to re-associate, ethernet to connect..)
+before a device configuration check is run. The default is 15 seconds.  If this option is used the
+device checking is assumed so one does not also need to use the \-\-s4\-device\-check flag.
 .TP
 .B \-\-s4\-min\-delay=N
 minimum time between S4 iterations.

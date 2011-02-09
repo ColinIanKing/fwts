@@ -256,6 +256,7 @@ static int wmi_table(fwts_framework *fw, char *table, int which, char *name)
 
 static int wmi_DSDT(fwts_framework *fw)
 {
+	fwts_infoonly(fw);
 	return wmi_table(fw, "DSDT", 0, "DSDT");
 }
 
@@ -263,6 +264,7 @@ static int wmi_SSDT(fwts_framework *fw)
 {
 	int i;
 
+	fwts_infoonly(fw);
 	for (i=0; i < 16; i++) {
 		char buffer[10];
 		sprintf(buffer,"SSDT%d", i+1);

@@ -315,6 +315,8 @@ static int cmosdump_test1(fwts_framework *fw)
 	fwts_log_info_verbatum(fw, "Extended RAM address:     0x%2.2x%2.2x", data[81], data[80]);
 	fwts_log_nl(fw);
 	*/
+
+	fwts_infoonly(fw);
 	
 	return FWTS_OK;
 }

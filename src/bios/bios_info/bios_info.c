@@ -72,6 +72,8 @@ static int bios_info_test1(fwts_framework *fw)
 		}
 	}
 
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 

@@ -66,6 +66,7 @@ typedef struct {
 	uint32_t aborted;
 	uint32_t warning;
 	uint32_t skipped;
+	uint32_t infoonly;
 } fwts_results;
 
 static inline void fwts_results_zero(fwts_results *results)
@@ -76,11 +77,12 @@ static inline void fwts_results_zero(fwts_results *results)
 
 static inline void fwts_framework_summate_results(fwts_results *total, fwts_results *increment)
 {
-	total->aborted += increment->aborted;
-	total->failed  += increment->failed;
-	total->passed  += increment->passed;
-	total->warning += increment->warning;
-	total->skipped += increment->skipped;
+	total->aborted  += increment->aborted;
+	total->failed   += increment->failed;
+	total->passed   += increment->passed;
+	total->warning  += increment->warning;
+	total->skipped  += increment->skipped;
+	total->infoonly += increment->infoonly;
 }
 
 /*
@@ -174,6 +176,7 @@ void fwts_framework_skipped(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
 void fwts_framework_aborted(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
+void fwts_framework_infoonly(fwts_framework *fw);
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 
 #define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent)
@@ -198,6 +201,8 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
 #define fwts_skipped(fw, args...)	fwts_framework_skipped(fw, ## args)
 
 #define fwts_aborted(fw, args...)	fwts_framework_aborted(fw, ## args)
+
+#define fwts_infoonly(fw)		fwts_framework_infoonly(fw);
 
 static inline int fwts_tests_passed(const fwts_framework *fw)
 {

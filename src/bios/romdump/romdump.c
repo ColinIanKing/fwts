@@ -91,6 +91,8 @@ static int romdump_test1(fwts_framework *fw)
 	
 	romdump_data(fw, mem+BIOS_ROM_OFFSET, BIOS_ROM_START, BIOS_ROM_SIZE);
 
+	fwts_infoonly(fw);
+
         munmap(mem, BIOS_ROM_REGION_SIZE);
 
 	return FWTS_OK;

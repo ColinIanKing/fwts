@@ -322,6 +322,11 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 	}
 	if ((include_zero_results || (results->skipped > 0)) && (buflen > 0)) {
 		snprintf(buffer, buflen, "%s%u skipped", n > 0 ? ", " : "", results->skipped);
+		buffer += n;
+		buflen -= n;
+	}
+	if ((include_zero_results || (results->skipped > 0)) && (buflen > 0)) {
+		snprintf(buffer, buflen, "%s%u informational", n > 0 ? ", " : "", results->infoonly);
 	}
 }
 
@@ -740,6 +745,16 @@ void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
 		fwts_framework_get_env(FWTS_ABORTED_TEXT), fw->current_minor_test_num, buffer);
 	va_end(ap);
+}
+
+
+/*
+ *  fwts_framework_infoonly()
+ *	mark a test as information only 
+ */
+void fwts_framework_infoonly(fwts_framework *fw)
+{
+	fw->minor_tests.infoonly++;
 }
 
 /*

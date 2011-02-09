@@ -38,6 +38,8 @@ static int memory_mapdump_util(fwts_framework *fw)
 	fwts_memory_map_table_dump(fw, memory_mapdump_memory_map_info);
 	fwts_memory_map_table_free(memory_mapdump_memory_map_info);
 
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 

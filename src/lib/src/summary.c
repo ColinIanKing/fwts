@@ -189,8 +189,8 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 
-		fwts_log_summary_verbatum(fw, "Test           |Passed |Failed |Aborted|Warning|Skipped|");
-		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+");
+		fwts_log_summary_verbatum(fw, "Test           |Passed |Failed |Aborted|Warning|Skipped|Info   |");
+		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+-------+");
 		fwts_list_foreach(item, sorted) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test*,item);
 			if (test->was_run) {
@@ -199,18 +199,20 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 				char aborted[8];
 				char warning[8];
 				char skipped[8];
+				char infoonly[8];
 
 				fwts_summary_format_field(passed, sizeof(passed), test->results.passed);
 				fwts_summary_format_field(failed, sizeof(failed), test->results.failed);
 				fwts_summary_format_field(aborted, sizeof(aborted), test->results.aborted);
 				fwts_summary_format_field(warning, sizeof(warning), test->results.warning);
 				fwts_summary_format_field(skipped, sizeof(skipped), test->results.skipped);
+				fwts_summary_format_field(infoonly, sizeof(infoonly), test->results.infoonly);
 
-				fwts_log_summary_verbatum(fw, "%-15.15s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|",
-					test->name, passed, failed, aborted, warning, skipped);
+				fwts_log_summary_verbatum(fw, "%-15.15s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|",
+					test->name, passed, failed, aborted, warning, skipped, infoonly);
 			}
 		}
-		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+");
+		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+-------+");
 		fwts_list_free(sorted, NULL);
 	}
 	return FWTS_OK;

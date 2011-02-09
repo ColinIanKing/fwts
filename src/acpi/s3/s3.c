@@ -38,6 +38,7 @@ static float s3_delay_delta = 0.5;	/* amount to add to delay between each S3 tes
 static int  s3_sleep_delay = 30;	/* time between start of suspend and wakeup */
 static bool s3_device_check = false;	/* check for device config changes */
 static char *s3_quirks = NULL;		/* Quirks to be passed to pm-suspend */
+static int  s3_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 
 static char *s3_headline(void)
 {
@@ -115,7 +116,7 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
 	if (s3_device_check) {
-		sleep(15);
+		sleep(s3_device_check_delay);
 		fwts_hwinfo_get(fw, &hwinfo2);
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
@@ -271,6 +272,10 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 6:
 			s3_quirks = optarg;
 			break;
+		case 7:
+			s3_device_check_delay = atoi(optarg);
+			s3_device_check = true;
+			break;
 		}
 	}
 
@@ -291,7 +296,11 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		return FWTS_ERROR;
 	}
 	if ((s3_sleep_delay < 5) || (s3_sleep_delay > 3600)) {
-		fprintf(stderr, "--s3-sleep-delay cannot be less than 5 or more than 1 hour!\n");
+		fprintf(stderr, "--s3-sleep-delay cannot be less than 5 seconds or more than 1 hour!\n");
+		return FWTS_ERROR;
+	}
+	if ((s3_device_check_delay < 1) || (s3_device_check_delay > 3600)) {
+		fprintf(stderr, "--s3-device-check-delay cannot be less than 1 second or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -303,8 +312,9 @@ static fwts_option s3_options[] = {
 	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterations." },
 	{ "s3-delay-delta", 	"", 1, "Run S3 tests N times." },
 	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup." },
-	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add 15 seconds to allow wifi to re-associate." },
+	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add a default of 15 seconds to allow wifi to re-associate." },
 	{ "s3-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-suspend." },
+	{ "s3-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds." },
 	{ NULL, NULL, 0, NULL }
 };
 

@@ -1,3 +1,11 @@
+fwts (0.21.06) natty; urgency=low
+
+  * Add hwinfo device checking for s3 and s4 tests 
+  * Update man page
+  * New upstream version 0.21.06
+
+ -- Colin King <colin.king@canonical.com>  Wed, 9 Feb 2011 00:51:47 +0000
+
 fwts (0.21.05) natty; urgency=low
 
   * acpi: dmar: don't free table as it's a cached copy.

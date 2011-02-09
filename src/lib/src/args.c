@@ -285,15 +285,25 @@ char *fwts_args_comma_list(const char *arg)
         char *token;
         char *saveptr = NULL;
 	char *retstr = NULL;
+	char *tmparg;
 
-        for (tmpstr = (char*)arg; (token = strtok_r(tmpstr, ",", &saveptr)) != NULL; tmpstr = NULL) {
+	if ((tmparg = strdup(arg)) == NULL) 
+		return NULL;
+
+        for (tmpstr = tmparg; (token = strtok_r(tmpstr, ",", &saveptr)) != NULL; tmpstr = NULL) {
 		if (retstr)
-			if ((retstr = fwts_realloc_strcat(retstr, " ")) == NULL)
+			if ((retstr = fwts_realloc_strcat(retstr, " ")) == NULL) {
+				free(tmparg);
 				return NULL;
+			}
 
-		if ((retstr = fwts_realloc_strcat(retstr, token)) == NULL)
+		if ((retstr = fwts_realloc_strcat(retstr, token)) == NULL) {
+			free(tmparg);
 			return NULL;
+		}
         }	
+
+	free(tmparg);
 	
 	/* Any empty list should return an empty string and not NULL */
 	if (retstr == NULL)

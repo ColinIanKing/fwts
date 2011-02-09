@@ -94,9 +94,6 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	if (s3_device_check) {
 		sleep(15);
 		fwts_hwinfo_get(fw, &hwinfo2);
-	}
-
-	if (s3_device_check) {
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
 		fwts_hwinfo_free(&hwinfo2);	

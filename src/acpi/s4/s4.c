@@ -33,6 +33,7 @@ static int  s4_min_delay = 2;		/* min time between resume and next suspend */
 static int  s4_max_delay = 4;		/* max time between resume and next suspend */
 static float s4_delay_delta = 0.5;	/* amount to add to delay between each S4 tests */
 static int  s4_sleep_delay = 90;	/* delay between initiating S4 and wakeup */
+static bool s4_device_check = false;	/* check for device config changes */
 
 static char *s4_headline(void)
 {
@@ -92,7 +93,9 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 {	
 	fwts_list *output;
 	fwts_list *klog;
+	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
+	int differences;
 
 	fwts_log_info(fw, "%s", test);
 
@@ -102,12 +105,25 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 		return FWTS_ERROR;
 	}
 
+	if (s4_device_check)
+		fwts_hwinfo_get(fw, &hwinfo1);
+
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);
 
 	/* Do s4 here */
 	status = fwts_pipe_exec("pm-hibernate", &output);
-	if (output)
-		fwts_text_list_free(output);
+	fwts_text_list_free(output);
+
+	if (s4_device_check) {
+		sleep(15);
+		fwts_hwinfo_get(fw, &hwinfo2);
+		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
+		fwts_hwinfo_free(&hwinfo1);
+		fwts_hwinfo_free(&hwinfo2);
+
+		if (differences > 0)
+			fwts_failed_high(fw, "Found %d differences in device configuation during S4 cycle.", differences);
+	}
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
@@ -201,7 +217,7 @@ static int s4_test_multiple(fwts_framework *fw)
 		fwts_progress(fw, ((i+1) * 100) / s4_multiple);
 
 
-		if (s4_hibernate(fw, "Multiple S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
+		if (s4_hibernate(fw, "S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
 		}
@@ -285,6 +301,8 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 4:
 			s4_sleep_delay = atoi(optarg);
 			break;
+		case 5:
+			s4_device_check = true;
 		}
 	}
 
@@ -317,6 +335,7 @@ static fwts_option s4_options[] = {
 	{ "s4-max-delay",       "", 1, "Maximum time between S4 iterations." },
 	{ "s4-delay-delta",     "", 1, "Run S4 tests N times." },
 	{ "s4-sleep-delay",	"", 1, "Sleep N seconds between start of hibernate and wakeup." },
+	{ "s4-device-check",	"", 0, "Check differences between device configurations over a S4 cycle. Note we add 15 seconds to allow wifi to re-associate." },
         { NULL, NULL, 0, NULL }
 };
 

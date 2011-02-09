@@ -29,12 +29,15 @@
 #include <unistd.h>
 #include <time.h>
 
+#define PM_SUSPEND "pm-suspend"
+
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
 static int  s3_max_delay = 30;		/* max time between resume and next suspend */
 static float s3_delay_delta = 0.5;	/* amount to add to delay between each S3 tests */
 static int  s3_sleep_delay = 30;	/* time between start of suspend and wakeup */
 static bool s3_device_check = false;	/* check for device config changes */
+static char *s3_quirks = NULL;		/* Quirks to be passed to pm-suspend */
 
 static char *s3_headline(void)
 {
@@ -64,7 +67,7 @@ static int s3_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
+static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 {
 	fwts_list *output;
 	fwts_hwinfo hwinfo1, hwinfo2;
@@ -73,6 +76,8 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	int differences;
 	time_t t_start;
 	time_t t_end;
+	char *command;
+	char *quirks;
 
 	fwts_klog_clear();
 
@@ -83,9 +88,27 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 
 	time(&t_start);
 
+	/* Format up pm-suspend command with optional quirking arguments */
+	if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND)) == NULL)
+		return FWTS_OUT_OF_MEMORY;
+
+	if (s3_quirks) {
+		if ((command = fwts_realloc_strcat(command, " ")) == NULL)
+			return FWTS_OUT_OF_MEMORY;
+		if ((quirks = fwts_args_comma_list(s3_quirks)) == NULL) {
+			free(command);
+			return FWTS_OUT_OF_MEMORY;
+		}
+		if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
+			free(quirks);
+			return FWTS_OUT_OF_MEMORY;
+		}
+	}
+
 	/* Do S3 here */
-	status = fwts_pipe_exec("pm-suspend", &output);
+	status = fwts_pipe_exec(command, &output);
 	fwts_text_list_free(output);
+	free(command);
 
 	time(&t_end);
 	duration = (int)(t_end - t_start);
@@ -140,6 +163,8 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 				     "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
+
+	return FWTS_OK;
 }
 
 static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
@@ -193,7 +218,10 @@ static int s3_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
 		fwts_progress(fw, ((i+1) * 100) / s3_multiple);
 
-		s3_do_suspend_resume(fw, &errors, s3_sleep_delay);
+		if (s3_do_suspend_resume(fw, &errors, s3_sleep_delay) == FWTS_OUT_OF_MEMORY) {
+			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
+			break;
+		}
 		s3_check_log(fw, &errors, &oopses);
 
 		tv.tv_sec  = awake_delay / 1000;
@@ -238,6 +266,9 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 5:
 			s3_device_check = true;
 			break;
+		case 6:
+			s3_quirks = optarg;
+			break;
 		}
 	}
 
@@ -271,6 +302,7 @@ static fwts_option s3_options[] = {
 	{ "s3-delay-delta", 	"", 1, "Run S3 tests N times." },
 	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup." },
 	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add 15 seconds to allow wifi to re-associate." },
+	{ "s3-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-suspend." },
 	{ NULL, NULL, 0, NULL }
 };
 

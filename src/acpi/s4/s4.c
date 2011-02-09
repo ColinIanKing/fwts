@@ -37,6 +37,7 @@ static float s4_delay_delta = 0.5;	/* amount to add to delay between each S4 tes
 static int  s4_sleep_delay = 90;	/* delay between initiating S4 and wakeup */
 static bool s4_device_check = false;	/* check for device config changes */
 static char *s4_quirks = NULL;		/* Quirks to be passed to pm-hibernate */
+static int  s4_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 
 static char *s4_headline(void)
 {
@@ -138,7 +139,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	free(command);
 
 	if (s4_device_check) {
-		sleep(15);
+		sleep(s4_device_check_delay);
 		fwts_hwinfo_get(fw, &hwinfo2);
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
@@ -332,6 +333,9 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 6:
 			s4_quirks = optarg;
 			break;
+		case 7:
+			s4_device_check_delay = atoi(optarg);
+			s4_device_check = true;
 		}
 	}
 
@@ -340,19 +344,23 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		return FWTS_ERROR;
 	}
 	if ((s4_sleep_delay < 10) || (s4_sleep_delay > 3600)) {
-		fprintf(stderr, "--s4-sleep-delay cannot be less than 10 or more than 1 hour!\n");
+		fprintf(stderr, "--s4-sleep-delay cannot be less than 10 seconds or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	if ((s4_min_delay < 0) || (s4_min_delay > 3600)) {
-		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
+		fprintf(stderr, "--s4-min-delay cannot be less than zero or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	if (s4_max_delay < s4_min_delay || s4_max_delay > 3600)  {
-		fprintf(stderr, "--s3-max-delay cannot be less than --s3-min-delay or more than 1 hour!\n");
+		fprintf(stderr, "--s4-max-delay cannot be less than --s4-min-delay or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	if (s4_delay_delta <= 0.001) {
-		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
+		fprintf(stderr, "--s4-delay-delta cannot be less than 0.001\n");
+		return FWTS_ERROR;
+	}
+	if ((s4_device_check_delay < 1) || (s4_device_check_delay > 3600)) {
+		fprintf(stderr, "--s4-device-check-delay cannot be less than 1 second or more than 1 hour!\n");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -364,8 +372,9 @@ static fwts_option s4_options[] = {
 	{ "s4-max-delay",       "", 1, "Maximum time between S4 iterations." },
 	{ "s4-delay-delta",     "", 1, "Run S4 tests N times." },
 	{ "s4-sleep-delay",	"", 1, "Sleep N seconds between start of hibernate and wakeup." },
-	{ "s4-device-check",	"", 0, "Check differences between device configurations over a S4 cycle. Note we add 15 seconds to allow wifi to re-associate." },
+	{ "s4-device-check",	"", 0, "Check differences between device configurations over a S4 cycle. Note we add a default of 15 seconds to allow wifi to re-associate." },
 	{ "s4-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-hibernate." },
+	{ "s4-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds." },
         { NULL, NULL, 0, NULL }
 };
 

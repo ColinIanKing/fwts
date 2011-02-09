@@ -121,8 +121,10 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 		fwts_hwinfo_free(&hwinfo1);
 		fwts_hwinfo_free(&hwinfo2);	
 	
-		if (differences > 0)
+		if (differences > 0) {
 			fwts_failed_high(fw, "Found %d differences in device configuation during S3 cycle.", differences);
+			(*errors)++;
+		}
 	}
 
 	if (duration < delay) {

@@ -144,8 +144,10 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 		fwts_hwinfo_free(&hwinfo1);
 		fwts_hwinfo_free(&hwinfo2);
 
-		if (differences > 0)
+		if (differences > 0) {
 			fwts_failed_high(fw, "Found %d differences in device configuation during S4 cycle.", differences);
+			(*errors)++;
+		}
 	}
 
 	if ((klog = fwts_klog_read()) == NULL) {

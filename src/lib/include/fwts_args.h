@@ -41,5 +41,6 @@ int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler
 int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[]);
 void fwts_args_show_options(void);
 int fwts_args_free(void);
+char *fwts_args_comma_list(const char *arg);
 
 #endif

@@ -274,3 +274,30 @@ int fwts_args_free(void)
 	
 	return FWTS_OK;
 }
+
+/*
+ *  fwts_args_comma_list
+ *	given a comma separated list, return a string of space separated terms
+ */
+char *fwts_args_comma_list(const char *arg)
+{
+        char *tmpstr;
+        char *token;
+        char *saveptr = NULL;
+	char *retstr = NULL;
+
+        for (tmpstr = (char*)arg; (token = strtok_r(tmpstr, ",", &saveptr)) != NULL; tmpstr = NULL) {
+		if (retstr)
+			if ((retstr = fwts_realloc_strcat(retstr, " ")) == NULL)
+				return NULL;
+
+		if ((retstr = fwts_realloc_strcat(retstr, token)) == NULL)
+			return NULL;
+        }	
+	
+	/* Any empty list should return an empty string and not NULL */
+	if (retstr == NULL)
+		retstr = calloc(1, 1);
+
+	return retstr;
+}

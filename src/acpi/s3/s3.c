@@ -76,10 +76,11 @@ static void s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 
 	fwts_klog_clear();
 
-	fwts_wakealarm_trigger(fw, delay);
-
 	if (s3_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
+
+	fwts_wakealarm_trigger(fw, delay);
+
 	time(&t_start);
 
 	/* Do S3 here */

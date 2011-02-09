@@ -43,4 +43,5 @@ libfwts_la_SOURCES = \
 	microcode.c \
 	virt.c \
 	args.c \
-	tag.c
+	tag.c \
+	hwinfo.c 

@@ -64,7 +64,8 @@ static int apicinstance_test1(fwts_framework *fw)
 		snprintf(buffer, sizeof(buffer), " (or up to %d)", count);
 		fwts_log_advice(fw, "If you find any APIC issues, perhaps try using acpi_apic_instance=2%s.",
 			count > 2 ? buffer : "");
-	}
+	} else
+		fwts_passed(fw, "Found %d APIC/MADT table(s), as expected.", count);
 
 	return FWTS_OK;
 }

@@ -81,9 +81,6 @@ tables and generates DSDT.dsl and SSDTx.dsl sources.
 .B \-\-dmidecode=file
 specify the full path and filename to the the dmidecode binary.
 .TP
-.B \-\-dsdt=file
-specify DSDT file rather than reading it from the ACPI table on the machine. Deprecated.
-.TP
 .B \-d, \-\-dump
 extracts firmware data and dumps it into log files. This generates:
 .br
@@ -167,12 +164,6 @@ of all tags picked up by all the tests is output.
 .TP
 .B \-\-lspci=path
 specify the full path and filename to the the lspci binary.
-.TP
-.B \-\-no\-s3
-do not run the S3 suspend/resume tests. Deprecated, now use \-\-skip\-test=s3
-.TP
-.B \-\-no\-s4
-do not run the S4 hibernate/resume tests. Deprecated, now use \-\-skip\-test=s4
 .TP
 .B \-P, \-\-power\-states
 run S3 and S4 power state tests (s3, s4 tests)

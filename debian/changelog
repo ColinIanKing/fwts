@@ -1,3 +1,12 @@
+fwts (0.21.07) natty; urgency=low
+
+  * Add --s3-quirks option
+  * Add --s4-quirks option
+  * Update man page
+  * New upstream version 0.21.07
+
+ -- Colin King <colin.king@canonical.com>  Wed, 9 Feb 2011 11:07:02 +0000
+
 fwts (0.21.06) natty; urgency=low
 
   * Add hwinfo device checking for s3 and s4 tests 

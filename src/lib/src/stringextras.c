@@ -39,3 +39,23 @@ void fwts_chop_newline(char *str)
 	while (len > 0 && str[len-1] == ' ')
 		str[--len] = '\0';
 }
+
+/*
+ *  fwts_realloc_strcat()
+ *	append newstr to orig (allocated on the heap)
+ *	return NULL if fails, otherwise return expanded string
+ */
+char *fwts_realloc_strcat(char *orig, char *newstr)
+{
+	int newlen = strlen(newstr);
+
+	if (orig) {
+		if ((orig = realloc(orig, strlen(orig) + newlen + 1)) == NULL)
+			return NULL;
+		strcat(orig, newstr);
+	} else {
+		orig = malloc(newlen + 1);
+		strcpy(orig, newstr);
+	}
+	return orig;
+}

@@ -26,6 +26,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define PM_HIBERNATE	"pm-hibernate"
+
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
 static int  s4_multiple = 1;		/* number of S4 multiple tests to run */
@@ -34,6 +36,7 @@ static int  s4_max_delay = 4;		/* max time between resume and next suspend */
 static float s4_delay_delta = 0.5;	/* amount to add to delay between each S4 tests */
 static int  s4_sleep_delay = 90;	/* delay between initiating S4 and wakeup */
 static bool s4_device_check = false;	/* check for device config changes */
+static char *s4_quirks = NULL;		/* Quirks to be passed to pm-hibernate */
 
 static char *s4_headline(void)
 {
@@ -96,6 +99,8 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
 	int differences;
+	char *command;
+	char *quirks;
 
 	fwts_log_info(fw, "%s", test);
 
@@ -108,11 +113,29 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	if (s4_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
 
+	/* Format up pm-hibernate command with optional quirking arguments */
+	if ((command = fwts_realloc_strcat(NULL, PM_HIBERNATE)) == NULL)
+		return FWTS_OUT_OF_MEMORY;
+
+	if (s4_quirks) {
+		if ((command = fwts_realloc_strcat(command, " ")) == NULL)
+			return FWTS_OUT_OF_MEMORY;
+		if ((quirks = fwts_args_comma_list(s4_quirks)) == NULL) {
+			free(command);
+			return FWTS_OUT_OF_MEMORY;
+		}
+		if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
+			free(quirks);
+			return FWTS_OUT_OF_MEMORY;
+		}
+	}
+
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);
 
 	/* Do s4 here */
-	status = fwts_pipe_exec("pm-hibernate", &output);
+	status = fwts_pipe_exec(command, &output);
 	fwts_text_list_free(output);
+	free(command);
 
 	if (s4_device_check) {
 		sleep(15);
@@ -303,6 +326,10 @@ static int s4_options_handler(fwts_framework *fw, int argc, char * const argv[],
 			break;
 		case 5:
 			s4_device_check = true;
+			break;
+		case 6:
+			s4_quirks = optarg;
+			break;
 		}
 	}
 
@@ -336,6 +363,7 @@ static fwts_option s4_options[] = {
 	{ "s4-delay-delta",     "", 1, "Run S4 tests N times." },
 	{ "s4-sleep-delay",	"", 1, "Sleep N seconds between start of hibernate and wakeup." },
 	{ "s4-device-check",	"", 0, "Check differences between device configurations over a S4 cycle. Note we add 15 seconds to allow wifi to re-associate." },
+	{ "s4-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-hibernate." },
         { NULL, NULL, 0, NULL }
 };
 

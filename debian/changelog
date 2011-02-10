@@ -1,3 +1,12 @@
+fwts (0.21.09) natty; urgency=low
+
+  * Add more feedback during s3, s4 tests.
+  * Add better arg checking post arg parsing.
+  * Fix a bunch of typos in s3, s4 help.
+  * New upstream version 0.21.09
+
+ -- Colin King <colin.king@canonical.com>  Wed, 10 Feb 2011 15:13:22 +0000
+
 fwts (0.21.08) natty; urgency=low
 
   * Ensure all tests log a passed/failed/skipped/aborted/infoonly state (LP: #715755)

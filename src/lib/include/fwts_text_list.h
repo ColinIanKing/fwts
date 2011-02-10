@@ -22,7 +22,7 @@
 
 #include "fwts_list.h"
 
-fwts_list         *fwts_text_list_init(void);
+fwts_list         *fwts_text_list_new(void);
 void 	           fwts_text_list_free(fwts_list *list);
 void	           fwts_text_list_dump(fwts_list *list);
 char              *fwts_text_list_strstr(fwts_list *list, const char *needle);

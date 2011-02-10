@@ -24,10 +24,10 @@
 #include "fwts.h"
 
 /*
- *  fwts_text_list_init()
+ *  fwts_text_list_new()
  *	initialise a text list
  */
-fwts_list *fwts_text_list_init(void)
+fwts_list *fwts_text_list_new(void)
 {
 	return fwts_list_new();
 }

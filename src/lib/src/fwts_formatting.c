@@ -94,7 +94,7 @@ fwts_list *fwts_format_text(char *text, const int width)
 
 	fwts_list *list;
 
-	if ((list = fwts_text_list_init()) == NULL)
+	if ((list = fwts_text_list_new()) == NULL)
 		return NULL;
 
 	if ((textptr = tidied_text = format_remove_multiple_whitespaces(text)) == NULL) {

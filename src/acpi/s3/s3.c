@@ -69,7 +69,7 @@ static int s3_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
+static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int percent)
 {
 	fwts_list *output;
 	fwts_hwinfo hwinfo1, hwinfo2;
@@ -80,6 +80,7 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	time_t t_end;
 	char *command;
 	char *quirks;
+	char buffer[80];
 
 	fwts_klog_clear();
 
@@ -108,7 +109,9 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	}
 
 	/* Do S3 here */
+	fwts_progress_message(fw, percent, "(Suspending)");
 	status = fwts_pipe_exec(command, &output);
+	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
 	free(command);
 
@@ -116,8 +119,16 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 	duration = (int)(t_end - t_start);
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
+
 	if (s3_device_check) {
-		sleep(s3_device_check_delay);
+		int i;
+	
+		for (i=0;i<s3_device_check_delay;i++) {
+			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1,s3_device_check_delay);
+			fwts_progress_message(fw, percent, buffer);
+			sleep(1);
+		}
+		fwts_progress_message(fw, percent, "(Checking devices)");
 		fwts_hwinfo_get(fw, &hwinfo2);
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
@@ -134,6 +145,7 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay)
 		fwts_failed_medium(fw, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
+	fwts_progress_message(fw, percent, "(Checking for errors)");
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*errors)++;
@@ -218,24 +230,35 @@ static int s3_test_multiple(fwts_framework *fw)
 
 	for (i=0; i<s3_multiple; i++) {
 		struct timeval tv;
+		int percent = (i * 100) / s3_multiple;
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
-		fwts_progress(fw, ((i+1) * 100) / s3_multiple);
 
-		if (s3_do_suspend_resume(fw, &errors, s3_sleep_delay) == FWTS_OUT_OF_MEMORY) {
+		if (s3_do_suspend_resume(fw, &errors, s3_sleep_delay, percent) == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
 			break;
 		}
+		fwts_progress_message(fw, percent, "(Checking logs for errors)");
 		s3_check_log(fw, &errors, &oopses);
 
-		tv.tv_sec  = awake_delay / 1000;
-		tv.tv_usec = (awake_delay % 1000)*1000;
+		if (!s3_device_check) {
+			char buffer[80];
+			int i;
 
-		select(0, NULL, NULL, NULL, &tv);
+			tv.tv_sec  = 0;
+			tv.tv_usec = (awake_delay % 1000)*1000;
+			select(0, NULL, NULL, NULL, &tv);
+
+			for (i=0; i<awake_delay/1000; i++) {
+				snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1, awake_delay/1000);
+				fwts_progress_message(fw, percent, buffer);
+				sleep(1);
+			}
 		
-		awake_delay += delta;
-		if (awake_delay > (s3_max_delay * 1000))
-			awake_delay = s3_min_delay * 1000;
+			awake_delay += delta;
+			if (awake_delay > (s3_max_delay * 1000))
+				awake_delay = s3_min_delay * 1000;
+		}
 	}
 
 	if ((errors + oopses) > 0) {

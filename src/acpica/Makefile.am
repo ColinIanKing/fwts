@@ -12,9 +12,24 @@ ACPICA_COMP =   $(ACPICA_SRC)/components
 #
 AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
 
+osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
+	cat  $(ACPICA_OSL)/osunixxf.c | \
+	sed 's/^AcpiOsPrintf/__AcpiOsPrintf/' | \
+	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' | \
+	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
+	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
+	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' \
+	> osunixxf_munged.c
+
+BUILT_SOURCES = osunixxf_munged.c
+
+CLEANFILES = osunixxf_munged.c
+
 lib_LTLIBRARIES = libfwtsacpica.la
-libfwtsacpica_la_LDFLAGS = -lpthread -static
+libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
+	fwts_acpica.c \
+	osunixxf_munged.c \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \
@@ -154,5 +169,4 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utosi.c \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
-	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c \
-	$(ACPICA_OSL)/osunixxf.c
+	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c

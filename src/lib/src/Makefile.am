@@ -9,7 +9,6 @@ libfwts_la_LDFLAGS = -lpthread -ljson -static
 
 libfwts_la_SOURCES = \
 	fwts_acpi.c \
-	fwts_acpica.c \
 	fwts_acpid.c \
 	fwts_acpi_tables.c \
 	fwts_args.c \

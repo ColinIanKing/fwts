@@ -71,34 +71,35 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwtsacpica_la_LIBADD =
-am_libfwtsacpica_la_OBJECTS = dbcmds.lo dbdisply.lo dbexec.lo \
-	dbfileio.lo dbhistry.lo dbinput.lo dbstats.lo dbutils.lo \
-	dbxface.lo dmbuffer.lo dmnames.lo dmobject.lo dmopcode.lo \
-	dmresrc.lo dmresrcl.lo dmresrcs.lo dmutils.lo dmwalk.lo \
-	dsfield.lo dsinit.lo dsmethod.lo dsmthdat.lo dsobject.lo \
-	dsopcode.lo dsutils.lo dswexec.lo dswload.lo dswscope.lo \
-	dswstate.lo evevent.lo evgpe.lo evgpeblk.lo evgpeinit.lo \
-	evgpeutil.lo evxfgpe.lo evmisc.lo evregion.lo evrgnini.lo \
-	evsci.lo evxface.lo evxfevnt.lo evxfregn.lo exfield.lo \
-	exfldio.lo exmisc.lo exmutex.lo exnames.lo exoparg1.lo \
-	exoparg2.lo exoparg3.lo exoparg6.lo exprep.lo exregion.lo \
-	exresnte.lo exresolv.lo exresop.lo exstore.lo exstoren.lo \
-	exstorob.lo exsystem.lo exutils.lo exconvrt.lo excreate.lo \
-	exdump.lo exdebug.lo exconfig.lo hwacpi.lo hwgpe.lo hwpci.lo \
-	hwregs.lo hwsleep.lo hwvalid.lo hwxface.lo nsaccess.lo \
-	nsalloc.lo nsdump.lo nsdumpdv.lo nseval.lo nsinit.lo nsload.lo \
-	nsnames.lo nsobject.lo nsparse.lo nspredef.lo nsrepair.lo \
-	nsrepair2.lo nssearch.lo nsutils.lo nswalk.lo nsxfeval.lo \
-	nsxfname.lo nsxfobj.lo psargs.lo psloop.lo psopcode.lo \
-	psparse.lo psscope.lo pstree.lo psutils.lo pswalk.lo \
-	psxface.lo rsaddr.lo rscalc.lo rscreate.lo rsdump.lo rsio.lo \
-	rsinfo.lo rsirq.lo rslist.lo rsmemory.lo rsmisc.lo rsutils.lo \
-	rsxface.lo tbfadt.lo tbfind.lo tbinstal.lo tbutils.lo \
-	tbxface.lo tbxfroot.lo utalloc.lo utcache.lo utcopy.lo \
-	utdebug.lo utdelete.lo uteval.lo utglobal.lo utids.lo \
-	utinit.lo utlock.lo utmath.lo utmisc.lo utmutex.lo utobject.lo \
-	utresrc.lo utstate.lo uttrack.lo utosi.lo utxferror.lo \
-	utxface.lo aehandlers.lo osunixxf.lo
+am_libfwtsacpica_la_OBJECTS = fwts_acpica.lo osunixxf_munged.lo \
+	dbcmds.lo dbdisply.lo dbexec.lo dbfileio.lo dbhistry.lo \
+	dbinput.lo dbstats.lo dbutils.lo dbxface.lo dmbuffer.lo \
+	dmnames.lo dmobject.lo dmopcode.lo dmresrc.lo dmresrcl.lo \
+	dmresrcs.lo dmutils.lo dmwalk.lo dsfield.lo dsinit.lo \
+	dsmethod.lo dsmthdat.lo dsobject.lo dsopcode.lo dsutils.lo \
+	dswexec.lo dswload.lo dswscope.lo dswstate.lo evevent.lo \
+	evgpe.lo evgpeblk.lo evgpeinit.lo evgpeutil.lo evxfgpe.lo \
+	evmisc.lo evregion.lo evrgnini.lo evsci.lo evxface.lo \
+	evxfevnt.lo evxfregn.lo exfield.lo exfldio.lo exmisc.lo \
+	exmutex.lo exnames.lo exoparg1.lo exoparg2.lo exoparg3.lo \
+	exoparg6.lo exprep.lo exregion.lo exresnte.lo exresolv.lo \
+	exresop.lo exstore.lo exstoren.lo exstorob.lo exsystem.lo \
+	exutils.lo exconvrt.lo excreate.lo exdump.lo exdebug.lo \
+	exconfig.lo hwacpi.lo hwgpe.lo hwpci.lo hwregs.lo hwsleep.lo \
+	hwvalid.lo hwxface.lo nsaccess.lo nsalloc.lo nsdump.lo \
+	nsdumpdv.lo nseval.lo nsinit.lo nsload.lo nsnames.lo \
+	nsobject.lo nsparse.lo nspredef.lo nsrepair.lo nsrepair2.lo \
+	nssearch.lo nsutils.lo nswalk.lo nsxfeval.lo nsxfname.lo \
+	nsxfobj.lo psargs.lo psloop.lo psopcode.lo psparse.lo \
+	psscope.lo pstree.lo psutils.lo pswalk.lo psxface.lo rsaddr.lo \
+	rscalc.lo rscreate.lo rsdump.lo rsio.lo rsinfo.lo rsirq.lo \
+	rslist.lo rsmemory.lo rsmisc.lo rsutils.lo rsxface.lo \
+	tbfadt.lo tbfind.lo tbinstal.lo tbutils.lo tbxface.lo \
+	tbxfroot.lo utalloc.lo utcache.lo utcopy.lo utdebug.lo \
+	utdelete.lo uteval.lo utglobal.lo utids.lo utinit.lo utlock.lo \
+	utmath.lo utmisc.lo utmutex.lo utobject.lo utresrc.lo \
+	utstate.lo uttrack.lo utosi.lo utxferror.lo utxface.lo \
+	aehandlers.lo
 libfwtsacpica_la_OBJECTS = $(am_libfwtsacpica_la_OBJECTS)
 libfwtsacpica_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -287,9 +288,13 @@ ACPICA_COMP = $(ACPICA_SRC)/components
 # -DACPI_EXEC_APP is specific to making ACPICA for the fwts method test
 #
 AM_CPPFLAGS = -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
+BUILT_SOURCES = osunixxf_munged.c
+CLEANFILES = osunixxf_munged.c
 lib_LTLIBRARIES = libfwtsacpica.la
-libfwtsacpica_la_LDFLAGS = -lpthread -static
+libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
+	fwts_acpica.c \
+	osunixxf_munged.c \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \
@@ -429,10 +434,10 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utosi.c \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
-	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c \
-	$(ACPICA_OSL)/osunixxf.c
+	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
-all: all-recursive
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -573,6 +578,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exstorob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exsystem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exutils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpica.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hwacpi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hwgpe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hwpci.Plo@am__quote@
@@ -599,7 +605,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nsxfeval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nsxfname.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nsxfobj.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osunixxf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osunixxf_munged.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/psargs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/psloop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/psopcode.Plo@am__quote@
@@ -1649,13 +1655,6 @@ aehandlers.lo: $(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aehandlers.lo `test -f '$(ACPICA_SRC)/tools/acpiexec/aehandlers.c' || echo '$(srcdir)/'`$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
-osunixxf.lo: $(ACPICA_OSL)/osunixxf.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT osunixxf.lo -MD -MP -MF $(DEPDIR)/osunixxf.Tpo -c -o osunixxf.lo `test -f '$(ACPICA_OSL)/osunixxf.c' || echo '$(srcdir)/'`$(ACPICA_OSL)/osunixxf.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/osunixxf.Tpo $(DEPDIR)/osunixxf.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_OSL)/osunixxf.c' object='osunixxf.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o osunixxf.lo `test -f '$(ACPICA_OSL)/osunixxf.c' || echo '$(srcdir)/'`$(ACPICA_OSL)/osunixxf.c
-
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -1856,14 +1855,16 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-recursive
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile $(LTLIBRARIES)
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(libdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-recursive
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -1880,6 +1881,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -1888,6 +1890,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -1959,8 +1962,9 @@ ps-am:
 
 uninstall-am: uninstall-libLTLIBRARIES
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check \
+	ctags-recursive install install-am install-strip \
+	tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic \
@@ -1978,6 +1982,15 @@ uninstall-am: uninstall-libLTLIBRARIES
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES
 
+
+osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
+	cat  $(ACPICA_OSL)/osunixxf.c | \
+	sed 's/^AcpiOsPrintf/__AcpiOsPrintf/' | \
+	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' | \
+	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
+	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
+	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' \
+	> osunixxf_munged.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -18,6 +18,11 @@ Description: FirmWare Test Suite
 Package: libfwtsiasl1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: ACPICA core built in iasl mode
+Description: ACPICA core built for iasl functionality
  This is the ACPICA core built into a library to support iasl functionality.
 
+Package: libfwtsacpica1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: ACPICA core built for acpiexec functionality
+ This is the ACPICA core built into a library to support acpiexec functionality.

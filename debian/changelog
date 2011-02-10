@@ -1,3 +1,10 @@
+fwts (0.21.10) natty; urgency=low
+
+  * Extend progress feedback.
+  * New upstream version 0.21.10
+
+ -- Colin King <colin.king@canonical.com>  Wed, 10 Feb 2011 15:32:12 +0000
+
 fwts (0.21.09) natty; urgency=low
 
   * Add more feedback during s3, s4 tests.

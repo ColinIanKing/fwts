@@ -21,6 +21,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_hwinfo_get()
+ *	gather H/W information 
+ */
 int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 {
 	fwts_pipe_exec("lspci | grep Network", &hwinfo->network);
@@ -35,6 +39,10 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_hwinfo_list_dump()
+ *	dump out a list
+ */
 static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
 {
 	fwts_list_link *item;
@@ -49,6 +57,10 @@ static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
 	}
 }
 
+/*
+ *  fwts_hwinfo_lists_dump()
+ *	dump out contents of two different lists
+ */
 static void fwts_hwinfo_lists_dump(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message)
 {
 
@@ -59,6 +71,10 @@ static void fwts_hwinfo_lists_dump(fwts_framework *fw, fwts_list *l1, fwts_list 
 	fwts_log_nl(fw);
 }
 
+/*
+ *  fwts_hwinfo_lists_differ()
+ *	check lists to see if their contents differ, return 1 for differ, 0 for match
+ */
 static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
 {
 	fwts_list_link *item1;
@@ -90,6 +106,10 @@ static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
 		return 1;
 }
 
+/*
+ *  fwts_hwinfo_compare()
+ *	check for differences in a list and if any found, dump out both lists
+ */
 static void fwts_hwinfo_lists_compare(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message, int *differences)
 {
 	if (fwts_hwinfo_lists_differ(l1, l2)) {
@@ -98,6 +118,10 @@ static void fwts_hwinfo_lists_compare(fwts_framework *fw, fwts_list *l1, fwts_li
 	}
 }
 
+/*
+ *  fwts_hwinfo_compare()
+ *	compare data in each hwinfo list, produce a diff comparison output
+ */
 void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *hwinfo2, int *differences)
 {
 	*differences = 0;
@@ -112,6 +136,10 @@ void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *
 	fwts_hwinfo_lists_compare(fw, hwinfo1->pactl, hwinfo2->pactl, "Pulse Audio Sink", differences);
 }
 
+/*
+ *  fwts_hwinfo_free()
+ *	free hwinfo lists
+ */
 int fwts_hwinfo_free(fwts_hwinfo *hwinfo)
 {
 	if (hwinfo == NULL)

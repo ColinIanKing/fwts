@@ -24,10 +24,10 @@
 #include "fwts.h"
 
 /*
- *  fwts_list_init()
+ *  fwts_list_new()
  *	allocate and initialise a list header, return NULL if failed
  */
-fwts_list *fwts_list_init(void)
+fwts_list *fwts_list_new(void)
 {
 	fwts_list *list;
 

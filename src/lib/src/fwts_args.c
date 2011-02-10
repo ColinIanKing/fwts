@@ -46,7 +46,7 @@ static int	 total_options;
  */
 int fwts_args_init(void)
 {
-	if ((options_list = fwts_list_init()) == NULL) 
+	if ((options_list = fwts_list_new()) == NULL) 
 		return FWTS_ERROR;
 
 	total_options = 0;
@@ -218,7 +218,7 @@ void fwts_args_show_options(void)
 	fwts_list_link *item;
 	fwts_list *sorted_options;
 
-	sorted_options = fwts_list_init();
+	sorted_options = fwts_list_new();
 
 	width = fwts_tty_width(fileno(stderr), FWTS_MIN_TTY_WIDTH);
 	if ((width - (FWTS_ARGS_WIDTH + 1)) < 0)

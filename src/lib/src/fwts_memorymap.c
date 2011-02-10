@@ -231,7 +231,7 @@ fwts_list *fwts_memory_map_table_load_from_klog(fwts_framework *fw)
 	if ((klog = fwts_klog_read()) == NULL)
 		return NULL;
 
-	if ((memory_map_list = fwts_list_init()) == NULL)
+	if ((memory_map_list = fwts_list_new()) == NULL)
 		return NULL;
 	
 	fwts_list_iterate(klog, fwts_memory_map_dmesg_info, memory_map_list);
@@ -295,7 +295,7 @@ fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 	if ((dir = opendir("/sys/firmware/memmap/")) == NULL)
 		return fwts_memory_map_table_load_from_klog(fw);
 
-	if ((memory_map_list = fwts_list_init()) == NULL) {
+	if ((memory_map_list = fwts_list_new()) == NULL) {
 		closedir(dir);
 		return NULL;
 	}

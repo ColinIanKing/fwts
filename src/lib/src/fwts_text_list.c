@@ -29,7 +29,7 @@
  */
 fwts_list *fwts_text_list_init(void)
 {
-	return fwts_list_init();
+	return fwts_list_new();
 }
 
 /*
@@ -103,7 +103,7 @@ fwts_list *fwts_list_from_text(const char *text)
 	if (text == NULL)
 		return NULL;
 
-	if ((list = fwts_list_init()) == NULL)
+	if ((list = fwts_list_new()) == NULL)
 		return NULL;
 
 	ptr = (char*)text;

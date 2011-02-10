@@ -59,7 +59,7 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 #define fwts_list_null(list)	\
 		((list) == NULL)
 
-fwts_list         *fwts_list_init(void);
+fwts_list         *fwts_list_new(void);
 int 		   fwts_list_len(fwts_list *list);
 void               fwts_list_free(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, void *private);

@@ -44,7 +44,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 	char path[PATH_MAX];
 	fwts_list *keymap_list;
 
-	if ((keymap_list = fwts_list_init()) == NULL)
+	if ((keymap_list = fwts_list_new()) == NULL)
 		return NULL;
 	
 	snprintf(path, sizeof(path), "%s/%s", FWTS_KEYMAP_PATH, machine);

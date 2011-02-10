@@ -89,7 +89,7 @@ static int get_mtrrs(void)
 	
 	memset(line, 0, 4096);
 
-	mtrr_list = fwts_list_init();
+	mtrr_list = fwts_list_new();
 
 	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0)
 		return FWTS_ERROR;
@@ -176,7 +176,7 @@ static fwts_list *get_klog_bios_mtrr(void)
 	fwts_list_link *item;
 	int scan = 0;
 
-	if ((mtrr_bios_list = fwts_list_init()) == NULL)
+	if ((mtrr_bios_list = fwts_list_new()) == NULL)
 		return NULL;
 
 	fwts_list_foreach(item, klog) {

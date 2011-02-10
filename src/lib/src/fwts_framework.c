@@ -156,7 +156,7 @@ void fwts_framework_test_add(const char *name,
 	}
 
 	if (fwts_framework_test_list == NULL) {
-		fwts_framework_test_list = fwts_list_init();
+		fwts_framework_test_list = fwts_list_new();
 		if (fwts_framework_test_list == NULL) {
 			fprintf(stderr, "FATAL: Could not allocate memory setting up test framework\n");
 			exit(EXIT_FAILURE);
@@ -233,7 +233,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		   category go and dump name and purpose of tests */
 		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
 		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
-			if ((sorted = fwts_list_init()) == NULL) {
+			if ((sorted = fwts_list_new()) == NULL) {
 				fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
 				exit(EXIT_FAILURE);
 			}
@@ -493,7 +493,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 	fw->current_major_test = test;
 	fw->current_minor_test_name = "";
-	fw->test_taglist = fwts_list_init();
+	fw->test_taglist = fwts_list_new();
 
 	test->was_run = true;
 	fw->total_run++;
@@ -1104,7 +1104,7 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
 		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 
-	fw->total_taglist = fwts_list_init();
+	fw->total_taglist = fwts_list_new();
 
 	fwts_summary_init();
 
@@ -1113,8 +1113,8 @@ int fwts_framework_args(const int argc, char **argv)
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
 	fwts_framework_strdup(&fw->json_data_path, FWTS_JSON_DATA_PATH);
 
-	tests_to_run  = fwts_list_init();
-	tests_to_skip = fwts_list_init();
+	tests_to_run  = fwts_list_new();
+	tests_to_skip = fwts_list_new();
 
 	if ((tests_to_run == NULL) || (tests_to_skip == NULL)) {
 		fwts_log_error(fw, "Run out of memory preparing to run tests.");

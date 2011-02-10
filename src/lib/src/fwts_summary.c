@@ -62,7 +62,7 @@ int fwts_summary_init(void)
 
 	/* initialise list of summary items for all error levels */
 	for (i=0;i<SUMMARY_MAX;i++)
-		if ((fwts_summaries[i] = fwts_list_init()) == NULL) {
+		if ((fwts_summaries[i] = fwts_list_new()) == NULL) {
 			fwts_summary_deinit();
 			return FWTS_ERROR;
 		}
@@ -185,7 +185,7 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 	}
 
 	if (fw->total_run > 0) {		
-		sorted = fwts_list_init();
+		sorted = fwts_list_new();
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 

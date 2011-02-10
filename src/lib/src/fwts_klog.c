@@ -118,7 +118,7 @@ int fwts_klog_scan(fwts_framework *fw,
 	if (!klog)
 		return FWTS_ERROR;
 
-	if ((klog_reduced = fwts_list_init()) == NULL)
+	if ((klog_reduced = fwts_list_new()) == NULL)
 		return FWTS_ERROR;
 
 	/*

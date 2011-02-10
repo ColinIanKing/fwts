@@ -691,7 +691,7 @@ fwts_list *fwts_acpica_get_object_names(int type)
 {
 	fwts_list *list;
 
-	if ((list = fwts_list_init()) != NULL)
+	if ((list = fwts_list_new()) != NULL)
 		AcpiWalkNamespace (type, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,	
 			fwts_acpi_walk_for_object_names, NULL, list, NULL);
 		

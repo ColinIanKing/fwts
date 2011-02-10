@@ -168,7 +168,7 @@ static int microcode_test1(fwts_framework *fw)
 		"microcode is important to have all the required "
 		"features and errata updates for the processor.");
 
-	if ((cpus = fwts_list_init()) == NULL) {
+	if ((cpus = fwts_list_new()) == NULL) {
 		fwts_log_error(fw, "Cannot allocate memory.");
 		return FWTS_ERROR;
 	}

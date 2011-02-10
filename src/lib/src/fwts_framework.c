@@ -183,7 +183,7 @@ void fwts_framework_test_add(const char *name,
 
 	/* Add any options and handler, if they exists */
 	if (ops->options && ops->options_handler)
-		fwts_args_add_options(ops->options, ops->options_handler);
+		fwts_args_add_options(ops->options, ops->options_handler, ops->options_check);
 }
 
 /*
@@ -1096,7 +1096,7 @@ int fwts_framework_args(const int argc, char **argv)
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
 
-	fwts_args_add_options(fwts_framework_options, fwts_framework_options_handler);
+	fwts_args_add_options(fwts_framework_options, fwts_framework_options_handler, NULL);
 
 	fw->firmware_type = fwts_firmware_detect();
 

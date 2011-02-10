@@ -35,6 +35,7 @@ typedef struct {
 	fwts_option     *options;		/* options array */
 	int             num_options;		/* number of options */
 	fwts_args_optarg_handler optarg_handler;/* options handler */
+	fwts_args_optarg_check   optarg_check;	/* options checker */
 } fwts_options_table;
 
 static fwts_list *options_list;
@@ -58,7 +59,7 @@ int fwts_args_init(void)
  *  fwts_args_add_options()
  *	add a table of options and handler for these options
  */
-int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler)
+int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler, fwts_args_optarg_check check)
 {	
 	int n;
 	fwts_options_table *options_table;
@@ -77,6 +78,7 @@ int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler
 	options_table->num_options = n;
 	options_table->options = options;
 	options_table->optarg_handler = handler;
+	options_table->optarg_check = check;
 
 	fwts_list_append(options_list, options_table);
 
@@ -161,10 +163,21 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 			}
 		}
 	}
+
+	/* We've collected all the args, now sanity check the values */
+
+	fwts_list_foreach(item, options_list) {
+		options_table = fwts_list_data(fwts_options_table *, item);
+		if (options_table->optarg_check != NULL) {
+			ret = options_table->optarg_check(fw); 
+			if (ret != FWTS_OK)
+				break;
+		}
+	}
 exit:
 	free(short_options);
 	free(long_options);
-	
+
 	return ret;
 }
 

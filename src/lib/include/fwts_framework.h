@@ -147,6 +147,7 @@ typedef struct fwts_framework_ops {
 	int (*getopts)(fwts_framework *, int argc, char **argv);	/* Arg handling */
 	fwts_option *options;
 	fwts_args_optarg_handler options_handler;
+	fwts_args_optarg_check   options_check;
 	fwts_framework_minor_test *minor_tests;	/* NULL terminated array of minor tests to run */
 	int total_tests;			/* Number of tests to run */
 } fwts_framework_ops;

@@ -336,12 +336,15 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
  *	dialog --guage
  *
  */
-void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
+void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, const char *message)
 {
 	float major_percent;
 	float minor_percent;
 	float process_percent;
 	float progress;
+	int width = fwts_tty_width(fileno(stderr), 80);
+	if (width > 256)
+		width = 256;
 
 	if (percent >=0 && percent <=100)
 		fw->minor_test_progress = percent;
@@ -357,13 +360,15 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent)
 	/* Feedback required? */
 	if (fw->show_progress) {
 		int percent;
-		char buf[55];
+		char buf[1024];
+		char truncbuf[256];
 
-		fwts_framework_strtrunc(buf, fw->current_minor_test_name, sizeof(buf));
+		snprintf(buf, sizeof(buf), "%s %s",fw->current_minor_test_name, message);
+		fwts_framework_strtrunc(truncbuf, buf, width-9);
 
 		percent = (100 * (fw->current_minor_test_num-1) / fw->current_major_test->ops->total_tests) +
 			  (fw->minor_test_progress / fw->current_major_test->ops->total_tests);
-		fprintf(stderr, "  %-55.55s: %3.0f%%\r", buf, progress);
+		fprintf(stderr, "  %-*.*s: %3.0f%%\r", width-9, width-9, truncbuf, progress);
 		fflush(stderr);
 	}
 
@@ -522,7 +527,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		}
 	}
 
-	fwts_framework_minor_test_progress(fw, 0);
+	fwts_framework_minor_test_progress(fw, 0, "");
 
 	if (test->ops->init) {
 		int ret;
@@ -561,7 +566,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 				fw->current_minor_test_num,
 				test->ops->total_tests, minor_test->name);
 
-		fwts_framework_minor_test_progress(fw, 0);
+		fwts_framework_minor_test_progress(fw, 0, "");
 		ret = (*minor_test->test_func)(fw);
 
 		/* Something went horribly wrong, abort all other tests too */
@@ -572,7 +577,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			}
 			break;
 		}
-		fwts_framework_minor_test_progress(fw, 100);
+		fwts_framework_minor_test_progress(fw, 100, "");
 		fwts_framework_summate_results(&fw->current_major_test->results, &fw->minor_tests);
 
 		if (fw->show_progress) {

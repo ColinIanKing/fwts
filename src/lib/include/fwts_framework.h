@@ -178,9 +178,11 @@ void fwts_framework_skipped(fwts_framework *, const char *fmt, ...)
 void fwts_framework_aborted(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
 void fwts_framework_infoonly(fwts_framework *fw);
-void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent);
+void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, const char *message);
 
-#define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent)
+#define fwts_progress(fw, percent)	fwts_framework_minor_test_progress(fw, percent, "")
+#define fwts_progress_message(fw, percent, message)	\
+	fwts_framework_minor_test_progress(fw, percent, message);
 
 #define fwts_passed(fw, args...)	fwts_framework_passed(fw, ## args)
 #define fwts_failed(fw, args...)	fwts_framework_failed(fw, LOG_LEVEL_MEDIUM, ## args)

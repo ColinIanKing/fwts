@@ -39,6 +39,7 @@ static int  s3_sleep_delay = 30;	/* time between start of suspend and wakeup */
 static bool s3_device_check = false;	/* check for device config changes */
 static char *s3_quirks = NULL;		/* Quirks to be passed to pm-suspend */
 static int  s3_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
+static bool s3_min_max_delay = false;
 
 static char *s3_headline(void)
 {
@@ -246,6 +247,39 @@ static int s3_test_multiple(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int s3_options_check(fwts_framework *fw)
+{
+	if ((s3_multiple < 0) || (s3_multiple > 100000)) {
+		fprintf(stderr, "--s3-multiple is %d, it should be 1..100000\n", s3_multiple);
+		return FWTS_ERROR;
+	}
+	if ((s3_min_delay < 0) || (s3_min_delay > 3600)) {
+		fprintf(stderr, "--s3-min-delay is %d, it cannot be less than zero or more than 1 hour!\n", s3_min_delay);
+		return FWTS_ERROR;
+	}
+	if (s3_max_delay < s3_min_delay || s3_max_delay > 3600)  {
+		fprintf(stderr, "--s3-max-delay is %d, it cannot be less than --s3-min-delay or more than 1 hour!\n", s3_max_delay);
+		return FWTS_ERROR;
+	}
+	if (s3_delay_delta <= 0.001) {
+		fprintf(stderr, "--s3-delay-delta is %f, it cannot be less than 0.001\n", s3_delay_delta);
+		return FWTS_ERROR;
+	}
+	if ((s3_sleep_delay < 5) || (s3_sleep_delay > 3600)) {
+		fprintf(stderr, "--s3-sleep-delay is %d, it cannot be less than 5 seconds or more than 1 hour!\n", s3_sleep_delay);
+		return FWTS_ERROR;
+	}
+	if ((s3_device_check_delay < 1) || (s3_device_check_delay > 3600)) {
+		fprintf(stderr, "--s3-device-check-delay is %d, it cannot be less than 1 second or more than 1 hour!\n", s3_device_check_delay);
+		return FWTS_ERROR;
+	}
+	if (s3_min_max_delay & s3_device_check) {	
+		fprintf(stderr, "Cannot use --s3-min-delay, --s3-max-delay, --s3-delay-delta as well as --s3-device-check, --s3-device-check-delay.\n");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
         switch (option_char) {
@@ -256,12 +290,15 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 			break;
 		case 1:
 			s3_min_delay = atoi(optarg);
+			s3_min_max_delay = true;
 			break;
 		case 2:
 			s3_max_delay = atoi(optarg);
+			s3_min_max_delay = true;
 			break;
 		case 3:
 			s3_delay_delta = atof(optarg);
+			s3_min_max_delay = true;
 			break;
 		case 4:
 			s3_sleep_delay = atoi(optarg);
@@ -278,43 +315,18 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 			break;
 		}
 	}
-
-	if ((s3_multiple < 0) || (s3_multiple > 100000)) {
-		fprintf(stderr, "--s3-multiple should be 1..100000\n");
-		return FWTS_ERROR;
-	}
-	if ((s3_min_delay < 0) || (s3_min_delay > 3600)) {
-		fprintf(stderr, "--s3-min-delay cannot be less than zero or more than 1 hour!\n");
-		return FWTS_ERROR;
-	}
-	if (s3_max_delay < s3_min_delay || s3_max_delay > 3600)  {
-		fprintf(stderr, "--s3-max-delay cannot be less than --s3-min-delay or more than 1 hour!\n");
-		return FWTS_ERROR;
-	}
-	if (s3_delay_delta <= 0.001) {
-		fprintf(stderr, "--s3-delay-delta cannot be less than 0.001\n");
-		return FWTS_ERROR;
-	}
-	if ((s3_sleep_delay < 5) || (s3_sleep_delay > 3600)) {
-		fprintf(stderr, "--s3-sleep-delay cannot be less than 5 seconds or more than 1 hour!\n");
-		return FWTS_ERROR;
-	}
-	if ((s3_device_check_delay < 1) || (s3_device_check_delay > 3600)) {
-		fprintf(stderr, "--s3-device-check-delay cannot be less than 1 second or more than 1 hour!\n");
-		return FWTS_ERROR;
-	}
 	return FWTS_OK;
 }
 
 static fwts_option s3_options[] = {
-	{ "s3-multiple", 	"", 1, "Time to be added to delay between S3 iterations." },
-	{ "s3-min-delay", 	"", 1, "Minimum time between S3 iterations." },
-	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterations." },
-	{ "s3-delay-delta", 	"", 1, "Run S3 tests N times." },
-	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup." },
-	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add a default of 15 seconds to allow wifi to re-associate." },
+	{ "s3-multiple", 	"", 1, "Run S3 tests multiple times, e.g. --s3-multiple=10." },
+	{ "s3-min-delay", 	"", 1, "Minimum time between S3 iterations, e.g. --s3-min-delay=10" },
+	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterationsm, e.g. --s3-max-delay=20" },
+	{ "s3-delay-delta", 	"", 1, "Time to be added to delay between S3 iterations. Used in conjunction with --s3-min-delay and --s3-max-delay, e.g. --s3-delay-delta=2.5" },
+	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup, e.g. --s3-sleep-delay=60" },
+	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add a default of 15 seconds to allow wifi to re-associate.  Cannot be used with --s3-min-delay, --s3-max-delay and --s3-delay-delta." },
 	{ "s3-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-suspend." },
-	{ "s3-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds." },
+	{ "s3-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds, e.g. --s3-device-check-delay=20" },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -330,6 +342,7 @@ static fwts_framework_ops s3_ops = {
 	.minor_tests = s3_tests,
 	.options     = s3_options,
 	.options_handler = s3_options_handler,
+	.options_check = s3_options_check,
 };
 
 FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);

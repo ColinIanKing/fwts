@@ -31,8 +31,8 @@
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
 static int  s4_multiple = 1;		/* number of S4 multiple tests to run */
-static int  s4_min_delay = 2;		/* min time between resume and next hibernate */
-static int  s4_max_delay = 4;		/* max time between resume and next hibernate */
+static int  s4_min_delay = 0;		/* min time between resume and next hibernate */
+static int  s4_max_delay = 30;		/* max time between resume and next hibernate */
 static float s4_delay_delta = 0.5;	/* amount to add to delay between each S4 tests */
 static int  s4_sleep_delay = 90;	/* delay between initiating S4 and wakeup */
 static bool s4_device_check = false;	/* check for device config changes */
@@ -94,7 +94,7 @@ static void s4_check_log(fwts_framework *fw, fwts_list *klog, int *errors, int *
 	*oopses += oops;
 }
 
-static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses, int *failed_alloc_image)
+static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses, int *failed_alloc_image, int percent)
 {	
 	fwts_list *output;
 	fwts_list *klog;
@@ -103,6 +103,7 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	int differences;
 	char *command;
 	char *quirks;
+	char buffer[80];
 
 	fwts_log_info(fw, "%s", test);
 
@@ -135,12 +136,21 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);
 
 	/* Do s4 here */
+	fwts_progress_message(fw, percent, "(Hibernating)");
 	status = fwts_pipe_exec(command, &output);
+	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
 	free(command);
 
 	if (s4_device_check) {
-		sleep(s4_device_check_delay);
+		int i;
+
+		for (i=0;i<s4_device_check_delay;i++) {
+			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1, s4_device_check_delay);
+			fwts_progress_message(fw, percent, buffer);
+			sleep(1);
+		}
+		fwts_progress_message(fw, percent, "(Checking devices)");
 		fwts_hwinfo_get(fw, &hwinfo2);
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
@@ -151,6 +161,8 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 			(*errors)++;
 		}
 	}
+
+	fwts_progress_message(fw, percent, "(Checking for errors)");
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
@@ -239,12 +251,11 @@ static int s4_test_multiple(fwts_framework *fw)
 	for (i=0; i<s4_multiple; i++) {
 		struct timeval tv;
 		int failed_alloc_image = 0;
+		int percent = (i * 100) / s4_multiple;
 
 		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,s4_multiple);
-		fwts_progress(fw, ((i+1) * 100) / s4_multiple);
 
-
-		if (s4_hibernate(fw, "S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
+		if (s4_hibernate(fw, "S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image, percent) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
 		}
@@ -268,7 +279,7 @@ static int s4_test_multiple(fwts_framework *fw)
 					fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
 					failed_alloc_image = 0;
 	
-					if (s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &errors, &oopses, &failed_alloc_image) != FWTS_OK) {
+					if (s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &errors, &oopses, &failed_alloc_image, percent) != FWTS_OK) {
 						ret = FWTS_ABORTED;
 						break;
 					};
@@ -281,14 +292,24 @@ static int s4_test_multiple(fwts_framework *fw)
 			}
 		}
 
-		tv.tv_sec  = awake_delay / 1000;
-		tv.tv_usec = (awake_delay % 1000)*1000;
+		if (!s4_device_check) {
+			char buffer[80];
+			int i;
 
-		select(0, NULL, NULL, NULL, &tv);
+			tv.tv_sec  = 0;
+			tv.tv_usec = (awake_delay % 1000)*1000;
+			select(0, NULL, NULL, NULL, &tv);
+		
+			for (i=0; i<awake_delay/1000; i++) {
+				snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1, awake_delay/1000);
+				fwts_progress_message(fw, percent, buffer);
+				sleep(1);
+			}
 
-		awake_delay += delta;
-		if (awake_delay > (s4_max_delay * 1000))
-			awake_delay = s4_min_delay * 1000;
+			awake_delay += delta;
+			if (awake_delay > (s4_max_delay * 1000))
+				awake_delay = s4_min_delay * 1000;
+		}
 	}
 
 	if (tracing_buffer_size > 0) {

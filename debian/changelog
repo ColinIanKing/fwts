@@ -1,9 +1,17 @@
+fwts (0.21.11) natty; urgency=low
+
+  * Fix skipped message truncation
+  * Make static libs into shared libs
+  * New upstream version 0.21.11
+
+ -- Colin King <colin.king@canonical.com>  Fri, 11 Feb 2011 22:49:40 +0000
+
 fwts (0.21.10) natty; urgency=low
 
   * Extend progress feedback.
   * New upstream version 0.21.10
 
- -- Colin King <colin.king@canonical.com>  Wed, 10 Feb 2011 15:32:12 +0000
+ -- Colin King <colin.king@canonical.com>  Thu, 10 Feb 2011 18:33:39 +0000
 
 fwts (0.21.09) natty; urgency=low
 
@@ -12,7 +20,7 @@ fwts (0.21.09) natty; urgency=low
   * Fix a bunch of typos in s3, s4 help.
   * New upstream version 0.21.09
 
- -- Colin King <colin.king@canonical.com>  Wed, 10 Feb 2011 15:13:22 +0000
+ -- Colin King <colin.king@canonical.com>  Thu, 10 Feb 2011 15:13:22 +0000
 
 fwts (0.21.08) natty; urgency=low
 

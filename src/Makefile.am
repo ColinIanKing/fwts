@@ -54,10 +54,11 @@ fwts_SOURCES = main.c \
 	kernel/oops/oops.c \
 	uefi/uefidump/uefidump.c
 
+fwts_LDFLAGS = -ljson -lm
+
 fwts_LDADD = \
 	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
-	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la \
-	-ljson -lm
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
 
 man_MANS = ../doc/fwts.1

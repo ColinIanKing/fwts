@@ -71,6 +71,9 @@ fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
 	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
+fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(fwts_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -320,11 +323,11 @@ fwts_SOURCES = main.c \
 	kernel/oops/oops.c \
 	uefi/uefidump/uefidump.c
 
+fwts_LDFLAGS = -ljson -lm
 fwts_LDADD = \
 	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
-	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la \
-	-ljson
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
 
 man_MANS = ../doc/fwts.1
 all: all-recursive
@@ -406,7 +409,7 @@ clean-binPROGRAMS:
 	rm -f $$list
 fwts$(EXEEXT): $(fwts_OBJECTS) $(fwts_DEPENDENCIES) 
 	@rm -f fwts$(EXEEXT)
-	$(LINK) $(fwts_OBJECTS) $(fwts_LDADD) $(LIBS)
+	$(fwts_LINK) $(fwts_OBJECTS) $(fwts_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

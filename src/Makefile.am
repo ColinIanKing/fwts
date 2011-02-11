@@ -1,7 +1,6 @@
 SUBDIRS = lib acpica
  
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
-AM_LDFLAGS = -Xlinker --allow-multiple-definition
 
 bin_PROGRAMS = fwts
 fwts_SOURCES = main.c \
@@ -59,6 +58,6 @@ fwts_LDADD = \
 	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
 	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
 	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la \
-	-ljson -lm -lpcre -lpthread
+	-ljson -lm
 
 man_MANS = ../doc/fwts.1

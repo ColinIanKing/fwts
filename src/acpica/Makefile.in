@@ -70,7 +70,8 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libfwtsacpica_la_LIBADD =
+libfwtsacpica_la_DEPENDENCIES =  \
+	$(top_srcdir)/src/lib/src/.libs/libfwts.la
 am_libfwtsacpica_la_OBJECTS = fwts_acpica.lo osunixxf_munged.lo \
 	dbcmds.lo dbdisply.lo dbexec.lo dbfileio.lo dbhistry.lo \
 	dbinput.lo dbstats.lo dbutils.lo dbxface.lo dmbuffer.lo \
@@ -435,6 +436,9 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
+
+libfwtsacpica_la_LIBADD = \
+	$(top_srcdir)/src/lib/src/.libs/libfwts.la
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

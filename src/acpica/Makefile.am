@@ -170,3 +170,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
+
+libfwtsacpica_la_LIBADD = \
+	$(top_srcdir)/src/lib/src/.libs/libfwts.la
+

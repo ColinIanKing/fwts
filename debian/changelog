@@ -1,3 +1,10 @@
+fwts (0.21.12) natty; urgency=low
+
+  * Print informational count when non-zero
+  * New upstream version 0.21.12
+
+ -- Colin King <colin.king@canonical.com>  Fri, 11 Feb 2011 23:29:00 +0000
+
 fwts (0.21.11) natty; urgency=low
 
   * Fix skipped message truncation

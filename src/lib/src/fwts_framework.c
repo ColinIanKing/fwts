@@ -321,7 +321,7 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 		buflen -= n;
 	}
 	if ((include_zero_results || (results->skipped > 0)) && (buflen > 0)) {
-		snprintf(buffer, buflen, "%s%u skipped", n > 0 ? ", " : "", results->skipped);
+		n = snprintf(buffer, buflen, "%s%u skipped", n > 0 ? ", " : "", results->skipped);
 		buffer += n;
 		buflen -= n;
 	}

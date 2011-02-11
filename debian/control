@@ -26,3 +26,9 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: ACPICA core built for acpiexec functionality
  This is the ACPICA core built into a library to support acpiexec functionality.
+
+Package: libfwts1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: fwts core library
+ This is the fwts core library.

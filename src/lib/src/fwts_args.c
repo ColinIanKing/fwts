@@ -38,8 +38,9 @@ typedef struct {
 	fwts_args_optarg_check   optarg_check;	/* options checker */
 } fwts_options_table;
 
-static fwts_list *options_list;
+static fwts_list options_list;
 static int	 total_options;
+static bool	 options_init = false;
 
 /*
  *  fwts_args_init()
@@ -47,10 +48,11 @@ static int	 total_options;
  */
 int fwts_args_init(void)
 {
-	if ((options_list = fwts_list_new()) == NULL) 
-		return FWTS_ERROR;
-
-	total_options = 0;
+	if (!options_init) {
+		fwts_list_init(&options_list);
+		total_options = 0;
+		options_init = true;
+	}
 
 	return FWTS_OK;
 }
@@ -64,9 +66,8 @@ int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler
 	int n;
 	fwts_options_table *options_table;
 
-	if (options_list == NULL) 
-		if (fwts_args_init() != FWTS_OK)
-			return FWTS_ERROR;
+	if (!options_init)
+		(void)fwts_args_init();
 
 	if ((options_table = calloc(1, sizeof(fwts_options_table))) == NULL)
 		return FWTS_ERROR;
@@ -80,7 +81,7 @@ int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler
 	options_table->optarg_handler = handler;
 	options_table->optarg_check = check;
 
-	fwts_list_append(options_list, options_table);
+	fwts_list_append(&options_list, options_table);
 
 	return FWTS_OK;
 }
@@ -108,7 +109,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 	/*
 	 *  Build a getopt_long options table from all the options tables
 	 */
-	fwts_list_foreach(item, options_list) {
+	fwts_list_foreach(item, &options_list) {
 		options_table = fwts_list_data(fwts_options_table *, item);
 
 		for (i=0; i<options_table->num_options; i++, n++) {
@@ -137,7 +138,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 		c = getopt_long(argc, argv, short_options, long_options, &option_index);
 		if (c == -1)
 			break;
-		fwts_list_foreach(item, options_list) {
+		fwts_list_foreach(item, &options_list) {
 			options_table = fwts_list_data(fwts_options_table *, item);
 			bool found = false;
 
@@ -166,7 +167,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 
 	/* We've collected all the args, now sanity check the values */
 
-	fwts_list_foreach(item, options_list) {
+	fwts_list_foreach(item, &options_list) {
 		options_table = fwts_list_data(fwts_options_table *, item);
 		if (options_table->optarg_check != NULL) {
 			ret = options_table->optarg_check(fw); 
@@ -229,9 +230,9 @@ void fwts_args_show_options(void)
 	int width;
 
 	fwts_list_link *item;
-	fwts_list *sorted_options;
+	fwts_list sorted_options;
 
-	sorted_options = fwts_list_new();
+	fwts_list_init(&sorted_options);
 
 	width = fwts_tty_width(fileno(stderr), FWTS_MIN_TTY_WIDTH);
 	if ((width - (FWTS_ARGS_WIDTH + 1)) < 0)
@@ -239,17 +240,17 @@ void fwts_args_show_options(void)
 
 	width -= (FWTS_ARGS_WIDTH + 1);
 
-	fwts_list_foreach(item, options_list) {
+	fwts_list_foreach(item, &options_list) {
 		fwts_options_table *options_table;
 		options_table = fwts_list_data(fwts_options_table *, item);
 
 		for (i=0; i<options_table->num_options; i++) {
-			fwts_list_add_ordered(sorted_options, 
+			fwts_list_add_ordered(&sorted_options, 
 				&options_table->options[i], fwts_args_compare_options);
 		}
 	}
 
-	fwts_list_foreach(item, sorted_options) {
+	fwts_list_foreach(item, &sorted_options) {
 		char buffer[80];
 		char *ptr = buffer;
 		fwts_option *option = fwts_list_data(fwts_option *, item);
@@ -274,7 +275,7 @@ void fwts_args_show_options(void)
 		fwts_args_show_option(width, buffer, option->explanation);
 	}
 
-	fwts_list_free(sorted_options, NULL);
+	fwts_list_free_items(&sorted_options, NULL);
 }
 
 /*
@@ -283,7 +284,7 @@ void fwts_args_show_options(void)
  */
 int fwts_args_free(void)
 {
-	fwts_list_free(options_list, free);
+	fwts_list_free_items(&options_list, free);
 	
 	return FWTS_OK;
 }

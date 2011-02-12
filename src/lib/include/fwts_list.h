@@ -39,7 +39,7 @@ typedef void (*fwts_list_foreach_callback)(void *data, void *private);
 typedef int  (fwts_list_compare)(void *data1, void *data2);
 
 #define fwts_list_foreach(iterator, list) \
-		for (iterator = list->head; iterator != NULL; iterator = iterator->next)
+		for (iterator = (list)->head; iterator != NULL; iterator = iterator->next)
 
 #define fwts_list_foreach_continue(iterator) \
 		for (; iterator != NULL; iterator = iterator->next)
@@ -59,6 +59,7 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 #define fwts_list_null(list)	\
 		((list) == NULL)
 
+void		   fwts_list_init(fwts_list *list);
 fwts_list         *fwts_list_new(void);
 int 		   fwts_list_len(fwts_list *list);
 void               fwts_list_free(fwts_list *list, fwts_list_link_free data_free);

@@ -24,6 +24,17 @@
 #include "fwts.h"
 
 /*
+ *  fwts_list_init()
+ *	initialize a list header
+ */
+void fwts_list_init(fwts_list *list)
+{
+	list->head = NULL;
+	list->tail = NULL;
+	list->len = 0;
+}
+
+/*
  *  fwts_list_new()
  *	allocate and initialise a list header, return NULL if failed
  */
@@ -34,9 +45,7 @@ fwts_list *fwts_list_new(void)
 	if ((list = calloc(1, sizeof(fwts_list))) == NULL)
 		return NULL;
 
-	list->head = NULL;
-	list->tail = NULL;
-	list->len = 0;
+	fwts_list_init(list);
 
 	return list;
 }

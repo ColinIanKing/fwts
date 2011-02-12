@@ -228,6 +228,7 @@ static void fwts_framework_show_tests_brief(fwts_framework *fw)
 		fprintf(stderr, "%s ", test->name);
 		n += len;
 	}
+	fwts_list_free_items(&sorted, NULL);
 	fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
 }
 
@@ -291,13 +292,13 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						for (j=0; j<test->ops->total_tests;j++)
 							printf("  %s\n", test->ops->minor_tests[j].name);
 						total += test->ops->total_tests;
-						printf("-->%d %d\n", test->ops->total_tests, total);
 					}
 					else {
 						printf(" %-13.13s %s\n", test->name, test->ops->headline());
 					}
 				}
 			}
+			fwts_list_free_items(&sorted, NULL);
 		}
 	}
 	if (full)

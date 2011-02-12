@@ -89,7 +89,8 @@ static int get_mtrrs(void)
 	
 	memset(line, 0, 4096);
 
-	mtrr_list = fwts_list_new();
+	if ((mtrr_list = fwts_list_new()) == NULL)
+		return FWTS_ERROR;
 
 	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0)
 		return FWTS_ERROR;

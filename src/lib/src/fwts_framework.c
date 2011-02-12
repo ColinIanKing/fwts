@@ -200,12 +200,45 @@ int fwts_framework_compare_test_name(void *data1, void *data2)
 
 /*
  *  fwts_framework_show_tests()
+ *	dump out registered tests in brief form
+ */
+static void fwts_framework_show_tests_brief(fwts_framework *fw)
+{
+	fwts_list sorted;
+	fwts_list_link *item;
+	int n = 0;
+	int width = fwts_tty_width(fileno(stderr), 80);
+
+	fwts_list_init(&sorted);
+
+	fwts_list_foreach(item, fwts_framework_test_list) {
+		fwts_list_add_ordered(&sorted,
+			fwts_list_data(fwts_framework_test *, item),
+			fwts_framework_compare_test_name);
+	}
+
+	fwts_list_foreach(item, &sorted) {		
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
+		int len = strlen(test->name) + 1;
+		if ((n + len) > width)  {
+			fprintf(stderr, "\n");
+			n = 0;
+		}
+				
+		fprintf(stderr, "%s ", test->name);
+		n += len;
+	}
+	fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
+}
+
+/*
+ *  fwts_framework_show_tests()
  *	dump out registered tests.
  */
 static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 {
 	fwts_list_link *item;
-	fwts_list *sorted;
+	fwts_list sorted;
 	int i;
 	int need_nl = 0;
 	int total = 0;
@@ -233,25 +266,22 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		   category go and dump name and purpose of tests */
 		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
 		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
-			if ((sorted = fwts_list_new()) == NULL) {
-				fprintf(stderr, "FATAL: Could not sort sort tests by name, out of memory.");
-				exit(EXIT_FAILURE);
-			}
+			fwts_list_init(&sorted);
 			fwts_list_foreach(item, fwts_framework_test_list) {
 				test = fwts_list_data(fwts_framework_test *, item);
 				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
-					fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *, item), 
-								fwts_framework_compare_test_name);
+					fwts_list_add_ordered(&sorted, test,
+						fwts_framework_compare_test_name);
 			}
 
-			if (fwts_list_len(sorted) > 0) {
+			if (fwts_list_len(&sorted) > 0) {
 				if (need_nl)
 					printf("\n");
 				need_nl = 1;
 				printf("%s%s:\n", categories[i].title,
 					categories[i].flag & FWTS_UTILS ? "" : " tests");
 	
-				fwts_list_foreach(item, sorted) {
+				fwts_list_foreach(item, &sorted) {
 					test = fwts_list_data(fwts_framework_test *, item);
 					if (full) {
 						int j;
@@ -261,13 +291,13 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						for (j=0; j<test->ops->total_tests;j++)
 							printf("  %s\n", test->ops->minor_tests[j].name);
 						total += test->ops->total_tests;
+						printf("-->%d %d\n", test->ops->total_tests, total);
 					}
 					else {
 						printf(" %-13.13s %s\n", test->name, test->ops->headline());
 					}
 				}
 			}
-			fwts_list_free(sorted, NULL);
 		}
 	}
 	if (full)
@@ -1166,33 +1196,16 @@ int fwts_framework_args(const int argc, char **argv)
 		goto tidy_close;
 	}
 
-	/* Run specified tests */
+	/* Collect up tests to run */
 	for (i=1; i < argc; i++) {
+		fwts_framework_test *test;
+
 		if (*argv[i] == '-')
 			continue;
 
-		fwts_framework_test *test = fwts_framework_test_find(fw, argv[i]);
-
-		if (test == NULL) {
-			int width = fwts_tty_width(fileno(stderr), 80);
-			int n = 0;
-			fwts_list_link *item;
+		if ((test = fwts_framework_test_find(fw, argv[i])) == NULL) {
 			fprintf(stderr, "No such test '%s', available tests:\n",argv[i]);
-
-			fwts_list_foreach(item, fwts_framework_test_list) {
-				int len;
-				fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
-				len = strlen(test->name) + 1;
-				if ((n + len) > width)  {
-					fprintf(stderr, "\n");
-					n = 0;
-				}
-				
-				fprintf(stderr, "%s ", test->name);
-				n += len;
-			}
-			fprintf(stderr, "\n\nuse: fwts --show-tests or fwts --show-tests-full for more information.\n");
-			
+			fwts_framework_show_tests_brief(fw);
 			ret = FWTS_ERROR;
 			goto tidy;
 		}

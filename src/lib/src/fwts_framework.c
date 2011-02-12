@@ -256,7 +256,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
 		{ "Power States",		FWTS_POWER_STATES },
 		{ "Utilities",			FWTS_UTILS },
-		{ NULL,			0 },
+		{ NULL,				0 },
 	};
 
 	/* Dump out tests registered under all categories */
@@ -359,6 +359,14 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 	if ((include_zero_results || (results->infoonly > 0)) && (buflen > 0)) {
 		snprintf(buffer, buflen, "%s%u info only", n > 0 ? ", " : "", results->infoonly);
 	}
+}
+
+static void fwts_framework_minor_test_progress_clear_line(void)
+{
+	int width = fwts_tty_width(fileno(stderr), 80);
+	if (width > 256)
+		width = 256;
+	fprintf(stderr, "%*.*s\r", width-1, width-1, "");
 }
 
 /*
@@ -569,23 +577,29 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 					fw->current_major_test->results.skipped++;
 					fw->total.skipped++;
 				}
-				if (fw->show_progress)
+				if (fw->show_progress) {
+					fwts_framework_minor_test_progress_clear_line();
 					fprintf(stderr, " Test skipped.\n");
-
+				}
 			} else {
 				fwts_log_error(fw, "Aborted test, initialisation failed.");
 				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
 					fw->current_major_test->results.aborted++;
 					fw->total.aborted++;
 				}
-				if (fw->show_progress)
+				if (fw->show_progress) {
+					fwts_framework_minor_test_progress_clear_line();
 					fprintf(stderr, " Test aborted.\n");
+				}
 			}
 			goto done;
 		}
 	}
 
-	for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++, fw->current_minor_test_num++) {
+	for (minor_test = test->ops->minor_tests; 
+		*minor_test->test_func != NULL; 
+		minor_test++, fw->current_minor_test_num++) {
+
 		int ret;
 
 		fw->current_minor_test_name = minor_test->name;
@@ -614,6 +628,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		if (fw->show_progress) {
 			char resbuf[128];
 			char namebuf[55];
+			fwts_framework_minor_test_progress_clear_line();
 			fwts_framework_format_results(resbuf, sizeof(resbuf), &fw->minor_tests, false);
 			fwts_framework_strtrunc(namebuf, minor_test->name, sizeof(namebuf));
 			fprintf(stderr, "  %-55.55s %s\n", namebuf,
@@ -1268,8 +1283,7 @@ tidy_close:
 	fwts_list_free(fwts_framework_test_list, free);
 
 	/* Failed tests flagged an error */
-	if ((fw->total.failed > 0) ||
-	    (fw->total.warning > 0))	
+	if ((fw->total.failed > 0) || (fw->total.warning > 0))	
 		ret = FWTS_ERROR;
 
 	free(fw);

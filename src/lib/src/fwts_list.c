@@ -79,12 +79,12 @@ void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, voi
 }
 
 /*
- *  fwts_list_free()
- *	free list. provide free() func pointer data_free() to
+ *  fwts_list_free_items()
+ *	free items on list but not list head. provide free() func pointer data_free() to
  *	free individual items in list. If func is null, don't
  * 	free items.
  */
-void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
+void fwts_list_free_items(fwts_list *list, fwts_list_link_free data_free)
 {
 	fwts_list_link *item;
 	fwts_list_link *next;
@@ -98,8 +98,19 @@ void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
 			data_free(item->data);
 		free(item);
 	}
-
-	free(list);
+}
+/*
+ *  fwts_list_free()
+ *	free list. provide free() func pointer data_free() to
+ *	free individual items in list. If func is null, don't
+ * 	free items.
+ */
+void fwts_list_free(fwts_list *list, fwts_list_link_free data_free)
+{
+	if (list) {
+		fwts_list_free_items(list, data_free);
+		free(list);
+	}
 }
 
 /*

@@ -62,6 +62,7 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 void		   fwts_list_init(fwts_list *list);
 fwts_list         *fwts_list_new(void);
 int 		   fwts_list_len(fwts_list *list);
+void		   fwts_list_free_items(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_free(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, void *private);
 fwts_list_link 	  *fwts_list_append(fwts_list *list, void *data);

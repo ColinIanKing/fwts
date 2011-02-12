@@ -291,7 +291,6 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						for (j=0; j<test->ops->total_tests;j++)
 							printf("  %s\n", test->ops->minor_tests[j].name);
 						total += test->ops->total_tests;
-						printf("-->%d %d\n", test->ops->total_tests, total);
 					}
 					else {
 						printf(" %-13.13s %s\n", test->name, test->ops->headline());
@@ -1255,7 +1254,6 @@ tidy:
 tidy_close:
 	fwts_acpi_free_tables();
 	fwts_summary_deinit();
-	fwts_args_free();
 
 	free(fw->dmidecode);
 	free(fw->lspci);

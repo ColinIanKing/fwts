@@ -357,7 +357,7 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 		buflen -= n;
 	}
 	if ((include_zero_results || (results->infoonly > 0)) && (buflen > 0)) {
-		snprintf(buffer, buflen, "%s%u informational", n > 0 ? ", " : "", results->infoonly);
+		snprintf(buffer, buflen, "%s%u info only", n > 0 ? ", " : "", results->infoonly);
 	}
 }
 

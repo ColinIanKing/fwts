@@ -158,7 +158,7 @@ static int microcode_init(fwts_framework *fw)
 
 static int microcode_test1(fwts_framework *fw)
 {
-	fwts_list *cpus;
+	fwts_list cpus;
 	pid_t pid;
 	int fd;
 
@@ -168,10 +168,7 @@ static int microcode_test1(fwts_framework *fw)
 		"microcode is important to have all the required "
 		"features and errata updates for the processor.");
 
-	if ((cpus = fwts_list_new()) == NULL) {
-		fwts_log_error(fw, "Cannot allocate memory.");
-		return FWTS_ERROR;
-	}
+	fwts_list_init(&cpus);
 
 	if ((fd = fwts_pipe_open("/sbin/modprobe microcode", &pid)) < 0) {
 		fwts_log_error(fw, "Cannot modprobe microcode module,");
@@ -179,7 +176,7 @@ static int microcode_test1(fwts_framework *fw)
 	}
 	fwts_pipe_close(fd, pid);
 	
-	gather_info(fw, cpus);
+	gather_info(fw, &cpus);
 
 	/* now run the microcode update */
 
@@ -187,9 +184,9 @@ static int microcode_test1(fwts_framework *fw)
 		fwts_log_error(fw, "Failed to upload latest microcode.");
 	} else {
 		/* and check for lacking updates */
-		check_info(fw, cpus);
+		check_info(fw, &cpus);
 
-		fwts_list_free(cpus, free);
+		fwts_list_free_items(&cpus, free);
 	}
 
 	return FWTS_OK;

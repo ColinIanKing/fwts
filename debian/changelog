@@ -1,3 +1,16 @@
+fwts (0.21.13) natty; urgency=low
+
+  * Print informational count when non-zero
+  * tidy up progress output.
+  * change results text "informational" to "info only".
+  * cpu microcode test: remove need to alloc/free cpu list.
+  * bios mtrr test: check for list_new NULL return.
+  * arg handling: remove need for alloc/free of options_list
+  * sort tests on name when dumping list of available tests.
+  * New upstream version 0.21.13
+
+ -- Colin King <colin.king@canonical.com>  Sat, 12 Feb 2011 18:38:20 +0000
+
 fwts (0.21.12) natty; urgency=low
 
   * Print informational count when non-zero

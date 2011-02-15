@@ -333,28 +333,28 @@ static int s4_test_multiple(fwts_framework *fw)
 	}
 
 	if (klog_errors > 0)
-		fwts_failed(fw, "Found %d errors in kernel log.", klog_errors);
+		fwts_log_info(fw, "Found %d errors in kernel log.", klog_errors);
 	else
 		fwts_passed(fw, "No kernel log errors detected.");
 
 	if (pm_errors > 0)
-		fwts_failed(fw, "Found %d PM related hibernate issues.", pm_errors);
+		fwts_log_info(fw, "Found %d PM related hibernate issues.", pm_errors);
 	else
-		fwts_passed(fw, "No related hibernate detected.");
+		fwts_passed(fw, "No PM related hibernate issues detected.");
 
 	if (hw_errors > 0)
-		fwts_failed(fw, "Found %d device errors.", hw_errors);
+		fwts_log_info(fw, "Found %d device errors.", hw_errors);
 	else
 		fwts_passed(fw, "No device errors detected.");
 	
 	if (klog_oopses > 0)		
-		fwts_failed(fw, "Found %d kernel oopses.", klog_oopses);
+		fwts_log_info(fw, "Found %d kernel oopses.", klog_oopses);
 	else
 		fwts_passed(fw, "No kernel oopses detected.");
 
 	/* Really passed or failed? */
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
-                fwts_failed(fw, "Found %d errors and %d oopses doing %d hibernate/resume cycle(s).",
+                fwts_log_info(fw, "Found %d errors and %d oopses doing %d hibernate/resume cycle(s).",
 			klog_errors + pm_errors + hw_errors, klog_oopses, s4_multiple);
 	} else
 		fwts_passed(fw, "Found no errors and no oopses  doing %d hibernate/resume cycle(s).", s4_multiple);

@@ -49,6 +49,9 @@ static int s4_init(fwts_framework *fw)
 {
 	fwts_list* swap_devs;
 
+	if (fwts_check_root_euid(fw))
+		return FWTS_ERROR;
+
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		return FWTS_ERROR;
@@ -94,7 +97,13 @@ static void s4_check_log(fwts_framework *fw, fwts_list *klog, int *errors, int *
 	*oopses += oops;
 }
 
-static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses, int *failed_alloc_image, int percent)
+static int s4_hibernate(fwts_framework *fw, 
+	int *klog_errors, 
+	int *hw_errors,
+	int *pm_errors,
+	int *klog_oopses, 
+	int *failed_alloc_image, 
+	int percent)
 {	
 	fwts_list *output;
 	fwts_list *klog;
@@ -105,11 +114,8 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 	char *quirks;
 	char buffer[80];
 
-	fwts_log_info(fw, "%s", test);
-
 	if (fwts_klog_clear()) {
-		fwts_log_error(fw, "Cannot clear kernel log.");
-		fwts_failed(fw, "%s", test);
+		fwts_log_error(fw, "S4 hibernate: Cannot clear kernel log.");
 		return FWTS_ERROR;
 	}
 
@@ -158,74 +164,75 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 
 		if (differences > 0) {
 			fwts_failed_high(fw, "Found %d differences in device configuation during S4 cycle.", differences);
-			(*errors)++;
+			(*hw_errors)++;
 		}
 	}
 
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 
 	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, "%s", test);
+		fwts_log_error(fw, "S4: hibernate: Cannot read kernel log.");
 		return FWTS_ERROR;
 	}
 	
-	s4_check_log(fw, klog, errors, oopses);
+	s4_check_log(fw, klog, klog_errors, klog_oopses);
+
+	fwts_progress_message(fw, percent, "(Checking for PM errors)");
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
 		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				   "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	} else if (status == 128) {
 		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				   "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	} else if (status > 128) {
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				   "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
 		fwts_failed_high(fw, "Failed to freeze user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
 		fwts_failed_high(fw, "Failed to freeze remaining non-user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") < 1) &&
 	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
 		fwts_failed_high(fw, "Failed to freeze devices.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
 		fwts_failed_high(fw, "Failed to allocate memory for hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
 		fwts_failed_high(fw, "Failed to restore hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 	
 	if (fwts_klog_regex_find(fw, klog, "Restarting tasks.*done") < 1) {
 		fwts_failed_high(fw, "Failed to restart tasks.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*errors)++;
+		(*pm_errors)++;
 	}
 
 	fwts_klog_free(klog);
@@ -236,8 +243,10 @@ static int s4_hibernate(fwts_framework *fw, char *test, int *errors, int *oopses
 static int s4_test_multiple(fwts_framework *fw)
 {
 	int i;
-	int errors = 0;
-	int oopses = 0;
+	int klog_errors = 0;
+	int hw_errors = 0;
+	int pm_errors = 0;
+	int klog_oopses = 0;
 	int awake_delay = s4_min_delay * 1000;
 	int delta = (int)(s4_delay_delta * 1000.0);
 	int tracing_buffer_size = -1;
@@ -255,7 +264,9 @@ static int s4_test_multiple(fwts_framework *fw)
 
 		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,s4_multiple);
 
-		if (s4_hibernate(fw, "S4 hibernate/resume test.", &errors, &oopses, &failed_alloc_image, percent) != FWTS_OK) {
+		if (s4_hibernate(fw, 
+			&klog_errors, &hw_errors, &pm_errors, &klog_oopses,
+			&failed_alloc_image, percent) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
 		}
@@ -279,7 +290,10 @@ static int s4_test_multiple(fwts_framework *fw)
 					fwts_set("1", FWTS_TRACING_BUFFER_SIZE);
 					failed_alloc_image = 0;
 	
-					if (s4_hibernate(fw, "S4 hibernate/resume re-test with 1K tracing buffer size.", &errors, &oopses, &failed_alloc_image, percent) != FWTS_OK) {
+					if (s4_hibernate(fw, 
+						&klog_errors, &hw_errors, &pm_errors, &klog_oopses,
+						&failed_alloc_image, percent) != FWTS_OK) {
+						fwts_log_error(fw, "Aborting S4 multiple tests.");
 						ret = FWTS_ABORTED;
 						break;
 					};
@@ -318,12 +332,32 @@ static int s4_test_multiple(fwts_framework *fw)
 		fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);
 	}
 
+	if (klog_errors > 0)
+		fwts_failed(fw, "Found %d errors in kernel log.", klog_errors);
+	else
+		fwts_passed(fw, "No kernel log errors detected.");
+
+	if (pm_errors > 0)
+		fwts_failed(fw, "Found %d PM related hibernate issues.", pm_errors);
+	else
+		fwts_passed(fw, "No related hibernate detected.");
+
+	if (hw_errors > 0)
+		fwts_failed(fw, "Found %d device errors.", hw_errors);
+	else
+		fwts_passed(fw, "No device errors detected.");
+	
+	if (klog_oopses > 0)		
+		fwts_failed(fw, "Found %d kernel oopses.", klog_oopses);
+	else
+		fwts_passed(fw, "No kernel oopses detected.");
+
 	/* Really passed or failed? */
-	if (errors + oopses > 0) {
-                fwts_log_info(fw, "Found %d errors and %d oopses doing %d hibernate/resume cycle(s).",
-			errors, oopses, s4_multiple);
+	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
+                fwts_failed(fw, "Found %d errors and %d oopses doing %d hibernate/resume cycle(s).",
+			klog_errors + pm_errors + hw_errors, klog_oopses, s4_multiple);
 	} else
-		fwts_passed(fw, "Found no errors doing %d hibernate/resume cycle(s).", s4_multiple);
+		fwts_passed(fw, "Found no errors and no oopses  doing %d hibernate/resume cycle(s).", s4_multiple);
 
 	return ret;
 }

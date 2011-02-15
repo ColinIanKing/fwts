@@ -50,6 +50,9 @@ static int s3_init(fwts_framework *fw)
 {
 	int ret;
 
+	if (fwts_check_root_euid(fw))
+		return FWTS_ERROR;
+
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
@@ -69,7 +72,11 @@ static int s3_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int percent)
+static int s3_do_suspend_resume(fwts_framework *fw,
+	int *hw_errors,
+	int *pm_errors,
+	int delay,
+	int percent)
 {
 	fwts_list *output;
 	fwts_hwinfo hwinfo1, hwinfo2;
@@ -87,9 +94,7 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int 
 	if (s3_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
 
-	fwts_wakealarm_trigger(fw, delay);
 
-	time(&t_start);
 
 	/* Format up pm-suspend command with optional quirking arguments */
 	if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND)) == NULL)
@@ -108,14 +113,17 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int 
 		}
 	}
 
+	fwts_wakealarm_trigger(fw, delay);
+
 	/* Do S3 here */
 	fwts_progress_message(fw, percent, "(Suspending)");
+	time(&t_start);
 	status = fwts_pipe_exec(command, &output);
+	time(&t_end);
 	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
 	free(command);
 
-	time(&t_end);
 	duration = (int)(t_end - t_start);
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
@@ -136,19 +144,19 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int 
 	
 		if (differences > 0) {
 			fwts_failed_high(fw, "Found %d differences in device configuation during S3 cycle.", differences);
-			(*errors)++;
+			(*hw_errors)++;
 		}
 	}
 
 	if (duration < delay) {
-		(*errors)++;
+		(*pm_errors)++;
 		fwts_failed_medium(fw, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
-		(*errors)++;
+		(*pm_errors)++;
 		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
@@ -164,17 +172,17 @@ static int s3_do_suspend_resume(fwts_framework *fw, int *errors, int delay, int 
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
-		(*errors)++;
+		(*pm_errors)++;
 		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
-		(*errors)++;
+		(*pm_errors)++;
 		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
-		(*errors)++;
+		(*pm_errors)++;
 		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
@@ -219,9 +227,11 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 
 static int s3_test_multiple(fwts_framework *fw)
 {	
-	int errors = 0;
-	int oopses = 0;
 	int i;
+	int klog_errors = 0;
+	int hw_errors = 0;
+	int pm_errors = 0;
+	int klog_oopses = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
 
@@ -234,12 +244,12 @@ static int s3_test_multiple(fwts_framework *fw)
 
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
 
-		if (s3_do_suspend_resume(fw, &errors, s3_sleep_delay, percent) == FWTS_OUT_OF_MEMORY) {
+		if (s3_do_suspend_resume(fw, &hw_errors, &pm_errors, s3_sleep_delay, percent) == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
 			break;
 		}
 		fwts_progress_message(fw, percent, "(Checking logs for errors)");
-		s3_check_log(fw, &errors, &oopses);
+		s3_check_log(fw, &klog_errors, &klog_oopses);
 
 		if (!s3_device_check) {
 			char buffer[80];
@@ -261,9 +271,32 @@ static int s3_test_multiple(fwts_framework *fw)
 		}
 	}
 
-	if ((errors + oopses) > 0) {
+	fwts_log_info(fw, "Completed %d S3 cycle(s)\n", s3_multiple);
+
+	if (klog_errors > 0)
+		fwts_log_info(fw, "Found %d errors in kernel log.", klog_errors);
+	else
+		fwts_passed(fw, "No kernel log errors detected.");
+
+	if (pm_errors > 0)
+		fwts_log_info(fw, "Found %d PM related suspend issues.", pm_errors);
+	else
+		fwts_passed(fw, "No PM related suspend issues detected.");
+
+	if (hw_errors > 0)
+		fwts_log_info(fw, "Found %d device errors.", hw_errors);
+	else
+		fwts_passed(fw, "No device errors detected.");
+
+	if (klog_oopses > 0)
+		fwts_log_info(fw, "Found %d kernel oopses.", klog_oopses);
+	else
+		fwts_passed(fw, "No kernel oopses detected.");
+
+
+	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
 		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).", 
-			errors, oopses, s3_multiple);
+			klog_errors + pm_errors + hw_errors, klog_oopses, s3_multiple);
 	} else
 		fwts_passed(fw, "Found no errors doing %d suspend/resume cycle(s).", s3_multiple);
 

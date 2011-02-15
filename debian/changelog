@@ -1,3 +1,10 @@
+fwts (0.21.14) natty; urgency=low
+
+  * acpi: s3,s4: break up pass/fail message summary.
+  * New upstream version 0.21.14
+
+ -- Colin King <colin.king@canonical.com>  Tue, 15 Feb 2011 19:50:04 +0000
+
 fwts (0.21.13) natty; urgency=low
 
   * Print informational count when non-zero

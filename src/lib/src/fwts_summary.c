@@ -24,9 +24,9 @@
 #include "fwts.h"
 
 typedef struct {
-	char *test;	/* test that found the error */
-	char *text;	/* text of failure message */
-	int  log_line;	/* line where failure was reported */
+	char *test;		/* test that found the error */
+	char *text;		/* text of failure message */
+	fwts_list log_lines;	/* line where failure was reported */
 } fwts_summary_item;
 
 enum {
@@ -78,6 +78,7 @@ static void fwts_summary_item_free(void *data)
 {
 	fwts_summary_item *item = (fwts_summary_item *)data;
 
+	fwts_list_free_items(&(item->log_lines), free);
 	free(item->test);
 	free(item->text);
 	free(item);
@@ -96,6 +97,22 @@ void fwts_summary_deinit(void)
 			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }
 
+static int fwts_summary_level_to_index(fwts_log_level level)
+{
+	switch (level) {
+	case LOG_LEVEL_CRITICAL:
+		return SUMMARY_CRITICAL;
+	case LOG_LEVEL_HIGH:
+		return SUMMARY_HIGH;
+	case LOG_LEVEL_MEDIUM:
+		return SUMMARY_MEDIUM;
+	case LOG_LEVEL_LOW:
+		return SUMMARY_LOW;
+	default:
+		return SUMMARY_UNKNOWN;
+	}
+}
+
 /*
  *  fwts_summary_add()
  *	add an error summary for a test with error message text at given
@@ -103,41 +120,54 @@ void fwts_summary_deinit(void)
  */
 int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 {
-	fwts_summary_item *item;
+	fwts_list_link	*item;
+	fwts_summary_item *summary_item = NULL;
+	bool summary_item_found = false;
+	int index = fwts_summary_level_to_index(level);
+	int *line_num;
 
-	if ((item = calloc(1, sizeof(fwts_summary_item))) == NULL)
+	if ((line_num = calloc(1, sizeof(int))) == NULL)
 		return FWTS_ERROR;
 
-	if ((item->test = strdup(test)) == NULL) {
-		free(item);
-		return FWTS_ERROR;
+	/* Does the text already exist? - search for it */
+	fwts_list_foreach(item, fwts_summaries[index]) {
+		summary_item = fwts_list_data(fwts_summary_item *,item);
+		if (strcmp(text, summary_item->text) == 0) {
+			summary_item_found = true;
+			break;
+		}
 	}
-	if ((item->text = strdup(text)) == NULL) {
-		free(item->test);	
-		free(item);	
-		return FWTS_ERROR;
-	}
-	fwts_chop_newline(item->text);
 
-	item->log_line = fwts_log_line_number();
-
-	switch (level) {
-	case LOG_LEVEL_CRITICAL:
-		fwts_list_append(fwts_summaries[SUMMARY_CRITICAL], item);
-		break;
-	case LOG_LEVEL_HIGH:
-		fwts_list_append(fwts_summaries[SUMMARY_HIGH], item);
-		break;
-	case LOG_LEVEL_MEDIUM:
-		fwts_list_append(fwts_summaries[SUMMARY_MEDIUM], item);
-		break;
-	case LOG_LEVEL_LOW:
-		fwts_list_append(fwts_summaries[SUMMARY_LOW], item);
-		break;
-	default:
-		fwts_list_append(fwts_summaries[SUMMARY_UNKNOWN], item);
-		break;
+	/* Not found, create a new one */
+	if (!summary_item_found) {
+		if ((summary_item = calloc(1, sizeof(fwts_summary_item))) == NULL) {
+			free(line_num);
+			return FWTS_ERROR;
+		}
+		if ((summary_item->test = strdup(test)) == NULL) {
+			free(line_num);
+			free(summary_item);
+			return FWTS_ERROR;
+		}
+		if ((summary_item->text = strdup(text)) == NULL) {
+			free(line_num);
+			free(summary_item->test);	
+			free(summary_item);	
+			return FWTS_ERROR;
+		}
+		fwts_list_init(&(summary_item->log_lines));
+		fwts_chop_newline(summary_item->text);
 	}
+
+	/* Now append a new line number to list of line numbers */
+
+	*line_num = fwts_log_line_number();
+	fwts_list_append(&summary_item->log_lines, line_num);
+
+	/* And append new item if not done so already */
+	if (!summary_item_found)
+		fwts_list_append(fwts_summaries[index], summary_item);
+
 	return FWTS_OK;
 }
 
@@ -149,6 +179,25 @@ static void fwts_summary_format_field(char *buffer, int buflen, uint32_t value)
 		*buffer = '\0';
 }
 
+static char *fwts_summary_lines(fwts_list *list)
+{
+	fwts_list_link *item;
+	char *text = NULL;
+	char tmp[16];
+	int i = 0;
+
+	fwts_list_foreach(item, list) {
+		int *num = fwts_list_data(int *, item);
+		snprintf(tmp, sizeof(tmp), "%s%d", 
+			text == NULL ? "" : ", ", *num);
+		text = fwts_realloc_strcat(text, tmp);
+		if (i++ > 20) {
+			text = fwts_realloc_strcat(text, "...");
+			break;
+		}
+	}
+	return text;
+}
 
 /*
  *  fwts_summary_report()
@@ -171,9 +220,13 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
-				fwts_log_summary_verbatum(fw, " %s test at log line %d:",
+				char *lines = fwts_summary_lines(&summary_item->log_lines);
+				fwts_log_summary(fw, " %s test, at %d log line%s: %s",
 					summary_item->test,
-					summary_item->log_line);
+					fwts_list_len(&summary_item->log_lines),
+					fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
+					lines);
+				free(lines);
 				fwts_log_summary_verbatum(fw, "  \"%s\"",
 					summary_item->text);
 			}

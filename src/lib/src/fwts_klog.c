@@ -124,8 +124,11 @@ int fwts_klog_scan(fwts_framework *fw,
 	/*
 	 *  Form a reduced log by stripping out repeated kernel warnings
 	 */
+	i = 0;
 	fwts_list_foreach(item, klog) {
 		char *newline = fwts_klog_remove_timestamp(fwts_list_data(char *, item));
+		if (progress_func  && ((i % 25) == 0))
+			progress_func(fw, 50 * i / fwts_list_len(klog));
 		if (*newline) {
 			int matched = 0;
 			fwts_list_link *l;
@@ -153,6 +156,7 @@ int fwts_klog_scan(fwts_framework *fw,
 				fwts_list_append(klog_reduced, new);
 			}
 		}
+		i++;
 	}
 
 	prev = "";
@@ -167,10 +171,12 @@ int fwts_klog_scan(fwts_framework *fw,
 
 		scan_func(fw, line, reduced->repeated, prev, private, match);
 		if (progress_func  && ((i % 25) == 0))
-			progress_func(fw, 100 * i / fwts_list_len(klog));
+			progress_func(fw, (50+(50 * i)) / fwts_list_len(klog_reduced));
 		prev = line;
 		i++;
 	}
+	if (progress_func)
+		progress_func(fw, 100);
 
 	fwts_list_free(klog_reduced, free);
 

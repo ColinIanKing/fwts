@@ -358,8 +358,22 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "ACPI (Warning|Error).*two DSDT tables",
+   "advice": "The FADT table contains a mismatch between the 32 bit pointer (DSDT) and 64 bit pointer (X_DSDT) pointer to the FACS table.  Section 5.2.9 of version 4.0a of the ACPI specification states that X_DSDT should be zero if DSDT is defined, or DSDT should be zero if X_DSDT is zero. With two different pointers defined, the kernel has to make a choice, and opts for the 32 bit pointer. Because these pointers are different, it suggests either one of them is incorrect, or different 32 bit and 64 bit DSDT tables are present in your system, which is NOT complaint with the ACPI specification.  The kernel has to make a choice and opts for the 32 bit DSDT."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
    "pattern": "ACPI (Warning|Error).*two FACS tables",
-   "advice": "The FADT table contains a mismatch between the 32 bit pointer (FIRMWARE_CTRL) and 64 bit pointer (X_FIRMWARE_CTRL) pointer to the FACS table.  Section 5.2.9 of version 4.0a of the ACPI specification states that X_FIRMWARE_CTRL should be zero if FIRMWARE_CTRL is defined, or FIRMWARE_CTRL should be zero if X_FIRMWARE_CTRL is zero. With two different pointers defined, the kernel has to make a choice, and opts for the 32 bit pointer. Because these pointers are different, it suggests either one of them is incorrect, or different 32 bit and 64 bit FACS tables are present in your system, which is NOT complaint with the ACPI specification."
+   "advice": "The FADT table contains a mismatch between the 32 bit pointer (FIRMWARE_CTRL) and 64 bit pointer (X_FIRMWARE_CTRL) pointer to the FACS table.  Section 5.2.9 of version 4.0a of the ACPI specification states that X_FIRMWARE_CTRL should be zero if FIRMWARE_CTRL is defined, or FIRMWARE_CTRL should be zero if X_FIRMWARE_CTRL is zero. With two different pointers defined, the kernel has to make a choice, and opts for the 32 bit pointer. Because these pointers are different, it suggests either one of them is incorrect, or different 32 bit and 64 bit FACS tables are present in your system, which is NOT complaint with the ACPI specification.  The kernel has to make a choice and opts for the 32 bit FIRMWARE_CTRL."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
+   "pattern": "ACPI Error.*32/64X address mismatch in.*, using 32",
+   "advice": "The FADT table contains a mismatch between a 32 bit pointer and a 64 bit Generic Address pointer. Because these pointers are different, it suggests either one of them is incorrect.  If a non-null 32 bit pointer exists, then the kernel will opt for this in preference to the 64 bit pointer even though this is not in accordance to the ACPI specification."
   },
   {
    "compare_mode": "regex",

@@ -1,3 +1,14 @@
+fwts (0.21.15) natty; urgency=low
+
+  * summary: collate summary items for a more compact summary.
+  * klog: add better progress feedback when scanning large logs.
+  * args: fix optind offset bug.
+  * klog: add _BCM execution failure check.
+  * klog: add more intelligence to FADT checking.
+  * New upstream version 0.21.15
+
+ -- Colin King <colin.king@canonical.com>  Wed, 16 Feb 2011 16:20:00 +0000
+
 fwts (0.21.14) natty; urgency=low
 
   * acpi: s3,s4: break up pass/fail message summary.

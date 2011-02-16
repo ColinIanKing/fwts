@@ -1213,7 +1213,7 @@ int fwts_framework_args(const int argc, char **argv)
 	}
 
 	/* Collect up tests to run */
-	for (i=1; i < argc; i++) {
+	for (i=optind; i < argc; i++) {
 		fwts_framework_test *test;
 
 		if (*argv[i] == '-')

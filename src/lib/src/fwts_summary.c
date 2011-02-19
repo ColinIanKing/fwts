@@ -174,7 +174,7 @@ int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 static void fwts_summary_format_field(char *buffer, int buflen, uint32_t value)
 {
 	if (value)
-		snprintf(buffer, buflen, "%7u", value);
+		snprintf(buffer, buflen, "%5u", value);
 	else
 		*buffer = '\0';
 }
@@ -242,17 +242,17 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 
-		fwts_log_summary_verbatum(fw, "Test           |Passed |Failed |Aborted|Warning|Skipped|Info   |");
-		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+-------+");
+		fwts_log_summary_verbatum(fw, "Test           |Pass |Fail |Abort|Warn |Skip |Info |");
+		fwts_log_summary_verbatum(fw, "---------------+-----+-----+-----+-----+-----+-----+");
 		fwts_list_foreach(item, sorted) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test*,item);
 			if (test->was_run) {
-				char passed[8];
-				char failed[8];
-				char aborted[8];
-				char warning[8];
-				char skipped[8];
-				char infoonly[8];
+				char passed[6];
+				char failed[6];
+				char aborted[6];
+				char warning[6];
+				char skipped[6];
+				char infoonly[6];
 
 				fwts_summary_format_field(passed, sizeof(passed), test->results.passed);
 				fwts_summary_format_field(failed, sizeof(failed), test->results.failed);
@@ -261,11 +261,11 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 				fwts_summary_format_field(skipped, sizeof(skipped), test->results.skipped);
 				fwts_summary_format_field(infoonly, sizeof(infoonly), test->results.infoonly);
 
-				fwts_log_summary_verbatum(fw, "%-15.15s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|%7.7s|",
+				fwts_log_summary_verbatum(fw, "%-15.15s|%5.5s|%5.5s|%5.5s|%5.5s|%5.5s|%5.5s|",
 					test->name, passed, failed, aborted, warning, skipped, infoonly);
 			}
 		}
-		fwts_log_summary_verbatum(fw, "---------------+-------+-------+-------+-------+-------+-------+");
+		fwts_log_summary_verbatum(fw, "---------------+-----+-----+-----+-----+-----+-----+");
 		fwts_list_free(sorted, NULL);
 	}
 	return FWTS_OK;

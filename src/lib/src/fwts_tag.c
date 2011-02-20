@@ -194,9 +194,7 @@ void fwts_tag_failed(fwts_framework *fw, fwts_tag tag)
 	const char *text = fwts_tag_to_str(tag);
 
 	if (*text) {
-		if (fw->test_taglist)
-			fwts_tag_add(fw->test_taglist, text);
-		if (fw->total_taglist)
-			fwts_tag_add(fw->total_taglist, text);
+		fwts_tag_add(&fw->test_taglist, text);
+		fwts_tag_add(&fw->total_taglist, text);
 	}
 }

@@ -41,8 +41,7 @@
 #define FWTS_ARGS_WIDTH 	28
 #define FWTS_MIN_TTY_WIDTH	50
 
-static fwts_list *tests_to_run;
-static fwts_list *tests_to_skip;
+static fwts_list tests_to_skip;
 
 static fwts_option fwts_framework_options[] = {
 	{ "stdout-summary", 	"",   0, "Output SUCCESS or FAILED to stdout at end of tests." },
@@ -95,7 +94,7 @@ enum {
 	FWTS_ABORTED_TEXT,
 };
 
-static fwts_list *fwts_framework_test_list;
+static fwts_list fwts_framework_test_list = FWTS_LIST_INIT;
 
 typedef struct {
 	const int env_id;
@@ -155,14 +154,6 @@ void fwts_framework_test_add(const char *name,
 		exit(EXIT_FAILURE);
 	}
 
-	if (fwts_framework_test_list == NULL) {
-		fwts_framework_test_list = fwts_list_new();
-		if (fwts_framework_test_list == NULL) {
-			fprintf(stderr, "FATAL: Could not allocate memory setting up test framework\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-
 	/* This happens early, so if it goes wrong, bail out */
 	if ((new_test = calloc(1, sizeof(fwts_framework_test))) == NULL) {
 		fprintf(stderr, "FATAL: Could not allocate memory adding tests to test framework\n");
@@ -179,7 +170,7 @@ void fwts_framework_test_add(const char *name,
 	new_test->flags = flags;
 
 	/* Add test, sorted on run order priority */
-	fwts_list_add_ordered(fwts_framework_test_list, new_test, fwts_framework_compare_priority);
+	fwts_list_add_ordered(&fwts_framework_test_list, new_test, fwts_framework_compare_priority);
 
 	/* Add any options and handler, if they exists */
 	if (ops->options && ops->options_handler)
@@ -211,7 +202,7 @@ static void fwts_framework_show_tests_brief(fwts_framework *fw)
 
 	fwts_list_init(&sorted);
 
-	fwts_list_foreach(item, fwts_framework_test_list) {
+	fwts_list_foreach(item, &fwts_framework_test_list) {
 		fwts_list_add_ordered(&sorted,
 			fwts_list_data(fwts_framework_test *, item),
 			fwts_framework_compare_test_name);
@@ -249,7 +240,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		const int  flag;	/* Mask of category */
 	} fwts_categories;
 
-	fwts_categories categories[] = {
+	static fwts_categories categories[] = {
 		{ "Batch",			FWTS_BATCH },
 		{ "Interactive",		FWTS_INTERACTIVE },
 		{ "Batch Experimental",		FWTS_BATCH_EXPERIMENTAL },
@@ -268,7 +259,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
 		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
 			fwts_list_init(&sorted);
-			fwts_list_foreach(item, fwts_framework_test_list) {
+			fwts_list_foreach(item, &fwts_framework_test_list) {
 				test = fwts_list_data(fwts_framework_test *, item);
 				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
 					fwts_list_add_ordered(&sorted, test,
@@ -537,7 +528,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 	fw->current_major_test = test;
 	fw->current_minor_test_name = "";
-	fw->test_taglist = fwts_list_new();
+	fwts_list_init(&fw->test_taglist);
 
 	test->was_run = true;
 	fw->total_run++;
@@ -643,11 +634,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		test->ops->deinit(fw);
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
-		fwts_tag_report(fw, LOG_TAG, fw->test_taglist);
+		fwts_tag_report(fw, LOG_TAG, &fw->test_taglist);
 
 done:
-	fwts_list_free(fw->test_taglist, free);
-	fw->test_taglist = NULL;
+	fwts_list_free_items(&fw->test_taglist, free);
 
 	if (!(test->flags & FWTS_UTILS))
 		fwts_framework_test_summary(fw);
@@ -683,7 +673,7 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
 {
 	fwts_list_link *item;
 	
-	fwts_list_foreach(item, fwts_framework_test_list) {
+	fwts_list_foreach(item, &fwts_framework_test_list) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		if (strcmp(name, test->name) == 0)
 			return test;
@@ -1024,7 +1014,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
 		case 24: /* --skip-test */
-			if (fwts_framework_skip_test_parse(fw, optarg, tests_to_skip) != FWTS_OK)
+			if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
 				return FWTS_COMPLETE;
 			break;
 		case 25: /* --quiet */
@@ -1114,7 +1104,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
 		break;
 	case 'S': /* --skip-test */
-		if (fwts_framework_skip_test_parse(fw, optarg, tests_to_skip) != FWTS_OK)
+		if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
 			return FWTS_COMPLETE;
 		break;
 	case 't': /* --table-path */
@@ -1142,6 +1132,7 @@ int fwts_framework_args(const int argc, char **argv)
 	int ret = FWTS_OK;
 	int i;
 
+	fwts_list tests_to_run;
 	fwts_framework *fw;
 
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
@@ -1155,7 +1146,7 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
 		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
 
-	fw->total_taglist = fwts_list_new();
+	fwts_list_init(&fw->total_taglist);
 
 	fwts_summary_init();
 
@@ -1164,13 +1155,8 @@ int fwts_framework_args(const int argc, char **argv)
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
 	fwts_framework_strdup(&fw->json_data_path, FWTS_JSON_DATA_PATH);
 
-	tests_to_run  = fwts_list_new();
-	tests_to_skip = fwts_list_new();
-
-	if ((tests_to_run == NULL) || (tests_to_skip == NULL)) {
-		fwts_log_error(fw, "Run out of memory preparing to run tests.");
-		goto tidy_close;
-	}
+	fwts_list_init(&tests_to_run);
+	fwts_list_init(&tests_to_skip);
 
 	if (fwts_args_parse(fw, argc, argv) != FWTS_OK)
 		goto tidy_close;
@@ -1226,46 +1212,45 @@ int fwts_framework_args(const int argc, char **argv)
 			goto tidy;
 		}
 
-		if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
-			fwts_list_append(tests_to_run, test);
+		if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
+			fwts_list_append(&tests_to_run, test);
 	}
 
-	if (fwts_list_len(tests_to_run) == 0) {
+	if (fwts_list_len(&tests_to_run) == 0) {
 		/* Find tests that are eligible for running */
 		fwts_list_link *item;
-		fwts_list_foreach(item, fwts_framework_test_list) {
+		fwts_list_foreach(item, &fwts_framework_test_list) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
 			if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS)
-				if (fwts_framework_skip_test(tests_to_skip, test) == NULL)
-					fwts_list_append(tests_to_run, test);
+				if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
+					fwts_list_append(&tests_to_run, test);
 		}
 	}
 
 	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET))
 		printf("Running %d tests, results appended to %s\n",
-			fwts_list_len(tests_to_run),
+			fwts_list_len(&tests_to_run),
 			fw->results_logname);
 
-	fwts_framework_heading_info(fw, tests_to_run);
-	fwts_framework_tests_run(fw, tests_to_run);
+	fwts_framework_heading_info(fw, &tests_to_run);
+	fwts_framework_tests_run(fw, &tests_to_run);
 
 	if (fw->print_summary) {
 		fwts_log_set_owner(fw->results, "summary");
 		fwts_log_nl(fw);
 		if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
-			fwts_tag_report(fw, LOG_SUMMARY, fw->total_taglist);
-		fwts_list_free(fw->test_taglist, free);
+			fwts_tag_report(fw, LOG_SUMMARY, &fw->total_taglist);
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
-		fwts_summary_report(fw, fwts_framework_test_list);
+		fwts_summary_report(fw, &fwts_framework_test_list);
 	}
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)
-		fwts_tag_report(fw, LOG_TAG | LOG_NO_FIELDS, fw->total_taglist);
+		fwts_tag_report(fw, LOG_TAG | LOG_NO_FIELDS, &fw->total_taglist);
 
 tidy:
-	fwts_list_free(tests_to_skip, NULL);
-	fwts_list_free(tests_to_run, NULL);
+	fwts_list_free_items(&tests_to_skip, NULL);
+	fwts_list_free_items(&tests_to_run, NULL);
 	fwts_log_close(fw->results);
 
 tidy_close:
@@ -1279,8 +1264,8 @@ tidy_close:
 	free(fw->klog);
 	free(fw->json_data_path);
 	fwts_framework_free_env();
-	fwts_list_free(fw->total_taglist, free);
-	fwts_list_free(fwts_framework_test_list, free);
+	fwts_list_free_items(&fw->total_taglist, free);
+	fwts_list_free_items(&fwts_framework_test_list, free);
 
 	/* Failed tests flagged an error */
 	if ((fw->total.failed > 0) || (fw->total.warning > 0))	

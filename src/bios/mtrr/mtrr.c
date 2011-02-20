@@ -95,6 +95,8 @@ static int get_mtrrs(void)
 	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0)
 		return FWTS_ERROR;
 
+	memset(&gentry, 0, sizeof(gentry));
+
 	for (gentry.regnum = 0;
 		ioctl (fd, MTRRIOC_GET_ENTRY, &gentry) == 0;
          	++gentry.regnum) {

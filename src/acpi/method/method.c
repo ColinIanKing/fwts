@@ -44,22 +44,22 @@
  * _BST  10.2.2.6	Y
  * _BTP  10.2.2.7	Y
  * _CID  6.1.2		N
- * _CRS  6.2.2		N
+ * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CST  8.4.2.1	N
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
  * _DGS  B.6.7		Y
- * _DIS  6.2.3		N
+ * _DIS  6.2.3		Y
  * _DOD  B.4.2		Y
  * _DOS  B.4.1		Y
  * _DSS  B.6.8		Y
  * _DSW  7.2.1		N
  * _Exx  5.6.4.1	n/a
- * _EC   1.12		N
- * _EJD  6.3.2		N
- * _EJx  6.3.3		n/a
+ * _EC   1.12		n/a
+ * _EJD  6.3.2		Y
+ * _EJx  6.3.3		Y
  * _GHL  10.4.7		N
  * _GL   5.7.1		N
  * _GLK  6.5.7		n/a
@@ -70,13 +70,13 @@
  * _GTS  7.3.3		Y
  * _HOT  11.4.6		Y
  * _INI  6.5.1		N
- * _IRC  7.2.13		N
+ * _IRC  7.2.13		Y
  * _Lxx  5.6.4.1	n/a
- * _LCK  6.3.4		n/a
+ * _LCK  6.3.4		Y
  * _LID  9.4.1		Y
  * _MAT  6.2.9		N
- * _OFF  7.1.2		N
- * _ON   7.1.3		N
+ * _OFF  7.1.2		Y
+ * _ON   7.1.3		Y
  * _OSC  6.2.10		n/a
  * _OSI  5.7.2		n/a
  * _OST  6.3.5		N
@@ -90,20 +90,22 @@
  * _PR0  7.2.7		N
  * _PRS  6.2.11		N
  * _PRW  7.2.11		N
- * _PS0  7.2.2		N
- * _PS3  7.2.5		N
- * _PSC  7.2.6		N
+ * _PS0  7.2.2		Y
+ * _PS1  7.2.3		Y
+ * _PS2  7.2.4		Y
+ * _PS3  7.2.5		Y
+ * _PSC  7.2.6		Y
  * _PSD  8.4.4.5	N
  * _PSL  11.4.8		N
  * _PSR  10.3.1		Y
  * _PSS  8.4.4.2	N
  * _PSV  11.4.9		Y
- * _PSW  7.2.12		N
+ * _PSW  7.2.12		Y
  * _PTC  8.4.3.1	N
  * _PTP  10.4.2		N
  * _PTS  7.3.2		Y
  * _PUR  8.5.11		N
- * _PXM  6.2.13 	N
+ * _PXM  6.2.13 	Y
  * _Qxx  5.6.4.1	n/a
  * _REG  6.5.4		N
  * _REV  5.7.4		N
@@ -366,10 +368,22 @@ static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf,
 	return FWTS_OK;
 }
 
+static void method_test_buffer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a buffer of %d elements.", name, obj->Buffer.Length);
+}
+
 static void method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned an integer.", name);
+}
+
+static void method_test_string_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a string.", name);
 }
 
 static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1608,6 +1622,120 @@ static int method_test_DSS(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_DSS", arg, 1, method_test_NULL_return, NULL);
 }
 
+/* Section 6.5 Other Objects and Controls */
+
+static int method_test_CRS(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_MANDITORY, "_CRS", NULL, 0, method_test_buffer_return, NULL);
+}
+
+static int method_test_DMA(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_DMA", NULL, 0, method_test_buffer_return, NULL);
+}
+
+static int method_test_DIS(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_DIS", NULL, 0, method_test_NULL_return, NULL);
+}
+
+static int method_test_PXM(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_PXM", NULL, 0, method_test_integer_return, NULL);
+}
+
+/* Section 7.2 */
+
+static int method_test_DSW(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[3];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+	arg[1].Type = ACPI_TYPE_INTEGER;
+	arg[1].Integer.Value = 0;
+	arg[2].Type = ACPI_TYPE_INTEGER;
+	arg[2].Integer.Value = 3;
+
+	return method_execute_method(fw, METHOD_OPTIONAL, "_DSW", arg, 3, method_test_NULL_return, NULL);
+}
+
+#define method_test_PSx(name)				\
+static int method_test ## name(fwts_framework *fw)	\
+{							\
+	return method_execute_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_NULL_return, # name); \
+}			
+
+method_test_PSx(_PS0)
+method_test_PSx(_PS1)
+method_test_PSx(_PS2)
+method_test_PSx(_PS3)
+
+static int method_test_PSC(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_PSC", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_PSW(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+
+	return method_execute_method(fw, METHOD_OPTIONAL, "_PSW", arg, 1, method_test_NULL_return, NULL);
+}
+
+static int method_test_IRC(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_IRC", NULL, 0, method_test_NULL_return, NULL);
+}
+
+/* Section 6.3 */
+
+static int method_test_EJD(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_EJD", NULL, 0, method_test_string_return, NULL);
+}
+
+#define method_test_EJx(name)				\
+static int method_test ## name(fwts_framework *fw)	\
+{							\
+	ACPI_OBJECT arg[1];				\
+							\
+	arg[0].Type = ACPI_TYPE_INTEGER;		\
+	arg[0].Integer.Value = 1;			\
+							\
+	return method_execute_method(fw, METHOD_OPTIONAL, # name, arg, 1, method_test_NULL_return, # name); \
+}			
+
+method_test_EJx(_EJ0)
+method_test_EJx(_EJ1)
+method_test_EJx(_EJ2)
+method_test_EJx(_EJ3)
+method_test_EJx(_EJ4)
+
+static int method_test_LCK(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+
+	return method_execute_method(fw, METHOD_OPTIONAL, "_LCK", arg, 1, method_test_NULL_return, NULL);
+}
+
+/* Section 7.1 */
+
+static int method_test_ON(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_ON", NULL, 0, method_test_NULL_return, NULL);
+}
+
+static int method_test_OFF(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_OFF", NULL, 0, method_test_NULL_return, NULL);
+}
 
 /* Tests */
 
@@ -1682,6 +1810,13 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TST, "Check _TST (Temperature Sensor Threshold) Object." },
 	{ method_test_TZP, "Check _TZP (Thermal Zone Polling) Object." },
 
+	/* Section 6.2 Device Configurations Objects */
+
+	{ method_test_CRS, "Check _CRS (Current Resource Settings)." },
+	{ method_test_DMA, "Check _DMA (Direct Memory Access)." },
+	{ method_test_DIS, "Check _DIS (Disable)." },
+	{ method_test_PXM, "Check _PXM (Proximity)." },
+
 	/* Section 6.5 Other Objects and Controls */
 	
 	{ method_test_DCK, "Check _DCK (Dock)." },
@@ -1701,6 +1836,29 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S5,  "Check _S5  (System S5 State) Object." },
 	{ method_test_WAK, "Check _WAK (System Wake)." },
 
+	/* Section 6.2 */
+	{ method_test_DSW, "Check _DSW (Device Sleep Wake)." },
+	{ method_test_PS0, "Check _PS0 (Power State 0)." },
+	{ method_test_PS1, "Check _PS1 (Power State 1)." },
+	{ method_test_PS2, "Check _PS2 (Power State 2)." },
+	{ method_test_PS3, "Check _PS3 (Power State 3)." },
+	{ method_test_PSC, "Check _PSC (Power State Current)." },
+	{ method_test_PSW, "Check _PSW (Power State Wake)." },
+	{ method_test_IRC, "Check _IRC (In Rush Current)." },
+
+	/* Section 6.3 */
+	{ method_test_EJD, "Check _EJD (Ejection Dependent Device)." },
+	{ method_test_EJ0, "Check _EJ0 (Eject)." },
+	{ method_test_EJ1, "Check _EJ1 (Eject)." },
+	{ method_test_EJ2, "Check _EJ2 (Eject)." },
+	{ method_test_EJ3, "Check _EJ3 (Eject)." },
+	{ method_test_EJ4, "Check _EJ4 (Eject)." },
+	{ method_test_LCK, "Check _LCK (Lock)." },
+
+	/* Section 7.1 */
+	{ method_test_ON,  "Check _ON  (Set resource on)." },
+	{ method_test_OFF, "Check _OFF (Set resource off)." },
+	
 	/* Appendix B, ACPI Extensions for Display Adapters */
 	
 	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching)." },

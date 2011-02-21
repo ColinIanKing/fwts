@@ -111,7 +111,7 @@
  * _REV  5.7.4		N
  * _RMV  6.3.6		N
  * _ROM  B.4.3		Y
- * _SB   5.3.1		N
+ * _SB   5.3.1		n/a
  * _SBS  10.1.3		Y
  * _SCP  11.4.11	Y
  * _SDD  9.8.3.3.1	N
@@ -135,7 +135,7 @@
  * _TZD  11.4.19	N
  * _TZM  11.4.20	N
  * _TZP  11.4.21	Y
- * _UID  6.1.9		N
+ * _UID  6.1.9		Y
  * _VPO  B.4.6		Y
  * _WAK  7.3.7 		Y
  * _Wxx  5.6.4.2.2
@@ -1737,6 +1737,42 @@ static int method_test_OFF(fwts_framework *fw)
 	return method_execute_method(fw, METHOD_OPTIONAL, "_OFF", NULL, 0, method_test_NULL_return, NULL);
 }
 
+/* Section 6.1 */
+
+static int method_test_SUN(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_SUN", NULL, 0, method_test_integer_return, NULL);
+}
+
+static void method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer) 
+			fwts_passed(fw, "Object _UID returned a string '%s' as expected.",
+				obj->String.Pointer);
+		else {
+			fwts_failed(fw, "Object _UID returned a NULL string.");
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+		break;
+	case ACPI_TYPE_INTEGER:
+		fwts_passed(fw, "Object _UID returned am integer 0x%8.8llx.",
+			(unsigned long long)obj->Integer.Value);
+		break;
+	default:
+		fwts_failed(fw, "Method _UID did not return a string or an integer.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		break;
+	}
+}
+
+static int method_test_UID(fwts_framework *fw)
+{
+	return method_execute_method(fw, METHOD_OPTIONAL, "_UID", NULL, 0, method_test_UID_return, NULL);
+}
+
+
 /* Tests */
 
 static fwts_framework_minor_test method_tests[] = {
@@ -1809,6 +1845,11 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TSP, "Check _TSP (Thermal Sampling Period) Object." },
 	{ method_test_TST, "Check _TST (Temperature Sensor Threshold) Object." },
 	{ method_test_TZP, "Check _TZP (Thermal Zone Polling) Object." },
+
+	/* Section 6.1 */
+
+	{ method_test_SUN, "Check _SUN (Slot User Number)." },
+	{ method_test_UID, "Check _UID (Unique ID)." },
 
 	/* Section 6.2 Device Configurations Objects */
 

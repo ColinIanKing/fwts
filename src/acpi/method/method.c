@@ -27,6 +27,118 @@
 /* acpica headers */
 #include "acpi.h"
 
+/* 
+ * ACPI methods + objects used in Linux ACPI driver:
+ *
+ * Name	 APCI Spec.	Tested
+ *	 section
+ * _ADR  6.1.1, B.6.1,	Y
+ * _ALx  11.4.2		N
+ * _BBN  6.5.5		Y
+ * _BCL  B.6.2 		Y
+ * _BCM  B.6.3		Y
+ * _BFS  7.3.1		Y
+ * _BIF  10.2.2.1	Y
+ * _BIX  10.2.2.2	Y
+ * _BQC  B.6.4		Y
+ * _BST  10.2.2.6	Y
+ * _BTP  10.2.2.7	Y
+ * _CID  6.1.2		N
+ * _CRS  6.2.2		N
+ * _CRT  11.4.4		Y
+ * _CST  8.4.2.1	N
+ * _DCK  6.5.2		Y
+ * _DCS  B.6.6		Y
+ * _DDC  B.6.5		Y
+ * _DGS  B.6.7		Y
+ * _DIS  6.2.3		N
+ * _DOD  B.4.2		Y
+ * _DOS  B.4.1		Y
+ * _DSS  B.6.8		Y
+ * _DSW  7.2.1		N
+ * _Exx  5.6.4.1	n/a
+ * _EC   1.12		N
+ * _EJD  6.3.2		N
+ * _EJx  6.3.3		n/a
+ * _GHL  10.4.7		N
+ * _GL   5.7.1		N
+ * _GLK  6.5.7		n/a
+ * _GPD  B.4.4		Y
+ * _GPE  5.3.1, 12.11	N
+ * _GTF  9.8.1.1	N
+ * _GTM  9.8.2.1.1	N
+ * _GTS  7.3.3		Y
+ * _HOT  11.4.6		Y
+ * _INI  6.5.1		N
+ * _IRC  7.2.13		N
+ * _Lxx  5.6.4.1	n/a
+ * _LCK  6.3.4		n/a
+ * _LID  9.4.1		Y
+ * _MAT  6.2.9		N
+ * _OFF  7.1.2		N
+ * _ON   7.1.3		N
+ * _OSC  6.2.10		n/a
+ * _OSI  5.7.2		n/a
+ * _OST  6.3.5		N
+ * _PCT  8.4.4.1	N
+ * _PDC  8.4.1		N
+ * _PMC  10.4.1		N
+ * _PMD  10.4.8		N
+ * _PMM  10.4.3		N
+ * _PPC  8.4.4.3	N
+ * _PR   5.3.1		N
+ * _PR0  7.2.7		N
+ * _PRS  6.2.11		N
+ * _PRW  7.2.11		N
+ * _PS0  7.2.2		N
+ * _PS3  7.2.5		N
+ * _PSC  7.2.6		N
+ * _PSD  8.4.4.5	N
+ * _PSL  11.4.8		N
+ * _PSR  10.3.1		Y
+ * _PSS  8.4.4.2	N
+ * _PSV  11.4.9		Y
+ * _PSW  7.2.12		N
+ * _PTC  8.4.3.1	N
+ * _PTP  10.4.2		N
+ * _PTS  7.3.2		Y
+ * _PUR  8.5.11		N
+ * _PXM  6.2.13 	N
+ * _Qxx  5.6.4.1	n/a
+ * _REG  6.5.4		N
+ * _REV  5.7.4		N
+ * _RMV  6.3.6		N
+ * _ROM  B.4.3		Y
+ * _SB   5.3.1		N
+ * _SBS  10.1.3		Y
+ * _SCP  11.4.11	Y
+ * _SDD  9.8.3.3.1	N
+ * _SEG  6.5.6		N
+ * _SHL  10.4.5		N
+ * _SPD  B.4.5		Y
+ * _SRS  6.2.15		N
+ * _SST  9.1.1		N
+ * _STA  6.3.7, 7.1.4	N
+ * _STM  9.8.2.1.2	N
+ * _SUN  6.1.8		N
+ * _T_x  18.2.1.1	n/a
+ * _TC1  11.4.12	Y
+ * _TC2  11.4.13	Y
+ * _TMP  11.4.14	Y
+ * _TPC  8.4.3.3	N
+ * _TSD  8.4.3.4	N
+ * _TSP  11.4.17	Y
+ * _TSS  8.4.3.2	N
+ * _TZ   5.3.1		N
+ * _TZD  11.4.19	N
+ * _TZM  11.4.20	N
+ * _TZP  11.4.21	Y
+ * _UID  6.1.9		N
+ * _VPO  B.4.6		Y
+ * _WAK  7.3.7 		Y
+ * _Wxx  5.6.4.2.2
+ */
+
 /* Test types */
 #define	METHOD_MANDITORY	1
 #define METHOD_OPTIONAL		2

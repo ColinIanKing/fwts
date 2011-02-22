@@ -377,7 +377,7 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 static fwts_option s3_options[] = {
 	{ "s3-multiple", 	"", 1, "Run S3 tests multiple times, e.g. --s3-multiple=10." },
 	{ "s3-min-delay", 	"", 1, "Minimum time between S3 iterations, e.g. --s3-min-delay=10" },
-	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterationsm, e.g. --s3-max-delay=20" },
+	{ "s3-max-delay", 	"", 1, "Maximum time between S3 iterations, e.g. --s3-max-delay=20" },
 	{ "s3-delay-delta", 	"", 1, "Time to be added to delay between S3 iterations. Used in conjunction with --s3-min-delay and --s3-max-delay, e.g. --s3-delay-delta=2.5" },
 	{ "s3-sleep-delay",	"", 1, "Sleep N seconds between start of suspend and wakeup, e.g. --s3-sleep-delay=60" },
 	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add a default of 15 seconds to allow wifi to re-associate.  Cannot be used with --s3-min-delay, --s3-max-delay and --s3-delay-delta." },

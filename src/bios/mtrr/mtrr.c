@@ -23,6 +23,8 @@
 
 #ifdef FWTS_ARCH_INTEL
 
+#define FWTS_TEST_VGA_REGION	0
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -173,6 +175,7 @@ restart:
 	return type;
 }
 
+#if FWTS_TEST_VGA_REGION
 static fwts_list *get_klog_bios_mtrr(void)
 {
 	fwts_list *mtrr_bios_list;
@@ -224,7 +227,9 @@ static fwts_list *get_klog_bios_mtrr(void)
 
 	return mtrr_bios_list;
 }
+#endif
 
+#if FWTS_TEST_VGA_REGION
 static int check_vga_controller_address(fwts_framework *fw)
 {
 	char line[4096];
@@ -303,6 +308,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 
 	return FWTS_OK;
 }
+#endif
 
 static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 {
@@ -578,16 +584,20 @@ static int mtrr_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+#if FWTS_TEST_VGA_REGION
 static int mtrr_test4(fwts_framework *fw)
 {
 	return check_vga_controller_address(fw);
 }
+#endif
 
 static fwts_framework_minor_test mtrr_tests[] = {
 	{ mtrr_test1, "Validate the kernel MTRR IOMEM setup." },
 	{ mtrr_test2, "Validate the MTRR setup across all processors." },
 	{ mtrr_test3, "Check for AMD MtrrFixDramModEn being cleared by the BIOS." },
+#if FWTS_TEST_VGA_REGION
 	{ mtrr_test4, "Validate the BIOS providided boot time MTRR IOMEM setup." },
+#endif
 	{ NULL, NULL }
 };
 

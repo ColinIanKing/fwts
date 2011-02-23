@@ -1,3 +1,15 @@
+fwts (0.22.01) natty; urgency=low
+
+  * Fixes for minor bugs (LP: #723746)
+  * bios: mtrr: fix: disable MTRR VGA test as it is not helpful.
+  * doc: fix fwts man page, remove duplicated -s options.
+  * acpi: s3: fix typo.
+  * acpi: method: comments on what needs testing.
+  * bios: mtrr: fix to stop valgrind complaining.
+  * lib: fwts_summary: fix summary fields to fit in 80 columns.
+
+ -- Colin King <colin.king@canonical.com>  Wed, 23 Feb 2011 14:37:00 +0000
+
 fwts (0.22.00) natty; urgency=low
 
   * New version for Natty release (LP: #720271)

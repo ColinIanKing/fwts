@@ -18,17 +18,26 @@ Description: FirmWare Test Suite
 Package: libfwtsiasl1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: ACPICA core built for iasl functionality
- This is the ACPICA core built into a library to support iasl functionality.
+Description: FirmWare Test Suite ACPICA core built for iasl functionality
+ The firmware test suite requires the ACPICA core engine to be built in
+ compiler mode (with ACPI_ASL_COMPILER enabled) to support assembly and 
+ disassembly of ACPI Machine Language (AML) in the ACPI DSDT and SSDTs.
+ This library contains this code with a thin fwts specifica API to 
+ interface with fwts.
 
 Package: libfwtsacpica1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: ACPICA core built for acpiexec functionality
- This is the ACPICA core built into a library to support acpiexec functionality.
+Description: FirmWare Test Suite ACPICA core built for acpiexec functionality
+ The firmware test suite requires the ACPICA core engine to be built in
+ execution mode (with ACPI_EXEC_APP enabled) to support run time execution
+ of ACPI Machine Language (AML) in the ACPI DSDT and SSDTs. This library
+ contains this code with a thin fwts specifica API to interface with fwts.
 
 Package: libfwts1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fwts core library
- This is the fwts core library.
+Description: FirmWare Test Suite core support library
+ This is the fwts core library. It contains a top level test framework
+ and a rich range of firmware specific testing support code for the 
+ various fwts tests.

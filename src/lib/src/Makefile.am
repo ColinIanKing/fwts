@@ -5,7 +5,8 @@ AM_CPPFLAGS = \
 	-Wall -Werror
 
 lib_LTLIBRARIES = libfwts.la
-libfwts_la_LDFLAGS = -lm -lpcre -lpthread -ljson -version-info 1:0:0
+libfwts_la_LDFLAGS = -lm -lpcre -lpthread -ljson -version-info 1:0:0 \
+	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
 
 libfwts_la_SOURCES = \
 	fwts_acpi.c \

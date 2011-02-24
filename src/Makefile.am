@@ -1,4 +1,10 @@
-SUBDIRS = lib acpica
+# Must build in this order:
+#   1. acpica/source/compiler
+#   2. lib
+#   3. acpica
+# ... because the libs in this bundled acpica/ depend on lib/ (libfwts.so),
+# but libfwts.so depends on libraries produced by acpica/source/compiler.
+SUBDIRS = acpica/source/compiler lib acpica
  
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 

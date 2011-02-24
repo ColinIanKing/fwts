@@ -1,4 +1,5 @@
-SUBDIRS = source/compiler
+# Nb. the top-level Makefile builds source/compiler for us now...
+## SUBDIRS = source/compiler
 
 ACPICA_SRC =    source
 ACPICA_COMMON = $(ACPICA_SRC)/common

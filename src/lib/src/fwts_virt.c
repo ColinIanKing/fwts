@@ -28,10 +28,10 @@
 #include "fwts.h"
 
 /*
- *  exec_cpuid()
+ *  fwts_exec_cpuid()
  *	execute cpuid instruction on a given CPU
  */
-void exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
+void fwts_exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
 {
 	cpu_set_t mask, oldmask;
 

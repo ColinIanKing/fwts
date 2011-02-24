@@ -151,13 +151,13 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		return FWTS_ERROR;
 	}
 
-	if ((fd = acpi_event_open()) < 0) {
+	if ((fd = fwts_acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
 
 	for (i=0;i<=20;i++) {
-		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL) {
+		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "button/lid")) {
 				events++;
 				lid_check_field_poll("state", state, &matching, &not_matching);
@@ -167,7 +167,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 		}
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	acpi_event_close(fd);
+	fwts_acpi_event_close(fd);
 
 	if ((gpe_count = fwts_gpe_read(&gpes_end)) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot read GPEs.");

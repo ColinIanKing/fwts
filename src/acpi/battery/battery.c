@@ -87,13 +87,13 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 		return FWTS_ERROR;
 	}
 
-	if ((fd = acpi_event_open()) < 0) {
+	if ((fd = fwts_acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
 
 	for (i=0;i<=20;i++) {
-		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL) {
+		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			char *str;
 			if ((str = strstr(buffer, "battery")) != NULL) {
 				events++;
@@ -107,7 +107,7 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 		}
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	acpi_event_close(fd);
+	fwts_acpi_event_close(fd);
 
 	if ((gpe_count = fwts_gpe_read(&gpes_end)) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot read GPEs.");

@@ -20,8 +20,8 @@
 #ifndef __FWTS_ACPID_H__
 #define __FWTS_ACPID_H__
 
-int acpi_event_open(void);
-char *acpi_event_read(const int fd, int *length, const int timeout);
-void acpi_event_close(const int fd);
+int   fwts_acpi_event_open(void);
+char *fwts_acpi_event_read(const int fd, int *length, const int timeout);
+void  fwts_acpi_event_close(const int fd);
 
 #endif

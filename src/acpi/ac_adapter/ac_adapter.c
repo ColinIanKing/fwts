@@ -122,7 +122,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 	int events;
 	int i;
 
-	if ((fd = acpi_event_open()) < 0) {
+	if ((fd = fwts_acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
@@ -134,7 +134,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 	fwts_printf(fw, "==== Please unplug the laptop power. ====\n");
 
 	for (i=0;i<20;i++) {
-		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL) {
+		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "ac_adapter")) {
 				events++;
 				ac_adapter_check_field("state", "off-line", &matching, &not_matching);
@@ -159,7 +159,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 	fwts_printf(fw, "==== Please re-connect the laptop power. ====\n");
 
 	for (i=0;i<20;i++) {
-		if ((buffer = acpi_event_read(fd, &len, 1)) != NULL) {
+		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			events++;
 			if (strstr(buffer, "ac_adapter")) {
 				events++;
@@ -178,7 +178,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 		else
 			fwts_passed(fw, "Detected ac_adapter on-line state.");
 
-	acpi_event_close(fd);
+	fwts_acpi_event_close(fd);
 
 	return FWTS_OK;
 }

@@ -39,10 +39,10 @@
 #define ACPID_SOCKET	"/var/run/acpid.socket"
 
 /*
- *  acpi_event_open()
+ *  fwts_acpi_event_open()
  *	open socket to acpid, return fd
  */
-int acpi_event_open(void)
+int fwts_acpi_event_open(void)
 {
 	struct sockaddr_un addr;
 	int ret;
@@ -66,10 +66,10 @@ int acpi_event_open(void)
 }
 
 /*
- *  acpi_event_read()
+ *  fwts_acpi_event_read()
  *	read event from acpid socket, wait for timeout secs
  */
-char *acpi_event_read(const int fd, int *length, const int timeout)
+char *fwts_acpi_event_read(const int fd, int *length, const int timeout)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
@@ -113,10 +113,10 @@ char *acpi_event_read(const int fd, int *length, const int timeout)
 }
 
 /*
- *  acpi_event_close()
+ *  fwts_acpi_event_close()
  *	close socket connection
  */
-void acpi_event_close(const int fd)
+void fwts_acpi_event_close(const int fd)
 {
 	close(fd);
 }

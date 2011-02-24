@@ -63,8 +63,8 @@ fwts_SOURCES = main.c \
 fwts_LDFLAGS = -ljson -lm
 
 fwts_LDADD = \
-	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
-	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
+	-Llib/src -lfwts \
+	-L$(top_srcdir)/src/acpica -lfwtsacpica \
+	-L$(top_srcdir)/src/acpica/source/compiler -lfwtsiasl
 
 man_MANS = ../doc/fwts.1

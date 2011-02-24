@@ -173,5 +173,5 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \
-	$(top_srcdir)/src/lib/src/.libs/libfwts.la
+	-L$(top_srcdir)/src/lib/src -lfwts
 

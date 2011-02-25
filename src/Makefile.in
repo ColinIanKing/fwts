@@ -68,9 +68,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
 	version.$(OBJEXT) oops.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
-fwts_DEPENDENCIES = $(top_srcdir)/src/lib/src/.libs/libfwts.la \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
-	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
+fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(fwts_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -270,7 +268,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = lib acpica
+
+# Must build in this order:
+#   1. acpica/source/compiler
+#   2. lib
+#   3. acpica
+# ... because the libs in this bundled acpica/ depend on lib/ (libfwts.so),
+# but libfwts.so depends on libraries produced by acpica/source/compiler.
+SUBDIRS = acpica/source/compiler lib acpica
 AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
 fwts_SOURCES = main.c \
 	acpi/klog/klog.c \
@@ -325,9 +330,9 @@ fwts_SOURCES = main.c \
 
 fwts_LDFLAGS = -ljson -lm
 fwts_LDADD = \
-	$(top_srcdir)/src/lib/src/.libs/libfwts.la \
-	$(top_srcdir)/src/acpica/.libs/libfwtsacpica.la \
-	$(top_srcdir)/src/acpica/source/compiler/.libs/libfwtsiasl.la
+	-Llib/src -lfwts \
+	-L$(top_srcdir)/src/acpica -lfwtsacpica \
+	-L$(top_srcdir)/src/acpica/source/compiler -lfwtsiasl
 
 man_MANS = ../doc/fwts.1
 all: all-recursive

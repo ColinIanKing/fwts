@@ -1,3 +1,17 @@
+fwts (0.22.02) natty; urgency=low
+
+  * clean up libtool linker usage.
+  * fix build order (acpica/source/compiler must build first).
+  * remove redundant 2nd pciutils from control file.
+  * lib: virt: rename exec_cpuid to fwts_exec_cpuid
+  * lib: acpid: rename event funcs with fwts_ prrefix
+  * configure.ac: remove AC_PROG_OBJCOPY
+  * debian: control: add more description to libraries.
+  * acpi: acpidump: fix typo 'suppored' -> 'supported'.
+  * doc: fwts man page: fix - to \-
+
+ -- Colin King <colin.king@canonical.com>  Fri, 25 Feb 2011 16:36:23 +0000
+
 fwts (0.22.01) natty; urgency=low
 
   * Fixes for minor bugs (LP: #723746)

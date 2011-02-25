@@ -1,3 +1,10 @@
+fwts (0.22.03) natty; urgency=low
+
+  * Fixes for lintian warnings (LP: #725336)
+  * fix build order (acpica/source/compiler must build first)
+
+ -- Colin King <colin.king@canonical.com>  Fri, 25 Feb 2011 23:15:01 +0000
+
 fwts (0.22.02) natty; urgency=low
 
   * clean up libtool linker usage.

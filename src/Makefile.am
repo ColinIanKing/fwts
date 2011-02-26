@@ -64,7 +64,6 @@ fwts_LDFLAGS = -ljson -lm
 
 fwts_LDADD = \
 	-Llib/src -lfwts \
-	-L$(top_srcdir)/src/acpica -lfwtsacpica \
-	-L$(top_srcdir)/src/acpica/source/compiler -lfwtsiasl
+	-L$(top_srcdir)/src/acpica -lfwtsacpica
 
 man_MANS = ../doc/fwts.1

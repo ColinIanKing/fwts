@@ -63,10 +63,12 @@ static int ebda_init(fwts_framework *fw)
 
 	if (lseek(fd, EBDA_OFFSET, SEEK_SET) < 0) {
 		fwts_log_error(fw, "Failed to seek to EBDA offset 0x%x.", EBDA_OFFSET);
+		close(fd);
 		return FWTS_ERROR;
 	}
 	if (read(fd, &addr, sizeof(unsigned short)) <= 0) {
 		fwts_log_error(fw, "Failed to read EBDA address.");
+		close(fd);
 		return FWTS_ERROR;
 	}
 	close(fd);

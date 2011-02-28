@@ -189,6 +189,11 @@ static int hpet_check_test1(fwts_framework *fw)
 		}
 	}
 
+	if (hpet_base_p == 0) {
+		fwts_log_info(fw, "No base address found for HPET.");
+		return FWTS_ERROR;
+	}
+
 	return FWTS_OK;
 }
 
@@ -198,6 +203,11 @@ static int hpet_check_test2(fwts_framework *fw)
 	uint64_t hpet_id;
 	uint32_t vendor_id;
 	uint32_t clk_period;
+
+	if (hpet_base_p == 0) {
+		fwts_log_info(fw, "Test skipped because previous test failed.");
+		return FWTS_SKIP;
+	}
 
 	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
 		fwts_log_error(fw, "Cannot open /dev/mem.");

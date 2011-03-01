@@ -261,7 +261,7 @@ static void mpdump_dump_bus(fwts_framework *fw)
 	fwts_log_info_verbatum(fw, "   ID  Type");
 	fwts_list_foreach(entry, &sorted) {
 		fwts_mp_bus_entry *bus_entry = fwts_list_data(fwts_mp_bus_entry *, entry);
-		fwts_log_info_verbatum(fw, "  0x%2.2x %6.6s", 
+		fwts_log_info_verbatum(fw, "  %3d  %6.6s", 
 			bus_entry->bus_id, bus_entry->bus_type);
 	}
 	fwts_log_nl(fw);
@@ -273,7 +273,8 @@ static int mpdump_compare_io_irq(void *data1, void *data2)
 	fwts_mp_io_interrupt_entry *entry1 = (fwts_mp_io_interrupt_entry*)data1;
 	fwts_mp_io_interrupt_entry *entry2 = (fwts_mp_io_interrupt_entry*)data2;
 
-	return entry1->source_bus_irq - entry2->source_bus_irq;
+	return (entry1->source_bus_irq + (entry1->source_bus_id * 256)) - 
+	       (entry2->source_bus_irq + (entry2->source_bus_id * 256));
 }
 
 static int mpdump_compare_local_irq(void *data1, void *data2)
@@ -284,7 +285,57 @@ static int mpdump_compare_local_irq(void *data1, void *data2)
 	return entry1->source_bus_irq - entry2->source_bus_irq;
 }
 
-static void mpdump_dump_irq_table(fwts_framework *fw)
+static char *mpdump_find_bus_name(uint8_t bus_id)
+{
+	fwts_list_link	*entry;
+
+	fwts_list_foreach(entry, &mp_data.entries) {
+		uint8_t *data = fwts_list_data(uint8_t *, entry);
+		if (*data == FWTS_MP_BUS_ENTRY) {
+			fwts_mp_bus_entry *bus_entry = fwts_list_data(fwts_mp_bus_entry *, entry);
+			if (bus_entry->bus_id == bus_id)
+				return (char*)&bus_entry->bus_type;
+		}
+	}
+	return "Unknown";
+}
+
+static char *mpdump_dst_io_apic(uint8_t apic)
+{
+	static char buffer[4];
+
+	if (apic == 255)
+		return "all";
+	else {
+		snprintf(buffer, sizeof(buffer), "%d", apic);
+		return buffer;
+	}
+}
+
+uint8_t mpdump_get_apic_id(void *data)
+{
+	uint8_t *which = (uint8_t*)data;
+	
+	if (*which == FWTS_MP_CPU_ENTRY) {
+		fwts_mp_processor_entry *cpu_entry = (fwts_mp_processor_entry *)data;
+		return cpu_entry->local_apic_id;
+	}
+	if (*which == FWTS_MP_IO_APIC_ENTRY) {
+		fwts_mp_io_apic_entry *io_apic_entry = (fwts_mp_io_apic_entry *)data;
+		return io_apic_entry->id;
+	}
+	return 0xff;
+}
+
+static int mpdump_compare_apic_id(void *data1, void *data2)
+{
+	uint8_t val1 = mpdump_get_apic_id(data1);
+	uint8_t val2 = mpdump_get_apic_id(data2);
+
+	return (int)val1 - (int)val2;
+}
+
+static void mpdump_dump_apics(fwts_framework *fw)
 {
 	fwts_list_link	*entry;
 	fwts_list	sorted;
@@ -293,28 +344,54 @@ static void mpdump_dump_irq_table(fwts_framework *fw)
 	
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
+		if ((*data == FWTS_MP_CPU_ENTRY) || (*data == FWTS_MP_IO_APIC_ENTRY))
+			fwts_list_add_ordered(&sorted, data, mpdump_compare_apic_id);
+	}
+	
+	fwts_log_info_verbatum(fw, "APIC IDs:");
+	fwts_log_info_verbatum(fw, "   ID  Type");
+	fwts_list_foreach(entry, &sorted) {
+		uint8_t *data = fwts_list_data(uint8_t *, entry);
+			fwts_log_info_verbatum(fw, "  %3d  %s APIC",
+				mpdump_get_apic_id(data),
+		 		(*data == FWTS_MP_CPU_ENTRY) ? "CPU Local" : "I/O");
+	}
+	fwts_log_nl(fw);
+	fwts_list_free_items(&sorted, NULL);
+}
+
+static void mpdump_dump_irq_table(fwts_framework *fw)
+{
+	fwts_list_link	*entry;
+	fwts_list	sorted;
+
+	fwts_list_init(&sorted);
+	fwts_list_foreach(entry, &mp_data.entries) {
+		uint8_t *data = fwts_list_data(uint8_t *, entry);
 		if (*data == FWTS_MP_IO_INTERRUPT_ENTRY)
 			fwts_list_add_ordered(&sorted, data, mpdump_compare_io_irq);
 	}
 
 	fwts_log_info_verbatum(fw, "IO Interrupts:");
-	fwts_log_info_verbatum(fw, "  IRQ#  Type   APIC  APIC   Polarity   Trigger");
-	fwts_log_info_verbatum(fw, "               ID    INTIN");
+	fwts_log_info_verbatum(fw, "  Src Bus  Src Bus  Src Bus  Dst I/O   Dst I/O     Type   Polarity   Trigger"); 
+	fwts_log_info_verbatum(fw, "    ID      Type      IRQ     APIC    APIC INTIN");
 	fwts_list_foreach(entry, &sorted) {
 		fwts_mp_io_interrupt_entry *io_interrupt_entry = 
 			fwts_list_data(fwts_mp_io_interrupt_entry *, entry);
-		fwts_log_info_verbatum(fw, "  %3d   %-6.6s %3d    %3d     %-7.7s    %-7.7s", 
+		fwts_log_info_verbatum(fw, "   %3d      %-6.6s    %3d      %3.3s       %3d      %-6.6s    %-7.7s    %-7.7s",
+			io_interrupt_entry->source_bus_id,
+			mpdump_find_bus_name(io_interrupt_entry->source_bus_id),
 			io_interrupt_entry->source_bus_irq, 
-			io_interrupt_entry->type < 4 ? mpdump_inttype[io_interrupt_entry->type] : "Unknown",
-			io_interrupt_entry->destination_io_apic_id,
+			mpdump_dst_io_apic(io_interrupt_entry->destination_io_apic_id),
 			io_interrupt_entry->destination_io_apic_intin,
+			io_interrupt_entry->type < 4 ? mpdump_inttype[io_interrupt_entry->type] : "Unknown",
 			mpdump_po_short[io_interrupt_entry->flags & 2],
 			mpdump_el_short[(io_interrupt_entry->flags >> 2) & 2]);
 	}
 	fwts_log_nl(fw);
 	fwts_list_free_items(&sorted, NULL);
-	fwts_list_init(&sorted);
 
+	fwts_list_init(&sorted);
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
 		if (*data == FWTS_MP_LOCAL_INTERRUPT_ENTRY)
@@ -322,22 +399,26 @@ static void mpdump_dump_irq_table(fwts_framework *fw)
 	}
 
 	fwts_log_info_verbatum(fw, "Local Interrupts:");
-	fwts_log_info_verbatum(fw, "  IRQ#  Type   APIC  APIC   Polarity   Trigger");
-	fwts_log_info_verbatum(fw, "               ID    INTIN");
+	fwts_log_info_verbatum(fw, "  Src Bus  Src Bus  Src Bus  Dst I/O   Dst I/O     Type   Polarity   Trigger"); 
+	fwts_log_info_verbatum(fw, "    ID      Type      IRQ     APIC    APIC INTIN");
 	fwts_list_foreach(entry, &sorted) {
 		fwts_mp_local_interrupt_entry *local_interrupt_entry = 
 			fwts_list_data(fwts_mp_local_interrupt_entry *, entry);
-		fwts_log_info_verbatum(fw, "  %3d   %-6.6s %3d    %3d     %-7.7s    %-7.7s", 
+		fwts_log_info_verbatum(fw, "   %3d      %-6.6s    %3d      %3.3s       %3d      %-6.6s    %-7.7s    %-7.7s",
+			local_interrupt_entry->source_bus_id,
+			mpdump_find_bus_name(local_interrupt_entry->source_bus_id),
 			local_interrupt_entry->source_bus_irq, 
-			local_interrupt_entry->type < 4 ? mpdump_inttype[local_interrupt_entry->type] : "Unknown",
-			local_interrupt_entry->destination_local_apic_id,
+			mpdump_dst_io_apic(local_interrupt_entry->destination_local_apic_id),
 			local_interrupt_entry->destination_local_apic_intin,
+			local_interrupt_entry->type < 4 ? mpdump_inttype[local_interrupt_entry->type] : "Unknown",
 			mpdump_po_short[local_interrupt_entry->flags & 2],
 			mpdump_el_short[(local_interrupt_entry->flags >> 2) & 2]);
 	}
-	 
-	fwts_list_free_items(&sorted, NULL);
 	fwts_log_nl(fw);
+	fwts_log_info_verbatum(fw, "Key: Con - Conforms to bus spec, Hi - Active High, Lo - Active Lo");
+	fwts_log_info_verbatum(fw, "     Rsv - Reserved, Lvl - Level Triggered, Edg - Edge Triggered");
+	fwts_log_nl(fw);
+	fwts_list_free_items(&sorted, NULL);
 }
 
 static int mpdump_compare_system_address_space(void *data1, void *data2)
@@ -376,7 +457,7 @@ static void mpdump_dump_system_address_table(fwts_framework *fw)
 	fwts_list_foreach(entry, &sorted) {
 		fwts_mp_system_address_space_entry *sys_addr_entry =
 			fwts_list_data(fwts_mp_system_address_space_entry *, entry);
-		fwts_log_info_verbatum(fw, "  %16.16llx - %16.16llx  0x%2.2x   %s",
+		fwts_log_info_verbatum(fw, "  %16.16llx - %16.16llx  %3d    %s",
 			(unsigned long long)sys_addr_entry->address_base,
 			(unsigned long long)sys_addr_entry->address_base +
 			sys_addr_entry->address_length,
@@ -386,7 +467,6 @@ static void mpdump_dump_system_address_table(fwts_framework *fw)
 	}
 
 	fwts_list_free_items(&sorted, NULL);
-	fwts_log_nl(fw);
 }
 
 static int mpdump_test1(fwts_framework *fw)
@@ -430,9 +510,11 @@ static int mpdump_test1(fwts_framework *fw)
 		}
 	}
 
+	fwts_log_underline(fw->results, '-');
 	fwts_log_info(fw, "Collated Data:");
 	fwts_log_nl(fw);
 	mpdump_dump_bus(fw);
+	mpdump_dump_apics(fw);
 	mpdump_dump_irq_table(fw);
 	mpdump_dump_system_address_table(fw);
 

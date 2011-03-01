@@ -34,6 +34,7 @@ libfwts_la_SOURCES = \
 	fwts_log.c \
 	fwts_memorymap.c \
 	fwts_microcode.c \
+	fwts_multiproc.c \
 	fwts_oops.c \
 	fwts_pipeio.c \
 	fwts_set.c \

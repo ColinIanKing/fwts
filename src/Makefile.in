@@ -61,12 +61,13 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
 	bios_info.$(OBJEXT) bios32.$(OBJEXT) hdaaudio.$(OBJEXT) \
 	romdump.$(OBJEXT) os2gap.$(OBJEXT) memmapdump.$(OBJEXT) \
-	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
-	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
-	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) \
-	nx.$(OBJEXT) microcode.$(OBJEXT) hotkey.$(OBJEXT) \
-	version.$(OBJEXT) oops.$(OBJEXT) uefidump.$(OBJEXT)
+	mpdump.$(OBJEXT) smbios.$(OBJEXT) cmosdump.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
+	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
+	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
+	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
+	hotkey.$(OBJEXT) version.$(OBJEXT) oops.$(OBJEXT) \
+	uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -311,6 +312,7 @@ fwts_SOURCES = main.c \
 	bios/romdump/romdump.c \
 	bios/os2gap/os2gap.c \
 	bios/memmapdump/memmapdump.c \
+	bios/multiproc/mpdump.c \
 	bios/smbios/smbios.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
@@ -331,8 +333,7 @@ fwts_SOURCES = main.c \
 fwts_LDFLAGS = -ljson -lm
 fwts_LDADD = \
 	-Llib/src -lfwts \
-	-L$(top_srcdir)/src/acpica -lfwtsacpica \
-	-L$(top_srcdir)/src/acpica/source/compiler -lfwtsiasl
+	-L$(top_srcdir)/src/acpica -lfwtsacpica
 
 man_MANS = ../doc/fwts.1
 all: all-recursive
@@ -455,6 +456,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memmapdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/method.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oops.Po@am__quote@
@@ -957,6 +959,20 @@ memmapdump.obj: bios/memmapdump/memmapdump.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/memmapdump/memmapdump.c' object='memmapdump.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o memmapdump.obj `if test -f 'bios/memmapdump/memmapdump.c'; then $(CYGPATH_W) 'bios/memmapdump/memmapdump.c'; else $(CYGPATH_W) '$(srcdir)/bios/memmapdump/memmapdump.c'; fi`
+
+mpdump.o: bios/multiproc/mpdump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpdump.o -MD -MP -MF $(DEPDIR)/mpdump.Tpo -c -o mpdump.o `test -f 'bios/multiproc/mpdump.c' || echo '$(srcdir)/'`bios/multiproc/mpdump.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mpdump.Tpo $(DEPDIR)/mpdump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/multiproc/mpdump.c' object='mpdump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mpdump.o `test -f 'bios/multiproc/mpdump.c' || echo '$(srcdir)/'`bios/multiproc/mpdump.c
+
+mpdump.obj: bios/multiproc/mpdump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mpdump.obj -MD -MP -MF $(DEPDIR)/mpdump.Tpo -c -o mpdump.obj `if test -f 'bios/multiproc/mpdump.c'; then $(CYGPATH_W) 'bios/multiproc/mpdump.c'; else $(CYGPATH_W) '$(srcdir)/bios/multiproc/mpdump.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/mpdump.Tpo $(DEPDIR)/mpdump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/multiproc/mpdump.c' object='mpdump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mpdump.obj `if test -f 'bios/multiproc/mpdump.c'; then $(CYGPATH_W) 'bios/multiproc/mpdump.c'; else $(CYGPATH_W) '$(srcdir)/bios/multiproc/mpdump.c'; fi`
 
 smbios.o: bios/smbios/smbios.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT smbios.o -MD -MP -MF $(DEPDIR)/smbios.Tpo -c -o smbios.o `test -f 'bios/smbios/smbios.c' || echo '$(srcdir)/'`bios/smbios/smbios.c

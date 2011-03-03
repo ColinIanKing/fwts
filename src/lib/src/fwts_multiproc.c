@@ -56,24 +56,6 @@ static int fwts_mp_checksum(fwts_mp_floating_header *header)
 }
 
 /*
- *  fwts_mp_get_ebda()
- *	find where EBDA region is.
- */
-static int fwts_mp_get_ebda(off_t *ebda_offset)
-{
-	uint16_t *ebda;
-
-	if ((ebda = fwts_mmap((off_t)0x40e, sizeof(uint16_t))) == FWTS_MAP_FAILED)
-		return -1;
-
-	*ebda_offset = ((off_t)*ebda) << 4;
-
-	(void)fwts_munmap(ebda, sizeof(uint16_t));
-
-	return 0;
-}
-
-/*
  *  fwts_mp_get_address()
  *	scan for _MP_ floating pointer, set phys_addr if found.
  */
@@ -95,7 +77,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 
 	/* If we have an EBDA region defined, scan this rather than default
 	   end of 640K region */
-	if (fwts_mp_get_ebda(&ebda) != -1) {
+	if ((ebda = fwts_ebda_get()) != FWTS_NO_EBDA) {
 		if (ebda != 0) {
 			regions[0].start = ebda;
 			regions[0].end   = ebda + 1024;

@@ -21,7 +21,6 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-#define EBDA_OFFSET		0x40e
 #define BIOS_ROM_START		(0x000a0000)
 
 static int ebdadump_init(fwts_framework *fw)
@@ -50,17 +49,14 @@ static void ebdadump_data(fwts_framework *fw, uint8_t *data, int offset, int len
 
 static int ebdadump_test1(fwts_framework *fw)
 {
-	uint8_t *mem;
-	uint16_t *ebda;
 	off_t  ebda_addr;
+	uint8_t *mem;
 	size_t len;
 
-	if ((ebda = fwts_mmap((off_t)EBDA_OFFSET, sizeof(uint16_t))) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Failed to get EBDA.");
+	if ((ebda_addr = fwts_ebda_get()) == FWTS_NO_EBDA) {
+		fwts_log_error(fw, "Failed to local EBDA region.");
 		return FWTS_ERROR;
 	}
-	ebda_addr = ((off_t)*ebda) << 4;
-	(void)fwts_munmap(ebda, sizeof(uint16_t));
 
 	len = BIOS_ROM_START - ebda_addr;
 

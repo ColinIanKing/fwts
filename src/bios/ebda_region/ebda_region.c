@@ -31,17 +31,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define EBDA_OFFSET	0x40e
-#define BAD_ADDR	0
-
-static unsigned long ebda_addr = BAD_ADDR;
+static off_t ebda_addr = FWTS_NO_EBDA;
 
 static fwts_list *memory_map;
 
 static int ebda_init(fwts_framework *fw)
 {
-	uint16_t *ebda;
-
 	if (fw->firmware_type != FWTS_FIRMWARE_BIOS) {
 		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
 		return FWTS_SKIP;
@@ -55,12 +50,10 @@ static int ebda_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((ebda = fwts_mmap((off_t)EBDA_OFFSET, sizeof(uint16_t))) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Failed to get EBDA.");
+	if ((ebda_addr = fwts_ebda_get()) == FWTS_NO_EBDA) {
+		fwts_log_error(fw, "Failed to locate EBDA region.");
 		return FWTS_ERROR;
 	}
-	ebda_addr = ((unsigned long)*ebda) << 4;
-	(void)fwts_munmap(ebda, sizeof(uint16_t));
 
 	return FWTS_OK;
 }

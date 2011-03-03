@@ -26,7 +26,7 @@
 
 static char *acpidump_headline(void)
 {
-	return "Check ACPI table acpidump.";
+	return "Dump ACPI tables.";
 }
 
 struct fwts_acpidump_field;
@@ -518,7 +518,7 @@ static void acpidump_fadt(fwts_framework *fw, uint8_t *data, int length)
 		FIELD_UINT("DSDT Address", 	fwts_acpi_table_fadt, dsdt),
 		FIELD_UINT("Model",		fwts_acpi_table_fadt, reserved),
 		FIELD_STRS("PM Profile",	fwts_acpi_table_fadt, preferred_pm_profile, fwts_acpi_fadt_preferred_pm_profile, 8),
-		FIELD_UINT("SCI Interrupt 0x", 	fwts_acpi_table_fadt, sci_int),
+		FIELD_UINT("SCI Interrupt", 	fwts_acpi_table_fadt, sci_int),
 		FIELD_UINT("SMI Command Port",	fwts_acpi_table_fadt, smi_cmd),
 		FIELD_UINT("ACPI Enable Value", fwts_acpi_table_fadt, acpi_enable),
 		FIELD_UINT("ACPI Disable Value",fwts_acpi_table_fadt, acpi_disable),

@@ -77,41 +77,6 @@ static uint8_t fwts_acpi_rsdp_checksum(uint8_t *data, const int length)
 	return checksum;
 }
 
-
-/*
- *  fwts_acpi_mmap()
- *	memory map in a region of firmware
- */
-static void *fwts_acpi_mmap(off_t start, size_t size)
-{
-	int fd;
-	void *mem;
-	off_t offset = ((size_t)start) & (PAGE_SIZE-1);
-	size_t length = (size_t)size + offset;
-
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0)
-		return MAP_FAILED;
-
-	if ((mem = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, start - offset)) == MAP_FAILED) {
-		close(fd);
-		return MAP_FAILED;
-	}
-	close(fd);
-
-	return (mem + offset);
-}
-
-/*
- *  fwts_acpi_munmap()
- *	unmap previously mapped firmware memory
- */
-static void fwts_acpi_munmap(void *mem, unsigned long size)
-{
-	unsigned long offset = ((unsigned long)(mem)) & (PAGE_SIZE-1);
-
-	munmap(mem - offset, size + offset);
-}
-
 /*
  *  fwts_acpi_find_rsdp_bios()
  *	Find RSDP address by scanning BIOS memory
@@ -123,7 +88,7 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
 	fwts_acpi_table_rsdp *rsdp;
 	unsigned long addr = 0;
 
-	if ((bios = fwts_acpi_mmap(BIOS_START, BIOS_LENGTH)) == MAP_FAILED)
+	if ((bios = fwts_mmap(BIOS_START, BIOS_LENGTH)) == FWTS_MAP_FAILED)
 		return 0;
 
 	/* Scan BIOS for RSDP, ACPI spec states it is aligned on 16 byte intervals */
@@ -138,7 +103,7 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
 			}
 		}
 	}
-	fwts_acpi_munmap(bios, BIOS_LENGTH);
+	(void)fwts_munmap(bios, BIOS_LENGTH);
 
 	return addr;
 }
@@ -156,11 +121,11 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
 	if ((rsdp = (fwts_acpi_table_rsdp*)malloc(sizeof(fwts_acpi_table_rsdp))) == NULL)
 		return NULL;
 
-	if ((mem = fwts_acpi_mmap(addr, sizeof(fwts_acpi_table_rsdp))) == MAP_FAILED)
+	if ((mem = fwts_mmap(addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
 	memcpy(rsdp, mem, sizeof(fwts_acpi_table_rsdp));
-	fwts_acpi_munmap(mem, sizeof(fwts_acpi_table_rsdp));
+	(void)fwts_munmap(mem, sizeof(fwts_acpi_table_rsdp));
 
 	return rsdp;
 }
@@ -177,20 +142,20 @@ static void *fwts_acpi_load_table(off_t addr)
 	void *table;
 	int len;
 	
-	if ((hdr = fwts_acpi_mmap((off_t)addr, sizeof(fwts_acpi_table_header))) == MAP_FAILED)
+	if ((hdr = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_header))) == FWTS_MAP_FAILED)
 		return NULL;
 
 	len = hdr->length;
-	fwts_acpi_munmap(hdr, sizeof(fwts_acpi_table_header));
+	(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
 
 	if ((table = malloc(len)) == NULL)
 		return NULL;
 
-	if ((mem = fwts_acpi_mmap((off_t)addr, len)) == MAP_FAILED)
+	if ((mem = fwts_mmap((off_t)addr, len)) == FWTS_MAP_FAILED)
 		return NULL;
 
 	memcpy(table, mem, len);
-	fwts_acpi_munmap(mem, len);
+	(void)fwts_munmap(mem, len);
 	
 	return table;
 }

@@ -39,37 +39,6 @@
 #define BIOS_START      (0x000e0000)            /* Start of BIOS memory */
 #define BIOS_END        (0x000fffff)            /* End of BIOS memory */
 
-#define PAGE_SIZE	(4096)
-
-static void *fwts_mp_mmap(off_t start, size_t size)
-{
-	int fd;
-	void *mem;
-	off_t offset = ((size_t)start) & (PAGE_SIZE-1);
-	size_t length = (size_t)size + offset;
-
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0)
-		return MAP_FAILED;
-
-	if ((mem = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, start - offset)) == MAP_FAILED) {
-		close(fd);
-		return MAP_FAILED;
-	}
-	close(fd);
-
-	return (mem + offset);
-}
-
-static int fwts_mp_munmap(void *mem, size_t size)
-{
-	off_t offset = ((off_t)(mem)) & (PAGE_SIZE-1);
-
-	if (munmap(mem - offset, size + offset) < 0)
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 /*
  *  fwts_mp_checksum()
  *	checksum the floating header
@@ -94,12 +63,12 @@ static int fwts_mp_get_ebda(off_t *ebda_offset)
 {
 	uint16_t *ebda;
 
-	if ((ebda = fwts_mp_mmap((off_t)0x40e, sizeof(uint16_t))) == MAP_FAILED)
+	if ((ebda = fwts_mmap((off_t)0x40e, sizeof(uint16_t))) == FWTS_MAP_FAILED)
 		return -1;
 
 	*ebda_offset = ((off_t)*ebda) << 4;
 
-	(void)fwts_mp_munmap(ebda, sizeof(uint16_t));
+	(void)fwts_munmap(ebda, sizeof(uint16_t));
 
 	return 0;
 }
@@ -139,7 +108,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 		off_t  start = regions[i].start;
 		size_t size = regions[i].end - start;
 
-		if ((mem = fwts_mp_mmap(start, size)) == MAP_FAILED)
+		if ((mem = fwts_mmap(start, size)) == FWTS_MAP_FAILED)
 			continue;
 
 		for (ptr = mem; ptr < (uint8_t*)(mem + size); ptr+=16) {
@@ -151,13 +120,13 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 				if (fwts_mp_checksum(hdr) == 0) {
 					/* Looks valid, so return addr */
 					*phys_addr = hdr->phys_address;
-					(void)fwts_mp_munmap(mem, size);
+					(void)fwts_munmap(mem, size);
 					return FWTS_OK;
 				}
 			}
 		}
 
-		(void)fwts_mp_munmap(mem, size);
+		(void)fwts_munmap(mem, size);
 	}
 	*phys_addr = 0;
 
@@ -185,8 +154,8 @@ int fwts_mp_data_get(fwts_mp_data *data)
 	data->phys_addr = phys_addr;
 
 	/* Get header and find out full size of header and table */
-	mem = fwts_mp_mmap((off_t)phys_addr, sizeof(fwts_mp_config_table_header));
-	if (mem == MAP_FAILED)
+	mem = fwts_mmap((off_t)phys_addr, sizeof(fwts_mp_config_table_header));
+	if (mem == FWTS_MAP_FAILED)
 		return FWTS_ERROR;
 
 	header = (fwts_mp_config_table_header *)mem;
@@ -196,9 +165,9 @@ int fwts_mp_data_get(fwts_mp_data *data)
 		((header->spec_rev == 1) ? 0 : header->extended_table_length);
 
 	/* Remap with full header and table now we know how big it is */
-	(void)fwts_mp_munmap(mem, sizeof(fwts_mp_config_table_header));
-	mem =  fwts_mp_mmap((off_t)phys_addr, data->size);
-	if (mem == MAP_FAILED)
+	(void)fwts_munmap(mem, sizeof(fwts_mp_config_table_header));
+	mem =  fwts_mmap((off_t)phys_addr, data->size);
+	if (mem == FWTS_MAP_FAILED)
 		return FWTS_ERROR;
 
 	data->header = (fwts_mp_config_table_header*)mem;
@@ -261,7 +230,7 @@ int fwts_mp_data_free(fwts_mp_data *data)
 
 	/* Free mapped data */
 	if (data->header)
-		(void)fwts_mp_munmap(data->header, data->size);
+		(void)fwts_munmap(data->header, data->size);
 
 	return FWTS_OK;
 }

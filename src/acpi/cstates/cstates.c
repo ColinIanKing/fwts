@@ -25,7 +25,7 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-#define PROCESSOR_PATH	"/proc/acpi/processor"
+#define PROCESSOR_PATH	"/sys/devices/system/cpu"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,14 +37,15 @@
 #include <sched.h>
 #include <time.h>
 #include <math.h>
+#include <ctype.h>
 
 #define MIN_CSTATE	1
 #define MAX_CSTATE	16
 
 typedef struct {
 	int counts[MAX_CSTATE];
-	int used[MAX_CSTATE];
-	int warned[MAX_CSTATE];
+	bool used[MAX_CSTATE];
+	bool present[MAX_CSTATE];
 } fwts_cstates;
 
 int statecount = -1;
@@ -90,48 +91,57 @@ static void keep_busy_for_one_second(int cpu)
 	sched_setaffinity(0, sizeof(oldset), &oldset);
 }
 
-static void get_cstates(char *dir, fwts_cstates *state)
+static void get_cstates(char *path, fwts_cstates *state)
 {
-	char path[PATH_MAX];
-	char line[4096];
-	FILE *file;
+	struct dirent *entry;
+	char filename[PATH_MAX];
+	char *data;
+	DIR *dir;
 	int i;
-	memset(state, 0, sizeof(fwts_cstates));
 
-	for (i=0; i<MAX_CSTATE; i++)
-		state->used[i] = -1;
-
-	snprintf(path, sizeof(path), "%s/power", dir);
-	if ((file = fopen(path, "r")) == NULL)
-		return;
-
-	while (fgets(line, 4095, file) != NULL) {
-		char *str;
-		int nr=0, count=0, active=0;
-
-		str = strchr(line, 'C');
-		if (!str)
-			continue;
-		nr = strtoull(str+1, NULL, 10);
-		str = strstr(line, "usage[");
-		if (!str)
-			continue;
-		count = strtoull(str+6, NULL, 10);
-		str = strchr(line, '*');
-		if (str)
-			active=1;
-		if (nr>=0 && nr <MAX_CSTATE) {
-			state->counts[nr] = count;
-			state->used[nr] = active;
-		}
+	for (i=MIN_CSTATE; i<MAX_CSTATE; i++) {
+		state->counts[i] = 0;
+		state->present[i] = false;
+		state->used[i] = false;
 	}
 
-	fclose(file);
+	if ((dir = opendir(path)) == NULL)
+		return;
+
+	while ((entry = readdir(dir)) != NULL) {
+		if (entry && strlen(entry->d_name)>3) {
+			int nr = 0;
+			int count;
+			int len;
+
+			snprintf(filename, sizeof(filename), "%s/%s/name", path, entry->d_name);
+			if ((data = fwts_get(filename)) == NULL)
+				break;
+
+			/* Names can be Cn\n, or ATM-Cn\n, or SNB-Cn\n, where n is the C state number */
+			len = strlen(data);
+			if ((len > 2) && (data[len-3] == 'C'))
+				nr = strtoull(data+len-2, NULL, 10);
+			free(data);
+
+			snprintf(filename, sizeof(filename), "%s/%s/usage", path, entry->d_name);
+			if ((data = fwts_get(filename)) == NULL)
+				break;
+			count = strtoull(data, NULL, 10);
+			free(data);
+			
+			if (nr>=0 && nr <MAX_CSTATE)
+				state->counts[nr] = count;
+
+			state->present[nr] = true;
+		}
+	}
+	closedir(dir);
 }
 
 #define TOTAL_WAIT_TIME		20
 
-static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
+static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 {
 	fwts_cstates initial, current;
 	int  count;
@@ -140,79 +150,51 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *dir)
 	int  keepgoing = 1;
 	int  first = 1;
 	int  i;
-	int  warned = 0;
 
 	memset(&initial, 0, sizeof(fwts_cstates));
-	get_cstates(dir, &initial);
+	get_cstates(path, &initial);
+
 
 	for (i=0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
 		int j;
 
 		fwts_progress(fw, 100 * (i+ (TOTAL_WAIT_TIME*nth))/(cpus * TOTAL_WAIT_TIME));
 
-		if (i < 4)
+		if ((i & 7) < 4)
 			sleep(1);
 		else
 			keep_busy_for_one_second(cpu);
 
-		get_cstates(dir, &current);
+		get_cstates(path, &current);
 		for (j=MIN_CSTATE; j<MAX_CSTATE;j++) {
-			if (current.used[j]>0){
-				if (initial.counts[j] == current.counts[j]) {
-					initial.warned[j]++;
-					warned++;
-				}
+			if (initial.counts[j] != current.counts[j]) {
 				initial.counts[j] = current.counts[j];
-				initial.used[j]++;
+				initial.used[j] = true;
 			}
 		}
 
 		keepgoing = 0;
 		for (j=MIN_CSTATE; j<MAX_CSTATE; j++)
-			if (initial.used[j]==0)
+			if (initial.present[j] && !initial.used[j])
 				keepgoing = 1;
 	}
-
-	if (warned) {
-		snprintf(buffer, sizeof(buffer),
-			"Processor %i doesn't increment C-state count in all C-states, failed in ", cpu);
-		for (i=MIN_CSTATE; i<MAX_CSTATE; i++) {
-			if ((initial.used[i]>0) && (initial.warned[i] != 0))  {
-				snprintf(tmp, sizeof(tmp), "C%i ",i);
-				strcat(buffer, tmp);
-			}
-		}
-		fwts_failed_medium(fw, "%s", buffer);
-	}
-#if 0
-	else {
-		snprintf(buffer, sizeof(buffer), "Processor %i incremented C-states ", cpu);
-		for (i=0; i<MAX_CSTATE; i++) {
-printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
-			if ((initial.used[i]>0) && (initial.warned[i] == 0))  {
-				snprintf(tmp, sizeof(tmp), "C%i ",i);
-				strcat(buffer, tmp);
-			}
-		}
-		fwts_passed(fw, "%s", buffer);
-	}
-#endif
 
 	if (keepgoing) {
 		/* Not a failure, but not a pass either! */
 		snprintf(buffer, sizeof(buffer), "Processor %i has not reached ", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
-			snprintf(tmp, sizeof(tmp), "C%i ", i);
-			if (initial.used[i] == 0)
+			if (initial.present[i] && !initial.used[i]) {
+				snprintf(tmp, sizeof(tmp), "C%i ", i);
 				strcat(buffer, tmp);
+			}
 		}
 		strcat(buffer, "during tests. This is not a failure, but also it is not a complete and thorough test.");
 		fwts_log_info(fw, "%s", buffer);
 	} else {
 		snprintf(buffer, sizeof(buffer), "Processor %i has reached all C-states", cpu);
 		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
-			snprintf(tmp, sizeof(tmp), "C%i ", i);
-			if (initial.used[i]==0) {
+			if (initial.present[i] && initial.used[i]) {
+				snprintf(tmp, sizeof(tmp), "C%i ", i);
 				if (first)
 					strcat(buffer, ": ");
 				first = 0;
@@ -224,7 +206,7 @@ printf("%d %d %d\n",i, initial.used[i],initial.warned[i]);
 
 	count = 0;
 	for (i=1; i<MAX_CSTATE; i++)
-		if (initial.used[i] >= 0)
+		if (initial.present[i])
 			count++;
 
 	if (statecount == -1)
@@ -255,7 +237,7 @@ static int cstates_test1(fwts_framework *fw)
 			  "if the C-state counter works and if C-state transitions happen.");
 
 	if ((dir = opendir(PROCESSOR_PATH)) == NULL) {
-		fwts_failed_high(fw, "Cannot open %s: /proc not mounted?", PROCESSOR_PATH);
+		fwts_failed_high(fw, "Cannot open %s: /sys not mounted?", PROCESSOR_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -266,10 +248,13 @@ static int cstates_test1(fwts_framework *fw)
 	rewinddir(dir);
 
 	for (i=0;(entry = readdir(dir)) != NULL;) {
-		if (entry && strlen(entry->d_name)>3) {
+		if (entry &&
+		    (strlen(entry->d_name)>3) && 
+		    (strncmp(entry->d_name, "cpu", 3) == 0) &&
+		    (isdigit(entry->d_name[3]))) {
 			char cpupath[PATH_MAX];
 			int cpu;
-			snprintf(cpupath, sizeof(cpupath), "%s/%s", PROCESSOR_PATH, entry->d_name);
+			snprintf(cpupath, sizeof(cpupath), "%s/%s/cpuidle", PROCESSOR_PATH, entry->d_name);
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			do_cpu(fw, i, cpus, cpu, cpupath);
 			i++;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2011 Canonical
+ * Copyright (C) 2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,32 +17,35 @@
  *
  */
 
-#ifndef __FWTS_TYPES_H__
-#define __FWTS_TYPES_H__
+#include "fwts.h"
 
-#include <stdint.h>
+#include <sys/types.h>
 
-typedef enum {
-	FWTS_OK       = 0,
+#ifdef FWTS_ARCH_INTEL
 
-	FWTS_ERROR = -1,
-	FWTS_SKIP  = -2,
-	FWTS_ABORTED = -3,
-	FWTS_ERROR_NO_PRIV = -4,
-	FWTS_NULL_POINTER = -5,
-	FWTS_NO_TABLE = -6,
-	FWTS_NOT_EXIST = -7,
-	FWTS_COMPLETE = -8,
-	FWTS_OUT_OF_MEMORY = -9,
-	FWTS_NO_EBDA = -10,
-} fwts_status;
+#define EBDA_OFFSET		0x40e
 
-#define	FWTS_MAP_FAILED 	((void *)-1)
+/*
+ *  ftws_ebda_get()
+ *	get EBDA offset so EBDA can be mmap'd
+ */
+off_t fwts_ebda_get(void)
+{
+	uint16_t *ebda;
+	off_t    ebda_addr;
 
-typedef enum {
-	FWTS_FALSE = 0,
-	FWTS_TRUE  = 1,
-	FWTS_BOOL_ERROR = -1
-} fwts_bool;
+	if ((ebda = fwts_mmap((off_t)EBDA_OFFSET, sizeof(uint16_t))) == FWTS_MAP_FAILED) {
+		return FWTS_NO_EBDA;
+	}
+	ebda_addr = ((off_t)*ebda) << 4;
+	(void)fwts_munmap(ebda, sizeof(uint16_t));
 
+	return ebda_addr;
+}
+
+#else
+off_t ftws_ebda_offset(void)
+{
+	return FWTS_NO_EBDA;
+}
 #endif

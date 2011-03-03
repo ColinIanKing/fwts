@@ -19,6 +19,7 @@ libfwts_la_SOURCES = \
 	fwts_cpu.c \
 	fwts_dump.c \
 	fwts_dump_data.c \
+	fwts_ebda.c \
 	fwts_fileio.c \
 	fwts_firmware.c \
 	fwts_formatting.c \

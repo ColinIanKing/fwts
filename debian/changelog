@@ -1,3 +1,11 @@
+fwts (0.22.04) natty; urgency=low
+
+  * acpi: acpidump: use more sensible heading, fix SCI text
+  * hpet: Fail test and skip sanity check when base address not found
+  * bios: ebda_region: close fd on error.
+
+ -- Colin King <colin.king@canonical.com>  Thu, 3 Mar 2011 09:37:39 +0000
+
 fwts (0.22.03) natty; urgency=low
 
   * Fixes for lintian warnings (LP: #725336)

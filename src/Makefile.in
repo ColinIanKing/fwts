@@ -58,16 +58,16 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	cstates.$(OBJEXT) dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
 	mcfg.$(OBJEXT) method.$(OBJEXT) apicedge.$(OBJEXT) \
 	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
-	wmi.$(OBJEXT) ebda_region.$(OBJEXT) mtrr.$(OBJEXT) \
-	bios_info.$(OBJEXT) bios32.$(OBJEXT) hdaaudio.$(OBJEXT) \
-	romdump.$(OBJEXT) os2gap.$(OBJEXT) memmapdump.$(OBJEXT) \
-	mpdump.$(OBJEXT) smbios.$(OBJEXT) cmosdump.$(OBJEXT) \
-	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
-	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
-	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
-	thermal_trip.$(OBJEXT) nx.$(OBJEXT) microcode.$(OBJEXT) \
-	hotkey.$(OBJEXT) version.$(OBJEXT) oops.$(OBJEXT) \
-	uefidump.$(OBJEXT)
+	wmi.$(OBJEXT) ebda_region.$(OBJEXT) ebdadump.$(OBJEXT) \
+	mtrr.$(OBJEXT) bios_info.$(OBJEXT) bios32.$(OBJEXT) \
+	hdaaudio.$(OBJEXT) romdump.$(OBJEXT) os2gap.$(OBJEXT) \
+	memmapdump.$(OBJEXT) mpdump.$(OBJEXT) smbios.$(OBJEXT) \
+	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
+	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
+	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
+	cpufreq.$(OBJEXT) thermal_trip.$(OBJEXT) nx.$(OBJEXT) \
+	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
+	oops.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -305,6 +305,7 @@ fwts_SOURCES = main.c \
 	acpi/powerbutton/powerbutton.c \
 	acpi/wmi/wmi.c \
 	bios/ebda_region/ebda_region.c \
+	bios/ebdadump/ebdadump.c \
 	bios/mtrr/mtrr.c \
 	bios/bios_info/bios_info.c \
 	bios/bios32/bios32.c \
@@ -442,6 +443,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebda_region.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ebdadump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fadt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hdaaudio.Po@am__quote@
@@ -861,6 +863,20 @@ ebda_region.obj: bios/ebda_region/ebda_region.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebda_region/ebda_region.c' object='ebda_region.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebda_region.obj `if test -f 'bios/ebda_region/ebda_region.c'; then $(CYGPATH_W) 'bios/ebda_region/ebda_region.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebda_region/ebda_region.c'; fi`
+
+ebdadump.o: bios/ebdadump/ebdadump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ebdadump.o -MD -MP -MF $(DEPDIR)/ebdadump.Tpo -c -o ebdadump.o `test -f 'bios/ebdadump/ebdadump.c' || echo '$(srcdir)/'`bios/ebdadump/ebdadump.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/ebdadump.Tpo $(DEPDIR)/ebdadump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebdadump/ebdadump.c' object='ebdadump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebdadump.o `test -f 'bios/ebdadump/ebdadump.c' || echo '$(srcdir)/'`bios/ebdadump/ebdadump.c
+
+ebdadump.obj: bios/ebdadump/ebdadump.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ebdadump.obj -MD -MP -MF $(DEPDIR)/ebdadump.Tpo -c -o ebdadump.obj `if test -f 'bios/ebdadump/ebdadump.c'; then $(CYGPATH_W) 'bios/ebdadump/ebdadump.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebdadump/ebdadump.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/ebdadump.Tpo $(DEPDIR)/ebdadump.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/ebdadump/ebdadump.c' object='ebdadump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ebdadump.obj `if test -f 'bios/ebdadump/ebdadump.c'; then $(CYGPATH_W) 'bios/ebdadump/ebdadump.c'; else $(CYGPATH_W) '$(srcdir)/bios/ebdadump/ebdadump.c'; fi`
 
 mtrr.o: bios/mtrr/mtrr.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mtrr.o -MD -MP -MF $(DEPDIR)/mtrr.Tpo -c -o mtrr.o `test -f 'bios/mtrr/mtrr.c' || echo '$(srcdir)/'`bios/mtrr/mtrr.c

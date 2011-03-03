@@ -36,6 +36,7 @@ fwts_SOURCES = main.c \
 	acpi/powerbutton/powerbutton.c \
 	acpi/wmi/wmi.c \
 	bios/ebda_region/ebda_region.c \
+	bios/ebdadump/ebdadump.c \
 	bios/mtrr/mtrr.c \
 	bios/bios_info/bios_info.c \
 	bios/bios32/bios32.c \

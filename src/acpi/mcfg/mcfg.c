@@ -26,12 +26,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/io.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <limits.h>
 
 static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
@@ -45,7 +39,6 @@ struct mcfg_entry {
 	unsigned char end_bus;
 	unsigned char  reserved[4];
 } __attribute__ ((packed));
-
 
 static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space)
 {
@@ -124,13 +117,17 @@ static char *mcfg_headline(void)
 
 static int mcfg_test1(fwts_framework *fw)
 {
-	int fd;
 	int nr, i;
 	uint8_t *table_ptr, *table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
 	int mcfg_size;
 	const char *memory_map_name;
+	int page_size;
+
+	page_size = sysconf(_SC_PAGESIZE);
+	if (page_size == -1)
+		page_size = 4096;
 
 	memory_map_name = fwts_memory_map_name(fw->firmware_type);
 	
@@ -221,21 +218,14 @@ static int mcfg_test1(fwts_framework *fw)
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem.");
-		return FWTS_ERROR;
-	}
-
-	if ((table_page = mmap(NULL, getpagesize(), PROT_READ, MAP_SHARED, fd, firstentry.low_address)) == MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap onto /dev/mem.");
-		close(fd);
+	if ((table_page = fwts_mmap(firstentry.low_address, page_size)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap table at 0x%x.", firstentry.low_address);
 		return FWTS_ERROR;
 	}
 
 	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)table_page);
 
-	munmap(table_page, getpagesize());
-	close(fd);
+	fwts_munmap(table_page, page_size);
 	
 	return FWTS_OK;
 }

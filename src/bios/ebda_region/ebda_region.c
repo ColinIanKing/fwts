@@ -40,8 +40,7 @@ static fwts_list *memory_map;
 
 static int ebda_init(fwts_framework *fw)
 {
-	int fd;
-	unsigned short addr;
+	uint16_t *ebda;
 
 	if (fw->firmware_type != FWTS_FIRMWARE_BIOS) {
 		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
@@ -56,24 +55,12 @@ static int ebda_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Failed to open /dev/mem.");
+	if ((ebda = fwts_mmap((off_t)EBDA_OFFSET, sizeof(uint16_t))) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Failed to get EBDA.");
 		return FWTS_ERROR;
 	}
-
-	if (lseek(fd, EBDA_OFFSET, SEEK_SET) < 0) {
-		fwts_log_error(fw, "Failed to seek to EBDA offset 0x%x.", EBDA_OFFSET);
-		close(fd);
-		return FWTS_ERROR;
-	}
-	if (read(fd, &addr, sizeof(unsigned short)) <= 0) {
-		fwts_log_error(fw, "Failed to read EBDA address.");
-		close(fd);
-		return FWTS_ERROR;
-	}
-	close(fd);
-
-	ebda_addr = ((unsigned long)addr) << 4;
+	ebda_addr = ((unsigned long)*ebda) << 4;
+	(void)fwts_munmap(ebda, sizeof(uint16_t));
 
 	return FWTS_OK;
 }

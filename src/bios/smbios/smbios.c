@@ -16,13 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
@@ -93,21 +86,14 @@ static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry 
 
 static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
 {
-	int fd;
 	int ret = FWTS_ERROR;
 	uint8_t *mem;
 	int i;
 
-
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem.");
+        if ((mem = fwts_mmap(SMBIOS_REGION_START, SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
 		return FWTS_ERROR;
 	}
-        if ((mem = mmap(NULL, SMBIOS_REGION_SIZE, PROT_READ, MAP_PRIVATE, fd, SMBIOS_REGION_START)) == MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap /dev/mem.");
-		return FWTS_ERROR;
-	}
-        close(fd);
 
 	for (i=0; i<SMBIOS_REGION_SIZE; i+= 16) {
 		if ((*(mem+i)   == '_') &&
@@ -130,7 +116,7 @@ static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry 
 		}
 	}
 
-        munmap(mem, SMBIOS_REGION_SIZE);
+        (void)fwts_munmap(mem, SMBIOS_REGION_SIZE);
 
 	return ret;
 }

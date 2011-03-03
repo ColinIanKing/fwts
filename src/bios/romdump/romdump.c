@@ -16,13 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
@@ -62,20 +55,13 @@ static void romdump_data(fwts_framework *fw, uint8_t *data, int offset, int leng
 
 static int romdump_test1(fwts_framework *fw)
 {
-	int fd;
 	uint8_t *mem;
 	int i;
 
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem.");
+        if ((mem = fwts_mmap(BIOS_ROM_REGION_START, BIOS_ROM_REGION_SIZE)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap BIOS ROM region.");
 		return FWTS_ERROR;
 	}
-
-        if ((mem = mmap(NULL, BIOS_ROM_REGION_SIZE, PROT_READ, MAP_PRIVATE, fd, BIOS_ROM_REGION_START)) == MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap /dev/mem.");
-		return FWTS_ERROR;
-	}
-        close(fd);
 
 	for (i=0; i<BIOS_ROM_REGION_SIZE; i+= 512) {
 		if ((*(mem+i) == 0x55) && (*(mem+i+1) == 0xaa)) {
@@ -93,7 +79,7 @@ static int romdump_test1(fwts_framework *fw)
 
 	fwts_infoonly(fw);
 
-        munmap(mem, BIOS_ROM_REGION_SIZE);
+        (void)fwts_munmap(mem, BIOS_ROM_REGION_SIZE);
 
 	return FWTS_OK;
 }

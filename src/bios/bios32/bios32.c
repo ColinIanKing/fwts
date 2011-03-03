@@ -16,13 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
@@ -59,7 +52,6 @@ static char *bios32_headline(void)
 
 static int bios32_test1(fwts_framework *fw)
 {
-	int fd;
 	uint8_t *mem;
 	int i;
 	int found = 0;
@@ -69,16 +61,10 @@ static int bios32_test1(fwts_framework *fw)
 			  "Revision 0.4 May 24, 1993, Phoenix Technologies Ltd and also the "
  			  "PCI BIOS specification.");
 
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem.");
+        if ((mem = fwts_mmap(BIOS32_SD_REGION_START, BIOS32_SD_REGION_SIZE)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap BIOS32 region.");
 		return FWTS_ERROR;
 	}
-
-        if ((mem = mmap(NULL, BIOS32_SD_REGION_SIZE, PROT_READ, MAP_PRIVATE, fd, BIOS32_SD_REGION_START)) == MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap /dev/mem.");
-		return FWTS_ERROR;
-	}
-        close(fd);
 
 	for (i=0; i<BIOS32_SD_REGION_SIZE; i+= 16) {
 		if ((*(mem+i)   == '_') &&
@@ -142,7 +128,7 @@ static int bios32_test1(fwts_framework *fw)
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 
-        munmap(mem, BIOS32_SD_REGION_SIZE);
+        (void)fwts_munmap(mem, BIOS32_SD_REGION_SIZE);
 
 	return FWTS_OK;
 }

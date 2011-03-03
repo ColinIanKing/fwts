@@ -16,8 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
 #include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
 
 static const char *mpdump_inttype[] = {
 	"INT",
@@ -534,3 +535,5 @@ static fwts_framework_ops mpdump_ops = {
 };
 
 FWTS_REGISTER(mpdump, &mpdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+
+#endif

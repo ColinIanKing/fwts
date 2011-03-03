@@ -19,20 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <string.h>
+
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/mman.h>
 
 static fwts_list *klog;
 
@@ -199,7 +190,6 @@ static int hpet_check_test1(fwts_framework *fw)
 
 static int hpet_check_test2(fwts_framework *fw)
 {
-	int fd;
 	uint64_t hpet_id;
 	uint32_t vendor_id;
 	uint32_t clk_period;
@@ -209,24 +199,15 @@ static int hpet_check_test2(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	if ((fd = open("/dev/mem", O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot open /dev/mem.");
-		return FWTS_ERROR;
-	}
-	hpet_base_v =
-	    mmap(NULL, HPET_REG_SIZE, PROT_READ, MAP_SHARED, fd,
-		 hpet_base_p);
-
+	hpet_base_v = fwts_mmap(hpet_base_p, HPET_REG_SIZE);
 	if (hpet_base_v == NULL) {
 		fwts_log_error(fw, "Cannot mmap to /dev/mem.");
-		close(fd);
 		return FWTS_ERROR;
 	}
 
 	hpet_id = *(uint64_t*) hpet_base_v;
 	vendor_id = (hpet_id & 0xffff0000) >> 16;
 
-	
 	if (vendor_id == 0xffff)
 		fwts_failed(fw, "Invalid Vendor ID: %04x - this should be configured.", vendor_id);
 	else
@@ -238,8 +219,7 @@ static int hpet_check_test2(fwts_framework *fw)
 	else
 		fwts_passed(fw, "Valid clock period %u.", clk_period);
 
-	munmap(hpet_base_v, HPET_REG_SIZE);
-	close(fd);
+	(void)fwts_munmap(hpet_base_v, HPET_REG_SIZE);
 
 	return FWTS_OK;
 }

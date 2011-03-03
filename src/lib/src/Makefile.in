@@ -77,7 +77,7 @@ am_libfwts_la_OBJECTS = fwts_acpi.lo fwts_acpid.lo fwts_acpi_tables.lo \
 	fwts_firmware.lo fwts_formatting.lo fwts_framework.lo \
 	fwts_get.lo fwts_gpe.lo fwts_hwinfo.lo fwts_iasl.lo \
 	fwts_interactive.lo fwts_keymap.lo fwts_klog.lo fwts_list.lo \
-	fwts_log.lo fwts_memorymap.lo fwts_microcode.lo \
+	fwts_log.lo fwts_memorymap.lo fwts_microcode.lo fwts_mmap.lo \
 	fwts_multiproc.lo fwts_oops.lo fwts_pipeio.lo fwts_set.lo \
 	fwts_stringextras.lo fwts_summary.lo fwts_tag.lo \
 	fwts_text_list.lo fwts_tty.lo fwts_uefi.lo fwts_virt.lo \
@@ -256,6 +256,7 @@ libfwts_la_SOURCES = \
 	fwts_log.c \
 	fwts_memorymap.c \
 	fwts_microcode.c \
+	fwts_mmap.c \
 	fwts_multiproc.c \
 	fwts_oops.c \
 	fwts_pipeio.c \
@@ -368,6 +369,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_memorymap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_microcode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_mmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_multiproc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_oops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_pipeio.Plo@am__quote@

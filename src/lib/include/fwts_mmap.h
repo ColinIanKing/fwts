@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2011 Canonical
+ * Copyright (C) 2011 Canonical
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,32 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#ifndef __FWTS_MMAP_H__
+#define __FWTS_MMAP_H__
 
-#ifndef __FWTS_TYPES_H__
-#define __FWTS_TYPES_H__
+#include <sys/mman.h>
 
-#include <stdint.h>
-
-typedef enum {
-	FWTS_OK       = 0,
-
-	FWTS_ERROR = -1,
-	FWTS_SKIP  = -2,
-	FWTS_ABORTED = -3,
-	FWTS_ERROR_NO_PRIV = -4,
-	FWTS_NULL_POINTER = -5,
-	FWTS_NO_TABLE = -6,
-	FWTS_NOT_EXIST = -7,
-	FWTS_COMPLETE = -8,
-	FWTS_OUT_OF_MEMORY = -9,
-} fwts_status;
-
-#define	FWTS_MAP_FAILED 	((void *)-1)
-
-typedef enum {
-	FWTS_FALSE = 0,
-	FWTS_TRUE  = 1,
-	FWTS_BOOL_ERROR = -1
-} fwts_bool;
+void *fwts_mmap(off_t start, size_t size);
+int fwts_munmap(void *mem, size_t size);
 
 #endif

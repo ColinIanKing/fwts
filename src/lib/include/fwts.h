@@ -55,6 +55,7 @@
 #include "fwts_virt.h"
 #include "fwts_formatting.h"
 #include "fwts_summary.h"
+#include "fwts_mmap.h"
 #include "fwts_microcode.h"
 #include "fwts_interactive.h"
 #include "fwts_keymap.h"

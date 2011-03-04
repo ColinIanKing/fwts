@@ -1,6 +1,12 @@
+fwts (0.22.06) natty; urgency=low
+
+  * acpi: cstates: fix progress calculation, tidy up code.
+
+ -- Colin King <colin.king@canonical.com>  Fri, 4 Mar 2011 10:37:00 +0000
+
 fwts (0.22.05) natty; urgency=low
   
-  * Fix cstates test (LP: 728685)
+  * Fix cstates test (LP: #728685)
   * acpi: acpidump: use more sensible heading, fix SCI text
   * hpet: Fail test and skip sanity check when base address not found
   * bios: ebda_region: close fd on error

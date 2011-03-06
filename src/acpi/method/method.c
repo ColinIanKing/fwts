@@ -1155,7 +1155,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 			fwts_advice(fw, "An incorrect value could be because the method requires interaction with "
 					"I/O ports or the embedded controller and this test frame work is spoofing "
 					"these operations. However, it is worth sanity checking these values in "
-					"/proc/acpi/thermal_zone.");
+					"/sys/class/thermal/thermal_zone*.");
 	}
 }
 

@@ -54,7 +54,6 @@ fwts_SOURCES = main.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
 	cpu/maxfreq/maxfreq.c \
 	cpu/cpufreq/cpufreq.c \
-	cpu/thermal_trip/thermal_trip.c \
 	cpu/nx/nx.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \

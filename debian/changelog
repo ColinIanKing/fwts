@@ -1,3 +1,10 @@
+fwts (0.22.07) natty; urgency=low
+
+  * drop thermal_trip test (LP: #730132)
+  * method test: reference /sys/class/thermal/thermal_zone
+
+ -- Colin King <colin.king@canonical.com>  Sun, 6 Mar 2011 13:51:10 +0000
+
 fwts (0.22.06) natty; urgency=low
 
   * acpi: cstates: fix progress calculation, tidy up code.

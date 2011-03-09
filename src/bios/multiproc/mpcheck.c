@@ -439,7 +439,7 @@ static int mpcheck_deinit(fwts_framework *fw)
 
 static char *mpcheck_headline(void)
 {
-	return "Dump MultiProcessor Data.";
+	return "Check MultiProcessor Tables.";
 }
 
 uint8_t mpcheck_get_apic_id(void *data)

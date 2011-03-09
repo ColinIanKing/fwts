@@ -19,6 +19,8 @@
 #ifndef __FWTS_MULTIPROC_H__
 #define __FWTS_MULTIPROC_H__
 
+#define FWTS_MP_HEADER_SIGNATURE	"PCMP"
+
 /* 
  * Structures as described in version 1.4 of the
  * Intel MultiProcessor Specification, May 1997

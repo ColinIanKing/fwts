@@ -20,8 +20,6 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-#define MP_HEADER_SIGNATURE	"PCMP"
-
 static fwts_mp_data mp_data;
 
 static uint8_t last_cpu_apic_id = 0;
@@ -461,9 +459,9 @@ static int mpcheck_test_header(fwts_framework *fw)
 {
 	bool failed = false;
 
-	if (strncmp((char*)mp_data.header->signature, MP_HEADER_SIGNATURE, 4)) {
+	if (strncmp((char*)mp_data.header->signature, FWTS_MP_HEADER_SIGNATURE, 4)) {
 		fwts_failed_medium(fw, "MP header signature should be %s, got %4.4s.",
-				MP_HEADER_SIGNATURE, mp_data.header->signature);
+				FWTS_MP_HEADER_SIGNATURE, mp_data.header->signature);
 		failed = true;
 	}
 
@@ -489,7 +487,7 @@ static fwts_framework_minor_test mpcheck_tests[] = {
 	{ mpcheck_test_io_apic_entries, 	"Check MP IO APIC entries." },
 	{ mpcheck_test_io_interrupt_entries,	"Check MP IO Interrupt entries." },
 	{ mpcheck_test_local_interrupt_entries, "Check MP Local Interrupt entries." },
-	{ mpcheck_test_sys_addr_entries,"Check MP System Address entries." },
+	{ mpcheck_test_sys_addr_entries,	"Check MP System Address entries." },
 	{ mpcheck_test_bus_hierarchy_entries,	"Check MP Bus Hierarchy entries." },
 	{ mpcheck_test_compat_bus_address_space_entries, "Check MP Compatible Bus Address Space entries." },
 	{ NULL, NULL }

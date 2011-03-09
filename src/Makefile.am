@@ -45,6 +45,7 @@ fwts_SOURCES = main.c \
 	bios/os2gap/os2gap.c \
 	bios/memmapdump/memmapdump.c \
 	bios/multiproc/mpdump.c \
+	bios/multiproc/mpcheck.c \
 	bios/smbios/smbios.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \

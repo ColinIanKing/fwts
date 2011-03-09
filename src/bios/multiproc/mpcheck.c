@@ -502,6 +502,6 @@ static fwts_framework_ops mpcheck_ops = {
 	.minor_tests = mpcheck_tests,
 };
 
-FWTS_REGISTER(mpcheck, &mpcheck_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(mpcheck, &mpcheck_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

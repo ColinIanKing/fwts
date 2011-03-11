@@ -628,6 +628,48 @@
    "advice": "ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed.however the kernel has detected this and is working around this typo."
   }, 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MPTABLE: bad signature",
+   "advice": "The MultiProcessor table has an incorrect signature, it should be PCMP. The kernel cannot trust the table and has disabled SMP support."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MPTABLE: checksum error",
+   "advice": "The MultiProcessor table has an incorrect checksum. The kernel cannot trust the table and has disabled SMP support."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MPTABLE: bad table version",
+   "advice": "The MultiProcessor table has an incorrect version. It should be 0x01 or 0x04 (for versions 1.1 and 1.4 respectively). The kernel cannot trust the table and has disabled SMP support."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MPTABLE: null local APIC address",
+   "advice": "The MultiProcessor table contains a NULL Local APIC address but the Local APIC address must be defined. The kernel has disabled SMP support."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MPTABLE: no processors registered",
+   "advice": "The MultiProcessor table contains no Processor Entry Fields, and hence there are no CPUs defined. The kernel has no option but to disable SMP support."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "BIOS bug.*no explicit IRQ entries.*using default mptable",
+   "advice": "The MultiProcessor table contains no IRQ Entry Fields, and hence there are no IRQs defined. The table is broken and should be fixed. The kernel will set up the low 16 IO-APIC pins to the ISA defaults in the hope the machine may work."
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_BIOS_IRQ",

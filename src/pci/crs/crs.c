@@ -19,11 +19,6 @@
 
 #include "fwts.h"
 
-static char *crs_headline(void)
-{
-	return "Check PCI host bridge configuration using _CRS.";
-}
-
 static int crs_get_bios_date(fwts_framework *fw, int *day, int *mon, int *year)
 {
 	fwts_list *dmi_text;
@@ -145,7 +140,7 @@ static fwts_framework_minor_test crs_tests[] = {
 };
 
 static fwts_framework_ops crs_ops = {
-	.headline    = crs_headline,
+	.description = "Check PCI host bridge configuration using _CRS.",
 	.minor_tests = crs_tests
 };
 

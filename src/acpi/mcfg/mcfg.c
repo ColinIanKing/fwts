@@ -110,11 +110,6 @@ static int mcfg_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *mcfg_headline(void)
-{
-	return "MCFG PCI Express* memory mapped config space.";
-}
-
 static int mcfg_test1(fwts_framework *fw)
 {
 	int nr, i;
@@ -236,7 +231,7 @@ static fwts_framework_minor_test mcfg_tests[] = {
 };
 
 static fwts_framework_ops mcfg_ops = {
-	.headline    = mcfg_headline,
+	.description = "MCFG PCI Express* memory mapped config space.",
 	.init        = mcfg_init,
 	.deinit      = mcfg_deinit,
 	.minor_tests = mcfg_tests

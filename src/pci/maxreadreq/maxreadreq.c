@@ -35,11 +35,6 @@
  * A too low value hurts performance
  */
 
-static char *maxreadreq_headline(void)
-{
-	return "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.";
-}
-
 static fwts_list *lspci_text;
 
 static int maxreadreq_init(fwts_framework *fw)
@@ -136,7 +131,7 @@ static fwts_framework_minor_test maxreadreq_tests[] = {
 };
 
 static fwts_framework_ops maxreadreq_ops = {
-	.headline    = maxreadreq_headline,
+	.description = "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
 	.init        = maxreadreq_init,	
 	.deinit      = maxreadreq_deinit,
 	.minor_tests = maxreadreq_tests

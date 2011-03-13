@@ -229,11 +229,6 @@ static int hotkey_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *hotkey_headline(void)
-{
-	return "Hotkey scan code tests.";
-}
-
 static int hotkey_test1(fwts_framework *fw)
 {
 	fwts_log_info(fw,
@@ -253,7 +248,7 @@ static fwts_framework_minor_test hotkey_tests[] = {
 };
 
 static fwts_framework_ops hotkey_ops = {
-	.headline    = hotkey_headline,
+	.description = "Hotkey scan code tests.",
 	.init        = hotkey_init,
 	.deinit      = hotkey_deinit,
 	.minor_tests = hotkey_tests

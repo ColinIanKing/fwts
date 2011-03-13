@@ -66,11 +66,6 @@ static int syntaxcheck_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *syntaxcheck_headline(void)
-{
-	return "Re-assemble DSDT and find syntax errors and warnings.";
-}
-
 static const char *syntaxcheck_error_level(uint32_t error_code)
 {
 	/* iasl encodes error_level as follows: */
@@ -356,9 +351,9 @@ static fwts_framework_minor_test syntaxcheck_tests[] = {
 };
 
 static fwts_framework_ops syntaxcheck_ops = {
+	.description = "Re-assemble DSDT and find syntax errors and warnings.",
 	.init        = syntaxcheck_init,
 	.deinit      = syntaxcheck_deinit,
-	.headline    = syntaxcheck_headline,
 	.minor_tests = syntaxcheck_tests
 };
 

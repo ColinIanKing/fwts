@@ -40,11 +40,6 @@ static char *s4_quirks = NULL;		/* Quirks to be passed to pm-hibernate */
 static int  s4_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 static bool s4_min_max_delay = false;
 
-static char *s4_headline(void)
-{
-	return "S4 hibernate/resume test.";
-}
-
 static int s4_init(fwts_framework *fw)
 {
 	fwts_list* swap_devs;
@@ -451,7 +446,7 @@ static fwts_framework_minor_test s4_tests[] = {
 };
 
 static fwts_framework_ops s4_ops = {
-	.headline    = s4_headline,
+	.description = "S4 hibernate/resume test.",
 	.init        = s4_init,
 	.minor_tests = s4_tests,
 	.options     = s4_options,

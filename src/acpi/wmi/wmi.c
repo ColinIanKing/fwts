@@ -51,11 +51,6 @@ typedef struct {
 	uint8_t	flags;				/* fwts_wmi_flags */
 } __attribute__ ((packed)) fwts_guid_info;
 
-static char *wmi_headline(void)
-{
-	return "Extract and analyse Windows Management Instrumentation (WMI).";
-}
-
 #define CONSUME_WHITESPACE(str)		\
 	while (*str && isspace(*str))	\
 		str++;			\
@@ -286,7 +281,7 @@ static fwts_framework_minor_test wmi_tests[] = {
 };
 
 static fwts_framework_ops wmi_ops = {
-	.headline    = wmi_headline,
+	.description = "Extract and analyse Windows Management Instrumentation (WMI).",
 	.minor_tests = wmi_tests
 };
 

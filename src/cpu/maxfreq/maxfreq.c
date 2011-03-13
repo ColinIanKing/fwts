@@ -38,12 +38,6 @@ static int maxfreq_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *maxfreq_headline(void)
-{
-	/* Return the name of the test scenario */
-	return "Check max CPU frequencies against max scaling frequency.";
-}
-
 typedef struct {
 	int cpu;
 	int speed;
@@ -193,7 +187,7 @@ static fwts_framework_minor_test maxfreq_tests[] = {
 };
 
 static fwts_framework_ops maxfreq_ops = {
-	.headline    = maxfreq_headline,
+	.description = "Check max CPU frequencies against max scaling frequency.",
 	.init        = maxfreq_init,
 	.deinit      = maxfreq_deinit,
 	.minor_tests = maxfreq_tests

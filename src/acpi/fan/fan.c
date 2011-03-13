@@ -68,11 +68,6 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 	fwts_passed(fw, "Fan %s status is '%s'", name, state);
 }
 
-static char *fan_headline(void)
-{
-	return "Simple Fan Tests.";
-}
-
 static int fan_test1(fwts_framework *fw)
 {
 	DIR *dir;
@@ -115,7 +110,7 @@ static fwts_framework_minor_test fan_tests[] = {
 };
 
 static fwts_framework_ops fan_ops = {
-	.headline    = fan_headline,
+	.description = "Simple Fan Tests.",
 	.minor_tests = fan_tests
 };
 

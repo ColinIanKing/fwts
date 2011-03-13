@@ -34,11 +34,6 @@ static int wakealarm_init(fwts_framework *fw)
 	return fwts_check_root_euid(fw);
 }
 
-static char *wakealarm_headline(void)
-{
-	return "Test ACPI Wakealarm.";
-}
-
 static int wakealarm_test1(fwts_framework *fw)
 {
 	struct stat buf;
@@ -120,7 +115,7 @@ static fwts_framework_minor_test wakealarm_tests[] = {
 };
 
 static fwts_framework_ops wakealarm_ops = {
-	.headline    =  wakealarm_headline,
+	.description = "Test ACPI Wakealarm.",
 	.init        =  wakealarm_init,
 	.minor_tests = wakealarm_tests
 };

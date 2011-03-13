@@ -32,11 +32,6 @@ static int cmosdump_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *cmosdump_headline(void)
-{
-	return "Dump CMOS Memory.";
-}
-
 static int cmosdump_test1(fwts_framework *fw)
 {
 	int i;
@@ -328,7 +323,7 @@ static fwts_framework_minor_test cmosdump_tests[] = {
 };
 
 static fwts_framework_ops cmosdump_ops = {
-	.headline    = cmosdump_headline,
+	.description = "Dump CMOS Memory.",
 	.init        = cmosdump_init,
 	.minor_tests = cmosdump_tests
 };

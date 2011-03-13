@@ -509,11 +509,6 @@ static uefidump_info uefidump_info_table[] = {
 	{ NULL, NULL }
 };
 
-static char *uefidump_headline(void)
-{
-	return "Dump UEFI variables.";
-}
-
 static int uefidump_true_filter(const struct dirent *d)
 {
 	return 1;
@@ -628,7 +623,7 @@ static fwts_framework_minor_test uefidump_tests[] = {
 };
 
 static fwts_framework_ops uefidump_ops = {
-	.headline    = uefidump_headline,
+	.description = "Dump UEFI variables.",
 	.init        = uefidump_init,
 	.minor_tests = uefidump_tests
 };

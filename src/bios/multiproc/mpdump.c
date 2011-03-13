@@ -232,11 +232,6 @@ static int mpdump_deinit(fwts_framework *fw)
 	return fwts_mp_data_free(&mp_data);
 }
 
-static char *mpdump_headline(void)
-{
-	return "Dump MultiProcessor Data.";
-}
-
 static int mpdump_compare_bus(void *data1, void *data2)
 {
 	fwts_mp_bus_entry *bus_entry1 = (fwts_mp_bus_entry *)data1;
@@ -528,7 +523,7 @@ static fwts_framework_minor_test mpdump_tests[] = {
 };
 
 static fwts_framework_ops mpdump_ops = {
-	.headline    = mpdump_headline,
+	.description = "Dump MultiProcessor Data.",
 	.init        = mpdump_init,
 	.deinit      = mpdump_deinit,
 	.minor_tests = mpdump_tests,

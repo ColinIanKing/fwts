@@ -25,11 +25,6 @@
 
 #include "fwts.h"
 
-static char *checksum_headline(void)
-{
-	return "Check ACPI table checksum.";
-}
-
 static int checksum_scan_tables(fwts_framework *fw)
 {
 	int i;
@@ -77,7 +72,7 @@ static fwts_framework_minor_test checksum_tests[] = {
 };
 
 static fwts_framework_ops checksum_ops = {
-	.headline    = checksum_headline,
+	.description = "Check ACPI table checksum.",
 	.minor_tests = checksum_tests
 };
 

@@ -174,11 +174,6 @@ static int method_deinit(fwts_framework *fw)
 	return fwts_acpica_deinit();
 }
 
-static char *method_headline(void)
-{
-	return "ACPI DSDT Method Semantic Tests.";
-}
-
 static int method_exits(char *name)
 {
 	int name_len = strlen(name);
@@ -1922,7 +1917,7 @@ static fwts_framework_minor_test method_tests[] = {
 };
 
 static fwts_framework_ops method_ops = {
-	.headline    = method_headline,
+	.description = "ACPI DSDT Method Semantic Tests.",
 	.init        = method_init,
 	.deinit      = method_deinit,
 	.minor_tests = method_tests

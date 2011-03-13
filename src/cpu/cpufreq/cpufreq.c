@@ -586,12 +586,6 @@ static void check_sw_any(fwts_framework *fw)
 		fwts_passed(fw, "P-state coordination done by Hardware.");
 }
 
-static char *cpufreq_headline(void)
-{
-	/* Return the name of the test scenario */
-	return "CPU frequency scaling tests (takes ~1-2 mins).";
-}
-
 static int cpufreq_test1(fwts_framework *fw)
 {
 	DIR *dir;
@@ -676,7 +670,7 @@ static fwts_framework_minor_test cpufreq_tests[] = {
 };
 
 static fwts_framework_ops cpufreq_ops = {
-	.headline    = cpufreq_headline,
+	.description = "CPU frequency scaling tests (takes ~1-2 mins).",
 	.minor_tests = cpufreq_tests
 };
 

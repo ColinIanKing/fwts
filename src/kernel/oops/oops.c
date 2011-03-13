@@ -26,11 +26,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-static char *oops_headline(void)
-{
-	return "Scan kernel log for Oopses.";
-}
-
 static fwts_list *klog;
 
 static int oops_init(fwts_framework *fw)
@@ -77,7 +72,7 @@ static fwts_framework_minor_test oops_tests[] = {
 };
 
 static fwts_framework_ops oops_ops = {
-	.headline    = oops_headline,
+	.description = "Scan kernel log for Oopses.",
 	.init        = oops_init,	
 	.deinit      = oops_deinit,
 	.minor_tests = oops_tests

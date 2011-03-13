@@ -25,11 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char *nx_headline(void)
-{
-	return "Test if CPU NX is disabled by the BIOS.";
-}
-
 static int nx_test1(fwts_framework *fw)
 {
 	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
@@ -186,7 +181,7 @@ static fwts_framework_minor_test nx_tests[] = {
 };
 
 static fwts_framework_ops nx_ops = {
-	.headline    = nx_headline,
+	.description = "Test if CPU NX is disabled by the BIOS.",
 	.minor_tests = nx_tests
 };
 

@@ -51,11 +51,6 @@ static int ac_adapter_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *ac_adapter_headline(void)
-{
-	return "Interactive ac_adapter power test.";
-}
-
 void ac_adapter_check_field(char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -191,7 +186,7 @@ static fwts_framework_minor_test ac_adapter_tests[] = {
 };
 
 static fwts_framework_ops ac_adapter_ops = {
-	.headline    = ac_adapter_headline,
+	.description = "Interactive ac_adapter power test.",
 	.init        = ac_adapter_init,
 	.deinit      = ac_adapter_deinit,
 	.minor_tests = ac_adapter_tests

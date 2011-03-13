@@ -141,7 +141,7 @@ typedef struct {
 #include "fwts_args.h"
 
 typedef struct fwts_framework_ops {
-	char *(*headline)(void);		/* Headline description of test */
+	char *description;			/* description of test */
 	int (*init)(fwts_framework *);		/* Initialise */
 	int (*deinit)(fwts_framework *);	/* De-init */		
 	int (*getopts)(fwts_framework *, int argc, char **argv);	/* Arg handling */

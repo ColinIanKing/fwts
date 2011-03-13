@@ -38,11 +38,6 @@
  * acpi interrupt should be LEVEL
  */
 
-static char *apicedge_headline(void)
-{
-	return "APIC Edge/Level Check.";
-}
-
 static int apicedge_test1(fwts_framework *fw)
 {	
 	FILE *file;
@@ -108,7 +103,7 @@ static fwts_framework_minor_test apicedge_tests[] = {
 };
 
 static fwts_framework_ops apicedge_ops = {
-	.headline    = apicedge_headline,
+	.description = "APIC Edge/Level Check.",
 	.minor_tests = apicedge_tests
 };
 

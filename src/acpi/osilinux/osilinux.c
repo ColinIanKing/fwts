@@ -27,11 +27,6 @@
 #include <unistd.h>
 #include <string.h>
 
-static char *osilinux_headline(void)
-{
-	return "Disassemble DSDT to check for _OSI(\"Linux\").";
-}
-
 static int osilinux_test1(fwts_framework *fw)
 {	
 	fwts_list_link *item;
@@ -98,7 +93,7 @@ static fwts_framework_minor_test osilinux_tests[] = {
 };
 
 static fwts_framework_ops osilinux_ops = {
-	.headline    = osilinux_headline,
+	.description = "Disassemble DSDT to check for _OSI(\"Linux\").",
 	.minor_tests = osilinux_tests
 };
 

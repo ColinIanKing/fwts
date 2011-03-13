@@ -160,13 +160,6 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 }
 
-
-
-static char *acpiinfo_headline(void)
-{
-	return "General ACPI information check.";
-}
-
 static fwts_list *klog;
 
 static int acpiinfo_init(fwts_framework *fw)
@@ -217,7 +210,7 @@ static fwts_framework_minor_test acpiinfo_tests[] = {
 };
 
 static fwts_framework_ops acpiinfo_ops = {
-	.headline    = acpiinfo_headline,
+	.description = "General ACPI information check.",
 	.init        = acpiinfo_init,	
 	.deinit      = acpiinfo_deinit,
 	.minor_tests = acpiinfo_tests

@@ -435,11 +435,6 @@ static int mpcheck_deinit(fwts_framework *fw)
 	return fwts_mp_data_free(&mp_data);
 }
 
-static char *mpcheck_headline(void)
-{
-	return "Check MultiProcessor Tables.";
-}
-
 uint8_t mpcheck_get_apic_id(void *data)
 {
 	uint8_t *which = (uint8_t*)data;
@@ -494,7 +489,7 @@ static fwts_framework_minor_test mpcheck_tests[] = {
 };
 
 static fwts_framework_ops mpcheck_ops = {
-	.headline    = mpcheck_headline,
+	.description = "Check MultiProcessor Tables.",
 	.init        = mpcheck_init,
 	.deinit      = mpcheck_deinit,
 	.minor_tests = mpcheck_tests,

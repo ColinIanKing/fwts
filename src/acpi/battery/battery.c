@@ -245,11 +245,6 @@ static void do_battery_test(fwts_framework *fw, char *dir, char *name)
 	check_charging(fw, dir, name);
 }
 
-static char *battery_headline(void)
-{
-	return "Battery Tests.";
-}
-
 static int battery_test1(fwts_framework *fw)
 {
 	DIR *dir;
@@ -295,7 +290,7 @@ static fwts_framework_minor_test battery_tests[] = {
 };
 
 static fwts_framework_ops battery_ops = {
-	.headline    = battery_headline,
+	.description = "Battery Tests.",
 	.minor_tests = battery_tests
 };
 

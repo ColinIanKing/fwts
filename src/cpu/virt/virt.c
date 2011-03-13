@@ -61,11 +61,6 @@ static int virt_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *virt_headline(void)
-{
-	return "Test CPU Virtualisation Configuration.";
-}
-
 static int virt_test1(fwts_framework *fw)
 {
 	extern void virt_check_svm(fwts_framework *);
@@ -89,7 +84,7 @@ static fwts_framework_minor_test virt_tests[] = {
 };
 
 static fwts_framework_ops virt_ops = {
-	.headline    = virt_headline,
+	.description = "Test CPU Virtualisation Configuration.",
 	.init        = virt_init,
 	.deinit      = virt_deinit,
 	.minor_tests = virt_tests

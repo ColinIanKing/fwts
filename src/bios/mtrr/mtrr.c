@@ -519,11 +519,6 @@ static int mtrr_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *mtrr_headline(void)
-{
-	return "MTRR validation.";
-}
-
 static int mtrr_test1(fwts_framework *fw)
 {
 	return validate_iomem(fw);
@@ -602,7 +597,7 @@ static fwts_framework_minor_test mtrr_tests[] = {
 };
 
 static fwts_framework_ops mtrr_ops = {
-	.headline    = mtrr_headline,
+	.description = "MTRR validation.",
 	.init        = mtrr_init,
 	.deinit      = mtrr_deinit,
 	.minor_tests = mtrr_tests

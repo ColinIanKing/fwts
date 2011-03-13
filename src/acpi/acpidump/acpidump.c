@@ -24,11 +24,6 @@
 
 #include "fwts.h"
 
-static char *acpidump_headline(void)
-{
-	return "Dump ACPI tables.";
-}
-
 struct fwts_acpidump_field;
 
 typedef void (*fwts_acpidump_field_func)(fwts_framework *fw, struct fwts_acpidump_field *info, void *data, int offset);
@@ -1068,7 +1063,7 @@ static fwts_framework_minor_test acpidump_tests[] = {
 };
 
 static fwts_framework_ops acpidump_ops = {
-	.headline    = acpidump_headline,
+	.description = "Dump ACPI tables.",
 	.minor_tests = acpidump_tests
 };
 

@@ -65,11 +65,6 @@ static int ebda_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *ebda_headline(void)
-{
-	return "Validate EBDA region is mapped and reserved in memory map table.";
-}
-
 static int ebda_test1(fwts_framework *fw)
 {
 	const char *memory_map_name = fwts_memory_map_name(fw->firmware_type);
@@ -106,7 +101,7 @@ static fwts_framework_minor_test ebda_tests[] = {
 };
 
 static fwts_framework_ops ebda_ops = {
-	.headline    = ebda_headline,
+	.description = "Validate EBDA region is mapped and reserved in memory map table.",
 	.init        = ebda_init,
 	.deinit      = ebda_deinit,
 	.minor_tests = ebda_tests

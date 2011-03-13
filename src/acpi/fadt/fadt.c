@@ -54,11 +54,6 @@ static int fadt_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *fadt_headline(void)
-{
-	return "FADT SCI_EN enabled check.";
-}
-
 static int fadt_test1(fwts_framework *fw)
 {
 	uint32_t port, width, value;
@@ -132,7 +127,7 @@ static fwts_framework_minor_test fadt_tests[] = {
 };
 
 static fwts_framework_ops fadt_ops = {
-	.headline    = fadt_headline,
+	.description = "FADT SCI_EN enabled check.",
 	.init        = fadt_init,
 	.minor_tests = fadt_tests
 };

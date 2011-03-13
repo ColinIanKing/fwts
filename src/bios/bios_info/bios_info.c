@@ -24,12 +24,6 @@
 #include <string.h>
 #include <limits.h>
 
-static char *bios_info_headline(void)
-{
-	/* Return the name of the test scenario */
-	return "Gather BIOS DMI information.";
-}
-
 typedef struct {
 	char *dmi_field;
 	char *label;
@@ -83,7 +77,7 @@ static fwts_framework_minor_test bios_info_tests[] = {
 };
 
 static fwts_framework_ops bios_info_ops = {
-	.headline    = bios_info_headline,
+	.description = "Gather BIOS DMI information.",
 	.minor_tests = bios_info_tests
 };
 

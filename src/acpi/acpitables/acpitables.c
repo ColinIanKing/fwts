@@ -24,11 +24,6 @@
 
 #include "fwts.h"
 
-static char *acpi_table_check_headline(void)
-{
-	return "ACPI table settings sanity checks.";
-}
-
 static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)table->data;
@@ -392,7 +387,7 @@ static fwts_framework_minor_test acpi_table_check_tests[] = {
 };
 
 static fwts_framework_ops acpi_table_check_ops = {
-	.headline    = acpi_table_check_headline,
+	.description = "ACPI table settings sanity checks.",
 	.minor_tests = acpi_table_check_tests
 };
 

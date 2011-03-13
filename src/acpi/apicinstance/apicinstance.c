@@ -19,11 +19,6 @@
 
 #include "fwts.h"
 
-static char *apicinstance_headline(void)
-{
-	return "Check for single instance of APIC/MADT table.";
-}
-
 static int apicinstance_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_info *first_madt_table = NULL;
@@ -76,7 +71,7 @@ static fwts_framework_minor_test apicinstance_tests[] = {
 };
 
 static fwts_framework_ops apicinstance_ops = {
-	.headline    = apicinstance_headline,
+	.description = "Check for single instance of APIC/MADT table.",
 	.minor_tests = apicinstance_tests
 };
 

@@ -51,11 +51,6 @@ static int power_button_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *power_button_headline(void)
-{
-	return "Interactive power_button button test.";
-}
-
 void power_button_check_field(fwts_framework *fw, char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -146,7 +141,7 @@ static fwts_framework_minor_test power_button_tests[] = {
 };
 
 static fwts_framework_ops power_button_ops = {
-	.headline    = power_button_headline,
+	.description = "Interactive power_button button test.",
 	.init        = power_button_init,
 	.deinit      = power_button_deinit,
 	.minor_tests = power_button_tests

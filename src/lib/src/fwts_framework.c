@@ -285,7 +285,8 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						total += test->ops->total_tests;
 					}
 					else {
-						printf(" %-13.13s %s\n", test->name, test->ops->headline());
+						printf(" %-13.13s %s\n", test->name, 
+							test->ops->description ? test->ops->description : "");
 					}
 				}
 			}
@@ -411,7 +412,8 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
 		fprintf(stdout, "So far: %s\n\n", buffer);
-		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->headline());
+		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->description ? 
+			fw->current_major_test->ops->description : "");
 		fprintf(stdout, "Running test #%d: %s\n",
 			fw->current_major_test_num,
 			fw->current_minor_test_name);
@@ -547,12 +549,12 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	if (!(test->flags & FWTS_UTILS))
 		fw->print_summary = 1;
 
-	if (test->ops->headline) {
-		fwts_log_heading(fw, "%s", test->ops->headline());
+	if (test->ops->description) {
+		fwts_log_heading(fw, "%s", test->ops->description);
 		fwts_framework_underline(fw,'-');
 		if (fw->show_progress) {
 			char buf[70];
-			fwts_framework_strtrunc(buf, test->ops->headline(), sizeof(buf));
+			fwts_framework_strtrunc(buf, test->ops->description, sizeof(buf));
 			fprintf(stderr, "Test: %-70.70s\n", buf);
 		}
 	}

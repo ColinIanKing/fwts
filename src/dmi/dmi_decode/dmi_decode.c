@@ -106,11 +106,6 @@ static int dmi_decode_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *dmi_decode_headline(void)
-{
-	return "Test DMI/SMBIOS tables for errors.";
-}
-
 static int dmi_decode_test1(fwts_framework *fw)
 {
 	fwts_list *dmi_text;
@@ -171,7 +166,7 @@ static fwts_framework_minor_test dmi_decode_tests[] = {
 };
 
 static fwts_framework_ops dmi_decode_ops = {
-	.headline    = dmi_decode_headline,
+	.description = "Test DMI/SMBIOS tables for errors.",
 	.init        = dmi_decode_init,
 	.minor_tests = dmi_decode_tests
 };

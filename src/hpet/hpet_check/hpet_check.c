@@ -152,11 +152,6 @@ static int hpet_check_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *hpet_check_headline(void)
-{
-	return "HPET configuration test.";
-}
-
 static int hpet_check_test1(fwts_framework *fw)
 {
 	if (klog == NULL)
@@ -243,7 +238,7 @@ static fwts_framework_minor_test hpet_check_tests[] = {
 };
 
 static fwts_framework_ops hpet_check_ops = {
-	.headline    = hpet_check_headline,
+	.description = "HPET configuration test.",
 	.init        = hpet_check_init,
 	.deinit      = hpet_check_deinit,
 	.minor_tests = hpet_check_tests

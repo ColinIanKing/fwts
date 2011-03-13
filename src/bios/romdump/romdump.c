@@ -37,11 +37,6 @@ static int romdump_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *romdump_headline(void)
-{
-	return "Dump ROM data.";
-}
-
 static void romdump_data(fwts_framework *fw, uint8_t *data, int offset, int length)
 {
 	char buffer[128];
@@ -90,7 +85,7 @@ static fwts_framework_minor_test romdump_tests[] = {
 };
 
 static fwts_framework_ops romdump_ops = {
-	.headline    = romdump_headline,
+	.description = "Dump ROM data.",
 	.init        = romdump_init,
 	.minor_tests = romdump_tests
 };

@@ -31,11 +31,6 @@ static int ebdadump_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *ebdadump_headline(void)
-{
-	return "Dump EBDA region.";
-}
-
 static void ebdadump_data(fwts_framework *fw, uint8_t *data, int offset, int length)
 {
 	char buffer[128];
@@ -87,7 +82,7 @@ static fwts_framework_minor_test ebdadump_tests[] = {
 };
 
 static fwts_framework_ops ebdadump_ops = {
-	.headline    = ebdadump_headline,
+	.description = "Dump EBDA region.",
 	.init        = ebdadump_init,
 	.minor_tests = ebdadump_tests
 };

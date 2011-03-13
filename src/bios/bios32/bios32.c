@@ -45,11 +45,6 @@ static int bios32_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *bios32_headline(void)
-{
-	return "Check BIOS32 Service Directory.";
-}
-
 static int bios32_test1(fwts_framework *fw)
 {
 	uint8_t *mem;
@@ -139,7 +134,7 @@ static fwts_framework_minor_test bios32_tests[] = {
 };
 
 static fwts_framework_ops bios32_ops = {
-	.headline    = bios32_headline,
+	.description = "Check BIOS32 Service Directory.",
 	.init        = bios32_init,
 	.minor_tests = bios32_tests
 };

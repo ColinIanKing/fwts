@@ -216,11 +216,6 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 			fwts_passed(fw, "Processor %i has the same number of C-states as processor %d", cpu, firstcpu);
 }
 
-static char *cstates_headline(void)
-{
-	return "Check processor C state support.";
-}
-
 static int cstates_test1(fwts_framework *fw)
 {
 	DIR *dir;
@@ -269,7 +264,7 @@ static fwts_framework_minor_test cstates_tests[] = {
 };
 
 static fwts_framework_ops cstates_ops = {
-	.headline    = cstates_headline,
+	.description = "Check processor C state support.",
 	.minor_tests = cstates_tests
 };
 

@@ -53,11 +53,6 @@ static int brightness_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *brightness_headline(void)
-{
-	return "Interactive LCD brightness test.";
-}
-
 int get_setting(char *entry_name, char *setting, int *value)
 {
 	char path[PATH_MAX];
@@ -383,7 +378,7 @@ static fwts_framework_minor_test brightness_tests[] = {
 };
 
 static fwts_framework_ops brightness_ops = {
-	.headline    = brightness_headline,
+	.description = "Interactive LCD brightness test.",
 	.init        = brightness_init,
 	.deinit      = brightness_deinit,
 	.minor_tests = brightness_tests

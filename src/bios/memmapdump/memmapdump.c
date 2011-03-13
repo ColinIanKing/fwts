@@ -21,11 +21,6 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-static char *memory_mapdump_headline(void)
-{
-	return "Dump system memory map.";
-}
-
 static int memory_mapdump_util(fwts_framework *fw)
 {
 	fwts_list *memory_mapdump_memory_map_info;
@@ -49,7 +44,7 @@ static fwts_framework_minor_test memory_mapdump_utils[] = {
 };
 
 static fwts_framework_ops memory_mapdump_ops = {
-	.headline    = memory_mapdump_headline,
+	.description = "Dump system memory map.",
 	.minor_tests = memory_mapdump_utils
 };
 

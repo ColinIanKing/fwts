@@ -26,11 +26,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-static char *klog_headline(void)
-{
-	return "Scan kernel log for errors and warnings.";
-}
-
 static fwts_list *klog;
 
 static int klog_init(fwts_framework *fw)
@@ -83,7 +78,7 @@ static fwts_framework_minor_test klog_tests[] = {
 };
 
 static fwts_framework_ops klog_ops = {
-	.headline    = klog_headline,
+	.description = "Scan kernel log for errors and warnings.",
 	.init        = klog_init,	
 	.deinit      = klog_deinit,
 	.minor_tests = klog_tests

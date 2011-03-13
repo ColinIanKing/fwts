@@ -29,11 +29,6 @@
 
 static fwts_list *os2gap_memory_map_info;
 
-static char *os2gap_headline(void)
-{
-	return "OS/2 memory hole test.";
-}
-
 static int os2gap_init(fwts_framework *fw)
 {
 	if ((os2gap_memory_map_info = fwts_memory_map_table_load(fw)) == NULL) {
@@ -72,7 +67,7 @@ static fwts_framework_minor_test os2gap_tests[] = {
 };
 
 static fwts_framework_ops os2gap_ops = {
-	.headline    = os2gap_headline,
+	.description = "OS/2 memory hole test.",
 	.init        = os2gap_init,
 	.deinit      = os2gap_deinit,
 	.minor_tests = os2gap_tests

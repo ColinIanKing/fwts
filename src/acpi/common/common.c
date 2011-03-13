@@ -30,11 +30,6 @@
 #include <unistd.h>
 #include <string.h>
 
-static char *dmesg_common_headline(void)
-{
-	return "General dmesg common errors check.";
-}
-
 static fwts_list *klog;
 
 static int dmesg_common_init(fwts_framework *fw)
@@ -82,7 +77,7 @@ static fwts_framework_minor_test dmesg_common_tests[] = {
 };
 
 static fwts_framework_ops dmesg_common_ops = {
-	.headline    = dmesg_common_headline,
+	.description = "General dmesg common errors check.",
 	.init        = dmesg_common_init,	
 	.deinit      = dmesg_common_deinit,
 	.minor_tests = dmesg_common_tests

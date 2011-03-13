@@ -35,11 +35,6 @@ static int hda_audio_deinit(fwts_framework *fw)
 {
 	return FWTS_OK;
 }
-
-static char *hda_audio_headline(void)
-{
-	return "Check HDA Audio Pin Configs.";
-}
 			
 static fwts_list *hda_audio_read_pins(fwts_framework *fw, const char *path, const char *file)
 {
@@ -180,7 +175,7 @@ static fwts_framework_minor_test hda_audio_tests[] = {
 };
 
 static fwts_framework_ops hda_audio_ops = {
-	.headline    = hda_audio_headline,
+	.description = "Check HDA Audio Pin Configs.",
 	.init        = hda_audio_init,	
 	.deinit      = hda_audio_deinit,
 	.minor_tests = hda_audio_tests

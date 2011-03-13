@@ -51,11 +51,6 @@ static int lid_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *lid_headline(void)
-{
-	return "Interactive lid button test.";
-}
-
 void lid_check_field(char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -234,7 +229,7 @@ static fwts_framework_minor_test lid_tests[] = {
 };
 
 static fwts_framework_ops lid_ops = {
-	.headline    = lid_headline,
+	.description = "Interactive lid button test.",
 	.init        = lid_init,
 	.deinit      = lid_deinit,
 	.minor_tests = lid_tests

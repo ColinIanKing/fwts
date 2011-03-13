@@ -130,11 +130,6 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 	closedir(dir);
 }
 
-static char *microcode_headline(void)
-{
-	return "Check if system is using latest microcode.";
-}
-
 static int microcode_init(fwts_framework *fw)
 {
 	if (fwts_check_root_euid(fw) != FWTS_OK)
@@ -198,7 +193,7 @@ static fwts_framework_minor_test microcode_tests[] = {
 };
 
 static fwts_framework_ops microcode_ops = {
-	.headline    = microcode_headline,
+	.description = "Check if system is using latest microcode.",
 	.init        = microcode_init,
 	.minor_tests = microcode_tests
 };

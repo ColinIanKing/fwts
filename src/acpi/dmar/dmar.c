@@ -281,11 +281,6 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 		fwts_failed(fw, "Found DMAR error: %s", line);
 }
 
-static char *dmar_headline(void)
-{
-	return "Check sane DMA Remapping (VT-d).";
-}
-
 static int dmar_test1(fwts_framework *fw)
 {
 	if (dmar_acpi_table_check(fw) == FWTS_OK) {
@@ -314,7 +309,7 @@ static fwts_framework_minor_test dmar_tests[] = {
 };
 
 static fwts_framework_ops dmar_ops = {
-	.headline    = dmar_headline,
+	.description = "Check sane DMA Remapping (VT-d).",
 	.minor_tests = dmar_tests
 };
 

@@ -41,11 +41,6 @@ static char *s3_quirks = NULL;		/* Quirks to be passed to pm-suspend */
 static int  s3_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 static bool s3_min_max_delay = false;
 
-static char *s3_headline(void)
-{
-	return "S3 suspend/resume test.";
-}
-
 static int s3_init(fwts_framework *fw)
 {
 	int ret;
@@ -392,7 +387,7 @@ static fwts_framework_minor_test s3_tests[] = {
 };
 
 static fwts_framework_ops s3_ops = {
-	.headline    = s3_headline,
+	.description = "S3 suspend/resume test.",
 	.init        = s3_init,	
 	.deinit      = s3_deinit,
 	.minor_tests = s3_tests,

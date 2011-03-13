@@ -19,12 +19,6 @@
 
 #include "fwts.h"
 
-static char *version_headline(void)
-{
-	/* Return the name of the test scenario */
-	return "Gather kernel system information.";
-}
-
 static int version_test1(fwts_framework *fw)
 {
 	char *str;
@@ -75,7 +69,7 @@ static fwts_framework_minor_test version_tests[] = {
 };
 
 static fwts_framework_ops version_ops = {
-	.headline    = version_headline,
+	.description = "Gather kernel system information.",
 	.minor_tests = version_tests
 };
 

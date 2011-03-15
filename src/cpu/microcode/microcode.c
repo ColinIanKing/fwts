@@ -132,9 +132,6 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 
 static int microcode_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw) != FWTS_OK)
-		return FWTS_ERROR;
-
 	if (access(FWTS_MICROCODE_DEVICE, W_OK) != 0) {
 		fwts_log_error(fw, "Cannot get write access to %s.", FWTS_MICROCODE_DEVICE);
 		return FWTS_ERROR;
@@ -198,6 +195,6 @@ static fwts_framework_ops microcode_ops = {
 	.minor_tests = microcode_tests
 };
 
-FWTS_REGISTER(microcode, &microcode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(microcode, &microcode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

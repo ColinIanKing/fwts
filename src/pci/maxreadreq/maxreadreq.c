@@ -39,9 +39,6 @@ static fwts_list *lspci_text;
 
 static int maxreadreq_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
@@ -137,6 +134,6 @@ static fwts_framework_ops maxreadreq_ops = {
 	.minor_tests = maxreadreq_tests
 };
 
-FWTS_REGISTER(maxreadreq, &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(maxreadreq, &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

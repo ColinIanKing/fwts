@@ -29,14 +29,6 @@
 #define BIOS_ROM_SIZE		(BIOS_ROM_END - BIOS_ROM_START)
 #define BIOS_ROM_OFFSET		(BIOS_ROM_START - BIOS_ROM_REGION_START)
 
-static int romdump_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static void romdump_data(fwts_framework *fw, uint8_t *data, int offset, int length)
 {
 	char buffer[128];
@@ -86,10 +78,9 @@ static fwts_framework_minor_test romdump_tests[] = {
 
 static fwts_framework_ops romdump_ops = {
 	.description = "Dump ROM data.",
-	.init        = romdump_init,
 	.minor_tests = romdump_tests
 };
 
-FWTS_REGISTER(romdump, &romdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(romdump, &romdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS | FWTS_ROOT_PRIV);
 
 #endif

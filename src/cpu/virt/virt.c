@@ -42,9 +42,6 @@ fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
 static int virt_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
@@ -90,6 +87,6 @@ static fwts_framework_ops virt_ops = {
 	.minor_tests = virt_tests
 };
 
-FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

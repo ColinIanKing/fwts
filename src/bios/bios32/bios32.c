@@ -39,8 +39,6 @@ static int bios32_init(fwts_framework *fw)
 		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
 		return FWTS_SKIP;
 	}
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
 
 	return FWTS_OK;
 }
@@ -139,6 +137,6 @@ static fwts_framework_ops bios32_ops = {
 	.minor_tests = bios32_tests
 };
 
-FWTS_REGISTER(bios32, &bios32_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(bios32, &bios32_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

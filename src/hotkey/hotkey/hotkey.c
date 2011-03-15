@@ -202,9 +202,6 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 
 static int hotkey_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw) != FWTS_OK)
-		return FWTS_ERROR;
-
 	hotkey_dev = hotkey_find_keyboard(fw, "/sys/devices/platform");
 
 	if ((hotkey_keymap = hotkey_find_keymap(fw, hotkey_dev)) == NULL) {
@@ -239,6 +236,8 @@ static int hotkey_test1(fwts_framework *fw)
 	fwts_log_info(fw, "Using %s keymap and %s input device.", hotkey_keymap, hotkey_dev);
 	hotkey_test(fw, hotkey_dev, hotkeys);
 
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 
@@ -254,6 +253,6 @@ static fwts_framework_ops hotkey_ops = {
 	.minor_tests = hotkey_tests
 };
 
-FWTS_REGISTER(hotkey, &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);
+FWTS_REGISTER(hotkey, &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE | FWTS_ROOT_PRIV);
 
 #endif

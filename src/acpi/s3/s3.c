@@ -45,9 +45,6 @@ static int s3_init(fwts_framework *fw)
 {
 	int ret;
 
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
@@ -396,6 +393,6 @@ static fwts_framework_ops s3_ops = {
 	.options_check = s3_options_check,
 };
 
-FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES);
+FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_POWER_STATES | FWTS_ROOT_PRIV);
 
 #endif

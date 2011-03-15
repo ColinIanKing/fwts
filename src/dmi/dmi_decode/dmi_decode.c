@@ -97,9 +97,6 @@ static dmi_pattern dmi_patterns[] = {
 
 static int dmi_decode_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->dmidecode, "dmidecode"))
 		return FWTS_ERROR;
 
@@ -171,6 +168,6 @@ static fwts_framework_ops dmi_decode_ops = {
 	.minor_tests = dmi_decode_tests
 };
 
-FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

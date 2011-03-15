@@ -420,12 +420,9 @@ static int mpcheck_test_compat_bus_address_space_entries(fwts_framework *fw)
 
 static int mpcheck_init(fwts_framework *fw)
 {	
-	if (fwts_check_root_euid(fw))
-		return FWTS_ABORTED;
-
 	if (fwts_mp_data_get(&mp_data) != FWTS_OK) {
 		fwts_log_error(fw, "Failed to get _MP_ data from firmware.");
-		return FWTS_ABORTED;
+		return FWTS_SKIP;
 	}
 	return FWTS_OK;
 }
@@ -495,6 +492,6 @@ static fwts_framework_ops mpcheck_ops = {
 	.minor_tests = mpcheck_tests,
 };
 
-FWTS_REGISTER(mpcheck, &mpcheck_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(mpcheck, &mpcheck_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

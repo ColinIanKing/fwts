@@ -37,9 +37,6 @@ static int fadt_init(fwts_framework *fw)
 {
 	fwts_acpi_table_info *table;
 
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot read ACPI table FACP.");
 		return FWTS_ERROR;
@@ -132,6 +129,6 @@ static fwts_framework_ops fadt_ops = {
 	.minor_tests = fadt_tests
 };
 
-FWTS_REGISTER(fadt, &fadt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(fadt, &fadt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

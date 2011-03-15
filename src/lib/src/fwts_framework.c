@@ -514,6 +514,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test *test)
 {		
 	fwts_framework_minor_test *minor_test;	
+	int ret;
 
 	fw->current_major_test = test;
 	fw->current_minor_test_name = "";
@@ -548,39 +549,43 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 	fwts_framework_minor_test_progress(fw, 0, "");
 
-	if (test->ops->init) {
-		int ret;
-		if ((ret = test->ops->init(fw)) != FWTS_OK) {
-			/* Init failed or skipped, so abort */
-			if (ret == FWTS_SKIP) {
-				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->current_major_test->results.skipped++;
-					fw->total.skipped++;
-				}
-				if (fw->show_progress) {
-					fwts_framework_minor_test_progress_clear_line();
-					fprintf(stderr, " Test skipped.\n");
-				}
-			} else {
-				fwts_log_error(fw, "Aborted test, initialisation failed.");
-				for (minor_test = test->ops->minor_tests; *minor_test->test_func != NULL; minor_test++) {
-					fw->current_major_test->results.aborted++;
-					fw->total.aborted++;
-				}
-				if (fw->show_progress) {
-					fwts_framework_minor_test_progress_clear_line();
-					fprintf(stderr, " Test aborted.\n");
-				}
-			}
-			goto done;
+	if ((test->flags & FWTS_ROOT_PRIV) &&
+	    (fwts_check_root_euid(fw) != FWTS_OK)) {
+		fwts_log_error(fw, "Aborted test, insufficient privilege.");
+		fw->current_major_test->results.aborted += test->ops->total_tests;
+		fw->total.aborted += test->ops->total_tests;
+		if (fw->show_progress) {
+			fwts_framework_minor_test_progress_clear_line();
+			fprintf(stderr, " Test aborted.\n");
 		}
+		goto done;
+	}
+
+	if ((test->ops->init) && 
+	    ((ret = test->ops->init(fw)) != FWTS_OK)) {
+		char *msg = NULL;
+
+		/* Init failed or skipped, so abort */
+		if (ret == FWTS_SKIP) {
+			fw->current_major_test->results.skipped += test->ops->total_tests;
+			fw->total.skipped += test->ops->total_tests;
+			msg = "Test skipped.";
+		} else {
+			fwts_log_error(fw, "Aborted test, initialisation failed.");
+			fw->current_major_test->results.aborted += test->ops->total_tests;
+			fw->total.aborted += test->ops->total_tests;
+			msg = "Test aborted.";
+		}
+		if (fw->show_progress) {
+			fwts_framework_minor_test_progress_clear_line();
+			fprintf(stderr, " %s.\n", msg);
+		}
+		goto done;
 	}
 
 	for (minor_test = test->ops->minor_tests; 
 		*minor_test->test_func != NULL; 
 		minor_test++, fw->current_minor_test_num++) {
-
-		int ret;
 
 		fw->current_minor_test_name = minor_test->name;
 
@@ -596,10 +601,9 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 		/* Something went horribly wrong, abort all other tests too */
 		if (ret == FWTS_ABORTED)  {
-			for (; *minor_test->test_func != NULL; minor_test++) {
-				fw->current_major_test->results.aborted++;
-				fw->total.aborted++;
-			}
+			int aborted = test->ops->total_tests - (fw->current_minor_test_num - 1);
+			fw->current_major_test->results.aborted += aborted;
+			fw->total.aborted += aborted;
 			break;
 		}
 		fwts_framework_minor_test_progress(fw, 100, "");

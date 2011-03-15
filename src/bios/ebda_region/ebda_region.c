@@ -42,9 +42,6 @@ static int ebda_init(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if ((memory_map = fwts_memory_map_table_load(fw)) == NULL) {
 		fwts_log_error(fw, "Failed to read memory map.");
 		return FWTS_ERROR;
@@ -107,6 +104,6 @@ static fwts_framework_ops ebda_ops = {
 	.minor_tests = ebda_tests
 };
 
-FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

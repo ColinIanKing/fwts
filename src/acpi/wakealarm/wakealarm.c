@@ -29,11 +29,6 @@
 
 static char *wkalarm = WAKEALARM;
 
-static int wakealarm_init(fwts_framework *fw)
-{
-	return fwts_check_root_euid(fw);
-}
-
 static int wakealarm_test1(fwts_framework *fw)
 {
 	struct stat buf;
@@ -116,10 +111,9 @@ static fwts_framework_minor_test wakealarm_tests[] = {
 
 static fwts_framework_ops wakealarm_ops = {
 	.description = "Test ACPI Wakealarm.",
-	.init        =  wakealarm_init,
 	.minor_tests = wakealarm_tests
 };
 
-FWTS_REGISTER(wakealarm, &wakealarm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(wakealarm, &wakealarm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

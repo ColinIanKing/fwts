@@ -84,9 +84,6 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 
 static int mcfg_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
@@ -237,6 +234,6 @@ static fwts_framework_ops mcfg_ops = {
 	.minor_tests = mcfg_tests
 };
 
-FWTS_REGISTER(mcfg, &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(mcfg, &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

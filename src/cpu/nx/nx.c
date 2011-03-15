@@ -131,11 +131,6 @@ static int nx_test3(fwts_framework *fw)
 	fwts_log_info(fw,
 		"This test verifies that all CPUs have the same NX flag setting by examining the per CPU MSR register 0x1a0.");
 
-	if (fwts_check_root_euid(fw)) {
-		fwts_log_error(fw, "This test needs to be run as root to access MSR registers");
-		return FWTS_ERROR;
-	}
-
 	if ((n = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot determine number of CPUs");
 		return FWTS_ERROR;
@@ -185,6 +180,6 @@ static fwts_framework_ops nx_ops = {
 	.minor_tests = nx_tests
 };
 
-FWTS_REGISTER(nx, &nx_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(nx, &nx_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

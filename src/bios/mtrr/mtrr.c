@@ -482,9 +482,6 @@ static void do_mtrr_resource(fwts_framework *fw)
 
 static int mtrr_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
@@ -603,6 +600,6 @@ static fwts_framework_ops mtrr_ops = {
 	.minor_tests = mtrr_tests
 };
 
-FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_EARLY, FWTS_BATCH);
+FWTS_REGISTER(mtrr, &mtrr_ops, FWTS_TEST_EARLY, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

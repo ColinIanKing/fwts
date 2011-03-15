@@ -41,14 +41,6 @@ typedef struct {
 	uint8_t		smbios_bcd_revision;
 }  __attribute__ ((packed)) fwts_smbios_entry;
 
-static int smbios_init(fwts_framework *fw)
-{
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
-	return FWTS_OK;
-}
-
 static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
 {
 	fwts_list *systab;
@@ -154,10 +146,9 @@ static fwts_framework_minor_test smbios_tests[] = {
 
 static fwts_framework_ops smbios_ops = {
 	.description = "Check SMBIOS.",
-	.init        = smbios_init,
 	.minor_tests = smbios_tests
 };
 
-FWTS_REGISTER(smbios, &smbios_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(smbios, &smbios_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

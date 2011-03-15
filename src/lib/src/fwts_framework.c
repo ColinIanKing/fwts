@@ -135,7 +135,7 @@ void fwts_framework_test_add(const char *name,
 {
 	fwts_framework_test *new_test;
 
-	if (flags & ~FWTS_RUN_ALL_FLAGS) {
+	if (flags & ~(FWTS_RUN_ALL_FLAGS | FWTS_ROOT_PRIV)) {
 		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL, \n"
 			        "FWTS_INTERACTIVE_EXPERIMENTAL or FWTS_POWER_STATES, got %x\n", name, flags);
 		exit(EXIT_FAILURE);

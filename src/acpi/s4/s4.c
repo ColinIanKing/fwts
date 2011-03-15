@@ -44,9 +44,6 @@ static int s4_init(fwts_framework *fw)
 {
 	fwts_list* swap_devs;
 
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if (fwts_klog_clear()) {
 		fwts_log_error(fw, "Cannot clear kernel log.");
 		return FWTS_ERROR;
@@ -454,6 +451,6 @@ static fwts_framework_ops s4_ops = {
 	.options_check = s4_options_check
 };
 
-FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_POWER_STATES);
+FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_POWER_STATES | FWTS_ROOT_PRIV);
 
 #endif

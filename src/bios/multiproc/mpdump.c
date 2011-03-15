@@ -217,12 +217,9 @@ static fwts_mp_data mp_data;
 
 static int mpdump_init(fwts_framework *fw)
 {	
-	if (fwts_check_root_euid(fw))
-		return FWTS_ABORTED;
-
 	if (fwts_mp_data_get(&mp_data) != FWTS_OK) {
 		fwts_log_error(fw, "Failed to get _MP_ data from firmware.");
-		return FWTS_ABORTED;
+		return FWTS_SKIP;
 	}
 	return FWTS_OK;
 }
@@ -529,6 +526,6 @@ static fwts_framework_ops mpdump_ops = {
 	.minor_tests = mpdump_tests,
 };
 
-FWTS_REGISTER(mpdump, &mpdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(mpdump, &mpdump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS | FWTS_ROOT_PRIV);
 
 #endif

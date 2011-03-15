@@ -109,6 +109,7 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(FWTS_FRAMEWORK_ADVICE),		"ADVICE",  NULL },
 	{ ID_NAME(FWTS_FRAMEWORK_SKIPPED),		"SKIPPED", NULL },
 	{ ID_NAME(FWTS_FRAMEWORK_ABORTED),		"ABORTED", NULL },
+	{ ID_NAME(FWTS_FRAMEWORK_INFOONLY),		"INFO", NULL },
 };
 
 /*
@@ -671,118 +672,54 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
 }
 
 /*
- *  fwts_framework_advice()
- *	log advice message
+ *  fwts_framework_log()
+ *	log a test result
  */
-void fwts_framework_advice(fwts_framework *fw, const char *fmt, ...)
+void fwts_framework_log(fwts_framework *fw, 
+	fwts_framework_results result,
+	fwts_log_level level,
+	uint32_t *count,
+	const char *fmt, ...)
 {
-	va_list ap;
 	char buffer[4096];
+	char *str = fwts_framework_get_env(result);
 
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_log_nl(fw);
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_ADVICE), buffer);
-	fwts_log_nl(fw);
-	va_end(ap);
-}
+	if (fmt) {
+		va_list ap;
 
-/*
- *  fwts_framework_passed()
- *	log a passed test message
- */
-void fwts_framework_passed(fwts_framework *fw, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[4096];
+		va_start(ap, fmt);
+		vsnprintf(buffer, sizeof(buffer), fmt, ap);
+		va_end(ap);
+	} else 
+		*buffer = '\0';
 
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fw->minor_tests.passed++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "%s: Test %d, %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_PASSED), fw->current_minor_test_num, buffer);
-	va_end(ap);
-}
+	if (count)
+		(*count)++;
 
-/*
- *  fwts_framework_failed()
- *	log a failed test message
- */
-void fwts_framework_failed(fwts_framework *fw, fwts_log_level level, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[4096];
-
-	fw->failed_level |= level;
-
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fwts_summary_add(fw->current_major_test->name, level, buffer);
-	fw->minor_tests.failed++;
-	fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_FAILED), fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
-	va_end(ap);
-}
-
-/*
- *  fwts_framework_warning()
- *	log a warning message
- */
-void fwts_framework_warning(fwts_framework *fw, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[1024];
-
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fw->minor_tests.warning++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_WARNING), fw->current_minor_test_num, buffer);
-	va_end(ap);
-}
-
-/*
- *  fwts_framework_skipped()
- *	log a skipped test message
- */
-void fwts_framework_skipped(fwts_framework *fw, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[1024];
-
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fw->minor_tests.skipped++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_SKIPPED), fw->current_minor_test_num, buffer);
-	va_end(ap);
-}
-
-/*
- *  fwts_framework_aborted()
- *	log an aborted test message
- */
-void fwts_framework_aborted(fwts_framework *fw, const char *fmt, ...)
-{
-	va_list ap;
-	char buffer[1024];
-
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	fw->minor_tests.aborted++;
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_MEDIUM, "%s: Test %d, %s",
-		fwts_framework_get_env(FWTS_FRAMEWORK_ABORTED), fw->current_minor_test_num, buffer);
-	va_end(ap);
-}
-
-/*
- *  fwts_framework_infoonly()
- *	mark a test as information only 
- */
-void fwts_framework_infoonly(fwts_framework *fw)
-{
-	fw->minor_tests.infoonly++;
+	switch (result) {
+	case FWTS_FRAMEWORK_ADVICE:
+		fwts_log_nl(fw);
+		fwts_log_printf(fw->results, LOG_RESULT, level, "%s: %s", str, buffer);
+		fwts_log_nl(fw);
+		break;
+	case FWTS_FRAMEWORK_FAILED:
+		fw->failed_level |= level;
+		fwts_summary_add(fw->current_major_test->name, level, buffer);
+		fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s",
+			str, fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
+		break;
+	case FWTS_FRAMEWORK_PASSED:
+	case FWTS_FRAMEWORK_WARNING:
+	case FWTS_FRAMEWORK_SKIPPED:
+	case FWTS_FRAMEWORK_ABORTED:
+		fwts_log_printf(fw->results, LOG_RESULT, level, "%s: Test %d, %s",
+			str, fw->current_minor_test_num, buffer);
+		break;
+	case FWTS_FRAMEWORK_INFOONLY:
+		break;	/* no-op */
+	default:
+		break;
+	}
 }
 
 /*

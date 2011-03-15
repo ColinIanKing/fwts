@@ -134,9 +134,6 @@ static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int whic
 
 static int hpet_check_init(fwts_framework *fw)
 {
-	if (fwts_check_root_euid(fw))
-		return FWTS_ERROR;
-
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		return FWTS_ERROR;
@@ -244,6 +241,6 @@ static fwts_framework_ops hpet_check_ops = {
 	.minor_tests = hpet_check_tests
 };
 
-FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

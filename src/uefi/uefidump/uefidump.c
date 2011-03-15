@@ -586,8 +586,6 @@ static int uefidump_init(fwts_framework *fw)
 		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
 		return FWTS_ABORTED;
 	}
-	if (fwts_check_root_euid(fw))	/* need to be root to read data */
-		return FWTS_ERROR;
 
 	return FWTS_OK;
 }
@@ -628,4 +626,4 @@ static fwts_framework_ops uefidump_ops = {
 	.minor_tests = uefidump_tests
 };
 
-FWTS_REGISTER(uefidump, &uefidump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(uefidump, &uefidump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS | FWTS_ROOT_PRIV);

@@ -20,6 +20,8 @@
 #ifndef __FWTS_CPU_H__
 #define __FWTS_CPU_H__
 
+#include <stdbool.h>
+
 typedef struct cpuinfo_x86 {
 	char *vendor_id;	/* Vendor ID */
 	int x86;		/* CPU family */
@@ -30,6 +32,9 @@ typedef struct cpuinfo_x86 {
 } fwts_cpuinfo_x86;
 
 int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val);
+
+int fwts_cpu_is_Intel(bool *is_intel);
+int fwts_cpu_is_AMD(bool *is_amd);
 
 int fwts_cpu_has_c1e(void);
 fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu);

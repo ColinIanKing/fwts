@@ -163,6 +163,29 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 	return cpu;
 }
 
+static int fwts_cpu_matches_vendor_id(const char *vendor_id, bool *matches)
+{
+	fwts_cpuinfo_x86 *cpu;
+
+	if ((cpu = fwts_cpu_get_info(0)) == NULL)
+		return FWTS_ERROR;
+	
+        *matches = (strstr(cpu->vendor_id, vendor_id) != NULL);
+
+	fwts_cpu_free_info(cpu);
+
+	return FWTS_OK;
+}
+
+int fwts_cpu_is_Intel(bool *is_intel)
+{
+	return fwts_cpu_matches_vendor_id("Intel", is_intel);
+}
+
+int fwts_cpu_is_AMD(bool *is_amd)
+{
+	return fwts_cpu_matches_vendor_id("AuthenticAMD", is_amd);
+}
 
 /*
  *  fwts_cpu_has_c1e()

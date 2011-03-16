@@ -266,6 +266,10 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 			}
 		}
 		fwts_log_summary_verbatum(fw, "---------------+-----+-----+-----+-----+-----+-----+");
+		fwts_log_summary_verbatum(fw, "Total:         |%5d|%5d|%5d|%5d|%5d|%5d|",
+			fw->total.passed, fw->total.failed, fw->total.aborted,
+			fw->total.warning, fw->total.skipped, fw->total.infoonly);
+		fwts_log_summary_verbatum(fw, "---------------+-----+-----+-----+-----+-----+-----+");
 		fwts_list_free(sorted, NULL);
 	}
 	return FWTS_OK;

@@ -144,4 +144,4 @@ static fwts_framework_ops crs_ops = {
 	.minor_tests = crs_tests
 };
 
-FWTS_REGISTER(crs, &crs_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(crs, &crs_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);

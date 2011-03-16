@@ -65,7 +65,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
 	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
 	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
-	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) \
+	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
 	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
 	oops.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
@@ -325,6 +325,7 @@ fwts_SOURCES = main.c \
 	cpu/maxfreq/maxfreq.c \
 	cpu/cpufreq/cpufreq.c \
 	cpu/nx/nx.c \
+	cpu/msr/msr.c \
 	cpu/microcode/microcode.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c \
@@ -460,6 +461,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microcode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpcheck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpdump.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/msr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mtrr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oops.Po@am__quote@
@@ -1171,6 +1173,20 @@ nx.obj: cpu/nx/nx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/nx/nx.c' object='nx.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o nx.obj `if test -f 'cpu/nx/nx.c'; then $(CYGPATH_W) 'cpu/nx/nx.c'; else $(CYGPATH_W) '$(srcdir)/cpu/nx/nx.c'; fi`
+
+msr.o: cpu/msr/msr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT msr.o -MD -MP -MF $(DEPDIR)/msr.Tpo -c -o msr.o `test -f 'cpu/msr/msr.c' || echo '$(srcdir)/'`cpu/msr/msr.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/msr.Tpo $(DEPDIR)/msr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/msr/msr.c' object='msr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o msr.o `test -f 'cpu/msr/msr.c' || echo '$(srcdir)/'`cpu/msr/msr.c
+
+msr.obj: cpu/msr/msr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT msr.obj -MD -MP -MF $(DEPDIR)/msr.Tpo -c -o msr.obj `if test -f 'cpu/msr/msr.c'; then $(CYGPATH_W) 'cpu/msr/msr.c'; else $(CYGPATH_W) '$(srcdir)/cpu/msr/msr.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/msr.Tpo $(DEPDIR)/msr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cpu/msr/msr.c' object='msr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o msr.obj `if test -f 'cpu/msr/msr.c'; then $(CYGPATH_W) 'cpu/msr/msr.c'; else $(CYGPATH_W) '$(srcdir)/cpu/msr/msr.c'; fi`
 
 microcode.o: cpu/microcode/microcode.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT microcode.o -MD -MP -MF $(DEPDIR)/microcode.Tpo -c -o microcode.o `test -f 'cpu/microcode/microcode.c' || echo '$(srcdir)/'`cpu/microcode/microcode.c

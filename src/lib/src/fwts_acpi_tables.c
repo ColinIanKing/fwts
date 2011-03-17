@@ -146,6 +146,9 @@ static void *fwts_acpi_load_table(off_t addr)
 		return NULL;
 
 	len = hdr->length;
+	if (len < (int)sizeof(fwts_acpi_table_header))
+		return NULL;
+
 	(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
 
 	if ((table = fwts_low_calloc(1, len)) == NULL)
@@ -224,8 +227,8 @@ static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32_t *a
 	else addr = 0;
 
 	if (addr) {
-		header = fwts_acpi_load_table(addr);
-		fwts_acpi_add_table(header->signature, header, (uint64_t)addr, header->length);
+		if ((header = fwts_acpi_load_table(addr)) != NULL)
+			fwts_acpi_add_table(header->signature, header, (uint64_t)addr, header->length);
 	}
 }
 
@@ -267,10 +270,11 @@ static int fwts_acpi_load_tables_from_firmware(void)
 			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
 			for (i=0; i<num_entries; i++) {
 				if (rsdt->entries[i]) {
-					header = fwts_acpi_load_table((off_t)rsdt->entries[i]);
-					if (strncmp("FACP", header->signature, 4) == 0)
-						fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-					fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
+					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
+						if (strncmp("FACP", header->signature, 4) == 0)
+							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
+					}
 				}
 			}
 		}
@@ -283,10 +287,11 @@ static int fwts_acpi_load_tables_from_firmware(void)
 			num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
 			for (i=0; i<num_entries; i++) {
 				if (xsdt->entries[i]) {
-					header = fwts_acpi_load_table((off_t)xsdt->entries[i]);
-					if (strncmp("FACP", header->signature, 4) == 0)
-						fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-					fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+					if ((header = fwts_acpi_load_table((off_t)xsdt->entries[i])) != NULL) {
+						if (strncmp("FACP", header->signature, 4) == 0)
+							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
+						fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+					}
 				}
 			}
 		}

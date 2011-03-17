@@ -63,5 +63,6 @@
 #include "fwts_oops.h"
 #include "fwts_hwinfo.h"
 #include "fwts_args.h"
+#include "fwts_alloc.h"
 
 #endif

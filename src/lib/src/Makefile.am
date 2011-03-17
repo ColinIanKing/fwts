@@ -13,6 +13,7 @@ libfwts_la_SOURCES = \
 	fwts_acpid.c \
 	fwts_acpi_tables.c \
 	fwts_args.c \
+	fwts_alloc.c \
 	fwts_binpaths.c \
 	fwts_checkeuid.c \
 	fwts_cmos.c \

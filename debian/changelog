@@ -1,3 +1,72 @@
+fwts (0.23.00) natty; urgency=low
+
+  * post natty freeze, bug fixes and new features
+  * fix segfault of method test on 64 bit machines (LP: #736874)
+  * drop thermal_trip test (LP: #730132)
+  * Fix cstates test (LP: #728685)
+  * acpi: acpidump: use more sensible heading, fix SCI text
+  * hpet: Fail test and skip sanity check when base address not found
+  * bios: ebda_region: close fd on error
+  * acpi: acpidump: use more sensible heading, fix SCI text
+  * hpet: Fail test and skip sanity check when base address not found
+  * bios: ebda_region: close fd on error.
+  * lib: fwts_acpi_tables: check for broken table sizes.
+  * lib: use low memory allocator for ACPI tables
+  * lib: fwts: include fwts_alloc.h
+  * lib: add 32 bit allocator
+  * lib: multiproc: add check of lower 1K region
+  * cpu: msr: fix 64 bit build warnings.
+  * lib: summary: add totals to table.
+  * cpu: msr: add MSR checking.
+  * lib: cpu: add Intel and AMD cpu ident checks.
+  * pci: crs: use FWTS_ROOT_PRIV flag
+  * uefi: uefidump: use FWTS_ROOT_PRIV flag
+  * pci: maxreadreq: use FWTS_ROOT_PRIV flag
+  * hpet: hpet_check: use FWTS_ROOT_PRIV flag
+  * hotkey: hotkey: use FWTS_ROOT_PRIV flag
+  * dmi: dmi_decode: use FWTS_ROOT_PRIV flag
+  * cpu: virt: use FWTS_ROOT_PRIV flag
+  * cpu: nx: use FWTS_ROOT_PRIV flag
+  * cpu: microcode: use FWTS_ROOT_PRIV flag
+  * bios: smbios: use FWTS_ROOT_PRIV flag and remove .init
+  * bios: romdump: use FWTS_ROOT_PRIV flag and remove .init
+  * bios: mpdump: use FWTS_ROOT_PRIV flag
+  * bios: mpcheck: use FWTS_ROOT_PRIV flag
+  * bios: mtrr: use FWTS_ROOT_PRIV flag
+  * bios: ebdadump: use FWTS_ROOT_PRIV flag and remove .init
+  * bios: ebda_region: use FWTS_ROOT_PRIV flag
+  * bios: bios32: use FWTS_ROOT_PRIV flag and remove .init
+  * acpi: wakealarm: use FWTS_ROOT_PRIV flag
+  * acpi: s4: use FWTS_ROOT_PRIV flag
+  * acpi: s3: use FWTS_ROOT_PRIV flag
+  * acpi: mcfg: use FWTS_ROOT_PRIV flag
+  * acpi: fadt: use FWTS_ROOT_PRIV flag
+  * cmos: cmosdump: use FWTS_ROOT_PRIV flag, remove init check
+  * lib: framework: allow FWTS_ROOT_PRIV flag on test
+  * lib: framework: add ROOT_PRIV flag, tidy _run_test
+  * lib: framework: rationalise test status logging.
+  * lib: framework: rename FWTS_*_TEXT to FWTS_FRAMEWORK_*, move typedef into header.
+  * framework + tests: remove .headline, replace with .description
+  * data: klog.json: add 6 MultiProcessor table checks.
+  * lib, bios: mpcheck: move MP header signature to fwts_multiproc.h
+  * bios: multiproc check - fix to make it a batch test.
+  * bios: multiproc check - fix test heading.
+  * add new multiproc table sanity checking.
+  * method: reference /sys/class/thermal rather than /proc/acpi/thermal_zone
+  * tests, lib: use new fwts_ebda_get() primitive
+  * lib: add fwts_ebda_get - return EBDA offset for mmap'ing the region
+  * acpi: acpudump: use more sensible heading, fix SCI text
+  * bios: add ebdadump to dump EBDA region
+  * tests: use fwts_mmap primitives
+  * lib: use fwts_mmap primitives
+  * lib: add fwts_mmap - memory mapping primitives
+  * multiproc: mpdump: collate data into tables.
+  * lib + test: initial MultiProc test support
+  * hpet: Fail test and skip sanity check when base address not found
+  * bios: ebda_region: close fd on error.
+
+ -- Colin King <colin.king@canonical.com>  Thu, 17 Mar 2011 16:43:54 +0000
+
 fwts (0.22.03) natty; urgency=low
 
   * Fixes for lintian warnings (LP: #725336)

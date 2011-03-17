@@ -153,7 +153,7 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
 	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp;
 
-	if ((rsdp = (fwts_acpi_table_rsdp*)malloc(sizeof(fwts_acpi_table_rsdp))) == NULL)
+	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL)
 		return NULL;
 
 	if ((mem = fwts_acpi_mmap(addr, sizeof(fwts_acpi_table_rsdp))) == MAP_FAILED)
@@ -183,7 +183,7 @@ static void *fwts_acpi_load_table(off_t addr)
 	len = hdr->length;
 	fwts_acpi_munmap(hdr, sizeof(fwts_acpi_table_header));
 
-	if ((table = malloc(len)) == NULL)
+	if ((table = fwts_low_calloc(1, len)) == NULL)
 		return NULL;
 
 	if ((mem = fwts_acpi_mmap((off_t)addr, len)) == MAP_FAILED)
@@ -208,7 +208,7 @@ static void fwts_acpi_add_table(char *name, void *table, uint64_t addr, int leng
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (addr && tables[i].addr == addr) {
 			/* We don't need it, it's a duplicate, so free and return */
-			free(table);
+			fwts_low_free(table);
 			return;
 		}
 		if (strncmp(tables[i].name, name, 4) == 0)
@@ -235,7 +235,7 @@ int fwts_acpi_free_tables(void)
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data) {
-			free(tables[i].data);
+			fwts_low_free(tables[i].data);
 			memset(&tables[i], 0, sizeof(fwts_acpi_table_info));
 		}
 	}
@@ -363,7 +363,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 			break;
 
 		len += (n - 1);
-		table = realloc(table, len);
+		table = fwts_low_realloc(table, len);
 		memcpy(table + offset, data, n-1);
 	}
 
@@ -413,12 +413,12 @@ static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
 	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
 		if (n < 0) {
 			if (errno != EINTR && errno != EAGAIN) {
-				free(ptr);
+				fwts_low_free(ptr);
 				return NULL;
 			}
 		}
 		else {
-			ptr = (uint8_t*)realloc(ptr, size + n + 1);
+			ptr = (uint8_t*)fwts_low_realloc(ptr, size + n + 1);
 			memcpy(ptr + size, buffer, n);
 			size += n;
 		}

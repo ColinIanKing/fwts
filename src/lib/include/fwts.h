@@ -66,5 +66,6 @@
 #include "fwts_args.h"
 #include "fwts_multiproc.h"
 #include "fwts_ebda.h"
+#include "fwts_alloc.h"
 
 #endif

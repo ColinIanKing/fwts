@@ -1,3 +1,9 @@
+fwts (0.22.08) natty; urgency=low
+
+  * fix segfault of method test on 64 bit machines (LP: #736874)
+
+ -- Colin King <colin.king@canonical.com>  Thu, 17 Mar 2011 14:13:12 +0000
+
 fwts (0.22.07) natty; urgency=low
 
   * drop thermal_trip test (LP: #730132)

@@ -440,7 +440,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (table != NULL) {
 		fwts_acpi_table_info *tbl;
 
-		fwts_acpica_FADT = calloc(1, table->length);
+		fwts_acpica_FADT = fwts_low_calloc(1, table->length);
 		memcpy(fwts_acpica_FADT, table->data, table->length);		
 
 		if (fwts_acpi_find_table(fw, "DSDT", 0, &tbl) != FWTS_OK)
@@ -471,7 +471,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (table != NULL) {
 		uint64_t *entries;
 
-		fwts_acpica_XSDT = calloc(1, table->length);
+		fwts_acpica_XSDT = fwts_low_calloc(1, table->length);
 		memcpy(fwts_acpica_XSDT, table->data, sizeof(ACPI_TABLE_HEADER));
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint64_t);
@@ -500,7 +500,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (table) {
 		uint32_t *entries;
 	
-		fwts_acpica_RSDT = calloc(1, table->length);
+		fwts_acpica_RSDT = fwts_low_calloc(1, table->length);
 		memcpy(fwts_acpica_RSDT, table->data, sizeof(ACPI_TABLE_HEADER));
 	
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint32_t);
@@ -528,7 +528,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (fwts_acpi_find_table(fw, "RSDP", 0, &table) != FWTS_OK)
 		return FWTS_ERROR;
 	if (table) {
-		fwts_acpica_RSDP = calloc(1, table->length);
+		fwts_acpica_RSDP = fwts_low_calloc(1, table->length);
 		memcpy(fwts_acpica_RSDP, table->data, table->length);
 
 		if (table->length > 20)
@@ -632,7 +632,7 @@ int fwts_acpica_init(fwts_framework *fw)
 
 #define FWTS_ACPICA_FREE(x)	\
 	if (x) {		\
-		free(x);	\
+		fwts_low_free(x);	\
 		x = NULL;	\
 	}			\
 

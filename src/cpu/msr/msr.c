@@ -110,7 +110,8 @@ static int msr_consistent_check(fwts_framework *fw,
 		for (cpu=1; cpu<ncpus; cpu++) {
 			if (inconsistent[cpu])
 				fwts_log_info(fw, "MSR CPU 0 -> 0x%llx vs CPU %d -> 0x%llx",
-					vals[0], cpu, vals[cpu]);
+					(unsigned long long)vals[0], cpu, 
+					(unsigned long long)vals[cpu]);
 		}
 	} else {
 		fwts_passed(fw, "MSR %s (0x%x) (mask:%llx) was consistent across %d CPUs.",

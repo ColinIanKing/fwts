@@ -72,6 +72,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 	fwts_scan_region regions[] = {
 		{ SYSTEM_BASE_END - 1024, 	SYSTEM_BASE_END },	/* Assume 640K or more */
 		{ BIOS_START,			BIOS_END },
+		{ 0,				0x400 },
 		{ 0,				0 },
 	};
 
@@ -84,7 +85,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 		}
 	}
 
-	for (i=0;regions[i].start; i++) {
+	for (i=0;regions[i].end; i++) {
 		void *mem;
 		uint8_t *ptr;
 		off_t  start = regions[i].start;

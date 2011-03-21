@@ -19,6 +19,7 @@
 #include <sys/mman.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "fwts_alloc.h"
 
@@ -44,6 +45,62 @@ typedef struct {
 	int	magic;
 } fwts_mmap_header;
 
+#define LIMIT_2GB	0x80000000ULL
+
+#ifndef MAP_32BIT
+/*
+ *  fwts_low_mmap()
+ *	try to find a free space under the 2GB limit and mmap it.
+ *	returns address of mmap'd region or MAP_FAILED if failed.
+ */
+static void *fwts_low_mmap(size_t requested_size)
+{
+	FILE *fp;
+	char buffer[1024];
+	char pathname[1024];
+	void *addr_start;
+	void *addr_end;
+	void *last_addr_end = NULL;
+	void *ret = MAP_FAILED;
+
+	if (requested_size == 0)	/* Illegal */
+		return MAP_FAILED;
+
+	if ((fp = fopen("/proc/self/maps", "r")) == NULL)
+		return MAP_FAILED;
+	
+	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+		sscanf(buffer, "%p-%p %*s %*x %*s %*u %s",
+			&addr_start, &addr_end, pathname);
+
+		if ((last_addr_end != NULL) &&
+		    (last_addr_end < (void*)LIMIT_2GB)) {
+			if ((addr_start - last_addr_end) > requested_size) {
+				void *addr = last_addr_end;
+				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE, 
+					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+				if (ret != MAP_FAILED)
+					break;	/* Success! */
+			}
+		}
+
+		/* We really don't want to mmap at the end of the heap
+		 * and if we've reached the stack we've gone too far so
+		 * abort */
+		if ((strncmp("[heap]", pathname, 6) == 0) ||
+		    (strncmp("[stack]", pathname, 7) == 0)) {
+			ret = MAP_FAILED;
+			break;
+		}
+
+		last_addr_end = addr_end;
+	}
+	fclose(fp);
+
+	return ret;
+}
+#endif
+
 /*
  *  fwts_low_calloc()
  * 	same as calloc(), but ensure the region is mapped
@@ -59,8 +116,14 @@ void *fwts_low_calloc(size_t nmemb, size_t size)
 
 	n += sizeof(fwts_mmap_header);
 	
+#ifdef MAP_32BIT
+	/* Not portable, only x86 */
 	ret = mmap(NULL, n, PROT_READ | PROT_WRITE, 
 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
+#else
+	/* We don't have a native MAP_32BIT, so bodge our own */
+	ret = fwts_low_mmap(n);
+#endif
 
 	if (ret == MAP_FAILED)
 		return NULL;

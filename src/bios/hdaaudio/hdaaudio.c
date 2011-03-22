@@ -26,40 +26,26 @@ typedef struct {
 	uint32_t	setting;
 } hda_audio_pin_setting;
 
-static int hda_audio_init(fwts_framework *fw)
+static int hda_audio_read_pins(fwts_framework *fw, const char *path, const char *file, fwts_list *settings)
 {
-	return FWTS_OK;
-}
-
-static int hda_audio_deinit(fwts_framework *fw)
-{
-	return FWTS_OK;
-}
-			
-static fwts_list *hda_audio_read_pins(fwts_framework *fw, const char *path, const char *file)
-{
-	FILE *fp;
-	fwts_list *settings;
+	FILE 		*fp;
 	uint16_t	pin;
 	uint32_t	setting;
 	hda_audio_pin_setting *pin_setting;
-	char name[PATH_MAX];
+	char 		name[PATH_MAX];
+
+	fwts_list_init(settings);
 
 	snprintf(name, sizeof(name), "%s/%s", path, file);
 
 	if ((fp = fopen(name, "r")) == NULL)
-		return NULL;
-
-	if ((settings = fwts_list_new()) == NULL) {
-		fclose(fp);
-		return NULL;
-	}
+		return FWTS_ERROR;
 
 	while (fscanf(fp, "0x%hx 0x%x\n", &pin, &setting) == 2) {
 		if ((pin_setting = malloc(sizeof(hda_audio_pin_setting))) == NULL) {
 			fwts_list_free(settings, free);
 			fclose(fp);
-			return NULL;
+			return FWTS_ERROR;
 		}
 		pin_setting->pin = pin;
 		pin_setting->setting = setting;
@@ -67,7 +53,7 @@ static fwts_list *hda_audio_read_pins(fwts_framework *fw, const char *path, cons
 	}
 	fclose(fp);
 	
-	return settings;
+	return FWTS_OK;
 }
 
 static void hda_audio_dump_pins(fwts_framework *fw, const char *config, fwts_list *settings)
@@ -81,11 +67,10 @@ static void hda_audio_dump_pins(fwts_framework *fw, const char *config, fwts_lis
 		fwts_list_foreach(item, settings) {
 			hda_audio_pin_setting *pin_setting = fwts_list_data(hda_audio_pin_setting *, item);
 	
-			fwts_log_info_verbatum(fw, "  0x%hx 0x%8.8x", pin_setting->pin, pin_setting->setting);
+			fwts_log_info_verbatum(fw, "  0x%4.4hx 0x%8.8x", pin_setting->pin, pin_setting->setting);
 		}
-	} else {
+	} else
 		fwts_log_info(fw, "%s: None Defined.", config);
-	}
 }
 
 static void hda_audio_dev_info(fwts_framework *fw, const char *label, const char *path, const char *file)
@@ -105,9 +90,9 @@ static void hda_audio_dev_info(fwts_framework *fw, const char *label, const char
 
 static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 {
-	fwts_list	*init_pin_configs;
-	fwts_list	*driver_pin_configs;
-	fwts_list	*user_pin_configs;
+	fwts_list	init_pin_configs;
+	fwts_list	driver_pin_configs;
+	fwts_list	user_pin_configs;
 	int		warn = 0;
 
 	hda_audio_dev_info(fw, "Vendor Name", path, "vendor_name");
@@ -117,32 +102,32 @@ static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 	hda_audio_dev_info(fw, "Subsystem ID", path, "subsystem_id");
 	hda_audio_dev_info(fw, "Revision ID", path, "revision_id");
 
-	init_pin_configs   = hda_audio_read_pins(fw, path, "init_pin_configs");
-	driver_pin_configs = hda_audio_read_pins(fw, path, "driver_pin_configs");
-	user_pin_configs   = hda_audio_read_pins(fw, path, "user_pin_configs");
+	(void)hda_audio_read_pins(fw, path, "init_pin_configs", &init_pin_configs);
+	(void)hda_audio_read_pins(fw, path, "driver_pin_configs", &driver_pin_configs);
+	(void)hda_audio_read_pins(fw, path, "user_pin_configs", &user_pin_configs);
 
-	if (fwts_list_len(init_pin_configs) > 0)
-		hda_audio_dump_pins(fw, "BIOS pin configurations", init_pin_configs);
+	if (fwts_list_len(&init_pin_configs) > 0)
+		hda_audio_dump_pins(fw, "BIOS pin configurations", &init_pin_configs);
 
-	if (fwts_list_len(driver_pin_configs) > 0) {
-		hda_audio_dump_pins(fw, "Driver defined pin configurations", driver_pin_configs);
+	if (fwts_list_len(&driver_pin_configs) > 0) {
+		hda_audio_dump_pins(fw, "Driver defined pin configurations", &driver_pin_configs);
 		warn++;
 	}
 	
-	if (fwts_list_len(user_pin_configs) > 0) {
-		hda_audio_dump_pins(fw, "User defined pin configurations", driver_pin_configs);
+	if (fwts_list_len(&user_pin_configs) > 0) {
+		hda_audio_dump_pins(fw, "User defined pin configurations", &driver_pin_configs);
 		warn++;
 	}
 
 	if (warn) {
-		fwts_log_warning(fw, "BIOS pin configurations had needed software override to make HDA audio work correctly.");
+		fwts_log_warning(fw, "BIOS pin configurations required software override to make HDA audio work correctly.");
 		fwts_log_advice(fw, "The driver or user provided overrides should be corrected in BIOS firmware.");
 	} else
 		fwts_passed(fw, "Default BIOS pin configurations did not have software override.");
 
-	fwts_list_free(user_pin_configs, free);
-	fwts_list_free(driver_pin_configs, free);
-	fwts_list_free(init_pin_configs, free);
+	fwts_list_free_items(&user_pin_configs, free);
+	fwts_list_free_items(&driver_pin_configs, free);
+	fwts_list_free_items(&init_pin_configs, free);
 
 	return FWTS_OK;
 }
@@ -159,7 +144,7 @@ static int hda_audio_test1(fwts_framework *fw)
 		if (strncmp(directory->d_name, "hw", 2) == 0) {
 			char path[PATH_MAX];
 			snprintf(path, sizeof(path), "/sys/class/sound/%s", directory->d_name);
-			fwts_log_info(fw, "Checking %s", directory->d_name);
+			fwts_log_info(fw, "Checking '%s':", directory->d_name);
 			hda_audio_check_pins(fw, path);
 			fwts_log_nl(fw);
 		}
@@ -176,8 +161,6 @@ static fwts_framework_minor_test hda_audio_tests[] = {
 
 static fwts_framework_ops hda_audio_ops = {
 	.description = "Check HDA Audio Pin Configs.",
-	.init        = hda_audio_init,	
-	.deinit      = hda_audio_deinit,
 	.minor_tests = hda_audio_tests
 };
 

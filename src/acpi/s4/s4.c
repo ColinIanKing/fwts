@@ -221,12 +221,6 @@ static int s4_hibernate(fwts_framework *fw,
 		(*pm_errors)++;
 	}
 	
-	if (fwts_klog_regex_find(fw, klog, "Restarting tasks.*done") < 1) {
-		fwts_failed_high(fw, "Failed to restart tasks.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-		(*pm_errors)++;
-	}
-
 	fwts_klog_free(klog);
 
 	return FWTS_OK;

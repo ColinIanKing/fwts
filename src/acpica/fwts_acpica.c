@@ -405,6 +405,21 @@ void AeTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTa
 		*NewTable = (ACPI_TABLE_HEADER*)fwts_acpica_DSDT;
 }
 
+ACPI_STATUS AcpiOsSignal (UINT32 function, void *info)
+{
+    switch (function) {
+    case ACPI_SIGNAL_BREAKPOINT:
+	fwts_warning(fwts_acpica_fw, "Method contains an ACPICA breakpoint: %s\n", info ? (char*)info : "No Information");
+	AcpiGbl_CmSingleStep = FALSE;
+        break;
+    case ACPI_SIGNAL_FATAL:
+    default:
+        break;
+    }
+    return AE_OK;
+}
+
+
 /*
  *  fwts_acpica_init()
  *	Initialise ACPICA core engine

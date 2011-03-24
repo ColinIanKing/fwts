@@ -19,7 +19,8 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' | \
 	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
 	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
-	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' \
+	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' | \
+	sed 's/^AcpiOsSignal/__AcpiOsSignal/' \
 	> osunixxf_munged.c
 
 BUILT_SOURCES = osunixxf_munged.c

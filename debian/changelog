@@ -1,3 +1,9 @@
+fwts (0.22.10) natty; urgency=low
+
+  * disable debug when hitting AML_BREAK_POINT opcodes (LP: #741555)
+
+ -- Colin King <colin.king@canonical.com>  Thu, 24 Mar 2011 09:47:23 +0000
+
 fwts (0.22.09) natty; urgency=low
 
   * work around systems that don't support MAP32_BIT (LP: #739256)

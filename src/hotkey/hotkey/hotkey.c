@@ -202,8 +202,10 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 
 static int hotkey_init(fwts_framework *fw)
 {
-	hotkey_dev = hotkey_find_keyboard(fw, "/sys/devices/platform");
-
+	if ((hotkey_dev = hotkey_find_keyboard(fw, "/sys/devices/platform")) == NULL) {
+		fwts_log_error(fw, "Cannot find keyboard for this machine.");
+		return FWTS_ERROR;
+	}
 	if ((hotkey_keymap = hotkey_find_keymap(fw, hotkey_dev)) == NULL) {
 		fwts_log_error(fw, "Cannot determine keymap for this machine.");
 		return FWTS_ERROR;

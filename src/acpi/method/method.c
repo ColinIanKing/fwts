@@ -151,7 +151,7 @@
 #define method_test_integer(name, type)			\
 static int method_test ## name(fwts_framework *fw)	\
 { 							\
-	return method_execute_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
+	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
 }
 
 
@@ -212,7 +212,7 @@ static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
 	}
 }
 
-static void method_execute_found_method(fwts_framework *fw, char *name,
+static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	method_test_return check_func,
 	void *private,
 	ACPI_OBJECT_LIST *arg_list)
@@ -229,7 +229,7 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 	if (ACPI_FAILURE(ret) != FWTS_OK) {
 		switch (ret) {
 		case AE_AML_INFINITE_LOOP:
-			fwts_failed_medium(fw, "Detected an infinite loop when executing method '%s'. ", name);
+			fwts_failed_medium(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
 			fwts_advice(fw, "This may occur because we are emulating the execution "
 					"in this test environment and cannot handshake with "
 					"the embedded controller or jump to the BIOS via SMIs. "
@@ -237,7 +237,7 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 					"lockup conditions are not being checked for in the AML bytecode.");
 			break;
 		default:
-			fwts_log_error(fw, "Failed to execute %s.", name);
+			fwts_log_error(fw, "Failed to evaluate %s.", name);
 			break;
 		}
 	}
@@ -260,14 +260,14 @@ static void method_execute_found_method(fwts_framework *fw, char *name,
 		fwts_advice(fw, "Locks left in an acquired state generally indicates that the AML code is not "
 				"releasing a lock. This can sometimes occur when a method hits an error condition "
 				"and exits prematurely without releasing an acquired lock. It may be occurring in the "
-				"method being tested or other methods used while executing the method.");
+				"method being tested or other methods used while evaluating the method.");
 	} else
  		if ((sem_acquired + sem_released) > 0)
 			fwts_passed(fw, "%s correctly acquired and released locks %d times.", name, sem_acquired);
 
 }
 
-static int method_execute_method(fwts_framework *fw,
+static int method_evaluate_method(fwts_framework *fw,
 	int test_type,  /* Manditory or optional */
 	char *name,
 	ACPI_OBJECT *args,
@@ -291,13 +291,13 @@ static int method_execute_method(fwts_framework *fw,
 			arg_list.Count   = num_args;
 			arg_list.Pointer = args;
 			fwts_acpica_simulate_sem_timeout(FWTS_FALSE);
-			method_execute_found_method(fw, method_name, check_func, private, &arg_list);
+			method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
 
 			/*
 			arg_list.Count   = num_args;
 			arg_list.Pointer = args;
 			fwts_acpica_simulate_sem_timeout(FWTS_TRUE);
-			method_execute_found_method(fw, method_name, check_func, private, &arg_list);
+			method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
 			*/
 		}
 	}
@@ -441,7 +441,7 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_SBS(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL);
 }
 
 
@@ -537,7 +537,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BIF(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL);
 }
 
 static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -637,7 +637,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 }
 static int method_test_BIX(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL);
 }
 
 static int method_test_BMA(fwts_framework *fw)
@@ -645,7 +645,7 @@ static int method_test_BMA(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -653,7 +653,7 @@ static int method_test_BMS(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
 }
 
 static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -701,7 +701,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BST(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL);
 }
 
 static int method_test_BTP(fwts_framework *fw)
@@ -713,7 +713,7 @@ static int method_test_BTP(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
 					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
@@ -728,7 +728,7 @@ static void method_test_PCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PCL(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
 }
 
 static int method_test_BTM(fwts_framework *fw)
@@ -740,7 +740,7 @@ static int method_test_BTM(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
 					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
@@ -776,7 +776,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BMD(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL);
 }
 
 static int method_test_BMC(fwts_framework *fw)
@@ -788,7 +788,7 @@ static int method_test_BMC(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
 					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
@@ -809,7 +809,7 @@ static int method_test_BFS(fwts_framework *fw)
 			arg[0].Type = ACPI_TYPE_INTEGER;
 			arg[0].Integer.Value = i;
 	
-			if (method_execute_method(fw, METHOD_OPTIONAL, "_BFS", arg, 1,
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BFS", arg, 1,
 			  			  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
 			fwts_log_nl(fw);
@@ -834,7 +834,7 @@ static int method_test_PTS(fwts_framework *fw)
 
 		fwts_log_info(fw, "Test _PTS(%d).", i);
 
-		if (method_execute_method(fw, METHOD_MANDITORY, "_PTS", arg, 1,
+		if (method_evaluate_method(fw, METHOD_MANDITORY, "_PTS", arg, 1,
 					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST) {
 			fwts_advice(fw, "Could not find _PTS. This method provides a mechanism to "
 					"do housekeeping functions, such as write sleep state to the "
@@ -861,7 +861,7 @@ static int method_test_GTS(fwts_framework *fw)
 
 			fwts_log_info(fw, "Test _GTS(%d) (Going To Sleep, State S%d.", i, i);
 
-			if (method_execute_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1,
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1,
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
 			fwts_log_nl(fw);
@@ -886,7 +886,7 @@ static int method_test_TTS(fwts_framework *fw)
 
 			fwts_log_info(fw, "Test _TTS(%d) Transition To State S%d.", i, i);
 	
-			if (method_execute_method(fw, METHOD_MANDITORY, "_TTS", arg, 1,
+			if (method_evaluate_method(fw, METHOD_MANDITORY, "_TTS", arg, 1,
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
 			fwts_log_nl(fw);
@@ -916,7 +916,7 @@ static void method_test_Sx_return(fwts_framework *fw, char *name, ACPI_BUFFER *b
 #define method_test_Sx(name)				\
 static int method_test ## name(fwts_framework *fw)	\
 {							\
-	return method_execute_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_Sx_return, # name); \
+	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_Sx_return, # name); \
 }			
 
 method_test_Sx(_S0)
@@ -987,7 +987,7 @@ static int method_test_WAK(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
 		fwts_log_info(fw, "Test _WAK(%d) System Wake, State S%d.", i, i);
-		if (method_execute_method(fw, METHOD_MANDITORY, "_WAK", arg, 1,
+		if (method_evaluate_method(fw, METHOD_MANDITORY, "_WAK", arg, 1,
 					  method_test_WAK_return, &i) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
@@ -1010,7 +1010,7 @@ static void method_test_PSR_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PSR(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_MANDITORY, "_PSR", NULL, 0, method_test_PSR_return, NULL);
+	return method_evaluate_method(fw, METHOD_MANDITORY, "_PSR", NULL, 0, method_test_PSR_return, NULL);
 }
 
 static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1041,7 +1041,7 @@ static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PIF(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PIF", NULL, 0, method_test_PIF_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PIF", NULL, 0, method_test_PIF_return, NULL);
 }
 
 
@@ -1055,7 +1055,7 @@ static void method_test_LID_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_LID(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL);
 }
 
 /* Section 11.3 Fan Devices */
@@ -1088,7 +1088,7 @@ static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_FIF(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_FIF", NULL, 0, method_test_FIF_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_FIF", NULL, 0, method_test_FIF_return, NULL);
 }
 
 static int method_test_FSL(fwts_framework *fw)
@@ -1097,7 +1097,7 @@ static int method_test_FSL(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 50;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_FSL", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_FSL", NULL, 0, method_test_NULL_return, NULL);
 }
 
 static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1127,7 +1127,7 @@ static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_FST(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_FST", NULL, 0, method_test_FST_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_FST", NULL, 0, method_test_FST_return, NULL);
 }
 
 /* Section 11.4 Thermal */
@@ -1157,7 +1157,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 #define method_test_THERM(name, type)			\
 static int method_test ## name(fwts_framework *fw)	\
 {							\
-	return method_execute_method(fw, type, # name, NULL, 0, method_test_THERM_return, # name);				\
+	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_THERM_return, # name);				\
 }			
 
 method_test_THERM(_CRT, METHOD_OPTIONAL)
@@ -1177,12 +1177,12 @@ static void method_test_TCx_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_TC1(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TC1", NULL, 0, method_test_TCx_return, "_TC1");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TC1", NULL, 0, method_test_TCx_return, "_TC1");
 }
 
 static int method_test_TC2(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TC2", NULL, 0, method_test_TCx_return, "_TC1");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TC2", NULL, 0, method_test_TCx_return, "_TC1");
 }
 
 static int method_test_ACx(fwts_framework *fw)
@@ -1192,7 +1192,7 @@ static int method_test_ACx(fwts_framework *fw)
 	for (i=0;i<10;i++) {
 		char buffer[5];
 		snprintf(buffer, sizeof(buffer), "AC%d", i);
-		method_execute_method(fw, METHOD_OPTIONAL, buffer, NULL, 0, method_test_THERM_return, buffer);
+		method_evaluate_method(fw, METHOD_OPTIONAL, buffer, NULL, 0, method_test_THERM_return, buffer);
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
@@ -1203,7 +1203,7 @@ static int method_test_DTI(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 2732 + 800; /* 80 degrees C */
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL);
 }
 
 static int method_test_SCP(fwts_framework *fw)
@@ -1219,7 +1219,7 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[1].Integer.Value = 5;		/* Acoustic limit */
 		arg[2].Type = ACPI_TYPE_INTEGER;
 		arg[2].Integer.Value = 5;		/* Power limit */
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 
@@ -1229,7 +1229,7 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[1].Integer.Value = 1;		/* Acoustic limit */
 		arg[2].Type = ACPI_TYPE_INTEGER;
 		arg[2].Integer.Value = 1;		/* Power limit */
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;
@@ -1244,7 +1244,7 @@ static void method_test_RTV_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_RTV(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_RTV", NULL, 0, method_test_RTV_return, "_RTV");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_RTV", NULL, 0, method_test_RTV_return, "_RTV");
 }
 
 static int method_test_TPT(fwts_framework *fw)
@@ -1252,7 +1252,7 @@ static int method_test_TPT(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 2732 + 900; /* 90 degrees C */
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TPT", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TPT", arg, 1, method_test_NULL_return, NULL);
 }
 
 static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1274,12 +1274,12 @@ static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFF
 
 static int method_test_TSP(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TSP", NULL, 0, method_test_polling_return, "_TSP");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TSP", NULL, 0, method_test_polling_return, "_TSP");
 }
 
 static int method_test_TZP(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TZP", NULL, 0, method_test_polling_return, "_TZP");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TZP", NULL, 0, method_test_polling_return, "_TZP");
 }
 
 /* Section 9.2, Ambient Light Sensor Device */
@@ -1292,7 +1292,7 @@ method_test_integer(_ALT, METHOD_OPTIONAL)
 
 static int method_test_ALP(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_ALP", NULL, 0, method_test_polling_return, "_ALP");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_ALP", NULL, 0, method_test_polling_return, "_ALP");
 }
 
 
@@ -1309,7 +1309,7 @@ static int method_test_DCK(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_DCK", NULL, 0, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DCK", NULL, 0, method_test_passed_failed_return, "_DCK") != FWTS_OK)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -1328,7 +1328,7 @@ static int method_test_STP(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 0;	/* wake up instantly */
 	
-	return method_execute_method(fw, METHOD_OPTIONAL, "_STP", NULL, 0, method_test_passed_failed_return, "_STP");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STP", NULL, 0, method_test_passed_failed_return, "_STP");
 }
 
 static int method_test_STV(fwts_framework *fw)
@@ -1340,7 +1340,7 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 100;	/* timer value */
 	
-	return method_execute_method(fw, METHOD_OPTIONAL, "_STV", NULL, 0, method_test_passed_failed_return, "_STV");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STV", NULL, 0, method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)
@@ -1350,7 +1350,7 @@ static int method_test_TIP(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 	
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TIP", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIP", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_TIV(fwts_framework *fw)
@@ -1360,7 +1360,7 @@ static int method_test_TIV(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 	
-	return method_execute_method(fw, METHOD_OPTIONAL, "_TIV", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIV", NULL, 0, method_test_integer_return, NULL);
 }
 
 /* Appendix B, ACPI Extensions for Display Adapters */
@@ -1373,7 +1373,7 @@ static int method_test_DOS(fwts_framework *fw)
 	arg[0].Integer.Value = 0 << 2 | 1;		
 		/* BIOS should toggle active display, BIOS controls brightness of LCD on AC/DC power changes */
 	
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DOS", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DOS", arg, 1, method_test_NULL_return, NULL);
 }
 
 static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1435,7 +1435,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_DOD(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DOD", NULL, 0, method_test_DOD_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DOD", NULL, 0, method_test_DOD_return, NULL);
 }
 	
 static void method_test_ROM_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1452,12 +1452,12 @@ static int method_test_ROM(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 4096;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_ROM", arg, 2, method_test_ROM_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_ROM", arg, 2, method_test_ROM_return, NULL);
 }
 
 static int method_test_GPD(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_GPD", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_GPD", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_SPD(fwts_framework *fw)
@@ -1469,7 +1469,7 @@ static int method_test_SPD(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;	/* bits 00..11, post device */
 
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_SPD", arg, 1, method_test_passed_failed_return, NULL) == FWTS_NOT_EXIST)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_SPD", arg, 1, method_test_passed_failed_return, NULL) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;
@@ -1477,12 +1477,12 @@ static int method_test_SPD(fwts_framework *fw)
 
 static int method_test_VPO(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_VPO", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_VPO", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_ADR(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_ADR", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_ADR", NULL, 0, method_test_integer_return, NULL);
 }
 
 static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1539,7 +1539,7 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BCL(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BCL", NULL, 0, method_test_BCL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BCL", NULL, 0, method_test_BCL_return, NULL);
 }
 
 static int method_test_BCM(fwts_framework *fw)
@@ -1549,12 +1549,12 @@ static int method_test_BCM(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 0;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BCM", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BCM", arg, 1, method_test_NULL_return, NULL);
 }
 
 static int method_test_BQC(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_BQC", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BQC", NULL, 0, method_test_integer_return, NULL);
 }
 
 static void method_test_DDC_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1591,7 +1591,7 @@ static int method_test_DDC(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = 128;
 
-		if (method_execute_method(fw, METHOD_OPTIONAL, "_DDC", arg, 1, method_test_DDC_return, &i) == FWTS_NOT_EXIST)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DDC", arg, 1, method_test_DDC_return, &i) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;
@@ -1599,12 +1599,12 @@ static int method_test_DDC(fwts_framework *fw)
 
 static int method_test_DCS(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DCS", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DCS", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_DGS(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DGS", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DGS", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_DSS(fwts_framework *fw)
@@ -1614,29 +1614,29 @@ static int method_test_DSS(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 0;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DSS", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DSS", arg, 1, method_test_NULL_return, NULL);
 }
 
 /* Section 6.5 Other Objects and Controls */
 
 static int method_test_CRS(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_MANDITORY, "_CRS", NULL, 0, method_test_buffer_return, NULL);
+	return method_evaluate_method(fw, METHOD_MANDITORY, "_CRS", NULL, 0, method_test_buffer_return, NULL);
 }
 
 static int method_test_DMA(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DMA", NULL, 0, method_test_buffer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DMA", NULL, 0, method_test_buffer_return, NULL);
 }
 
 static int method_test_DIS(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DIS", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DIS", NULL, 0, method_test_NULL_return, NULL);
 }
 
 static int method_test_PXM(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PXM", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PXM", NULL, 0, method_test_integer_return, NULL);
 }
 
 /* Section 7.2 */
@@ -1652,13 +1652,13 @@ static int method_test_DSW(fwts_framework *fw)
 	arg[2].Type = ACPI_TYPE_INTEGER;
 	arg[2].Integer.Value = 3;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_DSW", arg, 3, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DSW", arg, 3, method_test_NULL_return, NULL);
 }
 
 #define method_test_PSx(name)				\
 static int method_test ## name(fwts_framework *fw)	\
 {							\
-	return method_execute_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_NULL_return, # name); \
+	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_NULL_return, # name); \
 }			
 
 method_test_PSx(_PS0)
@@ -1668,7 +1668,7 @@ method_test_PSx(_PS3)
 
 static int method_test_PSC(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PSC", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSC", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_PSW(fwts_framework *fw)
@@ -1678,19 +1678,19 @@ static int method_test_PSW(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_PSW", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSW", arg, 1, method_test_NULL_return, NULL);
 }
 
 static int method_test_IRC(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_IRC", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_IRC", NULL, 0, method_test_NULL_return, NULL);
 }
 
 /* Section 6.3 */
 
 static int method_test_EJD(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_EJD", NULL, 0, method_test_string_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_EJD", NULL, 0, method_test_string_return, NULL);
 }
 
 #define method_test_EJx(name)				\
@@ -1701,7 +1701,7 @@ static int method_test ## name(fwts_framework *fw)	\
 	arg[0].Type = ACPI_TYPE_INTEGER;		\
 	arg[0].Integer.Value = 1;			\
 							\
-	return method_execute_method(fw, METHOD_OPTIONAL, # name, arg, 1, method_test_NULL_return, # name); \
+	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, arg, 1, method_test_NULL_return, # name); \
 }			
 
 method_test_EJx(_EJ0)
@@ -1717,26 +1717,26 @@ static int method_test_LCK(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
 
-	return method_execute_method(fw, METHOD_OPTIONAL, "_LCK", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_LCK", arg, 1, method_test_NULL_return, NULL);
 }
 
 /* Section 7.1 */
 
 static int method_test_ON(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_ON", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_ON", NULL, 0, method_test_NULL_return, NULL);
 }
 
 static int method_test_OFF(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_OFF", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_OFF", NULL, 0, method_test_NULL_return, NULL);
 }
 
 /* Section 6.1 */
 
 static int method_test_SUN(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_SUN", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SUN", NULL, 0, method_test_integer_return, NULL);
 }
 
 static void method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1764,7 +1764,7 @@ static void method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_UID(fwts_framework *fw)
 {
-	return method_execute_method(fw, METHOD_OPTIONAL, "_UID", NULL, 0, method_test_UID_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_UID", NULL, 0, method_test_UID_return, NULL);
 }
 
 

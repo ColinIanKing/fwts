@@ -222,8 +222,11 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	int sem_acquired;
 	int sem_released;
 
+
 	buf.Length  = ACPI_ALLOCATE_BUFFER;
 	buf.Pointer = NULL;
+
+	fwts_acpica_sem_count_clear();
 
 	ret = AcpiEvaluateObject(NULL, name, arg_list, &buf);
 	if (ACPI_FAILURE(ret) != FWTS_OK) {
@@ -279,7 +282,6 @@ static int method_evaluate_method(fwts_framework *fw,
 	int name_len = strlen(name);
 	int found = 0;
 
-	fwts_acpica_sem_count_clear();
 
 	fwts_list_foreach(item, methods) {
 		char *method_name = fwts_list_data(char*, item);

@@ -23,18 +23,27 @@ typedef void (*msr_callback_check)(fwts_framework *fw, uint64_t val);
 
 static int ncpus;
 static bool intel_cpu;
+fwts_cpuinfo_x86 *cpuinfo;
 
 static int msr_init(fwts_framework *fw)
 {
-	if (fwts_cpu_is_Intel(&intel_cpu) != FWTS_OK) {
+	if ((cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}
+	intel_cpu = strstr(cpuinfo->vendor_id, "Intel") != NULL;
 
 	if ((ncpus = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot detect the number of CPUs on this machine.");
 		return FWTS_ABORTED;
 	}
+	return FWTS_OK;
+}
+
+static int msr_deinit(fwts_framework *fw)
+{
+	fwts_cpu_free_info(cpuinfo);
+
 	return FWTS_OK;
 }
 
@@ -337,6 +346,70 @@ static msr_info IA32_MSRs[] = {
 	{ NULL,			0x00000000,	0, 0 , NULL },
 };
 
+static msr_info IA32_atom_MSRs[] = {
+	{ "BIOS_UPDT_TRIG",	0x00000079,	0, ~0, NULL },
+	{ "BIOS_SIGN_ID",	0x0000008b,	0, ~0, NULL },
+	{ "MSR_FSB_FREQ",	0x000000cd,	0, 0x7ULL, NULL },
+	{ "MSR_BBL_CR_CTL3",	0x0000011e,	0, 0x800101ULL, NULL },
+	{ "PERFEVTSEL0",	0x00000186,	0, ~0, NULL },
+	{ "PERFEVTSEL1",	0x00000187,	0, ~0, NULL },
+	{ "CLOCK_MODULATION",	0x0000019a,	0, ~0, NULL },
+	{ "MSR_THERM2_CTL",	0x0000019d,	0, 0x10000ULL, NULL },
+	{ "MC0_CTL",		0x00000400,	0, ~0, NULL },
+	{ "MC0_STATUS",		0x00000401,	0, ~0, NULL },
+	{ "MC0_ADDR",		0x00000402,	0, ~0, NULL },
+	{ "MC1_CTL",		0x00000404,	0, ~0, NULL },
+	{ "MC1_STATUS",		0x00000405,	0, ~0, NULL },
+	{ "MC2_CTL",		0x00000408,	0, ~0, NULL },
+	{ "MC2_STATUS",		0x00000409,	0, ~0, NULL },
+	{ "MC2_ADDR",		0x0000040a,	0, ~0, NULL },
+	{ "MC3_CTL",		0x0000040c,	0, ~0, NULL },
+	{ "MC3_STATUS",		0x0000040d,	0, ~0, NULL },
+	{ "MC3_ADDR",		0x0000040e,	0, ~0, NULL },
+	{ "MC4_CTL",		0x00000410,	0, ~0, NULL },
+	{ "MC4_STATUS",		0x00000411,	0, ~0, NULL },
+	{ "MC4_ADDR",		0x00000412,	0, ~0, NULL },
+	{ NULL,			0x00000000,	0, 0 , NULL },
+};
+
+static msr_info IA32_nehalem_MSRs[] = {
+	{ "BIOS_UPDT_TRIG",		0x00000079,	0, ~0, NULL },
+	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
+	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x7008407ULL, NULL },
+	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0, 0x7ffffULL, NULL },
+	{ "CLOCK_MODULATION",		0x0000019a,	0, 0x1fULL, NULL },
+	{ "MSR_TEMPERATURE_TARGET",	0x000001a2,	0, 0xff0000, NULL },
+	{ "MSR_OFFCORE_RSP_0",		0x000001a6,	0, ~0, NULL },
+	{ "MSR_MISC_PWR_MGMT",		0x000001aa,	0, 0x3ULL, NULL },
+	{ "MSR_TURBO_POWER_CURRENT_LIMIT",0x000001ac,	0, 0xffffffffULL, NULL },
+	{ "MSR_TURBO_RATIO_LIMIT",	0x000001ad,	0, 0xffffffffULL, NULL },
+	{ "MSR_POWER_CTL",		0x000001fc,	0, 0x2ULL, NULL },
+	{ NULL,				0x00000000,	0, 0 , NULL },
+};
+
+static msr_info IA32_sandybridge_MSRs[] = {
+	{ "BIOS_UPDT_TRIG",		0x00000079,	0, ~0, NULL },
+	{ "BIOS_SIGN_ID",		0x0000008b,	0, ~0, NULL },
+	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
+	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x7008407ULL, NULL },
+	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0, 0x7ffffULL, NULL },
+	{ "CLOCK_MODULATION",		0x0000019a,	0, 0x1fULL, NULL },
+	{ "MSR_TEMPERATURE_TARGET",	0x000001a2,	0, 0xff0000, NULL },
+	{ "MSR_OFFCORE_RSP_0",		0x000001a6,	0, ~0, NULL },
+	{ "MSR_TURBO_RATIO_LIMIT",	0x000001ad,	0, 0xffffffffULL, NULL },
+	{ "MSR_POWER_CTL",		0x000001fc,	0, 0x2ULL, NULL },
+	{ "MSR_PKGC3_IRTL",		0x0000060a,	0, 0x9fffULL, NULL },
+	{ "MSR_PKGC6_IRTL",		0x0000060b,	0, 0x9fffULL, NULL },
+	{ "MSR_PKGC7_IRTL",		0x0000060c,	0, 0x9fffULL, NULL },
+	{ "MSR_PKG_RAPL_POWER_LIMIT",	0x00000610,	0, ~0, NULL },
+	{ "MSR_PKG_RAPL_POWER_INFO",	0x00000614,	0, ~0, NULL },
+	{ "MSR_PP0_POWER_LIMIT",	0x00000638,	0, ~0, NULL },
+	{ "MSR_PP0_POLICY",		0x0000063a,	0, ~0, NULL },
+	{ "MSR_PP1_POWER_LIMIT",	0x00000640,	0, ~0, NULL },
+	{ "MSR_PP1_POLICY",		0x00000642,	0, ~0, NULL },
+	{ NULL,				0x00000000,	0, 0 , NULL },
+};
+
 static int msr_table_check(fwts_framework *fw, msr_info *info)
 {
 	int i;
@@ -348,7 +421,7 @@ static int msr_table_check(fwts_framework *fw, msr_info *info)
 	return FWTS_OK;
 }
 
-static int msr_misc(fwts_framework *fw)
+static int msr_IA32_generic(fwts_framework *fw)
 {
 	if (intel_cpu)
 		msr_table_check(fw, IA32_MSRs);
@@ -358,18 +431,52 @@ static int msr_misc(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int msr_IA32_specific(fwts_framework *fw)
+{
+	if (!intel_cpu)
+		fwts_skipped(fw, "Non-Intel CPU, test skipped.");
+
+        switch (cpuinfo->x86_model) {
+	case 0x1A: /* Core i7, Xeon 5500 series */
+	case 0x1E: /* Core i7 and i5 Processor - Lynnfield Jasper Forest */
+	case 0x1F: /* Core i7 and i5 Processor - Nehalem */
+	case 0x2E: /* Nehalem-EX Xeon */
+	case 0x2F: /* Westmere-EX Xeon */
+	case 0x25: /* Westmere */
+	case 0x2C: /* Westmere */
+		msr_table_check(fw, IA32_nehalem_MSRs);
+		printf("Nehalem\n");
+		break;
+	case 0x1C: /* Atom Processor */
+	case 0x26: /* Lincroft Atom Processor */
+		msr_table_check(fw, IA32_atom_MSRs);
+		break;
+	case 0x2A: /* Sandybridge */
+	case 0x2D: /* Ssandybridge Xeon */
+		msr_table_check(fw, IA32_sandybridge_MSRs);
+		break;
+	default:
+		fwts_log_info(fw, "No model specific tests for model 0x%x.", cpuinfo->x86_model);
+		break;
+	}
+	
+	return FWTS_OK;
+}
+
 
 static fwts_framework_minor_test msr_tests[] = {
 	{ msr_pstate_ratios, 		"Check all P State Ratios." },
 	{ msr_c1_c3_autodemotion, 	"Check C1 and C3 autodemotion." },
 	{ msr_smrr,			"Check SMRR MSR registers." },
-	{ msr_misc,			"Check generic IA-32 MSR registers." },
+	{ msr_IA32_generic,		"Check generic IA-32 MSR registers." },
+	{ msr_IA32_specific,		"Check specific IA-32 model MSR registers." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops msr_ops = {
 	.description = "MSR register tests.",
 	.init        = msr_init,
+	.deinit	     = msr_deinit,
 	.minor_tests = msr_tests 
 };
 

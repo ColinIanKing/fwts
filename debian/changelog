@@ -1,3 +1,10 @@
+fwts (0.22.11) natty; urgency=low
+
+  * acpi: method: fix incorrect semaphore counts (LP: #744405)
+  * method: rename *execute* -> *evaluate*
+
+ -- Colin King <colin.king@canonical.com>  Thu, 31 Mar 2011 12:17:12 +0100
+
 fwts (0.22.10) natty; urgency=low
 
   * disable debug when hitting AML_BREAK_POINT opcodes (LP: #741555)

@@ -239,18 +239,10 @@ fwts_bool fwts_cpu_has_c1e(void)
  */
 int fwts_cpu_enumerate(void)
 {
-	DIR *dir;
-	int cpus = 0;
-	struct dirent *directory;
+	int cpus = sysconf(_SC_NPROCESSORS_CONF);
 
-	if ((dir = opendir("/proc/acpi/processor")) == NULL)
+	if (cpus < 0)
 		return FWTS_ERROR;
-
-	while ((directory = readdir(dir)) != NULL)
-		if (strncmp(directory->d_name, "CPU", 3) == 0)
-			cpus++;
-
-	closedir(dir);
 	
 	return cpus;
 }

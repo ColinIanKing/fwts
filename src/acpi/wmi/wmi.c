@@ -91,7 +91,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data)
 		char guidstr[37];
 
 		snprintf(guidstr, sizeof(guidstr),
-			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02x%02X-%02X%02X%02X%02X%02X%02X",
+			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
 			guid[3], guid[2], guid[1], guid[0],
 			guid[5], guid[4],
 			guid[7], guid[6],

@@ -1148,7 +1148,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
-		else
+		else {
 			fwts_failed(fw, "%s returned a debious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)",
 				method,
 				(uint32_t)obj->Integer.Value,
@@ -1158,6 +1158,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 					"I/O ports or the embedded controller and this test frame work is spoofing "
 					"these operations. However, it is worth sanity checking these values in "
 					"/sys/class/thermal/thermal_zone*.");
+		}
 	}
 }
 

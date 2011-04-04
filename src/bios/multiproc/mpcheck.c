@@ -81,11 +81,13 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 					failed = true;
 				}
 			}
+			/*
 			if ((cpu_entry->local_apic_version != 0x11) &&
 			    (cpu_entry->local_apic_version != 0x14)) {
 				fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has an invalid Local APIC Version %2.2x, should be 0x11 or 0x14.", n, phys_addr, cpu_entry->local_apic_version);
 				failed = true;
 			}
+			*/
 			if (cpu_entry->cpu_flags & 1)
 				usable_cpu_found = true;
 
@@ -202,7 +204,7 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 			if (first_io_apic_id == -1) {
 				first_io_apic_id = io_apic_entry->id;
 				if (first_io_apic_id != (last_cpu_apic_id + 1)) {
-					fwts_failed_high(fw, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, io_apic_entry->id, last_cpu_apic_id);
+					fwts_failed_high(fw, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, io_apic_entry->id, last_cpu_apic_id + 1);
 					failed = true;
 				}
 			} else {

@@ -1149,7 +1149,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);
 		else {
-			fwts_failed(fw, "%s returned a debious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)",
+			fwts_failed(fw, "%s returned a dubious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)",
 				method,
 				(uint32_t)obj->Integer.Value,
 				(float)((uint32_t)obj->Integer.Value) / 10.0);

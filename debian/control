@@ -22,7 +22,7 @@ Description: FirmWare Test Suite ACPICA core built for iasl functionality
  The firmware test suite requires the ACPICA core engine to be built in
  compiler mode (with ACPI_ASL_COMPILER enabled) to support assembly and 
  disassembly of ACPI Machine Language (AML) in the ACPI DSDT and SSDTs.
- This library contains this code with a thin fwts specifica API to 
+ This library contains this code with a thin fwts specific API to 
  interface with fwts.
 
 Package: libfwtsacpica1
@@ -32,7 +32,7 @@ Description: FirmWare Test Suite ACPICA core built for acpiexec functionality
  The firmware test suite requires the ACPICA core engine to be built in
  execution mode (with ACPI_EXEC_APP enabled) to support run time execution
  of ACPI Machine Language (AML) in the ACPI DSDT and SSDTs. This library
- contains this code with a thin fwts specifica API to interface with fwts.
+ contains this code with a thin fwts specific API to interface with fwts.
 
 Package: libfwts1
 Architecture: any

@@ -77,7 +77,7 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 				}
 			} else {
 				if (cpu_entry->local_apic_id != (first_io_apic_id + n)) {
-					fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x than the previous entry.", n, phys_addr, cpu_entry->local_apic_id, first_io_apic_id + n);
+					fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, cpu_entry->local_apic_id, first_io_apic_id + n);
 					failed = true;
 				}
 			}

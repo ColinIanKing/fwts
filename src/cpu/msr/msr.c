@@ -23,6 +23,7 @@ typedef void (*msr_callback_check)(fwts_framework *fw, uint64_t val);
 
 static int ncpus;
 static bool intel_cpu;
+static bool amd_cpu;
 fwts_cpuinfo_x86 *cpuinfo;
 
 static int msr_init(fwts_framework *fw)
@@ -32,6 +33,7 @@ static int msr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	intel_cpu = strstr(cpuinfo->vendor_id, "Intel") != NULL;
+	amd_cpu = strstr(cpuinfo->vendor_id, "AuthenticAMD") != NULL;
 
 	if ((ncpus = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot detect the number of CPUs on this machine.");
@@ -223,6 +225,79 @@ typedef struct {
 	const uint64_t mask;
 	const msr_callback_check callback;
 } msr_info;
+
+
+/* From AMD Architecture Programmer's Manual, Volume 2: System Programming, Appending A */
+static msr_info AMD_MSRs[] = {
+	{ "MTRRCAP",		0x000000fe,	0, 0xfffULL, NULL },
+	{ "SYSENTER_CS",	0x00000174,	0, 0xffffULL, NULL },
+	{ "SYSENTER_ESP",	0x00000175,	0, ~0, NULL },
+	{ "SYSENTER_EIP",	0x00000176,	0, ~0, NULL },
+	{ "MCG_CAP",		0x00000179,	0, 0x1ff0fffULL, NULL },
+	{ "MCG_STATUS",		0x0000017a,	0, ~0, NULL },
+	{ "MCG_CTL",		0x0000017b,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE0",	0x00000200,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK0",	0x00000201,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE1",	0x00000202,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK1",	0x00000203,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE2",	0x00000204,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK2",	0x00000205,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE3",	0x00000206,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK3",	0x00000207,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE4",	0x00000208,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK4",	0x00000209,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE5",	0x0000020a,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK5",	0x0000020b,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE6",	0x0000020c,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK6",	0x0000020d,	0, ~0, NULL },
+	{ "MTRR_PHYSBASE7",	0x0000020e,	0, ~0, NULL },
+	{ "MTRR_PHYSMASK7",	0x0000020f,	0, ~0, NULL },
+	{ "MTRR_FIX64K_000",	0x00000250,	0, ~0, NULL },
+	{ "MTRR_FIX16K_800",	0x00000258,	0, ~0, NULL },
+	{ "MTRR_FIX16K_a00",	0x00000259,	0, ~0, NULL },
+	{ "MTRR_FIX4K_C000",	0x00000268,	0, ~0, NULL },
+	{ "MTRR_FIX4K_C800",	0x00000269,	0, ~0, NULL },
+	{ "MTRR_FIX4K_D000",	0x0000026a,	0, ~0, NULL },
+	{ "MTRR_FIX4K_D800",	0x0000026b,	0, ~0, NULL },
+	{ "MTRR_FIX4K_E000",	0x0000026c,	0, ~0, NULL },
+	{ "MTRR_FIX4K_E800",	0x0000026d,	0, ~0, NULL },
+	{ "MTRR_FIX4K_F000",	0x0000026e,	0, ~0, NULL },
+	{ "MTRR_FIX4K_F800",	0x0000026f,	0, ~0, NULL },
+	{ "PAT",		0x00000277,	0, 0x707070707070703ULL, NULL },
+	{ "MTRR_DEF_TYPE",	0x000002ff,	0, 0xc0fULL, NULL },
+	{ "EFER",		0xc0000080,	0, 0xd01ULL, NULL },
+	{ "STAR",		0xc0000081,	0, ~0, NULL },
+	{ "LSTAR",		0xc0000082,	0, ~0, NULL },
+	{ "FMASK",		0xc0000084,	0, ~0, NULL },
+	//{ "FS_BASE",		0xc0000100,	0, ~0, NULL },
+	//{ "GS_BASE",		0xc0000101, 	0, ~0, NULL },
+	{ "KERNEL_GS_BASE",	0xc0000102, 	0, ~0, NULL },
+	{ "TSC_AUX",		0xc0000103, 	0, 0xffffffffULL, NULL },
+	{ "SYSCFG",		0xc0010010,	0, ~0, NULL },
+	{ "IORRBase0",		0xc0010016,	0, ~0, NULL },
+	{ "IORRMask0",		0xc0010017,	0, ~0, NULL },
+	{ "IORRBase1",		0xc0010018,	0, ~0, NULL },
+	{ "IORRMask1",		0xc0010019,	0, ~0, NULL },
+	{ "TOP_MEM",		0xc001001a,	0, ~0, NULL },
+	{ "TOP_MEM2",		0xc001001d,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010030,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010031,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010032,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010033,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010034,	0, ~0, NULL },
+	{ "Processor_Name_String", 0xc0010035,	0, ~0, NULL },
+	{ "TSC Ratio",		0xc0010104,	0, ~0, NULL },
+	{ "SMBASE",		0xc0010111,	0, ~0, NULL },
+	{ "SMM_ADDR",		0xc0010112,	0, ~0, NULL },
+	{ "SMM_MASK",		0xc0010113,	0, ~0, NULL },
+	{ "VM_CR",		0xc0010114,	0, ~0, NULL },
+	{ "IGNNE",		0xc0010115,	0, ~0, NULL },
+	{ "SMM_CTL",		0xc0010116,	0, ~0, NULL },
+	{ "VM_HSAVE_PA",	0xc0010117,	0, ~0, NULL },
+	{ "SVM_KEY_MSR",	0xc0010118,	0, ~0, NULL },
+	{ "OSVW_ID_Length",	0xc0010140,	0, ~0, NULL },
+	{ NULL,			0x00000000,	0, 0 , NULL }
+};
 
 static msr_info IA32_MSRs[] = {
 	//{ "P5_MC_ADDR",		0x00000000,	0, ~0, NULL },
@@ -421,55 +496,57 @@ static int msr_table_check(fwts_framework *fw, msr_info *info)
 	return FWTS_OK;
 }
 
-static int msr_IA32_generic(fwts_framework *fw)
+static int msr_cpu_generic(fwts_framework *fw)
 {
 	if (intel_cpu)
 		msr_table_check(fw, IA32_MSRs);
+	else if (amd_cpu)
+		msr_table_check(fw, AMD_MSRs);
 	else
-		fwts_skipped(fw, "Non-Intel CPU, test skipped.");
+		fwts_skipped(fw, "Not an AMD or Intel CPU, test skipped.");
 
 	return FWTS_OK;
 }
 
-static int msr_IA32_specific(fwts_framework *fw)
+static int msr_cpu_specific(fwts_framework *fw)
 {
-	if (!intel_cpu)
+	if (intel_cpu) {
+        	switch (cpuinfo->x86_model) {
+		case 0x1A: /* Core i7, Xeon 5500 series */
+		case 0x1E: /* Core i7 and i5 Processor - Lynnfield Jasper Forest */
+		case 0x1F: /* Core i7 and i5 Processor - Nehalem */
+		case 0x2E: /* Nehalem-EX Xeon */
+		case 0x2F: /* Westmere-EX Xeon */
+		case 0x25: /* Westmere */
+		case 0x2C: /* Westmere */
+			msr_table_check(fw, IA32_nehalem_MSRs);
+			printf("Nehalem\n");
+			break;
+		case 0x1C: /* Atom Processor */
+		case 0x26: /* Lincroft Atom Processor */
+			msr_table_check(fw, IA32_atom_MSRs);
+			break;
+		case 0x2A: /* Sandybridge */
+		case 0x2D: /* Ssandybridge Xeon */
+			msr_table_check(fw, IA32_sandybridge_MSRs);
+			break;
+		default:
+			fwts_log_info(fw, "No model specific tests for model 0x%x.", cpuinfo->x86_model);
+			break;
+		}
+	} else
 		fwts_skipped(fw, "Non-Intel CPU, test skipped.");
-
-        switch (cpuinfo->x86_model) {
-	case 0x1A: /* Core i7, Xeon 5500 series */
-	case 0x1E: /* Core i7 and i5 Processor - Lynnfield Jasper Forest */
-	case 0x1F: /* Core i7 and i5 Processor - Nehalem */
-	case 0x2E: /* Nehalem-EX Xeon */
-	case 0x2F: /* Westmere-EX Xeon */
-	case 0x25: /* Westmere */
-	case 0x2C: /* Westmere */
-		msr_table_check(fw, IA32_nehalem_MSRs);
-		printf("Nehalem\n");
-		break;
-	case 0x1C: /* Atom Processor */
-	case 0x26: /* Lincroft Atom Processor */
-		msr_table_check(fw, IA32_atom_MSRs);
-		break;
-	case 0x2A: /* Sandybridge */
-	case 0x2D: /* Ssandybridge Xeon */
-		msr_table_check(fw, IA32_sandybridge_MSRs);
-		break;
-	default:
-		fwts_log_info(fw, "No model specific tests for model 0x%x.", cpuinfo->x86_model);
-		break;
-	}
-	
+		
 	return FWTS_OK;
 }
 
 
 static fwts_framework_minor_test msr_tests[] = {
+	{ msr_cpu_generic,		"Check CPU generic MSRs." },
+	{ msr_cpu_specific,		"Check CPU specific model MSRs." },
 	{ msr_pstate_ratios, 		"Check all P State Ratios." },
 	{ msr_c1_c3_autodemotion, 	"Check C1 and C3 autodemotion." },
 	{ msr_smrr,			"Check SMRR MSR registers." },
-	{ msr_IA32_generic,		"Check generic IA-32 MSR registers." },
-	{ msr_IA32_specific,		"Check specific IA-32 model MSR registers." },
 	{ NULL, NULL }
 };
 

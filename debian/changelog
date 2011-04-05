@@ -1,3 +1,13 @@
+fwts (0.22.13) natty; urgency=low
+
+  * fix minor typos and error messages (LP: #751248)
+  * debian: control: fix typos
+  * acpi: method: fix typo in THERM check.
+  * acpi: method: fix false alert with THERM check.
+  * acpi: wmi: fix guidstr: should be all in uppercase.
+
+ -- Colin King <colin.king@canonical.com>  Thu, 5 Apr 2011 12:44:07 +0100
+
 fwts (0.22.12) natty; urgency=low
 
   * lib: fwts_cpu_enumerate: use sysconf instead of /proc/acpi (LP: #746428)

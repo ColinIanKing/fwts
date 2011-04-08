@@ -1,3 +1,24 @@
+fwts (0.23.02) natty; urgency=low
+
+  * debian: control: fix typos
+  * bios: mpcheck: fix reporting of incorrect CPU entry that has suspect LAPIC ID
+  * bios: multiproc: drop APIC version check, fix io_apic_entries feedback.
+  * acpi: method: fix typo in THERM check.
+  * acpi: method: fix false alert with THERM check.
+  * acpi: wmi: fix guidstr: should be all in uppercase.
+  * cpu: msr: Add AMD specific MSR checks.
+  * cpu: msr: add CPU arch specific MSR checks.
+  * lib: fwts_cpu: use sysconf to determine number of CPUs
+  * acpi: method: fix LP: #744405, incorrect sem counts
+  * method: rename *execute* -> *evaluate*
+  * hotkey: check for keyboard find failure.
+  * lib: acpica: disable single step debug when hitting AML_BREAK_POINT opcodes.
+  * bios: hdaudio: minor tidy up of formatting and code.
+  * acpi: s4: remove redundant 'Restarting tasks' check
+  * acpi: wmi: check for known GUIDs
+
+ -- Colin King <colin.king@canonical.com>  Fri, 8 Apr 2011 10:36:52 +0100
+
 fwts (0.23.01) natty; urgency=low
 
   * work around systems that don't support MAP32_BIT (LP: #739256)

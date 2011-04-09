@@ -24,7 +24,6 @@
 
 fwts_list         *fwts_text_list_new(void);
 void 	           fwts_text_list_free(fwts_list *list);
-void	           fwts_text_list_dump(fwts_list *list);
 char              *fwts_text_list_strstr(fwts_list *list, const char *needle);
 fwts_list         *fwts_list_from_text(const char *list);
 fwts_list_link    *fwts_text_list_append(fwts_list *list, const char *text);

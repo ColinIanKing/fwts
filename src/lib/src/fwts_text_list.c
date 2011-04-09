@@ -56,21 +56,6 @@ fwts_list_link *fwts_text_list_append(fwts_list *list, const char *text)
 }
 
 /*
- *  fwts_text_list_dump()
- *	dump a text list (debug)
- */
-void fwts_text_list_dump(fwts_list *list)
-{
-	fwts_list_link *item;
-
-	if (list == NULL)
-		return;
-
-	fwts_list_foreach(item, list)
-		printf("DUMP: %s\n", fwts_list_data(char *, item));
-}
-
-/*
  *  fwts_text_list_strstr()
  *	check if string needle exists in the text list, returns
  *	the position in the string if found, NULL if not found

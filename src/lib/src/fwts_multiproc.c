@@ -47,7 +47,7 @@ static int fwts_mp_checksum(fwts_mp_floating_header *header)
 {
 	uint8_t sum = 0;
 	uint8_t *ptr = (uint8_t*)header;
-	int i;
+	unsigned int i;
 
 	for (i=0;i<sizeof(fwts_mp_floating_header);i++) 
 		sum += *ptr++;

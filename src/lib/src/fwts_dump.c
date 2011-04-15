@@ -39,7 +39,7 @@
  *  dump_data()
  *	dump to path/filename a chunk of data of length len
  */
-static int dump_data(const char *path, const char *filename, char *data, const int len)
+static int dump_data(const char *path, const char *filename, char *data, const size_t len)
 {
 	FILE *fp;
 	char name[PATH_MAX];
@@ -70,7 +70,7 @@ static int dump_dmesg(const char *path, const char *filename)
 	if ((len = klogctl(10, NULL, 0)) < 0)
 		return FWTS_ERROR;
 
-        if ((data = calloc(1, len)) < 0)
+        if ((data = calloc(1, len)) == NULL)
 		return FWTS_ERROR;
 
         if (klogctl(3, data, len) < 0) {

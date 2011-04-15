@@ -42,7 +42,7 @@
 typedef struct {
 	void   *start;
 	size_t	size;
-	int	magic;
+	unsigned int magic;
 } fwts_mmap_header;
 
 #define LIMIT_2GB	0x80000000ULL

@@ -65,7 +65,7 @@ fwts_list *fwts_klog_read(void)
 	if ((len = klogctl(10, NULL, 0)) < 0)
 		return NULL;
 
-	if ((buffer = calloc(1, len)) < 0) {
+	if ((buffer = calloc(1, len)) == NULL) {
 		free(buffer);
 		return NULL;
 	}

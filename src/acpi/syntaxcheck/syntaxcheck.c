@@ -39,7 +39,7 @@ typedef struct {
 static syntaxcheck_adviceinfo *adviceinfo;
 
 static int syntaxcheck_load_advice(fwts_framework *fw);
-static void syntaxcheck_free_advice(fwts_framework *fw);
+static void syntaxcheck_free_advice(void);
 
 /*
  *  syntaxcheck advice data file, data stored in json format
@@ -53,7 +53,6 @@ static void syntaxcheck_free_advice(fwts_framework *fw);
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
-
 	(void)syntaxcheck_load_advice(fw);
 	
 	return FWTS_OK;
@@ -61,7 +60,7 @@ static int syntaxcheck_init(fwts_framework *fw)
 
 static int syntaxcheck_deinit(fwts_framework *fw)
 {
-	syntaxcheck_free_advice(fw);
+	syntaxcheck_free_advice();
 
 	return FWTS_OK;
 }
@@ -190,7 +189,7 @@ fail_put:
  *  syntaxcheck_free_advice()
  * 	free up the adviceinfo data
  */
-static void syntaxcheck_free_advice(fwts_framework *fw)
+static void syntaxcheck_free_advice(void)
 {
 	if (adviceinfo) {
 		int i;

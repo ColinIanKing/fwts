@@ -29,26 +29,31 @@
  *  fwts_getchar()
  *	read a char from tty, no echo canonical mode
  */
-static int fwts_getchar(void)
+static int fwts_getchar(int *ch)
 {
 	struct termios oldterm;
 	struct termios newterm;
-	int ch;
 	int fd = fileno(stdin);
 
-	tcgetattr(fd, &oldterm);
+	*ch = -1;
+
+	if (tcgetattr(fd, &oldterm) < 0) 
+		return FWTS_ERROR;
+
 	memcpy(&newterm, &oldterm, sizeof(struct termios));
 
 	newterm.c_lflag &= ~(ECHO | ICANON);
 	newterm.c_cc[VMIN] = 1;
 	newterm.c_cc[VTIME] = 0;
-	tcsetattr(fd, TCSANOW, &newterm);
+	if (tcsetattr(fd, TCSANOW, &newterm) < 0)
+		return FWTS_ERROR;
 
-	ch = getchar();
+	*ch = getchar();
 	
-	tcsetattr(fd, TCSANOW, &oldterm);
+	if (tcsetattr(fd, TCSANOW, &oldterm) < 0) 
+		return FWTS_ERROR;
 
-	return ch;
+	return FWTS_OK;
 }
 
 /*
@@ -74,11 +79,18 @@ int fwts_printf(fwts_framework *fw, const char *fmt, ...)
  */
 int fwts_press_enter(fwts_framework *fw)
 {
+	int ch;
+
 	fprintf(stdout, "Press <Enter> to continue");
 	fflush(stdout);
 	
-	while (fwts_getchar() != '\n')
-		;
+	do {
+		if (fwts_getchar(&ch) == FWTS_ERROR) {
+			fwts_log_error(fw, "fwts_getchar() failed.");
+			break;
+		}
+	} while (ch != '\n');
+
 	fprintf(stdout, "\n");
 	fflush(stdout);
 	
@@ -96,8 +108,15 @@ int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
 	fprintf(stdout, "%s", message);
 	fflush(stdout);
 
-	while (index(options, (ch = fwts_getchar())) == NULL)
-		;
+	for (;;) {
+
+		if (fwts_getchar(&ch) == FWTS_ERROR) {
+			fwts_log_error(fw, "fwts_getchar() failed.");	
+			break;
+		}
+		if (index(options, ch) != NULL)
+			break;
+	}
 	fprintf(stdout, "\n");
 	fflush(stdout);
 

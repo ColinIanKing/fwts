@@ -54,7 +54,7 @@ typedef enum {
 } fwts_log_level;
 
 typedef struct log_t {
-	int magic;
+	unsigned int magic;
 	FILE *fp;	
 	char *owner;
 	int line_width;

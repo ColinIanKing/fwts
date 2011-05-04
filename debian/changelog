@@ -1,4 +1,19 @@
-fwts (0.23.02) natty; urgency=low
+fwts (0.23.03) oneiric; urgency=low
+
+  * acpi: syntaxcheck: remove redundant params
+  * lib: fwts_multiproc: fix -Wextra warnings
+  * lib: fwts_log.h: make magic unsigned int
+  * lib: fwts_klog: fix calloc failure check
+  * lib: fwts_dump: fix -Wextra warnings
+  * lib: fwts_alloc: make magic unsigned int
+  * lib: fwts_interactive: make fwts_getchar more robust
+  * lib: fwts_cpu: call _exit() on signal
+  * lib: fwts_text_list: remove fwts_text_list_dump
+  * doc: manpage: update introduction
+
+ -- Colin King <colin.king@canonical.com>  Wed, 4 May 2011 08:59:42 +0100
+
+fwts (0.23.02) oneiric; urgency=low
 
   * debian: control: fix typos
   * bios: mpcheck: fix reporting of incorrect CPU entry that has suspect LAPIC ID
@@ -19,13 +34,13 @@ fwts (0.23.02) natty; urgency=low
 
  -- Colin King <colin.king@canonical.com>  Fri, 8 Apr 2011 10:36:52 +0100
 
-fwts (0.23.01) natty; urgency=low
+fwts (0.23.01) oneiric; urgency=low
 
   * work around systems that don't support MAP32_BIT (LP: #739256)
 
  -- Colin King <colin.king@canonical.com>  Mon, 21 Mar 2011 10:49:00 +0000
 
-fwts (0.23.00) natty; urgency=low
+fwts (0.23.00) oneiric; urgency=low
 
   * post natty freeze, bug fixes and new features
   * fix segfault of method test on 64 bit machines (LP: #736874)

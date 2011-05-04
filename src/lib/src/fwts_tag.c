@@ -23,7 +23,7 @@
 #include "fwts.h"
 
 typedef struct {
-	fwts_tag	tag;
+	const fwts_tag	tag;
 	const char	*tag_id;
 	const char 	*tag_str;
 } fwts_tag_info;
@@ -100,7 +100,7 @@ fwts_tag fwts_tag_id_str_to_tag(const char *tag)
  *  fwts_tag_to_str()
  *	given a tag, return the human readable tag name
  */
-const char *fwts_tag_to_str(fwts_tag tag)
+const char *fwts_tag_to_str(const fwts_tag tag)
 {
 	int i;
 	static const char *none = "";
@@ -172,7 +172,7 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
  *  fwts_tag_report()
  *	report to the log the tags found in the taglist
  */
-void fwts_tag_report(fwts_framework *fw, fwts_log_field field, fwts_list *taglist)
+void fwts_tag_report(fwts_framework *fw, const fwts_log_field field, fwts_list *taglist)
 {
 	if ((taglist != NULL) && (fwts_list_len(taglist) > 0)) {
 		char *tags = fwts_tag_list_to_str(taglist);
@@ -189,7 +189,7 @@ void fwts_tag_report(fwts_framework *fw, fwts_log_field field, fwts_list *taglis
  *	per test (this is emptied at end of each test)
  * 	all tests (this is total for all tests run)
  */
-void fwts_tag_failed(fwts_framework *fw, fwts_tag tag)
+void fwts_tag_failed(fwts_framework *fw, const fwts_tag tag)
 {
 	const char *text = fwts_tag_to_str(tag);
 

@@ -53,7 +53,7 @@ typedef struct {
  *	try to find a free space under the 2GB limit and mmap it.
  *	returns address of mmap'd region or MAP_FAILED if failed.
  */
-static void *fwts_low_mmap(size_t requested_size)
+static void *fwts_low_mmap(const size_t requested_size)
 {
 	FILE *fp;
 	char buffer[1024];
@@ -108,7 +108,7 @@ static void *fwts_low_mmap(size_t requested_size)
  *	allocated ACPI tables that need to be addressed
  *	via legacy 32 bit pointers on 64 bit architectures.
  */
-void *fwts_low_calloc(size_t nmemb, size_t size)
+void *fwts_low_calloc(const size_t nmemb, const size_t size)
 {
 	size_t n = nmemb * size;
 	void *ret;
@@ -142,7 +142,7 @@ void *fwts_low_calloc(size_t nmemb, size_t size)
 /*
  *  fwts_low_malloc()
  */
-void *fwts_low_malloc(size_t size)
+void *fwts_low_malloc(const size_t size)
 {
 	return fwts_low_calloc(1, size);
 }
@@ -152,7 +152,7 @@ void *fwts_low_malloc(size_t size)
  *	realloc memory - ptr must be NULL or
  *	allocated with fwts_low_* allocators
  */
-void *fwts_low_realloc(void *ptr, size_t size)
+void *fwts_low_realloc(const void *ptr, const size_t size)
 {
 	void *ret;
 	fwts_mmap_header *hdr;
@@ -180,7 +180,7 @@ void *fwts_low_realloc(void *ptr, size_t size)
  *  fwts_low_free()
  *	free memory allocated by fwts_low_calloc()
  */
-void fwts_low_free(void *ptr)
+void fwts_low_free(const void *ptr)
 {
 	if (ptr) {
 		fwts_mmap_header *hdr = (fwts_mmap_header *)

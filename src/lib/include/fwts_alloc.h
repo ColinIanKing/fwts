@@ -19,9 +19,9 @@
 #ifndef __FWTS_ALLOC_H__
 #define __FWTS_ALLOC_H__
 
-void *fwts_low_calloc(size_t nmemb, size_t size);
-void *fwts_low_malloc(size_t size);
-void *fwts_low_realloc(void *ptr, size_t size);
-void fwts_low_free(void *ptr);
+void *fwts_low_calloc(const size_t nmemb, const size_t size);
+void *fwts_low_malloc(const size_t size);
+void *fwts_low_realloc(const void *ptr, const size_t size);
+void fwts_low_free(const void *ptr);
 
 #endif

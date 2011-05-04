@@ -110,7 +110,7 @@ static int ac_adapter_test2(fwts_framework *fw)
 static int ac_adapter_test3(fwts_framework *fw)
 {
 	int fd;
-	int len;
+	size_t len;
 	char *buffer;
 	int matching;
 	int not_matching;

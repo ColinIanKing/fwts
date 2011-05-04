@@ -69,7 +69,7 @@ int fwts_acpi_event_open(void)
  *  fwts_acpi_event_read()
  *	read event from acpid socket, wait for timeout secs
  */
-char *fwts_acpi_event_read(const int fd, int *length, const int timeout)
+char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
@@ -77,8 +77,8 @@ char *fwts_acpi_event_read(const int fd, int *length, const int timeout)
 	fd_set rfds;
 
 	int ret;
-	int n;
-	int size = 0;
+	size_t n;
+	size_t size = 0;
 	*length = 0;
 
 	ptr = NULL;

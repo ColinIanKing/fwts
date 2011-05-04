@@ -134,7 +134,7 @@ static int lid_test_state(fwts_framework *fw, char *state)
 	int matching = 0;
 	int not_matching = 0;
 	int events = 0;
-	int len;
+	size_t len;
 	char *buffer;
 	int i;
 

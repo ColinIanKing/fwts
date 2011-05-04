@@ -75,7 +75,7 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 	int fd;
 	int events = 0;
 	int matching = 0;
-	int len;
+	size_t len;
 	char *buffer;
 	int i;
 

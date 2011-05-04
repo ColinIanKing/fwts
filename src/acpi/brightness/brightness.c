@@ -288,7 +288,7 @@ static int brightness_wait_event(fwts_framework *fw)
 	int fd;
 	int events = 0;
 	char *buffer;
-	int len;
+	size_t len;
 	int i;
 
 	if ((fd = fwts_acpi_event_open()) < 0) {

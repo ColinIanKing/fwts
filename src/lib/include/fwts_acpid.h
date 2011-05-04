@@ -21,7 +21,7 @@
 #define __FWTS_ACPID_H__
 
 int   fwts_acpi_event_open(void);
-char *fwts_acpi_event_read(const int fd, int *length, const int timeout);
+char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout);
 void  fwts_acpi_event_close(const int fd);
 
 #endif

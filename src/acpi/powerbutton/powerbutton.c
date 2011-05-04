@@ -94,7 +94,7 @@ static int power_button_test1(fwts_framework *fw)
 static int power_button_test2(fwts_framework *fw)
 {
 	int fd;
-	int len;
+	size_t len;
 	char *buffer;
 	int matching;
 	int i;

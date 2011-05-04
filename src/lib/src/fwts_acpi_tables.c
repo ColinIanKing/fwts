@@ -66,7 +66,7 @@ static uint32_t fwts_acpi_find_rsdp_efi(void)
  *  fwts_acpi_rsdp_checksum()
  *	RSDP checksum
  */
-static uint8_t fwts_acpi_rsdp_checksum(uint8_t *data, const int length)
+static uint8_t fwts_acpi_rsdp_checksum(const uint8_t *data, const int length)
 {
 	int i;
 	uint8_t checksum = 0;
@@ -113,7 +113,7 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
  *	given the address of the rsdp, map in the region, copy it and
  *	return the rsdp table. Return NULL if fails.
  */
-static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
+static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(const uint32_t addr)
 {
 	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp;
@@ -135,7 +135,7 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(uint32_t addr)
  *	given the address of a ACPI table, map in firmware, find out size,
  *	copy it and return the copy. Returns NULL if fails.
  */
-static void *fwts_acpi_load_table(off_t addr)
+static void *fwts_acpi_load_table(const off_t addr)
 {
 	fwts_acpi_table_header *hdr;
 	void *mem;
@@ -168,7 +168,7 @@ static void *fwts_acpi_load_table(off_t addr)
  *	Add a table to internal ACPI table cache. Ignore duplicates based on
  *	their address.
  */
-static void fwts_acpi_add_table(char *name, void *table, uint64_t addr, int length)
+static void fwts_acpi_add_table(const char *name, const void *table, const uint64_t addr, const size_t length)
 {
 	int i;
 	int which = 0;
@@ -215,7 +215,7 @@ int fwts_acpi_free_tables(void)
  *	depending on whether 32 or 64 bit address is usable, get the FADT table
  *	address and load the FADT.
  */
-static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, uint32_t *addr32, uint64_t *addr64)
+static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, const uint32_t *addr32, const uint64_t *addr64)
 {
 	off_t addr;
 	fwts_acpi_table_header *header;
@@ -305,13 +305,13 @@ static int fwts_acpi_load_tables_from_firmware(void)
  *  fwts_acpi_load_table_from_acpidump()
  *	Load an ACPI table from the output of acpidump or fwts --dump
  */
-static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_t *addr, int *size)
+static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_t *addr, size_t *size)
 {
 	uint32_t offset;
 	uint8_t  data[16];
 	char buffer[80];
 	uint8_t *table = NULL;
-	int len = 0;
+	size_t len = 0;
 	unsigned long long table_addr;
 
 	*size = 0;
@@ -359,7 +359,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	while (!feof(fp)) {
 		uint64_t addr;		
 		uint8_t *table;
-		int length;
+		size_t length;
 		char name[16];
 
 		if ((table = fwts_acpi_load_table_from_acpidump(fp, name, &addr, &length)) != NULL)
@@ -371,11 +371,11 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
+static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 {
 	uint8_t *ptr = NULL;
-	int n;
-	int size = 0;
+	ssize_t n;
+	size_t size = 0;
 	char buffer[4096];	
 
 	*length = 0;
@@ -417,7 +417,7 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				fw->acpi_table_path, direntry->d_name);
 			if ((fd = open(path, O_RDONLY)) >= 0) {
 				uint8_t *table;
-				int length;
+				size_t length;
 				char name[PATH_MAX];
 
 				count++;

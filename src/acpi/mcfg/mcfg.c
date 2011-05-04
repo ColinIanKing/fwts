@@ -110,7 +110,9 @@ static int mcfg_deinit(fwts_framework *fw)
 static int mcfg_test1(fwts_framework *fw)
 {
 	int nr, i;
-	uint8_t *table_ptr, *table_page;
+	const uint8_t *table_ptr;
+	const uint8_t *table_page;	
+	void *mapped_table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
 	int mcfg_size;
@@ -166,7 +168,7 @@ static int mcfg_test1(fwts_framework *fw)
 	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).",
 			mcfg_size, nr);
 
-	table_page = table_ptr = mcfg_table->data;
+	table_page = table_ptr = (const uint8_t *)mcfg_table->data;
 
 	if (table_page == NULL) {
 		fwts_failed_high(fw, "Invalid MCFG ACPI table");
@@ -210,14 +212,14 @@ static int mcfg_test1(fwts_framework *fw)
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
-	if ((table_page = fwts_mmap(firstentry.low_address, page_size)) == FWTS_MAP_FAILED) {
+	if ((mapped_table_page = fwts_mmap(firstentry.low_address, page_size)) == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap table at 0x%x.", firstentry.low_address);
 		return FWTS_ERROR;
 	}
 
-	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)table_page);
+	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)mapped_table_page);
 
-	fwts_munmap(table_page, page_size);
+	fwts_munmap(mapped_table_page, page_size);
 	
 	return FWTS_OK;
 }

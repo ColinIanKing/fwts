@@ -219,7 +219,7 @@ static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)table->data;
-	void *data = table->data;
+	const void *data = table->data;
 	int length = table->length;
 	int i = 0;
 	

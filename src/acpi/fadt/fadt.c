@@ -30,7 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 
-static fwts_acpi_table_fadt *fadt;
+static const fwts_acpi_table_fadt *fadt;
 static int fadt_size;
 
 static int fadt_init(fwts_framework *fw)
@@ -45,7 +45,7 @@ static int fadt_init(fwts_framework *fw)
 		fwts_log_error(fw, "ACPI table FACP does not exist!");
 		return FWTS_ERROR;
 	}
-	fadt = table->data;
+	fadt = (const fwts_acpi_table_fadt*)table->data;
 	fadt_size = table->length;
 
 	return FWTS_OK;

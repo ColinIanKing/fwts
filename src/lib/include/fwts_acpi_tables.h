@@ -24,8 +24,8 @@
 
 typedef struct {
 	char    name[5];
-	void    *data;
-	int     length;
+	const void *data;
+	size_t	length;
 	int 	which;
 	uint64_t addr;
 } fwts_acpi_table_info;

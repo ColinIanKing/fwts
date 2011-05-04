@@ -1016,7 +1016,7 @@ static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 	int length;
 	int i;
 
-	data = table->data;
+	data = (uint8_t*)table->data;
 	length = table->length;
 
 	for (i=0; table_vec[i].name != NULL; i++) {

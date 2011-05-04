@@ -298,9 +298,9 @@ typedef struct {
   	char description[0];
 } fwts_uefi_bios_dev_path;
 
-void fwts_uefi_str16_to_str(char *dst, int len, uint16_t *src);
-int fwts_uefi_str16len(uint16_t *str);
-void fwts_uefi_get_varname(char *varname, int len, fwts_uefi_var *var);
+void fwts_uefi_str16_to_str(char *dst, const size_t len, const uint16_t *src);
+size_t fwts_uefi_str16len(const uint16_t *str);
+void fwts_uefi_get_varname(char *varname, const size_t len, const fwts_uefi_var *var);
 int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var);
 int fwts_uefi_set_variable(const char *varname, fwts_uefi_var *var);
 

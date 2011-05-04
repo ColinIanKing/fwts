@@ -28,7 +28,7 @@
 #include "fwts_uefi.h"
 
 
-static inline void fwts_uefi_set_filename(char *filename, int len, const char *varname)
+static inline void fwts_uefi_set_filename(char *filename, const int len, const char *varname)
 {
 	snprintf(filename, len, "/sys/firmware/efi/vars/%s/raw_var", varname);
 }
@@ -37,11 +37,13 @@ static inline void fwts_uefi_set_filename(char *filename, int len, const char *v
  *  fwts_uefi_str16_to_str()
  *	convert 16 bit string to 8 bit C string.
  */
-void fwts_uefi_str16_to_str(char *dst, int len, uint16_t *src)
+void fwts_uefi_str16_to_str(char *dst, const size_t len, const uint16_t *src)
 {
-	while ((*src) && (len > 1)) {
+	size_t i = len;
+
+	while ((*src) && (i > 1)) {
 		*dst++ = *(src++) & 0xff;		
-		len--;
+		i--;
 	}
 	*dst = '\0';
 }
@@ -50,7 +52,7 @@ void fwts_uefi_str16_to_str(char *dst, int len, uint16_t *src)
  *  fwts_uefi_str16len()
  *	16 bit version of strlen()
  */
-int fwts_uefi_str16len(uint16_t *str)
+size_t fwts_uefi_str16len(const uint16_t *str)
 {
 	int i;
 
@@ -63,7 +65,7 @@ int fwts_uefi_str16len(uint16_t *str)
  *  fwts_uefi_get_varname()
  *	fetch the UEFI variable name in terms of a 8 bit C string
  */
-void fwts_uefi_get_varname(char *varname, int len, fwts_uefi_var *var)
+void fwts_uefi_get_varname(char *varname, const size_t len, const fwts_uefi_var *var)
 {
 	fwts_uefi_str16_to_str(varname, len, var->varname);
 }
@@ -104,7 +106,7 @@ int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var)
 int fwts_uefi_set_variable(const char *varname, fwts_uefi_var *var)
 {
 	int  fd;
-	int  n;
+	ssize_t n;
 	int  ret = FWTS_OK;
 	char filename[PATH_MAX];
 

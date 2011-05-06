@@ -23,6 +23,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-int fwts_cmos_read(int offset, uint8_t *value);
+int fwts_cmos_read(const uint8_t offset, uint8_t *value);
 
 #endif

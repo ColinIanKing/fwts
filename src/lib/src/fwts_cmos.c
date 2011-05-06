@@ -27,7 +27,7 @@
  *  fwts_cmos_read()
  *	read a byte from cmos memory at a given offset
  */
-int fwts_cmos_read(int offset, uint8_t *value)
+int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 {
 	if (ioperm(0x70, 2, 1) < 0)
 		return FWTS_ERROR;
@@ -44,7 +44,7 @@ int fwts_cmos_read(int offset, uint8_t *value)
 	return FWTS_OK;
 }
 #else
-int fwts_cmos_read(int offset, uint8_t *value)
+int fwts_cmos_read(const int offset, uint8_t *value)
 {
 	return FWTS_ERROR;
 }

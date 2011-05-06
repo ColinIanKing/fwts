@@ -20,6 +20,7 @@
 #ifndef __FWTS_PIPEIO_H__
 #define __FWTS_PIPEIO_H__
 
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -28,7 +29,7 @@
 #define FWTS_EXEC_ERROR		(127)
 
 int   fwts_pipe_open(const char *command, pid_t *childpid);
-char *fwts_pipe_read(const int fd, int *length);
+char *fwts_pipe_read(const int fd, ssize_t *length);
 int   fwts_pipe_close(const int fd, const pid_t pid);
 int   fwts_pipe_exec(const char *command, fwts_list **list);
 

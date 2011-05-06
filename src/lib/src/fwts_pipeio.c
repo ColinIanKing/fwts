@@ -79,12 +79,12 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
  *	set to the number of chars read and we return
  *	a buffer of read data.
  */
-char *fwts_pipe_read(const int fd, int *length)
+char *fwts_pipe_read(const int fd, ssize_t *length)
 {
 	char *ptr = NULL;
 	char buffer[8192];	
-	int n;
-	int size = 0;
+	ssize_t n;
+	ssize_t size = 0;
 	*length = 0;
 
 	ptr = NULL;

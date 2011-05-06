@@ -93,7 +93,7 @@ static int dump_exec(const char *path, const char *filename, const char *command
 {
 	int fd;
 	pid_t pid;
-	int len;
+	ssize_t len;
 	char *data;
 	int ret;
 

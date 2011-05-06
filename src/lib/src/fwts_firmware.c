@@ -23,8 +23,6 @@
 
 #include "fwts.h"
 
-#define FLAGS   (S_IROTH | S_IXOTH)
-
 /*
  *  fwts_memory_map_entry_compare()
  *	callback used to sort memory_map entries on start address

@@ -43,7 +43,7 @@
  *  fwts_mp_checksum()
  *	checksum the floating header
  */
-static int fwts_mp_checksum(fwts_mp_floating_header *header)
+static int fwts_mp_checksum(const fwts_mp_floating_header *header)
 {
 	uint8_t sum = 0;
 	uint8_t *ptr = (uint8_t*)header;

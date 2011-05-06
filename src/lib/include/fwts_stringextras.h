@@ -23,6 +23,6 @@
 #include <string.h>
 
 void fwts_chop_newline(char *str);
-char *fwts_realloc_strcat(char *orig, char *newstr);
+char *fwts_realloc_strcat(char *orig, const char *newstr);
 
 #endif

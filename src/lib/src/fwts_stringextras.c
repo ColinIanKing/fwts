@@ -45,7 +45,7 @@ void fwts_chop_newline(char *str)
  *	append newstr to orig (allocated on the heap)
  *	return NULL if fails, otherwise return expanded string
  */
-char *fwts_realloc_strcat(char *orig, char *newstr)
+char *fwts_realloc_strcat(char *orig, const char *newstr)
 {
 	int newlen = strlen(newstr);
 

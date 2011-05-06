@@ -26,7 +26,7 @@
 
 #define PAGE_SIZE	4096
 
-void *fwts_mmap(off_t start, size_t size)
+void *fwts_mmap(const off_t start, const size_t size)
 {
 	int fd;
 	int page_size;
@@ -52,7 +52,7 @@ void *fwts_mmap(off_t start, size_t size)
 	return ret;
 }
 
-int fwts_munmap(void *mem, size_t size)
+int fwts_munmap(void *mem, const size_t size)
 {
 	int page_size;
 	off_t offset;

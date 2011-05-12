@@ -105,7 +105,7 @@ int fwts_iasl_disassemble(fwts_framework *fw,
 	*iasl_output = fwts_file_open_and_read(tmpfile);
 	(void)unlink(tmpfile);
 
-	return FWTS_OK;
+	return *iasl_output ? FWTS_OK : FWTS_ERROR;
 }
 
 int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)

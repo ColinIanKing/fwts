@@ -1,3 +1,10 @@
+fwts (0.22.14) natty; urgency=low
+
+  * lib: fwts_iasl: fix segfault on bad input: (LP: #781709)
+  * lib: fwts_cpu: call _exit() on signal
+
+ -- Colin King <colin.king@canonical.com>  Thu, 12 May 2011 16:38:31 +0200
+
 fwts (0.22.13) natty; urgency=low
 
   * fix minor typos and error messages (LP: #751248)

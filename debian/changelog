@@ -1,3 +1,22 @@
+fwts (0.23.04) oneiric; urgency=low
+
+  * lib: fwts_iasl: fix LP: #781709, segfault on bad input
+  * lib: fwts_stringextras: use const where appropriate
+  * lib: fwts_pipe_read: length should be ssize_t
+  * lib: fwts_mp_checksum: use const where appropriate
+  * lib: fwts_mmap: use const where appropriate
+  * lib: fwts_firmware: remove redundant FLAGS
+  * lib: fwts_cmos_read: offset should be const uint8_t
+  * lib: fwts_tag: use const where appropriate
+  * lib: fwts_uefi: use const where appropriate
+  * lib: fwts_formatting: use const where appropriate
+  * lib: fwts_acpi_tables: use const and size_t where appropriate
+  * lib: fwts_acpi_table_info: make data const void * and length size_t
+  * lib + tests: fwts_acpi_event_read(): use size_t for length
+  * lib: fwts_alloc: use const
+
+ -- Colin King <colin.king@canonical.com>  Thu, 12 May 2011 17:38:00 +0200
+
 fwts (0.23.03) oneiric; urgency=low
 
   * acpi: syntaxcheck: remove redundant params

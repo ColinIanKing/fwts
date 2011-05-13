@@ -56,10 +56,7 @@ fwts_list *fwts_list_new(void)
  */
 int fwts_list_len(fwts_list *list)
 {
-	if (list != NULL)
-		return list->len;
-	else
-		return 0;
+	return list ? list->len : 0;
 }
 
 /*

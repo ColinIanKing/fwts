@@ -38,7 +38,7 @@ static int apicinstance_test1(fwts_framework *fw)
 		
 		if (strcmp(table->name, "APIC") == 0)  {
 			fwts_log_info(fw, "Found APIC/MADT table %s @ %llx, length 0x%d\n",
-				table->name, (unsigned long long)table->addr, table->length);
+				table->name, (unsigned long long)table->addr, (int)table->length);
 			if (count == 0)
 				first_madt_table = table;
 			else {

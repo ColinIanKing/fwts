@@ -63,10 +63,10 @@ static uint32_t fwts_acpi_find_rsdp_efi(void)
 }
 
 /*
- *  fwts_acpi_rsdp_checksum()
- *	RSDP checksum
+ *  fwts_acpi_checksum()
+ *     table checksum
  */
-static uint8_t fwts_acpi_rsdp_checksum(uint8_t *data, const int length)
+static uint8_t fwts_acpi_checksum(uint8_t *data, const int length)
 {
 	int i;
 	uint8_t checksum = 0;
@@ -132,7 +132,7 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
 		/* Look for RSD PTR string */
 		if (strncmp(rsdp->signature, "RSD PTR ",8) == 0) {
 			int length = (rsdp->revision < 2) ? 20 : 36;
-			if (fwts_acpi_rsdp_checksum(ptr, length) == 0) {
+			if (fwts_acpi_checksum(ptr, length) == 0) {
 				addr = BIOS_START+(ptr - bios);
 				break;
 			}
@@ -335,6 +335,21 @@ static int fwts_acpi_load_tables_from_firmware(void)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_fake_physical_addr()
+ *	Loading tables from file may result in data without an originating
+ *	physical address of the table, so fake a unique 32 bit address for the table.
+ */
+static uint32_t fwts_fake_physical_addr(size_t size)
+{
+	static uint32_t fake_phys_addr = 0xbff00000;
+	uint32_t addr = fake_phys_addr;
+
+	fake_phys_addr += (size + 16);
+
+	return addr;
+}
+
 
 /*
  *  fwts_acpi_load_table_from_acpidump()
@@ -354,8 +369,6 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	if (fscanf(fp, "%15s @ 0x%Lx\n", name, &table_addr) < 2)
 		return NULL;
 
-	*addr = (uint64_t)table_addr;
-
 	/* Pull in 16 bytes at a time */
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		int n;
@@ -372,7 +385,13 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 		memcpy(table + offset, data, n-1);
 	}
 
+	if (table_addr == 0)
+		table_addr = fwts_fake_physical_addr(len);
+
+	/* We may need to fake a physical address if its null */
+	*addr = (uint64_t)(table_addr == 0 ? fwts_fake_physical_addr(len) : table_addr);
 	*size = len;
+
 	return table;
 }
 
@@ -406,6 +425,10 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_acpi_load_table_from_file()
+ *	load table from a raw binary dump
+ */
 static uint8_t *fwts_acpi_load_table_from_file(int fd, int *length)
 {
 	uint8_t *ptr = NULL;
@@ -471,6 +494,156 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_acpi_table_fixable()
+ *	return true if a table can be put into RSDT or XSDT
+ */
+static bool fwts_acpi_table_fixable(fwts_acpi_table_info *table)
+{
+	fwts_acpi_table_header *header;
+
+	if (table == NULL)
+		return false;
+
+	header = (fwts_acpi_table_header *)table->data;
+
+	/* We don't want RSDT or XSDT in the RSDT and XSDT */
+	if (strncmp(header->signature, "RSDT", 4) == 0)
+		return false;
+	if (strncmp(header->signature, "XSDT", 4) == 0)
+		return false;
+
+	return true;
+}
+
+/*
+ *  fwts_acpi_load_tables_fixup()
+ *	tables loaded from file sometimes do not contain the original
+ *	physical address of the tables, so these need faking. Also, some
+ *	poor ACPI dumping implementations fail to save the RSDP, RSDT and
+ *	XSDT, so we need to create fake versions from scratch.
+ */
+static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
+{
+	int i;
+	int j;
+	int count;
+	char *oem_tbl_id = "FWTS    ";
+	fwts_acpi_table_info *table;
+	fwts_acpi_table_rsdp *rsdp = NULL;
+	fwts_acpi_table_rsdt *rsdt = NULL;
+	fwts_acpi_table_xsdt *xsdt = NULL;
+	fwts_acpi_table_fadt *fadt = NULL;
+
+	/* Fetch the OEM Table ID */
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+	if (table) {
+		fadt = (fwts_acpi_table_fadt *)table->data;
+		oem_tbl_id = fadt->header.oem_tbl_id;
+	}
+
+	/* Get RSDP */
+	if (fwts_acpi_find_table(fw, "RSDP", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+	if (table)
+		rsdp = (fwts_acpi_table_rsdp *)table->data;
+
+	/* Get RSDT */
+	if (fwts_acpi_find_table(fw, "RSDT", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+	if (table)
+		rsdt = (fwts_acpi_table_rsdt *)table->data;
+
+	/* Get XSDT */
+	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+	if (table)
+		xsdt = (fwts_acpi_table_xsdt *)table->data;
+
+	/* Figure out how many tables we need to put into RSDT and XSDT */
+	for (count=0,i=0;;i++) {
+		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK)
+			break;
+		if (table == NULL)	/* No more tables */
+			break;
+		if (fwts_acpi_table_fixable(table))
+			count++;
+	}
+
+	/* No RSDT? go and fake one */
+	if (rsdt == NULL) {
+		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint32_t));
+		if ((rsdt = fwts_low_calloc(1, size)) == NULL)
+			return FWTS_ERROR;
+
+		for (i=0,j=0; j<count ;i++)
+			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
+				if (fwts_acpi_table_fixable(table))
+					rsdt->entries[j++] = (uint32_t)table->addr;
+
+		strncpy(rsdt->header.signature, "RSDT", 4);
+		rsdt->header.length = size;
+		rsdt->header.revision = 1;
+		strncpy(rsdt->header.oem_id, "FWTS  ", 6);
+		strncpy(rsdt->header.oem_tbl_id, oem_tbl_id, 8);
+		rsdt->header.oem_revision = 1;
+		strncpy(rsdt->header.creator_id, "FWTS", 4);
+		rsdt->header.creator_revision = 1;
+		rsdt->header.checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdt, size);
+
+		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)fwts_fake_physical_addr(size), size);
+	}
+
+	/* No XSDT? go and fake one */
+	if (xsdt == NULL) {
+		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint64_t));
+		if ((xsdt = fwts_low_calloc(1, size)) == NULL) 
+			return FWTS_ERROR;
+
+		for (i=0,j=0; j<count ;i++)
+			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
+				if (fwts_acpi_table_fixable(table))
+					xsdt->entries[j++] = table->addr;
+
+		strncpy(xsdt->header.signature, "XSDT", 4);
+		xsdt->header.length = size;
+		xsdt->header.revision = 2;
+		strncpy(xsdt->header.oem_id, "FWTS  ", 6);
+		strncpy(xsdt->header.oem_tbl_id, oem_tbl_id, 8);
+		xsdt->header.oem_revision = 1;
+		strncpy(xsdt->header.creator_id, "FWTS", 4);
+		xsdt->header.creator_revision = 1;
+		xsdt->header.checksum = 256 - fwts_acpi_checksum((uint8_t*)xsdt, size);
+
+		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)fwts_fake_physical_addr(size), size);
+	}
+
+	/* No RSDP? go and fake one */
+	if (rsdp == NULL) {
+		size_t size = sizeof(fwts_acpi_table_rsdp);
+		if ((rsdp = fwts_low_calloc(1, size)) == NULL)
+			return FWTS_ERROR;
+
+		strncpy(rsdp->signature, "RSD PTR ", 8);
+		strncpy(rsdp->oem_id, "FWTS  ", 6);
+		rsdp->revision = 2;
+		rsdp->rsdt_address = (unsigned long)rsdt;
+		rsdp->length = sizeof(fwts_acpi_table_rsdp);
+		rsdp->xsdt_address = (unsigned long)xsdt;
+		rsdp->reserved[0] = 0;
+		rsdp->reserved[1] = 0;
+		rsdp->reserved[2] = 0;
+
+		rsdp->checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdp, 20);
+		rsdp->extended_checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdp, sizeof(fwts_acpi_table_rsdp));
+
+		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size), sizeof(fwts_acpi_table_rsdp));
+	}
 	return FWTS_OK;
 }
 
@@ -491,8 +664,13 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 	else
 		ret = FWTS_ERROR_NO_PRIV;
 
-	if (ret == FWTS_OK)
+	if (ret == FWTS_OK) {
 		acpi_tables_loaded = 1;
+
+		/* Loading from file may require table address fixups */
+		if ((fw->acpi_table_path != NULL) || (fw->acpi_table_acpidump_file != NULL))
+			fwts_acpi_load_tables_fixup(fw);
+	}
 
 	return ret;
 }
@@ -536,7 +714,7 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 {
 	int i;
 	int ret;
-	
+
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
 

@@ -136,7 +136,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 {
 	pid_t 	pid;
 	int	fd;
-	int 	len;
+	ssize_t	len;
 	char 	*text;
 	int	ret;
 

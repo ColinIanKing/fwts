@@ -1,3 +1,13 @@
+fwts (0.23.05) oneiric; urgency=low
+
+  * lib: fwts_acpi_tables: fix LP: #784013, cannot load tables.
+  * acpi: apicinstance: fix 64 bit build error
+  * acpi: acpidump: fix 64 bit build error
+  * lib: fwts_pipeio: fix 64 bit build error
+  * lib: fwts_list: tidy up fwts_list_len
+
+ -- Colin King <colin.king@canonical.com>  Tue, 17 May 2011 16:42:00 +0100
+
 fwts (0.23.04) oneiric; urgency=low
 
   * lib: fwts_iasl: fix LP: #781709, segfault on bad input

@@ -59,11 +59,6 @@ static int s3_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int s3_deinit(fwts_framework *fw)
-{
-	return FWTS_OK;
-}
-
 static int s3_do_suspend_resume(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
@@ -386,7 +381,6 @@ static fwts_framework_minor_test s3_tests[] = {
 static fwts_framework_ops s3_ops = {
 	.description = "S3 suspend/resume test.",
 	.init        = s3_init,	
-	.deinit      = s3_deinit,
 	.minor_tests = s3_tests,
 	.options     = s3_options,
 	.options_handler = s3_options_handler,

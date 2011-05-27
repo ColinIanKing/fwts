@@ -51,23 +51,24 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
-	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s4.$(OBJEXT) \
-	ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) acpidump.$(OBJEXT) \
-	acpitables.$(OBJEXT) apicinstance.$(OBJEXT) battery.$(OBJEXT) \
-	brightness.$(OBJEXT) checksum.$(OBJEXT) common.$(OBJEXT) \
-	cstates.$(OBJEXT) dmar.$(OBJEXT) fadt.$(OBJEXT) fan.$(OBJEXT) \
-	mcfg.$(OBJEXT) method.$(OBJEXT) apicedge.$(OBJEXT) \
-	osilinux.$(OBJEXT) lid.$(OBJEXT) powerbutton.$(OBJEXT) \
-	wmi.$(OBJEXT) ebda_region.$(OBJEXT) ebdadump.$(OBJEXT) \
-	mtrr.$(OBJEXT) bios_info.$(OBJEXT) bios32.$(OBJEXT) \
-	hdaaudio.$(OBJEXT) romdump.$(OBJEXT) os2gap.$(OBJEXT) \
-	memmapdump.$(OBJEXT) mpdump.$(OBJEXT) mpcheck.$(OBJEXT) \
-	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
-	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
-	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
-	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
-	oops.$(OBJEXT) uefidump.$(OBJEXT)
+	syntaxcheck.$(OBJEXT) s3.$(OBJEXT) s3power.$(OBJEXT) \
+	s4.$(OBJEXT) ac_adapter.$(OBJEXT) acpiinfo.$(OBJEXT) \
+	acpidump.$(OBJEXT) acpitables.$(OBJEXT) apicinstance.$(OBJEXT) \
+	battery.$(OBJEXT) brightness.$(OBJEXT) checksum.$(OBJEXT) \
+	common.$(OBJEXT) cstates.$(OBJEXT) dmar.$(OBJEXT) \
+	fadt.$(OBJEXT) fan.$(OBJEXT) mcfg.$(OBJEXT) method.$(OBJEXT) \
+	apicedge.$(OBJEXT) osilinux.$(OBJEXT) lid.$(OBJEXT) \
+	powerbutton.$(OBJEXT) wmi.$(OBJEXT) ebda_region.$(OBJEXT) \
+	ebdadump.$(OBJEXT) mtrr.$(OBJEXT) bios_info.$(OBJEXT) \
+	bios32.$(OBJEXT) hdaaudio.$(OBJEXT) romdump.$(OBJEXT) \
+	os2gap.$(OBJEXT) memmapdump.$(OBJEXT) mpdump.$(OBJEXT) \
+	mpcheck.$(OBJEXT) smbios.$(OBJEXT) cmosdump.$(OBJEXT) \
+	dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) crs.$(OBJEXT) \
+	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
+	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
+	nx.$(OBJEXT) msr.$(OBJEXT) microcode.$(OBJEXT) \
+	hotkey.$(OBJEXT) version.$(OBJEXT) oops.$(OBJEXT) \
+	uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -283,6 +284,7 @@ fwts_SOURCES = main.c \
 	acpi/wakealarm/wakealarm.c \
 	acpi/syntaxcheck/syntaxcheck.c \
 	acpi/s3/s3.c \
+	acpi/s3power/s3power.c \
 	acpi/s4/s4.c \
 	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \
@@ -470,6 +472,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/romdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3power.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smbios.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syntaxcheck.Po@am__quote@
@@ -557,6 +560,20 @@ s3.obj: acpi/s3/s3.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s3/s3.c' object='s3.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s3.obj `if test -f 'acpi/s3/s3.c'; then $(CYGPATH_W) 'acpi/s3/s3.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s3/s3.c'; fi`
+
+s3power.o: acpi/s3power/s3power.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT s3power.o -MD -MP -MF $(DEPDIR)/s3power.Tpo -c -o s3power.o `test -f 'acpi/s3power/s3power.c' || echo '$(srcdir)/'`acpi/s3power/s3power.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/s3power.Tpo $(DEPDIR)/s3power.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s3power/s3power.c' object='s3power.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s3power.o `test -f 'acpi/s3power/s3power.c' || echo '$(srcdir)/'`acpi/s3power/s3power.c
+
+s3power.obj: acpi/s3power/s3power.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT s3power.obj -MD -MP -MF $(DEPDIR)/s3power.Tpo -c -o s3power.obj `if test -f 'acpi/s3power/s3power.c'; then $(CYGPATH_W) 'acpi/s3power/s3power.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s3power/s3power.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/s3power.Tpo $(DEPDIR)/s3power.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='acpi/s3power/s3power.c' object='s3power.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o s3power.obj `if test -f 'acpi/s3power/s3power.c'; then $(CYGPATH_W) 'acpi/s3power/s3power.c'; else $(CYGPATH_W) '$(srcdir)/acpi/s3power/s3power.c'; fi`
 
 s4.o: acpi/s4/s4.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT s4.o -MD -MP -MF $(DEPDIR)/s4.Tpo -c -o s4.o `test -f 'acpi/s4/s4.c' || echo '$(srcdir)/'`acpi/s4/s4.c

@@ -14,6 +14,7 @@ fwts_SOURCES = main.c \
 	acpi/wakealarm/wakealarm.c \
 	acpi/syntaxcheck/syntaxcheck.c \
 	acpi/s3/s3.c \
+	acpi/s3power/s3power.c \
 	acpi/s4/s4.c \
 	acpi/ac_adapter/ac_adapter.c \
 	acpi/acpiinfo/acpiinfo.c \

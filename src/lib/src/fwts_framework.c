@@ -603,7 +603,6 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		if (ret == FWTS_ABORTED)  {
 			int aborted = test->ops->total_tests - (fw->current_minor_test_num - 1);
 			fw->current_major_test->results.aborted += aborted;
-			fw->total.aborted += aborted;
 			break;
 		}
 		fwts_framework_minor_test_progress(fw, 100, "");

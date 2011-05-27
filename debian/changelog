@@ -1,3 +1,11 @@
+fwts (0.23.06) oneiric; urgency=low
+
+  * acpi: s3power: measure power loss during S3 suspend.
+  * lib: fwts_framework: fix LP: #789114, incorrect aborted total
+  * acpi: s3: remove redundant deinit
+
+ -- Colin King <colin.king@canonical.com>  Fri, 27 May 2011 15:17:02 +0100
+
 fwts (0.23.05) oneiric; urgency=low
 
   * lib: fwts_acpi_tables: fix LP: #784013, cannot load tables.

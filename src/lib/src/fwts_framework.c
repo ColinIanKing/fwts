@@ -607,10 +607,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 		/* Something went horribly wrong, abort all other tests too */
 		if (ret == FWTS_ABORTED)  {
-			for (; *minor_test->test_func != NULL; minor_test++) {
+			for (; *minor_test->test_func != NULL; minor_test++)
 				fw->current_major_test->results.aborted++;
-				fw->total.aborted++;
-			}
 			break;
 		}
 		fwts_framework_minor_test_progress(fw, 100, "");

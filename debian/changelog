@@ -1,3 +1,13 @@
+fwts (0.23.07) oneiric; urgency=low
+
+  * fix changelog LP bug number formatting
+  * fix incorrect aborted total (LP: #789114)
+  * fix table loading (LP: #784013)
+  * fwts_iasl: fix segfault on bad input (LP: #781709)
+  * acpi: method: fix incorrect sem counts (LP: #744405)
+
+ -- Colin King <colin.king@canonical.com>  Fri, 27 May 2011 16:20:23 +0100
+
 fwts (0.23.06) oneiric; urgency=low
 
   * acpi: s3power: measure power loss during S3 suspend.

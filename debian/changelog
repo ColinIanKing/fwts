@@ -1,3 +1,9 @@
+fwts (0.23.08) oneiric; urgency=low
+
+  * kernel: oops: make oops failures critical (LP: #797649)
+
+ -- Colin King <colin.king@canonical.com>  Wed, 15 Jun 2011 12:08:00 +0100
+
 fwts (0.23.07) oneiric; urgency=low
 
   * fix changelog LP bug number formatting

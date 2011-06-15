@@ -1,3 +1,9 @@
+fwts (0.22.17) natty; urgency=low
+
+  * kernel: oops: make oops failures critical (LP: #797649)
+
+ -- Colin King <colin.king@canonical.com>  Wed, 15 Jun 2011 12:10:50 +0100
+
 fwts (0.22.16) natty; urgency=low
 
   * lib: fwts_framework: fix incorrect aborted total (LP: #789114)

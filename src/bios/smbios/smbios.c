@@ -114,14 +114,14 @@ static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry 
 		    (*(mem+i+1) == 'S') &&
 		    (*(mem+i+2) == 'M') &&
 		    (*(mem+i+3) == '_')) {
-			fwts_smbios_entry *smbios;
+			//fwts_smbios_entry *smbios;
 			uint8_t checksum = 0;
 			int j;
 
 			for (j=i;j<i+16;j++)
 				checksum += *(mem+j);
 
-			smbios = (fwts_smbios_entry*)(mem+i);
+			//smbios = (fwts_smbios_entry*)(mem+i);
 
 			*addr = SMBIOS_REGION_START + i;
 			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios_entry));

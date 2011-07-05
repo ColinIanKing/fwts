@@ -257,62 +257,64 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		return FWTS_ERROR;
 	}
 
-	/* Scan error text from assembly */
-	fwts_list_foreach(item, iasl_errors) {
-		int num;
-		char ch;
-		char *line = fwts_text_list_text(item);
-
-		if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
-			if (item->next != NULL) {
-				char *error_text = fwts_text_list_text(item->next);
-				int iasl_error = (strstr(error_text, "Error") != NULL);
-				int iasl_warning = (strstr(error_text, "Warning") != NULL);
-				int error_code;
-
-				sscanf(error_text, "%*s %d", &error_code);
+	if (iasl_errors) {
+		/* Scan error text from assembly */
+		fwts_list_foreach(item, iasl_errors) {
+			int num;
+			char ch;
+			char *line = fwts_text_list_text(item);
+	
+			if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
+				if (item->next != NULL) {
+					char *error_text = fwts_text_list_text(item->next);
+					int iasl_error = (strstr(error_text, "Error") != NULL);
+					int iasl_warning = (strstr(error_text, "Warning") != NULL);
+					int error_code;
+	
+					sscanf(error_text, "%*s %d", &error_code);
 				
-				/* Valid error or warning, go and report */
-				if (iasl_error || iasl_warning) {
-					char *colon = strstr(line, ":");
-					char *carat = strstr(error_text, "^");
-					char *ptr;
-					int colon_offset = (colon == NULL) ? 0 : colon + 1 - line;
-					int carat_offset = (carat == NULL) ? 0 : carat - error_text;
+					/* Valid error or warning, go and report */
+					if (iasl_error || iasl_warning) {
+						char *colon = strstr(line, ":");
+						char *carat = strstr(error_text, "^");
+						char *ptr;
+						int colon_offset = (colon == NULL) ? 0 : colon + 1 - line;
+						int carat_offset = (carat == NULL) ? 0 : carat - error_text;
 
-					/* trim */
-					fwts_chop_newline(error_text);
+						/* trim */
+						fwts_chop_newline(error_text);
 
-					/* Strip out the ^ from the error message */
-					for (ptr = error_text; *ptr; ptr++)
-						if (*ptr == '^') 
-							*ptr = ' ';
-		
-					/* Look for error message after: "Error:  4042 - " prefix */
-					ptr = strstr(error_text, "-");
-					if (ptr)
-						ptr += 2;
-					else
-						ptr = error_text;	/* Urgh, none found, default */
+						/* Strip out the ^ from the error message */
+						for (ptr = error_text; *ptr; ptr++)
+							if (*ptr == '^') 
+								*ptr = ' ';
 
-					/* Skip over leading white space */
-					while (*ptr == ' ')
-						ptr++;
+						/* Look for error message after: "Error:  4042 - " prefix */
+						ptr = strstr(error_text, "-");
+						if (ptr)
+							ptr += 2;
+						else
+							ptr = error_text;	/* Urgh, none found, default */
 
-					syntaxcheck_dump_code(fw, error_code, 
-						carat_offset - colon_offset, ptr, 
-						iasl_disassembly, num, 8);
-					syntaxcheck_give_advice(fw, error_code);
+						/* Skip over leading white space */
+						while (*ptr == ' ')
+							ptr++;
+
+						syntaxcheck_dump_code(fw, error_code, 
+							carat_offset - colon_offset, ptr, 
+							iasl_disassembly, num, 8);
+						syntaxcheck_give_advice(fw, error_code);
+					}
+					errors += iasl_error;
+					warnings += iasl_warning;
+					item = item->next;
 				}
-				errors += iasl_error;
-				warnings += iasl_warning;
-				item = item->next;
-			}
-			else {
-				fwts_log_info(fw, "%s", line);
-				fwts_log_error(fw,
-					"Could not find parser error message "
-					"(this can happen if iasl segfaults!)");
+				else {
+					fwts_log_info(fw, "%s", line);
+					fwts_log_error(fw,
+						"Could not find parser error message "
+						"(this can happen if iasl segfaults!)");
+				}
 			}
 		}
 	}

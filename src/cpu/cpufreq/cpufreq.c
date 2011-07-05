@@ -357,7 +357,6 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 	char *line;
 	unsigned long Hz;
 	char *c, *c2;
-	int i;
 	unsigned long lowspeed=0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
@@ -365,7 +364,6 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 		return;
 
 	c = line;
-	i = 0;
 	while (c && strlen(c)>1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
@@ -390,7 +388,6 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 	char *line;
 	uint64_t Hz;
 	char *c, *c2;
-	int i;
 	unsigned long highspeed=0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
@@ -398,7 +395,6 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 		return;
 
 	c = line;
-	i = 0;
 	while (c && strlen(c)>1) {
 		c2 = strchr(c, ' ');
 		if (c2) {

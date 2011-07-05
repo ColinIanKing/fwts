@@ -1,3 +1,12 @@
+fwts (0.22.19) natty; urgency=low
+
+  * cpu: cpufreq: remove redundant variable i.
+  * bios: smbios: comment out redundant assigment.
+  * acpi: method: fix ommitted args to method evaluate calls.
+  * lib: fwts_framework: remove redundant var percent.
+
+ -- Colin King <colin.king@canonical.com>  Tue, 5 Jul 2011 18:18:18 +0100
+
 fwts (0.22.18) natty; urgency=low
 
   * acpi: syntaxcheck: fix segfault due to null error list (LP: #805980)

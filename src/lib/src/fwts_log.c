@@ -44,7 +44,7 @@ static char fwts_log_format[256] = "%line %owner ";
  */
 void fwts_log_set_line_width(int width)
 {
-	if ((width >= 80) && (width <= 256))
+	if ((width >= 80) && (width <= 1024))
 		log_line_width = width;
 }
 

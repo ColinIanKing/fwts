@@ -377,15 +377,12 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 
 	/* Feedback required? */
 	if (fw->show_progress) {
-		int percent;
 		char buf[1024];
 		char truncbuf[256];
 
 		snprintf(buf, sizeof(buf), "%s %s",fw->current_minor_test_name, message);
 		fwts_framework_strtrunc(truncbuf, buf, width-9);
 
-		percent = (100 * (fw->current_minor_test_num-1) / fw->current_major_test->ops->total_tests) +
-			  (fw->minor_test_progress / fw->current_major_test->ops->total_tests);
 		fprintf(stderr, "  %-*.*s: %3.0f%%\r", width-9, width-9, truncbuf, progress);
 		fflush(stderr);
 	}

@@ -1104,7 +1104,7 @@ static int method_test_FSL(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 50;
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_FSL", NULL, 0, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_FSL", arg, 1, method_test_NULL_return, NULL);
 }
 
 static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1317,7 +1317,7 @@ static int method_test_DCK(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
-		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DCK", NULL, 0, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DCK", arg, 1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -1336,7 +1336,7 @@ static int method_test_STP(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 0;	/* wake up instantly */
 	
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STP", NULL, 0, method_test_passed_failed_return, "_STP");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STP", arg, 2, method_test_passed_failed_return, "_STP");
 }
 
 static int method_test_STV(fwts_framework *fw)
@@ -1348,7 +1348,7 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 100;	/* timer value */
 	
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STV", NULL, 0, method_test_passed_failed_return, "_STV");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STV", arg, 2, method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)
@@ -1358,7 +1358,7 @@ static int method_test_TIP(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 	
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIP", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIP", arg, 1, method_test_integer_return, NULL);
 }
 
 static int method_test_TIV(fwts_framework *fw)
@@ -1368,7 +1368,7 @@ static int method_test_TIV(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
 	
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIV", NULL, 0, method_test_integer_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIV", arg, 1, method_test_integer_return, NULL);
 }
 
 /* Appendix B, ACPI Extensions for Display Adapters */

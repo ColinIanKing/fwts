@@ -1,3 +1,9 @@
+fwts (0.22.18) natty; urgency=low
+
+  * acpi: syntaxcheck: fix segfault due to null error list (LP: #805980)
+
+ -- Colin King <colin.king@canonical.com>  Tue, 5 Jul 2011 15:53:00 +0100
+
 fwts (0.22.17) natty; urgency=low
 
   * kernel: oops: make oops failures critical (LP: #797649)

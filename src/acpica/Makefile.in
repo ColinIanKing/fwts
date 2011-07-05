@@ -74,11 +74,11 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwtsacpica_la_DEPENDENCIES =
 am_libfwtsacpica_la_OBJECTS = fwts_acpica.lo osunixxf_munged.lo \
-	dbcmds.lo dbdisply.lo dbexec.lo dbfileio.lo dbhistry.lo \
-	dbinput.lo dbstats.lo dbutils.lo dbxface.lo dmbuffer.lo \
-	dmnames.lo dmobject.lo dmopcode.lo dmresrc.lo dmresrcl.lo \
-	dmresrcs.lo dmutils.lo dmwalk.lo dsfield.lo dsinit.lo \
-	dsmethod.lo dsmthdat.lo dsobject.lo dsopcode.lo dsutils.lo \
+	dsopcode_munged.lo dbcmds.lo dbdisply.lo dbexec.lo dbfileio.lo \
+	dbhistry.lo dbinput.lo dbstats.lo dbutils.lo dbxface.lo \
+	dmbuffer.lo dmnames.lo dmobject.lo dmopcode.lo dmresrc.lo \
+	dmresrcl.lo dmresrcs.lo dmutils.lo dmwalk.lo dsfield.lo \
+	dsinit.lo dsmethod.lo dsmthdat.lo dsobject.lo dsutils.lo \
 	dswexec.lo dswload.lo dswscope.lo dswstate.lo evevent.lo \
 	evgpe.lo evgpeblk.lo evgpeinit.lo evgpeutil.lo evxfgpe.lo \
 	evmisc.lo evregion.lo evrgnini.lo evsci.lo evxface.lo \
@@ -251,13 +251,14 @@ ACPICA_COMP = $(ACPICA_SRC)/components
 # -DACPI_EXEC_APP is specific to making ACPICA for the fwts method test
 #
 AM_CPPFLAGS = -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
-BUILT_SOURCES = osunixxf_munged.c
+BUILT_SOURCES = osunixxf_munged.c dsopcode_munged.c
 CLEANFILES = osunixxf_munged.c
 lib_LTLIBRARIES = libfwtsacpica.la
 libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
 	fwts_acpica.c \
 	osunixxf_munged.c \
+	dsopcode_munged.c \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \
@@ -281,7 +282,6 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/dispatcher/dsmethod.c \
 	$(ACPICA_COMP)/dispatcher/dsmthdat.c \
 	$(ACPICA_COMP)/dispatcher/dsobject.c \
-	$(ACPICA_COMP)/dispatcher/dsopcode.c \
 	$(ACPICA_COMP)/dispatcher/dsutils.c \
 	$(ACPICA_COMP)/dispatcher/dswexec.c \
 	$(ACPICA_COMP)/dispatcher/dswload.c \
@@ -501,7 +501,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsmethod.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsmthdat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsobject.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsopcode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsopcode_munged.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswexec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswload.Plo@am__quote@
@@ -801,13 +801,6 @@ dsobject.lo: $(ACPICA_COMP)/dispatcher/dsobject.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMP)/dispatcher/dsobject.c' object='dsobject.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dsobject.lo `test -f '$(ACPICA_COMP)/dispatcher/dsobject.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/dispatcher/dsobject.c
-
-dsopcode.lo: $(ACPICA_COMP)/dispatcher/dsopcode.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dsopcode.lo -MD -MP -MF $(DEPDIR)/dsopcode.Tpo -c -o dsopcode.lo `test -f '$(ACPICA_COMP)/dispatcher/dsopcode.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/dispatcher/dsopcode.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dsopcode.Tpo $(DEPDIR)/dsopcode.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMP)/dispatcher/dsopcode.c' object='dsopcode.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dsopcode.lo `test -f '$(ACPICA_COMP)/dispatcher/dsopcode.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/dispatcher/dsopcode.c
 
 dsutils.lo: $(ACPICA_COMP)/dispatcher/dsutils.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dsutils.lo -MD -MP -MF $(DEPDIR)/dsutils.Tpo -c -o dsutils.lo `test -f '$(ACPICA_COMP)/dispatcher/dsutils.c' || echo '$(srcdir)/'`$(ACPICA_COMP)/dispatcher/dsutils.c
@@ -1842,6 +1835,11 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' | \
 	sed 's/^AcpiOsSignal/__AcpiOsSignal/' \
 	> osunixxf_munged.c
+
+dsopcode_munged.c: $(ACPICA_COMP)/dispatcher/dsopcode.c
+	cat $(ACPICA_COMP)/dispatcher/dsopcode.c | \
+	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0400/' \
+	> dsopcode_munged.c
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

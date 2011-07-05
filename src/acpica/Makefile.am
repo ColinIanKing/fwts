@@ -23,7 +23,12 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	sed 's/^AcpiOsSignal/__AcpiOsSignal/' \
 	> osunixxf_munged.c
 
-BUILT_SOURCES = osunixxf_munged.c
+dsopcode_munged.c: $(ACPICA_COMP)/dispatcher/dsopcode.c
+	cat $(ACPICA_COMP)/dispatcher/dsopcode.c | \
+	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0400/' \
+	> dsopcode_munged.c
+
+BUILT_SOURCES = osunixxf_munged.c dsopcode_munged.c
 
 CLEANFILES = osunixxf_munged.c
 
@@ -32,6 +37,7 @@ libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
 	fwts_acpica.c \
 	osunixxf_munged.c \
+	dsopcode_munged.c \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \
@@ -55,7 +61,6 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/dispatcher/dsmethod.c \
 	$(ACPICA_COMP)/dispatcher/dsmthdat.c \
 	$(ACPICA_COMP)/dispatcher/dsobject.c \
-	$(ACPICA_COMP)/dispatcher/dsopcode.c \
 	$(ACPICA_COMP)/dispatcher/dsutils.c \
 	$(ACPICA_COMP)/dispatcher/dswexec.c \
 	$(ACPICA_COMP)/dispatcher/dswload.c \

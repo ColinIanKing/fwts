@@ -232,7 +232,7 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	if (ACPI_FAILURE(ret) != FWTS_OK) {
 		switch (ret) {
 		case AE_AML_INFINITE_LOOP:
-			fwts_failed_medium(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
+			fwts_warning(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
 			fwts_advice(fw, "This may occur because we are emulating the execution "
 					"in this test environment and cannot handshake with "
 					"the embedded controller or jump to the BIOS via SMIs. "

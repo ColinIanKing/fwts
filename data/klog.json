@@ -699,6 +699,55 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*your BIOS has configured an incorrect mask, fixing it",
+   "advice": "The Memory Type Range Registers (MTRRs) which define memory caching policy are misconfigued by the BIOS. In this case, the mask is incorrectly set and the kernel has detected this and worked around the firmware bug."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*your CPUs had inconsistent fixed MTRR settings",
+   "advice": "The fixed Memory Type Range Registers (MTRRs) which define memory caching policy are not consistent across all CPUs which is a firmware bug. The kernel has worked around this bug, but it may be worth getting the BIOS vendor to fix this."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*your CPUs had inconsistent variable MTRR settings",
+   "advice": "The variable Memory Type Range Registers (MTRRs) which define memory caching policy are not consistent across all CPUs which is a firmware bug. The kernel has worked around this bug, but it may be worth getting the BIOS vendor to fix this."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*your CPUs had inconsistent MTRRdefType settings",
+   "advice": "The Memory Type Range Registers (MTRRs) which define memory caching policy do not have a MTRRdefType consistently set across all CPUs which is a firmware bug. The kernel has worked around this bug, but it may be worth getting the BIOS vendor to fix this."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*base.*is not 4 MiB aligned",
+   "advice": "The Memory Type Range Registers (MTRRs) for Intel PPro CPUs with stepping < 8 must be 4 MiB aligned and not touch 0x70000000 -> 0x7003FFFF. This BIOS misconfiguration and should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITIICAL",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*writable mtrr between 0x70000000 and 0x7003FFFF may hang the CPU",
+   "advice": "The Memory Type Range Registers (MTRRs) for Intel PPro CPUs with stepping < 8 must not touch region 0x70000000 -> 0x7003FFFF. This BIOS misconfiguration may hang the CPU and should be fixed."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*base.*is not aligned on a size.*boundary",
+   "advice": "The Memory Type Range Registers (MTRRs) must be correctly aligned. This BIOS misconfiguration and should be fixed."
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": ".*defines _DOD but not _DOS",

@@ -17,6 +17,7 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	cat  $(ACPICA_OSL)/osunixxf.c | \
 	sed 's/^AcpiOsPrintf/__AcpiOsPrintf/' | \
 	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' | \
+	sed 's/^AcpiOsReadPciConfiguration/__AcpiOsReadPciConfiguration/' | \
 	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
 	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
 	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' | \

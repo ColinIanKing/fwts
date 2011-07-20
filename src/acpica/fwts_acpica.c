@@ -399,6 +399,28 @@ ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 	return AE_OK;
 }
 
+/*
+ *  AcpiOsReadPciConfiguration()
+ *	Override ACPICA AcpiOsReadPciConfiguration to fake PCI reads
+ */
+ACPI_STATUS AcpiOsReadPciConfiguration(ACPI_PCI_ID *pciid, UINT32 reg, UINT64 *value, UINT32 width)
+{
+	switch (width) {
+    		case 8:
+        		*value = 0x00;
+			break;
+		case 16:
+			*value = 0x0000;
+			break;
+		case 32:
+			*value = 0x00000000;
+			break;
+		default:
+			return AE_BAD_PARAMETER;
+	}
+	return AE_OK;
+}
+
 void AeTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTable)
 {
     	if (strncmp(ExistingTable->Signature, ACPI_SIG_DSDT, 4) == 0)

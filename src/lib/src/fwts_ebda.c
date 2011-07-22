@@ -44,7 +44,7 @@ off_t fwts_ebda_get(void)
 }
 
 #else
-off_t ftws_ebda_offset(void)
+off_t fwts_ebda_get(void)
 {
 	return FWTS_NO_EBDA;
 }

@@ -44,7 +44,7 @@ int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 	return FWTS_OK;
 }
 #else
-int fwts_cmos_read(const int offset, uint8_t *value)
+int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 {
 	return FWTS_ERROR;
 }

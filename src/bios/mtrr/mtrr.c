@@ -297,7 +297,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 	}
 
 	if (!found) {
-		fwts_failed_low(fw, "Did not find a BIOS configured MTRR for VGA memory region. ");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Did not find a BIOS configured MTRR for VGA memory region. ");
 		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
 				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
 				"and this will slow the boot speed. "

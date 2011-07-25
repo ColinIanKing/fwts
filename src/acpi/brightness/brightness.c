@@ -38,7 +38,7 @@ static int skip_tests = 0;
 static int brightness_init(fwts_framework *fw)
 {
 	if (!(brightnessdir = opendir(BRIGHTNESS_PATH))) {
-		fwts_failed_low(fw, "No %s directory available: cannot test.", BRIGHTNESS_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", BRIGHTNESS_PATH);
 		return FWTS_ERROR;
 	}
 

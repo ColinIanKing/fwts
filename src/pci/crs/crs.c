@@ -114,7 +114,8 @@ static int crs_test1(fwts_framework *fw)
 						"enable host bridge windows _CRS settings from ACPI.", mon, day, year);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else {
-				fwts_failed_low(fw, "Kernel was booted with pci=use_crs but this may be uncessary as "
+				fwts_failed(fw, LOG_LEVEL_LOW,
+						"Kernel was booted with pci=use_crs but this may be uncessary as "
 						"the BIOS is new enough to support automatic bridge windows configuring using _CRS from ACPI. "
 						"However, the workaround may be necessary because _CRS is incorrect or not implemented in the "
 						"DSDT.");

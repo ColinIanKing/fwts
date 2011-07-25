@@ -62,7 +62,7 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 	        	snprintf(path, sizeof(path), "/sys/devices/system/cpu/%s/microcode/version", entry->d_name);
 			if ((data = fwts_get(path)) == NULL) {
 				if (!warned) {
-					fwts_failed_low(fw,
+					fwts_failed(fw, LOG_LEVEL_LOW,
 						"The kernel does not export microcode version. "
 						"This test needs a 2.6.19-rc1 kernel or later to function");
 					warned++;
@@ -115,7 +115,7 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 							passed++;
 						else {
 							failed++;
-							fwts_failed_low(fw,
+							fwts_failed(fw, LOG_LEVEL_LOW, 
 								"Cpu %s has outdated microcode (version %x while version %x is available)",
 								cpu->cpu, cpu->version, version);
 						}

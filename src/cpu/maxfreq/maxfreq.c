@@ -127,7 +127,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 		
 	if (!(dir = opendir(CPU_FREQ_PATH))) {
-		fwts_failed_low(fw, "No %s directory available: cannot test.", CPU_FREQ_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", CPU_FREQ_PATH);
 		return FWTS_ERROR;
 	}
 

@@ -63,13 +63,13 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line,"ACPI: acpi_ec_space_handler: bit_width is 32, should be")) {
-		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_failed(fw, LOG_LEVEL_LOW, "Embedded controller bit_width is incorrect: %s.", line);
 		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"acpi_ec_space_handler: bit_width should be")) {
-		fwts_failed_low(fw, "Embedded controller bit_width is incorrect: %s.", line);
+		fwts_failed(fw, LOG_LEVEL_LOW, "Embedded controller bit_width is incorrect: %s.", line);
 		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}

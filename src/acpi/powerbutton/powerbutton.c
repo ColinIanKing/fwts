@@ -36,7 +36,7 @@ DIR *power_buttondir;
 static int power_button_init(fwts_framework *fw)
 {
 	if (!(power_buttondir = opendir(POWER_BUTTON_PATH))) {
-		fwts_failed_low(fw, "No %s directory available: cannot test.", POWER_BUTTON_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", POWER_BUTTON_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -84,7 +84,7 @@ static int power_button_test1(fwts_framework *fw)
 	power_button_check_field(fw, "info", "Power Button", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed_low(fw, "Failed to detect a Power Button in power button info field.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Failed to detect a Power Button in power button info field.");
 	else
 		fwts_passed(fw, "Detected a Power Button in a power button info field.");
 

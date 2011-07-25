@@ -36,7 +36,7 @@ DIR *ac_adapterdir;
 static int ac_adapter_init(fwts_framework *fw)
 {
 	if (!(ac_adapterdir = opendir(AC_ADAPTER_PATH))) {
-		fwts_failed_low(fw, "No %s directory available: cannot test.", AC_ADAPTER_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", AC_ADAPTER_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -82,7 +82,7 @@ static int ac_adapter_test1(fwts_framework *fw)
 	ac_adapter_check_field("state", "state:", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed_low(fw, "Failed to detect any state in the ac_adapter state info.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Failed to detect any state in the ac_adapter state info.");
 	else
 		fwts_passed(fw, "Detected a state in the ac_adapter state info.");
 

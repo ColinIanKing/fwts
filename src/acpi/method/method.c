@@ -488,14 +488,14 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -509,21 +509,21 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -582,14 +582,14 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		}
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -603,28 +603,28 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		}
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[7].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Cycle Count */
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {	
-			fwts_failed_low(fw, "_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW, "_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[10].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;

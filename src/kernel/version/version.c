@@ -39,7 +39,7 @@ static int version_test2(fwts_framework *fw)
 
 
 	if ((str = fwts_get("/proc/version")) == NULL)
-		fwts_failed_low(fw,"Cannot get version info from /proc/version");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Cannot get version info from /proc/version");
 	else {
 		fwts_passed(fw, "Kernel Version: %s", str);
 		free(str);
@@ -53,7 +53,7 @@ static int version_test3(fwts_framework *fw)
 
         if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
 	    ((str = fwts_get("/proc/acpi/info")) == NULL))
-		fwts_failed_low(fw,"Cannot get ACPI version info from /sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Cannot get ACPI version info from /sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
 	else {
 		fwts_passed(fw, "ACPI Version: %s", str);
 		free(str);

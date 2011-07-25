@@ -36,7 +36,7 @@ DIR *liddir;
 static int lid_init(fwts_framework *fw)
 {
 	if (!(liddir = opendir(LID_PATH))) {
-		fwts_failed_low(fw, "No %s directory available: cannot test.", LID_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", LID_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -100,7 +100,7 @@ static int lid_test1(fwts_framework *fw)
 	lid_check_field_poll("info", "Lid Switch", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0)) {
-		fwts_failed_low(fw, "Failed to detect a Lid Switch in LID info field.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "Failed to detect a Lid Switch in LID info field.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 	} else
 		fwts_passed(fw, "Detected a Lid Switch in LID info field.");

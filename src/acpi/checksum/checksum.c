@@ -55,7 +55,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 		if (checksum == 0)
 			fwts_passed(fw, "Table %s has correct checksum 0x%x.", table->name, hdr->checksum);
 		else {
-			fwts_failed_low(fw, "Table %s has incorrect checksum, expected 0x%x, got 0x%x.", table->name, 256-checksum, hdr->checksum);
+			fwts_failed(fw, LOG_LEVEL_LOW, "Table %s has incorrect checksum, expected 0x%x, got 0x%x.", table->name, 256-checksum, hdr->checksum);
 		}	fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
 	}
 	return FWTS_OK;

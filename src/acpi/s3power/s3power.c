@@ -211,7 +211,7 @@ static void s3power_difference(fwts_framework *fw, uint32_t before, uint32_t aft
 			} else if (duration < 48.0) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Machine cannot remain suspended for 2 days.");
 			} else if (duration < 60.0) {
-				fwts_failed_low(fw, "Machine cannot remain suspended for 2.5 days.");
+				fwts_failed(fw, LOG_LEVEL_LOW, "Machine cannot remain suspended for 2.5 days.");
 			} else {
 				fwts_passed(fw, "Machine can remain suspended for %5.2f hours.", duration);
 			}

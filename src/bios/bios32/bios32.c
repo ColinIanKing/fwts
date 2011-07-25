@@ -82,7 +82,7 @@ static int bios32_test1(fwts_framework *fw)
 			fwts_log_nl(fw);
 
 			if (bios32->entry_point >= 0x100000) {
-				fwts_failed_high(fw, "Service Directory Entry Point 0x%8.8x is in high memory and cannot be used by the kernel.",
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Service Directory Entry Point 0x%8.8x is in high memory and cannot be used by the kernel.",
 					bios32->entry_point);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
@@ -90,14 +90,14 @@ static int bios32_test1(fwts_framework *fw)
 					bios32->entry_point);
 
 			if (bios32->length != 1) {
-				fwts_failed_high(fw, "Service Directory Length is 0x%8.8x, expected 1 (1 x 16 bytes).",
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Service Directory Length is 0x%8.8x, expected 1 (1 x 16 bytes).",
 					bios32->length);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
 				fwts_passed(fw, "Service Directory Length is 1 (1 x 16 bytes) as expected.");
 
 			if (bios32->revision_level != 0) {
-				fwts_failed_high(fw, "Service Directory Revision is %d, only version 0 is supported by the kernel.",
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Service Directory Revision is %d, only version 0 is supported by the kernel.",
 					bios32->revision_level);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
@@ -105,7 +105,7 @@ static int bios32_test1(fwts_framework *fw)
 					bios32->revision_level);
 
 			if (checksum != 0) {
-				fwts_failed_high(fw, "Service Directory checksum failed.");
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Service Directory checksum failed.");
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
 				fwts_passed(fw, "Service Directory checksum passed.");
@@ -117,7 +117,7 @@ static int bios32_test1(fwts_framework *fw)
 	if (found == 0)
 		fwts_log_info(fw, "Could not find BIOS32 Service Directory.");
 	else if (found > 1) {
-		fwts_failed_high(fw, "Found %d instances of BIOS32 Service Directory, there should only be 1.", found);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Found %d instances of BIOS32 Service Directory, there should only be 1.", found);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 

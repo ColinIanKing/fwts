@@ -155,7 +155,7 @@ static int s4_hibernate(fwts_framework *fw,
 		fwts_hwinfo_free(&hwinfo2);
 
 		if (differences > 0) {
-			fwts_failed_high(fw, "Found %d differences in device configuation during S4 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Found %d differences in device configuation during S4 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}
@@ -190,33 +190,33 @@ static int s4_hibernate(fwts_framework *fw,
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
-		fwts_failed_high(fw, "Failed to freeze user space processes.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
-		fwts_failed_high(fw, "Failed to freeze remaining non-user space processes.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze remaining non-user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") < 1) &&
 	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
-		fwts_failed_high(fw, "Failed to freeze devices.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze devices.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
-		fwts_failed_high(fw, "Failed to allocate memory for hibernate image.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to allocate memory for hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
-		fwts_failed_high(fw, "Failed to restore hibernate image.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to restore hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}

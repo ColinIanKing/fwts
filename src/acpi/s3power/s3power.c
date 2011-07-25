@@ -207,7 +207,7 @@ static void s3power_difference(fwts_framework *fw, uint32_t before, uint32_t aft
 			if (duration < 24.0) {
 				fwts_failed(fw, LOG_LEVEL_CRITICAL, "Machine cannot remain suspended for 1 day.");
 			} else if (duration < 36.0) {
-				fwts_failed_high(fw, "Machine cannot remain suspended for 1.5 days.");
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Machine cannot remain suspended for 1.5 days.");
 			} else if (duration < 48.0) {
 				fwts_failed_medium(fw, "Machine cannot remain suspended for 2 days.");
 			} else if (duration < 60.0) {
@@ -272,7 +272,7 @@ static int s3power_test(fwts_framework *fw)
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	if (duration > (s3power_sleep_delay*2))
-		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", duration);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {

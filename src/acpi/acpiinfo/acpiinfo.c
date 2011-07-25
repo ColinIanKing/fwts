@@ -57,7 +57,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (prevline && strstr(prevline, "*** Error: Return object type is incorrect")) {
-		fwts_failed_high(fw, "Return object type is incorrect: %s.", line);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Return object type is incorrect: %s.", line);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
@@ -95,25 +95,25 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 		char tmp[4096];
 		strncpy(tmp, prevline, sizeof(tmp));
 		tmp[11] = '\0';
-		fwts_failed_high(fw, "ACPI table %s has an invalid checksum.", tmp+6);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "ACPI table %s has an invalid checksum.", tmp+6);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC")) {
-		fwts_failed_high(fw, "8254 timer not connected to IO-APIC: %s.", line);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "8254 timer not connected to IO-APIC: %s.", line);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_APIC);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "ACPI: PCI Interrupt Link") && strstr(line, " disabled and referenced, BIOS bug.")) {
-		fwts_failed_high(fw, "%s", line);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "%s", line);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line, "*** Warning Inconsistent FADT length") && strstr(line, "using FADT V1.0 portion of table")) {
-		fwts_failed_high(fw, "FADT table claims to be of higher revision than it is.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "FADT table claims to be of higher revision than it is.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
@@ -125,7 +125,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line, "MMCONFIG has no entries")) {
-		fwts_failed_high(fw, "The MCFG table has no entries!");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "The MCFG table has no entries!");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
@@ -137,7 +137,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line, "pcie_portdrv_probe->Dev") && strstr(line, "has invalid IRQ. Check vendor BIOS")) {
-		fwts_failed_high(fw, "PCI Express port driver reports an invalid IRQ.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PCI Express port driver reports an invalid IRQ.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}

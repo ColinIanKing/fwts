@@ -100,7 +100,7 @@ static int ac_adapter_test2(fwts_framework *fw)
 	ac_adapter_check_field("state", "on-line", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed_high(fw, "Failed to detect an ac_adapter on-line state.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to detect an ac_adapter on-line state.");
 	else
 		fwts_passed(fw, "Detected ac_adapter on-line state.");
 
@@ -140,10 +140,10 @@ static int ac_adapter_test3(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 	if (events == 0)
-		fwts_failed_high(fw, "Did not detect any ACPI ac-adapter events while waiting for power to be disconnected.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any ACPI ac-adapter events while waiting for power to be disconnected.");
 	else
 		if ((matching == 0) || (not_matching > 0))
-			fwts_failed_high(fw, "Could not detect ac_adapter off-line state.");
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Could not detect ac_adapter off-line state.");
 		else
 			fwts_passed(fw, "Detected ac_adapter off-line state.");
 
@@ -166,10 +166,10 @@ static int ac_adapter_test3(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 	if (events == 0)
-		fwts_failed_high(fw, "Did not detect any ACPI ac-adapter events while waiting for power to be re-connected.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any ACPI ac-adapter events while waiting for power to be re-connected.");
 	else
 		if ((matching == 0) || (not_matching > 0))
-			fwts_failed_high(fw, "Could not detect ac_adapter on-line state.");
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Could not detect ac_adapter on-line state.");
 		else
 			fwts_passed(fw, "Detected ac_adapter on-line state.");
 

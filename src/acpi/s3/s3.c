@@ -130,7 +130,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_free(&hwinfo2);	
 	
 		if (differences > 0) {
-			fwts_failed_high(fw, "Found %d differences in device configuation during S3 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Found %d differences in device configuation during S3 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}
@@ -144,7 +144,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*pm_errors)++;
-		fwts_failed_high(fw, "Unexpected: S3 much longer than expected (%d seconds).", duration);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
 		if (s3_C1E_enabled == -1)

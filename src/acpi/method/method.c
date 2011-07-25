@@ -333,7 +333,7 @@ static int method_name_check(fwts_framework *fw)
 			     (*ptr == '_') ||
 			     (isdigit(*ptr)) ||
 			     (isupper(*ptr))) ) {
-				fwts_failed_high(fw, "Method %s contains an illegal character: '%c'. This should be corrected.", 
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Method %s contains an illegal character: '%c'. This should be corrected.", 
 					fwts_list_data(char *, item), *ptr);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
 				failed++;

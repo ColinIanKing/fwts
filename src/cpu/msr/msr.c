@@ -188,20 +188,20 @@ static int msr_smrr(fwts_framework *fw)
 				uint64_t physbase = val & 0xfffff000;
 				uint64_t type = val & 7;
 				if ((physbase % 0x7fffff) != 0)
-					fwts_failed_high(fw, "SMRR: SMRR_PHYSBASE is NOT on an 8MB boundary: %llx.", (unsigned long long)physbase);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "SMRR: SMRR_PHYSBASE is NOT on an 8MB boundary: %llx.", (unsigned long long)physbase);
 				if (type != 6)
-					fwts_failed_high(fw, "SMRR: SMRR_TYPE is 0x%x, should be 0x6 (Write-Back).", (int)type);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "SMRR: SMRR_TYPE is 0x%x, should be 0x6 (Write-Back).", (int)type);
 			}
 			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
 				uint64_t physmask = val & 0xfffff000;
 				uint64_t valid = (val >> 11) & 1;
 	
 				if (physmask < 0x80000) {
-					fwts_failed_high(fw, "SMRR: region needs to be at least 8MB, SMRR_PHYSMASK = %llx.",
+					fwts_failed(fw, LOG_LEVEL_HIGH, "SMRR: region needs to be at least 8MB, SMRR_PHYSMASK = %llx.",
 						(unsigned long long) physmask);
 				}
 				if (!valid)
-					fwts_failed_high(fw, "SMRR: valid bit is 0, it should be 1 (enabled).");
+					fwts_failed(fw, LOG_LEVEL_HIGH, "SMRR: valid bit is 0, it should be 1 (enabled).");
 			}
 		}
 	} else

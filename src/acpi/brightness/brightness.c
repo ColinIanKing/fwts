@@ -105,7 +105,7 @@ static int brightness_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0)
-					fwts_failed_high(fw, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 				else {
 					fwts_passed(fw, "Maximum brightness for %s is %d which is sane.", entry->d_name, max_brightness);
 					skip_tests = 0;
@@ -115,12 +115,12 @@ static int brightness_test1(fwts_framework *fw)
 							fwts_passed(fw, "Actual brightness for %s is %d which is in range 0..%d.", entry->d_name, actual_brightness, max_brightness);
 						}
 						else
-							fwts_failed_high(fw, "Actual brightness for %s not in range 0..%d.", entry->d_name, max_brightness);
+							fwts_failed(fw, LOG_LEVEL_HIGH, "Actual brightness for %s not in range 0..%d.", entry->d_name, max_brightness);
 					else
-						fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_HIGH, "Actual brightness could not be accessed for %s.", entry->d_name);
 				}
 			} else
-				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
 
@@ -146,7 +146,7 @@ static int brightness_test2(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0) {
-					fwts_failed_high(fw, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 					continue;
 				}
 				
@@ -170,7 +170,7 @@ static int brightness_test2(fwts_framework *fw)
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
 			} else
-				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
 
@@ -194,7 +194,7 @@ static int brightness_test3(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0) {
-					fwts_failed_high(fw, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 					continue;
 				}
 				
@@ -222,7 +222,7 @@ static int brightness_test3(fwts_framework *fw)
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
 			} else
-				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
 
@@ -248,7 +248,7 @@ static int brightness_test4(fwts_framework *fw)
 				int i;
 
 				if (max_brightness <= 0) {
-					fwts_failed_high(fw, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 					continue;
 				}
 
@@ -276,7 +276,7 @@ static int brightness_test4(fwts_framework *fw)
 					set_setting(entry->d_name, "brightness", saved_brightness);
 				}
 			} else
-				fwts_failed_high(fw, "Maximum brightness could not be accessed for %s.", entry->d_name);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Maximum brightness could not be accessed for %s.", entry->d_name);
 		}
 	} while (entry);
 
@@ -322,7 +322,7 @@ static int brightness_test5(fwts_framework *fw)
 		entry = readdir(brightnessdir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) != FWTS_OK) {
-				fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Actual brightness could not be accessed for %s.", entry->d_name);
 			} else {
 				int tmp;
 
@@ -330,16 +330,16 @@ static int brightness_test5(fwts_framework *fw)
 				fwts_printf(fw, "==== Press the brightness UP hotkey for %s ====\n", entry->d_name);
 
 				if (brightness_wait_event(fw) == 0)
-					fwts_failed_high(fw, "Did not detect ACPI hotkey event.");
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect ACPI hotkey event.");
 				else {
 					int new_brightness;
 					if (get_setting(entry->d_name, "actual_brightness", &new_brightness) != FWTS_OK) {
-						fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_HIGH, "Actual brightness could not be accessed for %s.", entry->d_name);
 					} else {
 						if (new_brightness > 0)
 							fwts_passed(fw, "Brightness increased on UP hotkey for %s.", entry->d_name);
 						else
-							fwts_failed_high(fw, "Did not see brightness increased for %s.", entry->d_name);
+							fwts_failed(fw, LOG_LEVEL_HIGH, "Did not see brightness increased for %s.", entry->d_name);
 					}
 				}
 
@@ -349,16 +349,16 @@ static int brightness_test5(fwts_framework *fw)
 				fwts_printf(fw, "==== Press the brightness DOWN hotkey for %s ====\n", entry->d_name);
 
 				if (brightness_wait_event(fw) == 0)
-					fwts_failed_high(fw, "Did not detect ACPI hotkey event.");
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect ACPI hotkey event.");
 				else {
 					int new_brightness;
 					if (get_setting(entry->d_name, "actual_brightness", &new_brightness) != FWTS_OK) {
-						fwts_failed_high(fw, "Actual brightness could not be accessed for %s.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_HIGH, "Actual brightness could not be accessed for %s.", entry->d_name);
 					} else {
 						if (new_brightness < tmp)
 							fwts_passed(fw, "Brightness decreased on DOWN hotkey for %s.", entry->d_name);
 						else
-							fwts_failed_high(fw, "Did not see brightness decrease for %s.", entry->d_name);
+							fwts_failed(fw, LOG_LEVEL_HIGH, "Did not see brightness decrease for %s.", entry->d_name);
 					}
 				}
 			}

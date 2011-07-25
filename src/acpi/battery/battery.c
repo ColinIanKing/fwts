@@ -118,11 +118,11 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 	fwts_gpe_free(gpes_end, gpe_count);
 
 	if (events == 0)
-		fwts_failed_high(fw, "Did not detect any ACPI battery events.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any ACPI battery events.");
 	else
 		fwts_passed(fw, "Detected ACPI battery events.");
 		if (matching == 0)
-			fwts_failed_high(fw, "Could not detect ACPI events for battery %s.", name);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Could not detect ACPI events for battery %s.", name);
 		else
 			fwts_passed(fw, "Detected ACPI event for battery %s.", name);
 

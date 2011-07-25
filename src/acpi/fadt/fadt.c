@@ -103,7 +103,7 @@ static int fadt_test1(fwts_framework *fw)
 		break;
 	default:
 		ioperm(port, width/8, 0);
-		fwts_failed_high(fw, "FADT pm1a register has invalid bit width of %d.", width);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "FADT pm1a register has invalid bit width of %d.", width);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_LENGTH);
 		return FWTS_OK;
 	}
@@ -111,7 +111,7 @@ static int fadt_test1(fwts_framework *fw)
 	if (value & 0x01)
 		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled.");
 	else {
-		fwts_failed_high(fw, "SCI_EN bit in PM1a Control Register Block is not enabled.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SCI_EN bit in PM1a Control Register Block is not enabled.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 

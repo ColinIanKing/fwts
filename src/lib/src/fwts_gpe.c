@@ -164,8 +164,8 @@ void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gp
 	free(deltas);
 	
 	if (sci == 0)
-		fwts_failed_high(fw, "Did not detect any SCI interrupts.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any SCI interrupts.");
 
 	if (gpe == 0)
-		fwts_failed_high(fw, "Did not detect any GPE interrupts.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any GPE interrupts.");
 }

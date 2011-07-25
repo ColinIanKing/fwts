@@ -48,7 +48,7 @@ static int nx_test1(fwts_framework *fw)
 
 	if ((fwts_nx_cpuinfo->x86 == -1) ||
 	    (fwts_nx_cpuinfo->x86_model == -1)) {
-		fwts_failed_high(fw, "No model or family found for this CPU. Please check /proc/cpuinfo.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "No model or family found for this CPU. Please check /proc/cpuinfo.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 		return FWTS_OK;
 	}
@@ -56,7 +56,7 @@ static int nx_test1(fwts_framework *fw)
 	if (((fwts_nx_cpuinfo->x86 == 6)  && (fwts_nx_cpuinfo->x86_model >= 14)) ||
 	    ((fwts_nx_cpuinfo->x86 == 15) && (fwts_nx_cpuinfo->x86_model >= 3))  ||
 	    (fwts_nx_cpuinfo->x86 > 15)) {
-		fwts_failed_high(fw,
+		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"The CPU is family %d, model %d and has NX capabilities but they are not enabled.",
 			fwts_nx_cpuinfo->x86, fwts_nx_cpuinfo->x86_model);
 		fwts_advice(fw,

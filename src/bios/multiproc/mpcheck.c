@@ -72,19 +72,19 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 			if (first_io_apic_id == -1) {
 				first_io_apic_id = cpu_entry->local_apic_id;
 				if (first_io_apic_id != 0) {
-					fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.", n, phys_addr, first_io_apic_id);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.", n, phys_addr, first_io_apic_id);
 					failed = true;
 				}
 			} else {
 				if (cpu_entry->local_apic_id != (first_io_apic_id + n)) {
-					fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, cpu_entry->local_apic_id, first_io_apic_id + n);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, cpu_entry->local_apic_id, first_io_apic_id + n);
 					failed = true;
 				}
 			}
 			/*
 			if ((cpu_entry->local_apic_version != 0x11) &&
 			    (cpu_entry->local_apic_version != 0x14)) {
-				fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) has an invalid Local APIC Version %2.2x, should be 0x11 or 0x14.", n, phys_addr, cpu_entry->local_apic_version);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "CPU Entry %d (@0x%8.8x) has an invalid Local APIC Version %2.2x, should be 0x11 or 0x14.", n, phys_addr, cpu_entry->local_apic_version);
 				failed = true;
 			}
 			*/
@@ -93,7 +93,7 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 
 			if ((cpu_entry->cpu_flags >> 1) & 1) {
 				if (bootstrap_cpu != -1) {
-					fwts_failed_high(fw, "CPU Entry %d (@0x%8.8x) is marked as a boot CPU but CPU entry %d is the first boot CPU.", n, phys_addr, bootstrap_cpu);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "CPU Entry %d (@0x%8.8x) is marked as a boot CPU but CPU entry %d is the first boot CPU.", n, phys_addr, bootstrap_cpu);
 					failed = true;
 				} else 
 					bootstrap_cpu = n;
@@ -103,7 +103,7 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 	}
 
 	if (!usable_cpu_found) {
-		fwts_failed_high(fw, "CPU entries 0..%d were not marked as usable. There should be at least one usable CPU.",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "CPU entries 0..%d were not marked as usable. There should be at least one usable CPU.",
 			n-1);
 		failed = true;
 	}
@@ -156,18 +156,18 @@ static int mpcheck_test_bus_entries(fwts_framework *fw)
 					break;
 			}
 			if (bus_types[i] == NULL) {
-				fwts_failed_high(fw, "Bus Entry %d (@0x%8.8x) has an unrecognised bus type: %6.6s",
+				fwts_failed(fw, LOG_LEVEL_HIGH, "Bus Entry %d (@0x%8.8x) has an unrecognised bus type: %6.6s",
 					n, phys_addr, bus_entry->bus_type);
 			}
 			if (prev_bus_id == -1) {
 				prev_bus_id = bus_entry->bus_id;
 				if (prev_bus_id != 0) {
-					fwts_failed_high(fw, "Bus Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.", n, phys_addr, prev_bus_id);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Bus Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.", n, phys_addr, prev_bus_id);
 					failed = true;
 				}
 			} else {
 				if (bus_entry->bus_id < prev_bus_id) {
-					fwts_failed_high(fw, "Bus Entry %d (@0x%8.8x) has a Bus ID 0x%2.2x and should be greater than 0x%2.2x.", n, phys_addr, bus_entry->bus_id, prev_bus_id);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "Bus Entry %d (@0x%8.8x) has a Bus ID 0x%2.2x and should be greater than 0x%2.2x.", n, phys_addr, bus_entry->bus_id, prev_bus_id);
 					failed = true;
 				}
 			}
@@ -195,7 +195,7 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 			fwts_mp_io_apic_entry *io_apic_entry = fwts_list_data(fwts_mp_io_apic_entry *, entry);
 
 			if (io_apic_entry->address == 0) {
-				fwts_failed_high(fw, "IO APIC Entry %d (@0x%8.8x) has an invalid NULL address, should be non-zero.", n, phys_addr);
+				fwts_failed(fw, LOG_LEVEL_HIGH, "IO APIC Entry %d (@0x%8.8x) has an invalid NULL address, should be non-zero.", n, phys_addr);
 				failed = true;
 			}
 			if (io_apic_entry->flags & 1) {
@@ -204,12 +204,12 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 			if (first_io_apic_id == -1) {
 				first_io_apic_id = io_apic_entry->id;
 				if (first_io_apic_id != (last_cpu_apic_id + 1)) {
-					fwts_failed_high(fw, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, io_apic_entry->id, last_cpu_apic_id + 1);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.", n, phys_addr, io_apic_entry->id, last_cpu_apic_id + 1);
 					failed = true;
 				}
 			} else {
 				if (io_apic_entry->id != (first_io_apic_id + n)) {
-					fwts_failed_high(fw, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x than the previous entry.", n, phys_addr, io_apic_entry->id, first_io_apic_id + n);
+					fwts_failed(fw, LOG_LEVEL_HIGH, "IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x than the previous entry.", n, phys_addr, io_apic_entry->id, first_io_apic_id + n);
 					failed = true;
 				}
 			}
@@ -218,7 +218,7 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 	}
 
 	if (!enabled) {
-		fwts_failed_high(fw, "None of the %d IO APIC entries were enabled, at least one must be enabled.", n);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "None of the %d IO APIC entries were enabled, at least one must be enabled.", n);
 		failed = true;
 	}
 
@@ -269,11 +269,13 @@ static int mpcheck_test_io_interrupt_entries(fwts_framework *fw)
 				fwts_list_data(fwts_mp_io_interrupt_entry *, entry);
 				
 			if (io_interrupt_entry->type > 3) {
-				fwts_failed_high(fw, "IO Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.", n, phys_addr, io_interrupt_entry->type);
+				fwts_failed(fw, LOG_LEVEL_HIGH, 
+					"IO Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.", n, phys_addr, io_interrupt_entry->type);
 				failed = true;
 			}
 			if (!mpcheck_find_io_apic(io_interrupt_entry->destination_io_apic_id)) {
-				fwts_failed_high(fw, "IO Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x which has not been defined.", n, phys_addr, io_interrupt_entry->destination_io_apic_id);
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"IO Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x which has not been defined.", n, phys_addr, io_interrupt_entry->destination_io_apic_id);
 				failed = true;
 			}
 			n++;
@@ -300,12 +302,14 @@ static int mpcheck_test_local_interrupt_entries(fwts_framework *fw)
 				fwts_list_data(fwts_mp_local_interrupt_entry *, entry);
 				
 			if (local_interrupt_entry->type > 3) {
-				fwts_failed_high(fw, "Local Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.", n, phys_addr, local_interrupt_entry->type);
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Local Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.", n, phys_addr, local_interrupt_entry->type);
 				failed = true;
 			}
 #if 0
 			if (!mpcheck_find_io_apic(local_interrupt_entry->destination_local_apic_id)) {
-				fwts_failed_high(fw, "Local Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x which has not been defined.", n, phys_addr, local_interrupt_entry->destination_local_apic_id);
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Local Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x which has not been defined.", n, phys_addr, local_interrupt_entry->destination_local_apic_id);
 				failed = true;
 			}
 #endif

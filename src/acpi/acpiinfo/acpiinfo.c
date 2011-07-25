@@ -119,7 +119,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line, "thermal_get_trip_point: Invalid active threshold")) {
-		fwts_failed_critical(fw, "_AC0 thermal trip point is invalid.");
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "_AC0 thermal trip point is invalid.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_THERMAL);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}

@@ -59,7 +59,7 @@ static int oops_test1(fwts_framework *fw)
 	}
 
 	if (oopses > 0) 	
-		fwts_failed_critical(fw, "Found %d oopses in kernel log.", oopses);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "Found %d oopses in kernel log.", oopses);
 	else
 		fwts_passed(fw, "Found no oopses in kernel log.");
 

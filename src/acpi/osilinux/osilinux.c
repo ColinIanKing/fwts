@@ -42,7 +42,7 @@ static int osilinux_test1(fwts_framework *fw)
 	}
 
 	if (disassembly == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Could not read ACPI DSDT table.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoDSDT", "Could not read ACPI DSDT table.");
 		return FWTS_ERROR;
 	}
 

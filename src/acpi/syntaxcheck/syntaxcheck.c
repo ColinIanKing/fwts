@@ -316,9 +316,11 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	fwts_text_list_free(iasl_errors);
 
 	if (errors > 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "AMLReassemblyErrors",
+			"Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
 	} else if (warnings > 0) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
+		fwts_failed(fw, LOG_LEVEL_LOW, "AMLReassembleWarnings",
+			"Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
 	} else
 		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", tablename, which);
 

@@ -677,6 +677,7 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
  */
 void fwts_framework_log(fwts_framework *fw, 
 	fwts_framework_results result,
+	const char *label,
 	fwts_log_level level,
 	uint32_t *count,
 	const char *fmt, ...)
@@ -705,8 +706,8 @@ void fwts_framework_log(fwts_framework *fw,
 	case FWTS_FRAMEWORK_FAILED:
 		fw->failed_level |= level;
 		fwts_summary_add(fw->current_major_test->name, level, buffer);
-		fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s]: Test %d, %s",
-			str, fwts_log_level_to_str(level), fw->current_minor_test_num, buffer);
+		fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s] %s: Test %d, %s",
+			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num, buffer);
 		break;
 	case FWTS_FRAMEWORK_PASSED:
 	case FWTS_FRAMEWORK_WARNING:

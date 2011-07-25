@@ -52,14 +52,14 @@ static int s4_init(fwts_framework *fw)
 	swap_devs = fwts_file_open_and_read("/proc/swaps");
 	if (fwts_text_list_strstr(swap_devs, "/dev/") == NULL) {
 		fwts_list_free(swap_devs, free);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot run hibernate test - machine appears to have NO swap.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoSwap", "Cannot run hibernate test - machine appears to have NO swap.");
 		return FWTS_ERROR;
 	}
 	fwts_list_free(swap_devs, free);
 
 	if (fwts_wakealarm_test_firing(fw, 1)) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S4 test.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Check if wakealarm works reliably for S4 tests.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS4", "Check if wakealarm works reliably for S4 tests.");
 		return FWTS_ERROR;
 	}
 	
@@ -155,7 +155,7 @@ static int s4_hibernate(fwts_framework *fw,
 		fwts_hwinfo_free(&hwinfo2);
 
 		if (differences > 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Found %d differences in device configuation during S4 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS4", "Found %d differences in device configuation during S4 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}
@@ -173,50 +173,50 @@ static int s4_hibernate(fwts_framework *fw,
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action failed before trying to put the system "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS4", "pm-action failed before trying to put the system "
 				   "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status == 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action tried to put the machine in the requested "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS4", "pm-action tried to put the machine in the requested "
        				   "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status > 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action encountered an error and also failed to "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS4", "pm-action encountered an error and also failed to "
 				   "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze user space processes.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UserSpaceTaskFreeze", "Failed to freeze user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze remaining non-user space processes.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "KernelTaskFreeze", "Failed to freeze remaining non-user space processes.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") < 1) &&
 	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to freeze devices.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceFreeze", "Failed to freeze devices.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to allocate memory for hibernate image.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageAlloc", "Failed to allocate memory for hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Failed to restore hibernate image.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageRestore", "Failed to restore hibernate image.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
@@ -266,7 +266,7 @@ static int s4_test_multiple(fwts_framework *fw)
 				if ((!retried) && (tracing_buffer_size > 4096)) {
 					retried = true;
 
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "TracingBufferTooBig",
 						"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
 						"may cause hibernate to fail. Programs such as ureadahead may have "
 						"set this enable fast boot and not freed up the tracing buffer.", tracing_buffer_size);

@@ -118,11 +118,11 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 	fwts_gpe_free(gpes_end, gpe_count);
 
 	if (events == 0)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any ACPI battery events.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents", "Did not detect any ACPI battery events.");
 	else
 		fwts_passed(fw, "Detected ACPI battery events.");
 		if (matching == 0)
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Could not detect ACPI events for battery %s.", name);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents", "Could not detect ACPI events for battery %s.", name);
 		else
 			fwts_passed(fw, "Detected ACPI event for battery %s.", name);
 
@@ -149,7 +149,7 @@ static void check_charging(fwts_framework *fw, char *dir, char *name)
 		fwts_printf(fw, "Waiting %3.3d/120\r", 120-i);
 		sleep(1);
 	}
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery %s claims it's charging but no charge is added", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotCharging", "Battery %s claims it's charging but no charge is added", name);
 }
 
 static void check_discharging(fwts_framework *fw, char *dir, char *name)
@@ -176,7 +176,7 @@ static void check_discharging(fwts_framework *fw, char *dir, char *name)
 		sleep(1);
 	}
 	fwts_cpu_consume_complete();
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery %s claims it is discharging but no charge is used.", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotDischarging", "Battery %s claims it is discharging but no charge is used.", name);
 }
 
 
@@ -196,7 +196,7 @@ static void do_battery_test(fwts_framework *fw, char *dir, char *name)
 
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery present but undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNoState", "Battery present but undersupported - no state present.");
 		return;
 	}
 

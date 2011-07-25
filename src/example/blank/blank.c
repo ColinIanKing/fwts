@@ -54,7 +54,7 @@ static int example_test1(fwts_framework *fw)
 	/* Log success or failure */
 	fwts_passed(fw, "Test passed, hurrah!");
 	/*
-	fwts_failed(fw, LOG_LEVEL_HIGH, "Test failed!");
+	fwts_failed(fw, LOG_LEVEL_HIGH, "ExampleUniqueTestMessageIdentifier", "Test failed!");
 	*/
 
 	/* Returns:

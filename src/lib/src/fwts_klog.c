@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <pcre.h>
 #include <json/json.h>
+#include <ctype.h>
 
 #include "fwts.h"
 
@@ -183,6 +184,37 @@ int fwts_klog_scan(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+static char *fwts_klog_unique_label(const char *str)
+{
+	static char buffer[1024];
+	const char *src = str;
+	char *dst;
+	int count = 0;
+	int forceupper = 1;
+
+	strcpy(buffer, "Klog");
+	dst = buffer + 4;
+
+	while ((dst < (buffer+sizeof(buffer)-1)) && (count < 4) && (*src)) {
+		if ((*src == '|') || (*src == '/') || (*src == ' ')) {
+			src++;
+			count++;
+			forceupper = 1;
+			continue;
+		}
+		if (!isalnum(*src)) {
+			src++;
+			continue;
+		}
+		*dst++ = forceupper ? toupper(*src) : *src;
+		src++;
+
+		forceupper = 0;
+	}
+	*dst = '\0';
+	return buffer;
+}
+
 void fwts_klog_scan_patterns(fwts_framework *fw,
 	char *line,
 	int  repeated,
@@ -213,7 +245,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_log_info(fw, "Kernel message: %s", line);
 			else {
 				fwts_tag_failed(fw, pattern->tag);
-				fwts_failed(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
+				fwts_failed(fw, pattern->level, fwts_klog_unique_label(pattern->pattern), "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 			}
 			if (repeated)

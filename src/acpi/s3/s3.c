@@ -52,7 +52,7 @@ static int s3_init(fwts_framework *fw)
 	}
 	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Check if wakealarm works reliably for S3 tests.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3", "Check if wakealarm works reliably for S3 tests.");
 		return FWTS_ERROR;
 	}
 
@@ -130,21 +130,21 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_free(&hwinfo2);	
 	
 		if (differences > 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "Found %d differences in device configuation during S3 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS3", "Found %d differences in device configuation during S3 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}
 
 	if (duration < delay) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend", "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Unexpected: S3 much longer than expected (%d seconds).", duration);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend", "Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
 		if (s3_C1E_enabled == -1)
@@ -160,17 +160,17 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action failed before trying to put the system "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3", "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action tried to put the machine in the requested "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3", "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action encountered an error and also failed to "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3", "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
@@ -186,7 +186,7 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Unable to check kernel log for S3 suspend/resume test.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "KlogCheckS3", "Unable to check kernel log for S3 suspend/resume test.");
 		return FWTS_ERROR;
 	}
 

@@ -36,7 +36,7 @@ DIR *power_buttondir;
 static int power_button_init(fwts_framework *fw)
 {
 	if (!(power_buttondir = opendir(POWER_BUTTON_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "No %s directory available: cannot test.", POWER_BUTTON_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoButtonPath", "No %s directory available: cannot test.", POWER_BUTTON_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -84,7 +84,7 @@ static int power_button_test1(fwts_framework *fw)
 	power_button_check_field(fw, "info", "Power Button", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed(fw, LOG_LEVEL_LOW, "Failed to detect a Power Button in power button info field.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoPowerButtonField", "Failed to detect a Power Button in power button info field.");
 	else
 		fwts_passed(fw, "Detected a Power Button in a power button info field.");
 
@@ -119,7 +119,7 @@ static int power_button_test2(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 	if (matching == 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Did not detect any ACPI power buttons events while waiting for power button to be pressed.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NoPowerButtonEvents", "Did not detect any ACPI power buttons events while waiting for power button to be pressed.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
 	} else  {
 		char button[4096];

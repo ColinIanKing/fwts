@@ -208,7 +208,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 		statecount = count;
 	
 	if (statecount != count)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Processor %i is expected to have %i C-states but has %i.", cpu, statecount, count);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoCState", "Processor %i is expected to have %i C-states but has %i.", cpu, statecount, count);
 	else
 		if (firstcpu == -1)
 			firstcpu = cpu;
@@ -227,7 +227,7 @@ static int cstates_test1(fwts_framework *fw)
 			  "if the C-state counter works and if C-state transitions happen.");
 
 	if ((dir = opendir(PROCESSOR_PATH)) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Cannot open %s: /sys not mounted?", PROCESSOR_PATH);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoSysMounted", "Cannot open %s: /sys not mounted?", PROCESSOR_PATH);
 		return FWTS_ERROR;
 	}
 

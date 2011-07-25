@@ -70,7 +70,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		if (strncmp(line, "00: ",4)==0) {
 			if (strcmp(&line[4], compare_line)) {
 				fwts_log_info(fw, "%s is read from MMCONFIG, but traditional gives :\n-%s-\n", &line[4], compare_line);
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCI config space appears to not work");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIConfigSpaceBad", "PCI config space appears to not work");
 			} else
 				fwts_passed(fw, "PCI config space verified");
 
@@ -146,7 +146,7 @@ static int mcfg_test1(fwts_framework *fw)
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
 	if ((int)mcfg_size<0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Invalid MCFG ACPI table size: got %d bytes expecting more", mcfg_size + 36 + 8);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize", "Invalid MCFG ACPI table size: got %d bytes expecting more", mcfg_size + 36 + 8);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw, "MCFG table must be least %d bytes (header size) with multiples of %d"
 				"bytes for each MCFG entry.", 36+8, (int)sizeof(struct mcfg_entry));
@@ -155,12 +155,12 @@ static int mcfg_test1(fwts_framework *fw)
 	nr = mcfg_size / sizeof(struct mcfg_entry);
 
 	if (!nr) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "No MCFG ACPI table entries");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGNoEntries", "No MCFG ACPI table entries");
 		return FWTS_ERROR;
 	}
 
 	if ((nr * sizeof(struct mcfg_entry)) != mcfg_size) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFG table is not a multiple of record size");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize2", "MCFG table is not a multiple of record size");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
@@ -171,7 +171,7 @@ static int mcfg_test1(fwts_framework *fw)
 	table_page = table_ptr = (const uint8_t *)mcfg_table->data;
 
 	if (table_page == NULL) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Invalid MCFG ACPI table");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable", "Invalid MCFG ACPI table");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
@@ -182,14 +182,14 @@ static int mcfg_test1(fwts_framework *fw)
 	firstentry = *table;
 
 	if (memory_map_list == NULL)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot check MCFG mmio space against memory map table: could not read memory map table.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MMapUnreadable", "Cannot check MCFG mmio space against memory map table: could not read memory map table.");
 
 	for (i = 0; i<nr; i++) {
 		fwts_log_info(fw, "Entry address : 0x%x\n", table->low_address);
 
 		if ((memory_map_list != NULL) && (!fwts_memory_map_is_reserved(memory_map_list, table->low_address))) {
 			
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGMMIONotReserved",
 				"MCFG mmio config space at 0x%x is not reserved in the memory map table", table->low_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			fwts_advice(fw, "The PCI Express specification states that the PCI Express configuration space should "

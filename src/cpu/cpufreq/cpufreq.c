@@ -316,7 +316,8 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	}
 
 	if (nrspeeds != speedcount)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Not all processors support the same number of P states.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqPStates",
+			"Not all processors support the same number of P states.");
 
 	if (speedcount<2)
 		return;
@@ -340,9 +341,9 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	/* now check for 1) increasing HZ and 2) increasing speed */
 	for (i=0; i<speedcount-1; i++) {
 		if (freqs[i].Hz == freqs[i+1].Hz && !warned++)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Duplicate frequency reported.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqDupFreq", "Duplicate frequency reported.");
 		if (freqs[i].speed > freqs[i+1].speed)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Supposedly higher frequency is slower on CPU %i!", cpu);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSlowerOnCPU", "Supposedly higher frequency is slower on CPU %i!", cpu);
 		if (freqs[i].Hz > get_claimed_hz(cpu) && !warned_PSS) {
 			warned_PSS = 1;
 			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?", freqs[i].Hz, get_claimed_hz(cpu));
@@ -456,7 +457,7 @@ static void do_sw_all_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALL",
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ALL "
 			"instead?");
@@ -518,7 +519,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANY",
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ANY "
 			"instead?.");
@@ -571,7 +572,7 @@ static void check_sw_any(fwts_framework *fw)
 				lowest_speed(fw, j);
 		newhigh_perf = get_performance(i);
 		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 && once==0 && (high_perf - low_perf > 20)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Processors are set to SW_ANY.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqCPUsSetToSW_ANY", "Processors are set to SW_ANY.");
 			once++;
 			lowest_speed(fw, i);
 		}

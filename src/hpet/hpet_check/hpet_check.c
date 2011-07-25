@@ -69,7 +69,7 @@ static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_lin
 			
 		if (hpet_base_p != 0) {
 			if (hpet_base_p != address_base)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseMismatch",
 			     		"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
 					table,
 			     		(unsigned long)hpet_base_p, (unsigned long)address_base);
@@ -201,13 +201,15 @@ static int hpet_check_test2(fwts_framework *fw)
 	vendor_id = (hpet_id & 0xffff0000) >> 16;
 
 	if (vendor_id == 0xffff)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Invalid Vendor ID: %04x - this should be configured.", vendor_id);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorId",
+			"Invalid Vendor ID: %04x - this should be configured.", vendor_id);
 	else
 		fwts_passed(fw, "Vendor ID looks sane: %04x.", vendor_id);
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Invalid clock period %u, must be non-zero and less than 10^8.", clk_period);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETClockPeriod",
+			"Invalid clock period %u, must be non-zero and less than 10^8.", clk_period);
 	else
 		fwts_passed(fw, "Valid clock period %u.", clk_period);
 

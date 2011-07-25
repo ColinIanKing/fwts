@@ -297,7 +297,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 	}
 
 	if (!found) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "Did not find a BIOS configured MTRR for VGA memory region. ");
+		fwts_failed(fw, LOG_LEVEL_LOW, "MTRRVGA", "Did not find a BIOS configured MTRR for VGA memory region. ");
 		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
 				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
 				"and this will slow the boot speed. "
@@ -427,7 +427,8 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRIncorrectAttr",
+					"Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string(type & type_mustnot));
@@ -442,7 +443,8 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRLackingAttr",
+					"Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string( (type & type_must) ^ type_must));
@@ -543,7 +545,7 @@ static int mtrr_test2(fwts_framework *fw)
 		}
 
 		if (failed)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRCPUsMisconfigured",
 					"It is probable that the BIOS does not set up all the CPUs correctly and "
 					"the kernel has now corrected this misconfiguration.");
 		else
@@ -559,7 +561,7 @@ static int mtrr_test3(fwts_framework *fw)
 	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRFixDramModEnBit",
 						"The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
  						"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
  						"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "

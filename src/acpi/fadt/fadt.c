@@ -73,13 +73,13 @@ static int fadt_test1(fwts_framework *fw)
 		/*  Sanity check sizes with extended address variants */
 		fwts_log_info(fw, "FADT is greater than ACPI version 1.0");
 		if ((uint64_t)port != fadt->x_pm1a_cnt_blk.address) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPM1CNTAddrMismatch",
 				"32 and 64 bit versions of FADT pm1_cnt address do not match (0x%8.8x vs 0x%16.16llx).",
 				port, (unsigned long long int)fadt->x_pm1a_cnt_blk.address);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_ADDRESS);
 		}
 		if (width != fadt->x_pm1a_cnt_blk.register_bit_width) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPM1CNTSizeMismatch",
 				"32 and 64 bit versions of FADT pm1_cnt size do not match (0x%x vs 0x%x).",
 				width, fadt->x_pm1a_cnt_blk.register_bit_width);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_ADDRESS);
@@ -105,7 +105,7 @@ static int fadt_test1(fwts_framework *fw)
 		break;
 	default:
 		ioperm(port, width/8, 0);
-		fwts_failed(fw, LOG_LEVEL_HIGH, "FADT pm1a register has invalid bit width of %d.", width);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTPM1AInvalidWidth", "FADT pm1a register has invalid bit width of %d.", width);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_LENGTH);
 		return FWTS_OK;
 	}
@@ -113,7 +113,7 @@ static int fadt_test1(fwts_framework *fw)
 	if (value & 0x01)
 		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled.");
 	else {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "SCI_EN bit in PM1a Control Register Block is not enabled.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SCI_ENNotEnabled", "SCI_EN bit in PM1a Control Register Block is not enabled.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 

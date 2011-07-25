@@ -48,7 +48,7 @@ static int nx_test1(fwts_framework *fw)
 
 	if ((fwts_nx_cpuinfo->x86 == -1) ||
 	    (fwts_nx_cpuinfo->x86_model == -1)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "No model or family found for this CPU. Please check /proc/cpuinfo.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NXNoCPUModel", "No model or family found for this CPU. Please check /proc/cpuinfo.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 		return FWTS_OK;
 	}
@@ -56,7 +56,7 @@ static int nx_test1(fwts_framework *fw)
 	if (((fwts_nx_cpuinfo->x86 == 6)  && (fwts_nx_cpuinfo->x86_model >= 14)) ||
 	    ((fwts_nx_cpuinfo->x86 == 15) && (fwts_nx_cpuinfo->x86_model >= 3))  ||
 	    (fwts_nx_cpuinfo->x86 > 15)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH,
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NXCapableNotEnabled",
 			"The CPU is family %d, model %d and has NX capabilities but they are not enabled.",
 			fwts_nx_cpuinfo->x86, fwts_nx_cpuinfo->x86_model);
 		fwts_advice(fw,
@@ -98,7 +98,7 @@ static int nx_test2(fwts_framework *fw)
 
 	for (i=0; i<n; i++) {
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot get CPU%d info", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUInfoRead", "Cannot get CPU%d info", i);
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
@@ -106,7 +106,7 @@ static int nx_test2(fwts_framework *fw)
 			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
 		} else {
 			if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUFlagsInconsistent", "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}
@@ -155,7 +155,7 @@ static int nx_test3(fwts_framework *fw)
 			msr_value = val;
 		} else {
 			if ((msr_value & nx_bit) != (val & nx_bit)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUFlagsInconsistent", "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}

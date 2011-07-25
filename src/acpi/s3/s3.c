@@ -160,17 +160,17 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		(*pm_errors)++;
-		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		(*pm_errors)++;
-		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		(*pm_errors)++;
-		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}

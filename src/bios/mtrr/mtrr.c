@@ -559,7 +559,8 @@ static int mtrr_test3(fwts_framework *fw)
 	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
-				fwts_failed_medium(fw, "The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+						"The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
  						"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
  						"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
  						"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "

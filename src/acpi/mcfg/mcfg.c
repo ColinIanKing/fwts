@@ -189,7 +189,8 @@ static int mcfg_test1(fwts_framework *fw)
 
 		if ((memory_map_list != NULL) && (!fwts_memory_map_is_reserved(memory_map_list, table->low_address))) {
 			
-			fwts_failed_medium(fw, "MCFG mmio config space at 0x%x is not reserved in the memory map table", table->low_address);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MCFG mmio config space at 0x%x is not reserved in the memory map table", table->low_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			fwts_advice(fw, "The PCI Express specification states that the PCI Express configuration space should "
 					"be defined in the MCFG table and *maybe* optionally defined in the %s "

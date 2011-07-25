@@ -316,7 +316,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	}
 
 	if (nrspeeds != speedcount)
-		fwts_failed_medium(fw, "Not all processors support the same number of P states.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Not all processors support the same number of P states.");
 
 	if (speedcount<2)
 		return;
@@ -340,9 +340,9 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	/* now check for 1) increasing HZ and 2) increasing speed */
 	for (i=0; i<speedcount-1; i++) {
 		if (freqs[i].Hz == freqs[i+1].Hz && !warned++)
-			fwts_failed_medium(fw, "Duplicate frequency reported.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Duplicate frequency reported.");
 		if (freqs[i].speed > freqs[i+1].speed)
-			fwts_failed_medium(fw, "Supposedly higher frequency is slower on CPU %i!", cpu);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Supposedly higher frequency is slower on CPU %i!", cpu);
 		if (freqs[i].Hz > get_claimed_hz(cpu) && !warned_PSS) {
 			warned_PSS = 1;
 			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?", freqs[i].Hz, get_claimed_hz(cpu));

@@ -213,8 +213,6 @@ void fwts_framework_log(fwts_framework *fw,
 #define fwts_failed(fw, level, args...) \
 	fwts_framework_log(fw, FWTS_FRAMEWORK_FAILED, level, &fw->minor_tests.failed, ## args)
 
-#define fwts_failed_medium(fw, args...)	\
-	fwts_framework_log(fw, FWTS_FRAMEWORK_FAILED, LOG_LEVEL_MEDIUM, &fw->minor_tests.failed, ## args)
 #define fwts_failed_low(fw, args...) \
 	fwts_framework_log(fw, FWTS_FRAMEWORK_FAILED, LOG_LEVEL_LOW, &fw->minor_tests.failed, ## args)
 #define fwts_warning(fw, args...) \

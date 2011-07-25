@@ -465,17 +465,17 @@ static int mpcheck_test_header(fwts_framework *fw)
 	bool failed = false;
 
 	if (strncmp((char*)mp_data.header->signature, FWTS_MP_HEADER_SIGNATURE, 4)) {
-		fwts_failed_medium(fw, "MP header signature should be %s, got %4.4s.",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MP header signature should be %s, got %4.4s.",
 				FWTS_MP_HEADER_SIGNATURE, mp_data.header->signature);
 		failed = true;
 	}
 
 	if ((mp_data.header->spec_rev != 1) && (mp_data.header->spec_rev != 4)) {
-		fwts_failed_medium(fw, "MP header spec revision should be 1 or 4, got %d.", mp_data.header->spec_rev);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MP header spec revision should be 1 or 4, got %d.", mp_data.header->spec_rev);
 		failed = true;
 	}
 	if (mp_data.header->lapic_address == 0) {
-		fwts_failed_medium(fw, "MP header LAPIC address is NULL.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MP header LAPIC address is NULL.");
 		failed = true;
 	}
 	if (!failed)

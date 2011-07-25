@@ -134,7 +134,7 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw, struct acpi_dev_scope *s
 	int dev_type;
 
 	if (scope->length < MIN_SCOPE_LEN) {
-		fwts_failed_medium(fw, "Invalid device scope entry.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Invalid device scope entry.");
 		return FWTS_ERROR;
 	}
 

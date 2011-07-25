@@ -163,7 +163,7 @@ static int brightness_test2(fwts_framework *fw)
 						}
 					}
 					if (failed)
-						fwts_failed_medium(fw, "Actual brightness %d does not match the brightnesss level %d just set for backlight %s.", actual_brightness, i, entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Actual brightness %d does not match the brightnesss level %d just set for backlight %s.", actual_brightness, i, entry->d_name);
 					else
 						fwts_passed(fw, "Actual brightness match the brightnesss level for backlight %s.", entry->d_name);
 					/* Restore */
@@ -208,7 +208,7 @@ static int brightness_test3(fwts_framework *fw)
 					if (ch == 'y' || ch == 'Y')
 						fwts_passed(fw, "Backlight %s set to dim level.", entry->d_name);
 					else
-						fwts_failed_medium(fw, "Backlight %s was NOT set to dim level.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Backlight %s was NOT set to dim level.", entry->d_name);
 
 					fwts_printf(fw, "==== Setting backlight to highest level ====\n");
 					set_setting(entry->d_name, "brightness", max_brightness);
@@ -216,7 +216,7 @@ static int brightness_test3(fwts_framework *fw)
 					if (ch == 'y' || ch == 'Y')
 						fwts_passed(fw, "Backlight %s set to bright level.", entry->d_name);
 					else
-						fwts_failed_medium(fw, "Backlight %s was NOT set to bright level.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Backlight %s was NOT set to bright level.", entry->d_name);
 
 					/* Restore */
 					set_setting(entry->d_name, "brightness", saved_brightness);
@@ -270,7 +270,7 @@ static int brightness_test4(fwts_framework *fw)
 					if (ch == 'y' || ch == 'Y')
 						fwts_passed(fw, "Backlight %s was observed going from dim to bright.", entry->d_name);
 					else
-						fwts_failed_medium(fw, "Backlight %s was NOT observed going from dim to bright.", entry->d_name);
+						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Backlight %s was NOT observed going from dim to bright.", entry->d_name);
 
 					/* Restore */
 					set_setting(entry->d_name, "brightness", saved_brightness);

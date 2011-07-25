@@ -209,7 +209,7 @@ static void s3power_difference(fwts_framework *fw, uint32_t before, uint32_t aft
 			} else if (duration < 36.0) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "Machine cannot remain suspended for 1.5 days.");
 			} else if (duration < 48.0) {
-				fwts_failed_medium(fw, "Machine cannot remain suspended for 2 days.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Machine cannot remain suspended for 2 days.");
 			} else if (duration < 60.0) {
 				fwts_failed_low(fw, "Machine cannot remain suspended for 2.5 days.");
 			} else {
@@ -268,7 +268,7 @@ static int s3power_test(fwts_framework *fw)
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
 	if (duration < s3power_sleep_delay) {
-		fwts_failed_medium(fw, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, s3power_sleep_delay);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, s3power_sleep_delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	if (duration > (s3power_sleep_delay*2))
@@ -276,15 +276,15 @@ static int s3power_test(fwts_framework *fw)
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
-		fwts_failed_medium(fw, "pm-action failed before trying to put the system "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action failed before trying to put the system "
 				     "in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
-		fwts_failed_medium(fw, "pm-action tried to put the machine in the requested "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action tried to put the machine in the requested "
        				     "power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
-		fwts_failed_medium(fw, "pm-action encountered an error and also failed to "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "pm-action encountered an error and also failed to "
 				     "enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}

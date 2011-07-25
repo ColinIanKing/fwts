@@ -213,7 +213,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_log_info(fw, "Kernel message: %s", line);
 			else {
 				fwts_tag_failed(fw, pattern->tag);
-				fwts_failed_level(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
+				fwts_failed(fw, pattern->level, "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 			}
 			if (repeated)

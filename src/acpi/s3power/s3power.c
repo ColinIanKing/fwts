@@ -175,7 +175,7 @@ static int s3power_init(fwts_framework *fw)
 {
 	if (fwts_wakealarm_test_firing(fw, 1) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3power test.");
-		fwts_failed(fw, "Wakealarm does not work reliably for s3power test.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Wakealarm does not work reliably for s3power test.");
 		return FWTS_ABORTED;
 	}
 

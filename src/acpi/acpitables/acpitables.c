@@ -30,13 +30,13 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if ((ecdt->ec_control.address_space_id != 0) &&
             (ecdt->ec_control.address_space_id != 1))
-		fwts_failed(fw, "ECDT EC_CONTROL address space id = %d, "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDT EC_CONTROL address space id = %d, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
 			ecdt->ec_control.address_space_id);
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
             (ecdt->ec_data.address_space_id != 1))
-		fwts_failed(fw, "ECDT EC_CONTROL address space id = %d, "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDT EC_CONTROL address space id = %d, "
 				"should be 0 or 1 (System I/O Space or System Memory Space",
 			ecdt->ec_data.address_space_id);
 }
@@ -48,17 +48,17 @@ static void acpi_table_check_facs(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (table->length < 24) {
 		if ((facs->flags & 2) == 0) {
 			if (facs->firmware_waking_vector == 0)
-				fwts_failed(fw, "FACS: flags indicate 32 bit execution environment "
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACS: flags indicate 32 bit execution environment "
 						"but the 32 bit Firmware Waking Vector is set to zero.");
 		} else {
-			fwts_failed(fw, "FACS: flags indicate a 64 bit execution environment "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACS: flags indicate a 64 bit execution environment "
 					"but the FACS table is not long enough to support 64 bit "
 					"X Firmware Waking Vector.");
 		}
 	}
 	else {
 		if ((facs->flags & 2) && (facs->x_firmware_waking_vector == 0))
-			fwts_failed(fw, "FACS: Flags indicate a 64 bit execution environment "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACS: Flags indicate a 64 bit execution environment "
 					"but the 64 bit X Firmware Waking Vector is set to zero.");
 	}
 }
@@ -68,10 +68,10 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)table->data;
 
 	if (hpet->base_address.address == 0)
-		fwts_failed(fw, "HPET base is 0x000000000000, which is invalid.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPET base is 0x000000000000, which is invalid.");
 	
 	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0)
-		fwts_failed(fw, "HPET PCI Vendor ID is 0x0000, which is invalid.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPET PCI Vendor ID is 0x0000, which is invalid.");
 }
 
 static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -81,18 +81,18 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->firmware_control == 0) {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl == 0) {
-				fwts_failed(fw, "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
 			}
 		} else
-			fwts_failed(fw, "FADT 32 bit FIRMWARE_CONTROL is null.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT 32 bit FIRMWARE_CONTROL is null.");
 	} else {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl != 0) {
-				fwts_failed(fw, "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero. "
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero. "
 						"Section 5.2.9 of the ACPI specification states that if the FIRMWARE_CONTROL is non-zero "
 						"then X_FIRMWARE_CONTROL must be set to zero.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
-					fwts_failed(fw, "FIRMWARE_CONTROL is 0x%x and differs from X_FIRMWARE_CONTROL 0x%llx",
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FIRMWARE_CONTROL is 0x%x and differs from X_FIRMWARE_CONTROL 0x%llx",
 						(unsigned int)fadt->firmware_control, (unsigned long long int)fadt->x_firmware_ctrl);
 				}
 			}
@@ -100,18 +100,18 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 
 	if (fadt->dsdt == 0)
-		fwts_failed(fw, "FADT DSDT address is null.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT DSDT address is null.");
 	if (table->length >= 148) {
 		if (fadt->x_dsdt == 0)
-			fwts_failed(fw, "FADT X_DSDT address is null.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT X_DSDT address is null.");
 		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
-			fwts_failed(fw, "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
 				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
 	}
 
 	
 	if (fadt->sci_int == 0)
-		fwts_failed(fw, "FADT SCI Interrupt is 0x00, should be defined.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT SCI Interrupt is 0x00, should be defined.");
 	if (fadt->smi_cmd == 0) {
 		if ((fadt->acpi_enable == 0) &&
 		    (fadt->acpi_disable == 0) &&
@@ -120,17 +120,18 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		    (fadt->cst_cnt == 0))
 			fwts_warning(fw, "FADT SMI_CMD is 0x00, system appears to not support System Management mode.");
 		else
-			fwts_failed(fw, "FADT SMI_CMD is 0x00, however, one or more of ACPI_ENABLE, ACPI_DISABLE, "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"FADT SMI_CMD is 0x00, however, one or more of ACPI_ENABLE, ACPI_DISABLE, "
 					"S4BIOS_REQ, PSTATE_CNT and CST_CNT are defined which means SMI_CMD should be "
 					"defined otherwise SMI commands cannot be sent.");
 	}
 	
 	if (fadt->pm_tmr_len != 4)
-		fwts_failed(fw, "FADT PM_TMR_LEN is %d, should be 4.", fadt->pm_tmr_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT PM_TMR_LEN is %d, should be 4.", fadt->pm_tmr_len);
 	if (fadt->gpe0_blk_len & 1)
-		fwts_failed(fw, "FADT GPE0_BLK_LEN is %d, should a multiple of 2.", fadt->gpe0_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT GPE0_BLK_LEN is %d, should a multiple of 2.", fadt->gpe0_blk_len);
 	if (fadt->gpe1_blk_len & 1)
-		fwts_failed(fw, "FADT GPE1_BLK_LEN is %d, should a multiple of 2.", fadt->gpe1_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT GPE1_BLK_LEN is %d, should a multiple of 2.", fadt->gpe1_blk_len);
 	if (fadt->p_lvl2_lat > 100)
 		fwts_warning(fw, "FADT P_LVL2_LAT is %d, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
 	if (fadt->p_lvl3_lat > 1000)
@@ -148,7 +149,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&
 		    (fadt->reset_reg.address_space_id != 2))
-			fwts_failed(fw, "FADT RESET_REG was %d, must be System I/O space, System Memory space "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT RESET_REG was %d, must be System I/O space, System Memory space "
 				"or PCI configuration spaces.",
 				fadt->reset_reg.address_space_id);
 
@@ -168,10 +169,10 @@ static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *tabl
 			passed++;
 	}
 	if (!passed)
-		fwts_failed(fw, "RSDP: oem_id does not contain any alpha numeric characters.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDP: oem_id does not contain any alpha numeric characters.");
 
 	if (rsdp->revision > 2)
-		fwts_failed(fw, "RSDP: revision is %d, expected value less than 2.", rsdp->revision);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDP: revision is %d, expected value less than 2.", rsdp->revision);
 }
 
 static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -183,7 +184,7 @@ static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint32_t);
 	for (i=0; i<n; i++)  {
 		if (rsdt->entries[i] == 0)
-			fwts_failed(fw, "RSDT Entry %d is null, should not be non-zero.", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDT Entry %d is null, should not be non-zero.", i);
 	}
 }
 
@@ -192,15 +193,15 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
 	
 	if (sbst->critical_energy_level > sbst->low_energy_level)
-		fwts_failed(fw, "SBST Critical Energy Level (%d) is greater than the Low Energy Level (%d).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBST Critical Energy Level (%d) is greater than the Low Energy Level (%d).",
 			sbst->critical_energy_level, sbst->low_energy_level);
 
 	if (sbst->low_energy_level > sbst->warning_energy_level)
-		fwts_failed(fw, "SBST Low Energy Energy Level (%d) is greater than the Warning Energy Level (%d).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBST Low Energy Energy Level (%d) is greater than the Warning Energy Level (%d).",
 			sbst->low_energy_level, sbst->warning_energy_level);
 
 	if (sbst->warning_energy_level == 0)
-		fwts_failed(fw, "SBST Warning Energy Level is zero, which is probably too low.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBST Warning Energy Level is zero, which is probably too low.");
 }
 
 static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -212,7 +213,7 @@ static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint64_t);
 	for (i=0; i<n; i++)  {
 		if (xsdt->entries[i] == 0)
-			fwts_failed(fw, "XSDT Entry %d is null, should not be non-zero.", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "XSDT Entry %d is null, should not be non-zero.", i);
 	}
 }
 
@@ -224,7 +225,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	int i = 0;
 	
 	if (madt->flags & 0xfffffffe)
-		fwts_failed(fw, "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
 			(unsigned long int)madt->flags);
 
 	data += sizeof(fwts_acpi_table_madt);	
@@ -242,17 +243,17 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 0: {
 				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;
 				if (lapic->flags & 0xfffffffe)
-					fwts_failed(fw, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)lapic->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)lapic->flags);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
 			break;
 		case 1: {
 				fwts_acpi_madt_io_apic *ioapic = (fwts_acpi_madt_io_apic*)data;
 				if (ioapic->io_apic_phys_address == 0)
-					fwts_failed(fw, "MADT IO APIC address is zero, appears not to be defined.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT IO APIC address is zero, appears not to be defined.");
 				/*
 				if (ioapic->global_irq_base == 0)
-					fwts_failed(fw, "MADT IO APIC global IRQ base is zero, appears not to be defined.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT IO APIC global IRQ base is zero, appears not to be defined.");
 				*/
 				skip = sizeof(fwts_acpi_madt_io_apic);
 			}
@@ -260,23 +261,23 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 2: {
 				fwts_acpi_madt_interrupt_override *int_override = (fwts_acpi_madt_interrupt_override*)data;
 				if (int_override->bus != 0)
-					fwts_failed(fw, "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
 				if (int_override->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)int_override->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)int_override->flags);
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
 			break;
 		case 3: {
 				fwts_acpi_madt_nmi *nmi = (fwts_acpi_madt_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
 			break;
 		case 4: {
 				fwts_acpi_madt_local_apic_nmi *nmi = (fwts_acpi_madt_local_apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
@@ -288,7 +289,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 6: {
 				fwts_acpi_madt_io_sapic *sapic = (fwts_acpi_madt_io_sapic*)data;
 				if (sapic->address == 0)
-					fwts_failed(fw, "MADT I/O SAPIC address is zero, appears not to be defined.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADT I/O SAPIC address is zero, appears not to be defined.");
 				skip = sizeof(fwts_acpi_madt_io_sapic);
 			}
 			break;
@@ -300,13 +301,17 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 8: {
 				fwts_acpi_madt_platform_int_source *src = (fwts_acpi_madt_platform_int_source*)data;
 				if (src->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->flags);
 				if (src->type > 3)
-					fwts_failed(fw, "MADT Platform Interrupt Source, type field is %d, should be 1..3.", src->type);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"MADT Platform Interrupt Source, type field is %d, should be 1..3.", src->type);
 				if (src->io_sapic_vector == 0)
-					fwts_failed(fw, "MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");
 				if (src->pis_flags & 0xfffffffe)
-					fwts_failed(fw, "MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->pis_flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->pis_flags);
 				skip = (sizeof(fwts_acpi_madt_platform_int_source));
 			}
 			break;
@@ -316,7 +321,8 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 10: {
 				fwts_acpi_madt_local_x2apic_nmi *nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, "MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;

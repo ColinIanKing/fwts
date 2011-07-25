@@ -149,7 +149,7 @@ static void check_charging(fwts_framework *fw, char *dir, char *name)
 		fwts_printf(fw, "Waiting %3.3d/120\r", 120-i);
 		sleep(1);
 	}
-	fwts_failed(fw, "Battery %s claims it's charging but no charge is added", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery %s claims it's charging but no charge is added", name);
 }
 
 static void check_discharging(fwts_framework *fw, char *dir, char *name)
@@ -176,7 +176,7 @@ static void check_discharging(fwts_framework *fw, char *dir, char *name)
 		sleep(1);
 	}
 	fwts_cpu_consume_complete();
-	fwts_failed(fw, "Battery %s claims it is discharging but no charge is used.", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery %s claims it is discharging but no charge is used.", name);
 }
 
 
@@ -196,7 +196,7 @@ static void do_battery_test(fwts_framework *fw, char *dir, char *name)
 
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_failed(fw, "Battery present but undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Battery present but undersupported - no state present.");
 		return;
 	}
 

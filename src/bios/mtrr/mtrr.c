@@ -427,7 +427,7 @@ static int validate_iomem(fwts_framework *fw)
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string(type & type_mustnot));
@@ -442,7 +442,7 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_failed(fw, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
 					(unsigned long long int)start,
 					(unsigned long long int)end,
 					c2, cache_to_string( (type & type_must) ^ type_must));
@@ -543,7 +543,8 @@ static int mtrr_test2(fwts_framework *fw)
 		}
 
 		if (failed)
-			fwts_failed(fw, "It is probable that the BIOS does not set up all the CPUs correctly and "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+					"It is probable that the BIOS does not set up all the CPUs correctly and "
 					"the kernel has now corrected this misconfiguration.");
 		else
 			fwts_passed(fw, "All processors have the a consistent MTRR setup.");

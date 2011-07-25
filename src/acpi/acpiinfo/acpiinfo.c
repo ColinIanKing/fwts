@@ -50,7 +50,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line, "Disabling IRQ")!=NULL && prevline && strstr(prevline,"acpi_irq")) {
-		fwts_failed(fw, "ACPI interrupt got stuck: level triggered?");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPI interrupt got stuck: level triggered?");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 
 		fwts_log_info_verbatum(fw,"%s", line);
@@ -75,19 +75,19 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SRAT) returned 0!")) {
-		fwts_failed(fw, "SRAT table cannot be found");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SRAT table cannot be found");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
 	if (strstr(line,"Warning: acpi_table_parse(ACPI_SLIT) returned 0!")) {
-		fwts_failed(fw, "SLIT table cannot be found");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SLIT table cannot be found");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 		
 	if (strstr(line, "WARNING: No sibling found for CPU")) {
-		fwts_failed(fw, "Hyperthreading CPU enumeration fails.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Hyperthreading CPU enumeration fails.");
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
 
@@ -131,7 +131,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 
 	if (strstr(line, "MMCONFIG not in low 4GB of memory")) {
-		fwts_failed(fw, "The MCFG table entries are not in the lower 4Gb of RAM.");	
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "The MCFG table entries are not in the lower 4Gb of RAM.");	
 		fwts_tag_failed(fw, FWTS_TAG_BIOS_MMCONFIG);
 		fwts_log_info_verbatum(fw,"%s", line);
 	}
@@ -143,7 +143,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 	}
 		
 	if (strstr(line, "OCHI: BIOS handoff failed (BIOS bug")) {
-		fwts_failed(fw, "OHCI BIOS emulation handoff failed.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "OHCI BIOS emulation handoff failed.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_info_verbatum(fw,"%s", line);
 		fwts_advice(fw, "Generally this means that the EHCI driver was unable to take "
@@ -151,7 +151,7 @@ static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *p
 				"Disabling USB legacy mode in the BIOS may help.");
 	}
 	if (strstr(line, "EHCI: BIOS handoff failed (BIOS bug")) {
-		fwts_failed(fw, "EHCI BIOS emulation handoff failed.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "EHCI BIOS emulation handoff failed.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_info_verbatum(fw,"%s", line);
 		fwts_advice(fw, "Generally this means that the EHCI driver was unable to take "

@@ -52,14 +52,14 @@ static int s4_init(fwts_framework *fw)
 	swap_devs = fwts_file_open_and_read("/proc/swaps");
 	if (fwts_text_list_strstr(swap_devs, "/dev/") == NULL) {
 		fwts_list_free(swap_devs, free);
-		fwts_failed(fw, "Cannot run hibernate test - machine appears to have NO swap.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot run hibernate test - machine appears to have NO swap.");
 		return FWTS_ERROR;
 	}
 	fwts_list_free(swap_devs, free);
 
 	if (fwts_wakealarm_test_firing(fw, 1)) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S4 test.");
-		fwts_failed(fw, "Check if wakealarm works reliably for S4 tests.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Check if wakealarm works reliably for S4 tests.");
 		return FWTS_ERROR;
 	}
 	

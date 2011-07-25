@@ -36,7 +36,7 @@ static int wakealarm_test1(fwts_framework *fw)
 	if (stat(wkalarm, &buf) == 0)
 		fwts_passed(fw, WAKEALARM " found.");
 	else
-		fwts_failed(fw, "Could not find " WAKEALARM ".");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Could not find " WAKEALARM ".");
 
 	return FWTS_OK;
 }
@@ -45,7 +45,7 @@ static int wakealarm_test2(fwts_framework *fw)
 {
 	fwts_log_info(fw, "Trigger wakealarm for 1 seconds in the future.");
 	if (fwts_wakealarm_trigger(fw, 1)) {
-		fwts_failed(fw, "RTC wakealarm did not trigger.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RTC wakealarm did not trigger.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		return FWTS_OK;
 	}
@@ -61,14 +61,14 @@ static int wakealarm_test3(fwts_framework *fw)
 
 	ret = fwts_wakealarm_test_firing(fw, 2);
 	if (ret < 0) {
-		fwts_failed(fw, "Failed to trigger and fire wakealarm.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Failed to trigger and fire wakealarm.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		return FWTS_ERROR;	/* Really went wrong */
 	}
 	if (ret == 0)
 		fwts_passed(fw, "RTC wakealarm triggered and fired successfully.");
 	else {
-		fwts_failed(fw, "RTC wakealarm was triggered but did not fire.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RTC wakealarm was triggered but did not fire.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 		
@@ -84,12 +84,12 @@ static int wakealarm_test4(fwts_framework *fw)
 		fwts_log_info(fw, "Trigger wakealarm for %d seconds in the future.", i);
 		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {
-			fwts_failed(fw, "Failed to trigger and fire wakealarm.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Failed to trigger and fire wakealarm.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			return FWTS_ERROR;	/* Really went wrong */
 		}
 		if (ret != 0) {
-			fwts_failed(fw, "RTC wakealarm was triggered but did not fire.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "RTC wakealarm was triggered but did not fire.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed++;
 		}

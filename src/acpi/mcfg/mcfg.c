@@ -70,7 +70,7 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		if (strncmp(line, "00: ",4)==0) {
 			if (strcmp(&line[4], compare_line)) {
 				fwts_log_info(fw, "%s is read from MMCONFIG, but traditional gives :\n-%s-\n", &line[4], compare_line);
-				fwts_failed(fw, "PCI config space appears to not work");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCI config space appears to not work");
 			} else
 				fwts_passed(fw, "PCI config space verified");
 
@@ -155,7 +155,7 @@ static int mcfg_test1(fwts_framework *fw)
 	nr = mcfg_size / sizeof(struct mcfg_entry);
 
 	if (!nr) {
-		fwts_failed(fw, "No MCFG ACPI table entries");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "No MCFG ACPI table entries");
 		return FWTS_ERROR;
 	}
 
@@ -182,7 +182,7 @@ static int mcfg_test1(fwts_framework *fw)
 	firstentry = *table;
 
 	if (memory_map_list == NULL)
-		fwts_failed(fw, "Cannot check MCFG mmio space against memory map table: could not read memory map table.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot check MCFG mmio space against memory map table: could not read memory map table.");
 
 	for (i = 0; i<nr; i++) {
 		fwts_log_info(fw, "Entry address : 0x%x\n", table->low_address);

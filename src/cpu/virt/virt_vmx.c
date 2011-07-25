@@ -78,7 +78,7 @@ void virt_check_vmx(fwts_framework *fw)
 			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");
 			break;
 		case 1:
-			fwts_failed(fw, "Virtualization extensions supported but disabled by BIOS.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Virtualization extensions supported but disabled by BIOS.");
 			break;
 		default:
 			fwts_log_error(fw, "Virtualization extensions check failed - cannot read msr.");

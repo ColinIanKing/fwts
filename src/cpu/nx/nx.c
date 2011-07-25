@@ -98,7 +98,7 @@ static int nx_test2(fwts_framework *fw)
 
 	for (i=0; i<n; i++) {
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
-			fwts_failed(fw, "Cannot get CPU%d info", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot get CPU%d info", i);
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
@@ -106,7 +106,7 @@ static int nx_test2(fwts_framework *fw)
 			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
 		} else {
 			if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
-				fwts_failed(fw, "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}
@@ -155,7 +155,7 @@ static int nx_test3(fwts_framework *fw)
 			msr_value = val;
 		} else {
 			if ((msr_value & nx_bit) != (val & nx_bit)) {
-				fwts_failed(fw, "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}

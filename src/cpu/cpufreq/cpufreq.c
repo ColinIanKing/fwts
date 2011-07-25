@@ -456,7 +456,7 @@ static void do_sw_all_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw,
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ALL "
 			"instead?");
@@ -518,7 +518,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw,
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ANY "
 			"instead?.");
@@ -571,7 +571,7 @@ static void check_sw_any(fwts_framework *fw)
 				lowest_speed(fw, j);
 		newhigh_perf = get_performance(i);
 		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 && once==0 && (high_perf - low_perf > 20)) {
-			fwts_failed(fw, "Processors are set to SW_ANY.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Processors are set to SW_ANY.");
 			once++;
 			lowest_speed(fw, i);
 		}

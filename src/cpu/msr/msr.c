@@ -113,7 +113,7 @@ static int msr_consistent_check(fwts_framework *fw,
 	}
 
 	if (inconsistent_count > 0) {
-		fwts_failed_level(fw, level, "MSR %s (0x%x) has %d inconsistent values across %d CPUs for (shift: %d mask: 0x%llx).",
+		fwts_failed(fw, level, "MSR %s (0x%x) has %d inconsistent values across %d CPUs for (shift: %d mask: 0x%llx).",
 			msr_name, (int)msr,
 			inconsistent_count, ncpus, shift,
 			(unsigned long long)mask);

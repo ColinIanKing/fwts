@@ -139,7 +139,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 		} else if (info->flags & FWTS_WMI_EVENT) {
 			fwts_log_info(fw, "Found WMI Event, Notifier ID: 0x%2.2x, GUID: %s, Instance 0x%2.2x", info->notify_id, guidstr, info->instance);
 			if (known == NULL) {
-				fwts_failed(fw, "GUID %s is unknown to the kernel, a driver may need to be implemented for this GUID.", guidstr);		
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "GUID %s is unknown to the kernel, a driver may need to be implemented for this GUID.", guidstr);		
 				*result = true;
 				if (!advice_given) {
 					advice_given = 1;

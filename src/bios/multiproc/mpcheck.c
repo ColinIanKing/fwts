@@ -333,15 +333,18 @@ static int mpcheck_test_sys_addr_entries(fwts_framework *fw)
 				fwts_list_data(fwts_mp_system_address_space_entry *, entry);
 
 			if (!mpcheck_find_bus(sys_addr_entry->bus_id, 0)) {
-				fwts_failed(fw, "System Address Space Mapping Entry %d (@0x%8.8x) has an Bus ID 0x%2.2x that is not defined in any of the Bus Entries.", n, phys_addr, sys_addr_entry->bus_id);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, 
+					"System Address Space Mapping Entry %d (@0x%8.8x) has an Bus ID 0x%2.2x that is not defined in any of the Bus Entries.", n, phys_addr, sys_addr_entry->bus_id);
 				failed = true;
 			}
 			if (sys_addr_entry->address_type > 3) {
-				fwts_failed(fw, "System Address Space Mapping Entry %d (@0x%8.8x) has an incorrect Address Type: %d, should be 0..3.", n, phys_addr, sys_addr_entry->address_type);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"System Address Space Mapping Entry %d (@0x%8.8x) has an incorrect Address Type: %d, should be 0..3.", n, phys_addr, sys_addr_entry->address_type);
 				failed = true;
 			}
 			if (sys_addr_entry->address_length == 0) {
-				fwts_failed(fw, "System Address Space Mapping Entry %d (@0x%8.8x) has an zero sized Address Length.", n, phys_addr);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"System Address Space Mapping Entry %d (@0x%8.8x) has an zero sized Address Length.", n, phys_addr);
 				failed = true;
 			}
 			n++;
@@ -367,12 +370,14 @@ static int mpcheck_test_bus_hierarchy_entries(fwts_framework *fw)
 			fwts_mp_bus_hierarchy_entry *bus_hierarchy_entry = 
 				fwts_list_data(fwts_mp_bus_hierarchy_entry *, entry);
 			if (bus_hierarchy_entry->length != 8) {
-				fwts_failed(fw, "Bus Hierarchy Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Bus Hierarchy Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
 					n, phys_addr, bus_hierarchy_entry->length);
 				failed = true;
 			}
 			if (!mpcheck_find_bus(bus_hierarchy_entry->parent_bus, 0)) {
-				fwts_failed(fw, "Bus Hierarchy Entry %d (@x%8.8x) did not have parents that connected to a top level Bus entry.",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Bus Hierarchy Entry %d (@x%8.8x) did not have parents that connected to a top level Bus entry.",
 					n, phys_addr);
 				failed = true;
 			}
@@ -400,12 +405,14 @@ static int mpcheck_test_compat_bus_address_space_entries(fwts_framework *fw)
 				fwts_list_data(fwts_mp_compat_bus_address_space_entry*, entry);
 
 			if (compat_bus_entry->length != 8) {
-				fwts_failed(fw, "Compatible Bus Address Space Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Compatible Bus Address Space Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
 					n, phys_addr, compat_bus_entry->length);
 				failed = true;
 			}
 			if (compat_bus_entry->range_list > 1) {
-				fwts_failed(fw, "Compatible Bus Address Space Entry %d (@x%8.8x) Range List was 0x%2.2x, it should be 0x00 or 0x01.",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Compatible Bus Address Space Entry %d (@x%8.8x) Range List was 0x%2.2x, it should be 0x00 or 0x01.",
 					n, phys_addr, compat_bus_entry->range_list);
 				failed = true;
 			}

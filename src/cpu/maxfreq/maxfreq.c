@@ -142,7 +142,7 @@ static int maxfreq_test1(fwts_framework *fw)
 				int maxfreq = maxfreq_max(data);
 				int cpunum = atoi(entry->d_name + 3);
 				if (maxfreq == -1) {
-					fwts_failed(fw, "Cannot read cpu frequency from %s for CPU %s\n", CPU_FREQ_PATH, entry->d_name);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Cannot read cpu frequency from %s for CPU %s\n", CPU_FREQ_PATH, entry->d_name);
 					failed++;
 				} else {
 					double maxfreq_ghz = (double)maxfreq/1000000.0;
@@ -150,7 +150,7 @@ static int maxfreq_test1(fwts_framework *fw)
 
 					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
 						failed++;
-						fwts_failed(fw, "Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n",
+						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n",
 							maxfreq_ghz, cpufreq_ghz);
 						if (!advice)  {
 							advice++;

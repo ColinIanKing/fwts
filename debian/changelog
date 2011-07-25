@@ -1,3 +1,17 @@
+fwts (0.23.12) oneiric; urgency=low
+
+  * lib + tests: add unique test label that identifies each failure test.
+  * lib + tests: replace fwts_failed_low with fwts_failed.
+  * lib + tests: replace fwts_failed_medium with fwts_failed.
+  * lib + tests: replace fwts_failed_high with fwts_failed.
+  * lib + tests: replace fwts_failed_critical with fwts_failed.
+  * lib: remove fwts_failed_level macro
+  * lib + tests: fwts_failed now includes log level.
+  * lib: fix ARM FTBFS (LP: #814745)
+  * apcica lib: fake PCI config reads (LP: #813376)
+
+ -- Colin King <colin.king@canonical.com>  Mon, 25 Jul 2011 14:54:44 +0100
+
 fwts (0.23.11) oneiric; urgency=low
 
   * data: klog.json: add 7 more MTRR BIOS misconfiguration log checks.

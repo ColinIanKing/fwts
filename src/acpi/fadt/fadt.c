@@ -61,7 +61,7 @@ static int fadt_test1(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	fwts_log_info(fw, "FADT Preferred PM Profile: %d (%s)\n",
+	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
 		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
 	

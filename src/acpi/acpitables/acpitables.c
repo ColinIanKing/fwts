@@ -30,13 +30,13 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if ((ecdt->ec_control.address_space_id != 0) &&
             (ecdt->ec_control.address_space_id != 1))
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %d, "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
 			ecdt->ec_control.address_space_id);
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
             (ecdt->ec_data.address_space_id != 1))
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID", "ECDT EC_CONTROL address space id = %d, "
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
 			ecdt->ec_data.address_space_id);
 }
@@ -127,15 +127,15 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 	
 	if (fadt->pm_tmr_len != 4)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN", "FADT PM_TMR_LEN is %d, should be 4.", fadt->pm_tmr_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN", "FADT PM_TMR_LEN is %hhu, should be 4.", fadt->pm_tmr_len);
 	if (fadt->gpe0_blk_len & 1)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %d, should a multiple of 2.", fadt->gpe0_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %hhu, should a multiple of 2.", (int)fadt->gpe0_blk_len);
 	if (fadt->gpe1_blk_len & 1)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPE1BLKLEN", "FADT GPE1_BLK_LEN is %d, should a multiple of 2.", fadt->gpe1_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPE1BLKLEN", "FADT GPE1_BLK_LEN is %hhu, should a multiple of 2.", fadt->gpe1_blk_len);
 	if (fadt->p_lvl2_lat > 100)
-		fwts_warning(fw, "FADT P_LVL2_LAT is %d, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
+		fwts_warning(fw, "FADT P_LVL2_LAT is %hu, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
 	if (fadt->p_lvl3_lat > 1000)
-		fwts_warning(fw, "FADT P_LVL3_LAT is %d, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl3_lat);
+		fwts_warning(fw, "FADT P_LVL3_LAT is %hu, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl3_lat);
 	/*
 	if (fadt->day_alrm == 0)
 		fwts_warning(fw, "FADT DAY_ALRM is zero, OS will not be able to program day of month alarm.");
@@ -149,7 +149,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&
 		    (fadt->reset_reg.address_space_id != 2))
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG", "FADT RESET_REG was %d, must be System I/O space, System Memory space "
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG", "FADT RESET_REG was %hhu, must be System I/O space, System Memory space "
 				"or PCI configuration spaces.",
 				fadt->reset_reg.address_space_id);
 
@@ -172,7 +172,7 @@ static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *tabl
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadOEMId", "RSDP: oem_id does not contain any alpha numeric characters.");
 
 	if (rsdp->revision > 2)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %d, expected value less than 2.", rsdp->revision);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %hhu, expected value less than 2.", rsdp->revision);
 }
 
 static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -193,11 +193,11 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
 	
 	if (sbst->critical_energy_level > sbst->low_energy_level)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1", "SBST Critical Energy Level (%d) is greater than the Low Energy Level (%d).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1", "SBST Critical Energy Level (%u) is greater than the Low Energy Level (%u).",
 			sbst->critical_energy_level, sbst->low_energy_level);
 
 	if (sbst->low_energy_level > sbst->warning_energy_level)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2", "SBST Low Energy Energy Level (%d) is greater than the Warning Energy Level (%d).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2", "SBST Low Energy Energy Level (%u) is greater than the Warning Energy Level (%u).",
 			sbst->low_energy_level, sbst->warning_energy_level);
 
 	if (sbst->warning_energy_level == 0)
@@ -305,7 +305,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 						"MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->flags);
 				if (src->type > 3)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQType",
-						"MADT Platform Interrupt Source, type field is %d, should be 1..3.", src->type);
+						"MADT Platform Interrupt Source, type field is %hhu, should be 1..3.", src->type);
 				if (src->io_sapic_vector == 0)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQIOSAPICVector",
 						"MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");

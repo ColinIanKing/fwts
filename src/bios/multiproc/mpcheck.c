@@ -355,7 +355,7 @@ static int mpcheck_test_sys_addr_entries(fwts_framework *fw)
 			}
 			if (sys_addr_entry->address_type > 3) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MPSysAddrSpaceType",
-					"System Address Space Mapping Entry %d (@0x%8.8x) has an incorrect Address Type: %d, should be 0..3.", n, phys_addr, sys_addr_entry->address_type);
+					"System Address Space Mapping Entry %d (@0x%8.8x) has an incorrect Address Type: %hhu, should be 0..3.", n, phys_addr, sys_addr_entry->address_type);
 				failed = true;
 			}
 			if (sys_addr_entry->address_length == 0) {
@@ -485,7 +485,7 @@ static int mpcheck_test_header(fwts_framework *fw)
 
 	if ((mp_data.header->spec_rev != 1) && (mp_data.header->spec_rev != 4)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MPHeaderRevision",
-		"MP header spec revision should be 1 or 4, got %d.", mp_data.header->spec_rev);
+		"MP header spec revision should be 1 or 4, got %hhu.", mp_data.header->spec_rev);
 		failed = true;
 	}
 	if (mp_data.header->lapic_address == 0) {

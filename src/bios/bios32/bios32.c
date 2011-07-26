@@ -75,10 +75,10 @@ static int bios32_test1(fwts_framework *fw)
 
 			fwts_log_info(fw, "Found BIOS32 Service Directory at 0x%8.8x", BIOS32_SD_REGION_START+i);
 			fwts_log_info_verbatum(fw, "  Signature  : %4.4s", bios32->signature);
-			fwts_log_info_verbatum(fw, "  Entry Point: %8.8x", bios32->entry_point);
-			fwts_log_info_verbatum(fw, "  Revsion    : %2.2x", bios32->revision_level);
-			fwts_log_info_verbatum(fw, "  Length     : %2.2x", bios32->length);
-			fwts_log_info_verbatum(fw, "  Checksum   : %2.2x", bios32->checksum);
+			fwts_log_info_verbatum(fw, "  Entry Point: 0x%8.8x", bios32->entry_point);
+			fwts_log_info_verbatum(fw, "  Revsion    : 0x%2.2x", bios32->revision_level);
+			fwts_log_info_verbatum(fw, "  Length     : 0x%2.2x", bios32->length);
+			fwts_log_info_verbatum(fw, "  Checksum   : 0x%2.2x", bios32->checksum);
 			fwts_log_nl(fw);
 
 			if (bios32->entry_point >= 0x100000) {
@@ -100,11 +100,11 @@ static int bios32_test1(fwts_framework *fw)
 
 			if (bios32->revision_level != 0) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "BIOS32SrvDirRevision",
-					"Service Directory Revision is %d, only version 0 is supported by the kernel.",
+					"Service Directory Revision is 0x%2.2x, only version 0 is supported by the kernel.",
 					bios32->revision_level);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
-				fwts_passed(fw, "Service Directory Revision is %d and is supported by the kernel.",
+				fwts_passed(fw, "Service Directory Revision is 0x%2.2x and is supported by the kernel.",
 					bios32->revision_level);
 
 			if (checksum != 0) {

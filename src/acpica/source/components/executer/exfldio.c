@@ -993,6 +993,8 @@ AcpiExInsertIntoField (
     }
 
     AccessBitWidth = ACPI_MUL_8 (ObjDesc->CommonField.AccessByteWidth);
+    if (AccessBitWidth == 0) 
+        return_ACPI_STATUS (AE_ERROR);
 
     /*
      * Create the bitmasks used for bit insertion.

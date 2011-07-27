@@ -179,7 +179,6 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 	ret = FWTS_OK;
 
 fail_put:
-	json_object_put(syntaxcheck_table);
 	json_object_put(syntaxcheck_objs);
 	
 	return ret;

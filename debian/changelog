@@ -1,3 +1,21 @@
+fwts (0.23.13) oneiric; urgency=low
+
+  * lib + method test: better handling of object eval errors. (LP: #816877)
+  * apci: method: detect zero sized access bit width (LP: #816877)
+  * acpi: method: check for NULL _DDC and _UID object returns.
+  * acpi: method: only derefernce non-null _DOD objects (LP: #816824)
+  * lib: acpica: make hash unsigned int (LP: #816819)
+  * acpi: syntaxcheck: don't erroneously put syntaxcheck_table.
+  * cmosdump: print drive info with %hhu and pluralise.
+  * mpcheck: print uint8_t values with %hhu
+  * mtrr: print entry reg as uint8_t.
+  * bios32: print bios32 values in hex.
+  * fadt: ensure we print out preferred_pm_profile as 8 bit int.
+  * acpitables: ensure we are printing out correct int values.
+  * acpi: wmi: fix typo in test identifier.
+
+ -- Colin King <colin.king@canonical.com>  Wed, 27 Jul 2011 14:17:23 +0100
+
 fwts (0.23.12) oneiric; urgency=low
 
   * lib + tests: add unique test label that identifies each failure test.

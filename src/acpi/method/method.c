@@ -231,6 +231,99 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	ret = AcpiEvaluateObject(NULL, name, arg_list, &buf);
 	if (ACPI_FAILURE(ret) != FWTS_OK) {
 		switch (ret) {
+		case AE_AML_BAD_OPCODE:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLBadOpCode", "Detected a bad AML opcode when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NO_OPERAND:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoOperand", "Detected a AML opcode with a missing operand when evaluating method '%s'.", name);
+			break;
+		case AE_AML_OPERAND_TYPE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLOperandType", "Detected a AML opcode with an incorrect operand type when evaluating method '%s'.", name);
+			break;
+		case AE_AML_OPERAND_VALUE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLOperandValue", "Detected a AML opcode with an incorrect operand value when evaluating method '%s'.", name);
+			break;
+		case AE_AML_UNINITIALIZED_LOCAL:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitValue", "Detected an uninitialized local variable when evaluating method '%s'.", name);
+			break;
+		case AE_AML_UNINITIALIZED_ARG:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitArg", "Detected an uninitialized argument when evaluating method '%s'.", name);
+			break;
+		case AE_AML_UNINITIALIZED_ELEMENT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitElement", "Detected an uninitialized element when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NUMERIC_OVERFLOW:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNumericOverflow", "Detected a numeric overflow when evaluating method '%s'.", name);
+			break;
+		case AE_AML_REGION_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLRegionLimit", "Detected a region limit when evaluating method '%s'.", name);
+			break;
+		case AE_AML_BUFFER_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLBufferLimit", "Detected a buffer limit when evaluating method '%s'.", name);
+			break;
+		case AE_AML_PACKAGE_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLPackageLimit", "Detected a package limit when evaluating method '%s'.", name);
+			break;
+		case AE_AML_DIVIDE_BY_ZERO:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLDivByZero", "Detected a division by zero when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NAME_NOT_FOUND:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNameNotFound", "Detected a name not found error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_INTERNAL:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInternal", "Detected an internal ACPICA execution engine error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_INVALID_SPACE_ID:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidSpaceId", "Detected an invalid space ID error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_STRING_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLStringLimit", "Detected a string limit error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NO_RETURN_VALUE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoReturnValue", "Detected a no return value error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_METHOD_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMethodLimit", "Detected a method limit error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NOT_OWNER:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNotOwner", "Detected a not owner error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_MUTEX_ORDER:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMutexOrder", "Detected a mutex order errro when evaluating method '%s'.", name);
+			break;
+		case AE_AML_MUTEX_NOT_ACQUIRED:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMutexNotAcquired", "Detected a mutux not acquired error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_INVALID_RESOURCE_TYPE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidResourceType", "Detected an invalid resource type when evaluating method '%s'.", name);
+			break;
+		case AE_AML_INVALID_INDEX:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidIndex", "Detected an invalid index error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_REGISTER_LIMIT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLRegisterLimit", "Detected a register limit error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NO_WHILE:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLNoWhile", "Detected a no while error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_ALIGNMENT:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLAlignment", "Detected an aligmnent error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_NO_RESOURCE_END_TAG:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoRsrceEndTag", "Detected a no resource end tag error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_BAD_RESOURCE_VALUE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLBadRsrceValue", "Detected a bad resource value error when evaluating method '%s'.", name);
+			break;
+		case AE_AML_CIRCULAR_REFERENCE:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLCircularRef", "Detected a circular reference when evaluating method '%s'.", name);
+			break;
+		case AE_AML_BAD_RESOURCE_LENGTH:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLBadRscrcLength", "Detected a bad resource length when evaluating method '%s'.", name);
+			break;
+		case AE_AML_ILLEGAL_ADDRESS:
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLIllegalAddr", "Detected an illegal address when evaluating method '%s'.", name);
+			break;
 		case AE_AML_INFINITE_LOOP:
 			fwts_warning(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
 			fwts_advice(fw, "This may occur because we are emulating the execution "
@@ -240,7 +333,7 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 					"lockup conditions are not being checked for in the AML bytecode.");
 			break;
 		default:
-			fwts_log_error(fw, "Failed to evaluate %s.", name);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLFailedToEvaluate", "Failed to evaluate %s, got error code %d.", name, ret);
 			break;
 		}
 	}

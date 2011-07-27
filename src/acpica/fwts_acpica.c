@@ -199,14 +199,11 @@ static ACPI_STATUS fwtsExceptionHandler(ACPI_STATUS AmlStatus, ACPI_NAME Name,
 	char *exception = (char*)AcpiFormatException(AmlStatus);
 
 	if (Name)
-		fwts_log_info(fwts_acpica_fw, "[AcpiExec] Exception %s during execution of method %4.4s", exception, (char*)&Name);
+		fwts_log_info(fwts_acpica_fw, "ACPICA Exception %s during execution of method %4.4s", exception, (char*)&Name);
 	else
-		fwts_log_info(fwts_acpica_fw, "[AcpiExec] Exception %s during execution at module level (table load)", exception);
+		fwts_log_info(fwts_acpica_fw, "ACPICA Exception %s during execution at module level (table load)", exception);
 
-	if (AmlStatus == AE_AML_INFINITE_LOOP)
-		return AmlStatus;
-
-   	return AE_OK;
+	return AmlStatus;
 }
 
 static void fwtsDeviceNotifyHandler(ACPI_HANDLE device, UINT32 value, void *context)

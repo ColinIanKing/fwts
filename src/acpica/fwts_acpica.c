@@ -131,9 +131,9 @@ void fwts_acpica_simulate_sem_timeout(int timeout)
  *  hash_sem_handle()
  *	generate a simple hash based on semaphore handle
  */
-static int hash_sem_handle(sem_t *sem)
+static unsigned int hash_sem_handle(sem_t *sem)
 {	
-	int i = (int)((long)sem % MAX_SEMAPHORES);
+	unsigned int i = (unsigned int)((unsigned long)sem % MAX_SEMAPHORES);
 	int j;
 
 	for (j=0;j<MAX_SEMAPHORES;j++) {
@@ -152,7 +152,7 @@ static int hash_sem_handle(sem_t *sem)
  */
 static void hash_sem_inc_count(sem_t *sem)
 {
-	int i = hash_sem_handle(sem);
+	unsigned int i = hash_sem_handle(sem);
 	if (i != HASH_FULL) {
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count++;
@@ -165,7 +165,7 @@ static void hash_sem_inc_count(sem_t *sem)
  */
 static void hash_sem_dec_count(sem_t *sem)
 {
-	int i = hash_sem_handle(sem);
+	unsigned int i = hash_sem_handle(sem);
 	if (i != HASH_FULL) {
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count--;

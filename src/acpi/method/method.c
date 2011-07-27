@@ -1451,13 +1451,13 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				}
 			}
 		}
+		if (failed) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DODNoPackage",
+				"Method _DOD did not return a package of %d integers.", obj->Package.Count);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		} else
+			fwts_passed(fw, "Method _DOD returned a sane package of %d integers.", obj->Package.Count);
 	}
-	if (failed) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DODNoPackage",
-			"Method _DOD did not return a package of %d integers.", obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-	} else
-		fwts_passed(fw, "Method _DOD returned a sane package of %d integers.", obj->Package.Count);
 }
 
 static int method_test_DOD(fwts_framework *fw)

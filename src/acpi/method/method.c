@@ -1591,6 +1591,11 @@ static int method_test_BQC(fwts_framework *fw)
 static void method_test_DDC_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	uint32_t requested = *(uint32_t*)private;
+
+	if (obj == NULL){
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj", "Method %s returned a NULL object, and did not return a buffer or integer.", name);
+		return;
+	}
 	switch (obj->Type) {
 	case ACPI_TYPE_BUFFER:
 		if (requested != obj->Buffer.Length) {
@@ -1774,6 +1779,10 @@ static int method_test_SUN(fwts_framework *fw)
 
 static void method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
+	if (obj == NULL){
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj", "Method %s returned a NULL object, and did not return a buffer or integer.", name);
+		return;
+	}
 	switch (obj->Type) {
 	case ACPI_TYPE_STRING:
 		if (obj->String.Pointer) 

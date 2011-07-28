@@ -32,35 +32,19 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
             (ecdt->ec_control.address_space_id != 1))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
-			ecdt->ec_control.address_space_id);
+				ecdt->ec_control.address_space_id);	
+		fwts_advice(fw, "The ECDT EC_CONTROL address space id was invalid, however the kernel ACPI EC driver "
+				"will just assume it an I/O port address.  This will not affect "
+				"the system behaviour and can probably be ignored.");
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
             (ecdt->ec_data.address_space_id != 1))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
-			ecdt->ec_data.address_space_id);
-}
-
-static void acpi_table_check_facs(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	fwts_acpi_table_facs *facs = (fwts_acpi_table_facs*)table->data;
-
-	if (table->length < 24) {
-		if ((facs->flags & 2) == 0) {
-			if (facs->firmware_waking_vector == 0)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACS32BitExec", "FACS: flags indicate 32 bit execution environment "
-						"but the 32 bit Firmware Waking Vector is set to zero.");
-		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACS64BitExec", "FACS: flags indicate a 64 bit execution environment "
-					"but the FACS table is not long enough to support 64 bit "
-					"X Firmware Waking Vector.");
-		}
-	}
-	else {
-		if ((facs->flags & 2) && (facs->x_firmware_waking_vector == 0))
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FACT64BitExecWakingVectorZero", "FACS: Flags indicate a 64 bit execution environment "
-					"but the 64 bit X Firmware Waking Vector is set to zero.");
-	}
+				ecdt->ec_data.address_space_id);
+		fwts_advice(fw, "The ECDT EC_DATA address space id was invalid, however the kernel ACPI EC driver "
+				"will just assume it an I/O port address.  This will not affect "
+				"the system behaviour and can probably be ignored.");
 }
 
 static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -70,8 +54,14 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (hpet->base_address.address == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseZero", "HPET base is 0x000000000000, which is invalid.");
 	
-	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0)
+	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorIdZero", "HPET PCI Vendor ID is 0x0000, which is invalid.");
+		fwts_advice(fw, "The HPET specification (http://www.intel.com/hardwaredesign/hpetspec_1.pdf)  describes "
+				"the HPET table in section 3.2.4 'The ACPI 2.0 HPET Description Table (HPET)'. The top "
+				"16 bits of the Event Timer Block ID specify the Vendor ID and this should not be zero. "
+				"This won't affect the kernel behaviour, but should be fixed as it is an undefined ID value.");
+	}
+
 }
 
 static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -81,19 +71,35 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->firmware_control == 0) {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl == 0) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTFACSZero", "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
+				fwts_failed(fw, LOG_LEVEL_CRITICAL, "FADTFACSZero", "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
+				fwts_advice(fw, "The 32 bit FIRMWARE_CTRL or 64 bit X_FIRMWARE_CTRL should point to a valid "
+						"Firmware ACPI Control Structure (FACS). This is a firmware bug and needs to be fixed.");
 			}
-		} else
+		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32BitFACSNull", "FADT 32 bit FIRMWARE_CONTROL is null.");
+			fwts_advice(fw, "The ACPI version 1.0 FADT has a NULL FIRMWARE_CTRL and it needs to be defined "
+					"to point to a valid Firmware ACPI Control Structure (FACS). This is a firmware "
+					"bug and needs to be fixed.");
+		}
 	} else {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl != 0) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64BothDefined", "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero. "
 						"Section 5.2.9 of the ACPI specification states that if the FIRMWARE_CONTROL is non-zero "
 						"then X_FIRMWARE_CONTROL must be set to zero.");
+				fwts_advice(fw, "The FADT FIRMWARE_CTRL is a 32 bit pointer that points to the physical memory address "
+						"of the Firmware ACPI Control Structure (FACS).  There is also an extended 64 bit version "
+						"of this, the X_FIRMWARE_CTRL pointer that also can point to the FACS.  Section 5.2.9 of "
+						"the ACPI specification states that if the X_FIRMWARE_CTRL field contains a non zero value "
+						"then the FIRMWARE_CTRL field *must* be zero.  This error is also detected by the Linux kernel. "
+						"If FIRMWARE_CTRL and X_FIRMWARE_CTRL are defined, then the kernel just uses the 64 bit version of "
+						"the pointer.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FwCtrl32and64Differ", "FIRMWARE_CONTROL is 0x%x and differs from X_FIRMWARE_CONTROL 0x%llx",
 						(unsigned int)fadt->firmware_control, (unsigned long long int)fadt->x_firmware_ctrl);
+					fwts_advice(fw, "One would expect the 32 bit FIRMWARE_CTRL and 64 bit X_FIRMWARE_CTRL "
+							"pointers to point to the same FACS, however they don't which is clearly ambiguous and wrong. "
+							"The kernel works around this by using the 64 bit X_FIRMWARE_CTRL pointer to the FACS. ");
 				}
 			}
 		}
@@ -102,13 +108,17 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (fadt->dsdt == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTDSTNull", "FADT DSDT address is null.");
 	if (table->length >= 148) {
-		if (fadt->x_dsdt == 0)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTKNull", "FADT X_DSDT address is null.");
-		else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
+		if (fadt->x_dsdt == 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTDNull", "FADT X_DSDT address is null.");		
+			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null." 
+					"The kernel will fall back to using the 32 bit DSDT pointer instead.");
+		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64Mismatch", "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
 				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
+			fwts_advice(fw, "One would expect the 32 bit DSDT and 64 bit X_DSDT "
+					"pointers to point to the same DSDT, however they don't which is clearly ambiguous and wrong. "
+					"The kernel works around this by using the 64 bit X_DSDT pointer to the DSDT. ");
 	}
-
 	
 	if (fadt->sci_int == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSCIIRQZero", "FADT SCI Interrupt is 0x00, should be defined.");
@@ -119,23 +129,49 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		    (fadt->pstate_cnt == 0) &&
 		    (fadt->cst_cnt == 0))
 			fwts_warning(fw, "FADT SMI_CMD is 0x00, system appears to not support System Management mode.");
-		else
+		else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSMICMDZero",
 					"FADT SMI_CMD is 0x00, however, one or more of ACPI_ENABLE, ACPI_DISABLE, "
 					"S4BIOS_REQ, PSTATE_CNT and CST_CNT are defined which means SMI_CMD should be "
 					"defined otherwise SMI commands cannot be sent.");
+			fwts_advice(fw, "The configuration seems to suggest that SMI command should be defined to "
+					"allow the kernel to trigger system managment interrupts via the SMD_CMD port. "
+					"The fact that SMD_CMD is zero which is invalid means that SMIs are not possible "
+					"through the normal ACPI mechanisms. This means some firmware based machine "
+					"specific functions will not work.");
+		}
 	}
 	
-	if (fadt->pm_tmr_len != 4)
+	if (fadt->pm_tmr_len != 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN", "FADT PM_TMR_LEN is %hhu, should be 4.", fadt->pm_tmr_len);
-	if (fadt->gpe0_blk_len & 1)
+		fwts_advice(fw, "FADT field PM_TMR_LEN defines the number of bytes decoded by PM_TMR_BLK. "
+				"This fields value must be 4. If it is not the correct size then the kernel "
+				"will not request a region for the pm timer block. ");
+	}
+	if (fadt->gpe0_blk_len & 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %hhu, should a multiple of 2.", (int)fadt->gpe0_blk_len);
-	if (fadt->gpe1_blk_len & 1)
+		fwts_advice(fw, "The FADT GPE_BLK_LEN should be a multiple of 2. Because it isn't, the ACPI driver will "
+				"not map in the GPE0 region. This could mean that General Purpose Events will not "
+				"function correctly (for example lid or ac-power events).");
+	}
+	if (fadt->gpe1_blk_len & 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPE1BLKLEN", "FADT GPE1_BLK_LEN is %hhu, should a multiple of 2.", fadt->gpe1_blk_len);
-	if (fadt->p_lvl2_lat > 100)
+		fwts_advice(fw, "The FADT GPE_BLK_LEN should be a multiple of 2. Because it isn't, the ACPI driver will "
+				"not map in the GPE1 region. This could mean that General Purpose Events will not "
+				"function correctly (for example lid or ac-power events).");
+	}
+	if (fadt->p_lvl2_lat > 100) {
 		fwts_warning(fw, "FADT P_LVL2_LAT is %hu, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
-	if (fadt->p_lvl3_lat > 1000)
+		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C2 latency in microseconds. The ACPI specification "
+				"states that a value > 100 indicates that C2 is not supported and hence the "
+				"ACPI processor idle routine will not use C2 power states.");
+	}
+	if (fadt->p_lvl3_lat > 1000) {
 		fwts_warning(fw, "FADT P_LVL3_LAT is %hu, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl3_lat);
+		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C3 latency in microseconds. The ACPI specification "
+				"states that a value > 1000 indicates that C3 is not supported and hence the "
+				"ACPI processor idle routine will not use C3 power states.");
+	}
 	/*
 	if (fadt->day_alrm == 0)
 		fwts_warning(fw, "FADT DAY_ALRM is zero, OS will not be able to program day of month alarm.");
@@ -152,7 +188,8 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG", "FADT RESET_REG was %hhu, must be System I/O space, System Memory space "
 				"or PCI configuration spaces.",
 				fadt->reset_reg.address_space_id);
-
+			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
+					"to this register *may* nor work correctly, meaning a reboot via this mechanism may not work.");
 		if ((fadt->reset_value == 0) && (fadt->reset_reg.address != 0))
 			fwts_warning(fw, "FADT RESET_VALUE is zero, which may be incorrect, it is usually non-zero.");
 	}
@@ -168,11 +205,16 @@ static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if (isalnum(rsdp->oem_id[i]))
 			passed++;
 	}
-	if (!passed)
+	if (!passed) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadOEMId", "RSDP: oem_id does not contain any alpha numeric characters.");
+		fwts_advice(fw, "The RSDP OEM Id is non-conforming, but this will not affect the system behaviour. However "
+				"this should be fixed if possible to make the firmware ACPI complaint.");
+	}
 
-	if (rsdp->revision > 2)
+	if (rsdp->revision > 2) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %hhu, expected value less than 2.", rsdp->revision);
+		fwts_advice(fw, "A RSDP revision number greater than 2 probably won't cause any system problems.");
+	}
 }
 
 static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -183,8 +225,12 @@ static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint32_t);
 	for (i=0; i<n; i++)  {
-		if (rsdt->entries[i] == 0)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDTEntryNull", "RSDT Entry %d is null, should not be non-zero.", i);
+		if (rsdt->entries[i] == 0) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "RSDTEntryNull", "RSDT Entry %d is null, should not be non-zero.", i);
+			fwts_advice(fw, "A RSDT pointer is null and therefore erroneously points to an invalid 32 bit "
+					"ACPI table header. At worse this will cause the kernel to oops, at best the kernel "
+					"may ignore this.  However, it should be fixed where possible.");
+		}
 	}
 }
 
@@ -192,16 +238,22 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 {
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
 	
-	if (sbst->critical_energy_level > sbst->low_energy_level)
+	if (sbst->critical_energy_level > sbst->low_energy_level) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1", "SBST Critical Energy Level (%u) is greater than the Low Energy Level (%u).",
 			sbst->critical_energy_level, sbst->low_energy_level);
+		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
+	}
 
-	if (sbst->low_energy_level > sbst->warning_energy_level)
+	if (sbst->low_energy_level > sbst->warning_energy_level) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2", "SBST Low Energy Energy Level (%u) is greater than the Warning Energy Level (%u).",
 			sbst->low_energy_level, sbst->warning_energy_level);
+		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
+	}
 
-	if (sbst->warning_energy_level == 0)
+	if (sbst->warning_energy_level == 0) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevelZero", "SBST Warning Energy Level is zero, which is probably too low.");
+		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
+	}
 }
 
 static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -212,8 +264,12 @@ static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint64_t);
 	for (i=0; i<n; i++)  {
-		if (xsdt->entries[i] == 0)
+		if (xsdt->entries[i] == 0) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "XSDTEntryNull", "XSDT Entry %d is null, should not be non-zero.", i);
+			fwts_advice(fw, "A XSDT pointer is null and therefore erroneously points to an invalid 64 bit "
+					"ACPI table header. At worse this will cause the kernel to oops, at best the kernel "
+					"may ignore this.  However, it should be fixed where possible.");
+		}
 	}
 }
 
@@ -337,6 +393,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 {
+	/* FIXME */
 	/*fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)table->data;*/
 }
 
@@ -351,7 +408,6 @@ static acpi_table_check_table check_table[] = {
 	{ "APIC", acpi_table_check_madt },
 	{ "ECDT", acpi_table_check_ecdt },
 	{ "FACP", acpi_table_check_fadt },
-	{ "FACS", acpi_table_check_facs },
 	{ "HPET", acpi_table_check_hpet },
 	{ "MCFG", acpi_table_check_mcfg },
 	{ "RSDT", acpi_table_check_rsdt },

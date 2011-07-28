@@ -268,6 +268,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 				
 					/* Valid error or warning, go and report */
 					if (iasl_error || iasl_warning) {
+						char label[64];
 						char *colon = strstr(line, ":");
 						char *carat = strstr(error_text, "^");
 						char *ptr;
@@ -293,6 +294,8 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 						while (*ptr == ' ')
 							ptr++;
 
+						snprintf(label, sizeof(label), "AMLAssemblerError%d", error_code);
+						fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
 						syntaxcheck_dump_code(fw, error_code, 
 							carat_offset - colon_offset, ptr, 
 							iasl_disassembly, num, 8);
@@ -315,11 +318,9 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	fwts_text_list_free(iasl_errors);
 
 	if (errors > 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "AMLReassemblyErrors",
-			"Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
+		fwts_log_info(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
 	} else if (warnings > 0) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "AMLReassembleWarnings",
-			"Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
+		fwts_log_info(fw, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
 	} else
 		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", tablename, which);
 

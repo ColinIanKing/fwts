@@ -338,8 +338,12 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 	*size = 0;
 
-	if (fscanf(fp, "%15s @ 0x%Lx\n", name, &table_addr) < 2)
+	if (fscanf(fp, "%[A-Za-z0-9 ] @ 0x%Lx\n", name, &table_addr) < 2)
 		return NULL;
+
+	/* In fwts RSD PTR is known as the RSDP */
+	if (strcmp(name, "RSD PTR ") == 0)
+		strcpy(name, "RSDP");
 
 	/* Pull in 16 bytes at a time */
 	while (fgets(buffer, sizeof(buffer), fp) ) {

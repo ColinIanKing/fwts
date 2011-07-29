@@ -348,6 +348,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	/* Pull in 16 bytes at a time */
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		int n;
+		buffer[56] = '\0';	/* truncate */
 		if ((n = sscanf(buffer,"  %x: %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx",
 			&offset,
 			&data[0], &data[1], &data[2], &data[3],

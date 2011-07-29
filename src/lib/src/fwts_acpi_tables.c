@@ -333,16 +333,29 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	uint8_t  data[16];
 	char buffer[80];
 	uint8_t *table = NULL;
+	char *ptr = buffer;
 	size_t len = 0;
 	unsigned long long table_addr;
 
 	*size = 0;
 
-	if (fscanf(fp, "%[A-Za-z0-9 ] @ 0x%Lx\n", name, &table_addr) < 2)
+	if (fgets(buffer, sizeof(buffer), fp) == NULL)
 		return NULL;
 
+	for (ptr = buffer; *ptr && *ptr != '@'; ptr++)
+		;
+
+	if ((*ptr != '@') || ((ptr - buffer) < 5))
+		return NULL; /* Bad name? */
+
+	if (sscanf(ptr, "@ 0x%Lx\n", &table_addr) < 1)
+		return NULL;
+	
+	*(ptr-1) = '\0';
+	strcpy(name, buffer);
+
 	/* In fwts RSD PTR is known as the RSDP */
-	if (strcmp(name, "RSD PTR ") == 0)
+	if (strncmp(name, "RSD PTR", 7) == 0)
 		strcpy(name, "RSDP");
 
 	/* Pull in 16 bytes at a time */

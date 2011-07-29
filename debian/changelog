@@ -1,3 +1,17 @@
+fwts (0.23.14) oneiric; urgency=low
+
+  * lib: fwts_acpi_tables: make acpidump parsing more resiliant to bad data.
+  * lib: fwts_acpi_tables: read in data correctly (LP: #818042)
+  * acpi: checksum: handle RSDP.
+  * lib: fwts_acpi_tables.h: add fwts_acpi_checksum
+  * lib: fwts_acpi_tables: name RSD PTR to RSDP.
+  * lib: fwts_acpi_tables: handle ACPI 1.0 sized RSDP
+  * lib: fwts_acpi: rsdp requires a 64 bit xsdt
+  * acpi: syntaxcheck: log errors as per-test failures and include unique error code in error.
+  * acpi: acpitables: add more advice, deprecate FACS test, it was nonsense.
+
+ -- Colin King <colin.king@canonical.com>  Fri, 29 Jul 2011 17:28:00 +0100
+
 fwts (0.23.13) oneiric; urgency=low
 
   * lib + method test: better handling of object eval errors. (LP: #816877)

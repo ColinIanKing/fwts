@@ -1,3 +1,21 @@
+fwts (0.23.15) oneiric; urgency=low
+
+  * lib: fwts_framework: helper macros: use fmt arg
+  * bios: os2gap: add more failure info.
+  * bios: smbios: tidy up source.
+  * bios: romdump: tidy up source.
+  * bios: os2gap: fix failure format string (LP: #825945)
+  * bios: mtrr: tidy up source.
+  * bios: memmapdump: tidy up source.
+  * bios: hdaaudio: tidy up source.
+  * bios: ebda_region: tidy up source.
+  * bios: ebdadump: tidy up source.
+  * bios: bios_info: tidy up source.
+  * bios: bios32: tidy up source.
+  * bios: mpcheck: tidy up source.
+
+ -- Colin King <colin.king@canonical.com>  Sat, 13 Aug 2011 21:33:00 +0100
+
 fwts (0.23.14) oneiric; urgency=low
 
   * lib: fwts_acpi_tables: make acpidump parsing more resiliant to bad data.

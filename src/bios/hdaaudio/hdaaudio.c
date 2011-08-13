@@ -26,7 +26,8 @@ typedef struct {
 	uint32_t	setting;
 } hda_audio_pin_setting;
 
-static int hda_audio_read_pins(fwts_framework *fw, const char *path, const char *file, fwts_list *settings)
+static int hda_audio_read_pins(fwts_framework *fw, const char *path,
+	const char *file, fwts_list *settings)
 {
 	FILE 		*fp;
 	uint16_t	pin;
@@ -52,11 +53,12 @@ static int hda_audio_read_pins(fwts_framework *fw, const char *path, const char 
 		fwts_list_append(settings, pin_setting);
 	}
 	fclose(fp);
-	
+
 	return FWTS_OK;
 }
 
-static void hda_audio_dump_pins(fwts_framework *fw, const char *config, fwts_list *settings)
+static void hda_audio_dump_pins(fwts_framework *fw, const char *config,
+	fwts_list *settings)
 {
 	fwts_list_link *item;
 
@@ -65,15 +67,17 @@ static void hda_audio_dump_pins(fwts_framework *fw, const char *config, fwts_lis
 
 		fwts_log_info_verbatum(fw, "  Pin  Setting");
 		fwts_list_foreach(item, settings) {
-			hda_audio_pin_setting *pin_setting = fwts_list_data(hda_audio_pin_setting *, item);
-	
+			hda_audio_pin_setting *pin_setting =
+				fwts_list_data(hda_audio_pin_setting *, item);
+
 			fwts_log_info_verbatum(fw, "  0x%4.4hx 0x%8.8x", pin_setting->pin, pin_setting->setting);
 		}
 	} else
 		fwts_log_info(fw, "%s: None Defined.", config);
 }
 
-static void hda_audio_dev_info(fwts_framework *fw, const char *label, const char *path, const char *file)
+static void hda_audio_dev_info(fwts_framework *fw, const char *label,
+	const char *path, const char *file)
 {
 	char *info;
 	char fullpath[PATH_MAX];
@@ -102,20 +106,26 @@ static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 	hda_audio_dev_info(fw, "Subsystem ID", path, "subsystem_id");
 	hda_audio_dev_info(fw, "Revision ID", path, "revision_id");
 
-	(void)hda_audio_read_pins(fw, path, "init_pin_configs", &init_pin_configs);
-	(void)hda_audio_read_pins(fw, path, "driver_pin_configs", &driver_pin_configs);
-	(void)hda_audio_read_pins(fw, path, "user_pin_configs", &user_pin_configs);
+	(void)hda_audio_read_pins(fw, path, "init_pin_configs",
+		&init_pin_configs);
+	(void)hda_audio_read_pins(fw, path, "driver_pin_configs",
+		&driver_pin_configs);
+	(void)hda_audio_read_pins(fw, path, "user_pin_configs",
+		&user_pin_configs);
 
 	if (fwts_list_len(&init_pin_configs) > 0)
-		hda_audio_dump_pins(fw, "BIOS pin configurations", &init_pin_configs);
+		hda_audio_dump_pins(fw, "BIOS pin configurations",
+			&init_pin_configs);
 
 	if (fwts_list_len(&driver_pin_configs) > 0) {
-		hda_audio_dump_pins(fw, "Driver defined pin configurations", &driver_pin_configs);
+		hda_audio_dump_pins(fw, "Driver defined pin configurations",
+			&driver_pin_configs);
 		warn++;
 	}
-	
+
 	if (fwts_list_len(&user_pin_configs) > 0) {
-		hda_audio_dump_pins(fw, "User defined pin configurations", &driver_pin_configs);
+		hda_audio_dump_pins(fw, "User defined pin configurations",
+			&driver_pin_configs);
 		warn++;
 	}
 
@@ -143,7 +153,8 @@ static int hda_audio_test1(fwts_framework *fw)
 	while ((directory = readdir(dir)) != NULL)
 		if (strncmp(directory->d_name, "hw", 2) == 0) {
 			char path[PATH_MAX];
-			snprintf(path, sizeof(path), "/sys/class/sound/%s", directory->d_name);
+			snprintf(path, sizeof(path), "/sys/class/sound/%s",
+				directory->d_name);
 			fwts_log_info(fw, "Checking '%s':", directory->d_name);
 			hda_audio_check_pins(fw, path);
 			fwts_log_nl(fw);

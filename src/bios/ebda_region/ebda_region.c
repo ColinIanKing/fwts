@@ -70,9 +70,11 @@ static int ebda_test1(fwts_framework *fw)
 	if (memory_map == NULL)
 		return FWTS_ERROR;
 
-	fwts_log_info(fw, "The Extended BIOS Data Area (EBDA) is normally located at the end of the "
-			  "low 640K region and is typically 2-4K in size. It should be reserved in "
-			  "the %s table.", memory_map_name);
+	fwts_log_info(fw,
+		"The Extended BIOS Data Area (EBDA) is normally located at "
+		"the end of the low 640K region and is typically 2-4K in "
+		"size. It should be reserved in the %s table.", 
+		memory_map_name);
 
 	entry = fwts_memory_map_info(memory_map, (uint64_t)ebda_addr);
 	if ((entry != NULL) &&
@@ -85,7 +87,10 @@ static int ebda_test1(fwts_framework *fw)
 			(unsigned long long int)entry->start_address,
 			(unsigned long long int)entry->end_address);
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "EBDAMappedNotReserved", "EBDA region mapped at 0x%lx but not reserved in the %s table.", ebda_addr, memory_map_name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"EBDAMappedNotReserved",
+			"EBDA region mapped at 0x%lx but not reserved in the %s table.",
+			ebda_addr, memory_map_name);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 		

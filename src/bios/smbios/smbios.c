@@ -29,7 +29,7 @@ typedef struct {
 	uint8_t		checksum;
 	uint8_t		length;
 	uint8_t		major_version;
-	uint8_t		minor_version;	
+	uint8_t		minor_version;
 	uint16_t	max_struct_size;
 	uint8_t		revision;
 	uint8_t		formatted_area[5];
@@ -41,7 +41,8 @@ typedef struct {
 	uint8_t		smbios_bcd_revision;
 }  __attribute__ ((packed)) fwts_smbios_entry;
 
-static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw,
+	fwts_smbios_entry *entry, uint32_t *addr)
 {
 	fwts_list *systab;
 	fwts_list_link *item;
@@ -65,13 +66,14 @@ static int fwts_smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry 
 				break;
 			}
 		}
-	}	
+	}
 	fwts_list_free(systab, free);
 
 	return ret;
 }
 
-static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+static int fwts_smbios_find_entry_in_bios(fwts_framework *fw,
+	fwts_smbios_entry *entry, uint32_t *addr)
 {
 	int ret = FWTS_ERROR;
 	uint8_t *mem;
@@ -108,7 +110,8 @@ static int fwts_smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry 
 	return ret;
 }
 
-static int fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, uint32_t *addr)
+static int fwts_smbios_find_entry(fwts_framework *fw,
+	fwts_smbios_entry *entry, uint32_t *addr)
 {
 	switch (fw->firmware_type) {
 	case FWTS_FIRMWARE_BIOS:
@@ -128,9 +131,13 @@ static int smbios_test1(fwts_framework *fw)
 	uint32_t addr = 0;
 	fwts_smbios_entry entry;
 
-	fwts_log_info(fw, "This test tries to find and sanity check the SMBIOS data structures.");
+	fwts_log_info(fw,
+		"This test tries to find and sanity check the SMBIOS "
+		"data structures.");
 	if (fwts_smbios_find_entry(fw, &entry, &addr) != FWTS_OK)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SMBIOSNoEntryPoint", "Could not find SMBIOS Table Entry Point.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SMBIOSNoEntryPoint",
+			"Could not find SMBIOS Table Entry Point.");
 	else {
 		fwts_passed(fw, "Found SMBIOS Table Entry Point at 0x%8.8x", addr);
 		/* TODO: Dump out table */

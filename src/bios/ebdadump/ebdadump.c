@@ -23,7 +23,8 @@
 
 #define BIOS_ROM_START		(0x000a0000)
 
-static void ebdadump_data(fwts_framework *fw, uint8_t *data, int offset, int length)
+static void ebdadump_data(fwts_framework *fw,
+	uint8_t *data, int offset, int length)
 {
 	char buffer[128];
 	int i;
@@ -48,7 +49,7 @@ static int ebdadump_test1(fwts_framework *fw)
 	len = BIOS_ROM_START - ebda_addr;
 
 	if (ebda_addr > BIOS_ROM_START) {
-		fwts_log_error(fw, "EBDA start address is greater than the BIOS ROM start address.");		
+		fwts_log_error(fw, "EBDA start address is greater than the BIOS ROM start address.");
 		return FWTS_ERROR;
 	}
 
@@ -57,9 +58,11 @@ static int ebdadump_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "EBDA region: %x..%x (%d bytes)", (unsigned int)ebda_addr, 
-		BIOS_ROM_START, (unsigned int)len);
-	
+	fwts_log_info(fw, "EBDA region: %x..%x (%d bytes)",
+		(unsigned int)ebda_addr,
+		BIOS_ROM_START,
+		(unsigned int)len);
+
 	ebdadump_data(fw, mem, ebda_addr, len);
         (void)fwts_munmap(mem, len);
 

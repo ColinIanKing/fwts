@@ -39,8 +39,6 @@ static fwts_list *klog;
 static fwts_list *mtrr_list;
 static fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
-
-
 #define UNCACHED	0x0001
 #define	WRITE_BACK	0x0002
 #define	WRITE_COMBINING	0x0004
@@ -88,7 +86,7 @@ static int get_mtrrs(void)
 	struct mtrr_entry *entry;
 	int fd;
 	char line[4096];
-	
+
 	memset(line, 0, 4096);
 
 	if ((mtrr_list = fwts_list_new()) == NULL)
@@ -133,7 +131,7 @@ static int get_mtrrs(void)
 				entry->type = DISABLED;
 			}
 
-			fwts_list_append(mtrr_list, entry);		
+			fwts_list_append(mtrr_list, entry);
 		}
 	}
 	close(fd);
@@ -146,7 +144,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
 	int type = 0;
-	
+
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
@@ -154,21 +152,23 @@ static int cache_types(uint64_t start, uint64_t end)
 			type |= entry->type;
 	}
 
-	/* now to see if there is any part of the range that isn't covered by an mtrr,
-	   since it's UNCACHED if so */
+	/*
+	 * now to see if there is any part of the range that isn't
+	 * covered by an mtrr, since it's UNCACHED if so
+	 */
 restart:
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
 		if (entry->end >= end && entry->start < end) {
 			end = entry->start;
-			if (end<start)
+			if (end < start)
 				end = start;
 			else
 				goto restart;
 		}
 	}
-	
+
 	/* if there is no full coverage it's also uncached */
 	if (start != end)
 		type |= DEFAULT;
@@ -192,15 +192,15 @@ static fwts_list *get_klog_bios_mtrr(void)
 			scan = 1;
 			continue;
 		}
-	
+
 		if (scan) {
 			char *base = strstr(str, "base");
 			char *disabled = strstr(str, "disabled");
 
 			if ((base == NULL) && (disabled == NULL))
 				scan = 0;
-			
-			if (base) {	
+
+			if (base) {
 				uint64_t start = strtoull(base+6, NULL, 16);
 				str = strstr(base, "mask");
 				if (str) {
@@ -209,7 +209,8 @@ static fwts_list *get_klog_bios_mtrr(void)
 					mtrr = calloc(1, sizeof(struct mtrr_entry));
 					mtrr->type = 0;
 
-					uint64_t mask = strtoull(str+5, NULL, 16);
+					uint64_t mask =
+						strtoull(str+5, NULL, 16);
 					uint64_t pat = 0x8000000000000000ULL;
 					while ((mask & pat) == 0) {
 						mask |= pat;
@@ -218,7 +219,7 @@ static fwts_list *get_klog_bios_mtrr(void)
 
 					mtrr->start = start;
 					mtrr->end = start + ~mask;
-				
+
 					fwts_list_append(mtrr_bios_list, mtrr);
 				}
 			}
@@ -243,7 +244,7 @@ static int check_vga_controller_address(fwts_framework *fw)
 
 	if ((mtrr_bios_list = get_klog_bios_mtrr()) == NULL)
 		return FWTS_ERROR;
-	
+
 	snprintf(line, sizeof(line), "%s -v", fw->lspci);
 	fwts_pipe_exec(line, &lspci_output);
 	if (lspci_output == NULL)
@@ -298,10 +299,13 @@ static int check_vga_controller_address(fwts_framework *fw)
 
 	if (!found) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "MTRRVGA", "Did not find a BIOS configured MTRR for VGA memory region. ");
-		fwts_advice(fw, "The VGA memory region does not have a MTRR configured by the BIOS. "
-				"This means that bootloaders rendering to a framebuffer will be rendering slowly "
-				"and this will slow the boot speed. "
-				"It is probably worth asking the BIOS vendor to map in the VGA write-combining region.\n");
+		fwts_advice(fw,
+			"The VGA memory region does not have a MTRR configured "
+			"by the BIOS. This means that bootloaders rendering to "
+			"a framebuffer will be rendering slowly and this will "
+			"slow the boot speed. It is probably worth asking the "
+			"BIOS vendor to map in the VGA write-combining "
+			"region.");
 	}
 	fwts_list_free(mtrr_bios_list, free);
 	fwts_list_free(lspci_output, free);
@@ -318,7 +322,7 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 	fwts_list_link *item;
 
 	memset(line,0,4096);
-	
+
 	snprintf(line, sizeof(line), "%s -v -s %s", fw->lspci, device);
 	fwts_pipe_exec(line, &lspci_output);
 	if (lspci_output == NULL)
@@ -386,13 +390,16 @@ static int validate_iomem(fwts_framework *fw)
 
 		fwts_chop_newline(buffer);
 
-		/* for pci bridges, we note the increased depth and otherwise skip the entry */
+		/*
+		 * For pci bridges, we note the increased depth and
+		 * otherwise skip the entry
+ 		 */
 		if (strstr(buffer, ": PCI Bus #")) {
 			pcidepth++;
 			continue;
 		}
 
-		/* then: check the pci depth */		
+		/* then: check the pci depth */
 		for (i=0; i<pcidepth*2; i++) {
 			if (buffer[i]!=' ') {
 				pcidepth = i/2;
@@ -403,14 +410,13 @@ static int validate_iomem(fwts_framework *fw)
 		/* sub entry to a main entry -> skip */
 		if (*c==' ')
 			continue;
-		
+
 		start = strtoull(c, NULL, 16);
 		c2 = strchr(c, '-');
 		if (!c2)
 			continue;
 		c2++;
 		end = strtoull(c2, NULL, 16);
-		
 
 		c2 = strstr(c, " : ");
 		if (!c2)
@@ -420,18 +426,19 @@ static int validate_iomem(fwts_framework *fw)
 		/* exception: 640K - 1Mb range we ignore */
 		if (start >= 640*1024 && end <= 1024*1024)
 			continue;
-		
+
 		type = cache_types(start, end);
 
 		guess_cache_type(fw, c2, &type_must, &type_mustnot, start);
 
 		if ((type & type_mustnot)!=0) {
 			failed++;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRIncorrectAttr",
-					"Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
-					(unsigned long long int)start,
-					(unsigned long long int)end,
-					c2, cache_to_string(type & type_mustnot));
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MTRRIncorrectAttr",
+				"Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
+				(unsigned long long int)start,
+				(unsigned long long int)end,
+				c2, cache_to_string(type & type_mustnot));
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			if (type_must == UNCACHED)
 				skiperror = 1;
@@ -443,14 +450,16 @@ static int validate_iomem(fwts_framework *fw)
 		}
 		if ((type & type_must)!=type_must && skiperror==0) {
 			failed++;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRLackingAttr",
-					"Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
-					(unsigned long long int)start,
-					(unsigned long long int)end,
-					c2, cache_to_string( (type & type_must) ^ type_must));
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MTRRLackingAttr",
+				"Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
+				(unsigned long long int)start,
+				(unsigned long long int)end,
+				c2,
+				cache_to_string( (type & type_must) ^ type_must));
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		}
-		
+
 	}
 	fclose(file);
 
@@ -473,7 +482,9 @@ static void do_mtrr_resource(fwts_framework *fw)
 		if (entry->type & DISABLED)
 			fwts_log_info_verbatum(fw, "Reg %hhu: disabled\n", entry->reg);
 		else
-			fwts_log_info_verbatum(fw, "Reg %hhu: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n", entry->reg,
+			fwts_log_info_verbatum(fw,
+				"Reg %hhu: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n",
+				entry->reg,
 				(unsigned long long int)entry->start,
 				(unsigned long long int)entry->end,
 				(unsigned long long int)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
@@ -545,14 +556,16 @@ static int mtrr_test2(fwts_framework *fw)
 		}
 
 		if (failed)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRCPUsMisconfigured",
-					"It is probable that the BIOS does not set up all the CPUs correctly and "
-					"the kernel has now corrected this misconfiguration.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MTRRCPUsMisconfigured",
+				"It is probable that the BIOS does not set up "
+				"all the CPUs correctly and the kernel has now "
+				"corrected this misconfiguration.");
 		else
 			fwts_passed(fw, "All processors have the a consistent MTRR setup.");
 	} else
 		fwts_log_error(fw, "No boot dmesg found.");
-		
+
 	return FWTS_OK;
 }
 
@@ -561,13 +574,14 @@ static int mtrr_test3(fwts_framework *fw)
 	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MTRRFixDramModEnBit",
-						"The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
- 						"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
- 						"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
- 						"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
- 						"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
- 						"0 for operation.\"");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MTRRFixDramModEnBit",
+					"The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
+ 					"\"BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD "
+ 					"Opteron Processors\" (26094 Rev. 3.30 February 2006), section "
+ 					"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
+ 					"to 1 during BIOS initalization of the fixed MTRRs, then cleared to "
+ 					"0 for operation.\"");
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			}
 			else {

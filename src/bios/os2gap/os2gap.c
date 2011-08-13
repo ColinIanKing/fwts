@@ -51,7 +51,8 @@ static int os2gap_test1(fwts_framework *fw)
 	if (fwts_memory_map_is_reserved(os2gap_memory_map_info, OS2_GAP_ADDRESS)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, 
 			"OS2Gap",
-			"The memory map has OS/2 memory hole at %p..%p.",
+			"The memory map has OS/2 memory hole of %dK at %p..%p.",
+			OS2_GAP_SIZE / 1024,
 			(void*)OS2_GAP_ADDRESS,
 			(void*)(OS2_GAP_ADDRESS + OS2_GAP_SIZE));
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);

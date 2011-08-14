@@ -80,8 +80,8 @@ static int msr_consistent(const uint32_t msr,
 	}
 	return FWTS_OK;
 }
-	
-static int msr_consistent_check(fwts_framework *fw, 
+
+static int msr_consistent_check(fwts_framework *fw,
 	const fwts_log_level level,
 	const char *msr_name,
 	const uint32_t msr,
@@ -89,7 +89,7 @@ static int msr_consistent_check(fwts_framework *fw,
 	const uint64_t mask,
 	const msr_callback_check callback)
 {
-	uint64_t *vals;	
+	uint64_t *vals;
 	bool *inconsistent;
 	int inconsistent_count;
 	int cpu;
@@ -103,12 +103,12 @@ static int msr_consistent_check(fwts_framework *fw,
 		free(vals);
 		return FWTS_ERROR;
 	}
-	
-	if (msr_consistent(msr, shift, mask, 
+
+	if (msr_consistent(msr, shift, mask,
 		vals, &inconsistent_count, inconsistent) != FWTS_OK) {
 		//fwts_log_info(fw, "Cannot read MSR %s (0x%x).", msr_name, msr);
 		free(inconsistent);
-		free(vals);	
+		free(vals);
 		return FWTS_ERROR;
 	}
 
@@ -118,11 +118,11 @@ static int msr_consistent_check(fwts_framework *fw,
 			msr_name, (int)msr,
 			inconsistent_count, ncpus, shift,
 			(unsigned long long)mask);
-			
+
 		for (cpu=1; cpu<ncpus; cpu++) {
 			if (inconsistent[cpu])
 				fwts_log_info(fw, "MSR CPU 0 -> 0x%llx vs CPU %d -> 0x%llx",
-					(unsigned long long)vals[0], cpu, 
+					(unsigned long long)vals[0], cpu,
 					(unsigned long long)vals[cpu]);
 		}
 	} else {
@@ -137,7 +137,7 @@ static int msr_consistent_check(fwts_framework *fw,
 	free(vals);
 
 	return FWTS_OK;
-}	
+}
 
 static int msr_pstate_ratios(fwts_framework *fw)
 {
@@ -184,7 +184,7 @@ static int msr_smrr(fwts_framework *fw)
 			msr_consistent_check(fw, LOG_LEVEL_HIGH, "SMRR_TYPE", 0x1f2, 0, 0x7, NULL);
 			msr_consistent_check(fw, LOG_LEVEL_HIGH, "SMRR_PHYSMASK", 0x1f3, 12, 0xfffff, NULL);
 			msr_consistent_check(fw, LOG_LEVEL_HIGH, "SMRR_VALID", 0x1f3, 11, 0x1, NULL);
-	
+
 			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
 				uint64_t physbase = val & 0xfffff000;
 				uint64_t type = val & 7;
@@ -198,7 +198,7 @@ static int msr_smrr(fwts_framework *fw)
 			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
 				uint64_t physmask = val & 0xfffff000;
 				uint64_t valid = (val >> 11) & 1;
-	
+
 				if (physmask < 0x80000) {
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRRRegion",
 						"SMRR: region needs to be at least 8MB, SMRR_PHYSMASK = %llx.",
@@ -316,7 +316,7 @@ static msr_info IA32_MSRs[] = {
 	{ "CLOCK_MODULATION",	0x0000019a,	0, 0x1fULL, NULL },
 	{ "THERM_INTERRUPT",	0x0000019b,	0, 0x180801fULL, NULL },
 	//{ "THERM_STATUS",	0x0000019c,	0, 0x80000fffULL, NULL },
-	{ "MISC_ENABLE",	0x000001a0,	0, 0x400c51889ULL, NULL },	
+	{ "MISC_ENABLE",	0x000001a0,	0, 0x400c51889ULL, NULL },
 	{ "PACKAGE_THERM_INTERRUPT", 0x000001b2,0, 0x1ffff17ULL, NULL },
 	{ "SMRR_PHYSBASE",	0x000001f2,	0, 0xfffff0ffULL, NULL },
 	{ "SMRR_PHYSMASK",	0x000001f3,	0, 0xfffff800ULL, NULL },
@@ -533,7 +533,7 @@ static int msr_cpu_specific(fwts_framework *fw)
 		}
 	} else
 		fwts_skipped(fw, "Non-Intel CPU, test skipped.");
-		
+
 	return FWTS_OK;
 }
 
@@ -551,7 +551,7 @@ static fwts_framework_ops msr_ops = {
 	.description = "MSR register tests.",
 	.init        = msr_init,
 	.deinit	     = msr_deinit,
-	.minor_tests = msr_tests 
+	.minor_tests = msr_tests
 };
 
 FWTS_REGISTER(msr, &msr_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);

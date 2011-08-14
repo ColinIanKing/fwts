@@ -34,7 +34,7 @@ static int oops_init(fwts_framework *fw)
 		klog = fwts_file_open_and_read(fw->klog);
 	else
 		klog = fwts_klog_read();
-	
+
 	if (klog == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		return FWTS_ERROR;
@@ -50,7 +50,7 @@ static int oops_deinit(fwts_framework *fw)
 }
 
 static int oops_test1(fwts_framework *fw)
-{	
+{
 	int oopses = 0;
 
 	if (fwts_oops_check(fw, klog, &oopses) != FWTS_OK) {
@@ -58,8 +58,9 @@ static int oops_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (oopses > 0) 	
-		fwts_failed(fw, LOG_LEVEL_CRITICAL, "KernelOops", "Found %d oopses in kernel log.", oopses);
+	if (oopses > 0)
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"KernelOops", "Found %d oopses in kernel log.", oopses);
 	else
 		fwts_passed(fw, "Found no oopses in kernel log.");
 
@@ -73,7 +74,7 @@ static fwts_framework_minor_test oops_tests[] = {
 
 static fwts_framework_ops oops_ops = {
 	.description = "Scan kernel log for Oopses.",
-	.init        = oops_init,	
+	.init        = oops_init,
 	.deinit      = oops_deinit,
 	.minor_tests = oops_tests
 };

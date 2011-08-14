@@ -54,7 +54,8 @@ static unsigned long topspeed=1;
 #define GET_PERFORMANCE_MIN (1)
 #define GET_PERFORMANCE_AVG (2)
 
-static void cpu_mkpath(char *path, const int len, const int cpu, const char *name)
+static void cpu_mkpath(char *path, const int len,
+	const int cpu, const char *name)
 {
 	snprintf(path, len, "%s/cpu%i/cpufreq/%s", FWTS_CPU_PATH, cpu, name);
 }
@@ -111,8 +112,8 @@ static void  set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 	CPU_ZERO(&mask);
 	CPU_SET(cpu, &mask);
 	sched_setaffinity(0, sizeof(mask), &mask);
-	
-	set_governor(fw, cpu);	
+
+	set_governor(fw, cpu);
 
 	/* then set the speed */
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_setspeed");
@@ -143,7 +144,7 @@ static unsigned long  get_performance(const int cpu)
 	current = time(NULL);
 
 	do {
-		double A, B;	
+		double A, B;
 		int i;
 		A = 1.234567;
 		B = 3.121213;
@@ -161,7 +162,6 @@ static unsigned long  get_performance(const int cpu)
 			B = A * A;
 			A = A - B + sqrt(A);
 		}
-		
 		loopcount++;
 	} while (current == time(NULL));
 
@@ -171,7 +171,8 @@ static unsigned long  get_performance(const int cpu)
 }
 
 
-static unsigned long  get_performance_repeat(fwts_framework *fw, int cpu, unsigned long Hz, int count, int type)
+static unsigned long get_performance_repeat(fwts_framework *fw,
+	int cpu, unsigned long Hz, int count, int type)
 {
 	int i;
 
@@ -213,7 +214,7 @@ static unsigned long  get_performance_repeat(fwts_framework *fw, int cpu, unsign
 }
 
 static char *HzToHuman(unsigned long hz)
-{	
+{
 	static char buffer[1024];
 	memset(buffer, 0, 1024);
 	unsigned long long Hz;
@@ -224,10 +225,12 @@ static char *HzToHuman(unsigned long hz)
 	snprintf(buffer, sizeof(buffer), "%9lli", Hz);
 
 	if (Hz>1000)
-		snprintf(buffer, sizeof(buffer), "%6lli Mhz", (Hz+500)/1000);
+		snprintf(buffer, sizeof(buffer), "%6lli Mhz",
+			(Hz+500)/1000);
 
 	if (Hz>1500000)
-		snprintf(buffer, sizeof(buffer), "%6.2f Ghz", (Hz+50000.0)/1000000);
+		snprintf(buffer, sizeof(buffer), "%6.2f Ghz",
+			(Hz+50000.0)/1000000);
 
 
 	return buffer;
@@ -242,7 +245,7 @@ static unsigned long get_claimed_hz(const int cpu)
 	unsigned long value = 0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_max_freq");
-	
+
 	if ((buffer = fwts_get(path)) != NULL) {
 		value = strtoul(buffer, NULL, 10);
 		free(buffer);
@@ -280,8 +283,9 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	fclose(file);
 
 	if (totaltests==1)
-		totaltests = (2+count_ints(line)) * sysconf(_SC_NPROCESSORS_CONF) + 2;
-	
+		totaltests = (2+count_ints(line)) *
+			sysconf(_SC_NPROCESSORS_CONF) + 2;
+
 	c = line;
 	i = 0;
 	while (c && strlen(c)>1) {
@@ -301,7 +305,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		performedtests++;
 		fwts_progress(fw, (75 * performedtests)/totaltests);
 
-		i++;	
+		i++;
 		c = c2;
 	}
 	speedcount = i;
@@ -309,14 +313,15 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	fwts_log_info_verbatum(fw, " Frequency | Speed \n-----------+---------\n");
 	for (i=0; i < speedcount; i++)
 		fwts_log_info_verbatum(fw, "%9s | %5.1f %%\n", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/topspeed);
-	
+
 	if (nrspeeds == -1)  {
 		fwts_log_info(fw, "%i CPU frequency steps supported", speedcount);
 		nrspeeds = speedcount;
 	}
 
 	if (nrspeeds != speedcount)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqPStates",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqPStates",
 			"Not all processors support the same number of P states.");
 
 	if (speedcount<2)
@@ -341,12 +346,17 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	/* now check for 1) increasing HZ and 2) increasing speed */
 	for (i=0; i<speedcount-1; i++) {
 		if (freqs[i].Hz == freqs[i+1].Hz && !warned++)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqDupFreq", "Duplicate frequency reported.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqDupFreq",
+				"Duplicate frequency reported.");
 		if (freqs[i].speed > freqs[i+1].speed)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSlowerOnCPU", "Supposedly higher frequency is slower on CPU %i!", cpu);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqSlowerOnCPU",
+				"Supposedly higher frequency is slower on CPU %i!", cpu);
 		if (freqs[i].Hz > get_claimed_hz(cpu) && !warned_PSS) {
 			warned_PSS = 1;
-			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?", freqs[i].Hz, get_claimed_hz(cpu));
+			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?",
+				freqs[i].Hz, get_claimed_hz(cpu));
 		}
 	}
 }
@@ -416,10 +426,10 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 
 
 /*
-  4) Is BIOS wrongly doing Sw_All P-state coordination across cpus
-  - Change frequency on all CPU to the lowest value
-  - Change frequency on one particular CPU to the highest
-  - If BIOS is doing Sw_All, the last high freq request will not work
+ * 4) Is BIOS wrongly doing Sw_All P-state coordination across cpus
+ * - Change frequency on all CPU to the lowest value
+ * - Change frequency on one particular CPU to the highest
+ * - If BIOS is doing Sw_All, the last high freq request will not work
  */
 static void do_sw_all_test(fwts_framework *fw)
 {
@@ -457,7 +467,8 @@ static void do_sw_all_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALL",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqSW_ALL",
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ALL "
 			"instead?");
@@ -465,11 +476,11 @@ static void do_sw_all_test(fwts_framework *fw)
 
 
 /*
-  5) Is BIOS wrongly doing Sw_Any P-state coordination across cpus
-  - Change frequency on all CPU to the lowest value
-  - Change frequency on one particular CPU to the highest
-  - Change frequency on all CPU to the lowest value
-  - If BIOS is doing Sw_Any, the high freq request will not work
+ * 5) Is BIOS wrongly doing Sw_Any P-state coordination across cpus
+ * - Change frequency on all CPU to the lowest value
+ * - Change frequency on one particular CPU to the highest
+ * - Change frequency on all CPU to the lowest value
+ * - If BIOS is doing Sw_Any, the high freq request will not work
  */
 static void do_sw_any_test(fwts_framework *fw)
 {
@@ -519,7 +530,8 @@ static void do_sw_any_test(fwts_framework *fw)
 	                                        GET_PERFORMANCE_MAX) / topspeed;
 
 	if (lowperf >= highperf)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANY",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqSW_ANY",
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ANY "
 			"instead?.");
@@ -550,10 +562,10 @@ static void check_sw_any(fwts_framework *fw)
 		}
 	}
 	closedir(dir);
-	
+
 	if (max_cpu == 0)
 		return; /* Single processor machine, no point in checking anything */
-		
+
 	/* assume that all processors have the same low performance */
 	low_perf = get_performance(max_cpu);
 	for (i=0; i<= max_cpu; i++) {
@@ -564,15 +576,19 @@ static void check_sw_any(fwts_framework *fw)
 		high_perf = get_performance(i);
 		performedtests++;
 		fwts_progress(fw, (75 * performedtests)/totaltests);
-		/* now set all the others to low again; sw_any will cause the core in question
-		   to now also get the low speed, while hardware max will keep the performance
+		/*
+		 * now set all the others to low again; sw_any will cause
+		 * the core in question to now also get the low speed, while
+		 * hardware max will keep the performance
 		 */
 		for (j=0; j <= max_cpu; j++)
 			if (i!=j)
 				lowest_speed(fw, j);
 		newhigh_perf = get_performance(i);
 		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 && once==0 && (high_perf - low_perf > 20)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqCPUsSetToSW_ANY", "Processors are set to SW_ANY.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqCPUsSetToSW_ANY",
+				"Processors are set to SW_ANY.");
 			once++;
 			lowest_speed(fw, i);
 		}
@@ -601,7 +617,7 @@ static int cpufreq_test1(fwts_framework *fw)
 		"  3) No duplicate frequency values are reported by the BIOS\n"
 		"  4) Is BIOS wrongly doing Sw_All P-state coordination across cores\n"
 		"  5) Is BIOS wrongly doing Sw_Any P-state coordination across cores\n");
-	
+
 
 	/* First set all processors to their lowest speed */
 	if ((dir = opendir(FWTS_CPU_PATH)) == NULL) {

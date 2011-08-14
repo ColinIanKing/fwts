@@ -39,7 +39,7 @@ static int nx_test1(fwts_framework *fw)
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 		return FWTS_OK;
 	}
-	
+
 	if (strstr(fwts_nx_cpuinfo->flags," pae") == NULL) {
 		fwts_passed(fw, "CPU is not PAE capable, so it does not have NX.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
@@ -48,7 +48,9 @@ static int nx_test1(fwts_framework *fw)
 
 	if ((fwts_nx_cpuinfo->x86 == -1) ||
 	    (fwts_nx_cpuinfo->x86_model == -1)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "NXNoCPUModel", "No model or family found for this CPU. Please check /proc/cpuinfo.");
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"NXNoCPUModel",
+			"No model or family found for this CPU. Please check /proc/cpuinfo.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
 		return FWTS_OK;
 	}
@@ -106,7 +108,9 @@ static int nx_test2(fwts_framework *fw)
 			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
 		} else {
 			if (cpu0_has_nx != (strstr(fwts_nx_cpuinfo->flags," nx") != NULL)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUFlagsInconsistent", "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"NXCPUFlagsInconsistent",
+					"CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}
@@ -155,7 +159,9 @@ static int nx_test3(fwts_framework *fw)
 			msr_value = val;
 		} else {
 			if ((msr_value & nx_bit) != (val & nx_bit)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUFlagsInconsistent", "CPU%d has different NX flags to CPU0.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"NXCPUFlagsInconsistent",
+					"CPU%d has different NX flags to CPU0.", i);
 				failed++;
 			}
 		}

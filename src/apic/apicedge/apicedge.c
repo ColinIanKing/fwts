@@ -39,11 +39,13 @@
  */
 
 static int apicedge_test1(fwts_framework *fw)
-{	
+{
 	FILE *file;
 
 	if ((file = fopen("/proc/interrupts", "r")) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoProcInterrupts", "Could not open file /proc/interrupts.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"NoProcInterrupts",
+			"Could not open file /proc/interrupts.");
 		return FWTS_ERROR;
 	}
 
@@ -55,12 +57,12 @@ static int apicedge_test1(fwts_framework *fw)
 		memset(line, 0, 4096);
 		if (fgets(line, 4095, file) == NULL)
 			break;
-		
+
 		if (! (line[0]==' ' || (line[0]>='0' && line[0]<='9')) )
 			continue;
 
 		irq = strtoul(line, &c, 10);
-		if (c==line)
+		if (c == line)
 			continue;
 		if (strstr(line, "IO-APIC-edge"))
 			edge = 1;
@@ -72,24 +74,26 @@ static int apicedge_test1(fwts_framework *fw)
 			edge = 1;
 		if (strstr(line, "IO-APIC-level"))
 			edge = 0;
-			
+
 		if (strstr(line,"acpi")) {
-			if (edge==1) {
+			if (edge == 1) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPIIRQEdgeTrig", "ACPI Interrupt is incorrectly edge triggered.");
 				fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 			}
-			continue;	
+			continue;
 		}
-		if ((irq<15) && (edge == 0)) {
+		if ((irq < 15) && (edge == 0)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "LegacyIRQLevelTrig", "Legacy interrupt %i is incorrectly level triggered.", irq);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		}
-		if ((irq<15) && (edge == -1)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NonLegacyIRQLevelTrig", "Non-Legacy interrupt %i is incorrectly level triggered.", irq);
+		if ((irq < 15) && (edge == -1)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"NonLegacyIRQLevelTrig",
+				"Non-Legacy interrupt %i is incorrectly level triggered.", irq);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		}
 	}
-	fclose(file);	
+	fclose(file);
 
 	if (fwts_tests_passed(fw))
 		fwts_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered.");

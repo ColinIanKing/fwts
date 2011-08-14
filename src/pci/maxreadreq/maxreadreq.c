@@ -30,7 +30,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-/* 
+/*
  * This test checks if MaxReadReq is set > 128 for non-internal stuff
  * A too low value hurts performance
  */
@@ -51,7 +51,7 @@ static int maxreadreq_init(fwts_framework *fw)
 		fwts_log_error(fw, "Unexpected empty output from lspci -vvv.");
 		return FWTS_ERROR;
 	}
-	
+
 	return FWTS_OK;
 }
 
@@ -64,7 +64,7 @@ static int maxreadreq_deinit(fwts_framework *fw)
 }
 
 static int maxreadreq_test1(fwts_framework *fw)
-{	
+{
 	int warnings = 0;
 	char current_type[512];
 	char current_device[512];
@@ -81,40 +81,45 @@ static int maxreadreq_test1(fwts_framework *fw)
 
 		if (line[0]!=' ' && line[0] != '\t' && strlen(line)>8) {
 			if (strlen(line) > 500){
-				fwts_log_warning(fw, "Too big pci string would overflow "
-					    "current_device buffer Internal plugin, "
-					    "not a firmware bug.");
+				fwts_log_warning(fw,
+					"Too big pci string would overflow "
+					"current_device buffer Internal "
+					"plugin, not a firmware bug.");
 				break;
 			}
 			snprintf(current_device, sizeof(current_device), "pci://00:%s", line);
 			strncpy(current_type, line+8, 511);
 			c = strchr(current_type, ':');
-			if (c) 
+			if (c)
 				*c='\0';
 		}
 		/* chipset devices are exempt from this check */
 		if (strcmp(current_type, "PCI bridge")==0)
-			continue;		
+			continue;
 		if (strcmp(current_type, "Host bridge")==0)
-			continue;		
+			continue;
 		if (strcmp(current_type, "System peripheral")==0)
-			continue;		
+			continue;
 
 		c = strstr(line, "MaxReadReq ");
 		if (c) {
 			c += 11;
 			val = strtoul(c, NULL, 10);
 			if (val <= 128) {
-				fwts_log_warning(fw, "MaxReadReq for %s is low (%d) [%s].", current_device, val, current_type);
+				fwts_log_warning(fw,
+					"MaxReadReq for %s is low (%d) [%s].",
+					current_device, val, current_type);
 				warnings++;
 			}
 		}
 	}
 
 	if (warnings > 0) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "LowMaxReadReq", "%d devices have low MaxReadReq settings. " 
-				"Firmware may have configured these too low.",
-				 warnings);
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"LowMaxReadReq",
+			"%d devices have low MaxReadReq settings. "
+			"Firmware may have configured these too low.",
+			warnings);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	} else
 		fwts_passed(fw, "All devices have MaxReadReq set > 128.");
@@ -129,7 +134,7 @@ static fwts_framework_minor_test maxreadreq_tests[] = {
 
 static fwts_framework_ops maxreadreq_ops = {
 	.description = "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
-	.init        = maxreadreq_init,	
+	.init        = maxreadreq_init,
 	.deinit      = maxreadreq_deinit,
 	.minor_tests = maxreadreq_tests
 };

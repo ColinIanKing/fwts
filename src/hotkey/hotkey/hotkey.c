@@ -34,7 +34,8 @@ static fwts_list *hotkeys;
 static char *hotkey_dev;
 static char *hotkey_keymap;
 
-static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_list *hotkeys)
+static int hotkey_check_key(fwts_framework *fw,
+	struct input_event *ev, fwts_list *hotkeys)
 {
 	static int scancode = 0;
 	fwts_list_link *item;
@@ -47,10 +48,11 @@ static int hotkey_check_key(fwts_framework *fw, struct input_event *ev, fwts_lis
 	if ((ev->type == EV_KEY) &&
 	    (ev->value != 0)) {
 		fwts_list_foreach(item, hotkeys) {
-			fwts_keycode *keycode = fwts_list_data(fwts_keycode*, item);
+			fwts_keycode *keycode =
+				fwts_list_data(fwts_keycode*, item);
 			if (keycode->scancode == scancode) {
 				fwts_printf(fw, "Scancode: 0x%2.2x Eventcode 0x%3.3x (%s) '%s'\n",
-					scancode, ev->code,	
+					scancode, ev->code,
 					keycode->keyname, keycode->keytext);
 				found = 1;
 				break;
@@ -76,7 +78,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 		fwts_log_error(fw, "Cannot open device %s.", path);
 		return FWTS_ERROR;
 	}
-	
+
 	fwts_printf(fw, "Now press all the hotkeys to see if they can be identified.\n");
 	fwts_printf(fw, "Press <ESC> to finish.\n");
 
@@ -88,7 +90,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 	while (do_test) {
 		switch (read(fd, &ev, sizeof(ev))) {
 		case -1:
-		case 0:	
+		case 0:
 			do_test = 0;
 			break;
 		default:
@@ -107,7 +109,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 		return FWTS_ERROR;
 	}
 	close(fd);
-	
+
 	return FWTS_OK;
 }
 
@@ -123,7 +125,8 @@ static char *hotkey_device(char *path)
 	while ((scan_entry = readdir(scan)) != NULL) {
 		if (strncmp("event", scan_entry->d_name, 5) == 0) {
 			char filename[PATH_MAX];
-			snprintf(filename, sizeof(filename), "input/%s", scan_entry->d_name);
+			snprintf(filename, sizeof(filename),
+				"input/%s", scan_entry->d_name);
 			dev = strdup(filename);
 			break;
 		}
@@ -147,7 +150,8 @@ static char *hotkey_find_keyboard(fwts_framework *fw, char *path)
 
 	while ((entry = readdir(dir)) != NULL) {
 		if (strlen(entry->d_name) > 3) {
-			snprintf(filename, sizeof(filename), "%s/%s", path, entry->d_name);
+			snprintf(filename, sizeof(filename), "%s/%s",
+				path, entry->d_name);
 			lstat(filename, &statbuf);
 			if (S_ISDIR(statbuf.st_mode)) {
 				if (!S_ISLNK(statbuf.st_mode))
@@ -165,7 +169,7 @@ static char *hotkey_find_keyboard(fwts_framework *fw, char *path)
 			}
 		}
 	}
-	
+
 	closedir(dir);
 
 	return dev;
@@ -175,7 +179,7 @@ static char *hotkey_find_keymap(fwts_framework *fw, char *device)
 {
 	fwts_list *output;
 	fwts_list_link *item;
-	
+
 	char buffer[1024];
 	char *keymap = NULL;
 

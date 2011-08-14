@@ -49,7 +49,6 @@
 
 extern fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
-
 int cpu_has_vmx(void)
 {
 	return (strstr(fwts_virt_cpuinfo->flags, "vmx") != NULL);
@@ -78,7 +77,9 @@ void virt_check_vmx(fwts_framework *fw)
 			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");
 			break;
 		case 1:
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "VirtDisabledByBIOS", "Virtualization extensions supported but disabled by BIOS.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"VirtDisabledByBIOS",
+				"Virtualization extensions supported but disabled by BIOS.");
 			break;
 		default:
 			fwts_log_error(fw, "Virtualization extensions check failed - cannot read msr.");

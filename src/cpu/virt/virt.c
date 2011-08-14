@@ -73,7 +73,7 @@ static int virt_test1(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-	
+
 
 static fwts_framework_minor_test virt_tests[] = {
 	{ virt_test1, "Check CPU Virtualisation Configuration." },

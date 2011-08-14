@@ -54,10 +54,10 @@ static int can_lock_with_msr(void)
 int vt_locked_by_bios(void)
 {
 	uint64_t msr;
-	
+
 	if (!can_lock_with_msr())
 		return 0;
-	
+
 	if (fwts_cpu_readmsr(0, MSR_FEATURE_CONTROL, &msr))
 		return -1;
 
@@ -67,7 +67,7 @@ int vt_locked_by_bios(void)
 void virt_check_svm(fwts_framework *fw)
 {
 	fwts_log_info(fw, "Check SVM Virtualization extensions are set up correctly.");
-		
+
 	if (!cpu_has_svm())
 		fwts_skipped(fw, "Processor does not support Virtualization extensions, won't test BIOS configuration, skipping test.");
 	else  {
@@ -77,7 +77,9 @@ void virt_check_svm(fwts_framework *fw)
 			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");
 			break;
 		case 1:
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "VirtDisabledByBIOS", "Virtualization extensions supported but disabled by BIOS.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"VirtDisabledByBIOS",
+				"Virtualization extensions supported but disabled by BIOS.");
 			break;
 		default:
 			fwts_log_error(fw, "Virtualization extensions check failed - cannot read msr.");

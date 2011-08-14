@@ -59,10 +59,13 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 			char *data;
 	        	fwts_microcode_info *cpu;
 
-	        	snprintf(path, sizeof(path), "/sys/devices/system/cpu/%s/microcode/version", entry->d_name);
+	        	snprintf(path, sizeof(path),
+				"/sys/devices/system/cpu/%s/microcode/version",
+				entry->d_name);
 			if ((data = fwts_get(path)) == NULL) {
 				if (!warned) {
-					fwts_failed(fw, LOG_LEVEL_LOW, "MicrocodeVersion",
+					fwts_failed(fw, LOG_LEVEL_LOW,
+						"MicrocodeVersion",
 						"The kernel does not export microcode version. "
 						"This test needs a 2.6.19-rc1 kernel or later to function");
 					warned++;
@@ -71,12 +74,10 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 				if ((cpu = (fwts_microcode_info *)calloc(1, sizeof(fwts_microcode_info))) == NULL) {
 					fwts_log_error(fw, "Cannot allocate memory.");
 					break;
-				
 				}
 				strncpy(cpu->cpu, entry->d_name, 16);
-				cpu->version = strtoul(data, NULL, 16);	
+				cpu->version = strtoul(data, NULL, 16);
 				free(data);
-	
 				fwts_list_append(cpus, cpu);
 			}
 		}
@@ -104,9 +105,11 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 		    (strncmp(entry->d_name,"cpu",3) == 0) &&
 		    (isdigit(entry->d_name[3]))) {
 
-	        	snprintf(path, sizeof(path), "/sys/devices/system/cpu/%s/microcode/version", entry->d_name);
+	        	snprintf(path, sizeof(path),
+				"/sys/devices/system/cpu/%s/microcode/version",
+				entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
-				version = strtoul(data, NULL, 16);	
+				version = strtoul(data, NULL, 16);
 				free(data);
 				fwts_list_foreach(item, cpus) {
 					fwts_microcode_info *cpu = fwts_list_data(fwts_microcode_info*, item);
@@ -115,9 +118,12 @@ static void check_info(fwts_framework *fw, fwts_list *cpus)
 							passed++;
 						else {
 							failed++;
-							fwts_failed(fw, LOG_LEVEL_LOW, "MicrocodeOutdated",
+							fwts_failed(fw, LOG_LEVEL_LOW,
+								"MicrocodeOutdated",
 								"Cpu %s has outdated microcode (version %x while version %x is available)",
-								cpu->cpu, cpu->version, version);
+								cpu->cpu,
+								cpu->version,
+								version);
 						}
 					}
 				}
@@ -167,7 +173,7 @@ static int microcode_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	fwts_pipe_close(fd, pid);
-	
+
 	gather_info(fw, &cpus);
 
 	/* now run the microcode update */

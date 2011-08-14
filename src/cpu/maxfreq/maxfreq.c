@@ -54,7 +54,7 @@ static int maxfreq_max(const char *str)
 
 		if (!isdigit(*str))
 			break;
-		
+
 		val = atoi(str);
 		if (val > max)
 			max = val;
@@ -77,9 +77,9 @@ static int maxfreq_test1(fwts_framework *fw)
 	int advice = 0;
 
 	fwts_log_info(fw,
-		"This test checks the maximum CPU frequency as detected by the kernel for "
-		"each CPU against maxiumum frequency as specified by the BIOS frequency "
-		"scaling settings.");
+		"This test checks the maximum CPU frequency as detected by "
+		"the kernel for each CPU against maxiumum frequency as "
+		"specified by the BIOS frequency scaling settings.");
 
 	cpuinfo = fwts_file_open_and_read(CPU_INFO_PATH);
 	if (cpuinfo == NULL) {
@@ -125,9 +125,12 @@ static int maxfreq_test1(fwts_framework *fw)
 		fwts_skipped(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
 		return FWTS_SKIP;
 	}
-		
+
 	if (!(dir = opendir(CPU_FREQ_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "CPUFreqNoPath", "No %s directory available: cannot test.", CPU_FREQ_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"CPUFreqNoPath",
+			"No %s directory available: cannot test.",
+			CPU_FREQ_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -137,13 +140,17 @@ static int maxfreq_test1(fwts_framework *fw)
 			char path[PATH_MAX];
 			char *data;
 
-			snprintf(path, sizeof(path), CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies", entry->d_name);
+			snprintf(path, sizeof(path),
+				CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies",
+				entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
 				int maxfreq = maxfreq_max(data);
 				int cpunum = atoi(entry->d_name + 3);
 				if (maxfreq == -1) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqReadFailed",
-						"Cannot read cpu frequency from %s for CPU %s\n", CPU_FREQ_PATH, entry->d_name);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"CPUFreqReadFailed",
+						"Cannot read cpu frequency from %s for CPU %s\n",
+						CPU_FREQ_PATH, entry->d_name);
 					failed++;
 				} else {
 					double maxfreq_ghz = (double)maxfreq/1000000.0;
@@ -151,7 +158,9 @@ static int maxfreq_test1(fwts_framework *fw)
 
 					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
 						failed++;
-						fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSpeedMismatch",
+						fwts_failed(fw,
+							LOG_LEVEL_MEDIUM,
+							"CPUFreqSpeedMismatch",
 							"Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n",
 							maxfreq_ghz, cpufreq_ghz);
 						if (!advice)  {
@@ -163,7 +172,7 @@ static int maxfreq_test1(fwts_framework *fw)
 								"the ACPI _PSS (Performance Supported States) object. This is described in "
 								"section 8.4.4.2 of the APCI specification.",
 								(double)maxfreq/1000000.0, cpunum, path,
-								(double)cpufreq[cpunum]/1000000.0);	
+								(double)cpufreq[cpunum]/1000000.0);
 						}
 						else
 							fwts_advice(fw, "See advice for previous CPU.");

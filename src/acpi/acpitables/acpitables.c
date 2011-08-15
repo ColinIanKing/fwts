@@ -32,7 +32,7 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
             (ecdt->ec_control.address_space_id != 1))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
-				ecdt->ec_control.address_space_id);	
+				ecdt->ec_control.address_space_id);
 		fwts_advice(fw, "The ECDT EC_CONTROL address space id was invalid, however the kernel ACPI EC driver "
 				"will just assume it an I/O port address.  This will not affect "
 				"the system behaviour and can probably be ignored.");
@@ -53,7 +53,7 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if (hpet->base_address.address == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseZero", "HPET base is 0x000000000000, which is invalid.");
-	
+
 	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorIdZero", "HPET PCI Vendor ID is 0x0000, which is invalid.");
 		fwts_advice(fw, "The HPET specification (http://www.intel.com/hardwaredesign/hpetspec_1.pdf)  describes "
@@ -109,8 +109,8 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTDSTNull", "FADT DSDT address is null.");
 	if (table->length >= 148) {
 		if (fadt->x_dsdt == 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTDNull", "FADT X_DSDT address is null.");		
-			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null." 
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTDNull", "FADT X_DSDT address is null.");
+			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null."
 					"The kernel will fall back to using the 32 bit DSDT pointer instead.");
 		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64Mismatch", "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
@@ -119,7 +119,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"pointers to point to the same DSDT, however they don't which is clearly ambiguous and wrong. "
 					"The kernel works around this by using the 64 bit X_DSDT pointer to the DSDT. ");
 	}
-	
+
 	if (fadt->sci_int == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSCIIRQZero", "FADT SCI Interrupt is 0x00, should be defined.");
 	if (fadt->smi_cmd == 0) {
@@ -141,7 +141,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"specific functions will not work.");
 		}
 	}
-	
+
 	if (fadt->pm_tmr_len != 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN", "FADT PM_TMR_LEN is %hhu, should be 4.", fadt->pm_tmr_len);
 		fwts_advice(fw, "FADT field PM_TMR_LEN defines the number of bytes decoded by PM_TMR_BLK. "
@@ -237,7 +237,7 @@ static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
-	
+
 	if (sbst->critical_energy_level > sbst->low_energy_level) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1", "SBST Critical Energy Level (%u) is greater than the Low Energy Level (%u).",
 			sbst->critical_energy_level, sbst->low_energy_level);
@@ -279,14 +279,14 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	const void *data = table->data;
 	int length = table->length;
 	int i = 0;
-	
+
 	if (madt->flags & 0xfffffffe)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTFlagsNonZero", "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
 			(unsigned long int)madt->flags);
 
-	data += sizeof(fwts_acpi_table_madt);	
+	data += sizeof(fwts_acpi_table_madt);
 	length -= sizeof(fwts_acpi_table_madt);
-	
+
 	while (length > (int)sizeof(fwts_acpi_madt_sub_table_header)) {
 		int skip = 0;
 		i++;
@@ -294,7 +294,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
-		
+
 		switch (hdr->type) {
 		case 0: {
 				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;

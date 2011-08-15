@@ -35,10 +35,12 @@ static int apicinstance_test1(fwts_framework *fw)
 
 		if (table == NULL)
 			break;
-		
+
 		if (strcmp(table->name, "APIC") == 0)  {
 			fwts_log_info(fw, "Found APIC/MADT table %s @ %llx, length 0x%d\n",
-				table->name, (unsigned long long)table->addr, (int)table->length);
+				table->name,
+				(unsigned long long)table->addr,
+				(int)table->length);
 			if (count == 0)
 				first_madt_table = table;
 			else {
@@ -54,10 +56,14 @@ static int apicinstance_test1(fwts_framework *fw)
 
 	if (count > 1) {
 		char buffer[32];
-		fwts_failed(fw, LOG_LEVEL_HIGH, "MultipleAPICMADT", "Found %d APIC/MADT tables, the kernel expects just one.", count);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MultipleAPICMADT",
+			"Found %d APIC/MADT tables, the kernel expects just one.",
+			count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		snprintf(buffer, sizeof(buffer), " (or up to %d)", count);
-		fwts_log_advice(fw, "If you find any APIC issues, perhaps try using acpi_apic_instance=2%s.",
+		fwts_log_advice(fw,
+			"If you find any APIC issues, perhaps try using "
+			"acpi_apic_instance=2%s.",
 			count > 2 ? buffer : "");
 	} else
 		fwts_passed(fw, "Found %d APIC/MADT table(s), as expected.", count);

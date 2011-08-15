@@ -73,7 +73,7 @@ static ACPI_TABLE_XSDT 		*fwts_acpica_XSDT;
 static ACPI_TABLE_RSDT          *fwts_acpica_RSDT;
 static ACPI_TABLE_RSDP		*fwts_acpica_RSDP;
 static ACPI_TABLE_FADT		*fwts_acpica_FADT;
-static void *			*fwts_acpica_DSDT;
+static void 			*fwts_acpica_DSDT;
 
 static fwts_framework		*fwts_acpica_fw;			/* acpica context copy of fw */
 static int			fwts_acpica_force_sem_timeout;		/* > 0, forces a semaphore timeout */
@@ -480,23 +480,32 @@ int fwts_acpica_init(fwts_framework *fw)
 		if (fwts_acpi_find_table(fw, "DSDT", 0, &tbl) != FWTS_OK)
 			return FWTS_ERROR;
 		if (tbl) {
-			fwts_acpica_DSDT = tbl->data;
+			fwts_acpica_DSDT = (void *)tbl->data;
 
 			fwts_acpica_FADT->Dsdt = ACPI_PTR_TO_PHYSADDR(tbl->data);
 			if (table->length >= 148)
 				fwts_acpica_FADT->XDsdt = ACPI_PTR_TO_PHYSADDR(tbl->data);
+		} else {
+			fwts_acpica_DSDT = NULL;
+			fwts_acpica_FADT->Dsdt = 0;
+			fwts_acpica_FADT->XDsdt = 0;
 		}
 
 		if (fwts_acpi_find_table(fw, "FACS", 0, &tbl) != FWTS_OK)
 			return FWTS_ERROR;
 		if (tbl) {
+			fwts_acpica_FADT->Facs = ACPI_PTR_TO_PHYSADDR(tbl->data);
 			if (table->length >= 140)
 				fwts_acpica_FADT->XFacs = ACPI_PTR_TO_PHYSADDR(tbl->data);
-			fwts_acpica_FADT->Facs = ACPI_PTR_TO_PHYSADDR(tbl->data);
+		} else {
+			fwts_acpica_FADT->Facs = 0;
+			fwts_acpica_FADT->XFacs = 0;
 		}
 
 		fwts_acpica_FADT->Header.Checksum = 0;
 		fwts_acpica_FADT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_FADT, table->length);
+	} else {
+		fwts_acpica_FADT = NULL;
 	}
 	
 	/* Clone XSDT, make it point to tables in user address space */
@@ -526,6 +535,8 @@ int fwts_acpica_init(fwts_framework *fw)
 		}
 		fwts_acpica_XSDT->Header.Checksum = 0;
 		fwts_acpica_XSDT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_XSDT, table->length);
+	} else {
+		fwts_acpica_XSDT = NULL;
 	}
 
 	/* Clone RSDT, make it point to tables in user address space */
@@ -556,6 +567,8 @@ int fwts_acpica_init(fwts_framework *fw)
 		}
 		fwts_acpica_RSDT->Header.Checksum = 0;
 		fwts_acpica_RSDT->Header.Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_RSDT, table->length);
+	} else {
+		fwts_acpica_RSDT = NULL;
 	}
 
 	/* Clone RSDP, make it point to tables in user address space */
@@ -569,6 +582,8 @@ int fwts_acpica_init(fwts_framework *fw)
 			fwts_acpica_RSDP->XsdtPhysicalAddress = ACPI_PTR_TO_PHYSADDR(fwts_acpica_XSDT);
 		fwts_acpica_RSDP->RsdtPhysicalAddress = ACPI_PTR_TO_PHYSADDR(fwts_acpica_RSDT);
 		fwts_acpica_RSDP->Checksum = (UINT8)-AcpiTbChecksum ((void*)fwts_acpica_RSDP, ACPI_RSDP_CHECKSUM_LENGTH);
+	} else {
+		fwts_acpica_RSDP = NULL;
 	}
 
 	if (AcpiInitializeTables(Tables, ACPI_MAX_INIT_TABLES, TRUE) != AE_OK) {

@@ -54,7 +54,7 @@ static void syntaxcheck_free_advice(void);
 static int syntaxcheck_init(fwts_framework *fw)
 {
 	(void)syntaxcheck_load_advice(fw);
-	
+
 	return FWTS_OK;
 }
 
@@ -107,10 +107,11 @@ static void syntaxcheck_dump_code(fwts_framework *fw,
 		if (i >= error_line + (howmany / 2))
 			break;
 		if (i > error_line - (howmany / 2)) {
-			fwts_log_info_verbatum(fw, "%5.5d| %s\n", i, fwts_text_list_text(item));
+			fwts_log_info_verbatum(fw, "%5.5d| %s\n", i,
+				fwts_text_list_text(item));
 			if (i == error_line) {
 				fwts_log_info_verbatum(fw, "     | %*.*s", carat_offset, carat_offset, "^");
-				fwts_log_info_verbatum(fw, "     | %s %d: %s\n", 
+				fwts_log_info_verbatum(fw, "     | %s %d: %s\n",
 					syntaxcheck_error_level(error_code), error_code, error_message);
 			}
 		}
@@ -180,7 +181,7 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 
 fail_put:
 	json_object_put(syntaxcheck_objs);
-	
+
 	return ret;
 }
 
@@ -256,16 +257,16 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 			int num;
 			char ch;
 			char *line = fwts_text_list_text(item);
-	
+
 			if ((sscanf(line, "%*s %d%c", &num, &ch) == 2) && ch == ':') {
 				if (item->next != NULL) {
 					char *error_text = fwts_text_list_text(item->next);
 					int iasl_error = (strstr(error_text, "Error") != NULL);
 					int iasl_warning = (strstr(error_text, "Warning") != NULL);
 					int error_code;
-	
+
 					sscanf(error_text, "%*s %d", &error_code);
-				
+
 					/* Valid error or warning, go and report */
 					if (iasl_error || iasl_warning) {
 						char label[64];
@@ -280,7 +281,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 
 						/* Strip out the ^ from the error message */
 						for (ptr = error_text; *ptr; ptr++)
-							if (*ptr == '^') 
+							if (*ptr == '^')
 								*ptr = ' ';
 
 						/* Look for error message after: "Error:  4042 - " prefix */
@@ -296,8 +297,8 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 
 						snprintf(label, sizeof(label), "AMLAssemblerError%d", error_code);
 						fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
-						syntaxcheck_dump_code(fw, error_code, 
-							carat_offset - colon_offset, ptr, 
+						syntaxcheck_dump_code(fw, error_code,
+							carat_offset - colon_offset, ptr,
 							iasl_disassembly, num, 8);
 						syntaxcheck_give_advice(fw, error_code);
 					}

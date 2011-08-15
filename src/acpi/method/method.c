@@ -27,7 +27,7 @@
 /* acpica headers */
 #include "acpi.h"
 
-/* 
+/*
  * ACPI methods + objects used in Linux ACPI driver:
  *
  * Name	 APCI Spec.	Tested
@@ -341,7 +341,7 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 		if (check_func != NULL) {
 			ACPI_OBJECT *obj = buf.Pointer;
 			check_func(fw, name, &buf, obj, private);
-		}		
+		}
 	}
 	if (buf.Length && buf.Pointer)
 		free(buf.Pointer);
@@ -397,7 +397,7 @@ static int method_evaluate_method(fwts_framework *fw,
 			*/
 		}
 	}
-	
+
 	if (!found) {
 		if (test_type == METHOD_OPTIONAL) {
 			fwts_skipped(fw, "Optional method %s did not exist.", name);
@@ -427,7 +427,7 @@ static int method_name_check(fwts_framework *fw)
 			     (*ptr == '_') ||
 			     (isdigit(*ptr)) ||
 			     (isupper(*ptr))) ) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, "MethodIllegalName",  "Method %s contains an illegal character: '%c'. This should be corrected.", 
+				fwts_failed(fw, LOG_LEVEL_HIGH, "MethodIllegalName",  "Method %s contains an illegal character: '%c'. This should be corrected.",
 					fwts_list_data(char *, item), *ptr);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
 				failed++;
@@ -524,7 +524,7 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				(uint32_t)obj->Integer.Value,
 				sbs_info[obj->Integer.Value]);
 			break;
-		default:	
+		default:
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn", "_SBS returned %d, should be between 0 and 4.",
 				(uint32_t)obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -574,49 +574,49 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		/* Sanity check each field */
 		/* Power Unit */
-		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
+		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBadUnits", "_BIF: Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Capacity */
-		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFBadCapacity", "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
-		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFChargeCapacity", "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Battery Technology */
-		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {	
+		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBatTechUnit", "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design Voltage */
-		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignVoltage", "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
-		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignCapacityE5", "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
-		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignCapacityE6", "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -668,7 +668,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		/* Sanity check each field */
 		/* Power Unit */
-		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {	
+		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXPowerUnit",
 				"_BIX: Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[1].Integer.Value);
@@ -676,7 +676,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Design Capacity */
-		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacity",
 				"_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[2].Integer.Value);
@@ -684,7 +684,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Last Full Charge Capacity */
-		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXFullChargeCapacity",
 				"_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[3].Integer.Value);
@@ -692,7 +692,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Battery Technology */
-		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {	
+		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXBatteryTechUnit",
 				"_BIX: Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[4].Integer.Value);
@@ -700,7 +700,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Design Voltage */
-		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignVoltage",
 				"_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[5].Integer.Value);
@@ -708,7 +708,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Design capacity warning */
-		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacityE6",
 				"_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[6].Integer.Value);
@@ -716,7 +716,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Design capacity low */
-		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacityE7",
 				 "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[7].Integer.Value);
@@ -724,7 +724,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 		/* Cycle Count */
-		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {	
+		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
 				"_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[10].Integer.Value);
@@ -787,7 +787,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		/* Sanity check each field */
 		/* Battery State */
-		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
+		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadState",
 					"_BST: Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
@@ -902,7 +902,7 @@ static int method_test_BMC(fwts_framework *fw)
 	}
 	return FWTS_OK;
 }
-	
+
 /* Section 15, Waking and Sleeping */
 
 static int method_test_BFS(fwts_framework *fw)
@@ -912,10 +912,10 @@ static int method_test_BFS(fwts_framework *fw)
 	if (method_exits("_BFS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
-	
+
 			arg[0].Type = ACPI_TYPE_INTEGER;
 			arg[0].Integer.Value = i;
-	
+
 			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BFS", arg, 1,
 			  			  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
@@ -962,7 +962,7 @@ static int method_test_GTS(fwts_framework *fw)
 	if (method_exits("_GTS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
-	
+
 			arg[0].Type = ACPI_TYPE_INTEGER;
 			arg[0].Integer.Value = i;
 
@@ -987,12 +987,12 @@ static int method_test_TTS(fwts_framework *fw)
 	if (method_exits("_BFS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
-	
+
 			arg[0].Type = ACPI_TYPE_INTEGER;
 			arg[0].Integer.Value = i;
 
 			fwts_log_info(fw, "Test _TTS(%d) Transition To State S%d.", i, i);
-	
+
 			if (method_evaluate_method(fw, METHOD_MANDITORY, "_TTS", arg, 1,
 						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 				break;
@@ -1024,7 +1024,7 @@ static void method_test_Sx_return(fwts_framework *fw, char *name, ACPI_BUFFER *b
 static int method_test ## name(fwts_framework *fw)	\
 {							\
 	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_Sx_return, # name); \
-}			
+}
 
 method_test_Sx(_S0)
 method_test_Sx(_S1)
@@ -1055,7 +1055,7 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				failed++;
 			}
 			else {
-				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {	
+				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKBitField",
 						"_WAK: expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.",
 						(uint32_t)obj->Package.Elements[0].Integer.Value);
@@ -1077,7 +1077,7 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 							"_WAK method is misinforming the operating system. Currently Linux does not "
 							"check for the return type from _WAK, so it should theoretically not affect the "
 							"operation of suspend/resume.");
-				
+
 					failed++;
 				}
 			}
@@ -1128,7 +1128,7 @@ static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		method_dump_package(fw, obj);
-	
+
 		if (obj->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PIFElementCount",
 				"_PIF should return package of 6 elements, got %d elements instead.",
@@ -1276,7 +1276,7 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 static int method_test ## name(fwts_framework *fw)	\
 {							\
 	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_THERM_return, # name);				\
-}			
+}
 
 method_test_THERM(_CRT, METHOD_OPTIONAL)
 method_test_THERM(_HOT, METHOD_OPTIONAL)
@@ -1446,7 +1446,7 @@ static int method_test_STP(fwts_framework *fw)
 	arg[0].Integer.Value = 1;	/* DC timer */
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 0;	/* wake up instantly */
-	
+
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STP", arg, 2, method_test_passed_failed_return, "_STP");
 }
 
@@ -1458,7 +1458,7 @@ static int method_test_STV(fwts_framework *fw)
 	arg[0].Integer.Value = 1;	/* DC timer */
 	arg[1].Type = ACPI_TYPE_INTEGER;
 	arg[1].Integer.Value = 100;	/* timer value */
-	
+
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STV", arg, 2, method_test_passed_failed_return, "_STV");
 }
 
@@ -1468,7 +1468,7 @@ static int method_test_TIP(fwts_framework *fw)
 
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
-	
+
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIP", arg, 1, method_test_integer_return, NULL);
 }
 
@@ -1478,7 +1478,7 @@ static int method_test_TIV(fwts_framework *fw)
 
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;	/* DC timer */
-	
+
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_TIV", arg, 1, method_test_integer_return, NULL);
 }
 
@@ -1489,9 +1489,9 @@ static int method_test_DOS(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 
 	arg[0].Type = ACPI_TYPE_INTEGER;
-	arg[0].Integer.Value = 0 << 2 | 1;		
+	arg[0].Integer.Value = 0 << 2 | 1;
 		/* BIOS should toggle active display, BIOS controls brightness of LCD on AC/DC power changes */
-	
+
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DOS", arg, 1, method_test_NULL_return, NULL);
 }
 
@@ -1526,7 +1526,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 	
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 
 				failed++;
 			else {
 				uint32_t val = obj->Package.Elements[i].Integer.Value;
@@ -1557,7 +1557,7 @@ static int method_test_DOD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DOD", NULL, 0, method_test_DOD_return, NULL);
 }
-	
+
 static void method_test_ROM_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	method_check_type(fw, name, buf, ACPI_TYPE_BUFFER);
@@ -1614,7 +1614,7 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 	
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 
 				failed++;
 		}
 		if (failed) {
@@ -1696,7 +1696,7 @@ static void method_test_DDC_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				"Method _DDC returned a buffer of %d items, expected %d.",
 				obj->Buffer.Length, requested);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else	
+		} else
 			fwts_passed(fw, "Method _DDC returned a buffer of %d items as expected.",
 				obj->Buffer.Length);
 		break;
@@ -1790,7 +1790,7 @@ static int method_test_DSW(fwts_framework *fw)
 static int method_test ## name(fwts_framework *fw)	\
 {							\
 	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, NULL, 0, method_test_NULL_return, # name); \
-}			
+}
 
 method_test_PSx(_PS0)
 method_test_PSx(_PS1)
@@ -1833,7 +1833,7 @@ static int method_test ## name(fwts_framework *fw)	\
 	arg[0].Integer.Value = 1;			\
 							\
 	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, arg, 1, method_test_NULL_return, # name); \
-}			
+}
 
 method_test_EJx(_EJ0)
 method_test_EJx(_EJ1)
@@ -1878,7 +1878,7 @@ static void method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	}
 	switch (obj->Type) {
 	case ACPI_TYPE_STRING:
-		if (obj->String.Pointer) 
+		if (obj->String.Pointer)
 			fwts_passed(fw, "Object _UID returned a string '%s' as expected.",
 				obj->String.Pointer);
 		else {
@@ -1955,7 +1955,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PIF, "Check _PIF (Power Source Information) Object." },
 
 	/* Section 11.3 Fan Devices */
-	
+
 	{ method_test_FIF, "Check _FIF (Fan Information)." },
 	/* { method_test_FPS, "Check _FPS (Fan Performance States)." }, */
 	{ method_test_FSL, "Check _FSL (Fan Set Level)." },
@@ -1991,7 +1991,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PXM, "Check _PXM (Proximity)." },
 
 	/* Section 6.5 Other Objects and Controls */
-	
+
 	{ method_test_DCK, "Check _DCK (Dock)." },
 	{ method_test_BDN, "Check _BDN (BIOS Dock Name)." },
 	{ method_test_BBN, "Check _BBN (Base Bus Number)." },
@@ -2031,9 +2031,9 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 7.1 */
 	{ method_test_ON,  "Check _ON  (Set resource on)." },
 	{ method_test_OFF, "Check _OFF (Set resource off)." },
-	
+
 	/* Appendix B, ACPI Extensions for Display Adapters */
-	
+
 	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching)." },
 	{ method_test_DOD, "Check _DOD (Enumerate All Devices Attached to Display Adapter)." },
 	{ method_test_ROM, "Check _ROM (Get ROM Data) Object." },

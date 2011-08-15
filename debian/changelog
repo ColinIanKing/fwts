@@ -1,3 +1,31 @@
+fwts (0.23.17) oneiric; urgency=low
+
+  * acpi: method: tidy up source.
+  * acpi: acpitables: tidy up source.
+  * acpi: wmi: tidy up source.
+  * acpi: wakealarm: tidy up source.
+  * acpi: syntaxcheck: tidy up source.
+  * acpi: s4: tidy up source.
+  * acpi: s3power: tidy up source.
+  * acpi: s3: tidy up source.
+  * acpi: powerbutton: tidy up source.
+  * acpi: osilinux: tidy up source.
+  * acpi: mcfg: tidy up source.
+  * acpi: lid: fix failure format string (LP: #826676)
+  * acpi: klog: tidy up source.
+  * acpi: fan: tidy up source.
+  * acpi: fadt: tidy up source.
+  * acpi: dmar: tidy up source.
+  * acpi: cstates: tidy up source.
+  * acpi: common: tidy up source.
+  * acpi: checksum: tidy up source.
+  * acpi: battery: tidy up source.
+  * acpi: apicinstance: tidy up source.
+  * acpi: acpiinfo: tidy up source.
+  * acpi: ac_adapter: tidy up source.
+
+ -- Colin King <colin.king@canonical.com>  Mon, 15 Aug 2011 12:11:12 +0100
+
 fwts (0.23.16) oneiric; urgency=low
 
   * cpu: virt: tidy up sources.

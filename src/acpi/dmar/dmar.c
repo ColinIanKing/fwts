@@ -108,7 +108,9 @@ static int read_pci_device_secondary_bus_number(uint8_t seg,
 	char configs[64];
 	size_t count;
 
-	snprintf(path, sizeof(path), "/sys/bus/pci/devices/%04x:%02x:%02x.%d/config", seg, bus, dev, fn);
+	snprintf(path, sizeof(path),
+		"/sys/bus/pci/devices/%04x:%02x:%02x.%d/config",
+		seg, bus, dev, fn);
 	if ((file = fopen(path, "r")) == NULL)
 		return -1;
 
@@ -125,7 +127,8 @@ static int read_pci_device_secondary_bus_number(uint8_t seg,
 	return 1;
 }
 
-static int acpi_parse_one_dev_scope(fwts_framework *fw, struct acpi_dev_scope *scope, int seg)
+static int acpi_parse_one_dev_scope(fwts_framework *fw,
+	struct acpi_dev_scope *scope, int seg)
 {
 	struct acpi_pci_path *path;
 	int count;
@@ -134,7 +137,8 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw, struct acpi_dev_scope *s
 	int dev_type;
 
 	if (scope->length < MIN_SCOPE_LEN) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDevScope", "Invalid device scope entry.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDevScope",
+			"Invalid device scope entry.");
 		return FWTS_ERROR;
 	}
 
@@ -170,7 +174,8 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw, struct acpi_dev_scope *s
 
 	if ((scope->dev_type == ACPI_DEV_ENDPOINT && dev_type > 0) ||
 		(scope->dev_type == ACPI_DEV_P2PBRIDGE && dev_type == 0)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DevScopeTypeNoMatch", "Device scope type not match.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DevScopeTypeNoMatch",
+			"Device scope type not match.");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -179,7 +184,8 @@ error:
 	return FWTS_ERROR;
 }
 
-static int acpi_parse_dev_scope(fwts_framework *fw, void *start, void *end, int seg)
+static int acpi_parse_dev_scope(fwts_framework *fw,
+	void *start, void *end, int seg)
 {
 	struct acpi_dev_scope *scope;
 	int ret;
@@ -194,18 +200,21 @@ static int acpi_parse_dev_scope(fwts_framework *fw, void *start, void *end, int 
 	return FWTS_OK;
 }
 
-static int acpi_parse_one_drhd(fwts_framework *fw, struct acpi_dmar_entry_header *header)
+static int acpi_parse_one_drhd(fwts_framework *fw,
+	struct acpi_dmar_entry_header *header)
 {
 	static int include_all;
 	struct acpi_table_drhd *drhd = (struct acpi_table_drhd*)header;
 
 	if (drhd->address & MASK_4K) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDRHDRegAddr", "Invalid drhd register address.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDRHDRegAddr",
+			"Invalid drhd register address.");
 		return FWTS_ERROR;
 	}
 	if (drhd->flags & 1) {
 		if (include_all == 1) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MultipleDRHDSFlag", "Multiple drhds have include_all flag set.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MultipleDRHDSFlag",
+				"Multiple drhds have include_all flag set.");
 			return FWTS_ERROR;
 		}
 		include_all = 1;
@@ -216,14 +225,16 @@ static int acpi_parse_one_drhd(fwts_framework *fw, struct acpi_dmar_entry_header
 	return FWTS_OK;
 }
 
-static int acpi_parse_one_rmrr(fwts_framework *fw, struct acpi_dmar_entry_header *header)
+static int acpi_parse_one_rmrr(fwts_framework *fw,
+	struct acpi_dmar_entry_header *header)
 {
 	struct acpi_table_rmrr *rmrr = (struct acpi_table_rmrr *)header;
 
 	if ((rmrr->base_address & MASK_4K)
 		|| (rmrr->end_address < rmrr->base_address)
 		|| ((rmrr->end_address - rmrr->base_address + 1) & MASK_4K)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidRMRRRangeAddr", "Invalid rmrr range address.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidRMRRRangeAddr",
+			"Invalid rmrr range address.");
 		return FWTS_ERROR;
 	}
 	return acpi_parse_dev_scope(fw, (void *)(rmrr + 1),
@@ -237,7 +248,6 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 	int failed = 0;
 
-	
 	if (fwts_acpi_find_table(fw, "DMAR", 0, &table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot load ACPI table.");
 		return FWTS_ERROR;
@@ -249,13 +259,14 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 
 	table_ptr = (uint8_t*)table->data;
 	if (table->length <= DMAR_HEADER_SIZE) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDMAR", "Invalid DMAR ACPI table.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDMAR",
+			"Invalid DMAR ACPI table.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
 	header = (struct acpi_dmar_entry_header *)(table_ptr+DMAR_HEADER_SIZE);
-	while ((unsigned long)header < (unsigned long)(table_ptr + table->length)) {		
+	while ((unsigned long)header < (unsigned long)(table_ptr + table->length)) {
 		if ((header->type == ACPI_DMAR_DRHD) &&
 		    (acpi_parse_one_drhd(fw, header) != FWTS_OK)) {
 			failed++;
@@ -275,10 +286,12 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void acpiinfo_check(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors)
+static void acpiinfo_check(fwts_framework *fw,
+	char *line, int repeated, char *prevline, void *private, int *errors)
 {
         if (strstr(line, "DMAR:[fault reason"))
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DMARError", "Found DMAR error: %s", line);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DMARError",
+		"Found DMAR error: %s", line);
 }
 
 static int dmar_test1(fwts_framework *fw)

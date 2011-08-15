@@ -155,7 +155,7 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw,
 			"MCFG table must be least %d bytes (header size) with "
-			"multiples of %d "bytes for each MCFG entry.",
+			"multiples of %d bytes for each MCFG entry.",
 			36+8, (int)sizeof(struct mcfg_entry));
 		return FWTS_ERROR;
 	}

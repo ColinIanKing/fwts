@@ -47,7 +47,7 @@ typedef struct {
 typedef struct {
 	uint8_t	guid[16];			/* GUID */
 	union {
-		uint8_t 	obj_id[2];		/* Object Identifier */
+		uint8_t 	obj_id[2];	/* Object Identifier */
 		struct {
 			uint8_t	notify_id;	/* Notify Identifier */
 			uint8_t	reserved;	/* Reserved? */
@@ -80,7 +80,7 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 static fwts_wmi_known_guid *wmi_find_guid(char *guid)
 {
 	fwts_wmi_known_guid *info = fwts_wmi_known_guids;
-	
+
 	for (info = fwts_wmi_known_guids; info->guid != NULL; info++)
 		if (strcmp(info->guid, guid) == 0)
 			return info;
@@ -107,7 +107,7 @@ char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 		strcat(buffer, "WMI_STRING");
 	if (flags & FWTS_WMI_EVENT)
 		strcat(buffer, "WMI_EVENT ");
-	
+
 	return buffer;
 }
 
@@ -131,7 +131,6 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 			guid[8], guid[9],
 			guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
 
-
 		known = wmi_find_guid(guidstr);
 
 		if (info->flags & FWTS_WMI_METHOD) {
@@ -139,12 +138,14 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 		} else if (info->flags & FWTS_WMI_EVENT) {
 			fwts_log_info(fw, "Found WMI Event, Notifier ID: 0x%2.2x, GUID: %s, Instance 0x%2.2x", info->notify_id, guidstr, info->instance);
 			if (known == NULL) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "WMIUnknownGUID", "GUID %s is unknown to the kernel, a driver may need to be implemented for this GUID.", guidstr);		
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"WMIUnknownGUID",
+					"GUID %s is unknown to the kernel, a driver may need to be implemented for this GUID.", guidstr);
 				*result = true;
 				if (!advice_given) {
 					advice_given = 1;
 					fwts_log_nl(fw);
-					fwts_log_advice(fw, 	
+					fwts_log_advice(fw,
 						"ADVICE: A WMI driver probably needs to be written for this event.");
 					fwts_log_advice(fw,
 						"It can checked for using: wmi_has_guid(\"%s\").", guidstr);
@@ -162,7 +163,9 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 		}
 
 		if (known) {
-			fwts_passed(fw, "GUID %s is handled by driver %s (Vendor: %s).", guidstr, known->driver, known->vendor);
+			fwts_passed(fw,
+				"GUID %s is handled by driver %s (Vendor: %s).",
+				guidstr, known->driver, known->vendor);
 			*result = true;
 		}
 
@@ -190,7 +193,7 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 				continue;
 		}
 		CONSUME_WHITESPACE(str);
-		
+
 		for (i=0;i<8;i++) {
 			if (strncmp(str, "0x", 2))
 				break;
@@ -202,7 +205,9 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 			str++;
 			data++;
 			if (data > wdg_data + size) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, "WMI_WDGBufferBad", "_WDG buffer was more than %d bytes long!", size);
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"WMI_WDGBufferBad",
+					"_WDG buffer was more than %d bytes long!", size);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_LENGTH);
 				return;
 			}
@@ -255,7 +260,7 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item, int *cou
 	CONSUME_WHITESPACE(str);
 
 	size = strtoul(str, NULL, 16);
-		
+
 	item = item->next;
 	if (item == NULL) return;
 
@@ -270,7 +275,7 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item, int *cou
 		(*count)++ ;
 		wmi_get_wdg_data(fw, item, size, wdg_data);
 		wmi_parse_wdg_data(fw, size, wdg_data, result);
-		free(wdg_data);	
+		free(wdg_data);
 	}
 }
 
@@ -281,7 +286,7 @@ static int wmi_table(fwts_framework *fw, char *table, int which, char *name, boo
 	int count = 0;
 	int ret;
 
-	ret = fwts_iasl_disassemble(fw, table, which, &iasl_output);	
+	ret = fwts_iasl_disassemble(fw, table, which, &iasl_output);
 	if (ret == FWTS_NO_TABLE)	/* Nothing more to do */
 		return ret;
 	if (ret != FWTS_OK) {

@@ -34,7 +34,7 @@ static int klog_init(fwts_framework *fw)
 		klog = fwts_file_open_and_read(fw->klog);
 	else
 		klog = fwts_klog_read();
-	
+
 	if (klog == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
 		return FWTS_ERROR;
@@ -55,7 +55,7 @@ static void klog_progress(fwts_framework *fw, int progress)
 }
 
 static int klog_test1(fwts_framework *fw)
-{	
+{
 	int errors = 0;
 
 	if (fwts_klog_firmware_check(fw, klog_progress, klog, &errors)) {
@@ -63,9 +63,10 @@ static int klog_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (errors > 0) 	
+	if (errors > 0) 
 		/* Checks will log errors as failures automatically */
-		fwts_log_info(fw, "Found %d unique errors in kernel log.", errors);
+		fwts_log_info(fw, "Found %d unique errors in kernel log.",
+			errors);
 	else
 		fwts_passed(fw, "Found no errors in kernel log.");
 
@@ -79,7 +80,7 @@ static fwts_framework_minor_test klog_tests[] = {
 
 static fwts_framework_ops klog_ops = {
 	.description = "Scan kernel log for errors and warnings.",
-	.init        = klog_init,	
+	.init        = klog_init,
 	.deinit      = klog_deinit,
 	.minor_tests = klog_tests
 };

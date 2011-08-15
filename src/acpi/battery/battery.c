@@ -54,14 +54,15 @@ static unsigned long get_full(char *dir)
 
 	if (!dir)
 		return 0;
-	
+
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL)
 		return 0;
-	
+
 	while (fgets(buffer, 4095, file) != NULL) {
-		if (strstr(buffer,"remaining capacity:") && strlen(buffer)>25) {
-			value = strtoull(buffer+25, NULL, 10);	
+		if (strstr(buffer,"remaining capacity:") &&
+		    strlen(buffer)>25) {
+			value = strtoull(buffer+25, NULL, 10);
 			break;
 		}
 	}
@@ -118,13 +119,16 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 	fwts_gpe_free(gpes_end, gpe_count);
 
 	if (events == 0)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents", "Did not detect any ACPI battery events.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents",
+			"Did not detect any ACPI battery events.");
 	else
 		fwts_passed(fw, "Detected ACPI battery events.");
 		if (matching == 0)
-			fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents", "Could not detect ACPI events for battery %s.", name);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "BatteryNoEvents",
+			"Could not detect ACPI events for battery %s.", name);
 		else
-			fwts_passed(fw, "Detected ACPI event for battery %s.", name);
+			fwts_passed(fw, "Detected ACPI event for battery %s.",
+				name);
 
 	return FWTS_OK;
 }
@@ -145,11 +149,12 @@ static void check_charging(fwts_framework *fw, char *dir, char *name)
 		if (new_value>initial_value) {
 			fwts_passed(fw, "Battery %s charge is incrementing as expected.", name);
 			return;
-		}		
+		}
 		fwts_printf(fw, "Waiting %3.3d/120\r", 120-i);
 		sleep(1);
 	}
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotCharging", "Battery %s claims it's charging but no charge is added", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotCharging",
+		"Battery %s claims it's charging but no charge is added", name);
 }
 
 static void check_discharging(fwts_framework *fw, char *dir, char *name)
@@ -171,12 +176,14 @@ static void check_discharging(fwts_framework *fw, char *dir, char *name)
 			fwts_passed(fw, "Battery %s charge is decrementing as expected.", name);
 			fwts_cpu_consume_complete();
 			return;
-		}		
+		}
 		fwts_printf(fw, "Waiting %3.3d/120\r", 120-i);
 		sleep(1);
 	}
 	fwts_cpu_consume_complete();
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotDischarging", "Battery %s claims it is discharging but no charge is used.", name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNotDischarging",
+		"Battery %s claims it is discharging but no charge is used.",
+		name);
 }
 
 
@@ -196,7 +203,8 @@ static void do_battery_test(fwts_framework *fw, char *dir, char *name)
 
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNoState", "Battery present but undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BatteryNoState",
+			"Battery present but undersupported - no state present.");
 		return;
 	}
 
@@ -270,7 +278,8 @@ static int battery_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			char batpath[2048];
 
-			snprintf(batpath, sizeof(batpath), "/proc/acpi/battery/%s", entry->d_name);
+			snprintf(batpath, sizeof(batpath),
+				"/proc/acpi/battery/%s", entry->d_name);
 			do_battery_test(fw, batpath, entry->d_name);
 			battdir++;
 		}

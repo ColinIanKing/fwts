@@ -54,7 +54,7 @@ static int dmesg_common_deinit(fwts_framework *fw)
 }
 
 static int dmesg_common_test1(fwts_framework *fw)
-{	
+{
 	int errors = 0;
 
 	if (fwts_klog_common_check(fw, NULL, klog, &errors)) {
@@ -78,7 +78,7 @@ static fwts_framework_minor_test dmesg_common_tests[] = {
 
 static fwts_framework_ops dmesg_common_ops = {
 	.description = "General dmesg common errors check.",
-	.init        = dmesg_common_init,	
+	.init        = dmesg_common_init,
 	.deinit      = dmesg_common_deinit,
 	.minor_tests = dmesg_common_tests
 };

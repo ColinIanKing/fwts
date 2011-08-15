@@ -1,3 +1,9 @@
+fwts (0.23.18) oneiric; urgency=low
+
+  * lib: acpica: ensure table pointers are NULL when table input is corrupt (LP: #826774)
+
+ -- Colin King <colin.king@canonical.com>  Mon, 15 Aug 2011 15:33:30 +0100
+
 fwts (0.23.17) oneiric; urgency=low
 
   * acpi: method: tidy up source.

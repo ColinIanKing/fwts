@@ -36,7 +36,8 @@ DIR *liddir;
 static int lid_init(fwts_framework *fw)
 {
 	if (!(liddir = opendir(LID_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoLIDPath", "No %s directory available: cannot test.", LID_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoLIDPath",
+			"No %s directory available: cannot test.", LID_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -51,7 +52,8 @@ static int lid_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-void lid_check_field(char *field, char *contents, int *matching, int *not_matching)
+void lid_check_field(char *field,
+	char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
 
@@ -62,7 +64,8 @@ void lid_check_field(char *field, char *contents, int *matching, int *not_matchi
 			char path[PATH_MAX];
 			char *data;
 
-			snprintf(path, sizeof(path), LID_PATH "/%s/%s", entry->d_name, field);
+			snprintf(path, sizeof(path), LID_PATH "/%s/%s",
+				entry->d_name, field);
 			if ((data = fwts_get(path)) != NULL) {
 				if (strstr(data, contents))
 					(*matching)++;
@@ -74,7 +77,8 @@ void lid_check_field(char *field, char *contents, int *matching, int *not_matchi
 	} while (entry);
 }
 
-void lid_check_field_poll(char *field, char *contents, int *matching, int *not_matching)
+void lid_check_field_poll(char *field,
+	char *contents, int *matching, int *not_matching)
 {
 	int i;
 
@@ -100,7 +104,8 @@ static int lid_test1(fwts_framework *fw)
 	lid_check_field_poll("info", "Lid Switch", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0)) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoLidSwitch", "Failed to detect a Lid Switch in LID info field.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoLidSwitch",
+			"Failed to detect a Lid Switch in LID info field.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 	} else
 		fwts_passed(fw, "Detected a Lid Switch in LID info field.");
@@ -119,7 +124,8 @@ static int lid_test2(fwts_framework *fw)
 	lid_check_field_poll("state", "open", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "Detected a closed LID state in %s.", LID_PATH);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "LidNotOpen",
+			"Detected a closed LID state in %s.", LID_PATH);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 	} else
 		fwts_passed(fw, "Detected open LID state in %s.", LID_PATH);
@@ -173,13 +179,15 @@ static int lid_test_state(fwts_framework *fw, char *state)
 	fwts_gpe_free(gpes_end, gpe_count);
 
 	if (events == 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidEvents", "Did not detect any ACPI LID events while waiting for to LID %s.", state);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidEvents",
+			"Did not detect any ACPI LID events while waiting for to LID %s.", state);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
 	} else
 		fwts_passed(fw, "Detected ACPI LID events while waiting for LID to %s.", state);
 		if ((matching == 0) || (not_matching > 0)) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidState", "Could not detect lid %s state in %s.", state, LID_PATH);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidState",
+				"Could not detect lid %s state in %s.", state, LID_PATH);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 		} else
 			fwts_passed(fw, "Detected lid %s state.", state);

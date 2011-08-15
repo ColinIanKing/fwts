@@ -44,19 +44,22 @@ static void do_fan(fwts_framework *fw, char *dir, char *name)
 
 	snprintf(path, sizeof(path), "%s/state", dir);
 	if ((file = fopen(path, "r")) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanState", "Fan present but is undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanState",
+			"Fan present but is undersupported - no state present.");
 		return;
 	}
 
 	if (fgets(buffer, sizeof(buffer)-1, file) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanState", "Fan present but is undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanState",
+			"Fan present but is undersupported - no state present.");
 		fclose(file);
 		return;
 	}
 	fclose(file);
 
 	if ((state = strstr(buffer, "status:")) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanStateStatus", "Fan present but is undersupported - no state present.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanStateStatus",
+			"Fan present but is undersupported - no state present.");
 		return;
 	}
 
@@ -88,7 +91,8 @@ static int fan_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			char batpath[2048];
 
-			snprintf(batpath, sizeof(batpath), "/proc/acpi/fan/%s", entry->d_name);
+			snprintf(batpath, sizeof(batpath), Xi
+				"/proc/acpi/fan/%s", entry->d_name);
 			do_fan(fw, batpath, entry->d_name);
 			fandir++;
 		}

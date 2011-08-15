@@ -28,7 +28,7 @@
 #include <string.h>
 
 static int osilinux_test1(fwts_framework *fw)
-{	
+{
 	fwts_list_link *item;
 	fwts_list_link *dumpitem = NULL;
 	fwts_list* disassembly;
@@ -42,7 +42,8 @@ static int osilinux_test1(fwts_framework *fw)
 	}
 
 	if (disassembly == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoDSDT", "Could not read ACPI DSDT table.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoDSDT",
+			"Could not read ACPI DSDT table.");
 		return FWTS_ERROR;
 	}
 
@@ -66,7 +67,8 @@ static int osilinux_test1(fwts_framework *fw)
 			depth--;
 			if (dumpdepth != 0 && dumpdepth != depth) {
 				found++;
-				while (dumpitem != NULL && dumpitem != item->next) {
+				while (dumpitem != NULL &&
+				       dumpitem != item->next) {
 					fwts_log_warning_verbatum(fw, "%s", fwts_text_list_text(dumpitem));
 					dumpitem = dumpitem->next;
 				}
@@ -75,7 +77,8 @@ static int osilinux_test1(fwts_framework *fw)
 			}
 		}
 		if ((str = strstr(line, "_OSI")) != NULL) {
-			if (strstr(str + 4, "Linux") || strstr(str + 4, "linux"))
+			if (strstr(str + 4, "Linux") ||
+			    strstr(str + 4, "linux"))
 				dumpdepth = depth;
 		}
 	}

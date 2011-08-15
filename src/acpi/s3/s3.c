@@ -52,7 +52,8 @@ static int s3_init(fwts_framework *fw)
 	}
 	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3", "Check if wakealarm works reliably for S3 tests.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3",
+			"Check if wakealarm works reliably for S3 tests.");
 		return FWTS_ERROR;
 	}
 
@@ -117,7 +118,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 
 	if (s3_device_check) {
 		int i;
-	
+
 		for (i=0;i<s3_device_check_delay;i++) {
 			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1,s3_device_check_delay);
 			fwts_progress_message(fw, percent, buffer);
@@ -127,51 +128,58 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_get(fw, &hwinfo2);
 		fwts_hwinfo_compare(fw, &hwinfo1, &hwinfo2, &differences);
 		fwts_hwinfo_free(&hwinfo1);
-		fwts_hwinfo_free(&hwinfo2);	
-	
+		fwts_hwinfo_free(&hwinfo2);
+
 		if (differences > 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS3", "Found %d differences in device configuation during S3 cycle.", differences);
+			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS3",
+				"Found %d differences in device configuation during S3 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}
 
 	if (duration < delay) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend", "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend",
+			"Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 	if (duration > (delay*2)) {
 		int s3_C1E_enabled;
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend", "Unexpected: S3 much longer than expected (%d seconds).", duration);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend",
+			"Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 		s3_C1E_enabled = fwts_cpu_has_c1e();
 		if (s3_C1E_enabled == -1)
 			fwts_log_error(fw, "Cannot read C1E bit\n");
 		else if (s3_C1E_enabled == 1)
-			fwts_advice(fw, "Detected AMD with C1E enabled. The AMD C1E idle wait can sometimes "
-					"produce long delays on resume.  This is a known issue with the "
-					"failed delivery of intettupts while in deep C states. "
-					"If you have a BIOS option to disable C1E please disable this and retry. "
-					"Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
+			fwts_advice(fw,
+				"Detected AMD with C1E enabled. The AMD C1E idle wait can sometimes "
+				"produce long delays on resume.  This is a known issue with the "
+				"failed delivery of intettupts while in deep C states. "
+				"If you have a BIOS option to disable C1E please disable this and retry. "
+				"Alternatively, re-test with the kernel parameter \"idle=mwait\". ");
 	}
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3", "pm-action failed before trying to put the system "
-				     "in the requested power saving state.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3",
+			"pm-action failed before trying to put the system "
+			"in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3", "pm-action tried to put the machine in the requested "
-       				     "power state but failed.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3",
+			"pm-action tried to put the machine in the requested "
+			"power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		(*pm_errors)++;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3", "pm-action encountered an error and also failed to "
-				     "enter the requested power saving state.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3",
+			"pm-action encountered an error and also failed to "
+			"enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 
@@ -186,7 +194,8 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "KlogCheckS3", "Unable to check kernel log for S3 suspend/resume test.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "KlogCheckS3",
+			"Unable to check kernel log for S3 suspend/resume test.");
 		return FWTS_ERROR;
 	}
 
@@ -213,7 +222,7 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 }
 
 static int s3_test_multiple(fwts_framework *fw)
-{	
+{
 	int i;
 	int klog_errors = 0;
 	int hw_errors = 0;
@@ -251,7 +260,7 @@ static int s3_test_multiple(fwts_framework *fw)
 				fwts_progress_message(fw, percent, buffer);
 				sleep(1);
 			}
-		
+
 			awake_delay += delta;
 			if (awake_delay > (s3_max_delay * 1000))
 				awake_delay = s3_min_delay * 1000;
@@ -282,7 +291,7 @@ static int s3_test_multiple(fwts_framework *fw)
 
 
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
-		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).", 
+		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).",
 			klog_errors + pm_errors + hw_errors, klog_oopses, s3_multiple);
 	} else
 		fwts_passed(fw, "Found no errors doing %d suspend/resume cycle(s).", s3_multiple);
@@ -316,7 +325,7 @@ static int s3_options_check(fwts_framework *fw)
 		fprintf(stderr, "--s3-device-check-delay is %d, it cannot be less than 1 second or more than 1 hour!\n", s3_device_check_delay);
 		return FWTS_ERROR;
 	}
-	if (s3_min_max_delay & s3_device_check) {	
+	if (s3_min_max_delay & s3_device_check) {
 		fprintf(stderr, "Cannot use --s3-min-delay, --s3-max-delay, --s3-delay-delta as well as --s3-device-check, --s3-device-check-delay.\n");
 		return FWTS_ERROR;
 	}
@@ -329,7 +338,7 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
         case 0:
                 switch (long_index) {
 		case 0:
-			s3_multiple = atoi(optarg);	
+			s3_multiple = atoi(optarg);
 			break;
 		case 1:
 			s3_min_delay = atoi(optarg);
@@ -380,7 +389,7 @@ static fwts_framework_minor_test s3_tests[] = {
 
 static fwts_framework_ops s3_ops = {
 	.description = "S3 suspend/resume test.",
-	.init        = s3_init,	
+	.init        = s3_init,
 	.minor_tests = s3_tests,
 	.options     = s3_options,
 	.options_handler = s3_options_handler,

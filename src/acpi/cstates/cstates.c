@@ -67,7 +67,7 @@ static void keep_busy_for_one_second(int cpu)
 	current = time(NULL);
 
 	do {
-		double A, B;	
+		double A, B;
 		int i;
 		A = 1.234567;
 		B = 3.121213;
@@ -114,22 +114,27 @@ static void get_cstates(char *path, fwts_cstates *state)
 			int count;
 			int len;
 
-			snprintf(filename, sizeof(filename), "%s/%s/name", path, entry->d_name);
+			snprintf(filename, sizeof(filename), "%s/%s/name",
+				path, entry->d_name);
 			if ((data = fwts_get(filename)) == NULL)
 				break;
 
-			/* Names can be Cx\n, or ATM-Cx\n, or SNB-Cx\n, where x is the C state number */
+			/*
+			 * Names can be Cx\n, or ATM-Cx\n, or SNB-Cx\n,
+			 * where x is the C state number
+			 */
 			len = strlen(data);
 			if ((len > 2) && (data[len-3] == 'C'))
 				nr = strtoull(data+len-2, NULL, 10);
 			free(data);
 
-			snprintf(filename, sizeof(filename), "%s/%s/usage", path, entry->d_name);
+			snprintf(filename, sizeof(filename), "%s/%s/usage",
+				path, entry->d_name);
 			if ((data = fwts_get(filename)) == NULL)
 				break;
 			count = strtoull(data, NULL, 10);
 			free(data);
-			
+
 			if ((nr>=0) && (nr < MAX_CSTATE))
 				state->counts[nr] = count;
 
@@ -154,10 +159,11 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 
 	for (i=0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
 		int j;
-	
+
 		snprintf(buffer, sizeof(buffer),"(CPU %d of %d)", nth+1, cpus);
 		fwts_progress_message(fw,
-			100 * (i+ (TOTAL_WAIT_TIME*nth))/(cpus * TOTAL_WAIT_TIME), buffer);
+			100 * (i+ (TOTAL_WAIT_TIME*nth))/
+				(cpus * TOTAL_WAIT_TIME), buffer);
 
 		if ((i & 7) < 4)
 			sleep(1);
@@ -196,7 +202,8 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 				strcat(buffer, tmp);
 			}
 		}
-		fwts_passed(fw, "Processor %i has reached all C-states: %s", cpu, buffer);
+		fwts_passed(fw, "Processor %i has reached all C-states: %s",
+			cpu, buffer);
 	}
 
 	count = 0;
@@ -206,9 +213,11 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 
 	if (statecount == -1)
 		statecount = count;
-	
+
 	if (statecount != count)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoCState", "Processor %i is expected to have %i C-states but has %i.", cpu, statecount, count);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoCState",
+			"Processor %i is expected to have %i C-states but has %i.",
+			cpu, statecount, count);
 	else
 		if (firstcpu == -1)
 			firstcpu = cpu;
@@ -223,11 +232,14 @@ static int cstates_test1(fwts_framework *fw)
 	int cpus;
 	int i;
 
-	fwts_log_info(fw, "This test checks if all processors have the same number of C-states, "
-			  "if the C-state counter works and if C-state transitions happen.");
+	fwts_log_info(fw,
+		"This test checks if all processors have the same number of "
+		"C-states, if the C-state counter works and if C-state "
+		"transitions happen.");
 
 	if ((dir = opendir(PROCESSOR_PATH)) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoSysMounted", "Cannot open %s: /sys not mounted?", PROCESSOR_PATH);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoSysMounted",
+			"Cannot open %s: /sys not mounted?", PROCESSOR_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -243,12 +255,13 @@ static int cstates_test1(fwts_framework *fw)
 
 	for (i=0;(entry = readdir(dir)) != NULL;) {
 		if (entry &&
-		    (strlen(entry->d_name)>3) && 
+		    (strlen(entry->d_name)>3) &&
 		    (strncmp(entry->d_name, "cpu", 3) == 0) &&
 		    (isdigit(entry->d_name[3]))) {
 			char cpupath[PATH_MAX];
 
-			snprintf(cpupath, sizeof(cpupath), "%s/%s/cpuidle", PROCESSOR_PATH, entry->d_name);
+			snprintf(cpupath, sizeof(cpupath), "%s/%s/cpuidle",
+				PROCESSOR_PATH, entry->d_name);
 			do_cpu(fw, i++, cpus, strtoul(entry->d_name+3, NULL, 10), cpupath);
 		}
 	}

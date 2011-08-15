@@ -91,7 +91,7 @@ static int fan_test1(fwts_framework *fw)
 		if (entry && strlen(entry->d_name)>2) {
 			char batpath[2048];
 
-			snprintf(batpath, sizeof(batpath), Xi
+			snprintf(batpath, sizeof(batpath),
 				"/proc/acpi/fan/%s", entry->d_name);
 			do_fan(fw, batpath, entry->d_name);
 			fandir++;

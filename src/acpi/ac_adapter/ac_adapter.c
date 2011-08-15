@@ -36,7 +36,9 @@ DIR *ac_adapterdir;
 static int ac_adapter_init(fwts_framework *fw)
 {
 	if (!(ac_adapterdir = opendir(AC_ADAPTER_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterEntry", "No %s directory available: cannot test.", AC_ADAPTER_PATH);
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterEntry",
+			"No %s directory available: cannot test.",
+			AC_ADAPTER_PATH);
 		return FWTS_ERROR;
 	}
 
@@ -62,7 +64,8 @@ void ac_adapter_check_field(char *field, char *contents, int *matching, int *not
 			char path[PATH_MAX];
 			char *data;
 
-			snprintf(path, sizeof(path), AC_ADAPTER_PATH "/%s/%s", entry->d_name, field);
+			snprintf(path, sizeof(path), AC_ADAPTER_PATH "/%s/%s",
+				entry->d_name, field);
 			if ((data = fwts_get(path)) != NULL) {
 				if (strstr(data, contents))
 					(*matching)++;
@@ -82,7 +85,8 @@ static int ac_adapter_test1(fwts_framework *fw)
 	ac_adapter_check_field("state", "state:", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterState", "Failed to detect any state in the ac_adapter state info.");
+		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterState",
+			"Failed to detect any state in the ac_adapter state info.");
 	else
 		fwts_passed(fw, "Detected a state in the ac_adapter state info.");
 
@@ -100,7 +104,8 @@ static int ac_adapter_test2(fwts_framework *fw)
 	ac_adapter_check_field("state", "on-line", &matching, &not_matching);
 
 	if ((matching == 0) || (not_matching > 0))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOnLine", "Failed to detect an ac_adapter on-line state.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOnLine",
+			"Failed to detect an ac_adapter on-line state.");
 	else
 		fwts_passed(fw, "Detected ac_adapter on-line state.");
 
@@ -132,7 +137,8 @@ static int ac_adapter_test3(fwts_framework *fw)
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "ac_adapter")) {
 				events++;
-				ac_adapter_check_field("state", "off-line", &matching, &not_matching);
+				ac_adapter_check_field("state", "off-line",
+					&matching, &not_matching);
 				break;
 			}
 			free(buffer);
@@ -140,10 +146,12 @@ static int ac_adapter_test3(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 	if (events == 0)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterEventsOff", "Did not detect any ACPI ac-adapter events while waiting for power to be disconnected.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterEventsOff",
+			"Did not detect any ACPI ac-adapter events while waiting for power to be disconnected.");
 	else
 		if ((matching == 0) || (not_matching > 0))
-			fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOffline", "Could not detect ac_adapter off-line state.");
+			fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOffline",
+				"Could not detect ac_adapter off-line state.");
 		else
 			fwts_passed(fw, "Detected ac_adapter off-line state.");
 
@@ -158,7 +166,8 @@ static int ac_adapter_test3(fwts_framework *fw)
 			events++;
 			if (strstr(buffer, "ac_adapter")) {
 				events++;
-				ac_adapter_check_field("state", "on-line", &matching, &not_matching);
+				ac_adapter_check_field("state", "on-line",
+					&matching, &not_matching);
 				break;
 			}
 			free(buffer);
@@ -166,10 +175,12 @@ static int ac_adapter_test3(fwts_framework *fw)
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
 	if (events == 0)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterEventsOn", "Did not detect any ACPI ac-adapter events while waiting for power to be re-connected.");
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterEventsOn",
+			"Did not detect any ACPI ac-adapter events while waiting for power to be re-connected.");
 	else
 		if ((matching == 0) || (not_matching > 0))
-			fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOnline", "Could not detect ac_adapter on-line state.");
+			fwts_failed(fw, LOG_LEVEL_HIGH, "NoACAdapterOnline",
+				"Could not detect ac_adapter on-line state.");
 		else
 			fwts_passed(fw, "Detected ac_adapter on-line state.");
 

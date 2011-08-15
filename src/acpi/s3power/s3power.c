@@ -57,7 +57,8 @@ static int s3power_adapter_offline(fwts_framework *fw, bool *offline)
 			char path[PATH_MAX];
 			char *data;
 
-			snprintf(path, sizeof(path), AC_ADAPTER_PATH "/%s/state", entry->d_name);
+			snprintf(path, sizeof(path),
+				AC_ADAPTER_PATH "/%s/state", entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
 				if (strstr(data, "on-line"))
 					*offline = false;
@@ -104,7 +105,7 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 	return FWTS_OK;
 }
 
-static int s3power_get_capacity(fwts_framework *fw, 
+static int s3power_get_capacity(fwts_framework *fw,
 	const char *file,
 	const char *field,
 	uint32_t *capacity_mAh,
@@ -136,7 +137,8 @@ static int s3power_get_capacity(fwts_framework *fw,
 			} else {
 				char buffer[4096];
 				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
-					if (strstr(buffer, field) && strlen(buffer) > 25) {
+					if (strstr(buffer, field) &&
+					    strlen(buffer) > 25) {
 						sscanf(buffer+25, "%d %s", &val, units);
 						if (strncmp(units, "mAh",3) == 0) {
 							*capacity_mAh += val;
@@ -154,19 +156,21 @@ static int s3power_get_capacity(fwts_framework *fw,
 	} while (entry);
 
 	if (n == 0) {
-		fwts_log_info(fw, "No valid battery information present: cannot test.");		
+		fwts_log_info(fw, "No valid battery information present: cannot test.");
 		return FWTS_ERROR;
 	}
 
 	return FWTS_OK;
 }
 
-static int s3power_get_design_capacity(fwts_framework *fw, uint32_t *capacity_mAh, uint32_t *capacity_mWh)
+static int s3power_get_design_capacity(fwts_framework *fw,
+	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
 	return s3power_get_capacity(fw, "info", "design capacity", capacity_mAh, capacity_mWh);
 }
 
-static int s3power_get_remaining_capacity(fwts_framework *fw, uint32_t *capacity_mAh, uint32_t *capacity_mWh)
+static int s3power_get_remaining_capacity(fwts_framework *fw,
+	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
 	return s3power_get_capacity(fw, "state", "remaining capacity", capacity_mAh, capacity_mWh);
 }
@@ -175,7 +179,8 @@ static int s3power_init(fwts_framework *fw)
 {
 	if (fwts_wakealarm_test_firing(fw, 1) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3power test.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3Power", "Wakealarm does not work reliably for s3power test.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3Power",
+			"Wakealarm does not work reliably for s3power test.");
 		return FWTS_ABORTED;
 	}
 
@@ -187,7 +192,9 @@ static int s3power_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void s3power_difference(fwts_framework *fw, uint32_t before, uint32_t after, uint32_t battery_capacity, char *units)
+static void s3power_difference(fwts_framework *fw,
+	uint32_t before, uint32_t after,
+	uint32_t battery_capacity, char *units)
 {
 	int32_t diff = before - after;
 	float hourly_loss;
@@ -205,13 +212,21 @@ static void s3power_difference(fwts_framework *fw, uint32_t before, uint32_t aft
 				battery_capacity, units, duration);
 
 			if (duration < 24.0) {
-				fwts_failed(fw, LOG_LEVEL_CRITICAL, "ShortSuspendLife24hrs", "Machine cannot remain suspended for 1 day.");
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"ShortSuspendLife24hrs",
+					"Machine cannot remain suspended for 1 day.");
 			} else if (duration < 36.0) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, "ShortSuspendLife36hrs", "Machine cannot remain suspended for 1.5 days.");
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"ShortSuspendLife36hrs",
+					"Machine cannot remain suspended for 1.5 days.");
 			} else if (duration < 48.0) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspendLife48hrs", "Machine cannot remain suspended for 2 days.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"ShortSuspendLife48hrs",
+					"Machine cannot remain suspended for 2 days.");
 			} else if (duration < 60.0) {
-				fwts_failed(fw, LOG_LEVEL_LOW, "ShortSuspendLife60hrs", "Machine cannot remain suspended for 2.5 days.");
+				fwts_failed(fw, LOG_LEVEL_LOW,
+					"ShortSuspendLife60hrs",
+					"Machine cannot remain suspended for 2.5 days.");
 			} else {
 				fwts_passed(fw, "Machine can remain suspended for %5.2f hours.", duration);
 			}
@@ -268,24 +283,30 @@ static int s3power_test(fwts_framework *fw)
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
 	if (duration < s3power_sleep_delay) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend", "Unexpected: S3 slept for %d seconds, less than the expected %d seconds.", duration, s3power_sleep_delay);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend",
+			"Unexpected: S3 slept for %d seconds, less than the expected %d seconds.",
+			duration, s3power_sleep_delay);
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 	if (duration > (s3power_sleep_delay*2))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend", "Unexpected: S3 much longer than expected (%d seconds).", duration);
+		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend",
+			"Unexpected: S3 much longer than expected (%d seconds).", duration);
 
 	/* Add in error check for pm-suspend status */
 	if ((status > 0) && (status < 128)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3", "pm-action failed before trying to put the system "
-				     "in the requested power saving state.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3",
+			"pm-action failed before trying to put the system "
+			"in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3", "pm-action tried to put the machine in the requested "
-       				     "power state but failed.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3",
+			"pm-action tried to put the machine in the requested "
+			"power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3", "pm-action encountered an error and also failed to "
-				     "enter the requested power saving state.");
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3",
+			"pm-action encountered an error and also failed to "
+			"enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 
@@ -307,7 +328,7 @@ static int s3power_options_handler(fwts_framework *fw, int argc, char * const ar
         case 0:
                 switch (long_index) {
 		case 0:
-			s3power_sleep_delay = atoi(optarg);	
+			s3power_sleep_delay = atoi(optarg);
 			break;
 		}
 	}
@@ -326,7 +347,7 @@ static fwts_framework_minor_test s3power_tests[] = {
 
 static fwts_framework_ops s3power_ops = {
 	.description = "S3 power loss during suspend test (takes minimum of 10 minutes to run).",
-	.init        = s3power_init,	
+	.init        = s3power_init,
 	.minor_tests = s3power_tests,
 	.options     = s3power_options,
 	.options_handler = s3power_options_handler,

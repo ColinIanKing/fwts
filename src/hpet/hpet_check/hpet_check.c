@@ -66,7 +66,7 @@ static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_lin
 			*idx = '\0';
 
 		address_base = strtoul(val, NULL, 0x10);
-			
+
 		if (hpet_base_p != 0) {
 			if (hpet_base_p != address_base)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseMismatch",
@@ -97,9 +97,9 @@ static void hpet_parse_device_hpet(fwts_framework *fw, char *table, fwts_list_li
 					}
 				}
 				if (strstr(fwts_text_list_text(tmp_item), "DWordMemory") != NULL) {
-					tmp_item = tmp_item->next;	
+					tmp_item = tmp_item->next;
 					if (tmp_item != NULL) {
-						tmp_item = tmp_item->next;	
+						tmp_item = tmp_item->next;
 						if (tmp_item != NULL) {
 							/* HPET section is found, get base */
 							hpet_parse_check_base(fw, table, tmp_item);
@@ -162,13 +162,26 @@ static int hpet_check_test1(fwts_framework *fw)
 		   "IRQ routing and initialization is also verified by the test.");
 
 	fwts_list_foreach(item, klog) {
-		if ((strstr(fwts_text_list_text(item), "ACPI: HPET id:")) != NULL) {
-			char *txt = strstr(fwts_text_list_text(item), "base: ");
-			if (txt)
-				hpet_base_p = strtoul(txt+6,  NULL, 0x10);
-			fwts_log_warning(fw, "HPET driver in the kernel is enabled, inaccurate results follow.");
-			fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
-			break;
+		char *text = fwts_text_list_text(item);
+		/* Old format */
+		if (strstr(text, "ACPI: HPET id:") != NULL) {
+			char *str = strstr(text, "base: ");
+			if (str) {
+				hpet_base_p = strtoul(str+6,  NULL, 0x10);
+				fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
+				break;
+			}
+		}
+		/* New format */
+		/* [    0.277934] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0 */
+		if ((strstr(text, "hpet") != NULL) &&
+		    (strstr(text, "IRQs") != NULL)) {
+			char *str = strstr(text, "at MMIO ");
+			if (str) {
+				hpet_base_p = strtoul(str+8,  NULL, 0x10);
+				fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
+				break;
+			}
 		}
 	}
 

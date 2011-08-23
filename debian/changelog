@@ -1,3 +1,9 @@
+fwts (0.23.20) oneiric; urgency=low
+
+  * hpet: hpet_check: get HPET base on newer kernel logs (LP: #832273)
+
+ -- Colin King <colin.king@canonical.com>  Tue, 23 Aug 2011 19:56:23 +0100
+
 fwts (0.23.19) oneiric; urgency=low
 
   * apci: fan: use newer thermal interface, test fans on loaded CPU (LP: #831905)

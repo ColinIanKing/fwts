@@ -1,3 +1,9 @@
+fwts (0.23.19) oneiric; urgency=low
+
+  * apci: fan: use newer thermal interface, test fans on loaded CPU (LP: #831905)
+
+ -- Colin King <colin.king@canonical.com>  Tue, 23 Aug 2011 12:12:12 +0100
+
 fwts (0.23.18) oneiric; urgency=low
 
   * lib: acpica: ensure table pointers are NULL when table input is corrupt (LP: #826774)

@@ -281,6 +281,6 @@ static fwts_framework_ops cstates_ops = {
 	.minor_tests = cstates_tests
 };
 
-FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME,  FWTS_BATCH_EXPERIMENTAL);
+FWTS_REGISTER(cstates, &cstates_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 
 #endif

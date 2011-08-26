@@ -1,3 +1,12 @@
+fwts (0.23.21) oneiric; urgency=low
+
+  * acpi: acpitables: remove false positive warnings (LP: #833644)
+  * acpi: method: don't run mobile platform tests on servers (LP: #834554)
+  * bios: mpcheck: check uniqueness of CPU APIC IDs (LP: #834504)
+  * acpi: cstates: drop experimental status of the test.
+
+ -- Colin King <colin.king@canonical.com>  Fri, 26 Aug 2011 11:05:19 +0100
+
 fwts (0.23.20) oneiric; urgency=low
 
   * hpet: hpet_check: get HPET base on newer kernel logs (LP: #832273)

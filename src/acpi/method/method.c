@@ -148,12 +148,16 @@
 #define method_check_type(fw, name, buf, type) \
 	method_check_type__(fw, name, buf, type, #type)
 
+static bool mobile_platform;
+
+#define MOBILE_PLATFORM(test) 				\
+	mobile_platform ? test : FWTS_OK
+
 #define method_test_integer(name, type)			\
 static int method_test ## name(fwts_framework *fw)	\
 { 							\
 	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
 }
-
 
 typedef void (*method_test_return)(fwts_framework *fw, char *name, ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
 
@@ -161,6 +165,29 @@ static fwts_list *methods;
 
 static int method_init(fwts_framework *fw)
 {
+	fwts_acpi_table_info *info;
+	int i;
+
+	mobile_platform = false;
+
+	/* Some systems have multiple FADTs, sigh */
+	for (i=0; i<256; i++) {
+		int ret = fwts_acpi_find_table(fw, "FACP", i, &info);
+		if (ret == FWTS_NULL_POINTER || info == NULL)
+			break;
+		fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)info->data;
+		if (fadt->preferred_pm_profile == 2) {
+			mobile_platform = true;
+			break;
+		}
+        }
+
+	if (!mobile_platform) {
+		fwts_log_info(fw,
+			"FADT Preferred PM profile indicates this is not a Mobile Platform, "
+			"skipping Mobile Platform specific tests.");
+	}
+
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
@@ -537,7 +564,7 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_SBS(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL));
 }
 
 
@@ -633,7 +660,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BIF(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL));
 }
 
 static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -742,7 +769,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BIX(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL));
 }
 
 static int method_test_BMA(fwts_framework *fw)
@@ -750,7 +777,7 @@ static int method_test_BMA(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL));
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -758,7 +785,7 @@ static int method_test_BMS(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL));
 }
 
 static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -808,7 +835,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BST(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL));
 }
 
 static int method_test_BTP(fwts_framework *fw)
@@ -816,14 +843,16 @@ static int method_test_BTP(fwts_framework *fw)
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i=0;i<5;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-		fwts_log_nl(fw);
+	if (mobile_platform) {
+		for (i=0;i<5;i++) {
+			ACPI_OBJECT arg[1];
+			arg[0].Type = ACPI_TYPE_INTEGER;
+			arg[0].Integer.Value = values[i];
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTP", arg, 1,
+					  	method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+				break;
+			fwts_log_nl(fw);
+		}
 	}
 	return FWTS_OK;
 }
@@ -835,7 +864,7 @@ static void method_test_PCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PCL(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL"));
 }
 
 static int method_test_BTM(fwts_framework *fw)
@@ -843,14 +872,16 @@ static int method_test_BTM(fwts_framework *fw)
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i=0;i<5;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-		fwts_log_nl(fw);
+	if (mobile_platform) {
+		for (i=0;i<5;i++) {
+			ACPI_OBJECT arg[1];
+			arg[0].Type = ACPI_TYPE_INTEGER;
+			arg[0].Integer.Value = values[i];
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BTM", arg, 1,
+					  	method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+				break;
+			fwts_log_nl(fw);
+		}
 	}
 	return FWTS_OK;
 }
@@ -883,7 +914,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BMD(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL));
 }
 
 static int method_test_BMC(fwts_framework *fw)
@@ -891,14 +922,16 @@ static int method_test_BMC(fwts_framework *fw)
 	static int values[] = { 0, 1, 2, 4 };
 	int i;
 
-	for (i=0;i<4;i++) {
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = values[i];
-		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-			break;
-		fwts_log_nl(fw);
+	if (mobile_platform) {
+		for (i=0;i<4;i++) {
+			ACPI_OBJECT arg[1];
+			arg[0].Type = ACPI_TYPE_INTEGER;
+			arg[0].Integer.Value = values[i];
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BMC", arg, 1,
+					  	method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+				break;
+			fwts_log_nl(fw);
+		}
 	}
 	return FWTS_OK;
 }
@@ -1120,7 +1153,7 @@ static void method_test_PSR_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PSR(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_MANDITORY, "_PSR", NULL, 0, method_test_PSR_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSR", NULL, 0, method_test_PSR_return, NULL);
 }
 
 static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -1167,7 +1200,7 @@ static void method_test_LID_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_LID(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL);
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL));
 }
 
 /* Section 11.3 Fan Devices */
@@ -1417,20 +1450,29 @@ static int method_test_ALP(fwts_framework *fw)
 
 /* Section 6.5 Other Objects and Control Methods */
 
-method_test_integer(_BBN, METHOD_OPTIONAL)
-method_test_integer(_BDN, METHOD_OPTIONAL)
+static int method_test_BBN(fwts_framework *fw)
+{ 
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN", NULL, 0, method_test_integer_return, "_BBN"));
+}
+
+static int method_test_BDN(fwts_framework *fw)
+{ 
+	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BDN", NULL, 0, method_test_integer_return, "_BDN"));
+}
 
 static int method_test_DCK(fwts_framework *fw)
 {
 	int i;
 
-	for (i=1;i>0;i--) {	/* Dock, Undock */
-		ACPI_OBJECT arg[1];
-		arg[0].Type = ACPI_TYPE_INTEGER;
-		arg[0].Integer.Value = i;
-		if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DCK", arg, 1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
-			break;
-		fwts_log_nl(fw);
+	if (mobile_platform) {
+		for (i=1;i>0;i--) {	/* Dock, Undock */
+			ACPI_OBJECT arg[1];
+			arg[0].Type = ACPI_TYPE_INTEGER;
+			arg[0].Integer.Value = i;
+			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_DCK", arg, 1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+				break;
+			fwts_log_nl(fw);
+		}
 	}
 	return FWTS_OK;
 }
@@ -1526,7 +1568,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
 				failed++;
 			else {
 				uint32_t val = obj->Package.Elements[i].Integer.Value;
@@ -1614,7 +1656,7 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) 
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
 				failed++;
 		}
 		if (failed) {

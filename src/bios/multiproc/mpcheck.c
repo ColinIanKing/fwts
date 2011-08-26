@@ -22,8 +22,6 @@
 
 static fwts_mp_data mp_data;
 
-static uint8_t last_cpu_apic_id = 0;
-
 static bool mpcheck_find_bus(uint8_t id, int depth)
 {
 	fwts_list_link	*entry;
@@ -54,62 +52,65 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 {
 	bool failed = false;
 	int n = 0;
-	fwts_list_link	*entry;
+	fwts_list_link	*entry1;
 	int bootstrap_cpu = -1;
 	bool usable_cpu_found = false;
-	int first_io_apic_id = -1;
 
-	fwts_list_foreach(entry, &mp_data.entries) {
-		uint8_t *data = fwts_list_data(uint8_t *, entry);
-		if (*data == FWTS_MP_CPU_ENTRY) {
-			uint32_t phys_addr = mp_data.phys_addr +
-				((void *)data - (void *)mp_data.header);
-			fwts_mp_processor_entry *cpu_entry =
-				fwts_list_data(fwts_mp_processor_entry *, entry);
+	fwts_list_foreach(entry1, &mp_data.entries) {
+		uint8_t *data1 = fwts_list_data(uint8_t *, entry1);
+		if (*data1 == FWTS_MP_CPU_ENTRY) {
+			fwts_list_link	*entry2;
+			int m = 0;
 
-			if (last_cpu_apic_id < cpu_entry->local_apic_id)
-				last_cpu_apic_id = cpu_entry->local_apic_id;
+			uint32_t phys_addr1 = mp_data.phys_addr +
+				((void *)data1 - (void *)mp_data.header);
+			fwts_mp_processor_entry *cpu_entry1 =
+				fwts_list_data(fwts_mp_processor_entry *, entry1);
 
-			if (first_io_apic_id == -1) {
-				first_io_apic_id = cpu_entry->local_apic_id;
-				if (first_io_apic_id != 0) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"MPCPUEntryLAPICId",
-						"CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.",
-						n, phys_addr, first_io_apic_id);
-					failed = true;
-				}
-			} else {
-				if (cpu_entry->local_apic_id != (first_io_apic_id + n)) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"MPCPUEntryLAPICId",
-						"CPU Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.",
-						n, phys_addr,
-						cpu_entry->local_apic_id,
-						first_io_apic_id + n);
-					failed = true;
+			/* Check Local APIC ID is unique */
+			fwts_list_foreach(entry2, &mp_data.entries) {
+				uint8_t *data2 = fwts_list_data(uint8_t *, entry2);
+				uint32_t phys_addr2 = mp_data.phys_addr +
+					((void *)data2 - (void *)mp_data.header);
+
+				if (*data2 == FWTS_MP_CPU_ENTRY) {
+					if ((n < m) && (entry2 != entry1)) {
+						fwts_mp_processor_entry *cpu_entry2 =
+							fwts_list_data(fwts_mp_processor_entry *, entry2);
+
+						if (cpu_entry1->local_apic_id == cpu_entry2->local_apic_id) {
+							fwts_failed(fw, LOG_LEVEL_HIGH,
+								"MPCPUEntryLAPICId",
+								"CPU Entry %d (@0x%8.8x) and %d (@0x%8.8x) have the same Local APIC ID 0x%2.2x.",
+								n, phys_addr1, m, phys_addr2, cpu_entry1->local_apic_id);
+								failed = true;
+							break;
+						}
+					}
+					m++;
 				}
 			}
+
 			/*
-			if ((cpu_entry->local_apic_version != 0x11) &&
-			    (cpu_entry->local_apic_version != 0x14)) {
+			if ((cpu_entry1->local_apic_version != 0x11) &&
+			    (cpu_entry1->local_apic_version != 0x14)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPCPUEntryLAPICVersion",
 					"CPU Entry %d (@0x%8.8x) has an invalid Local APIC Version %2.2x, should be 0x11 or 0x14.",
 					n, phys_addr,
-					cpu_entry->local_apic_version);
+					cpu_entry1->local_apic_version);
 				failed = true;
 			}
 			*/
-			if (cpu_entry->cpu_flags & 1)
+			if (cpu_entry1->cpu_flags & 1)
 				usable_cpu_found = true;
 
-			if ((cpu_entry->cpu_flags >> 1) & 1) {
+			if ((cpu_entry1->cpu_flags >> 1) & 1) {
 				if (bootstrap_cpu != -1) {
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"MPCPUEntryBootCPU",
 						"CPU Entry %d (@0x%8.8x) is marked as a boot CPU but CPU entry %d is the first boot CPU.",
-						n, phys_addr, bootstrap_cpu);
+						n, phys_addr1, bootstrap_cpu);
 					failed = true;
 				} else
 					bootstrap_cpu = n;
@@ -217,7 +218,6 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 	bool enabled = false;
 	int n = 0;
 	fwts_list_link	*entry;
-	int first_io_apic_id = -1;
 
 	fwts_list_foreach(entry, &mp_data.entries) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
@@ -233,29 +233,6 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 			}
 			if (io_apic_entry->flags & 1) {
 				enabled = true;
-			}
-			if (first_io_apic_id == -1) {
-				first_io_apic_id = io_apic_entry->id;
-				if (first_io_apic_id != (last_cpu_apic_id + 1)) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"MPIOAPICId",
-						"IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x%2.2x.",
-						n, phys_addr,
-						io_apic_entry->id,
-						last_cpu_apic_id + 1);
-					failed = true;
-				}
-			} else {
-				if (io_apic_entry->id != (first_io_apic_id + n)) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"MPIOAPICIdSeries",
-						"IO APIC Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be "
-						"0x%2.2x than the previous entry.",
-						n, phys_addr,
-						io_apic_entry->id,
-						first_io_apic_id + n);
-					failed = true;
-				}
 			}
 			n++;
 		}

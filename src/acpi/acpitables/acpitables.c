@@ -160,6 +160,15 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				"not map in the GPE1 region. This could mean that General Purpose Events will not "
 				"function correctly (for example lid or ac-power events).");
 	}
+	/*
+	 * Bug LP: /833644
+	 *
+	 *   Remove these tests, really need to put more intelligence into it
+	 *   perhaps in the cstates test rather than here. For the moment we
+ 	 *   shall remove this warning as it's giving users false alarms
+	 *   See: https://bugs.launchpad.net/ubuntu/+source/fwts/+bug/833644
+	 */
+	/*
 	if (fadt->p_lvl2_lat > 100) {
 		fwts_warning(fw, "FADT P_LVL2_LAT is %hu, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
 		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C2 latency in microseconds. The ACPI specification "
@@ -172,6 +181,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				"states that a value > 1000 indicates that C3 is not supported and hence the "
 				"ACPI processor idle routine will not use C3 power states.");
 	}
+	*/
 	/*
 	if (fadt->day_alrm == 0)
 		fwts_warning(fw, "FADT DAY_ALRM is zero, OS will not be able to program day of month alarm.");

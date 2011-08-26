@@ -561,7 +561,7 @@ static void acpidump_fadt(fwts_framework *fw, uint8_t *data, int length)
 		FIELD_BITF("  32 bit PM timer (V1)", 			fwts_acpi_table_fadt, flags, 1, 8),
 		FIELD_BITF("  Docking Capability (V1)", 		fwts_acpi_table_fadt, flags, 1, 9),
 		FIELD_BITF("  Reset Register Supported (V2)", 		fwts_acpi_table_fadt, flags, 1, 10),
-		FIELD_BITF("  Selead Case (V3)", 			fwts_acpi_table_fadt, flags, 1, 11),
+		FIELD_BITF("  Sealed Case (V3)", 			fwts_acpi_table_fadt, flags, 1, 11),
 		FIELD_BITF("  Headless, No Video (V3)", 		fwts_acpi_table_fadt, flags, 1, 12),
 		FIELD_BITF("  Use native instr. after SLP_TYPx (V3)",	fwts_acpi_table_fadt, flags, 1, 13),
 		FIELD_BITF("  PCI_EXP_WAK bits supported (V4)", 	fwts_acpi_table_fadt, flags, 1, 14),

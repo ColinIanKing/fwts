@@ -260,9 +260,9 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 
 #define FWTS_REGISTER(name, ops, priority, flags)		\
 								\
-void name ## init (void) __attribute__ ((constructor));		\
+static void name ## init (void) __attribute__ ((constructor));	\
 								\
-void name ## init (void)					\
+static void name ## init (void)					\
 {								\
 	fwts_framework_test_add(# name, ops, priority, flags);	\
 }								\

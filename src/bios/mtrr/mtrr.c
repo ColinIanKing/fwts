@@ -56,8 +56,6 @@ struct mtrr_entry {
 	uint8_t  type;
 };
 
-char *mtrr_resource = NULL;
-
 static char *cache_to_string(int type)
 {
 	static char str[1024];

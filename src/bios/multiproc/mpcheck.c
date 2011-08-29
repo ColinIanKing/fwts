@@ -499,22 +499,6 @@ static int mpcheck_deinit(fwts_framework *fw)
 	return fwts_mp_data_free(&mp_data);
 }
 
-uint8_t mpcheck_get_apic_id(void *data)
-{
-	uint8_t *which = (uint8_t*)data;
-
-	if (*which == FWTS_MP_CPU_ENTRY) {
-		fwts_mp_processor_entry *cpu_entry =
-			(fwts_mp_processor_entry *)data;
-		return cpu_entry->local_apic_id;
-	}
-	if (*which == FWTS_MP_IO_APIC_ENTRY) {
-		fwts_mp_io_apic_entry *io_apic_entry = (fwts_mp_io_apic_entry *)data;
-		return io_apic_entry->id;
-	}
-	return 0xff;
-}
-
 static int mpcheck_test_header(fwts_framework *fw)
 {
 	bool failed = false;

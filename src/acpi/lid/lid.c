@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-DIR *liddir;
+static DIR *liddir;
 
 #define LID_PATH	"/proc/acpi/button/lid"
 

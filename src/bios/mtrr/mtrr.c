@@ -37,7 +37,7 @@
 
 static fwts_list *klog;
 static fwts_list *mtrr_list;
-static fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
+static fwts_cpuinfo_x86 *fwts_cpuinfo;
 
 #define UNCACHED	0x0001
 #define	WRITE_BACK	0x0002
@@ -507,7 +507,7 @@ static int mtrr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+	if ((fwts_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}
@@ -521,8 +521,8 @@ static int mtrr_deinit(fwts_framework *fw)
 {
 	fwts_klog_free(klog);
 	fwts_list_free(mtrr_list, free);
-	if (fwts_virt_cpuinfo)
-		fwts_cpu_free_info(fwts_virt_cpuinfo);
+	if (fwts_cpuinfo)
+		fwts_cpu_free_info(fwts_cpuinfo);
 
 	return FWTS_OK;
 }
@@ -569,7 +569,7 @@ static int mtrr_test2(fwts_framework *fw)
 
 static int mtrr_test3(fwts_framework *fw)
 {
-	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD")) {
+	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,

@@ -41,7 +41,7 @@
 
 extern fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
-int cpu_has_svm(void)
+static int cpu_has_svm(void)
 {
 	return (strstr(fwts_virt_cpuinfo->flags, "svm") != NULL);
 }
@@ -51,7 +51,7 @@ static int can_lock_with_msr(void)
 	return (fwts_virt_cpuinfo->x86 & 0x10);
 }
 
-int vt_locked_by_bios(void)
+static int vt_locked_by_bios(void)
 {
 	uint64_t msr;
 

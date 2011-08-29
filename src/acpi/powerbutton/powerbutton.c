@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-DIR *power_buttondir;
+static DIR *power_buttondir;
 
 #define POWER_BUTTON_PATH	"/proc/acpi/button/power"
 

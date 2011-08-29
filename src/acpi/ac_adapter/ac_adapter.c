@@ -53,7 +53,7 @@ static int ac_adapter_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-void ac_adapter_check_field(char *field, char *contents, int *matching, int *not_matching)
+static void ac_adapter_check_field(char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
 

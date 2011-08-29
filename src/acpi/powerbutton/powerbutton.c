@@ -53,7 +53,7 @@ static int power_button_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-void power_button_check_field(fwts_framework *fw,
+static void power_button_check_field(fwts_framework *fw,
 	char *field, char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;

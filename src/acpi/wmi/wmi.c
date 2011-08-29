@@ -93,7 +93,7 @@ static fwts_wmi_known_guid *wmi_find_guid(char *guid)
 		str++;			\
 	if (*str == '\0') return;	\
 
-char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
+static char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 {
 	static char buffer[256];
 

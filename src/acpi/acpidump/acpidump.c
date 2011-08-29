@@ -983,7 +983,7 @@ typedef struct {
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
 
-acpidump_table_vec table_vec[] = {
+static acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
 	{ "BERT", 	acpidump_bert, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },

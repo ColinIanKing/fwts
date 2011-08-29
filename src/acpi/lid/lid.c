@@ -52,7 +52,7 @@ static int lid_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-void lid_check_field(char *field,
+static void lid_check_field(char *field,
 	char *contents, int *matching, int *not_matching)
 {
 	struct dirent *entry;
@@ -77,7 +77,7 @@ void lid_check_field(char *field,
 	} while (entry);
 }
 
-void lid_check_field_poll(char *field,
+static void lid_check_field_poll(char *field,
 	char *contents, int *matching, int *not_matching)
 {
 	int i;

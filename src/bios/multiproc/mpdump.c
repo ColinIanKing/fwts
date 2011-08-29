@@ -305,7 +305,7 @@ static char *mpdump_dst_io_apic(uint8_t apic)
 	}
 }
 
-uint8_t mpdump_get_apic_id(void *data)
+static uint8_t mpdump_get_apic_id(void *data)
 {
 	uint8_t *which = (uint8_t*)data;
 	

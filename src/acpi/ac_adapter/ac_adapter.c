@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-DIR *ac_adapterdir;
+static DIR *ac_adapterdir;
 
 #define AC_ADAPTER_PATH	"/proc/acpi/ac_adapter"
 

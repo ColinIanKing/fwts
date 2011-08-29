@@ -49,7 +49,7 @@
 
 extern fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
-int cpu_has_vmx(void)
+static int cpu_has_vmx(void)
 {
 	return (strstr(fwts_virt_cpuinfo->flags, "vmx") != NULL);
 }

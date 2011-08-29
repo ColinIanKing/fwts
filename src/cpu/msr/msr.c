@@ -24,7 +24,7 @@ typedef void (*msr_callback_check)(fwts_framework *fw, uint64_t val);
 static int ncpus;
 static bool intel_cpu;
 static bool amd_cpu;
-fwts_cpuinfo_x86 *cpuinfo;
+static fwts_cpuinfo_x86 *cpuinfo;
 
 static int msr_init(fwts_framework *fw)
 {

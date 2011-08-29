@@ -53,7 +53,7 @@ static int brightness_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-int get_setting(char *entry_name, char *setting, int *value)
+static int get_setting(char *entry_name, char *setting, int *value)
 {
 	char path[PATH_MAX];
 	FILE *fp;
@@ -72,7 +72,7 @@ int get_setting(char *entry_name, char *setting, int *value)
 	return FWTS_OK;
 }
 
-int set_setting(char *entry_name, char *setting, int value)
+static int set_setting(char *entry_name, char *setting, int value)
 {
 	char path[PATH_MAX];
 	FILE *fp;

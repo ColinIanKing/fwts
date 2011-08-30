@@ -1,3 +1,28 @@
+fwts (0.23.22) oneiric; urgency=low
+
+  * declare various private variables and functions static (LP: #837215)
+  * bios: multiproc: make mpdump_get_apic_id static
+  * bios: multiproc: remove redundant mpcheck_get_apic_id()
+  * cpu: virt: make cpu_has_vmx static
+  * acpi: lid: make lid_*() static
+  * acpi: ac_adapter: make ac_adapter_check_field static
+  * acpi: powerbutton: make power_button_check_field static
+  * acpi: brightness: make *_setting static
+  * cpu: virt: make cpu_has_svm, vt_locked_by_bios static
+  * lib: framework: make init funcs static
+  * acpi: wmi: make wmi_wdg_flags_to_text() static
+  * bios: mtrr: rename fwts_virt_cpuinfo to fwts_cpuinfo
+  * acpi: acpidump: make table_vec static
+  * cpu: msr: make cpuinfo static
+  * acpi: ac_adapter: make ac_adapterdir static
+  * acpi: lid: make liddir static
+  * acpi: powerbutton: make power_buttondir static
+  * bios: mtrr: remove redundant mtrr_resource
+  * acpi: acpidump: fix typo 'Sealed Case'
+  * cpu: msr: drop TSC_AUX and SMBASE tests (LP: #834591)
+
+ -- Colin King <colin.king@canonical.com>  Tue, 30 Aug 2011 09:18:53 +0100
+
 fwts (0.23.21) oneiric; urgency=low
 
   * acpi: acpitables: remove false positive warnings (LP: #833644)

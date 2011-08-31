@@ -1,3 +1,10 @@
+fwts (0.23.23) oneiric; urgency=low
+
+  * cmos: cmosdump: fix floppy disk info
+  * cmos: cmosdump: fix register 0x0b dump (LP: #837969)
+
+ -- Colin King <colin.king@canonical.com>  Wed, 31 Aug 2011 17:07:34 +0100
+
 fwts (0.23.22) oneiric; urgency=low
 
   * declare various private variables and functions static (LP: #837215)

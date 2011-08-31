@@ -163,17 +163,20 @@ static int cmosdump_test1(fwts_framework *fw)
 	fwts_log_info_verbatum(fw, "Status Register B: (CMOS 0x0b): 0x%2.2x",
 		data[11]);
 	fwts_log_info_verbatum(fw, "  Daylight savings:       %1.1x (%s)",
-		(data[11] >> 1) & 1,
-		(data[11] >> 1) & 1 ? "Enabled" : "Disabled");
+		data[11] & 1,
+		data[11] & 1 ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  24 Hour Clock:          %1.1x (%s)",
+		(data[11] >> 1) & 1,
+		(data[11] >> 1) & 1 ? "24 Hour" : "12 Hour");
+	fwts_log_info_verbatum(fw, "  Data Mode (DM):         %1.1x (%s)",
 		(data[11] >> 2) & 1,
-		(data[11] >> 1) & 1 ? "12 Hour" : "24 Hour");
+		(data[11] >> 2) & 1 ? "Binary" : "BCD");
 	fwts_log_info_verbatum(fw, "  Square Wave:            %1.1x (%s)",
 		(data[11] >> 3) & 1,
-		(data[11] >> 2) & 1 ? "Enabled" : "Disabled");
+		(data[11] >> 3) & 1 ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Update ended IRQ:       %1.1x (%s)",
 		(data[11] >> 4) & 1,
-		(data[11] >> 3) & 1 ? "Enabled" : "Disabled");
+		(data[11] >> 4) & 1 ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Alarm IRQ:              %1.1x (%s)",
 		(data[11] >> 5) & 1,
 		(data[11] >> 5) & 1 ? "Enabled" : "Disabled");

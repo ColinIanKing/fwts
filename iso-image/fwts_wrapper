@@ -1,0 +1,232 @@
+#!/bin/bash
+#
+# Copyright (C) 2010 Canonical
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+FWTS="Firmware Test Suite"
+OPTIONS="/tmp/options.$$"
+DIALOG_CMD="/tmp/fwts.cmd.$$"
+
+FWTS_DATE=`date +%d%m%Y`
+FWTS_TIME=`date +%H%M`
+
+WORK_DIR=/cdrom/fwts/$FWTS_DATE/$FWTS_TIME
+
+#
+# for debugging, use:
+# WORK_DIR=./fwts/$FWTS_DATE/$FWTS_TIME
+#
+SHUTDOWN_AT_END=1
+
+
+do_help()
+{
+	dialog  --backtitle "$FWTS" --title "Help" --msgbox \
+		"To make selections from the menu use the following keys:\n\nUse the up/down cursor keys to navigate to the desired menu option and the <Space> bar to tick the menu selection.\n\nUse the left/right or tab keys to navigate the button options and press the <Enter> key to select." 13 60
+}
+
+#
+#  Run a bunch of tests and monitor progress
+#
+do_test()
+{
+	
+	num_tests=`fwts $1 --show-tests | wc -l`
+	num_tests=$((num_tests - 1))
+	if [ $num_tests -gt 0 ]; then
+  		fwts --force-clean --skip-test=s3,s4 $1 --show-progress-dialog | dialog --backtitle "$FWTS" --title "$2" --gauge "" 13 80 0
+	fi
+}
+
+#
+#  Get user choice of tests to run
+#
+select_tests()
+{
+	while true
+	do
+		declare -a tests
+		x=0
+		#
+		#  Discover available tests
+		#
+		fwts --batch --batch-experimental --show-tests | grep "^ " > $OPTIONS
+		while read test text
+		do
+			((x++))
+			tests[$x]=$test
+			txt="${txt} ${x} \"${text}\" off"
+		done < $OPTIONS
+		rm $OPTIONS
+	
+		#
+		# Construct and run dialog
+		#
+		echo dialog --backtitle '"$FWTS"' --title '"Select Tests to Run"' --help-button  --checklist '"Select from the list below the test(s) you want to run. Use up/down cursor keys, space to select and enter to start:"' 20 70 $x $txt > $DIALOG_CMD
+		. $DIALOG_CMD 2> $OPTIONS
+		ret=$?
+		rm $DIALOG_CMD
+
+		#
+		# Scan return selections and build fwts test scenarios
+		#
+		x=0
+		for i in `cat $OPTIONS`
+		do
+			((x++))
+			i=${i#\"}
+			i=${i%\"}
+			run_tests="$run_tests ${tests[$i]}"
+		done
+
+		#
+		# Handle dialog exit states:
+		#
+		case $ret in
+		0)
+			if [ $x -eq 0 ]; then
+				dialog --backtitle "$FWTS" --title "No Tests Selected!" --msgbox \
+			"   You did not select any tests to be run." 5 50
+			else
+  				fwts --force-clean $run_tests --show-progress-dialog | dialog  --backtitle "$FWTS" --title "$2" --gauge "" 15 80 0
+				done_tests_finish
+			fi
+			;;
+		1)
+			return
+			;;
+		2)
+			do_help
+			;;
+		255)
+			no_tests_finish
+			;;
+		esac
+	done
+}
+
+#
+#  View the results log
+#
+view_results()
+{	
+	tempfile=/tmp/view_results.tmp.$$
+	dialog --print-maxsize 2>| $tempfile
+	term_height=`sed -n "s/^MaxSize: \([0-9]*\), \([0-9]*\)$/\1/p" $tempfile 2> /dev/null`
+	term_width=` sed -n "s/^MaxSize: \([0-9]*\), \([0-9]*\)$/\2/p" $tempfile 2> /dev/null`
+	term_height=$((term_height))
+	term_width=$((term_width - 2))
+	rm $tempfile
+
+	dialog --backtitle "$FWTS" --title "Test Results" \
+		--textbox results.log \
+		$term_height $term_width
+}
+
+#
+#  Shutdown or exit
+#
+finish()
+{
+	if [ $SHUTDOWN_AT_END -eq 1 ]; then
+		dialog  --backtitle "$FWTS" --infobox "      Shutting down.." 3 30
+  		shutdown -P now
+		exit 0
+	else
+		dialog --clear
+		exit 0
+	fi
+}
+
+#
+#  Aborted, no tests run
+#
+no_tests_finish()
+{
+	dialog --backtitle "$FWTS" --title "Abort Testing!" --msgbox \
+		"   You did not select any tests to be run.\n\n          Press Enter to shutdown." 7 50
+	finish
+}
+
+#
+#  Finish after running some tests
+#
+done_tests_finish()
+{
+	dialog  --backtitle "$FWTS" --title "Testing Complete" --yesno \
+"The results can be found on the USB stick in the\n
+the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n
+     Do you want to view the results log now?" 9 55
+	case $? in
+	0)
+		view_results
+		;;
+	1|255)
+		;;
+	esac
+
+	dialog  --backtitle "$FWTS" --title "Testing Complete" --msgbox \
+"The results can be found on the USB stick in the\n
+the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n
+            Press Enter to shutdown" 9 55
+	finish
+}
+
+#
+#  Here we go..
+#
+mkdir -p $WORK_DIR >& /dev/null
+if [ $? -ne 0 ]; then
+	dialog --ok-label "Shutdown" --backtitle "$FWTS" --title "Error" --msgbox "Could not create directory fwts/$FWTS_DATE/$FWTS_TIME to store test results.\n\n          Press Enter to shutdown." 8 50 
+	finish
+	exit 0
+fi
+
+while true
+do
+	dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
+  		"This will run a suite of firmware tests that will check the BIOS and ACPI tables. It can also find issues that can cause Linux problems.\n\n\
+The default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue:" \
+		18 70 4 \
+		1 "All Batch Tests" on \
+		2 "Select Individual Tests" off \
+		3 "Abort Testing" off \
+	2> $OPTIONS
+
+	case $? in
+	0)
+		cd $WORK_DIR >& /dev/null
+		case `cat $OPTIONS` in
+		'1')
+  			do_test "--batch" 'Running Batch Tests'
+			done_tests_finish
+			;;
+		'2')
+			select_tests
+			;;
+		'3')
+			no_tests_finish
+			;;
+		esac
+		;;
+	2)
+		do_help
+		;;
+	1|255)
+		no_tests_finish
+		;;
+	esac
+done

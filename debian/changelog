@@ -1,3 +1,11 @@
+fwts (0.24.01) oneiric; urgency=low
+
+  * add fwts-collect man page
+  * debian: add fwts-collect to fwts installer
+  * scripts: fwts-collect - collect up logs for bug reporting
+    
+ -- Colin King <colin.king@canonical.com>  Tue, 20 Sep 2011 18:28:46 +0100
+
 fwts (0.24.00) oneiric; urgency=low
 
   * iso-image: fwts_wrapper dialog wrapper script.

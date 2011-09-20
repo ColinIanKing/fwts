@@ -1,0 +1,181 @@
+#!/bin/bash
+#
+# Copyright (C) 2011 Canonical
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+
+OUTNAME=fwts-logs.tar.gz
+TMPDIR=/tmp/fwts.$$
+FWTS=`which fwts`
+
+#
+#  sighandler
+#
+on_die()
+{
+	if [ -d $TMPDIR ]; then
+		rm -rf $TMPDIR
+		echo "Interrupted, exiting."
+		exit 1
+	fi
+}
+
+#
+#  Show how to use this script
+#
+show_help()
+{
+cat << EOD
+fwts-collect [ LOGFILEs... ]
+
+Collect up fwts related logs and put them in a gzip'd tar file
+for appending to bug reports.  By default this will collect the
+basic logs and system related information, but one can also
+specify extra files to add to the archive too.
+
+example:
+	fwts-collect report.log /var/log/messages
+
+EOD
+}
+
+
+#
+#  Dump out ACPI interrpupt stats
+#
+acpi_irq_dump()
+{
+	if [ -d /sys/firmware/acpi/interrupts ]; then
+		echo "/sys/firmware/acpi/interrupts:"
+		echo " "
+		for I in /sys/firmware/acpi/interrupts/*
+		do		
+			name=`basename $I`
+			echo -e "$name\t" `cat $I`
+		done
+	fi
+}
+
+
+while getopts "o:h" opt;
+do
+	case $opt in
+	h)	show_help	
+		exit 0
+		;;
+	\?)
+		echo "Invalid option: -$OPTARG" 1>&2
+		exit 1
+		;;
+	esac
+done
+
+OUTFILE=`basename $OUTNAME`
+OUTPATH=$PWD
+
+OUTNAME=$OUTPATH/$OUTFILE
+
+#
+# Sanity checks
+#
+if [ -d $OUTNAME ] ; then
+	echo "$OUTNAME is a directory and already exists." 1>&2
+	exit 1
+fi
+if [ -e $OUTNAME ] ; then
+	echo "File $OUTFILE already exists." 1>&2
+	exit 1
+fi
+if [[ $EUID -ne 0 ]]; then
+	echo "Need to run this as root" 1>&2
+	exit 1
+fi
+if [ -z $FWTS ]; then
+	echo "Firmware test suite fwts does not exist!" 1>&2
+	exit 1
+fi
+if [ -d $TMPDIR ]; then
+	echo "Cannot create temporary directory $TMPDIR: already exists!" 1>&2
+	exit 1
+fi
+
+trap 'on_die' TERM INT
+mkdir $TMPDIR
+
+err=$?
+if [ $? -ne 0 ]; then
+	echo "Cannot create temporary directory $TMPDIR: error $?" 1>&2
+	exit 1
+fi
+
+#
+#  Dump out logs
+#
+cd $TMPDIR
+
+#
+#  General /proc info
+#
+cat /proc/iomem > iomem.log
+cat /proc/mtrr > mtrr.log
+cat /proc/interrupts > interrupts.log
+acpi_irq_dump > acpi_irqs.log
+
+#
+#  Copy of kernel log
+#
+cp /var/log/kern.log kern.log
+
+#
+#  fwts specific output
+#
+sudo fwts --dump >& /dev/null
+fwts memmapdump --log-format="" -r memmap.log >& /dev/null
+fwts acpidump --log-format="" -r acpitables.log >& /dev/null
+fwts mpdump --log-format="" -r version.log >& /dev/null
+fwts version --log-format="" -r version.log >& /dev/null
+
+#
+#  fwts generates a README file that we don't need
+#
+rm README.txt
+
+#
+#  Copy over any extra user specified logs
+#
+cd $OUTPATH
+while [ $# -ne 0 ]
+do
+	if [ -e $1 ]; then
+		cp $1 $TMPDIR
+	else
+		echo "File $1 does not exist!" 1>& 2
+		rm -rf $TMPDIR
+		exit 1
+	fi
+	shift
+done
+
+#
+#  Now archive up the files
+#
+cd $TMPDIR
+tar cfz - . > $OUTNAME
+
+cd $OUTPATH
+rm -rf $TMPDIR
+
+exit 0

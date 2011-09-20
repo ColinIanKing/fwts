@@ -1,0 +1,67 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH FWTS 1 "July 8, 2010"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+fwts-collect \- collect logs for fwts bug reporting.
+.br
+
+.SH SYNOPSIS
+.B fwts-collect
+.RI [ FILES ]
+.br
+
+.SH DESCRIPTION
+This manual page documents briefly the
+.B fwts-collect
+firmware test suite log collecting tool.
+The tool
+.B fwts-collect
+collects logs and various system and firmware dumps into the gzip'd tar ball
+fwts-logs.tar.gz which can then be added to bug reports.  It collects data
+from /proc/iomem, /proc/mtrr, /proc/interrupts, IRQ counts from 
+/sys/firmware/acpi/interrupts and kernel logs.  It also invokes fwts and
+gathers ACPI tables, memorymaps, MultiProcessor table dumps, kernel version
+and ACPI version information. 
+.B
+fwts
+using sudo is required.
+.br
+Running
+.B
+fwts
+with no options will collect logs automatically. However, one can also
+specify the names of addition files to be added to the gzip'd tar ball.
+.P
+.SH EXAMPLES
+.LP
+Gather up logs into fwts-logs.tar.gz
+.RS 8
+sudo fwts-collect
+.RE
+.LP
+Gather up logs and also /var/log/pm-powersave.log
+.RS 8
+sudo fwts-collect /var/log/pm-powersave.log
+.SH SEE ALSO
+.BR fwts (1), 
+.BR dmidecode (8), 
+.BR lspci (8)
+.SH AUTHOR
+fwts-collect was written by Colin King <colin.king@canonical.com>
+.PP
+This manual page was written by Colin King <colin.king@canonical.com>,
+for the Ubuntu project (but may be used by others).

@@ -1,3 +1,10 @@
+fwts (0.24.00) oneiric; urgency=low
+
+  * iso-image: fwts_wrapper dialog wrapper script.
+  * assets: fwts logo
+    
+ -- Colin King <colin.king@canonical.com>  Tue, 20 Sep 2011 18:16:00 +0100
+
 fwts (0.23.23) oneiric; urgency=low
 
   * cmos: cmosdump: fix floppy disk info

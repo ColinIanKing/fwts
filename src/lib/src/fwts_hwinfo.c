@@ -34,7 +34,8 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	fwts_pipe_exec("hciconfig -a | grep -A2 '^\\w", &hwinfo->hciconfig);
 	fwts_pipe_exec("lspci | grep VGA", &hwinfo->videocard);
 	fwts_pipe_exec("xinput list", &hwinfo->xinput);
-	fwts_pipe_exec("pactl | grep Sink", &hwinfo->pactl);
+	fwts_pipe_exec("pactl list | grep Sink", &hwinfo->pactl);
+	fwts_pipe_exec("pactl list | grep Source", &hwinfo->pactl);
 
 	return FWTS_OK;
 }

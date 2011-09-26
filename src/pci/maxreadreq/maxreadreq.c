@@ -120,6 +120,15 @@ static int maxreadreq_test1(fwts_framework *fw)
 			"%d devices have low MaxReadReq settings. "
 			"Firmware may have configured these too low.",
 			warnings);
+		fwts_advice(fw, 
+			"The MaxReadRequest size is set too low and will affect performance. "
+			"It will provide excellent bus sharing at the cost of bus data transfer "
+			"rates. Although not a critical issue, it may be worth considering setting "
+			"the MaxReadRequest size to 256 or 512 to increase throughput on the PCI "
+			"Express bus. Some drivers (for example the Brocade Fibre Channel driver) "
+			"allow one to override the firmware settings. Where possible, this BIOS "
+			"configuration setting is worth increasing it a little more for better "
+			"performance at a small reduction of bus sharing.");
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	} else
 		fwts_passed(fw, "All devices have MaxReadReq set > 128.");

@@ -1098,10 +1098,9 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				if (!(
 				    ((obj->Package.Elements[1].Integer.Value == Sstate) && (obj->Package.Elements[0].Integer.Value == 0)) ||
                                     ((obj->Package.Elements[1].Integer.Value == 0) && (obj->Package.Elements[0].Integer.Value != 0)) )) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKPowerSState",
+					fwts_warning(fw,
 						"_WAK: expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.",
 						Sstate, (uint32_t)obj->Package.Elements[0].Integer.Value);
-					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					fwts_advice(fw, "_WAK should return 0 if the wake failed and was unsuccessful (i.e. element[0] "
 							"is non-zero) OR should return the S-state. "
 							"This can confuse the operating system as this _WAK return indicates that the "

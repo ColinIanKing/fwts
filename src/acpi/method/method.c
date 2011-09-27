@@ -256,7 +256,7 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	fwts_acpica_sem_count_clear();
 
 	ret = AcpiEvaluateObject(NULL, name, arg_list, &buf);
-	if (ACPI_FAILURE(ret) != FWTS_OK) {
+	if (ACPI_FAILURE(ret) != AE_OK) {
 		switch (ret) {
 		case AE_AML_BAD_OPCODE:
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLBadOpCode", "Detected a bad AML opcode when evaluating method '%s'.", name);

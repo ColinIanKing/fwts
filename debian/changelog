@@ -1,3 +1,12 @@
+fwts (0.24.02) oneiric; urgency=low
+
+  * acpi: method: check AE_OK return from AcpiEvaluateObject()
+  * pci: maxreadreq: add more helpful advice (LP: #859651)
+  * acpi: method: Make incorrect _WAK returns non-fatal as kernel ignores these anyway.
+  * lib: fwts_hwinfo: do pactl checking correctly (LP: #837606)
+
+ -- Colin King <colin.king@canonical.com>  Wed, 28 Sep 2011 11:42:00 +0100
+
 fwts (0.24.01) oneiric; urgency=low
 
   * add fwts-collect man page

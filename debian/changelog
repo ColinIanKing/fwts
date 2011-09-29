@@ -1,3 +1,13 @@
+fwts (0.24.03) oneiric; urgency=low
+
+  * acpi: acpitables: Tidy FADT RESET_REG error message.
+  * acpi: method: relax _BIF, _BIX tests.
+  * acpi: acpitables: fix spurious advice infomation (LP: #862170)
+  * acpi: method: less noisy errors when many _BCL levels are in wrong order.
+  * acpi: method: Check _BST charging + discharging more thoroughly (LP: #862153)
+
+ -- Colin King <colin.king@canonical.com>  Thu, 29 Sep 2011 10:48:49 +0100
+
 fwts (0.24.02) oneiric; urgency=low
 
   * acpi: method: check AE_OK return from AcpiEvaluateObject()

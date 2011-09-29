@@ -814,13 +814,24 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		/* Sanity check each field */
 		/* Battery State */
-		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
+		if ((obj->Package.Elements[0].Integer.Value) > 7) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadState",
-					"_BST: Expected Battery State (Element 0) to be 0..2, got 0x%8.8x.",
+					"_BST: Expected Battery State (Element 0) to be 0..7, got 0x%8.8x.",
 					(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+		/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
+		if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadState",
+					"_BST: Battery State (Element 0) is indicating both charging "
+					"and discharginng which is not allowed. Got value 0x%8.8x.",
+					(uint32_t)obj->Package.Elements[0].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed++;
+		}
+		
+		
 		/* Battery Present Rate - cannot check, pulled from EC */
 		/* Battery Remaining Capacity - cannot check, pulled from EC */
 		/* Battery Present Voltage - cannot check, pulled from EC */

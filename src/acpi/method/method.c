@@ -1678,6 +1678,8 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 					"Method _BCL should return a package of more than 2 integers, got just %d.", obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			} else {
+				bool ascending_levels = false;
+
 				if (obj->Package.Elements[0].Integer.Value <
 				    obj->Package.Elements[1].Integer.Value) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLMaxLevel",
@@ -1692,15 +1694,21 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 				for (i=2;i<obj->Package.Count-1;i++) {
 					if (obj->Package.Elements[i].Integer.Value >
 					    obj->Package.Elements[i+1].Integer.Value) {
-						fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLAscendingOrder",
-								"Brightness level %d (index %d) is greater than "
-						 		"brightness level %d (index %d), should be in ascending order.",
-						(uint32_t)obj->Package.Elements[i].Integer.Value, i,
-						(uint32_t)obj->Package.Elements[i+1].Integer.Value, i+1);
-						fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+						fwts_log_info(fw, "Brightness level %d (index %d) is greater than "
+						 	"brightness level %d (index %d), should be in ascending order.",
+							(uint32_t)obj->Package.Elements[i].Integer.Value, i,
+							(uint32_t)obj->Package.Elements[i+1].Integer.Value, i+1);
+						ascending_levels = true;
 						failed++;
 					}
 				}
+				if (ascending_levels) {
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLAscendingOrder",
+						"Some or all of the brightness level are not in ascending order which "
+						"should be fixed in the firmware.");
+					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+				}
+
 				if (failed)
 					fwts_advice(fw, "Method _BCL seems to be misconfigured and is returning incorrect brightness levels."
 							"It is worth sanity checking this with the firmware test suite interactive test "

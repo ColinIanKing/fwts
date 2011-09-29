@@ -607,6 +607,11 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#ifdef FWTS_METHOD_PEDANDTIC
+		/* 
+		 * Since this information may be evaluated by communicating with
+		 * the EC we skip these checks as we can't do this from userspace
+	 	 */
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFBadCapacity", "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
@@ -621,6 +626,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#endif
 		/* Battery Technology */
 		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBatTechUnit", "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
@@ -628,6 +634,11 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#ifdef FWTS_METHOD_PEDANDTIC
+		/* 
+		 * Since this information may be evaluated by communicating with
+		 * the EC we skip these checks as we can't do this from userspace
+	 	 */
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignVoltage", "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
@@ -649,6 +660,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#endif
 		if (failed)
 			fwts_advice(fw, "Battery _BIF package contains errors. It is worth running the "
 					"firmware test suite interactive 'battery' test to see if this "
@@ -702,6 +714,11 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#ifdef FWTS_METHOD_PEDANDTIC
+		/* 
+		 * Since this information may be evaluated by communicating with
+		 * the EC we skip these checks as we can't do this from userspace
+	 	 */
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacity",
@@ -718,6 +735,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#endif
 		/* Battery Technology */
 		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXBatteryTechUnit",
@@ -726,6 +744,11 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#ifdef FWTS_METHOD_PEDANDTIC
+		/* 
+		 * Since this information may be evaluated by communicating with
+		 * the EC we skip these checks as we can't do this from userspace
+	 	 */
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignVoltage",
@@ -758,6 +781,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+#endif
 		if (failed)
 			fwts_advice(fw, "Battery _BIX package contains errors. It is worth running the "
 					"firmware test suite interactive 'battery' test to see if this "

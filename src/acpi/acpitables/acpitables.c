@@ -29,22 +29,24 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)table->data;
 
 	if ((ecdt->ec_control.address_space_id != 0) &&
-            (ecdt->ec_control.address_space_id != 1))
+            (ecdt->ec_control.address_space_id != 1)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
 				ecdt->ec_control.address_space_id);
 		fwts_advice(fw, "The ECDT EC_CONTROL address space id was invalid, however the kernel ACPI EC driver "
 				"will just assume it an I/O port address.  This will not affect "
 				"the system behaviour and can probably be ignored.");
+	}
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
-            (ecdt->ec_data.address_space_id != 1))
+            (ecdt->ec_data.address_space_id != 1)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
 				"should be 0 or 1 (System I/O Space or System Memory Space)",
 				ecdt->ec_data.address_space_id);
 		fwts_advice(fw, "The ECDT EC_DATA address space id was invalid, however the kernel ACPI EC driver "
 				"will just assume it an I/O port address.  This will not affect "
 				"the system behaviour and can probably be ignored.");
+	}
 }
 
 static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -112,12 +114,13 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTDNull", "FADT X_DSDT address is null.");
 			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null."
 					"The kernel will fall back to using the 32 bit DSDT pointer instead.");
-		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt)
+		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64Mismatch", "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
 				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
 			fwts_advice(fw, "One would expect the 32 bit DSDT and 64 bit X_DSDT "
 					"pointers to point to the same DSDT, however they don't which is clearly ambiguous and wrong. "
 					"The kernel works around this by using the 64 bit X_DSDT pointer to the DSDT. ");
+		}
 	}
 
 	if (fadt->sci_int == 0)
@@ -194,12 +197,13 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	if (table->length>=129) {
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&
-		    (fadt->reset_reg.address_space_id != 2))
+		    (fadt->reset_reg.address_space_id != 2)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG", "FADT RESET_REG was %hhu, must be System I/O space, System Memory space "
 				"or PCI configuration spaces.",
 				fadt->reset_reg.address_space_id);
 			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
 					"to this register *may* nor work correctly, meaning a reboot via this mechanism may not work.");
+		}
 		if ((fadt->reset_value == 0) && (fadt->reset_reg.address != 0))
 			fwts_warning(fw, "FADT RESET_VALUE is zero, which may be incorrect, it is usually non-zero.");
 	}

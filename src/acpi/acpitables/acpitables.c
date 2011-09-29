@@ -198,8 +198,9 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&
 		    (fadt->reset_reg.address_space_id != 2)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG", "FADT RESET_REG was %hhu, must be System I/O space, System Memory space "
-				"or PCI configuration spaces.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG",
+				"FADT RESET_REG address space ID was %hhu, must be System Memory space (0), "
+				"System I/O space (1), or PCI configuration space (2).",
 				fadt->reset_reg.address_space_id);
 			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
 					"to this register *may* nor work correctly, meaning a reboot via this mechanism may not work.");

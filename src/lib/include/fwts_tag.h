@@ -70,6 +70,7 @@ typedef enum {
 	FWTS_TAG_ACPI_METHOD,
 	FWTS_TAG_EMBEDDED_CONTROLLER,
 	FWTS_TAG_POWER_MANAGEMENT,
+	FWTS_TAG_WMI,
 } fwts_tag;
 
 fwts_tag fwts_tag_id_str_to_tag(const char *tag);

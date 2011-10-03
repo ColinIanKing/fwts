@@ -78,6 +78,7 @@ static fwts_tag_info fwts_tags[] = {
 	FWTS_TAG(FWTS_TAG_ACPI_METHOD,		"acpi-method"),
 	FWTS_TAG(FWTS_TAG_EMBEDDED_CONTROLLER,	"embedded-controller"),
 	FWTS_TAG(FWTS_TAG_POWER_MANAGEMENT,	"power-management"),
+	FWTS_TAG(FWTS_TAG_WMI,			"wmi"),
 	{ 0, NULL, NULL }
 };
 

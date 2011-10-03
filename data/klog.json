@@ -70,6 +70,69 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "dell_wmi:.*Received unknown WMI event",
+   "advice": "The Dell WMI driver has received an unknown WMI event. The driver should handle this new event or the firmware is reporting an incorrect and unknown event."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "dell_wmi:.*bad event status 0x",
+   "advice": "The Dell WMI driver has received a bad event status. This should be investigated further."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "asus_wmi:.*Unknown key.*pressed",
+   "advice": "The ASUS WMI driver has received an unknown key event. The driver should handle this new key event or the firmware is reporting an incorrect and unknown event."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*bad event status 0x",
+   "advice": "The HP WMI driver has received a bad event status. This should be investigated further."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*Unknown response received",
+   "advice": "The HP WMI driver has received a return object that was not of type ACPI_BUFFER. The driver needs to be updated to handle this new return type or there is a bug in the WMI mechanism on this machine."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*Unknown buffer length",
+   "advice": "The HP WMI driver has received a return buffer that was not the expected size of 8 or 16 bytes. This is probably a bug in the WMI mechanism on this machine."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*Unknown key code - 0x",
+   "advice": "The HP WMI driver has received a key code that it does not recognise. The driver needs to be updated to handle this new key code."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*Unknown event_id",
+   "advice": "The HP WMI driver has received an event ID that it does not recognise. The driver needs to be updated to handle this new event ID."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "msi_wmi:.*Unknown key pressed",
+   "advice": "The MSI WMI driver has received a key code that it does not recognise. The driver needs to be updated to handle this new key code."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "ACPI.*Handling Garbled _PRT entry",
    "advice": "BIOS has a garbled _PRT entry; source_name and source_index swapped."

@@ -62,7 +62,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "force-clean", 	"f",  0, "Force a clean results log file." },
 	{ "version", 		"v",  0, "Show version (" FWTS_VERSION ")." },
 	{ "dump", 		"d",  0, "Dump out dmesg, dmidecode, lspci, ACPI tables to logs." },
-	{ "table-path", 	"T:", 1, "Path to ACPI tables dumped by acpidump and then acpixtract, e.g. --table-path=/some/path/to/acpidumps" },
+	{ "table-path", 	"t:", 1, "Path to ACPI tables dumped by acpidump and then acpixtract, e.g. --table-path=/some/path/to/acpidumps" },
 	{ "batch-experimental", "",   0, "Run Batch Experimental tests." },
 	{ "interactive-experimental", "", 0, "Just run Interactive Experimental tests." },
 	{ "power-states", 	"P",  0, "Test S3, S4 power states." },

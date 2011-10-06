@@ -1,3 +1,11 @@
+fwts (0.24.04) oneiric; urgency=low
+
+  * acpi: checksum: output correct checksum value (LP: #869018)
+  * framework: -T option should be -t, (LP: #868226)
+  * klog: detect WMI driver pr_info() warning messages (LP: #865384)
+
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Sep 2011 14:50:00 +0100
+
 fwts (0.24.03) oneiric; urgency=low
 
   * acpi: acpitables: Tidy FADT RESET_REG error message.

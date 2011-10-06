@@ -1,3 +1,10 @@
+fwts (0.23.25) oneiric; urgency=low
+
+  * acpi: checksum: output correct checksum value (LP: #869018)
+  * framework: -T option should be -t, (LP: #868226)
+
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Oct 2011 15:11:00 +0100
+
 fwts (0.23.24) oneiric; urgency=low
 
   * acpi: method: relax _BIF, _BIX tests.

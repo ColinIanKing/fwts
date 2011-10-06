@@ -69,6 +69,27 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)table->data;
+	bool misaligned = false;
+
+	/* FACS misaligned? */
+	if (fadt->firmware_control & 63) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTFACSAddrMisaligned", 
+			"The 32 bit FIRMWARE_CTRL address is not 64 byte aligned. ");
+		misaligned = true;
+	}
+	if ((table->length >= 140) && (fadt->x_firmware_ctrl & 63)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTFACSAddrMisaligned", 
+			"The 32 bit FIRMWARE_CTRL address is not 64 byte aligned. ");
+		misaligned = true;
+	}
+	if (misaligned) {
+		fwts_advice(fw, "Section 5.2.10 of the ACPI specification states that the "
+				"32 bit FIRMWARE_CTRL or the 64 bit X_FIRMWARE_CTRL contain the "
+				"address of the FACS that must be aligned to a 64 byte boundary. "
+				"This seems to be required for Windows but not for Linux. However, "
+				"it is good practice to ensure the firmware aligns the FACS correctly.");
+	}
+	
 
 	if (fadt->firmware_control == 0) {
 		if (table->length >= 140) {

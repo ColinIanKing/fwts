@@ -43,8 +43,8 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	checksum = fwts_acpi_checksum(table->data, 20);
 	if (checksum != 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableChecksumRSDP",
-			"RSDP has incorrect checksum, expected 0x%x, got 0x%x.",
-			256-checksum, rsdp->checksum);
+			"RSDP has incorrect checksum, expected 0x%2.2x, got 0x%2.2x.",
+			(uint8_t)(rsdp->checksum)-checksum, rsdp->checksum);
 	else
 		fwts_passed(fw, "Table RSDP has correct checksum 0x%x.", rsdp->checksum);
 
@@ -62,7 +62,9 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 		if (checksum != 0)
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"ACPITableChecksumRSDP",
-				"RSDP has incorrect extended checksum, expected 0x%x, got 0x%x.", rsdp->extended_checksum, checksum);
+				"RSDP has incorrect extended checksum, expected 0x%2.2x, got 0x%2.2x.",
+				(uint8_t)(rsdp->extended_checksum-checksum),
+				rsdp->extended_checksum);
 		else
 			fwts_passed(fw, "Table RSDP has correct extended checksum 0x%x.", rsdp->extended_checksum);
 
@@ -101,8 +103,8 @@ static int checksum_scan_tables(fwts_framework *fw)
 			fwts_passed(fw, "Table %s has correct checksum 0x%x.", table->name, hdr->checksum);
 		else {
 			fwts_failed(fw, LOG_LEVEL_LOW, "ACPITableChecksum",
-				"Table %s has incorrect checksum, expected 0x%x, got 0x%x.",
-				table->name, 256-checksum, hdr->checksum);
+				"Table %s has incorrect checksum, expected 0x%2.2x, got 0x%2.2x.",
+				table->name, (uint8_t)(hdr->checksum-checksum), hdr->checksum);
 		}	fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
 	}
 	return FWTS_OK;

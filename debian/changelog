@@ -1,3 +1,16 @@
+fwts (0.24.05) oneiric; urgency=low
+
+  * libfwtsiasl: fix pbuilder warnings
+  * Add notes on structure and coding conventions of fwts
+  * example: blank test - fix to use new framework style
+  * fwts_wrapper: update copyright dates
+  * Remove old cruft
+  * Update README_ACPICA to keep in sync with latest ACPICA
+  * Update with autoreconf respin
+  * Update to ACPICA, commit 45ebe2cf90521fe511b827007e9c1e5c610292b6
+
+ -- Colin King <colin.king@canonical.com>  Fri, 7 Sep 2011 19:01:00 +0100
+
 fwts (0.24.04) oneiric; urgency=low
 
   * acpi: checksum: output correct checksum value (LP: #869018)

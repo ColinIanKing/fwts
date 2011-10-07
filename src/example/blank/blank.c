@@ -41,12 +41,6 @@ static int example_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *example_headline(void)
-{
-	/* Return the name of the test scenario */
-	return "Example test name.";
-}
-
 static int example_test1(fwts_framework *fw)
 {
 	/* Do your test */
@@ -64,20 +58,37 @@ static int example_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int example_test2(fwts_framework *fw)
+{
+	/* Do your test */
+	
+	/* Log success or failure */
+	fwts_passed(fw, "Test passed, hurrah!");
+	/*
+	fwts_failed(fw, LOG_LEVEL_HIGH, "ExampleUniqueTestMessageIdentifier", "Test failed!");
+	*/
+
+	/* Returns:
+	 *	FWTS_ERROR - failed, abort test
+	 *	FWTS_OK    - success, do test
+	 */
+	return FWTS_OK;
+}
 
 /*
  *  Null terminated array of tests to run, in this
  *  scenario, we just have one test.
  */
 static fwts_framework_minor_test example_tests[] = {
-	{ example_test1, "Example text name." },
+	{ example_test1, "Example sub test1 name." },
+	{ example_test2, "Example sub test2 name." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops example_ops = {
-	.headline    = example_headline,
-	.init        = example_init,	/* Can be NULL if not required */
-	.deinit      = example_deinit,	/* Can be NULL if not required */
+	.description = "Example name.", /* Simple short description of test */
+	.init        = example_init,	/* Can be NULL and/or ommitted if not required */
+	.deinit      = example_deinit,	/* Can be NULL  and/or ommittedif not required */
 	.minor_tests = example_tests    /* Array of tests to run */
 };
 

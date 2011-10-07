@@ -114,6 +114,7 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_UTILS)/utstate.c \
 	$(ACPICA_UTILS)/utxface.c \
 	$(ACPICA_UTILS)/utxferror.c \
+	$(ACPICA_UTILS)/utdecode.c \
 	$(ACPICA_NAMESPACE)/nsaccess.c \
 	$(ACPICA_NAMESPACE)/nsalloc.c \
 	$(ACPICA_NAMESPACE)/nsdump.c \
@@ -141,6 +142,8 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_DISPATCHER)/dswexec.c \
 	$(ACPICA_DISPATCHER)/dswload.c \
 	$(ACPICA_DISPATCHER)/dswload2.c \
+	$(ACPICA_DISPATCHER)/dsargs.c \
+	$(ACPICA_DISPATCHER)/dscontrol.c \
 	$(ACPICA_EXECUTER)/exconvrt.c \
 	$(ACPICA_EXECUTER)/excreate.c \
 	$(ACPICA_EXECUTER)/exdump.c \

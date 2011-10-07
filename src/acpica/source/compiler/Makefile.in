@@ -84,21 +84,22 @@ am_libfwtsiasl_la_OBJECTS = aslcompile.lo aslcompilerlex.lo \
 	dtparserlex.lo utalloc.lo utcache.lo utcopy.lo utdebug.lo \
 	utdelete.lo utglobal.lo utinit.lo utlock.lo utobject.lo \
 	utmisc.lo utmath.lo utmutex.lo utresrc.lo utstate.lo \
-	utxface.lo utxferror.lo nsaccess.lo nsalloc.lo nsdump.lo \
-	nsnames.lo nsobject.lo nsparse.lo nssearch.lo nsutils.lo \
-	nswalk.lo nsxfobj.lo psargs.lo psloop.lo psopcode.lo \
-	psparse.lo psscope.lo pstree.lo psutils.lo pswalk.lo \
-	dswscope.lo dswstate.lo dsfield.lo dsobject.lo dsopcode.lo \
-	dsutils.lo dswexec.lo dswload.lo dswload2.lo exconvrt.lo \
-	excreate.lo exdump.lo exmisc.lo exmutex.lo exnames.lo \
-	exoparg1.lo exoparg2.lo exoparg3.lo exoparg6.lo exprep.lo \
-	exregion.lo exresnte.lo exresolv.lo exresop.lo exstore.lo \
-	exstoren.lo exstorob.lo exsystem.lo exutils.lo adfile.lo \
-	adisasm.lo adwalk.lo dmextern.lo dmrestag.lo dmtable.lo \
-	dmtbinfo.lo dmtbdump.lo dbfileio.lo dmbuffer.lo dmnames.lo \
-	dmopcode.lo dmobject.lo dmresrc.lo dmresrcl.lo dmresrcs.lo \
-	dmutils.lo dmwalk.lo tbfadt.lo tbinstal.lo tbutils.lo \
-	tbxface.lo osunixxf.lo fwts_iasl_interface.lo
+	utxface.lo utxferror.lo utdecode.lo nsaccess.lo nsalloc.lo \
+	nsdump.lo nsnames.lo nsobject.lo nsparse.lo nssearch.lo \
+	nsutils.lo nswalk.lo nsxfobj.lo psargs.lo psloop.lo \
+	psopcode.lo psparse.lo psscope.lo pstree.lo psutils.lo \
+	pswalk.lo dswscope.lo dswstate.lo dsfield.lo dsobject.lo \
+	dsopcode.lo dsutils.lo dswexec.lo dswload.lo dswload2.lo \
+	dsargs.lo dscontrol.lo exconvrt.lo excreate.lo exdump.lo \
+	exmisc.lo exmutex.lo exnames.lo exoparg1.lo exoparg2.lo \
+	exoparg3.lo exoparg6.lo exprep.lo exregion.lo exresnte.lo \
+	exresolv.lo exresop.lo exstore.lo exstoren.lo exstorob.lo \
+	exsystem.lo exutils.lo adfile.lo adisasm.lo adwalk.lo \
+	dmextern.lo dmrestag.lo dmtable.lo dmtbinfo.lo dmtbdump.lo \
+	dbfileio.lo dmbuffer.lo dmnames.lo dmopcode.lo dmobject.lo \
+	dmresrc.lo dmresrcl.lo dmresrcs.lo dmutils.lo dmwalk.lo \
+	tbfadt.lo tbinstal.lo tbutils.lo tbxface.lo osunixxf.lo \
+	fwts_iasl_interface.lo
 libfwtsiasl_la_OBJECTS = $(am_libfwtsiasl_la_OBJECTS)
 libfwtsiasl_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -336,6 +337,7 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_UTILS)/utstate.c \
 	$(ACPICA_UTILS)/utxface.c \
 	$(ACPICA_UTILS)/utxferror.c \
+	$(ACPICA_UTILS)/utdecode.c \
 	$(ACPICA_NAMESPACE)/nsaccess.c \
 	$(ACPICA_NAMESPACE)/nsalloc.c \
 	$(ACPICA_NAMESPACE)/nsdump.c \
@@ -363,6 +365,8 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_DISPATCHER)/dswexec.c \
 	$(ACPICA_DISPATCHER)/dswload.c \
 	$(ACPICA_DISPATCHER)/dswload2.c \
+	$(ACPICA_DISPATCHER)/dsargs.c \
+	$(ACPICA_DISPATCHER)/dscontrol.c \
 	$(ACPICA_EXECUTER)/exconvrt.c \
 	$(ACPICA_EXECUTER)/excreate.c \
 	$(ACPICA_EXECUTER)/exdump.c \
@@ -534,6 +538,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmtbinfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmwalk.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsargs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dscontrol.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsfield.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsobject.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsopcode.Plo@am__quote@
@@ -601,6 +607,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utcache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utcopy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utdebug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utdecode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utdelete.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utglobal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utinit.Plo@am__quote@
@@ -1048,6 +1055,13 @@ utxferror.lo: $(ACPICA_UTILS)/utxferror.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o utxferror.lo `test -f '$(ACPICA_UTILS)/utxferror.c' || echo '$(srcdir)/'`$(ACPICA_UTILS)/utxferror.c
 
+utdecode.lo: $(ACPICA_UTILS)/utdecode.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT utdecode.lo -MD -MP -MF $(DEPDIR)/utdecode.Tpo -c -o utdecode.lo `test -f '$(ACPICA_UTILS)/utdecode.c' || echo '$(srcdir)/'`$(ACPICA_UTILS)/utdecode.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/utdecode.Tpo $(DEPDIR)/utdecode.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_UTILS)/utdecode.c' object='utdecode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o utdecode.lo `test -f '$(ACPICA_UTILS)/utdecode.c' || echo '$(srcdir)/'`$(ACPICA_UTILS)/utdecode.c
+
 nsaccess.lo: $(ACPICA_NAMESPACE)/nsaccess.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT nsaccess.lo -MD -MP -MF $(DEPDIR)/nsaccess.Tpo -c -o nsaccess.lo `test -f '$(ACPICA_NAMESPACE)/nsaccess.c' || echo '$(srcdir)/'`$(ACPICA_NAMESPACE)/nsaccess.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/nsaccess.Tpo $(DEPDIR)/nsaccess.Plo
@@ -1236,6 +1250,20 @@ dswload2.lo: $(ACPICA_DISPATCHER)/dswload2.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_DISPATCHER)/dswload2.c' object='dswload2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dswload2.lo `test -f '$(ACPICA_DISPATCHER)/dswload2.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dswload2.c
+
+dsargs.lo: $(ACPICA_DISPATCHER)/dsargs.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dsargs.lo -MD -MP -MF $(DEPDIR)/dsargs.Tpo -c -o dsargs.lo `test -f '$(ACPICA_DISPATCHER)/dsargs.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dsargs.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dsargs.Tpo $(DEPDIR)/dsargs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_DISPATCHER)/dsargs.c' object='dsargs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dsargs.lo `test -f '$(ACPICA_DISPATCHER)/dsargs.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dsargs.c
+
+dscontrol.lo: $(ACPICA_DISPATCHER)/dscontrol.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dscontrol.lo -MD -MP -MF $(DEPDIR)/dscontrol.Tpo -c -o dscontrol.lo `test -f '$(ACPICA_DISPATCHER)/dscontrol.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dscontrol.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dscontrol.Tpo $(DEPDIR)/dscontrol.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_DISPATCHER)/dscontrol.c' object='dscontrol.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dscontrol.lo `test -f '$(ACPICA_DISPATCHER)/dscontrol.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dscontrol.c
 
 exconvrt.lo: $(ACPICA_EXECUTER)/exconvrt.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT exconvrt.lo -MD -MP -MF $(DEPDIR)/exconvrt.Tpo -c -o exconvrt.lo `test -f '$(ACPICA_EXECUTER)/exconvrt.c' || echo '$(srcdir)/'`$(ACPICA_EXECUTER)/exconvrt.c

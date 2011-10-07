@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -163,8 +163,42 @@ AeInterfaceHandler (
     ACPI_STRING             InterfaceName,
     UINT32                  Supported);
 
+static UINT32
+AeEventHandler (
+    void                    *Context);
+
 static UINT32               SigintCount = 0;
 static AE_DEBUG_REGIONS     AeRegions;
+
+
+/*
+ * We will override some of the default region handlers, especially the
+ * SystemMemory handler, which must be implemented locally. Do not override
+ * the PCI_Config handler since we would like to exercise the default handler
+ * code. These handlers are installed "early" - before any _REG methods
+ * are executed - since they are special in the sense that tha ACPI spec
+ * declares that they must "always be available". Cannot override the
+ * DataTable region handler either -- needed for test execution.
+ */
+static ACPI_ADR_SPACE_TYPE  DefaultSpaceIdList[] = {
+    ACPI_ADR_SPACE_SYSTEM_MEMORY,
+    ACPI_ADR_SPACE_SYSTEM_IO
+};
+
+/*
+ * We will install handlers for some of the various address space IDs
+ * Test one user-defined address space (used by aslts.)
+ */
+#define ACPI_ADR_SPACE_USER_DEFINED     0x80
+
+static ACPI_ADR_SPACE_TYPE  SpaceIdList[] = {
+    ACPI_ADR_SPACE_EC,
+    ACPI_ADR_SPACE_SMBUS,
+    ACPI_ADR_SPACE_PCI_BAR_TARGET,
+    ACPI_ADR_SPACE_IPMI,
+    ACPI_ADR_SPACE_FIXED_HARDWARE,
+    ACPI_ADR_SPACE_USER_DEFINED
+};
 
 
 /******************************************************************************
@@ -557,6 +591,22 @@ AeInterfaceHandler (
 
 /******************************************************************************
  *
+ * FUNCTION:    AeEventHandler
+ *
+ * DESCRIPTION: Handler for Fixed Events
+ *
+ *****************************************************************************/
+
+static UINT32
+AeEventHandler (
+    void                    *Context)
+{
+    return (0);
+}
+
+
+/******************************************************************************
+ *
  * FUNCTION:    AeRegionInit
  *
  * PARAMETERS:  None
@@ -585,7 +635,58 @@ AeRegionInit (
 
 /******************************************************************************
  *
- * FUNCTION:    AeInstallHandlers
+ * FUNCTION:    AeInstallLateHandlers
+ *
+ * PARAMETERS:  None
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Install handlers for the AcpiExec utility.
+ *
+ *****************************************************************************/
+
+ACPI_STATUS
+AeInstallLateHandlers (
+    void)
+{
+    ACPI_STATUS             Status;
+    UINT32                  i;
+
+
+    /* Install some fixed event handlers */
+
+    Status = AcpiInstallFixedEventHandler (ACPI_EVENT_GLOBAL, AeEventHandler, NULL);
+    AE_CHECK_OK (AcpiInstallFixedEventHandler, Status);
+
+    Status = AcpiInstallFixedEventHandler (ACPI_EVENT_RTC, AeEventHandler, NULL);
+    AE_CHECK_OK (AcpiInstallFixedEventHandler, Status);
+
+    /*
+     * Install handlers for some of the "device driver" address spaces
+     * such as EC, SMBus, etc.
+     */
+    for (i = 0; i < ACPI_ARRAY_LENGTH (SpaceIdList); i++)
+    {
+        /* Install handler at the root object */
+
+        Status = AcpiInstallAddressSpaceHandler (AcpiGbl_RootNode,
+                        SpaceIdList[i], AeRegionHandler, AeRegionInit, NULL);
+        if (ACPI_FAILURE (Status))
+        {
+            ACPI_EXCEPTION ((AE_INFO, Status,
+                "Could not install an OpRegion handler for %s space(%u)",
+                AcpiUtGetRegionName((UINT8) SpaceIdList[i]), SpaceIdList[i]));
+            return (Status);
+        }
+    }
+
+    return (AE_OK);
+}
+
+
+/******************************************************************************
+ *
+ * FUNCTION:    AeInstallEarlyHandlers
  *
  * PARAMETERS:  None
  *
@@ -598,11 +699,9 @@ AeRegionInit (
  *
  *****************************************************************************/
 
-static ACPI_ADR_SPACE_TYPE  SpaceIdList[] = {0, 1, 3, 4, 5, 6, 7, 0x80};
-#define AEXEC_NUM_REGIONS   8
-
 ACPI_STATUS
-AeInstallHandlers (void)
+AeInstallEarlyHandlers (
+    void)
 {
     ACPI_STATUS             Status;
     UINT32                  i;
@@ -700,25 +799,24 @@ AeInstallHandlers (void)
         printf ("No _SB_ found, %s\n", AcpiFormatException (Status));
     }
 
-    /* Set a handler for all supported operation regions */
 
-    for (i = 0; i < AEXEC_NUM_REGIONS; i++)
+    /*
+     * Install handlers that will override the default handlers for some of
+     * the space IDs.
+     */
+    for (i = 0; i < ACPI_ARRAY_LENGTH (DefaultSpaceIdList); i++)
     {
-        /* Remove any existing handler */
+        /* Install handler at the root object */
 
-        (void) AcpiRemoveAddressSpaceHandler (AcpiGbl_RootNode,
-                    SpaceIdList[i], AeRegionHandler);
-
-        /* Install handler at the root object.
-         * TBD: all default handlers should be installed here!
-         */
         Status = AcpiInstallAddressSpaceHandler (AcpiGbl_RootNode,
-                        SpaceIdList[i], AeRegionHandler, AeRegionInit, NULL);
+                    DefaultSpaceIdList[i], AeRegionHandler,
+                    AeRegionInit, NULL);
         if (ACPI_FAILURE (Status))
         {
             ACPI_EXCEPTION ((AE_INFO, Status,
-                "Could not install an OpRegion handler for %s space(%u)",
-                AcpiUtGetRegionName((UINT8) SpaceIdList[i]), SpaceIdList[i]));
+                "Could not install a default OpRegion handler for %s space(%u)",
+                AcpiUtGetRegionName ((UINT8) DefaultSpaceIdList[i]),
+                DefaultSpaceIdList[i]));
             return (Status);
         }
     }
@@ -729,7 +827,6 @@ AeInstallHandlers (void)
      */
     AeRegions.NumberOfRegions = 0;
     AeRegions.RegionList = NULL;
-
     return (Status);
 }
 

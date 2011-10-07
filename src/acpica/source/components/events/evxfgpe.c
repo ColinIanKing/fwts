@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -386,9 +386,19 @@ AcpiSetupGpeForWake (
         return_ACPI_STATUS (AE_BAD_PARAMETER);
     }
 
+    /* Handle root object case */
+
+    if (WakeDevice == ACPI_ROOT_OBJECT)
+    {
+        DeviceNode = AcpiGbl_RootNode;
+    }
+    else
+    {
+        DeviceNode = ACPI_CAST_PTR (ACPI_NAMESPACE_NODE, WakeDevice);
+    }
+
     /* Validate WakeDevice is of type Device */
 
-    DeviceNode = ACPI_CAST_PTR (ACPI_NAMESPACE_NODE, WakeDevice);
     if (DeviceNode->Type != ACPI_TYPE_DEVICE)
     {
         return_ACPI_STATUS (AE_BAD_PARAMETER);

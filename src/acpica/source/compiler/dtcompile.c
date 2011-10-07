@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -227,6 +227,7 @@ DtDoCompile (
 
     DtOutputBinary (Gbl_RootTable);
     LsDoHexOutput ();
+    DtWriteTableToListing ();
 
 CleanupAndExit:
 
@@ -348,7 +349,7 @@ DtCompileDataTable (
 
     /* Verify that we at least have a table signature and save it */
 
-    Signature = DtGetFieldValue (*FieldList, "Signature");
+    Signature = DtGetFieldValue (*FieldList);
     if (!Signature)
     {
         sprintf (MsgBuffer, "Expected \"%s\"", "Signature");
@@ -381,20 +382,6 @@ DtCompileDataTable (
         Status = DtCompileRsdp (FieldList);
         return (Status);
     }
-    else if (!ACPI_STRNCMP (Signature, "OEM", 3))
-    {
-        DtFatal (ASL_MSG_OEM_TABLE, *FieldList, Signature);
-        return (AE_ERROR);
-    }
-
-    /* Validate the signature via the ACPI table list */
-
-    TableData = AcpiDmGetTableData (Signature);
-    if (!TableData)
-    {
-        DtFatal (ASL_MSG_UNKNOWN_TABLE, *FieldList, Signature);
-        return (AE_ERROR);
-    }
 
     /*
      * All other tables must use the common ACPI table header. Insert the
@@ -410,6 +397,15 @@ DtCompileDataTable (
     }
 
     DtPushSubtable (Gbl_RootTable);
+
+    /* Validate the signature via the ACPI table list */
+
+    TableData = AcpiDmGetTableData (Signature);
+    if (!TableData)
+    {
+        DtCompileGeneric ((void **) FieldList);
+        goto Out;
+    }
 
     /* Dispatch to per-table compile */
 
@@ -445,6 +441,7 @@ DtCompileDataTable (
         return (AE_ERROR);
     }
 
+Out:
     /* Set the final table length and then the checksum */
 
     DtSetTableLength ();
@@ -495,9 +492,17 @@ DtCompileTable (
     }
 
     Length = DtGetSubtableLength (*Field, Info);
+    if (Length == ASL_EOF)
+    {
+        return (AE_ERROR);
+    }
+
     Subtable = UtLocalCalloc (sizeof (DT_SUBTABLE));
 
-    Subtable->Buffer = UtLocalCalloc (Length);
+    if (Length > 0)
+    {
+        Subtable->Buffer = UtLocalCalloc (Length);
+    }
     Subtable->Length = Length;
     Subtable->TotalLength = Length;
     Buffer = Subtable->Buffer;
@@ -518,30 +523,12 @@ DtCompileTable (
             goto Error;
         }
 
-        /* Does input field name match what is expected? */
+        /* Maintain table offsets */
 
-        if (ACPI_STRCMP (LocalField->Name, Info->Name))
-        {
-            /*
-             * If Required = TRUE, the subtable must exist.
-             * If Required = FALSE, the subtable is optional
-             * (For example, AcpiDmTableInfoDmarScope in DMAR table is
-             * optional)
-             */
-            if (Required)
-            {
-                sprintf (MsgBuffer, "Expected \"%s\"", Info->Name);
-                DtNameError (ASL_ERROR, ASL_MSG_INVALID_FIELD_NAME,
-                    LocalField, MsgBuffer);
-            }
-            else
-            {
-                Status = AE_NOT_FOUND;
-                goto Error;
-            }
-        }
-
+        LocalField->TableOffset = Gbl_CurrentTableOffset;
         FieldLength = DtGetFieldLength (LocalField, Info);
+        Gbl_CurrentTableOffset += FieldLength;
+
         FieldType = DtGetFieldType (Info);
         Gbl_InputFieldCount++;
 
@@ -581,7 +568,6 @@ DtCompileTable (
              * Recursion (one level max): compile GAS (Generic Address)
              * or Notify in-line subtable
              */
-            LocalField = LocalField->Next;
             *Field = LocalField;
 
             if (Info->Opcode == ACPI_DMT_GAS)
@@ -608,12 +594,20 @@ DtCompileTable (
             LocalField = *Field;
             break;
 
+        case DT_FIELD_TYPE_LABEL:
+
+            DtWriteFieldToListing (Buffer, LocalField, 0);
+            LocalField = LocalField->Next;
+            break;
+
         default:
 
             /* Normal case for most field types (Integer, String, etc.) */
 
             DtCompileOneField (Buffer, LocalField,
                 FieldLength, FieldType, Info->Flags);
+
+            DtWriteFieldToListing (Buffer, LocalField, FieldLength);
             LocalField = LocalField->Next;
 
             if (Info->Flags & DT_LENGTH)
@@ -623,6 +617,7 @@ DtCompileTable (
                 Subtable->LengthField = Buffer;
                 Subtable->SizeOfLengthField = FieldLength;
             }
+
             break;
         }
 

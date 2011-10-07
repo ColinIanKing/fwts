@@ -10,7 +10,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -141,9 +141,9 @@
 extern int                          yydebug;
 extern FILE                         *AslCompilerin;
 extern int                          AslCompilerdebug;
+extern int                          DtParserdebug;
 extern const ASL_MAPPING_ENTRY      AslKeywordMapping[];
 extern char                         *AslCompilertext;
-extern char                         HexLookup[];
 
 #define ASL_LINE_BUFFER_SIZE        1024
 #define ASL_MSG_BUFFER_SIZE         4096
@@ -270,6 +270,7 @@ ASL_EXTERN FILE                     *AcpiGbl_DebugFile; /* Placeholder for oswin
 
 ASL_EXTERN ASL_ANALYSIS_WALK_INFO   AnalysisWalkInfo;
 ASL_EXTERN ACPI_TABLE_HEADER        TableHeader;
+extern char                         AslHexLookup[];
 
 /* Event timing */
 

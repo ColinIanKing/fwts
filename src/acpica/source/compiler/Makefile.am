@@ -17,7 +17,7 @@ ACPICA_DISASSEMBLER = $(ACPICA_COMPONENTS)/disassembler
 ACPICA_TABLES       = $(ACPICA_COMPONENTS)/tables
 ACPICA_SERVICE      = ../os_specific/service_layers
 
-AM_YFLAGS = -v -d -y -pAslCompiler
+AM_YFLAGS = -v -d -y
 
 #
 # Case in-sensitive scanning
@@ -25,16 +25,25 @@ AM_YFLAGS = -v -d -y -pAslCompiler
 AM_LFLAGS = -i
 
 aslcompilerparse.c: aslcompiler.y
-	${YACC} ${AM_YFLAGS} aslcompiler.y
-	cp y.tab.c aslcompilerparse.c
-	cp y.tab.h aslcompiler.y.h
+	${YACC} ${AM_YFLAGS} -pAslCompiler aslcompiler.y
+	mv y.tab.c aslcompilerparse.c
+	mv y.tab.h aslcompiler.y.h
 
 aslcompilerlex.c: aslcompiler.l
 	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c aslcompiler.l
 
+dtparserparse.c: dtparser.y
+	${YACC} ${AM_YFLAGS} -pDtParser dtparser.y
+	mv y.tab.c dtparserparse.c
+	mv y.tab.h dtparser.y.h
+
+dtparserlex.c: dtparser.l
+	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c dtparser.l
+
 lib_LTLIBRARIES = libfwtsiasl.la
 
-BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c
+BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c \
+		dtparserparse.c dtparserlex.c
 
 #
 # Just export fwts specific API so we don't clash with core ACPICA library
@@ -42,14 +51,15 @@ BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c
 libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -lpthread -version-info 1:0:0
 
 CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h \
-		aslcompilerparse.c aslcompilerlex.c
+	aslcompilerparse.c aslcompilerlex.c \
+	dtparserparse.c dtparserlex.c
 
 libfwtsiasl_la_SOURCES = \
-	$(ACPICA_COMPILER)/aslcompilerparse.c \
+	$(ACPICA_COMPILER)/aslcompile.c \
 	$(ACPICA_COMPILER)/aslcompilerlex.c \
+	$(ACPICA_COMPILER)/aslcompilerparse.c \
 	$(ACPICA_COMPILER)/aslanalyze.c \
 	$(ACPICA_COMPILER)/aslcodegen.c \
-	$(ACPICA_COMPILER)/aslcompile.c \
 	$(ACPICA_COMPILER)/aslerror.c \
 	$(ACPICA_COMPILER)/aslfiles.c \
 	$(ACPICA_COMPILER)/aslfold.c \
@@ -75,13 +85,19 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_COMPILER)/asltransform.c \
 	$(ACPICA_COMPILER)/asltree.c \
 	$(ACPICA_COMPILER)/aslutils.c \
-	$(ACPICA_COMPILER)/dtcompile.c \
+	$(ACPICA_COMPILER)/aslbtypes.c \
+	$(ACPICA_COMPILER)/aslwalks.c \
+	$(ACPICA_COMPILER)/asluuid.c \
 	$(ACPICA_COMPILER)/dtfield.c \
 	$(ACPICA_COMPILER)/dtio.c \
 	$(ACPICA_COMPILER)/dtsubtable.c \
 	$(ACPICA_COMPILER)/dttemplate.c \
 	$(ACPICA_COMPILER)/dttable.c \
 	$(ACPICA_COMPILER)/dtutils.c \
+	$(ACPICA_COMPILER)/dtexpress.c \
+	$(ACPICA_COMPILER)/dtcompile.c \
+	$(ACPICA_COMPILER)/dtparserparse.c \
+	$(ACPICA_COMPILER)/dtparserlex.c \
 	$(ACPICA_UTILS)/utalloc.c \
 	$(ACPICA_UTILS)/utcache.c \
 	$(ACPICA_UTILS)/utcopy.c \
@@ -124,6 +140,7 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_DISPATCHER)/dsutils.c \
 	$(ACPICA_DISPATCHER)/dswexec.c \
 	$(ACPICA_DISPATCHER)/dswload.c \
+	$(ACPICA_DISPATCHER)/dswload2.c \
 	$(ACPICA_EXECUTER)/exconvrt.c \
 	$(ACPICA_EXECUTER)/excreate.c \
 	$(ACPICA_EXECUTER)/exdump.c \

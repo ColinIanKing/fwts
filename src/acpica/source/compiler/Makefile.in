@@ -71,32 +71,34 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwtsiasl_la_LIBADD =
-am_libfwtsiasl_la_OBJECTS = aslcompilerparse.lo aslcompilerlex.lo \
-	aslanalyze.lo aslcodegen.lo aslcompile.lo aslerror.lo \
+am_libfwtsiasl_la_OBJECTS = aslcompile.lo aslcompilerlex.lo \
+	aslcompilerparse.lo aslanalyze.lo aslcodegen.lo aslerror.lo \
 	aslfiles.lo aslfold.lo asllength.lo asllisting.lo aslload.lo \
 	asllookup.lo aslmap.lo aslopcodes.lo asloperands.lo aslopt.lo \
 	aslpredef.lo aslresource.lo aslrestype1.lo aslrestype1i.lo \
 	aslrestype2.lo aslrestype2d.lo aslrestype2e.lo aslrestype2q.lo \
 	aslrestype2w.lo aslstartup.lo aslstubs.lo asltransform.lo \
-	asltree.lo aslutils.lo dtcompile.lo dtfield.lo dtio.lo \
-	dtsubtable.lo dttemplate.lo dttable.lo dtutils.lo utalloc.lo \
-	utcache.lo utcopy.lo utdebug.lo utdelete.lo utglobal.lo \
-	utinit.lo utlock.lo utobject.lo utmisc.lo utmath.lo utmutex.lo \
-	utresrc.lo utstate.lo utxface.lo utxferror.lo nsaccess.lo \
-	nsalloc.lo nsdump.lo nsnames.lo nsobject.lo nsparse.lo \
-	nssearch.lo nsutils.lo nswalk.lo nsxfobj.lo psargs.lo \
-	psloop.lo psopcode.lo psparse.lo psscope.lo pstree.lo \
-	psutils.lo pswalk.lo dswscope.lo dswstate.lo dsfield.lo \
-	dsobject.lo dsopcode.lo dsutils.lo dswexec.lo dswload.lo \
-	exconvrt.lo excreate.lo exdump.lo exmisc.lo exmutex.lo \
-	exnames.lo exoparg1.lo exoparg2.lo exoparg3.lo exoparg6.lo \
-	exprep.lo exregion.lo exresnte.lo exresolv.lo exresop.lo \
-	exstore.lo exstoren.lo exstorob.lo exsystem.lo exutils.lo \
-	adfile.lo adisasm.lo adwalk.lo dmextern.lo dmrestag.lo \
-	dmtable.lo dmtbinfo.lo dmtbdump.lo dbfileio.lo dmbuffer.lo \
-	dmnames.lo dmopcode.lo dmobject.lo dmresrc.lo dmresrcl.lo \
-	dmresrcs.lo dmutils.lo dmwalk.lo tbfadt.lo tbinstal.lo \
-	tbutils.lo tbxface.lo osunixxf.lo fwts_iasl_interface.lo
+	asltree.lo aslutils.lo aslbtypes.lo aslwalks.lo asluuid.lo \
+	dtfield.lo dtio.lo dtsubtable.lo dttemplate.lo dttable.lo \
+	dtutils.lo dtexpress.lo dtcompile.lo dtparserparse.lo \
+	dtparserlex.lo utalloc.lo utcache.lo utcopy.lo utdebug.lo \
+	utdelete.lo utglobal.lo utinit.lo utlock.lo utobject.lo \
+	utmisc.lo utmath.lo utmutex.lo utresrc.lo utstate.lo \
+	utxface.lo utxferror.lo nsaccess.lo nsalloc.lo nsdump.lo \
+	nsnames.lo nsobject.lo nsparse.lo nssearch.lo nsutils.lo \
+	nswalk.lo nsxfobj.lo psargs.lo psloop.lo psopcode.lo \
+	psparse.lo psscope.lo pstree.lo psutils.lo pswalk.lo \
+	dswscope.lo dswstate.lo dsfield.lo dsobject.lo dsopcode.lo \
+	dsutils.lo dswexec.lo dswload.lo dswload2.lo exconvrt.lo \
+	excreate.lo exdump.lo exmisc.lo exmutex.lo exnames.lo \
+	exoparg1.lo exoparg2.lo exoparg3.lo exoparg6.lo exprep.lo \
+	exregion.lo exresnte.lo exresolv.lo exresop.lo exstore.lo \
+	exstoren.lo exstorob.lo exsystem.lo exutils.lo adfile.lo \
+	adisasm.lo adwalk.lo dmextern.lo dmrestag.lo dmtable.lo \
+	dmtbinfo.lo dmtbdump.lo dbfileio.lo dmbuffer.lo dmnames.lo \
+	dmopcode.lo dmobject.lo dmresrc.lo dmresrcl.lo dmresrcs.lo \
+	dmutils.lo dmwalk.lo tbfadt.lo tbinstal.lo tbutils.lo \
+	tbxface.lo osunixxf.lo fwts_iasl_interface.lo
 libfwtsiasl_la_OBJECTS = $(am_libfwtsiasl_la_OBJECTS)
 libfwtsiasl_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -134,6 +136,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -160,6 +163,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -187,6 +191,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 am__include = @am__include@
@@ -219,7 +224,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -253,28 +257,31 @@ ACPICA_DEBUGGER = $(ACPICA_COMPONENTS)/debugger
 ACPICA_DISASSEMBLER = $(ACPICA_COMPONENTS)/disassembler
 ACPICA_TABLES = $(ACPICA_COMPONENTS)/tables
 ACPICA_SERVICE = ../os_specific/service_layers
-AM_YFLAGS = -v -d -y -pAslCompiler
+AM_YFLAGS = -v -d -y
 
 #
 # Case in-sensitive scanning
 #
 AM_LFLAGS = -i
 lib_LTLIBRARIES = libfwtsiasl.la
-BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c
+BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c \
+		dtparserparse.c dtparserlex.c
+
 
 #
 # Just export fwts specific API so we don't clash with core ACPICA library
 #
 libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -lpthread -version-info 1:0:0
 CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h \
-		aslcompilerparse.c aslcompilerlex.c
+	aslcompilerparse.c aslcompilerlex.c \
+	dtparserparse.c dtparserlex.c
 
 libfwtsiasl_la_SOURCES = \
-	$(ACPICA_COMPILER)/aslcompilerparse.c \
+	$(ACPICA_COMPILER)/aslcompile.c \
 	$(ACPICA_COMPILER)/aslcompilerlex.c \
+	$(ACPICA_COMPILER)/aslcompilerparse.c \
 	$(ACPICA_COMPILER)/aslanalyze.c \
 	$(ACPICA_COMPILER)/aslcodegen.c \
-	$(ACPICA_COMPILER)/aslcompile.c \
 	$(ACPICA_COMPILER)/aslerror.c \
 	$(ACPICA_COMPILER)/aslfiles.c \
 	$(ACPICA_COMPILER)/aslfold.c \
@@ -300,13 +307,19 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_COMPILER)/asltransform.c \
 	$(ACPICA_COMPILER)/asltree.c \
 	$(ACPICA_COMPILER)/aslutils.c \
-	$(ACPICA_COMPILER)/dtcompile.c \
+	$(ACPICA_COMPILER)/aslbtypes.c \
+	$(ACPICA_COMPILER)/aslwalks.c \
+	$(ACPICA_COMPILER)/asluuid.c \
 	$(ACPICA_COMPILER)/dtfield.c \
 	$(ACPICA_COMPILER)/dtio.c \
 	$(ACPICA_COMPILER)/dtsubtable.c \
 	$(ACPICA_COMPILER)/dttemplate.c \
 	$(ACPICA_COMPILER)/dttable.c \
 	$(ACPICA_COMPILER)/dtutils.c \
+	$(ACPICA_COMPILER)/dtexpress.c \
+	$(ACPICA_COMPILER)/dtcompile.c \
+	$(ACPICA_COMPILER)/dtparserparse.c \
+	$(ACPICA_COMPILER)/dtparserlex.c \
 	$(ACPICA_UTILS)/utalloc.c \
 	$(ACPICA_UTILS)/utcache.c \
 	$(ACPICA_UTILS)/utcopy.c \
@@ -349,6 +362,7 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_DISPATCHER)/dsutils.c \
 	$(ACPICA_DISPATCHER)/dswexec.c \
 	$(ACPICA_DISPATCHER)/dswload.c \
+	$(ACPICA_DISPATCHER)/dswload2.c \
 	$(ACPICA_EXECUTER)/exconvrt.c \
 	$(ACPICA_EXECUTER)/excreate.c \
 	$(ACPICA_EXECUTER)/exdump.c \
@@ -473,6 +487,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adisasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/adwalk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslanalyze.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslbtypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslcodegen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslcompile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslcompilerlex.Plo@am__quote@
@@ -502,6 +517,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asltransform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asltree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslutils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asluuid.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aslwalks.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbfileio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmextern.Plo@am__quote@
@@ -523,11 +540,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswexec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswload.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswload2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswscope.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dswstate.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtcompile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtexpress.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtfield.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtio.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtparserlex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtparserparse.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dtsubtable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dttable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dttemplate.Plo@am__quote@
@@ -614,12 +635,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
 
-aslcompilerparse.lo: $(ACPICA_COMPILER)/aslcompilerparse.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslcompilerparse.lo -MD -MP -MF $(DEPDIR)/aslcompilerparse.Tpo -c -o aslcompilerparse.lo `test -f '$(ACPICA_COMPILER)/aslcompilerparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerparse.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslcompilerparse.Tpo $(DEPDIR)/aslcompilerparse.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcompilerparse.c' object='aslcompilerparse.lo' libtool=yes @AMDEPBACKSLASH@
+aslcompile.lo: $(ACPICA_COMPILER)/aslcompile.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslcompile.lo -MD -MP -MF $(DEPDIR)/aslcompile.Tpo -c -o aslcompile.lo `test -f '$(ACPICA_COMPILER)/aslcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompile.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslcompile.Tpo $(DEPDIR)/aslcompile.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcompile.c' object='aslcompile.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcompilerparse.lo `test -f '$(ACPICA_COMPILER)/aslcompilerparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerparse.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcompile.lo `test -f '$(ACPICA_COMPILER)/aslcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompile.c
 
 aslcompilerlex.lo: $(ACPICA_COMPILER)/aslcompilerlex.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslcompilerlex.lo -MD -MP -MF $(DEPDIR)/aslcompilerlex.Tpo -c -o aslcompilerlex.lo `test -f '$(ACPICA_COMPILER)/aslcompilerlex.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerlex.c
@@ -627,6 +648,13 @@ aslcompilerlex.lo: $(ACPICA_COMPILER)/aslcompilerlex.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcompilerlex.c' object='aslcompilerlex.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcompilerlex.lo `test -f '$(ACPICA_COMPILER)/aslcompilerlex.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerlex.c
+
+aslcompilerparse.lo: $(ACPICA_COMPILER)/aslcompilerparse.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslcompilerparse.lo -MD -MP -MF $(DEPDIR)/aslcompilerparse.Tpo -c -o aslcompilerparse.lo `test -f '$(ACPICA_COMPILER)/aslcompilerparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerparse.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslcompilerparse.Tpo $(DEPDIR)/aslcompilerparse.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcompilerparse.c' object='aslcompilerparse.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcompilerparse.lo `test -f '$(ACPICA_COMPILER)/aslcompilerparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompilerparse.c
 
 aslanalyze.lo: $(ACPICA_COMPILER)/aslanalyze.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslanalyze.lo -MD -MP -MF $(DEPDIR)/aslanalyze.Tpo -c -o aslanalyze.lo `test -f '$(ACPICA_COMPILER)/aslanalyze.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslanalyze.c
@@ -641,13 +669,6 @@ aslcodegen.lo: $(ACPICA_COMPILER)/aslcodegen.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcodegen.c' object='aslcodegen.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcodegen.lo `test -f '$(ACPICA_COMPILER)/aslcodegen.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcodegen.c
-
-aslcompile.lo: $(ACPICA_COMPILER)/aslcompile.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslcompile.lo -MD -MP -MF $(DEPDIR)/aslcompile.Tpo -c -o aslcompile.lo `test -f '$(ACPICA_COMPILER)/aslcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompile.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslcompile.Tpo $(DEPDIR)/aslcompile.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslcompile.c' object='aslcompile.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslcompile.lo `test -f '$(ACPICA_COMPILER)/aslcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslcompile.c
 
 aslerror.lo: $(ACPICA_COMPILER)/aslerror.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslerror.lo -MD -MP -MF $(DEPDIR)/aslerror.Tpo -c -o aslerror.lo `test -f '$(ACPICA_COMPILER)/aslerror.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslerror.c
@@ -824,12 +845,26 @@ aslutils.lo: $(ACPICA_COMPILER)/aslutils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslutils.lo `test -f '$(ACPICA_COMPILER)/aslutils.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslutils.c
 
-dtcompile.lo: $(ACPICA_COMPILER)/dtcompile.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtcompile.lo -MD -MP -MF $(DEPDIR)/dtcompile.Tpo -c -o dtcompile.lo `test -f '$(ACPICA_COMPILER)/dtcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtcompile.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dtcompile.Tpo $(DEPDIR)/dtcompile.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtcompile.c' object='dtcompile.lo' libtool=yes @AMDEPBACKSLASH@
+aslbtypes.lo: $(ACPICA_COMPILER)/aslbtypes.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslbtypes.lo -MD -MP -MF $(DEPDIR)/aslbtypes.Tpo -c -o aslbtypes.lo `test -f '$(ACPICA_COMPILER)/aslbtypes.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslbtypes.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslbtypes.Tpo $(DEPDIR)/aslbtypes.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslbtypes.c' object='aslbtypes.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtcompile.lo `test -f '$(ACPICA_COMPILER)/dtcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtcompile.c
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslbtypes.lo `test -f '$(ACPICA_COMPILER)/aslbtypes.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslbtypes.c
+
+aslwalks.lo: $(ACPICA_COMPILER)/aslwalks.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aslwalks.lo -MD -MP -MF $(DEPDIR)/aslwalks.Tpo -c -o aslwalks.lo `test -f '$(ACPICA_COMPILER)/aslwalks.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslwalks.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aslwalks.Tpo $(DEPDIR)/aslwalks.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/aslwalks.c' object='aslwalks.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aslwalks.lo `test -f '$(ACPICA_COMPILER)/aslwalks.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/aslwalks.c
+
+asluuid.lo: $(ACPICA_COMPILER)/asluuid.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT asluuid.lo -MD -MP -MF $(DEPDIR)/asluuid.Tpo -c -o asluuid.lo `test -f '$(ACPICA_COMPILER)/asluuid.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/asluuid.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/asluuid.Tpo $(DEPDIR)/asluuid.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/asluuid.c' object='asluuid.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o asluuid.lo `test -f '$(ACPICA_COMPILER)/asluuid.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/asluuid.c
 
 dtfield.lo: $(ACPICA_COMPILER)/dtfield.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtfield.lo -MD -MP -MF $(DEPDIR)/dtfield.Tpo -c -o dtfield.lo `test -f '$(ACPICA_COMPILER)/dtfield.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtfield.c
@@ -872,6 +907,34 @@ dtutils.lo: $(ACPICA_COMPILER)/dtutils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtutils.c' object='dtutils.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtutils.lo `test -f '$(ACPICA_COMPILER)/dtutils.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtutils.c
+
+dtexpress.lo: $(ACPICA_COMPILER)/dtexpress.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtexpress.lo -MD -MP -MF $(DEPDIR)/dtexpress.Tpo -c -o dtexpress.lo `test -f '$(ACPICA_COMPILER)/dtexpress.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtexpress.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dtexpress.Tpo $(DEPDIR)/dtexpress.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtexpress.c' object='dtexpress.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtexpress.lo `test -f '$(ACPICA_COMPILER)/dtexpress.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtexpress.c
+
+dtcompile.lo: $(ACPICA_COMPILER)/dtcompile.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtcompile.lo -MD -MP -MF $(DEPDIR)/dtcompile.Tpo -c -o dtcompile.lo `test -f '$(ACPICA_COMPILER)/dtcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtcompile.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dtcompile.Tpo $(DEPDIR)/dtcompile.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtcompile.c' object='dtcompile.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtcompile.lo `test -f '$(ACPICA_COMPILER)/dtcompile.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtcompile.c
+
+dtparserparse.lo: $(ACPICA_COMPILER)/dtparserparse.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtparserparse.lo -MD -MP -MF $(DEPDIR)/dtparserparse.Tpo -c -o dtparserparse.lo `test -f '$(ACPICA_COMPILER)/dtparserparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtparserparse.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dtparserparse.Tpo $(DEPDIR)/dtparserparse.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtparserparse.c' object='dtparserparse.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtparserparse.lo `test -f '$(ACPICA_COMPILER)/dtparserparse.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtparserparse.c
+
+dtparserlex.lo: $(ACPICA_COMPILER)/dtparserlex.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dtparserlex.lo -MD -MP -MF $(DEPDIR)/dtparserlex.Tpo -c -o dtparserlex.lo `test -f '$(ACPICA_COMPILER)/dtparserlex.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtparserlex.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dtparserlex.Tpo $(DEPDIR)/dtparserlex.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_COMPILER)/dtparserlex.c' object='dtparserlex.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dtparserlex.lo `test -f '$(ACPICA_COMPILER)/dtparserlex.c' || echo '$(srcdir)/'`$(ACPICA_COMPILER)/dtparserlex.c
 
 utalloc.lo: $(ACPICA_UTILS)/utalloc.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT utalloc.lo -MD -MP -MF $(DEPDIR)/utalloc.Tpo -c -o utalloc.lo `test -f '$(ACPICA_UTILS)/utalloc.c' || echo '$(srcdir)/'`$(ACPICA_UTILS)/utalloc.c
@@ -1166,6 +1229,13 @@ dswload.lo: $(ACPICA_DISPATCHER)/dswload.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_DISPATCHER)/dswload.c' object='dswload.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dswload.lo `test -f '$(ACPICA_DISPATCHER)/dswload.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dswload.c
+
+dswload2.lo: $(ACPICA_DISPATCHER)/dswload2.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dswload2.lo -MD -MP -MF $(DEPDIR)/dswload2.Tpo -c -o dswload2.lo `test -f '$(ACPICA_DISPATCHER)/dswload2.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dswload2.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/dswload2.Tpo $(DEPDIR)/dswload2.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(ACPICA_DISPATCHER)/dswload2.c' object='dswload2.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dswload2.lo `test -f '$(ACPICA_DISPATCHER)/dswload2.c' || echo '$(srcdir)/'`$(ACPICA_DISPATCHER)/dswload2.c
 
 exconvrt.lo: $(ACPICA_EXECUTER)/exconvrt.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT exconvrt.lo -MD -MP -MF $(DEPDIR)/exconvrt.Tpo -c -o exconvrt.lo `test -f '$(ACPICA_EXECUTER)/exconvrt.c' || echo '$(srcdir)/'`$(ACPICA_EXECUTER)/exconvrt.c
@@ -1688,12 +1758,20 @@ uninstall-am: uninstall-libLTLIBRARIES
 
 
 aslcompilerparse.c: aslcompiler.y
-	${YACC} ${AM_YFLAGS} aslcompiler.y
-	cp y.tab.c aslcompilerparse.c
-	cp y.tab.h aslcompiler.y.h
+	${YACC} ${AM_YFLAGS} -pAslCompiler aslcompiler.y
+	mv y.tab.c aslcompilerparse.c
+	mv y.tab.h aslcompiler.y.h
 
 aslcompilerlex.c: aslcompiler.l
 	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c aslcompiler.l
+
+dtparserparse.c: dtparser.y
+	${YACC} ${AM_YFLAGS} -pDtParser dtparser.y
+	mv y.tab.c dtparserparse.c
+	mv y.tab.h dtparser.y.h
+
+dtparserlex.c: dtparser.l
+	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c dtparser.l
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

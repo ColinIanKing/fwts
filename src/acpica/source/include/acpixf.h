@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -120,7 +120,7 @@
 
 /* Current ACPICA subsystem version in YYYYMMDD format */
 
-#define ACPI_CA_VERSION                 0x20101209
+#define ACPI_CA_VERSION                 0x20110623
 
 #include "actypes.h"
 #include "actbl.h"
@@ -148,6 +148,7 @@ extern UINT32               AcpiGbl_TraceFlags;
 extern UINT8                AcpiGbl_EnableAmlDebugObject;
 extern UINT8                AcpiGbl_CopyDsdtLocally;
 extern UINT8                AcpiGbl_TruncateIoAddresses;
+extern UINT8                AcpiGbl_DisableAutoRepair;
 
 
 /*

@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -125,26 +125,13 @@
 #define _COMPONENT          ACPI_COMPILER
         ACPI_MODULE_NAME    ("aslutils")
 
-#ifdef _USE_BERKELEY_YACC
-extern const char * const       AslCompilername[];
-static const char * const       *yytname = &AslCompilername[254];
-#else
-extern const char * const       yytname[];
-#endif
-
-char                    HexLookup[] =
+char                        AslHexLookup[] =
 {
     '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
 };
 
 
 /* Local prototypes */
-
-static ACPI_STATUS
-UtStrtoul64 (
-    char                    *String,
-    UINT32                  Base,
-    UINT64                  *RetInteger);
 
 static void
 UtPadNameWithUnderscores (
@@ -386,8 +373,8 @@ UtConvertByteToHex (
     Buffer[0] = '0';
     Buffer[1] = 'x';
 
-    Buffer[2] = (UINT8) HexLookup[(RawByte >> 4) & 0xF];
-    Buffer[3] = (UINT8) HexLookup[RawByte & 0xF];
+    Buffer[2] = (UINT8) AslHexLookup[(RawByte >> 4) & 0xF];
+    Buffer[3] = (UINT8) AslHexLookup[RawByte & 0xF];
 }
 
 
@@ -412,8 +399,8 @@ UtConvertByteToAsmHex (
 {
 
     Buffer[0] = '0';
-    Buffer[1] = (UINT8) HexLookup[(RawByte >> 4) & 0xF];
-    Buffer[2] = (UINT8) HexLookup[RawByte & 0xF];
+    Buffer[1] = (UINT8) AslHexLookup[(RawByte >> 4) & 0xF];
+    Buffer[2] = (UINT8) AslHexLookup[RawByte & 0xF];
     Buffer[3] = 'h';
 }
 
@@ -517,32 +504,6 @@ UtSetParseOpName (
 
     strncpy (Op->Asl.ParseOpName, UtGetOpName (Op->Asl.ParseOpcode),
         ACPI_MAX_PARSEOP_NAME);
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    UtGetOpName
- *
- * PARAMETERS:  ParseOpcode         - Parser keyword ID
- *
- * RETURN:      Pointer to the opcode name
- *
- * DESCRIPTION: Get the ascii name of the parse opcode
- *
- ******************************************************************************/
-
-char *
-UtGetOpName (
-    UINT32                  ParseOpcode)
-{
-
-    /*
-     * First entries (ASL_YYTNAME_START) in yytname are special reserved names.
-     * Ignore first 8 characters of the name
-     */
-    return ((char *) yytname
-        [(ParseOpcode - ASL_FIRST_PARSE_OPCODE) + ASL_YYTNAME_START] + 8);
 }
 
 
@@ -956,7 +917,7 @@ UtDoConstant (
  *
  ******************************************************************************/
 
-static ACPI_STATUS
+ACPI_STATUS
 UtStrtoul64 (
     char                    *String,
     UINT32                  Base,

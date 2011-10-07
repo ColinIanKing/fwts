@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -165,25 +165,6 @@ union acpi_parse_object;
 #define ACPI_MAX_MUTEX                  7
 #define ACPI_NUM_MUTEX                  ACPI_MAX_MUTEX+1
 
-#if defined(ACPI_DEBUG_OUTPUT) || defined(ACPI_DEBUGGER)
-#ifdef DEFINE_ACPI_GLOBALS
-
-/* Debug names for the mutexes above */
-
-static char                 *AcpiGbl_MutexNames[ACPI_NUM_MUTEX] =
-{
-    "ACPI_MTX_Interpreter",
-    "ACPI_MTX_Namespace",
-    "ACPI_MTX_Tables",
-    "ACPI_MTX_Events",
-    "ACPI_MTX_Caches",
-    "ACPI_MTX_Memory",
-    "ACPI_MTX_CommandComplete",
-    "ACPI_MTX_CommandReady"
-};
-
-#endif
-#endif
 
 /* Lock structure for reader/writer interfaces */
 
@@ -502,6 +483,7 @@ typedef struct acpi_predefined_data
     char                        *Pathname;
     const ACPI_PREDEFINED_INFO  *Predefined;
     union acpi_operand_object   *ParentPackage;
+    ACPI_NAMESPACE_NODE         *Node;
     UINT32                      Flags;
     UINT8                       NodeFlags;
 
@@ -1289,6 +1271,7 @@ typedef struct acpi_db_method_info
     UINT32                          NumLoops;
     char                            Pathname[128];
     char                            **Args;
+    ACPI_OBJECT_TYPE                *Types;
 
     /*
      * Arguments to be passed to method for the command
@@ -1297,6 +1280,7 @@ typedef struct acpi_db_method_info
      *   Index of current thread inside all them created.
      */
     char                            InitArgs;
+    ACPI_OBJECT_TYPE                ArgTypes[4];
     char                            *Arguments[4];
     char                            NumThreadsStr[11];
     char                            IdOfThreadStr[11];

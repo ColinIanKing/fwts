@@ -48,6 +48,8 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/debugger/dbstats.c \
 	$(ACPICA_COMP)/debugger/dbutils.c \
 	$(ACPICA_COMP)/debugger/dbxface.c \
+	$(ACPICA_COMP)/debugger/dbmethod.c \
+	$(ACPICA_COMP)/debugger/dbnames.c \
 	$(ACPICA_COMP)/disassembler/dmbuffer.c \
 	$(ACPICA_COMP)/disassembler/dmnames.c \
 	$(ACPICA_COMP)/disassembler/dmobject.c \
@@ -67,6 +69,9 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/dispatcher/dswload.c \
 	$(ACPICA_COMP)/dispatcher/dswscope.c \
 	$(ACPICA_COMP)/dispatcher/dswstate.c \
+	$(ACPICA_COMP)/dispatcher/dscontrol.c \
+	$(ACPICA_COMP)/dispatcher/dsargs.c \
+	$(ACPICA_COMP)/dispatcher/dswload2.c \
 	$(ACPICA_COMP)/events/evevent.c \
 	$(ACPICA_COMP)/events/evgpe.c \
 	$(ACPICA_COMP)/events/evgpeblk.c \
@@ -80,6 +85,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/events/evxface.c \
 	$(ACPICA_COMP)/events/evxfevnt.c \
 	$(ACPICA_COMP)/events/evxfregn.c \
+	$(ACPICA_COMP)/events/evglock.c \
 	$(ACPICA_COMP)/executer/exfield.c \
 	$(ACPICA_COMP)/executer/exfldio.c \
 	$(ACPICA_COMP)/executer/exmisc.c \
@@ -177,6 +183,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utosi.c \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
+	$(ACPICA_COMP)/utilities/utdecode.c \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

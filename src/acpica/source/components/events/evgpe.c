@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -493,6 +493,16 @@ AcpiEvGpeDetect (
             /* Get the next status/enable pair */
 
             GpeRegisterInfo = &GpeBlock->RegisterInfo[i];
+
+            /*
+             * Optimization: If there are no GPEs enabled within this
+             * register, we can safely ignore the entire register.
+             */
+            if (!(GpeRegisterInfo->EnableForRun |
+                  GpeRegisterInfo->EnableForWake))
+            {
+                continue;
+            }
 
             /* Read the Status Register */
 

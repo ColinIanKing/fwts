@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -193,7 +193,8 @@ DtCreateTemplates (
 
     /* Create all known templates if requested */
 
-    if (!ACPI_STRNCMP (Signature, "ALL", 3))
+    if (!ACPI_STRNCMP (Signature, "ALL", 3) ||
+        !ACPI_STRCMP (Signature, "*"))
     {
         Status = DtCreateAllTemplates ();
         return (Status);

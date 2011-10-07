@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -148,6 +148,7 @@
 #define NODE_COMPILER_EMITTED       0x00020000
 #define NODE_IS_DUPLICATE           0x00040000
 #define NODE_IS_RESOURCE_DATA       0x00080000
+#define NODE_IS_NULL_RETURN         0x00100000
 
 /* Keeps information about individual control methods */
 

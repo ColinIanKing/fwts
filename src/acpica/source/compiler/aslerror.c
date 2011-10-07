@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -692,13 +692,13 @@ AslCoreSubsystemError (
 
 int
 AslCompilererror (
-    char                    *CompilerMessage)
+    const char              *CompilerMessage)
 {
 
     AslCommonError (ASL_ERROR, ASL_MSG_SYNTAX, Gbl_CurrentLineNumber,
-                    Gbl_LogicalLineNumber, Gbl_CurrentLineOffset,
-                    Gbl_CurrentColumn, Gbl_Files[ASL_FILE_INPUT].Filename,
-                    CompilerMessage);
+        Gbl_LogicalLineNumber, Gbl_CurrentLineOffset,
+        Gbl_CurrentColumn, Gbl_Files[ASL_FILE_INPUT].Filename,
+        ACPI_CAST_PTR (char, CompilerMessage));
 
     return 0;
 }

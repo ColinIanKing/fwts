@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -341,7 +341,7 @@ AcpiNsInstallNode (
              * modified the namespace. This is used for cleanup when the
              * method exits.
              */
-            WalkState->MethodDesc->Method.Flags |= AOPOBJ_MODIFIED_NAMESPACE;
+            WalkState->MethodDesc->Method.InfoFlags |= ACPI_METHOD_MODIFIED_NAMESPACE;
         }
     }
 

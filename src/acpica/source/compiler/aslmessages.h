@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2010, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -260,6 +260,9 @@ typedef enum
     ASL_MSG_HID_LENGTH,
     ASL_MSG_NULL_STRING,
     ASL_MSG_LEADING_ASTERISK,
+    ASL_MSG_RESERVED_NO_RETURN_VAL,
+    ASL_MSG_GPE_NAME_CONFLICT,
+    ASL_MSG_NO_REGION,
 
     ASL_MSG_INVALID_FIELD_NAME,
     ASL_MSG_INTEGER_SIZE,
@@ -270,7 +273,10 @@ typedef enum
     ASL_MSG_ZERO_VALUE,
     ASL_MSG_UNKNOWN_TABLE,
     ASL_MSG_UNKNOWN_SUBTABLE,
-    ASL_MSG_OEM_TABLE
+    ASL_MSG_OEM_TABLE,
+    ASL_MSG_UNKNOWN_LABEL,
+    ASL_MSG_INVALID_EXPRESSION,
+    ASL_MSG_DIVIDE_BY_ZERO
 
 } ASL_MESSAGE_IDS;
 
@@ -408,6 +414,9 @@ char                        *AslMessages [] = {
 /*    ASL_MSG_HID_LENGTH */                 "_HID string must be exactly 7 or 8 characters",
 /*    ASL_MSG_NULL_STRING */                "Invalid zero-length (null) string",
 /*    ASL_MSG_LEADING_ASTERISK */           "Invalid leading asterisk",
+/*    ASL_MSG_RESERVED_NO_RETURN_VAL */     "Reserved method should not return a value",
+/*    ASL_MSG_GPE_NAME_CONFLICT */          "Name conflicts with a previous GPE method",
+/*    ASL_MSG_NO_REGION */                  "_REG has no corresponding Operation Region",
 
 /* These messages are used by the data table compiler only */
 
@@ -420,8 +429,10 @@ char                        *AslMessages [] = {
 /*    ASL_MSG_ZERO_VALUE */                 "Value must be non-zero",
 /*    ASL_MSG_UNKNOWN_TABLE */              "Unknown ACPI table signature",
 /*    ASL_MSG_UNKNOWN_SUBTABLE */           "Unknown subtable type",
-/*    ASL_MSG_OEM_TABLE */                  "OEM table - unknown contents"
-
+/*    ASL_MSG_OEM_TABLE */                  "OEM table - unknown contents",
+/*    ASL_MSG_UNKNOWN_LABEL */              "Label is undefined",
+/*    ASL_MSG_INVALID_EXPRESSION */         "Invalid expression",
+/*    ASL_MSG_DIVIDE_BY_ZERO */             "Expression contains divide-by-zero"
 };
 
 

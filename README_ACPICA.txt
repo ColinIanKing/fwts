@@ -6,225 +6,297 @@ and the Intel copyright message has been included in fwts.
 
 No file has been modified at all.
 
+src/acpica/common:
+  adfile.c
+  adisasm.c
+  adwalk.c
+  dmextern.c
+  dmrestag.c
+  dmtable.c
+  dmtbinfo.c
+  dmtbdump.c
+
 src/acpica/source/components:
-debugger
-disassembler
-dispatcher
-events
-executer
-hardware
-namespace
-parser
-resources
-tables
-utilities
+  debugger
+  disassembler
+  dispatcher
+  events
+  executer
+  hardware
+  namespace
+  parser
+  resources
+  tables
+  utilities
 
 src/acpica/source/components/debugger:
-dbcmds.c
-dbdisply.c
-dbexec.c
-dbfileio.c
-dbhistry.c
-dbinput.c
-dbstats.c
-dbutils.c
-dbxface.c
+  dbcmds.c
+  dbdisply.c
+  dbexec.c
+  dbfileio.c
+  dbhistry.c
+  dbinput.c
+  dbstats.c
+  dbutils.c
+  dbxface.c
+  dbmethod.c
+  dbnames.c
 
 src/acpica/source/components/disassembler:
-dmbuffer.c
-dmnames.c
-dmobject.c
-dmopcode.c
-dmresrc.c
-dmresrcl.c
-dmresrcs.c
-dmutils.c
-dmwalk.c
+  dmbuffer.c
+  dmnames.c
+  dmobject.c
+  dmopcode.c
+  dmresrc.c
+  dmresrcl.c
+  dmresrcs.c
+  dmutils.c
+  dmwalk.c
 
 src/acpica/source/components/dispatcher:
-dsfield.c
-dsinit.c
-dsmethod.c
-dsmthdat.c
-dsobject.c
-dsopcode.c
-dsutils.c
-dswexec.c
-dswload.c
-dswscope.c
-dswstate.c
+  dsfield.c
+  dsinit.c
+  dsmethod.c
+  dsmthdat.c
+  dsobject.c
+  dsopcode.c
+  dsutils.c
+  dswexec.c
+  dswload.c
+  dswscope.c
+  dswstate.c
+  dscontrol.c
+  dsargs.c
+  dswload2.c
 
 src/acpica/source/components/events:
-evevent.c
-evgpeblk.c
-evgpe.c
-evgpeinit.c
-evgpeutil.c
-evmisc.c
-evregion.c
-evrgnini.c
-evsci.c
-evxface.c
-evxfevnt.c
-evxfgpe.c 
-evxfregn.c
+  evevent.c
+  evgpe.c
+  evgpeblk.c
+  evgpeinit.c
+  evgpeutil.c
+  evmisc.c
+  evregion.c
+  evrgnini.c
+  evsci.c
+  evxface.c
+  evxfevnt.c
+  evxfgpe.c
+  evxfregn.c
+  evglock.c
 
 src/acpica/source/components/executer:
-exconfig.c
-exconvrt.c
-excreate.c
-exdebug.c
-exdump.c
-exfield.c
-exfldio.c
-exmisc.c
-exmutex.c
-exnames.c
-exoparg1.c
-exoparg2.c
-exoparg3.c
-exoparg6.c
-exprep.c
-exregion.c
-exresnte.c
-exresolv.c
-exresop.c
-exstore.c
-exstoren.c
-exstorob.c
-exsystem.c
-exutils.c
+  exfield.c
+  exfldio.c
+  exmisc.c
+  exmutex.c
+  exnames.c
+  exoparg1.c
+  exoparg2.c
+  exoparg3.c
+  exoparg6.c
+  exprep.c
+  exregion.c
+  exresnte.c
+  exresolv.c
+  exresop.c
+  exstore.c
+  exstoren.c
+  exstorob.c
+  exsystem.c
+  exutils.c
+  exconvrt.c
+  excreate.c
+  exdump.c
+  exdebug.c
+  exconfig.c
 
 src/acpica/source/components/hardware:
-hwacpi.c
-hwgpe.c
-hwpci.c
-hwregs.c
-hwsleep.c
-hwvalid.c
-hwxface.c
+  hwacpi.c
+  hwgpe.c
+  hwpci.c
+  hwregs.c
+  hwsleep.c
+  hwvalid.c
+  hwxface.c
 
 src/acpica/source/components/namespace:
-nsaccess.c
-nsalloc.c
-nsdump.c
-nsdumpdv.c
-nseval.c
-nsinit.c
-nsload.c
-nsnames.c
-nsobject.c
-nsparse.c
-nspredef.c
-nsrepair2.c
-nsrepair.c
-nssearch.c
-nsutils.c
-nswalk.c
-nsxfeval.c
-nsxfname.c
-nsxfobj.c
+  nsaccess.c
+  nsalloc.c
+  nsdump.c
+  nsdumpdv.c
+  nseval.c
+  nsinit.c
+  nsload.c
+  nsnames.c
+  nsobject.c
+  nsparse.c
+  nspredef.c
+  nsrepair.c
+  nsrepair2.c
+  nssearch.c
+  nsutils.c
+  nswalk.c
+  nsxfeval.c
+  nsxfname.c
+  nsxfobj.c
 
 src/acpica/source/components/parser:
-psargs.c
-psloop.c
-psopcode.c
-psparse.c
-psscope.c
-pstree.c
-psutils.c
-pswalk.c
-psxface.c
+  psargs.c
+  psloop.c
+  psopcode.c
+  psparse.c
+  psscope.c
+  pstree.c
+  psutils.c
+  pswalk.c
+  psxface.c
 
 src/acpica/source/components/resources:
-rsaddr.c
-rscalc.c
-rscreate.c
-rsdump.c
-rsinfo.c
-rsio.c
-rsirq.c
-rslist.c
-rsmemory.c
-rsmisc.c
-rsutils.c
-rsxface.c
+  rsaddr.c
+  rscalc.c
+  rscreate.c
+  rsdump.c
+  rsio.c
+  rsinfo.c
+  rsirq.c
+  rslist.c
+  rsmemory.c
+  rsmisc.c
+  rsutils.c
+  rsxface.c
 
 src/acpica/source/components/tables:
-tbfadt.c
-tbfind.c
-tbinstal.c
-tbutils.c
-tbxface.c
-tbxfroot.c
+  tbfadt.c
+  tbfind.c
+  tbinstal.c
+  tbutils.c
+  tbxface.c
+  tbxfroot.c
 
 src/acpica/source/components/utilities:
-utalloc.c
-utcache.c
-utcopy.c
-utdebug.c
-utdelete.c
-uteval.c
-utglobal.c
-utids.c
-utinit.c
-utlock.c
-utmath.c
-utmisc.c
-utmutex.c
-utobject.c
-utosi.c
-utresrc.c
-utstate.c
-uttrack.c
-utxface.c
-utxferror.c
+  utalloc.c
+  utcache.c
+  utcopy.c
+  utdebug.c
+  utdelete.c
+  uteval.c
+  utglobal.c
+  utids.c
+  utinit.c
+  utlock.c
+  utmath.c
+  utmisc.c
+  utmutex.c
+  utobject.c
+  utresrc.c
+  utstate.c
+  uttrack.c
+  utosi.c
+  utxferror.c
+  utxface.c
+  utdecode.c
 
 src/acpica/source/include:
-acapps.h
-accommon.h
-acconfig.h
-acdebug.h
-acdisasm.h
-acdispat.h
-acevents.h
-acexcep.h
-acglobal.h
-achware.h
-acinterp.h
-aclocal.h
-acmacros.h
-acnames.h
-acnamesp.h
-acobject.h
-acopcode.h
-acoutput.h
-acparser.h
-acpi.h
-acpiosxf.h
-acpixf.h
-acpredef.h
-acresrc.h
-acrestyp.h
-acstruct.h
-actables.h
-actbl1.h
-actbl2.h
-actbl.h
-actypes.h
-acutils.h
-amlcode.h
-amlresrc.h
-platform
+  gacpi.h
+  gplatform/acenv.h
+  gplatform/aclinux.h
+  gplatform/acgcc.h
+  gacnames.h
+  gactypes.h
+  gacexcep.h
+  gactbl.h
+  gactbl1.h
+  gactbl2.h
+  gacoutput.h
+  gacrestyp.h
+  gacpiosxf.h
+  gacpixf.h
+  gaccommon.h
+  gacconfig.h
+  gacmacros.h
+  gaclocal.h
+  gacobject.h
+  gacstruct.h
+  gacglobal.h
+  gachware.h
+  gacutils.h
+  gacparser.h
+  gamlcode.h
+  gacnamesp.h
+  gacdebug.h
+  gactables.h
+  gacinterp.h
+  gacapps.h
+  gacdispat.h
+  gacevents.h
+  gacresrc.h
+  gamlresrc.h
+  gacdisasm.h
+  gacpredef.h
+  gacopcode.h
 
-src/acpica/source/include/platform:
-acenv.h
-acgcc.h
-aclinux.h
+src/acpica/source/gplatform:
+  acenv.h
+  acgcc.h
+  aclinux.h
 
 src/acpica/source/os_specific/service_layers:
-osunixxf.c
+  osunixxf.c
 
 src/acpica/source/tools/acpiexec:
-aecommon.h
-aehandlers.c
+  aehandlers.c
+  aecommon.h
+
+src/acpica/source/compiler:
+  aslanalyze.c
+  aslcodegen.c
+  aslcompile.c
+  aslcompiler.h
+  aslcompiler.l
+  aslcompiler.y
+  asldefine.h
+  aslerror.c
+  aslfiles.c
+  aslfold.c
+  aslglobal.h
+  asllength.c
+  asllisting.c
+  aslload.c
+  asllookup.c
+  aslmain.c
+  aslmap.c
+  aslmessages.h
+  aslopcodes.c
+  asloperands.c
+  aslopt.c
+  aslpredef.c
+  aslresource.c
+  aslrestype1.c
+  aslrestype1i.c
+  aslrestype2.c
+  aslrestype2d.c
+  aslrestype2e.c
+  aslrestype2q.c
+  aslrestype2w.c
+  aslstartup.c
+  aslstubs.c
+  asltransform.c
+  asltree.c
+  asltypes.h
+  aslutils.c
+  dtcompile.c
+  dtcompiler.h
+  dtfield.c
+  dtio.c
+  dtsubtable.c
+  dttable.c
+  dttemplate.c
+  dttemplate.h
+  dtutils.c
+  dtexpress.c
+  dtparser.y
+  dtparser.l
+  aslbtypes.c
+  aslwalks.c
+  asluuid.c

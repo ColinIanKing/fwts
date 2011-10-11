@@ -1,0 +1,77 @@
+== FWTS Uploading ==
+
+General procedure
+-----------------
+
+Periodically we've put enough patches into fwts to deem it ready for a new upload. To do so, we
+update the changelog with a summary of the changes, update the version tag, push these, then
+we clone the repo, remove the .git directory and create debian source packages ready for uploading
+and building in the fwts PPAs.
+
+Here's how I went from Version V0.24.01 to V0.24.02
+
+In the fwts git repo:
+
+See the current version:
+
+./update_version.sh
+You need to specify the version number
+The last version was V0.24.01
+
+Use git log to see what's been added since the last tagged release, e.g.
+
+git log ^V0.24.01 HEAD
+
+collect up one-line-summary of changes, add them to the change log:
+
+e.g.
+
+fwts (0.24.02) oneiric; urgency=low
+
+  * acpi: method: check AE_OK return from AcpiEvaluateObject()
+  * pci: maxreadreq: add more helpful advice (LP: #859651)
+  * acpi: method: Make incorrect _WAK returns non-fatal as kernel ignores these anyway.
+  * lib: fwts_hwinfo: do pactl checking correctly (LP: #837606)
+
+ -- Colin King <colin.king@canonical.com>  Wed, 28 Sep 2011 11:42:00 +0100
+
+
+then:
+
+git add debian/changelog
+git commit -s -m"debian: update changelog"
+
+
+Next, update the tag:
+
+./update-version V0.24.02
+
+git push
+git push --tags
+
+Next, create an auto-packager directory somewhere and run the mkpackage.sh script from within it. E.g
+
+mkdir /home/cking/fwts/auto-packager
+cp mkpackage.sh /home/cking/fwts/auto-packager
+cd /home/cking/fwts/auto-packager
+./mkpackage.sh
+
+and this will clone the git repo, remove the .git directory and create packages for uploading.
+For a release like oneiric, it generates:
+
+V0.24.02/oneiric/fwts_0.24.02*
+V0.24.02/natty/fwts_0.24.02~n*
+V0.24.02/maverick/fwts_0.24.02~m*
+V0.24.02/lucid/fwts_0.24.02~l*
+
+NOTE: The current release does not end with ~ suffix to the version name. This version is the
+one that gets periodically uploaded to universe in the current release until we get to feature freeze.  
+
+And dput these into the  ppa:firmware-testing-team/ppa-fwts-unstable-crack PPA
+
+Let it shake out - build + test etc.  Get users to test against this. Onece you are OK with it,
+copy the packages into ppa:firmware-testing-team/ppa-fwts-devel
+
+Every so often during the distro release cycle copy the stable current package into universe. You can either do this on every version number bump or when you deem that a new version is really stable.
+
+Once a package has been copied to universe, we then copy the packages from ppa:firmware-testing-team/ppa-fwts-devel to ppa:firmware-testing-team/ppa-fwts-stable.

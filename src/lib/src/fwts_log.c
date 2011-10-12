@@ -269,7 +269,7 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 			if (strncmp(ptr,"date",4)==0) {
 				n += snprintf(buffer+n, len-n,
 					"%2.2d/%2.2d/%-2.2d", 		
-					tm.tm_mday, tm.tm_mon, (tm.tm_year+1900) % 100);
+					tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
 				ptr+=4;
 			}
 			if (strncmp(ptr,"time",4)==0) {

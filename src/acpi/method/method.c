@@ -201,7 +201,7 @@ static int method_deinit(fwts_framework *fw)
 	return fwts_acpica_deinit();
 }
 
-static int method_exits(char *name)
+static int method_exists(char *name)
 {
 	int name_len = strlen(name);
 	fwts_list_link	*item;
@@ -977,7 +977,7 @@ static int method_test_BFS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exits("_BFS")) {
+	if (method_exists("_BFS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -1027,7 +1027,7 @@ static int method_test_GTS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exits("_GTS")) {
+	if (method_exists("_GTS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -1052,7 +1052,7 @@ static int method_test_TTS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exits("_BFS")) {
+	if (method_exists("_BFS")) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 

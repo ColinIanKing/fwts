@@ -25,17 +25,17 @@ AM_YFLAGS = -v -d -y
 AM_LFLAGS = -i
 
 aslcompilerparse.c: aslcompiler.y
-	${YACC} ${AM_YFLAGS} -pAslCompiler aslcompiler.y
-	mv y.tab.c aslcompilerparse.c
-	mv y.tab.h aslcompiler.y.h
+	${YACC} ${AM_YFLAGS} -baslcompiler -pAslCompiler aslcompiler.y
+	mv aslcompiler.tab.c aslcompilerparse.c
+	mv aslcompiler.tab.h aslcompiler.y.h
 
 aslcompilerlex.c: aslcompiler.l
 	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c aslcompiler.l
 
 dtparserparse.c: dtparser.y
-	${YACC} ${AM_YFLAGS} -pDtParser dtparser.y
-	mv y.tab.c dtparserparse.c
-	mv y.tab.h dtparser.y.h
+	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser dtparser.y
+	mv dtparser.tab.c dtparserparse.c
+	mv dtparser.tab.h dtparser.y.h
 
 dtparserlex.c: dtparser.l
 	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c dtparser.l

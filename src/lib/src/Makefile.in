@@ -72,16 +72,17 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwts_la_LIBADD =
 am_libfwts_la_OBJECTS = fwts_acpi.lo fwts_acpid.lo fwts_acpi_tables.lo \
-	fwts_args.lo fwts_alloc.lo fwts_binpaths.lo fwts_checkeuid.lo \
-	fwts_cmos.lo fwts_cpu.lo fwts_dump.lo fwts_dump_data.lo \
-	fwts_ebda.lo fwts_fileio.lo fwts_firmware.lo \
-	fwts_formatting.lo fwts_framework.lo fwts_get.lo fwts_gpe.lo \
-	fwts_hwinfo.lo fwts_iasl.lo fwts_interactive.lo fwts_keymap.lo \
-	fwts_klog.lo fwts_list.lo fwts_log.lo fwts_memorymap.lo \
-	fwts_microcode.lo fwts_mmap.lo fwts_multiproc.lo fwts_oops.lo \
-	fwts_pipeio.lo fwts_set.lo fwts_stringextras.lo \
-	fwts_summary.lo fwts_tag.lo fwts_text_list.lo fwts_tty.lo \
-	fwts_uefi.lo fwts_virt.lo fwts_wakealarm.lo
+	fwts_acpi_method.lo fwts_args.lo fwts_alloc.lo \
+	fwts_binpaths.lo fwts_checkeuid.lo fwts_cmos.lo fwts_cpu.lo \
+	fwts_dump.lo fwts_dump_data.lo fwts_ebda.lo fwts_fileio.lo \
+	fwts_firmware.lo fwts_formatting.lo fwts_framework.lo \
+	fwts_get.lo fwts_gpe.lo fwts_hwinfo.lo fwts_iasl.lo \
+	fwts_interactive.lo fwts_keymap.lo fwts_klog.lo fwts_list.lo \
+	fwts_log.lo fwts_memorymap.lo fwts_microcode.lo fwts_mmap.lo \
+	fwts_multiproc.lo fwts_oops.lo fwts_pipeio.lo fwts_set.lo \
+	fwts_stringextras.lo fwts_summary.lo fwts_tag.lo \
+	fwts_text_list.lo fwts_tty.lo fwts_uefi.lo fwts_virt.lo \
+	fwts_wakealarm.lo
 libfwts_la_OBJECTS = $(am_libfwts_la_OBJECTS)
 libfwts_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -236,6 +237,7 @@ libfwts_la_SOURCES = \
 	fwts_acpi.c \
 	fwts_acpid.c \
 	fwts_acpi_tables.c \
+	fwts_acpi_method.c \
 	fwts_args.c \
 	fwts_alloc.c \
 	fwts_binpaths.c \
@@ -349,6 +351,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi_method.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi_tables.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_alloc.Plo@am__quote@

@@ -26,6 +26,7 @@
 
 /* acpica headers */
 #include "acpi.h"
+#include "fwts_acpi_method.h"
 
 /*
  * ACPI methods + objects used in Linux ACPI driver:
@@ -161,8 +162,6 @@ static int method_test ## name(fwts_framework *fw)	\
 
 typedef void (*method_test_return)(fwts_framework *fw, char *name, ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
 
-static fwts_list *methods;
-
 static int method_init(fwts_framework *fw)
 {
 	fwts_acpi_table_info *info;
@@ -188,55 +187,15 @@ static int method_init(fwts_framework *fw)
 			"skipping Mobile Platform specific tests.");
 	}
 
-	if (fwts_acpica_init(fw) != FWTS_OK)
+	if (fwts_method_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
-	methods = fwts_acpica_get_object_names(8);
 	return FWTS_OK;
 }
 
 static int method_deinit(fwts_framework *fw)
 {
-	fwts_list_free(methods, free);
-	return fwts_acpica_deinit();
-}
-
-static int method_exists(char *name)
-{
-	int name_len = strlen(name);
-	fwts_list_link	*item;
-
-	fwts_list_foreach(item, methods) {
-		char *method_name = fwts_list_data(char*, item);
-		int len = strlen(method_name);
-
-		if (strncmp(name, method_name + len - name_len, name_len) == 0)
-			return FWTS_TRUE;
-	}
-
-	return FWTS_FALSE;
-}
-
-static void method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj)
-{
-	int i;
-
-	fwts_log_info_verbatum(fw, "  Package has %d elements:", obj->Package.Count);
-
-	for (i=0;i<obj->Package.Count;i++) {
-		switch (obj->Package.Elements[i].Type) {
-		case ACPI_TYPE_INTEGER:
-			fwts_log_info_verbatum(fw, "    %2.2d: INTEGER: 0x%8.8llx", i,
-				(unsigned long long)obj->Package.Elements[i].Integer.Value);
-			break;
-		case ACPI_TYPE_STRING:
-			fwts_log_info_verbatum(fw, "    %2.2d: STRING:  0x%s", i, obj->Package.Elements[i].String.Pointer);
-			break;
-		default:
-			fwts_log_info_verbatum(fw, "    %2.2d: Uknown type %d\n", i, obj->Package.Elements[i].Type);
-			break;
-		}
-	}
+	return fwts_method_deinit(fw);
 }
 
 static void method_evaluate_found_method(fwts_framework *fw, char *name,
@@ -249,120 +208,12 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	int sem_acquired;
 	int sem_released;
 
-
-	buf.Length  = ACPI_ALLOCATE_BUFFER;
-	buf.Pointer = NULL;
-
 	fwts_acpica_sem_count_clear();
 
-	ret = AcpiEvaluateObject(NULL, name, arg_list, &buf);
+	ret = fwts_method_evaluate(fw, name, arg_list, &buf);
+
 	if (ACPI_FAILURE(ret) != AE_OK) {
-		switch (ret) {
-		case AE_AML_BAD_OPCODE:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLBadOpCode", "Detected a bad AML opcode when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NO_OPERAND:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoOperand", "Detected a AML opcode with a missing operand when evaluating method '%s'.", name);
-			break;
-		case AE_AML_OPERAND_TYPE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLOperandType", "Detected a AML opcode with an incorrect operand type when evaluating method '%s'.", name);
-			break;
-		case AE_AML_OPERAND_VALUE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLOperandValue", "Detected a AML opcode with an incorrect operand value when evaluating method '%s'.", name);
-			break;
-		case AE_AML_UNINITIALIZED_LOCAL:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitValue", "Detected an uninitialized local variable when evaluating method '%s'.", name);
-			break;
-		case AE_AML_UNINITIALIZED_ARG:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitArg", "Detected an uninitialized argument when evaluating method '%s'.", name);
-			break;
-		case AE_AML_UNINITIALIZED_ELEMENT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLUninitElement", "Detected an uninitialized element when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NUMERIC_OVERFLOW:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNumericOverflow", "Detected a numeric overflow when evaluating method '%s'.", name);
-			break;
-		case AE_AML_REGION_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLRegionLimit", "Detected a region limit when evaluating method '%s'.", name);
-			break;
-		case AE_AML_BUFFER_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLBufferLimit", "Detected a buffer limit when evaluating method '%s'.", name);
-			break;
-		case AE_AML_PACKAGE_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLPackageLimit", "Detected a package limit when evaluating method '%s'.", name);
-			break;
-		case AE_AML_DIVIDE_BY_ZERO:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLDivByZero", "Detected a division by zero when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NAME_NOT_FOUND:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNameNotFound", "Detected a name not found error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_INTERNAL:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInternal", "Detected an internal ACPICA execution engine error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_INVALID_SPACE_ID:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidSpaceId", "Detected an invalid space ID error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_STRING_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLStringLimit", "Detected a string limit error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NO_RETURN_VALUE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoReturnValue", "Detected a no return value error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_METHOD_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMethodLimit", "Detected a method limit error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NOT_OWNER:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNotOwner", "Detected a not owner error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_MUTEX_ORDER:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMutexOrder", "Detected a mutex order errro when evaluating method '%s'.", name);
-			break;
-		case AE_AML_MUTEX_NOT_ACQUIRED:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLMutexNotAcquired", "Detected a mutux not acquired error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_INVALID_RESOURCE_TYPE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidResourceType", "Detected an invalid resource type when evaluating method '%s'.", name);
-			break;
-		case AE_AML_INVALID_INDEX:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLInvalidIndex", "Detected an invalid index error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_REGISTER_LIMIT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLRegisterLimit", "Detected a register limit error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NO_WHILE:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLNoWhile", "Detected a no while error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_ALIGNMENT:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLAlignment", "Detected an aligmnent error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_NO_RESOURCE_END_TAG:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLNoRsrceEndTag", "Detected a no resource end tag error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_BAD_RESOURCE_VALUE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLBadRsrceValue", "Detected a bad resource value error when evaluating method '%s'.", name);
-			break;
-		case AE_AML_CIRCULAR_REFERENCE:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLCircularRef", "Detected a circular reference when evaluating method '%s'.", name);
-			break;
-		case AE_AML_BAD_RESOURCE_LENGTH:
-			fwts_failed(fw, LOG_LEVEL_HIGH, "AMLBadRscrcLength", "Detected a bad resource length when evaluating method '%s'.", name);
-			break;
-		case AE_AML_ILLEGAL_ADDRESS:
-			fwts_failed(fw, LOG_LEVEL_CRITICAL, "AMLIllegalAddr", "Detected an illegal address when evaluating method '%s'.", name);
-			break;
-		case AE_AML_INFINITE_LOOP:
-			fwts_warning(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
-			fwts_advice(fw, "This may occur because we are emulating the execution "
-					"in this test environment and cannot handshake with "
-					"the embedded controller or jump to the BIOS via SMIs. "
-					"However, the fact that AML code spins forever means that "
-					"lockup conditions are not being checked for in the AML bytecode.");
-			break;
-		default:
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLFailedToEvaluate", "Failed to evaluate %s, got error code %d.", name, ret);
-			break;
-		}
+		fwts_method_evaluate_report_error(fw, name, ret);
 	}
 	else {
 		if (check_func != NULL) {
@@ -400,28 +251,23 @@ static int method_evaluate_method(fwts_framework *fw,
 	void *private)
 {
 	fwts_list_link	*item;
+	fwts_list *methods;
 	int name_len = strlen(name);
 	int found = 0;
 
+ 	if ((methods = fwts_method_get_names()) != NULL) {
+		fwts_list_foreach(item, methods) {
+			char *method_name = fwts_list_data(char*, item);
+			int len = strlen(method_name);
+			if (strncmp(name, method_name + len - name_len, name_len) == 0) {
+				ACPI_OBJECT_LIST  arg_list;
 
-	fwts_list_foreach(item, methods) {
-		char *method_name = fwts_list_data(char*, item);
-		int len = strlen(method_name);
-		if (strncmp(name, method_name + len - name_len, name_len) == 0) {
-			ACPI_OBJECT_LIST  arg_list;
-
-			found++;
-			arg_list.Count   = num_args;
-			arg_list.Pointer = args;
-			fwts_acpica_simulate_sem_timeout(FWTS_FALSE);
-			method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
-
-			/*
-			arg_list.Count   = num_args;
-			arg_list.Pointer = args;
-			fwts_acpica_simulate_sem_timeout(FWTS_TRUE);
-			method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
-			*/
+				found++;
+				arg_list.Count   = num_args;
+				arg_list.Pointer = args;
+				fwts_acpica_simulate_sem_timeout(FWTS_FALSE);
+				method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
+			}
 		}
 	}
 
@@ -441,29 +287,32 @@ static int method_evaluate_method(fwts_framework *fw,
 static int method_name_check(fwts_framework *fw)
 {
 	fwts_list_link	*item;
+	fwts_list *methods;
 	int failed = 0;
 
-	fwts_log_info(fw, "Found %d Methods\n", methods->len);
+ 	if ((methods = fwts_method_get_names()) != NULL) {
+		fwts_log_info(fw, "Found %d Methods\n", methods->len);
 
-	fwts_list_foreach(item, methods) {
-		char *ptr;
+		fwts_list_foreach(item, methods) {
+			char *ptr;
 
-		for (ptr = fwts_list_data(char *, item); *ptr; ptr++) {
-			if (!((*ptr == '\\') ||
-			     (*ptr == '.') ||
-			     (*ptr == '_') ||
-			     (isdigit(*ptr)) ||
-			     (isupper(*ptr))) ) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, "MethodIllegalName",  "Method %s contains an illegal character: '%c'. This should be corrected.",
-					fwts_list_data(char *, item), *ptr);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
-				failed++;
-				break;
+			for (ptr = fwts_list_data(char *, item); *ptr; ptr++) {
+				if (!((*ptr == '\\') ||
+				     (*ptr == '.') ||
+				     (*ptr == '_') ||
+				     (isdigit(*ptr)) ||
+				     (isupper(*ptr))) ) {
+					fwts_failed(fw, LOG_LEVEL_HIGH, "MethodIllegalName",  "Method %s contains an illegal character: '%c'. This should be corrected.",
+						fwts_list_data(char *, item), *ptr);
+					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
+					failed++;
+					break;
+				}
 			}
 		}
+		if (!failed)
+			fwts_passed(fw, "Method names contain legal characters.");
 	}
-	if (!failed)
-		fwts_passed(fw, "Method names contain legal characters.");
 
 	return FWTS_OK;
 }
@@ -576,7 +425,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 13) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFElementCount", "_BIF package should return 13 elements, got %d instead.",
@@ -681,7 +530,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 16) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXElementCount", "_BIX package should return 16 elements, got %d instead.",
@@ -818,7 +667,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 4) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTElementCount", "_BST package should return 4 elements, got %d instead.",
@@ -927,7 +776,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 5) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BMDElementCount", "_BMD package should return 4 elements, got %d instead.",
@@ -977,7 +826,7 @@ static int method_test_BFS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exists("_BFS")) {
+	if (fwts_method_exists("_BFS") != NULL) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -1027,7 +876,7 @@ static int method_test_GTS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exists("_GTS")) {
+	if (fwts_method_exists("_GTS") != NULL) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -1052,7 +901,7 @@ static int method_test_TTS(fwts_framework *fw)
 {
 	int i;
 
-	if (method_exists("_BFS")) {
+	if (fwts_method_exists("_BFS") != NULL) {
 		for (i=1; i<6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -1078,7 +927,7 @@ static void method_test_Sx_return(fwts_framework *fw, char *name, ACPI_BUFFER *b
 	char *method = (char *)private;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SElementCount", "%s should return package of 3 integers, got %d elements instead.", method,
@@ -1107,7 +956,7 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	int failed = 0;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKElementCount", "_WAK should return package of 2 integers, got %d elements instead.",
@@ -1194,7 +1043,7 @@ static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 {
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PIFElementCount",
@@ -1242,7 +1091,7 @@ static int method_test_LID(fwts_framework *fw)
 static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 4) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FIFElementCount",
@@ -1284,7 +1133,7 @@ static int method_test_FSL(fwts_framework *fw)
 static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FSTElementCount",
@@ -1599,7 +1448,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		int i;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
@@ -1687,7 +1536,7 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		method_dump_package(fw, obj);
+		fwts_method_dump_package(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)

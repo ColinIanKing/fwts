@@ -1,3 +1,12 @@
+fwts (0.24.06) oneiric; urgency=low
+
+  * libfwtsiasl: ensure .y builds are not racey
+  * acpi: method: fix typo on method_exists() func name
+  * lib: fwts_log: fix off-by error on month on %date (LP: #872736)
+  * Add debian autopackager
+
+ -- Colin King <colin.king@canonical.com>  Thu, 13 Sep 2011 11:29:00 +0100
+
 fwts (0.24.05) oneiric; urgency=low
 
   * libfwtsiasl: fix pbuilder warnings

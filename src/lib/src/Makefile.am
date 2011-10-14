@@ -26,7 +26,8 @@ libfwts_la_SOURCES = \
 	fwts_firmware.c \
 	fwts_formatting.c \
 	fwts_framework.c \
-	fwts_get.c 	\
+	fwts_get.c \
+	fwts_guid.c \
 	fwts_gpe.c \
 	fwts_hwinfo.c \
 	fwts_iasl.c \

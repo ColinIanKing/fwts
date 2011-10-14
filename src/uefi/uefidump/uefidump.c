@@ -545,6 +545,7 @@ static char *uefidump_attribute(uint32_t attr)
 static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
+	char guid_str[37];
 	uefidump_info *info;
 	int i;
 	uint8_t *data;
@@ -552,11 +553,8 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 
 	fwts_log_info_verbatum(fw, "Name: %s.", varname);
-	fwts_log_info_verbatum(fw, "  GUID: %02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-			var->guid[3], var->guid[2], var->guid[1], var->guid[0],
-			var->guid[5], var->guid[4], var->guid[7], var->guid[6],
-			var->guid[8], var->guid[9], var->guid[10], var->guid[11],
-			var->guid[12], var->guid[13], var->guid[14], var->guid[15]);
+	fwts_guid_buf_to_str(var->guid, guid_str, sizeof(guid_str));
+	fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
 	fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes, uefidump_attribute(var->attributes));
 
 	/* If we've got an appropriate per variable dump mechanism, use this */

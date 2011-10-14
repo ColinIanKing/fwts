@@ -123,13 +123,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 		char guidstr[37];
 		fwts_wmi_known_guid *known;
 
-		snprintf(guidstr, sizeof(guidstr),
-			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-			guid[3], guid[2], guid[1], guid[0],
-			guid[5], guid[4],
-			guid[7], guid[6],
-			guid[8], guid[9],
-			guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
+		fwts_guid_buf_to_str(guid, guidstr, sizeof(guidstr));
 
 		known = wmi_find_guid(guidstr);
 

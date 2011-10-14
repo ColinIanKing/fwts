@@ -1,3 +1,13 @@
+fwts (0.24.07) oneiric; urgency=low
+
+  * uefi: uefidump: use new fwts_guid_buf_to_str()
+  * acpi: wmi: use new fwts_guid_buf_to_str()
+  * lib: Add GUID string formatting
+  * acpi: method: use acpi_methods_* funcs
+  * lib: add acpi_methods_* handling
+
+ -- Colin King <colin.king@canonical.com>  Fri, 14 Sep 2011 15:56:00 +0100
+
 fwts (0.24.06) oneiric; urgency=low
 
   * libfwtsiasl: ensure .y builds are not racey

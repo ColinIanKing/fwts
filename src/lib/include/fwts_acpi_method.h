@@ -25,6 +25,6 @@ int fwts_method_init(fwts_framework *fw);
 int fwts_method_deinit(fwts_framework *fw);
 char *fwts_method_exists(char *name);
 fwts_list *fwts_method_get_names(void);
-void fwts_method_dump_package(fwts_framework *fw, ACPI_OBJECT *obj);
+void fwts_method_dump_object(fwts_framework *fw, ACPI_OBJECT *obj);
 void fwts_method_evaluate_report_error(fwts_framework *fw, char *name, ACPI_STATUS status);
 ACPI_STATUS fwts_method_evaluate(fwts_framework *fw, char *name, ACPI_OBJECT_LIST *arg_list, ACPI_BUFFER *buf);

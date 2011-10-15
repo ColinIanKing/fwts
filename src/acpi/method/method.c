@@ -425,7 +425,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 13) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFElementCount", "_BIF package should return 13 elements, got %d instead.",
@@ -530,7 +530,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 16) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXElementCount", "_BIX package should return 16 elements, got %d instead.",
@@ -667,7 +667,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 4) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTElementCount", "_BST package should return 4 elements, got %d instead.",
@@ -776,7 +776,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 5) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BMDElementCount", "_BMD package should return 4 elements, got %d instead.",
@@ -927,7 +927,7 @@ static void method_test_Sx_return(fwts_framework *fw, char *name, ACPI_BUFFER *b
 	char *method = (char *)private;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SElementCount", "%s should return package of 3 integers, got %d elements instead.", method,
@@ -956,7 +956,7 @@ static void method_test_WAK_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	int failed = 0;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKElementCount", "_WAK should return package of 2 integers, got %d elements instead.",
@@ -1043,7 +1043,7 @@ static void method_test_PIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 {
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PIFElementCount",
@@ -1091,7 +1091,7 @@ static int method_test_LID(fwts_framework *fw)
 static void method_test_FIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 4) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FIFElementCount",
@@ -1133,7 +1133,7 @@ static int method_test_FSL(fwts_framework *fw)
 static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FSTElementCount",
@@ -1448,7 +1448,7 @@ static void method_test_DOD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		int i;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
@@ -1536,7 +1536,7 @@ static void method_test_BCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 		int i;
 		int failed = 0;
 
-		fwts_method_dump_package(fw, obj);
+		fwts_method_dump_object(fw, obj);
 
 		for (i=0;i<obj->Package.Count;i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)

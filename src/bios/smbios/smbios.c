@@ -20,71 +20,6 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-#define SMBIOS_REGION_START	(0x000e0000)
-#define SMBIOS_REGION_END  	(0x000fffff)
-#define SMBIOS_REGION_SIZE	(SMBIOS_REGION_END - SMBIOS_REGION_START)
-
-typedef struct {
-	uint8_t		signature[4];
-	uint8_t		checksum;
-	uint8_t		length;
-	uint8_t		major_version;
-	uint8_t		minor_version;
-	uint16_t	max_struct_size;
-	uint8_t		revision;
-	uint8_t		formatted_area[5];
-	uint8_t		anchor_string[5];
-	uint8_t		intermediate_checksum;
-	uint16_t	struct_table_length;
-	uint32_t	struct_table_address;
-	uint16_t	number_smbios_structures;
-	uint8_t		smbios_bcd_revision;
-}  __attribute__ ((packed)) fwts_smbios_entry;
-
-void *smbios_find_entry_in_uefi(fwts_framework *fw, fwts_smbios_entry *entry)
-{
-	void *addr;
-	fwts_smbios_entry *mapped_entry;
-
-	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
-		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) == FWTS_MAP_FAILED) {
-			fwts_log_error(fw, "Cannot mmap SMBIOS entry at %p\n", addr);
-			return NULL;
-		}
-		*entry = *mapped_entry;
-		(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
-	}
-	return addr;
-}
-
-void *smbios_find_entry_in_bios(fwts_framework *fw, fwts_smbios_entry *entry)
-{
-	uint8_t *mem;
-	void 	*addr = NULL;
-	int 	i;
-
-        if ((mem = fwts_mmap(SMBIOS_REGION_START, SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
-		return NULL;
-	}
-
-	for (i=0; i<SMBIOS_REGION_SIZE; i+= 16) {
-		if ((*(mem+i)   == '_') &&
-		    (*(mem+i+1) == 'S') &&
-		    (*(mem+i+2) == 'M') &&
-		    (*(mem+i+3) == '_') && 
-		    (fwts_checksum(mem + i, 16) == 0)) {
-			addr = (void*)SMBIOS_REGION_START + i;
-			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios_entry));
-			break;
-		}
-	}
-
-        (void)fwts_munmap(mem, SMBIOS_REGION_SIZE);
-
-	return addr;
-}
-
 static void smbios_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry)
 {
 	fwts_log_info_verbatum(fw, "  Anchor String          : %4.4s", entry->signature);
@@ -109,21 +44,6 @@ static void smbios_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry)
 	}
 }
 
-static void *smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry)
-{
-	switch (fw->firmware_type) {
-	case FWTS_FIRMWARE_BIOS:
-		return smbios_find_entry_in_bios(fw, entry);
-		break;
-	case FWTS_FIRMWARE_UEFI:
-		return smbios_find_entry_in_uefi(fw, entry);
-		break;
-	default:
-		return NULL;
-		break;
-	}
-}
-
 static int smbios_test1(fwts_framework *fw)
 {
 	void *addr = 0;
@@ -132,7 +52,7 @@ static int smbios_test1(fwts_framework *fw)
 	fwts_log_info(fw,
 		"This test tries to find and sanity check the SMBIOS "
 		"data structures.");
-	if ((addr = smbios_find_entry(fw, &entry)) == NULL)
+	if ((addr = fwts_smbios_find_entry(fw, &entry)) == NULL)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"SMBIOSNoEntryPoint",
 			"Could not find SMBIOS Table Entry Point.");

@@ -40,22 +40,6 @@
 #define BIOS_END        (0x000fffff)            /* End of BIOS memory */
 
 /*
- *  fwts_mp_checksum()
- *	checksum the floating header
- */
-static int fwts_mp_checksum(const fwts_mp_floating_header *header)
-{
-	uint8_t sum = 0;
-	uint8_t *ptr = (uint8_t*)header;
-	unsigned int i;
-
-	for (i=0;i<sizeof(fwts_mp_floating_header);i++) 
-		sum += *ptr++;
-
-	return sum;
-}
-
-/*
  *  fwts_mp_get_address()
  *	scan for _MP_ floating pointer, set phys_addr if found.
  */
@@ -100,7 +84,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 			    (*(ptr + 2) == 'P') &&
 			    (*(ptr + 3) == '_')) {
 				fwts_mp_floating_header *hdr = (fwts_mp_floating_header*)ptr;
-				if (fwts_mp_checksum(hdr) == 0) {
+				if (fwts_checksum((uint8_t *)hdr, sizeof(fwts_mp_floating_header)) == 0) {
 					/* Looks valid, so return addr */
 					*phys_addr = hdr->phys_address;
 					(void)fwts_munmap(mem, size);

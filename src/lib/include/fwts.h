@@ -70,5 +70,6 @@
 #include "fwts_guid.h"
 #include "fwts_scan_efi_systab.h"
 #include "fwts_checksum.h"
+#include "fwts_smbios.h"
 
 #endif

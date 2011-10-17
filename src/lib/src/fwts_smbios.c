@@ -1,0 +1,100 @@
+/*
+ * Copyright (C) 2010-2011 Canonical
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
+
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+/*
+ *  fwts_smbios_find_entry_uefi()
+ *	find SMBIOS structure table entry from UEFI systab
+ */
+static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *entry)
+{
+	void *addr;
+	fwts_smbios_entry *mapped_entry;
+
+	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
+		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) == FWTS_MAP_FAILED) {
+			fwts_log_error(fw, "Cannot mmap SMBIOS entry at %p\n", addr);
+			return NULL;
+		}
+		*entry = *mapped_entry;
+		(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
+	}
+	return addr;
+}
+
+/*
+ *  fwts_smbios_find_entry_bios()
+ *	find SMBIOS structure table entry by scanning memory
+ */
+static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *entry)
+{
+	uint8_t *mem;
+	void 	*addr = NULL;
+	int 	i;
+
+        if ((mem = fwts_mmap(SMBIOS_REGION_START, SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
+		return NULL;
+	}
+
+	for (i=0; i<SMBIOS_REGION_SIZE; i+= 16) {
+		if ((*(mem+i)   == '_') &&
+		    (*(mem+i+1) == 'S') &&
+		    (*(mem+i+2) == 'M') &&
+		    (*(mem+i+3) == '_') && 
+		    (fwts_checksum(mem + i, 16) == 0)) {
+			addr = (void*)SMBIOS_REGION_START + i;
+			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios_entry));
+			break;
+		}
+	}
+
+        (void)fwts_munmap(mem, SMBIOS_REGION_SIZE);
+
+	return addr;
+}
+
+/*
+ *  fwts_smbios_find_entry()
+ *	find SMBIOS structure table entry 
+ */
+void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry)
+{
+	void *addr;
+
+	/* Check EFI first */
+	if ((addr = fwts_smbios_find_entry_uefi(fw, entry)) == NULL) {
+		/* Failed? then scan memory */
+		addr = fwts_smbios_find_entry_bios(fw, entry);
+	}
+	return addr;
+}
+
+#else
+/*
+ *  fwts_smbios_find_entry()
+ *	find SMBIOS structure table entry, currently void for non-x86 specific code
+ */
+void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry)
+{
+	return NULL;
+}
+#endif

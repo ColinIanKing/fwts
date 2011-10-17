@@ -17,15 +17,15 @@
  *
  */
 
+#ifndef __FWTS_GPE_H__
+#define __FWTS_GPE_H__
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
 #include <sys/types.h>
 #include <dirent.h>
-
-#ifndef __FWTS_GPE_H__
-#define __FWTS_GPE_H__
 
 #define FWTS_GPE_PATH	"/sys/firmware/acpi/interrupts"
 

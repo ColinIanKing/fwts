@@ -17,7 +17,12 @@
  *
  */
 
+#ifndef __FWTS_SCAN_EFI_SYSTAB_H__
+#define __FWTS_SCAN_EFI_SYSTAB_H__
+
 #include <stdlib.h>
 #include "fwts.h"
 
 void *fwts_scan_efi_systab(const char *name);
+
+#endif

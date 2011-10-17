@@ -16,7 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+
+#ifndef __FWTS_GUID_H__
+#define __FWTS_GUID_H__ 
+
 #include <stdlib.h>
 #include <stdint.h>
 
 void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len);
+
+#endif

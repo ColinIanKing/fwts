@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+
+#ifndef __FWTS_ACPI_METHOD_H__
+#define __FWTS_ACPI_METHOD_H__
+
 #include "fwts.h"
 
 /* acpica headers */
@@ -28,3 +32,5 @@ fwts_list *fwts_method_get_names(void);
 void fwts_method_dump_object(fwts_framework *fw, ACPI_OBJECT *obj);
 void fwts_method_evaluate_report_error(fwts_framework *fw, char *name, ACPI_STATUS status);
 ACPI_STATUS fwts_method_evaluate(fwts_framework *fw, char *name, ACPI_OBJECT_LIST *arg_list, ACPI_BUFFER *buf);
+
+#endif

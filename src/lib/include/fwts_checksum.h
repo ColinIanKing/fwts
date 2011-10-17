@@ -17,6 +17,11 @@
  *
  */
 
+#ifndef __FWTS_CHECKSUM_H__
+#define __FWTS_CHECKSUM_H__
+
 #include "fwts.h"
 
 uint8_t fwts_checksum(const uint8_t *data, const int length);
+
+#endif

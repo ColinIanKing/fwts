@@ -18,7 +18,7 @@
  */
 
 #ifndef __FWTS_MICROCODE_H__
-#define  __FWTS_MICROCODE_H__
+#define __FWTS_MICROCODE_H__
 
 #define FWTS_MICROCODE_DEVICE	"/dev/cpu/microcode"
 #define FWTS_MICROCODE_FILE	"/usr/share/misc/intel-microcode.dat"

@@ -44,22 +44,9 @@ static int acpi_tables_loaded = 0;
  *  fwts_acpi_find_rsdp_efi()
  *  	Get RSDP address from EFI if possible
  */
-static uint32_t fwts_acpi_find_rsdp_efi(void)
+static void *fwts_acpi_find_rsdp_efi(void)
 {
-	FILE *systab;
-	char text[1024];
-	unsigned long rsdp = 0;
-
-	if ((systab = fopen("/sys/firmware/efi/systab", "r")) == NULL)
-		return 0;
-
-	while (fgets(text, sizeof(text), systab) != NULL) {
-		if (sscanf(text, "ACPI20=0x%lx", &rsdp) == 1)
-			break;
-	}
-	fclose(systab);
-
-	return rsdp;
+	return fwts_scan_efi_systab("ACPI20");
 }
 
 /*
@@ -81,12 +68,12 @@ uint8_t fwts_acpi_checksum(const uint8_t *data, const int length)
  *  fwts_acpi_find_rsdp_bios()
  *	Find RSDP address by scanning BIOS memory
  */
-static uint32_t fwts_acpi_find_rsdp_bios(void)
+static void *fwts_acpi_find_rsdp_bios(void)
 {
 	uint8_t *bios;
 	uint8_t *ptr;
 	fwts_acpi_table_rsdp *rsdp;
-	unsigned long addr = 0;
+	void *addr = 0;
 
 	if ((bios = fwts_mmap(BIOS_START, BIOS_LENGTH)) == FWTS_MAP_FAILED)
 		return 0;
@@ -98,7 +85,7 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
 		if (strncmp(rsdp->signature, "RSD PTR ",8) == 0) {
 			int length = (rsdp->revision < 1) ? 20 : 36;
 			if (fwts_acpi_checksum(ptr, length) == 0) {
-				addr = BIOS_START+(ptr - bios);
+				addr = (void*)(BIOS_START+(ptr - bios));
 				break;
 			}
 		}
@@ -113,13 +100,13 @@ static uint32_t fwts_acpi_find_rsdp_bios(void)
  *	given the address of the rsdp, map in the region, copy it and
  *	return the rsdp table. Return NULL if fails.
  */
-static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(const uint32_t addr, size_t *rsdp_len)
+static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(void *addr, size_t *rsdp_len)
 {
 	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp;
 	*rsdp_len = 0;
 
-	if ((mem = fwts_mmap(addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
+	if ((mem = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
 	/* Determine original RSDP size from revision. */
@@ -255,20 +242,20 @@ static int fwts_acpi_load_tables_from_firmware(void)
 	fwts_acpi_table_rsdt *rsdt;
 	fwts_acpi_table_header *header;
 
-	uint64_t	rsdp_addr;
-	size_t		rsdp_len;
-	int num_entries;
-	int i;
+	void *	rsdp_addr;
+	size_t	rsdp_len;
+	int 	num_entries;
+	int 	i;
 
 	/* Check for RSDP in EFI, then BIOS, if not found, give up */
-	if ((rsdp_addr = fwts_acpi_find_rsdp_efi()) == 0)
-		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == 0)
+	if ((rsdp_addr = fwts_acpi_find_rsdp_efi()) == NULL)
+		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == NULL)
 			return FWTS_ERROR;
 
 	/* Load and save cached RSDP */
 	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;
-	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)rsdp_addr, rsdp_len);
+	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len);
 
 	/* Load any tables from RSDT if it's valid */
 	if (rsdp->rsdt_address) {

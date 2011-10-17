@@ -40,7 +40,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 
 	/* Version 1.0 RSDP checksum, always applies */
-	checksum = fwts_acpi_checksum(table->data, 20);
+	checksum = fwts_checksum(table->data, 20);
 	if (checksum != 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableChecksumRSDP",
 			"RSDP has incorrect checksum, expected 0x%2.2x, got 0x%2.2x.",
@@ -58,7 +58,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 			/* Won't test on a short RSDP */
 			return;
 		}
-		checksum = fwts_acpi_checksum(table->data, sizeof(fwts_acpi_table_rsdp));
+		checksum = fwts_checksum(table->data, sizeof(fwts_acpi_table_rsdp));
 		if (checksum != 0)
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"ACPITableChecksumRSDP",
@@ -98,7 +98,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 		if (strcmp("FACS", table->name) == 0)
 			continue;
 
-		checksum = fwts_acpi_checksum(table->data, table->length);
+		checksum = fwts_checksum(table->data, table->length);
 		if (checksum == 0)
 			fwts_passed(fw, "Table %s has correct checksum 0x%x.", table->name, hdr->checksum);
 		else {

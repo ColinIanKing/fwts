@@ -24,7 +24,7 @@
  *  fwts_smbios_find_entry_uefi()
  *	find SMBIOS structure table entry from UEFI systab
  */
-static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *entry)
+static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type)
 {
 	void *addr;
 	fwts_smbios_entry *mapped_entry;
@@ -35,6 +35,7 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 			return NULL;
 		}
 		*entry = *mapped_entry;
+		*type  = FWTS_SMBIOS;	
 		(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
 	}
 	return addr;
@@ -44,30 +45,46 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
  *  fwts_smbios_find_entry_bios()
  *	find SMBIOS structure table entry by scanning memory
  */
-static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *entry)
+static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type)
 {
 	uint8_t *mem;
 	void 	*addr = NULL;
 	int 	i;
 
-        if ((mem = fwts_mmap(SMBIOS_REGION_START, SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
+        if ((mem = fwts_mmap(FWTS_SMBIOS_REGION_START, FWTS_SMBIOS_REGION_SIZE)) == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap SMBIOS region.");
 		return NULL;
 	}
 
-	for (i=0; i<SMBIOS_REGION_SIZE; i+= 16) {
+	for (i=0; i<FWTS_SMBIOS_REGION_SIZE; i+= 16) {
+		/* SMBIOS entry point */
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&
 		    (*(mem+i+2) == 'M') &&
 		    (*(mem+i+3) == '_') && 
 		    (fwts_checksum(mem + i, 16) == 0)) {
-			addr = (void*)SMBIOS_REGION_START + i;
+			addr = (void*)FWTS_SMBIOS_REGION_START + i;
 			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios_entry));
+			*type  = FWTS_SMBIOS;	
+			break;
+		}
+		/* Legacy DMI entry point */
+		if ((*(mem+i)   == '_') &&
+		    (*(mem+i+1) == 'D') &&
+		    (*(mem+i+2) == 'M') &&
+		    (*(mem+i+3) == 'I') && 
+		    (*(mem+i+4) == '_') && 
+		    (fwts_checksum(mem + i, 15) == 0)) {
+			memset(entry, 0, 16);
+			addr = (void*)FWTS_SMBIOS_REGION_START + i;
+			memcpy(16+((void*)entry), (void*)(mem + i), 15);
+			*type = FWTS_SMBIOS_DMI_LEGACY;
 			break;
 		}
 	}
+			
 
-        (void)fwts_munmap(mem, SMBIOS_REGION_SIZE);
+        (void)fwts_munmap(mem, FWTS_SMBIOS_REGION_SIZE);
 
 	return addr;
 }
@@ -76,14 +93,17 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
  *  fwts_smbios_find_entry()
  *	find SMBIOS structure table entry 
  */
-void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry)
+void *fwts_smbios_find_entry(fwts_framework *fw,
+	fwts_smbios_entry *entry,
+	fwts_smbios_type  *type)
 {
 	void *addr;
+	*type = FWTS_SMBIOS_UNKNOWN;
 
 	/* Check EFI first */
-	if ((addr = fwts_smbios_find_entry_uefi(fw, entry)) == NULL) {
+	if ((addr = fwts_smbios_find_entry_uefi(fw, entry, type)) == NULL) {
 		/* Failed? then scan memory */
-		addr = fwts_smbios_find_entry_bios(fw, entry);
+		addr = fwts_smbios_find_entry_bios(fw, entry, type);
 	}
 	return addr;
 }

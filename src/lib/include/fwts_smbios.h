@@ -23,9 +23,15 @@
 #include <stdint.h>
 #include "fwts.h"
 
-#define SMBIOS_REGION_START     (0x000e0000)
-#define SMBIOS_REGION_END       (0x000fffff)
-#define SMBIOS_REGION_SIZE      (SMBIOS_REGION_END - SMBIOS_REGION_START)
+#define FWTS_SMBIOS_REGION_START     (0x000e0000)
+#define FWTS_SMBIOS_REGION_END       (0x000fffff)
+#define FWTS_SMBIOS_REGION_SIZE      (FWTS_SMBIOS_REGION_END - FWTS_SMBIOS_REGION_START)
+
+typedef enum {
+	FWTS_SMBIOS_UNKNOWN = -1,
+	FWTS_SMBIOS_DMI_LEGACY = 0,
+	FWTS_SMBIOS = 1,
+} fwts_smbios_type;
 
 /*
  * From System Management BIOS (SMBIOS) Reference Specification
@@ -48,6 +54,6 @@ typedef struct {
 	uint8_t		smbios_bcd_revision;
 }  __attribute__ ((packed)) fwts_smbios_entry;
 
-void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry);
+void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type);
 
 #endif

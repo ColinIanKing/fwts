@@ -66,14 +66,7 @@ static int bios32_test1(fwts_framework *fw)
 		    (*(mem+i+1) == '3') &&
 		    (*(mem+i+2) == '2') &&
 		    (*(mem+i+3) == '_')) {
-			fwts_bios32_service_directory *bios32;
-			uint8_t checksum = 0;
-			int j;
-
-			for (j=i;j<i+16;j++)
-				checksum += *(mem+j);
-
-			bios32 = (fwts_bios32_service_directory*)(mem+i);
+			fwts_bios32_service_directory *bios32 = (fwts_bios32_service_directory*)(mem+i);
 
 			fwts_log_info(fw, "Found BIOS32 Service Directory at 0x%8.8x", BIOS32_SD_REGION_START+i);
 			fwts_log_info_verbatum(fw, "  Signature  : %4.4s", 
@@ -117,7 +110,7 @@ static int bios32_test1(fwts_framework *fw)
 				fwts_passed(fw, "Service Directory Revision is 0x%2.2x and is supported by the kernel.",
 					bios32->revision_level);
 
-			if (checksum != 0) {
+			if (fwts_checksum(mem + i, 16) != 0) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, 
 					"BIOS32SrvDirCheckSum",
 					"Service Directory checksum failed.");

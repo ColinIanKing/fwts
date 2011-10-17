@@ -69,5 +69,6 @@
 #include "fwts_alloc.h"
 #include "fwts_guid.h"
 #include "fwts_scan_efi_systab.h"
+#include "fwts_checksum.h"
 
 #endif

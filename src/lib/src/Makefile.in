@@ -73,13 +73,14 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libfwts_la_LIBADD =
 am_libfwts_la_OBJECTS = fwts_acpi.lo fwts_acpid.lo fwts_acpi_tables.lo \
 	fwts_acpi_method.lo fwts_args.lo fwts_alloc.lo \
-	fwts_binpaths.lo fwts_checkeuid.lo fwts_cmos.lo fwts_cpu.lo \
-	fwts_dump.lo fwts_dump_data.lo fwts_ebda.lo fwts_fileio.lo \
-	fwts_firmware.lo fwts_formatting.lo fwts_framework.lo \
-	fwts_get.lo fwts_guid.lo fwts_gpe.lo fwts_hwinfo.lo \
-	fwts_iasl.lo fwts_interactive.lo fwts_keymap.lo fwts_klog.lo \
-	fwts_list.lo fwts_log.lo fwts_memorymap.lo fwts_microcode.lo \
-	fwts_mmap.lo fwts_multiproc.lo fwts_oops.lo fwts_pipeio.lo \
+	fwts_binpaths.lo fwts_checkeuid.lo fwts_checksum.lo \
+	fwts_cmos.lo fwts_cpu.lo fwts_dump.lo fwts_dump_data.lo \
+	fwts_ebda.lo fwts_fileio.lo fwts_firmware.lo \
+	fwts_formatting.lo fwts_framework.lo fwts_get.lo fwts_guid.lo \
+	fwts_gpe.lo fwts_hwinfo.lo fwts_iasl.lo fwts_interactive.lo \
+	fwts_keymap.lo fwts_klog.lo fwts_list.lo fwts_log.lo \
+	fwts_memorymap.lo fwts_microcode.lo fwts_mmap.lo \
+	fwts_multiproc.lo fwts_oops.lo fwts_pipeio.lo \
 	fwts_scan_efi_systab.lo fwts_set.lo fwts_stringextras.lo \
 	fwts_summary.lo fwts_tag.lo fwts_text_list.lo fwts_tty.lo \
 	fwts_uefi.lo fwts_virt.lo fwts_wakealarm.lo
@@ -242,6 +243,7 @@ libfwts_la_SOURCES = \
 	fwts_alloc.c \
 	fwts_binpaths.c \
 	fwts_checkeuid.c \
+	fwts_checksum.c \
 	fwts_cmos.c \
 	fwts_cpu.c \
 	fwts_dump.c \
@@ -360,6 +362,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_args.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_binpaths.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_checkeuid.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_checksum.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_cmos.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_cpu.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_dump.Plo@am__quote@

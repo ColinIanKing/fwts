@@ -17,6 +17,7 @@ libfwts_la_SOURCES = \
 	fwts_alloc.c \
 	fwts_binpaths.c \
 	fwts_checkeuid.c \
+	fwts_checksum.c \
 	fwts_cmos.c \
 	fwts_cpu.c \
 	fwts_dump.c \

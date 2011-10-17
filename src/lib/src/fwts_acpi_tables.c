@@ -50,21 +50,6 @@ static void *fwts_acpi_find_rsdp_efi(void)
 }
 
 /*
- *  fwts_acpi_checksum()
- *	table checksum
- */
-uint8_t fwts_acpi_checksum(const uint8_t *data, const int length)
-{
-	int i;
-	uint8_t checksum = 0;
-
-	for (i=0; i<length; i++) {
-		checksum += *data++;
-	}
-	return checksum;
-}
-
-/*
  *  fwts_acpi_find_rsdp_bios()
  *	Find RSDP address by scanning BIOS memory
  */
@@ -84,7 +69,7 @@ static void *fwts_acpi_find_rsdp_bios(void)
 		/* Look for RSD PTR string */
 		if (strncmp(rsdp->signature, "RSD PTR ",8) == 0) {
 			int length = (rsdp->revision < 1) ? 20 : 36;
-			if (fwts_acpi_checksum(ptr, length) == 0) {
+			if (fwts_checksum(ptr, length) == 0) {
 				addr = (void*)(BIOS_START+(ptr - bios));
 				break;
 			}
@@ -571,7 +556,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdt->header.oem_revision = 1;
 		strncpy(rsdt->header.creator_id, "FWTS", 4);
 		rsdt->header.creator_revision = 1;
-		rsdt->header.checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdt, size);
+		rsdt->header.checksum = 256 - fwts_checksum((uint8_t*)rsdt, size);
 
 		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)fwts_fake_physical_addr(size), size);
 	}
@@ -595,7 +580,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		xsdt->header.oem_revision = 1;
 		strncpy(xsdt->header.creator_id, "FWTS", 4);
 		xsdt->header.creator_revision = 1;
-		xsdt->header.checksum = 256 - fwts_acpi_checksum((uint8_t*)xsdt, size);
+		xsdt->header.checksum = 256 - fwts_checksum((uint8_t*)xsdt, size);
 
 		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)fwts_fake_physical_addr(size), size);
 	}
@@ -616,8 +601,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdp->reserved[1] = 0;
 		rsdp->reserved[2] = 0;
 
-		rsdp->checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdp, 20);
-		rsdp->extended_checksum = 256 - fwts_acpi_checksum((uint8_t*)rsdp, sizeof(fwts_acpi_table_rsdp));
+		rsdp->checksum = 256 - fwts_checksum((uint8_t*)rsdp, 20);
+		rsdp->extended_checksum = 256 - fwts_checksum((uint8_t*)rsdp, sizeof(fwts_acpi_table_rsdp));
 
 		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size), sizeof(fwts_acpi_table_rsdp));
 	}

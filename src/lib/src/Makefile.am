@@ -42,6 +42,7 @@ libfwts_la_SOURCES = \
 	fwts_multiproc.c \
 	fwts_oops.c \
 	fwts_pipeio.c \
+	fwts_scan_efi_systab.c \
 	fwts_set.c \
 	fwts_stringextras.c \
 	fwts_summary.c \

@@ -19,39 +19,111 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
+/*
+ *  dmi_str()
+ *	return the string at the specified offset on the table
+ *	offset is the Nth field in the hdr, and this contains
+ *	the index to the Nth string at the end of the DMI entry
+ */
+static const char* dmi_str(fwts_dmi_header *hdr, uint8_t offset)
+{
+	char *data = (char *)hdr;
+	uint8_t	i = data[offset];
+
+	if (i > 0) {
+		data += hdr->length;
+		while (i > 1 && *data) {
+			data += strlen(data) + 1;
+			i--;
+		}
+		return (char*)data;
+	}
+	return "";
+}
+
+/*
+ *  dmi_get_bios_information()
+ *	Scan for DMI entry "BIOS Information", type 0
+ *	return NULL if we cannot find the entry, otherwise return
+ *	the entry starting from its header.
+ */
+static fwts_dmi_header *dmi_get_bios_information(fwts_framework *fw,
+	fwts_smbios_entry *entry,
+	uint8_t  *table)
+{
+	uint8_t *entry_data = table;
+	uint16_t table_length = entry->struct_table_length;
+	uint16_t struct_count = entry->number_smbios_structures;
+	int i = 0;
+
+	while ((i < struct_count) &&
+	       (entry_data <= (table + table_length - 4))) {
+		fwts_dmi_header *hdr = (fwts_dmi_header *)entry_data;
+		uint8_t *next_entry = entry_data + hdr->length;
+
+		if (hdr->length < 4)
+			break;
+
+		/* Look for structure terminator, ends in two zero bytes */
+		while (((next_entry - table + 1) < table_length) &&
+		       ((next_entry[0] != 0) || (next_entry[1] != 0))) {
+			next_entry++;
+		}
+		next_entry += 2;
+
+		/* Got valid table type 0? */
+		if (((next_entry - table) <= table_length) && (hdr->type == 0x00))
+			return hdr;
+
+		i++;
+		entry_data = next_entry;
+	}
+	return NULL;
+}
+
 static int crs_get_bios_date(fwts_framework *fw, int *day, int *mon, int *year)
 {
-	fwts_list *dmi_text;
-	fwts_list_link *item;
-	char buffer[PATH_MAX+256];
+	void *addr;
+	const char *date;
+	fwts_smbios_entry entry;
+	fwts_smbios_type  type;
+	uint16_t version = 0;
+	uint8_t  *table;
+	fwts_dmi_header *hdr;
 
-	*day = 0;
-	*mon = 0;
-	*year = 0;
-
-	snprintf(buffer, sizeof(buffer), "%s -t 0", fw->dmidecode);
-	if (fwts_pipe_exec(buffer, &dmi_text)) {
-		fwts_log_error(fw, "Failed to execute dmidecode.");
+	addr = fwts_smbios_find_entry(fw, &entry, &type, &version);
+	if (addr == NULL) {
+		fwts_log_error(fw, "Cannot find SMBIOS or DMI tables.");
 		return FWTS_ERROR;
 	}
 
-	if (dmi_text == NULL) {
-		fwts_log_error(fw,
-			"Failed to read output from dmidecode (out of memory).");
+	table = fwts_mmap((off_t)entry.struct_table_address,
+		         (size_t)entry.struct_table_length);
+	if (table == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap SMBIOS tables from %8.8x..%8.8x.",
+			entry.struct_table_address,
+			entry.struct_table_address + entry.struct_table_length);
 		return FWTS_ERROR;
 	}
 
-	fwts_list_foreach(item, dmi_text) {
-		char *ptr;
-		char *text = fwts_text_list_text(item);
-		char *pattern = "Release Date: ";
-		if ((ptr = strstr(text, pattern)) != NULL) {
-			ptr += strlen(pattern);
-			sscanf(ptr, "%d/%d/%d", mon, day, year);
-			break;
-		}
+	/* Search for BIOS Information table */
+	if ((hdr = dmi_get_bios_information(fw, &entry, table)) == NULL) {
+		(void)fwts_munmap(table, (size_t)entry.struct_table_length);
+		return FWTS_ERROR;
 	}
-	fwts_list_free(dmi_text, free);
+
+	/*
+	 * Offset 8 contains the BIOS release date, see System Management
+	 * BIOS (SMBIOS) Reference Specification, section 7.1
+	 */
+	date = dmi_str(hdr, 0x8);
+	*mon = *day = *year = 0;
+	/* Assume mon/day/year, but we only care about the year anyway */
+	sscanf(date, "%d/%d/%d", mon, day, year);
+
+	(void)fwts_munmap(table, (size_t)entry.struct_table_length);
 
 	return FWTS_OK;
 }
@@ -158,3 +230,5 @@ static fwts_framework_ops crs_ops = {
 };
 
 FWTS_REGISTER(crs, &crs_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+
+#endif

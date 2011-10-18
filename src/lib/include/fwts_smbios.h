@@ -54,6 +54,6 @@ typedef struct {
 	uint8_t		smbios_bcd_revision;
 }  __attribute__ ((packed)) fwts_smbios_entry;
 
-void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type);
+void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type, uint16_t *version);
 
 #endif

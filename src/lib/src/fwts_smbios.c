@@ -95,7 +95,8 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
  */
 void *fwts_smbios_find_entry(fwts_framework *fw,
 	fwts_smbios_entry *entry,
-	fwts_smbios_type  *type)
+	fwts_smbios_type  *type,
+	uint16_t	  *version)
 {
 	void *addr;
 	*type = FWTS_SMBIOS_UNKNOWN;
@@ -104,6 +105,21 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 	if ((addr = fwts_smbios_find_entry_uefi(fw, entry, type)) == NULL) {
 		/* Failed? then scan memory */
 		addr = fwts_smbios_find_entry_bios(fw, entry, type);
+		if (addr) {
+			switch (*type) {
+			case FWTS_SMBIOS:
+				*version = (entry->major_version << 8) +
+				           (entry->minor_version & 0xff);
+				break;
+			case FWTS_SMBIOS_DMI_LEGACY:
+				*version = ((entry->smbios_bcd_revision & 0xf0) << 4) +
+				 	    (entry->smbios_bcd_revision & 0x0f);
+				break;
+			default:
+				break;
+			}
+		}
+	
 	}
 	return addr;
 }

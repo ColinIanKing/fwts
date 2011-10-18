@@ -55,11 +55,12 @@ static int smbios_test1(fwts_framework *fw)
 	void *addr = 0;
 	fwts_smbios_entry entry;
 	fwts_smbios_type  type;
+	uint16_t	  version;
 
 	fwts_log_info(fw,
 		"This test tries to find and sanity check the SMBIOS "
 		"data structures.");
-	if ((addr = fwts_smbios_find_entry(fw, &entry, &type)) == NULL)
+	if ((addr = fwts_smbios_find_entry(fw, &entry, &type, &version)) == NULL)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"SMBIOSNoEntryPoint",
 			"Could not find SMBIOS Table Entry Point.");

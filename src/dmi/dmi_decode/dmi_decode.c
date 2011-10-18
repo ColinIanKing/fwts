@@ -962,7 +962,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 	uint16_t version = 0;
 	uint8_t  *table;
 
-	addr = fwts_smbios_find_entry(fw, &entry, &type);
+	addr = fwts_smbios_find_entry(fw, &entry, &type, &version);
 	if (addr == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_NO_TABLE_HEADER,
 			"Cannot find SMBIOS or DMI table entry.");
@@ -972,21 +972,6 @@ static int dmi_decode_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_NO_TABLE,
 			"Cannot find a valid SMBIOS or DMI table.");
 		return FWTS_ERROR;
-	}
-
-	switch (type) {
-	case FWTS_SMBIOS:
-		version = (entry.major_version << 8) +
-		          (entry.minor_version & 0xff);
-		break;
-	case FWTS_SMBIOS_DMI_LEGACY:
-		version = ((entry.smbios_bcd_revision & 0xf0) << 4) +
-			   (entry.smbios_bcd_revision & 0x0f);
-		break;
-	default:
-		fwts_log_error(fw, "Unknown SMBIOS type: %d.", type);
-		return FWTS_ERROR;
-		break;
 	}
 
 	/* Fix broken version numbers found in the wild */

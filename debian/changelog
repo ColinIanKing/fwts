@@ -1,3 +1,28 @@
+fwts (0.24.08) oneiric; urgency=low
+
+  * debian: remove dependancy on dmidecode
+  * pci: crs: get BIOS date from SMBIOS rather than rely on dmidecode
+  * lib: fwts_smbios: add in fwts_dmi_header from dmi_decode
+  * lib: fwts_smbios, fetch version number too.
+  * dmi: dmi_decode: complete re-write, better detection (LP: #874373)
+  * bios: smbios: handle legacy DMI header
+  * lib: smbios: handle legacy DMI header
+  * lib: tidy up headers
+  * bios: smbios: use smbios find helper
+  * lib: add smbios find helper
+  * bios: smbios: check header fully and dump fields (LP: #876331)
+  * bios: bios32: use fwts_checksum
+  * acpi: checksum: use fwts_checksum
+  * lib: fwts_acpi_tables: use fwts_checksum
+  * lib: multiproc: use fwts_checksum
+  * lib: add checksum helper fwts_checksum()
+  * bios: smbios: use systab efi helper
+  * lib: fwts_acpi_tables: use systab efi helper
+  * lib: add efi systab scanning helper.
+  * acpi: fwts_apci_method + method: improve error checking and object dumping
+
+ -- Colin King <colin.king@canonical.com>  Tue, 18 Sep 2011 16:36:00 +0100
+
 fwts (0.24.07) oneiric; urgency=low
 
   * uefi: uefidump: use new fwts_guid_buf_to_str()

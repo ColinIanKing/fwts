@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 7), libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9), f
 
 Package: fwts
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, pciutils, dmidecode
+Depends: ${shlibs:Depends}, ${misc:Depends}, pciutils 
 Description: FirmWare Test Suite
  This is a firmware test suite that performs sanity checks on Intel/AMD 
  PC firmware. It is intended to identify BIOS and ACPI errors and 

@@ -55,13 +55,6 @@
 #define GET_UINT64(x) (uint64_t)(*(const uint64_t *)(x))
 
 typedef struct {
-        uint8_t	 type;
-        uint8_t	 length;
-        uint16_t handle;
-        uint8_t	 *data;
-} fwts_dmi_header;
-
-typedef struct {
 	const char *label;
 	const char *field;
 	const char *value;

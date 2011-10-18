@@ -33,6 +33,13 @@ typedef enum {
 	FWTS_SMBIOS = 1,
 } fwts_smbios_type;
 
+typedef struct {
+	uint8_t  type;
+	uint8_t  length;
+	uint16_t handle;
+	uint8_t  *data;
+} fwts_dmi_header;
+
 /*
  * From System Management BIOS (SMBIOS) Reference Specification
  * http://dmtf.org/standards/smbios

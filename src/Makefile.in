@@ -62,11 +62,11 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	ebdadump.$(OBJEXT) mtrr.$(OBJEXT) bios_info.$(OBJEXT) \
 	bios32.$(OBJEXT) hdaaudio.$(OBJEXT) romdump.$(OBJEXT) \
 	os2gap.$(OBJEXT) memmapdump.$(OBJEXT) mpdump.$(OBJEXT) \
-	mpcheck.$(OBJEXT) pciirq.$(OBJEXT) smbios.$(OBJEXT) \
-	cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) hpet_check.$(OBJEXT) \
-	crs.$(OBJEXT) maxreadreq.$(OBJEXT) virt.$(OBJEXT) \
-	virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) \
-	cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
+	mpcheck.$(OBJEXT) pciirq.$(OBJEXT) pnp.$(OBJEXT) \
+	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
+	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
+	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
+	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
 	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
 	oops.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
@@ -320,6 +320,7 @@ fwts_SOURCES = main.c \
 	bios/multiproc/mpdump.c \
 	bios/multiproc/mpcheck.c \
 	bios/pciirq/pciirq.c \
+	bios/pnp/pnp.c \
 	bios/smbios/smbios.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
@@ -473,6 +474,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/os2gap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/osilinux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pciirq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pnp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerbutton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/romdump.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s3.Po@am__quote@
@@ -1040,6 +1042,20 @@ pciirq.obj: bios/pciirq/pciirq.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/pciirq/pciirq.c' object='pciirq.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pciirq.obj `if test -f 'bios/pciirq/pciirq.c'; then $(CYGPATH_W) 'bios/pciirq/pciirq.c'; else $(CYGPATH_W) '$(srcdir)/bios/pciirq/pciirq.c'; fi`
+
+pnp.o: bios/pnp/pnp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pnp.o -MD -MP -MF $(DEPDIR)/pnp.Tpo -c -o pnp.o `test -f 'bios/pnp/pnp.c' || echo '$(srcdir)/'`bios/pnp/pnp.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pnp.Tpo $(DEPDIR)/pnp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/pnp/pnp.c' object='pnp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pnp.o `test -f 'bios/pnp/pnp.c' || echo '$(srcdir)/'`bios/pnp/pnp.c
+
+pnp.obj: bios/pnp/pnp.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pnp.obj -MD -MP -MF $(DEPDIR)/pnp.Tpo -c -o pnp.obj `if test -f 'bios/pnp/pnp.c'; then $(CYGPATH_W) 'bios/pnp/pnp.c'; else $(CYGPATH_W) '$(srcdir)/bios/pnp/pnp.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/pnp.Tpo $(DEPDIR)/pnp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bios/pnp/pnp.c' object='pnp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pnp.obj `if test -f 'bios/pnp/pnp.c'; then $(CYGPATH_W) 'bios/pnp/pnp.c'; else $(CYGPATH_W) '$(srcdir)/bios/pnp/pnp.c'; fi`
 
 smbios.o: bios/smbios/smbios.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT smbios.o -MD -MP -MF $(DEPDIR)/smbios.Tpo -c -o smbios.o `test -f 'bios/smbios/smbios.c' || echo '$(srcdir)/'`bios/smbios/smbios.c

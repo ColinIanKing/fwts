@@ -1,3 +1,11 @@
+fwts (0.24.09) oneiric; urgency=low
+
+  * bios: Add PnP Installation Check structure test
+  * bios: pciirq: fix formatting
+  * bios: Add Legacy PCI IRQ Routing Table test
+
+ -- Colin King <colin.king@canonical.com>  Wed, 19 Oct 2011 18:41:00 +0100
+
 fwts (0.24.08) oneiric; urgency=low
 
   * debian: remove dependancy on dmidecode
@@ -21,7 +29,7 @@ fwts (0.24.08) oneiric; urgency=low
   * lib: add efi systab scanning helper.
   * acpi: fwts_apci_method + method: improve error checking and object dumping
 
- -- Colin King <colin.king@canonical.com>  Tue, 18 Sep 2011 16:36:00 +0100
+ -- Colin King <colin.king@canonical.com>  Tue, 18 Oct 2011 16:36:00 +0100
 
 fwts (0.24.07) oneiric; urgency=low
 
@@ -31,7 +39,7 @@ fwts (0.24.07) oneiric; urgency=low
   * acpi: method: use acpi_methods_* funcs
   * lib: add acpi_methods_* handling
 
- -- Colin King <colin.king@canonical.com>  Fri, 14 Sep 2011 15:56:00 +0100
+ -- Colin King <colin.king@canonical.com>  Fri, 14 Oct 2011 15:56:00 +0100
 
 fwts (0.24.06) oneiric; urgency=low
 
@@ -40,7 +48,7 @@ fwts (0.24.06) oneiric; urgency=low
   * lib: fwts_log: fix off-by error on month on %date (LP: #872736)
   * Add debian autopackager
 
- -- Colin King <colin.king@canonical.com>  Thu, 13 Sep 2011 11:29:00 +0100
+ -- Colin King <colin.king@canonical.com>  Thu, 13 Oct 2011 11:29:00 +0100
 
 fwts (0.24.05) oneiric; urgency=low
 
@@ -53,7 +61,7 @@ fwts (0.24.05) oneiric; urgency=low
   * Update with autoreconf respin
   * Update to ACPICA, commit 45ebe2cf90521fe511b827007e9c1e5c610292b6
 
- -- Colin King <colin.king@canonical.com>  Fri, 7 Sep 2011 19:01:00 +0100
+ -- Colin King <colin.king@canonical.com>  Fri, 7 Oct 2011 19:01:00 +0100
 
 fwts (0.24.04) oneiric; urgency=low
 
@@ -61,7 +69,7 @@ fwts (0.24.04) oneiric; urgency=low
   * framework: -T option should be -t, (LP: #868226)
   * klog: detect WMI driver pr_info() warning messages (LP: #865384)
 
- -- Colin King <colin.king@canonical.com>  Thu, 6 Sep 2011 14:50:00 +0100
+ -- Colin King <colin.king@canonical.com>  Thu, 6 Oct 2011 14:50:00 +0100
 
 fwts (0.24.03) oneiric; urgency=low
 

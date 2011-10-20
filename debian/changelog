@@ -1,3 +1,21 @@
+fwts (0.24.10) oneiric; urgency=low
+
+  * fwts-collect: fix mpdump log and don't remove README.txt
+  * doc: remove --dmidecode option from man page
+  * pci: crs: fetch BIOS date from /sys/class/dmi/id/bios_date
+  * lib + tests: remove framework dmidecode and --dmidecode option
+  * lib: fwts_dump: don't use fw->dmidecode anymore
+  * lib: fwts_dump: warnings if not being run by root.
+  * lib: fwts_framework: make fwts_framework_show_version() more generic and non-stattic
+  * lib + tests: add warning flag to fwts_check_root_euid()
+  * klog: enable this for non-x86
+  * pci: maxreadreq: enable this for non-x86
+  * kernel: oops: enable this for non-x86
+  * lib: fwts_dump: do sensible non-x86 dumps
+  * lib: fwts_smbios: fix non-x86 build failure.
+
+ -- Colin King <colin.king@canonical.com>  Thu, 20 Oct 2011 09:11:00 +0100
+
 fwts (0.24.09) oneiric; urgency=low
 
   * bios: Add PnP Installation Check structure test

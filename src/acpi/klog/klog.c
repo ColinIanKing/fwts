@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -86,5 +84,3 @@ static fwts_framework_ops klog_ops = {
 };
 
 FWTS_REGISTER(klog, &klog_ops, FWTS_TEST_EARLY, FWTS_BATCH);
-
-#endif

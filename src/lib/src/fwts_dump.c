@@ -114,6 +114,7 @@ static int dump_exec(const char *path, const char *filename, const char *command
 	return ret;
 }
 
+#ifdef FWTS_ARCH_INTEL
 /*
  *  dump_dmidecode()
  *	run dmidecode, dump output to path/filename
@@ -122,6 +123,7 @@ static int dump_dmidecode(fwts_framework *fw, const char *path, const char *file
 {
 	return dump_exec(path, filename, fw->dmidecode);
 }
+#endif
 
 /*
  *  dump_lspci()
@@ -136,6 +138,7 @@ static int dump_lspci(fwts_framework *fw, const char *path, const char *filename
 	return dump_exec(path, filename, command);
 }
 
+#ifdef FWTS_ARCH_INTEL
 /*
  *  dump_acpi_table()
  *	hex dump of a ACPI table
@@ -188,6 +191,7 @@ static int dump_acpi_tables(fwts_framework *fw, const char *path)
 		
 	return FWTS_OK;
 }
+#endif
 
 /*
  *  dump_readme()
@@ -250,20 +254,24 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	else
 		printf("Dumping dmesg to dmesg.log\n");
 
+#ifdef FWTS_ARCH_INTEL
 	if (dump_dmidecode(fw, path, "dmidecode.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from dmidecode.\n");
 	else
 		printf("Dumped DMI data to dmidecode.log\n");
+#endif
 
 	if (dump_lspci(fw, path, "lspci.log") != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from lspci.\n");
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
+#ifdef FWTS_ARCH_INTEL
 	if (dump_acpi_tables(fw, path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump ACPI tables.\n");
 	else
 		printf("Dumped ACPI tables to acpidump.log\n");
+#endif
 
 	return FWTS_OK;
 }

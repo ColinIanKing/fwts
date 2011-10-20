@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -621,7 +622,7 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		ret = fwts_acpi_load_tables_from_file(fw);
 	else if (fw->acpi_table_acpidump_file != NULL)
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
-	else if (fwts_check_root_euid(fw) == FWTS_OK)
+	else if (fwts_check_root_euid(fw, true) == FWTS_OK)
 		ret = fwts_acpi_load_tables_from_firmware();
 	else
 		ret = FWTS_ERROR_NO_PRIV;

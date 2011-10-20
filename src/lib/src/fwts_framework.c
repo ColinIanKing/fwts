@@ -547,7 +547,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	fwts_framework_minor_test_progress(fw, 0, "");
 
 	if ((test->flags & FWTS_ROOT_PRIV) &&
-	    (fwts_check_root_euid(fw) != FWTS_OK)) {
+	    (fwts_check_root_euid(fw, true) != FWTS_OK)) {
 		fwts_log_error(fw, "Aborted test, insufficient privilege.");
 		fw->current_major_test->results.aborted += test->ops->total_tests;
 		fw->total.aborted += test->ops->total_tests;

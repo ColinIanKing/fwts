@@ -19,6 +19,7 @@
 
 
 #include <unistd.h>
+#include <stdbool.h>
 #include <sys/types.h>
 
 #include "fwts.h"
@@ -27,10 +28,11 @@
  *  fwts_check_root_euid()
  *	Check if user has priviledges to access ports, memory, etc
  */
-int fwts_check_root_euid(fwts_framework *fw)
+int fwts_check_root_euid(fwts_framework *fw, bool warn)
 {
 	if (geteuid() != 0) {
-		fwts_log_error(fw, "Must be run as root or sudo to be able to read system information.");
+		if (warn)
+			fwts_log_error(fw, "Must be run as root or sudo to be able to read system information.");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;

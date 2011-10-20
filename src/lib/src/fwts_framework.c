@@ -727,9 +727,9 @@ void fwts_framework_log(fwts_framework *fw,
  *  fwts_framework_show_version()
  *	dump version of fwts
  */
-static void fwts_framework_show_version(char * const *argv)
+void fwts_framework_show_version(FILE *fp, const char *name)
 {
-	printf("%s, Version %s, %s\n", argv[0], FWTS_VERSION, FWTS_DATE);
+	fprintf(fp, "%s, Version %s, %s\n", name, FWTS_VERSION, FWTS_DATE);
 }
 
 
@@ -912,7 +912,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
 			break;
 		case 16: /* --version */
-			fwts_framework_show_version(argv);
+			fwts_framework_show_version(stdout, argv[0]);
 			return FWTS_COMPLETE;
 		case 17: /* --dump */
 			fwts_dump_info(fw, NULL);
@@ -1039,7 +1039,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
 		break;
 	case 'v': /* --version */
-		fwts_framework_show_version(argv);
+		fwts_framework_show_version(stdout, argv[0]);
 		return FWTS_COMPLETE;
 	case 'w': /* --log-width=N */
 		fwts_log_set_line_width(atoi(optarg));

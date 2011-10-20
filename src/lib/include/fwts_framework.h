@@ -180,6 +180,7 @@ typedef struct fwts_framework_test {
 int  fwts_framework_args(const int argc, char **argv);
 void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
 int  fwts_framework_compare_test_name(void *, void *);
+void fwts_framework_show_version(FILE *fp, const char *name);
 
 void fwts_framework_passed(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));

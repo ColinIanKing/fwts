@@ -21,8 +21,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -149,5 +147,3 @@ static fwts_framework_ops maxreadreq_ops = {
 };
 
 FWTS_REGISTER(maxreadreq, &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
-
-#endif

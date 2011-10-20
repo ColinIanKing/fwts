@@ -215,6 +215,8 @@ static int dump_readme(const char *path)
 	len = strlen(str) - 1;
 	fprintf(fp, "This is output captured by fwts on %*.*s.\n\n", len, len, str);
 
+	fwts_framework_show_version(fp, "fwts");
+
 	if ((str = fwts_get("/proc/version")) != NULL) {
 		fprintf(fp, "Version: %s", str);
 		free(str);
@@ -238,11 +240,16 @@ static int dump_readme(const char *path)
  */
 int fwts_dump_info(fwts_framework *fw, const char *path)
 {
+#ifdef FWTS_ARCH_INTEL
+	bool root_priv = (fwts_check_root_euid(fw, false) == FWTS_OK);
+#endif
+
 	if (path == NULL)
 		path = "./";
 
 	if (access(path, F_OK) != 0)
 		mkdir(path, 0777);
+	
 
 	if (dump_readme(path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump README.txt.\n");
@@ -255,10 +262,13 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 		printf("Dumping dmesg to dmesg.log\n");
 
 #ifdef FWTS_ARCH_INTEL
-	if (dump_dmidecode(fw, path, "dmidecode.log") != FWTS_OK)
-		fprintf(stderr, "Failed to dump output from dmidecode.\n");
-	else
-		printf("Dumped DMI data to dmidecode.log\n");
+	if (root_priv) {
+		if (dump_dmidecode(fw, path, "dmidecode.log") != FWTS_OK)
+			fprintf(stderr, "Failed to dump output from dmidecode.\n");
+		else
+			printf("Dumped DMI data to dmidecode.log\n");
+	} else 
+		fprintf(stderr, "Need root privilege to dump DMI tables.\n");
 #endif
 
 	if (dump_lspci(fw, path, "lspci.log") != FWTS_OK)
@@ -267,10 +277,13 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 		printf("Dumped lspci data to lspci.log\n");
 
 #ifdef FWTS_ARCH_INTEL
-	if (dump_acpi_tables(fw, path) != FWTS_OK)
-		fprintf(stderr, "Failed to dump ACPI tables.\n");
-	else
-		printf("Dumped ACPI tables to acpidump.log\n");
+	if (root_priv) {
+		if (dump_acpi_tables(fw, path) != FWTS_OK)
+			fprintf(stderr, "Failed to dump ACPI tables.\n");
+		else
+			printf("Dumped ACPI tables to acpidump.log\n");
+	} else
+		fprintf(stderr, "Need root privilege to dump ACPI tables.\n");
 #endif
 
 	return FWTS_OK;

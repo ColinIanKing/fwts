@@ -105,7 +105,7 @@ static int pciirq_test1(fwts_framework *fw)
 		"This test tries to find and sanity check the PCI IRQ Routing "
 		"Table, as defined by "
 		"http://www.microsoft.com/taiwan/whdc/archive/pciirq.mspx "
-		" and desribed in pages 233-238 of PCI System Architecture, "
+		" and described in pages 233-238 of PCI System Architecture, "
 		"Fourth Edition, Mindshare, Inc. (1999). "
 		"NOTE: The PCI IRQ Routing Table only really knows about ISA IRQs "
 		"and is generally not used with APIC. ");

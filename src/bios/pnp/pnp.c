@@ -40,7 +40,7 @@ typedef struct {
 	uint8_t		length;
 	uint16_t	control_field;
 	uint8_t		checksum;
-	uint32_t	event_notifcation_addr;
+	uint32_t	event_notification_addr;
 	uint16_t	RM_offset_entry;
 	uint16_t	RM_code_segment_addr;
 	uint16_t	PM_offset_entry;
@@ -106,8 +106,8 @@ static int pnp_test1(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "  Control Field                      : 0x%4.4x (%s)",
 				pnp->control_field, pnp_control_field[pnp->control_field & 0x3]);
 			fwts_log_info_verbatum(fw, "  Event Notification Flag Address    : 0x%8.8x%s",
-				pnp->event_notifcation_addr,
-				pnp->event_notifcation_addr ? "" : " (undefined)");
+				pnp->event_notification_addr,
+				pnp->event_notification_addr ? "" : " (undefined)");
 			fwts_log_info_verbatum(fw, "  Real Mode 16 bit Code Address      : 0x%4.4x:%4.4x",
 				pnp->RM_code_segment_addr, pnp->RM_offset_entry);
 			fwts_log_info_verbatum(fw, "  Real Mode 16 bit Data Address      : 0x%4.4x:%4.4x",
@@ -147,7 +147,7 @@ static int pnp_test1(fwts_framework *fw)
 					(int)pnp->length, (int)sizeof(pnp_header));
 
 			if ((pnp->control_field & 3) == PNP_CONTROL_FIELD_POLLING) {
-				if (pnp->event_notifcation_addr != 0)
+				if (pnp->event_notification_addr != 0)
 					fwts_passed(fw,
 						"The control field indicates that "
 						"polling is being used and the "

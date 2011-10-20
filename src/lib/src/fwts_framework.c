@@ -54,7 +54,6 @@ static fwts_option fwts_framework_options[] = {
 	{ "show-progress", 	"p",  0, "Output test progress report to stderr." },
 	{ "show-tests", 	"s",  0, "Show available tests." },
 	{ "klog", 		"k:", 1, "Specify kernel log file rather than reading it from the kernel, e.g. --klog=dmesg.log" },
-	{ "dmidecode", 		"",   1, "Specify path to dmidecode executable, e.g. --dmidecode=path." },
 	{ "log-width", 		"w:", 1, "Define the output log width in characters." },
 	{ "lspci", 		"",   1, "Specify path to lspci, e.g. --lspci=path." },
 	{ "batch", 		"b",  0, "Run non-Interactive tests." },
@@ -893,82 +892,79 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 9: /* --klog */
 			fwts_framework_strdup(&fw->klog, optarg);
 			break;
-		case 10: /* --dmidecode */
-			fwts_framework_strdup(&fw->dmidecode, optarg);
-			break;
-		case 11: /* --log-width=N */
+		case 10: /* --log-width=N */
 			fwts_log_set_line_width(atoi(optarg));
 			break;
-		case 12: /* --lspci=pathtolspci */
+		case 11: /* --lspci=pathtolspci */
 			fwts_framework_strdup(&fw->lspci, optarg);
 			break;
-		case 13: /* --batch */
+		case 12: /* --batch */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
 			break;
-		case 14: /* --interactive */
+		case 13: /* --interactive */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
 			break;
-		case 15: /* --force-clean */
+		case 14: /* --force-clean */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
 			break;
-		case 16: /* --version */
+		case 15: /* --version */
 			fwts_framework_show_version(stdout, argv[0]);
 			return FWTS_COMPLETE;
-		case 17: /* --dump */
+		case 16: /* --dump */
 			fwts_dump_info(fw, NULL);
 			return FWTS_COMPLETE;
-		case 18: /* --table-path */
+		case 17: /* --table-path */
 			fwts_framework_strdup(&fw->acpi_table_path, optarg);
 			break;
-		case 19: /* --batch-experimental */
+		case 18: /* --batch-experimental */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL;
 			break;
-		case 20: /* --interactive-experimental */
+		case 19: /* --interactive-experimental */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL;
 			break;
-		case 21: /* --power-states */
+		case 20: /* --power-states */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
 			break;
-		case 22: /* --all */
+		case 21: /* --all */
 			fw->flags |= FWTS_RUN_ALL_FLAGS;
 			break;
-		case 23: /* --show-progress-dialog */
+		case 22: /* --show-progress-dialog */
 			fw->flags = (fw->flags &
 					~(FWTS_FRAMEWORK_FLAGS_QUIET |
 					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS))
 					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
 			break;
-		case 24: /* --skip-test */
+		case 23: /* --skip-test */
 			if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
 				return FWTS_COMPLETE;
 			break;
-		case 25: /* --quiet */
+		case 24: /* --quiet */
 			fw->flags = (fw->flags &
 					~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
 					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
 					| FWTS_FRAMEWORK_FLAGS_QUIET;
 			break;
-		case 26: /* --dumpfile */
+		case 25: /* --dumpfile */
 			fwts_framework_strdup(&fw->acpi_table_acpidump_file, optarg);
 			break;
-		case 27: /* --lp-tags */
+		case 26: /* --lp-tags */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
 			fwts_log_filter_unset_field(~0);
 			fwts_log_filter_set_field(LOG_TAG);
 			break;
-		case 28: /* --show-tests-full */
+		case 27: /* --show-tests-full */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL;
 			break;
-		case 29: /* --utils */
+		case 28: /* --utils */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
 			break;
-		case 30: /* --json-data-path */
+		case 29: /* --json-data-path */
 			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
-		case 31: /* --lp-tags-log */
+		case 30: /* --lp-tags-log */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG;
 			break;
-		case 32: /* --disassemble-aml */
+		case 31: /* --disassemble-aml */
 			fwts_iasl_disassemble_all_to_file(fw);
 			return FWTS_COMPLETE;
 		}
@@ -1075,7 +1071,6 @@ int fwts_framework_args(const int argc, char **argv)
 
 	fwts_summary_init();
 
-	fwts_framework_strdup(&fw->dmidecode, FWTS_DMIDECODE_PATH);
 	fwts_framework_strdup(&fw->lspci, FWTS_LSPCI_PATH);
 	fwts_framework_strdup(&fw->results_logname, RESULTS_LOG);
 	fwts_framework_strdup(&fw->json_data_path, FWTS_JSON_DATA_PATH);
@@ -1106,9 +1101,7 @@ int fwts_framework_args(const int argc, char **argv)
 	}
 	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
-	if ((fw->dmidecode == NULL) ||
-	    (fw->lspci == NULL) ||
-	    (fw->results_logname == NULL)) {
+	if ((fw->lspci == NULL) || (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
 		goto tidy_close;
@@ -1183,7 +1176,6 @@ tidy_close:
 	fwts_summary_deinit();
 	fwts_args_free();
 
-	free(fw->dmidecode);
 	free(fw->lspci);
 	free(fw->results_logname);
 	free(fw->klog);

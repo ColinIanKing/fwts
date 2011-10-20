@@ -109,7 +109,6 @@ typedef struct {
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
 
-	char *dmidecode;			/* path to dmidecode */
 	char *lspci;				/* path to lspci */
 
 	char *acpi_table_path;			/* path to raw ACPI tables */

@@ -145,13 +145,8 @@ cp /var/log/kern.log kern.log
 sudo fwts --dump >& /dev/null
 fwts memmapdump --log-format="" -r memmap.log >& /dev/null
 fwts acpidump --log-format="" -r acpitables.log >& /dev/null
-fwts mpdump --log-format="" -r version.log >& /dev/null
+fwts mpdump --log-format="" -r mpdump.log >& /dev/null
 fwts version --log-format="" -r version.log >& /dev/null
-
-#
-#  fwts generates a README file that we don't need
-#
-rm README.txt
 
 #
 #  Copy over any extra user specified logs

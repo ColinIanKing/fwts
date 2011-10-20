@@ -129,7 +129,10 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
  *  fwts_smbios_find_entry()
  *	find SMBIOS structure table entry, currently void for non-x86 specific code
  */
-void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry)
+void *fwts_smbios_find_entry(fwts_framework *fw,
+	fwts_smbios_entry *entry,
+	fwts_smbios_type  *type,
+	uint16_t	  *version)
 {
 	return NULL;
 }

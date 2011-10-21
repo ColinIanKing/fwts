@@ -1,3 +1,9 @@
+fwts (0.24.10) oneiric; urgency=low
+
+  * test build 
+
+ -- Keng-Yu Lin <keng-yu.lin@ubuntu.com>  Fri, 21 Oct 2011 18:14:23 +0800
+
 fwts (0.24.09) oneiric; urgency=low
 
   * bios: Add PnP Installation Check structure test

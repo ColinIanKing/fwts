@@ -23,6 +23,7 @@
 
 #ifdef FWTS_ARCH_INTEL
 #include <sys/io.h>
+
 /*
  *  fwts_cmos_read()
  *	read a byte from cmos memory at a given offset
@@ -33,11 +34,16 @@ int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 		return FWTS_ERROR;
 	if (ioperm(0x80, 1, 1) < 0)
 		return FWTS_ERROR;
+	if (iopl(3) < 0)	/* Want to disabled interrupts */
+		return FWTS_ERROR;
 
+	asm("cli");
 	outb(offset, 0x70);	/* specify offset to read */
 	outb(0, 0x80);		/* Small Delay */
 	*value = inb(0x71);	/* get the value */
+	asm("sti");
 
+	(void)iopl(0);
 	(void)ioperm(0x80, 1, 0);
 	(void)ioperm(0x70, 2, 0);
 

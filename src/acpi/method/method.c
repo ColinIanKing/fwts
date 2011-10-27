@@ -376,6 +376,8 @@ static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 	if (buf->Length && buf->Pointer) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		fwts_log_info(fw, "Object returned:");
+		fwts_method_dump_object(fw, obj);
 		fwts_advice(fw, "This probably won't cause any errors, but it should be fixed as the AML code is "
 				"not conforming to the expected behaviour as described in the ACPI specification.");
 	} else

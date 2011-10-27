@@ -151,9 +151,6 @@
 
 static bool mobile_platform;
 
-#define MOBILE_PLATFORM(test) 				\
-	mobile_platform ? test : FWTS_OK
-
 #define method_test_integer(name, type)			\
 static int method_test ## name(fwts_framework *fw)	\
 { 							\
@@ -280,6 +277,22 @@ static int method_evaluate_method(fwts_framework *fw,
 			return FWTS_NOT_EXIST;
 		}
 	}
+
+	return FWTS_OK;
+}
+
+static int method_evaluate_method_mobile(fwts_framework *fw,
+	int test_type,  /* Manditory or optional */
+	char *name,
+	ACPI_OBJECT *args,
+	int num_args,
+	method_test_return check_func,
+	void *private)
+{
+	if (mobile_platform)
+		return method_evaluate_method(fw, test_type, name, args, num_args, check_func, private);
+	else
+		fwts_skipped(fw, "Not a mobile platform, method %s not tested.", name);
 
 	return FWTS_OK;
 }
@@ -413,7 +426,7 @@ static void method_test_SBS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_SBS(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_SBS", NULL, 0, method_test_SBS_return, NULL);
 }
 
 
@@ -521,7 +534,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BIF(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BIF", NULL, 0, method_test_BIF_return, NULL);
 }
 
 static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -642,7 +655,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BIX(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BIX", NULL, 0, method_test_BIX_return, NULL);
 }
 
 static int method_test_BMA(fwts_framework *fw)
@@ -650,7 +663,7 @@ static int method_test_BMA(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BMA", arg, 1, method_test_integer_return, NULL);
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -658,7 +671,7 @@ static int method_test_BMS(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BMS", arg, 1, method_test_integer_return, NULL);
 }
 
 static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -703,8 +716,6 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
-		
-		
 		/* Battery Present Rate - cannot check, pulled from EC */
 		/* Battery Remaining Capacity - cannot check, pulled from EC */
 		/* Battery Present Voltage - cannot check, pulled from EC */
@@ -719,7 +730,7 @@ static void method_test_BST_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BST(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BST", NULL, 0, method_test_BST_return, NULL);
 }
 
 static int method_test_BTP(fwts_framework *fw)
@@ -737,6 +748,8 @@ static int method_test_BTP(fwts_framework *fw)
 				break;
 			fwts_log_nl(fw);
 		}
+	} else {
+		fwts_skipped(fw, "Not a mobile platform, method _BTP not tested.");
 	}
 	return FWTS_OK;
 }
@@ -748,7 +761,7 @@ static void method_test_PCL_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_PCL(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL"));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_PCL", NULL, 0, method_test_PCL_return, "_PCL");
 }
 
 static int method_test_BTM(fwts_framework *fw)
@@ -766,6 +779,8 @@ static int method_test_BTM(fwts_framework *fw)
 				break;
 			fwts_log_nl(fw);
 		}
+	} else {
+		fwts_skipped(fw, "Not a mobile platform, method _BTM not tested.");
 	}
 	return FWTS_OK;
 }
@@ -798,7 +813,7 @@ static void method_test_BMD_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_BMD(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BMD", NULL, 0, method_test_BMD_return, NULL);
 }
 
 static int method_test_BMC(fwts_framework *fw)
@@ -816,6 +831,8 @@ static int method_test_BMC(fwts_framework *fw)
 				break;
 			fwts_log_nl(fw);
 		}
+	} else {
+		fwts_skipped(fw, "Not a mobile platform, method _BMC not tested.");
 	}
 	return FWTS_OK;
 }
@@ -1083,7 +1100,7 @@ static void method_test_LID_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 static int method_test_LID(fwts_framework *fw)
 {
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_LID", NULL, 0, method_test_LID_return, NULL);
 }
 
 /* Section 11.3 Fan Devices */
@@ -1335,12 +1352,12 @@ static int method_test_ALP(fwts_framework *fw)
 
 static int method_test_BBN(fwts_framework *fw)
 { 
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN", NULL, 0, method_test_integer_return, "_BBN"));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BBN", NULL, 0, method_test_integer_return, "_BBN");
 }
 
 static int method_test_BDN(fwts_framework *fw)
 { 
-	return MOBILE_PLATFORM(method_evaluate_method(fw, METHOD_OPTIONAL, "_BDN", NULL, 0, method_test_integer_return, "_BDN"));
+	return method_evaluate_method_mobile(fw, METHOD_OPTIONAL, "_BDN", NULL, 0, method_test_integer_return, "_BDN");
 }
 
 static int method_test_DCK(fwts_framework *fw)
@@ -1356,6 +1373,8 @@ static int method_test_DCK(fwts_framework *fw)
 				break;
 			fwts_log_nl(fw);
 		}
+	} else {
+		fwts_skipped(fw, "Not a mobile platform, method _DCK not tested.");
 	}
 	return FWTS_OK;
 }

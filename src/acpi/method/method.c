@@ -28,6 +28,9 @@
 #include "acpi.h"
 #include "fwts_acpi_method.h"
 
+/* Add small delay between each test */
+#define METHOD_DELAY_USECS	(0)
+
 /*
  * ACPI methods + objects used in Linux ACPI driver:
  *
@@ -221,8 +224,10 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	if (buf.Length && buf.Pointer)
 		free(buf.Pointer);
 
+#if METHOD_DELAY_USECS
 	/* Seen ACPICA core not release locks quickly, so put a delay in. Urgh. */
-	usleep(100000);
+	usleep(METHOD_DELAY_USECS);
+#endif
 
 	fwts_acpica_sem_count_get(&sem_acquired, &sem_released);
 	if (sem_acquired != sem_released) {

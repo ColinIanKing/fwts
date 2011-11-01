@@ -288,7 +288,7 @@ static int method_evaluate_method(fwts_framework *fw,
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodNotExist",
 				"Object %s did not exist.", name);
 		}
-		
+
 		/* Mobile specific tests on non-mobile platform? */
 		if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
 			fwts_skipped(fw, "Machine is not a mobile platform, skipping test for non-existant mobile platform related object %s.", name);
@@ -475,7 +475,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 #ifdef FWTS_METHOD_PEDANDTIC
-		/* 
+		/*
 		 * Since this information may be evaluated by communicating with
 		 * the EC we skip these checks as we can't do this from userspace
 	 	 */
@@ -502,7 +502,7 @@ static void method_test_BIF_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 #ifdef FWTS_METHOD_PEDANDTIC
-		/* 
+		/*
 		 * Since this information may be evaluated by communicating with
 		 * the EC we skip these checks as we can't do this from userspace
 	 	 */
@@ -582,7 +582,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 #ifdef FWTS_METHOD_PEDANDTIC
-		/* 
+		/*
 		 * Since this information may be evaluated by communicating with
 		 * the EC we skip these checks as we can't do this from userspace
 	 	 */
@@ -612,7 +612,7 @@ static void method_test_BIX_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 			failed++;
 		}
 #ifdef FWTS_METHOD_PEDANDTIC
-		/* 
+		/*
 		 * Since this information may be evaluated by communicating with
 		 * the EC we skip these checks as we can't do this from userspace
 	 	 */
@@ -1344,12 +1344,12 @@ static int method_test_ALP(fwts_framework *fw)
 /* Section 6.5 Other Objects and Control Methods */
 
 static int method_test_BBN(fwts_framework *fw)
-{ 
+{
 	return method_evaluate_method(fw, METHOD_MOBILE, "_BBN", NULL, 0, method_test_integer_return, "_BBN");
 }
 
 static int method_test_BDN(fwts_framework *fw)
-{ 
+{
 	return method_evaluate_method(fw, METHOD_MOBILE, "_BDN", NULL, 0, method_test_integer_return, "_BDN");
 }
 

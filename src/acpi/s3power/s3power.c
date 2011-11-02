@@ -30,7 +30,6 @@
 #include <time.h>
 
 #define PM_SUSPEND "pm-suspend"
-#define AC_ADAPTER_PATH "/proc/acpi/ac_adapter"
 
 static int 	s3power_sleep_delay = 600;	/* time between start of suspend and wakeup */
 static uint32_t battery_capacity_mAh;
@@ -38,37 +37,18 @@ static uint32_t battery_capacity_mWh;
 
 static int s3power_adapter_offline(fwts_framework *fw, bool *offline)
 {
-	DIR *dir;
-	struct dirent *entry;
+	int matching = 0;
+	int not_matching = 0;
 
-	if ((dir = opendir(AC_ADAPTER_PATH)) == NULL) {
+	if (fwts_ac_adapter_get_state(FWTS_AC_ADAPTER_ONLINE, &matching, &not_matching) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot detect if running on AC or battery.");
-		*offline = false;
 		return FWTS_ERROR;
 	}
 
-	/* Assume on-line unless we prove otherwise */
-	*offline = true;
+	/* Any online, then we're not totally offlined */
 
-	/* Scan to see all adapters are offline */
-	do {
-		entry = readdir(dir);
-		if (entry && strlen(entry->d_name)>2) {
-			char path[PATH_MAX];
-			char *data;
-
-			snprintf(path, sizeof(path),
-				AC_ADAPTER_PATH "/%s/state", entry->d_name);
-			if ((data = fwts_get(path)) != NULL) {
-				if (strstr(data, "on-line"))
-					*offline = false;
-				free(data);
-			}
-		}
-	} while (entry && *offline);
-
-	closedir(dir);
-
+	*offline = matching > 0 ? false : true;
+	
 	return FWTS_OK;
 }
 
@@ -91,7 +71,7 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 
 	fwts_printf(fw, "==== Please unplug the laptop power. ====\n");
 
-	for (i=0; (i<=10) && !*offline ;i++) {
+	for (i=0; (i<=20) && !*offline ;i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			char *str;
 			if ((str = strstr(buffer, "ac_adapter")) != NULL)

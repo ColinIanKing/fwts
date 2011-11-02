@@ -84,7 +84,7 @@ am_libfwts_la_OBJECTS = fwts_acpi.lo fwts_acpid.lo fwts_acpi_tables.lo \
 	fwts_scan_efi_systab.lo fwts_set.lo fwts_smbios.lo \
 	fwts_stringextras.lo fwts_summary.lo fwts_tag.lo \
 	fwts_text_list.lo fwts_tty.lo fwts_uefi.lo fwts_virt.lo \
-	fwts_wakealarm.lo
+	fwts_wakealarm.lo fwts_ac_adapter.lo
 libfwts_la_OBJECTS = $(am_libfwts_la_OBJECTS)
 libfwts_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -280,7 +280,8 @@ libfwts_la_SOURCES = \
 	fwts_tty.c \
 	fwts_uefi.c \
 	fwts_virt.c \
-	fwts_wakealarm.c
+	fwts_wakealarm.c \
+	fwts_ac_adapter.c 
 
 all: all-am
 
@@ -356,6 +357,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_ac_adapter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi_method.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fwts_acpi_tables.Plo@am__quote@

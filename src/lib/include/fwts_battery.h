@@ -23,7 +23,10 @@
 
 #define FWTS_BATTERY_DESIGN_CAPACITY	(0x00)
 #define FWTS_BATTERY_REMAINING_CAPACITY	(0x01)
+#define FWTS_BATTERY_ALL		(-1)
 
-int fwts_battery_get_capacity(fwts_framework *fw, int type, uint32_t *capacity_mAh, uint32_t *capacity_mWh);
+int fwts_battery_get_count(fwts_framework *fw, int *count);
+int fwts_battery_get_capacity(fwts_framework *fw, int type, int index, uint32_t *capacity_mAh, uint32_t *capacity_mWh);
+int fwts_battery_get_name(fwts_framework *fw, int index, char *name);
 
 #endif

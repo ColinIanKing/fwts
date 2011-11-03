@@ -88,13 +88,13 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 static int s3power_get_design_capacity(fwts_framework *fw,
 	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
-	return fwts_battery_get_capacity(fw, FWTS_BATTERY_DESIGN_CAPACITY, capacity_mAh, capacity_mWh);
+	return fwts_battery_get_capacity(fw, FWTS_BATTERY_DESIGN_CAPACITY, FWTS_BATTERY_ALL, capacity_mAh, capacity_mWh);
 }
 
 static int s3power_get_remaining_capacity(fwts_framework *fw,
 	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
-	return fwts_battery_get_capacity(fw, FWTS_BATTERY_REMAINING_CAPACITY, capacity_mAh, capacity_mWh);
+	return fwts_battery_get_capacity(fw, FWTS_BATTERY_REMAINING_CAPACITY, FWTS_BATTERY_ALL, capacity_mAh, capacity_mWh);
 }
 
 static int s3power_init(fwts_framework *fw)

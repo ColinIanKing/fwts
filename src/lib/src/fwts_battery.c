@@ -30,6 +30,7 @@
 static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	DIR 	*dir,
 	int	 type,
+	int	 index,
 	uint32_t *capacity_mAh,	/* charge */
 	uint32_t *capacity_mWh, /* energy */
 	int 	*count)
@@ -39,6 +40,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	char *field_mWh;
 	int  field_mAh_len;
 	int  field_mWh_len;
+	int  i = 0;
 
 	switch (type) {
 	case FWTS_BATTERY_DESIGN_CAPACITY:
@@ -63,17 +65,23 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 			char *data;
 			int  val;
 			FILE *fp;
+			bool match;
 
 			/* Check that type field matches the expected type */
 			snprintf(path, sizeof(path), "%s/%s/type", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
-				bool mismatch = (strstr("Battery", data) != NULL);
+				bool mismatch = (strstr(data, "Battery") == NULL);
 				free(data);
 				if (mismatch)
 					continue;	/* type don't match, skip this entry */
 			} else
 				continue;		/* can't check type, skip this entry */
 
+			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			i++;
+			if (!match)
+				continue;
+	
 			snprintf(path, sizeof(path), "%s/%s/uevent", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
 			if ((fp = fopen(path, "r")) == NULL) {
 				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
@@ -103,6 +111,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	DIR 	*dir,
 	int	 type,
+	int	 index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh,
 	int 	*count)
@@ -110,6 +119,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	struct dirent *entry;
 	char *file;
 	char *field;
+	int  i = 0;
 
 	switch (type) {
 	case FWTS_BATTERY_DESIGN_CAPACITY:
@@ -131,6 +141,11 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 			char units[64];
 			int  val;
 			FILE *fp;
+			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+
+			i++;
+			if (!match)
+				continue;
 
 			snprintf(path, sizeof(path), "%s/%s/%s", FWTS_PROC_ACPI_BATTERY, entry->d_name, file);
 			if ((fp = fopen(path, "r")) == NULL) {
@@ -159,8 +174,131 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+static int fwts_battery_get_count_sys_fs(fwts_framework *fw, DIR *dir, int *count)
+{
+	struct dirent *entry;
+	char path[PATH_MAX];
+	char *data;
+
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2) {
+			/* Check that type field matches the expected type */
+			snprintf(path, sizeof(path), "%s/%s/type", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
+			if ((data = fwts_get(path)) != NULL) {
+				if (strstr(data, "Battery") != NULL)
+					(*count)++;
+				free(data);
+			}
+		}
+	} while (entry);
+	return FWTS_OK;
+}
+
+static int fwts_battery_get_count_proc_fs(fwts_framework *fw, DIR *dir, int *count)
+{
+	struct dirent *entry;
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2)
+			(*count)++;
+	} while (entry);
+	return FWTS_OK;
+}
+
+static int fwts_battery_get_name_sys_fs(fwts_framework *fw, DIR *dir, int index, char *name)
+{
+	struct dirent *entry;
+	char path[PATH_MAX];
+	char *data;
+	int i = 0;
+
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2) {
+			bool match;
+			/* Check that type field matches the expected type */
+			snprintf(path, sizeof(path), "%s/%s/type", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
+			if ((data = fwts_get(path)) != NULL) {
+				bool mismatch = (strstr(data, "Battery") == NULL);
+				free(data);
+				if (mismatch)
+					continue;	/* type don't match, skip this entry */
+			} else
+				continue;		/* can't check type, skip this entry */
+
+			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			i++;
+			if (!match)
+				continue;
+				
+			strcpy(name, entry->d_name);
+			return FWTS_OK;
+		}
+	} while (entry);
+
+	return FWTS_ERROR;
+}
+
+static int fwts_battery_get_name_proc_fs(fwts_framework *fw, DIR *dir, int index, char *name)
+{
+	struct dirent *entry;
+	int i = 0;
+
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2) {
+			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			i++;
+			if (!match)
+				continue;
+
+			strcpy(name, entry->d_name);
+			return FWTS_OK;
+		}
+	} while (entry);
+
+	return FWTS_ERROR;
+}
+
+int fwts_battery_get_name(fwts_framework *fw, int index, char *name)
+{
+	int ret;
+	DIR *dir;
+
+	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
+		ret = fwts_battery_get_name_sys_fs(fw, dir, index, name);
+		closedir(dir);
+	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
+		ret = fwts_battery_get_name_proc_fs(fw, dir, index, name);
+		closedir(dir);
+	} else {
+		return FWTS_ERROR;
+	}
+	return ret;
+}
+
+int fwts_battery_get_count(fwts_framework *fw, int *count)
+{
+	*count = 0;
+	int ret;
+	DIR *dir;
+
+	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
+		ret = fwts_battery_get_count_sys_fs(fw, dir, count);
+		closedir(dir);
+	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
+		ret = fwts_battery_get_count_proc_fs(fw, dir, count);
+		closedir(dir);
+	} else {
+		return FWTS_ERROR;
+	}
+	return ret;
+}
+
 int fwts_battery_get_capacity(fwts_framework *fw,
 	int type,
+	int index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh)
 {
@@ -172,10 +310,10 @@ int fwts_battery_get_capacity(fwts_framework *fw,
 	*capacity_mWh = 0;
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
-		ret = fwts_battery_get_capacity_sys_fs(fw, dir, type, capacity_mAh, capacity_mWh, &n);
+		ret = fwts_battery_get_capacity_sys_fs(fw, dir, type, index, capacity_mAh, capacity_mWh, &n);
 		closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
-		ret = fwts_battery_get_capacity_proc_fs(fw, dir, type, capacity_mAh, capacity_mWh, &n);
+		ret = fwts_battery_get_capacity_proc_fs(fw, dir, type, index, capacity_mAh, capacity_mWh, &n);
 		closedir(dir);
 	} else {
 		fwts_log_info(fw, "No battery information present: cannot test.");

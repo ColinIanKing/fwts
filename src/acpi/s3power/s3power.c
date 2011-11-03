@@ -85,74 +85,16 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 	return FWTS_OK;
 }
 
-static int s3power_get_capacity(fwts_framework *fw,
-	const char *file,
-	const char *field,
-	uint32_t *capacity_mAh,
-	uint32_t *capacity_mWh)
-{
-	DIR *dir;
-	struct dirent *entry;
-	int n = 0;
-
-	*capacity_mAh = 0;
-	*capacity_mWh = 0;
-
-	if (!(dir = opendir("/proc/acpi/battery/"))) {
-		fwts_log_info(fw, "No battery information present: cannot test.");
-		return FWTS_ERROR;
-	}
-
-	do {
-		entry = readdir(dir);
-		if (entry && strlen(entry->d_name) > 2) {
-			char path[PATH_MAX];
-			char units[64];
-			int  val;
-			FILE *fp;
-
-			snprintf(path, sizeof(path), "/proc/acpi/battery/%s/%s", entry->d_name, file);
-			if ((fp = fopen(path, "r")) == NULL) {
-				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
-			} else {
-				char buffer[4096];
-				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
-					if (strstr(buffer, field) &&
-					    strlen(buffer) > 25) {
-						sscanf(buffer+25, "%d %s", &val, units);
-						if (strncmp(units, "mAh",3) == 0) {
-							*capacity_mAh += val;
-							n++;
-						}
-						if (strncmp(units, "mWh",3) == 0) {
-							*capacity_mWh += val;
-							n++;
-						}
-						break;
-					}
-				}
-			}
-		}
-	} while (entry);
-
-	if (n == 0) {
-		fwts_log_info(fw, "No valid battery information present: cannot test.");
-		return FWTS_ERROR;
-	}
-
-	return FWTS_OK;
-}
-
 static int s3power_get_design_capacity(fwts_framework *fw,
 	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
-	return s3power_get_capacity(fw, "info", "design capacity", capacity_mAh, capacity_mWh);
+	return fwts_battery_get_capacity(fw, FWTS_BATTERY_DESIGN_CAPACITY, capacity_mAh, capacity_mWh);
 }
 
 static int s3power_get_remaining_capacity(fwts_framework *fw,
 	uint32_t *capacity_mAh, uint32_t *capacity_mWh)
 {
-	return s3power_get_capacity(fw, "state", "remaining capacity", capacity_mAh, capacity_mWh);
+	return fwts_battery_get_capacity(fw, FWTS_BATTERY_REMAINING_CAPACITY, capacity_mAh, capacity_mWh);
 }
 
 static int s3power_init(fwts_framework *fw)

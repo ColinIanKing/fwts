@@ -73,5 +73,6 @@
 #include "fwts_checksum.h"
 #include "fwts_smbios.h"
 #include "fwts_ac_adapter.h"
+#include "fwts_battery.h"
 
 #endif

@@ -1,3 +1,23 @@
+fwts (0.24.11) oneiric; urgency=low
+
+  * lib: update battery helpers and re-work tests
+  * acpi: s3power: use fwts_battery helper
+  * lib: add fwts_battery
+  * s3power: use fwts_ac_adapter()
+  * acpi: ac_adapter: use fwts_ac_adapter lib
+  * lib: add fwts_ac_adapter
+  * acpi: ac_adapter: use newer /sys interface
+  * acpi: method: clean up dangling whitespaces
+  * acpi: method: handle mobile platform tests when FADT is lying
+  * acpi: method: dump return object on non-null return failures.
+  * acpi: method: make lock delay between each test 0 usecs
+  * acpi: method: on non-mobile tests explicitly report skipped mobile tests
+  * lib: fwts_cmos: disabled interrupts during port I/O (LP: #880472)
+  * bios: pciirq: fix typo
+  * bios: pnp: fix typo in event_notification_addr
+
+ -- Colin King <colin.king@canonical.com>  Fri, 4 Nov 2011 09:09:00 +0100
+
 fwts (0.24.10) oneiric; urgency=low
 
   * fwts-collect: fix mpdump log and don't remove README.txt
@@ -6,7 +26,7 @@ fwts (0.24.10) oneiric; urgency=low
   * lib + tests: remove framework dmidecode and --dmidecode option
   * lib: fwts_dump: don't use fw->dmidecode anymore
   * lib: fwts_dump: warnings if not being run by root.
-  * lib: fwts_framework: make fwts_framework_show_version() more generic and non-stattic
+  * lib: fwts_framework: fwts_framework_show_version() more generic
   * lib + tests: add warning flag to fwts_check_root_euid()
   * klog: enable this for non-x86
   * pci: maxreadreq: enable this for non-x86

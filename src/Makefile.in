@@ -68,7 +68,7 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
 	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
 	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
-	oops.$(OBJEXT) uefidump.$(OBJEXT)
+	oops.$(OBJEXT) csm.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -336,6 +336,7 @@ fwts_SOURCES = main.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c \
 	kernel/oops/oops.c \
+	uefi/csm/csm.c \
 	uefi/uefidump/uefidump.c
 
 fwts_LDFLAGS = -ljson -lm
@@ -446,6 +447,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cpufreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/crs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstates.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dmi_decode.Po@am__quote@
@@ -1294,6 +1296,20 @@ oops.obj: kernel/oops/oops.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='kernel/oops/oops.c' object='oops.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o oops.obj `if test -f 'kernel/oops/oops.c'; then $(CYGPATH_W) 'kernel/oops/oops.c'; else $(CYGPATH_W) '$(srcdir)/kernel/oops/oops.c'; fi`
+
+csm.o: uefi/csm/csm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT csm.o -MD -MP -MF $(DEPDIR)/csm.Tpo -c -o csm.o `test -f 'uefi/csm/csm.c' || echo '$(srcdir)/'`uefi/csm/csm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/csm.Tpo $(DEPDIR)/csm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='uefi/csm/csm.c' object='csm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o csm.o `test -f 'uefi/csm/csm.c' || echo '$(srcdir)/'`uefi/csm/csm.c
+
+csm.obj: uefi/csm/csm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT csm.obj -MD -MP -MF $(DEPDIR)/csm.Tpo -c -o csm.obj `if test -f 'uefi/csm/csm.c'; then $(CYGPATH_W) 'uefi/csm/csm.c'; else $(CYGPATH_W) '$(srcdir)/uefi/csm/csm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/csm.Tpo $(DEPDIR)/csm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='uefi/csm/csm.c' object='csm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o csm.obj `if test -f 'uefi/csm/csm.c'; then $(CYGPATH_W) 'uefi/csm/csm.c'; else $(CYGPATH_W) '$(srcdir)/uefi/csm/csm.c'; fi`
 
 uefidump.o: uefi/uefidump/uefidump.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT uefidump.o -MD -MP -MF $(DEPDIR)/uefidump.Tpo -c -o uefidump.o `test -f 'uefi/uefidump/uefidump.c' || echo '$(srcdir)/'`uefi/uefidump/uefidump.c

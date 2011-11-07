@@ -64,6 +64,7 @@ fwts_SOURCES = main.c \
 	hotkey/hotkey/hotkey.c \
 	kernel/version/version.c \
 	kernel/oops/oops.c \
+	uefi/csm/csm.c \
 	uefi/uefidump/uefidump.c
 
 fwts_LDFLAGS = -ljson -lm

@@ -1,3 +1,10 @@
+fwts (0.24.12) precise; urgency=low
+
+  * debian: update control
+  * uefi: add UEFI CSM check.
+
+ -- Colin King <colin.king@canonical.com>  Tue, 9 Nov 2011 10:05:00 +0100
+
 fwts (0.24.11) oneiric; urgency=low
 
   * lib: update battery helpers and re-work tests

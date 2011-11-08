@@ -29,74 +29,7 @@
 #include <limits.h>
 #include <dirent.h>
 
-static DIR *power_buttondir;
-
-#define POWER_BUTTON_PATH	"/proc/acpi/button/power"
-
-static int power_button_init(fwts_framework *fw)
-{
-	if (!(power_buttondir = opendir(POWER_BUTTON_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoButtonPath",
-			"No %s directory available: cannot test.",
-			POWER_BUTTON_PATH);
-		return FWTS_ERROR;
-	}
-
-	return FWTS_OK;
-}
-
-static int power_button_deinit(fwts_framework *fw)
-{
-	if (power_buttondir)
-		closedir(power_buttondir);
-
-	return FWTS_OK;
-}
-
-static void power_button_check_field(fwts_framework *fw,
-	char *field, char *contents, int *matching, int *not_matching)
-{
-	struct dirent *entry;
-
-	rewinddir(power_buttondir);
-	do {
-		entry = readdir(power_buttondir);
-		if (entry && strlen(entry->d_name)>2) {
-			char path[PATH_MAX];
-			char *data;
-
-			snprintf(path, sizeof(path), POWER_BUTTON_PATH "/%s/%s",
-				entry->d_name, field);
-			if ((data = fwts_get(path)) != NULL) {
-				if (strstr(data, contents)) {
-					(*matching)++;
-					fwts_log_info(fw, "Found power button %s.", entry->d_name);
-				}
-				else
-					(*not_matching)++;
-			}
-			free(data);
-		}
-	} while (entry);
-}
-
 static int power_button_test1(fwts_framework *fw)
-{
-	int matching = 0;
-	int not_matching = 0;
-
-	power_button_check_field(fw, "info", "Power Button", &matching, &not_matching);
-
-	if ((matching == 0) || (not_matching > 0))
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoPowerButtonField",
-			"Failed to detect a Power Button in power button info field.");
-	else
-		fwts_passed(fw, "Detected a Power Button in a power button info field.");
-
-	return FWTS_OK;
-}
-
-static int power_button_test2(fwts_framework *fw)
 {
 	int fd;
 	size_t len;
@@ -141,15 +74,12 @@ static int power_button_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test power_button_tests[] = {
-	{ power_button_test1, "Test power button(s) report they are really Power Buttons." },
-	{ power_button_test2, "Test press of power button and ACPI event." },
+	{ power_button_test1, "Test press of power button and ACPI event." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops power_button_ops = {
 	.description = "Interactive power_button button test.",
-	.init        = power_button_init,
-	.deinit      = power_button_deinit,
 	.minor_tests = power_button_tests
 };
 

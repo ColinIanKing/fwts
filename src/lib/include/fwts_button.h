@@ -20,9 +20,11 @@
 #ifndef __FWTS_BUTTON_H__
 #define __FWTS_BUTTON_H__
 
-#define FWTS_BUTTON_LID_ANY	(0x0000)
-#define FWTS_BUTTON_LID_OPENED	(0x0001)
-#define FWTS_BUTTON_LID_CLOSED	(0x0002)
+#define FWTS_BUTTON_LID_ANY		(0x0000)
+#define FWTS_BUTTON_LID_OPENED		(0x0001)
+#define FWTS_BUTTON_LID_CLOSED		(0x0002)
+
+#define FWTS_BUTTON_POWER_EXISTS	(0x00010)
 
 int fwts_button_match_state(fwts_framework *fw, int button, int *matched, int *not_matched);
 

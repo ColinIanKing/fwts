@@ -34,7 +34,8 @@ static int fwts_button_match_state_proc(fwts_framework *fw,
 {
 	DIR *dir;
 	struct dirent *entry;
-	char *acpi_button_lid = FWTS_PROC_ACPI_BUTTON "/lid";
+	char *acpi_button_lid   = FWTS_PROC_ACPI_BUTTON "/lid";
+	char *acpi_button_power = FWTS_PROC_ACPI_BUTTON "/power";
 	char *button_dir;
 	char *field;
 	char *match;
@@ -54,6 +55,11 @@ static int fwts_button_match_state_proc(fwts_framework *fw,
 		button_dir = acpi_button_lid;
 		field  = "state";
 		match  = "close";
+		break;
+	case FWTS_BUTTON_POWER_EXISTS:
+		button_dir = acpi_button_power;
+		field  = "info";
+		match  = "Power Button";
 		break;
 	default:
 		return FWTS_ERROR;

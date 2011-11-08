@@ -2,12 +2,13 @@ Source: fwts
 Section: devel
 Priority: optional
 Maintainer: Colin King <colin.king@ubuntu.com>
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7), libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9), flex, bison
 
 Package: fwts
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, pciutils 
+Suggests: dmidecode, net-tools, wireless-tools, bluez, xinput, pulseaudio-utils
 Description: FirmWare Test Suite
  This is a firmware test suite that performs sanity checks on Intel/AMD 
  PC firmware. It is intended to identify BIOS and ACPI errors and 

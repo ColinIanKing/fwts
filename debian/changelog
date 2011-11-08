@@ -1,3 +1,13 @@
+fwts (0.24.13) precise; urgency=low
+
+  * acpi: power_button: remove check on /proc/acpi/button/power
+  * lib: fwts_button: add power button support
+  * acpi: lid: use button helper
+  * lib: add generic button helper into lib
+  * lib: add generic button helper
+
+ -- Colin King <colin.king@canonical.com>  Tue, 9 Nov 2011 12:37:00 +0100
+
 fwts (0.24.12) precise; urgency=low
 
   * debian: update control

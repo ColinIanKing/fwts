@@ -69,6 +69,20 @@
  [
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "pnp.*can't evaluate _CRS: 12311",
+   "advice": "The _CRS object could not be evaluated because an invalid resource type has been returned. This can lead to misconfigured PNP hardware and may render a system unbootable."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "pnp.*can't evaluate _CRS:",
+   "advice": "The _CRS object could not be evaluated, the error code is an ACPI error return code (see include/acpi/acexecp.h in the linux source, this is composed of bottom 12 bits of an error number and upper 4 bits of an AE_CODE_* code. Typically, _CRS evaluation errors can lead to misconfigured PNP hardware and may render a system unbootable."
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_WMI",
    "pattern": "dell_wmi:.*Received unknown WMI event",

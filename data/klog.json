@@ -217,6 +217,41 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": ".*pci.*ACPI _OSC request failed.*returned control mask",
+   "advice": "The _OSC method evaluation failed and the ACPI _OSC control for PCIe was not granted. The kernel had to disable Active State Power Management (ASPM) which means that PCIe power management is not optimally configured."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_OSC invalid UUID",
+   "advice": "The _OSC method indicates it has been passed an invalid UUID, see section 6.2.10 _OSC (Operating System Capabilities) of the ACPI specification for more details.  Note that it has been observed on some systems that this error is returned because the _OSC has evaluated incorrectly and it returns with an incorrect error setting the OSC invalid UUID error bit."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_OSC invalid revision",
+   "advice": "The _OSC method indicates it has been passed an invalid revision number, see section 6.2.10 _OSC (Operating System Capabilities) of the ACPI specification for more details.  Note that the revision level is specific to the given UUID."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_OSC request failed",
+   "advice": "The _OSC method evaluation failed for some unknown reason. This could be that the data passed to it was incorrect or that the method itself is broken. See section 6.2.10 _OSC (Operating System Capabilities) of the ACPI specification for more details."
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_OSC request failed",
+   "advice": "The _OSC method evaluation failed for some unknown reason. This could be that the data passed to it was incorrect or that the method itself is broken. See section 6.2.10 _OSC (Operating System Capabilities) of the ACPI specification for more details."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_BUFFER_OVERFLOW",
    "pattern": "ACPI Error.*Field.*exceeds Buffer",
    "advice": "The field exceeds the allocated buffer size. This can lead to unexpected results when fetching data outside this region."

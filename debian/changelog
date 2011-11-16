@@ -1,3 +1,12 @@
+fwts (0.24.14) precise; urgency=low
+
+  * Add copy-acpica.sh script that updates the ACPI
+  * data: klog: add _OSC evaluation failure tests
+  * data: klog: add _CRS evaluation PNP kernel erro
+  * uefi: csm: fix typo.
+
+ -- Keng-Yu Lin <kengyu@canonical.com>  Wed, 16 Nov 2011 11:49:04 +0800
+
 fwts (0.24.13) precise; urgency=low
 
   * acpi: power_button: remove check on /proc/acpi/button/power

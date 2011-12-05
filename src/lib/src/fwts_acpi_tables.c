@@ -56,6 +56,7 @@ static void *fwts_acpi_find_rsdp_efi(void)
  */
 static void *fwts_acpi_find_rsdp_bios(void)
 {
+#ifdef FWTS_ARCH_INTEL
 	uint8_t *bios;
 	uint8_t *ptr;
 	fwts_acpi_table_rsdp *rsdp;
@@ -79,6 +80,9 @@ static void *fwts_acpi_find_rsdp_bios(void)
 	(void)fwts_munmap(bios, BIOS_LENGTH);
 
 	return addr;
+#else
+	return NULL;
+#endif
 }
 
 /*

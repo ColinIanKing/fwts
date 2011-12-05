@@ -19,18 +19,34 @@
 FWTS="Firmware Test Suite"
 OPTIONS="/tmp/options.$$"
 DIALOG_CMD="/tmp/fwts.cmd.$$"
+export DIALOGRC="/usr/share/fwts/fwts-live-dialogrc"
 
 FWTS_DATE=`date +%d%m%Y`
 FWTS_TIME=`date +%H%M`
 
-WORK_DIR=/cdrom/fwts/$FWTS_DATE/$FWTS_TIME
-
 #
 # for debugging, use:
-# WORK_DIR=./fwts/$FWTS_DATE/$FWTS_TIME
+# -  WORK_DIR=./fwts/$FWTS_DATE/$FWTS_TIME
+# if booting in fwts-live
+# - change FWTS_AUTO_SHUTDOWN= to alter default shutdown after testing completion
 #
+WORK_DIR=/fwts/$FWTS_DATE/$FWTS_TIME
 SHUTDOWN_AT_END=1
 
+#
+# set WORK_DIR to /cdrom/fwts if booting via casper 
+#
+if [ `grep -qs boot=casper /proc/cmdline; echo $?` -eq 0 ]; then
+	CASPER_DETECTED=1
+	WORK_DIR=/cdrom/fwts/$FWTS_DATE/$FWTS_TIME
+fi
+
+#
+# check /proc/cmdline for FWTS_AUTO_SHUTDOWN to toggle auto shutdown
+#
+if [ `grep -qs FWTS_AUTO_SHUTDOWN=1 /proc/cmdline; echo $?` -ne 0 -a $CASPER_DETECTED -eq 1 ]; then
+	SHUTDOWN_AT_END=0
+fi
 
 do_help()
 {

@@ -42,3 +42,12 @@ Description: FirmWare Test Suite core support library
  This is the fwts core library. It contains a top level test framework
  and a rich range of firmware specific testing support code for the 
  various fwts tests.
+
+Package: fwts-frontend
+Architecture: all
+Priority: optional
+Depends: ${shlibs:Depends}, ${misc:Depends}, dialog
+Description: Firmware Test Suite frontend interface
+ This is a dialog based interface designed to provide an easy to use method
+ to execute tests via Firmware Test Suite and is also used as the primary 
+ interface within Firmware Test Suit live images.

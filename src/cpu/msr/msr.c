@@ -19,6 +19,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 typedef void (*msr_callback_check)(fwts_framework *fw, uint64_t val);
 
 static int ncpus;
@@ -30,6 +32,10 @@ static int msr_init(fwts_framework *fw)
 {
 	if ((cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
+		return FWTS_ERROR;
+	}
+	if (cpuinfo->vendor_id == NULL) {
+		fwts_log_error(fw, "Cannot get CPU vendor_id");
 		return FWTS_ERROR;
 	}
 	intel_cpu = strstr(cpuinfo->vendor_id, "Intel") != NULL;
@@ -555,3 +561,5 @@ static fwts_framework_ops msr_ops = {
 };
 
 FWTS_REGISTER(msr, &msr_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+
+#endif

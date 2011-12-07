@@ -22,6 +22,12 @@
 
 #define FWTS_ACPI_TABLES_PATH   "/sys/firmware/acpi/tables"
 
+#define FWTS_FACP_IAPC_BOOT_ARCH_LEGACY_DEVICES		(0x0001)
+#define FWTS_FACP_IAPC_BOOT_ARCH_8042			(0x0002)
+#define FWTS_FACP_IAPC_BOOT_ARCH_VGA_NOT_PRESENT	(0x0004)
+#define FWTS_FACP_IAPC_BOOT_ARCH_MSI_NOT_SUPPORTED	(0x0008)
+#define FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS	(0x0010)
+
 #include "fwts_types.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"

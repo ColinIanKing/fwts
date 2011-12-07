@@ -76,6 +76,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
+	{ "aspm", 		"",   0, "Test ASPM configuration." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -966,6 +967,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 31: /* --disassemble-aml */
 			fwts_iasl_disassemble_all_to_file(fw);
+			return FWTS_COMPLETE;
+		case 32: /* --aspm */
+			fwts_aspm_check_configuration(fw);
 			return FWTS_COMPLETE;
 		}
 		break;

@@ -56,4 +56,5 @@ libfwts_la_SOURCES = \
 	fwts_wakealarm.c \
 	fwts_ac_adapter.c \
 	fwts_battery.c \
-	fwts_button.c
+	fwts_button.c \
+	fwts_aspm.c

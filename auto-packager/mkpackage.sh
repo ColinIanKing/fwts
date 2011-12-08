@@ -24,7 +24,7 @@
 # files, build source package ready for upload.
 #
 RELEASES="lucid maverick natty oneiric"
-REPO=git://kernel.ubuntu.com/cking/fwts
+REPO=git://kernel.ubuntu.com/hwe/fwts.git
 FWTS=fwts
 
 #

@@ -1,3 +1,18 @@
+fwts (0.24.16) precise; urgency=low
+
+  [Chris Van Hoof]
+  * Renaming directory 'iso-image' to 'live-image' and
+    'live-image/fwts_wrapper' to 'live-image/fwts-frontend-text'
+  * Adding a default dialogrc configuration file to select the Ubuntu color
+    palatte when fwts-frontend-text is executed
+  * Adding a bit of conditional logic to fwts-frontend-text to better detect
+    if executed in a live image and setting defaults which make the script
+    easier to control
+  * debian: adding fwts-frontend.install
+  * debian: update control file to build the _optional_ fwts-frontend package
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 09 Jan 2012 11:08:06 +0100
+
 fwts (0.24.15) precise; urgency=low
 
   * lib: fwts_acpi_find_rsdp_bios should only scan for RSDP on Intel/AMD

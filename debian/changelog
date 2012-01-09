@@ -1,3 +1,10 @@
+fwts (0.24.15) precise; urgency=low
+
+  * lib: fwts_acpi_find_rsdp_bios should only scan for RSDP on Intel/AMD
+  * cpu: msr: disabled test for non-Intel/AMD architectures 
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 09 Jan 2012 10:17:46 +0100
+
 fwts (0.24.14) precise; urgency=low
 
   * Add copy-acpica.sh script that updates the ACPI

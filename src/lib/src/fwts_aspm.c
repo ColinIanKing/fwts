@@ -51,7 +51,7 @@ int fwts_facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	return FWTS_OK;
 }
 
-int fwts_aspm_check_configuration(fwts_framework *fw)
+int aspm_check_configuration(fwts_framework *fw)
 {
 	int ret;
 	int aspm_facp;
@@ -65,4 +65,16 @@ int fwts_aspm_check_configuration(fwts_framework *fw)
 	return ret;
 }
 
+
+static fwts_framework_minor_test aspm_tests[] = {
+	{ aspm_check_configuration, "PCIe ASPM configuration test." },
+	{ NULL, NULL }
+};
+
+static fwts_framework_ops aspm_ops = {
+	.description = "PCIe ASPM check.",
+	.minor_tests = aspm_tests
+};
+
+FWTS_REGISTER(aspm, &aspm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
 

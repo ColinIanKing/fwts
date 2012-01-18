@@ -53,6 +53,7 @@ fwts_SOURCES = main.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
+	pci/aspm/aspm.c \
 	pci/crs/crs.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \

@@ -64,11 +64,12 @@ am_fwts_OBJECTS = main.$(OBJEXT) klog.$(OBJEXT) wakealarm.$(OBJEXT) \
 	os2gap.$(OBJEXT) memmapdump.$(OBJEXT) mpdump.$(OBJEXT) \
 	mpcheck.$(OBJEXT) pciirq.$(OBJEXT) pnp.$(OBJEXT) \
 	smbios.$(OBJEXT) cmosdump.$(OBJEXT) dmi_decode.$(OBJEXT) \
-	hpet_check.$(OBJEXT) crs.$(OBJEXT) maxreadreq.$(OBJEXT) \
-	virt.$(OBJEXT) virt_svm.$(OBJEXT) virt_vmx.$(OBJEXT) \
-	maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) nx.$(OBJEXT) msr.$(OBJEXT) \
-	microcode.$(OBJEXT) hotkey.$(OBJEXT) version.$(OBJEXT) \
-	oops.$(OBJEXT) csm.$(OBJEXT) uefidump.$(OBJEXT)
+	hpet_check.$(OBJEXT) aspm.$(OBJEXT) crs.$(OBJEXT) \
+	maxreadreq.$(OBJEXT) virt.$(OBJEXT) virt_svm.$(OBJEXT) \
+	virt_vmx.$(OBJEXT) maxfreq.$(OBJEXT) cpufreq.$(OBJEXT) \
+	nx.$(OBJEXT) msr.$(OBJEXT) microcode.$(OBJEXT) \
+	hotkey.$(OBJEXT) version.$(OBJEXT) oops.$(OBJEXT) \
+	csm.$(OBJEXT) uefidump.$(OBJEXT)
 fwts_OBJECTS = $(am_fwts_OBJECTS)
 fwts_DEPENDENCIES =
 fwts_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -325,6 +326,7 @@ fwts_SOURCES = main.c \
 	cmos/cmosdump/cmosdump.c \
 	dmi/dmi_decode/dmi_decode.c \
 	hpet/hpet_check/hpet_check.c \
+	pci/aspm/aspm.c \
 	pci/crs/crs.c \
 	pci/maxreadreq/maxreadreq.c \
 	cpu/virt/virt.c cpu/virt/virt_svm.c cpu/virt/virt_vmx.c \
@@ -438,6 +440,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/acpitables.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicedge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/apicinstance.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aspm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bios32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bios_info.Po@am__quote@
@@ -1114,6 +1117,20 @@ hpet_check.obj: hpet/hpet_check/hpet_check.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='hpet/hpet_check/hpet_check.c' object='hpet_check.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o hpet_check.obj `if test -f 'hpet/hpet_check/hpet_check.c'; then $(CYGPATH_W) 'hpet/hpet_check/hpet_check.c'; else $(CYGPATH_W) '$(srcdir)/hpet/hpet_check/hpet_check.c'; fi`
+
+aspm.o: pci/aspm/aspm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aspm.o -MD -MP -MF $(DEPDIR)/aspm.Tpo -c -o aspm.o `test -f 'pci/aspm/aspm.c' || echo '$(srcdir)/'`pci/aspm/aspm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aspm.Tpo $(DEPDIR)/aspm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/aspm/aspm.c' object='aspm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aspm.o `test -f 'pci/aspm/aspm.c' || echo '$(srcdir)/'`pci/aspm/aspm.c
+
+aspm.obj: pci/aspm/aspm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT aspm.obj -MD -MP -MF $(DEPDIR)/aspm.Tpo -c -o aspm.obj `if test -f 'pci/aspm/aspm.c'; then $(CYGPATH_W) 'pci/aspm/aspm.c'; else $(CYGPATH_W) '$(srcdir)/pci/aspm/aspm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/aspm.Tpo $(DEPDIR)/aspm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pci/aspm/aspm.c' object='aspm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o aspm.obj `if test -f 'pci/aspm/aspm.c'; then $(CYGPATH_W) 'pci/aspm/aspm.c'; else $(CYGPATH_W) '$(srcdir)/pci/aspm/aspm.c'; fi`
 
 crs.o: pci/crs/crs.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT crs.o -MD -MP -MF $(DEPDIR)/crs.Tpo -c -o crs.o `test -f 'pci/crs/crs.c' || echo '$(srcdir)/'`pci/crs/crs.c

@@ -75,6 +75,5 @@
 #include "fwts_ac_adapter.h"
 #include "fwts_battery.h"
 #include "fwts_button.h"
-#include "fwts_aspm.h"
 
 #endif

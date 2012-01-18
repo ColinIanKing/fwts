@@ -30,7 +30,7 @@
 
 #include "fwts.h"
 
-int fwts_facp_get_aspm_control(fwts_framework *fw, int *aspm)
+static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 {
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_fadt *fadt;
@@ -51,12 +51,12 @@ int fwts_facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	return FWTS_OK;
 }
 
-int aspm_check_configuration(fwts_framework *fw)
+static int aspm_check_configuration(fwts_framework *fw)
 {
 	int ret;
 	int aspm_facp;
 
-	ret = fwts_facp_get_aspm_control(fw, &aspm_facp);
+	ret = facp_get_aspm_control(fw, &aspm_facp);
 	if (ret == FWTS_ERROR) {
 		fwts_log_info(fw, "No valid FACP information present: cannot test aspm.");
 		return FWTS_ERROR;
@@ -64,7 +64,6 @@ int aspm_check_configuration(fwts_framework *fw)
 
 	return ret;
 }
-
 
 static fwts_framework_minor_test aspm_tests[] = {
 	{ aspm_check_configuration, "PCIe ASPM configuration test." },
@@ -77,4 +76,3 @@ static fwts_framework_ops aspm_ops = {
 };
 
 FWTS_REGISTER(aspm, &aspm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
-

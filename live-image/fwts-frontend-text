@@ -25,12 +25,21 @@ FWTS_DATE=`date +%d%m%Y`
 FWTS_TIME=`date +%H%M`
 
 #
+# Check if executed as root or with sudo
+#
+if [ $EUID -ne 0 ]; then
+	echo "`basename $0`: must be executed with sudo"
+	exit 1
+fi
+
+#
 # for debugging, use:
 # -  WORK_DIR=./fwts/$FWTS_DATE/$FWTS_TIME
 # if booting in fwts-live
 # - change FWTS_AUTO_SHUTDOWN= to alter default shutdown after testing completion
 #
 WORK_DIR=/fwts/$FWTS_DATE/$FWTS_TIME
+FWTS_AUTO_SHUTDOWN="$1"
 SHUTDOWN_AT_END=1
 
 #
@@ -42,10 +51,14 @@ if [ `grep -qs boot=casper /proc/cmdline; echo $?` -eq 0 ]; then
 fi
 
 #
-# check /proc/cmdline for FWTS_AUTO_SHUTDOWN to toggle auto shutdown
+# check /proc/cmdline and argv[1] for FWTS_AUTO_SHUTDOWN to toggle auto shutdown
 #
-if [ `grep -qs FWTS_AUTO_SHUTDOWN=1 /proc/cmdline; echo $?` -ne 0 -a $CASPER_DETECTED -eq 1 ]; then
-	SHUTDOWN_AT_END=0
+if [ `grep -qs FWTS_AUTO_SHUTDOWN=1 /proc/cmdline; echo $?` -ne 0 ]; then
+	if [ -n "${CASPER_DETECTED:+x}" ]; then
+		SHUTDOWN_AT_END=0
+	elif [ -n "${FWTS_AUTO_SHUTDOWN:+x}" ]; then
+		SHUTDOWN_AT_END=0
+	fi
 fi
 
 do_help()

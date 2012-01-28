@@ -74,4 +74,4 @@ fwts_LDADD = \
 	-Llib/src -lfwts \
 	-L$(top_srcdir)/src/acpica -lfwtsacpica
 
-man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1
+man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1

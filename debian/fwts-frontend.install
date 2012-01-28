@@ -1,2 +1,3 @@
 live-image/fwts-frontend-text usr/bin
 live-image/fwts-live-dialogrc usr/share/fwts
+usr/share/man/man1/fwts-frontend-text.1 usr/share/man/man1

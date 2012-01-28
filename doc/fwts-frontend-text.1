@@ -1,0 +1,65 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH FWTS-FRONTEND 1 "January 26, 2012"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+fwts-frontend-text \- text based interface to fwts.
+.br
+
+.SH SYNOPSIS
+.B fwts-frontend-text
+.br
+
+.SH DESCRIPTION
+This manual page briefly documents the
+.B fwts-frontend-text
+utility.
+The tool
+.B fwts-frontend-text
+executes a user-friendly interface to the Firmware Test Suite, providing the
+user a simple interface to execute all batch tests or the ability to select
+individual tests to execute.
+.B
+fwts-frontend-text
+should be run with root priviledge, for example using sudo.
+.br
+.LP
+Running
+.B
+fwts-frontend-text
+with the argument noautoshutdown will prevent the system
+from shutting down after tests have been executed.
+.P
+.SH EXAMPLES
+.LP
+Execute fwts-frontend-text
+.RS 8
+sudo fwts-frontend-text
+.RE
+.LP
+Execute fwts-frontend-text and disable automatic shutdown
+.RS 8
+sudo fwts-frontend-text noautoshutdown
+.SH SEE ALSO
+.BR fwts (1),
+.BR dmidecode (8),
+.BR lspci (8)
+.SH AUTHOR
+fwts-frontend-text was written by Colin King <colin.king@canonical.com>,
+and Chris Van Hoof <vanhoof@canonical.com>
+.PP
+This manual page was written by Chris Van Hoof <vanhoof@canonical.com>,
+for the Ubuntu project (but may be used by others).

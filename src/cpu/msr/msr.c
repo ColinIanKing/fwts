@@ -194,14 +194,14 @@ static int msr_smrr(fwts_framework *fw)
 			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
 				uint64_t physbase = val & 0xfffff000;
 				uint64_t type = val & 7;
-				if ((physbase % 0x7fffff) != 0)
+				if ((physbase & 0x7fffff) != 0)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRR_PHYSBASE8MBBoundary",
 						"SMRR: SMRR_PHYSBASE is NOT on an 8MB boundary: %llx.", (unsigned long long)physbase);
 				if (type != 6)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRR_TYPE",
 						"SMRR: SMRR_TYPE is 0x%x, should be 0x6 (Write-Back).", (int)type);
 			}
-			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
+			if (fwts_cpu_readmsr(0, 0x1f3, &val) == FWTS_OK) {
 				uint64_t physmask = val & 0xfffff000;
 				uint64_t valid = (val >> 11) & 1;
 

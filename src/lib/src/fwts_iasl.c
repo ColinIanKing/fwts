@@ -119,7 +119,7 @@ int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (ret == FWTS_OK)
-		printf("Disassembled DSTD to DSDT.dsl\n");
+		printf("Disassembled DSDT to DSDT.dsl\n");
 
 	for (i=0; ;i++) {
 		char filename[PATH_MAX];

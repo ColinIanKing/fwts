@@ -49,6 +49,7 @@
 #define DMI_ILLEGAL_MAPPED_ADDR_RANGE	"DMIIllegalMappedAddrRange"
 #define DMI_MGMT_CTRL_HOST_TYPE		"DMIMgmtCtrlHostType"
 #define DMI_INVALID_ENTRY_LENGTH	"DMIInvalidEntryLength"
+#define DMI_INVALID_HARDWARE_ENTRY	"DMIInvalidHardwareEntry"
 
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
@@ -241,6 +242,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 	int	i;
 	int 	len;
 	int	failed_count = fw->minor_tests.failed;
+	int	battery_count;
+	int	ret;
 
 	switch (hdr->type) {
 		case 0: /* 7.1 */
@@ -644,7 +647,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 					"(range allowed 0x01..0x08, 0xa0..0xa2) "
 					"while accessing '%s', field '%s', offset 0x%2.2x",
 					data[0x5], table, "Interface", 0x5);
-}
+			}
 			break;
 
 		case 22: /* 7.23 */
@@ -666,8 +669,14 @@ static void dmi_decode_entry(fwts_framework *fw,
 				break;
 			if (data[0x09] == 0x02)
 				dmi_str_check(fw, table, addr, "SBDS Device Chemistry", hdr, 0x14);
-			break;
 
+			ret = fwts_battery_get_count(fw, &battery_count);
+			if (ret != FWTS_OK || battery_count < 1) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_INVALID_HARDWARE_ENTRY,
+					"Invalid Hardware Configuration "
+					"(no battery found) ");
+			}
+			break;
 		case 23: /* 7.24 */
 			table = "System Reset (Type 23)";
 			if (hdr->length < 0x0D)

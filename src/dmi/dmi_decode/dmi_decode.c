@@ -55,6 +55,12 @@
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
 #define GET_UINT64(x) (uint64_t)(*(const uint64_t *)(x))
 
+#define CHASSIS_OTHER			0x00
+#define CHASSIS_DESKTOP			0x01
+#define CHASSIS_WORKSTATION		0x02
+#define CHASSIS_MOBILE			0x04
+#define CHASSIS_SERVER			0x08
+
 typedef struct {
 	const char *label;
 	const char *field;
@@ -66,6 +72,11 @@ typedef struct {
 	uint16_t   new;
 } fwts_dmi_version;
 
+typedef struct {
+	uint8_t   original;
+	uint8_t   mapped;
+} fwts_chassis_type_map;
+
 static const fwts_dmi_pattern dmi_patterns[] = {
 	{ "DMISerialNumber",	"Serial Number", 	"0123456789" },
 	{ "DMIAssetTag",	"Asset Tag",		"1234567890" },
@@ -76,6 +87,51 @@ static const fwts_dmi_pattern dmi_patterns[] = {
 static const char *uuid_patterns[] = {
 	"0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A",
 	NULL,
+};
+
+static const fwts_chassis_type_map fwts_dmi_chassis_type[] = {
+	{ FWTS_SMBIOS_CHASSIS_INVALID,			CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_OTHER,			CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_UNKNOWN,			CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_DESKTOP,			CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_LOW_PROFILE_DESKTOP,	CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_PIZZA_BOX,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_MINI_TOWER,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_TOWER,			CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_PORTABLE,			CHASSIS_MOBILE },
+	{ FWTS_SMBIOS_CHASSIS_LAPTOP,			CHASSIS_MOBILE },
+	{ FWTS_SMBIOS_CHASSIS_NOTEBOOK,			CHASSIS_MOBILE },
+	{ FWTS_SMBIOS_CHASSIS_HANDHELD,			CHASSIS_MOBILE },
+	{ FWTS_SMBIOS_CHASSIS_DOCKING_STATION,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_ALL_IN_ONE,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_SUB_NOTEBOOK,		CHASSIS_MOBILE },
+	{ FWTS_SMBIOS_CHASSIS_SPACE_SAVING,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_LUNCH_BOX,		CHASSIS_DESKTOP | CHASSIS_MOBILE},
+	{ FWTS_SMBIOS_CHASSIS_MAIN_SERVER_CHASSIS,	CHASSIS_SERVER },
+	{ FWTS_SMBIOS_CHASSIS_EXPANISON_CHASSIS,	CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_SUB_CHASSIS,		CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_BUS_EXPANSION_CHASSIS,	CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_PERIPHERAL_CHASSIS,	CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_RAID_CHASSIS,		CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_RACK_MOUNT_CHASSIS,	CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_SEALED_CASE_PC,		CHASSIS_DESKTOP },
+	{ FWTS_SMBIOS_CHASSIS_MULTI_SYSTEM_CHASSIS,	CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_COMPACT_PCI,		CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_ADVANCED_TCA,		CHASSIS_OTHER },
+	{ FWTS_SMBIOS_CHASSIS_BLADE,			CHASSIS_SERVER },
+	{ FWTS_SMBIOS_CHASSIS_BLASE_ENCLOSURE,		CHASSIS_SERVER }
+};
+
+static const fwts_chassis_type_map fwts_acpi_pm_profile_type[] = {
+	{ FWTS_FACP_UNSPECIFIED,	CHASSIS_OTHER },
+	{ FWTS_FACP_DESKTOP,		CHASSIS_DESKTOP },
+	{ FWTS_FACP_MOBILE,		CHASSIS_MOBILE },
+	{ FWTS_FACP_WORKSTATION,	CHASSIS_WORKSTATION },
+	{ FWTS_FACP_ENTERPRISE_SERVER,	CHASSIS_SERVER },
+	{ FWTS_FACP_SOHO_SERVER,	CHASSIS_SERVER | CHASSIS_DESKTOP },
+	{ FWTS_FACP_APPLIANCE_PC,	CHASSIS_DESKTOP },
+	{ FWTS_FACP_PERFORMANCE_SERVER,	CHASSIS_SERVER },
+	{ FWTS_FACP_TABLET,		CHASSIS_MOBILE }
 };
 
 /* Remapping table from buggy version numbers to correct values */
@@ -244,6 +300,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 	int	failed_count = fw->minor_tests.failed;
 	int	battery_count;
 	int	ret;
+	fwts_acpi_table_info *acpi_table;
+	fwts_acpi_table_fadt *fadt;
 
 	switch (hdr->type) {
 		case 0: /* 7.1 */
@@ -296,6 +354,36 @@ static void dmi_decode_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x1d, 0x0, 0x7f);
+			if (fwts_acpi_find_table(fw, "FACP", 0, &acpi_table) != FWTS_OK)
+				break;
+			if (acpi_table == NULL)
+				break;
+			fadt = (fwts_acpi_table_fadt *)acpi_table->data;
+			if (fadt->preferred_pm_profile >=
+				(sizeof(fwts_acpi_pm_profile_type) / sizeof(fwts_chassis_type_map))) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
+					"Incorrect Chassis Type "
+					"ACPI FACP reports %x",
+					fadt->preferred_pm_profile);
+				break;
+			}
+			if (data[5] >=
+				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
+					"Incorrect Chassis Type "
+					"SMBIOS Type 3 reports %x ",
+					data[5]);
+				break;
+			}
+			if (!(fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].mapped &
+			    fwts_dmi_chassis_type[data[5]].mapped)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
+					"Unmatched Chassis Type "
+					"SMBIOS Type 3 reports %x "
+					"ACPI FACP reports %x",
+					data[5],
+					fadt->preferred_pm_profile);
+			}
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Lock", hdr, 0x5, 0x0, 0x1, 0x7, 0x1);
 			dmi_str_check(fw, table, addr, "Version", hdr, 0x6);
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);

@@ -1,3 +1,20 @@
+fwts (0.24.17) precise; urgency=low
+
+  [Alex Hung]
+  * pcie: aspm: add aspm option and detect if the
+    "PCIe ASPM Controls" bit is set in FADT.
+
+  [Colin Ian King]
+  * Sanity check for MSR_IA32_ENERGY_PERF_BIAS messages.
+  * Since aspm is a test, move it out of the fwts core library
+  * Update copyright year
+
+  [Keng-Yu Lin]
+  * lib: add PCIe ASPM configuration check in the batch test
+  * debian: use dh-autoreconf
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 31 Jan 2012 13:47:48 +0800
+
 fwts (0.24.16) precise; urgency=low
 
   [Chris Van Hoof]

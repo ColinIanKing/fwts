@@ -30,6 +30,8 @@ static fwts_cpuinfo_x86 *cpuinfo;
 
 static int msr_init(fwts_framework *fw)
 {
+	char *bios_vendor;
+
 	if ((cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
@@ -44,6 +46,23 @@ static int msr_init(fwts_framework *fw)
 	if ((ncpus = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot detect the number of CPUs on this machine.");
 		return FWTS_ABORTED;
+	}
+
+	/*
+	 * Running MSR tests inside virtual machines such as QEMU with some kernel/kvm
+	 * combinations have been observed to cause GPFs.  We kludge around this by
+	 * avoiding MSR tests for a Bochs BIOS based QEMU virtual machine.
+	 */
+	if ((bios_vendor = fwts_get("/sys/class/dmi/id/bios_vendor")) != NULL) {
+		if (strstr(bios_vendor, "Bochs")) {
+			fwts_log_error(fw,
+				"MSR test being avoiding inside a virtual machine as "
+				"this is known to cause General Protection Faults on "
+				"some configurations.");
+			free(bios_vendor);
+			return FWTS_SKIP;
+		}
+		free(bios_vendor);
 	}
 	return FWTS_OK;
 }

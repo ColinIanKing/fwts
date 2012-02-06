@@ -1,3 +1,13 @@
+fwts (0.24.18) precise; urgency=low
+
+  [Alex Hung]
+  * cpu:msr: fixed errors for checking SMRR MSR registers
+
+  [Keng-Yu Lin]
+  * Fix a typo error of "DSTD" 
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 06 Feb 2012 16:39:43 +0800
+
 fwts (0.24.17) precise; urgency=low
 
   [Alex Hung]

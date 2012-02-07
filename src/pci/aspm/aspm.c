@@ -75,4 +75,4 @@ static fwts_framework_ops aspm_ops = {
 	.minor_tests = aspm_tests
 };
 
-FWTS_REGISTER(aspm, &aspm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(aspm, &aspm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);

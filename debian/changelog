@@ -1,3 +1,15 @@
+fwts (0.24.19) precise; urgency=low
+
+  [Alex Hung]
+  * dmi: dmi_decode: check type 3 chassis type with acpi preferred_pm_profile
+  * dmi: dmi_decode: check acpi battery if type 22 is present.
+  * pcie: aspm: use FWTS_ROOT_PRIV flag
+
+  [Colin Ian King]
+  * cpu: msr: GPF avoidance on BOCHs QEMU systems (LP: #925001)
+ 
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 09 Feb 2012 13:52:50 +0800
+
 fwts (0.24.18) precise; urgency=low
 
   [Alex Hung]

@@ -33,6 +33,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <asm/mtrr.h>
 
 static fwts_list *klog;
@@ -80,59 +81,78 @@ static char *cache_to_string(int type)
 
 static int get_mtrrs(void)
 {
-	struct mtrr_gentry gentry;
 	struct mtrr_entry *entry;
-	int fd;
+	FILE *fp;
 	char line[4096];
-
-	memset(line, 0, 4096);
 
 	if ((mtrr_list = fwts_list_new()) == NULL)
 		return FWTS_ERROR;
 
-	if ((fd = open("/proc/mtrr", O_RDONLY, 0)) < 0)
+	if ((fp = fopen("/proc/mtrr", "r")) == NULL)
 		return FWTS_ERROR;
 
-	memset(&gentry, 0, sizeof(gentry));
+	while (!feof(fp)) {
+		char *ptr1, *ptr2;
 
-	for (gentry.regnum = 0;
-		ioctl (fd, MTRRIOC_GET_ENTRY, &gentry) == 0;
-         	++gentry.regnum) {
-		if ((entry = calloc(1, sizeof(struct mtrr_entry))) != NULL) {
-			entry->reg = gentry.regnum;
-			if (gentry.size > 0) {
-				entry->start = gentry.base;
-				entry->size  = gentry.size;
-				entry->end   = gentry.base + gentry.size;
-				switch (gentry.type) {
-				case 0:  /* uncachable */
-					entry->type = UNCACHED;
-					break;
-				case 1: /* write combining */
-					entry->type = WRITE_COMBINING;
-					break;
-				case 4: /* write through */
-					entry->type = WRITE_THROUGH;
-					break;
-				case 5: /* write protect */
-					entry->type = WRITE_PROTECT;
-					break;
-				case 6: /* write combining */
-					entry->type = WRITE_BACK;
-					break;
-				default: /* unknown */
-					entry->type = UNKNOWN;
-					break;
-				}
-			}
-			else {
-				entry->type = DISABLED;
-			}
+		if (fgets(line, sizeof(line), fp) == NULL)
+			break;
 
-			fwts_list_append(mtrr_list, entry);
+		if ((entry = calloc(1, sizeof(struct mtrr_entry))) == NULL) {
+			fwts_list_free(mtrr_list, free);
+			fclose(fp);
+			return FWTS_ERROR;
 		}
+
+		/*
+		 * Put all text to lower case since the output
+		 * from /proc/mtrr is variable upper/lower case
+		 * across kernel versions so forcing to lower
+		 * saves comparing for upper/lower case variants.
+		 */
+		for (ptr1 = line; *ptr1; ptr1++)
+			*ptr1 = tolower(*ptr1);
+
+		/* Parse the following:
+		 *   reg01: base=0x080000000 ( 2048MB), size= 1024MB, count=1: write-back
+		 */
+
+		/* Get register, in decimal  */
+		if (strncmp(line, "reg", 3))
+			continue;
+		entry->reg = strtoul(line + 3, NULL, 10);
+
+		/* Get base, in hex */
+		if ((ptr1 = strstr(line, "base=0x")) == NULL)
+			continue;
+		entry->start = strtoull(ptr1 + 5, NULL, 16);
+
+		/* Get size, in decimal */
+		if ((ptr1 = strstr(line, "size=")) == NULL)
+			continue;
+
+		entry->size = strtoull(ptr1 + 5, &ptr2, 10);
+		if (ptr2 && (*ptr2 == 'm'))
+			entry->size *= 1024 * 1024;
+		if (ptr2 && (*ptr2 == 'k'))
+			entry->size *= 1024;
+
+		entry->end = entry->start + entry->size;
+
+		if (strstr(line, "write-back"))
+			entry->type = WRITE_BACK;
+		else if (strstr(line, "uncachable"))
+			entry->type = UNCACHED;
+		else if (strstr(line, "write-through"))
+			entry->type = WRITE_THROUGH;
+		else if (strstr(line, "write-combining"))
+			entry->type = WRITE_COMBINING;
+		else if (strstr(line, "write-protect"))
+			entry->type = WRITE_PROTECT;
+		else entry->type = UNKNOWN;
+
+		fwts_list_append(mtrr_list, entry);
 	}
-	close(fd);
+	fclose(fp);
 
 	return FWTS_OK;
 }
@@ -481,7 +501,7 @@ static void do_mtrr_resource(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "Reg %hhu: disabled\n", entry->reg);
 		else
 			fwts_log_info_verbatum(fw,
-				"Reg %hhu: 0x%08llx - 0x%08llx (%6lld %cB)  %s \n",
+				"Reg %hhu: 0x%16.16llx - 0x%16.16llx (%6lld %cB)  %s \n",
 				entry->reg,
 				(unsigned long long int)entry->start,
 				(unsigned long long int)entry->end,
@@ -496,8 +516,10 @@ static int mtrr_init(fwts_framework *fw)
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
-	if (get_mtrrs())
+	if (get_mtrrs() != FWTS_OK) {
 		fwts_log_error(fw, "Failed to read /proc/mtrr.");
+		return FWTS_ERROR;
+	}
 
 	if (access("/proc/mtrr", R_OK))
 		return FWTS_ERROR;

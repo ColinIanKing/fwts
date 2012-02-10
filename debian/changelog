@@ -1,3 +1,17 @@
+fwts (0.24.20) precise; urgency=low
+
+  [Chris Van Hoof]
+  * debian: update fwts-frontend.install to include
+    fwts-frontend-text man page
+  * doc: addition of fwts-frontend-text man page
+  * src/Makefile: include fwts-frontend-text.1 to man_MANS
+
+  [Keng-Yu Lin]
+  * auto-packager: change the git location
+  * auto-packager: add Precise release
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 09 Feb 2012 18:00:42 +0800
+
 fwts (0.24.19) precise; urgency=low
 
   [Alex Hung]

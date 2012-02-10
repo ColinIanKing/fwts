@@ -142,7 +142,10 @@ cp /var/log/kern.log kern.log
 #
 #  fwts specific output
 #
-sudo fwts --dump >& /dev/null
+fwts --dump >& /dev/null
+fwts cmosdump --log-format="" -r cmosdump.log >& /dev/null
+fwts ebdadump --log-format="" -r ebdadump.log >& /dev/null
+fwts uefidump --log-format="" -r uefidump.log >& /dev/null
 fwts memmapdump --log-format="" -r memmap.log >& /dev/null
 fwts acpidump --log-format="" -r acpitables.log >& /dev/null
 fwts mpdump --log-format="" -r mpdump.log >& /dev/null

@@ -34,8 +34,8 @@ collects logs and various system and firmware dumps into the gzip'd tar ball
 fwts-logs.tar.gz which can then be added to bug reports.  It collects data
 from /proc/iomem, /proc/mtrr, /proc/interrupts, IRQ counts from 
 /sys/firmware/acpi/interrupts and kernel logs.  It also invokes fwts and
-gathers ACPI tables, memorymaps, MultiProcessor table dumps, kernel version
-and ACPI version information. 
+gathers ACPI tables, memorymaps, MultiProcessor table dumps, CMOS data,
+UEFI variables, EBDA region, kernel version and ACPI version information. 
 .B
 fwts
 using sudo is required.

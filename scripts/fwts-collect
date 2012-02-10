@@ -116,8 +116,8 @@ trap 'on_die' TERM INT
 mkdir $TMPDIR
 
 err=$?
-if [ $? -ne 0 ]; then
-	echo "Cannot create temporary directory $TMPDIR: error $?" 1>&2
+if [ $err -ne 0 ]; then
+	echo "Cannot create temporary directory $TMPDIR: error $err" 1>&2
 	exit 1
 fi
 

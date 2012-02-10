@@ -70,8 +70,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 		case FWTS_UEFI_END_THIS_DEV_PATH_SUBTYPE:
 			break;
 		default:
-			path = uefidump_vprintf(path, "\\Unknown-End(0x%x)", (unsigned int) dev_path->subtype);
-              		break;
+			return uefidump_vprintf(path, "\\Unknown-End(0x%x)", (unsigned int) dev_path->subtype);
 		}
 		break;
 	case FWTS_UEFI_HARDWARE_DEV_PATH_TYPE:

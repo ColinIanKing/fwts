@@ -26,9 +26,67 @@
 #include <string.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <linux/pci.h>
-
 #include "fwts.h"
+
+/* PCI Confiiguration Space for Type 0 & 1 */
+#define FWTS_PCI_HEADER_TYPE		0x0E
+#define FWTS_PCI_CAPABILITIES_POINTER	0x34
+
+/* PCI Confiiguration Space for Type 1 */
+#define FWTS_PCI_SECONDARD_BUS_NUMBER	0x19
+
+/* PCI Capability IDs  */
+#define FWTS_PCI_LAST_ID		0x00
+#define FWTS_PCI_EXPRESS_CAP_ID		0x10
+
+/* PCI Express Capability Structure Fields */
+#define FWTS_PCIE_ASPM_SUPPORT_L0_FIELD	0x0400
+#define FWTS_PCIE_ASPM_SUPPORT_L1_FIELD	0x0800
+#define FWTS_PCIE_ASPM_SUPPORT_FIELD	(FWTS_PCIE_ASPM_SUPPORT_L0_FIELD | FWTS_PCIE_ASPM_SUPPORT_L1_FIELD)
+
+#define FWTS_PCIE_ASPM_CONTROL_L0_FIELD	0x0001
+#define FWTS_PCIE_ASPM_CONTROL_L1_FIELD	0x0002
+#define FWTS_PCIE_ASPM_CONTROL_FIELD	(FWTS_PCIE_ASPM_CONTROL_L0_FIELD | FWTS_PCIE_ASPM_CONTROL_L1_FIELD)
+
+
+struct pci_device {
+	uint8_t segment;
+	uint8_t bus;
+	uint8_t dev;
+	uint8_t func;
+	uint8_t config[256];
+	struct pci_device *next;
+};
+
+/* PCI Express Capability Structure is defined in Section 7.8
+ * of PCI Express®i Base Specification Revision 2.0
+ */
+struct pcie_capability {
+	uint8_t pcie_cap_id;
+	uint8_t next_cap_point;
+	uint16_t pcie_cap_reg;
+	uint32_t device_cap;
+	uint16_t device_contrl;
+	uint16_t device_status;
+	uint32_t link_cap;
+	uint16_t link_contrl;
+	uint16_t link_status;
+	uint32_t slot_cap;
+	uint16_t slot_contrl;
+	uint16_t slot_status;
+	uint16_t root_contrl;
+	uint16_t root_cap;
+	uint32_t root_status;
+	uint32_t device_cap2;
+	uint16_t device_contrl2;
+	uint16_t device_status2;
+	uint32_t link_cap2;
+	uint16_t link_contrl2;
+	uint16_t link_status2;
+	uint32_t slot_cap2;
+	uint16_t slot_contrl2;
+	uint16_t slot_status2;
+};
 
 static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 {
@@ -51,6 +109,173 @@ static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	return FWTS_OK;
 }
 
+int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
+					    struct pci_device *rp,
+					    struct pci_device *dev)
+{
+	struct pcie_capability *rp_cap, *device_cap;
+	uint8_t rp_aspm_cntrl, device_aspm_cntrl;
+	uint8_t next_cap;
+	int ret = FWTS_OK;
+
+	next_cap = rp->config[FWTS_PCI_CAPABILITIES_POINTER];
+	rp_cap = (struct pcie_capability *) &rp->config[next_cap];
+	while (rp_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
+		if (rp_cap->next_cap_point == FWTS_PCI_LAST_ID)
+			break;
+		next_cap = rp_cap->next_cap_point;
+		rp_cap = (struct pcie_capability *) &rp->config[next_cap];
+	}
+
+	next_cap = dev->config[FWTS_PCI_CAPABILITIES_POINTER];
+	device_cap = (struct pcie_capability *)	&dev->config[next_cap];
+	while (device_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
+		if (device_cap->next_cap_point == FWTS_PCI_LAST_ID)
+			break;
+		next_cap = device_cap->next_cap_point;
+		device_cap = (struct pcie_capability *)	&dev->config[next_cap];
+	}
+
+
+	if (((rp_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=
+		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
+		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L0s not enabled.",
+			 rp->bus, rp->dev, rp->func);
+	}
+
+	if (((rp_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
+		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
+		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L1 not enabled.",
+			rp->bus, rp->dev, rp->func);
+	}
+
+	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=
+		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
+		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L0s not enabled.",
+			dev->bus, dev->dev, dev->func);
+	}
+
+	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
+		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
+		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L1 not enabled.",
+			dev->bus, dev->dev, dev->func);
+	}
+
+	rp_aspm_cntrl = rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_FIELD;
+	device_aspm_cntrl = device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_FIELD;
+	if (rp_aspm_cntrl != device_aspm_cntrl) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIEASPM_UNMATCHED",
+			"PCIE aspm setting was not matched.");
+		fwts_log_error(fw, "RP %02Xh:%02Xh.%02Xh has aspm = %02Xh."
+			, rp->bus, rp->dev, rp->func, rp_aspm_cntrl);
+		fwts_log_error(fw, "Device %02Xh:%02Xh.%02Xh has aspm = %02Xh.",
+			dev->bus, dev->dev, dev->func, device_aspm_cntrl);
+	} else {
+		fwts_passed(fw, "PCIE aspm setting matched was matched.");
+	}
+
+	return ret;
+}
+
+int pcie_check_aspm_registers(fwts_framework *fw,
+				   const fwts_log_level level)
+{
+	fwts_list *lspci_output;
+	fwts_list_link *item;
+	struct pci_device *head = NULL, *cur = NULL, *device = NULL;
+	char command[PATH_MAX];
+	int ret = FWTS_OK;
+
+	snprintf(command, sizeof(command), "%s", fw->lspci);
+
+	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
+		fwts_log_warning(fw, "Could not execute %s", command);
+		return FWTS_ERROR;
+	}
+	if (lspci_output == NULL)
+		return FWTS_ERROR;
+
+	/* Get the list of pci devices and their configuration */
+	fwts_list_foreach(item, lspci_output) {
+		char *line = fwts_text_list_text(item);
+		char *pEnd;
+
+		device = (struct pci_device *) calloc(1, sizeof(*device));
+		if (device == NULL)
+			return FWTS_ERROR;
+
+		device->bus = strtol(line, &pEnd, 16);
+		device->dev = strtol(pEnd + 1, &pEnd, 16);
+		device->func = strtol(pEnd + 1, &pEnd, 16);
+
+		if (head == NULL)
+			head = device;
+		else
+			cur->next = device;
+
+		cur = device;
+	}
+
+	for (cur = head; cur; cur = cur->next) {
+		int reg_loc = 0, reg_val = 0;
+		int i;
+
+		snprintf(command, sizeof(command), "%s -s %02X:%02X.%02X -xxx",
+			fw->lspci, cur->bus, cur->dev, cur->func);
+		if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
+			fwts_log_warning(fw, "Could not execute %s", command);
+			return FWTS_ERROR;
+		}
+		if (lspci_output == NULL)
+			return FWTS_ERROR;
+
+		fwts_list_foreach(item, lspci_output) {
+			char *line = fwts_text_list_text(item);
+			char *pEnd;
+
+			if (line[3] == ' ') {
+				reg_val = strtol(line, &pEnd, 16);
+				for (i = 0; reg_loc < 256 && i < 16; i++) {
+					reg_val = strtol(pEnd + 1, &pEnd, 16);
+					cur->config[reg_loc] = reg_val;
+					reg_loc++;
+				}
+			}
+		}
+	}
+
+	/* Check aspm registers from the list of pci devices */
+	for (cur = head; cur; cur = cur->next) {
+		struct pci_device *target;
+
+		/* Find PCI Bridge (PCIE Root Port) and the attached device  */
+		if (cur->config[FWTS_PCI_HEADER_TYPE] & 0x01) {
+			target = head;
+			while (target != NULL) {
+				if (target->bus == cur->config[FWTS_PCI_SECONDARD_BUS_NUMBER])
+					break;
+				target = target->next;
+			}
+			if (target == NULL) {
+				continue;
+			}
+
+			pcie_compare_rp_dev_aspm_registers(fw, cur, target);
+		}
+	}
+
+	cur = head;
+	while (cur != NULL) {
+		device = cur->next;
+		free(cur);
+		cur = device;
+	}
+
+	fwts_text_list_free(lspci_output);
+
+	return ret;
+}
+
 static int aspm_check_configuration(fwts_framework *fw)
 {
 	int ret;
@@ -65,8 +290,14 @@ static int aspm_check_configuration(fwts_framework *fw)
 	return ret;
 }
 
+static int aspm_pcie_register_configuration(fwts_framework *fw)
+{
+	return pcie_check_aspm_registers(fw, LOG_LEVEL_HIGH);
+}
+
 static fwts_framework_minor_test aspm_tests[] = {
-	{ aspm_check_configuration, "PCIe ASPM configuration test." },
+	{ aspm_check_configuration, "PCIe ASPM ACPI test." },
+	{ aspm_pcie_register_configuration, "PCIe ASPM registers test." },
 	{ NULL, NULL }
 };
 

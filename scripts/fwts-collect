@@ -54,7 +54,7 @@ EOD
 
 
 #
-#  Dump out ACPI interrpupt stats
+#  Dump out ACPI interrupt stats
 #
 acpi_irq_dump()
 {

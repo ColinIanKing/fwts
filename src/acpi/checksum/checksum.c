@@ -42,12 +42,16 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	/* Version 1.0 RSDP checksum, always applies */
 	checksum = fwts_checksum(table->data, 20);
-	if (checksum != 0)
-		fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableChecksumRSDP",
+	if (checksum != 0) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "ACPITableChecksumRSDP",
 			"RSDP has incorrect checksum, expected 0x%2.2x, "
 			"got 0x%2.2x.",
 			(uint8_t)(rsdp->checksum)-checksum, rsdp->checksum);
-	else
+		fwts_advice(fw, 
+			"The kernel will not load the RSDP with an "
+			"invalid checksum and hence all other ACPI "
+			"tables will also fail to load.");
+	} else
 		fwts_passed(fw, "Table RSDP has correct checksum 0x%x.",
 			rsdp->checksum);
 
@@ -57,7 +61,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	 */
 	if (rsdp->revision > 0) {
 		if (table->length < sizeof(fwts_acpi_table_rsdp)) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"ACPITableCheckSumShortRSDP",
 				"RSDP was expected to be %d bytes long, "
 				"got a shortened size of %d bytes.",
@@ -67,19 +71,33 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 			return;
 		}
 		checksum = fwts_checksum(table->data, sizeof(fwts_acpi_table_rsdp));
-		if (checksum != 0)
-			fwts_failed(fw, LOG_LEVEL_HIGH,
+		if (checksum != 0) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"ACPITableChecksumRSDP",
 				"RSDP has incorrect extended checksum, "
 				"expected 0x%2.2x, got 0x%2.2x.",
 				(uint8_t)(rsdp->extended_checksum-checksum),
 				rsdp->extended_checksum);
-		else
+			fwts_advice(fw, 
+				"The kernel will not load the RSDP with an "
+				"invalid extended checksum and hence all "
+				"other ACPI tables will also fail to load.");
+		} else
 			fwts_passed(fw, "Table RSDP has correct extended "
 				"checksum 0x%x.", rsdp->extended_checksum);
 	}
 
 }
+
+/*
+ *  The following tables the kernel requires the checksum to be valid otherwise
+ *  it will not load them, so checksum failures here are considered critical errors.
+ */
+static char *critical_checksum[] = {
+	"RSDT",
+	"XSDT",
+	NULL
+};
 
 static int checksum_scan_tables(fwts_framework *fw)
 {
@@ -104,6 +122,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 			continue;
 		}
 
+		/* FACS doesn't have a checksum, so ignore */
 		if (strcmp("FACS", table->name) == 0)
 			continue;
 
@@ -112,11 +131,38 @@ static int checksum_scan_tables(fwts_framework *fw)
 			fwts_passed(fw, "Table %s has correct checksum 0x%x.",
 				table->name, hdr->checksum);
 		else {
-			fwts_failed(fw, LOG_LEVEL_LOW, "ACPITableChecksum",
+			int i;
+			int log_level = LOG_LEVEL_LOW;
+	
+			for (i = 0; critical_checksum[i]; i++) {
+				if (!strcmp(table->name, critical_checksum[i])) {
+					log_level = LOG_LEVEL_CRITICAL;
+					break;
+				}
+			}
+
+			fwts_failed(fw, log_level, "ACPITableChecksum",
 				"Table %s has incorrect checksum, "
 				"expected 0x%2.2x, got 0x%2.2x.",
-				table->name, (uint8_t)(hdr->checksum-checksum), hdr->checksum);
-		}	fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
+				table->name, (uint8_t)(hdr->checksum-checksum),
+				hdr->checksum);
+
+			/* Give some contextual explanation of the error */
+			if (log_level == LOG_LEVEL_CRITICAL)
+				fwts_advice(fw, 
+					"The kernel requires this table to have a "
+					"valid checksum and will not load it. This "
+					"will lead to ACPI not working correctly.");
+			else
+				fwts_advice(fw,
+					"The kernel will warn that this table has "
+					"an invalid checksum but will ignore the "
+					"error and still load it. This is not a "
+					"critical issue, but should be fixed if "
+					"possible to avoid the warning messages.");
+
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
+		}
 	}
 	return FWTS_OK;
 }

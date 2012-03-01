@@ -27,7 +27,9 @@ static int memory_mapdump_util(fwts_framework *fw)
 
 	if ((memory_mapdump_memory_map_info =
 		fwts_memory_map_table_load(fw)) == NULL) {
-		fwts_log_warning(fw, "Cannot memory map table from /sys/firmware/memmap or kernel log.");
+		fwts_log_warning(fw,
+			"Cannot memory map table from /sys/firmware/memmap "
+			"or kernel log.");
 		return FWTS_ERROR;
 	}
 

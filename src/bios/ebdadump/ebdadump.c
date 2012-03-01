@@ -30,7 +30,7 @@ static void ebdadump_data(fwts_framework *fw,
 	int i;
 
 	for (i=0; i<length; i+=16) {
-		fwts_dump_raw_data(buffer, sizeof(buffer), data+i, offset+i, 16);
+		fwts_dump_raw_data(buffer, sizeof buffer, data+i, offset+i, 16);
 		fwts_log_info_verbatum(fw, "%s", buffer);
 	}
 }
@@ -49,7 +49,8 @@ static int ebdadump_test1(fwts_framework *fw)
 	len = BIOS_ROM_START - ebda_addr;
 
 	if (ebda_addr > BIOS_ROM_START) {
-		fwts_log_error(fw, "EBDA start address is greater than the BIOS ROM start address.");
+		fwts_log_error(fw, "EBDA start address is greater than the "
+			"BIOS ROM start address.");
 		return FWTS_ERROR;
 	}
 
@@ -81,6 +82,7 @@ static fwts_framework_ops ebdadump_ops = {
 	.minor_tests = ebdadump_tests
 };
 
-FWTS_REGISTER(ebdadump, &ebdadump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS | FWTS_ROOT_PRIV);
+FWTS_REGISTER(ebdadump, &ebdadump_ops, FWTS_TEST_ANYTIME,
+	FWTS_UTILS | FWTS_ROOT_PRIV);
 
 #endif

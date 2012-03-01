@@ -99,9 +99,9 @@ struct acpi_pci_path {
  * = 0, normal pci device
  * = 1, pci bridge, sec_bus gets set
  */
-static int read_pci_device_secondary_bus_number(uint8_t seg,
-	uint8_t bus, uint8_t dev,
-	uint8_t fn, uint8_t *sec_bus)
+static int read_pci_device_secondary_bus_number(const uint8_t seg,
+	const uint8_t bus, const uint8_t dev,
+	const uint8_t fn, uint8_t *sec_bus)
 {
 	FILE *file;
 	char path[PATH_MAX];
@@ -128,7 +128,7 @@ static int read_pci_device_secondary_bus_number(uint8_t seg,
 }
 
 static int acpi_parse_one_dev_scope(fwts_framework *fw,
-	struct acpi_dev_scope *scope, int seg)
+	struct acpi_dev_scope *scope, const int seg)
 {
 	struct acpi_pci_path *path;
 	int count;
@@ -148,7 +148,8 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw,
 	}
 
 	if (scope->dev_type > ACPI_DEV_P2PBRIDGE) {
-		fwts_log_info(fw, "Unknown device scope type, the test case should be fixed.");
+		fwts_log_info(fw, "Unknown device scope type, "
+			"the test case should be fixed.");
 		return FWTS_ERROR;
 	}
 
@@ -180,12 +181,13 @@ static int acpi_parse_one_dev_scope(fwts_framework *fw,
 	}
 	return FWTS_OK;
 error:
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "DevScopeDevNotFound", "Device scope device not found.");
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "DevScopeDevNotFound",
+		"Device scope device not found.");
 	return FWTS_ERROR;
 }
 
 static int acpi_parse_dev_scope(fwts_framework *fw,
-	void *start, void *end, int seg)
+	void *start, void *end, const int seg)
 {
 	struct acpi_dev_scope *scope;
 	int ret;
@@ -253,7 +255,8 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL) {
-		fwts_skipped(fw, "No DMAR table. This is not necessarily a failure as most systems do not have this table.");
+		fwts_skipped(fw, "No DMAR table. This is not necessarily a "
+			"failure as most systems do not have this table.");
 		return FWTS_SKIP;
 	}
 
@@ -266,7 +269,8 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	}
 
 	header = (struct acpi_dmar_entry_header *)(table_ptr+DMAR_HEADER_SIZE);
-	while ((unsigned long)header < (unsigned long)(table_ptr + table->length)) {
+	while ((unsigned long)header <
+	       (unsigned long)(table_ptr + table->length)) {
 		if ((header->type == ACPI_DMAR_DRHD) &&
 		    (acpi_parse_one_drhd(fw, header) != FWTS_OK)) {
 			failed++;
@@ -304,7 +308,8 @@ static int dmar_test1(fwts_framework *fw)
                 	fwts_log_error(fw, "Cannot read kernel log.");
                 	return FWTS_ERROR;
         	}
-		if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors)) {
+		if (fwts_klog_scan(fw, klog, acpiinfo_check,
+			NULL, NULL, &errors)) {
                 	fwts_log_error(fw, "Failed to scan kernel log.");
                 	return FWTS_ERROR;
 		}

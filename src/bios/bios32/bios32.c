@@ -36,7 +36,9 @@ typedef struct {
 static int bios32_init(fwts_framework *fw)
 {
 	if (fw->firmware_type != FWTS_FIRMWARE_BIOS) {
-		fwts_log_info(fw, "Machine is not using traditional BIOS firmware, skipping test.");
+		fwts_log_info(fw,
+			"Machine is not using traditional BIOS firmware, "
+			"skipping test.");
 		return FWTS_SKIP;
 	}
 
@@ -66,9 +68,12 @@ static int bios32_test1(fwts_framework *fw)
 		    (*(mem+i+1) == '3') &&
 		    (*(mem+i+2) == '2') &&
 		    (*(mem+i+3) == '_')) {
-			fwts_bios32_service_directory *bios32 = (fwts_bios32_service_directory*)(mem+i);
+			fwts_bios32_service_directory *bios32 =
+				(fwts_bios32_service_directory *)(mem+i);
 
-			fwts_log_info(fw, "Found BIOS32 Service Directory at 0x%8.8x", BIOS32_SD_REGION_START+i);
+			fwts_log_info(fw,
+				"Found BIOS32 Service Directory at 0x%8.8x",
+				BIOS32_SD_REGION_START+i);
 			fwts_log_info_verbatum(fw, "  Signature  : %4.4s", 
 				bios32->signature);
 			fwts_log_info_verbatum(fw, "  Entry Point: 0x%8.8x",
@@ -84,30 +89,40 @@ static int bios32_test1(fwts_framework *fw)
 			if (bios32->entry_point >= 0x100000) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirEntryPointHighMem",
-					"Service Directory Entry Point 0x%8.8x is in high memory and cannot be used by the kernel.",
+					"Service Directory Entry Point 0x%8.8x "
+					"is in high memory and cannot be used "
+					"by the kernel.",
 					bios32->entry_point);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
-				fwts_passed(fw, "Service Directory Entry Point 0x%8.8x is not in high memory.",
+				fwts_passed(fw, "Service Directory Entry Point "
+					"0x%8.8x is not in high memory.",
 					bios32->entry_point);
 
 			if (bios32->length != 1) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirEntryLength",
-					 "Service Directory Length is 0x%8.8x, expected 1 (1 x 16 bytes).",
+					"Service Directory Length is 0x%8.8x, "
+					"expected 1 (1 x 16 bytes).",
 					bios32->length);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
-				fwts_passed(fw, "Service Directory Length is 1 (1 x 16 bytes) as expected.");
+				fwts_passed(fw,
+					"Service Directory Length is 1 "
+					"(1 x 16 bytes) as expected.");
 
 			if (bios32->revision_level != 0) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirRevision",
-					"Service Directory Revision is 0x%2.2x, only version 0 is supported by the kernel.",
+					"Service Directory Revision is 0x%2.2x,"
+					" only version 0 is supported by the "
+					"kernel.",
 					bios32->revision_level);
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
-				fwts_passed(fw, "Service Directory Revision is 0x%2.2x and is supported by the kernel.",
+				fwts_passed(fw,
+					"Service Directory Revision is 0x%2.2x "
+					"and is supported by the kernel.",
 					bios32->revision_level);
 
 			if (fwts_checksum(mem + i, 16) != 0) {
@@ -116,7 +131,8 @@ static int bios32_test1(fwts_framework *fw)
 					"Service Directory checksum failed.");
 				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else
-				fwts_passed(fw, "Service Directory checksum passed.");
+				fwts_passed(fw,
+					"Service Directory checksum passed.");
 			found++;
 		}
 	}
@@ -126,8 +142,8 @@ static int bios32_test1(fwts_framework *fw)
 	else if (found > 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"BIOS32MultipleSrvDirInstances", 
-			"Found %d instances of BIOS32 Service Directory, there should only be 1.",
-			found);
+			"Found %d instances of BIOS32 Service Directory, "
+			"there should only be 1.", found);
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	}
 
@@ -147,6 +163,7 @@ static fwts_framework_ops bios32_ops = {
 	.minor_tests = bios32_tests
 };
 
-FWTS_REGISTER(bios32, &bios32_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+FWTS_REGISTER(bios32, &bios32_ops, FWTS_TEST_ANYTIME,
+	FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

@@ -58,23 +58,23 @@ typedef struct {
 } __attribute__ ((packed)) fwts_guid_info;
 
 static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
-	{ "67C3371D-95A3-4C37-BB61-DD47B491DAAB",	"acer-wmi",	"Acer" },
-	{ "431F16ED-0C2B-444C-B267-27DEB140CF9C",	"acer-wmi",	"Acer" },
-	{ "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3",	"acer-wmi",	"Acer" },
-	{ "95764E09-FB56-4e83-B31A-37761F60994A",	"acer-wmi",	"Acer" },
-	{ "61EF69EA-865C-4BC3-A502-A0DEBA0CB531",	"acer-wmi",	"Acer" },
-	{ "676AA15E-6A47-4D9F-A2CC-1E6D18D14026",	"acer-wmi",	"Acer" },
-	{ "9DBB5994-A997-11DA-B012-B622A1EF5492",	"dell-wmi",	"Dell" },
-	{ "284A0E6B-380E-472A-921F-E52786257FB4",	"dell-wmi-aio",	"Dell" },
-	{ "02314822-307C-4F66-BF0E-48AEAEB26CC8",	"dell-wmi-aio",	"Dell" },
-	{ "ABBC0F72-8EA1-11D1-00A0-C90629100000",	"eeepc-wmi",	"Asus" },
-	{ "97845ED0-4E6D-11DE-8A39-0800200C9A66",	"eeepc-wmi",	"Asus" },
-	{ "95F24279-4D7B-4334-9387-ACCDC67EF61C",	"hp-wmi",	"HP"   },
-	{ "5FB7F034-2C63-45e9-BE91-3D44E2C707E4",	"hp-wmi",	"HP"   },
-	{ "551A1F84-FBDD-4125-91DB-3EA8F44F1D45",	"msi-wmi",	"MSI"  },
-	{ "B6F3EEF2-3D2F-49DC-9DE3-85BCE18C62F2",	"msi-wmi",	"MSI"  },
-	{ "C364AC71-36DB-495A-8494-B439D472A505",	"tc110-wmi",	"HP Compaq" },
-	{ NULL, 					NULL,		NULL }
+	{ "67C3371D-95A3-4C37-BB61-DD47B491DAAB", "acer-wmi",	"Acer" },
+	{ "431F16ED-0C2B-444C-B267-27DEB140CF9C", "acer-wmi",	"Acer" },
+	{ "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3", "acer-wmi",	"Acer" },
+	{ "95764E09-FB56-4e83-B31A-37761F60994A", "acer-wmi",	"Acer" },
+	{ "61EF69EA-865C-4BC3-A502-A0DEBA0CB531", "acer-wmi",	"Acer" },
+	{ "676AA15E-6A47-4D9F-A2CC-1E6D18D14026", "acer-wmi",	"Acer" },
+	{ "9DBB5994-A997-11DA-B012-B622A1EF5492", "dell-wmi",	"Dell" },
+	{ "284A0E6B-380E-472A-921F-E52786257FB4", "dell-wmi-aio","Dell" },
+	{ "02314822-307C-4F66-BF0E-48AEAEB26CC8", "dell-wmi-aio","Dell" },
+	{ "ABBC0F72-8EA1-11D1-00A0-C90629100000", "eeepc-wmi",	"Asus" },
+	{ "97845ED0-4E6D-11DE-8A39-0800200C9A66", "eeepc-wmi",	"Asus" },
+	{ "95F24279-4D7B-4334-9387-ACCDC67EF61C", "hp-wmi",	"HP"   },
+	{ "5FB7F034-2C63-45e9-BE91-3D44E2C707E4", "hp-wmi",	"HP"   },
+	{ "551A1F84-FBDD-4125-91DB-3EA8F44F1D45", "msi-wmi",	"MSI"  },
+	{ "B6F3EEF2-3D2F-49DC-9DE3-85BCE18C62F2", "msi-wmi",	"MSI"  },
+	{ "C364AC71-36DB-495A-8494-B439D472A505", "tc110-wmi",	"HP Compaq" },
+	{ NULL, NULL, NULL }
 };
 
 static fwts_wmi_known_guid *wmi_find_guid(char *guid)
@@ -111,7 +111,8 @@ static char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 	return buffer;
 }
 
-static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, bool *result)
+static void wmi_parse_wdg_data(fwts_framework *fw,
+	int size, uint8_t *wdg_data, bool *result)
 {
 	int i;
 	int advice_given = 0;
@@ -128,32 +129,54 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 		known = wmi_find_guid(guidstr);
 
 		if (info->flags & FWTS_WMI_METHOD) {
-			fwts_log_info(fw, "Found WMI Method WM%c%c with GUID: %s, Instance 0x%2.2x", info->obj_id[0], info->obj_id[1], guidstr, info->instance);
+			fwts_log_info(fw,
+				"Found WMI Method WM%c%c with GUID: %s, "
+				"Instance 0x%2.2x",
+				info->obj_id[0], info->obj_id[1],
+				guidstr, info->instance);
 		} else if (info->flags & FWTS_WMI_EVENT) {
-			fwts_log_info(fw, "Found WMI Event, Notifier ID: 0x%2.2x, GUID: %s, Instance 0x%2.2x", info->notify_id, guidstr, info->instance);
+			fwts_log_info(fw,
+				"Found WMI Event, Notifier ID: 0x%2.2x, "
+				"GUID: %s, Instance 0x%2.2x",
+				info->notify_id, guidstr, info->instance);
 			if (known == NULL) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"WMIUnknownGUID",
-					"GUID %s is unknown to the kernel, a driver may need to be implemented for this GUID.", guidstr);
+					"GUID %s is unknown to the kernel, "
+					"a driver may need to be implemented "
+					"for this GUID.", guidstr);
 				*result = true;
 				if (!advice_given) {
 					advice_given = 1;
 					fwts_log_nl(fw);
 					fwts_log_advice(fw,
-						"ADVICE: A WMI driver probably needs to be written for this event.");
+						"ADVICE: A WMI driver probably "
+						"needs to be written for this "
+						"event.");
 					fwts_log_advice(fw,
-						"It can checked for using: wmi_has_guid(\"%s\").", guidstr);
+						"It can checked for using: "
+						"wmi_has_guid(\"%s\").",
+						guidstr);
 					fwts_log_advice(fw,
-						"One can install a notify handler using wmi_install_notify_handler(\"%s\", handler, NULL).  ", guidstr);
+						"One can install a notify "
+						"handler using "
+						"wmi_install_notify_handler"
+						"(\"%s\", handler, NULL).  ",
+						guidstr);
 					fwts_log_advice(fw,
-						"http://lwn.net/Articles/391230 describes how to write an appropriate driver.");
+						"http://lwn.net/Articles/391230"
+						" describes how to write an "
+						"appropriate driver.");
 					fwts_log_nl(fw);
 				}
 			}
 		} else {
 			char *flags = wmi_wdg_flags_to_text(info->flags);
-			fwts_log_info(fw, "Found WMI Object, Object ID %c%c, GUID: %s, Instance 0x%2.2x, Flags: %2.2x %s",
-				info->obj_id[0], info->obj_id[1], guidstr, info->instance, info->flags, flags);
+			fwts_log_info(fw,
+				"Found WMI Object, Object ID %c%c, "
+				"GUID: %s, Instance 0x%2.2x, Flags: %2.2x %s",
+				info->obj_id[0], info->obj_id[1], guidstr,
+				info->instance, info->flags, flags);
 		}
 
 		if (known) {
@@ -167,7 +190,8 @@ static void wmi_parse_wdg_data(fwts_framework *fw, int size, uint8_t *wdg_data, 
 	}
 }
 
-static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size, uint8_t *wdg_data)
+static void wmi_get_wdg_data(fwts_framework *fw,
+	fwts_list_link *item, int size, uint8_t *wdg_data)
 {
 	char *str;
 	uint8_t *data = wdg_data;
@@ -201,7 +225,8 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 			if (data > wdg_data + size) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"WMI_WDGBufferBad",
-					"_WDG buffer was more than %d bytes long!", size);
+					"_WDG buffer was more than %d bytes "
+					"long!", size);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_LENGTH);
 				return;
 			}
@@ -210,7 +235,8 @@ static void wmi_get_wdg_data(fwts_framework *fw, fwts_list_link *item, int size,
 	return;
 }
 
-static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item, int *count, bool *result)
+static void wmi_parse_for_wdg(fwts_framework *fw,
+	fwts_list_link *item, int *count, bool *result)
 {
 	uint8_t *wdg_data;
 	int size;
@@ -273,7 +299,8 @@ static void wmi_parse_for_wdg(fwts_framework *fw, fwts_list_link *item, int *cou
 	}
 }
 
-static int wmi_table(fwts_framework *fw, char *table, int which, char *name, bool *result)
+static int wmi_table(fwts_framework *fw,
+	char *table, int which, char *name, bool *result)
 {
 	fwts_list_link *item;
 	fwts_list* iasl_output;
@@ -284,7 +311,8 @@ static int wmi_table(fwts_framework *fw, char *table, int which, char *name, boo
 	if (ret == FWTS_NO_TABLE)	/* Nothing more to do */
 		return ret;
 	if (ret != FWTS_OK) {
-		fwts_aborted(fw, "Cannot disassemble and parse for WMI information.");
+		fwts_aborted(fw, "Cannot disassemble and parse for "
+			"WMI information.");
 		return FWTS_ERROR;
 	}
 
@@ -345,7 +373,8 @@ static fwts_framework_minor_test wmi_tests[] = {
 };
 
 static fwts_framework_ops wmi_ops = {
-	.description = "Extract and analyse Windows Management Instrumentation (WMI).",
+	.description = "Extract and analyse Windows Management "
+		       "Instrumentation (WMI).",
 	.minor_tests = wmi_tests
 };
 

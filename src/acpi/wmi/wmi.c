@@ -112,7 +112,7 @@ static char *wmi_wdg_flags_to_text(const fwts_wmi_flags flags)
 }
 
 static void wmi_parse_wdg_data(fwts_framework *fw,
-	int size, uint8_t *wdg_data, bool *result)
+	const int size, const uint8_t *wdg_data, bool *result)
 {
 	int i;
 	int advice_given = 0;
@@ -191,7 +191,7 @@ static void wmi_parse_wdg_data(fwts_framework *fw,
 }
 
 static void wmi_get_wdg_data(fwts_framework *fw,
-	fwts_list_link *item, int size, uint8_t *wdg_data)
+	fwts_list_link *item, const int size, uint8_t *wdg_data)
 {
 	char *str;
 	uint8_t *data = wdg_data;
@@ -300,7 +300,7 @@ static void wmi_parse_for_wdg(fwts_framework *fw,
 }
 
 static int wmi_table(fwts_framework *fw,
-	char *table, int which, char *name, bool *result)
+	const char *table, const int which, const char *name, bool *result)
 {
 	fwts_list_link *item;
 	fwts_list* iasl_output;

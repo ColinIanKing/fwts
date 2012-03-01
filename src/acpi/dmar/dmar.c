@@ -128,7 +128,7 @@ static int read_pci_device_secondary_bus_number(const uint8_t seg,
 }
 
 static int acpi_parse_one_dev_scope(fwts_framework *fw,
-	struct acpi_dev_scope *scope, const int seg)
+	struct acpi_dev_scope *scope, const uint16_t seg)
 {
 	struct acpi_pci_path *path;
 	int count;
@@ -187,7 +187,7 @@ error:
 }
 
 static int acpi_parse_dev_scope(fwts_framework *fw,
-	void *start, void *end, const int seg)
+	void *start, void *end, const uint16_t seg)
 {
 	struct acpi_dev_scope *scope;
 	int ret;

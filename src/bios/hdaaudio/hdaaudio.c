@@ -71,7 +71,8 @@ static void hda_audio_dump_pins(fwts_framework *fw, const char *config,
 			hda_audio_pin_setting *pin_setting =
 				fwts_list_data(hda_audio_pin_setting *, item);
 
-			fwts_log_info_verbatum(fw, "  0x%4.4hx 0x%8.8x", pin_setting->pin, pin_setting->setting);
+			fwts_log_info_verbatum(fw, "  0x%4.4hx 0x%8.8x",
+				pin_setting->pin, pin_setting->setting);
 		}
 	} else
 		fwts_log_info(fw, "%s: None Defined.", config);
@@ -131,10 +132,16 @@ static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 	}
 
 	if (warn) {
-		fwts_log_warning(fw, "BIOS pin configurations required software override to make HDA audio work correctly.");
-		fwts_log_advice(fw, "The driver or user provided overrides should be corrected in BIOS firmware.");
+		fwts_log_warning(fw,
+			"BIOS pin configurations required software override "
+			"to make HDA audio work correctly.");
+		fwts_log_advice(fw,
+			"The driver or user provided overrides should be "
+			"corrected in BIOS firmware.");
 	} else
-		fwts_passed(fw, "Default BIOS pin configurations did not have software override.");
+		fwts_passed(fw,
+			"Default BIOS pin configurations did not have "
+			"software override.");
 
 	fwts_list_free_items(&user_pin_configs, free);
 	fwts_list_free_items(&driver_pin_configs, free);

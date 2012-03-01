@@ -43,7 +43,8 @@ static int hda_audio_read_pins(fwts_framework *fw, const char *path,
 		return FWTS_ERROR;
 
 	while (fscanf(fp, "0x%hx 0x%x\n", &pin, &setting) == 2) {
-		if ((pin_setting = malloc(sizeof(hda_audio_pin_setting))) == NULL) {
+		pin_setting = calloc(1, sizeof(hda_audio_pin_setting));
+		if (pin_setting == NULL) {
 			fwts_list_free(settings, free);
 			fclose(fp);
 			return FWTS_ERROR;

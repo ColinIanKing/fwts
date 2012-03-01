@@ -348,7 +348,7 @@ static int wmi_SSDT(fwts_framework *fw)
 
 	for (i=0; i < 16; i++) {
 		char buffer[10];
-		sprintf(buffer,"SSDT%d", i+1);
+		snprintf(buffer, sizeof(buffer), "SSDT%d", i+1);
 
 		ret = wmi_table(fw, "SSDT", i, buffer, &result);
 		if (ret == FWTS_NO_TABLE) {

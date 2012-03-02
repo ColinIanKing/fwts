@@ -225,6 +225,11 @@ static fwts_list *get_klog_bios_mtrr(void)
 					struct mtrr_entry *mtrr;
 
 					mtrr = calloc(1, sizeof(struct mtrr_entry));
+					if (mtrr == NULL) {
+						fwts_list_free(mtrr_bios_list,
+							free);
+						return NULL;
+					}
 					mtrr->type = 0;
 
 					uint64_t mask =
@@ -260,8 +265,10 @@ static int check_vga_controller_address(fwts_framework *fw)
 
 	memset(line,0,4096);
 
-	if ((mtrr_bios_list = get_klog_bios_mtrr()) == NULL)
+	if ((mtrr_bios_list = get_klog_bios_mtrr()) == NULL) {
+		fwts_log_error("Out of memory fetching MTRR list.");
 		return FWTS_ERROR;
+	}
 
 	snprintf(line, sizeof(line), "%s -v", fw->lspci);
 	fwts_pipe_exec(line, &lspci_output);

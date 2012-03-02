@@ -475,7 +475,11 @@ int fwts_acpica_init(fwts_framework *fw)
 		fwts_acpi_table_info *tbl;
 
 		fwts_acpica_FADT = fwts_low_calloc(1, table->length);
-		memcpy(fwts_acpica_FADT, table->data, table->length);		
+		if (fwts_acpica_FADT == NULL) {
+			fwts_log_error(fw, "Out of memory allocating FADT.");
+			return FWTS_ERROR;
+		}
+		memcpy(fwts_acpica_FADT, table->data, table->length);
 
 		if (fwts_acpi_find_table(fw, "DSDT", 0, &tbl) != FWTS_OK)
 			return FWTS_ERROR;
@@ -515,6 +519,10 @@ int fwts_acpica_init(fwts_framework *fw)
 		uint64_t *entries;
 
 		fwts_acpica_XSDT = fwts_low_calloc(1, table->length);
+		if (fwts_acpica_XSDT == NULL) {
+			fwts_log_error(fw, "Out of memory allocating XSDT.");
+			return FWTS_ERROR;
+		}
 		memcpy(fwts_acpica_XSDT, table->data, sizeof(ACPI_TABLE_HEADER));
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint64_t);
@@ -546,6 +554,10 @@ int fwts_acpica_init(fwts_framework *fw)
 		uint32_t *entries;
 	
 		fwts_acpica_RSDT = fwts_low_calloc(1, table->length);
+		if (fwts_acpica_RSDT == NULL) {
+			fwts_log_error(fw, "Out of memory allocating RSDT.");
+			return FWTS_ERROR;
+		}
 		memcpy(fwts_acpica_RSDT, table->data, sizeof(ACPI_TABLE_HEADER));
 	
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint32_t);
@@ -576,6 +588,10 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	if (table) {
 		fwts_acpica_RSDP = fwts_low_calloc(1, table->length);
+		if (fwts_acpica_RSDP == NULL) {
+			fwts_log_error(fw, "Out of memory allocating RSDP.");
+			return FWTS_ERROR;
+		}
 		memcpy(fwts_acpica_RSDP, table->data, table->length);
 
 		if (table->length > 20)

@@ -158,11 +158,13 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
 		len += taglen + 1;
 
 		if (str) {
-			str = realloc(str, len);
+			if ((str = realloc(str, len)) == NULL)
+				return NULL;
 			strcat(str, " ");
 			strcat(str, tag);
 		} else {
-			str = malloc(len);
+			if ((str = malloc(len)) == NULL)
+				return NULL;
 			strcpy(str, tag);
 		}
 	}

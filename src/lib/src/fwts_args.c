@@ -100,11 +100,13 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 	int c;
 	int option_index;
 	int ret = FWTS_OK;
-
 	char *short_options = NULL;
 
-	if ((long_options = calloc(1, (total_options + 1) * sizeof(struct option))) == NULL)
+	long_options = calloc(1, (total_options + 1) * sizeof(struct option));
+	if (long_options == NULL) {
+		fwts_log_error(fw, "Out of memory allocating long options.");
 		return FWTS_ERROR;
+	}
 
 	/*
 	 *  Build a getopt_long options table from all the options tables
@@ -128,6 +130,12 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 					strcat(short_options, short_name);
 				} else {
 					short_options = calloc(1, len + 1);
+					if (short_options == NULL) {
+						fwts_log_error(fw,
+							"Out of memory "
+							"allocating options.");
+						return FWTS_ERROR;
+					}
 					strcpy(short_options, short_name);
 				}
 			}
@@ -291,7 +299,8 @@ int fwts_args_free(void)
 
 /*
  *  fwts_args_comma_list
- *	given a comma separated list, return a string of space separated terms
+ *	given a comma separated list, return a string of space separated terms.
+ *	returns NULL if failed
  */
 char *fwts_args_comma_list(const char *arg)
 {
@@ -322,6 +331,7 @@ char *fwts_args_comma_list(const char *arg)
 	/* Any empty list should return an empty string and not NULL */
 	if (retstr == NULL)
 		retstr = calloc(1, 1);
+		/* Return NULL on calloc failure must be handled by caller */
 
 	return retstr;
 }

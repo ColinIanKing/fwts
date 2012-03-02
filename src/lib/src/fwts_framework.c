@@ -125,7 +125,10 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
 
 /*
  * fwts_framework_test_add()
- *    register a test, called by FWTS_REGISTER() macro
+ *    register a test, called by FWTS_REGISTER() macro.
+ *    this is called very early, so any errors need to
+ *    be reported to stderr because the logging engine
+ *    is not set up yet.
  */
 void fwts_framework_test_add(const char *name,
 	fwts_framework_ops *ops,
@@ -159,8 +162,17 @@ void fwts_framework_test_add(const char *name,
 	fwts_list_add_ordered(&fwts_framework_test_list, new_test, fwts_framework_compare_priority);
 
 	/* Add any options and handler, if they exists */
-	if (ops->options && ops->options_handler)
-		fwts_args_add_options(ops->options, ops->options_handler, ops->options_check);
+	if (ops->options && ops->options_handler) {
+		int ret;
+
+		ret = fwts_args_add_options(ops->options, ops->options_handler,
+			ops->options_check);
+		if (ret == FWTS_ERROR) {
+			fprintf(stderr, "FATAL: Could not allocate memory "
+				"for getopt options handler.");
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 /*
@@ -1059,7 +1071,10 @@ int fwts_framework_args(const int argc, char **argv)
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
 
-	fwts_args_add_options(fwts_framework_options, fwts_framework_options_handler, NULL);
+	ret = fwts_args_add_options(fwts_framework_options,
+		fwts_framework_options_handler, NULL);
+	if (ret == FWTS_ERROR)
+		return ret;
 
 	fw->firmware_type = fwts_firmware_detect();
 

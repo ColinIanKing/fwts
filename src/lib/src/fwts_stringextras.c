@@ -54,7 +54,8 @@ char *fwts_realloc_strcat(char *orig, const char *newstr)
 			return NULL;
 		strcat(orig, newstr);
 	} else {
-		orig = malloc(newlen + 1);
+		if ((orig = malloc(newlen + 1)) == NULL)
+			return NULL;
 		strcpy(orig, newstr);
 	}
 	return orig;

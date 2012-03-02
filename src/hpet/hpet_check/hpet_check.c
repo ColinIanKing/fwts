@@ -56,7 +56,7 @@ static void check_hpet_base_hpet(void)
 #endif
 
 static void hpet_parse_check_base(fwts_framework *fw,
-	char *table, fwts_list_link *item)
+	const char *table, fwts_list_link *item)
 {
 	char *val, *idx;
 
@@ -88,7 +88,7 @@ static void hpet_parse_check_base(fwts_framework *fw,
 }
 
 static void hpet_parse_device_hpet(fwts_framework *fw,
-	char *table, fwts_list_link *item)
+	const char *table, fwts_list_link *item)
 {
 	for (;item != NULL; item = item->next) {
 		char *str = fwts_text_list_text(item);
@@ -126,7 +126,7 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
  *	used to parse the DSDT for HPET base info
  */
 static void hpet_check_base_acpi_table(fwts_framework *fw,
-	char *table, int which)
+	const char *table, const int which)
 {
 	fwts_list *output;
 	fwts_list_link *item;

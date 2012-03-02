@@ -55,7 +55,8 @@ static void check_hpet_base_hpet(void)
 }
 #endif
 
-static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_link *item)
+static void hpet_parse_check_base(fwts_framework *fw,
+	char *table, fwts_list_link *item)
 {
 	char *val, *idx;
 
@@ -69,34 +70,42 @@ static void hpet_parse_check_base(fwts_framework *fw, char *table, fwts_list_lin
 
 		if (hpet_base_p != 0) {
 			if (hpet_base_p != address_base)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseMismatch",
-			     		"Mismatched HPET base between %s (%lx) and the kernel (%lx).",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"HPETBaseMismatch",
+					"Mismatched HPET base between %s (%lx) "
+					"and the kernel (%lx).",
 					table,
-			     		(unsigned long)hpet_base_p, (unsigned long)address_base);
+					(unsigned long)hpet_base_p,
+					(unsigned long)address_base);
 			else
 				fwts_passed(fw,
-					"HPET base matches that between %s and the kernel (%lx).",
+					"HPET base matches that between %s and "
+					"the kernel (%lx).",
 					table,
 					(unsigned long)hpet_base_p);
 		}
 	}
 }
 
-static void hpet_parse_device_hpet(fwts_framework *fw, char *table, fwts_list_link *item)
+static void hpet_parse_device_hpet(fwts_framework *fw,
+	char *table, fwts_list_link *item)
 {
 	for (;item != NULL; item = item->next) {
-		if ((strstr(fwts_text_list_text(item), "Name") != NULL) &&
-                    (strstr(fwts_text_list_text(item), "ResourceTemplate") != NULL)) {
+		char *str = fwts_text_list_text(item);
+		if ((strstr(str, "Name") != NULL) &&
+			(strstr(str, "ResourceTemplate") != NULL)) {
 			fwts_list_link *tmp_item = item->next;
 			for (; tmp_item != NULL; tmp_item = tmp_item->next) {
-				if (strstr(fwts_text_list_text(tmp_item), "Memory32Fixed") != NULL) {
+				if (strstr(fwts_text_list_text(tmp_item),
+					"Memory32Fixed") != NULL) {
 					tmp_item = tmp_item->next;
 					if (tmp_item != NULL) {
 						hpet_parse_check_base(fw, table, tmp_item);
 						return;
 					}
 				}
-				if (strstr(fwts_text_list_text(tmp_item), "DWordMemory") != NULL) {
+				if (strstr(fwts_text_list_text(tmp_item),
+					"DWordMemory") != NULL) {
 					tmp_item = tmp_item->next;
 					if (tmp_item != NULL) {
 						tmp_item = tmp_item->next;
@@ -112,10 +121,13 @@ static void hpet_parse_device_hpet(fwts_framework *fw, char *table, fwts_list_li
 	}
 }
 
-/* check_hpet_base_dsdt() -- used to parse the DSDT for HPET base info */
-static void hpet_check_base_acpi_table(fwts_framework *fw, char *table, int which)
+/*
+ *  check_hpet_base_dsdt()
+ *	used to parse the DSDT for HPET base info
+ */
+static void hpet_check_base_acpi_table(fwts_framework *fw,
+	char *table, int which)
 {
-
 	fwts_list *output;
 	fwts_list_link *item;
 
@@ -157,9 +169,10 @@ static int hpet_check_test1(fwts_framework *fw)
 	fwts_list_link *item;
 
 	fwts_log_info(fw,
-		   "This test checks the HPET PCI BAR for each timer block in the timer. "
-		   "The base address is passed by the firmware via an ACPI table. "
-		   "IRQ routing and initialization is also verified by the test.");
+		"This test checks the HPET PCI BAR for each timer block "
+		"in the timer. The base address is passed by the firmware "
+		"via an ACPI table. IRQ routing and initialization is also "
+		"verified by the test.");
 
 	fwts_list_foreach(item, klog) {
 		char *text = fwts_text_list_text(item);
@@ -168,7 +181,9 @@ static int hpet_check_test1(fwts_framework *fw)
 			char *str = strstr(text, "base: ");
 			if (str) {
 				hpet_base_p = strtoul(str+6,  NULL, 0x10);
-				fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
+				fwts_passed(fw,
+					"Found HPET base %x in kernel log.",
+					(uint32_t)hpet_base_p);
 				break;
 			}
 		}
@@ -179,7 +194,9 @@ static int hpet_check_test1(fwts_framework *fw)
 			char *str = strstr(text, "at MMIO ");
 			if (str) {
 				hpet_base_p = strtoul(str+8,  NULL, 0x10);
-				fwts_passed(fw, "Found HPET base %x in kernel log.", (uint32_t)hpet_base_p);
+				fwts_passed(fw,
+					"Found HPET base %x in kernel log.",
+					(uint32_t)hpet_base_p);
 				break;
 			}
 		}
@@ -215,14 +232,16 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	if (vendor_id == 0xffff)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorId",
-			"Invalid Vendor ID: %04x - this should be configured.", vendor_id);
+			"Invalid Vendor ID: %04x - this should be configured.",
+			vendor_id);
 	else
 		fwts_passed(fw, "Vendor ID looks sane: %04x.", vendor_id);
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETClockPeriod",
-			"Invalid clock period %u, must be non-zero and less than 10^8.", clk_period);
+			"Invalid clock period %u, must be non-zero and "
+			"less than 10^8.", clk_period);
 	else
 		fwts_passed(fw, "Valid clock period %u.", clk_period);
 
@@ -256,6 +275,7 @@ static fwts_framework_ops hpet_check_ops = {
 	.minor_tests = hpet_check_tests
 };
 
-FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME,
+	FWTS_BATCH | FWTS_ROOT_PRIV);
 
 #endif

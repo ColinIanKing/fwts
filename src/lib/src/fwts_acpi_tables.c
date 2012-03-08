@@ -349,6 +349,8 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 		len += (n - 1);
 		table = fwts_low_realloc(table, len);
+		if (table == NULL)
+			return NULL;
 		memcpy(table + offset, data, n-1);
 	}
 
@@ -414,6 +416,8 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 		}
 		else {
 			ptr = (uint8_t*)fwts_low_realloc(ptr, size + n + 1);
+			if (ptr == NULL)
+				return NULL;
 			memcpy(ptr + size, buffer, n);
 			size += n;
 		}

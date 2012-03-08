@@ -98,6 +98,8 @@ char *fwts_pipe_read(const int fd, ssize_t *length)
 		}
 		else {
 			ptr = realloc(ptr, size + n + 1);
+			if (ptr == NULL)
+				return NULL;
 			memcpy(ptr + size, buffer, n);
 			size += n;
 			*(ptr+size) = 0;

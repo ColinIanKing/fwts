@@ -50,6 +50,8 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
 		str = strdup(buffer);
 	else {
 		str = realloc(str, strlen(str) + strlen(buffer) + 1);
+		if (str == NULL)
+			return NULL;
 		strcat(str, buffer);
 	}
 

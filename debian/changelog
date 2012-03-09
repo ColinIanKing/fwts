@@ -1,3 +1,53 @@
+fwts (0.24.21) precise; urgency=low
+
+  [Alex Hung]
+  * pcie: add pcie aspm registers check on root port and device.
+
+  [Chris Van Hoof]
+  * fwts-frontend: v2 update to conditional logic to better detect
+    if we're booted via casper and additional logic to toggle auto
+    shutdown behaviour when testing
+
+  [Colin Ian King]
+  * uefi: uefidump: handle realloc failure
+  * lib: fwts_pipeio: handle realloc failure 
+  * lib: fwts_args: handle realloc failure
+  * lib: acpid: handle realloc failures in fwts_acpi_event_read()
+  * lib: fwts_acpi_tables: handle fwts_low_realloc() failures
+  * acpica: handle realloc failures in fwts_acpica_vprintf()
+  * lib: fwts_klog: remove redundant free()
+  * acpi: checksum: flag up errors that are critical, add more helpful advice
+  * acpi: checksum: fix typo shorted -> shortened
+  * acpi: checksum: reformat lines to fit into 80 columns
+  * acpi: wmi: use snprintf to be safe
+  * acpi: wmi: const func args
+  * acpi: wmi: reformat source into 80 columns
+  * acpi: dmar: make seg a uint16_t rather than an int
+  * acpi: dmar: make func args const
+  * acpi: acpiinfo: tidy up source
+  * bios: hdaaudio: ensure source fits into 80 columns
+  * bios: hdaaudio: use calloc() instead of malloc()
+  * lib: fwts_tag: handle out of memory failure
+  * bios: ebdadump: ensure source fits into 80 columns
+  * bios: bios32: ensure source fits into 80 columns
+  * lib: arg + framework: more robust out of memory handling.
+  * lib: fwts_stringextras: handle out of memory failure
+  * uefi: uefidump: fix infinite recursion on unknown end terminator (v2)
+  * bios: memmapdump: ensure source fits into 80 columns
+  * acpica: fwts_acpica_init(): handle out of memory failures
+  * bios: mtrr: handle out of memory failures
+  * hpet: hpet_check: make func args const where possible
+  * hpet: hpet_check: ensure source fits into 80 columns
+  * fwts-collect: fix typo
+  * fwts-collect: tidy up error handling
+  * fwts-collect: collect more fwts dumped data
+  * read /proc/mtrr rather than use ioctl() interface
+
+  [Keng-Yu Lin]
+  * debian: use autoreconf instead of dh-autoreconf
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 09 Mar 2012 15:04:30 +0800
+
 fwts (0.24.20) precise; urgency=low
 
   [Chris Van Hoof]

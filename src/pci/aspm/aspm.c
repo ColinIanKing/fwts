@@ -104,6 +104,11 @@ static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	} else {
 		*aspm = 0;
 		fwts_log_info(fw, "PCIE ASPM is not controlled by Linux kernel.");
+		fwts_advice(fw,
+			"BIOS reports that Linux kernel should not modify ASPM "
+			"settings that BIOS configured. It can be intentional "
+			"because hardware vendors identified some capability "
+			"bugs between the motherboard and the add-on cards.");
 	}
 
 	return FWTS_OK;
@@ -170,6 +175,12 @@ int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 			, rp->bus, rp->dev, rp->func, rp_aspm_cntrl);
 		fwts_log_error(fw, "Device %02Xh:%02Xh.%02Xh has aspm = %02Xh.",
 			dev->bus, dev->dev, dev->func, device_aspm_cntrl);
+		fwts_advice(fw,
+			"ASPM control registers between root port and device "
+			"must match in order for ASPM to be active. Unmatched "
+			"configuration indicates software did not configure "
+			"ASPM correctly and the system is not saving power "
+			"at its full potential.");
 	} else {
 		fwts_passed(fw, "PCIE aspm setting matched was matched.");
 	}

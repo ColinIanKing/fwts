@@ -665,7 +665,6 @@ static void acpidump_xsdt(fwts_framework *fw, uint8_t *data, int length)
 static void acpidump_madt(fwts_framework *fw, uint8_t *data, int length)
 {
 	int i = 0;
-	int n;
 	int offset = 0;
 
 	fwts_acpidump_field fields[] = {
@@ -788,8 +787,8 @@ static void acpidump_madt(fwts_framework *fw, uint8_t *data, int length)
 				};
 				fwts_log_info_verbatum(fw, " Local SAPIC:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
-				n = strlen(local_sapic->uid_string) + 1;
-				skip = (sizeof(fwts_acpi_madt_local_sapic) + n);
+				skip = (sizeof(fwts_acpi_madt_local_sapic) +
+					strlen(local_sapic->uid_string) + 1);
 			}
 			break;
 		case 8: {

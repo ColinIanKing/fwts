@@ -254,13 +254,13 @@ static int method_evaluate_method(fwts_framework *fw,
 {
 	fwts_list_link	*item;
 	fwts_list *methods;
-	int name_len = strlen(name);
+	size_t name_len = strlen(name);
 	int found = 0;
 
  	if ((methods = fwts_method_get_names()) != NULL) {
 		fwts_list_foreach(item, methods) {
 			char *method_name = fwts_list_data(char*, item);
-			int len = strlen(method_name);
+			size_t len = strlen(method_name);
 			if (strncmp(name, method_name + len - name_len, name_len) == 0) {
 				ACPI_OBJECT_LIST  arg_list;
 

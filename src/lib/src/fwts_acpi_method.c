@@ -164,12 +164,12 @@ fwts_list *fwts_method_get_names(void)
  */
 char *fwts_method_exists(char *name)
 {
-	int name_len = strlen(name);
+	size_t name_len = strlen(name);
 	fwts_list_link	*item;
 
 	fwts_list_foreach(item, fwts_method_names) {
 		char *method_name = fwts_list_data(char*, item);
-		int len = strlen(method_name);
+		size_t len = strlen(method_name);
 
 		if (strncmp(name, method_name + len - name_len, name_len) == 0)
 			return method_name;

@@ -150,11 +150,11 @@ char *fwts_tag_list_to_str(fwts_list *taglist)
 {
 	fwts_list_link	*item;
 	char *str = NULL;
-	int len = 0;
+	size_t len = 0;
 
 	fwts_list_foreach(item, taglist) {
 		char *tag = fwts_list_data(char *, item);
-		int taglen = strlen(tag);
+		size_t taglen = strlen(tag);
 		len += taglen + 1;
 
 		if (str) {

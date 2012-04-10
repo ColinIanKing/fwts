@@ -786,7 +786,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 	time_t now;
 	struct utsname buf;
 	char *tests = NULL;
-	int len = 1;
+	size_t len = 1;
 	int i;
 	fwts_list_link *item;
 

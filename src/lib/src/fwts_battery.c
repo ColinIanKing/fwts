@@ -38,8 +38,8 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	struct dirent *entry;
 	char *field_mAh;
 	char *field_mWh;
-	int  field_mAh_len;
-	int  field_mWh_len;
+	size_t field_mAh_len;
+	size_t field_mWh_len;
 	int  i = 0;
 
 	switch (type) {

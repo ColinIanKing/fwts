@@ -266,10 +266,10 @@ void fwts_acpica_debug_command(fwts_framework *fw, fwts_acpica_log_callback func
 void fwts_acpica_vprintf(const char *fmt, va_list args)
 {
 	static char *buffer;
-	static int  buffer_len;
+	static size_t buffer_len;
 
 	char tmp[4096];
-	int tmp_len;
+	size_t tmp_len;
 
 	vsnprintf(tmp, sizeof(tmp), fmt, args);
 	tmp_len = strlen(tmp);

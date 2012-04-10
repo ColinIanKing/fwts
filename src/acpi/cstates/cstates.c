@@ -112,7 +112,7 @@ static void get_cstates(char *path, fwts_cstates *state)
 		if (entry && strlen(entry->d_name)>3) {
 			int nr = 0;
 			int count;
-			int len;
+			size_t len;
 
 			snprintf(filename, sizeof(filename), "%s/%s/name",
 				path, entry->d_name);

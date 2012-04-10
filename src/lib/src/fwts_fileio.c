@@ -37,8 +37,7 @@ fwts_list *fwts_file_read(FILE *fp)
 		return NULL;
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		int len = strlen(buffer);
-		buffer[len-1] = '\0';	/* Chop off "\n" */
+		buffer[strlen(buffer) - 1] = '\0';	/* Chop off "\n" */
 		fwts_text_list_append(list, buffer);
 	}
 

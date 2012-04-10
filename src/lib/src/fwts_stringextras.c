@@ -27,7 +27,7 @@
  */
 void fwts_chop_newline(char *str)
 {
-	int len;
+	size_t len;
 
 	if (!str)
 		return;
@@ -47,7 +47,7 @@ void fwts_chop_newline(char *str)
  */
 char *fwts_realloc_strcat(char *orig, const char *newstr)
 {
-	int newlen = strlen(newstr);
+	size_t newlen = strlen(newstr);
 
 	if (orig) {
 		if ((orig = realloc(orig, strlen(orig) + newlen + 1)) == NULL)

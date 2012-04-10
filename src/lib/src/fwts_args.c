@@ -116,14 +116,14 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 
 		for (i=0; i<options_table->num_options; i++, n++) {
 			char *short_name = options_table->options[i].short_name;
+			size_t len;
 			
 			long_options[n].name    = options_table->options[i].long_name;
 			long_options[n].has_arg = options_table->options[i].has_arg;
 			long_options[n].flag    = 0;
 			long_options[n].val     = 0;
 	
-			if (short_name != NULL) {
-				int len = strlen(short_name);
+			if (short_name && (len = strlen(short_name)) > 0) {
 				if (short_options) {
 					short_options = realloc(short_options,
 						strlen(short_options) + len + 1);

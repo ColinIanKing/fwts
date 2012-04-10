@@ -292,7 +292,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)table->data;
 	const void *data = table->data;
-	int length = table->length;
+	size_t length = table->length;
 	int i = 0;
 
 	if (madt->flags & 0xfffffffe)
@@ -302,8 +302,8 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	data += sizeof(fwts_acpi_table_madt);
 	length -= sizeof(fwts_acpi_table_madt);
 
-	while (length > (int)sizeof(fwts_acpi_madt_sub_table_header)) {
-		int skip = 0;
+	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+		size_t skip = 0;
 		i++;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
 

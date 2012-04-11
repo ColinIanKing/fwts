@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
@@ -308,25 +309,40 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 {
 	uint32_t offset;
 	uint8_t  data[16];
-	char buffer[80];
+	char buffer[128];
 	uint8_t *table = NULL;
 	char *ptr = buffer;
 	size_t len = 0;
 	unsigned long long table_addr;
+	ptrdiff_t name_len;
 
 	*size = 0;
 
 	if (fgets(buffer, sizeof(buffer), fp) == NULL)
 		return NULL;
 
-	for (ptr = buffer; *ptr && *ptr != '@'; ptr++)
-		;
+	/*
+	 * Parse tablename followed by address, e.g.
+	 *   DSTD @ 0xbfa02344 
+	 *   SSDT4 @ 0xbfa0f230 
+	 */
+	ptr = strstr(buffer, "@ 0x");
+	if (ptr == NULL)
+		return NULL; /* Can't find table name */
 
-	if ((*ptr != '@') || ((ptr - buffer) < 5))
-		return NULL; /* Bad name? */
+	name_len = ptr - buffer;
+	/*
+	 * We should have no more than the table name (4..5 chars)
+	 * plus a space left between the start of the buffer and
+	 * the @ sign.  If we have more then something is wrong with
+	 * the data. So just ignore this garbage as we don't want to
+	 * overflow the name on the following strcpy()
+	 */
+	if ((name_len > 6) || (name_len < 5))
+		return NULL; /* Name way too long or too short */
 
 	if (sscanf(ptr, "@ 0x%Lx\n", &table_addr) < 1)
-		return NULL;
+		return NULL; /* Can't parse address */
 	
 	*(ptr-1) = '\0';
 	strcpy(name, buffer);

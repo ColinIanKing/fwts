@@ -169,18 +169,18 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	/* Now we have a disassembled source in tmpfile, so let's assemble it */
 
 	if (fwts_iasl_assemble_aml(tmpfile, &output_text) < 0) {
-		(void)unlink(tmpfile);
+		(void)unlink(amlfile);
 		(void)unlink(tmpfile);
 		free(output_text);
 		return FWTS_ERROR;
 	}
 
+	/* Remove these now we don't need them */
 	(void)unlink(tmpfile);
+	(void)unlink(amlfile);
 
-	/* For some reason that I've not yet fathomed the ACPICA assembler 
-	   leaves a .src file lying around so let's remove it to be tidy */
-
-	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.src", pid);
+	/* And remove aml file generated from ACPICA compiler */
+	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.aml", pid);
 	(void)unlink(tmpfile);
 
 	*iasl_errors = fwts_list_from_text(output_text);

@@ -37,9 +37,11 @@ static void init_asl_core(void)
 		Gbl_Files[i].Handle = NULL;
 		Gbl_Files[i].Filename = NULL;
 	}
-	
+
 	Gbl_Files[ASL_FILE_STDOUT].Handle   = stdout;
 	Gbl_Files[ASL_FILE_STDOUT].Filename = "STDOUT";
+	Gbl_Files[ASL_FILE_STDERR].Handle   = stdout;
+	Gbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
 }
 
 int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
@@ -55,10 +57,11 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		/* Child */
 		init_asl_core();
 
+		/* Setup ACPICA disassembler globals */
 		Gbl_DisasmFlag = TRUE;
         	Gbl_DoCompile = FALSE;
         	Gbl_OutputFilenamePrefix = (char*)outputfile;
-        	Gbl_UseDefaultAmlFilename = FALSE;
+		Gbl_UseDefaultAmlFilename = FALSE;
 
 		/* Throw away noisy errors */
 		freopen("/dev/null", "w", stderr);
@@ -82,7 +85,7 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 	char	buffer[8192];
 	int	n;
 	int 	len = 0;
-	int	status;	
+	int	status;
 	FILE 	*fp;
 
 	if (pipe(pipefds) < 0)
@@ -104,8 +107,12 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 		}
 		close(pipefds[0]);
 
+		/* Setup ACPICA compiler globals */
 		Gbl_DisasmFlag = FALSE;
         	Gbl_DoCompile = TRUE;
+		Gbl_PreprocessFlag = FALSE;
+        	Gbl_UseDefaultAmlFilename = FALSE;
+        	Gbl_OutputFilenamePrefix = source;
 
 		status = AslDoOnePathname(source, AslDoOneFile);
 
@@ -116,7 +123,7 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 	default:
 		/* Parent */
 		close(pipefds[1]);
-		
+
 		while ((n = read(pipefds[0], buffer, sizeof(buffer))) > 0) {
 			data = realloc(data, len + n + 1);
 			memcpy(data + len, buffer, n);

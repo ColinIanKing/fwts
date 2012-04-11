@@ -80,6 +80,25 @@ static int			fwts_acpica_force_sem_timeout;		/* > 0, forces a semaphore timeout 
 static bool			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
 static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
 
+#define ACPI_ADR_SPACE_USER_DEFINED1        0x80
+#define ACPI_ADR_SPACE_USER_DEFINED2        0xE4
+
+static ACPI_ADR_SPACE_TYPE fwts_space_id_list[] =
+{
+	ACPI_ADR_SPACE_SYSTEM_MEMORY,
+	ACPI_ADR_SPACE_SYSTEM_IO,
+	ACPI_ADR_SPACE_EC,
+	ACPI_ADR_SPACE_SMBUS,
+	ACPI_ADR_SPACE_CMOS,
+	ACPI_ADR_SPACE_GSBUS,
+	ACPI_ADR_SPACE_GPIO,
+	ACPI_ADR_SPACE_PCI_BAR_TARGET,
+	ACPI_ADR_SPACE_IPMI,
+	ACPI_ADR_SPACE_FIXED_HARDWARE,
+	ACPI_ADR_SPACE_USER_DEFINED1,
+	ACPI_ADR_SPACE_USER_DEFINED2
+};
+
 /* Semaphore Tracking */
 
 /*
@@ -126,17 +145,16 @@ void fwts_acpica_simulate_sem_timeout(int timeout)
 	fwts_acpica_force_sem_timeout = timeout;
 }
 
-
 /*
  *  hash_sem_handle()
  *	generate a simple hash based on semaphore handle
  */
 static unsigned int hash_sem_handle(sem_t *sem)
-{	
+{
 	unsigned int i = (unsigned int)((unsigned long)sem % MAX_SEMAPHORES);
 	int j;
 
-	for (j=0;j<MAX_SEMAPHORES;j++) {
+	for (j = 0; j<MAX_SEMAPHORES; j++) {
 		if (sem_hash_table[i].sem == sem)
 			return i;
 		if (sem_hash_table[i].sem == NULL)
@@ -175,61 +193,205 @@ static void hash_sem_dec_count(sem_t *sem)
 /* ACPICA Handlers */
 
 /*
- *  fwtsNotifyHandler()
+ *  fwts_notify_handler()
  *	Notify handler
  */
-static void fwtsNotifyHandler(ACPI_HANDLE Device, UINT32 Value, void *Context)
+static void fwts_notify_handler(ACPI_HANDLE Device, UINT32 Value, void *Context)
 {
-	/* fwts_log_info(fwts_acpica_fw, "Received a notify 0x%X", Value); */
+	(void)AcpiEvaluateObject(Device, "_NOT", NULL, NULL);
 }
 
-static UINT32 fwtsInterfaceHandler(ACPI_STRING InterfaceName, UINT32 Supported)
+static void fwts_device_notify_handler(ACPI_HANDLE Device, UINT32 Value, void *Context)
+{
+	(void)AcpiEvaluateObject(Device, "_NOT", NULL, NULL);
+}
+
+static UINT32 fwts_interface_handler(ACPI_STRING InterfaceName, UINT32 Supported)
 {
 	return Supported;
 }
 
-static ACPI_STATUS fwtsTableHandler(UINT32 Event, void *Table, void *Context)
+static ACPI_STATUS fwts_table_handler(UINT32 Event, void *Table, void *Context)
 {
 	return AE_OK;
 }
 
-static ACPI_STATUS fwtsExceptionHandler(ACPI_STATUS AmlStatus, ACPI_NAME Name,
-    				      UINT16 Opcode, UINT32 AmlOffset, void *Context)
+static UINT32 fwts_event_handler(void *Context)
+{
+	return 0;
+}
+
+static ACPI_STATUS fwts_exception_handler(
+	ACPI_STATUS AmlStatus,
+	ACPI_NAME Name,
+	UINT16 Opcode,
+	UINT32 AmlOffset,
+	void *Context)
 {
 	char *exception = (char*)AcpiFormatException(AmlStatus);
 
 	if (Name)
-		fwts_log_info(fwts_acpica_fw, "ACPICA Exception %s during execution of method %4.4s", exception, (char*)&Name);
+		fwts_log_info(fwts_acpica_fw,
+			"ACPICA Exception %s during execution of method %4.4s",
+			exception, (char*)&Name);
 	else
-		fwts_log_info(fwts_acpica_fw, "ACPICA Exception %s during execution at module level (table load)", exception);
+		fwts_log_info(fwts_acpica_fw,
+			"ACPICA Exception %s during execution at module level (table load)",
+			exception);
 
 	return AmlStatus;
 }
 
-static void fwtsDeviceNotifyHandler(ACPI_HANDLE device, UINT32 value, void *context)
-{
-    (void)AcpiEvaluateObject(device, "_NOT", NULL, NULL);
-}
-
-static void fwtsAttachedDataHandler(ACPI_HANDLE obj, void *data)
+static void fwts_attached_data_handler(ACPI_HANDLE obj, void *data)
 {
 }
 
-static ACPI_STATUS fwtsRegionInit(ACPI_HANDLE RegionHandle, UINT32 Function,
-    				  void *HandlerContext, void **RegionContext)
+static ACPI_STATUS fwts_region_init(
+	ACPI_HANDLE RegionHandle,
+	UINT32 Function,
+	void *HandlerContext,
+	void **RegionContext)
 {
-    *RegionContext = RegionHandle;
-    return (AE_OK);
+	*RegionContext = RegionHandle;
+	return AE_OK;
 }
 
-extern ACPI_STATUS
-AeRegionHandler (
-    UINT32                  Function,
-    ACPI_PHYSICAL_ADDRESS   Address,
-    UINT32                  BitWidth,
-    UINT64                  *Value,
-    void                    *HandlerContext,
-    void                    *RegionContext);
+static ACPI_STATUS fwts_region_handler(
+	UINT32                  function,
+	ACPI_PHYSICAL_ADDRESS   address,
+	UINT32                  bitwidth,
+	UINT64                  *value,
+	void                    *handlercontext,
+	void                    *regioncontext)
+{
+	ACPI_OPERAND_OBJECT     *regionobject = ACPI_CAST_PTR(ACPI_OPERAND_OBJECT, regioncontext);
+	UINT8                   *buffer = ACPI_CAST_PTR(UINT8, value);
+	ACPI_SIZE               length;
+	UINT32                  bytewidth;
+	ACPI_CONNECTION_INFO    *context;
+	int			i;
+
+	if (regionobject->Region.Type != ACPI_TYPE_REGION)
+		return AE_OK;
+
+	context = ACPI_CAST_PTR (ACPI_CONNECTION_INFO, handlercontext);
+	length = (ACPI_SIZE)regionobject->Region.Length;
+
+	switch (regionobject->Region.SpaceId) {
+	case ACPI_ADR_SPACE_SYSTEM_IO:
+		switch (function & ACPI_IO_MASK) {
+		case ACPI_READ:
+			*value = 0;
+			break;
+		case ACPI_WRITE:
+			break;
+		default:
+			return AE_BAD_PARAMETER;
+			break;
+		}
+		break;
+
+	case ACPI_ADR_SPACE_SMBUS:
+	case ACPI_ADR_SPACE_GSBUS:  /* ACPI 5.0 */
+		length = 0;
+
+		switch (function & ACPI_IO_MASK) {
+		case ACPI_READ:
+			switch (function >> 16) {
+			case AML_FIELD_ATTRIB_QUICK:
+			case AML_FIELD_ATTRIB_SEND_RCV:
+			case AML_FIELD_ATTRIB_BYTE:
+				length = 1;
+				break;
+			case AML_FIELD_ATTRIB_WORD:
+			case AML_FIELD_ATTRIB_WORD_CALL:
+				length = 2;
+				break;
+			case AML_FIELD_ATTRIB_BLOCK:
+			case AML_FIELD_ATTRIB_BLOCK_CALL:
+				length = 32;
+				break;
+			case AML_FIELD_ATTRIB_MULTIBYTE:
+			case AML_FIELD_ATTRIB_RAW_BYTES:
+			case AML_FIELD_ATTRIB_RAW_PROCESS:
+				length = context->AccessLength - 2;
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case ACPI_WRITE:
+			switch (function >> 16) {
+			case AML_FIELD_ATTRIB_QUICK:
+			case AML_FIELD_ATTRIB_SEND_RCV:
+			case AML_FIELD_ATTRIB_BYTE:
+			case AML_FIELD_ATTRIB_WORD:
+			case AML_FIELD_ATTRIB_BLOCK:
+				length = 0;
+				break;
+			case AML_FIELD_ATTRIB_WORD_CALL:
+				length = 2;
+				break;
+			case AML_FIELD_ATTRIB_BLOCK_CALL:
+				length = 32;
+				break;
+			case AML_FIELD_ATTRIB_MULTIBYTE:
+			case AML_FIELD_ATTRIB_RAW_BYTES:
+			case AML_FIELD_ATTRIB_RAW_PROCESS:
+				length = context->AccessLength - 2;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+		for (i = 0; i < length; i++)
+			buffer[i+2] = (UINT8)(0xA0 + i);
+		buffer[0] = 0x7A;
+		buffer[1] = (UINT8)length;
+		return AE_OK;
+
+	case ACPI_ADR_SPACE_IPMI: /* ACPI 4.0 */
+		buffer[0] = 0;       /* Status byte */
+		buffer[1] = 64;      /* Return buffer data length */
+		buffer[2] = 0;       /* Completion code */
+		buffer[3] = 0;       /* Reserved */
+		for (i = 4; i < 66; i++)
+			buffer[i] = (UINT8) (i);
+		return AE_OK;
+
+	case ACPI_ADR_SPACE_SYSTEM_MEMORY:
+	case ACPI_ADR_SPACE_EC:
+	case ACPI_ADR_SPACE_CMOS:
+	case ACPI_ADR_SPACE_GPIO:
+	case ACPI_ADR_SPACE_PCI_BAR_TARGET:
+	case ACPI_ADR_SPACE_FIXED_HARDWARE:
+	case ACPI_ADR_SPACE_USER_DEFINED1:
+	case ACPI_ADR_SPACE_USER_DEFINED2:
+	default:
+		bytewidth = (bitwidth / 8);
+		if (bitwidth % 8)
+			bytewidth += 1;
+
+		switch (function) {
+		case ACPI_READ:
+			/* Fake it, return all zeros */
+			memset(value, 0, bytewidth);
+		break;
+		case ACPI_WRITE:
+			/* Fake it, do nothing */
+			break;
+		default:
+			return AE_BAD_PARAMETER;
+		}
+		return AE_OK;
+	}
+
+	return AE_OK;
+}
 
 /*
  *  AeLocalGetRootPointer()
@@ -237,7 +399,7 @@ AeRegionHandler (
  */
 ACPI_PHYSICAL_ADDRESS AeLocalGetRootPointer(void)
 {
-	return ((ACPI_PHYSICAL_ADDRESS) fwts_acpica_RSDP);
+	return (ACPI_PHYSICAL_ADDRESS)fwts_acpica_RSDP;
 }
 
 /*
@@ -289,7 +451,7 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 		else
 			buffer_len = 0;
 	}
-	
+
 	if (index(buffer, '\n') != NULL) {
 		if (fwts_acpica_log_callback_func)
 			fwts_acpica_log_callback_func(fwts_acpica_fw, buffer);
@@ -365,7 +527,7 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
  *	Override ACPICA AcpiOsSignalSemaphore to keep track of semaphore releases
  *	so that we can see if any methods are sloppy in their releases.
  */
-ACPI_STATUS AcpiOsSignalSemaphore (ACPI_HANDLE handle, UINT32 Units)
+ACPI_STATUS AcpiOsSignalSemaphore(ACPI_HANDLE handle, UINT32 Units)
 {
 	sem_t *sem = (sem_t *)handle;
 
@@ -387,17 +549,17 @@ ACPI_STATUS AcpiOsSignalSemaphore (ACPI_HANDLE handle, UINT32 Units)
 ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 {
 	switch (width) {
-    		case 8:
-        		*value = 0xFF;
-			break;
-		case 16:
-			*value = 0xFFFF;
-			break;
-		case 32:
-			*value = 0xFFFFFFFF;
-			break;
-		default:
-			return AE_BAD_PARAMETER;
+	case 8:
+		*value = 0xFF;
+		break;
+	case 16:
+		*value = 0xFFFF;
+		break;
+	case 32:
+		*value = 0xFFFFFFFF;
+		break;
+	default:
+		return AE_BAD_PARAMETER;
 	}
 	return AE_OK;
 }
@@ -409,39 +571,154 @@ ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 ACPI_STATUS AcpiOsReadPciConfiguration(ACPI_PCI_ID *pciid, UINT32 reg, UINT64 *value, UINT32 width)
 {
 	switch (width) {
-    		case 8:
-        		*value = 0x00;
-			break;
-		case 16:
-			*value = 0x0000;
-			break;
-		case 32:
-			*value = 0x00000000;
-			break;
-		default:
-			return AE_BAD_PARAMETER;
+	case 8:
+		*value = 0x00;
+		break;
+	case 16:
+		*value = 0x0000;
+		break;
+	case 32:
+		*value = 0x00000000;
+		break;
+	default:
+		return AE_BAD_PARAMETER;
 	}
 	return AE_OK;
 }
 
 void AeTableOverride(ACPI_TABLE_HEADER *ExistingTable, ACPI_TABLE_HEADER **NewTable)
 {
-    	if (strncmp(ExistingTable->Signature, ACPI_SIG_DSDT, 4) == 0)
+	if (strncmp(ExistingTable->Signature, ACPI_SIG_DSDT, 4) == 0)
 		*NewTable = (ACPI_TABLE_HEADER*)fwts_acpica_DSDT;
 }
 
-ACPI_STATUS AcpiOsSignal (UINT32 function, void *info)
+ACPI_STATUS AcpiOsSignal(UINT32 function, void *info)
 {
-    switch (function) {
-    case ACPI_SIGNAL_BREAKPOINT:
-	fwts_warning(fwts_acpica_fw, "Method contains an ACPICA breakpoint: %s\n", info ? (char*)info : "No Information");
-	AcpiGbl_CmSingleStep = FALSE;
-        break;
-    case ACPI_SIGNAL_FATAL:
-    default:
-        break;
-    }
-    return AE_OK;
+	switch (function) {
+	case ACPI_SIGNAL_BREAKPOINT:
+		fwts_warning(fwts_acpica_fw,
+			"Method contains an ACPICA breakpoint: %s\n",
+			info ? (char*)info : "No Information");
+		AcpiGbl_CmSingleStep = FALSE;
+		break;
+	case ACPI_SIGNAL_FATAL:
+	default:
+		break;
+	}
+	return AE_OK;
+}
+
+int fwtsInstallLateHandlers(fwts_framework *fw)
+{
+	int i;
+
+	if (!AcpiGbl_ReducedHardware) {
+		if (AcpiInstallFixedEventHandler(ACPI_EVENT_GLOBAL, fwts_event_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install global event handler.");
+			return FWTS_ERROR;
+		}
+		if (AcpiInstallFixedEventHandler(ACPI_EVENT_RTC, fwts_event_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install RTC event handler.");
+			return FWTS_ERROR;
+		}
+	}
+
+	for (i = 0; i < ACPI_ARRAY_LENGTH(fwts_space_id_list); i++) {
+		if (AcpiInstallAddressSpaceHandler(AcpiGbl_RootNode,
+		    fwts_space_id_list[i], fwts_region_handler, fwts_region_init, NULL) != AE_OK) {
+			fwts_log_error(fw,
+				"Failed to install handler for %s space(%u)",
+				AcpiUtGetRegionName((UINT8)fwts_space_id_list[i]),
+				fwts_space_id_list[i]);
+			return FWTS_ERROR;
+		}
+	}
+
+	return FWTS_OK;
+}
+
+int fwtsInstallEarlyHandlers(fwts_framework *fw)
+{
+	int i;
+	ACPI_HANDLE	handle;
+
+	if (AcpiInstallInterfaceHandler(fwts_interface_handler) != AE_OK) {
+		fwts_log_error(fw, "Failed to install interface handler.");
+		return FWTS_ERROR;
+	}
+
+	if (AcpiInstallTableHandler(fwts_table_handler, NULL) != AE_OK) {
+		fwts_log_error(fw, "Failed to install table handler.");
+		return FWTS_ERROR;
+	}
+
+	if (AcpiInstallExceptionHandler(fwts_exception_handler) != AE_OK) {
+		fwts_log_error(fw, "Failed to install exception handler.");
+		return FWTS_ERROR;
+	}
+
+	if (AcpiInstallNotifyHandler(ACPI_ROOT_OBJECT, ACPI_SYSTEM_NOTIFY, fwts_notify_handler, NULL) != AE_OK) {
+		fwts_log_error(fw, "Failed to install system notify handler.");
+		return FWTS_ERROR;
+	}
+
+	if (AcpiInstallNotifyHandler(ACPI_ROOT_OBJECT, ACPI_DEVICE_NOTIFY, fwts_device_notify_handler, NULL) != AE_OK) {
+		fwts_log_error(fw, "Failed to install device notify handler.");
+		return FWTS_ERROR;
+	}
+
+	if (AcpiGetHandle(NULL, "\\_SB", &handle) == AE_OK) {
+		if (AcpiInstallNotifyHandler(handle, ACPI_SYSTEM_NOTIFY, fwts_notify_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install notify handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiRemoveNotifyHandler(handle, ACPI_SYSTEM_NOTIFY, fwts_notify_handler) != AE_OK) {
+			fwts_log_error(fw, "Failed to remove notify handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiInstallNotifyHandler(handle, ACPI_ALL_NOTIFY, fwts_notify_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install notify handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiRemoveNotifyHandler(handle, ACPI_ALL_NOTIFY, fwts_notify_handler) != AE_OK) {
+			fwts_log_error(fw, "Failed to remove notify handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiInstallNotifyHandler(handle, ACPI_ALL_NOTIFY, fwts_notify_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install notify handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiAttachData(handle, fwts_attached_data_handler, handle) != AE_OK) {
+			fwts_log_error(fw, "Failed to attach data handler.");
+			return FWTS_ERROR;
+		}
+		if (AcpiDetachData(handle, fwts_attached_data_handler) != AE_OK) {
+			fwts_log_error(fw, "Failed to detach data handler.");
+			return FWTS_ERROR;
+		}
+
+		if (AcpiAttachData(handle, fwts_attached_data_handler, handle) != AE_OK) {
+			fwts_log_error(fw, "Failed to attach data handler.");
+			return FWTS_ERROR;
+		}
+	}
+
+	for (i = 0; i < ACPI_ARRAY_LENGTH(fwts_space_id_list); i++) {
+		if (AcpiInstallAddressSpaceHandler(AcpiGbl_RootNode,
+		    fwts_space_id_list[i], fwts_region_handler, fwts_region_init, NULL) != AE_OK) {
+			fwts_log_error(fw,
+				"Could not install an OpRegion handler for %s space(%u)",
+				AcpiUtGetRegionName((UINT8)fwts_space_id_list[i]),
+				fwts_space_id_list[i]);
+			return FWTS_ERROR;
+		}
+	}
+	return FWTS_OK;
 }
 
 
@@ -451,12 +728,10 @@ ACPI_STATUS AcpiOsSignal (UINT32 function, void *info)
  */
 int fwts_acpica_init(fwts_framework *fw)
 {
-	ACPI_HANDLE handle;
 	int i;
 	int n;
 	UINT32 init_flags = ACPI_FULL_INITIALIZATION;
 	fwts_acpi_table_info *table;
-	ACPI_ADR_SPACE_TYPE SpaceIdList[] = {0, 1, 3, 4, 5, 6, 7, 0x80};
 
 	/* Abort if already initialised */
 	if (fwts_acpica_init_called)
@@ -517,7 +792,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	} else {
 		fwts_acpica_FADT = NULL;
 	}
-	
+
 	/* Clone XSDT, make it point to tables in user address space */
 	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK)
 		return FWTS_ERROR;
@@ -558,14 +833,14 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	if (table) {
 		uint32_t *entries;
-	
+
 		fwts_acpica_RSDT = fwts_low_calloc(1, table->length);
 		if (fwts_acpica_RSDT == NULL) {
 			fwts_log_error(fw, "Out of memory allocating RSDT.");
 			return FWTS_ERROR;
 		}
 		memcpy(fwts_acpica_RSDT, table->data, sizeof(ACPI_TABLE_HEADER));
-	
+
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint32_t);
 		entries = (uint32_t*)(table->data + sizeof(ACPI_TABLE_HEADER));
 		for (i=0; i<n; i++) {
@@ -621,80 +896,11 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	/* Install handlers */
-	if (AcpiInstallInterfaceHandler(fwtsInterfaceHandler) != AE_OK) {
-		fwts_log_error(fw, "Failed to install interface handler.");
-		return FWTS_ERROR;
-	}
-	if (AcpiInstallTableHandler(fwtsTableHandler, NULL) != AE_OK) {
-		fwts_log_error(fw, "Failed to install table handler.");
-		return FWTS_ERROR;
-	}
-	if (AcpiInstallExceptionHandler(fwtsExceptionHandler) != AE_OK) {
-		fwts_log_error(fw, "Failed to install exception handler.");
-		return FWTS_ERROR;
-	}
-	if (AcpiInstallNotifyHandler( ACPI_ROOT_OBJECT, ACPI_SYSTEM_NOTIFY, fwtsNotifyHandler, NULL) != AE_OK) {
-		fwts_log_error(fw, "Failed to install notify handler.");
-		return FWTS_ERROR;
-	}
-	if (AcpiInstallNotifyHandler( ACPI_ROOT_OBJECT, ACPI_DEVICE_NOTIFY, fwtsDeviceNotifyHandler, NULL) != AE_OK) {
-		fwts_log_error(fw, "Failed to install notify handler.");
-		return FWTS_ERROR;
-	}
-	if (AcpiGetHandle(NULL, "\\_SB", &handle) == AE_OK) {
-#if 0
-		if (AcpiInstallNotifyHandler(handle, ACPI_SYSTEM_NOTIFY, fwtsNotifyHandler, NULL) != AE_OK) {
-			fwts_log_error(fw, "Failed to install notify handler.");
-			return FWTS_ERROR;
-		}
-		if (AcpiRemoveNotifyHandler(handle, ACPI_SYSTEM_NOTIFY, fwtsNotifyHandler) != AE_OK) {
-			fwts_log_error(fw, "Failed to remove notify handler.");
-			return FWTS_ERROR;
-		}
-		if (AcpiInstallNotifyHandler(handle, ACPI_ALL_NOTIFY, fwtsNotifyHandler, NULL) != AE_OK) {
-			fwts_log_error(fw, "Failed to install notify handler.");
-			return FWTS_ERROR;
-		}
-		if (AcpiRemoveNotifyHandler(handle, ACPI_ALL_NOTIFY, fwtsNotifyHandler) != AE_OK) {
-			fwts_log_error(fw, "Failed to remove notify handler.");
-			return FWTS_ERROR;
-		}
-#endif
-		if (AcpiInstallNotifyHandler(handle, ACPI_ALL_NOTIFY, fwtsNotifyHandler, NULL) != AE_OK) {
-			fwts_log_error(fw, "Failed to install notify handler.");
-			return FWTS_ERROR;
-		}
-#if 0
-		if (AcpiAttachData(handle, fwtsAttachedDataHandler, handle) != AE_OK) {
-			fwts_log_error(fw, "Failed to attach data handler.");
-			return FWTS_ERROR;
-		}
-		if (AcpiDetachData(handle, fwtsAttachedDataHandler) != AE_OK) {
-			fwts_log_error(fw, "Failed to detach data handler.");
-			return FWTS_ERROR;
-		}
-#endif
-		if (AcpiAttachData(handle, fwtsAttachedDataHandler, handle) != AE_OK) {
-			fwts_log_error(fw, "Failed to attach data handler.");
-			return FWTS_ERROR;
-		}
-	}
 
-	for (i = 0; i < AEXEC_NUM_REGIONS; i++) {
-        	AcpiRemoveAddressSpaceHandler (AcpiGbl_RootNode, SpaceIdList[i], AeRegionHandler);
-        	if (AcpiInstallAddressSpaceHandler (AcpiGbl_RootNode,
-                        SpaceIdList[i], AeRegionHandler, fwtsRegionInit, NULL) != AE_OK) {
-                	fwts_log_error(fw, "Could not install an OpRegion handler for %s space(%u)",
-                	AcpiUtGetRegionName((UINT8)SpaceIdList[i]), SpaceIdList[i]);
-			return FWTS_ERROR;
-		}
-        }
-
+	(void)fwtsInstallEarlyHandlers(fw);
 	AcpiEnableSubsystem(init_flags);
 	AcpiInitializeObjects(init_flags);
-
-	AcpiDbCommandDispatch ("methods", NULL, NULL);
+	(void)fwtsInstallLateHandlers(fw);
 
 	fwts_acpica_init_called = true;
 
@@ -763,8 +969,8 @@ fwts_list *fwts_acpica_get_object_names(int type)
 	fwts_list *list;
 
 	if ((list = fwts_list_new()) != NULL)
-		AcpiWalkNamespace (type, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,	
+		AcpiWalkNamespace(type, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
 			fwts_acpi_walk_for_object_names, NULL, list, NULL);
-		
+
 	return list;
 }

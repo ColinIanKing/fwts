@@ -110,7 +110,7 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 		/* Setup ACPICA compiler globals */
 		Gbl_DisasmFlag = FALSE;
         	Gbl_DoCompile = TRUE;
-		Gbl_PreprocessFlag = FALSE;
+		Gbl_PreprocessFlag = TRUE;
         	Gbl_UseDefaultAmlFilename = FALSE;
         	Gbl_OutputFilenamePrefix = source;
 

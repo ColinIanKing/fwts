@@ -59,6 +59,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/disassembler/dmresrcs.c \
 	$(ACPICA_COMP)/disassembler/dmutils.c \
 	$(ACPICA_COMP)/disassembler/dmwalk.c \
+	$(ACPICA_COMP)/disassembler/dmresrcl2.c \
 	$(ACPICA_COMP)/dispatcher/dsfield.c \
 	$(ACPICA_COMP)/dispatcher/dsinit.c \
 	$(ACPICA_COMP)/dispatcher/dsmethod.c \
@@ -117,6 +118,8 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/hardware/hwsleep.c \
 	$(ACPICA_COMP)/hardware/hwvalid.c \
 	$(ACPICA_COMP)/hardware/hwxface.c \
+	$(ACPICA_COMP)/hardware/hwxfsleep.c \
+	$(ACPICA_COMP)/hardware/hwesleep.c \
 	$(ACPICA_COMP)/namespace/nsaccess.c \
 	$(ACPICA_COMP)/namespace/nsalloc.c \
 	$(ACPICA_COMP)/namespace/nsdump.c \
@@ -157,12 +160,14 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/resources/rsmisc.c \
 	$(ACPICA_COMP)/resources/rsutils.c \
 	$(ACPICA_COMP)/resources/rsxface.c \
+	$(ACPICA_COMP)/resources/rsserial.c \
 	$(ACPICA_COMP)/tables/tbfadt.c \
 	$(ACPICA_COMP)/tables/tbfind.c \
 	$(ACPICA_COMP)/tables/tbinstal.c \
 	$(ACPICA_COMP)/tables/tbutils.c \
 	$(ACPICA_COMP)/tables/tbxface.c \
 	$(ACPICA_COMP)/tables/tbxfroot.c \
+	$(ACPICA_COMP)/utilities/utaddress.c \
 	$(ACPICA_COMP)/utilities/utalloc.c \
 	$(ACPICA_COMP)/utilities/utcache.c \
 	$(ACPICA_COMP)/utilities/utcopy.c \

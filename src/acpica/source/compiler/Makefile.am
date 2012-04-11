@@ -40,10 +40,19 @@ dtparserparse.c: dtparser.y
 dtparserlex.c: dtparser.l
 	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c dtparser.l
 
+prparserparse.c: prparser.y
+	${YACC} ${AM_YFLAGS} -bprparser -pPrParser prparser.y
+	mv prparser.tab.c prparserparse.c
+	mv prparser.tab.h prparser.y.h
+
+prparserlex.c: prparser.l
+	${LEX} ${AM_LFLAGS} -PPrParser -oprparserlex.c prparser.l
+
 lib_LTLIBRARIES = libfwtsiasl.la
 
 BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c \
-		dtparserparse.c dtparserlex.c
+		dtparserparse.c dtparserlex.c \
+		prparserparse.c prparserlex.c
 
 #
 # Just export fwts specific API so we don't clash with core ACPICA library
@@ -98,6 +107,13 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_COMPILER)/dtcompile.c \
 	$(ACPICA_COMPILER)/dtparserparse.c \
 	$(ACPICA_COMPILER)/dtparserlex.c \
+	$(ACPICA_COMPILER)/prparserparse.c \
+	$(ACPICA_COMPILER)/prparserlex.c \
+	$(ACPICA_COMPILER)/prscan.c \
+	$(ACPICA_COMPILER)/aslrestype2s.c \
+	$(ACPICA_COMPILER)/prmacros.c \
+	$(ACPICA_COMPILER)/prutils.c \
+	$(ACPICA_COMPILER)/prexpress.c \
 	$(ACPICA_UTILS)/utalloc.c \
 	$(ACPICA_UTILS)/utcache.c \
 	$(ACPICA_UTILS)/utcopy.c \

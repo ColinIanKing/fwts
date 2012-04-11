@@ -6,9 +6,11 @@
 FWTS=.
 
 echo "Removing old ACPICA.."
-mv acpica acpica.old
+if [ -e acpica ]; then
+	mv acpica acpica.old
+fi
 echo "Cloning new ACPICA.."
-git clone git://git.moblin.org/acpica 
+git clone https://github.com/otcshare/acpica.git
 
 FWTS_ACPICA_PATH=${FWTS}/src/acpica/source 
 SAVE_FILES=acpica-upgrade-save
@@ -23,6 +25,7 @@ files="include/acpi.h \
        include/actbl.h \
        include/actbl1.h \
        include/actbl2.h \
+       include/actbl3.h \
        include/acoutput.h \
        include/acrestyp.h \
        include/acpiosxf.h \
@@ -70,6 +73,7 @@ files="include/acpi.h \
        components/disassembler/dmresrcs.c \
        components/disassembler/dmutils.c \
        components/disassembler/dmwalk.c \
+       components/disassembler/dmresrcl2.c \
        components/dispatcher/dsfield.c \
        components/dispatcher/dsinit.c \
        components/dispatcher/dsmethod.c \
@@ -129,6 +133,8 @@ files="include/acpi.h \
        components/hardware/hwsleep.c \
        components/hardware/hwvalid.c \
        components/hardware/hwxface.c \
+       components/hardware/hwxfsleep.c \
+       components/hardware/hwesleep.c \
        components/namespace/nsaccess.c \
        components/namespace/nsalloc.c \
        components/namespace/nsdump.c \
@@ -169,12 +175,14 @@ files="include/acpi.h \
        components/resources/rsmisc.c \
        components/resources/rsutils.c \
        components/resources/rsxface.c \
+       components/resources/rsserial.c \
        components/tables/tbfadt.c \
        components/tables/tbfind.c \
        components/tables/tbinstal.c \
        components/tables/tbutils.c \
        components/tables/tbxface.c \
        components/tables/tbxfroot.c \
+       components/utilities/utaddress.c \
        components/utilities/utalloc.c \
        components/utilities/utcache.c \
        components/utilities/utcopy.c \
@@ -204,6 +212,7 @@ files="include/acpi.h \
        compiler/aslcompiler.h \
        compiler/aslcompiler.l \
        compiler/aslcompiler.y \
+       compiler/aslsupport.l \
        compiler/asldefine.h \
        compiler/aslerror.c \
        compiler/aslfiles.c \
@@ -249,6 +258,14 @@ files="include/acpi.h \
        compiler/aslbtypes.c \
        compiler/aslwalks.c \
        compiler/asluuid.c \
+       compiler/preprocess.h \
+       compiler/prscan.c \
+       compiler/prmacros.c \
+       compiler/prutils.c \
+       compiler/prexpress.c \
+       compiler/prparser.y \
+       compiler/prparser.l \
+       compiler/aslrestype2s.c \
        common/adfile.c \
        common/adisasm.c \
        common/adwalk.c \

@@ -608,6 +608,10 @@ ACPI_STATUS AcpiOsSignal(UINT32 function, void *info)
 	return AE_OK;
 }
 
+void AcpiOsSleep(UINT64 milliseconds)
+{
+}
+
 int fwtsInstallLateHandlers(fwts_framework *fw)
 {
 	int i;

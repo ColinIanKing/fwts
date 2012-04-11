@@ -21,15 +21,21 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
 	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
 	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' | \
-	sed 's/^AcpiOsSignal/__AcpiOsSignal/' \
+	sed 's/^AcpiOsSignal/__AcpiOsSignal/' | \
+	sed 's/^AcpiOsSleep/__AcpiOsSleep/' \
 	> osunixxf_munged.c
 
-dsopcode_munged.c: $(ACPICA_COMP)/dispatcher/dsopcode.c
-	cat $(ACPICA_COMP)/dispatcher/dsopcode.c | \
-	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0400/' \
-	> dsopcode_munged.c
+#
+#  Force maximum loop iterations to be just 128 instead of 0xffff
+#  because we really don't want to wait until the sun turns into
+#  a lump of coal before we complete a blocked operation
+#
+dscontrol_munged.c: $(ACPICA_COMP)/dispatcher/dscontrol.c
+	cat $(ACPICA_COMP)/dispatcher/dscontrol.c | \
+	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0080/' \
+	> dscontrol_munged.c
 
-BUILT_SOURCES = osunixxf_munged.c dsopcode_munged.c
+BUILT_SOURCES = osunixxf_munged.c dscontrol_munged.c
 
 CLEANFILES = osunixxf_munged.c
 
@@ -38,7 +44,7 @@ libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
 	fwts_acpica.c \
 	osunixxf_munged.c \
-	dsopcode_munged.c \
+	dscontrol_munged.c \
 	$(ACPICA_COMP)/debugger/dbcmds.c \
 	$(ACPICA_COMP)/debugger/dbdisply.c \
 	$(ACPICA_COMP)/debugger/dbexec.c \
@@ -70,9 +76,9 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/dispatcher/dswload.c \
 	$(ACPICA_COMP)/dispatcher/dswscope.c \
 	$(ACPICA_COMP)/dispatcher/dswstate.c \
-	$(ACPICA_COMP)/dispatcher/dscontrol.c \
 	$(ACPICA_COMP)/dispatcher/dsargs.c \
 	$(ACPICA_COMP)/dispatcher/dswload2.c \
+	$(ACPICA_COMP)/dispatcher/dsopcode.c \
 	$(ACPICA_COMP)/events/evevent.c \
 	$(ACPICA_COMP)/events/evgpe.c \
 	$(ACPICA_COMP)/events/evgpeblk.c \

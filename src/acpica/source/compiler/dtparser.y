@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -135,6 +135,10 @@ UINT64                      DtParserResult; /* Expression return value */
 #define YYERROR_VERBOSE     1               /* Verbose error messages */
 #define YYFLAG              -32768
 
+/* Define YYMALLOC/YYFREE to prevent redefinition errors  */
+
+#define YYMALLOC            malloc
+#define YYFREE              free
 %}
 
 %union

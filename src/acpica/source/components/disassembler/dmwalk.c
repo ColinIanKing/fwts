@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -536,7 +536,8 @@ AcpiDmDescendingOp (
 
     AcpiDmDisassembleOneOp (NULL, Info, Op);
 
-    if (Op->Common.DisasmOpcode == ACPI_DASM_LNOT_PREFIX)
+    if ((Op->Common.DisasmOpcode == ACPI_DASM_LNOT_PREFIX) ||
+        (Op->Common.AmlOpcode == AML_INT_CONNECTION_OP))
     {
         return (AE_OK);
     }

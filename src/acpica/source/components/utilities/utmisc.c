@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -537,6 +537,44 @@ AcpiUtStrlwr (
     }
 
     return;
+}
+
+
+/******************************************************************************
+ *
+ * FUNCTION:    AcpiUtStricmp
+ *
+ * PARAMETERS:  String1             - first string to compare
+ *              String2             - second string to compare
+ *
+ * RETURN:      int that signifies string relationship. Zero means strings
+ *              are equal.
+ *
+ * DESCRIPTION: Implementation of the non-ANSI stricmp function (compare
+ *              strings with no case sensitivity)
+ *
+ ******************************************************************************/
+
+int
+AcpiUtStricmp (
+    char                    *String1,
+    char                    *String2)
+{
+    int                     c1;
+    int                     c2;
+
+
+    do
+    {
+        c1 = tolower ((int) *String1);
+        c2 = tolower ((int) *String2);
+
+        String1++;
+        String2++;
+    }
+    while ((c1 == c2) && (c1));
+
+    return (c1 - c2);
 }
 #endif
 

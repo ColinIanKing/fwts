@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -162,6 +162,8 @@ static ACPI_ADR_SPACE_TYPE  AcpiGbl_SpaceIdList[] =
     ACPI_ADR_SPACE_CMOS,
     ACPI_ADR_SPACE_PCI_BAR_TARGET,
     ACPI_ADR_SPACE_IPMI,
+    ACPI_ADR_SPACE_GPIO,
+    ACPI_ADR_SPACE_GSBUS,
     ACPI_ADR_SPACE_DATA_TABLE,
     ACPI_ADR_SPACE_FIXED_HARDWARE
 };
@@ -840,6 +842,7 @@ AcpiDbDisplayArgumentObject (
 }
 
 
+#if (!ACPI_REDUCED_HARDWARE)
 /*******************************************************************************
  *
  * FUNCTION:    AcpiDbDisplayGpes
@@ -1002,6 +1005,7 @@ AcpiDbDisplayGpes (
         GpeXruptInfo = GpeXruptInfo->Next;
     }
 }
+#endif /* !ACPI_REDUCED_HARDWARE */
 
 
 /*******************************************************************************
@@ -1043,7 +1047,7 @@ AcpiDbDisplayHandlers (
 
             while (HandlerObj)
             {
-                if (i == HandlerObj->AddressSpace.SpaceId)
+                if (AcpiGbl_SpaceIdList[i] == HandlerObj->AddressSpace.SpaceId)
                 {
                     AcpiOsPrintf (ACPI_HANDLER_PRESENT_STRING,
                         (HandlerObj->AddressSpace.HandlerFlags &
@@ -1061,7 +1065,27 @@ AcpiDbDisplayHandlers (
 
         FoundHandler:;
         }
+
+        /* Find all handlers for user-defined SpaceIDs */
+
+        HandlerObj = ObjDesc->Device.Handler;
+        while (HandlerObj)
+        {
+            if (HandlerObj->AddressSpace.SpaceId >= ACPI_USER_REGION_BEGIN)
+            {
+                AcpiOsPrintf (ACPI_PREDEFINED_PREFIX,
+                    "User-defined ID", HandlerObj->AddressSpace.SpaceId);
+                AcpiOsPrintf (ACPI_HANDLER_PRESENT_STRING,
+                    (HandlerObj->AddressSpace.HandlerFlags &
+                        ACPI_ADDR_HANDLER_DEFAULT_INSTALLED) ? "Default" : "User",
+                    HandlerObj->AddressSpace.Handler);
+            }
+
+            HandlerObj = HandlerObj->AddressSpace.Next;
+        }
     }
+
+#if (!ACPI_REDUCED_HARDWARE)
 
     /* Fixed event handlers */
 
@@ -1080,6 +1104,8 @@ AcpiDbDisplayHandlers (
             AcpiOsPrintf (ACPI_HANDLER_NOT_PRESENT_STRING, "None");
         }
     }
+
+#endif /* !ACPI_REDUCED_HARDWARE */
 
     /* Miscellaneous global handlers */
 

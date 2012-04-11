@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -113,7 +113,6 @@
  *
  *****************************************************************************/
 
-
 #include "acpi.h"
 #include "accommon.h"
 #include "acevents.h"
@@ -122,6 +121,7 @@
         ACPI_MODULE_NAME    ("evgpeutil")
 
 
+#if (!ACPI_REDUCED_HARDWARE) /* Entire module */
 /*******************************************************************************
  *
  * FUNCTION:    AcpiEvWalkGpeList
@@ -494,3 +494,4 @@ AcpiEvDeleteGpeHandlers (
     return_ACPI_STATUS (AE_OK);
 }
 
+#endif /* !ACPI_REDUCED_HARDWARE */

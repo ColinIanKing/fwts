@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -448,6 +448,10 @@ AcpiDmDumpDescending (
     case AML_WORD_OP:
     case AML_DWORD_OP:
         AcpiOsPrintf ("%X", (UINT32) Op->Common.Value.Integer);
+        break;
+
+    case AML_QWORD_OP:
+        AcpiOsPrintf ("%8.8X%8.8X", ACPI_FORMAT_UINT64 (Op->Common.Value.Integer));
         break;
 
     case AML_INT_NAMEPATH_OP:

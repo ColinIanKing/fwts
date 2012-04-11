@@ -12,7 +12,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -184,6 +184,12 @@ ACPI_STATUS
 AcpiOsTableOverride (
     ACPI_TABLE_HEADER       *ExistingTable,
     ACPI_TABLE_HEADER       **NewTable);
+
+ACPI_STATUS
+AcpiOsPhysicalTableOverride (
+    ACPI_TABLE_HEADER       *ExistingTable,
+    ACPI_PHYSICAL_ADDRESS   *NewAddress,
+    UINT32                  *NewTableLength);
 
 
 /*
@@ -375,13 +381,13 @@ AcpiOsWritePort (
 ACPI_STATUS
 AcpiOsReadMemory (
     ACPI_PHYSICAL_ADDRESS   Address,
-    UINT32                  *Value,
+    UINT64                  *Value,
     UINT32                  Width);
 
 ACPI_STATUS
 AcpiOsWriteMemory (
     ACPI_PHYSICAL_ADDRESS   Address,
-    UINT32                  Value,
+    UINT64                  Value,
     UINT32                  Width);
 
 

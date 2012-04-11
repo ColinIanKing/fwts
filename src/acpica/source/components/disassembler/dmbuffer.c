@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -180,19 +180,19 @@ AcpiDmDisasmByteList (
             }
 
             AcpiDmIndent (Level);
-            if (ByteCount > 7)
+            if (ByteCount > 8)
             {
-                AcpiOsPrintf ("/* %04X */    ", i);
+                AcpiOsPrintf ("/* %04X */  ", i);
             }
         }
 
-        AcpiOsPrintf ("0x%2.2X", (UINT32) ByteData[i]);
+        AcpiOsPrintf (" 0x%2.2X", (UINT32) ByteData[i]);
 
         /* Add comma if there are more bytes to display */
 
         if (i < (ByteCount -1))
         {
-            AcpiOsPrintf (", ");
+            AcpiOsPrintf (",");
         }
     }
 

@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -922,9 +922,9 @@ LsFinishSourceListing (
 
         FlPrintFile (FileId, "\n\nSummary of errors and warnings\n\n");
         AePrintErrorLog (FileId);
-        FlPrintFile (FileId, "\n\n");
+        FlPrintFile (FileId, "\n");
         UtDisplaySummary (FileId);
-        FlPrintFile (FileId, "\n\n");
+        FlPrintFile (FileId, "\n");
     }
 }
 
@@ -1381,6 +1381,7 @@ LsDoHexOutputC (
     /* Get AML size, seek back to start */
 
     AmlFileSize = FlGetFileSize (ASL_FILE_AML_OUTPUT);
+    FlSeekFile (ASL_FILE_AML_OUTPUT, 0);
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, " * C source code output\n");
     FlPrintFile (ASL_FILE_HEX_OUTPUT, " * AML code block contains 0x%X bytes\n *\n */\n",
@@ -1437,7 +1438,6 @@ LsDoHexOutputC (
     }
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, "};\n");
-    FlCloseFile (ASL_FILE_HEX_OUTPUT);
 }
 
 
@@ -1469,6 +1469,7 @@ LsDoHexOutputAsl (
     /* Get AML size, seek back to start */
 
     AmlFileSize = FlGetFileSize (ASL_FILE_AML_OUTPUT);
+    FlSeekFile (ASL_FILE_AML_OUTPUT, 0);
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, " * ASL source code output\n");
     FlPrintFile (ASL_FILE_HEX_OUTPUT, " * AML code block contains 0x%X bytes\n *\n */\n",
@@ -1525,7 +1526,6 @@ LsDoHexOutputAsl (
     }
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, "    })\n");
-    FlCloseFile (ASL_FILE_HEX_OUTPUT);
 }
 
 
@@ -1557,6 +1557,7 @@ LsDoHexOutputAsm (
     /* Get AML size, seek back to start */
 
     AmlFileSize = FlGetFileSize (ASL_FILE_AML_OUTPUT);
+    FlSeekFile (ASL_FILE_AML_OUTPUT, 0);
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, "; Assembly code source output\n");
     FlPrintFile (ASL_FILE_HEX_OUTPUT, "; AML code block contains 0x%X bytes\n;\n",
@@ -1608,7 +1609,6 @@ LsDoHexOutputAsm (
     }
 
     FlPrintFile (ASL_FILE_HEX_OUTPUT, "\n");
-    FlCloseFile (ASL_FILE_HEX_OUTPUT);
 }
 
 

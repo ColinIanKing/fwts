@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -164,8 +164,9 @@
 #define AE_SAME_HANDLER                 (ACPI_STATUS) (0x0019 | AE_CODE_ENVIRONMENTAL)
 #define AE_NO_HANDLER                   (ACPI_STATUS) (0x001A | AE_CODE_ENVIRONMENTAL)
 #define AE_OWNER_ID_LIMIT               (ACPI_STATUS) (0x001B | AE_CODE_ENVIRONMENTAL)
+#define AE_NOT_CONFIGURED               (ACPI_STATUS) (0x001C | AE_CODE_ENVIRONMENTAL)
 
-#define AE_CODE_ENV_MAX                 0x001B
+#define AE_CODE_ENV_MAX                 0x001C
 
 
 /*
@@ -294,7 +295,8 @@ char const   *AcpiGbl_ExceptionNames_Env[] =
     "AE_ABORT_METHOD",
     "AE_SAME_HANDLER",
     "AE_NO_HANDLER",
-    "AE_OWNER_ID_LIMIT"
+    "AE_OWNER_ID_LIMIT",
+    "AE_NOT_CONFIGURED"
 };
 
 char const   *AcpiGbl_ExceptionNames_Pgm[] =

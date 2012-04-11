@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -262,10 +262,7 @@ AcpiDbDumpExternalObject (
     case ACPI_TYPE_STRING:
 
         AcpiOsPrintf ("[String] Length %.2X = ", ObjDesc->String.Length);
-        for (i = 0; i < ObjDesc->String.Length; i++)
-        {
-            AcpiOsPrintf ("%c", ObjDesc->String.Pointer[i]);
-        }
+        AcpiUtPrintString (ObjDesc->String.Pointer, ACPI_UINT8_MAX);
         AcpiOsPrintf ("\n");
         break;
 
@@ -280,7 +277,7 @@ AcpiDbDumpExternalObject (
                 AcpiOsPrintf ("\n");
             }
             AcpiUtDumpBuffer (ACPI_CAST_PTR (UINT8, ObjDesc->Buffer.Pointer),
-                    ObjDesc->Buffer.Length, DB_DWORD_DISPLAY, _COMPONENT);
+                    ObjDesc->Buffer.Length, DB_BYTE_DISPLAY, _COMPONENT);
         }
         else
         {

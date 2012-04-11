@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -117,6 +117,7 @@
 
 #include "aslcompiler.h"
 #include "aslcompiler.y.h"
+#include "acapps.h"
 #include <time.h>
 
 #define _COMPONENT          ACPI_COMPILER
@@ -359,9 +360,6 @@ TrGetNodeFlagName (
     case NODE_METHOD_TYPED:
         return ("NODE_METHOD_TYPED");
 
-    case NODE_IS_BIT_OFFSET:
-        return ("NODE_IS_BIT_OFFSET");
-
     case NODE_COMPILE_TIME_CONST:
         return ("NODE_COMPILE_TIME_CONST");
 
@@ -500,6 +498,8 @@ TrCreateConstantLeafNode (
     time_t                  CurrentTime;
     char                    *StaticTimeString;
     char                    *TimeString;
+    char                    *Path;
+    char                    *Filename;
 
 
     switch (ParseOpcode)
@@ -509,7 +509,7 @@ TrCreateConstantLeafNode (
         Op->Asl.Value.Integer = Op->Asl.LineNumber;
         break;
 
-    case PARSEOP___FILE__:
+    case PARSEOP___PATH__:
         Op = TrAllocateNode (PARSEOP_STRING_LITERAL);
 
         /* Op.Asl.Filename contains the full pathname to the file */
@@ -517,7 +517,17 @@ TrCreateConstantLeafNode (
         Op->Asl.Value.String = Op->Asl.Filename;
         break;
 
-   case PARSEOP___DATE__:
+    case PARSEOP___FILE__:
+        Op = TrAllocateNode (PARSEOP_STRING_LITERAL);
+
+        /* Get the simple filename from the full path */
+
+        FlSplitInputPathname (Op->Asl.Filename, &Path, &Filename);
+        ACPI_FREE (Path);
+        Op->Asl.Value.String = Filename;
+        break;
+
+    case PARSEOP___DATE__:
         Op = TrAllocateNode (PARSEOP_STRING_LITERAL);
 
         /* Get a copy of the current time */

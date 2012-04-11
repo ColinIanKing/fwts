@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslrestype2 - Miscellaneous Large resource descriptors
@@ -9,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -192,7 +191,7 @@ RsDoGeneralRegisterDescriptor (
         case 3: /* Register Address */
 
             Descriptor->GenericReg.Address = InitializerOp->Asl.Value.Integer;
-            RsCreateByteField (InitializerOp, ACPI_RESTAG_ADDRESS,
+            RsCreateQwordField (InitializerOp, ACPI_RESTAG_ADDRESS,
                 CurrentByteOffset + ASL_RESDESC_OFFSET (GenericReg.Address));
             break;
 
@@ -426,7 +425,7 @@ RsDoInterruptDescriptor (
 
                 /* Create a named field at the start of the list */
 
-                RsCreateByteField (InitializerOp, ACPI_RESTAG_INTERRUPT,
+                RsCreateDwordField (InitializerOp, ACPI_RESTAG_INTERRUPT,
                     CurrentByteOffset +
                     ASL_RESDESC_OFFSET (ExtendedIrq.Interrupts[0]));
             }

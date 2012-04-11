@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -120,6 +120,8 @@
 
 #define _COMPONENT          ACPI_EVENTS
         ACPI_MODULE_NAME    ("evgpe")
+
+#if (!ACPI_REDUCED_HARDWARE) /* Entire module */
 
 /* Local prototypes */
 
@@ -898,3 +900,4 @@ AcpiEvGpeDispatch (
     return_UINT32 (ACPI_INTERRUPT_HANDLED);
 }
 
+#endif /* !ACPI_REDUCED_HARDWARE */

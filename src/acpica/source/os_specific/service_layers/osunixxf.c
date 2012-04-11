@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -286,6 +286,33 @@ AcpiOsTableOverride (
 
 /******************************************************************************
  *
+ * FUNCTION:    AcpiOsPhysicalTableOverride
+ *
+ * PARAMETERS:  ExistingTable       - Header of current table (probably firmware)
+ *              NewAddress          - Where new table address is returned
+ *                                    (Physical address)
+ *              NewTableLength      - Where new table length is returned
+ *
+ * RETURN:      Status, address/length of new table. Null pointer returned
+ *              if no table is available to override.
+ *
+ * DESCRIPTION: Returns AE_SUPPORT, function not used in user space.
+ *
+ *****************************************************************************/
+
+ACPI_STATUS
+AcpiOsPhysicalTableOverride (
+    ACPI_TABLE_HEADER       *ExistingTable,
+    ACPI_PHYSICAL_ADDRESS   *NewAddress,
+    UINT32                  *NewTableLength)
+{
+
+    return (AE_SUPPORT);
+}
+
+
+/******************************************************************************
+ *
  * FUNCTION:    AcpiOsRedirectOutput
  *
  * PARAMETERS:  Destination         - An open file handle/pointer
@@ -349,7 +376,6 @@ AcpiOsVprintf (
     const char              *Fmt,
     va_list                 Args)
 {
-    INT32                   Count = 0;
     UINT8                   Flags;
 
 
@@ -362,7 +388,7 @@ AcpiOsVprintf (
         {
             /* Output file is open, send the output there */
 
-            Count = vfprintf (AcpiGbl_DebugFile, Fmt, Args);
+            vfprintf (AcpiGbl_DebugFile, Fmt, Args);
         }
         else
         {
@@ -374,7 +400,7 @@ AcpiOsVprintf (
 
     if (Flags & ACPI_DB_CONSOLE_OUTPUT)
     {
-        Count = vfprintf (AcpiGbl_OutputFile, Fmt, Args);
+        vfprintf (AcpiGbl_OutputFile, Fmt, Args);
     }
 }
 
@@ -1090,9 +1116,10 @@ AcpiOsWritePort (
  *
  * PARAMETERS:  Address             - Physical Memory Address to read
  *              Value               - Where value is placed
- *              Width               - Number of bits
+ *              Width               - Number of bits (8,16,32, or 64)
  *
- * RETURN:      Value read from physical memory address
+ * RETURN:      Value read from physical memory address. Always returned
+ *              as a 64-bit integer, regardless of the read width.
  *
  * DESCRIPTION: Read data from a physical memory address
  *
@@ -1101,7 +1128,7 @@ AcpiOsWritePort (
 ACPI_STATUS
 AcpiOsReadMemory (
     ACPI_PHYSICAL_ADDRESS   Address,
-    UINT32                  *Value,
+    UINT64                  *Value,
     UINT32                  Width)
 {
 
@@ -1110,6 +1137,7 @@ AcpiOsReadMemory (
     case 8:
     case 16:
     case 32:
+    case 64:
         *Value = 0;
         break;
 
@@ -1126,7 +1154,7 @@ AcpiOsReadMemory (
  *
  * PARAMETERS:  Address             - Physical Memory Address to write
  *              Value               - Value to write
- *              Width               - Number of bits
+ *              Width               - Number of bits (8,16,32, or 64)
  *
  * RETURN:      None
  *
@@ -1137,7 +1165,7 @@ AcpiOsReadMemory (
 ACPI_STATUS
 AcpiOsWriteMemory (
     ACPI_PHYSICAL_ADDRESS   Address,
-    UINT32                  Value,
+    UINT64                  Value,
     UINT32                  Width)
 {
 
@@ -1244,8 +1272,11 @@ ACPI_THREAD_ID
 AcpiOsGetThreadId (
     void)
 {
+    pthread_t               thread;
 
-    return (ACPI_CAST_PTHREAD_T (pthread_self()));
+
+    thread = pthread_self();
+    return (ACPI_CAST_PTHREAD_T (thread));
 }
 
 

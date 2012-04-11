@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2011, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -227,6 +227,7 @@ const ACPI_PREDEFINED_NAMES     AcpiGbl_PreDefinedNames[] =
 };
 
 
+#if (!ACPI_REDUCED_HARDWARE)
 /******************************************************************************
  *
  * Event and Hardware globals
@@ -271,6 +272,7 @@ ACPI_FIXED_EVENT_INFO       AcpiGbl_FixedEventInfo[ACPI_NUM_FIXED_EVENTS] =
     /* ACPI_EVENT_SLEEP_BUTTON  */  {ACPI_BITREG_SLEEP_BUTTON_STATUS,   ACPI_BITREG_SLEEP_BUTTON_ENABLE, ACPI_BITMASK_SLEEP_BUTTON_STATUS,   ACPI_BITMASK_SLEEP_BUTTON_ENABLE},
     /* ACPI_EVENT_RTC           */  {ACPI_BITREG_RT_CLOCK_STATUS,       ACPI_BITREG_RT_CLOCK_ENABLE,     ACPI_BITMASK_RT_CLOCK_STATUS,       ACPI_BITMASK_RT_CLOCK_ENABLE},
 };
+#endif /* !ACPI_REDUCED_HARDWARE */
 
 
 /*******************************************************************************
@@ -305,6 +307,13 @@ AcpiUtInitGlobals (
         return_ACPI_STATUS (Status);
     }
 
+    /* Address Range lists */
+
+    for (i = 0; i < ACPI_ADDRESS_RANGE_MAX; i++)
+    {
+        AcpiGbl_AddressRangeList[i] = NULL;
+    }
+
     /* Mutex locked flags */
 
     for (i = 0; i < ACPI_NUM_MUTEX; i++)
@@ -334,6 +343,8 @@ AcpiUtInitGlobals (
         AcpiFixedEventCount[i]              = 0;
     }
 
+#if (!ACPI_REDUCED_HARDWARE)
+
     /* GPE support */
 
     AcpiGbl_AllGpesInitialized          = FALSE;
@@ -341,6 +352,10 @@ AcpiUtInitGlobals (
     AcpiGbl_GpeFadtBlocks[0]            = NULL;
     AcpiGbl_GpeFadtBlocks[1]            = NULL;
     AcpiCurrentGpeCount                 = 0;
+
+    AcpiGbl_GlobalEventHandler          = NULL;
+
+#endif /* !ACPI_REDUCED_HARDWARE */
 
     /* Global handlers */
 
@@ -350,7 +365,6 @@ AcpiUtInitGlobals (
     AcpiGbl_InitHandler                 = NULL;
     AcpiGbl_TableHandler                = NULL;
     AcpiGbl_InterfaceHandler            = NULL;
-    AcpiGbl_GlobalEventHandler          = NULL;
 
     /* Global Lock support */
 

@@ -102,7 +102,7 @@
  * _PSD  8.4.4.5	N
  * _PSL  11.4.8		N
  * _PSR  10.3.1		Y
- * _PSS  8.4.4.2	N
+ * _PSS  8.4.4.2	Y
  * _PSV  11.4.9		Y
  * _PSW  7.2.12		Y
  * _PTC  8.4.3.1	N
@@ -307,7 +307,7 @@ static int method_name_check(fwts_framework *fw)
 	int failed = 0;
 
  	if ((methods = fwts_method_get_names()) != NULL) {
-		fwts_log_info(fw, "Found %d Methods\n", methods->len);
+		fwts_log_info(fw, "Found %d Objects\n", methods->len);
 
 		fwts_list_foreach(item, methods) {
 			char *ptr;
@@ -1846,6 +1846,134 @@ static int method_test_UID(fwts_framework *fw)
 }
 
 
+/* Section 8.4 */
+
+static void method_test_PSS_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	int i;
+	bool failed = false;
+	uint32_t max_freq = 0;
+	uint32_t prev_power = 0;
+	bool max_freq_valid = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _PSS */
+	if (obj->Package.Count < 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementCount",
+			"_PSS should return package of at least 1 element, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	for (i=0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pstate;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementType",
+			"_PSS package element %d was not a package.", i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		pstate = &obj->Package.Elements[i];
+		if (pstate->Package.Count != 6) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackageElementCount",
+				"_PSS P-State sub-package %d was expected to have "
+				"6 elements, got %d elements instead.",
+				i, obj->Package.Count);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		/* Elements need to be all ACPI integer types */
+		if ((pstate->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+		    (pstate->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+		    (pstate->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
+		    (pstate->Package.Elements[3].Type != ACPI_TYPE_INTEGER) ||
+		    (pstate->Package.Elements[4].Type != ACPI_TYPE_INTEGER) ||
+		    (pstate->Package.Elements[5].Type != ACPI_TYPE_INTEGER)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackageElementType",
+				"_PSS P-State sub-package %d was expected to have "
+				"6 Integer elements but didn't", i);
+			failed = true;
+			continue;
+		}
+
+		fwts_log_info(fw, "P-State %d: CPU %ld Mhz, %lu mW, latency %lu us, bus master latency %lu us.",
+			i,
+			(unsigned long)pstate->Package.Elements[0].Integer.Value,
+			(unsigned long)pstate->Package.Elements[1].Integer.Value,
+			(unsigned long)pstate->Package.Elements[2].Integer.Value,
+			(unsigned long)pstate->Package.Elements[3].Integer.Value);
+
+		/*
+		 * Collect maximum frequency.  The sub-packages are sorted in
+		 * descending power dissipation order, so one would assume that
+		 * the highest frequency is first.  However, it is not clear
+		 * from the ACPI spec that this is necessarily an assumption we
+		 * should make, so instead we should probably scan through all
+		 * the valid sub-packages and find the highest frequency.
+		 */
+		if (max_freq < pstate->Package.Elements[0].Integer.Value) {
+			max_freq = pstate->Package.Elements[0].Integer.Value;
+			max_freq_valid = true;
+		}
+
+		/* Sanity check descending power dissipation levels */
+		if ((i > 0) && (prev_power != 0) &&
+		    (pstate->Package.Elements[1].Integer.Value >= prev_power)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackagePowerNotDecending",
+				"_PSS P-State sub-package %d has a larger power dissipation "
+				"setting than the previous sub-package.", i);
+			fwts_advice(fw, "_PSS P-States must be ordered in decending order of "
+				"power dissipation, so that the zero'th entry has the highest "
+				"power dissipation level and the Nth has the lowest.");
+			failed = true;
+		}
+		prev_power = pstate->Package.Elements[1].Integer.Value;
+	}
+
+	/*
+	 * Sanity check maximum frequency.  We could also check the DMI data
+	 * for a BIOS date (but this can be wrong) or check the CPU identity
+	 * (which requires adding in new CPU identity checks) to make a decision
+	 * on when it is reasonable to assume a CPU is modern and hence clocked
+	 * incorrectly.  For now, just flag up a low level error that the
+	 * frequency looks rather low rather than try to be intelligent (and
+	 * possibly make a mistake).  I'd rather flag up a few false positives
+	 * on older machines than miss flagging up bad _PSS settings on new
+	 * machines.
+	 */
+	if (max_freq_valid && max_freq < 1000) {
+		fwts_failed(fw, LOG_LEVEL_LOW, "Method_PSSSubPackageLowFreq",
+			"Maximum CPU frequency is %dHz and this is low for "
+			"a modern processor. This may indicate the _PSS P-States "
+			"are incorrect\n", max_freq);
+		fwts_advice(fw,
+			"The _PSS P-States are used by the Linux CPU frequency "
+			"driver to set the CPU frequencies according to system "
+			"load.  Sometimes the firmware sets these incorrectly "
+			"and the machine runs at a sub-optimal speed.  One can "
+			"view the firmware defined CPU frequencies via "
+			"/sys/devices/system/cpu/cpu*/cpufreq/scaling_available_frequencies");
+		failed = true;
+	}
+
+	if (!failed)
+		fwts_passed(fw, "_PSS correctly returned sane looking package.");
+}
+
+static int method_test_PSS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSS", NULL, 0, method_test_PSS_return, NULL);
+}
+
 /* Tests */
 
 static fwts_framework_minor_test method_tests[] = {
@@ -1972,6 +2100,9 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 7.1 */
 	{ method_test_ON,  "Check _ON  (Set resource on)." },
 	{ method_test_OFF, "Check _OFF (Set resource off)." },
+
+	/* Section 8.4 */
+	{ method_test_PSS, "Check _PSS (Performance Supported States)." },
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
 

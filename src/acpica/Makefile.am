@@ -11,7 +11,7 @@ ACPICA_COMP =   $(ACPICA_SRC)/components
 #
 # -DACPI_EXEC_APP is specific to making ACPICA for the fwts method test
 #
-AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall
+AM_CPPFLAGS =  -D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP -I$(top_srcdir)/src/lib/include -I$(ACPICA_SRC)/include -Wall -fno-strict-aliasing
 
 osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	cat  $(ACPICA_OSL)/osunixxf.c | \

@@ -110,7 +110,7 @@ static acpi_eval_error  errors[] = {
 };
 
 
-static fwts_list *fwts_method_names;
+static fwts_list *fwts_object_names;
 static bool fwts_method_initialized = false;
 
 
@@ -123,7 +123,8 @@ int fwts_method_init(fwts_framework *fw)
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
-	fwts_method_names = fwts_acpica_get_object_names(8);
+	/* Gather all object names */
+	fwts_object_names = fwts_acpica_get_object_names(0);
 	fwts_method_initialized = true;
 
 	return FWTS_OK;
@@ -138,8 +139,8 @@ int fwts_method_deinit(fwts_framework *fw)
 	int ret = FWTS_ERROR;
 
 	if (fwts_method_initialized) {
-		fwts_list_free(fwts_method_names, free);
-		fwts_method_names = NULL;
+		fwts_list_free(fwts_object_names, free);
+		fwts_object_names = NULL;
 		ret = fwts_acpica_deinit();
 
 		fwts_method_initialized = false;
@@ -155,7 +156,7 @@ int fwts_method_deinit(fwts_framework *fw)
  */
 fwts_list *fwts_method_get_names(void)
 {
-	return fwts_method_names;
+	return fwts_object_names;
 }
 
 /*  
@@ -167,7 +168,7 @@ char *fwts_method_exists(char *name)
 	size_t name_len = strlen(name);
 	fwts_list_link	*item;
 
-	fwts_list_foreach(item, fwts_method_names) {
+	fwts_list_foreach(item, fwts_object_names) {
 		char *method_name = fwts_list_data(char*, item);
 		size_t len = strlen(method_name);
 

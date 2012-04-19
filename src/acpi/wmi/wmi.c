@@ -219,7 +219,10 @@ static void wmi_get_wdg_data(fwts_framework *fw,
 			str+=4;
 			if (*str != ',') break;
 			str++;
-			if (!isspace(*str)) break;
+			if (!isspace(*str)) {
+				data++;
+				break;
+			}
 			str++;
 			data++;
 			if (data > wdg_data + size) {

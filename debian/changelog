@@ -1,3 +1,45 @@
+fwts (0.25.00) precise; urgency=low
+
+  [Alex Hung]
+  * doc: remove --aspm option from man page
+  * pcie: added explanations to aspm messages.
+
+  [Colin Ian King]
+  * acpi: method: add _PSS test
+  * lib: fwts_acpi_method: gather all object names rather than just method names
+  * acpica: add -fno-strict-aliasing to ignore type punning warnings (LP: #971886)
+  * Update copy-acpica.sh to include new ACPICA sources
+  * acpica: force infinite loops and OS delays to complete faster since timing is not relevant
+  * acpica: fwts_iasl_interface: we need to enable preprocessor to stop ramdom segfaulting
+  * data: syntaxcheck.json: re-order based on new ACPICA error code updates
+  * acpica + lib: fix assemble/dissassemble to work with new ACPICA core
+  * lib: fwts_acpi_tables: ensure we don't overflow a table name when given bad input
+  * Update README_ACPICA.txt to reflect new ACPICA sources added
+  * acpica: fwts_acpica: reworking required for new ACPICA changes
+  * acpica: update Makefiles
+  * acpica: updates to existing ACPICA sources
+  * acpica: new ACPICA sources
+  * lib: fwts_fileio.c: remove unnecessary variable len
+  * acpi: acpidump: remove unnecessary variable n
+  * lib: fwts_tag: use size_t instead of int
+  * lib: fwts_stringextras: use size_t instead of int
+  * lib: fwts_framework: use size_t instead of int
+  * lib: fwts_battery: use size_t instead of int
+  * lib: fwts_acpi_method: use size_t instead of int
+  * acpica: fwts_acpica: use size_t instead of int
+  * acpi: method: use size_t instead of int
+  * acpi: cstates: use size_t instead of int
+  * acpi: acpitables: use size_t instead of int
+  * lib: fwts_args: only handle non-zero length short_names
+  * Update copyright year
+  * Remove old TODO.txt
+  * klog: Add EC transaction failure detection
+
+  [Keng-Yu Lin]
+  * debian: update Standards-Version and debhelper version
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 20 Apr 2012 09:54:15 +0800
+
 fwts (0.24.21) precise; urgency=low
 
   [Alex Hung]

@@ -1,3 +1,10 @@
+fwts (0.25.01) precise; urgency=low
+
+  [Keng-Yu Lin]
+  * wmi: Fix an error on processing the _WDG data 
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 26 Apr 2012 10:30:35 +0800
+
 fwts (0.25.00) precise; urgency=low
 
   [Alex Hung]

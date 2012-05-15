@@ -101,6 +101,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 	int option_index;
 	int ret = FWTS_OK;
 	char *short_options = NULL;
+	size_t short_options_len = 0;
 
 	long_options = calloc(1, (total_options + 1) * sizeof(struct option));
 	if (long_options == NULL) {
@@ -126,7 +127,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 			if (short_name && (len = strlen(short_name)) > 0) {
 				if (short_options) {
 					short_options = realloc(short_options,
-						strlen(short_options) + len + 1);
+						short_options_len + len + 1);
 					if (short_options == NULL) {
 						fwts_log_error(fw,
 							"Out of memory "
@@ -134,6 +135,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 						return FWTS_ERROR;
 					}
 					strcat(short_options, short_name);
+					short_options_len += (len + 1);
 				} else {
 					short_options = calloc(1, len + 1);
 					if (short_options == NULL) {
@@ -143,6 +145,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 						return FWTS_ERROR;
 					}
 					strcpy(short_options, short_name);
+					short_options_len += (len + 1);
 				}
 			}
 		}

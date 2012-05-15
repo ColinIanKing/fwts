@@ -244,7 +244,7 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 			char *line = fwts_text_list_text(item);
 			char *pEnd;
 
-			if (line[3] == ' ') {
+			if (strlen(line) >= 3 && line[3] == ' ') {
 				reg_val = strtol(line, &pEnd, 16);
 				for (i = 0; reg_loc < 256 && i < 16; i++) {
 					reg_val = strtol(pEnd + 1, &pEnd, 16);

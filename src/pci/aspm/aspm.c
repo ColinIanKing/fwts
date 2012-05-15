@@ -114,9 +114,9 @@ static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	return FWTS_OK;
 }
 
-int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
-					    struct pci_device *rp,
-					    struct pci_device *dev)
+static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
+	struct pci_device *rp,
+	struct pci_device *dev)
 {
 	struct pcie_capability *rp_cap, *device_cap;
 	uint8_t rp_aspm_cntrl, device_aspm_cntrl;
@@ -199,8 +199,8 @@ static void pci_device_list_free(struct pci_device *head)
 	}
 }
 
-int pcie_check_aspm_registers(fwts_framework *fw,
-				   const fwts_log_level level)
+static int pcie_check_aspm_registers(fwts_framework *fw,
+	const fwts_log_level level)
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;

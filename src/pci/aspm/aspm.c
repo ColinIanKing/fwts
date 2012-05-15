@@ -188,6 +188,17 @@ int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	return ret;
 }
 
+static void pci_device_list_free(struct pci_device *head)
+{
+	struct pci_device *next;
+
+	while (head) {
+		next = head->next;
+		free(head);
+		head = next;
+	}
+}
+
 int pcie_check_aspm_registers(fwts_framework *fw,
 				   const fwts_log_level level)
 {
@@ -212,8 +223,11 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 		char *pEnd;
 
 		device = (struct pci_device *) calloc(1, sizeof(*device));
-		if (device == NULL)
+		if (device == NULL) {
+			pci_device_list_free(head);
+			fwts_text_list_free(lspci_output);
 			return FWTS_ERROR;
+		}
 
 		device->bus = strtol(line, &pEnd, 16);
 		device->dev = strtol(pEnd + 1, &pEnd, 16);
@@ -226,6 +240,7 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 
 		cur = device;
 	}
+	fwts_text_list_free(lspci_output);
 
 	for (cur = head; cur; cur = cur->next) {
 		int reg_loc = 0, reg_val = 0;
@@ -235,10 +250,13 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 			fw->lspci, cur->bus, cur->dev, cur->func);
 		if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
 			fwts_log_warning(fw, "Could not execute %s", command);
+			pci_device_list_free(head);
 			return FWTS_ERROR;
 		}
-		if (lspci_output == NULL)
+		if (lspci_output == NULL) {
+			pci_device_list_free(head);
 			return FWTS_ERROR;
+		}
 
 		fwts_list_foreach(item, lspci_output) {
 			char *line = fwts_text_list_text(item);
@@ -253,6 +271,7 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 				}
 			}
 		}
+		fwts_text_list_free(lspci_output);
 	}
 
 	/* Check aspm registers from the list of pci devices */
@@ -275,14 +294,7 @@ int pcie_check_aspm_registers(fwts_framework *fw,
 		}
 	}
 
-	cur = head;
-	while (cur != NULL) {
-		device = cur->next;
-		free(cur);
-		cur = device;
-	}
-
-	fwts_text_list_free(lspci_output);
+	pci_device_list_free(head);
 
 	return ret;
 }

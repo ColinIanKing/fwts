@@ -261,6 +261,119 @@ static int fwts_battery_get_name_proc_fs(fwts_framework *fw, DIR *dir, int index
 	return FWTS_ERROR;
 }
 
+static int fwts_battery_get_cycle_count_sys_fs(fwts_framework *fw, DIR *dir, int index, int *cycle_count)
+{
+	struct dirent *entry;
+	char *field_cycle_count;
+	size_t field_cycle_count_len;
+	int  i = 0;
+
+	*cycle_count = 0;
+	field_cycle_count = "POWER_SUPPLY_CYCLE_COUNT=";
+	field_cycle_count_len = strlen(field_cycle_count);
+
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2) {
+			char path[PATH_MAX];
+			char *data;
+			int  val;
+			FILE *fp;
+			bool match;
+
+			/* Check that type field matches the expected type */
+			snprintf(path, sizeof(path), "%s/%s/type", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
+			if ((data = fwts_get(path)) != NULL) {
+				bool mismatch = (strstr(data, "Battery") == NULL);
+				free(data);
+				if (mismatch)
+					continue;	/* type don't match, skip this entry */
+			} else
+				continue;		/* can't check type, skip this entry */
+			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			i++;
+			if (!match)
+				continue;
+
+			snprintf(path, sizeof(path), "%s/%s/uevent", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
+			if ((fp = fopen(path, "r")) == NULL) {
+				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
+			} else {
+				char buffer[4096];
+				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
+					if (strstr(buffer, field_cycle_count) &&
+					    strlen(buffer) > field_cycle_count_len) {
+						sscanf(buffer+field_cycle_count_len, "%d", &val);
+						*cycle_count = val;
+					}
+				}
+			}
+		}
+	} while (entry);
+
+	return FWTS_OK;
+}
+
+static int fwts_battery_get_cycle_count_proc_fs(fwts_framework *fw, DIR *dir, int index, int *cycle_count)
+{
+	struct dirent *entry;
+	char *file;
+	char *field;
+	int  i = 0;
+
+	*cycle_count = 0;
+	file = "info";
+	field = "cycle count";
+
+	do {
+		entry = readdir(dir);
+		if (entry && strlen(entry->d_name) > 2) {
+			char path[PATH_MAX];
+			int  val;
+			FILE *fp;
+			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+
+			i++;
+			if (!match)
+				continue;
+
+			snprintf(path, sizeof(path), "%s/%s/%s", FWTS_PROC_ACPI_BATTERY, entry->d_name, file);
+			if ((fp = fopen(path, "r")) == NULL) {
+				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
+			} else {
+				char buffer[4096];
+				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
+					if (strstr(buffer, field) &&
+					    strlen(buffer) > 25) {
+						sscanf(buffer+25, "%d", &val);
+						*cycle_count = val;
+						break;
+					}
+				}
+			}
+		}
+	} while (entry);
+	return FWTS_OK;
+}
+
+int fwts_battery_get_cycle_count(fwts_framework *fw, int index, int *cycle_count)
+{
+	int ret;
+	DIR *dir;
+
+	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
+		ret = fwts_battery_get_cycle_count_sys_fs(fw, dir, index, cycle_count);
+		closedir(dir);
+	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
+		ret = fwts_battery_get_cycle_count_proc_fs(fw, dir, index, cycle_count);
+		closedir(dir);
+	} else {
+		return FWTS_ERROR;
+	}
+
+	return ret;
+}
+
 int fwts_battery_get_name(fwts_framework *fw, int index, char *name)
 {
 	int ret;

@@ -170,6 +170,23 @@ static void check_discharging(fwts_framework *fw, int index, char *name)
 		name);
 }
 
+static void check_battery_cycle_count(fwts_framework *fw, int index, char *name)
+{
+	int cycle_count;
+
+	fwts_printf(fw, "==== Checking cycle count of battery '%s' ====\n", name);
+	if (fwts_battery_get_cycle_count(fw, index, &cycle_count) == FWTS_OK) {
+		if (cycle_count == 0) {
+			fwts_log_info(fw,
+				"Please ignore this error with a new battery");
+			fwts_failed(fw, LOG_LEVEL_LOW, "BatteryZeroCycleCount",
+			"System firmware may not support cycle count interface "
+			"or it reports it incorrectly for battery %s.",
+			name);
+		}
+	}
+
+}
 
 static void do_battery_test(fwts_framework *fw, int index)
 {
@@ -193,6 +210,7 @@ static void do_battery_test(fwts_framework *fw, int index)
 	fwts_printf(fw, "==== Please now PLUG IN the AC power of the machine ====\n");
 	wait_for_acpi_event(fw, name);
 	check_charging(fw, index, name);
+	check_battery_cycle_count(fw, index, name);
 }
 
 static int battery_test1(fwts_framework *fw)

@@ -485,6 +485,53 @@ void AcpiOsVprintf(const char *fmt, va_list args)
 }
 
 /*
+ *  AcpiOsCreateSemaphore()
+ *	Override ACPICA AcpiOsCreateSemaphore
+ */
+ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits,
+	UINT32 InitialUnits,
+	ACPI_HANDLE *OutHandle)
+{
+	sem_t *sem;
+
+	if (!OutHandle)
+		return AE_BAD_PARAMETER;
+
+	sem = AcpiOsAllocate(sizeof(sem_t));
+	if (!sem)
+		return AE_NO_MEMORY;
+
+	if (sem_init(sem, 0, InitialUnits) == -1) {
+		AcpiOsFree(sem);
+		return AE_BAD_PARAMETER;
+	}
+
+	*OutHandle = (ACPI_HANDLE)sem;
+
+	return AE_OK;
+}
+
+/*
+ *  AcpiOsDeleteSemaphore()
+ *	Override ACPICA AcpiOsDeleteSemaphore to fix semaphore memory freeing
+ */
+ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_HANDLE Handle)
+{
+	sem_t *sem = (sem_t *)Handle;
+
+	if (!sem)
+		return AE_BAD_PARAMETER;
+
+	if (sem_destroy(sem) == -1)
+		return AE_BAD_PARAMETER;
+
+	AcpiOsFree(sem);
+
+	return AE_OK;
+}
+
+
+/*
  *  AcpiOsWaitSemaphore()
  *	Override ACPICA AcpiOsWaitSemaphore to keep track of semaphore acquires
  *	so that we can see if any methods are sloppy in their releases.

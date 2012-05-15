@@ -20,6 +20,8 @@ osunixxf_munged.c: $(ACPICA_OSL)/osunixxf.c
 	sed 's/^AcpiOsReadPciConfiguration/__AcpiOsReadPciConfiguration/' | \
 	sed 's/^AcpiOsSignalSemaphore/__AcpiOsSignalSemaphore/' | \
 	sed 's/^AcpiOsWaitSemaphore/__AcpiOsWaitSemaphore/' | \
+	sed 's/^AcpiOsCreateSemaphore/__AcpiOsCreateSemaphore/' | \
+	sed 's/^AcpiOsDeleteSemaphore/__AcpiOsDeleteSemaphore/' | \
 	sed 's/^AcpiOsVprintf/__AcpiOsVprintf/' | \
 	sed 's/^AcpiOsSignal/__AcpiOsSignal/' | \
 	sed 's/^AcpiOsSleep/__AcpiOsSleep/' \

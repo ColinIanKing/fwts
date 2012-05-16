@@ -142,7 +142,7 @@ void fwts_log_print_fields(void)
 {
 	fwts_log_field field = 1;
 	char *str;
-	
+
 	printf("Available fields: ");
 	for (field=1; ; field <<= 1) {
 		str = fwts_log_field_to_str(field);
@@ -211,7 +211,7 @@ void fwts_log_filter_unset_field(const fwts_log_field filter)
  *	clears a bit.
  */
 void fwts_log_set_field_filter(const char *str)
-{	
+{
 	char *token;
 	char *saveptr;
 	fwts_log_field field;
@@ -238,7 +238,7 @@ void fwts_log_set_field_filter(const char *str)
  */
 void fwts_log_set_format(const char *str)
 {
-	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);	
+	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);
 	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
 }
 
@@ -259,36 +259,36 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 	for (ptr = fwts_log_format; *ptr; ) {
 		if (*ptr == '%') {
 			ptr++;
-			if (strncmp(ptr,"line",4)==0) {
-				n += snprintf(buffer+n, len-n,
+			if (!strncmp(ptr, "line", 4)) {
+				n += snprintf(buffer + n, len - n,
 					"%5.5d", log->line_number);
-				ptr+=4;
+				ptr += 4;
 			}
-			if (strncmp(ptr,"date",4)==0) {
-				n += snprintf(buffer+n, len-n,
-					"%2.2d/%2.2d/%-2.2d", 		
+			if (!strncmp(ptr, "date", 4)) {
+				n += snprintf(buffer + n, len - n,
+					"%2.2d/%2.2d/%-2.2d",
 					tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
-				ptr+=4;
+				ptr += 4;
 			}
-			if (strncmp(ptr,"time",4)==0) {
-				n += snprintf(buffer+n, len-n,
-					"%2.2d:%2.2d:%2.2d", 		
+			if (!strncmp(ptr, "time", 4)) {
+				n += snprintf(buffer + n, len - n,
+					"%2.2d:%2.2d:%2.2d",
 					tm.tm_hour, tm.tm_min, tm.tm_sec);
-				ptr+=4;
+				ptr += 4;
 			}
-			if (strncmp(ptr,"field",5)==0) {
-				n += snprintf(buffer+n, len-n, "%s",
+			if (!strncmp(ptr, "field", 5)) {
+				n += snprintf(buffer + n, len - n, "%s",
 					fwts_log_field_to_str(field));
-				ptr+=5;
+				ptr += 5;
 			}
-			if (strncmp(ptr,"level",5)==0) {
-				n += snprintf(buffer+n, len-n, "%1.1s",
+			if (!strncmp(ptr, "level", 5)) {
+				n += snprintf(buffer + n, len - n, "%1.1s",
 					fwts_log_level_to_str(level));
-				ptr+=5;
+				ptr += 5;
 			}
-			if (strncmp(ptr,"owner",5)==0 && log->owner) {
-				n += snprintf(buffer+n, len-n, "%-15.15s", log->owner);
-				ptr+=5;
+			if (!strncmp(ptr,"owner", 5) && log->owner) {
+				n += snprintf(buffer + n, len - n, "%-15.15s", log->owner);
+				ptr += 5;
 			}
 		}
 		else {
@@ -365,7 +365,7 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
 		len += strlen(text) + 1;
 	}
 	fwts_text_list_free(lines);
-	
+
 	return len;
 }
 
@@ -446,7 +446,7 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 	newlog->magic = LOG_MAGIC;
 
 	if (owner) {
-		if ((newlog->owner = calloc(1, strlen(owner)+1)) == NULL) {		
+		if ((newlog->owner = calloc(1, strlen(owner)+1)) == NULL) {
 			free(newlog);
 			return NULL;
 		}

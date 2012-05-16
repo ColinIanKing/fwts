@@ -118,7 +118,7 @@ static int fwts_summary_level_to_index(fwts_log_level level)
  *	add an error summary for a test with error message text at given
  *	error level to the list of summaries.
  */
-int fwts_summary_add(const char *test, fwts_log_level level, char *text)
+int fwts_summary_add(fwts_framework *fw, const char *test, fwts_log_level level, char *text)
 {
 	fwts_list_link	*item;
 	fwts_summary_item *summary_item = NULL;
@@ -161,7 +161,7 @@ int fwts_summary_add(const char *test, fwts_log_level level, char *text)
 
 	/* Now append a new line number to list of line numbers */
 
-	*line_num = fwts_log_line_number();
+	*line_num = fwts_log_line_number(fw->results);
 	fwts_list_append(&summary_item->log_lines, line_num);
 
 	/* And append new item if not done so already */

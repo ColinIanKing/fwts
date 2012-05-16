@@ -58,6 +58,7 @@ typedef struct log_t {
 	FILE *fp;	
 	char *owner;
 	int line_width;
+	int line_number;
 } fwts_log;
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode);
@@ -75,7 +76,7 @@ void      fwts_log_filter_set_field(const fwts_log_field filter);
 void      fwts_log_filter_unset_field(const fwts_log_field filter);
 int       fwts_log_str_to_level(const char *str);
 char     *fwts_log_level_to_str(const fwts_log_level level);
-int 	  fwts_log_line_number(void);
+int 	  fwts_log_line_number(fwts_log *log);
 void	  fwts_log_set_line_width(const int width);
 
 #define fwts_log_result(fw, fmt, args...)	\

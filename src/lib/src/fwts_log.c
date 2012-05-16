@@ -32,8 +32,6 @@
 
 static int log_line_width = 0;
 
-static int fwts_log_line = 1;
-
 static fwts_log_field fwts_log_filter = ~0;
 
 static char fwts_log_format[256] = "";
@@ -52,9 +50,9 @@ void fwts_log_set_line_width(int width)
  *  fwts_log_line_number()
  * 	get current line number of log
  */
-int fwts_log_line_number(void)
+int fwts_log_line_number(fwts_log *log)
 {
-	return fwts_log_line;
+	return log->line_number;
 }
 
 /*
@@ -263,7 +261,7 @@ static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwt
 			ptr++;
 			if (strncmp(ptr,"line",4)==0) {
 				n += snprintf(buffer+n, len-n,
-					"%5.5d", fwts_log_line);
+					"%5.5d", log->line_number);
 				ptr+=4;
 			}
 			if (strncmp(ptr,"date",4)==0) {
@@ -363,7 +361,7 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
 		fwrite(text, 1, strlen(text), log->fp);
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);
-		fwts_log_line++;
+		log->line_number++;
 		len += strlen(text) + 1;
 	}
 	fwts_text_list_free(lines);
@@ -396,7 +394,7 @@ void fwts_log_underline(fwts_log *log, const int ch)
 
 	fwrite(buffer, 1, log->line_width, log->fp);
 	fflush(log->fp);
-	fwts_log_line++;
+	log->line_number++;
 }
 
 /*
@@ -408,7 +406,7 @@ void fwts_log_newline(fwts_log *log)
 	if (log && (log->magic == LOG_MAGIC)) {
 		fwrite("\n", 1, 1, log->fp);
 		fflush(log->fp);
-		fwts_log_line++;
+		log->line_number++;
 	}
 }
 

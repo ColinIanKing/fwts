@@ -716,7 +716,7 @@ void fwts_framework_log(fwts_framework *fw,
 		break;
 	case FWTS_FRAMEWORK_FAILED:
 		fw->failed_level |= level;
-		fwts_summary_add(fw->current_major_test->name, level, buffer);
+		fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
 		fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s] %s: Test %d, %s",
 			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num, buffer);
 		break;

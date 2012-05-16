@@ -224,7 +224,7 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
 				char *lines = fwts_summary_lines(&summary_item->log_lines);
-				fwts_log_summary(fw, " %s test, at %d log line%s: %s: %s",
+				fwts_log_summary_verbatum(fw, " %s test, at %d log line%s: %s: %s",
 					summary_item->test,
 					fwts_list_len(&summary_item->log_lines),
 					fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",

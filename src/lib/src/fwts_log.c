@@ -375,26 +375,33 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
  */
 void fwts_log_underline(fwts_log *log, const int ch)
 {
-	int i;
 	int n;
+	char *buffer;
+	size_t width;
 
-	char buffer[1024];
+	if (!log || (log->magic != LOG_MAGIC))
+		return;
 
 	if (!((LOG_SEPARATOR & LOG_FIELD_MASK) & fwts_log_filter))
 		return;
 
-	/* Get width of log line, based on how wide the heading is */
-	n = fwts_log_header(log, buffer, sizeof(buffer), LOG_SEPARATOR, LOG_LEVEL_NONE);
+	width = log->line_width + 1;
 
-	for (i=n;i<log->line_width-1;i++)
-		buffer[i] = ch;
+	buffer = calloc(1, width);
+	if (!buffer)
+		return;	/* Unlikely, and just abort */
 
-	buffer[i++] = '\n';
-	buffer[i] = '\0';
+	/* Write in leading optional line prefix */
+	n = fwts_log_header(log, buffer, width, LOG_SEPARATOR, LOG_LEVEL_NONE);
 
-	fwrite(buffer, 1, log->line_width, log->fp);
+	memset(buffer + n, ch, width  - n);
+	buffer[width - 1] = '\n';
+
+	fwrite(buffer, 1, width, log->fp);
 	fflush(log->fp);
 	log->line_number++;
+
+	free(buffer);
 }
 
 /*

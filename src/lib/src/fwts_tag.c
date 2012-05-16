@@ -180,7 +180,7 @@ void fwts_tag_report(fwts_framework *fw, const fwts_log_field field, fwts_list *
 	if ((taglist != NULL) && (fwts_list_len(taglist) > 0)) {
 		char *tags = fwts_tag_list_to_str(taglist);
 		if (tags) {
-			fwts_log_printf(fw->results, field | LOG_VERBATUM, LOG_LEVEL_NONE, "Tags: %s", tags);
+			fwts_log_printf(fw->results, field | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", "Tags: %s", tags);
 			free(tags);
 		}
 	}

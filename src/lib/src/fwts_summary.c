@@ -210,34 +210,38 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 	fwts_list_link *item;
 
 	fwts_log_summary(fw, "Test Failure Summary");
-	fwts_log_summary(fw, "====================");
+	fwts_log_underline(fw->results, '=');
 	fwts_log_nl(fw);
 
 	for (i=0;i<SUMMARY_MAX;i++) {
+		fwts_log_section_begin(fw->results, "failure");
+
 		if (fwts_summaries[i]->len) {
 			fwts_list_link *item;
 			fwts_log_summary(fw, "%s failures: %d", summary_names[i], fwts_summaries[i]->len);
 
+			fwts_log_section_begin(fw->results, "failures");
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
 				char *lines = fwts_summary_lines(&summary_item->log_lines);
-				fwts_log_summary(fw, " %s test, at %d log line%s: %s",
+				fwts_log_summary(fw, " %s test, at %d log line%s: %s: %s",
 					summary_item->test,
 					fwts_list_len(&summary_item->log_lines),
 					fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
-					lines);
-				free(lines);
-				fwts_log_summary_verbatum(fw, "  \"%s\"",
+					lines,
 					summary_item->text);
+				free(lines);
 			}
+			fwts_log_section_end(fw->results);
 		}
 		else
 			fwts_log_summary(fw, "%s failures: NONE", summary_names[i]);
 
+		fwts_log_section_end(fw->results);
 		fwts_log_nl(fw);
 	}
 
-	if (fw->total_run > 0) {		
+	if (fw->log_type == LOG_TYPE_PLAINTEXT && fw->total_run > 0) {		
 		sorted = fwts_list_new();
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);

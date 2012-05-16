@@ -76,6 +76,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
+	{ "log-type",		"",   1, "Specify log type (plaintext or json)." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -110,6 +111,39 @@ static fwts_framework_setting fwts_framework_settings[] = {
 	{ ID_NAME(FWTS_FRAMEWORK_ABORTED),		"ABORTED", NULL },
 	{ ID_NAME(FWTS_FRAMEWORK_INFOONLY),		"INFO", NULL },
 };
+
+#if 0
+static const char *fwts_framework_results_to_str(fwts_framework_results result)
+{
+	switch (result) {
+	case FWTS_FRAMEWORK_PASSED:
+		return "Passed";
+	case FWTS_FRAMEWORK_FAILED:	
+		return "Failed";
+	case FWTS_FRAMEWORK_FAILED_LOW:
+		return "Failed Low";
+	case FWTS_FRAMEWORK_FAILED_HIGH:
+		return "Failed High";
+	case FWTS_FRAMEWORK_FAILED_MEDIUM:
+		return "Failed Medium";
+	case FWTS_FRAMEWORK_FAILED_CRITICAL:
+		return "Failed Critical";
+	case FWTS_FRAMEWORK_WARNING:
+		return "Warning";
+	case FWTS_FRAMEWORK_ERROR:
+		return "Error";
+	case FWTS_FRAMEWORK_ADVICE:
+		return "Advice";
+	case FWTS_FRAMEWORK_SKIPPED:
+		return "Skipped";
+        case FWTS_FRAMEWORK_ABORTED:
+		return "Aborted";
+	case FWTS_FRAMEWORK_INFOONLY:
+		return "Info";
+	default:
+		return "Unknown";
+}
+#endif
 
 /*
  *  fwts_framework_compare_priority()
@@ -535,6 +569,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 	fw->failed_level = 0;
 
+	fwts_log_section_begin(fw->results, test->name);
 	fwts_log_set_owner(fw->results, test->name);
 
 	fw->current_minor_test_num = 1;
@@ -591,20 +626,27 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		goto done;
 	}
 
+	fwts_log_section_begin(fw->results, "subtests");
 	for (minor_test = test->ops->minor_tests; 
 		*minor_test->test_func != NULL; 
 		minor_test++, fw->current_minor_test_num++) {
 
+		fwts_log_section_begin(fw->results, "subtest");
 		fw->current_minor_test_name = minor_test->name;
 
 		fwts_results_zero(&fw->minor_tests);
 
-		if (minor_test->name != NULL)
+		if (minor_test->name != NULL) {
+			fwts_log_section_begin(fw->results, "subtest_info");
 			fwts_log_info(fw, "Test %d of %d: %s",
 				fw->current_minor_test_num,
 				test->ops->total_tests, minor_test->name);
+			fwts_log_section_end(fw->results);
+		}
 
+		fwts_log_section_begin(fw->results, "subtest_results");
 		fwts_framework_minor_test_progress(fw, 0, "");
+
 		ret = (*minor_test->test_func)(fw);
 
 		/* Something went horribly wrong, abort all other tests too */
@@ -625,23 +667,33 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			fprintf(stderr, "  %-55.55s %s\n", namebuf,
 				*resbuf ? resbuf : "     ");
 		}
+		fwts_log_section_end(fw->results);
 		fwts_log_nl(fw);
+		fwts_log_section_end(fw->results);
 	}
+	fwts_log_section_end(fw->results);
 
 	fwts_framework_summate_results(&fw->total, &fw->current_major_test->results);
 
 	if (test->ops->deinit)
 		test->ops->deinit(fw);
 
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
+	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG) {
+		fwts_log_section_begin(fw->results, "tags");
 		fwts_tag_report(fw, LOG_TAG, &fw->test_taglist);
+		fwts_log_section_end(fw->results);
+	}
 
 done:
 	fwts_list_free_items(&fw->test_taglist, free);
 
-	if (!(test->flags & FWTS_UTILS))
+	if (!(test->flags & FWTS_UTILS)) {
+		fwts_log_section_begin(fw->results, "results");
 		fwts_framework_test_summary(fw);
+		fwts_log_section_end(fw->results);
+	}
 
+	fwts_log_section_end(fw->results);
 	fwts_log_set_owner(fw->results, "fwts");
 
 	return FWTS_OK;
@@ -694,6 +746,7 @@ void fwts_framework_log(fwts_framework *fw,
 	const char *fmt, ...)
 {
 	char buffer[4096];
+	char prefix[256];
 	char *str = fwts_framework_get_env(result);
 
 	if (fmt) {
@@ -711,21 +764,24 @@ void fwts_framework_log(fwts_framework *fw,
 	switch (result) {
 	case FWTS_FRAMEWORK_ADVICE:
 		fwts_log_nl(fw);
-		fwts_log_printf(fw->results, LOG_RESULT, level, "%s: %s", str, buffer);
+		snprintf(prefix, sizeof(prefix), "%s: ", str);
+		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		fwts_log_nl(fw);
 		break;
 	case FWTS_FRAMEWORK_FAILED:
 		fw->failed_level |= level;
 		fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
-		fwts_log_printf(fw->results, LOG_RESULT, level, "%s [%s] %s: Test %d, %s",
-			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num, buffer);
+		snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
+			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
+		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		break;
 	case FWTS_FRAMEWORK_PASSED:
 	case FWTS_FRAMEWORK_WARNING:
 	case FWTS_FRAMEWORK_SKIPPED:
 	case FWTS_FRAMEWORK_ABORTED:
-		fwts_log_printf(fw->results, LOG_RESULT, level, "%s: Test %d, %s",
-			str, fw->current_minor_test_num, buffer);
+		snprintf(prefix, sizeof(prefix), "%s: Test %d, ",
+			str, fw->current_minor_test_num);
+		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		break;
 	case FWTS_FRAMEWORK_INFOONLY:
 		break;	/* no-op */
@@ -979,6 +1035,16 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 31: /* --disassemble-aml */
 			fwts_iasl_disassemble_all_to_file(fw);
 			return FWTS_COMPLETE;
+		case 32: /* --log-type */
+			if (!strcmp(optarg, "plaintext"))
+				fw->log_type = LOG_TYPE_PLAINTEXT;
+			else if (!strcmp(optarg, "json"))
+				fw->log_type = LOG_TYPE_JSON;
+			else {
+				fprintf(stderr, "--log-type can be either plaintext or json.\n");
+				return FWTS_ERROR;
+			}
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1124,8 +1190,9 @@ int fwts_framework_args(const int argc, char **argv)
 
 	/* Results log */
 	if ((fw->results = fwts_log_open("fwts",
-			fw->results_logname,
-			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a")) == NULL) {
+			fw->results_logname,	
+			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a",
+			fw->log_type)) == NULL) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
 		goto tidy_close;
@@ -1165,10 +1232,16 @@ int fwts_framework_args(const int argc, char **argv)
 			fwts_list_len(&tests_to_run),
 			fw->results_logname);
 
+	fwts_log_section_begin(fw->results, "heading");
 	fwts_framework_heading_info(fw, &tests_to_run);
+	fwts_log_section_end(fw->results);
+
+	fwts_log_section_begin(fw->results, "tests");
 	fwts_framework_tests_run(fw, &tests_to_run);
+	fwts_log_section_end(fw->results);
 
 	if (fw->print_summary) {
+		fwts_log_section_begin(fw->results, "summary");
 		fwts_log_set_owner(fw->results, "summary");
 		fwts_log_nl(fw);
 		if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
@@ -1176,6 +1249,7 @@ int fwts_framework_args(const int argc, char **argv)
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
 		fwts_summary_report(fw, &fwts_framework_test_list);
+		fwts_log_section_end(fw->results);
 	}
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)

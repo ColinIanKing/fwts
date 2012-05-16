@@ -26,7 +26,6 @@
 
 #include "fwts_log.h"
 #include "fwts_list.h"
-#include "fwts_framework.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
@@ -139,6 +138,8 @@ typedef struct {
 
 	int firmware_type;			/* Type of firmware */
 	int show_progress;			/* Show progress while running current test */
+
+	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
 } fwts_framework;
 
 typedef struct {

@@ -37,6 +37,8 @@ libfwts_la_SOURCES = \
 	fwts_klog.c \
 	fwts_list.c \
 	fwts_log.c \
+	fwts_log_plaintext.c \
+	fwts_log_json.c \
 	fwts_memorymap.c \
 	fwts_microcode.c \
 	fwts_mmap.c \

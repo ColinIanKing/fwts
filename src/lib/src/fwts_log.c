@@ -32,9 +32,9 @@
 
 static int log_line_width = 0;
 
-static fwts_log_field fwts_log_filter = ~0;
+fwts_log_field fwts_log_filter = ~0;
 
-static char fwts_log_format[256] = "";
+const char *fwts_log_format = "";
 
 /*
  *  fwts_log_set_line_width()
@@ -59,7 +59,7 @@ int fwts_log_line_number(fwts_log *log)
  *  fwts_log_field_to_str()
  *	return string name of log field
  */
-static char *fwts_log_field_to_str(const fwts_log_field field)
+char *fwts_log_field_to_str(const fwts_log_field field)
 {
 	switch (field & LOG_FIELD_MASK) {
 	case LOG_RESULT:
@@ -86,6 +86,40 @@ static char *fwts_log_field_to_str(const fwts_log_field field)
 		return "TAG";
 	default:
 		return LOG_UNKOWN_FIELD;
+	}
+}
+
+/*
+ *  fwts_log_field_to_str_full()
+ *	return full string name of log field
+ */
+char *fwts_log_field_to_str_full(const fwts_log_field field)
+{
+	switch (field & LOG_FIELD_MASK) {
+	case LOG_RESULT:
+		return "Result";
+	case LOG_ERROR:
+		return "Error";
+	case LOG_WARNING:
+		return "Warning";
+	case LOG_DEBUG:
+		return "Debug";
+	case LOG_INFO:
+		return "Info";
+	case LOG_SUMMARY:
+		return "Summary";
+	case LOG_SEPARATOR:
+		return "Separator";
+	case LOG_NEWLINE:
+		return "Newline";
+	case LOG_ADVICE:
+		return "Advice";
+	case LOG_HEADING:
+		return "Heading";
+	case LOG_TAG:
+		return "Tag";
+	default:
+		return "Unknown";
 	}
 }
 
@@ -158,7 +192,7 @@ void fwts_log_print_fields(void)
  *  fwts_log_str_to_field()
  *	return log field of a given string, 0 if not matching
  */
-static fwts_log_field fwts_log_str_to_field(const char *text)
+fwts_log_field fwts_log_str_to_field(const char *text)
 {
 	int i;
 
@@ -238,79 +272,26 @@ void fwts_log_set_field_filter(const char *str)
  */
 void fwts_log_set_format(const char *str)
 {
-	strncpy(fwts_log_format, str, sizeof(fwts_log_format)-1);
-	fwts_log_format[sizeof(fwts_log_format)-1]='\0';
+	fwts_log_format = str;
 }
-
-/*
- *  fwts_log_header()
- *	format up a tabulated log heading
- */
-static int fwts_log_header(fwts_log *log, char *buffer, const int len, const fwts_log_field field, const fwts_log_level level)
-{
-	char *ptr;
-	int n = 0;
-	struct tm tm;
-	time_t now;
-
-	time(&now);
-	localtime_r(&now, &tm);
-
-	for (ptr = fwts_log_format; *ptr; ) {
-		if (*ptr == '%') {
-			ptr++;
-			if (!strncmp(ptr, "line", 4)) {
-				n += snprintf(buffer + n, len - n,
-					"%5.5d", log->line_number);
-				ptr += 4;
-			}
-			if (!strncmp(ptr, "date", 4)) {
-				n += snprintf(buffer + n, len - n,
-					"%2.2d/%2.2d/%-2.2d",
-					tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
-				ptr += 4;
-			}
-			if (!strncmp(ptr, "time", 4)) {
-				n += snprintf(buffer + n, len - n,
-					"%2.2d:%2.2d:%2.2d",
-					tm.tm_hour, tm.tm_min, tm.tm_sec);
-				ptr += 4;
-			}
-			if (!strncmp(ptr, "field", 5)) {
-				n += snprintf(buffer + n, len - n, "%s",
-					fwts_log_field_to_str(field));
-				ptr += 5;
-			}
-			if (!strncmp(ptr, "level", 5)) {
-				n += snprintf(buffer + n, len - n, "%1.1s",
-					fwts_log_level_to_str(level));
-				ptr += 5;
-			}
-			if (!strncmp(ptr,"owner", 5) && log->owner) {
-				n += snprintf(buffer + n, len - n, "%-15.15s", log->owner);
-				ptr += 5;
-			}
-		}
-		else {
-			n += snprintf(buffer+n, len-n, "%c", *ptr);
-			ptr++;
-		}
-	}
-	return n;
-}
-
 
 /*
  *  fwts_log_vprintf()
  *	printf to a log
  */
-int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, ...)
+int fwts_log_printf(fwts_log *log,
+	const fwts_log_field field,
+	const fwts_log_level level,
+	const char *status,
+	const char *label,
+	const char *prefix,
+	const char *fmt, ...)
 {
 	va_list	args;
 	int ret;
 
 	va_start(args, fmt);
-	ret = fwts_log_vprintf(log, field, level, fmt, args);
+	ret = fwts_log_vprintf(log, field, level, status, label, prefix, fmt, args);
 	va_end(args);
 
 	return ret;
@@ -320,53 +301,23 @@ int fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_le
  *  fwts_log_vprintf()
  *	vprintf to a log
  */
-int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *fmt, va_list args)
+int fwts_log_vprintf(fwts_log *log,
+	const fwts_log_field field,
+	const fwts_log_level level,
+	const char *status,
+	const char *label,
+	const char *prefix,
+	const char *fmt,
+	va_list args)
 {
-	char buffer[4096];
-	int n = 0;
-	int len = 0;
-
-	fwts_list *lines;
-	fwts_list_link *item;
-
-	if ((!log) || (log && log->magic != LOG_MAGIC))
-		return 0;
-
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
-	/* This is a pain, we neen to find out how big the leading log
-	   message is, so format one up. */
-	n = fwts_log_header(log, buffer, sizeof(buffer), field, level);
-
-	vsnprintf(buffer+n, sizeof(buffer)-n, fmt, args);
-
-	/* Break text into multi-lines if necessary */
-	if (field & LOG_VERBATUM)
-		lines = fwts_list_from_text(buffer+n);
+	if (log && log->magic == LOG_MAGIC &&
+	    log->ops && log->ops->underline)
+		return log->ops->vprintf(log, field, level, status, label, prefix, fmt, args);
 	else
-		lines = fwts_format_text(buffer+n, log->line_width-n);
-
-	len = n;
-
-	fwts_list_foreach(item, lines) {
-		char *text = fwts_text_list_text(item);
-
-		if (!(field & LOG_NO_FIELDS)) {
-			/* Re-format up a log heading with current line number which
-	 		   may increment with multiple line log messages */
-			fwts_log_header(log, buffer, sizeof(buffer), field, level);
-			fwrite(buffer, 1, n, log->fp);
-		}
-		fwrite(text, 1, strlen(text), log->fp);
-		fwrite("\n", 1, 1, log->fp);
-		fflush(log->fp);
-		log->line_number++;
-		len += strlen(text) + 1;
-	}
-	fwts_text_list_free(lines);
-
-	return len;
+		return 0;
 }
 
 /*
@@ -375,33 +326,9 @@ int fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_l
  */
 void fwts_log_underline(fwts_log *log, const int ch)
 {
-	int n;
-	char *buffer;
-	size_t width;
-
-	if (!log || (log->magic != LOG_MAGIC))
-		return;
-
-	if (!((LOG_SEPARATOR & LOG_FIELD_MASK) & fwts_log_filter))
-		return;
-
-	width = log->line_width + 1;
-
-	buffer = calloc(1, width);
-	if (!buffer)
-		return;	/* Unlikely, and just abort */
-
-	/* Write in leading optional line prefix */
-	n = fwts_log_header(log, buffer, width, LOG_SEPARATOR, LOG_LEVEL_NONE);
-
-	memset(buffer + n, ch, width  - n);
-	buffer[width - 1] = '\n';
-
-	fwrite(buffer, 1, width, log->fp);
-	fflush(log->fp);
-	log->line_number++;
-
-	free(buffer);
+	if (log && log->magic == LOG_MAGIC &&
+	    log->ops && log->ops->underline)
+		log->ops->underline(log, ch);
 }
 
 /*
@@ -410,11 +337,9 @@ void fwts_log_underline(fwts_log *log, const int ch)
  */
 void fwts_log_newline(fwts_log *log)
 {
-	if (log && (log->magic == LOG_MAGIC)) {
-		fwrite("\n", 1, 1, log->fp);
-		fflush(log->fp);
-		log->line_number++;
-	}
+	if (log && log->magic == LOG_MAGIC &&
+	    log->ops && log->ops->underline)
+		log->ops->newline(log);
 }
 
 int fwts_log_set_owner(fwts_log *log, const char *owner)
@@ -431,12 +356,26 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 	return FWTS_ERROR;
 }
 
+void fwts_log_section_begin(fwts_log *log, const char *name)
+{
+	if (log && log->magic == LOG_MAGIC &&
+	    log->ops && log->ops->section_begin)
+		log->ops->section_begin(log, name);
+}
+
+void fwts_log_section_end(fwts_log *log)
+{
+	if (log && log->magic == LOG_MAGIC &&
+	    log->ops && log->ops->section_end)
+		log->ops->section_end(log);
+}
+
 /*
  *  fwts_log_open()
  *	open a log file. if name is stderr or stdout, then attach log to these
  *	streams.
  */
-fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
+fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode, fwts_log_type type)
 {
 	fwts_log *newlog;
 
@@ -444,6 +383,18 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 		return NULL;
 
 	newlog->magic = LOG_MAGIC;
+	switch (type) {
+	case LOG_TYPE_JSON:
+		newlog->ops = &fwts_log_json_ops;
+		break;
+	case LOG_TYPE_PLAINTEXT:
+		newlog->ops = &fwts_log_plaintext_ops;
+		break;
+	case LOG_TYPE_NONE:
+	default:
+		newlog->ops = &fwts_log_plaintext_ops;
+		break;
+	}
 
 	if (owner) {
 		if ((newlog->owner = calloc(1, strlen(owner)+1)) == NULL) {
@@ -469,6 +420,9 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 		newlog->line_width = fwts_tty_width(fileno(newlog->fp), LOG_LINE_WIDTH);
 	}
 
+	if (newlog->ops && newlog->ops->open)
+		newlog->ops->open(newlog);
+
 	return newlog;
 }
 
@@ -479,6 +433,9 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode)
 int fwts_log_close(fwts_log *log)
 {
 	if (log && (log->magic == LOG_MAGIC)) {
+		if (log->ops && log->ops->close)
+			log->ops->close(log);
+
 		if (log->fp && (log->fp != stdout && log->fp != stderr))
 			fclose(log->fp);
 		if (log->owner)

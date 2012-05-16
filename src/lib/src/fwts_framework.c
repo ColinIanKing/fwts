@@ -1147,6 +1147,7 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->magic = FWTS_FRAMEWORK_MAGIC;
 	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
 		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+	fw->log_type = LOG_TYPE_PLAINTEXT;
 
 	fwts_list_init(&fw->total_taglist);
 

@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH FWTS 1 "July 8, 2010"
+.TH FWTS 1 "16 May, 2012"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -148,6 +148,10 @@ specify the information in each log line. The following specifiers are available
 %line  \- log line
 .br
 e.g. \-\-log\-format="%date %time [%field] (%owner): "
+.TP
+.B \-\-log\-type
+specify the log type. Currently plaintext and json log types are available and the
+default is plaintext.
 .TP
 .B \-\-lp\-tags
 run tests and just output LaunchPad bug triaging tags relevant to the 

@@ -101,6 +101,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 						(*count)++;
 					}
 				}
+				fclose(fp);
 			}
 		}
 	} while (entry);
@@ -167,6 +168,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 						break;
 					}
 				}
+				fclose(fp);
 			}
 		}
 	} while (entry);
@@ -307,6 +309,7 @@ static int fwts_battery_get_cycle_count_sys_fs(fwts_framework *fw, DIR *dir, int
 						*cycle_count = val;
 					}
 				}
+				fclose(fp);
 			}
 		}
 	} while (entry);
@@ -350,6 +353,7 @@ static int fwts_battery_get_cycle_count_proc_fs(fwts_framework *fw, DIR *dir, in
 						break;
 					}
 				}
+				fclose(fp);
 			}
 		}
 	} while (entry);

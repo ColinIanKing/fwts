@@ -188,6 +188,46 @@ static void check_battery_cycle_count(fwts_framework *fw, int index, char *name)
 
 }
 
+static void check_battery_trip_point(fwts_framework *fw, int index, char *name)
+{
+	int trip_point;
+	int trip_point_org;
+
+	fwts_printf(fw, "==== Checking trip point of battery '%s' ====\n", name);
+
+	if (!fwts_battery_check_trip_point_support(fw, index)) {
+		fwts_printf(fw, "==== Not supported - skip test ====\n");
+		return;
+	}
+
+	if (fwts_battery_get_trip_point(fw, index, &trip_point) == FWTS_OK)
+		trip_point_org = trip_point;
+	else
+		trip_point_org = 0;
+
+	fwts_log_info(fw, "Test battery '%s' downward trip point.", name);
+	fwts_printf(fw, "==== Please now UNPLUG the AC power of the machine ====\n");
+	fwts_press_enter(fw);
+	sleep(1);
+	trip_point = get_full(fw, index) - 5;
+	fwts_battery_set_trip_point(fw, index, trip_point);
+	fwts_cpu_consume_start();
+	wait_for_acpi_event(fw, name);
+	fwts_cpu_consume_complete();
+
+	fwts_log_info(fw, "Test battery '%s' upwards trip point.", name);
+	fwts_printf(fw, "==== Please PLUG IN the AC power of the machine ====\n");
+	fwts_press_enter(fw);
+	sleep(1);
+	trip_point = get_full(fw, index) + 3;
+	fwts_battery_set_trip_point(fw, index, trip_point);
+	wait_for_acpi_event(fw, name);
+
+	if (trip_point_org != 0)
+		fwts_battery_set_trip_point(fw, index, trip_point_org);
+
+}
+
 static void do_battery_test(fwts_framework *fw, int index)
 {
 	char name[PATH_MAX];
@@ -211,6 +251,7 @@ static void do_battery_test(fwts_framework *fw, int index)
 	wait_for_acpi_event(fw, name);
 	check_charging(fw, index, name);
 	check_battery_cycle_count(fw, index, name);
+	check_battery_trip_point(fw, index, name);
 }
 
 static int battery_test1(fwts_framework *fw)

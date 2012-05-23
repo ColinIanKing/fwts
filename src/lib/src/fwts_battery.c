@@ -45,11 +45,11 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	switch (type) {
 	case FWTS_BATTERY_DESIGN_CAPACITY:
 		field_mAh = "POWER_SUPPLY_CHARGE_FULL_DESIGN=";
-		field_mWh = "ENERGY_SUPPLY_CHARGE_FULL_DESIGN=";
+		field_mWh = "POWER_SUPPLY_ENERGY_FULL_DESIGN=";
 		break;
 	case FWTS_BATTERY_REMAINING_CAPACITY:
 		field_mAh = "POWER_SUPPLY_CHARGE_NOW=";
-		field_mWh = "ENERGY_SUPPLY_CHARGE_NOW=";
+		field_mWh = "POWER_SUPPLY_ENERGY_NOW=";
 		break;
 	default:
 		return FWTS_ERROR;

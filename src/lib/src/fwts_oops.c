@@ -33,6 +33,12 @@
 	(FWTS_OOPS_GOT_OOPS | FWTS_OOPS_GOT_STACK | FWTS_OOPS_GOT_CALL_TRACE | FWTS_OOPS_GOT_END_TRACE)
 
 
+/*
+ *  fwts_oops_dump()
+ *	for a given item in a kernel log list, scan for an oops message and
+ *	if we find an oops message increment 'oopses' and dump out the oops
+ *	message to the fwts log
+ */
 void fwts_oops_dump(fwts_framework *fw, fwts_list_link *bug_item, int *oopses)
 {
 	fwts_list_link *item = bug_item;
@@ -82,6 +88,12 @@ void fwts_oops_dump(fwts_framework *fw, fwts_list_link *bug_item, int *oopses)
 	}
 }
 
+/*
+ *  fwts_oos_check()
+ *	scan kernel log list for any oops messages. The number of oops
+ *	messages found is returned in 'oopses'.  Oops messages are logged to the
+ *	fwts log.
+ */
 int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses)
 {
 	fwts_list_link *item;

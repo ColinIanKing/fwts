@@ -24,6 +24,10 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_keymap_keycode_free()
+ *	free keymap data
+ */
 static void fwts_keymap_keycode_free(void *data)
 {
 	fwts_keycode *keycode = (fwts_keycode*)data;
@@ -32,11 +36,20 @@ static void fwts_keymap_keycode_free(void *data)
 	free(keycode);
 }
 
+/*
+ *  fwts_keymap_free()
+ *	free keymap list
+ */
 void fwts_keymap_free(fwts_list *keylist)
 {
 	fwts_list_free(keylist, fwts_keymap_keycode_free);
 }
 
+/*
+ *  fwts_keymap_load()
+ *	try and load keymap data for a given machine, return keymap
+ *	in a list of keymap items.
+ */
 fwts_list *fwts_keymap_load(const char *machine)
 {	
 	FILE *fp;
@@ -107,6 +120,10 @@ fwts_list *fwts_keymap_load(const char *machine)
 	return keymap_list;
 }
 
+/*
+ *  fwts_keymap_find_scancode()
+ *	try and find a keycode for a given scancode in a given keymap list
+ */
 fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode)
 {
 	fwts_list_link *item;

@@ -26,6 +26,11 @@
 
 #define PAGE_SIZE	4096
 
+/*
+ *  fwts_mmap()
+ *	Try and map physical memory from offset address 'start' and length
+ *	'size'. Return either the address or FWTS_MAP_FAILED if failed to mmap.
+ */
 void *fwts_mmap(const off_t start, const size_t size)
 {
 	int fd;
@@ -52,6 +57,10 @@ void *fwts_mmap(const off_t start, const size_t size)
 	return ret;
 }
 
+/*
+ *  fwts_munmap()
+ *	Unmap memory mapped wuth fwts_mmap. Needs the mmap'd address and size.
+ */
 int fwts_munmap(void *mem, const size_t size)
 {
 	int page_size;

@@ -59,6 +59,17 @@ static fwts_ac_interface_info fwts_ac_interfaces[] = {
 	}
 };
 
+/*
+ *  fwts_ac_adapter_get_state()
+ *	fetch count of matching and non-matching instances of
+ *	AC adapter state, state can be:
+ *	  FWTS_AC_ADAPTER_ONLINE  - connected to AC adapter
+ *	  FWTS_AC_ADAPTER_OFFLINE - not connected to AC adapter
+ *	  FWTS_AC_ADAPTER_ANY     - either of above
+ * 	matching is incremented for each AC adapter instance that matches
+ *	not_matching is incremented for each AC adapter instance that does
+ *	not match.
+ */
 int fwts_ac_adapter_get_state(int state, int *matching, int *not_matching)
 {
 	DIR *ac_power_dir;

@@ -30,7 +30,14 @@
 #include "fwts.h"
 #include "fwts_iasl_interface.h"
 
-static int fwts_iasl_dump_aml_to_file(fwts_framework *fw, const uint8_t *data, const int length, const char *amlfile)
+/*
+ *  fwts_iasl_dump_aml_to_file()
+ *	write AML data of given length to file amlfile.
+ */
+static int fwts_iasl_dump_aml_to_file(fwts_framework *fw,
+	const uint8_t *data,
+	const int length,
+	const char *amlfile)
 {
 	int fd;
 
@@ -51,6 +58,13 @@ static int fwts_iasl_dump_aml_to_file(fwts_framework *fw, const uint8_t *data, c
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_iasl_disassemble_to_file()
+ *	Disassemble a given table and dump disassembly to a file.
+ *	For tables where there are multiple matches, e.g. SSDT, we
+ *	specify the Nth table with 'which'.
+ *
+ */
 int fwts_iasl_disassemble_to_file(fwts_framework *fw,
 	const char *tablename,
 	const int which,
@@ -83,6 +97,13 @@ int fwts_iasl_disassemble_to_file(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_iasl_disassemble()
+ *	Disassemble a given table and dump disassembly list of strings.
+ *	For tables where there are multiple matches, e.g. SSDT, we
+ *	specify the Nth table with 'which'.
+ *
+ */
 int fwts_iasl_disassemble(fwts_framework *fw,
 	const char *tablename,
 	const int which,
@@ -108,6 +129,11 @@ int fwts_iasl_disassemble(fwts_framework *fw,
 	return *iasl_output ? FWTS_OK : FWTS_ERROR;
 }
 
+
+/*
+ *  fwts_iasl_disassemble_all_to_file()
+ * 	Disassemble DSDT and SSDT tables to separate files.
+ */
 int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
 {
 	int i;
@@ -133,6 +159,12 @@ int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_iasl_reassemble()
+ *	given a ACPI table in 'data', lenth 'len, go and disassemble it
+ *	and re-assemble it.  Dump the disassembly into list iasl_disassembly and
+ * 	any re-assembly errors into list iasl_errors.
+ */
 int fwts_iasl_reassemble(fwts_framework *fw,
 	const uint8_t *data, 
 	const int len,

@@ -1,3 +1,32 @@
+fwts (0.25.02) quantal; urgency=low
+
+  * fwts V0.25.02 release (LP: #1004410)
+
+  [Alex Hung]
+  * acpi: battery: add trip point tests for acpi batteries
+  * lib: fwts_battery: fix incorrect strings for a battery with unit of mWh
+  * lib: fwts_battery: fix no fclose() after fopen is called.
+  * acpi: battery: added cycle count check for acpi batteries.
+
+  [Colin Ian King]
+  * doc: update man page
+  * lib: fwts_summary.c: force non-word wrap using *_verbatum logging
+  * lib: fwts_framework: default to plaintext log type
+  * lib: re-work logging to add in json formatted log output
+  * lib: fwts_log: tidy up white spaces and strncmps
+  * lib: fwts_log: re-work log underline
+  * lib: move log line number into log struct
+  * lib: fwts_log: remove default line num and test name from log
+  * lib: fwts_args: remove strlen() calls, more efficient and stops valgrind
+    complaining
+  * acpica: fwts_acpica.c: Override ACPICA Semaphores to fix memory leak bug
+  * pci: aspm: make functions static
+  * pci: aspm: free memory from lists
+  * pci: aspm: fix memory read outside buffer
+  * lib: fwts_battery: added interface for cycle count.
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 25 May 2012 18:11:11 +0800
+
 fwts (0.25.01) precise; urgency=low
 
   [Keng-Yu Lin]

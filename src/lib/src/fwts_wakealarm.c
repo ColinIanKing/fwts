@@ -27,6 +27,11 @@
 
 static char *fwts_wkalarm = "/sys/class/rtc/rtc0/wakealarm";
 
+/*
+ *  fwts_wakealarm_get_irq_state()
+ *	get wakealarm IRQ state.  checks if alarm_IRQ exists and if
+ *	it is set.
+ */
 int fwts_wakealarm_get_irq_state(void)
 {
 	FILE *fp;
@@ -47,6 +52,10 @@ int fwts_wakealarm_get_irq_state(void)
 	return FWTS_ERROR;
 }
 
+/*
+ *  fwts_wakealarm_trigger()
+ *	trigger the RTC wakealarm to fire in 'seconds' seconds from now.
+ */
 int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 {
 	char buffer[32];
@@ -72,6 +81,11 @@ int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_wakealarm_test_firing()
+ *	test RTC wakealarm trigger and firing from 'seconds' seconds time
+ * 	from now.  returns FWTS_OK if passed, otherwise FWTS_ERROR.
+ */
 int fwts_wakealarm_test_firing(fwts_framework *fw, const int seconds)
 {
 	int ret;

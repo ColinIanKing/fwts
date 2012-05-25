@@ -29,6 +29,11 @@
 
 #define FWTS_PROC_ACPI_BUTTON	"/proc/acpi/button"
 
+/*
+ *  fwts_button_match_state_proc()
+ *	find matching button state and keep count of matching
+ *	any non-matching states found, via proc iterface
+ */
 static int fwts_button_match_state_proc(fwts_framework *fw,
 	int button, int *matched, int *not_matched)
 {
@@ -88,6 +93,20 @@ static int fwts_button_match_state_proc(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_button_match_state_proc()
+ *	find matching button state and keep count of matching
+ *	any non-matching states found
+ *
+ *  The button state can be:
+ *	FWTS_BUTTON_LID_ANY      - match any LID button state
+ * 	FWTS_BUTTON_LID_OPENED   - match any LID buttons that are open
+ * 	FWTS_BUTTON_LID_CLOSED   - match any LID buttons that are closed
+ *	FWTS_BUTTON_POWER_EXISTS - match any power putton states
+ *
+ * 	matched is a count of any button states that match, and not_matched
+ *	is a count of any button states that don't match.
+ */
 int fwts_button_match_state(fwts_framework *fw, int button, int *matched, int *not_matched)
 {
 	*matched = 0;

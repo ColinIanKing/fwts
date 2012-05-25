@@ -21,6 +21,11 @@
 
 #include "fwts.h"
 
+/*
+ *  fwts_guid_buf_to_str()
+ *	format given GUID 'guid' into a string guid_str.
+ *	guid_str needs to be at least 37 chars long
+ */
 void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len)
 {
 	if (guid_str && guid_str_len > 36) 

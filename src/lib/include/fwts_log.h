@@ -81,6 +81,7 @@ typedef struct fwts_log_ops_t {
 
 fwts_log_ops fwts_log_plaintext_ops;
 fwts_log_ops fwts_log_json_ops;
+fwts_log_ops fwts_log_xml_ops;
 
 extern fwts_log_field fwts_log_filter;
 extern const char *fwts_log_format;

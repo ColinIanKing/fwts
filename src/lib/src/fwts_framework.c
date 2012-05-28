@@ -76,7 +76,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
-	{ "log-type",		"",   1, "Specify log type (plaintext or json)." },
+	{ "log-type",		"",   1, "Specify log type (plaintext, json or xml)." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1040,6 +1040,8 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 				fw->log_type = LOG_TYPE_PLAINTEXT;
 			else if (!strcmp(optarg, "json"))
 				fw->log_type = LOG_TYPE_JSON;
+			else if (!strcmp(optarg, "xml"))
+				fw->log_type = LOG_TYPE_XML;
 			else {
 				fprintf(stderr, "--log-type can be either plaintext or json.\n");
 				return FWTS_ERROR;

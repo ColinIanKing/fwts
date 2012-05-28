@@ -876,7 +876,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 			strcat(tests, test->name);
 		}
 
-		fwts_log_info(fw, "Running tests: %s.\n",
+		fwts_log_info(fw, "Running tests: %s.",
 			fwts_list_len(tests_to_run) == 0 ? "None" : tests);
 		if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
 			fwts_log_newline(fw->results);

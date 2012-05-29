@@ -199,7 +199,7 @@ static void fwts_method_dump_object_recursive(fwts_framework *fw, ACPI_OBJECT *o
 			index_buf, (unsigned long long)obj->Integer.Value);
 		break;
 	case ACPI_TYPE_STRING:
-		fwts_log_info_verbatum(fw, "%*s%sSTRING:  0x%s", depth * 2, "",
+		fwts_log_info_verbatum(fw, "%*s%sSTRING:  %s", depth * 2, "",
 			index_buf, obj->String.Pointer);
 		break;
 	case ACPI_TYPE_BUFFER:

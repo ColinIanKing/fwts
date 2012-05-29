@@ -28,6 +28,7 @@ static int version_test1(fwts_framework *fw)
 		fwts_warning(fw,
 			"Cannot get version signature info from /proc/version_signature (This is Ubuntu specific, and not necessarily a failure).");
 	else {
+		fwts_chop_newline(str);
 		fwts_passed(fw, "Signature: %s", str);
 		free(str);
 	}
@@ -44,6 +45,7 @@ static int version_test2(fwts_framework *fw)
 			"KernelProcVersion",
 			"Cannot get version info from /proc/version");
 	else {
+		fwts_chop_newline(str);
 		fwts_passed(fw, "Kernel Version: %s", str);
 		free(str);
 	}
@@ -60,6 +62,7 @@ static int version_test3(fwts_framework *fw)
 			"KernelACPIVersion",
 			"Cannot get ACPI version info from /sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
 	else {
+		fwts_chop_newline(str);
 		fwts_passed(fw, "ACPI Version: %s", str);
 		free(str);
 	}

@@ -505,17 +505,17 @@ static void do_mtrr_resource(fwts_framework *fw)
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry *, item);
 		if (entry->type & DISABLED)
-			fwts_log_info_verbatum(fw, "Reg %hhu: disabled\n", entry->reg);
+			fwts_log_info_verbatum(fw, "Reg %hhu: disabled", entry->reg);
 		else
 			fwts_log_info_verbatum(fw,
-				"Reg %hhu: 0x%16.16llx - 0x%16.16llx (%6lld %cB)  %s \n",
+				"Reg %hhu: 0x%16.16llx - 0x%16.16llx (%6lld %cB)  %s",
 				entry->reg,
 				(unsigned long long int)entry->start,
 				(unsigned long long int)entry->end,
 				(unsigned long long int)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
 				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
-	fwts_log_info(fw,"\n");
+	fwts_log_nl(fw);
 }
 
 static int mtrr_init(fwts_framework *fw)

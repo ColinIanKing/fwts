@@ -60,6 +60,7 @@ static int bios_info_test1(fwts_framework *fw)
 		snprintf(path, sizeof(path), "/sys/class/dmi/id/%s", 
 			bios_info[i].dmi_field);
 		if ((data = fwts_get(path)) != NULL) {
+			fwts_chop_newline(data);
 			fwts_log_info_verbatum(fw, "%-18.18s: %s",
 				bios_info[i].label, data);
 			free(data);

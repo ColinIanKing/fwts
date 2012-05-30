@@ -96,6 +96,34 @@ static const char *fwts_copyright[] = {
 };
 
 /*
+ *  fwts_framework_log_suffix()
+ *	set the log name suffix
+ */
+static void fwts_framework_log_suffix(fwts_framework *fw, const char *suffix)
+{
+	char *ptr;
+	char *new;
+	size_t len;
+
+	/* Locate old suffix and kill it */
+	ptr = rindex(fw->results_logname, '.');
+	if (ptr != NULL)
+		*ptr = '\0';
+
+	/* Space for old log name sans old suffix + new suffix + '.' + '\0' */
+	len = strlen(fw->results_logname) + strlen(suffix) + 2;
+
+	if ((new = calloc(len, 1)) == NULL) {
+		fprintf(stderr, "Cannot allocate log name.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	snprintf(new, len, "%s.%s", fw->results_logname, suffix);
+	free(fw->results_logname);
+	fw->results_logname = new;
+}
+
+/*
  *  fwts_framework_compare_priority()
  *	used to register tests sorted on run priority
  */
@@ -943,15 +971,19 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_iasl_disassemble_all_to_file(fw);
 			return FWTS_COMPLETE;
 		case 32: /* --log-type */
-			if (!strcmp(optarg, "plaintext"))
+			if (!strcmp(optarg, "plaintext")) {
 				fw->log_type = LOG_TYPE_PLAINTEXT;
-			else if (!strcmp(optarg, "json"))
+				fwts_framework_log_suffix(fw, "log");
+			} else if (!strcmp(optarg, "json")) {
 				fw->log_type = LOG_TYPE_JSON;
-			else if (!strcmp(optarg, "xml"))
+				fwts_framework_log_suffix(fw, "json");
+			} else if (!strcmp(optarg, "xml")) {
 				fw->log_type = LOG_TYPE_XML;
-			else if (!strcmp(optarg, "html"))
+				fwts_framework_log_suffix(fw, "xml");
+			} else if (!strcmp(optarg, "html")) {
 				fw->log_type = LOG_TYPE_HTML;
-			else {
+				fwts_framework_log_suffix(fw, "html");
+			} else {
 				fprintf(stderr, "--log-type can be either plaintext, xml, html or json.\n");
 				return FWTS_ERROR;
 			}

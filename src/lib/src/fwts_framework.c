@@ -672,7 +672,7 @@ void fwts_framework_log(fwts_framework *fw,
 	case LOG_ADVICE:
 		fwts_log_nl(fw);
 		snprintf(prefix, sizeof(prefix), "%s: ", str);
-		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
+		fwts_log_printf(fw->results, LOG_ADVICE, level, str, label, prefix, "%s", buffer);
 		fwts_log_nl(fw);
 		break;
 	case LOG_FAILED:

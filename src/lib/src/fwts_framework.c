@@ -89,61 +89,11 @@ typedef struct {
 	char *env_value;
 } fwts_framework_setting;
 
-#define ID_NAME(id)	id, # id
-
 static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.",
 	"Some of this work - Copyright (c) 2010 - 2012, Canonical.",	
 	NULL
 };
-
-static fwts_framework_setting fwts_framework_settings[] = {
-	{ ID_NAME(FWTS_FRAMEWORK_PASSED),		"PASSED",  NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_FAILED),		"FAILED",  NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_FAILED_LOW),		"FAILED_LOW", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_FAILED_HIGH),		"FAILED_HIGH", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_FAILED_MEDIUM),	"FAILED_MEDIUM", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_FAILED_CRITICAL),	"FAILED_CRITICAL", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_WARNING),		"WARNING", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_ERROR),		"ERROR",   NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_ADVICE),		"ADVICE",  NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_SKIPPED),		"SKIPPED", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_ABORTED),		"ABORTED", NULL },
-	{ ID_NAME(FWTS_FRAMEWORK_INFOONLY),		"INFO", NULL },
-};
-
-#if 0
-static const char *fwts_framework_results_to_str(fwts_framework_results result)
-{
-	switch (result) {
-	case FWTS_FRAMEWORK_PASSED:
-		return "Passed";
-	case FWTS_FRAMEWORK_FAILED:	
-		return "Failed";
-	case FWTS_FRAMEWORK_FAILED_LOW:
-		return "Failed Low";
-	case FWTS_FRAMEWORK_FAILED_HIGH:
-		return "Failed High";
-	case FWTS_FRAMEWORK_FAILED_MEDIUM:
-		return "Failed Medium";
-	case FWTS_FRAMEWORK_FAILED_CRITICAL:
-		return "Failed Critical";
-	case FWTS_FRAMEWORK_WARNING:
-		return "Warning";
-	case FWTS_FRAMEWORK_ERROR:
-		return "Error";
-	case FWTS_FRAMEWORK_ADVICE:
-		return "Advice";
-	case FWTS_FRAMEWORK_SKIPPED:
-		return "Skipped";
-        case FWTS_FRAMEWORK_ABORTED:
-		return "Aborted";
-	case FWTS_FRAMEWORK_INFOONLY:
-		return "Info";
-	default:
-		return "Unknown";
-}
-#endif
 
 /*
  *  fwts_framework_compare_priority()
@@ -460,49 +410,6 @@ static inline void fwts_framework_underline(fwts_framework *fw, const int ch)
 	fwts_log_underline(fw->results, ch);
 }
 
-/*
- *  fwts_framework_get_env()
- *	get a variable - if already fetched return cached value, otherwise
- *	try to gather from environment. If not in environment, return
- *	predefined default.
- */
-static char *fwts_framework_get_env(const int env_id)
-{
-	int i;
-
-	for (i=0;i<(int)sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++) {
-		if (fwts_framework_settings[i].env_id == env_id) {	
-			if (fwts_framework_settings[i].env_value)
-				return fwts_framework_settings[i].env_value;
-			else {
-				const char *value = getenv(fwts_framework_settings[i].env_name);
-				if (value == NULL) {
-					value = fwts_framework_settings[i].env_default;
-				}
-				fwts_framework_settings[i].env_value = strdup(value);
-				if (fwts_framework_settings[i].env_value)
-					return fwts_framework_settings[i].env_value;
-				else
-					return "";
-			}
-		}
-	}
-	return "";
-}
-
-/*
- *  fwts_framework_free_env()
- *	free alloc'd environment variables
- */
-static void fwts_framework_free_env(void)
-{
-	int i;
-
-	for (i=0;i<(int)sizeof(fwts_framework_settings)/sizeof(fwts_framework_setting);i++)
-		if (fwts_framework_settings[i].env_value)
-			free(fwts_framework_settings[i].env_value);
-}
-
 static int fwts_framework_test_summary(fwts_framework *fw)
 {
 	char buffer[128];
@@ -516,25 +423,25 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 
 	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
 		if (results->aborted > 0)
-			printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_ABORTED));
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_ABORTED));
 		else if (results->skipped > 0)
-			printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_SKIPPED));
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_SKIPPED));
 		else if (results->failed > 0) {
 			/* We intentionally report the highest logged error level */
 			if (fw->failed_level & LOG_LEVEL_CRITICAL)
-				printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_FAILED_CRITICAL));
+				printf("%s_CRITICAL\n", fwts_log_field_to_str_upper(LOG_FAILED));
 			else if (fw->failed_level & LOG_LEVEL_HIGH)
-				printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_FAILED_HIGH));
+				printf("%s_HIGH\n", fwts_log_field_to_str_upper(LOG_FAILED));
 			else if (fw->failed_level & LOG_LEVEL_MEDIUM)
-				printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_FAILED_MEDIUM));
+				printf("%s_MEDIUM\n", fwts_log_field_to_str_upper(LOG_FAILED));
 			else if (fw->failed_level & LOG_LEVEL_LOW)
-				printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_FAILED_LOW));
-			else printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_FAILED));
+				printf("%s_LOW\n", fwts_log_field_to_str_upper(LOG_FAILED));
+			else printf("%s\n", fwts_log_field_to_str_upper(LOG_FAILED));
 		}
 		else if (results->warning > 0)
-			printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_WARNING));
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_WARNING));
 		else
-			printf("%s\n", fwts_framework_get_env(FWTS_FRAMEWORK_PASSED));
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_PASSED));
 	}
 
 	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
@@ -739,7 +646,7 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
  *	log a test result
  */
 void fwts_framework_log(fwts_framework *fw, 
-	fwts_framework_results result,
+	fwts_log_field field,
 	const char *label,
 	fwts_log_level level,
 	uint32_t *count,
@@ -747,7 +654,7 @@ void fwts_framework_log(fwts_framework *fw,
 {
 	char buffer[4096];
 	char prefix[256];
-	char *str = fwts_framework_get_env(result);
+	char *str = fwts_log_field_to_str_upper(field);
 
 	if (fmt) {
 		va_list ap;
@@ -761,29 +668,29 @@ void fwts_framework_log(fwts_framework *fw,
 	if (count)
 		(*count)++;
 
-	switch (result) {
-	case FWTS_FRAMEWORK_ADVICE:
+	switch (field) {
+	case LOG_ADVICE:
 		fwts_log_nl(fw);
 		snprintf(prefix, sizeof(prefix), "%s: ", str);
 		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		fwts_log_nl(fw);
 		break;
-	case FWTS_FRAMEWORK_FAILED:
+	case LOG_FAILED:
 		fw->failed_level |= level;
 		fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
 		snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
 			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
 		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		break;
-	case FWTS_FRAMEWORK_PASSED:
-	case FWTS_FRAMEWORK_WARNING:
-	case FWTS_FRAMEWORK_SKIPPED:
-	case FWTS_FRAMEWORK_ABORTED:
+	case LOG_PASSED:
+	case LOG_WARNING:
+	case LOG_SKIPPED:
+	case LOG_ABORTED:
 		snprintf(prefix, sizeof(prefix), "%s: Test %d, ",
 			str, fw->current_minor_test_num);
 		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
 		break;
-	case FWTS_FRAMEWORK_INFOONLY:
+	case LOG_INFOONLY:
 		break;	/* no-op */
 	default:
 		break;
@@ -1272,7 +1179,6 @@ tidy_close:
 	free(fw->results_logname);
 	free(fw->klog);
 	free(fw->json_data_path);
-	fwts_framework_free_env();
 	fwts_list_free_items(&fw->total_taglist, free);
 	fwts_list_free_items(&fwts_framework_test_list, free);
 

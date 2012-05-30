@@ -52,21 +52,6 @@ typedef enum {
 	FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL           = 0x80000000,
 } fwts_framework_flags;
 
-typedef enum {
-	FWTS_FRAMEWORK_PASSED,
-	FWTS_FRAMEWORK_FAILED,
-	FWTS_FRAMEWORK_FAILED_LOW,
-	FWTS_FRAMEWORK_FAILED_HIGH,
-	FWTS_FRAMEWORK_FAILED_MEDIUM,
-	FWTS_FRAMEWORK_FAILED_CRITICAL,
-	FWTS_FRAMEWORK_WARNING,
-	FWTS_FRAMEWORK_ERROR,
-	FWTS_FRAMEWORK_ADVICE,
-	FWTS_FRAMEWORK_SKIPPED,
-	FWTS_FRAMEWORK_ABORTED,
-	FWTS_FRAMEWORK_INFOONLY,
-} fwts_framework_results;
-
 #define FWTS_FRAMEWORK_FLAGS_TEST_MASK		\
 	(FWTS_FRAMEWORK_FLAGS_TEST_BIOS |	\
 	 FWTS_FRAMEWORK_FLAGS_TEST_UEFI |	\
@@ -198,7 +183,7 @@ void fwts_framework_infoonly(fwts_framework *fw);
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, const char *message);
 
 void fwts_framework_log(fwts_framework *fw,
-        fwts_framework_results result,
+	fwts_log_field field,
 	const char *label,
         fwts_log_level level,
         uint32_t *count,
@@ -210,19 +195,19 @@ void fwts_framework_log(fwts_framework *fw,
 
 /* Helpers to report tests results */
 #define fwts_passed(fw, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_PASSED, NULL, LOG_LEVEL_NONE, &fw->minor_tests.passed, fmt, ## args)
+	fwts_framework_log(fw, LOG_PASSED, NULL, LOG_LEVEL_NONE, &fw->minor_tests.passed, fmt, ## args)
 #define fwts_failed(fw, level, label, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_FAILED, label, level, &fw->minor_tests.failed, fmt, ## args)
+	fwts_framework_log(fw, LOG_FAILED, label, level, &fw->minor_tests.failed, fmt, ## args)
 #define fwts_warning(fw, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_WARNING, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.warning, fmt, ## args)
+	fwts_framework_log(fw, LOG_WARNING, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.warning, fmt, ## args)
 #define fwts_advice(fw, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_ADVICE, NULL, LOG_LEVEL_NONE, NULL, fmt, ## args)
+	fwts_framework_log(fw, LOG_ADVICE, NULL, LOG_LEVEL_NONE, NULL, fmt, ## args)
 #define fwts_skipped(fw, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_SKIPPED, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.skipped, fmt, ## args)
+	fwts_framework_log(fw, LOG_SKIPPED, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.skipped, fmt, ## args)
 #define fwts_aborted(fw, fmt, args...) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_ABORTED, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.aborted, fmt, ## args)
+	fwts_framework_log(fw, LOG_ABORTED, NULL, LOG_LEVEL_MEDIUM, &fw->minor_tests.aborted, fmt, ## args)
 #define fwts_infoonly(fw) \
-	fwts_framework_log(fw, FWTS_FRAMEWORK_INFOONLY, NULL, LOG_LEVEL_NONE, &fw->minor_tests.infoonly, NULL)
+	fwts_framework_log(fw, LOG_INFOONLY, NULL, LOG_LEVEL_NONE, &fw->minor_tests.infoonly, NULL)
 
 static inline int fwts_tests_passed(const fwts_framework *fw)
 {

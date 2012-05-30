@@ -432,6 +432,9 @@ fwts_log *fwts_log_open(const char *owner, const char *name, const char *mode, f
 	case LOG_TYPE_XML:
 		newlog->ops = &fwts_log_xml_ops;
 		break;
+	case LOG_TYPE_HTML:
+		newlog->ops = &fwts_log_html_ops;
+		break;
 	case LOG_TYPE_NONE:
 	default:
 		newlog->ops = &fwts_log_plaintext_ops;

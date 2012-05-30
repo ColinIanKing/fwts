@@ -63,6 +63,7 @@ typedef enum {
 	LOG_TYPE_PLAINTEXT  = 0x00000001,
 	LOG_TYPE_JSON       = 0x00000002,
 	LOG_TYPE_XML        = 0x00000003,
+	LOG_TYPE_HTML       = 0x00000004,
 } fwts_log_type;
 
 typedef struct log_t {
@@ -84,9 +85,10 @@ typedef struct fwts_log_ops_t {
 	void (*close)(fwts_log *);
 } fwts_log_ops;
 
-fwts_log_ops fwts_log_plaintext_ops;
-fwts_log_ops fwts_log_json_ops;
-fwts_log_ops fwts_log_xml_ops;
+extern fwts_log_ops fwts_log_plaintext_ops;
+extern fwts_log_ops fwts_log_json_ops;
+extern fwts_log_ops fwts_log_xml_ops;
+extern fwts_log_ops fwts_log_html_ops;
 
 extern fwts_log_field fwts_log_filter;
 extern const char *fwts_log_format;

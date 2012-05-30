@@ -76,7 +76,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
-	{ "log-type",		"",   1, "Specify log type (plaintext, json or xml)." },
+	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -672,7 +672,7 @@ void fwts_framework_log(fwts_framework *fw,
 	case LOG_ADVICE:
 		fwts_log_nl(fw);
 		snprintf(prefix, sizeof(prefix), "%s: ", str);
-		fwts_log_printf(fw->results, LOG_ADVICE, level, str, label, prefix, "%s", buffer);
+		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
 		fwts_log_nl(fw);
 		break;
 	case LOG_FAILED:
@@ -680,7 +680,7 @@ void fwts_framework_log(fwts_framework *fw,
 		fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
 		snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
 			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
-		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
+		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
 		break;
 	case LOG_PASSED:
 	case LOG_WARNING:
@@ -688,7 +688,7 @@ void fwts_framework_log(fwts_framework *fw,
 	case LOG_ABORTED:
 		snprintf(prefix, sizeof(prefix), "%s: Test %d, ",
 			str, fw->current_minor_test_num);
-		fwts_log_printf(fw->results, LOG_RESULT, level, str, label, prefix, "%s", buffer);
+		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
 		break;
 	case LOG_INFOONLY:
 		break;	/* no-op */
@@ -949,8 +949,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 				fw->log_type = LOG_TYPE_JSON;
 			else if (!strcmp(optarg, "xml"))
 				fw->log_type = LOG_TYPE_XML;
+			else if (!strcmp(optarg, "html"))
+				fw->log_type = LOG_TYPE_HTML;
 			else {
-				fprintf(stderr, "--log-type can be either plaintext or json.\n");
+				fprintf(stderr, "--log-type can be either plaintext, xml, html or json.\n");
 				return FWTS_ERROR;
 			}
 			break;

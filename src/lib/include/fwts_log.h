@@ -37,6 +37,11 @@ typedef enum {
 	LOG_ADVICE          = 0x00000100,
 	LOG_HEADING	    = 0x00000200,
 	LOG_TAG		    = 0x00000400,
+	LOG_PASSED	    = 0x00000800,
+	LOG_FAILED	    = 0x00001000,
+	LOG_SKIPPED	    = 0x00002000,
+	LOG_ABORTED	    = 0x00004000,
+	LOG_INFOONLY	    = 0x00008000, /* no-op */
 
 	LOG_FIELD_MASK	    = 0x0000ffff,
 
@@ -62,7 +67,7 @@ typedef enum {
 
 typedef struct log_t {
 	unsigned int magic;
-	FILE *fp;	
+	FILE *fp;
 	char *owner;
 	int line_width;
 	int line_number;
@@ -104,6 +109,7 @@ fwts_log_field fwts_log_str_to_field(const char *text);
 char     *fwts_log_level_to_str(const fwts_log_level level);
 char	 *fwts_log_field_to_str(const fwts_log_field field);
 char     *fwts_log_field_to_str_full(const fwts_log_field field);
+char	 *fwts_log_field_to_str_upper(const fwts_log_field field);
 int 	  fwts_log_line_number(fwts_log *log);
 void	  fwts_log_set_line_width(const int width);
 void	  fwts_log_section_begin(fwts_log *log, const char *name);
@@ -117,7 +123,7 @@ void	  fwts_log_section_end(fwts_log *log);
 
 #define fwts_log_warning_verbatum(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
-	
+
 #define fwts_log_error(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 

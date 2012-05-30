@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "fwts.h"
 
@@ -84,6 +85,16 @@ char *fwts_log_field_to_str(const fwts_log_field field)
 		return "HED";
 	case LOG_TAG:
 		return "TAG";
+	case LOG_PASSED:
+		return "PAS";
+	case LOG_FAILED:
+		return "FAL";
+	case LOG_SKIPPED:
+		return "SKP";
+	case LOG_ABORTED:
+		return "ABT";
+	case LOG_INFOONLY:
+		return "INO";
 	default:
 		return LOG_UNKOWN_FIELD;
 	}
@@ -118,9 +129,37 @@ char *fwts_log_field_to_str_full(const fwts_log_field field)
 		return "Heading";
 	case LOG_TAG:
 		return "Tag";
+	case LOG_PASSED:
+		return "Passed";
+	case LOG_FAILED:
+		return "Failed";
+	case LOG_SKIPPED:
+		return "Skipped";
+	case LOG_ABORTED:
+		return "Aborted";
+	case LOG_INFOONLY:
+		return "Info Only";
 	default:
 		return "Unknown";
 	}
+}
+
+/*
+ *  fwts_log_field_to_str_full()
+ *	return full string name of log field
+ */
+char *fwts_log_field_to_str_upper(const fwts_log_field field)
+{
+	static char str[16];
+	char *ptr1 = str;
+	char *ptr2 = fwts_log_field_to_str_full(field);
+
+	for (ptr1 = str; *ptr2; ptr1++, ptr2++)
+		*ptr1 = toupper(*ptr2);
+
+	*ptr1 = '\0';
+
+	return str;
 }
 
 /*

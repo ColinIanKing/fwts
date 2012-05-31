@@ -576,7 +576,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			fwts_log_info(fw, "Test %d of %d: %s",
 				fw->current_minor_test_num,
 				test->ops->total_tests, minor_test->name);
-			fwts_log_section_end(fw->results);
+			fwts_log_section_end(fw->results);	/* subtest_info */
 		}
 
 		fwts_log_section_begin(fw->results, "subtest_results");
@@ -588,6 +588,10 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		if (ret == FWTS_ABORTED)  {
 			int aborted = test->ops->total_tests - (fw->current_minor_test_num - 1);
 			fw->current_major_test->results.aborted += aborted;
+
+			fwts_log_section_end(fw->results);	/* subtest_results */
+			fwts_log_nl(fw);
+			fwts_log_section_end(fw->results);	/* subtest */
 			break;
 		}
 		fwts_framework_minor_test_progress(fw, 100, "");
@@ -602,11 +606,11 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 			fprintf(stderr, "  %-55.55s %s\n", namebuf,
 				*resbuf ? resbuf : "     ");
 		}
-		fwts_log_section_end(fw->results);
+		fwts_log_section_end(fw->results);	/* subtest_results */
 		fwts_log_nl(fw);
-		fwts_log_section_end(fw->results);
+		fwts_log_section_end(fw->results);	/* subtest */
 	}
-	fwts_log_section_end(fw->results);
+	fwts_log_section_end(fw->results);	/* subtests */
 
 	fwts_framework_summate_results(&fw->total, &fw->current_major_test->results);
 
@@ -625,10 +629,10 @@ done:
 	if (!(test->flags & FWTS_UTILS)) {
 		fwts_log_section_begin(fw->results, "results");
 		fwts_framework_test_summary(fw);
-		fwts_log_section_end(fw->results);
+		fwts_log_section_end(fw->results);	/* results */
 	}
 
-	fwts_log_section_end(fw->results);
+	fwts_log_section_end(fw->results);		/* test->name */
 	fwts_log_set_owner(fw->results, "fwts");
 
 	return FWTS_OK;

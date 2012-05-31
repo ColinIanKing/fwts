@@ -469,7 +469,8 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				strcpy(name, direntry->d_name);
 				name[strlen(name)-4] = '\0';
 				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
-					fwts_acpi_add_table(name, table, (uint64_t)0, length);
+					fwts_acpi_add_table(name, table,
+						(uint64_t)fwts_fake_physical_addr(length), length);
 				close(fd);
 			} else
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);

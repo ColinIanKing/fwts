@@ -499,8 +499,8 @@ static void do_mtrr_resource(fwts_framework *fw)
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
 
-	fwts_log_info(fw,"MTRR overview");
-	fwts_log_info(fw,"-------------");
+	fwts_log_info_verbatum(fw,"MTRR overview");
+	fwts_log_info_verbatum(fw,"-------------");
 
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry *, item);

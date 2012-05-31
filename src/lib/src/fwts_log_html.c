@@ -266,11 +266,12 @@ static void fwts_log_open_html(fwts_log *log)
 		"text-align: center; vertical-align: center }\n"
 		".style_subtest { background-color: lightgray; }\n"
 		".style_info { }\n"
-		".style_code { font-family=sans-mono; line-height: 70% }\n");
+		".style_code { font-family: \"courier\",\"mono\"; font-size:0.75em; overflow:auto; "
+		"width:90%; line-height:0.82em; font-stretch:extra-condensed; word-wrap:normal }\n");
 	fwts_log_html(log, "</STYLE>\n");
 	fflush(log->fp);
 
-	fwts_log_html(log, "<TABLE>\n");
+	fwts_log_html(log, "<TABLE WIDTH=1024>\n");
 	fwts_log_html(log, "</TR>\n");
 
 	fwts_log_section_begin_html(log, "fwts");

@@ -63,8 +63,6 @@ static int fwts_log_vprintf_html(fwts_log *log,
 	const char *fmt,
 	va_list args)
 {
-	struct tm tm;
-	time_t now;
 	char *str;
 	char *style;
 	char *code_start;
@@ -76,17 +74,7 @@ static int fwts_log_vprintf_html(fwts_log *log,
 	if (field & (LOG_NEWLINE | LOG_SEPARATOR | LOG_DEBUG))
 		return 0;
 
-	time(&now);
-	localtime_r(&now, &tm);
-
 	fwts_log_html(log, "<TR>\n");
-
-	if ((field & LOG_FIELD_MASK) != LOG_HEADING) {
-		fwts_log_html(log, "  <TD>%2.2d/%2.2d/%-2.2d</TD>\n",
-			tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
-		fwts_log_html(log, "  <TD>%2.2d:%2.2d:%2.2d</TD>\n",
-			tm.tm_hour, tm.tm_min, tm.tm_sec);
-	}
 
 	if (field & LOG_VERBATUM) {
 		code_start = "<PRE class=style_code>";
@@ -98,22 +86,22 @@ static int fwts_log_vprintf_html(fwts_log *log,
 
 	switch (field & LOG_FIELD_MASK) {
 	case LOG_ERROR:
-		fwts_log_html(log, "  <TD class=style_error>Error</TD><TD COLSPAN=3>");
+		fwts_log_html(log, "  <TD class=style_error>Error</TD><TD COLSPAN=2>");
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "</TD>\n");
 		break;
 	case LOG_WARNING:
-		fwts_log_html(log, "  <TD class=style_error>Warning</TD><TD COLSPAN=3 class=style_advice_info>%s", code_start);
+		fwts_log_html(log, "  <TD class=style_error>Warning</TD><TD COLSPAN=2 class=style_advice_info>%s", code_start);
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "%s</TD>\n", code_end);
 		break;
 	case LOG_HEADING:
-		fwts_log_html(log, "<TD COLSPAN=4 class=style_heading>%s", code_start);
+		fwts_log_html(log, "<TD COLSPAN=2 class=style_heading>%s", code_start);
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "%s</TD>\n", code_end);
 		break;
 	case LOG_INFO:
-		fwts_log_html(log, "  <TD></TD><TD COLSPAN=3 class=style_infos>%s", code_start);
+		fwts_log_html(log, "  <TD></TD><TD COLSPAN=2 class=style_infos>%s", code_start);
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "%s</TD>\n", code_end);
 		break;
@@ -158,13 +146,13 @@ static int fwts_log_vprintf_html(fwts_log *log,
 		break;
 
 	case LOG_SUMMARY:
-		fwts_log_html(log, "  <TD></TD><TD COLSPAN=3 class=style_summary>%s", code_start);
+		fwts_log_html(log, "  <TD></TD><TD COLSPAN=2 class=style_summary>%s", code_start);
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "%s</TD>\n", code_end);
 		break;
 
 	case LOG_ADVICE:
-		fwts_log_html(log, "  <TD class=style_advice>Advice</TD><TD COLSPAN=3 class=style_advice_info>%s", code_start);
+		fwts_log_html(log, "  <TD class=style_advice>Advice</TD><TD COLSPAN=2 class=style_advice_info>%s", code_start);
 		vfprintf(log->fp, fmt, args);
 		fprintf(log->fp, "%s</TD>\n", code_end);
 		break;
@@ -204,13 +192,13 @@ static void fwts_log_section_begin_html(fwts_log *log, const char *name)
 	html_stack[html_stack_index].name = name;
 
 	if (!strcmp(name, "summary")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=4>Summary</TD></TR>\n");
+		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2>Summary</TD></TR>\n");
 	} else if (!strcmp(name, "heading")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=4>Firmware Test Suite</TD></TR>\n");
+		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2>Firmware Test Suite</TD></TR>\n");
 	} else if (!strcmp(name, "subtest_info")) {
-		fwts_log_html(log, "<TR><TD class=style_subtest COLSPAN=4></TD></TR>\n");
+		fwts_log_html(log, "<TR><TD class=style_subtest COLSPAN=2></TD></TR>\n");
 	} else if (!strcmp(name, "failure")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=4></TD></TR>\n");
+		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2></TD></TR>\n");
 	}
 
 	fflush(log->fp);

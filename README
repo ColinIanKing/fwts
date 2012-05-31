@@ -18,9 +18,6 @@ sudo apt-get install iasl acpidump pciutils dmidecode
 make
 sudo make install
 
-I hope to get this into a PPA once I've got the code into a more
-stable form.
-
 To get help:
 
 fwts --help
@@ -203,28 +200,10 @@ look at the results log, e.g.
 
 sudo fwts mtrr --stdout-summary
 
-One can override the text using the following environment variables:
-
-BIOS_TEST_TOOLKIT_PASSED_TEXT
-BIOS_TEST_TOOLKIT_FAILED_TEXT
-
-e.g.
-
-sudo BIOS_TEST_TOOLKIT_PASSED_TEXT="yay" fwts mtrr --stdout-summary
-yay
-
-Finally, the exit code returns 1 for test failure and 0 for test success, so the
+The exit code returns 1 for test failure and 0 for test success, so the
 test suite can be run from a shell script and one can detect if the test worked or not, e.g.
 
 #!/bin/bash
 LOG=stdout
 sudo fwts dmi_decode --results-output=$LOG
 failed=$?
-
-Misc
-====
-
-Debug mode.. shows what the controlling test suite framework is doing. It's for
-the developer only!
-
-fwts --fwts-debug

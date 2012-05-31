@@ -224,12 +224,26 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
 				char *lines = fwts_summary_lines(&summary_item->log_lines);
-				fwts_log_summary_verbatum(fw, " %s test, at %d log line%s: %s: %s",
-					summary_item->test,
-					fwts_list_len(&summary_item->log_lines),
-					fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
-					lines,
-					summary_item->text);
+
+				/*
+				 *  This is not pleasant, we really don't want very wide lines
+				 *  logged in the HTML format, where we don't mind for other formats.
+				 */
+				if (fw->log_type == LOG_TYPE_HTML)
+					fwts_log_summary(fw, " %s test, at %d log line%s: %s: %s",
+						summary_item->test,
+						fwts_list_len(&summary_item->log_lines),
+						fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
+						lines,
+						summary_item->text);
+				else
+					fwts_log_summary_verbatum(fw, " %s test, at %d log line%s: %s: %s",
+						summary_item->test,
+						fwts_list_len(&summary_item->log_lines),
+						fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
+						lines,
+						summary_item->text);
+
 				free(lines);
 			}
 			fwts_log_section_end(fw->results);
@@ -241,7 +255,8 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_log_nl(fw);
 	}
 
-	if (fw->log_type == LOG_TYPE_PLAINTEXT && fw->total_run > 0) {		
+	if ((fw->log_type == LOG_TYPE_PLAINTEXT ||
+	     fw->log_type == LOG_TYPE_HTML) && fw->total_run > 0) {
 		sorted = fwts_list_new();
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);

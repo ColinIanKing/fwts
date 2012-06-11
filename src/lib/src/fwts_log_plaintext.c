@@ -32,7 +32,8 @@
  *  fwts_log_header_plaintext()
  *	format up a tabulated log heading
  */
-static int fwts_log_header_plaintext(fwts_log *log,
+static int fwts_log_header_plaintext(
+	fwts_log_file *log_file,
 	char *buffer,
 	const int len,
 	const fwts_log_field field,
@@ -51,7 +52,7 @@ static int fwts_log_header_plaintext(fwts_log *log,
 			ptr++;
 			if (!strncmp(ptr, "line", 4)) {
 				n += snprintf(buffer + n, len - n,
-					"%5.5d", log->line_number);
+					"%5.5d", log_file->log->line_number);
 				ptr += 4;
 			}
 			if (!strncmp(ptr, "date", 4)) {
@@ -76,8 +77,8 @@ static int fwts_log_header_plaintext(fwts_log *log,
 					fwts_log_level_to_str(level));
 				ptr += 5;
 			}
-			if (!strncmp(ptr,"owner", 5) && log->owner) {
-				n += snprintf(buffer + n, len - n, "%-15.15s", log->owner);
+			if (!strncmp(ptr,"owner", 5) && log_file->log->owner) {
+				n += snprintf(buffer + n, len - n, "%-15.15s", log_file->log->owner);
 				ptr += 5;
 			}
 		} else {
@@ -90,19 +91,19 @@ static int fwts_log_header_plaintext(fwts_log *log,
 
 
 /*
- *  fwts_log_vprintf()
- *	vprintf to a log
+ *  fwts_log_print()
+ *	print to a log
  */
-static int fwts_log_vprintf_plaintext(fwts_log *log,
+static int fwts_log_print_plaintext(
+	fwts_log_file *log_file,
 	const fwts_log_field field,
 	const fwts_log_level level,
 	const char *status,	/* Ignored */
 	const char *label,	/* Ignored */
 	const char *prefix,
-	const char *fmt,
-	va_list args)
+	const char *buffer)
 {
-	char buffer[4096];
+	char tmpbuf[8192];
 	int n = 0;
 	int header_len;
 	int len = 0;
@@ -115,15 +116,14 @@ static int fwts_log_vprintf_plaintext(fwts_log *log,
 
 	/* This is a pain, we neen to find out how big the leading log
 	   message is, so format one up. */
-	n = header_len = fwts_log_header_plaintext(log, buffer, sizeof(buffer), field, level);
-	n += snprintf(buffer + n, sizeof(buffer) - n, "%s", prefix);
-	n += vsnprintf(buffer + n, sizeof(buffer) - n, fmt, args);
+	n = header_len = fwts_log_header_plaintext(log_file, tmpbuf, sizeof(tmpbuf), field, level);
+	n += snprintf(tmpbuf + n, sizeof(tmpbuf) - n, "%s%s", prefix, buffer);
 
 	/* Break text into multi-lines if necessary */
 	if (field & LOG_VERBATUM)
-		lines = fwts_list_from_text(buffer + header_len);
+		lines = fwts_list_from_text(tmpbuf + header_len);
 	else
-		lines = fwts_format_text(buffer + header_len, log->line_width - header_len);
+		lines = fwts_format_text(tmpbuf + header_len, log_file->line_width - header_len);
 
 	len = n;
 
@@ -133,17 +133,16 @@ static int fwts_log_vprintf_plaintext(fwts_log *log,
 		if (!(field & LOG_NO_FIELDS)) {
 			/* Re-format up a log heading with current line number which
 	 		   may increment with multiple line log messages */
-			fwts_log_header_plaintext(log, buffer, sizeof(buffer), field, level);
-			fwrite(buffer, 1, header_len, log->fp);
+			fwts_log_header_plaintext(log_file, tmpbuf, sizeof(tmpbuf), field, level);
+			fwrite(tmpbuf, 1, header_len, log_file->fp);
 		}
-		fwrite(text, 1, strlen(text), log->fp);
-		fwrite("\n", 1, 1, log->fp);
-		fflush(log->fp);
-		log->line_number++;
+		fwrite(text, 1, strlen(text), log_file->fp);
+		fwrite("\n", 1, 1, log_file->fp);
+		fflush(log_file->fp);
 		len += strlen(text) + 1;
 	}
 	fwts_text_list_free(lines);
-	
+
 	return len;
 }
 
@@ -151,11 +150,11 @@ static int fwts_log_vprintf_plaintext(fwts_log *log,
  *  fwts_log_underline_plaintext()
  *	write an underline across log, using character ch as the underline
  */
-static void fwts_log_underline_plaintext(fwts_log *log, const int ch)
+static void fwts_log_underline_plaintext(fwts_log_file *log_file, const int ch)
 {
 	int n;
 	char *buffer;
-	size_t width = log->line_width + 1;
+	size_t width = log_file->line_width + 1;
 
 	if (!((LOG_SEPARATOR & LOG_FIELD_MASK) & fwts_log_filter))
 		return;
@@ -165,14 +164,13 @@ static void fwts_log_underline_plaintext(fwts_log *log, const int ch)
 		return;	/* Unlikely, and just abort */
 
 	/* Write in leading optional line prefix */
-	n = fwts_log_header_plaintext(log, buffer, width, LOG_SEPARATOR, LOG_LEVEL_NONE);
+	n = fwts_log_header_plaintext(log_file, buffer, width, LOG_SEPARATOR, LOG_LEVEL_NONE);
 
 	memset(buffer + n, ch, width  - n);
 	buffer[width - 1] = '\n';
 
-	fwrite(buffer, 1, width, log->fp);
-	fflush(log->fp);
-	log->line_number++;
+	fwrite(buffer, 1, width, log_file->fp);
+	fflush(log_file->fp);
 
 	free(buffer);
 }
@@ -181,15 +179,14 @@ static void fwts_log_underline_plaintext(fwts_log *log, const int ch)
  *  fwts_log_newline_plaintext()
  *	write newline to log
  */
-static void fwts_log_newline_plaintext(fwts_log *log)
+static void fwts_log_newline_plaintext(fwts_log_file *log_file)
 {
-	fwrite("\n", 1, 1, log->fp);
-	fflush(log->fp);
-	log->line_number++;
+	fwrite("\n", 1, 1, log_file->fp);
+	fflush(log_file->fp);
 }
 
 fwts_log_ops fwts_log_plaintext_ops = {
-	.vprintf = 	fwts_log_vprintf_plaintext,
+	.print = 	fwts_log_print_plaintext,
 	.underline =	fwts_log_underline_plaintext,
 	.newline =	fwts_log_newline_plaintext
 };

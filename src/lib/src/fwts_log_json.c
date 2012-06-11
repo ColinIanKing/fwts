@@ -40,19 +40,19 @@ static fwts_log_json_stack_t json_stack[MAX_JSON_STACK];
 static int json_stack_index = 0;
 
 /*
- *  fwts_log_vprintf_json()
- *	vprintf to a log
+ *  fwts_log_printf_son()
+ *	print to a log
  */
-static int fwts_log_vprintf_json(fwts_log *log,
+static int fwts_log_print_json(
+	fwts_log_file *log_file,
 	const fwts_log_field field,
 	const fwts_log_level level,
 	const char *status,
 	const char *label,
 	const char *prefix,
-	const char *fmt,
-	va_list args)
+	const char *buffer)
 {
-	char buffer[4096];
+	char tmpbuf[4096];
 	struct tm tm;
 	time_t now;
 	json_object *header;
@@ -69,13 +69,13 @@ static int fwts_log_vprintf_json(fwts_log *log,
 	localtime_r(&now, &tm);
 
 	header = json_object_new_object();
-	json_object_object_add(header, "line_num", json_object_new_int(log->line_number));
-	snprintf(buffer, sizeof(buffer), "%2.2d/%2.2d/%-2.2d",
+	json_object_object_add(header, "line_num", json_object_new_int(log_file->log->line_number));
+	snprintf(tmpbuf, sizeof(tmpbuf), "%2.2d/%2.2d/%-2.2d",
 		tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
-	json_object_object_add(header, "date", json_object_new_string(buffer));
-	snprintf(buffer, sizeof(buffer), "%2.2d:%2.2d:%2.2d",
+	json_object_object_add(header, "date", json_object_new_string(tmpbuf));
+	snprintf(tmpbuf, sizeof(tmpbuf), "%2.2d:%2.2d:%2.2d",
 		tm.tm_hour, tm.tm_min, tm.tm_sec);
-	json_object_object_add(header, "time", json_object_new_string(buffer));
+	json_object_object_add(header, "time", json_object_new_string(tmpbuf));
 	json_object_object_add(header, "field_type",
 		json_object_new_string(fwts_log_field_to_str_full(field)));
 
@@ -92,12 +92,9 @@ static int fwts_log_vprintf_json(fwts_log *log,
 	json_object_object_add(header, "owner",
 		json_object_new_string(log->owner));
 	*/
-	vsnprintf(buffer, sizeof(buffer), fmt, args);
 	json_object_object_add(header, "log_text", json_object_new_string(buffer));
 
 	json_object_array_add(json_log, header);
-
-	log->line_number++;
 
 	return 0;
 }
@@ -106,7 +103,7 @@ static int fwts_log_vprintf_json(fwts_log *log,
  *  fwts_log_underline_json()
  *	write an underline across log, using character ch as the underline
  */
-static void fwts_log_underline_json(fwts_log *log, const int ch)
+static void fwts_log_underline_json(fwts_log_file *log_file, const int ch)
 {
 	/* No-op for json */
 }
@@ -115,12 +112,12 @@ static void fwts_log_underline_json(fwts_log *log, const int ch)
  *  fwts_log_newline()
  *	write newline to log
  */
-static void fwts_log_newline_json(fwts_log *log)
+static void fwts_log_newline_json(fwts_log_file *log_file)
 {
 	/* No-op for json */
 }
 
-static void fwts_log_section_begin_json(fwts_log *log, const char *name)
+static void fwts_log_section_begin_json(fwts_log_file *log_file, const char *name)
 {
 	json_object *json_obj;
 	json_object *json_log;
@@ -132,7 +129,7 @@ static void fwts_log_section_begin_json(fwts_log *log, const char *name)
 	json_stack[json_stack_index].obj = json_obj;
 	json_stack[json_stack_index].log = json_log;
 
-	if (json_stack_index > 0) 
+	if (json_stack_index > 0)
 		json_object_array_add(json_stack[json_stack_index-1].log, json_obj);
 
 	if (json_stack_index < MAX_JSON_STACK)
@@ -143,7 +140,7 @@ static void fwts_log_section_begin_json(fwts_log *log, const char *name)
 	}
 }
 
-static void fwts_log_section_end_json(fwts_log *log)
+static void fwts_log_section_end_json(fwts_log_file *log_file)
 {
 	if (json_stack_index > 0)
 		json_stack_index--;
@@ -153,29 +150,30 @@ static void fwts_log_section_end_json(fwts_log *log)
 	}
 }
 
-static void fwts_log_open_json(fwts_log *log)
+static void fwts_log_open_json(fwts_log_file *log_file)
 {
-	fwts_log_section_begin_json(log, "fwts");
+	fwts_log_section_begin_json(log_file, "fwts");
 }
 
-static void fwts_log_close_json(fwts_log *log)
+static void fwts_log_close_json(fwts_log_file *log_file)
 {
 	const char *str;
 	size_t len;
 
-	fwts_log_section_end_json(log);
+	fwts_log_section_end_json(log_file);
 
 	str = json_object_to_json_string(json_stack[0].obj);
 	len = strlen(str);
 
-	fwrite(str, 1, len, log->fp);
-	fwrite("\n", 1, 1, log->fp);
-	fflush(log->fp);
+	fwrite(str, 1, len, log_file->fp);
+	fwrite("\n", 1, 1, log_file->fp);
+	fflush(log_file->fp);
+
 	json_object_put(json_stack[0].obj);
 }
 
 fwts_log_ops fwts_log_json_ops = {
-	.vprintf = 	 fwts_log_vprintf_json,
+	.print = 	 fwts_log_print_json,
 	.underline =	 fwts_log_underline_json,
 	.newline =	 fwts_log_newline_json,
 	.section_begin = fwts_log_section_begin_json,

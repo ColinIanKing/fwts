@@ -28,7 +28,8 @@
 
 #include "fwts.h"
 
-#define RESULTS_LOG	"results.log"
+/* Suffix ".log", ".xml", etc gets automatically appended */
+#define RESULTS_LOG	"results"
 
 #define FWTS_RUN_ALL_FLAGS		\
 	(FWTS_BATCH |			\
@@ -94,34 +95,6 @@ static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 2010 - 2012, Canonical.",	
 	NULL
 };
-
-/*
- *  fwts_framework_log_suffix()
- *	set the log name suffix
- */
-static void fwts_framework_log_suffix(fwts_framework *fw, const char *suffix)
-{
-	char *ptr;
-	char *new;
-	size_t len;
-
-	/* Locate old suffix and kill it */
-	ptr = rindex(fw->results_logname, '.');
-	if (ptr != NULL)
-		*ptr = '\0';
-
-	/* Space for old log name sans old suffix + new suffix + '.' + '\0' */
-	len = strlen(fw->results_logname) + strlen(suffix) + 2;
-
-	if ((new = calloc(len, 1)) == NULL) {
-		fprintf(stderr, "Cannot allocate log name.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	snprintf(new, len, "%s.%s", fw->results_logname, suffix);
-	free(fw->results_logname);
-	fw->results_logname = new;
-}
 
 /*
  *  fwts_framework_compare_priority()
@@ -677,7 +650,7 @@ static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const c
  *  fwts_framework_log()
  *	log a test result
  */
-void fwts_framework_log(fwts_framework *fw, 
+void fwts_framework_log(fwts_framework *fw,
 	fwts_log_field field,
 	const char *label,
 	fwts_log_level level,
@@ -860,6 +833,39 @@ static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, f
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_log_type_parse()
+ *	parse optarg of comma separated log types
+ */
+static int fwts_framework_log_type_parse(fwts_framework *fw, const char *arg)
+{
+	char *str;
+	char *token;
+	char *saveptr = NULL;
+
+	fw->log_type = 0;
+
+	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+		if (!strcmp(token, "plaintext"))
+			fw->log_type |= LOG_TYPE_PLAINTEXT;
+		else if (!strcmp(token, "json"))
+			fw->log_type |= LOG_TYPE_JSON;
+		else if (!strcmp(token, "xml"))
+			fw->log_type |= LOG_TYPE_XML;
+		else if (!strcmp(token, "html"))
+			fw->log_type |= LOG_TYPE_HTML;
+		else {
+			fprintf(stderr, "--log-type can be plaintext, xml, html or json.\n");
+			return FWTS_ERROR;
+		}
+	}
+
+	if (!fw->log_type)
+		fw->log_type = LOG_TYPE_PLAINTEXT;
+
+	return FWTS_OK;
+}
+
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
 	switch (option_char) {
@@ -975,22 +981,8 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_iasl_disassemble_all_to_file(fw);
 			return FWTS_COMPLETE;
 		case 32: /* --log-type */
-			if (!strcmp(optarg, "plaintext")) {
-				fw->log_type = LOG_TYPE_PLAINTEXT;
-				fwts_framework_log_suffix(fw, "log");
-			} else if (!strcmp(optarg, "json")) {
-				fw->log_type = LOG_TYPE_JSON;
-				fwts_framework_log_suffix(fw, "json");
-			} else if (!strcmp(optarg, "xml")) {
-				fw->log_type = LOG_TYPE_XML;
-				fwts_framework_log_suffix(fw, "xml");
-			} else if (!strcmp(optarg, "html")) {
-				fw->log_type = LOG_TYPE_HTML;
-				fwts_framework_log_suffix(fw, "html");
-			} else {
-				fprintf(stderr, "--log-type can be either plaintext, xml, html or json.\n");
-				return FWTS_ERROR;
-			}
+			fwts_framework_log_type_parse(fw, optarg);
+			/* FIX ME - check return */
 			break;
 		}
 		break;
@@ -1133,6 +1125,16 @@ int fwts_framework_args(const int argc, char **argv)
 	if ((fw->lspci == NULL) || (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
+		goto tidy_close;
+	}
+
+	/* Ensure we have just one log type specified for non-filename logging */
+	if (fwts_log_type_count(fw->log_type) > 1 &&
+	    fwts_log_get_filename_type(fw->results_logname) != LOG_FILENAME_TYPE_FILE) {
+		fprintf(stderr,
+			"Cannot specify more than one log type when "
+			"logging to stderr or stdout\n");
+		ret = FWTS_ERROR;
 		goto tidy_close;
 	}
 

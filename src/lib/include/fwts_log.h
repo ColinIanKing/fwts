@@ -23,7 +23,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define LOG_MAGIC	0xfe23ab13
+#include "fwts_list.h"
+
+#define LOG_MAGIC		(0xfe23ab13)
+#define LOG_MAX_BUF_SIZE	(4096)		/* Max output per log line */
 
 typedef enum {
 	LOG_RESULT	    = 0x00000001,
@@ -58,31 +61,56 @@ typedef enum {
 	LOG_LEVEL_INFO      = 0x00000010,
 } fwts_log_level;
 
+/*
+ *  different types of log file
+ */
 typedef enum {
 	LOG_TYPE_NONE       = 0x00000000,
 	LOG_TYPE_PLAINTEXT  = 0x00000001,
 	LOG_TYPE_JSON       = 0x00000002,
-	LOG_TYPE_XML        = 0x00000003,
-	LOG_TYPE_HTML       = 0x00000004,
+	LOG_TYPE_XML        = 0x00000004,
+	LOG_TYPE_HTML       = 0x00000008,
 } fwts_log_type;
 
+/*
+ *   different types of output log
+ */
+typedef enum {
+	LOG_FILENAME_TYPE_STDOUT = 0x00000001,	/* log output to stdout */
+	LOG_FILENAME_TYPE_STDERR = 0x00000002,	/* log output to stderr */
+	LOG_FILENAME_TYPE_FILE   = 0x00000003,	/* log output to a file */
+} fwts_log_filename_type;
+
+/*
+ *  top level log descriptor
+ */
 typedef struct log_t {
-	unsigned int magic;
-	FILE *fp;
-	char *owner;
-	int line_width;
-	int line_number;
-	struct fwts_log_ops_t *ops;
+	unsigned int magic;			/* magic ID of the log */
+	fwts_list log_files;			/* list of fwts_log_file */
+	int line_number;			/* keeps track of the line numbering */
+	char *owner;				/* who is writing to this log */
 } fwts_log;
 
+/*
+ *  info for a specific log type
+ */
+typedef struct {
+	FILE *fp;				/* file descriptor for log */
+	fwts_log *log;				/* parent log struct */
+	fwts_log_type type;			/* log type */
+	fwts_log_filename_type filename_type;	/* log filename type */
+	struct fwts_log_ops_t *ops;		/* log operators */
+	int line_width;				/* width of log in chars */
+} fwts_log_file;
+
 typedef struct fwts_log_ops_t {
-	int (*vprintf)(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *fmt, va_list args);
-	void (*underline)(fwts_log *log, int ch);
-	void (*newline)(fwts_log *log);
-	void (*section_begin)(fwts_log *, const char *tag);
-	void (*section_end)(fwts_log *);
-	void (*open)(fwts_log *);
-	void (*close)(fwts_log *);
+	int (*print)(fwts_log_file *log_file, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *buffer);
+	void (*underline)(fwts_log_file *log_file, int ch);
+	void (*newline)(fwts_log_file *log_file);
+	void (*section_begin)(fwts_log_file *log_file, const char *tag);
+	void (*section_end)(fwts_log_file *log_file);
+	void (*open)(fwts_log_file *log_file);
+	void (*close)(fwts_log_file *log_file);
 } fwts_log_ops;
 
 extern fwts_log_ops fwts_log_plaintext_ops;
@@ -116,6 +144,12 @@ int 	  fwts_log_line_number(fwts_log *log);
 void	  fwts_log_set_line_width(const int width);
 void	  fwts_log_section_begin(fwts_log *log, const char *name);
 void	  fwts_log_section_end(fwts_log *log);
+fwts_log_filename_type fwts_log_get_filename_type(const char *name);
+
+static inline int fwts_log_type_count(fwts_log_type type)
+{
+	return __builtin_popcount(type);
+}
 
 #define fwts_log_result(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "", "", "", fmt, ## args)

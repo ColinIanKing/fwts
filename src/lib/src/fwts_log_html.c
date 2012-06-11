@@ -37,31 +37,31 @@ typedef struct {
 static fwts_log_html_stack_t html_stack[MAX_HTML_STACK];
 static int html_stack_index = 0;
 
-static void fwts_log_html(fwts_log *log, const char *fmt, ...)
+static void fwts_log_html(fwts_log_file *log_file, const char *fmt, ...)
 {
 	va_list args;
 
 	va_start(args, fmt);
 
-	fprintf(log->fp, "%*s", html_stack_index * HTML_INDENT, "");
-	vfprintf(log->fp, fmt, args);
+	fprintf(log_file->fp, "%*s", html_stack_index * HTML_INDENT, "");
+	vfprintf(log_file->fp, fmt, args);
 
 	va_end(args);
 }
 
 
 /*
- *  fwts_log_vprintf_html()
- *	vprintf to a log
+ *  fwts_log_print_html()
+ *	print to a log
  */
-static int fwts_log_vprintf_html(fwts_log *log,
+static int fwts_log_print_html(
+	fwts_log_file *log_file,
 	const fwts_log_field field,
 	const fwts_log_level level,
 	const char *status,
 	const char *label,
 	const char *prefix,
-	const char *fmt,
-	va_list args)
+	const char *buffer)
 {
 	char *str;
 	char *style;
@@ -74,7 +74,7 @@ static int fwts_log_vprintf_html(fwts_log *log,
 	if (field & (LOG_NEWLINE | LOG_SEPARATOR | LOG_DEBUG))
 		return 0;
 
-	fwts_log_html(log, "<TR>\n");
+	fwts_log_html(log_file, "<TR>\n");
 
 	if (field & LOG_VERBATUM) {
 		code_start = "<PRE class=style_code>";
@@ -86,29 +86,24 @@ static int fwts_log_vprintf_html(fwts_log *log,
 
 	switch (field & LOG_FIELD_MASK) {
 	case LOG_ERROR:
-		fwts_log_html(log, "  <TD class=style_error>Error</TD><TD COLSPAN=2>");
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "</TD>\n");
+		fwts_log_html(log_file, "  <TD class=style_error>Error</TD>"
+			"<TD COLSPAN=2>%s</TD>\n", buffer);
 		break;
 	case LOG_WARNING:
-		fwts_log_html(log, "  <TD class=style_error>Warning</TD><TD COLSPAN=2 class=style_advice_info>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "  <TD class=style_error>Warning</TD>"
+			"<TD COLSPAN=2 class=style_advice_info>%s%s%s</TD>\n",
+			code_start, buffer, code_end);
 		break;
 	case LOG_HEADING:
-		fwts_log_html(log, "<TD COLSPAN=2 class=style_heading>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "<TD COLSPAN=2 class=style_heading>%s%s%s</TD>\n",
+			code_start, buffer, code_end);
 		break;
 	case LOG_INFO:
-		fwts_log_html(log, "  <TD></TD><TD COLSPAN=2 class=style_infos>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "  <TD></TD><TD COLSPAN=2 class=style_infos>%s%s%s</TD>\n",
+			code_start, buffer, code_end);
 		break;
 	case LOG_PASSED:
-		fwts_log_html(log, "<TD class=style_passed>PASSED</TD><TD>");
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "</TD>\n");
+		fwts_log_html(log_file, "<TD class=style_passed>PASSED</TD><TD>%s</TD>\n", buffer);
 		break;
 	case LOG_FAILED:
 		switch (level) {
@@ -132,39 +127,33 @@ static int fwts_log_vprintf_html(fwts_log *log,
 		}
 		str = fwts_log_level_to_str(level);
 
-		fwts_log_html(log, "  <TD%s>%s [%s]</TD>\n", style, *status ? status : "", str);
-
-		fwts_log_html(log, "  <TD>");
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "</TD>\n");
+		fwts_log_html(log_file, "  <TD%s>%s [%s]</TD>\n", style, *status ? status : "", str);
+		fwts_log_html(log_file, "  <TD>%s</TD>\n", buffer);
 		break;
 
 	case LOG_SKIPPED:
-		fwts_log_html(log, "<TD class=style_skipped>Skipped</TD><TD>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "<TD class=style_skipped>Skipped</TD>"
+			"<TD>%s%s%s</TD>\n", code_start, buffer, code_end);
 		break;
 
 	case LOG_SUMMARY:
-		fwts_log_html(log, "  <TD></TD><TD COLSPAN=2 class=style_summary>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "  <TD></TD>"
+			"<TD COLSPAN=2 class=style_summary>%s%s%s</TD>\n",
+			code_start, buffer, code_end);
 		break;
 
 	case LOG_ADVICE:
-		fwts_log_html(log, "  <TD class=style_advice>Advice</TD><TD COLSPAN=2 class=style_advice_info>%s", code_start);
-		vfprintf(log->fp, fmt, args);
-		fprintf(log->fp, "%s</TD>\n", code_end);
+		fwts_log_html(log_file, "  <TD class=style_advice>Advice</TD>"
+			"<TD COLSPAN=2 class=style_advice_info>%s%s%s</TD>\n",
+			code_start, buffer, code_end);
 		break;
 
 	default:
 		break;
 	}
 
-	fwts_log_html(log, "</TR>\n");
-	fflush(log->fp);
-
-	log->line_number++;
+	fwts_log_html(log_file, "</TR>\n");
+	fflush(log_file->fp);
 
 	return 0;
 }
@@ -173,7 +162,7 @@ static int fwts_log_vprintf_html(fwts_log *log,
  *  fwts_log_underline_html()
  *	write an underline across log, using character ch as the underline
  */
-static void fwts_log_underline_html(fwts_log *log, const int ch)
+static void fwts_log_underline_html(fwts_log_file *log_file, const int ch)
 {
 	/* No-op for html */
 }
@@ -182,26 +171,26 @@ static void fwts_log_underline_html(fwts_log *log, const int ch)
  *  fwts_log_newline()
  *	write newline to log
  */
-static void fwts_log_newline_html(fwts_log *log)
+static void fwts_log_newline_html(fwts_log_file *log_file)
 {
 	/* No-op for html */
 }
 
-static void fwts_log_section_begin_html(fwts_log *log, const char *name)
+static void fwts_log_section_begin_html(fwts_log_file *log_file, const char *name)
 {
 	html_stack[html_stack_index].name = name;
 
 	if (!strcmp(name, "summary")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2>Summary</TD></TR>\n");
+		fwts_log_html(log_file, "<TR><TD class=style_heading COLSPAN=2>Summary</TD></TR>\n");
 	} else if (!strcmp(name, "heading")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2>Firmware Test Suite</TD></TR>\n");
+		fwts_log_html(log_file, "<TR><TD class=style_heading COLSPAN=2>Firmware Test Suite</TD></TR>\n");
 	} else if (!strcmp(name, "subtest_info")) {
-		fwts_log_html(log, "<TR><TD class=style_subtest COLSPAN=2></TD></TR>\n");
+		fwts_log_html(log_file, "<TR><TD class=style_subtest COLSPAN=2></TD></TR>\n");
 	} else if (!strcmp(name, "failure")) {
-		fwts_log_html(log, "<TR><TD class=style_heading COLSPAN=2></TD></TR>\n");
+		fwts_log_html(log_file, "<TR><TD class=style_heading COLSPAN=2></TD></TR>\n");
 	}
 
-	fflush(log->fp);
+	fflush(log_file->fp);
 
 	if (html_stack_index < MAX_HTML_STACK)
 		html_stack_index++;
@@ -211,11 +200,11 @@ static void fwts_log_section_begin_html(fwts_log *log, const char *name)
 	}
 }
 
-static void fwts_log_section_end_html(fwts_log *log)
+static void fwts_log_section_end_html(fwts_log_file *log_file)
 {
 	if (html_stack_index > 0) {
 		html_stack_index--;
-		fflush(log->fp);
+		fflush(log_file->fp);
 	} else {
 		fprintf(stderr, "html log stack underflow.\n");
 		exit(EXIT_FAILURE);
@@ -223,15 +212,15 @@ static void fwts_log_section_end_html(fwts_log *log)
 
 }
 
-static void fwts_log_open_html(fwts_log *log)
+static void fwts_log_open_html(fwts_log_file *log_file)
 {
-	fwts_log_html(log, "<HTML>\n");
-	fwts_log_html(log, "<HEAD>\n");
-	fwts_log_html(log, "  <TITLE>fwts log</TITLE>\n");
-	fwts_log_html(log, "</HEAD>\n");
-	fwts_log_html(log, "<BODY>\n");
-	fwts_log_html(log, "<STYLE>\n");
-	fwts_log_html(log,
+	fwts_log_html(log_file, "<HTML>\n");
+	fwts_log_html(log_file, "<HEAD>\n");
+	fwts_log_html(log_file, "  <TITLE>fwts log</TITLE>\n");
+	fwts_log_html(log_file, "</HEAD>\n");
+	fwts_log_html(log_file, "<BODY>\n");
+	fwts_log_html(log_file, "<STYLE>\n");
+	fwts_log_html(log_file,
 		".style_critical { background-color: red; font-weight: bold; "
 		"text-align: center; vertical-align: center  }\n"
 		".style_high { background-color: orange; font-weight: bold; "
@@ -256,27 +245,27 @@ static void fwts_log_open_html(fwts_log *log)
 		".style_info { }\n"
 		".style_code { font-family: \"courier\",\"mono\"; font-size:0.75em; overflow:auto; "
 		"width:90%; line-height:0.82em; font-stretch:extra-condensed; word-wrap:normal }\n");
-	fwts_log_html(log, "</STYLE>\n");
-	fflush(log->fp);
+	fwts_log_html(log_file, "</STYLE>\n");
+	fflush(log_file->fp);
 
-	fwts_log_html(log, "<TABLE WIDTH=1024>\n");
-	fwts_log_html(log, "</TR>\n");
+	fwts_log_html(log_file, "<TABLE WIDTH=1024>\n");
+	fwts_log_html(log_file, "</TR>\n");
 
-	fwts_log_section_begin_html(log, "fwts");
+	fwts_log_section_begin_html(log_file, "fwts");
 }
 
-static void fwts_log_close_html(fwts_log *log)
+static void fwts_log_close_html(fwts_log_file *log_file)
 {
-	fwts_log_section_end_html(log);
+	fwts_log_section_end_html(log_file);
 
-	fwts_log_html(log, "</TABLE>\n");
-	fwts_log_html(log, "</BODY>\n");
-	fwts_log_html(log, "</HTML>\n");
-	fflush(log->fp);
+	fwts_log_html(log_file, "</TABLE>\n");
+	fwts_log_html(log_file, "</BODY>\n");
+	fwts_log_html(log_file, "</HTML>\n");
+	fflush(log_file->fp);
 }
 
 fwts_log_ops fwts_log_html_ops = {
-	.vprintf = 	 fwts_log_vprintf_html,
+	.print = 	 fwts_log_print_html,
 	.underline =	 fwts_log_underline_html,
 	.newline =	 fwts_log_newline_html,
 	.section_begin = fwts_log_section_begin_html,

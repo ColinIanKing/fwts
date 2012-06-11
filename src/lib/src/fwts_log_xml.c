@@ -38,19 +38,18 @@ static fwts_log_xml_stack_t xml_stack[MAX_XML_STACK];
 static int xml_stack_index = 0;
 
 /*
- *  fwts_log_vprintf_xml()
- *	vprintf to a log
+ *  fwts_log_print_xml()
+ *	print to a log
  */
-static int fwts_log_vprintf_xml(fwts_log *log,
+static int fwts_log_print_xml(
+	fwts_log_file *log_file,
 	const fwts_log_field field,
 	const fwts_log_level level,
 	const char *status,
 	const char *label,
 	const char *prefix,
-	const char *fmt,
-	va_list args)
+	const char *buffer)
 {
-	char buffer[4096];
 	struct tm tm;
 	time_t now;
 	char *str;
@@ -64,21 +63,21 @@ static int fwts_log_vprintf_xml(fwts_log *log,
 	time(&now);
 	localtime_r(&now, &tm);
 
-	fprintf(log->fp, "%*s<logentry>\n", xml_stack_index * XML_INDENT, "");
+	fprintf(log_file->fp, "%*s<logentry>\n", xml_stack_index * XML_INDENT, "");
 
-	fprintf(log->fp, "%*s<line_num>%d</line_num>\n",
+	fprintf(log_file->fp, "%*s<line_num>%d</line_num>\n",
 		(xml_stack_index + 1) * XML_INDENT,
-		"", log->line_number);
+		"", log_file->log->line_number);
 
-	fprintf(log->fp, "%*s<date>%2.2d/%2.2d/%-2.2d</date>\n",
+	fprintf(log_file->fp, "%*s<date>%2.2d/%2.2d/%-2.2d</date>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
 
-	fprintf(log->fp, "%*s<time>%2.2d:%2.2d:%2.2d</time>\n",
+	fprintf(log_file->fp, "%*s<time>%2.2d:%2.2d:%2.2d</time>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", tm.tm_hour, tm.tm_min, tm.tm_sec);
 
-	fprintf(log->fp, "%*s<field_type>%s</field_type>\n",
+	fprintf(log_file->fp, "%*s<field_type>%s</field_type>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", fwts_log_field_to_str_full(field));
 
@@ -86,26 +85,23 @@ static int fwts_log_vprintf_xml(fwts_log *log,
 	if (!strcmp(str, " "))
 		str = "None";
 
-	fprintf(log->fp, "%*s<level>%s</level>\n",
+	fprintf(log_file->fp, "%*s<level>%s</level>\n",
 		(xml_stack_index + 1) * XML_INDENT, "", str);
 
-	fprintf(log->fp, "%*s<status>%s</status>\n",
+	fprintf(log_file->fp, "%*s<status>%s</status>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", *status ? status : "None");
 
-	fprintf(log->fp, "%*s<failure_label>%s</failure_label>\n",
+	fprintf(log_file->fp, "%*s<failure_label>%s</failure_label>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", label && *label ? label : "None");
 
-	vsnprintf(buffer, sizeof(buffer), fmt, args);
-	fprintf(log->fp, "%*s<log_text>%s</log_text>\n",
+	fprintf(log_file->fp, "%*s<log_text>%s</log_text>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", buffer);
 
-	fprintf(log->fp, "%*s</logentry>\n", xml_stack_index * XML_INDENT, "");
-	fflush(log->fp);
-
-	log->line_number++;
+	fprintf(log_file->fp, "%*s</logentry>\n", xml_stack_index * XML_INDENT, "");
+	fflush(log_file->fp);
 
 	return 0;
 }
@@ -114,7 +110,7 @@ static int fwts_log_vprintf_xml(fwts_log *log,
  *  fwts_log_underline_xml()
  *	write an underline across log, using character ch as the underline
  */
-static void fwts_log_underline_xml(fwts_log *log, const int ch)
+static void fwts_log_underline_xml(fwts_log_file *log_file, const int ch)
 {
 	/* No-op for xml */
 }
@@ -123,17 +119,17 @@ static void fwts_log_underline_xml(fwts_log *log, const int ch)
  *  fwts_log_newline()
  *	write newline to log
  */
-static void fwts_log_newline_xml(fwts_log *log)
+static void fwts_log_newline_xml(fwts_log_file *log_file)
 {
 	/* No-op for xml */
 }
 
-static void fwts_log_section_begin_xml(fwts_log *log, const char *name)
+static void fwts_log_section_begin_xml(fwts_log_file *log_file, const char *name)
 {
 	xml_stack[xml_stack_index].name = name;
 
-	fprintf(log->fp, "%*s<%s>\n", xml_stack_index * XML_INDENT, "", name);
-	fflush(log->fp);
+	fprintf(log_file->fp, "%*s<%s>\n", xml_stack_index * XML_INDENT, "", name);
+	fflush(log_file->fp);
 
 	if (xml_stack_index < MAX_XML_STACK)
 		xml_stack_index++;
@@ -143,13 +139,13 @@ static void fwts_log_section_begin_xml(fwts_log *log, const char *name)
 	}
 }
 
-static void fwts_log_section_end_xml(fwts_log *log)
+static void fwts_log_section_end_xml(fwts_log_file *log_file)
 {
 	if (xml_stack_index > 0) {
 		xml_stack_index--;
-		fprintf(log->fp, "%*s</%s>\n", xml_stack_index * XML_INDENT,
+		fprintf(log_file->fp, "%*s</%s>\n", xml_stack_index * XML_INDENT,
 			"", xml_stack[xml_stack_index].name);
-		fflush(log->fp);
+		fflush(log_file->fp);
 	} else {
 		fprintf(stderr, "xml log stack underflow.\n");
 		exit(EXIT_FAILURE);
@@ -157,26 +153,26 @@ static void fwts_log_section_end_xml(fwts_log *log)
 
 }
 
-static void fwts_log_open_xml(fwts_log *log)
+static void fwts_log_open_xml(fwts_log_file *log_file)
 {
 	char *xml_header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
 
-	fwrite(xml_header, 1, strlen(xml_header), log->fp);
-	fflush(log->fp);
+	fwrite(xml_header, 1, strlen(xml_header), log_file->fp);
+	fflush(log_file->fp);
 
-	fwts_log_section_begin_xml(log, "fwts");
+	fwts_log_section_begin_xml(log_file, "fwts");
 }
 
-static void fwts_log_close_xml(fwts_log *log)
+static void fwts_log_close_xml(fwts_log_file *log_file)
 {
-	fwts_log_section_end_xml(log);
+	fwts_log_section_end_xml(log_file);
 
-	fwrite("\n", 1, 1, log->fp);
-	fflush(log->fp);
+	fwrite("\n", 1, 1, log_file->fp);
+	fflush(log_file->fp);
 }
 
 fwts_log_ops fwts_log_xml_ops = {
-	.vprintf = 	 fwts_log_vprintf_xml,
+	.print = 	 fwts_log_print_xml,
 	.underline =	 fwts_log_underline_xml,
 	.newline =	 fwts_log_newline_xml,
 	.section_begin = fwts_log_section_begin_xml,

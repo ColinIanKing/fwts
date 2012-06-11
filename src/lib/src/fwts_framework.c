@@ -981,8 +981,8 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_iasl_disassemble_all_to_file(fw);
 			return FWTS_COMPLETE;
 		case 32: /* --log-type */
-			fwts_framework_log_type_parse(fw, optarg);
-			/* FIX ME - check return */
+			if (fwts_framework_log_type_parse(fw, optarg) != FWTS_OK)
+				return FWTS_ERROR;
 			break;
 		}
 		break;
@@ -1099,8 +1099,15 @@ int fwts_framework_args(const int argc, char **argv)
 	fwts_list_init(&tests_to_run);
 	fwts_list_init(&tests_to_skip);
 
-	if (fwts_args_parse(fw, argc, argv) != FWTS_OK)
+	switch (fwts_args_parse(fw, argc, argv)) {
+	case FWTS_OK:
+		break;
+	case FWTS_COMPLETE:		/* All done, e.g. --help, --version */
 		goto tidy_close;
+	default:
+		ret = FWTS_ERROR;	/* Parsing error, or out of memory etc */
+		goto tidy_close;
+	}
 
 	for (i=1; i<argc; i++)
 		if (!strcmp(argv[i], "-")) {

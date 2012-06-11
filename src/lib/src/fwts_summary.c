@@ -255,8 +255,8 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 		fwts_log_nl(fw);
 	}
 
-	if ((fw->log_type == LOG_TYPE_PLAINTEXT ||
-	     fw->log_type == LOG_TYPE_HTML) && fw->total_run > 0) {
+	if ((fw->log_type & (LOG_TYPE_PLAINTEXT| LOG_TYPE_HTML)) &&
+	     fw->total_run > 0) {
 		sorted = fwts_list_new();
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);

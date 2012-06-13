@@ -195,6 +195,13 @@ no_tests_finish()
 #
 done_tests_finish()
 {
+    if [ -n "${CASPER_DETECTED:+x}" ]; then
+        cd $WORK_DIR
+        ln -sf ./results.html ../../results.html
+    else
+        ln -sf $WORK_DIR/results.html /fwts/results.html
+    fi
+
 	dialog  --backtitle "$FWTS" --title "Testing Complete" --yesno \
 "The results can be found on the USB stick in the\n
 the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n

@@ -76,7 +76,7 @@ do_test()
 	num_tests=`fwts $1 --show-tests | wc -l`
 	num_tests=$((num_tests - 1))
 	if [ $num_tests -gt 0 ]; then
-  		fwts --force-clean --skip-test=s3,s4 $1 --show-progress-dialog | dialog --backtitle "$FWTS" --title "$2" --gauge "" 13 80 0
+  		fwts --force-clean --skip-test=s3,s4 $1 --show-progress-dialog --log-type plaintext,html | dialog --backtitle "$FWTS" --title "$2" --gauge "" 13 80 0
 	fi
 }
 
@@ -130,7 +130,7 @@ select_tests()
 				dialog --backtitle "$FWTS" --title "No Tests Selected!" --msgbox \
 			"   You did not select any tests to be run." 5 50
 			else
-  				fwts --force-clean $run_tests --show-progress-dialog | dialog  --backtitle "$FWTS" --title "$2" --gauge "" 15 80 0
+  				fwts --force-clean $run_tests --show-progress-dialog --log-type plaintext,html | dialog  --backtitle "$FWTS" --title "$2" --gauge "" 15 80 0
 				done_tests_finish
 			fi
 			;;

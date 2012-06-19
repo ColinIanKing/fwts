@@ -1,3 +1,54 @@
+fwts (0.25.03) quantal; urgency=low
+
+  [Chris Van Hoof]
+  * live-image/fwts-frontend-text: conditional added to done_tests_finish()
+    which creates a symbolic link to the latest results.html at the top level
+    WORK_DIR
+  * live-image/fwts-frontend-text: adding support for both plaintext and html
+    log out by default with --log-type
+
+  [Colin Ian King]
+  * apci: checksum: RSDT and XSDT checksum failures should not be critical
+    (LP: #1013168)
+  * lib: fwts_log_html: convert misc ASCII chars to HTML mnemonics
+  * lib: fwts_framework: handle --log-type parse errors
+  * lib: fwts_summary: handle the log_type now that it is a bit map
+  * lib: rework logging and framework to allow for multiple output logs
+  * lib: fwts_framework: handle nested log section endings on ABORT
+  * lib: fwts_log_html: remove timestamp as it is in the heading anyhow
+  * Update README
+  * lib: fwts_acpi_tables: fake table start address when loading from file.
+  * lib: fwts_framework: set log name suffix when using --log-type option
+  * lib: fwts_summary: HTML summary should not be in verbatum
+  * lib: fwts_log_html: tweak style and table format
+  * lib: fwts_memorymap: output should be in verbatum style
+  * bios: mtrr: make MTRR overview all verbatum style, looks better on HTML log
+  * lib: add HTML logging backend
+  * lib: fwts_framework: log advice as LOG_ADVICE and not LOG_RESULT
+  * lib: fwts_framework: remove fwts_framework_results, remove redundant code
+  * lib: fwts_log: add extra log types and upper case flavour of
+    fwts_log_field_to_str_full()
+  * lib: fwts_framework: drop unneccessary \n in log call
+  * lib: add xml logging
+  * lib: fwts_acpi_method: remove leading 0x in front of dumped strings
+  * bios: mtrr: strip off trailing newlines
+  * bios: bios_info: strip off trailing newlines
+  * kernel: version: strip off trailing newline
+  * lib: fwts_wakealarm.c: add more comments
+  * lib: fwts_oops.c: add more comments
+  * lib: fwts_mmap.c: add more comments
+  * lib: fwts_keymap.c: add more comments
+  * lib: fwts_iasl.c: add more comments
+  * lib: fwts_guid.c: add more comments
+  * lib: fwts_button.c: add more comments
+  * lib: fwts_ac_adapter.c: add more comments
+
+  [Keng-Yu Lin]
+  * debian: update copyright to conform to copyright-format 1.0
+  * debian: update the control file
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 19 Jun 2012 13:31:53 +0800
+
 fwts (0.25.02) quantal; urgency=low
 
   * fwts V0.25.02 release (LP: #1004410)

@@ -26,7 +26,6 @@
 typedef struct {
 	char *test;		/* test that found the error */
 	char *text;		/* text of failure message */
-	fwts_list log_lines;	/* line where failure was reported */
 } fwts_summary_item;
 
 enum {
@@ -78,7 +77,6 @@ static void fwts_summary_item_free(void *data)
 {
 	fwts_summary_item *item = (fwts_summary_item *)data;
 
-	fwts_list_free_items(&(item->log_lines), free);
 	free(item->test);
 	free(item->text);
 	free(item);
@@ -124,10 +122,6 @@ int fwts_summary_add(fwts_framework *fw, const char *test, fwts_log_level level,
 	fwts_summary_item *summary_item = NULL;
 	bool summary_item_found = false;
 	int index = fwts_summary_level_to_index(level);
-	int *line_num;
-
-	if ((line_num = calloc(1, sizeof(int))) == NULL)
-		return FWTS_ERROR;
 
 	/* Does the text already exist? - search for it */
 	fwts_list_foreach(item, fwts_summaries[index]) {
@@ -140,29 +134,21 @@ int fwts_summary_add(fwts_framework *fw, const char *test, fwts_log_level level,
 
 	/* Not found, create a new one */
 	if (!summary_item_found) {
-		if ((summary_item = calloc(1, sizeof(fwts_summary_item))) == NULL) {
-			free(line_num);
+		if ((summary_item = calloc(1, sizeof(fwts_summary_item))) == NULL)
 			return FWTS_ERROR;
-		}
+
 		if ((summary_item->test = strdup(test)) == NULL) {
-			free(line_num);
 			free(summary_item);
 			return FWTS_ERROR;
 		}
+
 		if ((summary_item->text = strdup(text)) == NULL) {
-			free(line_num);
-			free(summary_item->test);	
-			free(summary_item);	
+			free(summary_item->test);
+			free(summary_item);
 			return FWTS_ERROR;
 		}
-		fwts_list_init(&(summary_item->log_lines));
 		fwts_chop_newline(summary_item->text);
 	}
-
-	/* Now append a new line number to list of line numbers */
-
-	*line_num = fwts_log_line_number(fw->results);
-	fwts_list_append(&summary_item->log_lines, line_num);
 
 	/* And append new item if not done so already */
 	if (!summary_item_found)
@@ -177,26 +163,6 @@ static void fwts_summary_format_field(char *buffer, int buflen, uint32_t value)
 		snprintf(buffer, buflen, "%5u", value);
 	else
 		*buffer = '\0';
-}
-
-static char *fwts_summary_lines(fwts_list *list)
-{
-	fwts_list_link *item;
-	char *text = NULL;
-	char tmp[16];
-	int i = 0;
-
-	fwts_list_foreach(item, list) {
-		int *num = fwts_list_data(int *, item);
-		snprintf(tmp, sizeof(tmp), "%s%d", 
-			text == NULL ? "" : ", ", *num);
-		text = fwts_realloc_strcat(text, tmp);
-		if (i++ > 20) {
-			text = fwts_realloc_strcat(text, "...");
-			break;
-		}
-	}
-	return text;
 }
 
 /*
@@ -223,28 +189,19 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 			fwts_log_section_begin(fw->results, "failures");
 			fwts_list_foreach(item, fwts_summaries[i]) {
 				fwts_summary_item *summary_item = fwts_list_data(fwts_summary_item *,item);
-				char *lines = fwts_summary_lines(&summary_item->log_lines);
 
 				/*
 				 *  This is not pleasant, we really don't want very wide lines
 				 *  logged in the HTML format, where we don't mind for other formats.
 				 */
 				if (fw->log_type == LOG_TYPE_HTML)
-					fwts_log_summary(fw, " %s test, at %d log line%s: %s: %s",
+					fwts_log_summary(fw, " %s test: %s",
 						summary_item->test,
-						fwts_list_len(&summary_item->log_lines),
-						fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
-						lines,
 						summary_item->text);
 				else
-					fwts_log_summary_verbatum(fw, " %s test, at %d log line%s: %s: %s",
+					fwts_log_summary_verbatum(fw, " %s: %s",
 						summary_item->test,
-						fwts_list_len(&summary_item->log_lines),
-						fwts_list_len(&summary_item->log_lines) > 1 ? "s" : "",
-						lines,
 						summary_item->text);
-
-				free(lines);
 			}
 			fwts_log_section_end(fw->results);
 		}

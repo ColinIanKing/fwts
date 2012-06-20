@@ -444,29 +444,34 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 
 static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 {
-	DIR *dir;
-	struct dirent *direntry;
+	struct dirent **dir_entries;
 	int count = 0;
+	int i;
 
-	if ((dir = opendir(fw->acpi_table_path)) == NULL) {
+	/*
+ 	 * Read in directory in alphabetical name sorted order
+	 * to ensure the tables are always loaded into memory
+	 * in some form of deterministic order
+	 */
+	if ((count = scandir(fw->acpi_table_path, &dir_entries, 0, alphasort)) < 0) {
 		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.",
 			fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
 
-	while ((direntry = readdir(dir)) != NULL) {
-		if (strstr(direntry->d_name, ".dat")) {
+	for (i = 0; i < count; i++) {
+		if (strstr(dir_entries[i]->d_name, ".dat")) {
 			char path[PATH_MAX];
 			int fd;
+
 			snprintf(path, sizeof(path), "%s/%s",
-				fw->acpi_table_path, direntry->d_name);
+				fw->acpi_table_path, dir_entries[i]->d_name);
 			if ((fd = open(path, O_RDONLY)) >= 0) {
 				uint8_t *table;
 				size_t length;
 				char name[PATH_MAX];
 
-				count++;
-				strcpy(name, direntry->d_name);
+				strcpy(name, dir_entries[i]->d_name);
 				name[strlen(name)-4] = '\0';
 				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
 					fwts_acpi_add_table(name, table,
@@ -475,8 +480,9 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 			} else
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);
 		}
+		free(dir_entries[i]);
 	}
-	closedir(dir);
+	free(dir_entries);
 
 	if (count == 0) {
 		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);

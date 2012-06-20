@@ -52,7 +52,7 @@ static int fwts_log_header_plaintext(
 			ptr++;
 			if (!strncmp(ptr, "line", 4)) {
 				n += snprintf(buffer + n, len - n,
-					"%5.5d", log_file->log->line_number);
+					"%5.5d", log_file->line_number);
 				ptr += 4;
 			}
 			if (!strncmp(ptr, "date", 4)) {
@@ -139,6 +139,7 @@ static int fwts_log_print_plaintext(
 		fwrite(text, 1, strlen(text), log_file->fp);
 		fwrite("\n", 1, 1, log_file->fp);
 		fflush(log_file->fp);
+		log_file->line_number++;
 		len += strlen(text) + 1;
 	}
 	fwts_text_list_free(lines);
@@ -171,6 +172,7 @@ static void fwts_log_underline_plaintext(fwts_log_file *log_file, const int ch)
 
 	fwrite(buffer, 1, width, log_file->fp);
 	fflush(log_file->fp);
+	log_file->line_number++;
 
 	free(buffer);
 }
@@ -183,6 +185,7 @@ static void fwts_log_newline_plaintext(fwts_log_file *log_file)
 {
 	fwrite("\n", 1, 1, log_file->fp);
 	fflush(log_file->fp);
+	log_file->line_number++;
 }
 
 fwts_log_ops fwts_log_plaintext_ops = {

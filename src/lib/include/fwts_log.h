@@ -87,7 +87,6 @@ typedef enum {
 typedef struct log_t {
 	unsigned int magic;			/* magic ID of the log */
 	fwts_list log_files;			/* list of fwts_log_file */
-	int line_number;			/* keeps track of the line numbering */
 	char *owner;				/* who is writing to this log */
 } fwts_log;
 
@@ -96,6 +95,7 @@ typedef struct log_t {
  */
 typedef struct {
 	FILE *fp;				/* file descriptor for log */
+	int line_number;			/* keeps track of the line numbering */
 	fwts_log *log;				/* parent log struct */
 	fwts_log_type type;			/* log type */
 	fwts_log_filename_type filename_type;	/* log filename type */

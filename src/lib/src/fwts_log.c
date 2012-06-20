@@ -420,7 +420,6 @@ int fwts_log_printf(fwts_log *log,
 				log_file->ops->print(log_file, field, level,
 					status, label, prefix, buffer);
 		}
-		log->line_number++;
 
 		va_end(args);
 	}
@@ -460,7 +459,6 @@ void fwts_log_newline(fwts_log *log)
 			if (log_file->ops && log_file->ops->newline)
 				log_file->ops->newline(log_file);
 		}
-		log->line_number++;
 	}
 }
 

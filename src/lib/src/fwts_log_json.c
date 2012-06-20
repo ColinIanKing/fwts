@@ -69,7 +69,7 @@ static int fwts_log_print_json(
 	localtime_r(&now, &tm);
 
 	header = json_object_new_object();
-	json_object_object_add(header, "line_num", json_object_new_int(log_file->log->line_number));
+	json_object_object_add(header, "line_num", json_object_new_int(log_file->line_number));
 	snprintf(tmpbuf, sizeof(tmpbuf), "%2.2d/%2.2d/%-2.2d",
 		tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
 	json_object_object_add(header, "date", json_object_new_string(tmpbuf));
@@ -95,6 +95,7 @@ static int fwts_log_print_json(
 	json_object_object_add(header, "log_text", json_object_new_string(buffer));
 
 	json_object_array_add(json_log, header);
+	log_file->line_number++;	/* This is academic really */
 
 	return 0;
 }
@@ -168,6 +169,7 @@ static void fwts_log_close_json(fwts_log_file *log_file)
 	fwrite(str, 1, len, log_file->fp);
 	fwrite("\n", 1, 1, log_file->fp);
 	fflush(log_file->fp);
+	log_file->line_number++;
 
 	json_object_put(json_stack[0].obj);
 }

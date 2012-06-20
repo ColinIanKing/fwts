@@ -67,7 +67,7 @@ static int fwts_log_print_xml(
 
 	fprintf(log_file->fp, "%*s<line_num>%d</line_num>\n",
 		(xml_stack_index + 1) * XML_INDENT,
-		"", log_file->log->line_number);
+		"", log_file->line_number);
 
 	fprintf(log_file->fp, "%*s<date>%2.2d/%2.2d/%-2.2d</date>\n",
 		(xml_stack_index + 1) * XML_INDENT,
@@ -102,6 +102,7 @@ static int fwts_log_print_xml(
 
 	fprintf(log_file->fp, "%*s</logentry>\n", xml_stack_index * XML_INDENT, "");
 	fflush(log_file->fp);
+	log_file->line_number++;
 
 	return 0;
 }
@@ -169,6 +170,7 @@ static void fwts_log_close_xml(fwts_log_file *log_file)
 
 	fwrite("\n", 1, 1, log_file->fp);
 	fflush(log_file->fp);
+	log_file->line_number++;
 }
 
 fwts_log_ops fwts_log_xml_ops = {

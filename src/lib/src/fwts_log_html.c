@@ -343,6 +343,7 @@ static int fwts_log_print_html(
 
 	fwts_log_html(log_file, "</TR>\n");
 	fflush(log_file->fp);
+	log_file->line_number++;	/* not used, but bump it anyway */
 
 	return 0;
 }

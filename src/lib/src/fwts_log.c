@@ -562,6 +562,46 @@ fwts_log_filename_type fwts_log_get_filename_type(const char *filename)
 }
 
 /*
+ *  fwts_log_filenames()
+ *	return string of all the log filenames that will be used
+ */
+char *fwts_log_get_filenames(const char *filename, fwts_log_type type)
+{
+	unsigned int i;
+	char *filenames = NULL;
+	char *tmp;
+	size_t len = 0;
+
+	for (i=0; i<32; i++) {
+		fwts_log_type mask = 1 << i;
+		if (type & mask) {
+			if ((tmp = fwts_log_filename(filename, mask)) == NULL)
+				return NULL;
+
+			if (filenames) {
+				len += strlen(tmp) + 2;
+				if ((filenames = realloc(filenames, len)) == NULL) {
+					free(tmp);
+					return NULL;
+				}
+				strcat(filenames, " ");
+				strcat(filenames, tmp);
+			} else {
+				len = strlen(tmp) + 1;
+				if ((filenames = malloc(len)) == NULL) {
+					free(tmp);
+					return NULL;
+				}
+				strcpy(filenames, tmp);
+			}
+			free(tmp);
+		}
+	}
+
+	return filenames;
+}
+
+/*
  *  fwts_log_open()
  *	open a log file. if name is stderr or stdout, then attach log to these
  *	streams.

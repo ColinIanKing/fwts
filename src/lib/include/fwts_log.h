@@ -144,6 +144,7 @@ int 	  fwts_log_line_number(fwts_log *log);
 void	  fwts_log_set_line_width(const int width);
 void	  fwts_log_section_begin(fwts_log *log, const char *name);
 void	  fwts_log_section_end(fwts_log *log);
+char     *fwts_log_get_filenames(const char *filename, fwts_log_type type);
 fwts_log_filename_type fwts_log_get_filename_type(const char *name);
 
 static inline int fwts_log_type_count(fwts_log_type type)

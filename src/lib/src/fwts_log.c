@@ -48,15 +48,6 @@ void fwts_log_set_line_width(int width)
 }
 
 /*
- *  fwts_log_line_number()
- * 	get current line number of log
- */
-int fwts_log_line_number(fwts_log *log)
-{
-	return log->line_number;
-}
-
-/*
  *  fwts_log_field_to_str()
  *	return string name of log field
  */

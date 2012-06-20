@@ -140,7 +140,6 @@ char     *fwts_log_level_to_str(const fwts_log_level level);
 char	 *fwts_log_field_to_str(const fwts_log_field field);
 char     *fwts_log_field_to_str_full(const fwts_log_field field);
 char	 *fwts_log_field_to_str_upper(const fwts_log_field field);
-int 	  fwts_log_line_number(fwts_log *log);
 void	  fwts_log_set_line_width(const int width);
 void	  fwts_log_section_begin(fwts_log *log, const char *name);
 void	  fwts_log_section_end(fwts_log *log);

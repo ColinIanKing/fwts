@@ -24,6 +24,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <ctype.h>
 
@@ -337,6 +339,20 @@ static char *fwts_log_filename(const char *filename, fwts_log_type type)
 	size_t suffix_len;
 	size_t trunc_len;
 	size_t filename_len;
+	struct stat stat_buf;
+
+	/*
+	 *  If the user specified a char special file, like /dev/null
+	 *  or a named pipe, socket or symlink we should just return
+	 * that instead.
+	 */
+	if (stat(filename, &stat_buf) == 0) {
+		if (S_ISCHR(stat_buf.st_mode) ||
+		    S_ISFIFO(stat_buf.st_mode) ||
+		    S_ISSOCK(stat_buf.st_mode) ||
+		    S_ISLNK(stat_buf.st_mode))
+			return strdup(filename);
+	}
 
 	suffix = fwts_log_type_filename_suffix(type);
 	suffix_len = strlen(suffix);

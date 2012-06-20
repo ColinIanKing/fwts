@@ -1184,10 +1184,16 @@ int fwts_framework_args(const int argc, char **argv)
 		}
 	}
 
-	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET))
-		printf("Running %d tests, results appended to %s\n",
-			fwts_list_len(&tests_to_run),
-			fw->results_logname);
+	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET)) {
+		char *filenames = fwts_log_get_filenames(fw->results_logname, fw->log_type);
+		
+		if (filenames) {
+			printf("Running %d tests, results appended to %s\n",
+				fwts_list_len(&tests_to_run),
+				filenames);
+			free(filenames);
+		}
+	}
 
 	fwts_log_section_begin(fw->results, "heading");
 	fwts_framework_heading_info(fw, &tests_to_run);

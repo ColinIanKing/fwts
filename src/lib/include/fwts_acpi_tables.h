@@ -22,12 +22,19 @@
 
 #include "fwts.h"
 
+typedef enum {
+	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
+	FWTS_ACPI_TABLE_FROM_FILE,	/* loaded from file, e.g. from acpidump */
+	FWTS_ACPI_TABLE_FROM_FIXUP,	/* auto-generated fixup by fwts */
+} fwts_acpi_table_provenance;
+
 typedef struct {
 	char    name[5];
 	const void *data;
 	size_t	length;
 	int 	which;
 	uint64_t addr;
+	fwts_acpi_table_provenance provenance;
 } fwts_acpi_table_info;
 
 int fwts_acpi_load_tables(fwts_framework *fw);

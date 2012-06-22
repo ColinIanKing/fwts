@@ -152,7 +152,12 @@ static void *fwts_acpi_load_table(const off_t addr)
  *	Add a table to internal ACPI table cache. Ignore duplicates based on
  *	their address.
  */
-static void fwts_acpi_add_table(const char *name, const void *table, const uint64_t addr, const size_t length)
+static void fwts_acpi_add_table(
+	const char *name,			/* Table Name */
+	const void *table,			/* Table binary blob */
+	const uint64_t addr,			/* Address of table */
+	const size_t length,			/* Length of table */
+	fwts_acpi_table_provenance provenance)	/* Where we got the table from */
 {
 	int i;
 	int which = 0;
@@ -172,6 +177,7 @@ static void fwts_acpi_add_table(const char *name, const void *table, const uint6
 			tables[i].addr = addr;
 			tables[i].length = length;
 			tables[i].which = which;
+			tables[i].provenance = provenance;
 			return;
 		}
 	}
@@ -199,7 +205,11 @@ int fwts_acpi_free_tables(void)
  *	depending on whether 32 or 64 bit address is usable, get the FADT table
  *	address and load the FADT.
  */
-static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, const uint32_t *addr32, const uint64_t *addr64)
+static void fwts_acpi_handle_fadt_tables(
+	fwts_acpi_table_fadt *fadt,
+	const uint32_t *addr32,
+	const uint64_t *addr64,
+	fwts_acpi_table_provenance provenance)
 {
 	off_t addr;
 	fwts_acpi_table_header *header;
@@ -212,14 +222,15 @@ static void fwts_acpi_handle_fadt_tables(fwts_acpi_table_fadt *fadt, const uint3
 
 	if (addr) {
 		if ((header = fwts_acpi_load_table(addr)) != NULL)
-			fwts_acpi_add_table(header->signature, header, (uint64_t)addr, header->length);
+			fwts_acpi_add_table(header->signature, header,
+				(uint64_t)addr, header->length, provenance);
 	}
 }
 
-static void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt)
+static void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt, fwts_acpi_table_provenance provenance)
 {
-	fwts_acpi_handle_fadt_tables(fadt, &fadt->dsdt, &fadt->x_dsdt);
-	fwts_acpi_handle_fadt_tables(fadt, &fadt->firmware_control, &fadt->x_firmware_ctrl);
+	fwts_acpi_handle_fadt_tables(fadt, &fadt->dsdt, &fadt->x_dsdt, provenance);
+	fwts_acpi_handle_fadt_tables(fadt, &fadt->firmware_control, &fadt->x_firmware_ctrl, provenance);
 }
 
 /*
@@ -246,19 +257,22 @@ static int fwts_acpi_load_tables_from_firmware(void)
 	/* Load and save cached RSDP */
 	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;
-	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len);
+	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 
 	/* Load any tables from RSDT if it's valid */
 	if (rsdp->rsdt_address) {
 		if ((rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address)) != NULL) {
-			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address, rsdt->header.length);
+			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address,
+				rsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
 			for (i=0; i<num_entries; i++) {
 				if (rsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
-							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i], header->length);
+							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
+								FWTS_ACPI_TABLE_FROM_FIRMWARE);
+						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i],
+							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 					}
 				}
 			}
@@ -268,14 +282,17 @@ static int fwts_acpi_load_tables_from_firmware(void)
 	/* Load any tables from XSDT if it's valid */
 	if (rsdp->xsdt_address) {
 		if ((xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address)) != NULL) {
-			fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address, xsdt->header.length);
+			fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address,
+				xsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 			num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
 			for (i=0; i<num_entries; i++) {
 				if (xsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)xsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
-							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header);
-						fwts_acpi_add_table(header->signature, header, xsdt->entries[i], header->length);
+							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
+								FWTS_ACPI_TABLE_FROM_FIRMWARE);
+						fwts_acpi_add_table(header->signature, header, xsdt->entries[i],
+							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 					}
 				}
 			}
@@ -402,7 +419,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 		char name[16];
 
 		if ((table = fwts_acpi_load_table_from_acpidump(fp, name, &addr, &length)) != NULL)
-			fwts_acpi_add_table(name, table, addr, length);
+			fwts_acpi_add_table(name, table, addr, length, FWTS_ACPI_TABLE_FROM_FILE);
 	}
 
 	fclose(fp);
@@ -475,7 +492,8 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 				name[strlen(name)-4] = '\0';
 				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
 					fwts_acpi_add_table(name, table,
-						(uint64_t)fwts_fake_physical_addr(length), length);
+						(uint64_t)fwts_fake_physical_addr(length), length,
+						FWTS_ACPI_TABLE_FROM_FILE);
 				close(fd);
 			} else
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);
@@ -590,7 +608,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdt->header.creator_revision = 1;
 		rsdt->header.checksum = 256 - fwts_checksum((uint8_t*)rsdt, size);
 
-		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)fwts_fake_physical_addr(size), size);
+		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)fwts_fake_physical_addr(size),
+			size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 
 	/* No XSDT? go and fake one */
@@ -614,7 +633,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		xsdt->header.creator_revision = 1;
 		xsdt->header.checksum = 256 - fwts_checksum((uint8_t*)xsdt, size);
 
-		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)fwts_fake_physical_addr(size), size);
+		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)fwts_fake_physical_addr(size),
+			size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 
 	/* No RSDP? go and fake one */
@@ -636,7 +656,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdp->checksum = 256 - fwts_checksum((uint8_t*)rsdp, 20);
 		rsdp->extended_checksum = 256 - fwts_checksum((uint8_t*)rsdp, sizeof(fwts_acpi_table_rsdp));
 
-		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size), sizeof(fwts_acpi_table_rsdp));
+		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size),
+			sizeof(fwts_acpi_table_rsdp), FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 	return FWTS_OK;
 }

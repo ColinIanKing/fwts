@@ -1,3 +1,22 @@
+fwts (0.25.04) quantal; urgency=low
+
+  [Colin Ian King]
+  * apci: acpitables: only check CMOS in BOOT table from firmware tables
+    (LP: #1016469)
+  * lib: fwts_acpi_tables: add ACPI table provenance
+  * lib: fwts_acpi_tables: load tables in deterministically
+  * lib: fwts_log: handle special logfile names
+  * lib: log: move line counting to logging back-ends
+  * lib: fwts_log: remove fwts_log_line_number(), no longer used
+  * lib: fwts_framework: output all logfile names being written to
+  * lib: fwts_log: add fwts_log_get_filenames()
+  * lib: fwts_summary: remove references to log line number
+
+  [Keng-Yu Lin]
+  * debian: Fix up the dependency of debian packages
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 25 Jun 2012 16:44:51 +0800
+
 fwts (0.25.03) quantal; urgency=low
 
   [Chris Van Hoof]

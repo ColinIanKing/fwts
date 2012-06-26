@@ -21,9 +21,13 @@
 
 #include "fwts.h"
 
+#define FWTS_HWINFO_LISTS_SAME		(0)
+#define FWTS_HWINFO_LISTS_DIFFER	(1)
+#define FWTS_HWINFO_LISTS_OUT_OF_MEMORY	(-1)
+
 /*
  *  fwts_hwinfo_get()
- *	gather H/W information 
+ *	gather H/W information
  */
 int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 {
@@ -34,8 +38,8 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 	fwts_pipe_exec("hciconfig -a | grep -A2 '^\\w", &hwinfo->hciconfig);
 	fwts_pipe_exec("lspci | grep VGA", &hwinfo->videocard);
 	fwts_pipe_exec("xinput list", &hwinfo->xinput);
-	fwts_pipe_exec("pactl list | grep Sink", &hwinfo->pactl);
-	fwts_pipe_exec("pactl list | grep Source", &hwinfo->pactl);
+	fwts_pipe_exec("pactl list | grep Sink | grep -v Latency", &hwinfo->pactl);
+	fwts_pipe_exec("pactl list | grep Source | grep -v Latency", &hwinfo->pactl);
 
 	return FWTS_OK;
 }
@@ -64,7 +68,6 @@ static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
  */
 static void fwts_hwinfo_lists_dump(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message)
 {
-
 	fwts_log_info(fw, "%s configurations differ, before:", message);
 	fwts_hwinfo_list_dump(fw, l1);
 	fwts_log_info(fw, "versus after:");
@@ -73,38 +76,94 @@ static void fwts_hwinfo_lists_dump(fwts_framework *fw, fwts_list *l1, fwts_list 
 }
 
 /*
+ *  fwts_hwinfo_alpha_compare()
+ *	alphanumeric sort compare function
+ */
+static int fwts_hwinfo_alpha_compare(void *data1, void *data2)
+{
+        return strcmp((char *)data1, (char*)data2);
+}
+
+/*
+ *  fwts_hwinfo_list_sort_alpha()
+ *	clone the contents of the given list and return an
+ *	alphanumerically sorted version of the list. This
+ *	list has cloned contents of the original, so it has
+ *	to be free'd with fwts_list_free(list, NULL) since
+ *	we don't want to free the cloned items and ruin the
+ *	original list
+ */
+static fwts_list *fwts_hwinfo_list_sort_alpha(fwts_list *list)
+{
+	fwts_list_link *item;
+	fwts_list *sorted;
+	
+	if ((sorted = fwts_list_new()) == NULL)
+		return NULL;
+
+	fwts_list_foreach(item, list) {
+		char *str = fwts_list_data(char *, item);
+		fwts_list_add_ordered(sorted, str, fwts_hwinfo_alpha_compare);
+	}
+
+	return sorted;
+}
+
+/*
  *  fwts_hwinfo_lists_differ()
- *	check lists to see if their contents differ, return 1 for differ, 0 for match
+ *	check lists to see if their contents differ, return 1 for differ, 0 for match,
+ *	-1 for out of memory error
  */
 static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
 {
 	fwts_list_link *item1;
 	fwts_list_link *item2;
+	
+	fwts_list *sorted1, *sorted2;
 
+	/* Both null - both the same then */
 	if ((l1 == NULL) && (l2 == NULL))
-		return 0;
-	if ((l1 == NULL) || (l2 == NULL))
-		return 1;
-	if (fwts_list_len(l1) != fwts_list_len(l2))
-		return 1;
+		return FWTS_HWINFO_LISTS_SAME;
 
-	item1 = fwts_list_head(l1);
-	item2 = fwts_list_head(l2);
+	/* Either null and the other not? */
+	if ((l1 == NULL) || (l2 == NULL))
+		return FWTS_HWINFO_LISTS_DIFFER;
+
+	/* Different length, then they differ */
+	if (fwts_list_len(l1) != fwts_list_len(l2))
+		return FWTS_HWINFO_LISTS_DIFFER;
+
+	if ((sorted1 = fwts_hwinfo_list_sort_alpha(l1)) == NULL)
+		return FWTS_HWINFO_LISTS_OUT_OF_MEMORY;
+		
+	if ((sorted2 = fwts_hwinfo_list_sort_alpha(l2)) == NULL) {
+		fwts_list_free(sorted1, NULL);
+		return FWTS_HWINFO_LISTS_OUT_OF_MEMORY;
+	}
+
+	item1 = fwts_list_head(sorted1);
+	item2 = fwts_list_head(sorted2);
 
 	while ((item1 != NULL) && (item2 != NULL)) {
 		char *str1 = fwts_list_data(char *, item1);
 		char *str2 = fwts_list_data(char *, item2);
 
-		if (strcmp(str1, str2))
-			return 1;
+		if (strcmp(str1, str2)) {
+			fwts_list_free(sorted1, NULL);
+			fwts_list_free(sorted2, NULL);
+			return FWTS_HWINFO_LISTS_DIFFER;
+		}
 		item1 = fwts_list_next(item1);
 		item2 = fwts_list_next(item2);
 	}
 
+	fwts_list_free(sorted1, NULL);
+	fwts_list_free(sorted2, NULL);
+
 	if ((item1 == NULL) && (item2 == NULL))
-		return 0;
+		return FWTS_HWINFO_LISTS_SAME;
 	else
-		return 1;
+		return FWTS_HWINFO_LISTS_DIFFER;
 }
 
 /*
@@ -113,7 +172,7 @@ static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
  */
 static void fwts_hwinfo_lists_compare(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message, int *differences)
 {
-	if (fwts_hwinfo_lists_differ(l1, l2)) {
+	if (fwts_hwinfo_lists_differ(l1, l2) == FWTS_HWINFO_LISTS_DIFFER) {
 		(*differences)++;
 		fwts_hwinfo_lists_dump(fw, l1, l2, message);
 	}

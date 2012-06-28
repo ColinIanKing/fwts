@@ -177,19 +177,19 @@ static int s4_hibernate(fwts_framework *fw,
 
 	/* Add in error check for pm-hibernate status */
 	if ((status > 0) && (status < 128)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS4",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedPreS4",
 			"pm-action failed before trying to put the system "
 			"in the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status == 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS4",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionPowerStateS4",
 			"pm-action tried to put the machine in the requested "
 			"power state but failed.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status > 128) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS4",
+		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedS4",
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
@@ -278,7 +278,7 @@ static int s4_test_multiple(fwts_framework *fw)
 				if ((!retried) && (tracing_buffer_size > 4096)) {
 					retried = true;
 
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"TracingBufferTooBig",
 						"/sys/kernel/debug/tracing/buffer_size_kb is set to %d Kbytes which "
 						"may cause hibernate to fail. Programs such as ureadahead may have "

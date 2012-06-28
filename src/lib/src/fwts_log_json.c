@@ -40,7 +40,17 @@ static fwts_log_json_stack_t json_stack[MAX_JSON_STACK];
 static int json_stack_index = 0;
 
 /*
- *  fwts_log_printf_son()
+ *  fwts_log_out_of_memory_json()
+ *	handle out of memory from json objects
+ */
+static void fwts_log_out_of_memory_json(void)
+{
+	fprintf(stderr, "Out of memory allocating a json object.\n");
+	exit(EXIT_FAILURE);
+}
+
+/*
+ *  fwts_log_printf_json()
  *	print to a log
  */
 static int fwts_log_print_json(
@@ -57,6 +67,7 @@ static int fwts_log_print_json(
 	time_t now;
 	json_object *header;
 	json_object *json_log = (json_object*)json_stack[json_stack_index-1].log;
+	json_object *obj;
 	char *str;
 
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
@@ -68,31 +79,53 @@ static int fwts_log_print_json(
 	time(&now);
 	localtime_r(&now, &tm);
 
-	header = json_object_new_object();
-	json_object_object_add(header, "line_num", json_object_new_int(log_file->line_number));
+	if ((header = json_object_new_object()) == NULL)
+		fwts_log_out_of_memory_json();
+
+	if ((obj = json_object_new_int(log_file->line_number)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "line_num", obj);
+
 	snprintf(tmpbuf, sizeof(tmpbuf), "%2.2d/%2.2d/%-2.2d",
 		tm.tm_mday, tm.tm_mon + 1, (tm.tm_year+1900) % 100);
-	json_object_object_add(header, "date", json_object_new_string(tmpbuf));
+	if ((obj = json_object_new_string(tmpbuf)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "date", obj);
+
 	snprintf(tmpbuf, sizeof(tmpbuf), "%2.2d:%2.2d:%2.2d",
 		tm.tm_hour, tm.tm_min, tm.tm_sec);
-	json_object_object_add(header, "time", json_object_new_string(tmpbuf));
-	json_object_object_add(header, "field_type",
-		json_object_new_string(fwts_log_field_to_str_full(field)));
+	if ((obj = json_object_new_string(tmpbuf)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "time", obj);
+
+	if ((obj = json_object_new_string(fwts_log_field_to_str_full(field))) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "field_type", obj);
 
 	str = fwts_log_level_to_str(level);
 	if (!strcmp(str, " "))
 		str = "None";
-	json_object_object_add(header, "level",
-		json_object_new_string(str));
+	if ((obj = json_object_new_string(str)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "level", obj);
 
-	json_object_object_add(header, "status", json_object_new_string(*status ? status : "None"));
-	json_object_object_add(header, "failure_label", json_object_new_string(label && *label ? label : "None"));
+	if ((obj = json_object_new_string(*status ? status : "None")) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "status", obj);
+
+	if ((obj = json_object_new_string(label && *label ? label : "None")) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "failure_label", obj);
 
 	/* Redundant really
-	json_object_object_add(header, "owner",
-		json_object_new_string(log->owner));
+	if ((obj = json_object_new_string(log->owner)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "owner", obj);
 	*/
-	json_object_object_add(header, "log_text", json_object_new_string(buffer));
+
+	if ((obj = json_object_new_string(buffer)) == NULL)
+		fwts_log_out_of_memory_json();
+	json_object_object_add(header, "log_text", obj);
 
 	json_object_array_add(json_log, header);
 	log_file->line_number++;	/* This is academic really */
@@ -123,15 +156,25 @@ static void fwts_log_section_begin_json(fwts_log_file *log_file, const char *nam
 	json_object *json_obj;
 	json_object *json_log;
 
-	json_obj = json_object_new_object();
-	json_log = json_object_new_array();
+	if ((json_obj = json_object_new_object()) == NULL)
+		fwts_log_out_of_memory_json();
+
+	if ((json_log = json_object_new_array()) == NULL)
+		fwts_log_out_of_memory_json();
+
+	/*
+	 * unfortunately json_object_object_add can fail on
+	 * a strdup, but it doesn't check this and doesn't
+	 * tell us about this either. Bit lame really.
+	 */
 	json_object_object_add(json_obj, name, json_log);
 
 	json_stack[json_stack_index].obj = json_obj;
 	json_stack[json_stack_index].log = json_log;
 
 	if (json_stack_index > 0)
-		json_object_array_add(json_stack[json_stack_index-1].log, json_obj);
+		if (json_object_array_add(json_stack[json_stack_index-1].log, json_obj) != 0)
+			fwts_log_out_of_memory_json();
 
 	if (json_stack_index < MAX_JSON_STACK)
 		json_stack_index++;

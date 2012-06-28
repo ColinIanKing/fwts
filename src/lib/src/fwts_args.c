@@ -62,7 +62,7 @@ int fwts_args_init(void)
  *	add a table of options and handler for these options
  */
 int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler, fwts_args_optarg_check check)
-{	
+{
 	int n;
 	fwts_options_table *options_table;
 
@@ -118,12 +118,12 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 		for (i=0; i<options_table->num_options; i++, n++) {
 			char *short_name = options_table->options[i].short_name;
 			size_t len;
-			
+
 			long_options[n].name    = options_table->options[i].long_name;
 			long_options[n].has_arg = options_table->options[i].has_arg;
 			long_options[n].flag    = 0;
 			long_options[n].val     = 0;
-	
+
 			if (short_name && (len = strlen(short_name)) > 0) {
 				if (short_options) {
 					short_options = realloc(short_options,
@@ -165,7 +165,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 					if (index(short_name, c) != NULL) {
 						found = true;
 						break;
-					}		
+					}
 				}
 			} else if (options_table->num_options > option_index)
 				found = true;
@@ -187,7 +187,7 @@ int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
 	fwts_list_foreach(item, &options_list) {
 		options_table = fwts_list_data(fwts_options_table *, item);
 		if (options_table->optarg_check != NULL) {
-			ret = options_table->optarg_check(fw); 
+			ret = options_table->optarg_check(fw);
 			if (ret != FWTS_OK)
 				break;
 		}
@@ -224,7 +224,7 @@ void fwts_args_show_option(int width, char *option, char *explanation)
 	fwts_list *text;
 	fwts_list_link *item;
 	int lineno = 0;
-	
+
 	text = fwts_format_text(explanation,
 		width < 0 ? (FWTS_MIN_TTY_WIDTH - FWTS_ARGS_WIDTH-1) : width);
 
@@ -262,7 +262,7 @@ void fwts_args_show_options(void)
 		options_table = fwts_list_data(fwts_options_table *, item);
 
 		for (i=0; i<options_table->num_options; i++) {
-			fwts_list_add_ordered(&sorted_options, 
+			fwts_list_add_ordered(&sorted_options,
 				&options_table->options[i], fwts_args_compare_options);
 		}
 	}
@@ -302,7 +302,7 @@ void fwts_args_show_options(void)
 int fwts_args_free(void)
 {
 	fwts_list_free_items(&options_list, free);
-	
+
 	return FWTS_OK;
 }
 
@@ -319,7 +319,7 @@ char *fwts_args_comma_list(const char *arg)
 	char *retstr = NULL;
 	char *tmparg;
 
-	if ((tmparg = strdup(arg)) == NULL) 
+	if ((tmparg = strdup(arg)) == NULL)
 		return NULL;
 
         for (tmpstr = tmparg; (token = strtok_r(tmpstr, ",", &saveptr)) != NULL; tmpstr = NULL) {
@@ -333,10 +333,10 @@ char *fwts_args_comma_list(const char *arg)
 			free(tmparg);
 			return NULL;
 		}
-        }	
+        }
 
 	free(tmparg);
-	
+
 	/* Any empty list should return an empty string and not NULL */
 	if (retstr == NULL)
 		retstr = calloc(1, 1);

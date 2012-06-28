@@ -82,7 +82,6 @@ static fwts_tag_info fwts_tags[] = {
 	{ 0, NULL, NULL }
 };
 
-
 /*
  *  fwts_tag_id_str_to_tag()
  *	given a tag string, return the tag

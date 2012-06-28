@@ -41,7 +41,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 {
 	int pipefds[2];
 	pid_t pid;
-	
+
 	if (pipe(pipefds) < 0)
 		return -1;
 
@@ -68,7 +68,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		/* Parent */
 		close(pipefds[1]);
 		*childpid = pid;
-	
+
 		return pipefds[0];
 	}
 }
@@ -82,7 +82,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 char *fwts_pipe_read(const int fd, ssize_t *length)
 {
 	char *ptr = NULL;
-	char buffer[8192];	
+	char buffer[8192];
 	ssize_t n;
 	ssize_t size = 0;
 	*length = 0;

@@ -72,7 +72,7 @@ int fwts_acpi_event_open(void)
 char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
 {
 	char *ptr = NULL;
-	char buffer[8192];	
+	char buffer[8192];
 	struct timeval tv;
 	fd_set rfds;
 

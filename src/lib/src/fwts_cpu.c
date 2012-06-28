@@ -68,7 +68,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 		if (stat(buffer, &statbuf))
 			return FWTS_ERROR; /* Really failed */
 	}
-	
+
 	if ((fd = open(buffer, O_RDONLY)) < 0)
                 return FWTS_ERROR;
 
@@ -169,7 +169,7 @@ static int fwts_cpu_matches_vendor_id(const char *vendor_id, bool *matches)
 
 	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_ERROR;
-	
+
         *matches = (strstr(cpu->vendor_id, vendor_id) != NULL);
 
 	fwts_cpu_free_info(cpu);
@@ -199,7 +199,7 @@ fwts_bool fwts_cpu_has_c1e(void)
 
 	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_BOOL_ERROR;
-	
+
         if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {
 		fwts_cpu_free_info(cpu);
 		return FWTS_FALSE;
@@ -243,7 +243,7 @@ int fwts_cpu_enumerate(void)
 
 	if (cpus < 0)
 		return FWTS_ERROR;
-	
+
 	return cpus;
 }
 
@@ -308,7 +308,7 @@ static void fwts_cpu_consume_cycles(void)
 void fwts_cpu_consume_complete(void)
 {
 	fwts_cpu_consume_kill();
-	free(fwts_cpu_pids);	
+	free(fwts_cpu_pids);
 }
 
 /*
@@ -333,7 +333,7 @@ int fwts_cpu_consume_start(void)
 		pid = fork();
 		switch (pid) {
 		case 0: /* Child */
-			fwts_cpu_consume_cycles();	
+			fwts_cpu_consume_cycles();
 			break;
 		case -1:
 			/* Went wrong */

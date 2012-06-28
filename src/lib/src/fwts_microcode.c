@@ -110,7 +110,7 @@ int fwts_update_microcode(fwts_framework *fw, const char *device, const char *fi
 		return FWTS_ERROR;
 	}
 
-	close(fd);	
+	close(fd);
 	free(microcode);
 
 	return FWTS_OK;

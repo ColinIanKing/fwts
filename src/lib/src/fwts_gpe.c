@@ -58,7 +58,7 @@ int fwts_gpe_read(fwts_gpe **gpes)
 
 	if ((dir = opendir(FWTS_GPE_PATH)) == NULL)
 		return FWTS_ERROR;
-	
+
 	while ((entry = readdir(dir)) != NULL) {
 		if ((strncmp(entry->d_name, "gpe", 3) == 0) ||
 		    (strncmp(entry->d_name, "sci",3) == 0)) {
@@ -70,7 +70,7 @@ int fwts_gpe_read(fwts_gpe **gpes)
 
 				if (((*gpes)[n].name  = strdup(entry->d_name)) == NULL)
 					goto error;
-				
+
 				snprintf(path, sizeof(path), "%s/%s", FWTS_GPE_PATH, entry->d_name);
 				if ((data = fwts_get(path)) != NULL) {
 					(*gpes)[n].count = atoi(data);
@@ -99,7 +99,7 @@ error:
  * 	update the result in gpe_delta.
  */
 int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, const int n)
-{	
+{
 	int i;
 	if (((*gpe_delta) = calloc(n, sizeof(int))) == NULL)
 		return FWTS_ERROR;
@@ -162,7 +162,7 @@ void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gp
 		}
 	}
 	free(deltas);
-	
+
 	if (sci == 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "NoSCIInterrupts", "Did not detect any SCI interrupts.");
 

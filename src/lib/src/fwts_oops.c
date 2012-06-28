@@ -54,7 +54,7 @@ void fwts_oops_dump(fwts_framework *fw, fwts_list_link *bug_item, int *oopses)
 			dumpable |= FWTS_OOPS_GOT_STACK;
 		if (strstr(line, "Call Trace:"))
 			dumpable |= FWTS_OOPS_GOT_CALL_TRACE;
-		if (strstr(line, "--[ end trace")) { 
+		if (strstr(line, "--[ end trace")) {
 			dumpable |= FWTS_OOPS_GOT_END_TRACE;
 			break;
 		}
@@ -80,7 +80,7 @@ void fwts_oops_dump(fwts_framework *fw, fwts_list_link *bug_item, int *oopses)
 		fwts_log_info(fw, "Found OOPS (%d):", *oopses);
 
 		while (bug_item != NULL && bug_item != item) {
-			fwts_log_info_verbatum(fw, "  %s", 
+			fwts_log_info_verbatum(fw, "  %s",
 				fwts_klog_remove_timestamp(fwts_list_data(char *, bug_item)));
 			bug_item = bug_item->next;
 		}

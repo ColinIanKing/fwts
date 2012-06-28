@@ -27,7 +27,6 @@
 #include "fwts.h"
 #include "fwts_uefi.h"
 
-
 static inline void fwts_uefi_set_filename(char *filename, const int len, const char *varname)
 {
 	snprintf(filename, len, "/sys/firmware/efi/vars/%s/raw_var", varname);
@@ -42,7 +41,7 @@ void fwts_uefi_str16_to_str(char *dst, const size_t len, const uint16_t *src)
 	size_t i = len;
 
 	while ((*src) && (i > 1)) {
-		*dst++ = *(src++) & 0xff;		
+		*dst++ = *(src++) & 0xff;
 		i--;
 	}
 	*dst = '\0';
@@ -86,7 +85,7 @@ int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var)
 
 	fwts_uefi_set_filename(filename, sizeof(filename), varname);
 
-	if ((fd = open(filename, O_RDONLY)) < 0) 
+	if ((fd = open(filename, O_RDONLY)) < 0)
 		return FWTS_ERROR;
 
 	memset(var, 0, sizeof(fwts_uefi_var));
@@ -115,7 +114,7 @@ int fwts_uefi_set_variable(const char *varname, fwts_uefi_var *var)
 
 	fwts_uefi_set_filename(filename, sizeof(filename), varname);
 
-	if ((fd = open(filename, O_WRONLY)) < 0) 
+	if ((fd = open(filename, O_WRONLY)) < 0)
 		return FWTS_ERROR;
 
 	if ((n = write(fd, var, sizeof(fwts_uefi_var))) != sizeof(fwts_uefi_var))

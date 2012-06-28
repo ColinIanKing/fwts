@@ -59,7 +59,7 @@ void fwts_exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
 			   : "a"(cmd)
 	);
 #endif
-	
+
 	if (cpu != CURRENT_CPU)
 		sched_setaffinity(0, sizeof(oldmask), &oldmask);
 }

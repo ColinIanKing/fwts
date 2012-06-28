@@ -100,7 +100,7 @@ static int fwts_register_memory_map_line(fwts_list *memory_map_list, const uint6
 
 	if ((entry = calloc(1, sizeof(fwts_memory_map_entry))) == NULL)
 		return FWTS_ERROR;
-	
+
 	entry->start_address = start;
 	entry->end_address   = end;
 	entry->type          = type;
@@ -153,7 +153,7 @@ fwts_bool fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t
 	/* when we don't have FWTS_MEMORY_MAP info, assume all is fair */
 	if (memory_map_list == NULL)
 		return FWTS_TRUE;
-	
+
 	/* bios data area is always reserved */
 	if ((memory >= 640 * 1024) && (memory <= 1024*1024))
 		return FWTS_TRUE;
@@ -233,7 +233,7 @@ fwts_list *fwts_memory_map_table_load_from_klog(fwts_framework *fw)
 
 	if ((memory_map_list = fwts_list_new()) == NULL)
 		return NULL;
-	
+
 	fwts_list_iterate(klog, fwts_memory_map_dmesg_info, memory_map_list);
 	fwts_klog_free(klog);
 
@@ -268,7 +268,7 @@ static fwts_memory_map_entry *fwts_memory_map_table_read_entry(const char *which
 	}
 	sscanf(data, "0x%llx", (unsigned long long*)&entry->end_address);
 	free(data);
-	
+
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/type", which);
 	if ((data = fwts_get(path)) == NULL) {
 		free(entry);

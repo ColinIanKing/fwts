@@ -21,7 +21,7 @@
 
 /*
  *  fwts_checksum()
- *	checksum a uint8_t * buffer 
+ *	checksum a uint8_t * buffer
  */
 uint8_t fwts_checksum(const uint8_t *data, const int length)
 {

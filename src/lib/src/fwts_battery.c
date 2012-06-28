@@ -81,7 +81,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 			i++;
 			if (!match)
 				continue;
-	
+
 			snprintf(path, sizeof(path), "%s/%s/uevent", FWTS_SYS_CLASS_POWER_SUPPLY, entry->d_name);
 			if ((fp = fopen(path, "r")) == NULL) {
 				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
@@ -233,7 +233,7 @@ static int fwts_battery_get_name_sys_fs(fwts_framework *fw, DIR *dir, int index,
 			i++;
 			if (!match)
 				continue;
-				
+
 			strcpy(name, entry->d_name);
 			return FWTS_OK;
 		}

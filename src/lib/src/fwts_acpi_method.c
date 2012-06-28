@@ -109,10 +109,8 @@ static acpi_eval_error  errors[] = {
 	{ 0,				0,			NULL,			NULL }
 };
 
-
 static fwts_list *fwts_object_names;
 static bool fwts_method_initialized = false;
-
 
 /*
  *  fwts_method_init()
@@ -149,7 +147,6 @@ int fwts_method_deinit(fwts_framework *fw)
 	return ret;
 }
 
-
 /*
  *  fwts_method_get_names()
  *	return list of method names
@@ -159,8 +156,8 @@ fwts_list *fwts_method_get_names(void)
 	return fwts_object_names;
 }
 
-/*  
- *  fwts_method_exists() 
+/*
+ *  fwts_method_exists()
  *	return first matching name
  */
 char *fwts_method_exists(char *name)

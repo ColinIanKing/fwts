@@ -101,7 +101,7 @@ fwts_list *fwts_format_text(const char *text, const int width)
 		fwts_list_free(list, free);
 		return NULL;
 	}
-	
+
 	linestart = tidied_text;
 
 	while (*textptr) {
@@ -121,7 +121,7 @@ fwts_list *fwts_format_text(const char *text, const int width)
 				}
 				fwts_text_list_append(list, tmp);
 				free(tmp);
-				
+
 				linestart = lastspace + ((isspace(*lastspace)) ? 1 : 0);
 				linelen = textptr - linestart;
 				lastspace = NULL;
@@ -137,6 +137,6 @@ fwts_list *fwts_format_text(const char *text, const int width)
 	fwts_text_list_append(list, tmp);
 	free(tmp);
 	free(tidied_text);
-	
+
 	return list;
 }

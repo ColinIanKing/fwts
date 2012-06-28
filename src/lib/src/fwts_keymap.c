@@ -51,7 +51,7 @@ void fwts_keymap_free(fwts_list *keylist)
  *	in a list of keymap items.
  */
 fwts_list *fwts_keymap_load(const char *machine)
-{	
+{
 	FILE *fp;
 	char buffer[4096];
 	char path[PATH_MAX];
@@ -59,7 +59,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 
 	if ((keymap_list = fwts_list_new()) == NULL)
 		return NULL;
-	
+
 	snprintf(path, sizeof(path), "%s/%s", FWTS_KEYMAP_PATH, machine);
 
 	if ((fp = fopen(path, "r")) == NULL)
@@ -116,7 +116,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 	}
 
 	fclose(fp);
-	
+
 	return keymap_list;
 }
 

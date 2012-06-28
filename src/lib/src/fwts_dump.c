@@ -34,7 +34,6 @@
  *  Utilities for the fwts --dump option
  */
 
-
 /*
  *  dump_data()
  *	dump to path/filename a chunk of data of length len
@@ -106,7 +105,7 @@ static int dump_exec(const char *path, const char *filename, const char *command
 	}
 
 	fwts_pipe_close(fd, pid);
-	
+
 	ret = dump_data(path, filename, data, len);
 
 	free(data);
@@ -132,7 +131,7 @@ static int dump_dmidecode(fwts_framework *fw, const char *path, const char *file
 static int dump_lspci(fwts_framework *fw, const char *path, const char *filename)
 {
 	char command[1024];
-	
+
 	snprintf(command, sizeof(command), "%s -vv -nn", fw->lspci);
 
 	return dump_exec(path, filename, command);
@@ -188,7 +187,7 @@ static int dump_acpi_tables(fwts_framework *fw, const char *path)
 		dump_acpi_table(table, fp);
 	}
 	fclose(fp);
-		
+
 	return FWTS_OK;
 }
 #endif
@@ -228,7 +227,7 @@ static int dump_readme(const char *path)
 	}
 
 	fclose(fp);
-	
+
 	return FWTS_OK;
 }
 
@@ -249,7 +248,7 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 
 	if (access(path, F_OK) != 0)
 		mkdir(path, 0777);
-	
+
 
 	if (dump_readme(path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump README.txt.\n");

@@ -115,6 +115,6 @@ fwts_list *fwts_list_from_text(const char *text)
 
 		fwts_list_append(list, str);
 	}
-	
+
 	return list;
 }

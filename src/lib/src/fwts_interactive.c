@@ -37,7 +37,7 @@ static int fwts_getchar(int *ch)
 
 	*ch = -1;
 
-	if (tcgetattr(fd, &oldterm) < 0) 
+	if (tcgetattr(fd, &oldterm) < 0)
 		return FWTS_ERROR;
 
 	memcpy(&newterm, &oldterm, sizeof(struct termios));
@@ -49,8 +49,8 @@ static int fwts_getchar(int *ch)
 		return FWTS_ERROR;
 
 	*ch = getchar();
-	
-	if (tcsetattr(fd, TCSANOW, &oldterm) < 0) 
+
+	if (tcsetattr(fd, TCSANOW, &oldterm) < 0)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
@@ -83,7 +83,7 @@ int fwts_press_enter(fwts_framework *fw)
 
 	fprintf(stdout, "Press <Enter> to continue");
 	fflush(stdout);
-	
+
 	do {
 		if (fwts_getchar(&ch) == FWTS_ERROR) {
 			fwts_log_error(fw, "fwts_getchar() failed.");
@@ -93,7 +93,7 @@ int fwts_press_enter(fwts_framework *fw)
 
 	fprintf(stdout, "\n");
 	fflush(stdout);
-	
+
 	return FWTS_OK;
 }
 
@@ -111,7 +111,7 @@ int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
 	for (;;) {
 
 		if (fwts_getchar(&ch) == FWTS_ERROR) {
-			fwts_log_error(fw, "fwts_getchar() failed.");	
+			fwts_log_error(fw, "fwts_getchar() failed.");
 			break;
 		}
 		if (index(options, ch) != NULL)

@@ -68,7 +68,7 @@ fwts_list *fwts_klog_read(void)
 
 	if ((buffer = calloc(1, len)) == NULL)
 		return NULL;
-	
+
 	if (klogctl(3, buffer, len) < 0) {
 		free(buffer);
 		return NULL;
@@ -76,7 +76,7 @@ fwts_list *fwts_klog_read(void)
 
 	list = fwts_list_from_text(buffer);
 	free(buffer);
-	
+
 	return list;
 }
 
@@ -131,10 +131,10 @@ int fwts_klog_scan(fwts_framework *fw,
 		if (*newline) {
 			int matched = 0;
 			fwts_list_link *l;
-			fwts_list_foreach(l, klog_reduced) {	
+			fwts_list_foreach(l, klog_reduced) {
 				char *line;
 				klog_reduced_item *reduced = fwts_list_data(klog_reduced_item *, l);
-				
+
 				line = fwts_klog_remove_timestamp(reduced->line);
 				if (strcmp(newline, line) == 0) {
 					reduced->repeated++;
@@ -144,7 +144,7 @@ int fwts_klog_scan(fwts_framework *fw,
 			}
 			if (!matched) {
 				klog_reduced_item *new;
-	
+
 				if ((new = calloc(1, sizeof(klog_reduced_item))) == NULL) {
 					fwts_list_free(klog_reduced, free);
 					return FWTS_ERROR;
@@ -272,7 +272,7 @@ static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
 	else
 		return FWTS_COMPARE_UNKNOWN;
 }
-		
+
 #define JSON_ERROR	((json_object*)-1)
 
 /*
@@ -311,12 +311,12 @@ static int fwts_klog_check(fwts_framework *fw,
 		fwts_log_error(fw, "Cannot load klog data from %s.", json_data_path);
 		return FWTS_ERROR;
 	}
-		
+
 	if ((klog_table = json_object_object_get(klog_objs, table)) == JSON_ERROR) {
 		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
 		goto fail_put;
 	}
-		
+
 	n = json_object_array_length(klog_table);
 
 	/* Last entry is null to indicate end, so alloc n+1 items */
@@ -367,13 +367,13 @@ fail:
 	free(patterns);
 fail_put:
 	json_object_put(klog_objs);
-	
+
 	return ret;
 }
 
 int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress,
 	fwts_list *klog, int *errors)
-{	
+{
 	return fwts_klog_check(fw, "firmware_error_warning_patterns",
 		progress, klog, errors);
 }

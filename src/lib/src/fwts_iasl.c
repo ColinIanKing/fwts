@@ -52,7 +52,7 @@ static int fwts_iasl_dump_aml_to_file(fwts_framework *fw,
 		close(fd);
 		(void)unlink(amlfile);
 		return FWTS_ERROR;
-	}	
+	}
 	close(fd);
 
 	return FWTS_OK;
@@ -166,7 +166,7 @@ int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
  * 	any re-assembly errors into list iasl_errors.
  */
 int fwts_iasl_reassemble(fwts_framework *fw,
-	const uint8_t *data, 
+	const uint8_t *data,
 	const int len,
 	fwts_list **iasl_disassembly,
 	fwts_list **iasl_errors)

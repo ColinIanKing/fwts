@@ -27,7 +27,7 @@
  * We implement a low memory allocator to allow us to allocate
  * memory < 2G limit for the ACPICA table handling.  On 64 bit
  * machines we habe to ensure that cached copies of ACPI tables
- * have addresses that can be addressed by the legacy 32 bit 
+ * have addresses that can be addressed by the legacy 32 bit
  * ACPI table pointers.
  *
  * This implementation is not intended to be a malloc replacement
@@ -68,7 +68,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 
 	if ((fp = fopen("/proc/self/maps", "r")) == NULL)
 		return MAP_FAILED;
-	
+
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		sscanf(buffer, "%p-%p %*s %*x %*s %*u %s",
 			&addr_start, &addr_end, pathname);
@@ -77,7 +77,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		    (last_addr_end < (void*)LIMIT_2GB)) {
 			if ((addr_start - last_addr_end) > requested_size) {
 				void *addr = last_addr_end;
-				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE, 
+				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
 					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 				if (ret != MAP_FAILED)
 					break;	/* Success! */
@@ -115,10 +115,10 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 	fwts_mmap_header *hdr;
 
 	n += sizeof(fwts_mmap_header);
-	
+
 #ifdef MAP_32BIT
 	/* Not portable, only x86 */
-	ret = mmap(NULL, n, PROT_READ | PROT_WRITE, 
+	ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
 #else
 	/* We don't have a native MAP_32BIT, so bodge our own */
@@ -164,7 +164,7 @@ void *fwts_low_realloc(const void *ptr, const size_t size)
 		(ptr - sizeof(fwts_mmap_header));
 
 	/* sanity check */
-	if (hdr->magic != FWTS_ALLOC_MAGIC) 
+	if (hdr->magic != FWTS_ALLOC_MAGIC)
 		return NULL;
 
 	if ((ret = fwts_low_malloc(size)) == NULL)

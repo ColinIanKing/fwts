@@ -28,14 +28,14 @@
  *	values in /sys or /proc
  */
 int fwts_set(const char *text, const char *file)
-{	
+{
 	FILE *fp;
 
 	if ((fp = fopen(file, "w")) == NULL)
 		return FWTS_ERROR;
 
 	fprintf(fp, "%s\n", text);
-	fclose(fp);	
+	fclose(fp);
 
 	return FWTS_OK;
 }

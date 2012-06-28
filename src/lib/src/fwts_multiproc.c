@@ -79,7 +79,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 			continue;
 
 		for (ptr = mem; ptr < (uint8_t*)(mem + size); ptr+=16) {
-			if ((*ptr == '_') && 
+			if ((*ptr == '_') &&
 			    (*(ptr + 1) == 'M') &&
 			    (*(ptr + 2) == 'P') &&
 			    (*(ptr + 3) == '_')) {
@@ -100,7 +100,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 	return FWTS_ERROR;
 }
 
-/* 
+/*
  *  fwts_mp_data_get()
  *	find _MP_ data, map in header and table,
  *	collect up entries into a list
@@ -128,7 +128,7 @@ int fwts_mp_data_get(fwts_mp_data *data)
 	header = (fwts_mp_config_table_header *)mem;
 	fwts_list_init(&data->entries);
 
-	data->size = header->base_table_length + 
+	data->size = header->base_table_length +
 		((header->spec_rev == 1) ? 0 : header->extended_table_length);
 
 	/* Remap with full header and table now we know how big it is */
@@ -185,7 +185,7 @@ int fwts_mp_data_get(fwts_mp_data *data)
 
 /*
  *  fwts_mp_data_free()
- *	free entries and unmap 
+ *	free entries and unmap
  */
 int fwts_mp_data_free(fwts_mp_data *data)
 {

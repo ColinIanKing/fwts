@@ -219,7 +219,6 @@ void fwts_log_print_fields(void)
 	printf("\n");
 }
 
-
 /*
  *  fwts_log_str_to_field()
  *	return log field of a given string, 0 if not matching

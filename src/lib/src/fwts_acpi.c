@@ -39,7 +39,6 @@ char *fwts_acpi_fadt_preferred_pm_profile[] = {
 	"Performance Server",
 };
 
-
 /*
  *  fwts_acpi_table_get_header()
  * 	copy into ACPI table header from raw data

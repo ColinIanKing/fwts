@@ -125,7 +125,7 @@ static void *fwts_acpi_load_table(const off_t addr)
 	void *mem;
 	void *table;
 	int len;
-	
+
 	if ((hdr = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_header))) == FWTS_MAP_FAILED)
 		return NULL;
 
@@ -143,7 +143,7 @@ static void *fwts_acpi_load_table(const off_t addr)
 
 	memcpy(table, mem, len);
 	(void)fwts_munmap(mem, len);
-	
+
 	return table;
 }
 
@@ -317,7 +317,6 @@ static uint32_t fwts_fake_physical_addr(size_t size)
 	return addr;
 }
 
-
 /*
  *  fwts_acpi_load_table_from_acpidump()
  *	Load an ACPI table from the output of acpidump or fwts --dump
@@ -340,8 +339,8 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 	/*
 	 * Parse tablename followed by address, e.g.
-	 *   DSTD @ 0xbfa02344 
-	 *   SSDT4 @ 0xbfa0f230 
+	 *   DSTD @ 0xbfa02344
+	 *   SSDT4 @ 0xbfa0f230
 	 */
 	ptr = strstr(buffer, "@ 0x");
 	if (ptr == NULL)
@@ -360,7 +359,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 	if (sscanf(ptr, "@ 0x%Lx\n", &table_addr) < 1)
 		return NULL; /* Can't parse address */
-	
+
 	*(ptr-1) = '\0';
 	strcpy(name, buffer);
 
@@ -397,7 +396,6 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	return table;
 }
 
-
 /*
  *  fwts_acpi_load_tables_from_acpidump()
  *	Load in all ACPI tables from output of acpidump or fwts --dump
@@ -413,7 +411,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 	}
 
 	while (!feof(fp)) {
-		uint64_t addr;		
+		uint64_t addr;
 		uint8_t *table;
 		size_t length;
 		char name[16];
@@ -436,7 +434,7 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 	uint8_t *ptr = NULL;
 	ssize_t n;
 	size_t size = 0;
-	char buffer[4096];	
+	char buffer[4096];
 
 	*length = 0;
 
@@ -615,7 +613,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	/* No XSDT? go and fake one */
 	if (xsdt == NULL) {
 		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint64_t));
-		if ((xsdt = fwts_low_calloc(1, size)) == NULL) 
+		if ((xsdt = fwts_low_calloc(1, size)) == NULL)
 			return FWTS_ERROR;
 
 		for (i=0,j=0; j<count ;i++)

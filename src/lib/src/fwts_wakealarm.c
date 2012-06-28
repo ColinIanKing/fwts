@@ -41,14 +41,14 @@ int fwts_wakealarm_get_irq_state(void)
 	if ((fp = fopen("/proc/driver/rtc", "r")) == NULL)
 		return FWTS_ERROR;
 
-	while (fscanf(fp, "%s : %s\n", field, value) != EOF) {	
+	while (fscanf(fp, "%s : %s\n", field, value) != EOF) {
 		if (!strcmp(field, "alarm_IRQ")) {
 			fclose(fp);
 			return strcmp(value, "no");
 		}
 	}
 	fclose(fp);
-	
+
 	return FWTS_ERROR;
 }
 

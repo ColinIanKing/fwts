@@ -92,7 +92,7 @@ typedef struct {
 
 static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.",
-	"Some of this work - Copyright (c) 2010 - 2012, Canonical.",	
+	"Some of this work - Copyright (c) 2010 - 2012, Canonical.",
 	NULL
 };
 
@@ -191,14 +191,14 @@ static void fwts_framework_show_tests_brief(fwts_framework *fw)
 			fwts_framework_compare_test_name);
 	}
 
-	fwts_list_foreach(item, &sorted) {		
+	fwts_list_foreach(item, &sorted) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
 		int len = strlen(test->name) + 1;
 		if ((n + len) > width)  {
 			fprintf(stderr, "\n");
 			n = 0;
 		}
-				
+
 		fprintf(stderr, "%s ", test->name);
 		n += len;
 	}
@@ -255,7 +255,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 				need_nl = 1;
 				printf("%s%s:\n", categories[i].title,
 					categories[i].flag & FWTS_UTILS ? "" : " tests");
-	
+
 				fwts_list_foreach(item, &sorted) {
 					test = fwts_list_data(fwts_framework_test *, item);
 					if (full) {
@@ -268,7 +268,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						total += test->ops->total_tests;
 					}
 					else {
-						printf(" %-13.13s %s\n", test->name, 
+						printf(" %-13.13s %s\n", test->name,
 							test->ops->description ? test->ops->description : "");
 					}
 				}
@@ -392,7 +392,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 		fprintf(stdout, "XXX\n");
 		fprintf(stdout, "%d\n", (int)progress);
 		fprintf(stdout, "So far: %s\n\n", buffer);
-		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->description ? 
+		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->description ?
 			fw->current_major_test->ops->description : "");
 		fprintf(stdout, "Running test #%d: %s\n",
 			fw->current_major_test_num,
@@ -462,8 +462,8 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 }
 
 static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test *test)
-{		
-	fwts_framework_minor_test *minor_test;	
+{
+	fwts_framework_minor_test *minor_test;
 	int ret;
 
 	fw->current_major_test = test;
@@ -512,7 +512,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 		goto done;
 	}
 
-	if ((test->ops->init) && 
+	if ((test->ops->init) &&
 	    ((ret = test->ops->init(fw)) != FWTS_OK)) {
 		char *msg = NULL;
 
@@ -535,8 +535,8 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	}
 
 	fwts_log_section_begin(fw->results, "subtests");
-	for (minor_test = test->ops->minor_tests; 
-		*minor_test->test_func != NULL; 
+	for (minor_test = test->ops->minor_tests;
+		*minor_test->test_func != NULL;
 		minor_test++, fw->current_minor_test_num++) {
 
 		fwts_log_section_begin(fw->results, "subtest");
@@ -613,7 +613,7 @@ done:
 
 /*
  *  fwts_framework_tests_run()
- *	
+ *
  */
 static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run)
 {
@@ -636,7 +636,7 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const char *name)
 {
 	fwts_list_link *item;
-	
+
 	fwts_list_foreach(item, &fwts_framework_test_list) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		if (strcmp(name, test->name) == 0)
@@ -667,7 +667,7 @@ void fwts_framework_log(fwts_framework *fw,
 		va_start(ap, fmt);
 		vsnprintf(buffer, sizeof(buffer), fmt, ap);
 		va_end(ap);
-	} else 
+	} else
 		*buffer = '\0';
 
 	if (count)
@@ -737,10 +737,10 @@ static void fwts_framework_syntax(char * const *argv)
 	printf("Usage %s: [OPTION] [TEST]\n", argv[0]);
 
 	fwts_args_show_options();
-	
+
 	/* Tag on copyright info */
 	printf("\n");
-	for (i=0; fwts_copyright[i]; i++) 
+	for (i=0; fwts_copyright[i]; i++)
 		printf("%s\n", fwts_copyright[i]);
 }
 
@@ -774,7 +774,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 		tm.tm_hour, tm.tm_min, tm.tm_sec,
 		buf.sysname, buf.nodename, buf.release, buf.version, buf.machine);
 	fwts_log_nl(fw);
-	
+
 	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		len += strlen(test->name) + 1;
@@ -873,7 +873,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		switch (long_index) {
 		case 0: /* --stdout-summary */
 			fw->flags |= FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY;
-			break;	
+			break;
 		case 1: /* --help */
 			fwts_framework_syntax(argv);
 			return FWTS_COMPLETE;
@@ -892,7 +892,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			return FWTS_COMPLETE;
 		case 6: /* --log-format */
 			fwts_log_set_format(optarg);
-			break;	
+			break;
 		case 7: /* --show-progress */
 			fw->flags = (fw->flags &
 					~(FWTS_FRAMEWORK_FLAGS_QUIET |
@@ -1147,7 +1147,7 @@ int fwts_framework_args(const int argc, char **argv)
 
 	/* Results log */
 	if ((fw->results = fwts_log_open("fwts",
-			fw->results_logname,	
+			fw->results_logname,
 			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a",
 			fw->log_type)) == NULL) {
 		ret = FWTS_ERROR;
@@ -1186,7 +1186,7 @@ int fwts_framework_args(const int argc, char **argv)
 
 	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET)) {
 		char *filenames = fwts_log_get_filenames(fw->results_logname, fw->log_type);
-		
+
 		if (filenames) {
 			printf("Running %d tests, results appended to %s\n",
 				fwts_list_len(&tests_to_run),
@@ -1236,10 +1236,10 @@ tidy_close:
 	fwts_list_free_items(&fwts_framework_test_list, free);
 
 	/* Failed tests flagged an error */
-	if ((fw->total.failed > 0) || (fw->total.warning > 0))	
+	if ((fw->total.failed > 0) || (fw->total.warning > 0))
 		ret = FWTS_ERROR;
 
 	free(fw);
-	
+
 	return ret;
 }

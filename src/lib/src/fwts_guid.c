@@ -28,7 +28,7 @@
  */
 void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len)
 {
-	if (guid_str && guid_str_len > 36) 
+	if (guid_str && guid_str_len > 36)
         	snprintf(guid_str, guid_str_len, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
 			guid[3], guid[2], guid[1], guid[0], guid[5], guid[4], guid[7], guid[6],
 			guid[8], guid[9], guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);

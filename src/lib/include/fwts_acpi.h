@@ -557,6 +557,34 @@ typedef struct {
 	uint8_t		path[0];
 } __attribute__ ((packed)) fwts_acpi_table_dmar_device_scope;
 
+/* SLIC, see "OEM Activation 2.0 for Windows Vista Operating Systems" */
+typedef struct {
+	uint32_t	type;
+	uint32_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_slic_header;
+
+typedef struct {
+	fwts_acpi_table_slic_header header;
+	uint8_t		key_type;
+	uint8_t		version;
+	uint16_t	reserved;
+	uint32_t	algorithm;
+	uint8_t		magic[4];
+	uint32_t	bit_length;
+	uint8_t		modulus[128];
+} __attribute__ ((packed)) fwts_acpi_table_slic_key;
+
+typedef struct {
+	fwts_acpi_table_slic_header header;
+	uint32_t	version;
+	uint8_t		oem_id[6];
+	uint8_t		oem_table_id[8];
+	uint8_t		windows_flag[8];
+	uint32_t	slic_version;
+	uint8_t		reserved[16];
+	uint8_t		signature[128];
+} __attribute__ ((packed)) fwts_acpi_table_slic_marker;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

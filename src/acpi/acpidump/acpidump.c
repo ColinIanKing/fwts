@@ -60,6 +60,9 @@ typedef struct fwts_acpidump_field {
 #define FIELD_UINT(text, type, field)			\
 	FIELD(text, type, field, acpi_dump_uint, 0, 0, NULL, 0, NULL)
 
+#define FIELD_UINTS(text, type, field)			\
+	FIELD(text, type, field, acpi_dump_uints, 0, 0, NULL, 0, NULL)
+
 #define FIELD_STR(text, type, field)			\
 	FIELD(text, type, field, acpi_dump_str, 0, 0, NULL, 0, NULL)
 
@@ -81,7 +84,7 @@ static char *acpi_dump_field_info(char *label, int size, int offset)
 {
 	static char buffer[1024];
 
-	snprintf(buffer, sizeof(buffer), "[0x%3.3x %4.4d %2d] %40.40s:",
+	snprintf(buffer, sizeof(buffer), "[0x%3.3x %4.4d %3d] %40.40s:",
 		offset, offset, size, label);
 
 	return buffer;
@@ -151,6 +154,27 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info(info->label, info->size, info->offset + offset), val8, i);
 		}
 		break;
+	}
+}
+
+static void acpi_dump_uints(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
+{
+	int n;
+	int length = info->size;
+	uint8_t *ptr = (uint8_t *)data;
+
+        for (n = 0; n < length; n += 8) {
+		int i;
+		int j;
+		int todo = length - n > 8 ? 8 : length - n;
+		char buffer[128];
+
+		for (i = 0, j = 0, *buffer = '\0'; i < todo; i++, ptr++)
+                	j += snprintf(buffer + j, sizeof(buffer) - j, "%2.2x ", *ptr);
+
+		fwts_log_info_verbatum(fw, "%s %s",
+		 	acpi_dump_field_info(info->label, info->size, info->offset + offset),
+			buffer);
 	}
 }
 
@@ -1338,6 +1362,69 @@ static void acpidump_dmar(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_slic()
+ *	dump out SLIC
+ */
+static void acpidump_slic(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+	uint8_t *ptr = data;
+
+	static fwts_acpidump_field slic_header_fields[] = {
+		FIELD_UINT("Type", 	fwts_acpi_table_slic_header, type),
+		FIELD_UINT("Length", 	fwts_acpi_table_slic_header, length),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field slic_key_fields[] = {
+		FIELD_UINT("Key Type", 	fwts_acpi_table_slic_key, key_type),
+		FIELD_UINT("Version", 	fwts_acpi_table_slic_key, version),
+		FIELD_UINT("Reserved", 	fwts_acpi_table_slic_key, reserved),
+		FIELD_UINT("Algorithm", fwts_acpi_table_slic_key, algorithm),
+		FIELD_UINT("Magic", 	fwts_acpi_table_slic_key, magic),
+		FIELD_UINT("Bit Length",fwts_acpi_table_slic_key, bit_length),
+		FIELD_UINTS("Modulus", 	fwts_acpi_table_slic_key, modulus),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field slic_marker_fields[] = {
+		FIELD_UINT("Version", 		fwts_acpi_table_slic_marker, version),
+		FIELD_STR("OEM ID", 		fwts_acpi_table_slic_marker, oem_id),
+		FIELD_STR("OEM TABLE ID", 	fwts_acpi_table_slic_marker, oem_table_id),
+		FIELD_UINTS("Windows Flag",	fwts_acpi_table_slic_marker, windows_flag),
+		FIELD_UINT("SLIC Version", 	fwts_acpi_table_slic_marker, slic_version),
+		FIELD_UINTS("Reserved",		fwts_acpi_table_slic_marker, reserved),
+		FIELD_UINTS("Signature", 	fwts_acpi_table_slic_marker, signature),
+		FIELD_END
+	};
+
+	ptr += sizeof(fwts_acpi_table_header);
+
+	while (ptr < data + length) {
+		fwts_log_nl(fw);
+		fwts_acpi_table_slic_header *header =
+			(fwts_acpi_table_slic_header *)ptr;
+
+		switch(header->type) {
+		case 0:
+			__acpi_dump_table_fields(fw, ptr, slic_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, slic_key_fields, ptr - data);
+			break;
+		case 1:
+			__acpi_dump_table_fields(fw, ptr, slic_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, slic_marker_fields, ptr - data);
+			break;
+		default:
+			__acpi_dump_table_fields(fw, ptr, slic_header_fields, ptr - data);
+			break;
+		}
+
+		ptr += header->length;
+	}
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1372,6 +1459,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "SBST", 	acpidump_sbst,  1 },
 	{ "SSDT", 	acpidump_amlcode, 1 },
 	{ "SLIT", 	acpidump_slit,  1 },
+	{ "SLIC", 	acpidump_slic,  1 },
 	{ "SRAT", 	acpidump_srat,  1 },
 	{ "TCPA",	acpidump_tcpa,	1 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },

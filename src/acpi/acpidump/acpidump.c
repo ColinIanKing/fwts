@@ -195,8 +195,6 @@ static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length)
 {
         int n;
 
-	fwts_log_nl(fw);
-
         for (n = 0; n < length; n+=16) {
                 int left = length - n;
 		char buffer[128];
@@ -207,6 +205,7 @@ static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length)
 
 static void acpi_dump_raw_table(fwts_framework *fw, fwts_acpi_table_info *table)
 {
+	fwts_log_nl(fw);
 	acpi_dump_raw_data(fw, (uint8_t *)table->data, table->length);
 }
 
@@ -363,6 +362,7 @@ static void acpidump_bert(fwts_framework *fw, fwts_acpi_table_info *table)
 	};
 
 	acpi_dump_table_fields(fw, data, fields, length, length);
+	fwts_log_nl(fw);
 	acpi_dump_raw_data(fw, bert->generic_error_data, n);
 }
 
@@ -406,6 +406,7 @@ static void acpidump_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, data, fields, 0, length);
 
 	fwts_log_info_verbatum(fw, "EC_ID:");
+	fwts_log_nl(fw);
 	acpi_dump_raw_data(fw, ecdt->ec_id, n);
 }
 
@@ -1040,6 +1041,167 @@ static void acpidump_tcpa(fwts_framework *fw, fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, data, fields, length, length);
 }
 
+/*
+ *  acpidump_asf()
+ *	dump out ASF! descruption table
+ *	see: http://dmtf.org/documents/asf/alert-standard-format-asf-specification-200
+ */
+static void acpidump_asf(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+	uint8_t *ptr;
+
+	ptr = data + sizeof(fwts_acpi_table_header);
+
+	static fwts_acpidump_field asf_info_fields[] = {
+		FIELD_UINT("Watchdog Reset Value", 	fwts_acpi_table_asf_info, watchdog_reset_value),
+		FIELD_UINT("Min Sensor Poll Wait Time", fwts_acpi_table_asf_info, min_sensor_poll_wait_time),
+		FIELD_UINT("System ID",			fwts_acpi_table_asf_info, id),
+		FIELD_UINT("IANA ID",			fwts_acpi_table_asf_info, iana_id),
+		FIELD_UINT("Feature Flags",		fwts_acpi_table_asf_info, flags),
+		FIELD_UINT("Reserved1",			fwts_acpi_table_asf_info, reserved1),
+		FIELD_UINT("Reserved2",			fwts_acpi_table_asf_info, reserved2),
+		FIELD_UINT("Reserved3",			fwts_acpi_table_asf_info, reserved3),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_alrt_fields[] = {
+		FIELD_UINT("Assertion Event Bit Mask", 	fwts_acpi_table_asf_alrt, assertion_mask),
+		FIELD_UINT("De-assertion Event Bit Mask", fwts_acpi_table_asf_alrt, deassertion_mask),
+		FIELD_UINT("Number of Alerts", 		fwts_acpi_table_asf_alrt, number_of_alerts),
+		FIELD_UINT("Array Element Length", 	fwts_acpi_table_asf_alrt, array_length),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_alrt_element_fields[] = {
+		FIELD_UINT("Alert Device Address", 	fwts_acpi_table_asf_alrt_element, device_addr),
+		FIELD_UINT("Alert Command", 		fwts_acpi_table_asf_alrt_element, command),
+		FIELD_UINT("Alert Data Mask", 		fwts_acpi_table_asf_alrt_element, data_mask),
+		FIELD_UINT("Alert Compare Value", 	fwts_acpi_table_asf_alrt_element, compare_value),
+		FIELD_UINT("Alert Event Sensor Type", 	fwts_acpi_table_asf_alrt_element, sensor_type),
+		FIELD_UINT("Alert Event Type", 		fwts_acpi_table_asf_alrt_element, event_type),
+		FIELD_UINT("Alert Event Offset", 	fwts_acpi_table_asf_alrt_element, event_offset),
+		FIELD_UINT("Alert Event Source Type", 	fwts_acpi_table_asf_alrt_element, event_source_type),
+		FIELD_UINT("Alert Event Severity", 	fwts_acpi_table_asf_alrt_element, event_severity),
+		FIELD_UINT("Alert Sensor Number", 	fwts_acpi_table_asf_alrt_element, sensor_number),
+		FIELD_UINT("Alert Entity", 		fwts_acpi_table_asf_alrt_element, entity),
+		FIELD_UINT("Alert Entity Instance", 	fwts_acpi_table_asf_alrt_element, entity_instance),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_rctl_fields[] = {
+		FIELD_UINT("Number of Controls", 	fwts_acpi_table_asf_rctl, number_of_controls),
+		FIELD_UINT("Array Element Length", 	fwts_acpi_table_asf_rctl, array_element_length),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_asf_rctl, reserved),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_rctl_element_fields[] = {
+		FIELD_UINT("Control Function", 		fwts_acpi_table_asf_rctl_element, control_function),
+		FIELD_UINT("Control Device Address", 	fwts_acpi_table_asf_rctl_element, control_device_addr),
+		FIELD_UINT("Control Command", 		fwts_acpi_table_asf_rctl_element, control_command),
+		FIELD_UINT("Control Value", 		fwts_acpi_table_asf_rctl_element, control_value),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_rcmp_fields[] = {
+		FIELD_UINT("Remote Control Capabilities", fwts_acpi_table_asf_rcmp, remote_control_capabilities),
+		FIELD_UINT("RMCP Boot Options Completion Code", fwts_acpi_table_asf_rcmp, rcmp_completion_code),
+		FIELD_UINT("RMCP IANA Enterprise ID", 	fwts_acpi_table_asf_rcmp, rcmp_iana),
+		FIELD_UINT("RMCP Special Command", 	fwts_acpi_table_asf_rcmp, rcmp_special_command),
+		FIELD_UINT("RMCP Special Command Parameter", fwts_acpi_table_asf_rcmp, rcmp_special_command_param),
+		FIELD_UINT("RMCP Boot Options", 	fwts_acpi_table_asf_rcmp, rcmp_boot_options),
+		FIELD_UINT("RMCP OEM Parameters", 	fwts_acpi_table_asf_rcmp, rcmp_oem_parameters),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_header_fields[] = {
+		FIELD_UINT("Type", fwts_acpi_table_asf_header, type),
+		FIELD_UINT("Reserved", fwts_acpi_table_asf_header, reserved),
+		FIELD_UINT("Length", fwts_acpi_table_asf_header, length),
+	};
+
+	static fwts_acpidump_field asf_addr_fields[] = {
+		FIELD_UINT("SEEPROM Address", 		fwts_acpi_table_asf_addr, seeprom_addr),
+		FIELD_UINT("Number of Devices", 	fwts_acpi_table_asf_addr, number_of_devices),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field asf_addr_element_fields[] = {
+		FIELD_UINT("Fixed SMBus Address", 	fwts_acpi_table_asf_addr_element, fixed_smbus_addr),
+		FIELD_END
+	};
+
+	while (ptr < data + length) {
+		fwts_acpi_table_asf_header *hdr = (fwts_acpi_table_asf_header*)ptr;
+		fwts_acpi_table_asf_alrt *alrt;
+		fwts_acpi_table_asf_rctl *rctl;
+		fwts_acpi_table_asf_addr *addr;
+		uint8_t type = hdr->type;
+		uint8_t i;
+		uint8_t *asf_ptr = ptr;
+
+		fwts_log_nl(fw);
+		__acpi_dump_table_fields(fw, asf_ptr, asf_header_fields, asf_ptr - data);
+
+		asf_ptr += sizeof(fwts_acpi_table_asf_header);
+
+		switch (type & 0x7f) {
+		case 0:
+			/* Info fields */
+			__acpi_dump_table_fields(fw, asf_ptr, asf_info_fields, asf_ptr - data);
+			break;
+		case 1:
+			/* Alert fields */
+			alrt = (fwts_acpi_table_asf_alrt *)asf_ptr;
+			__acpi_dump_table_fields(fw, asf_ptr, asf_alrt_fields, asf_ptr - data);
+			asf_ptr += sizeof(fwts_acpi_table_asf_alrt);
+			for (i = 0; i < alrt->number_of_alerts; i++) {
+				fwts_log_nl(fw);
+				fwts_log_info_verbatum(fw, "ASF Alert Data #%d:\n", (int)i);
+				__acpi_dump_table_fields(fw, asf_ptr, asf_alrt_element_fields, asf_ptr - data);
+				asf_ptr += alrt->array_length;
+			}
+			break;
+		case 2:
+			/* remote control system actions */
+			rctl = (fwts_acpi_table_asf_rctl *)asf_ptr;
+			__acpi_dump_table_fields(fw, asf_ptr, asf_rctl_fields, asf_ptr - data);
+			asf_ptr += sizeof(fwts_acpi_table_asf_rctl);
+			for (i = 0; i < rctl->number_of_controls; i++) {
+				fwts_log_nl(fw);
+				fwts_log_info_verbatum(fw, "ASF Control Data #%d:\n", (int)i);
+				__acpi_dump_table_fields(fw, asf_ptr, asf_rctl_element_fields, asf_ptr - data);
+
+				asf_ptr += rctl->array_element_length;
+			}
+			break;
+		case 3:
+			/* remote control capabilties */
+			__acpi_dump_table_fields(fw, asf_ptr, asf_rcmp_fields, asf_ptr - data);
+			break;
+		case 4:
+			/* fixed SMBus addresses */
+			addr = (fwts_acpi_table_asf_addr *)asf_ptr;
+			__acpi_dump_table_fields(fw, asf_ptr, asf_addr_fields, asf_ptr - data);
+			asf_ptr += sizeof(fwts_acpi_table_asf_addr);
+			for (i = 0; i < addr->number_of_devices; i++) {
+				__acpi_dump_table_fields(fw, asf_ptr, asf_addr_element_fields, asf_ptr - data);
+				asf_ptr += sizeof(fwts_acpi_table_asf_addr_element);
+			}
+			break;
+		default:
+			break;	/* Unknown! */
+		}
+
+		ptr += hdr->length;	/* Jump to next header */
+
+		if (type & 0x80)	/* Last record indicator, top bit of type field */
+			break;
+	}
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1053,6 +1215,7 @@ typedef struct {
 
 static acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
+	{ "ASF!", 	acpidump_asf, 	1 },
 	{ "BERT", 	acpidump_bert, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "CPEP", 	acpidump_cpep, 	1 },

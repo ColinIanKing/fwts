@@ -428,6 +428,82 @@ typedef struct {
 	uint64_t	log_zone_addr;
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
 
+/* Following ASF definitions from
+   http://dmtf.org/documents/asf/alert-standard-format-asf-specification-200 */
+typedef struct {
+	uint8_t		type;
+	uint8_t		reserved;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_asf_header;
+
+typedef struct {
+	uint8_t		watchdog_reset_value;
+	uint8_t		min_sensor_poll_wait_time;
+	uint16_t	id;
+	uint32_t	iana_id;
+	uint8_t		flags;
+	uint8_t		reserved1;
+	uint8_t		reserved2;
+	uint8_t		reserved3;
+} __attribute__ ((packed)) fwts_acpi_table_asf_info;
+
+typedef struct {
+	uint8_t		device_addr;
+	uint8_t		command;
+	uint8_t		data_mask;
+	uint8_t		compare_value;
+	uint8_t		sensor_type;
+	uint8_t		event_type;
+	uint8_t		event_offset;
+	uint8_t		event_source_type;
+	uint8_t		event_severity;
+	uint8_t		sensor_number;
+	uint8_t		entity;
+	uint8_t		entity_instance;
+}  __attribute__ ((packed)) fwts_acpi_table_asf_alrt_element;
+
+typedef struct {
+	uint8_t		assertion_mask;
+	uint8_t		deassertion_mask;
+	uint8_t		number_of_alerts;
+	uint8_t		array_length;
+	uint8_t		device_length[0];
+} __attribute__ ((packed)) fwts_acpi_table_asf_alrt;
+
+typedef struct {
+	uint8_t		control_function;
+	uint8_t		control_device_addr;
+	uint8_t		control_command;
+	uint8_t		control_value;
+} __attribute__ ((packed)) fwts_acpi_table_asf_rctl_element;
+
+typedef struct {
+	uint8_t		number_of_controls;
+	uint8_t		array_element_length;
+	uint16_t	reserved;
+	fwts_acpi_table_asf_rctl_element	elements[0];
+} __attribute__ ((packed)) fwts_acpi_table_asf_rctl;
+
+typedef struct {
+	uint8_t		remote_control_capabilities[7];
+	uint8_t		rcmp_completion_code;
+	uint8_t		rcmp_iana[4];
+	uint8_t		rcmp_special_command;
+	uint8_t		rcmp_special_command_param[2];
+	uint8_t		rcmp_boot_options[2];
+	uint8_t		rcmp_oem_parameters[2];
+} __attribute__ ((packed)) fwts_acpi_table_asf_rcmp;
+
+typedef struct {
+	uint8_t		fixed_smbus_addr;
+} __attribute__ ((packed)) fwts_acpi_table_asf_addr_element;
+
+typedef struct {
+	uint8_t		seeprom_addr;
+	uint8_t		number_of_devices;
+	uint8_t		fwts_acpi_table_asf_addr_element[0];
+} __attribute__ ((packed)) fwts_acpi_table_asf_addr;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

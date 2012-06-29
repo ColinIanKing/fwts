@@ -1480,6 +1480,33 @@ static void acpidump_bgrt(fwts_framework *fw, fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, data, bgrt_fields, length, length);
 }
 
+/*
+ *  acpidump_gtdt()
+ *	dump GTDT, see 5.2.24 Generic Timer Description Table (GTDT)
+ *	of version 5.0 ACPI spec.
+ */
+static void acpidump_gtdt(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+
+	static fwts_acpidump_field gtdt_fields[] = {
+		FIELD_UINT("Physical Address", 		fwts_acpi_table_gtdt, phys_addr),
+		FIELD_UINT("Global Flags", 		fwts_acpi_table_gtdt, global_flags),
+		FIELD_UINT("Secure PL1 Timer GSIV", 	fwts_acpi_table_gtdt, secure_PL1_timer_GSIV),
+		FIELD_UINT("Secure PL1 Timer Flags", 	fwts_acpi_table_gtdt, secure_PL1_timer_flags),
+		FIELD_UINT("Non-Secure PL1 Timer GSIV", fwts_acpi_table_gtdt, non_secure_PL1_timer_GSIV),
+		FIELD_UINT("Non-Secure PL1 Timer Flags", fwts_acpi_table_gtdt, non_secure_PL1_timer_flags),
+		FIELD_UINT("Virtual Timer GSIV", 	fwts_acpi_table_gtdt, virtual_timer_GSIV),
+		FIELD_UINT("Virtual Timer flags", 	fwts_acpi_table_gtdt, virtual_timer_flags),
+		FIELD_UINT("Non-Secure PL2 Timer GSIV", fwts_acpi_table_gtdt, non_secure_PL2_timer_GSIV),
+		FIELD_UINT("Non-Secure PL2 Timer Flags", fwts_acpi_table_gtdt, non_secure_PL2_timer_flags),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, gtdt_fields, length, length);
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1505,6 +1532,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "ERST", 	acpidump_erst, 	1 },
 	{ "FACP", 	acpidump_fadt, 	1 },
 	{ "FACS", 	acpidump_facs, 	0 },
+	{ "GTDT", 	acpidump_gtdt, 	1 },
 	{ "HEST", 	acpidump_hest, 	1 },
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },

@@ -601,6 +601,20 @@ typedef struct {
 	uint32_t	image_offset_t;
 } __attribute__ ((packed)) fwts_acpi_table_bgrt;
 
+/* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec */
+typedef struct {
+	uint64_t	phys_addr;
+	uint32_t	global_flags;
+	uint32_t	secure_PL1_timer_GSIV;
+	uint32_t	secure_PL1_timer_flags;
+	uint32_t	non_secure_PL1_timer_GSIV;
+	uint32_t	non_secure_PL1_timer_flags;
+	uint32_t	virtual_timer_GSIV;
+	uint32_t	virtual_timer_flags;
+	uint32_t	non_secure_PL2_timer_GSIV;
+	uint32_t	non_secure_PL2_timer_flags;
+} __attribute__ ((packed)) fwts_acpi_table_gtdt;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

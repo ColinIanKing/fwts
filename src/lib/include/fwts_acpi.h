@@ -419,6 +419,15 @@ typedef struct {
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
+/* From http://www.kuro5hin.org/story/2002/10/27/16622/530,
+   and also http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint16_t	reserved;
+	uint32_t	log_zone_length;
+	uint64_t	log_zone_addr;
+}  __attribute__ ((packed)) fwts_acpi_table_tcpa;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

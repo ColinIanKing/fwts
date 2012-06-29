@@ -1025,6 +1025,20 @@ static void acpidump_srat(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 }
 
+static void acpidump_tcpa(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+
+	fwts_acpidump_field fields[] = {
+		FIELD_UINT("Reserved", 		fwts_acpi_table_tcpa, reserved),
+		FIELD_UINT("Log Zone Length", 	fwts_acpi_table_tcpa, log_zone_length),
+		FIELD_UINT("Log Zone Address", 	fwts_acpi_table_tcpa, log_zone_addr),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, fields, length, length);
+}
 
 typedef struct {
 	char *name;
@@ -1059,6 +1073,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "SSDT", 	acpidump_amlcode, 1 },
 	{ "SLIT", 	acpidump_slit,  1 },
 	{ "SRAT", 	acpidump_srat,  1 },
+	{ "TCPA",	acpidump_tcpa,	1 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },
 	{ NULL,		NULL,		0 },
 };
@@ -1106,7 +1121,6 @@ static int acpidump_test1(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-
 
 static fwts_framework_minor_test acpidump_tests[] = {
 	{ acpidump_test1, "Dump ACPI tables." },

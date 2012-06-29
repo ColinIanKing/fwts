@@ -591,6 +591,16 @@ typedef struct {
 	uint8_t		data[0];
 } __attribute__ ((packed)) fwts_acpi_table_uefi;
 
+/* 5.2.22 Boot Graphics Resource Table (BGRT) ACPI 5.0 Spec */
+typedef struct {
+	uint16_t	version;
+	uint8_t		status;
+	uint8_t		image_type;
+	uint64_t	image_addr;
+	uint32_t	image_offset_x;
+	uint32_t	image_offset_t;
+} __attribute__ ((packed)) fwts_acpi_table_bgrt;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

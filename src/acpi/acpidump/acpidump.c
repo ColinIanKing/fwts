@@ -1457,6 +1457,29 @@ static void acpidump_uefi(fwts_framework *fw, fwts_acpi_table_info *table)
 		sizeof(fwts_acpi_table_uefi));
 }
 
+/*
+ *  acpidump_bgrt()
+ *	dump BGRT, see 5.2.22 Boot Graphics Resource Table (BGRT)
+ *	of version 5.0 ACPI spec.
+ */
+static void acpidump_bgrt(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+
+	static fwts_acpidump_field bgrt_fields[] = {
+		FIELD_UINT("Version", 		fwts_acpi_table_bgrt, version),
+		FIELD_UINT("Status", 		fwts_acpi_table_bgrt, status),
+		FIELD_UINT("Image Type", 	fwts_acpi_table_bgrt, image_type),
+		FIELD_UINT("Image Address", 	fwts_acpi_table_bgrt, image_addr),
+		FIELD_UINT("Image Offset X", 	fwts_acpi_table_bgrt, image_offset_x),
+		FIELD_UINT("Image Offset Y", 	fwts_acpi_table_bgrt, image_offset_t),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, bgrt_fields, length, length);
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1472,6 +1495,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
 	{ "ASF!", 	acpidump_asf, 	1 },
 	{ "BERT", 	acpidump_bert, 	1 },
+	{ "BGRT", 	acpidump_bgrt, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "CPEP", 	acpidump_cpep, 	1 },
 	{ "DSDT", 	acpidump_amlcode, 1 },

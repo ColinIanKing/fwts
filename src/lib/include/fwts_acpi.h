@@ -585,6 +585,12 @@ typedef struct {
 	uint8_t		signature[128];
 } __attribute__ ((packed)) fwts_acpi_table_slic_marker;
 
+typedef struct {
+	fwts_acpi_table_header header;
+	uint8_t		uuid[16];
+	uint8_t		data[0];
+} __attribute__ ((packed)) fwts_acpi_table_uefi;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

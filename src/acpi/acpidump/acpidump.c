@@ -78,6 +78,9 @@ typedef struct fwts_acpidump_field {
 #define FIELD_BITF(text, type, field, nbits, shift)			\
 	FIELD(text, type, field, acpi_dump_uint, nbits, shift, NULL, 0, NULL)
 
+#define FIELD_GUID(text, type, field)			\
+	FIELD(text, type, field, acpi_dump_guid, 0, 0, NULL, 0, NULL)
+
 #define FIELD_END { NULL, 0, 0, NULL, 0, 0, NULL, 0, NULL}
 
 static char *acpi_dump_field_info(char *label, int size, int offset)
@@ -178,6 +181,15 @@ static void acpi_dump_uints(fwts_framework *fw, fwts_acpidump_field *info, void 
 	}
 }
 
+static void acpi_dump_guid(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
+{
+	char guid[37];
+
+	fwts_guid_buf_to_str(data, guid, sizeof(guid));
+	fwts_log_info_verbatum(fw, "%s %s",
+		acpi_dump_field_info(info->label, info->size, info->offset + offset), guid);
+}
+
 static void acpi_dump_strings(fwts_framework *fw, fwts_acpidump_field *info, void *data, int offset)
 {
 	int hexdigits = info->size << 1;
@@ -215,14 +227,14 @@ static void __acpi_dump_table_fields(fwts_framework *fw, uint8_t *data, fwts_acp
 		field->func(fw, field, data + field->offset, offset);
 }
 
-static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length)
+static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length, size_t offset)
 {
         int n;
 
         for (n = 0; n < length; n+=16) {
                 int left = length - n;
 		char buffer[128];
-		fwts_dump_raw_data(buffer, sizeof(buffer), data + n, n, left > 16 ? 16 : left);
+		fwts_dump_raw_data(buffer, sizeof(buffer), data + n, n + offset, left > 16 ? 16 : left);
 		fwts_log_info_verbatum(fw, "%s", buffer);
         }
 }
@@ -230,7 +242,7 @@ static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length)
 static void acpi_dump_raw_table(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_log_nl(fw);
-	acpi_dump_raw_data(fw, (uint8_t *)table->data, table->length);
+	acpi_dump_raw_data(fw, (uint8_t *)table->data, table->length, 0);
 }
 
 static char *acpi_dump_gas_address_space_id(uint64_t index)
@@ -387,7 +399,7 @@ static void acpidump_bert(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	acpi_dump_table_fields(fw, data, fields, length, length);
 	fwts_log_nl(fw);
-	acpi_dump_raw_data(fw, bert->generic_error_data, n);
+	acpi_dump_raw_data(fw, bert->generic_error_data, n, sizeof(fwts_acpi_table_bert));
 }
 
 static void acpidump_cpep(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -431,7 +443,7 @@ static void acpidump_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	fwts_log_info_verbatum(fw, "EC_ID:");
 	fwts_log_nl(fw);
-	acpi_dump_raw_data(fw, ecdt->ec_id, n);
+	acpi_dump_raw_data(fw, ecdt->ec_id, n, sizeof(fwts_acpi_table_ecdt));
 }
 
 static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -1425,6 +1437,26 @@ static void acpidump_slic(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_uefi()
+ *	dump out UEFI tables
+ */
+static void acpidump_uefi(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	fwts_acpi_table_uefi *uefi = (fwts_acpi_table_uefi *)table->data;
+
+	static fwts_acpidump_field uefi_fields[] = {
+		FIELD_GUID("UUID", 	fwts_acpi_table_uefi, uuid),
+		FIELD_END
+	};
+
+	__acpi_dump_table_fields(fw, data, uefi_fields, 0);
+	fwts_log_nl(fw);
+	acpi_dump_raw_data(fw, uefi->data, table->length - sizeof(fwts_acpi_table_uefi),
+		sizeof(fwts_acpi_table_uefi));
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1462,6 +1494,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "SLIC", 	acpidump_slic,  1 },
 	{ "SRAT", 	acpidump_srat,  1 },
 	{ "TCPA",	acpidump_tcpa,	1 },
+	{ "UEFI", 	acpidump_uefi, 	1 },
 	{ "XSDT", 	acpidump_xsdt, 	1 },
 	{ NULL,		NULL,		0 },
 };

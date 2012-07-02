@@ -48,6 +48,7 @@
  * _BST  10.2.2.6	Y
  * _BTP  10.2.2.7	Y
  * _CID  6.1.2		N
+ * _CPC  8.4.5		N
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CST  8.4.2.1	N
@@ -2139,6 +2140,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 8.4 */
 	{ method_test_PSS, "Check _PSS (Performance Supported States)." },
+	/* { method_test_CPC, "Check _CPC (Continuous Performance Control)." }, */
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
 

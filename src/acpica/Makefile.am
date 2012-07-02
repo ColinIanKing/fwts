@@ -41,7 +41,7 @@ BUILT_SOURCES = osunixxf_munged.c dscontrol_munged.c
 
 CLEANFILES = osunixxf_munged.c
 
-lib_LTLIBRARIES = libfwtsacpica.la
+pkglib_LTLIBRARIES = libfwtsacpica.la
 libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0
 libfwtsacpica_la_SOURCES = \
 	fwts_acpica.c \

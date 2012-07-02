@@ -48,7 +48,7 @@ prparserparse.c: prparser.y
 prparserlex.c: prparser.l
 	${LEX} ${AM_LFLAGS} -PPrParser -oprparserlex.c prparser.l
 
-lib_LTLIBRARIES = libfwtsiasl.la
+pkglib_LTLIBRARIES = libfwtsiasl.la
 
 BUILT_SOURCES = aslcompilerparse.c aslcompilerlex.c \
 		dtparserparse.c dtparserlex.c \

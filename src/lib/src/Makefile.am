@@ -4,7 +4,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/compiler \
 	-Wall -Werror
 
-lib_LTLIBRARIES = libfwts.la
+pkglib_LTLIBRARIES = libfwts.la
 libfwts_la_LDFLAGS = -lpcre -lpthread -ljson -version-info 1:0:0 \
 	-L$(top_srcdir)/src/acpica/source/compiler -lfwtsiasl
 

@@ -504,6 +504,59 @@ typedef struct {
 	uint8_t		fwts_acpi_table_asf_addr_element[0];
 } __attribute__ ((packed)) fwts_acpi_table_asf_addr;
 
+/*
+ *  DMAR
+ *  See http://download.intel.com/technology/computing/vptech/Intel(r)_VT_for_Direct_IO.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header header;
+	uint8_t		host_addr_width;
+	uint8_t		flags;
+	uint8_t		reserved[10];
+} __attribute__ ((packed)) fwts_acpi_table_dmar;
+
+typedef struct {
+	uint16_t	type;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_dmar_header;
+
+/* DMA remapping hardware unit definition structure */
+typedef struct {
+	fwts_acpi_table_dmar_header header;
+	uint8_t		flags;
+	uint8_t		reserved;
+	uint16_t	segment_number;
+	uint64_t	register_base_addr;
+	uint8_t		device_scope[0];
+} __attribute__ ((packed)) fwts_acpi_table_dmar_hardware_unit;
+
+/* Reserved Memory Defininition */
+typedef struct {
+	fwts_acpi_table_dmar_header header;
+	uint16_t	reserved;
+	uint16_t	segment;
+	uint64_t	base_address;
+	uint64_t	end_address;
+} __attribute__ ((packed)) fwts_acpi_table_dmar_reserved_memory;
+
+/* Root Port ATS capability reporting structure */
+typedef struct {
+	fwts_acpi_table_dmar_header header;
+	uint8_t		flags;
+	uint8_t		reserved;
+	uint16_t	segment;
+} __attribute__ ((packed)) fwts_acpi_table_dmar_atsr;
+
+/* DMA remapping device scope entries */
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+	uint8_t		reserved[2];
+	uint8_t		enumeration_id;
+	uint8_t		start_bus_number;
+	uint8_t		path[0];
+} __attribute__ ((packed)) fwts_acpi_table_dmar_device_scope;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

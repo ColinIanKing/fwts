@@ -1202,6 +1202,142 @@ static void acpidump_asf(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_dmar_device_scope()
+ *	dump out DMAR device scope
+ */
+static void acpidump_dmar_device_scope(
+	fwts_framework *fw,
+	uint8_t *data,
+	uint8_t *device_scope,
+	size_t device_scope_length)
+{
+	static fwts_acpidump_field dmar_device_scope_fields[] = {
+		FIELD_UINT("Type",			fwts_acpi_table_dmar_device_scope, type),
+		FIELD_UINT("Length",			fwts_acpi_table_dmar_device_scope, length),
+		FIELD_UINT("Reserved",			fwts_acpi_table_dmar_device_scope, reserved),
+		FIELD_UINT("Enumeration ID",		fwts_acpi_table_dmar_device_scope, enumeration_id),
+		FIELD_UINT("Start Bus Number",		fwts_acpi_table_dmar_device_scope, start_bus_number),
+		FIELD_END
+	};
+
+	/* Parse through multiple device scope entries */
+	while (device_scope_length > 0) {
+		int i;
+
+		fwts_acpi_table_dmar_device_scope *device_scope_entry =
+			(fwts_acpi_table_dmar_device_scope *)device_scope;
+		__acpi_dump_table_fields(fw, device_scope, dmar_device_scope_fields, device_scope - data);
+		/*
+		 *  The device scope has a variable length path,
+		 *  so just dump this raw data out for now.
+		 */
+		for (i=0; i < device_scope_entry->length - sizeof(fwts_acpi_table_dmar_device_scope); i++) {
+			uint8_t val8 = device_scope_entry->path[i];
+			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info("Path", 1,
+				(device_scope - data) + sizeof(fwts_acpi_table_dmar_device_scope) + i),
+				val8, i);
+		}
+		device_scope += device_scope_entry->length;
+		device_scope_length -= device_scope_entry->length;
+	}
+}
+
+/*
+ *  acpidump_dmar()
+ *	dump out DMAR
+ *	http://download.intel.com/technology/computing/vptech/Intel(r)_VT_for_Direct_IO.pdf
+ */
+static void acpidump_dmar(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+	uint8_t *ptr = data;
+
+	static fwts_acpidump_field dmar_fields[] = {
+		FIELD_UINT("Host Address Width", 	fwts_acpi_table_dmar, host_addr_width),
+		FIELD_UINT("Flags", 			fwts_acpi_table_dmar, flags),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_dmar, reserved),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field dmar_header_fields[] = {
+		FIELD_UINT("Type",			fwts_acpi_table_dmar_header, type),
+		FIELD_UINT("Length",			fwts_acpi_table_dmar_header, length),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field dmar_hardware_unit_fields[] = {
+		FIELD_UINT("Flags",			fwts_acpi_table_dmar_hardware_unit, flags),
+		FIELD_UINT("Reserved",			fwts_acpi_table_dmar_hardware_unit, reserved),
+		FIELD_UINT("Segment Number",		fwts_acpi_table_dmar_hardware_unit, segment_number),
+		FIELD_UINT("Register Base Address",	fwts_acpi_table_dmar_hardware_unit, register_base_addr),
+		FIELD_UINT("Device Scope",		fwts_acpi_table_dmar_hardware_unit, device_scope),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field dmar_reserved_memory_fields[] = {
+		FIELD_UINT("Reserved",			fwts_acpi_table_dmar_reserved_memory, reserved),
+		FIELD_UINT("Segment",			fwts_acpi_table_dmar_reserved_memory, segment),
+		FIELD_UINT("Base Address",		fwts_acpi_table_dmar_reserved_memory, base_address),
+		FIELD_UINT("End Address",		fwts_acpi_table_dmar_reserved_memory, end_address),
+
+		FIELD_END
+	};
+
+	static fwts_acpidump_field dmar_atsr_fields[] = {
+		FIELD_UINT("Flags",			fwts_acpi_table_dmar_atsr, flags),
+		FIELD_UINT("Reserved",			fwts_acpi_table_dmar_atsr, reserved),
+		FIELD_UINT("Segment",			fwts_acpi_table_dmar_atsr, segment),
+		FIELD_END
+	};
+
+	__acpi_dump_table_fields(fw, ptr, dmar_fields, ptr - data);
+	ptr += sizeof(fwts_acpi_table_dmar);
+
+	while (ptr < data + length) {
+		fwts_acpi_table_dmar_header *header =
+			(fwts_acpi_table_dmar_header *)ptr;
+
+		fwts_log_nl(fw);
+
+		switch (header->type) {
+		case 0:
+			fwts_log_info_verbatum(fw, "Hardware Unit Definition:");
+			__acpi_dump_table_fields(fw, ptr, dmar_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, dmar_hardware_unit_fields, ptr - data);
+
+			acpidump_dmar_device_scope(fw, data,
+				ptr + sizeof(fwts_acpi_table_dmar_hardware_unit),
+				(size_t)header->length - sizeof(fwts_acpi_table_dmar_hardware_unit));
+			break;
+		case 1:
+			fwts_log_info_verbatum(fw, "Reserved Memory Definition:");
+			__acpi_dump_table_fields(fw, ptr, dmar_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, dmar_reserved_memory_fields, ptr - data);
+
+			acpidump_dmar_device_scope(fw, data,
+				ptr + sizeof(fwts_acpi_table_dmar_reserved_memory),
+				(size_t)header->length - sizeof(fwts_acpi_table_dmar_reserved_memory));
+			break;
+		case 2:
+			fwts_log_info_verbatum(fw, "Root Port ATS Capability Reporting Structure:");
+			__acpi_dump_table_fields(fw, ptr, dmar_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, dmar_atsr_fields, ptr - data);
+
+			acpidump_dmar_device_scope(fw, data,
+				ptr + sizeof(fwts_acpi_table_dmar_atsr),
+				(size_t)header->length - sizeof(fwts_acpi_table_dmar_atsr));
+			break;
+		default:
+			/* and anything else */
+			break;
+		}
+
+		ptr += header->length;
+	}
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1220,6 +1356,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "CPEP", 	acpidump_cpep, 	1 },
 	{ "DSDT", 	acpidump_amlcode, 1 },
+	{ "DMAR", 	acpidump_dmar,	1 },
 	{ "ECDT", 	acpidump_ecdt, 	1 },
 	{ "EINJ", 	acpidump_einj, 	1 },
 	{ "ERST", 	acpidump_erst, 	1 },

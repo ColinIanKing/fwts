@@ -92,6 +92,7 @@
  * _PPC  8.4.4.3	N
  * _PR   5.3.1		N
  * _PR0  7.2.7		N
+ * _PRE  7.2.12		Y
  * _PRS  6.2.11		N
  * _PRW  7.2.11		N
  * _PS0  7.2.2		Y
@@ -1754,6 +1755,28 @@ static int method_test_PSE(fwts_framework *fw)
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSE", arg, 1, method_test_NULL_return, NULL);
 }
 
+static void method_test_PRE_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+{
+	int i;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* All elements in the package must be references */
+	for (i=0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PREElementType",
+			"_PRE package element %d was not a reference.", i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+	}
+}
+
+static int method_test_PRE(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PRE", NULL, 0, method_test_PRE_return, NULL);
+}
+
 static int method_test_PSW(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
@@ -2099,6 +2122,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PSE, "Check _PSE (Power State for Enumeration)." },
 	{ method_test_PSW, "Check _PSW (Power State Wake)." },
 	{ method_test_IRC, "Check _IRC (In Rush Current)." },
+	{ method_test_PRE, "Check _PRE (Power Resources for Enumeration)." },
 
 	/* Section 6.3 */
 	{ method_test_EJD, "Check _EJD (Ejection Dependent Device)." },

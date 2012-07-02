@@ -36,65 +36,127 @@
  *
  * Name	 APCI Spec.	Tested
  *	 section
+ * _ACx  11.4.1		Y
  * _ADR  6.1.1, B.6.1,	Y
  * _AEI  5.6.5.2	Y
  * _ALx  11.4.2		N
+ * _ALC  9.2.5		Y
+ * _ALI  9.2.2		Y
+ * _ALP  9.2.6		Y
+ * _ALR  9.2.5		N
+ * _ALT  9.2.3		Y
+ * _ART  11.4.3		N
  * _BBN  6.5.5		Y
  * _BCL  B.6.2 		Y
  * _BCM  B.6.3		Y
+ * _BCT  10.2.29	N
+ * _BDN  6.5.3		N
  * _BFS  7.3.1		Y
  * _BIF  10.2.2.1	Y
  * _BIX  10.2.2.2	Y
+ * _BLT  9.1.3		N
+ * _BMA  10.2.2.4	N
+ * _BMC	 10.2.2.11	N
+ * _BMD  10.2.2.10	N
+ * _BMS  10.2.2.5	N
  * _BQC  B.6.4		Y
  * _BST  10.2.2.6	Y
+ * _BTM  10.2.2.8	N
  * _BTP  10.2.2.7	Y
+ * _CBA  see PCI spec	N
+ * _CDM  6.2.1		N
  * _CID  6.1.2		N
+ * _CLS  6.1.3		N
  * _CPC  8.4.5		N
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
+ * _CSD  8.4.2.2	N
  * _CST  8.4.2.1	N
+ * _CWS  9.18.6		N
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
+ * _DDN  6.1.4		N
+ * _DEP  6.5.8		N
  * _DGS  B.6.7		Y
  * _DIS  6.2.3		Y
+ * _DLM  5.7.5		N
+ * _DMA  6.2.4		N
  * _DOD  B.4.2		Y
  * _DOS  B.4.1		Y
+ * _DSM  9.14.1		N
  * _DSS  B.6.8		Y
  * _DSW  7.2.1		N
  * _Exx  5.6.4.1	n/a
  * _EC   1.12		n/a
+ * _EDL  6.3.1		N
  * _EJD  6.3.2		Y
  * _EJx  6.3.3		Y
+ * _EVT  5.6.5.3	N
+ * _FDE  9.9.1		N
+ * _FDI  9.9.2		N
+ * _FDM  9.9.3		N
+ * _FIF  11.3.1.1	N
+ * _FIX  6.3.3		N
+ * _FPS  11.3.1.2	N
+ * _FSL  11.3.1.3	N
+ * _FST  11.3.1.4	N
+ * _GAI  10.4.5		N
+ * _GCP  9.18.2		N
  * _GHL  10.4.7		N
  * _GL   5.7.1		N
  * _GLK  6.5.7		n/a
  * _GPD  B.4.4		Y
  * _GPE  5.3.1, 12.11	N
+ * _GRT  9.18.3		N
+ * _GSB  6.2.6		N
  * _GTF  9.8.1.1	N
  * _GTM  9.8.2.1.1	N
  * _GTS  7.3.3		Y
+ * _GWS  9.18.5		N
+ * _HID  6.1.5		N
  * _HOT  11.4.6		Y
+ * _HPP  6.2.7		N
+ * _HPX  6.2.8		N
+ * _HRV  6.1.6		N
+ * _IFT  19.5		N
  * _INI  6.5.1		N
  * _IRC  7.2.13		Y
  * _Lxx  5.6.4.1	n/a
  * _LCK  6.3.4		Y
  * _LID  9.4.1		Y
  * _MAT  6.2.9		N
+ * _MBM  9.12.2.1	N
+ * _MLS  6.1.7		N
+ * _MSG  9.1.2		N
+ * _MSM  9.12.2.2	N
+ * _NTT  11.4.7		N
  * _OFF  7.1.2		Y
- * _ON   7.1.3		Y
+ * _ON_  7.1.3		Y
+ * _OS   5.7.3		N
  * _OSC  6.2.10		n/a
  * _OSI  5.7.2		n/a
  * _OST  6.3.5		N
+ * _PAI  10.4.4		N
+ * _PCL  10.3.2		N
  * _PCT  8.4.4.1	N
  * _PDC  8.4.1		N
+ * _PDL  8.4.4.6	N
+ * _PIC  5.8.1		N
+ * _PIF  10.3.3		N
+ * _PLD  6.1.8		N
  * _PMC  10.4.1		N
  * _PMD  10.4.8		N
  * _PMM  10.4.3		N
  * _PPC  8.4.4.3	N
+ * _PPE  8.4.6		N
  * _PR   5.3.1		N
- * _PR0  7.2.7		N
+ * _PR0  7.2.8		N
+ * _PR1	 7.2.9		N
+ * _PR2  7.2.10		N
+ * _PR3  7.2.11		N
  * _PRE  7.2.12		Y
+ * _PRL  10.3.4		N
  * _PRS  6.2.11		N
  * _PRW  7.2.11		N
  * _PS0  7.2.2		Y
@@ -119,34 +181,69 @@
  * _REV  5.7.4		N
  * _RMV  6.3.6		N
  * _ROM  B.4.3		Y
- * _SB   5.3.1		n/a
+ * _RTV  11.4.10	N
+ * _S0_  7.3.4.1	N
+ * _S1_  7.3.4.2	N
+ * _S2_  7.3.4.3	N
+ * _S3_  7.3.4.4	N
+ * _S4_  7.3.4.5	N
+ * _S5_  7.3.4.6	N
+ * _S1D  7.2.16		N
+ * _S2D  7.2.17		N
+ * _S3D  7.2.18		N
+ * _S4D  7.2.19		N
+ * _S0W  7.2.20		N
+ * _S1W  7.2.21		N
+ * _S2W	 7.2.22		N
+ * _S3W  7.2.23		N
+ * _S4W  7.2.24		N
+ * _SB_  5.3.1		n/a
  * _SBS  10.1.3		Y
  * _SCP  11.4.11	Y
  * _SDD  9.8.3.3.1	N
  * _SEG  6.5.6		N
  * _SHL  10.4.5		N
+ * _SLI  6.2.14		N
  * _SPD  B.4.5		Y
  * _SRS  6.2.15		N
+ * _SRT  9.18.4		N
  * _SST  9.1.1		N
  * _STA  6.3.7, 7.1.4	N
  * _STM  9.8.2.1.2	N
+ * _STP  9.18.7		N
+ * _STR  6.1.9		N
+ * _STV  9.18.8		N
+ * _SUB  6.1.9		N
  * _SUN  6.1.8		N
+ * _SWS  7.3.5		N
  * _T_x  18.2.1.1	n/a
  * _TC1  11.4.12	Y
  * _TC2  11.4.13	Y
+ * _TDL  8.4.3.5	N
+ * _TIP  9.18.9		N
+ * _TIV  9.18.10	N
  * _TMP  11.4.14	Y
  * _TPC  8.4.3.3	N
+ * _TPT  11.4.15	N
+ * _TRT  11.4.16	N
  * _TSD  8.4.3.4	N
  * _TSP  11.4.17	Y
  * _TSS  8.4.3.2	N
- * _TZ   5.3.1		N
+ * _TST  11.4.18	N
+ * _TTS  7.3.6		N
+ * _TZ_  5.3.1		N
  * _TZD  11.4.19	N
- * _TZM  11.4.20	N
  * _TZP  11.4.21	Y
+ * _TZM  11.4.20	N
  * _UID  6.1.9		Y
+ * _UPC  9.13		N
+ * _UPD  9.16.1		N
+ * _UPP  9.16.2		N
  * _VPO  B.4.6		Y
  * _WAK  7.3.7 		Y
- * _Wxx  5.6.4.2.2
+ * _Wxx  5.6.4.2.2	N
+ * _WDG  WMI		N
+ * _WED  WMI		N
  */
 
 /* Test types */

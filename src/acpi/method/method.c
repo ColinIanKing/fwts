@@ -37,6 +37,7 @@
  * Name	 APCI Spec.	Tested
  *	 section
  * _ADR  6.1.1, B.6.1,	Y
+ * _AEI  5.6.5.2	Y
  * _ALx  11.4.2		N
  * _BBN  6.5.5		Y
  * _BCL  B.6.2 		Y
@@ -2009,6 +2010,13 @@ static int method_test_PSS(fwts_framework *fw)
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSS", NULL, 0, method_test_PSS_return, NULL);
 }
 
+/* Section 5.6 */
+
+static int method_test_AEI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_AEI", NULL, 0, method_test_buffer_return, NULL);
+}
+
 /* Tests */
 
 static fwts_framework_minor_test method_tests[] = {
@@ -2081,6 +2089,10 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TSP, "Check _TSP (Thermal Sampling Period) Object." },
 	{ method_test_TST, "Check _TST (Temperature Sensor Threshold) Object." },
 	{ method_test_TZP, "Check _TZP (Thermal Zone Polling) Object." },
+
+	/* Section 5.6 */
+
+	{ method_test_AEI, "Check _AEI." },
 
 	/* Section 6.1 */
 

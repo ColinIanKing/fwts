@@ -100,6 +100,7 @@
  * _PS3  7.2.5		Y
  * _PSC  7.2.6		Y
  * _PSD  8.4.4.5	N
+ * _PSE  7.2.7		Y
  * _PSL  11.4.8		N
  * _PSR  10.3.1		Y
  * _PSS  8.4.4.2	Y
@@ -1743,6 +1744,16 @@ static int method_test_PSC(fwts_framework *fw)
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSC", NULL, 0, method_test_integer_return, NULL);
 }
 
+static int method_test_PSE(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;
+
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSE", arg, 1, method_test_NULL_return, NULL);
+}
+
 static int method_test_PSW(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
@@ -2085,6 +2096,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PS2, "Check _PS2 (Power State 2)." },
 	{ method_test_PS3, "Check _PS3 (Power State 3)." },
 	{ method_test_PSC, "Check _PSC (Power State Current)." },
+	{ method_test_PSE, "Check _PSE (Power State for Enumeration)." },
 	{ method_test_PSW, "Check _PSW (Power State Wake)." },
 	{ method_test_IRC, "Check _IRC (In Rush Current)." },
 

@@ -363,7 +363,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 				(sizeof(fwts_acpi_pm_profile_type) / sizeof(fwts_chassis_type_map))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
-					"ACPI FACP reports %x",
+					"ACPI FACP reports 0x%x",
 					fadt->preferred_pm_profile);
 				break;
 			}
@@ -371,7 +371,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
-					"SMBIOS Type 3 reports %x ",
+					"SMBIOS Type 3 reports 0x%x ",
 					data[5]);
 				break;
 			}
@@ -379,8 +379,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 			    fwts_dmi_chassis_type[data[5]].mapped)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Unmatched Chassis Type "
-					"SMBIOS Type 3 reports %x "
-					"ACPI FACP reports %x",
+					"SMBIOS Type 3 reports 0x%x "
+					"ACPI FACP reports 0x%x",
 					data[5],
 					fadt->preferred_pm_profile);
 			}

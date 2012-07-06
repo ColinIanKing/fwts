@@ -162,6 +162,17 @@ static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 	return old;
 }
 
+static void dmi_out_of_range_advice(fwts_framework *fw)
+{
+	fwts_advice(fw,
+		"A value that is out of range is incorrect and not conforming to "
+		"the SMBIOS specification.  It is possible that it "
+		"won't be handled correctly by the operating system or by tools "
+		"like dmidecode. For some fields this out of range setings "
+		"could lead to the operating system to ignore or misunderstand this "
+		"particular SMBIOS configuration.");
+}
+
 static void dmi_min_max_uint8_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -172,12 +183,14 @@ static void dmi_min_max_uint8_check(fwts_framework *fw,
 	uint8_t max)
 {
 	uint8_t val = hdr->data[offset];
-	if ((val < min) || (val > max))
+	if ((val < min) || (val > max)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			DMI_VALUE_OUT_OF_RANGE,
 			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
 			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
 			val, min, max, table, addr, field, offset);
+		dmi_out_of_range_advice(fw);
+	}
 }
 
 static void dmi_min_max_mask_uint8_check(fwts_framework *fw,
@@ -193,11 +206,13 @@ static void dmi_min_max_mask_uint8_check(fwts_framework *fw,
 {
 	uint8_t val = (hdr->data[offset] >> shift) & mask;
 
-	if ((val < min) || (val > max))
+	if ((val < min) || (val > max)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
 			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
 			val, min, max, table, addr, field, offset);
+		dmi_out_of_range_advice(fw);
+	}
 }
 
 static void dmi_str_check_index(fwts_framework *fw,
@@ -226,6 +241,11 @@ static void dmi_str_check_index(fwts_framework *fw,
 				"Out of range string index 0x%2.2x while accessing entry '%s' "
 				"@ 0x%8.8x, field '%s', offset 0x%2.2x",
 				index, table, addr, field, offset);
+			fwts_advice(fw,
+				"DMI strings are stored in a manner that uses a special "
+				"index to fetch the Nth string from the data. For this "
+				"particular DMI string the index given is not in range "
+				"which means this particular entry is broken.");
 			return;
 		}
 
@@ -247,6 +267,13 @@ static void dmi_str_check_index(fwts_framework *fw,
 				"offset 0x%2.2x has a default value '%s' and probably has "
 				"not been updated by the BIOS vendor.",
 				index, table, addr, field, offset, data);
+			fwts_advice(fw,
+				"The DMI table contains data which is clearly been "
+				"left in a default setting and not been configured "
+				"for this machine.  While this is not critical it does "
+				"mean that somebody has probably forgotten to define this "
+				"field and it basically means this field is effectively "
+				"useless.");
 		}
 	}
 }
@@ -281,6 +308,13 @@ static void dmi_uuid_check(fwts_framework *fw,
 				"offset 0x%2.2x has a default value '%s' and probably has "
 				"not been updated by the BIOS vendor.",
 				table, addr, field, offset, guid_str);
+			fwts_advice(fw,
+				"The DMI table contains a UUID which is clearly been "
+				"left in a default setting and not been configured "
+				"for this machine.  While this is not critical it does "
+				"mean that somebody has probably forgotten to define this "
+				"field and it basically means this field is effectively "
+				"useless.");
 		}
 	}
 }
@@ -377,6 +411,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 					"Incorrect Chassis Type "
 					"SMBIOS Type 3 reports 0x%x",
 					data[5]);
+				fwts_advice(fw,
+					"The Chassis Type in the ACPI FADT is out of range "
+					"and hence we cannot identify the preferred power "
+					"management profile for this machine.");
 				break;
 			}
 

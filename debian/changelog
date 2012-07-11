@@ -1,3 +1,40 @@
+fwts (0.25.05) quantal; urgency=low
+
+  [Chris Van Hoof]
+  * live-image/fwts-frontend-text: use mv versus ln as symbolic links are not
+    supported on fat file systems
+
+  [Colin Ian King]
+  * dmi_decode: Add some more advice text
+  * dmi_decode: Only be pedantic if we are sure about the board type
+    (LP: #1021674)
+  * dmi_decode: report chassis types with 0x prefix since they are in hex
+  * lib: tidy up source, remove trailing whitespaces and empty lines
+  * acpi: method: update table of implemented tests
+  * acpi: method: add new _AEI check
+  * acpi: method: Add stub for ACPI 5.0 _CPC
+  * acpi: method: Add new ACPI 5.0 _PRE
+  * acpi: method: Add new ACPI 5.0 _PSE check
+  * acpi: acpidump: Add ACPI 5.0 GTDT support.
+  * acpi: acpidump: Add ACPI 5.0 BGRT support.
+  * lib: fwts_log_json: do more json object out of memory checking
+  * acpi: acpidump: dump out ACPI UEFI tables
+  * acpi: acpidump: Add SLIC table dump
+  * acpi: acpidump: dump out the DMAR table
+  * acpi: acpidump: dump out the ASF! table
+  * acpi: acpidump: Add dump of TCPA
+  * acpi: s4: hibernate/resume failures should be HIGH failures
+  * acpi: s3: suspend/resume failures should be HIGH failures
+  * Add empty m4 directory so autoreconf does not fail
+  * Remove the autotool generated files
+  * lib: fwts_hwinfo: sort device info before comparing (LP: #1018288)
+
+  [Keng-Yu Lin]
+  * Install the libraries in pkglib
+  * debian: Add autoreconf parameters -ivf
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 11 Jul 2012 13:58:43 +0800
+
 fwts (0.25.04) quantal; urgency=low
 
   [Colin Ian King]

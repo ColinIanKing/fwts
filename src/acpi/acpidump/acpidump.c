@@ -657,6 +657,8 @@ static void acpidump_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
 		FIELD_GAS ("X_PM_TMR_BLK", 	fwts_acpi_table_fadt, x_pm_tmr_blk),
 		FIELD_GAS ("X_GPE0_BLK", 	fwts_acpi_table_fadt, x_gpe0_blk),
 		FIELD_GAS ("X_GPE1_BLK", 	fwts_acpi_table_fadt, x_gpe1_blk),
+		FIELD_GAS ("SLEEP_CONTROL_REG", fwts_acpi_table_fadt, sleep_control_reg),
+		FIELD_GAS ("SLEEP_STATUS_REG", 	fwts_acpi_table_fadt, sleep_status_reg),
 		FIELD_END
 	};
 

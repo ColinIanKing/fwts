@@ -215,6 +215,8 @@ typedef struct {
 	fwts_acpi_gas	x_pm_tmr_blk;
 	fwts_acpi_gas	x_gpe0_blk;
 	fwts_acpi_gas	x_gpe1_blk;
+	fwts_acpi_gas	sleep_control_reg;
+	fwts_acpi_gas	sleep_status_reg;
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
 
 typedef struct {

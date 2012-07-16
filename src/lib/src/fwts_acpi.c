@@ -37,6 +37,7 @@ char *fwts_acpi_fadt_preferred_pm_profile[] = {
 	"SOHO Server",
 	"Appliance PC",
 	"Performance Server",
+	"Tablet",
 };
 
 /*

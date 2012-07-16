@@ -29,6 +29,9 @@
 #include <errno.h>
 #include <semaphore.h>
 #include <signal.h>
+#include <pthread.h>
+
+static pthread_mutex_t mutex_lock_count;
 
 #include "fwts.h"
 
@@ -109,10 +112,14 @@ void fwts_acpica_sem_count_clear(void)
 {
 	int i;
 
+	pthread_mutex_lock(&mutex_lock_count);
+
 	for (i=0;i<MAX_SEMAPHORES;i++) {
 		sem_hash_table[i].sem = NULL;
 		sem_hash_table[i].count = 0;
 	}
+
+	pthread_mutex_unlock(&mutex_lock_count);
 }
 
 /*
@@ -171,9 +178,12 @@ static unsigned int hash_sem_handle(sem_t *sem)
 static void hash_sem_inc_count(sem_t *sem)
 {
 	unsigned int i = hash_sem_handle(sem);
+
 	if (i != HASH_FULL) {
+		pthread_mutex_lock(&mutex_lock_count);
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count++;
+		pthread_mutex_unlock(&mutex_lock_count);
 	}
 }
 
@@ -184,9 +194,12 @@ static void hash_sem_inc_count(sem_t *sem)
 static void hash_sem_dec_count(sem_t *sem)
 {
 	unsigned int i = hash_sem_handle(sem);
+
 	if (i != HASH_FULL) {
+		pthread_mutex_lock(&mutex_lock_count);
 		sem_hash_table[i].sem = sem;
 		sem_hash_table[i].count--;
+		pthread_mutex_unlock(&mutex_lock_count);
 	}
 }
 
@@ -788,6 +801,8 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (fwts_acpica_init_called)
 		return FWTS_ERROR;
 
+	pthread_mutex_init(&mutex_lock_count, NULL);
+
 	fwts_acpica_fw = fw;
 
 	AcpiDbgLevel = ACPI_NORMAL_DEFAULT;
@@ -974,6 +989,7 @@ int fwts_acpica_deinit(void)
 		return FWTS_ERROR;
 
 	AcpiTerminate();
+	pthread_mutex_destroy(&mutex_lock_count);
 
 	FWTS_ACPICA_FREE(fwts_acpica_XSDT);
 	FWTS_ACPICA_FREE(fwts_acpica_RSDT);

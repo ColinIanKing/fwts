@@ -10,6 +10,7 @@ src/acpica/source/common:
   adfile.c
   adisasm.c
   adwalk.c
+  ahpredef.c
   dmextern.c
   dmrestag.c
   dmtable.c
@@ -177,6 +178,7 @@ src/acpica/source/components/tables:
   tbutils.c
   tbxface.c
   tbxfroot.c
+  tbxfload.c
 
 src/acpica/source/components/utilities:
   utaddress.c
@@ -187,6 +189,7 @@ src/acpica/source/components/utilities:
   utdecode.c
   utdelete.c
   uteval.c
+  utexcep.c
   utglobal.c
   utids.c
   utinit.c

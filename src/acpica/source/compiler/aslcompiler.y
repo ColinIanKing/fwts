@@ -435,6 +435,7 @@ void *                      AslLocalAllocate (unsigned int Size);
 %token <i> PARSEOP_REGIONSPACE_IO
 %token <i> PARSEOP_REGIONSPACE_IPMI
 %token <i> PARSEOP_REGIONSPACE_MEM
+%token <i> PARSEOP_REGIONSPACE_PCC
 %token <i> PARSEOP_REGIONSPACE_PCI
 %token <i> PARSEOP_REGIONSPACE_PCIBAR
 %token <i> PARSEOP_REGIONSPACE_SMBUS
@@ -2271,7 +2272,7 @@ AddressKeyword
     ;
 
 AddressSpaceKeyword
-    : ByteConst                             {$$ = UtCheckIntegerRange ($1, 0x80, 0xFF);}
+    : ByteConst                             {$$ = UtCheckIntegerRange ($1, 0x0A, 0xFF);}
     | RegionSpaceKeyword                    {}
     ;
 
@@ -2431,6 +2432,7 @@ RegionSpaceKeyword
     | PARSEOP_REGIONSPACE_IPMI              {$$ = TrCreateLeafNode (PARSEOP_REGIONSPACE_IPMI);}
     | PARSEOP_REGIONSPACE_GPIO              {$$ = TrCreateLeafNode (PARSEOP_REGIONSPACE_GPIO);}
     | PARSEOP_REGIONSPACE_GSBUS             {$$ = TrCreateLeafNode (PARSEOP_REGIONSPACE_GSBUS);}
+    | PARSEOP_REGIONSPACE_PCC               {$$ = TrCreateLeafNode (PARSEOP_REGIONSPACE_PCC);}
     | PARSEOP_REGIONSPACE_FFIXEDHW          {$$ = TrCreateLeafNode (PARSEOP_REGIONSPACE_FFIXEDHW);}
     ;
 

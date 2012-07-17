@@ -387,12 +387,16 @@ AePrintException (
         }
         else
         {
+            /*
+             * Less verbose version of the error message, enabled via the
+             * -vi switch. The format is compatible with MS Visual Studio.
+             */
             fprintf (OutputFile, "%s", Enode->Filename);
 
             if (Enode->LineNumber)
             {
-                fprintf (OutputFile, "(%u) i:%6u : ",
-                    Enode->LineNumber, Enode->LineNumber);
+                fprintf (OutputFile, "(%u) : ",
+                    Enode->LineNumber);
             }
         }
     }
@@ -407,9 +411,18 @@ AePrintException (
     {
         /* Decode the message ID */
 
-        fprintf (OutputFile, "%s %4.4d - ",
-                    AslErrorLevel[Enode->Level],
-                    Enode->MessageId + ((Enode->Level+1) * 1000));
+        if (Gbl_VerboseErrors)
+        {
+            fprintf (OutputFile, "%s %4.4d -",
+                        AslErrorLevel[Enode->Level],
+                        Enode->MessageId + ((Enode->Level+1) * 1000));
+        }
+        else /* IDE case */
+        {
+            fprintf (OutputFile, "%s %4.4d:",
+                        AslErrorLevelIde[Enode->Level],
+                        Enode->MessageId + ((Enode->Level+1) * 1000));
+        }
 
         MainMessage = AslMessages[Enode->MessageId];
         ExtraMessage = Enode->Message;

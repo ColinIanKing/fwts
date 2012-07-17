@@ -183,6 +183,7 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_COMMON)/adfile.c \
 	$(ACPICA_COMMON)/adisasm.c \
 	$(ACPICA_COMMON)/adwalk.c \
+	$(ACPICA_COMMON)/ahpredef.c \
 	$(ACPICA_COMMON)/dmextern.c \
 	$(ACPICA_COMMON)/dmrestag.c \
 	$(ACPICA_COMMON)/dmtable.c \

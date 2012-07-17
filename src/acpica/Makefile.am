@@ -176,6 +176,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/tables/tbutils.c \
 	$(ACPICA_COMP)/tables/tbxface.c \
 	$(ACPICA_COMP)/tables/tbxfroot.c \
+	$(ACPICA_COMP)/tables/tbxfload.c \
 	$(ACPICA_COMP)/utilities/utaddress.c \
 	$(ACPICA_COMP)/utilities/utalloc.c \
 	$(ACPICA_COMP)/utilities/utcache.c \
@@ -198,6 +199,7 @@ libfwtsacpica_la_SOURCES = \
 	$(ACPICA_COMP)/utilities/utxferror.c \
 	$(ACPICA_COMP)/utilities/utxface.c \
 	$(ACPICA_COMP)/utilities/utdecode.c \
+	$(ACPICA_COMP)/utilities/utexcep.c \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

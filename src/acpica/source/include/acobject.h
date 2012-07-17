@@ -166,7 +166,7 @@
 
 #define AOPOBJ_AML_CONSTANT         0x01    /* Integer is an AML constant */
 #define AOPOBJ_STATIC_POINTER       0x02    /* Data is part of an ACPI table, don't delete */
-#define AOPOBJ_DATA_VALID           0x04    /* Object is intialized and data is valid */
+#define AOPOBJ_DATA_VALID           0x04    /* Object is initialized and data is valid */
 #define AOPOBJ_OBJECT_INITIALIZED   0x08    /* Region is initialized, _REG was run */
 #define AOPOBJ_SETUP_COMPLETE       0x10    /* Region setup is complete */
 #define AOPOBJ_INVALID              0x20    /* Host OS won't allow a Region address */
@@ -195,8 +195,8 @@ typedef struct acpi_object_integer
 
 
 /*
- * Note: The String and Buffer object must be identical through the Pointer
- * and length elements.  There is code that depends on this.
+ * Note: The String and Buffer object must be identical through the
+ * pointer and length elements. There is code that depends on this.
  *
  * Fields common to both Strings and Buffers
  */
@@ -318,8 +318,7 @@ typedef struct acpi_object_method
  * Common fields for objects that support ASL notifications
  */
 #define ACPI_COMMON_NOTIFY_INFO \
-    union acpi_operand_object       *SystemNotify;      /* Handler for system notifies */\
-    union acpi_operand_object       *DeviceNotify;      /* Handler for driver notifies */\
+    union acpi_operand_object       *NotifyList[2];     /* Handlers for system/device notifies */\
     union acpi_operand_object       *Handler;           /* Handler for Address space */
 
 
@@ -461,8 +460,10 @@ typedef struct acpi_object_notify_handler
 {
     ACPI_OBJECT_COMMON_HEADER
     ACPI_NAMESPACE_NODE             *Node;              /* Parent device */
-    ACPI_NOTIFY_HANDLER             Handler;
+    UINT32                          HandlerType;        /* Type: Device/System/Both */
+    ACPI_NOTIFY_HANDLER             Handler;            /* Handler address */
     void                            *Context;
+    union acpi_operand_object       *Next[2];           /* Device and System handler lists */
 
 } ACPI_OBJECT_NOTIFY_HANDLER;
 
@@ -476,7 +477,7 @@ typedef struct acpi_object_addr_handler
     ACPI_NAMESPACE_NODE             *Node;              /* Parent device */
     void                            *Context;
     ACPI_ADR_SPACE_SETUP            Setup;
-    union acpi_operand_object       *RegionList;        /* regions using this handler */
+    union acpi_operand_object       *RegionList;        /* Regions using this handler */
     union acpi_operand_object       *Next;
 
 } ACPI_OBJECT_ADDR_HANDLER;

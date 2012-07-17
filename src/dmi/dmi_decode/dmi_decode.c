@@ -78,6 +78,11 @@ typedef struct {
 	uint8_t   mapped;
 } fwts_chassis_type_map;
 
+typedef struct {
+	uint8_t	type;
+	uint8_t	offset;
+} fwts_dmi_used_by_kernel;
+
 static const fwts_dmi_pattern dmi_patterns[] = {
 	{ "DMISerialNumber",	"Serial Number", 	"0123456789" },
 	{ "DMIAssetTag",	"Asset Tag",		"1234567890" },
@@ -143,6 +148,62 @@ static const fwts_dmi_version dmi_versions[] = {
 	{ 0, 0 }
 };
 
+#define FIELD_ANY	0xff
+#define TYPE_EOD	0xff
+
+/*
+ *  DMI decoded fields used by the kernel, i.e. fields
+ *  we care that work,
+ *	see drivers/firmware/dmi_scan.c, dmi_decode()
+ */
+static fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
+	/* Type 0 BIOS Information fields */
+	{ 0, 4 },
+	{ 0, 5 },
+	{ 0, 8 },
+	/* Type 1, System Information */
+	{ 1, 4 },
+	{ 1, 5 },
+	{ 1, 6 },
+	{ 1, 7 },
+	{ 1, 8 },
+	/* Type 2, Base Board Information */
+	{ 2, 4 },
+	{ 2, 5 },
+	{ 2, 6 },
+	{ 2, 7 },
+	{ 2, 8 },
+	/* Type 3, Chassis Information */
+	{ 3, 4 },
+	{ 3, 5 },
+	{ 3, 6 },
+	{ 3, 7 },
+	{ 3, 8 },
+	/* Type 10, Onboard Devices Information */
+	{ 10, FIELD_ANY },
+	/* Type 11, OEM Strings */
+	{ 11, FIELD_ANY },
+	/* Type 38, IPMI Device Information */
+	{ 38, FIELD_ANY },
+	/* Type 41, Onboard Devices Extended Information */
+	{ 41, FIELD_ANY },
+	/* End */
+	{ TYPE_EOD, 0xff },
+};
+
+static bool dmi_used_by_kernel(uint8_t type, uint8_t offset)
+{
+	int i;
+
+	for (i = 0; dmi_used_by_kernel_table[i].type != TYPE_EOD; i++) {
+		if (dmi_used_by_kernel_table[i].type == type)
+			if ((dmi_used_by_kernel_table[i].offset == FIELD_ANY) ||
+			    (dmi_used_by_kernel_table[i].offset == offset))
+				return true;
+	}
+	return false;
+}
+
 static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 {
 	int i;
@@ -162,15 +223,21 @@ static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 	return old;
 }
 
-static void dmi_out_of_range_advice(fwts_framework *fw)
+static void dmi_out_of_range_advice(fwts_framework *fw, uint8_t type, uint8_t offset)
 {
-	fwts_advice(fw,
-		"A value that is out of range is incorrect and not conforming to "
-		"the SMBIOS specification.  It is possible that it "
-		"won't be handled correctly by the operating system or by tools "
-		"like dmidecode. For some fields this out of range setings "
-		"could lead to the operating system to ignore or misunderstand this "
-		"particular SMBIOS configuration.");
+	if (dmi_used_by_kernel(type, offset))
+		fwts_advice(fw,
+			"A value that is out of range is incorrect and not conforming to "
+			"the SMBIOS specification.  The Linux kernel extracts and uses "
+			"this particular data item, so it is recommended that this SMBIOS "
+			"configuration is corrected even if the impact on the system "
+			"is most probably not critical.");
+	else
+		fwts_advice(fw,
+			"A value that is out of range is incorrect and not conforming to "
+			"the SMBIOS specification.  This field is not currently used by "
+			"the Linux kernel, so this firmware bug shouldn't cause any "
+			"problems.");
 }
 
 static void dmi_min_max_uint8_check(fwts_framework *fw,
@@ -189,7 +256,7 @@ static void dmi_min_max_uint8_check(fwts_framework *fw,
 			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
 			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
 			val, min, max, table, addr, field, offset);
-		dmi_out_of_range_advice(fw);
+		dmi_out_of_range_advice(fw, hdr->type, offset);
 	}
 }
 
@@ -211,7 +278,7 @@ static void dmi_min_max_mask_uint8_check(fwts_framework *fw,
 			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
 			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
 			val, min, max, table, addr, field, offset);
-		dmi_out_of_range_advice(fw);
+		dmi_out_of_range_advice(fw, hdr->type, offset);
 	}
 }
 
@@ -237,15 +304,29 @@ static void dmi_str_check_index(fwts_framework *fw,
 		}
 		/* Sanity checks */
 		if (*data == '\0') {
+			/* This entry is clearly broken so flag it as a corrupt entry */
 			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_STRING_INDEX_OUT_OF_RANGE,
 				"Out of range string index 0x%2.2x while accessing entry '%s' "
 				"@ 0x%8.8x, field '%s', offset 0x%2.2x",
 				index, table, addr, field, offset);
-			fwts_advice(fw,
-				"DMI strings are stored in a manner that uses a special "
-				"index to fetch the Nth string from the data. For this "
-				"particular DMI string the index given is not in range "
-				"which means this particular entry is broken.");
+			if (dmi_used_by_kernel(hdr->type, offset))
+				fwts_advice(fw,
+					"DMI strings are stored in a manner that uses a special "
+					"index to fetch the Nth string from the data. For this "
+					"particular DMI string the index given is not in range "
+					"which means this particular entry is broken. The Linux "
+					"kernel uses this string - hence this string should be "
+					"fixed to ensure sane data is passed to the kernel. "
+					"Note that this probably won't cause any critical system "
+					"errors.");
+			else
+				fwts_advice(fw,
+					"DMI strings are stored in a manner that uses a special "
+					"index to fetch the Nth string from the data. For this "
+					"particular DMI string the index given is not in range "
+					"which means this particular entry is broken. The Linux "
+					"kernel does not use this string, so this error will not "
+					"cause any system errors.");
 			return;
 		}
 
@@ -262,18 +343,37 @@ static void dmi_str_check_index(fwts_framework *fw,
 			}
 		}
 		if (failed != -1) {
-			fwts_failed(fw, LOG_LEVEL_LOW, dmi_patterns[j].label,
-				"String index 0x%2.2x in table entry '%s' @ 0x%8.8x, field '%s', "
-				"offset 0x%2.2x has a default value '%s' and probably has "
-				"not been updated by the BIOS vendor.",
-				index, table, addr, field, offset, data);
-			fwts_advice(fw,
-				"The DMI table contains data which is clearly been "
-				"left in a default setting and not been configured "
-				"for this machine.  While this is not critical it does "
-				"mean that somebody has probably forgotten to define this "
-				"field and it basically means this field is effectively "
-				"useless.");
+			if (dmi_used_by_kernel(hdr->type, offset)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, dmi_patterns[j].label,
+					"String index 0x%2.2x in table entry '%s' @ 0x%8.8x, field '%s', "
+					"offset 0x%2.2x has a default value '%s' and probably has "
+					"not been updated by the BIOS vendor.",
+					index, table, addr, field, offset, data);
+				fwts_advice(fw,
+					"The DMI table contains data which is clearly been "
+					"left in a default setting and not been configured "
+					"for this machine. "
+					"Somebody has probably forgotten to define this "
+					"field and it basically means this field is effectively "
+					"useless. Note that the kernel uses this field so "
+					"it probably should be corrected to ensure the kernel "
+					"is using sane values.");
+			} else {
+				/* This string is broken, but we don't care about it too much */
+				fwts_failed(fw, LOG_LEVEL_LOW, dmi_patterns[j].label,
+					"String index 0x%2.2x in table entry '%s' @ 0x%8.8x, field '%s', "
+					"offset 0x%2.2x has a default value '%s' and probably has "
+					"not been updated by the BIOS vendor.",
+					index, table, addr, field, offset, data);
+				fwts_advice(fw,
+					"The DMI table contains data which is clearly been "
+					"left in a default setting and not been configured "
+					"for this machine. "
+					"Somebody has probably forgotten to define this "
+					"field and it basically means this field is effectively "
+					"useless, however the kernel does not use this data "
+					"so the issue is fairly low.");
+			}
 		}
 	}
 }

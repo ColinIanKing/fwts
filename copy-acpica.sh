@@ -182,6 +182,7 @@ files="include/acpi.h \
        components/tables/tbutils.c \
        components/tables/tbxface.c \
        components/tables/tbxfroot.c \
+       components/tables/tbxfload.c \
        components/utilities/utaddress.c \
        components/utilities/utalloc.c \
        components/utilities/utcache.c \
@@ -204,6 +205,7 @@ files="include/acpi.h \
        components/utilities/utxferror.c \
        components/utilities/utxface.c \
        components/utilities/utdecode.c \
+       components/utilities/utexcep.c \
        tools/acpiexec/aehandlers.c \
        tools/acpiexec/aecommon.h \
        compiler/aslanalyze.c \
@@ -269,6 +271,7 @@ files="include/acpi.h \
        common/adfile.c \
        common/adisasm.c \
        common/adwalk.c \
+       common/ahpredef.c \
        common/dmextern.c \
        common/dmrestag.c \
        common/dmtable.c \

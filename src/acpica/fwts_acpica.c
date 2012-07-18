@@ -32,6 +32,7 @@
 #include <pthread.h>
 
 static pthread_mutex_t mutex_lock_count;
+static pthread_mutex_t mutex_thread_info;
 
 #include "fwts.h"
 
@@ -54,10 +55,14 @@ static pthread_mutex_t mutex_lock_count;
 #define MAX_SEMAPHORES		(1009)
 #define HASH_FULL		(0xffffffff)
 
+#define MAX_THREADS		(128)
+
 typedef struct {
 	sem_t		*sem;	/* Semaphore handle */
 	int		count;	/* count > 0 if acquired */
 } sem_hash;
+
+typedef void * (*PTHREAD_CALLBACK)(void *);
 
 BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
@@ -68,6 +73,16 @@ UINT8   AcpiGbl_RegionFillValue = 0;
 static sem_hash			sem_hash_table[MAX_SEMAPHORES];
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];
+
+/*
+ *  Used to account for threads used by AcpiOsExecute
+ */
+typedef struct {
+	bool		used;	/* true if the thread accounting info in use by a thread */
+	pthread_t	thread;	/* thread info */
+} fwts_thread;
+
+static fwts_thread	threads[MAX_THREADS];
 
 /*
  *  Static copies of ACPI tables used by ACPICA execution engine
@@ -133,6 +148,27 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 	*acquired = 0;
 	*released = 0;
 
+	/* Wait for any pending threads to complete */
+
+	for (i = 0; i < MAX_THREADS; i++) {
+		pthread_mutex_lock(&mutex_thread_info);
+		if (threads[i].used) {
+			pthread_mutex_unlock(&mutex_thread_info);
+
+			/* Wait for thread to complete */
+			pthread_join(threads[i].thread, NULL);
+
+			pthread_mutex_lock(&mutex_thread_info);
+			threads[i].used = false;
+			pthread_mutex_unlock(&mutex_thread_info);
+		}
+		pthread_mutex_unlock(&mutex_thread_info);
+	}
+
+	/*
+	 * All threads (such as Notify() calls now complete, so
+	 * we can now do the semaphore accounting calculations
+	 */
 	for (i=0;i<MAX_SEMAPHORES;i++) {
 		if (sem_hash_table[i].sem != NULL) {
 			(*acquired)++;
@@ -624,6 +660,74 @@ ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 	return AE_OK;
 }
 
+typedef struct {
+	PTHREAD_CALLBACK	func;
+	void *			context;
+	int			thread_index;
+} fwts_func_wrapper_context;
+
+/*
+ *  fwts_pthread_func_wrapper()
+ *	wrap the AcpiOsExecute function so we can mark the thread
+ *	accounting free once the function has completed.
+ */
+void *fwts_pthread_func_wrapper(fwts_func_wrapper_context *ctx)
+{
+	void *ret;
+
+	ret = ctx->func(ctx->context);
+
+	pthread_mutex_lock(&mutex_thread_info);
+	threads[ctx->thread_index].used = false;
+	pthread_mutex_unlock(&mutex_thread_info);
+
+	free(ctx);
+
+	return ret;
+}
+
+ACPI_STATUS AcpiOsExecute(
+	ACPI_EXECUTE_TYPE       type,
+	ACPI_OSD_EXEC_CALLBACK  function,
+	void                    *func_context)
+{
+	int	ret;
+	int 	i;
+
+	pthread_mutex_lock(&mutex_thread_info);
+
+	/* Find a free slot to do per-thread join tracking */
+	for (i = 0; i < MAX_THREADS; i++) {
+		if (!threads[i].used) {
+			fwts_func_wrapper_context *ctx;
+
+			/* We need some context to pass through to the thread wrapper */
+			if ((ctx = malloc(sizeof(fwts_func_wrapper_context))) == NULL) {
+				pthread_mutex_unlock(&mutex_thread_info);
+				return AE_NO_MEMORY;
+			}
+
+			ctx->func = (PTHREAD_CALLBACK)function;
+			ctx->context = func_context;
+			ctx->thread_index = i;
+			threads[i].used = true;
+
+			ret = pthread_create(&threads[i].thread, NULL,
+				(PTHREAD_CALLBACK)fwts_pthread_func_wrapper, ctx);
+			pthread_mutex_unlock(&mutex_thread_info);
+
+			if (ret)
+				return AE_ERROR;
+
+			return AE_OK;
+		}
+	}
+
+	/* No free slots, failed! */
+	pthread_mutex_unlock(&mutex_thread_info);
+	return AE_NO_MEMORY;
+}
+
 /*
  *  AcpiOsReadPciConfiguration()
  *	Override ACPICA AcpiOsReadPciConfiguration to fake PCI reads
@@ -802,6 +906,7 @@ int fwts_acpica_init(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	pthread_mutex_init(&mutex_lock_count, NULL);
+	pthread_mutex_init(&mutex_thread_info, NULL);
 
 	fwts_acpica_fw = fw;
 
@@ -990,6 +1095,7 @@ int fwts_acpica_deinit(void)
 
 	AcpiTerminate();
 	pthread_mutex_destroy(&mutex_lock_count);
+	pthread_mutex_destroy(&mutex_thread_info);
 
 	FWTS_ACPICA_FREE(fwts_acpica_XSDT);
 	FWTS_ACPICA_FREE(fwts_acpica_RSDT);

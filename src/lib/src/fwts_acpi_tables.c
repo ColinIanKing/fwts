@@ -503,9 +503,24 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 						name[4] = '\0';
 					}
 
-					fwts_acpi_add_table(name, table,
-						(uint64_t)fwts_fake_physical_addr(length), length,
-						FWTS_ACPI_TABLE_FROM_FILE);
+					if (!strncmp(name, "XSDT", 4) || !strncmp(name, "RSDT", 4)) {
+						/*
+						 * For XSDT and RSDT we don't bother loading at this point.
+						 * These tables point to the other tables, however, we can't
+						 * figure out which table each pointer references because
+						 * we are loading in raw table data and we don't know where
+						 * these were located in the original machine.  So the best
+						 * way forward is to ignore these tables and instead leave
+						 * the fix up stage fwts_acpi_load_tables_fixup() to magically
+						 * create faked XSDT and RSDT entries based on the tables
+						 * we've loaded from file.
+						 */
+						fwts_low_free(table);
+					} else {
+						fwts_acpi_add_table(name, table,
+							(uint64_t)fwts_fake_physical_addr(length), length,
+							FWTS_ACPI_TABLE_FROM_FILE);
+					}
 				}
 				close(fd);
 			} else

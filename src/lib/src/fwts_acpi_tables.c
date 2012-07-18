@@ -484,14 +484,29 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 			if ((fd = open(path, O_RDONLY)) >= 0) {
 				uint8_t *table;
 				size_t length;
-				char name[PATH_MAX];
 
-				strcpy(name, dir_entries[i]->d_name);
-				name[strlen(name)-4] = '\0';
-				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL)
+				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL) {
+					char name[9];	/* "RSD PTR " or standard ACPI 4 letter name */
+
+					fwts_acpi_table_rsdp *rsdp  = (fwts_acpi_table_rsdp *)table;
+
+					/* Could be RSDP or a standard ACPI table, so check */
+
+					if (!strncmp(rsdp->signature, "RSD PTR ", 8)) {
+						/* In fwts, RSD PTR is tagged as the RSDP */
+						strcpy(name, "RSDP");
+					} else {
+						/* Assume it is a standard ACPI table */
+						fwts_acpi_table_header *hdr = (fwts_acpi_table_header *)table;
+
+						strncpy(name, hdr->signature, 4);
+						name[4] = '\0';
+					}
+
 					fwts_acpi_add_table(name, table,
 						(uint64_t)fwts_fake_physical_addr(length), length,
 						FWTS_ACPI_TABLE_FROM_FILE);
+				}
 				close(fd);
 			} else
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);

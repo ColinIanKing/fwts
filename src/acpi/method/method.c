@@ -1438,7 +1438,7 @@ static int method_test_ALP(fwts_framework *fw)
 
 static int method_test_BBN(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_MOBILE, "_BBN", NULL, 0, method_test_integer_return, "_BBN");
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN", NULL, 0, method_test_integer_return, "_BBN");
 }
 
 static int method_test_BDN(fwts_framework *fw)

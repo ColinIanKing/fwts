@@ -294,7 +294,7 @@ static void acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *d
 		"Unknown",
 	};
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_STRF("  addr_space_id", 	fwts_acpi_gas, address_space_id, acpi_dump_gas_address_space_id),
 		FIELD_UINT("  reg_bit_width", 	fwts_acpi_gas, register_bit_width),
 		FIELD_UINT("  reg_bit_offset",	fwts_acpi_gas, register_bit_offset),
@@ -313,7 +313,7 @@ static void acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *d
 
 static void acpidump_hdr(fwts_framework *fw, fwts_acpi_table_header *hdr, int length)
 {
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_STR ("Signature", 	fwts_acpi_table_header, signature),
 		FIELD_UINT("Length", 		fwts_acpi_table_header, length),
 		FIELD_UINT("Revision", 		fwts_acpi_table_header, revision),
@@ -386,7 +386,7 @@ static void acpidump_bert(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	int n = length - sizeof(fwts_acpi_table_bert);
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Region Length", 	fwts_acpi_table_bert, boot_error_region_length),
 		FIELD_UINT("Region Addr", 	fwts_acpi_table_bert, boot_error_region),
 		FIELD_UINT("Boot Status", 	fwts_acpi_table_bert, boot_status),
@@ -430,8 +430,7 @@ static void acpidump_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)data;
 	int n = length - sizeof(fwts_acpi_table_ecdt);
 
-
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_GAS ("EC_CONTROL",fwts_acpi_table_ecdt,   ec_control),
 		FIELD_GAS ("EC_DATA", 	fwts_acpi_table_ecdt,   ec_data),
 		FIELD_UINT("UID", 	fwts_acpi_table_ecdt,	uid),
@@ -502,7 +501,7 @@ static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	fwts_acpi_table_erst *erst = (fwts_acpi_table_erst*)data;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Serialization Hdr. Size", fwts_acpi_table_erst, serialization_header_size),
 		FIELD_UINT("Insrtuction Entry Count", fwts_acpi_table_erst, instruction_entry_count),
 		FIELD_END
@@ -536,7 +535,7 @@ static void acpidump_facs(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_STR ("Signature", 	fwts_acpi_table_facs, 	signature),
 		FIELD_UINT("Length", 		fwts_acpi_table_facs,	length),
 		FIELD_UINT("H/W Signature", 	fwts_acpi_table_facs,	hardware_signature),
@@ -557,7 +556,7 @@ static void acpidump_hpet(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Event Timer ID", 	fwts_acpi_table_hpet, event_timer_block_id),
 		FIELD_BITF("  Hardware Rev", 	fwts_acpi_table_hpet, event_timer_block_id, 8, 0),
 		FIELD_BITF("  Num Comparitors", fwts_acpi_table_hpet, event_timer_block_id, 5, 8),
@@ -582,7 +581,7 @@ static void acpidump_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("FACS Address", 	fwts_acpi_table_fadt, firmware_control),
 		FIELD_UINT("DSDT Address", 	fwts_acpi_table_fadt, dsdt),
 		FIELD_UINT("Model",		fwts_acpi_table_fadt, reserved),
@@ -673,7 +672,7 @@ static void acpidump_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_STR ("Signature", 	fwts_acpi_table_rsdp, signature),
 		FIELD_UINT("Checksum", 		fwts_acpi_table_rsdp, checksum),
 		FIELD_STR ("OEM ID", 		fwts_acpi_table_rsdp, oem_id),
@@ -717,7 +716,7 @@ static void acpidump_sbst(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Warn. Energy Level", 	fwts_acpi_table_sbst,	warning_energy_level),
 		FIELD_UINT("Low  Energy Level", 	fwts_acpi_table_sbst,	low_energy_level),
 		FIELD_UINT("Crit. Energy Level", 	fwts_acpi_table_sbst,	critical_energy_level),
@@ -757,7 +756,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 	int i = 0;
 	size_t offset = 0;
 	
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Local APIC Address", 	fwts_acpi_table_madt, lapic_address),
 		FIELD_UINT("Flags", 			fwts_acpi_table_madt, flags),
 		FIELD_BITF("  PCAT_COMPAT", 		fwts_acpi_table_madt, flags, 1, 0),
@@ -782,7 +781,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 
 		switch (hdr->type) {
 		case 0: {
-				fwts_acpidump_field fields_processor_local_apic[] = {
+				static fwts_acpidump_field fields_processor_local_apic[] = {
 					FIELD_UINT("  ACPI CPU ID", fwts_acpi_madt_processor_local_apic, acpi_processor_id),
 					FIELD_UINT("  APIC ID",     fwts_acpi_madt_processor_local_apic, apic_id),
 					FIELD_UINT("  Flags",       fwts_acpi_madt_processor_local_apic, flags),
@@ -795,7 +794,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 1: {
-				fwts_acpidump_field fields_io_apic[] = {
+				static fwts_acpidump_field fields_io_apic[] = {
 					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
 					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
 					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, global_irq_base),
@@ -807,7 +806,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 2: {
-				fwts_acpidump_field fields_madt_interrupt_override[] = {
+				static fwts_acpidump_field fields_madt_interrupt_override[] = {
 					FIELD_UINT("  Bus", 		fwts_acpi_madt_interrupt_override, bus),
 					FIELD_UINT("  Source", 		fwts_acpi_madt_interrupt_override, source),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_interrupt_override, gsi),
@@ -820,7 +819,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 3: {
-				fwts_acpidump_field fields_madt_nmi[] = {
+				static fwts_acpidump_field fields_madt_nmi[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_nmi, flags),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_nmi, gsi),
 					FIELD_END
@@ -831,7 +830,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 4: {
-				fwts_acpidump_field fields_madt_local_apic_nmi[] = {
+				static fwts_acpidump_field fields_madt_local_apic_nmi[] = {
 					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_apic_nmi, acpi_processor_id),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_apic_nmi, flags),
 					FIELD_UINT("  Local APIC LINT", fwts_acpi_madt_local_apic_nmi, local_apic_lint),
@@ -843,7 +842,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 5: {
-				fwts_acpidump_field fields_madt_local_apic_addr_override[] = {
+				static fwts_acpidump_field fields_madt_local_apic_addr_override[] = {
 					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
 					FIELD_END
 				};
@@ -853,7 +852,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 6: {
-				fwts_acpidump_field fields_madt_io_sapic[] = {
+				static fwts_acpidump_field fields_madt_io_sapic[] = {
 					FIELD_UINT("  I/O SAPIC ID", 	fwts_acpi_madt_io_sapic, io_sapic_id),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_io_sapic, gsi),
 					FIELD_UINT("  I/O SAPIC Addr", 	fwts_acpi_madt_io_sapic, address),
@@ -866,7 +865,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			break;
 		case 7: {
 				fwts_acpi_madt_local_sapic *local_sapic = (fwts_acpi_madt_local_sapic*)data;
-				fwts_acpidump_field fields_madt_local_sapic[] = {
+				static fwts_acpidump_field fields_madt_local_sapic[] = {
 					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_sapic, acpi_processor_id),
 					FIELD_UINT("  Local SAPIC ID", 	fwts_acpi_madt_local_sapic, local_sapic_id),
 					FIELD_UINT("  Local SAPIC EID",	fwts_acpi_madt_local_sapic, local_sapic_eid),
@@ -882,7 +881,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 8: {
-				fwts_acpidump_field fields_madt_local_sapic[] = {
+				static fwts_acpidump_field fields_madt_local_sapic[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_platform_int_source, flags),
 					FIELD_UINT("  Type", 		fwts_acpi_madt_platform_int_source, type),
 					FIELD_UINT("  Processor ID", 	fwts_acpi_madt_platform_int_source, processor_id),
@@ -898,7 +897,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 9: {
-				fwts_acpidump_field fields_madt_local_x2apic[] = {
+				static fwts_acpidump_field fields_madt_local_x2apic[] = {
 					FIELD_UINT("  x2APIC ID", 	fwts_acpi_madt_local_x2apic, x2apic_id),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic, flags),
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic, processor_uid),
@@ -910,7 +909,7 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 10: {
-				fwts_acpidump_field fields_madt_local_x2apic_nmi[] = {
+				static fwts_acpidump_field fields_madt_local_x2apic_nmi[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic_nmi, flags),
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic_nmi, processor_uid),
 					FIELD_UINT("  LINT#", 		fwts_acpi_madt_local_x2apic_nmi, local_x2apic_lint),
@@ -940,7 +939,7 @@ static void acpidump_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 	int n;
 	int i;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Base Address", 	fwts_acpi_table_mcfg, 	base_address),
 		FIELD_UINT("Base Reserved", 	fwts_acpi_table_mcfg,	base_reserved),
 		FIELD_END
@@ -1012,7 +1011,7 @@ static void acpidump_srat(fwts_framework *fw, fwts_acpi_table_info *table)
 	while (ptr < data + length) {
 		switch (*ptr) {
 		case 0:	{
-				fwts_acpidump_field fields_lasa[] = {
+				static fwts_acpidump_field fields_lasa[] = {
 					FIELD_UINT("  Proximity [7:0]", fwts_acpi_table_slit_local_apic_sapic_affinity, proximity_domain_0),
 					FIELD_UINT("  APIC ID", fwts_acpi_table_slit_local_apic_sapic_affinity, apic_id),
 					FIELD_UINT("  Flags", fwts_acpi_table_slit_local_apic_sapic_affinity, flags),
@@ -1030,7 +1029,7 @@ static void acpidump_srat(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 1:	{
-				fwts_acpidump_field fields_ma[] = {
+				static fwts_acpidump_field fields_ma[] = {
 					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_memory_affinity, proximity_domain),
 					FIELD_UINT("  Base Addr Lo", fwts_acpi_table_slit_memory_affinity, base_addr_lo),
 					FIELD_UINT("  Base Addr Hi", fwts_acpi_table_slit_memory_affinity, base_addr_hi),
@@ -1046,7 +1045,7 @@ static void acpidump_srat(fwts_framework *fw, fwts_acpi_table_info *table)
 			}
 			break;
 		case 2: {
-				fwts_acpidump_field fields_xa[] = {
+				static fwts_acpidump_field fields_xa[] = {
 					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_local_x2apic_affinity, proximity_domain),
 					FIELD_UINT("  X2APIC ID",    fwts_acpi_table_slit_local_x2apic_affinity, x2apic_id),
 					FIELD_UINT("  Flags",        fwts_acpi_table_slit_local_x2apic_affinity, flags),
@@ -1071,7 +1070,7 @@ static void acpidump_tcpa(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 
-	fwts_acpidump_field fields[] = {
+	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Reserved", 		fwts_acpi_table_tcpa, reserved),
 		FIELD_UINT("Log Zone Length", 	fwts_acpi_table_tcpa, log_zone_length),
 		FIELD_UINT("Log Zone Address", 	fwts_acpi_table_tcpa, log_zone_addr),

@@ -233,7 +233,7 @@
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",
    "pattern": ".*pci.*ACPI _OSC request failed.*returned control mask",
-   "advice": "The _OSC method evaluation failed and the ACPI _OSC control for PCIe was not granted. The kernel had to disable Active State Power Management (ASPM) which means that PCIe power management is not optimally configured."
+   "advice": "The _OSC method evaluation failed, which will result in disabling PCIe functionality, for example, the Linux kernel has to disable Active State Power Management (ASPM) which means that PCIe power management is not optimally configured."
   },
   {
    "compare_mode": "string",

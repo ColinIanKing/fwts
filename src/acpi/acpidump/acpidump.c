@@ -1511,6 +1511,66 @@ static void acpidump_gtdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, data, gtdt_fields, length, length);
 }
 
+/*
+ *  acpidump_fpdt()
+ *	dump FPDT, see 5.2.23 Firmware Performance Data Table (FPDT)
+ *	of version 5.0 ACPI spec.
+ */
+static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	uint8_t *ptr  = data;
+	size_t length = table->length;
+
+	static fwts_acpidump_field fpdt_header_fields[] = {
+		FIELD_UINT("Type", 		fwts_acpi_table_fpdt_header, type),
+		FIELD_UINT("Length", 		fwts_acpi_table_fpdt_header, length),
+		FIELD_UINT("Revision", 		fwts_acpi_table_fpdt_header, revision),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field fpdt_s3_perf_ptr_fields[] = {
+		FIELD_UINT("Reserved", 		fwts_acpi_table_fpdt_s3_perf_ptr, reserved),
+		FIELD_UINT("S3PT Pointer", 	fwts_acpi_table_fpdt_s3_perf_ptr, s3pt_addr),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field fpdt_basic_boot_perf_ptr_fields[] = {
+		FIELD_UINT("Reserved", 		fwts_acpi_table_fpdt_basic_boot_perf_ptr, reserved),
+		FIELD_UINT("FBPT Pointer", 	fwts_acpi_table_fpdt_basic_boot_perf_ptr, fbpt_addr),
+		FIELD_END
+	};
+
+	/*
+	 *  Currently we just dump out the various pointer records.  A more complete
+	 *  implementation should mmap the memory that the records point to and also
+	 *  dump these out.  That's an implementation issue for later.
+	 */
+	while (ptr < data + length) {
+		fwts_acpi_table_fpdt_header *fpdt = (fwts_acpi_table_fpdt_header*)ptr;
+
+		__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+		switch (fpdt->type) {
+		case 0:
+			fwts_log_info_verbatum(fw, "S3 resume performance record pointer:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
+			break;
+		case 1:
+			fwts_log_info_verbatum(fw, "S3 suspend performance record pointer:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
+			break;
+		case 2:
+			fwts_log_info_verbatum(fw, "Boot performance record pointer:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_basic_boot_perf_ptr_fields, ptr - data);
+			break;
+		default:
+			break;
+		}
+
+		ptr += fpdt->length;
+	}
+}
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1536,6 +1596,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "ERST", 	acpidump_erst, 	1 },
 	{ "FACP", 	acpidump_fadt, 	1 },
 	{ "FACS", 	acpidump_facs, 	0 },
+	{ "FPDT",	acpidump_fpdt,	1 },
 	{ "GTDT", 	acpidump_gtdt, 	1 },
 	{ "HEST", 	acpidump_hest, 	1 },
 	{ "HPET", 	acpidump_hpet, 	1 },

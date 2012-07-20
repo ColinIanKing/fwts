@@ -603,6 +603,27 @@ typedef struct {
 	uint32_t	image_offset_t;
 } __attribute__ ((packed)) fwts_acpi_table_bgrt;
 
+/* 5.2.23 Firmware Performance Data Table (FPDT) ACPI 5.0 spec */
+typedef struct {
+	uint16_t	type;
+	uint8_t		length;
+	uint8_t		revision;
+} __attribute__ ((packed)) fwts_acpi_table_fpdt_header;
+
+/* 5.2.23.4 S3 Performance Table Pointer Record */
+typedef struct {
+	fwts_acpi_table_fpdt_header	fpdt;
+	uint32_t	reserved;
+	uint64_t	s3pt_addr;
+} __attribute__ ((packed)) fwts_acpi_table_fpdt_s3_perf_ptr;
+
+/* 5.2.23.5 Firmware Basic Boot Performance Pointer Record */
+typedef struct {
+	fwts_acpi_table_fpdt_header	fpdt;
+	uint32_t	reserved;
+	uint64_t	fbpt_addr;
+} __attribute__ ((packed)) fwts_acpi_table_fpdt_basic_boot_perf_ptr;
+
 /* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec */
 typedef struct {
 	uint64_t	phys_addr;

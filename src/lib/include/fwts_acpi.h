@@ -638,6 +638,11 @@ typedef struct {
 	uint32_t	non_secure_PL2_timer_flags;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt;
 
+/* 5.2.20 ACPI RAS FeatureTable (RASF) */
+typedef struct {
+        uint8_t         platform_cc_id[12];
+} __attribute__ ((packed)) fwts_acpi_table_rasf;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

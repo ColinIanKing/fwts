@@ -1571,6 +1571,28 @@ static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_rasf()
+ *	dump RASF, see 5.2.20 ACPI RAS FeatureTable (RASF)
+ *	of version 5.0 ACPI spec.
+ */
+static void acpidump_rasf(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+
+	static fwts_acpidump_field rasf_fields[] = {
+		FIELD_UINTS("Comm. Channel ID", fwts_acpi_table_rasf, platform_cc_id),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, rasf_fields, length, length);
+
+	/* No idea how to dump rest of table, spec is a rather poor */
+	acpi_dump_raw_table(fw, table);
+}
+
+
 typedef struct {
 	char *name;
 	void (*func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -1603,6 +1625,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "MCFG", 	acpidump_mcfg, 	1 },
 	{ "MSCT", 	acpidump_msct, 	1 },
 	{ "PSDT", 	acpidump_amlcode, 1 },
+	{ "RASF",	acpidump_rasf,	1 },
 	{ "RSDT", 	acpidump_rsdt, 	1 },
 	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
 	{ "SBST", 	acpidump_sbst,  1 },

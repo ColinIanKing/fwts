@@ -1603,6 +1603,7 @@ typedef struct {
 #define acpidump_einj		acpi_dump_raw_table
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
+#define acpidump_mpst		acpi_dump_raw_table
 
 static acpidump_table_vec table_vec[] = {
 	{ "APIC", 	acpidump_madt, 	1 },
@@ -1623,6 +1624,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "HEST", 	acpidump_hest, 	1 },
 	{ "HPET", 	acpidump_hpet, 	1 },
 	{ "MCFG", 	acpidump_mcfg, 	1 },
+	{ "MPST",	acpidump_mpst,  1 },
 	{ "MSCT", 	acpidump_msct, 	1 },
 	{ "PSDT", 	acpidump_amlcode, 1 },
 	{ "RASF",	acpidump_rasf,	1 },

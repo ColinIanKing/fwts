@@ -304,7 +304,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 			topspeed = freqs[i].speed;
 
 		performedtests++;
-		fwts_progress(fw, (75 * performedtests)/totaltests);
+		fwts_progress(fw, 100*performedtests/totaltests);
 
 		i++;
 		c = c2;
@@ -576,7 +576,7 @@ static void check_sw_any(fwts_framework *fw)
 
 		high_perf = get_performance(i);
 		performedtests++;
-		fwts_progress(fw, (75 * performedtests)/totaltests);
+		fwts_progress(fw, 100*performedtests/totaltests);
 		/*
 		 * now set all the others to low again; sw_any will cause
 		 * the core in question to now also get the low speed, while
@@ -594,7 +594,7 @@ static void check_sw_any(fwts_framework *fw)
 			lowest_speed(fw, i);
 		}
 		performedtests++;
-		fwts_progress(fw, (75 * performedtests)/totaltests);
+		fwts_progress(fw, 100*performedtests/totaltests);
 	}
 	if (!once)
 		fwts_passed(fw, "P-state coordination done by Hardware.");
@@ -667,10 +667,13 @@ static int cpufreq_test1(fwts_framework *fw)
 	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && nrspeeds > 1) {
 		do_sw_all_test(fw);
 		performedtests++;
+		fwts_progress(fw, 100*performedtests/totaltests);
 		do_sw_any_test(fw);
 		performedtests++;
+		fwts_progress(fw, 100*performedtests/totaltests);
 	} else if (nrspeeds > 1) {
 		performedtests += 2;
+		fwts_progress(fw, 100*performedtests/totaltests);
 	}
 
 	fwts_progress(fw, 100);

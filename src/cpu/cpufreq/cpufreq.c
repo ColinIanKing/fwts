@@ -45,11 +45,11 @@ typedef struct {
 	unsigned long	speed;
 } fwts_cpu_freq;
 
-static int nrspeeds = -1;
-static int totaltests = 1;
-static int performedtests = 0;
+static int number_of_speeds = -1;
+static int total_tests = 1;
+static int performed_tests = 0;
 static int no_cpufreq = 0;
-static unsigned long topspeed = 0;
+static unsigned long top_speed = 0;
 
 #define GET_PERFORMANCE_MAX (0)
 #define GET_PERFORMANCE_MIN (1)
@@ -265,7 +265,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	int speedcount;
 	static int warned=0;
 	int warned_PSS = 0;
-	unsigned long cpu_topspeed = 0;
+	unsigned long cpu_top_speed = 0;
 
 	memset(freqs, 0, sizeof(freqs));
 	memset(line, 0, 4096);
@@ -284,8 +284,8 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		return;
 	fclose(file);
 
-	if (totaltests==1)
-		totaltests = (2+count_ints(line)) *
+	if (total_tests==1)
+		total_tests = (2+count_ints(line)) *
 			sysconf(_SC_NPROCESSORS_CONF) + 2;
 
 	c = line;
@@ -301,32 +301,32 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		freqs[i].Hz = strtoull(c, NULL, 10);
 		set_HZ(fw, cpu, freqs[i].Hz);
 		freqs[i].speed = get_performance(cpu);
-		if (freqs[i].speed > cpu_topspeed)
-			cpu_topspeed = freqs[i].speed;
+		if (freqs[i].speed > cpu_top_speed)
+			cpu_top_speed = freqs[i].speed;
 
-		performedtests++;
-		fwts_progress(fw, 100*performedtests/totaltests);
+		performed_tests++;
+		fwts_progress(fw, 100*performed_tests/total_tests);
 
 		i++;
 		c = c2;
 	}
 	speedcount = i;
 
-	if (cpu_topspeed > topspeed)
-		topspeed = cpu_topspeed;
+	if (cpu_top_speed > top_speed)
+		top_speed = cpu_top_speed;
 
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.", cpu, speedcount);
 	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
 	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
 	for (i=0; i < speedcount; i++)
-		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/cpu_topspeed, freqs[i].speed);
+		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/cpu_top_speed, freqs[i].speed);
 
-	if (nrspeeds == -1)
-		nrspeeds = speedcount;
+	if (number_of_speeds == -1)
+		number_of_speeds = speedcount;
 	
 	fwts_log_nl(fw);
 
-	if (nrspeeds != speedcount)
+	if (number_of_speeds != speedcount)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"CPUFreqPStates",
 			"Not all processors support the same number of P states.");
@@ -469,12 +469,12 @@ static void do_sw_all_test(fwts_framework *fw)
 	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
 	                                       0,
 	                                       5,
-	                                       GET_PERFORMANCE_MIN) / topspeed;
+	                                       GET_PERFORMANCE_MIN) / top_speed;
 	highest_speed(fw, first_cpu_index);
 	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
 	                                        0,
 	                                        5,
-	                                        GET_PERFORMANCE_MAX) / topspeed;
+	                                        GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -520,7 +520,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
 	                                       0,
 	                                       5,
-	                                       GET_PERFORMANCE_MIN) / topspeed;
+	                                       GET_PERFORMANCE_MIN) / top_speed;
 
 	highest_speed(fw, first_cpu_index);
 
@@ -537,7 +537,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
 	                                        0,
 	                                        5,
-	                                        GET_PERFORMANCE_MAX) / topspeed;
+	                                        GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -584,8 +584,8 @@ static void check_sw_any(fwts_framework *fw)
 			continue;
 
 		high_perf = get_performance(i);
-		performedtests++;
-		fwts_progress(fw, 100*performedtests/totaltests);
+		performed_tests++;
+		fwts_progress(fw, 100*performed_tests/total_tests);
 		/*
 		 * now set all the others to low again; sw_any will cause
 		 * the core in question to now also get the low speed, while
@@ -602,8 +602,8 @@ static void check_sw_any(fwts_framework *fw)
 			once++;
 			lowest_speed(fw, i);
 		}
-		performedtests++;
-		fwts_progress(fw, 100*performedtests/totaltests);
+		performed_tests++;
+		fwts_progress(fw, 100*performed_tests/total_tests);
 	}
 	if (!once)
 		fwts_passed(fw, "P-state coordination done by Hardware.");
@@ -673,16 +673,16 @@ static int cpufreq_test1(fwts_framework *fw)
 	 * Check for more than one CPU and more than one frequency and
 	 * then do the benchmark set 2
 	 */
-	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && nrspeeds > 1) {
+	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && number_of_speeds > 1) {
 		do_sw_all_test(fw);
-		performedtests++;
-		fwts_progress(fw, 100*performedtests/totaltests);
+		performed_tests++;
+		fwts_progress(fw, 100*performed_tests/total_tests);
 		do_sw_any_test(fw);
-		performedtests++;
-		fwts_progress(fw, 100*performedtests/totaltests);
-	} else if (nrspeeds > 1) {
-		performedtests += 2;
-		fwts_progress(fw, 100*performedtests/totaltests);
+		performed_tests++;
+		fwts_progress(fw, 100*performed_tests/total_tests);
+	} else if (number_of_speeds > 1) {
+		performed_tests += 2;
+		fwts_progress(fw, 100*performed_tests/total_tests);
 	}
 
 	fwts_progress(fw, 100);

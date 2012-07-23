@@ -36,6 +36,7 @@
 #include <sched.h>
 #include <time.h>
 #include <math.h>
+#include <ctype.h>
 
 #define FWTS_CPU_PATH	"/sys/devices/system/cpu"
 
@@ -626,7 +627,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
+		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			lowest_speed(fw, cpu);
 		}
@@ -636,7 +637,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	/* then do the benchmark */
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
+		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			do_cpu(fw, cpu);
 			lowest_speed(fw, cpu);
@@ -649,7 +650,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	/* set everything back to the highest speed again */
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
+		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
 			cpu = strtoul(entry->d_name+3,NULL,10);
 			highest_speed(fw, cpu);
 		}

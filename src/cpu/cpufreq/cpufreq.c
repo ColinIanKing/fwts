@@ -49,7 +49,7 @@ static int nrspeeds = -1;
 static int totaltests = 1;
 static int performedtests = 0;
 static int no_cpufreq = 0;
-static unsigned long topspeed=1;
+static unsigned long topspeed = 0;
 
 #define GET_PERFORMANCE_MAX (0)
 #define GET_PERFORMANCE_MIN (1)
@@ -265,6 +265,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	int speedcount;
 	static int warned=0;
 	int warned_PSS = 0;
+	unsigned long cpu_topspeed = 0;
 
 	memset(freqs, 0, sizeof(freqs));
 	memset(line, 0, 4096);
@@ -300,8 +301,8 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		freqs[i].Hz = strtoull(c, NULL, 10);
 		set_HZ(fw, cpu, freqs[i].Hz);
 		freqs[i].speed = get_performance(cpu);
-		if (freqs[i].speed > topspeed)
-			topspeed = freqs[i].speed;
+		if (freqs[i].speed > cpu_topspeed)
+			cpu_topspeed = freqs[i].speed;
 
 		performedtests++;
 		fwts_progress(fw, 100*performedtests/totaltests);
@@ -311,14 +312,19 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	}
 	speedcount = i;
 
-	fwts_log_info_verbatum(fw, " Frequency | Speed \n-----------+---------\n");
-	for (i=0; i < speedcount; i++)
-		fwts_log_info_verbatum(fw, "%9s | %5.1f %%\n", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/topspeed);
+	if (cpu_topspeed > topspeed)
+		topspeed = cpu_topspeed;
 
-	if (nrspeeds == -1)  {
-		fwts_log_info(fw, "%i CPU frequency steps supported", speedcount);
+	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.", cpu, speedcount);
+	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
+	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
+	for (i=0; i < speedcount; i++)
+		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/cpu_topspeed, freqs[i].speed);
+
+	if (nrspeeds == -1)
 		nrspeeds = speedcount;
-	}
+	
+	fwts_log_nl(fw);
 
 	if (nrspeeds != speedcount)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -353,7 +359,10 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		if (freqs[i].speed > freqs[i+1].speed)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqSlowerOnCPU",
-				"Supposedly higher frequency is slower on CPU %i!", cpu);
+				"Supposedly higher frequency %s is slower (%lu bogo loops) than frequency %s (%lu bogo loops) on CPU %i.",
+				HzToHuman(freqs[i+1].Hz), freqs[i+1].speed,
+				HzToHuman(freqs[i].Hz), freqs[i].speed,
+				cpu);
 		if (freqs[i].Hz > get_claimed_hz(cpu) && !warned_PSS) {
 			warned_PSS = 1;
 			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?",

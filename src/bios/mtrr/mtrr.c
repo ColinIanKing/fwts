@@ -567,17 +567,17 @@ static int mtrr_test2(fwts_framework *fw)
 		int failed = 0;
 
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent fixed MTRR settings") > 0) {
-			fwts_log_info(fw, "Detected CPUs with inconsitent fixed MTRR settings which the kernel fixed.");
+			fwts_log_info(fw, "Detected CPUs with inconsistent fixed MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent variable MTRR settings") > 0) {
-			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent MTRRdefType") > 0) {
-			fwts_log_info(fw, "Detected CPUs with inconsitent variable MTRR settings which the kernel fixed.");
+			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = 1;
 		}

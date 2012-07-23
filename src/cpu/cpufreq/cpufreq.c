@@ -217,7 +217,6 @@ static unsigned long get_performance_repeat(fwts_framework *fw,
 static char *HzToHuman(unsigned long hz)
 {
 	static char buffer[1024];
-	memset(buffer, 0, 1024);
 	unsigned long long Hz;
 
 	Hz = hz;
@@ -267,7 +266,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	unsigned long cpu_top_speed = 0;
 
 	memset(freqs, 0, sizeof(freqs));
-	memset(line, 0, 4096);
+	memset(line, 0, sizeof(line));
 
 	set_governor(fw, cpu);
 

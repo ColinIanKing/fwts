@@ -216,23 +216,23 @@ static unsigned long get_performance_repeat(fwts_framework *fw,
 
 static char *HzToHuman(unsigned long hz)
 {
-	static char buffer[1024];
+	static char buffer[32];
 	unsigned long long Hz;
 
 	Hz = hz;
 
-	/* default: just put the Number in */
-	snprintf(buffer, sizeof(buffer), "%9lli", Hz);
-
-	if (Hz > 1000)
-		snprintf(buffer, sizeof(buffer), "%6lli Mhz",
-			(Hz+500) / 1000);
-
-	if (Hz > 1500000)
+	if (Hz > 1500000) {
 		snprintf(buffer, sizeof(buffer), "%6.2f Ghz",
 			(Hz+50000.0) / 1000000);
-
-	return buffer;
+		return buffer;
+	} else if (Hz > 1000) {
+		snprintf(buffer, sizeof(buffer), "%6lli Mhz",
+			(Hz+500) / 1000);
+		return buffer;
+	} else {
+		snprintf(buffer, sizeof(buffer), "%9lli", Hz);
+		return buffer;
+	}
 }
 
 

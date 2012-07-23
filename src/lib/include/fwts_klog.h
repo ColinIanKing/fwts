@@ -44,6 +44,7 @@ typedef struct {
         const char *pattern;
 	const char *advice;
 	pcre *re;
+	pcre_extra *extra;
 } fwts_klog_pattern;
 
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);

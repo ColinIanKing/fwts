@@ -230,7 +230,8 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		int matched = 0;
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
-			matched = (pcre_exec(pattern->re, NULL, line, strlen(line), 0, 0, vector, 1) == 0);
+			if (pattern->re)
+				matched = (pcre_exec(pattern->re, pattern->extra, line, strlen(line), 0, 0, vector, 1) == 0);
 			break;
 		case FWTS_COMPARE_STRING:
 		default:
@@ -354,8 +355,16 @@ static int fwts_klog_check(fwts_framework *fw,
 		if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice")) == NULL)
 			goto fail;
 
-		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL)
+		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
 			fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
+			patterns[i].re = NULL;
+		} else {
+			patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
+			if (error != NULL) {
+				fwts_log_error(fw, "Regex %s failed to optimize: %s.", patterns[i].pattern, error);
+				patterns[i].re = NULL;
+			}
+		}
 	}
 	/* We've now collected up the scan patterns, lets scan the log for errors */
 	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors);
@@ -364,6 +373,8 @@ fail:
 	for (i=0; i<n; i++)
 		if (patterns[i].re)
 			pcre_free(patterns[i].re);
+		if (patterns[i].extra)
+			pcre_free(patterns[i].extra);
 	free(patterns);
 fail_put:
 	json_object_put(klog_objs);
@@ -398,15 +409,22 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 	const char *error;
 	int erroffset;
 	pcre *re;
+	pcre_extra *extra;
 	int rc;
 	int vector[1];
 
 	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
 	if (re != NULL) {
-		rc = pcre_exec(re, NULL, line, strlen(line), 0, 0, vector, 1);
+		extra = pcre_study(re, 0, &error);
+		if (error)
+			return;
+
+		rc = pcre_exec(re, extra, line, strlen(line), 0, 0, vector, 1);
+		if (extra)
+			free(extra);
+		pcre_free(re);
 		if (rc == 0)
 			(*match)++;
-		pcre_free(re);
 	}
 }
 

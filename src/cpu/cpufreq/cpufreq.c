@@ -67,7 +67,7 @@ static int count_ints(char *text)
 	int count = 0;
 
 	while (str && strlen(str) > 0) {
-		char *str2 = strchr(str,' ');
+		char *str2 = strchr(str, ' ');
 		if (!str2)
 			break;
 		str = str2 + 1;
@@ -100,7 +100,7 @@ static int cpu_exists(int cpu)
 	return !access(path, R_OK);
 }
 
-static void  set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
+static void set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 {
 	cpu_set_t mask, oldset;
 	char path[PATH_MAX];
@@ -125,7 +125,7 @@ static void  set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 
 }
 
-static unsigned long  get_performance(const int cpu)
+static unsigned long get_performance(const int cpu)
 {
 	cpu_set_t mask, oldset;
 	time_t current;
@@ -149,7 +149,7 @@ static unsigned long  get_performance(const int cpu)
 		int i;
 		A = 1.234567;
 		B = 3.121213;
-		for (i=0; i<100; i++) {
+		for (i = 0; i < 100; i++) {
 			A = A * B;
 			B = A * A;
 			A = A - B + sqrt(A);
@@ -198,16 +198,16 @@ static unsigned long get_performance_repeat(fwts_framework *fw,
 	}
 
 	switch (type) {
-	    case GET_PERFORMANCE_MAX:
+	case GET_PERFORMANCE_MAX:
 		retval = max;
 		break;
-	    case GET_PERFORMANCE_MIN:
+	case GET_PERFORMANCE_MIN:
 		retval = min;
 		break;
-	    case GET_PERFORMANCE_AVG:
+	case GET_PERFORMANCE_AVG:
 		retval = cumulative/real_count;
 		break;
-	    default:
+	default:
 		retval = 0;
 		break;
 	}
@@ -225,14 +225,13 @@ static char *HzToHuman(unsigned long hz)
 	/* default: just put the Number in */
 	snprintf(buffer, sizeof(buffer), "%9lli", Hz);
 
-	if (Hz>1000)
+	if (Hz > 1000)
 		snprintf(buffer, sizeof(buffer), "%6lli Mhz",
-			(Hz+500)/1000);
+			(Hz+500) / 1000);
 
-	if (Hz>1500000)
+	if (Hz > 1500000)
 		snprintf(buffer, sizeof(buffer), "%6.2f Ghz",
-			(Hz+50000.0)/1000000);
-
+			(Hz+50000.0) / 1000000);
 
 	return buffer;
 }
@@ -280,17 +279,17 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		}
 		return;
 	}
-	if (fgets(line, 4095, file)==NULL)
+	if (fgets(line, 4095, file) == NULL)
 		return;
 	fclose(file);
 
-	if (total_tests==1)
+	if (total_tests == 1)
 		total_tests = (2+count_ints(line)) *
 			sysconf(_SC_NPROCESSORS_CONF) + 2;
 
 	c = line;
 	i = 0;
-	while (c && strlen(c)>1) {
+	while (c && strlen(c) > 1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
 			*c2 = 0;
@@ -305,7 +304,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 			cpu_top_speed = freqs[i].speed;
 
 		performed_tests++;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 
 		i++;
 		c = c2;
@@ -318,12 +317,15 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.", cpu, speedcount);
 	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
 	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
-	for (i=0; i < speedcount; i++)
-		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu", HzToHuman(freqs[i].Hz), 100.0*freqs[i].speed/cpu_top_speed, freqs[i].speed);
+	for (i = 0; i < speedcount; i++)
+		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu",
+			HzToHuman(freqs[i].Hz),
+			100.0 * freqs[i].speed/cpu_top_speed,
+			freqs[i].speed);
 
 	if (number_of_speeds == -1)
 		number_of_speeds = speedcount;
-	
+
 	fwts_log_nl(fw);
 
 	if (number_of_speeds != speedcount)
@@ -340,7 +342,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	while (delta) {
 		fwts_cpu_freq tmp;
 		delta = 0;
-		for (i=0; i<speedcount-1; i++) {
+		for (i = 0; i < speedcount-1; i++) {
 			if (freqs[i].Hz > freqs[i+1].Hz) {
 				tmp = freqs[i];
 				freqs[i] = freqs[i+1];
@@ -351,7 +353,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	}
 
 	/* now check for 1) increasing HZ and 2) increasing speed */
-	for (i=0; i<speedcount-1; i++) {
+	for (i = 0; i < speedcount-1; i++) {
 		if (freqs[i].Hz == freqs[i+1].Hz && !warned++)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqDupFreq",
@@ -385,7 +387,7 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 		return;
 
 	c = line;
-	while (c && strlen(c)>1) {
+	while (c && strlen(c) > 1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
 			*c2 = 0;
@@ -394,7 +396,7 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 			c2 = NULL;
 
 		Hz = strtoull(c, NULL, 10);
-		if (Hz < lowspeed || lowspeed==0)
+		if (Hz < lowspeed || lowspeed == 0)
 			lowspeed = Hz;
 		c = c2;
 	}
@@ -416,7 +418,7 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 		return;
 
 	c = line;
-	while (c && strlen(c)>1) {
+	while (c && strlen(c) > 1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
 			*c2=0;
@@ -425,7 +427,7 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 			c2 = NULL;
 
 		Hz = strtoull(c, NULL, 10);
-		if (Hz > highspeed || highspeed==0)
+		if (Hz > highspeed || highspeed == 0)
 			highspeed = Hz;
 		c = c2;
 	}
@@ -455,8 +457,8 @@ static void do_sw_all_test(fwts_framework *fw)
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
-			cpu = strtoul(entry->d_name+3, NULL, 10);
+		if (entry && strlen(entry->d_name) > 3) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			if (first_cpu_index == -1)
 				first_cpu_index = cpu;
 
@@ -467,14 +469,10 @@ static void do_sw_all_test(fwts_framework *fw)
 
 	/* All CPUs at the lowest frequency */
 	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
-	                                       0,
-	                                       5,
-	                                       GET_PERFORMANCE_MIN) / top_speed;
+						0, 5, GET_PERFORMANCE_MIN) / top_speed;
 	highest_speed(fw, first_cpu_index);
 	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
-	                                        0,
-	                                        5,
-	                                        GET_PERFORMANCE_MAX) / top_speed;
+						0, 5, GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -506,8 +504,8 @@ static void do_sw_any_test(fwts_framework *fw)
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
-			cpu = strtoul(entry->d_name+3, NULL, 10);
+		if (entry && strlen(entry->d_name) > 3) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			if (first_cpu_index == -1)
 				first_cpu_index = cpu;
 
@@ -518,15 +516,13 @@ static void do_sw_any_test(fwts_framework *fw)
 
 	/* All CPUs at the lowest frequency */
 	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
-	                                       0,
-	                                       5,
-	                                       GET_PERFORMANCE_MIN) / top_speed;
+						0, 5, GET_PERFORMANCE_MIN) / top_speed;
 
 	highest_speed(fw, first_cpu_index);
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
-			cpu = strtoul(entry->d_name+3, NULL, 10);
+		if (entry && strlen(entry->d_name) > 3) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			if (cpu == first_cpu_index)
 				continue;
 			lowest_speed(fw, cpu);
@@ -535,9 +531,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	closedir(dir);
 
 	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
-	                                        0,
-	                                        5,
-	                                        GET_PERFORMANCE_MAX) / top_speed;
+						0, 5, GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -554,7 +548,7 @@ static void check_sw_any(fwts_framework *fw)
 	struct dirent *entry;
 	uint64_t low_perf, high_perf, newhigh_perf;
 	static int once = 0;
-	int max_cpu = 0, i,j;
+	int max_cpu = 0, i, j;
 	int cpu;
 
 	/* First set all processors to their lowest speed */
@@ -564,8 +558,8 @@ static void check_sw_any(fwts_framework *fw)
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3) {
-			cpu = strtoul(entry->d_name+3,NULL,10);
+		if (entry && strlen(entry->d_name) > 3) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			lowest_speed(fw, cpu);
 			if (cpu > max_cpu)
 				max_cpu = cpu;
@@ -578,24 +572,25 @@ static void check_sw_any(fwts_framework *fw)
 
 	/* assume that all processors have the same low performance */
 	low_perf = get_performance(max_cpu);
-	for (i=0; i<= max_cpu; i++) {
+	for (i = 0; i <= max_cpu; i++) {
 		highest_speed(fw, i);
 		if (!cpu_exists(i))
 			continue;
 
 		high_perf = get_performance(i);
 		performed_tests++;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 		/*
 		 * now set all the others to low again; sw_any will cause
 		 * the core in question to now also get the low speed, while
 		 * hardware max will keep the performance
 		 */
-		for (j=0; j <= max_cpu; j++)
-			if (i!=j)
+		for (j = 0; j <= max_cpu; j++)
+			if (i != j)
 				lowest_speed(fw, j);
 		newhigh_perf = get_performance(i);
-		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 && once==0 && (high_perf - low_perf > 20)) {
+		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 &&
+		    (once == 0) && (high_perf - low_perf > 20)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPUsSetToSW_ANY",
 				"Processors are set to SW_ANY.");
@@ -603,7 +598,7 @@ static void check_sw_any(fwts_framework *fw)
 			lowest_speed(fw, i);
 		}
 		performed_tests++;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 	}
 	if (!once)
 		fwts_passed(fw, "P-state coordination done by Hardware.");
@@ -636,8 +631,8 @@ static int cpufreq_test1(fwts_framework *fw)
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
-			cpu = strtoul(entry->d_name+3,NULL,10);
+		if (entry && strlen(entry->d_name) > 3 && isdigit(entry->d_name[3])) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			lowest_speed(fw, cpu);
 		}
 	}
@@ -646,8 +641,8 @@ static int cpufreq_test1(fwts_framework *fw)
 	/* then do the benchmark */
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
-			cpu = strtoul(entry->d_name+3,NULL,10);
+		if (entry && strlen(entry->d_name) > 3 && isdigit(entry->d_name[3])) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			do_cpu(fw, cpu);
 			lowest_speed(fw, cpu);
 			if (no_cpufreq)
@@ -659,8 +654,8 @@ static int cpufreq_test1(fwts_framework *fw)
 	/* set everything back to the highest speed again */
 
 	while ((entry = readdir(dir)) != NULL) {
-		if (entry && strlen(entry->d_name)>3 && isdigit(entry->d_name[3])) {
-			cpu = strtoul(entry->d_name+3,NULL,10);
+		if (entry && strlen(entry->d_name) > 3 && isdigit(entry->d_name[3])) {
+			cpu = strtoul(entry->d_name + 3, NULL, 10);
 			highest_speed(fw, cpu);
 		}
 	}
@@ -676,13 +671,13 @@ static int cpufreq_test1(fwts_framework *fw)
 	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && number_of_speeds > 1) {
 		do_sw_all_test(fw);
 		performed_tests++;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 		do_sw_any_test(fw);
 		performed_tests++;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 	} else if (number_of_speeds > 1) {
 		performed_tests += 2;
-		fwts_progress(fw, 100*performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/total_tests);
 	}
 
 	fwts_progress(fw, 100);

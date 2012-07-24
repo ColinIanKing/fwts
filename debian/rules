@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+export DEB_BUILD_HARDENING=1
+
 override_dh_auto_configure:
 	autoreconf -ivf
 	dh_auto_configure

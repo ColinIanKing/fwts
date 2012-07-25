@@ -59,6 +59,9 @@ Next, update the tag:
 git push
 git push --tags
 
+Next, create a directory for creating the tarball and checksum and run the mktar.sh script.
+Upload the generated tarball and SHA256SUMS to the desired localtion for the releasing.
+
 Next, create an auto-packager directory somewhere and run the mkpackage.sh script from within it. E.g
 
 mkdir /home/cking/fwts/auto-packager

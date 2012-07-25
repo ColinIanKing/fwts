@@ -23,7 +23,7 @@
 # Get fwts sources, strip out .git directory, add in necessary debian packaging
 # files, build source package ready for upload.
 #
-RELEASES="lucid maverick natty oneiric precise"
+RELEASES="lucid natty oneiric precise quantal"
 REPO=git://kernel.ubuntu.com/hwe/fwts.git
 FWTS=fwts
 

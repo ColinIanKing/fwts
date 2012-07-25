@@ -25,6 +25,7 @@
 #
 RELEASES="lucid natty oneiric precise quantal"
 REPO=git://kernel.ubuntu.com/hwe/fwts.git
+RELEASE_TAR_URL=http://kernel.ubuntu.com/~lexical/fwts
 FWTS=fwts
 
 #
@@ -74,6 +75,27 @@ rm_source()
 }
 
 #
+#  Prepare the orig tarball
+#
+
+prepare_tarball()
+{
+	mkdir $version
+	pushd $version >& /dev/null
+	wget -N $RELEASE_TAR_URL/fwts-$version.tar.gz
+	wget -N $RELEASE_TAR_URL/SHA256SUMS
+	sha256sum -c SHA256SUMS
+
+	if [ $? -ne 0 ]; then
+		echo "Checksum unmatched. Abort"
+		exit
+	fi
+
+	mv fwts-$version.tar.gz fwts_`echo $version|cut -b 2-`.orig.tar.gz
+	popd >& /dev/null
+}
+
+#
 #  Create source package ready for upload and build
 #
 mk_package()
@@ -83,6 +105,7 @@ mk_package()
 	rm -rf $version/$rel
   	mkdir -p $version/$rel
 	cp -r $FWTS $version/$rel
+	cp $version/fwts_`echo $version|cut -b 2-`.orig.tar.gz $version/$rel
 
 	pushd $version/$rel/$FWTS >& /dev/null
 
@@ -120,6 +143,8 @@ fi
 
 checkout_version $version
 rm_git
+
+prepare_tarball
 
 for I in $RELEASES 
 do

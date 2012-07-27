@@ -1,3 +1,46 @@
+fwts (0.25.06precise1) precise-proposed; urgency=low
+
+  * Stable Release Update for Precise (LP: #1033451)
+
+  [Alex Hung]
+  * acpi: method: Change _BBN's test_type from METHOD_MOBILE to METHOD_OPTIONAL
+
+  [Colin Ian King]
+  * acpi: acpidump: add extra ACPI 5.0 fields to FACP
+  * acpi: acpidump: Add support for bit 20 and 21 of FADT flags
+  * Update FADT preferred PM profile to add Tablet
+  * dmi: dmi_decode: make advice more relevant to data handled by the kernel
+  * Add mutex around semaphore counting (LP: #1017388)
+  * acpi: method: remove race delay kludge
+  * lib: acpi_acpi_tables: Add tables based on ACPI name and not file name.
+  * lib: fwts_acpi_tables: Force fixup on XSDT and RSDT when loading from .dat
+    files
+  * lib: acpica: fix semaphore counting by waiting for threads to complete
+  * acpica: incorporate new ACPICA sources to enable fwts to build
+  * acpica: use latest ACPICA source
+  * Update copy-acpica.sh to copy over new sources
+  * Update README_ACPICA.txt to add in new acpica sources
+  * acpi: acpidump + acpi headers: Add simple support for FPDT
+  * acpi: acpidump + acpi headers: Add basic dump of RASF
+  * acpi: acpidump: Add stub for MPST
+  * acpi: acpidump: make arrays static
+  * data: klog.json: make the _OSC failure advice more general and hand-wavy
+  * cpu: cpufreq: cpufreq and cpuidle dirs confusing cpuN parsing
+  * cpu: cpufreq: make progress estimate more accurate
+  * cpu: cpufreq: tidy up table output
+  * cpu: cpufreq: rename some global variables to make them more readable
+  * cpu: cpufreq: various whitespace clean ups
+  * cpu: cpufreq: tidy up memset usage
+  * cpu: cpufreq: make HzToHuman() more efficient
+  * cpu: cpufreq: add need to run as root
+  * bios: mtrr: fix stupid typos
+  * lib: fwts_klog: optimize regex scanning (LP: #1028031)
+
+  [Keng-Yu Lin]
+  * debian: Add hardening options
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 27 Jul 2012 17:22:07 +0800
+
 fwts (0.25.05) quantal; urgency=low
 
   [Chris Van Hoof]

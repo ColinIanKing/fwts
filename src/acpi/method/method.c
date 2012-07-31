@@ -2003,7 +2003,7 @@ static void method_test_PSS_return(fwts_framework *fw, char *name, ACPI_BUFFER *
 
 		/* Sanity check descending power dissipation levels */
 		if ((i > 0) && (prev_power != 0) &&
-		    (pstate->Package.Elements[1].Integer.Value >= prev_power)) {
+		    (pstate->Package.Elements[1].Integer.Value > prev_power)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackagePowerNotDecending",
 				"_PSS P-State sub-package %d has a larger power dissipation "
 				"setting than the previous sub-package.", i);

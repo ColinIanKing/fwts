@@ -1222,22 +1222,43 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char*)private;
-		if (obj->Integer.Value >= 2732)
-			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x (%5.1f degrees K)",
-				method,
-				(uint32_t)obj->Integer.Value,
-				(float)((uint32_t)obj->Integer.Value) / 10.0);
-		else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadTemp",
-				"%s returned a dubious value below 0 degrees C: 0x%8.8x (%5.1f degrees K)",
-				method,
-				(uint32_t)obj->Integer.Value,
-				(float)((uint32_t)obj->Integer.Value) / 10.0);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			fwts_advice(fw, "An incorrect value could be because the method requires interaction with "
-					"I/O ports or the embedded controller and this test frame work is spoofing "
-					"these operations. However, it is worth sanity checking these values in "
+		
+		if (fwts_acpi_region_handler_called_get()) {
+			/*
+			 *  We accessed some memory or I/O region during the evaluation
+			 *  which returns spoofed values, so we should not test the value
+			 *  being returned. In this case, just pass this as a valid
+			 *  return type. 
+			 */
+			fwts_passed(fw, "%s correctly returned sane looking return type.", name);
+		} else {
+			/*
+			 *  The evaluation probably was a hard-coded value, so sanity check it
+			 */
+			if (obj->Integer.Value >= 2732)
+				fwts_passed(fw,
+					"%s correctly returned sane looking value "
+					"0x%8.8x (%5.1f degrees K)",
+					method,
+					(uint32_t)obj->Integer.Value,
+					(float)((uint32_t)obj->Integer.Value) / 10.0);
+			else {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadTemp",
+					"%s returned a dubious value below 0 degrees C: "
+					"0x%8.8x (%5.1f degrees K)",
+					method,
+					(uint32_t)obj->Integer.Value,
+					(float)((uint32_t)obj->Integer.Value) / 10.0);
+				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+				fwts_advice(fw,
+					"The value returned was probably a hard-coded "
+					"thermal value which is out of range because "
+					"fwts did not detect any ACPI region handler "
+					"accesses of I/O or system memeory to evaluate "
+					"the thermal value. "
+					"It is worth sanity checking these values in "
 					"/sys/class/thermal/thermal_zone*.");
+			}
 		}
 	}
 }
@@ -1245,7 +1266,8 @@ static void method_test_THERM_return(fwts_framework *fw, char *name, ACPI_BUFFER
 #define method_test_THERM(name, type)			\
 static int method_test ## name(fwts_framework *fw)	\
 {							\
-	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_THERM_return, # name);				\
+	fwts_acpi_region_handler_called_set(false);	\
+	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_THERM_return, # name);	\
 }
 
 method_test_THERM(_CRT, METHOD_OPTIONAL)

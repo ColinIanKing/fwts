@@ -74,6 +74,8 @@ static sem_hash			sem_hash_table[MAX_SEMAPHORES];
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];
 
+static bool			region_handler_called;
+
 /*
  *  Used to account for threads used by AcpiOsExecute
  */
@@ -305,6 +307,16 @@ static ACPI_STATUS fwts_region_init(
 	return AE_OK;
 }
 
+void fwts_acpi_region_handler_called_set(bool val)
+{
+	region_handler_called = val;
+}
+
+bool fwts_acpi_region_handler_called_get(void)
+{
+	return region_handler_called;
+}
+
 static ACPI_STATUS fwts_region_handler(
 	UINT32                  function,
 	ACPI_PHYSICAL_ADDRESS   address,
@@ -322,6 +334,8 @@ static ACPI_STATUS fwts_region_handler(
 
 	if (regionobject->Region.Type != ACPI_TYPE_REGION)
 		return AE_OK;
+
+	fwts_acpi_region_handler_called_set(true);
 
 	context = ACPI_CAST_PTR (ACPI_CONNECTION_INFO, handlercontext);
 	length = (ACPI_SIZE)regionobject->Region.Length;

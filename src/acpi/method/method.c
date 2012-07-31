@@ -48,7 +48,7 @@
  * _BCM  B.6.3		Y
  * _BCT  10.2.29	N
  * _BDN  6.5.3		N
- * _BFS  7.3.1		Y
+ * _BFS  7.3.1		deprecated
  * _BIF  10.2.2.1	Y
  * _BIX  10.2.2.2	Y
  * _BLT  9.1.3		N
@@ -109,7 +109,7 @@
  * _GSB  6.2.6		N
  * _GTF  9.8.1.1	N
  * _GTM  9.8.2.1.1	N
- * _GTS  7.3.3		Y
+ * _GTS  7.3.3		deprecated
  * _GWS  9.18.5		N
  * _HID  6.1.5		N
  * _HOT  11.4.6		Y
@@ -925,30 +925,6 @@ static int method_test_BMC(fwts_framework *fw)
 
 /* Section 15, Waking and Sleeping */
 
-static int method_test_BFS(fwts_framework *fw)
-{
-	int i;
-
-	if (fwts_method_exists("_BFS") != NULL) {
-		for (i=1; i<6; i++) {
-			ACPI_OBJECT arg[1];
-
-			arg[0].Type = ACPI_TYPE_INTEGER;
-			arg[0].Integer.Value = i;
-
-			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_BFS", arg, 1,
-			  			  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-				break;
-			fwts_log_nl(fw);
-		}
-	}
-	else {
-		fwts_skipped(fw, "Optional control method _BFS does not exist.");
-	}
-
-	return FWTS_OK;
-}
-
 static int method_test_PTS(fwts_framework *fw)
 {
 	int i;
@@ -971,31 +947,6 @@ static int method_test_PTS(fwts_framework *fw)
 			break;
 		}
 		fwts_log_nl(fw);
-	}
-	return FWTS_OK;
-}
-
-static int method_test_GTS(fwts_framework *fw)
-{
-	int i;
-
-	if (fwts_method_exists("_GTS") != NULL) {
-		for (i=1; i<6; i++) {
-			ACPI_OBJECT arg[1];
-
-			arg[0].Type = ACPI_TYPE_INTEGER;
-			arg[0].Integer.Value = i;
-
-			fwts_log_info(fw, "Test _GTS(%d) (Going To Sleep, State S%d.", i, i);
-
-			if (method_evaluate_method(fw, METHOD_OPTIONAL, "_GTS", arg, 1,
-						  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
-				break;
-			fwts_log_nl(fw);
-		}
-	}
-	else {
-		fwts_skipped(fw, "Optional control method _GTS does not exist.");
 	}
 	return FWTS_OK;
 }
@@ -2202,9 +2153,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BBN, "Check _BBN (Base Bus Number)." },
 
 	/* Section 15, Waking and Sleeping */
-	{ method_test_BFS, "Check _BFS (Back from Sleep)." },
 	{ method_test_PTS, "Check _PTS (Prepare to Sleep)." },
-	{ method_test_GTS, "Check _GTS (Going to Sleep)." },
 	{ method_test_TTS, "Check _TTS (Transition to State)." },
 	{ method_test_S0,  "Check _S0  (System S0 State) Object." },
 	{ method_test_S1,  "Check _S1  (System S1 State) Object." },

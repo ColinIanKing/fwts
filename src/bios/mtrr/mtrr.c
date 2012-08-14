@@ -356,11 +356,11 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 	fwts_list_foreach(item, lspci_output) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
-			if (strstr(str, "Non-Prefetchable"))
+			if (strstr(str, "non-prefetchable"))
 				pref = 0;
-			else if (strstr(str, "(Prefetchable"))
+			else if (strstr(str, "(prefetchable"))
 				pref = 1;
-			else if (strstr(str, ", Prefetchable"))
+			else if (strstr(str, ", prefetchable"))
 				pref = 1;
 		}
 	}
@@ -419,7 +419,7 @@ static int validate_iomem(fwts_framework *fw)
 		 * For pci bridges, we note the increased depth and
 		 * otherwise skip the entry
  		 */
-		if (strstr(buffer, ": PCI Bus #")) {
+		if (strstr(buffer, ": PCI Bus ")) {
 			pcidepth++;
 			continue;
 		}

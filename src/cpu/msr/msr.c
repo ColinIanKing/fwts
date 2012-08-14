@@ -423,10 +423,6 @@ static msr_info IA32_MSRs[] = {
 	{ "VMX_TRUE_EXIT_CTLS",	0x0000048f,	0, ~0, NULL },
 	{ "VMX_TRUE_ENTRY_CTLS",0x00000490,	0, ~0, NULL },
 
-	{ "A_PMC0",		0x000004c1,	0, ~0, NULL },
-	{ "A_PMC1",		0x000004c2,	0, ~0, NULL },
-	{ "A_PMC2",		0x000004c3,	0, ~0, NULL },
-	{ "A_PMC3",		0x000004c4,	0, ~0, NULL },
 	{ "A_PMC4",		0x000004c5,	0, ~0, NULL },
 	{ "A_PMC5",		0x000004c6,	0, ~0, NULL },
 	{ "A_PMC6",		0x000004c7,	0, ~0, NULL },
@@ -439,7 +435,6 @@ static msr_info IA32_MSRs[] = {
 	//{ "FS_BASE",		0xc0000100,	0, ~0, NULL },
 	//{ "GS_BASE",		0xc0000101, 	0, ~0, NULL },
 	{ "KERNEL_GS_BASE",	0xc0000102, 	0, ~0, NULL },
-	{ "TSC_AUX",		0xc0000103, 	0, 0xffffffffULL, NULL },
 	{ NULL,			0x00000000,	0, 0 , NULL },
 };
 

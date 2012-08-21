@@ -46,8 +46,8 @@ static void init_asl_core(void)
 
 int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 {
-	ACPI_STATUS	status;
 	pid_t	pid;
+	int	status;
 
 	pid = fork();
 	switch (pid) {
@@ -64,9 +64,9 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		Gbl_UseDefaultAmlFilename = FALSE;
 
 		/* Throw away noisy errors */
-		freopen("/dev/null", "w", stderr);
+		if (freopen("/dev/null", "w", stderr) != NULL)
+			(void)AslDoOnePathname((char *)aml, AslDoOneFile);
 
-		status = AslDoOnePathname(aml, AslDoOneFile);
 		_exit(0);
 		break;
 	default:
@@ -86,7 +86,6 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 	int	n;
 	int 	len = 0;
 	int	status;
-	FILE 	*fp;
 
 	if (pipe(pipefds) < 0)
 		return -1;
@@ -112,9 +111,9 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
         	Gbl_DoCompile = TRUE;
 		Gbl_PreprocessFlag = TRUE;
         	Gbl_UseDefaultAmlFilename = FALSE;
-        	Gbl_OutputFilenamePrefix = source;
+        	Gbl_OutputFilenamePrefix = (char*)source;
 
-		status = AslDoOnePathname(source, AslDoOneFile);
+		status = AslDoOnePathname((char*)source, AslDoOneFile);
 
 		close(pipefds[1]);
 

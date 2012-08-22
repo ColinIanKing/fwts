@@ -825,6 +825,20 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mtrr:.*no more MTRRs available",
+   "advice": "A device driver has tried to allocate a Memory Type Range Register (MTRR) to optimially configure a caching policy on a memory region but there are no more free MTRRs available.  Generally the firmware should allow for one or two free MTRRs for drivers to allocate.  The system will have a sub-optimally configured memory region and this may severely impact on performance."
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern":  "[drm].*MTRR allocation failed.*Graphics performance may suffer",
+   "advice": "The DRM driver has tried to allocate a Memory Type Range Register (MTRR) but there are no more free MTRRs available. The system will have a sub-optimally configured graphics memory region and this may severely impact on graphics rendering throughput and performance.  The firmware should allow for one or two free MTRRs, but it hasn't, which is probably a firmware bug."
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_BIOS",
    "pattern": "mtrr:.*your BIOS has configured an incorrect mask, fixing it",

@@ -1,0 +1,6 @@
+PACKAGE_NAME="fwts-efi-runtime-dkms"
+PACKAGE_VERSION="#MODULE_VERSION#"
+MAKE[0]="make"
+BUILT_MODULE_NAME[0]="efi_runtime"
+DEST_MODULE_LOCATION[0]="/updates"
+AUTOINSTALL="yes"

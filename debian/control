@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Firmware Testing Team <firmware-testing-team@lists.launchpad.net>
 Uploaders: Colin King <colin.king@ubuntu.com>, Keng-Yu Lin <kengyu@ubuntu.com>, Alex Hung <alex.hung@canonical.com>, Chris Van Hoof <vanhoof@canonical.com>, Ivan Hu <ivan.hu@canonical.com>
 Standards-Version: 3.9.3
-Build-Depends: debhelper (>= 7.0.50~), autoconf, automake, libtool, libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9), flex, bison, hardening-wrapper, dh-autoreconf
+Build-Depends: debhelper (>= 7.0.50~), autoconf, automake, libtool, libpcre3-dev (>= 7.8), libjson0-dev (>= 0.9), flex, bison, hardening-wrapper, dh-autoreconf, dkms
 
 Package: fwts
 Architecture: any
@@ -52,3 +52,11 @@ Description: Firmware Test Suite frontend interface
  This is a dialog based interface designed to provide an easy to use method
  to execute tests via Firmware Test Suite and is also used as the primary 
  interface within Firmware Test Suit live images.
+
+Package: fwts-efi-runtime-dkms
+Architecture: amd64
+Priority: optional
+Depends: ${shlibs:Depends}, ${misc:Depends}, dkms, linux-headers-generic | linux-headers
+Description: Firmware Test Suite UEFI Runtime Service kernel driver
+ This package provides the efi_runtime kernel driver in DKMS format,
+ which is required for accessing UEFI Runtime Services.

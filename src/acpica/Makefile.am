@@ -40,7 +40,15 @@ dscontrol_munged.c: $(ACPICA_COMP)/dispatcher/dscontrol.c
 
 BUILT_SOURCES = osunixxf_munged.c dscontrol_munged.c
 
-CLEANFILES = osunixxf_munged.c
+CLEANFILES = osunixxf_munged.c \
+	dscontrol_munged.c \
+	$(ACPICA_SRC)/compiler/aslcompiler.output \
+	$(ACPICA_SRC)/compiler/dtparser.output \
+	$(ACPICA_SRC)/compiler/dtparser.y.h \
+	$(ACPICA_SRC)/compiler/prparser.output \
+	$(ACPICA_SRC)/compiler/prparser.y.h \
+	$(ACPICA_SRC)/compiler/prparserlex.c \
+	$(ACPICA_SRC)/compiler/prparserparse.c
 
 pkglib_LTLIBRARIES = libfwtsacpica.la
 libfwtsacpica_la_LDFLAGS = -lpthread -version-info 1:0:0

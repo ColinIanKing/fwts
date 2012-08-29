@@ -55,7 +55,7 @@ basic logs and system related information, but one can also
 specify extra files to add to the archive too.
 
 example:
-	fwts-collect report.log /var/log/messages
+	sudo fwts-collect report.log /var/log/messages
 
 EOD
 }

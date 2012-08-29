@@ -22,6 +22,14 @@ TMPDIR=/tmp/fwts.$$
 FWTS=`which fwts`
 
 #
+# Check if executed as root or with sudo
+#
+if [ $EUID -ne 0 ]; then
+        echo "`basename $0`: must be executed with sudo"
+        exit 1
+fi
+
+#
 #  sighandler
 #
 on_die()

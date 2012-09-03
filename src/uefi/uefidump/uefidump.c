@@ -601,6 +601,22 @@ static void uefidump_info_morc(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+/*
+ *  Dump ACPI global variable address
+ */
+static void uefidump_info_acpi_global_variable(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 8) {
+		/* Should be 8 bytes, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		uint64_t value;
+
+		memcpy(&value, var->data, sizeof(uint64_t));
+		fwts_log_info_verbatum(fw, "  ACPI Global Variable Address: 0x%16.16llx.", (unsigned long long)value);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -623,6 +639,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "SecureBoot",		uefidump_info_secure_boot },
 	{ "SetupMode",		uefidump_info_setup_mode },
 	{ "MemoryOverwriteRequestControl",	uefidump_info_morc },
+	{ "AcpiGlobalVariable",	uefidump_info_acpi_global_variable },
 	{ NULL, NULL }
 };
 

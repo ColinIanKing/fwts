@@ -29,6 +29,22 @@ typedef struct {
 	uefidump_func	func;		/* Function to dump this variable */
 } uefidump_info;
 
+static void uefidump_var_hexdump(fwts_framework *fw, fwts_uefi_var *var)
+{
+	int i;
+	uint8_t *data = (uint8_t*)&var->data;
+
+	fwts_log_info_verbatum(fw,  "  Size: %d bytes of data.", (int)var->datalen);
+
+	for (i = 0; i < (int)var->datalen; i+= 16) {
+		char buffer[128];
+		int left = (int)var->datalen - i;
+
+		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
+		fwts_log_info_verbatum(fw,  "  Data: %s", buffer+2);
+	}
+}
+
 static char *uefidump_vprintf(char *str, const char *fmt, ...) __attribute__((format(printf, 2, 3)));
 
 /*
@@ -509,6 +525,54 @@ static void uefidump_info_dump_type0(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_info_secure_boot(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 1) {
+		/* Should be 1 byte, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value) {
+		case 0:
+			mode = " (Secure Boot Mode Off)";
+			break;
+		case 1:
+			mode = " (Secure Boot Mode On)";
+			break;
+		default:
+			mode = "";
+			break;
+		}
+		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
+	}
+}
+
+static void uefidump_info_setup_mode(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 1) {
+		/* Should be 1 byte, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value) {
+		case 0:
+			mode = " (User Mode)";
+			break;
+		case 1:
+			mode = " (Setup Mode)";
+			break;
+		default:
+			mode = "";
+			break;
+		}
+		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -528,6 +592,8 @@ static uefidump_info uefidump_info_table[] = {
 	{ "Timeout",		uefidump_info_timeout },
 	{ "Boot0",		uefidump_info_bootdev },
 	{ "dump-type0-",	uefidump_info_dump_type0 },
+	{ "SecureBoot",		uefidump_info_secure_boot },
+	{ "SetupMode",		uefidump_info_setup_mode },
 	{ NULL, NULL }
 };
 
@@ -569,8 +635,6 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 	char varname[512];
 	char guid_str[37];
 	uefidump_info *info;
-	int i;
-	uint8_t *data;
 
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 
@@ -588,16 +652,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 	}
 
 	/* otherwise just do a plain old hex dump */
-	fwts_log_info_verbatum(fw,  "  Size: %d bytes of data.", (int)var->datalen);
-	data = (uint8_t*)&var->data;
-
-	for (i=0; i<(int)var->datalen; i+= 16) {
-		char buffer[128];
-		int left = (int)var->datalen - i;
-
-		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
-		fwts_log_info_verbatum(fw,  "  Data: %s", buffer+2);
-	}
+	uefidump_var_hexdump(fw, var);
 }
 
 static int uefidump_init(fwts_framework *fw)

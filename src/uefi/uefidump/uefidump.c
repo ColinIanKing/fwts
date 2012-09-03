@@ -573,6 +573,34 @@ static void uefidump_info_setup_mode(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+/*
+ *  See TCG Platform Reset Attack Mitigation Specification, Revision 1.0,
+ *  section 5.
+ */
+static void uefidump_info_morc(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 1) {
+		/* Should be 1 byte, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value & 1) {
+		case 0:
+			mode = " (Firmware should not clear memory on reboot)";
+			break;
+		case 1:
+			mode = " (Firmware should clear memory on reboot)";
+			break;
+		default:
+			mode = "";
+			break;
+		}
+		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -594,6 +622,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "dump-type0-",	uefidump_info_dump_type0 },
 	{ "SecureBoot",		uefidump_info_secure_boot },
 	{ "SetupMode",		uefidump_info_setup_mode },
+	{ "MemoryOverwriteRequestControl",	uefidump_info_morc },
 	{ NULL, NULL }
 };
 

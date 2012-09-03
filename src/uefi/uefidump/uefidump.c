@@ -490,6 +490,25 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	free(path);
 }
 
+/*
+ *  Dump kernel oops log messages
+ */
+static void uefidump_info_dump_type0(fwts_framework *fw, fwts_uefi_var *var)
+{
+	char *ptr = (char*)var->data;
+
+	while (*ptr) {
+		char *start = ptr;
+		while (*ptr && *ptr != '\n')
+			ptr++;
+
+		if (*ptr == '\n') {
+			*ptr++ = 0;
+			fwts_log_info_verbatum(fw, "  KLog: %s.", start);
+		}
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -507,6 +526,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "Lang",		uefidump_info_lang },
 	{ "Timeout",		uefidump_info_timeout },
 	{ "Boot0",		uefidump_info_bootdev },
+	{ "dump-type0-",	uefidump_info_dump_type0 },
 	{ NULL, NULL }
 };
 

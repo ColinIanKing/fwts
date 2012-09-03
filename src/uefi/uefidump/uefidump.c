@@ -617,6 +617,30 @@ static void uefidump_info_acpi_global_variable(fwts_framework *fw, fwts_uefi_var
 	}
 }
 
+/*
+ *  Dump Supported Signature GUIDs
+ */
+static void uefidump_info_signature_support(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen % 16) {
+		/* Should be multiple of 16 bytes, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		/* Signatures are an array of GUIDs */
+		uint8_t *data = var->data;
+		char guid_str[37];
+
+		if (var->datalen)
+			fwts_log_info_verbatum(fw, "  Signature GUIDs:");
+
+		while (data - var->data < var->datalen) {
+			fwts_guid_buf_to_str(data, guid_str, sizeof(guid_str));
+			fwts_log_info_verbatum(fw, "    %s", guid_str);
+			data += 16;
+		}
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -640,6 +664,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "SetupMode",		uefidump_info_setup_mode },
 	{ "MemoryOverwriteRequestControl",	uefidump_info_morc },
 	{ "AcpiGlobalVariable",	uefidump_info_acpi_global_variable },
+	{ "SignatureSupport",	uefidump_info_signature_support },
 	{ NULL, NULL }
 };
 

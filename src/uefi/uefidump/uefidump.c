@@ -520,6 +520,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "ConIn",		uefidump_info_dev_path },
 	{ "ConOutDev",		uefidump_info_dev_path },
 	{ "ConOut",		uefidump_info_dev_path },
+	{ "ConErrDev",		uefidump_info_dev_path },
 	{ "ErrOutDev",		uefidump_info_dev_path },
 	{ "ErrOut",		uefidump_info_dev_path },
 	{ "LangCodes",		uefidump_info_langcodes },

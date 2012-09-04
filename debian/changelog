@@ -1,3 +1,32 @@
+fwts (0.25.07) quantal; urgency=low
+
+  [Chris Van Hoof]
+  * fwts-collect: make sure we are executing as root or with sudo
+  * fwts-collect: reference sudo requirement in show_help()
+
+  [Colin Ian King]
+  * acpi: method: remove _GTS and _BFS tests
+  * acpi: method: _PSS power dissipation levels can be equal to previous level
+  * acpi: method: only get pedantic about therm returns if values are hard coded
+  * misc: remove old crufty valgrind script
+  * acpica: tidy up code to remove GCC warnings
+  * Add some MTRR specific klog tests.
+
+  [Ivan Hu]
+  * msr: remove the IA32_A_PMC0-3 and IA32_TSC_AUX from cosistent test
+  * mtrr: fix mtrr checking without devices that are under bridges
+
+  [Keng-Yu Lin]
+  * auto-packager: Add Quantal and remove Maverick
+  * auto-packager: update mkpackage.README
+  * auto-packager: Add mktar.sh to make the release tarball
+  * auto-packager: mkpackage.sh to handle the released tarball
+  * auto-packager: Update the mkpackage.README
+  * debian: change source package format to 3.0 (quilt)
+  * Add dh-autoreconf support and clean up generated files (LP: #1042287)
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 04 Sep 2012 10:20:22 +0800
+
 fwts (0.25.06) quantal; urgency=low
 
   [Alex Hung]

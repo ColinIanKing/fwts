@@ -24,6 +24,9 @@
 #include <pcre.h>
 #include <json/json.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "fwts.h"
 
@@ -301,12 +304,23 @@ static int fwts_klog_check(fwts_framework *fw,
 	int ret = FWTS_ERROR;
 	int n;
 	int i;
+	int fd;
 	json_object *klog_objs;
 	json_object *klog_table;
 	fwts_klog_pattern *patterns;
 	char json_data_path[PATH_MAX];
 
 	snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, KLOG_DATA_JSON_FILE);
+
+	/*
+	 * json_object_from_file() can fail when files aren't readable
+	 * so check if we can open for read before calling json_object_from_file()
+	 */
+	if ((fd = open(json_data_path, O_RDONLY)) < 0) {
+		fwts_log_error(fw, "Cannot read file %s.", json_data_path);
+		return FWTS_ERROR;
+	}
+	close(fd);
 
 	if ((klog_objs = json_object_from_file(json_data_path)) == JSON_ERROR) {
 		fwts_log_error(fw, "Cannot load klog data from %s.", json_data_path);

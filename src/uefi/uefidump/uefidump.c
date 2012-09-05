@@ -17,8 +17,6 @@
  *
  */
 
-#include <dirent.h>
-
 #include "fwts.h"
 #include "fwts_uefi.h"
 
@@ -32,7 +30,7 @@ typedef struct {
 static void uefidump_var_hexdump(fwts_framework *fw, fwts_uefi_var *var)
 {
 	int i;
-	uint8_t *data = (uint8_t*)&var->data;
+	uint8_t *data = (uint8_t*)var->data;
 
 	fwts_log_info_verbatum(fw,  "  Size: %d bytes of data.", (int)var->datalen);
 
@@ -482,6 +480,7 @@ static void uefidump_info_bootorder(fwts_framework *fw, fwts_uefi_var *var)
 			*data++, i < (n - 1) ? "," : "");
 	}
 	fwts_log_info_verbatum(fw, "  Boot Order: %s.", str);
+	free(str);
 }
 
 static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
@@ -668,11 +667,6 @@ static uefidump_info uefidump_info_table[] = {
 	{ NULL, NULL }
 };
 
-static int uefidump_true_filter(const struct dirent *d)
-{
-	return 1;
-}
-
 /*
  *  uefidump_attribute()
  *	convert attribute into a human readable form
@@ -738,25 +732,26 @@ static int uefidump_init(fwts_framework *fw)
 
 static int uefidump_test1(fwts_framework *fw)
 {
-	int n;
-	int i;
-	struct dirent **names = NULL;
+	fwts_list name_list;
 
-	n = scandir("/sys/firmware/efi/vars", &names, uefidump_true_filter, alphasort);
-	if (n <= 0) {
+	if (fwts_uefi_get_variable_names(&name_list) == FWTS_ERROR) {
 		fwts_log_info(fw, "Cannot find any UEFI variables.");
 	} else {
-		for (i=0; i<n; i++) {
+		fwts_list_link *item;
+
+		fwts_list_foreach(item, &name_list) {
 			fwts_uefi_var var;
-			if ((names[i] != NULL) && 
-		    	(fwts_uefi_get_variable(names[i]->d_name, &var) == FWTS_OK)) {
+			char *name = fwts_list_data(char *, item);
+
+			if (fwts_uefi_get_variable(name, &var) == FWTS_OK) {
 				uefidump_var(fw, &var);
+				fwts_uefi_free_variable(&var);
 				fwts_log_nl(fw);
 			}
-			free(names[i]);
 		}
 	}
-	free(names);
+
+	fwts_uefi_free_variable_names(&name_list);
 
 	return FWTS_OK;
 }

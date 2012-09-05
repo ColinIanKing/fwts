@@ -23,13 +23,13 @@
 #define FWTS_UEFI_LOAD_ACTIVE 0x00000001
 
 typedef struct {
-	uint16_t	varname[512];
+	uint16_t	*varname;
 	uint8_t		guid[16];
-	uint64_t	datalen;
-	uint8_t		data[1024];
+	size_t		datalen;
+	uint8_t		*data;
 	uint64_t	status;
 	uint32_t	attributes;
-} __attribute__((packed)) fwts_uefi_var;
+} fwts_uefi_var;
 
 typedef uint8_t  fwts_uefi_mac_addr[32];
 typedef uint8_t  fwts_uefi_ipv4_addr[4];
@@ -302,6 +302,8 @@ void fwts_uefi_str16_to_str(char *dst, const size_t len, const uint16_t *src);
 size_t fwts_uefi_str16len(const uint16_t *str);
 void fwts_uefi_get_varname(char *varname, const size_t len, const fwts_uefi_var *var);
 int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var);
-int fwts_uefi_set_variable(const char *varname, fwts_uefi_var *var);
+void fwts_uefi_free_variable(fwts_uefi_var *var);
+void fwts_uefi_free_variable_names(fwts_list *list);
+int fwts_uefi_get_variable_names(fwts_list *list);
 
 #endif

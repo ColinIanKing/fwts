@@ -33,3 +33,17 @@ void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len)
 			guid[3], guid[2], guid[1], guid[0], guid[5], guid[4], guid[7], guid[6],
 			guid[8], guid[9], guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
 }
+
+/*
+ *  fwts_guid_str_to_buf()
+ *	convert a GUID string back to a 16 byte GUID
+ *	guid needs to be at least 16 chars long
+ */
+void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, size_t guid_len)
+{
+	if (guid && guid_len >= 16) {
+		sscanf(guid_str, "%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
+			&guid[3], &guid[2], &guid[1], &guid[0], &guid[5], &guid[4], &guid[7], &guid[6],
+			&guid[8], &guid[9], &guid[10], &guid[11], &guid[12], &guid[13], &guid[14], &guid[15]);
+	}
+}

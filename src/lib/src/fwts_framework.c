@@ -37,7 +37,8 @@
 	 FWTS_BATCH_EXPERIMENTAL |	\
 	 FWTS_INTERACTIVE_EXPERIMENTAL |\
 	 FWTS_POWER_STATES |		\
-	 FWTS_UTILS)
+	 FWTS_UTILS |			\
+	 FWTS_UNSAFE)
 
 #define FWTS_ARGS_WIDTH 	28
 #define FWTS_MIN_TTY_WIDTH	50
@@ -78,6 +79,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
 	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
+	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -230,6 +232,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
 		{ "Power States",		FWTS_POWER_STATES },
 		{ "Utilities",			FWTS_UTILS },
+		{ "Unsafe",			FWTS_UNSAFE },
 		{ NULL,				0 },
 	};
 
@@ -984,6 +987,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			if (fwts_framework_log_type_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
+		case 33: /* --unsafe */
+			fw->flags |= FWTS_FRAMEWORK_FLAGS_UNSAFE;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1050,6 +1056,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		break;
 	case 'u': /* --utils */
 		fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
+		break;
+	case 'U': /* --unsafe */
+		fw->flags |= FWTS_FRAMEWORK_FLAGS_UNSAFE;
 		break;
 	case 'v': /* --version */
 		fwts_framework_show_version(stdout, argv[0]);

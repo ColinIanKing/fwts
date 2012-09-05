@@ -11,6 +11,7 @@ fwts (0.25.07) quantal; urgency=low
   * misc: remove old crufty valgrind script
   * acpica: tidy up code to remove GCC warnings
   * Add some MTRR specific klog tests.
+  * lib: fwts_klog: sanity check json klog data is readable
 
   [Ivan Hu]
   * msr: remove the IA32_A_PMC0-3 and IA32_TSC_AUX from cosistent test
@@ -25,7 +26,7 @@ fwts (0.25.07) quantal; urgency=low
   * debian: change source package format to 3.0 (quilt)
   * Add dh-autoreconf support and clean up generated files (LP: #1042287)
 
- -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 04 Sep 2012 10:20:22 +0800
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 05 Sep 2012 16:31:13 +0800
 
 fwts (0.25.06) quantal; urgency=low
 

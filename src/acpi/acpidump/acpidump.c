@@ -1694,4 +1694,4 @@ static fwts_framework_ops acpidump_ops = {
 	.minor_tests = acpidump_tests
 };
 
-FWTS_REGISTER(acpidump, &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_UTILS);
+FWTS_REGISTER(acpidump, &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);

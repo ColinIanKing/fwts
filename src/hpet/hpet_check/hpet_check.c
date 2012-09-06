@@ -276,6 +276,6 @@ static fwts_framework_ops hpet_check_ops = {
 };
 
 FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME,
-	FWTS_BATCH | FWTS_ROOT_PRIV);
+	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

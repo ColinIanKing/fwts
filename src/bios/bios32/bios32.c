@@ -164,6 +164,6 @@ static fwts_framework_ops bios32_ops = {
 };
 
 FWTS_REGISTER(bios32, &bios32_ops, FWTS_TEST_ANYTIME,
-	FWTS_BATCH | FWTS_ROOT_PRIV);
+	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

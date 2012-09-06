@@ -291,6 +291,6 @@ static fwts_framework_ops battery_ops = {
 	.minor_tests = battery_tests
 };
 
-FWTS_REGISTER(battery, &battery_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);
+FWTS_REGISTER(battery, &battery_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
 
 #endif

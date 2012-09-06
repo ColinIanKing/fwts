@@ -77,4 +77,4 @@ static fwts_framework_ops oops_ops = {
 	.minor_tests = oops_tests
 };
 
-FWTS_REGISTER(oops, &oops_ops, FWTS_TEST_EARLY, FWTS_BATCH);
+FWTS_REGISTER(oops, &oops_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH);

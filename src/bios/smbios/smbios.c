@@ -130,6 +130,6 @@ static fwts_framework_ops smbios_ops = {
 	.minor_tests = smbios_tests
 };
 
-FWTS_REGISTER(smbios, &smbios_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+FWTS_REGISTER(smbios, &smbios_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

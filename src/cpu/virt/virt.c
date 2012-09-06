@@ -87,6 +87,6 @@ static fwts_framework_ops virt_ops = {
 	.minor_tests = virt_tests
 };
 
-FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+FWTS_REGISTER(virt, &virt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

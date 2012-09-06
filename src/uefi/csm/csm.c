@@ -111,6 +111,6 @@ static fwts_framework_ops csm_ops = {
 	.minor_tests = csm_tests
 };
 
-FWTS_REGISTER(csm, &csm_ops, FWTS_TEST_ANYTIME, FWTS_BATCH | FWTS_ROOT_PRIV);
+FWTS_REGISTER(csm, &csm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

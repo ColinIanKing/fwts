@@ -331,6 +331,6 @@ static fwts_framework_ops dmar_ops = {
 	.minor_tests = dmar_tests
 };
 
-FWTS_REGISTER(dmar, &dmar_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL);
+FWTS_REGISTER(dmar, &dmar_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH_EXPERIMENTAL);
 
 #endif

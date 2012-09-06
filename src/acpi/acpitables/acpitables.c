@@ -468,4 +468,4 @@ static fwts_framework_ops acpi_table_check_ops = {
 	.minor_tests = acpi_table_check_tests
 };
 
-FWTS_REGISTER(acpitables, &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(acpitables, &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);

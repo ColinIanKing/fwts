@@ -31,14 +31,14 @@
 /* Suffix ".log", ".xml", etc gets automatically appended */
 #define RESULTS_LOG	"results"
 
-#define FWTS_RUN_ALL_FLAGS		\
-	(FWTS_BATCH |			\
-	 FWTS_INTERACTIVE |		\
-	 FWTS_BATCH_EXPERIMENTAL |	\
-	 FWTS_INTERACTIVE_EXPERIMENTAL |\
-	 FWTS_POWER_STATES |		\
-	 FWTS_UTILS |			\
-	 FWTS_UNSAFE)
+#define FWTS_FLAG_RUN_ALL		\
+	(FWTS_FLAG_BATCH |			\
+	 FWTS_FLAG_INTERACTIVE |		\
+	 FWTS_FLAG_BATCH_EXPERIMENTAL |	\
+	 FWTS_FLAG_INTERACTIVE_EXPERIMENTAL |\
+	 FWTS_FLAG_POWER_STATES |		\
+	 FWTS_FLAG_UTILS |			\
+	 FWTS_FLAG_UNSAFE)
 
 #define FWTS_ARGS_WIDTH 	28
 #define FWTS_MIN_TTY_WIDTH	50
@@ -124,9 +124,9 @@ void fwts_framework_test_add(const char *name,
 {
 	fwts_framework_test *new_test;
 
-	if (flags & ~(FWTS_RUN_ALL_FLAGS | FWTS_ROOT_PRIV)) {
-		fprintf(stderr, "Test %s flags must be FWTS_BATCH, FWTS_INTERACTIVE, FWTS_BATCH_EXPERIMENTAL, \n"
-			        "FWTS_INTERACTIVE_EXPERIMENTAL or FWTS_POWER_STATES, got %x\n", name, flags);
+	if (flags & ~(FWTS_FLAG_RUN_ALL | FWTS_FLAG_ROOT_PRIV)) {
+		fprintf(stderr, "Test %s flags must be a bit field in 0x%x, got %x\n",
+			name, FWTS_FLAG_RUN_ALL, flags);
 		exit(EXIT_FAILURE);
 	}
 
@@ -226,13 +226,13 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 	} fwts_categories;
 
 	static fwts_categories categories[] = {
-		{ "Batch",			FWTS_BATCH },
-		{ "Interactive",		FWTS_INTERACTIVE },
-		{ "Batch Experimental",		FWTS_BATCH_EXPERIMENTAL },
-		{ "Interactive Experimental",	FWTS_INTERACTIVE_EXPERIMENTAL },
-		{ "Power States",		FWTS_POWER_STATES },
-		{ "Utilities",			FWTS_UTILS },
-		{ "Unsafe",			FWTS_UNSAFE },
+		{ "Batch",			FWTS_FLAG_BATCH },
+		{ "Interactive",		FWTS_FLAG_INTERACTIVE },
+		{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
+		{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
+		{ "Power States",		FWTS_FLAG_POWER_STATES },
+		{ "Utilities",			FWTS_FLAG_UTILS },
+		{ "Unsafe",			FWTS_FLAG_UNSAFE },
 		{ NULL,				0 },
 	};
 
@@ -242,12 +242,12 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 
 		/* If no category flags are set, or category matches user requested
 		   category go and dump name and purpose of tests */
-		if (((fw->flags & FWTS_RUN_ALL_FLAGS) == 0) ||
-		    ((fw->flags & FWTS_RUN_ALL_FLAGS) & categories[i].flag)) {
+		if (((fw->flags & FWTS_FLAG_RUN_ALL) == 0) ||
+		    ((fw->flags & FWTS_FLAG_RUN_ALL) & categories[i].flag)) {
 			fwts_list_init(&sorted);
 			fwts_list_foreach(item, &fwts_framework_test_list) {
 				test = fwts_list_data(fwts_framework_test *, item);
-				if ((test->flags & FWTS_RUN_ALL_FLAGS) == categories[i].flag)
+				if ((test->flags & FWTS_FLAG_RUN_ALL) == categories[i].flag)
 					fwts_list_add_ordered(&sorted, test,
 						fwts_framework_compare_test_name);
 			}
@@ -257,7 +257,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 					printf("\n");
 				need_nl = 1;
 				printf("%s%s:\n", categories[i].title,
-					categories[i].flag & FWTS_UTILS ? "" : " tests");
+					categories[i].flag & FWTS_FLAG_UTILS ? "" : " tests");
 
 				fwts_list_foreach(item, &sorted) {
 					test = fwts_list_data(fwts_framework_test *, item);
@@ -387,7 +387,7 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 	}
 
 	/* Output for the dialog tool, dialog --title "fwts" --gauge "" 12 80 0 */
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG) {
+	if (fw->flags & FWTS_FLAG_SHOW_PROGRESS_DIALOG) {
 		char buffer[128];
 
 		fwts_framework_format_results(buffer, sizeof(buffer), &fw->total, true);
@@ -425,7 +425,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 	fwts_log_summary(fw, "%s.", buffer);
 	fwts_framework_underline(fw,'=');
 
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY) {
+	if (fw->flags & FWTS_FLAG_STDOUT_SUMMARY) {
 		if (results->aborted > 0)
 			printf("%s\n", fwts_log_field_to_str_upper(LOG_ABORTED));
 		else if (results->skipped > 0)
@@ -448,7 +448,7 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 			printf("%s\n", fwts_log_field_to_str_upper(LOG_PASSED));
 	}
 
-	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
+	if (!(fw->flags & FWTS_FLAG_LP_TAGS))
 		fwts_log_newline(fw->results);
 
 	return FWTS_OK;
@@ -484,11 +484,11 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	fwts_log_set_owner(fw->results, test->name);
 
 	fw->current_minor_test_num = 1;
-	fw->show_progress = (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS) &&
+	fw->show_progress = (fw->flags & FWTS_FLAG_SHOW_PROGRESS) &&
 			    (FWTS_TEST_INTERACTIVE(test->flags) == 0);
 
 	/* Not a utility test?, then we require a test summary at end of the test run */
-	if (!(test->flags & FWTS_UTILS))
+	if (!(test->flags & FWTS_FLAG_UTILS))
 		fw->print_summary = 1;
 
 	if (test->ops->description) {
@@ -503,7 +503,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 
 	fwts_framework_minor_test_progress(fw, 0, "");
 
-	if ((test->flags & FWTS_ROOT_PRIV) &&
+	if ((test->flags & FWTS_FLAG_ROOT_PRIV) &&
 	    (fwts_check_root_euid(fw, true) != FWTS_OK)) {
 		fwts_log_error(fw, "Aborted test, insufficient privilege.");
 		fw->current_major_test->results.aborted += test->ops->total_tests;
@@ -593,7 +593,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 	if (test->ops->deinit)
 		test->ops->deinit(fw);
 
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG) {
+	if (fw->flags & FWTS_FLAG_LP_TAGS_LOG) {
 		fwts_log_section_begin(fw->results, "tags");
 		fwts_tag_report(fw, LOG_TAG, &fw->test_taglist);
 		fwts_log_section_end(fw->results);
@@ -602,7 +602,7 @@ static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts
 done:
 	fwts_list_free_items(&fw->test_taglist, free);
 
-	if (!(test->flags & FWTS_UTILS)) {
+	if (!(test->flags & FWTS_FLAG_UTILS)) {
 		fwts_log_section_begin(fw->results, "results");
 		fwts_framework_test_summary(fw);
 		fwts_log_section_end(fw->results);	/* results */
@@ -793,7 +793,7 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 
 		fwts_log_info(fw, "Running tests: %s.",
 			fwts_list_len(tests_to_run) == 0 ? "None" : tests);
-		if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS))
+		if (!(fw->flags & FWTS_FLAG_LP_TAGS))
 			fwts_log_newline(fw->results);
 		free(tests);
 	}
@@ -875,7 +875,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 	case 0:
 		switch (long_index) {
 		case 0: /* --stdout-summary */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_STDOUT_SUMMARY;
+			fw->flags |= FWTS_FLAG_STDOUT_SUMMARY;
 			break;
 		case 1: /* --help */
 			fwts_framework_syntax(argv);
@@ -898,12 +898,12 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 7: /* --show-progress */
 			fw->flags = (fw->flags &
-					~(FWTS_FRAMEWORK_FLAGS_QUIET |
-					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
-					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+					~(FWTS_FLAG_QUIET |
+					  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
+					| FWTS_FLAG_SHOW_PROGRESS;
 			break;
 		case 8: /* --show-tests */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
+			fw->flags |= FWTS_FLAG_SHOW_TESTS;
 			break;
 		case 9: /* --klog */
 			fwts_framework_strdup(&fw->klog, optarg);
@@ -915,13 +915,13 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->lspci, optarg);
 			break;
 		case 12: /* --batch */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+			fw->flags |= FWTS_FLAG_BATCH;
 			break;
 		case 13: /* --interactive */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+			fw->flags |= FWTS_FLAG_INTERACTIVE;
 			break;
 		case 14: /* --force-clean */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
+			fw->flags |= FWTS_FLAG_FORCE_CLEAN;
 			break;
 		case 15: /* --version */
 			fwts_framework_show_version(stdout, argv[0]);
@@ -933,22 +933,22 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->acpi_table_path, optarg);
 			break;
 		case 18: /* --batch-experimental */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH_EXPERIMENTAL;
+			fw->flags |= FWTS_FLAG_BATCH_EXPERIMENTAL;
 			break;
 		case 19: /* --interactive-experimental */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE_EXPERIMENTAL;
+			fw->flags |= FWTS_FLAG_INTERACTIVE_EXPERIMENTAL;
 			break;
 		case 20: /* --power-states */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
+			fw->flags |= FWTS_FLAG_POWER_STATES;
 			break;
 		case 21: /* --all */
-			fw->flags |= FWTS_RUN_ALL_FLAGS;
+			fw->flags |= FWTS_FLAG_RUN_ALL;
 			break;
 		case 22: /* --show-progress-dialog */
 			fw->flags = (fw->flags &
-					~(FWTS_FRAMEWORK_FLAGS_QUIET |
-					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS))
-					| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
+					~(FWTS_FLAG_QUIET |
+					  FWTS_FLAG_SHOW_PROGRESS))
+					| FWTS_FLAG_SHOW_PROGRESS_DIALOG;
 			break;
 		case 23: /* --skip-test */
 			if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
@@ -956,29 +956,29 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 24: /* --quiet */
 			fw->flags = (fw->flags &
-					~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
-					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
-					| FWTS_FRAMEWORK_FLAGS_QUIET;
+					~(FWTS_FLAG_SHOW_PROGRESS |
+					  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
+					| FWTS_FLAG_QUIET;
 			break;
 		case 25: /* --dumpfile */
 			fwts_framework_strdup(&fw->acpi_table_acpidump_file, optarg);
 			break;
 		case 26: /* --lp-tags */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
+			fw->flags |= FWTS_FLAG_LP_TAGS;
 			fwts_log_filter_unset_field(~0);
 			fwts_log_filter_set_field(LOG_TAG);
 			break;
 		case 27: /* --show-tests-full */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL;
+			fw->flags |= FWTS_FLAG_SHOW_TESTS_FULL;
 			break;
 		case 28: /* --utils */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
+			fw->flags |= FWTS_FLAG_UTILS;
 			break;
 		case 29: /* --json-data-path */
 			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
 		case 30: /* --lp-tags-log */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG;
+			fw->flags |= FWTS_FLAG_LP_TAGS_LOG;
 			break;
 		case 31: /* --disassemble-aml */
 			fwts_iasl_disassemble_all_to_file(fw);
@@ -988,34 +988,34 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 				return FWTS_ERROR;
 			break;
 		case 33: /* --unsafe */
-			fw->flags |= FWTS_FRAMEWORK_FLAGS_UNSAFE;
+			fw->flags |= FWTS_FLAG_UNSAFE;
 			break;
 		}
 		break;
 	case 'a': /* --all */
-		fw->flags |= FWTS_RUN_ALL_FLAGS;
+		fw->flags |= FWTS_FLAG_RUN_ALL;
 		break;
 	case 'b': /* --batch */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+		fw->flags |= FWTS_FLAG_BATCH;
 		break;
 	case 'd': /* --dump */
 		fwts_dump_info(fw, NULL);
 		return FWTS_COMPLETE;
 	case 'D': /* --show-progress-dialog */
 		fw->flags = (fw->flags &
-				~(FWTS_FRAMEWORK_FLAGS_QUIET |
-				  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS))
-				| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG;
+				~(FWTS_FLAG_QUIET |
+				  FWTS_FLAG_SHOW_PROGRESS))
+				| FWTS_FLAG_SHOW_PROGRESS_DIALOG;
 		break;
 	case 'f':
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN;
+		fw->flags |= FWTS_FLAG_FORCE_CLEAN;
 		break;
 	case 'h':
 	case '?':
 		fwts_framework_syntax(argv);
 		return FWTS_COMPLETE;
 	case 'i': /* --interactive */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_INTERACTIVE;
+		fw->flags |= FWTS_FLAG_INTERACTIVE;
 		break;
 	case 'j': /* --json-data-path */
 		fwts_framework_strdup(&fw->json_data_path, optarg);
@@ -1024,28 +1024,28 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fwts_framework_strdup(&fw->klog, optarg);
 		break;
 	case 'l': /* --lp-flags */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_LP_TAGS;
+		fw->flags |= FWTS_FLAG_LP_TAGS;
 		break;
 	case 'p': /* --show-progress */
 		fw->flags = (fw->flags &
-				~(FWTS_FRAMEWORK_FLAGS_QUIET |
-				  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
-				| FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+				~(FWTS_FLAG_QUIET |
+				  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
+				| FWTS_FLAG_SHOW_PROGRESS;
 			break;
 	case 'P': /* --power-states */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_POWER_STATES;
+		fw->flags |= FWTS_FLAG_POWER_STATES;
 		break;
 	case 'q': /* --quiet */
 		fw->flags = (fw->flags &
-				~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
-				  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
-				| FWTS_FRAMEWORK_FLAGS_QUIET;
+				~(FWTS_FLAG_SHOW_PROGRESS |
+				  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
+				| FWTS_FLAG_QUIET;
 		break;
 	case 'r': /* --results-output */
 		fwts_framework_strdup(&fw->results_logname, optarg);
 		break;
 	case 's': /* --show-tests */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_SHOW_TESTS;
+		fw->flags |= FWTS_FLAG_SHOW_TESTS;
 		break;
 	case 'S': /* --skip-test */
 		if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
@@ -1055,10 +1055,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fwts_framework_strdup(&fw->acpi_table_path, optarg);
 		break;
 	case 'u': /* --utils */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_UTILS;
+		fw->flags |= FWTS_FLAG_UTILS;
 		break;
 	case 'U': /* --unsafe */
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_UNSAFE;
+		fw->flags |= FWTS_FLAG_UNSAFE;
 		break;
 	case 'v': /* --version */
 		fwts_framework_show_version(stdout, argv[0]);
@@ -1093,8 +1093,8 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->firmware_type = fwts_firmware_detect();
 
 	fw->magic = FWTS_FRAMEWORK_MAGIC;
-	fw->flags = FWTS_FRAMEWORK_FLAGS_DEFAULT |
-		    FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS;
+	fw->flags = FWTS_FLAG_DEFAULT |
+		    FWTS_FLAG_SHOW_PROGRESS;
 	fw->log_type = LOG_TYPE_PLAINTEXT;
 
 	fwts_list_init(&fw->total_taglist);
@@ -1122,22 +1122,22 @@ int fwts_framework_args(const int argc, char **argv)
 		if (!strcmp(argv[i], "-")) {
 			fwts_framework_strdup(&fw->results_logname, "stdout");
 			fw->flags = (fw->flags &
-					~(FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS |
-					  FWTS_FRAMEWORK_FLAGS_SHOW_PROGRESS_DIALOG))
-					| FWTS_FRAMEWORK_FLAGS_QUIET;
+					~(FWTS_FLAG_SHOW_PROGRESS |
+					  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
+					| FWTS_FLAG_QUIET;
 			break;
 		}
 
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS) {
+	if (fw->flags & FWTS_FLAG_SHOW_TESTS) {
 		fwts_framework_show_tests(fw, false);
 		goto tidy_close;
 	}
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_SHOW_TESTS_FULL) {
+	if (fw->flags & FWTS_FLAG_SHOW_TESTS_FULL) {
 		fwts_framework_show_tests(fw, true);
 		goto tidy_close;
 	}
-	if ((fw->flags & FWTS_RUN_ALL_FLAGS) == 0)
-		fw->flags |= FWTS_FRAMEWORK_FLAGS_BATCH;
+	if ((fw->flags & FWTS_FLAG_RUN_ALL) == 0)
+		fw->flags |= FWTS_FLAG_BATCH;
 	if ((fw->lspci == NULL) || (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
@@ -1157,7 +1157,7 @@ int fwts_framework_args(const int argc, char **argv)
 	/* Results log */
 	if ((fw->results = fwts_log_open("fwts",
 			fw->results_logname,
-			fw->flags & FWTS_FRAMEWORK_FLAGS_FORCE_CLEAN ? "w" : "a",
+			fw->flags & FWTS_FLAG_FORCE_CLEAN ? "w" : "a",
 			fw->log_type)) == NULL) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);
@@ -1187,13 +1187,13 @@ int fwts_framework_args(const int argc, char **argv)
 		fwts_list_link *item;
 		fwts_list_foreach(item, &fwts_framework_test_list) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
-			if (fw->flags & test->flags & FWTS_RUN_ALL_FLAGS)
+			if (fw->flags & test->flags & FWTS_FLAG_RUN_ALL)
 				if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
 					fwts_list_append(&tests_to_run, test);
 		}
 	}
 
-	if (!(fw->flags & FWTS_FRAMEWORK_FLAGS_QUIET)) {
+	if (!(fw->flags & FWTS_FLAG_QUIET)) {
 		char *filenames = fwts_log_get_filenames(fw->results_logname, fw->log_type);
 
 		if (filenames) {
@@ -1216,7 +1216,7 @@ int fwts_framework_args(const int argc, char **argv)
 		fwts_log_section_begin(fw->results, "summary");
 		fwts_log_set_owner(fw->results, "summary");
 		fwts_log_nl(fw);
-		if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS_LOG)
+		if (fw->flags & FWTS_FLAG_LP_TAGS_LOG)
 			fwts_tag_report(fw, LOG_SUMMARY, &fw->total_taglist);
 		fwts_framework_total_summary(fw);
 		fwts_log_nl(fw);
@@ -1224,7 +1224,7 @@ int fwts_framework_args(const int argc, char **argv)
 		fwts_log_section_end(fw->results);
 	}
 
-	if (fw->flags & FWTS_FRAMEWORK_FLAGS_LP_TAGS)
+	if (fw->flags & FWTS_FLAG_LP_TAGS)
 		fwts_tag_report(fw, LOG_TAG | LOG_NO_FIELDS, &fw->total_taglist);
 
 tidy:

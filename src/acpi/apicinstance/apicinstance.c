@@ -81,4 +81,4 @@ static fwts_framework_ops apicinstance_ops = {
 	.minor_tests = apicinstance_tests
 };
 
-FWTS_REGISTER(apicinstance, &apicinstance_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(apicinstance, &apicinstance_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);

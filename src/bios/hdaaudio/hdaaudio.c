@@ -183,4 +183,4 @@ static fwts_framework_ops hda_audio_ops = {
 	.minor_tests = hda_audio_tests
 };
 
-FWTS_REGISTER(hda_audio, &hda_audio_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(hda_audio, &hda_audio_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);

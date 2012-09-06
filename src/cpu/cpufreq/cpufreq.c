@@ -694,6 +694,6 @@ static fwts_framework_ops cpufreq_ops = {
 	.minor_tests = cpufreq_tests
 };
 
-FWTS_REGISTER(cpufreq, &cpufreq_ops, FWTS_TEST_ANYTIME, FWTS_BATCH_EXPERIMENTAL | FWTS_ROOT_PRIV);
+FWTS_REGISTER(cpufreq, &cpufreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH_EXPERIMENTAL | FWTS_FLAG_ROOT_PRIV);
 
 #endif

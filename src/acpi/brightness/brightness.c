@@ -384,6 +384,6 @@ static fwts_framework_ops brightness_ops = {
 	.minor_tests = brightness_tests
 };
 
-FWTS_REGISTER(brightness, &brightness_ops, FWTS_TEST_ANYTIME, FWTS_INTERACTIVE);
+FWTS_REGISTER(brightness, &brightness_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
 
 #endif

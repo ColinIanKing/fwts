@@ -82,6 +82,6 @@ static fwts_framework_ops bios_info_ops = {
 	.minor_tests = bios_info_tests
 };
 
-FWTS_REGISTER(bios_info, &bios_info_ops, FWTS_TEST_FIRST, FWTS_BATCH);
+FWTS_REGISTER(bios_info, &bios_info_ops, FWTS_TEST_FIRST, FWTS_FLAG_BATCH);
 
 #endif

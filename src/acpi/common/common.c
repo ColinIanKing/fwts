@@ -83,6 +83,6 @@ static fwts_framework_ops dmesg_common_ops = {
 	.minor_tests = dmesg_common_tests
 };
 
-FWTS_REGISTER(dmesg_common, &dmesg_common_ops, FWTS_TEST_EARLY, FWTS_BATCH);
+FWTS_REGISTER(dmesg_common, &dmesg_common_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH);
 
 #endif

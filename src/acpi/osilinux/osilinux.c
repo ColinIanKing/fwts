@@ -100,6 +100,6 @@ static fwts_framework_ops osilinux_ops = {
 	.minor_tests = osilinux_tests
 };
 
-FWTS_REGISTER(osilinux, &osilinux_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(osilinux, &osilinux_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
 
 #endif

@@ -83,4 +83,4 @@ static fwts_framework_ops klog_ops = {
 	.minor_tests = klog_tests
 };
 
-FWTS_REGISTER(klog, &klog_ops, FWTS_TEST_EARLY, FWTS_BATCH);
+FWTS_REGISTER(klog, &klog_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH);

@@ -2242,4 +2242,4 @@ static fwts_framework_ops method_ops = {
 	.minor_tests = method_tests
 };
 
-FWTS_REGISTER(method, &method_ops, FWTS_TEST_ANYTIME, FWTS_BATCH);
+FWTS_REGISTER(method, &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);

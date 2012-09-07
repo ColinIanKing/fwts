@@ -52,7 +52,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "results-no-separators", "", 0, "No horizontal separators in results log." },
 	{ "log-filter", 	"",   1, "Define filters to dump out specific log fields: --log-filter=RES,SUM - dump out results and summary, --log-filter=ALL,~INF - dump out all fields except info fields." },
 	{ "log-fields", 	"",   0, "Show available log filtering fields." },
-	{ "log-format", 	"",   1, "Define output log format:  e.g. --log-format=\"\%date \%time [\%field] (\%owner): \".  Fields are: \%time - time, \%field - filter field, \%owner - name of test, \%level - failure error level, \%line - log line number." },
+	{ "log-format", 	"",   1, "Define output log format:  e.g. --log-format=\"%date %time [%field] (%owner): \".  Fields are: %time - time, %field - filter field, %owner - name of test, %level - failure error level, %line - log line number." },
 	{ "show-progress", 	"p",  0, "Output test progress report to stderr." },
 	{ "show-tests", 	"s",  0, "Show available tests." },
 	{ "klog", 		"k:", 1, "Specify kernel log file rather than reading it from the kernel, e.g. --klog=dmesg.log" },

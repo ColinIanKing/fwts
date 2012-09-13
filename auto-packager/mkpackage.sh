@@ -25,7 +25,7 @@
 #
 RELEASES="lucid natty oneiric precise quantal"
 REPO=git://kernel.ubuntu.com/hwe/fwts.git
-RELEASE_TAR_URL=http://kernel.ubuntu.com/~lexical/fwts
+RELEASE_TAR_URL=http://fwts.ubuntu.com/release
 FWTS=fwts
 
 #
@@ -84,7 +84,8 @@ prepare_tarball()
 	pushd $version >& /dev/null
 	wget -N $RELEASE_TAR_URL/fwts-$version.tar.gz
 	wget -N $RELEASE_TAR_URL/SHA256SUMS
-	sha256sum -c SHA256SUMS
+	grep "fwts-$version.tar.gz" SHA256SUMS > SHA256SUMS.local
+	sha256sum -c SHA256SUMS.local
 
 	if [ $? -ne 0 ]; then
 		echo "Checksum unmatched. Abort"

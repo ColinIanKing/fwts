@@ -1,3 +1,24 @@
+fwts (0.26.00-1) quantal; urgency=low
+
+  [Colin Ian King]
+  * uefi: uefidump: Dump out variables containing kernel messages
+  * uefi: uefidump: add support for ConErrDev
+  * uefi: uefifump: Add support for dumping SecureBoot and SetupMode vars
+  * uefi: uefidump: Add support for dumping MemoryOverwriteRequestControl.
+  * uefi: uefidump: Add support for AcpiGlobalVariable
+  * uefi: uefidump: Add support for SignatureSupport variable
+  * lib: fwts_guid: Add fwts_guid_str_to_buf to convert string back to a GUID
+  * uefi: add in support for new uefivar file system interface
+  * lib: framework: Add "unsafe" test category
+  * lib + tests: bulk rename of fwts flag macros
+  * lib: fwts_framework: fix unnecessary escaping
+  * acpica: Fix segfault when disassembling AML (LP: #1050475)
+
+  [Keng-Yu Lin]
+  * auto-packager: mkpackage.sh: checksum only the specified version
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 14 Sep 2012 13:35:31 +0800
+
 fwts (0.25.07-1) quantal; urgency=low
 
   [Chris Van Hoof]

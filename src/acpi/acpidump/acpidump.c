@@ -920,6 +920,35 @@ static void acpidump_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;
+		case 11: {
+				static fwts_acpidump_field fields_madt_gic[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic, reserved),
+					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gic, gic_id),
+					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_gic, processor_uid),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_gic, flags),
+					FIELD_UINT("  Parking Protocol",fwts_acpi_madt_gic, parking_protocol_version),
+					FIELD_UINT("  Perf. Int. GSIV",	fwts_acpi_madt_gic, performance_interrupt_gsiv),
+					FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
+					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
+				};
+				fwts_log_info_verbatum(fw, " GIC:");
+				__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
+				skip = (sizeof(fwts_acpi_madt_gic));
+			}
+			break;
+		case 12: {
+				static fwts_acpidump_field fields_madt_gicd[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved),
+					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gicd, gic_id),
+					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gicd, physical_base_address),
+					FIELD_UINT("  Sys Vector Base",	fwts_acpi_madt_gicd, system_vector_base),
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved2),
+				};
+				fwts_log_info_verbatum(fw, " GIC Distributor:");
+				__acpi_dump_table_fields(fw, data, fields_madt_gicd, offset);
+				skip = (sizeof(fwts_acpi_madt_gicd));
+			}
+			break;
 		default:
 			fwts_log_info_verbatum(fw, " Reserved for OEM use:");
 			skip = 0;

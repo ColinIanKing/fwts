@@ -392,7 +392,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 10: {
 				fwts_acpi_madt_local_x2apic_nmi *nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADLAPICX2APICNMIFlags",
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTLAPICX2APICNMIFlags",
 						"MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}

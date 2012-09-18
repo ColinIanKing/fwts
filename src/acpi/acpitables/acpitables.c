@@ -397,6 +397,21 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;
+		case 11: {
+				fwts_acpi_madt_gic *gic = (fwts_acpi_madt_gic*)data;
+
+				if (gic->flags & 0xfffffffc)
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTGICFLags",
+						"MADT GIC, flags, bits 2..31 are reserved "
+						"and should be zero, but are set as: %lx.",
+						(unsigned long int)gic->flags);
+				skip = sizeof(fwts_acpi_madt_gic);
+			}
+			break;
+		case 12: 
+			/* Not much to sanity check */
+			skip = sizeof(fwts_acpi_madt_gicd);
+			break;
 		default:
 			skip = 0;
 			break;

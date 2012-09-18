@@ -1620,6 +1620,59 @@ static void acpidump_rasf(fwts_framework *fw, fwts_acpi_table_info *table)
 	acpi_dump_raw_table(fw, table);
 }
 
+/*
+ *  acpidump_pcct()
+ *	dump RASF, see 14 ACPI PCCT (Platform Communications Channel)
+ *	of version 5.0 ACPI spec.
+ */
+static void acpidump_pcct(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *data = (uint8_t *)table->data;
+	size_t length = table->length;
+	uint8_t *ptr  = data;
+
+	static fwts_acpidump_field pcct_fields[] = {
+		FIELD_UINT ("Flags",	fwts_acpi_table_pcct, flags),
+		FIELD_UINTS("Reserved", fwts_acpi_table_pcct, reserved),
+		FIELD_END
+	};
+
+	static fwts_acpidump_field type0_fields[] = {
+		FIELD_UINTS("Reserved",		fwts_acpi_table_pcct_subspace_type_0, reserved),
+		FIELD_UINT ("Base Address",	fwts_acpi_table_pcct_subspace_type_0, base_address),
+		FIELD_UINT ("Length",		fwts_acpi_table_pcct_subspace_type_0, length),
+		FIELD_GAS  ("Doorbell Register",fwts_acpi_table_pcct_subspace_type_0, doorbell_register),
+		FIELD_UINT ("Doorbell Preserve",fwts_acpi_table_pcct_subspace_type_0, doorbell_preserve),
+		FIELD_UINT ("Doorbell Write",	fwts_acpi_table_pcct_subspace_type_0, doorbell_write),
+		FIELD_UINT ("Nominal Latency",	fwts_acpi_table_pcct_subspace_type_0, nominal_latency),
+		FIELD_UINT ("Max. Access Rate",	fwts_acpi_table_pcct_subspace_type_0, max_periodic_access_rate),
+		FIELD_UINT ("Min. Turnaround Time", fwts_acpi_table_pcct_subspace_type_0, min_request_turnaround_time),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, pcct_fields, length, length);
+
+	ptr += sizeof(fwts_acpi_table_pcct);
+
+	/* Now scan through the array of subspace structures */
+	while (ptr < data + length) {
+		fwts_acpi_table_pcct_subspace_header *header =
+			(fwts_acpi_table_pcct_subspace_header *)ptr;
+
+		/* Currently just type 0 is supported */
+		switch (header->type) {
+		case 0: 
+			fwts_log_info_verbatum(fw,
+				"General Communications Subspace Structure (type 0):");
+			__acpi_dump_table_fields(fw, ptr, type0_fields, ptr - data);
+			
+			break;
+		default:
+			break;
+		}
+		ptr += header->length;
+	}
+}
 
 typedef struct {
 	char *name;
@@ -1654,6 +1707,7 @@ static acpidump_table_vec table_vec[] = {
 	{ "MCFG", 	acpidump_mcfg, 	1 },
 	{ "MPST",	acpidump_mpst,  1 },
 	{ "MSCT", 	acpidump_msct, 	1 },
+	{ "PCCT",	acpidump_pcct,	1 },
 	{ "PSDT", 	acpidump_amlcode, 1 },
 	{ "RASF",	acpidump_rasf,	1 },
 	{ "RSDT", 	acpidump_rsdt, 	1 },

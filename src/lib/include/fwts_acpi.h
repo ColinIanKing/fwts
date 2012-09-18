@@ -664,6 +664,31 @@ typedef struct {
         uint8_t         platform_cc_id[12];
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
+/* Section 14.1, Platform Communications Channel Table */
+typedef struct {
+	fwts_acpi_table_header	header;	
+	uint32_t	flags;
+	uint8_t		reserved[8];
+} __attribute__ ((packed)) fwts_acpi_table_pcct;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+} __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_header;
+
+typedef struct {
+	fwts_acpi_table_pcct_subspace_header	header;
+	uint8_t		reserved[6];
+	uint64_t	base_address;
+	uint64_t	length;
+	fwts_acpi_gas	doorbell_register;
+	uint64_t	doorbell_preserve;
+	uint64_t	doorbell_write;
+	uint32_t	nominal_latency;
+	uint32_t	max_periodic_access_rate;
+	uint16_t	min_request_turnaround_time;
+} __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_0;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

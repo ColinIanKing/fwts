@@ -622,6 +622,7 @@ static void acpidump_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
 		FIELD_BITF("  VGA Not Present (V4)",			fwts_acpi_table_fadt, iapc_boot_arch, 1, 2),
 		FIELD_BITF("  MSI Not Supported (V4)",			fwts_acpi_table_fadt, iapc_boot_arch, 1, 3),
 		FIELD_BITF("  PCIe ASPM Not supported (V4)",		fwts_acpi_table_fadt, iapc_boot_arch, 1, 4),
+		FIELD_BITF("  CMOS RTC Not Present (V5)",		fwts_acpi_table_fadt, iapc_boot_arch, 1, 5),
 		FIELD_UINT("Flags (see below)", 			fwts_acpi_table_fadt, flags),
 		FIELD_BITF("  WBINVD instruction (V1)", 		fwts_acpi_table_fadt, flags, 1, 0),
 		FIELD_BITF("  WBINVD flushes all caches (V1)", 		fwts_acpi_table_fadt, flags, 1, 1),

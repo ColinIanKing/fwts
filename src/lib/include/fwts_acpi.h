@@ -421,6 +421,27 @@ typedef struct {
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
+/* New in ACPI 5.0, GIC, section 5.2.12.14 */
+typedef struct {
+	uint8_t		reserved[2];
+	uint32_t	gic_id;
+	uint32_t	processor_uid;
+	uint32_t	flags;
+	uint32_t	parking_protocol_version;
+	uint32_t	performance_interrupt_gsiv;
+	uint64_t	parked_address;
+	uint64_t	physical_base_address;
+} __attribute__ ((packed)) fwts_acpi_madt_gic;
+
+/* New in ACPI 5.0, GICD, section 5.2.12.15 */
+typedef struct {
+	uint8_t		reserved[2];
+	uint32_t	gic_id;
+	uint64_t	physical_base_address;
+	uint32_t	system_vector_base;
+	uint32_t	reserved2;
+} __attribute__ ((packed)) fwts_acpi_madt_gicd;
+
 /* From http://www.kuro5hin.org/story/2002/10/27/16622/530,
    and also http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html */
 typedef struct {

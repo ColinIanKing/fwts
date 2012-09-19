@@ -87,7 +87,7 @@
  * _DSW  7.2.1		Y
  * _Exx  5.6.4.1	n/a
  * _EC   1.12		n/a
- * _EDL  6.3.1		N
+ * _EDL  6.3.1		Y
  * _EJD  6.3.2		Y
  * _EJx  6.3.3		Y
  * _EVT  5.6.5.3	N
@@ -178,7 +178,7 @@
  * _Qxx  5.6.4.1	n/a
  * _REG  6.5.4		N
  * _REV  5.7.4		N
- * _RMV  6.3.6		N
+ * _RMV  6.3.6		Y
  * _ROM  B.4.3		Y
  * _RTV  11.4.10	Y
  * _S0_  7.3.4.1	N
@@ -207,7 +207,7 @@
  * _SRS  6.2.15		N
  * _SRT  9.18.4		N
  * _SST  9.1.1		N
- * _STA  6.3.7, 7.1.4	N
+ * _STA  6.3.7, 7.1.4	Y
  * _STM  9.8.2.1.2	N
  * _STP  9.18.7		N
  * _STR  6.1.9		Y
@@ -956,6 +956,36 @@ static int method_test_PXM(fwts_framework *fw)
 /*
  * Section 6.3 Device Insertion, Removal and Status Objects
  */
+static void method_test_EDL_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* All elements in the package must be references */
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_EDLElementType",
+				"_EDL package element %d was not a reference.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+	}
+}
+
+static int method_test_EDL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_EDL", NULL, 0, method_test_EDL_return, NULL);
+}
+
 static int method_test_EJD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -989,6 +1019,50 @@ static int method_test_LCK(fwts_framework *fw)
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_LCK", arg, 1, method_test_NULL_return, NULL);
+}
+
+static int method_test_RMV(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_RMV",
+		NULL, 0, method_test_passed_failed_return, "_RMV");
+}
+
+static void method_test_STA_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		if ((obj->Integer.Value & 3) == 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_STAEnabledNotPresent",
+				"_STA indicates that the device is enabled "
+				"but not present, which is impossible.");
+			failed = true;
+		}
+		if ((obj->Integer.Value & ~0x1f) != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_STAReservedBitsSet",
+				"_STA is returning non-zero reserved "
+				"bits 5-31. These should be zero.");
+			failed = true;
+		}
+
+		if (!failed)
+			fwts_passed(fw,
+				"_STA correctly returned sane looking "
+				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+	}
+}
+
+static int method_test_STA(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STA",
+		NULL, 0, method_test_STA_return, "_STA");
 }
 
 
@@ -2909,7 +2983,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 6.3 Device Insertion, Removal and Status Objects */
 
-	/* { method_test_EDL, "Check _EDL (Eject Device List)." }, */
+	{ method_test_EDL, "Check _EDL (Eject Device List)." },
 	{ method_test_EJD, "Check _EJD (Ejection Dependent Device)." },
 	{ method_test_EJ0, "Check _EJ0 (Eject)." },
 	{ method_test_EJ1, "Check _EJ1 (Eject)." },
@@ -2918,8 +2992,8 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_EJ4, "Check _EJ4 (Eject)." },
 	{ method_test_LCK, "Check _LCK (Lock)." },
 	/* { method_test_OST, "Check _OST (OSPM Status Indication)." }, */
-	/* { method_test_RMV, "Check _RMV (Remove)." }, */
-	/* { method_test_STA, "Check _STA (Status)." }, */
+	{ method_test_RMV, "Check _RMV (Remove)." },
+	{ method_test_STA, "Check _STA (Status)." },
 
 	/* Section 6.4 Resource Data Types for ACPI */
 

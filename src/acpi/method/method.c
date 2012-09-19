@@ -281,7 +281,7 @@ static int method_init(fwts_framework *fw)
 	fadt_mobile_platform = false;
 
 	/* Some systems have multiple FADTs, sigh */
-	for (i=0; i<256; i++) {
+	for (i = 0; i < 256; i++) {
 		int ret = fwts_acpi_find_table(fw, "FACP", i, &info);
 		if (ret == FWTS_NULL_POINTER || info == NULL)
 			break;
@@ -800,7 +800,7 @@ static int method_test_DCK(fwts_framework *fw)
 {
 	int i;
 
-	for (i=0;i<=1;i++) {	/* Undock, Dock */
+	for (i = 0; i <= 1; i++) {	/* Undock, Dock */
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
@@ -889,7 +889,7 @@ static void method_test_PRE_return(
 		return;
 
 	/* All elements in the package must be references */
-	for (i=0; i < obj->Package.Count; i++) {
+	for (i = 0; i < obj->Package.Count; i++) {
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PREElementType",
@@ -953,7 +953,7 @@ static void method_test_PSS_return(
 		return;
 	}
 
-	for (i=0; i < obj->Package.Count; i++) {
+	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pstate;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
@@ -1232,7 +1232,7 @@ static void method_test_BIF_return(
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
 
-		for (i=0;(i<9) && (i<obj->Package.Count);i++) {
+		for (i = 0; (i < 9) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIFBadType",
@@ -1242,7 +1242,7 @@ static void method_test_BIF_return(
 				failed++;
 			}
 		}
-		for (i=9;(i<13) && (i<obj->Package.Count);i++) {
+		for (i = 9; (i < 13) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBadType", "_BIF package element %d is not of type STRING.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -1374,7 +1374,7 @@ static void method_test_BIX_return(
 			failed++;
 		}
 
-		for (i=0;(i<16) && (i<obj->Package.Count);i++) {
+		for (i = 0; (i < 16) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIXBadType",
@@ -1384,7 +1384,7 @@ static void method_test_BIX_return(
 				failed++;
 			}
 		}
-		for (i=16;(i<20) && (i<obj->Package.Count);i++) {
+		for (i = 16; (i < 20) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIXBadType",
@@ -1549,7 +1549,7 @@ static void method_test_BST_return(
 			failed++;
 		}
 
-		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
+		for (i = 0; (i < 4) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BSTBadType",
@@ -1608,7 +1608,7 @@ static int method_test_BTP(fwts_framework *fw)
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i=0;i<5;i++) {
+	for (i = 0; i < 5; i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -1640,7 +1640,7 @@ static int method_test_BTM(fwts_framework *fw)
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i=0;i<5;i++) {
+	for (i=0 ; i < 5; i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -1675,7 +1675,7 @@ static void method_test_BMD_return(
 			failed++;
 		}
 
-		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
+		for (i= 0; (i < 4) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BMDBadType",
@@ -1700,7 +1700,7 @@ static int method_test_BMC(fwts_framework *fw)
 	static int values[] = { 0, 1, 2, 4 };
 	int i;
 
-	for (i=0;i<4;i++) {
+	for (i = 0; i < 4; i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
@@ -2012,7 +2012,7 @@ static int method_test_ACx(fwts_framework *fw)
 {
 	int i;
 
-	for (i=0;i<10;i++) {
+	for (i = 0; i < 10; i++) {
 		char buffer[5];
 
 		snprintf(buffer, sizeof(buffer), "AC%d", i);
@@ -2037,7 +2037,7 @@ static int method_test_SCP(fwts_framework *fw)
 {
 	int i;
 
-	for (i=0;i<2;i++) {
+	for (i = 0; i < 2; i++) {
 		ACPI_OBJECT arg[3];
 
 		arg[0].Type = ACPI_TYPE_INTEGER;
@@ -2111,7 +2111,7 @@ static int method_test_PTS(fwts_framework *fw)
 {
 	int i;
 
-	for (i=1; i<6; i++) {
+	for (i = 1; i < 6; i++) {
 		ACPI_OBJECT arg[1];
 
 		arg[0].Type = ACPI_TYPE_INTEGER;
@@ -2141,7 +2141,7 @@ static int method_test_TTS(fwts_framework *fw)
 	int i;
 
 	if (fwts_method_exists("_BFS") != NULL) {
-		for (i=1; i<6; i++) {
+		for (i = 1; i < 6; i++) {
 			ACPI_OBJECT arg[1];
 
 			arg[0].Type = ACPI_TYPE_INTEGER;
@@ -2275,7 +2275,7 @@ static int method_test_WAK(fwts_framework *fw)
 {
 	uint32_t i;
 
-	for (i=1; i<6; i++) {
+	for (i = 1; i < 6; i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
@@ -2342,7 +2342,7 @@ static void method_test_DOD_return(
 
 		fwts_method_dump_object(fw, obj);
 
-		for (i=0;i<obj->Package.Count;i++) {
+		for (i = 0; i < obj->Package.Count; i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
 				failed++;
 			else {
@@ -2414,7 +2414,7 @@ static int method_test_SPD(fwts_framework *fw)
 	ACPI_OBJECT arg[2];
 	int i;
 
-	for (i=0;i<4;i++) {
+	for (i = 0; i < 4; i++) {
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;	/* bits 00..11, post device */
 
@@ -2450,7 +2450,7 @@ static void method_test_BCL_return(
 
 		fwts_method_dump_object(fw, obj);
 
-		for (i=0;i<obj->Package.Count;i++) {
+		for (i = 0; i < obj->Package.Count; i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
 				failed++;
 		}
@@ -2484,7 +2484,7 @@ static void method_test_BCL_return(
 					failed++;
 				}
 
-				for (i=2;i<obj->Package.Count-1;i++) {
+				for (i = 2; i < obj->Package.Count - 1; i++) {
 					if (obj->Package.Elements[i].Integer.Value >
 					    obj->Package.Elements[i+1].Integer.Value) {
 						fwts_log_info(fw,
@@ -2605,7 +2605,7 @@ static int method_test_DDC(fwts_framework *fw)
 	ACPI_OBJECT arg[1];
 	uint32_t i;
 
-	for (i=128; i<=256; i <<= 1) {
+	for (i = 128; i <= 256; i <<= 1) {
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = 128;
 

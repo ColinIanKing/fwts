@@ -251,7 +251,7 @@
 #define method_check_type(fw, name, buf, type) 			\
 	method_check_type__(fw, name, buf, type, #type)
 
-static bool fadt_mobile_platform;
+static bool fadt_mobile_platform;	/* True if a mobile platform */
 
 #define method_test_integer(name, type)				\
 static int method_test ## name(fwts_framework *fw)		\
@@ -269,6 +269,10 @@ typedef void (*method_test_return)(fwts_framework *fw, char *name,
 
 /****************************************************************************/
 
+/*
+ *  method_init()
+ *	initialize ACPI
+ */
 static int method_init(fwts_framework *fw)
 {
 	fwts_acpi_table_info *info;
@@ -300,12 +304,22 @@ static int method_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/*
+ *  method_deinit
+ *	de-intialize ACPI
+ */
 static int method_deinit(fwts_framework *fw)
 {
 	return fwts_method_deinit(fw);
 }
 
-static void method_evaluate_found_method(fwts_framework *fw, char *name,
+/*
+ *  method_evaluate_found_method
+ *	find a given object name and evaluate it
+ */
+static void method_evaluate_found_method(
+	fwts_framework *fw,
+	char *name,
 	method_test_return check_func,
 	void *private,
 	ACPI_OBJECT_LIST *arg_list)
@@ -353,6 +367,12 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 
 }
 
+/*
+ *  method_evaluate_method
+ *	find all matching object names and evaluate them,
+ *	also run the callback check_func to sanity check
+ *	any returned values
+ */
 static int method_evaluate_method(fwts_framework *fw,
 	int test_type,  /* Manditory or optional */
 	char *name,
@@ -418,6 +438,10 @@ static int method_evaluate_method(fwts_framework *fw,
 	}
 }
 
+/*
+ *  method_name_check
+ *	sanity check object name conforms to ACPI specification
+ */
 static int method_name_check(fwts_framework *fw)
 {
 	fwts_list_link	*item;
@@ -456,7 +480,16 @@ static int method_name_check(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf, int type, char *type_name)
+/*
+ *  method_check_type__
+ *	check returned object type
+ */
+static int method_check_type__(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	int type,
+	char *type_name)
 {
 	ACPI_OBJECT *obj;
 
@@ -477,26 +510,62 @@ static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf,
 	return FWTS_OK;
 }
 
-static void method_test_buffer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_buffer_return
+ *	check if a buffer object was returned
+ */
+static void method_test_buffer_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a buffer of %d elements.",
 			name, obj->Buffer.Length);
 }
 
-static void method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_integer_return
+ *	check if an integer object was returned
+ */
+static void method_test_integer_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned an integer.", name);
 }
 
-static void method_test_string_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_string_return
+ *	check if an string object was returned
+ */
+static void method_test_string_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a string.", name);
 }
 
-static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_NULL_return
+ *	check if no object was retuned
+ */
+static void method_test_NULL_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (buf->Length && buf->Pointer) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
@@ -512,7 +581,16 @@ static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 		fwts_passed(fw, "%s returned no values as expected.", name);
 }
 
-static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_passed_failed_return
+ *	check if 0 or 1 (false/true) integer is returned
+ */
+static void method_test_passed_failed_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	char *method = (char *)private;
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
@@ -538,7 +616,16 @@ static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACP
 	}
 }
 
-static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+/*
+ *  method_test_polling_return
+ *	check if a returned polling time is valid
+ */
+static void method_test_polling_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char *)private;

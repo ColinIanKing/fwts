@@ -200,7 +200,7 @@
  * _SBS  10.1.3		Y
  * _SCP  11.4.11	Y
  * _SDD  9.8.3.3.1	N
- * _SEG  6.5.6		N
+ * _SEG  6.5.6		Y
  * _SHL  10.4.5		N
  * _SLI  6.2.14		N
  * _SPD  B.4.5		Y
@@ -1103,6 +1103,34 @@ static int method_test_DCK(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static void method_test_SEG_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		if ((obj->Integer.Value & 0xffff0000)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_SEGIllegalReserved",
+				"_SEG returned value 0x%8.8x and some of the "
+				"upper 16 reserved bits are set when they "
+				"should in fact be zero.",
+				(uint32_t)obj->Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		} else
+			fwts_passed(fw,
+				"_SEG correctly returned sane looking "
+				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+	}
+}
+
+static int method_test_SEG(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SEG",
+		NULL, 0, method_test_SEG_return, "_SEG");
+}
 
 /*
  * Section 7.1 Declaring a Power Resource Object
@@ -3124,7 +3152,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_INI, "Check _INI (Initialize)." }, */
 	/* { method_test_GLK, "Check _GLK (Global Lock)." }, */
 	/* { method_test_REG, "Check _REG (Region)." }, */
-	/* { method_test_SEG, "Check _SEG (Segment)." }, */
+	{ method_test_SEG, "Check _SEG (Segment)." },
 
 	/* Section 7.1 Declaring a Power Resource Object */
 

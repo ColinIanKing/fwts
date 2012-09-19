@@ -107,7 +107,7 @@
  * _GPD  B.4.4		Y
  * _GPE  5.3.1, 12.11	N
  * _GRT  9.18.3		Y
- * _GSB  6.2.6		N
+ * _GSB  6.2.6		Y
  * _GTF  9.8.1.1	N
  * _GTM  9.8.2.1.1	N
  * _GTS  7.3.3		deprecated
@@ -944,6 +944,12 @@ static int method_test_DIS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_DIS", NULL, 0, method_test_NULL_return, NULL);
+}
+
+static int method_test_GSB(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GSB", NULL, 0, method_test_integer_return, NULL);
 }
 
 static int method_test_PXM(fwts_framework *fw)
@@ -3084,7 +3090,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_DIS, "Check _DIS (Disable)." },
 	{ method_test_DMA, "Check _DMA (Direct Memory Access)." },
 	/* { method_test_FIX, "Check _FIX (Fixed Register Resource Provider)." }, */
-	/* { method_test_GSB, "Check _GSB (Global System Interrupt Base)." }, */
+	{ method_test_GSB, "Check _GSB (Global System Interrupt Base)." },
 	/* { method_test_HPP, "Check _HPP (Hot Plug Parameters)." }, */
 	/* { method_test_HPX, "Check _HPX (Hot Plug Extensions)." }, */
 	/* { method_test_MAT, "Check _MAT (Multiple APIC Table Entry)." }, */

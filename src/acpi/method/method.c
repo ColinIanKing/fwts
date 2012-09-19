@@ -248,21 +248,20 @@
 #define METHOD_OPTIONAL		2
 #define METHOD_MOBILE		4
 
-#define method_check_type(fw, name, buf, type) \
+#define method_check_type(fw, name, buf, type) 			\
 	method_check_type__(fw, name, buf, type, #type)
 
 static bool fadt_mobile_platform;
 
-#define method_test_integer(name, type)			\
-static int method_test ## name(fwts_framework *fw)	\
-{ 							\
-	return method_evaluate_method(fw, type, # name, NULL, 0, method_test_integer_return, # name); \
+#define method_test_integer(name, type)				\
+static int method_test ## name(fwts_framework *fw)		\
+{ 								\
+	return method_evaluate_method(fw, type, # name,		\
+		NULL, 0, method_test_integer_return, # name); \
 }
 
-typedef void (*method_test_return)(fwts_framework *fw, char *name, ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
-
-
-
+typedef void (*method_test_return)(fwts_framework *fw, char *name,
+	ACPI_BUFFER *ret_buff, ACPI_OBJECT *ret_obj, void *private);
 
 /*
  * Helper functions to facilitate the evaluations
@@ -291,7 +290,8 @@ static int method_init(fwts_framework *fw)
 
 	if (!fadt_mobile_platform) {
 		fwts_log_info(fw,
-			"FADT Preferred PM profile indicates this is not a Mobile Platform.");
+			"FADT Preferred PM profile indicates this is not "
+			"a Mobile Platform.");
 	}
 
 	if (fwts_method_init(fw) != FWTS_OK)
@@ -334,15 +334,22 @@ static void method_evaluate_found_method(fwts_framework *fw, char *name,
 	fwts_acpica_sem_count_get(&sem_acquired, &sem_released);
 	if (sem_acquired != sem_released) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLLocksAcquired",
-			"%s left %d locks in an acquired state.", name, sem_acquired - sem_released);
+			"%s left %d locks in an acquired state.",
+			name, sem_acquired - sem_released);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_MUTEX);
-		fwts_advice(fw, "Locks left in an acquired state generally indicates that the AML code is not "
-				"releasing a lock. This can sometimes occur when a method hits an error condition "
-				"and exits prematurely without releasing an acquired lock. It may be occurring in the "
-				"method being tested or other methods used while evaluating the method.");
+		fwts_advice(fw,
+			"Locks left in an acquired state generally indicates "
+			"that the AML code is not releasing a lock. This can "
+			"sometimes occur when a method hits an error "
+			"condition and exits prematurely without releasing an "
+			"acquired lock. It may be occurring in the method "
+			"being tested or other methods used while evaluating "
+			"the method.");
 	} else
  		if ((sem_acquired + sem_released) > 0)
-			fwts_passed(fw, "%s correctly acquired and released locks %d times.", name, sem_acquired);
+			fwts_passed(fw,
+				"%s correctly acquired and released locks "
+				"%d times.", name, sem_acquired);
 
 }
 
@@ -370,7 +377,8 @@ static int method_evaluate_method(fwts_framework *fw,
 				arg_list.Count   = num_args;
 				arg_list.Pointer = args;
 				fwts_acpica_simulate_sem_timeout(FWTS_FALSE);
-				method_evaluate_found_method(fw, method_name, check_func, private, &arg_list);
+				method_evaluate_found_method(fw, method_name,
+					check_func, private, &arg_list);
 			}
 		}
 	}
@@ -378,10 +386,13 @@ static int method_evaluate_method(fwts_framework *fw,
 	if (found) {
 		if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
 			fwts_warning(fw,
-				"The FADT indictates that this machine is not a mobile "
-				"platform, however it has a mobile platform specific object %s defined. "
-				"Either the FADT referred PM profile is incorrect or this machine has "
-				"mobile platform objects defined when it should not.", name);
+				"The FADT indictates that this machine is not "
+				"a mobile platform, however it has a mobile "
+				"platform specific object %s defined. "
+				"Either the FADT referred PM profile is "
+				"incorrect or this machine has mobile "
+				"platform objects defined when it should not.",
+				name);
 		}
 		return FWTS_OK;
 	} else {
@@ -393,9 +404,14 @@ static int method_evaluate_method(fwts_framework *fw,
 
 		/* Mobile specific tests on non-mobile platform? */
 		if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
-			fwts_skipped(fw, "Machine is not a mobile platform, skipping test for non-existant mobile platform related object %s.", name);
+			fwts_skipped(fw,
+				"Machine is not a mobile platform, skipping "
+				"test for non-existant mobile platform "
+				"related object %s.", name);
 		} else {
-			fwts_skipped(fw, "Skipping test for non-existant object %s.", name);
+			fwts_skipped(fw,
+				"Skipping test for non-existant object %s.",
+				name);
 		}
 
 		return FWTS_NOT_EXIST;
@@ -420,8 +436,13 @@ static int method_name_check(fwts_framework *fw)
 				     (*ptr == '_') ||
 				     (isdigit(*ptr)) ||
 				     (isupper(*ptr))) ) {
-					fwts_failed(fw, LOG_LEVEL_HIGH, "MethodIllegalName",  "Method %s contains an illegal character: '%c'. This should be corrected.",
-						fwts_list_data(char *, item), *ptr);
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"MethodIllegalName",
+						"Method %s contains an illegal "
+						"character: '%c'. This should "
+						"be corrected.",
+						fwts_list_data(char *, item),
+						*ptr);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD);
 					failed++;
 					break;
@@ -440,14 +461,17 @@ static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf,
 	ACPI_OBJECT *obj;
 
 	if ((buf == NULL) || (buf->Pointer == NULL)){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj", "Method %s returned a NULL object, and did not return %s.", name, type_name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+			"Method %s returned a NULL object, and did not "
+			"return %s.", name, type_name);
 		return FWTS_ERROR;
 	}
 
 	obj = buf->Pointer;
 
 	if (obj->Type != type) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType", "Method %s did not return %s.", name, type_name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType",
+			"Method %s did not return %s.", name, type_name);
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -456,7 +480,8 @@ static int method_check_type__(fwts_framework *fw, char *name, ACPI_BUFFER *buf,
 static void method_test_buffer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
-		fwts_passed(fw, "%s correctly returned a buffer of %d elements.", name, obj->Buffer.Length);
+		fwts_passed(fw, "%s correctly returned a buffer of %d elements.",
+			name, obj->Buffer.Length);
 }
 
 static void method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
@@ -478,8 +503,11 @@ static void method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER 
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		fwts_log_info(fw, "Object returned:");
 		fwts_method_dump_object(fw, obj);
-		fwts_advice(fw, "This probably won't cause any errors, but it should be fixed as the AML code is "
-				"not conforming to the expected behaviour as described in the ACPI specification.");
+		fwts_advice(fw,
+			"This probably won't cause any errors, but it should "
+			"be fixed as the AML code is not conforming to the "
+			"expected behaviour as described in the ACPI "
+			"specification.");
 	} else
 		fwts_passed(fw, "%s returned no values as expected.", name);
 }
@@ -490,13 +518,22 @@ static void method_test_passed_failed_return(fwts_framework *fw, char *name, ACP
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		unsigned int val = (uint32_t)obj->Integer.Value;
 		if ((val == 0) || (val == 1))
-			fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x.", method, val);
+			fwts_passed(fw,
+				"%s correctly returned sane looking value "
+				"0x%8.8x.", method, val);
 		else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnZeroOrOne", "%s returned 0x%8.8x, should return 1 (success) or 0 (failed).", method, val);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodReturnZeroOrOne",
+				"%s returned 0x%8.8x, should return 1 "
+				"(success) or 0 (failed).", method, val);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			fwts_advice(fw, "Method %s should be returning the correct 1/0 success/failed return values. "
-					"Unexpected behaviour may occur becauses of this error, the AML code does not "
-					"conform to the ACPI specification and should be fixed.", method);
+			fwts_advice(fw,
+				"Method %s should be returning the correct "
+				"1/0 success/failed return values. "
+				"Unexpected behaviour may occur becauses of "
+				"this error, the AML code does not conform to "
+				"the ACPI specification and should be fixed.",
+				method);
 		}
 	}
 }
@@ -506,15 +543,21 @@ static void method_test_polling_return(fwts_framework *fw, char *name, ACPI_BUFF
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char *)private;
 		if (obj->Integer.Value < 36000) {
-			fwts_passed(fw, "%s correctly returned sane looking value %f seconds",
-				method, (float)obj->Integer.Value / 10.0);
+			fwts_passed(fw,
+				"%s correctly returned sane looking value "
+				"%f seconds", method,
+				(float)obj->Integer.Value / 10.0);
 		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodPollTimeTooLong",
-				"%s returned a value %f seconds > (1 hour) which is probably incorrect.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodPollTimeTooLong",
+				"%s returned a value %f seconds > (1 hour) "
+				"which is probably incorrect.",
 				method, (float)obj->Integer.Value / 10.0);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			fwts_advice(fw, "The method is returning a polling interval which is very long and hence "
-					"most probably incorrect.");
+			fwts_advice(fw,
+				"The method is returning a polling interval "
+				"which is very long and hence most probably "
+				"incorrect.");
 		}
 	}
 }
@@ -547,16 +590,20 @@ static void method_test_UID_return(
 	void *private)
 {
 	if (obj == NULL){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj", "Method %s returned a NULL object, and did not return a buffer or integer.", name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+			"Method %s returned a NULL object, and did not "
+			"return a buffer or integer.", name);
 		return;
 	}
 	switch (obj->Type) {
 	case ACPI_TYPE_STRING:
 		if (obj->String.Pointer)
-			fwts_passed(fw, "Object _UID returned a string '%s' as expected.",
+			fwts_passed(fw,
+				"Object _UID returned a string '%s' as expected.",
 				obj->String.Pointer);
 		else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDNullString",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_UIDNullString",
 				"Object _UID returned a NULL string.");
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -613,18 +660,20 @@ static int method_test_PXM(fwts_framework *fw)
  */
 static int method_test_EJD(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_EJD", NULL, 0, method_test_string_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_EJD", NULL, 0, method_test_string_return, NULL);
 }
 
-#define method_test_EJx(name)				\
-static int method_test ## name(fwts_framework *fw)	\
-{							\
-	ACPI_OBJECT arg[1];				\
-							\
-	arg[0].Type = ACPI_TYPE_INTEGER;		\
-	arg[0].Integer.Value = 1;			\
-							\
-	return method_evaluate_method(fw, METHOD_OPTIONAL, # name, arg, 1, method_test_NULL_return, # name); \
+#define method_test_EJx(name)					\
+static int method_test ## name(fwts_framework *fw)		\
+{								\
+	ACPI_OBJECT arg[1];					\
+								\
+	arg[0].Type = ACPI_TYPE_INTEGER;			\
+	arg[0].Integer.Value = 1;				\
+								\
+	return method_evaluate_method(fw, METHOD_OPTIONAL,	\
+		# name, arg, 1, method_test_NULL_return, # name); \
 }
 
 method_test_EJx(_EJ0)
@@ -640,7 +689,8 @@ static int method_test_LCK(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	arg[0].Integer.Value = 1;
 
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_LCK", arg, 1, method_test_NULL_return, NULL);
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_LCK", arg, 1, method_test_NULL_return, NULL);
 }
 
 
@@ -667,7 +717,8 @@ static int method_test_DCK(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
-		if (method_evaluate_method(fw, METHOD_MOBILE, "_DCK", arg, 1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+		if (method_evaluate_method(fw, METHOD_MOBILE, "_DCK", arg,
+			1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -753,8 +804,10 @@ static void method_test_PRE_return(
 	/* All elements in the package must be references */
 	for (i=0; i < obj->Package.Count; i++) {
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PREElementType",
-			"_PRE package element %d was not a reference.", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PREElementType",
+				"_PRE package element %d was not a reference.",
+				i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
 	}
@@ -817,8 +870,10 @@ static void method_test_PSS_return(
 		ACPI_OBJECT *pstate;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementType",
-			"_PSS package element %d was not a package.", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSSElementType",
+				"_PSS package element %d was not a package.",
+				i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -826,9 +881,10 @@ static void method_test_PSS_return(
 
 		pstate = &obj->Package.Elements[i];
 		if (pstate->Package.Count != 6) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackageElementCount",
-				"_PSS P-State sub-package %d was expected to have "
-				"6 elements, got %d elements instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSSSubPackageElementCount",
+				"_PSS P-State sub-package %d was expected to "
+				"have 6 elements, got %d elements instead.",
 				i, obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -842,9 +898,10 @@ static void method_test_PSS_return(
 		    (pstate->Package.Elements[3].Type != ACPI_TYPE_INTEGER) ||
 		    (pstate->Package.Elements[4].Type != ACPI_TYPE_INTEGER) ||
 		    (pstate->Package.Elements[5].Type != ACPI_TYPE_INTEGER)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackageElementType",
-				"_PSS P-State sub-package %d was expected to have "
-				"6 Integer elements but didn't", i);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSSSubPackageElementType",
+				"_PSS P-State sub-package %d was expected to "
+				"have 6 Integer elements but didn't", i);
 			failed = true;
 			continue;
 		}
@@ -872,12 +929,17 @@ static void method_test_PSS_return(
 		/* Sanity check descending power dissipation levels */
 		if ((i > 0) && (prev_power != 0) &&
 		    (pstate->Package.Elements[1].Integer.Value > prev_power)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSSubPackagePowerNotDecending",
-				"_PSS P-State sub-package %d has a larger power dissipation "
-				"setting than the previous sub-package.", i);
-			fwts_advice(fw, "_PSS P-States must be ordered in decending order of "
-				"power dissipation, so that the zero'th entry has the highest "
-				"power dissipation level and the Nth has the lowest.");
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSSSubPackagePowerNotDecending",
+				"_PSS P-State sub-package %d has a larger "
+				"power dissipation setting than the previous "
+				"sub-package.", i);
+			fwts_advice(fw,
+				"_PSS P-States must be ordered in decending "
+				"order of power dissipation, so that the "
+				"zero'th entry has the highest power "
+				"dissipation level and the Nth has the "
+				"lowest.");
 			failed = true;
 		}
 		prev_power = pstate->Package.Elements[1].Integer.Value;
@@ -897,20 +959,22 @@ static void method_test_PSS_return(
 	if (max_freq_valid && max_freq < 1000) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "Method_PSSSubPackageLowFreq",
 			"Maximum CPU frequency is %dHz and this is low for "
-			"a modern processor. This may indicate the _PSS P-States "
-			"are incorrect\n", max_freq);
+			"a modern processor. This may indicate the _PSS "
+			"P-States are incorrect\n", max_freq);
 		fwts_advice(fw,
 			"The _PSS P-States are used by the Linux CPU frequency "
 			"driver to set the CPU frequencies according to system "
 			"load.  Sometimes the firmware sets these incorrectly "
 			"and the machine runs at a sub-optimal speed.  One can "
 			"view the firmware defined CPU frequencies via "
-			"/sys/devices/system/cpu/cpu*/cpufreq/scaling_available_frequencies");
+			"/sys/devices/system/cpu/cpu*/cpufreq/"
+			"scaling_available_frequencies");
 		failed = true;
 	}
 
 	if (!failed)
-		fwts_passed(fw, "_PSS correctly returned sane looking package.");
+		fwts_passed(fw,
+			"_PSS correctly returned sane looking package.");
 }
 
 static int method_test_PSS(fwts_framework *fw)
@@ -938,10 +1002,17 @@ static int method_test_ALP(fwts_framework *fw)
 /*
  * Section 9.4 Lid control
  */
-static void method_test_LID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+static void method_test_LID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw, "_LID correctly returned sane looking value 0x%8.8x", (uint32_t)obj->Integer.Value);
+		fwts_passed(fw,
+			"_LID correctly returned sane looking value 0x%8.8x",
+			(uint32_t)obj->Integer.Value);
 }
 
 static int method_test_LID(fwts_framework *fw)
@@ -1032,8 +1103,11 @@ static void method_test_SBS_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn", "_SBS returned %d, should be between 0 and 4.",
 				(uint32_t)obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			fwts_advice(fw, "Smart Battery _SBS is incorrectly informing the OS about the smart battery "
-					"configuration. This is a bug and needs to be fixed.");
+			fwts_advice(fw,
+				"Smart Battery _SBS is incorrectly informing "
+				"the OS about the smart battery "
+				"configuration. This is a bug and needs to be "
+				"fixed.");
 			break;
 		}
 	}
@@ -1063,14 +1137,20 @@ static void method_test_BIF_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 13) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFElementCount", "_BIF package should return 13 elements, got %d instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIFElementCount",
+				"_BIF package should return 13 elements, "
+				"got %d instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
 
 		for (i=0;(i<9) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBadType", "_BIF package element %d is not of type DWORD Integer.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BIFBadType",
+					"_BIF package element %d is not of "
+					"type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -1086,8 +1166,11 @@ static void method_test_BIF_return(
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBadUnits", "_BIF: Expected Power Unit (Element 0) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[0].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIFBadUnits",
+				"_BIF: Expected Power Unit (Element 0) to be "
+				"0 (mWh) or 1 (mAh), got 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -1098,23 +1181,33 @@ static void method_test_BIF_return(
 	 	 */
 		/* Design Capacity */
 		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFBadCapacity", "_BIF: Design Capacity (Element 1) is unknown: 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[1].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIFBadCapacity",
+				"_BIF: Design Capacity (Element 1) is "
+				"unknown: 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFChargeCapacity", "_BIF: Last Full Charge Capacity (Element 2) is unknown: 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[2].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIFChargeCapacity",
+				"_BIF: Last Full Charge Capacity (Element 2) "
+				"is unknown: 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 #endif
 		/* Battery Technology */
 		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBatTechUnit", "_BIF: Expected Battery Technology Unit (Element 3) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[3].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIFBatTechUnit",
+				"_BIF: Expected Battery Technology Unit "
+				"(Element 3) to be 0 (Primary) or 1 "
+				"(Secondary), got 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -1125,30 +1218,42 @@ static void method_test_BIF_return(
 	 	 */
 		/* Design Voltage */
 		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignVoltage", "_BIF: Design Voltage (Element 4) is unknown: 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[4].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIFDesignVoltage",
+				"_BIF: Design Voltage (Element 4) is "
+				"unknown: 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignCapacityE5", "_BIF: Design Capacity Warning (Element 5) is unknown: 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[5].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIFDesignCapacityE5",
+				"_BIF: Design Capacity Warning (Element 5) "
+				"is unknown: 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIFDesignCapacityE6", "_BIF: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[6].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIFDesignCapacityE6",
+				"_BIF: Design Capacity Warning (Element 6) "
+				"is unknown: 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 #endif
 		if (failed)
-			fwts_advice(fw, "Battery _BIF package contains errors. It is worth running the "
-					"firmware test suite interactive 'battery' test to see if this "
-					"is problematic.  This is a bug an needs to be fixed.");
+			fwts_advice(fw,
+				"Battery _BIF package contains errors. It is "
+				"worth running the firmware test suite "
+				"interactive 'battery' test to see if this "
+				"is problematic.  This is a bug an needs to "
+				"be fixed.");
 		else
 			fwts_passed(fw, "Battery _BIF package looks sane.");
 	}
@@ -1174,22 +1279,30 @@ static void method_test_BIX_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 16) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXElementCount", "_BIX package should return 16 elements, got %d instead.",
-				obj->Package.Count);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIXElementCount",
+				"_BIX package should return 16 elements, "
+				"got %d instead.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 
 		for (i=0;(i<16) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXBadType", "_BIX package element %d is not of type DWORD Integer.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BIXBadType",
+					"_BIX package element %d is not of "
+					"type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
 		}
 		for (i=16;(i<20) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXBadType", "_BIX package element %d is not of type STRING.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BIXBadType",
+					"_BIX package element %d is not of "
+					"type STRING.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -1198,8 +1311,10 @@ static void method_test_BIX_return(
 		/* Sanity check each field */
 		/* Power Unit */
 		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXPowerUnit",
-				"_BIX: Expected Power Unit (Element 1) to be 0 (mWh) or 1 (mAh), got 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIXPowerUnit",
+				"_BIX: Expected Power Unit (Element 1) to be "
+				"0 (mWh) or 1 (mAh), got 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1211,16 +1326,20 @@ static void method_test_BIX_return(
 	 	 */
 		/* Design Capacity */
 		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacity",
-				"_BIX: Design Capacity (Element 2) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIXDesignCapacity",
+				"_BIX: Design Capacity (Element 2) is "
+				"unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Last Full Charge Capacity */
 		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXFullChargeCapacity",
-				"_BIX: Last Full Charge Capacity (Element 3) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIXFullChargeCapacity",
+				"_BIX: Last Full Charge Capacity (Element 3) "
+				"is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1228,8 +1347,11 @@ static void method_test_BIX_return(
 #endif
 		/* Battery Technology */
 		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIXBatteryTechUnit",
-				"_BIX: Expected Battery Technology Unit (Element 4) to be 0 (Primary) or 1 (Secondary), got 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIXBatteryTechUnit",
+				"_BIX: Expected Battery Technology Unit "
+				"(Element 4) to be 0 (Primary) or 1 "
+				"(Secondary), got 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1241,24 +1363,30 @@ static void method_test_BIX_return(
 	 	 */
 		/* Design Voltage */
 		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignVoltage",
-				"_BIX: Design Voltage (Element 5) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIXDesignVoltage",
+				"_BIX: Design Voltage (Element 5) is unknown: "
+				"0x%8.8x.",
 				(uint32_t)obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity warning */
 		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacityE6",
-				"_BIX: Design Capacity Warning (Element 6) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIXDesignCapacityE6",
+				"_BIX: Design Capacity Warning (Element 6) "
+				"is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Design capacity low */
 		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXDesignCapacityE7",
-				 "_BIX: Design Capacity Warning (Element 7) is unknown: 0x%8.8x.",
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"Method_BIXDesignCapacityE7",
+				 "_BIX: Design Capacity Warning (Element 7) "
+				"is unknown: 0x%8.8x.",
 				(uint32_t)obj->Package.Elements[7].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1266,16 +1394,20 @@ static void method_test_BIX_return(
 		/* Cycle Count */
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
-				"_BIX: Cycle Count (Element 10) is unknown: 0x%8.8x.",
+				"_BIX: Cycle Count (Element 10) is unknown: "
+				"0x%8.8x.",
 				(uint32_t)obj->Package.Elements[10].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 #endif
 		if (failed)
-			fwts_advice(fw, "Battery _BIX package contains errors. It is worth running the "
-					"firmware test suite interactive 'battery' test to see if this "
-					"is problematic.  This is a bug an needs to be fixed.");
+			fwts_advice(fw,
+				"Battery _BIX package contains errors. It is "
+				"worth running the firmware test suite "
+				"interactive 'battery' test to see if this "
+				"is problematic.  This is a bug an needs to "
+				"be fixed.");
 		else
 			fwts_passed(fw, "Battery _BIX package looks sane.");
 	}
@@ -1321,7 +1453,10 @@ static void method_test_BST_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 4) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTElementCount", "_BST package should return 4 elements, got %d instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BSTElementCount",
+				"_BST package should return 4 elements, "
+				"got %d instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1329,8 +1464,10 @@ static void method_test_BST_return(
 
 		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadType",
-					"_BST package element %d is not of type DWORD Integer.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BSTBadType",
+					"_BST package element %d is not of "
+					"type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -1339,18 +1476,22 @@ static void method_test_BST_return(
 		/* Sanity check each field */
 		/* Battery State */
 		if ((obj->Package.Elements[0].Integer.Value) > 7) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadState",
-					"_BST: Expected Battery State (Element 0) to be 0..7, got 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[0].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BSTBadState",
+				"_BST: Expected Battery State (Element 0) to "
+				"be 0..7, got 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
 		/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
 		if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BSTBadState",
-					"_BST: Battery State (Element 0) is indicating both charging "
-					"and discharginng which is not allowed. Got value 0x%8.8x.",
-					(uint32_t)obj->Package.Elements[0].Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BSTBadState",
+				"_BST: Battery State (Element 0) is "
+				"indicating both charging and discharginng "
+				"which is not allowed. Got value 0x%8.8x.",
+				(uint32_t)obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -1358,9 +1499,12 @@ static void method_test_BST_return(
 		/* Battery Remaining Capacity - cannot check, pulled from EC */
 		/* Battery Present Voltage - cannot check, pulled from EC */
 		if (failed)
-			fwts_advice(fw, "Battery _BST package contains errors. It is worth running the "
-					"firmware test suite interactive 'battery' test to see if this "
-					"is problematic.  This is a bug an needs to be fixed.");
+			fwts_advice(fw,
+				"Battery _BST package contains errors. It is "
+				"worth running the firmware test suite "
+				"interactive 'battery' test to see if this "
+				"is problematic.  This is a bug an needs to "
+				"be fixed.");
 		else
 			fwts_passed(fw, "Battery _BST package looks sane.");
 	}
@@ -1382,7 +1526,7 @@ static int method_test_BTP(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BTP", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -1414,7 +1558,7 @@ static int method_test_BTM(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BTM", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -1435,7 +1579,10 @@ static void method_test_BMD_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 5) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BMDElementCount", "_BMD package should return 4 elements, got %d instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BMDElementCount",
+				"_BMD package should return 4 elements, "
+				"got %d instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -1443,7 +1590,10 @@ static void method_test_BMD_return(
 
 		for (i=0;(i<4) && (i<obj->Package.Count);i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BMDBadType", "_BMD package element %d is not of type DWORD Integer.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BMDBadType",
+					"_BMD package element %d is not of "
+					"type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -1468,7 +1618,7 @@ static int method_test_BMC(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BMC", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -1488,11 +1638,16 @@ static void method_test_PSR_return(
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if (obj->Integer.Value > 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSRZeroOrOne",
-				"_PSR returned 0x%8.8x\n, expected 0 (offline) or 1 (online)", (uint32_t)obj->Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSRZeroOrOne",
+				"_PSR returned 0x%8.8x\n, expected 0 "
+				"(offline) or 1 (online)",
+				(uint32_t)obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
-			fwts_passed(fw, "_PSR correctly returned sane looking value 0x%8.8x", (uint32_t)obj->Integer.Value);
+			fwts_passed(fw,
+				"_PSR correctly returned sane looking "
+				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
 	}
 }
 
@@ -1513,8 +1668,10 @@ static void method_test_PIF_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 6) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PIFElementCount",
-				"_PIF should return package of 6 elements, got %d elements instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PIFElementCount",
+				"_PIF should return package of 6 elements, "
+				"got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -1524,11 +1681,15 @@ static void method_test_PIF_return(
 			    (obj->Package.Elements[3].Type != ACPI_TYPE_STRING) ||
 			    (obj->Package.Elements[4].Type != ACPI_TYPE_STRING) ||
 			    (obj->Package.Elements[5].Type != ACPI_TYPE_STRING)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PIFBadType",
-					"_PIF should return package of 1 buffer, 2 integers and 3 strings.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_PIFBadType",
+					"_PIF should return package of 1 "
+					"buffer, 2 integers and 3 strings.");
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			} else {
-				fwts_passed(fw, "_PIF correctly returned sane looking package.");
+				fwts_passed(fw,
+					"_PIF correctly returned sane "
+					"looking package.");
 			}
 		}
 	}
@@ -1555,8 +1716,10 @@ static void method_test_FIF_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 4) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FIFElementCount",
-				"_FIF should return package of 4 elements, got %d elements instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FIFElementCount",
+				"_FIF should return package of 4 elements, "
+				"got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -1564,14 +1727,22 @@ static void method_test_FIF_return(
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[3].Type != ACPI_TYPE_INTEGER)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FIFBadType",
-					"_FIF should return package of 4 integers.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_FIFBadType",
+					"_FIF should return package of 4 "
+					"integers.");
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				fwts_advice(fw, "_FIF is not returning the correct fan information. "
-						"It may be worth running the firmware test suite interactive 'fan' test "
-						"to see if this affects the control and operation of the fan.");
+				fwts_advice(fw,
+					"_FIF is not returning the correct "
+					"fan information. It may be worth "
+					"running the firmware test suite "
+					"interactive 'fan' test to see if "
+					"this affects the control and "
+					"operation of the fan.");
 			} else {
-				fwts_passed(fw, "_FIF correctly returned sane looking package.");
+				fwts_passed(fw,
+					"_FIF correctly returned sane "
+					"looking package.");
 			}
 		}
 	}
@@ -1593,28 +1764,43 @@ static int method_test_FSL(fwts_framework *fw)
 		"_FSL", arg, 1, method_test_NULL_return, NULL);
 }
 
-static void method_test_FST_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private)
+static void method_test_FST_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FSTElementCount",
-				"_FST should return package of 3 elements, got %d elements instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FSTElementCount",
+				"_FST should return package of 3 elements, "
+				"got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
 			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_FSTBadType",
-					"_FST should return package of 3 integers.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_FSTBadType",
+					"_FST should return package of 3 "
+					"integers.");
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				fwts_advice(fw, "_FST is not returning the correct fan status information. "
-						"It may be worth running the firmware test suite interactive 'fan' test "
-						"to see if this affects the control and operation of the fan.");
+				fwts_advice(fw,
+					"_FST is not returning the correct "
+					"fan status information. It may be "
+					"worth running the firmware test "
+					"suite interactive 'fan' test to see "
+					"if this affects the control and "
+					"operation of the fan.");
 			} else {
-				fwts_passed(fw, "_FST correctly returned sane looking package.");
+				fwts_passed(fw,
+					"_FST correctly returned sane "
+					"looking package.");
 			}
 		}
 	}
@@ -1642,38 +1828,45 @@ static void method_test_THERM_return(
 
 		if (fwts_acpi_region_handler_called_get()) {
 			/*
-			 *  We accessed some memory or I/O region during the evaluation
-			 *  which returns spoofed values, so we should not test the value
-			 *  being returned. In this case, just pass this as a valid
-			 *  return type.
+			 *  We accessed some memory or I/O region during the
+			 *  evaluation which returns spoofed values, so we
+			 *  should not test the value being returned. In this
+			 *  case, just pass this as a valid return type.
 			 */
-			fwts_passed(fw, "%s correctly returned sane looking return type.", name);
+			fwts_passed(fw,
+				"%s correctly returned sane looking "
+				"return type.", name);
 		} else {
 			/*
-			 *  The evaluation probably was a hard-coded value, so sanity check it
+			 *  The evaluation probably was a hard-coded value,
+			 *  so sanity check it
 			 */
 			if (obj->Integer.Value >= 2732)
 				fwts_passed(fw,
-					"%s correctly returned sane looking value "
-					"0x%8.8x (%5.1f degrees K)",
+					"%s correctly returned sane looking "
+					"value 0x%8.8x (%5.1f degrees K)",
 					method,
 					(uint32_t)obj->Integer.Value,
 					(float)((uint32_t)obj->Integer.Value) / 10.0);
 			else {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodBadTemp",
-					"%s returned a dubious value below 0 degrees C: "
-					"0x%8.8x (%5.1f degrees K)",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodBadTemp",
+					"%s returned a dubious value below "
+					"0 degrees C: 0x%8.8x (%5.1f "
+					"degrees K)",
 					method,
 					(uint32_t)obj->Integer.Value,
 					(float)((uint32_t)obj->Integer.Value) / 10.0);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				fwts_advice(fw,
-					"The value returned was probably a hard-coded "
-					"thermal value which is out of range because "
-					"fwts did not detect any ACPI region handler "
-					"accesses of I/O or system memeory to evaluate "
-					"the thermal value. "
-					"It is worth sanity checking these values in "
+					"The value returned was probably a "
+					"hard-coded thermal value which is "
+					"out of range because fwts did not "
+					"detect any ACPI region handler "
+					"accesses of I/O or system memeory "
+					"to evaluate the thermal value. "
+					"It is worth sanity checking these "
+					"values in "
 					"/sys/class/thermal/thermal_zone*.");
 			}
 		}
@@ -1710,7 +1903,9 @@ static void method_test_TCx_return(
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		char *method = (char *)private;
-		fwts_passed(fw, "%s correctly returned sane looking value 0x%8.8x", method, (uint32_t)obj->Integer.Value);
+		fwts_passed(fw,
+			"%s correctly returned sane looking value 0x%8.8x",
+			method, (uint32_t)obj->Integer.Value);
 	}
 }
 
@@ -1732,6 +1927,7 @@ static int method_test_ACx(fwts_framework *fw)
 
 	for (i=0;i<10;i++) {
 		char buffer[5];
+
 		snprintf(buffer, sizeof(buffer), "AC%d", i);
 		method_evaluate_method(fw, METHOD_OPTIONAL,
 			buffer, NULL, 0, method_test_THERM_return, buffer);
@@ -1765,7 +1961,8 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[2].Integer.Value = 5;		/* Power limit */
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			"_DTI", arg, 1, method_test_NULL_return,
+			NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 
@@ -1777,7 +1974,8 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[2].Integer.Value = 1;		/* Power limit */
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_DTI", arg, 1, method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			"_DTI", arg, 1, method_test_NULL_return,
+			NULL) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;
@@ -1791,7 +1989,9 @@ static void method_test_RTV_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw, "_RTV correctly returned sane looking value 0x%8.8x", (uint32_t)obj->Integer.Value);
+		fwts_passed(fw,
+			"_RTV correctly returned sane looking value 0x%8.8x",
+			(uint32_t)obj->Integer.Value);
 }
 
 static int method_test_RTV(fwts_framework *fw)
@@ -1833,12 +2033,15 @@ static int method_test_PTS(fwts_framework *fw)
 		fwts_log_info(fw, "Test _PTS(%d).", i);
 
 		if (method_evaluate_method(fw, METHOD_MANDITORY, "_PTS", arg, 1,
-					  method_test_NULL_return, NULL) == FWTS_NOT_EXIST) {
-			fwts_advice(fw, "Could not find _PTS. This method provides a mechanism to "
-					"do housekeeping functions, such as write sleep state to the "
-					"embedded controller before entering a sleep state. If the "
-					"machine cannot suspend (S3), hibernate (S4) or shutdown (S5) "
-					"then it could be because _PTS is missing.");
+			method_test_NULL_return, NULL) == FWTS_NOT_EXIST) {
+			fwts_advice(fw,
+				"Could not find _PTS. This method provides a "
+				"mechanism to do housekeeping functions, such "
+				"as write sleep state to the embedded "
+				"controller before entering a sleep state. If "
+				"the machine cannot suspend (S3), "
+				"hibernate (S4) or shutdown (S5) then it "
+				"could be because _PTS is missing.");
 			break;
 		}
 		fwts_log_nl(fw);
@@ -1857,16 +2060,19 @@ static int method_test_TTS(fwts_framework *fw)
 			arg[0].Type = ACPI_TYPE_INTEGER;
 			arg[0].Integer.Value = i;
 
-			fwts_log_info(fw, "Test _TTS(%d) Transition To State S%d.", i, i);
+			fwts_log_info(fw,
+				"Test _TTS(%d) Transition To State S%d.", i, i);
 
-			if (method_evaluate_method(fw, METHOD_MANDITORY, "_TTS", arg, 1,
-				method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			if (method_evaluate_method(fw, METHOD_MANDITORY,
+				"_TTS", arg, 1, method_test_NULL_return,
+				NULL) == FWTS_NOT_EXIST)
 				break;
 			fwts_log_nl(fw);
 		}
 	}
 	else {
-		fwts_skipped(fw, "Optional control method _TTS does not exist.");
+		fwts_skipped(fw,
+			"Optional control method _TTS does not exist.");
 	}
 	return FWTS_OK;
 }
@@ -1884,7 +2090,10 @@ static void method_test_Sx_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SElementCount", "%s should return package of 3 integers, got %d elements instead.", method,
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_SElementCount",
+				"%s should return package of 3 integers, "
+				"got %d elements instead.", method,
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -1919,22 +2128,32 @@ static void method_test_WAK_return(
 		fwts_method_dump_object(fw, obj);
 
 		if (obj->Package.Count != 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKElementCount", "_WAK should return package of 2 integers, got %d elements instead.",
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_WAKElementCount",
+				"_WAK should return package of 2 integers, "
+				"got %d elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		} else {
 			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
 			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER))  {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKBadType", "_WAK should return package of 2 integers, got %d instead.",
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_WAKBadType",
+					"_WAK should return package of 2 "
+					"integers, got %d instead.",
 					obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
 			else {
 				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_WAKBitField",
-						"_WAK: expecting condition bit-field (element 0) of packages to be in range, got 0x%8.8x.",
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"Method_WAKBitField",
+						"_WAK: expecting condition "
+						"bit-field (element 0) of "
+						"packages to be in range, "
+						"got 0x%8.8x.",
 						(uint32_t)obj->Package.Elements[0].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					failed++;
@@ -1959,7 +2178,9 @@ static void method_test_WAK_return(
 			}
 		}
 		if (!failed)
-			fwts_passed(fw, "_WAK correctly returned sane looking package.");
+			fwts_passed(fw,
+				"_WAK correctly returned sane "
+				"looking package.");
 	}
 }
 
@@ -1973,7 +2194,7 @@ static int method_test_WAK(fwts_framework *fw)
 		arg[0].Integer.Value = i;
 		fwts_log_info(fw, "Test _WAK(%d) System Wake, State S%d.", i, i);
 		if (method_evaluate_method(fw, METHOD_MANDITORY, "_WAK", arg, 1,
-					  method_test_WAK_return, &i) == FWTS_NOT_EXIST)
+			method_test_WAK_return, &i) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -2054,11 +2275,15 @@ static void method_test_DOD_return(
 			}
 		}
 		if (failed) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DODNoPackage",
-				"Method _DOD did not return a package of %d integers.", obj->Package.Count);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_DODNoPackage",
+				"Method _DOD did not return a package of "
+				"%d integers.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
-			fwts_passed(fw, "Method _DOD returned a sane package of %d integers.", obj->Package.Count);
+			fwts_passed(fw,
+				"Method _DOD returned a sane package of "
+				"%d integers.", obj->Package.Count);
 	}
 }
 
@@ -2143,21 +2368,29 @@ static void method_test_BCL_return(
 				failed++;
 		}
 		if (failed) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLNoPackage",
-				"Method _BCL did not return a package of %d integers.", obj->Package.Count);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BCLNoPackage",
+				"Method _BCL did not return a package of %d "
+				"integers.", obj->Package.Count);
 		} else {
 			if (obj->Package.Count < 3) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLElementCount",
-					"Method _BCL should return a package of more than 2 integers, got just %d.", obj->Package.Count);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BCLElementCount",
+					"Method _BCL should return a package "
+					"of more than 2 integers, got "
+					"just %d.", obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			} else {
 				bool ascending_levels = false;
 
 				if (obj->Package.Elements[0].Integer.Value <
 				    obj->Package.Elements[1].Integer.Value) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLMaxLevel",
-						"Brightness level when on full power (%d) is less than "
-						 	"brightness level when on battery power (%d).",
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"Method_BCLMaxLevel",
+						"Brightness level when on full "
+						" power (%d) is less than "
+						 "brightness level when on "
+						"battery power (%d).",
 						(uint32_t)obj->Package.Elements[0].Integer.Value,
 						(uint32_t)obj->Package.Elements[1].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -2167,8 +2400,13 @@ static void method_test_BCL_return(
 				for (i=2;i<obj->Package.Count-1;i++) {
 					if (obj->Package.Elements[i].Integer.Value >
 					    obj->Package.Elements[i+1].Integer.Value) {
-						fwts_log_info(fw, "Brightness level %d (index %d) is greater than "
-						 	"brightness level %d (index %d), should be in ascending order.",
+						fwts_log_info(fw,
+							"Brightness level %d "
+							"(index %d) is greater "
+							"than brightness level "
+							"%d (index %d), should "
+							"be in ascending "
+							"order.",
 							(uint32_t)obj->Package.Elements[i].Integer.Value, i,
 							(uint32_t)obj->Package.Elements[i+1].Integer.Value, i+1);
 						ascending_levels = true;
@@ -2176,19 +2414,33 @@ static void method_test_BCL_return(
 					}
 				}
 				if (ascending_levels) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BCLAscendingOrder",
-						"Some or all of the brightness level are not in ascending order which "
-						"should be fixed in the firmware.");
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"Method_BCLAscendingOrder",
+						"Some or all of the brightness "
+						"level are not in ascending "
+						"order which should be fixed "
+						"in the firmware.");
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				}
 
 				if (failed)
-					fwts_advice(fw, "Method _BCL seems to be misconfigured and is returning incorrect brightness levels."
-							"It is worth sanity checking this with the firmware test suite interactive test "
-							"'brightness' to see how broken this is. As it is, _BCL is broken and needs to be "
-							"fixed.");
+					fwts_advice(fw,
+						"Method _BCL seems to be "
+						"misconfigured and is "
+						"returning incorrect "
+						"brightness levels."
+						"It is worth sanity checking "
+						"this with the firmware test "
+						"suite interactive test "
+						"'brightness' to see how "
+						"broken this is. As it is, "
+						"_BCL is broken and needs to "
+						"be fixed.");
 				else
-					fwts_passed(fw, "Method _BCL returned a sane package of %d integers.", obj->Package.Count);
+					fwts_passed(fw,
+						"Method _BCL returned a sane "
+						"package of %d integers.",
+						obj->Package.Count);
 			}
 		}
 	}
@@ -2227,23 +2479,30 @@ static void method_test_DDC_return(
 	uint32_t requested = *(uint32_t*)private;
 
 	if (obj == NULL){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj", "Method %s returned a NULL object, and did not return a buffer or integer.", name);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"MethodReturnNullObj",
+			"Method %s returned a NULL object, and did not "
+			"return a buffer or integer.", name);
 		return;
 	}
 	switch (obj->Type) {
 	case ACPI_TYPE_BUFFER:
 		if (requested != obj->Buffer.Length) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DDCElementCount",
-				"Method _DDC returned a buffer of %d items, expected %d.",
-				obj->Buffer.Length, requested);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_DDCElementCount",
+				"Method _DDC returned a buffer of %d items, "
+				"expected %d.", obj->Buffer.Length, requested);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
-			fwts_passed(fw, "Method _DDC returned a buffer of %d items as expected.",
-				obj->Buffer.Length);
+			fwts_passed(fw,
+				"Method _DDC returned a buffer of %d items "
+				"as expected.", obj->Buffer.Length);
 		break;
 	case ACPI_TYPE_INTEGER:
-			fwts_passed(fw, "Method _DDC could not return a buffer of %d items"
-					"and instead returned an error status.",
+			fwts_passed(fw,
+				"Method _DDC could not return a buffer of %d "
+					"items and instead returned an error "
+					"status.",
 				obj->Buffer.Length);
 		break;
 	default:
@@ -2264,7 +2523,8 @@ static int method_test_DDC(fwts_framework *fw)
 		arg[0].Integer.Value = 128;
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_DDC", arg, 1, method_test_DDC_return, &i) == FWTS_NOT_EXIST)
+			"_DDC", arg, 1, method_test_DDC_return,
+			&i) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;

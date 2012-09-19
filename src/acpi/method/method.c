@@ -3226,7 +3226,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_S4_, "Check _S4_ (S4 System State)." }, */
 	/* { method_test_S5_, "Check _S5_ (S5 System State)." }, */
 	/* { method_test_S5_, "Check _S5_ (S5 System State)." }, */
-	/* { method_test_SWP, "Check _SWP (System Wake Source)." }, */
+	/* { method_test_SWS, "Check _SWS (System Wake Source)." }, */
 
 	/* Section 8.4 Declaring Processors */
 

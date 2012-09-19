@@ -47,7 +47,7 @@
  * _BBN  6.5.5		Y
  * _BCL  B.6.2 		Y
  * _BCM  B.6.3		Y
- * _BCT  10.2.29	N
+ * _BCT  10.2.29	Y
  * _BDN  6.5.3		Y
  * _BFS  7.3.1		deprecated
  * _BIF  10.2.2.1	Y
@@ -1495,6 +1495,21 @@ static int method_test_SBS(fwts_framework *fw)
 /*
  * Section 10.2 Battery Control Methods
  */
+static int method_test_BCT(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 50;	/* 50% */
+
+	/*
+	 * For now, just check that we get some integer back, values
+	 * can be 0x00000000, 0x00000001-0xfffffffe and 0xffffffff,
+	 * so anything is valid as long as it is an integer
+	 */
+	return method_evaluate_method(fw, METHOD_MOBILE,
+		"_BCT", arg, 1, method_test_integer_return, NULL);
+}
+
 static void method_test_BIF_return(
 	fwts_framework *fw,
 	char *name,
@@ -3136,14 +3151,13 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 10.2 Battery Controls */
 
-	/* { method_test_BCT, "Check _BCT (Battery Charge Time)." }, */
+	{ method_test_BCT, "Check _BCT (Battery Charge Time)." },
 	{ method_test_BIF, "Check _BIF (Battery Information)." },
 	{ method_test_BIX, "Check _BIX (Battery Information Extended)." },
 	{ method_test_BMA, "Check _BMA (Battery Measurement Averaging)." },
 	{ method_test_BMC, "Check _BMC (Battery Maintenance Control)." },
 	{ method_test_BMD, "Check _BMD (Battery Maintenance Data)." },
 	{ method_test_BMS, "Check _BMS (Battery Measurement Sampling Time)." },
-	/* { method_test_BMT, "Check _BMT (Battery Time)." }, */
 	{ method_test_BST, "Check _BST (Battery Status)." },
 	{ method_test_BTP, "Check _BTP (Battery Trip Point)." },
 	{ method_test_BTM, "Check _BTM (Battery Time)." },

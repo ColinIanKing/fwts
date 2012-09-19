@@ -150,10 +150,10 @@
  * _PPC  8.4.4.3	N
  * _PPE  8.4.6		N
  * _PR   5.3.1		N
- * _PR0  7.2.8		N
- * _PR1	 7.2.9		N
- * _PR2  7.2.10		N
- * _PR3  7.2.11		N
+ * _PR0  7.2.8		Y
+ * _PR1	 7.2.9		Y
+ * _PR2  7.2.10		Y
+ * _PR3  7.2.11		Y
  * _PRE  7.2.12		Y
  * _PRL  10.3.4		N
  * _PRS  6.2.11		N
@@ -187,15 +187,15 @@
  * _S3_  7.3.4.4	N
  * _S4_  7.3.4.5	N
  * _S5_  7.3.4.6	N
- * _S1D  7.2.16		N
- * _S2D  7.2.17		N
- * _S3D  7.2.18		N
- * _S4D  7.2.19		N
- * _S0W  7.2.20		N
- * _S1W  7.2.21		N
- * _S2W	 7.2.22		N
- * _S3W  7.2.23		N
- * _S4W  7.2.24		N
+ * _S1D  7.2.16		Y
+ * _S2D  7.2.17		Y
+ * _S3D  7.2.18		Y
+ * _S4D  7.2.19		Y
+ * _S0W  7.2.20		Y
+ * _S1W  7.2.21		Y
+ * _S2W	 7.2.22		Y
+ * _S3W  7.2.23		Y
+ * _S4W  7.2.24		Y
  * _SB_  5.3.1		n/a
  * _SBS  10.1.3		Y
  * _SCP  11.4.11	Y
@@ -1195,7 +1195,7 @@ static int method_test_PSE(fwts_framework *fw)
 		"_PSE", arg, 1, method_test_NULL_return, NULL);
 }
 
-static void method_test_PRE_return(
+static void method_test_power_resources_return(
 	fwts_framework *fw,
 	char *name,
 	ACPI_BUFFER *buf,
@@ -1211,19 +1211,26 @@ static void method_test_PRE_return(
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PREElementType",
-				"_PRE package element %d was not a reference.",
-				i);
+				"Method_PowerResourceElementType",
+				"%s package element %d was not a reference.",
+				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
 	}
 }
 
-static int method_test_PRE(fwts_framework *fw)
-{
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PRE", NULL, 0, method_test_PRE_return, NULL);
+#define method_test_POWER(name)						\
+static int method_test ## name(fwts_framework *fw)			\
+{									\
+	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
+		# name, NULL, 0, method_test_power_resources_return, # name);\
 }
+
+method_test_POWER(_PR0)
+method_test_POWER(_PR1)
+method_test_POWER(_PR2)
+method_test_POWER(_PR3)
+method_test_POWER(_PRE)
 
 static int method_test_PSW(fwts_framework *fw)
 {
@@ -1235,6 +1242,31 @@ static int method_test_PSW(fwts_framework *fw)
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_PSW", arg, 1, method_test_NULL_return, NULL);
 }
+
+#define method_test_SxD(name)						\
+static int method_test ## name(fwts_framework *fw)			\
+{									\
+	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
+		# name, NULL, 0, method_test_integer_return, # name);	\
+}
+
+method_test_SxD(_S1D)
+method_test_SxD(_S2D)
+method_test_SxD(_S3D)
+method_test_SxD(_S4D)
+
+#define method_test_SxW(name)						\
+static int method_test ## name(fwts_framework *fw)			\
+{									\
+	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
+		# name, NULL, 0, method_test_integer_return, # name);	\
+}
+
+method_test_SxW(_S0W)
+method_test_SxW(_S1W)
+method_test_SxW(_S2W)
+method_test_SxW(_S3W)
+method_test_SxW(_S4W)
 
 static int method_test_IRC(fwts_framework *fw)
 {
@@ -3164,10 +3196,10 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_DSW, "Check _DSW (Device Sleep Wake)." },
 	{ method_test_IRC, "Check _IRC (In Rush Current)." },
 	{ method_test_PRE, "Check _PRE (Power Resources for Enumeration)." },
-	/* { method_test_PR0, "Check _PR0 (Power Resources for D0)." }, */
-	/* { method_test_PR1, "Check _PR1 (Power Resources for D1)." }, */
-	/* { method_test_PR2, "Check _PR2 (Power Resources for D2)." }, */
-	/* { method_test_PR3, "Check _PR3 (Power Resources for D3)." }, */
+	{ method_test_PR0, "Check _PR0 (Power Resources for D0)." },
+	{ method_test_PR1, "Check _PR1 (Power Resources for D1)." },
+	{ method_test_PR2, "Check _PR2 (Power Resources for D2)." },
+	{ method_test_PR3, "Check _PR3 (Power Resources for D3)." },
 	/* { method_test_PRW, "Check _PRW (Power Resources for Wake)." }, */
 	{ method_test_PS0, "Check _PS0 (Power State 0)." },
 	{ method_test_PS1, "Check _PS1 (Power State 1)." },
@@ -3176,15 +3208,15 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PSC, "Check _PSC (Power State Current)." },
 	{ method_test_PSE, "Check _PSE (Power State for Enumeration)." },
 	{ method_test_PSW, "Check _PSW (Power State Wake)." },
-	/* { method_test_S1D, "Check _S1D (S1 Device State)." }, */
-	/* { method_test_S2D, "Check _S2D (S2 Device State)." }, */
-	/* { method_test_S3D, "Check _S3D (S3 Device State)." }, */
-	/* { method_test_S4D, "Check _S4D (S4 Device StSystem Statusate)." }, */
-	/* { method_test_S0W, "Check _S0W (S0 Device Wake State)." }, */
-	/* { method_test_S1W, "Check _S1W (S1 Device Wake State)." }, */
-	/* { method_test_S2W, "Check _S2W (S2 Device Wake State)." }, */
-	/* { method_test_S3W, "Check _S3W (S3 Device Wake State)." }, */
-	/* { method_test_S4W, "Check _S4W (S4 Device Wake State)." }, */
+	{ method_test_S1D, "Check _S1D (S1 Device State)." },
+	{ method_test_S2D, "Check _S2D (S2 Device State)." },
+	{ method_test_S3D, "Check _S3D (S3 Device State)." },
+	{ method_test_S4D, "Check _S4D (S4 Device State)." },
+	{ method_test_S0W, "Check _S0W (S0 Device Wake State)." },
+	{ method_test_S1W, "Check _S1W (S1 Device Wake State)." },
+	{ method_test_S2W, "Check _S2W (S2 Device Wake State)." },
+	{ method_test_S3W, "Check _S3W (S3 Device Wake State)." },
+	{ method_test_S4W, "Check _S4W (S4 Device Wake State)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
 	/* { method_test_S0_, "Check _S0_ (S0 System State)." }, */

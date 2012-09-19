@@ -100,18 +100,18 @@
  * _FSL  11.3.1.3	Y
  * _FST  11.3.1.4	Y
  * _GAI  10.4.5		N
- * _GCP  9.18.2		N
+ * _GCP  9.18.2		Y
  * _GHL  10.4.7		N
  * _GL   5.7.1		N
  * _GLK  6.5.7		n/a
  * _GPD  B.4.4		Y
  * _GPE  5.3.1, 12.11	N
- * _GRT  9.18.3		N
+ * _GRT  9.18.3		Y
  * _GSB  6.2.6		N
  * _GTF  9.8.1.1	N
  * _GTM  9.8.2.1.1	N
  * _GTS  7.3.3		deprecated
- * _GWS  9.18.5		N
+ * _GWS  9.18.5		Y
  * _HID  6.1.5		Y
  * _HOT  11.4.6		Y
  * _HPP  6.2.7		N
@@ -1397,6 +1397,103 @@ static int method_test_LID(fwts_framework *fw)
 /*
  * Section 9.18 Wake Alarm Device
  */
+static void method_test_GCP_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		if (obj->Integer.Value & ~0xf) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_GCPReturn",
+				"_GCP returned %d, should be between 0 and 15, "
+				"one or more of the reserved bits 4..31 seem "
+				"to be set.",
+				(uint32_t)obj->Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		} else {
+			fwts_passed(fw,
+				"_GCP correctly returned sane looking "
+				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+		}
+	}
+}
+
+static int method_test_GCP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GCP", NULL, 0, method_test_GCP_return, "_GCP");
+}
+
+static void method_test_GRT_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (obj->Buffer.Length != 16) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_GRTBadBufferSize",
+			"_GRT should return a buffer of 16 bytes, but "
+			"instead just returned %d\n",
+			(int)obj->Buffer.Length);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/*
+	 * Should sanity check this, but we can't read the
+	 * the data in this emulated mode, so ignore
+	 */
+}
+
+static int method_test_GRT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GRT", NULL, 0, method_test_GRT_return, NULL);
+}
+
+static void method_test_GWS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		if (obj->Integer.Value & ~0x3) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_GWSReturn",
+				"_GWS returned %d, should be between 0 and 3, "
+				"one or more of the reserved bits 2..31 seem "
+				"to be set.",
+				(uint32_t)obj->Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		} else {
+			fwts_passed(fw,
+				"_GWS correctly returned sane looking "
+				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+		}
+	}
+}
+
+static int method_test_GWS(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 1;	/* DC timer */
+
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GWS", arg, 1, method_test_GWS_return, "_GWS");
+}
+
 static int method_test_STP(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[2];
@@ -3136,9 +3233,9 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 9.18 Wake Alarm Device */
 
-	/* { method_test_GCP, "Check _GCP (Get Capabilities)." }, */
-	/* { method_test_GRT, "Check _GRT (Get Real Time)." }, */
-	/* { method_test_GWS, "Check _GWS (Get Wake Status)." }, */
+	{ method_test_GCP, "Check _GCP (Get Capabilities)." },
+	{ method_test_GRT, "Check _GRT (Get Real Time)." },
+	{ method_test_GWS, "Check _GWS (Get Wake Status)." },
 	/* { method_test_SRT, "Check _SRT (Set Real Time)." }, */
 	{ method_test_STP, "Check _STP (Set Expired Timer Wake Policy)." },
 	{ method_test_STV, "Check _STV (Set Timer Value)." },

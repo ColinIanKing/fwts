@@ -65,10 +65,10 @@
  * _CDM  6.2.1		N
  * _CID  6.1.2		N
  * _CLS  6.1.3		N
- * _CPC  8.4.5		N
+ * _CPC  8.4.5		Y
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
- * _CSD  8.4.2.2	N
+ * _CSD  8.4.2.2	Y
  * _CST  8.4.2.1	N
  * _CWS  9.18.6		N
  * _DCK  6.5.2		Y
@@ -138,17 +138,17 @@
  * _OST  6.3.5		N
  * _PAI  10.4.4		N
  * _PCL  10.3.2		N
- * _PCT  8.4.4.1	N
+ * _PCT  8.4.4.1	Y
  * _PDC  8.4.1		N
- * _PDL  8.4.4.6	N
+ * _PDL  8.4.4.6	Y
  * _PIC  5.8.1		N
  * _PIF  10.3.3		Y
  * _PLD  6.1.8		Y
  * _PMC  10.4.1		N
  * _PMD  10.4.8		N
  * _PMM  10.4.3		N
- * _PPC  8.4.4.3	N
- * _PPE  8.4.6		N
+ * _PPC  8.4.4.3	Y
+ * _PPE  8.4.6		Y
  * _PR   5.3.1		N
  * _PR0  7.2.8		Y
  * _PR1	 7.2.9		Y
@@ -218,16 +218,16 @@
  * _T_x  18.2.1.1	n/a
  * _TC1  11.4.12	Y
  * _TC2  11.4.13	Y
- * _TDL  8.4.3.5	N
+ * _TDL  8.4.3.5	Y
  * _TIP  9.18.9		N
  * _TIV  9.18.10	N
  * _TMP  11.4.14	Y
- * _TPC  8.4.3.3	N
+ * _TPC  8.4.3.3	Y
  * _TPT  11.4.15	Y
  * _TRT  11.4.16	N
- * _TSD  8.4.3.4	N
+ * _TSD  8.4.3.4	Y
  * _TSP  11.4.17	Y
- * _TSS  8.4.3.2	N
+ * _TSS  8.4.3.2	Y
  * _TST  11.4.18	Y
  * _TTS  7.3.6		Y
  * _TZ_  5.3.1		N
@@ -1393,6 +1393,277 @@ static int method_test_SWS(fwts_framework *fw)
 /*
  * Section 8.4 Declaring Processors
  */
+static void method_test_type_integer(
+	fwts_framework *fw,
+	bool *failed,
+	ACPI_OBJECT *obj,
+	int element,
+	char *message)
+{
+	if (obj->Package.Elements[element].Type  != ACPI_TYPE_INTEGER) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
+			"_CPC package element %d (%s) was not an integer.",
+			element, message);
+		*failed = true;
+	}
+}
+
+static void method_test_type_buffer(
+	fwts_framework *fw,
+	bool *failed,
+	ACPI_OBJECT *obj,
+	int element,
+	char *message)
+{
+	if (obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
+			"_CPC package element %d (%s) was not a buffer.",
+			element, message);
+		*failed = true;
+	}
+}
+
+static void method_test_type_mixed(
+	fwts_framework *fw,
+	bool *failed,
+	ACPI_OBJECT *obj,
+	int element,
+	char *message)
+{
+	if ((obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER) &&
+	    (obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
+			"_CPC package element %d (%s) was not a buffer "
+			"or an integer.", element, message);
+		*failed = true;
+	}
+}
+
+static void method_test_CPC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _PCT */
+	if (obj->Package.Count != 17) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementCount",
+			"_CPC should return package of 17 elements, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* For now, just check types */
+
+	method_test_type_integer(fw, &failed, obj, 0, "NumEntries");
+	method_test_type_integer(fw, &failed, obj, 1, "Revision");
+	method_test_type_mixed  (fw, &failed, obj, 2, "HighestPerformance");
+	method_test_type_mixed  (fw, &failed, obj, 3, "NominalPerformance");
+	method_test_type_mixed  (fw, &failed, obj, 4, "LowestNonlinerPerformance");
+	method_test_type_mixed  (fw, &failed, obj, 5, "LowestPerformance");
+	method_test_type_buffer (fw, &failed, obj, 6, "GuaranteedPerformanceRegister");
+	method_test_type_buffer (fw, &failed, obj, 7, "DesiredPerformanceRegister");
+	method_test_type_buffer (fw, &failed, obj, 8, "MinimumPerformanceRegister");
+	method_test_type_buffer (fw, &failed, obj, 9, "MaximumPerformanceRegister");
+	method_test_type_buffer (fw, &failed, obj, 10, "PerformanceReductionToleranceRegister");
+	method_test_type_buffer (fw, &failed, obj, 11, "TimeWindowRegister");
+	method_test_type_mixed  (fw, &failed, obj, 12, "CounterWraparoundTime");
+	method_test_type_mixed  (fw, &failed, obj, 13, "NominalCounterRegister");
+	method_test_type_mixed  (fw, &failed, obj, 14, "DeliveredCounterRegister");
+	method_test_type_mixed  (fw, &failed, obj, 15, "PerformanceLimitedRegister");
+	method_test_type_mixed  (fw, &failed, obj, 16, "EnableRegister");
+
+	if (!failed)
+		fwts_passed(fw, "_CPC correctly returned sane looking package.");
+}
+
+static int method_test_CPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_CPC", NULL,
+		0, method_test_CPC_return, NULL);
+}
+
+static void method_test_CSD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _CSD */
+	if (obj->Package.Count < 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSDElementCount",
+			"_CSD should return package of at least 1 element, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		int j;
+		bool elements_ok = true;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSDElementType",
+				"_CSD package element %d was not a package.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		pkg = &obj->Package.Elements[i];
+		/*
+		 *  Currently we expect a package of 6 integers.
+		 */
+		if (pkg->Package.Count != 6) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSDSubPackageElementCount",
+				"_CSD sub-package %d was expected to "
+				"have 5 elements, got %d elements instead.",
+				i, pkg->Package.Count);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;
+		}
+
+		for (j = 0; j < 6; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_CSDSubPackageElementCount",
+					"_CSD sub-package %d element %d is not "
+					"an integer.",
+					i, j);
+				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+
+		/* Element 0 must equal the number elements in the package */
+		if (pkg->Package.Elements[0].Integer.Value != pkg->Package.Count) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSDSubPackageElement0",
+				"_CSD sub-package %d element 0 (NumEntries) "
+				"was expected to have value 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 1 should contain zero */
+		if (pkg->Package.Elements[1].Integer.Value != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSDSubPackageElement1",
+				"_CSD sub-package %d element 1 (Revision) "
+				"was expected to have value 1, instead it "
+				"was 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[1].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 3 should contain 0xfc..0xfe */
+		if ((pkg->Package.Elements[3].Integer.Value != 0xfc) &&
+		    (pkg->Package.Elements[3].Integer.Value != 0xfd) &&
+		    (pkg->Package.Elements[3].Integer.Value != 0xfe)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSDSubPackageElement1",
+				"_CSD sub-package %d element 3 (CoordType) "
+				"was expected to have value 0xfc (SW_ALL), "
+				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
+				"was 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[3].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 4 number of processors, skip check */
+		/* Element 5 index, check */
+	}
+
+	if (!failed)
+		fwts_passed(fw,
+			"_CSD correctly returned sane looking package.");
+}
+
+static int method_test_CSD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CSD", NULL, 0, method_test_CSD_return, NULL);
+}
+
+static void method_test_PCT_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _PCT */
+	if (obj->Package.Count < 2) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PCTElementCount",
+			"_PCT should return package of least 2 elements, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	for (i = 0; i < obj->Package.Count; i++) {
+		/*
+		 * Fairly shallow checks here, should probably check
+		 * for a register description in the buffer
+		 */
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_BUFFER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PCTElementType",
+				"_PCT package element %d was not a buffer.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+	}
+	if (!failed)
+		fwts_passed(fw,
+			"_PCT correctly returned sane looking package.");
+}
+
+static int method_test_PCT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PCT", NULL,
+		0, method_test_PCT_return, NULL);
+}
+
 static void method_test_PSS_return(
 	fwts_framework *fw,
 	char *name,
@@ -1533,6 +1804,268 @@ static void method_test_PSS_return(
 static int method_test_PSS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PSS", NULL, 0, method_test_PSS_return, NULL);
+}
+
+static int method_test_PPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PPC", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_PPE(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PPE", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_PDL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PDL", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_TDL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TDL", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_TPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TPC", NULL, 0, method_test_integer_return, NULL);
+}
+
+static void method_test_TSD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _TSD */
+	if (obj->Package.Count < 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSDElementCount",
+			"_TSD should return package of at least 1 element, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		int j;
+		bool elements_ok = true;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDElementType",
+				"_TSD package element %d was not a package.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		pkg = &obj->Package.Elements[i];
+		/*
+		 *  Currently we expect a package of 5 integers.
+		 */
+		if (pkg->Package.Count != 5) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDSubPackageElementCount",
+				"_TSD sub-package %d was expected to "
+				"have 5 elements, got %d elements instead.",
+				i, pkg->Package.Count);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;
+		}
+
+		for (j = 0; j < 5; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_TSDSubPackageElementCount",
+					"_TSD sub-package %d element %d is not "
+					"an integer.",
+					i, j);
+				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+
+		/* Element 0 must equal the number elements in the package */
+		if (pkg->Package.Elements[0].Integer.Value != pkg->Package.Count) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDSubPackageElement0",
+				"_TSD sub-package %d element 0 (NumEntries) "
+				"was expected to have value 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 1 should contain zero */
+		if (pkg->Package.Elements[1].Integer.Value != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDSubPackageElement1",
+				"_TSD sub-package %d element 1 (Revision) "
+				"was expected to have value 1, instead it "
+				"was 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[1].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 3 should contain 0xfc..0xfe */
+		if ((pkg->Package.Elements[3].Integer.Value != 0xfc) &&
+		    (pkg->Package.Elements[3].Integer.Value != 0xfd) &&
+		    (pkg->Package.Elements[3].Integer.Value != 0xfe)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDSubPackageElement1",
+				"_TSD sub-package %d element 3 (CoordType) "
+				"was expected to have value 0xfc (SW_ALL), "
+				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
+				"was 0x%llx.",
+				i,
+				(unsigned long long)pkg->Package.Elements[3].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Element 4 number of processors, skip check */
+	}
+
+	if (!failed)
+		fwts_passed(fw,
+			"_TSD correctly returned sane looking package.");
+}
+
+static int method_test_TSD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TSD", NULL, 0, method_test_TSD_return, NULL);
+}
+
+static void method_test_TSS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Something is really wrong if we don't have any elements in _TSS */
+	if (obj->Package.Count < 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSSElementCount",
+			"_TSS should return package of at least 1 element, "
+			"got %d elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		int j;
+		bool elements_ok = true;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSSElementType",
+				"_TSS package element %d was not a package.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		pkg = &obj->Package.Elements[i];
+		/*
+		 *  We expect a package of 5 integers.
+		 */
+		if (pkg->Package.Count != 5) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSSSubPackageElementCount",
+				"_TSS sub-package %d was expected to "
+				"have 5 elements, got %d elements instead.",
+				i, pkg->Package.Count);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		for (j = 0; j < 5; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_TSSSubPackageElementCount",
+					"_TSS sub-package %d element %d is not "
+					"an integer.",
+					i, j);
+				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+				elements_ok = false;
+			}
+		}
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+
+		/* Element 0 must be 1..100 */
+		if ((pkg->Package.Elements[0].Integer.Value < 1) ||
+		    (pkg->Package.Elements[0].Integer.Value > 100)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TSDSubPackageElement0",
+				"_TSD sub-package %d element 0"
+				"was expected to have value 1..100, instead "
+				"was %llu.",
+				i,
+				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+		/* Skip checking elements 1..4 */
+
+		fwts_log_info(fw, "TSS [%d]:", i);
+		fwts_log_info_verbatum(fw, "   CPU frequency: %lld%%",
+			(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Power        : %lld (mW)",
+			(unsigned long long)pkg->Package.Elements[1].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Latency      : %lld microseconds",
+			(unsigned long long)pkg->Package.Elements[2].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Control      : 0x%llx",
+			(unsigned long long)pkg->Package.Elements[3].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Status       : 0x%llx",
+			(unsigned long long)pkg->Package.Elements[4].Integer.Value);
+	}
+
+	if (!failed)
+		fwts_passed(fw,
+			"_TSD correctly returned sane looking package.");
+}
+
+static int method_test_TSS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TSS", NULL, 0, method_test_TSS_return, NULL);
 }
 
 
@@ -3345,20 +3878,20 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 8.4 Declaring Processors */
 
 	{ method_test_PSS, "Check _PSS (Performance Supported States)." },
-	/* { method_test_CPC, "Check _CPC (Continuous Performance Control)." }, */
-	/* { method_test_CSD, "Check _CSD (C State Dependencies)." }, */
+	{ method_test_CPC, "Check _CPC (Continuous Performance Control)." },
+	{ method_test_CSD, "Check _CSD (C State Dependencies)." },
 	/* { method_test_CST, "Check _CST (C States)." }, */
-	/* { method_test_PCT, "Check _PCT (Performance Control)." }, */
+	{ method_test_PCT, "Check _PCT (Performance Control)." },
 	/* { method_test_PDC, "Check _PDC (Processor Driver Capabilities)." }, */
-	/* { method_test_PDL, "Check _PDL (P-State Depth Limit)." }, */
-	/* { method_test_PPC, "Check _PPC (Performance Present Capabilities)." }, */
-	/* { method_test_PPE, "Check _PPE (Polling for Platform Error)." }, */
+	{ method_test_PDL, "Check _PDL (P-State Depth Limit)." },
+	{ method_test_PPC, "Check _PPC (Performance Present Capabilities)." },
+	{ method_test_PPE, "Check _PPE (Polling for Platform Error)." },
 	/* { method_test_PSD, "Check _PSD (Power State Dependencies)." }, */
 	/* { method_test_PTC, "Check _PTC (Processor Throttling Control)." }, */
-	/* { method_test_TDL, "Check _TDL (T-State Depth Limit)." }, */
-	/* { method_test_TPC, "Check _TPC (Throttling Present Capabilities)." }, */
-	/* { method_test_TSD, "Check _TSD (Throttling State Dependencies)." }, */
-	/* { method_test_TSS, "Check _TSS (Throttling Supported States)." }, */
+	{ method_test_TDL, "Check _TDL (T-State Depth Limit)." },
+	{ method_test_TPC, "Check _TPC (Throttling Present Capabilities)." },
+	{ method_test_TSD, "Check _TSD (Throttling State Dependencies)." },
+	{ method_test_TSS, "Check _TSS (Throttling Supported States)." },
 
 	/* Section 8.5 Processor Aggregator Device */
 

@@ -1274,6 +1274,121 @@ static int method_test_IRC(fwts_framework *fw)
 		"_IRC", NULL, 0, method_test_NULL_return, NULL);
 }
 
+/*
+ * Section 7.3 OEM Supplied System-Level Control Methods
+ */
+static void method_test_Sx__return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	bool failed = false;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/*
+	 * The ACPI spec states it should have 1 integer, with the
+	 * values packed into each byte. However, nearly all BIOS
+	 * vendors don't do this, instead they return a package of
+	 * 2 or more integers with each integer lower byte containing
+	 * the data we are interested in. The kernel handles this
+	 * the non-compliant way. Doh. See drivers/acpi/acpica/hwxface.c
+	 * for the kernel implementation and also
+	 * source/components/hardware/hwxface.c in the reference ACPICA
+	 * sources.
+ 	 */
+
+	/* Something is really wrong if we don't have any elements in _Sx_ */
+	if (obj->Package.Count < 1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_SxElementCount",
+			"The kernel expects a package of at least two "
+			"integers, and %s only returned %d elements in "
+			"the package.", name, obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/*
+	 * Oh dear, BIOS is conforming to the spec but won't work in
+	 * Linux
+	 */
+	if (obj->Package.Count == 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SxElementCount",
+			"The ACPI specification states that %s should "
+			"return a package of a single integer which "
+			"this firmware does do. However, nearly all of the "
+			"BIOS vendors return the values in the low 8 bits "
+			"in a package of 2 to 4 integers which is not "
+			"compliant with the specification BUT is the way "
+			"that the ACPICA reference engine and the kernel "
+			"expect. So, while this is conforming to the ACPI "
+			"specification it will in fact not work in the "
+			"Linux kernel.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* Yes, we really want integers! */
+	if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_SxElementType",
+			"%s returned a package that did not contain "
+			"an integer.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	if (obj->Package.Elements[0].Integer.Value & 0xffffff00) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_SxElementValue",
+			"%s package element 0 had upper 24 bits "
+			"of bits that were non-zero.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed = true;
+	}
+
+	if (obj->Package.Elements[1].Integer.Value & 0xffffff00) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_SxElementValue",
+			"%s package element 1 had upper 24 bits "
+			"of bits that were non-zero.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed = true;
+	}
+
+	fwts_log_info(fw, "%s PM1a_CNT.SLP_TYP value: 0x%8.8llx", name,
+		(unsigned long long)obj->Package.Elements[0].Integer.Value);
+	fwts_log_info(fw, "%s PM1b_CNT.SLP_TYP value: 0x%8.8llx", name,
+		(unsigned long long)obj->Package.Elements[1].Integer.Value);
+
+	if (!failed)
+		fwts_passed(fw, "%s correctly returned sane looking package.",
+			name);
+}
+
+#define method_test_Sx_(name)						\
+static int method_test ## name(fwts_framework *fw)			\
+{									\
+	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
+		# name, NULL, 0, method_test_Sx__return, # name);	\
+}
+
+method_test_Sx_(_S0_)
+method_test_Sx_(_S1_)
+method_test_Sx_(_S2_)
+method_test_Sx_(_S3_)
+method_test_Sx_(_S4_)
+method_test_Sx_(_S5_)
+
+static int method_test_SWS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_SWS", NULL, 0, method_test_integer_return, NULL);
+}
 
 /*
  * Section 8.4 Declaring Processors
@@ -3219,14 +3334,13 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S4W, "Check _S4W (S4 Device Wake State)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
-	/* { method_test_S0_, "Check _S0_ (S0 System State)." }, */
-	/* { method_test_S1_, "Check _S1_ (S1 System State)." }, */
-	/* { method_test_S2_, "Check _S2_ (S2 System State)." }, */
-	/* { method_test_S3_, "Check _S3_ (S3 System State)." }, */
-	/* { method_test_S4_, "Check _S4_ (S4 System State)." }, */
-	/* { method_test_S5_, "Check _S5_ (S5 System State)." }, */
-	/* { method_test_S5_, "Check _S5_ (S5 System State)." }, */
-	/* { method_test_SWS, "Check _SWS (System Wake Source)." }, */
+	{ method_test_S0_, "Check _S0_ (S0 System State)." },
+	{ method_test_S1_, "Check _S1_ (S1 System State)." },
+	{ method_test_S2_, "Check _S2_ (S2 System State)." },
+	{ method_test_S3_, "Check _S3_ (S3 System State)." },
+	{ method_test_S4_, "Check _S4_ (S4 System State)." },
+	{ method_test_S5_, "Check _S5_ (S5 System State)." },
+	{ method_test_SWS, "Check _SWS (System Wake Source)." },
 
 	/* Section 8.4 Declaring Processors */
 

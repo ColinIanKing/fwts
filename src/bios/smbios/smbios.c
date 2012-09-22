@@ -23,7 +23,7 @@
 static void smbios_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type type)
 {	
 	if (type == FWTS_SMBIOS) {
-		fwts_log_info_verbatum(fw, "SMBIOS Entry Point Stucture:");
+		fwts_log_info_verbatum(fw, "SMBIOS Entry Point Structure:");
 		fwts_log_info_verbatum(fw, "  Anchor String          : %4.4s", entry->signature);
 		fwts_log_info_verbatum(fw, "  Checksum               : 0x%2.2x", entry->checksum);
 		fwts_log_info_verbatum(fw, "  Entry Point Length     : 0x%2.2x", entry->length);
@@ -37,7 +37,7 @@ static void smbios_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts
 			entry->formatted_area[4]);
 	}
 	if (type == FWTS_SMBIOS_DMI_LEGACY)
-		fwts_log_info_verbatum(fw, "Legacy DMI Entry Point Stucture:");
+		fwts_log_info_verbatum(fw, "Legacy DMI Entry Point Structure:");
 
 	/* Common to SMBIOS and SMBIOS_DMI_LEGACY */
 	fwts_log_info_verbatum(fw, "  Intermediate Anchor    : %5.5s", (char *)entry->anchor_string);

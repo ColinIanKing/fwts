@@ -68,7 +68,7 @@ static int virt_test1(fwts_framework *fw)
 	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {
 		virt_check_vmx(fw);
 	} else {
-		fwts_warning(fw, "Cannot test virtualisation extentions - unknown CPU.");
+		fwts_warning(fw, "Cannot test virtualisation extensions - unknown CPU.");
 	}
 
 	return FWTS_OK;

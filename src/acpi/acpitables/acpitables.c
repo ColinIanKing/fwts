@@ -138,7 +138,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"S4BIOS_REQ, PSTATE_CNT and CST_CNT are defined which means SMI_CMD should be "
 					"defined otherwise SMI commands cannot be sent.");
 			fwts_advice(fw, "The configuration seems to suggest that SMI command should be defined to "
-					"allow the kernel to trigger system managment interrupts via the SMD_CMD port. "
+					"allow the kernel to trigger system management interrupts via the SMD_CMD port. "
 					"The fact that SMD_CMD is zero which is invalid means that SMIs are not possible "
 					"through the normal ACPI mechanisms. This means some firmware based machine "
 					"specific functions will not work.");

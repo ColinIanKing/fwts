@@ -178,7 +178,7 @@ static void fwts_log_html(fwts_log_file *log_file, const char *fmt, ...)
 
 /*
  *  fwts_log_html_convert_ascii()
- *	return a static string containing any convertion from ASCII to a
+ *	return a static string containing any conversion from ASCII to a
  *	HTML representation of char ch.  If no conversion needed, just
  *	return a string containing the ch.
  */

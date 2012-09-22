@@ -87,8 +87,8 @@ static fwts_framework_minor_test example_tests[] = {
 
 static fwts_framework_ops example_ops = {
 	.description = "Example name.", /* Simple short description of test */
-	.init        = example_init,	/* Can be NULL and/or ommitted if not required */
-	.deinit      = example_deinit,	/* Can be NULL  and/or ommittedif not required */
+	.init        = example_init,	/* Can be NULL and/or omitted if not required */
+	.deinit      = example_deinit,	/* Can be NULL  and/or omitted if not required */
 	.minor_tests = example_tests    /* Array of tests to run */
 };
 

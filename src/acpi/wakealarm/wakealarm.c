@@ -110,7 +110,7 @@ static int wakealarm_test4(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test wakealarm_tests[] = {
-	{ wakealarm_test1, "Check existance of " WAKEALARM "." },
+	{ wakealarm_test1, "Check existence of " WAKEALARM "." },
 	{ wakealarm_test2, "Trigger wakealarm for 1 seconds in the future." },
 	{ wakealarm_test3, "Check if wakealarm is fired." },
 	{ wakealarm_test4, "Multiple wakealarm firing tests." },

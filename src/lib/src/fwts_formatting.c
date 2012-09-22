@@ -27,7 +27,7 @@
 
 /*
  *  dup_line()
- *	duplicate a portion of a line of text, from start to end upto
+ *	duplicate a portion of a line of text, from start to end up to
  *	a maximum of width characters
  */
 static char *dup_line(const char *start, const char *end, const int width)

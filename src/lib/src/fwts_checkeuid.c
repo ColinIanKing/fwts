@@ -26,7 +26,7 @@
 
 /*
  *  fwts_check_root_euid()
- *	Check if user has priviledges to access ports, memory, etc
+ *	Check if user has privileges to access ports, memory, etc
  */
 int fwts_check_root_euid(fwts_framework *fw, bool warn)
 {

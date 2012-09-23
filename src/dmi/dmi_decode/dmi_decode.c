@@ -20,6 +20,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 
@@ -212,7 +213,9 @@ static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 		if (old == dmi_versions[i].old) {
 			uint16_t new = dmi_versions[i].new;
 			fwts_warning(fw,
-				"Detected a buggy DMI version number %u.%u, remapping to %u.%u",
+				"Detected a buggy DMI version number "
+				"%" PRIu16 ".%" PRIu16 "remapping to "
+				"%" PRIu16 ".%" PRIu16,
 				VERSION_MAJOR(old), VERSION_MINOR(old),
 				VERSION_MAJOR(new), VERSION_MINOR(new));
 			return new;
@@ -253,8 +256,10 @@ static void dmi_min_max_uint8_check(fwts_framework *fw,
 	if ((val < min) || (val > max)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			DMI_VALUE_OUT_OF_RANGE,
-			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
-			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+			"Out of range value 0x%2.2" PRIx8
+			" (range allowed 0x%2.2" PRIx8 "..0x%2.2" PRIx8 ") "
+			"while accessing entry '%s' @ 0x%8.8" PRIx32
+			", field '%s', offset 0x%2.2" PRIx8,
 			val, min, max, table, addr, field, offset);
 		dmi_out_of_range_advice(fw, hdr->type, offset);
 	}
@@ -275,8 +280,10 @@ static void dmi_min_max_mask_uint8_check(fwts_framework *fw,
 
 	if ((val < min) || (val > max)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-			"Out of range value 0x%2.2x (range allowed 0x%2.2x..0x%2.2x) "
-			"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+			"Out of range value 0x%2.2" PRIx8
+			" (range allowed 0x%2.2" PRIx8 "..0x%2.2" PRIx8 ") "
+			"while accessing entry '%s' @ 0x%8.8" PRIx32
+			", field '%s', offset 0x%2.2" PRIx8,
 			val, min, max, table, addr, field, offset);
 		dmi_out_of_range_advice(fw, hdr->type, offset);
 	}
@@ -306,8 +313,9 @@ static void dmi_str_check_index(fwts_framework *fw,
 		if (*data == '\0') {
 			/* This entry is clearly broken so flag it as a corrupt entry */
 			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_STRING_INDEX_OUT_OF_RANGE,
-				"Out of range string index 0x%2.2x while accessing entry '%s' "
-				"@ 0x%8.8x, field '%s', offset 0x%2.2x",
+				"Out of range string index 0x%2.2" PRIx8
+				" while accessing entry '%s' "
+				"@ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2" PRIx8,
 				index, table, addr, field, offset);
 			if (dmi_used_by_kernel(hdr->type, offset))
 				fwts_advice(fw,
@@ -345,8 +353,10 @@ static void dmi_str_check_index(fwts_framework *fw,
 		if (failed != -1) {
 			if (dmi_used_by_kernel(hdr->type, offset)) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, dmi_patterns[j].label,
-					"String index 0x%2.2x in table entry '%s' @ 0x%8.8x, field '%s', "
-					"offset 0x%2.2x has a default value '%s' and probably has "
+					"String index 0x%2.2" PRIx8
+					" in table entry '%s' @ 0x%8.8" PRIx32
+					", field '%s', offset 0x%2.2" PRIx8
+					" has a default value '%s' and probably has "
 					"not been updated by the BIOS vendor.",
 					index, table, addr, field, offset, data);
 				fwts_advice(fw,
@@ -361,8 +371,10 @@ static void dmi_str_check_index(fwts_framework *fw,
 			} else {
 				/* This string is broken, but we don't care about it too much */
 				fwts_failed(fw, LOG_LEVEL_LOW, dmi_patterns[j].label,
-					"String index 0x%2.2x in table entry '%s' @ 0x%8.8x, field '%s', "
-					"offset 0x%2.2x has a default value '%s' and probably has "
+					"String index 0x%2.2" PRIx8
+					" in table entry '%s' @ 0x%8.8" PRIx32
+					", field '%s', offset 0x%2.2" PRIx8
+					" has a default value '%s' and probably has "
 					"not been updated by the BIOS vendor.",
 					index, table, addr, field, offset, data);
 				fwts_advice(fw,
@@ -404,8 +416,9 @@ static void dmi_uuid_check(fwts_framework *fw,
 	for (i=0; uuid_patterns[i] != NULL; i++) {
 		if (strcmp(guid_str, uuid_patterns[i]) == 0) {
 			fwts_failed(fw, LOG_LEVEL_LOW, DMI_BAD_UUID,
-				"UUID in table entry '%s' @ 0x%8.8x, field '%s', "
-				"offset 0x%2.2x has a default value '%s' and probably has "
+				"UUID in table entry '%s' @ 0x%8.8" PRIx32
+				" field '%s', offset 0x%2.2" PRIx8
+				" has a default value '%s' and probably has "
 				"not been updated by the BIOS vendor.",
 				table, addr, field, offset, guid_str);
 			fwts_advice(fw,
@@ -501,7 +514,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 				(sizeof(fwts_acpi_pm_profile_type) / sizeof(fwts_chassis_type_map))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
-					"ACPI FACP reports 0x%x",
+					"ACPI FACP reports 0x%" PRIx8,
 					fadt->preferred_pm_profile);
 				break;
 			}
@@ -509,7 +522,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
-					"SMBIOS Type 3 reports 0x%x",
+					"SMBIOS Type 3 reports 0x%" PRIx8,
 					data[5]);
 				fwts_advice(fw,
 					"The Chassis Type in the ACPI FADT is out of range "
@@ -532,8 +545,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 			       fwts_dmi_chassis_type[data[5]].mapped)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Unmatched Chassis Type: "
-					"SMBIOS Type 3 reports 0x%x '%s' "
-					"ACPI FACP reports 0x%x '%s'",
+					"SMBIOS Type 3 reports 0x%" PRIx8 " '%s' "
+					"ACPI FACP reports 0x%" PRIx8 " '%s'",
 					data[5],
 					fwts_dmi_chassis_type[data[5]].name,
 					fadt->preferred_pm_profile,
@@ -543,8 +556,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 				 */
 				fwts_advice(fw,
 					"The SMBIOS System Enclosure/Chassis type is defined as "
-					"0x%x '%s' where as the ACPI FACP reports the preferred "
-					"power management profile is 0x%x '%s' so we possibly "
+					"0x%" PRIx8 " '%s' where as the ACPI FACP reports the preferred "
+					"power management profile is 0x%" PRIx8 " '%s' so we possibly "
 					"have conflicting definitions of the machine's PM profile "
 					"for the type of machine. "
 					"See Table 16 of section 4.5.1 of the SMBIOS specification "
@@ -577,18 +590,21 @@ static void dmi_decode_entry(fwts_framework *fw,
 					if (ptr[i * len] & 0x80) {
 						if (val > 0x42)
 							fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-								"Out of range value 0x%2.2x "
-								"(range allowed 0x00..0x42) "
-								"while accessing entry '%s' @ 0x%8.8x, field "
-								"'SMBIOS Structure Type %d', offset 0x%2.2x",
+								"Out of range value 0x%2.2" PRIx8
+								" (range allowed 0x00..0x42) "
+								"while accessing entry '%s' @ "
+								"0x%8.8" PRIx32 ", field "
+								"'SMBIOS Structure Type %d', "
+								"offset 0x%2.2x",
 								val, table, addr, i, 0x15 + (i*len));
 					} else {
 						if ((val < 0x1) || (val > 0xd))
 							snprintf(tmp, sizeof(tmp), "Base Board Type %d", i);
 							fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-								"Out of range value 0x%2.2x "
-								"(range allowed 0x00..0x42) "
-								"while accessing entry '%s' @ 0x%8.8x, field "
+								"Out of range value 0x%2.2" PRIx8
+								" (range allowed 0x00..0x42) "
+								"while accessing entry '%s' @ "
+								"0x%8.8" PRIx32 ", field "
 								"'Base Board Type %d', offset 0x%2.2x",
 								val, table, addr, i, 0x15 + (i*len));
 					}
@@ -638,10 +654,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Socket Designation", hdr, 0x4);
 			if (((GET_UINT16(data + 0x05) >> 5) & 0x0003) == 0x2)
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value %x4.4x "
+					"Out of range value %x4.4" PRIx16 " "
 					"bits 5..6 set to illegal value 0x2, only allowed"
-					"0x0, 0x1, 0x3 while accessing entry '%s' @ 0x%8.8x, "
-					"field '%s', offset 0x%2.2x",
+					"0x0, 0x1, 0x3 while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					GET_UINT16(data + 0x05),
 					table, addr, "Cache Location", 0x5);
 			if (hdr->length < 0x13)
@@ -660,29 +676,29 @@ static void dmi_decode_entry(fwts_framework *fw,
  			      (data[0x5] == 0xff) ||
  			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
-					"while accessing entry '%s' @ 0x%8.8x, "
-					"field '%s', offset 0x%2.2x",
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Internal Connector Type", 0x5);
 			dmi_str_check(fw, table, addr, "External Reference Designator", hdr, 0x6);
 			if (!((data[0x7] <= 0x22) ||
  			      (data[0x7] == 0xff) ||
  			      ((data[0x7] >= 0xa0) && (data[0x7] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
-					"while accessing entry '%s' @ 0x%8.8x, "
-					"field '%s', offset 0x%2.2x",
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x7], table, addr, "Internal Connector Type", 0x7);
 
 			if (!((data[0x8] <= 0x21) ||
  			      (data[0x8] == 0xff) ||
  			      ((data[0x8] >= 0xa0) && (data[0x8] <= 0xa1))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x21, 0xa0..0xa1, 0xff) "
-					"while accessing entry '%s' @ 0x%8.8x, "
+					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 					"field '%s', offset 0x%2.2x",
 					data[0x8], table, addr, "Port Type", 0x8);
 			break;
@@ -695,9 +711,9 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x13)) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2x" PRIx8 " "
 					"(range allowed 0x01..0x08, 0xa0..0xa2) "
-					"while accessing entry '%s' @ 0x%8.8x, "
+					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 					"field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Slot Type", 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
@@ -762,9 +778,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((val >= 0x00) && (val <= 0x04)) ||
 			      ((val >= 0x80) && (val <= 0xff)))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x (range allowed 0x00..0x01, "
-					"0x80..0xff) while accessing entry '%s' @ 0x%8.8x, "
-					"field '%s', offset 0x%2.2x",
+					"Out of range value 0x%2.2" PRIx8 " "
+					"(range allowed 0x00..0x01, "
+					"0x80..0xff) while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					val, table, addr, "Access Method", 0x0a);
 			}
 			if (hdr->length < 0x17)
@@ -773,9 +790,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((val >= 0x00) && (val <= 0x01)) ||
 			      ((val >= 0x80) && (val <= 0xff)))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x (range allowed 0x00..0x01, "
-					"0x80..0xff) while accessing entry '%s' @ 0x%8.8x, "
-					"field '%s', offset 0x%2.2x",
+					"Out of range value 0x%2.2" PRIx8 " "
+					"(range allowed 0x00..0x01, "
+					"0x80..0xff) while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					val, table, addr, "Log Header Format", 0x14);
 			}
 			if (hdr->length < 0x17 + data[0x15] * data[0x16])
@@ -790,19 +808,19 @@ static void dmi_decode_entry(fwts_framework *fw,
 					      ((val >= 0x10) && (val <= 0x17)) ||
 					      ((val >= 0x80) && (val <= 0xff)))) {
 						fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-							"Out of range value 0x%2.2x "
+							"Out of range value 0x%2.2" PRIx8 " "
 							"(range allowed 0x01..0x0e, 0x10..0x17, "
-							"0x80..0xff) while accessing entry '%s' @ 0x%8.8x, "
-							"field '%s', item %d",
+							"0x80..0xff) while accessing entry '%s' @ "
+							"0x%8.8" PRIx32 ", field '%s', item %d",
 							val, table, addr, "Log Descriptor Type", i);
 					}
 					val = ptr[j + 1];
 					if ((val > 0x06) && (val < 0x80)) {
 						fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-							"Out of range value 0x%2.2x "
+							"Out of range value 0x%2.2" PRIx8 " "
 							"(range allowed 0x00..0x06, 0x80..0xff) "
-							"while accessing entry '%s' @ 0x%8.8x, "
-							"field '%s', item %d",
+							"while accessing entry '%s' @ "
+							"0x%8.8" PRIx32 ", field '%s', item %d",
 							val, table, addr, "Log Descriptor Format", i);
 					}
 				}
@@ -816,9 +834,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((data[0x4] >= 0x01) && (data[0x4] <= 0x0a)) ||
 			      ((data[0x4] >= 0xa0) && (data[0x4] <= 0xa3))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x01..0x0a, 0xa0..0xa3) "
-					"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x4], table, addr, "Location", 0x4);
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
 			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
@@ -860,14 +879,14 @@ static void dmi_decode_entry(fwts_framework *fw,
 				if (start == end)
 					fwts_failed(fw, LOG_LEVEL_HIGH, DMI_ILLEGAL_MAPPED_ADDR_RANGE,
 						"Extended Start and End addresses are identical "
-						"while accessing entry '%s' @ 0x%8.8x, "
+						"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 						"fields 'Extended Starting Address' and 'Extended Ending Address'",
 						table, addr);
 			} else {
 				if (GET_UINT32(data + 0x08) - GET_UINT32(data + 0x04) + 1 == 0)
 					fwts_failed(fw, LOG_LEVEL_HIGH, DMI_ILLEGAL_MAPPED_ADDR_RANGE,
 						"Illegal zero mapped address range "
-						"for entry '%s' @ 0x%8.8x", table, addr);
+						"for entry '%s' @ 0x%8.8" PRIx32, table, addr);
 			}
 			break;
 
@@ -882,19 +901,20 @@ static void dmi_decode_entry(fwts_framework *fw,
 				if (start == end)
 					fwts_failed(fw, LOG_LEVEL_HIGH, DMI_ILLEGAL_MAPPED_ADDR_RANGE,
 						"Extended Start and End addresses are identical "
-						"while accessing entry '%s' @ 0x%8.8x, "
+						"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 						"fields 'Extended Starting Address' and 'Extended Ending Address'",
 						table, addr);
 			} else {
 				if (GET_UINT32(data + 0x08) - GET_UINT32(data + 0x04) + 1 == 0)
 					fwts_failed(fw, LOG_LEVEL_HIGH, DMI_ILLEGAL_MAPPED_ADDR_RANGE,
 						"Illegal zero mapped address range "
-						"for entry '%s' @ 0x%8.8x", table, addr);
+						"for entry '%s' @ 0x%8.8" PRIx32, table, addr);
 			}
 			if (data[0x10] == 0)
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_ILLEGAL_MAPPED_ADDR_RANGE,
-					"Illegal row position %2.2x, "
-					"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+					"Illegal row position %2.2" PRIx8 ", "
+					"while accessing entry '%s' @ 0x%8.8" PRIx32
+					", field '%s', offset 0x%2.2x",
 					data[0x10], table, addr, "Partial Row Position", 0x10);
 			break;
 
@@ -906,7 +926,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x08)) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa2)))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x01..0x08, 0xa0..0xa2) "
 					"while accessing '%s', field '%s', offset 0x%2.2x",
 					data[0x5], table, "Interface", 0x5);
@@ -979,9 +999,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!(((val >= 0x01) && (val <= 0x09)) ||
 			      ((val >= 0x10) && (val <= 0x11))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x01..0x09, 0x10..0x11) "
-					"while accessing entry '%s' @ 0x%8.8x, field '%s', "
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', "
 					"offset 0x%2.2x, mask 0x%2.2x",
 					data[0x6], table, addr, "Device Type", 0x6, 0x1f);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Status (bits 5..7)", hdr, 0x6, 0x1, 0x6, 5, 0x7);
@@ -1029,9 +1050,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 				break;
 			if ((data[0xa] > 0x8) && (data[0xa] < 128))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x08, 0x80..0xff) "
-					"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0xa], table, addr, "Boot Status", 0xa);
 			break;
 
@@ -1112,9 +1134,10 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (!((data[0x04] >= 0x02 && data[0x04] <= 0x08) ||
 			      (data[0x04] == 0xF0)))
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_MGMT_CTRL_HOST_TYPE,
-					"Out of range value 0x%2.2x "
+					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x02..0x08, 0xf0) "
-					"while accessing entry '%s' @ 0x%8.8x, field '%s', offset 0x%2.2x",
+					"while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x4], table, addr, "Reference Designation", 0x4);
 			break;
 
@@ -1125,15 +1148,15 @@ static void dmi_decode_entry(fwts_framework *fw,
 			table = "End of Table (Type 127)";
 			break;
 		default:
-			snprintf(tmp, sizeof(tmp), "Unknown (Type %d)", hdr->type);
+			snprintf(tmp, sizeof(tmp), "Unknown (Type %" PRId8 ")", hdr->type);
 			table = tmp;
 			break;
 	}
 	if (fw->minor_tests.failed == failed_count)
-		fwts_passed(fw, "Entry @ 0x%8.8x '%s'", addr, table);	
+		fwts_passed(fw, "Entry @ 0x%8.8" PRIx32 " '%s'", addr, table);	
 	else if (!advice_given && hdr->type <= 42)
 		fwts_advice(fw,
-			"It may be worth checking against section 7.%d of the "
+			"It may be worth checking against section 7.%" PRId8 " of the "
 			"System Management BIOS (SMBIOS) Reference Specification "
 			"(see http://www.dmtf.org/standards/smbios).", hdr->type+1);
 }
@@ -1142,8 +1165,10 @@ static int dmi_version_check(fwts_framework *fw, uint16_t version)
 {
 	if (version > DMI_VERSION) {
 		fwts_warning(fw,
-			"SMBIOS version %u.%u is not supported by the dmi_decode "
-			"test. This test only supports SMBIOS version %u.%u and lower.",
+			"SMBIOS version %" PRIu16 ".%" PRIu16
+			" is not supported by the dmi_decode "
+			"test. This test only supports SMBIOS version "
+			"%" PRIu16 ".%" PRIu16 " and lower.",
 			VERSION_MAJOR(version), VERSION_MINOR(version),
 			VERSION_MAJOR(DMI_VERSION), VERSION_MINOR(DMI_VERSION));
 		return FWTS_ERROR;
@@ -1178,8 +1203,9 @@ static void dmi_scan_tables(fwts_framework *fw,
 		/* Sanity check */
 		if (hdr.length < 4) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_ENTRY_LENGTH,
-				"Invald header length of entry #%d, length was 0x%2.2x.",
-				i, (unsigned int)hdr.length);
+				"Invald header length of entry #%d, "
+				"length was 0x%2.2" PRIx8 ".",
+				i, hdr.length);
 			fwts_advice(fw,
 				"DMI entry header lengths must be 4 or more bytes long "
 				"so this error indicates that the DMI table is unreliable "
@@ -1208,9 +1234,9 @@ static void dmi_scan_tables(fwts_framework *fw,
 
 	if (table_length != (entry_data - table))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_BAD_TABLE_LENGTH,
-			"DMI table length was %d bytes (as specified by "
-			"the SMBIOS header) but the DMI entries used %d bytes.",
-			table_length, (int)(entry_data - table));
+			"DMI table length was %" PRId16 " bytes (as specified by "
+			"the SMBIOS header) but the DMI entries used %td bytes.",
+			table_length, entry_data - table);
 
 	if (struct_count != i)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_STRUCT_COUNT,
@@ -1247,7 +1273,8 @@ static int dmi_decode_test1(fwts_framework *fw)
 	table = fwts_mmap((off_t)entry.struct_table_address,
 		         (size_t)entry.struct_table_length);
 	if (table == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap SMBIOS tables from %8.8x..%8.8x.",
+		fwts_log_error(fw, "Cannot mmap SMBIOS tables from "
+			"%8.8" PRIx32 "..%8.8" PRIx32 ".",
 			entry.struct_table_address,
 			entry.struct_table_address + entry.struct_table_length);
 		return FWTS_ERROR;

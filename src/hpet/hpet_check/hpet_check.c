@@ -20,6 +20,7 @@
  *
  */
 #include <string.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 
@@ -72,17 +73,17 @@ static void hpet_parse_check_base(fwts_framework *fw,
 			if (hpet_base_p != address_base)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"HPETBaseMismatch",
-					"Mismatched HPET base between %s (%lx) "
-					"and the kernel (%lx).",
+					"Mismatched HPET base between %s (%" PRIx64 ") "
+					"and the kernel (%" PRIx64 ").",
 					table,
-					(unsigned long)hpet_base_p,
-					(unsigned long)address_base);
+					hpet_base_p,
+					address_base);
 			else
 				fwts_passed(fw,
 					"HPET base matches that between %s and "
-					"the kernel (%lx).",
+					"the kernel (%" PRIx64 ").",
 					table,
-					(unsigned long)hpet_base_p);
+					hpet_base_p);
 		}
 	}
 }
@@ -182,8 +183,8 @@ static int hpet_check_test1(fwts_framework *fw)
 			if (str) {
 				hpet_base_p = strtoul(str+6,  NULL, 0x10);
 				fwts_passed(fw,
-					"Found HPET base %x in kernel log.",
-					(uint32_t)hpet_base_p);
+					"Found HPET base %" PRIx64 " in kernel log.",
+					hpet_base_p);
 				break;
 			}
 		}
@@ -195,8 +196,8 @@ static int hpet_check_test1(fwts_framework *fw)
 			if (str) {
 				hpet_base_p = strtoul(str+8,  NULL, 0x10);
 				fwts_passed(fw,
-					"Found HPET base %x in kernel log.",
-					(uint32_t)hpet_base_p);
+					"Found HPET base %" PRIx64 " in kernel log.",
+					hpet_base_p);
 				break;
 			}
 		}
@@ -232,18 +233,18 @@ static int hpet_check_test2(fwts_framework *fw)
 
 	if (vendor_id == 0xffff)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorId",
-			"Invalid Vendor ID: %04x - this should be configured.",
+			"Invalid Vendor ID: %04" PRIx32 " - this should be configured.",
 			vendor_id);
 	else
-		fwts_passed(fw, "Vendor ID looks sane: %04x.", vendor_id);
+		fwts_passed(fw, "Vendor ID looks sane: %04" PRIx32 ".", vendor_id);
 
 	clk_period = hpet_id >> 32;
 	if ((clk_period > MAX_CLK_PERIOD) || (clk_period == 0))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETClockPeriod",
-			"Invalid clock period %u, must be non-zero and "
+			"Invalid clock period %" PRIu32 ", must be non-zero and "
 			"less than 10^8.", clk_period);
 	else
-		fwts_passed(fw, "Valid clock period %u.", clk_period);
+		fwts_passed(fw, "Valid clock period %" PRIu32 ".", clk_period);
 
 	(void)fwts_munmap(hpet_base_v, HPET_REG_SIZE);
 

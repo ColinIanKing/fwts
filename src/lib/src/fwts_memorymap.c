@@ -25,6 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 
@@ -201,9 +202,8 @@ static void fwts_memory_map_dump_info(void *data, void *private)
 	fwts_memory_map_entry *entry = (fwts_memory_map_entry *)data;
 	fwts_framework *fw = (fwts_framework *)private;
 
-	fwts_log_info_verbatum(fw, "%016llx - %016llx  %s",
-			(unsigned long long)entry->start_address,
-			(unsigned long long)entry->end_address,
+	fwts_log_info_verbatum(fw, "0x%16.16" PRIx64 " - 0x%16.16" PRIx64 " %s",
+			entry->start_address, entry->end_address,
 			fwts_memory_map_type_to_str(entry->type));
 }
 
@@ -258,7 +258,7 @@ static fwts_memory_map_entry *fwts_memory_map_table_read_entry(const char *which
 		free(entry);
 		return NULL;
 	}
-	sscanf(data, "0x%llx", (unsigned long long*)&entry->start_address);
+	sscanf(data, "0x%" SCNx64, &entry->start_address);
 	free(data);
 
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/end", which);
@@ -266,7 +266,7 @@ static fwts_memory_map_entry *fwts_memory_map_table_read_entry(const char *which
 		free(entry);
 		return NULL;
 	}
-	sscanf(data, "0x%llx", (unsigned long long*)&entry->end_address);
+	sscanf(data, "0x%" SCNx64, &entry->end_address);
 	free(data);
 
 	snprintf(path, sizeof(path), "/sys/firmware/memmap/%s/type", which);

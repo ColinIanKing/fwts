@@ -18,6 +18,8 @@
  */
 
 #include "fwts.h"
+#include <stdint.h>
+#include <inttypes.h>
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -59,10 +61,10 @@ static int ebdadump_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "EBDA region: %x..%x (%d bytes)",
-		(unsigned int)ebda_addr,
+	fwts_log_info(fw, "EBDA region: %" PRIx32 "..%x (%zd bytes)",
+		(uint32_t)ebda_addr,
 		BIOS_ROM_START,
-		(unsigned int)len);
+		len);
 
 	ebdadump_data(fw, mem, ebda_addr, len);
         (void)fwts_munmap(mem, len);

@@ -34,8 +34,8 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	if (table->length < 20) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableCheckSumShortRSDP",
 			"RSDP was expected to be at least 20 bytes long, "
-			"got a shortened size of %d bytes.",
-			(int)table->length);
+			"got a shortened size of %zd bytes.",
+			table->length);
 		/* Won't test on a short RSDP */
 		return;
 	}
@@ -47,7 +47,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 			"RSDP has incorrect checksum, expected 0x%2.2x, "
 			"got 0x%2.2x.",
 			(uint8_t)(rsdp->checksum)-checksum, rsdp->checksum);
-		fwts_advice(fw, 
+		fwts_advice(fw,
 			"The kernel will not load the RSDP with an "
 			"invalid checksum and hence all other ACPI "
 			"tables will also fail to load.");

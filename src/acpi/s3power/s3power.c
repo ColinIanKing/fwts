@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <inttypes.h>
 
 #define PM_SUSPEND "pm-suspend"
 
@@ -122,7 +123,7 @@ static void s3power_difference(fwts_framework *fw,
 	float hourly_loss;
 
 	if (before != 0) {
-		fwts_log_info(fw, "Change in capacity: %d %s\n", (int)diff, units);
+		fwts_log_info(fw, "Change in capacity: %" PRId32 " %s\n", diff, units);
 		hourly_loss = ((float)diff * 3600.0) / (float)s3power_sleep_delay;
 		if (diff < 0) {
 			fwts_log_error(fw, "Negative loss of power, are you sure the machine was not charging?");
@@ -130,7 +131,7 @@ static void s3power_difference(fwts_framework *fw,
 		fwts_log_info(fw, "Loss of %7.4f %s per hour.", hourly_loss, units);
 		if ((diff > 0) && (battery_capacity > 0)) {
 			float duration = (float)battery_capacity / hourly_loss;
-			fwts_log_info(fw, "The %d %s battery will provide %5.2f hours of suspend time.",
+			fwts_log_info(fw, "The %" PRIu32 " %s battery will provide %5.2f hours of suspend time.",
 				battery_capacity, units, duration);
 
 			if (duration < 24.0) {

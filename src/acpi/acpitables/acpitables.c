@@ -21,6 +21,7 @@
 #include <dirent.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 
@@ -30,8 +31,9 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if ((ecdt->ec_control.address_space_id != 0) &&
             (ecdt->ec_control.address_space_id != 1)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
-				"should be 0 or 1 (System I/O Space or System Memory Space)",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID",
+				"ECDT EC_CONTROL address space id = %" PRIu8
+				", should be 0 or 1 (System I/O Space or System Memory Space)",
 				ecdt->ec_control.address_space_id);
 		fwts_advice(fw, "The ECDT EC_CONTROL address space id was invalid, however the kernel ACPI EC driver "
 				"will just assume it an I/O port address.  This will not affect "
@@ -40,8 +42,9 @@ static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if ((ecdt->ec_data.address_space_id != 0) &&
             (ecdt->ec_data.address_space_id != 1)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID", "ECDT EC_CONTROL address space id = %hhu, "
-				"should be 0 or 1 (System I/O Space or System Memory Space)",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID",
+				"ECDT EC_CONTROL address space id = %" PRIu8
+				", should be 0 or 1 (System I/O Space or System Memory Space)",
 				ecdt->ec_data.address_space_id);
 		fwts_advice(fw, "The ECDT EC_DATA address space id was invalid, however the kernel ACPI EC driver "
 				"will just assume it an I/O port address.  This will not affect "
@@ -97,8 +100,11 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 						"If FIRMWARE_CTRL and X_FIRMWARE_CTRL are defined, then the kernel just uses the 64 bit version of "
 						"the pointer.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FwCtrl32and64Differ", "FIRMWARE_CONTROL is 0x%x and differs from X_FIRMWARE_CONTROL 0x%llx",
-						(unsigned int)fadt->firmware_control, (unsigned long long int)fadt->x_firmware_ctrl);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FwCtrl32and64Differ",
+						"FIRMWARE_CONTROL is 0x%" PRIx32 " and differs "
+						"from X_FIRMWARE_CONTROL 0x%" PRIx64,
+						fadt->firmware_control,
+						fadt->x_firmware_ctrl);
 					fwts_advice(fw, "One would expect the 32 bit FIRMWARE_CTRL and 64 bit X_FIRMWARE_CTRL "
 							"pointers to point to the same FACS, however they don't which is clearly ambiguous and wrong. "
 							"The kernel works around this by using the 64 bit X_FIRMWARE_CTRL pointer to the FACS. ");
@@ -115,8 +121,10 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null."
 					"The kernel will fall back to using the 32 bit DSDT pointer instead.");
 		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64Mismatch", "FADT 32 bit DSDT (0x%x) does not point to same physical address as 64 bit X_DSDT (0x%llx).",
-				(unsigned int)fadt->dsdt, (unsigned long long int)fadt->x_dsdt);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64Mismatch",
+				"FADT 32 bit DSDT (0x%" PRIx32 ") does not point to same "
+				"physical address as 64 bit X_DSDT (0x%" PRIx64 ").",
+				fadt->dsdt, fadt->x_dsdt);
 			fwts_advice(fw, "One would expect the 32 bit DSDT and 64 bit X_DSDT "
 					"pointers to point to the same DSDT, however they don't which is clearly ambiguous and wrong. "
 					"The kernel works around this by using the 64 bit X_DSDT pointer to the DSDT. ");
@@ -146,19 +154,22 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 
 	if (fadt->pm_tmr_len != 4) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN", "FADT PM_TMR_LEN is %hhu, should be 4.", fadt->pm_tmr_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN",
+			"FADT PM_TMR_LEN is %" PRIu8 ", should be 4.", fadt->pm_tmr_len);
 		fwts_advice(fw, "FADT field PM_TMR_LEN defines the number of bytes decoded by PM_TMR_BLK. "
 				"This fields value must be 4. If it is not the correct size then the kernel "
 				"will not request a region for the pm timer block. ");
 	}
 	if (fadt->gpe0_blk_len & 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %hhu, should a multiple of 2.", (int)fadt->gpe0_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %" PRIu8
+			", should a multiple of 2.", fadt->gpe0_blk_len);
 		fwts_advice(fw, "The FADT GPE_BLK_LEN should be a multiple of 2. Because it isn't, the ACPI driver will "
 				"not map in the GPE0 region. This could mean that General Purpose Events will not "
 				"function correctly (for example lid or ac-power events).");
 	}
 	if (fadt->gpe1_blk_len & 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPE1BLKLEN", "FADT GPE1_BLK_LEN is %hhu, should a multiple of 2.", fadt->gpe1_blk_len);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPE1BLKLEN", "FADT GPE1_BLK_LEN is %" PRIu8
+			", should a multiple of 2.", fadt->gpe1_blk_len);
 		fwts_advice(fw, "The FADT GPE_BLK_LEN should be a multiple of 2. Because it isn't, the ACPI driver will "
 				"not map in the GPE1 region. This could mean that General Purpose Events will not "
 				"function correctly (for example lid or ac-power events).");
@@ -173,13 +184,15 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	 */
 	/*
 	if (fadt->p_lvl2_lat > 100) {
-		fwts_warning(fw, "FADT P_LVL2_LAT is %hu, a value > 100 indicates a system not to support a C2 state.", fadt->p_lvl2_lat);
+		fwts_warning(fw, "FADT P_LVL2_LAT is %" PRIi16 ", a value > 100 indicates a "
+			"system not to support a C2 state.", fadt->p_lvl2_lat);
 		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C2 latency in microseconds. The ACPI specification "
 				"states that a value > 100 indicates that C2 is not supported and hence the "
 				"ACPI processor idle routine will not use C2 power states.");
 	}
 	if (fadt->p_lvl3_lat > 1000) {
-		fwts_warning(fw, "FADT P_LVL3_LAT is %hu, a value > 1000 indicates a system not to support a C3 state.", fadt->p_lvl3_lat);
+		fwts_warning(fw, "FADT P_LVL3_LAT is %" PRIu16 ", a value > 1000 indicates a "
+			"system not to support a C3 state.", fadt->p_lvl3_lat);
 		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C3 latency in microseconds. The ACPI specification "
 				"states that a value > 1000 indicates that C3 is not supported and hence the "
 				"ACPI processor idle routine will not use C3 power states.");
@@ -199,7 +212,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		    (fadt->reset_reg.address_space_id != 1) &&
 		    (fadt->reset_reg.address_space_id != 2)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG",
-				"FADT RESET_REG address space ID was %hhu, must be System Memory space (0), "
+				"FADT RESET_REG address space ID was %" PRIu8 ", must be System Memory space (0), "
 				"System I/O space (1), or PCI configuration space (2).",
 				fadt->reset_reg.address_space_id);
 			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
@@ -227,7 +240,8 @@ static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 
 	if (rsdp->revision > 2) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %hhu, expected value less than 2.", rsdp->revision);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %" PRIu8
+			", expected value less than 2.", rsdp->revision);
 		fwts_advice(fw, "A RSDP revision number greater than 2 probably won't cause any system problems.");
 	}
 }
@@ -254,13 +268,17 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
 
 	if (sbst->critical_energy_level > sbst->low_energy_level) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1", "SBST Critical Energy Level (%u) is greater than the Low Energy Level (%u).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1",
+			"SBST Critical Energy Level (%" PRIu32 ") "
+			"is greater than the Low Energy Level (%" PRIu32 ").",
 			sbst->critical_energy_level, sbst->low_energy_level);
 		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
 	}
 
 	if (sbst->low_energy_level > sbst->warning_energy_level) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2", "SBST Low Energy Energy Level (%u) is greater than the Warning Energy Level (%u).",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2",
+			"SBST Low Energy Energy Level (%" PRIu32 ") "
+			"is greater than the Warning Energy Level (%" PRIu32 ").",
 			sbst->low_energy_level, sbst->warning_energy_level);
 		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
 	}
@@ -296,8 +314,10 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	int i = 0;
 
 	if (madt->flags & 0xfffffffe)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTFlagsNonZero", "MADT flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.\n",
-			(unsigned long int)madt->flags);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTFlagsNonZero",
+			"MADT flags field, bits 1..31 are reserved and "
+			"should be zero, but are set as: %" PRIx32 ".\n",
+			madt->flags);
 
 	data += sizeof(fwts_acpi_table_madt);
 	length -= sizeof(fwts_acpi_table_madt);
@@ -314,7 +334,10 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		case 0: {
 				fwts_acpi_madt_processor_local_apic *lapic = (fwts_acpi_madt_processor_local_apic *)data;
 				if (lapic->flags & 0xfffffffe)
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTAPICFlagsNonZero", "MADT Local APIC flags field, bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)lapic->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTAPICFlagsNonZero",
+						"MADT Local APIC flags field, bits 1..31 are reserved and "
+						"should be zero, but are set as: %" PRIx32 ".",
+						lapic->flags);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
 			break;
@@ -334,21 +357,30 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				if (int_override->bus != 0)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTIRQSrcISA", "MADT Interrupt Source Override Bus should be 0 for ISA bus.");
 				if (int_override->flags & 0xfffffff0)
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTIRQSrcFlags", "MADT Interrupt Source Override flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)int_override->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTIRQSrcFlags",
+						"MADT Interrupt Source Override flags, bits 4..31 are reserved "
+						"and should be zero, but are set as: %" PRIx32 ".",
+						int_override->flags);
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
 			break;
 		case 3: {
 				fwts_acpi_madt_nmi *nmi = (fwts_acpi_madt_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTNMISrcFlags", "MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTNMISrcFlags",
+						"MADT Non-Maskable Interrupt Source, flags, bits 4..31 are reserved "
+						"and should be zero, but are set as: %" PRIx32 ".",
+						nmi->flags);
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
 			break;
 		case 4: {
 				fwts_acpi_madt_local_apic_nmi *nmi = (fwts_acpi_madt_local_apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTLAPICNMIFlags", "MADT Local APIC NMI flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTLAPICNMIFlags",
+						"MADT Local APIC NMI flags, bits 4..31 are reserved "
+						"and should be zero, but are set as: %" PRIx32 ".",
+						nmi->flags);
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
@@ -373,16 +405,21 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				fwts_acpi_madt_platform_int_source *src = (fwts_acpi_madt_platform_int_source*)data;
 				if (src->flags & 0xfffffff0)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQSrcFlags",
-						"MADT Platform Interrupt Source, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->flags);
+						"MADT Platform Interrupt Source, flags, bits 4..31 are "
+						"reserved and should be zero, but are set as: %" PRIx32 ".",
+						src->flags);
 				if (src->type > 3)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQType",
-						"MADT Platform Interrupt Source, type field is %hhu, should be 1..3.", src->type);
+						"MADT Platform Interrupt Source, type field is %" PRIu8
+						", should be 1..3.", src->type);
 				if (src->io_sapic_vector == 0)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQIOSAPICVector",
 						"MADT Platform Interrupt Source, IO SAPIC Vector is zero, appears not to be defined.");
 				if (src->pis_flags & 0xfffffffe)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTPlatIRQSrcFlagsNonZero",
-						"MADT Platform Interrupt Source, Platform Interrupt Source flag bits 1..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)src->pis_flags);
+						"MADT Platform Interrupt Source, Platform Interrupt Source flag "
+						"bits 1..31 are reserved and should be zero, but are "
+						"set as: %" PRIx32 ".", src->pis_flags);
 				skip = (sizeof(fwts_acpi_madt_platform_int_source));
 			}
 			break;
@@ -393,7 +430,9 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				fwts_acpi_madt_local_x2apic_nmi *nmi = (fwts_acpi_madt_local_x2apic_nmi*)data;
 				if (nmi->flags & 0xfffffff0)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTLAPICX2APICNMIFlags",
-						"MADT Local x2APIC NMI, flags, bits 4..31 are reserved and should be zero, but are set as: %lx.", (unsigned long int)nmi->flags);
+						"MADT Local x2APIC NMI, flags, bits 4..31 are reserved and "
+						"should be zero, but are set as: %" PRIx32 ".",
+						nmi->flags);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
 			break;
@@ -403,8 +442,8 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				if (gic->flags & 0xfffffffc)
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MADTGICFLags",
 						"MADT GIC, flags, bits 2..31 are reserved "
-						"and should be zero, but are set as: %lx.",
-						(unsigned long int)gic->flags);
+						"and should be zero, but are set as: %" PRIx32 ".",
+						gic->flags);
 				skip = sizeof(fwts_acpi_madt_gic);
 			}
 			break;

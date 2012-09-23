@@ -35,6 +35,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <asm/mtrr.h>
+#include <inttypes.h>
 
 static fwts_list *klog;
 static fwts_list *mtrr_list;
@@ -311,9 +312,9 @@ static int check_vga_controller_address(fwts_framework *fw)
 						mtrr = fwts_list_data(struct mtrr_entry *, mtrr_bios_item);
 						if (start >= mtrr->start && (start+size)<= mtrr->end) {
 							found = 1;
-							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %llx - %llx\n",
-								(unsigned long long int)mtrr->start,
-								(unsigned long long int)mtrr->end);
+							fwts_passed(fw, "Found VGA memory region in BIOS initialised MTRR space: %" PRIx64 " - %" PRIx64 "\n",
+								mtrr->start,
+								mtrr->end);
 							break;
 						}
 					}
@@ -460,9 +461,9 @@ static int validate_iomem(fwts_framework *fw)
 			failed++;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MTRRIncorrectAttr",
-				"Memory range 0x%llx to 0x%llx (%s) has incorrect attribute%s.",
-				(unsigned long long int)start,
-				(unsigned long long int)end,
+				"Memory range 0x%" PRIx64 " to 0x%" PRIx64 " (%s) "
+				"has incorrect attribute%s.",
+				start, end,
 				c2, cache_to_string(type & type_mustnot));
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			if (type_must == UNCACHED)
@@ -477,9 +478,9 @@ static int validate_iomem(fwts_framework *fw)
 			failed++;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MTRRLackingAttr",
-				"Memory range 0x%llx to 0x%llx (%s) is lacking attribute%s.",
-				(unsigned long long int)start,
-				(unsigned long long int)end,
+				"Memory range 0x%" PRIx64 " to 0x%" PRIx64 " (%s) "
+				"is lacking attribute%s.",
+				start, end,
 				c2,
 				cache_to_string( (type & type_must) ^ type_must));
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
@@ -508,11 +509,11 @@ static void do_mtrr_resource(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "Reg %hhu: disabled", entry->reg);
 		else
 			fwts_log_info_verbatum(fw,
-				"Reg %hhu: 0x%16.16llx - 0x%16.16llx (%6lld %cB)  %s",
+				"Reg %hhu: 0x%16.16" PRIx64 " - 0x%16.16" PRIx64 " (%6" PRId64 " %cB)  %s",
 				entry->reg,
-				(unsigned long long int)entry->start,
-				(unsigned long long int)entry->end,
-				(unsigned long long int)(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
+				entry->start,
+				entry->end,
+				(entry->size >= (1024*1024) ? entry->size / (1024*1024) : (entry->size / 1024)),
 				entry->size >= (1024*1024) ? 'M' : 'K', cache_to_string(entry->type));
 	}
 	fwts_log_nl(fw);

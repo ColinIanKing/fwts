@@ -18,6 +18,7 @@
  */
 
 #include "fwts.h"
+#include <inttypes.h>
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -139,20 +140,21 @@ static int msr_consistent_check(fwts_framework *fw,
 
 	if (inconsistent_count > 0) {
 		fwts_failed(fw, level, "MSRCPUsInconsistent",
-			"MSR %s (0x%x) has %d inconsistent values across %d CPUs for (shift: %d mask: 0x%llx).",
-			msr_name, (int)msr,
-			inconsistent_count, ncpus, shift,
-			(unsigned long long)mask);
+			"MSR %s (0x%" PRIx32 ") has %d inconsistent values across "
+			"%d CPUs for (shift: %d mask: 0x%" PRIx64 ").",
+			msr_name, msr, inconsistent_count,
+			ncpus, shift, mask);
 
 		for (cpu=1; cpu<ncpus; cpu++) {
 			if (inconsistent[cpu])
-				fwts_log_info(fw, "MSR CPU 0 -> 0x%llx vs CPU %d -> 0x%llx",
-					(unsigned long long)vals[0], cpu,
-					(unsigned long long)vals[cpu]);
+				fwts_log_info(fw, "MSR CPU 0 -> 0x%" PRIx64
+					" vs CPU %d -> 0x%" PRIx64,
+					vals[0], cpu, vals[cpu]);
 		}
 	} else {
-		fwts_passed(fw, "MSR %s (0x%x) (mask:%llx) was consistent across %d CPUs.",
-			msr_name, (int)msr, (unsigned long long)mask, ncpus);
+		fwts_passed(fw, "MSR %s (0x%" PRIx32 ") (mask:%" PRIx64 ") "
+			"was consistent across %d CPUs.",
+			msr_name, msr, mask, ncpus);
 		if (callback)
 			callback(fw, vals[0]);
 	}
@@ -215,10 +217,11 @@ static int msr_smrr(fwts_framework *fw)
 				uint64_t type = val & 7;
 				if ((physbase & 0x7fffff) != 0)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRR_PHYSBASE8MBBoundary",
-						"SMRR: SMRR_PHYSBASE is NOT on an 8MB boundary: %llx.", (unsigned long long)physbase);
+						"SMRR: SMRR_PHYSBASE is NOT on an 8MB boundary: %" PRIx64 ".",
+						physbase);
 				if (type != 6)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRR_TYPE",
-						"SMRR: SMRR_TYPE is 0x%x, should be 0x6 (Write-Back).", (int)type);
+						"SMRR: SMRR_TYPE is 0x%" PRIx64 ", should be 0x6 (Write-Back).", type);
 			}
 			if (fwts_cpu_readmsr(0, 0x1f3, &val) == FWTS_OK) {
 				uint64_t physmask = val & 0xfffff000;
@@ -226,8 +229,9 @@ static int msr_smrr(fwts_framework *fw)
 
 				if (physmask < 0x80000) {
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRRRegion",
-						"SMRR: region needs to be at least 8MB, SMRR_PHYSMASK = %llx.",
-						(unsigned long long) physmask);
+						"SMRR: region needs to be at least 8MB, "
+						"SMRR_PHYSMASK = %" PRIx64 ".",
+						physmask);
 				}
 				if (!valid)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRRValidBit",

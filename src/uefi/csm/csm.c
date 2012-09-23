@@ -20,6 +20,7 @@
 #ifdef FWTS_ARCH_INTEL
 
 #include <stdbool.h>
+#include <inttypes.h>
 
 /* Real Mode IDT */
 #define INT_VEC_START		(0x00000000)
@@ -67,9 +68,9 @@ static int csm_test1(fwts_framework *fw)
 			int ROMend = BIOS_ROM_REGION_START+i+length;
 
 			if ((ROMstart <= int10hVec) && (int10hVec <= ROMend)) {
-				fwts_log_info(fw, "Int 10h jumps to 0x%x in option ROM at: "
+				fwts_log_info(fw, "Int 10h jumps to 0x%" PRIx32 " in option ROM at: "
 					"0x%x..0x%0x",
-					(int)int10hVec, ROMstart, ROMend);
+					int10hVec, ROMstart, ROMend);
 				flag |= VGA_SUPPORT;
 				break;
 			}

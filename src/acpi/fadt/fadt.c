@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <sys/io.h>
 #include <unistd.h>
+#include <inttypes.h>
 #include <string.h>
 
 static const fwts_acpi_table_fadt *fadt;
@@ -75,8 +76,8 @@ static int fadt_test1(fwts_framework *fw)
 		if ((uint64_t)port != fadt->x_pm1a_cnt_blk.address) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"FADTPM1CNTAddrMismatch",
-				"32 and 64 bit versions of FADT pm1_cnt address do not match (0x%8.8x vs 0x%16.16llx).",
-				port, (unsigned long long int)fadt->x_pm1a_cnt_blk.address);
+				"32 and 64 bit versions of FADT pm1_cnt address do not match (0x%8.8x vs 0x%16.16" PRIx64 ").",
+				port, fadt->x_pm1a_cnt_blk.address);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_BAD_ADDRESS);
 		}
 		if (width != fadt->x_pm1a_cnt_blk.register_bit_width) {

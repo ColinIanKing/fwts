@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 static off_t ebda_addr = FWTS_NO_EBDA;
 
@@ -73,19 +74,20 @@ static int ebda_test1(fwts_framework *fw)
 	fwts_log_info(fw,
 		"The Extended BIOS Data Area (EBDA) is normally located at "
 		"the end of the low 640K region and is typically 2-4K in "
-		"size. It should be reserved in the %s table.", 
+		"size. It should be reserved in the %s table.",
 		memory_map_name);
 
 	entry = fwts_memory_map_info(memory_map, (uint64_t)ebda_addr);
 	if ((entry != NULL) &&
 	    (entry->type == FWTS_MEMORY_MAP_RESERVED ||
 	     entry->type == FWTS_MEMORY_MAP_ACPI)) {
-		fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %lldK region in the %s table at 0x%llx..0x%llx.",
+		fwts_passed(fw, "EBDA region mapped at 0x%lx and reserved as a %" PRId64
+			"K region in the %s table at 0x%" PRIx64 "..0x%" PRIx64 ".",
 			ebda_addr,
-			(unsigned long long int)(entry->end_address - entry->start_address) / 1024,
+			(entry->end_address - entry->start_address) / 1024,
 			memory_map_name,
-			(unsigned long long int)entry->start_address,
-			(unsigned long long int)entry->end_address);
+			entry->start_address,
+			entry->end_address);
 	} else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"EBDAMappedNotReserved",

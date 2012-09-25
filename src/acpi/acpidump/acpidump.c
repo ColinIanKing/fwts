@@ -19,7 +19,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
-
+#include <inttypes.h>
 #include <unistd.h>
 
 #include "fwts.h"
@@ -144,12 +144,12 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 	case 8:
 		if (info->bit_field_nbits) {
 			hexdigits = (3+info->bit_field_nbits) / 4;
-			fwts_log_info_verbatum(fw, "%56.56s: 0x%*.*llx", info->label,
-				hexdigits, hexdigits, (unsigned long long)val);
+			fwts_log_info_verbatum(fw, "%56.56s: 0x%*.*" PRIx64, info->label,
+				hexdigits, hexdigits, val);
 		} else
-			fwts_log_info_verbatum(fw, "%s 0x%*.*llx",
+			fwts_log_info_verbatum(fw, "%s 0x%*.*" PRIx64,
 				acpi_dump_field_info(info->label, info->size, info->offset + offset),
-				hexdigits, hexdigits, (unsigned long long)val);
+				hexdigits, hexdigits, val);
 		break;
 	default:		
 		for (i=0; i<info->size; i++) {
@@ -526,8 +526,8 @@ static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
 
 static void acpidump_amlcode(fwts_framework *fw, fwts_acpi_table_info *table)
 {
-	fwts_log_info_verbatum(fw, "Contains 0x%lx bytes of AML byte code",
-		(int long)table->length-sizeof(fwts_acpi_table_header));
+	fwts_log_info_verbatum(fw, "Contains 0x%zx bytes of AML byte code",
+		table->length-sizeof(fwts_acpi_table_header));
 }
 
 static void acpidump_facs(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -743,9 +743,9 @@ static void acpidump_xsdt(fwts_framework *fw, fwts_acpi_table_info *table)
 		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table) == FWTS_OK) {
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
-			fwts_log_info_verbatum(fw, "%s 0x%16.16llx",
+			fwts_log_info_verbatum(fw, "%s 0x%16.16" PRIx64,
 				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])),
-				(unsigned long long)xsdt->entries[i]);
+				xsdt->entries[i]);
 		}
 	}
 }
@@ -1007,12 +1007,11 @@ static void acpidump_slit(fwts_framework *fw, fwts_acpi_table_info *table)
 	int n = length - sizeof(fwts_acpi_table_slit);
 	uint8_t *entry;
 
-	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%llx (%llu)",
-				(unsigned long long)slit->num_of_system_localities,
-				(unsigned long long)slit->num_of_system_localities);
+	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%" PRIx64 "(%" PRIu64 ")",
+		slit->num_of_system_localities, slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
-		fwts_log_info_verbatum(fw,"Expecting %lld bytes, got only %d",
-			(unsigned long long)(slit->num_of_system_localities * slit->num_of_system_localities), n);
+		fwts_log_info_verbatum(fw,"Expecting %" PRId64 " bytes, got only %d",
+			(slit->num_of_system_localities * slit->num_of_system_localities), n);
 	}
 	else {
 		entry = data + sizeof(fwts_acpi_table_slit);
@@ -1049,7 +1048,7 @@ static void acpidump_srat(fwts_framework *fw, fwts_acpi_table_info *table)
 					FIELD_UINT("  Proximity [31:24]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_3),
 					FIELD_UINT("  Proximity [23:16]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_2),
 					FIELD_UINT("  Proximity [15:8]",fwts_acpi_table_slit_local_apic_sapic_affinity,   proximity_domain_1),
-					FIELD_UINT("  Clock Domain:   0x%lx", fwts_acpi_table_slit_local_apic_sapic_affinity, clock_domain),
+					FIELD_UINT("  Clock Domain:   0x", fwts_acpi_table_slit_local_apic_sapic_affinity, clock_domain),
 					FIELD_END,
 				};
 				fwts_log_info_verbatum(fw, " Processor Local APIC/SAPID Affinity Structure:");
@@ -1228,7 +1227,7 @@ static void acpidump_asf(fwts_framework *fw, fwts_acpi_table_info *table)
 			asf_ptr += sizeof(fwts_acpi_table_asf_alrt);
 			for (i = 0; i < alrt->number_of_alerts; i++) {
 				fwts_log_nl(fw);
-				fwts_log_info_verbatum(fw, "ASF Alert Data #%d:\n", (int)i);
+				fwts_log_info_verbatum(fw, "ASF Alert Data #%" PRId8 ":", i);
 				__acpi_dump_table_fields(fw, asf_ptr, asf_alrt_element_fields, asf_ptr - data);
 				asf_ptr += alrt->array_length;
 			}
@@ -1240,7 +1239,7 @@ static void acpidump_asf(fwts_framework *fw, fwts_acpi_table_info *table)
 			asf_ptr += sizeof(fwts_acpi_table_asf_rctl);
 			for (i = 0; i < rctl->number_of_controls; i++) {
 				fwts_log_nl(fw);
-				fwts_log_info_verbatum(fw, "ASF Control Data #%d:\n", (int)i);
+				fwts_log_info_verbatum(fw, "ASF Control Data #%" PRId8 ":", i);
 				__acpi_dump_table_fields(fw, asf_ptr, asf_rctl_element_fields, asf_ptr - data);
 
 				asf_ptr += rctl->array_element_length;
@@ -1759,7 +1758,7 @@ static int acpidump_test1(fwts_framework *fw)
 	fwts_infoonly(fw);
 
 	for (i=0; (fwts_acpi_get_table(fw, i, &table) == FWTS_OK) && (table !=NULL); i++) {
-		fwts_log_info_verbatum(fw, "%s @ %4.4x (%d bytes)", table->name, (uint32_t)table->addr, (int)table->length);
+		fwts_log_info_verbatum(fw, "%s @ %4.4" PRIx32 " (%zd bytes)", table->name, (uint32_t)table->addr, table->length);
 		fwts_log_info_verbatum(fw, "---------------");
 		acpidump_table(fw, table);
 		fwts_log_nl(fw);

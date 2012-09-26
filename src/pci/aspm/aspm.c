@@ -122,6 +122,7 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	uint8_t rp_aspm_cntrl, device_aspm_cntrl;
 	uint8_t next_cap;
 	int ret = FWTS_OK;
+	bool l0s_disabled = false, l1_disabled = false;
 
 	next_cap = rp->config[FWTS_PCI_CAPABILITIES_POINTER];
 	rp_cap = (struct pcie_capability *) &rp->config[next_cap];
@@ -146,24 +147,46 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
 		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L0s not enabled.",
 			 rp->bus, rp->dev, rp->func);
+		l0s_disabled = true;
 	}
 
 	if (((rp_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
 		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
 		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L1 not enabled.",
 			rp->bus, rp->dev, rp->func);
+		l1_disabled = true;
 	}
 
 	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=
 		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
 		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L0s not enabled.",
 			dev->bus, dev->dev, dev->func);
+		l0s_disabled = true;
 	}
 
 	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
 		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
 		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L1 not enabled.",
 			dev->bus, dev->dev, dev->func);
+		l1_disabled = true;
+	}
+
+	if (l0s_disabled) {
+		fwts_advice(fw,
+			"The ASPM L0s low power Link state is optimized for "
+			"short entry and exit latencies, while providing "
+			"substantial power savings. Disabling L0s of a PCIe "
+			"device may increases power consumption, and will  "
+			"impact the battery life of a mobile system.");
+	}
+
+	if (l1_disabled) {
+		fwts_advice(fw,
+			"The ASPM L1 low power Link state is optimized for "
+			"maximum power savings with longer entry and exit "
+			"latencies. Disabling L1 of a PCIe device may "
+			"increases power consumption, and will impact the "
+			"battery life of a mobile system significantly.");
 	}
 
 	rp_aspm_cntrl = rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_FIELD;

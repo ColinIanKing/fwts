@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <inttypes.h>
+
 #include "fwts.h"
 
 #ifdef FWTS_ARCH_INTEL
@@ -81,8 +83,12 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 						if (cpu_entry1->local_apic_id == cpu_entry2->local_apic_id) {
 							fwts_failed(fw, LOG_LEVEL_HIGH,
 								"MPCPUEntryLAPICId",
-								"CPU Entry %d (@0x%8.8x) and %d (@0x%8.8x) have the same Local APIC ID 0x%2.2x.",
-								n, phys_addr1, m, phys_addr2, cpu_entry1->local_apic_id);
+								"CPU Entry %d (@0x%8.8" PRIx32 ")"
+								" and %d (@0x%8.8" PRIx32 ") "
+								"have the same Local APIC ID "
+								"0x%2.2" PRIx8 ".",
+								n, phys_addr1, m, phys_addr2,
+								cpu_entry1->local_apic_id);
 								failed = true;
 							break;
 						}
@@ -96,7 +102,9 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 			    (cpu_entry1->local_apic_version != 0x14)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPCPUEntryLAPICVersion",
-					"CPU Entry %d (@0x%8.8x) has an invalid Local APIC Version %2.2x, should be 0x11 or 0x14.",
+					"CPU Entry %d (@0x%8.8" PRIx32 ") has an "
+					"invalid Local APIC Version %2.2x, should be "
+					"0x11 or 0x14.",
 					n, phys_addr,
 					cpu_entry1->local_apic_version);
 				failed = true;
@@ -109,7 +117,9 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 				if (bootstrap_cpu != -1) {
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"MPCPUEntryBootCPU",
-						"CPU Entry %d (@0x%8.8x) is marked as a boot CPU but CPU entry %d is the first boot CPU.",
+						"CPU Entry %d (@0x%8.8" PRIx32 ") "
+						"is marked as a boot CPU but CPU entry "
+						"%d is the first boot CPU.",
 						n, phys_addr1, bootstrap_cpu);
 					failed = true;
 				} else
@@ -179,7 +189,8 @@ static int mpcheck_test_bus_entries(fwts_framework *fw)
 			if (bus_types[i] == NULL) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPBusEntryBusType",
-					"Bus Entry %d (@0x%8.8x) has an unrecognised bus type: %6.6s",
+					"Bus Entry %d (@0x%8.8" PRIx32 ") has an "
+					"unrecognised bus type: %6.6s",
 					n, phys_addr, bus_entry->bus_type);
 			}
 			if (prev_bus_id == -1) {
@@ -187,7 +198,8 @@ static int mpcheck_test_bus_entries(fwts_framework *fw)
 				if (prev_bus_id != 0) {
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"MPBusEntryLAPICId",
-						"Bus Entry %d (@0x%8.8x) has a Local APIC ID 0x%2.2x and should be 0x00.",
+						"Bus Entry %d (@0x%8.8" PRIx32 ") has a "
+						"Local APIC ID 0x%2.2x and should be 0x00.",
 						n, phys_addr,
 						prev_bus_id);
 					failed = true;
@@ -196,7 +208,9 @@ static int mpcheck_test_bus_entries(fwts_framework *fw)
 				if (bus_entry->bus_id < prev_bus_id) {
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"MPBusEntryBusId",
-						"Bus Entry %d (@0x%8.8x) has a Bus ID 0x%2.2x and should be greater than 0x%2.2x.",
+						"Bus Entry %d (@0x%8.8" PRIx32 ") has a "
+						"Bus ID 0x%2.2x and should be greater "
+						"than 0x%2.2x.",
 						n, phys_addr,
 						bus_entry->bus_id,
 						prev_bus_id);
@@ -227,7 +241,8 @@ static int mpcheck_test_io_apic_entries(fwts_framework *fw)
 
 			if (io_apic_entry->address == 0) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "MPIOAPICNullAddr",
-					"IO APIC Entry %d (@0x%8.8x) has an invalid NULL address, should be non-zero.",
+					"IO APIC Entry %d (@0x%8.8" PRIx32 ") has an "
+					"invalid NULL address, should be non-zero.",
 					n, phys_addr);
 				failed = true;
 			}
@@ -294,7 +309,8 @@ static int mpcheck_test_io_interrupt_entries(fwts_framework *fw)
 			if (io_interrupt_entry->type > 3) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPIOIRQType",
-					"IO Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.",
+					"IO Interrupt Entry %d (@0x%8.8" PRIx32 ") has a "
+					"Type 0x%2.2" PRIx8 " and should be 0x00..0x03.",
 					n, phys_addr,
 					io_interrupt_entry->type);
 				failed = true;
@@ -302,7 +318,8 @@ static int mpcheck_test_io_interrupt_entries(fwts_framework *fw)
 			if (!mpcheck_find_io_apic(io_interrupt_entry->destination_io_apic_id)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPIOAPICId",
-					"IO Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x "
+					"IO Interrupt Entry %d (@0x%8.8" PRIx32 ") has a "
+					"Destination IO APIC ID 0x%2.2" PRIx8 " "
 					"which has not been defined.",
 					n, phys_addr,
 					io_interrupt_entry->destination_io_apic_id);
@@ -333,7 +350,8 @@ static int mpcheck_test_local_interrupt_entries(fwts_framework *fw)
 			if (local_interrupt_entry->type > 3) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPLocalIRQType",
-					"Local Interrupt Entry %d (@0x%8.8x) has a Type 0x%2.2x and should be 0x00..0x03.",
+					"Local Interrupt Entry %d (@0x%8.8" PRIx32 ") has a "
+					"Type 0x%2.2" PRIx8 " and should be 0x00..0x03.",
 					n, phys_addr,
 					local_interrupt_entry->type);
 				failed = true;
@@ -342,7 +360,8 @@ static int mpcheck_test_local_interrupt_entries(fwts_framework *fw)
 			if (!mpcheck_find_io_apic(local_interrupt_entry->destination_local_apic_id)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"MPLocalIRQDestIRQAPIDId",
-					"Local Interrupt Entry %d (@0x%8.8x) has a Destination IO APIC ID 0x%2.2x "
+					"Local Interrupt Entry %d (@0x%8.8" PRIx32 ") has a"
+					"Destination IO APIC ID 0x%2.2" PRIx8 " "
 					"which has not been defined.",
 					n, phys_addr,
 					local_interrupt_entry->destination_local_apic_id);
@@ -375,7 +394,8 @@ static int mpcheck_test_sys_addr_entries(fwts_framework *fw)
 			if (!mpcheck_find_bus(sys_addr_entry->bus_id, 0)) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPSysAddrSpaceBusId",
-					"System Address Space Mapping Entry %d (@0x%8.8x) has an Bus ID 0x%2.2x "
+					"System Address Space Mapping Entry %d (@0x%8.8" PRIx32 ") "
+					"has an Bus ID 0x%2.2" PRIx8 " "
 					"that is not defined in any of the Bus Entries.",
 					n, phys_addr, sys_addr_entry->bus_id);
 				failed = true;
@@ -383,8 +403,9 @@ static int mpcheck_test_sys_addr_entries(fwts_framework *fw)
 			if (sys_addr_entry->address_type > 3) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPSysAddrSpaceType",
-					"System Address Space Mapping Entry %d (@0x%8.8x) has an incorrect "
-					"Address Type: %hhu, should be 0..3.",
+					"System Address Space Mapping Entry %d (@0x%8.8" PRIx32 ") "
+					"has an incorrect Address Type: %2.2" PRIx8 ", "
+					"should be 0..3.",
 					n, phys_addr,
 					sys_addr_entry->address_type);
 				failed = true;
@@ -392,7 +413,8 @@ static int mpcheck_test_sys_addr_entries(fwts_framework *fw)
 			if (sys_addr_entry->address_length == 0) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPSysAddrSpaceAddrLength",
-					"System Address Space Mapping Entry %d (@0x%8.8x) has a "
+					"System Address Space Mapping Entry %d "
+					"(@0x%8.8" PRIx32 ") has a "
 					"zero sized Address Length.",
 					n, phys_addr);
 				failed = true;
@@ -422,7 +444,8 @@ static int mpcheck_test_bus_hierarchy_entries(fwts_framework *fw)
 			if (bus_hierarchy_entry->length != 8) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPBusHieraracyLength",
-					"Bus Hierarchy Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
+					"Bus Hierarchy Entry %d (@x%8.8" PRIx32 ") "
+					"length was 0x%2.2" PRIx8 ", it should be 0x08.",
 					n, phys_addr,
 					bus_hierarchy_entry->length);
 				failed = true;
@@ -430,7 +453,8 @@ static int mpcheck_test_bus_hierarchy_entries(fwts_framework *fw)
 			if (!mpcheck_find_bus(bus_hierarchy_entry->parent_bus, 0)) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPBusHierarchyParents",
-					"Bus Hierarchy Entry %d (@x%8.8x) did not have parents that "
+					"Bus Hierarchy Entry %d (@x%8.8" PRIx32 ") "
+					"did not have parents that "
 					"connected to a top level Bus entry.",
 					n, phys_addr);
 				failed = true;
@@ -461,7 +485,9 @@ static int mpcheck_test_compat_bus_address_space_entries(fwts_framework *fw)
 			if (compat_bus_entry->length != 8) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPCompatBusLength",
-					"Compatible Bus Address Space Entry %d (@x%8.8x) length was 0x%2.2x, it should be 0x08.",
+					"Compatible Bus Address Space Entry %d "
+					"(@x%8.8" PRIx32 ") "
+					"length was 0x%2.2" PRIx8 ", it should be 0x08.",
 					n, phys_addr,
 					compat_bus_entry->length);
 				failed = true;
@@ -469,8 +495,9 @@ static int mpcheck_test_compat_bus_address_space_entries(fwts_framework *fw)
 			if (compat_bus_entry->range_list > 1) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MPCompatBusRangeList",
-					"Compatible Bus Address Space Entry %d (@x%8.8x) Range List was 0x%2.2x, it should be 0x00 or 0x01.",
-					n, phys_addr,
+					"Compatible Bus Address Space Entry %d "
+					"(@x%8.8" PRIx32 ") Range List was 0x%8.8" PRIx32
+					", it should be 0x00 or 0x01.", n, phys_addr,
 					compat_bus_entry->range_list);
 				failed = true;
 			}
@@ -512,7 +539,8 @@ static int mpcheck_test_header(fwts_framework *fw)
 
 	if ((mp_data.header->spec_rev != 1) && (mp_data.header->spec_rev != 4)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MPHeaderRevision",
-		"MP header spec revision should be 1 or 4, got %hhu.", mp_data.header->spec_rev);
+		"MP header spec revision should be 1 or 4, got %" PRIx8 ".",
+		mp_data.header->spec_rev);
 		failed = true;
 	}
 	if (mp_data.header->lapic_address == 0) {

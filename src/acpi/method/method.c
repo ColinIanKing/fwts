@@ -23,6 +23,7 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <ctype.h>
 
 /* acpica headers */
 #include "acpi.h"
@@ -73,7 +74,7 @@
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
- * _DDN  6.1.4		N
+ * _DDN  6.1.4		Y
  * _DEP  6.5.8		N
  * _DGS  B.6.7		Y
  * _DIS  6.2.3		Y
@@ -111,7 +112,7 @@
  * _GTM  9.8.2.1.1	N
  * _GTS  7.3.3		deprecated
  * _GWS  9.18.5		N
- * _HID  6.1.5		N
+ * _HID  6.1.5		Y
  * _HOT  11.4.6		Y
  * _HPP  6.2.7		N
  * _HPX  6.2.8		N
@@ -142,7 +143,7 @@
  * _PDL  8.4.4.6	N
  * _PIC  5.8.1		N
  * _PIF  10.3.3		Y
- * _PLD  6.1.8		N
+ * _PLD  6.1.8		Y
  * _PMC  10.4.1		N
  * _PMD  10.4.8		N
  * _PMM  10.4.3		N
@@ -209,9 +210,9 @@
  * _STA  6.3.7, 7.1.4	N
  * _STM  9.8.2.1.2	N
  * _STP  9.18.7		N
- * _STR  6.1.9		N
+ * _STR  6.1.9		Y
  * _STV  9.18.8		N
- * _SUB  6.1.9		N
+ * _SUB  6.1.9		Y
  * _SUN  6.1.8		N
  * _SWS  7.3.5		N
  * _T_x  18.2.1.1	n/a
@@ -664,6 +665,215 @@ static int method_test_AEI(fwts_framework *fw)
 /*
  * Section 6.1 Device Identification Objects
  */
+static int method_test_DDN(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_DDN", NULL, 0, method_test_string_return, NULL);
+}
+
+static bool method_valid_HID_string(char *str)
+{
+	if (strlen(str) == 7) {
+		/* PNP ID, must be 3 capitals followed by 4 hex */
+		if (!isupper(str[0]) ||
+		    !isupper(str[1]) ||
+		    !isupper(str[2])) return false;
+		if (!isxdigit(str[3]) ||
+		    !isxdigit(str[4]) ||
+		    !isxdigit(str[5]) ||
+		    !isxdigit(str[6])) return false;
+		return true;
+	}
+
+	if (strlen(str) == 8) {
+		/* ACPI ID, must be 4 capitals or digits followed by 4 hex */
+		if ((!isupper(str[0]) && !isdigit(str[0])) ||
+		    (!isupper(str[1]) && !isdigit(str[1])) ||
+		    (!isupper(str[2]) && !isdigit(str[2])) ||
+		    (!isupper(str[3]) && !isdigit(str[3]))) return false;
+		if (!isxdigit(str[4]) ||
+		    !isxdigit(str[5]) ||
+		    !isxdigit(str[6]) ||
+		    !isxdigit(str[7])) return false;
+		return true;
+	}
+
+	return false;
+}
+
+static bool method_valid_EISA_ID(uint32_t id, char *buf, size_t buf_len)
+{
+	snprintf(buf, buf_len, "%c%c%c%02X%02X",
+		0x40 + ((id >> 2) & 0x1f),
+		0x40 + ((id & 0x3) << 3) + ((id >> 13) & 0x7),
+		0x40 + ((id >> 8) & 0x1f),
+		(id >> 16) & 0xff, (id >> 24) & 0xff);
+
+	/* 3 chars in EISA ID must be upper case */
+	if (!isupper(buf[0]) ||
+	    !isupper(buf[1]) ||
+	    !isupper(buf[2])) return false;
+
+	/* Last 4 digits are always going to be hex, so pass */
+	return true;
+}
+
+static void method_test_HID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	char tmp[8];
+
+	if (obj == NULL) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+			"Method %s returned a NULL object, and did not "
+			"return a buffer or integer.", name);
+		return;
+	}
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer) {
+			if (method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"Object _HID returned a string '%s' "
+					"as expected.",
+					obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodHIDInvalidString",
+					"Object _HID returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_HIDNullString",
+				"Object _HID returned a NULL string.");
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+		break;
+	case ACPI_TYPE_INTEGER:
+		if (method_valid_EISA_ID((uint32_t)obj->Integer.Value,
+			tmp, sizeof(tmp)))
+			fwts_passed(fw, "Object _HID returned an integer 0x%8.8lx (EISA ID %s).",
+				(unsigned long)obj->Integer.Value,
+				tmp);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodHIDInvalidInteger",
+				"Object _HID returned a integer 0x%8.8lx "
+				"(EISA ID %s) but the this is not a valid "
+				"EISA ID encoded PNP ID.",
+				(unsigned long)obj->Integer.Value,
+				tmp);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_HIDBadReturnType",
+			"Method _HID did not return a string or an integer.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		break;
+	}
+}
+
+static int method_test_HID(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_HID", NULL, 0, method_test_HID_return, NULL);
+}
+
+static int method_test_HRV(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_HRV", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_STR(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_STR", NULL, 0, method_test_string_return, NULL);
+}
+
+static void method_test_PLD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	int i;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* All elements in the package must be buffers */
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_BUFFER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PLDElementType",
+				"_PLD package element %d was not a buffer.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+		/* We should sanity check the PLD further */
+	}
+}
+
+static int method_test_PLD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PLD", NULL, 0, method_test_PLD_return, NULL);
+}
+
+static void method_test_SUB_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (obj == NULL) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+			"Method %s returned a NULL object, and did not "
+			"return a buffer or integer.", name);
+		return;
+	}
+	if (obj->Type == ACPI_TYPE_STRING)
+		if (obj->String.Pointer) {
+			if (method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"Object _SUB returned a string '%s' "
+					"as expected.",
+					obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodSUBInvalidString",
+					"Object _SUB returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_SUBNullString",
+				"Object _SUB returned a NULL string.");
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		}
+	else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDBadReturnType",
+			"Method _SUB did not return a string or an integer.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	}
+}
+
+
+static int method_test_SUB(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_SUB", NULL, 0, method_test_SUB_return, NULL);
+}
+
 static int method_test_SUN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -697,7 +907,7 @@ static void method_test_UID_return(
 		}
 		break;
 	case ACPI_TYPE_INTEGER:
-		fwts_passed(fw, "Object _UID returned am integer 0x%8.8llx.",
+		fwts_passed(fw, "Object _UID returned an integer 0x%8.8llx.",
 			(unsigned long long)obj->Integer.Value);
 		break;
 	default:
@@ -2671,14 +2881,14 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* { method_test_CID, "Check _CID (Compatible ID)." }, */
 	/* { method_test_CLS, "Check _CLS (Class Code)." }, */
-	/* { method_test_DDN, "Check _DDN (DOS Device Name)." }, */
-	/* { method_test_HID, "Check _HID (Hardware ID)." }, */
-	/* { method_test_HRV, "Check _HRV (Hardware Revision Number)." }, */
+	{ method_test_DDN, "Check _DDN (DOS Device Name)." },
+	{ method_test_HID, "Check _HID (Hardware ID)." },
+	{ method_test_HRV, "Check _HRV (Hardware Revision Number)." },
 	/* { method_test_MLS, "Check _MLS (Multiple Language String)." }, */
-	/* { method_test_PLD, "Check _PLD (Physical Device Location)." }, */
-	/* { method_test_SUB, "Check _SUB (Subsystem ID)." }, */
+	{ method_test_PLD, "Check _PLD (Physical Device Location)." },
+	{ method_test_SUB, "Check _SUB (Subsystem ID)." },
 	{ method_test_SUN, "Check _SUN (Slot User Number)." },
-	/* { method_test_STR, "Check _STR (String)." }, */
+	{ method_test_STR, "Check _STR (String)." },
 	{ method_test_UID, "Check _UID (Unique ID)." },
 
 	/* Section 6.2 Device Configurations Objects */

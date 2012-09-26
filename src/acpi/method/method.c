@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <inttypes.h>
 
 /* acpica headers */
 #include "acpi.h"
@@ -524,7 +525,7 @@ static void method_test_buffer_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
-		fwts_passed(fw, "%s correctly returned a buffer of %d elements.",
+		fwts_passed(fw, "%s correctly returned a buffer of %" PRIu32 " elements.",
 			name, obj->Buffer.Length);
 }
 
@@ -596,15 +597,15 @@ static void method_test_passed_failed_return(
 {
 	char *method = (char *)private;
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		unsigned int val = (uint32_t)obj->Integer.Value;
+		uint32_t val = (uint32_t)obj->Integer.Value;
 		if ((val == 0) || (val == 1))
 			fwts_passed(fw,
 				"%s correctly returned sane looking value "
-				"0x%8.8x.", method, val);
+				"0x%8.8" PRIx32 ".", method, val);
 		else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodReturnZeroOrOne",
-				"%s returned 0x%8.8x, should return 1 "
+				"%s returned 0x%8.8" PRIx32 ", should return 1 "
 				"(success) or 0 (failed).", method, val);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			fwts_advice(fw,
@@ -703,7 +704,7 @@ static bool method_valid_HID_string(char *str)
 
 static bool method_valid_EISA_ID(uint32_t id, char *buf, size_t buf_len)
 {
-	snprintf(buf, buf_len, "%c%c%c%02X%02X",
+	snprintf(buf, buf_len, "%c%c%c%02" PRIX32 "%02" PRIX32,
 		0x40 + ((id >> 2) & 0x1f),
 		0x40 + ((id & 0x3) << 3) + ((id >> 13) & 0x7),
 		0x40 + ((id >> 8) & 0x1f),
@@ -758,16 +759,17 @@ static void method_test_HID_return(
 	case ACPI_TYPE_INTEGER:
 		if (method_valid_EISA_ID((uint32_t)obj->Integer.Value,
 			tmp, sizeof(tmp)))
-			fwts_passed(fw, "Object _HID returned an integer 0x%8.8lx (EISA ID %s).",
-				(unsigned long)obj->Integer.Value,
+			fwts_passed(fw, "Object _HID returned an integer "
+				"0x%8.8" PRIx64 " (EISA ID %s).",
+				obj->Integer.Value,
 				tmp);
 		else
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodHIDInvalidInteger",
-				"Object _HID returned a integer 0x%8.8lx "
+				"Object _HID returned a integer 0x%8.8" PRIx64 " "
 				"(EISA ID %s) but the this is not a valid "
 				"EISA ID encoded PNP ID.",
-				(unsigned long)obj->Integer.Value,
+				obj->Integer.Value,
 				tmp);
 		break;
 	default:
@@ -907,8 +909,8 @@ static void method_test_UID_return(
 		}
 		break;
 	case ACPI_TYPE_INTEGER:
-		fwts_passed(fw, "Object _UID returned an integer 0x%8.8llx.",
-			(unsigned long long)obj->Integer.Value);
+		fwts_passed(fw, "Object _UID returned an integer 0x%8.8" PRIx64 ".",
+			obj->Integer.Value);
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDBadReturnType",
@@ -1061,7 +1063,7 @@ static void method_test_STA_return(
 		if (!failed)
 			fwts_passed(fw,
 				"_STA correctly returned sane looking "
-				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+				"value 0x%8.8" PRIx64, obj->Integer.Value);
 	}
 }
 
@@ -1114,15 +1116,15 @@ static void method_test_SEG_return(
 		if ((obj->Integer.Value & 0xffff0000)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_SEGIllegalReserved",
-				"_SEG returned value 0x%8.8x and some of the "
+				"_SEG returned value 0x%8.8" PRIx64 " and some of the "
 				"upper 16 reserved bits are set when they "
 				"should in fact be zero.",
-				(uint32_t)obj->Integer.Value);
+				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
 			fwts_passed(fw,
 				"_SEG correctly returned sane looking "
-				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+				"value 0x%8.8" PRIx64, obj->Integer.Value);
 	}
 }
 
@@ -1360,10 +1362,10 @@ static void method_test_Sx__return(
 		failed = true;
 	}
 
-	fwts_log_info(fw, "%s PM1a_CNT.SLP_TYP value: 0x%8.8llx", name,
-		(unsigned long long)obj->Package.Elements[0].Integer.Value);
-	fwts_log_info(fw, "%s PM1b_CNT.SLP_TYP value: 0x%8.8llx", name,
-		(unsigned long long)obj->Package.Elements[1].Integer.Value);
+	fwts_log_info(fw, "%s PM1a_CNT.SLP_TYP value: 0x%8.8" PRIx64, name,
+		obj->Package.Elements[0].Integer.Value);
+	fwts_log_info(fw, "%s PM1b_CNT.SLP_TYP value: 0x%8.8" PRIx64, name,
+		obj->Package.Elements[1].Integer.Value);
 
 	if (!failed)
 		fwts_passed(fw, "%s correctly returned sane looking package.",
@@ -1508,7 +1510,7 @@ static void method_test_CSD_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSDElementCount",
 			"_CSD should return package of at least 1 element, "
-			"got %d elements instead.",
+			"got %" PRId32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1567,9 +1569,9 @@ static void method_test_CSD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_CSDSubPackageElement0",
 				"_CSD sub-package %d element 0 (NumEntries) "
-				"was expected to have value 0x%llx.",
+				"was expected to have value 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+				pkg->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1579,9 +1581,9 @@ static void method_test_CSD_return(
 				"Method_CSDSubPackageElement1",
 				"_CSD sub-package %d element 1 (Revision) "
 				"was expected to have value 1, instead it "
-				"was 0x%llx.",
+				"was 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[1].Integer.Value);
+				pkg->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1594,9 +1596,9 @@ static void method_test_CSD_return(
 				"_CSD sub-package %d element 3 (CoordType) "
 				"was expected to have value 0xfc (SW_ALL), "
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
-				"was 0x%llx.",
+				"was 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[3].Integer.Value);
+				pkg->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1632,7 +1634,7 @@ static void method_test_PCT_return(
 	if (obj->Package.Count < 2) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PCTElementCount",
 			"_PCT should return package of least 2 elements, "
-			"got %d elements instead.",
+			"got %" PRId32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1684,7 +1686,7 @@ static void method_test_PSS_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementCount",
 			"_PSS should return package of at least 1 element, "
-			"got %d elements instead.",
+			"got %" PRId32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1708,7 +1710,7 @@ static void method_test_PSS_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSSSubPackageElementCount",
 				"_PSS P-State sub-package %d was expected to "
-				"have 6 elements, got %d elements instead.",
+				"have 6 elements, got %" PRId32 " elements instead.",
 				i, obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1730,12 +1732,13 @@ static void method_test_PSS_return(
 			continue;
 		}
 
-		fwts_log_info(fw, "P-State %d: CPU %ld Mhz, %lu mW, latency %lu us, bus master latency %lu us.",
+		fwts_log_info(fw, "P-State %d: CPU %" PRIu64 " Mhz, %" PRIu64 " mW, "
+			"latency %" PRIu64 " us, bus master latency %" PRIu64 " us.",
 			i,
-			(unsigned long)pstate->Package.Elements[0].Integer.Value,
-			(unsigned long)pstate->Package.Elements[1].Integer.Value,
-			(unsigned long)pstate->Package.Elements[2].Integer.Value,
-			(unsigned long)pstate->Package.Elements[3].Integer.Value);
+			pstate->Package.Elements[0].Integer.Value,
+			pstate->Package.Elements[1].Integer.Value,
+			pstate->Package.Elements[2].Integer.Value,
+			pstate->Package.Elements[3].Integer.Value);
 
 		/*
 		 * Collect maximum frequency.  The sub-packages are sorted in
@@ -1853,7 +1856,7 @@ static void method_test_TSD_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSDElementCount",
 			"_TSD should return package of at least 1 element, "
-			"got %d elements instead.",
+			"got %" PRId32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1883,7 +1886,7 @@ static void method_test_TSD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElementCount",
 				"_TSD sub-package %d was expected to "
-				"have 5 elements, got %d elements instead.",
+				"have 5 elements, got %" PRId32 " elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1912,9 +1915,9 @@ static void method_test_TSD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement0",
 				"_TSD sub-package %d element 0 (NumEntries) "
-				"was expected to have value 0x%llx.",
+				"was expected to have value 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+				pkg->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1924,9 +1927,9 @@ static void method_test_TSD_return(
 				"Method_TSDSubPackageElement1",
 				"_TSD sub-package %d element 1 (Revision) "
 				"was expected to have value 1, instead it "
-				"was 0x%llx.",
+				"was 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[1].Integer.Value);
+				pkg->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1939,9 +1942,9 @@ static void method_test_TSD_return(
 				"_TSD sub-package %d element 3 (CoordType) "
 				"was expected to have value 0xfc (SW_ALL), "
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
-				"was 0x%llx.",
+				"was 0x%" PRIx64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[3].Integer.Value);
+				pkg->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
@@ -1976,7 +1979,7 @@ static void method_test_TSS_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSSElementCount",
 			"_TSS should return package of at least 1 element, "
-			"got %d elements instead.",
+			"got %" PRId32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -2006,7 +2009,7 @@ static void method_test_TSS_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSSSubPackageElementCount",
 				"_TSS sub-package %d was expected to "
-				"have 5 elements, got %d elements instead.",
+				"have 5 elements, got %" PRId32" elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -2036,25 +2039,25 @@ static void method_test_TSS_return(
 				"Method_TSDSubPackageElement0",
 				"_TSD sub-package %d element 0"
 				"was expected to have value 1..100, instead "
-				"was %llu.",
+				"was %" PRIu64 ".",
 				i,
-				(unsigned long long)pkg->Package.Elements[0].Integer.Value);
+				pkg->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 		}
 		/* Skip checking elements 1..4 */
 
 		fwts_log_info(fw, "TSS [%d]:", i);
-		fwts_log_info_verbatum(fw, "   CPU frequency: %lld%%",
-			(unsigned long long)pkg->Package.Elements[0].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Power        : %lld (mW)",
-			(unsigned long long)pkg->Package.Elements[1].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Latency      : %lld microseconds",
-			(unsigned long long)pkg->Package.Elements[2].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Control      : 0x%llx",
-			(unsigned long long)pkg->Package.Elements[3].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Status       : 0x%llx",
-			(unsigned long long)pkg->Package.Elements[4].Integer.Value);
+		fwts_log_info_verbatum(fw, "   CPU frequency: %" PRIu64 "%%",
+			pkg->Package.Elements[0].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Power        : %" PRIu64 " (mW)",
+			pkg->Package.Elements[1].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Latency      : %" PRIu64 " microseconds",
+			pkg->Package.Elements[2].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Control      : 0x%" PRIx64,
+			pkg->Package.Elements[3].Integer.Value);
+		fwts_log_info_verbatum(fw, "   Status       : 0x%" PRIx64,
+			pkg->Package.Elements[4].Integer.Value);
 	}
 
 	if (!failed)
@@ -2097,8 +2100,8 @@ static void method_test_LID_return(
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw,
-			"_LID correctly returned sane looking value 0x%8.8x",
-			(uint32_t)obj->Integer.Value);
+			"_LID correctly returned sane looking value 0x%8.8" PRIx64,
+			obj->Integer.Value);
 }
 
 static int method_test_LID(fwts_framework *fw)
@@ -2122,15 +2125,15 @@ static void method_test_GCP_return(
 		if (obj->Integer.Value & ~0xf) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_GCPReturn",
-				"_GCP returned %d, should be between 0 and 15, "
+				"_GCP returned %" PRId64 ", should be between 0 and 15, "
 				"one or more of the reserved bits 4..31 seem "
 				"to be set.",
-				(uint32_t)obj->Integer.Value);
+				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
 			fwts_passed(fw,
 				"_GCP correctly returned sane looking "
-				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+				"value 0x%8.8" PRIx64, obj->Integer.Value);
 		}
 	}
 }
@@ -2155,8 +2158,8 @@ static void method_test_GRT_return(
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_GRTBadBufferSize",
 			"_GRT should return a buffer of 16 bytes, but "
-			"instead just returned %d\n",
-			(int)obj->Buffer.Length);
+			"instead just returned %" PRIu32,
+			obj->Buffer.Length);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
 	}
@@ -2184,15 +2187,15 @@ static void method_test_GWS_return(
 		if (obj->Integer.Value & ~0x3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_GWSReturn",
-				"_GWS returned %d, should be between 0 and 3, "
+				"_GWS returned %" PRIu64 ", should be between 0 and 3, "
 				"one or more of the reserved bits 2..31 seem "
 				"to be set.",
-				(uint32_t)obj->Integer.Value);
+				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
 			fwts_passed(fw,
 				"_GWS correctly returned sane looking "
-				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+				"value 0x%8.8" PRIx64, obj->Integer.Value);
 		}
 	}
 }
@@ -2278,13 +2281,14 @@ static void method_test_SBS_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		switch (obj->Integer.Value) {
 		case 0 ... 4:
-			fwts_passed(fw, "_SBS correctly returned value %d %s",
-				(uint32_t)obj->Integer.Value,
+			fwts_passed(fw, "_SBS correctly returned value %" PRIu64 " %s",
+				obj->Integer.Value,
 				sbs_info[obj->Integer.Value]);
 			break;
 		default:
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn", "_SBS returned %d, should be between 0 and 4.",
-				(uint32_t)obj->Integer.Value);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn",
+				"_SBS returned %" PRIu64 ", should be between 0 and 4.",
+				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			fwts_advice(fw,
 				"Smart Battery _SBS is incorrectly informing "
@@ -2338,7 +2342,7 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIFElementCount",
 				"_BIF package should return 13 elements, "
-				"got %d instead.",
+				"got %" PRId32 " instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -2367,8 +2371,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIFBadUnits",
 				"_BIF: Expected Power Unit (Element 0) to be "
-				"0 (mWh) or 1 (mAh), got 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[0].Integer.Value);
+				"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2382,8 +2386,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIFBadCapacity",
 				"_BIF: Design Capacity (Element 1) is "
-				"unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[1].Integer.Value);
+				"unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2392,8 +2396,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIFChargeCapacity",
 				"_BIF: Last Full Charge Capacity (Element 2) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[2].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2404,8 +2408,8 @@ static void method_test_BIF_return(
 				"Method_BIFBatTechUnit",
 				"_BIF: Expected Battery Technology Unit "
 				"(Element 3) to be 0 (Primary) or 1 "
-				"(Secondary), got 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[3].Integer.Value);
+				"(Secondary), got 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2419,8 +2423,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIFDesignVoltage",
 				"_BIF: Design Voltage (Element 4) is "
-				"unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[4].Integer.Value);
+				"unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2429,8 +2433,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIFDesignCapacityE5",
 				"_BIF: Design Capacity Warning (Element 5) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[5].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2439,8 +2443,8 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIFDesignCapacityE6",
 				"_BIF: Design Capacity Warning (Element 6) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[6].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2480,7 +2484,7 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIXElementCount",
 				"_BIX package should return 16 elements, "
-				"got %d instead.", obj->Package.Count);
+				"got %" PRId32 " instead.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2512,8 +2516,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIXPowerUnit",
 				"_BIX: Expected Power Unit (Element 1) to be "
-				"0 (mWh) or 1 (mAh), got 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[1].Integer.Value);
+				"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[1].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2527,8 +2531,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIXDesignCapacity",
 				"_BIX: Design Capacity (Element 2) is "
-				"unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[2].Integer.Value);
+				"unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[2].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2537,8 +2541,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIXFullChargeCapacity",
 				"_BIX: Last Full Charge Capacity (Element 3) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[3].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[3].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2549,8 +2553,8 @@ static void method_test_BIX_return(
 				"Method_BIXBatteryTechUnit",
 				"_BIX: Expected Battery Technology Unit "
 				"(Element 4) to be 0 (Primary) or 1 "
-				"(Secondary), got 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[4].Integer.Value);
+				"(Secondary), got 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[4].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2564,8 +2568,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIXDesignVoltage",
 				"_BIX: Design Voltage (Element 5) is unknown: "
-				"0x%8.8x.",
-				(uint32_t)obj->Package.Elements[5].Integer.Value);
+				"0x%8.8" PRIx64 ".",
+				obj->Package.Elements[5].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2574,8 +2578,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIXDesignCapacityE6",
 				"_BIX: Design Capacity Warning (Element 6) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[6].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[6].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2584,8 +2588,8 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_LOW,
 				"Method_BIXDesignCapacityE7",
 				 "_BIX: Design Capacity Warning (Element 7) "
-				"is unknown: 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[7].Integer.Value);
+				"is unknown: 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[7].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2593,8 +2597,8 @@ static void method_test_BIX_return(
 		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {
 			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
 				"_BIX: Cycle Count (Element 10) is unknown: "
-				"0x%8.8x.",
-				(uint32_t)obj->Package.Elements[10].Integer.Value);
+				"0x%8.8" PRIx64 ".",
+				obj->Package.Elements[10].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2654,7 +2658,7 @@ static void method_test_BST_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BSTElementCount",
 				"_BST package should return 4 elements, "
-				"got %d instead.",
+				"got %" PRId32" instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -2677,8 +2681,8 @@ static void method_test_BST_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BSTBadState",
 				"_BST: Expected Battery State (Element 0) to "
-				"be 0..7, got 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[0].Integer.Value);
+				"be 0..7, got 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2688,8 +2692,8 @@ static void method_test_BST_return(
 				"Method_BSTBadState",
 				"_BST: Battery State (Element 0) is "
 				"indicating both charging and discharginng "
-				"which is not allowed. Got value 0x%8.8x.",
-				(uint32_t)obj->Package.Elements[0].Integer.Value);
+				"which is not allowed. Got value 0x%8.8" PRIx64 ".",
+				obj->Package.Elements[0].Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2780,7 +2784,7 @@ static void method_test_BMD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BMDElementCount",
 				"_BMD package should return 4 elements, "
-				"got %d instead.",
+				"got %" PRId32 " instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -2838,14 +2842,14 @@ static void method_test_PSR_return(
 		if (obj->Integer.Value > 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSRZeroOrOne",
-				"_PSR returned 0x%8.8x\n, expected 0 "
+				"_PSR returned 0x%8.8" PRIx64 ", expected 0 "
 				"(offline) or 1 (online)",
-				(uint32_t)obj->Integer.Value);
+				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
 			fwts_passed(fw,
 				"_PSR correctly returned sane looking "
-				"value 0x%8.8x", (uint32_t)obj->Integer.Value);
+				"value 0x%8.8" PRIx64, obj->Integer.Value);
 	}
 }
 
@@ -2869,7 +2873,7 @@ static void method_test_PIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PIFElementCount",
 				"_PIF should return package of 6 elements, "
-				"got %d elements instead.",
+				"got %" PRId32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -2917,7 +2921,7 @@ static void method_test_FIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_FIFElementCount",
 				"_FIF should return package of 4 elements, "
-				"got %d elements instead.",
+				"got %" PRId32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -2976,7 +2980,7 @@ static void method_test_FST_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_FSTElementCount",
 				"_FST should return package of 3 elements, "
-				"got %d elements instead.",
+				"got %" PRId32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -3042,19 +3046,19 @@ static void method_test_THERM_return(
 			if (obj->Integer.Value >= 2732)
 				fwts_passed(fw,
 					"%s correctly returned sane looking "
-					"value 0x%8.8x (%5.1f degrees K)",
+					"value 0x%8.8" PRIx64 " (%5.1f degrees K)",
 					method,
-					(uint32_t)obj->Integer.Value,
-					(float)((uint32_t)obj->Integer.Value) / 10.0);
+					obj->Integer.Value,
+					(float)((uint64_t)obj->Integer.Value) / 10.0);
 			else {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MethodBadTemp",
 					"%s returned a dubious value below "
-					"0 degrees C: 0x%8.8x (%5.1f "
+					"0 degrees C: 0x%8.8" PRIx64 " (%5.1f "
 					"degrees K)",
 					method,
-					(uint32_t)obj->Integer.Value,
-					(float)((uint32_t)obj->Integer.Value) / 10.0);
+					obj->Integer.Value,
+					(float)((uint64_t)obj->Integer.Value) / 10.0);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				fwts_advice(fw,
 					"The value returned was probably a "
@@ -3188,8 +3192,8 @@ static void method_test_RTV_return(
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw,
-			"_RTV correctly returned sane looking value 0x%8.8x",
-			(uint32_t)obj->Integer.Value);
+			"_RTV correctly returned sane looking value 0x%8.8" PRIx64,
+			obj->Integer.Value);
 }
 
 static int method_test_RTV(fwts_framework *fw)
@@ -3329,7 +3333,7 @@ static void method_test_WAK_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_WAKElementCount",
 				"_WAK should return package of 2 integers, "
-				"got %d elements instead.",
+				"got %" PRId32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -3339,7 +3343,7 @@ static void method_test_WAK_return(
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_WAKBadType",
 					"_WAK should return package of 2 "
-					"integers, got %d instead.",
+					"integers, got %" PRId32 " instead.",
 					obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
@@ -3351,8 +3355,8 @@ static void method_test_WAK_return(
 						"_WAK: expecting condition "
 						"bit-field (element 0) of "
 						"packages to be in range, "
-						"got 0x%8.8x.",
-						(uint32_t)obj->Package.Elements[0].Integer.Value);
+						"got 0x%8.8" PRIx64 ".",
+						obj->Package.Elements[0].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					failed++;
 				}
@@ -3360,8 +3364,10 @@ static void method_test_WAK_return(
 				    ((obj->Package.Elements[1].Integer.Value == Sstate) && (obj->Package.Elements[0].Integer.Value == 0)) ||
                                     ((obj->Package.Elements[1].Integer.Value == 0) && (obj->Package.Elements[0].Integer.Value != 0)) )) {
 					fwts_warning(fw,
-						"_WAK: expecting power supply S-state (element 1) of packages to be 0x%8.8x, got 0x%8.8x.",
-						Sstate, (uint32_t)obj->Package.Elements[0].Integer.Value);
+						"_WAK: expecting power supply S-state (element 1) "
+						"of packages to be 0x%8.8" PRIx32
+						", got 0x%8.8" PRIx64 ".",
+						Sstate, obj->Package.Elements[0].Integer.Value);
 					fwts_advice(fw, "_WAK should return 0 if the wake failed and was unsuccessful (i.e. element[0] "
 							"is non-zero) OR should return the S-state. "
 							"This can confuse the operating system as this _WAK return indicates that the "
@@ -3460,15 +3466,15 @@ static void method_test_DOD_return(
 				uint32_t val = obj->Package.Elements[i].Integer.Value;
 				fwts_log_info_verbatum(fw, "Device %d:", i);
 				if ((val & 0x80000000)) {
-					fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %x", val);
+					fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRId32, val);
 				} else {
-					fwts_log_info_verbatum(fw, "  Instance:                %d", val & 0xf);
-					fwts_log_info_verbatum(fw, "  Display port attachment: %d", (val >> 4) & 0xf);
-					fwts_log_info_verbatum(fw, "  Type of display:         %d (%s)",
+					fwts_log_info_verbatum(fw, "  Instance:                %" PRId32, val & 0xf);
+					fwts_log_info_verbatum(fw, "  Display port attachment: %" PRId32, (val >> 4) & 0xf);
+					fwts_log_info_verbatum(fw, "  Type of display:         %" PRId32 " (%s)",
 						(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
-					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %d", (val >> 16) & 1);
-					fwts_log_info_verbatum(fw, "  Non-VGA device:          %d", (val >> 17) & 1);
-					fwts_log_info_verbatum(fw, "  Head or pipe ID:         %d", (val >> 18) & 0x7);
+					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRId32, (val >> 16) & 1);
+					fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRId32, (val >> 17) & 1);
+					fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRId32, (val >> 18) & 0x7);
 				}
 			}
 		}
@@ -3476,12 +3482,12 @@ static void method_test_DOD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_DODNoPackage",
 				"Method _DOD did not return a package of "
-				"%d integers.", obj->Package.Count);
+				"%" PRId32 " integers.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
 			fwts_passed(fw,
 				"Method _DOD returned a sane package of "
-				"%d integers.", obj->Package.Count);
+				"%" PRId32 " integers.", obj->Package.Count);
 	}
 }
 
@@ -3568,15 +3574,15 @@ static void method_test_BCL_return(
 		if (failed) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BCLNoPackage",
-				"Method _BCL did not return a package of %d "
-				"integers.", obj->Package.Count);
+				"Method _BCL did not return a package of %" PRId32
+				" integers.", obj->Package.Count);
 		} else {
 			if (obj->Package.Count < 3) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BCLElementCount",
 					"Method _BCL should return a package "
 					"of more than 2 integers, got "
-					"just %d.", obj->Package.Count);
+					"just %" PRId32 ".", obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			} else {
 				bool ascending_levels = false;
@@ -3586,11 +3592,11 @@ static void method_test_BCL_return(
 					fwts_failed(fw, LOG_LEVEL_MEDIUM,
 						"Method_BCLMaxLevel",
 						"Brightness level when on full "
-						" power (%d) is less than "
+						" power (%" PRIu64 ") is less than "
 						 "brightness level when on "
-						"battery power (%d).",
-						(uint32_t)obj->Package.Elements[0].Integer.Value,
-						(uint32_t)obj->Package.Elements[1].Integer.Value);
+						"battery power (%" PRIu64 ").",
+						obj->Package.Elements[0].Integer.Value,
+						obj->Package.Elements[1].Integer.Value);
 					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 					failed++;
 				}
@@ -3599,14 +3605,14 @@ static void method_test_BCL_return(
 					if (obj->Package.Elements[i].Integer.Value >
 					    obj->Package.Elements[i+1].Integer.Value) {
 						fwts_log_info(fw,
-							"Brightness level %d "
-							"(index %d) is greater "
-							"than brightness level "
-							"%d (index %d), should "
+							"Brightness level %" PRIu64
+							" (index %d) is greater "
+							"than brightness level %" PRIu64
+							" (index %d), should "
 							"be in ascending "
 							"order.",
-							(uint32_t)obj->Package.Elements[i].Integer.Value, i,
-							(uint32_t)obj->Package.Elements[i+1].Integer.Value, i+1);
+							obj->Package.Elements[i].Integer.Value, i,
+							obj->Package.Elements[i+1].Integer.Value, i+1);
 						ascending_levels = true;
 						failed++;
 					}
@@ -3637,7 +3643,7 @@ static void method_test_BCL_return(
 				else
 					fwts_passed(fw,
 						"Method _BCL returned a sane "
-						"package of %d integers.",
+						"package of %" PRId32 " integers.",
 						obj->Package.Count);
 			}
 		}
@@ -3688,8 +3694,8 @@ static void method_test_DDC_return(
 		if (requested != obj->Buffer.Length) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_DDCElementCount",
-				"Method _DDC returned a buffer of %d items, "
-				"expected %d.", obj->Buffer.Length, requested);
+				"Method _DDC returned a buffer of %" PRIu32 " items, "
+				"expected %" PRIu32 ".", obj->Buffer.Length, requested);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
 			fwts_passed(fw,

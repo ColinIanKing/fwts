@@ -73,6 +73,14 @@ struct efi_getnextvariablename {
 	uint64_t	*status;
 } __attribute__ ((packed));
 
+struct efi_queryvariableinfo {
+	uint32_t	Attributes;
+	uint64_t	*MaximumVariableStorageSize;
+	uint64_t	*RemainingVariableStorageSize;
+	uint64_t	*MaximumVariableSize;
+	uint64_t	*status;
+} __attribute__ ((packed));
+
 struct efi_gettime {
 	EFI_TIME		*Time;
 	EFI_TIME_CAPABILITIES	*Capabilities;
@@ -115,5 +123,8 @@ struct efi_setwakeuptime {
 
 #define EFI_RUNTIME_GET_NEXTVARIABLENAME \
 	_IOWR('p', 0x07, struct efi_getnextvariablename)
+
+#define EFI_RUNTIME_QUERY_VARIABLEINFO \
+	_IOR('p', 0x08, struct efi_queryvariableinfo)
 
 #endif /* _EFI_RUNTIME_H_ */

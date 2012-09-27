@@ -117,6 +117,8 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 	struct efi_getnextvariablename __user *pgetnextvariablename;
 	unsigned long name_size;
 
+	struct efi_queryvariableinfo __user *pqueryvariableinfo;
+
 	switch (cmd) {
 	case EFI_RUNTIME_GET_VARIABLE:
 		pgetvariable = (struct efi_getvariable __user *)arg;
@@ -260,6 +262,24 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 		if (copy_to_user(pgetnextvariablename->VendorGuid,
 						&vendor_guid, sizeof(EFI_GUID)))
 			return -EFAULT;
+		return 0;
+
+	case EFI_RUNTIME_QUERY_VARIABLEINFO:
+
+		pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
+
+		if (get_user(attr, &pqueryvariableinfo->Attributes))
+			return -EFAULT;
+
+		status = efi.query_variable_info(attr,
+				pqueryvariableinfo->MaximumVariableStorageSize,
+				pqueryvariableinfo->RemainingVariableStorageSize
+				, pqueryvariableinfo->MaximumVariableSize);
+		if (put_user(status, pqueryvariableinfo->status))
+			return -EFAULT;
+		if (status != EFI_SUCCESS)
+			return -EINVAL;
+
 		return 0;
 	}
 

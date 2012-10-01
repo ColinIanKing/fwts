@@ -119,6 +119,8 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 
 	struct efi_queryvariableinfo __user *pqueryvariableinfo;
 
+	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
+
 	switch (cmd) {
 	case EFI_RUNTIME_GET_VARIABLE:
 		pgetvariable = (struct efi_getvariable __user *)arg;
@@ -276,6 +278,20 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 				pqueryvariableinfo->RemainingVariableStorageSize
 				, pqueryvariableinfo->MaximumVariableSize);
 		if (put_user(status, pqueryvariableinfo->status))
+			return -EFAULT;
+		if (status != EFI_SUCCESS)
+			return -EINVAL;
+
+		return 0;
+
+	case EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT:
+
+		pgetnexthighmonotoniccount = (struct
+				efi_getnexthighmonotoniccount __user *)arg;
+
+		status = efi.get_next_high_mono_count(pgetnexthighmonotoniccount
+								->HighCount);
+		if (put_user(status, pgetnexthighmonotoniccount->status))
 			return -EFAULT;
 		if (status != EFI_SUCCESS)
 			return -EINVAL;

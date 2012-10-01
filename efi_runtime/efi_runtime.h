@@ -105,6 +105,11 @@ struct efi_setwakeuptime {
 	uint64_t	*status;
 } __attribute__ ((packed));
 
+struct efi_getnexthighmonotoniccount {
+	uint32_t	*HighCount;
+	uint64_t	*status;
+} __attribute__ ((packed));
+
 /* ioctl calls that are permitted to the /dev/efi_runtime interface. */
 #define EFI_RUNTIME_GET_VARIABLE \
 	_IOWR('p', 0x01, struct efi_getvariable)
@@ -126,5 +131,8 @@ struct efi_setwakeuptime {
 
 #define EFI_RUNTIME_QUERY_VARIABLEINFO \
 	_IOR('p', 0x08, struct efi_queryvariableinfo)
+
+#define EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT \
+	_IOR('p', 0x09, struct efi_getnexthighmonotoniccount)
 
 #endif /* _EFI_RUNTIME_H_ */

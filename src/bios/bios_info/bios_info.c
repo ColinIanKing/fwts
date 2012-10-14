@@ -43,7 +43,7 @@ static fwts_bios_info bios_info[] = {
 	{ "chassis_version",	"Chassis Version" },
 	{ "chassis_asset_tag",	"Chassic Asset Tag" },
 	{ "product_name",	"Product Name" },
-	{ "product_serial"	"Product Serial #" },
+	{ "product_serial",	"Product Serial #" },
 	{ "product_uuid",	"Product UUID " },
 	{ "product_version",	"Product Version" },
 	{ "sys_vendor",		"System Vendor" },

@@ -40,7 +40,7 @@ static int csm_test1(fwts_framework *fw)
 	uint8_t  *optROM;
 	uint32_t *intVec;
 	uint32_t int10hVec;
-	int i;
+	uint32_t i;
 	int flag = 0;
 
 	fwts_log_info(fw, "Checking for UEFI Compatibility Support Module (CSM)");
@@ -63,9 +63,9 @@ static int csm_test1(fwts_framework *fw)
 
 	for (i=0; i<BIOS_ROM_REGION_SIZE; i+= 512) {
 		if ((*(optROM+i) == 0x55) && (*(optROM+i+1) == 0xaa)) {
-			int length = *(optROM+i+2) << 9;
-			int ROMstart = BIOS_ROM_REGION_START+i;
-			int ROMend = BIOS_ROM_REGION_START+i+length;
+			uint32_t length = *(optROM+i+2) << 9;
+			uint32_t ROMstart = BIOS_ROM_REGION_START+i;
+			uint32_t ROMend = BIOS_ROM_REGION_START+i+length;
 
 			if ((ROMstart <= int10hVec) && (int10hVec <= ROMend)) {
 				fwts_log_info(fw, "Int 10h jumps to 0x%" PRIx32 " in option ROM at: "

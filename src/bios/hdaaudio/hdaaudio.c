@@ -26,8 +26,7 @@ typedef struct {
 	uint32_t	setting;
 } hda_audio_pin_setting;
 
-static int hda_audio_read_pins(fwts_framework *fw, const char *path,
-	const char *file, fwts_list *settings)
+static int hda_audio_read_pins(const char *path, const char *file, fwts_list *settings)
 {
 	FILE 		*fp;
 	uint16_t	pin;
@@ -108,12 +107,9 @@ static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 	hda_audio_dev_info(fw, "Subsystem ID", path, "subsystem_id");
 	hda_audio_dev_info(fw, "Revision ID", path, "revision_id");
 
-	(void)hda_audio_read_pins(fw, path, "init_pin_configs",
-		&init_pin_configs);
-	(void)hda_audio_read_pins(fw, path, "driver_pin_configs",
-		&driver_pin_configs);
-	(void)hda_audio_read_pins(fw, path, "user_pin_configs",
-		&user_pin_configs);
+	(void)hda_audio_read_pins(path, "init_pin_configs", &init_pin_configs);
+	(void)hda_audio_read_pins(path, "driver_pin_configs", &driver_pin_configs);
+	(void)hda_audio_read_pins(path, "user_pin_configs", &user_pin_configs);
 
 	if (fwts_list_len(&init_pin_configs) > 0)
 		hda_audio_dump_pins(fw, "BIOS pin configurations",

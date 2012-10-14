@@ -464,7 +464,7 @@ static int fwts_framework_total_summary(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int fwts_framework_run_test(fwts_framework *fw, const int num_tests, fwts_framework_test *test)
+static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test)
 {
 	fwts_framework_minor_test *minor_test;
 	int ret;
@@ -627,7 +627,7 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
 
 	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
-		fwts_framework_run_test(fw, fwts_list_len(tests_to_run), test);
+		fwts_framework_run_test(fw, test);
 		fw->current_major_test_num++;
 	}
 }

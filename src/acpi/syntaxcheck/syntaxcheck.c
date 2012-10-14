@@ -29,8 +29,6 @@
 
 #include <json/json.h>
 
-#define JSON_ERROR      ((json_object*)-1)
-
 typedef struct {
 	uint16_t	error;
 	char 		*advice;
@@ -137,12 +135,14 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 
 	snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, SYNTAXCHECK_JSON_FILE);
 
-	if ((syntaxcheck_objs = json_object_from_file(json_data_path)) == JSON_ERROR) {
+	syntaxcheck_objs = json_object_from_file(json_data_path);
+	if (FWTS_JSON_ERROR(syntaxcheck_objs)) {
 		fwts_log_error(fw, "Cannot load objects table from %s.", json_data_path);
 		return FWTS_ERROR;
 	}
 
-        if ((syntaxcheck_table = json_object_object_get(syntaxcheck_objs, "erroradvice")) == JSON_ERROR) {
+        syntaxcheck_table = json_object_object_get(syntaxcheck_objs, "erroradvice");
+        if (FWTS_JSON_ERROR(syntaxcheck_table)) {
                 fwts_log_error(fw, "Cannot fetch syntaxcheck table from %s.", json_data_path);
                 goto fail_put;
         }
@@ -160,13 +160,15 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 		const char *str;
 		json_object *obj;
 
-		if ((obj = json_object_array_get_idx(syntaxcheck_table, i)) == JSON_ERROR) {
+		obj = json_object_array_get_idx(syntaxcheck_table, i);
+		if (FWTS_JSON_ERROR(obj)) {
 			fwts_log_error(fw, "Cannot fetch %d item from syntaxcheck table.", i);
 			free(adviceinfo);
 			adviceinfo = NULL;
 			break;
 		}
-		if ((str = json_object_get_string(json_object_object_get(obj, "advice"))) == NULL) {
+		str = json_object_get_string(json_object_object_get(obj, "advice"));
+		if (FWTS_JSON_ERROR(str)) {
                 	fwts_log_error(fw, "Cannot fetch advice from item %d.", i);
 			free(adviceinfo);
 			adviceinfo = NULL;

@@ -93,7 +93,7 @@ static int fwts_button_match_state_proc(int button, int *matched, int *not_match
 }
 
 /*
- *  fwts_button_match_state_proc()
+ *  fwts_button_match_state()
  *	find matching button state and keep count of matching
  *	any non-matching states found
  *

@@ -77,7 +77,7 @@ char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
 	fd_set rfds;
 
 	int ret;
-	size_t n;
+	ssize_t n;
 	size_t size = 0;
 	*length = 0;
 

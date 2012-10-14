@@ -287,7 +287,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
  *  fwts_framework_strtrunc()
  *	truncate overlong string
  */
-static void fwts_framework_strtrunc(char *dest, const char *src, int max)
+static void fwts_framework_strtrunc(char *dest, const char *src, size_t max)
 {
 	strncpy(dest, src, max);
 

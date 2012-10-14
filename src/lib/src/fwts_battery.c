@@ -176,7 +176,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_count_sys_fs(fwts_framework *fw, DIR *dir, int *count)
+static int fwts_battery_get_count_sys_fs(DIR *dir, int *count)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
@@ -197,7 +197,7 @@ static int fwts_battery_get_count_sys_fs(fwts_framework *fw, DIR *dir, int *coun
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_count_proc_fs(fwts_framework *fw, DIR *dir, int *count)
+static int fwts_battery_get_count_proc_fs(DIR *dir, int *count)
 {
 	struct dirent *entry;
 	do {
@@ -208,7 +208,7 @@ static int fwts_battery_get_count_proc_fs(fwts_framework *fw, DIR *dir, int *cou
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_name_sys_fs(fwts_framework *fw, DIR *dir, int index, char *name)
+static int fwts_battery_get_name_sys_fs(DIR *dir, int index, char *name)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
@@ -242,7 +242,7 @@ static int fwts_battery_get_name_sys_fs(fwts_framework *fw, DIR *dir, int index,
 	return FWTS_ERROR;
 }
 
-static int fwts_battery_get_name_proc_fs(fwts_framework *fw, DIR *dir, int index, char *name)
+static int fwts_battery_get_name_proc_fs(DIR *dir, int index, char *name)
 {
 	struct dirent *entry;
 	int i = 0;
@@ -591,10 +591,10 @@ int fwts_battery_get_name(fwts_framework *fw, int index, char *name)
 	DIR *dir;
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
-		ret = fwts_battery_get_name_sys_fs(fw, dir, index, name);
+		ret = fwts_battery_get_name_sys_fs(dir, index, name);
 		closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
-		ret = fwts_battery_get_name_proc_fs(fw, dir, index, name);
+		ret = fwts_battery_get_name_proc_fs(dir, index, name);
 		closedir(dir);
 	} else {
 		return FWTS_ERROR;
@@ -609,10 +609,10 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 	DIR *dir;
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
-		ret = fwts_battery_get_count_sys_fs(fw, dir, count);
+		ret = fwts_battery_get_count_sys_fs(dir, count);
 		closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
-		ret = fwts_battery_get_count_proc_fs(fw, dir, count);
+		ret = fwts_battery_get_count_proc_fs(dir, count);
 		closedir(dir);
 	} else {
 		return FWTS_ERROR;

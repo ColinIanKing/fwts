@@ -405,8 +405,7 @@ static void dmi_uuid_check(fwts_framework *fw,
 	uint32_t addr,
 	const char *field,
 	const fwts_dmi_header *hdr,
-	uint8_t offset,
-	uint16_t version)
+	uint8_t offset)
 {
 	char guid_str[37];
 	int i;
@@ -434,8 +433,7 @@ static void dmi_uuid_check(fwts_framework *fw,
 
 static void dmi_decode_entry(fwts_framework *fw,
 	uint32_t addr,
-	const fwts_dmi_header *hdr,
-	uint16_t version)
+	const fwts_dmi_header *hdr)
 {
 	uint8_t *ptr;
 	uint8_t count;
@@ -473,7 +471,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);
 			if (hdr->length < 0x19)
 				break;
-			dmi_uuid_check(fw, table, addr, "UUID", hdr, 0x8, version);
+			dmi_uuid_check(fw, table, addr, "UUID", hdr, 0x8);
 			dmi_min_max_uint8_check(fw, table, addr, "Wakeup Type", hdr, 0x18, 0x0, 0x08);
 			if (hdr->length < 0x1b)
 				break;
@@ -1178,8 +1176,7 @@ static int dmi_version_check(fwts_framework *fw, uint16_t version)
 
 static void dmi_scan_tables(fwts_framework *fw,
 	fwts_smbios_entry *entry,
-	uint8_t  *table,
-	uint16_t version)
+	uint8_t  *table)
 {
 	uint8_t *entry_data = table;
 	uint16_t table_length;
@@ -1226,7 +1223,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 		next_entry += 2;
 
 		if ((next_entry - table) <= table_length)
-			dmi_decode_entry(fw, addr, &hdr, version);
+			dmi_decode_entry(fw, addr, &hdr);
 
 		i++;
 		entry_data = next_entry;
@@ -1280,7 +1277,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	dmi_scan_tables(fw, &entry, table, version);
+	dmi_scan_tables(fw, &entry, table);
 
 	(void)fwts_munmap(table, (size_t)entry.struct_table_length);
 

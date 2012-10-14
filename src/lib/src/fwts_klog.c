@@ -277,8 +277,6 @@ static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
 		return FWTS_COMPARE_UNKNOWN;
 }
 
-#define JSON_ERROR	((json_object*)-1)
-
 /*
  *  fwts_json_str()
  *	given a key, fetch the string value associated with this object
@@ -288,7 +286,8 @@ static const char *fwts_json_str(fwts_framework *fw, const char *table, int inde
 {
 	const char *str;
 
-	if ((str = json_object_get_string(json_object_object_get(obj, key))) == NULL) {
+	str = json_object_get_string(json_object_object_get(obj, key));
+	if (FWTS_JSON_ERROR(str)) {
 		fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.", key, index, table);
 		return NULL;
 	}
@@ -322,12 +321,14 @@ static int fwts_klog_check(fwts_framework *fw,
 	}
 	close(fd);
 
-	if ((klog_objs = json_object_from_file(json_data_path)) == JSON_ERROR) {
+	klog_objs = json_object_from_file(json_data_path);
+	if (FWTS_JSON_ERROR(klog_objs)) {
 		fwts_log_error(fw, "Cannot load klog data from %s.", json_data_path);
 		return FWTS_ERROR;
 	}
 
-	if ((klog_table = json_object_object_get(klog_objs, table)) == JSON_ERROR) {
+	klog_table = json_object_object_get(klog_objs, table);
+	if (FWTS_JSON_ERROR(klog_table)) {
 		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
 		goto fail_put;
 	}
@@ -347,7 +348,8 @@ static int fwts_klog_check(fwts_framework *fw,
 		const char *str;
 		json_object *obj;
 
-		if ((obj = json_object_array_get_idx(klog_table, i)) == JSON_ERROR) {
+		obj = json_object_array_get_idx(klog_table, i);
+		if (FWTS_JSON_ERROR(obj)) {
 			fwts_log_error(fw, "Cannot fetch %d item from table %s.", i, table);
 			goto fail;
 		}

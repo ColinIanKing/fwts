@@ -182,7 +182,7 @@ char *fwts_method_exists(char *name)
  */
 static void fwts_method_dump_object_recursive(fwts_framework *fw, ACPI_OBJECT *obj, int depth, int index)
 {
-	int i;
+	uint32_t i;
 	char index_buf[5];
 
 	if (index > -1)
@@ -206,7 +206,7 @@ static void fwts_method_dump_object_recursive(fwts_framework *fw, ACPI_OBJECT *o
 	case ACPI_TYPE_PACKAGE:
 		fwts_log_info_verbatum(fw, "%*s%sPackage has %d elements:",depth * 2, "",
 			index_buf, obj->Package.Count);
-		for (i=0; i < obj->Package.Count; i++) {
+		for (i = 0; i < obj->Package.Count; i++) {
 			ACPI_OBJECT *element = &obj->Package.Elements[i];
 			fwts_method_dump_object_recursive(fw, element, depth + 1, i);
 		}

@@ -34,8 +34,7 @@
  *	find matching button state and keep count of matching
  *	any non-matching states found, via proc iterface
  */
-static int fwts_button_match_state_proc(fwts_framework *fw,
-	int button, int *matched, int *not_matched)
+static int fwts_button_match_state_proc(int button, int *matched, int *not_matched)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -113,7 +112,7 @@ int fwts_button_match_state(fwts_framework *fw, int button, int *matched, int *n
 	*not_matched = 0;
 
 	if (access(FWTS_PROC_ACPI_BUTTON, R_OK) == 0)
-		return fwts_button_match_state_proc(fw, button, matched, not_matched);
+		return fwts_button_match_state_proc(button, matched, not_matched);
 
 	return FWTS_ERROR;
 }

@@ -636,7 +636,7 @@ static void fwts_framework_tests_run(fwts_framework *fw, fwts_list *tests_to_run
  *  fwts_framework_test_find()
  *	find a named test, return test if found, NULL otherwise
  */
-static fwts_framework_test *fwts_framework_test_find(fwts_framework *fw, const char *name)
+static fwts_framework_test *fwts_framework_test_find(const char *name)
 {
 	fwts_list_link *item;
 
@@ -826,7 +826,7 @@ static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, f
 	fwts_framework_test *test;
 
 	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
-		if ((test = fwts_framework_test_find(fw, token)) == NULL) {
+		if ((test = fwts_framework_test_find(token)) == NULL) {
 			fprintf(stderr, "No such test '%s'\n", token);
 			return FWTS_ERROR;
 		} else
@@ -1171,7 +1171,7 @@ int fwts_framework_args(const int argc, char **argv)
 		if (*argv[i] == '-')
 			continue;
 
-		if ((test = fwts_framework_test_find(fw, argv[i])) == NULL) {
+		if ((test = fwts_framework_test_find(argv[i])) == NULL) {
 			fprintf(stderr, "No such test '%s', available tests:\n",argv[i]);
 			fwts_framework_show_tests_brief();
 			ret = FWTS_ERROR;

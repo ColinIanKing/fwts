@@ -20,6 +20,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stddef.h>
 
 #include "fwts_alloc.h"
 
@@ -75,7 +76,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 
 		if ((last_addr_end != NULL) &&
 		    (last_addr_end < (void*)LIMIT_2GB)) {
-			if ((addr_start - last_addr_end) > requested_size) {
+			if ((addr_start - last_addr_end) > (ptrdiff_t)requested_size) {
 				void *addr = last_addr_end;
 				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
 					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);

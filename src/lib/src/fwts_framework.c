@@ -818,7 +818,7 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
  *  fwts_framework_skip_test_parse()
  *	parse optarg of comma separated list of tests to skip
  */
-static int fwts_framework_skip_test_parse(fwts_framework *fw, const char *arg, fwts_list *tests_to_skip)
+static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_skip)
 {
 	char *str;
 	char *token;
@@ -951,7 +951,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 					| FWTS_FLAG_SHOW_PROGRESS_DIALOG;
 			break;
 		case 23: /* --skip-test */
-			if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
+			if (fwts_framework_skip_test_parse(optarg, &tests_to_skip) != FWTS_OK)
 				return FWTS_COMPLETE;
 			break;
 		case 24: /* --quiet */
@@ -1048,7 +1048,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FLAG_SHOW_TESTS;
 		break;
 	case 'S': /* --skip-test */
-		if (fwts_framework_skip_test_parse(fw, optarg, &tests_to_skip) != FWTS_OK)
+		if (fwts_framework_skip_test_parse(optarg, &tests_to_skip) != FWTS_OK)
 			return FWTS_COMPLETE;
 		break;
 	case 't': /* --table-path */

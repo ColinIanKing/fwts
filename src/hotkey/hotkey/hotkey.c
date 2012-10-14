@@ -136,7 +136,7 @@ static char *hotkey_device(char *path)
 	return dev;
 }
 
-static char *hotkey_find_keyboard(fwts_framework *fw, char *path)
+static char *hotkey_find_keyboard(char *path)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -155,7 +155,7 @@ static char *hotkey_find_keyboard(fwts_framework *fw, char *path)
 			lstat(filename, &statbuf);
 			if (S_ISDIR(statbuf.st_mode)) {
 				if (!S_ISLNK(statbuf.st_mode))
-					if ((dev = hotkey_find_keyboard(fw, filename)) != NULL)
+					if ((dev = hotkey_find_keyboard(filename)) != NULL)
 						break;
 			} else {
 				if ((data = fwts_get(filename)) != NULL) {
@@ -206,7 +206,7 @@ static char *hotkey_find_keymap(char *device)
 
 static int hotkey_init(fwts_framework *fw)
 {
-	if ((hotkey_dev = hotkey_find_keyboard(fw, "/sys/devices/platform")) == NULL) {
+	if ((hotkey_dev = hotkey_find_keyboard("/sys/devices/platform")) == NULL) {
 		fwts_log_error(fw, "Cannot find keyboard for this machine.");
 		return FWTS_ERROR;
 	}

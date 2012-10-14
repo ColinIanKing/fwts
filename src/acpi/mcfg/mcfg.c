@@ -118,7 +118,7 @@ static int mcfg_test1(fwts_framework *fw)
 	void *mapped_table_page;
 	struct mcfg_entry *table, firstentry;
 	int failed = 0;
-	int mcfg_size;
+	ssize_t mcfg_size;
 	const char *memory_map_name;
 	int page_size;
 
@@ -148,9 +148,9 @@ static int mcfg_test1(fwts_framework *fw)
 	mcfg_size -= 36; /* general ACPI header */
 	mcfg_size -= 8;  /* 8 bytes of padding */
 
-	if ((int)mcfg_size<0) {
+	if (mcfg_size < 0) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize",
-			"Invalid MCFG ACPI table size: got %d bytes expecting more",
+			"Invalid MCFG ACPI table size: got %zd bytes expecting more",
 			mcfg_size + 36 + 8);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw,
@@ -167,14 +167,14 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((nr * sizeof(struct mcfg_entry)) != mcfg_size) {
+	if (mcfg_size != (ssize_t)(nr * sizeof(struct mcfg_entry))) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize2",
 			"MCFG table is not a multiple of record size");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "MCFG table found, size is %i bytes (excluding header) (%i entries).",
+	fwts_log_info(fw, "MCFG table found, size is %zd bytes (excluding header) (%i entries).",
 			mcfg_size, nr);
 
 	table_page = table_ptr = (const uint8_t *)mcfg_table->data;

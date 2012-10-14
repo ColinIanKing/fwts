@@ -443,7 +443,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 	char	*table;
 	int	i;
 	int 	len;
-	int	failed_count = fw->minor_tests.failed;
+	uint32_t failed_count = fw->minor_tests.failed;
 	int	battery_count;
 	int	ret;
 	int	both_ok;

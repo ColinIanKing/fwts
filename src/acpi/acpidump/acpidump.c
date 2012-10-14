@@ -37,7 +37,7 @@ typedef struct fwts_acpidump_field {
 	uint8_t  bit_field_nbits;
 	uint8_t  bit_field_shift;
 	char  **strings;
-	int   strings_len;
+	size_t   strings_len;
 	fwts_acpidump_str_func str_func;
 } fwts_acpidump_field;
 
@@ -229,7 +229,7 @@ static void __acpi_dump_table_fields(fwts_framework *fw, uint8_t *data, fwts_acp
 
 static void acpi_dump_raw_data(fwts_framework *fw, uint8_t *data, size_t length, size_t offset)
 {
-        int n;
+        size_t n;
 
         for (n = 0; n < length; n+=16) {
                 int left = length - n;
@@ -449,7 +449,7 @@ static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
-	int i;
+	uint32_t i;
 
 	static char *serialization_actions[] = {
 		"BEGIN_WRITE_OPERATION",
@@ -519,7 +519,7 @@ static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
 			FIELD_UINT("  Mask", 		fwts_acpi_table_erst, entries[i].mask),
 			FIELD_END
 		};
-		fwts_log_info_verbatum(fw, "Entry #%d", i+1);
+		fwts_log_info_verbatum(fw, "Entry #%" PRIu32, i+1);
 		__acpi_dump_table_fields(fw, data, entry_fields, 0);
 	}
 }
@@ -966,8 +966,8 @@ static void acpidump_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)data;
-	int n;
-	int i;
+	size_t n;
+	size_t i;
 
 	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Base Address", 	fwts_acpi_table_mcfg, 	base_address),
@@ -990,7 +990,7 @@ static void acpidump_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 			FIELD_UINT("  End Bus Num", 	fwts_acpi_table_mcfg,	configuration[i].end_bus_number),
 			FIELD_END
 		};
-		fwts_log_info_verbatum(fw, "Configuration #%d:", i+1);
+		fwts_log_info_verbatum(fw, "Configuration #%zd:", i+1);
 		acpi_dump_table_fields(fw, (uint8_t*)config, fields_config, 0, length);
 		config++;
 	}
@@ -1001,22 +1001,23 @@ static void acpidump_slit(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
 	fwts_acpi_table_slit *slit = (fwts_acpi_table_slit*)data;
-	int i;
-	int j = 0;
-	int k = 0;
-	int n = length - sizeof(fwts_acpi_table_slit);
+	uint64_t j = 0;
+	uint64_t k = 0;
+	uint64_t n = length - sizeof(fwts_acpi_table_slit);
 	uint8_t *entry;
 
 	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%" PRIx64 "(%" PRIu64 ")",
 		slit->num_of_system_localities, slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
-		fwts_log_info_verbatum(fw,"Expecting %" PRId64 " bytes, got only %d",
+		fwts_log_info_verbatum(fw,"Expecting %" PRIu64 " bytes, got only %" PRIu64,
 			(slit->num_of_system_localities * slit->num_of_system_localities), n);
 	}
 	else {
+		uint64_t i;
 		entry = data + sizeof(fwts_acpi_table_slit);
-		for (i=0; i<n; i++) {
-			fwts_log_info_verbatum(fw, "Entry[%2.2d][%2.2d]: %2.2x", j, k, *entry++);
+
+		for (i = 0; i < n; i++) {
+			fwts_log_info_verbatum(fw, "Entry[%2.2" PRIu64 "][%2.2" PRIu64 "]: %2.2x", j, k, *entry++);
 			k++;
 			if (k >= slit->num_of_system_localities) {
 				k = 0;
@@ -1291,7 +1292,7 @@ static void acpidump_dmar_device_scope(
 
 	/* Parse through multiple device scope entries */
 	while (device_scope_length > 0) {
-		int i;
+		unsigned int i;
 
 		fwts_acpi_table_dmar_device_scope *device_scope_entry =
 			(fwts_acpi_table_dmar_device_scope *)device_scope;

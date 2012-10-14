@@ -491,7 +491,7 @@ static int method_check_type__(
 	fwts_framework *fw,
 	char *name,
 	ACPI_BUFFER *buf,
-	int type,
+	ACPI_OBJECT_TYPE type,
 	char *type_name)
 {
 	ACPI_OBJECT *obj;
@@ -805,7 +805,7 @@ static void method_test_PLD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -815,7 +815,7 @@ static void method_test_PLD_return(
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_BUFFER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PLDElementType",
-				"_PLD package element %d was not a buffer.",
+				"_PLD package element %" PRIu32 " was not a buffer.",
 				i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -971,7 +971,7 @@ static void method_test_EDL_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -981,7 +981,7 @@ static void method_test_EDL_return(
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_EDLElementType",
-				"_EDL package element %d was not a reference.",
+				"_EDL package element %" PRIu32 " was not a reference.",
 				i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -1204,7 +1204,7 @@ static void method_test_power_resources_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -1214,7 +1214,7 @@ static void method_test_power_resources_return(
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PowerResourceElementType",
-				"%s package element %d was not a reference.",
+				"%s package element %" PRIu32 " was not a reference.",
 				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -1307,8 +1307,9 @@ static void method_test_Sx__return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_SxElementCount",
 			"The kernel expects a package of at least two "
-			"integers, and %s only returned %d elements in "
-			"the package.", name, obj->Package.Count);
+			"integers, and %s only returned %" PRIu32
+			" elements in the package.",
+			name, obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
 	}
@@ -1457,7 +1458,7 @@ static void method_test_CPC_return(
 	if (obj->Package.Count != 17) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementCount",
 			"_CPC should return package of 17 elements, "
-			"got %d elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1500,7 +1501,7 @@ static void method_test_CSD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 	bool failed = false;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1510,7 +1511,7 @@ static void method_test_CSD_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSDElementCount",
 			"_CSD should return package of at least 1 element, "
-			"got %" PRId32 " elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1519,13 +1520,13 @@ static void method_test_CSD_return(
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		int j;
+		uint32_t j;
 		bool elements_ok = true;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_CSDElementType",
-				"_CSD package element %d was not a package.",
+				"_CSD package element %" PRIu32 " was not a package.",
 				i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1539,8 +1540,8 @@ static void method_test_CSD_return(
 		if (pkg->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_CSDSubPackageElementCount",
-				"_CSD sub-package %d was expected to "
-				"have 5 elements, got %d elements instead.",
+				"_CSD sub-package %" PRIu32 " was expected to "
+				"have 5 elements, got %" PRIu32 " elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1551,7 +1552,8 @@ static void method_test_CSD_return(
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_CSDSubPackageElementCount",
-					"_CSD sub-package %d element %d is not "
+					"_CSD sub-package %" PRIu32
+					" element %" PRIu32 " is not "
 					"an integer.",
 					i, j);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -1624,7 +1626,7 @@ static void method_test_PCT_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 	bool failed = false;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1634,7 +1636,7 @@ static void method_test_PCT_return(
 	if (obj->Package.Count < 2) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PCTElementCount",
 			"_PCT should return package of least 2 elements, "
-			"got %" PRId32 " elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1648,8 +1650,8 @@ static void method_test_PCT_return(
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_BUFFER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PCTElementType",
-				"_PCT package element %d was not a buffer.",
-				i);
+				"_PCT package element %" PRIu32
+				" was not a buffer.", i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -1673,7 +1675,7 @@ static void method_test_PSS_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 	bool failed = false;
 	uint32_t max_freq = 0;
 	uint32_t prev_power = 0;
@@ -1686,7 +1688,7 @@ static void method_test_PSS_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementCount",
 			"_PSS should return package of at least 1 element, "
-			"got %" PRId32 " elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1698,8 +1700,8 @@ static void method_test_PSS_return(
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSSElementType",
-				"_PSS package element %d was not a package.",
-				i);
+				"_PSS package element %" PRIu32
+				" was not a package.", i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -1709,8 +1711,9 @@ static void method_test_PSS_return(
 		if (pstate->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSSSubPackageElementCount",
-				"_PSS P-State sub-package %d was expected to "
-				"have 6 elements, got %" PRId32 " elements instead.",
+				"_PSS P-State sub-package %" PRIu32
+				" was expected to "
+				"have 6 elements, got %" PRIu32 " elements instead.",
 				i, obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1726,7 +1729,7 @@ static void method_test_PSS_return(
 		    (pstate->Package.Elements[5].Type != ACPI_TYPE_INTEGER)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSSSubPackageElementType",
-				"_PSS P-State sub-package %d was expected to "
+				"_PSS P-State sub-package %" PRIu32 " was expected to "
 				"have 6 Integer elements but didn't", i);
 			failed = true;
 			continue;
@@ -1758,7 +1761,7 @@ static void method_test_PSS_return(
 		    (pstate->Package.Elements[1].Integer.Value > prev_power)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PSSSubPackagePowerNotDecending",
-				"_PSS P-State sub-package %d has a larger "
+				"_PSS P-State sub-package %" PRIu32 " has a larger "
 				"power dissipation setting than the previous "
 				"sub-package.", i);
 			fwts_advice(fw,
@@ -1846,7 +1849,7 @@ static void method_test_TSD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 	bool failed = false;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1856,7 +1859,7 @@ static void method_test_TSD_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSDElementCount",
 			"_TSD should return package of at least 1 element, "
-			"got %" PRId32 " elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1865,14 +1868,14 @@ static void method_test_TSD_return(
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		int j;
+		uint32_t j;
 		bool elements_ok = true;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDElementType",
-				"_TSD package element %d was not a package.",
-				i);
+				"_TSD package element %" PRIu32
+				" was not a package.", i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -1885,8 +1888,8 @@ static void method_test_TSD_return(
 		if (pkg->Package.Count != 5) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElementCount",
-				"_TSD sub-package %d was expected to "
-				"have 5 elements, got %" PRId32 " elements instead.",
+				"_TSD sub-package %" PRIu32 " was expected to "
+				"have 5 elements, got %" PRIu32 " elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -1897,9 +1900,9 @@ static void method_test_TSD_return(
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_TSDSubPackageElementCount",
-					"_TSD sub-package %d element %d is not "
-					"an integer.",
-					i, j);
+					"_TSD sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.", i, j);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				elements_ok = false;
 			}
@@ -1914,7 +1917,8 @@ static void method_test_TSD_return(
 		if (pkg->Package.Elements[0].Integer.Value != pkg->Package.Count) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement0",
-				"_TSD sub-package %d element 0 (NumEntries) "
+				"_TSD sub-package %" PRIu32
+				" element 0 (NumEntries) "
 				"was expected to have value 0x%" PRIx64 ".",
 				i,
 				pkg->Package.Elements[0].Integer.Value);
@@ -1925,7 +1929,8 @@ static void method_test_TSD_return(
 		if (pkg->Package.Elements[1].Integer.Value != 0) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement1",
-				"_TSD sub-package %d element 1 (Revision) "
+				"_TSD sub-package %" PRIu32
+				" element 1 (Revision) "
 				"was expected to have value 1, instead it "
 				"was 0x%" PRIx64 ".",
 				i,
@@ -1939,7 +1944,8 @@ static void method_test_TSD_return(
 		    (pkg->Package.Elements[3].Integer.Value != 0xfe)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement1",
-				"_TSD sub-package %d element 3 (CoordType) "
+				"_TSD sub-package %" PRIu32
+				" element 3 (CoordType) "
 				"was expected to have value 0xfc (SW_ALL), "
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
 				"was 0x%" PRIx64 ".",
@@ -1969,7 +1975,7 @@ static void method_test_TSS_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int i;
+	uint32_t i;
 	bool failed = false;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -1979,7 +1985,7 @@ static void method_test_TSS_return(
 	if (obj->Package.Count < 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSSElementCount",
 			"_TSS should return package of at least 1 element, "
-			"got %" PRId32 " elements instead.",
+			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		return;
@@ -1988,14 +1994,14 @@ static void method_test_TSS_return(
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		int j;
+		uint32_t j;
 		bool elements_ok = true;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSSElementType",
-				"_TSS package element %d was not a package.",
-				i);
+				"_TSS package element %" PRIu32
+				" was not a package.", i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -2008,8 +2014,9 @@ static void method_test_TSS_return(
 		if (pkg->Package.Count != 5) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSSSubPackageElementCount",
-				"_TSS sub-package %d was expected to "
-				"have 5 elements, got %" PRId32" elements instead.",
+				"_TSS sub-package %" PRIu32
+				" was expected to have 5 elements, "
+				"got %" PRIu32" elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed = true;
@@ -2020,9 +2027,9 @@ static void method_test_TSS_return(
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_TSSSubPackageElementCount",
-					"_TSS sub-package %d element %d is not "
-					"an integer.",
-					i, j);
+					"_TSS sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.", i, j);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				elements_ok = false;
 			}
@@ -2037,7 +2044,7 @@ static void method_test_TSS_return(
 		    (pkg->Package.Elements[0].Integer.Value > 100)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement0",
-				"_TSD sub-package %d element 0"
+				"_TSD sub-package %" PRIu32 " element 0"
 				"was expected to have value 1..100, instead "
 				"was %" PRIu64 ".",
 				i,
@@ -2047,7 +2054,7 @@ static void method_test_TSS_return(
 		}
 		/* Skip checking elements 1..4 */
 
-		fwts_log_info(fw, "TSS [%d]:", i);
+		fwts_log_info(fw, "TSS [%" PRIu32 "]:", i);
 		fwts_log_info_verbatum(fw, "   CPU frequency: %" PRIu64 "%%",
 			pkg->Package.Elements[0].Integer.Value);
 		fwts_log_info_verbatum(fw, "   Power        : %" PRIu64 " (mW)",
@@ -2333,7 +2340,7 @@ static void method_test_BIF_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 		int failed = 0;
 
 		fwts_method_dump_object(fw, obj);
@@ -2342,7 +2349,7 @@ static void method_test_BIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIFElementCount",
 				"_BIF package should return 13 elements, "
-				"got %" PRId32 " instead.",
+				"got %" PRIu32 " instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		}
@@ -2351,15 +2358,18 @@ static void method_test_BIF_return(
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIFBadType",
-					"_BIF package element %d is not of "
-					"type DWORD Integer.", i);
+					"_BIF package element %" PRIu32
+					" is not of type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
 		}
 		for (i = 9; (i < 13) && (i < obj->Package.Count); i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_BIFBadType", "_BIF package element %d is not of type STRING.", i);
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_BIFBadType",
+					"_BIF package element %" PRIu32
+					" is not of type STRING.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -2475,7 +2485,7 @@ static void method_test_BIX_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 		int failed = 0;
 
 		fwts_method_dump_object(fw, obj);
@@ -2484,7 +2494,7 @@ static void method_test_BIX_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIXElementCount",
 				"_BIX package should return 16 elements, "
-				"got %" PRId32 " instead.", obj->Package.Count);
+				"got %" PRIu32 " instead.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
@@ -2493,8 +2503,8 @@ static void method_test_BIX_return(
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIXBadType",
-					"_BIX package element %d is not of "
-					"type DWORD Integer.", i);
+					"_BIX package element %" PRIu32
+					" is not of type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -2503,8 +2513,8 @@ static void method_test_BIX_return(
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BIXBadType",
-					"_BIX package element %d is not of "
-					"type STRING.", i);
+					"_BIX package element %" PRIu32
+					" is not of type STRING.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -2649,7 +2659,7 @@ static void method_test_BST_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 		int failed = 0;
 
 		fwts_method_dump_object(fw, obj);
@@ -2658,7 +2668,7 @@ static void method_test_BST_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BSTElementCount",
 				"_BST package should return 4 elements, "
-				"got %" PRId32" instead.",
+				"got %" PRIu32" instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -2668,8 +2678,8 @@ static void method_test_BST_return(
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BSTBadType",
-					"_BST package element %d is not of "
-					"type DWORD Integer.", i);
+					"_BST package element %" PRIu32
+					" is not of type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -2775,7 +2785,7 @@ static void method_test_BMD_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 		int failed = 0;
 
 		fwts_method_dump_object(fw, obj);
@@ -2784,7 +2794,7 @@ static void method_test_BMD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BMDElementCount",
 				"_BMD package should return 4 elements, "
-				"got %" PRId32 " instead.",
+				"got %" PRIu32 " instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -2794,8 +2804,8 @@ static void method_test_BMD_return(
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_BMDBadType",
-					"_BMD package element %d is not of "
-					"type DWORD Integer.", i);
+					"_BMD package element %" PRIu32
+					" is not of type DWORD Integer.", i);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
 			}
@@ -2873,7 +2883,7 @@ static void method_test_PIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_PIFElementCount",
 				"_PIF should return package of 6 elements, "
-				"got %" PRId32 " elements instead.",
+				"got %" PRIu32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -2921,7 +2931,7 @@ static void method_test_FIF_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_FIFElementCount",
 				"_FIF should return package of 4 elements, "
-				"got %" PRId32 " elements instead.",
+				"got %" PRIu32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -2980,7 +2990,7 @@ static void method_test_FST_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_FSTElementCount",
 				"_FST should return package of 3 elements, "
-				"got %" PRId32 " elements instead.",
+				"got %" PRIu32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
@@ -3333,7 +3343,7 @@ static void method_test_WAK_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_WAKElementCount",
 				"_WAK should return package of 2 integers, "
-				"got %" PRId32 " elements instead.",
+				"got %" PRIu32 " elements instead.",
 				obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
@@ -3343,7 +3353,7 @@ static void method_test_WAK_return(
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"Method_WAKBadType",
 					"_WAK should return package of 2 "
-					"integers, got %" PRId32 " instead.",
+					"integers, got %" PRIu32 " instead.",
 					obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
@@ -3455,7 +3465,7 @@ static void method_test_DOD_return(
 	};
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 
 		fwts_method_dump_object(fw, obj);
 
@@ -3464,17 +3474,17 @@ static void method_test_DOD_return(
 				failed++;
 			else {
 				uint32_t val = obj->Package.Elements[i].Integer.Value;
-				fwts_log_info_verbatum(fw, "Device %d:", i);
+				fwts_log_info_verbatum(fw, "Device %" PRIu32 ":", i);
 				if ((val & 0x80000000)) {
-					fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRId32, val);
+					fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRIu32, val);
 				} else {
-					fwts_log_info_verbatum(fw, "  Instance:                %" PRId32, val & 0xf);
-					fwts_log_info_verbatum(fw, "  Display port attachment: %" PRId32, (val >> 4) & 0xf);
-					fwts_log_info_verbatum(fw, "  Type of display:         %" PRId32 " (%s)",
+					fwts_log_info_verbatum(fw, "  Instance:                %" PRIu32, val & 0xf);
+					fwts_log_info_verbatum(fw, "  Display port attachment: %" PRIu32, (val >> 4) & 0xf);
+					fwts_log_info_verbatum(fw, "  Type of display:         %" PRIu32 " (%s)",
 						(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
-					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRId32, (val >> 16) & 1);
-					fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRId32, (val >> 17) & 1);
-					fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRId32, (val >> 18) & 0x7);
+					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRIu32, (val >> 16) & 1);
+					fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRIu32, (val >> 17) & 1);
+					fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRIu32, (val >> 18) & 0x7);
 				}
 			}
 		}
@@ -3482,12 +3492,12 @@ static void method_test_DOD_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_DODNoPackage",
 				"Method _DOD did not return a package of "
-				"%" PRId32 " integers.", obj->Package.Count);
+				"%" PRIu32 " integers.", obj->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
 			fwts_passed(fw,
 				"Method _DOD returned a sane package of "
-				"%" PRId32 " integers.", obj->Package.Count);
+				"%" PRIu32 " integers.", obj->Package.Count);
 	}
 }
 
@@ -3562,7 +3572,7 @@ static void method_test_BCL_return(
 	void *private)
 {
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		int i;
+		uint32_t i;
 		int failed = 0;
 
 		fwts_method_dump_object(fw, obj);
@@ -3574,7 +3584,7 @@ static void method_test_BCL_return(
 		if (failed) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BCLNoPackage",
-				"Method _BCL did not return a package of %" PRId32
+				"Method _BCL did not return a package of %" PRIu32
 				" integers.", obj->Package.Count);
 		} else {
 			if (obj->Package.Count < 3) {
@@ -3582,7 +3592,7 @@ static void method_test_BCL_return(
 					"Method_BCLElementCount",
 					"Method _BCL should return a package "
 					"of more than 2 integers, got "
-					"just %" PRId32 ".", obj->Package.Count);
+					"just %" PRIu32 ".", obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			} else {
 				bool ascending_levels = false;
@@ -3606,11 +3616,10 @@ static void method_test_BCL_return(
 					    obj->Package.Elements[i+1].Integer.Value) {
 						fwts_log_info(fw,
 							"Brightness level %" PRIu64
-							" (index %d) is greater "
+							" (index %" PRIu32 ") is greater "
 							"than brightness level %" PRIu64
-							" (index %d), should "
-							"be in ascending "
-							"order.",
+							" (index %d" PRIu32 "), should "
+							"be in ascending order.",
 							obj->Package.Elements[i].Integer.Value, i,
 							obj->Package.Elements[i+1].Integer.Value, i+1);
 						ascending_levels = true;
@@ -3643,7 +3652,7 @@ static void method_test_BCL_return(
 				else
 					fwts_passed(fw,
 						"Method _BCL returned a sane "
-						"package of %" PRId32 " integers.",
+						"package of %" PRIu32 " integers.",
 						obj->Package.Count);
 			}
 		}

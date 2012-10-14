@@ -491,7 +491,7 @@ static int acpi_table_check_test1(fwts_framework *fw)
 	int i;
 
 	for (i=0; check_table[i].name != NULL; i++) {
-		int failed = fw->minor_tests.failed;
+		uint32_t failed = fw->minor_tests.failed;
 		fwts_acpi_table_info *table;
 
 		if (fwts_acpi_find_table(fw, check_table[i].name, 0, &table) != FWTS_OK) {

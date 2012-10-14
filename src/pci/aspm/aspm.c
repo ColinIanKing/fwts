@@ -222,8 +222,7 @@ static void pci_device_list_free(struct pci_device *head)
 	}
 }
 
-static int pcie_check_aspm_registers(fwts_framework *fw,
-	const fwts_log_level level)
+static int pcie_check_aspm_registers(fwts_framework *fw)
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;
@@ -338,7 +337,7 @@ static int aspm_check_configuration(fwts_framework *fw)
 
 static int aspm_pcie_register_configuration(fwts_framework *fw)
 {
-	return pcie_check_aspm_registers(fw, LOG_LEVEL_HIGH);
+	return pcie_check_aspm_registers(fw);
 }
 
 static fwts_framework_minor_test aspm_tests[] = {

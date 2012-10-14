@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <stddef.h>
 #include <inttypes.h>
 
 #include "fwts.h"
@@ -645,7 +646,7 @@ static void uefidump_info_signature_support(fwts_framework *fw, fwts_uefi_var *v
 		if (var->datalen)
 			fwts_log_info_verbatum(fw, "  Signature GUIDs:");
 
-		while (data - var->data < var->datalen) {
+		while (data - var->data < (ptrdiff_t)var->datalen) {
 			fwts_guid_buf_to_str(data, guid_str, sizeof(guid_str));
 			fwts_log_info_verbatum(fw, "    %s", guid_str);
 			data += 16;

@@ -123,7 +123,7 @@ static int hda_audio_check_pins(fwts_framework *fw, const char *path)
 
 	if (fwts_list_len(&user_pin_configs) > 0) {
 		hda_audio_dump_pins(fw, "User defined pin configurations",
-			&driver_pin_configs);
+			&user_pin_configs);
 		warn++;
 	}
 

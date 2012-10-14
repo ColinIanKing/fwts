@@ -145,7 +145,7 @@ static int dump_lspci(fwts_framework *fw, const char *path, const char *filename
 static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 {
 	char buffer[128];
-	int n;
+	size_t n;
 
 	fprintf(fp, "%s @ 0x%x\n", table->name, (uint32_t)table->addr);
 

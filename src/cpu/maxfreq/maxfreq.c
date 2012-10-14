@@ -28,16 +28,6 @@
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
 
-static int maxfreq_init(fwts_framework *fw)
-{
-	return FWTS_OK;
-}
-
-static int maxfreq_deinit(fwts_framework *fw)
-{
-	return FWTS_OK;
-}
-
 typedef struct {
 	int cpu;
 	int speed;
@@ -199,8 +189,6 @@ static fwts_framework_minor_test maxfreq_tests[] = {
 
 static fwts_framework_ops maxfreq_ops = {
 	.description = "Check max CPU frequencies against max scaling frequency.",
-	.init        = maxfreq_init,
-	.deinit      = maxfreq_deinit,
 	.minor_tests = maxfreq_tests
 };
 

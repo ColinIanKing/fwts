@@ -178,7 +178,7 @@ int fwts_framework_compare_test_name(void *data1, void *data2)
  *  fwts_framework_show_tests()
  *	dump out registered tests in brief form
  */
-static void fwts_framework_show_tests_brief(fwts_framework *fw)
+static void fwts_framework_show_tests_brief(void)
 {
 	fwts_list sorted;
 	fwts_list_link *item;
@@ -1173,7 +1173,7 @@ int fwts_framework_args(const int argc, char **argv)
 
 		if ((test = fwts_framework_test_find(fw, argv[i])) == NULL) {
 			fprintf(stderr, "No such test '%s', available tests:\n",argv[i]);
-			fwts_framework_show_tests_brief(fw);
+			fwts_framework_show_tests_brief();
 			ret = FWTS_ERROR;
 			goto tidy;
 		}

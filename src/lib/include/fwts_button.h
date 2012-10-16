@@ -26,6 +26,6 @@
 
 #define FWTS_BUTTON_POWER_EXISTS	(0x00010)
 
-int fwts_button_match_state(fwts_framework *fw, int button, int *matched, int *not_matched);
+int fwts_button_match_state(fwts_framework *fw, const int button, int *matched, int *not_matched);
 
 #endif

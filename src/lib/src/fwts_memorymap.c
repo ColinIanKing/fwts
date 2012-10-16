@@ -77,7 +77,7 @@ static int fwts_memory_map_str_to_type(const char *str)
  *  fwts_memory_map_type_to_str()
  *	convert E280 type values to strings
  */
-static char *fwts_memory_map_type_to_str(int type)
+static char *fwts_memory_map_type_to_str(const int type)
 {
 	switch (type) {
 	case FWTS_MEMORY_MAP_RESERVED:
@@ -320,7 +320,7 @@ void fwts_memory_map_table_free(fwts_list *memory_map_list)
 	fwts_list_free(memory_map_list, free);
 }
 
-const char *fwts_memory_map_name(int type)
+const char *fwts_memory_map_name(const int type)
 {
 	switch (type) {
 	case FWTS_FIRMWARE_BIOS:

@@ -42,7 +42,7 @@ int        fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_
 fwts_list *fwts_memory_map_table_load(fwts_framework *fw);
 void       fwts_memory_map_table_free(fwts_list *memory_map_list);
 void       fwts_memory_map_table_dump(fwts_framework *fw, fwts_list *memory_map_list);
-const char *fwts_memory_map_name(int type);
+const char *fwts_memory_map_name(const int type);
 fwts_memory_map_entry *fwts_memory_map_info(fwts_list *memory_map_list, const uint64_t memory);
 
 #endif

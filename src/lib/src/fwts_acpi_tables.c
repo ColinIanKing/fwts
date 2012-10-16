@@ -157,7 +157,8 @@ static void fwts_acpi_add_table(
 	const void *table,			/* Table binary blob */
 	const uint64_t addr,			/* Address of table */
 	const size_t length,			/* Length of table */
-	fwts_acpi_table_provenance provenance)	/* Where we got the table from */
+	const fwts_acpi_table_provenance provenance)
+						/* Where we got the table from */
 {
 	int i;
 	int which = 0;
@@ -209,7 +210,7 @@ static void fwts_acpi_handle_fadt_tables(
 	fwts_acpi_table_fadt *fadt,
 	const uint32_t *addr32,
 	const uint64_t *addr64,
-	fwts_acpi_table_provenance provenance)
+	const fwts_acpi_table_provenance provenance)
 {
 	off_t addr;
 	fwts_acpi_table_header *header;
@@ -307,7 +308,7 @@ static int fwts_acpi_load_tables_from_firmware(void)
  *	Loading tables from file may result in data without an originating
  *	physical address of the table, so fake a unique 32 bit address for the table.
  */
-static uint32_t fwts_fake_physical_addr(size_t size)
+static uint32_t fwts_fake_physical_addr(const size_t size)
 {
 	static uint32_t fake_phys_addr = 0xbff00000;
 	uint32_t addr = fake_phys_addr;

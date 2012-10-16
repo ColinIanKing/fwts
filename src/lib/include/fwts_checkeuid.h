@@ -22,6 +22,6 @@
 
 #include "fwts_framework.h"
 
-int fwts_check_root_euid(fwts_framework *fw, bool warn);
+int fwts_check_root_euid(fwts_framework *fw, const bool warn);
 
 #endif

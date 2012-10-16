@@ -29,8 +29,8 @@
 
 static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	DIR 	*dir,
-	int	 type,
-	int	 index,
+	const int type,
+	const int index,
 	uint32_t *capacity_mAh,	/* charge */
 	uint32_t *capacity_mWh, /* energy */
 	int 	*count)
@@ -111,8 +111,8 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 
 static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	DIR 	*dir,
-	int	 type,
-	int	 index,
+	const int type,
+	const int index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh,
 	int 	*count)
@@ -208,7 +208,10 @@ static int fwts_battery_get_count_proc_fs(DIR *dir, int *count)
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_name_sys_fs(DIR *dir, int index, char *name)
+static int fwts_battery_get_name_sys_fs(
+	DIR *dir,
+	const int index,
+	char *name)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
@@ -242,7 +245,10 @@ static int fwts_battery_get_name_sys_fs(DIR *dir, int index, char *name)
 	return FWTS_ERROR;
 }
 
-static int fwts_battery_get_name_proc_fs(DIR *dir, int index, char *name)
+static int fwts_battery_get_name_proc_fs(
+	DIR *dir,
+	const int index,
+	char *name)
 {
 	struct dirent *entry;
 	int i = 0;
@@ -263,7 +269,11 @@ static int fwts_battery_get_name_proc_fs(DIR *dir, int index, char *name)
 	return FWTS_ERROR;
 }
 
-static int fwts_battery_get_cycle_count_sys_fs(fwts_framework *fw, DIR *dir, int index, int *cycle_count)
+static int fwts_battery_get_cycle_count_sys_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	int *cycle_count)
 {
 	struct dirent *entry;
 	char *field_cycle_count;
@@ -317,7 +327,11 @@ static int fwts_battery_get_cycle_count_sys_fs(fwts_framework *fw, DIR *dir, int
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_cycle_count_proc_fs(fwts_framework *fw, DIR *dir, int index, int *cycle_count)
+static int fwts_battery_get_cycle_count_proc_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	int *cycle_count)
 {
 	struct dirent *entry;
 	char *file;
@@ -360,7 +374,11 @@ static int fwts_battery_get_cycle_count_proc_fs(fwts_framework *fw, DIR *dir, in
 	return FWTS_OK;
 }
 
-static int fwts_battery_set_trip_point_sys_fs(fwts_framework *fw, DIR *dir, int index, int trip_point)
+static int fwts_battery_set_trip_point_sys_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	const int trip_point)
 {
 	struct dirent *entry;
 	int  i = 0;
@@ -402,7 +420,11 @@ static int fwts_battery_set_trip_point_sys_fs(fwts_framework *fw, DIR *dir, int 
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_trip_point_sys_fs(fwts_framework *fw, DIR *dir, int index, int *trip_point)
+static int fwts_battery_get_trip_point_sys_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	int *trip_point)
 {
 	struct dirent *entry;
 	int  i = 0;
@@ -448,7 +470,11 @@ static int fwts_battery_get_trip_point_sys_fs(fwts_framework *fw, DIR *dir, int 
 	return FWTS_OK;
 }
 
-static int fwts_battery_set_trip_point_proc_fs(fwts_framework *fw, DIR *dir, int index, int trip_point)
+static int fwts_battery_set_trip_point_proc_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	const int trip_point)
 {
 	struct dirent *entry;
 	int  i = 0;
@@ -479,7 +505,11 @@ static int fwts_battery_set_trip_point_proc_fs(fwts_framework *fw, DIR *dir, int
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_trip_point_proc_fs(fwts_framework *fw, DIR *dir, int index, int *trip_point)
+static int fwts_battery_get_trip_point_proc_fs(
+	fwts_framework *fw,
+	DIR *dir,
+	const int index,
+	int *trip_point)
 {
 	struct dirent *entry;
 	int  i = 0;
@@ -518,7 +548,10 @@ static int fwts_battery_get_trip_point_proc_fs(fwts_framework *fw, DIR *dir, int
 	return FWTS_OK;
 }
 
-int fwts_battery_set_trip_point(fwts_framework *fw, int index, int trip_point)
+int fwts_battery_set_trip_point(
+	fwts_framework *fw,
+	const int index,
+	const int trip_point)
 {
 	int ret;
 	DIR *dir;
@@ -536,7 +569,9 @@ int fwts_battery_set_trip_point(fwts_framework *fw, int index, int trip_point)
 	return ret;
 }
 
-int fwts_battery_get_trip_point(fwts_framework *fw, int index, int *trip_point)
+int fwts_battery_get_trip_point(
+	fwts_framework *fw,
+	const int index, int *trip_point)
 {
 	int ret;
 	DIR *dir;
@@ -554,7 +589,9 @@ int fwts_battery_get_trip_point(fwts_framework *fw, int index, int *trip_point)
 	return ret;
 }
 
-bool fwts_battery_check_trip_point_support(fwts_framework *fw, int index)
+bool fwts_battery_check_trip_point_support(
+	fwts_framework *fw,
+	const int index)
 {
 	int trip_point;
 
@@ -567,7 +604,10 @@ bool fwts_battery_check_trip_point_support(fwts_framework *fw, int index)
 	return true;
 }
 
-int fwts_battery_get_cycle_count(fwts_framework *fw, int index, int *cycle_count)
+int fwts_battery_get_cycle_count(
+	fwts_framework *fw,
+	const int index,
+	int *cycle_count)
 {
 	int ret;
 	DIR *dir;
@@ -585,7 +625,10 @@ int fwts_battery_get_cycle_count(fwts_framework *fw, int index, int *cycle_count
 	return ret;
 }
 
-int fwts_battery_get_name(fwts_framework *fw, int index, char *name)
+int fwts_battery_get_name(
+	fwts_framework *fw,
+	const int index,
+	char *name)
 {
 	int ret;
 	DIR *dir;
@@ -621,8 +664,8 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 }
 
 int fwts_battery_get_capacity(fwts_framework *fw,
-	int type,
-	int index,
+	const int type,
+	const int index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh)
 {

@@ -27,6 +27,6 @@
 #define FWTS_AC_ADAPTER_ONLINE	(0x1)
 #define FWTS_AC_ADAPTER_OFFLINE	(0x2)
 
-int fwts_ac_adapter_get_state(int state, int *matching, int *not_matching);
+int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching);
 
 #endif

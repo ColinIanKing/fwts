@@ -70,7 +70,7 @@ static fwts_ac_interface_info fwts_ac_interfaces[] = {
  *	not_matching is incremented for each AC adapter instance that does
  *	not match.
  */
-int fwts_ac_adapter_get_state(int state, int *matching, int *not_matching)
+int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 {
 	DIR *ac_power_dir;
 	struct dirent *entry;

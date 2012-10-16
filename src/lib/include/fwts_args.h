@@ -39,7 +39,7 @@ typedef int (*fwts_args_optarg_check)(fwts_framework *framework);
 
 int fwts_args_init(void);
 int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler, fwts_args_optarg_check check);
-int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[]);
+int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[]);
 void fwts_args_show_options(void);
 int fwts_args_free(void);
 char *fwts_args_comma_list(const char *arg);

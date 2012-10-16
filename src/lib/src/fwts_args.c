@@ -32,7 +32,7 @@
  *  of how many options there are in each table.
  */
 typedef struct {
-	fwts_option     *options;		/* options array */
+	fwts_option *options;			/* options array */
 	int             num_options;		/* number of options */
 	fwts_args_optarg_handler optarg_handler;/* options handler */
 	fwts_args_optarg_check   optarg_check;	/* options checker */
@@ -61,7 +61,10 @@ int fwts_args_init(void)
  *  fwts_args_add_options()
  *	add a table of options and handler for these options
  */
-int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler, fwts_args_optarg_check check)
+int fwts_args_add_options(
+	fwts_option *options,
+	fwts_args_optarg_handler handler,
+	fwts_args_optarg_check check)
 {
 	int n;
 	fwts_options_table *options_table;
@@ -90,7 +93,7 @@ int fwts_args_add_options(fwts_option *options, fwts_args_optarg_handler handler
  *  fwts_args_parse()
  *	parse options
  */
-int fwts_args_parse(fwts_framework *fw, int argc, char * const argv[])
+int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 {
 	fwts_list_link *item;
 	fwts_options_table *options_table;
@@ -219,7 +222,10 @@ static int fwts_args_compare_options(void *data1, void *data2)
  *  fwts_args_show_option()
  *	pretty print an option
  */
-void fwts_args_show_option(int width, char *option, char *explanation)
+static void fwts_args_show_option(
+	const int width,
+	const char *option,
+	const char *explanation)
 {
 	fwts_list *text;
 	fwts_list_link *item;

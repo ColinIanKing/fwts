@@ -66,7 +66,11 @@ static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
  *  fwts_hwinfo_lists_dump()
  *	dump out contents of two different lists
  */
-static void fwts_hwinfo_lists_dump(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message)
+static void fwts_hwinfo_lists_dump(
+	fwts_framework *fw,
+	fwts_list *l1,
+	fwts_list *l2,
+	const char *message)
 {
 	fwts_log_info(fw, "%s configurations differ, before:", message);
 	fwts_hwinfo_list_dump(fw, l1);
@@ -170,7 +174,12 @@ static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
  *  fwts_hwinfo_compare()
  *	check for differences in a list and if any found, dump out both lists
  */
-static void fwts_hwinfo_lists_compare(fwts_framework *fw, fwts_list *l1, fwts_list *l2, char *message, int *differences)
+static void fwts_hwinfo_lists_compare(
+	fwts_framework *fw,
+	fwts_list *l1,
+	fwts_list *l2,
+	const char *message,
+	int *differences)
 {
 	if (fwts_hwinfo_lists_differ(l1, l2) == FWTS_HWINFO_LISTS_DIFFER) {
 		(*differences)++;

@@ -28,13 +28,13 @@
 #include "fwts_acpi_method.h"
 
 typedef struct {
-	ACPI_STATUS status;
+	const ACPI_STATUS status;
 	const fwts_log_level level;
 	const char *error_type;
 	const char *error_text;
 } acpi_eval_error;
 
-static acpi_eval_error  errors[] = {
+static const acpi_eval_error errors[] = {
 	/* ACPI_STATUS			fwts_log_level		error_type		error_text */
 	{ AE_ERROR,			LOG_LEVEL_HIGH,		"AEError",		"Environment error" },
 	{ AE_NO_ACPI_TABLES,		LOG_LEVEL_HIGH,		"AENoACPITables",	"NO ACPI tables" },
@@ -160,7 +160,7 @@ fwts_list *fwts_method_get_names(void)
  *  fwts_method_exists()
  *	return first matching name
  */
-char *fwts_method_exists(char *name)
+char *fwts_method_exists(const char *name)
 {
 	size_t name_len = strlen(name);
 	fwts_list_link	*item;
@@ -180,7 +180,11 @@ char *fwts_method_exists(char *name)
  *   fwts_method_dump_object()
  *	dump out an object, minimal form
  */
-static void fwts_method_dump_object_recursive(fwts_framework *fw, ACPI_OBJECT *obj, int depth, int index)
+static void fwts_method_dump_object_recursive(
+	fwts_framework *fw,
+	const ACPI_OBJECT *obj,
+	const int depth,
+	const int index)
 {
 	uint32_t i;
 	char index_buf[5];
@@ -222,7 +226,7 @@ static void fwts_method_dump_object_recursive(fwts_framework *fw, ACPI_OBJECT *o
  *   fwts_method_dump_object()
  *	dump out an object, minimal form
  */
-void fwts_method_dump_object(fwts_framework *fw, ACPI_OBJECT *obj)
+void fwts_method_dump_object(fwts_framework *fw, const ACPI_OBJECT *obj)
 {
 	fwts_method_dump_object_recursive(fw, obj, 1, -1);
 }
@@ -231,7 +235,10 @@ void fwts_method_dump_object(fwts_framework *fw, ACPI_OBJECT *obj)
  *  fwts_method_evaluate_report_error()
  *	report any errors found during object evaluation
  */
-void fwts_method_evaluate_report_error(fwts_framework *fw, char *name, ACPI_STATUS status)
+void fwts_method_evaluate_report_error(
+	fwts_framework *fw,
+	const char *name,
+	const ACPI_STATUS status)
 {
 	int i;
 

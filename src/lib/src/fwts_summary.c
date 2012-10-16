@@ -95,7 +95,7 @@ void fwts_summary_deinit(void)
 			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }
 
-static int fwts_summary_level_to_index(fwts_log_level level)
+static int fwts_summary_level_to_index(const fwts_log_level level)
 {
 	switch (level) {
 	case LOG_LEVEL_CRITICAL:
@@ -116,7 +116,11 @@ static int fwts_summary_level_to_index(fwts_log_level level)
  *	add an error summary for a test with error message text at given
  *	error level to the list of summaries.
  */
-int fwts_summary_add(fwts_framework *fw, const char *test, fwts_log_level level, char *text)
+int fwts_summary_add(
+	fwts_framework *fw,
+	const char *test,
+	const fwts_log_level level,
+	const char *text)
 {
 	fwts_list_link	*item;
 	fwts_summary_item *summary_item = NULL;
@@ -157,7 +161,10 @@ int fwts_summary_add(fwts_framework *fw, const char *test, fwts_log_level level,
 	return FWTS_OK;
 }
 
-static void fwts_summary_format_field(char *buffer, int buflen, uint32_t value)
+static void fwts_summary_format_field(
+	char *buffer,
+	const int buflen,
+	const uint32_t value)
 {
 	if (value)
 		snprintf(buffer, buflen, "%5u", value);

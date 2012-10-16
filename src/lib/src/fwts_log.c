@@ -43,7 +43,7 @@ const char *fwts_log_format = "";
  *  fwts_log_set_line_width()
  * 	set width of a log
  */
-void fwts_log_set_line_width(int width)
+void fwts_log_set_line_width(const int width)
 {
 	if ((width >= 80) && (width <= 1024))
 		log_line_width = width;
@@ -310,7 +310,7 @@ void fwts_log_set_format(const char *str)
  *  fwts_log_type_filename_suffix()
  *	return a filename suffix on a given log type
  */
-static char *fwts_log_type_filename_suffix(fwts_log_type type)
+static char *fwts_log_type_filename_suffix(const fwts_log_type type)
 {
 	switch (type) {
 	case LOG_TYPE_JSON:
@@ -330,7 +330,7 @@ static char *fwts_log_type_filename_suffix(fwts_log_type type)
  *  fwts_log_filename_new_suffix()
  *	return the log name with suffix based on log type
  */
-static char *fwts_log_filename(const char *filename, fwts_log_type type)
+static char *fwts_log_filename(const char *filename, const fwts_log_type type)
 {
 	char *ptr;
 	char *new_name;
@@ -534,7 +534,7 @@ void fwts_log_section_end(fwts_log *log)
  *  fwts_log_get_ops()
  *	return log ops basedon log type
  */
-static fwts_log_ops *fwts_log_get_ops(fwts_log_type type)
+static fwts_log_ops *fwts_log_get_ops(const fwts_log_type type)
 {
 	switch (type) {
 	case LOG_TYPE_JSON:
@@ -569,7 +569,7 @@ fwts_log_filename_type fwts_log_get_filename_type(const char *filename)
  *  fwts_log_filenames()
  *	return string of all the log filenames that will be used
  */
-char *fwts_log_get_filenames(const char *filename, fwts_log_type type)
+char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 {
 	unsigned int i;
 	char *filenames = NULL;
@@ -614,7 +614,7 @@ fwts_log *fwts_log_open(
 	const char *owner,	/* Creator of the log */
 	const char *filename,	/* Log file name */
 	const char *mode,	/* open mode, see fopen() modes */
-	fwts_log_type type)	/* Log type */
+	const fwts_log_type type) /* Log type */
 {
 	fwts_log *newlog;
 	unsigned int i;

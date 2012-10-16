@@ -121,7 +121,7 @@ extern fwts_log_ops fwts_log_html_ops;
 extern fwts_log_field fwts_log_filter;
 extern const char *fwts_log_format;
 
-fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode, fwts_log_type);
+fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode, const fwts_log_type);
 int       fwts_log_close(fwts_log *log);
 int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *fmt, ...)
 	__attribute__((format(printf, 7, 8)));
@@ -143,7 +143,7 @@ char	 *fwts_log_field_to_str_upper(const fwts_log_field field);
 void	  fwts_log_set_line_width(const int width);
 void	  fwts_log_section_begin(fwts_log *log, const char *name);
 void	  fwts_log_section_end(fwts_log *log);
-char     *fwts_log_get_filenames(const char *filename, fwts_log_type type);
+char     *fwts_log_get_filenames(const char *filename, const fwts_log_type type);
 fwts_log_filename_type fwts_log_get_filename_type(const char *name);
 
 static inline int fwts_log_type_count(fwts_log_type type)

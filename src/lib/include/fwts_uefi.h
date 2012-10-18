@@ -41,6 +41,13 @@ enum {
 	FWTS_UEFI_VAR_RUNTIME_ACCESS =		0x00000004
 };
 
+enum {
+	FWTS_UEFI_TIME_ADJUST_DAYLIGHT =	0x01,
+	FWTS_UEFI_TIME_IN_DAYLIGHT = 		0x02
+};
+
+#define FWTS_UEFI_UNSPECIFIED_TIMEZONE 0x07FF
+
 #if 0
 typedef struct {
 	char *description;

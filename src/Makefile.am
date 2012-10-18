@@ -6,7 +6,7 @@
 # but libfwts.so depends on libraries produced by acpica/source/compiler.
 SUBDIRS = acpica/source/compiler lib acpica
  
-AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -Wall -Werror
+AM_CPPFLAGS = -I$(top_srcdir)/src/lib/include -I$(top_srcdir)/src/acpica/source/include -I$(top_srcdir)/efi_runtime -Wall -Werror
 
 bin_PROGRAMS = fwts
 fwts_SOURCES = main.c \
@@ -66,7 +66,8 @@ fwts_SOURCES = main.c \
 	kernel/version/version.c \
 	kernel/oops/oops.c \
 	uefi/csm/csm.c \
-	uefi/uefidump/uefidump.c
+	uefi/uefidump/uefidump.c \
+	uefi/uefirttime/uefirttime.c
 
 fwts_LDFLAGS = -ljson -lm
 

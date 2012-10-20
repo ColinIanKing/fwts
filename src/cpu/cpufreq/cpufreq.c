@@ -50,6 +50,7 @@ static int total_tests = 1;
 static int performed_tests = 0;
 static int no_cpufreq = 0;
 static unsigned long top_speed = 0;
+static int num_cpus;
 
 #define GET_PERFORMANCE_MAX (0)
 #define GET_PERFORMANCE_MIN (1)
@@ -284,7 +285,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 
 	if (total_tests == 1)
 		total_tests = (2+count_ints(line)) *
-			sysconf(_SC_NPROCESSORS_CONF) + 2;
+			num_cpus + 2;
 
 	c = line;
 	i = 0;
@@ -667,7 +668,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	 * Check for more than one CPU and more than one frequency and
 	 * then do the benchmark set 2
 	 */
-	if (sysconf(_SC_NPROCESSORS_CONF) > 1 && number_of_speeds > 1) {
+	if (num_cpus > 1 && number_of_speeds > 1) {
 		do_sw_all_test(fw);
 		performed_tests++;
 		fwts_progress(fw, 100 * performed_tests/total_tests);
@@ -684,12 +685,22 @@ static int cpufreq_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int cpufreq_init(fwts_framework *fw)
+{
+	if ((num_cpus = fwts_cpu_enumerate()) == FWTS_ERROR) {
+		fwts_log_warning(fw, "Cannot determine number of CPUS, defaulting to 1.");
+		num_cpus = 1;
+	}
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test cpufreq_tests[] = {
 	{ cpufreq_test1, "CPU P-State Checks." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops cpufreq_ops = {
+	.init        = cpufreq_init,
 	.description = "CPU frequency scaling tests (takes ~1-2 mins).",
 	.minor_tests = cpufreq_tests
 };

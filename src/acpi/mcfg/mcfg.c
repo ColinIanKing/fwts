@@ -27,17 +27,22 @@
 #include <string.h>
 #include <unistd.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
 
-static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space)
+static void compare_config_space(
+	fwts_framework *fw,
+	const uint16_t segment,
+	const uint32_t device,
+	const uint8_t *space)
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;
 
 	char command[PATH_MAX];
-	char compare_line[1024];
+	char compare_line[50];
 
 	snprintf(compare_line, sizeof(compare_line),
 		"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
@@ -46,11 +51,18 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 		space[8],  space[9],  space[10], space[11],
 		space[12], space[13], space[14], space[15]);
 
-	snprintf(command, sizeof(command), "%s -vxxx -s %i:%i",
+	snprintf(command, sizeof(command), "%s -vxxx -s %" PRIu16 ":%" PRIu32,
 		fw->lspci, segment, device);
 
 	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
 		fwts_log_warning(fw, "Could not execute %s", command);
+		return;
+	}
+
+	if (lspci_output == NULL) {
+		fwts_log_warning(fw,
+			"Failed to get lspci info for %" PRIu16 ":%" PRIu32,
+			segment, device);
 		return;
 	}
 
@@ -59,17 +71,19 @@ static void compare_config_space(fwts_framework *fw, int segment, int device, un
 
 		fwts_chop_newline(line);
 
-		if (strncmp(line, "00: ",4)==0) {
+		if (strncmp(line, "00: ", 4) ==0) {
 			if (strcmp(&line[4], compare_line)) {
-				fwts_log_info(fw, "%s is read from MMCONFIG, but traditional gives :\n-%s-\n", &line[4], compare_line);
+				fwts_log_info(fw,
+					"%s is read from MMCONFIG, but config "
+					"space gives :\n-%s-\n", &line[4], compare_line);
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"PCIConfigSpaceBad",
-					"PCI config space appears to not work");
+					"PCI config space appears to not work.");
 			} else
-				fwts_passed(fw, "PCI config space verified");
+				fwts_passed(fw, "PCI config space verified.");
 
 			fwts_text_list_free(lspci_output);
-			return ;
+			return;
 		}
 	}
 	fwts_text_list_free(lspci_output);
@@ -86,7 +100,9 @@ static int mcfg_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (mcfg_table == NULL) {
-		fwts_log_error(fw, "ACPI table MCFG not found. This table is required to check for PCI Express*");
+		fwts_log_error(fw,
+			"ACPI table MCFG not found. This table is "
+			"required to check for PCI Express*");
 		return FWTS_ERROR;
 	}
 
@@ -104,10 +120,10 @@ static int mcfg_deinit(fwts_framework *fw)
 static int mcfg_test1(fwts_framework *fw)
 {
 	int nr, i;
-	void *mapped_table_page;
+	uint8_t *mapped_table_page;
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)mcfg_table->data;
 	fwts_acpi_mcfg_configuration *config;
-	int failed = 0;
+	bool failed = false;
 	ssize_t mcfg_size;
 	const char *memory_map_name;
 	int page_size;
@@ -143,9 +159,10 @@ static int mcfg_test1(fwts_framework *fw)
 			mcfg_size + sizeof(fwts_acpi_table_mcfg));
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw,
-			"MCFG table must be least %d bytes (header size) with "
-			"multiples of %d bytes for each MCFG entry.",
-			36+8, (int)sizeof(fwts_acpi_mcfg_configuration));
+			"MCFG table must be least %zd bytes (header size) with "
+			"multiples of %zd bytes for each MCFG entry.",
+			sizeof(fwts_acpi_table_mcfg),
+			sizeof(fwts_acpi_mcfg_configuration));
 		return FWTS_ERROR;
 	}
 	nr = mcfg_size / sizeof(fwts_acpi_mcfg_configuration);
@@ -163,8 +180,9 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	fwts_log_info(fw, "MCFG table found, size is %zd bytes (excluding header) (%i entries).",
-			mcfg_size, nr);
+	fwts_log_info(fw,
+		"MCFG table found, size is %zd bytes (excluding header) (%i entries).",
+		mcfg_size, nr);
 
 	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
@@ -179,7 +197,11 @@ static int mcfg_test1(fwts_framework *fw)
 
 	config = &mcfg->configuration[0];
 	for (i = 0; i < nr; i++, config++) {
-		fwts_log_info(fw, "Configuration Entry #%d address : 0x%" PRIx64, i, config->base_address);
+		fwts_log_info_verbatum(fw, "Configuration Entry #%d:", i);
+		fwts_log_info_verbatum(fw, "  Base Address  : 0x%" PRIx64, config->base_address);
+		fwts_log_info_verbatum(fw, "  Segment       : %" PRIu8, config->pci_segment_group_number);
+		fwts_log_info_verbatum(fw, "  Start bus     : %" PRIu8, config->start_bus_number);
+		fwts_log_info_verbatum(fw, "  End bus       : %" PRIu8, config->end_bus_number);
 
 		if ((memory_map_list != NULL) &&
 		    (!fwts_memory_map_is_reserved(memory_map_list, config->base_address))) {
@@ -189,21 +211,22 @@ static int mcfg_test1(fwts_framework *fw)
 				" is not reserved in the memory map table",
 				config->base_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			fwts_advice(fw,
-				"The PCI Express specification states that the PCI Express configuration space should "
-				"be defined in the MCFG table and *maybe* optionally defined in the %s "
-				"if ACPI MCFG is present. "
-				"Linux checks if the region is reserved in the memory map table and will reject the "
-				"MMCONFIG if there is a discrepency between MCFG and the memory map table for the "
-				"PCI Express region.  [See arch/x86/pci/mmconfig-shared.c pci_mmcfg_reject_broken()]. "
-				"It is recommended that this is defined in the %s table for Linux.",
-				memory_map_name, memory_map_name);
-			failed++;
-		}
 
-		fwts_log_info_verbatum(fw, "Segment       : %" PRIu8, config->pci_segment_group_number);
-		fwts_log_info_verbatum(fw, "Start bus     : %" PRIu8, config->start_bus_number);
-		fwts_log_info_verbatum(fw, "End bus       : %" PRIu8, config->end_bus_number);
+			fwts_advice(fw,
+				"The PCI Express specification states that the "
+				"PCI Express configuration space should "
+				"be defined in the MCFG table and *maybe* "
+				"optionally defined in the %s if ACPI MCFG is "
+				"present. Linux checks if the region is reserved "
+				"in the memory map table and will reject the "
+				"MMCONFIG if there is a discrepency between MCFG "
+				"and the memory map table for the PCI Express region. "
+				"[See arch/x86/pci/mmconfig-shared.c pci_mmcfg_reject_broken()]. "
+				"It is recommended that this is defined in the "
+				"%s table for Linux.",
+				memory_map_name, memory_map_name);
+			failed = true;
+		}
 	}
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
@@ -215,10 +238,7 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
 		return FWTS_ERROR;
 	}
-
-	compare_config_space(fw, config->pci_segment_group_number,
-		0, (unsigned char *)mapped_table_page);
-
+	compare_config_space(fw, config->pci_segment_group_number, 0, mapped_table_page);
 	fwts_munmap(mapped_table_page, page_size);
 
 	return FWTS_OK;

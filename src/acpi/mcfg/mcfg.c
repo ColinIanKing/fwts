@@ -26,19 +26,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
-
-/* Defined in PCI Firmware Specification 3.0 */
-struct mcfg_entry {
-	unsigned int low_address;
-	unsigned int high_address;
-	unsigned short segment;
-	unsigned char start_bus;
-	unsigned char end_bus;
-	unsigned char  reserved[4];
-} __attribute__ ((packed));
 
 static void compare_config_space(fwts_framework *fw, int segment, int device, unsigned char *space)
 {
@@ -113,10 +104,9 @@ static int mcfg_deinit(fwts_framework *fw)
 static int mcfg_test1(fwts_framework *fw)
 {
 	int nr, i;
-	const uint8_t *table_ptr;
-	const uint8_t *table_page;
 	void *mapped_table_page;
-	struct mcfg_entry *table, firstentry;
+	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)mcfg_table->data;
+	fwts_acpi_mcfg_configuration *config;
 	int failed = 0;
 	ssize_t mcfg_size;
 	const char *memory_map_name;
@@ -145,21 +135,20 @@ static int mcfg_test1(fwts_framework *fw)
 	}
 
 	mcfg_size = mcfg_table->length;
-	mcfg_size -= 36; /* general ACPI header */
-	mcfg_size -= 8;  /* 8 bytes of padding */
+	mcfg_size -= sizeof(fwts_acpi_table_mcfg);
 
 	if (mcfg_size < 0) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize",
 			"Invalid MCFG ACPI table size: got %zd bytes expecting more",
-			mcfg_size + 36 + 8);
+			mcfg_size + sizeof(fwts_acpi_table_mcfg));
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw,
 			"MCFG table must be least %d bytes (header size) with "
 			"multiples of %d bytes for each MCFG entry.",
-			36+8, (int)sizeof(struct mcfg_entry));
+			36+8, (int)sizeof(fwts_acpi_mcfg_configuration));
 		return FWTS_ERROR;
 	}
-	nr = mcfg_size / sizeof(struct mcfg_entry);
+	nr = mcfg_size / sizeof(fwts_acpi_mcfg_configuration);
 
 	if (!nr) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGNoEntries",
@@ -167,7 +156,7 @@ static int mcfg_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (mcfg_size != (ssize_t)(nr * sizeof(struct mcfg_entry))) {
+	if (mcfg_size != (ssize_t)(nr * sizeof(fwts_acpi_mcfg_configuration))) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize2",
 			"MCFG table is not a multiple of record size");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
@@ -177,32 +166,28 @@ static int mcfg_test1(fwts_framework *fw)
 	fwts_log_info(fw, "MCFG table found, size is %zd bytes (excluding header) (%i entries).",
 			mcfg_size, nr);
 
-	table_page = table_ptr = (const uint8_t *)mcfg_table->data;
-
-	if (table_page == NULL) {
+	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
 			"Invalid MCFG ACPI table");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
-	table_ptr += 36 + 8; /* 36 for the acpi header, 8 for padding */
-        table = (struct mcfg_entry *) table_ptr;
-
-	firstentry = *table;
-
 	if (memory_map_list == NULL)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MMapUnreadable",
 			"Cannot check MCFG mmio space against memory map table: could not read memory map table.");
 
-	for (i = 0; i<nr; i++) {
-		fwts_log_info(fw, "Entry address : 0x%x\n", table->low_address);
+	config = &mcfg->configuration[0];
+	for (i = 0; i < nr; i++, config++) {
+		fwts_log_info(fw, "Configuration Entry #%d address : 0x%" PRIx64, i, config->base_address);
 
 		if ((memory_map_list != NULL) &&
-		    (!fwts_memory_map_is_reserved(memory_map_list, table->low_address))) {
+		    (!fwts_memory_map_is_reserved(memory_map_list, config->base_address))) {
 
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGMMIONotReserved",
-				"MCFG mmio config space at 0x%x is not reserved in the memory map table", table->low_address);
+				"MCFG mmio config space at 0x%" PRIx64
+				" is not reserved in the memory map table",
+				config->base_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			fwts_advice(fw,
 				"The PCI Express specification states that the PCI Express configuration space should "
@@ -216,22 +201,23 @@ static int mcfg_test1(fwts_framework *fw)
 			failed++;
 		}
 
-		fwts_log_info_verbatum(fw, "High  address : 0x%x \n", table->high_address);
-		fwts_log_info_verbatum(fw, "Segment       : %i \n", table->segment);
-		fwts_log_info_verbatum(fw, "Start bus     : %i \n", table->start_bus);
-		fwts_log_info_verbatum(fw, "End bus       : %i \n", table->end_bus);
-
-		table++;
+		fwts_log_info_verbatum(fw, "Segment       : %" PRIu8, config->pci_segment_group_number);
+		fwts_log_info_verbatum(fw, "Start bus     : %" PRIu8, config->start_bus_number);
+		fwts_log_info_verbatum(fw, "End bus       : %" PRIu8, config->end_bus_number);
 	}
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
-	if ((mapped_table_page = fwts_mmap(firstentry.low_address, page_size)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap table at 0x%x.", firstentry.low_address);
+	/* Sanity check on first config */
+	config = &mcfg->configuration[0];
+
+	if ((mapped_table_page = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
 		return FWTS_ERROR;
 	}
 
-	compare_config_space(fw, firstentry.segment, 0, (unsigned char *)mapped_table_page);
+	compare_config_space(fw, config->pci_segment_group_number,
+		0, (unsigned char *)mapped_table_page);
 
 	fwts_munmap(mapped_table_page, page_size);
 

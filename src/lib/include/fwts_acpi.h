@@ -220,8 +220,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
 
 typedef struct {
-	uint32_t	base_address;
-	uint32_t	base_reserved;
+	uint64_t	base_address;
 	uint16_t	pci_segment_group_number;
 	uint8_t		start_bus_number;
 	uint8_t		end_bus_number;
@@ -230,8 +229,7 @@ typedef struct {
 
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint32_t	base_address;
-	uint32_t	base_reserved;
+	uint64_t	reserved;
 	fwts_acpi_mcfg_configuration configuration[0];
 } __attribute__ ((packed)) fwts_acpi_table_mcfg;
 

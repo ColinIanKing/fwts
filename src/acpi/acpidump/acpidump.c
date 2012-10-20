@@ -970,8 +970,7 @@ static void acpidump_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 	size_t i;
 
 	static fwts_acpidump_field fields[] = {
-		FIELD_UINT("Base Address", 	fwts_acpi_table_mcfg, 	base_address),
-		FIELD_UINT("Base Reserved", 	fwts_acpi_table_mcfg,	base_reserved),
+		FIELD_UINT("Reserved", 	fwts_acpi_table_mcfg,	reserved),
 		FIELD_END
 	};
 
@@ -980,16 +979,17 @@ static void acpidump_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 	n = length - sizeof(fwts_acpi_table_mcfg);
 	fwts_acpi_mcfg_configuration *config = mcfg->configuration;
 
-	for (i=0; i<n/sizeof(fwts_acpi_mcfg_configuration); i++) {
-		fwts_acpidump_field fields_config[] = {
-			FIELD_UINT("  Base Address", 	fwts_acpi_table_mcfg,	configuration[i].base_address),
-			FIELD_UINT("  Base Address", 	fwts_acpi_table_mcfg,	configuration[i].base_address),
-			FIELD_UINT("  Base Reserved", 	fwts_acpi_table_mcfg,	configuration[i].base_reserved),
-			FIELD_UINT("  PCI Seg Grp Num", fwts_acpi_table_mcfg,	configuration[i].pci_segment_group_number),
-			FIELD_UINT("  Start Bus Num", 	fwts_acpi_table_mcfg,	configuration[i].start_bus_number),
-			FIELD_UINT("  End Bus Num", 	fwts_acpi_table_mcfg,	configuration[i].end_bus_number),
+	for (i = 0; i < n / sizeof(fwts_acpi_mcfg_configuration); i++) {
+		static fwts_acpidump_field fields_config[] = {
+			FIELD_UINT("  Base Address", 	fwts_acpi_mcfg_configuration,	base_address),
+			FIELD_UINT("  PCI Seg Grp Num", fwts_acpi_mcfg_configuration,	pci_segment_group_number),
+			FIELD_UINT("  Start Bus Num", 	fwts_acpi_mcfg_configuration,	start_bus_number),
+			FIELD_UINT("  End Bus Num", 	fwts_acpi_mcfg_configuration,	end_bus_number),
+			FIELD_UINT("  Reserved", 	fwts_acpi_mcfg_configuration,	reserved),
 			FIELD_END
 		};
+
+		fwts_log_nl(fw);
 		fwts_log_info_verbatum(fw, "Configuration #%zd:", i+1);
 		acpi_dump_table_fields(fw, (uint8_t*)config, fields_config, 0, length);
 		config++;

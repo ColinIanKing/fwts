@@ -120,17 +120,11 @@ static int mcfg_deinit(fwts_framework *fw)
 static int mcfg_test1(fwts_framework *fw)
 {
 	int nr, i;
-	uint8_t *mapped_table_page;
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)mcfg_table->data;
 	fwts_acpi_mcfg_configuration *config;
 	bool failed = false;
 	ssize_t mcfg_size;
 	const char *memory_map_name;
-	int page_size;
-
-	page_size = sysconf(_SC_PAGESIZE);
-	if (page_size == -1)
-		page_size = 4096;
 
 	memory_map_name = fwts_memory_map_name(fw->firmware_type);
 
@@ -231,9 +225,39 @@ static int mcfg_test1(fwts_framework *fw)
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
-	/* Sanity check on first config */
+
+	return FWTS_OK;
+}
+
+#define SINGLE_CONFIG_TABLE_SIZE \
+	(sizeof(fwts_acpi_table_mcfg) + sizeof(fwts_acpi_mcfg_configuration))
+
+static int mcfg_test2(fwts_framework *fw)
+{
+	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg *)mcfg_table->data;
+	fwts_acpi_mcfg_configuration *config;
+	uint8_t *mapped_table_page;
+	size_t page_size;
+
+	page_size = fwts_page_size();
+
+	if (mcfg == NULL) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
+			"Invalid MCFG ACPI table");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
+		return FWTS_ERROR;
+	}
+
+	/* Need at least one config entry */
+	if (mcfg_table->length < SINGLE_CONFIG_TABLE_SIZE) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGNoEntries",
+			"No MCFG ACPI table entries");
+		return FWTS_ERROR;
+	}
+
 	config = &mcfg->configuration[0];
 
+	/* Sanity check on first config */
 	if ((mapped_table_page = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
 		return FWTS_ERROR;
@@ -246,6 +270,7 @@ static int mcfg_test1(fwts_framework *fw)
 
 static fwts_framework_minor_test mcfg_tests[] = {
 	{ mcfg_test1, "Validate MCFG table." },
+	{ mcfg_test2, "Validate MCFG PCI config space." },
 	{ NULL, NULL }
 };
 

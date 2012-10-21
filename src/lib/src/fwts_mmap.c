@@ -24,7 +24,22 @@
 
 #include "fwts.h"
 
-#define PAGE_SIZE	4096
+#define FWTS_DEFAULT_PAGE_SIZE  (4096)
+
+/*
+ *  fwts_page_size()
+ *	determine system page size, guess if we can't
+ *	get it from sysconf().
+ */
+size_t fwts_page_size(void)
+{
+	size_t page_size;
+
+	page_size = sysconf(_SC_PAGESIZE);
+
+	/* If sysconf() returns -1, default it 4K */
+	return page_size == -1 ? FWTS_DEFAULT_PAGE_SIZE : page_size;
+}
 
 /*
  *  fwts_mmap()
@@ -40,9 +55,7 @@ void *fwts_mmap(const off_t start, const size_t size)
 	void *mem;
 	void *ret = FWTS_MAP_FAILED;
 
- 	if ((page_size = sysconf(_SC_PAGE_SIZE)) == -1)
-		page_size = PAGE_SIZE;	/* Guess */
-
+	page_size = fwts_page_size();
 	offset = ((size_t)start) & (page_size - 1);
 	length = (size_t)size + offset;
 
@@ -66,9 +79,7 @@ int fwts_munmap(void *mem, const size_t size)
 	int page_size;
 	off_t offset;
 
- 	if ((page_size = sysconf(_SC_PAGE_SIZE)) == -1)
-		page_size = PAGE_SIZE;	/* Guess */
-
+	page_size = fwts_page_size();
 	offset = ((off_t)(mem)) & (page_size - 1);
 
 	if (munmap(mem - offset, size + offset) < 0)

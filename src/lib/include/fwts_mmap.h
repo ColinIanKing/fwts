@@ -20,8 +20,10 @@
 #ifndef __FWTS_MMAP_H__
 #define __FWTS_MMAP_H__
 
+#include <stddef.h>
 #include <sys/mman.h>
 
+size_t fwts_page_size(void);
 void *fwts_mmap(const off_t start, const size_t size);
 int fwts_munmap(void *mem, const size_t size);
 

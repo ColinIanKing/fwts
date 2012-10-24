@@ -76,10 +76,10 @@
   },
   {
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_INFO",
    "tag": "FWTS_TAG_BIOS",
    "pattern": "ENERGY_PERF_BIAS.*Set to 'normal'.* was 'performance'",
-   "advice": "The MSR_IA32_ENERGY_PERF_BIAS was initialized incorrectly and was defaulted to a high performance bias setting.  The kernel has detected this and changed it down to a 'normal' bias setting.  The BIOS vendor should be informed that the MSR is not defaulted to the normal bias setting."
+   "advice": "This is not exactly a failure but a warning from the kernel. The MSR_IA32_ENERGY_PERF_BIAS was initialized and defaulted to a high performance bias setting. The kernel has detected this and changed it down to a 'normal' bias setting."
   },
   {
    "compare_mode": "regex",

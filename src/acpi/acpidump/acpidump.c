@@ -303,6 +303,8 @@ static void acpi_dump_gas(fwts_framework *fw, fwts_acpidump_field *info, void *d
 		FIELD_END
 	};
 
+	FWTS_UNUSED(offset);
+
 	fwts_log_nl(fw);
 	fwts_log_info_verbatum(fw, "%s (Generic Address Structure)",
 		acpi_dump_field_info(info->label, info->size, info->offset));

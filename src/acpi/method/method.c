@@ -524,6 +524,8 @@ static void method_test_buffer_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a buffer of %" PRIu32 " elements.",
 			name, obj->Buffer.Length);
@@ -540,6 +542,9 @@ static void method_test_integer_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned an integer.", name);
 }
@@ -555,6 +560,9 @@ static void method_test_string_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a string.", name);
 }
@@ -570,6 +578,8 @@ static void method_test_NULL_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (buf->Length && buf->Pointer) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
@@ -728,6 +738,9 @@ static void method_test_HID_return(
 {
 	char tmp[8];
 
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
 	if (obj == NULL) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
 			"Method %s returned a NULL object, and did not "
@@ -807,6 +820,8 @@ static void method_test_PLD_return(
 {
 	uint32_t i;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -836,6 +851,9 @@ static void method_test_SUB_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
 	if (obj == NULL) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
 			"Method %s returned a NULL object, and did not "
@@ -889,6 +907,9 @@ static void method_test_UID_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
 	if (obj == NULL){
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
 			"Method %s returned a NULL object, and did not "
@@ -973,6 +994,8 @@ static void method_test_EDL_return(
 {
 	uint32_t i;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -1044,6 +1067,8 @@ static void method_test_STA_return(
 {
 	bool failed = false;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if ((obj->Integer.Value & 3) == 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -1112,6 +1137,8 @@ static void method_test_SEG_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if ((obj->Integer.Value & 0xffff0000)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -1206,6 +1233,8 @@ static void method_test_power_resources_return(
 {
 	uint32_t i;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -1287,6 +1316,8 @@ static void method_test_Sx__return(
 	void *private)
 {
 	bool failed = false;
+
+	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -1451,6 +1482,8 @@ static void method_test_CPC_return(
 {
 	bool failed = false;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -1503,6 +1536,8 @@ static void method_test_CSD_return(
 {
 	uint32_t i;
 	bool failed = false;
+
+	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -1629,6 +1664,8 @@ static void method_test_PCT_return(
 	uint32_t i;
 	bool failed = false;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -1680,6 +1717,8 @@ static void method_test_PSS_return(
 	uint32_t max_freq = 0;
 	uint32_t prev_power = 0;
 	bool max_freq_valid = false;
+
+	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -1852,6 +1891,8 @@ static void method_test_TSD_return(
 	uint32_t i;
 	bool failed = false;
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -1977,6 +2018,8 @@ static void method_test_TSS_return(
 {
 	uint32_t i;
 	bool failed = false;
+
+	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
@@ -2105,6 +2148,8 @@ static void method_test_LID_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw,
 			"_LID correctly returned sane looking value 0x%8.8" PRIx64,
@@ -2128,6 +2173,8 @@ static void method_test_GCP_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if (obj->Integer.Value & ~0xf) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -2158,6 +2205,8 @@ static void method_test_GRT_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
@@ -2190,6 +2239,8 @@ static void method_test_GWS_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if (obj->Integer.Value & ~0x3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -2285,6 +2336,8 @@ static void method_test_SBS_return(
 		"Maximum 4 Smart Batteries, system manager/selector present"
 	};
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		switch (obj->Integer.Value) {
 		case 0 ... 4:
@@ -2339,6 +2392,8 @@ static void method_test_BIF_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 		int failed = 0;
@@ -2484,6 +2539,8 @@ static void method_test_BIX_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 		int failed = 0;
@@ -2658,6 +2715,8 @@ static void method_test_BST_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 		int failed = 0;
@@ -2751,6 +2810,12 @@ static void method_test_PCL_return(fwts_framework *fw,
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(name);
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
 	/* FIXME */
 }
 
@@ -2784,6 +2849,8 @@ static void method_test_BMD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 		int failed = 0;
@@ -2848,6 +2915,8 @@ static void method_test_PSR_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		if (obj->Integer.Value > 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -2876,6 +2945,8 @@ static void method_test_PIF_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		fwts_method_dump_object(fw, obj);
 
@@ -2924,6 +2995,8 @@ static void method_test_FIF_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		fwts_method_dump_object(fw, obj);
 
@@ -2983,6 +3056,8 @@ static void method_test_FST_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		fwts_method_dump_object(fw, obj);
 
@@ -3200,6 +3275,8 @@ static void method_test_RTV_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
 		fwts_passed(fw,
 			"_RTV correctly returned sane looking value 0x%8.8" PRIx64,
@@ -3464,6 +3541,8 @@ static void method_test_DOD_return(
 		"Reserved"
 	};
 
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 
@@ -3514,6 +3593,9 @@ static void method_test_ROM_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
 	method_check_type(fw, name, buf, ACPI_TYPE_BUFFER);
 }
 
@@ -3571,6 +3653,8 @@ static void method_test_BCL_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	FWTS_UNUSED(private);
+
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 		int failed = 0;
@@ -3690,6 +3774,8 @@ static void method_test_DDC_return(
 	void *private)
 {
 	uint32_t requested = *(uint32_t*)private;
+
+	FWTS_UNUSED(buf);
 
 	if (obj == NULL){
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,

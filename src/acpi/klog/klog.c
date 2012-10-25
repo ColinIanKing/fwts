@@ -42,6 +42,8 @@ static int klog_init(fwts_framework *fw)
 
 static int klog_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_klog_free(klog);
 
 	return FWTS_OK;

@@ -549,6 +549,8 @@ static int mtrr_init(fwts_framework *fw)
 
 static int mtrr_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_klog_free(klog);
 	fwts_list_free(mtrr_list, free);
 	if (fwts_cpuinfo)

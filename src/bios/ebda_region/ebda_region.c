@@ -58,6 +58,8 @@ static int ebda_init(fwts_framework *fw)
 
 static int ebda_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_klog_free(memory_map);
 
 	return FWTS_OK;

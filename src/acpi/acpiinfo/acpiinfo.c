@@ -33,6 +33,10 @@
 static void acpiinfo_check(fwts_framework *fw, char *line,
 	int repeated, char *prevline, void *private, int *errors)
 {
+	FWTS_UNUSED(repeated);
+	FWTS_UNUSED(private);
+	FWTS_UNUSED(errors);
+
 	if (strstr(line, "ACPI: Subsystem revision") != NULL) {
 		char *version = strstr(line, "sion ");
 		if (version) {
@@ -208,6 +212,8 @@ static int acpiinfo_init(fwts_framework *fw)
 
 static int acpiinfo_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_klog_free(klog);
 
 	return FWTS_OK;

@@ -293,6 +293,11 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 static void acpiinfo_check(fwts_framework *fw,
 	char *line, int repeated, char *prevline, void *private, int *errors)
 {
+	FWTS_UNUSED(repeated);
+	FWTS_UNUSED(prevline);
+	FWTS_UNUSED(private);
+	FWTS_UNUSED(errors);
+
         if (strstr(line, "DMAR:[fault reason"))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DMARError",
 		"Found DMAR error: %s", line);

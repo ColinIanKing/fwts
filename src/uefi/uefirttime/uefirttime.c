@@ -160,6 +160,7 @@ static int uefirttime_init(fwts_framework *fw)
 
 static int uefirttime_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
 
 	close(fd);
 

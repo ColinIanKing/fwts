@@ -58,6 +58,8 @@ static int syntaxcheck_init(fwts_framework *fw)
 
 static int syntaxcheck_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	syntaxcheck_free_advice();
 
 	return FWTS_OK;

@@ -70,6 +70,8 @@ static int msr_init(fwts_framework *fw)
 
 static int msr_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_cpu_free_info(cpuinfo);
 
 	return FWTS_OK;

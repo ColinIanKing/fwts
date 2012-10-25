@@ -156,6 +156,8 @@ static int hpet_check_init(fwts_framework *fw)
 
 static int hpet_check_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (klog)
 		fwts_text_list_free(klog);
 

@@ -47,6 +47,8 @@ static int brightness_init(fwts_framework *fw)
 
 static int brightness_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (brightnessdir)
 		closedir(brightnessdir);
 

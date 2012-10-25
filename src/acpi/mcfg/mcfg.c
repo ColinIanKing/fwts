@@ -111,6 +111,8 @@ static int mcfg_init(fwts_framework *fw)
 
 static int mcfg_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (memory_map_list)
 		fwts_memory_map_table_free(memory_map_list);
 

@@ -55,6 +55,8 @@ static int maxreadreq_init(fwts_framework *fw)
 
 static int maxreadreq_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (lspci_text)
 		fwts_text_list_free(lspci_text);
 

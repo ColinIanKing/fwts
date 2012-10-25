@@ -40,6 +40,8 @@ static int os2gap_init(fwts_framework *fw)
 
 static int os2gap_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (os2gap_memory_map_info)
 		fwts_memory_map_table_free(os2gap_memory_map_info);
 

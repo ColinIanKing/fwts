@@ -224,6 +224,8 @@ static int hotkey_init(fwts_framework *fw)
 
 static int hotkey_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_keymap_free(hotkeys);
 	if (hotkey_dev)
 		free(hotkey_dev);

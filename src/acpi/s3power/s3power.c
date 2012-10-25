@@ -238,6 +238,8 @@ static int s3power_test(fwts_framework *fw)
 
 static int s3power_options_check(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if ((s3power_sleep_delay < 600) || (s3power_sleep_delay > 24*60*60)) {
 		fprintf(stderr, "--s3power-sleep-delay is %d, it cannot be less than 600 seconds or more than 24 hours!\n", s3power_sleep_delay);
 		return FWTS_ERROR;
@@ -247,6 +249,10 @@ static int s3power_options_check(fwts_framework *fw)
 
 static int s3power_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(argc);
+	FWTS_UNUSED(argv);
+
         switch (option_char) {
         case 0:
                 switch (long_index) {

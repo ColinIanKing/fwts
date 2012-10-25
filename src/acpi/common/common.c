@@ -48,6 +48,8 @@ static int dmesg_common_init(fwts_framework *fw)
 
 static int dmesg_common_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_klog_free(klog);
 
 	return FWTS_OK;

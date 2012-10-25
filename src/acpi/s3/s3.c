@@ -301,6 +301,8 @@ static int s3_test_multiple(fwts_framework *fw)
 
 static int s3_options_check(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if ((s3_multiple < 0) || (s3_multiple > 100000)) {
 		fprintf(stderr, "--s3-multiple is %d, it should be 1..100000\n", s3_multiple);
 		return FWTS_ERROR;
@@ -334,6 +336,10 @@ static int s3_options_check(fwts_framework *fw)
 
 static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(argc);
+	FWTS_UNUSED(argv);
+
         switch (option_char) {
         case 0:
                 switch (long_index) {

@@ -523,6 +523,8 @@ static int mpcheck_init(fwts_framework *fw)
 
 static int mpcheck_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	return fwts_mp_data_free(&mp_data);
 }
 

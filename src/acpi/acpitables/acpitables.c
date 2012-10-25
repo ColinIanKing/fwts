@@ -462,6 +462,9 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 {
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(table);
+
 	/* FIXME */
 	/*fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)table->data;*/
 }

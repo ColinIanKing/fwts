@@ -226,6 +226,8 @@ static int mpdump_init(fwts_framework *fw)
 
 static int mpdump_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	return fwts_mp_data_free(&mp_data);
 }
 

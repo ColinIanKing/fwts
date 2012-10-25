@@ -52,6 +52,8 @@ static int virt_init(fwts_framework *fw)
 
 static int virt_deinit(fwts_framework *fw)
 {
+	FWTS_UNUSED(fw);
+
 	if (fwts_virt_cpuinfo)
 		fwts_cpu_free_info(fwts_virt_cpuinfo);
 

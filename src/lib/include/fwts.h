@@ -24,6 +24,8 @@
 #define FWTS_ARCH_INTEL	1
 #endif
 
+#define FWTS_UNUSED(var)	(void)var
+
 #define FWTS_JSON_DATA_PATH	"/usr/share/fwts"
 
 #include "fwts_version.h"

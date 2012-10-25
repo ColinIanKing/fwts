@@ -1,3 +1,122 @@
+fwts (0.26.01-1) raring; urgency=low
+
+  [Alex Hung]
+  * pcie: aspm: add more information for L0s and L1 warnings (LP: #1055430)
+  * hotkey: remove redundant framework parameter from hotkey_find_keyboard
+  * bios: hdaaudio: fix user pin configurations (user_pin_configs) is not checked.
+
+  [Colin Ian King]
+  * lib: acpi: add ACPI 5.0 GIC and GICD structs to MADT
+  * acpi: acpidump: Dump out the new MADT GIC and GICD structures
+  * acpi: acpitables: Add checks for MADT GIC and GICD
+  * acpi: acpitables: fix typo in LAPICX2 APIC NMI Flags tag
+  * lib: acpi: Add support for the new ACPI 5.0 PCCT
+  * acpi: acpidump: Add support for ACPI 5.0 PCCT
+  * acpi: apcidump: Add ACPI 5.0 support for boot flag CMOS RTC present bit
+  * acpi: method: re-order tests based on location in specification
+  * acpi: method: re-order method test functions
+  * acpi: method: tidy source; 80 columns wide formatting
+  * acpi: method: add some more comments
+  * acpi: method: clean up spacing in for loops
+  * acpi: method: add in all ACPI control method and objects
+  * acpi: method: add DDN, HID, HRV, PLD, SUB, STR checks
+  * acpi: method: add checks for EDL, RMV, STA
+  * acpi: method: add BCT test
+  * acpi: method: add checks for GCP, GRT, GWS
+  * acpi: method: Add check for GSB
+  * acpi: method: Add check for SEG
+  * acpi: method: Add PRx, SxD, SxW checks
+  * acpi: method: fix typo SWP --> SWS
+  * acpi: method: Add _S0_ .. _S5_, _SWS checks
+  * acpi: method: Add CPC, CSD, PCT, PDL, PPC, TDL, TSD and TSS checks
+  * bios: smbios: fix typo Stucture ==> Structure
+  * cpu: virt fix typo extentions ==> extensions
+  * cpu: virt: fix typo originall ==> originally
+  * lib: fwts_formatting: fix typo upto ==> up to
+  * lib: fwts_log_html: fix typo convertion ==> conversion
+  * lib: fwts_checkeuid: fix typo priviledges ==> privileges
+  * example: blank test: fix typos ommitted ==> omitted
+  * acpi: wakealarm: fix typo existance ==> existence
+  * acpi: acpitables: fix typo managment ==> management
+  * acpi: acpidump: print format using inttypes
+  * acpi: acpitables: print format using inttypes
+  * acpi: checksum: print format using inttypes
+  * acpi: fadt: print format using inttypes
+  * acpi: method: print format using inttypes
+  * acpi: s3power: print format using inttypes
+  * bios: bios32: print format using inttypes
+  * bios: ebda_region: print format using inttypes
+  * bios: ebdadump: print format using inttypes
+  * bios: mtrr: print format using inttypes
+  * bios: mpcheck: print format using inttypes
+  * cpu: msr: print format using inttypes
+  * dmi: dmi_decode: print format using inttypes
+  * hpet: hpet_check: print format using inttypes
+  * lib: fwts_memorymap: print format using inttypes
+  * uefi: csm: print format using inttypes
+  * uefi: uefidump: print format using inttypes and whitespace tidy
+  * lib: fwts_acpid: fix checking of return from read()
+  * lib: fwts_acpi_method: fix for loop index type
+  * lib: fwts_dump: fix loop variable type to match table length type
+  * lib: fwts_framework: Make string length type a size_t rather than an int
+  * lib: fwts_framework: remove redundant parameter from fwts_framework_run_test
+  * lib: fwts_framework: remove redundant fw parameter from fwts_framework_show_tests_brief
+  * lib: fwts_framework: remove fw parameter from fwts_framework_test_find
+  * lib: fwts_framework: remove fw parameter from fwts_framework_skip_test_parse
+  * lib: fwts_battery: remove redundant framework parameter in helper functions
+  * lib: fwts_button: Remove framework parameter from fwts_button_match_state_proc
+  * lib: fwts_button: fix comment on function name
+  * acpi: acpidump: fix a bunch of int type issues.
+  * acpi: acpitables: use the correct type for failed
+  * acpi: mcfg: make mcfg_size a ssize_t
+  * acpi: wmi: make size a size_t
+  * bios: bios_info: fix bug where product_serial was not being dumped
+  * bios: hdaaudio: remove redundant fw parameter from hda_audio_check_pins
+  * bios: dmi_decode: remove redundant parameters from helper functions
+  * dmi: dmi_decode: failed_count should be uint32_t
+  * pci: aspm: remove redundant parameter in pcie_check_aspm_registers
+  * cpu: maxfreq: remove redundant init and deinit functions
+  * hotkey: remove redundant framework parameter from hotkey_find_keymap
+  * uefi: csm: use uint32_t for BIOS address ranges
+  * uefi: uefidump: cast to ptrdiff_t to remove mixed signed/unsigned comparison
+  * acpi: method: fix a bunch of mixed type comparison issues
+  * lib: fwts_alloc: use ptrdiff_t to ensure non-mixed type comparison
+  * lib: fwts_json: wrapper for json error returns
+  * lib: fwts_klog: use FWTS_JSON_ERROR macro for error checking
+  * acpi: syntaxcheck: use FWTS_JSON_ERROR macro for error checking
+  * uefi: uefidump: remove FWTS_FLAG_UNSAFE from test.
+  * lib: fwts_ac_adapter: constify state
+  * lib: fwts_acpi_method: constify funcs and static tables
+  * lib: fwts_acpi_tables: constify func arguments where appropriate
+  * lib: fwts_args: constify func arguments where appropriate
+  * lib: fwts_battery: constify func arguments where appropriate
+  * lib: fwts_button: constify function arguments where appropriate
+  * lib: fwts_checkeuid: constify function arguments where appropriate
+  * lib: fwts_hwinfo: constify function arguments where appropriate
+  * lib: fwts_memorymap: constify function arguments where appropriate
+  * lib: fwts_log: constify function arguments where appropriate
+  * lib: fwts_summary: constify function arguments where appropriate
+  * cpu: cpufreq: add init function to determine number of CPUs
+  * lib: fwts_mmap: add fwts_page_size()
+  * acpi: acpidump: correctly dump out MCFG configuration
+  * acpi: mcfg: use fwts_acpi_mcfg_configuration as defined in fwts_acpi.h
+  * acpi: mcfg: more code tidying.
+  * acpi: mcfg: split into two distinct tests
+
+  [Ivan Hu]
+  * efi_runtime: add efi_runtime kernel driver module into fwts
+  * efi_runtime: add checking the efi environment
+  * efi_runtime: add UEFI runtime service QueryVariableInfo interface
+  * efi_runtime: add UEFI runtime service GetNextHighMonotonicCount interface
+  * lib: fwts_efi_module: add fwts library helper fuctions for efi_runtime module
+  * uefirttime: add fwts tests for the UEFI get/set time runtime services
+
+  [Keng-Yu Lin]
+  * uefi: Add fwts-efi-runtime-dkms package
+  * Add autotools scripts for the data directory
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 25 Oct 2012 16:14:43 +0800
+
 fwts (0.26.00-1) quantal; urgency=low
 
   [Colin Ian King]

@@ -773,8 +773,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (hdr->length < 0x14)
 				break;
 			val = hdr->data[0x0a];
-			if (!(((val >= 0x00) && (val <= 0x04)) ||
-			      ((val >= 0x80) && (val <= 0xff)))) {
+			if (!((val <= 0x04) || (val >= 0x80))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x01, "
@@ -785,8 +784,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			if (hdr->length < 0x17)
 				break;
 			val = hdr->data[0x14];
-			if (!(((val >= 0x00) && (val <= 0x01)) ||
-			      ((val >= 0x80) && (val <= 0xff)))) {
+			if (!((val <= 0x01) || (val >= 0x80))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x01, "
@@ -804,7 +802,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 					val = ptr[j];
 					if (!(((val >= 0x01) && (val <= 0x0e)) ||
 					      ((val >= 0x10) && (val <= 0x17)) ||
-					      ((val >= 0x80) && (val <= 0xff)))) {
+					      (val >= 0x80))) {
 						fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 							"Out of range value 0x%2.2" PRIx8 " "
 							"(range allowed 0x01..0x0e, 0x10..0x17, "

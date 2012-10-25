@@ -33,12 +33,12 @@
  */
 size_t fwts_page_size(void)
 {
-	size_t page_size;
+	long page_size;
 
 	page_size = sysconf(_SC_PAGESIZE);
 
 	/* If sysconf() returns -1, default it 4K */
-	return page_size == -1 ? FWTS_DEFAULT_PAGE_SIZE : page_size;
+	return (size_t)(page_size == -1 ? FWTS_DEFAULT_PAGE_SIZE : page_size);
 }
 
 /*

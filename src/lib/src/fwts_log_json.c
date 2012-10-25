@@ -70,6 +70,8 @@ static int fwts_log_print_json(
 	json_object *obj;
 	char *str;
 
+	FWTS_UNUSED(prefix);
+
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
@@ -139,6 +141,9 @@ static int fwts_log_print_json(
  */
 static void fwts_log_underline_json(fwts_log_file *log_file, const int ch)
 {
+	FWTS_UNUSED(log_file);
+	FWTS_UNUSED(ch);
+
 	/* No-op for json */
 }
 
@@ -148,6 +153,8 @@ static void fwts_log_underline_json(fwts_log_file *log_file, const int ch)
  */
 static void fwts_log_newline_json(fwts_log_file *log_file)
 {
+	FWTS_UNUSED(log_file);
+
 	/* No-op for json */
 }
 
@@ -155,6 +162,8 @@ static void fwts_log_section_begin_json(fwts_log_file *log_file, const char *nam
 {
 	json_object *json_obj;
 	json_object *json_log;
+
+	FWTS_UNUSED(log_file);
 
 	if ((json_obj = json_object_new_object()) == NULL)
 		fwts_log_out_of_memory_json();
@@ -186,6 +195,8 @@ static void fwts_log_section_begin_json(fwts_log_file *log_file, const char *nam
 
 static void fwts_log_section_end_json(fwts_log_file *log_file)
 {
+	FWTS_UNUSED(log_file);
+
 	if (json_stack_index > 0)
 		json_stack_index--;
 	else {

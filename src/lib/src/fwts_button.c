@@ -118,6 +118,8 @@ int fwts_button_match_state(
 	*matched = 0;
 	*not_matched = 0;
 
+	FWTS_UNUSED(fw);
+
 	if (access(FWTS_PROC_ACPI_BUTTON, R_OK) == 0)
 		return fwts_button_match_state_proc(button, matched, not_matched);
 

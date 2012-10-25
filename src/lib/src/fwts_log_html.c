@@ -248,6 +248,9 @@ static int fwts_log_print_html(
 	char *code_end;
 	char *html_converted;
 
+	FWTS_UNUSED(label);
+	FWTS_UNUSED(prefix);
+
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
@@ -354,6 +357,9 @@ static int fwts_log_print_html(
  */
 static void fwts_log_underline_html(fwts_log_file *log_file, const int ch)
 {
+	FWTS_UNUSED(log_file);
+	FWTS_UNUSED(ch);
+
 	/* No-op for html */
 }
 
@@ -363,6 +369,8 @@ static void fwts_log_underline_html(fwts_log_file *log_file, const int ch)
  */
 static void fwts_log_newline_html(fwts_log_file *log_file)
 {
+	FWTS_UNUSED(log_file);
+
 	/* No-op for html */
 }
 

@@ -228,6 +228,8 @@ fwts_list *fwts_memory_map_table_load_from_klog(fwts_framework *fw)
 	fwts_list *klog;
 	fwts_list *memory_map_list;
 
+	FWTS_UNUSED(fw);
+
 	if ((klog = fwts_klog_read()) == NULL)
 		return NULL;
 

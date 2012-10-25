@@ -111,6 +111,9 @@ static int fwts_log_print_plaintext(
 	fwts_list *lines;
 	fwts_list_link *item;
 
+	FWTS_UNUSED(status);
+	FWTS_UNUSED(label);
+
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 

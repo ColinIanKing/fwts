@@ -229,6 +229,8 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		"This is a bug picked up by the kernel, but as yet, the "
 		"firmware test suite has no diagnostic advice for this particular problem.";
 
+	FWTS_UNUSED(prevline);
+
 	while (pattern->pattern != NULL) {
 		int matched = 0;
 		switch (pattern->compare_mode) {
@@ -428,6 +430,10 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 	pcre_extra *extra;
 	int rc;
 	int vector[1];
+
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(repeated);
+	FWTS_UNUSED(prev);
 
 	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
 	if (re != NULL) {

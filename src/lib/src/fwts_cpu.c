@@ -270,6 +270,8 @@ static void fwts_cpu_consume_kill(void)
  */
 static void fwts_cpu_consume_sighandler(int dummy)
 {
+	FWTS_UNUSED(dummy);
+
 	_exit(0);
 }
 
@@ -279,6 +281,8 @@ static void fwts_cpu_consume_sighandler(int dummy)
  */
 static void fwts_cpu_sigint_handler(int dummy)
 {
+	FWTS_UNUSED(dummy);
+
 	fwts_cpu_consume_kill();
 	_exit(0);
 }

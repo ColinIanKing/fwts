@@ -871,6 +871,8 @@ static int fwts_framework_log_type_parse(fwts_framework *fw, const char *arg)
 
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
+	FWTS_UNUSED(argc);
+
 	switch (option_char) {
 	case 0:
 		switch (long_index) {

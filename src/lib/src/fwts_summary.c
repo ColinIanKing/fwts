@@ -127,6 +127,8 @@ int fwts_summary_add(
 	bool summary_item_found = false;
 	int index = fwts_summary_level_to_index(level);
 
+	FWTS_UNUSED(fw);
+
 	/* Does the text already exist? - search for it */
 	fwts_list_foreach(item, fwts_summaries[index]) {
 		summary_item = fwts_list_data(fwts_summary_item *,item);

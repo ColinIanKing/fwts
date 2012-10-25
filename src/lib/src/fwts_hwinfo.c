@@ -31,6 +31,8 @@
  */
 int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 {
+	FWTS_UNUSED(fw);
+
 	fwts_pipe_exec("lspci | grep Network", &hwinfo->network);
 	fwts_pipe_exec("lspci | grep Ethernet", &hwinfo->ethernet);
 	fwts_pipe_exec("ifconfig -a | grep -A1 '^\\w'", &hwinfo->ifconfig);

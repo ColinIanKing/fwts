@@ -136,6 +136,8 @@ int fwts_method_deinit(fwts_framework *fw)
 {
 	int ret = FWTS_ERROR;
 
+	FWTS_UNUSED(fw);
+
 	if (fwts_method_initialized) {
 		fwts_list_free(fwts_object_names, free);
 		fwts_object_names = NULL;
@@ -283,6 +285,8 @@ ACPI_STATUS fwts_method_evaluate(fwts_framework *fw,
         ACPI_OBJECT_LIST *arg_list,
 	ACPI_BUFFER	 *buf)
 {
+	FWTS_UNUSED(fw);
+
         buf->Length  = ACPI_ALLOCATE_BUFFER;
         buf->Pointer = NULL;
 

@@ -347,6 +347,8 @@ void fwts_uefi_free_variable(fwts_uefi_var *var)
 
 static int fwts_uefi_true_filter(const struct dirent *d)
 {
+	FWTS_UNUSED(d);
+
 	return 1;
 }
 

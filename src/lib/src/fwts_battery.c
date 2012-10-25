@@ -633,6 +633,8 @@ int fwts_battery_get_name(
 	int ret;
 	DIR *dir;
 
+	FWTS_UNUSED(fw);
+
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_name_sys_fs(dir, index, name);
 		closedir(dir);
@@ -650,6 +652,8 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 	*count = 0;
 	int ret;
 	DIR *dir;
+
+	FWTS_UNUSED(fw);
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_count_sys_fs(dir, count);

@@ -54,6 +54,8 @@ static int fwts_log_print_xml(
 	time_t now;
 	char *str;
 
+	FWTS_UNUSED(prefix);
+
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return 0;
 
@@ -113,6 +115,9 @@ static int fwts_log_print_xml(
  */
 static void fwts_log_underline_xml(fwts_log_file *log_file, const int ch)
 {
+	FWTS_UNUSED(log_file);
+	FWTS_UNUSED(ch);
+
 	/* No-op for xml */
 }
 
@@ -122,6 +127,8 @@ static void fwts_log_underline_xml(fwts_log_file *log_file, const int ch)
  */
 static void fwts_log_newline_xml(fwts_log_file *log_file)
 {
+	FWTS_UNUSED(log_file);
+
 	/* No-op for xml */
 }
 

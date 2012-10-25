@@ -120,6 +120,8 @@ static int dump_exec(const char *path, const char *filename, const char *command
  */
 static int dump_dmidecode(fwts_framework *fw, const char *path, const char *filename)
 {
+	FWTS_UNUSED(fw);
+
 	return dump_exec(path, filename, FWTS_DMIDECODE_PATH);
 }
 #endif

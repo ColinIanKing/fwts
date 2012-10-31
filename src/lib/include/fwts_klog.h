@@ -43,6 +43,7 @@ typedef struct {
 	fwts_tag tag;
         const char *pattern;
 	const char *advice;
+	char *label;
 	pcre *re;
 	pcre_extra *extra;
 } fwts_klog_pattern;

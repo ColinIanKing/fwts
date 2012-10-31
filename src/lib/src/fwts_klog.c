@@ -284,13 +284,21 @@ static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
  *	given a key, fetch the string value associated with this object
  *	and report an error if it cannot be found.
  */
-static const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key)
+static const char *fwts_json_str(
+	fwts_framework *fw,
+	const char *table,
+	int index,
+	json_object *obj,
+	const char *key,
+	bool log_error)
 {
 	const char *str;
 
 	str = json_object_get_string(json_object_object_get(obj, key));
 	if (FWTS_JSON_ERROR(str)) {
-		fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.", key, index, table);
+		if (log_error)
+			fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.",
+				key, index, table);
 		return NULL;
 	}
 	return str;
@@ -355,22 +363,33 @@ static int fwts_klog_check(fwts_framework *fw,
 			fwts_log_error(fw, "Cannot fetch %d item from table %s.", i, table);
 			goto fail;
 		}
-		if ((str = fwts_json_str(fw, table, i, obj, "compare_mode")) == NULL)
+		if ((str = fwts_json_str(fw, table, i, obj, "compare_mode", true)) == NULL)
 			goto fail;
 		patterns[i].compare_mode = fwts_klog_compare_mode_str_to_val(str);
 
-		if ((str = fwts_json_str(fw, table, i, obj, "log_level")) == NULL)
+		if ((str = fwts_json_str(fw, table, i, obj, "log_level", true)) == NULL)
 			goto fail;
 		patterns[i].level   = fwts_log_str_to_level(str);
 
-		if ((str = fwts_json_str(fw, table, i, obj, "tag")) == NULL)
+		if ((str = fwts_json_str(fw, table, i, obj, "tag", true)) == NULL)
 			goto fail;
 		patterns[i].tag     = fwts_tag_id_str_to_tag(str);
 
-		if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern")) == NULL)
+		if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern", true)) == NULL)
 			goto fail;
 
-		if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice")) == NULL)
+		if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice", true)) == NULL)
+			goto fail;
+
+		/* Labels appear in fwts 0.26.0, so are optional with older versions */
+		str = fwts_json_str(fw, table, i, obj, "label", false);
+		if (str) {
+			patterns[i].label = strdup(str);
+		} else {
+			/* Not specified, so automagically generate */
+			patterns[i].label = strdup(fwts_klog_unique_label(patterns[i].pattern));
+		}
+		if (patterns[i].label == NULL)
 			goto fail;
 
 		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
@@ -388,11 +407,14 @@ static int fwts_klog_check(fwts_framework *fw,
 	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors);
 
 fail:
-	for (i=0; i<n; i++)
+	for (i=0; i<n; i++) {
 		if (patterns[i].re)
 			pcre_free(patterns[i].re);
 		if (patterns[i].extra)
 			pcre_free(patterns[i].extra);
+		if (patterns[i].label)
+			free(patterns[i].label);
+	}
 	free(patterns);
 fail_put:
 	json_object_put(klog_objs);

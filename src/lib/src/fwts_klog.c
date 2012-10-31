@@ -20,6 +20,7 @@
 #include <sys/klog.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <pcre.h>
 #include <json/json.h>
@@ -34,7 +35,6 @@
  *  klog pattern matching strings data file, data stored in json format
  */
 #define KLOG_DATA_JSON_FILE		"klog.json"
-
 
 /*
  *  fwts_klog_free()
@@ -100,22 +100,23 @@ char *fwts_klog_remove_timestamp(char *text)
 }
 
 int fwts_klog_scan(fwts_framework *fw,
-		   fwts_list *klog,
-		   fwts_klog_scan_func scan_func,
-		   fwts_klog_progress_func progress_func,
-		   void *private,
-		   int *match)
+	fwts_list *klog,
+	fwts_klog_scan_func scan_func,
+	fwts_klog_progress_func progress_func,
+	void *private,
+	int *match)
 {
 	typedef struct {
 		char *line;
 		int repeated;
 	} klog_reduced_item;
 
-	*match= 0;
 	char *prev;
 	fwts_list_link *item;
 	fwts_list *klog_reduced;
 	int i;
+
+	*match = 0;
 
 	if (!klog)
 		return FWTS_ERROR;
@@ -132,7 +133,7 @@ int fwts_klog_scan(fwts_framework *fw,
 		if (progress_func  && ((i % 25) == 0))
 			progress_func(fw, 50 * i / fwts_list_len(klog));
 		if (*newline) {
-			int matched = 0;
+			bool matched = false;
 			fwts_list_link *l;
 			fwts_list_foreach(l, klog_reduced) {
 				char *line;
@@ -141,7 +142,7 @@ int fwts_klog_scan(fwts_framework *fw,
 				line = fwts_klog_remove_timestamp(reduced->line);
 				if (strcmp(newline, line) == 0) {
 					reduced->repeated++;
-					matched = 1;
+					matched = true;
 					break;
 				}
 			}
@@ -191,16 +192,19 @@ static char *fwts_klog_unique_label(const char *str)
 	const char *src = str;
 	char *dst;
 	int count = 0;
-	int forceupper = 1;
+	bool forceupper = true;
 
 	strcpy(buffer, "Klog");
 	dst = buffer + 4;
 
-	while ((dst < (buffer+sizeof(buffer)-1)) && (count < 4) && (*src)) {
-		if ((*src == '|') || (*src == '/') || (*src == ' ')) {
+	while ((dst < (buffer + sizeof(buffer) - 1)) &&
+	       (count < 4) && (*src)) {
+		if ((*src == '|') ||
+		    (*src == '/') ||
+		    (*src == ' ')) {
 			src++;
 			count++;
-			forceupper = 1;
+			forceupper = true;
 			continue;
 		}
 		if (!isalnum(*src)) {
@@ -210,7 +214,7 @@ static char *fwts_klog_unique_label(const char *str)
 		*dst++ = forceupper ? toupper(*src) : *src;
 		src++;
 
-		forceupper = 0;
+		forceupper = false;
 	}
 	*dst = '\0';
 	return buffer;
@@ -232,7 +236,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 	FWTS_UNUSED(prevline);
 
 	while (pattern->pattern != NULL) {
-		int matched = 0;
+		bool matched = false;
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
 			if (pattern->re)
@@ -249,7 +253,9 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_log_info(fw, "Kernel message: %s", line);
 			else {
 				fwts_tag_failed(fw, pattern->tag);
-				fwts_failed(fw, pattern->level, fwts_klog_unique_label(pattern->pattern), "%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
+				fwts_failed(fw, pattern->level,
+					fwts_klog_unique_label(pattern->pattern),
+					"%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				(*errors)++;
 			}
 			if (repeated)
@@ -352,7 +358,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	}
 
 	/* Now fetch json objects and compile regex */
-	for (i=0; i<n; i++) {
+	for (i = 0; i < n; i++) {
 		const char *error;
 		int erroffset;
 		const char *str;
@@ -386,7 +392,7 @@ static int fwts_klog_check(fwts_framework *fw,
 		if (str) {
 			patterns[i].label = strdup(str);
 		} else {
-			/* Not specified, so automagically generate */
+			/* if not specified, auto-magically generate */
 			patterns[i].label = strdup(fwts_klog_unique_label(patterns[i].pattern));
 		}
 		if (patterns[i].label == NULL)
@@ -407,7 +413,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors);
 
 fail:
-	for (i=0; i<n; i++) {
+	for (i = 0; i < n; i++) {
 		if (patterns[i].re)
 			pcre_free(patterns[i].re);
 		if (patterns[i].extra)

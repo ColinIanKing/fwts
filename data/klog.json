@@ -78,6 +78,30 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_POWER",
+   "pattern": "_DSW execution failed",
+   "advice": "The ACPI control _DSW (Device Sleep Wake) failed to execute, this may impact on the ability to enable or disable the wake capabilities of a device in the computer.",
+   "label": "KlogAcpiDswFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_POWER",
+   "pattern": "_PSW execution failed",
+   "advice": "The ACPI control _PSW (Power State Wake) failed to execute, this may impact on the ability to enable or disable the wake capabilities of a device in the computer.",
+   "label": "KlogAcpiPswFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI_POWER",
+   "pattern": "Transition power state",
+   "advice": "Failed to power on or shutdown a wakeup device using _PSW or _DSW control methods.",
+   "label": "KlogAcpiSuspend"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
    "pattern": "Fail in evaluating the _REG object of EC device",

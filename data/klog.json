@@ -79,6 +79,22 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
+   "pattern": "error obtaining _EC",
+   "advice": "The ACPI Embedded Controller Offset Query Control Method _EC failed to evaluate. It is either missing or broken and means the kernel cound not add a SMBUS host controller.",
+   "label": "KlogAcpiEcFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "host controller is not configured",
+   "advice": "The kernel count not issue a SMBUS transaction because the host controller was not configured. See acpi_smbus_transaction()",
+   "label": "KlogSmbusHostController"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_THERMAL",
    "pattern": "Invalid _TSS data: freq is zero",
    "advice": "The _TSS has returned a zero fequency setting in one or more of the package elements.",

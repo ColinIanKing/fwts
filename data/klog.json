@@ -79,6 +79,14 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_ACPI_SUSPEND",
+   "pattern": "wakeup header does not match",
+   "advice": "The ACPI suspend wakeup header did not contain the expected header value so the kernel had to abort the suspend. This can happen if the data is corrupted.",
+   "label": "KlogAcpiSuspendHeader"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_ACPI_EVAL",
    "pattern": "ACPI: not enough elements in _CST",
    "advice": "_CST returned either a NULL buffer or a type that wasn't an ACPI package or less than 2 elements in the package. The kernel could not evaluate the CPU supported C states supported, meaning that the machine will not run optimally.",

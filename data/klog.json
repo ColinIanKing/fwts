@@ -79,6 +79,38 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_DOCK",
+   "pattern": "Unable to undock",
+   "advice": "An undock event was requested but the machine still seems to be docked.",
+   "label": "KlogAcpiDockCannotUndock"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_DOCK",
+   "pattern": "Unable to dock",
+   "advice": "A dock notify event was handled but the machine still seems to be undocked.",
+   "label": "KlogAcpiDockCannotDoct"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_DOCK",
+   "pattern": "Unknown dock event",
+   "advice": "A dock notify event was handled, but the type of notify event was not recognised.",
+   "label": "KlogAcpiDockEvent"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_DOCK",
+   "pattern": ".* encountered error .*",
+   "advice": "An error occurred when trying to add a new dock station device.",
+   "label": "KlogAcpiDockAdd"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_ACPI_BUTTON",
    "pattern": "More than one Lid device found",
    "advice": "Failed to add a Lid device because one already exists.  The kernel does not support more than one Lid device.",

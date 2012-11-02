@@ -79,6 +79,14 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
+   "pattern": "Fail in evaluating the _REG object of EC device",
+   "advice": "The _REG object for the Embedded Controller Device could not be evaluated, however the kernel will ignore this and try to install the handler for the Embedded Controller.",
+   "label": "KlogAcpiEcBadReg"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_ACPI_DOCK",
    "pattern": "Unable to undock",
    "advice": "An undock event was requested but the machine still seems to be docked.",

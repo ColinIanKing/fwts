@@ -77,6 +77,62 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Fatal opcode executed",
+   "advice": "An ACPI AML fatal opcode was executed and the kernel has trapped this signal. It could be because of faulty control method code.",
+   "label": "KlogAcpiFatalOpcodeSignal"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Call to queue_work() failed.",
+   "advice": "Failed to queue up AML exec work on CPU 0. This results in ACPI control code not being executed which could lead to unexpected behaviour.",
+   "label": "KlogAcpiQueueWorkFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "acpi_os_get_timer() TBD",
+   "advice": "Support for the 64 bit ACPI AML timer operand is not implemented, this will be emulated and may affect AML code that relies on accurate timers.",
+   "label": "KlogAcpiGetTimerNotImplemented"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "SCI .* allocation failed",
+   "advice": "Failed to install an ACPI SCI interrupt handler because the the IRQ allocation failed.",
+   "label": "KlogAcpiSciIrqAllocError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "SCI .*ACPI GSI .* not registered",
+   "advice": "Failed to install an ACPI SCI interrupt handler because the Global System Interrupt (GSI) is not registered.",
+   "label": "KlogAcpiSciGsiError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot map memory that high",
+   "advice": "Cannot map an ACPI physical address above the 32 bit 4GB limit, this could lead to broken functionality.",
+   "label": "KlogAcpiMap4GbLimit"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "System description tables not found",
+   "advice": "The EFI ACPI20 or ACPI RSDP pointers were invalid, so the kernel cannot find any of the ACPI tables.  ACPI support will be disabled.",
+   "label": "KlogAcpiEfiRsdpError"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

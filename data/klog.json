@@ -78,6 +78,22 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "ACPI: not enough elements in _CST",
+   "advice": "_CST returned either a NULL buffer or a type that wasn't an ACPI package or less than 2 elements in the package. The kernel could not evaluate the CPU supported C states supported, meaning that the machine will not run optimally.",
+   "label": "KlogAcpiCstElements"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "ACPI: count given by _CST is not valid",
+   "advice": "_CST returned an invalid number of elements, the package a different number of C states to the number of C states that _CST reported. The kernel could not evaluate the CPU supported C states supported, meaning that the machine will not run optimally.",
+   "label": "KlogAcpiCstCount"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_ACPI_EVAL",
    "pattern": "No return object",

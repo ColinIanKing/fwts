@@ -79,6 +79,22 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_BUTTON",
+   "pattern": "More than one Lid device found",
+   "advice": "Failed to add a Lid device because one already exists.  The kernel does not support more than one Lid device.",
+   "label": "KlogAcpiLidMany"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_ACPI_BUTTON",
+   "pattern": "Unsupported hid",
+   "advice": "The Lid Hardware ID (HID) is one that the kernel does not recognise and so the Lid device was not added to the system. This can explain why the Lid does not work.",
+   "label": "KlogAcpiLidBadHid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_ACPI_CONTAINER",
    "pattern": "ACPI: device is NULL",
    "advice": "The kernel count not add a container because the device associated with this was NULL, which is unexexpected.",

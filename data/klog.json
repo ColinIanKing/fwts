@@ -78,6 +78,22 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Oops, 'acpi_handle' corrupt",
+   "advice": "Failed to unbind a device, the ACPI handle was corrupt.",
+   "label": "KlogAcpiHandleCorrupt"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Can't use platform_notify",
+   "advice": "Cannot add the ACPI platform notifiers, they are already registered. This should not happen.",
+   "label": "KlogAcpiPlatformNotify"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "memory_hp:Error in acpi_memory_enable_device",

@@ -77,6 +77,94 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_PRS resource type .* isn't an IRQ",
+   "advice": "The ACPI _PRS resource type was expected to be an IRQ type and was not.",
+   "label": "KlogAcpiPciLinkPrsIrq"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_CRS resource type 0x%x isn't an IRQ",
+   "advice": "The ACPI _CRS resource type was expected to be an IRQ type and was not.",
+   "label": "KlogAcpiPciLinkCrsIrq"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI:.*Unable to read status",
+   "advice": "A query of _STA to get the bus status failed and the current link status is unknown.",
+   "label": "KlogAcpiPciLinkSta"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_CRS returned 0",
+   "advice": "The query of the bus status failed because the _CRS controlled returned IRQ 0, which was not expected.",
+   "label": "KlogAcpiPciLinkCrsIrqZero"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid Resource_type",
+   "advice": "A PCI link set failed because the link IRQ resource type is invalid.",
+   "label": "KlogAcpiPciLinkIrqResourceInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to set IRQ for",
+   "advice": "An attempt to enabled the link device failed.",
+   "label": "KlogAcpiPciLinkFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid link device",
+   "advice": "Unable to allocate an IRQ failed because the link device is invalid.",
+   "label": "KlogAcpiPciLinkDeviceInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid link context",
+   "advice": "Unable to allocate an IRQ failed because the link context was invalid (NULL).",
+   "label": "KlogAcpiPciLinkContextNull"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Invalid index",
+   "advice": "Support for multiple index IRQ entries per link device is not yet implemented.",
+   "label": "KlogAcpiPciLinkMultipleIrqEntries"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Link active IRQ is 0",
+   "advice": "Unable to allocate an IRQ failed because the active IRQ is 0, which is wrong.",
+   "label": "KlogAcpiPciLinkActiveIrqZero"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Link isn't initialized",
+   "advice": "An attempt to free the IRQ of a link failed because the link was not initialized.",
+   "label": "KlogAcpiPciLinkNotInitialized"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",

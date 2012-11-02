@@ -78,6 +78,14 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_CONTAINER",
+   "pattern": "ACPI: device is NULL",
+   "advice": "The kernel count not add a container because the device associated with this was NULL, which is unexexpected.",
+   "label": "KlogAcpiContainer"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_ACPI_SUSPEND",
    "pattern": "wakeup header does not match",

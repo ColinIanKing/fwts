@@ -78,6 +78,30 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "can't evaluate _SEG",
+   "advice": "The _SEG ACPI control could not be evaluated. This will stop certain PCI root bridges from being added and enabled on the computer.",
+   "label": "KlogAcpiSegFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "can't evaluate _BBN",
+   "advice": "The _BBN ACPI control could not be evaluated. This will stop certain PCI root bridges from being added and enabled on the computer.",
+   "label": "KlogAcpiSegFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Bus .*:.* not present in PCI namespace",
+   "advice": "The bus cound not be found in the PCI namespace. This will stop certain PCI root bridges from being added and enabled on the computer.",
+   "label": "KlogAcpiPciScanFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI_POWER",
    "pattern": "_DSW execution failed",

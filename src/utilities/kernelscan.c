@@ -949,7 +949,7 @@ static int parse_cpp_includes(FILE *fp)
  *  calls.
  *
  *  Usage:
- *  	cat drivers/pnp/pnpacpi/rsparser.c | kernel_scan -E | gcc  -E - | kernel_scan -P
+ *	cat drivers/pnp/pnpacpi/rsparser.c | kernelscan -E | gcc  -E - | kernelscan -P
  *
  *  This prints out any kernel printk KERN_ERR calls
  *  or dev_err calls and checks to see if the error can be matched by

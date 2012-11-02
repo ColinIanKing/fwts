@@ -77,6 +77,206 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _TSS data: freq is zero",
+   "advice": "The _TSS has returned a zero fequency setting in one or more of the package elements.",
+   "label": "KlogAcpiTssZeroFrequency"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _TSS data",
+   "advice": "The _TSS has returned a NULL data pointer or data which isn't an ACPI package.",
+   "label": "KlogAcpiTssBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Unknown _TSD:num_entries",
+   "advice": "The number of entries in the throlling domain information was not 5.",
+   "label": "KlogAcpiTsdIllegalNumEntries"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Unknown _TSD:revision",
+   "advice": "The expected TSD revision was not 0.",
+   "label": "KlogAcpiTsdBadRevision"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "HARDWARE addr space,NOT supported yet",
+   "advice": "The CPU does not seem to support the MSR_IA32_THERM_CONTROL MSR.",
+   "label": "KlogAcpiUnsupportedThermControlMsr"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Unknown addr space",
+   "advice": "Could not read the hardware specific throttling status, the status register space ID was not a system I/O space or a fixed hardware space.",
+   "label": "KlogAcpiThrottleStatusBadRead"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _TSD data",
+   "advice": "The _TSD has returned data which isn't valid, either a NULL data pointer or data which isn't an ACPI package has been returned.",
+   "label": "KlogAcpiTsdBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _PTC control register",
+   "advice": "The _PTC control register bit widths or bit offsets are incorrect.",
+   "label": "KlogAcpiPtcControlRegisterInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _PTC status register",
+   "advice": "The _PTC status register bit widths or bit offsets are incorrect.",
+   "label": "KlogAcpiPtcStatusRegisterInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _PTC data (status_register)",
+   "advice": "The _PTC status register data (element 1 of the package) was either NULL or too small.",
+   "label": "KlogAcpiPtcDataStatusRegister"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _PTC data (control_register)",
+   "advice": "The _PTC control register data (element 0 of the package) was either NULL or too small.",
+   "label": "KlogAcpiPtcDataControlRegister"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Invalid _PTC data",
+   "advice": "_PTC did not return a package of two elements, expected a two element package containing bufffers for the control and status register.",
+   "label": "KlogAcpiPtcDataBad"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Failed to create sysfs link 'thermal_cooling'",
+   "advice": "sysfs_create_link() failed to create the thermal 'thermal_cooling' sysfs entry.",
+   "label": "KlogAcpiThermalThermalCoolingSysfs"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Failed to create sysfs link 'device'",
+   "advice": "sysfs_create_link() failed to create the thermal 'device' sysfs entry.",
+   "label": "KlogAcpiThemalDeviceSysfs"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Setting initial power state",
+   "advice": "The call to acpi_bus_update_power() in acpi_fan_add() failed while adding a new fan device.",
+   "label": "KlogAcpiFanAddFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
+   "pattern": "ACPI:.*EC.*input buffer is not empty, aborting transaction",
+   "advice": "The ACPI Embedded Controller (EC) driver attempted to perform a read or write transaction but had to abort because the EC was still busy and the input buffer was not emptied within 500ms.  Normally this indicates an EC firmware fault.  One can try increasing the delay using the acpi.ec_delay kernel parameter or writing to /sys/module/acpi/parameters/ec_delay - however this generally does not help much of the EC firmware is buggy.",
+   "label": "KlogAcpiEcInputBufferIsNotEmpty"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "ENERGY_PERF_BIAS.*Set to 'normal'.* was 'performance'",
+   "advice": "The MSR_IA32_ENERGY_PERF_BIAS was initialized incorrectly and was defaulted to a high performance bias setting.  The kernel has detected this and changed it down to a 'normal' bias setting.  The BIOS vendor should be informed that the MSR is not defaulted to the normal bias setting.",
+   "label": "KlogEnergyPerfBiasSetToNormal"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "pnp.*can't evaluate _CRS: 12311",
+   "advice": "The _CRS object could not be evaluated because an invalid resource type has been returned. This can lead to misconfigured PNP hardware and may render a system unbootable.",
+   "label": "KlogPnpCrsInvalidResourceType"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "pnp.*can't evaluate _CRS:",
+   "advice": "The _CRS object could not be evaluated, the error code is an ACPI error return code (see include/acpi/acexecp.h in the linux source, this is composed of bottom 12 bits of an error number and upper 4 bits of an AE_CODE_* code. Typically, _CRS evaluation errors can lead to misconfigured PNP hardware and may render a system unbootable.",
+   "label": "KlogPnpCrsCannotEvaluate"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "dell_wmi:.*Received unknown WMI event",
+   "advice": "The Dell WMI driver has received an unknown WMI event. The driver should handle this new event or the firmware is reporting an incorrect and unknown event.",
+   "label": "KlogDellWmiReceivedUnknownWMIEvent"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "dell_wmi:.*bad event status 0x",
+   "advice": "The Dell WMI driver has received a bad event status. This should be investigated further.",
+   "label": "KlogDellWmiBadEventStatus"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "asus_wmi:.*Unknown key.*pressed",
+   "advice": "The ASUS WMI driver has received an unknown key event. The driver should handle this new key event or the firmware is reporting an incorrect and unknown event.",
+   "label": "KlogAsusWmiUnknownKeypressed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_WMI",
+   "pattern": "hp_wmi:.*bad event status 0x",
+   "advice": "The HP WMI driver has received a bad event status. This should be investigated further.",
+   "label": "KlogHpWmiBadEventStatus"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Failed to create sysfs link 'thermal_cooling'",
+   "advice": "sysfs_create_link() failed to create the thermal 'thermal_cooling' sysfs entry.",
+   "label": "KlogAcpiThermalThermalCoolingSysfs"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_THERMAL",
+   "pattern": "Failed to create sysfs link 'device'",
+   "advice": "sysfs_create_link() failed to create the thermal 'device' sysfs entry.",
+   "label": "KlogAcpiThemalDeviceSysfs"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",

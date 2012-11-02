@@ -386,6 +386,8 @@ static int skip_comments(parser *p)
 
 				if (ch == '/')
 					return PARSER_COMMENT_FOUND;
+
+				unget_next(p, ch);
 			}
 		}
 	}
@@ -760,10 +762,10 @@ static int parse_kernel_message(parser *p, token *t)
 
 	printk = (strcmp(t->token, "printk") == 0);
 
-	if (strcmp(t->token, "dev_err") == 0) {
+	if (strcmp(t->token, "dev_err") == 0)
 		emit = true;
-		line = strdupcat(line, "dev_err");
-	}
+
+	line = strdupcat(line, t->token);
 	token_clear(t);
 
 	for (;;) {
@@ -795,8 +797,9 @@ static int parse_kernel_message(parser *p, token *t)
 		    (t->type == TOKEN_IDENTIFIER) &&
 		    (prev_token_type == TOKEN_PAREN_OPENED) &&
 		    (strcmp(t->token, "KERN_ERR") == 0)) {
-			line = strdupcat(line, "printk( ");
+			emit = true;
 		}
+
 
 		if (t->type == TOKEN_LITERAL_STRING) {
 			literal_strip_quotes(t);
@@ -820,6 +823,10 @@ static int parse_kernel_message(parser *p, token *t)
 		}
 
 		line = strdupcat(line, t->token);
+
+		if (t->type == TOKEN_IDENTIFIER && prev_token_type != TOKEN_COMMA)
+			line = strdupcat(line, " ");
+
 		if (t->type == TOKEN_COMMA)
 			line = strdupcat(line, " ");
 

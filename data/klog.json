@@ -79,6 +79,38 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_VIDEO",
+   "pattern": "Failed to switch the brightness",
+   "advice": "The ACPI video brightness for the LCD could not be set because _BCM failed.",
+   "label": "KlogAcpiVideoBcmFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_VIDEO",
+   "pattern": "Invalid _DOD data in element",
+   "advice": "The ACPI _DOD control returned an element that was not an ACPI integer as expected. This element will be ignored, which could lead to reduced functionality.",
+   "label": "KlogAcpiVideoDodFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_VIDEO",
+   "pattern": "Invalid _DDC data",
+   "advice": "The ACPI _DDC control is returning either a NULL buffer pointer or data that is not an ACPI buffer. The Extended Display Identification Data (EDID) structure that represents the display output device could not be fetched. This may affect video output.",
+   "label": "KlogAcpiVideoDdcFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_VIDEO",
+   "pattern": "Invalid _BCL data",
+   "advice": "The ACPI _BCL control is returning either a NULL buffer pointer or data that is not an ACPI package. LCD brightness level queries will not work.",
+   "label": "KlogAcpiVideoBclFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Oops, 'acpi_handle' corrupt",
    "advice": "Failed to unbind a device, the ACPI handle was corrupt.",

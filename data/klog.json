@@ -79,6 +79,62 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _PSS data",
+   "advice": "Failed to get ACPI performance states from the _PSS contol, buffer was either NULL or not an ACPI package.",
+   "label": "KlogAcpiPssFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid BIOS _PSS frequency found for processor",
+   "advice": "CPU frequency in MHz as supplied by _PSS control cannot be stored in a 32 bit unsigned integer, overflow error.",
+   "label": "KlogAcpiPssFreqTooBig"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No valid BIOS _PSS frequency found for processor",
+   "advice": "One of the CPUs did not have a valid _PSS frequency defined. Cannot fetch _PSS levels for this CPU.",
+   "label": "KlogAcpiPssNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _PSD data",
+   "advice": "The ACPI _PSD control returned a pointer that was NULL or not an ACPI package or did not have 1 item in the package or the item could not be fetched out of the package. P-State dependencies cannot be evaluated, machine may perform sub-optimally.",
+   "label": "KlogAcpiPsdBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown _PSD:num_entries",
+   "advice": "The number of _PSD entries should be 5 but a different count was returned. The P-State dependencies cannot be evaluated, machine may perform sub-optimally.",
+   "label": "KlogAcpiPsdBadCount"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown _PSD:revision",
+   "advice": "The _PSD revision should be 0 but a different version was returned. P-State dependencies cannot be evaluated, machine may perform sub-optimally.",
+   "label": "KlogAcpiPsdBadRevision"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _PSD:coord_type",
+   "advice": "The _PSD coordination type was invalid, it should be SW_ALL, SW_ANY or HW_ALL. P-State dependencies cannot be evaluated, machine may perform sub-optimally.",
+   "label": "KlogAcpiPsdBadCoordType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_VIDEO",
    "pattern": "Failed to switch the brightness",
    "advice": "The ACPI video brightness for the LCD could not be set because _BCM failed.",

@@ -79,6 +79,38 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "No return object",
+   "advice": "An ACPI evaluate for a reference returned a buffer of zero length or a NULL buffer pointer.",
+   "label": "KlogAcpiEvalReferenceBadBuffer"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "Expecting a [Package], found type",
+   "advice": "An ACPI evaluate for a reference did not return a ACPI package as expected.",
+   "label": "KlogAcpiEvalReferenceNotPackage"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "[Package] has zero elements",
+   "advice": "An ACPI evaluate for a reference returned an illeage package of zero elements.",
+   "label": "KlogAcpiEvalReferencePackageZeroElements"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_ACPI_EVAL",
+   "pattern": "Expecting a [Reference] package element, found type",
+   "advice": "An ACPI evaluate for a reference returned contained an element that was not a reference type.",
+   "label": "KlogAcpiEvalReferencePackageElementType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
    "pattern": "error obtaining _EC",
    "advice": "The ACPI Embedded Controller Offset Query Control Method _EC failed to evaluate. It is either missing or broken and means the kernel cound not add a SMBUS host controller.",

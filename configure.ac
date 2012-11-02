@@ -81,6 +81,7 @@
 	   src/acpica/Makefile
            src/lib/Makefile
            src/lib/src/Makefile
+	   src/utilities/Makefile
            data/Makefile
           ])
           AC_OUTPUT

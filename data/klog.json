@@ -80,6 +80,30 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "pci_create_slot returned",
+   "advice": "A PCI slot could not be register because a call to pci_create_slot() failed.",
+   "label": "KlogAcpiPciSlot"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "walk_p2p_bridge failure",
+   "advice": "Traversing the PCI root bridge failed because of an error walking the P2P bridge.",
+   "label": "KlogAcpiPciSlot"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "register_slot failure",
+   "advice": "Adding a PCI slot failed because traversing the PCI root bridge failed.",
+   "label": "KlogAcpiPciSlot"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "_PRS resource type .* isn't an IRQ",
    "advice": "The ACPI _PRS resource type was expected to be an IRQ type and was not.",
    "label": "KlogAcpiPciLinkPrsIrq"

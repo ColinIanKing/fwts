@@ -77,6 +77,14 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Vendor .* System .* Revision .* has a known ACPI BIOS problem",
+   "advice": "The kernel has recognised that this particular version of the firmware has known ACPI issues and so ACPI support will be disabled. Reduced functionality will occur.",
+   "label": "KlogAcpiBlackListed"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",

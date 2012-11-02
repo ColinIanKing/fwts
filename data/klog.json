@@ -80,6 +80,62 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to register for device notifications",
+   "advice": "The ACPI device notify handlers failed to be installed and so ACPI support with be disabled.",
+   "label": "KlogAcpiNotifyHandlerInstallFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to initialize ACPI objects",
+   "advice": "The ACPI objects failed to initialize and so ACPI support with be disabled.",
+   "label": "KlogAcpiObjectsFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to start the ACPI Interpreter",
+   "advice": "The ACPI interpreter failed to start up correctly and so ACPI support with be disabled.",
+   "label": "KlogAcpiInterpreterFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to enable ACPI",
+   "advice": "The ACPI subsystem failed to be enabled and so ACPI support with be disabled.",
+   "label": "KlogAcpiEnableFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to load the System Description Tables",
+   "advice": "The ACPI driver was unabled to load the ACPI tables and so ACPI support will be disabled.",
+   "label": "KlogAcpiLoadFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to initialize the ACPI Interpreter",
+   "advice": "The ACPI interpreter could not be intialized and so ACPI support will be disabled.",
+   "label": "KlogAcpiInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to reallocate ACPI tables",
+   "advice": "The kernel count not reallocate the ACPI tables into memory from firmware and so ACPI support will be disabled.",
+   "label": "KlogAcpiReallocateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "can't evaluate _SEG",
    "advice": "The _SEG ACPI control could not be evaluated. This will stop certain PCI root bridges from being added and enabled on the computer.",
    "label": "KlogAcpiSegFailed"

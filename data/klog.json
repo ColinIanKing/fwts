@@ -80,6 +80,70 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:Error in acpi_memory_enable_device",
+   "advice": "Adding a hotplug memory device failed because.",
+   "label": "KlogAcpiHotPlugAddMemDeviceFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_INFO",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:Disable memory device",
+   "advice": "An ACPI notify eject request occurred to disable a memory device.",
+   "label": "KlogAcpiHotPlugNotifyDisableOkay"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:Driver Data is NULL",
+   "advice": "An ACPI notify eject request failed because the device data is NULL.",
+   "label": "KlogAcpiHotPlugNotifyEjectDataNull"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Device doesn't exist",
+   "advice": "An ACPI notify eject request failed because the device does not exist.",
+   "label": "KlogAcpiHotPlugNotifyEjectDeviceNotExist"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:Cannot enable memory device",
+   "advice": "Memory device notify failed because it could not enabled the memory device.",
+   "label": "KlogAcpiHotPlugEnableFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:Cannot find driver data",
+   "advice": "Memory device notify failed because it could not find the relevant driver data for this device.",
+   "label": "KlogAcpiHotPlugDeviceNotify"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:add_memory failed",
+   "advice": "Failed to add memory device, add_memory() failed for some reason.",
+   "label": "KlogAcpiHotPlugAddMemoryFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "memory_hp:get_device_resources failed",
+   "advice": "The devices resources could not be determined from the relevant ACPI _CRS control and so the memory device could not be enabled.",
+   "label": "KlogAcpiHotPlugCrsFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Fatal opcode executed",
    "advice": "An ACPI AML fatal opcode was executed and the kernel has trapped this signal. It could be because of faulty control method code.",
    "label": "KlogAcpiFatalOpcodeSignal"

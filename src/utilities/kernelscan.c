@@ -293,14 +293,17 @@ static klog_pattern *klog_load(const char *table)
 			exit(EXIT_FAILURE);
 		}
 
-		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
-			fprintf(stderr, "Regex %s failed to compile: %s.\n", patterns[i].pattern, error);
-			patterns[i].re = NULL;
-		} else {
-			patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
-			if (error != NULL) {
-				fprintf(stderr, "Regex %s failed to optimize: %s.\n", patterns[i].pattern, error);
+		/* Pre-compile regular expressions to make things run a bit faster */
+		if (patterns[i].cm == COMPARE_REGEX) {
+			if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
+				fprintf(stderr, "Regex %s failed to compile: %s.\n", patterns[i].pattern, error);
 				patterns[i].re = NULL;
+			} else {
+				patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
+				if (error != NULL) {
+					fprintf(stderr, "Regex %s failed to optimize: %s.\n", patterns[i].pattern, error);
+					patterns[i].re = NULL;
+				}
 			}
 		}
 	}
@@ -323,8 +326,7 @@ static bool klog_find(char *str, klog_pattern *patterns)
 			if (strstr(str, patterns[i].pattern)) {
 				return true;
 			}
-		}
-		if (patterns[i].cm == COMPARE_REGEX) {
+		} else if (patterns[i].cm == COMPARE_REGEX) {
 			int vector[1];
 			if (pcre_exec(patterns[i].re, patterns[i].extra, str, strlen(str), 0, 0, vector, 1) == 0) {
 				return true;

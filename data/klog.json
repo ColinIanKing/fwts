@@ -78,6 +78,30 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating processor object",
+   "advice": "An error occurred evaluating the ACPI Processor() object, ACPI CPU control for this CPU broken.",
+   "label": "KlogAcpiProcessorFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating processor _UID",
+   "advice": "An error occurred evaluating an ACPI CPU _UID, ACPI CPU control for this CPU is broken.",
+   "label": "KlogAcpiProcessorBadUid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid PBLK length",
+   "advice": "The Processor Register Block data is not the expected size, ACPI control of this CPU will not occur.",
+   "label": "KlogAcpiProcessorPblkBad"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Invalid _PSS data",

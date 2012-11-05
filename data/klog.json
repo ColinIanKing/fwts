@@ -78,6 +78,54 @@
  [
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "PnPBIOS.*ESCD size reported by BIOS escd_info call is too great",
+   "advice": "The ESCD size was greater than a sane size of 32K.",
+   "label": "KlogPnpBiosEscdSize"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "PnPBIOS.*ESCD size reported by BIOS read_escd call is too great",
+   "advice": "The ESCD size was greater than a sane size of 32K.",
+   "label": "KlogPnpBiosEscdSize"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "PnPBIOS.*",
+   "advice": "The PnPBIOS driver has detected an issue that fwts does not know about.",
+   "label": "KlogPnpBiosError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Node number .* is out of sequence following node .* Aborting.",
+   "advice": "Device node numbers are out of sequence.",
+   "label": "KlogPnpBiosDevNodeSeqError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "PCI: BIOS BUG #",
+   "advice": "A call to the PCI BIOS32 service routine (with service signature $PCI) has returned a bad status or an illegal PCI signature. The kernel will disable the use of the PCI BIOS.",
+   "label": "KlogBios32PciFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "e820: too many entries; ignoring ",
+   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI Numa hardare, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
+   "label": "KlogE820TooManyEntries"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "MTRR.*CPU.*SYSCFG.*MtrrFixDramModEn.*not cleared by BIOS, clearing this bit",

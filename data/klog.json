@@ -80,6 +80,102 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Cannot create",
+   "advice": "The ACPI driver attempted to create an entry in /proc/acpi but failed. This should not happen and is a kernel bug.",
+   "label": "KlogAcpiProcfsCreateFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Create sysfs link",
+   "advice": "The ACPI driver attempted to create a sysfs link for a device and this failed. This should not happen and is a kernel bug.",
+   "label": "KlogAcpiSysfsLinkCreateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error updating fan power state",
+   "advice": "Failed to update the fan power state when coming out of resume. The call to acpi_bus_update_power() failed even though the fan device was valid.",
+   "label": "KlogAcpiFanResumeUpdate"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "does not support this state",
+   "advice": "A request to suspend the machine was aborted because it was asked to transition to a sleep state that is not supported by the ACPI driver or this machine.",
+   "label": "KlogAcpiUnsupportedSleepState"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Hardware changed while hibernated, cannot resume",
+   "advice": "The FACS hardware signature has changed when coming out of hibernation. The kernel has concluded that the machine has changed and therefore won't commit to resuming from hibernate.",
+   "label": "KlogAcpiS4ResumeBadFacsSignature"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Device don't exist, dropping EJECT",
+   "advice": "A processor hotplug notify eject request event was rejected because the device does not seem to exist.",
+   "label": "KlogAcpiHotPlugEjectMissingDevice"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Driver data is NULL, dropping EJECT",
+   "advice": "A processor hotplug notify eject request event was rejected because the device data is NULL.",
+   "label": "KlogAcpiHotplugEjectNullDeviceData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid reference to IOAPIC pin",
+   "advice": "The IOAPIC pin was invalid, it exceeded the maximum expected pin reference value (MP_MAX_IOAPIC_PIN 127).",
+   "label": "KlogAcpiIoApicPinRefInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error parsing IOAPIC entry",
+   "advice": "Failed to parse the ACPI MADT, the number of IOAPIC entries found was less than zero, which probably means the MADT is broken.",
+   "label": "KlogAcpiMadtParseError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No IOAPIC entries present",
+   "advice": "The ACPI MADT was expected to contain at least one IOAPIC entry, however, none were found. Cannot enumerate the IOAPICs.",
+   "label": "KlogAcpiMadtNoIoApicEntry"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error parsing interrupt source overrides entry",
+   "advice": "Could not parse the ACPI MADT to determine the interrupt override for the SCI. This could lead to unexpected behaviour.",
+   "label": "KlogAcpiMadtIrqOverrideParseError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error parsing NMI SRC entry",
+   "advice": "Could not parse the ACPI MADT to determine the NMI SRC entry. This could lead to unexpected behaviour.",
+   "label": "KlogAcpiMadtNmiSrcEntryParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "pci_create_slot returned",
    "advice": "A PCI slot could not be register because a call to pci_create_slot() failed.",
    "label": "KlogAcpiPciSlot"

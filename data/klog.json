@@ -78,6 +78,22 @@
  [
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "MTRR.*CPU.*SYSCFG.*MtrrFixDramModEn.*not cleared by BIOS, clearing this bit",
+   "advice": "The firmware is expected to clear MtrrFixDramModEn bit, see for example BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD Opteron Processors (26094 Rev. 3.30 February 2006), section 13.2.1.2 SYSCFG Register. The MtrrFixDramModEn bit should be set 1 during firmware initalization of the fixed MTRRs, then cleared to 0 for operation. Hence the kernel has detected and worked around this fault.",
+   "label": "KlogMtrrFixDramModEnNotClear"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "MTRR.*CPU.*Writing MSR .* to .* failed",
+   "advice": "Writing to a MTRR MSR has failed. The kernel cannot do much about this and has ignored the failure.",
+   "label": "KlogMtrrWriteMsrFailed"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "acpi_request_vector.*invalid interrupt type",

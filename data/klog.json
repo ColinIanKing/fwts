@@ -80,6 +80,70 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "acpi_request_vector.*invalid interrupt type",
+   "advice": "An attempt to request an interrupt vector greater than 256 (ACPI_MAX_PLATFORM_INTERRUPTS) has occurred and will be rejected.",
+   "label": "KlogAcpiIa64RequestBadVector"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Can't find MADT",
+   "advice": "Could not find the ACPI MADT. The kernel could not find this table so it could determine how many CPUs the system had.  The machine will boot with just one CPU which may be the incorrect number of CPUs.",
+   "label": "KlogAcpiMadtMissing"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Error parsing MADT - no LAPIC entries",
+   "advice": "The ACPI MADT could not be parsed to determine the number of Local APIC entries.  This may lead to sub-optimal configuration of the machine.",
+   "label": "KlogAcpiMadtLapicParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Error parsing LAPIC address override entry",
+   "advice": "The ACPI MADT could not be parsed to determine the Local APIC override entry.",
+   "label": "KlogAcpiMadtLapiceOverrideParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Error parsing LAPIC NMI entry",
+   "advice": "The ACPI MADT could not be parsed to determine the Local APIC NMI entry.",
+   "label": "KlogAcpiMadtLapicNmiParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Error parsing MADT.*no IOSAPIC entries",
+   "advice": "The ACPI MADT could not be parsed to find the IOSAPIC entries.",
+   "label": "KlogAcpiMadtIosapicParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Error parsing platform interrupt source entry",
+   "advice": "The ACPI MADT could not be parsed to find the platform intrerrupt source entry.",
+   "label": "KlogAcpiMadtPlatIntSrcParseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI.*Can't find FADT",
+   "advice": "The ACPI Fixed ACPI Description Table (FADT) is missing and so the kernel cannot determine if the legacy keyboard controller is present.  It cannot also determine the SCI_INT interrupt line which is used for ACPI events, such as the power and sleep buttons. If the SCI_INT is not on a legacy interrupt then it needs to be specified in the FADT. ",
+   "label": "KlogAcpiFadtMissing"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "ACPI.*Cannot create",
    "advice": "The ACPI driver attempted to create an entry in /proc/acpi but failed. This should not happen and is a kernel bug.",
    "label": "KlogAcpiProcfsCreateFailed"

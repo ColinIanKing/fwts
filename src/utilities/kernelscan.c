@@ -798,10 +798,11 @@ static int parse_kernel_message(parser *p, token *t)
 		if (printk &&
 		    (t->type == TOKEN_IDENTIFIER) &&
 		    (prev_token_type == TOKEN_PAREN_OPENED) &&
-		    (strcmp(t->token, "KERN_ERR") == 0)) {
+		    ((strcmp(t->token, "KERN_ERR") == 0) ||
+		     (strcmp(t->token, "KERN_CRIT") == 0) ||
+		     (strcmp(t->token, "KERN_EMERG") == 0))) {
 			emit = true;
 		}
-
 
 		if (t->type == TOKEN_LITERAL_STRING) {
 			literal_strip_quotes(t);

@@ -17,6 +17,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
+CONFIGS="-DCONFIG_ACPI_HOTPLUG_CPU -DCONFIG_ACPI_PROC_EVENT \
+	 -DCONFIG_ACPI_PROCFS_POWER -DCONFIG_ACPI_SLEEP \
+	 -DCONFIG_CPU_FREQ -DCONFIG_DMI -DCONFIG_HIBERNATION \
+	 -DCONFIG_HOTPLUG_CPU -DCONFIG_KEXEC -DCONFIG_NET \
+	 -DCONFIG_PM -DCONFIG_PM_SLEEP -DCONFIG_SMP \
+	 -DCONFIG_SUSPEND -DCONFIG_X86 -DCONFIG_X86_IO_APIC"
+
 KERNELSCAN=./kernelscan
 TMP=/tmp/kernelscan_$$.txt
 
@@ -34,7 +41,7 @@ fi
 
 scan_source_file()
 {
-	$KERNELSCAN < $1 -E | gcc  -E - | $KERNELSCAN -P > $TMP
+	$KERNELSCAN < $1 -E | gcc -E $CONFIGS - | $KERNELSCAN -P > $TMP
 	if [ $(stat -c%s $TMP) -gt 0 ]; then
 		echo "Source: $1"
 		cat $TMP

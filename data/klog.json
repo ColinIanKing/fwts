@@ -80,6 +80,46 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "apm.*an event queue overflowed",
+   "advice": "More then 20 APM events were queued up which is unexpected.  The queue was not being drained quickly by a reading process (perhaps it is not running).",
+   "label": "KlogApmEventQueueOverflow"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "apm.*passed bad filp",
+   "advice": "A read of the APM events was performed by a reading process with an unrecognised file pointer. This should not happen.",
+   "label": "KlogApmReadBadFileptr"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "apm.*filp not in user list",
+   "advice": "An attempt to release a APM reader occurred using an unrecognised file pointer. This should not happen.",
+   "label": "KlogApmReleaseBadFileptr"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "apm.*cannot allocate struct of size %d bytes",
+   "advice": "An attempt to open failed, out of memory. APM events cannot be read.",
+   "label": "KlogApmOpenNoMemory"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "apm.*disabled - Unable to start kernel thread",
+   "advice": "Cannot start kernel APM thread, APM handling will be disabled.",
+   "label": "KlogApmKernelThreadFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "PnPBIOS.*ESCD size reported by BIOS escd_info call is too great",
    "advice": "The ESCD size was greater than a sane size of 32K.",
    "label": "KlogPnpBiosEscdSize"

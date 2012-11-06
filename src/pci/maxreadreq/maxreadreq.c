@@ -88,7 +88,8 @@ static int maxreadreq_test1(fwts_framework *fw)
 				break;
 			}
 			snprintf(current_device, sizeof(current_device), "pci://00:%s", line);
-			strncpy(current_type, line+8, 511);
+			strncpy(current_type, line+8, sizeof(current_type)-1);
+			current_type[sizeof(current_type)-1] = '\0';
 			c = strchr(current_type, ':');
 			if (c)
 				*c='\0';

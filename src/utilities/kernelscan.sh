@@ -41,12 +41,16 @@ fi
 
 scan_source_file()
 {
-	$KERNELSCAN < $1 -E | gcc -E $CONFIGS - | $KERNELSCAN -P > $TMP
-	if [ $(stat -c%s $TMP) -gt 0 ]; then
-		echo "Source: $1"
-		cat $TMP
+	if [ -f $1 ]; then
+		$KERNELSCAN < $1 -E | gcc -E $CONFIGS - | $KERNELSCAN -P > $TMP
+		if [ $(stat -c%s $TMP) -gt 0 ]; then
+			echo "Source: $1"
+			cat $TMP
+		fi
+		rm $TMP	
+	else
+		echo "Source: $1 does not exist"
 	fi
-	rm $TMP
 }
 
 scan_source_tree()

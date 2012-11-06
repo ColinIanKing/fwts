@@ -75,7 +75,8 @@ static void gather_info(fwts_framework *fw, fwts_list *cpus)
 					fwts_log_error(fw, "Cannot allocate memory.");
 					break;
 				}
-				strncpy(cpu->cpu, entry->d_name, 16);
+				strncpy(cpu->cpu, entry->d_name, sizeof(cpu->cpu) - 1);
+				cpu->cpu[sizeof(cpu->cpu) - 1] = '\0';
 				cpu->version = strtoul(data, NULL, 16);
 				free(data);
 				fwts_list_append(cpus, cpu);

@@ -764,7 +764,8 @@ static int parse_kernel_message(parser *p, token *t)
 
 	printk = (strcmp(t->token, "printk") == 0);
 
-	if (strcmp(t->token, "dev_err") == 0)
+	if ((strcmp(t->token, "dev_err") == 0) ||
+	    (strcmp(t->token, "ACPI_ERROR") == 0))
 		emit = true;
 
 	line = strdupcat(line, t->token);
@@ -855,7 +856,8 @@ static void parse_kernel_messages(FILE *fp)
 
 	while ((get_token(&p, &t)) != EOF) {
 		if ((strcmp(t.token, "printk") == 0) ||
-		    (strcmp(t.token, "dev_err") == 0)) {
+		    (strcmp(t.token, "dev_err") == 0) ||
+		    (strcmp(t.token, "ACPI_ERROR") == 0)) {
 			parse_kernel_message(&p, &t);
 		} else
 			token_clear(&t);

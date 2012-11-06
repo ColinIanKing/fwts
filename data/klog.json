@@ -165,6 +165,14 @@
    "label": "KlogE820TooManyEntries"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Ooops! Too many entries in the memory map!",
+   "advice": "Legacy E820 BIOS has a limit of 128 entries in the E820 memory map but the firmware seems to have more than this. For EFI Numa hardare, the limit is 128 + 3 * maximum number of nodes.  The kernel has ignore the extra entries.  This could lead to regions of memory being used by the kernel when in fact is should be reserved and this can lead to unexpected behaviour.",
+   "label": "KlogE820TooManyEntries"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",

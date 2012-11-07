@@ -137,6 +137,32 @@ static bool checktimefields(fwts_framework *fw, EFI_TIME *Time)
 	return true;
 }
 
+
+static void addonehour(EFI_TIME *time)
+{
+	if (time->Hour != 23) {
+		time->Hour += 1;
+		return;
+	}
+	time->Hour = 0;
+
+	if ((time->Day != dayofmonth[time->Month - 1]) &&
+		(!(time->Month == 2 && (!IS_LEAP(time->Year)
+		&& time->Day == 28)))) {
+		time->Day += 1;
+		return;
+	}
+	time->Day = 1;
+
+	if (time->Month != 12) {
+		time->Month += 1;
+		return;
+	}
+	time->Month = 1;
+	time->Year += 1;
+	return;
+}
+
 static int uefirttime_init(fwts_framework *fw)
 {
 	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
@@ -341,10 +367,114 @@ static int uefirttime_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirttime_test4(fwts_framework *fw)
+{
+
+	long ioret;
+	struct efi_setwakeuptime setwakeuptime;
+	uint64_t status;
+	EFI_TIME oldtime;
+	EFI_TIME newtime;
+
+	struct efi_gettime gettime;
+	EFI_TIME_CAPABILITIES efi_time_cap;
+
+	struct efi_getwakeuptime getwakeuptime;
+	uint8_t enabled, pending;
+
+	gettime.Capabilities = &efi_time_cap;
+	gettime.Time = &oldtime;
+	gettime.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
+			"Failed to get time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	/* change the hour, add 1 hour*/
+	addonehour(&oldtime);
+
+	setwakeuptime.Time = &oldtime;
+	setwakeuptime.status = &status;
+	setwakeuptime.Enabled = true;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
+			"Failed to set wakeup time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	sleep(1);
+
+	getwakeuptime.Enabled = &enabled;
+	getwakeuptime.Pending = &pending;
+	getwakeuptime.Time = &newtime;
+	getwakeuptime.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, &getwakeuptime);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
+			"Failed to get wakeup time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	if (*getwakeuptime.Enabled != true) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTimeEnable",
+			"Failed to set wakeup alarm clock, wakeup timer should be enabled.");
+		return FWTS_ERROR;
+	}
+
+	if (*getwakeuptime.Pending != false) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTimePending",
+			"Get error alarm signle status.");
+		return FWTS_ERROR;
+	}
+
+	if ((oldtime.Year != newtime.Year) || (oldtime.Month != newtime.Month) ||
+		(oldtime.Day != newtime.Day) || (oldtime.Hour != newtime.Hour)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTimeVerify",
+			"Failed to verify wakeup time after change.");
+		return FWTS_ERROR;
+	}
+
+	setwakeuptime.Enabled = false;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
+			"Failed to set wakeup time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	sleep(1);
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, &getwakeuptime);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
+			"Failed to get wakeup time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	if (*getwakeuptime.Enabled != false) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTimeEnable",
+			"Failed to set wakeup alarm clock, wakeup timer should be disabled.");
+		return FWTS_ERROR;
+	}
+
+	fwts_passed(fw, "UEFI runtime service SetWakeupTime interface test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirttime_tests[] = {
 	{ uefirttime_test1, "Test UEFI RT service get time interface." },
 	{ uefirttime_test2, "Test UEFI RT service set time interface." },
 	{ uefirttime_test3, "Test UEFI RT service get wakeup time interface." },
+	{ uefirttime_test4, "Test UEFI RT service set wakeup time interface." },
 	{ NULL, NULL }
 };
 

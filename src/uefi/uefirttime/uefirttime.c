@@ -313,9 +313,38 @@ static int uefirttime_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirttime_test3(fwts_framework *fw)
+{
+	long ioret;
+	struct efi_getwakeuptime getwakeuptime;
+	uint64_t status;
+	uint8_t enabled, pending;
+	EFI_TIME efi_time;
+
+	getwakeuptime.Enabled = &enabled;
+	getwakeuptime.Pending = &pending;
+	getwakeuptime.Time = &efi_time;
+	getwakeuptime.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, &getwakeuptime);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
+			"Failed to get wakeup time with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	if (!checktimefields(fw, getwakeuptime.Time))
+		return FWTS_ERROR;
+
+	fwts_passed(fw, "UEFI runtime service GetWakeupTime interface test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirttime_tests[] = {
 	{ uefirttime_test1, "Test UEFI RT service get time interface." },
 	{ uefirttime_test2, "Test UEFI RT service set time interface." },
+	{ uefirttime_test3, "Test UEFI RT service get wakeup time interface." },
 	{ NULL, NULL }
 };
 

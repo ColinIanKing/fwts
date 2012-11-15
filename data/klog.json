@@ -79,6 +79,14 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Time parameter is too large",
+   "advice": "ACPI Stall() op was requested to wait for more than 255 usec.  The ACPI specification states that the maximum should be 100 usec but to accommodate some firmware a maximum of 255 is supported by the kernel.",
+   "label": "KlogAcpiStallTooLarge"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
    "pattern": "Evaluating _BCM failed",
    "advice": "Could not set the brightness level, the ACPI control _BCM failed to execute correctly.",

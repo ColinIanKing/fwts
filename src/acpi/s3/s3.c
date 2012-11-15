@@ -186,11 +186,12 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
+static int s3_check_log(fwts_framework *fw, int *errors, int *oopses, int *warn_ons)
 {
 	fwts_list *klog;
 	int error;
 	int oops;
+	int warn_on;
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
@@ -211,10 +212,11 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses)
 		fwts_log_error(fw, "Error parsing kernel log.");
 	*errors += error;
 
-	if (fwts_oops_check(fw, klog, &oops))
+	if (fwts_oops_check(fw, klog, &oops, &warn_on))
 		fwts_log_error(fw, "Error parsing kernel log.");
 
 	*oopses += oops;
+	*warn_ons += warn_on;
 
 	fwts_klog_free(klog);
 
@@ -228,6 +230,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int hw_errors = 0;
 	int pm_errors = 0;
 	int klog_oopses = 0;
+	int klog_warn_ons = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
 
@@ -245,7 +248,7 @@ static int s3_test_multiple(fwts_framework *fw)
 			break;
 		}
 		fwts_progress_message(fw, percent, "(Checking logs for errors)");
-		s3_check_log(fw, &klog_errors, &klog_oopses);
+		s3_check_log(fw, &klog_errors, &klog_oopses, &klog_warn_ons);
 
 		if (!s3_device_check) {
 			char buffer[80];
@@ -288,6 +291,11 @@ static int s3_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "Found %d kernel oopses.", klog_oopses);
 	else
 		fwts_passed(fw, "No kernel oopses detected.");
+
+	if (klog_warn_ons > 0)
+		fwts_log_info(fw, "Found %d kernel WARN_ON warnings.", klog_warn_ons);
+	else
+		fwts_passed(fw, "No kernel WARN_ON warnings detected.");
 
 
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {

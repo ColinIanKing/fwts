@@ -77,6 +77,14 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not map memory at 0x.* for length",
+   "advice": "ACPI could not memory map the Extended BIOS Data Area (EBDA) or upper region 0xE0000-0xFFFFF to search for the ACPI RSDP.  This normally results in the RSDP not being found, which means the ACPI tables can't be located and hence ACPI is disabled.",
+   "label": "KlogAcpiRsdpMemMap"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",

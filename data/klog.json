@@ -80,6 +80,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid zero ID from AcpiOsGetThreadId",
+   "advice": "A zero thread ID was returned which will break the ACPI driver.  This should never happen, since the thread ID is actually the address of the thread descriptor which is never zero.",
+   "label": "KlogAcpiZeroThreadId"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Unknown action (0x",
    "advice": "The ACPI engine was expecting to increment, decrement or delete a reference count but instead was given an uknown action to do instead.  This is a bug in the ACPI ACPICA code.",
    "label": "KlogAcpiRefCountUnknownAction"

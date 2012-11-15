@@ -147,7 +147,7 @@ static void unget_next(parser *p, int ch)
 {
 	get_stack *new;
 
-	if ((new = calloc(sizeof(get_stack), 1)) == NULL) {
+	if ((new = calloc(1, sizeof(get_stack))) == NULL) {
 		fprintf(stderr, "unget_next: Out of memory!\n");
 		exit(EXIT_FAILURE);
 	}

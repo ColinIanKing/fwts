@@ -78,6 +78,86 @@
  [
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Found a grandchild.*P=.*C=",
+   "advice": "An error occured in the ACPI driver, acpi_ns_delete_children() was trying to delete children objects and discovered that one of these had children objects of it's own, which should not happen.",
+   "label": "KlogAcpiObjectGrandchild"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot assign type .* to .*must be type Int/Str/Buf",
+   "advice": "ACPI execution run time error: Type assignment was illegal, acpi_ex_resolve_object() was trying assign a type to a different type which is illegal.",
+   "label": "KlogAcpiTypeAssign"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Store into an unresolved Alias object",
+   "advice": "ACPI execution run time error: The ACPI driver has been asked to resolve an object of type ACPI_TYPE_LOCAL_ALIAS or ACPI_TYPE_LOCAL_METHOD_ALIAS but this should not occur as these should have been resolved earlier. See function acpi_ex_resolve_object() for more details.",
+   "label": "KlogAcpiUnresolveAliasObject"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown AML opcode 0x",
+   "advice": "ACPI execution run time error: The ACPI interpreter has reached an opcode that is unknown, this normally is a bug in the underlying AML code either because of badly written AML code or the compiler has produced code that is incorrect or the ACPI interpreter does not support this valid opcode. ",
+   "label": "KlogAcpiUnknownAmlOpcode"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "BCD digit too large (not decimal): 0x",
+   "advice": "ACPI execution run time error: AML opcode AML_FROM_BCD_OP (0x5b28) contains a BCD digit value that is greater than 9 and is out of range for a Binary Coded Decimal digit.",
+   "label": "KlogAcpiBcdDigitTooLarge"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Integer too large to convert to BCD",
+   "advice": "ACPI execution run time error: AML opcode AML_TO_BCD_OP (0x5b29) has been requested to convert an integer into a Binary Coded Decimal value that is too large. An overflow has been caught and it is possible that unexpected execution behaviour will occur.",
+   "label": "KlogAcpiToBcdOverflow"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "obsolete and not implemented",
+   "advice": "ACPI execution run time error: Execution of AML_SHIFT_LEFT_BIT_OP (0x5b11) or AML_SHIFT_RIGHT_BIT_OP (0x5b10) were ignored, these are obsolete AML opcodes and are not implemented in the ACPI interpreter. Unexepcted execution behaviour will occur.",
+   "label": "KlogAcpiOpObsolete"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Operand must be Buffer/Integer/String/Package - found type",
+   "advice": "ACPI execution run time error: Execution of AML_SIZE_OF_OP with an operand that is not a buffer, integer, string or package has occurred. This will result in unexpected behaviour. This is a bug in the AML.",
+   "label": "KlogAcpiOpTypeBad"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown Index TargetType 0x",
+   "advice": "ACPI execution run time error: Execution of AML_DEREF_OF_OP (0x83) with an illegal target index operator that was not a buffer or a package type.",
+   "label": "KlogAcpiUnknownIndexTargetType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown class in reference",
+   "advice": "ACPI execution run time error: Execution of AML_DEREF_OF_OP (0x83) with an illegal operand reference class.",
+   "label": "KlogAcpiUnknownIndexTargetType"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "apm.*an event queue overflowed",

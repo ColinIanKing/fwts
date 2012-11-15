@@ -22,6 +22,6 @@
 
 #include <sys/types.h>
 
-int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses);
+int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses, int *warn_ons);
 
 #endif

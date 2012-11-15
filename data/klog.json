@@ -198,6 +198,14 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid AML Opcode: 0x",
+   "advice": "ACPI execution run time error: The ACPI interpreter has reached an opcode that is unknown, this normally is a bug in the underlying AML code either because of badly written AML code or the compiler has produced code that is incorrect or the ACPI interpreter does not support this valid opcode. ",
+   "label": "KlogAcpiUnknownAmlOpcode"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "BCD digit too large (not decimal): 0x",

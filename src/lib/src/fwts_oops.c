@@ -117,13 +117,14 @@ static void fwts_klog_stack_dump(
 int fwts_oops_check(fwts_framework *fw, fwts_list *klog, int *oopses, int *warn_ons)
 {
 	fwts_list_link *item;
-	*oopses = 0;
-	*warn_ons = 0;
 
 	/* Sanity check */
 	if ((fw == NULL) || (oopses == NULL) ||
 	    (warn_ons == NULL) || (klog == NULL))
 		return FWTS_ERROR;
+
+	*oopses = 0;
+	*warn_ons = 0;
 
 	fwts_list_foreach(item, klog) {
 		char *line = fwts_klog_remove_timestamp(fwts_list_data(char *, item));

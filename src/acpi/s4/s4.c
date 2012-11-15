@@ -69,10 +69,11 @@ static int s4_init(fwts_framework *fw)
 }
 
 static void s4_check_log(fwts_framework *fw,
-	fwts_list *klog, int *errors, int *oopses)
+	fwts_list *klog, int *errors, int *oopses, int *warn_ons)
 {
 	int error;
 	int oops;
+	int warn_on;
 
 	/* Check for kernel errors reported in the log */
 	if (fwts_klog_pm_check(fw, NULL, klog, &error))
@@ -87,9 +88,10 @@ static void s4_check_log(fwts_framework *fw,
 		fwts_log_error(fw, "Error parsing kernel log.");
 	*errors += error;
 
-	if (fwts_oops_check(fw, klog, &oops))
+	if (fwts_oops_check(fw, klog, &oops, &warn_on))
 		fwts_log_error(fw, "Error parsing kernel log.");
 	*oopses += oops;
+	*warn_ons += warn_on;
 }
 
 static int s4_hibernate(fwts_framework *fw,
@@ -97,6 +99,7 @@ static int s4_hibernate(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
 	int *klog_oopses,
+	int *klog_warn_ons,
 	int *failed_alloc_image,
 	int percent)
 {
@@ -171,7 +174,7 @@ static int s4_hibernate(fwts_framework *fw,
 		return FWTS_ERROR;
 	}
 
-	s4_check_log(fw, klog, klog_errors, klog_oopses);
+	s4_check_log(fw, klog, klog_errors, klog_oopses, klog_warn_ons);
 
 	fwts_progress_message(fw, percent, "(Checking for PM errors)");
 
@@ -245,6 +248,7 @@ static int s4_test_multiple(fwts_framework *fw)
 	int hw_errors = 0;
 	int pm_errors = 0;
 	int klog_oopses = 0;
+	int klog_warn_ons = 0;
 	int awake_delay = s4_min_delay * 1000;
 	int delta = (int)(s4_delay_delta * 1000.0);
 	int tracing_buffer_size = -1;
@@ -263,7 +267,8 @@ static int s4_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "S4 cycle %d of %d\n",i+1,s4_multiple);
 
 		if (s4_hibernate(fw,
-			&klog_errors, &hw_errors, &pm_errors, &klog_oopses,
+			&klog_errors, &hw_errors, &pm_errors,
+			&klog_oopses, &klog_warn_ons,
 			&failed_alloc_image, percent) != FWTS_OK) {
 			fwts_log_error(fw, "Aborting S4 multiple tests.");
 			return FWTS_ERROR;
@@ -290,7 +295,8 @@ static int s4_test_multiple(fwts_framework *fw)
 					failed_alloc_image = 0;
 
 					if (s4_hibernate(fw,
-						&klog_errors, &hw_errors, &pm_errors, &klog_oopses,
+						&klog_errors, &hw_errors, &pm_errors,
+						&klog_oopses, &klog_warn_ons,
 						&failed_alloc_image, percent) != FWTS_OK) {
 						fwts_log_error(fw, "Aborting S4 multiple tests.");
 						ret = FWTS_ABORTED;
@@ -350,6 +356,12 @@ static int s4_test_multiple(fwts_framework *fw)
 		fwts_log_info(fw, "Found %d kernel oopses.", klog_oopses);
 	else
 		fwts_passed(fw, "No kernel oopses detected.");
+
+	if (klog_warn_ons > 0)
+		fwts_log_info(fw, "Found %d kernel WARN_ON warnings.", klog_warn_ons);
+	else
+		fwts_passed(fw, "No kernel WARN_ON warnings detected.");
+
 
 	/* Really passed or failed? */
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {

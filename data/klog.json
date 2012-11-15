@@ -80,6 +80,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown action (0x",
+   "advice": "The ACPI engine was expecting to increment, decrement or delete a reference count but instead was given an uknown action to do instead.  This is a bug in the ACPI ACPICA code.",
+   "label": "KlogAcpiRefCountUnknownAction"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Null Op",
    "advice": "The ACPI interpreter found a NULL parse opcode and didn't expect to. See acpi_ds_delete_result_if_not_used() or acpi_ds_is_result_used().",
    "label": "KlogAcpiNullOp"

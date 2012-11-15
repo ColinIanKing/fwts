@@ -121,7 +121,7 @@ fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 	if (list == NULL)
 		return NULL;
 
-	if ((link = calloc(sizeof(fwts_list_link),1)) == NULL)
+	if ((link = calloc(1,sizeof(fwts_list_link))) == NULL)
 		return NULL;
 
 	link->data = data;

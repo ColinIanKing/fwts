@@ -52,8 +52,9 @@ static int oops_deinit(fwts_framework *fw)
 static int oops_test1(fwts_framework *fw)
 {
 	int oopses = 0;
+	int warn_ons = 0;
 
-	if (fwts_oops_check(fw, klog, &oopses) != FWTS_OK) {
+	if (fwts_oops_check(fw, klog, &oopses, &warn_ons) != FWTS_OK) {
 		fwts_log_error(fw, "Error parsing kernel log.");
 		return FWTS_ERROR;
 	}
@@ -63,6 +64,12 @@ static int oops_test1(fwts_framework *fw)
 			"KernelOops", "Found %d oopses in kernel log.", oopses);
 	else
 		fwts_passed(fw, "Found no oopses in kernel log.");
+
+	if (warn_ons > 0)
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"KernelWarnOns", "Found %d WARN_ON warnings in kernel log.", warn_ons);
+	else
+		fwts_passed(fw, "Found no WARN_ON warnings in kernel log.");
 
 	return FWTS_OK;
 }

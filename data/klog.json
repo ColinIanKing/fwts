@@ -77,6 +77,54 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI Subsystem is already terminated",
+   "advice": "A request to terminate the ACPI driver but it is already terminated. You should not see this error.",
+   "label": "KlogAcpiAlreadyTerminated"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Null scope parameter",
+   "advice": "Failed to push the current scope onto the scope stack, the node was Null, which was not expected. See acpi_ds_scope_stack_push().",
+   "label": "KlogAcpiNullScopeParameter"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid conversion sub-opcode",
+   "advice": "The ACPI driver could not convert an AML resource descriptor to a corresponding internal resource descriptor. Refer to acpi_rs_convert_aml_to_resource() or acpi_rs_convert_resource_to_aml().",
+   "label": "KlogAcpiConversionSupOpcode"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid conversion opcode",
+   "advice": "The ACPI driver could not convert an AML resource descriptor to a corresponding internal resource descriptor. Refer to acpi_rs_convert_aml_to_resource() or acpi_rs_convert_resource_to_aml().",
+   "label": "KlogAcpiConversionSupOpcode"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No SMI_CMD in FADT, mode transition failed",
+   "advice": "ACPI FADT SMI_CMD is zero, with ACPI 2.0 this means that the system cannot transtion to/from ACPI mode.",
+   "label": "KlogAcpiFadtSmiCmdZero"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No ACPI mode transition supported in this system (enable/disable both zero)",
+   "advice": "ACPI FADT ACPI_ENABLE is zero and ACPI_DISABLE is set, ACPI 2.0 this means enabling or disabling is not supported and the system cannot transition to ACPI mode.",
+   "label": "KlogAcpiNoModeTransitionSupport"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",

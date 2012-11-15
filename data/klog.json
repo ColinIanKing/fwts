@@ -78,6 +78,22 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Null Op",
+   "advice": "The ACPI interpreter found a NULL parse opcode and didn't expect to. See acpi_ds_delete_result_if_not_used() or acpi_ds_is_result_used().",
+   "label": "KlogAcpiNullOp"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown parent opcode Op=",
+   "advice": "The ACPI interpreter found an AML opcode that had an unexpected parent class. This probably indicates an internal ACPI interpeter bug. ",
+   "label": "KlogAcpiUnknownParentOp"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Time parameter is too large",

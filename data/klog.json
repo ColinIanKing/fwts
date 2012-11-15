@@ -78,6 +78,38 @@
  [
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "Evaluating _BCM failed",
+   "advice": "Could not set the brightness level, the ACPI control _BCM failed to execute correctly.",
+   "label": "KlogAcpiBcmFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
+   "pattern": "Current brightness invalid",
+   "advice": "The ACPI video driver set the brightness level using the ACPI control _BCM, however the level used was not a known level (as returned by _BCL).",
+   "label": "KlogAcpiInvalidBrightness"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Too many duplicates in _BCL package",
+   "advice": "ACPI method _BCL (Query List of Brightness Control Levels Supported) contains too many duplicated brightness levels in the returned package and this is non-standard.",
+   "label": "KlogAcpiBclPackageContainsDuplicates"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Found unordered _BCL package",
+   "advice": "ACPI method _BCL (Query List of Brightness Control Levels Supported) has a maximum brightness value which is not the last value in the returned package. Values returned must be in ascending order.",
+   "label": "KlogAcpiBclUnorderedPackage"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "ACPI Subsystem is already terminated",
@@ -1455,14 +1487,6 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "ACPI Error.*Current brightness invalid",
-   "advice": "ACPI video driver has encountered a brightness level that is outside the expected range.",
-   "label": "KlogAcpiCurrentBrightnessInvalid"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_NAMESPACE_LOOKUP",
    "pattern": "ACPI Error.*Namespace lookup failure, AE_ALREADY_EXISTS",
    "advice": "",
@@ -1751,14 +1775,6 @@
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "ACPI Error.*Evaluating _BCM failed",
-   "advice": "The ACPI engine has failed to execute the _BCM Brightness Control Method.  This will result in possibly failing to set the display brightness level.",
-   "label": "KlogAcpiEvaluateBcmFailed"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_EVAL",
    "pattern": "ACPI (Warning|Error).*Evaluating .* failed",
    "advice": "Executing the ACPI Method leaded in an execution failure. This needs investigating.",
@@ -1851,22 +1867,6 @@
    "pattern": "ACPI Warning.*_BQC returned an invalid level",
    "advice": "Method _BQC (Brightness Query Current) returned an invalid display brightness level.",
    "label": "KlogAcpiBqcReturnedInvalidLevel"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "ACPI Error.*Found unordered _BCL package",
-   "advice": "Method _BCL (Query List of Brightness Control Levels Supported) has a maximum brightness value which is not the last value in the returned package. Values returned must be in ascending order.",
-   "label": "KlogAcpiBclUnorderedPackage"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "ACPI Error.*Too many duplicates in _BCL package",
-   "advice": "Method _BCL (Query List of Brightness Control Levels Supported) contains too many duplicated brightness levels in the returned package and this is non-standard.",
-   "label": "KlogAcpiBclPackageContainsDuplicates"
   },
   {
    "compare_mode": "regex",

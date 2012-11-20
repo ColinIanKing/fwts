@@ -80,9 +80,9 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "Could not acquire AML Interpreter mutex",
-   "advice": "The ACPI AML interpreter attempted to acquire the mutex but this failed. The interpreter will continue to execute but there will be race conditions occurring.",
-   "label": "KlogAcpiAmlMutexNotAcquired"
+   "pattern": "Divide by zero",
+   "advice": "The ACPI interpreter detected a zero divisor which produce a division by zero error.  The AML code is buggy and this will return an undefined value that may cause unexpected behaviour.",
+   "label": "KlogAcpiAmlDivideByZero"
   },
   {
    "compare_mode": "string",

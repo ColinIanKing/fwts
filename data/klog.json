@@ -77,6 +77,14 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown exception code: 0x",
+   "advice": "An execption occurred but the execption code was not recognized and the ACPI driver could not find a textual description for this exception. This is most probably a bug in the ACPI driver or ACPICA core.",
+   "label": "KlogAcpiUnknownExceptionCode"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

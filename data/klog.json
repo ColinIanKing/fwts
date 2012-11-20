@@ -77,6 +77,22 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Mutex .* is not acquired, cannot release",
+   "advice": "An attempt to release (unlock) an ACPI related mutex has occurred. This mutex could not be released. This is most probably a bug in the AML code where a Release opcode has been executed that does not match up with an earlier corresponding Mutex opcode. It may also be a bug in the ACPI driver, but this is less likely.",
+   "label": "KlogAcpiMutexReleaseError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Thread .* could not acquire Mutex",
+   "advice": "A mutex could not be acquired (locked) and the ACPI driver has flagged this up as an exception error. If this occurs when executing a AML Mutex opcode there could be race condition errors if the AML is not checking the return from the Mutex operation and a lot of firmware does omit this check.",
+   "label": "KlogAcpiMutexAcquireError"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",

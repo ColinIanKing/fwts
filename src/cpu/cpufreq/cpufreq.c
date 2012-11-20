@@ -589,7 +589,8 @@ static void check_sw_any(fwts_framework *fw)
 			if (i != j)
 				lowest_speed(fw, j);
 		newhigh_perf = get_performance(i);
-		if (high_perf - newhigh_perf > (high_perf - low_perf)/4 &&
+		if ((high_perf > newhigh_perf) &&
+		    (high_perf - newhigh_perf > (high_perf - low_perf)/4) &&
 		    (once == 0) && (high_perf - low_perf > 20)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPUsSetToSW_ANY",

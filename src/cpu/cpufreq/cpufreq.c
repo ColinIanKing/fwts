@@ -172,9 +172,7 @@ static unsigned long get_performance(const int cpu)
 	return loopcount;
 }
 
-
-static unsigned long get_performance_repeat(fwts_framework *fw,
-	int cpu, unsigned long Hz, int count, int type)
+static unsigned long get_performance_repeat(int cpu, int count, int type)
 {
 	int i;
 
@@ -182,7 +180,6 @@ static unsigned long get_performance_repeat(fwts_framework *fw,
 	unsigned long long cumulative = 0;
 	unsigned long retval;
 
-	set_HZ(fw, cpu, Hz);
 	for (i = 0; i < count; i++) {
 		unsigned long temp;
 		temp = get_performance(cpu);
@@ -468,11 +465,11 @@ static void do_sw_all_test(fwts_framework *fw)
 	closedir(dir);
 
 	/* All CPUs at the lowest frequency */
-	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
-						0, 5, GET_PERFORMANCE_MIN) / top_speed;
+	lowperf = 100 * get_performance_repeat(first_cpu_index,
+						5, GET_PERFORMANCE_MIN) / top_speed;
 	highest_speed(fw, first_cpu_index);
-	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
-						0, 5, GET_PERFORMANCE_MAX) / top_speed;
+	highperf = 100 * get_performance_repeat(first_cpu_index,
+						5, GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -515,8 +512,8 @@ static void do_sw_any_test(fwts_framework *fw)
 	rewinddir(dir);
 
 	/* All CPUs at the lowest frequency */
-	lowperf = 100 * get_performance_repeat(fw, first_cpu_index,
-						0, 5, GET_PERFORMANCE_MIN) / top_speed;
+	lowperf = 100 * get_performance_repeat(first_cpu_index,
+						5, GET_PERFORMANCE_MIN) / top_speed;
 
 	highest_speed(fw, first_cpu_index);
 
@@ -530,8 +527,8 @@ static void do_sw_any_test(fwts_framework *fw)
 	}
 	closedir(dir);
 
-	highperf = 100 * get_performance_repeat(fw, first_cpu_index,
-						0, 5, GET_PERFORMANCE_MAX) / top_speed;
+	highperf = 100 * get_performance_repeat(first_cpu_index,
+						5, GET_PERFORMANCE_MAX) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,

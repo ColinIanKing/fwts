@@ -77,6 +77,14 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Sleep values out of range: A=.* B=.*",
+   "advice": "An attempt to transition to a sleep state has occurred with the ACPI sleep type values for the PM controls set greater than the maximum allowed value of 7. This is an illegal value and the system will not be transistioned to this sleep state. ",
+   "label": "KlogAcpiSleepValuesRangeError"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

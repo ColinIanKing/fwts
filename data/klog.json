@@ -80,6 +80,22 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Index .* is beyond end of object",
+   "advice": "The ACPI interpreter could not execute an AML index opcode, the index in the first operand is out of range.",
+   "label": "KlogAcpiIndexOverflow"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unexpected notify object type",
+   "advice": "The ACPI interpreter could not execute a AML notify opcode because the first operand is not a notify object.  This is a bug in the firmware.",
+   "label": "KlogAcpiUnexpectedNotifyObjType"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Sleep values out of range: A=.* B=.*",
    "advice": "An attempt to transition to a sleep state has occurred with the ACPI sleep type values for the PM controls set greater than the maximum allowed value of 7. This is an illegal value and the system will not be transistioned to this sleep state. ",
    "label": "KlogAcpiSleepValuesRangeError"

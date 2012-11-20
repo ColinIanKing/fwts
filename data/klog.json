@@ -77,6 +77,22 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not acquire AML Interpreter mutex",
+   "advice": "The ACPI AML interpreter attempted to acquire the mutex but this failed. The interpreter will continue to execute but there will be race conditions occurring.",
+   "label": "KlogAcpiAmlMutexNotAcquired"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not release AML Interpreter mutex",
+   "advice": "The ACPI AML interpreter attempted to release the mutex but this failed. The next time interpreter will attempt to acquire this mutex it will fail, however it will continue to execute AML but there will be race conditions occurring.",
+   "label": "KlogAcpiAmlMutexNotReleased"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

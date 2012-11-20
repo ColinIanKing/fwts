@@ -77,6 +77,46 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to initialize fixed events",
+   "advice": "The ACPI driver failed to initialize the structure that keeps track of fixed event handlers.  The failure occurred when trying to disable one of the 4 fixed events and this causes the ACPI subsystem initialization to fail, which disables ACPI support.",
+   "label": "KlogAcpiFixedEventInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to initialize general purpose events",
+   "advice": "The ACPI driver failed to initialize the General Purpose Event (GPE) blocks as defined in the ACPI FADT. This in turn causes the ACPI subsystem initialization to fail, which disables ACPI support.",
+   "label": "KlogAcpiGpeInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to install System Control Interrupt handler",
+   "advice": "The ACPI driver failed to install the System Control (SCI) interrupt handler, which has to be working for ACPI to work correctly. This in turn causes the ACPI subsystem initialization to fail, which disables ACPI support.",
+   "label": "KlogAcpiSciHandlerInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to initialize Global Lock handler",
+   "advice": "The ACPI driver failed to initialized the Global Lock handler, which is basically a kernel mutex (and should not fail). This in turn causes the ACPI subsystem initialization to fail, which disables ACPI support.",
+   "label": "KlogAcpiGlobalLockInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No installed handler for fixed event",
+   "advice": "The ACPI driver failed to dispatch a fixed event because their is no fixed event handler installed for this event. This is an error and the kernel has disabled this event for further interrupts. This could lead to reduced functionality.",
+   "label": "KlogAcpiNoFixedEventHandler"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

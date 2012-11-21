@@ -119,7 +119,7 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
  */
 void fwts_framework_test_add(const char *name,
 	fwts_framework_ops *ops,
-	const int priority,
+	const fwts_priority priority,
 	const fwts_framework_flags flags)
 {
 	fwts_framework_test *new_test;

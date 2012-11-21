@@ -70,6 +70,17 @@ typedef struct {
 	uint32_t infoonly;
 } fwts_results;
 
+/*
+ *  Where to schedule a test, priority sorted lowest first, highest last
+ */
+typedef enum {
+	FWTS_TEST_FIRST	= 0,
+	FWTS_TEST_EARLY	= 1,
+	FWTS_TEST_ANYTIME = 2,
+	FWTS_TEST_LATE = 3,
+	FWTS_TEST_LAST = 4
+} fwts_priority;
+
 static inline void fwts_results_zero(fwts_results *results)
 {
 	memset(results, 0, sizeof(fwts_results));
@@ -157,14 +168,14 @@ typedef struct fwts_framework_ops {
 typedef struct fwts_framework_test {
 	const char *name;
 	fwts_framework_ops *ops;
-	int         priority;
+	fwts_priority priority;
 	fwts_framework_flags flags;
 	fwts_results results;			/* Per test results */
 	bool	    was_run;
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char **argv);
-void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const fwts_framework_flags flags);
+void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const fwts_priority priority, const fwts_framework_flags flags);
 int  fwts_framework_compare_test_name(void *, void *);
 void fwts_framework_show_version(FILE *fp, const char *name);
 
@@ -216,15 +227,6 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 		 fw->minor_tests.warning +
 		 fw->minor_tests.aborted) == 0);
 }
-
-/*
- *  Where to schedule a test, priority sorted lowest first, highest last
- */
-#define FWTS_TEST_FIRST		0		
-#define FWTS_TEST_EARLY		10
-#define FWTS_TEST_ANYTIME	50
-#define FWTS_TEST_LATE		75
-#define FWTS_TEST_LAST		100
 
 /*
  *  Batch (run w/o interaction) or interactive (requires user interaction) flags

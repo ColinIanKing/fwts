@@ -489,7 +489,7 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 
 	/* Not a utility test?, then we require a test summary at end of the test run */
 	if (!(test->flags & FWTS_FLAG_UTILS))
-		fw->print_summary = 1;
+		fw->print_summary = true;
 
 	if (test->ops->description) {
 		fwts_log_heading(fw, "%s", test->ops->description);

@@ -116,7 +116,7 @@ typedef struct {
 	uint32_t	total_run;		/* total number of major tests run */
 
 	int minor_test_progress;		/* Percentage completion of current test */
-	int print_summary;			/* Print summary of results at end of test runs */
+	bool print_summary;			/* Print summary of results at end of test runs */
 	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
 
 	fwts_list test_taglist;			/* List of tags found when running all minor tests */

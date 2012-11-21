@@ -123,7 +123,7 @@ typedef struct {
 	fwts_list total_taglist;		/* List of tags found when running all tests */
 
 	int firmware_type;			/* Type of firmware */
-	int show_progress;			/* Show progress while running current test */
+	bool show_progress;			/* Show progress while running current test */
 
 	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
 } fwts_framework;

@@ -90,7 +90,7 @@ static inline void fwts_framework_summate_results(fwts_results *total, fwts_resu
  *  Test framework context
  */
 typedef struct {
-	int magic;				/* identify struct magic */
+	uint32_t magic;				/* identify struct magic */
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
 

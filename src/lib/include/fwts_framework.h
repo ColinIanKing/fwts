@@ -158,13 +158,13 @@ typedef struct fwts_framework_test {
 	const char *name;
 	fwts_framework_ops *ops;
 	int         priority;
-	int         flags;
+	fwts_framework_flags flags;
 	fwts_results results;			/* Per test results */
 	bool	    was_run;
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char **argv);
-void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const int flags);
+void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const int priority, const fwts_framework_flags flags);
 int  fwts_framework_compare_test_name(void *, void *);
 void fwts_framework_show_version(FILE *fp, const char *name);
 

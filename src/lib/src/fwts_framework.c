@@ -120,7 +120,7 @@ static int fwts_framework_compare_priority(void *data1, void *data2)
 void fwts_framework_test_add(const char *name,
 	fwts_framework_ops *ops,
 	const int priority,
-	const int flags)
+	const fwts_framework_flags flags)
 {
 	fwts_framework_test *new_test;
 
@@ -221,8 +221,8 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 	int total = 0;
 
 	typedef struct {
-		const char *title;	/* Test category */
-		const int  flag;	/* Mask of category */
+		const char *title;		/* Test category */
+		fwts_framework_flags flag;	/* Mask of category */
 	} fwts_categories;
 
 	static fwts_categories categories[] = {

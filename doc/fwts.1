@@ -95,6 +95,18 @@ Load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump.
 latter is preferred as fwts \-\-dump is able to dump more tables than acpidump. This
 allows one to dump tables from one machine and processes them with fwts on another machine.
 .TP
+.B \-\-filter\-error\-discard
+Specifies the errors that one wants to silently ignore.  One supplies a comma sperated
+list of fwts error message labels that one wants fwts to not report as errors. fwts will
+run the test but if there is a test failure and the label matches the one supplied in this
+list fwts will then just ignore this error. This cannot be used with \-\-filter\-error\-keep.
+.TP
+.B \-\-filter\-error\-keep
+Specifies the errors that one wants to keep, all other errors are silently ignored.
+One supplies a comma sperated list of fwts error message labels that one wants fwts
+report as errors, other test failures will be not reported and silently ignored.
+This cannot be used with \-\-filter\-error\-discard.
+.TP
 .B \-f, \-\-force\-clean
 creates a new results log file, rather than just appending to any existing one (default).
 .TP

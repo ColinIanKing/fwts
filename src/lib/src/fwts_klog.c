@@ -397,15 +397,22 @@ static int fwts_klog_check(fwts_framework *fw,
 		if (patterns[i].label == NULL)
 			goto fail;
 
-		if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
-			fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
-			patterns[i].re = NULL;
-		} else {
-			patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
-			if (error != NULL) {
-				fwts_log_error(fw, "Regex %s failed to optimize: %s.", patterns[i].pattern, error);
+		if (patterns[i].compare_mode == FWTS_COMPARE_REGEX) {
+			if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
+				fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
 				patterns[i].re = NULL;
+				patterns[i].extra = NULL;
+			} else {
+				patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
+				if (error != NULL) {
+					fwts_log_error(fw, "Regex %s failed to optimize: %s.", patterns[i].pattern, error);
+					patterns[i].re = NULL;
+					patterns[i].extra = NULL;
+				}
 			}
+		} else {
+			patterns[i].re = NULL;
+			patterns[i].extra = NULL;
 		}
 	}
 	/* We've now collected up the scan patterns, lets scan the log for errors */

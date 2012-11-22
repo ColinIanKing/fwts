@@ -1233,6 +1233,16 @@ int fwts_framework_args(const int argc, char **argv)
 		goto tidy_close;
 	}
 
+	/* These are mutually exclusive, both cannot have items */
+	if ((fwts_list_len(&fw->errors_filter_keep) > 0) &&
+	    (fwts_list_len(&fw->errors_filter_discard) > 0)) {
+		fprintf(stderr,
+			"The --filter-error-discard and --filter-error-keep options are\n"
+			"mutually exclusive.  Specify one or the other, but not both.\n");
+		ret = FWTS_ERROR;
+		goto tidy_close;
+	}
+
 	/* Ensure we have just one log type specified for non-filename logging */
 	if (fwts_log_type_count(fw->log_type) > 1 &&
 	    fwts_log_get_filename_type(fw->results_logname) != LOG_FILENAME_TYPE_FILE) {

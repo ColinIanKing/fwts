@@ -80,6 +80,8 @@ static fwts_option fwts_framework_options[] = {
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
 	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
 	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses." },
+	{ "filter-error-discard", "", 1, "Discard errors that match any of the specified labels." },
+	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -649,6 +651,50 @@ static fwts_framework_test *fwts_framework_test_find(const char *name)
 	return NULL;
 }
 
+bool fwts_error_filtered_out(fwts_framework *fw, const char *label)
+{
+	fwts_list_link *item;
+
+	/*
+	 *  Has the user specified errors to discard?  If we find any matches
+	 *  then flag as wanting to filter out.
+	 */
+	if (fwts_list_len(&fw->errors_filter_discard) > 0) {
+		fwts_list_foreach(item, &fw->errors_filter_discard) {
+			if (strcmp(label, fwts_list_data(char *, item)) == 0)
+				return true;	/* Discard */
+		}
+		return false;	/* No matches, won't discard */
+	}
+
+	/*
+	 *  Has the user specified errors to keep?  If we find any matches
+	 *  then flag as wanting to keep.
+	 */
+	if (fwts_list_len(&fw->errors_filter_keep) > 0) {
+		fwts_list_foreach(item, &fw->errors_filter_keep) {
+			if (strcmp(label, fwts_list_data(char *, item)) == 0)
+				return false;	/* Don't discard */
+		}
+		return true;	/* Not found, so discard */
+	}
+
+	/*
+	 *  User not specified any filters?  Don't discard
+	 */
+	return false;
+}
+
+/*
+ *  fwts_error_inc()
+ *	Increment the error count if we're not filtering out this error (based on label).
+ */
+void fwts_error_inc(fwts_framework *fw, const char *label, int *count)
+{
+	if (!fwts_error_filtered_out(fw, label))
+		(*count)++;
+}
+
 /*
  *  fwts_framework_log()
  *	log a test result
@@ -663,6 +709,7 @@ void fwts_framework_log(fwts_framework *fw,
 	char buffer[4096];
 	char prefix[256];
 	char *str = fwts_log_field_to_str_upper(field);
+	bool do_count = true;
 
 	if (fmt) {
 		va_list ap;
@@ -673,22 +720,31 @@ void fwts_framework_log(fwts_framework *fw,
 	} else
 		*buffer = '\0';
 
-	if (count)
-		(*count)++;
-
 	switch (field) {
 	case LOG_ADVICE:
-		fwts_log_nl(fw);
-		snprintf(prefix, sizeof(prefix), "%s: ", str);
-		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
-		fwts_log_nl(fw);
+		/* If the previous LOG_FAILED message was filtered out, ignore following advice */
+		if (fw->error_filtered_out) {
+			do_count = false;
+		} else {
+			fwts_log_nl(fw);
+			snprintf(prefix, sizeof(prefix), "%s: ", str);
+			fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+			fwts_log_nl(fw);
+		}
 		break;
 	case LOG_FAILED:
-		fw->failed_level |= level;
-		fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
-		snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
-			str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
-		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+		if (fwts_error_filtered_out(fw, label)) {
+			fw->error_filtered_out = true;
+			do_count = false;
+		} else {
+			fw->error_filtered_out = false;
+
+			fw->failed_level |= level;
+			fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
+			snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
+				str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
+			fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+		}
 		break;
 	case LOG_PASSED:
 	case LOG_WARNING:
@@ -703,6 +759,10 @@ void fwts_framework_log(fwts_framework *fw,
 	default:
 		break;
 	}
+
+	/* Only increment stats if we've reported something */
+	if (do_count && (count != NULL))
+		(*count)++;
 }
 
 /*
@@ -831,6 +891,23 @@ static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_s
 			return FWTS_ERROR;
 		} else
 			fwts_list_append(tests_to_skip, test);
+	}
+
+	return FWTS_OK;
+}
+
+static int fwts_framework_filter_error_parse(const char *arg, fwts_list *list)
+{
+	char *str;
+	char *token;
+	char *saveptr = NULL;
+
+	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+		if (fwts_list_append(list, token) == NULL) {
+			fprintf(stderr, "Out of memory parsing argument %s\n", arg);
+			fwts_list_free(list, NULL);
+			return FWTS_ERROR;
+		}
 	}
 
 	return FWTS_OK;
@@ -992,6 +1069,14 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 33: /* --unsafe */
 			fw->flags |= FWTS_FLAG_UNSAFE;
 			break;
+		case 34: /* --filter-error-discard */
+			if (fwts_framework_filter_error_parse(optarg, &fw->errors_filter_discard) != FWTS_OK)
+				return FWTS_ERROR;
+			break;
+		case 35: /* --filter-error-keep */
+			if (fwts_framework_filter_error_parse(optarg, &fw->errors_filter_keep) != FWTS_OK)
+				return FWTS_ERROR;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1100,6 +1185,8 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->log_type = LOG_TYPE_PLAINTEXT;
 
 	fwts_list_init(&fw->total_taglist);
+	fwts_list_init(&fw->errors_filter_keep);
+	fwts_list_init(&fw->errors_filter_discard);
 
 	fwts_summary_init();
 
@@ -1243,6 +1330,9 @@ tidy_close:
 	free(fw->results_logname);
 	free(fw->klog);
 	free(fw->json_data_path);
+
+	fwts_list_free_items(&fw->errors_filter_discard, NULL);
+	fwts_list_free_items(&fw->errors_filter_keep, NULL);
 	fwts_list_free_items(&fw->total_taglist, free);
 	fwts_list_free_items(&fwts_framework_test_list, free);
 

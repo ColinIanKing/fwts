@@ -137,6 +137,10 @@ typedef struct {
 	bool show_progress;			/* Show progress while running current test */
 
 	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
+
+	fwts_list errors_filter_keep;		/* Results to keep, empty = keep all */
+	fwts_list errors_filter_discard;	/* Results to discard, empty = discard none */
+	bool error_filtered_out;		/* True if a klog message has been filtered out */
 } fwts_framework;
 
 typedef struct {
@@ -193,6 +197,7 @@ void fwts_framework_aborted(fwts_framework *, const char *fmt, ...)
 	__attribute__((format(printf, 2, 3)));
 void fwts_framework_infoonly(fwts_framework *fw);
 void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, const char *message);
+void fwts_error_inc(fwts_framework *fw, const char *label, int *count);
 
 void fwts_framework_log(fwts_framework *fw,
 	fwts_log_field field,

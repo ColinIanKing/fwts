@@ -255,7 +255,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed(fw, pattern->level, pattern->label,
 					"%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
-				(*errors)++;
+				fwts_error_inc(fw, pattern->label, errors);
 			}
 			if (repeated)
 				fwts_log_info(fw, "Message repeated %d times.", repeated);

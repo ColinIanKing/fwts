@@ -1326,10 +1326,10 @@
    "label": "KlogAcpiPciLinkCrsIrq"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "ACPI:.*Unable to read status",
+   "pattern": "Unable to read status",
    "advice": "A query of _STA to get the bus status failed and the current link status is unknown.",
    "label": "KlogAcpiPciLinkSta"
   },
@@ -1817,7 +1817,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_ACPI_CONTAINER",
-   "pattern": "ACPI: device is NULL",
+   "pattern": "device is NULL",
    "advice": "The kernel count not add a container because the device associated with this was NULL, which is unexexpected.",
    "label": "KlogAcpiContainer"
   },
@@ -1833,7 +1833,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_ACPI_EVAL",
-   "pattern": "ACPI: not enough elements in _CST",
+   "pattern": "not enough elements in _CST",
    "advice": "_CST returned either a NULL buffer or a type that wasn't an ACPI package or less than 2 elements in the package. The kernel could not evaluate the CPU supported C states supported, meaning that the machine will not run optimally.",
    "label": "KlogAcpiCstElements"
   },
@@ -1841,7 +1841,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_ACPI_EVAL",
-   "pattern": "ACPI: count given by _CST is not valid",
+   "pattern": "count given by _CST is not valid",
    "advice": "_CST returned an invalid number of elements, the package a different number of C states to the number of C states that _CST reported. The kernel could not evaluate the CPU supported C states supported, meaning that the machine will not run optimally.",
    "label": "KlogAcpiCstCount"
   },
@@ -2025,7 +2025,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
-   "pattern": "ACPI:.*EC.*input buffer is not empty, aborting transaction",
+   "pattern": "EC.*input buffer is not empty, aborting transaction",
    "advice": "The ACPI Embedded Controller (EC) driver attempted to perform a read or write transaction but had to abort because the EC was still busy and the input buffer was not emptied within 500ms.  Normally this indicates an EC firmware fault.  One can try increasing the delay using the acpi.ec_delay kernel parameter or writing to /sys/module/acpi/parameters/ec_delay - however this generally does not help much of the EC firmware is buggy.",
    "label": "KlogAcpiEcInputBufferIsNotEmpty"
   },
@@ -2105,7 +2105,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
-   "pattern": "ACPI:.*EC.*input buffer is not empty, aborting transaction",
+   "pattern": "EC.*input buffer is not empty, aborting transaction",
    "advice": "The ACPI Embedded Controller (EC) driver attempted to perform a read or write transaction but had to abort because the EC was still busy and the input buffer was not emptied within 500ms.  Normally this indicates an EC firmware fault.  One can try increasing the delay using the acpi.ec_delay kernel parameter or writing to /sys/module/acpi/parameters/ec_delay - however this generally does not help much of the EC firmware is buggy.",
    "label": "KlogAcpiEcInputBufferIsNotEmpty"
   },
@@ -3078,7 +3078,7 @@
    "label": "KlogBiosBug"
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_NAMESPACE_LOOKUP",
    "pattern": "ACPI Error.*Namespace lookup failure, AE_NOT_FOUND",
@@ -3121,8 +3121,8 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
-   "pattern": "\\*\\*\\* Error.*Method reached maximum reentrancy limitACPI method has reached reentrancy limit, this is a recursion bug in the AML",
-   "advice": "",
+   "pattern": "\\*\\*\\* Error.*Method reached maximum reentrancy limit",
+   "advice": "ACPI method has reached reentrancy limit, this is a recursion bug in the AML.",
    "label": "KlogAcpiRecursionTooDeep"
   },
   {

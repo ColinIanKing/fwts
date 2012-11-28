@@ -77,6 +77,46 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Table has invalid signature .* must be SSDT or OEMx",
+   "advice": "The ACPI driver detected an ACPI table with an invalid signature. This table will not be loaded and will be ignored.",
+   "label": "KlogAcpiInvalidTableSignature"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "The ACPI DSDT has been corrupted or replaced - old, new headers below",
+   "advice": "The current loaded DSDT length and/or checksum differ to original version. This could be because it has been altered from outside Linux (perhaps broken firmware or a rootkit) or some incorrect memory write has corrupted the table. A workaround is to boot with the kernel parameter: acpi=copy_dsdt",
+   "label": "KlogAcpiDsdtCorrupt"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid signature .* for ACPI table, expected .*",
+   "advice": "The ACPI DSDT and FACS tables must have correct signatures otherwise the ACPI driver treats them as suspect or corrupt and will not load them.",
+   "label": "KlogAcpiTableSignatureInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid table length .* in RSDT/XSDT",
+   "advice": "The ACPI RSDT and XSDT must have the correct length. These variable length tables contain pointers to other ACPI tables and stated length that is different than the actual length can imply that the these tables are not trustworthy and hence the ACPI driver cannot tell if the pointers are totally valid or not.  The driver will ignore these tables and ACPI will be disabled.",
+   "label": "KlogAcpiTableLengthInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Required FADT field .* has zero address and.*or length",
+   "advice": "The ACPI FADT fields Pm1a_event, Pm1a_control, pm_timer are required fields that must have a defined (non-zero) address and a length that is non-zero.  One of these fields is incorrect and needs fixing.",
+   "label": "KlogAcpiFadtFieldZeroAddrLength"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
@@ -2537,7 +2577,7 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BAD_ADDRESS",
-   "pattern": "ACPI Error.*32/64X address mismatch in.*, using 32",
+   "pattern": "32/64X address mismatch in.*, using 32",
    "advice": "The FADT table contains a mismatch between a 32 bit pointer and a 64 bit Generic Address pointer. Because these pointers are different, it suggests either one of them is incorrect.  If a non-null 32 bit pointer exists, then the kernel will opt for this in preference to the 64 bit pointer even though this is not in accordance to the ACPI specification.",
    "label": "KlogAcpi32Bit64BitAddressMismatch"
   },

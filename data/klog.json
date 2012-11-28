@@ -77,6 +77,567 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not convert AML resource",
+   "advice": "The ACPI driver could not convert an AML resource to an internal representation of the resource that is aligned and easier to access. This is most likely to be because their is an unrecognised ACPI resource op-code.  See acpi_rs_convert_aml_to_resource() for details.",
+   "label": "KlogAcpiAmlResourceConvertFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not convert resource",
+   "advice": "The ACPI driver could not covert a resource linked list into an AML bytestream. See acpi_rs_convert_resources_to_aml() for details.",
+   "label": "KlogAcpiResourceToAmlFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not get result from predicate evaluation",
+   "advice": "The ACPI driver failed to pop a result off the result stack while evaluating a predicate. This is probably an AML code firmware bug.",
+   "label": "KlogAcpiPredicateEvalPopFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During .?egion initialization",
+   "advice": "The ACPI driver failed to initialize a name space operation region. This is most probably the _REG (Region) control failed to evaluate.",
+   "label": "KlogAcpiRegInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PRS",
+   "advice": "The ACPI driver failed to evaluate the _PRS (Possible Resource Settings) object. This failure will lead to a PCI link not being added to the system.",
+   "label": "KlogAcpiPrsEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _CRS",
+   "advice": "The ACPI driver failed to evaluate the _CRS (Current Resource Settings) object to get the current IRQ assignment. This failure will lead to a PCI link not allocating an IRQ.",
+   "label": "KlogAcpiCrsEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _SRS",
+   "advice": "The ACPI driver failed to evaluate the _SRS (Set Resource Settings) object to set the current link resource. This failure will lead to a
+ PCI link not allocating an IRQ.",
+   "label": "KlogAcpiSrsEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While executing method",
+   "advice": "The ACPI driver attempted to execute an ACPI sleep method but this failed to execute. This is most probably an ACPI firmware bug.",
+   "label": "KlogAcpiSleepMethodFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Missing or null operand",
+   "advice": "The ACPI driver got a missing or NULL operand while translating a parse tree object that is an argument to an AML object. This is more likely to be poorly written or compiled AML rather than an ACPI parser bug.",
+   "label": "KlogAcpiParseMissingNullOp"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While creating Arg ",
+   "advice": "The ACPI driver failed to convert an operator's arguments from a parse tree format to a namespace object during the parse.",
+   "label": "KlogAcpiOpArgCreateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _BST",
+   "advice": "The ACPI driver attempted to get the ACPI battery state but the _BST (Battery Status) failed to evaluate. This is most likely to be a firmware or embedded controller bug. The ACPI battery state cannot be reported to userspace.",
+   "label": "KlogAcpiBsrEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PPC",
+   "advice": "The ACPI driver attempted to get the current CPU performance states but the _PPC (Performance Present Capabilities) method failed to evaluate. The CPU frequency policy will not be updated.  This may explain why CPU frequencies are locked at one setting and do not change.",
+   "label": "KlogAcpiPpcEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PCT",
+   "advice": "The ACPI driver attempted to get the CPU performance control and status registers but the _PCT (Performance Control) object failed to evaluate. This error normally occurs because the BIOS is an old or that it does not know the CPU frequencies.  CPU frequency support is not supported.",
+   "label": "KlogAcpiPctEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PSS",
+   "advice": "The ACPI driver attempted to get the CPU performance states bug the _PSS (Performance Supported States) object failed to evaluate. This error normally occurs because the BIOS is an old or that it does not know the CPU frequencies.  CPU frequency support is not supported.",
+   "label": "KlogAcpiPssEvalFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Failed to write pstate_control .* to smi_command",
+   "advice": "The ACPI driver attempted to update the P states but the P state control command written to the SMI command port failed to write.  This could be because that ACPI FADT SMI command or FADT P State control settings are incorrect, or that the port write just failed (which is very unlikely).",
+   "label": "KlogAcpiPstateControlSmiCommandFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Returned by Handler for",
+   "advice": "The ACPI driver detected an error returned by a region handler.",
+   "label": "KlogAcpiRegionHandlerError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "from region _REG",
+   "advice": "The ACPI driver detected an error when attempting to execute an ACPI_REG_DISCONNECT on a _REG (Region) method.",
+   "label": "KlogAcpiRegDisconnectFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "from region handler - deactivate",
+   "advice": "The ACPI driver detected an error when attempting to deactivate a region. This error is ignored.",
+   "label": "KlogAcpiRegDeactivateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While resolving operands for",
+   "advice": "The ACPI driver found not resolve an operand for the AML AML_DECREMENT_OP (0x76) or AML_INCREMENT_OP (0x75) instructions. This is due to buggy AML code and not a ACPI driver bug.",
+   "label": "KlogAcpiIncDecNoOperands"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not update object reference count",
+   "advice": "The ACPI driver failed to update the reference count to an internal ACPI object. Reference counts are incremented when an object is attached to a node or an object is copied and decremented when an object is detected from a node.  This failure will lead to object garbage collection failing to operate correctly. This is considered a kernel bug.",
+   "label": "KlogAcpiObjRefCountError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not write ACPI mode change",
+   "advice": "The ACPI driver attempted to inform the firmware (via a System Management Interrupt) that the machine was transitioning to or from ACPI or legacy mode but this failed. This normally indicates that either SMIs are failing or the firmware is buggy. Normally if this fails to transition to ACPI mode then ACPI is not enabled.",
+   "label": "KlogAcpiModeChangeFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During name lookup/catalog",
+   "advice": "The ACPI driver failed to find an object while parsing a named Op, see acpi_ps_build_named_op().",
+   "label": "KlogAcpiNamedObjLookupFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invoked method did not return a value",
+   "advice": "An invoked ACPI method did not return a value but it was expected to. This could lead to unexpected ACPI execution behaviour.",
+   "label": "KlogAcpiMethodNoReturnValue"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "GetPredicate Failed",
+   "advice": "The ACPI driver failed to get a predicate for the AML opcodes IF or WHILE. This normally is because of faulty AML code.",
+   "label": "KlogAcpiIfWhilePredicateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not create predefined name",
+   "advice": "The ACPI driver was initializing the ACPI namespace and adding pre-defined names but this failed on this particular object. This should not happen.",
+   "label": "KlogAcpiPredefinedNameCreateFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While loading namespace from ACPI tables",
+   "advice": "The ACPI driver failed to load the namespace from the DSDT and SSDTs/PSDTs found in the RSDT/XDSDT. This will lead to the ACPI driver being disabled.",
+   "label": "KlogAcpiNameSpaceLoadFailure"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While evaluating SleepState .* bad Sleep object .* type .*",
+   "advice": "The ACPI driver failed to evaluate an ACPI sleep control while trying to obtain the SLP_TYPa and SLP_TYPb values for the requested sleep state.",
+   "label": "KlogAcpiSlpEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "while handling a GPE",
+   "advice": "The ACPI driver attempted to asynchronously execute an ACPI General Purpose Event (GPE) but this failed because the kernel ran out of free memory to allocate a GPE event information buffer.  The event was not handled, this may lead to unpredictable behaviour.",
+   "label": "KlogAcpiGpeNoMemory"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "while evaluating GPE method",
+   "advice": "The ACPI driver attempted to asynchronously execute an ACPI General Purpose Event (GPE) but the ACPI GPE method failed for some unknown reason. This is most likely a firmware bug.",
+   "label": "KlogAcpiGpeEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to clear GPE",
+   "advice": "An edge triggered ACPI General Purpose Event (GPE) occurred and the clearing of the GPE status bit failed. This is normally a low-level hardware I/O register write failure. This may lead to this GPE failing to be handled again.",
+   "label": "KlogAcpiGpeClearFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to disable GPE",
+   "advice": "An ACPI General Purpose Event (GPE) could not be disabled.  These are disabled to ensure the GPE does not keep firing before the asynchronous GPE handler completes.  The failure to disable the GPE may lead to further GPEs being triggered and causing some unexpected handling failures.",
+   "label": "KlogAcpiGpeDisableFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to queue handler for GPE",
+   "advice": "The ACPI driver failed to dispatch the GPE asynchronously. The GPE will not be properly handled and will be ignored.",
+   "label": "KlogAcpiGpeQueueHandlerFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During OSL initialization",
+   "advice": "The ACPI driver failed to initialize, the kernel specific OS dependent layer failed to initialize. This is a kernel bug and ACPI will be disabled.",
+   "label": "KlogAcpiOsLayerInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During initialization of globals",
+   "advice": "The ACPI driver failed to initialize, could not initialize the globals used by the subsystem. This is a kernel bug and ACPI will be disabled.",
+   "label": "KlogAcpiGlobalsInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During Global Mutex creation",
+   "advice": "The ACPI driver failed to initialize, could not initialize the global mutex. This is a kernel bug and ACPI will be disabled.",
+   "label": "KlogAcpiGlobalMutexInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During Namespace initialization",
+   "advice": "The ACPI driver failed to initialize, could not initialize the ACPI global namespace manager and root namespace tree. ACPI will be disabled.",
+   "label": "KlogAcpiNamespaceInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During OSI interfaces initialization",
+   "advice": "The ACPI driver failed to initialize, could not initialize the ACPI OSI interfaces. ACPI will be disabled.",
+   "label": "KlogAcpiOsiInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not create GPE Block 0",
+   "advice": "The ACPI driver failed intialize the General Purpose Events (GPE) Block 0. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
+   "label": "KlogAcpiGpeBlock0InitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not create GPE Block 1",
+   "advice": "The ACPI driver failed intialize the General Purpose Events (GPE) Block 1. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
+   "label": "KlogAcpiGpeBlock1InitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "While decoding _Lxx/_Exx methods",
+   "advice": "The ACPI driver failed to decode level _Lxx or edge _Exx methods for newly added ACPI tables.",
+   "label": "KlogAcpiGpeLevelOrEdgeMethodDecodeFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not enable GPE 0x",
+   "advice": "The ACPI driver failed to enable a General Purpose Event (GPE).  A GPE event handler will not be executed for this GPE and this may mean some form of loss of functionality with specific devices.",
+   "label": "KlogAcpiGpeEnableFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Processor Device is not present",
+   "advice": "The ACPI driver has responded to an ACPI processor hotplug event and attempted to execute the _STA (Status) control for a processor but this failed. _STA is mandatory for a processor that supports hot plug and so the driver has not added the processor to the running system.",
+   "label": "KlogAcpiCpuHotPlugStaFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not install PciConfig handler for Root Bridge",
+   "advice": "The ACPI driver could not install a PCI Config operation region for a PCI Root Bridge. This could occur for a variety of reasons but it is most probably because the devices _REG (Region) control failed.",
+   "label": "KlogAcpiPciConfigInstallFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During WalkNamespace",
+   "advice": "The ACPI driver failed to traverse the ACPI namespace either during namespace initialization. ACPI will be disabled. ",
+   "label": "KlogAcpiWalkNamespaceFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "During device initialization",
+   "advice": "The ACPI driver failed to traverse the ACPI namespace and initialize all the ACPI devices.",
+   "label": "KlogAcpiNsDevInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not execute arguments for",
+   "advice": "The ACPI driver failed to initialize methods or op regions during the namespace traversal.",
+   "label": "KlogAcpiNsExecArgFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI thermal trip point .* changed",
+   "advice": "The ACPI driver has thrown this exeption because of one of the two cases: 1. Either a trip point has becomes invalid when re-evaluating the AML code or, 2. devices listed in _PSL, _ALx or _TZD may have changed and the driver needs to re-bind to the cooling devices of a thermal zone when that happens.  This execption probably means the ACPI thermal driver needs to cater for this behaviour and it needs fixing or updating.",
+   "label": "KlogAcpiThermTripPointChanged"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot find acpi parent",
+   "advice": "The ACPI driver was attempting to notify a memory device but could not find a parent to the given device handle. This is an internal ACPI driver error and should not occur.  ACPI memory hotplug failures may occur because of this failure.",
+   "label": "KlogAcpiMemHotPlugParentError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_EJ0 failed",
+   "advice": "The ACPI driver attempted to power down a memory hot plug device but the ACPI _EJ0 (Eject) control failed which leaves the hotplug memory device in an invalid state.",
+   "label": "KlogAcpiMemHotPlugEj0Failed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "walk_namespace failed",
+   "advice": "The ACPI driver failed to traverse the ACPI object namespace to allow it to register any memory hotplug notify handlers. This failure means that ACPI memory hotplug will not work.",
+   "label": "KlogAcpiMemHotPlugInitFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "failed to execute _DCK",
+   "advice": "The ACPI driver executed the _DCK (Dock) control but this failed to complete successfully. This control is executed when an ACPI docking or undocking event is received.  This may be because of a fault _DCK control or that the hardware isn't functioning correctly.",
+   "label": "KlogAcpiDckEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _DOD",
+   "advice": "The ACPI driver failed to enumerate the ACPI video devices because the _DOD (Enumerate All Devices Attached to the Display Adapter) control failed.  This may explain why the video device is not functioning correctly.",
+   "label": "KlogAcpiDodEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _DOD data",
+   "advice": "The ACPI control _DOD (Enumerate All Devices Attached to the Display Adapter) returned either a NULL package or not did not return an ACPI_PACKAGE type as expected.  This may explain why the video device is not functioning correctly.",
+   "label": "KlogAcpiDodInvalidData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid GPE 0x",
+   "advice": "The ACPI driver was requested to get the status of a ACPI General Purpose Event or Fixed Event that did not exist. This is an unexpected driver error.",
+   "label": "KlogAcpiInvalidGpe"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PRT",
+   "advice": "The ACPI driver failed to get the PCI Routing Table for a device because the evaluation of _PRT (PCI Routing Table) failed. This will lead to the device not having the IRQ wired up to the correct slot/device/pin. Without this, the device cannot handle interrupts and will fail to work. ",
+   "label": "KlogAcpiPrtEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Attempted physical table override failed",
+   "advice": "The ACPI driver attempted to physically map an ACPI table but this failed.  This table will not be used and this can lead to unexpected behaviour and loss of functionality.",
+   "label": "KlogAcpiTablePhysMapFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not acquire Global Lock",
+   "advice": "The ACPI Global Lock is a mutex that ensures exclusive access to resources controlled by the ACPI driver. This lock failed to be acquired which normally means that the kernel mutex has failed, which should never occur.  This is normally considered a kernel bug.",
+   "label": "KlogAcpiGlobalLockAcquireFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not release Global Lock",
+   "advice": "The ACPI Global Lock is a mutex that ensures exclusive access to resources controlled by the ACPI driver. This lock failed to be release which normally means that the kernel mutex has failed, which should never occur.  This is normally considered a kernel bug.",
+   "label": "KlogAcpiGlobalLockReleaseFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error reading AC Adapter state",
+   "advice": "The ACPI driver could not read the AC adapter state because the ACPI control _PSR (Power Source) failed to evaluate. This could be because this control did not exist or more probably that it failed to execute because of an error between the firmware and the smart battery.",
+   "label": "KlogAcpiPsrEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _TPC",
+   "advice": "The ACPI driver failed to get the current number of supported CPU throttling T States because the ACPI control _TPC (Throttling Present Capabilities) failed to evaluate.",
+   "label": "KlogAcpiTpcEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PTC",
+   "advice": "The ACPI driver failed to get the Processor Throttling Control because the ACPI control _PTC failed to evaluate. This option control defines a processor throttling control interface alternative to the I/O address spaced-based P_BLK throttling control register (P_CNT).  Without this the CPU cannot be throttled via this interface.",
+   "label": "KlogAcpiPtcEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _TSS",
+   "advice": "The ACPI driver failed to get the Throttling Supported States because the ACPI control _TSS failed to evaluate. Processor throttling will not be enabled.",
+   "label": "KlogAcpiTssEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _TSS data: freq is zero",
+   "advice": "The ACPI driver got invalid data from the ACPI control _TSS (Throttling Supported States). One of the CPU throttling frequencies in the _TSS package is zero, which is invalid. Processor throttling will not be enabled.",
+   "label": "KlogAcpiTssPackageFreqZero"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _TSS data",
+   "advice": "The ACPI driver got invalid data from the ACPI control _TSS (Throttling Supported States). Either the package was NULL or the data returned was not of type ACPI_PACKAGE.",
+   "label": "KlogAcpiTssPackageInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _TSD",
+   "advice": "The ACPI driver could not get the T-State Dependency from the ACPI control _TSD. This means that the CPU will not have any throttling coordination with other CPUs",
+   "label": "KlogAcpiTsdEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _TSD data",
+   "advice": "The ACPI driver got invalid data from the ACPI control _TSD (T-State Dependency). Either the package was NULL or the data returned was not of type ACPI_PACKAGE or the number of elements in the package was incorrect or the package in element zero could not be extracted.",
+   "label": "KlogAcpiTsdDataInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PRW",
+   "advice": "The ACPI driver failed to evaluate the ACPI control _PRW (Power Resources for Wake). As a result, wakeup device management will not function.",
+   "label": "KlogAcpiPrwEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Extracting _PRW package",
+   "advice": "The ACPI driver got invalid data from the ACPI control _PRW (Power Resources for Wake). The returned data did not conform to the ACPI specification, see section 7.2.13 of the ACPI 5.0 ACPI specification for more details.",
+   "label": "KlogAcpiPrwDataInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Notifying BIOS of _CST ability failed",
+   "advice": "The ACPI driver attempted to notify the firmware (using a System Management Interrupt) that the system had _CST (C-State) ability but this notify command failed. This may lead to unexpected C-State behaviour.",
+   "label": "KlogAcpiSmiCstFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Evaluating _PIC",
+   "advice": "The ACPI driver attempted to inform the firmware which method of interrupt routing was being used via the _PIC method, however, this failed to execute.  This results in ACPI being disabled.",
+   "label": "KlogAcpiPicEvalFailed"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

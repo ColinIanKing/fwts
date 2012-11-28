@@ -2185,8 +2185,8 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_RSDP",
-   "pattern": "ACPI Error.*A valid RSDP was not found",
-   "advice": "An ACPI-compatible system must provide an RSDP (Root System Description Pointer in the system's low address space. This structure’s only purpose is to provide the physical address of the RSDT and XSDT.",
+   "pattern": "A valid RSDP was not found",
+   "advice": "An ACPI compatible system must provide an RSDP (Root System Description Pointer). This structure provides the physical address of the RSDT and XSDT. Since this could not be found, the ACPI driver has had to disable ACPI support.",
    "label": "KlogAcpiValidRsdpNotFound"
   },
   {

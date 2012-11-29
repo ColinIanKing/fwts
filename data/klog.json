@@ -238,6 +238,14 @@
    "label": "KlogAcpiPstateControlSmiCommandFailed"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
+   "pattern": "AE_TIME.*Returned by Handler for.*[EmbeddedControl]",
+   "advice": "This is most probably caused by when a read or write operation to the EC memory has failed because of a timeout waiting for the Embedded Controller to complete the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller status port to indicate that a transaction is complete, but in this case it has not and a AE_TIME error has been returned. ",
+   "label": "KlogAcpiTimeOutReturnedByHandler"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
@@ -2708,14 +2716,6 @@
    "pattern": "ACPI Warning.*Invalid throttling state",
    "advice": "",
    "label": "KlogAcpiInvalidThrottlingState"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
-   "pattern": "ACPI Exception:.*AE_TIME.*Returned by Handler for.*[EmbeddedControl]",
-   "advice": "This is most probably caused by when a read or write operation to the EC memory has failed because of a timeout waiting for the Embedded Controller to complete the transaction.  Normally, the kernel waits for 500ms for the Embedded Controller status port to indicate that a transaction is complete, but in this case it has not and a AE_TIME error has been returned. ",
-   "label": "KlogAcpiTimeOutReturnedByHandler"
   },
   {
    "compare_mode": "string",

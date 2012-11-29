@@ -1,3 +1,115 @@
+fwts (0.26.02-1) raring; urgency=low
+
+  [Alex Hung]
+  * acpi: mcfg: Set MCFGMMIONotReserved error to low
+
+  [Colin Ian King]
+  * fwts_mmap: fwts_page_size fix comparing size_t against -1
+  * lib: fwts: add FWTS_UNUSED() macro for unused func arguments
+  * lib: fwts_*: use FWTS_UNUSED on unused func args in fwts library
+  * lib: Makefile.am: enable -Wextra
+  * dmi: dmi_decode: remove some redundant range changes on uint8_t values
+  * tests: use FWTS_UNUSED on unused func args
+  * Makefile.am: enable -Wextra
+  * lib: include: fwts_log, add in new label field
+  * lib: klog: load labels from json data file rather than auto-generate
+  * data: klog.json: add in label for each error message
+  * lib: klog: tidy up the code a little
+  * utilities: kernelscan: Tool to scan kernel for error messages
+  * utilities: kernelscan: tidy up the formatting of output messages.
+  * utilities: kernelscan.sh: scan various directories for kernel error messages
+  * utlities: kernelscan: make some regex optimisations
+  * utilities: kernelscan: fix comment that explains how to use this tool
+  * utilities: kernelscan.sh - add execute flag to script
+  * data: klog.json: Add support for ACPI fan and ACPI processor throttling
+  * data: klog.json: Add support for the ACPI SMBUS driver
+  * data: klog.json: Add support for the ACPI utils kernel error messages
+  * data: klog.json: Add support for the ACPI processor_idle kernel error messages
+  * data: klog.json: Add support for the ACPI arch x86 kernel sleep
+  * data: klog.json: Add support for the ACPI container handler
+  * data: klog.json: Add support for the ACPI Lid errors
+  * data: klog.json: Add support for the ACPI Docking handler
+  * data: klog.json: Add support for the ACPI EC handler
+  * data: klog.json: Add support for the ACPI thermal zone handler.
+  * data: klog.json: Add support for the ACPI device power handler
+  * data: klog.json: Add support for the ACPI PCI root handler
+  * data: klog.json: Add support for the ACPI initialisation error messages
+  * data: klog.json: Add support for the ACPI blacklisting messages
+  * data: klog.json: Add support for the ACPI osl messages
+  * data: klog.json: Add support for the ACPI memory hotplug messages
+  * data: klog.json: Add support for the ACPI glue code
+  * data: klog.json: Add support for the ACPI video handler
+  * data: klog.json: Add support for the ACPI processor perf driver
+  * data: klog.json: Add support for the ACPI processor driver
+  * data: klog.json: Add support for the ACPI PCI link control messages
+  * data: klog.json: Add support for the ACPI PCI slot messages
+  * data: klog.json: Add in some more miscellaneous ACPI error messages
+  * data: klog.json: Add support for the ia64 ACPI handler.
+  * data: klog.json: Add support for the x86 MTRR kernel messages
+  * data: klog.json: Add support for various BIOS and PnPBIOS kernel messages
+  * utilities: kernelscan: add in ACPI configs and more printk message types
+  * utilities: kernelscan.sh: Add more paths to scan
+  * data: klog.json: Add support for the APM driver kernel messages
+  * data: klog.json: Add support for E820 handler in 3.2.x Kernels
+  * utilities: kernelscan.sh: Check that the file exists
+  * utilities: kernelscan.c: Add scanning for ACPI_ERROR
+  * cpu: microcode: ensure we don't overflow with strncpy
+  * pci: maxreadreq: ensure we don't overflow with strncpy
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPI ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * lib: fwts_oops: check for WARN_ON messages as well as oopses
+  * kernel: oops: also check for WARN_ON messages found
+  * acpi: s3: also check for WARN_ON messages found
+  * acpi: s4: also check for WARN_ON messages found
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * data: klog.json: ACPICA ACPI_ERROR messages
+  * utilities: kernelscan.c: add scanning for ACPI_BIOS_ERROR messages
+  * lib: fwts_test: calloc being called with args swapped
+  * lib: fwts_oops: fix fwts_oops_check dereference checks on oopses and warn_ons
+  * utilities: kernelscan: swap calloc arguments in unget_next()
+  * utilities: kernelscan.c: add scanning for ACPI_EXCEPTION messages
+  * acpi: pcc: New test to sanity check PCC, (LP: #863175)
+  * data: klog.json: ACPICA ACPI_ERROR messages, exutils.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, utmath.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, dswload2.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, utexcep.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, hwxfsleep.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, exoparg2.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, evevent.c
+  * data: klog.json: ACPICA ACPI_ERROR messages, utmutex.c
+  * lib: fwts_framework: make framework magic id into a uint32_t
+  * lib: fwts_framework: failed_level should be type fwts_log_level
+  * lib: fwts_framework: show_progress flag should be a bool
+  * lib: fwts_framework: print_summary should be a bool
+  * lib: fwts_framework: use fwts_framework_flags instead of int
+  * lib: fwts_framework: make test priority a strongly typed enum
+  * lib: fwts_klog: forgot to log a klog error using the pattern string
+  * lib: fwts_klog: Don't regex compile non-regex strings
+  * lib: fwts_framework, fwts_klog: Add filtering to fwts errors
+  * lib: fwts_framework: sanity check new options
+  * doc: Add new --filter-error-discard and --filter-error-keep options.
+  * data: klog.json: Add the final set of ACPI_EXCEPTION errors
+  * data: klog.json: fix up the RSDP error exception advice to make more sense
+  * data: klog.json: Add all the ACPI_BIOS_ERROR messages
+
+  [Ivan Hu]
+  * klog: change the MSR_IA32_ENERGY_PERF_BIAS test from fauilure to info
+  * uefirttime: add the fwts test for the UEFI get wakeup time runtime service
+  * uefirttime: add the fwts test for the UEFI set wakeup time runtime service
+  * cpufreq: fix the CPUFreqCPUsSetToSW_ANY failed LP#1076694
+  * cpufreq: fix the CPUFreqSW_ALL and CPUFreqSW_ANY failed LP#1076694
+
+  [Keng-Yu Lin]
+  * data: klog.json: remove the duplicated KlogEnergyPerfBiasSetToNormal item
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 29 Nov 2012 13:52:59 +0800
+
 fwts (0.26.01-1) raring; urgency=low
 
   [Alex Hung]

@@ -68,7 +68,8 @@ fwts_SOURCES = main.c \
 	kernel/oops/oops.c \
 	uefi/csm/csm.c \
 	uefi/uefidump/uefidump.c \
-	uefi/uefirttime/uefirttime.c
+	uefi/uefirttime/uefirttime.c \
+	uefi/uefirtvariable/uefirtvariable.c
 
 fwts_LDFLAGS = -ljson -lm
 

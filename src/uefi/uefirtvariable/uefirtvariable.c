@@ -35,6 +35,7 @@
 }
 
 #define EFI_SUCCESS		0
+#define EFI_NOT_FOUND		(14 | (1UL << 63))
 
 #define MAX_DATA_LENGTH		1024
 
@@ -133,7 +134,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableAttributes",
 			"Failed to get variable with right attributes, "
 			"attributes we got is %" PRIu32
-			", but it should be %" PRIu32".",
+			", but it should be %" PRIu32 ".",
 			*getvariable.Attributes, attributes);
 	return FWTS_ERROR;
 	} else if (*getvariable.DataSize != datasize) {
@@ -148,6 +149,127 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 				return FWTS_ERROR;
 			}
 		}
+	}
+
+	/* delete the variable */
+	setvariable.DataSize = 0;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
+
+static bool compare_guid(EFI_GUID *guid1, EFI_GUID *guid2)
+{
+	bool ident = true;
+	int i;
+
+	if ((guid1->Data1 != guid2->Data1) || (guid1->Data2 != guid2->Data2) || (guid1->Data3 != guid2->Data3))
+		ident = false;
+	else {
+		for (i = 0; i < 8; i++) {
+			if (guid1->Data4[i] != guid2->Data4[i])
+				ident = false;
+		}
+	}
+	return ident;
+}
+
+static bool compare_name(uint16_t *name1, uint16_t *name2)
+{
+	bool ident = true;
+	int i = 0;
+
+	while (true) {
+		if ((name1[i] != name2[i])) {
+			ident = false;
+			break;
+		} else if (name1[i] == '\0')
+			break;
+		i++;
+	}
+	return ident;
+}
+
+static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
+{
+	long ioret;
+	uint64_t status;
+
+	struct efi_setvariable setvariable;
+
+	uint64_t dataindex, datasize = 10;
+	uint8_t data[MAX_DATA_LENGTH];
+
+	struct efi_getnextvariablename getnextvariablename;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t variablename[MAX_DATA_LENGTH];
+	EFI_GUID vendorguid;
+	bool found_name = false, found_guid = false;
+
+	for (dataindex = 0; dataindex < datasize; dataindex++)
+		data[dataindex] = (uint8_t)dataindex;
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = data;
+	setvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.status = &status;
+
+	/* To start the search, need to pass a Null-terminated string in VariableName */
+	variablename[0] = '\0';
+	while (true) {
+		variablenamesize = MAX_DATA_LENGTH;
+		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+		if (ioret == -1) {
+
+			/* no next variable was found*/
+			if (*getnextvariablename.status == EFI_NOT_FOUND)
+				break;
+
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to get next variable name with UEFI runtime service.");
+			return FWTS_ERROR;
+		}
+		if (compare_name(getnextvariablename.VariableName, variablenametest))
+			found_name = true;
+		if (compare_guid(getnextvariablename.VendorGuid, &gtestguid1))
+			found_guid = true;
+		if (found_name && found_guid)
+			break;
+	};
+
+	if (!found_name) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableNameName",
+			"Failed to get next variable name with right name.");
+		return FWTS_ERROR;
+	}
+	if (!found_guid) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableNameGuid",
+			"Failed to get next variable name correct guid.");
+		return FWTS_ERROR;
 	}
 
 	/* delete the variable */
@@ -179,8 +301,23 @@ static int uefirtvariable_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtvariable_test2(fwts_framework *fw)
+{
+	uint64_t index;
+
+	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
+		if (getnextvariable_test(fw, attributesarray[index]) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+
+	fwts_passed(fw, "UEFI runtime service GetNextVariableName interface test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
+	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
 	{ NULL, NULL }
 };
 

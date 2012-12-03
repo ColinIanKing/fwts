@@ -2633,9 +2633,17 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
-   "pattern": "ACPI Error.*Method parse\/execution failed.*AE_AML_NO_RETURN_VALUE",
+   "pattern": "Method parse\/execution failed.*AE_AML_NO_RETURN_VALUE",
    "advice": "The ACPI Method was expected to return a value and did not.",
    "label": "KlogAcpiMethodNoReturnValue"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "Method parse/execution failed",
+   "advice": "The ACPI driver encounter a parsing error on some ACPI AML code. This is unexepcted and normally indicates that there is a bug in the compiled AML code.  It could be a programming fault or an AML compiler issue.  See acpi_ps_parse_aml().",
+   "label": "KlogAcpiParseExecAmlFailed"
   },
   {
    "compare_mode": "regex",
@@ -3286,11 +3294,19 @@
    "label": "KlogAcpiExecFailure"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
-   "pattern": "\\*\\*\\* Error.*Method execution failed",
-   "advice": "Execution of an ACPI AML method failed.",
+   "pattern": "No object was returned from",
+   "advice": "The ACPI interpreter was requested to evaluate an ACPI namespace object and was expecting an ACPI object to be returned, but nothing was returned.  This appears to be an ACPI AML bug.",
+   "label": "KlogAcpiEvalObjNoObjReturned"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "Method execution failed",
+   "advice": "Execution of an ACPI AML method failed. This is normally a bug in the ACPI AML code",
    "label": "KlogAcpiExecFailure"
   },
   {
@@ -3310,11 +3326,11 @@
    "label": "KlogAcpiRecursionTooDeep"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
-   "pattern": "\\*\\*\\* Error.*Return object type is incorrect",
-   "advice": "Return object type is not the correct type, this is an AML error in the DSDT or SSDT",
+   "pattern": "Return object type is incorrect",
+   "advice": "Return object type is not the correct type, this is an AML error in the DSDT or SSDT. See also acpi_ut_evaluate_object().",
    "label": "KlogAcpiReturnObjectTypeIncorrect"
   } 
  ], 

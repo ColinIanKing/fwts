@@ -144,7 +144,7 @@ static void acpi_dump_uint(fwts_framework *fw, fwts_acpidump_field *info, void *
 	case 8:
 		if (info->bit_field_nbits) {
 			hexdigits = (3+info->bit_field_nbits) / 4;
-			fwts_log_info_verbatum(fw, "%56.56s: 0x%*.*" PRIx64, info->label,
+			fwts_log_info_verbatum(fw, "%57.57s: 0x%*.*" PRIx64, info->label,
 				hexdigits, hexdigits, val);
 		} else
 			fwts_log_info_verbatum(fw, "%s 0x%*.*" PRIx64,

@@ -77,6 +77,190 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": ", Invalid action",
+   "advice": "The ACPI driver was requested to set a GPE wake mask with an incorrect action, expected ACPI_GPE_ENABLE or ACPI_GPE_DISABLE, see acpi_set_gpe_wake_mask(). This is most probably a kernel bug.",
+   "label": "KlogAcpiGpeWakeMaskIncorrect"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid GPE Action,",
+   "advice": "The ACPI driver was requested to enable or disable a single GPE in a parent enable register but was given an incorrect action, expected  ACPI_GPE_ENABLE or ACPI_GPE_DISABLE, see acpi_hw_low_set_gpe(). This is most probably a kernel bug.",
+   "label": "KlogAcpiGpeActionInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unsupported address space: 0x",
+   "advice": "The ACPI driver was requested to validate a H/W register but the address space ID was not ACPI_ADR_SPACE_SYSTEM_MEMORY or ACPI_ADR_SPACE_SYSTEM_IO.  Other address spaces are not supported by the driver. See acpi_hw_validate_register().",
+   "label": "KlogAcpiHwRegsUnsupportedAddressSpace"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unsupported register bit width: 0x",
+   "advice": "The ACPI driver was requested to validate a H/W register but the bit width of the register was not 8, 16 or 32 bits; other sizes are not suppoted by the driver. See acpi_hw_validate_register().",
+   "label": "KlogAcpiHwRegsUnsupportedRegisterBitWidth"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid BitRegister ID: 0x",
+   "advice": "The ACPI driver was requested the bitmask of a specific register ID which was greater than the the predefined driver maximum of ACPI_BITREG_MAX.  A NULL register info struct was passed back to the caller.  This is normally a driver bug, see acpi_hw_get_bit_register_info().",
+   "label": "KlogAcpiHwRegsInvalidBitRegisterId"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown Register ID: 0x",
+   "advice": "The ACPI driver was registed to read an ACPI register, but an invalid register ID was given; was expected withe a PM1 status register, PM1 enable register, PM1 control, PM 2 control, PM timer or a SMI command block.  This is normally a driver bug, see acpi_hw_register_read().",
+   "label": "KlogAcpiHwRegsUnknownRegisterId"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No handler or method for .*, disabling event",
+   "advice": "A General Purpose Event (GPE) has occurred and there does not appear to be a GPE handler for this event.  This should no longer be possible with kernels dating after March 2010.  The GPE is disabled and will not occur until the machine is rebooted. See acpi_ev_gpe_dispatch().",
+   "label": "KlogAcpiGpeHandlerMissing"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid SystemMemory width ",
+   "advice": "The ACPI interpreter was requested to read or write to a memory region via a memory space handler but the requested field width was invalid. It expected a field with of 8, 16, 32 or 64 bits.  This is most probably an AML opregion bug.",
+   "label": "KlogAcpiOpRegionInvalidSystemMemoryWidth"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not map memory at 0x.*, size",
+   "advice": "The ACPI interpreter was requested to read or write to a memory region via a memory space handler but the logical address could not be mapped from the given physical address given.  This memory region is not mappable, so it could be an AML opregion bug or a bug in the kernel (less likely).",
+   "label": "KlogAcpiOpRegionMemMapError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "32-bit FADT register is too long .* to convert to GAS struct - 255 bits max, truncating",
+   "advice": "The Generic Address Structure bit_width was greater than 31 which is too large for a 32 bit ACPI FADT register and was truncated.  This is firmware bug.",
+   "label": "KlogAcpiFadtGasBitWidthTooLong"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not install GPE interrupt handler at level 0x",
+   "advice": "The ACPI driver attempted to install a General Purpose Event interrupt handler but this failed.  Is the interrupt available or already used? See acpi_ev_get_gpe_xrupt_block().",
+   "label": "KlogAcpiGpeHandlerInstallFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown control opcode=0x.* Op=",
+   "advice": "The ACPI interpreter could not execute an unknown AML opcode. This is an ACPI AML firmware bug.  See acpi_ds_exec_end_control_op().",
+   "label": "KlogAcpiUnknownControlOp"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No response from Global Lock hardware, disabling lock",
+   "advice": "An attempt to send a global lock SMI did not generate a global lock event and so the kernel has concluded that the BIOS global lock handler is not functioning on this hardware.  All subsequent attempts to use the global lock will be flagged with an error.  You may experience race conditions in the ACPI driver.",
+   "label": "KlogAcpiGlobalLockDisabled"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Could not signal Global Lock semaphore",
+   "advice": "A global lock signal was sent to the firmware using a SMI but this failed to complete correctly.",
+   "label": "KlogAcpiGlobalLockSignalError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid leading digit:",
+   "advice": "An ACPI name started with a leading digit which is illegal. This is a bug in an ACPI table.",
+   "label": "KlogAcpiNameLeadingDigit"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Bad character 0x.* in name, at",
+   "advice": "Am ACPI segment name started with some valid name characters but was shorted than the expected length of 4 characters.",
+   "label": "KlogAcpiNameWrongSize"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Malformed Name at ",
+   "advice": "An ACPI name had a valid prefix path but there wasn't a valid name following the prefix.",
+   "label": "KlogAcpiMalformedName"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid/unknown Address Space ID: 0x",
+   "advice": "The ACPI driver was attempting to create a new operation region objject as specified by an AML instruction but the provided Space ID was not one of the predefined IDs or in the user-defined range. The operation region is not created. This is an AML bug in the ACPI DSDT or SSDTs.",
+   "label": "KlogAcpiAmlOpRegionInvalidAddressSpaceId"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Type returned from .* was incorrect: .*, expected Btypes: 0x",
+   "advice": "The ACPI interpreter was evaluating a namespace object and discovered that the return type did not match the expected return type.  This is an ACPI AML bug in the ACPI DSDT or SSDTs.",
+   "label": "KlogAcpiIncorrectReturnType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid/unsupported resource descriptor: Type 0x",
+   "advice": "The ACPI interpreter failed to convert an AML resource into an aligned internal representation of the resource. The resource descriptor was not a recognised type that could be converted. This is an ACPI AML bug.",
+   "label": "KlogAcpiInvalidResourceDescriptor"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid descriptor type .* in resource list",
+   "advice": "The ACPI interpreter failed to convert a linked list of resources into an AML buffer because one of the resources had in invalid resource type. This may be a bug in the ACPI resource handling code.",
+   "label": "KlogAcpiInvalidDescriptorType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Match operator out of range",
+   "advice": "The ACPI interpreter found an AML match operator that was unrecognised, it was expecting MTR, MEQ, etc.  This is a bug in the AML.",
+   "label": "KlogAcpiMatchOperatorOutOfRange"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Index .* beyond package end",
+   "advice": "The ACPI interpreter was executing a 6 argument MATCH_OP op-code and discovered that the integer index being used fall outside of the package being referenced.  This is an index overflow or underflow error and is considered to be a bug in the AML.",
+   "label": "KlogAcpiIndexOutOfPackageRange"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

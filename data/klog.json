@@ -77,6 +77,110 @@
  "firmware_error_warning_patterns":
  [
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "device .* has invalid IRQ.*check vendor BIOS",
+   "advice": "An error occurred probing the PCI-Express port devices. The device has a valid pin but did not have an a valid IRQ.  This is normally due to a misconfiguration in the firmware.",
+   "label": "KlogBiosIrqInvalid"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITCAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid active.* threshold",
+   "advice": "The ACPI thermal driver has attempted to evaluate an ACPI active threshold control _ALx and this failed to evaluate.  This is normally due to broken or buggy _ALx control. This may lead to sub-optimal thermal control.",
+   "label": "KlogAcpiAlThresholdInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_CPU",
+   "pattern": "No sibling found for CPU",
+   "advice": "Hyperthreading CPU enumeration failed, hyperthreads will be disabled.",
+   "label": "KlogCpuNoSiblingFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "OHCI: BIOS handoff failed",
+   "advice": "An OHCI BIOS handoff failure generally means that the OHCI driver was unable to take control of the USB controller away from the BIOS. Disabling USB legacy mode in the BIOS may help.",
+   "label": "KlogBiosOhciEmulation"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "EHCI: BIOS handoff failed",
+   "advice": "An EHCI BIOS handoff failure generally means that the EHCI driver was unable to take control of the USB controller away from the BIOS. Disabling USB legacy mode in the BIOS may help.",
+   "label": "KlogBiosEhciEmulation"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "xHCI BIOS handoff failed",
+   "advice": "An xHCI BIOS handoff failure generally means that the xHCI driver was unable to take control of the USB controller away from the BIOS. Disabling USB legacy mode in the BIOS may help.",
+   "label": "KlogBiosXhciEmulation"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "MMCONFIG has no entries",
+   "advice": "The ACPI MCFG has failed to be parsed, it has no entries in it. This is not expected and is most likely an ACPI misconfiguration. The PCI memory mapped configuration space is not known and hence PCI will be not configured.",
+   "label": "KlogAcpiMcfgNoEntries"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "MMCONFIG not in low 4GB of memory",
+   "advice": "An ACPI MCFG config entry is not in the lower 4GB (32 bit) address space and will be ignored.",
+   "label": "KlogAcpiMcfgNotIn32BitMemorySpace"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "MCFG region for .* at .* is above 4GB, ignored",
+   "advice": "An ACPI MCFG config entry is not in the lower 4GB (32 bit) address space and will be ignored.",
+   "label": "KlogAcpiMcfgNotin32BitMemorySpace"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "MP-BIOS bug.*8254 timer not connected to IO-APIC",
+   "advice": "The 8254 timer is not connected to an IO-APIC, this is invariably due to a misconfiguration in the BIOS.",
+   "label": "KlogIoApic8254TimerNotConnected"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "disabled and referenced, BIOS bug",
+   "advice": "A PCI interrupt link could not be enabled when the associated ACPI _STA control was executed. It will be disabled. This is normally a bug in the _STA control for this link.",
+   "label": "KlogPciLinkDisabled"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "Inconsistent FADT length .* and revision .* using FADT V1.0 portion of table",
+   "advice": "The ACPI FADT was reporting to be a version 2.0 (or higher) FADT but the length was too short, so the kernel has assumed it was a version 1.0 FADT instead. The machine may have reduced ACPI 1.0 functionality.",
+   "label": "KlogAcpiFadtInconsistentLength"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS_IRQ",
+   "pattern": "Disabling IRQ#",
+   "advice": "The kernel had detected a spurious interrupt which is generating tens of thousands of interrupts. This can occur if the interrupt is stuck.  The kernel has taken action and disabled this interrupt.  Look at /proc/interrupts to find the devices serviced by this interrupt as these are most probably no functioning now.",
+   "label": "KlogIrqDisabled"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

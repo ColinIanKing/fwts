@@ -1,8 +1,5 @@
 /*
- * Copyright (C) 2006, Intel Corporation
  * Copyright (C) 2010-2012 Canonical
- *
- * This file was originally part of the Linux-ready Firmware Developer Kit
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,231 +22,132 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
 
-static void acpiinfo_check(fwts_framework *fw, char *line,
-	int repeated, char *prevline, void *private, int *errors)
+static int acpiinfo_compiled_by(fwts_framework *fw, char *name, int instance)
 {
-	FWTS_UNUSED(repeated);
-	FWTS_UNUSED(private);
-	FWTS_UNUSED(errors);
+	char *compiler;
+	char tmp[80];
+	char num[10];
+	fwts_acpi_table_info *table;
+	fwts_acpi_table_header *header;
 
-	if (strstr(line, "ACPI: Subsystem revision") != NULL) {
-		char *version = strstr(line, "sion ");
-		if (version) {
-			version += 5;
-			fwts_log_info(fw, "Linux ACPI interpreter version %s.",
-				version);
-		}
-	}
-
-	if (strstr(line, "ACPI: DSDT") != NULL) {
-		char *vendor = "Unknown";
-		if (strstr(line, "MSFT"))
-			vendor = "Microsoft";
-		if (strstr(line, "INTL"))
-			vendor = "Intel";
-		fwts_log_info(fw, "DSDT was compiled by the %s AML compiler.",
-			vendor);
-	}
-
-	if (strstr(line, "Disabling IRQ") != NULL && prevline &&
-	    strstr(prevline, "acpi_irq")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPIIRQStuck",
-			"ACPI interrupt got stuck: level triggered?");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (prevline &&
-	    strstr(prevline, "*** Error: Return object type is incorrect")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "BadObjectReturn",
-			"Return object type is incorrect: %s.", line);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "ACPI: acpi_ec_space_handler: bit_width is 32, "
-			"should be")) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "ECBitWidth",
-			"Embedded controller bit_width is incorrect: %s.",
-			line);
-		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "acpi_ec_space_handler: bit_width should be")) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "ECBitWidth2",
-			"Embedded controller bit_width is incorrect: %s.",
-			line);
-		fwts_tag_failed(fw, FWTS_TAG_EMBEDDED_CONTROLLER);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "Warning: acpi_table_parse(ACPI_SRAT) returned 0!")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoSRAT",
-			"SRAT table cannot be found");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "Warning: acpi_table_parse(ACPI_SLIT) returned 0!")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoSLIT",
-			"SLIT table cannot be found");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "WARNING: No sibling found for CPU")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUHyperthreading",
-			"Hyperthreading CPU enumeration fails.");
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (prevline && strstr(line, ">>> ERROR: Invalid checksum") &&
-	    strlen(prevline) > 11) {
-		char tmp[4096];
-
-		strncpy(tmp, prevline, sizeof(tmp));
-		tmp[11] = '\0';
-		fwts_failed(fw, LOG_LEVEL_HIGH, "InvalidTableChecksum",
-			"ACPI table %s has an invalid checksum.", tmp+6);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "MP-BIOS bug: 8254 timer not connected to IO-APIC")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "8254NotConnected",
-			"8254 timer not connected to IO-APIC: %s.", line);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_APIC);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "ACPI: PCI Interrupt Link") &&
-	    strstr(line, " disabled and referenced, BIOS bug.")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "PCIInterruptLink", "%s", line);
-		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "*** Warning Inconsistent FADT length") &&
-	    strstr(line, "using FADT V1.0 portion of table")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTRevsion",
-			"FADT table claims to be of higher revision than it is.");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "thermal_get_trip_point: Invalid active threshold")) {
-		fwts_failed(fw, LOG_LEVEL_CRITICAL, "_AC0TripPoint",
-			"_AC0 thermal trip point is invalid.");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_THERMAL);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "MMCONFIG has no entries")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGNoEntries",
-			"The MCFG table has no entries!");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "MMCONFIG not in low 4GB of memory")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MCFGEntriesTooHigh",
-			"The MCFG table entries are not in the lower 4Gb of RAM.");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS_MMCONFIG);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "pcie_portdrv_probe->Dev") &&
-	    strstr(line, "has invalid IRQ. Check vendor BIOS")) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "PCIExpressInvalidIRQ",
-			"PCI Express port driver reports an invalid IRQ.");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
-		fwts_log_info_verbatum(fw, "%s", line);
-	}
-
-	if (strstr(line, "OCHI: BIOS handoff failed (BIOS bug")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "OHCIEmulation",
-			"OHCI BIOS emulation handoff failed.");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-		fwts_log_info_verbatum(fw, "%s", line);
-		fwts_advice(fw,
-			"Generally this means that the EHCI driver was unable "
-			"to take control of the USB controller away from the "
-			"BIOS. Disabling USB legacy mode in the BIOS may help.");
-	}
-	if (strstr(line, "EHCI: BIOS handoff failed (BIOS bug")) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "EHCIEmulation",
-			"EHCI BIOS emulation handoff failed.");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-		fwts_log_info_verbatum(fw, "%s", line);
-		fwts_advice(fw,
-			"Generally this means that the EHCI driver was unable "
-			"to take control of the USB controller away from the "
-			"BIOS. Disabling USB legacy mode in the BIOS may help.");
-	}
-}
-
-static fwts_list *klog;
-
-static int acpiinfo_init(fwts_framework *fw)
-{
-	if (fw->klog)
-		klog = fwts_file_open_and_read(fw->klog);
-	else
-		klog = fwts_klog_read();
-
-	if (klog == NULL) {
-		fwts_log_error(fw, "Cannot read kernel log.");
+	if (fwts_acpi_find_table(fw, name, instance < 0 ? 0 : instance, &table) != FWTS_OK)
 		return FWTS_ERROR;
+
+	if (table == NULL || table->data == NULL)
+		return FWTS_ERROR;
+
+	header = (fwts_acpi_table_header *)table->data;
+
+	if (strncmp(header->creator_id, "MSFT", 4) == 0) {
+		compiler = "Microsoft";
+	} else if (strncmp(header->creator_id, "INTL", 4) == 0) {
+		compiler = "Intel";
+	} else {
+		snprintf(tmp, sizeof(tmp), "Unknown (%4.4s)", header->creator_id);
+		compiler = tmp;
 	}
-	return FWTS_OK;
-}
 
-static int acpiinfo_deinit(fwts_framework *fw)
-{
-	FWTS_UNUSED(fw);
+	if (instance == -1)
+		*num = '\0';
+	else
+		snprintf(num, sizeof(num), "%d", instance);
 
-	fwts_klog_free(klog);
+	fwts_log_info(fw,
+		"Table %4.4s%s, OEM %6.6s, created with %4.4s (%s) compiler.",
+		header->signature, num, header->oem_id, header->creator_id, compiler);
 
 	return FWTS_OK;
 }
 
 static int acpiinfo_test1(fwts_framework *fw)
 {
-	int errors = 0;
+	char *str;
+
+	if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
+	    ((str = fwts_get("/proc/acpi/info")) == NULL))
+                fwts_log_info(fw,
+			"Cannot get ACPI version info from "
+			"/sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
+        else {
+		int version;
+		int yearmonth;
+
+                fwts_chop_newline(str);
+
+		sscanf(str, "%6d", &yearmonth);
+
+		if (yearmonth > 201110) {
+			version = 5;
+		} else if (yearmonth > 200906) {
+			version = 4;
+		} else if (yearmonth > 200505) {
+			version = 3;
+		} else {
+			version = 2;
+		}
+
+                fwts_log_info(fw, "Kernel ACPICA driver version: %s, supports ACPI %d.0", str, version);
+                free(str);
+        }
+
+	fwts_infoonly(fw);
+
+	return FWTS_OK;
+}
+
+static int acpiinfo_test2(fwts_framework *fw)
+{
+	fwts_acpi_table_info *table;
+	fwts_acpi_table_header *header;
+
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+
+	if (table == NULL || table->data == NULL)
+		return FWTS_ERROR;
+
+	header = (fwts_acpi_table_header *)table->data;
 
 	fwts_log_info(fw,
-		"This test checks the output of the in-kernel ACPI CA against "
-		"common error messages that indicate a bad interaction with "
-		"the bios, including those that point at AML syntax errors.");
+		"FACP ACPI Version: %d.0\n", header->revision);
 
-	if (fwts_klog_scan(fw, klog, acpiinfo_check, NULL, NULL, &errors)) {
-		fwts_log_error(fw, "failed to scan kernel log.");
-		return FWTS_ERROR;
+	fwts_infoonly(fw);
+
+	return FWTS_OK;
+}
+
+static int acpiinfo_test3(fwts_framework *fw)
+{
+	int i;
+
+	fwts_log_info(fw,
+		"Determine the compiler used to generate the ACPI AML in the DSDT and SSDT.");
+
+	acpiinfo_compiled_by(fw, "DSDT", -1);
+
+	for (i = 0; i < 32 ; i++) {
+		/* If we can't fetch the Nth SSDT, we've reached the end */
+		if (acpiinfo_compiled_by(fw, "SSDT", i) != FWTS_OK)
+			break;
 	}
 
-	if (errors > 0)
-		fwts_log_info(fw, "Found %d errors in kernel log.", errors);
-	else
-		fwts_passed(fw, "Found no errors in kernel log.");
+	fwts_infoonly(fw);
 
 	return FWTS_OK;
 }
 
 static fwts_framework_minor_test acpiinfo_tests[] = {
-	{ acpiinfo_test1, "General ACPI information check." },
+	{ acpiinfo_test1, "Determine Kernel ACPI version." },
+	{ acpiinfo_test2, "Determine machines ACPI version." },
+	{ acpiinfo_test3, "Determine AML compiler." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpiinfo_ops = {
 	.description = "General ACPI information check.",
-	.init        = acpiinfo_init,
-	.deinit      = acpiinfo_deinit,
 	.minor_tests = acpiinfo_tests
 };
 

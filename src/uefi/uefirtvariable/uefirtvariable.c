@@ -34,6 +34,12 @@
 						0xF9, 0x7F, 0xB4, 0x42, 0x6F} \
 }
 
+#define TEST_GUID2 \
+{ \
+	0xBD6D18A3, 0xEE9E, 0x445E, {0xA8, 0x1B, 0xD3, \
+						0xDD, 0xB7, 0x11, 0xD0, 0x6E} \
+}
+
 #define EFI_SUCCESS		0
 #define EFI_NOT_FOUND		(14 | (1UL << 63))
 
@@ -41,6 +47,7 @@
 
 static int fd;
 EFI_GUID gtestguid1 = TEST_GUID1;
+EFI_GUID gtestguid2 = TEST_GUID2;
 uint32_t attributesarray[] = { FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
 			       FWTS_UEFI_VAR_NON_VOLATILE | FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
 			       FWTS_UEFI_VAR_BOOTSERVICE_ACCESS | FWTS_UEFI_VAR_RUNTIME_ACCESS,
@@ -86,7 +93,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	struct efi_setvariable setvariable;
 
 	uint64_t status;
-	uint8_t testdata[MAX_DATA_LENGTH];
+	uint8_t testdata[datasize+1];
 	uint64_t dataindex;
 	uint64_t getdatasize;
 	uint32_t attributestest;
@@ -136,7 +143,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 			"attributes we got is %" PRIu32
 			", but it should be %" PRIu32 ".",
 			*getvariable.Attributes, attributes);
-	return FWTS_ERROR;
+		return FWTS_ERROR;
 	} else if (*getvariable.DataSize != datasize) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableDataSize",
 			"Failed to get variable with correct datasize.");
@@ -286,6 +293,119 @@ static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
 	return FWTS_OK;
 }
 
+static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
+					uint16_t *varname, EFI_GUID *gtestguid, uint8_t datadiff)
+{
+	long ioret;
+	struct efi_setvariable setvariable;
+
+	uint64_t status;
+	uint64_t dataindex;
+
+	uint8_t data[datasize+1];
+
+	for (dataindex = 0; dataindex < datasize; dataindex++)
+		data[dataindex] = (uint8_t)dataindex + datadiff;
+	data[dataindex] = '0';
+
+	setvariable.VariableName = varname;
+	setvariable.VendorGuid = gtestguid;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = data;
+	setvariable.status = &status;
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+static int setvariable_checkvariable(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
+					uint16_t *varname, EFI_GUID *gtestguid, uint8_t datadiff)
+{
+	long ioret;
+	struct efi_getvariable getvariable;
+
+	uint64_t status;
+	uint8_t testdata[datasize+1];
+	uint64_t dataindex;
+	uint64_t getdatasize;
+	uint32_t attributestest;
+
+	getvariable.VariableName = varname;
+	getvariable.VendorGuid = gtestguid;
+	getvariable.Attributes = &attributestest;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = testdata;
+	getvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
+			"Failed to get variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	if (*getvariable.Attributes != attributes) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariableAttributes",
+			"Failed to set variable with right attributes, "
+			"attributes we got is %" PRIu32
+			", but it should both be %" PRIu32 ".",
+			attributestest, attributes);
+		return FWTS_ERROR;
+	} else if (*getvariable.DataSize != datasize) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariableDataSize",
+			"Failed to set variable with correct datasize.");
+		return FWTS_ERROR;
+	} else {
+		for (dataindex = 0; dataindex < datasize; dataindex++) {
+			if (testdata[dataindex] != ((uint8_t)dataindex + datadiff)) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariableData",
+					"Failed to set variable with correct data.");
+				return FWTS_ERROR;
+			}
+		}
+	}
+	return FWTS_OK;
+}
+
+static int setvariable_test1(fwts_framework *fw, uint32_t attributes, uint64_t datasize1,
+							uint64_t datasize2, uint16_t *varname)
+{
+	uint8_t datadiff_g2 = 2, datadiff_g1 = 0;
+
+	if (setvariable_insertvariable(fw, attributes, datasize2, varname,
+					&gtestguid2, datadiff_g2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, datasize1, varname,
+					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable(fw, attributes, datasize2, varname,
+					&gtestguid2, datadiff_g2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable(fw, attributes, datasize1, varname,
+					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid2, datadiff_g2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	return FWTS_OK;
+}
+
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t index;
@@ -315,9 +435,26 @@ static int uefirtvariable_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtvariable_test3(fwts_framework *fw)
+{
+	uint64_t index;
+	uint64_t datasize1 = 10, datasize2 = 20;
+
+	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
+		if (setvariable_test1(fw, attributesarray[index], datasize1, datasize2,
+								variablenametest) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+
+	fwts_passed(fw, "UEFI runtime service SetVariable interface test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
 	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
+	{ uefirtvariable_test3, "Test UEFI RT service set variable interface." },
 	{ NULL, NULL }
 };
 

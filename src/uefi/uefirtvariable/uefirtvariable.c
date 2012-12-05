@@ -406,6 +406,61 @@ static int setvariable_test1(fwts_framework *fw, uint32_t attributes, uint64_t d
 	return FWTS_OK;
 }
 
+static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *varname)
+{
+	uint64_t datasize = 10;
+	uint8_t datadiff1 = 0, datadiff2 = 2, datadiff3 = 4;
+
+	if (setvariable_insertvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	/* insert the same data */
+	if (setvariable_insertvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid1, datadiff1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+
+	/* insert different data */
+	datasize = 20;
+
+	if (setvariable_insertvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid1, datadiff2) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	datasize = 5;
+
+	if (setvariable_insertvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff3) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+					&gtestguid1, datadiff3) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid1, datadiff3) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	return FWTS_OK;
+}
+
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t index;
@@ -443,6 +498,11 @@ static int uefirtvariable_test3(fwts_framework *fw)
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test1(fw, attributesarray[index], datasize1, datasize2,
 								variablenametest) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+
+	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
+		if (setvariable_test2(fw, attributesarray[index], variablenametest) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
 

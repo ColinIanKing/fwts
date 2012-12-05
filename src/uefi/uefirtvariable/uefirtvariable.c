@@ -556,6 +556,25 @@ static int setvariable_test4(fwts_framework *fw, uint32_t attributes)
 	return FWTS_OK;
 }
 
+static int setvariable_test5(fwts_framework *fw, uint32_t attributes)
+{
+	uint64_t datasize = 10;
+	uint8_t datadiff = 0;
+
+	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_insertvariable(fw, 0, datasize, variablenametest,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (setvariable_checkvariable_notfound(fw, variablenametest, &gtestguid1) == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	return FWTS_OK;
+}
+
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t index;
@@ -608,6 +627,11 @@ static int uefirtvariable_test3(fwts_framework *fw)
 
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test4(fw, attributesarray[index]) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+
+	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
+		if (setvariable_test5(fw, attributesarray[index]) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
 

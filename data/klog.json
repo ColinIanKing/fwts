@@ -1,5 +1,5 @@
 {
- "common_error_warning_patterns": 
+ "firmware_error_warning_patterns":
  [ 
   {
    "compare_mode": "string",
@@ -72,10 +72,7 @@
    "pattern": "Disabling IRQ",
    "advice": "The kernel detected an irq storm. This is most probably an IRQ routing bug.",
    "label": "CommonBiosIrqRoutingBug"
-  }
- ],
- "firmware_error_warning_patterns":
- [
+  },
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",

@@ -84,10 +84,6 @@ static void s4_check_log(fwts_framework *fw,
 		fwts_log_error(fw, "Error parsing kernel log.");
 	*errors += error;
 
-	if (fwts_klog_common_check(fw, NULL, klog, &error))
-		fwts_log_error(fw, "Error parsing kernel log.");
-	*errors += error;
-
 	if (fwts_oops_check(fw, klog, &oops, &warn_on))
 		fwts_log_error(fw, "Error parsing kernel log.");
 	*oopses += oops;

@@ -448,13 +448,6 @@ int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress,
 		progress, klog, errors);
 }
 
-int fwts_klog_common_check(fwts_framework *fw, fwts_klog_progress_func progress,
-	fwts_list *klog, int *errors)
-{
-	return fwts_klog_check(fw, "common_error_warning_patterns",
-		progress, klog, errors);
-}
-
 static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int repeated,
 	char *prev, void *pattern, int *match)
 {

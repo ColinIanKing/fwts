@@ -193,9 +193,9 @@ restart:
 	return type;
 }
 
-static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
+static bool is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 {
-	int pref = 0;
+	bool pref = false;
 	char line[4096];
 	fwts_list *lspci_output;
 	fwts_list_link *item;
@@ -212,11 +212,11 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
 			if (strstr(str, "non-prefetchable"))
-				pref = 0;
+				pref = false;
 			else if (strstr(str, "(prefetchable"))
-				pref = 1;
+				pref = true;
 			else if (strstr(str, ", prefetchable"))
-				pref = 1;
+				pref = true;
 		}
 	}
 	fwts_list_free(lspci_output, free);

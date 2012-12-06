@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -421,22 +422,22 @@ static int mtrr_test1(fwts_framework *fw)
 static int mtrr_test2(fwts_framework *fw)
 {
 	if (klog != NULL) {
-		int failed = 0;
+		bool failed = false;
 
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent fixed MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent fixed MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			failed = 1;
+			failed = true;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent variable MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			failed = 1;
+			failed = true;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent MTRRdefType") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			failed = 1;
+			failed = true;
 		}
 
 		if (failed)

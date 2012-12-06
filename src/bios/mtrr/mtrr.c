@@ -264,7 +264,7 @@ static int validate_iomem(fwts_framework *fw)
 		int type, type_must, type_mustnot;
 		char *c, *c2;
 		int i;
-		int skiperror = 0;
+		bool skiperror = false;
 
 		if (fgets(buffer, 4095, file)==NULL)
 			break;
@@ -322,14 +322,14 @@ static int validate_iomem(fwts_framework *fw)
 				c2, cache_to_string(type & type_mustnot));
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			if (type_must == UNCACHED)
-				skiperror = 1;
+				skiperror = true;
 		}
 
 		if (type & DEFAULT) {
 			type |= UNCACHED;
 			type &= ~DEFAULT;
 		}
-		if ((type & type_must)!=type_must && skiperror==0) {
+		if (((type & type_must) != type_must) && !skiperror) {
 			failed++;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MTRRLackingAttr",

@@ -220,11 +220,11 @@ static char *HzToHuman(unsigned long hz)
 	Hz = hz;
 
 	if (Hz > 1500000) {
-		snprintf(buffer, sizeof(buffer), "%6.2f Ghz",
+		snprintf(buffer, sizeof(buffer), "%6.2f GHz",
 			(Hz+50000.0) / 1000000);
 		return buffer;
 	} else if (Hz > 1000) {
-		snprintf(buffer, sizeof(buffer), "%6lli Mhz",
+		snprintf(buffer, sizeof(buffer), "%6lli MHz",
 			(Hz+500) / 1000);
 		return buffer;
 	} else {

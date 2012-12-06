@@ -52,6 +52,10 @@ int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 #else
 int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 {
+	FWTS_UNUSED(offset);
+
+	*value = ~0;	/* Fake a failed read */
+
 	return FWTS_ERROR;
 }
 #endif

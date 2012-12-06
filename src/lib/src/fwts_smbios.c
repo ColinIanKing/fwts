@@ -132,6 +132,13 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 	fwts_smbios_type  *type,
 	uint16_t	  *version)
 {
+	FWTS_UNUSED(fw);
+
+	/* Return a dummy values */
+	memset(entry, 0, sizeof(fwts_smbios_entry));
+	*type = FWTS_SMBIOS_UNKNOWN;
+	*version = 0;
+
 	return NULL;
 }
 #endif

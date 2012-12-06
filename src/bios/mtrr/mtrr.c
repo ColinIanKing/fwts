@@ -250,8 +250,9 @@ static int validate_iomem(fwts_framework *fw)
 	FILE *file;
 	char buffer[4096];
 	int pcidepth = 0;
-	memset(buffer, 0, 4096);
 	int failed = 0;
+
+	memset(buffer, 0, 4096);
 
 	if ((file = fopen("/proc/iomem", "r")) == NULL)
 		return FWTS_ERROR;

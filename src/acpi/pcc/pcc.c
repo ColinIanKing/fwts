@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -467,3 +469,5 @@ static fwts_framework_ops pcc_ops = {
 };
 
 FWTS_REGISTER(pcc, &pcc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+
+#endif

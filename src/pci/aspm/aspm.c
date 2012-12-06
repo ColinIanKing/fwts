@@ -61,7 +61,7 @@ struct pci_device {
 /* PCI Express Capability Structure is defined in Section 7.8
  * of PCI Express®i Base Specification Revision 2.0
  */
-struct pcie_capability {
+typedef struct {
 	uint8_t pcie_cap_id;
 	uint8_t next_cap_point;
 	uint16_t pcie_cap_reg;
@@ -86,7 +86,7 @@ struct pcie_capability {
 	uint32_t slot_cap2;
 	uint16_t slot_contrl2;
 	uint16_t slot_status2;
-};
+} __attribute__ ((packed)) pcie_capability;
 
 static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 {
@@ -118,28 +118,28 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	struct pci_device *rp,
 	struct pci_device *dev)
 {
-	struct pcie_capability *rp_cap, *device_cap;
+	pcie_capability *rp_cap, *device_cap;
 	uint8_t rp_aspm_cntrl, device_aspm_cntrl;
 	uint8_t next_cap;
 	int ret = FWTS_OK;
 	bool l0s_disabled = false, l1_disabled = false;
 
 	next_cap = rp->config[FWTS_PCI_CAPABILITIES_POINTER];
-	rp_cap = (struct pcie_capability *) &rp->config[next_cap];
+	rp_cap = (pcie_capability *) &rp->config[next_cap];
 	while (rp_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
 		if (rp_cap->next_cap_point == FWTS_PCI_LAST_ID)
 			break;
 		next_cap = rp_cap->next_cap_point;
-		rp_cap = (struct pcie_capability *) &rp->config[next_cap];
+		rp_cap = (pcie_capability *) &rp->config[next_cap];
 	}
 
 	next_cap = dev->config[FWTS_PCI_CAPABILITIES_POINTER];
-	device_cap = (struct pcie_capability *)	&dev->config[next_cap];
+	device_cap = (pcie_capability *)&dev->config[next_cap];
 	while (device_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
 		if (device_cap->next_cap_point == FWTS_PCI_LAST_ID)
 			break;
 		next_cap = device_cap->next_cap_point;
-		device_cap = (struct pcie_capability *)	&dev->config[next_cap];
+		device_cap = (pcie_capability *)&dev->config[next_cap];
 	}
 
 

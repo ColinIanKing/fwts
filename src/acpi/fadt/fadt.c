@@ -92,22 +92,23 @@ static int fadt_test1(fwts_framework *fw)
 		width = fadt->x_pm1a_cnt_blk.register_bit_width;
 	}
 
-	ioperm(port, width/8, 1);
 	switch (width) {
 	case 8:
+		ioperm(port, width/8, 1);
 		value = inb(fadt->pm1a_cnt_blk);
 		ioperm(port, width/8, 0);
 		break;
 	case 16:
+		ioperm(port, width/8, 1);
 		value = inw(fadt->pm1a_cnt_blk);
 		ioperm(port, width/8, 0);
 		break;
 	case 32:
+		ioperm(port, width/8, 1);
 		value = inl(fadt->pm1a_cnt_blk);
 		ioperm(port, width/8, 0);
 		break;
 	default:
-		ioperm(port, width/8, 0);
 		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTPM1AInvalidWidth",
 			"FADT pm1a register has invalid bit width of %d.",
 			width);

@@ -25,13 +25,18 @@ static int version_test1(fwts_framework *fw)
 
 	/* Following is Ubuntu specific, so don't fail */
 	if ((str = fwts_get("/proc/version_signature")) == NULL)
-		fwts_warning(fw,
-			"Cannot get version signature info from /proc/version_signature (This is Ubuntu specific, and not necessarily a failure).");
+		fwts_log_info(fw,
+			"Cannot get version signature info from "
+			"/proc/version_signature (This is Ubuntu "
+			"specific, and is not necessarily a failure).");
 	else {
 		fwts_chop_newline(str);
-		fwts_passed(fw, "Signature: %s", str);
+		fwts_log_info(fw, "Signature: %s", str);
 		free(str);
 	}
+
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 
@@ -41,14 +46,14 @@ static int version_test2(fwts_framework *fw)
 
 
 	if ((str = fwts_get("/proc/version")) == NULL)
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"KernelProcVersion",
-			"Cannot get version info from /proc/version");
+		fwts_log_info(fw, "Cannot get version info from /proc/version");
 	else {
 		fwts_chop_newline(str);
-		fwts_passed(fw, "Kernel Version: %s", str);
+		fwts_log_info(fw, "Kernel Version: %s", str);
 		free(str);
 	}
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 
@@ -58,14 +63,17 @@ static int version_test3(fwts_framework *fw)
 
         if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
 	    ((str = fwts_get("/proc/acpi/info")) == NULL))
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"KernelACPIVersion",
-			"Cannot get ACPI version info from /sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
+		fwts_log_info(fw,
+			"Cannot get ACPI version info from "
+			"/sys/module/acpi/parameters/acpica_version "
+			"or /proc/acpi/info, system does not have ACPI.");
 	else {
 		fwts_chop_newline(str);
-		fwts_passed(fw, "ACPI Version: %s", str);
+		fwts_log_info(fw, "ACPI Version: %s", str);
 		free(str);
 	}
+	fwts_infoonly(fw);
+
 	return FWTS_OK;
 }
 

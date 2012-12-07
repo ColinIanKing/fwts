@@ -58,6 +58,14 @@ void fwts_exec_cpuid(const int cpu, const uint32_t cmd, cpu_registers* regs)
                              "=c"(regs->ecx),"=d"(regs->edx)
 			   : "a"(cmd)
 	);
+#else
+	/* Non x86 we just fake it */
+	FWTS_UNUSED(cmd);
+
+	regs->eax = 0;
+	regs->ebx = 0;
+	regs->ecx = 0;
+	regs->edx = 0;
 #endif
 
 	if (cpu != CURRENT_CPU)

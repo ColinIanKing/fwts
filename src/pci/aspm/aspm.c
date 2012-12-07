@@ -100,10 +100,10 @@ static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 
 	if ((fadt->iapc_boot_arch & FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS) == 0) {
 		*aspm = 1;
-		fwts_log_info(fw, "PCIE ASPM is controlled by Linux kernel.");
+		fwts_log_info(fw, "PCIe ASPM is controlled by Linux kernel.");
 	} else {
 		*aspm = 0;
-		fwts_log_info(fw, "PCIE ASPM is not controlled by Linux kernel.");
+		fwts_log_info(fw, "PCIe ASPM is not controlled by Linux kernel.");
 		fwts_advice(fw,
 			"BIOS reports that Linux kernel should not modify ASPM "
 			"settings that BIOS configured. It can be intentional "
@@ -192,11 +192,11 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	rp_aspm_cntrl = rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_FIELD;
 	device_aspm_cntrl = device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_FIELD;
 	if (rp_aspm_cntrl != device_aspm_cntrl) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIEASPM_UNMATCHED",
-			"PCIE aspm setting was not matched.");
-		fwts_log_error(fw, "RP %02Xh:%02Xh.%02Xh has aspm = %02Xh."
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIEASPM_Unmatched",
+			"PCIe ASPM setting was not matched.");
+		fwts_log_error(fw, "RP %02Xh:%02Xh.%02Xh has ASPM = %02Xh."
 			, rp->bus, rp->dev, rp->func, rp_aspm_cntrl);
-		fwts_log_error(fw, "Device %02Xh:%02Xh.%02Xh has aspm = %02Xh.",
+		fwts_log_error(fw, "Device %02Xh:%02Xh.%02Xh has ASPM = %02Xh.",
 			dev->bus, dev->dev, dev->func, device_aspm_cntrl);
 		fwts_advice(fw,
 			"ASPM control registers between root port and device "
@@ -205,7 +205,7 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 			"ASPM correctly and the system is not saving power "
 			"at its full potential.");
 	} else {
-		fwts_passed(fw, "PCIE aspm setting matched was matched.");
+		fwts_passed(fw, "PCIe ASPM setting matched was matched.");
 	}
 
 	return ret;
@@ -234,11 +234,13 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 	snprintf(command, sizeof(command), "%s", fw->lspci);
 
 	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
-		fwts_log_warning(fw, "Could not execute %s", command);
+		fwts_log_warning(fw, "Could not execute %s.", command);
 		return FWTS_ERROR;
 	}
-	if (lspci_output == NULL)
+	if (lspci_output == NULL) {
+		fwts_log_warning(fw, "Output from lspci was empty.");
 		return FWTS_ERROR;
+	}
 
 	/* Get the list of pci devices and their configuration */
 	fwts_list_foreach(item, lspci_output) {
@@ -330,7 +332,7 @@ static int aspm_check_configuration(fwts_framework *fw)
 
 	ret = facp_get_aspm_control(fw, &aspm_facp);
 	if (ret == FWTS_ERROR) {
-		fwts_log_info(fw, "No valid FACP information present: cannot test aspm.");
+		fwts_log_info(fw, "No valid FACP information present: cannot test ASPM.");
 		return FWTS_ERROR;
 	}
 

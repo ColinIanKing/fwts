@@ -143,7 +143,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 	int	ret;
 
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
-		return -1;
+		return FWTS_ERROR;
 
 	text = fwts_pipe_read(fd, &len);
 	*list = fwts_list_from_text(text);

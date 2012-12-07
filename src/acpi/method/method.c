@@ -280,6 +280,7 @@ static int method_init(fwts_framework *fw)
 {
 	fwts_acpi_table_info *info;
 	int i;
+	bool got_fadt = false;
 
 	fadt_mobile_platform = false;
 
@@ -289,20 +290,23 @@ static int method_init(fwts_framework *fw)
 		if (ret == FWTS_NULL_POINTER || info == NULL)
 			break;
 		fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)info->data;
+		got_fadt = true;
 		if (fadt->preferred_pm_profile == 2) {
 			fadt_mobile_platform = true;
 			break;
 		}
 	}
 
-	if (!fadt_mobile_platform) {
+	if (got_fadt && !fadt_mobile_platform) {
 		fwts_log_info(fw,
 			"FADT Preferred PM profile indicates this is not "
 			"a Mobile Platform.");
 	}
 
-	if (fwts_method_init(fw) != FWTS_OK)
+	if (fwts_method_init(fw) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot initialise ACPI.");
 		return FWTS_ERROR;
+	}
 
 	return FWTS_OK;
 }

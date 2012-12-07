@@ -19,6 +19,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 static int apicinstance_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_info *first_madt_table = NULL;
@@ -82,3 +84,5 @@ static fwts_framework_ops apicinstance_ops = {
 };
 
 FWTS_REGISTER(apicinstance, &apicinstance_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+
+#endif

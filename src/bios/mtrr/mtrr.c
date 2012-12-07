@@ -193,38 +193,51 @@ restart:
 	return type;
 }
 
-static bool is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
+static int check_prefetchable(
+	fwts_framework *fw,
+	char *device,
+	uint64_t address,
+	bool *pref)
 {
-	bool pref = false;
 	char line[4096];
 	fwts_list *lspci_output;
 	fwts_list_link *item;
 	int status;
 
+	*pref = false;
+
 	memset(line,0,4096);
 
 	snprintf(line, sizeof(line), "%s -v -s %s", fw->lspci, device);
-	fwts_pipe_exec(line, &lspci_output, &status);
+	if (fwts_pipe_exec(line, &lspci_output, &status) != FWTS_OK)
+		return FWTS_ERROR;
+
+	/* Nothing for this decice? That seems like a failure */
 	if (lspci_output == NULL)
-		return pref;
+		return FWTS_ERROR;
 
 	fwts_list_foreach(item, lspci_output) {
 		char *str = strstr(fwts_text_list_text(item), "Memory at ");
 		if (str && strtoull(str+10, NULL, 16) == address) {
 			if (strstr(str, "non-prefetchable"))
-				pref = false;
+				*pref = false;
 			else if (strstr(str, "(prefetchable"))
-				pref = true;
+				*pref = true;
 			else if (strstr(str, ", prefetchable"))
-				pref = true;
+				*pref = true;
 		}
 	}
 	fwts_list_free(lspci_output, free);
 
-	return pref;
+	return FWTS_OK;
 }
 
-static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *mustnot, uint64_t address)
+static int guess_cache_type(
+	fwts_framework *fw,
+	char *string,
+	int *must,
+	int *mustnot,
+	uint64_t address)
 {
 	*must = 0;
 	*mustnot = 0;
@@ -232,11 +245,16 @@ static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *m
 	if (strstr(string, "System RAM")) {
 		*must = WRITE_BACK;
 		*mustnot = ~WRITE_BACK;
-		return;
+		return FWTS_OK;
 	}
 	/* if it's PCI mmio -> uncached typically except for video */
 	if (strstr(string, "0000:")) {
-		if (is_prefetchable(fw, string, address)) {
+		bool pref;
+
+		if (check_prefetchable(fw, string, address, &pref) != FWTS_OK)
+			return FWTS_ERROR;
+
+		if (pref) {
 			*must = 0;
 			*mustnot = WRITE_BACK | UNCACHED;
 		} else {
@@ -244,6 +262,8 @@ static void guess_cache_type(fwts_framework *fw, char *string, int *must, int *m
 			*mustnot = (~UNCACHED) & (~DEFAULT);
 		}
 	}
+
+	return FWTS_OK;
 }
 
 static int validate_iomem(fwts_framework *fw)
@@ -310,7 +330,13 @@ static int validate_iomem(fwts_framework *fw)
 
 		type = cache_types(start, end);
 
-		guess_cache_type(fw, c2, &type_must, &type_mustnot, start);
+		if (guess_cache_type(fw, c2, &type_must, &type_mustnot, start) != FWTS_OK) {
+			/*  This has failed, give up at this point */
+			fwts_skipped(fw, 
+				"Could not guess cache type, lspci seems to be failing.");
+			fclose(file);
+			return FWTS_ERROR;
+		}
 
 		if ((type & type_mustnot)!=0) {
 			failed++;

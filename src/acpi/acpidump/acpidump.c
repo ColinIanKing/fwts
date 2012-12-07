@@ -1767,6 +1767,10 @@ static int acpidump_test1(fwts_framework *fw)
 		fwts_log_nl(fw);
 	}
 
+	/* Some systems don't have any ACPI tables */
+	if (!i)
+		fwts_log_info(fw, "Cannot find any ACPI tables.");
+
 	return FWTS_OK;
 }
 

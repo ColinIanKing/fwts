@@ -141,7 +141,7 @@ static int s4_hibernate(fwts_framework *fw,
 
 	/* Do s4 here */
 	fwts_progress_message(fw, percent, "(Hibernating)");
-	status = fwts_pipe_exec(command, &output);
+	(void)fwts_pipe_exec(command, &output, &status);
 	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
 	free(command);

@@ -106,7 +106,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Do S3 here */
 	fwts_progress_message(fw, percent, "(Suspending)");
 	time(&t_start);
-	status = fwts_pipe_exec(command, &output);
+	(void)fwts_pipe_exec(command, &output, &status);
 	time(&t_end);
 	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);

@@ -33,15 +33,17 @@ int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
 {
 	FWTS_UNUSED(fw);
 
-	fwts_pipe_exec("lspci | grep Network", &hwinfo->network);
-	fwts_pipe_exec("lspci | grep Ethernet", &hwinfo->ethernet);
-	fwts_pipe_exec("ifconfig -a | grep -A1 '^\\w'", &hwinfo->ifconfig);
-	fwts_pipe_exec("iwconfig | grep -A1 '^\\w'", &hwinfo->iwconfig);
-	fwts_pipe_exec("hciconfig -a | grep -A2 '^\\w", &hwinfo->hciconfig);
-	fwts_pipe_exec("lspci | grep VGA", &hwinfo->videocard);
-	fwts_pipe_exec("xinput list", &hwinfo->xinput);
-	fwts_pipe_exec("pactl list | grep Sink | grep -v Latency", &hwinfo->pactl);
-	fwts_pipe_exec("pactl list | grep Source | grep -v Latency", &hwinfo->pactl);
+	int status;
+
+	fwts_pipe_exec("lspci | grep Network", &hwinfo->network, &status);
+	fwts_pipe_exec("lspci | grep Ethernet", &hwinfo->ethernet, &status);
+	fwts_pipe_exec("ifconfig -a | grep -A1 '^\\w'", &hwinfo->ifconfig, &status);
+	fwts_pipe_exec("iwconfig | grep -A1 '^\\w'", &hwinfo->iwconfig, &status);
+	fwts_pipe_exec("hciconfig -a | grep -A2 '^\\w", &hwinfo->hciconfig, &status);
+	fwts_pipe_exec("lspci | grep VGA", &hwinfo->videocard, &status);
+	fwts_pipe_exec("xinput list", &hwinfo->xinput, &status);
+	fwts_pipe_exec("pactl list | grep Sink | grep -v Latency", &hwinfo->pactl, &status);
+	fwts_pipe_exec("pactl list | grep Source | grep -v Latency", &hwinfo->pactl, &status);
 
 	return FWTS_OK;
 }

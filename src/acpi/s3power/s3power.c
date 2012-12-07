@@ -191,8 +191,7 @@ static int s3power_test(fwts_framework *fw)
 	/* Do S3 here */
 	fwts_progress_message(fw, 100, "(Suspending)");
 	time(&t_start);
-	status = 0;
-	status = fwts_pipe_exec(PM_SUSPEND, &output);
+	(void)fwts_pipe_exec(PM_SUSPEND, &output, &status);
 	time(&t_end);
 	fwts_progress_message(fw, 100, "(Resumed)");
 	fwts_text_list_free(output);

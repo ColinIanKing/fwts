@@ -57,7 +57,9 @@ int fwts_lib_efi_runtime_load_module(fwts_framework *fw)
 	}
 
 	if (!module_already_loaded) {
-		if (fwts_pipe_exec("modprobe efi_runtime", &output) != FWTS_OK) {
+		int status;
+
+		if (fwts_pipe_exec("modprobe efi_runtime", &output, &status) != FWTS_OK) {
 			fwts_log_error(fw, "Load efi_runtime module error.");
 			return FWTS_ERROR;
 		} else {
@@ -94,7 +96,9 @@ int fwts_lib_efi_runtime_unload_module(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (module_already_loaded) {
-		if (fwts_pipe_exec("modprobe -r efi_runtime", &output) != FWTS_OK) {
+		int status;
+
+		if (fwts_pipe_exec("modprobe -r efi_runtime", &output, &status) != FWTS_OK) {
 			fwts_log_error(fw, "Unload efi_runtime module error.");
 			return FWTS_ERROR;
 		} else {

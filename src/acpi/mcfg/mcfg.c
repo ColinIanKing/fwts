@@ -40,6 +40,7 @@ static void compare_config_space(
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;
+	int status;
 
 	char command[PATH_MAX];
 	char compare_line[50];
@@ -54,7 +55,7 @@ static void compare_config_space(
 	snprintf(command, sizeof(command), "%s -vxxx -s %" PRIu16 ":%" PRIu32,
 		fw->lspci, segment, device);
 
-	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
+	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
 		fwts_log_warning(fw, "Could not execute %s", command);
 		return;
 	}

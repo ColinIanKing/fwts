@@ -346,11 +346,12 @@ static int is_prefetchable(fwts_framework *fw, char *device, uint64_t address)
 	char line[4096];
 	fwts_list *lspci_output;
 	fwts_list_link *item;
+	int status;
 
 	memset(line,0,4096);
 
 	snprintf(line, sizeof(line), "%s -v -s %s", fw->lspci, device);
-	fwts_pipe_exec(line, &lspci_output);
+	fwts_pipe_exec(line, &lspci_output, &status);
 	if (lspci_output == NULL)
 		return pref;
 

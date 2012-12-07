@@ -37,10 +37,12 @@ static fwts_list *lspci_text;
 
 static int maxreadreq_init(fwts_framework *fw)
 {
+	int status;
+
 	if (fwts_check_executable(fw, fw->lspci, "lspci"))
 		return FWTS_ERROR;
 
-	if (fwts_pipe_exec("lspci -vvv", &lspci_text)) {
+	if (fwts_pipe_exec("lspci -vvv", &lspci_text, &status) != FWTS_OK) {
 		fwts_log_error(fw, "Failed to execute lspci -vvv.");
 		return FWTS_ERROR;
 	}

@@ -182,9 +182,10 @@ static char *hotkey_find_keymap(char *device)
 
 	char buffer[1024];
 	char *keymap = NULL;
+	int status;
 
 	snprintf(buffer, sizeof(buffer), "udevadm test /class/%s 2>&1", device);
-	if (fwts_pipe_exec(buffer, &output) != FWTS_OK)
+	if (fwts_pipe_exec(buffer, &output, &status) != FWTS_OK)
 		return NULL;
 
 	snprintf(buffer, sizeof(buffer), "keymap %s", device);

@@ -229,10 +229,11 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 	struct pci_device *head = NULL, *cur = NULL, *device = NULL;
 	char command[PATH_MAX];
 	int ret = FWTS_OK;
+	int status;
 
 	snprintf(command, sizeof(command), "%s", fw->lspci);
 
-	if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
+	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
 		fwts_log_warning(fw, "Could not execute %s", command);
 		return FWTS_ERROR;
 	}
@@ -267,10 +268,11 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 	for (cur = head; cur; cur = cur->next) {
 		int reg_loc = 0, reg_val = 0;
 		int i;
+		int status;
 
 		snprintf(command, sizeof(command), "%s -s %02X:%02X.%02X -xxx",
 			fw->lspci, cur->bus, cur->dev, cur->func);
-		if (fwts_pipe_exec(command, &lspci_output) == FWTS_EXEC_ERROR) {
+		if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
 			fwts_log_warning(fw, "Could not execute %s", command);
 			pci_device_list_free(head);
 			return FWTS_ERROR;

@@ -133,14 +133,15 @@ int fwts_pipe_close(const int fd, const pid_t pid)
  *  fwts_pipe_exec()
  *	execute a command, return a list containing lines
  *	of the stdout output from the command.
+ *	Return FWTS_OK if the exec worked, FWTS_EXEC_ERROR if
+ *	it failed.  status contains the child exit status.
  */
-int fwts_pipe_exec(const char *command, fwts_list **list)
+int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 {
 	pid_t 	pid;
 	int	fd;
 	ssize_t	len;
 	char 	*text;
-	int	ret;
 
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return FWTS_ERROR;
@@ -149,12 +150,11 @@ int fwts_pipe_exec(const char *command, fwts_list **list)
 	*list = fwts_list_from_text(text);
 	free(text);
 
-	ret = fwts_pipe_close(fd, pid);
-
-	if (ret == FWTS_EXEC_ERROR) {
+	*status = fwts_pipe_close(fd, pid);
+	if (*status) {
 		fwts_list_free(*list, free);
 		*list = NULL;
-		return FWTS_ERROR;
+		return FWTS_EXEC_ERROR;
 	}
 	return FWTS_OK;
 }

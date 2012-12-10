@@ -24,28 +24,35 @@
 
 /*
  *  fwts_dump_raw_data()
- *	print raw uint8 data of length `nbytes` into a buffer (length len) as a hex dump. nbytes must
- *	be no more than 16. The address/offset of the buffer in memory is annotated by addr.
+ *	print raw uint8 data of length `nbytes` into a buffer (length len)
+ *      as a hex dump. nbytes must be no more than 16. The address/offset
+ *      of the buffer in memory is annotated by addr.
  */
-void fwts_dump_raw_data(char *buffer, const int len, const uint8_t *data, const int addr, const int nbytes)
+void fwts_dump_raw_data(
+	char *buffer,		/* buffer to contained formatted dump */
+	const size_t len,	/* Length of buffer */
+	const uint8_t *data,	/* Octects to dump */
+	const int addr,		/* Original buffer data address */
+	const size_t nbytes)	/* Number of bytes to dump, max 16 */
 {
         int i;
 	int n = 0;
+	int nbytes_max = nbytes > 16 ? 16 : nbytes;
 
 	n = snprintf(buffer, len, "  %4.4x: ", addr);
 
 	/* Hex dump */
-        for (i=0;i<nbytes;i++)
+        for (i = 0; i < nbytes_max; i++)
                 n += snprintf(buffer + n, len - n, "%2.2x ", data[i]);
 
 	/* Padding */
-        for (;i<16;i++)
+        for (; i < 16; i++)
                 n += snprintf(buffer + n, len - n, "   ");
 
         n += snprintf(buffer + n, len - n, " ");
 
 	/* printable ASCII dump */
-        for (i=0;i<nbytes;i++)
+        for (i = 0; i < nbytes_max; i++)
 		buffer[n++] = (data[i] < 32 || data[i] > 126) ? '.' : data[i];
 	buffer[n] = '\0';
 }

@@ -29,9 +29,7 @@
  */
 void fwts_list_init(fwts_list *list)
 {
-	list->head = NULL;
-	list->tail = NULL;
-	list->len = 0;
+	memset(list, 0, sizeof(fwts_list));
 }
 
 /*
@@ -40,14 +38,8 @@ void fwts_list_init(fwts_list *list)
  */
 fwts_list *fwts_list_new(void)
 {
-	fwts_list *list;
-
-	if ((list = calloc(1, sizeof(fwts_list))) == NULL)
-		return NULL;
-
-	fwts_list_init(list);
-
-	return list;
+	/* calloc already zero's the list */
+	return calloc(1, sizeof(fwts_list));
 }
 
 /*

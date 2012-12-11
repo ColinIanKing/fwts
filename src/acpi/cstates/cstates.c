@@ -67,9 +67,8 @@ static void get_cstates(char *path, fwts_cstates *state)
 
 	while ((entry = readdir(dir)) != NULL) {
 		if (entry && strlen(entry->d_name)>3) {
-			int nr = 0;
+			int nr;
 			int count;
-			size_t len;
 
 			snprintf(filename, sizeof(filename), "%s/%s/name",
 				path, entry->d_name);
@@ -77,12 +76,21 @@ static void get_cstates(char *path, fwts_cstates *state)
 				break;
 
 			/*
-			 * Names can be Cx\n, or ATM-Cx\n, or SNB-Cx\n,
-			 * where x is the C state number
+			 * Names can be "Cx\n", or "ATM-Cx\n", or "SNB-Cx\n",
+			 * or newer kernels can be "Cx\n" or "Cx-SNB\n" etc
+			 * where x is the C state number.
 			 */
-			len = strlen(data);
-			if ((len > 2) && (data[len-3] == 'C'))
-				nr = strtoull(data+len-2, NULL, 10);
+			if ((data[0] == 'C') && isdigit(data[1]))
+				nr = strtoull(data+1, NULL, 10);
+			else if (strcmp("POLL", data) == 0)
+				nr = 0;
+			else {
+				char *ptr = strstr(data, "-C");
+				if (ptr) 
+					nr = strtoull(ptr + 2, NULL, 10);
+				else
+					nr = 0;
+			}
 			free(data);
 
 			snprintf(filename, sizeof(filename), "%s/%s/usage",

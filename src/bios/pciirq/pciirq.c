@@ -61,14 +61,14 @@ typedef struct {
 
 static const char *pciirq_reserved(uint8_t *data)
 {
-	static char buf[1+ (RESERVED_SIZE * 3)];
-	char tmp[4];
+	static char buf[1+ (RESERVED_SIZE * 5)];
+	char tmp[6];
 	int i;
 
 	*buf = '\0';
 
 	for (i=0; i < RESERVED_SIZE; i++) {
-		snprintf(tmp, sizeof(tmp), "%s%2.2x", *buf ? ",": "", data[i]);
+		snprintf(tmp, sizeof(tmp), "%s0x%2.2x", *buf ? ",": "", data[i]);
 		strcat(buf, tmp);
 	}
 	return buf;
@@ -149,25 +149,34 @@ static int pciirq_test1(fwts_framework *fw)
 			fwts_log_info_verbatum(fw, "  Miniport Data         : 0x%8.8x%s",
 				pciirq->miniport_data,
 				pciirq->miniport_data ? "" : " (none)");
-			fwts_log_info_verbatum(fw, "  Reserved              : 0x%s",
+			fwts_log_info_verbatum(fw, "  Reserved              : %s",
 				pciirq_reserved(pciirq->reserved));
 			fwts_log_info_verbatum(fw, "  Checksum              : 0x%2.2x",
 				pciirq->checksum);
 			fwts_log_nl(fw);
 
+			/*
+			 *  Dump table
+			 */
+			fwts_log_info_verbatum(fw, "Bus:Dev Slot  INTA#   INTB#   INTC#   INTD#");
 			for (slot = pciirq->slots, j = 0; j < slot_count; j++, slot++) {
-				fwts_log_info_verbatum(fw, "  Slot Entry %d:", j);
-				fwts_log_info_verbatum(fw, "    ID: %2.2x:%2.2x, Slot Number : 0x%2.2x%s",
+				char buffer[80];
+				char *ptr = buffer;
+
+				ptr += snprintf(ptr, sizeof(buffer),
+					" %2.2x:%2.2x   %2.2x  ",
 					slot->pci_bus_number, slot->pci_dev_number >> 3,
-					slot->slot_number, slot->slot_number ? "" : " (on-board)");
+					slot->slot_number);
 				for (k = 0; k < 4; k++) {
-					fwts_log_info_verbatum(fw, "    INT%c# Link Value : 0x%2.2x%s, "
-						"IRQ Bitmap 0x%4.4x (%s)", 'A' + k,
-						slot->INT[k].link, slot->INT[k].link ? "" : " (not connected)",
-						slot->INT[k].bitmap, pciirq_irq_bitmap(slot->INT[k].bitmap));
+					if (slot->INT[k].link)
+						ptr += snprintf(ptr, sizeof(buffer) - (ptr - buffer),
+							"%2.2x/%4.4x ", slot->INT[k].link, slot->INT[k].bitmap);
+					else
+						ptr += snprintf(ptr, sizeof(buffer) - (ptr - buffer), "        ");
 				}
-				fwts_log_nl(fw);
+				fwts_log_info_verbatum(fw, "%s", buffer);
 			}
+			fwts_log_nl(fw);
 
 			found++;
 
@@ -202,12 +211,6 @@ static int pciirq_test1(fwts_framework *fw)
 			slot_ok = true;
 			for (slot = pciirq->slots, j = 0; j < slot_count; j++, slot++) {
 				for (k = 0; k < 4; k++) {
-					if ((slot->INT[k].link == 0) && (slot->INT[k].bitmap != 0)) {
-						fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIIRQLinkBitmap",
-							"Slot %d INT%c# has a has an IRQ bitmap defined "
-							"but the link is not connected.", j, k + 'A');
-						slot_ok = false;
-					}
 					if ((slot->INT[k].link != 0) && (slot->INT[k].bitmap == 0)) {
 						fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIIRQLinkBitmap",
 							"Slot %d INT%c# has a has an link connected "

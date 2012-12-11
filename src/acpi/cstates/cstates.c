@@ -34,9 +34,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdint.h>
-#include <sched.h>
-#include <time.h>
-#include <math.h>
 #include <ctype.h>
 
 #define MIN_CSTATE	1
@@ -50,46 +47,6 @@ typedef struct {
 
 static int statecount = -1;
 static int firstcpu = -1;
-
-static void keep_busy_for_one_second(int cpu)
-{
-	cpu_set_t mask, oldset;
-	time_t current;
-	unsigned long loopcount = 0;
-
-	/* First, go to the right cpu */
-
-	sched_getaffinity(0, sizeof(oldset), &oldset);
-
-	CPU_ZERO(&mask);
-	CPU_SET(cpu, &mask);
-	sched_setaffinity(0, sizeof(mask), &mask);
-	current = time(NULL);
-
-	do {
-		double A, B;
-		int i;
-		A = 1.234567;
-		B = 3.121213;
-		for (i=0; i<100; i++) {
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-		}
-		loopcount++;
-	} while (current == time(NULL));
-
-	sched_setaffinity(0, sizeof(oldset), &oldset);
-}
 
 static void get_cstates(char *path, fwts_cstates *state)
 {
@@ -167,8 +124,16 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 
 		if ((i & 7) < 4)
 			sleep(1);
-		else
-			keep_busy_for_one_second(cpu);
+		else {
+			uint64_t loop_count;
+
+			if (fwts_cpu_performance(fw, cpu, &loop_count) != FWTS_OK) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "CPUFailedPerformance",
+					"Could not determine the CPU performance, this "
+					"may be due to not being able to get or set the "
+					"CPU affinity for CPU %i.", cpu);
+			}
+		}
 
 		get_cstates(path, &current);
 

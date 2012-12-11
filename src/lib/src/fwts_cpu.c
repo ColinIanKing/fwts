@@ -31,6 +31,9 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <math.h>
+#include <sched.h>
+#include <time.h>
 
 #include "fwts_types.h"
 #include "fwts_cpu.h"
@@ -287,6 +290,92 @@ static void fwts_cpu_sigint_handler(int dummy)
 	_exit(0);
 }
 
+
+/*
+ *  fwts_cpu_burn_cycles()
+ *	burn some CPU cycles
+ */
+static void fwts_cpu_burn_cycles(void)
+{
+	double A = 1.234567;
+	double B = 3.121213;
+	int i;
+
+	for (i = 0; i < 100; i++) {
+		A = A * B;
+		B = A * A;
+		A = A - B + sqrt(A);
+		A = A * B;
+		B = A * A;
+		A = A - B + sqrt(A);
+		A = A * B;
+		B = A * A;
+		A = A - B + sqrt(A);
+		A = A * B;
+		B = A * A;
+		A = A - B + sqrt(A);
+	}
+}
+
+/*
+ *  fwts_cpu_performance()
+ *
+ */
+int fwts_cpu_performance(
+	fwts_framework *fw,
+	const int cpu,		/* CPU we want to measure performance */
+	uint64_t *loop_count)	/* Returned measure of bogo compute power */
+{
+	cpu_set_t mask, oldset;
+	time_t current;
+	int ncpus = fwts_cpu_enumerate();
+
+	*loop_count = 0;
+
+	if (ncpus == FWTS_ERROR)
+		return FWTS_ERROR;
+
+	if (cpu < 0 || cpu > ncpus)
+		return FWTS_ERROR;
+
+	/* Pin to the specified CPU */
+
+	if (sched_getaffinity(0, sizeof(oldset), &oldset) < 0) {
+		fwts_log_error(fw, "Cannot get scheduling affinity.");
+		return FWTS_ERROR;
+	}
+
+	CPU_ZERO(&mask);
+	CPU_SET(cpu, &mask);
+	if (sched_setaffinity(0, sizeof(mask), &mask) < 0) {
+		fwts_log_error(fw, "Cannot set scheduling affinity to CPU %d.", cpu);
+		return FWTS_ERROR;
+	}
+
+	/* Wait until we get a new second */
+	current = time(NULL);
+	while (current == time(NULL))
+		sched_yield();
+
+	current = time(NULL);
+
+	/*
+	 * And burn some CPU cycles and get a bogo-compute like
+	 * loop count measure of CPU performance.
+	 */
+	do {
+		fwts_cpu_burn_cycles();
+		(*loop_count)++;
+	} while (current == time(NULL));
+
+	if (sched_setaffinity(0, sizeof(oldset), &oldset) < 0) {
+		fwts_log_error(fw, "Cannot restore old CPU affinity settings.");
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
 /*
  *  fwts_cpu_consume_cycles()
  *	eat up CPU cycles
@@ -294,16 +383,13 @@ static void fwts_cpu_sigint_handler(int dummy)
 static void fwts_cpu_consume_cycles(void)
 {
 	signal(SIGUSR1, fwts_cpu_consume_sighandler);
+	uint64_t i;
 
-	float dummy = 0.000001;
-	unsigned long long i = 0;
-
-	while (dummy > 0.0) {
-		dummy += 0.0000037;
+	for (;;) {
+		fwts_cpu_burn_cycles();
 		i++;
 	}
 }
-
 
 /*
  *  fwts_cpu_consume_complete()

@@ -20,6 +20,8 @@
 #ifndef __FWTS_CPU_H__
 #define __FWTS_CPU_H__
 
+#include "fwts_framework.h"
+
 #include <stdbool.h>
 
 typedef struct cpuinfo_x86 {
@@ -44,5 +46,6 @@ int fwts_cpu_enumerate(void);
 int fwts_cpu_consume(const int seconds);
 int fwts_cpu_consume_start(void);
 void fwts_cpu_consume_complete(void);
+int fwts_cpu_performance(fwts_framework *fw, const int cpu, uint64_t *loop_count);
 
 #endif

@@ -37,19 +37,20 @@
 #include <time.h>
 #include <math.h>
 #include <ctype.h>
+#include <inttypes.h>
 
 #define FWTS_CPU_PATH	"/sys/devices/system/cpu"
 
 typedef struct {
-	unsigned long	Hz;
-	unsigned long	speed;
+	uint32_t	Hz;
+	uint64_t	speed;
 } fwts_cpu_freq;
 
 static int number_of_speeds = -1;
 static int total_tests = 1;
 static int performed_tests = 0;
 static int no_cpufreq = 0;
-static unsigned long top_speed = 0;
+static uint64_t top_speed = 0;
 static int num_cpus;
 
 #define GET_PERFORMANCE_MAX (0)
@@ -126,63 +127,26 @@ static void set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 
 }
 
-static unsigned long get_performance(const int cpu)
-{
-	cpu_set_t mask, oldset;
-	time_t current;
-	unsigned long loopcount = 0;
-
-	/* First, go to the right cpu */
-
-	sched_getaffinity(0, sizeof(oldset), &oldset);
-
-	CPU_ZERO(&mask);
-	CPU_SET(cpu, &mask);
-	sched_setaffinity(0, sizeof(mask), &mask);
-
-	current = time(NULL);
-	while (current == time(NULL))
-		sched_yield();
-	current = time(NULL);
-
-	do {
-		double A, B;
-		int i;
-		A = 1.234567;
-		B = 3.121213;
-		for (i = 0; i < 100; i++) {
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-			A = A * B;
-			B = A * A;
-			A = A - B + sqrt(A);
-		}
-		loopcount++;
-	} while (current == time(NULL));
-
-	sched_setaffinity(0, sizeof(oldset), &oldset);
-
-	return loopcount;
-}
-
-static unsigned long get_performance_repeat(int cpu, int count, int type)
+static int get_performance_repeat(
+	fwts_framework *fw,
+	const int cpu,
+	const int count,
+	const int type,
+	uint64_t *retval)
 {
 	int i;
 
-	unsigned long max = 0, min = ULONG_MAX, real_count = 0;
-	unsigned long long cumulative = 0;
-	unsigned long retval;
+	uint64_t max = 0;
+	uint64_t min = ~0;
+	uint64_t real_count = 0;
+	uint64_t cumulative = 0;
 
 	for (i = 0; i < count; i++) {
-		unsigned long temp;
-		temp = get_performance(cpu);
+		uint64_t temp;
+
+		if (fwts_cpu_performance(fw, cpu, &temp) != FWTS_OK)
+			return FWTS_ERROR;
+
 		if (temp) {
 			if (temp < min)
 				min = temp;
@@ -197,19 +161,19 @@ static unsigned long get_performance_repeat(int cpu, int count, int type)
 
 	switch (type) {
 	case GET_PERFORMANCE_MAX:
-		retval = max;
+		*retval = max;
 		break;
 	case GET_PERFORMANCE_MIN:
-		retval = min;
+		*retval = min;
 		break;
 	case GET_PERFORMANCE_AVG:
-		retval = cumulative/real_count;
+		*retval = cumulative / real_count;
 		break;
 	default:
-		retval = 0;
+		*retval = 0;
 		break;
 	}
-	return retval;
+	return FWTS_OK;
 }
 
 static char *HzToHuman(unsigned long hz)
@@ -235,11 +199,11 @@ static char *HzToHuman(unsigned long hz)
 
 
 
-static unsigned long get_claimed_hz(const int cpu)
+static uint32_t get_claimed_hz(const int cpu)
 {
 	char path[PATH_MAX];
 	char *buffer;
-	unsigned long value = 0;
+	uint32_t value = 0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_max_freq");
 
@@ -261,7 +225,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	int speedcount;
 	static int warned=0;
 	int warned_PSS = 0;
-	unsigned long cpu_top_speed = 0;
+	uint64_t cpu_top_speed = 0;
 
 	memset(freqs, 0, sizeof(freqs));
 	memset(line, 0, sizeof(line));
@@ -296,7 +260,12 @@ static void do_cpu(fwts_framework *fw, int cpu)
 
 		freqs[i].Hz = strtoull(c, NULL, 10);
 		set_HZ(fw, cpu, freqs[i].Hz);
-		freqs[i].speed = get_performance(cpu);
+
+		if (fwts_cpu_performance(fw, cpu, &freqs[i].speed) != FWTS_OK) {
+			fwts_log_error(fw, "Failed to get CPU performance for "
+				"CPU frequency %" PRIu32 " Hz.", freqs[i].Hz);
+			freqs[i].speed = 0;
+		}
 		if (freqs[i].speed > cpu_top_speed)
 			cpu_top_speed = freqs[i].speed;
 
@@ -364,7 +333,8 @@ static void do_cpu(fwts_framework *fw, int cpu)
 				cpu);
 		if (freqs[i].Hz > get_claimed_hz(cpu) && !warned_PSS) {
 			warned_PSS = 1;
-			fwts_warning(fw, "Frequency %lu not achievable; _PSS limit of %lu in effect?",
+			fwts_warning(fw, "Frequency %" PRIu32
+				" not achievable; _PSS limit of %" PRIu32 " in effect?",
 				freqs[i].Hz, get_claimed_hz(cpu));
 		}
 	}
@@ -444,7 +414,7 @@ static void do_sw_all_test(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
-	unsigned long highperf, lowperf;
+	uint64_t highperf, lowperf;
 	int first_cpu_index = -1;
 	int cpu;
 
@@ -465,11 +435,20 @@ static void do_sw_all_test(fwts_framework *fw)
 	closedir(dir);
 
 	/* All CPUs at the lowest frequency */
-	lowperf = 100 * get_performance_repeat(first_cpu_index,
-						5, GET_PERFORMANCE_MIN) / top_speed;
+	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
+			"Failed to get CPU performance.");
+		return;
+	}
+	lowperf = (lowperf * 100) / top_speed;
+
 	highest_speed(fw, first_cpu_index);
-	highperf = 100 * get_performance_repeat(first_cpu_index,
-						5, GET_PERFORMANCE_MAX) / top_speed;
+	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
+			"Failed to get CPU performance.");
+		return;
+	}
+	highperf = (highperf * 100) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -512,8 +491,12 @@ static void do_sw_any_test(fwts_framework *fw)
 	rewinddir(dir);
 
 	/* All CPUs at the lowest frequency */
-	lowperf = 100 * get_performance_repeat(first_cpu_index,
-						5, GET_PERFORMANCE_MIN) / top_speed;
+	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
+			"Failed to get CPU performance.");
+		return;
+	}
+	lowperf = (100 * lowperf) / top_speed;
 
 	highest_speed(fw, first_cpu_index);
 
@@ -527,8 +510,12 @@ static void do_sw_any_test(fwts_framework *fw)
 	}
 	closedir(dir);
 
-	highperf = 100 * get_performance_repeat(first_cpu_index,
-						5, GET_PERFORMANCE_MAX) / top_speed;
+	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
+			"Failed to get CPU performance.");
+		return;
+	}
+	highperf = (100 * highperf) / top_speed;
 
 	if (lowperf >= highperf)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -568,13 +555,24 @@ static void check_sw_any(fwts_framework *fw)
 		return; /* Single processor machine, no point in checking anything */
 
 	/* assume that all processors have the same low performance */
-	low_perf = get_performance(max_cpu);
+	if (fwts_cpu_performance(fw, max_cpu, &low_perf) != FWTS_OK) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqCPsSetToSW_ANYGetPerf",
+			"Cannot get CPU performance.");
+		return;
+	}
+
 	for (i = 0; i <= max_cpu; i++) {
 		highest_speed(fw, i);
 		if (!cpu_exists(i))
 			continue;
 
-		high_perf = get_performance(i);
+		if (fwts_cpu_performance(fw, i, &high_perf) != FWTS_OK) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqCPsSetToSW_ANYGetPerf",
+				"Cannot get CPU performance.");
+			return;
+		}
 		performed_tests++;
 		fwts_progress(fw, 100 * performed_tests/total_tests);
 		/*
@@ -585,7 +583,12 @@ static void check_sw_any(fwts_framework *fw)
 		for (j = 0; j <= max_cpu; j++)
 			if (i != j)
 				lowest_speed(fw, j);
-		newhigh_perf = get_performance(i);
+		if (fwts_cpu_performance(fw, i, &newhigh_perf) != FWTS_OK) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqCPsSetToSW_ANYGetPerf",
+				"Cannot get CPU performance.");
+			return;
+		}
 		if ((high_perf > newhigh_perf) &&
 		    (high_perf - newhigh_perf > (high_perf - low_perf)/4) &&
 		    (once == 0) && (high_perf - low_perf > 20)) {

@@ -342,8 +342,7 @@ static void method_evaluate_found_method(
 
 	if (ACPI_FAILURE(ret) != AE_OK) {
 		fwts_method_evaluate_report_error(fw, name, ret);
-	}
-	else {
+	} else {
 		if (check_func != NULL) {
 			ACPI_OBJECT *obj = buf.Pointer;
 			check_func(fw, name, &buf, obj, private);
@@ -366,12 +365,7 @@ static void method_evaluate_found_method(
 			"acquired lock. It may be occurring in the method "
 			"being tested or other methods used while evaluating "
 			"the method.");
-	} else
-		if ((sem_acquired + sem_released) > 0)
-			fwts_passed(fw,
-				"%s correctly acquired and released locks "
-				"%d times.", name, sem_acquired);
-
+	}
 }
 
 /*

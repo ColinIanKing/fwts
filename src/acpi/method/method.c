@@ -2427,8 +2427,6 @@ static void method_test_BIF_return(
 		uint32_t i;
 		int failed = 0;
 
-		fwts_method_dump_object(fw, obj);
-
 		if (obj->Package.Count != 13) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_BIFElementCount",

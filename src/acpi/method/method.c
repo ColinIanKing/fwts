@@ -3536,8 +3536,6 @@ static void method_test_DOD_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		uint32_t i;
 
-		fwts_method_dump_object(fw, obj);
-
 		for (i = 0; i < obj->Package.Count; i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
 				failed++;

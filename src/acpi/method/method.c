@@ -3419,8 +3419,6 @@ static void method_test_WAK_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_object(fw, obj);
-
 		if (obj->Package.Count != 2) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_WAKElementCount",

@@ -87,32 +87,32 @@ static int cmosdump_test1(fwts_framework *fw)
 	};
 
 	static char *divider[8] = {
-		"unknown",
-		"unknown",
+		"4.194 MHz",
+		"1.049 MHz",
 		"32.768 KHz (default)",
 		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
+		"test mode",
+		"test mode",
+		"reset / disable",
+		"reset / disable",
 	};
 
 	static char *rate_selection[16] = {
 		"none",
-		"unknown",
-		"unknown",
-		"122 microseconds (minimum)",
-		"unknown",
-		"unknown",
+		"3.90625 millseconds",
+		"7.8215 milliseconds",
+		"122.070 microseconds",
+		"244.141 microseconds",
+		"488.281 microseconds",
 		"976.562 microseconds (default)",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
-		"unknown",
+		"1.953125 milliseconds",
+		"3.90625 milliseconds",
+		"7.8215 milliseconds",
+		"15.625 milliseconds",
+		"31.25 milliseconds",
+		"62.5 milliseconds",
+		"125 milliseconds",
+		"250 milliseconds",
 		"500 milliseconds"
 	};
 

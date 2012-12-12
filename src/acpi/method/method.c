@@ -1715,6 +1715,8 @@ static void method_test_PSS_return(
 	uint32_t max_freq = 0;
 	uint32_t prev_power = 0;
 	bool max_freq_valid = false;
+	bool dump_elements = false;
+	bool *element_ok;
 
 	FWTS_UNUSED(private);
 
@@ -1728,6 +1730,12 @@ static void method_test_PSS_return(
 			"got %" PRIu32 " elements instead.",
 			obj->Package.Count);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	element_ok = calloc(obj->Package.Count, sizeof(bool));
+	if (element_ok == NULL) {
+		fwts_log_error(fw, "Cannot allocate an array. Test aborted.");
 		return;
 	}
 
@@ -1772,13 +1780,11 @@ static void method_test_PSS_return(
 			continue;
 		}
 
-		fwts_log_info(fw, "P-State %d: CPU %" PRIu64 " Mhz, %" PRIu64 " mW, "
-			"latency %" PRIu64 " us, bus master latency %" PRIu64 " us.",
-			i,
-			pstate->Package.Elements[0].Integer.Value,
-			pstate->Package.Elements[1].Integer.Value,
-			pstate->Package.Elements[2].Integer.Value,
-			pstate->Package.Elements[3].Integer.Value);
+		/*
+	 	 *  Parses OK, so this element can be dumped out
+		 */
+		element_ok[i] = true;
+		dump_elements = true;
 
 		/*
 		 * Collect maximum frequency.  The sub-packages are sorted in
@@ -1811,6 +1817,31 @@ static void method_test_PSS_return(
 		}
 		prev_power = pstate->Package.Elements[1].Integer.Value;
 	}
+
+	/*
+	 *  If we have some valid data then dump it out, it is useful to see
+	 */
+	if (dump_elements) {
+		fwts_log_info_verbatum(fw, "P-State  Freq     Power  Latency   Bus Master");
+		fwts_log_info_verbatum(fw, "         (MHz)    (mW)    (us)    Latency (us)");
+		for (i = 0; i < obj->Package.Count; i++) {
+			ACPI_OBJECT *pstate = &obj->Package.Elements[i];
+			if (element_ok[i]) {
+				fwts_log_info_verbatum(fw, " %3d   %7" PRIu64 " %8" PRIu64
+					" %5" PRIu64 "     %5" PRIu64,
+					i,
+					pstate->Package.Elements[0].Integer.Value,
+					pstate->Package.Elements[1].Integer.Value,
+					pstate->Package.Elements[2].Integer.Value,
+					pstate->Package.Elements[3].Integer.Value);
+			} else {
+				fwts_log_info_verbatum(fw,
+					" %3d      ----    -----    --        -- (invalid)", i);
+			}
+		}
+	}
+
+	free(element_ok);
 
 	/*
 	 * Sanity check maximum frequency.  We could also check the DMI data

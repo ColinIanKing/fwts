@@ -3414,8 +3414,9 @@ static void method_test_WAK_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	uint32_t Sstate = *(uint32_t*)private;
 	int failed = 0;
+
+	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
 		fwts_method_dump_object(fw, obj);
@@ -3438,38 +3439,6 @@ static void method_test_WAK_return(
 					obj->Package.Count);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 				failed++;
-			}
-			else {
-				if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"Method_WAKBitField",
-						"_WAK: expecting condition "
-						"bit-field (element 0) of "
-						"packages to be in range, "
-						"got 0x%8.8" PRIx64 ".",
-						obj->Package.Elements[0].Integer.Value);
-					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-					failed++;
-				}
-				if (!(
-				    ((obj->Package.Elements[1].Integer.Value == Sstate) && (obj->Package.Elements[0].Integer.Value == 0)) ||
-                                    ((obj->Package.Elements[1].Integer.Value == 0) && (obj->Package.Elements[0].Integer.Value != 0)) )) {
-					fwts_warning(fw,
-						"_WAK: expecting power supply S-state (element 1) "
-						"of packages to be 0x%8.8" PRIx32
-						", got 0x%8.8" PRIx64 ".",
-						Sstate, obj->Package.Elements[0].Integer.Value);
-					fwts_advice(fw, "_WAK should return 0 if the wake failed and was unsuccessful (i.e. element[0] "
-							"is non-zero) OR should return the S-state. "
-							"This can confuse the operating system as this _WAK return indicates that the "
-							"S-state was not entered because of too much current being drawn from the "
-							"power supply, however, the BIOS may have actually entered this state and the "
-							"_WAK method is misinforming the operating system. Currently Linux does not "
-							"check for the return type from _WAK, so it should theoretically not affect the "
-							"operation of suspend/resume.");
-
-					failed++;
-				}
 			}
 		}
 		if (!failed)

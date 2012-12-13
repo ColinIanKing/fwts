@@ -611,33 +611,41 @@ static int uefirtvariable_test3(fwts_framework *fw)
 	uint64_t index;
 	uint64_t datasize1 = 10, datasize2 = 20;
 
+	fwts_log_info(fw, "Testing SetVariable on two different GUIDs and the same variable name.");
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test1(fw, attributesarray[index], datasize1, datasize2,
 								variablenametest) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
+	fwts_passed(fw, "SetVariable on two different GUIDs and the same variable name passed.");
 
+	fwts_log_info(fw, "Testing SetVariable on the same and different variable data.");
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test2(fw, attributesarray[index], variablenametest) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
+	fwts_passed(fw, "SetVariable on the same and different variable data passed.");
 
+	fwts_log_info(fw, "Testing SetVariable on similar variable name.");
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test3(fw, attributesarray[index]) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
+	fwts_passed(fw, "SetVariable on similar variable name passed.");
 
+	fwts_log_info(fw, "Testing SetVariable on DataSize is 0.");
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test4(fw, attributesarray[index]) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
+	fwts_passed(fw, "SetVariable on DataSize is 0 passed.");
 
+	fwts_log_info(fw, "Testing SetVariable on Attributes is 0.");
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
 		if (setvariable_test5(fw, attributesarray[index]) == FWTS_ERROR)
 			return FWTS_ERROR;
 	}
-
-	fwts_passed(fw, "UEFI runtime service SetVariable interface test passed.");
+	fwts_passed(fw, "SetVariable on Attributes is 0 passed.");
 
 	return FWTS_OK;
 }

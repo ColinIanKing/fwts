@@ -1,33 +1,32 @@
-README for the fireware test suite
-==================================
-
-Well, you got this far, which is a good thing.  
+README for the FirmWare Test Suite (fwts)
+=========================================
 
 Quick Start Guide
 =================
 
-1) Dependencies: iasl, acpidump pciutils dmidecode
+1) Dependencies:
 
-Please first install iasl and acpidump:
-
-sudo apt-get install iasl acpidump pciutils dmidecode
+	autoconf, automake, libtool, libpcre3-dev, libjson0-dev, flex, bison, dkms
 
 2) To build and install (only if building from source)
 
-./configure
-make
-sudo make install
+	autoreconf -ivf
+	./configure
+	make
 
 To get help:
 
-fwts --help
+	fwts --help
 
-To run all the tests (including S3 and S4 suspend/resume hibernate/resume tests) use:
+To run all the default tests, use:
 
-fwts
+	sudo fwts
 
 ..this will dump the results into results.log
 
+To see the available tests, use:
+
+	fwts --show-tests 
 
 Advanced Options Guide
 ======================
@@ -37,136 +36,180 @@ Running Specific Tests
 
 Run specific tests, e.g. check syntax of DSDT:
 
-sudo fwts syntaxcheck
+	sudo fwts syntaxcheck
 
 You can run multiple tests too:
 
-sudo fwts syntaxcheck fan batttery
+	sudo fwts syntaxcheck fan battery
 
 To see all the available tests:
 
-sudo fwts --show-tests
+	sudo fwts --show-tests-full
 
 Changing the output
 -------------------
 
 To dump the results to another file:
 
-sudo fwts --results-output=myresults.log
+	sudo fwts --results-output=myresults.log
+
+or the short form:
+
+	sudo fwts -r myresults.log
 
 or to stderr or stdout and redirect:
 
-sudo fwts --results-output=stderr
-sudo fwts --results-output=stdout > mylog.log
+	sudo fwts -r stderr
+	sudo fwts -r stdout > mylog.log
 
-The log has various columns:
+or a shorter form for stdout:
 
-0001 17/05/10 15:00:48 wakealarm       Test ACPI Wakealarm.
-0002 17/05/10 15:00:48 wakealarm       ------------------------------------------------------------------------------------------
-0003 17/05/10 15:00:48 wakealarm       Check existance of /sys/class/rtc/rtc0/wakealarm.
-0004 17/05/10 15:00:48 wakealarm       PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm.
-0005 17/05/10 15:00:48 wakealarm       Trigger RTC wakealarm.
-0006 17/05/10 15:00:48 wakealarm       Trigger wakealarm for 1 seconds in the future.
-0007 17/05/10 15:00:48 wakealarm       PASSED: test 2, Trigger RTC wakealarm.
-0008 17/05/10 15:00:48 wakealarm       Check if wakealarm is fired.
-0009 17/05/10 15:00:48 wakealarm       Trigger wakealarm for 2 seconds in the future.
-0010 17/05/10 15:00:51 wakealarm       PASSED: test 3, Check if wakealarm is fired.
-0011 17/05/10 15:00:51 wakealarm       Multiple wakealarm firing tests.
-0012 17/05/10 15:00:51 wakealarm       Trigger wakealarm for 1 seconds in the future.
-0013 17/05/10 15:00:53 wakealarm       Trigger wakealarm for 2 seconds in the future.
-0014 17/05/10 15:00:56 wakealarm       Trigger wakealarm for 3 seconds in the future.
-0015 17/05/10 15:01:00 wakealarm       Trigger wakealarm for 4 seconds in the future.
-0016 17/05/10 15:01:05 wakealarm       PASSED: test 4, Multiple wakealarm firing tests.
-0017 17/05/10 15:01:05 wakealarm       ==========================================================================================
-0018 17/05/10 15:01:05 wakealarm       4 passed, 0 failed, 0 warnings, 0 aborted.
-0019 17/05/10 15:01:05 wakealarm       ==========================================================================================
+	sudo fwts - > mylog.log
 
-^    ^        ^        ^
-|    |        |        |
-|    |        |        +--- %owner (name of test that ran)
-|    |        |
-|    |        +--- %time
-|    |
-|    +--- %date 
+If the output is written to stdout, the width of the log is based on the
+width of the tty.  The default width when writing to a log file may be
+changed to N characters wide using -w N or --log-width=N, e.g.
+
+	sudo fwts --log-width=90 - > mylog.log
+
+The log has various columns that can be enabled, here is an example:
+
+00012 13/12/12 12:55:04 wakealarm      Test ACPI Wakealarm.
+00013 13/12/12 12:55:04 wakealarm      -------------------------------------------------------------
+00014 13/12/12 12:55:04 wakealarm      Test 1 of 4: Check existence of /sys/class/rtc/rtc0
+00015 13/12/12 12:55:04 wakealarm      /wakealarm.
+00016 13/12/12 12:55:04 wakealarm      PASSED: Test 1, /sys/class/rtc/rtc0/wakealarm found.
+00017 13/12/12 12:55:04 wakealarm      
+00018 13/12/12 12:55:04 wakealarm      Test 2 of 4: Trigger wakealarm for 1 seconds in the future.
+00019 13/12/12 12:55:04 wakealarm      Trigger wakealarm for 1 seconds in the future.
+00020 13/12/12 12:55:04 wakealarm      PASSED: Test 2, RTC wakealarm was triggered successfully.
+00021 13/12/12 12:55:04 wakealarm      
+00022 13/12/12 12:55:04 wakealarm      Test 3 of 4: Check if wakealarm is fired.
+00023 13/12/12 12:55:07 wakealarm      PASSED: Test 3, RTC wakealarm triggered and fired
+00024 13/12/12 12:55:07 wakealarm      successfully.
+00025 13/12/12 12:55:07 wakealarm      
+00026 13/12/12 12:55:07 wakealarm      Test 4 of 4: Multiple wakealarm firing tests.
+00027 13/12/12 12:55:07 wakealarm      Trigger wakealarm for 1 seconds in the future.
+00028 13/12/12 12:55:09 wakealarm      Trigger wakealarm for 2 seconds in the future.
+00029 13/12/12 12:55:12 wakealarm      Trigger wakealarm for 3 seconds in the future.
+00030 13/12/12 12:55:16 wakealarm      Trigger wakealarm for 4 seconds in the future.
+00031 13/12/12 12:55:21 wakealarm      PASSED: Test 4, RTC wakealarm triggered and fired
+00032 13/12/12 12:55:21 wakealarm      successfully.
+00033 13/12/12 12:55:21 wakealarm      
+00034 13/12/12 12:55:21 wakealarm      =============================================================
+00035 13/12/12 12:55:21 wakealarm      4 passed, 0 failed, 0 warnings, 0 aborted, 0 skipped, 0 info
+00036 13/12/12 12:55:21 wakealarm      only.
+00037 13/12/12 12:55:21 wakealarm      ============================================================
+^     ^        ^        ^
+|     |        |        |
+|     |        |        +--- %owner (name of test that ran)
+|     |        |
+|     |        +--- %time
+|     |
+|     +--- %date 
 |
 +--- %line (line number)
 
 Also, there is an optional %field that indicates the type of message being logged:
 
-sudo fwts wakealarm --log-format="%line %data %time %field %owner"
+	sudo fwts wakealarm --log-format="%line %date %time %field %owner"
 
-generates results.log containing:
+..this generates results.log containing:
 
-0001 data 15:05:13 HED wakealarm      Test ACPI Wakealarm.
-0002 data 15:05:13 SEP wakealarm      -------------------------------------------------------------------------------------------
-0003 data 15:05:13 INF wakealarm      Check existance of /sys/class/rtc/rtc0/wakealarm.
-0004 data 15:05:13 RES wakealarm      PASSED: test 1, Check existance of /sys/class/rtc/rtc0/wakealarm.
-0005 data 15:05:13 INF wakealarm      Trigger RTC wakealarm.
-0006 data 15:05:13 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
-0007 data 15:05:13 RES wakealarm      PASSED: test 2, Trigger RTC wakealarm.
-0008 data 15:05:13 INF wakealarm      Check if wakealarm is fired.
-0009 data 15:05:13 INF wakealarm      Trigger wakealarm for 2 seconds in the future.
-0010 data 15:05:16 RES wakealarm      PASSED: test 3, Check if wakealarm is fired.
-0011 data 15:05:16 INF wakealarm      Multiple wakealarm firing tests.
-0012 data 15:05:16 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
-0013 data 15:05:18 INF wakealarm      Trigger wakealarm for 2 seconds in the future.
-0014 data 15:05:21 INF wakealarm      Trigger wakealarm for 3 seconds in the future.
-0015 data 15:05:25 INF wakealarm      Trigger wakealarm for 4 seconds in the future.
-0016 data 15:05:30 RES wakealarm      PASSED: test 4, Multiple wakealarm firing tests.
-0017 data 15:05:30 SEP wakealarm      ===========================================================================================
-0018 data 15:05:30 SUM wakealarm      4 passed, 0 failed, 0 warnings, 0 aborted.
-0019 data 15:05:30 SEP wakealarm      ===========================================================================================
-                    ^
-                    |
- +------------------+
+00013 13/12/12 12:53:11 HED wakealarm      Test ACPI Wakealarm.
+00014 13/12/12 12:53:11 SEP wakealarm      ---------------------------------------------------------
+00015 13/12/12 12:53:11 INF wakealarm      Test 1 of 4: Check existence of /sys/class/rtc/rtc0
+00016 13/12/12 12:53:11 INF wakealarm      /wakealarm.
+00017 13/12/12 12:53:11 PAS wakealarm      PASSED: Test 1, /sys/class/rtc/rtc0/wakealarm found.
+00018 13/12/12 12:53:11 NLN wakealarm      
+00019 13/12/12 12:53:11 INF wakealarm      Test 2 of 4: Trigger wakealarm for 1 seconds in the
+00020 13/12/12 12:53:11 INF wakealarm      future.
+00021 13/12/12 12:53:11 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
+00022 13/12/12 12:53:11 PAS wakealarm      PASSED: Test 2, RTC wakealarm was triggered successfully.
+00023 13/12/12 12:53:11 NLN wakealarm      
+00024 13/12/12 12:53:11 INF wakealarm      Test 3 of 4: Check if wakealarm is fired.
+00025 13/12/12 12:53:14 PAS wakealarm      PASSED: Test 3, RTC wakealarm triggered and fired
+00026 13/12/12 12:53:14 PAS wakealarm      successfully.
+00027 13/12/12 12:53:14 NLN wakealarm      
+00028 13/12/12 12:53:14 INF wakealarm      Test 4 of 4: Multiple wakealarm firing tests.
+00029 13/12/12 12:53:14 INF wakealarm      Trigger wakealarm for 1 seconds in the future.
+00030 13/12/12 12:53:16 INF wakealarm      Trigger wakealarm for 2 seconds in the future.
+00031 13/12/12 12:53:19 INF wakealarm      Trigger wakealarm for 3 seconds in the future.
+00032 13/12/12 12:53:23 INF wakealarm      Trigger wakealarm for 4 seconds in the future.
+00033 13/12/12 12:53:28 PAS wakealarm      PASSED: Test 4, RTC wakealarm triggered and fired
+00034 13/12/12 12:53:28 PAS wakealarm      successfully.
+00035 13/12/12 12:53:28 NLN wakealarm      
+00036 13/12/12 12:53:28 SEP wakealarm      =========================================================
+00037 13/12/12 12:53:28 SUM wakealarm      4 passed, 0 failed, 0 warnings, 0 aborted, 0 skipped, 0
+00038 13/12/12 12:53:28 SUM wakealarm      info only.
+00039 13/12/12 12:53:28 SEP wakealarm      =========================================================
+                         ^
+                         |
+ +-----------------------+
  |
-HED = heading
-INF = information fields
-SEP = separator (just pretty printing)
 RES = result (PASSED or FAILED)
-SUM = summary
 ERR = error (something fatal happened!)
 WRN = warning (not a critical failure, but may need looking at)
-DBG = debug output
+DBG = debug output (deprecated)
+INF = information fields
+SUM = summary
 NLN = new line (empty field)
+ADV = advice information
+HED = heading
+TAG = tag information
+SEP = separator (just pretty printing)
+PAS = Test Passed
+FAL = Test Failed
+SKP = Test Skipped
+ABT = Test Aborted
+INO = Information only 
 
-use fwts --log-fields to show all available fields
+use:
+	fwts --log-fields to show all available fields
 
 One can filter on these fields using --log-filter, e.g.
 
-sudo fwts --log-filter=RES,SUM  
-    .. just collect results and summary of tests
+	sudo fwts --log-filter=RES,SUM  
 
-sudo fwts --log-filter=ALL,~SEP
-    .. all fields except the separators
+.. just collect results and summary of tests
 
-..it's quite flexible!
+	sudo fwts --log-filter=ALL,~SEP
+
+.. all fields except the separators
+
 
 One can also re-arrange or modify the log format using --log-format, e.g.
 
-sudo fwts --log-format="%line %field %time: "  mtrr
+	sudo fwts --log-format="%line %field %time: " mtrr -
 
 this produces:
 
-0001 HED 15:08:38: MTRR validation.
-0002 SEP 15:08:38: --------------------------------------------------------------------------------------------------------------
-0003 INF 15:08:38: MTRR overview
-0004 INF 15:08:38: -------------
-0005 INF 15:08:38: 0x00000000 - 0x80000000   write-back
-0006 INF 15:08:38: 0x80000000 - 0xc0000000   write-back
-0007 INF 15:08:38: 0xbf700000 - 0xbf800000   uncached
-0008 INF 15:08:38: 0xbf800000 - 0xc0000000   uncached
-0009 INF 15:08:38: 0xd0000000 - 0xe0000000   write-combining
-0010 INF 15:08:38:
-0011 INF 15:08:38: This test validates the MTRR IOMEM setup.
-0012 RES 15:08:38: FAILED [MEDIUM]: test 1, Memory range 0xd0000000 to 0xdfffffff (0000:00:02.0) has incorrect attribute
-0013 RES 15:08:38: write-combining
-0014 INF 15:08:39: This test validates the MTRR setup across all processors.
-0015 RES 15:08:39: PASSED: test 2, All processors have the MTRR setup
-0016 SEP 15:08:39: ==============================================================================================================
-0017 SUM 15:08:39: 1 passed, 1 failed, 0 warnings, 0 aborted.
-0018 SEP 15:08:39: ==============================================================================================================
-
+00011 SEP 12:13:07: --------------------------------------------------------------------------------
+00012 INF 12:13:07: MTRR overview
+00013 INF 12:13:07: -------------
+00014 INF 12:13:07: Reg 0: 0x00000000ffc00000 - 0x0000000100000000 (     4 MB)   Write-Protect
+00015 INF 12:13:07: Reg 1: 0x0000000000000000 - 0x0000000080000000 (  2048 MB)   Write-Back
+00016 INF 12:13:07: Reg 2: 0x0000000080000000 - 0x00000000c0000000 (  1024 MB)   Write-Back
+00017 INF 12:13:07: Reg 3: 0x00000000c0000000 - 0x00000000e0000000 (   512 MB)   Write-Back
+00018 INF 12:13:07: Reg 4: 0x00000000dc000000 - 0x00000000e0000000 (    64 MB)   Uncached
+00019 INF 12:13:07: Reg 5: 0x00000000db000000 - 0x00000000dc000000 (    16 MB)   Uncached
+00020 INF 12:13:07: Reg 6: 0x0000000100000000 - 0x0000000180000000 (  2048 MB)   Write-Back
+00021 INF 12:13:07: Reg 7: 0x0000000180000000 - 0x00000001a0000000 (   512 MB)   Write-Back
+00022 INF 12:13:07: Reg 8: 0x000000019f000000 - 0x00000001a0000000 (    16 MB)   Uncached
+00023 INF 12:13:07: Reg 9: 0x000000019e800000 - 0x000000019f000000 (     8 MB)   Uncached
+00024 NLN 12:13:07: 
+00025 INF 12:13:07: Test 1 of 3: Validate the kernel MTRR IOMEM setup.
+00026 PAS 12:13:07: PASSED: Test 1, Memory ranges seem to have correct attributes.
+00027 NLN 12:13:07: 
+00028 INF 12:13:07: Test 2 of 3: Validate the MTRR setup across all processors.
+00029 PAS 12:13:07: PASSED: Test 2, All processors have the a consistent MTRR setup.
+00030 NLN 12:13:07: 
+00031 INF 12:13:07: Test 3 of 3: Check for AMD MtrrFixDramModEn being cleared by the BIOS.
+00032 SKP 12:13:07: SKIPPED: Test 3, CPU is not an AMD, cannot test.
+00033 NLN 12:13:07: 
+00034 SEP 12:13:07: ================================================================================
+00035 SUM 12:13:07: 2 passed, 0 failed, 0 warnings, 0 aborted, 1 skipped, 0 info only.
+00036 SEP 12:13:07: ================================================================================
 
 Available fields are:
 
@@ -181,15 +224,11 @@ Test Progress Feedback
 
 Use the --show-progress to dump out the test progress to stderr. Output is as follows:
 
-mtrr                : Test 1 of 2 started
-mtrr                : Test 1 of 2 completed (0 passed, 1 failed, 0 aborted)
-mtrr                : Test 2 of 2 started
-mtrr                : Test 2 of 2 completed (1 passed, 0 failed, 0 aborted)
-  ^
-  test name            ^ progress info
-
-It's a bit crude at the moment!
-
+Test: Test ACPI Wakealarm.                                                  
+  Check existence of /sys/class/rtc/rtc0/wakealarm.       1 passed                                 
+  Trigger wakealarm for 1 seconds in the future.          1 passed                                 
+  Check if wakealarm is fired.                            1 passed                                 
+  Multiple wakealarm firing tests.                        1 passed   
 
 PASSED or FAILED?
 =================
@@ -207,3 +246,17 @@ test suite can be run from a shell script and one can detect if the test worked 
 LOG=stdout
 sudo fwts dmi_decode --results-output=$LOG
 failed=$?
+
+Resources
+=========
+
+fwts git repository:
+	git://kernel.ubuntu.com/hwe/fwts.git
+	http://kernel.ubuntu.com/git?p=hwe/fwts.git;a=summary
+
+fwts reference guide:
+	https://wiki.ubuntu.com/Kernel/Reference/fwts
+
+fwts LiveCD:
+	http://fwts.ubuntu.com/fwts-live/
+

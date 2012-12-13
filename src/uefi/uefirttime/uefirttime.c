@@ -189,6 +189,7 @@ static int uefirttime_deinit(fwts_framework *fw)
 	FWTS_UNUSED(fw);
 
 	close(fd);
+	fwts_lib_efi_runtime_unload_module(fw);
 
 	return FWTS_OK;
 }

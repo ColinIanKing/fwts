@@ -45,11 +45,8 @@
 static int fd;
 EFI_GUID gtestguid1 = TEST_GUID1;
 EFI_GUID gtestguid2 = TEST_GUID2;
-uint32_t attributesarray[] = { FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
-			       FWTS_UEFI_VAR_NON_VOLATILE | FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
-			       FWTS_UEFI_VAR_BOOTSERVICE_ACCESS | FWTS_UEFI_VAR_RUNTIME_ACCESS,
-			       FWTS_UEFI_VAR_NON_VOLATILE | FWTS_UEFI_VAR_BOOTSERVICE_ACCESS | FWTS_UEFI_VAR_RUNTIME_ACCESS};
 
+uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE | FWTS_UEFI_VAR_BOOTSERVICE_ACCESS | FWTS_UEFI_VAR_RUNTIME_ACCESS;
 uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
 
 static int uefirtvariable_init(fwts_framework *fw)
@@ -83,14 +80,14 @@ static int uefirtvariable_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t datasize, uint16_t *varname)
+static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *varname)
 {
 	long ioret;
 	struct efi_getvariable getvariable;
 	struct efi_setvariable setvariable;
 
 	uint64_t status;
-	uint8_t testdata[datasize+1];
+	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t dataindex;
 	uint64_t getdatasize;
 	uint32_t attributestest;
@@ -98,7 +95,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	uint8_t data[datasize+1];
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
-	data[dataindex] = '0';
+	data[dataindex] = '\0';
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = &gtestguid1;
@@ -172,7 +169,6 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	return FWTS_OK;
 }
 
-
 static bool compare_guid(EFI_GUID *guid1, EFI_GUID *guid2)
 {
 	bool ident = true;
@@ -205,7 +201,7 @@ static bool compare_name(uint16_t *name1, uint16_t *name2)
 	return ident;
 }
 
-static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
+static int getnextvariable_test(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
@@ -223,6 +219,7 @@ static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
+	data[dataindex] = '\0';
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid1;
@@ -309,7 +306,7 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex + datadiff;
-	data[dataindex] = '0';
+	data[dataindex] = '\0';
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = gtestguid;
@@ -328,7 +325,7 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 	return FWTS_OK;
 }
 
-static int setvariable_checkvariable(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
+static int setvariable_checkvariable(fwts_framework *fw, uint64_t datasize,
 					uint16_t *varname, EFI_GUID *gtestguid, uint8_t datadiff)
 {
 	long ioret;
@@ -409,7 +406,7 @@ static int setvariable_checkvariable_notfound(fwts_framework *fw, uint16_t *varn
 	return FWTS_ERROR;
 }
 
-static int setvariable_test1(fwts_framework *fw, uint32_t attributes, uint64_t datasize1,
+static int setvariable_test1(fwts_framework *fw, uint64_t datasize1,
 							uint64_t datasize2, uint16_t *varname)
 {
 	uint8_t datadiff_g2 = 2, datadiff_g1 = 0;
@@ -422,11 +419,11 @@ static int setvariable_test1(fwts_framework *fw, uint32_t attributes, uint64_t d
 					&gtestguid1, datadiff_g1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize2, varname,
+	if (setvariable_checkvariable(fw, datasize2, varname,
 					&gtestguid2, datadiff_g2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize1, varname,
+	if (setvariable_checkvariable(fw, datasize1, varname,
 					&gtestguid1, datadiff_g1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
@@ -441,7 +438,7 @@ static int setvariable_test1(fwts_framework *fw, uint32_t attributes, uint64_t d
 	return FWTS_OK;
 }
 
-static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *varname)
+static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 {
 	uint64_t datasize = 10;
 	uint8_t datadiff1 = 0, datadiff2 = 2, datadiff3 = 4;
@@ -455,7 +452,7 @@ static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *
 					&gtestguid1, datadiff1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
@@ -471,7 +468,7 @@ static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *
 					&gtestguid1, datadiff2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
@@ -485,7 +482,7 @@ static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *
 					&gtestguid1, datadiff3) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, varname,
+	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff3) == FWTS_ERROR)
 		return FWTS_ERROR;
 
@@ -496,7 +493,7 @@ static int setvariable_test2(fwts_framework *fw, uint32_t attributes, uint16_t *
 	return FWTS_OK;
 }
 
-static int setvariable_test3(fwts_framework *fw, uint32_t attributes)
+static int setvariable_test3(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
 	uint8_t datadiff1 = 0, datadiff2 = 1, datadiff3 = 2;
@@ -515,15 +512,15 @@ static int setvariable_test3(fwts_framework *fw, uint32_t attributes)
 						&gtestguid1, datadiff1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, variablenametest2,
+	if (setvariable_checkvariable(fw, datasize, variablenametest2,
 						&gtestguid1, datadiff2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, variablenametest3,
+	if (setvariable_checkvariable(fw, datasize, variablenametest3,
 						&gtestguid1, datadiff3) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_checkvariable(fw, attributes, datasize, variablenametest,
+	if (setvariable_checkvariable(fw, datasize, variablenametest,
 						&gtestguid1, datadiff1) == FWTS_ERROR)
 		return FWTS_ERROR;
 
@@ -542,7 +539,7 @@ static int setvariable_test3(fwts_framework *fw, uint32_t attributes)
 	return FWTS_OK;
 }
 
-static int setvariable_test4(fwts_framework *fw, uint32_t attributes)
+static int setvariable_test4(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
@@ -561,7 +558,7 @@ static int setvariable_test4(fwts_framework *fw, uint32_t attributes)
 	return FWTS_OK;
 }
 
-static int setvariable_test5(fwts_framework *fw, uint32_t attributes)
+static int setvariable_test5(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
@@ -582,13 +579,10 @@ static int setvariable_test5(fwts_framework *fw, uint32_t attributes)
 
 static int uefirtvariable_test1(fwts_framework *fw)
 {
-	uint64_t index;
 	uint64_t datasize = 10;
 
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (getvariable_test(fw, attributesarray[index], datasize, variablenametest) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (getvariable_test(fw, datasize, variablenametest) == FWTS_ERROR)
+		return FWTS_ERROR;
 
 	fwts_passed(fw, "UEFI runtime service GetVariable interface test passed.");
 
@@ -597,12 +591,8 @@ static int uefirtvariable_test1(fwts_framework *fw)
 
 static int uefirtvariable_test2(fwts_framework *fw)
 {
-	uint64_t index;
-
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (getnextvariable_test(fw, attributesarray[index]) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (getnextvariable_test(fw) == FWTS_ERROR)
+		return FWTS_ERROR;
 
 	fwts_passed(fw, "UEFI runtime service GetNextVariableName interface test passed.");
 
@@ -611,43 +601,31 @@ static int uefirtvariable_test2(fwts_framework *fw)
 
 static int uefirtvariable_test3(fwts_framework *fw)
 {
-	uint64_t index;
 	uint64_t datasize1 = 10, datasize2 = 20;
 
 	fwts_log_info(fw, "Testing SetVariable on two different GUIDs and the same variable name.");
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (setvariable_test1(fw, attributesarray[index], datasize1, datasize2,
-								variablenametest) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (setvariable_test1(fw, datasize1, datasize2, variablenametest) == FWTS_ERROR)
+		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on two different GUIDs and the same variable name passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on the same and different variable data.");
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (setvariable_test2(fw, attributesarray[index], variablenametest) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (setvariable_test2(fw, variablenametest) == FWTS_ERROR)
+		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on the same and different variable data passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on similar variable name.");
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (setvariable_test3(fw, attributesarray[index]) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (setvariable_test3(fw) == FWTS_ERROR)
+		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on similar variable name passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on DataSize is 0.");
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (setvariable_test4(fw, attributesarray[index]) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (setvariable_test4(fw) == FWTS_ERROR)
+		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on DataSize is 0 passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on Attributes is 0.");
-	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		if (setvariable_test5(fw, attributesarray[index]) == FWTS_ERROR)
-			return FWTS_ERROR;
-	}
+	if (setvariable_test5(fw) == FWTS_ERROR)
+		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on Attributes is 0 passed.");
 
 	return FWTS_OK;

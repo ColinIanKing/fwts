@@ -212,6 +212,7 @@ static int uefirttime_test1(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -244,6 +245,7 @@ static int uefirttime_test2(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -280,6 +282,7 @@ static int uefirttime_test2(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
 			"Failed to set time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -292,6 +295,7 @@ static int uefirttime_test2(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -331,6 +335,7 @@ static int uefirttime_test2(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
 			"Failed to set time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -356,6 +361,7 @@ static int uefirttime_test3(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -391,6 +397,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetTime",
 			"Failed to get time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -405,6 +412,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
 			"Failed to set wakeup time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -419,6 +427,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -447,6 +456,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetWakeupTime",
 			"Failed to set wakeup time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -456,6 +466,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetWakeupTime",
 			"Failed to get wakeup time with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 

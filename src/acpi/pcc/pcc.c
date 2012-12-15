@@ -88,7 +88,7 @@ typedef struct {
  */
 static int pcc_init(fwts_framework *fw)
 {
-	if (fwts_method_init(fw) != FWTS_OK)
+	if (fwts_acpi_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
@@ -100,7 +100,7 @@ static int pcc_init(fwts_framework *fw)
  */
 static int pcc_deinit(fwts_framework *fw)
 {
-	return fwts_method_deinit(fw);
+	return fwts_acpi_deinit(fw);
 }
 
 #if CHECK_PCC_HDR
@@ -423,13 +423,13 @@ static int pcc_test1(fwts_framework *fw)
 		"test will be skipped.");
 	fwts_log_nl(fw);
 
-	if ((pccs = fwts_method_get_names()) != NULL) {
+	if ((pccs = fwts_acpi_object_get_names()) != NULL) {
 		fwts_list_foreach(item, pccs) {
 			char *pcc_name = fwts_list_data(char*, item);
 			size_t len = strlen(pcc_name);
 
 			if (strncmp(name, pcc_name + len - name_len, name_len) == 0) {
-				ret = fwts_method_evaluate(fw, pcc_name, NULL, &buf);
+				ret = fwts_acpi_object_evaluate(fw, pcc_name, NULL, &buf);
 				if (ACPI_FAILURE(ret) == AE_OK) {
 					pcc_check_buffer(fw, pcc_name, &buf);
 					count++;

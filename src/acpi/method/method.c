@@ -303,7 +303,7 @@ static int method_init(fwts_framework *fw)
 			"a Mobile Platform.");
 	}
 
-	if (fwts_method_init(fw) != FWTS_OK) {
+	if (fwts_acpi_init(fw) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot initialise ACPI.");
 		return FWTS_ERROR;
 	}
@@ -317,7 +317,7 @@ static int method_init(fwts_framework *fw)
  */
 static int method_deinit(fwts_framework *fw)
 {
-	return fwts_method_deinit(fw);
+	return fwts_acpi_deinit(fw);
 }
 
 /*
@@ -338,10 +338,10 @@ static void method_evaluate_found_method(
 
 	fwts_acpica_sem_count_clear();
 
-	ret = fwts_method_evaluate(fw, name, arg_list, &buf);
+	ret = fwts_acpi_object_evaluate(fw, name, arg_list, &buf);
 
 	if (ACPI_FAILURE(ret) != AE_OK) {
-		fwts_method_evaluate_report_error(fw, name, ret);
+		fwts_acpi_object_evaluate_report_error(fw, name, ret);
 	} else {
 		if (check_func != NULL) {
 			ACPI_OBJECT *obj = buf.Pointer;
@@ -387,7 +387,7 @@ static int method_evaluate_method(fwts_framework *fw,
 	size_t name_len = strlen(name);
 	int found = 0;
 
-	if ((methods = fwts_method_get_names()) != NULL) {
+	if ((methods = fwts_acpi_object_get_names()) != NULL) {
 		fwts_list_foreach(item, methods) {
 			char *method_name = fwts_list_data(char*, item);
 			size_t len = strlen(method_name);
@@ -449,7 +449,7 @@ static int method_name_check(fwts_framework *fw)
 	fwts_list *methods;
 	int failed = 0;
 
- 	if ((methods = fwts_method_get_names()) != NULL) {
+ 	if ((methods = fwts_acpi_object_get_names()) != NULL) {
 		fwts_log_info(fw, "Found %d Objects\n", methods->len);
 
 		fwts_list_foreach(item, methods) {
@@ -582,7 +582,7 @@ static void method_test_NULL_return(
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		fwts_log_info(fw, "Object returned:");
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 		fwts_advice(fw,
 			"This probably won't cause any errors, but it should "
 			"be fixed as the AML code is not conforming to the "
@@ -2878,7 +2878,7 @@ static void method_test_BMD_return(
 		uint32_t i;
 		int failed = 0;
 
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		if (obj->Package.Count != 5) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -2971,7 +2971,7 @@ static void method_test_PIF_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		if (obj->Package.Count != 6) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -3021,7 +3021,7 @@ static void method_test_FIF_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		if (obj->Package.Count != 4) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -3082,7 +3082,7 @@ static void method_test_FST_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -3365,7 +3365,7 @@ static int method_test_TTS(fwts_framework *fw)
 {
 	int i;
 
-	if (fwts_method_exists("_BFS") != NULL) {
+	if (fwts_acpi_object_exists("_BFS") != NULL) {
 		for (i = 1; i < 6; i++) {
 			ACPI_OBJECT arg[1];
 
@@ -3399,7 +3399,7 @@ static void method_test_Sx_return(
 	char *method = (char *)private;
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		if (obj->Package.Count != 3) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -3647,7 +3647,7 @@ static void method_test_BCL_return(
 		uint32_t i;
 		int failed = 0;
 
-		fwts_method_dump_object(fw, obj);
+		fwts_acpi_object_dump(fw, obj);
 
 		for (i = 0; i < obj->Package.Count; i++) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)

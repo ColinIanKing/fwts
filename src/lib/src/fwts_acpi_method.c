@@ -110,59 +110,59 @@ static const acpi_eval_error errors[] = {
 };
 
 static fwts_list *fwts_object_names;
-static bool fwts_method_initialized = false;
+static bool fwts_acpi_initialized = false;
 
 /*
- *  fwts_method_init()
+ *  fwts_acpi_init()
  *	Initialise ACPIA engine and collect method namespace
  */
-int fwts_method_init(fwts_framework *fw)
+int fwts_acpi_init(fwts_framework *fw)
 {
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
 	/* Gather all object names */
 	fwts_object_names = fwts_acpica_get_object_names(0);
-	fwts_method_initialized = true;
+	fwts_acpi_initialized = true;
 
 	return FWTS_OK;
 }
 
 /*
- *  fwts_method_deinit()
+ *  fwts_acpi_deinit()
  *	Close ACPIA engine and free method namespace
  */
-int fwts_method_deinit(fwts_framework *fw)
+int fwts_acpi_deinit(fwts_framework *fw)
 {
 	int ret = FWTS_ERROR;
 
 	FWTS_UNUSED(fw);
 
-	if (fwts_method_initialized) {
+	if (fwts_acpi_initialized) {
 		fwts_list_free(fwts_object_names, free);
 		fwts_object_names = NULL;
 		ret = fwts_acpica_deinit();
 
-		fwts_method_initialized = false;
+		fwts_acpi_initialized = false;
 	}
 
 	return ret;
 }
 
 /*
- *  fwts_method_get_names()
- *	return list of method names
+ *  fwts_acpi_object_get_names()
+ *	return list of object names
  */
-fwts_list *fwts_method_get_names(void)
+fwts_list *fwts_acpi_object_get_names(void)
 {
 	return fwts_object_names;
 }
 
 /*
- *  fwts_method_exists()
+ *  fwts_acpi_object_exists()
  *	return first matching name
  */
-char *fwts_method_exists(const char *name)
+char *fwts_acpi_object_exists(const char *name)
 {
 	size_t name_len = strlen(name);
 	fwts_list_link	*item;
@@ -179,10 +179,10 @@ char *fwts_method_exists(const char *name)
 
 
 /*
- *   fwts_method_dump_object()
+ *   fwts_acpi_object_dump_recursive()
  *	dump out an object, minimal form
  */
-static void fwts_method_dump_object_recursive(
+static void fwts_acpi_object_dump_recursive(
 	fwts_framework *fw,
 	const ACPI_OBJECT *obj,
 	const int depth,
@@ -214,7 +214,7 @@ static void fwts_method_dump_object_recursive(
 			index_buf, obj->Package.Count);
 		for (i = 0; i < obj->Package.Count; i++) {
 			ACPI_OBJECT *element = &obj->Package.Elements[i];
-			fwts_method_dump_object_recursive(fw, element, depth + 1, i);
+			fwts_acpi_object_dump_recursive(fw, element, depth + 1, i);
 		}
 		break;
 	default:
@@ -225,19 +225,19 @@ static void fwts_method_dump_object_recursive(
 }
 
 /*
- *   fwts_method_dump_object()
+ *   fwts_method_object_dump()
  *	dump out an object, minimal form
  */
-void fwts_method_dump_object(fwts_framework *fw, const ACPI_OBJECT *obj)
+void fwts_acpi_object_dump(fwts_framework *fw, const ACPI_OBJECT *obj)
 {
-	fwts_method_dump_object_recursive(fw, obj, 1, -1);
+	fwts_acpi_object_dump_recursive(fw, obj, 1, -1);
 }
 
 /*
- *  fwts_method_evaluate_report_error()
+ *  fwts_acpi_object_evaluate_report_error()
  *	report any errors found during object evaluation
  */
-void fwts_method_evaluate_report_error(
+void fwts_acpi_object_evaluate_report_error(
 	fwts_framework *fw,
 	const char *name,
 	const ACPI_STATUS status)
@@ -274,13 +274,13 @@ void fwts_method_evaluate_report_error(
 }
 
 /*
- *  fwts_method_evaluate()
+ *  fwts_acpi_object_evaluate()
  *	evaluate object, return error status (handle this with
  *	fwts_method_evaluate_report_error()).
  * 	This returns buf which auto allocates any return values
  *	which need to be freed post-evalutation using free().
  */
-ACPI_STATUS fwts_method_evaluate(fwts_framework *fw,
+ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw,
 	char *name,
         ACPI_OBJECT_LIST *arg_list,
 	ACPI_BUFFER	 *buf)

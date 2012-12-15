@@ -25,12 +25,12 @@
 /* acpica headers */
 #include "acpi.h"
 
-int fwts_method_init(fwts_framework *fw);
-int fwts_method_deinit(fwts_framework *fw);
-char *fwts_method_exists(const char *name);
-fwts_list *fwts_method_get_names(void);
-void fwts_method_dump_object(fwts_framework *fw, const ACPI_OBJECT *obj);
-void fwts_method_evaluate_report_error(fwts_framework *fw, const char *name, const ACPI_STATUS status);
-ACPI_STATUS fwts_method_evaluate(fwts_framework *fw, char *name, ACPI_OBJECT_LIST *arg_list, ACPI_BUFFER *buf);
+int fwts_acpi_init(fwts_framework *fw);
+int fwts_acpi_deinit(fwts_framework *fw);
+char *fwts_acpi_object_exists(const char *name);
+fwts_list *fwts_acpi_object_get_names(void);
+void fwts_acpi_object_dump(fwts_framework *fw, const ACPI_OBJECT *obj);
+void fwts_acpi_object_evaluate_report_error(fwts_framework *fw, const char *name, const ACPI_STATUS status);
+ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw, char *name, ACPI_OBJECT_LIST *arg_list, ACPI_BUFFER *buf);
 
 #endif

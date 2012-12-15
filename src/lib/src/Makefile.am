@@ -17,7 +17,7 @@ libfwts_la_LDFLAGS = 			\
 #
 libfwts_la_SOURCES = 		\
 	fwts_ac_adapter.c 	\
-	fwts_acpi_method.c 	\
+	fwts_acpi_object_eval.c \
 	fwts_acpi_tables.c 	\
 	fwts_acpi.c 		\
 	fwts_acpid.c 		\

@@ -28,7 +28,7 @@
 
 /* acpica headers */
 #include "acpi.h"
-#include "fwts_acpi_method.h"
+#include "fwts_acpi_object_eval.h"
 
 /*
  *  This test does some sanity checking on the PCC interface,

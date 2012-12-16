@@ -35,11 +35,11 @@
 #define PROC_INTERFACE		(0x1)
 
 typedef struct {
-	char *path;	/* Path name of interface */
-	char *state;	/* Name of online/offline status */
-	char *offline;	/* Contents of state when offline */
-	char *online;	/* Contents of state when online */
-	char *type;	/* /sys/class type to indicate Mains power, NULL if not used */
+	const char *path;	/* Path name of interface */
+	const char *state;	/* Name of online/offline status */
+	const char *offline;	/* Contents of state when offline */
+	const char *online;	/* Contents of state when online */
+	const char *type;	/* /sys/class type to indicate Mains power, NULL if not used */
 } fwts_ac_interface_info;
 
 static fwts_ac_interface_info fwts_ac_interfaces[] = {
@@ -106,7 +106,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 
 			snprintf(path, sizeof(path), "%s/%s/%s", ac_interface->path, entry->d_name, ac_interface->state);
 			if ((data = fwts_get(path)) != NULL) {
-				char *state_text = "";
+				const char *state_text = "";
 
 				switch (state) {
 				case FWTS_AC_ADAPTER_ANY:

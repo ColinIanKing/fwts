@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len);
-void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, size_t guid_len);
+void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, const size_t guid_str_len);
+void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, const size_t guid_len);
 
 #endif

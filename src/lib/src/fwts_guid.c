@@ -26,7 +26,7 @@
  *	format given GUID 'guid' into a string guid_str.
  *	guid_str needs to be at least 37 chars long
  */
-void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len)
+void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, const size_t guid_str_len)
 {
 	if (guid_str && guid_str_len > 36)
         	snprintf(guid_str, guid_str_len, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
@@ -39,7 +39,7 @@ void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, size_t guid_str_len)
  *	convert a GUID string back to a 16 byte GUID
  *	guid needs to be at least 16 chars long
  */
-void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, size_t guid_len)
+void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, const size_t guid_len)
 {
 	if (guid && guid_len >= 16) {
 		sscanf(guid_str, "%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",

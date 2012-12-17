@@ -406,6 +406,35 @@ static int setvariable_checkvariable_notfound(fwts_framework *fw, uint16_t *varn
 	return FWTS_ERROR;
 }
 
+static int setvariable_invalidattr(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
+					uint16_t *varname, EFI_GUID *gtestguid, uint8_t datadiff)
+{
+	struct efi_setvariable setvariable;
+	uint64_t status;
+	uint64_t dataindex;
+	uint8_t data[datasize+1];
+
+	for (dataindex = 0; dataindex < datasize; dataindex++)
+		data[dataindex] = (uint8_t)dataindex + datadiff;
+	data[dataindex] = '\0';
+
+	setvariable.VariableName = varname;
+	setvariable.VendorGuid = gtestguid;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = data;
+	setvariable.status = &status;
+
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (status == EFI_SUCCESS) {
+		fwts_warning(fw, "After ExitBootServices() is performed, the attributes %" PRIu32 ", "
+			"for SetVariable shouldn't be set successfully.", attributes);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 static int setvariable_test1(fwts_framework *fw, uint64_t datasize1,
 							uint64_t datasize2, uint16_t *varname)
 {
@@ -577,6 +606,30 @@ static int setvariable_test5(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int setvariable_test6(fwts_framework *fw)
+{
+	uint64_t datasize = 10;
+	uint8_t datadiff = 0;
+	uint32_t attributesarray[] = {  FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
+					FWTS_UEFI_VAR_NON_VOLATILE | FWTS_UEFI_VAR_BOOTSERVICE_ACCESS,
+					FWTS_UEFI_VAR_BOOTSERVICE_ACCESS | FWTS_UEFI_VAR_RUNTIME_ACCESS };
+	uint64_t index;
+
+	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
+		setvariable_invalidattr(fw, attributesarray[index], datasize, variablenametest, &gtestguid1, datadiff);
+
+		if (setvariable_checkvariable_notfound(fw, variablenametest, &gtestguid1) == FWTS_ERROR) {
+			fwts_log_info(fw, "Get the variable which is set by SetVariable with invalid attribute %"
+				PRIu32 " after ExitBootServices() is performed, "
+				"test failed.", attributesarray[index]);
+			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			return FWTS_ERROR;
+		}
+	}
+
+	return FWTS_OK;
+}
+
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
@@ -627,6 +680,11 @@ static int uefirtvariable_test3(fwts_framework *fw)
 	if (setvariable_test5(fw) == FWTS_ERROR)
 		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on Attributes is 0 passed.");
+
+	fwts_log_info(fw, "Testing SetVariable on Invalid Attributes.");
+	if (setvariable_test6(fw) == FWTS_ERROR)
+		return FWTS_ERROR;
+	fwts_passed(fw, "SetVariable on Invalid Attributes passed.");
 
 	return FWTS_OK;
 }

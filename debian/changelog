@@ -1,3 +1,51 @@
+fwts (0.26.03-1) raring; urgency=low
+
+  [Colin Ian King]
+  * data: klog.json: fix up and correct a few miscellaneous klog items
+  * data: klog.json: promote EC error so it gets caught before generic handler
+  * kernel: version: make test infoonly rather than pass/fail tests
+  * cpu: cpufreq: spell Ghz as GHz and Mhz and MHz
+  * cpu: cpufreq: Make this test no longer experimental.
+  * lib: fwts_pipeio: fwts_pipe_exec() should return FWTS_ERROR instead of -1
+  * lib + tests: modify fwts_pipe_exec to return the child exit status
+  * acpi: apicinstance: make this an Intel x86 only test
+  * acpi: method: handle ACPI failures a little more gracefully
+  * apci: aspm: clean up messages
+  * acpi: acpidump: print a message if no ACPI tables could be found.
+  * lib: fwts_dump_data: tidy up code, ensure we limit nbytes to 16
+  * data: klog.json: Add next 20 or so ACPI_ERROR messages
+  * utilities: kernelscan: Add check for ACPI_ERROR_METHOD kernel errors
+  * data/klog.json: Scan for all the ACPI_ERROR_METHOD kernel errors
+  * acpi: acpidump: fix formatting of bit fields
+  * data/klog.json: Update a parse/execution failure advice line
+  * acpi: acpiinfo: Complete reworking to bring it up to date.
+  * acpi: fadt: only perform port read on valid port widths
+  * pci: aspm: make pcie_capability a packed struct type
+  * bios: mtrr: remove unused VGA region check
+  * bios: mtrr: move buffer memset() to after failed is declared.
+  * bios: mtrr: make the failed flag a boolean
+  * bios: mtrr: make is_prefetchable() return a bool type
+  * bios: mtrr: make skiperror a boolean
+  * acpi: dmar: Make this test no longer experimental.
+  * lib: fwts_cmos: fix build error with non-Intel architectures
+  * lib: fwts_smbios: fix build error with non-Intel architectures
+  * lib: fwts_virt: fix non-Intel build errors
+  * acpi: pcc: make this test an Intel only test
+  * bios: mtrr: make prefetchable checks handle lspci exec failures
+  * bios: mtrr: remove mtrr_test4 because we're removed FWTS_TEST_VGA_REGION
+  * lib, tests: remove fwts common test, merge into fwts klog
+
+  [Ivan Hu]
+  * uefirtvariable: Add new test for UEFI runtime GetVariable
+  * uefirtvariable: Add new test for UEFI runtime GetNextVariableName
+  * uefirtvariable: Add new test for UEFI runtime SetVariable, subtest 1
+  * uefirtvariable: Add new test for UEFI runtime SetVariable, subtest 2
+  * uefirtvariable: Add new test for UEFI runtime SetVariable, subtest 3
+  * uefirtvariable: Add new test for UEFI runtime SetVariable, subtest 4
+  * uefirtvariable: Add new test for UEFI runtime SetVariable, subtest 5
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 17 Dec 2012 15:13:11 +0800
+
 fwts (0.26.02-1) raring; urgency=low
 
   [Alex Hung]

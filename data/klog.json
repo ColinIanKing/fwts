@@ -146,14 +146,6 @@
    "label": "KlogAcpiMcfgNotin32BitMemorySpace"
   },
   {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_BIOS",
-   "pattern": "MP-BIOS bug.*8254 timer not connected to IO-APIC",
-   "advice": "The 8254 timer is not connected to an IO-APIC, this is invariably due to a misconfiguration in the BIOS.",
-   "label": "KlogIoApic8254TimerNotConnected"
-  },
-  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",

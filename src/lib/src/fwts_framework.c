@@ -265,7 +265,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 					test = fwts_list_data(fwts_framework_test *, item);
 					if (full) {
 						int j;
-						printf(" %-13.13s (%d test%s):\n",
+						printf(" %-15.15s (%d test%s):\n",
 							test->name, test->ops->total_tests,
 							test->ops->total_tests > 1 ? "s" : "");
 						for (j=0; j<test->ops->total_tests;j++)
@@ -273,7 +273,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
 						total += test->ops->total_tests;
 					}
 					else {
-						printf(" %-13.13s %s\n", test->name,
+						printf(" %-15.15s %s\n", test->name,
 							test->ops->description ? test->ops->description : "");
 					}
 				}

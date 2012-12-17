@@ -40,11 +40,6 @@
 						0xDD, 0xB7, 0x11, 0xD0, 0x6E} \
 }
 
-#define BITS_PER_LONG		(sizeof(long) * 8)
-
-#define EFI_SUCCESS		0
-#define EFI_NOT_FOUND		(14 | (1UL << (BITS_PER_LONG-1)))
-
 #define MAX_DATA_LENGTH		1024
 
 static int fd;
@@ -117,7 +112,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
-
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -132,12 +127,14 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
 			"Failed to get variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
 	if (*getvariable.status != EFI_SUCCESS) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableStatus",
 			"Failed to get variable, return status isn't EFI_SUCCESS.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	} else if (*getvariable.Attributes != attributes) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableAttributes",
@@ -168,6 +165,7 @@ static int getvariable_test(fwts_framework *fw, uint32_t attributes, uint64_t da
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -238,6 +236,7 @@ static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -260,6 +259,7 @@ static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
 
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
 			return FWTS_ERROR;
 		}
 		if (compare_name(getnextvariablename.VariableName, variablenametest))
@@ -289,6 +289,7 @@ static int getnextvariable_test(fwts_framework *fw, uint32_t attributes)
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -321,7 +322,7 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
-
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -350,6 +351,7 @@ static int setvariable_checkvariable(fwts_framework *fw, uint32_t attributes, ui
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
 			"Failed to get variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
@@ -403,6 +405,7 @@ static int setvariable_checkvariable_notfound(fwts_framework *fw, uint16_t *varn
 	fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 		"Failed to set variable with UEFI runtime service., "
 		"expect the status return EFI_NOT_FOUND.");
+	fwts_uefi_print_status_info(fw, status);
 	return FWTS_ERROR;
 }
 

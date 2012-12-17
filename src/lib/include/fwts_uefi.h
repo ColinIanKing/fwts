@@ -46,6 +46,41 @@ enum {
 	FWTS_UEFI_TIME_IN_DAYLIGHT = 		0x02
 };
 
+#define HIGH_BIT_SET	(1UL << 63)
+
+#define EFI_SUCCESS			0
+#define EFI_LOAD_ERROR			(1 | HIGH_BIT_SET)
+#define EFI_INVALID_PARAMETER		(2 | HIGH_BIT_SET)
+#define EFI_UNSUPPORTED			(3 | HIGH_BIT_SET)
+#define EFI_BAD_BUFFER_SIZE 		(4 | HIGH_BIT_SET)
+#define EFI_BUFFER_TOO_SMALL		(5 | HIGH_BIT_SET)
+#define EFI_NOT_READY			(6 | HIGH_BIT_SET)
+#define EFI_DEVICE_ERROR		(7 | HIGH_BIT_SET)
+#define EFI_WRITE_PROTECTED		(8 | HIGH_BIT_SET)
+#define EFI_OUT_OF_RESOURCES		(9 | HIGH_BIT_SET)
+#define EFI_VOLUME_CORRUPTED		(10 | HIGH_BIT_SET)
+#define EFI_VOLUME_FULL			(11 | HIGH_BIT_SET)
+#define EFI_NO_MEDIA			(12 | HIGH_BIT_SET)
+#define EFI_MEDIA_CHANGED		(13 | HIGH_BIT_SET)
+#define EFI_NOT_FOUND			(14 | HIGH_BIT_SET)
+#define EFI_ACCESS_DENIED		(15 | HIGH_BIT_SET)
+#define EFI_NO_RESPONSE			(16 | HIGH_BIT_SET)
+#define EFI_NO_MAPPING			(17 | HIGH_BIT_SET)
+#define EFI_TIMEOUT			(18 | HIGH_BIT_SET)
+#define EFI_NOT_STARTED			(19 | HIGH_BIT_SET)
+#define EFI_ALREADY_STARTED		(20 | HIGH_BIT_SET)
+#define EFI_ABORTED			(21 | HIGH_BIT_SET)
+#define EFI_ICMP_ERROR			(22 | HIGH_BIT_SET)
+#define EFI_TFTP_ERROR			(23 | HIGH_BIT_SET)
+#define EFI_PROTOCOL_ERROR		(24 | HIGH_BIT_SET)
+#define EFI_INCOMPATIBLE_VERSION	(25 | HIGH_BIT_SET)
+#define EFI_SECURITY_VIOLATION		(26 | HIGH_BIT_SET)
+#define EFI_CRC_ERROR			(27 | HIGH_BIT_SET)
+#define EFI_END_OF_MEDIA		(28 | HIGH_BIT_SET)
+#define EFI_END_OF_FILE			(31 | HIGH_BIT_SET)
+#define EFI_INVALID_LANGUAGE		(32 | HIGH_BIT_SET)
+#define EFI_COMPROMISED_DATA		(33 | HIGH_BIT_SET)
+
 #define FWTS_UEFI_UNSPECIFIED_TIMEZONE 0x07FF
 
 #if 0
@@ -312,5 +347,7 @@ int fwts_uefi_get_variable(const char *varname, fwts_uefi_var *var);
 void fwts_uefi_free_variable(fwts_uefi_var *var);
 void fwts_uefi_free_variable_names(fwts_list *list);
 int fwts_uefi_get_variable_names(fwts_list *list);
+
+void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status);
 
 #endif

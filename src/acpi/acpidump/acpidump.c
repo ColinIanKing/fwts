@@ -15,6 +15,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -41,14 +42,11 @@ typedef struct fwts_acpidump_field {
 	fwts_acpidump_str_func str_func;
 } fwts_acpidump_field;
 
-#define OFFSET(type, field)				\
-	((void*)&(((type*)(0))->field) - (void*)0)
-
 #define FIELD(text, type, field, func, bit_field_nbits, bit_field_shift, strings, strings_len, str_func) \
 	{						\
 	text,						\
 	sizeof(((type*)0)->field),			\
-	OFFSET(type, field),				\
+	offsetof(type, field),				\
 	func,						\
 	bit_field_nbits,				\
 	bit_field_shift,				\
@@ -459,7 +457,7 @@ static void acpidump_erst(fwts_framework *fw, fwts_acpi_table_info *table)
 		"BEGIN_CLEAR_OPERATION",
 		"END_OPERATION",
 		
-		"SET_RECORD_OFFSET",
+		"SET_RECORD_offsetof",
 		"EXECUTE_OPERATION",
 		"CHECK_BUSY_STATUS",
 		"GET_COMMAND_STATUS",
@@ -708,7 +706,7 @@ static void acpidump_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%8.8x",
-				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), OFFSET(fwts_acpi_table_rsdt, entries[i])),
+				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), offsetof(fwts_acpi_table_rsdt, entries[i])),
 				rsdt->entries[i]);
 		}
 	}
@@ -746,7 +744,7 @@ static void acpidump_xsdt(fwts_framework *fw, fwts_acpi_table_info *table)
 			char *name = table == NULL ? "unknown" : table->name;
 			snprintf(label, sizeof(label), "Entry %2.2d %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%16.16" PRIx64,
-				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), OFFSET(fwts_acpi_table_xsdt, entries[i])),
+				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), offsetof(fwts_acpi_table_xsdt, entries[i])),
 				xsdt->entries[i]);
 		}
 	}

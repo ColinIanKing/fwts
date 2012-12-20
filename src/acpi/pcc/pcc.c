@@ -213,7 +213,7 @@ static void pcc_check_shared_memory_region(
 
 	if (pcc_mr->minimum & 4095) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PCCMemoryNotPageAligned",
-			"PCC Memory Resource Minumum Address is not page aligned. It must "
+			"PCC Memory Resource Minimum Address is not page aligned. It must "
 			"start on a 4K page boundary.");
 		*failed = true;
 	}
@@ -403,7 +403,7 @@ static void pcc_check_buffer(
 	pcc_check_doorbell_write_mask(fw, name, &obj->Package.Elements[3], &failed);
 
 	if (!failed)
-		fwts_passed(fw, "PCC pased; %s returned sane looking data structures.", name);
+		fwts_passed(fw, "PCC passed; %s returned sane looking data structures.", name);
 }
 
 static int pcc_test1(fwts_framework *fw)

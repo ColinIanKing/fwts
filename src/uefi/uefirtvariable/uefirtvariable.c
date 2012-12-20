@@ -40,8 +40,10 @@
 						0xDD, 0xB7, 0x11, 0xD0, 0x6E} \
 }
 
+#define BITS_PER_LONG		(sizeof(long) * 8)
+
 #define EFI_SUCCESS		0
-#define EFI_NOT_FOUND		(14 | (1UL << 63))
+#define EFI_NOT_FOUND		(14 | (1UL << (BITS_PER_LONG-1)))
 
 #define MAX_DATA_LENGTH		1024
 

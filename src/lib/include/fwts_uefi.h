@@ -46,7 +46,9 @@ enum {
 	FWTS_UEFI_TIME_IN_DAYLIGHT = 		0x02
 };
 
-#define HIGH_BIT_SET	(1UL << 63)
+#define BITS_PER_LONG	(sizeof(long) * 8)
+
+#define HIGH_BIT_SET	(1UL << (BITS_PER_LONG-1))
 
 #define EFI_SUCCESS			0
 #define EFI_LOAD_ERROR			(1 | HIGH_BIT_SET)

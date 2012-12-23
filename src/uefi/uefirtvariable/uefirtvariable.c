@@ -125,31 +125,31 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
 			"Failed to get variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
-		return FWTS_ERROR;
+		goto err_restore_env;
 	}
 
 	if (*getvariable.status != EFI_SUCCESS) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableStatus",
 			"Failed to get variable, return status isn't EFI_SUCCESS.");
 		fwts_uefi_print_status_info(fw, status);
-		return FWTS_ERROR;
+		goto err_restore_env;
 	} else if (*getvariable.Attributes != attributes) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableAttributes",
 			"Failed to get variable with right attributes, "
 			"attributes we got is %" PRIu32
 			", but it should be %" PRIu32 ".",
 			*getvariable.Attributes, attributes);
-		return FWTS_ERROR;
+		goto err_restore_env;
 	} else if (*getvariable.DataSize != datasize) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableDataSize",
 			"Failed to get variable with correct datasize.");
-		return FWTS_ERROR;
+		goto err_restore_env;
 	} else {
 		for (dataindex = 0; dataindex < datasize; dataindex++) {
 			if (data[dataindex] != (uint8_t)dataindex) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableData",
 					"Failed to get variable with correct data.");
-				return FWTS_ERROR;
+				goto err_restore_env;
 			}
 		}
 	}
@@ -161,12 +161,28 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
-			"Failed to set variable with UEFI runtime service.");
+			"Failed to delete variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
 	return FWTS_OK;
+
+err_restore_env:
+
+	setvariable.DataSize = 0;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to delete variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	return FWTS_ERROR;
+
 }
 
 static bool compare_guid(EFI_GUID *guid1, EFI_GUID *guid2)
@@ -257,7 +273,7 @@ static int getnextvariable_test(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with UEFI runtime service.");
 			fwts_uefi_print_status_info(fw, status);
-			return FWTS_ERROR;
+			goto err_restore_env;
 		}
 		if (compare_name(getnextvariablename.VariableName, variablenametest))
 			found_name = true;
@@ -270,12 +286,12 @@ static int getnextvariable_test(fwts_framework *fw)
 	if (!found_name) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableNameName",
 			"Failed to get next variable name with right name.");
-		return FWTS_ERROR;
+		goto err_restore_env;
 	}
 	if (!found_guid) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableNameGuid",
 			"Failed to get next variable name correct guid.");
-		return FWTS_ERROR;
+		goto err_restore_env;
 	}
 
 	/* delete the variable */
@@ -285,12 +301,27 @@ static int getnextvariable_test(fwts_framework *fw)
 
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
-			"Failed to set variable with UEFI runtime service.");
+			"Failed to delete variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
 
 	return FWTS_OK;
+
+err_restore_env:
+
+	setvariable.DataSize = 0;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to delete variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	return FWTS_ERROR;
 }
 
 static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
@@ -317,8 +348,12 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
-			"Failed to set variable with UEFI runtime service.");
+		if (datasize == 0)
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+				"Failed to delete variable with UEFI runtime service.");
+		else
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+				"Failed to set variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
@@ -446,25 +481,33 @@ static int setvariable_test1(fwts_framework *fw, uint64_t datasize1,
 
 	if (setvariable_insertvariable(fw, attributes, datasize1, varname,
 					&gtestguid1, datadiff_g1) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env1;
 
 	if (setvariable_checkvariable(fw, datasize2, varname,
 					&gtestguid2, datadiff_g2) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env;
 
 	if (setvariable_checkvariable(fw, datasize1, varname,
 					&gtestguid1, datadiff_g1) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env;
+
+	if (setvariable_insertvariable(fw, attributes, 0, varname,
+					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+		goto err_restore_env1;
 
 	if (setvariable_insertvariable(fw, attributes, 0, varname,
 					&gtestguid2, datadiff_g2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid1, datadiff_g1) == FWTS_ERROR)
-		return FWTS_ERROR;
-
 	return FWTS_OK;
+
+err_restore_env:
+	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff_g1);
+err_restore_env1:
+	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid2, datadiff_g2);
+
+	return FWTS_ERROR;
+
 }
 
 static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
@@ -483,7 +526,7 @@ static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 
 	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env1;
 
 	if (setvariable_insertvariable(fw, attributes, 0, varname,
 					&gtestguid1, datadiff1) == FWTS_ERROR)
@@ -499,7 +542,7 @@ static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 
 	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env2;
 
 	if (setvariable_insertvariable(fw, attributes, 0, varname,
 					&gtestguid1, datadiff2) == FWTS_ERROR)
@@ -513,13 +556,25 @@ static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 
 	if (setvariable_checkvariable(fw, datasize, varname,
 					&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env3;
 
 	if (setvariable_insertvariable(fw, attributes, 0, varname,
 					&gtestguid1, datadiff3) == FWTS_ERROR)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
+
+err_restore_env1:
+	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff1);
+	return FWTS_ERROR;
+
+err_restore_env2:
+	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff2);
+	return FWTS_ERROR;
+
+err_restore_env3:
+	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff3);
+	return FWTS_ERROR;
 }
 
 static int setvariable_test3(fwts_framework *fw)
@@ -535,37 +590,47 @@ static int setvariable_test3(fwts_framework *fw)
 
 	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest3,
 						&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env2;
 
 	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
 						&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env1;
 
 	if (setvariable_checkvariable(fw, datasize, variablenametest2,
 						&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env;
 
 	if (setvariable_checkvariable(fw, datasize, variablenametest3,
 						&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env;
 
 	if (setvariable_checkvariable(fw, datasize, variablenametest,
 						&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
+		goto err_restore_env;
+
+	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
+						&gtestguid1, datadiff1) == FWTS_ERROR)
+		goto err_restore_env1;
+
+	if (setvariable_insertvariable(fw, attributes, 0, variablenametest3,
+						&gtestguid1, datadiff3) == FWTS_ERROR)
+		goto err_restore_env2;
 
 	if (setvariable_insertvariable(fw, attributes, 0, variablenametest2,
 						&gtestguid1, datadiff2) == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest3,
-						&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
-
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
-						&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
-
 	return FWTS_OK;
+
+err_restore_env:
+	setvariable_insertvariable(fw, attributes, 0, variablenametest, &gtestguid1, datadiff1);
+err_restore_env1:
+	setvariable_insertvariable(fw, attributes, 0, variablenametest3, &gtestguid1, datadiff3);
+err_restore_env2:
+	setvariable_insertvariable(fw, attributes, 0, variablenametest2, &gtestguid1, datadiff2);
+
+	return FWTS_ERROR;
+
 }
 
 static int setvariable_test4(fwts_framework *fw)

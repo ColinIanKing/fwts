@@ -718,6 +718,85 @@ static int do_queryvariableinfo(uint64_t *status, uint64_t *remvarstoragesize, u
 	return FWTS_OK;
 }
 
+static int getnextvariable_multitest(fwts_framework *fw, uint32_t multitesttime)
+{
+	long ioret;
+	uint64_t status;
+	uint32_t i;
+
+	struct efi_setvariable setvariable;
+
+	uint64_t dataindex, datasize = 10;
+	uint8_t data[MAX_DATA_LENGTH];
+
+	struct efi_getnextvariablename getnextvariablename;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t variablename[MAX_DATA_LENGTH];
+	EFI_GUID vendorguid;
+
+	for (dataindex = 0; dataindex < datasize; dataindex++)
+		data[dataindex] = (uint8_t)dataindex;
+	data[dataindex] = '\0';
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = data;
+	setvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.status = &status;
+
+	for (i = 0; i < multitesttime; i++) {
+		variablename[0] = '\0';
+		variablenamesize = MAX_DATA_LENGTH;
+		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+		if (ioret == -1) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to get next variable name with UEFI runtime service.");
+			goto err_restore_env;
+		}
+	};
+
+	setvariable.DataSize = 0;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+
+err_restore_env:
+
+	setvariable.DataSize = 0;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to delete variable with UEFI runtime service.");
+	}
+
+	return FWTS_ERROR;
+}
+
+
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
@@ -812,6 +891,11 @@ static int uefirtvariable_test5(fwts_framework *fw)
 	if (getvariable_test(fw, datasize, variablenametest, multitesttime) == FWTS_ERROR)
 		return FWTS_ERROR;
 	fwts_passed(fw, "GetVariable on getting the variable multiple times passed.");
+
+	fwts_log_info(fw, "Testing GetNextVariableName on getting the variable multiple times.");
+	if (getnextvariable_multitest(fw, multitesttime) == FWTS_ERROR)
+		return FWTS_ERROR;
+	fwts_passed(fw, "GetNextVariableName on getting the next variable name multiple times passed.");
 
 	return FWTS_OK;
 

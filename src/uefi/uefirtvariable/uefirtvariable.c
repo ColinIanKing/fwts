@@ -80,7 +80,7 @@ static int uefirtvariable_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *varname)
+static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *varname, uint32_t multitesttime)
 {
 	long ioret;
 	struct efi_getvariable getvariable;
@@ -93,6 +93,8 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 	uint32_t attributestest;
 
 	uint8_t data[datasize+1];
+	uint32_t i;
+
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
 	data[dataindex] = '\0';
@@ -120,14 +122,15 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 	getvariable.Data = testdata;
 	getvariable.status = &status;
 
-	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
-	if (ioret == -1) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
-			"Failed to get variable with UEFI runtime service.");
-		fwts_uefi_print_status_info(fw, status);
-		goto err_restore_env;
+	for (i = 0; i < multitesttime; i++) {
+		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+		if (ioret == -1) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariable",
+				"Failed to get variable with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
+			goto err_restore_env;
+		}
 	}
-
 	if (*getvariable.status != EFI_SUCCESS) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetVariableStatus",
 			"Failed to get variable, return status isn't EFI_SUCCESS.");
@@ -718,8 +721,9 @@ static int do_queryvariableinfo(uint64_t *status, uint64_t *remvarstoragesize, u
 static int uefirtvariable_test1(fwts_framework *fw)
 {
 	uint64_t datasize = 10;
+	uint32_t multitesttime = 1;
 
-	if (getvariable_test(fw, datasize, variablenametest) == FWTS_ERROR)
+	if (getvariable_test(fw, datasize, variablenametest, multitesttime) == FWTS_ERROR)
 		return FWTS_ERROR;
 
 	fwts_passed(fw, "UEFI runtime service GetVariable interface test passed.");
@@ -799,11 +803,26 @@ static int uefirtvariable_test4(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtvariable_test5(fwts_framework *fw)
+{
+	uint32_t multitesttime = 1024;
+	uint64_t datasize = 10;
+
+	fwts_log_info(fw, "Testing GetVariable on getting the variable multiple times.");
+	if (getvariable_test(fw, datasize, variablenametest, multitesttime) == FWTS_ERROR)
+		return FWTS_ERROR;
+	fwts_passed(fw, "GetVariable on getting the variable multiple times passed.");
+
+	return FWTS_OK;
+
+}
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
 	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
 	{ uefirtvariable_test3, "Test UEFI RT service set variable interface." },
 	{ uefirtvariable_test4, "Test UEFI RT service query variable info interface." },
+	{ uefirtvariable_test5, "Test UEFI RT service variable interface stress test." },
 	{ NULL, NULL }
 };
 

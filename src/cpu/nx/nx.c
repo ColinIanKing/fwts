@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2012 Canonical
+ * Copyright (C) 2010-2013 Canonical
  *
  * from ideas in check-bios-nx
  *

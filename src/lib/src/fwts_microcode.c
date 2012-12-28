@@ -1,7 +1,6 @@
 /*
- *
  * Copyright 2000 (c) Simon Trimmer, Tigran Aivazian.
- * Copyright (C) 2010-2012 Canonical
+ * Copyright (C) 2010-2013 Canonical
  *
  * Originally microcode_ctl.c
  * Manipulate /dev/cpu/microcode under Linux

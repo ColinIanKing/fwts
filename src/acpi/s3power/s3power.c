@@ -282,6 +282,6 @@ static fwts_framework_ops s3power_ops = {
 	.options_check = s3power_options_check,
 };
 
-FWTS_REGISTER(s3power, &s3power_ops, FWTS_TEST_LATE, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("s3power", &s3power_ops, FWTS_TEST_LATE, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
 
 #endif

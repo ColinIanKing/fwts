@@ -917,4 +917,4 @@ static fwts_framework_ops uefirtvariable_ops = {
 	.minor_tests = uefirtvariable_tests
 };
 
-FWTS_REGISTER(uefirtvariable, &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("uefirtvariable", &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV);

@@ -202,6 +202,6 @@ static fwts_framework_ops microcode_ops = {
 	.minor_tests = microcode_tests
 };
 
-FWTS_REGISTER(microcode, &microcode_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("microcode", &microcode_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

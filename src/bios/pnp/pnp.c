@@ -189,6 +189,6 @@ static fwts_framework_ops pnp_ops = {
 	.minor_tests = pnp_tests
 };
 
-FWTS_REGISTER(pnp, &pnp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("pnp", &pnp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

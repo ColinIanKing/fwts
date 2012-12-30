@@ -51,6 +51,6 @@ static fwts_framework_ops memory_mapdump_ops = {
 	.minor_tests = memory_mapdump_utils
 };
 
-FWTS_REGISTER(memmapdump, &memory_mapdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("memmapdump", &memory_mapdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
 
 #endif

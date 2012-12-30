@@ -454,6 +454,6 @@ static fwts_framework_ops cmosdump_ops = {
 	.minor_tests = cmosdump_tests
 };
 
-FWTS_REGISTER(cmosdump, &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("cmosdump", &cmosdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
 
 #endif

@@ -426,7 +426,7 @@ static fwts_framework_ops hpet_check_ops = {
 	.minor_tests = hpet_check_tests
 };
 
-FWTS_REGISTER(hpet_check, &hpet_check_ops, FWTS_TEST_ANYTIME,
+FWTS_REGISTER("hpet_check", &hpet_check_ops, FWTS_TEST_ANYTIME,
 	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

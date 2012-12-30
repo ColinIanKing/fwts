@@ -1292,6 +1292,6 @@ static fwts_framework_ops dmi_decode_ops = {
 	.minor_tests = dmi_decode_tests
 };
 
-FWTS_REGISTER(dmi_decode, &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("dmi_decode", &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

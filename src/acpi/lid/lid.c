@@ -201,6 +201,6 @@ static fwts_framework_ops lid_ops = {
 	.minor_tests = lid_tests
 };
 
-FWTS_REGISTER(lid, &lid_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
+FWTS_REGISTER("lid", &lid_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
 
 #endif

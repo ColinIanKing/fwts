@@ -406,6 +406,6 @@ static fwts_framework_ops s3_ops = {
 	.options_check = s3_options_check,
 };
 
-FWTS_REGISTER(s3, &s3_ops, FWTS_TEST_LATE, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("s3", &s3_ops, FWTS_TEST_LATE, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
 
 #endif

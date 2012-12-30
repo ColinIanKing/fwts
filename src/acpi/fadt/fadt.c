@@ -138,6 +138,6 @@ static fwts_framework_ops fadt_ops = {
 	.minor_tests = fadt_tests
 };
 
-FWTS_REGISTER(fadt, &fadt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("fadt", &fadt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

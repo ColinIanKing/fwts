@@ -262,6 +262,6 @@ static fwts_framework_ops hotkey_ops = {
 	.minor_tests = hotkey_tests
 };
 
-FWTS_REGISTER(hotkey, &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("hotkey", &hotkey_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE | FWTS_FLAG_ROOT_PRIV);
 
 #endif

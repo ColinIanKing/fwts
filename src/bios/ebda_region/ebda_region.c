@@ -113,6 +113,6 @@ static fwts_framework_ops ebda_ops = {
 	.minor_tests = ebda_tests
 };
 
-FWTS_REGISTER(ebda, &ebda_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("ebda", &ebda_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

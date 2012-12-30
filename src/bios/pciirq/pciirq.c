@@ -252,6 +252,6 @@ static fwts_framework_ops pciirq_ops = {
 	.minor_tests = pciirq_tests
 };
 
-FWTS_REGISTER(pciirq, &pciirq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("pciirq", &pciirq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

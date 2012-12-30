@@ -111,6 +111,6 @@ static fwts_framework_ops apicedge_ops = {
 	.minor_tests = apicedge_tests
 };
 
-FWTS_REGISTER(apicedge, &apicedge_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("apicedge", &apicedge_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
 
 #endif

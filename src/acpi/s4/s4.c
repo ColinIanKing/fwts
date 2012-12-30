@@ -472,6 +472,6 @@ static fwts_framework_ops s4_ops = {
 	.options_check = s4_options_check
 };
 
-FWTS_REGISTER(s4, &s4_ops, FWTS_TEST_LAST, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("s4", &s4_ops, FWTS_TEST_LAST, FWTS_FLAG_POWER_STATES | FWTS_FLAG_ROOT_PRIV);
 
 #endif

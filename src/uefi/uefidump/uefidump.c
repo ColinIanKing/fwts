@@ -781,4 +781,4 @@ static fwts_framework_ops uefidump_ops = {
 	.minor_tests = uefidump_tests
 };
 
-FWTS_REGISTER(uefidump, &uefidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("uefidump", &uefidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);

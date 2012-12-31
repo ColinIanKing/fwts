@@ -1550,17 +1550,12 @@ static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	uint8_t *ptr  = data;
 	size_t length = table->length;
+	const size_t fpdt_hdr_len = sizeof(fwts_acpi_table_fpdt_header);
 
 	static fwts_acpidump_field fpdt_header_fields[] = {
 		FIELD_UINT("Type", 		fwts_acpi_table_fpdt_header, type),
 		FIELD_UINT("Length", 		fwts_acpi_table_fpdt_header, length),
 		FIELD_UINT("Revision", 		fwts_acpi_table_fpdt_header, revision),
-		FIELD_END
-	};
-
-	static fwts_acpidump_field fpdt_s3_perf_ptr_fields[] = {
-		FIELD_UINT("Reserved", 		fwts_acpi_table_fpdt_s3_perf_ptr, reserved),
-		FIELD_UINT("S3PT Pointer", 	fwts_acpi_table_fpdt_s3_perf_ptr, s3pt_addr),
 		FIELD_END
 	};
 
@@ -1570,6 +1565,14 @@ static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
+	static fwts_acpidump_field fpdt_s3_perf_ptr_fields[] = {
+		FIELD_UINT("Reserved", 		fwts_acpi_table_fpdt_s3_perf_ptr, reserved),
+		FIELD_UINT("S3PT Pointer", 	fwts_acpi_table_fpdt_s3_perf_ptr, s3pt_addr),
+		FIELD_END
+	};
+
+	ptr += sizeof(fwts_acpi_table_header);
+
 	/*
 	 *  Currently we just dump out the various pointer records.  A more complete
 	 *  implementation should mmap the memory that the records point to and also
@@ -1578,24 +1581,45 @@ static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
 	while (ptr < data + length) {
 		fwts_acpi_table_fpdt_header *fpdt = (fwts_acpi_table_fpdt_header*)ptr;
 
-		__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+		fwts_log_nl(fw);
+
 		switch (fpdt->type) {
-		case 0:
-			fwts_log_info_verbatum(fw, "S3 resume performance record pointer:");
-			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
-			break;
-		case 1:
-			fwts_log_info_verbatum(fw, "S3 suspend performance record pointer:");
-			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
-			break;
-		case 2:
-			fwts_log_info_verbatum(fw, "Boot performance record pointer:");
+		case 0x0000:
+			fwts_log_info_verbatum(fw, "Basic Boot Performance Data Record pointer:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			__acpi_dump_table_fields(fw, ptr, fpdt_basic_boot_perf_ptr_fields, ptr - data);
 			break;
+		case 0x0001:
+			fwts_log_info_verbatum(fw, "S3 Performance Table pointer:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
+			break;
+		case 0x0002 ... 0x0fff:
+			fwts_log_info_verbatum(fw, "Reserved for ACPI specification useage:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
+			break;
+		case 0x1000 ... 0x1fff:
+			fwts_log_info_verbatum(fw, "Reserved for Platform Vendor useage:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
+			break;
+		case 0x2000 ... 0x2fff:
+			fwts_log_info_verbatum(fw, "Reserved for Hardware Vendor useage:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
+			break;
+		case 0x3000 ... 0x3fff:
+			fwts_log_info_verbatum(fw, "Reserved for BIOS Vendor useage:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
+			break;
 		default:
+			fwts_log_info_verbatum(fw, "Reserved for future useage:");
+			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
+			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
 		}
-
 		ptr += fpdt->length;
 	}
 }

@@ -811,13 +811,18 @@ static void fwts_framework_syntax(char * const *argv)
  * fwts_framework_heading_info()
  *	log basic system info so we can track the tests
  */
-static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_run)
+static void fwts_framework_heading_info(
+	fwts_framework *fw,
+	fwts_list *tests_to_run,
+	const int argc,
+	char * const *argv)
 {
 	struct tm tm;
 	time_t now;
 	struct utsname buf;
 	char *tests = NULL;
-	size_t len = 1;
+	char *args = NULL;
+	size_t len;
 	int i;
 	fwts_list_link *item;
 
@@ -838,6 +843,19 @@ static void fwts_framework_heading_info(fwts_framework *fw, fwts_list *tests_to_
 		buf.sysname, buf.nodename, buf.release, buf.version, buf.machine);
 	fwts_log_nl(fw);
 
+	for (len = 1, i = 1; i < argc; i++)
+		len += strlen(argv[i]) + 1;
+
+	if ((args = calloc(len, 1)) != NULL) {
+		for (len = 1, i = 1; i < argc; i++) {
+			strcat(args, " ");
+			strcat(args, argv[i]);
+		}
+		fwts_log_info(fw, "Command: \"fwts %s\".", args);
+		free(args);
+	}
+
+	len = 1;
 	fwts_list_foreach(item, tests_to_run) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 		len += strlen(test->name) + 1;
@@ -1304,7 +1322,7 @@ int fwts_framework_args(const int argc, char **argv)
 	}
 
 	fwts_log_section_begin(fw->results, "heading");
-	fwts_framework_heading_info(fw, &tests_to_run);
+	fwts_framework_heading_info(fw, &tests_to_run, argc, argv);
 	fwts_log_section_end(fw->results);
 
 	fwts_log_section_begin(fw->results, "tests");

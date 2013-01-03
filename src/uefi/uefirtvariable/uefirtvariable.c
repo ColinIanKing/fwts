@@ -923,6 +923,17 @@ static int uefirtvariable_test6(fwts_framework *fw)
 		return FWTS_ERROR;
 	fwts_passed(fw, "SetVariable on setting the variable with the same data multiple times passed.");
 
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different data multiple times.");
+	for (i = 0; i < multitesttime; i++) {
+		if (setvariable_insertvariable(fw, attributes, datasize+i, variablenametest,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+			return FWTS_ERROR;
+		if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+	fwts_passed(fw, "Testing SetVariable on setting the variable with different data multiple times passed.");
+
 	return FWTS_OK;
 }
 

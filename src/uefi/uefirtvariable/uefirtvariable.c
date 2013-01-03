@@ -906,7 +906,7 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	uint32_t multitesttime = 40;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
-	uint32_t i;
+	uint32_t i, j;
 	uint8_t variablenamelength = 32;
 	uint16_t variablenametest4[variablenamelength+1];
 
@@ -948,6 +948,27 @@ static int uefirtvariable_test6(fwts_framework *fw)
 			return FWTS_ERROR;
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different name multiple times passed.");
+
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name and data multiple times.");
+
+	/* This combine test do a lot of setvariable, reduce variablenamelength and multitesttime, for saving the setvariable
+	   times to avoid running out of nvram space and getting the EFI_OUT_OF_RESOURCES */
+	variablenamelength /= 4;
+	multitesttime /= 4;
+
+	for (i = 0; i < variablenamelength; i++) {
+		variablenametest4[i] = 'a';
+		variablenametest4[i+1] = '\0';
+		for (j = 0; j < multitesttime; j++) {
+			if (setvariable_insertvariable(fw, attributes, datasize+j, variablenametest4,
+								&gtestguid1, datadiff) == FWTS_ERROR)
+				return FWTS_ERROR;
+			if (setvariable_insertvariable(fw, attributes, 0, variablenametest4,
+								&gtestguid1, datadiff) == FWTS_ERROR)
+				return FWTS_ERROR;
+		}
+	}
+	fwts_passed(fw, "Testing SetVariable on setting the variable with different name and data multiple times passed.");
 
 	return FWTS_OK;
 }

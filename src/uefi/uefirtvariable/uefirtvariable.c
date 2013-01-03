@@ -907,6 +907,8 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 	uint32_t i;
+	uint8_t variablenamelength = 32;
+	uint16_t variablenametest4[variablenamelength+1];
 
 	fwts_log_info(fw, "Testing SetVariable on setting the variable with the same data multiple times.");
 	for (i = 0; i < multitesttime; i++) {
@@ -933,6 +935,19 @@ static int uefirtvariable_test6(fwts_framework *fw)
 			return FWTS_ERROR;
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different data multiple times passed.");
+
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name multiple times.");
+	for (i = 0; i < variablenamelength; i++) {
+		variablenametest4[i] = 'a';
+		variablenametest4[i+1] = '\0';
+		if (setvariable_insertvariable(fw, attributes, datasize, variablenametest4,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+			return FWTS_ERROR;
+		if (setvariable_insertvariable(fw, attributes, 0, variablenametest4,
+							&gtestguid1, datadiff) == FWTS_ERROR)
+			return FWTS_ERROR;
+	}
+	fwts_passed(fw, "Testing SetVariable on setting the variable with different name multiple times passed.");
 
 	return FWTS_OK;
 }

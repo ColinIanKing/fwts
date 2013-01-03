@@ -109,6 +109,13 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_OUT_OF_RESOURCES) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw, "Run out of resources for SetVariable UEFI runtime interface: cannot test.");
+			fwts_advice(fw, "Firmware may reclaim some resources after rebooting."
+					" Reboot and test again may be helpful to continue the test.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
@@ -250,8 +257,15 @@ static int getnextvariable_test(fwts_framework *fw)
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_OUT_OF_RESOURCES) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw, "Run out of resources for SetVariable UEFI runtime interface: cannot test.");
+			fwts_advice(fw, "Firmware may reclaim some resources after rebooting."
+					" Reboot and test again may be helpful to continue the test.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
-			"Failed to set variable with UEFI runtime service.");
+				"Failed to set variable with UEFI runtime service.");
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
@@ -354,9 +368,17 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 		if (datasize == 0)
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 				"Failed to delete variable with UEFI runtime service.");
-		else
+		else {
+			if (status == EFI_OUT_OF_RESOURCES) {
+				fwts_uefi_print_status_info(fw, status);
+				fwts_skipped(fw, "Run out of resources for SetVariable UEFI runtime interface: cannot test.");
+				fwts_advice(fw, "Firmware may reclaim some resources after rebooting."
+						" Reboot and test again may be helpful to continue the test.");
+				return FWTS_SKIP;
+			}
 			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 				"Failed to set variable with UEFI runtime service.");
+		}
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
@@ -476,31 +498,32 @@ static int setvariable_invalidattr(fwts_framework *fw, uint32_t attributes, uint
 static int setvariable_test1(fwts_framework *fw, uint64_t datasize1,
 							uint64_t datasize2, uint16_t *varname)
 {
+	int ret;
 	uint8_t datadiff_g2 = 2, datadiff_g1 = 0;
 
-	if (setvariable_insertvariable(fw, attributes, datasize2, varname,
-					&gtestguid2, datadiff_g2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize2, varname, &gtestguid2, datadiff_g2);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_insertvariable(fw, attributes, datasize1, varname,
-					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, datasize1, varname, &gtestguid1, datadiff_g1);
+	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	if (setvariable_checkvariable(fw, datasize2, varname,
-					&gtestguid2, datadiff_g2) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize2, varname, &gtestguid2, datadiff_g2);
+	if (ret != FWTS_OK)
 		goto err_restore_env;
 
-	if (setvariable_checkvariable(fw, datasize1, varname,
-					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize1, varname, &gtestguid1, datadiff_g1);
+	if (ret != FWTS_OK)
 		goto err_restore_env;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid1, datadiff_g1) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff_g1);
+	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid2, datadiff_g2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid2, datadiff_g2);
+	if (ret != FWTS_OK)
+		return ret;
 
 	return FWTS_OK;
 
@@ -509,119 +532,129 @@ err_restore_env:
 err_restore_env1:
 	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid2, datadiff_g2);
 
-	return FWTS_ERROR;
+	return ret;
 
 }
 
 static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff1 = 0, datadiff2 = 2, datadiff3 = 4;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, varname,
-					&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, varname, &gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
+		return ret;
 
 	/* insert the same data */
-	if (setvariable_insertvariable(fw, attributes, datasize, varname,
-					&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, varname, &gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_checkvariable(fw, datasize, varname,
-					&gtestguid1, datadiff1) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, varname, &gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid1, datadiff1) == FWTS_ERROR)
-		return FWTS_ERROR;
-
+	ret = setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
+		return ret;
 
 	/* insert different data */
 	datasize = 20;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, varname,
-					&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, varname, &gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_checkvariable(fw, datasize, varname,
-					&gtestguid1, datadiff2) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, varname, &gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
 		goto err_restore_env2;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
+		return ret;
 
 	datasize = 5;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, varname,
-					&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, varname, &gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_checkvariable(fw, datasize, varname,
-					&gtestguid1, datadiff3) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, varname, &gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
 		goto err_restore_env3;
 
-	if (setvariable_insertvariable(fw, attributes, 0, varname,
-					&gtestguid1, datadiff3) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
+		return ret;
 
 	return FWTS_OK;
 
 err_restore_env1:
 	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff1);
-	return FWTS_ERROR;
+	return ret;
 
 err_restore_env2:
 	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff2);
-	return FWTS_ERROR;
+	return ret;
 
 err_restore_env3:
 	setvariable_insertvariable(fw, attributes, 0, varname, &gtestguid1, datadiff3);
-	return FWTS_ERROR;
+	return ret;
 }
 
 static int setvariable_test3(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff1 = 0, datadiff2 = 1, datadiff3 = 2;
 	uint16_t variablenametest2[] = {'T', 'e', 's', 't', 'v', 'a', 'r', ' ', '\0'};
 	uint16_t variablenametest3[] = {'T', 'e', 's', 't', 'v', 'a', '\0'};
 
-	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest2,
-						&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest2,
+								&gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest3,
-						&gtestguid1, datadiff3) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest3,
+								&gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
 		goto err_restore_env2;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
-						&gtestguid1, datadiff1) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+								&gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	if (setvariable_checkvariable(fw, datasize, variablenametest2,
-						&gtestguid1, datadiff2) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, variablenametest2,
+								&gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
 		goto err_restore_env;
 
-	if (setvariable_checkvariable(fw, datasize, variablenametest3,
-						&gtestguid1, datadiff3) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, variablenametest3,
+								&gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
 		goto err_restore_env;
 
-	if (setvariable_checkvariable(fw, datasize, variablenametest,
-						&gtestguid1, datadiff1) == FWTS_ERROR)
+	ret = setvariable_checkvariable(fw, datasize, variablenametest,
+								&gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
 		goto err_restore_env;
 
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
-						&gtestguid1, datadiff1) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, 0, variablenametest,
+								&gtestguid1, datadiff1);
+	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest3,
-						&gtestguid1, datadiff3) == FWTS_ERROR)
+	ret = setvariable_insertvariable(fw, attributes, 0, variablenametest3,
+								&gtestguid1, datadiff3);
+	if (ret != FWTS_OK)
 		goto err_restore_env2;
 
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest2,
-						&gtestguid1, datadiff2) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, variablenametest2,
+								&gtestguid1, datadiff2);
+	if (ret != FWTS_OK)
+		return ret;
 
 	return FWTS_OK;
 
@@ -632,22 +665,25 @@ err_restore_env1:
 err_restore_env2:
 	setvariable_insertvariable(fw, attributes, 0, variablenametest2, &gtestguid1, datadiff2);
 
-	return FWTS_ERROR;
+	return ret;
 
 }
 
 static int setvariable_test4(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
-						&gtestguid1, datadiff) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+								&gtestguid1, datadiff);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
-						&gtestguid1, datadiff) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, variablenametest,
+								&gtestguid1, datadiff);
+	if (ret != FWTS_OK)
+		return ret;
 
 	if (setvariable_checkvariable_notfound(fw, variablenametest, &gtestguid1) == FWTS_ERROR)
 		return FWTS_ERROR;
@@ -657,16 +693,19 @@ static int setvariable_test4(fwts_framework *fw)
 
 static int setvariable_test5(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 
-	if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+									&gtestguid1, datadiff);
+	if (ret != FWTS_OK)
+		return ret;
 
-	if (setvariable_insertvariable(fw, 0, datasize, variablenametest,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, 0, datasize, variablenametest,
+									&gtestguid1, datadiff);
+	if (ret != FWTS_OK)
+		return ret;
 
 	if (setvariable_checkvariable_notfound(fw, variablenametest, &gtestguid1) == FWTS_ERROR)
 		return FWTS_ERROR;
@@ -748,6 +787,13 @@ static int getnextvariable_multitest(fwts_framework *fw, uint32_t multitesttime)
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if (status == EFI_OUT_OF_RESOURCES) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw, "Run out of resources for SetVariable UEFI runtime interface: cannot test.");
+			fwts_advice(fw, "Firmware may reclaim some resources after rebooting."
+					" Reboot and test again may be helpful to continue the test.");
+			return FWTS_SKIP;
+		}
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
 			"Failed to set variable with UEFI runtime service.");
 		return FWTS_ERROR;
@@ -799,11 +845,13 @@ err_restore_env:
 
 static int uefirtvariable_test1(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint32_t multitesttime = 1;
 
-	if (getvariable_test(fw, datasize, variablenametest, multitesttime) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = getvariable_test(fw, datasize, variablenametest, multitesttime);
+	if (ret != FWTS_OK)
+		return ret;
 
 	fwts_passed(fw, "UEFI runtime service GetVariable interface test passed.");
 
@@ -812,8 +860,11 @@ static int uefirtvariable_test1(fwts_framework *fw)
 
 static int uefirtvariable_test2(fwts_framework *fw)
 {
-	if (getnextvariable_test(fw) == FWTS_ERROR)
-		return FWTS_ERROR;
+	int ret;
+
+	ret = getnextvariable_test(fw);
+	if (ret != FWTS_OK)
+		return ret;
 
 	fwts_passed(fw, "UEFI runtime service GetNextVariableName interface test passed.");
 
@@ -822,36 +873,43 @@ static int uefirtvariable_test2(fwts_framework *fw)
 
 static int uefirtvariable_test3(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize1 = 10, datasize2 = 20;
 
 	fwts_log_info(fw, "Testing SetVariable on two different GUIDs and the same variable name.");
-	if (setvariable_test1(fw, datasize1, datasize2, variablenametest) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test1(fw, datasize1, datasize2, variablenametest);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on two different GUIDs and the same variable name passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on the same and different variable data.");
-	if (setvariable_test2(fw, variablenametest) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test2(fw, variablenametest);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on the same and different variable data passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on similar variable name.");
-	if (setvariable_test3(fw) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test3(fw);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on similar variable name passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on DataSize is 0.");
-	if (setvariable_test4(fw) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test4(fw);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on DataSize is 0 passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on Attributes is 0.");
-	if (setvariable_test5(fw) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test5(fw);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on Attributes is 0 passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on Invalid Attributes.");
-	if (setvariable_test6(fw) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_test6(fw);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on Invalid Attributes passed.");
 
 	return FWTS_OK;
@@ -884,17 +942,20 @@ static int uefirtvariable_test4(fwts_framework *fw)
 
 static int uefirtvariable_test5(fwts_framework *fw)
 {
+	int ret;
 	uint32_t multitesttime = 1024;
 	uint64_t datasize = 10;
 
 	fwts_log_info(fw, "Testing GetVariable on getting the variable multiple times.");
-	if (getvariable_test(fw, datasize, variablenametest, multitesttime) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = getvariable_test(fw, datasize, variablenametest, multitesttime);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "GetVariable on getting the variable multiple times passed.");
 
 	fwts_log_info(fw, "Testing GetNextVariableName on getting the variable multiple times.");
-	if (getnextvariable_multitest(fw, multitesttime) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = getnextvariable_multitest(fw, multitesttime);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "GetNextVariableName on getting the next variable name multiple times passed.");
 
 	return FWTS_OK;
@@ -903,6 +964,7 @@ static int uefirtvariable_test5(fwts_framework *fw)
 
 static int uefirtvariable_test6(fwts_framework *fw)
 {
+	int ret;
 	uint32_t multitesttime = 40;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
@@ -912,27 +974,30 @@ static int uefirtvariable_test6(fwts_framework *fw)
 
 	fwts_log_info(fw, "Testing SetVariable on setting the variable with the same data multiple times.");
 	for (i = 0; i < multitesttime; i++) {
-		if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
-							&gtestguid1, datadiff) == FWTS_ERROR) {
+		ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+									&gtestguid1, datadiff);
+		if (ret != FWTS_OK) {
 			if (i > 0)
 				setvariable_insertvariable(fw, attributes, 0, variablenametest,
 										&gtestguid1, datadiff);
-			return FWTS_ERROR;
+			return ret;
 		}
 	}
-	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
-						&gtestguid1, datadiff) == FWTS_ERROR)
-		return FWTS_ERROR;
+	ret = setvariable_insertvariable(fw, attributes, 0, variablenametest, &gtestguid1, datadiff);
+	if (ret != FWTS_OK)
+		return ret;
 	fwts_passed(fw, "SetVariable on setting the variable with the same data multiple times passed.");
 
 	fwts_log_info(fw, "Testing SetVariable on setting the variable with different data multiple times.");
 	for (i = 0; i < multitesttime; i++) {
-		if (setvariable_insertvariable(fw, attributes, datasize+i, variablenametest,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-			return FWTS_ERROR;
-		if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-			return FWTS_ERROR;
+		ret = setvariable_insertvariable(fw, attributes, datasize+i, variablenametest,
+									&gtestguid1, datadiff);
+		if (ret != FWTS_OK)
+			return ret;
+		ret = setvariable_insertvariable(fw, attributes, 0, variablenametest,
+									&gtestguid1, datadiff);
+		if (ret != FWTS_OK)
+			return ret;
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different data multiple times passed.");
 
@@ -940,12 +1005,14 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	for (i = 0; i < variablenamelength; i++) {
 		variablenametest4[i] = 'a';
 		variablenametest4[i+1] = '\0';
-		if (setvariable_insertvariable(fw, attributes, datasize, variablenametest4,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-			return FWTS_ERROR;
-		if (setvariable_insertvariable(fw, attributes, 0, variablenametest4,
-							&gtestguid1, datadiff) == FWTS_ERROR)
-			return FWTS_ERROR;
+		ret = setvariable_insertvariable(fw, attributes, datasize, variablenametest4,
+									&gtestguid1, datadiff);
+		if (ret != FWTS_OK)
+			return ret;
+		ret = setvariable_insertvariable(fw, attributes, 0, variablenametest4,
+									&gtestguid1, datadiff);
+		if (ret != FWTS_OK)
+			return ret;
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different name multiple times passed.");
 
@@ -960,12 +1027,14 @@ static int uefirtvariable_test6(fwts_framework *fw)
 		variablenametest4[i] = 'a';
 		variablenametest4[i+1] = '\0';
 		for (j = 0; j < multitesttime; j++) {
-			if (setvariable_insertvariable(fw, attributes, datasize+j, variablenametest4,
-								&gtestguid1, datadiff) == FWTS_ERROR)
-				return FWTS_ERROR;
-			if (setvariable_insertvariable(fw, attributes, 0, variablenametest4,
-								&gtestguid1, datadiff) == FWTS_ERROR)
-				return FWTS_ERROR;
+			ret = setvariable_insertvariable(fw, attributes, datasize+j, variablenametest4,
+											&gtestguid1, datadiff);
+			if (ret != FWTS_OK)
+				return ret;
+			ret = setvariable_insertvariable(fw, attributes, 0, variablenametest4,
+											&gtestguid1, datadiff);
+			if (ret != FWTS_OK)
+				return ret;
 		}
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different name and data multiple times passed.");

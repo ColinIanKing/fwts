@@ -901,12 +901,38 @@ static int uefirtvariable_test5(fwts_framework *fw)
 
 }
 
+static int uefirtvariable_test6(fwts_framework *fw)
+{
+	uint32_t multitesttime = 40;
+	uint64_t datasize = 10;
+	uint8_t datadiff = 0;
+	uint32_t i;
+
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with the same data multiple times.");
+	for (i = 0; i < multitesttime; i++) {
+		if (setvariable_insertvariable(fw, attributes, datasize, variablenametest,
+							&gtestguid1, datadiff) == FWTS_ERROR) {
+			if (i > 0)
+				setvariable_insertvariable(fw, attributes, 0, variablenametest,
+										&gtestguid1, datadiff);
+			return FWTS_ERROR;
+		}
+	}
+	if (setvariable_insertvariable(fw, attributes, 0, variablenametest,
+						&gtestguid1, datadiff) == FWTS_ERROR)
+		return FWTS_ERROR;
+	fwts_passed(fw, "SetVariable on setting the variable with the same data multiple times passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
 	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
 	{ uefirtvariable_test3, "Test UEFI RT service set variable interface." },
 	{ uefirtvariable_test4, "Test UEFI RT service query variable info interface." },
 	{ uefirtvariable_test5, "Test UEFI RT service variable interface stress test." },
+	{ uefirtvariable_test6, "Test UEFI RT service set variable interface stress test." },
 	{ NULL, NULL }
 };
 

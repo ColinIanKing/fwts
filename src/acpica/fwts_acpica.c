@@ -55,6 +55,8 @@ static pthread_mutex_t mutex_thread_info;
 #define MAX_SEMAPHORES		(1024)
 #define MAX_THREADS		(128)
 
+#define MAX_WAIT_TIMEOUT	(20)	/* Seconds */
+
 typedef struct {
 	sem_t		sem;	/* Semaphore handle */
 	int		count;	/* count > 0 if acquired */
@@ -546,6 +548,10 @@ ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_HANDLE Handle)
 	return ret;
 }
 
+static void sem_alarm(int dummy)
+{
+	/* Do nothing apart from interrupt sem_wait() */
+}
 
 /*
  *  AcpiOsWaitSemaphore()
@@ -556,6 +562,7 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 {
 	sem_info *sem = (sem_info *)handle;
 	struct timespec	tm;
+	struct sigaction sa;
 
 	if (!handle)
 		return AE_BAD_PARAMETER;
@@ -567,8 +574,34 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 		break;
 
 	case ACPI_WAIT_FOREVER:
-		if (sem_wait(&sem->sem))
+		/*
+		 *  The semantics are "wait forever", but
+		 *  really we actually detect a lock up
+		 *  after a long wait and break out rather
+		 *  than waiting for the sun to turn into
+		 *  a lump of coal.  This allows us to
+		 *  handle controls such as _EJ0 that may
+		 *  be waiting forever for a event to signal
+		 *  control to continue.  It is evil.
+		 */
+		sa.sa_handler = sem_alarm;
+		sa.sa_flags = 0;
+		sigaction(SIGALRM, &sa, NULL);
+		alarm(MAX_WAIT_TIMEOUT);
+
+		if (sem_wait(&sem->sem)) {
+			alarm(0);
+			if (errno == EINTR)
+				fwts_log_info(fwts_acpica_fw,
+					"AML was blocked waiting for "
+					"an external event, fwts detected "
+					"this and forced a timeout after "
+					"%d seconds on a Wait() that had "
+					"an indefinite timeout.",
+					MAX_WAIT_TIMEOUT);
 			return AE_TIME;
+		}
+		alarm(0);
 		break;
 	default:
 		tm.tv_sec = Timeout / 1000;

@@ -31,7 +31,7 @@
 #include <signal.h>
 #include <pthread.h>
 
-static pthread_mutex_t mutex_lock_count;
+static pthread_mutex_t mutex_lock_sem_table;
 static pthread_mutex_t mutex_thread_info;
 
 #include "fwts.h"
@@ -52,15 +52,14 @@ static pthread_mutex_t mutex_thread_info;
 #define ACPI_MAX_INIT_TABLES	(32)
 #define AEXEC_NUM_REGIONS   	(8)
 
-#define MAX_SEMAPHORES		(1009)
-#define HASH_FULL		(0xffffffff)
-
+#define MAX_SEMAPHORES		(1024)
 #define MAX_THREADS		(128)
 
 typedef struct {
-	sem_t		*sem;	/* Semaphore handle */
+	sem_t		sem;	/* Semaphore handle */
 	int		count;	/* count > 0 if acquired */
-} sem_hash;
+	bool		used;	/* Semaphore being used flag */
+} sem_info;
 
 typedef void * (*PTHREAD_CALLBACK)(void *);
 
@@ -68,9 +67,9 @@ BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
 
 /*
- *  Hash table of semaphore handles
+ *  Used to account for semaphores used by AcpiOs*Semaphore()
  */
-static sem_hash			sem_hash_table[MAX_SEMAPHORES];
+static sem_info			sem_table[MAX_SEMAPHORES];
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];
 
@@ -129,14 +128,12 @@ void fwts_acpica_sem_count_clear(void)
 {
 	int i;
 
-	pthread_mutex_lock(&mutex_lock_count);
+	pthread_mutex_lock(&mutex_lock_sem_table);
 
-	for (i=0;i<MAX_SEMAPHORES;i++) {
-		sem_hash_table[i].sem = NULL;
-		sem_hash_table[i].count = 0;
-	}
+	for (i = 0; i < MAX_SEMAPHORES; i++)
+		sem_table[i].count = 0;
 
-	pthread_mutex_unlock(&mutex_lock_count);
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 }
 
 /*
@@ -171,13 +168,15 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 	 * All threads (such as Notify() calls now complete, so
 	 * we can now do the semaphore accounting calculations
 	 */
-	for (i=0;i<MAX_SEMAPHORES;i++) {
-		if (sem_hash_table[i].sem != NULL) {
+	pthread_mutex_lock(&mutex_lock_sem_table);
+	for (i = 0; i < MAX_SEMAPHORES; i++) {
+		if (sem_table[i].used) {
 			(*acquired)++;
-			if (sem_hash_table[i].count == 0)
+			if (sem_table[i].count == 0)
 				(*released)++;
 		}
 	}
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 }
 
 /*
@@ -188,57 +187,6 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 void fwts_acpica_simulate_sem_timeout(int timeout)
 {
 	fwts_acpica_force_sem_timeout = timeout;
-}
-
-/*
- *  hash_sem_handle()
- *	generate a simple hash based on semaphore handle
- */
-static unsigned int hash_sem_handle(sem_t *sem)
-{
-	unsigned int i = (unsigned int)((unsigned long)sem % MAX_SEMAPHORES);
-	int j;
-
-	for (j = 0; j<MAX_SEMAPHORES; j++) {
-		if (sem_hash_table[i].sem == sem)
-			return i;
-		if (sem_hash_table[i].sem == NULL)
-			return i;
-		i = (i+1) % MAX_SEMAPHORES;
-	}
-	return HASH_FULL;
-}
-
-/*
- *  hash_sem_inc_count()
- *	increment semaphore counter
- */
-static void hash_sem_inc_count(sem_t *sem)
-{
-	unsigned int i = hash_sem_handle(sem);
-
-	if (i != HASH_FULL) {
-		pthread_mutex_lock(&mutex_lock_count);
-		sem_hash_table[i].sem = sem;
-		sem_hash_table[i].count++;
-		pthread_mutex_unlock(&mutex_lock_count);
-	}
-}
-
-/*
- *  hash_sem_dec_count()
- *	decrement semaphore counter
- */
-static void hash_sem_dec_count(sem_t *sem)
-{
-	unsigned int i = hash_sem_handle(sem);
-
-	if (i != HASH_FULL) {
-		pthread_mutex_lock(&mutex_lock_count);
-		sem_hash_table[i].sem = sem;
-		sem_hash_table[i].count--;
-		pthread_mutex_unlock(&mutex_lock_count);
-	}
 }
 
 /* ACPICA Handlers */
@@ -555,23 +503,36 @@ ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits,
 	UINT32 InitialUnits,
 	ACPI_HANDLE *OutHandle)
 {
-	sem_t *sem;
+	sem_info *sem = NULL;
+	ACPI_STATUS ret = AE_OK;
+	int i;
 
 	if (!OutHandle)
 		return AE_BAD_PARAMETER;
 
-	sem = AcpiOsAllocate(sizeof(sem_t));
+	pthread_mutex_lock(&mutex_lock_sem_table);
+	for (i = 0; i < MAX_SEMAPHORES; i++) {
+		if (!sem_table[i].used) {
+			sem = &sem_table[i];
+			break;
+		}
+	}
+
 	if (!sem)
 		return AE_NO_MEMORY;
 
-	if (sem_init(sem, 0, InitialUnits) == -1) {
-		AcpiOsFree(sem);
-		return AE_BAD_PARAMETER;
+	sem->used = true;
+	sem->count = 0;
+
+	if (sem_init(&sem->sem, 0, InitialUnits) == -1) {
+		*OutHandle = NULL;
+		ret = AE_NO_MEMORY;
+	} else {
+		*OutHandle = (ACPI_HANDLE)sem;
 	}
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 
-	*OutHandle = (ACPI_HANDLE)sem;
-
-	return AE_OK;
+	return ret;
 }
 
 /*
@@ -580,17 +541,20 @@ ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits,
  */
 ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_HANDLE Handle)
 {
-	sem_t *sem = (sem_t *)Handle;
+	sem_info *sem = (sem_info *)Handle;
+	ACPI_STATUS ret = AE_OK;
 
 	if (!sem)
 		return AE_BAD_PARAMETER;
 
-	if (sem_destroy(sem) == -1)
-		return AE_BAD_PARAMETER;
+	pthread_mutex_lock(&mutex_lock_sem_table);
+	if (sem_destroy(&sem->sem) == -1)
+		ret = AE_BAD_PARAMETER;
+	sem->used = false;
 
-	AcpiOsFree(sem);
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 
-	return AE_OK;
+	return ret;
 }
 
 
@@ -601,7 +565,7 @@ ACPI_STATUS AcpiOsDeleteSemaphore(ACPI_HANDLE Handle)
  */
 ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout)
 {
-	sem_t	*sem = (sem_t *)handle;
+	sem_info *sem = (sem_info *)handle;
 	struct timespec	tm;
 
 	if (!handle)
@@ -612,22 +576,26 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 
 	switch (Timeout) {
 	case 0:
-		if (sem_trywait(sem) < 0)
+		if (sem_trywait(&sem->sem))
 			return AE_TIME;
 		break;
+
 	case ACPI_WAIT_FOREVER:
-		if (sem_wait(sem))
+		if (sem_wait(&sem->sem))
 			return AE_TIME;
 		break;
 	default:
 		tm.tv_sec = Timeout / 1000;
 		tm.tv_nsec = (Timeout - (tm.tv_sec * 1000)) * 1000000;
 
-		if (sem_timedwait(sem, &tm))
+		if (sem_timedwait(&sem->sem, &tm))
 			return AE_TIME;
 		break;
 	}
-	hash_sem_inc_count(sem);
+
+	pthread_mutex_lock(&mutex_lock_sem_table);
+	sem->count++;
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 
 	return AE_OK;
 }
@@ -639,15 +607,17 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
  */
 ACPI_STATUS AcpiOsSignalSemaphore(ACPI_HANDLE handle, UINT32 Units)
 {
-	sem_t *sem = (sem_t *)handle;
+	sem_info *sem = (sem_info *)handle;
 
 	if (!handle)
 		return AE_BAD_PARAMETER;
 
-	if (sem_post(sem) < 0)
+	if (sem_post(&sem->sem) < 0)
 		return AE_LIMIT;
 
-	hash_sem_dec_count(sem);
+	pthread_mutex_lock(&mutex_lock_sem_table);
+	sem->count--;
+	pthread_mutex_unlock(&mutex_lock_sem_table);
 
 	return AE_OK;
 }
@@ -919,7 +889,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (fwts_acpica_init_called)
 		return FWTS_ERROR;
 
-	pthread_mutex_init(&mutex_lock_count, NULL);
+	pthread_mutex_init(&mutex_lock_sem_table, NULL);
 	pthread_mutex_init(&mutex_thread_info, NULL);
 
 	fwts_acpica_fw = fw;
@@ -1108,7 +1078,7 @@ int fwts_acpica_deinit(void)
 		return FWTS_ERROR;
 
 	AcpiTerminate();
-	pthread_mutex_destroy(&mutex_lock_count);
+	pthread_mutex_destroy(&mutex_lock_sem_table);
 	pthread_mutex_destroy(&mutex_thread_info);
 
 	FWTS_ACPICA_FREE(fwts_acpica_XSDT);

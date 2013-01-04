@@ -284,7 +284,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
 	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
 	for (i = 0; i < speedcount; i++)
-		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9lu",
+		fwts_log_info_verbatum(fw, "%9s |     %5.1f %%    | %9" PRIu64,
 			HzToHuman(freqs[i].Hz),
 			100.0 * freqs[i].speed/cpu_top_speed,
 			freqs[i].speed);
@@ -327,7 +327,9 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		if (freqs[i].speed > freqs[i+1].speed)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqSlowerOnCPU",
-				"Supposedly higher frequency %s is slower (%lu bogo loops) than frequency %s (%lu bogo loops) on CPU %i.",
+				"Supposedly higher frequency %s is slower (%" PRIu64
+				" bogo loops) than frequency %s (%" PRIu64 
+				" bogo loops) on CPU %i.",
 				HzToHuman(freqs[i+1].Hz), freqs[i+1].speed,
 				HzToHuman(freqs[i].Hz), freqs[i].speed,
 				cpu);
@@ -470,7 +472,7 @@ static void do_sw_any_test(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *entry;
-	unsigned long highperf, lowperf;
+	uint64_t highperf, lowperf;
 	int first_cpu_index = -1;
 	int cpu;
 

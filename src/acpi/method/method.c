@@ -397,7 +397,6 @@ static int method_evaluate_method(fwts_framework *fw,
 				found++;
 				arg_list.Count   = num_args;
 				arg_list.Pointer = args;
-				fwts_acpica_simulate_sem_timeout(FWTS_FALSE);
 				method_evaluate_found_method(fw, method_name,
 					check_func, private, &arg_list);
 			}

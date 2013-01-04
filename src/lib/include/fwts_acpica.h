@@ -31,7 +31,6 @@ void fwts_acpica_debug_command(fwts_framework *fw, fwts_acpica_log_callback func
 fwts_list *fwts_acpica_get_object_names(int type);
 void fwts_acpica_sem_count_clear(void);
 void fwts_acpica_sem_count_get(int *acquired, int *released);
-void fwts_acpica_simulate_sem_timeout(int flag);
 void fwts_acpi_region_handler_called_set(bool val);
 bool fwts_acpi_region_handler_called_get(void);
 

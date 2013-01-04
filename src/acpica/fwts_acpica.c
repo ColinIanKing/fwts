@@ -95,7 +95,6 @@ static ACPI_TABLE_FADT		*fwts_acpica_FADT;
 static void 			*fwts_acpica_DSDT;
 
 static fwts_framework		*fwts_acpica_fw;			/* acpica context copy of fw */
-static int			fwts_acpica_force_sem_timeout;		/* > 0, forces a semaphore timeout */
 static bool			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
 static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
 
@@ -177,16 +176,6 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 		}
 	}
 	pthread_mutex_unlock(&mutex_lock_sem_table);
-}
-
-/*
- *  fwts_acpica_simulate_sem_timeout()
- *	force a timeout on next semaphore acuire to see if
- *	we can break ACPI methods during testing.
- */
-void fwts_acpica_simulate_sem_timeout(int timeout)
-{
-	fwts_acpica_force_sem_timeout = timeout;
 }
 
 /* ACPICA Handlers */
@@ -570,9 +559,6 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 
 	if (!handle)
 		return AE_BAD_PARAMETER;
-
-	if (fwts_acpica_force_sem_timeout)
-		return AE_TIME;
 
 	switch (Timeout) {
 	case 0:

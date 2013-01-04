@@ -327,7 +327,8 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	uint32_t offset;
 	uint8_t  data[16];
 	char buffer[128];
-	uint8_t *table = NULL;
+	uint8_t *table;
+	uint8_t *tmp = NULL;
 	char *ptr = buffer;
 	size_t len = 0;
 	unsigned long long table_addr;
@@ -381,11 +382,18 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 			break;
 
 		len += (n - 1);
-		table = fwts_low_realloc(table, len);
-		if (table == NULL)
+		if ((tmp = realloc(tmp, len)) == NULL)
 			return NULL;
-		memcpy(table + offset, data, n-1);
+		memcpy(tmp + offset, data, n-1);
 	}
+
+	/* Allocate the table using low 32 bit memory */
+	if ((table = fwts_low_malloc(len)) == NULL) {
+		free(tmp);
+		return NULL;
+	}
+	memcpy(table, tmp, len);
+	free(tmp);
 
 	if (table_addr == 0)
 		table_addr = fwts_fake_physical_addr(len);

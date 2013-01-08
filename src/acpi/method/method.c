@@ -70,7 +70,7 @@
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CSD  8.4.2.2	Y
- * _CST  8.4.2.1	N
+ * _CST  8.4.2.1	Y
  * _CWS  9.18.6		N
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
@@ -2309,6 +2309,182 @@ static int method_test_CSD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_CSD", NULL, 0, method_test_CSD_return, NULL);
+}
+
+static void method_test_CST_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, j;
+	bool failed = false;
+	bool *cst_elements_ok;
+	bool an_element_ok = false;
+
+	typedef struct {
+		const uint32_t	type;
+		const char 	*name;
+	} cstate_info;
+
+	static const cstate_info cstate_types[] = {
+		{ ACPI_TYPE_BUFFER,	"buffer" },
+		{ ACPI_TYPE_INTEGER,	"integer" },
+		{ ACPI_TYPE_INTEGER,	"integer" },
+		{ ACPI_TYPE_INTEGER,	"integer" },
+	};
+
+	FWTS_UNUSED(private);
+
+	if (obj == NULL)
+		return;
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* _CST has at least two elements */
+	if (obj->Package.Count < 3) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSTElementCount",
+			"_CST should return package of at least 2 elements, "
+			"got %" PRIu32 " elements instead.",
+			obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* Element 1 must be an integer */
+	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSTElement0NotInteger",
+			"_CST should return package with element zero being an integer "
+			"count of the number of C state sub-packages.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	if (obj->Package.Elements[0].Integer.Value != obj->Package.Count - 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSTElement0CountMismatch",
+			"_CST should return package with element zero containing "
+			"the number of C state sub-elements.  However, _CST has "
+			"%" PRIu32 " returned C state sub-elements yet _CST "
+			"reports it has %" PRIu64 " C states.",
+			obj->Package.Count - 1,
+			obj->Package.Elements[0].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	cst_elements_ok = calloc(obj->Package.Count, sizeof(bool));
+	if (cst_elements_ok == NULL) {
+		fwts_log_error(fw, "Cannot allocate an array. Test aborted.");
+		return;
+	}
+
+	/* Could be one or more packages */
+	for (i = 1; i < obj->Package.Count; i++) {
+		cst_elements_ok[i] = true;
+
+		ACPI_OBJECT *pkg;
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSTElementType",
+				"_CST package element %" PRIu32 " was not a package.",
+				i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			cst_elements_ok[i] = false;
+			failed = true;
+			continue;	/* Skip processing sub-package */
+		}
+
+		pkg = &obj->Package.Elements[i];
+
+		if (pkg->Package.Count != 4) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CSTElementPackageCountInvalid",
+				"_CST package element %" PRIu32 " should have "
+				"4 elements, instead it had %" PRIu32 ".",
+				i, pkg->Package.Count);
+			cst_elements_ok[i] = false;
+			failed = true;
+			continue;
+		}
+
+		for (j = 0; j < 4; j++) {
+			if (pkg->Package.Elements[j].Type != cstate_types[j].type) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_CSTCStatePackageElementInvalidType",
+					"_CST C-State package %" PRIu32 " element %" PRIu32
+					" was not a %s.",
+					i, j, cstate_types[j].name);
+				cst_elements_ok[i] = false;
+				failed = true;
+			}
+		}
+
+		/* Some very simple sanity checks on Register Resource Buffer */
+		if (pkg->Package.Elements[0].Type == ACPI_TYPE_BUFFER) {
+			if (pkg->Package.Elements[0].Buffer.Pointer == NULL) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_CSTCStateRegisterResourceBufferNull",
+					"_CST C-State package %" PRIu32 " has a NULL "
+					"Register Resource Buffer", i);
+				failed = true;
+			} else {
+				uint8_t *data = (uint8_t *)pkg->Package.Elements[0].Buffer.Pointer;
+				size_t  length = (size_t)pkg->Package.Elements[0].Buffer.Length;
+
+				if (data[0] != 0x82) {
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_CSTCStateResourceBufferWrongType",
+					"_CST C-State package %" PRIu32 " has a Resource "
+					"type 0x%2.2" PRIx8 ", however, was expecting a Register "
+					"Resource type 0x82.", i, data[0]);
+					failed = true;
+				}
+				else {
+					bool passed = true;
+					method_test_CRS_large_size(fw, name, data, length, 12, 12, &passed);
+					if (!passed)
+						failed = true;
+				}
+			}
+		}
+
+		if (cst_elements_ok[i])
+			an_element_ok = true;
+	}
+
+	/*  Now dump out per CPU C-state information */
+	if (an_element_ok) {
+		fwts_log_info_verbatum(fw, "%s values:", name);
+		fwts_log_info_verbatum(fw, "#   C-State   Latency     Power");
+		fwts_log_info_verbatum(fw, "                (us)      (mW)");
+		for (i = 1; i < obj->Package.Count; i++){
+			if (cst_elements_ok[i]) {
+				ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+				fwts_log_info_verbatum(fw,
+					"%2" PRIu32 "     C%" PRIu64 "     %6" PRIu64 "    %6" PRIu64,
+					i,
+					pkg->Package.Elements[1].Integer.Value,
+					pkg->Package.Elements[2].Integer.Value,
+					pkg->Package.Elements[3].Integer.Value);
+			} else {
+				fwts_log_info_verbatum(fw,
+					"%2" PRIu32 "     --      -----     -----", i);
+			}
+		}
+	}
+
+	free(cst_elements_ok);
+
+	if (!failed)
+		fwts_passed(fw, "%s correctly returned sane looking values.", name);
+}
+
+static int method_test_CST(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CST", NULL, 0, method_test_CST_return, NULL);
 }
 
 static void method_test_PCT_return(
@@ -4656,7 +4832,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PSS, "Check _PSS (Performance Supported States)." },
 	{ method_test_CPC, "Check _CPC (Continuous Performance Control)." },
 	{ method_test_CSD, "Check _CSD (C State Dependencies)." },
-	/* { method_test_CST, "Check _CST (C States)." }, */
+	{ method_test_CST, "Check _CST (C States)." },
 	{ method_test_PCT, "Check _PCT (Performance Control)." },
 	/* { method_test_PDC, "Check _PDC (Processor Driver Capabilities)." }, */
 	{ method_test_PDL, "Check _PDL (P-State Depth Limit)." },

@@ -60,7 +60,7 @@
  * _BMS  10.2.2.5	Y
  * _BQC  B.6.4		Y
  * _BST  10.2.2.6	Y
- * _BTM  10.2.2.8	N
+ * _BTM  10.2.2.8	Y
  * _BTP  10.2.2.7	Y
  * _CBA  see PCI spec	N
  * _CDM  6.2.1		N
@@ -117,7 +117,7 @@
  * _HOT  11.4.6		Y
  * _HPP  6.2.7		N
  * _HPX  6.2.8		N
- * _HRV  6.1.6		N
+ * _HRV  6.1.6		Y
  * _IFT  19.5		N
  * _INI  6.5.1		N
  * _INT  19.1.8		N
@@ -182,12 +182,12 @@
  * _RMV  6.3.6		Y
  * _ROM  B.4.3		Y
  * _RTV  11.4.10	Y
- * _S0_  7.3.4.1	N
- * _S1_  7.3.4.2	N
- * _S2_  7.3.4.3	N
- * _S3_  7.3.4.4	N
- * _S4_  7.3.4.5	N
- * _S5_  7.3.4.6	N
+ * _S0_  7.3.4.1	Y
+ * _S1_  7.3.4.2	Y
+ * _S2_  7.3.4.3	Y
+ * _S3_  7.3.4.4	Y
+ * _S4_  7.3.4.5	Y
+ * _S5_  7.3.4.6	Y
  * _S1D  7.2.16		Y
  * _S2D  7.2.17		Y
  * _S3D  7.2.18		Y
@@ -210,18 +210,18 @@
  * _SST  9.1.1		N
  * _STA  6.3.7, 7.1.4	Y
  * _STM  9.8.2.1.2	N
- * _STP  9.18.7		N
+ * _STP  9.18.7		Y
  * _STR  6.1.9		Y
- * _STV  9.18.8		N
+ * _STV  9.18.8		Y
  * _SUB  6.1.9		Y
- * _SUN  6.1.8		N
- * _SWS  7.3.5		N
+ * _SUN  6.1.8		Y
+ * _SWS  7.3.5		Y
  * _T_x  18.2.1.1	n/a
  * _TC1  11.4.12	Y
  * _TC2  11.4.13	Y
  * _TDL  8.4.3.5	Y
- * _TIP  9.18.9		N
- * _TIV  9.18.10	N
+ * _TIP  9.18.9		Y
+ * _TIV  9.18.10	Y
  * _TMP  11.4.14	Y
  * _TPC  8.4.3.3	Y
  * _TPT  11.4.15	Y
@@ -4844,10 +4844,6 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_MSG, "Check _MSG (Message)." }, */
 	/* { method_test_PUR, "Check _PUR (Processor Utilization Request)." }, */
 	/* { method_test_SST, "Check _SST (System Status)." }, */
-	/* { method_test_STP, "Check _STP (Set Expired Timer Wake Policy)." }, */
-	/* { method_test_STV, "Check _STV (Set Timer Value)." }, */
-	/* { method_test_TIP, "Check _TIP (Expired Timer Wake Policy)." }, */
-	/* { method_test_TIV, "Check _TIV (Timer Values)." }, */
 
 	/* Section 9.2 Ambient Light Sensor Device */
 

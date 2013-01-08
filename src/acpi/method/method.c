@@ -2471,7 +2471,7 @@ static void method_test_CST_return(
 		return;
 
 	/* _CST has at least two elements */
-	if (obj->Package.Count < 3) {
+	if (obj->Package.Count < 2) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSTElementCount",
 			"%s should return package of at least 2 elements, "
 			"got %" PRIu32 " elements instead.",

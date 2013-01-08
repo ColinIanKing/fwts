@@ -2706,6 +2706,8 @@ static void method_test_TSS_return(
 {
 	uint32_t i;
 	bool failed = false;
+	bool *tss_elements_ok;
+	bool an_element_ok = false;
 
 	FWTS_UNUSED(private);
 
@@ -2722,11 +2724,18 @@ static void method_test_TSS_return(
 		return;
 	}
 
+	tss_elements_ok = calloc(obj->Package.Count, sizeof(bool));
+	if (tss_elements_ok == NULL) {
+		fwts_log_error(fw, "Cannot allocate an array. Test aborted.");
+		return;
+	}
+
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
 		uint32_t j;
-		bool elements_ok = true;
+
+		tss_elements_ok[i] = true;
 
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -2734,6 +2743,7 @@ static void method_test_TSS_return(
 				"_TSS package element %" PRIu32
 				" was not a package.", i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			tss_elements_ok[i] = false;
 			failed = true;
 			continue;	/* Skip processing sub-package */
 		}
@@ -2750,6 +2760,7 @@ static void method_test_TSS_return(
 				"got %" PRIu32" elements instead.",
 				i, pkg->Package.Count);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			tss_elements_ok[i] = false;
 			failed = true;
 			continue;	/* Skip processing sub-package */
 		}
@@ -2762,13 +2773,16 @@ static void method_test_TSS_return(
 					" element %" PRIu32 " is not "
 					"an integer.", i, j);
 				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				elements_ok = false;
+				tss_elements_ok[i] = false;
 			}
 		}
-		if (!elements_ok) {
+		if (!tss_elements_ok[i]) {
 			failed = true;
 			continue;
 		}
+
+		/* At least one element is OK, so remember that */
+		an_element_ok = true;
 
 		/* Element 0 must be 1..100 */
 		if ((pkg->Package.Elements[0].Integer.Value < 1) ||
@@ -2784,23 +2798,36 @@ static void method_test_TSS_return(
 			failed = true;
 		}
 		/* Skip checking elements 1..4 */
-
-		fwts_log_info(fw, "TSS [%" PRIu32 "]:", i);
-		fwts_log_info_verbatum(fw, "   CPU frequency: %" PRIu64 "%%",
-			pkg->Package.Elements[0].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Power        : %" PRIu64 " (mW)",
-			pkg->Package.Elements[1].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Latency      : %" PRIu64 " microseconds",
-			pkg->Package.Elements[2].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Control      : 0x%" PRIx64,
-			pkg->Package.Elements[3].Integer.Value);
-		fwts_log_info_verbatum(fw, "   Status       : 0x%" PRIx64,
-			pkg->Package.Elements[4].Integer.Value);
 	}
+
+	/* Summary info */
+	if (an_element_ok) {
+		fwts_log_info_verbatum(fw, "%s values:", name);
+		fwts_log_info_verbatum(fw, "T-State  CPU     Power   Latency  Control  Status");
+		fwts_log_info_verbatum(fw, "         Freq    (mW)    (usecs)");
+		for (i = 0; i < obj->Package.Count; i++) {
+			if (tss_elements_ok[i]) {
+				ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+
+				fwts_log_info_verbatum(fw,
+					"  %3d    %3" PRIu64 "%%  %7" PRIu64 "  %7" PRIu64
+					"      %2.2" PRIx64 "      %2.2" PRIx64, i,
+					pkg->Package.Elements[0].Integer.Value,
+					pkg->Package.Elements[1].Integer.Value,
+					pkg->Package.Elements[2].Integer.Value,
+					pkg->Package.Elements[3].Integer.Value,
+					pkg->Package.Elements[4].Integer.Value);
+			} else {
+				fwts_log_info_verbatum(fw,
+					"  %3d    ----    -----    -----      --      -- (invalid)", i);
+			}
+		}
+	}
+	free(tss_elements_ok);
 
 	if (!failed)
 		fwts_passed(fw,
-			"_TSD correctly returned sane looking package.");
+			"_TSS correctly returned sane looking package.");
 }
 
 static int method_test_TSS(fwts_framework *fw)

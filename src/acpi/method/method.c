@@ -273,6 +273,31 @@ typedef void (*method_test_return)(fwts_framework *fw, char *name,
 /****************************************************************************/
 
 /*
+ *  method_passed_sane()
+ *	helper function to report often used passed messages
+ */
+static void method_passed_sane(
+	fwts_framework *fw,
+	const char *name,
+	const char *type)
+{
+	fwts_passed(fw, "%s correctly returned a sane looking %s.", name, type);
+}
+
+/*
+ *  method_passed_sane_uint64()
+ *	helper function to report often used passed uint64 values
+ */
+static void method_passed_sane_uint64(
+	fwts_framework *fw,
+	const char *name,
+	const uint64_t value)
+{
+	fwts_passed(fw, "%s correctly returned sane looking "
+		"value 0x%8.8" PRIx64 ".", name, value);
+}
+
+/*
  *  method_init()
  *	initialize ACPI
  */
@@ -606,9 +631,7 @@ static void method_test_passed_failed_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
 		uint32_t val = (uint32_t)obj->Integer.Value;
 		if ((val == 0) || (val == 1))
-			fwts_passed(fw,
-				"%s correctly returned sane looking value "
-				"0x%8.8" PRIx32 ".", method, val);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 		else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodReturnZeroOrOne",
@@ -1743,9 +1766,7 @@ static void method_test_STA_return(
 		}
 
 		if (!failed)
-			fwts_passed(fw,
-				"_STA correctly returned sane looking "
-				"value 0x%8.8" PRIx64, obj->Integer.Value);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 	}
 }
 
@@ -1806,9 +1827,7 @@ static void method_test_SEG_return(
 				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
-			fwts_passed(fw,
-				"_SEG correctly returned sane looking "
-				"value 0x%8.8" PRIx64, obj->Integer.Value);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 	}
 }
 
@@ -2057,8 +2076,7 @@ static void method_test_Sx__return(
 		obj->Package.Elements[1].Integer.Value);
 
 	if (!failed)
-		fwts_passed(fw, "%s correctly returned sane looking package.",
-			name);
+		method_passed_sane(fw, name, "package");
 }
 
 #define method_test_Sx_(name)						\
@@ -2175,7 +2193,7 @@ static void method_test_CPC_return(
 	method_test_type_mixed  (fw, &failed, obj, 16, "EnableRegister");
 
 	if (!failed)
-		fwts_passed(fw, "_CPC correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_CPC(fwts_framework *fw)
@@ -2301,8 +2319,7 @@ static void method_test_CSD_return(
 	}
 
 	if (!failed)
-		fwts_passed(fw,
-			"_CSD correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_CSD(fwts_framework *fw)
@@ -2478,7 +2495,7 @@ static void method_test_CST_return(
 	free(cst_elements_ok);
 
 	if (!failed)
-		fwts_passed(fw, "%s correctly returned sane looking values.", name);
+		method_passed_sane(fw, name, "values");
 }
 
 static int method_test_CST(fwts_framework *fw)
@@ -2528,8 +2545,7 @@ static void method_test_PCT_return(
 		}
 	}
 	if (!failed)
-		fwts_passed(fw,
-			"_PCT correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PCT(fwts_framework *fw)
@@ -2707,8 +2723,7 @@ static void method_test_PSS_return(
 	}
 
 	if (!failed)
-		fwts_passed(fw,
-			"_PSS correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PSS(fwts_framework *fw)
@@ -2864,8 +2879,7 @@ static void method_test_TSD_return(
 	}
 
 	if (!failed)
-		fwts_passed(fw,
-			"_TSD correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_TSD(fwts_framework *fw)
@@ -3003,8 +3017,7 @@ static void method_test_TSS_return(
 	free(tss_elements_ok);
 
 	if (!failed)
-		fwts_passed(fw,
-			"_TSS correctly returned sane looking package.");
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_TSS(fwts_framework *fw)
@@ -3043,9 +3056,7 @@ static void method_test_LID_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw,
-			"_LID correctly returned sane looking value 0x%8.8" PRIx64,
-			obj->Integer.Value);
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_LID(fwts_framework *fw)
@@ -3077,9 +3088,7 @@ static void method_test_GCP_return(
 				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
-			fwts_passed(fw,
-				"_GCP correctly returned sane looking "
-				"value 0x%8.8" PRIx64, obj->Integer.Value);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 		}
 	}
 }
@@ -3143,9 +3152,7 @@ static void method_test_GWS_return(
 				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else {
-			fwts_passed(fw,
-				"_GWS correctly returned sane looking "
-				"value 0x%8.8" PRIx64, obj->Integer.Value);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 		}
 	}
 }
@@ -3812,9 +3819,7 @@ static void method_test_PSR_return(
 				obj->Integer.Value);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		} else
-			fwts_passed(fw,
-				"_PSR correctly returned sane looking "
-				"value 0x%8.8" PRIx64, obj->Integer.Value);
+			method_passed_sane_uint64(fw, name, obj->Integer.Value);
 	}
 }
 
@@ -4006,9 +4011,7 @@ static void method_test_THERM_return(
 			 *  should not test the value being returned. In this
 			 *  case, just pass this as a valid return type.
 			 */
-			fwts_passed(fw,
-				"%s correctly returned sane looking "
-				"return type.", name);
+			method_passed_sane(fw, name, "return type");
 		} else {
 			/*
 			 *  The evaluation probably was a hard-coded value,
@@ -4074,12 +4077,8 @@ static void method_test_TCx_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		char *method = (char *)private;
-		fwts_passed(fw,
-			"%s correctly returned sane looking value 0x%8.8x",
-			method, (uint32_t)obj->Integer.Value);
-	}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
+		method_passed_sane_uint64(fw, (char*)private, obj->Integer.Value);
 }
 
 static int method_test_TC1(fwts_framework *fw)
@@ -4164,9 +4163,7 @@ static void method_test_RTV_return(
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw,
-			"_RTV correctly returned sane looking value 0x%8.8" PRIx64,
-			obj->Integer.Value);
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_RTV(fwts_framework *fw)

@@ -298,6 +298,20 @@ static void method_passed_sane_uint64(
 }
 
 /*
+ *  method_failed_null_return()
+ *	helper function to report often used failed NULL object return
+ */
+static void method_failed_null_object(
+	fwts_framework *fw,
+	const char *name,
+	const char *type)
+{
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+		"%s returned a NULL object, and did not "
+		"return %s.", name, type);
+}
+
+/*
  *  method_init()
  *	initialize ACPI
  */
@@ -518,10 +532,8 @@ static int method_check_type__(
 {
 	ACPI_OBJECT *obj;
 
-	if ((buf == NULL) || (buf->Pointer == NULL)){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
-			"Method %s returned a NULL object, and did not "
-			"return %s.", name, type_name);
+	if ((buf == NULL) || (buf->Pointer == NULL)) {
+		method_failed_null_object(fw, name, type_name);
 		return FWTS_ERROR;
 	}
 
@@ -762,11 +774,10 @@ static void method_test_HID_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
-			"Method %s returned a NULL object, and did not "
-			"return a buffer or integer.", name);
+		method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
+
 	switch (obj->Type) {
 	case ACPI_TYPE_STRING:
 		if (obj->String.Pointer) {
@@ -873,11 +884,10 @@ static void method_test_SUB_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
-			"Method %s returned a NULL object, and did not "
-			"return a buffer or integer.", name);
+		method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
+
 	if (obj->Type == ACPI_TYPE_STRING)
 		if (obj->String.Pointer) {
 			if (method_valid_HID_string(obj->String.Pointer))
@@ -928,12 +938,11 @@ static void method_test_UID_return(
 	FWTS_UNUSED(buf);
 	FWTS_UNUSED(private);
 
-	if (obj == NULL){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
-			"%s returned a NULL object, and did not "
-			"return a buffer or integer.", name);
+	if (obj == NULL) {
+		method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
+
 	switch (obj->Type) {
 	case ACPI_TYPE_STRING:
 		if (obj->String.Pointer)
@@ -4618,13 +4627,11 @@ static void method_test_DDC_return(
 
 	FWTS_UNUSED(buf);
 
-	if (obj == NULL){
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"MethodReturnNullObj",
-			"Method %s returned a NULL object, and did not "
-			"return a buffer or integer.", name);
+	if (obj == NULL) {
+		method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
+
 	switch (obj->Type) {
 	case ACPI_TYPE_BUFFER:
 		if (requested != obj->Buffer.Length) {

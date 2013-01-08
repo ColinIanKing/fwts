@@ -2481,6 +2481,7 @@ static void method_test_PSS_return(
 	 *  If we have some valid data then dump it out, it is useful to see
 	 */
 	if (dump_elements) {
+		fwts_log_info_verbatum(fw, "%s values:", name);
 		fwts_log_info_verbatum(fw, "P-State  Freq     Power  Latency   Bus Master");
 		fwts_log_info_verbatum(fw, "         (MHz)    (mW)    (us)    Latency (us)");
 		for (i = 0; i < obj->Package.Count; i++) {

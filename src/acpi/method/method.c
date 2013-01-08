@@ -96,7 +96,7 @@
  * _FDI  9.9.2		N
  * _FDM  9.9.3		N
  * _FIF  11.3.1.1	Y
- * _FIX  6.2.5		N
+ * _FIX  6.2.5		Y
  * _FPS  11.3.1.2	N
  * _FSL  11.3.1.3	Y
  * _FST  11.3.1.4	Y
@@ -1647,6 +1647,56 @@ static int method_test_DMA(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_DMA", NULL, 0, method_test_buffer_return, NULL);
+}
+
+static void method_test_FIX_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	char tmp[8];
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* All elements in the package must be integers */
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FIXElementType",
+				"%s package element %" PRIu32 " was not an integer.",
+				name, i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		} else {
+			/* And they need to be valid IDs */
+			if (!method_valid_EISA_ID(
+				(uint32_t)obj->Package.Elements[i].Integer.Value,
+				tmp, sizeof(tmp))) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_FIXInvalidElementValue",
+					"%s returned an integer "
+					"0x%8.8" PRIx64 " in package element "
+					"%" PRIu32 " that is not a valid "
+					"EISA ID.", name, obj->Integer.Value, i);
+				failed = true;
+			}
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_FIX(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_FIX", NULL, 0, method_test_FIX_return, NULL);
 }
 
 static int method_test_DIS(fwts_framework *fw)
@@ -4748,7 +4798,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_CRS, "Check _CRS (Current Resource Settings)." },
 	{ method_test_DIS, "Check _DIS (Disable)." },
 	{ method_test_DMA, "Check _DMA (Direct Memory Access)." },
-	/* { method_test_FIX, "Check _FIX (Fixed Register Resource Provider)." }, */
+	{ method_test_FIX, "Check _FIX (Fixed Register Resource Provider)." },
 	{ method_test_GSB, "Check _GSB (Global System Interrupt Base)." },
 	/* { method_test_HPP, "Check _HPP (Hot Plug Parameters)." }, */
 	/* { method_test_HPX, "Check _HPX (Hot Plug Extensions)." }, */

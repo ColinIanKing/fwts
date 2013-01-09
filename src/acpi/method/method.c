@@ -157,7 +157,7 @@
  * _PR3  7.2.11		Y
  * _PRE  7.2.12		Y
  * _PRL  10.3.4		N
- * _PRS  6.2.11		N
+ * _PRS  6.2.11		Y
  * _PRW  7.2.11		N
  * _PS0  7.2.2		Y
  * _PS1  7.2.3		Y
@@ -978,7 +978,8 @@ static int method_test_UID(fwts_framework *fw)
  */
 static void method_test_CRS_size(
 	fwts_framework *fw,
-	const char *name,		/* full _CRS path name */
+	const char *name,		/* full _CRS or _PRS path name */
+	const char *objname,		/* name of _CRS or _PRS object */
 	const char *tag,		/* error log tag */
 	const size_t crs_length,	/* size of _CRS buffer */
 	const size_t hdr_length,	/* size of _CRS header */
@@ -990,10 +991,10 @@ static void method_test_CRS_size(
 	if (crs_length < data_length + hdr_length) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, tag,
 			"%s Resource size is %zd bytes long but "
-			"the size stated in the _CRS buffer header  "
+			"the size stated in the %s buffer header  "
 			"is %zd and hence is longer. The resource "
 			"buffer is too short.",
-			name, crs_length, data_length);
+			name, crs_length, objname, data_length);
 		*passed = false;
 		return;
 	}
@@ -1018,6 +1019,7 @@ static void method_test_CRS_size(
 static void method_test_CRS_small_size(
 	fwts_framework *fw,
 	const char *name,
+	const char *objname,
 	const uint8_t *data,
 	const size_t crs_length,
 	const size_t min,
@@ -1025,8 +1027,11 @@ static void method_test_CRS_small_size(
 	bool *passed)
 {
 	size_t data_length = data[0] & 7;
+	char tmp[128];
 
-	method_test_CRS_size(fw, name, "Method_CRSSmallResourceSize",
+	snprintf(tmp, sizeof(tmp), "Method%sSmallResourceSize", objname);
+
+	method_test_CRS_size(fw, name, objname, tmp,
 		crs_length, 1, data_length, min, max, passed);
 }
 
@@ -1037,12 +1042,14 @@ static void method_test_CRS_small_size(
 static void method_test_CRS_small_resource_items(
 	fwts_framework *fw,
 	const char *name,
+	const char *objname,
 	const uint8_t *data,
 	const size_t length,
 	bool *passed,
 	const char **tag)
 {
 	uint8_t tag_item = (data[0] >> 3) & 0xf;
+	char tmp[128];
 
 	static const char *types[] = {
 		"Reserved",
@@ -1065,15 +1072,15 @@ static void method_test_CRS_small_resource_items(
 
 	switch (tag_item) {
 	case 0x4: /* 6.4.2.1 IRQ Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 2, 3, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 2, 3, passed);
 		break;
 	case 0x5: /* 6.4.2.2 DMA Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 2, 2, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 2, 2, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		if ((data[2] & 3) == 3) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_CRSDmaDescriptor",
+			snprintf(tmp, sizeof(tmp), "Method%sDmaDescriptor", objname);
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s DMA transfer type preference is 0x%" PRIx8
 				" which is reserved and invalid. See "
 				"Section 6.4.2.2 of the ACPI specification.",
@@ -1082,18 +1089,18 @@ static void method_test_CRS_small_resource_items(
 		}
 		break;
 	case 0x6: /* 6.4.2.3 Start Dependent Functions Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 0, 1, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 0, 1, passed);
 		break;
 	case 0x7: /* 6.4.2.4 End Dependent Functions Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 0, 0, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 0, 0, passed);
 		break;
 	case 0x8: /* 6.4.2.5 I/O Port Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 7, 7, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 7, 7, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		if (data[1] & 0xfe) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_CRSIoPortInfoReservedNonZero",
+			snprintf(tmp, sizeof(tmp), "Method%sIoPortInfoReservedNonZero", objname);
+			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 				"%s I/O Port Descriptor Information field "
 				"has reserved bits that are non-zero, got "
 				"0x%" PRIx8 " and expected 0 or 1 for this "
@@ -1101,8 +1108,8 @@ static void method_test_CRS_small_resource_items(
 			*passed = false;
 		}
 		if (((data[1] & 1) == 0) && (data[3] > 3)) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_CRSIoPortInfoMinBase10BitAddr",
+			snprintf(tmp, sizeof(tmp), "Method%sIoPortInfoMinBase10BitAddr", objname);
+			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 				"%s I/O Port Descriptor range minimum "
 				"base address is more than 10 bits however "
 				"the Information field indicates that only "
@@ -1110,8 +1117,8 @@ static void method_test_CRS_small_resource_items(
 			*passed = false;
 		}
 		if (((data[1] & 1) == 0) && (data[5] > 3)) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_CRSIoPortInfoMinBase10BitAddr",
+			snprintf(tmp, sizeof(tmp), "Method%sIoPortInfoMaxBase10BitAddr", objname);
+			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 				"%s I/O Port Descriptor range maximum "
 				"base address is more than 10 bits however "
 				"the Information field indicates that only "
@@ -1120,15 +1127,15 @@ static void method_test_CRS_small_resource_items(
 		}
 		break;
 	case 0x9: /* 6.4.2.6 Fixed Location I/O Port Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 3, 3, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 3, 3, passed);
 		break;
 	case 0xa: /* 6.4.2.7 Fixed DMA Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 5, 5, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 5, 5, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		if (data[5] > 5) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_CRSFixedDmaTransferWidth",
+			snprintf(tmp, sizeof(tmp), "Method%sFixedDmaTransferWidth", objname);
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s DMA transfer width is 0x%" PRIx8
 				" which is reserved and invalid. See "
 				"Section 6.4.2.7 of the ACPI specification.",
@@ -1137,25 +1144,26 @@ static void method_test_CRS_small_resource_items(
 		}
 		break;
 	case 0xe: /* 6.4.2.8 Vendor-Defined Descriptor */
-		method_test_CRS_small_size(fw, name, data, length, 1, 7, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 1, 7, passed);
 		break;
 	case 0xf: /* 6.4.2.9 End Tag */
-		method_test_CRS_small_size(fw, name, data, length, 1, 1, passed);
+		method_test_CRS_small_size(fw, name, objname, data, length, 1, 1, passed);
 		break;
 	default:
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"Method_CRSUnkownSmallResourceItem",
+		snprintf(tmp, sizeof(tmp), "Method%sUnkownSmallResourceItem", objname);
+		fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 			"%s tag bits 6:3 is an undefined "
 			"small tag item name, value 0x%" PRIx8 ".",
 			name, tag_item);
 		fwts_advice(fw,
 			"A small resource data type tag (byte 0, "
-			"bits 6:3 of the _CRS buffer) contains "
+			"bits 6:3 of the %s buffer) contains "
 			"an undefined small tag item 'name'. "
-			"The _CRS buffer is therefore undefined "
+			"The %s buffer is therefore undefined "
 			"and can't be used.  See section "
 			"'6.4.2 Small Resource Data Type' of the ACPI "
-			"specification, and also table 6-161.");
+			"specification, and also table 6-161.",
+			objname, objname);
 		*passed = false;
 		break;
 	}
@@ -1166,6 +1174,7 @@ static void method_test_CRS_small_resource_items(
 static void method_test_CRS_large_size(
 	fwts_framework *fw,
 	const char *name,
+	const char *objname,
 	const uint8_t *data,
 	const size_t crs_length,
 	const size_t min,
@@ -1173,10 +1182,12 @@ static void method_test_CRS_large_size(
 	bool *passed)
 {
 	size_t data_length;
+	char tmp[128];
 
 	/* Small _CRS resources have a 3 byte header */
 	if (crs_length < 3) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CRSBufferTooSmall",
+		snprintf(tmp, sizeof(tmp), "Method%sBufferTooSmall", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 			"%s should return a buffer of at least three bytes in length.", name);
 		*passed = false;
 		return;
@@ -1184,7 +1195,8 @@ static void method_test_CRS_large_size(
 
 	data_length = (size_t)data[1] + ((size_t)data[2] << 8);
 
-	method_test_CRS_size(fw, name, "Method_CRSLargeResourceSize",
+	snprintf(tmp, sizeof(tmp), "Method%sLargeResourceSize",objname);
+	method_test_CRS_size(fw, name, objname, tmp,
 		crs_length, 3, data_length, min, max, passed);
 }
 
@@ -1234,7 +1246,8 @@ static uint64_t method_CRS_val16(const uint8_t *data)
  */
 static void method_test_CRS_mif_maf(
 	fwts_framework *fw,
-	const char *name,		/* Full _CRS path name */
+	const char *name,		/* Full _CRS or _PRS path name */
+	const char *objname,		/* _CRS or _PRS name */
 	const uint8_t flag,		/* _MIF _MAF flag field */
 	const uint64_t min,		/* Min address */
 	const uint64_t max,		/* Max address */
@@ -1258,7 +1271,7 @@ static void method_test_CRS_mif_maf(
 	/* Table 6-179 Valid combination of Address Space Descriptors fields */
 	if (len == 0) {
 		if ((mif == 1) && (maf == 1)) {
-			snprintf(tmp, sizeof(tmp), "Method_CRS%sMifMafBothOne", tag);
+			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafBothOne", objname, tag);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				tmp,
 				"%s %s _MIF and _MAF flags are both "
@@ -1269,7 +1282,7 @@ static void method_test_CRS_mif_maf(
 			*passed = false;
 		}
 		if ((mif == 1) && (min % (granularity + 1) != 0)) {
-			snprintf(tmp, sizeof(tmp), "Method_CRS%sMinNotMultipleOfGran", tag);
+			snprintf(tmp, sizeof(tmp), "Method%s%sMinNotMultipleOfGran", objname, tag);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				tmp,
 				"%s %s _MIN address is not a multiple "
@@ -1279,7 +1292,7 @@ static void method_test_CRS_mif_maf(
 			*passed = false;
 		}
 		if ((maf == 1) && (max % (granularity - 1) != 0)) {
-			snprintf(tmp, sizeof(tmp), "Method_CRS%sMaxNotMultipleOfGran", tag);
+			snprintf(tmp, sizeof(tmp), "Method%s%sMaxNotMultipleOfGran", objname, tag);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				tmp,
 				"%s %s _MAX address is not a multiple "
@@ -1291,7 +1304,7 @@ static void method_test_CRS_mif_maf(
 	} else {
 		if ((mif == 0) && (maf == 0) &&
 		    (len % (granularity + 1) != 0)) {
-			snprintf(tmp, sizeof(tmp), "Method_CRS%sLenNotMultipleOfGran", tag);
+			snprintf(tmp, sizeof(tmp), "Method%s%sLenNotMultipleOfGran", objname, tag);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				tmp,
 				"%s %s length is not a multiple "
@@ -1303,7 +1316,7 @@ static void method_test_CRS_mif_maf(
 		}
 		if (((mif == 0) && (maf == 1)) ||
  		    ((mif == 1) && (maf == 0))) {
-			snprintf(tmp, sizeof(tmp), "Method_CRS%sMifMafInvalid", tag);
+			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafInvalid", objname, tag);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				tmp,
 				"%s %s _MIF and _MAF flags are either "
@@ -1315,7 +1328,7 @@ static void method_test_CRS_mif_maf(
 		}
 		if ((mif == 1) && (maf == 1)) {
 			if (granularity != 0) {
-				snprintf(tmp, sizeof(tmp), "Method_CRS%sGranularityNotZero", tag);
+				snprintf(tmp, sizeof(tmp), "Method%s%sGranularityNotZero", objname, tag);
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					tmp,
 					"%s %s granularity 0x%" PRIx64
@@ -1326,7 +1339,7 @@ static void method_test_CRS_mif_maf(
 				*passed = false;
 			}
 			if (min > max) {
-				snprintf(tmp, sizeof(tmp), "Method_CRS%sMaxLessThanMin", tag);
+				snprintf(tmp, sizeof(tmp), "Method%s%sMaxLessThanMin", objname, tag);
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					tmp,
 					"%s %s minimum address range 0x%" PRIx64
@@ -1337,7 +1350,7 @@ static void method_test_CRS_mif_maf(
 				*passed = false;
 			}
 			if (max - min + 1 != len) {
-				snprintf(tmp, sizeof(tmp), "Method_CRS%sLengthInvalid", tag);
+				snprintf(tmp, sizeof(tmp), "Method%s%sLengthInvalid", objname, tag);
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					tmp,
 					"%s %s length 0x%" PRIx64
@@ -1358,6 +1371,7 @@ static void method_test_CRS_mif_maf(
 static void method_test_CRS_large_resource_items(
 	fwts_framework *fw,
 	const char *name,
+	const char *objname,
 	const uint8_t *data,
 	const uint64_t length,
 	bool *passed,
@@ -1365,6 +1379,7 @@ static void method_test_CRS_large_resource_items(
 {
 	uint64_t min, max, len, gra;
 	uint8_t tag_item = data[0] & 0x7f;
+	char tmp[128];
 
 	static const char *types[] = {
 		"Reserved",
@@ -1387,15 +1402,15 @@ static void method_test_CRS_large_resource_items(
 
 	switch (tag_item) {
 	case 0x1: /* 6.4.3.1 24-Bit Memory Range Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 9, 9, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 9, 9, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		min = method_CRS_val24(&data[4]);
 		max = method_CRS_val24(&data[6]);
 		len = method_CRS_val16(&data[10]);
 		if (max < min) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CRS24BitMemRangeMaxLessThanMin",
+			snprintf(tmp, sizeof(tmp), "Method%s24BitMemRangeMaxLessThanMin", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s 24-Bit Memory Range Descriptor minimum "
 				"address range 0x%" PRIx64 " is greater than "
 				"the maximum address range 0x%" PRIx64 ".",
@@ -1403,8 +1418,8 @@ static void method_test_CRS_large_resource_items(
 			*passed = false;
 		}
 		if (len > max + 1 - min) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CRS24BitMemRangeLengthTooLarge",
+			snprintf(tmp, sizeof(tmp), "Method%s24BitMemRangeLengthTooLarge", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s 24-Bit Memory Range Descriptor length "
 				"0x%" PRIx64 " is greater than size between the "
 				"the minimum and maximum address ranges "
@@ -1414,7 +1429,7 @@ static void method_test_CRS_large_resource_items(
 		}
 		break;
 	case 0x2: /* 6.4.3.7 Generic Register Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 12, 12, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 12, 12, passed);
 		if (!*passed)
 			break;
 		switch (data[3]) {
@@ -1424,16 +1439,16 @@ static void method_test_CRS_large_resource_items(
 			/* Valid values */
 			break;
 		default:
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_CRSGenericRegAddrSpaceIdInvalid",
+			snprintf(tmp, sizeof(tmp), "Method%sGenericRegAddrSpaceIdInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s Generic Register Descriptor has an invalid "
 				"Address Space ID 0x%" PRIx8 ".",
 				name, data[3]);
 			*passed = false;
 		}
 		if (data[6] > 4) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"Method_CRSGenericRegAddrSizeInvalid",
+			snprintf(tmp, sizeof(tmp), "Method%sGenericRegAddrSizeInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s Generic Register Descriptor has an invalid "
 				"Address Access Size 0x%" PRIx8 ".",
 				name, data[6]);
@@ -1441,18 +1456,18 @@ static void method_test_CRS_large_resource_items(
 		}
 		break;
 	case 0x4: /* 6.4.3.2 Vendor-Defined Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 0, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 0, 65535, passed);
 		break;
 	case 0x5: /* 6.4.3.3 32-Bit Memory Range Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 17, 17, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 17, 17, passed);
 		if (!*passed)
 			break;
 		min = method_CRS_val32(&data[4]);
 		max = method_CRS_val32(&data[8]);
 		len = method_CRS_val32(&data[16]);
 		if (max < min) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CRS32BitMemRangeMaxLessThanMin",
+			snprintf(tmp, sizeof(tmp), "Method%s32BitMemRangeMaxLessThanMin", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s 32-Bit Memory Range Descriptor minimum "
 				"address range 0x%" PRIx64 " is greater than "
 				"the maximum address range 0x%" PRIx64 ".",
@@ -1460,8 +1475,8 @@ static void method_test_CRS_large_resource_items(
 			*passed = false;
 		}
 		if (len > max + 1 - min) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CRS32BitMemRangeLengthTooLarge",
+			snprintf(tmp, sizeof(tmp), "Method%s32BitMemRangeLengthTooLarge", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s 32-Bit Memory Range Descriptor length "
 				"0x%" PRIx64 " is greater than size between the "
 				"the minimum and maximum address ranges "
@@ -1471,11 +1486,11 @@ static void method_test_CRS_large_resource_items(
 		}
 		break;
 	case 0x6: /* 6.4.3.4 32-Bit Fixed Memory Range Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 9, 9, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 9, 9, passed);
 		/* Not much can be checked for this descriptor */
 		break;
 	case 0x7: /* 6.4.3.5.2 DWord Address Space Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 23, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 23, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		gra = method_CRS_val32(&data[6]);
@@ -1483,13 +1498,13 @@ static void method_test_CRS_large_resource_items(
 		max = method_CRS_val32(&data[14]);
 		len = method_CRS_val32(&data[22]);
 
-		method_test_CRS_mif_maf(fw, name, data[4],
+		method_test_CRS_mif_maf(fw, name, objname, data[4],
 			min, max, len, gra,
 			"64BitDWordAddrSpace",
 			types[0x7], passed);
 		break;
 	case 0x8: /* 6.4.3.5.3 Word Address Space Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 13, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 13, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		gra = method_CRS_val16(&data[6]);
@@ -1497,17 +1512,17 @@ static void method_test_CRS_large_resource_items(
 		max = method_CRS_val16(&data[10]);
 		len = method_CRS_val16(&data[14]);
 
-		method_test_CRS_mif_maf(fw, name, data[4],
+		method_test_CRS_mif_maf(fw, name, objname, data[4],
 			min, max, len, gra,
 			"64BitWordAddrSpace",
 			types[0x8], passed);
 		break;
 	case 0x9: /* 6.4.3.6 Extended Interrupt Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 6, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 6, 65535, passed);
 		/* Not much can be checked for this descriptor */
 		break;
 	case 0xa: /* 6.4.3.5.1 QWord Address Space Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 43, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 43, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		gra = method_CRS_val64(&data[6]);
@@ -1515,13 +1530,13 @@ static void method_test_CRS_large_resource_items(
 		max = method_CRS_val64(&data[22]);
 		len = method_CRS_val64(&data[38]);
 
-		method_test_CRS_mif_maf(fw, name, data[4],
+		method_test_CRS_mif_maf(fw, name, objname, data[4],
 			min, max, len, gra,
 			"64BitQWordAddrSpace",
 			types[0xa], passed);
 		break;
 	case 0xb: /* 6.4.3.5.4 Extended Address Space Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 53, 53, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 53, 53, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		gra = method_CRS_val64(&data[8]);
@@ -1529,18 +1544,18 @@ static void method_test_CRS_large_resource_items(
 		max = method_CRS_val64(&data[24]);
 		len = method_CRS_val64(&data[40]);
 
-		method_test_CRS_mif_maf(fw, name, data[4],
+		method_test_CRS_mif_maf(fw, name, objname, data[4],
 			min, max, len, gra,
 			"64BitExtAddrSpace",
 			types[0xb], passed);
 		break;
 	case 0xc: /* 6.4.3.8.1 GPIO Connection Descriptor */
-		method_test_CRS_large_size(fw, name, data, length, 22, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 22, 65535, passed);
 		if (!*passed)	/* Too short, abort */
 			break;
 		if (data[4] > 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_CRSGpioConnTypeInvalid",
+			snprintf(tmp, sizeof(tmp), "Method%sGpioConnTypeInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s GPIO Connection Descriptor has an invalid "
 				"Connection Type 0x%" PRIx8 ".",
 				name, data[2]);
@@ -1554,8 +1569,8 @@ static void method_test_CRS_large_resource_items(
                                 "specification.");
 		}
 		if ((data[9] > 0x03) && (data[9] < 0x80)) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_CRSGpioConnTypeInvalid",
+			snprintf(tmp, sizeof(tmp), "Method%sGpioConnTypeInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 				"%s GPIO Connection Descriptor has an invalid "
 				"Pin Configuration Type 0x%" PRIx8 ".",
 				name, data[9]);
@@ -1571,22 +1586,23 @@ static void method_test_CRS_large_resource_items(
 		}
 		break;
 	case 0xe: /* 6.4.3.8.2 Serial Bus Connection Descriptors */
-		method_test_CRS_large_size(fw, name, data, length, 11, 65535, passed);
+		method_test_CRS_large_size(fw, name, objname, data, length, 11, 65535, passed);
 		/* Don't care */
 		break;
 	default:
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"Method_CRSUnkownLargeResourceItem",
+		snprintf(tmp, sizeof(tmp), "Method%sUnkownLargeResourceItem", objname);
+		fwts_failed(fw, LOG_LEVEL_LOW, tmp,
 			"%s tag bits 6:0 is an undefined "
 			"large tag item name, value 0x%" PRIx8 ".",
 			name, tag_item);
 		fwts_advice(fw,
 			"A large resource data type tag (byte 0 of the "
-			"_CRS buffer) contains an undefined large tag "
-			"item 'name'. The _CRS buffer is therefore "
+			"%s buffer) contains an undefined large tag "
+			"item 'name'. The %s buffer is therefore "
 			"undefined and can't be used.  See section "
 			"'6.4.3 Large Resource Data Type' of the ACPI "
-			"specification, and also table 6-173.");
+			"specification, and also table 6-173.",
+			objname, objname);
 		*passed = false;
 		break;
 	}
@@ -1604,18 +1620,22 @@ static void method_test_CRS_return(
 	uint8_t *data;
 	bool passed = true;
 	const char *tag = "Unknown";
+	char *objname = (char*)private;
+	char tmp[128];
 
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 	if (obj->Buffer.Pointer == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CRSNullBuffer",
+		snprintf(tmp, sizeof(tmp), "Method%sNullBuffer", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 			"%s returned a NULL buffer pointer.", name);
 		return;
 	}
 	if (obj->Buffer.Length < 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CRSBufferTooSmall",
+		snprintf(tmp, sizeof(tmp), "Method%sBufferTooSmall", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 			"%s should return a buffer of at least one byte in length.", name);
 		return;
 	}
@@ -1623,9 +1643,9 @@ static void method_test_CRS_return(
 	data = (uint8_t*)obj->Buffer.Pointer;
 
 	if (data[0] & 128)
-		method_test_CRS_large_resource_items(fw, name, data, obj->Buffer.Length, &passed, &tag);
+		method_test_CRS_large_resource_items(fw, name, objname, data, obj->Buffer.Length, &passed, &tag);
 	else
-		method_test_CRS_small_resource_items(fw, name, data, obj->Buffer.Length, &passed, &tag);
+		method_test_CRS_small_resource_items(fw, name, objname, data, obj->Buffer.Length, &passed, &tag);
 
 	if (passed)
 		fwts_passed(fw, "%s (%s) looks sane.", name, tag);
@@ -1633,14 +1653,17 @@ static void method_test_CRS_return(
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 }
 
-/*
- *  method_test_integer_return
- *	check if an integer object was returned
- */
 static int method_test_CRS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MANDITORY,
-		"_CRS", NULL, 0, method_test_CRS_return, NULL);
+		"_CRS", NULL, 0, method_test_CRS_return, "_CRS");
+}
+
+static int method_test_PRS(fwts_framework *fw)
+{
+	/* Re-use the _CRS checking on the returned buffer */
+	return method_evaluate_method(fw, METHOD_MANDITORY,
+		"_PRS", NULL, 0, method_test_CRS_return, "_PRS");
 }
 
 static int method_test_DMA(fwts_framework *fw)
@@ -2570,7 +2593,7 @@ static void method_test_CST_return(
 				}
 				else {
 					bool passed = true;
-					method_test_CRS_large_size(fw, name, data, length, 12, 12, &passed);
+					method_test_CRS_large_size(fw, name, "_CST", data, length, 12, 12, &passed);
 					if (!passed)
 						failed = true;
 				}
@@ -4857,7 +4880,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_HPP, "Check _HPP (Hot Plug Parameters)." },
 	/* { method_test_HPX, "Check _HPX (Hot Plug Extensions)." }, */
 	/* { method_test_MAT, "Check _MAT (Multiple APIC Table Entry)." }, */
-	/* { method_test_PRS, "Check _PRS (Possible Resource Settings)." }, */
+	{ method_test_PRS, "Check _PRS (Possible Resource Settings)." },
 	{ method_test_PXM, "Check _PXM (Proximity)." },
 	/* { method_test_SLI, "Check _SLI (System Locality Information)." }, */
 	/* { method_test_SRS, "Check _SRS (Set Resource Settings)." }, */

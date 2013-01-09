@@ -115,7 +115,7 @@
  * _GWS  9.18.5		Y
  * _HID  6.1.5		Y
  * _HOT  11.4.6		Y
- * _HPP  6.2.7		N
+ * _HPP  6.2.7		Y
  * _HPX  6.2.8		N
  * _HRV  6.1.6		Y
  * _IFT  19.5		N
@@ -1709,6 +1709,54 @@ static int method_test_GSB(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_GSB", NULL, 0, method_test_integer_return, NULL);
+}
+
+static void method_test_HPP_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Must be 4 elements in the package */
+	if (obj->Package.Count != 4) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_HPPElementCount",
+			"%s should return a package of 4 elements, "
+			"instead got %" PRIu32 " elements.",
+			name, obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
+	}
+
+	/* All 4 elements in the package must be integers */
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_HPPElementType",
+				"%s package element %" PRIu32 " was not an integer.",
+				name, i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_HPP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_HPP", NULL, 0, method_test_HPP_return, NULL);
 }
 
 static int method_test_PXM(fwts_framework *fw)
@@ -4800,7 +4848,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_DMA, "Check _DMA (Direct Memory Access)." },
 	{ method_test_FIX, "Check _FIX (Fixed Register Resource Provider)." },
 	{ method_test_GSB, "Check _GSB (Global System Interrupt Base)." },
-	/* { method_test_HPP, "Check _HPP (Hot Plug Parameters)." }, */
+	{ method_test_HPP, "Check _HPP (Hot Plug Parameters)." },
 	/* { method_test_HPX, "Check _HPX (Hot Plug Extensions)." }, */
 	/* { method_test_MAT, "Check _MAT (Multiple APIC Table Entry)." }, */
 	/* { method_test_PRS, "Check _PRS (Possible Resource Settings)." }, */

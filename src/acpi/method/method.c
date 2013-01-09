@@ -312,6 +312,58 @@ static void method_failed_null_object(
 }
 
 /*
+ *  method_package_count_min()
+ *	check that an ACPI package has at least 'min' elements
+ */
+static int method_package_count_min(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const uint32_t min)
+{
+	if (obj->Package.Count < min) {
+		char tmp[128];
+
+		snprintf(tmp, sizeof(tmp), "Method_%sElementCount", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			"%s should return package of at least %" PRIu32
+			" element%s, got %" PRIu32 " element%s instead.",
+			name, min, min == 1 ? "" : "s",
+			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
+ *  method_package_count_equal()
+ *	check that an ACPI package has exactly 'count' elements
+ */
+static int method_package_count_equal(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const uint32_t count)
+{
+	if (obj->Package.Count != count) {
+		char tmp[128];
+
+		snprintf(tmp, sizeof(tmp), "Method_%sElementCount", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			"%s should return package of %" PRIu32
+			" element%s, got %" PRIu32 " element%s instead.",
+			name, count, count == 1 ? "" : "s",
+			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
  *  method_init()
  *	initialize ACPI
  */
@@ -1750,15 +1802,8 @@ static void method_test_HPP_return(
 		return;
 
 	/* Must be 4 elements in the package */
-	if (obj->Package.Count != 4) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"Method_HPPElementCount",
-			"%s should return a package of 4 elements, "
-			"instead got %" PRIu32 " elements.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_equal(fw, name, "_HPP", obj, 4) != FWTS_OK)
 		return;
-	}
 
 	/* All 4 elements in the package must be integers */
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -2296,14 +2341,8 @@ static void method_test_CPC_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PCT */
-	if (obj->Package.Count != 17) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementCount",
-			"%s should return package of 17 elements, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_equal(fw, name, "_CPC", obj, 17) != FWTS_OK)
 		return;
-	}
 
 	/* For now, just check types */
 
@@ -2351,14 +2390,8 @@ static void method_test_CSD_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _CSD */
-	if (obj->Package.Count < 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSDElementCount",
-			"%s should return package of at least 1 element, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_CSD", obj, 1) != FWTS_OK)
 		return;
-	}
 
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -2494,14 +2527,8 @@ static void method_test_CST_return(
 		return;
 
 	/* _CST has at least two elements */
-	if (obj->Package.Count < 2) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CSTElementCount",
-			"%s should return package of at least 2 elements, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_CST", obj, 2) != FWTS_OK)
 		return;
-	}
 
 	/* Element 1 must be an integer */
 	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) {
@@ -2653,14 +2680,8 @@ static void method_test_PCT_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PCT */
-	if (obj->Package.Count < 2) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PCTElementCount",
-			"%s should return package of least 2 elements, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_PCT", obj, 2) != FWTS_OK)
 		return;
-	}
 
 	for (i = 0; i < obj->Package.Count; i++) {
 		/*
@@ -2708,14 +2729,8 @@ static void method_test_PSS_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PSS */
-	if (obj->Package.Count < 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_PSSElementCount",
-			"%s should return package of at least 1 element, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_PSS", obj, 1) != FWTS_OK)
 		return;
-	}
 
 	element_ok = calloc(obj->Package.Count, sizeof(bool));
 	if (element_ok == NULL) {
@@ -2910,14 +2925,8 @@ static void method_test_TSD_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _TSD */
-	if (obj->Package.Count < 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSDElementCount",
-			"%s should return package of at least 1 element, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_TSD", obj, 1) != FWTS_OK)
 		return;
-	}
 
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -3039,14 +3048,8 @@ static void method_test_TSS_return(
 		return;
 
 	/* Something is really wrong if we don't have any elements in _TSS */
-	if (obj->Package.Count < 1) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_TSSElementCount",
-			"%s should return package of at least 1 element, "
-			"got %" PRIu32 " elements instead.",
-			name, obj->Package.Count);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	if (method_package_count_min(fw, name, "_TSS", obj, 1) != FWTS_OK)
 		return;
-	}
 
 	tss_elements_ok = calloc(obj->Package.Count, sizeof(bool));
 	if (tss_elements_ok == NULL) {
@@ -3424,136 +3427,131 @@ static void method_test_BIF_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	int failed = 0;
+
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
-		int failed = 0;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 13) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIFElementCount",
-				"%s package should return 13 elements, "
-				"got %" PRIu32 " instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		}
+	if (method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
+		return;
 
-		for (i = 0; (i < 9) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BIFBadType",
-					"%s package element %" PRIu32
-					" is not of type DWORD Integer.", name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-		for (i = 9; (i < 13) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BIFBadType",
-					"%s package element %" PRIu32
-					" is not of type STRING.", name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-
-		/* Sanity check each field */
-		/* Power Unit */
-		if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
+	for (i = 0; (i < 9) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIFBadUnits",
-				"%s: Expected Power Unit (Element 0) to be "
-				"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[0].Integer.Value);
+				"Method_BIFBadType",
+				"%s package element %" PRIu32
+				" is not of type DWORD Integer.", name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
-#ifdef FWTS_METHOD_PEDANDTIC
-		/*
-		 * Since this information may be evaluated by communicating with
-		 * the EC we skip these checks as we can't do this from userspace
-	 	 */
-		/* Design Capacity */
-		if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIFBadCapacity",
-				"%s: Design Capacity (Element 1) is "
-				"unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[1].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Last Full Charge Capacity */
-		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIFChargeCapacity",
-				"%s: Last Full Charge Capacity (Element 2) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[2].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#endif
-		/* Battery Technology */
-		if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIFBatTechUnit",
-				"%s: Expected Battery Technology Unit "
-				"(Element 3) to be 0 (Primary) or 1 "
-				"(Secondary), got 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[3].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#ifdef FWTS_METHOD_PEDANDTIC
-		/*
-		 * Since this information may be evaluated by communicating with
-		 * the EC we skip these checks as we can't do this from userspace
-	 	 */
-		/* Design Voltage */
-		if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIFDesignVoltage",
-				"%s: Design Voltage (Element 4) is "
-				"unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[4].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Design capacity warning */
-		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIFDesignCapacityE5",
-				"%s: Design Capacity Warning (Element 5) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[5].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Design capacity low */
-		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIFDesignCapacityE6",
-				"%s: Design Capacity Warning (Element 6) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[6].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#endif
-		if (failed)
-			fwts_advice(fw,
-				"Battery %s package contains errors. It is "
-				"worth running the firmware test suite "
-				"interactive 'battery' test to see if this "
-				"is problematic.  This is a bug an needs to "
-				"be fixed.", name);
-		else
-			method_passed_sane(fw, name, "package");
 	}
+	for (i = 9; (i < 13) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIFBadType",
+				"%s package element %" PRIu32
+				" is not of type STRING.", name, i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed++;
+		}
+	}
+
+	/* Sanity check each field */
+	/* Power Unit */
+	if (obj->Package.Elements[0].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIFBadUnits",
+			"%s: Expected Power Unit (Element 0) to be "
+			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[0].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Capacity */
+	if (obj->Package.Elements[1].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIFBadCapacity",
+			"%s: Design Capacity (Element 1) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[1].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Last Full Charge Capacity */
+	if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIFChargeCapacity",
+			"%s: Last Full Charge Capacity (Element 2) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[2].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#endif
+	/* Battery Technology */
+	if (obj->Package.Elements[3].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIFBatTechUnit",
+			"%s: Expected Battery Technology Unit "
+			"(Element 3) to be 0 (Primary) or 1 "
+			"(Secondary), got 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[3].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+ 	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+	 */
+	/* Design Voltage */
+	if (obj->Package.Elements[4].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIFDesignVoltage",
+			"%s: Design Voltage (Element 4) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[4].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Design capacity warning */
+	if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIFDesignCapacityE5",
+			"%s: Design Capacity Warning (Element 5) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[5].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Design capacity low */
+	if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIFDesignCapacityE6",
+			"%s: Design Capacity Warning (Element 6) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[6].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#endif
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
+	else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BIF(fwts_framework *fw)
@@ -3569,148 +3567,141 @@ static void method_test_BIX_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	int failed = 0;
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
-		int failed = 0;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 16) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIXElementCount",
-				"%s package should return 16 elements, "
-				"got %" PRIu32 " instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
+	if (method_package_count_equal(fw, name, "_BIX", obj, 16) != FWTS_OK)
+		return;
 
-		for (i = 0; (i < 16) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BIXBadType",
-					"%s package element %" PRIu32
-					" is not of type DWORD Integer.",
-					name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-		for (i = 16; (i < 20) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BIXBadType",
-					"%s package element %" PRIu32
-					" is not of type STRING.",
-					name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-
-		/* Sanity check each field */
-		/* Power Unit */
-		if (obj->Package.Elements[1].Integer.Value > 0x00000002) {
+	for (i = 0; (i < 16) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIXPowerUnit",
-				"%s: Expected Power Unit (Element 1) to be "
-				"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[1].Integer.Value);
+				"Method_BIXBadType",
+				"%s package element %" PRIu32
+				" is not of type DWORD Integer.",
+				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
-#ifdef FWTS_METHOD_PEDANDTIC
-		/*
-		 * Since this information may be evaluated by communicating with
-		 * the EC we skip these checks as we can't do this from userspace
-	 	 */
-		/* Design Capacity */
-		if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIXDesignCapacity",
-				"%s: Design Capacity (Element 2) is "
-				"unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[2].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Last Full Charge Capacity */
-		if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIXFullChargeCapacity",
-				"%s: Last Full Charge Capacity (Element 3) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[3].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#endif
-		/* Battery Technology */
-		if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BIXBatteryTechUnit",
-				"%s: Expected Battery Technology Unit "
-				"(Element 4) to be 0 (Primary) or 1 "
-				"(Secondary), got 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[4].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#ifdef FWTS_METHOD_PEDANDTIC
-		/*
-		 * Since this information may be evaluated by communicating with
-		 * the EC we skip these checks as we can't do this from userspace
-	 	 */
-		/* Design Voltage */
-		if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIXDesignVoltage",
-				"%s: Design Voltage (Element 5) is unknown: "
-				"0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[5].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Design capacity warning */
-		if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIXDesignCapacityE6",
-				"%s: Design Capacity Warning (Element 6) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[6].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Design capacity low */
-		if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"Method_BIXDesignCapacityE7",
-				"%s: Design Capacity Warning (Element 7) "
-				"is unknown: 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[7].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Cycle Count */
-		if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {
-			fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
-				"%s: Cycle Count (Element 10) is unknown: "
-				"0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[10].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-#endif
-		if (failed)
-			fwts_advice(fw,
-				"Battery %s package contains errors. It is "
-				"worth running the firmware test suite "
-				"interactive 'battery' test to see if this "
-				"is problematic.  This is a bug an needs to "
-				"be fixed.", name);
-		else
-			method_passed_sane(fw, name, "package");
 	}
+	for (i = 16; (i < 20) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_STRING) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_BIXBadType",
+				"%s package element %" PRIu32
+				" is not of type STRING.",
+				name, i);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed++;
+		}
+	}
+
+	/* Sanity check each field */
+	/* Power Unit */
+	if (obj->Package.Elements[1].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIXPowerUnit",
+			"%s: Expected Power Unit (Element 1) to be "
+			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[1].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+ 	 */
+	/* Design Capacity */
+	if (obj->Package.Elements[2].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIXDesignCapacity",
+			"%s: Design Capacity (Element 2) is "
+			"unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[2].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Last Full Charge Capacity */
+	if (obj->Package.Elements[3].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIXFullChargeCapacity",
+			"%s: Last Full Charge Capacity (Element 3) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[3].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#endif
+	/* Battery Technology */
+	if (obj->Package.Elements[4].Integer.Value > 0x00000002) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BIXBatteryTechUnit",
+			"%s: Expected Battery Technology Unit "
+			"(Element 4) to be 0 (Primary) or 1 "
+			"(Secondary), got 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[4].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#ifdef FWTS_METHOD_PEDANDTIC
+	/*
+	 * Since this information may be evaluated by communicating with
+	 * the EC we skip these checks as we can't do this from userspace
+ 	 */
+	/* Design Voltage */
+	if (obj->Package.Elements[5].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIXDesignVoltage",
+			"%s: Design Voltage (Element 5) is unknown: "
+			"0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[5].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Design capacity warning */
+	if (obj->Package.Elements[6].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIXDesignCapacityE6",
+			"%s: Design Capacity Warning (Element 6) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[6].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Design capacity low */
+	if (obj->Package.Elements[7].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"Method_BIXDesignCapacityE7",
+			"%s: Design Capacity Warning (Element 7) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[7].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Cycle Count */
+	if (obj->Package.Elements[10].Integer.Value > 0x7fffffff) {
+		fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
+			"%s: Cycle Count (Element 10) is unknown: "
+			"0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[10].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+#endif
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
+	else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BIX(fwts_framework *fw)
@@ -3746,69 +3737,63 @@ static void method_test_BST_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	int failed = 0;
+
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
-		int failed = 0;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 4) {
+	if (method_package_count_equal(fw, name, "_BST", obj, 4) != FWTS_OK)
+		return;
+
+	for (i = 0; (i < 4) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BSTElementCount",
-				"%s package should return 4 elements, "
-				"got %" PRIu32" instead.",
-				name, obj->Package.Count);
+				"Method_BSTBadType",
+				"%s package element %" PRIu32
+				" is not of type DWORD Integer.",
+				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
+	}
 
-		for (i = 0; (i < 4) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BSTBadType",
-					"%s package element %" PRIu32
-					" is not of type DWORD Integer.",
-					name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-
-		/* Sanity check each field */
-		/* Battery State */
-		if ((obj->Package.Elements[0].Integer.Value) > 7) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BSTBadState",
-				"%s: Expected Battery State (Element 0) to "
-				"be 0..7, got 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[0].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
-		if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BSTBadState",
-				"%s: Battery State (Element 0) is "
-				"indicating both charging and discharginng "
-				"which is not allowed. Got value 0x%8.8" PRIx64 ".",
-				name, obj->Package.Elements[0].Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		}
-		/* Battery Present Rate - cannot check, pulled from EC */
-		/* Battery Remaining Capacity - cannot check, pulled from EC */
-		/* Battery Present Voltage - cannot check, pulled from EC */
-		if (failed)
-			fwts_advice(fw,
-				"Battery %s package contains errors. It is "
-				"worth running the firmware test suite "
-				"interactive 'battery' test to see if this "
-				"is problematic.  This is a bug an needs to "
-				"be fixed.", name);
+	/* Sanity check each field */
+	/* Battery State */
+	if ((obj->Package.Elements[0].Integer.Value) > 7) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BSTBadState",
+			"%s: Expected Battery State (Element 0) to "
+			"be 0..7, got 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[0].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
+	if (((obj->Package.Elements[0].Integer.Value) & 3) == 3) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BSTBadState",
+			"%s: Battery State (Element 0) is "
+			"indicating both charging and discharginng "
+			"which is not allowed. Got value 0x%8.8" PRIx64 ".",
+			name, obj->Package.Elements[0].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
+	/* Battery Present Rate - cannot check, pulled from EC */
+	/* Battery Remaining Capacity - cannot check, pulled from EC */
+	/* Battery Present Voltage - cannot check, pulled from EC */
+	if (failed)
+		fwts_advice(fw,
+			"Battery %s package contains errors. It is "
+			"worth running the firmware test suite "
+			"interactive 'battery' test to see if this "
+			"is problematic.  This is a bug an needs to "
+			"be fixed.", name);
 		else
 			method_passed_sane(fw, name, "package");
-	}
 }
 
 static int method_test_BST(fwts_framework *fw)
@@ -3879,37 +3864,31 @@ static void method_test_BMD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	int failed = 0;
+
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
-		int failed = 0;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		fwts_acpi_object_dump(fw, obj);
+	if (method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 5) {
+	fwts_acpi_object_dump(fw, obj);
+
+	for (i= 0; (i < 4) && (i < obj->Package.Count); i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BMDElementCount",
-				"%s package should return 4 elements, "
-				"got %" PRIu32 " instead.",
-				name, obj->Package.Count);
+				"Method_BMDBadType",
+				"%s package element %" PRIu32
+				" is not of type DWORD Integer.",
+				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 			failed++;
 		}
-
-		for (i= 0; (i < 4) && (i < obj->Package.Count); i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BMDBadType",
-					"%s package element %" PRIu32
-					" is not of type DWORD Integer.",
-					name, i);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-		/* TODO: check return values */
 	}
+	/* TODO: check return values */
 }
 
 static int method_test_BMD(fwts_framework *fw)
@@ -3948,17 +3927,18 @@ static void method_test_PSR_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		if (obj->Integer.Value > 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PSRZeroOrOne",
-				"%s returned 0x%8.8" PRIx64 ", expected 0 "
-				"(offline) or 1 (online)",
-				name, obj->Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
-	}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value > 2) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PSRZeroOrOne",
+			"%s returned 0x%8.8" PRIx64 ", expected 0 "
+			"(offline) or 1 (online)",
+			name, obj->Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_PSR(fwts_framework *fw)
@@ -3976,33 +3956,27 @@ static void method_test_PIF_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_acpi_object_dump(fw, obj);
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 6) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_PIFElementCount",
-				"%s should return package of 6 elements, "
-				"got %" PRIu32 " elements instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else {
-			if ((obj->Package.Elements[0].Type != ACPI_TYPE_BUFFER) ||
-			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[3].Type != ACPI_TYPE_STRING) ||
-			    (obj->Package.Elements[4].Type != ACPI_TYPE_STRING) ||
-			    (obj->Package.Elements[5].Type != ACPI_TYPE_STRING)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_PIFBadType",
-					"%s should return package of 1 "
-					"buffer, 2 integers and 3 strings.", name);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			} else {
-				method_passed_sane(fw, name, "package");
-			}
-		}
-	}
+	if (method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
+		return;
+
+	fwts_acpi_object_dump(fw, obj);
+
+	if ((obj->Package.Elements[0].Type != ACPI_TYPE_BUFFER) ||
+	    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[3].Type != ACPI_TYPE_STRING) ||
+	    (obj->Package.Elements[4].Type != ACPI_TYPE_STRING) ||
+	    (obj->Package.Elements[5].Type != ACPI_TYPE_STRING)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PIFBadType",
+			"%s should return package of 1 "
+			"buffer, 2 integers and 3 strings.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PIF(fwts_framework *fw)
@@ -4024,38 +3998,32 @@ static void method_test_FIF_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_acpi_object_dump(fw, obj);
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 4) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_FIFElementCount",
-				"%s should return package of 4 elements, "
-				"got %" PRIu32 " elements instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else {
-			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[3].Type != ACPI_TYPE_INTEGER)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_FIFBadType",
-					"%s should return package of 4 "
-					"integers.", name);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				fwts_advice(fw,
-					"%s is not returning the correct "
-					"fan information. It may be worth "
-					"running the firmware test suite "
-					"interactive 'fan' test to see if "
-					"this affects the control and "
-					"operation of the fan.", name);
-			} else {
-				method_passed_sane(fw, name, "package");
-			}
-		}
-	}
+	if (method_package_count_equal(fw, name, "_FIF", obj, 4) != FWTS_OK)
+		return;
+
+	fwts_acpi_object_dump(fw, obj);
+
+	if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[3].Type != ACPI_TYPE_INTEGER)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_FIFBadType",
+			"%s should return package of 4 "
+			"integers.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		fwts_advice(fw,
+			"%s is not returning the correct "
+			"fan information. It may be worth "
+			"running the firmware test suite "
+			"interactive 'fan' test to see if "
+			"this affects the control and "
+			"operation of the fan.", name);
+	} else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FIF(fwts_framework *fw)
@@ -4083,37 +4051,30 @@ static void method_test_FST_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_acpi_object_dump(fw, obj);
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_FSTElementCount",
-				"%s should return package of 3 elements, "
-				"got %" PRIu32 " elements instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else {
-			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_FSTBadType",
-					"%s should return package of 3 "
-					"integers.", name);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				fwts_advice(fw,
-					"%s is not returning the correct "
-					"fan status information. It may be "
-					"worth running the firmware test "
-					"suite interactive 'fan' test to see "
-					"if this affects the control and "
-					"operation of the fan.", name);
-			} else {
-				method_passed_sane(fw, name, "package");
-			}
-		}
-	}
+	if (method_package_count_equal(fw, name, "_FST", obj, 3) != FWTS_OK)
+		return;
+
+	fwts_acpi_object_dump(fw, obj);
+	if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[2].Type != ACPI_TYPE_INTEGER)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_FSTBadType",
+			"%s should return package of 3 "
+			"integers.", name);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		fwts_advice(fw,
+			"%s is not returning the correct "
+			"fan status information. It may be "
+			"worth running the firmware test "
+			"suite interactive 'fan' test to see "
+			"if this affects the control and "
+			"operation of the fan.", name);
+	} else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FST(fwts_framework *fw)
@@ -4133,50 +4094,51 @@ static void method_test_THERM_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		char *method = (char*)private;
+	char *method = (char*)private;
 
-		if (fwts_acpi_region_handler_called_get()) {
-			/*
-			 *  We accessed some memory or I/O region during the
-			 *  evaluation which returns spoofed values, so we
-			 *  should not test the value being returned. In this
-			 *  case, just pass this as a valid return type.
-			 */
-			method_passed_sane(fw, name, "return type");
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (fwts_acpi_region_handler_called_get()) {
+		/*
+		 *  We accessed some memory or I/O region during the
+		 *  evaluation which returns spoofed values, so we
+		 *  should not test the value being returned. In this
+		 *  case, just pass this as a valid return type.
+		 */
+		method_passed_sane(fw, name, "return type");
+	} else {
+		/*
+		 *  The evaluation probably was a hard-coded value,
+		 *  so sanity check it
+		 */
+		if (obj->Integer.Value >= 2732) {
+			fwts_passed(fw,
+				"%s correctly returned sane looking "
+				"value 0x%8.8" PRIx64 " (%5.1f degrees K)",
+				method,
+				obj->Integer.Value,
+				(float)((uint64_t)obj->Integer.Value) / 10.0);
 		} else {
-			/*
-			 *  The evaluation probably was a hard-coded value,
-			 *  so sanity check it
-			 */
-			if (obj->Integer.Value >= 2732)
-				fwts_passed(fw,
-					"%s correctly returned sane looking "
-					"value 0x%8.8" PRIx64 " (%5.1f degrees K)",
-					method,
-					obj->Integer.Value,
-					(float)((uint64_t)obj->Integer.Value) / 10.0);
-			else {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"MethodBadTemp",
-					"%s returned a dubious value below "
-					"0 degrees C: 0x%8.8" PRIx64 " (%5.1f "
-					"degrees K)",
-					method,
-					obj->Integer.Value,
-					(float)((uint64_t)obj->Integer.Value) / 10.0);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				fwts_advice(fw,
-					"The value returned was probably a "
-					"hard-coded thermal value which is "
-					"out of range because fwts did not "
-					"detect any ACPI region handler "
-					"accesses of I/O or system memeory "
-					"to evaluate the thermal value. "
-					"It is worth sanity checking these "
-					"values in "
-					"/sys/class/thermal/thermal_zone*.");
-			}
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodBadTemp",
+				"%s returned a dubious value below "
+				"0 degrees C: 0x%8.8" PRIx64 " (%5.1f "
+				"degrees K)",
+				method,
+				obj->Integer.Value,
+				(float)((uint64_t)obj->Integer.Value) / 10.0);
+			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			fwts_advice(fw,
+				"The value returned was probably a "
+				"hard-coded thermal value which is "
+				"out of range because fwts did not "
+				"detect any ACPI region handler "
+				"accesses of I/O or system memeory "
+				"to evaluate the thermal value. "
+				"It is worth sanity checking these "
+				"values in "
+				"/sys/class/thermal/thermal_zone*.");
 		}
 	}
 }
@@ -4320,7 +4282,6 @@ static int method_test_TZP(fwts_framework *fw)
 		"_TZP", NULL, 0, method_test_polling_return, "_TZP");
 }
 
-
 /*
  * Section 16 Waking and Sleeping
  */
@@ -4390,18 +4351,13 @@ static void method_test_Sx_return(
 {
 	char *method = (char *)private;
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		fwts_acpi_object_dump(fw, obj);
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		if (obj->Package.Count != 3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_SElementCount",
-				"%s should return package of 3 integers, "
-				"got %d elements instead.", method,
-				obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		}
-	}
+	if (method_package_count_equal(fw, name, method, obj, 3) != FWTS_OK)
+		return;
+
+	fwts_acpi_object_dump(fw, obj);
 }
 
 #define method_test_Sx(name)					\
@@ -4425,34 +4381,26 @@ static void method_test_WAK_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	int failed = 0;
-
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		if (obj->Package.Count != 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_WAKElementCount",
-				"%s should return package of 2 integers, "
-				"got %" PRIu32 " elements instead.",
-				name, obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			failed++;
-		} else {
-			if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
-			    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER))  {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_WAKBadType",
-					"%s should return package of 2 "
-					"integers, got %" PRIu32 " instead.",
-					name, obj->Package.Count);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				failed++;
-			}
-		}
-		if (!failed)
-			method_passed_sane(fw, name, "package");
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
+		return;
+
+	if ((obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER) ||
+	    (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER))  {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_WAKBadType",
+			"%s should return package of 2 "
+			"integers, got %" PRIu32 " instead.",
+			name, obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		return;
 	}
+
+	method_passed_sane(fw, name, "package");
 }
 
 static int method_test_WAK(fwts_framework *fw)
@@ -4498,6 +4446,7 @@ static void method_test_DOD_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
 	int failed = 0;
 	static char *dod_type[] = {
 		"Other",
@@ -4523,37 +4472,37 @@ static void method_test_DOD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		for (i = 0; i < obj->Package.Count; i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
-				failed++;
-			else {
-				uint32_t val = obj->Package.Elements[i].Integer.Value;
-				fwts_log_info_verbatum(fw, "Device %" PRIu32 ":", i);
-				if ((val & 0x80000000)) {
-					fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRIu32, val);
-				} else {
-					fwts_log_info_verbatum(fw, "  Instance:                %" PRIu32, val & 0xf);
-					fwts_log_info_verbatum(fw, "  Display port attachment: %" PRIu32, (val >> 4) & 0xf);
-					fwts_log_info_verbatum(fw, "  Type of display:         %" PRIu32 " (%s)",
-						(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
-					fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRIu32, (val >> 16) & 1);
-					fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRIu32, (val >> 17) & 1);
-					fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRIu32, (val >> 18) & 0x7);
-				}
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
+			failed++;
+		else {
+			uint32_t val = obj->Package.Elements[i].Integer.Value;
+			fwts_log_info_verbatum(fw, "Device %" PRIu32 ":", i);
+			if ((val & 0x80000000)) {
+				fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRIu32, val);
+			} else {
+				fwts_log_info_verbatum(fw, "  Instance:                %" PRIu32, val & 0xf);
+				fwts_log_info_verbatum(fw, "  Display port attachment: %" PRIu32, (val >> 4) & 0xf);
+				fwts_log_info_verbatum(fw, "  Type of display:         %" PRIu32 " (%s)",
+					(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
+				fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRIu32, (val >> 16) & 1);
+				fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRIu32, (val >> 17) & 1);
+				fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRIu32, (val >> 18) & 0x7);
 			}
 		}
-		if (failed) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_DODNoPackage",
-				"Method _DOD did not return a package of "
-				"%" PRIu32 " integers.", obj->Package.Count);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else
-			method_passed_sane(fw, name, "package");
 	}
+
+	if (failed) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_DODNoPackage",
+			"Method _DOD did not return a package of "
+			"%" PRIu32 " integers.", obj->Package.Count);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_DOD(fwts_framework *fw)
@@ -4629,95 +4578,89 @@ static void method_test_BCL_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
+	uint32_t i;
+	int failed = 0;
+	bool ascending_levels = false;
+
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) == FWTS_OK) {
-		uint32_t i;
-		int failed = 0;
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
 
-		fwts_acpi_object_dump(fw, obj);
+	if (method_package_count_min(fw, name, "_BCL", obj, 3) != FWTS_OK)
+		return;
 
-		for (i = 0; i < obj->Package.Count; i++) {
-			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
-				failed++;
-		}
-		if (failed) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_BCLNoPackage",
-				"%s did not return a package of %" PRIu32
-				" integers.", name, obj->Package.Count);
-		} else {
-			if (obj->Package.Count < 3) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_BCLElementCount",
-					"%s should return a package "
-					"of more than 2 integers, got "
-					"just %" PRIu32 ".",
-					name, obj->Package.Count);
-				fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			} else {
-				bool ascending_levels = false;
+	fwts_acpi_object_dump(fw, obj);
 
-				if (obj->Package.Elements[0].Integer.Value <
-				    obj->Package.Elements[1].Integer.Value) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"Method_BCLMaxLevel",
-						"Brightness level when on full "
-						" power (%" PRIu64 ") is less than "
-						 "brightness level when on "
-						"battery power (%" PRIu64 ").",
-						obj->Package.Elements[0].Integer.Value,
-						obj->Package.Elements[1].Integer.Value);
-					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-					failed++;
-				}
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER)
+			failed++;
+	}
+	if (failed) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BCLNoPackage",
+			"%s did not return a package of %" PRIu32
+			" integers.", name, obj->Package.Count);
+		return;
+	}
 
-				for (i = 2; i < obj->Package.Count - 1; i++) {
-					if (obj->Package.Elements[i].Integer.Value >
-					    obj->Package.Elements[i+1].Integer.Value) {
-						fwts_log_info(fw,
-							"Brightness level %" PRIu64
-							" (index %" PRIu32 ") is greater "
-							"than brightness level %" PRIu64
-							" (index %d" PRIu32 "), should "
-							"be in ascending order.",
-							obj->Package.Elements[i].Integer.Value, i,
-							obj->Package.Elements[i+1].Integer.Value, i+1);
-						ascending_levels = true;
-						failed++;
-					}
-				}
-				if (ascending_levels) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"Method_BCLAscendingOrder",
-						"Some or all of the brightness "
-						"level are not in ascending "
-						"order which should be fixed "
-						"in the firmware.");
-					fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-				}
+	if (obj->Package.Elements[0].Integer.Value <
+	    obj->Package.Elements[1].Integer.Value) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BCLMaxLevel",
+			"Brightness level when on full "
+			" power (%" PRIu64 ") is less than "
+				"brightness level when on "
+			"battery power (%" PRIu64 ").",
+			obj->Package.Elements[0].Integer.Value,
+			obj->Package.Elements[1].Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		failed++;
+	}
 
-				if (failed)
-					fwts_advice(fw,
-						"%s seems to be "
-						"misconfigured and is "
-						"returning incorrect "
-						"brightness levels."
-						"It is worth sanity checking "
-						"this with the firmware test "
-						"suite interactive test "
-						"'brightness' to see how "
-						"broken this is. As it is, "
-						"_BCL is broken and needs to "
-						"be fixed.", name);
-				else
-					fwts_passed(fw,
-						"%s returned a sane "
-						"package of %" PRIu32 " integers.",
-						name, obj->Package.Count);
-			}
+	for (i = 2; i < obj->Package.Count - 1; i++) {
+		if (obj->Package.Elements[i].Integer.Value >
+		    obj->Package.Elements[i+1].Integer.Value) {
+			fwts_log_info(fw,
+				"Brightness level %" PRIu64
+				" (index %" PRIu32 ") is greater "
+				"than brightness level %" PRIu64
+				" (index %d" PRIu32 "), should "
+				"be in ascending order.",
+				obj->Package.Elements[i].Integer.Value, i,
+				obj->Package.Elements[i+1].Integer.Value, i+1);
+			ascending_levels = true;
+			failed++;
 		}
 	}
+	if (ascending_levels) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_BCLAscendingOrder",
+			"Some or all of the brightness "
+			"level are not in ascending "
+			"order which should be fixed "
+			"in the firmware.");
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	}
+
+	if (failed)
+		fwts_advice(fw,
+			"%s seems to be "
+			"misconfigured and is "
+			"returning incorrect "
+			"brightness levels."
+			"It is worth sanity checking "
+			"this with the firmware test "
+			"suite interactive test "
+			"'brightness' to see how "
+			"broken this is. As it is, "
+			"_BCL is broken and needs to "
+			"be fixed.", name);
+	else
+		fwts_passed(fw,
+			"%s returned a sane "
+			"package of %" PRIu32 " integers.",
+			name, obj->Package.Count);
 }
 
 static int method_test_BCL(fwts_framework *fw)

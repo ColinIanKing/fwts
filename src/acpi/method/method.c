@@ -119,7 +119,7 @@
  * _HPX  6.2.8		N
  * _HRV  6.1.6		Y
  * _IFT  19.5		N
- * _INI  6.5.1		N
+ * _INI  6.5.1		Y
  * _INT  19.1.8		N
  * _IRC  7.2.13		Y
  * _Lxx  5.6.4.1	n/a
@@ -1910,6 +1910,12 @@ static int method_test_DCK(fwts_framework *fw)
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
+}
+
+static int method_test_INI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_INI", NULL, 0, method_test_NULL_return, NULL);
 }
 
 static void method_test_SEG_return(
@@ -4878,7 +4884,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BDN, "Check _BDN (BIOS Dock Name)." },
 	{ method_test_BBN, "Check _BBN (Base Bus Number)." },
 	{ method_test_DCK, "Check _DCK (Dock)." },
-	/* { method_test_INI, "Check _INI (Initialize)." }, */
+	{ method_test_INI, "Check _INI (Initialize)." },
 	/* { method_test_GLK, "Check _GLK (Global Lock)." }, */
 	/* { method_test_REG, "Check _REG (Region)." }, */
 	{ method_test_SEG, "Check _SEG (Segment)." },

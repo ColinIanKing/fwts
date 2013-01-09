@@ -53,7 +53,7 @@
  * _BFS  7.3.1		deprecated
  * _BIF  10.2.2.1	Y
  * _BIX  10.2.2.2	Y
- * _BLT  9.1.3		N
+ * _BLT  9.1.3		N not easily tested
  * _BMA  10.2.2.4	Y
  * _BMC	 10.2.2.11	Y
  * _BMD  10.2.2.10	Y
@@ -65,13 +65,13 @@
  * _CBA  see PCI spec	N
  * _CDM  6.2.1		N
  * _CID  6.1.2		N
- * _CLS  6.1.3		N
+ * _CLS  6.1.3		N requires PCI SIG class info
  * _CPC  8.4.5		Y
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CSD  8.4.2.2	Y
  * _CST  8.4.2.1	Y
- * _CWS  9.18.6		N
+ * _CWS  9.18.6		N not easily tested
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
@@ -91,10 +91,10 @@
  * _EDL  6.3.1		Y
  * _EJD  6.3.2		Y
  * _EJx  6.3.3		Y
- * _EVT  5.6.5.3	N
- * _FDE  9.9.1		N
- * _FDI  9.9.2		N
- * _FDM  9.9.3		N
+ * _EVT  5.6.5.3	n/a
+ * _FDE  9.9.1		N (floppy controller, ignore)
+ * _FDI  9.9.2		N (floppy controller, ignore)
+ * _FDM  9.9.3		N (floppy controller, ignore)
  * _FIF  11.3.1.1	Y
  * _FIX  6.2.5		Y
  * _FPS  11.3.1.2	N
@@ -103,7 +103,7 @@
  * _GAI  10.4.5		N
  * _GCP  9.18.2		Y
  * _GHL  10.4.7		N
- * _GL   5.7.1		N
+ * _GL   5.7.1		n/a
  * _GLK  6.5.7		n/a
  * _GPD  B.4.4		Y
  * _GPE  5.3.1, 12.11	N
@@ -136,8 +136,8 @@
  * _OS   5.7.3		N
  * _OSC  6.2.10		n/a
  * _OSI  5.7.2		n/a
- * _OST  6.3.5		N
- * _PAI  10.4.4		N
+ * _OST  6.3.5		n/a
+ * _PAI  10.4.4		n/a
  * _PCL  10.3.2		N
  * _PCT  8.4.4.1	Y
  * _PDC  8.4.1		N
@@ -150,7 +150,7 @@
  * _PMM  10.4.3		N
  * _PPC  8.4.4.3	Y
  * _PPE  8.4.6		Y
- * _PR   5.3.1		N
+ * _PR   5.3.1		n/a
  * _PR0  7.2.8		Y
  * _PR1	 7.2.9		Y
  * _PR2  7.2.10		Y
@@ -172,13 +172,13 @@
  * _PSV  11.4.9		Y
  * _PSW  7.2.12		Y
  * _PTC  8.4.3.1	N
- * _PTP  10.4.2		N
+ * _PTP  10.4.2		n/a
  * _PTS  7.3.2		Y
  * _PUR  8.5.11		N
  * _PXM  6.2.13 	Y
  * _Qxx  5.6.4.1	n/a
- * _REG  6.5.4		N
- * _REV  5.7.4		N
+ * _REG  6.5.4		n/a
+ * _REV  5.7.4		n/a
  * _RMV  6.3.6		Y
  * _ROM  B.4.3		Y
  * _RTV  11.4.10	Y
@@ -200,16 +200,16 @@
  * _SB_  5.3.1		n/a
  * _SBS  10.1.3		Y
  * _SCP  11.4.11	Y
- * _SDD  9.8.3.3.1	N
+ * _SDD  9.8.3.3.1	n/a
  * _SEG  6.5.6		Y
- * _SHL  10.4.5		N
+ * _SHL  10.4.5		n/a
  * _SLI  6.2.14		N
  * _SPD  B.4.5		Y
- * _SRS  6.2.15		N
- * _SRT  9.18.4		N
- * _SST  9.1.1		N
+ * _SRS  6.2.15		n/a
+ * _SRT  9.18.4		n/a
+ * _SST  9.1.1		n/a
  * _STA  6.3.7, 7.1.4	Y
- * _STM  9.8.2.1.2	N
+ * _STM  9.8.2.1.2	n/a
  * _STP  9.18.7		Y
  * _STR  6.1.9		Y
  * _STV  9.18.8		Y
@@ -231,7 +231,7 @@
  * _TSS  8.4.3.2	Y
  * _TST  11.4.18	Y
  * _TTS  7.3.6		Y
- * _TZ_  5.3.1		N
+ * _TZ_  5.3.1		n/a
  * _TZD  11.4.19	N
  * _TZP  11.4.21	Y
  * _TZM  11.4.20	N
@@ -241,7 +241,7 @@
  * _UPP  9.16.2		N
  * _VPO  B.4.6		Y
  * _WAK  7.3.7 		Y
- * _Wxx  5.6.4.2.2	N
+ * _Wxx  5.6.4.2.2	n/a
  * _WDG  WMI		N
  * _WED  WMI		N
  */

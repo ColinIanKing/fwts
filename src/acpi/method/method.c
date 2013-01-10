@@ -1931,25 +1931,26 @@ static void method_test_STA_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		if ((obj->Integer.Value & 3) == 2) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_STAEnabledNotPresent",
-				"%s indicates that the device is enabled "
-				"but not present, which is impossible.", name);
-			failed = true;
-		}
-		if ((obj->Integer.Value & ~0x1f) != 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_STAReservedBitsSet",
-				"%s is returning non-zero reserved "
-				"bits 5-31. These should be zero.", name);
-			failed = true;
-		}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
 
-		if (!failed)
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
+	if ((obj->Integer.Value & 3) == 2) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_STAEnabledNotPresent",
+			"%s indicates that the device is enabled "
+			"but not present, which is impossible.", name);
+		failed = true;
 	}
+	if ((obj->Integer.Value & ~0x1f) != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_STAReservedBitsSet",
+			"%s is returning non-zero reserved "
+			"bits 5-31. These should be zero.", name);
+		failed = true;
+	}
+
+	if (!failed)
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_STA(fwts_framework *fw)
@@ -2005,18 +2006,19 @@ static void method_test_SEG_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		if ((obj->Integer.Value & 0xffff0000)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_SEGIllegalReserved",
-				"%s returned value 0x%8.8" PRIx64 " and some of the "
-				"upper 16 reserved bits are set when they "
-				"should in fact be zero.",
-				name, obj->Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
-	}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if ((obj->Integer.Value & 0xffff0000)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_SEGIllegalReserved",
+			"%s returned value 0x%8.8" PRIx64 " and some of the "
+			"upper 16 reserved bits are set when they "
+			"should in fact be zero.",
+			name, obj->Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_SEG(fwts_framework *fw)
@@ -2302,7 +2304,7 @@ static void method_test_type_integer(
 	int element,
 	char *message)
 {
-	if (obj->Package.Elements[element].Type  != ACPI_TYPE_INTEGER) {
+	if (obj->Package.Elements[element].Type != ACPI_TYPE_INTEGER) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
 			"_CPC package element %d (%s) was not an integer.",
 			element, message);
@@ -2317,7 +2319,7 @@ static void method_test_type_buffer(
 	int element,
 	char *message)
 {
-	if (obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER) {
+	if (obj->Package.Elements[element].Type != ACPI_TYPE_BUFFER) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
 			"_CPC package element %d (%s) was not a buffer.",
 			element, message);
@@ -2332,8 +2334,8 @@ static void method_test_type_mixed(
 	int element,
 	char *message)
 {
-	if ((obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER) &&
-	    (obj->Package.Elements[element].Type  != ACPI_TYPE_BUFFER)) {
+	if ((obj->Package.Elements[element].Type != ACPI_TYPE_BUFFER) &&
+	    (obj->Package.Elements[element].Type != ACPI_TYPE_BUFFER)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CPCElementType",
 			"_CPC package element %d (%s) was not a buffer "
 			"or an integer.", element, message);
@@ -3229,19 +3231,19 @@ static void method_test_GCP_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		if (obj->Integer.Value & ~0xf) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_GCPReturn",
-				"%s returned %" PRId64 ", should be between 0 and 15, "
-				"one or more of the reserved bits 4..31 seem "
-				"to be set.",
-				name, obj->Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else {
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
-		}
-	}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value & ~0xf) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_GCPReturn",
+			"%s returned %" PRId64 ", should be between 0 and 15, "
+			"one or more of the reserved bits 4..31 seem "
+			"to be set.",
+			name, obj->Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_GCP(fwts_framework *fw)
@@ -3294,19 +3296,19 @@ static void method_test_GWS_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		if (obj->Integer.Value & ~0x3) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_GWSReturn",
-				"%s returned %" PRIu64 ", should be between 0 and 3, "
-				"one or more of the reserved bits 2..31 seem "
-				"to be set.",
-				name, obj->Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-		} else {
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
-		}
-	}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value & ~0x3) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_GWSReturn",
+			"%s returned %" PRIu64 ", should be between 0 and 3, "
+			"one or more of the reserved bits 2..31 seem "
+			"to be set.",
+			name, obj->Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+	} else
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_GWS(fwts_framework *fw)
@@ -3389,25 +3391,26 @@ static void method_test_SBS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		switch (obj->Integer.Value) {
-		case 0 ... 4:
-			fwts_passed(fw, "%s correctly returned value %" PRIu64 " %s",
-				name, obj->Integer.Value,
-				sbs_info[obj->Integer.Value]);
-			break;
-		default:
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn",
-				"%s returned %" PRIu64 ", should be between 0 and 4.",
-				name, obj->Integer.Value);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
-			fwts_advice(fw,
-				"Smart Battery %s is incorrectly informing "
-				"the OS about the smart battery "
-				"configuration. This is a bug and needs to be "
-				"fixed.", name);
-			break;
-		}
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	switch (obj->Integer.Value) {
+	case 0 ... 4:
+		fwts_passed(fw, "%s correctly returned value %" PRIu64 " %s",
+			name, obj->Integer.Value,
+			sbs_info[obj->Integer.Value]);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn",
+			"%s returned %" PRIu64 ", should be between 0 and 4.",
+			name, obj->Integer.Value);
+		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+		fwts_advice(fw,
+			"Smart Battery %s is incorrectly informing "
+			"the OS about the smart battery "
+			"configuration. This is a bug and needs to be "
+			"fixed.", name);
+		break;
 	}
 }
 

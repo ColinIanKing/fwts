@@ -380,11 +380,13 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 	if (fw->show_progress) {
 		char buf[1024];
 		char truncbuf[256];
+		static int index;
 
 		snprintf(buf, sizeof(buf), "%s %s",fw->current_minor_test_name, message);
 		fwts_framework_strtrunc(truncbuf, buf, width-9);
 
-		fprintf(stderr, "  %-*.*s: %3.0f%%\r", width-9, width-9, truncbuf, progress);
+		fprintf(stderr, "  %-*.*s: %5.1f%% %c\r",
+			width-13, width-13, truncbuf, progress, "/-\\|"[index++ & 3]);
 		fflush(stderr);
 	}
 

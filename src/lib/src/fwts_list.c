@@ -24,34 +24,6 @@
 #include "fwts.h"
 
 /*
- *  fwts_list_init()
- *	initialize a list header
- */
-void fwts_list_init(fwts_list *list)
-{
-	memset(list, 0, sizeof(fwts_list));
-}
-
-/*
- *  fwts_list_new()
- *	allocate and initialise a list header, return NULL if failed
- */
-fwts_list *fwts_list_new(void)
-{
-	/* calloc already zero's the list */
-	return calloc(1, sizeof(fwts_list));
-}
-
-/*
- *  fwts_list_len()
- *	return list length, return 0 if list is NULL
- */
-int fwts_list_len(fwts_list *list)
-{
-	return list ? list->len : 0;
-}
-
-/*
  *  fwts_list_iterate()
  *	iterate over items in list, call callback function to operate on each
  *	item, and pass private data over to callback. private may be NULL if not used
@@ -60,7 +32,7 @@ void fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, voi
 {
 	fwts_list_link *item;
 
-	if (list == NULL)
+	if (!list)
 		return;
 
 	fwts_list_foreach(item, list)
@@ -78,12 +50,12 @@ void fwts_list_free_items(fwts_list *list, fwts_list_link_free data_free)
 	fwts_list_link *item;
 	fwts_list_link *next;
 
-	if (list == NULL)
+	if (!list)
 		return;
 
-	for (item = list->head; item != NULL; item = next) {
+	for (item = list->head; item; item = next) {
 		next = item->next;
-		if ((item->data != NULL) && (data_free != NULL))
+		if (item->data && data_free)
 			data_free(item->data);
 		free(item);
 	}
@@ -110,7 +82,7 @@ fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 {
 	fwts_list_link *link;
 
-	if (list == NULL)
+	if (!list)
 		return NULL;
 
 	if ((link = calloc(1,sizeof(fwts_list_link))) == NULL)
@@ -118,13 +90,12 @@ fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 
 	link->data = data;
 
-	if (list->head == NULL) {
-		list->head = link;
-		list->tail = link;
-	} else {
+	if (list->head)
 		list->tail->next = link;
-		list->tail = link;
-	}
+	else
+		list->head = link;
+
+	list->tail = link;
 	list->len++;
 
 	return link;
@@ -144,18 +115,17 @@ fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list
 
 	new_list_item->data = new_data;
 
-	for (list_item = &list->head; *list_item != NULL; list_item = &(*list_item)->next) {
+	for (list_item = &list->head; *list_item; list_item = &(*list_item)->next) {
 		void *data = (void *)(*list_item)->data;
 		if (compare(data, new_data) >= 0) {
 			new_list_item->next = (*list_item);
 			break;
 		}
 	}
-	if (new_list_item->next == NULL)
+	if (!new_list_item->next)
 		list->tail = new_list_item;
 
 	*list_item = new_list_item;
-
 	list->len++;
 
 	return new_list_item;

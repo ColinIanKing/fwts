@@ -62,13 +62,38 @@ typedef int  (fwts_list_compare)(void *data1, void *data2);
 #define fwts_list_null(list)	\
 		((list) == NULL)
 
-void		   fwts_list_init(fwts_list *list);
-fwts_list         *fwts_list_new(void);
-int 		   fwts_list_len(fwts_list *list);
 void		   fwts_list_free_items(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_free(fwts_list *list, fwts_list_link_free data_free);
 void               fwts_list_iterate(fwts_list *list, fwts_list_foreach_callback callback, void *private);
 fwts_list_link 	  *fwts_list_append(fwts_list *list, void *data);
 fwts_list_link    *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list_compare compare);
+
+/*
+ *  fwts_list_init()
+ *      initialize a list header
+ */
+static inline void fwts_list_init(fwts_list *list)
+{
+	memset(list, 0, sizeof(fwts_list));
+}
+
+/*
+ *  fwts_list_new()
+ *      allocate and initialise a list header, return NULL if failed
+ */
+static inline fwts_list *fwts_list_new(void)
+{
+        /* calloc already zero's the list */
+	return calloc(1, sizeof(fwts_list));
+}
+
+/*
+ *  fwts_list_len()
+ *      return list length, return 0 if list is NULL
+ */
+static inline int fwts_list_len(fwts_list *list)
+{
+	return list ? list->len : 0;
+}
 
 #endif

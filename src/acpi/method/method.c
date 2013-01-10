@@ -900,6 +900,7 @@ static void method_test_PLD_return(
 	void *private)
 {
 	uint32_t i;
+	bool failed = false;
 
 	FWTS_UNUSED(private);
 
@@ -914,9 +915,13 @@ static void method_test_PLD_return(
 				"%s package element %" PRIu32 " was not a buffer.",
 				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
 		}
 		/* We should sanity check the PLD further */
 	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PLD(fwts_framework *fw)
@@ -1845,6 +1850,7 @@ static void method_test_EDL_return(
 	void *private)
 {
 	uint32_t i;
+	bool failed = false;
 
 	FWTS_UNUSED(private);
 
@@ -1859,8 +1865,12 @@ static void method_test_EDL_return(
 				"%s package element %" PRIu32 " was not a reference.",
 				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
 		}
 	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_EDL(fwts_framework *fw)
@@ -2086,6 +2096,7 @@ static void method_test_power_resources_return(
 	void *private)
 {
 	uint32_t i;
+	bool failed = false;
 
 	FWTS_UNUSED(private);
 
@@ -2100,8 +2111,12 @@ static void method_test_power_resources_return(
 				"%s package element %" PRIu32 " was not a reference.",
 				name, i);
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
+			failed = true;
 		}
 	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
 }
 
 #define method_test_POWER(name)						\
@@ -3261,6 +3276,7 @@ static void method_test_GRT_return(
 	 * Should sanity check this, but we can't read the
 	 * the data in this emulated mode, so ignore
 	 */
+	method_passed_sane(fw, name, "buffer");
 }
 
 static int method_test_GRT(fwts_framework *fw)
@@ -3889,6 +3905,8 @@ static void method_test_BMD_return(
 		}
 	}
 	/* TODO: check return values */
+	if (!failed)
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BMD(fwts_framework *fw)
@@ -4521,7 +4539,8 @@ static void method_test_ROM_return(
 	FWTS_UNUSED(obj);
 	FWTS_UNUSED(private);
 
-	method_check_type(fw, name, buf, ACPI_TYPE_BUFFER);
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
+		method_passed_sane(fw, name, "package");
 }
 
 static int method_test_ROM(fwts_framework *fw)

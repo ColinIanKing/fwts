@@ -100,8 +100,24 @@ static int uefirtmisc_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtmisc_test2(fwts_framework *fw)
+{
+	int ret;
+	uint32_t multitesttime = 1024;
+
+	fwts_log_info(fw, "Stress testing for UEFI runtime service GetNextHighMonotonicCount interface.");
+	ret = getnexthighmonotoniccount_test(fw, multitesttime);
+	if (ret != FWTS_OK)
+		return ret;
+
+	fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount interface stress test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtmisc_tests[] = {
 	{ uefirtmisc_test1, "Test for UEFI miscellaneous runtime service interfaces." },
+	{ uefirtmisc_test2, "Stress test for UEFI miscellaneous runtime service interfaces." },
 	{ NULL, NULL }
 };
 

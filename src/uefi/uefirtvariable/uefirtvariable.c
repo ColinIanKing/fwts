@@ -1042,6 +1042,42 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtvariable_test7(fwts_framework *fw)
+{
+	uint32_t multitesttime = 1024;
+	uint64_t status;
+	uint64_t remvarstoragesize;
+	uint64_t maxvariablesize;
+	uint32_t i;
+
+	/* first check if the firmware support QueryVariableInfo interface */
+	if (do_queryvariableinfo(&status, &remvarstoragesize, &maxvariablesize) == FWTS_ERROR) {
+		if (status == EFI_UNSUPPORTED) {
+			fwts_skipped(fw, "Not support the QueryVariableInfo UEFI runtime interface: cannot test.");
+			fwts_advice(fw, "Firmware also needs to check if the revision of system table is correct or not."
+					" Linux kernel returns EFI_UNSUPPORTED as well, if the FirmwareRevision"
+					" of system table is less than EFI_2_00_SYSTEM_TABLE_REVISION.");
+			return FWTS_SKIP;
+		} else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryVariableInfo",
+				"Failed to query variable info with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
+			return FWTS_ERROR;
+		}
+	}
+	for (i = 0; i < multitesttime; i++) {
+		if (do_queryvariableinfo(&status, &remvarstoragesize, &maxvariablesize) == FWTS_ERROR) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryVariableInfo",
+				"Failed to query variable info with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
+			return FWTS_ERROR;
+		}
+	}
+	fwts_passed(fw, "UEFI runtime service query variable info interface stress test passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
 	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
@@ -1049,6 +1085,7 @@ static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test4, "Test UEFI RT service query variable info interface." },
 	{ uefirtvariable_test5, "Test UEFI RT service variable interface stress test." },
 	{ uefirtvariable_test6, "Test UEFI RT service set variable interface stress test." },
+	{ uefirtvariable_test7, "Test UEFI RT service query variable info interface stress test." },
 	{ NULL, NULL }
 };
 

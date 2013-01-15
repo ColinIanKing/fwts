@@ -43,7 +43,7 @@ static int apicinstance_test1(fwts_framework *fw)
 				table->name,
 				(unsigned long long)table->addr,
 				(int)table->length);
-			if (count == 0)
+			if (first_madt_table == NULL)
 				first_madt_table = table;
 			else {
 				if ((first_madt_table->length == table->length) &&

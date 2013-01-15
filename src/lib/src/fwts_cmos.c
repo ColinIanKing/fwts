@@ -30,24 +30,48 @@
  */
 int fwts_cmos_read(const uint8_t offset, uint8_t *value)
 {
+	int ret = FWTS_OK;
+
+	*value = ~0;	/* Default in case of error */
+
 	if (ioperm(0x70, 2, 1) < 0)
 		return FWTS_ERROR;
-	if (ioperm(0x80, 1, 1) < 0)
-		return FWTS_ERROR;
-	if (iopl(3) < 0)	/* Want to disabled interrupts */
-		return FWTS_ERROR;
+
+	if (ioperm(0x80, 1, 1) < 0) {
+		ret = FWTS_ERROR;
+		goto tidy0x70;
+	}
+	/* Want to disable interrupts */
+	if (iopl(3) < 0) {
+		ret = FWTS_ERROR;
+		goto tidy0x80;
+	}
 
 	asm("cli");
-	outb(offset, 0x70);	/* specify offset to read */
-	outb(0, 0x80);		/* Small Delay */
-	*value = inb(0x71);	/* get the value */
-	asm("sti");
+	/* specify offset to read */
+	if (fwts_outb(offset, 0x70) != FWTS_OK) {
+		ret = FWTS_ERROR;
+		goto tidy;
+	}
 
+	/* Small Delay */
+	if (fwts_outb(0, 0x80) != FWTS_OK) {
+		ret = FWTS_ERROR;
+		goto tidy;
+	}
+
+	/* get the CMOS value */
+	if (fwts_inb(0x71, value) != FWTS_OK)
+		ret = FWTS_ERROR;
+tidy:
+	asm("sti");
 	(void)iopl(0);
+tidy0x80:
 	(void)ioperm(0x80, 1, 0);
+tidy0x70:
 	(void)ioperm(0x70, 2, 0);
 
-	return FWTS_OK;
+	return ret;
 }
 #else
 int fwts_cmos_read(const uint8_t offset, uint8_t *value)

@@ -1,3 +1,95 @@
+fwts (0.26.04-0ubuntu1) raring; urgency=low
+
+  [Colin Ian King]
+  * lib: fwts_list: make list creation and initialisation more optimal.
+  * lib: cpu: add common CPU performance measuring code to fwts library
+  * lib: Makefile: Link in math library because we need sqrt()
+  * acpi: cstates: use new fwts_cpu_performance() helper function
+  * cpu: cpufreq: Use new fwts_cpu_performance() helper function
+  * bios: pciirq: make table dump more compact, fix formatting
+  * acpi: method: ignore _WAK return values
+  * acpi: method: don't bother dumping _WAK package, it's just noise
+  * acpi: cstates: cater for different kernel C-state info
+  * acpi: method: don't bother reporting internal ACPI lock success
+  * acpi: method: dump out _PSS states in a tabular format
+  * apci: method: don't bother dumping out the _BST contents
+  * apci: method: don't bother dumping out the _BIF contents
+  * apci: method: don't bother dumping out the _BIX contents
+  * apci: method: don't bother dumping out the _DOD contents
+  * cmos: cmosdump: add in some previously unknown RTC settings
+  * README: Updated for latest version of fwts. Add more info too.
+  * README_SOURCE: Reformat to make it 80 char width friendly, minor changes.
+  * src: lib: Makefile.am: Minor tidy up of the makefile.
+  * src: acpica: Makefile: Slight tidy up of the makefile.
+  * src/Makefile.am: Tidy up fwts main makefile, re-order tests
+  * lib: fwts_apci_method: rename object evaluation functions
+  * acpi: pcc: renaming of ACPI object evaluation function names
+  * acpi: method: renaming of ACPI object evaluation function names
+  * lib: rename fwts_acpi_method to fwts_acpi_object_eval
+  * lib: fwts_ac_adapter: constify some struct fields and variables
+  * lib: fwts_guid: constify guid_str_len and guid_len parameters
+  * lib: fwts_framework: test names should be dislayed in a wider format field
+  * data: klog: Remove a duplicate timer BIOS bug check
+  * data: klog.json: Add more specfic parse/execution failure checks on
+    timeouts
+  * data: klog.json: move the most generic parse/execition failure message down
+  * acpi: acpidump: use offsetof macro from stddef.h rather than define our own
+  * acpi: pcc: fix some stupid typos
+  * hpet: hpetcheck: add ACPI HPET table check
+  * lib: update copyright year to 2013
+  * tests: update copyright year to 2013
+  * misc: update copyright year to 2013
+  * lib + tests: don't stringify the test name in FWTS_REGISTER
+  * lib: fwts_framework: assert on FWTS_REGISTER names being too long
+  * lib: framework: log the fwts command line for reference.
+  * acpi: acpidump: fix ACPI FPDT dump
+  * cpu: cpufreq: fix a bunch of 32 bit build errors
+  * lib: fwts_acpi_tables: speed up table loading on 64 bit systems
+  * acpica: fwts_acpica: optimise semaphore tracking
+  * acpica + acpi: method test: remove fwts_acpica_simulate_sem_timeout()
+  * acpica: fwts_acpica: force indefinite AML Wait() to timeout
+  * acpi: method: Add better _CRS resource checking
+
+  [Ivan Hu]
+  * uefirtvariable: add more specific passed messages for each sub-tests
+  * uefirtvariable: add the function to print out the return status messages
+  * uefirttime: print out the return status and description when errors occur
+  * uefirttime: unload the efi_runtime module when deinit the test
+  * uefirtvariable: remove the invalid attribute tests after
+    ExitBootServices() is performed
+  * uefirtvariable: add function test for SetVariable with invalid attributes
+  * fwts_uefi:uefirtvariable:use sizeof() for defining long integer for fixing
+    build failure on 32 bit systems
+  * uefirtvariable: restore the environment when errors occur after the test
+    variables have been set
+  * uefirtvariable: add new test for UEFI runtime QueryVariableInfo
+  * uefirtvariable: add stress test for UEFI runtime interface GetVariable
+  * uefirtvariable: add stress test for UEFI runtime interface
+    GetNextVariableName
+  * uefirtvariable: add stress test for UEFI runtime interface SetVariable with
+    the same data
+  * uefirtvariable: add stress test for UEFI runtime interface SetVariable with
+    different data
+  * uefirtvariable: add stress test for UEFI runtime interface SetVariable with
+    different name
+  * uefirtvariable: add stress test for UEFI runtime interface SetVariable with
+    different name and data
+  * uefirtvariable: skip the tests when get the EFI_OUT_OF_RESOURCES from
+    firmware
+  * uefirtvariable: add stress test for the UEFI runtime QueryVariableInfo
+    interface
+  * uefirtmisc: add the test for UEFI runtime GetNextHighMonotonicCount
+    interface
+  * uefirtmisc: add stress test for UEFI runtime GetNextHighMonotonicCount
+    interface
+
+  [Keng-Yu Lin]
+  * uefi: uefirtvariable: use sizeof() for finding the bit size of long integer
+  * debian: change the mail address of the maintainer
+  * auto-packager: mkpackage.sh: Add raring
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 15 Jan 2013 13:21:26 +0800
+
 fwts (0.26.03-1) raring; urgency=low
 
   [Colin Ian King]

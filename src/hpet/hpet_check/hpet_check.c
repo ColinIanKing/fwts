@@ -70,29 +70,25 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
 	const char *table, fwts_list_link *item)
 {
 	for (;item != NULL; item = item->next) {
-		char *str = fwts_text_list_text(item);
+		const char *str = fwts_text_list_text(item);
+
 		if ((strstr(str, "Name") != NULL) &&
-			(strstr(str, "ResourceTemplate") != NULL)) {
+		    (strstr(str, "ResourceTemplate") != NULL)) {
 			fwts_list_link *tmp_item = item->next;
 			for (; tmp_item != NULL; tmp_item = tmp_item->next) {
-				if (strstr(fwts_text_list_text(tmp_item),
-					"Memory32Fixed") != NULL) {
-					tmp_item = tmp_item->next;
-					if (tmp_item != NULL) {
-						hpet_parse_check_base(fw, table, tmp_item);
+				const char *str = fwts_text_list_text(tmp_item);
+
+				if (strstr(str, "Memory32Fixed") != NULL) {
+					/* Next line contains base address */
+					if (tmp_item->next != NULL) {
+						hpet_parse_check_base(fw, table, tmp_item->next);
 						return;
 					}
-				}
-				if (strstr(fwts_text_list_text(tmp_item),
-					"DWordMemory") != NULL) {
-					tmp_item = tmp_item->next;
-					if (tmp_item != NULL) {
-						tmp_item = tmp_item->next;
-						if (tmp_item != NULL) {
-							/* HPET section is found, get base */
-							hpet_parse_check_base(fw, table, tmp_item);
-							return;
-						}
+				} else if (strstr(str, "DWordMemory") != NULL) {
+					if (tmp_item->next != NULL &&		/* Granularity */
+					    tmp_item->next->next != NULL) {	/* Base address */
+						hpet_parse_check_base(fw, table, tmp_item->next->next);
+						return;
 					}
 				}
 			}

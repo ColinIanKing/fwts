@@ -78,5 +78,6 @@
 #include "fwts_battery.h"
 #include "fwts_button.h"
 #include "fwts_json.h"
+#include "fwts_ioport.h"
 
 #endif

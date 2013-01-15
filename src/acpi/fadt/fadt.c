@@ -54,7 +54,8 @@ static int fadt_init(fwts_framework *fw)
 
 static int fadt_test1(fwts_framework *fw)
 {
-	uint32_t port, width, value;
+	uint32_t port, width, val32;
+	int ret = FWTS_OK;
 
 	/*  Not having a FADT is not a failure */
 	if (fadt_size == 0) {
@@ -94,19 +95,34 @@ static int fadt_test1(fwts_framework *fw)
 
 	switch (width) {
 	case 8:
-		ioperm(port, width/8, 1);
-		value = inb(fadt->pm1a_cnt_blk);
-		ioperm(port, width/8, 0);
+		if (ioperm(port, width/8, 1) < 0)
+			ret = FWTS_ERROR;
+		else {
+			uint8_t val8;
+
+			ret = fwts_inb(port, &val8);
+			val32 = val8;
+			ioperm(port, width/8, 0);
+		}
 		break;
 	case 16:
-		ioperm(port, width/8, 1);
-		value = inw(fadt->pm1a_cnt_blk);
-		ioperm(port, width/8, 0);
+		if (ioperm(port, width/8, 1) < 0)
+			ret = FWTS_ERROR;
+		else {
+			uint16_t val16;
+
+			ret = fwts_inw(port, &val16);
+			val32 = val16;
+			ioperm(port, width/8, 0);
+		}
 		break;
 	case 32:
-		ioperm(port, width/8, 1);
-		value = inl(fadt->pm1a_cnt_blk);
-		ioperm(port, width/8, 0);
+		if (ioperm(port, width/8, 1) < 0)
+			ret = FWTS_ERROR;
+		else {
+			ret = fwts_inl(port, &val32);
+			ioperm(port, width/8, 0);
+		}
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTPM1AInvalidWidth",
@@ -116,7 +132,12 @@ static int fadt_test1(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	if (value & 0x01)
+	if (ret != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read FADT PM1A_CNT_BLK port 0x%" PRIx32 ".", port);
+		return FWTS_ERROR;
+	}
+
+	if (val32 & 0x01)
 		fwts_passed(fw, "SCI_EN bit in PM1a Control Register Block is enabled.");
 	else {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SCI_ENNotEnabled",

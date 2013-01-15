@@ -2735,7 +2735,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "Method parse/execution failed.*EC.*AE_TIME",
-   "advice": "The ACPI driver encounted an error executing some ACPI AML code which originated from the Embedded Controller (EC) timing out while waiting for a transaction to complete. This could indicate that either EC interrupts are being disabled or that the EC has temporarily gone offline or locked up, so this could be a kernel error or more probably a bug in the EC firmware.  See the kernel driver drivers/acpi/ec.c.  One can increase EC timeouts using the kernel parameter ec_delay to specify the timeout in milliseconds, the default is 500.",
+   "advice": "The ACPI driver encountered an error executing some ACPI AML code which originated from the Embedded Controller (EC) timing out while waiting for a transaction to complete. This could indicate that either EC interrupts are being disabled or that the EC has temporarily gone offline or locked up, so this could be a kernel error or more probably a bug in the EC firmware.  See the kernel driver drivers/acpi/ec.c.  One can increase EC timeouts using the kernel parameter ec_delay to specify the timeout in milliseconds, the default is 500.",
    "label": "KlogAcpiEcTimeout"
   },
   {

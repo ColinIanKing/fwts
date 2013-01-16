@@ -2743,7 +2743,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "Method parse/execution failed.*AE_TIME",
-   "advice": "The ACPI driver encounted an error executing some ACPI AML code which originated from a device timing out.",
+   "advice": "The ACPI driver encountered an error executing some ACPI AML code which originated from a device timing out.",
    "label": "KlogAcpiTimeout"
   },
   {
@@ -2839,7 +2839,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "Method parse/execution failed",
-   "advice": "The ACPI driver encounted a parse or execution error on some ACPI AML code. This is unexepcted and normally indicates that there is a bug in the compiled AML code.  It could be a programming fault or an AML compiler issue.  See acpi_ps_parse_aml().",
+   "advice": "The ACPI driver encountered a parse or execution error on some ACPI AML code. This is unexepcted and normally indicates that there is a bug in the compiled AML code.  It could be a programming fault or an AML compiler issue.  See acpi_ps_parse_aml().",
    "label": "KlogAcpiParseExecAmlFailed"
   },
   {

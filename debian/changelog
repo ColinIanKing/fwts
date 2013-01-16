@@ -49,6 +49,7 @@ fwts (0.26.04-0ubuntu1) raring; urgency=low
   * acpica + acpi: method test: remove fwts_acpica_simulate_sem_timeout()
   * acpica: fwts_acpica: force indefinite AML Wait() to timeout
   * acpi: method: Add better _CRS resource checking
+  * data: klog.json: fix spelling mistake
 
   [Ivan Hu]
   * uefirtvariable: add more specific passed messages for each sub-tests
@@ -88,7 +89,7 @@ fwts (0.26.04-0ubuntu1) raring; urgency=low
   * debian: change the mail address of the maintainer
   * auto-packager: mkpackage.sh: Add raring
 
- -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 15 Jan 2013 13:21:26 +0800
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 16 Jan 2013 17:00:37 +0800
 
 fwts (0.26.03-1) raring; urgency=low
 

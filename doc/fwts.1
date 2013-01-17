@@ -69,10 +69,6 @@ run the non-interactive batch tests. Batch tests require no user interaction.
 .B \-\-batch\-experimental
 run only batch experimental tests.
 .TP
-.B \-\-debug\-output=file
-when running with \-\-fwts\-debug this option specifies where the debug output will be written to. One
-can also specify stdout and stderr to redirect to these output streams.
-.TP
 .B \-\-disassemble\-aml
 Disassemble AML (ACPI machine language) byte code. This attempts to disassemble AML in DSDT and SSDT
 tables and generates DSDT.dsl and SSDTx.dsl sources.
@@ -109,9 +105,6 @@ This cannot be used with \-\-filter\-error\-discard.
 .TP
 .B \-f, \-\-force\-clean
 creates a new results log file, rather than just appending to any existing one (default).
-.TP
-.B \-\-fwts\-debug
-enable the internal debugger. This dumps debug information to stderr.
 .TP
 .B \-h, \-\-help
 outputs the internal help page.

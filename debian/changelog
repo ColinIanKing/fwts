@@ -50,6 +50,7 @@ fwts (0.26.04-0ubuntu1) raring; urgency=low
   * acpica: fwts_acpica: force indefinite AML Wait() to timeout
   * acpi: method: Add better _CRS resource checking
   * data: klog.json: fix spelling mistake
+  * data: klog.json: fix spelling mistake
 
   [Ivan Hu]
   * uefirtvariable: add more specific passed messages for each sub-tests
@@ -89,7 +90,7 @@ fwts (0.26.04-0ubuntu1) raring; urgency=low
   * debian: change the mail address of the maintainer
   * auto-packager: mkpackage.sh: Add raring
 
- -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 16 Jan 2013 17:00:37 +0800
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Thu, 17 Jan 2013 14:01:06 +0800
 
 fwts (0.26.03-1) raring; urgency=low
 

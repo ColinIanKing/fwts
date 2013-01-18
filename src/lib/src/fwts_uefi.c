@@ -25,6 +25,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 #include "fwts_uefi.h"

@@ -468,6 +468,6 @@ void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status)
 			return;
 		}
 	}
-	fwts_log_info(fw, "Cann't find the return status infomation, value = 0x%" PRIx64 ".", status);
+	fwts_log_info(fw, "Cannot find the return status information, value = 0x%" PRIx64 ".", status);
 
 }

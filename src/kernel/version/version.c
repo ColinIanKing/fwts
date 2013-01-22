@@ -61,6 +61,22 @@ static int version_test3(fwts_framework *fw)
 {
 	char *str;
 
+	if ((str = fwts_get("/proc/cmdline")) == NULL)
+		fwts_log_info(fw, "Cannot get version info from /proc/cmdline");
+	else {
+		fwts_chop_newline(str);
+		fwts_log_info(fw, "Kernel boot command line: %s", str);
+		free(str);
+	}
+	fwts_infoonly(fw);
+
+	return FWTS_OK;
+}
+
+static int version_test4(fwts_framework *fw)
+{
+	char *str;
+
         if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
 	    ((str = fwts_get("/proc/acpi/info")) == NULL))
 		fwts_log_info(fw,
@@ -80,7 +96,8 @@ static int version_test3(fwts_framework *fw)
 static fwts_framework_minor_test version_tests[] = {
 	{ version_test1, "Gather kernel signature." },
 	{ version_test2, "Gather kernel system information." },
-	{ version_test3, "Gather APCI driver version." },
+	{ version_test3, "Gather kernel boot command line." },
+	{ version_test4, "Gather ACPI driver version." },
 	{ NULL, NULL },
 };
 

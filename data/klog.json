@@ -1356,6 +1356,14 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "PnPBIOS.*Disabled by ACPI PNP",
+   "advice": "The PnPBIOS driver was disabled because PnP support is provided by the ACPI driver.",
+   "label": "KlogPnpBiosDisabled"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "PnPBIOS.*",

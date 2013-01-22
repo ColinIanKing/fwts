@@ -75,6 +75,14 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "0x.*-0x.* SystemIO conflicts with",
+   "advice": "A resource conflict between an ACPI OperationRegion and a native driver has been detected. By default the kernel will use a strict policy and will not allow this region to conflict and -EBUSY will be returned to the caller that was trying to allocate the already claimed region.  If an ACPI driver is available for this device then this should be used instead of a native driver, so disabling the native driver may help. One can specify kernel boot paramater acpi_enforce_resources=lax to disable these checks but it may lead to random problems and system instability.  Alternatively, one can specify acpi_enforce_resources=no and ACPI Operation Region resources will not be registered.",
+   "label": "KlogAcpiSystemIOConflict",
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_BIOS",
    "pattern": "device .* has invalid IRQ.*check vendor BIOS",

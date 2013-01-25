@@ -2766,6 +2766,14 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
+   "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*_SRS.*AE_AML_BUFFER_LIMIT",
+   "advice": "Method failed: ResourceSourceIndex is present but ResourceSource is not. This is a common issue from a particular BIOS vendor, the _SRS (Set Resource Settings) optional control takes a byte stream argument that specifies a new resource allocation for a device. The resource descriptors in the byte stream argument must be specified exactly as listed by _CRS.  However, in this case _SRS has been passed a byte stream that is too short and attempted to access bytes outside the buffer causing this error. This is a firmware bug that needs to be fixed.",
+   "label": "KlogAcpiBufferLimit"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_BUFFER_LIMIT",
    "advice": "Method failed: ResourceSourceIndex is present but ResourceSource is not.",
    "label": "KlogAcpiBufferLimit"

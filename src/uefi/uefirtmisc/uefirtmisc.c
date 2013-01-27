@@ -28,7 +28,18 @@
 #include "efi_runtime.h"
 #include "fwts_efi_module.h"
 
+#define CAPSULE_FLAGS_PERSIST_ACROSS_RESET 0x00010000
+#define CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE 0x00020000
+#define CAPSULE_FLAGS_INITIATE_RESET 0x00040000
+
+#define EFI_CAPSULE_GUID \
+{ \
+	0x3B6686BD, 0x0D76, 0x4030, {0xB7, 0x0E, 0xB5, \
+						0x51, 0x9E, 0x2F, 0xC5, 0xA0} \
+}
+
 static int fd;
+EFI_GUID gEfiCapsuleHeaderGuid = EFI_CAPSULE_GUID;
 
 static int uefirtmisc_init(fwts_framework *fw)
 {
@@ -85,10 +96,66 @@ static int getnexthighmonotoniccount_test(fwts_framework *fw, uint32_t multitest
 	return FWTS_OK;
 }
 
+static int querycapsulecapabilities_test(fwts_framework *fw, uint32_t multitesttime, uint32_t flag)
+{
+	long ioret;
+	uint64_t status;
+	uint32_t i;
+
+	struct efi_querycapsulecapabilities querycapsulecapabilities;
+	EFI_RESET_TYPE resettype;
+	EFI_CAPSULE_HEADER *pcapsuleheaderarray[2];
+	EFI_CAPSULE_HEADER capsuleheader;
+	uint64_t maxcapsulesize;
+	uint64_t capsulecount;
+
+	pcapsuleheaderarray[0] = &capsuleheader;
+	pcapsuleheaderarray[1] = NULL;
+	pcapsuleheaderarray[0]->CapsuleGuid = gEfiCapsuleHeaderGuid;
+	pcapsuleheaderarray[0]->CapsuleImageSize = sizeof(EFI_CAPSULE_HEADER);
+	pcapsuleheaderarray[0]->HeaderSize = sizeof(EFI_CAPSULE_HEADER);
+	pcapsuleheaderarray[0]->Flags = flag;
+	querycapsulecapabilities.status = &status;
+	querycapsulecapabilities.CapsuleHeaderArray = pcapsuleheaderarray;
+	capsulecount = 1;
+	querycapsulecapabilities.CapsuleCount = capsulecount;
+	querycapsulecapabilities.MaximumCapsuleSize = &maxcapsulesize;
+	querycapsulecapabilities.ResetType = &resettype;
+
+	for (i = 0; i < multitesttime; i++) {
+		ioret = ioctl(fd, EFI_RUNTIME_QUERY_CAPSULECAPABILITIES, &querycapsulecapabilities);
+		if (ioret == -1) {
+			if (status == EFI_UNSUPPORTED) {
+				fwts_skipped(fw, "Not support the UEFI QueryCapsuleCapabilities runtime interface"
+						 " with flag value 0x%" PRIx32 ": cannot test.", flag);
+				fwts_advice(fw, "Firmware also needs to check if the revision of system table is correct or not."
+						" Linux kernel returns EFI_UNSUPPORTED as well, if the FirmwareRevision"
+						" of system table is less than EFI_2_00_SYSTEM_TABLE_REVISION.");
+				return FWTS_SKIP;
+			} else {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeQueryCapsuleCapabilities",
+					"Failed to query capsule capabilities with UEFI runtime service"
+					" with flag value 0x%" PRIx32 ".", flag);
+				fwts_uefi_print_status_info(fw, status);
+				return FWTS_ERROR;
+			}
+		}
+	}
+
+	return FWTS_OK;
+}
+
 static int uefirtmisc_test1(fwts_framework *fw)
 {
 	int ret;
 	uint32_t multitesttime = 1;
+	uint32_t i;
+
+	uint32_t flag[] = { 0,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_INITIATE_RESET,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE | CAPSULE_FLAGS_INITIATE_RESET};
 
 	fwts_log_info(fw, "Testing UEFI runtime service GetNextHighMonotonicCount interface.");
 	ret = getnexthighmonotoniccount_test(fw, multitesttime);
@@ -96,6 +163,17 @@ static int uefirtmisc_test1(fwts_framework *fw)
 		return ret;
 
 	fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount interface test passed.");
+
+	fwts_log_info(fw, "Testing UEFI runtime service QueryCapsuleCapabilities interface.");
+	for (i = 0; i < (sizeof(flag)/(sizeof flag[0])); i++) {
+		ret = querycapsulecapabilities_test(fw, multitesttime, flag[i]);
+		if (ret == FWTS_SKIP)
+			continue;
+		if (ret != FWTS_OK)
+			return ret;
+
+		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities interface test with flag value 0x%"PRIx32 " passed.", flag[i]);
+	}
 
 	return FWTS_OK;
 }

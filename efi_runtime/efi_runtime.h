@@ -21,6 +21,12 @@
 #ifndef _EFI_RUNTIME_H_
 #define _EFI_RUNTIME_H_
 
+typedef enum {
+	EfiResetCold,
+	EfiResetWarm,
+	EfiResetShutdown
+} EFI_RESET_TYPE;
+
 typedef struct {
 	uint32_t	Data1;
 	uint16_t	Data2;
@@ -47,6 +53,13 @@ typedef struct {
 	uint32_t	Accuracy;
 	uint8_t		SetsToZero;
 } __attribute__ ((packed)) EFI_TIME_CAPABILITIES;
+
+typedef struct {
+	EFI_GUID CapsuleGuid;
+	uint32_t HeaderSize;
+	uint32_t Flags;
+	uint32_t CapsuleImageSize;
+} __attribute__ ((packed)) EFI_CAPSULE_HEADER;
 
 struct efi_getvariable {
 	uint16_t	*VariableName;
@@ -110,6 +123,14 @@ struct efi_getnexthighmonotoniccount {
 	uint64_t	*status;
 } __attribute__ ((packed));
 
+struct efi_querycapsulecapabilities {
+	EFI_CAPSULE_HEADER	**CapsuleHeaderArray;
+	uint64_t		CapsuleCount;
+	uint64_t		*MaximumCapsuleSize;
+	EFI_RESET_TYPE		*ResetType;
+	uint64_t		*status;
+} __attribute__ ((packed));
+
 /* ioctl calls that are permitted to the /dev/efi_runtime interface. */
 #define EFI_RUNTIME_GET_VARIABLE \
 	_IOWR('p', 0x01, struct efi_getvariable)
@@ -134,5 +155,8 @@ struct efi_getnexthighmonotoniccount {
 
 #define EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT \
 	_IOR('p', 0x09, struct efi_getnexthighmonotoniccount)
+
+#define EFI_RUNTIME_QUERY_CAPSULECAPABILITIES \
+	_IOR('p', 0x0A, struct efi_querycapsulecapabilities)
 
 #endif /* _EFI_RUNTIME_H_ */

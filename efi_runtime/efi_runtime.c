@@ -121,6 +121,8 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 
 	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
 
+	struct efi_querycapsulecapabilities __user *pquerycapsulecapabilities;
+
 	switch (cmd) {
 	case EFI_RUNTIME_GET_VARIABLE:
 		pgetvariable = (struct efi_getvariable __user *)arg;
@@ -292,6 +294,25 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 		status = efi.get_next_high_mono_count(pgetnexthighmonotoniccount
 								->HighCount);
 		if (put_user(status, pgetnexthighmonotoniccount->status))
+			return -EFAULT;
+		if (status != EFI_SUCCESS)
+			return -EINVAL;
+
+		return 0;
+
+	case EFI_RUNTIME_QUERY_CAPSULECAPABILITIES:
+
+		pquerycapsulecapabilities = (struct
+				efi_querycapsulecapabilities __user *)arg;
+
+		status = efi.query_capsule_caps(
+				(efi_capsule_header_t **)
+				pquerycapsulecapabilities->CapsuleHeaderArray,
+				pquerycapsulecapabilities->CapsuleCount,
+				pquerycapsulecapabilities->MaximumCapsuleSize,
+				(int *)pquerycapsulecapabilities->ResetType);
+
+		if (put_user(status, pquerycapsulecapabilities->status))
 			return -EFAULT;
 		if (status != EFI_SUCCESS)
 			return -EINVAL;

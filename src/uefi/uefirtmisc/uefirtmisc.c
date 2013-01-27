@@ -181,7 +181,14 @@ static int uefirtmisc_test1(fwts_framework *fw)
 static int uefirtmisc_test2(fwts_framework *fw)
 {
 	int ret;
-	uint32_t multitesttime = 1024;
+	uint32_t multitesttime = 512;
+	uint32_t i;
+
+	uint32_t flag[] = { 0,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_INITIATE_RESET,
+			    CAPSULE_FLAGS_PERSIST_ACROSS_RESET | CAPSULE_FLAGS_POPULATE_SYSTEM_TABLE | CAPSULE_FLAGS_INITIATE_RESET};
 
 	fwts_log_info(fw, "Stress testing for UEFI runtime service GetNextHighMonotonicCount interface.");
 	ret = getnexthighmonotoniccount_test(fw, multitesttime);
@@ -189,6 +196,17 @@ static int uefirtmisc_test2(fwts_framework *fw)
 		return ret;
 
 	fwts_passed(fw, "UEFI runtime service GetNextHighMonotonicCount interface stress test passed.");
+
+	fwts_log_info(fw, "Stress testing UEFI runtime service QueryCapsuleCapabilities interface.");
+	for (i = 0; i < (sizeof(flag)/(sizeof flag[0])); i++) {
+		ret = querycapsulecapabilities_test(fw, multitesttime, flag[i]);
+		if (ret == FWTS_SKIP)
+			continue;
+		if (ret != FWTS_OK)
+			return ret;
+		fwts_passed(fw, "UEFI runtime service QueryCapsuleCapabilities interface stress test with flag value 0x%" PRIx32 " passed.", flag[i]);
+
+	}
 
 	return FWTS_OK;
 }

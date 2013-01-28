@@ -3036,6 +3036,14 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "tag": "FWTS_TAG_ACPI_BAD_LENGTH",
+   "pattern": "ACPI Warning.*FADT .*revision 5.* is longer than ACPI 2.*0 version",
+   "advice": "The kernel has not supported ACPI version 5.0, it truncated the FADT back to ACPI2.0 size and ignored the extra ACPI5.0 settings.",
+   "label": "KlogAcpiFadtTruncatedLength"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_THROTTLING",
    "pattern": "ACPI Warning.*Invalid throttling state",

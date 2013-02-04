@@ -1,3 +1,53 @@
+fwts (0.26.05-0ubuntu1) raring; urgency=low
+
+  [Colin Ian King]
+  * lib: fwts_uefi: fix build error when using gcc 4.6.3
+  * lib: fwts_uefi: fix a couple of spelling mistakes that crept in
+  * doc/fwts: remove debug options from fwts man page (LP: #1100955)
+  * data: klog.json: add better advice for a common firmware issue
+  * acpi: method: format _TSS states into a table
+  * acpi: method: Show the name of the _PSS control
+  * acpi: method: implement _CST sanity checks
+  * acpi: method: refactor some of the passed messages
+  * acpi: method: tidy up passed/failure messages
+  * apci: method: update comments on implemented tests
+  * acpi: method: use a helper function for MethodReturnNullObj errors
+  * data: klog.json: Make PnP BIOS message into an info message
+  * data: klog.json: Handle SystemIO conflict messages
+  * acpi: method: Add simple _FIX test
+  * acpi: method: Add _HPP (Hot Plug Parameters) sanity check
+  * lib: framework: Increase precision of progress, add a spinner progress
+    indicator
+  * acpi: method: Add _INI (Init) sanity check
+  * acpi: method: _CST test checks for wrong number of package elements
+  * acpi: method: Add _PRS return buffer sanity checking.
+  * acpi: method: update comments describing objects/controls
+  * acpi: method: Add helpers to check for package sizes
+  * lib: fwts_list: optimize list functions a little, make small helper funcs
+    inline
+  * acpi: method: fix some tests that don't indicate passed when they are
+    complete
+  * acpi: method: tidy up some more tests
+  * acpi: method: add helper to check for package contents, simplify code.
+  * lib: fwts_ioport: add helper functions to do port I/O
+  * acpi: fadt: use new I/O port helpers to avoid segfaults
+  * lib: fwts_cmos: Use new I/O helpers, add more error checking
+  * hpet: hpetcheck: fix a bug found by smatch
+  * apci: apicinstance: clean up smatch warning
+  * script: smatchify.sh: build fwts and check with smatch
+  * kernel: version: gather kernel boot command line
+  * acpi: crsdump: dump ACPI _CRS buffers in an annotated form
+
+  [Ivan Hu]
+  * data: klog.json: Make FADT truncated warning into info message
+  * efi_runtime: add UEFI runtime service QueryCapsuleCapabilities interface
+  * uefirtmisc: add UEFI runtime service QueryCapsuleCapabilities interface
+    test.
+  * efirtmisc: add UEFI runtime service QueryCapsuleCapabilities interface
+    stress test
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 04 Feb 2013 15:25:56 +0800
+
 fwts (0.26.04-0ubuntu1) raring; urgency=low
 
   [Colin Ian King]

@@ -131,7 +131,7 @@ int fwts_outl(uint32_t port, uint32_t value)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
-	outw(port, value);
+	outl(port, value);
 	signal(SIGSEGV, SIG_DFL);
 
 	return FWTS_OK;

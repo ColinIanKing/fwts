@@ -779,35 +779,6 @@ void AcpiOsSleep(UINT64 milliseconds)
 {
 }
 
-int fwtsInstallLateHandlers(fwts_framework *fw)
-{
-	int i;
-
-	if (!AcpiGbl_ReducedHardware) {
-		if (AcpiInstallFixedEventHandler(ACPI_EVENT_GLOBAL, fwts_event_handler, NULL) != AE_OK) {
-			fwts_log_error(fw, "Failed to install global event handler.");
-			return FWTS_ERROR;
-		}
-		if (AcpiInstallFixedEventHandler(ACPI_EVENT_RTC, fwts_event_handler, NULL) != AE_OK) {
-			fwts_log_error(fw, "Failed to install RTC event handler.");
-			return FWTS_ERROR;
-		}
-	}
-
-	for (i = 0; i < ACPI_ARRAY_LENGTH(fwts_space_id_list); i++) {
-		if (AcpiInstallAddressSpaceHandler(AcpiGbl_RootNode,
-		    fwts_space_id_list[i], fwts_region_handler, fwts_region_init, NULL) != AE_OK) {
-			fwts_log_error(fw,
-				"Failed to install handler for %s space(%u)",
-				AcpiUtGetRegionName((UINT8)fwts_space_id_list[i]),
-				fwts_space_id_list[i]);
-			return FWTS_ERROR;
-		}
-	}
-
-	return FWTS_OK;
-}
-
 int fwtsInstallEarlyHandlers(fwts_framework *fw)
 {
 	int i;
@@ -889,6 +860,18 @@ int fwtsInstallEarlyHandlers(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 	}
+
+	if (!AcpiGbl_ReducedHardware) {
+		if (AcpiInstallFixedEventHandler(ACPI_EVENT_GLOBAL, fwts_event_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install global event handler.");
+			return FWTS_ERROR;
+		}
+		if (AcpiInstallFixedEventHandler(ACPI_EVENT_RTC, fwts_event_handler, NULL) != AE_OK) {
+			fwts_log_error(fw, "Failed to install RTC event handler.");
+			return FWTS_ERROR;
+		}
+	}
+
 	return FWTS_OK;
 }
 
@@ -917,6 +900,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	AcpiDbgLayer = 0x00000000;
 
 	AcpiOsRedirectOutput(stderr);
+
 
 	if (ACPI_FAILURE(AcpiInitializeSubsystem())) {
 		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
@@ -1074,7 +1058,6 @@ int fwts_acpica_init(fwts_framework *fw)
 	(void)fwtsInstallEarlyHandlers(fw);
 	AcpiEnableSubsystem(init_flags);
 	AcpiInitializeObjects(init_flags);
-	(void)fwtsInstallLateHandlers(fw);
 
 	fwts_acpica_init_called = true;
 

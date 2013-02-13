@@ -17,12 +17,14 @@
  *
  */
 
-#include <sys/io.h>
 #include <stdint.h>
+#include "fwts.h"
+
+#ifdef FWTS_ARCH_INTEL
+
+#include <sys/io.h>
 #include <signal.h>
 #include <setjmp.h>
-
-#include "fwts.h"
 
 static jmp_buf jmpbuf;
 
@@ -134,3 +136,60 @@ int fwts_outl(uint32_t port, uint32_t value)
 
 	return FWTS_OK;
 }
+
+#else
+
+/*
+ *  dummy versions of above, all return FWTS_ERROR
+ *  for non-x86 platforms and any return values are
+ *  set to ~0.
+ */
+int fwts_inb(uint32_t port, uint8_t *value)
+{	
+	FWTS_UNUSED(port);
+
+	*value = ~0;
+	return FWTS_ERROR;
+}
+
+int fwts_inw(uint32_t port, uint16_t *value)
+{
+	FWTS_UNUSED(port);
+
+	*value = ~0;
+	return FWTS_ERROR;
+}
+
+int fwts_inl(uint32_t port, uint32_t *value)
+{
+	FWTS_UNUSED(port);
+
+	*value = ~0;
+	return FWTS_ERROR;
+}
+
+int fwts_outb(uint32_t port, uint8_t value)
+{
+	FWTS_UNUSED(port);
+	FWTS_UNUSED(value);
+
+	return FWTS_ERROR;
+}
+
+int fwts_outw(uint32_t port, uint16_t value)
+{
+	FWTS_UNUSED(port);
+	FWTS_UNUSED(value);
+
+	return FWTS_ERROR;
+}
+
+int fwts_outl(uint32_t port, uint32_t value)
+{
+	FWTS_UNUSED(port);
+	FWTS_UNUSED(value);
+
+	return FWTS_ERROR;
+}
+
+#endif

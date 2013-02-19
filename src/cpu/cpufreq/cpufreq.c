@@ -619,13 +619,12 @@ static int cpufreq_test1(fwts_framework *fw)
 		"various frequency states (P-states) that the BIOS advertises "
 		"for the processor. For each processor/frequency combination, "
 		"a quick performance value is measured. The test then validates that:");
-	fwts_log_info_verbatum(fw,
-		"  1) Each processor has the same number of frequency states\n"
-		"  2) Higher advertised frequencies have a higher performance\n"
-		"  3) No duplicate frequency values are reported by the BIOS\n"
-		"  4) Is BIOS wrongly doing Sw_All P-state coordination across cores\n"
-		"  5) Is BIOS wrongly doing Sw_Any P-state coordination across cores\n");
-
+	fwts_log_info_verbatum(fw, "  1. Each processor has the same number of frequency states.");
+	fwts_log_info_verbatum(fw, "  2. Higher advertised frequencies have a higher performance.");
+	fwts_log_info_verbatum(fw, "  3. No duplicate frequency values are reported by the BIOS.");
+	fwts_log_info_verbatum(fw, "  4. BIOS doing Sw_All P-state coordination across cores.");
+	fwts_log_info_verbatum(fw, "  5. BIOS doing Sw_Any P-state coordination across cores.");
+	fwts_log_nl(fw);
 
 	/* First set all processors to their lowest speed */
 	if ((dir = opendir(FWTS_CPU_PATH)) == NULL) {

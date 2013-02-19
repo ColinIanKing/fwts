@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 7.0.50~), autoconf, automake, libtool, libpcre3-dev
 
 Package: fwts
 Architecture: any
-Depends: libfwtsiasl1 (= ${binary:Version}), libfwtsacpica1 (= ${binary:Version}), libfwts1 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}, pciutils
+Depends: libfwtsiasl1 (= ${binary:Version}), libfwtsacpica1 (= ${binary:Version}), libfwts1 (= ${binary:Version}), fwts-efi-runtime-dkms (= ${binary:Version}) [amd64] , ${shlibs:Depends}, ${misc:Depends}, pciutils
 Suggests: dmidecode, net-tools, wireless-tools, bluez, xinput, pulseaudio-utils
 Description: FirmWare Test Suite
  This is a firmware test suite that performs sanity checks on Intel/AMD 

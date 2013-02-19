@@ -4560,6 +4560,7 @@ static void method_test_BCL_return(
 	uint32_t i;
 	bool failed = false;
 	bool ascending_levels = false;
+	char *str = NULL;
 
 	FWTS_UNUSED(private);
 
@@ -4571,8 +4572,6 @@ static void method_test_BCL_return(
 
 	if (method_package_elements_all_type(fw, name, "_BCL", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
-
-	fwts_acpi_object_dump(fw, obj);
 
 	if (obj->Package.Elements[0].Integer.Value <
 	    obj->Package.Elements[1].Integer.Value) {
@@ -4612,6 +4611,24 @@ static void method_test_BCL_return(
 			"in the firmware.");
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		failed = true;
+	}
+
+	fwts_log_info(fw, "Brightness levels for %s:" ,name);
+	fwts_log_info_verbatum(fw, "  Level on full power   : %" PRIu64, obj->Package.Elements[0].Integer.Value);
+	fwts_log_info_verbatum(fw, "  Level on battery power: %" PRIu64, obj->Package.Elements[1].Integer.Value);
+	for (i = 2; i < obj->Package.Count; i++) {
+		char tmp[12];
+
+		snprintf(tmp, sizeof(tmp), "%s%" PRIu64,
+			i == 2 ? "" : ", ",
+			obj->Package.Elements[i].Integer.Value);
+		str = fwts_realloc_strcat(str, tmp);
+		if (!str)
+			break;
+	}
+	if (str) {
+		fwts_log_info_verbatum(fw, "  Brightness Levels     : %s", str);
+		free(str);
 	}
 
 	if (failed)

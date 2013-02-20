@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 /* acpica headers */
 #include "acpi.h"

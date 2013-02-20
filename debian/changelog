@@ -1,3 +1,20 @@
+fwts (0.26.06-0ubuntu1) raring; urgency=low
+
+  [Alex Hung]
+  * lib: fwts_ioport: fix calling unmatched I/O function in a help function.
+
+  [Colin Ian King]
+  * lib: fwts_ioport: add dummy stubs for non-x86 arch
+  * acpica: fwts_acpica: remove fwtsInstallLateHandlers
+  * acpi: wmi: re-write to eval _WDG rather than parse AML
+  * acpi: method: print out BCL brightness levels rather than dump the object
+  * cpu: cpufreq: tidy up information message formatting
+
+  [Keng-Yu Lin]
+  * debian: add fwts-efi-runtime-dkms package in the dependency
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 20 Feb 2013 17:44:50 +0800
+
 fwts (0.26.05-0ubuntu1) raring; urgency=low
 
   [Colin Ian King]

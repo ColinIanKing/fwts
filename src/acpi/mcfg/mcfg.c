@@ -32,18 +32,28 @@
 static fwts_list *memory_map_list;
 static fwts_acpi_table_info *mcfg_table;
 
-static void compare_config_space(
+static int compare_config_space(
 	fwts_framework *fw,
 	const uint16_t segment,
 	const uint32_t device,
-	const uint8_t *space)
+	fwts_acpi_mcfg_configuration *config)
 {
 	fwts_list *lspci_output;
 	fwts_list_link *item;
 	int status;
+	uint8_t *space;
+	size_t page_size;
 
 	char command[PATH_MAX];
 	char compare_line[50];
+
+	page_size = fwts_page_size();
+
+	/* Sanity check on first config */
+	if ((space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
+		return FWTS_ERROR;
+	}
 
 	snprintf(compare_line, sizeof(compare_line),
 		"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
@@ -52,19 +62,21 @@ static void compare_config_space(
 		space[8],  space[9],  space[10], space[11],
 		space[12], space[13], space[14], space[15]);
 
+	(void)fwts_munmap(space, page_size);
+
 	snprintf(command, sizeof(command), "%s -vxxx -s %" PRIu16 ":%" PRIu32,
 		fw->lspci, segment, device);
 
 	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
 		fwts_log_warning(fw, "Could not execute %s", command);
-		return;
+		return FWTS_ERROR;
 	}
 
 	if (lspci_output == NULL) {
 		fwts_log_warning(fw,
 			"Failed to get lspci info for %" PRIu16 ":%" PRIu32,
 			segment, device);
-		return;
+		return FWTS_ERROR;
 	}
 
 	fwts_list_foreach(item, lspci_output) {
@@ -84,11 +96,13 @@ static void compare_config_space(
 				fwts_passed(fw, "PCI config space verified.");
 
 			fwts_text_list_free(lspci_output);
-			return;
+			return FWTS_OK;
 		}
 	}
 	fwts_text_list_free(lspci_output);
 	fwts_log_warning(fw, "Possible PCI space config space defect?");
+
+	return FWTS_ERROR;
 }
 
 static int mcfg_init(fwts_framework *fw)
@@ -228,7 +242,6 @@ static int mcfg_test1(fwts_framework *fw)
 	if (!failed)
 		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
 
-
 	return FWTS_OK;
 }
 
@@ -239,10 +252,6 @@ static int mcfg_test2(fwts_framework *fw)
 {
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg *)mcfg_table->data;
 	fwts_acpi_mcfg_configuration *config;
-	uint8_t *mapped_table_page;
-	size_t page_size;
-
-	page_size = fwts_page_size();
 
 	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
@@ -260,15 +269,7 @@ static int mcfg_test2(fwts_framework *fw)
 
 	config = &mcfg->configuration[0];
 
-	/* Sanity check on first config */
-	if ((mapped_table_page = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
-		return FWTS_ERROR;
-	}
-	compare_config_space(fw, config->pci_segment_group_number, 0, mapped_table_page);
-	fwts_munmap(mapped_table_page, page_size);
-
-	return FWTS_OK;
+	return compare_config_space(fw, config->pci_segment_group_number, 0, config);
 }
 
 static fwts_framework_minor_test mcfg_tests[] = {

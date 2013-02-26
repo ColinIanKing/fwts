@@ -89,15 +89,14 @@ static int getvariable_test(fwts_framework *fw, uint64_t datasize, uint16_t *var
 	uint64_t status;
 	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t dataindex;
-	uint64_t getdatasize;
+	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
 
-	uint8_t data[datasize+1];
+	uint8_t data[datasize];
 	uint32_t i;
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
-	data[dataindex] = '\0';
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = &gtestguid1;
@@ -245,7 +244,6 @@ static int getnextvariable_test(fwts_framework *fw)
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
-	data[dataindex] = '\0';
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid1;
@@ -350,11 +348,10 @@ static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, u
 	uint64_t status;
 	uint64_t dataindex;
 
-	uint8_t data[datasize+1];
+	uint8_t data[datasize];
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex + datadiff;
-	data[dataindex] = '\0';
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = gtestguid;
@@ -392,9 +389,9 @@ static int setvariable_checkvariable(fwts_framework *fw, uint64_t datasize,
 	struct efi_getvariable getvariable;
 
 	uint64_t status;
-	uint8_t testdata[datasize+1];
+	uint8_t testdata[datasize];
 	uint64_t dataindex;
-	uint64_t getdatasize;
+	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
 
 	getvariable.VariableName = varname;
@@ -442,7 +439,7 @@ static int setvariable_checkvariable_notfound(fwts_framework *fw, uint16_t *varn
 
 	uint64_t status;
 	uint8_t testdata[MAX_DATA_LENGTH];
-	uint64_t getdatasize;
+	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
 
 	getvariable.VariableName = varname;
@@ -472,11 +469,10 @@ static int setvariable_invalidattr(fwts_framework *fw, uint32_t attributes, uint
 	struct efi_setvariable setvariable;
 	uint64_t status;
 	uint64_t dataindex;
-	uint8_t data[datasize+1];
+	uint8_t data[datasize];
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex + datadiff;
-	data[dataindex] = '\0';
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = gtestguid;
@@ -775,7 +771,6 @@ static int getnextvariable_multitest(fwts_framework *fw, uint32_t multitesttime)
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
-	data[dataindex] = '\0';
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid1;

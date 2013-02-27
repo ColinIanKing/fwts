@@ -235,10 +235,24 @@ static int syntaxcheck_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static inline uint16_t syntaxcheck_error_code_to_error_level(const uint32_t error_code)
+{
+	uint16_t error_level = (error_code / 1000) - 1;
+
+	return error_level;
+}
+
+static inline uint16_t syntaxcheck_error_code_to_error_number(const uint32_t error_code)
+{
+	uint16_t error_number = (error_code % 1000);
+
+	return error_number;
+}
+
 static const char *syntaxcheck_error_code_to_id(const uint32_t error_code)
 {
 	int i;
-	uint16_t error_number = (error_code % 1000);
+	uint16_t error_number = syntaxcheck_error_code_to_error_number(error_code);
 	static const char *unknown = "Unknown";
 
 	for (i = 0; syntaxcheck_error_map[i].id_str != NULL; i++) {
@@ -251,8 +265,7 @@ static const char *syntaxcheck_error_code_to_id(const uint32_t error_code)
 
 static const char *syntaxcheck_error_level(uint32_t error_code)
 {
-	/* iasl encodes error_level as follows: */
-	uint16_t error_level  = (error_code / 1000) - 1;
+	uint16_t error_level = syntaxcheck_error_code_to_error_level(error_code);
 
 	static char *error_levels[] = {
 		"warning (level 0)",
@@ -395,7 +408,7 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 {
 	int i;
 	/* iasl encodes error_codes as follows: */
-	uint16_t error_number = (error_code % 1000);
+	uint16_t error_number = syntaxcheck_error_code_to_error_number(error_code);
 
 	for (i = 0; syntaxcheck_error_map[i].id_str != NULL; i++) {
 		if ((syntaxcheck_error_map[i].error_number == error_number) &&

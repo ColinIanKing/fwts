@@ -2,6 +2,22 @@
  "erroradvice": 
  [ 
   {
+   "id": "ASL_MSG_RETURN_TYPES",
+   "advice": "Some of the execution paths do not return a value.  All control paths that return must return a value otherwise unepected behaviour may occur.  This error occurs because a branch on an conditional op-code returns a value and another does not, which is inconsitent behaviour."
+  },
+  {
+   "id": "ASL_MSG_RESERVED_RETURN_VALUE",
+   "advice": "A reserved method was expected to return a value, however, it does not. This is unexpected behaviour that does not conform the the ACPI specification."
+  },
+  {
+   "id": "ASL_MSG_INVALID_TYPE",
+   "advice": "An invalid type was used.  A different type was expected to be used.",
+  },
+  {
+   "id": "ASL_MSG_RESERVED_NO_RETURN_VAL",
+   "advice": "A reserved method returned a value however it is not expected to return anything, so this does not conform to the expected behaviour.  The kernel will most probably ignore the return value, so this is not going to produce any run time errors."
+  },
+  {
    "id": "ASL_MSG_ALIGNMENT",
    "advice": "Addresses must be an exact multiple of the alignment value."
   },

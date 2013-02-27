@@ -451,6 +451,10 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		return FWTS_ERROR;
 	}
 
+	fwts_log_nl(fw);
+	fwts_log_info(fw, "Checking ACPI table %s (#%d)", tablename, which);
+	fwts_log_nl(fw);
+
 	if (iasl_errors) {
 		/* Scan error text from assembly */
 		fwts_list_foreach(item, iasl_errors) {
@@ -548,6 +552,8 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		fwts_log_info(fw, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
 	} else
 		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", tablename, which);
+
+	fwts_log_nl(fw);
 
 	return FWTS_OK;
 }

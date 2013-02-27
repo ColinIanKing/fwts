@@ -2,194 +2,156 @@
  "erroradvice": 
  [ 
   {
-   "error": 1,
    "id": "ASL_MSG_ALIGNMENT",
    "advice": "Addresses must be an exact multiple of the alignment value."
   },
   {
-   "error": 2,
    "id": "ASL_MSG_ALPHANUMERIC_STRING",
    "advice": "For _HID (Hardware object IDs), the ACPI specification requires all characters must be alphanumeric. Section 6.1.4 of version 4.0a of the specification states that a valid PNP ID must be of the form AAA#### (where A is an uppercase letter and # is a hex digit) and a valid ACPI ID must be of the form ACPI#### where # is a hex digit."
   },
   {
-   "error": 3,
    "id": "ASL_MSG_AML_NOT_IMPLEMENTED",
    "advice": "This error message should not occur."
   },
   {
-   "error": 4,
    "id": "ASL_MSG_ARG_COUNT_HI",
    "advice": "Method is called with too many arguments. This is a bug and can lead to unexpected and undefined behaviour."
   },
   {
-   "error": 5,
    "id": "ASL_MSG_ARG_COUNT_LO",
    "advice": "Method is called with too few arguments. This is a bug and can lead to unexpected and undefined behaviour."
   },
   {
-   "error": 6,
    "id": "ASL_MSG_ARG_INIT",
    "advice": "FIXME"
   },
   {
-   "error": 7,
    "id": "ASL_MSG_BACKWARDS_OFFSET",
    "advice": "Backwards offsets in fields are illegal and this is a bug in the AML. The iasl compiler will ignore this node completely."
   },
   {
-   "error": 8,
    "id": "ASL_MSG_BUFFER_LENGTH",
    "advice": "The AML buffer length was zero and contained no items. This is most probably a mistake - but the compiler has gone ahead and compiled this in as a zero sized buffer anyway."
   },
   {
-   "error": 20,
    "id": "ASL_MSG_DMA_CHANNEL",
    "advice": "DMA channels are described by an 8 bit mask, hence there can only be 8 channels 0..7. See ACPI specification 4.0a, section 6.4.2.2 DMA Descriptor
  for more details."
   },
   {
-   "error": 21,
    "id": "ASL_MSG_DMA_LIST",
    "advice": "Only a maximum of 8 DMA channels can be specified in a list."
   },
   {
-   "error": 22,
    "id": "ASL_MSG_DUPLICATE_ITEM",
    "advice": "An initializer list has duplicate items, which is illegal."
   },
   {
-   "error": 33,
    "id": "ASL_MSG_HID_LENGTH",
    "advice": " _HID String must be of the form XXX#### or ACPI####."
   },
   {
-   "error": 38,
    "id": "ASL_MSG_INTEGER_LENGTH",
    "advice": "A 64 bit integer has been truncated down to a 32 bit value.  This could lead to unexpected behaviour due to loss of data through truncation."
   },
   {
-   "error": 41,
    "id": "ASL_MSG_INTERRUPT_NUMBER",
    "advice": "Only interrupts 0..15 are allowed as the IRQ mask is just 16 bits wide."
   },
   {
-   "error": 43,
    "id": "ASL_MSG_INVALID_ADDR_FLAGS",
    "advice": "This occurs if the length is zero and just one of the resource MIF/MAF flags are set, or the length is non-zero and resource MIF/MAF flags are both set. These are illegal combinations and need to be fixed. See section 6.4.3.5 Address Space Resource Descriptors of version 4.0a of the ACPI specification for more details."
   },
   {
-   "error": 45,
    "id": "ASL_MSG_INVALID_EISAID",
    "advice": "The EISAID string must be exactly 7 characters and of the form UUUXXXX, 3 uppercase letters and 4 hex digits (e.g., 'PNP0001'). See section 18.5.35 'EISAID (EISA ID String To Integer Conversion Macro)' of version 4.0a of the ACPI specification for more details."
   },
   {
-   "error": 48,
    "id": "ASL_MSG_INVALID_GRANULARITY",
    "advice": "This occurs if the specified granularity is non-zero and not a power-of-two minus one in value."
   },
   {
-   "error": 49,
    "id": "ASL_MSG_INVALID_LENGTH",
    "advice": "This needs to be fixed as the length specified is greater than the window size specified by the Min/Max fields - this is clealy ambiguous."
   },
   {
-   "error": 50,
    "id": "ASL_MSG_INVALID_LENGTH_FIXED",
    "advice": "The minimum address is greater than the maximum address. This is illegal."
   },
   {
-   "error": 51,
    "id": "ASL_MSG_INVALID_MIN_MAX",
    "advice": "The minimum, maximum addresses and length must be a multiple of the alignment, which must be a power of 2."
   },
   {
-   "error": 53,
    "id": "ASL_MSG_INVALID_PERFORMANCE",
    "advice": "Performance/Robustness value in StartDependentFn declaration was > 2. It must be one of: 0 = Good, 1 = Acceptable, 2 = Sub-optimal. See section 18.5.111 of version 4.0a of the ACPI specification for more information."
   },
   {
-   "error": 54,
    "id": "ASL_MSG_INVALID_PRIORITY",
    "advice": "Priority in StartDependentFn declaration was > 2. It must be one of: 0 = Good, 1 = Acceptable, 2 = Sub-optimal. See section 18.5.111 of version 4.0a of the ACPI specification for more information."
   },
   {
-   "error": 57,
    "id": "ASL_MSG_INVALID_TIME",
    "advice": "Illegal stall time (>255). Generally, stall times > 100 microseconds must use sleep() instead. See section 18.5.110 Stall (Stall for a Short Time)
  of version 4.0a of the ACPI speciciation."
   },
   {
-   "error": 76,
    "id": "ASL_MSG_NAMED_OBJECT_IN_WHILE",
    "advice": "A named object cannot be created inside a while loop. This needs to be fixed."
   },
   {
-   "error": 80,
    "id": "ASL_MSG_NO_RETVAL",
    "advice": "The called method did not return a value, which was unexpected. This is a bug and will lead to undefined behaviour during execution."
   },
   {
-   "error": 90,
    "id": "ASL_MSG_NULL_DESCRIPTOR",
    "advice": "A 'null descriptor' (where most fields are set to zero) has been found. Usually, these are updated or completed at run time using BufferFields, but to do so one requires a resource tag and this descriptor does not have one, hence it cannot be referenced to allow it to be updated.  This is most probably a bug and needs to be fixed."
   },
   {
-   "error": 99,
    "id": "ASL_MSG_REGION_BUFFER_ACCESS",
    "advice": "SMBUS and IPMI regions require BufferAcc access. This error occurs when the incorrect access type is used on a region."
   },
   {
-   "error": 100,
    "id": "ASL_MSG_REGION_BYTE_ACCESS",
    "advice": "Embedded Controller (EC) and CMOS regions can only be accessed using ByteAcc access."
   },
   {
-   "error": 101,
    "id": "ASL_MSG_RESERVED_ARG_COUNT_HI",
    "advice": "Reserved method is called with too many arguments. This is a bug and can lead to unexpected and undefined behaviour."
   },
   {
-   "error": 102,
    "id": "ASL_MSG_RESERVED_ARG_COUNT_LO",
    "advice": "Method is called with too few arguments. This is a bug and can lead to unexpected and undefined behaviour."
   },
   {
-   "error": 113,
    "id": "ASL_MSG_RESULT_NOT_USED",
    "advice": "The result from an operation is not used. This is probably not intended and could be a bug and should be checked."
   },
   {
-   "error": 118,
    "id": "ASL_MSG_SERIALIZED",
    "advice": "A method needs to be marked Serialized because of the wat Switch() has been implemented (multiple threads cannot execute the method concurrently since local temporary names need to be created which could lead to race condtions).  This should be explicity specified in the original code to avoid potential run time race conditions."
   },
   {
-   "error": 120,
    "id": "ASL_MSG_SOME_NO_RETVAL",
    "advice": "Method sometimes return a value, sometimes it does not. This is inconsistent behaviour and a bug in the AML. This needs to be fixed to avoid incorrect behaviour at run time."
   },
   {
-   "error": 123,
    "id": "ASL_MSG_SYNC_LEVEL",
    "advice": "Data mutex synchronization level is too large, should be 0..15.  See section 18.5.79 Mutex (Declare Synchronization/Mutex Object) of version 4.0a of the ACPI specification for more details."
   },
   {
-   "error": 124,
    "id": "ASL_MSG_SYNTAX",
    "advice": "The disassembled code cannot be reassembled using the strict IASL compiler as it contains syntax errors."
   },
   {
-   "error": 125,
    "id": "ASL_MSG_TABLE_SIGNATURE",
    "advice": "Table signature must be 4 characters long and must contain alphanumeric characters."
   },
   {
-   "error": 128,
    "id": "ASL_MSG_TIMEOUT",
    "advice": "The operation can possibly timeout, and hence the return value indicates an timeout error. However, because the return value is not checked this very probably indicates that the code is buggy.  A possible scenario is that a mutex times out and the code attempts to access data in a critical region when it should not.  This will lead to undefined behaviour.  This should be fixed."
   },
   {
-   "error": 133,
    "id": "ASL_MSG_UPPER_CASE",
    "advice": "Characters in literal string that are not hexadecimal letters must be upper case."
   }

@@ -48,6 +48,8 @@ static void syntaxcheck_free_advice(void);
 #define ASL_WARNING2            1
 #define ASL_WARNING3            2
 #define ASL_ERROR               3
+#define ASL_REMARK		4
+#define ASL_OPTIMIZATION	5
 
 static int syntaxcheck_init(fwts_framework *fw)
 {
@@ -75,13 +77,14 @@ static const char *syntaxcheck_error_level(uint32_t error_code)
 		"warning (level 1)",
 		"warning (level 2)",
 		"error",
+		"remark",
+		"optimization",
 		"unknown",
 	};
 
-	if (error_level > 3)
-		error_level = 4;
+	const int max_levels = (sizeof(error_levels) / sizeof(char*)) - 1;
 
-	return error_levels[error_level];
+	return error_levels[error_level > max_levels ? max_levels : error_level];
 }
 
 /*

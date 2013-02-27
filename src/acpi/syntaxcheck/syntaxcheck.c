@@ -475,6 +475,9 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 						char *ptr;
 						int colon_offset = (colon == NULL) ? 0 : colon + 1 - line;
 						int carat_offset = (carat == NULL) ? 0 : carat - error_text;
+						uint16_t error_level =
+							syntaxcheck_error_code_to_error_level((uint32_t)error_code);
+						bool skip = false;
 
 						/* trim */
 						fwts_chop_newline(error_text);
@@ -497,11 +500,31 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 
 						snprintf(label, sizeof(label), "AMLAsm%s",
 							syntaxcheck_error_code_to_id(error_code));
-						fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
-						syntaxcheck_dump_code(fw, error_code,
-							carat_offset - colon_offset, ptr,
-							iasl_disassembly, num, 8);
-						syntaxcheck_give_advice(fw, error_code);
+
+						switch (error_level) {
+						case ASL_WARNING:
+						case ASL_WARNING2:
+						case ASL_WARNING3:
+							fwts_failed(fw, LOG_LEVEL_MEDIUM, label, "Assembler warning in line %d", num);
+							break;
+						case ASL_ERROR:
+							fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
+							break;
+						case ASL_REMARK:
+						case ASL_OPTIMIZATION:
+							skip = true;
+							break;
+						default:
+							fwts_log_info(fw, "Assember message in line %d", num);
+							break;
+						}
+
+						if (!skip) {
+							syntaxcheck_dump_code(fw, error_code,
+								carat_offset - colon_offset, ptr,
+								iasl_disassembly, num, 8);
+							syntaxcheck_give_advice(fw, error_code);
+						}
 					}
 					errors += iasl_error;
 					warnings += iasl_warning;

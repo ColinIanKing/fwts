@@ -29,12 +29,13 @@
 
 #include <json/json.h>
 
-typedef struct {
-	uint16_t	error;
-	char 		*advice;
-} syntaxcheck_adviceinfo;
+#include "aslmessages.h"
 
-static syntaxcheck_adviceinfo *adviceinfo;
+typedef struct {
+	const uint16_t	error_number;
+	const char	*id_str;
+	char		*advice;
+} syntaxcheck_error_map_item;
 
 static int syntaxcheck_load_advice(fwts_framework *fw);
 static void syntaxcheck_free_advice(void);
@@ -51,6 +52,173 @@ static void syntaxcheck_free_advice(void);
 #define ASL_REMARK		4
 #define ASL_OPTIMIZATION	5
 
+#define ASL_ID(error)	{ error, #error, NULL }
+
+/*
+ *  From aslmessages.h, current ASL errors
+ * 	create a mapping from value to stringified name
+ */
+static syntaxcheck_error_map_item syntaxcheck_error_map[] = {
+    ASL_ID(ASL_MSG_ALIGNMENT),
+    ASL_ID(ASL_MSG_ALPHANUMERIC_STRING),
+    ASL_ID(ASL_MSG_AML_NOT_IMPLEMENTED),
+    ASL_ID(ASL_MSG_ARG_COUNT_HI),
+    ASL_ID(ASL_MSG_ARG_COUNT_LO),
+    ASL_ID(ASL_MSG_ARG_INIT),
+    ASL_ID(ASL_MSG_BACKWARDS_OFFSET),
+    ASL_ID(ASL_MSG_BUFFER_LENGTH),
+    ASL_ID(ASL_MSG_CLOSE),
+    ASL_ID(ASL_MSG_COMPILER_INTERNAL),
+    ASL_ID(ASL_MSG_COMPILER_RESERVED),
+    ASL_ID(ASL_MSG_CONNECTION_MISSING),
+    ASL_ID(ASL_MSG_CONNECTION_INVALID),
+    ASL_ID(ASL_MSG_CONSTANT_EVALUATION),
+    ASL_ID(ASL_MSG_CONSTANT_FOLDED),
+    ASL_ID(ASL_MSG_CORE_EXCEPTION),
+    ASL_ID(ASL_MSG_DEBUG_FILE_OPEN),
+    ASL_ID(ASL_MSG_DEBUG_FILENAME),
+    ASL_ID(ASL_MSG_DEPENDENT_NESTING),
+    ASL_ID(ASL_MSG_DMA_CHANNEL),
+    ASL_ID(ASL_MSG_DMA_LIST),
+    ASL_ID(ASL_MSG_DUPLICATE_CASE),
+    ASL_ID(ASL_MSG_DUPLICATE_ITEM),
+    ASL_ID(ASL_MSG_EARLY_EOF),
+    ASL_ID(ASL_MSG_ENCODING_LENGTH),
+    ASL_ID(ASL_MSG_EX_INTERRUPT_LIST),
+    ASL_ID(ASL_MSG_EX_INTERRUPT_LIST_MIN),
+    ASL_ID(ASL_MSG_EX_INTERRUPT_NUMBER),
+    ASL_ID(ASL_MSG_FIELD_ACCESS_WIDTH),
+    ASL_ID(ASL_MSG_FIELD_UNIT_ACCESS_WIDTH),
+    ASL_ID(ASL_MSG_FIELD_UNIT_OFFSET),
+    ASL_ID(ASL_MSG_GPE_NAME_CONFLICT),
+    ASL_ID(ASL_MSG_HID_LENGTH),
+    ASL_ID(ASL_MSG_HID_PREFIX),
+    ASL_ID(ASL_MSG_HID_SUFFIX),
+    ASL_ID(ASL_MSG_INCLUDE_FILE_OPEN),
+    ASL_ID(ASL_MSG_INPUT_FILE_OPEN),
+    ASL_ID(ASL_MSG_INTEGER_LENGTH),
+    ASL_ID(ASL_MSG_INTEGER_OPTIMIZATION),
+    ASL_ID(ASL_MSG_INTERRUPT_LIST),
+    ASL_ID(ASL_MSG_INTERRUPT_NUMBER),
+    ASL_ID(ASL_MSG_INVALID_ACCESS_SIZE),
+    ASL_ID(ASL_MSG_INVALID_ADDR_FLAGS),
+    ASL_ID(ASL_MSG_INVALID_CONSTANT_OP),
+    ASL_ID(ASL_MSG_INVALID_EISAID),
+    ASL_ID(ASL_MSG_INVALID_ESCAPE),
+    ASL_ID(ASL_MSG_INVALID_GRAN_FIXED),
+    ASL_ID(ASL_MSG_INVALID_GRANULARITY),
+    ASL_ID(ASL_MSG_INVALID_LENGTH),
+    ASL_ID(ASL_MSG_INVALID_LENGTH_FIXED),
+    ASL_ID(ASL_MSG_INVALID_MIN_MAX),
+    ASL_ID(ASL_MSG_INVALID_OPERAND),
+    ASL_ID(ASL_MSG_INVALID_PERFORMANCE),
+    ASL_ID(ASL_MSG_INVALID_PRIORITY),
+    ASL_ID(ASL_MSG_INVALID_STRING),
+    ASL_ID(ASL_MSG_INVALID_TARGET),
+    ASL_ID(ASL_MSG_INVALID_TIME),
+    ASL_ID(ASL_MSG_INVALID_TYPE),
+    ASL_ID(ASL_MSG_INVALID_UUID),
+    ASL_ID(ASL_MSG_ISA_ADDRESS),
+    ASL_ID(ASL_MSG_LEADING_ASTERISK),
+    ASL_ID(ASL_MSG_LIST_LENGTH_LONG),
+    ASL_ID(ASL_MSG_LIST_LENGTH_SHORT),
+    ASL_ID(ASL_MSG_LISTING_FILE_OPEN),
+    ASL_ID(ASL_MSG_LISTING_FILENAME),
+    ASL_ID(ASL_MSG_LOCAL_INIT),
+    ASL_ID(ASL_MSG_LOCAL_OUTSIDE_METHOD),
+    ASL_ID(ASL_MSG_LONG_LINE),
+    ASL_ID(ASL_MSG_MEMORY_ALLOCATION),
+    ASL_ID(ASL_MSG_MISSING_ENDDEPENDENT),
+    ASL_ID(ASL_MSG_MISSING_STARTDEPENDENT),
+    ASL_ID(ASL_MSG_MULTIPLE_DEFAULT),
+    ASL_ID(ASL_MSG_MULTIPLE_TYPES),
+    ASL_ID(ASL_MSG_NAME_EXISTS),
+    ASL_ID(ASL_MSG_NAME_OPTIMIZATION),
+    ASL_ID(ASL_MSG_NAMED_OBJECT_IN_WHILE),
+    ASL_ID(ASL_MSG_NESTED_COMMENT),
+    ASL_ID(ASL_MSG_NO_CASES),
+    ASL_ID(ASL_MSG_NO_REGION),
+    ASL_ID(ASL_MSG_NO_RETVAL),
+    ASL_ID(ASL_MSG_NO_WHILE),
+    ASL_ID(ASL_MSG_NON_ASCII),
+    ASL_ID(ASL_MSG_NON_ZERO),
+    ASL_ID(ASL_MSG_NOT_EXIST),
+    ASL_ID(ASL_MSG_NOT_FOUND),
+    ASL_ID(ASL_MSG_NOT_METHOD),
+    ASL_ID(ASL_MSG_NOT_PARAMETER),
+    ASL_ID(ASL_MSG_NOT_REACHABLE),
+    ASL_ID(ASL_MSG_NOT_REFERENCED),
+    ASL_ID(ASL_MSG_NULL_DESCRIPTOR),
+    ASL_ID(ASL_MSG_NULL_STRING),
+    ASL_ID(ASL_MSG_OPEN),
+    ASL_ID(ASL_MSG_OUTPUT_FILE_OPEN),
+    ASL_ID(ASL_MSG_OUTPUT_FILENAME),
+    ASL_ID(ASL_MSG_PACKAGE_LENGTH),
+    ASL_ID(ASL_MSG_PREPROCESSOR_FILENAME),
+    ASL_ID(ASL_MSG_READ),
+    ASL_ID(ASL_MSG_RECURSION),
+    ASL_ID(ASL_MSG_REGION_BUFFER_ACCESS),
+    ASL_ID(ASL_MSG_REGION_BYTE_ACCESS),
+    ASL_ID(ASL_MSG_RESERVED_ARG_COUNT_HI),
+    ASL_ID(ASL_MSG_RESERVED_ARG_COUNT_LO),
+    ASL_ID(ASL_MSG_RESERVED_METHOD),
+    ASL_ID(ASL_MSG_RESERVED_NO_RETURN_VAL),
+    ASL_ID(ASL_MSG_RESERVED_OPERAND_TYPE),
+    ASL_ID(ASL_MSG_RESERVED_RETURN_VALUE),
+    ASL_ID(ASL_MSG_RESERVED_USE),
+    ASL_ID(ASL_MSG_RESERVED_WORD),
+    ASL_ID(ASL_MSG_RESOURCE_FIELD),
+    ASL_ID(ASL_MSG_RESOURCE_INDEX),
+    ASL_ID(ASL_MSG_RESOURCE_LIST),
+    ASL_ID(ASL_MSG_RESOURCE_SOURCE),
+    ASL_ID(ASL_MSG_RESULT_NOT_USED),
+    ASL_ID(ASL_MSG_RETURN_TYPES),
+    ASL_ID(ASL_MSG_SCOPE_FWD_REF),
+    ASL_ID(ASL_MSG_SCOPE_TYPE),
+    ASL_ID(ASL_MSG_SEEK),
+    ASL_ID(ASL_MSG_SERIALIZED),
+    ASL_ID(ASL_MSG_SINGLE_NAME_OPTIMIZATION),
+    ASL_ID(ASL_MSG_SOME_NO_RETVAL),
+    ASL_ID(ASL_MSG_STRING_LENGTH),
+    ASL_ID(ASL_MSG_SWITCH_TYPE),
+    ASL_ID(ASL_MSG_SYNC_LEVEL),
+    ASL_ID(ASL_MSG_SYNTAX),
+    ASL_ID(ASL_MSG_TABLE_SIGNATURE),
+    ASL_ID(ASL_MSG_TAG_LARGER),
+    ASL_ID(ASL_MSG_TAG_SMALLER),
+    ASL_ID(ASL_MSG_TIMEOUT),
+    ASL_ID(ASL_MSG_TOO_MANY_TEMPS),
+    ASL_ID(ASL_MSG_UNKNOWN_RESERVED_NAME),
+    ASL_ID(ASL_MSG_UNREACHABLE_CODE),
+    ASL_ID(ASL_MSG_UNSUPPORTED),
+    ASL_ID(ASL_MSG_UPPER_CASE),
+    ASL_ID(ASL_MSG_VENDOR_LIST),
+    ASL_ID(ASL_MSG_WRITE),
+    ASL_ID(ASL_MSG_DIRECTIVE_SYNTAX),
+    ASL_ID(ASL_MSG_ENDIF_MISMATCH),
+    ASL_ID(ASL_MSG_ERROR_DIRECTIVE),
+    ASL_ID(ASL_MSG_EXISTING_NAME),
+    ASL_ID(ASL_MSG_INVALID_INVOCATION),
+    ASL_ID(ASL_MSG_MACRO_SYNTAX),
+    ASL_ID(ASL_MSG_TOO_MANY_ARGUMENTS),
+    ASL_ID(ASL_MSG_UNKNOWN_DIRECTIVE),
+    ASL_ID(ASL_MSG_UNKNOWN_PRAGMA),
+    ASL_ID(ASL_MSG_BUFFER_ELEMENT),
+    ASL_ID(ASL_MSG_DIVIDE_BY_ZERO),
+    ASL_ID(ASL_MSG_FLAG_VALUE),
+    ASL_ID(ASL_MSG_INTEGER_SIZE),
+    ASL_ID(ASL_MSG_INVALID_EXPRESSION),
+    ASL_ID(ASL_MSG_INVALID_FIELD_NAME),
+    ASL_ID(ASL_MSG_INVALID_HEX_INTEGER),
+    ASL_ID(ASL_MSG_OEM_TABLE),
+    ASL_ID(ASL_MSG_RESERVED_VALUE),
+    ASL_ID(ASL_MSG_UNKNOWN_LABEL),
+    ASL_ID(ASL_MSG_UNKNOWN_SUBTABLE),
+    ASL_ID(ASL_MSG_UNKNOWN_TABLE),
+    ASL_ID(ASL_MSG_ZERO_VALUE),
+    { 0, NULL, NULL }
+};
+
 static int syntaxcheck_init(fwts_framework *fw)
 {
 	(void)syntaxcheck_load_advice(fw);
@@ -65,6 +233,20 @@ static int syntaxcheck_deinit(fwts_framework *fw)
 	syntaxcheck_free_advice();
 
 	return FWTS_OK;
+}
+
+static const char *syntaxcheck_error_code_to_id(const uint32_t error_code)
+{
+	int i;
+	uint16_t error_number = (error_code % 1000);
+	static const char *unknown = "Unknown";
+
+	for (i = 0; syntaxcheck_error_map[i].id_str != NULL; i++) {
+		if (syntaxcheck_error_map[i].error_number == error_number)
+			return syntaxcheck_error_map[i].id_str;
+	}
+
+	return unknown;
 }
 
 static const char *syntaxcheck_error_level(uint32_t error_code)
@@ -125,9 +307,7 @@ static void syntaxcheck_dump_code(fwts_framework *fw,
 /*
  *  syntaxcheck_load_advice()
  *	load error, advice string tuple from json formatted data file
- *	this populates adviceinfo - note that this is allocated to be
- * 	one item bigger than the number of tuples read, the last entry
- *	is null and indicates the end.
+ *	this populates the syntaxcheck_error_map advice field.
  */
 static int syntaxcheck_load_advice(fwts_framework *fw)
 {
@@ -154,34 +334,35 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 
 	n = json_object_array_length(syntaxcheck_table);
 
-	/* Last entry is null to indicate end, so alloc n+1 items */
-	if ((adviceinfo = calloc(n+1, sizeof(syntaxcheck_adviceinfo))) == NULL) {
-		fwts_log_error(fw, "Cannot syntaxcheck advice table.");
-		goto fail_put;
-	}
-
-	/* Now fetch json objects and compile regex */
-	for (i=0; i<n; i++) {
-		const char *str;
+	/* Now fetch json objects */
+	for (i = 0; i < n; i++) {
+		const char *advice, *id_str;
 		json_object *obj;
+		int j;
 
 		obj = json_object_array_get_idx(syntaxcheck_table, i);
 		if (FWTS_JSON_ERROR(obj)) {
 			fwts_log_error(fw, "Cannot fetch %d item from syntaxcheck table.", i);
-			free(adviceinfo);
-			adviceinfo = NULL;
 			break;
 		}
-		str = json_object_get_string(json_object_object_get(obj, "advice"));
-		if (FWTS_JSON_ERROR(str)) {
+		advice = json_object_get_string(json_object_object_get(obj, "advice"));
+		if (FWTS_JSON_ERROR(advice)) {
                 	fwts_log_error(fw, "Cannot fetch advice from item %d.", i);
-			free(adviceinfo);
-			adviceinfo = NULL;
+			break;
+		}
+		id_str = json_object_get_string(json_object_object_get(obj, "id"));
+		if (FWTS_JSON_ERROR(id_str)) {
+                	fwts_log_error(fw, "Cannot fetch ID from item %d.", i);
 			break;
 		}
 
-		adviceinfo[i].error = json_object_get_int(json_object_object_get(obj, "error"));
-		adviceinfo[i].advice = strdup(str);
+		for (j = 0; syntaxcheck_error_map[j].id_str != NULL; j++) {
+			if (strcmp(id_str, syntaxcheck_error_map[j].id_str) == 0) {
+				/* Matching id, so update the advice field */
+				syntaxcheck_error_map[j].advice = strdup(advice);
+				break;
+			}
+		}
 	}
 
 	ret = FWTS_OK;
@@ -198,13 +379,12 @@ fail_put:
  */
 static void syntaxcheck_free_advice(void)
 {
-	if (adviceinfo) {
-		int i;
-		for (i=0; adviceinfo[i].advice != NULL; i++)
-			free(adviceinfo[i].advice);
+	int i;
 
-		free(adviceinfo);
-	}
+	for (i = 0; syntaxcheck_error_map[i].id_str != NULL; i++)
+		if (syntaxcheck_error_map[i].advice)
+			free(syntaxcheck_error_map[i].advice);
+
 }
 
 /*
@@ -217,14 +397,14 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 	/* iasl encodes error_codes as follows: */
 	uint16_t error_number = (error_code % 1000);
 
-	if (adviceinfo == NULL)
-		return;	/* No advice! */
-
-	for (i=0; adviceinfo[i].advice != NULL; i++) {
-		if (adviceinfo[i].error == error_number) {
-			fwts_advice(fw, "(for %s #%d): %s",
+	for (i = 0; syntaxcheck_error_map[i].id_str != NULL; i++) {
+		if ((syntaxcheck_error_map[i].error_number == error_number) &&
+		    (syntaxcheck_error_map[i].advice != NULL)) {
+			fwts_advice(fw, "(for %s #%d, %s): %s",
 				syntaxcheck_error_level(error_code),
-				error_code, adviceinfo[i].advice);
+				error_code,
+				syntaxcheck_error_map[i].id_str,
+				syntaxcheck_error_map[i].advice);
 			break;
 		}
 	}
@@ -302,7 +482,8 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 						while (*ptr == ' ')
 							ptr++;
 
-						snprintf(label, sizeof(label), "AMLAssemblerError%d", error_code);
+						snprintf(label, sizeof(label), "AMLAsm%s",
+							syntaxcheck_error_code_to_id(error_code));
 						fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
 						syntaxcheck_dump_code(fw, error_code,
 							carat_offset - colon_offset, ptr,

@@ -9,6 +9,7 @@ SUBDIRS = acpica/source/compiler lib acpica
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include \
 	-I$(top_srcdir)/src/acpica/source/include \
+	-I$(top_srcdir)/src/acpica/source/compiler \
 	-I$(top_srcdir)/efi_runtime \
 	-Wall -Werror -Wextra
 

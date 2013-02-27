@@ -71,9 +71,9 @@ static const char *syntaxcheck_error_level(uint32_t error_code)
 	uint16_t error_level  = (error_code / 1000) - 1;
 
 	static char *error_levels[] = {
-		"warning level 0",
-		"warning level 1",
-		"warning level 2",
+		"warning (level 0)",
+		"warning (level 1)",
+		"warning (level 2)",
 		"error",
 		"unknown",
 	};

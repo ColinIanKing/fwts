@@ -96,7 +96,7 @@ static int fwts_uefi_get_interface(char **path)
 
 			if (fscanf(fp, "%*s %4095s %1023s", mount, fstype) == 2) {
 				/* Always try to find the newer interface first */
-				if (!strcmp(fstype, "efivars")) {
+				if (!strcmp(fstype, "efivarfs")) {
 					strcpy(efivar_path, mount);
 					break;
 				}

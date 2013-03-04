@@ -21,6 +21,7 @@
 
 #include "fwts.h"
 #include "fwts_uefi.h"
+#include "sbkeydefs.h"
 
 typedef void (*securebootcert_func)(fwts_framework *fw, fwts_uefi_var *var, char *varname);
 
@@ -36,6 +37,13 @@ typedef struct {
 	uint8_t		Data4[8];
 } __attribute__ ((packed)) EFI_GUID;
 
+typedef struct _EFI_SIGNATURE_LIST {
+	EFI_GUID	SignatureType;
+	uint32_t	SignatureListSize;
+	uint32_t	SignatureHeaderSize;
+	uint32_t	SignatureSize;
+} __attribute__((packed)) EFI_SIGNATURE_LIST;
+
 #define VAR_SECUREBOOT_FOUND	1
 #define VAR_SETUPMODE_FOUND	2
 #define VAR_DB_FOUND		4
@@ -45,6 +53,18 @@ typedef struct {
 { \
 	0x8BE4DF61, 0x93CA, 0x11d2, { 0xAA, 0x0D, 0x00, \
 						0xE0, 0x98, 0x03, 0x2B, 0x8C} \
+}
+
+#define EFI_IMAGE_SECURITY_DATABASE_GUID \
+{ \
+	0xd719b2cb, 0x3d3a, 0x4596, { 0xa3, 0xbc, 0xda, \
+						0xd0, 0x0e, 0x67, 0x65, 0x6f} \
+}
+
+#define EFI_CERT_X509_GUID \
+{ \
+	0xa5c059a1, 0x94e4, 0x4aa7, { 0x87, 0xb5, 0xab, \
+						0x15, 0x5c, 0x2b, 0xf0, 0x72 } \
 }
 
 static uint8_t var_found;
@@ -150,9 +170,93 @@ static void securebootcert_setup_mode(fwts_framework *fw, fwts_uefi_var *var, ch
 	}
 }
 
+static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key, uint32_t key_len)
+{
+	uint8_t *var_data_addr;
+	EFI_SIGNATURE_LIST siglist;
+	size_t i = 0;
+	EFI_GUID cert_x509_guid = EFI_CERT_X509_GUID;
+	bool key_found = false;
+
+	if (datalen < sizeof(siglist))
+		return key_found;
+
+	for (var_data_addr = var_data; var_data_addr < var_data + datalen; ) {
+
+		siglist = *((EFI_SIGNATURE_LIST *)var_data_addr);
+
+		/* check for potential overflow */
+		if (var_data_addr + siglist.SignatureListSize < var_data_addr)
+			break;
+
+		if (var_data_addr + siglist.SignatureListSize > var_data + datalen)
+			break;
+
+		if (siglist.SignatureHeaderSize > siglist.SignatureListSize) {
+			var_data_addr += siglist.SignatureListSize;
+			continue;
+		}
+
+		if (memcmp(&siglist.SignatureType, &cert_x509_guid, sizeof(EFI_GUID)) != 0) {
+			var_data_addr += siglist.SignatureListSize;
+			continue;
+		}
+
+		var_data_addr += sizeof(siglist) + siglist.SignatureHeaderSize;
+
+		EFI_GUID SignatureOwner = *(EFI_GUID *)var_data_addr;
+
+		if (key_len != (siglist.SignatureSize - sizeof(SignatureOwner))) {
+			var_data_addr += siglist.SignatureSize;
+			continue;
+		}
+
+		var_data_addr += sizeof(SignatureOwner);
+
+		for (i = 0; i < key_len; i++) {
+			if (*((uint8_t *)var_data_addr+i) != key[i])
+				break;
+		}
+		var_data_addr += siglist.SignatureSize;
+
+		if (i == key_len) {
+			key_found = true;
+			return key_found;
+		}
+	}
+	return key_found;
+}
+
+static void securebootcert_data_base(fwts_framework *fw, fwts_uefi_var *var, char *varname)
+{
+
+	bool ident = false;
+	EFI_GUID image_security_var_guid = EFI_IMAGE_SECURITY_DATABASE_GUID;
+
+	if (strcmp(varname, "db"))
+		return;
+
+	var_found |= VAR_DB_FOUND;
+	ident = compare_guid(&image_security_var_guid, var->guid);
+
+	if (!ident) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableGUIDInvalid",
+			"The secure boot variable %s GUID invalid.", varname);
+		return;
+	}
+
+	fwts_log_info_verbatum(fw, "Check Microsoft UEFI CA certificate presence in %s", varname);
+	if (check_sigdb_presence(var->data, var->datalen, ms_uefi_ca_2011_key, ms_uefi_ca_2011_key_len))
+		fwts_passed(fw, "MS UEFI CA 2011 key check passed.");
+	else
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootMSCertNotFound",
+			"The Microsoft UEFI CA certificate not found .");
+}
+
 static securebootcert_info securebootcert_info_table[] = {
 	{ "SecureBoot",		securebootcert_secure_boot },
 	{ "SetupMode",		securebootcert_setup_mode },
+	{ "db",			securebootcert_data_base },
 	{ NULL, NULL }
 };
 
@@ -175,6 +279,18 @@ static char *securebootcert_attribute(uint32_t attr)
 		if (*str)
 			strcat(str, ",");
 		strcat(str, "RunTime");
+	}
+
+	if (attr & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "AuthenicatedWrite");
+	}
+
+	if (attr & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "TimeBaseAuthenicatedWrite");
 	}
 
 	return str;
@@ -239,6 +355,9 @@ static int securebootcert_test1(fwts_framework *fw)
 	if (!(var_found & VAR_SETUPMODE_FOUND))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
 			"The secure boot variable SetupMode not found.");
+	if (!(var_found & VAR_DB_FOUND))
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
+			"The secure boot variable DB not found.");
 
 	fwts_uefi_free_variable_names(&name_list);
 

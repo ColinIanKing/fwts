@@ -79,5 +79,6 @@
 #include "fwts_button.h"
 #include "fwts_json.h"
 #include "fwts_ioport.h"
+#include "fwts_release.h"
 
 #endif

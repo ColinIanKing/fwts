@@ -354,5 +354,6 @@ void fwts_uefi_free_variable_names(fwts_list *list);
 int fwts_uefi_get_variable_names(fwts_list *list);
 
 void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status);
+char *fwts_uefi_attribute_info(uint32_t attr);
 
 #endif

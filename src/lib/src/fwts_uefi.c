@@ -471,3 +471,43 @@ void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status)
 	fwts_log_info(fw, "Cannot find the return status information, value = 0x%" PRIx64 ".", status);
 
 }
+
+/*
+ *  fwts_uefi_attribute_info()
+ *	convert attribute into a human readable form
+ */
+char *fwts_uefi_attribute_info(uint32_t attr)
+{
+	static char str[100];
+
+	*str = 0;
+
+	if (attr & FWTS_UEFI_VAR_NON_VOLATILE)
+		strcat(str, "NonVolatile");
+
+	if (attr & FWTS_UEFI_VAR_BOOTSERVICE_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "BootServ");
+	}
+
+	if (attr & FWTS_UEFI_VAR_RUNTIME_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "RunTime");
+	}
+
+	if (attr & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "AuthenicatedWrite");
+	}
+
+	if (attr & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "TimeBaseAuthenicatedWrite");
+	}
+
+	return str;
+}

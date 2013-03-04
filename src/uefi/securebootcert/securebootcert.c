@@ -301,42 +301,6 @@ static securebootcert_info securebootcert_info_table[] = {
 	{ NULL, NULL }
 };
 
-static char *securebootcert_attribute(uint32_t attr)
-{
-	static char str[100];
-
-	*str = 0;
-
-	if (attr & FWTS_UEFI_VAR_NON_VOLATILE)
-		strcat(str, "NonVolatile");
-
-	if (attr & FWTS_UEFI_VAR_BOOTSERVICE_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "BootServ");
-	}
-
-	if (attr & FWTS_UEFI_VAR_RUNTIME_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "RunTime");
-	}
-
-	if (attr & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "AuthenicatedWrite");
-	}
-
-	if (attr & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "TimeBaseAuthenicatedWrite");
-	}
-
-	return str;
-}
-
 static void securebootcert_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
@@ -351,7 +315,7 @@ static void securebootcert_var(fwts_framework *fw, fwts_uefi_var *var)
 			fwts_guid_buf_to_str(var->guid, guid_str, sizeof(guid_str));
 			fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
 			fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes,
-							securebootcert_attribute(var->attributes));
+							fwts_uefi_attribute_info(var->attributes));
 			info->func(fw, var, varname);
 			fwts_log_nl(fw);
 			return;

@@ -681,34 +681,6 @@ static uefidump_info uefidump_info_table[] = {
 	{ NULL, NULL }
 };
 
-/*
- *  uefidump_attribute()
- *	convert attribute into a human readable form
- */
-static char *uefidump_attribute(uint32_t attr)
-{
-	static char str[50];
-
-	*str = 0;
-
-	if (attr & FWTS_UEFI_VAR_NON_VOLATILE)
-		strcat(str, "NonVolatile");
-
-	if (attr & FWTS_UEFI_VAR_BOOTSERVICE_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "BootServ");
-	}
-
-	if (attr & FWTS_UEFI_VAR_RUNTIME_ACCESS) {
-		if (*str)
-			strcat(str, ",");
-		strcat(str, "RunTime");
-	}
-
-	return str;
-}
-
 static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
@@ -720,7 +692,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 	fwts_log_info_verbatum(fw, "Name: %s.", varname);
 	fwts_guid_buf_to_str(var->guid, guid_str, sizeof(guid_str));
 	fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
-	fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes, uefidump_attribute(var->attributes));
+	fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes, fwts_uefi_attribute_info(var->attributes));
 
 	/* If we've got an appropriate per variable dump mechanism, use this */
 	for (info = uefidump_info_table; info->description != NULL; info++) {

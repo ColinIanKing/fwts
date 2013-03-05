@@ -401,7 +401,158 @@ static int getnextvariable_test2(fwts_framework *fw)
 	return FWTS_OK;
 
 err:
+	return FWTS_ERROR;
+}
 
+struct efi_var_item {
+	struct efi_var_item *next; /* collision chain */
+	uint16_t *name;
+	EFI_GUID *guid;
+	uint64_t hash;
+};
+
+/*
+ * This is a completely arbitrary value.
+ */
+#define BUCKET_SIZE 32
+static struct efi_var_item *buckets[BUCKET_SIZE];
+
+/*
+ * This doesn't have to be a super efficient hashing function with
+ * minimal collisions, just more efficient than iterating over a
+ * simple linked list.
+ */
+static inline uint64_t hash_func(uint16_t *variablename, uint64_t length)
+{
+	uint64_t i, hash = 0;
+	uint16_t *c = variablename;
+
+	for (i = 0; i < length; i++)
+		hash = hash * 33 + *c++;
+
+	return hash;
+}
+
+/*
+ * Return's 0 on success, -1 if there was a collision - meaning we've
+ * encountered duplicate variable names with the same GUID.
+ */
+static int bucket_insert(struct efi_var_item *item)
+{
+	struct efi_var_item *chain;
+	unsigned int index = item->hash % BUCKET_SIZE;
+
+	chain = buckets[index];
+
+	while (chain) {
+		/*
+		 * OK, we got a collision - no big deal. Walk the
+		 * chain and see whether this variable name and
+		 * variable guid already appear on it.
+		 */
+		if (compare_name(item->name, chain->name)) {
+			if (compare_guid(item->guid, chain->guid))
+				return -1; /* duplicate */
+		}
+
+		chain = chain->next;
+	}
+
+	item->next = buckets[index];
+	buckets[index] = item;
+	return 0;
+}
+
+static void bucket_destroy(void)
+{
+	struct efi_var_item *item;
+	int i;
+
+	for (i = 0; i < BUCKET_SIZE; i++) {
+		item = buckets[i];
+
+		while (item) {
+			struct efi_var_item *chain = item->next;
+
+			free(item->name);
+			free(item);
+			item = chain;
+		}
+	}
+}
+
+static int getnextvariable_test3(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+
+	struct efi_getnextvariablename getnextvariablename;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t variablename[MAX_DATA_LENGTH];
+	EFI_GUID vendorguid;
+
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.status = &status;
+
+	/* To start the search, need to pass a Null-terminated string in VariableName */
+	variablename[0] = '\0';
+	while (true) {
+		struct efi_var_item *item;
+
+		variablenamesize = MAX_DATA_LENGTH;
+		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+		if (ioret == -1) {
+
+			/* no next variable was found*/
+			if (*getnextvariablename.status == EFI_NOT_FOUND)
+				break;
+
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to get next variable name with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
+			goto err;
+		}
+
+		item = malloc(sizeof(*item));
+		if (!item) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to allocate memory for test.");
+			goto err;
+		}
+
+		item->guid = &vendorguid;
+		item->next = NULL;
+
+		item->name = malloc(variablenamesize);
+		if (!item->name) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to allocate memory for test.");
+			free(item);
+			goto err;
+		}
+
+		memcpy(item->name, variablename, variablenamesize);
+
+		/* Ensure there are no duplicate variable names + guid */
+		item->hash = hash_func(variablename, variablenamesize);
+
+		if (bucket_insert(item)) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				     "Duplicate variable name found.");
+			free(item->name);
+			free(item);
+			goto err;
+		}
+	};
+
+	bucket_destroy();
+	return FWTS_OK;
+
+err:
+	bucket_destroy();
 	return FWTS_ERROR;
 }
 
@@ -928,6 +1079,10 @@ static int uefirtvariable_test2(fwts_framework *fw)
 		return ret;
 
 	ret = getnextvariable_test2(fw);
+	if (ret != FWTS_OK)
+		return ret;
+
+	ret = getnextvariable_test3(fw);
 	if (ret != FWTS_OK)
 		return ret;
 

@@ -556,6 +556,95 @@ err:
 	return FWTS_ERROR;
 }
 
+static int getnextvariable_test4(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+	uint64_t i;
+
+	struct efi_getnextvariablename getnextvariablename;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t variablename[MAX_DATA_LENGTH];
+	EFI_GUID vendorguid;
+
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.status = &status;
+
+	/*
+	 * Check for expected error values.
+	 */
+	getnextvariablename.VariableName = NULL;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+	if (ioret != -1 || status != EFI_INVALID_PARAMETER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+			"Expected EFI_INVALID_PARAMETER with NULL VariableName.");
+		fwts_uefi_print_status_info(fw, status);
+		goto err;
+	}
+
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = NULL;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+	if (ioret != -1 || status != EFI_INVALID_PARAMETER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+			"Expected EFI_INVALID_PARAMETER with NULL VendorGuid.");
+		fwts_uefi_print_status_info(fw, status);
+		goto err;
+	}
+
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.VariableNameSize = NULL;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+	if (ioret != -1 || status != EFI_INVALID_PARAMETER) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+			"Expected EFI_INVALID_PARAMETER with NULL VariableNameSize.");
+		fwts_uefi_print_status_info(fw, status);
+		goto err;
+	}
+
+	/* No first result can be 0 or 1 byte in size. */
+	for (i = 0; i < 2; i++) {
+		variablenamesize = i;
+		getnextvariablename.VariableNameSize = &variablenamesize;
+
+		/* To start the search, need to pass a Null-terminated string in VariableName */
+		variablename[0] = '\0';
+
+		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+		/*
+		 * We expect this machine to have at least some UEFI
+		 * variables, which is the reason we don't check for
+		 * EFI_NOT_FOUND at this point.
+		 */
+		if (ioret != -1 || status != EFI_BUFFER_TOO_SMALL) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Expected EFI_BUFFER_TOO_SMALL with small VariableNameSize.");
+			fwts_uefi_print_status_info(fw, status);
+			goto err;
+		}
+
+		/* Has the firmware failed to update the variable size? */
+		if (variablenamesize == i) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				    "EFI_BUFFER_TOO_SMALL VariableNameSize was not updated.");
+			goto err;
+		}
+	}
+
+	return FWTS_OK;
+
+err:
+	return FWTS_ERROR;
+}
+
 static int setvariable_insertvariable(fwts_framework *fw, uint32_t attributes, uint64_t datasize,
 					uint16_t *varname, EFI_GUID *gtestguid, uint8_t datadiff)
 {
@@ -1083,6 +1172,10 @@ static int uefirtvariable_test2(fwts_framework *fw)
 		return ret;
 
 	ret = getnextvariable_test3(fw);
+	if (ret != FWTS_OK)
+		return ret;
+
+	ret = getnextvariable_test4(fw);
 	if (ret != FWTS_OK)
 		return ret;
 

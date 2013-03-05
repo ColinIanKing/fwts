@@ -496,7 +496,7 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 		fw->print_summary = true;
 
 	if (test->ops->description) {
-		fwts_log_heading(fw, "%s", test->ops->description);
+		fwts_log_heading(fw, "%s: %s", test->name, test->ops->description);
 		fwts_framework_underline(fw,'-');
 		if (fw->show_progress) {
 			char buf[70];

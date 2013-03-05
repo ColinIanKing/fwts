@@ -253,10 +253,51 @@ static void securebootcert_data_base(fwts_framework *fw, fwts_uefi_var *var, cha
 			"The Microsoft UEFI CA certificate not found .");
 }
 
+static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, char *varname)
+{
+
+	bool ident = false;
+	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
+
+	if (strcmp(varname, "KEK"))
+		return;
+
+	var_found |= VAR_KEK_FOUND;
+	ident = compare_guid(&global_var_guid, var->guid);
+
+	if (!ident) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableGUIDInvalid",
+			"The secure boot variable %s GUID invalid.", varname);
+		return;
+	}
+
+	fwts_release *release = fwts_release_get();
+	if (release == NULL) {
+		fwts_skipped(fw, "Cannot determine system, stop checking the Ubuntu Master CA certificate.");
+		return;
+	}
+
+	if (strcmp(release->distributor, "Ubuntu") != 0) {
+		fwts_skipped(fw, "Not a Ubuntu system, it's not necessary checking the Ubuntu Master CA certificate.");
+		fwts_release_free(release);
+		return;
+	}
+	fwts_release_free(release);
+
+	fwts_log_info_verbatum(fw, "Check Ubuntu master CA certificate presence in %s", varname);
+	if (check_sigdb_presence(var->data, var->datalen, ubuntu_key, ubuntu_key_len))
+		fwts_passed(fw, "Ubuntu UEFI CA 2011 key check passed.");
+	else {
+		fwts_log_info_verbatum(fw, "No Ubuntu master CA certificate presence in %s", varname);
+		fwts_infoonly(fw);
+	}
+}
+
 static securebootcert_info securebootcert_info_table[] = {
 	{ "SecureBoot",		securebootcert_secure_boot },
 	{ "SetupMode",		securebootcert_setup_mode },
 	{ "db",			securebootcert_data_base },
+	{ "KEK",		securebootcert_key_ex_key },
 	{ NULL, NULL }
 };
 
@@ -358,6 +399,9 @@ static int securebootcert_test1(fwts_framework *fw)
 	if (!(var_found & VAR_DB_FOUND))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
 			"The secure boot variable DB not found.");
+	if (!(var_found & VAR_KEK_FOUND))
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
+			"The secure boot variable KEK not found.");
 
 	fwts_uefi_free_variable_names(&name_list);
 

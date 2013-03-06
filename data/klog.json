@@ -2327,7 +2327,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_EMBEDDED_CONTROLLER",
    "pattern": "EC.*input buffer is not empty, aborting transaction",
-   "advice": "The ACPI Embedded Controller (EC) driver attempted to perform a read or write transaction but had to abort because the EC was still busy and the input buffer was not emptied within 500ms.  Normally this indicates an EC firmware fault.  One can try increasing the delay using the acpi.ec_delay kernel parameter or writing to /sys/module/acpi/parameters/ec_delay - however this generally does not help much of the EC firmware is buggy.",
+   "advice": "The ACPI Embedded Controller (EC) driver attempted to perform a read or write transaction but had to abort because the EC was still busy and the input buffer was not emptied within 500ms.  Normally this indicates an EC firmware fault.  One can try increasing the delay using the acpi.ec_delay kernel parameter or writing to /sys/module/acpi/parameters/ec_delay - however this generally does not help much if the EC firmware is buggy.",
    "label": "KlogAcpiEcInputBufferIsNotEmpty"
   },
   {

@@ -226,7 +226,7 @@ static bool compare_name(uint16_t *name1, uint16_t *name2)
 	return ident;
 }
 
-static int getnextvariable_test(fwts_framework *fw)
+static int getnextvariable_test1(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
@@ -335,6 +335,72 @@ err_restore_env:
 		fwts_uefi_print_status_info(fw, status);
 		return FWTS_ERROR;
 	}
+
+	return FWTS_ERROR;
+}
+
+/*
+ * Return true if variablenamesize is the length of the
+ * NULL-terminated unicode string, variablename.
+ */
+static bool strlen_valid(uint16_t *variablename, uint64_t variablenamesize)
+{
+	uint64_t len;
+	uint16_t c;
+
+	for (len = 2; len <= variablenamesize; len += sizeof(c)) {
+		c = variablename[(len / sizeof(c)) - 1];
+		if (!c)
+			break;
+	}
+
+	return len == variablenamesize;
+}
+
+static int getnextvariable_test2(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+
+	struct efi_getnextvariablename getnextvariablename;
+	uint64_t variablenamesize = MAX_DATA_LENGTH;
+	uint16_t variablename[MAX_DATA_LENGTH];
+	EFI_GUID vendorguid;
+
+	getnextvariablename.VariableNameSize = &variablenamesize;
+	getnextvariablename.VariableName = variablename;
+	getnextvariablename.VendorGuid = &vendorguid;
+	getnextvariablename.status = &status;
+
+	/* To start the search, need to pass a Null-terminated string in VariableName */
+	variablename[0] = '\0';
+	while (true) {
+		variablenamesize = MAX_DATA_LENGTH;
+		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
+
+		if (ioret == -1) {
+
+			/* no next variable was found*/
+			if (*getnextvariablename.status == EFI_NOT_FOUND)
+				break;
+
+			fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextVariableName",
+				"Failed to get next variable name with UEFI runtime service.");
+			fwts_uefi_print_status_info(fw, status);
+			goto err;
+		}
+
+		if (variablenamesize != MAX_DATA_LENGTH &&
+		    !strlen_valid(variablename, variablenamesize)) {
+			fwts_warning(fw, "UEFIRuntimeGetNextVariableName "
+				"Unexpected variable name size returned.");
+			goto err;
+		}
+	};
+
+	return FWTS_OK;
+
+err:
 
 	return FWTS_ERROR;
 }
@@ -857,7 +923,11 @@ static int uefirtvariable_test2(fwts_framework *fw)
 {
 	int ret;
 
-	ret = getnextvariable_test(fw);
+	ret = getnextvariable_test1(fw);
+	if (ret != FWTS_OK)
+		return ret;
+
+	ret = getnextvariable_test2(fw);
 	if (ret != FWTS_OK)
 		return ret;
 

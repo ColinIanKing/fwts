@@ -2654,9 +2654,25 @@
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_NO_HANDLER",
+   "pattern": "ACPI Error.*No handler for Region.*SystemCMOS",
+   "advice": "An attempt to dispatch an address space or operation region access to CMOS memory has failed because the Linux kernel does not yet have a CMOS handler.  This may have little or no detrimental effect, however it is worth examining the AML to see what kind of access is occurring to see if the firmware really requires CMOS access.  For example, recent firmware may implement Peak Shift, which requires access CMOS memory and this can trigger this error.",
+   "label": "KlogAcpiNoHandlerForRegion"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NO_HANDLER",
    "pattern": "ACPI Error.*No handler for Region",
    "advice": "",
    "label": "KlogAcpiNoHandlerForRegion"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI_NO_HANDLER",
+   "pattern": "ACPI Error.*Region SystemCMOS.* has no handler",
+   "advice": "An attempt to read or write a single field to a CMOS Operation Region has failed because the Linux kernel does not yet have a CMOS handler.  This may have little or no detrimental effect, however it is worth examining the AML to see what kind of access is occurring to see if the firmware really requires CMOS access.  For example, recent firmware may implement Peak Shift, which requires access CMOS memory and this can trigger this error.",
+   "label": "KlogAcpiRegionHasNoHandler"
   },
   {
    "compare_mode": "regex",

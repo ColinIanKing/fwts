@@ -2807,7 +2807,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_BUFFER_LIMIT",
-   "advice": "Method failed: ResourceSourceIndex is present but ResourceSource is not.",
+   "advice": "Generally this error occurs because of access outside of a buffer.  This occurs for several reasons: a) A field does not fit withing the current length of a buffer, b) an ACPI table load did not fit into a buffer, c) An attempt to convert a buffer into an integer failed because the buffer was zero sized, d) a SMBus/IPMI/GenericSerialBus write failed because the buffer was too small, e) An index into a buffer was too long and fell outside the buffer.",
    "label": "KlogAcpiBufferLimit"
   },
   {

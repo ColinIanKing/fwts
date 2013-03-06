@@ -2823,7 +2823,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_NOT_EXIST",
-   "advice": "",
+   "advice": "The ACPI interpreter failed to execute or parse some AML because a object or control did not exist.  This normally occurs because of buggy firmware and may lead to unexpected behaviour or loss of functionality.",
    "label": "KlogAcpiObjectDoesNotExist"
   },
   {

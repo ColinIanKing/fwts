@@ -134,14 +134,13 @@ static void fwts_log_newline_xml(fwts_log_file *log_file)
 
 static void fwts_log_section_begin_xml(fwts_log_file *log_file, const char *name)
 {
-	xml_stack[xml_stack_index].name = name;
-
 	fprintf(log_file->fp, "%*s<%s>\n", xml_stack_index * XML_INDENT, "", name);
 	fflush(log_file->fp);
 
-	if (xml_stack_index < MAX_XML_STACK)
+	if (xml_stack_index < MAX_XML_STACK) {
+		xml_stack[xml_stack_index].name = name;
 		xml_stack_index++;
-	else  {
+	} else  {
 		fprintf(stderr, "xml log stack overflow pushing section %s.\n", name);
 		exit(EXIT_FAILURE);
 	}

@@ -376,8 +376,6 @@ static void fwts_log_newline_html(fwts_log_file *log_file)
 
 static void fwts_log_section_begin_html(fwts_log_file *log_file, const char *name)
 {
-	html_stack[html_stack_index].name = name;
-
 	if (!strcmp(name, "summary")) {
 		fwts_log_html(log_file, "<TR><TD class=style_heading COLSPAN=2>Summary</TD></TR>\n");
 	} else if (!strcmp(name, "heading")) {
@@ -390,9 +388,10 @@ static void fwts_log_section_begin_html(fwts_log_file *log_file, const char *nam
 
 	fflush(log_file->fp);
 
-	if (html_stack_index < MAX_HTML_STACK)
+	if (html_stack_index < MAX_HTML_STACK) {
+		html_stack[html_stack_index].name = name;
 		html_stack_index++;
-	else  {
+	} else  {
 		fprintf(stderr, "html log stack overflow pushing section %s.\n", name);
 		exit(EXIT_FAILURE);
 	}

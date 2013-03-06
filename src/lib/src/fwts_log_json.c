@@ -178,16 +178,16 @@ static void fwts_log_section_begin_json(fwts_log_file *log_file, const char *nam
 	 */
 	json_object_object_add(json_obj, name, json_log);
 
-	json_stack[json_stack_index].obj = json_obj;
-	json_stack[json_stack_index].log = json_log;
 
 	if (json_stack_index > 0)
 		if (json_object_array_add(json_stack[json_stack_index-1].log, json_obj) != 0)
 			fwts_log_out_of_memory_json();
 
-	if (json_stack_index < MAX_JSON_STACK)
+	if (json_stack_index < MAX_JSON_STACK) {
+		json_stack[json_stack_index].obj = json_obj;
+		json_stack[json_stack_index].log = json_log;
 		json_stack_index++;
-	else  {
+	} else  {
 		fprintf(stderr, "json log stack overflow pushing section %s.\n", name);
 		exit(EXIT_FAILURE);
 	}

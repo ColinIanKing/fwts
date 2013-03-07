@@ -299,6 +299,7 @@ static void dmi_str_check_index(fwts_framework *fw,
 {
 	char 	*data = (char *)hdr->data;
 	uint8_t	i = index;
+	bool used_by_kernel = dmi_used_by_kernel(hdr->type, offset);
 
 	if (i > 0) {
 		int 	j;
@@ -309,15 +310,18 @@ static void dmi_str_check_index(fwts_framework *fw,
 			data += strlen(data) + 1;
 			i--;
 		}
+
 		/* Sanity checks */
 		if (*data == '\0') {
+			int level = used_by_kernel ? LOG_LEVEL_HIGH : LOG_LEVEL_LOW;
+
 			/* This entry is clearly broken so flag it as a corrupt entry */
-			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_STRING_INDEX_OUT_OF_RANGE,
+			fwts_failed(fw, level, DMI_STRING_INDEX_OUT_OF_RANGE,
 				"Out of range string index 0x%2.2" PRIx8
 				" while accessing entry '%s' "
 				"@ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2" PRIx8,
 				index, table, addr, field, offset);
-			if (dmi_used_by_kernel(hdr->type, offset))
+			if (used_by_kernel) 
 				fwts_advice(fw,
 					"DMI strings are stored in a manner that uses a special "
 					"index to fetch the Nth string from the data. For this "
@@ -351,14 +355,17 @@ static void dmi_str_check_index(fwts_framework *fw,
 			}
 		}
 		if (failed != -1) {
-			if (dmi_used_by_kernel(hdr->type, offset)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, dmi_patterns[j].label,
-					"String index 0x%2.2" PRIx8
-					" in table entry '%s' @ 0x%8.8" PRIx32
-					", field '%s', offset 0x%2.2" PRIx8
-					" has a default value '%s' and probably has "
-					"not been updated by the BIOS vendor.",
-					index, table, addr, field, offset, data);
+			int level = used_by_kernel ? LOG_LEVEL_MEDIUM : LOG_LEVEL_LOW;
+
+			fwts_failed(fw, level, dmi_patterns[j].label,
+				"String index 0x%2.2" PRIx8
+				" in table entry '%s' @ 0x%8.8" PRIx32
+				", field '%s', offset 0x%2.2" PRIx8
+				" has a default value '%s' and probably has "
+				"not been updated by the BIOS vendor.",
+				index, table, addr, field, offset, data);
+
+			if (used_by_kernel) {
 				fwts_advice(fw,
 					"The DMI table contains data which is clearly been "
 					"left in a default setting and not been configured "
@@ -370,13 +377,6 @@ static void dmi_str_check_index(fwts_framework *fw,
 					"is using sane values.");
 			} else {
 				/* This string is broken, but we don't care about it too much */
-				fwts_failed(fw, LOG_LEVEL_LOW, dmi_patterns[j].label,
-					"String index 0x%2.2" PRIx8
-					" in table entry '%s' @ 0x%8.8" PRIx32
-					", field '%s', offset 0x%2.2" PRIx8
-					" has a default value '%s' and probably has "
-					"not been updated by the BIOS vendor.",
-					index, table, addr, field, offset, data);
 				fwts_advice(fw,
 					"The DMI table contains data which is clearly been "
 					"left in a default setting and not been configured "

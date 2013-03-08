@@ -74,6 +74,14 @@
    "label": "CommonBiosIrqRoutingBug"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_PRW evaluation error:",
+   "advice": "The ACPI _PRW (Power Resources for Wake) object failed to evaluate when the ACPI driver was attempting to get the wakeup device flags.",
+   "label": "KlogACPIPrwEvalError"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
@@ -878,9 +886,57 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error in acpi_memory_enable_device",
+   "advice": "ACPI memory hotplug failed to add a memory device, acpi_memory_enable_device() failed. This occurs if the memory block has already been used by the kernel or if add_memory() failed.",
+   "label": "KlogAcpiMemHotPlugFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Error reading AC Adapter state",
    "advice": "The ACPI driver could not read the AC adapter state because the ACPI control _PSR (Power Source) failed to evaluate. This could be because this control did not exist or more probably that it failed to execute because of an error between the firmware and the smart battery.",
    "label": "KlogAcpiPsrEvalFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "failed to add I2C device .* from ACPI",
+   "advice": "Failed to create an I2C device while walking through the ACPI namespace enumerating I2C slave devices behind the adapter.",
+   "label": "KlogAcpiI2CAddFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot turn wakeup power resources on",
+   "advice": "The ACPI driver was preparing to wakeup a device by powering on the power resources required for the device but one of these resources failed to power on.  See acpi_enable_wakeup_device_power().",
+   "label": "KlogAcpiPowerWakeupResources"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot turn wakeup power resources off",
+   "advice": "The ACPI driver was preparing to shutdown a wakeup device by powering off the power resources for the device but one of these resources failed to power off. See acpi_disable_wakeup_device_power().",
+   "label": "KlogAcpiPowerWakeupResources"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Failed to evaluate processor object",
+   "advice": "ACPI Processor() failed to evaluate. ACPI could not gather information on a CPU which will lead to it not being used.",
+   "label": "KlogAcpiProcessorEvalFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Failed to evaluate processor _UID",
+   "advice": "ACPI failed to evaluate a processor _UID object (as declared in a Device statement).  ACPI could not gather information on a CPU which will lead to it not being used.",
+   "label": "KlogAcpiProcessorEvalFailed"
   },
   {
    "compare_mode": "string",

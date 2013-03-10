@@ -3420,6 +3420,21 @@
   },
   {
    "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "cpu .* try to use APIC.* for vector .*, but the register is already in use for vector .* on another cpu",
+   "advice": "The local vector table (LVT) offsets that provided by firmware have conflicts, the assignment to the same offset causes the second APIC setup failed.",
+   "label": "KlogLVTOffsetAssignConflict"
+  },  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "cpu .* try to use APIC.* for vector .*, but the register is already in use for vector .* on this cpu" ,
+   "advice": "The local vector table (LVT) offsets that provided by firmware have conflicts, the assignment to the same offset causes the second APIC setup failed.",
+   "label": "KlogLVTOffsetAssignConflict"
+  },
+  {
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "\\[Firmware Bug\\]:.*",

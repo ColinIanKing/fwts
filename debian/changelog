@@ -1,3 +1,45 @@
+fwts (0.26.07-0ubuntu1) raring; urgency=low
+
+  [Colin Ian King]
+  * update_version.sh: Insert just date + time in date stamp
+  * acpi: mcfg: move PCI mmap and munmap to compare_config_space
+  * acpi: syntaxcheck: reformat warning messages
+  * acpi: syntaxcheck: add in extra error level messages
+  * acpi: syntaxcheck: re-work IASL error mappings
+  * data: syntaxcheck: remove redundant error code
+  * acpi: syntaxcheck: add helpers to convert error_code
+  * acpi: syntaxcheck: issue error messages depending on error level
+  * acpi: syntaxcheck: add some more per-table information in log
+  * data: syntaxcheck: add a few more advice entries
+  * lib: Add helper function to get release info
+  * data: cater for _PTS not existing
+  * data: klog.json: cater for CMOS handler errors
+  * data: klog.json: fix a typo: of --> if
+  * data: klog.json: Add some vague advice for AE_NOT_EXIST
+  * data: klog.json: Improve the advice for AE_AML_BUFFER_LIMIT
+  * lib: fwts_log_*: fix a few smatch errors
+  * dmi: dmi_decode: DMI not used by kernel should be low failures (LP: #1148703)
+  * lib: framework: add in test name before test description
+  * data: syntaxcheck.json: add more advice info for common errors
+  * data: klog.json: Add some more ACPI related kernel message checks
+
+  [Ivan Hu]
+  * lib: fwts_uefi: fixed the newer inteface never be used
+  * securebootcert: add Ubuntu UEFI secure boot tests
+  * securebootcert: add Ubuntu UEFI secure boot test - check MS UEFI CA
+  * securebootcert: add Ubuntu UEFI secure boot test - check Ubuntu CA presence
+  * lib: fwts_uefi: add a helper fuction to convert attribute into readable form
+  * data: klog.json: add message for the LVT offset conflict issue
+
+  [Matt Fleming]
+  * uefirtvariable: Correct DataSize for GetVariable()
+  * uefirtvariable: Check new VariableNameSize from GetNextVariableName()
+  * uefirtvariable: Test GetNextVariableName() returns unique variables
+  * uefirtvariable: Test GetNextVariableName() error handling
+  * efi_runtime: Add 'install' target
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 12 Mar 2013 16:01:22 +0800
+
 fwts (0.26.06-0ubuntu1) raring; urgency=low
 
   [Alex Hung]

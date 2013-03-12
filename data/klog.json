@@ -74,6 +74,1230 @@
    "label": "CommonBiosIrqRoutingBug"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not register bus type",
+    "advice": "The ACPI driver failed to register the ACPI buse type.  This is not deemed to be fatal, but it is a kernel error that should be investigated. See acpi_scan_init().",
+    "label": "KlogAcpiScanBusTypeRegisterFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "failed to create clocks",
+    "advice": "ACPI platform clocks failed to initialize making the creation of the platform device for the ACPI device node fail. See acpi_create_platform_device() and acpi_create_platform_clks().",
+    "label": "KlogAcpiPlatformClockCreateFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "platform device creation failed:",
+    "advice": "Failed to register the ACPI device node.  platform_device_register_full() failed which makes the platform device creation fail.  See platform_device_register_full() and acpi_create_platform_device().",
+    "label": "KlogAcpiPlatformDeviceCreateFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "cannot add bridge to acpi list",
+    "advice": "The ACPI bus scan failed and so a root bridge hotplug insertion failed.  See handle_root_bridge_insertion().",
+    "label": "KlogAcpiPciRootBridgeAddFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Incorrect return type .* requested .*",
+    "advice": "An ACPI object find and evaluate has failed, the return object requested does not match the requested type.  This is most probably a firmware bug.",
+    "label": "KlogAcpiIncorrectReturnType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown field access type 0x",
+    "advice": "Attempted to decode an ACPI field definition failed because the firmware attempted to use an unknown access type.  Only byte, word, dword, qword and 'any' access types are allowed.",
+    "label": "KlogAcpiUknownFieldAccessType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null RegionNode",
+    "advice": "Construction of an object and connecting it to a parent node failed because a region node was unexpectedly NULL. See acpi_ex_prep_field_value().",
+    "label": "KlogAcpiNullRegionNode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null Index Object during field prep",
+    "advice": "Construction of an object and connecting it to a parent node failed for a local index field. See acpi_ex_prep_field_value().",
+    "label": "KlogAcpiNullIndexObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No object attached to node",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, there is no object attached to the given node. See acpi_ex_resolve_node_to_value().",
+    "label": "KlogAcpiNoObjectAttachedToNode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object not a Package, type",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was not an ACPI package as expected.",
+    "label": "KlogAcpiObjectNotPackage"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object not a Buffer, type",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was not an ACPI buffer as expected.",
+    "label": "KlogAcpiObjectNotBuffer"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object not a String, type",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was not an ACPI string as expected.",
+    "label": "KlogAcpiObjectNotString"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object not a Integer, type",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was not an ACPI integer as expected.",
+    "label": "KlogAcpiObjectNotInteger"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Untyped entry .* no attached object",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was an ACPI ANY type and so there is no object associated with it.",
+    "label": "KlogAcpiUntypedEntry"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unsupported Reference type 0x",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object reference class must be a table, refof or index reference class.",
+    "label": "KlogAcpiUnsupportedReferenceType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Node .* Unknown object type 0x",
+    "advice": "Failed to resolve an ACPI namespace node to a valued object, the source object was an unknown type.",
+    "label": "KlogAcpiUnknownObjectType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid internal name",
+    "advice": "An error occurred turning an ACPI internal name into an external (printable) form. The required length exceeded the intenral name length, causing a bounds error.  See acpi_ns_externalize_name().",
+    "label": "KlogAcpiInvalidInternalName"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "is not an ACPI Operand object",
+    "advice": "An internal ACPI error occurred freeing an ACPI object or adding it to the object cache. The descriptor type of the given object was not a descriptor type operand.  See acpi_ut_delete_object_desc().",
+    "label": "KlogAcpiNotOperandObject"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot convert to external object - unsupported Reference Class .* in object",
+    "advice": "An internal ACPI error occurred getting the size of a simple ACPI object. A local reference object with a reference class that was not a refclass name class is not currently supported (such as locals and args) in the ACPI driver and may need implementing. See acpi_ut_get_simple_object_size(). ",
+    "label": "KlogAcpiUnsupportedReferenceClass"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot convert to external object - unsupported type .* in object",
+    "advice": "An internal ACPI error occurred getting the size of a simple ACPI object, the object was of a type that is not supported.",
+    "label": "KlogAcpiUnsupportedType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Local index .* is invalid .*max",
+    "advice": "An error occurred getting the node associated with a local or an arg. The local index for the refclass local type was greather than ACPI_METHOD_MAX_LOCAL.  See acpi_ds_method_data_get_node().",
+    "label": "KlogAcpiLocalIndexInvalid"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Arg index .* is invalid .*max",
+    "advice": "An error occurred getting the node associated with a local or an arg. The arg index for the refclass arg type was greather than ACPI_NETHOD_MAX_ARG.  See acpi_ds_method_data_get_node().",
+    "label": "KlogAcpiArgIndexInvalid"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Type .* is invalid",
+    "advice": "An error occurred getting the node associated with a local or an arg. The given type is not a refclass local or refclass arg type. See acpi_ds_method_data_get_node().",
+    "label": "KlogAcpiTypeInvalid"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null object descriptor pointer",
+    "advice": "An error occurred retrieving the value of a selected Arg or Local for a method, the descriptor pointer was NULL. See acpi_ds_method_data_get_value().",
+    "label": "KlogAcpiNullObjectDescriptorPtr"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Uninitialized Arg.* at node",
+    "advice": "An error occurred retrieving the value of a selected Arg or Local for a method, an argument to the method was not initialised. This is probably a firmware bug. See also acpi_ds_method_data_get_value().",
+    "label": "KlogAcpiUnitializedArg"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Not a Arg/Local opcode: 0x",
+    "advice": "An error occurred retrieving the value of a selected Arg or Local for a method. This is probably a firmware bug. See also acpi_ds_method_data_get_value().",
+    "label": "KlogAcpiNotArgLocalOpcode"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Field .* access width .* too large for region",
+    "advice": "An access type is larger than a region, for example, where a region is one byte in length and a field of dword access is specified.  This is a bug in the firmware and the access to the region fails. This can lead to unexpected behaviour.",
+    "label": "KlogAcpiFieldAccessWidthTooLarge"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Field .* Base.*Offset.*Width .* is beyond end of region",
+    "advice": "An access exceeds the region length, in this case the base + offset + access width is larger than the region size.  For example, this could be a dword access one byte from the end of region.  This is a bug in the firmware and the access to the region fails. This can lead to unexpected behaviour.",
+    "label": "KlogAcpiFieldEndOfRegion"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Region .*ID=.* not implemented",
+    "advice": "An access (read or write) to an operation region has been attempted and a region for this has not been implemented, this may need to be implemented to provide the expected behaviour. See acpi_ex_access_region().",
+    "label": "KlogAcpiRegionNotImplemented"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Region .*ID=.* has no handler",
+    "advice": "An access (read or write) to an operation region has been attempted and a region handler for this has not been implemented, this may need to be implemented to provide the expected behaviour. See acpi_ex_access_region().",
+    "label": "KlogAcpiKlogRegionNoHandler"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Index value 0x.* overflows field width 0x",
+    "advice": "A write of a value larger than the maximum value that can fit into a register has be detected. The bit length of the field is not wide enough or the value is larger than expected.  This is normally a bug in the firmware. See acpi_ex_register_overflow().",
+    "label": "KlogAcpiIndexValueOverflow"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Wrong object type in field I/O",
+    "advice": "A read or write of a data to an I/O field failed. The object is of the wrong type. See acpi_ex_field_datum_io().",
+    "label": "KlogAcpiWrongObjectType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown UpdateRule value: 0x",
+    "advice": "An attempt to apply a field update rule to a field write failed because the update rule was unknown. See acpi_ex_write_with_update_rule().",
+    "label": "KlogAcpiUknownUpdateRuleValue"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Field size .* is too large for buffer",
+    "advice": "An attempt to extract the current value of a given field failed because the field size was too large for the given buffer.  See acpi_ex_extract_from_field().",
+    "label": "KlogAcpiFieldSizeTooLarge"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "GPE0 block .* overlaps the GPE1 block .* Ignoring GPE1",
+    "advice": "An error occurred initializing the GPE data structures, the GPE0/GPE1 blocks overlap each other.  This is normally a bug in the ACPI FADT GPE block address config.",
+    "label": "KlogAcpiGpe0BlockOverlapsGpe1Block"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Maximum GPE number from FADT is too large: 0x",
+    "advice": "There were more than 255 GPEs specified in the FADT. The ACPI driver only supports a maximum of 255 GPEs.",
+    "label": "KlogAcpiMaxGpeTooLarge"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "For GPE 0x.* found both _L.* and _E.* methods",
+    "advice": "A GPE has a level _Lxx and an edge _Exx method associated with it, which is incorrect, it should have one or the other but not both.",
+    "label": "KlogAcpiGpeFoundMultipleMethods"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot acquire Mutex .* null thread info",
+    "advice": "An attempt to acquire an ACPI AML mutex failed, the caller must have a valid thread state structure.  This is an internal ACPICA driver bug. See acpi_ex_acquire_mutex().",
+    "label": "KlogAcpiMutexAcquireFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot acquire Mutex \\[.*\\], current SyncLevel is too large",
+    "advice": "An ACPI mutex was not acquired because the sync level was too large. The per-thread sync level must be less or equal to the sync level of the method being executed.  This error occurs because the interpreter attempted to avoid possible deadlocks. See acpi_ex_acquire_mutex().",
+    "label": "KlogAcpiMutexAcquireFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot release Mutex .* not acquired",
+    "advice": "An ACPI mutex was not already previously acquired, so it cannot be released.",
+    "label": "KlogAcpiMutexReleaseFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot release Mutex .* null thread info",
+    "advice": "An ACPI mutex could not be released, the thread ID was null and not valid. This maybe an internal ACPICA bug.",
+    "label": "KlogAcpiMutexReleaseFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Thread .* cannot release Mutex .* acquired by thread",
+    "advice": "An ACPI mutex is already owned but the thread making the mutex release is not the owner, so the release was rejected.",
+    "label": "KlogAcpiMutexReleaseFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot release Mutex .* SyncLevel mismatch: mutex .* current",
+    "advice": "An ACPI mutex could not be released, the sync level of the mutex must be equal to that of the current sync level. Attempting to release a mutex of a different level means that the mutex ordering rule has been violated.",
+    "label": "KlogAcpiMutexReleaseFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not transition to ACPI mode",
+    "advice": "A request to transfer a system into ACPI mode has failed. This could be because the ACPI FADT does not have SMI_CMD defined, or that the FADT ACPI_ENABLE and ACPI_DISABLE flags are both zero, or a SMI command failed to work.",
+    "label": "KlogAcpiAcpiModeTransitionFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Hardware did not enter ACPI mode",
+    "advice": "Could not transfer a system into the ACPI mode. A SMI command was issued however the system failed to transition to the ACPI mode after 3 seconds of waiting. Perhaps SMIs are broken or that the firmware cannot transition the machine to ACPI mode.",
+    "label": "KlogAcpiAcpiModeNotEntered"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not exit ACPI mode to legacy mode",
+    "advice": "A request to transfer a system into legacy BIOS mode has failed. This could be because the ACPI FADT does not have SMI_CMD defined, or that the FADT ACPI_ENABLE and ACPI_DISABLE flags are both zero, or a SMI command failed to work.",
+    "label": "KlogAcpiAcpiModeToLegacyModeFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Target is not a Reference or Constant object",
+    "advice": "An attempt to store an ACPI value into a location failed because the target is not a reference or a constat object. See acpi_ex_store().",
+    "label": "KlogAcpiTargetNotRefOrConstantObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Source must be Integer/Buffer/String type, not",
+    "advice": "An attempt to store an ACPI object into an indexed buffer or package element failed because the source type is invalid. See acpi_ex_store_object_to_index().  This is most likely a firmware bug.",
+    "label": "KlogAcpiBadSourceType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Target is not a Package or BufferField",
+    "advice": "An attempt to store an ACPI object into an indexed buffer or package element failed beacause the targe type is not a package or a buffer field.",
+    "label": "KlogAcpiTargetNotPackageOrBufferField"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No pointer back to namespace node in buffer object",
+    "advice": "An attempt to get a buffer length and initializer byte list failed because there was no pointer that referenced back to the name space node in the given buffer object.  See acpi_ds_get_buffer_arguments().",
+    "label": "KlogAcpiBadPointeInBufferObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No pointer back to namespace node in package",
+    "advice": "An attempt to get a buffer length and initializer byte list failed because there was no pointer that referenced back to the name space node in the given package.  See acpi_ds_get_package_arguments().",
+    "label": "KlogAcpiBadPointerInPackage"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not disable fixed event",
+    "advice": "An ACPI fixed event could not be disabled, acpi_disable_event() failed to disable it.  See acpi_ev_terminate().",
+    "label": "KlogAcpiFixedEventDisableFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not remove SCI handler",
+    "advice": "The ACPI SCI handler could not be removed. See acpi_ev_terminate().",
+    "label": "KlogAcpiSciHandlerRemoveFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not remove Global Lock handler",
+    "advice": "The ACPI Global Lock Handler could not be removed. See acpi_ev_terminate().",
+    "label": "KlogAcpiGlobalLockHandlerRemoveFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid/unsupported SerialBus resource descriptor: BusType 0x",
+    "advice": "An ACPI resource descriptor failed a validation check, the bus type field for a serial bus resource descriptor is invalid. See acpi_ut_validate_resource().  This appears to be a firmware bug.",
+    "label": "KlogAcpiBadSerialBusResourceDescriptor"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid resource descriptor length: Type 0x.*, Length 0x.* MinLength 0x.*",
+    "advice": "An ACPI resource descriptor failed a validation check, the length of the resource descriptor is invalid. See acpi_ut_validate_resource().  This appears to be a firmware bug.",
+    "label": "KlogAcpiInvalidResourceDescriptorLength"
+  },
+ {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No results on result stack",
+    "advice": "Failed to pop an object off the ACPI walk result stack, no results on the stack. This is an internal ACPICA bug and should not occur, see acpi_ds_result_pop().",
+    "label": "KlogAcpiResultStackNoResults"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No result state for result stack",
+    "advice": "Failed to pop an object off the ACPI walk result stack, no result state on the stack. This is an internal ACPICA bug and should not occur, see acpi_ds_result_pop().",
+    "label": "KlogAcpiResultStackNoState"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Result stack is empty! State=",
+    "advice": "Failed to pop an object off the ACPI walk result stack, the result stack is NULL (empty). This is normally triggered by buggy firmware attempting to pop values off the stack when it is empty.",
+    "label": "KlogAcpiResultStatckEmpty"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No result objects on result stack, State=",
+    "advice": "Failed to pop an object off the ACPI walk result stack, there were no result objects on the result stack.",
+    "label": "KlogAcpiResultStatckNoResultObjects"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Result stack is full",
+    "advice": "Failed to push an object onto the current ACPI result stack, the result stack is full up. This is an internal ACPICA bug.",
+    "label": "KlogAcpiResultStackFull"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Failed to extend the result stack",
+    "advice": "Failed to push an object onto the current ACPI result stack, the stack could not be extended.",
+    "label": "KlogAcpiResultStackExtendFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No free elements in result stack",
+    "advice": "Failed to push an object onto the current ACPI result stack, there are no free element slots in the stack. This is an internal ACPICA bug.",
+    "label": "KlogAcpiResultStackNoFreeElements"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No result stack frame during push",
+    "advice": "Failed to push an object onto the current ACPI result stack, there appears to be no results stack to push the object onto. This is an internal ACPICA bug.",
+    "label": "KlogAcpiResultStackPushNoFrame"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null Object! Obj=.* State=.* Num=.*",
+    "advice": "Failed to push an object onto the current ACPI result stack, the object is NULL.",
+    "label": "KlogAcpiResultStackNullObject"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Result stack overflow: State=.* Num=",
+    "advice": "Failed to push an object onto the ACPI walk_state result stack. The stack has overflowed.",
+    "label": "KlogAcpiResultStackOverflow"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Insufficient result stack size",
+    "advice": "Failed to pop an object off the ACPI walk_state result stack. The result stack had insufficient objects on it to pop off.",
+    "label": "KlogAcpiResultStackSizeInsufficient"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object stack overflow.*Obj=.*State=.*",
+    "advice": "Failed to push an object onto the walk state object/operand stack, a maximum of 8 operands are allowed.",
+    "label": "KlogAcpiObjectStackOverflow"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Object stack underflow.*Count=.*State=.*Ops=",
+    "advice": "Failed to pop an object from the walk state object/operand stack, there were no operands left on the stack.",
+    "label": "KlogAcpiObjectStackUnderflow"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "is not a valid walk state",
+    "advice": "Failed to delete an ACPI walk state, the given walk state is not an ACPI walk state type.  This is an internal ACPICA bug. see acpi_ds_delete_walk_state().",
+    "label": "KlogAcpiWalkStateInvalid"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "walk still has a scope list",
+    "advice": "Failed to delete an ACPI walk state, the walk state has an open scope list.  This is an internal ACPICA bug. See acpi_ds_delete_walk_state().",
+    "label": "KlogAcpiWalkStateHasScopeList"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Target of Create Field is not a Buffer object",
+    "advice": "Failed to initialise an ACPI buffer field, the target of the Create Field op is not a buffer object. This is a firmware bug.",
+    "label": "KlogAcpiTargetNotBufferObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "destination not a NS Node",
+    "advice": "Failed to initialise an ACPI buffer field, the destination is not an ACPI name space node. This is a firmware bug.",
+    "label": "KlogAcpiDestinationNotNameSpaceNode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Attempt to CreateField of length zero",
+    "advice": "Failed to initialise an ACPI buffer field, CreateField used with a zero field length which is illegal. This is a firmware bug.",
+    "label": "KlogAcpiZeroLengthCreateField"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown field creation opcode 0x",
+    "advice": "Failed to initialise an ACPI buffer field, was expecting a CreateField, CreateBitField, CreateByteField, CreateWordField, CreateDWordField or a CreateQWordField opcode, but got a different AML opcode instead.  This is a firmware bug.",
+    "label": "KlogAcpiUknownFieldCreationOpcode"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Field .* at .* exceeds Buffer .* size .*bits",
+    "advice": "Failed to initialise an ACPI buffer field, the field exceeded the buffer size provided. This is a firmware bug.",
+    "label": "KlogAcpiFieldExceedsBuffer"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": ".*bad operand.*status 0x",
+    "advice": "Failed to get buffer field Buffer and Index, could not resolve operands. A call to acpi_ex_resolve_operands() failed and returned an error status code. See acpi_ds_eval_buffer_field_operands().",
+    "label": "KlogAcpiBadOperand"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No Sleep State object returned from",
+    "advice": "An evaluation of the _Sx namespace object containing register values for the sleep state failed. It is entirely possible that the _Sx is broken in the firmware.  See also acpi_get_sleep_type_data():",
+    "label": "KlogAcpiNoSleepStateObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Sleep State return object is not a Package",
+    "advice": "An evaluation of the _Sx namespace object containing register values for the sleep state failed.  The kernel was expecting an ACPI package to be returned, but some different type was returned instead.  The ACPI firmware object _Sx is buggy.",
+    "label": "KlogAcpiSleepStateObjectNotPackage"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "While evaluating Sleep State",
+    "advice": "Failed to evaluate _Sx namespace object that contains the register values for the sleep state.",
+    "label": "KlogAcpiSleepStateEvalFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Resize of Root Table Array is not allowed",
+    "advice": "An attempt to resize the ACPI Root Table Array failed because the ACPI global root table flag ACPI_ROOT_ALLOW_RESIZE is not set.",
+    "label": "KlogAcpiRootTableArrayResize"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not allocate new root table array",
+    "advice": "Failed to allocate memory for the root table array.",
+    "label": "KlogAcpiRootTableArrayAllocFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Bad destination type during conversion: 0x",
+    "advice": "Destination type should be one of Integer, Buffer Field, Local Bank Field, Local Index Field, String or Buffer.",
+    "label": "KlogAcpiBadDestinationType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown Target type ID 0x.* AmlOpcode 0x.* DestType",
+    "advice": "An unknown target type was found in attempting to perform implicit type conversion.",
+    "label": "KlogAcpiUnknownTargetTypeId"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "SMBus/IPMI/GenericSerialBus write requires Buffer, found type",
+    "advice": "A SMBus, IPMI or GenericSerialBus write to a named field required a buffer to write into, but got a different type instead.",
+    "label": "KlogAcpiWriteRequiresBuffer"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "SMBus/IPMI/GenericSerialBus write requires Buffer of length .*, found length",
+    "advice": "A write buffer was too small.  SMBus, IPMI and GenericSerialBus writes require a buffer of size 34, 66 and 34 bytes respectively.",
+    "label": "KlogAcpiWriteBufferSize"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not acquire AML Interpreter mutex",
+    "advice": "The AML interpreter mutex could not be acquired when entering the interpreter execution region.  This is a fatal system error.",
+    "label": "KlogAcpiAmlMutexAcquireFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid descriptor type 0x",
+    "advice": "An invalid descriptor type was found while obtaining a reference to a target object.",
+    "label": "KlogAcpiInvalidDescriptorType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null parameter: Node .* Name 0x.* ReturnNode",
+    "advice": "Either the node, target name or return node pointers were NULL when attempting to search for a name segment in a single namespace level, see acpi_ns_search_and_enter().",
+    "label": "KlogAcpiNameSpaceNullParameter"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not allocate the GpeRegisterInfo table",
+    "advice": "General Purpose Events will fail to work because the table could not be allocated.",
+    "label": "KlogAcpiGpeRegisterInfoAllocFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not allocate the GpeEventInfo table",
+    "advice": "General Purpose Events will fail to work because the table could not be allocated.",
+    "label": "KlogAcpiGpeEventInfoAllocFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Bad BitWidth parameter:",
+    "advice": "A hardware I/O request failed because the requested bit width of the I/O operation was not 8, 16 or 32 bits wide.  Undefined behaviour may occur.",
+    "label": "KlogAcpiBadBitWidth"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Illegal I/O port address/length above 64K",
+    "advice": "A hardware I/O port access was above the 64K 16 bit port address space. This is illegal and not allowed. Undefined behaviour may occur.",
+    "label": "KlogAcpiIllegalIoPortAddressLength"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Need sub-package, found",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, the given list did not contain a sub-package. See acpi_rs_create_pci_routing_table().",
+    "label": "KlogAcpiPciRoutingTableSubPackageRequired"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Need package of length 4, found length",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package had an incorrect package length. See acpi_rs_create_pci_routing_table().",
+    "label": "KlogAcpiPciRoutingTableBadPackageLength"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Address.*Need Integer, found",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package Address (element 0) was not an Integer type.",
+    "label": "KlogAcpiPciRoutingTableBadPackageAddressType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Pin.*Need Integer, found",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package Pin (element 1) was not an Integer type.",
+    "label": "KlogAcpiPciRoutingTableBadPackagePinType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Source.*Need name, found Reference Class 0x",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package SourceName (element 2) local reference was not an reference class name type.",
+    "label": "KlogAcpiPciRoutingTableBadPackageSourceNameRefType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Source.*Need Ref/String/Integer, found",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package SourceName (element 2) was not a local reference, Integer or String type.",
+    "label": "KlogAcpiPciRoutingTableBadPackageSourceNameType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "SourceIndex.*Need Integer, found",
+    "advice": "Failed to create a linked list of PCI interrupt descriptions, a sub-package SourceIndex (element 3) was not an Integer type",
+    "label": "KlogAcpiPciRoutingTableBadSourceIndexType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Control Method .* has no attached object",
+    "advice": "An internal ACPICA error has occurred while attempting to get the next name, see acpi_ps_get_next_namepath(). This information is critical for parsing to continue correctly.",
+    "label": "KlogAcpiControlMethodNoAttachedObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid ArgType 0x",
+    "advice": "An error occurred in getting the next simple argument was expecting one of byte data, work data, dword data, qword data, char list, name or namestring, see acpi_ps_get_next_simple_arg().",
+    "label": "KlogAcpi"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No predicate ObjDesc=.* State=",
+    "advice": "An error occurred in getting the result of a predicate evaluation, a NULL operand object was found, which is unexpected. See acpi_ds_get_predicate_value().",
+    "label": "KlogAcpiNullPredicateObjDesc"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Bad predicate .*not an integer.* ObjDesc=.*State=.*Type=0x",
+    "advice": "The result of a predicate evaluation should be an integer but it was not. This is an unexpected error. See acpi_ds_get_predicate_value().",
+    "label": "KlogAcpiBadPredicateEvalResult"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Undefined opcode type Op=",
+    "advice": "Caught an unexpected opcode type, see acpi_ds_exec_end_op().",
+    "label": "KlogAcpiUndefinedOpCodeType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unimplemented opcode, class=.*type=.*Opcode=.*Op=.*",
+    "advice": "Caught an unexpected unimplemented opcode, see see acpi_ds_exec_end_op().",
+    "label": "KlogAcpiUnimplementedOpCode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not override predefined",
+    "advice": "An error occurred during Name Space initialisation, a predefined name could not be overridden. This only occurs if the initial value is NULL or the value string is NULL.",
+    "label": "KlogAcpiNameSpaceOverrideFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unsupported initial type value 0x",
+    "advice": "An error occurred during Name Space initialisation, a predefined name initial value is of an unsupported type.",
+    "label": "KlogAcpiNameSpaceOverrideBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "is not a namespace node",
+    "advice": "A scope node is not a namespace node, this is an internal ACPICA error.",
+    "label": "KlogAcpiNameSpaceNotNameSpaceNode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "ACPI path has too many parent prefixes (^) - reached beyond root node",
+    "advice": "An ACPI path has too many parent prefixes and has fallen outside the root node.  This is a bug in the firmware.  The Name Space lookup on the ACPI path cannot be found.",
+    "label": "KlogAcpiPathTooManyParentPrefixes"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not construct external pathname; index=.*, size=.*, Path=.*",
+    "advice": "Expected a zero index to a name buffer.  See acpi_ns_build_external_path().",
+    "label": "KlogAcpiExternalPathNameConstructFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid Namespace Node .* while traversing namespace",
+    "advice": "An ACPI namespace node descriptor type was not the expected ACPI_DESC_TYPE_NAMED type. Could not get the pathname length, see acpi_ns_get_pathname_length().",
+    "label": "KlogAcpiInvalidNameSpaceNodeType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unsupported object type, cannot convert to external object:",
+    "advice": "Failed to copy a simple internal ACPI object to an external ACPI object, unknown internal object type.",
+    "label": "KlogAcpiUtCopyBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unsupported object type, cannot convert to internal object:",
+    "advice": "Failed to copy a simple external ACPI object to an internal ACPI object, unknown external object type.",
+    "label": "KlogAcpiUtCopyBadType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed type .*, found .*",
+    "advice": "An ACPI object type did not match the expected type.",
+    "label": "KlogAcpiCheckObjectTypeFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null stack entry at",
+    "advice": "An internal ACPICA error occurred resolving operands - the ACPICA stack is either NULL or contains a NULL entry. This should not happen.",
+    "label": "KlogAcpiNullStackEntry"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Bad operand object type",
+    "advice": "An error occured trying to convert multiple input operands to the types required by the target operator, see acpi_ex_resolve_operands(), the internal ACPI operand object type was not correct.",
+    "label": "KlogAcpiBadOperandObjectType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed [Integer/String/Buffer], found",
+    "advice": "An error occurred in resolving operands, required an Integer, String or Buffer type, got a different type instead.",
+    "label": "KlogAcpiResolveOpBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed [Buffer/String/Package/Reference], found",
+    "advice": "An error occurred in resolving operands, required an Integer, String, Package or Reference type (normally for a size_of operator), got a different type instead.",
+    "label": "KlogAcpiResolveOpBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed [Buffer/String/Package], found",
+    "advice": "An error occurred in resolving operands, required a Buffer, String or Package type, got a different type instead.",
+    "label": "KlogAcpiResolveOpBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed [Region/Buffer], found",
+    "advice": "An error occurred in resolving operands, required a Region or Buffer type, got a different type instead.",
+    "label": "KlogAcpiResolveOpBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed Integer/Buffer/String/Package/Ref/Ddb], found",
+    "advice": "An error occurred in resolving operands, required an Integer, Buffer, String, Package or Dbd type for a Store() operator, got a different type instead.",
+    "label": "KlogAcpiResolveOpBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Internal - Unknown ARGI (required operand) type 0x",
+    "advice": "Internal error in acpi_ex_resolve_operands() - found an unknown type, this should not occur.",
+    "label": "KlogAcpiResolveOpBadArgType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "No init routine for region",
+    "advice": "An attempt to dispatch an address space or operation region access failed because the region has never been initialised but it does not have an address space setup function.  This is a ACPI or kernel address space handler bug.  Access to the address space or operation region will fail with undefined behaviour.",
+    "label": "KlogAcpiRegionHanderNoInit"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "The DSDT has been corrupted or replaced - old, new headers below",
+    "advice": "Some firmware corrupts the DSDT or installs a bad new DSDT, so a workaround is to copy the DSDT. Booting with kernel parameter acpi=copy_dsdt may fix this issue.",
+    "label": "KlogAcpiDsdtCorruptOrReplaced"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not copy DSDT of length 0x",
+    "advice": "Failed to copy DSDT to local memory. Some firmware corrupts the DSDT or installs a bad new DSDT, so a workaround is to copy the DSDT.  However, the table allocation failed, which means ACPI initialisation had failed, so ACPI support is disabled.",
+    "label": "KlogAcpiDsdtCopyFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null physical address for ACPI table",
+    "advice": "An attempt to install an ACPI table has failed because the physical address of the table is NULL, which is incorrect.  This could lead to ACPI failing to initialize and perhaps ACPI support being disabled.",
+    "label": "KlogAcpiTableNullPhysicalAddress"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not map memory for table .* at",
+    "advice": "The ACPI table could not me mapped into memory and was not added to the ACPI root table list.  This may lead to broken functionality.",
+    "label": "KlogAcpiTableMemoryMapFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null NamedObj handle",
+    "advice": "ACPI attempted to attach an ACPI object with a NULL parent node, see acpi_ns_attach_object().",
+    "label": "KlogAcpiAttachNullParentNode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Null object, but type not ACPI_TYPE_ANY",
+    "advice": "ACPI attempted to attach a NULL ACPI object with a type that was not ACPI_TYPE_ANY, see acpi_ns_attach_object().",
+    "label": "KlogAcpiAttachNullObjectBadType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Bit offset within field too large.*0xFFFFFFFF",
+    "advice": "A named field has a bit offset that is greater than the 32 bit field offset limit. An AML_INT_RESERVEDFIELD_OP 0x0031 was ignored because of the bit offset error.",
+    "label": "KlogAcpiFieldOffsetTooLarge"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Field .* bit offset too large.*0xFFFFFFFF",
+    "advice": "A named field has a bit offset that is greater than the 32 bit field offset limit. An AML_INT_NAMEDFIELD_OP 0x0030 was ignored because of the bit offset error.",
+    "label": "KlogAcpiFieldOffsetTooLarge"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid opcode in field list: 0x",
+    "advice": "An invalid opcode was found while parsing a field list. This is invariable due to buggy firmware.",
+    "label": "KlogAcpiFieldListInvalidOpcode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Attempt to dereference an Index to NULL package element Idx=",
+    "advice": "An error occurred attempting to retrieve a value from an internal ACPI object. A NULL object descriptor indicates an uninitialized element in an ACPI package, and hence it cannot be deferenced. Could not retrieve a value from an internal ACPI object. See acpi_ex_resolve_object_to_value().",
+    "label": "KlogAcpiNullPackageElementDereference"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown TargetType .* in Index.*Reference object",
+    "advice": "An ACPI_REFCLASS_INDEX has an unknown target type. Should be a buffer field or a package. Could not retrieve a value from an internal ACPI object. See acpi_ex_resolve_object_to_value().",
+    "label": "KlogAcpiUnkownTargetType"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown Reference type 0x.* in",
+    "advice": "The ACPI object type was not a known reference type. Could not retrieve a value from an internal ACPI object. See acpi_ex_resolve_object_to_value().",
+    "label": "KlogAcpiUnknownReferenceType"
+  },
+ {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Owner ID .* already exists",
+    "advice": "A table or method owner ID allocation was attempted but the owner ID already exists.  The allocation has failed.",
+    "label": "KlogAcpiOwnerIdAlreadyExists"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not allocate new OwnerId (255 max), AE_OWNER_ID_LIMIT",
+    "advice": "A table or method owner ID allocation failed because all owner IDs (maximum of 255) are in use. This only happens if there are very deep nestings of invoked control methods or there is an ACPI bug where owner IDs are not being released.",
+    "label": "KlogAcpiNoFreeOwnerIds"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid OwnerId: 0x",
+    "advice": "An attempt to release an owner ID failed because the owner ID is invalud. Only owner IDs 1 to 255 are allowed.",
+    "label": "KlogAcpiInvalidOwnerId"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Release of non-allocated OwnerId: 0x",
+    "advice": "An attempt to release an owner ID failed because the owner ID is not already allocated. This is a double-release error.",
+    "label": "KlogAcpiOwnerIdDoubleRelease"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown opcode 0x.* at table offset 0x.*, ignoring",
+    "advice": "An invalid AML opcode in the input stream has been encountered. This will be skipped. This normally indicates buggy firmware.  Undefined behaviour may occur.",
+    "label": "KlogAcpiUnknowOpcode"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Expecting bytelist, found AML opcode 0x.* in op",
+    "advice": "An error occurred translating a parser object to an equivalent namespace object. This occurs when evaluating a named buffer object such as Name(xxxx, Buffer) and the buffer does not contain an AML opcode bytelist.",
+    "label": "KlogAcpiByteListExpected"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown constant opcode 0x",
+    "advice": "An error occurred initializing a namespace object from a parser op. The return type was an Integer however the opcode type was not a Zero op, One op, Ones op or Revision op. See acpi_ds_init_object_from_op().",
+    "label": "KlogAcpiUnknownConstantOpcode"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown Integer type 0x",
+    "advice": "An error occurred initializing a namespace object from a parser op. The return type was an unknown Integer type. See acpi_ds_init_object_from_op().",
+    "label": "KlogAcpiUnknownIntegerType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unimplemented reference type for AML opcode: 0x",
+    "advice": "An error occurred initializing a namespace object from a parser op. ACPICA has detected an unimplemented reference type. See cpi_ds_init_object_from_op().",
+    "label": "KlogAcpiUnimplementedRefType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unimplemented data type: 0x",
+    "advice": "An error occurred initializing a namespace object from a parser op. ACPICA has detected an unimplemented data type. See cpi_ds_init_object_from_op().",
+    "label": "KlogAcpiUnimplementedDataType"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Method reached maximum reentrancy limit (255)",
+    "advice": "A method has been re-entrantly entered too many times. The limit is imposed to avoid a wrap-around on the thread count. Methods should generally not be re-entrantly executred this deep, so it may indicate a bug in the firmware.",
+    "label": "KlogAcpiMethodMaxRentrancyLimit"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Cannot acquire Mutex for method .*, current SyncLevel is too large",
+    "advice": "The mutex for a method was not acquired because the sync level was too large. The per-thread sync level must be less or equal to the sync level of the method being executed.  This error occurs because the interpreter attempted to avoid possible deadlocks. See acpi_ds_begin_method_execution().",
+    "label": "KlogAcpiSyncLevelTooLarge"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid zero thread count in method",
+    "advice": "A control thread execution has terminated and the thread count is zero, which should never occur. See acpi_ds_terminate_control_method().",
+    "label": "KlogAcpiZeroThreadCount"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Control method has no attached sub-object",
+    "advice": "Execution of a control method has failed, there is no method object associated with the resolved node. See acpi_ns_evaluate().",
+    "label": "KlogAcpiControlNoSubObject"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Evaluation of object type .* is not supported",
+    "advice": "Evaluation of a device, event, mutex, region, thermal or local scope ACPI object types is not allowed. The firmware is buggy. See acpi_ns_evaluate().",
+    "label": "KlogAcpiEvalObjectTypeNotSupported"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_BIOS",
+    "pattern": "unknown tag .* length",
+    "advice": "Failed to parse the PnPBIOS resource data, an unknown tag length specifier was found. This is a bug in the firmware resource data.",
+    "label": "KlogAcpiPnpBios"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_BIOS",
+    "pattern": "no end tag in resource structure",
+    "advice": "Failed to parse the PnPBIOS resource data, there was no end tag in the resource structure.",
+    "label": "KlogAcpiPnpBios"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI",
@@ -2753,14 +3977,6 @@
    "pattern": "Package List length.*larger than.*truncated",
    "advice": "A Method has returned a Package List that was larger than expected.",
    "label": "KlogAcpiPackageListLargerThanExpected"
-  },
-  {
-   "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
-   "tag": "FWTS_TAG_ACPI_METHOD_RETURN",
-   "pattern": "ACPI Error.*Result stack is empty!",
-   "advice": "",
-   "label": "KlogAcpiResultStackEmpty"
   },
   {
    "compare_mode": "regex",

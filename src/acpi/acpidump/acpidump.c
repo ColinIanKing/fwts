@@ -1595,27 +1595,27 @@ static void acpidump_fpdt(fwts_framework *fw, fwts_acpi_table_info *table)
 			__acpi_dump_table_fields(fw, ptr, fpdt_s3_perf_ptr_fields, ptr - data);
 			break;
 		case 0x0002 ... 0x0fff:
-			fwts_log_info_verbatum(fw, "Reserved for ACPI specification useage:");
+			fwts_log_info_verbatum(fw, "Reserved for ACPI specification usage:");
 			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
 		case 0x1000 ... 0x1fff:
-			fwts_log_info_verbatum(fw, "Reserved for Platform Vendor useage:");
+			fwts_log_info_verbatum(fw, "Reserved for Platform Vendor usage:");
 			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
 		case 0x2000 ... 0x2fff:
-			fwts_log_info_verbatum(fw, "Reserved for Hardware Vendor useage:");
+			fwts_log_info_verbatum(fw, "Reserved for Hardware Vendor usage:");
 			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
 		case 0x3000 ... 0x3fff:
-			fwts_log_info_verbatum(fw, "Reserved for BIOS Vendor useage:");
+			fwts_log_info_verbatum(fw, "Reserved for BIOS Vendor usage:");
 			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Reserved for future useage:");
+			fwts_log_info_verbatum(fw, "Reserved for future usage:");
 			__acpi_dump_table_fields(fw, ptr, fpdt_header_fields, ptr - data);
 			acpi_dump_raw_data(fw, ptr + fpdt_hdr_len, fpdt->length - fpdt_hdr_len, ptr + fpdt_hdr_len - data);
 			break;

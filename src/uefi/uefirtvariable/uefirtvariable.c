@@ -349,7 +349,9 @@ static bool strlen_valid(uint16_t *variablename, uint64_t variablenamesize)
 	uint16_t c;
 
 	for (len = 2; len <= variablenamesize; len += sizeof(c)) {
-		c = variablename[(len / sizeof(c)) - 1];
+		uint64_t i = (len / sizeof(c)) - 1;
+
+		c = variablename[i];
 		if (!c)
 			break;
 	}

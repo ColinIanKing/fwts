@@ -1452,6 +1452,17 @@ static void acpidump_slic(fwts_framework *fw, fwts_acpi_table_info *table)
 		fwts_acpi_table_slic_header *header =
 			(fwts_acpi_table_slic_header *)ptr;
 
+		/*
+		 *  Some machines such as the Acer Veritas have a SLIC header that
+		 *  declares it's length as zero.  So to avoid spinning forever
+		 *  break out of the loop.
+		 */
+		if ((ptr + sizeof(fwts_acpi_table_slic_header) < data + length) &&
+		    (header->length == 0)) {
+			fwts_log_info(fw, "SLIC header length is zero, aborting dump of SLIC.");
+			break;
+		}
+
 		switch(header->type) {
 		case 0:
 			__acpi_dump_table_fields(fw, ptr, slic_header_fields, ptr - data);

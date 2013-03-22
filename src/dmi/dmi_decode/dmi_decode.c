@@ -86,6 +86,7 @@ typedef struct {
 
 static const fwts_dmi_pattern dmi_patterns[] = {
 	{ "DMISerialNumber",	"Serial Number", 	"0123456789" },
+	{ "DMISerialNumber",	"Serial Number", 	"System Serial Number" },
 	{ "DMIAssetTag",	"Asset Tag",		"1234567890" },
 	{ "DMIBadDefault",	NULL,			"To Be Filled By O.E.M." },
 	{ NULL,			NULL,			NULL }

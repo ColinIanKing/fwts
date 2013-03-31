@@ -256,8 +256,6 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 								&vendor);
 		if (put_user(status, pgetnextvariablename->status))
 			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
 		convert_to_guid(&vendor, &vendor_guid);
 
 		if (put_user(name_size, pgetnextvariablename->VariableNameSize))
@@ -266,6 +264,8 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 		if (copy_to_user(pgetnextvariablename->VendorGuid,
 						&vendor_guid, sizeof(EFI_GUID)))
 			return -EFAULT;
+		if (status != EFI_SUCCESS)
+			return -EINVAL;
 		return 0;
 
 	case EFI_RUNTIME_QUERY_VARIABLEINFO:

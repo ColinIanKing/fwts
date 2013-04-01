@@ -43,13 +43,14 @@
 #define MAX_DATA_LENGTH		1024
 
 static int fd;
-EFI_GUID gtestguid1 = TEST_GUID1;
-EFI_GUID gtestguid2 = TEST_GUID2;
+static EFI_GUID gtestguid1 = TEST_GUID1;
+static EFI_GUID gtestguid2 = TEST_GUID2;
 
-uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE |
-		      FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
-		      FWTS_UEFI_VAR_RUNTIME_ACCESS;
-uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
+static uint32_t attributes =
+	FWTS_UEFI_VAR_NON_VOLATILE |
+	FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
+	FWTS_UEFI_VAR_RUNTIME_ACCESS;
+static uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
 
 static int uefirtvariable_init(fwts_framework *fw)
 {
@@ -74,8 +75,6 @@ static int uefirtvariable_init(fwts_framework *fw)
 
 static int uefirtvariable_deinit(fwts_framework *fw)
 {
-	FWTS_UNUSED(fw);
-
 	close(fd);
 	fwts_lib_efi_runtime_unload_module(fw);
 
@@ -84,9 +83,9 @@ static int uefirtvariable_deinit(fwts_framework *fw)
 
 static int getvariable_test(
 	fwts_framework *fw,
-	uint64_t datasize,
+	const uint64_t datasize,
 	uint16_t *varname,
-	uint32_t multitesttime)
+	const uint32_t multitesttime)
 {
 	long ioret;
 	struct efi_getvariable getvariable;
@@ -212,7 +211,7 @@ err_restore_env:
 
 }
 
-static bool compare_guid(EFI_GUID *guid1, EFI_GUID *guid2)
+static bool compare_guid(const EFI_GUID *guid1, const EFI_GUID *guid2)
 {
 	bool ident = true;
 	int i;
@@ -230,7 +229,7 @@ static bool compare_guid(EFI_GUID *guid1, EFI_GUID *guid2)
 	return ident;
 }
 
-static bool compare_name(uint16_t *name1, uint16_t *name2)
+static bool compare_name(const uint16_t *name1, const uint16_t *name2)
 {
 	bool ident = true;
 	int i = 0;
@@ -374,7 +373,7 @@ err_restore_env:
  * Return true if variablenamesize is the length of the
  * NULL-terminated unicode string, variablename.
  */
-static bool strlen_valid(uint16_t *variablename, uint64_t variablenamesize)
+static bool strlen_valid(const uint16_t *variablename, const uint64_t variablenamesize)
 {
 	uint64_t len;
 	uint16_t c;
@@ -460,7 +459,7 @@ static struct efi_var_item *buckets[BUCKET_SIZE];
  * minimal collisions, just more efficient than iterating over a
  * simple linked list.
  */
-static inline uint64_t hash_func(uint16_t *variablename, uint64_t length)
+static inline uint64_t hash_func(uint16_t *variablename, const uint64_t length)
 {
 	uint64_t i, hash = 0;
 	uint16_t *c = variablename;
@@ -704,11 +703,11 @@ err:
 
 static int setvariable_insertvariable(
 	fwts_framework *fw,
-	uint32_t attributes,
-	uint64_t datasize,
+	const uint32_t attributes,
+	const uint64_t datasize,
 	uint16_t *varname,
 	EFI_GUID *gtestguid,
-	uint8_t datadiff)
+	const uint8_t datadiff)
 {
 	long ioret;
 	struct efi_setvariable setvariable;
@@ -761,10 +760,10 @@ static int setvariable_insertvariable(
 
 static int setvariable_checkvariable(
 	fwts_framework *fw,
-	uint64_t datasize,
+	const uint64_t datasize,
 	uint16_t *varname,
 	EFI_GUID *gtestguid,
-	uint8_t datadiff)
+	const uint8_t datadiff)
 {
 	long ioret;
 	struct efi_getvariable getvariable;
@@ -853,11 +852,11 @@ static int setvariable_checkvariable_notfound(
 
 static int setvariable_invalidattr(
 	fwts_framework *fw,
-	uint32_t attributes,
-	uint64_t datasize,
+	const uint32_t attributes,
+	const uint64_t datasize,
 	uint16_t *varname,
 	EFI_GUID *gtestguid,
-	uint8_t datadiff)
+	const uint8_t datadiff)
 {
 	struct efi_setvariable setvariable;
 	uint64_t status;
@@ -889,8 +888,8 @@ static int setvariable_invalidattr(
 
 static int setvariable_test1(
 	fwts_framework *fw,
-	uint64_t datasize1,
-	uint64_t datasize2,
+	const uint64_t datasize1,
+	const uint64_t datasize2,
 	uint16_t *varname)
 {
 	int ret;
@@ -1189,7 +1188,7 @@ static int do_queryvariableinfo(
 
 static int getnextvariable_multitest(
 	fwts_framework *fw,
-	uint32_t multitesttime)
+	const uint32_t multitesttime)
 {
 	long ioret;
 	uint64_t status;

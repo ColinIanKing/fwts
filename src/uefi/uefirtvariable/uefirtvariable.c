@@ -1298,23 +1298,30 @@ static int uefirtvariable_test2(fwts_framework *fw)
 {
 	int ret;
 
+	fwts_log_info(fw, "The runtime service GetNextVariableName interface function test.");
 	ret = getnextvariable_test1(fw);
 	if (ret != FWTS_OK)
 		return ret;
+	fwts_passed(fw, "The runtime service GetNextVariableName interface function test passed.");
 
+	fwts_log_info(fw, "Check the GetNextVariableName returned value of VariableNameSize is equal to the length of VariableName.");
 	ret = getnextvariable_test2(fw);
 	if (ret != FWTS_OK)
 		return ret;
+	fwts_passed(fw, "Check the GetNextVariableName returned value of VariableNameSize is equal to the length of VariableName passed.");
 
+	fwts_log_info(fw, "Test GetNextVariableName interface returns unique variables.");
 	ret = getnextvariable_test3(fw);
 	if (ret != FWTS_OK)
 		return ret;
+	fwts_passed(fw, "Test GetNextVariableName interface returns unique variables passed.");
 
+	fwts_log_info(fw, "The GetNextVariableName interface conformance tests.");
 	ret = getnextvariable_test4(fw);
 	if (ret != FWTS_OK)
 		return ret;
+	fwts_passed(fw, "The runtime service GetNextVariableName interface conformance tests passed.");
 
-	fwts_passed(fw, "UEFI runtime service GetNextVariableName interface test passed.");
 
 	return FWTS_OK;
 }

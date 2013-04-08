@@ -1,3 +1,21 @@
+fwts (0.26.08-0ubuntu1) raring; urgency=low
+
+  [Colin Ian King]
+  * uefi: uefivariable: fix build error on older compilers
+  * acpi: acpidump: fix spelling mistake, useage -> usage
+  * acpi: acpidump: abort dumping of SLIC if length is zero
+  * data: klog.json: Add in another batch of BIOS and ACPI related checks
+  * dmi: dmi_decode: Add another commonly used serial number
+  * uefi: uefirtvariable: minor reformatting for 80 char width lines
+  * uefi: uefirtvariable: minor code tidy up, constify and statics
+
+  [Ivan Hu]
+  * efiruntime: getnextvariablename update the VariableNameSize before return
+    when get EFI_BUFFER_TOO_SMALL
+  * uefirtvariable: add some information for the GetNextVariableName sub-tests
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Mon, 08 Apr 2013 16:45:31 +0800
+
 fwts (0.26.07-0ubuntu1) raring; urgency=low
 
   [Colin Ian King]

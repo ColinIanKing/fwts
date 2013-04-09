@@ -51,7 +51,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, dialog, fwts
 Description: Firmware Test Suite frontend interface
  This is a dialog based interface designed to provide an easy to use method
  to execute tests via Firmware Test Suite and is also used as the primary 
- interface within Firmware Test Suit live images.
+ interface within Firmware Test Suite live images.
 
 Package: fwts-efi-runtime-dkms
 Architecture: amd64

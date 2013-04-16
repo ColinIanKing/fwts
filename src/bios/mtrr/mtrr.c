@@ -73,7 +73,7 @@ static char *cache_to_string(int type)
 	if (type & WRITE_PROTECT)
 		strcat(str," Write-Protect");
 	if (type & DEFAULT)
-		strcat(str," Default");
+		strcat(str," Default (Most probably Uncached)");
 	if (type & UNKNOWN)
 		strcat(str," Unknown");
 	return str;

@@ -60,7 +60,8 @@ typedef struct {
 #define UEFI_IFACE_EFIVARS		(3)	/* efivar fs */
 
 /* File system magic numbers */
-#define EFIVARS_FS_MAGIC	0x6165676C
+#define PSTOREFS_MAGIC          0x6165676C
+#define EFIVARFS_MAGIC          0xde5e81e4
 #define SYS_FS_MAGIC		0x62656572
 
 /*
@@ -126,7 +127,8 @@ static int fwts_uefi_get_interface(char **path)
 	/* We've now found a valid file system we can use */
 	*path = efivar_path;
 
-	if (statbuf.f_type == EFIVARS_FS_MAGIC) {
+	if ((statbuf.f_type == EFIVARFS_MAGIC) ||
+	    (statbuf.f_type == PSTOREFS_MAGIC)) {
 		efivars_interface = UEFI_IFACE_EFIVARS;
 		return UEFI_IFACE_EFIVARS;
 	}

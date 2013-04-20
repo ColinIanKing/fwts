@@ -41,6 +41,8 @@
 
 #define FWTS_CPU_PATH	"/sys/devices/system/cpu"
 
+#define MAX_FREQS	256
+
 typedef struct {
 	uint32_t	Hz;
 	uint64_t	speed;
@@ -214,14 +216,22 @@ static uint32_t get_claimed_hz(const int cpu)
 	return value;
 }
 
+static int cpu_freq_compare(const void *v1, const void *v2)
+{
+	const fwts_cpu_freq *cpu_freq1 = (fwts_cpu_freq *)v1;
+	const fwts_cpu_freq *cpu_freq2 = (fwts_cpu_freq *)v2;
+
+	return cpu_freq1->Hz - cpu_freq2->Hz;
+}
+
 static void do_cpu(fwts_framework *fw, int cpu)
 {
 	char path[PATH_MAX];
 	char line[4096];
-	fwts_cpu_freq freqs[32];
+	fwts_cpu_freq freqs[MAX_FREQS];
 	FILE *file;
 	char *c, *c2;
-	int i, delta;
+	int i;
 	int speedcount;
 	static int warned=0;
 	int warned_PSS = 0;
@@ -250,7 +260,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 
 	c = line;
 	i = 0;
-	while (c && strlen(c) > 1) {
+	while ((i < MAX_FREQS) && c && strlen(c) > 1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
 			*c2 = 0;
@@ -302,21 +312,8 @@ static void do_cpu(fwts_framework *fw, int cpu)
 	if (speedcount<2)
 		return;
 
-	/* Now.. sort the frequencies */
-
-	delta=1;
-	while (delta) {
-		fwts_cpu_freq tmp;
-		delta = 0;
-		for (i = 0; i < speedcount-1; i++) {
-			if (freqs[i].Hz > freqs[i+1].Hz) {
-				tmp = freqs[i];
-				freqs[i] = freqs[i+1];
-				freqs[i+1] = tmp;
-				delta = 1;
-			}
-		}
-	}
+	/* Sort the frequencies */
+	qsort(freqs, speedcount, sizeof(fwts_cpu_freq), cpu_freq_compare);
 
 	/* now check for 1) increasing HZ and 2) increasing speed */
 	for (i = 0; i < speedcount-1; i++) {

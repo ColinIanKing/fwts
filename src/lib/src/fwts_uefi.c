@@ -60,9 +60,9 @@ typedef struct {
 #define UEFI_IFACE_EFIVARS		(3)	/* efivar fs */
 
 /* File system magic numbers */
-#define PSTOREFS_MAGIC          0x6165676C
-#define EFIVARFS_MAGIC          0xde5e81e4
-#define SYS_FS_MAGIC		0x62656572
+#define PSTOREFS_MAGIC          ((__SWORD_TYPE)0x6165676C)
+#define EFIVARFS_MAGIC          ((__SWORD_TYPE)0xde5e81e4)
+#define SYS_FS_MAGIC		((__SWORD_TYPE)0x62656572)
 
 /*
  *  fwts_uefi_get_interface()

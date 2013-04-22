@@ -135,7 +135,7 @@ static int fwts_uefi_get_interface(char **path)
 
 	if (statbuf.f_type == SYS_FS_MAGIC) {
 		efivars_interface = UEFI_IFACE_SYSFS;
-		return UEFI_IFACE_EFIVARS;
+		return UEFI_IFACE_SYSFS;
 	}
 
 	return UEFI_IFACE_UNKNOWN;

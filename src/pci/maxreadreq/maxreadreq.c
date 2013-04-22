@@ -103,6 +103,8 @@ static int maxreadreq_test1(fwts_framework *fw)
 			continue;
 		if (strcmp(current_type, "System peripheral")==0)
 			continue;
+		if (strcmp(current_type, "Audio device")==0)
+			continue;
 
 		c = strstr(line, "MaxReadReq ");
 		if (c) {

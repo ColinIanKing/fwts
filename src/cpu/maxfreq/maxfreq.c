@@ -28,10 +28,10 @@
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
 
-static int maxfreq_max(const char *str)
+static double maxfreq_max(const char *str)
 {
-	int max = -1;
-	int val;
+	double max = -1.0;
+	double val;
 
 	while (str && *str) {
 		while ((*str != '\0') && isspace(*str))
@@ -40,7 +40,7 @@ static int maxfreq_max(const char *str)
 		if (!isdigit(*str))
 			break;
 
-		val = atoi(str);
+		val = atof(str);
 		if (val > max)
 			max = val;
 		str = strstr(str, " ");
@@ -57,7 +57,7 @@ static int maxfreq_test1(fwts_framework *fw)
 	int cpu;
 	fwts_list_link *item;
 	fwts_list *cpuinfo;
-	int *cpufreq;
+	double *cpufreq;
 	int failed = 0;
 	int advice = 0;
 
@@ -79,7 +79,7 @@ static int maxfreq_test1(fwts_framework *fw)
 			cpus++;
 	}
 
-	if ((cpufreq = calloc(cpus, sizeof(int))) == NULL) {
+	if ((cpufreq = calloc(cpus, sizeof(double))) == NULL) {
 		fwts_log_error(fw, "Cannot create cpu frequency array.");
 		return FWTS_ERROR;
 	}
@@ -90,16 +90,15 @@ static int maxfreq_test1(fwts_framework *fw)
 		char *str = fwts_text_list_text(item);
 		if (strstr(str, "model name")) {
 			if ((str = strstr(str, "@")) != NULL) {
-				double freq = atof(str+1);
+				cpufreq[cpu] = atof(str+1);
 				if (strstr(str, "GHz"))
-					freq *= 1000000.0;
+					cpufreq[cpu] *= 1000000.0;
 				if (strstr(str, "MHz"))
-					freq *= 1000.0;
-				cpufreq[cpu] = (int)freq;
+					cpufreq[cpu] *= 1000.0;
 				cpufreqs_read++;
 			}
 			else
-				cpufreq[cpu] = -1;
+				cpufreq[cpu] = -1.0;
 
 			cpu++;
 		}
@@ -129,17 +128,17 @@ static int maxfreq_test1(fwts_framework *fw)
 				CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies",
 				entry->d_name);
 			if ((data = fwts_get(path)) != NULL) {
-				int maxfreq = maxfreq_max(data);
+				double maxfreq = maxfreq_max(data);
 				int cpunum = atoi(entry->d_name + 3);
-				if (maxfreq == -1) {
+				if (maxfreq < 0.0) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM,
 						"CPUFreqReadFailed",
 						"Cannot read cpu frequency from %s for CPU %s\n",
 						CPU_FREQ_PATH, entry->d_name);
 					failed++;
 				} else {
-					double maxfreq_ghz = (double)maxfreq/1000000.0;
-					double cpufreq_ghz = (double)cpufreq[cpunum] / 1000000.0;
+					double maxfreq_ghz = maxfreq / 1000000.0;
+					double cpufreq_ghz = cpufreq[cpunum] / 1000000.0;
 
 					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
 						failed++;

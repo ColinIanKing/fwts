@@ -33,9 +33,9 @@
 /*
  * This test sanity checks apic irq information
  * rule of thumb:
- * interrupts <16 should be EDGE
- * interrupts >16 should be LEVEL
- * acpi interrupt should be LEVEL
+ *   interrupts <16 should be EDGE
+ *   interrupts >16 should be LEVEL
+ *   acpi interrupt should be LEVEL
  */
 
 static int apicedge_test1(fwts_framework *fw)
@@ -54,11 +54,11 @@ static int apicedge_test1(fwts_framework *fw)
 		int edge = -1;
 		int irq = 0;
 
-		memset(line, 0, 4096);
-		if (fgets(line, 4095, file) == NULL)
+		memset(line, 0, sizeof(line));
+		if (fgets(line, sizeof(line) - 1, file) == NULL)
 			break;
 
-		if (! (line[0]==' ' || (line[0]>='0' && line[0]<='9')) )
+		if (! (line[0] == ' ' || (line[0] >= '0' && line[0] <= '9')) )
 			continue;
 
 		irq = strtoul(line, &c, 10);
@@ -77,13 +77,17 @@ static int apicedge_test1(fwts_framework *fw)
 
 		if (strstr(line,"acpi")) {
 			if (edge == 1) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPIIRQEdgeTrig", "ACPI Interrupt is incorrectly edge triggered.");
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"ACPIIRQEdgeTrig",
+					"ACPI Interrupt is incorrectly edge triggered.");
 				fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 			}
 			continue;
 		}
 		if ((irq < 15) && (edge == 0)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "LegacyIRQLevelTrig", "Legacy interrupt %i is incorrectly level triggered.", irq);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"LegacyIRQLevelTrig",
+				"Legacy interrupt %i is incorrectly level triggered.", irq);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS_IRQ);
 		}
 		if ((irq < 15) && (edge == -1)) {

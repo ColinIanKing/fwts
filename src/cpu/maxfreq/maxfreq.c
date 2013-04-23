@@ -28,11 +28,6 @@
 #define CPU_FREQ_PATH	"/sys/devices/system/cpu"
 #define CPU_INFO_PATH	"/proc/cpuinfo"
 
-typedef struct {
-	int cpu;
-	int speed;
-} fwts_cpuinfo;
-
 static int maxfreq_max(const char *str)
 {
 	int max = -1;

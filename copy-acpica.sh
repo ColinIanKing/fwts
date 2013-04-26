@@ -10,7 +10,7 @@ if [ -e acpica ]; then
 	mv acpica acpica.old
 fi
 echo "Cloning new ACPICA.."
-git clone https://github.com/otcshare/acpica.git
+git clone git://github.com/acpica/acpica
 
 FWTS_ACPICA_PATH=${FWTS}/src/acpica/source 
 SAVE_FILES=acpica-upgrade-save

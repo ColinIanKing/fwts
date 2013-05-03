@@ -83,6 +83,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/debugger/dbxface.c	\
 	$(ACPICA_COMP)/debugger/dbmethod.c	\
 	$(ACPICA_COMP)/debugger/dbnames.c	\
+	$(ACPICA_COMP)/debugger/dbconvert.c	\
 	$(ACPICA_COMP)/disassembler/dmbuffer.c	\
 	$(ACPICA_COMP)/disassembler/dmnames.c	\
 	$(ACPICA_COMP)/disassembler/dmobject.c	\
@@ -93,6 +94,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/disassembler/dmutils.c	\
 	$(ACPICA_COMP)/disassembler/dmwalk.c	\
 	$(ACPICA_COMP)/disassembler/dmresrcl2.c	\
+	$(ACPICA_COMP)/disassembler/dmdeferred.c \
 	$(ACPICA_COMP)/dispatcher/dsfield.c	\
 	$(ACPICA_COMP)/dispatcher/dsinit.c	\
 	$(ACPICA_COMP)/dispatcher/dsmethod.c	\
@@ -120,6 +122,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/events/evxfevnt.c	\
 	$(ACPICA_COMP)/events/evxfregn.c	\
 	$(ACPICA_COMP)/events/evglock.c		\
+	$(ACPICA_COMP)/events/evhandler.c	\
 	$(ACPICA_COMP)/executer/exfield.c	\
 	$(ACPICA_COMP)/executer/exfldio.c	\
 	$(ACPICA_COMP)/executer/exmisc.c	\
@@ -172,6 +175,9 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/namespace/nsxfeval.c	\
 	$(ACPICA_COMP)/namespace/nsxfname.c	\
 	$(ACPICA_COMP)/namespace/nsxfobj.c	\
+	$(ACPICA_COMP)/namespace/nsconvert.c	\
+	$(ACPICA_COMP)/namespace/nsprepkg.c	\
+	$(ACPICA_COMP)/namespace/nsarguments.c	\
 	$(ACPICA_COMP)/parser/psargs.c		\
 	$(ACPICA_COMP)/parser/psloop.c		\
 	$(ACPICA_COMP)/parser/psopcode.c	\
@@ -181,6 +187,8 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/parser/psutils.c		\
 	$(ACPICA_COMP)/parser/pswalk.c		\
 	$(ACPICA_COMP)/parser/psxface.c		\
+	$(ACPICA_COMP)/parser/psopinfo.c	\
+	$(ACPICA_COMP)/parser/psobject.c	\
 	$(ACPICA_COMP)/resources/rsaddr.c	\
 	$(ACPICA_COMP)/resources/rscalc.c	\
 	$(ACPICA_COMP)/resources/rscreate.c	\
@@ -194,6 +202,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/resources/rsutils.c	\
 	$(ACPICA_COMP)/resources/rsxface.c	\
 	$(ACPICA_COMP)/resources/rsserial.c	\
+	$(ACPICA_COMP)/resources/rsdumpinfo.c	\
 	$(ACPICA_COMP)/tables/tbfadt.c		\
 	$(ACPICA_COMP)/tables/tbfind.c		\
 	$(ACPICA_COMP)/tables/tbinstal.c	\
@@ -224,6 +233,10 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/utilities/utxface.c	\
 	$(ACPICA_COMP)/utilities/utdecode.c	\
 	$(ACPICA_COMP)/utilities/utexcep.c	\
+	$(ACPICA_COMP)/utilities/utpredef.c	\
+	$(ACPICA_COMP)/utilities/utstring.c	\
+	$(ACPICA_COMP)/utilities/utownerid.c	\
+	$(ACPICA_COMP)/utilities/utxfinit.c	\
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslutils -- compiler utilities
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -124,32 +123,6 @@
 
 #define _COMPONENT          ACPI_COMPILER
         ACPI_MODULE_NAME    ("aslutils")
-
-
-char                        AslHexLookup[] =
-{
-    '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-};
-
-/* Table below must match ASL_FILE_TYPES in asltypes.h */
-
-static const char       *AslFileTypeNames [ASL_NUM_FILES] =
-{
-    "stdout:       ",
-    "stderr:       ",
-    "Table Input:  ",
-    "Binary Output:",
-    "Source Output:",
-    "Preprocessor: ",
-    "Listing File: ",
-    "Hex Dump:     ",
-    "Namespace:    ",
-    "Debug File:   ",
-    "ASM Source:   ",
-    "C Source:     ",
-    "ASM Include:  ",
-    "C Include:    "
-};
 
 
 /* Local prototypes */
@@ -177,34 +150,34 @@ UtAttachNameseg (
  *
  ******************************************************************************/
 
+#define ACPI_TABLE_HELP_FORMAT  "%8u) %s    %s\n"
+
 void
 UtDisplaySupportedTables (
     void)
 {
     ACPI_DMTABLE_DATA       *TableData;
-    UINT32                  i = 6;
+    UINT32                  i;
 
 
-    printf ("\nACPI tables supported by iASL subsystems in "
-        "version %8.8X:\n"
-        "  ASL and Data Table compilers\n"
-        "  AML and Data Table disassemblers\n"
-        "  ACPI table template generator\n\n", ACPI_CA_VERSION);
+    printf ("\nACPI tables supported by iASL version %8.8X:\n"
+        "  (Compiler, Disassembler, Template Generator)\n\n",
+        ACPI_CA_VERSION);
 
     /* Special tables */
 
-    printf ("%8u) %s    %s\n", 1, ACPI_SIG_DSDT, "Differentiated System Description Table");
-    printf ("%8u) %s    %s\n", 2, ACPI_SIG_SSDT, "Secondary System Description Table");
-    printf ("%8u) %s    %s\n", 3, ACPI_SIG_FADT, "Fixed ACPI Description Table (FADT)");
-    printf ("%8u) %s    %s\n", 4, ACPI_SIG_FACS, "Firmware ACPI Control Structure");
-    printf ("%8u) %s    %s\n", 5, ACPI_RSDP_NAME, "Root System Description Pointer");
+    printf ("  Special tables and AML tables:\n");
+    printf (ACPI_TABLE_HELP_FORMAT, 1, ACPI_RSDP_NAME, "Root System Description Pointer");
+    printf (ACPI_TABLE_HELP_FORMAT, 2, ACPI_SIG_FACS, "Firmware ACPI Control Structure");
+    printf (ACPI_TABLE_HELP_FORMAT, 3, ACPI_SIG_DSDT, "Differentiated System Description Table");
+    printf (ACPI_TABLE_HELP_FORMAT, 4, ACPI_SIG_SSDT, "Secondary System Description Table");
 
     /* All data tables with common table header */
 
-    for (TableData = AcpiDmTableData; TableData->Signature; TableData++)
+    printf ("\n  Standard ACPI data tables:\n");
+    for (TableData = AcpiDmTableData, i = 5; TableData->Signature; TableData++, i++)
     {
-        printf ("%8u) %s    %s\n", i, TableData->Signature, TableData->Name);
-        i++;
+        printf (ACPI_TABLE_HELP_FORMAT, i, TableData->Signature, TableData->Name);
     }
 }
 
@@ -619,7 +592,7 @@ UtDisplaySummary (
         }
 
         FlPrintFile (FileId, "%14s %s - %u bytes\n",
-            AslFileTypeNames [i],
+            Gbl_Files[i].ShortDescription,
             Gbl_Files[i].Filename, FlGetFileSize (i));
     }
 
@@ -663,36 +636,23 @@ UtCheckIntegerRange (
     UINT32                  LowValue,
     UINT32                  HighValue)
 {
-    char                    *ParseError = NULL;
-    char                    Buffer[64];
-
 
     if (!Op)
     {
-        return NULL;
+        return (NULL);
     }
 
-    if (Op->Asl.Value.Integer < LowValue)
+    if ((Op->Asl.Value.Integer < LowValue) ||
+        (Op->Asl.Value.Integer > HighValue))
     {
-        ParseError = "Value below valid range";
-        Op->Asl.Value.Integer = LowValue;
+        sprintf (MsgBuffer, "0x%X, allowable: 0x%X-0x%X",
+            (UINT32) Op->Asl.Value.Integer, LowValue, HighValue);
+
+        AslError (ASL_ERROR, ASL_MSG_RANGE, Op, MsgBuffer);
+        return (NULL);
     }
 
-    if (Op->Asl.Value.Integer > HighValue)
-    {
-        ParseError = "Value above valid range";
-        Op->Asl.Value.Integer = HighValue;
-    }
-
-    if (ParseError)
-    {
-        sprintf (Buffer, "%s 0x%X-0x%X", ParseError, LowValue, HighValue);
-        AslCompilererror (Buffer);
-
-        return NULL;
-    }
-
-    return Op;
+    return (Op);
 }
 
 
@@ -728,6 +688,79 @@ UtGetStringBuffer (
     Gbl_StringCacheNext += Length;
 
     return (Buffer);
+}
+
+
+/******************************************************************************
+ *
+ * FUNCTION:    UtExpandLineBuffers
+ *
+ * PARAMETERS:  None. Updates global line buffer pointers.
+ *
+ * RETURN:      None. Reallocates the global line buffers
+ *
+ * DESCRIPTION: Called if the current line buffer becomes filled. Reallocates
+ *              all global line buffers and updates Gbl_LineBufferSize. NOTE:
+ *              Also used for the initial allocation of the buffers, when
+ *              all of the buffer pointers are NULL. Initial allocations are
+ *              of size ASL_DEFAULT_LINE_BUFFER_SIZE
+ *
+ *****************************************************************************/
+
+void
+UtExpandLineBuffers (
+    void)
+{
+    UINT32                  NewSize;
+
+
+    /* Attempt to double the size of all line buffers */
+
+    NewSize = Gbl_LineBufferSize * 2;
+    if (Gbl_CurrentLineBuffer)
+    {
+        DbgPrint (ASL_DEBUG_OUTPUT,"Increasing line buffer size from %u to %u\n",
+            Gbl_LineBufferSize, NewSize);
+    }
+
+    Gbl_CurrentLineBuffer = realloc (Gbl_CurrentLineBuffer, NewSize);
+    Gbl_LineBufPtr = Gbl_CurrentLineBuffer;
+    if (!Gbl_CurrentLineBuffer)
+    {
+        goto ErrorExit;
+    }
+
+    Gbl_MainTokenBuffer = realloc (Gbl_MainTokenBuffer, NewSize);
+    if (!Gbl_MainTokenBuffer)
+    {
+        goto ErrorExit;
+    }
+
+    Gbl_MacroTokenBuffer = realloc (Gbl_MacroTokenBuffer, NewSize);
+    if (!Gbl_MacroTokenBuffer)
+    {
+        goto ErrorExit;
+    }
+
+    Gbl_ExpressionTokenBuffer = realloc (Gbl_ExpressionTokenBuffer, NewSize);
+    if (!Gbl_ExpressionTokenBuffer)
+    {
+        goto ErrorExit;
+    }
+
+    Gbl_LineBufferSize = NewSize;
+    return;
+
+
+    /* On error above, simply issue error messages and abort, cannot continue */
+
+ErrorExit:
+    printf ("Could not increase line buffer size from %u to %u\n",
+        Gbl_LineBufferSize, Gbl_LineBufferSize * 2);
+
+    AslError (ASL_ERROR, ASL_MSG_BUFFER_ALLOCATION,
+        NULL, NULL);
+    AslAbort ();
 }
 
 
@@ -865,17 +898,18 @@ UtAttachNameseg (
         /* No dots in the namepath, there is only a single nameseg. */
         /* Handle prefixes */
 
-        while ((*Name == '\\') || (*Name == '^'))
+        while (ACPI_IS_ROOT_PREFIX (*Name) ||
+               ACPI_IS_PARENT_PREFIX (*Name))
         {
             Name++;
         }
 
-        /* Remaing string should be one single nameseg */
+        /* Remaining string should be one single nameseg */
 
         UtPadNameWithUnderscores (Name, PaddedNameSeg);
     }
 
-    strncpy (Op->Asl.NameSeg, PaddedNameSeg, 4);
+    ACPI_MOVE_NAME (Op->Asl.NameSeg, PaddedNameSeg);
 }
 
 

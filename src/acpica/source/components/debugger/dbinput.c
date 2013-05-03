@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -139,8 +139,18 @@ AcpiDbSingleThread (
     void);
 
 static void
+AcpiDbDisplayCommandInfo (
+    char                    *Command,
+    BOOLEAN                 DisplayAll);
+
+static void
 AcpiDbDisplayHelp (
-    void);
+    char                    *Command);
+
+static BOOLEAN
+AcpiDbMatchCommandHelp (
+    char                        *Command,
+    const ACPI_DB_COMMAND_HELP  *Help);
 
 
 /*
@@ -162,8 +172,10 @@ enum AcpiExDebuggerCommands
     CMD_CLOSE,
     CMD_DEBUG,
     CMD_DISASSEMBLE,
+    CMD_DISASM,
     CMD_DUMP,
     CMD_ENABLEACPI,
+    CMD_EVALUATE,
     CMD_EVENT,
     CMD_EXECUTE,
     CMD_EXIT,
@@ -217,7 +229,7 @@ enum AcpiExDebuggerCommands
 
 /* Second parameter is the required argument count */
 
-static const COMMAND_INFO       AcpiGbl_DbCommands[] =
+static const ACPI_DB_COMMAND_INFO   AcpiGbl_DbCommands[] =
 {
     {"<NOT FOUND>",  0},
     {"<NULL>",       0},
@@ -231,8 +243,10 @@ static const COMMAND_INFO       AcpiGbl_DbCommands[] =
     {"CLOSE",        0},
     {"DEBUG",        1},
     {"DISASSEMBLE",  1},
+    {"DISASM",       1},
     {"DUMP",         1},
     {"ENABLEACPI",   0},
+    {"EVALUATE",     1},
     {"EVENT",        1},
     {"EXECUTE",      1},
     {"EXIT",         0},
@@ -265,11 +279,11 @@ static const COMMAND_INFO       AcpiGbl_DbCommands[] =
     {"PREFIX",       0},
     {"QUIT",         0},
     {"REFERENCES",   1},
-    {"RESOURCES",    1},
+    {"RESOURCES",    0},
     {"RESULTS",      0},
     {"SET",          3},
-    {"SLEEP",        1},
-    {"STATS",        0},
+    {"SLEEP",        0},
+    {"STATS",        1},
     {"STOP",         0},
     {"TABLES",       0},
     {"TEMPLATE",     1},
@@ -282,100 +296,229 @@ static const COMMAND_INFO       AcpiGbl_DbCommands[] =
     {NULL,           0}
 };
 
+/*
+ * Help for all debugger commands. First argument is the number of lines
+ * of help to output for the command.
+ */
+static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
+{
+    {0, "\nGeneral-Purpose Commands:",         "\n"},
+    {1, "  Allocations",                       "Display list of current memory allocations\n"},
+    {2, "  Dump <Address>|<Namepath>",         "\n"},
+    {0, "       [Byte|Word|Dword|Qword]",      "Display ACPI objects or memory\n"},
+    {1, "  EnableAcpi",                        "Enable ACPI (hardware) mode\n"},
+    {1, "  Handlers",                          "Info about global handlers\n"},
+    {1, "  Help [Command]",                    "This help screen or individual command\n"},
+    {1, "  History",                           "Display command history buffer\n"},
+    {1, "  Level <DebugLevel>] [console]",     "Get/Set debug level for file or console\n"},
+    {1, "  Locks",                             "Current status of internal mutexes\n"},
+    {1, "  Osi [Install|Remove <name>]",       "Display or modify global _OSI list\n"},
+    {1, "  Quit or Exit",                      "Exit this command\n"},
+    {9, "  Stats [Allocations|Memory|Misc|",   "\n"},
+    {1, "      Objects|Sizes|Stack|Tables]",   "Display namespace and memory statistics\n"},
+    {1, "     Allocations",                    "Display list of current memory allocations\n"},
+    {1, "     Memory",                         "Dump internal memory lists\n"},
+    {1, "     Misc",                           "Namespace search and mutex stats\n"},
+    {1, "     Objects",                        "Summary of namespace objects\n"},
+    {1, "     Sizes",                          "Sizes for each of the internal objects\n"},
+    {1, "     Stack",                          "Display CPU stack usage\n"},
+    {1, "     Tables",                         "Info about current ACPI table(s)\n"},
+    {1, "  Tables",                            "Display info about loaded ACPI tables\n"},
+    {1, "  Unload <Namepath>",                 "Unload an ACPI table via namespace object\n"},
+    {1, "  ! <CommandNumber>",                 "Execute command from history buffer\n"},
+    {1, "  !!",                                "Execute last command again\n"},
+
+    {0, "\nNamespace Access Commands:",        "\n"},
+    {1, "  Businfo",                           "Display system bus info\n"},
+    {1, "  Disassemble <Method>",              "Disassemble a control method\n"},
+    {1, "  Event <F|G> <Value>",               "Generate AcpiEvent (Fixed/GPE)\n"},
+    {1, "  Find <AcpiName> (? is wildcard)",   "Find ACPI name(s) with wildcards\n"},
+    {1, "  Gpe <GpeNum> <GpeBlock>",           "Simulate a GPE\n"},
+    {1, "  Gpes",                              "Display info on all GPEs\n"},
+    {1, "  Integrity",                         "Validate namespace integrity\n"},
+    {1, "  Methods",                           "Display list of loaded control methods\n"},
+    {1, "  Namespace [Object] [Depth]",        "Display loaded namespace tree/subtree\n"},
+    {1, "  Notify <Object> <Value>",           "Send a notification on Object\n"},
+    {1, "  Objects <ObjectType>",              "Display all objects of the given type\n"},
+    {1, "  Owner <OwnerId> [Depth]",           "Display loaded namespace by object owner\n"},
+    {1, "  Predefined",                        "Check all predefined names\n"},
+    {1, "  Prefix [<NamePath>]",               "Set or Get current execution prefix\n"},
+    {1, "  References <Addr>",                 "Find all references to object at addr\n"},
+    {1, "  Resources [DeviceName]",            "Display Device resources (no arg = all devices)\n"},
+    {1, "  Set N <NamedObject> <Value>",       "Set value for named integer\n"},
+    {1, "  Sleep [SleepState]",                "Simulate sleep/wake sequence(s) (0-5)\n"},
+    {1, "  Template <Object>",                 "Format/dump a Buffer/ResourceTemplate\n"},
+    {1, "  Terminate",                         "Delete namespace and all internal objects\n"},
+    {1, "  Type <Object>",                     "Display object type\n"},
+
+    {0, "\nControl Method Execution Commands:","\n"},
+    {1, "  Arguments (or Args)",               "Display method arguments\n"},
+    {1, "  Breakpoint <AmlOffset>",            "Set an AML execution breakpoint\n"},
+    {1, "  Call",                              "Run to next control method invocation\n"},
+    {1, "  Debug <Namepath> [Arguments]",      "Single Step a control method\n"},
+    {6, "  Evaluate",                          "Synonym for Execute\n"},
+    {5, "  Execute <Namepath> [Arguments]",    "Execute control method\n"},
+    {1, "     Hex Integer",                    "Integer method argument\n"},
+    {1, "     \"Ascii String\"",               "String method argument\n"},
+    {1, "     (Byte List)",                    "Buffer method argument\n"},
+    {1, "     [Package Element List]",         "Package method argument\n"},
+    {1, "  Go",                                "Allow method to run to completion\n"},
+    {1, "  Information",                       "Display info about the current method\n"},
+    {1, "  Into",                              "Step into (not over) a method call\n"},
+    {1, "  List [# of Aml Opcodes]",           "Display method ASL statements\n"},
+    {1, "  Locals",                            "Display method local variables\n"},
+    {1, "  Results",                           "Display method result stack\n"},
+    {1, "  Set <A|L> <#> <Value>",             "Set method data (Arguments/Locals)\n"},
+    {1, "  Stop",                              "Terminate control method\n"},
+    {1, "  Thread <Threads><Loops><NamePath>", "Spawn threads to execute method(s)\n"},
+    {1, "  Trace <method name>",               "Trace method execution\n"},
+    {1, "  Tree",                              "Display control method calling tree\n"},
+    {1, "  <Enter>",                           "Single step next AML opcode (over calls)\n"},
+
+    {0, "\nFile I/O Commands:",                "\n"},
+    {1, "  Close",                             "Close debug output file\n"},
+    {1, "  Load <Input Filename>",             "Load ACPI table from a file\n"},
+    {1, "  Open <Output Filename>",            "Open a file for debug output\n"},
+    {0, NULL, NULL}
+};
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDbMatchCommandHelp
+ *
+ * PARAMETERS:  Command             - Command string to match
+ *              Help                - Help table entry to attempt match
+ *
+ * RETURN:      TRUE if command matched, FALSE otherwise
+ *
+ * DESCRIPTION: Attempt to match a command in the help table in order to
+ *              print help information for a single command.
+ *
+ ******************************************************************************/
+
+static BOOLEAN
+AcpiDbMatchCommandHelp (
+    char                        *Command,
+    const ACPI_DB_COMMAND_HELP  *Help)
+{
+    char                    *Invocation = Help->Invocation;
+    UINT32                  LineCount;
+
+
+    /* Valid commands in the help table begin with a couple of spaces */
+
+    if (*Invocation != ' ')
+    {
+        return (FALSE);
+    }
+
+    while (*Invocation == ' ')
+    {
+        Invocation++;
+    }
+
+    /* Match command name (full command or substring) */
+
+    while ((*Command) && (*Invocation) && (*Invocation != ' '))
+    {
+        if (ACPI_TOLOWER (*Command) != ACPI_TOLOWER (*Invocation))
+        {
+            return (FALSE);
+        }
+
+        Invocation++;
+        Command++;
+    }
+
+    /* Print the appropriate number of help lines */
+
+    LineCount = Help->LineCount;
+    while (LineCount)
+    {
+        AcpiOsPrintf ("%-38s : %s", Help->Invocation, Help->Description);
+        Help++;
+        LineCount--;
+    }
+
+    return (TRUE);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDbDisplayCommandInfo
+ *
+ * PARAMETERS:  Command             - Command string to match
+ *              DisplayAll          - Display all matching commands, or just
+ *                                    the first one (substring match)
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Display help information for a Debugger command.
+ *
+ ******************************************************************************/
+
+static void
+AcpiDbDisplayCommandInfo (
+    char                    *Command,
+    BOOLEAN                 DisplayAll)
+{
+    const ACPI_DB_COMMAND_HELP  *Next;
+    BOOLEAN                     Matched;
+
+
+    Next = AcpiGbl_DbCommandHelp;
+    while (Next->Invocation)
+    {
+        Matched = AcpiDbMatchCommandHelp (Command, Next);
+        if (!DisplayAll && Matched)
+        {
+            return;
+        }
+
+        Next++;
+    }
+}
+
 
 /*******************************************************************************
  *
  * FUNCTION:    AcpiDbDisplayHelp
  *
- * PARAMETERS:  None
+ * PARAMETERS:  Command             - Optional command string to display help.
+ *                                    if not specified, all debugger command
+ *                                    help strings are displayed
  *
  * RETURN:      None
  *
- * DESCRIPTION: Print a usage message.
+ * DESCRIPTION: Display help for a single debugger command, or all of them.
  *
  ******************************************************************************/
 
 static void
 AcpiDbDisplayHelp (
-    void)
+    char                    *Command)
 {
+    const ACPI_DB_COMMAND_HELP  *Next = AcpiGbl_DbCommandHelp;
 
-    AcpiOsPrintf ("\nGeneral-Purpose Commands:\n");
-    AcpiOsPrintf ("  Allocations                         Display list of current memory allocations\n");
-    AcpiOsPrintf ("  Dump <Address>|<Namepath>\n");
-    AcpiOsPrintf ("       [Byte|Word|Dword|Qword]        Display ACPI objects or memory\n");
-    AcpiOsPrintf ("  EnableAcpi                          Enable ACPI (hardware) mode\n");
-    AcpiOsPrintf ("  Handlers                            Info about global handlers\n");
-    AcpiOsPrintf ("  Help                                This help screen\n");
-    AcpiOsPrintf ("  History                             Display command history buffer\n");
-    AcpiOsPrintf ("  Level [<DebugLevel>] [console]      Get/Set debug level for file or console\n");
-    AcpiOsPrintf ("  Locks                               Current status of internal mutexes\n");
-    AcpiOsPrintf ("  Osi [Install|Remove <name>]         Display or modify global _OSI list\n");
-    AcpiOsPrintf ("  Quit or Exit                        Exit this command\n");
-    AcpiOsPrintf ("  Stats [Allocations|Memory|Misc|\n");
-    AcpiOsPrintf ("        Objects|Sizes|Stack|Tables]   Display namespace and memory statistics\n");
-    AcpiOsPrintf ("     Allocations                      Display list of current memory allocations\n");
-    AcpiOsPrintf ("     Memory                           Dump internal memory lists\n");
-    AcpiOsPrintf ("     Misc                             Namespace search and mutex stats\n");
-    AcpiOsPrintf ("     Objects                          Summary of namespace objects\n");
-    AcpiOsPrintf ("     Sizes                            Sizes for each of the internal objects\n");
-    AcpiOsPrintf ("     Stack                            Display CPU stack usage\n");
-    AcpiOsPrintf ("     Tables                           Info about current ACPI table(s)\n");
-    AcpiOsPrintf ("  Tables                              Display info about loaded ACPI tables\n");
-    AcpiOsPrintf ("  Unload <Namepath>                   Unload an ACPI table via namespace object\n");
-    AcpiOsPrintf ("  ! <CommandNumber>                   Execute command from history buffer\n");
-    AcpiOsPrintf ("  !!                                  Execute last command again\n");
 
-    AcpiOsPrintf ("\nNamespace Access Commands:\n");
-    AcpiOsPrintf ("  Businfo                             Display system bus info\n");
-    AcpiOsPrintf ("  Disassemble <Method>                Disassemble a control method\n");
-    AcpiOsPrintf ("  Event <F|G> <Value>                 Generate AcpiEvent (Fixed/GPE)\n");
-    AcpiOsPrintf ("  Find <AcpiName>  (? is wildcard)    Find ACPI name(s) with wildcards\n");
-    AcpiOsPrintf ("  Gpe <GpeNum> <GpeBlock>             Simulate a GPE\n");
-    AcpiOsPrintf ("  Gpes                                Display info on all GPEs\n");
-    AcpiOsPrintf ("  Integrity                           Validate namespace integrity\n");
-    AcpiOsPrintf ("  Methods                             Display list of loaded control methods\n");
-    AcpiOsPrintf ("  Namespace [Object] [Depth]          Display loaded namespace tree/subtree\n");
-    AcpiOsPrintf ("  Notify <Object> <Value>             Send a notification on Object\n");
-    AcpiOsPrintf ("  Objects <ObjectType>                Display all objects of the given type\n");
-    AcpiOsPrintf ("  Owner <OwnerId> [Depth]             Display loaded namespace by object owner\n");
-    AcpiOsPrintf ("  Predefined                          Check all predefined names\n");
-    AcpiOsPrintf ("  Prefix [<NamePath>]                 Set or Get current execution prefix\n");
-    AcpiOsPrintf ("  References <Addr>                   Find all references to object at addr\n");
-    AcpiOsPrintf ("  Resources <DeviceName | *>          Display Device resources (* = all devices)\n");
-    AcpiOsPrintf ("  Set N <NamedObject> <Value>         Set value for named integer\n");
-    AcpiOsPrintf ("  Sleep <SleepState>                  Simulate sleep/wake sequence\n");
-    AcpiOsPrintf ("  Template <Object>                   Format/dump a Buffer/ResourceTemplate\n");
-    AcpiOsPrintf ("  Terminate                           Delete namespace and all internal objects\n");
-    AcpiOsPrintf ("  Type <Object>                       Display object type\n");
+    if (!Command)
+    {
+        /* No argument to help, display help for all commands */
 
-    AcpiOsPrintf ("\nControl Method Execution Commands:\n");
-    AcpiOsPrintf ("  Arguments (or Args)                 Display method arguments\n");
-    AcpiOsPrintf ("  Breakpoint <AmlOffset>              Set an AML execution breakpoint\n");
-    AcpiOsPrintf ("  Call                                Run to next control method invocation\n");
-    AcpiOsPrintf ("  Debug <Namepath> [Arguments]        Single Step a control method\n");
-    AcpiOsPrintf ("  Execute <Namepath> [Arguments]      Execute control method\n");
-    AcpiOsPrintf ("     Hex Integer                      Integer method argument\n");
-    AcpiOsPrintf ("     \"Ascii String\"                   String method argument\n");
-    AcpiOsPrintf ("     (Byte List)                      Buffer method argument\n");
-    AcpiOsPrintf ("     [Package Element List]           Package method argument\n");
-    AcpiOsPrintf ("  Go                                  Allow method to run to completion\n");
-    AcpiOsPrintf ("  Information                         Display info about the current method\n");
-    AcpiOsPrintf ("  Into                                Step into (not over) a method call\n");
-    AcpiOsPrintf ("  List [# of Aml Opcodes]             Display method ASL statements\n");
-    AcpiOsPrintf ("  Locals                              Display method local variables\n");
-    AcpiOsPrintf ("  Results                             Display method result stack\n");
-    AcpiOsPrintf ("  Set <A|L> <#> <Value>               Set method data (Arguments/Locals)\n");
-    AcpiOsPrintf ("  Stop                                Terminate control method\n");
-    AcpiOsPrintf ("  Thread <Threads><Loops><NamePath>   Spawn threads to execute method(s)\n");
-    AcpiOsPrintf ("  Trace <method name>                 Trace method execution\n");
-    AcpiOsPrintf ("  Tree                                Display control method calling tree\n");
-    AcpiOsPrintf ("  <Enter>                             Single step next AML opcode (over calls)\n");
+        while (Next->Invocation)
+        {
+            AcpiOsPrintf ("%-38s%s", Next->Invocation, Next->Description);
+            Next++;
+        }
+    }
+    else
+    {
+        /* Display help for all commands that match the subtring */
 
-    AcpiOsPrintf ("\nFile I/O Commands:\n");
-    AcpiOsPrintf ("  Close                               Close debug output file\n");
-    AcpiOsPrintf ("  Load <Input Filename>               Load ACPI table from a file\n");
-    AcpiOsPrintf ("  Open <Output Filename>              Open a file for debug output\n");
+        AcpiDbDisplayCommandInfo (Command, TRUE);
+    }
 }
 
 
@@ -388,7 +531,7 @@ AcpiDbDisplayHelp (
  *
  * RETURN:      Pointer to the start of the next token.
  *
- * DESCRIPTION: Command line parsing.  Get the next token on the command line
+ * DESCRIPTION: Command line parsing. Get the next token on the command line
  *
  ******************************************************************************/
 
@@ -541,7 +684,7 @@ AcpiDbGetNextToken (
  *
  * RETURN:      Count of arguments to the command
  *
- * DESCRIPTION: Get the next command line from the user.  Gets entire line
+ * DESCRIPTION: Get the next command line from the user. Gets entire line
  *              up to the next newline
  *
  ******************************************************************************/
@@ -673,6 +816,7 @@ AcpiDbCommandDispatch (
             ParamCount, AcpiGbl_DbCommands[CommandIndex].Name,
             AcpiGbl_DbCommands[CommandIndex].MinArgs);
 
+        AcpiDbDisplayCommandInfo (AcpiGbl_DbCommands[CommandIndex].Name, FALSE);
         return (AE_CTRL_TRUE);
     }
 
@@ -726,6 +870,7 @@ AcpiDbCommandDispatch (
         break;
 
     case CMD_DISASSEMBLE:
+    case CMD_DISASM:
         (void) AcpiDbDisassembleMethod (AcpiGbl_DbArgs[1]);
         break;
 
@@ -749,6 +894,7 @@ AcpiDbCommandDispatch (
         AcpiOsPrintf ("Event command not implemented\n");
         break;
 
+    case CMD_EVALUATE:
     case CMD_EXECUTE:
         AcpiDbExecute (AcpiGbl_DbArgs[1],
             &AcpiGbl_DbArgs[2], &AcpiGbl_DbArgTypes[2], EX_NO_SINGLE_STEP);
@@ -776,7 +922,7 @@ AcpiDbCommandDispatch (
 
     case CMD_HELP:
     case CMD_HELP2:
-        AcpiDbDisplayHelp ();
+        AcpiDbDisplayHelp (AcpiGbl_DbArgs[1]);
         break;
 
     case CMD_HISTORY:
@@ -1012,7 +1158,7 @@ AcpiDbCommandDispatch (
  *
  * RETURN:      None
  *
- * DESCRIPTION: Debugger execute thread.  Waits for a command line, then
+ * DESCRIPTION: Debugger execute thread. Waits for a command line, then
  *              simply dispatches it.
  *
  ******************************************************************************/
@@ -1055,7 +1201,7 @@ AcpiDbExecuteThread (
  *
  * RETURN:      None
  *
- * DESCRIPTION: Debugger execute thread.  Waits for a command line, then
+ * DESCRIPTION: Debugger execute thread. Waits for a command line, then
  *              simply dispatches it.
  *
  ******************************************************************************/
@@ -1081,7 +1227,7 @@ AcpiDbSingleThread (
  *
  * RETURN:      None
  *
- * DESCRIPTION: Command line execution for the AML debugger.  Commands are
+ * DESCRIPTION: Command line execution for the AML debugger. Commands are
  *              matched and dispatched here.
  *
  ******************************************************************************/
@@ -1093,6 +1239,8 @@ AcpiDbUserCommands (
 {
     ACPI_STATUS             Status = AE_OK;
 
+
+    AcpiOsPrintf ("\n");
 
     /* TBD: [Restructure] Need a separate command line buffer for step mode */
 
@@ -1160,4 +1308,3 @@ AcpiDbUserCommands (
 }
 
 #endif  /* ACPI_DEBUGGER */
-

@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslcompile - top level compile module
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -115,6 +114,7 @@
  *****************************************************************************/
 
 #include "aslcompiler.h"
+#include "dtcompiler.h"
 
 #include <stdio.h>
 #include <time.h>
@@ -122,6 +122,15 @@
 
 #define _COMPONENT          ACPI_COMPILER
         ACPI_MODULE_NAME    ("aslcompile")
+
+/*
+ * Main parser entry
+ * External is here in case the parser emits the same external in the
+ * generated header. (Newer versions of Bison)
+ */
+int
+AslCompilerparse(
+    void);
 
 /* Local prototypes */
 
@@ -189,6 +198,7 @@ AslCompilerSignon (
         break;
 
     case ASL_FILE_C_SOURCE_OUTPUT:
+    case ASL_FILE_C_OFFSET_OUTPUT:
     case ASL_FILE_C_INCLUDE_OUTPUT:
 
         Prefix = " * ";
@@ -262,6 +272,7 @@ AslCompilerFileHeader (
         break;
 
     case ASL_FILE_C_SOURCE_OUTPUT:
+    case ASL_FILE_C_OFFSET_OUTPUT:
     case ASL_FILE_C_INCLUDE_OUTPUT:
 
         Prefix = " * ";
@@ -285,6 +296,7 @@ AslCompilerFileHeader (
     switch (FileId)
     {
     case ASL_FILE_C_SOURCE_OUTPUT:
+    case ASL_FILE_C_OFFSET_OUTPUT:
     case ASL_FILE_C_INCLUDE_OUTPUT:
         FlPrintFile (FileId, " */\n");
         break;
@@ -347,7 +359,7 @@ FlConsumeAnsiComment (
     BOOLEAN                 ClosingComment = FALSE;
 
 
-    while (fread (&Byte, 1, 1, Handle))
+    while (fread (&Byte, 1, 1, Handle) == 1)
     {
         /* Scan until comment close is found */
 
@@ -390,7 +402,7 @@ FlConsumeNewComment (
     UINT8                   Byte;
 
 
-    while (fread (&Byte, 1, 1, Handle))
+    while (fread (&Byte, 1, 1, Handle) == 1)
     {
         Status->Offset++;
 
@@ -402,6 +414,89 @@ FlConsumeNewComment (
             return;
         }
     }
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    FlCheckForAcpiTable
+ *
+ * PARAMETERS:  Handle              - Open input file
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Determine if a file seems to be a binary ACPI table, via the
+ *              following checks on what would be the table header:
+ *              0) File must be at least as long as an ACPI_TABLE_HEADER
+ *              1) The header length field must match the file size
+ *              2) Signature, OemId, OemTableId, AslCompilerId must be ASCII
+ *
+ ******************************************************************************/
+
+ACPI_STATUS
+FlCheckForAcpiTable (
+    FILE                    *Handle)
+{
+    ACPI_TABLE_HEADER       Table;
+    UINT32                  FileSize;
+    size_t                  Actual;
+    UINT32                  i;
+
+
+    /* Read a potential table header */
+
+    Actual = fread (&Table, 1, sizeof (ACPI_TABLE_HEADER), Handle);
+    fseek (Handle, 0, SEEK_SET);
+
+    if (Actual < sizeof (ACPI_TABLE_HEADER))
+    {
+        return (AE_ERROR);
+    }
+
+    /* Header length field must match the file size */
+
+    FileSize = DtGetFileSize (Handle);
+    if (Table.Length != FileSize)
+    {
+        return (AE_ERROR);
+    }
+
+    /*
+     * These fields must be ASCII:
+     * Signature, OemId, OemTableId, AslCompilerId.
+     * We allow a NULL terminator in OemId and OemTableId.
+     */
+    for (i = 0; i < ACPI_NAME_SIZE; i++)
+    {
+        if (!ACPI_IS_ASCII ((UINT8) Table.Signature[i]))
+        {
+            return (AE_ERROR);
+        }
+
+        if (!ACPI_IS_ASCII ((UINT8) Table.AslCompilerId[i]))
+        {
+            return (AE_ERROR);
+        }
+    }
+
+    for (i = 0; (i < ACPI_OEM_ID_SIZE) && (Table.OemId[i]); i++)
+    {
+        if (!ACPI_IS_ASCII ((UINT8) Table.OemId[i]))
+        {
+            return (AE_ERROR);
+        }
+    }
+
+    for (i = 0; (i < ACPI_OEM_TABLE_ID_SIZE) && (Table.OemTableId[i]); i++)
+    {
+        if (!ACPI_IS_ASCII ((UINT8) Table.OemTableId[i]))
+        {
+            return (AE_ERROR);
+        }
+    }
+
+    printf ("Binary file appears to be a valid ACPI table, disassembling\n");
+    return (AE_OK);
 }
 
 
@@ -441,7 +536,7 @@ FlCheckForAscii (
 
     /* Read the entire file */
 
-    while (fread (&Byte, 1, 1, Handle))
+    while (fread (&Byte, 1, 1, Handle) == 1)
     {
         /* Ignore comment fields (allow non-ascii within) */
 
@@ -552,7 +647,7 @@ CmDoCompile (
         {
             UtEndEvent (Event);
             CmCleanupAndExit ();
-            return 0;
+            return (0);
         }
     }
     UtEndEvent (Event);
@@ -620,7 +715,7 @@ CmDoCompile (
     if (ACPI_FAILURE (Status))
     {
         AePrintErrorLog (ASL_FILE_STDERR);
-        return -1;
+        return (-1);
     }
 
     /* Interpret and generate all compile-time constants */
@@ -661,7 +756,7 @@ CmDoCompile (
             UtDisplaySummary (ASL_FILE_STDOUT);
         }
         UtEndEvent (FullCompile);
-        return 0;
+        return (0);
     }
 
     /*
@@ -681,7 +776,7 @@ CmDoCompile (
     /* Namespace cross-reference */
 
     AslGbl_NamespaceEvent = UtBeginEvent ("Cross reference parse tree and Namespace");
-    Status = LkCrossReferenceNamespace ();
+    Status = XfCrossReferenceNamespace ();
     if (ACPI_FAILURE (Status))
     {
         goto ErrorExit;
@@ -693,7 +788,7 @@ CmDoCompile (
     UtEndEvent (AslGbl_NamespaceEvent);
 
     /*
-     * Semantic analysis.  This can happen only after the
+     * Semantic analysis. This can happen only after the
      * namespace has been loaded and cross-referenced.
      *
      * part one - check control methods
@@ -703,8 +798,8 @@ CmDoCompile (
 
     DbgPrint (ASL_DEBUG_OUTPUT, "\nSemantic analysis - Method analysis\n\n");
     TrWalkParseTree (RootNode, ASL_WALK_VISIT_TWICE,
-        AnMethodAnalysisWalkBegin,
-        AnMethodAnalysisWalkEnd, &AnalysisWalkInfo);
+        MtMethodAnalysisWalkBegin,
+        MtMethodAnalysisWalkEnd, &AnalysisWalkInfo);
     UtEndEvent (Event);
 
     /* Semantic error checking part two - typing of method returns */
@@ -754,7 +849,7 @@ CmDoCompile (
 
     UtEndEvent (FullCompile);
     CmCleanupAndExit ();
-    return 0;
+    return (0);
 
 ErrorExit:
     UtEndEvent (FullCompile);
@@ -783,11 +878,11 @@ CmDoOutputFiles (
     /* Create listings and hex files */
 
     LsDoListings ();
-    LsDoHexOutput ();
+    HxDoHexOutput ();
 
     /* Dump the namespace to the .nsp file if requested */
 
-    (void) LsDisplayNamespace ();
+    (void) NsDisplayNamespace ();
 }
 
 
@@ -830,12 +925,12 @@ CmDumpAllEvents (
 
             Delta = (UINT32) (Event->EndTime - Event->StartTime);
 
-            USec = Delta / 10;
-            MSec = Delta / 10000;
+            USec = Delta / ACPI_100NSEC_PER_USEC;
+            MSec = Delta / ACPI_100NSEC_PER_MSEC;
 
             /* Round milliseconds up */
 
-            if ((USec - (MSec * 1000)) >= 500)
+            if ((USec - (MSec * ACPI_USEC_PER_MSEC)) >= 500)
             {
                 MSec++;
             }
@@ -872,6 +967,7 @@ CmCleanupAndExit (
     void)
 {
     UINT32                  i;
+    BOOLEAN                 DeleteAmlFile = FALSE;
 
 
     AePrintErrorLog (ASL_FILE_STDERR);
@@ -923,6 +1019,16 @@ CmCleanupAndExit (
 
     UtDisplaySummary (ASL_FILE_STDOUT);
 
+    /*
+     * We will delete the AML file if there are errors and the
+     * force AML output option has not been used.
+     */
+    if ((Gbl_ExceptionCount[ASL_ERROR] > 0) && (!Gbl_IgnoreErrors) &&
+        Gbl_Files[ASL_FILE_AML_OUTPUT].Handle)
+    {
+        DeleteAmlFile = TRUE;
+    }
+
     /* Close all open files */
 
     Gbl_Files[ASL_FILE_PREPROCESSOR].Handle = NULL; /* the .i file is same as source file */
@@ -934,29 +1040,17 @@ CmCleanupAndExit (
 
     /* Delete AML file if there are errors */
 
-    if ((Gbl_ExceptionCount[ASL_ERROR] > 0) && (!Gbl_IgnoreErrors) &&
-        Gbl_Files[ASL_FILE_AML_OUTPUT].Handle)
+    if (DeleteAmlFile)
     {
-        if (remove (Gbl_Files[ASL_FILE_AML_OUTPUT].Filename))
-        {
-            printf ("%s: ",
-                Gbl_Files[ASL_FILE_AML_OUTPUT].Filename);
-            perror ("Could not delete AML file");
-        }
+        FlDeleteFile (ASL_FILE_AML_OUTPUT);
     }
 
     /* Delete the preprocessor output file (.i) unless -li flag is set */
 
     if (!Gbl_PreprocessorOutputFlag &&
-        Gbl_PreprocessFlag &&
-        Gbl_Files[ASL_FILE_PREPROCESSOR].Filename)
+        Gbl_PreprocessFlag)
     {
-        if (remove (Gbl_Files[ASL_FILE_PREPROCESSOR].Filename))
-        {
-            printf ("%s: ",
-                Gbl_Files[ASL_FILE_PREPROCESSOR].Filename);
-            perror ("Could not delete preprocessor .i file");
-        }
+        FlDeleteFile (ASL_FILE_PREPROCESSOR);
     }
 
     /*
@@ -973,15 +1067,8 @@ CmCleanupAndExit (
      *
      * TBD: SourceOutput should be .TMP, then rename if we want to keep it?
      */
-    if (!Gbl_SourceOutputFlag && Gbl_Files[ASL_FILE_SOURCE_OUTPUT].Filename)
+    if (!Gbl_SourceOutputFlag)
     {
-        if (remove (Gbl_Files[ASL_FILE_SOURCE_OUTPUT].Filename))
-        {
-            printf ("%s: ",
-                Gbl_Files[ASL_FILE_SOURCE_OUTPUT].Filename);
-            perror ("Could not delete SRC file");
-        }
+        FlDeleteFile (ASL_FILE_SOURCE_OUTPUT);
     }
 }
-
-

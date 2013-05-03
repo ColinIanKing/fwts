@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -220,7 +220,9 @@ const char                      *AcpiGbl_RwDecode[] =
 const char                      *AcpiGbl_ShrDecode[] =
 {
     "Exclusive",
-    "Shared"
+    "Shared",
+    "ExclusiveAndWake",         /* ACPI 5.0 */
+    "SharedAndWake"             /* ACPI 5.0 */
 };
 
 const char                      *AcpiGbl_SizDecode[] =
@@ -501,27 +503,17 @@ static const UINT8          AcpiGbl_ResourceTypes[] =
     ACPI_VARIABLE_LENGTH            /* 0E *SerialBus */
 };
 
-/*
- * For the iASL compiler/disassembler, we don't want any error messages
- * because the disassembler uses the resource validation code to determine
- * if Buffer objects are actually Resource Templates.
- */
-#ifdef ACPI_ASL_COMPILER
-#define ACPI_RESOURCE_ERROR(plist)
-#else
-#define ACPI_RESOURCE_ERROR(plist)  ACPI_ERROR(plist)
-#endif
-
 
 /*******************************************************************************
  *
  * FUNCTION:    AcpiUtWalkAmlResources
  *
- * PARAMETERS:  Aml             - Pointer to the raw AML resource template
- *              AmlLength       - Length of the entire template
- *              UserFunction    - Called once for each descriptor found. If
- *                                NULL, a pointer to the EndTag is returned
- *              Context         - Passed to UserFunction
+ * PARAMETERS:  WalkState           - Current walk info
+ * PARAMETERS:  Aml                 - Pointer to the raw AML resource template
+ *              AmlLength           - Length of the entire template
+ *              UserFunction        - Called once for each descriptor found. If
+ *                                    NULL, a pointer to the EndTag is returned
+ *              Context             - Passed to UserFunction
  *
  * RETURN:      Status
  *
@@ -532,10 +524,11 @@ static const UINT8          AcpiGbl_ResourceTypes[] =
 
 ACPI_STATUS
 AcpiUtWalkAmlResources (
+    ACPI_WALK_STATE         *WalkState,
     UINT8                   *Aml,
     ACPI_SIZE               AmlLength,
     ACPI_WALK_AML_CALLBACK  UserFunction,
-    void                    *Context)
+    void                    **Context)
 {
     ACPI_STATUS             Status;
     UINT8                   *EndAml;
@@ -565,7 +558,7 @@ AcpiUtWalkAmlResources (
     {
         /* Validate the Resource Type and Resource Length */
 
-        Status = AcpiUtValidateResource (Aml, &ResourceIndex);
+        Status = AcpiUtValidateResource (WalkState, Aml, &ResourceIndex);
         if (ACPI_FAILURE (Status))
         {
             /*
@@ -607,7 +600,7 @@ AcpiUtWalkAmlResources (
 
             if (!UserFunction)
             {
-                *(void **) Context = Aml;
+                *Context = Aml;
             }
 
             /* Normal exit */
@@ -625,7 +618,7 @@ AcpiUtWalkAmlResources (
     {
         /* Insert an EndTag anyway. AcpiRsGetListLength always leaves room */
 
-        (void) AcpiUtValidateResource (EndTag, &ResourceIndex);
+        (void) AcpiUtValidateResource (WalkState, EndTag, &ResourceIndex);
         Status = UserFunction (EndTag, 2, Offset, ResourceIndex, Context);
         if (ACPI_FAILURE (Status))
         {
@@ -641,9 +634,10 @@ AcpiUtWalkAmlResources (
  *
  * FUNCTION:    AcpiUtValidateResource
  *
- * PARAMETERS:  Aml             - Pointer to the raw AML resource descriptor
- *              ReturnIndex     - Where the resource index is returned. NULL
- *                                if the index is not required.
+ * PARAMETERS:  WalkState           - Current walk info
+ *              Aml                 - Pointer to the raw AML resource descriptor
+ *              ReturnIndex         - Where the resource index is returned. NULL
+ *                                    if the index is not required.
  *
  * RETURN:      Status, and optionally the Index into the global resource tables
  *
@@ -655,6 +649,7 @@ AcpiUtWalkAmlResources (
 
 ACPI_STATUS
 AcpiUtValidateResource (
+    ACPI_WALK_STATE         *WalkState,
     void                    *Aml,
     UINT8                   *ReturnIndex)
 {
@@ -768,9 +763,12 @@ AcpiUtValidateResource (
         if ((AmlResource->CommonSerialBus.Type == 0) ||
             (AmlResource->CommonSerialBus.Type > AML_RESOURCE_MAX_SERIALBUSTYPE))
         {
-            ACPI_RESOURCE_ERROR ((AE_INFO,
-                "Invalid/unsupported SerialBus resource descriptor: BusType 0x%2.2X",
-                AmlResource->CommonSerialBus.Type));
+            if (WalkState)
+            {
+                ACPI_ERROR ((AE_INFO,
+                    "Invalid/unsupported SerialBus resource descriptor: BusType 0x%2.2X",
+                    AmlResource->CommonSerialBus.Type));
+            }
             return (AE_AML_INVALID_RESOURCE_TYPE);
         }
     }
@@ -787,17 +785,23 @@ AcpiUtValidateResource (
 
 InvalidResource:
 
-    ACPI_RESOURCE_ERROR ((AE_INFO,
-        "Invalid/unsupported resource descriptor: Type 0x%2.2X",
-        ResourceType));
+    if (WalkState)
+    {
+        ACPI_ERROR ((AE_INFO,
+            "Invalid/unsupported resource descriptor: Type 0x%2.2X",
+            ResourceType));
+    }
     return (AE_AML_INVALID_RESOURCE_TYPE);
 
 BadResourceLength:
 
-    ACPI_RESOURCE_ERROR ((AE_INFO,
-        "Invalid resource descriptor length: Type "
-        "0x%2.2X, Length 0x%4.4X, MinLength 0x%4.4X",
-        ResourceType, ResourceLength, MinimumResourceLength));
+    if (WalkState)
+    {
+        ACPI_ERROR ((AE_INFO,
+            "Invalid resource descriptor length: Type "
+            "0x%2.2X, Length 0x%4.4X, MinLength 0x%4.4X",
+            ResourceType, ResourceLength, MinimumResourceLength));
+    }
     return (AE_AML_BAD_RESOURCE_LENGTH);
 }
 
@@ -986,10 +990,8 @@ AcpiUtGetResourceEndTag (
 
     /* Validate the template and get a pointer to the EndTag */
 
-    Status = AcpiUtWalkAmlResources (ObjDesc->Buffer.Pointer,
-                ObjDesc->Buffer.Length, NULL, EndTag);
+    Status = AcpiUtWalkAmlResources (NULL, ObjDesc->Buffer.Pointer,
+                ObjDesc->Buffer.Length, NULL, (void **) EndTag);
 
     return_ACPI_STATUS (Status);
 }
-
-

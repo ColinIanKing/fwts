@@ -1,7 +1,6 @@
-
 /******************************************************************************
  *
- * Module Name: aslfiles - file I/O suppoert
+ * Module Name: aslfiles - File support functions
  *
  *****************************************************************************/
 
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -133,317 +132,6 @@ ACPI_STATUS
 FlParseInputPathname (
     char                    *InputFilename);
 #endif
-
-
-/*******************************************************************************
- *
- * FUNCTION:    AslAbort
- *
- * PARAMETERS:  None
- *
- * RETURN:      None
- *
- * DESCRIPTION: Dump the error log and abort the compiler.  Used for serious
- *              I/O errors
- *
- ******************************************************************************/
-
-void
-AslAbort (
-    void)
-{
-
-    AePrintErrorLog (ASL_FILE_STDERR);
-    if (Gbl_DebugFlag)
-    {
-        /* Print error summary to stdout also */
-
-        AePrintErrorLog (ASL_FILE_STDOUT);
-    }
-
-    exit (1);
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlFileError
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              ErrorId             - Index into error message array
- *
- * RETURN:      None
- *
- * DESCRIPTION: Decode errno to an error message and add the entire error
- *              to the error log.
- *
- ******************************************************************************/
-
-void
-FlFileError (
-    UINT32                  FileId,
-    UINT8                   ErrorId)
-{
-
-    sprintf (MsgBuffer, "\"%s\" (%s)", Gbl_Files[FileId].Filename,
-        strerror (errno));
-    AslCommonError (ASL_ERROR, ErrorId, 0, 0, 0, 0, NULL, MsgBuffer);
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlOpenFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              Filename            - file pathname to open
- *              Mode                - Open mode for fopen
- *
- * RETURN:      None
- *
- * DESCRIPTION: Open a file.
- *              NOTE: Aborts compiler on any error.
- *
- ******************************************************************************/
-
-void
-FlOpenFile (
-    UINT32                  FileId,
-    char                    *Filename,
-    char                    *Mode)
-{
-    FILE                    *File;
-
-
-    File = fopen (Filename, Mode);
-
-    Gbl_Files[FileId].Filename = Filename;
-    Gbl_Files[FileId].Handle   = File;
-
-    if (!File)
-    {
-        FlFileError (FileId, ASL_MSG_OPEN);
-        AslAbort ();
-    }
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlGetFileSize
- *
- * PARAMETERS:  FileId              - Index into file info array
- *
- * RETURN:      File Size
- *
- * DESCRIPTION: Get current file size. Uses seek-to-EOF. File must be open.
- *
- ******************************************************************************/
-
-UINT32
-FlGetFileSize (
-    UINT32                  FileId)
-{
-    FILE                    *fp;
-    UINT32                  FileSize;
-    long                    Offset;
-
-
-    fp = Gbl_Files[FileId].Handle;
-    Offset = ftell (fp);
-
-    fseek (fp, 0, SEEK_END);
-    FileSize = (UINT32) ftell (fp);
-
-    /* Restore file pointer */
-
-    fseek (fp, Offset, SEEK_SET);
-    return (FileSize);
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlReadFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              Buffer              - Where to place the data
- *              Length              - Amount to read
- *
- * RETURN:      Status.  AE_ERROR indicates EOF.
- *
- * DESCRIPTION: Read data from an open file.
- *              NOTE: Aborts compiler on any error.
- *
- ******************************************************************************/
-
-ACPI_STATUS
-FlReadFile (
-    UINT32                  FileId,
-    void                    *Buffer,
-    UINT32                  Length)
-{
-    UINT32                  Actual;
-
-
-    /* Read and check for error */
-
-    Actual = fread (Buffer, 1, Length, Gbl_Files[FileId].Handle);
-    if (Actual != Length)
-    {
-        if (feof (Gbl_Files[FileId].Handle))
-        {
-            /* End-of-file, just return error */
-
-            return (AE_ERROR);
-        }
-
-        FlFileError (FileId, ASL_MSG_READ);
-        AslAbort ();
-    }
-
-    return (AE_OK);
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlWriteFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              Buffer              - Data to write
- *              Length              - Amount of data to write
- *
- * RETURN:      None
- *
- * DESCRIPTION: Write data to an open file.
- *              NOTE: Aborts compiler on any error.
- *
- ******************************************************************************/
-
-void
-FlWriteFile (
-    UINT32                  FileId,
-    void                    *Buffer,
-    UINT32                  Length)
-{
-    UINT32                  Actual;
-
-
-    /* Write and check for error */
-
-    Actual = fwrite ((char *) Buffer, 1, Length, Gbl_Files[FileId].Handle);
-    if (Actual != Length)
-    {
-        FlFileError (FileId, ASL_MSG_WRITE);
-        AslAbort ();
-    }
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlPrintFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              Format              - Printf format string
- *              ...                 - Printf arguments
- *
- * RETURN:      None
- *
- * DESCRIPTION: Formatted write to an open file.
- *              NOTE: Aborts compiler on any error.
- *
- ******************************************************************************/
-
-void
-FlPrintFile (
-    UINT32                  FileId,
-    char                    *Format,
-    ...)
-{
-    INT32                   Actual;
-    va_list                 Args;
-
-
-    va_start (Args, Format);
-
-    Actual = vfprintf (Gbl_Files[FileId].Handle, Format, Args);
-    va_end (Args);
-
-    if (Actual == -1)
-    {
-        FlFileError (FileId, ASL_MSG_WRITE);
-        AslAbort ();
-    }
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlSeekFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *              Offset              - Absolute byte offset in file
- *
- * RETURN:      None
- *
- * DESCRIPTION: Seek to absolute offset
- *              NOTE: Aborts compiler on any error.
- *
- ******************************************************************************/
-
-void
-FlSeekFile (
-    UINT32                  FileId,
-    long                    Offset)
-{
-    int                     Error;
-
-
-    Error = fseek (Gbl_Files[FileId].Handle, Offset, SEEK_SET);
-    if (Error)
-    {
-        FlFileError (FileId, ASL_MSG_SEEK);
-        AslAbort ();
-    }
-}
-
-
-/*******************************************************************************
- *
- * FUNCTION:    FlCloseFile
- *
- * PARAMETERS:  FileId              - Index into file info array
- *
- * RETURN:      None
- *
- * DESCRIPTION: Close an open file.  Aborts compiler on error
- *
- ******************************************************************************/
-
-void
-FlCloseFile (
-    UINT32                  FileId)
-{
-    int                     Error;
-
-
-    if (!Gbl_Files[FileId].Handle)
-    {
-        return;
-    }
-
-    Error = fclose (Gbl_Files[FileId].Handle);
-    if (Error)
-    {
-        FlFileError (FileId, ASL_MSG_CLOSE);
-        AslAbort ();
-    }
-
-    Gbl_Files[FileId].Handle = NULL;
-    return;
-}
 
 
 /*******************************************************************************
@@ -696,16 +384,17 @@ FlOpenIncludeWithPrefix (
     /* Attempt to open the file, push if successful */
 
     IncludeFile = fopen (Pathname, "r");
-    if (IncludeFile)
+    if (!IncludeFile)
     {
-        /* Push the include file on the open input file stack */
-
-        AslPushInputFileStack (IncludeFile, Pathname);
-        return (IncludeFile);
+        fprintf (stderr, "Could not open include file %s\n", Pathname);
+        ACPI_FREE (Pathname);
+        return (NULL);
     }
 
-    ACPI_FREE (Pathname);
-    return (NULL);
+    /* Push the include file on the open input file stack */
+
+    AslPushInputFileStack (IncludeFile, Pathname);
+    return (IncludeFile);
 }
 
 
@@ -841,7 +530,7 @@ FlOpenInputFile (
  *
  * RETURN:      Status
  *
- * DESCRIPTION: Create the output filename (*.AML) and open the file.  The file
+ * DESCRIPTION: Create the output filename (*.AML) and open the file. The file
  *              is created in the same directory as the parent input file.
  *
  ******************************************************************************/
@@ -895,6 +584,13 @@ FlOpenMiscOutputFiles (
 {
     char                    *Filename;
 
+
+    /* All done for disassembler */
+
+    if (Gbl_FileType == ASL_INPUT_TYPE_ACPI_TABLE)
+    {
+        return (AE_OK);
+    }
 
     /* Create/Open a hex output file if asked */
 
@@ -989,7 +685,7 @@ FlOpenMiscOutputFiles (
         return (AE_OK);
     }
 
-   /* Create/Open a combined source output file */
+    /* Create/Open a combined source output file */
 
     Filename = FlGenerateFilename (FilenamePrefix, FILE_SUFFIX_SOURCE);
     if (!Filename)
@@ -1049,6 +745,27 @@ FlOpenMiscOutputFiles (
         FlPrintFile (ASL_FILE_C_SOURCE_OUTPUT, "/*\n");
         AslCompilerSignon (ASL_FILE_C_SOURCE_OUTPUT);
         AslCompilerFileHeader (ASL_FILE_C_SOURCE_OUTPUT);
+    }
+
+    /* Create/Open a C code source output file for the offset table if asked */
+
+    if (Gbl_C_OffsetTableFlag)
+    {
+        Filename = FlGenerateFilename (FilenamePrefix, FILE_SUFFIX_C_OFFSET);
+        if (!Filename)
+        {
+            AslCommonError (ASL_ERROR, ASL_MSG_LISTING_FILENAME,
+                0, 0, 0, 0, NULL, NULL);
+            return (AE_ERROR);
+        }
+
+        /* Open the C code source file, text mode */
+
+        FlOpenFile (ASL_FILE_C_OFFSET_OUTPUT, Filename, "w+t");
+
+        FlPrintFile (ASL_FILE_C_OFFSET_OUTPUT, "/*\n");
+        AslCompilerSignon (ASL_FILE_C_OFFSET_OUTPUT);
+        AslCompilerFileHeader (ASL_FILE_C_OFFSET_OUTPUT);
     }
 
     /* Create/Open a assembly include output file if asked */
@@ -1182,5 +899,3 @@ FlParseInputPathname (
     return (AE_OK);
 }
 #endif
-
-

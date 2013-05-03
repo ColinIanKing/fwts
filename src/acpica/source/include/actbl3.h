@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -142,14 +142,13 @@
 #define ACPI_SIG_PCCT           "PCCT"      /* Platform Communications Channel Table */
 #define ACPI_SIG_PMTT           "PMTT"      /* Platform Memory Topology Table */
 #define ACPI_SIG_RASF           "RASF"      /* RAS Feature table */
+#define ACPI_SIG_TPM2           "TPM2"      /* Trusted Platform Module 2.0 H/W interface table */
 
 #define ACPI_SIG_S3PT           "S3PT"      /* S3 Performance (sub)Table */
 #define ACPI_SIG_PCCS           "PCC"       /* PCC Shared Memory Region */
 
 /* Reserved table signatures */
 
-#define ACPI_SIG_CSRT           "CSRT"      /* Core System Resources Table */
-#define ACPI_SIG_DBG2           "DBG2"      /* Debug Port table 2 */
 #define ACPI_SIG_MATR           "MATR"      /* Memory Address Translation Table */
 #define ACPI_SIG_MSDM           "MSDM"      /* Microsoft Data Management Table */
 #define ACPI_SIG_WPBT           "WPBT"      /* Windows Platform Binary Table */
@@ -161,9 +160,15 @@
 #pragma pack(1)
 
 /*
- * Note about bitfields: The UINT8 type is used for bitfields in ACPI tables.
- * This is the only type that is even remotely portable. Anything else is not
- * portable, so do not use any other bitfield types.
+ * Note: C bitfields are not used for this reason:
+ *
+ * "Bitfields are great and easy to read, but unfortunately the C language
+ * does not specify the layout of bitfields in memory, which means they are
+ * essentially useless for dealing with packed data in on-disk formats or
+ * binary wire protocols." (Or ACPI tables and buffers.) "If you ask me,
+ * this decision was a design error in C. Ritchie could have picked an order
+ * and stuck with it." Norman Ramsey.
+ * See http://stackoverflow.com/a/1053662/41661
  */
 
 
@@ -262,7 +267,7 @@ typedef struct acpi_fpdt_header
 enum AcpiFpdtType
 {
     ACPI_FPDT_TYPE_BOOT                 = 0,
-    ACPI_FPDT_TYPE_S3PERF               = 1,
+    ACPI_FPDT_TYPE_S3PERF               = 1
 };
 
 
@@ -324,7 +329,7 @@ typedef struct acpi_s3pt_header
 enum AcpiS3ptType
 {
     ACPI_S3PT_TYPE_RESUME               = 0,
-    ACPI_S3PT_TYPE_SUSPEND              = 1,
+    ACPI_S3PT_TYPE_SUSPEND              = 1
 };
 
 typedef struct acpi_s3pt_resume
@@ -386,10 +391,10 @@ typedef struct acpi_table_gtdt
  ******************************************************************************/
 
 #define ACPI_MPST_CHANNEL_INFO \
-    UINT16                  Reserved1; \
     UINT8                   ChannelId; \
-    UINT8                   Reserved2; \
-    UINT16                  PowerNodeCount;
+    UINT8                   Reserved1[3]; \
+    UINT16                  PowerNodeCount; \
+    UINT16                  Reserved2;
 
 /* Main table */
 
@@ -420,9 +425,8 @@ typedef struct acpi_mpst_power_node
     UINT32                  Length;
     UINT64                  RangeAddress;
     UINT64                  RangeLength;
-    UINT8                   NumPowerStates;
-    UINT8                   NumPhysicalComponents;
-    UINT16                  Reserved2;
+    UINT32                  NumPowerStates;
+    UINT32                  NumPhysicalComponents;
 
 } ACPI_MPST_POWER_NODE;
 
@@ -457,12 +461,13 @@ typedef struct acpi_mpst_component
 typedef struct acpi_mpst_data_hdr
 {
     UINT16                  CharacteristicsCount;
+    UINT16                  Reserved;
 
 } ACPI_MPST_DATA_HDR;
 
 typedef struct acpi_mpst_power_data
 {
-    UINT8                   Revision;
+    UINT8                   StructureId;
     UINT8                   Flags;
     UINT16                  Reserved1;
     UINT32                  AveragePower;
@@ -486,10 +491,10 @@ typedef struct acpi_mpst_shared
     UINT32                  Signature;
     UINT16                  PccCommand;
     UINT16                  PccStatus;
-    UINT16                  CommandRegister;
-    UINT16                  StatusRegister;
-    UINT16                  PowerStateId;
-    UINT16                  PowerNodeId;
+    UINT32                  CommandRegister;
+    UINT32                  StatusRegister;
+    UINT32                  PowerStateId;
+    UINT32                  PowerNodeId;
     UINT64                  EnergyConsumed;
     UINT64                  AveragePower;
 
@@ -666,28 +671,67 @@ typedef struct acpi_rasf_shared_memory
     UINT32                  Signature;
     UINT16                  Command;
     UINT16                  Status;
-    UINT64                  RequestedAddress;
-    UINT64                  RequestedLength;
-    UINT64                  ActualAddress;
-    UINT64                  ActualLength;
-    UINT16                  Flags;
-    UINT8                   Speed;
+    UINT16                  Version;
+    UINT8                   Capabilities[16];
+    UINT8                   SetCapabilities[16];
+    UINT16                  NumParameterBlocks;
+    UINT32                  SetCapabilitiesStatus;
 
 } ACPI_RASF_SHARED_MEMORY;
+
+/* RASF Parameter Block Structure Header */
+
+typedef struct acpi_rasf_parameter_block
+{
+    UINT16                  Type;
+    UINT16                  Version;
+    UINT16                  Length;
+
+} ACPI_RASF_PARAMETER_BLOCK;
+
+/* RASF Parameter Block Structure for PATROL_SCRUB */
+
+typedef struct acpi_rasf_patrol_scrub_parameter
+{
+    ACPI_RASF_PARAMETER_BLOCK   Header;
+    UINT16                      PatrolScrubCommand;
+    UINT64                      RequestedAddressRange[2];
+    UINT64                      ActualAddressRange[2];
+    UINT16                      Flags;
+    UINT8                       RequestedSpeed;
+
+} ACPI_RASF_PATROL_SCRUB_PARAMETER;
 
 /* Masks for Flags and Speed fields above */
 
 #define ACPI_RASF_SCRUBBER_RUNNING      1
 #define ACPI_RASF_SPEED                 (7<<1)
+#define ACPI_RASF_SPEED_SLOW            (0<<1)
+#define ACPI_RASF_SPEED_MEDIUM          (4<<1)
+#define ACPI_RASF_SPEED_FAST            (7<<1)
 
 /* Channel Commands */
 
 enum AcpiRasfCommands
 {
-    ACPI_RASF_GET_RAS_CAPABILITIES      = 1,
-    ACPI_RASF_GET_PATROL_PARAMETERS     = 2,
-    ACPI_RASF_START_PATROL_SCRUBBER     = 3,
-    ACPI_RASF_STOP_PATROL_SCRUBBER      = 4
+    ACPI_RASF_EXECUTE_RASF_COMMAND      = 1
+};
+
+/* Platform RAS Capabilities */
+
+enum AcpiRasfCapabiliities
+{
+    ACPI_HW_PATROL_SCRUB_SUPPORTED      = 0,
+    ACPI_SW_PATROL_SCRUB_EXPOSED        = 1
+};
+
+/* Patrol Scrub Commands */
+
+enum AcpiRasfPatrolScrubCommands
+{
+    ACPI_RASF_GET_PATROL_PARAMETERS     = 1,
+    ACPI_RASF_START_PATROL_SCRUBBER     = 2,
+    ACPI_RASF_STOP_PATROL_SCRUBBER      = 3
 };
 
 /* Channel Command flags */
@@ -713,6 +757,41 @@ enum AcpiRasfStatus
 #define ACPI_RASF_SCI_DOORBELL          (1<<1)
 #define ACPI_RASF_ERROR                 (1<<2)
 #define ACPI_RASF_STATUS                (0x1F<<3)
+
+
+/*******************************************************************************
+ *
+ * TPM2 - Trusted Platform Module (TPM) 2.0 Hardware Interface Table
+ *        Version 3
+ *
+ * Conforms to "TPM 2.0 Hardware Interface Table (TPM2)" 29 November 2011
+ *
+ ******************************************************************************/
+
+typedef struct acpi_table_tpm2
+{
+    ACPI_TABLE_HEADER       Header;             /* Common ACPI table header */
+    UINT32                  Flags;
+    UINT64                  ControlAddress;
+    UINT32                  StartMethod;
+
+} ACPI_TABLE_TPM2;
+
+/* Control area structure (not part of table, pointed to by ControlAddress) */
+
+typedef struct acpi_tpm2_control
+{
+    UINT32                  Reserved;
+    UINT32                  Error;
+    UINT32                  Cancel;
+    UINT32                  Start;
+    UINT64                  InterruptControl;
+    UINT32                  CommandSize;
+    UINT64                  CommandAddress;
+    UINT32                  ResponseSize;
+    UINT64                  ResponseAddress;
+
+} ACPI_TPM2_CONTROL;
 
 
 /* Reset to default packing */

@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -273,7 +273,7 @@ AcpiDmGpioCommon (
     AcpiOsPrintf (", ");
     AcpiOsPrintf ("0x%2.2X, ", Resource->Gpio.ResSourceIndex);
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_ConsumeDecode [(Resource->Gpio.Flags & 1)]);
+        AcpiGbl_ConsumeDecode [ACPI_GET_1BIT_FLAG (Resource->Gpio.Flags)]);
 
     /* Insert a descriptor name */
 
@@ -345,9 +345,9 @@ AcpiDmGpioIntDescriptor (
 
     AcpiDmIndent (Level);
     AcpiOsPrintf ("GpioInt (%s, %s, %s, ",
-        AcpiGbl_HeDecode [(Resource->Gpio.IntFlags & 1)],
-        AcpiGbl_LlDecode [(Resource->Gpio.IntFlags >> 1) & 1],
-        AcpiGbl_ShrDecode [(Resource->Gpio.IntFlags >> 3) & 1]);
+        AcpiGbl_HeDecode [ACPI_GET_1BIT_FLAG (Resource->Gpio.IntFlags)],
+        AcpiGbl_LlDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->Gpio.IntFlags, 1)],
+        AcpiGbl_ShrDecode [ACPI_EXTRACT_2BIT_FLAG (Resource->Gpio.IntFlags, 3)]);
 
     /* PinConfig, DebounceTimeout */
 
@@ -378,7 +378,7 @@ AcpiDmGpioIntDescriptor (
  *
  * RETURN:      None
  *
- * DESCRIPTION: Decode a GPIO Interrupt descriptor
+ * DESCRIPTION: Decode a GPIO I/O descriptor
  *
  ******************************************************************************/
 
@@ -395,7 +395,7 @@ AcpiDmGpioIoDescriptor (
 
     AcpiDmIndent (Level);
     AcpiOsPrintf ("GpioIo (%s, ",
-        AcpiGbl_ShrDecode [(Resource->Gpio.IntFlags >> 3) & 1]);
+        AcpiGbl_ShrDecode [ACPI_EXTRACT_2BIT_FLAG (Resource->Gpio.IntFlags, 3)]);
 
     if (Resource->Gpio.PinConfig <= 3)
     {
@@ -412,7 +412,7 @@ AcpiDmGpioIoDescriptor (
     AcpiOsPrintf ("0x%4.4X, ", Resource->Gpio.DebounceTimeout);
     AcpiOsPrintf ("0x%4.4X, ", Resource->Gpio.DriveStrength);
     AcpiOsPrintf ("%s,\n",
-        AcpiGbl_IorDecode [Resource->Gpio.IntFlags & 3]);
+        AcpiGbl_IorDecode [ACPI_GET_2BIT_FLAG (Resource->Gpio.IntFlags)]);
 
     /* Dump the GpioInt/GpioIo common portion of the descriptor */
 
@@ -552,12 +552,12 @@ AcpiDmI2cSerialBusDescriptor (
     AcpiDmIndent (Level);
     AcpiOsPrintf ("I2cSerialBus (0x%4.4X, %s, 0x%8.8X,\n",
         Resource->I2cSerialBus.SlaveAddress,
-        AcpiGbl_SmDecode [(Resource->I2cSerialBus.Flags & 1)],
+        AcpiGbl_SmDecode [ACPI_GET_1BIT_FLAG (Resource->I2cSerialBus.Flags)],
         Resource->I2cSerialBus.ConnectionSpeed);
 
     AcpiDmIndent (Level + 1);
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_AmDecode [(Resource->I2cSerialBus.TypeSpecificFlags & 1)]);
+        AcpiGbl_AmDecode [ACPI_GET_1BIT_FLAG (Resource->I2cSerialBus.TypeSpecificFlags)]);
 
     /* ResourceSource is a required field */
 
@@ -575,7 +575,7 @@ AcpiDmI2cSerialBusDescriptor (
     AcpiOsPrintf ("0x%2.2X, ", Resource->I2cSerialBus.ResSourceIndex);
 
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_ConsumeDecode [(Resource->I2cSerialBus.Flags >> 1) & 1]);
+        AcpiGbl_ConsumeDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->I2cSerialBus.Flags, 1)]);
 
     /* Insert a descriptor name */
 
@@ -618,21 +618,21 @@ AcpiDmSpiSerialBusDescriptor (
     AcpiDmIndent (Level);
     AcpiOsPrintf ("SpiSerialBus (0x%4.4X, %s, %s, 0x%2.2X,\n",
         Resource->SpiSerialBus.DeviceSelection,
-        AcpiGbl_DpDecode [(Resource->SpiSerialBus.TypeSpecificFlags >> 1) & 1],
-        AcpiGbl_WmDecode [(Resource->SpiSerialBus.TypeSpecificFlags & 1)],
+        AcpiGbl_DpDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->SpiSerialBus.TypeSpecificFlags, 1)],
+        AcpiGbl_WmDecode [ACPI_GET_1BIT_FLAG (Resource->SpiSerialBus.TypeSpecificFlags)],
         Resource->SpiSerialBus.DataBitLength);
 
     /* SlaveMode, ConnectionSpeed, ClockPolarity, ClockPhase */
 
     AcpiDmIndent (Level + 1);
     AcpiOsPrintf ("%s, 0x%8.8X, %s,\n",
-        AcpiGbl_SmDecode [(Resource->SpiSerialBus.Flags & 1)],
+        AcpiGbl_SmDecode [ACPI_GET_1BIT_FLAG (Resource->SpiSerialBus.Flags)],
         Resource->SpiSerialBus.ConnectionSpeed,
-        AcpiGbl_CpoDecode [(Resource->SpiSerialBus.ClockPolarity & 1)]);
+        AcpiGbl_CpoDecode [ACPI_GET_1BIT_FLAG (Resource->SpiSerialBus.ClockPolarity)]);
 
     AcpiDmIndent (Level + 1);
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_CphDecode [(Resource->SpiSerialBus.ClockPhase & 1)]);
+        AcpiGbl_CphDecode [ACPI_GET_1BIT_FLAG (Resource->SpiSerialBus.ClockPhase)]);
 
     /* ResourceSource is a required field */
 
@@ -650,7 +650,7 @@ AcpiDmSpiSerialBusDescriptor (
     AcpiOsPrintf ("0x%2.2X, ", Resource->SpiSerialBus.ResSourceIndex);
 
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_ConsumeDecode [(Resource->SpiSerialBus.Flags >> 1) & 1]);
+        AcpiGbl_ConsumeDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->SpiSerialBus.Flags, 1)]);
 
     /* Insert a descriptor name */
 
@@ -693,17 +693,17 @@ AcpiDmUartSerialBusDescriptor (
     AcpiDmIndent (Level);
     AcpiOsPrintf ("UartSerialBus (0x%8.8X, %s, %s,\n",
         Resource->UartSerialBus.DefaultBaudRate,
-        AcpiGbl_BpbDecode [(Resource->UartSerialBus.TypeSpecificFlags >> 4) & 3],
-        AcpiGbl_SbDecode [(Resource->UartSerialBus.TypeSpecificFlags >> 2) & 3]);
+        AcpiGbl_BpbDecode [ACPI_EXTRACT_3BIT_FLAG (Resource->UartSerialBus.TypeSpecificFlags, 4)],
+        AcpiGbl_SbDecode [ACPI_EXTRACT_2BIT_FLAG (Resource->UartSerialBus.TypeSpecificFlags, 2)]);
 
     /* LinesInUse, IsBigEndian, Parity, FlowControl */
 
     AcpiDmIndent (Level + 1);
     AcpiOsPrintf ("0x%2.2X, %s, %s, %s,\n",
         Resource->UartSerialBus.LinesEnabled,
-        AcpiGbl_EdDecode [(Resource->UartSerialBus.TypeSpecificFlags >> 7) & 1],
-        AcpiGbl_PtDecode [Resource->UartSerialBus.Parity & 7],
-        AcpiGbl_FcDecode [Resource->UartSerialBus.TypeSpecificFlags & 3]);
+        AcpiGbl_EdDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->UartSerialBus.TypeSpecificFlags, 7)],
+        AcpiGbl_PtDecode [ACPI_GET_3BIT_FLAG (Resource->UartSerialBus.Parity)],
+        AcpiGbl_FcDecode [ACPI_GET_2BIT_FLAG (Resource->UartSerialBus.TypeSpecificFlags)]);
 
     /* ReceiveBufferSize, TransmitBufferSize */
 
@@ -728,7 +728,7 @@ AcpiDmUartSerialBusDescriptor (
     AcpiOsPrintf ("0x%2.2X, ", Resource->UartSerialBus.ResSourceIndex);
 
     AcpiOsPrintf ("%s, ",
-        AcpiGbl_ConsumeDecode [(Resource->UartSerialBus.Flags >> 1) & 1]);
+        AcpiGbl_ConsumeDecode [ACPI_EXTRACT_1BIT_FLAG (Resource->UartSerialBus.Flags, 1)]);
 
     /* Insert a descriptor name */
 
@@ -769,4 +769,3 @@ AcpiDmSerialBusDescriptor (
 }
 
 #endif
-

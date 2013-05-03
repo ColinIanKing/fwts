@@ -97,6 +97,14 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_COMPILER)/aslbtypes.c \
 	$(ACPICA_COMPILER)/aslwalks.c \
 	$(ACPICA_COMPILER)/asluuid.c \
+	$(ACPICA_COMPILER)/aslmethod.c \
+	$(ACPICA_COMPILER)/aslhex.c \
+	$(ACPICA_COMPILER)/aslnamesp.c \
+	$(ACPICA_COMPILER)/aslfileio.c \
+	$(ACPICA_COMPILER)/asllistsup.c \
+	$(ACPICA_COMPILER)/asloffset.c \
+	$(ACPICA_COMPILER)/aslxref.c \
+	$(ACPICA_COMPILER)/aslprepkg.c \
 	$(ACPICA_COMPILER)/dtfield.c \
 	$(ACPICA_COMPILER)/dtio.c \
 	$(ACPICA_COMPILER)/dtsubtable.c \
@@ -131,6 +139,11 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_UTILS)/utxface.c \
 	$(ACPICA_UTILS)/utxferror.c \
 	$(ACPICA_UTILS)/utdecode.c \
+	$(ACPICA_UTILS)/utpredef.c \
+	$(ACPICA_UTILS)/utstring.c \
+	$(ACPICA_UTILS)/utaddress.c \
+	$(ACPICA_UTILS)/utownerid.c \
+	$(ACPICA_UTILS)/utexcep.c \
 	$(ACPICA_NAMESPACE)/nsaccess.c \
 	$(ACPICA_NAMESPACE)/nsalloc.c \
 	$(ACPICA_NAMESPACE)/nsdump.c \
@@ -149,6 +162,8 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_PARSER)/pstree.c \
 	$(ACPICA_PARSER)/psutils.c \
 	$(ACPICA_PARSER)/pswalk.c \
+	$(ACPICA_PARSER)/psobject.c \
+	$(ACPICA_PARSER)/psopinfo.c \
 	$(ACPICA_DISPATCHER)/dswscope.c \
 	$(ACPICA_DISPATCHER)/dswstate.c \
 	$(ACPICA_DISPATCHER)/dsfield.c \
@@ -199,6 +214,8 @@ libfwtsiasl_la_SOURCES = \
 	$(ACPICA_DISASSEMBLER)/dmresrcs.c \
 	$(ACPICA_DISASSEMBLER)/dmutils.c \
 	$(ACPICA_DISASSEMBLER)/dmwalk.c \
+	$(ACPICA_DISASSEMBLER)/dmdeferred.c \
+	$(ACPICA_DISASSEMBLER)/dmresrcl2.c \
 	$(ACPICA_TABLES)/tbfadt.c \
 	$(ACPICA_TABLES)/tbinstal.c \
 	$(ACPICA_TABLES)/tbutils.c \

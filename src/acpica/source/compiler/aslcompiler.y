@@ -9,13 +9,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +32,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +44,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +56,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +81,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +93,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -632,7 +632,7 @@ void *                      AslLocalAllocate (unsigned int Size);
 %type <n> SwitchTerm
 %type <n> UnloadTerm
 %type <n> WhileTerm
-//%type <n> CaseTermList
+/* %type <n> CaseTermList */
 
 /* Type 2 opcodes */
 
@@ -733,6 +733,7 @@ void *                      AslLocalAllocate (unsigned int Size);
 /* Types */
 
 %type <n> SuperName
+%type <n> ObjectTypeName
 %type <n> ArgTerm
 %type <n> LocalTerm
 %type <n> DebugTerm
@@ -2063,7 +2064,7 @@ NotTerm
 
 ObjectTypeTerm
     : PARSEOP_OBJECTTYPE '('        {$<n>$ = TrCreateLeafNode (PARSEOP_OBJECTTYPE);}
-        SuperName
+        ObjectTypeName
         ')'                         {$$ = TrLinkChildren ($<n>3,1,$4);}
     | PARSEOP_OBJECTTYPE '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
@@ -2511,6 +2512,18 @@ SuperName
     | LocalTerm                     {}
     | DebugTerm                     {}
     | Type6Opcode                   {}
+
+/* For ObjectType: SuperName except for UserTerm (method invocation) */
+
+ObjectTypeName
+    : NameString                    {}
+    | ArgTerm                       {}
+    | LocalTerm                     {}
+    | DebugTerm                     {}
+    | RefOfTerm                     {}
+    | DerefOfTerm                   {}
+    | IndexTerm                     {}
+
 /*    | UserTerm                      {} */  /* Caused reduce/reduce with Type6Opcode->UserTerm */
     ;
 
@@ -2579,30 +2592,38 @@ ConstExprTerm
     | PARSEOP___PATH__              {$$ = TrCreateConstantLeafNode (PARSEOP___PATH__);}
     ;
 
+/*
+ * The NODE_COMPILE_TIME_CONST flag in the following constant expressions
+ * enables compile-time constant folding to reduce the Type3Opcodes/Type2IntegerOpcodes
+ * to simple integers. It is an error if these types of expressions cannot be
+ * reduced, since the AML grammar for ****ConstExpr requires a simple constant.
+ * Note: The required byte length of the constant is passed through to the
+ * constant folding code in the node AmlLength field.
+ */
 ByteConstExpr
-    : Type3Opcode                   {$$ = TrUpdateNode (PARSEOP_BYTECONST, $1);}
-    | Type2IntegerOpcode            {$$ = TrUpdateNode (PARSEOP_BYTECONST, $1);}
+    : Type3Opcode                   {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 1);}
+    | Type2IntegerOpcode            {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 1);}
     | ConstExprTerm                 {$$ = TrUpdateNode (PARSEOP_BYTECONST, $1);}
     | ByteConst                     {}
     ;
 
 WordConstExpr
-    : Type3Opcode                   {$$ = TrUpdateNode (PARSEOP_WORDCONST, $1);}
-    | Type2IntegerOpcode            {$$ = TrUpdateNode (PARSEOP_WORDCONST, $1);}
+    : Type3Opcode                   {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 2);}
+    | Type2IntegerOpcode            {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 2);}
     | ConstExprTerm                 {$$ = TrUpdateNode (PARSEOP_WORDCONST, $1);}
     | WordConst                     {}
     ;
 
 DWordConstExpr
-    : Type3Opcode                   {$$ = TrUpdateNode (PARSEOP_DWORDCONST, $1);}
-    | Type2IntegerOpcode            {$$ = TrUpdateNode (PARSEOP_DWORDCONST, $1);}
+    : Type3Opcode                   {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 4);}
+    | Type2IntegerOpcode            {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 4);}
     | ConstExprTerm                 {$$ = TrUpdateNode (PARSEOP_DWORDCONST, $1);}
     | DWordConst                    {}
     ;
 
 QWordConstExpr
-    : Type3Opcode                   {$$ = TrUpdateNode (PARSEOP_QWORDCONST, $1);}
-    | Type2IntegerOpcode            {$$ = TrUpdateNode (PARSEOP_QWORDCONST, $1);}
+    : Type3Opcode                   {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 8);}
+    | Type2IntegerOpcode            {$$ = TrSetNodeFlags ($1, NODE_COMPILE_TIME_CONST); TrSetNodeAmlLength ($1, 8);}
     | ConstExprTerm                 {$$ = TrUpdateNode (PARSEOP_QWORDCONST, $1);}
     | QWordConst                    {}
     ;
@@ -2911,10 +2932,10 @@ ExtendedSpaceTerm
 
 FixedDmaTerm
     : PARSEOP_FIXEDDMA '('          {$<n>$ = TrCreateLeafNode (PARSEOP_FIXEDDMA);}
-        WordConstExpr               // 04: DMA RequestLines
-        ',' WordConstExpr           // 06: DMA Channels
-        OptionalXferSize            // 07: DMA TransferSize
-        OptionalNameString          // 08: DescriptorName
+        WordConstExpr               /* 04: DMA RequestLines */
+        ',' WordConstExpr           /* 06: DMA Channels */
+        OptionalXferSize            /* 07: DMA TransferSize */
+        OptionalNameString          /* 08: DescriptorName */
         ')'                         {$$ = TrLinkChildren ($<n>3,4,$4,$6,$7,$8);}
     | PARSEOP_FIXEDDMA '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
@@ -2932,16 +2953,16 @@ FixedIOTerm
 
 GpioIntTerm
     : PARSEOP_GPIO_INT '('          {$<n>$ = TrCreateLeafNode (PARSEOP_GPIO_INT);}
-        InterruptTypeKeyword        // 04: InterruptType
-        ',' InterruptLevel          // 06: InterruptLevel
-        OptionalShareType           // 07: SharedType
-        ',' PinConfigByte           // 09: PinConfig
-        OptionalWordConstExpr       // 10: DebounceTimeout
-        ',' StringData              // 12: ResourceSource
-        OptionalByteConstExpr       // 13: ResourceSourceIndex
-        OptionalResourceType        // 14: ResourceType
-        OptionalNameString          // 15: DescriptorName
-        OptionalBuffer_Last         // 16: VendorData
+        InterruptTypeKeyword        /* 04: InterruptType */
+        ',' InterruptLevel          /* 06: InterruptLevel */
+        OptionalShareType           /* 07: SharedType */
+        ',' PinConfigByte           /* 09: PinConfig */
+        OptionalWordConstExpr       /* 10: DebounceTimeout */
+        ',' StringData              /* 12: ResourceSource */
+        OptionalByteConstExpr       /* 13: ResourceSourceIndex */
+        OptionalResourceType        /* 14: ResourceType */
+        OptionalNameString          /* 15: DescriptorName */
+        OptionalBuffer_Last         /* 16: VendorData */
         ')' '{'
             DWordConstExpr '}'      {$$ = TrLinkChildren ($<n>3,11,$4,$6,$7,$9,$10,$12,$13,$14,$15,$16,$19);}
     | PARSEOP_GPIO_INT '('
@@ -2950,16 +2971,16 @@ GpioIntTerm
 
 GpioIoTerm
     : PARSEOP_GPIO_IO '('           {$<n>$ = TrCreateLeafNode (PARSEOP_GPIO_IO);}
-        OptionalShareType_First     // 04: SharedType
-        ',' PinConfigByte           // 06: PinConfig
-        OptionalWordConstExpr       // 07: DebounceTimeout
-        OptionalWordConstExpr       // 08: DriveStrength
-        OptionalIoRestriction       // 09: IoRestriction
-        ',' StringData              // 11: ResourceSource
-        OptionalByteConstExpr       // 12: ResourceSourceIndex
-        OptionalResourceType        // 13: ResourceType
-        OptionalNameString          // 14: DescriptorName
-        OptionalBuffer_Last         // 15: VendorData
+        OptionalShareType_First     /* 04: SharedType */
+        ',' PinConfigByte           /* 06: PinConfig */
+        OptionalWordConstExpr       /* 07: DebounceTimeout */
+        OptionalWordConstExpr       /* 08: DriveStrength */
+        OptionalIoRestriction       /* 09: IoRestriction */
+        ',' StringData              /* 11: ResourceSource */
+        OptionalByteConstExpr       /* 12: ResourceSourceIndex */
+        OptionalResourceType        /* 13: ResourceType */
+        OptionalNameString          /* 14: DescriptorName */
+        OptionalBuffer_Last         /* 15: VendorData */
         ')' '{'
             DWordList '}'           {$$ = TrLinkChildren ($<n>3,11,$4,$6,$7,$8,$9,$11,$12,$13,$14,$15,$18);}
     | PARSEOP_GPIO_IO '('
@@ -2968,15 +2989,15 @@ GpioIoTerm
 
 I2cSerialBusTerm
     : PARSEOP_I2C_SERIALBUS '('     {$<n>$ = TrCreateLeafNode (PARSEOP_I2C_SERIALBUS);}
-        WordConstExpr               // 04: SlaveAddress
-        OptionalSlaveMode           // 05: SlaveMode
-        ',' DWordConstExpr          // 07: ConnectionSpeed
-        OptionalAddressingMode      // 08: AddressingMode
-        ',' StringData              // 10: ResourceSource
-        OptionalByteConstExpr       // 11: ResourceSourceIndex
-        OptionalResourceType        // 12: ResourceType
-        OptionalNameString          // 13: DescriptorName
-        OptionalBuffer_Last         // 14: VendorData
+        WordConstExpr               /* 04: SlaveAddress */
+        OptionalSlaveMode           /* 05: SlaveMode */
+        ',' DWordConstExpr          /* 07: ConnectionSpeed */
+        OptionalAddressingMode      /* 08: AddressingMode */
+        ',' StringData              /* 10: ResourceSource */
+        OptionalByteConstExpr       /* 11: ResourceSourceIndex */
+        OptionalResourceType        /* 12: ResourceType */
+        OptionalNameString          /* 13: DescriptorName */
+        OptionalBuffer_Last         /* 14: VendorData */
         ')'                         {$$ = TrLinkChildren ($<n>3,9,$4,$5,$7,$8,$10,$11,$12,$13,$14);}
     | PARSEOP_I2C_SERIALBUS '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
@@ -3149,19 +3170,19 @@ RegisterTerm
 
 SpiSerialBusTerm
     : PARSEOP_SPI_SERIALBUS '('     {$<n>$ = TrCreateLeafNode (PARSEOP_SPI_SERIALBUS);}
-        WordConstExpr               // 04: DeviceSelection
-        OptionalDevicePolarity      // 05: DevicePolarity
-        OptionalWireMode            // 06: WireMode
-        ',' ByteConstExpr           // 08: DataBitLength
-        OptionalSlaveMode           // 09: SlaveMode
-        ',' DWordConstExpr          // 11: ConnectionSpeed
-        ',' ClockPolarityKeyword    // 13: ClockPolarity
-        ',' ClockPhaseKeyword       // 15: ClockPhase
-        ',' StringData              // 17: ResourceSource
-        OptionalByteConstExpr       // 18: ResourceSourceIndex
-        OptionalResourceType        // 19: ResourceType
-        OptionalNameString          // 20: DescriptorName
-        OptionalBuffer_Last         // 21: VendorData
+        WordConstExpr               /* 04: DeviceSelection */
+        OptionalDevicePolarity      /* 05: DevicePolarity */
+        OptionalWireMode            /* 06: WireMode */
+        ',' ByteConstExpr           /* 08: DataBitLength */
+        OptionalSlaveMode           /* 09: SlaveMode */
+        ',' DWordConstExpr          /* 11: ConnectionSpeed */
+        ',' ClockPolarityKeyword    /* 13: ClockPolarity */
+        ',' ClockPhaseKeyword       /* 15: ClockPhase */
+        ',' StringData              /* 17: ResourceSource */
+        OptionalByteConstExpr       /* 18: ResourceSourceIndex */
+        OptionalResourceType        /* 19: ResourceType */
+        OptionalNameString          /* 20: DescriptorName */
+        OptionalBuffer_Last         /* 21: VendorData */
         ')'                         {$$ = TrLinkChildren ($<n>3,13,$4,$5,$6,$8,$9,$11,$13,$15,$17,$18,$19,$20,$21);}
     | PARSEOP_SPI_SERIALBUS '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
@@ -3187,20 +3208,20 @@ StartDependentFnTerm
 
 UartSerialBusTerm
     : PARSEOP_UART_SERIALBUS '('    {$<n>$ = TrCreateLeafNode (PARSEOP_UART_SERIALBUS);}
-        DWordConstExpr              // 04: ConnectionSpeed
-        OptionalBitsPerByte         // 05: BitsPerByte
-        OptionalStopBits            // 06: StopBits
-        ',' ByteConstExpr           // 08: LinesInUse
-        OptionalEndian              // 09: Endianess
-        OptionalParityType          // 10: Parity
-        OptionalFlowControl         // 11: FlowControl
-        ',' WordConstExpr           // 13: Rx BufferSize
-        ',' WordConstExpr           // 15: Tx BufferSize
-        ',' StringData              // 17: ResourceSource
-        OptionalByteConstExpr       // 18: ResourceSourceIndex
-        OptionalResourceType        // 19: ResourceType
-        OptionalNameString          // 20: DescriptorName
-        OptionalBuffer_Last         // 21: VendorData
+        DWordConstExpr              /* 04: ConnectionSpeed */
+        OptionalBitsPerByte         /* 05: BitsPerByte */
+        OptionalStopBits            /* 06: StopBits */
+        ',' ByteConstExpr           /* 08: LinesInUse */
+        OptionalEndian              /* 09: Endianess */
+        OptionalParityType          /* 10: Parity */
+        OptionalFlowControl         /* 11: FlowControl */
+        ',' WordConstExpr           /* 13: Rx BufferSize */
+        ',' WordConstExpr           /* 15: Tx BufferSize */
+        ',' StringData              /* 17: ResourceSource */
+        OptionalByteConstExpr       /* 18: ResourceSourceIndex */
+        OptionalResourceType        /* 19: ResourceType */
+        OptionalNameString          /* 20: DescriptorName */
+        OptionalBuffer_Last         /* 21: VendorData */
         ')'                         {$$ = TrLinkChildren ($<n>3,14,$4,$5,$6,$8,$9,$10,$11,$13,$15,$17,$18,$19,$20,$21);}
     | PARSEOP_UART_SERIALBUS '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
@@ -3573,7 +3594,7 @@ OptionalXferSize
 int
 AslCompilerwrap(void)
 {
-  return 1;
+  return (1);
 }
 
 /*! [End] no source code translation !*/

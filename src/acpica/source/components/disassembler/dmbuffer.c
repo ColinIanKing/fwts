@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -135,6 +135,12 @@ AcpiDmUnicode (
 static void
 AcpiDmIsEisaIdElement (
     ACPI_PARSE_OBJECT       *Op);
+
+static void
+AcpiDmPldBuffer (
+    UINT32                  Level,
+    UINT8                   *ByteData,
+    UINT32                  ByteCount);
 
 
 /*******************************************************************************
@@ -250,6 +256,12 @@ AcpiDmByteList (
     case ACPI_DASM_UNICODE:
 
         AcpiDmUnicode (Op);
+        break;
+
+    case ACPI_DASM_PLD_METHOD:
+
+        AcpiDmDisasmByteList (Info->Level, ByteData, ByteCount);
+        AcpiDmPldBuffer (Info->Level, ByteData, ByteCount);
         break;
 
     case ACPI_DASM_BUFFER:
@@ -404,13 +416,168 @@ AcpiDmIsStringBuffer (
 
 /*******************************************************************************
  *
+ * FUNCTION:    AcpiDmIsPldBuffer
+ *
+ * PARAMETERS:  Op                  - Buffer Object to be examined
+ *
+ * RETURN:      TRUE if buffer contains a ASCII string, FALSE otherwise
+ *
+ * DESCRIPTION: Determine if a buffer Op contains a _PLD structure
+ *
+ ******************************************************************************/
+
+BOOLEAN
+AcpiDmIsPldBuffer (
+    ACPI_PARSE_OBJECT       *Op)
+{
+    ACPI_NAMESPACE_NODE     *Node;
+    ACPI_PARSE_OBJECT       *ParentOp;
+
+
+    ParentOp = Op->Common.Parent;
+    if (!ParentOp)
+    {
+        return (FALSE);
+    }
+
+    /* Check for form: Name(_PLD, Buffer() {}). Not legal, however */
+
+    if (ParentOp->Common.AmlOpcode == AML_NAME_OP)
+    {
+        Node = ParentOp->Common.Node;
+
+        if (ACPI_COMPARE_NAME (Node->Name.Ascii, METHOD_NAME__PLD))
+        {
+            return (TRUE);
+        }
+
+        return (FALSE);
+    }
+
+    /* Check for proper form: Name(_PLD, Package() {Buffer() {}}) */
+
+    if (ParentOp->Common.AmlOpcode == AML_PACKAGE_OP)
+    {
+        ParentOp = ParentOp->Common.Parent;
+        if (!ParentOp)
+        {
+            return (FALSE);
+        }
+
+        if (ParentOp->Common.AmlOpcode == AML_NAME_OP)
+        {
+            Node = ParentOp->Common.Node;
+
+            if (ACPI_COMPARE_NAME (Node->Name.Ascii, METHOD_NAME__PLD))
+            {
+                return (TRUE);
+            }
+        }
+    }
+
+    return (FALSE);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDmPldBuffer
+ *
+ * PARAMETERS:  Level               - Current source code indentation level
+ *              ByteData            - Pointer to the byte list
+ *              ByteCount           - Length of the byte list
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Dump and format the contents of a _PLD buffer object
+ *
+ ******************************************************************************/
+
+#define ACPI_PLD_OUTPUT08     "%*.s/* %18s : %-6.2X */\n", ACPI_MUL_4 (Level), " "
+#define ACPI_PLD_OUTPUT16   "%*.s/* %18s : %-6.4X */\n", ACPI_MUL_4 (Level), " "
+#define ACPI_PLD_OUTPUT24   "%*.s/* %18s : %-6.6X */\n", ACPI_MUL_4 (Level), " "
+
+static void
+AcpiDmPldBuffer (
+    UINT32                  Level,
+    UINT8                   *ByteData,
+    UINT32                  ByteCount)
+{
+    ACPI_PLD_INFO           *PldInfo;
+    ACPI_STATUS             Status;
+
+
+    /* Check for valid byte count */
+
+    if (ByteCount < ACPI_PLD_REV1_BUFFER_SIZE)
+    {
+        return;
+    }
+
+    /* Convert _PLD buffer to local _PLD struct */
+
+    Status = AcpiDecodePldBuffer (ByteData, ByteCount, &PldInfo);
+    if (ACPI_FAILURE (Status))
+    {
+        return;
+    }
+
+    /* First 32-bit dword */
+
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Revision", PldInfo->Revision);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "IgnoreColor", PldInfo->IgnoreColor);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT24,"Color", PldInfo->Color);
+
+    /* Second 32-bit dword */
+
+    AcpiOsPrintf (ACPI_PLD_OUTPUT16,"Width", PldInfo->Width);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT16,"Height", PldInfo->Height);
+
+    /* Third 32-bit dword */
+
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "UserVisible", PldInfo->UserVisible);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Dock", PldInfo->Dock);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Lid", PldInfo->Lid);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Panel", PldInfo->Panel);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "VerticalPosition", PldInfo->VerticalPosition);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "HorizontalPosition", PldInfo->HorizontalPosition);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Shape", PldInfo->Shape);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "GroupOrientation", PldInfo->GroupOrientation);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "GroupToken", PldInfo->GroupToken);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "GroupPosition", PldInfo->GroupPosition);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Bay", PldInfo->Bay);
+
+    /* Fourth 32-bit dword */
+
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Ejectable", PldInfo->Ejectable);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "OspmEjectRequired", PldInfo->OspmEjectRequired);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "CabinetNumber", PldInfo->CabinetNumber);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "CardCageNumber", PldInfo->CardCageNumber);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Reference", PldInfo->Reference);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Rotation", PldInfo->Rotation);
+    AcpiOsPrintf (ACPI_PLD_OUTPUT08,  "Order", PldInfo->Order);
+
+    /* Fifth 32-bit dword */
+
+    if (ByteCount >= ACPI_PLD_REV1_BUFFER_SIZE)
+    {
+        AcpiOsPrintf (ACPI_PLD_OUTPUT16,"VerticalOffset", PldInfo->VerticalOffset);
+        AcpiOsPrintf (ACPI_PLD_OUTPUT16,"HorizontalOffset", PldInfo->HorizontalOffset);
+    }
+
+    ACPI_FREE (PldInfo);
+}
+
+
+/*******************************************************************************
+ *
  * FUNCTION:    AcpiDmUnicode
  *
  * PARAMETERS:  Op              - Byte List op containing Unicode string
  *
  * RETURN:      None
  *
- * DESCRIPTION: Dump Unicode string as a standard ASCII string.  (Remove
+ * DESCRIPTION: Dump Unicode string as a standard ASCII string. (Remove
  *              the extra zero bytes).
  *
  ******************************************************************************/

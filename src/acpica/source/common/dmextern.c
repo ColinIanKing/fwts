@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -118,6 +118,7 @@
 #include "amlcode.h"
 #include "acnamesp.h"
 #include "acdisasm.h"
+#include <stdio.h>
 
 
 /*
@@ -225,10 +226,17 @@ AcpiDmNormalizeParentPrefix (
     char                    *Fullpath;
     char                    *ParentPath;
     ACPI_SIZE               Length;
+    UINT32                  Index = 0;
 
 
-    /* Search upwards in the parse tree until we reach a namespace node */
+    if (!Op)
+    {
+        return (NULL);
+    }
 
+    /* Search upwards in the parse tree until we reach the next namespace node */
+
+    Op = Op->Common.Parent;
     while (Op)
     {
         if (Op->Common.Node)
@@ -277,6 +285,13 @@ AcpiDmNormalizeParentPrefix (
          * for the required dot separator (ParentPath.Path)
          */
         Length++;
+
+        /* For External() statements, we do not want a leading '\' */
+
+        if (*ParentPath == AML_ROOT_PREFIX)
+        {
+            Index = 1;
+        }
     }
 
     Fullpath = ACPI_ALLOCATE_ZEROED (Length);
@@ -291,7 +306,7 @@ AcpiDmNormalizeParentPrefix (
      *
      * Copy the parent path
      */
-    ACPI_STRCAT (Fullpath, ParentPath);
+    ACPI_STRCPY (Fullpath, &ParentPath[Index]);
 
     /*
      * Add dot separator
@@ -431,6 +446,7 @@ AcpiDmAddToExternalList (
     ACPI_EXTERNAL_LIST      *NextExternal;
     ACPI_EXTERNAL_LIST      *PrevExternal = NULL;
     ACPI_STATUS             Status;
+    BOOLEAN                 Resolved = FALSE;
 
 
     if (!Path)
@@ -438,7 +454,31 @@ AcpiDmAddToExternalList (
         return;
     }
 
-    /* Externalize the ACPI path */
+    if (Type == ACPI_TYPE_METHOD)
+    {
+        if (Value & 0x80)
+        {
+            Resolved = TRUE;
+        }
+        Value &= 0x07;
+    }
+
+    /*
+     * We don't want External() statements to contain a leading '\'.
+     * This prevents duplicate external statements of the form:
+     *
+     *    External (\ABCD)
+     *    External (ABCD)
+     *
+     * This would cause a compile time error when the disassembled
+     * output file is recompiled.
+     */
+    if ((*Path == AML_ROOT_PREFIX) && (Path[1]))
+    {
+        Path++;
+    }
+
+    /* Externalize the ACPI pathname */
 
     Status = AcpiNsExternalizeName (ACPI_UINT32_MAX, Path,
                 NULL, &ExternalPath);
@@ -447,8 +487,10 @@ AcpiDmAddToExternalList (
         return;
     }
 
-    /* Get the full pathname from root if "Path" has a parent prefix */
-
+    /*
+     * Get the full pathname from the root if "Path" has one or more
+     * parent prefixes (^). Note: path will not contain a leading '\'.
+     */
     if (*Path == (UINT8) AML_PARENT_PREFIX)
     {
         Fullpath = AcpiDmNormalizeParentPrefix (Op, ExternalPath);
@@ -505,6 +547,7 @@ AcpiDmAddToExternalList (
     NewExternal->Path = ExternalPath;
     NewExternal->Type = Type;
     NewExternal->Value = Value;
+    NewExternal->Resolved = Resolved;
     NewExternal->Length = (UINT16) ACPI_STRLEN (ExternalPath);
 
     /* Was the external path with parent prefix normalized to a fullpath? */
@@ -725,6 +768,29 @@ AcpiDmEmitExternals (
     }
 
     /*
+     * Determine the number of control methods in the external list, and
+     * also how many of those externals were resolved via the namespace.
+     */
+    NextExternal = AcpiGbl_ExternalList;
+    while (NextExternal)
+    {
+        if (NextExternal->Type == ACPI_TYPE_METHOD)
+        {
+            AcpiGbl_NumExternalMethods++;
+            if (NextExternal->Resolved)
+            {
+                AcpiGbl_ResolvedExternalMethods++;
+            }
+        }
+
+        NextExternal = NextExternal->Next;
+    }
+
+    /* Check if any control methods were unresolved */
+
+    AcpiDmUnresolvedWarning (1);
+
+    /*
      * Walk the list of externals (unresolved references)
      * found during the AML parsing
      */
@@ -736,8 +802,17 @@ AcpiDmEmitExternals (
 
         if (AcpiGbl_ExternalList->Type == ACPI_TYPE_METHOD)
         {
-            AcpiOsPrintf (")    // %u Arguments\n",
-                AcpiGbl_ExternalList->Value);
+            if (AcpiGbl_ExternalList->Resolved)
+            {
+                AcpiOsPrintf (")    // %u Arguments\n",
+                    AcpiGbl_ExternalList->Value);
+            }
+            else
+            {
+                AcpiOsPrintf (")    // Warning: unresolved Method, "
+                    "assuming %u arguments (may be incorrect, see warning above)\n",
+                    AcpiGbl_ExternalList->Value);
+            }
         }
         else
         {
@@ -760,3 +835,172 @@ AcpiDmEmitExternals (
     AcpiOsPrintf ("\n");
 }
 
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDmUnresolvedWarning
+ *
+ * PARAMETERS:  Type                - Where to output the warning.
+ *                                    0 means write to stderr
+ *                                    1 means write to AcpiOsPrintf
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Issue warning message if there are unresolved external control
+ *              methods within the disassembly.
+ *
+ ******************************************************************************/
+
+#if 0
+Summary of the external control method problem:
+
+When the -e option is used with disassembly, the various SSDTs are simply
+loaded into a global namespace for the disassembler to use in order to
+resolve control method references (invocations).
+
+The disassembler tracks any such references, and will emit an External()
+statement for these types of methods, with the proper number of arguments .
+
+Without the SSDTs, the AML does not contain enough information to properly
+disassemble the control method invocation -- because the disassembler does
+not know how many arguments to parse.
+
+An example: Assume we have two control methods. ABCD has one argument, and
+EFGH has zero arguments. Further, we have two additional control methods
+that invoke ABCD and EFGH, named T1 and T2:
+
+    Method (ABCD, 1)
+    {
+    }
+    Method (EFGH, 0)
+    {
+    }
+    Method (T1)
+    {
+        ABCD (Add (2, 7, Local0))
+    }
+    Method (T2)
+    {
+        EFGH ()
+        Add (2, 7, Local0)
+    }
+
+Here is the AML code that is generated for T1 and T2:
+
+     185:      Method (T1)
+
+0000034C:  14 10 54 31 5F 5F 00 ...    "..T1__."
+
+     186:      {
+     187:          ABCD (Add (2, 7, Local0))
+
+00000353:  41 42 43 44 ............    "ABCD"
+00000357:  72 0A 02 0A 07 60 ......    "r....`"
+
+     188:      }
+
+     190:      Method (T2)
+
+0000035D:  14 10 54 32 5F 5F 00 ...    "..T2__."
+
+     191:      {
+     192:          EFGH ()
+
+00000364:  45 46 47 48 ............    "EFGH"
+
+     193:          Add (2, 7, Local0)
+
+00000368:  72 0A 02 0A 07 60 ......    "r....`"
+     194:      }
+
+Note that the AML code for T1 and T2 is essentially identical. When
+disassembling this code, the methods ABCD and EFGH must be known to the
+disassembler, otherwise it does not know how to handle the method invocations.
+
+In other words, if ABCD and EFGH are actually external control methods
+appearing in an SSDT, the disassembler does not know what to do unless
+the owning SSDT has been loaded via the -e option.
+#endif
+
+void
+AcpiDmUnresolvedWarning (
+    UINT8                   Type)
+{
+
+    if (!AcpiGbl_NumExternalMethods)
+    {
+        return;
+    }
+
+    if (Type)
+    {
+        if (!AcpiGbl_ExternalFileList)
+        {
+            /* The -e option was not specified */
+
+           AcpiOsPrintf ("    /*\n"
+                "     * iASL Warning: There were %u external control methods found during\n"
+                "     * disassembly, but additional ACPI tables to resolve these externals\n"
+                "     * were not specified. This resulting disassembler output file may not\n"
+                "     * compile because the disassembler did not know how many arguments\n"
+                "     * to assign to these methods. To specify the tables needed to resolve\n"
+                "     * external control method references, use the one of the following\n"
+                "     * example iASL invocations:\n"
+                "     *     iasl -e <ssdt1.aml,ssdt2.aml...> -d <dsdt.aml>\n"
+                "     *     iasl -e <dsdt.aml,ssdt2.aml...> -d <ssdt1.aml>\n"
+                "     */\n",
+                AcpiGbl_NumExternalMethods);
+        }
+        else if (AcpiGbl_NumExternalMethods != AcpiGbl_ResolvedExternalMethods)
+        {
+            /* The -e option was specified, but there are still some unresolved externals */
+
+            AcpiOsPrintf ("    /*\n"
+                "     * iASL Warning: There were %u external control methods found during\n"
+                "     * disassembly, but only %u %s resolved (%u unresolved). Additional\n"
+                "     * ACPI tables are required to properly disassemble the code. This\n"
+                "     * resulting disassembler output file may not compile because the\n"
+                "     * disassembler did not know how many arguments to assign to the\n"
+                "     * unresolved methods.\n"
+                "     */\n",
+                AcpiGbl_NumExternalMethods, AcpiGbl_ResolvedExternalMethods,
+                (AcpiGbl_ResolvedExternalMethods > 1 ? "were" : "was"),
+                (AcpiGbl_NumExternalMethods - AcpiGbl_ResolvedExternalMethods));
+        }
+    }
+    else
+    {
+        if (!AcpiGbl_ExternalFileList)
+        {
+            /* The -e option was not specified */
+
+            fprintf (stderr, "\n"
+                "iASL Warning: There were %u external control methods found during\n"
+                "disassembly, but additional ACPI tables to resolve these externals\n"
+                "were not specified. The resulting disassembler output file may not\n"
+                "compile because the disassembler did not know how many arguments\n"
+                "to assign to these methods. To specify the tables needed to resolve\n"
+                "external control method references, use the one of the following\n"
+                "example iASL invocations:\n"
+                "    iasl -e <ssdt1.aml,ssdt2.aml...> -d <dsdt.aml>\n"
+                "    iasl -e <dsdt.aml,ssdt2.aml...> -d <ssdt1.aml>\n",
+                AcpiGbl_NumExternalMethods);
+        }
+        else if (AcpiGbl_NumExternalMethods != AcpiGbl_ResolvedExternalMethods)
+        {
+            /* The -e option was specified, but there are still some unresolved externals */
+
+            fprintf (stderr, "\n"
+                "iASL Warning: There were %u external control methods found during\n"
+                "disassembly, but only %u %s resolved (%u unresolved). Additional\n"
+                "ACPI tables are required to properly disassemble the code. The\n"
+                "resulting disassembler output file may not compile because the\n"
+                "disassembler did not know how many arguments to assign to the\n"
+                "unresolved methods.\n",
+                AcpiGbl_NumExternalMethods, AcpiGbl_ResolvedExternalMethods,
+                (AcpiGbl_ResolvedExternalMethods > 1 ? "were" : "was"),
+                (AcpiGbl_NumExternalMethods - AcpiGbl_ResolvedExternalMethods));
+        }
+    }
+
+}

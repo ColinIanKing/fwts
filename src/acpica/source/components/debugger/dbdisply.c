@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -140,6 +140,12 @@ static void *
 AcpiDbGetPointer (
     void                    *Target);
 
+static ACPI_STATUS
+AcpiDbDisplayNonRootHandlers (
+    ACPI_HANDLE             ObjHandle,
+    UINT32                  NestingLevel,
+    void                    *Context,
+    void                    **ReturnValue);
 
 /*
  * System handler information.
@@ -148,6 +154,7 @@ AcpiDbGetPointer (
 #define ACPI_PREDEFINED_PREFIX          "%25s (%.2X) : "
 #define ACPI_HANDLER_NAME_STRING               "%30s : "
 #define ACPI_HANDLER_PRESENT_STRING                    "%-9s (%p)\n"
+#define ACPI_HANDLER_PRESENT_STRING2                   "%-9s (%p)"
 #define ACPI_HANDLER_NOT_PRESENT_STRING                "%-9s\n"
 
 /* All predefined Address Space IDs */
@@ -248,7 +255,7 @@ AcpiDbDumpParserDescriptor (
  *
  * FUNCTION:    AcpiDbDecodeAndDisplayObject
  *
- * PARAMETERS:  Target          - String with object to be displayed.  Names
+ * PARAMETERS:  Target          - String with object to be displayed. Names
  *                                and hex pointers are supported.
  *              OutputType      - Byte, Word, Dword, or Qword (B|W|D|Q)
  *
@@ -342,7 +349,7 @@ AcpiDbDecodeAndDisplayObject (
                 return;
             }
 
-            AcpiUtDumpBuffer (ObjPtr, sizeof (ACPI_OPERAND_OBJECT), Display,
+            AcpiUtDebugDumpBuffer (ObjPtr, sizeof (ACPI_OPERAND_OBJECT), Display,
                 ACPI_UINT32_MAX);
             AcpiExDumpObjectDescriptor (ObjPtr, 1);
             break;
@@ -359,7 +366,7 @@ AcpiDbDecodeAndDisplayObject (
                 return;
             }
 
-            AcpiUtDumpBuffer (ObjPtr, sizeof (ACPI_PARSE_OBJECT), Display,
+            AcpiUtDebugDumpBuffer (ObjPtr, sizeof (ACPI_PARSE_OBJECT), Display,
                 ACPI_UINT32_MAX);
             AcpiDbDumpParserDescriptor ((ACPI_PARSE_OBJECT *) ObjPtr);
             break;
@@ -377,7 +384,7 @@ AcpiDbDecodeAndDisplayObject (
 
             /* Just dump some memory */
 
-            AcpiUtDumpBuffer (ObjPtr, Size, Display, ACPI_UINT32_MAX);
+            AcpiUtDebugDumpBuffer (ObjPtr, Size, Display, ACPI_UINT32_MAX);
             break;
         }
 
@@ -414,7 +421,7 @@ DumpNode:
         return;
     }
 
-    AcpiUtDumpBuffer ((void *) Node, sizeof (ACPI_NAMESPACE_NODE),
+    AcpiUtDebugDumpBuffer ((void *) Node, sizeof (ACPI_NAMESPACE_NODE),
         Display, ACPI_UINT32_MAX);
     AcpiExDumpNamespaceNode (Node, 1);
 
@@ -429,7 +436,7 @@ DumpNode:
             return;
         }
 
-        AcpiUtDumpBuffer ((void *) ObjDesc, sizeof (ACPI_OPERAND_OBJECT),
+        AcpiUtDebugDumpBuffer ((void *) ObjDesc, sizeof (ACPI_OPERAND_OBJECT),
             Display, ACPI_UINT32_MAX);
         AcpiExDumpObjectDescriptor (ObjDesc, 1);
     }
@@ -715,7 +722,7 @@ AcpiDbDisplayCallingTree (
  *
  * FUNCTION:    AcpiDbDisplayObjectType
  *
- * PARAMETERS:  ObjectArg       - User entered NS node handle
+ * PARAMETERS:  Name            - User entered NS node handle or name
  *
  * RETURN:      None
  *
@@ -725,17 +732,21 @@ AcpiDbDisplayCallingTree (
 
 void
 AcpiDbDisplayObjectType (
-    char                    *ObjectArg)
+    char                    *Name)
 {
-    ACPI_HANDLE             Handle;
+    ACPI_NAMESPACE_NODE     *Node;
     ACPI_DEVICE_INFO        *Info;
     ACPI_STATUS             Status;
     UINT32                  i;
 
 
-    Handle = ACPI_TO_POINTER (ACPI_STRTOUL (ObjectArg, NULL, 16));
+    Node = AcpiDbConvertToNode (Name);
+    if (!Node)
+    {
+        return;
+    }
 
-    Status = AcpiGetObjectInfo (Handle, &Info);
+    Status = AcpiGetObjectInfo (ACPI_CAST_PTR (ACPI_HANDLE, Node), &Info);
     if (ACPI_FAILURE (Status))
     {
         AcpiOsPrintf ("Could not get object info, %s\n",
@@ -743,18 +754,25 @@ AcpiDbDisplayObjectType (
         return;
     }
 
-    AcpiOsPrintf ("ADR: %8.8X%8.8X, STA: %8.8X, Flags: %X\n",
-        ACPI_FORMAT_UINT64 (Info->Address),
-        Info->CurrentStatus, Info->Flags);
-
-    AcpiOsPrintf ("S1D-%2.2X S2D-%2.2X S3D-%2.2X S4D-%2.2X\n",
-        Info->HighestDstates[0], Info->HighestDstates[1],
-        Info->HighestDstates[2], Info->HighestDstates[3]);
-
-    AcpiOsPrintf ("S0W-%2.2X S1W-%2.2X S2W-%2.2X S3W-%2.2X S4W-%2.2X\n",
-        Info->LowestDstates[0], Info->LowestDstates[1],
-        Info->LowestDstates[2], Info->LowestDstates[3],
-        Info->LowestDstates[4]);
+    if (Info->Valid & ACPI_VALID_ADR)
+    {
+        AcpiOsPrintf ("ADR: %8.8X%8.8X, STA: %8.8X, Flags: %X\n",
+            ACPI_FORMAT_UINT64 (Info->Address),
+            Info->CurrentStatus, Info->Flags);
+    }
+    if (Info->Valid & ACPI_VALID_SXDS)
+    {
+        AcpiOsPrintf ("S1D-%2.2X S2D-%2.2X S3D-%2.2X S4D-%2.2X\n",
+            Info->HighestDstates[0], Info->HighestDstates[1],
+            Info->HighestDstates[2], Info->HighestDstates[3]);
+    }
+    if (Info->Valid & ACPI_VALID_SXWS)
+    {
+        AcpiOsPrintf ("S0W-%2.2X S1W-%2.2X S2W-%2.2X S3W-%2.2X S4W-%2.2X\n",
+            Info->LowestDstates[0], Info->LowestDstates[1],
+            Info->LowestDstates[2], Info->LowestDstates[3],
+            Info->LowestDstates[4]);
+    }
 
     if (Info->Valid & ACPI_VALID_HID)
     {
@@ -763,6 +781,10 @@ AcpiDbDisplayObjectType (
     if (Info->Valid & ACPI_VALID_UID)
     {
         AcpiOsPrintf ("UID: %s\n", Info->UniqueId.String);
+    }
+    if (Info->Valid & ACPI_VALID_SUB)
+    {
+        AcpiOsPrintf ("SUB: %s\n", Info->SubsystemId.String);
     }
     if (Info->Valid & ACPI_VALID_CID)
     {
@@ -1041,7 +1063,7 @@ AcpiDbDisplayHandlers (
 
     /* Operation region handlers */
 
-    AcpiOsPrintf ("\nOperation Region Handlers:\n");
+    AcpiOsPrintf ("\nOperation Region Handlers at the namespace root:\n");
 
     ObjDesc = AcpiNsGetAttachedObject (AcpiGbl_RootNode);
     if (ObjDesc)
@@ -1133,6 +1155,77 @@ AcpiDbDisplayHandlers (
             AcpiOsPrintf (ACPI_HANDLER_NOT_PRESENT_STRING, "None");
         }
     }
+
+
+    /* Other handlers that are installed throughout the namespace */
+
+    AcpiOsPrintf ("\nOperation Region Handlers for specific devices:\n");
+
+    (void) AcpiWalkNamespace (ACPI_TYPE_DEVICE, ACPI_ROOT_OBJECT,
+                ACPI_UINT32_MAX, AcpiDbDisplayNonRootHandlers,
+                NULL, NULL, NULL);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDbDisplayNonRootHandlers
+ *
+ * PARAMETERS:  ACPI_WALK_CALLBACK
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Display information about all handlers installed for a
+ *              device object.
+ *
+ ******************************************************************************/
+
+static ACPI_STATUS
+AcpiDbDisplayNonRootHandlers (
+    ACPI_HANDLE             ObjHandle,
+    UINT32                  NestingLevel,
+    void                    *Context,
+    void                    **ReturnValue)
+{
+    ACPI_NAMESPACE_NODE     *Node = ACPI_CAST_PTR (ACPI_NAMESPACE_NODE, ObjHandle);
+    ACPI_OPERAND_OBJECT     *ObjDesc;
+    ACPI_OPERAND_OBJECT     *HandlerObj;
+    char                    *Pathname;
+
+
+    ObjDesc = AcpiNsGetAttachedObject (Node);
+    if (!ObjDesc)
+    {
+        return (AE_OK);
+    }
+
+    Pathname = AcpiNsGetExternalPathname (Node);
+    if (!Pathname)
+    {
+        return (AE_OK);
+    }
+
+    /* Display all handlers associated with this device */
+
+    HandlerObj = ObjDesc->Device.Handler;
+    while (HandlerObj)
+    {
+        AcpiOsPrintf (ACPI_PREDEFINED_PREFIX,
+            AcpiUtGetRegionName ((UINT8) HandlerObj->AddressSpace.SpaceId),
+            HandlerObj->AddressSpace.SpaceId);
+
+        AcpiOsPrintf (ACPI_HANDLER_PRESENT_STRING2,
+            (HandlerObj->AddressSpace.HandlerFlags &
+                ACPI_ADDR_HANDLER_DEFAULT_INSTALLED) ? "Default" : "User",
+            HandlerObj->AddressSpace.Handler);
+
+        AcpiOsPrintf (" Device Name: %s (%p)\n", Pathname, Node);
+
+        HandlerObj = HandlerObj->AddressSpace.Next;
+    }
+
+    ACPI_FREE (Pathname);
+    return (AE_OK);
 }
 
 #endif /* ACPI_DEBUGGER */

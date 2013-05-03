@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -175,6 +175,17 @@ AeInterfaceHandler (
     ACPI_STRING             InterfaceName,
     UINT32                  Supported);
 
+static ACPI_STATUS
+AeInstallOneEcHandler (
+    ACPI_HANDLE             ObjHandle,
+    UINT32                  Level,
+    void                    *Context,
+    void                    **ReturnValue);
+
+static ACPI_STATUS
+AeInstallEcHandlers (
+    void);
+
 #if (!ACPI_REDUCED_HARDWARE)
 static UINT32
 AeEventHandler (
@@ -188,17 +199,17 @@ static char                *TableEvents[] =
 };
 #endif /* !ACPI_REDUCED_HARDWARE */
 
+
 static UINT32               SigintCount = 0;
 static AE_DEBUG_REGIONS     AeRegions;
 BOOLEAN                     AcpiGbl_DisplayRegionAccess = FALSE;
-
 
 /*
  * We will override some of the default region handlers, especially the
  * SystemMemory handler, which must be implemented locally. Do not override
  * the PCI_Config handler since we would like to exercise the default handler
  * code. These handlers are installed "early" - before any _REG methods
- * are executed - since they are special in the sense that tha ACPI spec
+ * are executed - since they are special in the sense that the ACPI spec
  * declares that they must "always be available". Cannot override the
  * DataTable region handler either -- needed for test execution.
  */
@@ -210,26 +221,26 @@ static ACPI_ADR_SPACE_TYPE  DefaultSpaceIdList[] =
 
 /*
  * We will install handlers for some of the various address space IDs.
- * Test one user-defined address space (used by aslts.)
+ * Test one user-defined address space (used by aslts).
  */
 #define ACPI_ADR_SPACE_USER_DEFINED1        0x80
 #define ACPI_ADR_SPACE_USER_DEFINED2        0xE4
 
 static ACPI_ADR_SPACE_TYPE  SpaceIdList[] =
 {
-    ACPI_ADR_SPACE_EC,
     ACPI_ADR_SPACE_SMBUS,
-    ACPI_ADR_SPACE_GSBUS,
-    ACPI_ADR_SPACE_GPIO,
+    ACPI_ADR_SPACE_CMOS,
     ACPI_ADR_SPACE_PCI_BAR_TARGET,
     ACPI_ADR_SPACE_IPMI,
+    ACPI_ADR_SPACE_GPIO,
+    ACPI_ADR_SPACE_GSBUS,
     ACPI_ADR_SPACE_FIXED_HARDWARE,
     ACPI_ADR_SPACE_USER_DEFINED1,
     ACPI_ADR_SPACE_USER_DEFINED2
 };
 
-
 static ACPI_CONNECTION_INFO   AeMyContext;
+
 
 /******************************************************************************
  *
@@ -239,7 +250,7 @@ static ACPI_CONNECTION_INFO   AeMyContext;
  *
  * RETURN:      none
  *
- * DESCRIPTION: Control-C handler.  Abort running control method if any.
+ * DESCRIPTION: Control-C handler. Abort running control method if any.
  *
  *****************************************************************************/
 
@@ -371,7 +382,7 @@ AeCommonNotifyHandler (
  *
  * RETURN:      Status
  *
- * DESCRIPTION: System notify handler for AcpiExec utility.  Used by the ASL
+ * DESCRIPTION: System notify handler for AcpiExec utility. Used by the ASL
  *              test suite(s) to communicate errors and other information to
  *              this utility via the Notify() operator.
  *
@@ -404,7 +415,7 @@ AeSystemNotifyHandler (
  *
  * RETURN:      Status
  *
- * DESCRIPTION: Device notify handler for AcpiExec utility.  Used by the ASL
+ * DESCRIPTION: Device notify handler for AcpiExec utility. Used by the ASL
  *              test suite(s) to communicate errors and other information to
  *              this utility via the Notify() operator.
  *
@@ -724,6 +735,55 @@ AeRegionInit (
 }
 
 
+/*******************************************************************************
+ *
+ * FUNCTION:    AeInstallEcHandlers, AeInstallOneEcHandler
+ *
+ * PARAMETERS:  ACPI_WALK_NAMESPACE callback
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Walk entire namespace, install a handler for every EC
+ *              device found.
+ *
+ ******************************************************************************/
+
+static ACPI_STATUS
+AeInstallOneEcHandler (
+    ACPI_HANDLE             ObjHandle,
+    UINT32                  Level,
+    void                    *Context,
+    void                    **ReturnValue)
+{
+    ACPI_STATUS             Status;
+
+
+    /* Install the handler for this EC device */
+
+    Status = AcpiInstallAddressSpaceHandler (ObjHandle, ACPI_ADR_SPACE_EC,
+        AeRegionHandler, AeRegionInit, &AeMyContext);
+    if (ACPI_FAILURE (Status))
+    {
+        ACPI_EXCEPTION ((AE_INFO, Status,
+            "Could not install an OpRegion handler for EC device (%p)",
+            ObjHandle));
+    }
+
+    return (Status);
+}
+
+static ACPI_STATUS
+AeInstallEcHandlers (
+    void)
+{
+
+    /* Find all Embedded Controller devices */
+
+    AcpiGetDevices ("PNP0C09", AeInstallOneEcHandler, NULL, NULL);
+    return (AE_OK);
+}
+
+
 /******************************************************************************
  *
  * FUNCTION:    AeInstallLateHandlers
@@ -761,14 +821,21 @@ AeInstallLateHandlers (
     AeMyContext.AccessLength = 0xA5;
 
     /*
+     * We will install a handler for each EC device, directly under the EC
+     * device definition. This is unlike the other handlers which we install
+     * at the root node.
+     */
+    AeInstallEcHandlers ();
+
+    /*
      * Install handlers for some of the "device driver" address spaces
-     * such as EC, SMBus, etc.
+     * such as SMBus, etc.
      */
     for (i = 0; i < ACPI_ARRAY_LENGTH (SpaceIdList); i++)
     {
         /* Install handler at the root object */
 
-        Status = AcpiInstallAddressSpaceHandler (AcpiGbl_RootNode,
+        Status = AcpiInstallAddressSpaceHandler (ACPI_ROOT_OBJECT,
                     SpaceIdList[i], AeRegionHandler,
                     AeRegionInit, &AeMyContext);
         if (ACPI_FAILURE (Status))
@@ -954,7 +1021,7 @@ AeInstallEarlyHandlers (
     {
         /* Install handler at the root object */
 
-        Status = AcpiInstallAddressSpaceHandler (AcpiGbl_RootNode,
+        Status = AcpiInstallAddressSpaceHandler (ACPI_ROOT_OBJECT,
                     DefaultSpaceIdList[i], AeRegionHandler,
                     AeRegionInit, &AeMyContext);
         if (ACPI_FAILURE (Status))
@@ -1438,5 +1505,3 @@ DoFunction:
 
     return (AE_OK);
 }
-
-

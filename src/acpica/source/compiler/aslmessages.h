@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslmessages.h - Compiler error/warning messages
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -239,6 +238,7 @@ typedef enum
     ASL_MSG_RESERVED_METHOD,
     ASL_MSG_RESERVED_NO_RETURN_VAL,
     ASL_MSG_RESERVED_OPERAND_TYPE,
+    ASL_MSG_RESERVED_PACKAGE_LENGTH,
     ASL_MSG_RESERVED_RETURN_VALUE,
     ASL_MSG_RESERVED_USE,
     ASL_MSG_RESERVED_WORD,
@@ -263,12 +263,15 @@ typedef enum
     ASL_MSG_TAG_SMALLER,
     ASL_MSG_TIMEOUT,
     ASL_MSG_TOO_MANY_TEMPS,
+    ASL_MSG_TRUNCATION,
     ASL_MSG_UNKNOWN_RESERVED_NAME,
     ASL_MSG_UNREACHABLE_CODE,
     ASL_MSG_UNSUPPORTED,
     ASL_MSG_UPPER_CASE,
     ASL_MSG_VENDOR_LIST,
     ASL_MSG_WRITE,
+    ASL_MSG_RANGE,
+    ASL_MSG_BUFFER_ALLOCATION,
 
     /* These messages are used by the Preprocessor only */
 
@@ -345,7 +348,7 @@ char                        *AslMessages [] = {
 /*    ASL_MSG_HID_SUFFIX */                 "_HID suffix must be all hex digits",
 /*    ASL_MSG_INCLUDE_FILE_OPEN */          "Could not open include file",
 /*    ASL_MSG_INPUT_FILE_OPEN */            "Could not open input file",
-/*    ASL_MSG_INTEGER_LENGTH */             "64-bit integer in 32-bit table, truncating",
+/*    ASL_MSG_INTEGER_LENGTH */             "64-bit integer in 32-bit table, truncating (DSDT version < 2)",
 /*    ASL_MSG_INTEGER_OPTIMIZATION */       "Integer optimized to single-byte AML opcode",
 /*    ASL_MSG_INTERRUPT_LIST */             "Too many interrupts (16 max)",
 /*    ASL_MSG_INTERRUPT_NUMBER */           "Invalid interrupt number (must be 0-15)",
@@ -413,6 +416,7 @@ char                        *AslMessages [] = {
 /*    ASL_MSG_RESERVED_METHOD */            "Reserved name must be a control method",
 /*    ASL_MSG_RESERVED_NO_RETURN_VAL */     "Reserved method should not return a value",
 /*    ASL_MSG_RESERVED_OPERAND_TYPE */      "Invalid object type for reserved name",
+/*    ASL_MSG_RESERVED_PACKAGE_LENGTH */    "Invalid package length for reserved name",
 /*    ASL_MSG_RESERVED_RETURN_VALUE */      "Reserved method must return a value",
 /*    ASL_MSG_RESERVED_USE */               "Invalid use of reserved name",
 /*    ASL_MSG_RESERVED_WORD */              "Use of reserved name",
@@ -437,12 +441,15 @@ char                        *AslMessages [] = {
 /*    ASL_MSG_TAG_SMALLER */                "ResourceTag smaller than Field",
 /*    ASL_MSG_TIMEOUT */                    "Result is not used, possible operator timeout will be missed",
 /*    ASL_MSG_TOO_MANY_TEMPS */             "Method requires too many temporary variables (_T_x)",
+/*    ASL_MSG_TRUNCATION */                 "64-bit return value will be truncated to 32 bits (DSDT version < 2)",
 /*    ASL_MSG_UNKNOWN_RESERVED_NAME */      "Unknown reserved name",
 /*    ASL_MSG_UNREACHABLE_CODE */           "Statement is unreachable",
 /*    ASL_MSG_UNSUPPORTED */                "Unsupported feature",
 /*    ASL_MSG_UPPER_CASE */                 "Non-hex letters must be upper case",
 /*    ASL_MSG_VENDOR_LIST */                "Too many vendor data bytes (7 max)",
 /*    ASL_MSG_WRITE */                      "Could not write file",
+/*    ASL_MSG_RANGE */                      "Constant out of range",
+/*    ASL_MSG_BUFFER_ALLOCATION */          "Could not allocate line buffer",
 
 /* Preprocessor */
 

@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslmain - compiler main and utilities
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -120,6 +119,7 @@
 #include "aslcompiler.h"
 #include "acapps.h"
 #include "acdisasm.h"
+#include <signal.h>
 
 #ifdef _DEBUG
 #include <crtdbg.h>
@@ -141,6 +141,10 @@ FilenameHelp (
 static void
 Usage (
     void);
+
+static void ACPI_SYSTEM_XFACE
+AslSignalHandler (
+    int                     Sig);
 
 static void
 AslInitialize (
@@ -168,7 +172,7 @@ AslDoResponseFile (
 
 
 #define ASL_TOKEN_SEPARATORS    " \t\n"
-#define ASL_SUPPORTED_OPTIONS   "@:2b|c|d^D:e:fgh^i|I:l^mno|p:P^r:s|t|T:G^v^w|x:z"
+#define ASL_SUPPORTED_OPTIONS   "@:b|c|d^D:e:fgh^i|I:l^m:no|p:P^r:s|t|T:G^v^w|x:z"
 
 
 /*******************************************************************************
@@ -179,7 +183,8 @@ AslDoResponseFile (
  *
  * RETURN:      None
  *
- * DESCRIPTION: Display option help message
+ * DESCRIPTION: Display option help message.
+ *              Optional items in square brackets.
  *
  ******************************************************************************/
 
@@ -191,6 +196,7 @@ Options (
     printf ("\nGlobal:\n");
     ACPI_OPTION ("-@ <file>",       "Specify command file");
     ACPI_OPTION ("-I <dir>",        "Specify additional include directory");
+    ACPI_OPTION ("-T <sig>|ALL|*",  "Create table template file for ACPI <Sig>");
     ACPI_OPTION ("-v",              "Display compiler version");
 
     printf ("\nPreprocessor:\n");
@@ -199,7 +205,7 @@ Options (
     ACPI_OPTION ("-P",              "Preprocess only and create preprocessor output file (*.i)");
     ACPI_OPTION ("-Pn",             "Disable preprocessor");
 
-    printf ("\nGeneral Output:\n");
+    printf ("\nGeneral Processing:\n");
     ACPI_OPTION ("-p <prefix>",     "Specify path/filename prefix for all output files");
     ACPI_OPTION ("-va",             "Disable all errors and warnings (summary only)");
     ACPI_OPTION ("-vi",             "Less verbose errors and warnings for use with IDEs");
@@ -209,38 +215,41 @@ Options (
     ACPI_OPTION ("-w1 -w2 -w3",     "Set warning reporting level");
     ACPI_OPTION ("-we",             "Report warnings as errors");
 
-    printf ("\nAML Output Files:\n");
-    ACPI_OPTION ("-sa -sc",         "Create AML in assembler or C source file (*.asm or *.c)");
-    ACPI_OPTION ("-ia -ic",         "Create assembler or C include file (*.inc or *.h)");
-    ACPI_OPTION ("-ta -tc -ts",     "Create AML in assembler, C, or ASL hex table (*.hex)");
-
-    printf ("\nAML Code Generation:\n");
+    printf ("\nAML Code Generation (*.aml):\n");
     ACPI_OPTION ("-oa",             "Disable all optimizations (compatibility mode)");
     ACPI_OPTION ("-of",             "Disable constant folding");
     ACPI_OPTION ("-oi",             "Disable integer optimization to Zero/One/Ones");
     ACPI_OPTION ("-on",             "Disable named reference string optimization");
     ACPI_OPTION ("-cr",             "Disable Resource Descriptor error checking");
+    ACPI_OPTION ("-in",             "Ignore NoOp operators");
     ACPI_OPTION ("-r <revision>",   "Override table header Revision (1-255)");
 
-    printf ("\nASL Listing Files:\n");
+    printf ("\nOptional Source Code Output Files:\n");
+    ACPI_OPTION ("-sc -sa",         "Create source file in C or assembler (*.c or *.asm)");
+    ACPI_OPTION ("-ic -ia",         "Create include file in C or assembler (*.h or *.inc)");
+    ACPI_OPTION ("-tc -ta -ts",     "Create hex AML table in C, assembler, or ASL (*.hex)");
+    ACPI_OPTION ("-so",             "Create offset table in C (*.offset.h)");
+
+    printf ("\nOptional Listing Files:\n");
     ACPI_OPTION ("-l",              "Create mixed listing file (ASL source and AML) (*.lst)");
     ACPI_OPTION ("-ln",             "Create namespace file (*.nsp)");
     ACPI_OPTION ("-ls",             "Create combined source file (expanded includes) (*.src)");
 
-    printf ("\nACPI Data Tables:\n");
-    ACPI_OPTION ("-G",              "Compile custom table containing generic operators");
-    ACPI_OPTION ("-T <sig>|ALL|*",  "Create table template file(s) for <Sig>");
-    ACPI_OPTION ("-vt",             "Create verbose templates (full disassembly)");
+    printf ("\nData Table Compiler:\n");
+    ACPI_OPTION ("-G",              "Compile custom table that contains generic operators");
+    ACPI_OPTION ("-vt",             "Create verbose template files (full disassembly)");
 
     printf ("\nAML Disassembler:\n");
-    ACPI_OPTION ("-d  [file]",      "Disassemble or decode binary ACPI table to file (*.dsl)");
-    ACPI_OPTION ("-da [f1,f2]",     "Disassemble multiple tables from single namespace");
-    ACPI_OPTION ("-dc [file]",      "Disassemble AML and immediately compile it");
-    ACPI_OPTION ("",                "(Obtain DSDT from current system if no input file)");
-    ACPI_OPTION ("-e  [f1,f2]",     "Include ACPI table(s) for external symbol resolution");
-    ACPI_OPTION ("-m",              "Do not translate Buffers to Resource Templates");
-    ACPI_OPTION ("-2",              "Emit ACPI 2.0 compatible ASL code");
+    ACPI_OPTION ("-d  <f1,f2>",     "Disassemble or decode binary ACPI tables to file (*.dsl)");
+    ACPI_OPTION ("",                "  (Optional, file type is automatically detected)");
+    ACPI_OPTION ("-da <f1,f2>",     "Disassemble multiple tables from single namespace");
+    ACPI_OPTION ("-db",             "Do not translate Buffers to Resource Templates");
+    ACPI_OPTION ("-dc <f1,f2>",     "Disassemble AML and immediately compile it");
+    ACPI_OPTION ("",                "  (Obtain DSDT from current system if no input file)");
+    ACPI_OPTION ("-e  <f1,f2>",     "Include ACPI table(s) for external symbol resolution");
     ACPI_OPTION ("-g",              "Get ACPI tables and write to files (*.dat)");
+    ACPI_OPTION ("-in",             "Ignore NoOp opcodes");
+    ACPI_OPTION ("-vt",             "Dump binary table data in hex format within output file");
 
     printf ("\nHelp:\n");
     ACPI_OPTION ("-h",              "This message");
@@ -252,6 +261,7 @@ Options (
     printf ("\nDebug Options:\n");
     ACPI_OPTION ("-bf -bt",         "Create debug file (full or parse tree only) (*.txt)");
     ACPI_OPTION ("-f",              "Ignore errors, force creation of AML output file(s)");
+    ACPI_OPTION ("-m <size>",       "Set internal line buffer size (in Kbytes)");
     ACPI_OPTION ("-n",              "Parse only, no output generation");
     ACPI_OPTION ("-ot",             "Display compile times and statistics");
     ACPI_OPTION ("-x <level>",      "Set debug level for trace output");
@@ -278,7 +288,7 @@ FilenameHelp (
 
     printf ("\nAML output filename generation:\n");
     printf ("  Output filenames are generated by appending an extension to a common\n");
-    printf ("  filename prefix.  The filename prefix is obtained via one of the\n");
+    printf ("  filename prefix. The filename prefix is obtained via one of the\n");
     printf ("  following methods (in priority order):\n");
     printf ("    1) The -p option specifies the prefix\n");
     printf ("    2) The prefix of the AMLFileName in the ASL Definition Block\n");
@@ -310,6 +320,49 @@ Usage (
 }
 
 
+/******************************************************************************
+ *
+ * FUNCTION:    AslSignalHandler
+ *
+ * PARAMETERS:  Sig                 - Signal that invoked this handler
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Control-C handler. Delete any intermediate files and any
+ *              output files that may be left in an indeterminate state.
+ *
+ *****************************************************************************/
+
+static void ACPI_SYSTEM_XFACE
+AslSignalHandler (
+    int                     Sig)
+{
+    UINT32                  i;
+
+
+    signal (Sig, SIG_IGN);
+    printf ("Aborting\n\n");
+
+    /* Close all open files */
+
+    Gbl_Files[ASL_FILE_PREPROCESSOR].Handle = NULL; /* the .i file is same as source file */
+
+    for (i = ASL_FILE_INPUT; i < ASL_MAX_FILE_TYPE; i++)
+    {
+        FlCloseFile (i);
+    }
+
+    /* Delete any output files */
+
+    for (i = ASL_FILE_AML_OUTPUT; i < ASL_MAX_FILE_TYPE; i++)
+    {
+        FlDeleteFile (i);
+    }
+
+    exit (0);
+}
+
+
 /*******************************************************************************
  *
  * FUNCTION:    AslInitialize
@@ -333,7 +386,6 @@ AslInitialize (
     _CrtSetDbgFlag (_CRTDBG_CHECK_ALWAYS_DF | _CrtSetDbgFlag(0));
 #endif
 
-    AcpiDbgLevel = 0;
 
     for (i = 0; i < ASL_NUM_FILES; i++)
     {
@@ -346,6 +398,11 @@ AslInitialize (
 
     Gbl_Files[ASL_FILE_STDERR].Handle   = stderr;
     Gbl_Files[ASL_FILE_STDERR].Filename = "STDERR";
+
+    /* Allocate the line buffer(s) */
+
+    Gbl_LineBufferSize /= 2;
+    UtExpandLineBuffers ();
 }
 
 
@@ -409,7 +466,7 @@ AslDoResponseFile (
     {
         printf ("Could not open command file %s, %s\n",
             Filename, strerror (errno));
-        return -1;
+        return (-1);
     }
 
     /* Must save the current GetOpt globals */
@@ -493,11 +550,6 @@ AslDoOptions (
         break;
 
 
-    case '2':   /* ACPI 2.0 compatibility mode */
-        Gbl_Acpi2 = TRUE;
-        break;
-
-
     case 'b':   /* Debug output options */
         switch (AcpiGbl_Optarg[0])
         {
@@ -545,6 +597,10 @@ AslDoOptions (
         case 'a':
             Gbl_DoCompile = FALSE;
             Gbl_DisassembleAll = TRUE;
+            break;
+
+        case 'b':   /* Do not convert buffers to resource descriptors */
+            AcpiGbl_NoResourceDisassembly = TRUE;
             break;
 
         case 'c':
@@ -644,6 +700,13 @@ AslDoOptions (
             Gbl_C_IncludeOutputFlag = TRUE;
             break;
 
+        case 'n':
+
+            /* Compiler/Disassembler: Ignore the NOOP operator */
+
+            AcpiGbl_IgnoreNoopOperator = TRUE;
+            break;
+
         default:
             printf ("Unknown option: -i%s\n", AcpiGbl_Optarg);
             return (-1);
@@ -685,8 +748,13 @@ AslDoOptions (
         break;
 
 
-    case 'm':   /* Do not convert buffers to resource descriptors */
-        AcpiGbl_NoResourceDisassembly = TRUE;
+    case 'm':   /* Set line buffer size */
+        Gbl_LineBufferSize = (UINT32) strtoul (AcpiGbl_Optarg, NULL, 0) * 1024;
+        if (Gbl_LineBufferSize < ASL_DEFAULT_LINE_BUFFER_SIZE)
+        {
+            Gbl_LineBufferSize = ASL_DEFAULT_LINE_BUFFER_SIZE;
+        }
+        printf ("Line Buffer Size: %u\n", Gbl_LineBufferSize);
         break;
 
 
@@ -787,6 +855,13 @@ AslDoOptions (
             /* Produce C hex output file */
 
             Gbl_C_OutputFlag = TRUE;
+            break;
+
+        case 'o':
+
+            /* Produce AML offset table in C */
+
+            Gbl_C_OffsetTableFlag = TRUE;
             break;
 
         default:
@@ -1018,7 +1093,10 @@ main (
     int                     Index2;
 
 
+    signal (SIGINT, AslSignalHandler);
+
     AcpiGbl_ExternalFileList = NULL;
+    AcpiDbgLevel = 0;
 
 #ifdef _DEBUG
     _CrtSetDbgFlag (_CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF |
@@ -1027,9 +1105,10 @@ main (
 
     /* Init and command line */
 
+    Index1 = Index2 = AslCommandLine (argc, argv);
+
     AslInitialize ();
     PrInitializePreprocessor ();
-    Index1 = Index2 = AslCommandLine (argc, argv);
 
     /* Options that have no additional parameters or pathnames */
 
@@ -1077,5 +1156,3 @@ main (
 
     return (0);
 }
-
-

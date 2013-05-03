@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -118,6 +118,7 @@
 #include "accommon.h"
 #include "acnamesp.h"
 #include "acdebug.h"
+#include "acpredef.h"
 
 
 #ifdef ACPI_DEBUGGER
@@ -174,7 +175,7 @@ AcpiDbBusWalk (
  * Arguments for the Objects command
  * These object types map directly to the ACPI_TYPES
  */
-static ARGUMENT_INFO        AcpiDbObjectTypes [] =
+static ACPI_DB_ARGUMENT_INFO    AcpiDbObjectTypes [] =
 {
     {"ANY"},
     {"INTEGERS"},
@@ -231,7 +232,7 @@ AcpiDbSetScope (
 
     AcpiDbPrepNamestring (Name);
 
-    if (Name[0] == '\\')
+    if (ACPI_IS_ROOT_PREFIX (Name[0]))
     {
         /* Validate new scope from the root */
 
@@ -280,7 +281,7 @@ ErrorExit:
  *
  * RETURN:      None
  *
- * DESCRIPTION: Dump entire namespace or a subtree.  Each node is displayed
+ * DESCRIPTION: Dump entire namespace or a subtree. Each node is displayed
  *              with type and other information.
  *
  ******************************************************************************/
@@ -377,7 +378,7 @@ AcpiDbDumpNamespaceByOwner (
  *
  * RETURN:      Status
  *
- * DESCRIPTION: Find a particular name/names within the namespace.  Wildcards
+ * DESCRIPTION: Find a particular name/names within the namespace. Wildcards
  *              are supported -- '?' matches any character.
  *
  ******************************************************************************/
@@ -506,9 +507,10 @@ AcpiDbWalkForPredefinedNames (
     const ACPI_PREDEFINED_INFO  *Predefined;
     const ACPI_PREDEFINED_INFO  *Package = NULL;
     char                        *Pathname;
+    char                        StringBuffer[48];
 
 
-    Predefined = AcpiNsCheckForPredefinedName (Node);
+    Predefined = AcpiUtMatchPredefinedMethod (Node->Name.Ascii);
     if (!Predefined)
     {
         return (AE_OK);
@@ -522,27 +524,33 @@ AcpiDbWalkForPredefinedNames (
 
     /* If method returns a package, the info is in the next table entry */
 
-    if (Predefined->Info.ExpectedBtypes & ACPI_BTYPE_PACKAGE)
+    if (Predefined->Info.ExpectedBtypes & ACPI_RTYPE_PACKAGE)
     {
         Package = Predefined + 1;
     }
 
-    AcpiOsPrintf ("%-32s arg %X ret %2.2X", Pathname,
-        Predefined->Info.ParamCount, Predefined->Info.ExpectedBtypes);
+    AcpiUtGetExpectedReturnTypes (StringBuffer,
+        Predefined->Info.ExpectedBtypes);
+
+    AcpiOsPrintf ("%-32s Arguments %X, Return Types: %s", Pathname,
+        METHOD_GET_ARG_COUNT (Predefined->Info.ArgumentList),
+        StringBuffer);
 
     if (Package)
     {
-        AcpiOsPrintf (" PkgType %2.2X ObjType %2.2X Count %2.2X",
+        AcpiOsPrintf (" (PkgType %2.2X, ObjType %2.2X, Count %2.2X)",
             Package->RetInfo.Type, Package->RetInfo.ObjectType1,
             Package->RetInfo.Count1);
     }
 
     AcpiOsPrintf("\n");
 
-    AcpiNsCheckParameterCount (Pathname, Node, ACPI_UINT32_MAX, Predefined);
+    /* Check that the declared argument count matches the ACPI spec */
+
+    AcpiNsCheckAcpiCompliance (Pathname, Node, Predefined);
+
     ACPI_FREE (Pathname);
     (*Count)++;
-
     return (AE_OK);
 }
 

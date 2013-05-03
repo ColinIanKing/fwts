@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -121,6 +121,7 @@
 #include "acdebug.h"
 #include "acdisasm.h"
 #include "acparser.h"
+#include "acpredef.h"
 
 
 #ifdef ACPI_DEBUGGER
@@ -417,6 +418,13 @@ AcpiDbDisassembleMethod (
         return (AE_BAD_PARAMETER);
     }
 
+    if (Method->Type != ACPI_TYPE_METHOD)
+    {
+        ACPI_ERROR ((AE_INFO, "%s (%s): Object must be a control method",
+            Name, AcpiUtGetTypeName (Method->Type)));
+        return (AE_BAD_PARAMETER);
+    }
+
     ObjDesc = Method->Object;
 
     Op = AcpiPsCreateScopeOp ();
@@ -434,21 +442,46 @@ AcpiDbDisassembleMethod (
     }
 
     Status = AcpiDsInitAmlWalk (WalkState, Op, NULL,
-                    ObjDesc->Method.AmlStart,
-                    ObjDesc->Method.AmlLength, NULL, ACPI_IMODE_LOAD_PASS1);
+        ObjDesc->Method.AmlStart,
+        ObjDesc->Method.AmlLength, NULL, ACPI_IMODE_LOAD_PASS1);
     if (ACPI_FAILURE (Status))
     {
         return (Status);
     }
 
-    /* Parse the AML */
+    Status = AcpiUtAllocateOwnerId (&ObjDesc->Method.OwnerId);
+    WalkState->OwnerId = ObjDesc->Method.OwnerId;
+
+    /* Push start scope on scope stack and make it current */
+
+    Status = AcpiDsScopeStackPush (Method,
+        Method->Type, WalkState);
+    if (ACPI_FAILURE (Status))
+    {
+        return (Status);
+    }
+
+    /* Parse the entire method AML including deferred operators */
 
     WalkState->ParseFlags &= ~ACPI_PARSE_DELETE_TREE;
     WalkState->ParseFlags |= ACPI_PARSE_DISASSEMBLE;
-    Status = AcpiPsParseAml (WalkState);
 
+    Status = AcpiPsParseAml (WalkState);
+    (void) AcpiDmParseDeferredOps (Op);
+
+    /* Now we can disassemble the method */
+
+    AcpiGbl_DbOpt_verbose = FALSE;
     AcpiDmDisassemble (NULL, Op, 0);
+    AcpiGbl_DbOpt_verbose = TRUE;
+
     AcpiPsDeleteParseTree (Op);
+
+    /* Method cleanup */
+
+    AcpiNsDeleteNamespaceSubtree (Method);
+    AcpiNsDeleteNamespaceByOwner (ObjDesc->Method.OwnerId);
+    AcpiUtReleaseOwnerId (&ObjDesc->Method.OwnerId);
     return (AE_OK);
 }
 
@@ -473,19 +506,25 @@ AcpiDbWalkForExecute (
     void                    *Context,
     void                    **ReturnValue)
 {
-    ACPI_NAMESPACE_NODE     *Node = (ACPI_NAMESPACE_NODE *) ObjHandle;
-    ACPI_EXECUTE_WALK       *Info = (ACPI_EXECUTE_WALK *) Context;
-    ACPI_BUFFER             ReturnObj;
-    ACPI_STATUS             Status;
-    char                    *Pathname;
-    UINT32                  i;
-    ACPI_DEVICE_INFO        *ObjInfo;
-    ACPI_OBJECT_LIST        ParamObjects;
-    ACPI_OBJECT             Params[ACPI_METHOD_NUM_ARGS];
-    const ACPI_PREDEFINED_INFO *Predefined;
+    ACPI_NAMESPACE_NODE         *Node = (ACPI_NAMESPACE_NODE *) ObjHandle;
+    ACPI_DB_EXECUTE_WALK        *Info = (ACPI_DB_EXECUTE_WALK *) Context;
+    char                        *Pathname;
+    const ACPI_PREDEFINED_INFO  *Predefined;
+    ACPI_DEVICE_INFO            *ObjInfo;
+    ACPI_OBJECT_LIST            ParamObjects;
+    ACPI_OBJECT                 Params[ACPI_METHOD_NUM_ARGS];
+    ACPI_OBJECT                 *ThisParam;
+    ACPI_BUFFER                 ReturnObj;
+    ACPI_STATUS                 Status;
+    UINT16                      ArgTypeList;
+    UINT8                       ArgCount;
+    UINT8                       ArgType;
+    UINT32                      i;
 
 
-    Predefined = AcpiNsCheckForPredefinedName (Node);
+    /* The name must be a predefined ACPI name */
+
+    Predefined = AcpiUtMatchPredefinedMethod (Node->Name.Ascii);
     if (!Predefined)
     {
         return (AE_OK);
@@ -510,21 +549,59 @@ AcpiDbWalkForExecute (
         return (Status);
     }
 
+    ParamObjects.Count = 0;
     ParamObjects.Pointer = NULL;
-    ParamObjects.Count   = 0;
 
     if (ObjInfo->Type == ACPI_TYPE_METHOD)
     {
-        /* Setup default parameters */
+        /* Setup default parameters (with proper types) */
 
-        for (i = 0; i < ObjInfo->ParamCount; i++)
+        ArgTypeList = Predefined->Info.ArgumentList;
+        ArgCount = METHOD_GET_ARG_COUNT (ArgTypeList);
+
+        /*
+         * Setup the ACPI-required number of arguments, regardless of what
+         * the actual method defines. If there is a difference, then the
+         * method is wrong and a warning will be issued during execution.
+         */
+        ThisParam = Params;
+        for (i = 0; i < ArgCount; i++)
         {
-            Params[i].Type           = ACPI_TYPE_INTEGER;
-            Params[i].Integer.Value  = 1;
+            ArgType = METHOD_GET_NEXT_TYPE (ArgTypeList);
+            ThisParam->Type = ArgType;
+
+            switch (ArgType)
+            {
+            case ACPI_TYPE_INTEGER:
+                ThisParam->Integer.Value = 1;
+                break;
+
+            case ACPI_TYPE_STRING:
+                ThisParam->String.Pointer = "This is the default argument string";
+                ThisParam->String.Length = ACPI_STRLEN (ThisParam->String.Pointer);
+                break;
+
+            case ACPI_TYPE_BUFFER:
+                ThisParam->Buffer.Pointer = (UINT8 *) Params; /* just a garbage buffer */
+                ThisParam->Buffer.Length = 48;
+                break;
+
+             case ACPI_TYPE_PACKAGE:
+                ThisParam->Package.Elements = NULL;
+                ThisParam->Package.Count = 0;
+                break;
+
+           default:
+                AcpiOsPrintf ("%s: Unsupported argument type: %u\n",
+                    Pathname, ArgType);
+                break;
+            }
+
+            ThisParam++;
         }
 
-        ParamObjects.Pointer     = Params;
-        ParamObjects.Count       = ObjInfo->ParamCount;
+        ParamObjects.Count = ArgCount;
+        ParamObjects.Pointer = Params;
     }
 
     ACPI_FREE (ObjInfo);
@@ -574,7 +651,7 @@ void
 AcpiDbBatchExecute (
     char                    *CountArg)
 {
-    ACPI_EXECUTE_WALK       Info;
+    ACPI_DB_EXECUTE_WALK    Info;
 
 
     Info.Count = 0;
@@ -591,7 +668,7 @@ AcpiDbBatchExecute (
     (void) AcpiWalkNamespace (ACPI_TYPE_ANY, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
                 AcpiDbWalkForExecute, NULL, (void *) &Info, NULL);
 
-    AcpiOsPrintf ("Executed %u predefined names in the namespace\n", Info.Count);
+    AcpiOsPrintf ("Evaluated %u predefined names in the namespace\n", Info.Count);
 }
 
 #endif /* ACPI_DEBUGGER */

@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *
  * Module Name: aslresource - Resource template/descriptor utilities
@@ -9,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -470,7 +469,7 @@ RsGetStringDataLength (
         InitializerOp = ASL_GET_PEER_NODE (InitializerOp);
     }
 
-    return 0;
+    return (0);
 }
 
 
@@ -521,7 +520,7 @@ RsAllocateResourceNode (
  * RETURN:      None, sets fields within the input node
  *
  * DESCRIPTION: Utility function to generate a named bit field within a
- *              resource descriptor.  Mark a node as 1) a field in a resource
+ *              resource descriptor. Mark a node as 1) a field in a resource
  *              descriptor, and 2) set the value to be a BIT offset
  *
  ******************************************************************************/
@@ -556,8 +555,8 @@ RsCreateResourceField (
  * RETURN:      Sets bits within the *Flags output byte.
  *
  * DESCRIPTION: Set a bit in a cumulative flags word from an initialization
- *              node.  Will use a default value if the node is DEFAULT, meaning
- *              that no value was specified in the ASL.  Used to merge multiple
+ *              node. Will use a default value if the node is DEFAULT, meaning
+ *              that no value was specified in the ASL. Used to merge multiple
  *              keywords into a single flags byte.
  *
  ******************************************************************************/
@@ -967,6 +966,7 @@ RsDoOneResourceDescriptor (
     if (Rnode)
     {
         DescriptorTypeOp->Asl.FinalAmlLength = Rnode->BufferLength;
+        DescriptorTypeOp->Asl.Extra = ((AML_RESOURCE *) Rnode->Buffer)->DescriptorType;
     }
 
     return (Rnode);
@@ -1001,7 +1001,7 @@ RsLinkDescriptorChain (
 
     if (!Rnode)
     {
-        return 0;
+        return (0);
     }
 
     /* Point the previous node to the new node */
@@ -1021,7 +1021,7 @@ RsLinkDescriptorChain (
     /* Previous node becomes the last node in the chain */
 
     *PreviousRnode = LastRnode;
-    return CurrentByteOffset;
+    return (CurrentByteOffset);
 }
 
 
@@ -1031,7 +1031,7 @@ RsLinkDescriptorChain (
  *
  * PARAMETERS:  Op        - Parent of a resource template list
  *
- * RETURN:      None.  Sets input node to point to a list of AML code
+ * RETURN:      None. Sets input node to point to a list of AML code
  *
  * DESCRIPTION: Merge a list of resource descriptors into a single AML buffer,
  *              in preparation for output to the AML output file.
@@ -1088,7 +1088,7 @@ RsDoResourceTemplate (
 
         /*
          * Update current byte offset to indicate the number of bytes from the
-         * start of the buffer.  Buffer can include multiple descriptors, we
+         * start of the buffer. Buffer can include multiple descriptors, we
          * must keep track of the offset of not only each descriptor, but each
          * element (field) within each descriptor as well.
          */

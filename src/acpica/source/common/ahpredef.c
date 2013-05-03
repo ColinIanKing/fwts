@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -133,7 +133,7 @@
 const AH_PREDEFINED_NAME    AslPredefinedInfo[] =
 {
     AH_PREDEF ("_ACx",    "Active Cooling", "Returns the active cooling policy threshold values"),
-    AH_PREDEF ("_ADR",    "Address", "Returns the address of a device on its parent bus"),
+    AH_PREDEF ("_ADR",    "Address", "Returns address of a device on parent bus, and resource field"),
     AH_PREDEF ("_AEI",    "ACPI Event Interrupts", "Returns a list of GPIO events to be used as ACPI events"),
     AH_PREDEF ("_ALC",    "Ambient Light Chromaticity", "Returns the ambient light color chromaticity"),
     AH_PREDEF ("_ALI",    "Ambient Light Illuminance", "Returns the ambient light brightness"),
@@ -185,7 +185,7 @@ const AH_PREDEFINED_NAME    AslPredefinedInfo[] =
     AH_PREDEF ("_DGS",    "Display Graphics State", "Return the current state of the output device"),
     AH_PREDEF ("_DIS",    "Disable Device", "Disables a device"),
     AH_PREDEF ("_DLM",    "Device Lock Mutex", "Defines mutex for OS/AML sharing"),
-    AH_PREDEF ("_DMA",    "Direct Memory Access", "Returns a device's current resources for DMA transactions"),
+    AH_PREDEF ("_DMA",    "Direct Memory Access", "Returns device current resources for DMA transactions, and resource field"),
     AH_PREDEF ("_DOD",    "Display Output Devices", "Enumerate all devices attached to the display adapter"),
     AH_PREDEF ("_DOS",    "Disable Output Switching", "Sets the display output switching mode"),
     AH_PREDEF ("_DPL",    "Device Selection Polarity", "Polarity of Device Selection signal, Resource Descriptor field"),
@@ -270,7 +270,7 @@ const AH_PREDEFINED_NAME    AslPredefinedInfo[] =
     AH_PREDEF ("_PIC",    "Interrupt Model", "Inform AML of the interrupt model in use"),
     AH_PREDEF ("_PIF",    "Power Source Information", "Returns a Power Source information block"),
     AH_PREDEF ("_PIN",    "Pin List", "Pin list, Resource Descriptor field"),
-    AH_PREDEF ("_PLD",    "Physical Device Location", "Returns a device's physical location information"),
+    AH_PREDEF ("_PLD",    "Physical Location of Device", "Returns a device's physical location information"),
     AH_PREDEF ("_PMC",    "Power Meter Capabilities", "Returns a list of Power Meter capabilities info"),
     AH_PREDEF ("_PMD",    "Power Metered Devices", "Returns a list of devices that are measured by the power meter device"),
     AH_PREDEF ("_PMM",    "Power Meter Measurement", "Returns the current value of the Power Meter"),

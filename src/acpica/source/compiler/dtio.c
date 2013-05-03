@@ -8,13 +8,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -31,7 +31,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -43,11 +43,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -55,7 +55,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -80,10 +80,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -92,14 +92,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -150,6 +150,18 @@ DtDumpBuffer (
     UINT8                   *Buffer,
     UINT32                  Offset,
     UINT32                  Length);
+
+static void
+DtDumpSubtableInfo (
+    DT_SUBTABLE             *Subtable,
+    void                    *Context,
+    void                    *ReturnValue);
+
+static void
+DtDumpSubtableTree (
+    DT_SUBTABLE             *Subtable,
+    void                    *Context,
+    void                    *ReturnValue);
 
 
 /* States for DtGetNextLine */
@@ -485,13 +497,21 @@ DtGetNextLine (
     BOOLEAN                 LineNotAllBlanks = FALSE;
     UINT32                  State = DT_NORMAL_TEXT;
     UINT32                  CurrentLineOffset;
-    UINT32                  BeyondBufferCount;
     UINT32                  i;
     char                    c;
 
 
-    for (i = 0; i < ASL_LINE_BUFFER_SIZE;)
+    for (i = 0; ;)
     {
+        /*
+         * If line is too long, expand the line buffers. Also increases
+         * Gbl_LineBufferSize.
+         */
+        if (i >= Gbl_LineBufferSize)
+        {
+            UtExpandLineBuffers ();
+        }
+
         c = (char) getc (Handle);
         if (c == EOF)
         {
@@ -563,6 +583,11 @@ DtGetNextLine (
                  */
                 if ((i != 0) && LineNotAllBlanks)
                 {
+                    if ((i + 1) >= Gbl_LineBufferSize)
+                    {
+                        UtExpandLineBuffers ();
+                    }
+
                     Gbl_CurrentLineBuffer[i+1] = 0; /* Terminate string */
                     return (CurrentLineOffset);
                 }
@@ -636,7 +661,12 @@ DtGetNextLine (
                 break;
 
             default:    /* Not a comment */
-                i++;    /* Save the preceeding slash */
+                i++;    /* Save the preceding slash */
+                if (i >= Gbl_LineBufferSize)
+                {
+                    UtExpandLineBuffers ();
+                }
+
                 Gbl_CurrentLineBuffer[i] = c;
                 i++;
                 State = DT_NORMAL_TEXT;
@@ -740,21 +770,6 @@ DtGetNextLine (
             return (ASL_EOF);
         }
     }
-
-    /* Line is too long for internal buffer. Determine actual length */
-
-    BeyondBufferCount = 1;
-    c = (char) getc (Handle);
-    while (c != '\n')
-    {
-        c = (char) getc (Handle);
-        BeyondBufferCount++;
-    }
-
-    printf ("ERROR - At %u: Input line (%u bytes) is too long (max %u)\n",
-        Gbl_CurrentLineNumber++, ASL_LINE_BUFFER_SIZE + BeyondBufferCount,
-        ASL_LINE_BUFFER_SIZE);
-    return (ASL_EOF);
 }
 
 
@@ -777,7 +792,6 @@ DtScanFile (
 {
     ACPI_STATUS             Status;
     UINT32                  Offset;
-    DT_FIELD                *Next;
 
 
     ACPI_FUNCTION_NAME (DtScanFile);
@@ -807,28 +821,7 @@ DtScanFile (
 
     /* Dump the parse tree if debug enabled */
 
-    if (Gbl_DebugFlag)
-    {
-        Next = Gbl_FieldList;
-        DbgPrint (ASL_DEBUG_OUTPUT, "Tree:  %32s %32s %8s %8s %8s %8s %8s %8s\n\n",
-            "Name", "Value", "Line", "ByteOff", "NameCol", "Column", "TableOff", "Flags");
-
-        while (Next)
-        {
-            DbgPrint (ASL_DEBUG_OUTPUT, "Field: %32.32s %32.32s %.8X %.8X %.8X %.8X %.8X %.8X\n",
-                Next->Name,
-                Next->Value,
-                Next->Line,
-                Next->ByteOffset,
-                Next->NameColumn,
-                Next->Column,
-                Next->TableOffset,
-                Next->Flags);
-
-            Next = Next->Next;
-        }
-    }
-
+    DtDumpFieldList (Gbl_FieldList);
     return (Gbl_FieldList);
 }
 
@@ -982,6 +975,123 @@ DtDumpBuffer (
 
 /******************************************************************************
  *
+ * FUNCTION:    DtDumpFieldList
+ *
+ * PARAMETERS:  Field               - Root field
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Dump the entire field list
+ *
+ *****************************************************************************/
+
+void
+DtDumpFieldList (
+    DT_FIELD                *Field)
+{
+
+    if (!Gbl_DebugFlag || !Field)
+    {
+        return;
+    }
+
+    DbgPrint (ASL_DEBUG_OUTPUT,  "\nField List:\n"
+        "LineNo   ByteOff  NameCol  Column   TableOff "
+        "Flags    %32s : %s\n\n", "Name", "Value");
+    while (Field)
+    {
+        DbgPrint (ASL_DEBUG_OUTPUT,
+            "%.08X %.08X %.08X %.08X %.08X %.08X %32s : %s\n",
+            Field->Line, Field->ByteOffset, Field->NameColumn,
+            Field->Column, Field->TableOffset, Field->Flags,
+            Field->Name, Field->Value);
+
+        Field = Field->Next;
+    }
+
+    DbgPrint (ASL_DEBUG_OUTPUT,  "\n\n");
+}
+
+
+/******************************************************************************
+ *
+ * FUNCTION:    DtDumpSubtableInfo, DtDumpSubtableTree
+ *
+ * PARAMETERS:  DT_WALK_CALLBACK
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Info - dump a subtable tree entry with extra information.
+ *              Tree - dump a subtable tree formatted by depth indentation.
+ *
+ *****************************************************************************/
+
+static void
+DtDumpSubtableInfo (
+    DT_SUBTABLE             *Subtable,
+    void                    *Context,
+    void                    *ReturnValue)
+{
+
+    DbgPrint (ASL_DEBUG_OUTPUT,
+        "[%.04X] %.08X %.08X %.08X %.08X %.08X %p %p %p\n",
+        Subtable->Depth, Subtable->Length, Subtable->TotalLength,
+        Subtable->SizeOfLengthField, Subtable->Flags, Subtable,
+        Subtable->Parent, Subtable->Child, Subtable->Peer);
+}
+
+static void
+DtDumpSubtableTree (
+    DT_SUBTABLE             *Subtable,
+    void                    *Context,
+    void                    *ReturnValue)
+{
+
+    DbgPrint (ASL_DEBUG_OUTPUT,
+        "[%.04X] %*s%08X (%.02X) - (%.02X)\n",
+        Subtable->Depth, (4 * Subtable->Depth), " ",
+        Subtable, Subtable->Length, Subtable->TotalLength);
+}
+
+
+/******************************************************************************
+ *
+ * FUNCTION:    DtDumpSubtableList
+ *
+ * PARAMETERS:  None
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Dump the raw list of subtables with information, and also
+ *              dump the subtable list in formatted tree format. Assists with
+ *              the development of new table code.
+ *
+ *****************************************************************************/
+
+void
+DtDumpSubtableList (
+    void)
+{
+
+    if (!Gbl_DebugFlag || !Gbl_RootTable)
+    {
+        return;
+    }
+
+    DbgPrint (ASL_DEBUG_OUTPUT,
+        "Subtable Info:\n"
+        "Depth  Length   TotalLen LenSize  Flags    "
+        "This     Parent   Child    Peer\n\n");
+    DtWalkTableTree (Gbl_RootTable, DtDumpSubtableInfo, NULL, NULL);
+
+    DbgPrint (ASL_DEBUG_OUTPUT,
+        "\nSubtable Tree: (Depth, Subtable, Length, TotalLength)\n\n");
+    DtWalkTableTree (Gbl_RootTable, DtDumpSubtableTree, NULL, NULL);
+}
+
+
+/******************************************************************************
+ *
  * FUNCTION:    DtWriteFieldToListing
  *
  * PARAMETERS:  Buffer              - Contains the compiled data
@@ -1077,7 +1187,7 @@ DtWriteTableToListing (
 
     AcpiOsPrintf ("\n%s: Length %d (0x%X)\n\n",
         ACPI_RAW_TABLE_DATA_HEADER, Gbl_TableLength, Gbl_TableLength);
-    AcpiUtDumpBuffer2 (Buffer, Gbl_TableLength, DB_BYTE_DISPLAY);
+    AcpiUtDumpBuffer (Buffer, Gbl_TableLength, DB_BYTE_DISPLAY, 0);
 
     AcpiOsRedirectOutput (stdout);
 }

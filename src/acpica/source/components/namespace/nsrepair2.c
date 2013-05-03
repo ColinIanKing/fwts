@@ -9,13 +9,13 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2012, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
  * All rights reserved.
  *
  * 2. License
  *
  * 2.1. This is your license from Intel Corp. under its intellectual property
- * rights.  You may have additional license terms from the party that provided
+ * rights. You may have additional license terms from the party that provided
  * you this software, covering your right to use that party's intellectual
  * property rights.
  *
@@ -32,7 +32,7 @@
  * offer to sell, and import the Covered Code and derivative works thereof
  * solely to the minimum extent necessary to exercise the above copyright
  * license, and in no event shall the patent license extend to any additions
- * to or modifications of the Original Intel Code.  No other license or right
+ * to or modifications of the Original Intel Code. No other license or right
  * is granted directly or by implication, estoppel or otherwise;
  *
  * The above copyright and patent license is granted only if the following
@@ -44,11 +44,11 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification with rights to further distribute source must include
  * the above Copyright Notice, the above License, this list of Conditions,
- * and the following Disclaimer and Export Compliance provision.  In addition,
+ * and the following Disclaimer and Export Compliance provision. In addition,
  * Licensee must cause all Covered Code to which Licensee contributes to
  * contain a file documenting the changes Licensee made to create that Covered
- * Code and the date of any change.  Licensee must include in that file the
- * documentation of any changes made by any predecessor Licensee.  Licensee
+ * Code and the date of any change. Licensee must include in that file the
+ * documentation of any changes made by any predecessor Licensee. Licensee
  * must include a prominent statement that the modification is derived,
  * directly or indirectly, from Original Intel Code.
  *
@@ -56,7 +56,7 @@
  * Redistribution of source code of any substantial portion of the Covered
  * Code or modification without rights to further distribute source must
  * include the following Disclaimer and Export Compliance provision in the
- * documentation and/or other materials provided with distribution.  In
+ * documentation and/or other materials provided with distribution. In
  * addition, Licensee may not authorize further sublicense of source of any
  * portion of the Covered Code, and must include terms to the effect that the
  * license from Licensee to its licensee is limited to the intellectual
@@ -81,10 +81,10 @@
  * 4. Disclaimer and Export Compliance
  *
  * 4.1. INTEL MAKES NO WARRANTY OF ANY KIND REGARDING ANY SOFTWARE PROVIDED
- * HERE.  ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
- * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT,  ASSISTANCE,
- * INSTALLATION, TRAINING OR OTHER SERVICES.  INTEL WILL NOT PROVIDE ANY
- * UPDATES, ENHANCEMENTS OR EXTENSIONS.  INTEL SPECIFICALLY DISCLAIMS ANY
+ * HERE. ANY SOFTWARE ORIGINATING FROM INTEL OR DERIVED FROM INTEL SOFTWARE
+ * IS PROVIDED "AS IS," AND INTEL WILL NOT PROVIDE ANY SUPPORT, ASSISTANCE,
+ * INSTALLATION, TRAINING OR OTHER SERVICES. INTEL WILL NOT PROVIDE ANY
+ * UPDATES, ENHANCEMENTS OR EXTENSIONS. INTEL SPECIFICALLY DISCLAIMS ANY
  * IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT AND FITNESS FOR A
  * PARTICULAR PURPOSE.
  *
@@ -93,14 +93,14 @@
  * COSTS OF PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, OR FOR ANY INDIRECT,
  * SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, UNDER ANY
  * CAUSE OF ACTION OR THEORY OF LIABILITY, AND IRRESPECTIVE OF WHETHER INTEL
- * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.  THESE LIMITATIONS
+ * HAS ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. THESE LIMITATIONS
  * SHALL APPLY NOTWITHSTANDING THE FAILURE OF THE ESSENTIAL PURPOSE OF ANY
  * LIMITED REMEDY.
  *
  * 4.3. Licensee shall not export, either directly or indirectly, any of this
  * software or system incorporating such software without first obtaining any
  * required license or other approval from the U. S. Department of Commerce or
- * any other agency or department of the United States Government.  In the
+ * any other agency or department of the United States Government. In the
  * event Licensee exports any such software from the United States or
  * re-exports any such software from a foreign destination, Licensee shall
  * ensure that the distribution and export/re-export of the software is in
@@ -130,7 +130,7 @@
  */
 typedef
 ACPI_STATUS (*ACPI_REPAIR_FUNCTION) (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 typedef struct acpi_repair_info
@@ -144,42 +144,42 @@ typedef struct acpi_repair_info
 /* Local prototypes */
 
 static const ACPI_REPAIR_INFO *
-AcpiNsMatchRepairableName (
+AcpiNsMatchComplexRepair (
     ACPI_NAMESPACE_NODE     *Node);
 
 static ACPI_STATUS
 AcpiNsRepair_ALR (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsRepair_CID (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsRepair_FDE (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsRepair_HID (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsRepair_PSS (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsRepair_TSS (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr);
 
 static ACPI_STATUS
 AcpiNsCheckSortedList (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     *ReturnObject,
     UINT32                  ExpectedCount,
     UINT32                  SortIndex,
@@ -242,7 +242,7 @@ static const ACPI_REPAIR_INFO       AcpiNsRepairableNames[] =
  *
  * FUNCTION:    AcpiNsComplexRepairs
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              Node                - Namespace node for the method/object
  *              ValidateStatus      - Original status of earlier validation
  *              ReturnObjectPtr     - Pointer to the object returned from the
@@ -258,7 +258,7 @@ static const ACPI_REPAIR_INFO       AcpiNsRepairableNames[] =
 
 ACPI_STATUS
 AcpiNsComplexRepairs (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_NAMESPACE_NODE     *Node,
     ACPI_STATUS             ValidateStatus,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
@@ -269,20 +269,20 @@ AcpiNsComplexRepairs (
 
     /* Check if this name is in the list of repairable names */
 
-    Predefined = AcpiNsMatchRepairableName (Node);
+    Predefined = AcpiNsMatchComplexRepair (Node);
     if (!Predefined)
     {
         return (ValidateStatus);
     }
 
-    Status = Predefined->RepairFunction (Data, ReturnObjectPtr);
+    Status = Predefined->RepairFunction (Info, ReturnObjectPtr);
     return (Status);
 }
 
 
 /******************************************************************************
  *
- * FUNCTION:    AcpiNsMatchRepairableName
+ * FUNCTION:    AcpiNsMatchComplexRepair
  *
  * PARAMETERS:  Node                - Namespace node for the method/object
  *
@@ -293,7 +293,7 @@ AcpiNsComplexRepairs (
  *****************************************************************************/
 
 static const ACPI_REPAIR_INFO *
-AcpiNsMatchRepairableName (
+AcpiNsMatchComplexRepair (
     ACPI_NAMESPACE_NODE     *Node)
 {
     const ACPI_REPAIR_INFO  *ThisName;
@@ -319,7 +319,7 @@ AcpiNsMatchRepairableName (
  *
  * FUNCTION:    AcpiNsRepair_ALR
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -332,14 +332,14 @@ AcpiNsMatchRepairableName (
 
 static ACPI_STATUS
 AcpiNsRepair_ALR (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_OPERAND_OBJECT     *ReturnObject = *ReturnObjectPtr;
     ACPI_STATUS             Status;
 
 
-    Status = AcpiNsCheckSortedList (Data, ReturnObject, 2, 1,
+    Status = AcpiNsCheckSortedList (Info, ReturnObject, 2, 1,
                 ACPI_SORT_ASCENDING, "AmbientIlluminance");
 
     return (Status);
@@ -350,7 +350,7 @@ AcpiNsRepair_ALR (
  *
  * FUNCTION:    AcpiNsRepair_FDE
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -365,7 +365,7 @@ AcpiNsRepair_ALR (
 
 static ACPI_STATUS
 AcpiNsRepair_FDE (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_OPERAND_OBJECT     *ReturnObject = *ReturnObjectPtr;
@@ -393,7 +393,7 @@ AcpiNsRepair_FDE (
 
         if (ReturnObject->Buffer.Length != ACPI_FDE_BYTE_BUFFER_SIZE)
         {
-            ACPI_WARN_PREDEFINED ((AE_INFO, Data->Pathname, Data->NodeFlags,
+            ACPI_WARN_PREDEFINED ((AE_INFO, Info->FullPathname, Info->NodeFlags,
                 "Incorrect return buffer length %u, expected %u",
                 ReturnObject->Buffer.Length, ACPI_FDE_DWORD_BUFFER_SIZE));
 
@@ -422,7 +422,7 @@ AcpiNsRepair_FDE (
 
         ACPI_DEBUG_PRINT ((ACPI_DB_REPAIR,
             "%s Expanded Byte Buffer to expected DWord Buffer\n",
-            Data->Pathname));
+            Info->FullPathname));
         break;
 
     default:
@@ -434,7 +434,7 @@ AcpiNsRepair_FDE (
     AcpiUtRemoveReference (ReturnObject);
     *ReturnObjectPtr = BufferObject;
 
-    Data->Flags |= ACPI_OBJECT_REPAIRED;
+    Info->ReturnFlags |= ACPI_OBJECT_REPAIRED;
     return (AE_OK);
 }
 
@@ -443,7 +443,7 @@ AcpiNsRepair_FDE (
  *
  * FUNCTION:    AcpiNsRepair_CID
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -457,7 +457,7 @@ AcpiNsRepair_FDE (
 
 static ACPI_STATUS
 AcpiNsRepair_CID (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_STATUS             Status;
@@ -472,7 +472,7 @@ AcpiNsRepair_CID (
 
     if (ReturnObject->Common.Type == ACPI_TYPE_STRING)
     {
-        Status = AcpiNsRepair_HID (Data, ReturnObjectPtr);
+        Status = AcpiNsRepair_HID (Info, ReturnObjectPtr);
         return (Status);
     }
 
@@ -491,7 +491,7 @@ AcpiNsRepair_CID (
         OriginalElement = *ElementPtr;
         OriginalRefCount = OriginalElement->Common.ReferenceCount;
 
-        Status = AcpiNsRepair_HID (Data, ElementPtr);
+        Status = AcpiNsRepair_HID (Info, ElementPtr);
         if (ACPI_FAILURE (Status))
         {
             return (Status);
@@ -520,7 +520,7 @@ AcpiNsRepair_CID (
  *
  * FUNCTION:    AcpiNsRepair_HID
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -533,7 +533,7 @@ AcpiNsRepair_CID (
 
 static ACPI_STATUS
 AcpiNsRepair_HID (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_OPERAND_OBJECT     *ReturnObject = *ReturnObjectPtr;
@@ -554,12 +554,12 @@ AcpiNsRepair_HID (
 
     if (ReturnObject->String.Length == 0)
     {
-        ACPI_WARN_PREDEFINED ((AE_INFO, Data->Pathname, Data->NodeFlags,
+        ACPI_WARN_PREDEFINED ((AE_INFO, Info->FullPathname, Info->NodeFlags,
             "Invalid zero-length _HID or _CID string"));
 
         /* Return AE_OK anyway, let driver handle it */
 
-        Data->Flags |= ACPI_OBJECT_REPAIRED;
+        Info->ReturnFlags |= ACPI_OBJECT_REPAIRED;
         return (AE_OK);
     }
 
@@ -584,7 +584,7 @@ AcpiNsRepair_HID (
         NewString->String.Length--;
 
         ACPI_DEBUG_PRINT ((ACPI_DB_REPAIR,
-            "%s: Removed invalid leading asterisk\n", Data->Pathname));
+            "%s: Removed invalid leading asterisk\n", Info->FullPathname));
     }
 
     /*
@@ -610,7 +610,7 @@ AcpiNsRepair_HID (
  *
  * FUNCTION:    AcpiNsRepair_TSS
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -623,7 +623,7 @@ AcpiNsRepair_HID (
 
 static ACPI_STATUS
 AcpiNsRepair_TSS (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_OPERAND_OBJECT     *ReturnObject = *ReturnObjectPtr;
@@ -639,13 +639,14 @@ AcpiNsRepair_TSS (
      * In this case, it is best to just return the _TSS package as-is.
      * (May, 2011)
      */
-    Status = AcpiNsGetNode (Data->Node, "^_PSS", ACPI_NS_NO_UPSEARCH, &Node);
+    Status = AcpiNsGetNode (Info->Node, "^_PSS",
+        ACPI_NS_NO_UPSEARCH, &Node);
     if (ACPI_SUCCESS (Status))
     {
         return (AE_OK);
     }
 
-    Status = AcpiNsCheckSortedList (Data, ReturnObject, 5, 1,
+    Status = AcpiNsCheckSortedList (Info, ReturnObject, 5, 1,
                 ACPI_SORT_DESCENDING, "PowerDissipation");
 
     return (Status);
@@ -656,7 +657,7 @@ AcpiNsRepair_TSS (
  *
  * FUNCTION:    AcpiNsRepair_PSS
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObjectPtr     - Pointer to the object returned from the
  *                                    evaluation of a method or object
  *
@@ -671,7 +672,7 @@ AcpiNsRepair_TSS (
 
 static ACPI_STATUS
 AcpiNsRepair_PSS (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     **ReturnObjectPtr)
 {
     ACPI_OPERAND_OBJECT     *ReturnObject = *ReturnObjectPtr;
@@ -690,7 +691,7 @@ AcpiNsRepair_PSS (
      * incorrectly sorted, sort it. We sort by CpuFrequency, since this
      * should be proportional to the power.
      */
-    Status =AcpiNsCheckSortedList (Data, ReturnObject, 6, 0,
+    Status =AcpiNsCheckSortedList (Info, ReturnObject, 6, 0,
                 ACPI_SORT_DESCENDING, "CpuFrequency");
     if (ACPI_FAILURE (Status))
     {
@@ -712,7 +713,7 @@ AcpiNsRepair_PSS (
 
         if ((UINT32) ObjDesc->Integer.Value > PreviousValue)
         {
-            ACPI_WARN_PREDEFINED ((AE_INFO, Data->Pathname, Data->NodeFlags,
+            ACPI_WARN_PREDEFINED ((AE_INFO, Info->FullPathname, Info->NodeFlags,
                 "SubPackage[%u,%u] - suspicious power dissipation values",
                 i-1, i));
         }
@@ -729,7 +730,7 @@ AcpiNsRepair_PSS (
  *
  * FUNCTION:    AcpiNsCheckSortedList
  *
- * PARAMETERS:  Data                - Pointer to validation data structure
+ * PARAMETERS:  Info                - Method execution information block
  *              ReturnObject        - Pointer to the top-level returned object
  *              ExpectedCount       - Minimum length of each sub-package
  *              SortIndex           - Sub-package entry to sort on
@@ -746,7 +747,7 @@ AcpiNsRepair_PSS (
 
 static ACPI_STATUS
 AcpiNsCheckSortedList (
-    ACPI_PREDEFINED_DATA    *Data,
+    ACPI_EVALUATE_INFO      *Info,
     ACPI_OPERAND_OBJECT     *ReturnObject,
     UINT32                  ExpectedCount,
     UINT32                  SortIndex,
@@ -827,11 +828,11 @@ AcpiNsCheckSortedList (
             AcpiNsSortList (ReturnObject->Package.Elements,
                 OuterElementCount, SortIndex, SortDirection);
 
-            Data->Flags |= ACPI_OBJECT_REPAIRED;
+            Info->ReturnFlags |= ACPI_OBJECT_REPAIRED;
 
             ACPI_DEBUG_PRINT ((ACPI_DB_REPAIR,
                 "%s: Repaired unsorted list - now sorted by %s\n",
-                Data->Pathname, SortKeyName));
+                Info->FullPathname, SortKeyName));
             return (AE_OK);
         }
 

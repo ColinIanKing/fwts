@@ -385,8 +385,10 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 	if (!((dev_path->type & 0x7f) == (FWTS_UEFI_END_DEV_PATH_TYPE) &&
 	      (dev_path->subtype == FWTS_UEFI_END_ENTIRE_DEV_PATH_SUBTYPE))) {
 		uint16_t len = dev_path->length[0] | (((uint16_t)dev_path->length[1])<<8);
-		dev_path = (fwts_uefi_dev_path*)((char *)dev_path + len);
-		path = uefidump_build_dev_path(path, dev_path);
+		if (len > 0) {
+			dev_path = (fwts_uefi_dev_path*)((char *)dev_path + len);
+			path = uefidump_build_dev_path(path, dev_path);
+		}
 	}
 
 	return path;

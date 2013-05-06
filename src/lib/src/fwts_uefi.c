@@ -399,7 +399,7 @@ int fwts_uefi_get_variable_names(fwts_list *list)
 		return FWTS_ERROR;
 
 	for (i = 0; i < n; i++) {
-		if (names[i]->d_name == NULL)
+		if (names[i]->d_name[0] == '\0')
 			continue;
 		if (!strcmp(names[i]->d_name, "."))
 			continue;

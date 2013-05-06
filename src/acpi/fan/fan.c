@@ -76,12 +76,15 @@ static fwts_list *get_fan_info(fwts_framework *fw)
 			if (info == NULL) {
 				fwts_log_error(fw, "Out of memory gathing fan information.");
 				fwts_list_free(fans, free_fan_info);
+				closedir(dir);
 				return NULL;
 			}
 
 			if ((info->name = strdup(entry->d_name)) == NULL) {
 				fwts_log_error(fw, "Out of memory gathing fan information.");
 				fwts_list_free(fans, free_fan_info);
+				free(info);
+				closedir(dir);
 				return NULL;
 			}
 

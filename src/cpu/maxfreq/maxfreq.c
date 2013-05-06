@@ -81,6 +81,7 @@ static int maxfreq_test1(fwts_framework *fw)
 
 	if ((cpufreq = calloc(cpus, sizeof(double))) == NULL) {
 		fwts_log_error(fw, "Cannot create cpu frequency array.");
+		fwts_list_free(cpuinfo, free);
 		return FWTS_ERROR;
 	}
 

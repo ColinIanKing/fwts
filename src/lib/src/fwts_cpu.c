@@ -385,7 +385,7 @@ int fwts_cpu_performance(
 static void fwts_cpu_consume_cycles(void)
 {
 	signal(SIGUSR1, fwts_cpu_consume_sighandler);
-	uint64_t i;
+	uint64_t i = 0;
 
 	for (;;) {
 		fwts_cpu_burn_cycles();

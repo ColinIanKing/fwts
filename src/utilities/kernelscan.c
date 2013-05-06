@@ -777,6 +777,7 @@ static int parse_kernel_message(parser *p, token *t)
 	for (;;) {
 		ret = get_token(p, t);
 		if (ret == EOF) {
+			free(line);
 			return EOF;
 		}
 

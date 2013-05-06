@@ -60,7 +60,10 @@ int fwts_acpi_event_open(void)
                 return ret;
 	}
 
-	fcntl(fd, F_SETFD, FD_CLOEXEC);
+	if ((ret = fcntl(fd, F_SETFD, FD_CLOEXEC)) < 0) {
+		close(fd);
+		return ret;
+	}
 
         return fd;
 }

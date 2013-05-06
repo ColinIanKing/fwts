@@ -131,6 +131,7 @@ static int s4_hibernate(fwts_framework *fw,
 			free(quirks);
 			return FWTS_OUT_OF_MEMORY;
 		}
+		free(quirks);
 	}
 
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);

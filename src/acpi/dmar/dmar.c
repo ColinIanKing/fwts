@@ -316,6 +316,7 @@ static int dmar_test1(fwts_framework *fw)
 		if (fwts_klog_scan(fw, klog, acpiinfo_check,
 			NULL, NULL, &errors)) {
                 	fwts_log_error(fw, "Failed to scan kernel log.");
+			fwts_klog_free(klog);
                 	return FWTS_ERROR;
 		}
 		if (errors == 0)

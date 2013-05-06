@@ -585,6 +585,7 @@ ACPI_STATUS AcpiOsWaitSemaphore(ACPI_HANDLE handle, UINT32 Units, UINT16 Timeout
 		 *  control to continue.  It is evil.
 		 */
 		sa.sa_handler = sem_alarm;
+		sigemptyset(&sa.sa_mask);
 		sa.sa_flags = 0;
 		sigaction(SIGALRM, &sa, NULL);
 		alarm(MAX_WAIT_TIMEOUT);

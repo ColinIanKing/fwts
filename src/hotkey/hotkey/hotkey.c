@@ -154,19 +154,20 @@ static char *hotkey_find_keyboard(char *path)
 		if (strlen(entry->d_name) > 3) {
 			snprintf(filename, sizeof(filename), "%s/%s",
 				path, entry->d_name);
-			lstat(filename, &statbuf);
-			if (S_ISDIR(statbuf.st_mode)) {
-				if (!S_ISLNK(statbuf.st_mode))
-					if ((dev = hotkey_find_keyboard(filename)) != NULL)
-						break;
-			} else {
-				if ((data = fwts_get(filename)) != NULL) {
-					if (strncmp(data, AT_KEYBOARD, sizeof(AT_KEYBOARD)-1) == 0) {
-						dev = hotkey_device(path);
+			if (lstat(filename, &statbuf) == 0) {
+				if (S_ISDIR(statbuf.st_mode)) {
+					if (!S_ISLNK(statbuf.st_mode))
+						if ((dev = hotkey_find_keyboard(filename)) != NULL)
+							break;
+				} else {
+					if ((data = fwts_get(filename)) != NULL) {
+						if (strncmp(data, AT_KEYBOARD, sizeof(AT_KEYBOARD)-1) == 0) {
+							dev = hotkey_device(path);
+							free(data);
+							break;
+						}
 						free(data);
-						break;
 					}
-					free(data);
 				}
 			}
 		}

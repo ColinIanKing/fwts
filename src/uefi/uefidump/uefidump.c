@@ -60,8 +60,8 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
 	char buffer[4096];
 
 	va_start(args, fmt);
-
 	vsnprintf(buffer, sizeof(buffer), fmt, args);
+	va_end(args);
 
 	if (str == NULL)
 		str = strdup(buffer);
@@ -72,7 +72,6 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
 		strcat(str, buffer);
 	}
 
-	va_end(args);
 	return str;
 }
 

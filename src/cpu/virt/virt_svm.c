@@ -61,7 +61,7 @@ static int vt_locked_by_bios(void)
 	if (fwts_cpu_readmsr(0, MSR_FEATURE_CONTROL, &msr))
 		return -1;
 
-	return ((msr & 0x1000) == 1); /* SVM capable but locked by bios*/
+	return ((msr & 0x1000) == 0x1000); /* SVM capable but locked by bios*/
 }
 
 void virt_check_svm(fwts_framework *fw)

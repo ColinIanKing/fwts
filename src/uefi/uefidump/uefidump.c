@@ -168,6 +168,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 				else
 					path = uefidump_vprintf(path, "%s,", hidstr);
 			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-ACPI-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

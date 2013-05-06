@@ -27,7 +27,8 @@
 
 static int ac_adapter_init(fwts_framework *fw)
 {
-	int matching, not_matching;
+	int matching = 0;
+	int not_matching = 0;
 
 	if (fwts_ac_adapter_get_state(FWTS_AC_ADAPTER_ANY, &matching, &not_matching) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterEntry",

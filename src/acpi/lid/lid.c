@@ -146,7 +146,7 @@ static int lid_test_state(fwts_framework *fw, int button)
 			"Did not detect any ACPI LID events while waiting for to LID %s.", state);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
-	} else
+	} else {
 		fwts_passed(fw, "Detected ACPI LID events while waiting for LID to %s.", state);
 		if ((matching == 0) || (not_matching > 0)) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidState",
@@ -154,6 +154,7 @@ static int lid_test_state(fwts_framework *fw, int button)
 			fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
 		} else
 			fwts_passed(fw, "Detected lid %s state.", state);
+	}
 
 	return FWTS_OK;
 }

@@ -88,8 +88,10 @@ static int get_mtrrs(void)
 	if ((mtrr_list = fwts_list_new()) == NULL)
 		return FWTS_ERROR;
 
-	if ((fp = fopen("/proc/mtrr", "r")) == NULL)
+	if ((fp = fopen("/proc/mtrr", "r")) == NULL) {
+		fwts_list_free(mtrr_list, free);
 		return FWTS_ERROR;
+	}
 
 	while (!feof(fp)) {
 		char *ptr1, *ptr2;

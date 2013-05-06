@@ -99,6 +99,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			free(quirks);
 			return FWTS_OUT_OF_MEMORY;
 		}
+		free(quirks);
 	}
 
 	fwts_wakealarm_trigger(fw, delay);

@@ -153,6 +153,7 @@ static int nx_test3(fwts_framework *fw)
 		}
 		if (fwts_cpu_readmsr(i, 0x1a0, &val) != FWTS_OK) {
 			fwts_log_error(fw, "Cannot read msr 0x1a0 on CPU%d", i);
+			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
 		if (i == 0) {

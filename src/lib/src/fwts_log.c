@@ -579,8 +579,11 @@ char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 	for (i=0; i<32; i++) {
 		fwts_log_type mask = 1 << i;
 		if (type & mask) {
-			if ((tmp = fwts_log_filename(filename, mask)) == NULL)
+			if ((tmp = fwts_log_filename(filename, mask)) == NULL) {
+				if (filenames)
+					free(filenames);
 				return NULL;
+			}
 
 			if (filenames) {
 				len += strlen(tmp) + 2;

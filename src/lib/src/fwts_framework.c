@@ -291,7 +291,10 @@ static void fwts_framework_show_tests(fwts_framework *fw, bool full)
  */
 static void fwts_framework_strtrunc(char *dest, const char *src, size_t max)
 {
-	strncpy(dest, src, max);
+	if (src)
+		strncpy(dest, src, max);
+	else
+		strncpy(dest, "", max);
 
 	if ((strlen(src) > max) && (max > 3)) {
 		dest[max-1] = 0;

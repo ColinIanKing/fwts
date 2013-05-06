@@ -107,8 +107,8 @@ static int fwts_uefi_get_interface(char **path)
 					strcpy(efivar_path, "/sys/firmware/efi/vars");
 			}
 		}
+		fclose(fp);
 	}
-	fclose(fp);
 
 	*path = NULL;
 

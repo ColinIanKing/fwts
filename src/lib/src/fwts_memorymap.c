@@ -185,11 +185,12 @@ static void fwts_memory_map_dmesg_info(void *data, void *private)
 
 		start = strtoull(str+10, NULL, 16);
 		str = strstr(line," - ");
-		if (str)
+		if (str) {
 			str += 3;
-		end   = strtoull(str, NULL, 16) - 1;
+			end = strtoull(str, NULL, 16) - 1;
 
-		fwts_register_memory_map_line(memory_map_list, start, end, fwts_memory_map_str_to_type(line));
+			fwts_register_memory_map_line(memory_map_list, start, end, fwts_memory_map_str_to_type(line));
+		}
 	}
 }
 

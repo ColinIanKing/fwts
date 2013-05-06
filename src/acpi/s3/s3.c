@@ -73,8 +73,8 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int differences;
 	time_t t_start;
 	time_t t_end;
-	char *command;
-	char *quirks;
+	char *command = NULL;
+	char *quirks = NULL;
 	char buffer[80];
 
 	fwts_klog_clear();
@@ -182,6 +182,11 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			"enter the requested power saving state.");
 		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
+
+	if (command)
+		free(command);
+	if (quirks)
+		free(quirks);
 
 	return FWTS_OK;
 }

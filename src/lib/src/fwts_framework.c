@@ -1195,7 +1195,7 @@ int fwts_framework_args(const int argc, char **argv)
 	ret = fwts_args_add_options(fwts_framework_options,
 		fwts_framework_options_handler, NULL);
 	if (ret == FWTS_ERROR)
-		return ret;
+		goto tidy_args;
 
 	fw->firmware_type = fwts_firmware_detect();
 
@@ -1354,7 +1354,6 @@ tidy:
 tidy_close:
 	fwts_acpi_free_tables();
 	fwts_summary_deinit();
-	fwts_args_free();
 
 	free(fw->lspci);
 	free(fw->results_logname);
@@ -1370,6 +1369,8 @@ tidy_close:
 	if ((fw->total.failed > 0) || (fw->total.warning > 0))
 		ret = FWTS_ERROR;
 
+tidy_args:
+	fwts_args_free();
 	free(fw);
 
 	return ret;

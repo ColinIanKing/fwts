@@ -248,9 +248,12 @@ int fwts_dump_info(fwts_framework *fw, const char *path)
 	if (path == NULL)
 		path = "./";
 
-	if (access(path, F_OK) != 0)
-		mkdir(path, 0777);
-
+	if (access(path, F_OK) != 0) {
+		if (mkdir(path, 0777) < 0) {
+			fprintf(stderr, "Cannot mkdir %s.\n", path);
+			return FWTS_ERROR;
+		}
+	}
 
 	if (dump_readme(path) != FWTS_OK)
 		fprintf(stderr, "Failed to dump README.txt.\n");

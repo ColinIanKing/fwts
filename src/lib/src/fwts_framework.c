@@ -925,7 +925,7 @@ static int fwts_framework_filter_error_parse(const char *arg, fwts_list *list)
 	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
 		if (fwts_list_append(list, token) == NULL) {
 			fprintf(stderr, "Out of memory parsing argument %s\n", arg);
-			fwts_list_free(list, NULL);
+			fwts_list_free_items(list, NULL);
 			return FWTS_ERROR;
 		}
 	}

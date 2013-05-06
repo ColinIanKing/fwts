@@ -250,8 +250,10 @@ static void do_cpu(fwts_framework *fw, int cpu)
 		}
 		return;
 	}
-	if (fgets(line, 4095, file) == NULL)
+	if (fgets(line, 4095, file) == NULL) {
+		fclose(file);
 		return;
+	}
 	fclose(file);
 
 	if (total_tests == 1)

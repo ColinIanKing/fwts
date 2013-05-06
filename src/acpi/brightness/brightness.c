@@ -158,7 +158,11 @@ static int brightness_test2(fwts_framework *fw)
 
 					for (i=0;i<=max_brightness;i++) {
 						set_setting(entry->d_name, "brightness", i);
-						get_setting(entry->d_name, "actual_brightness", &actual_brightness);
+						if (get_setting(entry->d_name, "actual_brightness", &actual_brightness) != FWTS_OK) {
+							fwts_log_info(fw, "Cannot get brightness setting %d for backlight %s.", i, entry->d_name);
+							failed++;
+							continue;
+						}
 						if (actual_brightness != i)  {
 							fwts_log_info(fw, "Actual brightness %d does not match the brightnesss level %d just set for backlight %s.", actual_brightness, i, entry->d_name);
 							failed++;

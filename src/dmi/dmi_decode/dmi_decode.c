@@ -597,8 +597,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 								"offset 0x%2.2x",
 								val, table, addr, i, 0x15 + (i*len));
 					} else {
-						if ((val < 0x1) || (val > 0xd))
-							snprintf(tmp, sizeof(tmp), "Base Board Type %d", i);
+						if ((val < 0x1) || (val > 0xd)) {
 							fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 								"Out of range value 0x%2.2" PRIx8
 								" (range allowed 0x00..0x42) "
@@ -606,6 +605,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 								"0x%8.8" PRIx32 ", field "
 								"'Base Board Type %d', offset 0x%2.2x",
 								val, table, addr, i, 0x15 + (i*len));
+						}
 					}
 				}
 			}

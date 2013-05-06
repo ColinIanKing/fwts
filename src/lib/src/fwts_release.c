@@ -38,7 +38,7 @@ static void fwts_release_field_get(char *needle, char *delimiter, char *text, ch
 	while (*str == ' ')
 		str++;
 
-	if (str)
+	if (*str)
 		*field = strdup(str);
 }
 

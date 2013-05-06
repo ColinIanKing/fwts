@@ -169,7 +169,10 @@ static int get_performance_repeat(
 		*retval = min;
 		break;
 	case GET_PERFORMANCE_AVG:
-		*retval = cumulative / real_count;
+		if (real_count)
+			*retval = cumulative / real_count;
+		else
+			*retval = 0;
 		break;
 	default:
 		*retval = 0;

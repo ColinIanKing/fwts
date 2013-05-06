@@ -495,6 +495,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
 			"Failed to get CPU performance.");
+		closedir(dir);
 		return;
 	}
 	lowperf = (100 * lowperf) / top_speed;

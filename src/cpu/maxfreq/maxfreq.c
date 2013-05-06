@@ -108,6 +108,7 @@ static int maxfreq_test1(fwts_framework *fw)
 
 	if (cpufreqs_read == 0) {
 		fwts_skipped(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
+		free(cpufreq);
 		return FWTS_SKIP;
 	}
 
@@ -116,6 +117,7 @@ static int maxfreq_test1(fwts_framework *fw)
 			"CPUFreqNoPath",
 			"No %s directory available: cannot test.",
 			CPU_FREQ_PATH);
+		free(cpufreq);
 		return FWTS_ERROR;
 	}
 

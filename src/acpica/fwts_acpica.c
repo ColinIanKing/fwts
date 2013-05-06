@@ -509,8 +509,10 @@ ACPI_STATUS AcpiOsCreateSemaphore(UINT32 MaxUnits,
 		}
 	}
 
-	if (!sem)
+	if (!sem) {
+		pthread_mutex_unlock(&mutex_lock_sem_table);
 		return AE_NO_MEMORY;
+	}
 
 	sem->used = true;
 	sem->count = 0;

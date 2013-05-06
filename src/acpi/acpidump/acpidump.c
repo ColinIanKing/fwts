@@ -101,7 +101,7 @@ static void acpi_dump_str(fwts_framework *fw, fwts_acpidump_field *info, void *d
 static uint64_t apci_dump_get_uint64_t(fwts_acpidump_field *info, void *data)
 {
 	uint64_t	ret;
-	uint64_t	mask = (1<<info->bit_field_nbits) - 1;
+	uint64_t	mask = (1<<(uint64_t)info->bit_field_nbits) - 1;
 	int i;
 
 	switch (info->size) {

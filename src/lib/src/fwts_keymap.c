@@ -62,8 +62,10 @@ fwts_list *fwts_keymap_load(const char *machine)
 
 	snprintf(path, sizeof(path), "%s/%s", FWTS_KEYMAP_PATH, machine);
 
-	if ((fp = fopen(path, "r")) == NULL)
+	if ((fp = fopen(path, "r")) == NULL) {
+		fwts_keymap_free(keymap_list);
 		return NULL;
+	}
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		fwts_keycode *key;

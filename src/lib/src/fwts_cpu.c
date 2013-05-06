@@ -114,8 +114,10 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 	if ((cpu = (fwts_cpuinfo_x86*)calloc(1, sizeof(fwts_cpuinfo_x86))) == NULL)
 		return NULL;
 
-	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
+	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL) {
+		free(cpu);
 		return NULL;
+	}
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		char *ptr = strstr(buffer, ":");

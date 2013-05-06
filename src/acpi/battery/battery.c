@@ -80,6 +80,7 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 
 	if ((fd = fwts_acpi_event_open()) < 0) {
 		fwts_log_error(fw, "Cannot connect to acpid.");
+		fwts_gpe_free(gpes_start, gpe_count);
 		return FWTS_ERROR;
 	}
 
@@ -102,6 +103,8 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 
 	if ((gpe_count = fwts_gpe_read(&gpes_end)) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot read GPEs.");
+		fwts_gpe_free(gpes_start, gpe_count);
+		return FWTS_ERROR;
 	}
 
 	fwts_gpe_test(fw, gpes_start, gpes_end, gpe_count);

@@ -74,8 +74,7 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 
 	for (i=0; (i<=20) && !*offline ;i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
-			char *str;
-			if ((str = strstr(buffer, "ac_adapter")) != NULL)
+			if (strstr(buffer, "ac_adapter") != NULL)
 				s3power_adapter_offline(fw, offline);
 			free(buffer);
 		}

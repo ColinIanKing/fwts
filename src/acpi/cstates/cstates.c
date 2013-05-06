@@ -100,10 +100,10 @@ static void get_cstates(char *path, fwts_cstates *state)
 			count = strtoull(data, NULL, 10);
 			free(data);
 
-			if ((nr>=0) && (nr < MAX_CSTATE))
+			if ((nr >= 0) && (nr < MAX_CSTATE)) {
 				state->counts[nr] = count;
-
-			state->present[nr] = true;
+				state->present[nr] = true;
+			}
 		}
 	}
 	closedir(dir);

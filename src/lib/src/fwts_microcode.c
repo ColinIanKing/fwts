@@ -54,6 +54,7 @@ int fwts_update_microcode(fwts_framework *fw, const char *device, const char *fi
 
 	if ((fp = fopen(filename, "r")) == NULL) {
 		fwts_log_error(fw, "Cannot open source '%s'.", filename);
+		free(microcode);
 		return FWTS_ERROR;
 	}
 

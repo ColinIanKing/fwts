@@ -44,7 +44,7 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 	while (fscanf(fp, "0x%hx 0x%x\n", &pin, &setting) == 2) {
 		pin_setting = calloc(1, sizeof(hda_audio_pin_setting));
 		if (pin_setting == NULL) {
-			fwts_list_free(settings, free);
+			fwts_list_free_items(settings, free);
 			fclose(fp);
 			return FWTS_ERROR;
 		}

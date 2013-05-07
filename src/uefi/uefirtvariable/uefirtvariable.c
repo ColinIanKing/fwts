@@ -858,6 +858,7 @@ static int setvariable_invalidattr(
 	EFI_GUID *gtestguid,
 	const uint8_t datadiff)
 {
+	long ioret;
 	struct efi_setvariable setvariable;
 	uint64_t status;
 	uint64_t dataindex;
@@ -873,9 +874,9 @@ static int setvariable_invalidattr(
 	setvariable.Data = data;
 	setvariable.status = &status;
 
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
-	if (status == EFI_SUCCESS) {
+	if ((status == EFI_SUCCESS) && (ioret != -1)) {
 		fwts_warning(fw,
 			"After ExitBootServices() is performed, the "
 			"attributes %" PRIu32 ", "

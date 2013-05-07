@@ -667,6 +667,7 @@ fwts_log *fwts_log_open(
 			case LOG_FILENAME_TYPE_FILE:
 				if ((newname = fwts_log_filename(filename, mask)) == NULL) {
 					fwts_log_close(newlog);
+					free(log_file);
 					return NULL;
 				}
 				log_file->fp = fopen(newname, mode);
@@ -674,6 +675,7 @@ fwts_log *fwts_log_open(
 
 				if (log_file->fp == NULL) {
 					fwts_log_close(newlog);
+					free(log_file);
 					return NULL;
 				}
 			}

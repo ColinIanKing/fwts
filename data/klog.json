@@ -3995,11 +3995,11 @@
    "label": "KlogAcpiNoHandlerForRegion"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_NO_HANDLER",
-   "pattern": "ACPI Error.*No handler for Region",
-   "advice": "",
+   "pattern": "No handler for Region",
+   "advice": "ACPI attempted to read or write to a region however the ACPI driver does not have a handler implemented for this particular region space.  The read/write will fail and undefined behaviour will occur.",
    "label": "KlogAcpiNoHandlerForRegion"
   },
   {

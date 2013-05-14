@@ -77,6 +77,14 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
+    "pattern": "MMIO size insufficient to access LTR",
+    "advice": "Intel Lynxpoint Low Power Subsystem have a set of MMIO mapped registers that provide access to the LTR (Latency Tolerance Reporting).  However, the MMIO size is smaller than expected. The corresponding I/O resource for this is incorrect, it should have a resource size set to a minimum of 24 bytes.",
+    "label": "KlogAcpiLpssMmioSizeTooSmall"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
     "pattern": "Error installing notify handler",
     "advice": "Failed to install a notify handler for the ACPI video driver. The ACPI video driver cannot handle notify events to change brightness levels or turn the display on/off.",
     "label": "KlogAcpiNotifyHandlerInstallFailed"

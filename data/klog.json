@@ -85,6 +85,14 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
+    "pattern": "Can't remove video notify handler",
+    "advice": "Failed to remove a notify handler for the ACPI video driver. This is most probably an internal kernel issue.",
+    "label": "KlogAcpiNotifyHandlerRemoveFailed"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
     "pattern": "Could not register bus type",
     "advice": "The ACPI driver failed to register the ACPI buse type.  This is not deemed to be fatal, but it is a kernel error that should be investigated. See acpi_scan_init().",
     "label": "KlogAcpiScanBusTypeRegisterFailed"

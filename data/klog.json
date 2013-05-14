@@ -1170,7 +1170,7 @@
     "label": "KlogAcpiAttachNullObjectBadType"
   },
   {
-    "compare_mode": "string",
+    "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
     "pattern": "Bit offset within field too large.*0xFFFFFFFF",

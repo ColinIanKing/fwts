@@ -1010,6 +1010,14 @@
     "label": "KlogAcpiUtCopyBadType"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Needed Region, found type 0x",
+    "advice": "An ACPI object type did not match the expected type, expected an ACPI Region type.",
+    "label": "KlogAcpiCheckObjectTypeFailed"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",

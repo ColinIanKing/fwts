@@ -930,10 +930,10 @@
     "label": "KlogAcpiControlMethodNoAttachedObject"
   },
   {
-    "compare_mode": "string",
+    "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
-    "pattern": "Invalid ArgType 0x",
+    "pattern": "Invalid ArgType.*0x",
     "advice": "An error occurred in getting the next simple argument was expecting one of byte data, work data, dword data, qword data, char list, name or namestring, see acpi_ps_get_next_simple_arg().",
     "label": "KlogAcpi"
   },

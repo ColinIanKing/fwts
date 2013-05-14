@@ -74,6 +74,22 @@
    "label": "CommonBiosIrqRoutingBug"
   },
   {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not enable.*event",
+    "advice": "An ACPI fixed event could not be enabled. This can affect fixed events such as the power management timer, power button, sleep button, RTC alarm, wake status, system bus master request or the global release lock status.",
+    "label": "KlogAcpiEventEnableFailed"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Could not disable.*events",
+    "advice": "An ACPI fixed event could not be disabled. This can affect fixed events such as the power management timer, power button, sleep button, RTC alarm, wake status, system bus master request or the global release lock status.",
+    "label": "KlogAcpiEventDisableFailed"
+  },
+  {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",

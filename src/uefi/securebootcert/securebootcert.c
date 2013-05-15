@@ -330,6 +330,11 @@ static int securebootcert_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 	}
 
+	if (!fwts_uefi_efivars_iface_exist()) {
+		fwts_log_info(fw, "Cannot detect efivars interface. Aborted.");
+		return FWTS_ABORTED;
+	}
+
 	return FWTS_OK;
 }
 

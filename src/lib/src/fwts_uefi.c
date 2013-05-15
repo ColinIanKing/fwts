@@ -513,3 +513,15 @@ char *fwts_uefi_attribute_info(uint32_t attr)
 
 	return str;
 }
+
+/*
+ *  fwts_uefi_efivars_fs_exist()
+ *	check the efivar interface exist
+ */
+bool fwts_uefi_efivars_iface_exist(void)
+{
+	char *path;
+
+	return (fwts_uefi_get_interface(&path) == UEFI_IFACE_EFIVARS);
+
+}

@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: dmdeferred - Disassembly of deferred AML opcodes
+ * Module Name: utbuffer - Buffer dump routines
  *
  *****************************************************************************/
 
@@ -113,234 +113,180 @@
  *
  *****************************************************************************/
 
+#define __UTBUFFER_C__
 
 #include "acpi.h"
 #include "accommon.h"
-#include "acdispat.h"
-#include "amlcode.h"
-#include "acdisasm.h"
-#include "acparser.h"
 
-#define _COMPONENT          ACPI_CA_DISASSEMBLER
-        ACPI_MODULE_NAME    ("dmdeferred")
+#define _COMPONENT          ACPI_UTILITIES
+        ACPI_MODULE_NAME    ("utbuffer")
 
 
-/* Local prototypes */
-
-static ACPI_STATUS
-AcpiDmDeferredParse (
-    ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
-    UINT32                  AmlLength);
-
-
-/******************************************************************************
+/*******************************************************************************
  *
- * FUNCTION:    AcpiDmParseDeferredOps
+ * FUNCTION:    AcpiUtDumpBuffer
  *
- * PARAMETERS:  Root                - Root of the parse tree
+ * PARAMETERS:  Buffer              - Buffer to dump
+ *              Count               - Amount to dump, in bytes
+ *              Display             - BYTE, WORD, DWORD, or QWORD display:
+ *                                      DB_BYTE_DISPLAY
+ *                                      DB_WORD_DISPLAY
+ *                                      DB_DWORD_DISPLAY
+ *                                      DB_QWORD_DISPLAY
+ *              BaseOffset          - Beginning buffer offset (display only)
  *
- * RETURN:      Status
+ * RETURN:      None
  *
- * DESCRIPTION: Parse the deferred opcodes (Methods, regions, etc.)
+ * DESCRIPTION: Generic dump buffer in both hex and ascii.
  *
- *****************************************************************************/
+ ******************************************************************************/
 
-ACPI_STATUS
-AcpiDmParseDeferredOps (
-    ACPI_PARSE_OBJECT       *Root)
+void
+AcpiUtDumpBuffer (
+    UINT8                   *Buffer,
+    UINT32                  Count,
+    UINT32                  Display,
+    UINT32                  BaseOffset)
 {
-    const ACPI_OPCODE_INFO  *OpInfo;
-    ACPI_PARSE_OBJECT       *Op = Root;
-    ACPI_STATUS             Status;
+    UINT32                  i = 0;
+    UINT32                  j;
+    UINT32                  Temp32;
+    UINT8                   BufChar;
 
 
-    ACPI_FUNCTION_ENTRY ();
-
-
-    /* Traverse the entire parse tree */
-
-    while (Op)
+    if (!Buffer)
     {
-        OpInfo = AcpiPsGetOpcodeInfo (Op->Common.AmlOpcode);
-        if (!(OpInfo->Flags & AML_DEFER))
-        {
-            Op = AcpiPsGetDepthNext (Root, Op);
-            continue;
-        }
-
-        /* Now we know we have a deferred opcode */
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_METHOD_OP:
-        case AML_BUFFER_OP:
-        case AML_PACKAGE_OP:
-        case AML_VAR_PACKAGE_OP:
-
-            Status = AcpiDmDeferredParse (Op, Op->Named.Data, Op->Named.Length);
-            if (ACPI_FAILURE (Status))
-            {
-                return (Status);
-            }
-            break;
-
-        /* We don't need to do anything for these deferred opcodes */
-
-        case AML_REGION_OP:
-        case AML_DATA_REGION_OP:
-        case AML_CREATE_QWORD_FIELD_OP:
-        case AML_CREATE_DWORD_FIELD_OP:
-        case AML_CREATE_WORD_FIELD_OP:
-        case AML_CREATE_BYTE_FIELD_OP:
-        case AML_CREATE_BIT_FIELD_OP:
-        case AML_CREATE_FIELD_OP:
-        case AML_BANK_FIELD_OP:
-
-            break;
-
-        default:
-
-            ACPI_ERROR ((AE_INFO, "Unhandled deferred AML opcode [0x%.4X]",
-                 Op->Common.AmlOpcode));
-            break;
-        }
-
-        Op = AcpiPsGetDepthNext (Root, Op);
+        AcpiOsPrintf ("Null Buffer Pointer in DumpBuffer!\n");
+        return;
     }
 
-    return (AE_OK);
+    if ((Count < 4) || (Count & 0x01))
+    {
+        Display = DB_BYTE_DISPLAY;
+    }
+
+    /* Nasty little dump buffer routine! */
+
+    while (i < Count)
+    {
+        /* Print current offset */
+
+        AcpiOsPrintf ("%6.4X: ", (BaseOffset + i));
+
+        /* Print 16 hex chars */
+
+        for (j = 0; j < 16;)
+        {
+            if (i + j >= Count)
+            {
+                /* Dump fill spaces */
+
+                AcpiOsPrintf ("%*s", ((Display * 2) + 1), " ");
+                j += Display;
+                continue;
+            }
+
+            switch (Display)
+            {
+            case DB_BYTE_DISPLAY:
+            default:    /* Default is BYTE display */
+
+                AcpiOsPrintf ("%02X ", Buffer[(ACPI_SIZE) i + j]);
+                break;
+
+            case DB_WORD_DISPLAY:
+
+                ACPI_MOVE_16_TO_32 (&Temp32, &Buffer[(ACPI_SIZE) i + j]);
+                AcpiOsPrintf ("%04X ", Temp32);
+                break;
+
+            case DB_DWORD_DISPLAY:
+
+                ACPI_MOVE_32_TO_32 (&Temp32, &Buffer[(ACPI_SIZE) i + j]);
+                AcpiOsPrintf ("%08X ", Temp32);
+                break;
+
+            case DB_QWORD_DISPLAY:
+
+                ACPI_MOVE_32_TO_32 (&Temp32, &Buffer[(ACPI_SIZE) i + j]);
+                AcpiOsPrintf ("%08X", Temp32);
+
+                ACPI_MOVE_32_TO_32 (&Temp32, &Buffer[(ACPI_SIZE) i + j + 4]);
+                AcpiOsPrintf ("%08X ", Temp32);
+                break;
+            }
+
+            j += Display;
+        }
+
+        /*
+         * Print the ASCII equivalent characters but watch out for the bad
+         * unprintable ones (printable chars are 0x20 through 0x7E)
+         */
+        AcpiOsPrintf (" ");
+        for (j = 0; j < 16; j++)
+        {
+            if (i + j >= Count)
+            {
+                AcpiOsPrintf ("\n");
+                return;
+            }
+
+            BufChar = Buffer[(ACPI_SIZE) i + j];
+            if (ACPI_IS_PRINT (BufChar))
+            {
+                AcpiOsPrintf ("%c", BufChar);
+            }
+            else
+            {
+                AcpiOsPrintf (".");
+            }
+        }
+
+        /* Done with that line. */
+
+        AcpiOsPrintf ("\n");
+        i += 16;
+    }
+
+    return;
 }
 
 
-/******************************************************************************
+/*******************************************************************************
  *
- * FUNCTION:    AcpiDmDeferredParse
+ * FUNCTION:    AcpiUtDebugDumpBuffer
  *
- * PARAMETERS:  Op                  - Root Op of the deferred opcode
- *              Aml                 - Pointer to the raw AML
- *              AmlLength           - Length of the AML
+ * PARAMETERS:  Buffer              - Buffer to dump
+ *              Count               - Amount to dump, in bytes
+ *              Display             - BYTE, WORD, DWORD, or QWORD display:
+ *                                      DB_BYTE_DISPLAY
+ *                                      DB_WORD_DISPLAY
+ *                                      DB_DWORD_DISPLAY
+ *                                      DB_QWORD_DISPLAY
+ *              ComponentID         - Caller's component ID
  *
- * RETURN:      Status
+ * RETURN:      None
  *
- * DESCRIPTION: Parse one deferred opcode
- *              (Methods, operation regions, etc.)
+ * DESCRIPTION: Generic dump buffer in both hex and ascii.
  *
- *****************************************************************************/
+ ******************************************************************************/
 
-static ACPI_STATUS
-AcpiDmDeferredParse (
-    ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
-    UINT32                  AmlLength)
+void
+AcpiUtDebugDumpBuffer (
+    UINT8                   *Buffer,
+    UINT32                  Count,
+    UINT32                  Display,
+    UINT32                  ComponentId)
 {
-    ACPI_WALK_STATE         *WalkState;
-    ACPI_STATUS             Status;
-    ACPI_PARSE_OBJECT       *SearchOp;
-    ACPI_PARSE_OBJECT       *StartOp;
-    UINT32                  BaseAmlOffset;
-    ACPI_PARSE_OBJECT       *NewRootOp;
-    ACPI_PARSE_OBJECT       *ExtraOp;
 
+    /* Only dump the buffer if tracing is enabled */
 
-    ACPI_FUNCTION_TRACE (DmDeferredParse);
-
-
-    if (!Aml || !AmlLength)
+    if (!((ACPI_LV_TABLES & AcpiDbgLevel) &&
+        (ComponentId & AcpiDbgLayer)))
     {
-        return_ACPI_STATUS (AE_OK);
+        return;
     }
 
-    ACPI_DEBUG_PRINT ((ACPI_DB_INFO, "Parsing deferred opcode %s [%4.4s]\n",
-        Op->Common.AmlOpName, (char *) &Op->Named.Name));
-
-    /* Need a new walk state to parse the AML */
-
-    WalkState = AcpiDsCreateWalkState (0, Op, NULL, NULL);
-    if (!WalkState)
-    {
-        return_ACPI_STATUS (AE_NO_MEMORY);
-    }
-
-    Status = AcpiDsInitAmlWalk (WalkState, Op, NULL, Aml,
-        AmlLength, NULL, ACPI_IMODE_LOAD_PASS1);
-    if (ACPI_FAILURE (Status))
-    {
-        return_ACPI_STATUS (Status);
-    }
-
-    /* Parse the AML for this deferred opcode */
-
-    WalkState->ParseFlags &= ~ACPI_PARSE_DELETE_TREE;
-    WalkState->ParseFlags |= ACPI_PARSE_DISASSEMBLE;
-    Status = AcpiPsParseAml (WalkState);
-
-    /*
-     * We need to update all of the AML offsets, since the parser thought
-     * that the method began at offset zero. In reality, it began somewhere
-     * within the ACPI table, at the BaseAmlOffset. Walk the entire tree that
-     * was just created and update the AmlOffset in each Op.
-     */
-    BaseAmlOffset = (Op->Common.Value.Arg)->Common.AmlOffset + 1;
-    StartOp = (Op->Common.Value.Arg)->Common.Next;
-    SearchOp = StartOp;
-
-    while (SearchOp)
-    {
-        SearchOp->Common.AmlOffset += BaseAmlOffset;
-        SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-    }
-
-    /*
-     * For Buffer and Package opcodes, link the newly parsed subtree
-     * into the main parse tree
-     */
-    switch (Op->Common.AmlOpcode)
-    {
-    case AML_BUFFER_OP:
-    case AML_PACKAGE_OP:
-    case AML_VAR_PACKAGE_OP:
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_PACKAGE_OP:
-
-            ExtraOp = Op->Common.Value.Arg;
-            NewRootOp = ExtraOp->Common.Next;
-            ACPI_FREE (ExtraOp);
-            break;
-
-        case AML_VAR_PACKAGE_OP:
-        case AML_BUFFER_OP:
-        default:
-
-            NewRootOp = Op->Common.Value.Arg;
-            break;
-        }
-
-        Op->Common.Value.Arg = NewRootOp->Common.Value.Arg;
-
-        /* Must point all parents to the main tree */
-
-        StartOp = Op;
-        SearchOp = StartOp;
-        while (SearchOp)
-        {
-            if (SearchOp->Common.Parent == NewRootOp)
-            {
-                SearchOp->Common.Parent = Op;
-            }
-
-            SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-        }
-
-        ACPI_FREE (NewRootOp);
-        break;
-
-    default:
-
-        break;
-    }
-
-    return_ACPI_STATUS (AE_OK);
+    AcpiUtDumpBuffer (Buffer, Count, Display, 0);
 }

@@ -443,8 +443,8 @@ AcpiRsGetAmlLength (
 
             break;
 
-
         default:
+
             break;
         }
 
@@ -634,6 +634,7 @@ AcpiRsGetListLength (
             break;
 
         default:
+
             break;
         }
 
@@ -748,7 +749,9 @@ AcpiRsGetPciRoutingTableLength (
 
         NameFound = FALSE;
 
-        for (TableIndex = 0; TableIndex < 4 && !NameFound; TableIndex++)
+        for (TableIndex = 0;
+             TableIndex < PackageElement->Package.Count && !NameFound;
+             TableIndex++)
         {
             if (*SubObjectList && /* Null object allowed */
 

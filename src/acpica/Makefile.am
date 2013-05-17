@@ -210,6 +210,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/tables/tbxface.c		\
 	$(ACPICA_COMP)/tables/tbxfroot.c	\
 	$(ACPICA_COMP)/tables/tbxfload.c	\
+	$(ACPICA_COMP)/tables/tbprint.c		\
 	$(ACPICA_COMP)/utilities/utaddress.c	\
 	$(ACPICA_COMP)/utilities/utalloc.c	\
 	$(ACPICA_COMP)/utilities/utcache.c	\
@@ -237,6 +238,8 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/utilities/utstring.c	\
 	$(ACPICA_COMP)/utilities/utownerid.c	\
 	$(ACPICA_COMP)/utilities/utxfinit.c	\
+	$(ACPICA_COMP)/utilities/uterror.c	\
+	$(ACPICA_COMP)/utilities/utbuffer.c	\
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

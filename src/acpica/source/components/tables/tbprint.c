@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: dmdeferred - Disassembly of deferred AML opcodes
+ * Module Name: tbprint - Table output utilities
  *
  *****************************************************************************/
 
@@ -113,234 +113,225 @@
  *
  *****************************************************************************/
 
+#define __TBPRINT_C__
 
 #include "acpi.h"
 #include "accommon.h"
-#include "acdispat.h"
-#include "amlcode.h"
-#include "acdisasm.h"
-#include "acparser.h"
+#include "actables.h"
 
-#define _COMPONENT          ACPI_CA_DISASSEMBLER
-        ACPI_MODULE_NAME    ("dmdeferred")
+#define _COMPONENT          ACPI_TABLES
+        ACPI_MODULE_NAME    ("tbprint")
 
 
 /* Local prototypes */
 
-static ACPI_STATUS
-AcpiDmDeferredParse (
-    ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
-    UINT32                  AmlLength);
+static void
+AcpiTbFixString (
+    char                    *String,
+    ACPI_SIZE               Length);
+
+static void
+AcpiTbCleanupTableHeader (
+    ACPI_TABLE_HEADER       *OutHeader,
+    ACPI_TABLE_HEADER       *Header);
 
 
-/******************************************************************************
+/*******************************************************************************
  *
- * FUNCTION:    AcpiDmParseDeferredOps
+ * FUNCTION:    AcpiTbFixString
  *
- * PARAMETERS:  Root                - Root of the parse tree
+ * PARAMETERS:  String              - String to be repaired
+ *              Length              - Maximum length
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Replace every non-printable or non-ascii byte in the string
+ *              with a question mark '?'.
+ *
+ ******************************************************************************/
+
+static void
+AcpiTbFixString (
+    char                    *String,
+    ACPI_SIZE               Length)
+{
+
+    while (Length && *String)
+    {
+        if (!ACPI_IS_PRINT (*String))
+        {
+            *String = '?';
+        }
+        String++;
+        Length--;
+    }
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiTbCleanupTableHeader
+ *
+ * PARAMETERS:  OutHeader           - Where the cleaned header is returned
+ *              Header              - Input ACPI table header
+ *
+ * RETURN:      Returns the cleaned header in OutHeader
+ *
+ * DESCRIPTION: Copy the table header and ensure that all "string" fields in
+ *              the header consist of printable characters.
+ *
+ ******************************************************************************/
+
+static void
+AcpiTbCleanupTableHeader (
+    ACPI_TABLE_HEADER       *OutHeader,
+    ACPI_TABLE_HEADER       *Header)
+{
+
+    ACPI_MEMCPY (OutHeader, Header, sizeof (ACPI_TABLE_HEADER));
+
+    AcpiTbFixString (OutHeader->Signature, ACPI_NAME_SIZE);
+    AcpiTbFixString (OutHeader->OemId, ACPI_OEM_ID_SIZE);
+    AcpiTbFixString (OutHeader->OemTableId, ACPI_OEM_TABLE_ID_SIZE);
+    AcpiTbFixString (OutHeader->AslCompilerId, ACPI_NAME_SIZE);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiTbPrintTableHeader
+ *
+ * PARAMETERS:  Address             - Table physical address
+ *              Header              - Table header
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Print an ACPI table header. Special cases for FACS and RSDP.
+ *
+ ******************************************************************************/
+
+void
+AcpiTbPrintTableHeader (
+    ACPI_PHYSICAL_ADDRESS   Address,
+    ACPI_TABLE_HEADER       *Header)
+{
+    ACPI_TABLE_HEADER       LocalHeader;
+
+
+    /*
+     * The reason that the Address is cast to a void pointer is so that we
+     * can use %p which will work properly on both 32-bit and 64-bit hosts.
+     */
+    if (ACPI_COMPARE_NAME (Header->Signature, ACPI_SIG_FACS))
+    {
+        /* FACS only has signature and length fields */
+
+        ACPI_INFO ((AE_INFO, "%4.4s %p %05X",
+            Header->Signature, ACPI_CAST_PTR (void, Address),
+            Header->Length));
+    }
+    else if (ACPI_COMPARE_NAME (Header->Signature, ACPI_SIG_RSDP))
+    {
+        /* RSDP has no common fields */
+
+        ACPI_MEMCPY (LocalHeader.OemId,
+            ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->OemId, ACPI_OEM_ID_SIZE);
+        AcpiTbFixString (LocalHeader.OemId, ACPI_OEM_ID_SIZE);
+
+        ACPI_INFO ((AE_INFO, "RSDP %p %05X (v%.2d %6.6s)",
+            ACPI_CAST_PTR (void, Address),
+            (ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->Revision > 0) ?
+                ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->Length : 20,
+            ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->Revision,
+            LocalHeader.OemId));
+    }
+    else
+    {
+        /* Standard ACPI table with full common header */
+
+        AcpiTbCleanupTableHeader (&LocalHeader, Header);
+
+        ACPI_INFO ((AE_INFO,
+            "%4.4s %p %05X (v%.2d %6.6s %8.8s %08X %4.4s %08X)",
+            LocalHeader.Signature, ACPI_CAST_PTR (void, Address),
+            LocalHeader.Length, LocalHeader.Revision, LocalHeader.OemId,
+            LocalHeader.OemTableId, LocalHeader.OemRevision,
+            LocalHeader.AslCompilerId, LocalHeader.AslCompilerRevision));
+    }
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiTbValidateChecksum
+ *
+ * PARAMETERS:  Table               - ACPI table to verify
+ *              Length              - Length of entire table
  *
  * RETURN:      Status
  *
- * DESCRIPTION: Parse the deferred opcodes (Methods, regions, etc.)
+ * DESCRIPTION: Verifies that the table checksums to zero. Optionally returns
+ *              exception on bad checksum.
  *
- *****************************************************************************/
+ ******************************************************************************/
 
 ACPI_STATUS
-AcpiDmParseDeferredOps (
-    ACPI_PARSE_OBJECT       *Root)
+AcpiTbVerifyChecksum (
+    ACPI_TABLE_HEADER       *Table,
+    UINT32                  Length)
 {
-    const ACPI_OPCODE_INFO  *OpInfo;
-    ACPI_PARSE_OBJECT       *Op = Root;
-    ACPI_STATUS             Status;
+    UINT8                   Checksum;
 
 
-    ACPI_FUNCTION_ENTRY ();
+    /* Compute the checksum on the table */
 
+    Checksum = AcpiTbChecksum (ACPI_CAST_PTR (UINT8, Table), Length);
 
-    /* Traverse the entire parse tree */
+    /* Checksum ok? (should be zero) */
 
-    while (Op)
+    if (Checksum)
     {
-        OpInfo = AcpiPsGetOpcodeInfo (Op->Common.AmlOpcode);
-        if (!(OpInfo->Flags & AML_DEFER))
-        {
-            Op = AcpiPsGetDepthNext (Root, Op);
-            continue;
-        }
+        ACPI_BIOS_WARNING ((AE_INFO,
+            "Incorrect checksum in table [%4.4s] - 0x%2.2X, "
+            "should be 0x%2.2X",
+            Table->Signature, Table->Checksum,
+            (UINT8) (Table->Checksum - Checksum)));
 
-        /* Now we know we have a deferred opcode */
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_METHOD_OP:
-        case AML_BUFFER_OP:
-        case AML_PACKAGE_OP:
-        case AML_VAR_PACKAGE_OP:
-
-            Status = AcpiDmDeferredParse (Op, Op->Named.Data, Op->Named.Length);
-            if (ACPI_FAILURE (Status))
-            {
-                return (Status);
-            }
-            break;
-
-        /* We don't need to do anything for these deferred opcodes */
-
-        case AML_REGION_OP:
-        case AML_DATA_REGION_OP:
-        case AML_CREATE_QWORD_FIELD_OP:
-        case AML_CREATE_DWORD_FIELD_OP:
-        case AML_CREATE_WORD_FIELD_OP:
-        case AML_CREATE_BYTE_FIELD_OP:
-        case AML_CREATE_BIT_FIELD_OP:
-        case AML_CREATE_FIELD_OP:
-        case AML_BANK_FIELD_OP:
-
-            break;
-
-        default:
-
-            ACPI_ERROR ((AE_INFO, "Unhandled deferred AML opcode [0x%.4X]",
-                 Op->Common.AmlOpcode));
-            break;
-        }
-
-        Op = AcpiPsGetDepthNext (Root, Op);
+#if (ACPI_CHECKSUM_ABORT)
+        return (AE_BAD_CHECKSUM);
+#endif
     }
 
     return (AE_OK);
 }
 
 
-/******************************************************************************
+/*******************************************************************************
  *
- * FUNCTION:    AcpiDmDeferredParse
+ * FUNCTION:    AcpiTbChecksum
  *
- * PARAMETERS:  Op                  - Root Op of the deferred opcode
- *              Aml                 - Pointer to the raw AML
- *              AmlLength           - Length of the AML
+ * PARAMETERS:  Buffer          - Pointer to memory region to be checked
+ *              Length          - Length of this memory region
  *
- * RETURN:      Status
+ * RETURN:      Checksum (UINT8)
  *
- * DESCRIPTION: Parse one deferred opcode
- *              (Methods, operation regions, etc.)
+ * DESCRIPTION: Calculates circular checksum of memory region.
  *
- *****************************************************************************/
+ ******************************************************************************/
 
-static ACPI_STATUS
-AcpiDmDeferredParse (
-    ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
-    UINT32                  AmlLength)
+UINT8
+AcpiTbChecksum (
+    UINT8                   *Buffer,
+    UINT32                  Length)
 {
-    ACPI_WALK_STATE         *WalkState;
-    ACPI_STATUS             Status;
-    ACPI_PARSE_OBJECT       *SearchOp;
-    ACPI_PARSE_OBJECT       *StartOp;
-    UINT32                  BaseAmlOffset;
-    ACPI_PARSE_OBJECT       *NewRootOp;
-    ACPI_PARSE_OBJECT       *ExtraOp;
+    UINT8                   Sum = 0;
+    UINT8                   *End = Buffer + Length;
 
 
-    ACPI_FUNCTION_TRACE (DmDeferredParse);
-
-
-    if (!Aml || !AmlLength)
+    while (Buffer < End)
     {
-        return_ACPI_STATUS (AE_OK);
+        Sum = (UINT8) (Sum + *(Buffer++));
     }
 
-    ACPI_DEBUG_PRINT ((ACPI_DB_INFO, "Parsing deferred opcode %s [%4.4s]\n",
-        Op->Common.AmlOpName, (char *) &Op->Named.Name));
-
-    /* Need a new walk state to parse the AML */
-
-    WalkState = AcpiDsCreateWalkState (0, Op, NULL, NULL);
-    if (!WalkState)
-    {
-        return_ACPI_STATUS (AE_NO_MEMORY);
-    }
-
-    Status = AcpiDsInitAmlWalk (WalkState, Op, NULL, Aml,
-        AmlLength, NULL, ACPI_IMODE_LOAD_PASS1);
-    if (ACPI_FAILURE (Status))
-    {
-        return_ACPI_STATUS (Status);
-    }
-
-    /* Parse the AML for this deferred opcode */
-
-    WalkState->ParseFlags &= ~ACPI_PARSE_DELETE_TREE;
-    WalkState->ParseFlags |= ACPI_PARSE_DISASSEMBLE;
-    Status = AcpiPsParseAml (WalkState);
-
-    /*
-     * We need to update all of the AML offsets, since the parser thought
-     * that the method began at offset zero. In reality, it began somewhere
-     * within the ACPI table, at the BaseAmlOffset. Walk the entire tree that
-     * was just created and update the AmlOffset in each Op.
-     */
-    BaseAmlOffset = (Op->Common.Value.Arg)->Common.AmlOffset + 1;
-    StartOp = (Op->Common.Value.Arg)->Common.Next;
-    SearchOp = StartOp;
-
-    while (SearchOp)
-    {
-        SearchOp->Common.AmlOffset += BaseAmlOffset;
-        SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-    }
-
-    /*
-     * For Buffer and Package opcodes, link the newly parsed subtree
-     * into the main parse tree
-     */
-    switch (Op->Common.AmlOpcode)
-    {
-    case AML_BUFFER_OP:
-    case AML_PACKAGE_OP:
-    case AML_VAR_PACKAGE_OP:
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_PACKAGE_OP:
-
-            ExtraOp = Op->Common.Value.Arg;
-            NewRootOp = ExtraOp->Common.Next;
-            ACPI_FREE (ExtraOp);
-            break;
-
-        case AML_VAR_PACKAGE_OP:
-        case AML_BUFFER_OP:
-        default:
-
-            NewRootOp = Op->Common.Value.Arg;
-            break;
-        }
-
-        Op->Common.Value.Arg = NewRootOp->Common.Value.Arg;
-
-        /* Must point all parents to the main tree */
-
-        StartOp = Op;
-        SearchOp = StartOp;
-        while (SearchOp)
-        {
-            if (SearchOp->Common.Parent == NewRootOp)
-            {
-                SearchOp->Common.Parent = Op;
-            }
-
-            SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-        }
-
-        ACPI_FREE (NewRootOp);
-        break;
-
-    default:
-
-        break;
-    }
-
-    return_ACPI_STATUS (AE_OK);
+    return (Sum);
 }

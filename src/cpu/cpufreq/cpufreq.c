@@ -23,8 +23,6 @@
 
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -96,6 +94,7 @@ static void set_governor(fwts_framework *fw, const int cpu)
 	}
 }
 
+#ifdef FWTS_ARCH_INTEL
 static int cpu_exists(int cpu)
 {
 	char path[PATH_MAX];
@@ -103,6 +102,7 @@ static int cpu_exists(int cpu)
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_governor");
 	return !access(path, R_OK);
 }
+#endif
 
 static void set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 {
@@ -129,6 +129,7 @@ static void set_HZ(fwts_framework *fw, const int cpu, const unsigned long Hz)
 
 }
 
+#ifdef FWTS_ARCH_INTEL
 static int get_performance_repeat(
 	fwts_framework *fw,
 	const int cpu,
@@ -180,6 +181,7 @@ static int get_performance_repeat(
 	}
 	return FWTS_OK;
 }
+#endif
 
 static char *HzToHuman(unsigned long hz)
 {
@@ -201,8 +203,6 @@ static char *HzToHuman(unsigned long hz)
 		return buffer;
 	}
 }
-
-
 
 static uint32_t get_claimed_hz(const int cpu)
 {
@@ -330,7 +330,7 @@ static void do_cpu(fwts_framework *fw, int cpu)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqSlowerOnCPU",
 				"Supposedly higher frequency %s is slower (%" PRIu64
-				" bogo loops) than frequency %s (%" PRIu64 
+				" bogo loops) than frequency %s (%" PRIu64
 				" bogo loops) on CPU %i.",
 				HzToHuman(freqs[i+1].Hz), freqs[i+1].speed,
 				HzToHuman(freqs[i].Hz), freqs[i].speed,
@@ -408,6 +408,7 @@ static void highest_speed(fwts_framework *fw, const int cpu)
 }
 
 
+#ifdef FWTS_ARCH_INTEL
 /*
  * 4) Is BIOS wrongly doing Sw_All P-state coordination across cpus
  * - Change frequency on all CPU to the lowest value
@@ -530,7 +531,6 @@ static void do_sw_any_test(fwts_framework *fw)
 			"instead?.");
 }
 
-
 static void check_sw_any(fwts_framework *fw)
 {
 	DIR *dir;
@@ -609,6 +609,7 @@ static void check_sw_any(fwts_framework *fw)
 	if (!once)
 		fwts_passed(fw, "P-state coordination done by Hardware.");
 }
+#endif
 
 static int cpufreq_test1(fwts_framework *fw)
 {
@@ -616,7 +617,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	struct dirent *entry;
 	int cpu;
 
-	/* Do your test */
+#ifdef FWTS_ARCH_INTEL
 	fwts_log_info(fw,
 		"For each processor in the system, this test steps through the "
 		"various frequency states (P-states) that the BIOS advertises "
@@ -627,6 +628,16 @@ static int cpufreq_test1(fwts_framework *fw)
 	fwts_log_info_verbatum(fw, "  3. No duplicate frequency values are reported by the BIOS.");
 	fwts_log_info_verbatum(fw, "  4. BIOS doing Sw_All P-state coordination across cores.");
 	fwts_log_info_verbatum(fw, "  5. BIOS doing Sw_Any P-state coordination across cores.");
+#else
+	fwts_log_info(fw,
+		"For each processor in the system, this test steps through the "
+		"various frequency states that the CPU supports. "
+		"For each processor/frequency combination, "
+		"a quick performance value is measured. The test then validates that:");
+	fwts_log_info_verbatum(fw, "  1. Each processor has the same number of frequency states.");
+	fwts_log_info_verbatum(fw, "  2. Higher advertised frequencies have a higher performance.");
+	fwts_log_info_verbatum(fw, "  3. No duplicate frequency values exist.");
+#endif
 	fwts_log_nl(fw);
 
 	/* First set all processors to their lowest speed */
@@ -666,6 +677,7 @@ static int cpufreq_test1(fwts_framework *fw)
 	}
 	closedir(dir);
 
+#ifdef FWTS_ARCH_INTEL
 	if (!no_cpufreq)
 		check_sw_any(fw);
 
@@ -684,7 +696,7 @@ static int cpufreq_test1(fwts_framework *fw)
 		performed_tests += 2;
 		fwts_progress(fw, 100 * performed_tests/total_tests);
 	}
-
+#endif
 	fwts_progress(fw, 100);
 
 	return FWTS_OK;
@@ -700,7 +712,11 @@ static int cpufreq_init(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test cpufreq_tests[] = {
+#ifdef FWTS_ARCH_INTEL
 	{ cpufreq_test1, "CPU P-State Checks." },
+#else
+	{ cpufreq_test1, "CPU Frequency Checks." },
+#endif
 	{ NULL, NULL }
 };
 
@@ -711,5 +727,3 @@ static fwts_framework_ops cpufreq_ops = {
 };
 
 FWTS_REGISTER("cpufreq", &cpufreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
-
-#endif

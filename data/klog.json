@@ -1742,8 +1742,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Evaluating _SRS",
-   "advice": "The ACPI driver failed to evaluate the _SRS (Set Resource Settings) object to set the current link resource. This failure will lead to a
- PCI link not allocating an IRQ.",
+   "advice": "The ACPI driver failed to evaluate the _SRS (Set Resource Settings) object to set the current link resource. This failure will lead to a PCI link not allocating an IRQ.",
    "label": "KlogAcpiSrsEvalFailed"
   },
   {

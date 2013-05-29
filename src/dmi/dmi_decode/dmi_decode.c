@@ -87,7 +87,13 @@ typedef struct {
 static const fwts_dmi_pattern dmi_patterns[] = {
 	{ "DMISerialNumber",	"Serial Number", 	"0123456789" },
 	{ "DMISerialNumber",	"Serial Number", 	"System Serial Number" },
+	{ "DMISerialNumber",	"Serial Number",	"MB-1234567890" },
+	{ "DMISerialNumber",	NULL,			"Chassis Serial Number" },
 	{ "DMIAssetTag",	"Asset Tag",		"1234567890" },
+	{ "DMIAssetTag",	"Asset Tag",		"Asset-1234567890" },
+	{ "DMIChassisVendor",	NULL,			"Chassis Manufacture" },
+	{ "DMIChassisVersion",	NULL,			"Chassis Version" },
+	{ "DMIProductVersion",	NULL,			"System Version" },
 	{ "DMIBadDefault",	NULL,			"To Be Filled By O.E.M." },
 	{ NULL,			NULL,			NULL }
 };

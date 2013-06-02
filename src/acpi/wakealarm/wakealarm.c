@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <string.h>
 
-static char *wkalarm = WAKEALARM;
+static const char *wkalarm = WAKEALARM;
 
 static int wakealarm_test1(fwts_framework *fw)
 {
@@ -96,7 +96,7 @@ static int wakealarm_test4(fwts_framework *fw)
 	int i;
 	int failed = 0;
 
-	for (i=1; i<5; i++) {
+	for (i = 1; i < 5; i++) {
 		fwts_log_info(fw, "Trigger wakealarm for %d seconds in the future.", i);
 		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {

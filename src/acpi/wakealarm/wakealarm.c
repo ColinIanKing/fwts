@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -35,9 +33,23 @@ static int wakealarm_test1(fwts_framework *fw)
 
 	if (stat(wkalarm, &buf) == 0)
 		fwts_passed(fw, WAKEALARM " found.");
-	else
+	else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoWakeAlarmTest1",
 			"Could not find " WAKEALARM ".");
+#ifdef FWTS_ARCH_INTEL
+		/* For x86 devices, this is considered a failure */
+		fwts_advice(fw,
+			"x86 devices generally should have an RTC wake alarm that "
+			"is normally controlled by the " WAKEALARM " interface. This interface "
+			"does not exist, so the wake alarm tests will be aborted.");
+#else
+		fwts_advice(fw,
+			"non-x86 devices sometimes do not have an RTC wake alarm that "
+			"is normally controlled by the " WAKEALARM " interface. This "
+			"interface does not exist, so the wake alarm tests will be aborted.");
+#endif
+		return FWTS_ABORTED;
+	}
 
 	return FWTS_OK;
 }
@@ -123,5 +135,3 @@ static fwts_framework_ops wakealarm_ops = {
 };
 
 FWTS_REGISTER("wakealarm", &wakealarm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
-
-#endif

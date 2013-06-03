@@ -141,7 +141,7 @@ static int acpiinfo_test3(fwts_framework *fw)
 
 static fwts_framework_minor_test acpiinfo_tests[] = {
 	{ acpiinfo_test1, "Determine Kernel ACPI version." },
-	{ acpiinfo_test2, "Determine machines ACPI version." },
+	{ acpiinfo_test2, "Determine machine's ACPI version." },
 	{ acpiinfo_test3, "Determine AML compiler." },
 	{ NULL, NULL }
 };

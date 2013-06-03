@@ -1,5 +1,6 @@
 	  AC_INIT([fwts],[0.1],[colin.king@canonical.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+          m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 	  AC_CANONICAL_HOST
 	  AC_CONFIG_MACRO_DIR([m4])
           AC_PROG_CC

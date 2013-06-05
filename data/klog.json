@@ -1362,11 +1362,27 @@
    "label": "KlogACPIPrwEvalError"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "lpc_ich: Resource conflict(s) found affecting iTCO_wdt",
+   "advice": "A resource conflict has occurred between ACPI OperationRegions and the same I/O region used by the lpc_ich driver for the Intel TCO (Total Cost of Ownership) timer (iTCO_wdt, this is a watchdog timer that will reboot the machine after its second expiration). According to Intel Controller Hub (ICH) specifications, the TCO watchdog has a 32 bytes I/O space resource. ACPI OperationRegions in the DSDT frequently reserve this TCO I/O space because they require access to bit 9 (DMISCI_STS) of the TCO1_STS register of the TCO, however, this bit is never used by the lpc_ich driver, so there is no risk of conflict. In the vast majority of cases this warning can be ignored as no harm will occur.",
+   "label": "KlogAcpiSystemIOConflictLpcIchWatchDogTimer",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "lpc_ich: Resource conflict(s) found affecting gpio_ich",
+   "advice": "A resource conflict has occurred between ACPI OperationRegions and the same I/O region used by the lpc_ich driver for the General Purpose I/O (GPIO) region. Sometimes this GPIO region is used by the firmware for rfkill or LED controls or very rarely for the Embedded Controller System Control Interrupt. This may require deeper inspection to check if the conflict will lead to any real issues.  However, in the vast majority of cases this warning can be ignored as no harm will occur.",
+   "label": "KlogAcpiSystemIOConflictLpcIchWatchDogTimer",
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "0x.*-0x.* SystemIO conflicts with",
-   "advice": "A resource conflict between an ACPI OperationRegion and a native driver has been detected. By default the kernel will use a strict policy and will not allow this region to conflict and -EBUSY will be returned to the caller that was trying to allocate the already claimed region.  If an ACPI driver is available for this device then this should be used instead of a native driver, so disabling the native driver may help. One can specify kernel boot parameter acpi_enforce_resources=lax to disable these checks but it may lead to random problems and system instability.  Alternatively, one can specify acpi_enforce_resources=no and ACPI Operation Region resources will not be registered.",
+   "advice": "A resource conflict between an ACPI OperationRegion and a native driver has been detected. By default the kernel will use a strict policy and will not allow this region to conflict and -EBUSY will be returned to the caller that was trying to allocate the already claimed region.  If an ACPI driver is available for this device then this should be used instead of a native driver, so disabling the native driver may help.  (Note that the lpc_ich driver can trigger these warnings, in which case they can generally be ignored). One can specify kernel boot parameter acpi_enforce_resources=lax to disable these checks but it may lead to random problems and system instability.  Alternatively, one can specify acpi_enforce_resources=no and ACPI Operation Region resources will not be registered.",
    "label": "KlogAcpiSystemIOConflict",
   },
   {

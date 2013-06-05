@@ -1,3 +1,113 @@
+fwts (13.06.00-0ubuntu1) saucy; urgency=low
+
+  [Alex Hung]
+  * bios: mtrr: add uncached string for DEFAULT type
+  * pci: maxreadreq: Audio device to chipset devices.
+  * data: klog.json: remove a redudent line break
+
+  [Colin Ian King]
+  * debian: control: fix typo
+  * lib: fwts_uefi: make vars work on recent kernels (LP: #1171617)
+  * cpufreq: use qsort to sort frequencies
+  * lib: fwts_uefi: cast to __SWORD_TYPE 32 bit builds
+  * apic: apicedge: minor code tidy-up
+  * cmos: cmosdump: remove unused commented out code
+  * cmos: cmosdump: minor code tidy up, formatting
+  * cpu: maxfreq: remove unused fwts_cpuinfo typedef
+  * cpu: maxfreq: use number of cpus as number of items in calloc()
+  * cpu: maxfreq: use doubles for cpu freqs rather than int
+  * doc/fwts.1 add in names of contributors to fwts
+  * copy-acpica.sh: update to use the correct ACPICA git repo
+  * uefi: uefidump: don't recurse forever on zero lengths (LP: #1174947)
+  * acpica: update to ACPICA version 20130418.
+  * cpu: cpufreq: fix leak of file if fgets returns NULL
+  * cpu: cpufreq: fix leak of dir before we return
+  * cpu: maxfreq: fix leak of cpuinfo
+  * lib: fwts_microcode: fix leak of allocated microcode buffer
+  * lib: fwts_memorymap: free klog on error
+  * lib: fwts_keymap: free keymap_list on error
+  * lib: fwts_cpu: free cpu on error
+  * hotkey: close fd on error
+  * cpu: nx: free fwts_nx_cpuinfo on error
+  * bios: mtrr: free mtrr_list on file open error
+  * cpu: maxfreq: free cpufreq on error
+  * acpi: dmar: free klog list on error
+  * acpi: fan: fix resource leak bugs
+  * acpi: lid: free gpe resources on error
+  * acpi: s3: free quirks and command resources
+  * acpi: s3power: free quirks and command resources
+  * lib: fwts_cpu: initialize variable, stop coverity warning
+  * lib: fwts_uefi: fix check of empty d_name
+  * lib: fwts_uefi: only close fp if it was successfully opened
+  * lib: fwts_memorymap: handle the case where str maybe NULL
+  * cpu: cpufreq: avoid division by zero
+  * uefi: uefidump: fix missing break in switch statement
+  * uefi: uefidump: missing va_end on str == NULL return path
+  * dmi: dmi_decode: remove redundant snprintf
+  * acpi: cstates: set state->present[nr] if nr < MAX_CSTATE
+  * utilities: kernelscan: fix memory leak
+  * lib: fwts_dump: check error return on mkdir
+  * lib: fwts_acpid: check fcntl return rather than assuming it works
+  * hotkey: check lstat() return value rather
+  * acpi: ac_adapter: initialize matching and not_matching
+  * acpi: acpidump: fix overflow before widening bug
+  * lib: fwts_args: free long_options on error
+  * lib: fwts_framework: free resources on error
+  * lib: fwts_log: free filenames on error condition
+  * acpica: fwts_acpica: clear sa_mask fields
+  * bios: hdaaudio: free list items and not list
+  * lib: fwts_framework: free just items in list and not list descriptor
+  * acpi: lid: Fix nesting bug
+  * acpi: battery: Fix nesting bug
+  * lib: fwts_release: check *str rather than str
+  * acpica: fwts_acpica: missing unlock on error path
+  * cpu: virt: correctly return true if SVM is enabled
+  * lib: fwts_framework: ensure we don't truncate null names
+  * acpi: fan: fix cur_state comparison bugs
+  * acpi: brightness: check get_setting return
+  * acpi: s4: free quirks
+  * acpi: s3: free quirks
+  * lib: fwts_log: free log_file on error exit
+  * acpica: Fix for _INI regression.
+  * acpi: battery: free gpe resources on error
+  * data: klog.json: Add ACPI video notify handler check
+  * data: klog.json: Add ACPI video notify handler remove check
+  * data: klog.json: Add checks for Intel Lynxpoint LPSS errors
+  * data: klog.json: Add check for ACPI region field type error
+  * data: klog.json: Add check for object repair or convert failure
+  * data: klog.json: Add ACPI fixed event error checking
+  * data: klog.json: Make ArgType a regex to match various similar strings
+  * data: klog.json: Drop ACPI prefix, make patten a string match
+  * data: klog.json: Bit offset pattern should be a regex not a string match
+  * Revert "acpi: s3: free quirks and command resources"
+  * lib: framework: don't check for long string if src is NULL
+  * acpi: acpidump: ensure we are shifting a 64 bit unsigned long
+  * cpu: cpufreq: make test more generic for non-x86 systems
+  * acpica: update to ACPICA version 20130517.
+  * lib: remove fwts_microcode
+  * cpu: microcode: rewrite so we no longer need to load microcode (LP: #1120240)
+  * dmi: dmi_decode: Add checks for frequent bad defaults on AMI firmware
+  * acpi: wakealarm: enable for non-x86 devices (LP: #1182630)
+  * acpi: wakealarm: minor tidy up to the test
+  * acpi: acpiinfo: missing possessive apostrophe
+  * data: klog.json: fix spelling mistake
+
+  [Ivan Hu]
+  * lib: fwts_uefi: modify the return value of the fwts_uefi_get_interface
+  * acpica: fix the build error after patch the update to ACPICA version 20130418
+  * uefirtvariable: fix the unchecked return value
+  * lib: fwts_uefi: add the function to check the efivars interface existence
+  * securebootcert: need to check the efivars interface existence while checking the variable db and kek
+
+  [Keng-Yu Lin]
+  * efi_runtime: Update the address of the Free Software Foundation
+  * auto-packager: mkpackage.sh: remove Natty and Oneiric
+  * debian: control: Add the backported HWE kernel header packages
+  * auto-packager: mkpackage.sh: Add Saucy
+  * configure.ac: Use AM_PROG_AR when it exists
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 05 Jun 2013 10:51:43 +0800
+
 fwts (0.26.08-0ubuntu1) raring; urgency=low
 
   [Colin Ian King]

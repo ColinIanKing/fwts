@@ -1189,6 +1189,7 @@ static void acpidump_asf(fwts_framework *fw, fwts_acpi_table_info *table)
 		FIELD_UINT("Type", fwts_acpi_table_asf_header, type),
 		FIELD_UINT("Reserved", fwts_acpi_table_asf_header, reserved),
 		FIELD_UINT("Length", fwts_acpi_table_asf_header, length),
+		FIELD_END
 	};
 
 	static fwts_acpidump_field asf_addr_fields[] = {

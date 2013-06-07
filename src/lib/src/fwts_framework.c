@@ -82,6 +82,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses." },
 	{ "filter-error-discard", "", 1, "Discard errors that match any of the specified labels." },
 	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
+	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1098,6 +1099,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 35: /* --filter-error-keep */
 			if (fwts_framework_filter_error_parse(optarg, &fw->errors_filter_keep) != FWTS_OK)
 				return FWTS_ERROR;
+			break;
+		case 36: /* --acpica-debug */
+			fw->flags |= FWTS_FLAG_ACPICA_DEBUG;
 			break;
 		}
 		break;

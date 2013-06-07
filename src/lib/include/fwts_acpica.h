@@ -26,8 +26,6 @@ typedef void (*fwts_acpica_log_callback)(fwts_framework *fw, const char *buffer)
 
 int  fwts_acpica_init(fwts_framework *fw);
 int  fwts_acpica_deinit(void);
-void fwts_acpica_set_log_callback(fwts_framework *fw, fwts_acpica_log_callback func);
-void fwts_acpica_debug_command(fwts_framework *fw, fwts_acpica_log_callback func, char *command);
 fwts_list *fwts_acpica_get_object_names(int type);
 void fwts_acpica_sem_count_clear(void);
 void fwts_acpica_sem_count_get(int *acquired, int *released);

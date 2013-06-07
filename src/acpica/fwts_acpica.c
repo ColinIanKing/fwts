@@ -17,6 +17,8 @@
  *
  */
 
+#define _GNU_SOURCE
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -96,7 +98,6 @@ static void 			*fwts_acpica_DSDT;
 
 static fwts_framework		*fwts_acpica_fw;		/* acpica context copy of fw */
 static bool			fwts_acpica_init_called;	/* > 0, ACPICA initialised */
-static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
 
 /* Semaphore Tracking */
 
@@ -384,25 +385,6 @@ ACPI_PHYSICAL_ADDRESS AeLocalGetRootPointer(void)
 }
 
 /*
- *  fwts_acpica_set_log_callback()
- *	define logging callback function as used by fwts_acpica_vprintf()
- */
-void fwts_acpica_set_log_callback(fwts_framework *fw, fwts_acpica_log_callback func)
-{
-	fwts_acpica_log_callback_func = func;
-}
-
-/*
- *  fwts_acpica_debug_command()
- *	run a debugging command, requires a logging callback function (or set to NULL for none).
- */
-void fwts_acpica_debug_command(fwts_framework *fw, fwts_acpica_log_callback func, char *command)
-{
-	fwts_acpica_set_log_callback(fw, func);
-	AcpiDbCommandDispatch(command, NULL, NULL);
-}
-
-/*
  *  fwts_acpica_vprintf()
  *	accumulate prints from ACPICA engine, emit them when we hit terminal '\n'
  */
@@ -411,10 +393,18 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 	static char *buffer;
 	static size_t buffer_len;
 
-	char tmp[4096];
+	char *tmp;
 	size_t tmp_len;
 
-	vsnprintf(tmp, sizeof(tmp), fmt, args);
+	/* Only emit messages if in ACPICA debug mode */
+	if (!(fwts_acpica_fw->flags & FWTS_FLAG_ACPICA_DEBUG))
+		return;
+
+	if (vasprintf(&tmp, fmt, args) < 0) {
+		fwts_log_info(fwts_acpica_fw, "Out of memory allocating ACPICA printf buffer.");
+		return;
+	}
+
 	tmp_len = strlen(tmp);
 
 	if (buffer_len == 0) {
@@ -434,11 +424,12 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 	}
 
 	if (index(buffer, '\n') != NULL) {
-		if (fwts_acpica_log_callback_func)
-			fwts_acpica_log_callback_func(fwts_acpica_fw, buffer);
+		fwts_log_info(fwts_acpica_fw, "%s", buffer);
 		free(buffer);
 		buffer_len = 0;
 	}
+
+	free(tmp);
 }
 
 /*

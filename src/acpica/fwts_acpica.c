@@ -31,12 +31,9 @@
 #include <signal.h>
 #include <pthread.h>
 
-static pthread_mutex_t mutex_lock_sem_table;
-static pthread_mutex_t mutex_thread_info;
-
 #include "fwts.h"
 
-/* acpica headers */
+/* ACPICA specific headers */
 #include "acpi.h"
 #include "accommon.h"
 #include "acparser.h"
@@ -46,36 +43,25 @@ static pthread_mutex_t mutex_thread_info;
 #include "actables.h"
 #include "acinterp.h"
 #include "acapps.h"
-#include <pthread.h>
-#include <errno.h>
 
-#define ACPI_MAX_INIT_TABLES	(32)
-#define AEXEC_NUM_REGIONS   	(8)
+#define ACPI_MAX_INIT_TABLES		(64)	/* Number of ACPI tables */
 
-#define MAX_SEMAPHORES		(1024)
-#define MAX_THREADS		(128)
+#define MAX_SEMAPHORES			(1024)	/* For semaphore tracking */
+#define MAX_THREADS			(128)	/* For thread tracking */
 
-#define MAX_WAIT_TIMEOUT	(20)	/* Seconds */
+#define MAX_WAIT_TIMEOUT		(20)	/* Seconds */
 
+#define ACPI_ADR_SPACE_USER_DEFINED1	(0x80)
+#define ACPI_ADR_SPACE_USER_DEFINED2	(0xE4)
+
+/* 
+ *  Semaphore accounting info
+ */
 typedef struct {
 	sem_t		sem;	/* Semaphore handle */
 	int		count;	/* count > 0 if acquired */
 	bool		used;	/* Semaphore being used flag */
 } sem_info;
-
-typedef void * (*PTHREAD_CALLBACK)(void *);
-
-BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
-UINT8   AcpiGbl_RegionFillValue = 0;
-
-/*
- *  Used to account for semaphores used by AcpiOs*Semaphore()
- */
-static sem_info			sem_table[MAX_SEMAPHORES];
-
-static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];
-
-static bool			region_handler_called;
 
 /*
  *  Used to account for threads used by AcpiOsExecute
@@ -85,7 +71,19 @@ typedef struct {
 	pthread_t	thread;	/* thread info */
 } fwts_thread;
 
-static fwts_thread	threads[MAX_THREADS];
+typedef void * (*pthread_callback)(void *);
+
+BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
+UINT8   AcpiGbl_RegionFillValue = 0;
+
+static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];	/* ACPICA Table descriptors */
+static bool			region_handler_called;		/* Region handler tracking */
+
+static sem_info			sem_table[MAX_SEMAPHORES];	/* Semaphore accounting for AcpiOs*Semaphore() */
+static pthread_mutex_t		mutex_lock_sem_table;		/* Semaphore accounting mutex */
+
+static fwts_thread		threads[MAX_THREADS];		/* Thread accounting for AcpiOsExecute */
+static pthread_mutex_t		mutex_thread_info;		/* Thread accounting mutex */
 
 /*
  *  Static copies of ACPI tables used by ACPICA execution engine
@@ -96,28 +94,9 @@ static ACPI_TABLE_RSDP		*fwts_acpica_RSDP;
 static ACPI_TABLE_FADT		*fwts_acpica_FADT;
 static void 			*fwts_acpica_DSDT;
 
-static fwts_framework		*fwts_acpica_fw;			/* acpica context copy of fw */
-static bool			fwts_acpica_init_called;		/* > 0, ACPICA initialised */
+static fwts_framework		*fwts_acpica_fw;		/* acpica context copy of fw */
+static bool			fwts_acpica_init_called;	/* > 0, ACPICA initialised */
 static fwts_acpica_log_callback fwts_acpica_log_callback_func = NULL;	/* logging call back func */
-
-#define ACPI_ADR_SPACE_USER_DEFINED1        0x80
-#define ACPI_ADR_SPACE_USER_DEFINED2        0xE4
-
-static ACPI_ADR_SPACE_TYPE fwts_space_id_list[] =
-{
-	ACPI_ADR_SPACE_SYSTEM_MEMORY,
-	ACPI_ADR_SPACE_SYSTEM_IO,
-	ACPI_ADR_SPACE_EC,
-	ACPI_ADR_SPACE_SMBUS,
-	ACPI_ADR_SPACE_CMOS,
-	ACPI_ADR_SPACE_GSBUS,
-	ACPI_ADR_SPACE_GPIO,
-	ACPI_ADR_SPACE_PCI_BAR_TARGET,
-	ACPI_ADR_SPACE_IPMI,
-	ACPI_ADR_SPACE_FIXED_HARDWARE,
-	ACPI_ADR_SPACE_USER_DEFINED1,
-	ACPI_ADR_SPACE_USER_DEFINED2
-};
 
 /* Semaphore Tracking */
 
@@ -667,7 +646,7 @@ ACPI_STATUS AcpiOsReadPort(ACPI_IO_ADDRESS addr, UINT32 *value, UINT32 width)
 }
 
 typedef struct {
-	PTHREAD_CALLBACK	func;
+	pthread_callback	func;
 	void *			context;
 	int			thread_index;
 } fwts_func_wrapper_context;
@@ -713,13 +692,13 @@ ACPI_STATUS AcpiOsExecute(
 				return AE_NO_MEMORY;
 			}
 
-			ctx->func = (PTHREAD_CALLBACK)function;
+			ctx->func = (pthread_callback)function;
 			ctx->context = func_context;
 			ctx->thread_index = i;
 			threads[i].used = true;
 
 			ret = pthread_create(&threads[i].thread, NULL,
-				(PTHREAD_CALLBACK)fwts_pthread_func_wrapper, ctx);
+				(pthread_callback)fwts_pthread_func_wrapper, ctx);
 			pthread_mutex_unlock(&mutex_thread_info);
 
 			if (ret)
@@ -786,6 +765,22 @@ int fwtsInstallEarlyHandlers(fwts_framework *fw)
 {
 	int i;
 	ACPI_HANDLE	handle;
+
+	static ACPI_ADR_SPACE_TYPE fwts_space_id_list[] =
+	{
+		ACPI_ADR_SPACE_SYSTEM_MEMORY,
+		ACPI_ADR_SPACE_SYSTEM_IO,
+		ACPI_ADR_SPACE_EC,
+		ACPI_ADR_SPACE_SMBUS,
+		ACPI_ADR_SPACE_CMOS,
+		ACPI_ADR_SPACE_GSBUS,
+		ACPI_ADR_SPACE_GPIO,
+		ACPI_ADR_SPACE_PCI_BAR_TARGET,
+		ACPI_ADR_SPACE_IPMI,
+		ACPI_ADR_SPACE_FIXED_HARDWARE,
+		ACPI_ADR_SPACE_USER_DEFINED1,
+		ACPI_ADR_SPACE_USER_DEFINED2
+	};
 
 	if (AcpiInstallInterfaceHandler(fwts_interface_handler) != AE_OK) {
 		fwts_log_error(fw, "Failed to install interface handler.");
@@ -903,7 +898,6 @@ int fwts_acpica_init(fwts_framework *fw)
 	AcpiDbgLayer = 0x00000000;
 
 	AcpiOsRedirectOutput(stderr);
-
 
 	if (ACPI_FAILURE(AcpiInitializeSubsystem())) {
 		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");

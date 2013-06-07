@@ -1062,10 +1062,7 @@ int fwts_acpica_init(fwts_framework *fw)
 }
 
 #define FWTS_ACPICA_FREE(x)	\
-	if (x) {		\
-		fwts_low_free(x);	\
-		x = NULL;	\
-	}			\
+	{ fwts_low_free(x); x = NULL; }
 
 /*
  *  fwts_acpica_deinit()

@@ -607,7 +607,7 @@ static void check_sw_any(fwts_framework *fw)
 		fwts_progress(fw, 100 * performed_tests/total_tests);
 	}
 	if (!once)
-		fwts_passed(fw, "P-state coordination done by Hardware.");
+		fwts_passed(fw, "P-state coordination under hardware control.");
 }
 #endif
 

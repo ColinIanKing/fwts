@@ -722,7 +722,7 @@ static fwts_framework_minor_test cpufreq_tests[] = {
 
 static fwts_framework_ops cpufreq_ops = {
 	.init        = cpufreq_init,
-	.description = "CPU frequency scaling tests (takes ~1-2 mins).",
+	.description = "CPU frequency scaling tests.",
 	.minor_tests = cpufreq_tests
 };
 

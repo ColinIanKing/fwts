@@ -181,7 +181,7 @@ static void mpdump_dump_sys_addr_entry(fwts_framework *fw, void *data, uint32_t 
 	fwts_log_info_verbatum(fw, "System Address Space Mapping Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatum(fw, "  Bus ID:             0x%2.2x", sys_addr_entry->bus_id);
 	fwts_log_info_verbatum(fw, "  Address Type:       0x%2.2x (%s)", sys_addr_entry->address_type,
-			sys_addr_entry->address_type < 4 ? mpdump_sys_addr_type[sys_addr_entry->address_type] : "Unknown");
+			sys_addr_entry->address_type < 3 ? mpdump_sys_addr_type[sys_addr_entry->address_type] : "Unknown");
 	fwts_log_info_verbatum(fw, "  Address Start:      0x%16.16llx", 
 		(unsigned long long)sys_addr_entry->address_base);
 	fwts_log_info_verbatum(fw, "  Address End:        0x%16.16llx",
@@ -457,7 +457,7 @@ static void mpdump_dump_system_address_table(fwts_framework *fw)
 			(unsigned long long)sys_addr_entry->address_base +
 			sys_addr_entry->address_length,
 			sys_addr_entry->bus_id,
-			sys_addr_entry->address_type < 4 ? 
+			sys_addr_entry->address_type < 3 ? 
 				mpdump_sys_addr_type[sys_addr_entry->address_type] : "Unknown");
 	}
 

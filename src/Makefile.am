@@ -23,7 +23,6 @@ fwts_SOURCES = main.c 				\
 	acpi/acpidump/acpidump.c 		\
 	acpi/acpiinfo/acpiinfo.c 		\
 	acpi/acpitables/acpitables.c 		\
-	apic/apicedge/apicedge.c 		\
 	acpi/apicinstance/apicinstance.c 	\
 	acpi/battery/battery.c 			\
 	acpi/brightness/brightness.c 		\
@@ -46,6 +45,7 @@ fwts_SOURCES = main.c 				\
 	acpi/syntaxcheck/syntaxcheck.c 		\
 	acpi/wakealarm/wakealarm.c 		\
 	acpi/wmi/wmi.c 				\
+	apic/apicedge/apicedge.c 		\
 	bios/bios_info/bios_info.c 		\
 	bios/bios32/bios32.c 			\
 	bios/ebda_region/ebda_region.c 		\

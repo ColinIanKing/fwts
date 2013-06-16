@@ -789,8 +789,7 @@ static void fwts_framework_strdup(char **ptr, const char *str)
 	if (ptr == NULL)
 		return;
 
-	if (*ptr)
-		free(*ptr);
+	free(*ptr);
 	*ptr = strdup(str);
 }
 

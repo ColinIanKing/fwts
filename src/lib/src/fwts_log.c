@@ -482,8 +482,7 @@ int fwts_log_set_owner(fwts_log *log, const char *owner)
 	if (log && (log->magic == LOG_MAGIC)) {
 		char *newowner = strdup(owner);
 		if (newowner) {
-			if (log->owner)
-				free(log->owner);
+			free(log->owner);
 			log->owner = newowner;
 			return FWTS_OK;
 		}
@@ -580,8 +579,7 @@ char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 		fwts_log_type mask = 1 << i;
 		if (type & mask) {
 			if ((tmp = fwts_log_filename(filename, mask)) == NULL) {
-				if (filenames)
-					free(filenames);
+				free(filenames);
 				return NULL;
 			}
 
@@ -726,9 +724,7 @@ int fwts_log_close(fwts_log *log)
 		/* ..and free log files */
 		fwts_list_free_items(&log->log_files, free);
 
-		if (log->owner)
-			free(log->owner);
-
+		free(log->owner);
 		free(log);
 	}
 	return FWTS_OK;

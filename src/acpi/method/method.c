@@ -439,8 +439,7 @@ static void method_evaluate_found_method(
 			check_func(fw, name, &buf, obj, private);
 		}
 	}
-	if (buf.Length && buf.Pointer)
-		free(buf.Pointer);
+	free(buf.Pointer);
 
 	fwts_acpica_sem_count_get(&sem_acquired, &sem_released);
 	if (sem_acquired != sem_released) {

@@ -231,10 +231,8 @@ static int hotkey_deinit(fwts_framework *fw)
 	FWTS_UNUSED(fw);
 
 	fwts_keymap_free(hotkeys);
-	if (hotkey_dev)
-		free(hotkey_dev);
-	if (hotkey_keymap)
-		free(hotkey_keymap);
+	free(hotkey_dev);
+	free(hotkey_keymap);
 	return FWTS_OK;
 }
 

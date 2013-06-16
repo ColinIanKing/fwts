@@ -469,8 +469,7 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 			return;
 
 		rc = pcre_exec(re, extra, line, strlen(line), 0, 0, vector, 1);
-		if (extra)
-			free(extra);
+		free(extra);
 		pcre_free(re);
 		if (rc == 0)
 			(*match)++;

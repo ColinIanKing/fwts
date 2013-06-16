@@ -380,9 +380,7 @@ static int wmi_test1(fwts_framework *fw)
 					(uint8_t*)obj->Buffer.Pointer);
 				wdg_found = true;
 			}
-
-			if (buf.Length && buf.Pointer)
-				free(buf.Pointer);
+			free(buf.Pointer);
 		}
 	}
 

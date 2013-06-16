@@ -869,9 +869,7 @@ static int crsdump_test1(fwts_framework *fw)
 				else
 					crsdump_small_resource_items(fw, name, data, obj->Buffer.Length);
 			}
-
-			if (buf.Length && buf.Pointer)
-				free(buf.Pointer);
+			free(buf.Pointer);
 		}
 	}
 	return FWTS_OK;

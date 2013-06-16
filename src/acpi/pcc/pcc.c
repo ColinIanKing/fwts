@@ -433,9 +433,7 @@ static int pcc_test1(fwts_framework *fw)
 				if (ACPI_FAILURE(ret) == AE_OK) {
 					pcc_check_buffer(fw, pcc_name, &buf);
 					count++;
-
-					if (buf.Length && buf.Pointer)
-	        				free(buf.Pointer);
+	        			free(buf.Pointer);
 				}
 			}
 		}

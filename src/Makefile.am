@@ -32,7 +32,6 @@ fwts_SOURCES = main.c 				\
 	acpi/dmar/dmar.c 			\
 	acpi/fadt/fadt.c 			\
 	acpi/fan/fan.c 				\
-	acpi/klog/klog.c 			\
 	acpi/lid/lid.c 				\
 	acpi/mcfg/mcfg.c 			\
 	acpi/method/method.c 			\
@@ -72,6 +71,7 @@ fwts_SOURCES = main.c 				\
 	dmi/dmi_decode/dmi_decode.c 		\
 	hotkey/hotkey/hotkey.c 			\
 	hpet/hpet_check/hpet_check.c 		\
+	kernel/klog/klog.c 			\
 	kernel/oops/oops.c 			\
 	kernel/version/version.c 		\
 	pci/aspm/aspm.c 			\

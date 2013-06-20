@@ -56,65 +56,65 @@ static int smbios_test1(fwts_framework *fw)
 	fwts_smbios_entry entry;
 	fwts_smbios_type  type;
 	uint16_t	  version;
+	uint8_t checksum;
+	static char warning[] = 
+		"This field is not checked by the kernel, and so will not affect the system, "
+		"however it should be fixed to conform to the latest version of the "
+		"System Management BIOS (SMBIOS) Reference Specification. ";
 
 	fwts_log_info(fw,
 		"This test tries to find and sanity check the SMBIOS "
 		"data structures.");
-	if ((addr = fwts_smbios_find_entry(fw, &entry, &type, &version)) == NULL)
+
+	if ((addr = fwts_smbios_find_entry(fw, &entry, &type, &version)) == NULL) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"SMBIOSNoEntryPoint",
 			"Could not find SMBIOS Table Entry Point.");
-	else {
-		uint8_t checksum;
-		static char warning[] = 
-			"This field is not checked by the kernel, and so will not affect the system, "
-			"however it should be fixed to conform to the latest version of the "
-			"System Management BIOS (SMBIOS) Reference Specification. ";
+		return FWTS_OK;
+	}
 
-		fwts_passed(fw, "Found SMBIOS Table Entry Point at %p", addr);
-
-		smbios_dump_entry(fw, &entry, type);
+	fwts_passed(fw, "Found SMBIOS Table Entry Point at %p", addr);
+	smbios_dump_entry(fw, &entry, type);
 		
-		if (type == FWTS_SMBIOS) {
-			checksum = fwts_checksum((uint8_t*)&entry, sizeof(fwts_smbios_entry));
-			if (checksum != 0) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"SMBIOSBadChecksum",
-					"SMBIOS Table Entry Point Checksum is 0x%2.2x, should be 0x%2.2x",
-						entry.checksum, (uint8_t)(entry.checksum - checksum));
-			}
-			if (entry.length != 0x1f) {
-				fwts_failed(fw, LOG_LEVEL_LOW,
-					"SMBIOSBadEntryLength",
-					"SMBIOS Table Entry Point Length is 0x%2.2x, should be 0x1f", entry.length);
-				fwts_advice(fw, "%s Note that version 2.1 of the specification incorrectly stated that the "
-					"Entry Point Length should be 0x1e when it should be 0x1f.", warning);
-			}
-		}
-		if (memcmp(entry.anchor_string, "_DMI_", 5) != 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"SMBIOSBadIntermediateAnchor", 
-				"SMBIOS Table Entry Intermediate Anchor String was '%5.5s' and should be '_DMI_'.", 
-				entry.anchor_string);
-			fwts_advice(fw, "%s", warning);
-		}
-		/* Intermediate checksum for legacy DMI */
-		checksum = fwts_checksum(((uint8_t*)&entry)+16, 15);
+	if (type == FWTS_SMBIOS) {
+		checksum = fwts_checksum((uint8_t*)&entry, sizeof(fwts_smbios_entry));
 		if (checksum != 0) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SMBIOSBadChecksum",
-				"SMBIOS Table Entry Point Intermediate Checksum is 0x%2.2x, should be 0x%2.2x",
-					entry.intermediate_checksum,
-					(uint8_t)(entry.intermediate_checksum - checksum));
+				"SMBIOS Table Entry Point Checksum is 0x%2.2x, should be 0x%2.2x",
+					entry.checksum, (uint8_t)(entry.checksum - checksum));
 		}
-		if ((entry.struct_table_length > 0) && (entry.struct_table_address == 0)) {
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"SMBIOSBadTableAddress",
-				"SMBIOS Table Entry Structure Table Address is NULL and should be defined.");
-			fwts_advice(fw,
-				"The address of the SMBIOS Structure Tables must be defined if the "
-				"length of these tables is defined.");
+		if (entry.length != 0x1f) {
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"SMBIOSBadEntryLength",
+				"SMBIOS Table Entry Point Length is 0x%2.2x, should be 0x1f", entry.length);
+			fwts_advice(fw, "%s Note that version 2.1 of the specification incorrectly stated that the "
+				"Entry Point Length should be 0x1e when it should be 0x1f.", warning);
 		}
+	}
+	if (memcmp(entry.anchor_string, "_DMI_", 5) != 0) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOSBadIntermediateAnchor", 
+			"SMBIOS Table Entry Intermediate Anchor String was '%5.5s' and should be '_DMI_'.", 
+			entry.anchor_string);
+		fwts_advice(fw, "%s", warning);
+	}
+	/* Intermediate checksum for legacy DMI */
+	checksum = fwts_checksum(((uint8_t*)&entry)+16, 15);
+	if (checksum != 0) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOSBadChecksum",
+			"SMBIOS Table Entry Point Intermediate Checksum is 0x%2.2x, should be 0x%2.2x",
+				entry.intermediate_checksum,
+				(uint8_t)(entry.intermediate_checksum - checksum));
+	}
+	if ((entry.struct_table_length > 0) && (entry.struct_table_address == 0)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOSBadTableAddress",
+			"SMBIOS Table Entry Structure Table Address is NULL and should be defined.");
+		fwts_advice(fw,
+			"The address of the SMBIOS Structure Tables must be defined if the "
+			"length of these tables is defined.");
 	}
 
 	return FWTS_OK;

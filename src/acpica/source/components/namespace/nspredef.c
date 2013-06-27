@@ -237,6 +237,11 @@ AcpiNsCheckReturnValue (
         goto Exit;
     }
 
+    if (!(*ReturnObjectPtr))
+    {
+        Status = AE_AML_NO_RETURN_VALUE;
+        goto Exit;
+    }
     /*
      * For returned Package objects, check the type of all sub-objects.
      * Note: Package may have been newly created by call above.

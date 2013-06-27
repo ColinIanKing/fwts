@@ -29,6 +29,7 @@
 
 #include "fwts.h"
 #include "fwts_iasl_interface.h"
+#include "fwts_acpica.h"
 
 /*
  *  fwts_iasl_dump_aml_to_file()
@@ -74,6 +75,8 @@ int fwts_iasl_disassemble_to_file(fwts_framework *fw,
 	char amlfile[PATH_MAX];
 	int pid = getpid();
 	int ret;
+
+	fwts_acpcia_set_fwts_framework(fw);
 
 	if ((ret = fwts_acpi_find_table(fw, tablename, which, &table)) != FWTS_OK)
 		return ret;
@@ -178,6 +181,8 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 
 	if ((iasl_disassembly  == NULL) || (iasl_errors == NULL))
 		return FWTS_ERROR;
+
+	fwts_acpcia_set_fwts_framework(fw);
 
 	*iasl_disassembly = NULL;
 

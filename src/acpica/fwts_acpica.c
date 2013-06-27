@@ -396,6 +396,9 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 	char *tmp;
 	size_t tmp_len;
 
+	if (fwts_acpica_fw == NULL)
+		return;
+
 	/* Only emit messages if in ACPICA debug mode */
 	if (!(fwts_acpica_fw->flags & FWTS_FLAG_ACPICA_DEBUG))
 		return;
@@ -864,6 +867,14 @@ int fwtsInstallEarlyHandlers(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_acpcia_set_fwts_framework()
+ *	set fwts_acpica_fw ptr
+ */
+void fwts_acpcia_set_fwts_framework(fwts_framework *fw)
+{
+	fwts_acpica_fw = fw;
+}
 
 /*
  *  fwts_acpica_init()
@@ -883,7 +894,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	pthread_mutex_init(&mutex_lock_sem_table, NULL);
 	pthread_mutex_init(&mutex_thread_info, NULL);
 
-	fwts_acpica_fw = fw;
+	fwts_acpcia_set_fwts_framework(fw);
 
 	AcpiDbgLevel = ACPI_NORMAL_DEFAULT;
 	AcpiDbgLayer = 0x00000000;

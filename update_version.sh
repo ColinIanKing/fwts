@@ -27,7 +27,7 @@ cat << EOF > src/lib/include/fwts_version.h
  */
 EOF
 echo '#define FWTS_VERSION "'$version'"' >> src/lib/include/fwts_version.h
-echo '#define FWTS_DATE    "'`date "+%x %T"`'"' >> src/lib/include/fwts_version.h
+echo '#define FWTS_DATE    "'`date --utc "+%F %T"`'"' >> src/lib/include/fwts_version.h
 git add src/lib/include/fwts_version.h
 git commit -s -m"lib: fwts_version.h - update to $version"
 git tag -m'"Version '$1'"' $1

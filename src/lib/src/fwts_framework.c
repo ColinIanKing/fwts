@@ -88,13 +88,6 @@ static fwts_option fwts_framework_options[] = {
 
 static fwts_list fwts_framework_test_list = FWTS_LIST_INIT;
 
-typedef struct {
-	const int env_id;
-	const char *env_name;
-	const char *env_default;
-	char *env_value;
-} fwts_framework_setting;
-
 static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.",
 	"Some of this work - Copyright (c) 2010 - 2013, Canonical.",

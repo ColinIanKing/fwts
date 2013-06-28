@@ -40,9 +40,6 @@
 	 FWTS_FLAG_UTILS |			\
 	 FWTS_FLAG_UNSAFE)
 
-#define FWTS_ARGS_WIDTH 	28
-#define FWTS_MIN_TTY_WIDTH	50
-
 static fwts_list tests_to_skip;
 
 static fwts_option fwts_framework_options[] = {

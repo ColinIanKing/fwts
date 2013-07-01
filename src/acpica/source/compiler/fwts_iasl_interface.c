@@ -42,6 +42,11 @@ static void init_asl_core(void)
 	Gbl_Files[ASL_FILE_STDOUT].Filename = "STDOUT";
 	Gbl_Files[ASL_FILE_STDERR].Handle   = stdout;
 	Gbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
+
+	Gbl_LineBufferSize = 16384;
+	Gbl_CurrentLineBuffer = NULL;
+	Gbl_MainTokenBuffer = NULL;
+	UtExpandLineBuffers();
 }
 
 int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)

@@ -67,7 +67,7 @@ fwts_SOURCES = main.c 				\
 	cpu/nx/nx.c 				\
 	cpu/msr/msr.c 				\
 	cpu/microcode/microcode.c 		\
-	dmi/dmi_decode/dmi_decode.c 		\
+	dmi/dmicheck/dmicheck.c 		\
 	hotkey/hotkey/hotkey.c 			\
 	hpet/hpet_check/hpet_check.c 		\
 	kernel/klog/klog.c 			\

@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <limits.h>
 
-#define DMI_VERSION 			(0x0207)
+#define DMI_VERSION			(0x0207)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -85,8 +85,8 @@ typedef struct {
 } fwts_dmi_used_by_kernel;
 
 static const fwts_dmi_pattern dmi_patterns[] = {
-	{ "DMISerialNumber",	"Serial Number", 	"0123456789" },
-	{ "DMISerialNumber",	"Serial Number", 	"System Serial Number" },
+	{ "DMISerialNumber",	"Serial Number",	"0123456789" },
+	{ "DMISerialNumber",	"Serial Number",	"System Serial Number" },
 	{ "DMISerialNumber",	"Serial Number",	"MB-1234567890" },
 	{ "DMISerialNumber",	NULL,			"Chassis Serial Number" },
 	{ "DMIAssetTag",	"Asset Tag",		"1234567890" },
@@ -300,7 +300,7 @@ static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 	return ret;
 }
 
-static int dmi_decode_test1(fwts_framework *fw)
+static int dmicheck_test1(fwts_framework *fw)
 {
 	void *addr = 0;
 	fwts_smbios_entry entry;
@@ -328,7 +328,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if (type == FWTS_SMBIOS) {
-		checksum = fwts_checksum((uint8_t*)&entry, sizeof(fwts_smbios_entry));
+		checksum = fwts_checksum((uint8_t *)&entry, sizeof(fwts_smbios_entry));
 		if (checksum != 0)
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SMBIOSBadChecksum",
@@ -357,7 +357,7 @@ static int dmi_decode_test1(fwts_framework *fw)
 		fwts_passed(fw, "SMBIOS Table Entry Intermediate Anchor String _DMI_ is valid.");
 
 	/* Intermediate checksum for legacy DMI */
-	checksum = fwts_checksum(((uint8_t*)&entry)+16, 15);
+	checksum = fwts_checksum(((uint8_t *)&entry)+16, 15);
 	if (checksum != 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SMBIOSBadChecksum",
@@ -403,7 +403,7 @@ static uint16_t dmi_remap_version(fwts_framework *fw, uint16_t old)
 {
 	int i;
 
-	for (i=0; dmi_versions[i].old != 0; i++) {
+	for (i = 0; dmi_versions[i].old != 0; i++) {
 		if (old == dmi_versions[i].old) {
 			uint16_t new = dmi_versions[i].new;
 			fwts_warning(fw,
@@ -491,12 +491,12 @@ static void dmi_str_check_index(fwts_framework *fw,
 	uint8_t offset,
 	uint8_t index)
 {
-	char 	*data = (char *)hdr->data;
+	char	*data = (char *)hdr->data;
 	uint8_t	i = index;
 	bool used_by_kernel = dmi_used_by_kernel(hdr->type, offset);
 
 	if (i > 0) {
-		int 	j;
+		int	j;
 		int	failed = -1;
 
 		data += hdr->length;
@@ -515,7 +515,7 @@ static void dmi_str_check_index(fwts_framework *fw,
 				" while accessing entry '%s' "
 				"@ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2" PRIx8,
 				index, table, addr, field, offset);
-			if (used_by_kernel) 
+			if (used_by_kernel)
 				fwts_advice(fw,
 					"DMI strings are stored in a manner that uses a special "
 					"index to fetch the Nth string from the data. For this "
@@ -606,7 +606,7 @@ static void dmi_uuid_check(fwts_framework *fw,
 
 	fwts_guid_buf_to_str(hdr->data + offset, guid_str, sizeof(guid_str));
 
-	for (i=0; uuid_patterns[i] != NULL; i++) {
+	for (i = 0; uuid_patterns[i] != NULL; i++) {
 		if (strcmp(guid_str, uuid_patterns[i]) == 0) {
 			fwts_failed(fw, LOG_LEVEL_LOW, DMI_BAD_UUID,
 				"UUID in table entry '%s' @ 0x%8.8" PRIx32
@@ -625,7 +625,7 @@ static void dmi_uuid_check(fwts_framework *fw,
 	}
 }
 
-static void dmi_decode_entry(fwts_framework *fw,
+static void dmicheck_entry(fwts_framework *fw,
 	uint32_t addr,
 	const fwts_dmi_header *hdr)
 {
@@ -636,7 +636,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 	char	tmp[64];
 	char	*table;
 	int	i;
-	int 	len;
+	int	len;
 	uint32_t failed_count = fw->minor_tests.failed;
 	int	battery_count;
 	int	ret;
@@ -732,7 +732,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			both_ok = (fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].mapped != CHASSIS_OTHER) &
 				  (fwts_dmi_chassis_type[data[5]].mapped != CHASSIS_OTHER);
 
-			if ( both_ok &&
+			if (both_ok &&
 			     !(fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].mapped &
 			       fwts_dmi_chassis_type[data[5]].mapped)) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
@@ -865,8 +865,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Internal Reference Designator", hdr, 0x4);
 			if (!((data[0x5] <= 0x22) ||
- 			      (data[0x5] == 0xff) ||
- 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa4))))
+			      (data[0x5] == 0xff) ||
+			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
@@ -875,8 +875,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 					data[0x5], table, addr, "Internal Connector Type", 0x5);
 			dmi_str_check(fw, table, addr, "External Reference Designator", hdr, 0x6);
 			if (!((data[0x7] <= 0x22) ||
- 			      (data[0x7] == 0xff) ||
- 			      ((data[0x7] >= 0xa0) && (data[0x7] <= 0xa4))))
+			      (data[0x7] == 0xff) ||
+			      ((data[0x7] >= 0xa0) && (data[0x7] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
@@ -885,8 +885,8 @@ static void dmi_decode_entry(fwts_framework *fw,
 					data[0x7], table, addr, "Internal Connector Type", 0x7);
 
 			if (!((data[0x8] <= 0x21) ||
- 			      (data[0x8] == 0xff) ||
- 			      ((data[0x8] >= 0xa0) && (data[0x8] <= 0xa1))))
+			      (data[0x8] == 0xff) ||
+			      ((data[0x8] >= 0xa0) && (data[0x8] <= 0xa1))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
 					"(range allowed 0x00..0x21, 0xa0..0xa1, 0xff) "
@@ -1343,7 +1343,7 @@ static void dmi_decode_entry(fwts_framework *fw,
 			break;
 	}
 	if (fw->minor_tests.failed == failed_count)
-		fwts_passed(fw, "Entry @ 0x%8.8" PRIx32 " '%s'", addr, table);	
+		fwts_passed(fw, "Entry @ 0x%8.8" PRIx32 " '%s'", addr, table);
 	else if (!advice_given && hdr->type <= 42)
 		fwts_advice(fw,
 			"It may be worth checking against section 7.%" PRId8 " of the "
@@ -1356,7 +1356,7 @@ static int dmi_version_check(fwts_framework *fw, uint16_t version)
 	if (version > DMI_VERSION) {
 		fwts_warning(fw,
 			"SMBIOS version %" PRIu16 ".%" PRIu16
-			" is not supported by the dmi_decode "
+			" is not supported by the dmicheck "
 			"test. This test only supports SMBIOS version "
 			"%" PRIu16 ".%" PRIu16 " and lower.",
 			VERSION_MAJOR(version), VERSION_MINOR(version),
@@ -1380,7 +1380,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 
 	while ((i < struct_count) &&
 	       (entry_data <= (table + table_length - 4))) {
- 		uint32_t addr = entry->struct_table_address + (entry_data - table);
+		uint32_t addr = entry->struct_table_address + (entry_data - table);
 		fwts_dmi_header hdr;
 		uint8_t *next_entry;
 
@@ -1415,7 +1415,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 		next_entry += 2;
 
 		if ((next_entry - table) <= table_length)
-			dmi_decode_entry(fw, addr, &hdr);
+			dmicheck_entry(fw, addr, &hdr);
 
 		i++;
 		entry_data = next_entry;
@@ -1434,7 +1434,7 @@ static void dmi_scan_tables(fwts_framework *fw,
 				struct_count, i);
 }
 
-static int dmi_decode_test2(fwts_framework *fw)
+static int dmicheck_test2(fwts_framework *fw)
 {
 	void *addr;
 	fwts_smbios_entry entry;
@@ -1460,7 +1460,7 @@ static int dmi_decode_test2(fwts_framework *fw)
 		return FWTS_SKIP;
 
 	table = fwts_mmap((off_t)entry.struct_table_address,
-		         (size_t)entry.struct_table_length);
+			 (size_t)entry.struct_table_length);
 	if (table == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap SMBIOS tables from "
 			"%8.8" PRIx32 "..%8.8" PRIx32 ".",
@@ -1476,17 +1476,17 @@ static int dmi_decode_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static fwts_framework_minor_test dmi_decode_tests[] = {
-	{ dmi_decode_test1, "Find and Check SMBIOS Table Entry Point." },
-	{ dmi_decode_test2, "Test DMI/SMBIOS tables for errors." },
+static fwts_framework_minor_test dmicheck_tests[] = {
+	{ dmicheck_test1, "Find and Check SMBIOS Table Entry Point." },
+	{ dmicheck_test2, "Test DMI/SMBIOS tables for errors." },
 	{ NULL, NULL }
 };
 
-static fwts_framework_ops dmi_decode_ops = {
+static fwts_framework_ops dmicheck_ops = {
 	.description = "Test DMI/SMBIOS tables for errors.",
-	.minor_tests = dmi_decode_tests
+	.minor_tests = dmicheck_tests
 };
 
-FWTS_REGISTER("dmi_decode", &dmi_decode_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("dmicheck", &dmicheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
 
 #endif

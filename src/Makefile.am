@@ -58,7 +58,6 @@ fwts_SOURCES = main.c 				\
 	bios/pciirq/pciirq.c 			\
 	bios/pnp/pnp.c 				\
 	bios/romdump/romdump.c 			\
-	bios/smbios/smbios.c 			\
 	cmos/cmosdump/cmosdump.c 		\
 	cpu/virt/virt.c 			\
 	cpu/virt/virt_svm.c 			\

@@ -1,3 +1,40 @@
+fwts (13.07.00-0ubuntu1) saucy; urgency=low
+
+  [Alex Hung]
+  * data: klog.json: remove duplicated patterns
+
+  [Colin Ian King]
+  * data: klog.json: Add some more advice for the now common lpc_ich warnings
+  * apci: acpidump: fix segfault when dumping ASF! tables (LP: #1188209)
+  * acpica: fwts_acpica: some cosmetic tidying up.
+  * acpica: fwts_acpica: no need to check for null ptr on fwts_low_free
+  * lib: acpica + fwts_framework: add --acpica-debug option
+  * cpu: cpufreq: re-phrase P-state coordination message
+  * cpu: cpufreq: remove the time to run from the description
+  * Makefile.am: move apicedge test to keep tests in alpabetical order
+  * bios: smbios: minor re-structure of test1
+  * klog: move from acpi to kernel directory
+  * bios: mpdump: fix indexing outside of mpdump_sys_addr_type array
+  * lib, acpi, hotkey: remove redundant null checks before free()
+  * bios: smbios: add more sanity checks to SMBIOS information
+  * lib: fix assembly/disassembly segfault when AcpiOsVprintf is calle
+    (LP: #1195209)
+  * ACPICA: update to version 20130626
+  * acpica: nspredef: fix null pointer dereference issue (LP: #1195251)
+  * lib: fwts_framework: remove fwts_framework_setting
+  * lib: fwts_framework: minor tidy up of code
+  * lib: fwts_framework: remove some old and redundant #defines
+  * fwts_iasl_interface.c: allocate temp buffers required for IASL
+    (LP: #1196463)
+
+  [Ivan Hu]
+  * uefivarinfo: add the utility to show the NVRam and variable info
+
+  [Keng-Yu Lin]
+  * update_version.sh: use non-localised date representation
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 03 Jul 2013 11:07:03 +0800
+
 fwts (13.06.00-0ubuntu1) saucy; urgency=low
 
   [Alex Hung]

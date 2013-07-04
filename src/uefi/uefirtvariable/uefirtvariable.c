@@ -844,8 +844,8 @@ static int setvariable_checkvariable_notfound(
 			return FWTS_OK;
 	}
 	fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
-		"Failed to set variable with UEFI runtime service., "
-		"expect the status return EFI_NOT_FOUND.");
+		"Failed to set variable with UEFI runtime service, "
+		"expected the status return EFI_NOT_FOUND.");
 	fwts_uefi_print_status_info(fw, status);
 	return FWTS_ERROR;
 }

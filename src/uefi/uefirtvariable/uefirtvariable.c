@@ -46,6 +46,14 @@ static int fd;
 static EFI_GUID gtestguid1 = TEST_GUID1;
 static EFI_GUID gtestguid2 = TEST_GUID2;
 
+static uint32_t uefi_get_variable_multiple = 1024;
+static uint32_t uefi_set_variable_multiple = 40;
+static uint32_t uefi_query_variable_multiple = 1024;
+
+#define UEFI_GET_VARIABLE_MULTIPLE_MAX		(100000)
+#define UEFI_SET_VARIABLE_MULTIPLE_MAX		 (10000)
+#define UEFI_QUERY_VARIABLE_MULTIPLE_MAX	(100000)
+
 static uint32_t attributes =
 	FWTS_UEFI_VAR_NON_VOLATILE |
 	FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
@@ -1406,10 +1414,11 @@ static int uefirtvariable_test4(fwts_framework *fw)
 static int uefirtvariable_test5(fwts_framework *fw)
 {
 	int ret;
-	uint32_t multitesttime = 1024;
+	uint32_t multitesttime = uefi_get_variable_multiple;
 	uint64_t datasize = 10;
 
-	fwts_log_info(fw, "Testing GetVariable on getting the variable multiple times.");
+	fwts_log_info(fw, "Testing GetVariable on getting the variable %" PRIu32
+		" times.", uefi_get_variable_multiple);
 	ret = getvariable_test(fw, datasize, variablenametest, multitesttime);
 	if (ret != FWTS_OK)
 		return ret;
@@ -1428,14 +1437,15 @@ static int uefirtvariable_test5(fwts_framework *fw)
 static int uefirtvariable_test6(fwts_framework *fw)
 {
 	int ret;
-	uint32_t multitesttime = 40;
+	uint32_t multitesttime = uefi_set_variable_multiple;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 	uint32_t i, j;
 	uint8_t variablenamelength = 32;
 	uint16_t variablenametest4[variablenamelength+1];
 
-	fwts_log_info(fw, "Testing SetVariable on setting the variable with the same data multiple times.");
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with the same data %" PRIu32
+		" times.", uefi_set_variable_multiple);
 	for (i = 0; i < multitesttime; i++) {
 		ret = setvariable_insertvariable(fw, attributes, datasize,
 			variablenametest, &gtestguid1, datadiff);
@@ -1452,7 +1462,8 @@ static int uefirtvariable_test6(fwts_framework *fw)
 		return ret;
 	fwts_passed(fw, "SetVariable on setting the variable with the same data multiple times passed.");
 
-	fwts_log_info(fw, "Testing SetVariable on setting the variable with different data multiple times.");
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different data %" PRIu32
+		" times.", uefi_set_variable_multiple);
 	for (i = 0; i < multitesttime; i++) {
 		ret = setvariable_insertvariable(fw, attributes, datasize+i,
 			variablenametest, &gtestguid1, datadiff);
@@ -1465,7 +1476,8 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different data multiple times passed.");
 
-	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name multiple times.");
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name %" PRIu32
+		" times.", uefi_set_variable_multiple);
 	for (i = 0; i < variablenamelength; i++) {
 		variablenametest4[i] = 'a';
 		variablenametest4[i+1] = '\0';
@@ -1480,7 +1492,8 @@ static int uefirtvariable_test6(fwts_framework *fw)
 	}
 	fwts_passed(fw, "Testing SetVariable on setting the variable with different name multiple times passed.");
 
-	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name and data multiple times.");
+	fwts_log_info(fw, "Testing SetVariable on setting the variable with different name and data %" PRIu32
+		" times.", uefi_set_variable_multiple);
 
 	/*
 	 * This combine test do a lot of setvariable, reduce variablenamelength
@@ -1512,11 +1525,14 @@ static int uefirtvariable_test6(fwts_framework *fw)
 
 static int uefirtvariable_test7(fwts_framework *fw)
 {
-	uint32_t multitesttime = 1024;
+	uint32_t multitesttime = uefi_query_variable_multiple;
 	uint64_t status;
 	uint64_t remvarstoragesize;
 	uint64_t maxvariablesize;
 	uint32_t i;
+
+	fwts_log_info(fw, "Testing QueryVariableInfo on querying the variable %" PRIu32
+		" times.", uefi_query_variable_multiple);
 
 	/* first check if the firmware support QueryVariableInfo interface */
 	if (do_queryvariableinfo(&status, &remvarstoragesize, &maxvariablesize) == FWTS_ERROR) {
@@ -1555,6 +1571,68 @@ static int uefirtvariable_test7(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int options_check(fwts_framework *fw)
+{
+	FWTS_UNUSED(fw);
+
+	if ((uefi_get_variable_multiple < 1) ||
+	    (uefi_get_variable_multiple > UEFI_GET_VARIABLE_MULTIPLE_MAX)) {
+		fprintf(stderr, "--uefi-get-variable-multiple is %" PRIu32", it "
+			"should be 1..%" PRIu32 "\n",
+			uefi_get_variable_multiple, UEFI_GET_VARIABLE_MULTIPLE_MAX);
+		return FWTS_ERROR;
+	}
+	if ((uefi_set_variable_multiple < 1) ||
+	    (uefi_set_variable_multiple > UEFI_SET_VARIABLE_MULTIPLE_MAX)) {
+		fprintf(stderr, "--uefi-set-variable-multiple is %" PRIu32", it "
+			"should be 1..%" PRIu32 "\n",
+			uefi_set_variable_multiple, UEFI_SET_VARIABLE_MULTIPLE_MAX);
+		return FWTS_ERROR;
+	}
+	if ((uefi_query_variable_multiple < 1) ||
+	    (uefi_query_variable_multiple > UEFI_QUERY_VARIABLE_MULTIPLE_MAX)) {
+		fprintf(stderr, "--uefi-query-variable-multiple is %" PRIu32", it "
+			"should be 1..%" PRIu32 "\n",
+			uefi_query_variable_multiple, UEFI_QUERY_VARIABLE_MULTIPLE_MAX);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+static int options_handler(
+	fwts_framework *fw,
+	int argc,
+	char * const argv[],
+	int option_char,
+	int long_index)
+{
+	FWTS_UNUSED(fw);
+	FWTS_UNUSED(argc);
+	FWTS_UNUSED(argv);
+
+	if (option_char == 0) {
+		switch (long_index) {
+		case 0:	/* --uefi-get-var-multiple */
+			uefi_get_variable_multiple = strtoul(optarg, NULL, 10);
+			break;
+		case 1:	/* --uefi-set-var-multiple */
+			uefi_set_variable_multiple = strtoul(optarg, NULL, 10);
+			break;
+		case 2: /* --uefi-query-var-multiple */
+			uefi_query_variable_multiple = strtoul(optarg, NULL, 10);
+			break;
+		}
+	}
+	return FWTS_OK;
+}
+
+static fwts_option options[] = {
+	{ "uefi-get-var-multiple",	"", 1, "Run uefirtvariable get variable test multiple times." },
+	{ "uefi-set-var-multiple",	"", 1, "Run uefirtvariable set variable test multiple times." },
+	{ "uefi-query-var-multiple", 	"", 1, "Run uefirtvariable query variable test multiple times." },
+	{ NULL, NULL, 0, NULL }
+};
+
 static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test1, "Test UEFI RT service get variable interface." },
 	{ uefirtvariable_test2, "Test UEFI RT service get next variable name interface." },
@@ -1567,10 +1645,13 @@ static fwts_framework_minor_test uefirtvariable_tests[] = {
 };
 
 static fwts_framework_ops uefirtvariable_ops = {
-	.description = "UEFI Runtime service variable interface tests.",
-	.init        = uefirtvariable_init,
-	.deinit      = uefirtvariable_deinit,
-	.minor_tests = uefirtvariable_tests
+	.description     = "UEFI Runtime service variable interface tests.",
+	.init            = uefirtvariable_init,
+	.deinit          = uefirtvariable_deinit,
+	.minor_tests     = uefirtvariable_tests,
+	.options         = options,
+	.options_handler = options_handler,
+	.options_check   = options_check,
 };
 
 FWTS_REGISTER("uefirtvariable", &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV);

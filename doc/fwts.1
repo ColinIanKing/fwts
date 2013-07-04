@@ -95,6 +95,15 @@ Load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump.
 latter is preferred as fwts \-\-dump is able to dump more tables than acpidump. This
 allows one to dump tables from one machine and processes them with fwts on another machine.
 .TP
+.B \-\-uefi\-get\-var\-multiple
+Specifies the number of times to get a variable in the uefirtvariable get variable stress test.
+.TP
+.B \-\-uefi\-set\-var\-multiple
+Specifies the number of times to set a variable in the uefirtvariable set variable stress test.
+.TP
+.B \-\-uefi\-query\-var\-multiple
+Specifies the number of times to query a variable in the uefirtvariable query variable stress test.
+.TP
 .B \-\-filter\-error\-discard
 Specifies the errors that one wants to silently ignore.  One supplies a comma sperated
 list of fwts error message labels that one wants fwts to not report as errors. fwts will

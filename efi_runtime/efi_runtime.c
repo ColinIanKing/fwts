@@ -34,6 +34,13 @@ MODULE_AUTHOR("Ivan Hu");
 MODULE_DESCRIPTION("EFI Runtime Driver");
 MODULE_LICENSE("GPL");
 
+/* commit 83e681897 turned efi_enabled into a function, so abstract it */
+#ifdef EFI_RUNTIME_SERVICES
+#define EFI_RUNTIME_ENABLED	efi_enabled(EFI_RUNTIME_SERVICES)
+#else
+#define EFI_RUNTIME_ENABLED	efi_enabled
+#endif
+
 static void convert_from_efi_time(efi_time_t *eft, EFI_TIME *time)
 {
 	memset(time, 0, sizeof(EFI_TIME));
@@ -361,8 +368,10 @@ static int __init efi_runtime_init(void)
 
 	printk(KERN_INFO "EFI_RUNTIME Driver v%s\n", EFI_FWTS_EFI_VERSION);
 
-	if (!efi_enabled)
+	if (!EFI_RUNTIME_ENABLED) {
+		printk(KERN_INFO "EFI runtime services not enabled.\n");
 		return -ENODEV;
+	}
 
 	ret = misc_register(&efi_runtime_dev);
 	if (ret) {

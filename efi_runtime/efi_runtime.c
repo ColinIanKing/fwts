@@ -18,6 +18,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <linux/version.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -124,11 +125,11 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 	struct efi_getnextvariablename __user *pgetnextvariablename;
 	unsigned long name_size;
 
-	struct efi_queryvariableinfo __user *pqueryvariableinfo;
-
 	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+	struct efi_queryvariableinfo __user *pqueryvariableinfo;
 	struct efi_querycapsulecapabilities __user *pquerycapsulecapabilities;
+#endif
 
 	switch (cmd) {
 	case EFI_RUNTIME_GET_VARIABLE:
@@ -275,6 +276,7 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 			return -EINVAL;
 		return 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
 	case EFI_RUNTIME_QUERY_VARIABLEINFO:
 
 		pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
@@ -292,6 +294,7 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 			return -EINVAL;
 
 		return 0;
+#endif
 
 	case EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT:
 
@@ -307,6 +310,7 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 
 		return 0;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
 	case EFI_RUNTIME_QUERY_CAPSULECAPABILITIES:
 
 		pquerycapsulecapabilities = (struct
@@ -325,6 +329,7 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 			return -EINVAL;
 
 		return 0;
+#endif
 	}
 
 	return -ENOTTY;

@@ -60,7 +60,7 @@ static void convert_from_efi_time(efi_time_t *eft, EFI_TIME *time)
 
 static void convert_to_efi_time(efi_time_t *eft, EFI_TIME *time)
 {
-	memset(eft, 0, sizeof(eft));
+	memset(eft, 0, sizeof(*eft));
 	eft->year = time->Year;
 	eft->month = time->Month;
 	eft->day = time->Day;

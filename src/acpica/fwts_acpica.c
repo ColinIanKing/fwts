@@ -876,6 +876,9 @@ void fwts_acpcia_set_fwts_framework(fwts_framework *fw)
 	fwts_acpica_fw = fw;
 }
 
+#define FWTS_ACPICA_MODE(fw, mode)	\
+	(((fw->acpica_mode & mode) == mode) ? 1 : 0)
+
 /*
  *  fwts_acpica_init()
  *	Initialise ACPICA core engine
@@ -890,6 +893,15 @@ int fwts_acpica_init(fwts_framework *fw)
 	/* Abort if already initialised */
 	if (fwts_acpica_init_called)
 		return FWTS_ERROR;
+
+	AcpiGbl_AllMethodsSerialized =
+		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_SERIALIZED);
+	AcpiGbl_EnableInterpreterSlack =
+		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_SLACK);
+	AcpiGbl_IgnoreErrors =
+		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_IGNORE_ERRORS);
+	AcpiGbl_DisableAutoRepair =
+		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_DISABLE_AUTO_REPAIR);
 
 	pthread_mutex_init(&mutex_lock_sem_table, NULL);
 	pthread_mutex_init(&mutex_thread_info, NULL);

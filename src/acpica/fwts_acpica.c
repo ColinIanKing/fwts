@@ -209,6 +209,15 @@ static ACPI_STATUS fwts_exception_handler(
 			"ACPICA Exception %s during execution at module level (table load)",
 			exception);
 
+	if (AcpiGbl_IgnoreErrors) {
+		if (AmlStatus != AE_OK) {
+			fwts_log_info(fwts_acpica_fw,
+				"ACPICA Exception override, forcing AE_OK for execption %s",
+				exception);
+			AmlStatus = AE_OK;
+		}
+	}
+
 	return AmlStatus;
 }
 

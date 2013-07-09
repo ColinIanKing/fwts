@@ -665,6 +665,22 @@ static void method_test_NULL_return(
 {
 	FWTS_UNUSED(private);
 
+	/*
+	 *  In ACPICA SLACK mode null returns can be actually
+	 *  forced to return ACPI integers. Blame an errata
+	 *  and Windows compatability for this mess.
+	 */
+	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
+		if ((buf != NULL) && (buf->Pointer != NULL)) {
+			ACPI_OBJECT *obj = buf->Pointer;
+			if (obj->Type == ACPI_TYPE_INTEGER) {
+				fwts_passed(fw, "%s returned an ACPI_TYPE_INTEGER as expected in slack mode.",
+					name);
+				return;
+			}
+		}
+	}
+
 	if (buf->Length && buf->Pointer) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);

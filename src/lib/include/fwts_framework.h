@@ -26,6 +26,7 @@
 
 #include "fwts_log.h"
 #include "fwts_list.h"
+#include "fwts_acpica_mode.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
@@ -142,6 +143,7 @@ typedef struct {
 	fwts_list errors_filter_keep;		/* Results to keep, empty = keep all */
 	fwts_list errors_filter_discard;	/* Results to discard, empty = discard none */
 	bool error_filtered_out;		/* True if a klog message has been filtered out */
+	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 } fwts_framework;
 
 typedef struct {

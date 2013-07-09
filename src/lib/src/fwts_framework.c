@@ -80,6 +80,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "filter-error-discard", "", 1, "Discard errors that match any of the specified labels." },
 	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
 	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },
+	{ "acpica",		"",   1, "Enable ACPICA run time options." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -958,6 +959,39 @@ static int fwts_framework_log_type_parse(fwts_framework *fw, const char *arg)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_acpica_parse()
+ *	parse optarg of comma separated acpica mode flags
+ */
+static int fwts_framework_acpica_parse(fwts_framework *fw, const char *arg)
+{
+	char *str;
+	char *token;
+	char *saveptr = NULL;
+
+	fw->acpica_mode = 0;
+
+	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+		if (!strcmp(token, "serialized"))
+			fw->acpica_mode |= FWTS_ACPICA_MODE_SERIALIZED;
+		else if (!strcmp(token, "slack"))
+			fw->acpica_mode |= FWTS_ACPICA_MODE_SLACK;
+		else if (!strcmp(token, "ignore-errors"))
+			fw->acpica_mode |= FWTS_ACPICA_MODE_IGNORE_ERRORS;
+		else if (!strcmp(token, "disable-auto-repair"))
+			fw->acpica_mode |= FWTS_ACPICA_MODE_DISABLE_AUTO_REPAIR;
+		else {
+			fprintf(stderr, "--acpica can be serialized, slack, ignore-errors or disable-auto-repair\n");
+			return FWTS_ERROR;
+		}
+	}
+
+	if (!fw->log_type)
+		fw->log_type = LOG_TYPE_PLAINTEXT;
+
+	return FWTS_OK;
+}
+
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
 	FWTS_UNUSED(argc);
@@ -1091,6 +1125,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 36: /* --acpica-debug */
 			fw->flags |= FWTS_FLAG_ACPICA_DEBUG;
+			break;
+		case 37: /* --acpica */
+			if (fwts_framework_acpica_parse(fw, optarg) != FWTS_OK)
+				return FWTS_ERROR;
 			break;
 		}
 		break;

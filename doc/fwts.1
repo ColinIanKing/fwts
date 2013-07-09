@@ -60,6 +60,14 @@ fwts options are as follow:
 .B \-
 output results to stdout.
 .TP
+.B \-\-acpica
+enable ACPICA execution mode options. These can be specified as a comma separated
+list of one or more options.  Avaiable options are: serialized (serialized execution
+of AML), slack (run in less pedeantic mode), ignore\-errors (ignore ACPICA exception
+errors), disable\-auto\-repair (disable ACPICA from automatically fixing broken ACPICA controls).
+Note that the slack mode will turn on implicit returns of zero on control methods to attempt
+to allow buggy AML to work on non-Windows systems.
+.TP
 .B \-\-acpica\-debug
 enable ACPICA debug warning and error messages when invoking the ACPICA subsystem. This is mainly
 for fwts developers to help track down any ACPICA interfacing issues with fwts.

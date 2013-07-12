@@ -45,13 +45,6 @@ static void syntaxcheck_free_advice(void);
  */
 #define SYNTAXCHECK_JSON_FILE		"syntaxcheck.json"
 
-#define ASL_WARNING             0
-#define ASL_WARNING2            1
-#define ASL_WARNING3            2
-#define ASL_ERROR               3
-#define ASL_REMARK		4
-#define ASL_OPTIMIZATION	5
-
 #define ASL_ID(error)	{ error, #error, NULL }
 
 /*

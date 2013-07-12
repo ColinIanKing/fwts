@@ -29,6 +29,8 @@
 
 #include <json/json.h>
 
+#define ASL_EXCEPTIONS	/* so we can include AslErrorLevel in aslmessages.h */
+
 #include "aslmessages.h"
 
 typedef struct {
@@ -259,20 +261,20 @@ static const char *syntaxcheck_error_code_to_id(const uint32_t error_code)
 static const char *syntaxcheck_error_level(uint32_t error_code)
 {
 	uint16_t error_level = syntaxcheck_error_code_to_error_level(error_code);
+	static char buf[64];
+	char *ptr;
 
-	static char *error_levels[] = {
-		"warning (level 0)",
-		"warning (level 1)",
-		"warning (level 2)",
-		"error",
-		"remark",
-		"optimization",
-		"unknown",
-	};
+	/* Out of range for some reason? */
+	if (error_level >= ASL_NUM_REPORT_LEVELS)
+		return "Unknown";
 
-	const int max_levels = (sizeof(error_levels) / sizeof(char*)) - 1;
+	/* AslErrorLevel strings are end-space padded, so strip off end spaces if any */
+	strcpy(buf, AslErrorLevel[error_level]);
+	ptr = strchr(buf, ' ');
+	if (ptr)
+		*ptr = '\0';
 
-	return error_levels[error_level > max_levels ? max_levels : error_level];
+	return buf;
 }
 
 /*
@@ -508,6 +510,8 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 							fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
 							break;
 						case ASL_REMARK:
+							fwts_log_info(fw, "Assembler remark in line %d", num);
+							break;
 						case ASL_OPTIMIZATION:
 							skip = true;
 							break;

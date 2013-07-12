@@ -33,7 +33,7 @@ static void init_asl_core(void)
 
 	AcpiDbgLevel = 0;
 
-	for (i=0; i<ASL_NUM_FILES; i++) {
+	for (i = 0; i < ASL_NUM_FILES; i++) {
 		Gbl_Files[i].Handle = NULL;
 		Gbl_Files[i].Filename = NULL;
 	}
@@ -64,8 +64,8 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 
 		/* Setup ACPICA disassembler globals */
 		Gbl_DisasmFlag = TRUE;
-        	Gbl_DoCompile = FALSE;
-        	Gbl_OutputFilenamePrefix = (char*)outputfile;
+		Gbl_DoCompile = FALSE;
+		Gbl_OutputFilenamePrefix = (char*)outputfile;
 		Gbl_UseDefaultAmlFilename = FALSE;
 
 		/* Throw away noisy errors */
@@ -76,7 +76,7 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		break;
 	default:
 		/* Parent */
-		waitpid(pid, &status, WUNTRACED | WCONTINUED);
+		(void)waitpid(pid, &status, WUNTRACED | WCONTINUED);
 	}
 
 	return 0;
@@ -84,13 +84,14 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 
 int fwts_iasl_assemble_aml(const char *source, char **output)
 {
-	int pipefds[2];
+	int 	pipefds[2];
+	int	status;
+	int 	ret = 0;
+	size_t	len = 0;
+	ssize_t	n;
 	pid_t	pid;
 	char    *data = NULL;
 	char	buffer[8192];
-	int	n;
-	int 	len = 0;
-	int	status;
 
 	if (pipe(pipefds) < 0)
 		return -1;
@@ -98,46 +99,61 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 	pid = fork();
 	switch (pid) {
 	case -1:
-		close(pipefds[0]);
-		close(pipefds[1]);
+		(void)close(pipefds[0]);
+		(void)close(pipefds[1]);
 		return -1;
 	case 0:
 		/* Child */
 		init_asl_core();
 
-		if (pipefds[0] != STDOUT_FILENO) {
-			dup2(pipefds[1], STDOUT_FILENO);
-			close(pipefds[1]);
+		/* stdout to be redirected down the writer end of pipe */
+		if (pipefds[1] != STDOUT_FILENO) {
+			if (dup2(pipefds[1], STDOUT_FILENO) < 0) {
+				_exit(EXIT_FAILURE);
+			}
 		}
-		close(pipefds[0]);
+		/* Close reader end */
+		(void)close(pipefds[0]);
 
 		/* Setup ACPICA compiler globals */
 		Gbl_DisasmFlag = FALSE;
-        	Gbl_DoCompile = TRUE;
+		Gbl_DoCompile = TRUE;
 		Gbl_PreprocessFlag = TRUE;
-        	Gbl_UseDefaultAmlFilename = FALSE;
-        	Gbl_OutputFilenamePrefix = (char*)source;
+		Gbl_UseDefaultAmlFilename = FALSE;
+		Gbl_OutputFilenamePrefix = (char*)source;
 
-		status = AslDoOnePathname((char*)source, AslDoOneFile);
+		(void)AslDoOnePathname((char*)source, AslDoOneFile);
 
-		close(pipefds[1]);
+		/*
+		 * We need to flush buffered I/O on IASL stdout
+		 * before we exit
+		 */
+		fflush(stdout);
 
 		_exit(0);
 		break;
 	default:
 		/* Parent */
-		close(pipefds[1]);
 
+		/* Close writer end */
+		(void)close(pipefds[1]);
+
+		/* Gather output from IASL */
 		while ((n = read(pipefds[0], buffer, sizeof(buffer))) > 0) {
 			data = realloc(data, len + n + 1);
+			if (data == NULL) {
+				ret = -1;
+				break;
+			}
 			memcpy(data + len, buffer, n);
 			len += n;
-			data[len] = 0;
+			data[len] = '\0';
 		}
-		waitpid(pid, &status, WUNTRACED | WCONTINUED);
-		close(pipefds[0]);
+		(void)waitpid(pid, &status, WUNTRACED | WCONTINUED);
+		(void)close(pipefds[0]);
+		break;
 	}
 
 	*output = data;
-	return 0;
+	return ret;
 }

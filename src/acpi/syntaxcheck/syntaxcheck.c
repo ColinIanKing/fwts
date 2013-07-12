@@ -516,7 +516,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 							skip = true;
 							break;
 						default:
-							fwts_log_info(fw, "Assember message in line %d", num);
+							fwts_log_info(fw, "Assembler message in line %d", num);
 							break;
 						}
 

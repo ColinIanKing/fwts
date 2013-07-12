@@ -16,8 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-#define LOG_LINE_WIDTH 100
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -31,6 +29,7 @@
 
 #include "fwts.h"
 
+#define LOG_LINE_WIDTH		(80)
 #define LOG_UNKOWN_FIELD	"???"
 
 static int log_line_width = 0;

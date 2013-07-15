@@ -261,6 +261,14 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid zero length descriptor in resource list",
+    "advice": "An error occurred turning an ACPI resource list into a byte stream of resources.  The resource length was zero, which is an illegal length.",
+    "label": "KlogAcpiInvalidZeroLengthDescriptor"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
     "pattern": "is not an ACPI Operand object",
     "advice": "An internal ACPI error occurred freeing an ACPI object or adding it to the object cache. The descriptor type of the given object was not a descriptor type operand.  See acpi_ut_delete_object_desc().",
     "label": "KlogAcpiNotOperandObject"
@@ -496,6 +504,14 @@
     "pattern": "Target is not a Reference or Constant object",
     "advice": "An attempt to store an ACPI value into a location failed because the target is not a reference or a constat object. See acpi_ex_store().",
     "label": "KlogAcpiTargetNotRefOrConstantObject"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Unknown Reference Class 0x",
+    "advice": "An ACPI store op-code failed to execute because the an unknown reference class type was used. The store operation will fail to execute leading to undefined behaviour. This is possibly an AML compiler bug.",
+    "label": "KlogAcpiUnknownRefClass"
   },
   {
     "compare_mode": "string",
@@ -826,6 +842,14 @@
     "label": "KlogAcpiInvalidDescriptorType"
   },
   {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid object type: 0x",
+    "advice": "The ACPI interpreter failed to concatenate two objects of the same type because one or more of the types was an invalid object type. Expected types are ACPI_TYPE_INTEGER, ACPI_TYPE_STRING, ACPI_TYPE_BUFFER.",
+    "label": "KlogAcpiConcatenateInvalidObjectType"
+  },
+  {
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
@@ -1037,6 +1061,14 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
+    "pattern": "Package allocation failure",
+    "advice": "Failed to copy an internal ACPI package object to another internal ACPI package object, out of memory.",
+    "label": "KlogAcpiPackageAllocFailure"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
     "pattern": "Needed Region, found type 0x",
     "advice": "An ACPI object type did not match the expected type, expected an ACPI Region type.",
     "label": "KlogAcpiCheckObjectTypeFailed"
@@ -1106,6 +1138,14 @@
     "label": "KlogAcpiResolveOpBadType"
   },
   {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid descriptor.*\\[.*\\]",
+    "advice": "Failed to resolve an ACPI operand, bad descriptor; expecting either an ACPI_DESC_TYPE_NAMED or ACPI_DESC_TYPE_OPERAND descriptor.",
+    "label": "KlogAcpiInvalidDescriptor"
+  },
+  {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
@@ -1173,6 +1213,14 @@
     "compare_mode": "regex",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
+    "pattern": "Invalid handle.*\\[%s\\]",
+    "advice": "An attempt to attach an object with an ACPI node failed because the node was not a name handle type. This is probably an internal ACPI error. See acpi_ns_attach_object().",
+    "label": "KlogAcpiInvalidHandle"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
     "pattern": "Bit offset within field too large.*0xFFFFFFFF",
     "advice": "A named field has a bit offset that is greater than the 32 bit field offset limit. An AML_INT_RESERVEDFIELD_OP 0x0031 was ignored because of the bit offset error.",
     "label": "KlogAcpiFieldOffsetTooLarge"
@@ -1200,6 +1248,14 @@
     "pattern": "Attempt to dereference an Index to NULL package element Idx=",
     "advice": "An error occurred attempting to retrieve a value from an internal ACPI object. A NULL object descriptor indicates an uninitialized element in an ACPI package, and hence it cannot be deferenced. Could not retrieve a value from an internal ACPI object. See acpi_ex_resolve_object_to_value().",
     "label": "KlogAcpiNullPackageElementDereference"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Not a namespace node.*\\[.*\\]",
+    "advice": "An ACPI reference was found that did not point to a namespace node. Failed to resolve. See acpi_ex_resolve_multiple().",
+    "label": "KlogAcpiNotNamespaceNode"
   },
   {
     "compare_mode": "regex",
@@ -1250,12 +1306,12 @@
     "label": "KlogAcpiOwnerIdDoubleRelease"
   },
   {
-    "compare_mode": "regex",
+    "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
-    "pattern": "Unknown opcode 0x.* at table offset 0x.*, ignoring",
+    "pattern": "Unknown opcode 0x",
     "advice": "An invalid AML opcode in the input stream has been encountered. This will be skipped. This normally indicates buggy firmware.  Undefined behaviour may occur.",
-    "label": "KlogAcpiUnknowOpcode"
+    "label": "KlogAcpiUnknownOpcode"
   },
   {
     "compare_mode": "regex",
@@ -1336,6 +1392,14 @@
     "pattern": "Evaluation of object type .* is not supported",
     "advice": "Evaluation of a device, event, mutex, region, thermal or local scope ACPI object types is not allowed. The firmware is buggy. See acpi_ns_evaluate().",
     "label": "KlogAcpiEvalObjectTypeNotSupported"
+  },
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_HIGH",
+    "tag": "FWTS_TAG_ACPI",
+    "pattern": "Method has no attached sub-object",
+    "advice": "An ACPI method type did not have a method object associated with the node and a NULL object was found instead. Failed to execute a control method.",
+    "label": "KlogAcpiEvalMethodObjectNull"
   },
   {
     "compare_mode": "regex",
@@ -2410,6 +2474,14 @@
    "label": "KlogAcpiUnknownExceptionCode"
   },
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown Reference Count action (0x",
+   "advice": "An internal ACPI error occurred attempting to update an object reference count.  An incorrect action type was provided, expected REF_INCREMENT or REF_DECREMENT, see acpi_ut_update_ref_count().",
+   "label": "KlogAcpiUnknownRefCountAction"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
@@ -3077,6 +3149,14 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
+   "pattern": "Processor driver could not be attached",
+   "advice": "An attempt to add a processor to the system failed in acpi_processor_add(), the processor driver's .probe failed calling device_attach(). The CPU cannot be added to the system under ACPI control.",
+   "label": "KlogAcpiProcessorNotAttached"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
    "pattern": "Invalid _PSS data",
    "advice": "Failed to get ACPI performance states from the _PSS contol, buffer was either NULL or not an ACPI package.",
    "label": "KlogAcpiPssFailed"
@@ -3296,6 +3376,22 @@
    "pattern": "System description tables not found",
    "advice": "The EFI ACPI20 or ACPI RSDP pointers were invalid, so the kernel cannot find any of the ACPI tables.  ACPI support will be disabled.",
    "label": "KlogAcpiEfiRsdpError"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid EFI RTC value: write of .* to EFI RTC failed",
+   "advice": "Failed to update the EFI Real Time Clock (RTC), the provided time was not a valid time and so the EFI RTC was not updated.",
+   "label": "KlogAcpiEfiRtcWriteFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "acpi_memory_enable_device() error",
+   "advice": "ACPI memory hotplug failed to add an ACPI memory device to the systen. This error can occur if the memory block has already been used by the kernel or if the ACPI memory bind failed.",
+   "label": "KlogAcpiMemEnableDevice"
   },
   {
    "compare_mode": "regex",

@@ -7,7 +7,7 @@
    "tag": "FWTS_TAG_BIOS_THERMAL",
    "pattern": "Temperature above threshold, cpu clock throttled",
    "advice": "Test caused CPU temperature above critical threshold. Insufficient cooling?",
-   "label": "CommonThermalOverrun"
+   "label": "KlogThermalOverrun"
   },
   {
    "compare_mode": "string",
@@ -15,7 +15,7 @@
    "tag": "FWTS_TAG_BIOS",
    "pattern": "BIOS never enumerated boot CPU",
    "advice": "The boot processor is not enumerated!",
-   "label": "CommonBiosBootCpuNotEnumerated"
+   "label": "KlogBiosBootCpuNotEnumerated"
   },
   {
    "compare_mode": "regex",
@@ -23,7 +23,7 @@
    "tag": "FWTS_TAG_ACPI_HOTPLUG",
    "pattern": "acpi_shpchprm.*_HPP fail",
    "advice": "Hotplug _HPP method failed",
-   "label": "CommonAcpiHppMethodFailed"
+   "label": "KlogAcpiHppMethodFailed"
   },
   {
    "compare_mode": "regex",
@@ -31,7 +31,7 @@
    "tag": "FWTS_TAG_ACPI_HOTPLUG",
    "pattern": "shpchp.*acpi_pciehprm.*OSHP fail",
    "advice": "ACPI Hotplug OSHP method failed",
-   "label": "CommonAcpiHotplugOshpMethodFailed"
+   "label": "KlogAcpiHotplugOshpMethodFailed"
   },
   {
    "compare_mode": "regex",
@@ -39,7 +39,7 @@
    "tag": "FWTS_TAG_ACPI_HOTPLUG",
    "pattern": "shpchp.*acpi_shpchprm.*evaluate _BBN fail",
    "advice": "Hotplug _BBN method is missing",
-   "label": "CommonAcpiHotPlugBbnMissing"
+   "label": "KlogAcpiHotPlugBbnMissing"
   },
   {
    "compare_mode": "string",
@@ -47,7 +47,7 @@
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Error while parsing _PSD domain information",
    "advice": "_PSD domain information is corrupt!",
-   "label": "CommonAcpiPsdParsingError"
+   "label": "KlogAcpiPsdParsingError"
   },
   {
    "compare_mode": "string",
@@ -55,7 +55,7 @@
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Wrong _BBN value, reboot and use option 'pci=noacpi'",
    "advice": "The BIOS has wrong _BBN value, which will make PCI root bridge have wrong bus number",
-   "label": "CommonAcpiWrongBbnValue"
+   "label": "KlogAcpiWrongBbnValue"
   },
   {
    "compare_mode": "regex",
@@ -63,7 +63,7 @@
    "tag": "FWTS_TAG_ACPI_APIC",
    "pattern": "ACPI.*apic on CPU.* stops in C2",
    "advice": "The local apic timer incorrectly stops during C2 idle state.The ACPI specification forbids this and Linux needs the local APIC timer to work. The most likely cause of this is that the firmware uses a hardware C3 or C4 state that is mapped to the ACPI C2 state.",
-   "label": "CommonAcpiApicStopsInC2"
+   "label": "KlogAcpiApicStopsInC2"
   },
   {
    "compare_mode": "string",
@@ -71,7 +71,7 @@
    "tag": "FWTS_TAG_BIOS_IRQ",
    "pattern": "Disabling IRQ",
    "advice": "The kernel detected an irq storm. This is most probably an IRQ routing bug.",
-   "label": "CommonBiosIrqRoutingBug"
+   "label": "KlogBiosIrqRoutingBug"
   },
   {
     "compare_mode": "regex",

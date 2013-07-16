@@ -331,17 +331,21 @@ static int aspm_check_configuration(fwts_framework *fw)
 	int aspm_facp;
 
 	ret = facp_get_aspm_control(fw, &aspm_facp);
-	if (ret == FWTS_ERROR) {
-		fwts_log_info(fw, "No valid FACP information present: cannot test ASPM.");
-		return FWTS_ERROR;
-	}
+	if (ret == FWTS_ERROR)
+		fwts_skipped(fw, "No valid FACP information present: cannot test ASPM.");
 
 	return ret;
 }
 
 static int aspm_pcie_register_configuration(fwts_framework *fw)
 {
-	return pcie_check_aspm_registers(fw);
+	int ret;
+
+	ret = pcie_check_aspm_registers(fw);
+	if (ret == FWTS_ERROR)
+		fwts_skipped(fw, "Cannot sanity check PCIe register configuration.");
+
+	return ret;
 }
 
 static fwts_framework_minor_test aspm_tests[] = {

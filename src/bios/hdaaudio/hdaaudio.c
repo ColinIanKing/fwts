@@ -150,6 +150,7 @@ static int hda_audio_test1(fwts_framework *fw)
 {
 	DIR *dir;
 	struct dirent *directory;
+	bool checked = false;
 
 	if ((dir = opendir("/sys/class/sound/")) == NULL)
 		return FWTS_ERROR;
@@ -157,6 +158,8 @@ static int hda_audio_test1(fwts_framework *fw)
 	while ((directory = readdir(dir)) != NULL)
 		if (strncmp(directory->d_name, "hw", 2) == 0) {
 			char path[PATH_MAX];
+
+			checked = true;
 			snprintf(path, sizeof(path), "/sys/class/sound/%s",
 				directory->d_name);
 			fwts_log_info(fw, "Checking '%s':", directory->d_name);
@@ -165,6 +168,9 @@ static int hda_audio_test1(fwts_framework *fw)
 		}
 
 	closedir(dir);
+
+	if (!checked)
+		fwts_skipped(fw, "Cannot find any BIOS set audio pin configurations.");
 
 	return FWTS_OK;
 }

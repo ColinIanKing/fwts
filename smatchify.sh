@@ -51,7 +51,7 @@ smatch_install_dependencies()
 }
 
 #
-#  Get an upto date version of smatch
+#  Get an up to date version of smatch
 #
 smatch_get()
 {

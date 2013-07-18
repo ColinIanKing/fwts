@@ -135,7 +135,7 @@
   },
   {
    "id": "ASL_MSG_RETURN_TYPES",
-   "advice": "Some of the execution paths do not return a value.  All control paths that return must return a value otherwise unepected behaviour may occur.  This error occurs because a branch on an conditional op-code returns a value and another does not, which is inconsitent behaviour."
+   "advice": "Some of the execution paths do not return a value.  All control paths that return must return a value otherwise unexpected behaviour may occur.  This error occurs because a branch on an conditional op-code returns a value and another does not, which is inconsistent behaviour."
   },
   {
    "id": "ASL_MSG_RESERVED_RETURN_VALUE",

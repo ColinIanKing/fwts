@@ -1094,7 +1094,7 @@
     "log_level": "LOG_LEVEL_HIGH",
     "tag": "FWTS_TAG_ACPI",
     "pattern": "Bad operand object type",
-    "advice": "An error occured trying to convert multiple input operands to the types required by the target operator, see acpi_ex_resolve_operands(), the internal ACPI operand object type was not correct.",
+    "advice": "An error occurred trying to convert multiple input operands to the types required by the target operator, see acpi_ex_resolve_operands(), the internal ACPI operand object type was not correct.",
     "label": "KlogAcpiBadOperandObjectType"
   },
   {
@@ -2622,7 +2622,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "No SMI_CMD in FADT, mode transition failed",
-   "advice": "ACPI FADT SMI_CMD is zero, with ACPI 2.0 this means that the system cannot transtion to/from ACPI mode.",
+   "advice": "ACPI FADT SMI_CMD is zero, with ACPI 2.0 this means that the system cannot transition to/from ACPI mode.",
    "label": "KlogAcpiFadtSmiCmdZero"
   },
   {
@@ -2638,7 +2638,7 @@
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Found a grandchild.*P=.*C=",
-   "advice": "An error occured in the ACPI driver, acpi_ns_delete_children() was trying to delete children objects and discovered that one of these had children objects of it's own, which should not happen.",
+   "advice": "An error occurred in the ACPI driver, acpi_ns_delete_children() was trying to delete children objects and discovered that one of these had children objects of it's own, which should not happen.",
    "label": "KlogAcpiObjectGrandchild"
   },
   {
@@ -2838,7 +2838,7 @@
    "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "MTRR.*CPU.*SYSCFG.*MtrrFixDramModEn.*not cleared by BIOS, clearing this bit",
-   "advice": "The firmware is expected to clear MtrrFixDramModEn bit, see for example BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD Opteron Processors (26094 Rev. 3.30 February 2006), section 13.2.1.2 SYSCFG Register. The MtrrFixDramModEn bit should be set 1 during firmware initalization of the fixed MTRRs, then cleared to 0 for operation. Hence the kernel has detected and worked around this fault.",
+   "advice": "The firmware is expected to clear MtrrFixDramModEn bit, see for example BIOS and Kernel Developer's Guide for the AMD Athlon 64 and AMD Opteron Processors (26094 Rev. 3.30 February 2006), section 13.2.1.2 SYSCFG Register. The MtrrFixDramModEn bit should be set 1 during firmware initialization of the fixed MTRRs, then cleared to 0 for operation. Hence the kernel has detected and worked around this fault.",
    "label": "KlogMtrrFixDramModEnNotClear"
   },
   {
@@ -4174,7 +4174,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_PARSE_EXEC_FAIL",
    "pattern": "ACPI Error.*Method (execution|parse\/execution) failed.*AE_AML_BUFFER_LIMIT",
-   "advice": "Generally this error occurs because of access outside of a buffer.  This occurs for several reasons: a) A field does not fit withing the current length of a buffer, b) an ACPI table load did not fit into a buffer, c) An attempt to convert a buffer into an integer failed because the buffer was zero sized, d) a SMBus/IPMI/GenericSerialBus write failed because the buffer was too small, e) An index into a buffer was too long and fell outside the buffer.",
+   "advice": "Generally this error occurs because of access outside of a buffer.  This occurs for several reasons: a) A field does not fit within the current length of a buffer, b) an ACPI table load did not fit into a buffer, c) An attempt to convert a buffer into an integer failed because the buffer was zero sized, d) a SMBus/IPMI/GenericSerialBus write failed because the buffer was too small, e) An index into a buffer was too long and fell outside the buffer.",
    "label": "KlogAcpiBufferLimit"
   },
   {
@@ -4952,7 +4952,7 @@
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_POWER_MANAGEMENT",
    "pattern": "PM: Memory allocation failed",
-   "advice": "swusp_alloc() failed trying to allocate highmem and failing that non-highmem pages for the suspend image. There is probably just not enough free physcial memory available.",
+   "advice": "swusp_alloc() failed trying to allocate highmem and failing that non-highmem pages for the suspend image. There is probably just not enough free physical memory available.",
    "label": "PmMemoryAllocationFailed"
   },
   {

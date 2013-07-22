@@ -1,5 +1,5 @@
 The following files have been copied from the ACPICA source
-tree from git repository: git://git.moblin.org/acpica
+tree from git repository: git://github.com/acpica/acpica.git
 
 In compliance with the license, these files are listed below
 and the Intel copyright message has been included in fwts.

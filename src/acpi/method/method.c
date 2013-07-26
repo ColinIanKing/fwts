@@ -681,7 +681,7 @@ static void method_test_NULL_return(
 		}
 	}
 
-	if (buf->Length && buf->Pointer) {
+	if (buf && buf->Length && buf->Pointer) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
 		fwts_tag_failed(fw, FWTS_TAG_ACPI_METHOD_RETURN);
 		fwts_log_info(fw, "Object returned:");

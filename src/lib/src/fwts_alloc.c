@@ -122,10 +122,15 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 	ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
 		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
 #else
-	/* We don't have a native MAP_32BIT, so bodge our own */
-	ret = fwts_low_mmap(n);
+	if (sizeof(void *) == 4) {
+		/* 32 bit mmap by default */
+		ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	} else {
+		/* We don't have a native MAP_32BIT, so bodge our own */
+		ret = fwts_low_mmap(n);
+	}
 #endif
-
 	if (ret == MAP_FAILED)
 		return NULL;
 

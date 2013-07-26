@@ -269,7 +269,8 @@ static const char *syntaxcheck_error_level(uint32_t error_code)
 		return "Unknown";
 
 	/* AslErrorLevel strings are end-space padded, so strip off end spaces if any */
-	strcpy(buf, AslErrorLevel[error_level]);
+	strncpy(buf, AslErrorLevel[error_level], sizeof(buf));
+	buf[sizeof(buf) -1] = '\0';
 	ptr = strchr(buf, ' ');
 	if (ptr)
 		*ptr = '\0';

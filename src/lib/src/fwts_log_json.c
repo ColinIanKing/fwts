@@ -213,18 +213,21 @@ static void fwts_log_open_json(fwts_log_file *log_file)
 static void fwts_log_close_json(fwts_log_file *log_file)
 {
 	const char *str;
-	size_t len;
 
 	fwts_log_section_end_json(log_file);
 
 	str = json_object_to_json_string(json_stack[0].obj);
-	len = strlen(str);
+	if (str == NULL) {
+		/* Let's not make this bail out as user may be logging to other files too */
+		fprintf(stderr, "Cannot turn json object to text for output. Empty json output\n");
+	} else {
+		size_t len = strlen(str);
 
-	fwrite(str, 1, len, log_file->fp);
-	fwrite("\n", 1, 1, log_file->fp);
-	fflush(log_file->fp);
-	log_file->line_number++;
-
+		fwrite(str, 1, len, log_file->fp);
+		fwrite("\n", 1, 1, log_file->fp);
+		fflush(log_file->fp);
+		log_file->line_number++;
+	}
 	json_object_put(json_stack[0].obj);
 }
 

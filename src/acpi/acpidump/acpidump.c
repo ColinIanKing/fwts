@@ -375,31 +375,14 @@ static void acpidump_bert(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
-	fwts_acpi_table_bert *bert = (fwts_acpi_table_bert*)data;
-
-	static char *error_severity[] = {
-		"Correctable",
-		"Fatal",
-		"Corrected",
-		"None"
-	};
-
-	int n = length - sizeof(fwts_acpi_table_bert);
 
 	static fwts_acpidump_field fields[] = {
 		FIELD_UINT("Region Length", 	fwts_acpi_table_bert, boot_error_region_length),
 		FIELD_UINT("Region Addr", 	fwts_acpi_table_bert, boot_error_region),
-		FIELD_UINT("Boot Status", 	fwts_acpi_table_bert, boot_status),
-		FIELD_UINT("Raw Data Offset", 	fwts_acpi_table_bert, raw_data_offset),
-		FIELD_UINT("Raw Data Length", 	fwts_acpi_table_bert, raw_data_length),
-		FIELD_UINT("Error Severity", 	fwts_acpi_table_bert, error_severity),
-		FIELD_STRS("Generic Error Data",fwts_acpi_table_bert, generic_error_data, error_severity, 4),
 		FIELD_END
 	};
 
 	acpi_dump_table_fields(fw, data, fields, length, length);
-	fwts_log_nl(fw);
-	acpi_dump_raw_data(fw, bert->generic_error_data, n, sizeof(fwts_acpi_table_bert));
 }
 
 static void acpidump_cpep(fwts_framework *fw, fwts_acpi_table_info *table)

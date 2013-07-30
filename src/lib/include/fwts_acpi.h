@@ -78,12 +78,6 @@ typedef struct {
 	fwts_acpi_table_header	header;	
 	uint32_t	boot_error_region_length;
 	uint64_t	boot_error_region;
-	uint32_t	boot_status;
-	uint32_t	raw_data_offset;
-	uint32_t	raw_data_length;
-	uint32_t	data_length;
-	uint32_t	error_severity;
-	uint8_t		generic_error_data[0];
 } __attribute__ ((packed)) fwts_acpi_table_bert;
 
 typedef struct {

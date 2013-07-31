@@ -3,6 +3,222 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Your BIOS is broken and requested that x2apic be disabled",
+   "advice": "The DMAR DMAR_X2APIC_OPT_OUT bit was set so the firmware requested that the x2apic should be disabled leading to decreased system performance.  The firmware opt out can be overridden using the intremap=no_x2apic_optout kernel parameter.",
+   "label": "KlogSratEntryUnsupported"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Found unsupported SRAT entry",
+   "advice": "The kernel detected an entry in the ACPI System Resource Affinity Table (SRAT) that was not recognised. Processor local APIC/SAPIC affinity (0), Memory affinity (1) and Processory local x2APIC affinity (2) are only supported.",
+   "label": "KlogSratEntryUnsupported"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Found unsupported x2apic \\[.*\\] SRAT entry",
+   "advice": "This warning occurs because NUMA x2apic affinity is not enabled. Kernel config CONFIG_ACPI_NUMA must be enabled to avoid this warning.",
+   "label": "KlogSratx2apicUnsupported"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Exceed the limit of T-state",
+   "advice": "An attempt to change the throttling state to one that is outside the range of T-states as provided by the Throttling Supported States _TSS package. The last (and hence lowest performance) state has been selected instead.",
+   "label": "KlogTstateLimitExceeded"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "duty_cycle spans bit 4",
+   "advice": "The FADT Duty Cycle Offset and Duty Cycle Width is > 4, which means there are more than the maximum allowed 16 processor throttling states so throttling will be be disabled.",
+   "label": "KlogTooManyThrottlingStates"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid package argument",
+   "advice": "The ACPI driver attempted to extract an ACPI package but found that the ACPI object was either NULL or was not a package or was a package that had zero elements.",
+   "label": "KlogInvalidPackageArgument"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid format argument",
+   "advice": "The ACPI driver attempted to extract an ACPI package but found that the format was NULL or the format pointer was NULL or the format length was less than 1.",
+   "label": "KlogInvalidFormatArgument"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid buffer argument",
+   "advice": "The ACPI driver attempted to extract an ACPI package but found that the destination buffer was NULL.",
+   "label": "KlogInvalidBufferArgument"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Limiting number of power states to max",
+   "advice": "The ACPI C states object (_CST) contains more C states than ACPI supports and so the kernal has had to limit this.  To enable more C states, one must increase the Kernal ACPI macro ACPI_PROCESSOR_MAX_POWER.",
+   "label": "KlogLimitPowerStates"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Duplicate ACPI video bus devices for the same VGA controller",
+   "advice": "The ACPI video driver has found a duplicate ACPI video bus device for the same VGA controller.  If the current driver does not work, one can try to work around this using the video.allow_duplicates=1 kernel parameter.",
+   "label": "KlogDuplicateACPIVideoBus"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "TSC doesn't count with P0 frequency",
+   "advice": "The AMD processor has the x86 constant TSC feature enabled but the firmware has not set bit 24 of the MSR MSR_K7_HWCR and so the processor TSC does not count in the P0 frequenct level. This is a firmware bug.",
+   "label": "KlogAmdTscP0FreqNoCount"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "BIOS strings suggest APM bugs, disabling power status reporting",
+   "advice": "The firmware is known to have broken Advanced Power Management (APM), so APM has been disabled.",
+   "label": "KlogApmBiosBroken"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "BIOS strings suggest APM reports battery life in minutes and wrong byte order",
+   "advice": "The firmware is known to report the battery life in minutes in the wrong byte order, so the kernel has detected this and will work around the firmware bug.  This is known to occur on many Sony laptops.",
+   "label": "KlogApmMinuteSwapBytes"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Disabling ACPI support",
+   "advice": "The machine has had ACPI support disabled because either the firmware is way too old, or it is known to have broken or bad ACPI support. One can try to override this with the acpi=force kernel parameter, but the machine may still hang or not work correctly.",
+   "label": "KlogAcpiDisabled"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "acpi=force override",
+   "advice": "The kernel has been forced to enabled ACPI. This is sometimes required because ACPI support has been disabled because the firmware is too old or was blacklisted because it has known ACPI issues.",
+   "label": "KlogAcpiForceOverride"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid passive threshold",
+   "advice": "The ACPI driver attempted to evaluate the ACPI Passive List (_PSL) object for a particular thermal zone but this failed. The passive cooling for that particular thermal zone has been invalidated.",
+   "label": "KlogInvalidPassiveThreshold"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Critical threshold",
+   "advice": "The firmware critical trip point has been overridden using the kernel critical trip point kernel parameter crt.",
+   "label": "KlogCriticalThreshold"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Found unsupported MADT entry",
+   "advice": "The ACPI Multiple APIC Description Table (MADT) contains an entry that has an unknown MADT header type. This will be igored, but it does suggest a broken or buggyy ACPI MADT.",
+   "label": "KlogMadtEntryUnsupported"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unknown interrupt routing model",
+   "advice": "An internal ACPI driver bug has occured. acpi_bus_init_irq has deetected an unkown interrupt routing model in acpi_irq_model. This most probably is a kernel bug.",
+   "label": "KlogAcpiIrqModelUnknown"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unable to map SBF",
+   "advice": "The kernel was unable to map the ACPI BOOT table and hence unable to determine the port to set the Simple Boot Flag.",
+   "label": "KlogBootTableNotMapped"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "DMAR: Recommended TLB entries for ISOCH unit is 16; your BIOS set",
+   "advice": "The recommended number of TLB entries for the ISOCH DMAR unit should be 16, hoever the firmware has misconfigured this.",
+   "label": "KlogDmarTlbEntriesMisconfigured"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot transition to non-D0 state from D3",
+   "advice": "ACPI cannot transition a device from a D3 state to a non-D0 state.",
+   "label": "KlogAcpiD0TransitionFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Cannot set device to a higher-powered state than parent",
+   "advice": "ACPI cannot transition a device to a higher power state to that of the parent device.",
+   "label": "KlogAcpiHigherPowerStateThanParent"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Device \\[.*\\] failed to transition to",
+   "advice": "ACPI cannot transition a device to a different power state.",
+   "label": "KlogAcpiPowerStateTransitionFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid _PRS IRQ",
+   "advice": "The ACPI Possible Resource Settings (_PRS) object returned an invalid IRQ mapping from a PCI interrupt pin to the interrupt input of an interrupt controller.",
+   "label": "KlogAcpiInvalidPrsIrq"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_INFO",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "firmware reports .*:.*:.* PCI INT .* connected to .*; changing to",
+   "advice": "The kernel has detected a PCI interrupt configuration than needed to be quirked to make it work correctly.",
+   "label": "KlogAcpiPciIntRemap"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No IOAPIC for GSI",
+   "advice": "The kernel could not find an IOAPIC that manages the Global System Interrupt (GSI), so no IOAPIC will be configured with that GSI.",
+   "label": "KlogAcpiNoIoapicForGsi"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_BIOS_THERMAL",
    "pattern": "Temperature above threshold, cpu clock throttled",
@@ -4514,10 +4730,10 @@
    "label": "KlogAcpiInvalidPssFrequency"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "\\[Firmware Bug\\]: ACPI.*No _BQC method",
+   "pattern": "No _BQC method",
    "advice": "_BQC (Brightness Query Current level) seems to be missing. This method returns the current brightness level of a built-in display output device.",
    "label": "KlogAcpiMissingBqc"
   },
@@ -4530,10 +4746,10 @@
    "label": "KlogAcpiMissingBqc"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "\\[Firmware Bug\\]: BIOS needs update for CPU frequency support",
+   "pattern": "BIOS needs update for CPU frequency support",
    "advice": "Having _PPC but missing frequencies (_PSS, _PCT) is a good hint that the BIOS is older than the CPU and does not know the CPU frequencies.",
    "label": "KlogAcpiMissingPssPct"
   },
@@ -4546,26 +4762,26 @@
    "label": "KlogAcpiErstInvalid"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_THERMAL",
-   "pattern": "\\[Firmware Bug\\]:.*Invalid critical threshold",
+   "pattern": "Invalid critical threshold",
    "advice": "ACPI _CRT (Critical Trip Point) is returning a threshold lower than zero degrees Celsius which is clearly incorrect.",
    "label": "KlogAcpiCrtInvalidThreshold"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_ACPI_THERMAL",
-   "pattern": "\\[Firmware Bug\\]:.*No valid trip found",
+   "pattern": "No valid trip found",
    "advice": "No valid ACPI _CRT (Critical Trip Point) was found.",
    "label": "KlogAcpiNoValidCrt"
   },
   {
-   "compare_mode": "regex",
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI_BRIGHTNESS",
-   "pattern": "\\[Firmware Bug\\]:.*_BCQ is used instead of _BQC",
+   "pattern": "_BCQ is used instead of _BQC",
    "advice": "ACPI Method _BCQ was defined (typo) instead of _BQC - this should be fixed.however the kernel has detected this and is working around this typo.",
    "label": "KlogAcpiBcqInsteadOfBqc"
   }, 

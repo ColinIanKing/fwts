@@ -805,7 +805,8 @@ static int parse_kernel_message(parser *p, token *t)
 		    (prev_token_type == TOKEN_PAREN_OPENED) &&
 		    ((strcmp(t->token, "KERN_ERR") == 0) ||
 		     (strcmp(t->token, "KERN_CRIT") == 0) ||
-		     (strcmp(t->token, "KERN_EMERG") == 0))) {
+		     (strcmp(t->token, "KERN_EMERG") == 0) ||
+		     (strcmp(t->token, "KERN_WARNING") == 0))) {
 			emit = true;
 		}
 

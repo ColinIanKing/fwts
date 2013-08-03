@@ -216,7 +216,12 @@ static void fwts_log_close_json(fwts_log_file *log_file)
 
 	fwts_log_section_end_json(log_file);
 
+#ifdef JSON_C_TO_STRING_PRETTY
+	str = json_object_to_json_string_ext(
+		json_stack[0].obj, JSON_C_TO_STRING_PRETTY);
+#else
 	str = json_object_to_json_string(json_stack[0].obj);
+#endif
 	if (str == NULL) {
 		/* Let's not make this bail out as user may be logging to other files too */
 		fprintf(stderr, "Cannot turn json object to text for output. Empty json output\n");

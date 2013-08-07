@@ -51,29 +51,22 @@ static pid_t *fwts_cpu_pids;
  */
 int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 {
-	struct stat statbuf;
 	char buffer[PATH_MAX];
-	uint64_t value;
+	uint64_t value = 0;
 	int fd;
 	int ret;
 
-	value = 0;
-
 	snprintf(buffer, sizeof(buffer), "/dev/cpu/%d/msr", cpu);
-
-	if (stat(buffer, &statbuf)) {
+	if ((fd = open(buffer, O_RDONLY)) < 0) {
 		/* Hrm, msr not there, so force modprobe msr and see what happens */
 		pid_t pid;
 		if ((fd = fwts_pipe_open("modprobe msr", &pid)) < 0)
 			return FWTS_ERROR;
 		fwts_pipe_close(fd, pid);
 
-		if (stat(buffer, &statbuf))
+		if ((fd = open(buffer, O_RDONLY)) < 0)
 			return FWTS_ERROR; /* Really failed */
 	}
-
-	if ((fd = open(buffer, O_RDONLY)) < 0)
-                return FWTS_ERROR;
 
 	ret = pread(fd, &value, 8, reg);
 	close(fd);

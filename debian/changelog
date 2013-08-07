@@ -1,3 +1,60 @@
+fwts (13.08.00-0ubuntu1) saucy; urgency=low
+ 
+  [Alex Hung]
+  * dmi: dmi_decode: merge smbios test as they both check dmi/smbios
+  * dmi: rename dmi_decode test to dmicheck
+
+  [Colin Ian King]
+  * uefi: uefirtvariable: minor cleanup of failure message
+  * uefi: uefirtvariable: add options to specify iterations in variable stress
+      tests (LP: #1197742)
+  * efi_runtime: Fix efi_runtime build warnings (LP: #1198168)
+  * efi_runtime: ensure it always builds for kernels > 3.0.0 (LP: #1198168)
+  * efi_runtime: memset the entire structure (LP: #1198236)
+  * lib: add acpica mode types
+  * lib: framework: add new acpica mode flags
+  * lib: acpica: set various ACPICA global mode flags depending on acpica_mode
+  * lib: fwts_framework: add support for new --acpica option
+  * acpi: method: handle ACPICA slack mode gracefully
+  * doc: add --acpica option to man page
+  * acpi: syntaxcheck: use ASL_MESSAGE_TYPES instead of #defining them
+      (LP: #1200568)
+  * acpi: syntaxcheck: ensure error message strings are in sync with error
+      (LP: #1200568)
+  * lib: fwts_log: set non-TTY log with to 80 characters (LP: #1200592)
+  * acpi: syntaxcheck: fix spelling mistake (LP: #1200602)
+  * fwts_iasl_interface.c: ensure we read in all of stdout (LP: #1200426)
+  * data: klog.json: rename "Common" label prefix to "Klog", (LP: #1201311)
+  * data: klog.json: Update patterns to keep in sync with Linux 3.10 
+      (LP: #1201335)
+  * bios: hdaaudio: skip the test if no BIOS pin config found (LP: #1201903)
+  * pci: aspm: test should skip if it can't read FACP or PCIe config
+      (LP: #1201909)
+  * docs: remove legacy notes created during early fwts development
+  * smatchify.sh: fix spelling mistake
+  * bios: mtrr: fix spelling mistake
+  * acpica: Makefile.am: fix spelling mistake
+  * data: syntaxcheck.json: fix spelling mistakes
+  * data: klog.json: fix spelling mistakes
+  * docs: fwts.1: fix spelling mistake
+  * doc: fwts-frontend-text.1: fix spelling mistake
+  * ACPICA: update to version 20130725 (LP: #1205203)
+  * acpi: syntaxcheck: strcpy should be replaced with strncpy (LP: #1205215)
+  * acpi: method: check for NULL buf before dereferencing it (LP: #1205267)
+  * lib: fwts_alloc: use plain old mmap on 32 bit machines (LP: #1204065)
+  * ACPICA BZ 1035 fixes segfault with too many ^^^^^^ prefixes.
+      (LP: #1205714)
+  * lib: fwts_log_json: check sting from json is not null (LP: #1206285)
+  * acpi: acpidump: fix segfault on BERT entries (LP: #1206643)
+  * data: klog.json: Add some firmware related kernel warnings (LP: #1206958)
+  * utils: kernelscan: also scan for warning messages (LP: #1206953)
+  * lib: fwts_log_json: enable json human readable formatting (LP: #1206290)
+
+  [Zhang Rui]
+  * update README_ACPICA to reflect the real ACPICA repo
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 07 Aug 2013 10:27:51 +0800
+
 fwts (13.07.00-0ubuntu1) saucy; urgency=low
 
   [Alex Hung]

@@ -270,33 +270,35 @@ static int fwts_uefi_get_variable_efivars_fs(const char *varname, fwts_uefi_var 
 
 	snprintf(filename, sizeof(filename), "%s/%s", path, varname);
 
-	if (stat(filename, &statbuf) < 0)
+	if ((fd = open(filename, O_RDONLY)) < 0)
 		return FWTS_ERROR;
+
+	if (fstat(fd, &statbuf) < 0) {
+		close(fd);
+		return FWTS_ERROR;
+	}
 
 	/* Variable name, less the GUID, in 16 bit ints */
 	var->varname = calloc(1, (varname_len + 1 - 36)  * sizeof(uint16_t));
-	if (var->varname == NULL)
+	if (var->varname == NULL) {
+		close(fd);
 		return FWTS_ERROR;
+	}
 
 	/* Convert name to internal 16 bit version */
 	fwts_uefi_str_to_str16(var->varname, varname_len - 36, varname);
 
 	/* Need to read the data in one read, so allocate a buffer big enough */
 	if ((efivars_fs_var = calloc(1, statbuf.st_size)) == NULL) {
+		close(fd);
 		free(var->varname);
-		return FWTS_ERROR;
-	}
-
-	if ((fd = open(filename, O_RDONLY)) < 0) {
-		free(var->varname);
-		free(efivars_fs_var);
 		return FWTS_ERROR;
 	}
 
 	if (read(fd, efivars_fs_var, statbuf.st_size) != statbuf.st_size) {
+		close(fd);
 		free(var->varname);
 		free(efivars_fs_var);
-		close(fd);
 		return FWTS_ERROR;
 	}
 	close(fd);

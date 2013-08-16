@@ -388,4 +388,4 @@ static fwts_framework_ops securebootcert_ops = {
 	.minor_tests = securebootcert_tests
 };
 
-FWTS_REGISTER("securebootcert", &securebootcert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("securebootcert", &securebootcert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);

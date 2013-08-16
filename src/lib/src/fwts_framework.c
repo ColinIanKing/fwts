@@ -38,7 +38,8 @@
 	 FWTS_FLAG_INTERACTIVE_EXPERIMENTAL |	\
 	 FWTS_FLAG_POWER_STATES |		\
 	 FWTS_FLAG_UTILS |			\
-	 FWTS_FLAG_UNSAFE)
+	 FWTS_FLAG_UNSAFE |			\
+	 FWTS_FLAG_TEST_UEFI)
 
 static fwts_list tests_to_skip;
 
@@ -81,6 +82,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
 	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },
 	{ "acpica",		"",   1, "Enable ACPICA run time options." },
+	{ "uefi",		"",   0, "Run UEFI tests." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -227,6 +229,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 		{ "Power States",		FWTS_FLAG_POWER_STATES },
 		{ "Utilities",			FWTS_FLAG_UTILS },
 		{ "Unsafe",			FWTS_FLAG_UNSAFE },
+		{ "UEFI",			FWTS_FLAG_TEST_UEFI },
 		{ NULL,				0 },
 	};
 
@@ -241,7 +244,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 			fwts_list_init(&sorted);
 			fwts_list_foreach(item, &fwts_framework_test_list) {
 				test = fwts_list_data(fwts_framework_test *, item);
-				if ((test->flags & FWTS_FLAG_RUN_ALL) == categories[i].flag)
+				if ((test->flags & FWTS_FLAG_RUN_ALL) & categories[i].flag)
 					fwts_list_add_ordered(&sorted, test,
 						fwts_framework_compare_test_name);
 			}
@@ -1129,6 +1132,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 37: /* --acpica */
 			if (fwts_framework_acpica_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
+			break;
+		case 38: /* --uefi */
+			fw->flags |= FWTS_FLAG_TEST_UEFI;
 			break;
 		}
 		break;

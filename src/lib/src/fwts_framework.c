@@ -1055,7 +1055,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_show_version(stdout, argv[0]);
 			return FWTS_COMPLETE;
 		case 16: /* --dump */
-			fwts_dump_info(fw, NULL);
+			fwts_dump_info(fw);
 			return FWTS_COMPLETE;
 		case 17: /* --table-path */
 			fwts_framework_strdup(&fw->acpi_table_path, optarg);
@@ -1145,7 +1145,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FLAG_BATCH;
 		break;
 	case 'd': /* --dump */
-		fwts_dump_info(fw, NULL);
+		fwts_dump_info(fw);
 		return FWTS_COMPLETE;
 	case 'D': /* --show-progress-dialog */
 		fw->flags = (fw->flags &

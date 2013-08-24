@@ -22,6 +22,6 @@
 
 #include "fwts.h"
 
-int fwts_dump_info(fwts_framework *fw, const char *path);
+int fwts_dump_info(fwts_framework *fw);
 
 #endif

@@ -21,12 +21,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 #include <time.h>
+#include <limits.h>
 #include <sys/klog.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "fwts.h"
 
@@ -38,13 +35,11 @@
  *  dump_data()
  *	dump to path/filename a chunk of data of length len
  */
-static int dump_data(const char *path, const char *filename, char *data, const size_t len)
+static int dump_data(const char *filename, char *data, const size_t len)
 {
 	FILE *fp;
-	char name[PATH_MAX];
 
-	snprintf(name, sizeof(name), "%s/%s", path, filename);
-	if ((fp = fopen(name, "w")) == NULL)
+	if ((fp = fopen(filename, "w")) == NULL)
 		return FWTS_ERROR;
 
 	if ((fwrite(data, sizeof(char), len, fp) != len)) {
@@ -60,7 +55,7 @@ static int dump_data(const char *path, const char *filename, char *data, const s
  *  dump_dmesg()
  *	read kernel log, dump to path/filename
  */
-static int dump_dmesg(const char *path, const char *filename)
+static int dump_dmesg(void)
 {
 	int len;
 	char *data;
@@ -76,7 +71,7 @@ static int dump_dmesg(const char *path, const char *filename)
 		free(data);
 		return FWTS_ERROR;
 	}
-	ret = dump_data(path, filename, data, strlen(data));
+	ret = dump_data("dmesg.log", data, strlen(data));
 
 	free(data);
 
@@ -88,7 +83,7 @@ static int dump_dmesg(const char *path, const char *filename)
  *  dump_exec()
  *  	Execute command, dump output to path/filename
  */
-static int dump_exec(const char *path, const char *filename, const char *command)
+static int dump_exec(const char *filename, const char *command)
 {
 	int fd;
 	pid_t pid;
@@ -106,7 +101,7 @@ static int dump_exec(const char *path, const char *filename, const char *command
 
 	fwts_pipe_close(fd, pid);
 
-	ret = dump_data(path, filename, data, len);
+	ret = dump_data(filename, data, len);
 
 	free(data);
 
@@ -118,11 +113,11 @@ static int dump_exec(const char *path, const char *filename, const char *command
  *  dump_dmidecode()
  *	run dmidecode, dump output to path/filename
  */
-static int dump_dmidecode(fwts_framework *fw, const char *path, const char *filename)
+static int dump_dmidecode(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
-	return dump_exec(path, filename, FWTS_DMIDECODE_PATH);
+	return dump_exec("dmidecode.log", FWTS_DMIDECODE_PATH);
 }
 #endif
 
@@ -130,13 +125,13 @@ static int dump_dmidecode(fwts_framework *fw, const char *path, const char *file
  *  dump_lspci()
  *	run lspci, dump output to path/filename
  */
-static int dump_lspci(fwts_framework *fw, const char *path, const char *filename)
+static int dump_lspci(fwts_framework *fw)
 {
 	char command[1024];
 
 	snprintf(command, sizeof(command), "%s -vv -nn", fw->lspci);
 
-	return dump_exec(path, filename, command);
+	return dump_exec("lspci.log", command);
 }
 
 #ifdef FWTS_ARCH_INTEL
@@ -165,14 +160,12 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
  *  dump_acpi_tables()
  *	hex dump all ACPI tables
  */
-static int dump_acpi_tables(fwts_framework *fw, const char *path)
+static int dump_acpi_tables(fwts_framework *fw)
 {
-	char filename[PATH_MAX];
 	FILE *fp;
 	int i;
 
-	snprintf(filename, sizeof(filename), "%s/acpidump.log", path);
-	if ((fp = fopen(filename, "w")) == NULL)
+	if ((fp = fopen("acpidump.log", "w")) == NULL)
 		return FWTS_ERROR;
 
 	for (i=0;;i++) {
@@ -198,18 +191,15 @@ static int dump_acpi_tables(fwts_framework *fw, const char *path)
  *  dump_readme()
  *	dump README file containing some system info
  */
-static int dump_readme(const char *path)
+static int dump_readme(void)
 {
-	char filename[PATH_MAX];
 	time_t now = time(NULL);
 	struct tm *tm = localtime(&now);
 	FILE *fp;
 	char *str;
 	int len;
 
-	snprintf(filename, sizeof(filename), "%s/README.txt", path);
-
-	if ((fp = fopen(filename, "w")) == NULL)
+	if ((fp = fopen("README.txt", "w")) == NULL)
 		return FWTS_ERROR;
 
 	str = asctime(tm);
@@ -239,50 +229,48 @@ static int dump_readme(const char *path)
  *	kernel log, dmidecode output, lspci output,
  *	ACPI tables
  */
-int fwts_dump_info(fwts_framework *fw, const char *path)
+int fwts_dump_info(fwts_framework *fw)
 {
+	char path[PATH_MAX+1];
 #ifdef FWTS_ARCH_INTEL
 	bool root_priv = (fwts_check_root_euid(fw, false) == FWTS_OK);
 #endif
+	if (getcwd(path, PATH_MAX) == NULL)
+		strcpy(path, "./");
 
-	if (path == NULL)
-		path = "./";
-
-	if (access(path, F_OK) != 0) {
-		if (mkdir(path, 0777) < 0) {
-			fprintf(stderr, "Cannot mkdir %s.\n", path);
-			return FWTS_ERROR;
-		}
+	if (access(path, W_OK) < 0) {
+		fprintf(stderr, "No write access to %s.\n", path);
+		return FWTS_ERROR;
 	}
 
-	if (dump_readme(path) != FWTS_OK)
+	if (dump_readme() != FWTS_OK)
 		fprintf(stderr, "Failed to dump README.txt.\n");
 	else
 		printf("Created README.txt\n");
 
-	if (dump_dmesg(path, "dmesg.log") != FWTS_OK)
+	if (dump_dmesg() != FWTS_OK)
 		fprintf(stderr, "Failed to dump kernel log.\n");
 	else
 		printf("Dumping dmesg to dmesg.log\n");
 
 #ifdef FWTS_ARCH_INTEL
 	if (root_priv) {
-		if (dump_dmidecode(fw, path, "dmidecode.log") != FWTS_OK)
+		if (dump_dmidecode(fw) != FWTS_OK)
 			fprintf(stderr, "Failed to dump output from dmidecode.\n");
 		else
 			printf("Dumped DMI data to dmidecode.log\n");
-	} else 
+	} else
 		fprintf(stderr, "Need root privilege to dump DMI tables.\n");
 #endif
 
-	if (dump_lspci(fw, path, "lspci.log") != FWTS_OK)
+	if (dump_lspci(fw) != FWTS_OK)
 		fprintf(stderr, "Failed to dump output from lspci.\n");
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
 #ifdef FWTS_ARCH_INTEL
 	if (root_priv) {
-		if (dump_acpi_tables(fw, path) != FWTS_OK)
+		if (dump_acpi_tables(fw) != FWTS_OK)
 			fprintf(stderr, "Failed to dump ACPI tables.\n");
 		else
 			printf("Dumped ACPI tables to acpidump.log\n");

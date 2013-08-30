@@ -3,6 +3,94 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ACPI: Deprecated procfs I/F for AC is loaded, please retry with CONFIG_ACPI_PROCFS_POWER cleared",
+   "advice": "Using an old procfs interface for ACPI AC Adapter, this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This should be disabled for kernels > 2.6.37.",
+   "label": "KlogAcpiDeprecatedProcfsInterface"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Deprecated procfs I/F for SBS is loaded, please retry with CONFIG_ACPI_PROCFS_POWER cleared",
+   "advice": "Using an old procfs interface for ACPI battery, this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This should be disabled for kernels > 2.6.37.",
+   "label": "KlogAcpiDeprecatedProcfsInterface"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Unsupported Throttling notifier event",
+   "advice": "This is an internal ACPI driver error, an unknown processor throttling notifier event has been passed to acpi_processor_throttling_notifier().  This error is very unlikely and is an ACPI driver bug.",
+   "label": "KlogAcpiUnkownCpuThrottleNotifier"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Failed to create genetlink family for ACPI event",
+   "advice": "An internel kernel error occurred during  ACPI driver genetic link initialization. See acpi_event_genetlink_init() in drivers/acpi/event.c for more information.",
+   "label": "KlogAcpiGenetlinkInitFail"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Can not change Invalid GPE/Fixed Event status",
+   "advice": "The ACPI_EVENT_FLAG_HANDLE bit in the event status was not set which is invalid, aborting setting a GPE or Fixed Event counter.",
+   "label": "KlogAcpiInvalidStatus"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "ignored .* entries of .* found",
+   "advice": "The ACPI table had more sub-table entries than expected, the extra entries were ignored.",
+   "label": "KlogAcpiTableLargerThanExpected"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No return value",
+   "advice": "An ACPI object evaluation failed because the caller requested a return value but the return buffer length was zero which is not enough to store the return value.",
+   "label": "KlogAcpiEvalZeroBufferLength"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Blank _PRS EXT IRQ resource",
+   "advice": "An error occurred evaluating an ACPI _PRS IRQ resource, the resource was NULL or the interrupt count was zero.",
+   "label": "KlogAcpiBlankPrsIrqResource"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Blank _CRS EXT IRQ resource",
+   "advice": "An error occurred evaluating an ACPI _CRS IRQ resource, the resource was NULL or the interrupt count was zero.",
+   "label": "KlogAcpiBlankCrsIrqResource"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "BIOS reported IRQ .*, using IRQ",
+   "advice": "ACPI _CRS reported that a link should be using a specific IRQ, however a different IRQ is being used for the PCI link and _CRS has been ignored.",
+   "label": "KlogAcpiCrsIgnoredForPciLinkIrq"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "_CRS .* not found in _PRS",
+   "advice": "This error only occurs in ACPI strict mode. An interrupt specified by _CRS was not found in the _PRS, so a PCI interrupt is chosen from the last entry of the _PRS list.",
+   "label": "KlogAcpiCrsNotInPrs"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Your BIOS is broken and requested that x2apic be disabled",
@@ -186,7 +274,7 @@
    "label": "KlogAcpiHigherPowerStateThanParent"
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Device \\[.*\\] failed to transition to",

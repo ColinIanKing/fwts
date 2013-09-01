@@ -77,7 +77,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "lp-tags-log", 	"",   0, "Output LaunchPad bug tags in results log." },
 	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
 	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
-	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses." },
+	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses)." },
 	{ "filter-error-discard", "", 1, "Discard errors that match any of the specified labels." },
 	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
 	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },

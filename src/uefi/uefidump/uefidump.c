@@ -656,6 +656,30 @@ static void uefidump_info_signature_support(fwts_framework *fw, fwts_uefi_var *v
 	}
 }
 
+static void uefidump_info_hwerrrec_support(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 2) {
+		/* Should be 2 byte, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		char *support;
+		uint16_t *value = (uint16_t *)var->data;
+
+		switch (*value) {
+		case 0:
+			support = " (Not support for Hardware Error Record Persistence)";
+			break;
+		case 1:
+			support = " (Support for Hardware Error Record Persistence)";
+			break;
+		default:
+			support = " (reserved value)";
+			break;
+		}
+		fwts_log_info_verbatum(fw, "  Value: 0x%4.4" PRIx16 "%s.", *value, support);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -680,6 +704,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "MemoryOverwriteRequestControl",	uefidump_info_morc },
 	{ "AcpiGlobalVariable",	uefidump_info_acpi_global_variable },
 	{ "SignatureSupport",	uefidump_info_signature_support },
+	{ "HwErrRecSupport",	uefidump_info_hwerrrec_support },
 	{ NULL, NULL }
 };
 

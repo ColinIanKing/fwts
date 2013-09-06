@@ -723,6 +723,13 @@ static void uefidump_info_osindications_supported(fwts_framework *fw, fwts_uefi_
 	}
 }
 
+static void uefidump_info_vendor_keys(fwts_framework *fw, fwts_uefi_var *var)
+{
+	uint8_t value = (uint8_t)var->data[0];
+
+	fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 ".", value);
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -749,6 +756,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "SignatureSupport",	uefidump_info_signature_support },
 	{ "HwErrRecSupport",	uefidump_info_hwerrrec_support },
 	{ "OsIndicationsSupported",	uefidump_info_osindications_supported },
+	{ "VendorKeys",		uefidump_info_vendor_keys },
 	{ NULL, NULL }
 };
 

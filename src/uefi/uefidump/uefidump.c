@@ -680,6 +680,49 @@ static void uefidump_info_hwerrrec_support(fwts_framework *fw, fwts_uefi_var *va
 	}
 }
 
+static void uefidump_info_osindications_supported(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 8) {
+		/* Should be 8 bytes, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		uint64_t value;
+		char str[300];
+
+		memcpy(&value, var->data, sizeof(uint64_t));
+		*str = 0;
+
+		if (value & EFI_OS_INDICATIONS_BOOT_TO_FW_UI)
+			strcat(str, "EFI_OS_INDICATIONS_BOOT_TO_FW_UI");
+
+		if (value & EFI_OS_INDICATIONS_TIMESTAMP_REVOCATION) {
+			if (*str)
+				strcat(str, ",");
+			strcat(str, "EFI_OS_INDICATIONS_TIMESTAMP_REVOCATION");
+		}
+
+		if (value & EFI_OS_INDICATIONS_FILE_CAPSULE_DELIVERY_SUPPORTED) {
+			if (*str)
+				strcat(str, ",");
+			strcat(str, "EFI_OS_INDICATIONS_FILE_CAPSULE_DELIVERY_SUPPORTED");
+		}
+
+		if (value & EFI_OS_INDICATIONS_FMP_CAPSULE_SUPPORTED) {
+			if (*str)
+				strcat(str, ",");
+			strcat(str, "EFI_OS_INDICATIONS_FMP_CAPSULE_SUPPORTED");
+		}
+
+		if (value & EFI_OS_INDICATIONS_CAPSULE_RESULT_VAR_SUPPORTED) {
+			if (*str)
+				strcat(str, ",");
+			strcat(str, "EFI_OS_INDICATIONS_CAPSULE_RESULT_VAR_SUPPORTED");
+		}
+
+		fwts_log_info_verbatum(fw, "  Value: 0x%16.16" PRIx64 " (%s).", value, str);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -705,6 +748,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "AcpiGlobalVariable",	uefidump_info_acpi_global_variable },
 	{ "SignatureSupport",	uefidump_info_signature_support },
 	{ "HwErrRecSupport",	uefidump_info_hwerrrec_support },
+	{ "OsIndicationsSupported",	uefidump_info_osindications_supported },
 	{ NULL, NULL }
 };
 

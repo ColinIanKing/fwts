@@ -1,3 +1,24 @@
+fwts (13.09.00-0ubuntu1) saucy; urgency=low
+
+  [Colin Ian King]
+  * lib/fwts_uefi.c: fix time-of-use race on open/stat (LP: #1209251)
+  * lib: fwts_cpu.c: fix time-of-use race on stat/open (LP: #1209225)
+  * lib: fwts_dump: remove the redundant path in fwts_dump_info (LP: #1216344)
+  * data: klog.json: Add some more ACPI related kernel error messages
+      (LP: #1219006)
+  * fwts: framework: Add missing closed parenthesis for -U option (LP: #1219576)
+
+  [Ivan Hu]
+  * UEFI: move the UEFI tests into the UEFI category (LP:#1207200)
+  * uefi: uefidump: Add support for HwErrRecSupport
+  * uefi: uefidump: Add support for OsIndicationsSupported
+  * uefi: uefidump: Add support for VendorKeys
+
+  [Naresh Bhat]
+  * ACPICA:enable 64bit build for aarch64 architecture
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 10 Sep 2013 17:33:17 +0800
+
 fwts (13.08.00-0ubuntu1) saucy; urgency=low
  
   [Alex Hung]

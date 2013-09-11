@@ -319,7 +319,9 @@ static void fwts_framework_format_results(char *buffer, int buflen, fwts_results
 		buflen -= n;
 	}
 	if ((include_zero_results || (results->warning > 0)) && (buflen > 0)) {
-		n = snprintf(buffer, buflen, "%s%u warnings", n > 0 ? ", " : "", results->warning);
+		n = snprintf(buffer, buflen, "%s%u warning%s",
+			n > 0 ? ", " : "", results->warning,
+			results->warning > 1 ? "s" : "");
 		buffer += n;
 		buflen -= n;
 	}

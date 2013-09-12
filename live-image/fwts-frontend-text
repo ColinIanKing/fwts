@@ -92,7 +92,7 @@ select_tests()
 		#
 		#  Discover available tests
 		#
-		fwts --batch --batch-experimental --show-tests | grep "^ " > $OPTIONS
+		fwts --batch --batch-experimental --uefi --unsafe --show-tests | grep "^ "| sort | uniq > $OPTIONS
 		while read test text
 		do
 			((x++))

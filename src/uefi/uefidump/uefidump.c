@@ -18,6 +18,7 @@
  */
 #include <stddef.h>
 #include <inttypes.h>
+#include <ctype.h>
 
 #include "fwts.h"
 #include "fwts_uefi.h"
@@ -747,7 +748,6 @@ static uefidump_info uefidump_info_table[] = {
 	{ "LangCodes",		uefidump_info_langcodes },
 	{ "Lang",		uefidump_info_lang },
 	{ "Timeout",		uefidump_info_timeout },
-	{ "Boot0",		uefidump_info_bootdev },
 	{ "dump-type0-",	uefidump_info_dump_type0 },
 	{ "SecureBoot",		uefidump_info_secure_boot },
 	{ "SetupMode",		uefidump_info_setup_mode },
@@ -779,6 +779,14 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 			info->func(fw, var);
 			return;
 		}
+	}
+
+	/* Check the boot load option Boot####. #### is a printed hex value */
+	if ((strlen(varname) == 8) && (strncmp(varname, "Boot", 4) == 0)
+			&& isxdigit(varname[4]) && isxdigit(varname[5])
+			&& isxdigit(varname[6]) && isxdigit(varname[7])) {
+		uefidump_info_bootdev(fw, var);
+		return;
 	}
 
 	/* otherwise just do a plain old hex dump */

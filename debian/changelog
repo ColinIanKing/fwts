@@ -1,3 +1,14 @@
+fwts (13.09.01-0ubuntu1) saucy; urgency=low
+ 
+  [Alex Hung]
+  * live-image/fwts-frontend-text: add uefi tests to fwts-live (LP: #1223793)
+
+  [Keng-Yu Lin]
+  * efi_runtime: fix the broken kernel vermagic when upgrading the kernel
+      pacakge (LP: #1223801)
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Tue, 17 Sep 2013 15:27:31 +0800
+
 fwts (13.09.00-0ubuntu1) saucy; urgency=low
 
   [Colin Ian King]

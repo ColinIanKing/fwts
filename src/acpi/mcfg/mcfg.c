@@ -34,82 +34,65 @@ static fwts_acpi_table_info *mcfg_table;
 
 static int compare_config_space(
 	fwts_framework *fw,
-	const uint16_t segment,
-	const uint32_t device,
-	fwts_acpi_mcfg_configuration *config)
+	const fwts_acpi_mcfg_configuration *config)
 {
-	fwts_list *lspci_output;
-	fwts_list_link *item;
-	int status;
-	uint8_t *space;
-	size_t page_size;
-
-	char command[PATH_MAX];
-	char compare_line[50];
+	uint8_t *mapped_config_space;
+	uint8_t config_space[16];
+	size_t page_size, n;
+	bool match;
+	char path[PATH_MAX];
+	FILE *fp;
+	int i;
 
 	page_size = fwts_page_size();
 
-	/* Sanity check on first config */
-	if ((space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap table at 0x%" PRIx64 ".", config->base_address);
+	/*
+ 	 * Sanity check on first config, this is enough to
+	 * see if MMIO base is OK or not
+	 */
+	snprintf(path, sizeof(path),
+		"/sys/bus/pci/devices/%4.4" PRIx16 ":00:00.0/config",
+		config->pci_segment_group_number);
+
+	if ((fp = fopen(path, "r")) == NULL) {
+		fwts_log_warning(fw, "Could not open %s.", path);
+		return FWTS_ERROR;
+	}
+	n = fread(config_space, 1, sizeof(config_space), fp);
+	fclose(fp);
+	if (n != sizeof(config_space)) {
+		fwts_log_warning(fw, "Could only read %zd bytes from %s, expecting %zd.", n, path, sizeof(config_space));
 		return FWTS_ERROR;
 	}
 
-	snprintf(compare_line, sizeof(compare_line),
-		"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x",
-		space[0],  space[1],  space[2],  space[3],
-		space[4],  space[5],  space[6],  space[7],
-		space[8],  space[9],  space[10], space[11],
-		space[12], space[13], space[14], space[15]);
-
-	(void)fwts_munmap(space, page_size);
-
-	snprintf(command, sizeof(command), "%s -vxxx -s %" PRIu16 ":%" PRIu32,
-		fw->lspci, segment, device);
-
-	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
-		fwts_log_warning(fw, "Could not execute %s", command);
+	if ((mapped_config_space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap PCI config space at 0x%" PRIx64 ".", config->base_address);
 		return FWTS_ERROR;
 	}
-
-	if (lspci_output == NULL) {
-		fwts_log_warning(fw,
-			"Failed to get lspci info for %" PRIu16 ":%" PRIu32,
-			segment, device);
-		return FWTS_ERROR;
-	}
-
-	fwts_list_foreach(item, lspci_output) {
-		char *line = fwts_text_list_text(item);
-
-		fwts_chop_newline(line);
-
-		if (strncmp(line, "00: ", 4) ==0) {
-			if (strcmp(&line[4], compare_line)) {
-				fwts_log_info(fw,
-					"%s is read from MMCONFIG, but config "
-					"space gives :\n-%s-\n", &line[4], compare_line);
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"PCIConfigSpaceBad",
-					"PCI config space appears to not work.");
-			} else
-				fwts_passed(fw, "PCI config space verified.");
-
-			fwts_text_list_free(lspci_output);
-			return FWTS_OK;
+	/*
+	 * Need to explicitly do byte comparisons on region
+	 * memcmp() fails as this can do 64 bit reads
+	 */
+	for (match = true, i = 0; i < 16; i++) {
+		if (config_space[i] != mapped_config_space[i]) {
+			match = false;
+			break;
 		}
 	}
-	fwts_text_list_free(lspci_output);
-	fwts_log_warning(fw, "Possible PCI space config space defect?");
+	(void)fwts_munmap(mapped_config_space, page_size);
 
-	return FWTS_ERROR;
+	if (match)
+		fwts_passed(fw, "PCI config space verified.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"PCIConfigSpaceBad",
+			"PCI config space appears to not work.");
+
+	return FWTS_OK;
 }
 
 static int mcfg_init(fwts_framework *fw)
 {
-	if (fwts_check_executable(fw, fw->lspci, "lspci"))
-		return FWTS_ERROR;
-
 	if (fwts_acpi_find_table(fw, "MCFG", 0, &mcfg_table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot load ACPI table");
 		return FWTS_ERROR;
@@ -204,7 +187,7 @@ static int mcfg_test1(fwts_framework *fw)
 
 	if (memory_map_list == NULL)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MMapUnreadable",
-			"Cannot check MCFG mmio space against memory map table: could not read memory map table.");
+			"Cannot check MCFG MMIO space against memory map table: could not read memory map table.");
 
 	config = &mcfg->configuration[0];
 	for (i = 0; i < nr; i++, config++) {
@@ -218,7 +201,7 @@ static int mcfg_test1(fwts_framework *fw)
 		    (!fwts_memory_map_is_reserved(memory_map_list, config->base_address))) {
 
 			fwts_failed(fw, LOG_LEVEL_LOW, "MCFGMMIONotReserved",
-				"MCFG mmio config space at 0x%" PRIx64
+				"MCFG MMIO config space at 0x%" PRIx64
 				" is not reserved in the memory map table",
 				config->base_address);
 			fwts_tag_failed(fw, FWTS_TAG_BIOS);
@@ -240,7 +223,7 @@ static int mcfg_test1(fwts_framework *fw)
 		}
 	}
 	if (!failed)
-		fwts_passed(fw, "MCFG mmio config space is reserved in memory map table.");
+		fwts_passed(fw, "MCFG MMIO config space is reserved in memory map table.");
 
 	return FWTS_OK;
 }
@@ -251,7 +234,6 @@ static int mcfg_test1(fwts_framework *fw)
 static int mcfg_test2(fwts_framework *fw)
 {
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg *)mcfg_table->data;
-	fwts_acpi_mcfg_configuration *config;
 
 	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
@@ -267,9 +249,7 @@ static int mcfg_test2(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	config = &mcfg->configuration[0];
-
-	return compare_config_space(fw, config->pci_segment_group_number, 0, config);
+	return compare_config_space(fw, &mcfg->configuration[0]);
 }
 
 static fwts_framework_minor_test mcfg_tests[] = {

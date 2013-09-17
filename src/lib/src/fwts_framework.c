@@ -89,7 +89,7 @@ static fwts_option fwts_framework_options[] = {
 static fwts_list fwts_framework_test_list = FWTS_LIST_INIT;
 
 static const char *fwts_copyright[] = {
-	"Some of this work - Copyright (c) 1999 - 2010, Intel Corp. All rights reserved.",
+	"Some of this work - Copyright (c) 1999 - 2013, Intel Corp. All rights reserved.",
 	"Some of this work - Copyright (c) 2010 - 2013, Canonical.",
 	NULL
 };

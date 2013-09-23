@@ -211,6 +211,16 @@ static syntaxcheck_error_map_item syntaxcheck_error_map[] = {
     ASL_ID(ASL_MSG_UNKNOWN_SUBTABLE),
     ASL_ID(ASL_MSG_UNKNOWN_TABLE),
     ASL_ID(ASL_MSG_ZERO_VALUE),
+    ASL_ID(ASL_MSG_RECURSION),
+    ASL_ID(ASL_MSG_SERIALIZED_REQUIRED),
+    ASL_ID(ASL_MSG_LOCAL_OUTSIDE_METHOD),
+    ASL_ID(ASL_MSG_NOT_PARAMETER),
+    ASL_ID(ASL_MSG_TRUNCATION),
+    ASL_ID(ASL_MSG_LIST_LENGTH_SHORT),
+    ASL_ID(ASL_MSG_PACKAGE_LENGTH),
+    ASL_ID(ASL_MSG_RESERVED_PACKAGE_LENGTH),
+    ASL_ID(ASL_MSG_LIST_LENGTH_SHORT),
+
     { 0, NULL, NULL }
 };
 
@@ -429,6 +439,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	fwts_list_link *item;
 	int errors = 0;
 	int warnings = 0;
+	int remarks = 0;
 	fwts_acpi_table_info *table;
 	fwts_list* iasl_errors;
 	fwts_list* iasl_disassembly;
@@ -463,12 +474,13 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 					char *error_text = fwts_text_list_text(item->next);
 					int iasl_error = (strstr(error_text, "Error") != NULL);
 					int iasl_warning = (strstr(error_text, "Warning") != NULL);
+					int iasl_remark = (strstr(error_text, "Remark") != NULL);
 					int error_code;
 
 					sscanf(error_text, "%*s %d", &error_code);
 
 					/* Valid error or warning, go and report */
-					if (iasl_error || iasl_warning) {
+					if (iasl_error || iasl_warning || iasl_remark) {
 						char label[64];
 						char *colon = strstr(line, ":");
 						char *carat = strstr(error_text, "^");
@@ -511,7 +523,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 							fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
 							break;
 						case ASL_REMARK:
-							fwts_log_info(fw, "Assembler remark in line %d", num);
+							fwts_failed(fw, LOG_LEVEL_LOW, label, "Assembler remark in line %d", num);
 							break;
 						case ASL_OPTIMIZATION:
 							skip = true;
@@ -530,6 +542,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 					}
 					errors += iasl_error;
 					warnings += iasl_warning;
+					remarks += iasl_remark;
 					item = item->next;
 				}
 				else {
@@ -544,12 +557,11 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	fwts_text_list_free(iasl_disassembly);
 	fwts_text_list_free(iasl_errors);
 
-	if (errors > 0) {
-		fwts_log_info(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings.", tablename, which, errors, warnings);
-	} else if (warnings > 0) {
-		fwts_log_info(fw, "Table %s (%d) reassembly: Found 0 errors, %d warnings.", tablename, which, warnings);
-	} else
-		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings.", tablename, which);
+	if (errors + warnings + remarks > 0)
+		fwts_log_info(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings, %d remarks.",
+			tablename, which, errors, warnings, remarks);
+	else
+		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings, 0 remarks.", tablename, which);
 
 	fwts_log_nl(fw);
 

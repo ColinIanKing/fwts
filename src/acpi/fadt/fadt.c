@@ -31,6 +31,8 @@
 #include <inttypes.h>
 #include <string.h>
 
+#define FADT_RESET_SUPPORTED		(1 << 10)
+
 static const fwts_acpi_table_fadt *fadt;
 static int fadt_size;
 
@@ -49,6 +51,12 @@ static int fadt_init(fwts_framework *fw)
 	fadt = (const fwts_acpi_table_fadt*)table->data;
 	fadt_size = table->length;
 
+	/*  Not having a FADT is not a failure */
+	if (fadt_size == 0) {
+		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure, skipping tests.");
+		return FWTS_SKIP;
+	}
+
 	return FWTS_OK;
 }
 
@@ -57,12 +65,6 @@ static int fadt_test1(fwts_framework *fw)
 	uint32_t port, width, val32;
 	int ret = FWTS_OK;
 
-	/*  Not having a FADT is not a failure */
-	if (fadt_size == 0) {
-		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure.");
-		return FWTS_OK;
-	}
-
 	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
 		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
@@ -70,8 +72,7 @@ static int fadt_test1(fwts_framework *fw)
 	port = fadt->pm1a_cnt_blk;
 	width = fadt->pm1_cnt_len * 8;	/* In bits */
 
-	/* Punt at 244 byte FADT is V2 */
-	if (fadt->header.length == 244) {
+	if ((fadt->header.revision > 1) || (fadt->header.length >= 244)) {
 		/*  Sanity check sizes with extended address variants */
 		fwts_log_info(fw, "FADT is greater than ACPI version 1.0");
 		if ((uint64_t)port != fadt->x_pm1a_cnt_blk.address) {
@@ -148,8 +149,49 @@ static int fadt_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int fadt_test2(fwts_framework *fw)
+{
+	if ((fadt->header.revision == 1) || (fadt->header.length < 244)) {
+		fwts_skipped(fw, "Header size indicates an ACPI 1.0 FADT, skipping test.");
+		return FWTS_SKIP;
+	}
+	/*
+ 	 * Sanity check Reset reg, c.f. ACPICA
+	 * commit 57bdfbee675cd2c0618c66882d68a6bdf9f8efc4
+	 */
+	if (fadt->flags & FADT_RESET_SUPPORTED) {
+		if (fadt->reset_reg.register_bit_width != 8) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "FadtResetRegWidth",
+				"FADT reset register is not 8 bits wide, got instead: %" PRIi8 ".",
+				fadt->reset_reg.register_bit_width);
+			fwts_advice(fw,
+				"Section 5.2.9 Fixed ACPI Description Table (Table 5-34) of the ACPI "
+				"specification states that the FADT register width should "
+				"be 8 bits wide. However, recent versions of ACPICA will ignore this "
+				"and default to 8 bits.");
+		} else
+			fwts_passed(fw, "FADT reset register width is 8 bits wide as expected.");
+
+		if (fadt->reset_reg.register_bit_offset != 0) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "FadtResetRegBitOffset",
+				"FADT reset register bit offset is not 0, got instead: %" PRIi8 ".",
+				fadt->reset_reg.register_bit_offset);
+			fwts_advice(fw,
+				"Section 5.2.9 Fixed ACPI Description Table (Table 5-34) of the ACPI "
+				"specification states that the FADT register bit offset should be 0.");
+		} else
+			fwts_passed(fw, "FADT register bit offset is 0 as expected.");
+	} else {
+		fwts_skipped(fw, "FADT flags indicates reset register not supported, skipping test.");
+		return FWTS_SKIP;
+	}
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test fadt_tests[] = {
 	{ fadt_test1, "Check FADT SCI_EN bit is enabled." },
+	{ fadt_test2, "Check FADT reset register." },
 	{ NULL, NULL }
 };
 

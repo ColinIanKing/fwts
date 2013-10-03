@@ -360,7 +360,6 @@ FlSplitInputPathname (
 
 
     *OutDirectoryPath = NULL;
-    *OutFilename = NULL;
 
     if (!InputPath)
     {
@@ -402,10 +401,19 @@ FlSplitInputPathname (
 
     if (!Filename)
     {
+        ACPI_FREE(DirectoryPath);
         return (AE_NO_MEMORY);
     }
 
     *OutDirectoryPath = DirectoryPath;
-    *OutFilename = Filename;
+
+    if (OutFilename)
+    {
+        *OutFilename = Filename;
+    }
+    else
+    {
+        ACPI_FREE(Filename);
+    }
     return (AE_OK);
 }

@@ -226,11 +226,11 @@ AcpiTbPrintTableHeader (
     {
         /* FACS only has signature and length fields */
 
-        ACPI_INFO ((AE_INFO, "%4.4s %p %05X",
+        ACPI_INFO ((AE_INFO, "%4.4s %p %06X",
             Header->Signature, ACPI_CAST_PTR (void, Address),
             Header->Length));
     }
-    else if (ACPI_COMPARE_NAME (Header->Signature, ACPI_SIG_RSDP))
+    else if (ACPI_VALIDATE_RSDP_SIG (Header->Signature))
     {
         /* RSDP has no common fields */
 
@@ -238,7 +238,7 @@ AcpiTbPrintTableHeader (
             ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->OemId, ACPI_OEM_ID_SIZE);
         AcpiTbFixString (LocalHeader.OemId, ACPI_OEM_ID_SIZE);
 
-        ACPI_INFO ((AE_INFO, "RSDP %p %05X (v%.2d %6.6s)",
+        ACPI_INFO ((AE_INFO, "RSDP %p %06X (v%.2d %6.6s)",
             ACPI_CAST_PTR (void, Address),
             (ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->Revision > 0) ?
                 ACPI_CAST_PTR (ACPI_TABLE_RSDP, Header)->Length : 20,
@@ -252,7 +252,7 @@ AcpiTbPrintTableHeader (
         AcpiTbCleanupTableHeader (&LocalHeader, Header);
 
         ACPI_INFO ((AE_INFO,
-            "%4.4s %p %05X (v%.2d %6.6s %8.8s %08X %4.4s %08X)",
+            "%4.4s %p %06X (v%.2d %6.6s %8.8s %08X %4.4s %08X)",
             LocalHeader.Signature, ACPI_CAST_PTR (void, Address),
             LocalHeader.Length, LocalHeader.Revision, LocalHeader.OemId,
             LocalHeader.OemTableId, LocalHeader.OemRevision,
@@ -282,6 +282,17 @@ AcpiTbVerifyChecksum (
 {
     UINT8                   Checksum;
 
+
+    /*
+     * FACS/S3PT:
+     * They are the odd tables, have no standard ACPI header and no checksum
+     */
+
+    if (ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_S3PT) ||
+        ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_FACS))
+    {
+        return (AE_OK);
+    }
 
     /* Compute the checksum on the table */
 

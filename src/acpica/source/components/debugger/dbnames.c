@@ -243,8 +243,7 @@ AcpiDbSetScope (
             goto ErrorExit;
         }
 
-        ACPI_STRCPY (AcpiGbl_DbScopeBuf, Name);
-        ACPI_STRCAT (AcpiGbl_DbScopeBuf, "\\");
+        AcpiGbl_DbScopeBuf[0] = 0;
     }
     else
     {
@@ -256,9 +255,22 @@ AcpiDbSetScope (
         {
             goto ErrorExit;
         }
+    }
 
-        ACPI_STRCAT (AcpiGbl_DbScopeBuf, Name);
-        ACPI_STRCAT (AcpiGbl_DbScopeBuf, "\\");
+    /* Build the final pathname */
+
+    if (AcpiUtSafeStrcat (AcpiGbl_DbScopeBuf, sizeof (AcpiGbl_DbScopeBuf),
+        Name))
+    {
+        Status = AE_BUFFER_OVERFLOW;
+        goto ErrorExit;
+    }
+
+    if (AcpiUtSafeStrcat (AcpiGbl_DbScopeBuf, sizeof (AcpiGbl_DbScopeBuf),
+        "\\"))
+    {
+        Status = AE_BUFFER_OVERFLOW;
+        goto ErrorExit;
     }
 
     AcpiGbl_DbScopeNode = Node;
@@ -322,6 +334,37 @@ AcpiDbDumpNamespace (
     AcpiDbSetOutputDestination (ACPI_DB_REDIRECTABLE_OUTPUT);
     AcpiNsDumpObjects (ACPI_TYPE_ANY, ACPI_DISPLAY_SUMMARY, MaxDepth,
         ACPI_OWNER_ID_MAX, SubtreeEntry);
+    AcpiDbSetOutputDestination (ACPI_DB_CONSOLE_OUTPUT);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDbDumpNamespacePaths
+ *
+ * PARAMETERS:  None
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Dump entire namespace with full object pathnames and object
+ *              type information. Alternative to "namespace" command.
+ *
+ ******************************************************************************/
+
+void
+AcpiDbDumpNamespacePaths (
+    void)
+{
+
+    AcpiDbSetOutputDestination (ACPI_DB_DUPLICATE_OUTPUT);
+    AcpiOsPrintf ("ACPI Namespace (from root):\n");
+
+    /* Display the entire namespace */
+
+    AcpiDbSetOutputDestination (ACPI_DB_REDIRECTABLE_OUTPUT);
+    AcpiNsDumpObjectPaths (ACPI_TYPE_ANY, ACPI_DISPLAY_SUMMARY,
+        ACPI_UINT32_MAX, ACPI_OWNER_ID_MAX, AcpiGbl_RootNode);
+
     AcpiDbSetOutputDestination (ACPI_DB_CONSOLE_OUTPUT);
 }
 

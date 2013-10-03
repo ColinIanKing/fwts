@@ -114,6 +114,7 @@
  *****************************************************************************/
 
 #define __UTGLOBAL_C__
+#define EXPORT_ACPI_INTERFACES
 #define DEFINE_ACPI_GLOBALS
 
 #include "acpi.h"
@@ -346,7 +347,7 @@ AcpiUtInitGlobals (
 
 #if (!ACPI_REDUCED_HARDWARE)
 
-    /* GPE support */
+    /* GPE/SCI support */
 
     AcpiGbl_AllGpesInitialized          = FALSE;
     AcpiGbl_GpeXruptListHead            = NULL;
@@ -355,6 +356,7 @@ AcpiUtInitGlobals (
     AcpiCurrentGpeCount                 = 0;
 
     AcpiGbl_GlobalEventHandler          = NULL;
+    AcpiGbl_SciHandlerList              = NULL;
 
 #endif /* !ACPI_REDUCED_HARDWARE */
 

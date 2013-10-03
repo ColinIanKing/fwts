@@ -240,6 +240,7 @@ libfwtsacpica_la_SOURCES =			\
 	$(ACPICA_COMP)/utilities/utxfinit.c	\
 	$(ACPICA_COMP)/utilities/uterror.c	\
 	$(ACPICA_COMP)/utilities/utbuffer.c	\
+	$(ACPICA_COMMON)/acgetline.c            \
 	$(ACPICA_SRC)/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

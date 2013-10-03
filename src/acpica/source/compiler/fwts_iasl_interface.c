@@ -70,7 +70,7 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 
 		/* Throw away noisy errors */
 		if (freopen("/dev/null", "w", stderr) != NULL)
-			(void)AslDoOnePathname((char *)aml, AslDoOneFile);
+			AslDoOneFile((char *)aml);
 
 		_exit(0);
 		break;
@@ -122,7 +122,7 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 		Gbl_UseDefaultAmlFilename = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)source;
 
-		(void)AslDoOnePathname((char*)source, AslDoOneFile);
+		(void)AslDoOneFile((char *)source);
 
 		/*
 		 * We need to flush buffered I/O on IASL stdout

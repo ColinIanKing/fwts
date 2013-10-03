@@ -922,11 +922,6 @@ int fwts_acpica_init(fwts_framework *fw)
 
 	AcpiOsRedirectOutput(stderr);
 
-	if (ACPI_FAILURE(AcpiInitializeSubsystem())) {
-		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
-		return FWTS_ERROR;
-	}
-
 	/* Clone FADT, make sure it points to a DSDT in user space */
 	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK)
 		return FWTS_ERROR;
@@ -1061,27 +1056,34 @@ int fwts_acpica_init(fwts_framework *fw)
 		fwts_acpica_RSDP = NULL;
 	}
 
+	if (ACPI_FAILURE(AcpiInitializeSubsystem())) {
+		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
+		goto failed;
+	}
+
 	if (AcpiInitializeTables(Tables, ACPI_MAX_INIT_TABLES, TRUE) != AE_OK) {
 		fwts_log_error(fw, "Failed to initialise tables.");
-		return FWTS_ERROR;
+		goto failed;
 	}
 	if (AcpiReallocateRootTable() != AE_OK) {
 		fwts_log_error(fw, "Failed to reallocate root table.");
-		return FWTS_ERROR;
+		goto failed;
 	}
 	if (AcpiLoadTables() != AE_OK) {
 		fwts_log_error(fw, "Failed to load tables.");
-		return FWTS_ERROR;
+		goto failed;
 	}
-
 
 	(void)fwtsInstallEarlyHandlers(fw);
 	AcpiEnableSubsystem(init_flags);
 	AcpiInitializeObjects(init_flags);
 
 	fwts_acpica_init_called = true;
-
 	return FWTS_OK;
+
+failed:
+	AcpiTerminate();
+	return FWTS_ERROR;
 }
 
 #define FWTS_ACPICA_FREE(x)	\

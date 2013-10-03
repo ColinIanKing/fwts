@@ -441,8 +441,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	int warnings = 0;
 	int remarks = 0;
 	fwts_acpi_table_info *table;
-	fwts_list* iasl_errors;
-	fwts_list* iasl_disassembly;
+	fwts_list *iasl_stdout, *iasl_stderr, *iasl_disassembly;
 
 	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK) {
 		fwts_aborted(fw, "Cannot load ACPI table %s.", tablename);
@@ -453,7 +452,7 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 		return FWTS_NO_TABLE;		/* Table does not exist */
 
 	if (fwts_iasl_reassemble(fw, table->data, table->length,
-				&iasl_disassembly, &iasl_errors) != FWTS_OK) {
+				&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {
 		fwts_aborted(fw, "Cannot re-assasemble with iasl.");
 		return FWTS_ERROR;
 	}
@@ -462,9 +461,9 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	fwts_log_info(fw, "Checking ACPI table %s (#%d)", tablename, which);
 	fwts_log_nl(fw);
 
-	if (iasl_errors) {
+	if (iasl_stdout) {
 		/* Scan error text from assembly */
-		fwts_list_foreach(item, iasl_errors) {
+		fwts_list_foreach(item, iasl_stdout) {
 			int num;
 			char ch;
 			char *line = fwts_text_list_text(item);
@@ -554,8 +553,28 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 			}
 		}
 	}
+
+	/*
+	 *  Did iasl emit any errors that we need to check?
+	 */
+	if (iasl_stderr) {
+		fwts_list_foreach(item, iasl_stderr) {
+			char *line = fwts_text_list_text(item);
+			if (strstr(line, "Compiler aborting due to parser-detected syntax error")) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "SyntaxCheckIASLCompilerAborted",
+					"Compilation aborted early due to a parser detected syntax error.");
+				fwts_advice(fw,
+					"Some subsequent errors may not be detected because the "
+					"compiler had to terminate prematurely.  If the compiler did not "
+					"abort early then potentially correct code may parse incorrectly "
+					"producing some or many false positive errors.");
+			}
+		}
+	}
+
 	fwts_text_list_free(iasl_disassembly);
-	fwts_text_list_free(iasl_errors);
+	fwts_text_list_free(iasl_stdout);
+	fwts_text_list_free(iasl_stderr);
 
 	if (errors + warnings + remarks > 0)
 		fwts_log_info(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings, %d remarks.",

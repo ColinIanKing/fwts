@@ -24,7 +24,7 @@
 
 int fwts_iasl_disassemble_all_to_file(fwts_framework *fw);
 
-int fwts_iasl_disassemble(fwts_framework *fw, 
+int fwts_iasl_disassemble(fwts_framework *fw,
 	const char *table,
 	const int which,
 	fwts_list **ias_output);
@@ -33,6 +33,7 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	const uint8_t *data,
 	const int len,
 	fwts_list **iasl_disassembly,
-	fwts_list **iasl_errors);
+	fwts_list **iasl_stdout,
+	fwts_list **iasl_stderr);
 
 #endif

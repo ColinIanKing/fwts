@@ -19,6 +19,8 @@
 
 #define _DECLARE_GLOBALS
 
+#include <unistd.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -27,6 +29,10 @@
 #include "aslcompiler.h"
 #include "acapps.h"
 
+/*
+ *  init_asl_core()
+ *	initialize iasl
+ */
 static void init_asl_core(void)
 {
 	int i;
@@ -49,6 +55,10 @@ static void init_asl_core(void)
 	UtExpandLineBuffers();
 }
 
+/*
+ *  fwts_iasl_disassemble_aml()
+ *	invoke iasl to disassemble AML
+ */
 int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 {
 	pid_t	pid;
@@ -63,6 +73,8 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		init_asl_core();
 
 		/* Setup ACPICA disassembler globals */
+		Gbl_WarningLevel = ASL_WARNING3;
+		Gbl_IgnoreErrors = TRUE;
 		Gbl_DisasmFlag = TRUE;
 		Gbl_DoCompile = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)outputfile;
@@ -82,38 +94,70 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 	return 0;
 }
 
-int fwts_iasl_assemble_aml(const char *source, char **output)
+/*
+ *  fwts_iasl_read_output()
+ *	consume output from iasl.
+ */
+static int fwts_iasl_read_output(const int fd, char **data, size_t *len, bool *eof)
 {
-	int 	pipefds[2];
-	int	status;
-	int 	ret = 0;
-	size_t	len = 0;
-	ssize_t	n;
-	pid_t	pid;
-	char    *data = NULL;
 	char	buffer[8192];
+	ssize_t	n;
 
-	if (pipe(pipefds) < 0)
+	if (*eof)
+		return 0;
+
+	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
+		if ((*data = realloc(*data, *len + n + 1)) == NULL)
+			return -1;
+		memcpy(*data + *len, buffer, n);
+		*len += n;
+		(*data)[*len] = '\0';
+	}
+	if (n <= 0)
+		*eof = true;
+	return 0;
+}
+
+/*
+ *  fwts_iasl_assemble_aml()
+ *	invoke iasl and assemble some source, stdout into
+ *	stdout_output, stderr into stderr_output
+ */
+int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stderr_output)
+{
+	int 	stdout_fds[2], stderr_fds[2];
+	int	status, ret = 0;
+	size_t	stdout_len = 0, stderr_len = 0;
+	pid_t	pid;
+	bool	stdout_eof = false, stderr_eof = false;
+
+	if (pipe(stdout_fds) < 0)
+		return -1;
+	if (pipe(stderr_fds) < 0)
 		return -1;
 
 	pid = fork();
 	switch (pid) {
 	case -1:
-		(void)close(pipefds[0]);
-		(void)close(pipefds[1]);
+		(void)close(stdout_fds[0]);
+		(void)close(stdout_fds[1]);
+		(void)close(stderr_fds[0]);
+		(void)close(stderr_fds[1]);
 		return -1;
 	case 0:
 		/* Child */
 		init_asl_core();
 
 		/* stdout to be redirected down the writer end of pipe */
-		if (pipefds[1] != STDOUT_FILENO) {
-			if (dup2(pipefds[1], STDOUT_FILENO) < 0) {
+		if (stdout_fds[1] != STDOUT_FILENO)
+			if (dup2(stdout_fds[1], STDOUT_FILENO) < 0)
 				_exit(EXIT_FAILURE);
-			}
-		}
+		if (stderr_fds[1] != STDERR_FILENO)
+			if (dup2(stderr_fds[1], STDERR_FILENO) < 0)
+				_exit(EXIT_FAILURE);
 		/* Close reader end */
-		(void)close(pipefds[0]);
+		(void)close(stdout_fds[0]);
+		(void)close(stderr_fds[0]);
 
 		/* Setup ACPICA compiler globals */
 		Gbl_DisasmFlag = FALSE;
@@ -128,32 +172,28 @@ int fwts_iasl_assemble_aml(const char *source, char **output)
 		 * We need to flush buffered I/O on IASL stdout
 		 * before we exit
 		 */
-		fflush(stdout);
+		(void)fflush(stdout);
+		(void)fflush(stderr);
 
 		_exit(0);
 		break;
 	default:
 		/* Parent */
-
 		/* Close writer end */
-		(void)close(pipefds[1]);
+		(void)close(stdout_fds[1]);
+		(void)close(stderr_fds[1]);
 
-		/* Gather output from IASL */
-		while ((n = read(pipefds[0], buffer, sizeof(buffer))) > 0) {
-			data = realloc(data, len + n + 1);
-			if (data == NULL) {
-				ret = -1;
+		while (!stdout_eof && !stderr_eof) {
+			if (fwts_iasl_read_output(stdout_fds[0], stdout_output, &stdout_len, &stdout_eof) < 0)
 				break;
-			}
-			memcpy(data + len, buffer, n);
-			len += n;
-			data[len] = '\0';
+			if (fwts_iasl_read_output(stderr_fds[0], stderr_output, &stderr_len, &stderr_eof) < 0)
+				break;
 		}
 		(void)waitpid(pid, &status, WUNTRACED | WCONTINUED);
-		(void)close(pipefds[0]);
+		(void)close(stdout_fds[0]);
+		(void)close(stderr_fds[0]);
 		break;
 	}
 
-	*output = data;
 	return ret;
 }

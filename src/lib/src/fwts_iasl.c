@@ -172,14 +172,17 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	const uint8_t *data,
 	const int len,
 	fwts_list **iasl_disassembly,
-	fwts_list **iasl_errors)
+	fwts_list **iasl_stdout,
+	fwts_list **iasl_stderr)
 {
 	char tmpfile[PATH_MAX];
 	char amlfile[PATH_MAX];
-	char *output_text = NULL;
+	char *stdout_output = NULL, *stderr_output = NULL;
 	int pid = getpid();
 
-	if ((iasl_disassembly  == NULL) || (iasl_errors == NULL))
+	if ((iasl_disassembly  == NULL) ||
+	    (iasl_stdout == NULL) ||
+	    (iasl_stderr == NULL))
 		return FWTS_ERROR;
 
 	fwts_acpcia_set_fwts_framework(fw);
@@ -205,10 +208,10 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 
 	/* Now we have a disassembled source in tmpfile, so let's assemble it */
 
-	if (fwts_iasl_assemble_aml(tmpfile, &output_text) < 0) {
+	if (fwts_iasl_assemble_aml(tmpfile, &stdout_output, &stderr_output) < 0) {
 		(void)unlink(amlfile);
 		(void)unlink(tmpfile);
-		free(output_text);
+		free(stdout_output);
 		return FWTS_ERROR;
 	}
 
@@ -220,8 +223,9 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_%d.aml", pid);
 	(void)unlink(tmpfile);
 
-	*iasl_errors = fwts_list_from_text(output_text);
-	free(output_text);
+	*iasl_stdout = fwts_list_from_text(stdout_output);
+	*iasl_stderr = fwts_list_from_text(stderr_output);
+	free(stdout_output);
 
 	return FWTS_OK;
 }

@@ -731,6 +731,20 @@ static void uefidump_info_vendor_keys(fwts_framework *fw, fwts_uefi_var *var)
 	fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 ".", value);
 }
 
+static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
+{
+	uint16_t *data = (uint16_t*)var->data;
+	size_t i, n = var->datalen / sizeof(uint16_t);
+	char *str = NULL;
+
+	for (i = 0; i < n; i++) {
+		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
+			*data++, i < (n - 1) ? "," : "");
+	}
+	fwts_log_info_verbatum(fw, "  Driver Order: %s.", str);
+	free(str);
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -757,6 +771,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "HwErrRecSupport",	uefidump_info_hwerrrec_support },
 	{ "OsIndicationsSupported",	uefidump_info_osindications_supported },
 	{ "VendorKeys",		uefidump_info_vendor_keys },
+	{ "DriverOrder",	uefidump_info_driverorder },
 	{ NULL, NULL }
 };
 

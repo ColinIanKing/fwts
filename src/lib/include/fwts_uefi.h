@@ -115,6 +115,17 @@ typedef struct {
         fwts_uefi_dev_path unused_file_path_list[1];
 } __attribute__((packed)) fwts_uefi_load_option;
 
+typedef struct {
+        uint32_t keydata;
+        uint32_t bootoptioncrc;
+        uint16_t bootoption;
+} __attribute__((packed)) fwts_uefi_key_option;
+
+typedef struct {
+        uint16_t scancode;
+        uint16_t unicodechar;
+} __attribute__((packed)) fwts_uefi_input_key;
+
 typedef enum {
 	FWTS_UEFI_HARDWARE_DEV_PATH_TYPE =		(0x01),
 	FWTS_UEFI_ACPI_DEVICE_PATH_TYPE =		(0x02),

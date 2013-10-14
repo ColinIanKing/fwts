@@ -777,6 +777,78 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_info_keyoption(fwts_framework *fw, fwts_uefi_var *var)
+{
+	fwts_uefi_key_option *key_option = (fwts_uefi_key_option *)var->data;
+	fwts_uefi_input_key *inputkey = (fwts_uefi_input_key *) (((uint8_t *) var->data) + sizeof (fwts_uefi_key_option));
+	char str[300];
+	size_t keyoptionsize, inputkeycount, index = 0;
+
+	*str = 0;
+
+	if (var->datalen < sizeof (fwts_uefi_key_option)) {
+		uefidump_var_hexdump(fw, var);
+		return;
+	}
+
+	if (key_option->keydata & (1 << 8))
+		strcat(str, "ShiftPressed");
+
+	if (key_option->keydata & (1 << 9)) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "ControlPressed");
+	}
+
+	if (key_option->keydata & (1 << 10)) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "AltPressed");
+	}
+
+	if (key_option->keydata &(1 << 11)) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "LogoPressed");
+	}
+
+	if (key_option->keydata & (1 << 12)) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "MenuPressed");
+	}
+
+	if (key_option->keydata & (1 << 13)) {
+		if (*str)
+			strcat(str, ",");
+		strcat(str, "SysReqPressed");
+	}
+
+	if (*str != 0)
+		fwts_log_info_verbatum(fw, "  PackedValue: 0x%8.8" PRIx32 " (%s).", key_option->keydata, str);
+	else
+		fwts_log_info_verbatum(fw, "  PackedValue: 0x%8.8" PRIx32 ".", key_option->keydata);
+
+	fwts_log_info_verbatum(fw, "  BootOptionCrc: 0x%8.8" PRIx32 ".", key_option->bootoptioncrc);
+	fwts_log_info_verbatum(fw, "  BootOption: %4.4" PRIx16 ".", key_option->bootoption);
+
+	inputkeycount = (key_option->keydata & 0xC0000000) >> 30;
+	for (index = 0; index < inputkeycount; index++) {
+		fwts_log_info_verbatum(fw, "  ScanCode: 0x%4.4" PRIx16 ".", inputkey[index].scancode);
+		fwts_log_info_verbatum(fw, "  UnicodeChar: 0x%4.4" PRIx16 ".", inputkey[index].unicodechar);
+	}
+
+	keyoptionsize = sizeof (fwts_uefi_key_option) + inputkeycount * sizeof (fwts_uefi_input_key);
+
+	/*
+	 * there are extra data following the keyoption data structure which the firmware is using,
+	 * dump all data for reference
+	 */
+	if (var->datalen > keyoptionsize) {
+		uefidump_var_hexdump(fw, var);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -841,6 +913,14 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 			&& isxdigit(varname[6]) && isxdigit(varname[7])
 			&& isxdigit(varname[8]) && isxdigit(varname[9])) {
 		uefidump_info_driverdev(fw, var);
+		return;
+	}
+
+	/* Check the key option key####. #### is a printed hex value */
+	if ((strlen(varname) == 7) && (strncmp(varname, "Key", 3) == 0)
+			&& isxdigit(varname[3]) && isxdigit(varname[4])
+			&& isxdigit(varname[5]) && isxdigit(varname[6])) {
+		uefidump_info_keyoption(fw, var);
 		return;
 	}
 

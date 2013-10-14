@@ -20,7 +20,8 @@
 #ifndef __FWTS_UEFI_H__
 #define __FWTS_UEFI_H__
 
-#define FWTS_UEFI_LOAD_ACTIVE 0x00000001
+#define FWTS_UEFI_LOAD_OPTION_ACTIVE 		0x00000001
+#define FWTS_UEFI_LOAD_OPTION_FORCE_RECONNECT 	0x00000002
 
 typedef struct {
 	uint16_t	*varname;

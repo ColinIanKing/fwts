@@ -508,7 +508,7 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	int len;
 
 	fwts_log_info_verbatum(fw, "  Active: %s\n",
-		(load_option->attributes & FWTS_UEFI_LOAD_ACTIVE) ? "Yes" : "No");
+		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_ACTIVE) ? "Yes" : "No");
 	fwts_uefi_str16_to_str(tmp, sizeof(tmp), load_option->description);
 	len = fwts_uefi_str16len(load_option->description);
 	fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
@@ -745,6 +745,38 @@ static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
 	free(str);
 }
 
+static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
+{
+	fwts_uefi_load_option *load_option = (fwts_uefi_load_option *)var->data;
+	char *path;
+	char *tmp;
+	size_t len;
+
+	fwts_log_info_verbatum(fw, "  Force Reconnect: %s\n",
+		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_FORCE_RECONNECT) ? "Yes" : "No");
+
+	len = fwts_uefi_str16len(load_option->description);
+
+	if (len != 0) {
+		tmp = malloc(len + 1);
+		if (tmp) {
+			fwts_uefi_str16_to_str(tmp, len + 1, load_option->description);
+			fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
+			free(tmp);
+		}
+	}
+
+	if (load_option->file_path_list_length != 0) {
+		/* Skip over description to get to packed path, unpack path and print */
+		path = (char *)var->data + sizeof(load_option->attributes) +
+			sizeof(load_option->file_path_list_length) +
+			(sizeof(uint16_t) * (len + 1));
+		path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path *)path);
+		fwts_log_info_verbatum(fw, "  Path: %s.", path);
+		free(path);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -801,6 +833,14 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 			&& isxdigit(varname[4]) && isxdigit(varname[5])
 			&& isxdigit(varname[6]) && isxdigit(varname[7])) {
 		uefidump_info_bootdev(fw, var);
+		return;
+	}
+
+	/* Check the driver load option Driver####. #### is a printed hex value */
+	if ((strlen(varname) == 10) && (strncmp(varname, "Driver", 6) == 0)
+			&& isxdigit(varname[6]) && isxdigit(varname[7])
+			&& isxdigit(varname[8]) && isxdigit(varname[9])) {
+		uefidump_info_driverdev(fw, var);
 		return;
 	}
 

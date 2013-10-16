@@ -18,15 +18,20 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <dirent.h>
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <inttypes.h>
 #include "fwts.h"
+
+#define PCI_DEV_PATH			"/sys/bus/pci/devices"
 
 /* PCI Confiiguration Space for Type 0 & 1 */
 #define FWTS_PCI_HEADER_TYPE		0x0E
@@ -48,17 +53,16 @@
 #define FWTS_PCIE_ASPM_CONTROL_L1_FIELD	0x0002
 #define FWTS_PCIE_ASPM_CONTROL_FIELD	(FWTS_PCIE_ASPM_CONTROL_L0_FIELD | FWTS_PCIE_ASPM_CONTROL_L1_FIELD)
 
-
 struct pci_device {
 	uint8_t segment;
 	uint8_t bus;
 	uint8_t dev;
 	uint8_t func;
 	uint8_t config[256];
-	struct pci_device *next;
 };
 
-/* PCI Express Capability Structure is defined in Section 7.8
+/*
+ * PCI Express Capability Structure is defined in Section 7.8
  * of PCI Express®i Base Specification Revision 2.0
  */
 typedef struct {
@@ -88,7 +92,7 @@ typedef struct {
 	uint16_t slot_status2;
 } __attribute__ ((packed)) pcie_capability;
 
-static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
+static int facp_get_aspm_control(fwts_framework *fw)
 {
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_fadt *fadt;
@@ -99,10 +103,8 @@ static int facp_get_aspm_control(fwts_framework *fw, int *aspm)
 	fadt = (fwts_acpi_table_fadt*)table->data;
 
 	if ((fadt->iapc_boot_arch & FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS) == 0) {
-		*aspm = 1;
 		fwts_log_info(fw, "PCIe ASPM is controlled by Linux kernel.");
 	} else {
-		*aspm = 0;
 		fwts_log_info(fw, "PCIe ASPM is not controlled by Linux kernel.");
 		fwts_advice(fw,
 			"BIOS reports that Linux kernel should not modify ASPM "
@@ -211,126 +213,84 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	return ret;
 }
 
-static void pci_device_list_free(struct pci_device *head)
-{
-	struct pci_device *next;
-
-	while (head) {
-		next = head->next;
-		free(head);
-		head = next;
-	}
-}
-
 static int pcie_check_aspm_registers(fwts_framework *fw)
 {
-	fwts_list *lspci_output;
-	fwts_list_link *item;
-	struct pci_device *head = NULL, *cur = NULL, *device = NULL;
-	char command[PATH_MAX];
-	int ret = FWTS_OK;
-	int status;
+	DIR *dirp;
+	struct dirent *entry;
+	fwts_list dev_list;
+	fwts_list_link *lcur, *ltarget;
 
-	snprintf(command, sizeof(command), "%s", fw->lspci);
+	fwts_list_init(&dev_list);
 
-	if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
-		fwts_log_warning(fw, "Could not execute %s.", command);
+	if ((dirp = opendir(PCI_DEV_PATH)) == NULL) {
+		fwts_log_warning(fw, "Could not open %s.", PCI_DEV_PATH);
 		return FWTS_ERROR;
 	}
-	if (lspci_output == NULL) {
-		fwts_log_warning(fw, "Output from lspci was empty.");
-		return FWTS_ERROR;
-	}
+	while ((entry = readdir(dirp)) != NULL) {
+		uint8_t bus, dev, func;
 
-	/* Get the list of pci devices and their configuration */
-	fwts_list_foreach(item, lspci_output) {
-		char *line = fwts_text_list_text(item);
-		char *pEnd;
+		if (entry->d_name[0] == '.')
+			continue;
 
-		device = (struct pci_device *) calloc(1, sizeof(*device));
-		if (device == NULL) {
-			pci_device_list_free(head);
-			fwts_text_list_free(lspci_output);
-			return FWTS_ERROR;
-		}
+		if (sscanf(entry->d_name, "%*x:%" SCNx8 ":%" SCNx8 ".%" SCNx8, &bus, &dev, &func) == 3) {
+			int fd;
+			char path[PATH_MAX];
+			struct pci_device *device;
 
-		device->bus = strtol(line, &pEnd, 16);
-		device->dev = strtol(pEnd + 1, &pEnd, 16);
-		device->func = strtol(pEnd + 1, &pEnd, 16);
-
-		if (head == NULL)
-			head = device;
-		else
-			cur->next = device;
-
-		cur = device;
-	}
-	fwts_text_list_free(lspci_output);
-
-	for (cur = head; cur; cur = cur->next) {
-		int reg_loc = 0, reg_val = 0;
-		int i;
-		int status;
-
-		snprintf(command, sizeof(command), "%s -s %02X:%02X.%02X -xxx",
-			fw->lspci, cur->bus, cur->dev, cur->func);
-		if (fwts_pipe_exec(command, &lspci_output, &status) != FWTS_OK) {
-			fwts_log_warning(fw, "Could not execute %s", command);
-			pci_device_list_free(head);
-			return FWTS_ERROR;
-		}
-		if (lspci_output == NULL) {
-			pci_device_list_free(head);
-			return FWTS_ERROR;
-		}
-
-		fwts_list_foreach(item, lspci_output) {
-			char *line = fwts_text_list_text(item);
-			char *pEnd;
-
-			if (strlen(line) >= 3 && line[3] == ' ') {
-				reg_val = strtol(line, &pEnd, 16);
-				for (i = 0; reg_loc < 256 && i < 16; i++) {
-					reg_val = strtol(pEnd + 1, &pEnd, 16);
-					cur->config[reg_loc] = reg_val;
-					reg_loc++;
-				}
+			device = (struct pci_device *)calloc(1, sizeof(struct pci_device));
+			if (device == NULL) {
+				fwts_list_free_items(&dev_list, free);
+				closedir(dirp);
+				return FWTS_ERROR;
 			}
-		}
-		fwts_text_list_free(lspci_output);
-	}
+			device->bus = bus;
+			device->dev = dev;
+			device->func = func;
 
-	/* Check aspm registers from the list of pci devices */
-	for (cur = head; cur; cur = cur->next) {
-		struct pci_device *target;
-
-		/* Find PCI Bridge (PCIE Root Port) and the attached device  */
-		if (cur->config[FWTS_PCI_HEADER_TYPE] & 0x01) {
-			target = head;
-			while (target != NULL) {
-				if (target->bus == cur->config[FWTS_PCI_SECONDARD_BUS_NUMBER])
-					break;
-				target = target->next;
-			}
-			if (target == NULL) {
+			snprintf(path, sizeof(path), PCI_DEV_PATH "/%s/config", entry->d_name);
+			if ((fd = open(path, O_RDONLY)) < 0) {
+				fwts_log_warning(fw, "Could not open config from PCI device %s\n", entry->d_name);
+				free(device);
 				continue;
 			}
 
-			pcie_compare_rp_dev_aspm_registers(fw, cur, target);
+			if (read(fd, device->config, sizeof(device->config)) < 0) {
+				fwts_log_warning(fw, "Could not read config from PCI device %s\n", entry->d_name);
+				free(device);
+				close(fd);
+				continue;
+			}
+			close(fd);
+			fwts_list_append(&dev_list, device);
 		}
 	}
+	closedir(dirp);
 
-	pci_device_list_free(head);
+	/* Check aspm registers from the list of pci devices */
+	for (lcur = dev_list.head; lcur; lcur = lcur->next) {
+		struct pci_device *target, *cur = (struct pci_device *)lcur->data;
 
-	return ret;
+		/* Find PCI Bridge (PCIE Root Port) and the attached device  */
+		if (cur->config[FWTS_PCI_HEADER_TYPE] & 0x01) {
+			for (ltarget = dev_list.head; ltarget; ltarget = ltarget->next) {
+				target = (struct pci_device *)ltarget->data;
+				if (target->bus == cur->config[FWTS_PCI_SECONDARD_BUS_NUMBER]) {
+					pcie_compare_rp_dev_aspm_registers(fw, cur, target);
+					break;
+				}
+			}
+		}
+	}
+	fwts_list_free_items(&dev_list, free);
+
+	return FWTS_OK;
 }
 
 static int aspm_check_configuration(fwts_framework *fw)
 {
 	int ret;
-	int aspm_facp;
 
-	ret = facp_get_aspm_control(fw, &aspm_facp);
+	ret = facp_get_aspm_control(fw);
 	if (ret == FWTS_ERROR)
 		fwts_skipped(fw, "No valid FACP information present: cannot test ASPM.");
 

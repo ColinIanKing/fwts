@@ -30,6 +30,8 @@
 #include <time.h>
 
 #define PM_SUSPEND "pm-suspend"
+#define FWTS_SUSPEND	"FWTS_SUSPEND"
+#define FWTS_RESUME	"FWTS_RESUME"
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -82,8 +84,6 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	if (s3_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
 
-
-
 	/* Format up pm-suspend command with optional quirking arguments */
 	if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND)) == NULL)
 		return FWTS_OUT_OF_MEMORY;
@@ -107,7 +107,11 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Do S3 here */
 	fwts_progress_message(fw, percent, "(Suspending)");
 	time(&t_start);
+	(void)fwts_klog_write(fw, "Starting fwts suspend\n");
+	(void)fwts_klog_write(fw, FWTS_SUSPEND "\n");
 	(void)fwts_pipe_exec(command, &output, &status);
+	(void)fwts_klog_write(fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fw, "Finished fwts resume\n");
 	time(&t_end);
 	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
@@ -115,7 +119,6 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 
 	duration = (int)(t_end - t_start);
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
-
 
 	if (s3_device_check) {
 		int i;
@@ -187,6 +190,79 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+static int s3_scan_times(fwts_framework *fw, fwts_list *klog)
+{
+	fwts_list_link *item;
+
+	double s3_suspend_start = -1.0, s3_suspend_finish = -1.0;
+	double s3_resume_start = -1.0, s3_resume_finish = -1.0;
+	double previous_ts = -1.0, ts = 0.0;
+
+	fwts_list_foreach(item, klog) {
+		char *txt = (char *)item->data;
+		char *bracket = strchr(txt, '[');
+		size_t len = strlen(txt);
+
+		if (len < 15 || bracket == NULL)
+			continue;
+
+		previous_ts = ts;
+
+		/* Get log time stamp */
+		sscanf(bracket + 1, "%lf", &ts);
+		if (strstr(txt, FWTS_SUSPEND)) {
+			s3_suspend_start = ts;
+			continue;
+		}
+		if (strstr(txt, FWTS_RESUME)) {
+			s3_resume_finish = ts;
+			continue;
+		}
+		/* This may be the last message we see from the kernel */
+		if (strstr(txt, "PM: Saving platform NVS memory")) {
+			s3_suspend_finish = ts;
+			continue;
+		}
+		/* And this may appear even later */
+		if (strstr(txt, "smpboot: CPU") && strstr(txt, "is now offline")) {
+			s3_suspend_finish = ts;
+			continue;
+		}
+
+		if (strstr(txt, "ACPI: Low-level resume complete")) {
+			s3_resume_start = ts;
+			if (s3_suspend_finish < 0.0)
+				s3_suspend_finish = previous_ts;
+			continue;
+		}
+		if (s3_resume_start < 0.0 && strstr(txt, "ACPI: Waking up from system sleep state S3")) {
+			s3_resume_start = ts;
+			if (s3_suspend_finish < 0.0)
+				s3_suspend_finish = previous_ts;
+			continue;
+		}
+		if (strstr(txt, "Restarting tasks ... done")) {
+			s3_resume_finish = ts;
+			break;
+		}
+	}
+
+	fwts_log_info(fw, "Suspend/Resume Timings:");
+	if (s3_suspend_start > 0.0 && s3_suspend_finish > 0.0)
+		fwts_log_info_verbatum(fw, "  Suspend: %.3f seconds.",
+			s3_suspend_finish - s3_suspend_start);
+	else
+		fwts_log_info_verbatum(fw, "  Could not determine time to suspend.");
+
+	if (s3_resume_start > 0.0 && s3_resume_finish > 0.0)
+		fwts_log_info_verbatum(fw, "  Resume:  %.3f seconds.",
+			s3_resume_finish - s3_resume_start);
+	else
+		fwts_log_info_verbatum(fw, "  Could not determine time to resume.");
+
+	return FWTS_OK;
+}
+
 static int s3_check_log(fwts_framework *fw, int *errors, int *oopses, int *warn_ons)
 {
 	fwts_list *klog;
@@ -214,6 +290,8 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses, int *warn_
 
 	*oopses += oops;
 	*warn_ons += warn_on;
+
+	s3_scan_times(fw, klog);
 
 	fwts_klog_free(klog);
 

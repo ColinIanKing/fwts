@@ -62,5 +62,6 @@ int        fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func 
 int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
 int	   fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern);
 char      *fwts_klog_remove_timestamp(char *text);
+int        fwts_klog_write(fwts_framework *fw, const char *msg);
 
 #endif

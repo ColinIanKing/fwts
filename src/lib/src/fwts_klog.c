@@ -489,3 +489,22 @@ int fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern)
 
 	return found;
 }
+
+/*
+ * fwts_klog_write()
+ *	write a message to the kernel log
+ */
+int fwts_klog_write(fwts_framework *fw, const char *msg)
+{
+	FILE *fp;
+
+	if ((fp = fopen("/dev/kmsg", "w")) == NULL) {
+		fwts_log_info(fw, "Cannot write to kernel log /dev/kmsg.");
+		return FWTS_ERROR;
+	}
+
+	fprintf(fp, "%s", msg);
+	fclose(fp);
+
+	return FWTS_OK;
+}

@@ -42,6 +42,8 @@ static bool s3_device_check = false;	/* check for device config changes */
 static char *s3_quirks = NULL;		/* Quirks to be passed to pm-suspend */
 static int  s3_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 static bool s3_min_max_delay = false;
+static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
+static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 
 static int s3_init(fwts_framework *fw)
 {
@@ -190,7 +192,11 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static int s3_scan_times(fwts_framework *fw, fwts_list *klog)
+static int s3_scan_times(
+	fwts_framework *fw,
+	fwts_list *klog,
+	int *suspend_too_long,
+	int *resume_too_long)
 {
 	fwts_list_link *item;
 
@@ -248,22 +254,32 @@ static int s3_scan_times(fwts_framework *fw, fwts_list *klog)
 	}
 
 	fwts_log_info(fw, "Suspend/Resume Timings:");
-	if (s3_suspend_start > 0.0 && s3_suspend_finish > 0.0)
+	if (s3_suspend_start > 0.0 && s3_suspend_finish > 0.0) {
 		fwts_log_info_verbatum(fw, "  Suspend: %.3f seconds.",
 			s3_suspend_finish - s3_suspend_start);
-	else
+		if (s3_suspend_finish - s3_suspend_start > s3_suspend_time)
+			(*suspend_too_long)++;
+	} else
 		fwts_log_info_verbatum(fw, "  Could not determine time to suspend.");
 
-	if (s3_resume_start > 0.0 && s3_resume_finish > 0.0)
+	if (s3_resume_start > 0.0 && s3_resume_finish > 0.0) {
 		fwts_log_info_verbatum(fw, "  Resume:  %.3f seconds.",
 			s3_resume_finish - s3_resume_start);
-	else
+		if (s3_resume_finish - s3_resume_start > s3_resume_time)
+			(*resume_too_long)++;
+	} else
 		fwts_log_info_verbatum(fw, "  Could not determine time to resume.");
 
 	return FWTS_OK;
 }
 
-static int s3_check_log(fwts_framework *fw, int *errors, int *oopses, int *warn_ons)
+static int s3_check_log(
+	fwts_framework *fw,
+	int *errors,
+	int *oopses,
+	int *warn_ons,
+	int *suspend_too_long,
+	int *resume_too_long)
 {
 	fwts_list *klog;
 	int error;
@@ -291,7 +307,7 @@ static int s3_check_log(fwts_framework *fw, int *errors, int *oopses, int *warn_
 	*oopses += oops;
 	*warn_ons += warn_on;
 
-	s3_scan_times(fw, klog);
+	s3_scan_times(fw, klog, suspend_too_long, resume_too_long);
 
 	fwts_klog_free(klog);
 
@@ -306,6 +322,8 @@ static int s3_test_multiple(fwts_framework *fw)
 	int pm_errors = 0;
 	int klog_oopses = 0;
 	int klog_warn_ons = 0;
+	int suspend_too_long = 0;
+	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
 
@@ -323,7 +341,8 @@ static int s3_test_multiple(fwts_framework *fw)
 			break;
 		}
 		fwts_progress_message(fw, percent, "(Checking logs for errors)");
-		s3_check_log(fw, &klog_errors, &klog_oopses, &klog_warn_ons);
+		s3_check_log(fw, &klog_errors, &klog_oopses, &klog_warn_ons,
+			&suspend_too_long, &resume_too_long);
 
 		if (!s3_device_check) {
 			char buffer[80];
@@ -372,12 +391,29 @@ static int s3_test_multiple(fwts_framework *fw)
 	else
 		fwts_passed(fw, "No kernel WARN_ON warnings detected.");
 
-
 	if ((klog_errors + pm_errors + hw_errors + klog_oopses) > 0) {
 		fwts_log_info(fw, "Found %d errors and %d oopses doing %d suspend/resume cycle(s).",
 			klog_errors + pm_errors + hw_errors, klog_oopses, s3_multiple);
 	} else
 		fwts_passed(fw, "Found no errors doing %d suspend/resume cycle(s).", s3_multiple);
+
+	if (suspend_too_long > 0)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SuspendTooLong",
+			"%d suspend%s took longer than %.2f seconds.",
+			suspend_too_long, resume_too_long == 1 ? "" : "s",
+			s3_suspend_time);
+	else
+		fwts_passed(fw, "All suspends took less than %.2f seconds.",
+			s3_suspend_time);
+
+	if (resume_too_long > 0)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ResumeTooLong",
+			"%d resume%s took longer than %.2f seconds.",
+			resume_too_long, resume_too_long == 1 ? "" : "s",
+			s3_resume_time);
+	else
+		fwts_passed(fw, "All resumes took less than %.2f seconds.",
+			s3_resume_time);
 
 	return FWTS_OK;
 }
@@ -412,6 +448,14 @@ static int s3_options_check(fwts_framework *fw)
 	}
 	if (s3_min_max_delay & s3_device_check) {
 		fprintf(stderr, "Cannot use --s3-min-delay, --s3-max-delay, --s3-delay-delta as well as --s3-device-check, --s3-device-check-delay.\n");
+		return FWTS_ERROR;
+	}
+	if (s3_suspend_time < 0.0) {
+		fprintf(stderr, "--s3-suspend-time too small.\n");
+		return FWTS_ERROR;
+	}
+	if (s3_resume_time < 0.0) {
+		fprintf(stderr, "--s3-resume-time too small.\n");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -454,6 +498,12 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 			s3_device_check_delay = atoi(optarg);
 			s3_device_check = true;
 			break;
+		case 8:
+			s3_suspend_time = atof(optarg);
+			break;
+		case 9:
+			s3_resume_time = atof(optarg);
+			break;
 		}
 	}
 	return FWTS_OK;
@@ -468,6 +518,8 @@ static fwts_option s3_options[] = {
 	{ "s3-device-check",	"", 0, "Check differences between device configurations over a S3 cycle. Note we add a default of 15 seconds to allow wifi to re-associate.  Cannot be used with --s3-min-delay, --s3-max-delay and --s3-delay-delta." },
 	{ "s3-quirks",		"", 1, "Comma separated list of quirk arguments to pass to pm-suspend." },
 	{ "s3-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds, e.g. --s3-device-check-delay=20" },
+	{ "s3-suspend-time",	"", 1, "Maximum expected suspend time in seconds, e.g. --s3-suspend-time=3.5" },
+	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ NULL, NULL, 0, NULL }
 };
 

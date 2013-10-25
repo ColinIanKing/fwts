@@ -80,7 +80,7 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
  *  uefidump_build_dev_path()
  *	recursively scan dev_path and build up a human readable path name
  */
-static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
+static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, const size_t dev_path_len)
 {
 	switch (dev_path->type & 0x7f) {
 	case FWTS_UEFI_END_DEV_PATH_TYPE:
@@ -95,21 +95,21 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 	case FWTS_UEFI_HARDWARE_DEV_PATH_TYPE:
 		switch (dev_path->subtype) {
 		case FWTS_UEFI_PCI_DEV_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_pci_dev_path)) {
 				fwts_uefi_pci_dev_path *p = (fwts_uefi_pci_dev_path *)dev_path;
 				path = uefidump_vprintf(path, "\\PCI(0x%" PRIx8 ",0x%" PRIx8 ")",
 					p->function, p->device);
 			}
 			break;
 		case FWTS_UEFI_PCCARD_DEV_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_pccard_dev_path)) {
 				fwts_uefi_pccard_dev_path *p = (fwts_uefi_pccard_dev_path *)dev_path;
 				path = uefidump_vprintf(path, "\\PCCARD(0x%" PRIx8 ")",
 					p->function);
 			}
 			break;
 		case FWTS_UEFI_MEMORY_MAPPED_DEV_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_mem_mapped_dev_path)) {
 				fwts_uefi_mem_mapped_dev_path *m = (fwts_uefi_mem_mapped_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\Memmap(0x%" PRIx32 ",0x%" PRIx64 ",0x%" PRIx64 ")",
 					m->memory_type,
@@ -118,7 +118,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_VENDOR_DEV_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_vendor_dev_path)) {
 				fwts_uefi_vendor_dev_path *v = (fwts_uefi_vendor_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\VENDOR(%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x)",
 					v->guid.info1, v->guid.info2, v->guid.info3,
@@ -127,7 +127,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_CONTROLLER_DEV_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_controller_dev_path)) {
 				fwts_uefi_controller_dev_path *c = (fwts_uefi_controller_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\Controller(0x%" PRIx32 ")",
 					c->controller);
@@ -142,14 +142,14 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 	case FWTS_UEFI_ACPI_DEVICE_PATH_TYPE:
 		switch (dev_path->subtype) {
 		case FWTS_UEFI_ACPI_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_acpi_dev_path)) {
 				fwts_uefi_acpi_dev_path *a = (fwts_uefi_acpi_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\ACPI(0x%" PRIx32 ",0x%" PRIx32 ")",
 					a->hid, a->uid);
 			}
 			break;
 		case FWTS_UEFI_EXPANDED_ACPI_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_expanded_acpi_dev_path)) {
 				fwts_uefi_expanded_acpi_dev_path *a = (fwts_uefi_expanded_acpi_dev_path*)dev_path;
 				char *hidstr= a->hidstr;
 				path = uefidump_vprintf(path, "\\ACPI(");
@@ -178,42 +178,42 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 	case FWTS_UEFI_MESSAGING_DEVICE_PATH_TYPE:
 		switch (dev_path->subtype) {
 			case FWTS_UEFI_ATAPI_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_atapi_dev_path)) {
 				fwts_uefi_atapi_dev_path *a = (fwts_uefi_atapi_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\ATAPI(0x%" PRIx8 ",0x%" PRIx8 ",0x%" PRIx16 ")",
 					a->primary_secondary, a->slave_master, a->lun);
 			}
 			break;
 		case FWTS_UEFI_SCSI_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_scsi_dev_path)) {
 				fwts_uefi_scsi_dev_path *s = (fwts_uefi_scsi_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\SCSI(0x%" PRIx16 ",0x%" PRIx16 ")",
 					s->pun, s->lun);
 			}
 			break;
 		case FWTS_UEFI_FIBRE_CHANNEL_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_fibre_channel_dev_path)) {
 				fwts_uefi_fibre_channel_dev_path *f = (fwts_uefi_fibre_channel_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\FIBRECHANNEL(0x%" PRIx64 ",0x%" PRIx64 ")",
 					f->wwn, f->lun);
 			}
 			break;
 		case FWTS_UEFI_1394_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_1394_dev_path)) {
 				fwts_uefi_1394_dev_path *fw = (fwts_uefi_1394_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\1394(0x%" PRIx64 ")",
 					fw->guid);
 			}
 			break;
 		case FWTS_UEFI_USB_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_usb_dev_path)) {
 				fwts_uefi_usb_dev_path *u = (fwts_uefi_usb_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\USB(0x%" PRIx8 ",0x%" PRIx8 ")",
 					u->parent_port_number, u->interface);
 			}
 			break;
 		case FWTS_UEFI_USB_CLASS_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_usb_class_dev_path)) {
 				fwts_uefi_usb_class_dev_path *u = (fwts_uefi_usb_class_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\USBCLASS(0x%" PRIx16 ",0x%" PRIx16
 					",0x%" PRIx8 ",0x%" PRIx8 ",0x%" PRIx8 ")",
@@ -223,13 +223,13 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_I2O_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_i2o_dev_path)) {
 				fwts_uefi_i2o_dev_path *i2o = (fwts_uefi_i2o_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\I2O(0x%" PRIx32 ")", i2o->tid);
 			}
 			break;
 		case FWTS_UEFI_MAC_ADDRESS_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_mac_addr_dev_path)) {
 				fwts_uefi_mac_addr_dev_path *m = (fwts_uefi_mac_addr_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\MACADDR(%" PRIx8 ":%" PRIx8 ":%" PRIx8
 					":%" PRIx8 ":%" PRIx8 ":%" PRIx8 ",0x%" PRIx8 ")",
@@ -240,7 +240,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_IPV4_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_ipv4_dev_path)) {
 				fwts_uefi_ipv4_dev_path *i = (fwts_uefi_ipv4_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\IPv4("
 					"%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ","
@@ -255,7 +255,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_IPV6_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_ipv6_dev_path)) {
 				fwts_uefi_ipv6_dev_path *i = (fwts_uefi_ipv6_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\IPv6("
 					"%" PRIx8 ":%" PRIx8 ":%" PRIx8 ":%" PRIx8
@@ -276,7 +276,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_INFINIBAND_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_infiniband_dev_path)) {
 				fwts_uefi_infiniband_dev_path *i = (fwts_uefi_infiniband_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\InfiniBand("
 					"%" PRIx8 ",%" PRIx64 ",%" PRIx64 ",%" PRIx64 ")",
@@ -285,7 +285,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_UART_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_uart_dev_path)) {
 				fwts_uefi_uart_dev_path *u = (fwts_uefi_uart_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\UART("
 					"%" PRIu64 ",%" PRIu8 ",%" PRIu8 ",%" PRIu8 ")",
@@ -293,7 +293,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_vendor_messaging_dev_path)) {
 				fwts_uefi_vendor_messaging_dev_path *v = (fwts_uefi_vendor_messaging_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\VENDOR("
 					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
@@ -313,7 +313,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 	case FWTS_UEFI_MEDIA_DEVICE_PATH_TYPE:
 		switch (dev_path->subtype) {
 		case FWTS_UEFI_HARD_DRIVE_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_hard_drive_dev_path)) {
 				fwts_uefi_hard_drive_dev_path *h = (fwts_uefi_hard_drive_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\HARDDRIVE("
 				"%" PRIu32 ",%" PRIx64 ",%" PRIx64 ","
@@ -330,14 +330,14 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 			}
 			break;
 		case FWTS_UEFI_CDROM_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_cdrom_dev_path)) {
 				fwts_uefi_cdrom_dev_path *c = (fwts_uefi_cdrom_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\CDROM(%" PRIu32 ",%" PRIx64 ",%" PRIx64 ")",
 					c->boot_entry, c->partition_start, c->partition_size);
 			}
 			break;
 		case FWTS_UEFI_VENDOR_MEDIA_DEVICE_PATH_SUBTYPE:
-			{
+			if (dev_path_len >= sizeof(fwts_uefi_vendor_media_dev_path)) {
 				fwts_uefi_vendor_media_dev_path *v = (fwts_uefi_vendor_media_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\VENDOR("
 					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
@@ -388,7 +388,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path)
 		uint16_t len = dev_path->length[0] | (((uint16_t)dev_path->length[1])<<8);
 		if (len > 0) {
 			dev_path = (fwts_uefi_dev_path*)((char *)dev_path + len);
-			path = uefidump_build_dev_path(path, dev_path);
+			path = uefidump_build_dev_path(path, dev_path, dev_path_len - len);
 		}
 	}
 
@@ -399,7 +399,7 @@ static void uefidump_info_dev_path(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char *path;
 
-	path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path*)var->data);
+	path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path*)var->data, var->datalen);
 
 	fwts_log_info_verbatum(fw, "  Device Path: %s.", path);
 
@@ -460,29 +460,38 @@ static void uefidump_info_platform_langcodes(fwts_framework *fw, fwts_uefi_var *
 
 static void uefidump_info_timeout(fwts_framework *fw, fwts_uefi_var *var)
 {
-	uint16_t *data = (uint16_t*)var->data;
-	fwts_log_info_verbatum(fw, "Timeout: %" PRId16 " seconds.", *data);
+	if (var->datalen >= sizeof(uint16_t)) {
+		uint16_t *data = (uint16_t*)var->data;
+
+		fwts_log_info_verbatum(fw, "  Timeout: %" PRId16 " seconds.", *data);
+	}
 }
 
 static void uefidump_info_bootcurrent(fwts_framework *fw, fwts_uefi_var *var)
 {
-	uint16_t *data = (uint16_t *)var->data;
+	if (var->datalen >= sizeof(uint16_t)) {
+		uint16_t *data = (uint16_t *)var->data;
 
-	fwts_log_info_verbatum(fw, "  BootCurrent: 0x%4.4" PRIx16 ".", *data);
+		fwts_log_info_verbatum(fw, "  BootCurrent: 0x%4.4" PRIx16 ".", *data);
+	}
 }
 
 static void uefidump_info_bootnext(fwts_framework *fw, fwts_uefi_var *var)
 {
-	uint16_t *data = (uint16_t *)var->data;
+	if (var->datalen >= sizeof(uint16_t)) {
+		uint16_t *data = (uint16_t *)var->data;
 
-	fwts_log_info_verbatum(fw, "  BootNext: 0x%4.4" PRIx16 ".", *data);
+		fwts_log_info_verbatum(fw, "  BootNext: 0x%4.4" PRIx16 ".", *data);
+	}
 }
 
 static void uefidump_info_bootoptionsupport(fwts_framework *fw, fwts_uefi_var *var)
 {
-	uint16_t *data = (uint16_t *)var->data;
+	if (var->datalen >= sizeof(uint16_t)) {
+		uint16_t *data = (uint16_t *)var->data;
 
-	fwts_log_info_verbatum(fw, "  BootOptionSupport: 0x%4.4" PRIx16 ".", *data);
+		fwts_log_info_verbatum(fw, "  BootOptionSupport: 0x%4.4" PRIx16 ".", *data);
+	}
 }
 
 static void uefidump_info_bootorder(fwts_framework *fw, fwts_uefi_var *var)
@@ -492,7 +501,7 @@ static void uefidump_info_bootorder(fwts_framework *fw, fwts_uefi_var *var)
 	int n = (int)var->datalen / sizeof(uint16_t);
 	char *str = NULL;
 
-	for (i = 0; i<n; i++) {
+	for (i = 0; i < n; i++) {
 		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
 			*data++, i < (n - 1) ? "," : "");
 	}
@@ -502,11 +511,15 @@ static void uefidump_info_bootorder(fwts_framework *fw, fwts_uefi_var *var)
 
 static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 {
-	fwts_uefi_load_option * load_option = (fwts_uefi_load_option *)var->data;
+	fwts_uefi_load_option *load_option;
 	char tmp[2048];
 	char *path;
-	int len;
+	size_t len, offset;
 
+	if (var->datalen < sizeof(fwts_uefi_load_option))
+		return;
+
+ 	load_option = (fwts_uefi_load_option *)var->data;
 	fwts_log_info_verbatum(fw, "  Active: %s\n",
 		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_ACTIVE) ? "Yes" : "No");
 	fwts_uefi_str16_to_str(tmp, sizeof(tmp), load_option->description);
@@ -514,10 +527,12 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
 
 	/* Skip over description to get to packed path, unpack path and print */
-	path = (char *)var->data + sizeof(load_option->attributes) +
-		sizeof(load_option->file_path_list_length) +
-		(sizeof(uint16_t) * (len + 1));
-	path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path *)path);
+	offset = sizeof(load_option->attributes) +
+		 sizeof(load_option->file_path_list_length) +
+		 (sizeof(uint16_t) * (len + 1));
+
+	path = uefidump_build_dev_path(NULL,
+			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
 	fwts_log_info_verbatum(fw, "  Path: %s.", path);
 	free(path);
 }
@@ -528,14 +543,18 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 static void uefidump_info_dump_type0(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char *ptr = (char*)var->data;
+	size_t len = var->datalen;
 
-	while (*ptr) {
+	while (len && *ptr) {
 		char *start = ptr;
-		while (*ptr && *ptr != '\n')
+		while (len && *ptr && *ptr != '\n') {
 			ptr++;
+			len--;
+		}
 
 		if (*ptr == '\n') {
-			*ptr++ = 0;
+			*ptr++ = '\0';
+			len--;
 			fwts_log_info_verbatum(fw, "  KLog: %s.", start);
 		}
 	}
@@ -726,9 +745,11 @@ static void uefidump_info_osindications_supported(fwts_framework *fw, fwts_uefi_
 
 static void uefidump_info_vendor_keys(fwts_framework *fw, fwts_uefi_var *var)
 {
-	uint8_t value = (uint8_t)var->data[0];
+	if (var->datalen >= sizeof(uint8_t)) {
+		uint8_t value = (uint8_t)var->data[0];
 
-	fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 ".", value);
+		fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 ".", value);
+	}
 }
 
 static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
@@ -747,16 +768,19 @@ static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
 
 static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 {
-	fwts_uefi_load_option *load_option = (fwts_uefi_load_option *)var->data;
+	fwts_uefi_load_option *load_option;
 	char *path;
 	char *tmp;
-	size_t len;
+	size_t len, offset;
 
+	if (var->datalen < sizeof(fwts_uefi_load_option))
+		return;
+
+	load_option = (fwts_uefi_load_option *)var->data;
 	fwts_log_info_verbatum(fw, "  Force Reconnect: %s\n",
 		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_FORCE_RECONNECT) ? "Yes" : "No");
 
 	len = fwts_uefi_str16len(load_option->description);
-
 	if (len != 0) {
 		tmp = malloc(len + 1);
 		if (tmp) {
@@ -768,10 +792,11 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 
 	if (load_option->file_path_list_length != 0) {
 		/* Skip over description to get to packed path, unpack path and print */
-		path = (char *)var->data + sizeof(load_option->attributes) +
-			sizeof(load_option->file_path_list_length) +
-			(sizeof(uint16_t) * (len + 1));
-		path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path *)path);
+		offset = sizeof(load_option->attributes) +
+			 sizeof(load_option->file_path_list_length) +
+			 (sizeof(uint16_t) * (len + 1));
+		path = uefidump_build_dev_path(NULL,
+			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
 		fwts_log_info_verbatum(fw, "  Path: %s.", path);
 		free(path);
 	}

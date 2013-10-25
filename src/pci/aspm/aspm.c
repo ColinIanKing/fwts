@@ -31,19 +31,6 @@
 #include <inttypes.h>
 #include "fwts.h"
 
-#define PCI_DEV_PATH			"/sys/bus/pci/devices"
-
-/* PCI Confiiguration Space for Type 0 & 1 */
-#define FWTS_PCI_HEADER_TYPE		0x0E
-#define FWTS_PCI_CAPABILITIES_POINTER	0x34
-
-/* PCI Confiiguration Space for Type 1 */
-#define FWTS_PCI_SECONDARD_BUS_NUMBER	0x19
-
-/* PCI Capability IDs  */
-#define FWTS_PCI_LAST_ID		0x00
-#define FWTS_PCI_EXPRESS_CAP_ID		0x10
-
 /* PCI Express Capability Structure Fields */
 #define FWTS_PCIE_ASPM_SUPPORT_L0_FIELD	0x0400
 #define FWTS_PCIE_ASPM_SUPPORT_L1_FIELD	0x0800
@@ -60,37 +47,6 @@ struct pci_device {
 	uint8_t func;
 	uint8_t config[256];
 };
-
-/*
- * PCI Express Capability Structure is defined in Section 7.8
- * of PCI Express®i Base Specification Revision 2.0
- */
-typedef struct {
-	uint8_t pcie_cap_id;
-	uint8_t next_cap_point;
-	uint16_t pcie_cap_reg;
-	uint32_t device_cap;
-	uint16_t device_contrl;
-	uint16_t device_status;
-	uint32_t link_cap;
-	uint16_t link_contrl;
-	uint16_t link_status;
-	uint32_t slot_cap;
-	uint16_t slot_contrl;
-	uint16_t slot_status;
-	uint16_t root_contrl;
-	uint16_t root_cap;
-	uint32_t root_status;
-	uint32_t device_cap2;
-	uint16_t device_contrl2;
-	uint16_t device_status2;
-	uint32_t link_cap2;
-	uint16_t link_contrl2;
-	uint16_t link_status2;
-	uint32_t slot_cap2;
-	uint16_t slot_contrl2;
-	uint16_t slot_status2;
-} __attribute__ ((packed)) pcie_capability;
 
 static int facp_get_aspm_control(fwts_framework *fw)
 {
@@ -120,28 +76,28 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	struct pci_device *rp,
 	struct pci_device *dev)
 {
-	pcie_capability *rp_cap, *device_cap;
+	fwts_pcie_capability *rp_cap, *device_cap;
 	uint8_t rp_aspm_cntrl, device_aspm_cntrl;
 	uint8_t next_cap;
 	int ret = FWTS_OK;
 	bool l0s_disabled = false, l1_disabled = false;
 
-	next_cap = rp->config[FWTS_PCI_CAPABILITIES_POINTER];
-	rp_cap = (pcie_capability *) &rp->config[next_cap];
+	next_cap = rp->config[FWTS_PCI_CONFIG_TYPE1_CAPABILITY_POINTER];
+	rp_cap = (fwts_pcie_capability *) &rp->config[next_cap];
 	while (rp_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
-		if (rp_cap->next_cap_point == FWTS_PCI_LAST_ID)
+		if (rp_cap->next_cap_point == FWTS_PCI_CAPABILITIES_LAST_ID)
 			break;
 		next_cap = rp_cap->next_cap_point;
-		rp_cap = (pcie_capability *) &rp->config[next_cap];
+		rp_cap = (fwts_pcie_capability *) &rp->config[next_cap];
 	}
 
-	next_cap = dev->config[FWTS_PCI_CAPABILITIES_POINTER];
-	device_cap = (pcie_capability *)&dev->config[next_cap];
+	next_cap = dev->config[FWTS_PCI_CONFIG_TYPE1_CAPABILITY_POINTER];
+	device_cap = (fwts_pcie_capability *)&dev->config[next_cap];
 	while (device_cap->pcie_cap_id != FWTS_PCI_EXPRESS_CAP_ID) {
-		if (device_cap->next_cap_point == FWTS_PCI_LAST_ID)
+		if (device_cap->next_cap_point == FWTS_PCI_CAPABILITIES_LAST_ID)
 			break;
 		next_cap = device_cap->next_cap_point;
-		device_cap = (pcie_capability *)&dev->config[next_cap];
+		device_cap = (fwts_pcie_capability *)&dev->config[next_cap];
 	}
 
 
@@ -222,8 +178,8 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 
 	fwts_list_init(&dev_list);
 
-	if ((dirp = opendir(PCI_DEV_PATH)) == NULL) {
-		fwts_log_warning(fw, "Could not open %s.", PCI_DEV_PATH);
+	if ((dirp = opendir(FWTS_PCI_DEV_PATH)) == NULL) {
+		fwts_log_warning(fw, "Could not open %s.", FWTS_PCI_DEV_PATH);
 		return FWTS_ERROR;
 	}
 	while ((entry = readdir(dirp)) != NULL) {
@@ -247,7 +203,7 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 			device->dev = dev;
 			device->func = func;
 
-			snprintf(path, sizeof(path), PCI_DEV_PATH "/%s/config", entry->d_name);
+			snprintf(path, sizeof(path), FWTS_PCI_DEV_PATH "/%s/config", entry->d_name);
 			if ((fd = open(path, O_RDONLY)) < 0) {
 				fwts_log_warning(fw, "Could not open config from PCI device %s\n", entry->d_name);
 				free(device);
@@ -271,10 +227,10 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 		struct pci_device *target, *cur = (struct pci_device *)lcur->data;
 
 		/* Find PCI Bridge (PCIE Root Port) and the attached device  */
-		if (cur->config[FWTS_PCI_HEADER_TYPE] & 0x01) {
+		if (cur->config[FWTS_PCI_CONFIG_HEADER_TYPE] & 0x01) {
 			for (ltarget = dev_list.head; ltarget; ltarget = ltarget->next) {
 				target = (struct pci_device *)ltarget->data;
-				if (target->bus == cur->config[FWTS_PCI_SECONDARD_BUS_NUMBER]) {
+				if (target->bus == cur->config[FWTS_PCI_CONFIG_TYPE1_SECONDARY_BUS_NUMBER]) {
 					pcie_compare_rp_dev_aspm_registers(fw, cur, target);
 					break;
 				}

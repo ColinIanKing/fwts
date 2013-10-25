@@ -27,97 +27,92 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <inttypes.h>
 
 /*
  * This test checks if MaxReadReq is set > 128 for non-internal stuff
  * A too low value hurts performance
  */
-
-static fwts_list *lspci_text;
-
-static int maxreadreq_init(fwts_framework *fw)
-{
-	int status;
-
-	if (fwts_check_executable(fw, fw->lspci, "lspci"))
-		return FWTS_ERROR;
-
-	if (fwts_pipe_exec("lspci -vvv", &lspci_text, &status) != FWTS_OK) {
-		fwts_log_error(fw, "Failed to execute lspci -vvv.");
-		return FWTS_ERROR;
-	}
-
-	if (lspci_text == NULL) {
-		fwts_log_error(fw, "Unexpected empty output from lspci -vvv.");
-		return FWTS_ERROR;
-	}
-
-	return FWTS_OK;
-}
-
-static int maxreadreq_deinit(fwts_framework *fw)
-{
-	FWTS_UNUSED(fw);
-
-	if (lspci_text)
-		fwts_text_list_free(lspci_text);
-
-	return FWTS_OK;
-}
-
 static int maxreadreq_test1(fwts_framework *fw)
 {
+	DIR *dirp;
+	struct dirent *entry;
 	int warnings = 0;
-	char current_type[512];
-	char current_device[512];
 
-	fwts_list_link *item;
-
-	if (lspci_text == NULL)
+	if ((dirp = opendir(FWTS_PCI_DEV_PATH)) == NULL) {
+		fwts_log_warning(fw, "Could not open %s.", FWTS_PCI_DEV_PATH);
 		return FWTS_ERROR;
+	}
 
-	fwts_list_foreach(item, lspci_text) {
-		char *line = fwts_text_list_text(item);
-		int val = 0;
-		char *c;
+	while ((entry = readdir(dirp)) != NULL) {
+		char path[PATH_MAX];
+		uint8_t config[256];
+		int fd;
+		ssize_t n;
+		uint8_t offset = 0;
 
-		if (line[0]!=' ' && line[0] != '\t' && strlen(line)>8) {
-			if (strlen(line) > 500){
-				fwts_log_warning(fw,
-					"Too big pci string would overflow "
-					"current_device buffer Internal "
-					"plugin, not a firmware bug.");
-				break;
-			}
-			snprintf(current_device, sizeof(current_device), "pci://00:%s", line);
-			strncpy(current_type, line+8, sizeof(current_type)-1);
-			current_type[sizeof(current_type)-1] = '\0';
-			c = strchr(current_type, ':');
-			if (c)
-				*c='\0';
+		if (entry->d_name[0] == '.')
+			continue;
+
+		/* Read Config space */
+		snprintf(path, sizeof(path), FWTS_PCI_DEV_PATH "/%s/config", entry->d_name);
+		if ((fd = open(path, O_RDONLY)) < 0) {
+			fwts_log_warning(fw, "Could not open %s PCI config data\n", entry->d_name);
+			continue;
 		}
-		/* chipset devices are exempt from this check */
-		if (strcmp(current_type, "PCI bridge")==0)
+		if ((n = read(fd, config, sizeof(config))) < 0) {
+			fwts_log_warning(fw, "Could not read %s PCI config data\n", entry->d_name);
+			close(fd);
 			continue;
-		if (strcmp(current_type, "Host bridge")==0)
+		}
+		close(fd);
+
+		/* Ignore Host Bridge */
+		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_BRIDGE_CONTROLLER) &&
+		    (config[FWTS_PCI_CONFIG_SUBCLASS] == FWTS_PCI_SUBCLASS_CODE_HOST_BRIDGE))
 			continue;
-		if (strcmp(current_type, "System peripheral")==0)
+		/* Ignore PCI Bridge */
+		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_BRIDGE_CONTROLLER) &&
+		    (config[FWTS_PCI_CONFIG_SUBCLASS] == FWTS_PCI_SUBCLASS_CODE_PCI_TO_PCI_BRIDGE))
 			continue;
-		if (strcmp(current_type, "Audio device")==0)
+		/* Ignore System Peripheral */
+		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_BASE_SYSTEM_PERIPHERALS) &&
+		    (config[FWTS_PCI_CONFIG_SUBCLASS] == FWTS_PCI_SUBCLASS_CODE_OTHER_SYSTEM_PERIPHERAL))
+			continue;
+		/* Ignore Audio Device */
+		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_MULTIMEDIA_CONTROLLER) &&
+		    (config[FWTS_PCI_CONFIG_SUBCLASS] == FWTS_PCI_SUBCLASS_CODE_AUDIO_DEVICE))
 			continue;
 
-		c = strstr(line, "MaxReadReq ");
-		if (c) {
-			c += 11;
-			val = strtoul(c, NULL, 10);
-			if (val <= 128) {
-				fwts_log_warning(fw,
-					"MaxReadReq for %s is low (%d) [%s].",
-					current_device, val, current_type);
-				warnings++;
+		/* config region too small, do next */
+		if (n < FWTS_PCI_CONFIG_TYPE0_CAPABILITIES_POINTER)
+			continue;
+		offset = config[FWTS_PCI_CONFIG_TYPE0_CAPABILITIES_POINTER];
+
+		/*
+		 *  Step through capability structures and
+		 *  examine MaxReadReq settings
+		 */
+		while ((offset != FWTS_PCI_CAPABILITIES_LAST_ID) &&
+		       (offset > 0) && ((ssize_t)(offset + sizeof(fwts_pcie_capability)) <= n)) {
+			fwts_pcie_capability *cap = (fwts_pcie_capability *)&config[offset];
+
+			if (cap->pcie_cap_id == FWTS_PCI_EXPRESS_CAP_ID) {
+				uint32_t max_readreq = 128 << ((cap->device_contrl >> 12) & 0x3);
+				if (max_readreq <= 128) {
+					fwts_log_warning(fw,
+						"MaxReadReq for %s is low (%" PRIu32 ").",
+						entry->d_name, max_readreq);
+					warnings++;
+				}
 			}
+			offset = cap->next_cap_point;
 		}
 	}
+	closedir(dirp);
 
 	if (warnings > 0) {
 		fwts_failed(fw, LOG_LEVEL_LOW,
@@ -125,7 +120,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 			"%d devices have low MaxReadReq settings. "
 			"Firmware may have configured these too low.",
 			warnings);
-		fwts_advice(fw, 
+		fwts_advice(fw,
 			"The MaxReadRequest size is set too low and will affect performance. "
 			"It will provide excellent bus sharing at the cost of bus data transfer "
 			"rates. Although not a critical issue, it may be worth considering setting "
@@ -148,8 +143,6 @@ static fwts_framework_minor_test maxreadreq_tests[] = {
 
 static fwts_framework_ops maxreadreq_ops = {
 	.description = "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
-	.init        = maxreadreq_init,
-	.deinit      = maxreadreq_deinit,
 	.minor_tests = maxreadreq_tests
 };
 

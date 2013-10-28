@@ -25,27 +25,23 @@
 #include <unistd.h>
 #include <string.h>
 
-static const char *wkalarm = WAKEALARM;
-
 static int wakealarm_test1(fwts_framework *fw)
 {
-	struct stat buf;
-
-	if (stat(wkalarm, &buf) == 0)
-		fwts_passed(fw, WAKEALARM " found.");
+	if (fwts_wakealarm_exits(fw) == FWTS_OK)
+		fwts_passed(fw, "RTC with a RTC alarm ioctl() interface found.");
 	else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoWakeAlarmTest1",
-			"Could not find " WAKEALARM ".");
+			"Could not find an RTC with an alarm ioctl() interface.");
 #ifdef FWTS_ARCH_INTEL
 		/* For x86 devices, this is considered a failure */
 		fwts_advice(fw,
 			"x86 devices generally should have an RTC wake alarm that "
-			"is normally controlled by the " WAKEALARM " interface. This interface "
+			"is normally controlled by the RTC alarm ioctl() interface. This interface "
 			"does not exist, so the wake alarm tests will be aborted.");
 #else
 		fwts_advice(fw,
 			"non-x86 devices sometimes do not have an RTC wake alarm that "
-			"is normally controlled by the " WAKEALARM " interface. This "
+			"is normally controlled by the RTC alarm ioctl() interface. This "
 			"interface does not exist, so the wake alarm tests will be aborted.");
 #endif
 		return FWTS_ABORTED;
@@ -63,6 +59,8 @@ static int wakealarm_test2(fwts_framework *fw)
 		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		return FWTS_OK;
 	}
+
+	(void)fwts_wakealarm_cancel(fw);
 
 	fwts_passed(fw, "RTC wakealarm was triggered successfully.");
 
@@ -122,7 +120,7 @@ static int wakealarm_test4(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test wakealarm_tests[] = {
-	{ wakealarm_test1, "Check existence of " WAKEALARM "." },
+	{ wakealarm_test1, "Check existence of RTC with alarm interface." },
 	{ wakealarm_test2, "Trigger wakealarm for 1 seconds in the future." },
 	{ wakealarm_test3, "Check if wakealarm is fired." },
 	{ wakealarm_test4, "Multiple wakealarm firing tests." },

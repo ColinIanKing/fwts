@@ -18,38 +18,42 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+#include <linux/rtc.h>
 
 #include "fwts.h"
 
-static char *fwts_wkalarm = "/sys/class/rtc/rtc0/wakealarm";
+static char *fwts_rtc = "/dev/rtc0";
 
 /*
- *  fwts_wakealarm_get_irq_state()
- *	get wakealarm IRQ state.  checks if alarm_IRQ exists and if
- *	it is set.
+ *  fwts_wakealarm_exits()
+ *	check that a RTC exists that supports minimal RTC alarm ioctl
  */
-int fwts_wakealarm_get_irq_state(void)
+int fwts_wakealarm_exits(fwts_framework *fw)
 {
-	FILE *fp;
-	char field[32];
-	char value[32];
+	int fd;
+	int ret = FWTS_OK;
+	struct rtc_time rtc_tm;
 
-	if ((fp = fopen("/proc/driver/rtc", "r")) == NULL)
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
 		return FWTS_ERROR;
-
-	while (fscanf(fp, "%s : %s\n", field, value) != EOF) {
-		if (!strcmp(field, "alarm_IRQ")) {
-			fclose(fp);
-			return strcmp(value, "no");
-		}
 	}
-	fclose(fp);
 
-	return FWTS_ERROR;
+	if (ioctl(fd, RTC_ALM_READ, &rtc_tm) < 0) {
+		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+	(void)close(fd);
+
+	return ret;
 }
 
 /*
@@ -58,28 +62,109 @@ int fwts_wakealarm_get_irq_state(void)
  */
 int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
 {
-	char buffer[32];
-	int ret;
+	int fd, ret = FWTS_OK;
+	struct rtc_time rtc_tm;
 
-	snprintf(buffer, sizeof(buffer), "+%d", seconds);
-
-	if (fwts_set("0", fwts_wkalarm)) {
-		fwts_log_error(fw, "Cannot write '0' to %s", fwts_wkalarm);
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
 		return FWTS_ERROR;
 	}
-	if (fwts_set(buffer, fwts_wkalarm)) {
-		fwts_log_error(fw, "Cannot write '%s' to %s", buffer, fwts_wkalarm);
-		return FWTS_ERROR;
-	}
-	if ((ret = fwts_wakealarm_get_irq_state()) == FWTS_ERROR)
-		return FWTS_ERROR;
 
-	if (!fwts_wakealarm_get_irq_state()) {
-		fwts_log_error(fw, "Wakealarm %s did not get set", fwts_wkalarm);
-		return FWTS_ERROR;
+	if (ioctl(fd, RTC_RD_TIME, &rtc_tm) < 0) {
+		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+		goto out;
 	}
-	return FWTS_OK;
+
+	rtc_tm.tm_sec += seconds;
+	if (rtc_tm.tm_sec >= 60) {
+		rtc_tm.tm_min += rtc_tm.tm_sec / 60;
+		rtc_tm.tm_sec %= 60;
+	}
+	if (rtc_tm.tm_min >= 60) {
+		rtc_tm.tm_hour += rtc_tm.tm_min / 60;
+		rtc_tm.tm_min %= 60;
+	}
+	if (rtc_tm.tm_hour >= 24) {
+		rtc_tm.tm_hour %= 24;
+	}
+	errno = 0;
+	if (ioctl(fd, RTC_ALM_SET, &rtc_tm) < 0) {
+		if (errno == ENOTTY) {
+			fwts_log_error(fw, "Real Time Clock device %s does not support alarm interrupts.", fwts_rtc);
+			ret = FWTS_ERROR;
+			goto out;
+		}
+	}
+	if (ioctl(fd, RTC_AIE_ON, 0) < 0) {
+		fwts_log_error(fw, "Cannot enable alarm interrupts on Real Time Clock device %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+out:
+	(void)close(fd);
+
+	return ret;
 }
+
+int fwts_wakealarm_cancel(fwts_framework *fw)
+{
+	int fd, ret = FWTS_OK;
+
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
+		return FWTS_ERROR;
+	}
+
+	if (ioctl(fd, RTC_AIE_OFF, 0) < 0) {
+		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+	(void)close(fd);
+
+	return ret;
+}
+
+/*
+ *  fwts_wakealarm_check_fired()
+ *	check if wakealarm fires
+ */
+int fwts_wakealarm_check_fired(fwts_framework *fw, const int seconds)
+{
+	int fd, rc, ret = FWTS_OK;
+	fd_set rfds;
+	struct timeval tv;
+
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
+		return FWTS_ERROR;
+	}
+
+	FD_ZERO(&rfds);
+	FD_SET(fd, &rfds);
+
+	/* Wait for 1 second longer than the alarm */
+	tv.tv_sec = seconds + 1;
+	tv.tv_usec = 0;
+
+	/* Wait for data to be available or timeout */
+	rc = select(fd + 1, &rfds, NULL, NULL, &tv);
+	if (rc == -1) {
+		fwts_log_error(fw, "Select failed waitin for Real Time Clock device %s to fire.\n", fwts_rtc);
+		ret = FWTS_ERROR;
+		goto out;
+	}
+
+	/* Timed out, no data available, so alarm did not fire */
+	if (rc == 0) {
+		fwts_log_error(fw, "Wakealarm Real Time Clock device %s did not fire", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+out:
+	(void)close(fd);
+
+	return ret;
+}
+
 
 /*
  *  fwts_wakealarm_test_firing()
@@ -88,15 +173,15 @@ int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
  */
 int fwts_wakealarm_test_firing(fwts_framework *fw, const int seconds)
 {
-	int ret;
+	int ret = FWTS_OK;
 
-	if ((ret = fwts_wakealarm_trigger(fw, seconds)) != FWTS_OK)
+	if (fwts_wakealarm_trigger(fw, seconds + 2) != FWTS_OK)
 		return FWTS_ERROR;
 
-	sleep(seconds+1);
-	if (fwts_wakealarm_get_irq_state() != FWTS_OK) {
-		fwts_log_error(fw, "Wakealarm %s did not fire", fwts_wkalarm);
-		return FWTS_ERROR;
-	}
-	return FWTS_OK;
+	if (fwts_wakealarm_check_fired(fw, seconds + 2) != FWTS_OK)
+		ret = FWTS_ERROR;
+
+	fwts_wakealarm_cancel(fw);
+
+	return ret;
 }

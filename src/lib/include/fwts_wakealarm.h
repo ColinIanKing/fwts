@@ -22,10 +22,9 @@
 
 #include "fwts_framework.h"
 
-#define WAKEALARM "/sys/class/rtc/rtc0/wakealarm"
-
-int fwts_wakealarm_get_irq_state(void);
+int fwts_wakealarm_exits(fwts_framework *fw);
 int fwts_wakealarm_test_firing(fwts_framework *fw, const int sleep);
 int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds);
+int fwts_wakealarm_cancel(fwts_framework *fw);
 
 #endif

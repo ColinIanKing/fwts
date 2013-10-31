@@ -201,35 +201,71 @@ static int check_prefetchable(
 	uint64_t address,
 	bool *pref)
 {
-	char line[4096];
-	fwts_list *lspci_output;
-	fwts_list_link *item;
-	int status;
+	char path[PATH_MAX];
+	uint8_t config[64];
+	int fd, i, n, bars;
+	uint32_t *bar;
 
 	*pref = false;
-
-	memset(line,0,4096);
-
-	snprintf(line, sizeof(line), "%s -v -s %s", fw->lspci, device);
-	if (fwts_pipe_exec(line, &lspci_output, &status) != FWTS_OK)
+	snprintf(path, sizeof(path), FWTS_PCI_DEV_PATH "/%s/config", device);
+	if ((fd = open(path, O_RDONLY)) < 0) {
+		fwts_log_error(fw, "Cannot read PCI config for device %s\n", device);
 		return FWTS_ERROR;
+	}
 
-	/* Nothing for this decice? That seems like a failure */
-	if (lspci_output == NULL)
-		return FWTS_ERROR;
+	n = read(fd, config, sizeof(config));
+	close(fd);
 
-	fwts_list_foreach(item, lspci_output) {
-		char *str = strstr(fwts_text_list_text(item), "Memory at ");
-		if (str && strtoull(str+10, NULL, 16) == address) {
-			if (strstr(str, "non-prefetchable"))
-				*pref = false;
-			else if (strstr(str, "(prefetchable"))
-				*pref = true;
-			else if (strstr(str, ", prefetchable"))
-				*pref = true;
+	/* config space too small? ignore for now */
+	if (n < 64)
+		return FWTS_OK;
+
+	/* Type, mask off top bit so we can cater for multi-function devices */
+	switch (config[FWTS_PCI_CONFIG_HEADER_TYPE] & 0x7f) {
+	case FWTS_PCI_CONFIG_HEADER_TYPE_NON_BRIDGE:
+		bars = 6;
+		break;
+	case FWTS_PCI_CONFIG_HEADER_TYPE_PCI_BRIDGE:
+		bars = 2;
+		break;
+	default:
+		/* No BARs, ignore */
+		return FWTS_OK;
+	}
+
+	/*
+	 *  Check BAR addresses, do they match and are they prefetchable
+	 *  See http://wiki.osdev.org/PCI
+	 */
+	bar = (uint32_t*)&config[0x10];
+	for (i = 0; i < bars; i++) {
+		if ((bar[i] & 1) == 0) {
+			uint64_t bar_addr;
+			bool is_prefetchable =
+				(bar[i] & FWTS_PCI_CONFIG_BAR_PREFETCHABLE);
+
+			switch ((bar[i] >> 1) & 0x03) {
+			case FWTS_PCI_CONFIG_BAR_TYPE_ADDR_16BIT:
+				bar_addr = bar[i] & 0xfff0;
+				break;
+			case FWTS_PCI_CONFIG_BAR_TYPE_ADDR_32BIT:
+				bar_addr = bar[i] & 0xfffffff0;
+				break;
+			case FWTS_PCI_CONFIG_BAR_TYPE_ADDR_64BIT:
+				bar_addr = (bar[i] & 0xfffffff0) |
+					   (((uint64_t)bar[i+1]) << 32);
+				i++;
+				break;
+			default:
+				continue;
+			}
+
+			if (bar_addr == address) {
+				*pref = is_prefetchable;
+				break;
+			}
 		}
 	}
-	fwts_list_free(lspci_output, free);
 
 	return FWTS_OK;
 }
@@ -334,8 +370,8 @@ static int validate_iomem(fwts_framework *fw)
 
 		if (guess_cache_type(fw, c2, &type_must, &type_mustnot, start) != FWTS_OK) {
 			/*  This has failed, give up at this point */
-			fwts_skipped(fw, 
-				"Could not guess cache type, lspci seems to be failing.");
+			fwts_skipped(fw,
+				"Could not guess cache type.");
 			fclose(file);
 			return FWTS_ERROR;
 		}
@@ -404,9 +440,6 @@ static void do_mtrr_resource(fwts_framework *fw)
 
 static int mtrr_init(fwts_framework *fw)
 {
-	if (fwts_check_executable(fw, fw->lspci, "lspci"))
-		return FWTS_ERROR;
-
 	if (get_mtrrs() != FWTS_OK) {
 		fwts_log_error(fw, "Failed to read /proc/mtrr.");
 		return FWTS_ERROR;

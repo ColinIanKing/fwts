@@ -375,11 +375,11 @@ static int brightness_test5(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test brightness_tests[] = {
-	{ brightness_test1, "Check for maximum and actual brightness." },
+	{ brightness_test1, "Test for maximum and actual brightness." },
 	{ brightness_test2, "Change actual brightness." },
 	{ brightness_test3, "Observe all brightness changes." },
 	{ brightness_test4, "Observe min, max brightness changes." },
-	{ brightness_test5, "Check brightness hotkeys." },
+	{ brightness_test5, "Test brightness hotkeys." },
 	{ NULL, NULL }
 };
 

@@ -286,12 +286,12 @@ static int battery_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test battery_tests[] = {
-	{ battery_test1, "Check batteries." },
+	{ battery_test1, "Battery test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops battery_ops = {
-	.description = "Battery Tests.",
+	.description = "Battery tests.",
 	.minor_tests = battery_tests
 };
 

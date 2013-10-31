@@ -565,11 +565,11 @@ static int msr_cpu_specific(fwts_framework *fw)
 
 
 static fwts_framework_minor_test msr_tests[] = {
-	{ msr_cpu_generic,		"Check CPU generic MSRs." },
-	{ msr_cpu_specific,		"Check CPU specific model MSRs." },
-	{ msr_pstate_ratios, 		"Check all P State Ratios." },
-	{ msr_c1_c3_autodemotion, 	"Check C1 and C3 autodemotion." },
-	{ msr_smrr,			"Check SMRR MSR registers." },
+	{ msr_cpu_generic,		"Test CPU generic MSRs." },
+	{ msr_cpu_specific,		"Test CPU specific model MSRs." },
+	{ msr_pstate_ratios, 		"Test all P State Ratios." },
+	{ msr_c1_c3_autodemotion, 	"Test C1 and C3 autodemotion." },
+	{ msr_smrr,			"Test SMRR MSR registers." },
 	{ NULL, NULL }
 };
 

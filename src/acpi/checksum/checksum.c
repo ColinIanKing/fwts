@@ -146,12 +146,12 @@ static int checksum_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test checksum_tests[] = {
-	{ checksum_test1, "Check ACPI table checksums." },
+	{ checksum_test1, "ACPI table checksum test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops checksum_ops = {
-	.description = "Check ACPI table checksum.",
+	.description = "ACPI table checksum test.",
 	.minor_tests = checksum_tests
 };
 

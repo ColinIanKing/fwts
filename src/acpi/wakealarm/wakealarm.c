@@ -120,15 +120,15 @@ static int wakealarm_test4(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test wakealarm_tests[] = {
-	{ wakealarm_test1, "Check existence of RTC with alarm interface." },
+	{ wakealarm_test1, "Test existence of RTC with alarm interface." },
 	{ wakealarm_test2, "Trigger wakealarm for 1 seconds in the future." },
-	{ wakealarm_test3, "Check if wakealarm is fired." },
+	{ wakealarm_test3, "Test if wakealarm is fired." },
 	{ wakealarm_test4, "Multiple wakealarm firing tests." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops wakealarm_ops = {
-	.description = "Test ACPI Wakealarm.",
+	.description = "ACPI Wakealarm tests.",
 	.minor_tests = wakealarm_tests
 };
 

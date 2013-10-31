@@ -259,7 +259,7 @@ static fwts_framework_minor_test mcfg_tests[] = {
 };
 
 static fwts_framework_ops mcfg_ops = {
-	.description = "MCFG PCI Express* memory mapped config space.",
+	.description = "MCFG PCI Express* memory mapped config space test.",
 	.init        = mcfg_init,
 	.deinit      = mcfg_deinit,
 	.minor_tests = mcfg_tests

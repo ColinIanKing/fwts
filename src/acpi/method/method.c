@@ -4780,302 +4780,302 @@ static int method_test_DSS(fwts_framework *fw)
  * Tests
  */
 static fwts_framework_minor_test method_tests[] = {
-	{ method_name_check, "Check Method Names." },
+	{ method_name_check, "Test Method Names." },
 
 	/* Section 5.3 */
-	/* { method_test_GPE, "Check _GPE (General Purpose Events)." }, */
-	/* { method_test_PR , "Check _PR  (Processor)." }, */
+	/* { method_test_GPE, "Test _GPE (General Purpose Events)." }, */
+	/* { method_test_PR , "Test _PR  (Processor)." }, */
 
 	/* Section 5.6 ACPI Event Programming Model */
-	/* { method_test_Wxx, "Check _Wxx (Wake Event)." }, */
+	/* { method_test_Wxx, "Test _Wxx (Wake Event)." }, */
 
-	{ method_test_AEI, "Check _AEI." },
-	/* { method_test_EVT, "Check _EVT (Event Method)." }, */
+	{ method_test_AEI, "Test _AEI." },
+	/* { method_test_EVT, "Test _EVT (Event Method)." }, */
 
 	/* Section 5.7 Predefined Objects */
-	/* { method_test_DLM, "Check _DLM (Device Lock Mutex)." }, */
-	/* { method_test_GL , "Check _GL  (Global Lock)." }, */
-	/* { method_test_OS , "Check _OS  (Operating System)." }, */
-	/* { method_test_REV, "Check _REV (Revision)." }, */
+	/* { method_test_DLM, "Test _DLM (Device Lock Mutex)." }, */
+	/* { method_test_GL , "Test _GL  (Global Lock)." }, */
+	/* { method_test_OS , "Test _OS  (Operating System)." }, */
+	/* { method_test_REV, "Test _REV (Revision)." }, */
 
 	/* Section 5.8 System Configuration Objects */
-	/* { method_test_PIC, "Check _PIC (Inform AML of Interrupt Model)." }, */
+	/* { method_test_PIC, "Test _PIC (Inform AML of Interrupt Model)." }, */
 
 	/* Section 6.1 Device Identification Objects  */
 
-	/* { method_test_CID, "Check _CID (Compatible ID)." }, */
-	/* { method_test_CLS, "Check _CLS (Class Code)." }, */
-	{ method_test_DDN, "Check _DDN (DOS Device Name)." },
-	{ method_test_HID, "Check _HID (Hardware ID)." },
-	{ method_test_HRV, "Check _HRV (Hardware Revision Number)." },
-	/* { method_test_MLS, "Check _MLS (Multiple Language String)." }, */
-	{ method_test_PLD, "Check _PLD (Physical Device Location)." },
-	{ method_test_SUB, "Check _SUB (Subsystem ID)." },
-	{ method_test_SUN, "Check _SUN (Slot User Number)." },
-	{ method_test_STR, "Check _STR (String)." },
-	{ method_test_UID, "Check _UID (Unique ID)." },
+	/* { method_test_CID, "Test _CID (Compatible ID)." }, */
+	/* { method_test_CLS, "Test _CLS (Class Code)." }, */
+	{ method_test_DDN, "Test _DDN (DOS Device Name)." },
+	{ method_test_HID, "Test _HID (Hardware ID)." },
+	{ method_test_HRV, "Test _HRV (Hardware Revision Number)." },
+	/* { method_test_MLS, "Test _MLS (Multiple Language String)." }, */
+	{ method_test_PLD, "Test _PLD (Physical Device Location)." },
+	{ method_test_SUB, "Test _SUB (Subsystem ID)." },
+	{ method_test_SUN, "Test _SUN (Slot User Number)." },
+	{ method_test_STR, "Test _STR (String)." },
+	{ method_test_UID, "Test _UID (Unique ID)." },
 
 	/* Section 6.2 Device Configurations Objects */
 
-	/* { method_test_CDM, "Check _CDM (Clock Domain)." }, */
-	{ method_test_CRS, "Check _CRS (Current Resource Settings)." },
-	{ method_test_DIS, "Check _DIS (Disable)." },
-	{ method_test_DMA, "Check _DMA (Direct Memory Access)." },
-	{ method_test_FIX, "Check _FIX (Fixed Register Resource Provider)." },
-	{ method_test_GSB, "Check _GSB (Global System Interrupt Base)." },
-	{ method_test_HPP, "Check _HPP (Hot Plug Parameters)." },
-	/* { method_test_HPX, "Check _HPX (Hot Plug Extensions)." }, */
-	/* { method_test_MAT, "Check _MAT (Multiple APIC Table Entry)." }, */
-	{ method_test_PRS, "Check _PRS (Possible Resource Settings)." },
-	{ method_test_PXM, "Check _PXM (Proximity)." },
-	/* { method_test_SLI, "Check _SLI (System Locality Information)." }, */
-	/* { method_test_SRS, "Check _SRS (Set Resource Settings)." }, */
+	/* { method_test_CDM, "Test _CDM (Clock Domain)." }, */
+	{ method_test_CRS, "Test _CRS (Current Resource Settings)." },
+	{ method_test_DIS, "Test _DIS (Disable)." },
+	{ method_test_DMA, "Test _DMA (Direct Memory Access)." },
+	{ method_test_FIX, "Test _FIX (Fixed Register Resource Provider)." },
+	{ method_test_GSB, "Test _GSB (Global System Interrupt Base)." },
+	{ method_test_HPP, "Test _HPP (Hot Plug Parameters)." },
+	/* { method_test_HPX, "Test _HPX (Hot Plug Extensions)." }, */
+	/* { method_test_MAT, "Test _MAT (Multiple APIC Table Entry)." }, */
+	{ method_test_PRS, "Test _PRS (Possible Resource Settings)." },
+	{ method_test_PXM, "Test _PXM (Proximity)." },
+	/* { method_test_SLI, "Test _SLI (System Locality Information)." }, */
+	/* { method_test_SRS, "Test _SRS (Set Resource Settings)." }, */
 
 	/* Section 6.3 Device Insertion, Removal and Status Objects */
 
-	{ method_test_EDL, "Check _EDL (Eject Device List)." },
-	{ method_test_EJD, "Check _EJD (Ejection Dependent Device)." },
-	{ method_test_EJ0, "Check _EJ0 (Eject)." },
-	{ method_test_EJ1, "Check _EJ1 (Eject)." },
-	{ method_test_EJ2, "Check _EJ2 (Eject)." },
-	{ method_test_EJ3, "Check _EJ3 (Eject)." },
-	{ method_test_EJ4, "Check _EJ4 (Eject)." },
-	{ method_test_LCK, "Check _LCK (Lock)." },
-	/* { method_test_OST, "Check _OST (OSPM Status Indication)." }, */
-	{ method_test_RMV, "Check _RMV (Remove)." },
-	{ method_test_STA, "Check _STA (Status)." },
+	{ method_test_EDL, "Test _EDL (Eject Device List)." },
+	{ method_test_EJD, "Test _EJD (Ejection Dependent Device)." },
+	{ method_test_EJ0, "Test _EJ0 (Eject)." },
+	{ method_test_EJ1, "Test _EJ1 (Eject)." },
+	{ method_test_EJ2, "Test _EJ2 (Eject)." },
+	{ method_test_EJ3, "Test _EJ3 (Eject)." },
+	{ method_test_EJ4, "Test _EJ4 (Eject)." },
+	{ method_test_LCK, "Test _LCK (Lock)." },
+	/* { method_test_OST, "Test _OST (OSPM Status Indication)." }, */
+	{ method_test_RMV, "Test _RMV (Remove)." },
+	{ method_test_STA, "Test _STA (Status)." },
 
 	/* Section 6.4 Resource Data Types for ACPI */
 
 	/* Section 6.5 Other Objects and Controls */
 
-	/* { method_test_DEP, "Check _DEP (Operational Region Dependencies)." }, */
-	{ method_test_BDN, "Check _BDN (BIOS Dock Name)." },
-	{ method_test_BBN, "Check _BBN (Base Bus Number)." },
-	{ method_test_DCK, "Check _DCK (Dock)." },
-	{ method_test_INI, "Check _INI (Initialize)." },
-	/* { method_test_GLK, "Check _GLK (Global Lock)." }, */
-	/* { method_test_REG, "Check _REG (Region)." }, */
-	{ method_test_SEG, "Check _SEG (Segment)." },
+	/* { method_test_DEP, "Test _DEP (Operational Region Dependencies)." }, */
+	{ method_test_BDN, "Test _BDN (BIOS Dock Name)." },
+	{ method_test_BBN, "Test _BBN (Base Bus Number)." },
+	{ method_test_DCK, "Test _DCK (Dock)." },
+	{ method_test_INI, "Test _INI (Initialize)." },
+	/* { method_test_GLK, "Test _GLK (Global Lock)." }, */
+	/* { method_test_REG, "Test _REG (Region)." }, */
+	{ method_test_SEG, "Test _SEG (Segment)." },
 
 	/* Section 7.1 Declaring a Power Resource Object */
 
-	{ method_test_OFF, "Check _OFF (Set resource off)." },
-	{ method_test_ON,  "Check _ON  (Set resource on)." },
+	{ method_test_OFF, "Test _OFF (Set resource off)." },
+	{ method_test_ON,  "Test _ON  (Set resource on)." },
 
 	/* Section 7.2 Device Power Management Objects */
 
-	{ method_test_DSW, "Check _DSW (Device Sleep Wake)." },
-	{ method_test_IRC, "Check _IRC (In Rush Current)." },
-	{ method_test_PRE, "Check _PRE (Power Resources for Enumeration)." },
-	{ method_test_PR0, "Check _PR0 (Power Resources for D0)." },
-	{ method_test_PR1, "Check _PR1 (Power Resources for D1)." },
-	{ method_test_PR2, "Check _PR2 (Power Resources for D2)." },
-	{ method_test_PR3, "Check _PR3 (Power Resources for D3)." },
-	/* { method_test_PRW, "Check _PRW (Power Resources for Wake)." }, */
-	{ method_test_PS0, "Check _PS0 (Power State 0)." },
-	{ method_test_PS1, "Check _PS1 (Power State 1)." },
-	{ method_test_PS2, "Check _PS2 (Power State 2)." },
-	{ method_test_PS3, "Check _PS3 (Power State 3)." },
-	{ method_test_PSC, "Check _PSC (Power State Current)." },
-	{ method_test_PSE, "Check _PSE (Power State for Enumeration)." },
-	{ method_test_PSW, "Check _PSW (Power State Wake)." },
-	{ method_test_S1D, "Check _S1D (S1 Device State)." },
-	{ method_test_S2D, "Check _S2D (S2 Device State)." },
-	{ method_test_S3D, "Check _S3D (S3 Device State)." },
-	{ method_test_S4D, "Check _S4D (S4 Device State)." },
-	{ method_test_S0W, "Check _S0W (S0 Device Wake State)." },
-	{ method_test_S1W, "Check _S1W (S1 Device Wake State)." },
-	{ method_test_S2W, "Check _S2W (S2 Device Wake State)." },
-	{ method_test_S3W, "Check _S3W (S3 Device Wake State)." },
-	{ method_test_S4W, "Check _S4W (S4 Device Wake State)." },
+	{ method_test_DSW, "Test _DSW (Device Sleep Wake)." },
+	{ method_test_IRC, "Test _IRC (In Rush Current)." },
+	{ method_test_PRE, "Test _PRE (Power Resources for Enumeration)." },
+	{ method_test_PR0, "Test _PR0 (Power Resources for D0)." },
+	{ method_test_PR1, "Test _PR1 (Power Resources for D1)." },
+	{ method_test_PR2, "Test _PR2 (Power Resources for D2)." },
+	{ method_test_PR3, "Test _PR3 (Power Resources for D3)." },
+	/* { method_test_PRW, "Test _PRW (Power Resources for Wake)." }, */
+	{ method_test_PS0, "Test _PS0 (Power State 0)." },
+	{ method_test_PS1, "Test _PS1 (Power State 1)." },
+	{ method_test_PS2, "Test _PS2 (Power State 2)." },
+	{ method_test_PS3, "Test _PS3 (Power State 3)." },
+	{ method_test_PSC, "Test _PSC (Power State Current)." },
+	{ method_test_PSE, "Test _PSE (Power State for Enumeration)." },
+	{ method_test_PSW, "Test _PSW (Power State Wake)." },
+	{ method_test_S1D, "Test _S1D (S1 Device State)." },
+	{ method_test_S2D, "Test _S2D (S2 Device State)." },
+	{ method_test_S3D, "Test _S3D (S3 Device State)." },
+	{ method_test_S4D, "Test _S4D (S4 Device State)." },
+	{ method_test_S0W, "Test _S0W (S0 Device Wake State)." },
+	{ method_test_S1W, "Test _S1W (S1 Device Wake State)." },
+	{ method_test_S2W, "Test _S2W (S2 Device Wake State)." },
+	{ method_test_S3W, "Test _S3W (S3 Device Wake State)." },
+	{ method_test_S4W, "Test _S4W (S4 Device Wake State)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
-	{ method_test_S0_, "Check _S0_ (S0 System State)." },
-	{ method_test_S1_, "Check _S1_ (S1 System State)." },
-	{ method_test_S2_, "Check _S2_ (S2 System State)." },
-	{ method_test_S3_, "Check _S3_ (S3 System State)." },
-	{ method_test_S4_, "Check _S4_ (S4 System State)." },
-	{ method_test_S5_, "Check _S5_ (S5 System State)." },
-	{ method_test_SWS, "Check _SWS (System Wake Source)." },
+	{ method_test_S0_, "Test _S0_ (S0 System State)." },
+	{ method_test_S1_, "Test _S1_ (S1 System State)." },
+	{ method_test_S2_, "Test _S2_ (S2 System State)." },
+	{ method_test_S3_, "Test _S3_ (S3 System State)." },
+	{ method_test_S4_, "Test _S4_ (S4 System State)." },
+	{ method_test_S5_, "Test _S5_ (S5 System State)." },
+	{ method_test_SWS, "Test _SWS (System Wake Source)." },
 
 	/* Section 8.4 Declaring Processors */
 
-	{ method_test_PSS, "Check _PSS (Performance Supported States)." },
-	{ method_test_CPC, "Check _CPC (Continuous Performance Control)." },
-	{ method_test_CSD, "Check _CSD (C State Dependencies)." },
-	{ method_test_CST, "Check _CST (C States)." },
-	{ method_test_PCT, "Check _PCT (Performance Control)." },
-	/* { method_test_PDC, "Check _PDC (Processor Driver Capabilities)." }, */
-	{ method_test_PDL, "Check _PDL (P-State Depth Limit)." },
-	{ method_test_PPC, "Check _PPC (Performance Present Capabilities)." },
-	{ method_test_PPE, "Check _PPE (Polling for Platform Error)." },
-	/* { method_test_PSD, "Check _PSD (Power State Dependencies)." }, */
-	/* { method_test_PTC, "Check _PTC (Processor Throttling Control)." }, */
-	{ method_test_TDL, "Check _TDL (T-State Depth Limit)." },
-	{ method_test_TPC, "Check _TPC (Throttling Present Capabilities)." },
-	{ method_test_TSD, "Check _TSD (Throttling State Dependencies)." },
-	{ method_test_TSS, "Check _TSS (Throttling Supported States)." },
+	{ method_test_PSS, "Test _PSS (Performance Supported States)." },
+	{ method_test_CPC, "Test _CPC (Continuous Performance Control)." },
+	{ method_test_CSD, "Test _CSD (C State Dependencies)." },
+	{ method_test_CST, "Test _CST (C States)." },
+	{ method_test_PCT, "Test _PCT (Performance Control)." },
+	/* { method_test_PDC, "Test _PDC (Processor Driver Capabilities)." }, */
+	{ method_test_PDL, "Test _PDL (P-State Depth Limit)." },
+	{ method_test_PPC, "Test _PPC (Performance Present Capabilities)." },
+	{ method_test_PPE, "Test _PPE (Polling for Platform Error)." },
+	/* { method_test_PSD, "Test _PSD (Power State Dependencies)." }, */
+	/* { method_test_PTC, "Test _PTC (Processor Throttling Control)." }, */
+	{ method_test_TDL, "Test _TDL (T-State Depth Limit)." },
+	{ method_test_TPC, "Test _TPC (Throttling Present Capabilities)." },
+	{ method_test_TSD, "Test _TSD (Throttling State Dependencies)." },
+	{ method_test_TSS, "Test _TSS (Throttling Supported States)." },
 
 	/* Section 8.5 Processor Aggregator Device */
 
 	/* Section 9.1 System Indicators */
-	/* { method_test_CWS, "Check _CWS (Clear Wake Status)." }, */
-	/* { method_test_MSG, "Check _MSG (Message)." }, */
-	/* { method_test_PUR, "Check _PUR (Processor Utilization Request)." }, */
-	/* { method_test_SST, "Check _SST (System Status)." }, */
+	/* { method_test_CWS, "Test _CWS (Clear Wake Status)." }, */
+	/* { method_test_MSG, "Test _MSG (Message)." }, */
+	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
+	/* { method_test_SST, "Test _SST (System Status)." }, */
 
 	/* Section 9.2 Ambient Light Sensor Device */
 
-	{ method_test_ALC, "Check _ALC (Ambient Light Colour Chromaticity)." },
-	{ method_test_ALI, "Check _ALI (Ambient Light Illuminance)." },
-	{ method_test_ALT, "Check _ALT (Ambient Light Temperature)." },
-	{ method_test_ALP, "Check _ALP (Ambient Light Polling). "},
-	/* { method_test_ALR, "Check _ALR (Ambient Light Response). "}, */
+	{ method_test_ALC, "Test _ALC (Ambient Light Colour Chromaticity)." },
+	{ method_test_ALI, "Test _ALI (Ambient Light Illuminance)." },
+	{ method_test_ALT, "Test _ALT (Ambient Light Temperature)." },
+	{ method_test_ALP, "Test _ALP (Ambient Light Polling). "},
+	/* { method_test_ALR, "Test _ALR (Ambient Light Response). "}, */
 
 	/* Section 9.3 Battery Device */
 
 	/* Section 9.4 Lid Device */
 
-	{ method_test_LID, "Check _LID (Lid Status)." },
+	{ method_test_LID, "Test _LID (Lid Status)." },
 
 	/* Section 9.8 ATA Controllers */
-	/* { method_test_GTF, "Check _GTF (Get Task File)." }, */
-	/* { method_test_GTM, "Check _GTM (Get Timing Mode)." }, */
-	/* { method_test_SDD, "Check _SDD (Set Device Data)." }, */
-	/* { method_test_STM, "Check _STM (Set Timing Mode)." }, */
+	/* { method_test_GTF, "Test _GTF (Get Task File)." }, */
+	/* { method_test_GTM, "Test _GTM (Get Timing Mode)." }, */
+	/* { method_test_SDD, "Test _SDD (Set Device Data)." }, */
+	/* { method_test_STM, "Test _STM (Set Timing Mode)." }, */
 
 	/* Section 9.9 Floppy Controllers */
-	/* { method_test_FDE, "Check _FDE (Floppy Disk Enumerate)." }, */
-	/* { method_test_FDI, "Check _FDI (Floppy Drive Information)." }, */
-	/* { method_test_FDM, "Check _FDM (Floppy Drive Mode)." }, */
+	/* { method_test_FDE, "Test _FDE (Floppy Disk Enumerate)." }, */
+	/* { method_test_FDI, "Test _FDI (Floppy Drive Information)." }, */
+	/* { method_test_FDM, "Test _FDM (Floppy Drive Mode)." }, */
 
 	/* Section 9.12 Memory Devices */
-	/* { method_test_MBM, "Check _MBM (Memory Bandwidth Monitoring Data)." }, */
-	/* { method_test_MSM, "Check _MSM (Memory Set Monitoring)." }, */
+	/* { method_test_MBM, "Test _MBM (Memory Bandwidth Monitoring Data)." }, */
+	/* { method_test_MSM, "Test _MSM (Memory Set Monitoring)." }, */
 
 	/* Section 9.13 USB Port Capabilities */
-	/* { method_test_UPC, "Check _UPC (USB Port Capabilities)." }, */
+	/* { method_test_UPC, "Test _UPC (USB Port Capabilities)." }, */
 
 	/* Section 9.14 Device Object Name Collision */
-	/* { method_test_DSM, "Check _DSM (Device Specific Method)." }, */
+	/* { method_test_DSM, "Test _DSM (Device Specific Method)." }, */
 
 	/* Section 9.16 User Presence Detection Device */
-	/* { method_test_UPD, "Check _UPD (User Presence Detect)." }, */
-	/* { method_test_UPP, "Check _UPP (User Presence Polling)." }, */
+	/* { method_test_UPD, "Test _UPD (User Presence Detect)." }, */
+	/* { method_test_UPP, "Test _UPP (User Presence Polling)." }, */
 
 	/* Section 9.18 Wake Alarm Device */
 
-	{ method_test_GCP, "Check _GCP (Get Capabilities)." },
-	{ method_test_GRT, "Check _GRT (Get Real Time)." },
-	{ method_test_GWS, "Check _GWS (Get Wake Status)." },
-	/* { method_test_SRT, "Check _SRT (Set Real Time)." }, */
-	{ method_test_STP, "Check _STP (Set Expired Timer Wake Policy)." },
-	{ method_test_STV, "Check _STV (Set Timer Value)." },
-	{ method_test_TIP, "Check _TIP (Expired Timer Wake Policy)." },
-	{ method_test_TIV, "Check _TIV (Timer Values)." },
+	{ method_test_GCP, "Test _GCP (Get Capabilities)." },
+	{ method_test_GRT, "Test _GRT (Get Real Time)." },
+	{ method_test_GWS, "Test _GWS (Get Wake Status)." },
+	/* { method_test_SRT, "Test _SRT (Set Real Time)." }, */
+	{ method_test_STP, "Test _STP (Set Expired Timer Wake Policy)." },
+	{ method_test_STV, "Test _STV (Set Timer Value)." },
+	{ method_test_TIP, "Test _TIP (Expired Timer Wake Policy)." },
+	{ method_test_TIV, "Test _TIV (Timer Values)." },
 
 	/* Section 10.1 Smart Battery */
 
-	{ method_test_SBS, "Check _SBS (Smart Battery Subsystem)." },
+	{ method_test_SBS, "Test _SBS (Smart Battery Subsystem)." },
 
 	/* Section 10.2 Battery Controls */
 
-	{ method_test_BCT, "Check _BCT (Battery Charge Time)." },
-	{ method_test_BIF, "Check _BIF (Battery Information)." },
-	{ method_test_BIX, "Check _BIX (Battery Information Extended)." },
-	{ method_test_BMA, "Check _BMA (Battery Measurement Averaging)." },
-	{ method_test_BMC, "Check _BMC (Battery Maintenance Control)." },
-	{ method_test_BMD, "Check _BMD (Battery Maintenance Data)." },
-	{ method_test_BMS, "Check _BMS (Battery Measurement Sampling Time)." },
-	{ method_test_BST, "Check _BST (Battery Status)." },
-	{ method_test_BTP, "Check _BTP (Battery Trip Point)." },
-	{ method_test_BTM, "Check _BTM (Battery Time)." },
-	/* { method_test_BLT, "Check _BLT (Battery Level Threshold)." }, */
-	{ method_test_PCL, "Check _PCL (Power Consumer List)." },
+	{ method_test_BCT, "Test _BCT (Battery Charge Time)." },
+	{ method_test_BIF, "Test _BIF (Battery Information)." },
+	{ method_test_BIX, "Test _BIX (Battery Information Extended)." },
+	{ method_test_BMA, "Test _BMA (Battery Measurement Averaging)." },
+	{ method_test_BMC, "Test _BMC (Battery Maintenance Control)." },
+	{ method_test_BMD, "Test _BMD (Battery Maintenance Data)." },
+	{ method_test_BMS, "Test _BMS (Battery Measurement Sampling Time)." },
+	{ method_test_BST, "Test _BST (Battery Status)." },
+	{ method_test_BTP, "Test _BTP (Battery Trip Point)." },
+	{ method_test_BTM, "Test _BTM (Battery Time)." },
+	/* { method_test_BLT, "Test _BLT (Battery Level Threshold)." }, */
+	{ method_test_PCL, "Test _PCL (Power Consumer List)." },
 
 	/* Section 10.3 AC Adapters and Power Source Objects */
 
-	/* { method_test_PCL, "Check _PCL (Power Consumer List)." }, */
-	{ method_test_PIF, "Check _PIF (Power Source Information)." },
-	/* { method_test_PRL, "Check _PRL (Power Source Redundancy List)." }, */
-	{ method_test_PSR, "Check _PSR (Power Source)." },
+	/* { method_test_PCL, "Test _PCL (Power Consumer List)." }, */
+	{ method_test_PIF, "Test _PIF (Power Source Information)." },
+	/* { method_test_PRL, "Test _PRL (Power Source Redundancy List)." }, */
+	{ method_test_PSR, "Test _PSR (Power Source)." },
 
 	/* Section 10.4 Power Meters */
-	/* { method_test_GAI, "Check _GAI (Get Averaging Level)." }, */
-	/* { method_test_GHL, "Check _GHL (Get Harware Limit)." }, */
-	/* { method_test_PAI, "Check _PAI (Power Averaging Interval)." }, */
-	/* { method_test_PMC, "Check _PMC (Power Meter Capabilities)." }, */
-	/* { method_test_PMD, "Check _PMD (Power Meter Devices)." }, */
-	/* { method_test_PMM, "Check _PMM (Power Meter Measurement)." }, */
-	/* { method_test_PTP, "Check _PTP (Power Trip Points)." }, */
-	/* { method_test_SHL, "Check _SHL (Set Hardware Limit)." }, */
+	/* { method_test_GAI, "Test _GAI (Get Averaging Level)." }, */
+	/* { method_test_GHL, "Test _GHL (Get Harware Limit)." }, */
+	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
+	/* { method_test_PMC, "Test _PMC (Power Meter Capabilities)." }, */
+	/* { method_test_PMD, "Test _PMD (Power Meter Devices)." }, */
+	/* { method_test_PMM, "Test _PMM (Power Meter Measurement)." }, */
+	/* { method_test_PTP, "Test _PTP (Power Trip Points)." }, */
+	/* { method_test_SHL, "Test _SHL (Set Hardware Limit)." }, */
 
 	/* Section 11.3 Fan Devices */
 
-	{ method_test_FIF, "Check _FIF (Fan Information)." },
-	/* { method_test_FPS, "Check _FPS (Fan Performance States)." }, */
-	{ method_test_FSL, "Check _FSL (Fan Set Level)." },
-	{ method_test_FST, "Check _FST (Fan Status)." },
+	{ method_test_FIF, "Test _FIF (Fan Information)." },
+	/* { method_test_FPS, "Test _FPS (Fan Performance States)." }, */
+	{ method_test_FSL, "Test _FSL (Fan Set Level)." },
+	{ method_test_FST, "Test _FST (Fan Status)." },
 
 	/* Section 11.4 Thermal Objects */
 
-	{ method_test_ACx, "Check _ACx (Active Cooling)." },
-	/* { method_test_ART, "Check _ART (Active Cooling Relationship Table)." }, */
-	/* { method_test_ALx, "Check _ALx (Active List)". }, */
-	{ method_test_CRT, "Check _CRT (Critical Trip Point)." },
-	{ method_test_DTI, "Check _DTI (Device Temperature Indication)." },
-	{ method_test_HOT, "Check _HOT (Hot Temperature)." },
-	{ method_test_NTT, "Check _NTT (Notification Temp Threshold)." },
-	/* { method_test_PSL, "Check _PSL (Passive List)." }, */
-	{ method_test_PSV, "Check _PSV (Passive Temp)." },
-	{ method_test_RTV, "Check _RTV (Relative Temp Values)." },
-	{ method_test_SCP, "Check _SCP (Set Cooling Policy)." },
-	{ method_test_TC1, "Check _TC1 (Thermal Constant 1)." },
-	{ method_test_TC2, "Check _TC2 (Thermal Constant 2)." },
-	{ method_test_TMP, "Check _TMP (Thermal Zone Current Temp)." },
-	{ method_test_TPT, "Check _TPT (Trip Point Temperature)." },
-	/* { method_test_TRT, "Check _TRT (Thermal Relationship Table)." }, */
-	{ method_test_TSP, "Check _TSP (Thermal Sampling Period)." },
-	{ method_test_TST, "Check _TST (Temperature Sensor Threshold)." },
-	/* { method_test_TZD, "Check _TZD (Thermal Zone Devices)." }, */
-	{ method_test_TZP, "Check _TZP (Thermal Zone Polling)." },
+	{ method_test_ACx, "Test _ACx (Active Cooling)." },
+	/* { method_test_ART, "Test _ART (Active Cooling Relationship Table)." }, */
+	/* { method_test_ALx, "Test _ALx (Active List)". }, */
+	{ method_test_CRT, "Test _CRT (Critical Trip Point)." },
+	{ method_test_DTI, "Test _DTI (Device Temperature Indication)." },
+	{ method_test_HOT, "Test _HOT (Hot Temperature)." },
+	{ method_test_NTT, "Test _NTT (Notification Temp Threshold)." },
+	/* { method_test_PSL, "Test _PSL (Passive List)." }, */
+	{ method_test_PSV, "Test _PSV (Passive Temp)." },
+	{ method_test_RTV, "Test _RTV (Relative Temp Values)." },
+	{ method_test_SCP, "Test _SCP (Set Cooling Policy)." },
+	{ method_test_TC1, "Test _TC1 (Thermal Constant 1)." },
+	{ method_test_TC2, "Test _TC2 (Thermal Constant 2)." },
+	{ method_test_TMP, "Test _TMP (Thermal Zone Current Temp)." },
+	{ method_test_TPT, "Test _TPT (Trip Point Temperature)." },
+	/* { method_test_TRT, "Test _TRT (Thermal Relationship Table)." }, */
+	{ method_test_TSP, "Test _TSP (Thermal Sampling Period)." },
+	{ method_test_TST, "Test _TST (Temperature Sensor Threshold)." },
+	/* { method_test_TZD, "Test _TZD (Thermal Zone Devices)." }, */
+	{ method_test_TZP, "Test _TZP (Thermal Zone Polling)." },
 
 	/* Section 16 Waking and Sleeping */
 
-	{ method_test_PTS, "Check _PTS (Prepare to Sleep)." },
-	{ method_test_TTS, "Check _TTS (Transition to State)." },
-	{ method_test_S0,  "Check _S0  (System S0 State)." },
-	{ method_test_S1,  "Check _S1  (System S1 State)." },
-	{ method_test_S2,  "Check _S2  (System S2 State)." },
-	{ method_test_S3,  "Check _S3  (System S3 State)." },
-	{ method_test_S4,  "Check _S4  (System S4 State)." },
-	{ method_test_S5,  "Check _S5  (System S5 State)." },
-	{ method_test_WAK, "Check _WAK (System Wake)." },
+	{ method_test_PTS, "Test _PTS (Prepare to Sleep)." },
+	{ method_test_TTS, "Test _TTS (Transition to State)." },
+	{ method_test_S0,  "Test _S0  (System S0 State)." },
+	{ method_test_S1,  "Test _S1  (System S1 State)." },
+	{ method_test_S2,  "Test _S2  (System S2 State)." },
+	{ method_test_S3,  "Test _S3  (System S3 State)." },
+	{ method_test_S4,  "Test _S4  (System S4 State)." },
+	{ method_test_S5,  "Test _S5  (System S5 State)." },
+	{ method_test_WAK, "Test _WAK (System Wake)." },
 
 	/* Section 19 */
-	/* { method_test_IFT, "Check _IFT (IPMI Interface Type)." }, */
-	/* { method_test_INT, "Check _INT (Interrupts)." }, */
+	/* { method_test_IFT, "Test _IFT (IPMI Interface Type)." }, */
+	/* { method_test_INT, "Test _INT (Interrupts)." }, */
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
 
-	{ method_test_ADR, "Check _ADR (Return Unique ID for Device)." },
-	{ method_test_BCL, "Check _BCL (Query List of Brightness Control Levels Supported)." },
-	{ method_test_BCM, "Check _BCM (Set Brightness Level)." },
-	{ method_test_BQC, "Check _BQC (Brightness Query Current Level)." },
-	{ method_test_DCS, "Check _DCS (Return the Status of Output Device)." },
-	{ method_test_DDC, "Check _DDC (Return the EDID for this Device)." },
-	{ method_test_DSS, "Check _DSS (Device Set State)." },
-	{ method_test_DGS, "Check _DGS (Query Graphics State)." },
-	{ method_test_DOD, "Check _DOD (Enumerate All Devices Attached to Display Adapter)." },
-	{ method_test_DOS, "Check _DOS (Enable/Disable Output Switching)." },
-	{ method_test_GPD, "Check _GPD (Get POST Device)." },
-	{ method_test_ROM, "Check _ROM (Get ROM Data)." },
-	{ method_test_SPD, "Check _SPD (Set POST Device)." },
-	{ method_test_VPO, "Check _VPO (Video POST Options)." },
+	{ method_test_ADR, "Test _ADR (Return Unique ID for Device)." },
+	{ method_test_BCL, "Test _BCL (Query List of Brightness Control Levels Supported)." },
+	{ method_test_BCM, "Test _BCM (Set Brightness Level)." },
+	{ method_test_BQC, "Test _BQC (Brightness Query Current Level)." },
+	{ method_test_DCS, "Test _DCS (Return the Status of Output Device)." },
+	{ method_test_DDC, "Test _DDC (Return the EDID for this Device)." },
+	{ method_test_DSS, "Test _DSS (Device Set State)." },
+	{ method_test_DGS, "Test _DGS (Query Graphics State)." },
+	{ method_test_DOD, "Test _DOD (Enumerate All Devices Attached to Display Adapter)." },
+	{ method_test_DOS, "Test _DOS (Enable/Disable Output Switching)." },
+	{ method_test_GPD, "Test _GPD (Get POST Device)." },
+	{ method_test_ROM, "Test _ROM (Get ROM Data)." },
+	{ method_test_SPD, "Test _SPD (Set POST Device)." },
+	{ method_test_VPO, "Test _VPO (Video POST Options)." },
 
 	/* From PCI Specification */
-	/* { method_test_CBA, "Check _CBA (Configuration Base Address)." }, */
+	/* { method_test_CBA, "Test _CBA (Configuration Base Address)." }, */
 
 	/* End! */
 
@@ -5083,7 +5083,7 @@ static fwts_framework_minor_test method_tests[] = {
 };
 
 static fwts_framework_ops method_ops = {
-	.description = "ACPI DSDT Method Semantic Tests.",
+	.description = "ACPI DSDT Method Semantic tests.",
 	.init        = method_init,
 	.deinit      = method_deinit,
 	.minor_tests = method_tests

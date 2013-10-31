@@ -299,12 +299,12 @@ static int microcode_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test microcode_tests[] = {
-	{ microcode_test1, "Check for most recent microcode being loaded." },
+	{ microcode_test1, "Test for most recent microcode being loaded." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops microcode_ops = {
-	.description = "Check if system is using latest microcode.",
+	.description = "Test if system is using latest microcode.",
 	.init        = microcode_init,
 	.deinit      = microcode_deinit,
 	.minor_tests = microcode_tests

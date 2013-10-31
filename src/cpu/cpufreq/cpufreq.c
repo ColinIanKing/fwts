@@ -713,9 +713,9 @@ static int cpufreq_init(fwts_framework *fw)
 
 static fwts_framework_minor_test cpufreq_tests[] = {
 #ifdef FWTS_ARCH_INTEL
-	{ cpufreq_test1, "CPU P-State Checks." },
+	{ cpufreq_test1, "CPU P-State tests." },
 #else
-	{ cpufreq_test1, "CPU Frequency Checks." },
+	{ cpufreq_test1, "CPU Frequency tests." },
 #endif
 	{ NULL, NULL }
 };

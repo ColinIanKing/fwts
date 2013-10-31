@@ -190,13 +190,13 @@ static int fadt_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test fadt_tests[] = {
-	{ fadt_test1, "Check FADT SCI_EN bit is enabled." },
-	{ fadt_test2, "Check FADT reset register." },
+	{ fadt_test1, "Test FADT SCI_EN bit is enabled." },
+	{ fadt_test2, "Test FADT reset register." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops fadt_ops = {
-	.description = "FADT SCI_EN enabled check.",
+	.description = "FADT SCI_EN enabled tests.",
 	.init        = fadt_init,
 	.minor_tests = fadt_tests
 };

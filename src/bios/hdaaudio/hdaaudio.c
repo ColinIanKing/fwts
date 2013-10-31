@@ -176,12 +176,12 @@ static int hda_audio_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test hda_audio_tests[] = {
-	{ hda_audio_test1, "Check HDA Audio Pin Configs." },
+	{ hda_audio_test1, "HDA Audio Pin Configuration test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops hda_audio_ops = {
-	.description = "Check HDA Audio Pin Configs.",
+	.description = "HDA Audio Pin Configuration test.",
 	.minor_tests = hda_audio_tests
 };
 

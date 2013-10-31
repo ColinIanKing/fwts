@@ -328,12 +328,12 @@ static int dmar_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test dmar_tests[] = {
-	{ dmar_test1, "Check DMA Remapping." },
+	{ dmar_test1, "DMA Remapping test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops dmar_ops = {
-	.description = "Check sane DMA Remapping (VT-d).",
+	.description = "DMA Remapping (VT-d) test.",
 	.minor_tests = dmar_tests
 };
 

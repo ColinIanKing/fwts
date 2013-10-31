@@ -180,12 +180,12 @@ static int pnp_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test pnp_tests[] = {
-	{ pnp_test1, "Check PnP BIOS Support Installation structure." },
+	{ pnp_test1, "PnP BIOS Support Installation structure test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops pnp_ops = {
-	.description = "Check BIOS Support Installation structure.",
+	.description = "BIOS Support Installation structure test.",
 	.minor_tests = pnp_tests
 };
 

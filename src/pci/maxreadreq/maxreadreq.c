@@ -137,12 +137,12 @@ static int maxreadreq_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test maxreadreq_tests[] = {
-	{ maxreadreq_test1, "Check firmware settings MaxReadReq for PCI Express devices." },
+	{ maxreadreq_test1, "Test firmware settings MaxReadReq for PCI Express devices." },
 	{ NULL, NULL },
 };
 
 static fwts_framework_ops maxreadreq_ops = {
-	.description = "Checks firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
+	.description = "Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
 	.minor_tests = maxreadreq_tests
 };
 

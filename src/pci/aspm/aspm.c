@@ -271,7 +271,7 @@ static fwts_framework_minor_test aspm_tests[] = {
 };
 
 static fwts_framework_ops aspm_ops = {
-	.description = "PCIe ASPM check.",
+	.description = "PCIe ASPM test.",
 	.minor_tests = aspm_tests
 };
 

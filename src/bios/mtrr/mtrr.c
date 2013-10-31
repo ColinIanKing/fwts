@@ -543,12 +543,12 @@ static int mtrr_test3(fwts_framework *fw)
 static fwts_framework_minor_test mtrr_tests[] = {
 	{ mtrr_test1, "Validate the kernel MTRR IOMEM setup." },
 	{ mtrr_test2, "Validate the MTRR setup across all processors." },
-	{ mtrr_test3, "Check for AMD MtrrFixDramModEn being cleared by the BIOS." },
+	{ mtrr_test3, "Test for AMD MtrrFixDramModEn being cleared by the BIOS." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops mtrr_ops = {
-	.description = "MTRR validation.",
+	.description = "MTRR tests.",
 	.init        = mtrr_init,
 	.deinit      = mtrr_deinit,
 	.minor_tests = mtrr_tests

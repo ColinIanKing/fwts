@@ -393,7 +393,7 @@ static int wmi_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test wmi_tests[] = {
-	{ wmi_test1, "Check Windows Management Instrumentation" },
+	{ wmi_test1, "Windows Management Instrumentation test." },
 	{ NULL, NULL }
 };
 

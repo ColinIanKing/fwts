@@ -102,12 +102,12 @@ static int ebda_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test ebda_tests[] = {
-	{ ebda_test1, "Check EBDA is reserved in E820 table." },
+	{ ebda_test1, "Test EBDA is reserved in E820 table." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops ebda_ops = {
-	.description = "Validate EBDA region is mapped and reserved in memory map table.",
+	.description = "Test EBDA region is mapped and reserved in memory map table.",
 	.init        = ebda_init,
 	.deinit      = ebda_deinit,
 	.minor_tests = ebda_tests

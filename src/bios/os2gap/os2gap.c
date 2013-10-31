@@ -67,7 +67,7 @@ static int os2gap_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test os2gap_tests[] = {
-	{ os2gap_test1, "Check the OS/2 15Mb memory hole is absent." },
+	{ os2gap_test1, "Test the OS/2 15Mb memory hole is absent." },
 	{ NULL, NULL }
 };
 

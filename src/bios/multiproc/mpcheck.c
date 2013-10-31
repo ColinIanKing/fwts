@@ -558,20 +558,20 @@ static int mpcheck_test_header(fwts_framework *fw)
 
 
 static fwts_framework_minor_test mpcheck_tests[] = {
-	{ mpcheck_test_header,  		"Check MP header." },
-	{ mpcheck_test_cpu_entries,		"Check MP CPU entries." },
-	{ mpcheck_test_bus_entries,		"Check MP Bus entries." },
-	{ mpcheck_test_io_apic_entries, 	"Check MP IO APIC entries." },
-	{ mpcheck_test_io_interrupt_entries,	"Check MP IO Interrupt entries." },
-	{ mpcheck_test_local_interrupt_entries, "Check MP Local Interrupt entries." },
-	{ mpcheck_test_sys_addr_entries,	"Check MP System Address entries." },
-	{ mpcheck_test_bus_hierarchy_entries,	"Check MP Bus Hierarchy entries." },
-	{ mpcheck_test_compat_bus_address_space_entries, "Check MP Compatible Bus Address Space entries." },
+	{ mpcheck_test_header,  		"Test MP header." },
+	{ mpcheck_test_cpu_entries,		"Test MP CPU entries." },
+	{ mpcheck_test_bus_entries,		"Test MP Bus entries." },
+	{ mpcheck_test_io_apic_entries, 	"Test MP IO APIC entries." },
+	{ mpcheck_test_io_interrupt_entries,	"Test MP IO Interrupt entries." },
+	{ mpcheck_test_local_interrupt_entries, "Test MP Local Interrupt entries." },
+	{ mpcheck_test_sys_addr_entries,	"Test MP System Address entries." },
+	{ mpcheck_test_bus_hierarchy_entries,	"Test MP Bus Hierarchy entries." },
+	{ mpcheck_test_compat_bus_address_space_entries, "Test MP Compatible Bus Address Space entries." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops mpcheck_ops = {
-	.description = "Check MultiProcessor Tables.",
+	.description = "MultiProcessor Tables tests.",
 	.init        = mpcheck_init,
 	.deinit      = mpcheck_deinit,
 	.minor_tests = mpcheck_tests,

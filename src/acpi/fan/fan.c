@@ -248,13 +248,13 @@ static int fan_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test fan_tests[] = {
-	{ fan_test1, "Check fan status." },
+	{ fan_test1, "Test fan status." },
 	{ fan_test2, "Load system, check CPU fan status." },
 	{ NULL, NULL}
 };
 
 static fwts_framework_ops fan_ops = {
-	.description = "Simple Fan Tests.",
+	.description = "Simple fan tests.",
 	.minor_tests = fan_tests
 };
 

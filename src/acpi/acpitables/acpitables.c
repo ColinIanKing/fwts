@@ -516,12 +516,12 @@ static int acpi_table_check_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test acpi_table_check_tests[] = {
-	{ acpi_table_check_test1, "Check ACPI tables." },
+	{ acpi_table_check_test1, "Test ACPI tables." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpi_table_check_ops = {
-	.description = "ACPI table settings sanity checks.",
+	.description = "ACPI table settings sanity tests.",
 	.minor_tests = acpi_table_check_tests
 };
 

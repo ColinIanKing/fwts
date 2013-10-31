@@ -243,12 +243,12 @@ static int pciirq_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test pciirq_tests[] = {
-	{ pciirq_test1, "PCI IRQ Routing Table." },
+	{ pciirq_test1, "PCI IRQ Routing Table test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops pciirq_ops = {
-	.description = "Check PCI IRQ Routing Table.",
+	.description = "PCI IRQ Routing Table test.",
 	.minor_tests = pciirq_tests
 };
 

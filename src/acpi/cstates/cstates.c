@@ -245,12 +245,12 @@ static int cstates_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test cstates_tests[] = {
-	{ cstates_test1, "Check all CPUs C-states." },
+	{ cstates_test1, "Test all CPUs C-states." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops cstates_ops = {
-	.description = "Check processor C state support.",
+	.description = "Processor C state support test.",
 	.minor_tests = cstates_tests
 };
 

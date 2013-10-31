@@ -74,12 +74,12 @@ static int apicinstance_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test apicinstance_tests[] = {
-	{ apicinstance_test1, "Check single instance of APIC/MADT table." },
+	{ apicinstance_test1, "Test for single instance of APIC/MADT table." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops apicinstance_ops = {
-	.description = "Check for single instance of APIC/MADT table.",
+	.description = "Test for single instance of APIC/MADT table.",
 	.minor_tests = apicinstance_tests
 };
 

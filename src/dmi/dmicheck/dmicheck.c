@@ -1477,13 +1477,13 @@ static int dmicheck_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test dmicheck_tests[] = {
-	{ dmicheck_test1, "Find and Check SMBIOS Table Entry Point." },
+	{ dmicheck_test1, "Find and test SMBIOS Table Entry Point." },
 	{ dmicheck_test2, "Test DMI/SMBIOS tables for errors." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops dmicheck_ops = {
-	.description = "Test DMI/SMBIOS tables for errors.",
+	.description = "DMI/SMBIOS table tests.",
 	.minor_tests = dmicheck_tests
 };
 

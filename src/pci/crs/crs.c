@@ -131,12 +131,12 @@ static int crs_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test crs_tests[] = {
-	{ crs_test1, "Check PCI host bridge configuration using _CRS." },
+	{ crs_test1, "Test PCI host bridge configuration using _CRS." },
 	{ NULL, NULL },
 };
 
 static fwts_framework_ops crs_ops = {
-	.description = "Check PCI host bridge configuration using _CRS.",
+	.description = "Test PCI host bridge configuration using _CRS.",
 	.minor_tests = crs_tests
 };
 

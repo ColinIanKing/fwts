@@ -455,12 +455,12 @@ static int pcc_test1(fwts_framework *fw)
 
 /* Just one big test */
 static fwts_framework_minor_test pcc_tests[] = {
-	{ pcc_test1, "Check PCCH." },
+	{ pcc_test1, "Processor Clocking Control (PCC) test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops pcc_ops = {
-	.description = "Processor Clocking Control (PCC) Test.",
+	.description = "Processor Clocking Control (PCC) test.",
 	.init        = pcc_init,
 	.deinit      = pcc_deinit,
 	.minor_tests = pcc_tests

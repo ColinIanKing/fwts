@@ -180,12 +180,12 @@ static int maxfreq_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test maxfreq_tests[] = {
-	{ maxfreq_test1, "Maximum CPU frequency check." },
+	{ maxfreq_test1, "Maximum CPU frequency test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops maxfreq_ops = {
-	.description = "Check max CPU frequencies against max scaling frequency.",
+	.description = "Test max CPU frequencies against max scaling frequency.",
 	.minor_tests = maxfreq_tests
 };
 

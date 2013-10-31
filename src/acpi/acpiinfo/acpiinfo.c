@@ -147,7 +147,7 @@ static fwts_framework_minor_test acpiinfo_tests[] = {
 };
 
 static fwts_framework_ops acpiinfo_ops = {
-	.description = "General ACPI information check.",
+	.description = "General ACPI information test.",
 	.minor_tests = acpiinfo_tests
 };
 

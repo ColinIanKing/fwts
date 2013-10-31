@@ -176,9 +176,9 @@ static int nx_test3(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test nx_tests[] = {
-	{ nx_test1, "Check CPU NX capability." },
-	{ nx_test2, "Check all CPUs have same BIOS set NX flag." },
-	{ nx_test3, "Check all CPUs have same msr setting in MSR 0x1a0." },
+	{ nx_test1, "Test CPU NX capability." },
+	{ nx_test2, "Test all CPUs have same BIOS set NX flag." },
+	{ nx_test3, "Test all CPUs have same msr setting in MSR 0x1a0." },
 	{ NULL, NULL }
 };
 

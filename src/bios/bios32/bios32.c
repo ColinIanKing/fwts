@@ -154,12 +154,12 @@ static int bios32_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test bios32_tests[] = {
-	{ bios32_test1, "Check BIOS32 Service Directory." },
+	{ bios32_test1, "BIOS32 Service Directory test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops bios32_ops = {
-	.description = "Check BIOS32 Service Directory.",
+	.description = "BIOS32 Service Directory test.",
 	.init        = bios32_init,
 	.minor_tests = bios32_tests
 };

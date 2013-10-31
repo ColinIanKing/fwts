@@ -103,12 +103,12 @@ static int csm_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test csm_tests[] = {
-	{ csm_test1, "Check for UEFI Compatibility Support Module." },
+	{ csm_test1, "UEFI Compatibility Support Module test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops csm_ops = {
-	.description = "Check for UEFI Compatibility Support Module.",
+	.description = "UEFI Compatibility Support Module test.",
 	.minor_tests = csm_tests
 };
 

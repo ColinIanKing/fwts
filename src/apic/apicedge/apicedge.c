@@ -106,12 +106,12 @@ static int apicedge_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test apicedge_tests[] = {
-	{ apicedge_test1, "Legacy and PCI Interrupt Edge/Level trigger checks." },
+	{ apicedge_test1, "Legacy and PCI Interrupt Edge/Level trigger tests." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops apicedge_ops = {
-	.description = "APIC Edge/Level Check.",
+	.description = "APIC edge/level test.",
 	.minor_tests = apicedge_tests
 };
 

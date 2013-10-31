@@ -408,15 +408,15 @@ static int hpet_check_test4(fwts_framework *fw)
 
 
 static fwts_framework_minor_test hpet_check_tests[] = {
-	{ hpet_check_test1, "Check HPET base in kernel log." },
-	{ hpet_check_test2, "Check HPET base in HPET table. "},
-	{ hpet_check_test3, "Check HPET base in DSDT and/or SSDT. "},
-	{ hpet_check_test4, "Sanity check HPET configuration." },
+	{ hpet_check_test1, "Test HPET base in kernel log." },
+	{ hpet_check_test2, "Test HPET base in HPET table. "},
+	{ hpet_check_test3, "Test HPET base in DSDT and/or SSDT. "},
+	{ hpet_check_test4, "Test HPET configuration." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops hpet_check_ops = {
-	.description = "HPET configuration test.",
+	.description = "HPET configuration tests.",
 	.init        = hpet_check_init,
 	.deinit      = hpet_check_deinit,
 	.minor_tests = hpet_check_tests

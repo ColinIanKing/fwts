@@ -4,9 +4,121 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "mem=nopentium ignored! (only supported on x86_32)",
+   "advice": "The kernel parameter mem=nopentium (to disable 4MB pages) was ignored as it only applies to 32 bit x86 systems.",
+   "label": "KlogE8320BiosKernelParameter"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_BIOS",
+   "pattern": "apm: Could not register misc device",
+   "advice": "APM misc device could not be registered. However, the driver can work without this, but userspace cannot control it.",
+   "label": "KlogBiosApmMiscDevice"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
-   "pattern": "ACPI: Deprecated procfs I/F for AC is loaded, please retry with CONFIG_ACPI_PROCFS_POWER cleared",
+   "pattern": "Could not allocate an object descriptor",
+   "advice": "The ACPI driver was unable to allocate an object descriptor from the ACPI global operand cache, see acpi_ut_allocate_object_desc_dbg().",
+   "label": "KlogAcpiAllocObjDescriptor"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Oops, ACPI handle corrupt in",
+   "advice": "An error occurred attempting to get an ACPI handle from a kernel device structure.  The handle appears to be corrupt and invalid, so the unbinding of links to the device could not be actioned. See acpi_unbind_one(). This could be due to an ACPI kernel bug or a genenal memory corruption issue.",
+   "label": "KlogAcpiHandleCorrupt"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Failed to create link",
+   "advice": "The ACPI driver failed to create a sysfs link on a firmware node.  Depending on the firmware node this may impede userspace from interfacing with the firmware.  See acpi_bind_one().",
+   "label": "KlogAcpiSysfsCreateLinkFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "No memory for resources",
+   "advice": "An out of memory error occurred attempting to allocate resources while creating a platform device for an ACPI device node.",
+   "label": "KlogAcpiPlatformDeviceNoMemory"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "kset create error",
+   "advice": "The ACPI initialization failed to create the acpi_kobj kobject and so it won't appear in /sys/firmware. This may cause some user space applications difficulties if this is not created and populated. See acpi_init().",
+   "label": "KlogAcpiSysfsFirmwareNotCreated"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error creating sysfs interface for device ",
+   "advice": "An error occurred when adding a new ACPI device and the sysfs interface could not be created.",
+   "label": "KlogAcpiSysfsDeviceInterfaceFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Error registering device",
+   "advice": "An error occurred when adding a new ACPI device, the device registration failed. See acpi_device_add().",
+   "label": "KlogAcpi"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid reference in package",
+   "advice": "An error occurred while trying to evaluate an ACPI reference. An element in the package had a NULL reference handle.",
+   "label": "KlogAcpiNullReferenceInPackage"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid package element.*got string.*buffer",
+   "advice": "An error occurred while trying to extract a ACPI package, got a string or a buffer in a package element, but was expecting a different type.",
+   "label": "KlogAcpiInvalidPackageElement"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Invalid package element.*got number",
+   "advice": "An error occurred while trying to extract a ACPI package, got an integer in a package element, but was expecting a different type.",
+   "label": "KlogAcpiInvalidPackageElement"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Format specifies more objects.*than exist in package",
+   "advice": "An error occurred while trying to extract an ACPI package, the format specifier specifies more object than actually exist in the package. See acpi_extract_package().",
+   "label": "KlogAcpiBadFormatSpecifier"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Deprecated procfs I/F for AC is loaded, please retry with CONFIG_ACPI_PROCFS_POWER cleared",
    "advice": "Using an old procfs interface for ACPI AC Adapter, this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This should be disabled for kernels > 2.6.37.",
+   "label": "KlogAcpiDeprecatedProcfsInterface"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "tag": "FWTS_TAG_ACPI",
+   "pattern": "Deprecated procfs I/F for battery is loaded, please retry with CONFIG_ACPI_PROCFS_POWER cleared",
+   "advice": "Using an old procfs interface for ACPI battery, this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This should be disabled for kernels > 2.6.37.",
    "label": "KlogAcpiDeprecatedProcfsInterface"
   },
   {

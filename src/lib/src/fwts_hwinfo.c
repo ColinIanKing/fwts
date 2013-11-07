@@ -18,6 +18,20 @@
  */
 
 #include <stdlib.h>
+#include <stdint.h>
+#include <errno.h>
+#include <inttypes.h>
+#include <dirent.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <net/if.h>
+#include <netinet/ether.h>
+#include <arpa/inet.h>
 
 #include "fwts.h"
 
@@ -25,46 +39,524 @@
 #define FWTS_HWINFO_LISTS_DIFFER	(1)
 #define FWTS_HWINFO_LISTS_OUT_OF_MEMORY	(-1)
 
-/*
- *  fwts_hwinfo_get()
- *	gather H/W information
- */
-int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
+#define FWTS_HWINFO_SYS_NET		"/sys/class/net"
+#define FWTS_HWINFO_SYS_INPUT		"/sys/class/input"
+#define FWTS_HWINFO_SYS_BLUETOOTH	"/sys/class/bluetooth"
+
+typedef struct {
+	char name[NAME_MAX + 1];	/* PCI name */
+	uint8_t	config[64];		/* PCI config data */
+	ssize_t config_len;		/* Length of config data */
+} fwts_pci_config;
+
+typedef struct {
+	char *name;			/* Network device name */
+	char *addr;			/* Address */
+	char *hw_addr;			/* H/W MAC address */
+} fwts_net_config;
+
+typedef struct {
+	char *name;			/* Input class name */
+	char *dev_name;			/* Input device name */
+	char *phys;			/* Physical name */
+} fwts_input_config;
+
+typedef struct {
+	char *name;			/* class name */
+	char *bt_name;			/* BT name */
+	char *address;			/* BT address */
+	char *bus;			/* Bus device is on */
+	char *type;			/* Type info */
+} fwts_bluetooth_config;
+
+/* compare H/W info */
+typedef int (*hwinfo_cmp)(void *data1, void *data2);
+
+/* dump H/W info */
+typedef void (*hwinfo_dump)(fwts_framework *fw, fwts_list *list);
+
+static char *fwts_hwinfo_data_get(const char *sys, const char *dev, const char *file)
 {
-	FWTS_UNUSED(fw);
+	char path[PATH_MAX];
+	char *data;
 
-	int status;
+	snprintf(path, sizeof(path), "%s/%s/%s", sys, dev, file);
+	if ((data = fwts_get(path)) == NULL)
+		return strdup("");
 
-	fwts_pipe_exec("lspci | grep Network", &hwinfo->network, &status);
-	fwts_pipe_exec("lspci | grep Ethernet", &hwinfo->ethernet, &status);
-	fwts_pipe_exec("ifconfig -a | grep -A1 '^\\w'", &hwinfo->ifconfig, &status);
-	fwts_pipe_exec("iwconfig | grep -A1 '^\\w'", &hwinfo->iwconfig, &status);
-	fwts_pipe_exec("hciconfig -a | grep -A2 '^\\w", &hwinfo->hciconfig, &status);
-	fwts_pipe_exec("lspci | grep VGA", &hwinfo->videocard, &status);
-	fwts_pipe_exec("xinput list", &hwinfo->xinput, &status);
-	fwts_pipe_exec("pactl list | grep Sink | grep -v Latency", &hwinfo->pactl, &status);
-	fwts_pipe_exec("pactl list | grep Source | grep -v Latency", &hwinfo->pactl, &status);
+	fwts_chop_newline(data);
+	return data;
+}
+
+
+/*
+ *  fwts_hwinfo_bluetooth_free()
+ *	free bluetooth data
+ */
+static void fwts_hwinfo_bluetooth_free(void *data)
+{
+	fwts_bluetooth_config *config = (fwts_bluetooth_config *)data;
+
+	free(config->name);
+	free(config->bt_name);
+	free(config->address);
+	free(config->bus);
+	free(config->type);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_bluetooth_name_cmp()
+ *	compare bluetooth config device name for sorting purposes
+ */
+static int fwts_hwinfo_bluetooth_name_cmp(void *data1, void *data2)
+{
+	fwts_bluetooth_config *config1 = (fwts_bluetooth_config *)data1;
+	fwts_bluetooth_config *config2 = (fwts_bluetooth_config *)data2;
+
+	return strcmp(config1->name, config2->name);
+}
+
+/*
+ *  fwts_hwinfo_bluetooth_cmp()
+ *	compare bluetooth config data
+ */
+static int fwts_hwinfo_bluetooth_config_cmp(void *data1, void *data2)
+{
+	fwts_bluetooth_config *config1 = (fwts_bluetooth_config *)data1;
+	fwts_bluetooth_config *config2 = (fwts_bluetooth_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->bt_name, config2->bt_name) ||
+	       strcmp(config1->address, config2->address) ||
+	       strcmp(config1->bus, config2->bus) ||
+	       strcmp(config1->type, config2->type);
+}
+
+/*
+ *  fwts_hwinfo_bluetooth_get()
+ * 	read a specific input device config
+ */
+static int fwts_hwinfo_bluetooth_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+
+	fwts_list_init(devices);
+	if ((dp = opendir(FWTS_HWINFO_SYS_BLUETOOTH)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_BLUETOOTH);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fwts_bluetooth_config *bluetooth_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+
+		if ((bluetooth_config = calloc(1, sizeof(*bluetooth_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate bluetooth config data.");
+			break;
+		}
+		bluetooth_config->name = strdup(d->d_name);
+		bluetooth_config->bt_name = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_BLUETOOTH, d->d_name, "name");
+		bluetooth_config->address = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_BLUETOOTH, d->d_name, "address");
+		bluetooth_config->bus = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_BLUETOOTH, d->d_name, "bus");
+		bluetooth_config->type = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_BLUETOOTH, d->d_name, "type");
+
+		if (bluetooth_config->name == NULL ||
+		    bluetooth_config->bt_name == NULL ||
+		    bluetooth_config->address == NULL ||
+		    bluetooth_config->bus == NULL ||
+		    bluetooth_config->type == NULL) {
+			fwts_log_error(fw, "Cannot allocate bluetooth device attributes.");
+			fwts_hwinfo_bluetooth_free(bluetooth_config);
+			break;
+		}
+		fwts_list_add_ordered(devices, bluetooth_config, fwts_hwinfo_bluetooth_name_cmp);
+	}
+	closedir(dp);
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_bluetooth_dump()
+ *	simple bluetooth config dump
+ */
+static void fwts_hwinfo_bluetooth_dump(fwts_framework *fw, fwts_list *devices)
+{
+	fwts_list_link *item;
+
+	fwts_list_foreach(item, devices) {
+		fwts_bluetooth_config *bluetooth_config = fwts_list_data(fwts_bluetooth_config *, item);
+
+		fwts_log_info_verbatum(fw, "  Device:  %s", bluetooth_config->name);
+		fwts_log_info_verbatum(fw, "  Name:    %s", bluetooth_config->bt_name);
+		fwts_log_info_verbatum(fw, "  Address: %s", bluetooth_config->address);
+		fwts_log_info_verbatum(fw, "  Bus:     %s", bluetooth_config->bus);
+		fwts_log_info_verbatum(fw, "  Type:    %s", bluetooth_config->type);
+		fwts_log_nl(fw);
+	}
+}
+
+/*
+ *  fwts_hwinfo_input_free()
+ *	free input data
+ */
+static void fwts_hwinfo_input_free(void *data)
+{
+	fwts_input_config *config = (fwts_input_config *)data;
+
+	free(config->name);
+	free(config->dev_name);
+	free(config->phys);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_input_name_cmp()
+ *	compare input config device class name for sorting purposes
+ */
+static int fwts_hwinfo_input_name_cmp(void *data1, void *data2)
+{
+	fwts_input_config *config1 = (fwts_input_config *)data1;
+	fwts_input_config *config2 = (fwts_input_config *)data2;
+
+	return strcmp(config1->name, config2->name);
+}
+
+/*
+ *  fwts_hwinfo_input_cmp()
+ *	compare input config data
+ */
+static int fwts_hwinfo_input_config_cmp(void *data1, void *data2)
+{
+	fwts_input_config *config1 = (fwts_input_config *)data1;
+	fwts_input_config *config2 = (fwts_input_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->dev_name, config2->dev_name) ||
+	       strcmp(config1->phys, config2->phys);
+}
+
+/*
+ *  fwts_hwinfo_input_get()
+ * 	read a specific input device config
+ */
+static int fwts_hwinfo_input_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+
+	fwts_list_init(devices);
+	if ((dp = opendir(FWTS_HWINFO_SYS_INPUT)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_INPUT);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		fwts_input_config *input_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+		if (!strncmp(d->d_name, "input", 5)) {
+			if ((input_config = calloc(1, sizeof(*input_config))) == NULL) {
+				fwts_log_error(fw, "Cannot allocate input config data.");
+				break;
+			}
+			input_config->dev_name = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_INPUT, d->d_name, "name");
+			input_config->phys = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_INPUT, d->d_name, "phys");
+		} else if (!strncmp(d->d_name, "event", 5) ||
+			   !strncmp(d->d_name, "mouse", 5)) {
+			if ((input_config = calloc(1, sizeof(*input_config))) == NULL) {
+				fwts_log_error(fw, "Cannot allocate input config data.");
+				break;
+			}
+			input_config->dev_name = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_INPUT, d->d_name, "device/name");
+			input_config->phys = fwts_hwinfo_data_get(FWTS_HWINFO_SYS_INPUT, d->d_name, "device/phys");
+		} else {
+			/* Don't know what type it is, ignore */
+			continue;
+		}
+
+		input_config->name = strdup(d->d_name);
+
+		if (input_config->name == NULL ||
+		    input_config->dev_name == NULL ||
+		    input_config->phys == NULL) {
+			fwts_log_error(fw, "Cannot allocate input device attributes.");
+			fwts_hwinfo_input_free(input_config);
+			break;
+		}
+		fwts_list_add_ordered(devices, input_config, fwts_hwinfo_input_name_cmp);
+	}
+	closedir(dp);
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_input_dump()
+ *	simple input config dump
+ */
+static void fwts_hwinfo_input_dump(fwts_framework *fw, fwts_list *devices)
+{
+	fwts_list_link *item;
+
+	fwts_list_foreach(item, devices) {
+		fwts_input_config *input_config = fwts_list_data(fwts_input_config *, item);
+
+		fwts_log_info_verbatum(fw, "  Device:      %s", input_config->name);
+		fwts_log_info_verbatum(fw, "  Device Name: %s", input_config->dev_name);
+		fwts_log_info_verbatum(fw, "  Phy:         %s", input_config->phys);
+		fwts_log_nl(fw);
+	}
+}
+
+/*
+ *  fwts_hwinfo_net_free()
+ *	free net config data
+ */
+static void fwts_hwinfo_net_free(void *data)
+{
+	fwts_net_config *config = (fwts_net_config *)data;
+
+	free(config->name);
+	free(config->addr);
+	free(config->hw_addr);
+	free(config);
+}
+
+/*
+ *  fwts_hwinfo_net_name_cmp()
+ *	compare net config device name for sorting purposes
+ */
+static int fwts_hwinfo_net_name_cmp(void *data1, void *data2)
+{
+	fwts_net_config *config1 = (fwts_net_config *)data1;
+	fwts_net_config *config2 = (fwts_net_config *)data2;
+
+	return strcmp(config1->name, config2->name);
+}
+
+/*
+ *  fwts_hwinfo_net_cmp()
+ *	compare net config data
+ */
+static int fwts_hwinfo_net_cmp(void *data1, void *data2)
+{
+	fwts_net_config *config1 = (fwts_net_config *)data1;
+	fwts_net_config *config2 = (fwts_net_config *)data2;
+
+	return strcmp(config1->name, config2->name) ||
+	       strcmp(config1->addr, config2->addr) ||
+	       strcmp(config1->hw_addr, config2->hw_addr);
+}
+
+/*
+ *  fwts_hwinfo_new_get()
+ * 	read a specific network interface config
+ */
+static int fwts_hwinfo_net_get(
+	fwts_framework *fw,
+	fwts_list *devices)
+{
+	DIR *dp;
+	struct dirent *d;
+	int sock;
+
+	fwts_list_init(devices);
+	if ((sock = socket(PF_INET, SOCK_DGRAM, 0)) < 0) {
+		fwts_log_error(fw, "Cannot open socket to interrogate network devices.");
+		return FWTS_ERROR;
+	}
+
+	if ((dp = opendir(FWTS_HWINFO_SYS_NET)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_NET);
+		close(sock);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		struct	ifreq buf;
+		fwts_net_config *net_config;
+
+		if (d->d_name[0] == '.')
+			continue;
+		if ((net_config = calloc(1, sizeof(*net_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate net config data.");
+			break;
+		}
+		net_config->name = strdup(d->d_name);
+		if (net_config->name == NULL) {
+			fwts_log_error(fw, "Cannot allocate net config name.");
+			fwts_hwinfo_net_free(net_config);
+			break;
+		}
+		memset(&buf, 0, sizeof(buf));
+		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
+		if (ioctl(sock, SIOCGIFHWADDR, &buf) < 0) {
+			fwts_log_error(fw, "Cannot get network information for device %s.", d->d_name);
+			fwts_hwinfo_net_free(net_config);
+			continue;
+		}
+		net_config->hw_addr = strdup(ether_ntoa(((struct ether_addr *)&buf.ifr_hwaddr.sa_data)));
+		if (net_config->hw_addr == NULL) {
+			fwts_log_error(fw, "Cannot allocate net config address.");
+			fwts_hwinfo_net_free(net_config);
+			break;
+		}
+		memset(&buf, 0, sizeof(buf));
+		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
+		if (ioctl(sock, SIOCGIFADDR, &buf) < 0) {
+			if (errno != EADDRNOTAVAIL)
+				fwts_log_error(fw, "Cannot get address for device %s.", d->d_name);
+		}
+		net_config->addr = strdup(inet_ntoa(((struct sockaddr_in *)&buf.ifr_addr)->sin_addr));
+		if (net_config->addr == NULL) {
+			fwts_log_error(fw, "Cannot allocate net config H/W address.");
+			fwts_hwinfo_net_free(net_config);
+			break;
+		}
+		fwts_list_add_ordered(devices, net_config, fwts_hwinfo_net_name_cmp);
+	}
+	closedir(dp);
+	close(sock);
 
 	return FWTS_OK;
 }
 
 /*
- *  fwts_hwinfo_list_dump()
- *	dump out a list
+ *  fwts_hwinfo_net_dump()
+ *	simple net config dump
  */
-static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
+static void fwts_hwinfo_net_dump(fwts_framework *fw, fwts_list *devices)
 {
 	fwts_list_link *item;
 
-	if (list == NULL)
-		fwts_log_info_verbatum(fw, "  (null)");
-	else  {
-		fwts_list_foreach(item, list) {
-			char *text = fwts_list_data(char *, item);
-			fwts_log_info_verbatum(fw, "  %s", text);
-		}
+	fwts_list_foreach(item, devices) {
+		fwts_net_config *net_config = fwts_list_data(fwts_net_config *, item);
+
+		fwts_log_info_verbatum(fw, "  Device:      %s", net_config->name);
+		fwts_log_info_verbatum(fw, "  Address:     %s", net_config->addr);
+		fwts_log_info_verbatum(fw, "  H/W Address: %s", net_config->hw_addr);
+		fwts_log_nl(fw);
 	}
 }
+
+/*
+ *  fwts_hwinfo_pci_get()
+ * 	read a specific PCI config based on class code,
+ *	retuning matching PCI configs into the configs list
+ */
+static int fwts_hwinfo_pci_get(
+	fwts_framework *fw,
+	const uint8_t class_code,
+	fwts_list *configs)
+{
+	DIR *pci;
+	struct dirent *d;
+
+	fwts_list_init(configs);
+	if ((pci = opendir(FWTS_PCI_DEV_PATH)) == NULL) {
+		fwts_log_error(fw, "Cannot open %s to scan PCI devices.", FWTS_PCI_DEV_PATH);
+		return FWTS_ERROR;
+	}
+
+	while ((d = readdir(pci)) != NULL) {
+		ssize_t	n;
+		int	fd;
+		fwts_pci_config *pci_config;
+		uint8_t	config[64];
+		char 	path[PATH_MAX];
+
+		if (d->d_name[0] == '.')
+			continue;
+		snprintf(path, sizeof(path), FWTS_PCI_DEV_PATH "/%s/config", d->d_name);
+
+		if ((fd = open(path, O_RDONLY)) < 0) {
+			fwts_log_error(fw, "Cannot open PCI config from %s.", d->d_name);
+			continue;
+		}
+
+		if ((n = read(fd, config, sizeof(config))) < 0) {
+			fwts_log_error(fw, "Cannot read PCI config from %s.", d->d_name);
+			close(fd);
+			continue;
+		}
+		close(fd);
+
+		if (config[FWTS_PCI_CONFIG_CLASS_CODE] != class_code)
+			continue;
+
+		if ((pci_config = (fwts_pci_config *)calloc(1, sizeof(*pci_config))) == NULL) {
+			fwts_log_error(fw, "Cannot allocate PCI config.");
+			continue;
+		}
+		memcpy(pci_config->config, config, n);
+		pci_config->config_len = n;
+		strncpy(pci_config->name, d->d_name, NAME_MAX);
+
+		fwts_list_append(configs, pci_config);
+	}
+	closedir(pci);
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_hwinfo_pci_config_cmp()
+ *	compare PCI configs
+ */
+static int fwts_hwinfo_pci_config_cmp(void *data1, void *data2)
+{
+	fwts_pci_config *pci_config1 = (fwts_pci_config *)data1;
+	fwts_pci_config *pci_config2 = (fwts_pci_config *)data2;
+
+	return (pci_config1->config_len != pci_config2->config_len ||
+	    memcmp(pci_config1->config, pci_config2->config, pci_config1->config_len) ||
+	    strcmp(pci_config1->name, pci_config2->name));
+}
+
+/*
+ *  fwts_hwinfo_pci_dump()
+ *	simple PCI config dump
+ */
+static void fwts_hwinfo_pci_dump(fwts_framework *fw, fwts_list *configs)
+{
+	fwts_list_link *item;
+
+	fwts_list_foreach(item, configs) {
+		ssize_t n;
+
+		fwts_pci_config *pci_config = fwts_list_data(fwts_pci_config *, item);
+		fwts_log_info_verbatum(fw, "  PCI: %s, VID: %2.2" PRIx8 ":%2.2" PRIx8
+			", Class: %2.2" PRIx8 ":%2.2" PRIx8 " (%s)",
+			pci_config->name,
+			pci_config->config[FWTS_PCI_CONFIG_VENDOR_ID],
+			pci_config->config[FWTS_PCI_CONFIG_DEVICE_ID],
+			pci_config->config[FWTS_PCI_CONFIG_CLASS_CODE],
+			pci_config->config[FWTS_PCI_CONFIG_SUBCLASS],
+			fwts_pci_description(pci_config->config[FWTS_PCI_CONFIG_CLASS_CODE],
+				pci_config->config[FWTS_PCI_CONFIG_SUBCLASS]));
+		fwts_log_info_verbatum(fw, "  Config:");
+
+		/* and do a raw hex dump of the config space */
+		for (n = 0; n < pci_config->config_len; n += 16) {
+			ssize_t left = pci_config->config_len - n;
+			char buffer[128];
+
+			fwts_dump_raw_data(buffer, sizeof(buffer), pci_config->config + n,
+				n, left > 16 ? 16 : left);
+			fwts_log_info_verbatum(fw, "  %s", buffer);
+		}
+		fwts_log_nl(fw);
+	}
+}
+
 
 /*
  *  fwts_hwinfo_lists_dump()
@@ -72,49 +564,24 @@ static void fwts_hwinfo_list_dump(fwts_framework *fw, fwts_list *list)
  */
 static void fwts_hwinfo_lists_dump(
 	fwts_framework *fw,
+	hwinfo_dump dump,
 	fwts_list *l1,
 	fwts_list *l2,
 	const char *message)
 {
 	fwts_log_info(fw, "%s configurations differ, before:", message);
-	fwts_hwinfo_list_dump(fw, l1);
+	if (fwts_list_len(l1))
+		dump(fw, l1);
+	else
+		fwts_log_info(fw, "  (empty)");
+
 	fwts_log_info(fw, "versus after:");
-	fwts_hwinfo_list_dump(fw, l2);
+	if (fwts_list_len(l2))
+		dump(fw, l2);
+	else
+		fwts_log_info(fw, "  (empty)");
+
 	fwts_log_nl(fw);
-}
-
-/*
- *  fwts_hwinfo_alpha_compare()
- *	alphanumeric sort compare function
- */
-static int fwts_hwinfo_alpha_compare(void *data1, void *data2)
-{
-        return strcmp((char *)data1, (char*)data2);
-}
-
-/*
- *  fwts_hwinfo_list_sort_alpha()
- *	clone the contents of the given list and return an
- *	alphanumerically sorted version of the list. This
- *	list has cloned contents of the original, so it has
- *	to be free'd with fwts_list_free(list, NULL) since
- *	we don't want to free the cloned items and ruin the
- *	original list
- */
-static fwts_list *fwts_hwinfo_list_sort_alpha(fwts_list *list)
-{
-	fwts_list_link *item;
-	fwts_list *sorted;
-	
-	if ((sorted = fwts_list_new()) == NULL)
-		return NULL;
-
-	fwts_list_foreach(item, list) {
-		char *str = fwts_list_data(char *, item);
-		fwts_list_add_ordered(sorted, str, fwts_hwinfo_alpha_compare);
-	}
-
-	return sorted;
 }
 
 /*
@@ -122,12 +589,13 @@ static fwts_list *fwts_hwinfo_list_sort_alpha(fwts_list *list)
  *	check lists to see if their contents differ, return 1 for differ, 0 for match,
  *	-1 for out of memory error
  */
-static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
+static int fwts_hwinfo_lists_differ(
+	hwinfo_cmp cmp,
+	fwts_list *l1,
+	fwts_list *l2)
 {
 	fwts_list_link *item1;
 	fwts_list_link *item2;
-	
-	fwts_list *sorted1, *sorted2;
 
 	/* Both null - both the same then */
 	if ((l1 == NULL) && (l2 == NULL))
@@ -141,32 +609,15 @@ static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
 	if (fwts_list_len(l1) != fwts_list_len(l2))
 		return FWTS_HWINFO_LISTS_DIFFER;
 
-	if ((sorted1 = fwts_hwinfo_list_sort_alpha(l1)) == NULL)
-		return FWTS_HWINFO_LISTS_OUT_OF_MEMORY;
-		
-	if ((sorted2 = fwts_hwinfo_list_sort_alpha(l2)) == NULL) {
-		fwts_list_free(sorted1, NULL);
-		return FWTS_HWINFO_LISTS_OUT_OF_MEMORY;
-	}
-
-	item1 = fwts_list_head(sorted1);
-	item2 = fwts_list_head(sorted2);
+	item1 = fwts_list_head(l1);
+	item2 = fwts_list_head(l2);
 
 	while ((item1 != NULL) && (item2 != NULL)) {
-		char *str1 = fwts_list_data(char *, item1);
-		char *str2 = fwts_list_data(char *, item2);
-
-		if (strcmp(str1, str2)) {
-			fwts_list_free(sorted1, NULL);
-			fwts_list_free(sorted2, NULL);
+		if (cmp(fwts_list_data(void *, item1), fwts_list_data(void *, item2)))
 			return FWTS_HWINFO_LISTS_DIFFER;
-		}
 		item1 = fwts_list_next(item1);
 		item2 = fwts_list_next(item2);
 	}
-
-	fwts_list_free(sorted1, NULL);
-	fwts_list_free(sorted2, NULL);
 
 	if ((item1 == NULL) && (item2 == NULL))
 		return FWTS_HWINFO_LISTS_SAME;
@@ -180,15 +631,37 @@ static int fwts_hwinfo_lists_differ(fwts_list *l1, fwts_list *l2)
  */
 static void fwts_hwinfo_lists_compare(
 	fwts_framework *fw,
+	hwinfo_cmp cmp,
+	hwinfo_dump dump,
 	fwts_list *l1,
 	fwts_list *l2,
 	const char *message,
 	int *differences)
 {
-	if (fwts_hwinfo_lists_differ(l1, l2) == FWTS_HWINFO_LISTS_DIFFER) {
+	if (fwts_hwinfo_lists_differ(cmp, l1, l2) == FWTS_HWINFO_LISTS_DIFFER) {
 		(*differences)++;
-		fwts_hwinfo_lists_dump(fw, l1, l2, message);
+		fwts_hwinfo_lists_dump(fw, dump, l1, l2, message);
 	}
+}
+
+/*
+ *  fwts_hwinfo_get()
+ *	gather H/W information
+ */
+int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo)
+{
+	FWTS_UNUSED(fw);
+
+	/* PCI devices */
+	fwts_hwinfo_pci_get(fw, FWTS_PCI_CLASS_CODE_NETWORK_CONTROLLER, &hwinfo->network);
+	fwts_hwinfo_pci_get(fw, FWTS_PCI_CLASS_CODE_DISPLAY_CONTROLLER, &hwinfo->videocard);
+	/* Network devices */
+	fwts_hwinfo_net_get(fw, &hwinfo->netdevs);
+	fwts_hwinfo_input_get(fw, &hwinfo->input);
+	/* Bluetooth devices */
+	fwts_hwinfo_bluetooth_get(fw, &hwinfo->bluetooth);
+
+	return FWTS_OK;
 }
 
 /*
@@ -199,14 +672,20 @@ void fwts_hwinfo_compare(fwts_framework *fw, fwts_hwinfo *hwinfo1, fwts_hwinfo *
 {
 	*differences = 0;
 
-	fwts_hwinfo_lists_compare(fw, hwinfo1->network, hwinfo2->network, "Network Controller", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->ethernet, hwinfo2->ethernet, "Ethernet Controller", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->ifconfig, hwinfo2->ifconfig, "Network - ifconfig", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->iwconfig, hwinfo2->iwconfig, "Network - iwconfig", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->hciconfig, hwinfo2->hciconfig, "Bluetooth Device", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->videocard, hwinfo2->videocard, "Video", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->xinput, hwinfo2->xinput, "Input Devices", differences);
-	fwts_hwinfo_lists_compare(fw, hwinfo1->pactl, hwinfo2->pactl, "Pulse Audio Sink", differences);
+	/* PCI devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_pci_config_cmp, fwts_hwinfo_pci_dump,
+		&hwinfo1->network, &hwinfo2->network, "Network Controller", differences);
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_pci_config_cmp, fwts_hwinfo_pci_dump,
+		&hwinfo1->videocard, &hwinfo2->videocard, "Video", differences);
+	/* Network devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_net_cmp, fwts_hwinfo_net_dump,
+		&hwinfo1->netdevs, &hwinfo2->netdevs, "Network", differences);
+	/* Input devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_input_config_cmp, fwts_hwinfo_input_dump,
+		&hwinfo1->input, &hwinfo2->input, "Input Devices", differences);
+	/* Bluetooth devices */
+	fwts_hwinfo_lists_compare(fw, fwts_hwinfo_bluetooth_config_cmp, fwts_hwinfo_bluetooth_dump,
+		&hwinfo1->bluetooth, &hwinfo2->bluetooth, "Bluetooth Device", differences);
 }
 
 /*
@@ -218,14 +697,15 @@ int fwts_hwinfo_free(fwts_hwinfo *hwinfo)
 	if (hwinfo == NULL)
 		return FWTS_ERROR;
 
-	fwts_list_free(hwinfo->network, free);
-	fwts_list_free(hwinfo->ethernet, free);
-	fwts_list_free(hwinfo->ifconfig, free);
-	fwts_list_free(hwinfo->iwconfig, free);
-	fwts_list_free(hwinfo->hciconfig, free);
-	fwts_list_free(hwinfo->videocard, free);
-	fwts_list_free(hwinfo->xinput, free);
-	fwts_list_free(hwinfo->pactl, free);
+	/* PCI devices */
+	fwts_list_free_items(&hwinfo->network, free);
+	fwts_list_free_items(&hwinfo->videocard, free);
+	/* Network devices */
+	fwts_list_free_items(&hwinfo->netdevs, fwts_hwinfo_net_free);
+	/* Input devices */
+	fwts_list_free_items(&hwinfo->input, fwts_hwinfo_input_free);
+	/* Bluetooth devices */
+	fwts_list_free_items(&hwinfo->bluetooth, fwts_hwinfo_bluetooth_free);
 
 	return FWTS_OK;
 }

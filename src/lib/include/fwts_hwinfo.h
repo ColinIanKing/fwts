@@ -23,14 +23,11 @@
 #include "fwts.h"
 
 typedef struct {
-	fwts_list *network;
-	fwts_list *ethernet;
-	fwts_list *ifconfig;
-	fwts_list *iwconfig;
-	fwts_list *hciconfig;
-	fwts_list *videocard;
-	fwts_list *xinput;
-	fwts_list *pactl;
+	fwts_list network;	/* PCI network config */
+	fwts_list videocard;	/* PCI video card config */
+	fwts_list netdevs;	/* Network devices */
+	fwts_list input;	/* Input device config */
+	fwts_list bluetooth;	/* Bluetooth config */
 } fwts_hwinfo;
 
 int fwts_hwinfo_get(fwts_framework *fw, fwts_hwinfo *hwinfo);

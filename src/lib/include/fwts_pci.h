@@ -183,4 +183,6 @@ typedef struct {
  	uint16_t slot_status2;
 } __attribute__ ((packed)) fwts_pcie_capability;
 
+const char *fwts_pci_description(const uint8_t class_code, const uint8_t subclass_code);
+
 #endif

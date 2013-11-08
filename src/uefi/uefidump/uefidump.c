@@ -994,6 +994,8 @@ static uefidump_info uefidump_info_table[] = {
 	{ "VendorKeys",		uefidump_info_vendor_keys },
 	{ "DriverOrder",	uefidump_info_driverorder },
 	{ "db",			uefidump_info_signaturedatabase },
+	{ "KEK",		uefidump_info_signaturedatabase },
+	{ "PK",			uefidump_info_signaturedatabase },
 	{ NULL, NULL }
 };
 

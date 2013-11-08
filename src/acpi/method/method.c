@@ -63,7 +63,7 @@
  * _BTM  10.2.2.8	Y
  * _BTP  10.2.2.7	Y
  * _CBA  PCI f/w spec	Y
- * _CDM  6.2.1		N
+ * _CDM  6.2.1		Y
  * _CID  6.1.2		N
  * _CLS  6.1.3		N requires PCI SIG class info
  * _CPC  8.4.5		Y
@@ -4784,6 +4784,12 @@ static int method_test_CBA(fwts_framework *fw)
 		"_CBA", NULL, 0, method_test_integer_return, NULL);
 }
 
+static int method_test_CDM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CDM", NULL, 0, method_test_integer_return, NULL);
+}
+
 /*
  * Tests
  */
@@ -4825,7 +4831,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 6.2 Device Configurations Objects */
 
-	/* { method_test_CDM, "Test _CDM (Clock Domain)." }, */
+	{ method_test_CDM, "Test _CDM (Clock Domain)." },
 	{ method_test_CRS, "Test _CRS (Current Resource Settings)." },
 	{ method_test_DIS, "Test _DIS (Disable)." },
 	{ method_test_DMA, "Test _DMA (Direct Memory Access)." },

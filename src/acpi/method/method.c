@@ -62,7 +62,7 @@
  * _BST  10.2.2.6	Y
  * _BTM  10.2.2.8	Y
  * _BTP  10.2.2.7	Y
- * _CBA  see PCI spec	N
+ * _CBA  PCI f/w spec	Y
  * _CDM  6.2.1		N
  * _CID  6.1.2		N
  * _CLS  6.1.3		N requires PCI SIG class info
@@ -4778,6 +4778,11 @@ static int method_test_DSS(fwts_framework *fw)
 		"_DSS", arg, 1, method_test_NULL_return, NULL);
 }
 
+static int method_test_CBA(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CBA", NULL, 0, method_test_integer_return, NULL);
+}
 
 /*
  * Tests
@@ -5078,7 +5083,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_VPO, "Test _VPO (Video POST Options)." },
 
 	/* From PCI Specification */
-	/* { method_test_CBA, "Test _CBA (Configuration Base Address)." }, */
+	{ method_test_CBA, "Check _CBA (Configuration Base Address)." },
 
 	/* End! */
 

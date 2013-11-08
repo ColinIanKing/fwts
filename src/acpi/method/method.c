@@ -1002,6 +1002,12 @@ static int method_test_HID(fwts_framework *fw)
 		"_HID", NULL, 0, method_test_HID_return, NULL);
 }
 
+static int method_test_CID(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CID", NULL, 0, method_test_HID_return, NULL);
+}
+
 static int method_test_HRV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -4817,7 +4823,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 6.1 Device Identification Objects  */
 
-	/* { method_test_CID, "Test _CID (Compatible ID)." }, */
+	{ method_test_CID, "Test _CID (Compatible ID)." },
 	/* { method_test_CLS, "Test _CLS (Class Code)." }, */
 	{ method_test_DDN, "Test _DDN (DOS Device Name)." },
 	{ method_test_HID, "Test _HID (Hardware ID)." },

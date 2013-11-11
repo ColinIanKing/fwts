@@ -129,7 +129,7 @@
  * _MAT  6.2.9		N
  * _MBM  9.12.2.1	N
  * _MLS  6.1.7		N
- * _MSG  9.1.2		N
+ * _MSG  9.1.2		Y
  * _MSM  9.12.2.2	N
  * _NTT  11.4.7		Y
  * _OFF  7.1.2		Y
@@ -3193,6 +3193,21 @@ static int method_test_TSS(fwts_framework *fw)
 
 
 /*
+ * Section 9.1 System Indicators
+ */
+
+static int method_test_MSG(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	arg[0].Integer.Value = 0;
+
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_MSG", arg, 1, method_test_NULL_return, NULL);
+}
+
+/*
  * Section 9.2 Ambient Light Sensor Device
  */
 method_test_integer(_ALC, METHOD_OPTIONAL)
@@ -4950,7 +4965,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 9.1 System Indicators */
 	/* { method_test_CWS, "Test _CWS (Clear Wake Status)." }, */
-	/* { method_test_MSG, "Test _MSG (Message)." }, */
+	{ method_test_MSG, "Test _MSG (Message)." },
 	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
 	/* { method_test_SST, "Test _SST (System Status)." }, */
 

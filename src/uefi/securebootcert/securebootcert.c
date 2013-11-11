@@ -61,12 +61,6 @@ typedef struct _EFI_SIGNATURE_LIST {
 						0xd0, 0x0e, 0x67, 0x65, 0x6f} \
 }
 
-#define EFI_CERT_X509_GUID \
-{ \
-	0xa5c059a1, 0x94e4, 0x4aa7, { 0x87, 0xb5, 0xab, \
-						0x15, 0x5c, 0x2b, 0xf0, 0x72 } \
-}
-
 static uint8_t var_found;
 
 static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)

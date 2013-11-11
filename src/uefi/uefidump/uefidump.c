@@ -51,7 +51,7 @@ static void uefidump_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size
 {
 	size_t i;
 
-	for (i = 0; i < size; i+= 16) {
+	for (i = 0; i < size; i += 16) {
 		char buffer[128];
 		size_t left = size - i;
 
@@ -892,6 +892,36 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 	fwts_uefi_signature_list *signature_list;
 	char guid_str[37];
 	size_t offset = 0, list_start = 0;
+	size_t i;
+	fwts_uefi_guid guid[] = {
+			EFI_CERT_X509_GUID,
+			EFI_CERT_SHA256_GUID,
+			EFI_CERT_RSA2048_GUID,
+			EFI_CERT_RSA2048_SHA256_GUID,
+			EFI_CERT_SHA1_GUID,
+			EFI_CERT_RSA2048_SHA1_GUID,
+			EFI_CERT_SHA224_GUID,
+			EFI_CERT_SHA384_GUID,
+			EFI_CERT_SHA512_GUID,
+			EFI_CERT_X509_SHA256_GUID,
+			EFI_CERT_X509_SHA384_GUID,
+			EFI_CERT_X509_SHA512_GUID
+	};
+	char *str[] = {
+		"EFI_CERT_X509_GUID",
+		"EFI_CERT_SHA256_GUID",
+		"EFI_CERT_RSA2048_GUID",
+		"EFI_CERT_RSA2048_SHA256_GUID",
+		"EFI_CERT_SHA1_GUID",
+		"EFI_CERT_RSA2048_SHA1_GUID",
+		"EFI_CERT_SHA224_GUID",
+		"EFI_CERT_SHA384_GUID",
+		"EFI_CERT_SHA512_GUID",
+		"EFI_CERT_X509_SHA256_GUID",
+		"EFI_CERT_X509_SHA384_GUID",
+		"EFI_CERT_X509_SHA512_GUID",
+		"Unknown GUID"
+	};
 
 	if (var->datalen < sizeof(fwts_uefi_signature_list))
 		return;
@@ -899,7 +929,12 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 	do {
 		signature_list = (fwts_uefi_signature_list *)(var->data + list_start);
 		fwts_guid_buf_to_str(var->data, guid_str, sizeof(guid_str));
-		fwts_log_info_verbatum(fw, "  SignatureType: %s", guid_str);
+
+		for (i = 0; i < sizeof(guid)/sizeof(guid[0]); i++)
+			if (memcmp(var->data, &guid[i], sizeof(fwts_uefi_guid)) == 0)
+				break;
+
+		fwts_log_info_verbatum(fw, "  SignatureType: %s (%s)", guid_str, str[i]);
 		fwts_log_info_verbatum(fw, "  SignatureListSize: 0x%" PRIx32, signature_list->signaturelistsize);
 		fwts_log_info_verbatum(fw, "  SignatureHeaderSize: 0x%" PRIx32, signature_list->signatureheadersize);
 		fwts_log_info_verbatum(fw, "  SignatureSize: 0x%" PRIx32, signature_list->signaturesize);

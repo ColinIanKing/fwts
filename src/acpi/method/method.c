@@ -101,7 +101,7 @@
  * _FPS  11.3.1.2	N
  * _FSL  11.3.1.3	Y
  * _FST  11.3.1.4	Y
- * _GAI  10.4.5		N
+ * _GAI  10.4.5		Y
  * _GCP  9.18.2		Y
  * _GHL  10.4.7		N
  * _GL   5.7.1		n/a
@@ -4002,6 +4002,15 @@ static int method_test_PIF(fwts_framework *fw)
 		"_PIF", NULL, 0, method_test_PIF_return, NULL);
 }
 
+/*
+ * Section 10.4 Power Meters 
+ */
+
+static int method_test_GAI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GAI", NULL, 0, method_test_integer_return, NULL);
+}
 
 /*
  * Section 11.3 Fan Devices
@@ -5022,7 +5031,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PSR, "Test _PSR (Power Source)." },
 
 	/* Section 10.4 Power Meters */
-	/* { method_test_GAI, "Test _GAI (Get Averaging Level)." }, */
+	{ method_test_GAI, "Test _GAI (Get Averaging Level)." },
 	/* { method_test_GHL, "Test _GHL (Get Harware Limit)." }, */
 	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
 	/* { method_test_PMC, "Test _PMC (Power Meter Capabilities)." }, */

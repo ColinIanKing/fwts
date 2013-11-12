@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
 export DEB_BUILD_HARDENING=1
+export AUTOMAKE=automake-1.11
+export ACLOCAL=aclocal-1.11
 
 DEBVERS := $(shell dpkg-parsechangelog | grep ^Version: | cut -d' ' -f2 \
 		| cut -d- -f1)

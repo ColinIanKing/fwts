@@ -29,28 +29,41 @@
 #include <limits.h>
 #include <dirent.h>
 
-static DIR *brightnessdir;
+static DIR *brightness_dir;
+static char *brightness_path;
 
 static int skip_tests = 0;
 
-#define BRIGHTNESS_PATH	"/sys/devices/virtual/backlight"
-
 static int brightness_init(fwts_framework *fw)
 {
-	if (!(brightnessdir = opendir(BRIGHTNESS_PATH))) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "BacklightNoPath", "No %s directory available: cannot test.", BRIGHTNESS_PATH);
-		return FWTS_ERROR;
+	int i;
+	static char *sys_path[] = {
+		"/sys/class/backlight",
+		"/sys/devices/virtual/backlight",
+		NULL
+	};
+
+	brightness_path = NULL;
+	brightness_dir = NULL;
+
+	for (i = 0; sys_path[i]; i++) {
+		brightness_dir = opendir(sys_path[i]);
+		if (brightness_dir) {
+			brightness_path = sys_path[i];
+			return FWTS_OK;
+		}
 	}
 
-	return FWTS_OK;
+	fwts_failed(fw, LOG_LEVEL_LOW, "BacklightNoPath", "No sysfs backlight directory available: cannot test.");
+	return FWTS_ERROR;
 }
 
 static int brightness_deinit(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
-	if (brightnessdir)
-		closedir(brightnessdir);
+	if (brightness_dir)
+		closedir(brightness_dir);
 
 	return FWTS_OK;
 }
@@ -60,7 +73,7 @@ static int get_setting(char *entry_name, char *setting, int *value)
 	char path[PATH_MAX];
 	FILE *fp;
 
-	snprintf(path, sizeof(path), BRIGHTNESS_PATH "/%s/%s", entry_name, setting);
+	snprintf(path, sizeof(path), "%s/%s/%s", brightness_path, entry_name, setting);
 	if ((fp = fopen(path, "r")) == NULL)
 		return -1;
 
@@ -79,7 +92,7 @@ static int set_setting(char *entry_name, char *setting, int value)
 	char path[PATH_MAX];
 	FILE *fp;
 
-	snprintf(path, sizeof(path), BRIGHTNESS_PATH "/%s/%s", entry_name, setting);
+	snprintf(path, sizeof(path), "%s/%s/%s", brightness_path, entry_name, setting);
 	if ((fp = fopen(path, "w")) == NULL)
 		return -1;
 
@@ -101,9 +114,9 @@ static int brightness_test1(fwts_framework *fw)
 
 	skip_tests = 1;
 
-	rewinddir(brightnessdir);
+	rewinddir(brightness_dir);
 	do {
-		entry = readdir(brightnessdir);
+		entry = readdir(brightness_dir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0)
@@ -142,16 +155,15 @@ static int brightness_test2(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	rewinddir(brightnessdir);
+	rewinddir(brightness_dir);
 	do {
-		entry = readdir(brightnessdir);
+		entry = readdir(brightness_dir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0) {
 					fwts_failed(fw, LOG_LEVEL_HIGH, "BrightnessMaxTest2", "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 					continue;
 				}
-				
 				if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) == FWTS_OK) {
 					int i;
 					int failed = 0;
@@ -194,16 +206,15 @@ static int brightness_test3(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	rewinddir(brightnessdir);
+	rewinddir(brightness_dir);
 	do {
-		entry = readdir(brightnessdir);
+		entry = readdir(brightness_dir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				if (max_brightness <= 0) {
 					fwts_failed(fw, LOG_LEVEL_HIGH, "BrightnessMaxTest3", "Maximum brightness for %s is %d and should be > 0.", entry->d_name, max_brightness);
 					continue;
 				}
-				
 				if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) == FWTS_OK) {
 					int ch;
 
@@ -246,9 +257,9 @@ static int brightness_test4(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	rewinddir(brightnessdir);
+	rewinddir(brightness_dir);
 	do {
-		entry = readdir(brightnessdir);
+		entry = readdir(brightness_dir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "max_brightness", &max_brightness) == FWTS_OK) {
 				int i;
@@ -262,7 +273,7 @@ static int brightness_test4(fwts_framework *fw)
 				if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) == FWTS_OK) {
 					long delay = 5000000/max_brightness;
 					int ch;
-		
+
 					if (delay > 1000000)
 						delay = 1000000;
 
@@ -301,7 +312,7 @@ static int brightness_wait_event(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot connect to acpid.");
 		return FWTS_ERROR;
 	}
-	
+
 	for (i=0;i<=20;i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL)
 			if (strstr(buffer, "video")) {
@@ -323,9 +334,9 @@ static int brightness_test5(fwts_framework *fw)
 	struct dirent *entry;
 	int saved_brightness;
 
-	rewinddir(brightnessdir);
+	rewinddir(brightness_dir);
 	do {
-		entry = readdir(brightnessdir);
+		entry = readdir(brightness_dir);
 		if (entry && strlen(entry->d_name)>2) {
 			if (get_setting(entry->d_name, "actual_brightness", &saved_brightness) != FWTS_OK) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "BrightnessNotExist", "Actual brightness could not be accessed for %s.", entry->d_name);
@@ -350,7 +361,6 @@ static int brightness_test5(fwts_framework *fw)
 				}
 
 				tmp = (saved_brightness > 0) ? saved_brightness : 1;
-					
 				set_setting(entry->d_name, "brightness", tmp);
 				fwts_printf(fw, "==== Press the brightness DOWN hotkey for %s ====\n", entry->d_name);
 

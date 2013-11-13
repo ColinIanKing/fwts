@@ -47,6 +47,19 @@ static void uefidump_var_hexdump(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size)
+{
+	size_t i;
+
+	for (i = 0; i < size; i+= 16) {
+		char buffer[128];
+		size_t left = size - i;
+
+		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
+		fwts_log_info_verbatum(fw,  "  Data: %s", buffer+2);
+	}
+}
+
 static char *uefidump_vprintf(char *str, const char *fmt, ...) __attribute__((format(printf, 2, 3)));
 
 /*
@@ -874,6 +887,50 @@ static void uefidump_info_keyoption(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *var)
+{
+	fwts_uefi_signature_list *signature_list;
+	char guid_str[37];
+	size_t offset = 0, list_start = 0;
+
+	if (var->datalen < sizeof(fwts_uefi_signature_list))
+		return;
+
+	do {
+		signature_list = (fwts_uefi_signature_list *)(var->data + list_start);
+		fwts_guid_buf_to_str(var->data, guid_str, sizeof(guid_str));
+		fwts_log_info_verbatum(fw, "  SignatureType: %s", guid_str);
+		fwts_log_info_verbatum(fw, "  SignatureListSize: 0x%" PRIx32, signature_list->signaturelistsize);
+		fwts_log_info_verbatum(fw, "  SignatureHeaderSize: 0x%" PRIx32, signature_list->signatureheadersize);
+		fwts_log_info_verbatum(fw, "  SignatureSize: 0x%" PRIx32, signature_list->signaturesize);
+
+		offset = list_start + sizeof (fwts_uefi_signature_list);
+		if (signature_list->signatureheadersize > 0) {
+			fwts_log_info_verbatum(fw, "  SignatureHeader:");
+			uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), signature_list->signatureheadersize);
+		}
+		offset += signature_list->signatureheadersize;
+		while ((signature_list->signaturelistsize - offset + list_start) > 0) {
+			if ((signature_list->signaturelistsize - offset + list_start) >= signature_list->signaturesize) {
+				fwts_guid_buf_to_str((uint8_t *)(var->data + offset), guid_str, sizeof(guid_str));
+				fwts_log_info_verbatum(fw, "  SignatureOwner: %s", guid_str);
+				offset += sizeof(fwts_uefi_guid);
+				fwts_log_info_verbatum(fw, "  SignatureData:");
+				uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), signature_list->signaturesize - sizeof(fwts_uefi_guid));
+				offset += signature_list->signaturesize - sizeof(fwts_uefi_guid);
+			} else {
+				/* have Signature data left, but not correspond to the SignatureSize, just dump raw data */
+				fwts_log_info_verbatum(fw, "  Data:");
+				uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), (signature_list->signaturelistsize - offset + list_start));
+				break;
+			}
+		}
+
+		list_start += signature_list->signaturelistsize;
+
+	} while ((var->datalen - list_start) > sizeof(fwts_uefi_signature_list));
+
+}
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -901,6 +958,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "OsIndicationsSupported",	uefidump_info_osindications_supported },
 	{ "VendorKeys",		uefidump_info_vendor_keys },
 	{ "DriverOrder",	uefidump_info_driverorder },
+	{ "db",			uefidump_info_signaturedatabase },
 	{ NULL, NULL }
 };
 

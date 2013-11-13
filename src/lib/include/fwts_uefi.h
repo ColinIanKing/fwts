@@ -363,6 +363,13 @@ typedef struct {
   	char description[0];
 } fwts_uefi_bios_dev_path;
 
+typedef struct {
+	fwts_uefi_guid signaturetype;
+	uint32_t signaturelistsize;
+	uint32_t signatureheadersize;
+	uint32_t signaturesize;
+} __attribute__((packed)) fwts_uefi_signature_list;
+
 void fwts_uefi_str16_to_str(char *dst, const size_t len, const uint16_t *src);
 size_t fwts_uefi_str16len(const uint16_t *str);
 void fwts_uefi_get_varname(char *varname, const size_t len, const fwts_uefi_var *var);

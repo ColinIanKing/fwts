@@ -240,8 +240,8 @@
  * _TZP  11.4.21	Y
  * _UID  6.1.9		Y
  * _UPC  9.13		N
- * _UPD  9.16.1		N
- * _UPP  9.16.2		N
+ * _UPD  9.16.1		Y
+ * _UPP  9.16.2		Y
  * _VPO  B.4.6		Y
  * _WAK  7.3.7 		Y
  * _Wxx  5.6.4.2.2	n/a
@@ -3245,6 +3245,21 @@ static int method_test_LID(fwts_framework *fw)
 		"_LID", NULL, 0, method_test_LID_return, NULL);
 }
 
+/*
+ * Section 9.16 User Presence Detection Device
+ */
+
+static int method_test_UPD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_UPD", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_UPP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_UPP", NULL, 0, method_test_integer_return, NULL);
+}
 
 /*
  * Section 9.18 Wake Alarm Device
@@ -5011,8 +5026,8 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_DSM, "Test _DSM (Device Specific Method)." }, */
 
 	/* Section 9.16 User Presence Detection Device */
-	/* { method_test_UPD, "Test _UPD (User Presence Detect)." }, */
-	/* { method_test_UPP, "Test _UPP (User Presence Polling)." }, */
+	{ method_test_UPD, "Test _UPD (User Presence Detect)." },
+	{ method_test_UPP, "Test _UPP (User Presence Polling)." },
 
 	/* Section 9.18 Wake Alarm Device */
 

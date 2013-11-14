@@ -5140,7 +5140,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_VPO, "Test _VPO (Video POST Options)." },
 
 	/* From PCI Specification */
-	{ method_test_CBA, "Check _CBA (Configuration Base Address)." },
+	{ method_test_CBA, "Test _CBA (Configuration Base Address)." },
 
 	/* End! */
 

@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -621,5 +619,3 @@ static fwts_framework_ops syntaxcheck_ops = {
 };
 
 FWTS_REGISTER("syntaxcheck", &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
-
-#endif

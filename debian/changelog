@@ -1,3 +1,63 @@
+fwts (13.11.00-0ubuntu1) trusty; urgency=low
+
+  [Alex Hung]
+  * acpi: method: correct alphabetical order in comments to sync with acpi spec
+  * acpi: method: add missing names to acpi-method list
+  * acpi: method: add _CBA control method test (LP: #1249171)
+  * acpi: method: add _CDM control method test (LP: #1249172)
+  * acpi: method: add _CID control method test (LP: #1249174)
+  * acpi: method: add _GAI control method test (LP: #1249894)
+  * acpi: method: add _MSG control method test (LP: #1249939)
+  * acpi: method: add _PMM control method test (LP: #1249941)
+  * acpi: method: add _UPD and _UPP control method tests (LP: #1251168)
+
+  [Colin Ian King]
+  * lib: framework: report warning[s] correctly (LP:#1223736)
+  * lib: update copyright year. (LP: #1226590)
+  * acpi: mcfg: Parse /sys/bus/pci rather than using lspci (LP: #1226615)
+  * syntaxcheck: report IASL compiler remarks as low failures (LP: #1200606)
+  * acpi: fadt: sanity check reset register settings (LP: #1230394)
+  * ACPICA: update to version 20130927.
+  * iasl: capture output from stderr to catch iasl fatal errors
+  * pci: aspm: remove the need to run and parse lspci output (LP: #1227853)
+  * lib: fwts_klog: Add ability to write message to kernel log
+  * acpi: s3: add timings report for suspend/resume (LP: #1241638)
+  * acpi: s3: add --s3-suspend-time and --s3-resume-time (LP: #1241638)
+  * lib: add new PCI definitions
+  * pci: aspm: use new fwts PCI defintions
+  * pci: maxreadreq: don't use lspci to get PCI specific data (LP: #1244676)
+  * uefi: uefidump: add more checks to avoid buffer overruns (LP: #1239641)
+  * bios: mtrr: don't use lspci to get PCI specific data (LP: #1244673)
+  * wakealarm: use ioctl() interface as this more of a generic interface
+    (LP: #1244184)
+  * Tests: replace "check" with "test" in test name headings (LP: #1246650)
+  * data: klog.json: Sync up with latest kernel 3.12 (LP: #1248499)
+  * lib: Add PCI helper to return description of a device
+  * lib: fwts_hwinfo: don't use external utils for H/W checks (LP: #1246646)
+  * debian: control: remove some unrequired suggests
+  * acpi: brightness: use /sys/class/backlight interface (LP: #1250517)
+  * acpi: brightness: break up brightness test (LP: #1250429)
+  * acpi: syntaxcheck: non-x86 may have ACPI support (LP: #1251293)
+  * acpi: method: Change "Check" to "Test", (LP: #1246650)
+
+  [Ivan Hu]
+  * uefi: uefidump: fix the boot load option Boot#### larger than Boot1000
+    doesn't be parsered (LP: #1225850)
+  * uefi: uefidump: Add support for DriverOrder (LP: #1237263)
+  * uefi: uefidump: add support for Driver#### (LP: #1237263)
+  * uefidump: add support for Key#### (LP: #1237263)
+  * uefi: uefidump: add support for db, dbx, dbt... variables scan
+    (LP: #1247749)
+  * uefi: uefidump: compare the SignarureType GUID and print out type for
+    signature database parser (LP: #1247749)
+  * uefi: uefidump: add support for KEK, KEKDefault, PK, PKDefault global
+    variables scan (LP: #1247749)
+
+  [Keng-Yu Lin]
+  * Force to use automake1.11 to prevent FTBFS in Trusy (LP: #1250340)
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Fri, 15 Nov 2013 14:11:00 +0800
+
 fwts (13.09.01-0ubuntu1) saucy; urgency=low
  
   [Alex Hung]

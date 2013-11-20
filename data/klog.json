@@ -5147,10 +5147,10 @@
   },
   {
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_LOW",
    "tag": "FWTS_TAG_ACPI",
    "pattern": ".*defines _DOD but not _DOS",
-   "advice": "ACPI Method _DOD (Enumerate all devices attached to display adapter) is defined but we should also have _DOS (Enable\/Disable output switching) defined but it's been omitted. This can cause display switching issues.",
+   "advice": "ACPI Method _DOD (Enumerate all devices attached to display adapter) is defined but we should also have _DOS (Enable\/Disable output switching) defined but it's been omitted.",
    "label": "KlogAcpiDodWithNoDos"
   },
   {

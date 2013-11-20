@@ -418,11 +418,19 @@
    "label": "KlogAcpiNoIoapicForGsi"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "tag": "FWTS_TAG_BIOS_THERMAL",
+   "pattern": "[T|t]emperature above threshold, cpu clock throttled",
+   "advice": "Test caused CPU temperature above critical threshold. The CPU has been throttled to run slower because of over-heating above the critical threshold. CPU throttling will be turned off once the CPU has cooled sufficiently.  Frequent throttling may indicate poor thermal design on the machine.",
+   "label": "KlogThermalOverrun"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "tag": "FWTS_TAG_BIOS_THERMAL",
-   "pattern": "Temperature above threshold, cpu clock throttled",
-   "advice": "Test caused CPU temperature above critical threshold. Insufficient cooling?",
+   "pattern": "Possible thermal failure",
+   "advice": "A Pentium class Intel CPU has had a thermal machine check exception caused by hot CPU.  If this persists it may indicate poor thermal design on the machine.",
    "label": "KlogThermalOverrun"
   },
   {

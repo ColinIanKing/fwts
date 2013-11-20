@@ -143,7 +143,7 @@
  * _PCT  8.4.4.1	Y
  * _PDC  8.4.1		N
  * _PDL  8.4.4.6	Y
- * _PIC  5.8.1		N
+ * _PIC  5.8.1		Y
  * _PIF  10.3.3		Y
  * _PLD  6.1.8		Y
  * _PMC  10.4.1		N
@@ -878,6 +878,27 @@ static int method_test_AEI(fwts_framework *fw)
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_AEI", NULL, 0, method_test_buffer_return, NULL);
 }
+
+/*
+ * Section 5.8 System Configuration Objects
+ */
+static int method_test_PIC(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	int i, ret;
+	arg[0].Type = ACPI_TYPE_INTEGER;
+
+	for (i = 0; i < 3; i++) {
+		arg[0].Integer.Value = i;
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_PIC", arg, 1, method_test_NULL_return, NULL);
+
+		if (ret != FWTS_OK)
+			break;
+	}
+	return ret;
+}
+
 
 /*
  * Section 6.1 Device Identification Objects
@@ -4864,7 +4885,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_REV, "Test _REV (Revision)." }, */
 
 	/* Section 5.8 System Configuration Objects */
-	/* { method_test_PIC, "Test _PIC (Inform AML of Interrupt Model)." }, */
+	{ method_test_PIC, "Test _PIC (Inform AML of Interrupt Model)." },
 
 	/* Section 6.1 Device Identification Objects  */
 

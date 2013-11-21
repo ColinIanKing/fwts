@@ -22,7 +22,7 @@
 
 #ifdef FWTS_ARCH_INTEL
 
-typedef void (*msr_callback_check)(fwts_framework *fw, uint64_t val);
+typedef void (*msr_callback_check)(fwts_framework *fw, const uint64_t val);
 
 static int ncpus;
 static bool intel_cpu;
@@ -80,15 +80,15 @@ static int msr_deinit(fwts_framework *fw)
 static int msr_consistent(const uint32_t msr,
 	const int shift,
 	const uint64_t mask,
-	uint64_t *vals,
-	int *inconsistent_count,
-	bool *inconsistent)
+	uint64_t *const vals,
+	int *const inconsistent_count,
+	bool *const inconsistent)
 {
 	int cpu;
 
 	*inconsistent_count = 0;
 
-	for (cpu=0; cpu<ncpus; cpu++) {
+	for (cpu = 0; cpu < ncpus; cpu++) {
 		uint64_t val;
 		if (fwts_cpu_readmsr(cpu, msr, &val) != FWTS_OK) {
 			return FWTS_ERROR;
@@ -98,7 +98,7 @@ static int msr_consistent(const uint32_t msr,
 		vals[cpu] = val;
 	}
 
-	for (cpu=0; cpu<ncpus; cpu++) {
+	for (cpu = 0; cpu < ncpus; cpu++) {
 		if (vals[0] != vals[cpu]) {
 			(*inconsistent_count)++;
 			inconsistent[cpu] = true;
@@ -111,7 +111,7 @@ static int msr_consistent(const uint32_t msr,
 
 static int msr_consistent_check(fwts_framework *fw,
 	const fwts_log_level level,
-	const char *msr_name,
+	const char *const msr_name,
 	const uint32_t msr,
 	const int shift,
 	const uint64_t mask,
@@ -131,36 +131,32 @@ static int msr_consistent_check(fwts_framework *fw,
 		free(vals);
 		return FWTS_ERROR;
 	}
-
 	if (msr_consistent(msr, shift, mask,
 		vals, &inconsistent_count, inconsistent) != FWTS_OK) {
-		//fwts_log_info(fw, "Cannot read MSR %s (0x%x).", msr_name, msr);
 		free(inconsistent);
 		free(vals);
 		return FWTS_ERROR;
 	}
-
 	if (inconsistent_count > 0) {
 		fwts_failed(fw, level, "MSRCPUsInconsistent",
-			"MSR %s (0x%" PRIx32 ") has %d inconsistent values across "
-			"%d CPUs for (shift: %d mask: 0x%" PRIx64 ").",
-			msr_name, msr, inconsistent_count,
+			"MSR 0x%8.8" PRIx32 " %s has %d inconsistent values across "
+			"%d CPUs (shift: %d mask: 0x%" PRIx64 ").",
+			msr, msr_name, inconsistent_count,
 			ncpus, shift, mask);
 
-		for (cpu=1; cpu<ncpus; cpu++) {
+		for (cpu = 1; cpu < ncpus; cpu++) {
 			if (inconsistent[cpu])
 				fwts_log_info(fw, "MSR CPU 0 -> 0x%" PRIx64
 					" vs CPU %d -> 0x%" PRIx64,
 					vals[0], cpu, vals[cpu]);
 		}
 	} else {
-		fwts_passed(fw, "MSR %s (0x%" PRIx32 ") (mask:%" PRIx64 ") "
-			"was consistent across %d CPUs.",
-			msr_name, msr, mask, ncpus);
+		fwts_passed(fw, "MSR 0x%8.8" PRIx32 " %s "
+			"is consistent across %d CPUs.",
+			msr, msr_name, ncpus);
 		if (callback)
 			callback(fw, vals[0]);
 	}
-
 
 	free(inconsistent);
 	free(vals);
@@ -179,12 +175,11 @@ static int msr_pstate_ratios(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void msr_c1_c3_autodemotion_check(fwts_framework *fw, uint64_t val)
+static void msr_c1_c3_autodemotion_check(fwts_framework *fw, const uint64_t val)
 {
 	fwts_log_info(fw, "C1 and C3 Autodemotion %s.",
 		val == 3 ? "enabled" : "disabled");
 }
-
 
 static int msr_c1_c3_autodemotion(fwts_framework *fw)
 {
@@ -247,7 +242,7 @@ static int msr_smrr(fwts_framework *fw)
 }
 
 typedef struct {
-	const char *name;
+	const char *const name;
 	const uint32_t msr;
 	const int shift;
 	const uint64_t mask;
@@ -256,7 +251,7 @@ typedef struct {
 
 
 /* From AMD Architecture Programmer's Manual, Volume 2: System Programming, Appending A */
-static msr_info AMD_MSRs[] = {
+static const msr_info AMD_MSRs[] = {
 	{ "MTRRCAP",		0x000000fe,	0, 0xfffULL, NULL },
 	{ "SYSENTER_CS",	0x00000174,	0, 0xffffULL, NULL },
 	{ "SYSENTER_ESP",	0x00000175,	0, ~0, NULL },
@@ -327,11 +322,11 @@ static msr_info AMD_MSRs[] = {
 	{ NULL,			0x00000000,	0, 0 , NULL }
 };
 
-static msr_info IA32_MSRs[] = {
-	//{ "P5_MC_ADDR",		0x00000000,	0, ~0, NULL },
+static const msr_info IA32_MSRs[] = {
+	//{ "P5_MC_ADDR",	0x00000000,	0, ~0, NULL },
 	{ "P5_MC_TYPE",		0x00000001,	0, ~0, NULL },
 	{ "MONITOR_FILTER_SIZE",0x00000006,	0, ~0, NULL },
-	//{ "TIME_STAMP_COUNTER",	0x00000010,	0, ~0, NULL },
+	//{ "TIME_STAMP_COUNTER",0x00000010,	0, ~0, NULL },
 	{ "PLATFORM_ID",	0x00000017,	0, 0x1c000000000000ULL, NULL },
 	{ "EBL_CR_POWERON",	0x0000002a,	0, ~0, NULL },
 	{ "APIC_BASE",		0x0000001b,	0, 0xfffffffffffffeffULL, NULL },
@@ -444,7 +439,7 @@ static msr_info IA32_MSRs[] = {
 	{ NULL,			0x00000000,	0, 0 , NULL },
 };
 
-static msr_info IA32_atom_MSRs[] = {
+static const msr_info IA32_atom_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",	0x00000079,	0, ~0, NULL },
 	{ "BIOS_SIGN_ID",	0x0000008b,	0, ~0, NULL },
 	{ "MSR_FSB_FREQ",	0x000000cd,	0, 0x7ULL, NULL },
@@ -470,7 +465,7 @@ static msr_info IA32_atom_MSRs[] = {
 	{ NULL,			0x00000000,	0, 0 , NULL },
 };
 
-static msr_info IA32_nehalem_MSRs[] = {
+static const msr_info IA32_nehalem_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",		0x00000079,	0, ~0, NULL },
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
 	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x7008407ULL, NULL },
@@ -485,7 +480,7 @@ static msr_info IA32_nehalem_MSRs[] = {
 	{ NULL,				0x00000000,	0, 0 , NULL },
 };
 
-static msr_info IA32_sandybridge_MSRs[] = {
+static const msr_info IA32_sandybridge_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",		0x00000079,	0, ~0, NULL },
 	{ "BIOS_SIGN_ID",		0x0000008b,	0, ~0, NULL },
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
@@ -508,11 +503,11 @@ static msr_info IA32_sandybridge_MSRs[] = {
 	{ NULL,				0x00000000,	0, 0 , NULL },
 };
 
-static int msr_table_check(fwts_framework *fw, msr_info *info)
+static int msr_table_check(fwts_framework *fw, const msr_info *const info)
 {
 	int i;
 
-	for (i=0; info[i].name != NULL; i++)
+	for (i = 0; info[i].name != NULL; i++)
 		msr_consistent_check(fw, LOG_LEVEL_MEDIUM,
 			info[i].name, info[i].msr, info[i].shift, info[i].mask, info[i].callback);
 
@@ -550,7 +545,7 @@ static int msr_cpu_specific(fwts_framework *fw)
 			msr_table_check(fw, IA32_atom_MSRs);
 			break;
 		case 0x2A: /* Sandybridge */
-		case 0x2D: /* Ssandybridge Xeon */
+		case 0x2D: /* Sandybridge Xeon */
 			msr_table_check(fw, IA32_sandybridge_MSRs);
 			break;
 		default:
@@ -562,7 +557,6 @@ static int msr_cpu_specific(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-
 
 static fwts_framework_minor_test msr_tests[] = {
 	{ msr_cpu_generic,		"Test CPU generic MSRs." },

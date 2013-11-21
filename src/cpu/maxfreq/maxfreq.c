@@ -20,6 +20,8 @@
 
 #ifdef FWTS_ARCH_INTEL
 
+#include <stdlib.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <ctype.h>
@@ -50,16 +52,13 @@ static double maxfreq_max(const char *str)
 
 static int maxfreq_test1(fwts_framework *fw)
 {
-	DIR *dir;
+	double *cpufreq;
+	int cpu, cpus;
+	bool advice = false, passed = true, cpufreqs_read = false;
 	struct dirent *entry;
-	int cpus;
-	int cpufreqs_read = 0;
-	int cpu;
+	DIR *dir;
 	fwts_list_link *item;
 	fwts_list *cpuinfo;
-	double *cpufreq;
-	int failed = 0;
-	int advice = 0;
 
 	fwts_log_info(fw,
 		"This test checks the maximum CPU frequency as detected by "
@@ -96,7 +95,7 @@ static int maxfreq_test1(fwts_framework *fw)
 					cpufreq[cpu] *= 1000000.0;
 				if (strstr(str, "MHz"))
 					cpufreq[cpu] *= 1000.0;
-				cpufreqs_read++;
+				cpufreqs_read = true;
 			}
 			else
 				cpufreq[cpu] = -1.0;
@@ -106,8 +105,10 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 	fwts_list_free(cpuinfo, free);
 
-	if (cpufreqs_read == 0) {
-		fwts_skipped(fw, "Cannot read CPU frequencies from %s, this generally happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
+	if (!cpufreqs_read) {
+		fwts_skipped(fw,
+			"Cannot read CPU frequencies from %s, this generally "
+			"happens on AMD CPUs, skipping test.", CPU_INFO_PATH);
 		free(cpufreq);
 		return FWTS_SKIP;
 	}
@@ -122,59 +123,76 @@ static int maxfreq_test1(fwts_framework *fw)
 	}
 
 	do {
+		char path[PATH_MAX];
+		char *data;
+		double maxfreq, maxfreq_ghz, cpufreq_ghz;
+		int cpunum;
+
 		entry = readdir(dir);
-		if (entry && strlen(entry->d_name)>2) {
-			char path[PATH_MAX];
-			char *data;
+		if (!entry || entry->d_name[0] == '.' ||
+		    strlen(entry->d_name) < 3)
+			continue;
 
-			snprintf(path, sizeof(path),
-				CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies",
-				entry->d_name);
-			if ((data = fwts_get(path)) != NULL) {
-				double maxfreq = maxfreq_max(data);
-				int cpunum = atoi(entry->d_name + 3);
-				if (maxfreq < 0.0) {
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"CPUFreqReadFailed",
-						"Cannot read cpu frequency from %s for CPU %s\n",
-						CPU_FREQ_PATH, entry->d_name);
-					failed++;
-				} else {
-					double maxfreq_ghz = maxfreq / 1000000.0;
-					double cpufreq_ghz = cpufreq[cpunum] / 1000000.0;
+		snprintf(path, sizeof(path),
+			CPU_FREQ_PATH "/%s/cpufreq/scaling_available_frequencies",
+			entry->d_name);
 
-					if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
-						failed++;
-						fwts_failed(fw,
-							LOG_LEVEL_MEDIUM,
-							"CPUFreqSpeedMismatch",
-							"Maximum scaling frequency %f GHz do not match expected frequency %f GHz\n",
-							maxfreq_ghz, cpufreq_ghz);
-						if (!advice)  {
-							advice++;
-							fwts_advice(fw,
-								"The maximum scaling frequency %f GHz for CPU %d configured by the BIOS in %s "
-								"does not match the expected maximum CPU frequency %f GHz "
-								"that the CPU can run at. This usually indicates a misconfiguration of "
-								"the ACPI _PSS (Performance Supported States) object. This is described in "
-								"section 8.4.4.2 of the APCI specification.",
-								(double)maxfreq/1000000.0, cpunum, path,
-								(double)cpufreq[cpunum]/1000000.0);
-						}
-						else
-							fwts_advice(fw, "See advice for previous CPU.");
-					}
-				}
+		if ((data = fwts_get(path)) == NULL)
+			continue;
+		maxfreq = maxfreq_max(data);
+		free(data);
+
+		cpunum = atoi(entry->d_name + 3);
+		if (maxfreq < 0.0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqReadFailed",
+				"Cannot read cpu frequency from %s for CPU %s.",
+				CPU_FREQ_PATH, entry->d_name);
+			passed = false;
+			continue;
+		}
+
+		maxfreq_ghz = maxfreq / 1000000.0;
+		cpufreq_ghz = cpufreq[cpunum] / 1000000.0;
+
+		if (fabs(maxfreq_ghz - cpufreq_ghz) > (maxfreq_ghz * 0.005)) {
+			passed = false;
+			fwts_failed(fw,
+				LOG_LEVEL_MEDIUM,
+				"CPUFreqSpeedMismatch",
+				"Maximum scaling frequency %f GHz do not match "
+				"expected frequency %f GHz.",
+				maxfreq_ghz, cpufreq_ghz);
+			if (!advice)  {
+				advice = true;
+				fwts_advice(fw,
+					"The maximum scaling frequency %f GHz "
+					"for CPU %d configured by the BIOS in "
+					"%s does not match the expected "
+					"maximum CPU frequency %f GHz that "
+					"the CPU can run at. This usually "
+					"indicates a misconfiguration of the "
+					"ACPI _PSS (Performance Supported "
+					"States) object. This is described in "
+					"section 8.4.4.2 of the APCI "
+					"specification.",
+					(double)maxfreq/1000000.0, cpunum, path,
+					(double)cpufreq[cpunum]/1000000.0);
+			} else {
+				fwts_advice(fw, "See advice for previous CPU.");
 			}
-			free(data);
+		} else {
+			fwts_log_info(fw,
+				"CPU %d maximum frequency %f GHz is sane.",
+				cpunum, maxfreq_ghz);
 		}
 	} while (entry);
 
-	if (!failed)
+	if (passed)
 		fwts_passed(fw, "%d CPUs passed the maximum frequency check.", cpus);
 
 	free(cpufreq);
-	closedir(dir);
+	(void)closedir(dir);
 
 	return FWTS_OK;
 }

@@ -99,7 +99,9 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 	case FWTS_UEFI_END_DEV_PATH_TYPE:
 		switch (dev_path->subtype) {
 		case FWTS_UEFI_END_ENTIRE_DEV_PATH_SUBTYPE:
+			break;
 		case FWTS_UEFI_END_THIS_DEV_PATH_SUBTYPE:
+			path = uefidump_vprintf(path, "\n  Device Path: ");
 			break;
 		default:
 			return uefidump_vprintf(path, "\\Unknown-End(0x%" PRIx8 ")", dev_path->subtype);

@@ -350,7 +350,7 @@
    "log_level": "LOG_LEVEL_HIGH",
    "tag": "FWTS_TAG_ACPI",
    "pattern": "Unknown interrupt routing model",
-   "advice": "An internal ACPI driver bug has occured. acpi_bus_init_irq has deetected an unkown interrupt routing model in acpi_irq_model. This most probably is a kernel bug.",
+   "advice": "An internal ACPI driver bug has occurred. acpi_bus_init_irq has detected an unknown interrupt routing model in acpi_irq_model. This most probably is a kernel bug.",
    "label": "KlogAcpiIrqModelUnknown"
   },
   {

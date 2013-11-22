@@ -671,7 +671,7 @@ static void method_test_NULL_return(
 	/*
 	 *  In ACPICA SLACK mode null returns can be actually
 	 *  forced to return ACPI integers. Blame an errata
-	 *  and Windows compatability for this mess.
+	 *  and Windows compatibility for this mess.
 	 */
 	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
 		if ((buf != NULL) && (buf->Pointer != NULL)) {

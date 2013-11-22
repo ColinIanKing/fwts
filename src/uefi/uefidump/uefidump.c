@@ -182,6 +182,23 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					path = uefidump_vprintf(path, "%s,", hidstr);
 			}
 			break;
+		case FWTS_UEFI_ACPI_ADR_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_acpi_adr_dev_path)) {
+				fwts_uefi_acpi_adr_dev_path *a = (fwts_uefi_acpi_adr_dev_path *)dev_path;
+				uint16_t len = a->dev_path.length[0] | (((uint16_t)a->dev_path.length[1]) << 8);
+				path = uefidump_vprintf(path, "\\ACPI_ADR(0x%" PRIx32, a->adr);
+
+				/* Adding additional _ADR */
+				uint8_t *adr_add = (uint8_t *)a + sizeof(fwts_uefi_acpi_adr_dev_path);
+				size_t offset = 0;
+				while ((len - sizeof(fwts_uefi_acpi_adr_dev_path) - offset) >= sizeof(uint32_t)) {
+					path = uefidump_vprintf(path, ", 0x%" PRIx32 , *(uint32_t *)(adr_add + offset));
+					offset += sizeof(uint32_t);
+				}
+
+				path = uefidump_vprintf(path, ")");
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-ACPI-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

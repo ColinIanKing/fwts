@@ -186,7 +186,8 @@ typedef enum {
 
 typedef enum {
 	FWTS_UEFI_ACPI_DEVICE_PATH_SUBTYPE = 		(0x01),
-	FWTS_UEFI_EXPANDED_ACPI_DEVICE_PATH_SUBTYPE = 	(0x02)
+	FWTS_UEFI_EXPANDED_ACPI_DEVICE_PATH_SUBTYPE = 	(0x02),
+	FWTS_UEFI_ACPI_ADR_DEVICE_PATH_SUBTYPE = 	(0x03)
 } acpi_dev_path_subtypes;
 
 typedef enum {
@@ -266,6 +267,11 @@ typedef struct {
 	uint32_t cid;
 	char hidstr[1];
 } fwts_uefi_expanded_acpi_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint32_t adr;
+} fwts_uefi_acpi_adr_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

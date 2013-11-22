@@ -241,6 +241,7 @@ static int msr_smrr(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+
 typedef struct {
 	const char *const name;
 	const uint32_t msr;
@@ -248,7 +249,6 @@ typedef struct {
 	const uint64_t mask;
 	const msr_callback_check callback;
 } msr_info;
-
 
 /* From AMD Architecture Programmer's Manual, Volume 2: System Programming, Appending A */
 static const msr_info AMD_MSRs[] = {
@@ -446,7 +446,6 @@ static const msr_info IA32_atom_MSRs[] = {
 	{ "MSR_BBL_CR_CTL3",	0x0000011e,	0, 0x800101ULL, NULL },
 	{ "PERFEVTSEL0",	0x00000186,	0, ~0, NULL },
 	{ "PERFEVTSEL1",	0x00000187,	0, ~0, NULL },
-	{ "CLOCK_MODULATION",	0x0000019a,	0, ~0, NULL },
 	{ "MSR_THERM2_CTL",	0x0000019d,	0, 0x10000ULL, NULL },
 	{ "MC0_CTL",		0x00000400,	0, ~0, NULL },
 	{ "MC0_STATUS",		0x00000401,	0, ~0, NULL },
@@ -465,12 +464,15 @@ static const msr_info IA32_atom_MSRs[] = {
 	{ NULL,			0x00000000,	0, 0 , NULL },
 };
 
+static const msr_info IA32_silvermont_MSRs[] = {
+	{ NULL,			0x00000000,	0, 0 , NULL },
+};
+
 static const msr_info IA32_nehalem_MSRs[] = {
 	{ "BIOS_UPDT_TRIG",		0x00000079,	0, ~0, NULL },
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
 	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x7008407ULL, NULL },
 	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0, 0x7ffffULL, NULL },
-	{ "CLOCK_MODULATION",		0x0000019a,	0, 0x1fULL, NULL },
 	{ "MSR_TEMPERATURE_TARGET",	0x000001a2,	0, 0xff0000, NULL },
 	{ "MSR_OFFCORE_RSP_0",		0x000001a6,	0, ~0, NULL },
 	{ "MSR_MISC_PWR_MGMT",		0x000001aa,	0, 0x3ULL, NULL },
@@ -486,7 +488,6 @@ static const msr_info IA32_sandybridge_MSRs[] = {
 	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xff003001ff00ULL, NULL },
 	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x7008407ULL, NULL },
 	{ "MSR_PMG_IO_CAPTURE_BASE",	0x000000e4,	0, 0x7ffffULL, NULL },
-	{ "CLOCK_MODULATION",		0x0000019a,	0, 0x1fULL, NULL },
 	{ "MSR_TEMPERATURE_TARGET",	0x000001a2,	0, 0xff0000, NULL },
 	{ "MSR_OFFCORE_RSP_0",		0x000001a6,	0, ~0, NULL },
 	{ "MSR_TURBO_RATIO_LIMIT",	0x000001ad,	0, 0xffffffffULL, NULL },
@@ -500,6 +501,180 @@ static const msr_info IA32_sandybridge_MSRs[] = {
 	{ "MSR_PP0_POLICY",		0x0000063a,	0, ~0, NULL },
 	{ "MSR_PP1_POWER_LIMIT",	0x00000640,	0, ~0, NULL },
 	{ "MSR_PP1_POLICY",		0x00000642,	0, ~0, NULL },
+	{ NULL,				0x00000000,	0, 0 , NULL },
+};
+
+static const msr_info IA32_ivybridge_MSRs[] = {
+	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0x00ffff073000ff00ULL, NULL },
+	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x000000001e008407ULL, NULL },
+	{ "MSR_CONFIG_TDP_NOMINAL",	0x00000648,	0, 0x00000000000000ffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL1",	0x00000649,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL2",	0x0000064a,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_CONTROL",	0x0000064b,	0, 0x0000000080000003ULL,  NULL },
+	{ "MSR_TURBO_ACTIVATION_RATIO",	0x0000064c,	0, 0x00000000800000ffULL,  NULL },
+	{ NULL,				0x00000000,	0, 0 , NULL },
+};
+
+static const msr_info IA32_ivybridge_ep_MSRs[] = {
+	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0xffff073000ff00ULL, NULL },
+	{ "MSR_PKG_CST_CONFIG_CONTROL",	0x000000e2,	0, 0x0000001e008407ULL, NULL },
+	{ "MSR_ERROR_CONTROL",		0x0000017f,	0, 0x00000000000002ULL, NULL },
+	/* Not sure about the following, commented out for the moment */
+	/*
+	{ "MSR_MC5_CTL",		0x00000414,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC5_STATUS",		0x00000415,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC5_ADDR",		0x00000416,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC5_MISC",		0x00000417,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC6_CTL",		0x00000418,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC6_STATUS",		0x00000419,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC6_ADDR",		0x0000041a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC6_MISC",		0x0000041b,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC7_CTL",		0x0000041c,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC7_STATUS",		0x0000041d,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC7_ADDR",		0x0000041e,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC7_MISC",		0x0000041f,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC8_CTL",		0x00000420,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC8_STATUS",		0x00000421,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC8_ADDR",		0x00000422,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC8_MISC",		0x00000423,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC9_CTL",		0x00000424,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC9_STATUS",		0x00000425,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC9_ADDR",		0x00000426,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC9_MISC",		0x00000427,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC10_CTL",		0x00000428,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC10_STATUS",		0x00000429,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC10_ADDR",		0x0000042a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC10_MISC",		0x0000042b,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC11_CTL",		0x0000042c,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC11_STATUS",		0x0000042d,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC11_ADDR",		0x0000042e,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC11_MISC",		0x0000042f,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC12_CTL",		0x00000430,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC12_STATUS",		0x00000431,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC12_ADDR",		0x00000432,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC12_MISC",		0x00000433,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC13_CTL",		0x00000434,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC13_STATUS",		0x00000435,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC13_ADDR",		0x00000436,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC13_MISC",		0x00000437,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC14_CTL",		0x00000438,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC14_STATUS",		0x00000439,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC14_ADDR",		0x0000043a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC14_MISC",		0x0000043b,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC15_CTL",		0x0000043c,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC15_STATUS",		0x0000043d,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC15_ADDR",		0x0000043e,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC15_MISC",		0x0000043f,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC16_CTL",		0x00000440,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC16_STATUS",		0x00000441,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC16_ADDR",		0x00000442,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC16_MISC",		0x00000443,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC17_CTL",		0x00000444,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC17_STATUS",		0x00000445,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC17_ADDR",		0x00000446,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC17_MISC",		0x00000447,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC18_CTL",		0x00000448,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC18_STATUS",		0x00000449,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC18_ADDR",		0x0000044a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC18_MISC",		0x0000044b,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC19_CTL",		0x0000044c,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC19_STATUS",		0x0000044d,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC19_ADDR",		0x0000044e,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC19_MISC",		0x0000044f,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC20_CTL",		0x00000450,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC20_STATUS",		0x00000451,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC20_ADDR",		0x00000452,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC20_MISC",		0x00000453,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC21_CTL",		0x00000454,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC21_STATUS",		0x00000455,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC21_ADDR",		0x00000456,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC21_MISC",		0x00000457,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC22_CTL",		0x00000458,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC22_STATUS",		0x00000459,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC22_ADDR",		0x0000045a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC22_MISC",		0x0000045b,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC23_CTL",		0x0000045c,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC23_STATUS",		0x0000045d,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC23_ADDR",		0x0000045e,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC23_MISC",		0x0000045f,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC24_CTL",		0x00000460,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC24_STATUS",		0x00000461,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC24_ADDR",		0x00000462,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC24_MISC",		0x00000463,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC25_CTL",		0x00000464,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC25_STATUS",		0x00000465,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC25_ADDR",		0x00000466,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC25_MISC",		0x00000467,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC26_CTL",		0x00000468,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC26_STATUS",		0x00000469,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC26_ADDR",		0x0000046a,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_MC26_MISC",		0x0000046b,	0, 0xffffffffffffffffULL, NULL },
+	*/
+	{ "MSR_PKG_PERF_STATUS",	0x00000613,	0, 0x00000000ffffffffULL, NULL },
+	{ "MSR_DRAM_POWER_LIMIT",	0x00000618,	0, 0x0000000080ffffffULL, NULL },
+	{ "MSR_DRAM_ENERGY_STATUS",	0x00000619,	0, 0x00000000ffffffffULL, NULL },
+	{ "MSR_DRAM_PERF_STATUS",	0x0000061b,	0, 0x00000000ffffffffULL, NULL },
+	{ "MSR_DRAM_POWER_INFO",	0x0000061c,	0, 0x00ff7fff7fff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_NOMINAL",	0x00000648,	0, 0x00000000000000ffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL1",	0x00000649,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL2",	0x0000064a,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_CONTROL",	0x0000064b,	0, 0x0000000080000003ULL, NULL },
+	{ "MSR_TURBO_ACTIVATION_RATIO",	0x0000064c,	0, 0x00000000800000ffULL, NULL },
+	{ NULL,				0x00000000,	0, 0 , NULL },
+};
+
+static const msr_info IA32_haswell_MSRs[] = {
+	{ "MSR_PLATFORM_INFO",		0x000000ce,	0, 0x00ffff073000ff00ULL, NULL },
+	{ "IA32_TSC_ADJUST",		0x0000003b,	0, 0xffffffffffffffffULL, NULL },
+	{ "IA32_PERFEVTSEL0",		0x00000186,	0, 0x00000000ffffffffULL, NULL },
+	{ "IA32_PERFEVTSEL1",		0x00000187,	0, 0x00000000ffffffffULL, NULL },
+	{ "IA32_PERFEVTSEL2",		0x00000188,	0, 0x00000000ffffffffULL, NULL },
+	{ "IA32_PERFEVTSEL3",		0x00000189,	0, 0x00000000ffffffffULL, NULL },
+	//{ "IA32_VMX_FMFUNC",		0x00000491,	0, 0, NULL },
+	{ "MSR_CONFIG_TDP_NOMINAL",	0x00000648,	0, 0x00000000000000ffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL1",	0x00000649,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_LEVEL2",	0x0000064a,	0, 0x7fff7fff00ff7fffULL, NULL },
+	{ "MSR_CONFIG_TDP_CONTROL",	0x0000064b,	0, 0x0000000080000003ULL, NULL },
+	{ "MSR_TURBO_ACTIVATION_RATIO", 0x0000064c,	0, 0x00000000800000ffULL, NULL },
+	{ "MSR_PKG_C8_RESIDENCY",	0x00000630,	0, 0x0fffffffffffffffULL, NULL },
+	{ "MSR_PKG_C9_RESIDENCY",	0x00000630,	0, 0x0fffffffffffffffULL, NULL },
+	{ "MSR_PKG_C10_RESIDENCY",	0x00000630,	0, 0x0fffffffffffffffULL, NULL },
+	{ "MSR_SMM_MCA_CAP",		0x0000017d,	0, 0x0c00000000000000ULL, NULL },
+	{ "MSR_TURBO_RATIO_LIMIT",	0x000001ad,	0, 0x00000000ffffffffULL, NULL },
+	{ "MSR_UNC_PERF_GLOBAL_CTRL",	0x00000391,	0, 0x00000000e000001fULL, NULL },
+	//{ "MSR_UNC_PERF_GLOBAL_STATUS",0x00000392,	0, 0x000000000000000fULL, NULL },
+	{ "MSR_UNC_PERF_FIXED_CTRL",	0x00000394,	0, 0x0000000005000000ULL, NULL },
+	//{ "MSR_UNC_PERF_FIXED_CTR",	0x00000395,	0, 0x0000ffffffffffffULL, NULL },
+	{ "MSR_UNC_CB0_CONFIG",		0x00000396,	0, 0x000000000000000fULL, NULL },
+	//{ "MSR_UNC_ARB_PER_CTR0",	0x000003b0,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_ARB_PER_CTR1",	0x000003b1,	0, 0xffffffffffffffffULL, NULL },
+
+	//{ "MSR_UNC_ARB_PERFEVTSEL0",	0x000003b2,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_ARB_PERFEVTSEL1",	0x000003b3,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_UNC_PERF_GLOBAL_CTRL",	0x00000391,	0, 0x00000000e000000fULL, NULL },
+	{ "MSR_UNC_PERF_FIXED_CTR",	0x00000395,	0, 0x0000ffffffffffffULL, NULL },
+	{ "MSR_SMM_FEATURE_CONTROL",	0x000004e0,	0, 0x0000000000000005ULL, NULL },
+	{ "MSR_SMM_DELAYED",		0x000004e2,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_SMM_BLOCKED",		0x000004e3,	0, 0xffffffffffffffffULL, NULL },
+	{ "MSR_PP1_POWER_LIMIT",	0x00000640,	0, 0x0000000080ffffffULL, NULL },
+	{ "MSR_PP1_ENERGY_STATUS",	0x00000641,	0, 0x00000000ffffffffULL, NULL },
+	{ "MSR_PP1_POLICY",		0x00000652,	0, 0x000000000000000fULL, NULL },
+	//{ "MSR_UNC_CB0_0_PERFEVTSEL0"	0x00000700,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_0_PERFEVTSEL1",0x00000701,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_0_PER_CTR0",	0x00000706,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_0_PER_CTR0",	0x00000707,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL0"	0x00000710,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL1",0x00000711,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000716,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000717,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL0"	0x00000720,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL1",0x00000721,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000726,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000727,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL0"	0x00000730,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PERFEVTSEL1",0x00000731,	0, 0xffffffffffffffffULL, NULL },
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000736,	0, 0xffffffffffffffffULL, NULL },`
+	//{ "MSR_UNC_CB0_1_PER_CTR0",	0x00000737,	0, 0xffffffffffffffffULL, NULL },`
 	{ NULL,				0x00000000,	0, 0 , NULL },
 };
 
@@ -526,32 +701,78 @@ static int msr_cpu_generic(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+typedef struct {
+	const char *const microarch;
+	const uint8_t family;
+	const uint8_t model;
+	const msr_info *const info;
+} cpu_to_msr;
+
+static const cpu_to_msr cpu_msr_map[] = {
+	{ "Pentium",			0x05, 0x01,	NULL },
+	{ "Pentium",			0x05, 0x02,	NULL },
+	{ "Pentium",			0x05, 0x04,	NULL },
+	{ "Pentium Pro",		0x06, 0x01,	NULL },
+	{ "Pentium II",			0x06, 0x03,	NULL },
+	{ "Pentium II",			0x06, 0x05,	NULL },
+	{ "Pentium III",		0x06, 0x07,	NULL },
+	{ "Pentium III",		0x06, 0x08,	NULL },
+	{ "Pentium M",			0x06, 0x09,	NULL },
+	{ "Pentium III",		0x06, 0x0a,	NULL },
+	{ "Pentium III",		0x06, 0x0b,	NULL },
+	{ "Pentium 4, Xeon",		0x06, 0x00,	NULL },
+	{ "Pentium 4, Xeon",		0x0f, 0x01,	NULL },
+	{ "Pentium 4, Xeon",		0x0f, 0x02,	NULL },
+	{ "Pentium 4, Pentium D, Xeon", 0x0f, 0x03,	NULL },
+	{ "Pentium 4, Pentium D, Xeon", 0x0f, 0x04,	NULL },
+	{ "Pentium 4, Pentium D, Xeon", 0x0f, 0x06,	NULL },
+	{ "Nehalem",			0x06, 0x1a,	IA32_nehalem_MSRs },
+	{ "Nehalem",			0x06, 0x1e,	IA32_nehalem_MSRs },
+	{ "Nehalem",			0x06, 0x1f,	IA32_nehalem_MSRs },
+	{ "Nehalem",			0x06, 0x2e,	IA32_nehalem_MSRs },
+	{ "Westmere",			0x06, 0x25,	IA32_nehalem_MSRs },
+	{ "Westmere",			0x06, 0x2c,	IA32_nehalem_MSRs },
+	{ "Westmere",			0x06, 0x2f,	IA32_nehalem_MSRs },
+	{ "Atom",			0x06, 0x1c,	IA32_atom_MSRs },
+	{ "Atom",			0x06, 0x26,	IA32_atom_MSRs },
+	{ "Atom",			0x06, 0x27,	IA32_atom_MSRs },
+	{ "Atom",			0x06, 0x35,	IA32_atom_MSRs },
+	{ "Atom",			0x06, 0x36,	IA32_atom_MSRs },
+	{ "Atom",			0x06, 0x37,	IA32_silvermont_MSRs },
+	{ "Atom",			0x06, 0x4d,	IA32_silvermont_MSRs },
+	{ "Sandybridge",		0x06, 0x2a,	IA32_sandybridge_MSRs },
+	{ "Sandybridge",		0x06, 0x2d,	IA32_sandybridge_MSRs },
+	{ "Ivybridge",			0x06, 0x3a, 	IA32_ivybridge_MSRs },
+	{ "Ivybridge-EP",		0x06, 0x3e, 	IA32_ivybridge_ep_MSRs },
+	{ "Haswell",			0x06, 0x3c,	IA32_haswell_MSRs },
+	{ "Haswell",			0x06, 0x45,	IA32_haswell_MSRs },
+	{ "Haswell",			0x06, 0x46,	IA32_haswell_MSRs },
+
+	{ NULL,				0x00, 0x00,	NULL }
+};
+
 static int msr_cpu_specific(fwts_framework *fw)
 {
 	if (intel_cpu) {
-        	switch (cpuinfo->x86_model) {
-		case 0x1A: /* Core i7, Xeon 5500 series */
-		case 0x1E: /* Core i7 and i5 Processor - Lynnfield Jasper Forest */
-		case 0x1F: /* Core i7 and i5 Processor - Nehalem */
-		case 0x2E: /* Nehalem-EX Xeon */
-		case 0x2F: /* Westmere-EX Xeon */
-		case 0x25: /* Westmere */
-		case 0x2C: /* Westmere */
-			msr_table_check(fw, IA32_nehalem_MSRs);
-			printf("Nehalem\n");
-			break;
-		case 0x1C: /* Atom Processor */
-		case 0x26: /* Lincroft Atom Processor */
-			msr_table_check(fw, IA32_atom_MSRs);
-			break;
-		case 0x2A: /* Sandybridge */
-		case 0x2D: /* Sandybridge Xeon */
-			msr_table_check(fw, IA32_sandybridge_MSRs);
-			break;
-		default:
-			fwts_log_info(fw, "No model specific tests for model 0x%x.", cpuinfo->x86_model);
-			break;
+		int i;
+		bool checked = false;
+
+
+		for (i = 0; cpu_msr_map[i].microarch; i++) {
+			if ((cpu_msr_map[i].model == cpuinfo->x86_model) &&
+			    (cpu_msr_map[i].family == cpuinfo->x86) &&
+			    (cpu_msr_map[i].info)) {
+				fwts_log_info(fw, "CPU family: 0x%x, model: 0x%x (%s)",
+					cpu_msr_map[i].family,
+					cpu_msr_map[i].model,
+					cpu_msr_map[i].microarch);
+				msr_table_check(fw, cpu_msr_map[i].info);
+				checked = true;
+			}
 		}
+
+		if (!checked)
+			fwts_log_info(fw, "No model specific tests for model 0x%x.", cpuinfo->x86_model);
 	} else
 		fwts_skipped(fw, "Non-Intel CPU, test skipped.");
 

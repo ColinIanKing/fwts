@@ -5006,7 +5006,6 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 8.5 Processor Aggregator Device */
 
 	/* Section 9.1 System Indicators */
-	/* { method_test_CWS, "Test _CWS (Clear Wake Status)." }, */
 	{ method_test_MSG, "Test _MSG (Message)." },
 	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
 	/* { method_test_SST, "Test _SST (System Status)." }, */
@@ -5055,6 +5054,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GCP, "Test _GCP (Get Capabilities)." },
 	{ method_test_GRT, "Test _GRT (Get Real Time)." },
 	{ method_test_GWS, "Test _GWS (Get Wake Status)." },
+	/* { method_test_CWS, "Test _CWS (Clear Wake Status)." }, */
 	/* { method_test_SRT, "Test _SRT (Set Real Time)." }, */
 	{ method_test_STP, "Test _STP (Set Expired Timer Wake Policy)." },
 	{ method_test_STV, "Test _STV (Set Timer Value)." },

@@ -342,6 +342,13 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, "\\FIBREEX(0x%" PRIx64 ",0x%" PRIx64 ")", f->wwn, f->lun);
 			}
 			break;
+		case FWTS_UEFI_SATA_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_sata_dev_path)) {
+				fwts_uefi_sata_dev_path *s = (fwts_uefi_sata_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\SATA(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx16 ")",
+					s->hbapn, s->pmpn, s->lun);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

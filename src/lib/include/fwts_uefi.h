@@ -203,7 +203,9 @@ typedef enum {
 	FWTS_UEFI_IPV4_DEVICE_PATH_SUBTYPE =		(0x0c),
 	FWTS_UEFI_IPV6_DEVICE_PATH_SUBTYPE =		(0x0d),
 	FWTS_UEFI_UART_DEVICE_PATH_SUBTYPE =		(0x0e),
-	FWTS_UEFI_USB_CLASS_DEVICE_PATH_SUBTYPE =	(0x0f)
+	FWTS_UEFI_USB_CLASS_DEVICE_PATH_SUBTYPE =	(0x0f),
+	FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE = (0x15)
+
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -369,6 +371,13 @@ typedef struct {
 	fwts_uefi_guid guid;
 	uint8_t vendor_defined_data[0];
 } fwts_uefi_vendor_messaging_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint32_t reserved;
+	uint64_t wwn;
+	uint64_t lun;
+} fwts_uefi_fibre_channel_ex_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

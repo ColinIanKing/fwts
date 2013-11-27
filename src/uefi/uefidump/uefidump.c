@@ -336,6 +336,12 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					v->guid.info4[4], v->guid.info4[5], v->guid.info4[6], v->guid.info4[7]);
 			}
 			break;
+		case FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_fibre_channel_ex_dev_path)) {
+				fwts_uefi_fibre_channel_ex_dev_path *f = (fwts_uefi_fibre_channel_ex_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\FIBREEX(0x%" PRIx64 ",0x%" PRIx64 ")", f->wwn, f->lun);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

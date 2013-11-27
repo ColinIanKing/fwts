@@ -206,6 +206,7 @@ typedef enum {
 	FWTS_UEFI_USB_CLASS_DEVICE_PATH_SUBTYPE =	(0x0f),
 	FWTS_UEFI_USB_WWID_DEVICE_PATH_SUBTYPE =	(0x10),
 	FWTS_UEFI_SATA_DEVICE_PATH_SUBTYPE = 		(0x12),
+	FWTS_UEFI_VLAN_DEVICE_PATH_SUBTYPE = 		(0x14),
 	FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE = (0x15)
 
 } messaging_dev_path_subtypes;
@@ -395,6 +396,11 @@ typedef struct {
 	uint16_t product_id;
 	uint16_t serial_number[0];
 } fwts_uefi_usb_wwid_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint16_t vlanid;
+} fwts_uefi_vlan_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

@@ -372,6 +372,12 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, ")");
 			}
 			break;
+		case FWTS_UEFI_VLAN_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_vlan_dev_path)) {
+				fwts_uefi_vlan_dev_path *v = (fwts_uefi_vlan_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\VLAN(0x%" PRIx16 ")", v->vlanid);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

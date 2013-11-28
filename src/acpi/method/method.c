@@ -119,7 +119,7 @@
  * _HPP  6.2.7		Y
  * _HPX  6.2.8		N
  * _HRV  6.1.6		Y
- * _IFT  19.5		N
+ * _IFT  IPMI		Y
  * _INI  6.5.1		Y
  * _INT  19.1.8		N
  * _IRC  7.2.13		Y
@@ -209,7 +209,7 @@
  * _SPD  B.4.5		Y
  * _SRS  6.2.15		n/a
  * _SRT  9.18.4		n/a
- * _SRV  IPMI		N
+ * _SRV  IPMI		Y
  * _SST  9.1.1		n/a
  * _STA  6.3.7, 7.1.4	Y
  * _STM  9.8.2.1.2	n/a
@@ -4863,6 +4863,21 @@ static int method_test_CDM(fwts_framework *fw)
 }
 
 /*
+ * Intelligent Platform Management Interface (IPMI) Specification
+ */
+static int method_test_IFT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_IFT", NULL, 0, method_test_integer_return, NULL);
+}
+
+static int method_test_SRV(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_SRV", NULL, 0, method_test_integer_return, NULL);
+}
+
+/*
  * Tests
  */
 static fwts_framework_minor_test method_tests[] = {
@@ -5140,7 +5155,6 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_WAK, "Test _WAK (System Wake)." },
 
 	/* Section 19 */
-	/* { method_test_IFT, "Test _IFT (IPMI Interface Type)." }, */
 	/* { method_test_INT, "Test _INT (Interrupts)." }, */
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
@@ -5162,6 +5176,10 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* From PCI Specification */
 	{ method_test_CBA, "Test _CBA (Configuration Base Address)." },
+
+	/* From IPMI Specification 2.0 */
+	{ method_test_IFT, "Test _IFT (IPMI Interface Type)." },
+	{ method_test_SRV, "Test _SRV (IPMI Interface Revision)." },
 
 	/* End! */
 

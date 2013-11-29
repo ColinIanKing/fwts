@@ -121,7 +121,6 @@
  * _HRV  6.1.6		Y
  * _IFT  IPMI		Y
  * _INI  6.5.1		Y
- * _INT  19.1.8		N
  * _IRC  7.2.13		Y
  * _Lxx  5.6.4.1	n/a
  * _LCK  6.3.4		Y
@@ -5153,9 +5152,6 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S4,  "Test _S4  (System S4 State)." },
 	{ method_test_S5,  "Test _S5  (System S5 State)." },
 	{ method_test_WAK, "Test _WAK (System Wake)." },
-
-	/* Section 19 */
-	/* { method_test_INT, "Test _INT (Interrupts)." }, */
 
 	/* Appendix B, ACPI Extensions for Display Adapters */
 

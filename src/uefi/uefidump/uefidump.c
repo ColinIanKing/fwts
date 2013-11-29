@@ -349,6 +349,29 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					s->hbapn, s->pmpn, s->lun);
 			}
 			break;
+		case FWTS_UEFI_USB_WWID_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_usb_wwid_dev_path)) {
+				fwts_uefi_usb_wwid_dev_path *u = (fwts_uefi_usb_wwid_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\USBWWID(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx16,
+					u->interface_num, u->vendor_id, u->product_id);
+
+				/* Adding Serial Number */
+				char *tmp;
+				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
+
+				if (len <= sizeof(fwts_uefi_usb_wwid_dev_path)) {
+					path = uefidump_vprintf(path, ")");
+					break;
+				}
+				tmp = malloc((len - sizeof(fwts_uefi_usb_wwid_dev_path))/sizeof(uint16_t) + 1);
+				if (tmp) {	
+					fwts_uefi_str16_to_str(tmp, (len - sizeof(fwts_uefi_usb_wwid_dev_path))/sizeof(uint16_t) + 1, u->serial_number);
+					path = uefidump_vprintf(path, ",%s", tmp);
+					free(tmp);
+				}
+				path = uefidump_vprintf(path, ")");
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

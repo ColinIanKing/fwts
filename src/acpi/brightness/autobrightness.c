@@ -99,7 +99,8 @@ static int auto_brightness_test2(fwts_framework *fw)
 	rewinddir(brightness_dir);
 	do {
 		int i;
-		bool failed = false;
+		int failures = 0;
+		bool *brightness_fail;
 
 		entry = readdir(brightness_dir);
 		if (entry == NULL || entry->d_name[0] == '.')
@@ -129,33 +130,64 @@ static int auto_brightness_test2(fwts_framework *fw)
 			continue;
 		}
 
+		brightness_fail = calloc(sizeof(bool), max_brightness + 1);
+		if (brightness_fail == NULL) {
+			fwts_log_error(fw, "Cannot allocate brightness table.");
+			continue;
+		}
 
 		for (i = 0; i <= max_brightness; i++) {
 			brightness_set_setting(entry->d_name, "brightness", i);
 			if (brightness_get_setting(entry->d_name, "actual_brightness", &actual_brightness) != FWTS_OK) {
 				fwts_log_info(fw, "Cannot get brightness setting %d for backlight %s.", i, entry->d_name);
-				failed = true;
+				failures++;
+				brightness_fail[i] = true;
 				continue;
 			}
-
 			if (actual_brightness != i) {
-				fwts_log_info(fw,
-					"Actual brightness %d does not match the brightnesss "
-					"level %d just set for backlight %s.",
-					actual_brightness, i, entry->d_name);
-				failed = true;
+				failures++;
+				brightness_fail[i] = true;
+			} else {
+				brightness_fail[i] = false;
 			}
 		}
 
-		if (failed)
+		if (failures) {
+			char *msg = NULL;
+			char buf[40];
+
+			/* Find the ranges of the failed levels */
+			for (i = 0; i <= max_brightness; i++) {
+				int j, end = i;
+
+				if (brightness_fail[i]) {
+					/* Scan until we don't find a failure */
+					for (j = i; j <= max_brightness && brightness_fail[j]; j++)
+						end = j;
+
+					if (i == end) {
+						/* Just one failure */
+						snprintf(buf, sizeof(buf), " %d", i);
+					} else {
+						/* A contiguous range of failures */
+						snprintf(buf, sizeof(buf), " %d-%d", i, end);
+						i = end;
+					}
+					msg = fwts_realloc_strcat(msg, buf);
+				}
+			}
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"BrightnessMismatch",
-				"Actual brightness %d does not match the brightnesss level "
-				"%d just set for backlight %s.",
-				actual_brightness, i, entry->d_name);
-		else
+				"%d brightness levels did not match the brightnesss level "
+				"just set for backlight %s.",
+				failures, entry->d_name);
+			fwts_log_info(fw, "The failed brightness levels were:%s.", msg);
+			free(msg);
+		} else
 			fwts_passed(fw, "Actual brightness matches the brightnesss level for "
 				"all %d levels for backlight %s.", max_brightness, entry->d_name);
+
+		free(brightness_fail);
 
 		/* Restore original setting */
 		brightness_set_setting(entry->d_name, "brightness", saved_brightness);

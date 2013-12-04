@@ -26,10 +26,11 @@
  *	format given GUID 'guid' into a string guid_str.
  *	guid_str needs to be at least 37 chars long
  */
-void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, const size_t guid_str_len)
+void fwts_guid_buf_to_str(const uint8_t *guid, char *guid_str, const size_t guid_str_len)
 {
 	if (guid_str && guid_str_len > 36)
-        	snprintf(guid_str, guid_str_len, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+		snprintf(guid_str, guid_str_len,
+			"%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
 			guid[3], guid[2], guid[1], guid[0], guid[5], guid[4], guid[7], guid[6],
 			guid[8], guid[9], guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
 }
@@ -42,7 +43,8 @@ void fwts_guid_buf_to_str(uint8_t *guid, char *guid_str, const size_t guid_str_l
 void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, const size_t guid_len)
 {
 	if (guid && guid_len >= 16) {
-		sscanf(guid_str, "%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
+		sscanf(guid_str,
+			"%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
 			&guid[3], &guid[2], &guid[1], &guid[0], &guid[5], &guid[4], &guid[7], &guid[6],
 			&guid[8], &guid[9], &guid[10], &guid[11], &guid[12], &guid[13], &guid[14], &guid[15]);
 	}

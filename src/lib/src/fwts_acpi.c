@@ -28,7 +28,7 @@
 
 #include "fwts.h"
 
-char *fwts_acpi_fadt_preferred_pm_profile[] = {
+const char *fwts_acpi_fadt_preferred_pm_profile[] = {
 	"Unspecified",
 	"Desktop",
 	"Mobile",

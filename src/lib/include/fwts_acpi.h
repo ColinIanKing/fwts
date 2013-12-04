@@ -42,7 +42,7 @@
 #include "fwts_framework.h"
 #include "fwts_log.h"
 
-extern char *fwts_acpi_fadt_preferred_pm_profile[];
+extern const char *fwts_acpi_fadt_preferred_pm_profile[];
 
 #define FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(x)		\
 	((x) > 8) ? "Reserved" : fwts_acpi_fadt_preferred_pm_profile[x]

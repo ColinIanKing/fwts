@@ -180,7 +180,7 @@ static int hpet_check_test1(fwts_framework *fw)
 	}
 
 	if (hpet_base_p == 0) {
-		fwts_log_info(fw, "No base address found for HPET.");
+		fwts_log_info(fw, "No base address found for HPET in the kernel log.");
 		return FWTS_ERROR;
 	}
 
@@ -357,11 +357,16 @@ static int hpet_check_test3(fwts_framework *fw)
 {
 	int i;
 
+	if (hpet_base_p == 0) {
+		fwts_log_info(fw, "Test skipped because HPET address was not found.");
+		return FWTS_SKIP;
+	}
+
 	hpet_check_base_acpi_table(fw, "DSDT", 0);
 
-	for (i=0;i<11;i++) {
+	for (i = 0; i< 11; i++)
 		hpet_check_base_acpi_table(fw, "SSDT", i);
-	}
+
 	return FWTS_OK;
 }
 
@@ -373,7 +378,7 @@ static int hpet_check_test4(fwts_framework *fw)
 	uint32_t clk_period;
 
 	if (hpet_base_p == 0) {
-		fwts_log_info(fw, "Test skipped because previous test failed.");
+		fwts_log_info(fw, "Test skipped because HPET address was not found.");
 		return FWTS_SKIP;
 	}
 

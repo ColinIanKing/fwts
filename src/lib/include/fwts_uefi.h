@@ -208,8 +208,8 @@ typedef enum {
 	FWTS_UEFI_LOGICAL_UNIT_DEVICE_PATH_SUBTYPE =	(0x11),
 	FWTS_UEFI_SATA_DEVICE_PATH_SUBTYPE = 		(0x12),
 	FWTS_UEFI_VLAN_DEVICE_PATH_SUBTYPE = 		(0x14),
-	FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE = (0x15)
-
+	FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE = (0x15),
+	FWTS_UEFI_SAS_EX_DEVICE_PATH_SUBTYPE =		(0x16)
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -407,6 +407,15 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t vlanid;
 } fwts_uefi_vlan_dev_path;
+
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint64_t sas_addr;
+	uint64_t lun;
+	uint16_t dev_topology_info;
+	uint16_t rtp;
+} __attribute__((packed)) fwts_uefi_sas_ex_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

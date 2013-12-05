@@ -384,6 +384,13 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, "\\DEVICELOGICALUNIT(0x%" PRIx8 ")", l->lun);
 			}
 			break;
+		case FWTS_UEFI_SAS_EX_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_sas_ex_dev_path)) {
+				fwts_uefi_sas_ex_dev_path *s = (fwts_uefi_sas_ex_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\SASEX(0x%" PRIx64 ",0x%" PRIx64 ",0x%" PRIx16 ",0x%" PRIx16 ")",
+					s->sas_addr, s->lun, s->dev_topology_info, s->rtp);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

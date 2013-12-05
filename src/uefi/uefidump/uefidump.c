@@ -391,6 +391,21 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					s->sas_addr, s->lun, s->dev_topology_info, s->rtp);
 			}
 			break;
+		case FWTS_UEFI_ISCSI_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_iscsi_dev_path)) {
+				fwts_uefi_iscsi_dev_path *i = (fwts_uefi_iscsi_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\iSCSI(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx64 ",0x%" PRIx16,
+					i->protocol, i->options, i->lun, i->tpg_tag);
+
+				/* Adding iSCSI target name */
+				uint16_t len = i->dev_path.length[0] | (((uint16_t)i->dev_path.length[1]) << 8);
+				if (len - sizeof(fwts_uefi_iscsi_dev_path) > 223) {
+					path = uefidump_vprintf(path, ")");
+					break;
+				}
+				path = uefidump_vprintf(path, ",%s)", i->iscsi_tn);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

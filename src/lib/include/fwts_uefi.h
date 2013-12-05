@@ -210,7 +210,8 @@ typedef enum {
 	FWTS_UEFI_ISCSI_DEVICE_PATH_SUBTYPE = 		(0x13),
 	FWTS_UEFI_VLAN_DEVICE_PATH_SUBTYPE = 		(0x14),
 	FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE = (0x15),
-	FWTS_UEFI_SAS_EX_DEVICE_PATH_SUBTYPE =		(0x16)
+	FWTS_UEFI_SAS_EX_DEVICE_PATH_SUBTYPE =		(0x16),
+	FWTS_UEFI_NVM_EXPRESS_NAMESP_DEVICE_PATH_SUBTYPE = (0x17)
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -425,6 +426,12 @@ typedef struct {
 	uint16_t tpg_tag;
 	char iscsi_tn[0];
 } __attribute__((packed)) fwts_uefi_iscsi_dev_path;
+ 
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint32_t namesp_id;
+	uint64_t ext_unique_id;
+} __attribute__((packed)) fwts_uefi_nvm_express_namespace_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

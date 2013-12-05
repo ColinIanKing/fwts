@@ -406,6 +406,13 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, ",%s)", i->iscsi_tn);
 			}
 			break;
+		case FWTS_UEFI_NVM_EXPRESS_NAMESP_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_nvm_express_namespace_dev_path)) {
+				fwts_uefi_nvm_express_namespace_dev_path *n = (fwts_uefi_nvm_express_namespace_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\NVMEXPRESS(0x%" PRIx32 ",0x%" PRIx64 ")",
+					n->namesp_id, n->ext_unique_id);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

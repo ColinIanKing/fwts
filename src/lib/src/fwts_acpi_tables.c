@@ -260,26 +260,6 @@ static int fwts_acpi_load_tables_from_firmware(void)
 		return FWTS_ERROR;
 	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 
-	/* Load any tables from RSDT if it's valid */
-	if (rsdp->rsdt_address) {
-		if ((rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address)) != NULL) {
-			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address,
-				rsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
-			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
-			for (i=0; i<num_entries; i++) {
-				if (rsdt->entries[i]) {
-					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
-						if (strncmp("FACP", header->signature, 4) == 0)
-							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
-								FWTS_ACPI_TABLE_FROM_FIRMWARE);
-						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i],
-							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
-					}
-				}
-			}
-		}
-	}
-
 	/* Load any tables from XSDT if it's valid */
 	if (rsdp->xsdt_address) {
 		if ((xsdt = fwts_acpi_load_table((off_t)rsdp->xsdt_address)) != NULL) {
@@ -293,6 +273,26 @@ static int fwts_acpi_load_tables_from_firmware(void)
 							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
 								FWTS_ACPI_TABLE_FROM_FIRMWARE);
 						fwts_acpi_add_table(header->signature, header, xsdt->entries[i],
+							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
+					}
+				}
+			}
+		}
+	}
+
+	/* Load any tables from RSDT if it's valid */
+	if (rsdp->rsdt_address) {
+		if ((rsdt = fwts_acpi_load_table((off_t)rsdp->rsdt_address)) != NULL) {
+			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address,
+				rsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
+			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
+			for (i=0; i<num_entries; i++) {
+				if (rsdt->entries[i]) {
+					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
+						if (strncmp("FACP", header->signature, 4) == 0)
+							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
+								FWTS_ACPI_TABLE_FROM_FIRMWARE);
+						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i],
 							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 					}
 				}

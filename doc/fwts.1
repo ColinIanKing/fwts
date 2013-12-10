@@ -229,7 +229,7 @@ specify a comma separated list of quirk arguments to pass to pm-suspend, for exa
 .B \-\-s3\-sleep\-delay=N
 sleep N seconds from the start of the suspend to the wakeup time. Note that this
 time MUST be longer than the time it takes to suspend the machine otherwise the
-wakeup timer will fire during the hibernate state.
+wakeup timer will fire during the suspend state. The default is 30 seconds.
 .TP
 .B \-\-s3\-suspend\-time=N
 specify the maximum allowed suspend time in seconds. If suspend takes longer than

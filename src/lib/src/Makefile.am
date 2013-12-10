@@ -69,5 +69,4 @@ libfwts_la_SOURCES = 		\
 	fwts_text_list.c 	\
 	fwts_tty.c 		\
 	fwts_uefi.c 		\
-	fwts_virt.c 		\
 	fwts_wakealarm.c 

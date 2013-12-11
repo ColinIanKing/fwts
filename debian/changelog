@@ -1,3 +1,61 @@
+fwts (13.12.00-0ubuntu1) trusty; urgency=low
+
+  [Alex Hung]
+  * data: klog.json: set _DOS error to low as kernel workarounds it
+    (LP: #1250764)
+  * acpi: method: add _PIC control method test (LP: #1252997)
+  * acpi: method: move commented _CWS to correct section
+  * acpi: method: add _IFT and _SRV control method tests (LP: #1255915)
+  * acpi: method: remove resource descriptor field "_INT" from
+    method/object list
+
+  [Colin Ian King]
+  * lib: fwts_hwinfo.c: Fix strict aliasing build failure on Lucid
+    (LP: #1251587)
+  * ACPICA: update to version 20131115
+  * data: klog.json: thermal overrun messages should be checked on
+    klog test (LP: #1253146)
+  * data: klog.json: fix two spelling mistakes
+  * acpi: method: fix spelling mistake in comment
+  * cpu: cpufreq: check CPU freq max limits (LP: #1253047)
+  * cpu: maxfreq: report maxfreq and tidy up the test (LP: #1253658)
+  * cpu: msr: tidy up output and tidy up source (LP: #1253684)
+  * cpu: msr: Add Ivybridge and Haswell MSRs (LP: #1254066)
+  * cpu: msr: remove the need for shift in tables, tidy up tables
+  * lib: fwts_guid: consitify and minor tidy up
+  * lib: fwts_acpi: constify fwts_acpi_fadt_preferred_pm_profile
+  * acpi: acpidump: constify tables and func args, tidy up source
+  * hpet: hpet_check: skip test3 if HPET address was not found (LP: #1257825)
+  * acpi: autobrightness: make error reporting far less verbose (LP: #1257782)
+  * doc: fix --s3-sleep-delay man page entry
+  * lib: remove fwts_virt, it contains code that is not used (LP: #1259655)
+
+  [Ivan Hu]
+  * uefi: uefidump: add more subtype support on acpi device path type for
+    uefidump (LP: #1253000)
+  * uefi: uefidump: dealing with the End of Hardware Device Path sub-type
+    0x01 (LP: #1253906)
+  * uefi: uefidump: add the Fibre Channel Ex subtype-21 support on messaging
+    device path type for uefidump (LP: #1255387)
+  * uefi: uefidump: add the SATA subtype-18 support on messaging device path
+    type for uefidump (LP: #1255387)
+  * uefi: uefidump: add the USB WWID subtype-16 support on messaging device
+    path type for uefidump (LP: #1255387)
+  * uefi: uefidump: add the VLAN subtype-20 support on messaging device path
+    type for uefidump(LP: #1255387)
+  * uefi: uefidump: add the Device Logical Unit subtype-17 support on messaging
+    device path type for uefidump(LP: #1255387)
+  * uefi: uefidump: add the SAS Ex subtype-22 support on messaging device path
+    type for uefidump(LP: #1255387)
+  * uefi: uefidump: add the iSCSI subtype-19 support on messaging device path
+    type for uefidump(LP: #1255387)
+  * uefi: uefidump: add the NVM Express namespace subtype-23 support on
+    messaging device path type for uefidump (LP: #1255387)
+  * lib: fwts_acpi_table: multi-FADT table support fimware make sure the table
+    from XSDT be checked first. (LP: #1258378)
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 11 Dec 2013 14:09:00 +0800
+
 fwts (13.11.00-0ubuntu1) trusty; urgency=low
 
   [Alex Hung]

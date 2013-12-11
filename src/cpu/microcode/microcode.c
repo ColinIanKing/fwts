@@ -288,7 +288,7 @@ static int microcode_test1(fwts_framework *fw)
 		if (passed > 0)
 			fwts_passed(fw, "%d CPU(s) have the latest microcode loaded.", passed);
 		else
-			fwts_log_info(fw, "Could not determine from kernel log if latest microcode has been loaded.");
+			fwts_skipped(fw, "Could not determine from kernel log if latest microcode has been loaded.");
 	}
 
 	closedir(dir);

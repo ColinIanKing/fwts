@@ -134,7 +134,6 @@ static int dump_lspci(fwts_framework *fw)
 	return dump_exec("lspci.log", command);
 }
 
-#ifdef FWTS_ARCH_INTEL
 /*
  *  dump_acpi_table()
  *	hex dump of a ACPI table
@@ -185,7 +184,6 @@ static int dump_acpi_tables(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-#endif
 
 /*
  *  dump_readme()
@@ -232,9 +230,8 @@ static int dump_readme(void)
 int fwts_dump_info(fwts_framework *fw)
 {
 	char path[PATH_MAX+1];
-#ifdef FWTS_ARCH_INTEL
 	bool root_priv = (fwts_check_root_euid(fw, false) == FWTS_OK);
-#endif
+
 	if (getcwd(path, PATH_MAX) == NULL)
 		strcpy(path, "./");
 
@@ -268,7 +265,6 @@ int fwts_dump_info(fwts_framework *fw)
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
-#ifdef FWTS_ARCH_INTEL
 	if (root_priv) {
 		if (dump_acpi_tables(fw) != FWTS_OK)
 			fprintf(stderr, "Failed to dump ACPI tables.\n");
@@ -276,7 +272,6 @@ int fwts_dump_info(fwts_framework *fw)
 			printf("Dumped ACPI tables to acpidump.log\n");
 	} else
 		fprintf(stderr, "Need root privilege to dump ACPI tables.\n");
-#endif
 
 	return FWTS_OK;
 }

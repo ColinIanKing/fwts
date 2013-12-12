@@ -1679,6 +1679,40 @@ static void acpidump_pcct(fwts_framework *fw, const fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_spcr()
+ *	dump spcr, Serial Port Console Redirection Table
+ */
+static void acpidump_spcr(fwts_framework *fw, const fwts_acpi_table_info *table)
+{
+	static const fwts_acpidump_field spcr_fields[] = {
+		FIELD_UINT("Interface Type", 		fwts_acpi_table_spcr, interface_type),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_spcr, reserved1),
+		FIELD_GAS ("Base Address", 		fwts_acpi_table_spcr, base_address),
+		FIELD_UINT("Interrupt Type", 		fwts_acpi_table_spcr, interrupt_type),
+		FIELD_UINT("IRQ", 			fwts_acpi_table_spcr, irq),
+		FIELD_UINT("Global System Interrupt", 	fwts_acpi_table_spcr, gsi),
+		FIELD_UINT("Baud Rate", 		fwts_acpi_table_spcr, baud_rate),
+		FIELD_UINT("Parity", 			fwts_acpi_table_spcr, parity),
+		FIELD_UINT("Stop Bits", 		fwts_acpi_table_spcr, stop_bits),
+		FIELD_UINT("Flow Control", 		fwts_acpi_table_spcr, flow_control),
+		FIELD_UINT("Terminal Type", 		fwts_acpi_table_spcr, terminal_type),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_spcr, reserved2),
+		FIELD_UINT("PCI Device ID", 		fwts_acpi_table_spcr, pci_device_id),
+		FIELD_UINT("PCI Vendor ID", 		fwts_acpi_table_spcr, pci_vendor_id),
+		FIELD_UINT("PCI Bus Number", 		fwts_acpi_table_spcr, pci_bus_number),
+		FIELD_UINT("PCI Device Number", 	fwts_acpi_table_spcr, pci_device_number),
+		FIELD_UINT("PCI Function Number", 	fwts_acpi_table_spcr, pci_function_number),
+		FIELD_UINT("PCI Flags", 		fwts_acpi_table_spcr, pci_flags),
+		FIELD_UINT("PCI Segment", 		fwts_acpi_table_spcr, pci_segment),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_spcr, reserved3),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, table->data, spcr_fields, 0, table->length);
+}
+
+
 typedef struct {
 	const char *name;
 	void (*func)(fwts_framework *fw, const fwts_acpi_table_info *table);
@@ -1718,6 +1752,7 @@ static const acpidump_table_vec table_vec[] = {
 	{ "RSDT", 	acpidump_rsdt, 	1 },
 	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
 	{ "SBST", 	acpidump_sbst,  1 },
+	{ "SPCR",	acpidump_spcr,  1 },
 	{ "SSDT", 	acpidump_amlcode, 1 },
 	{ "SLIT", 	acpidump_slit,  1 },
 	{ "SLIC", 	acpidump_slic,  1 },

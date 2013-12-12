@@ -681,6 +681,30 @@ typedef struct {
 	uint16_t	min_request_turnaround_time;
 } __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_0;
 
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		interface_type;
+	uint8_t		reserved1[3];
+	fwts_acpi_gas	base_address;
+	uint8_t		interrupt_type;
+	uint8_t		irq;
+	uint32_t	gsi;
+	uint8_t		baud_rate;
+	uint8_t		parity;
+	uint8_t		stop_bits;
+	uint8_t		flow_control;
+	uint8_t		terminal_type;
+	uint8_t		reserved2;
+	uint16_t	pci_device_id;
+	uint16_t	pci_vendor_id;
+	uint8_t		pci_bus_number;
+	uint8_t		pci_device_number;
+	uint8_t		pci_function_number;
+	uint32_t	pci_flags;
+	uint8_t		pci_segment;
+	uint32_t	reserved3;
+} __attribute__ ((packed)) fwts_acpi_table_spcr;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

@@ -1712,6 +1712,21 @@ static void acpidump_spcr(fwts_framework *fw, const fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, table->data, spcr_fields, 0, table->length);
 }
 
+/*
+ *  acpidump_dbgp()
+ *	dump dbgp, debug port table
+ */
+static void acpidump_dbgp(fwts_framework *fw, const fwts_acpi_table_info *table)
+{
+	static const fwts_acpidump_field dbgp_fields[] = {
+		FIELD_UINT("Interface Type", 		fwts_acpi_table_dbgp, interface_type),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_dbgp, reserved1),
+		FIELD_GAS ("Base Address", 		fwts_acpi_table_dbgp, base_address),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, table->data, dbgp_fields, 0, table->length);
+}
 
 typedef struct {
 	const char *name;
@@ -1732,6 +1747,7 @@ static const acpidump_table_vec table_vec[] = {
 	{ "BGRT", 	acpidump_bgrt, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "CPEP", 	acpidump_cpep, 	1 },
+	{ "DBGP", 	acpidump_dbgp,	1 },
 	{ "DSDT", 	acpidump_amlcode, 1 },
 	{ "DMAR", 	acpidump_dmar,	1 },
 	{ "ECDT", 	acpidump_ecdt, 	1 },

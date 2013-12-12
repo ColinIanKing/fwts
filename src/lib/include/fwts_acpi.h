@@ -705,6 +705,13 @@ typedef struct {
 	uint32_t	reserved3;
 } __attribute__ ((packed)) fwts_acpi_table_spcr;
 
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		interface_type;
+	uint8_t		reserved1[3];
+	fwts_acpi_gas	base_address;
+} __attribute__ ((packed)) fwts_acpi_table_dbgp;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

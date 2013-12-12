@@ -66,6 +66,9 @@ typedef struct fwts_acpidump_field {
 #define FIELD_STR(text, type, field)			\
 	FIELD(text, type, field, acpi_dump_str, 0, 0, NULL, 0, NULL)
 
+#define FIELD_STRZ(text, type, field)			\
+	FIELD(text, type, field, acpi_dump_strz, 0, 0, NULL, 0, NULL)
+
 #define FIELD_STRS(text, type, field, strings, strings_len)			\
 	FIELD(text, type, field, acpi_dump_strings, 0, 0, strings, strings_len, NULL)
 
@@ -105,6 +108,17 @@ static void acpi_dump_str(
 	fwts_log_info_verbatum(fw, "%s %*.*s",
 		acpi_dump_field_info(info->label, info->size, info->offset + offset),
 		info->size, info->size, (char *)data);
+}
+
+static void acpi_dump_strz(
+	fwts_framework *fw,
+	const fwts_acpidump_field *info,
+	const void *data,
+	const int offset)
+{
+	fwts_log_info_verbatum(fw, "%s %s",
+		acpi_dump_field_info(info->label, strlen(data) + 1, info->offset + offset),
+		(char *)data);
 }
 
 static uint64_t apci_dump_get_uint64_t(
@@ -354,9 +368,9 @@ static void acpi_dump_gas(
 
 	fwts_log_nl(fw);
 	fwts_log_info_verbatum(fw, "%s (Generic Address Structure)",
-		acpi_dump_field_info(info->label, info->size, info->offset));
+		acpi_dump_field_info(info->label, info->size, offset + info->offset));
 	
-	__acpi_dump_table_fields(fw, data, fields, info->offset);
+	__acpi_dump_table_fields(fw, data, fields, offset + info->offset);
 }
 
 static void acpidump_hdr(
@@ -1728,6 +1742,114 @@ static void acpidump_dbgp(fwts_framework *fw, const fwts_acpi_table_info *table)
 	acpi_dump_table_fields(fw, table->data, dbgp_fields, 0, table->length);
 }
 
+/*
+ *  acpidump_dbg2()
+ *	dump dbg2, debug port table
+ */
+static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
+{
+	fwts_acpi_table_dbg2 *dbg2 = (fwts_acpi_table_dbg2 *)table->data;
+	uint32_t i;
+	size_t offset;
+
+	typedef struct {
+		fwts_acpi_gas	addr;
+	} gas_addr;
+
+	typedef struct {
+		uint32_t	size;
+	} addr_size;
+
+	typedef struct {
+		char		*path;
+	} namespace;
+
+	static const fwts_acpidump_field dbg2_fields[] = {
+		FIELD_UINT("Info Offset", 		fwts_acpi_table_dbg2, info_offset),
+		FIELD_UINT("Info Count", 		fwts_acpi_table_dbg2, info_count),
+		FIELD_END
+	};
+
+	static const fwts_acpidump_field dbg2_info_fields[] = {
+		FIELD_UINT("Revision", 			fwts_acpi_table_dbg2_info, revision),
+		FIELD_UINT("Length", 			fwts_acpi_table_dbg2_info, length),
+		FIELD_UINT("Register Count",		fwts_acpi_table_dbg2_info, number_of_regs),
+		FIELD_UINT("Namespace Length", 		fwts_acpi_table_dbg2_info, namespace_length),
+		FIELD_UINT("Namespace Offset",		fwts_acpi_table_dbg2_info, namespace_offset),
+		FIELD_UINT("OEM Data Length", 		fwts_acpi_table_dbg2_info, oem_data_length),
+		FIELD_UINT("OEM Data Offset",		fwts_acpi_table_dbg2_info, oem_data_offset),
+		FIELD_UINT("Port Type", 		fwts_acpi_table_dbg2_info, port_type),
+		FIELD_UINT("Port Subtype",		fwts_acpi_table_dbg2_info, port_subtype),
+		FIELD_UINT("Reserved",			fwts_acpi_table_dbg2_info, reserved),
+		FIELD_UINT("Base Address Offset",	fwts_acpi_table_dbg2_info, base_address_offset),
+		FIELD_UINT("Address Size Offset", 	fwts_acpi_table_dbg2_info, address_size_offset),
+		FIELD_END
+	};
+
+	static const fwts_acpidump_field dbg2_gas_fields[] = {
+		FIELD_GAS ("Base Address Register",	gas_addr, addr),
+		FIELD_END
+	};
+
+	static const fwts_acpidump_field dbg2_addr_fields[] = {
+		FIELD_UINT("Address Size", 		addr_size, size),
+		FIELD_END
+	};
+
+	static const fwts_acpidump_field dbg2_namespace_fields[] = {
+		FIELD_STRZ("Namepath", 			namespace, path),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, table->data, dbg2_fields, 0, table->length);
+	fwts_log_nl(fw);
+
+	offset = dbg2->info_offset;
+
+	/* Dump out info_count number of instances */
+	for (i = 0; i < dbg2->info_count; i++) {
+		uint32_t j;
+		fwts_acpi_table_dbg2_info *dbg2_info = (fwts_acpi_table_dbg2_info *)(table->data + offset);
+		uint8_t *base_addr_regs = (uint8_t *)dbg2_info + dbg2_info->base_address_offset;
+		uint8_t *address_size   = (uint8_t *)dbg2_info + dbg2_info->address_size_offset;
+		uint8_t *namespace_str  = (uint8_t *)dbg2_info + dbg2_info->namespace_offset;
+		uint8_t *oem_data       = (uint8_t *)dbg2_info + dbg2_info->oem_data_offset;
+
+		__acpi_dump_table_fields(fw, table->data + offset, dbg2_info_fields, offset);
+
+		if (dbg2_info->number_of_regs) {
+			/* Dump out the register GAS and sizes */
+			for (j = 0; j < dbg2_info->number_of_regs; j++) {
+				__acpi_dump_table_fields(fw, &base_addr_regs[j], dbg2_gas_fields,
+					(void*)&base_addr_regs[j] - table->data);
+			}
+			fwts_log_nl(fw);
+
+			for (j = 0; j < dbg2_info->number_of_regs; j++)
+				acpi_dump_uint(fw, dbg2_addr_fields, &address_size[j],
+					(void *)&address_size[j] - table->data);
+			fwts_log_nl(fw);
+
+		}
+		/* Do we have a namespace to dump? */
+		if (dbg2_info->namespace_offset)
+			acpi_dump_strz(fw, dbg2_namespace_fields, namespace_str,
+				(void *)namespace_str - table->data);
+
+		/* And dump any OEM specific data */
+		if (dbg2_info->oem_data_length) {
+			fwts_log_nl(fw);
+			fwts_log_info_verbatum(fw, "OEM Data:");
+			acpi_dump_raw_data(fw, oem_data, dbg2_info->oem_data_length,
+				(void *)oem_data - table->data);
+		}
+
+		offset += dbg2_info->length;
+		if (offset > table->length)
+			break;
+	}
+}
+
 typedef struct {
 	const char *name;
 	void (*func)(fwts_framework *fw, const fwts_acpi_table_info *table);
@@ -1747,6 +1869,7 @@ static const acpidump_table_vec table_vec[] = {
 	{ "BGRT", 	acpidump_bgrt, 	1 },
 	{ "BOOT", 	acpidump_boot, 	1 },
 	{ "CPEP", 	acpidump_cpep, 	1 },
+	{ "DBG2", 	acpidump_dbg2,	1 },
 	{ "DBGP", 	acpidump_dbgp,	1 },
 	{ "DSDT", 	acpidump_amlcode, 1 },
 	{ "DMAR", 	acpidump_dmar,	1 },

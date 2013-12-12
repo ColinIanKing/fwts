@@ -712,6 +712,27 @@ typedef struct {
 	fwts_acpi_gas	base_address;
 } __attribute__ ((packed)) fwts_acpi_table_dbgp;
 
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	info_offset;
+	uint32_t	info_count;
+} __attribute__ ((packed)) fwts_acpi_table_dbg2;
+
+typedef struct {
+	uint8_t		revision;
+	uint16_t	length;
+	uint8_t		number_of_regs;
+	uint16_t	namespace_length;
+	uint16_t	namespace_offset;
+	uint16_t	oem_data_length;
+	uint16_t	oem_data_offset;
+	uint16_t	port_type;
+	uint16_t	port_subtype;
+	uint16_t	reserved;
+	uint16_t	base_address_offset;
+	uint16_t	address_size_offset;
+} __attribute__ ((packed)) fwts_acpi_table_dbg2_info;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

@@ -143,7 +143,7 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 	char buffer[128];
 	size_t n;
 
-	fprintf(fp, "%s @ 0x%x\n", table->name, (uint32_t)table->addr);
+	fprintf(fp, "%s @ 0x%lx\n", table->name, (unsigned long)table->addr);
 
 	for (n = 0; n < table->length; n+=16) {
 		int left = table->length - n;

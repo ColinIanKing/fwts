@@ -52,6 +52,34 @@ static void *fwts_acpi_find_rsdp_efi(void)
 }
 
 /*
+ *  fwts_acpi_find_rsdp_klog()
+ *	Get RSDP by parsing kernel log
+ */
+static void *fwts_acpi_find_rsdp_klog(void)
+{
+	fwts_list *klog;
+	fwts_list_link *item;
+	void *rsdp = NULL;
+
+	if ((klog = fwts_klog_read()) == NULL)
+		return NULL;
+
+	fwts_list_foreach(item, klog) {
+		char *text = fwts_text_list_text(item);
+		char *ptr = strstr(text, "ACPI: RSDP");
+
+		if (ptr) {
+			rsdp = (void *)strtoul(ptr + 11, NULL, 16);
+			break;
+		}
+	}
+
+	fwts_text_list_free(klog);
+
+	return rsdp;
+}
+
+/*
  *  fwts_acpi_find_rsdp_bios()
  *	Find RSDP address by scanning BIOS memory
  */
@@ -94,21 +122,26 @@ static void *fwts_acpi_find_rsdp_bios(void)
 static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(void *addr, size_t *rsdp_len)
 {
 	uint8_t *mem;
-	fwts_acpi_table_rsdp *rsdp;
+	fwts_acpi_table_rsdp *rsdp = NULL;
 	*rsdp_len = 0;
 
 	if ((mem = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
-	/* Determine original RSDP size from revision. */
 	rsdp = (fwts_acpi_table_rsdp*)mem;
+	/* Determine original RSDP size from revision. */
 	*rsdp_len = (rsdp->revision < 1) ? 20 : 36;
+
+	/* Must have the correct signature */
+	if (strncmp(rsdp->signature, "RSD PTR ", 8))
+		goto out;
 
 	/* Assume version 2.0 size, we don't care about a few bytes over allocation if it's version 1.0 */
 	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL)
-		return NULL;
+		goto out;
 
 	memcpy(rsdp, mem, *rsdp_len);
+out:
 	(void)fwts_munmap(mem, sizeof(fwts_acpi_table_rsdp));
 
 	return rsdp;
@@ -238,22 +271,33 @@ static void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt, fwts_acpi_table_pr
  *  fwts_acpi_load_tables_from_firmware()
  *  	Load up cached copies of all the ACPI tables
  */
-static int fwts_acpi_load_tables_from_firmware(void)
+static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 {
 	fwts_acpi_table_rsdp *rsdp;
 	fwts_acpi_table_xsdt *xsdt;
 	fwts_acpi_table_rsdt *rsdt;
 	fwts_acpi_table_header *header;
 
-	void *	rsdp_addr;
+	void *	rsdp_addr = NULL;
 	size_t	rsdp_len;
 	int 	num_entries;
 	int 	i;
 
-	/* Check for RSDP in EFI, then BIOS, if not found, give up */
-	if ((rsdp_addr = fwts_acpi_find_rsdp_efi()) == NULL)
-		if ((rsdp_addr = fwts_acpi_find_rsdp_bios()) == NULL)
-			return FWTS_ERROR;
+	/* Check for RSDP as EFI, then BIOS, parsed klog, if not found, give up */
+	if (fw->rsdp)
+		rsdp_addr = (void*)fw->rsdp;
+	if (!rsdp_addr)
+		rsdp_addr = fwts_acpi_find_rsdp_efi();
+	if (!rsdp_addr)
+		rsdp_addr = fwts_acpi_find_rsdp_bios();
+	if (!rsdp_addr)
+		rsdp_addr = fwts_acpi_find_rsdp_klog();
+	if (!rsdp_addr)
+		return FWTS_ERROR;
+
+	/* Must be on a 16 byte boundary */
+	if (((unsigned long)rsdp_addr & 0xf))
+		return FWTS_ERROR;
 
 	/* Load and save cached RSDP */
 	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
@@ -712,7 +756,7 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 	else if (fw->acpi_table_acpidump_file != NULL)
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
 	else if (fwts_check_root_euid(fw, true) == FWTS_OK)
-		ret = fwts_acpi_load_tables_from_firmware();
+		ret = fwts_acpi_load_tables_from_firmware(fw);
 	else
 		ret = FWTS_ERROR_NO_PRIV;
 

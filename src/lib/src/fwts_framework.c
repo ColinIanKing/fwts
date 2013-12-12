@@ -83,6 +83,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },
 	{ "acpica",		"",   1, "Enable ACPICA run time options." },
 	{ "uefi",		"",   0, "Run UEFI tests." },
+	{ "rsdp",		"R:", 1, "Specify the physical address of the ACPI RSDP." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1138,6 +1139,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 38: /* --uefi */
 			fw->flags |= FWTS_FLAG_TEST_UEFI;
 			break;
+		case 39: /* --rsdp */
+			fw->rsdp = (void *)strtoul(optarg, NULL, 0);
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1213,6 +1217,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		return FWTS_COMPLETE;
 	case 'w': /* --log-width=N */
 		fwts_log_set_line_width(atoi(optarg));
+		break;
+	case 'R': /* --rsdp=addr */
+		fw->rsdp = (void *)strtoul(optarg, NULL, 0);
 		break;
 	}
 	return FWTS_OK;

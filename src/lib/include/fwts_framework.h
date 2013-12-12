@@ -144,6 +144,7 @@ typedef struct {
 	fwts_list errors_filter_discard;	/* Results to discard, empty = discard none */
 	bool error_filtered_out;		/* True if a klog message has been filtered out */
 	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
+	void *rsdp;				/* ACPI RSDP address */
 } fwts_framework;
 
 typedef struct {

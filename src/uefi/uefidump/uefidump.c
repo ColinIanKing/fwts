@@ -491,6 +491,19 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					p->fw_file_name.info4[6], p->fw_file_name.info4[7]);
 			}
 			break;
+		case FWTS_UEFI_PIWG_FW_VOLUME_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_piwg_fw_volume_dev_path)) {
+				fwts_piwg_fw_volume_dev_path *p = (fwts_piwg_fw_volume_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\FV("
+					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 ")",
+					p->fw_volume_name.info1, p->fw_volume_name.info2, p->fw_volume_name.info3,
+					p->fw_volume_name.info4[0], p->fw_volume_name.info4[1], p->fw_volume_name.info4[2],
+					p->fw_volume_name.info4[3], p->fw_volume_name.info4[4], p->fw_volume_name.info4[5],
+					p->fw_volume_name.info4[6], p->fw_volume_name.info4[7]);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MEDIA-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

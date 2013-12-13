@@ -220,7 +220,8 @@ typedef enum {
 	FWTS_UEFI_VENDOR_MEDIA_DEVICE_PATH_SUBTYPE =	(0x03),
 	FWTS_UEFI_FILE_PATH_DEVICE_PATH_SUBTYPE =	(0x04),
 	FWTS_UEFI_PROTOCOL_DEVICE_PATH_SUBTYPE =	(0x05),
-	FWTS_UEFI_PIWG_FW_FILE_DEVICE_PATH_SUBTYPE =	(0x06)
+	FWTS_UEFI_PIWG_FW_FILE_DEVICE_PATH_SUBTYPE =	(0x06),
+	FWTS_UEFI_PIWG_FW_VOLUME_DEVICE_PATH_SUBTYPE =	(0x07)
 } media_dev_path_subtypes;
 
 typedef enum {
@@ -471,6 +472,11 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	fwts_uefi_guid fw_file_name;
 } __attribute__((packed)) fwts_piwg_fw_file_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	fwts_uefi_guid fw_volume_name;
+} __attribute__((packed)) fwts_piwg_fw_volume_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

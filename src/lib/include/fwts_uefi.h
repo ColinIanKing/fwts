@@ -266,7 +266,7 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t hid;
 	uint32_t uid;
-} fwts_uefi_acpi_dev_path;
+} __attribute__((packed)) fwts_uefi_acpi_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -274,25 +274,25 @@ typedef struct {
 	uint32_t uid;
 	uint32_t cid;
 	char hidstr[1];
-} fwts_uefi_expanded_acpi_dev_path;
+} __attribute__((packed)) fwts_uefi_expanded_acpi_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t adr;
-} fwts_uefi_acpi_adr_dev_path;
+} __attribute__((packed)) fwts_uefi_acpi_adr_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint8_t primary_secondary;
 	uint8_t slave_master;
 	uint16_t lun;
-} fwts_uefi_atapi_dev_path;
+} __attribute__((packed)) fwts_uefi_atapi_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t pun;
 	uint16_t lun;
-} fwts_uefi_scsi_dev_path;
+} __attribute__((packed)) fwts_uefi_scsi_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -305,13 +305,13 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t reserved;
 	uint64_t guid;
-} fwts_uefi_1394_dev_path;
+} __attribute__((packed)) fwts_uefi_1394_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint8_t parent_port_number;
 	uint8_t interface;
-} fwts_uefi_usb_dev_path;
+} __attribute__((packed)) fwts_uefi_usb_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -320,19 +320,19 @@ typedef struct {
 	uint8_t device_class;
 	uint8_t device_subclass;
 	uint8_t device_protocol;
-} fwts_uefi_usb_class_dev_path;
+} __attribute__((packed)) fwts_uefi_usb_class_dev_path;
 
 typedef struct
 {
 	fwts_uefi_dev_path dev_path;
 	uint32_t tid;
-} fwts_uefi_i2o_dev_path;
+} __attribute__((packed)) fwts_uefi_i2o_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
   	fwts_uefi_mac_addr mac_addr;
 	uint8_t if_type;
-} fwts_uefi_mac_addr_dev_path;
+} __attribute__((packed)) fwts_uefi_mac_addr_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -342,7 +342,7 @@ typedef struct {
   	uint16_t remote_port;
   	uint16_t protocol;
   	uint8_t static_ip_address;
-} fwts_uefi_ipv4_dev_path;
+} __attribute__((packed)) fwts_uefi_ipv4_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -352,7 +352,7 @@ typedef struct {
   	uint16_t remote_port;
   	uint16_t protocol;
   	uint8_t static_ip_address;
-} fwts_uefi_ipv6_dev_path;
+} __attribute__((packed)) fwts_uefi_ipv6_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -361,7 +361,7 @@ typedef struct {
 	uint64_t remote_id;
 	uint64_t target_port_id;
 	uint64_t device_id;
-} fwts_uefi_infiniband_dev_path;
+} __attribute__((packed)) fwts_uefi_infiniband_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -370,27 +370,27 @@ typedef struct {
 	uint8_t data_bits;
 	uint8_t parity;
 	uint8_t stop_bits;
-} fwts_uefi_uart_dev_path;
+} __attribute__((packed)) fwts_uefi_uart_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	fwts_uefi_guid guid;
 	uint8_t vendor_defined_data[0];
-} fwts_uefi_vendor_messaging_dev_path;
+} __attribute__((packed)) fwts_uefi_vendor_messaging_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t reserved;
 	uint64_t wwn;
 	uint64_t lun;
-} fwts_uefi_fibre_channel_ex_dev_path;
+} __attribute__((packed)) fwts_uefi_fibre_channel_ex_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t hbapn;
 	uint16_t pmpn;
 	uint16_t lun;
-} fwts_uefi_sata_dev_path;
+} __attribute__((packed)) fwts_uefi_sata_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -398,7 +398,7 @@ typedef struct {
 	uint16_t vendor_id;
 	uint16_t product_id;
 	uint16_t serial_number[0];
-} fwts_uefi_usb_wwid_dev_path;
+} __attribute__((packed)) fwts_uefi_usb_wwid_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -408,7 +408,7 @@ typedef struct {
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t vlanid;
-} fwts_uefi_vlan_dev_path;
+} __attribute__((packed)) fwts_uefi_vlan_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -441,32 +441,32 @@ typedef struct {
 	uint8_t partition_signature[8];
 	uint8_t mbr_type;
 	uint8_t signature_type;
-} fwts_uefi_hard_drive_dev_path;
+} __attribute__((packed)) fwts_uefi_hard_drive_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t boot_entry;
 	uint64_t partition_start;
 	uint64_t partition_size;
-} fwts_uefi_cdrom_dev_path;
+} __attribute__((packed)) fwts_uefi_cdrom_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	fwts_uefi_guid guid;
 	uint8_t vendor_defined_data[0];
-} fwts_uefi_vendor_media_dev_path;
+} __attribute__((packed)) fwts_uefi_vendor_media_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t path_name[0];
-} fwts_uefi_file_path_dev_path;
+} __attribute__((packed)) fwts_uefi_file_path_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint16_t device_type;
 	uint16_t status_flags;
   	char description[0];
-} fwts_uefi_bios_dev_path;
+} __attribute__((packed)) fwts_uefi_bios_dev_path;
 
 typedef struct {
 	fwts_uefi_guid signaturetype;

@@ -466,6 +466,18 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 			}
 			break;
 		case FWTS_UEFI_PROTOCOL_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_media_protocol_dev_path)) {
+				fwts_media_protocol_dev_path *m = (fwts_media_protocol_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\MEDIAPROTOCOL("
+					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 ")",
+					m->protocol_guid.info1, m->protocol_guid.info2, m->protocol_guid.info3,
+					m->protocol_guid.info4[0], m->protocol_guid.info4[1], m->protocol_guid.info4[2],
+					m->protocol_guid.info4[3], m->protocol_guid.info4[4], m->protocol_guid.info4[5],
+					m->protocol_guid.info4[6], m->protocol_guid.info4[7]);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MEDIA-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

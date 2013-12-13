@@ -463,6 +463,11 @@ typedef struct {
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
+	fwts_uefi_guid protocol_guid;
+} __attribute__((packed)) fwts_media_protocol_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
 	uint16_t device_type;
 	uint16_t status_flags;
   	char description[0];

@@ -1643,7 +1643,7 @@ static void acpidump_rasf(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 /*
  *  acpidump_pcct()
- *	dump RASF, see 14 ACPI PCCT (Platform Communications Channel)
+ *	dump PCCT, see 14 ACPI PCCT (Platform Communications Channel)
  *	of version 5.0 ACPI spec.
  */
 static void acpidump_pcct(fwts_framework *fw, const fwts_acpi_table_info *table)
@@ -1851,55 +1851,82 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
 }
 
 typedef struct {
-	const char *name;
+	const char *name;		/* ACPI table signature */
 	void (*func)(fwts_framework *fw, const fwts_acpi_table_info *table);
-	const int  standard_header;
+	const int standard_header;	/* 1 = standard ACPI header */
+	const char *description;	/* table description */
 } acpidump_table_vec;
 
 /* To be implemented */
+#define acpidump_aspt		acpi_dump_raw_table
+#define acpidump_csrt		acpi_dump_raw_table
+#define acpidump_etdt		acpi_dump_raw_table
 #define acpidump_einj		acpi_dump_raw_table
 #define acpidump_hest		acpi_dump_raw_table
+#define acpidump_ibft		acpi_dump_raw_table
+#define acpidump_ivrs		acpi_dump_raw_table
+#define acpidump_mchi		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
+#define acpidump_msdm		acpi_dump_raw_table
 #define acpidump_mpst		acpi_dump_raw_table
+#define acpidump_oemb		acpi_dump_raw_table
+#define acpidump_pmtt		acpi_dump_raw_table
+#define acpidump_waet		acpi_dump_raw_table
+#define acpidump_wdat		acpi_dump_raw_table
+#define acpidump_wdrt		acpi_dump_raw_table
+#define acpidump_wpbt		acpi_dump_raw_table
 
 static const acpidump_table_vec table_vec[] = {
-	{ "APIC", 	acpidump_madt, 	1 },
-	{ "ASF!", 	acpidump_asf, 	1 },
-	{ "BERT", 	acpidump_bert, 	1 },
-	{ "BGRT", 	acpidump_bgrt, 	1 },
-	{ "BOOT", 	acpidump_boot, 	1 },
-	{ "CPEP", 	acpidump_cpep, 	1 },
-	{ "DBG2", 	acpidump_dbg2,	1 },
-	{ "DBGP", 	acpidump_dbgp,	1 },
-	{ "DSDT", 	acpidump_amlcode, 1 },
-	{ "DMAR", 	acpidump_dmar,	1 },
-	{ "ECDT", 	acpidump_ecdt, 	1 },
-	{ "EINJ", 	acpidump_einj, 	1 },
-	{ "ERST", 	acpidump_erst, 	1 },
-	{ "FACP", 	acpidump_fadt, 	1 },
-	{ "FACS", 	acpidump_facs, 	0 },
-	{ "FPDT",	acpidump_fpdt,	1 },
-	{ "GTDT", 	acpidump_gtdt, 	1 },
-	{ "HEST", 	acpidump_hest, 	1 },
-	{ "HPET", 	acpidump_hpet, 	1 },
-	{ "MCFG", 	acpidump_mcfg, 	1 },
-	{ "MPST",	acpidump_mpst,  1 },
-	{ "MSCT", 	acpidump_msct, 	1 },
-	{ "PCCT",	acpidump_pcct,	1 },
-	{ "PSDT", 	acpidump_amlcode, 1 },
-	{ "RASF",	acpidump_rasf,	1 },
-	{ "RSDT", 	acpidump_rsdt, 	1 },
-	{ "RSD PTR ", 	acpidump_rsdp, 	0 },
-	{ "SBST", 	acpidump_sbst,  1 },
-	{ "SPCR",	acpidump_spcr,  1 },
-	{ "SSDT", 	acpidump_amlcode, 1 },
-	{ "SLIT", 	acpidump_slit,  1 },
-	{ "SLIC", 	acpidump_slic,  1 },
-	{ "SRAT", 	acpidump_srat,  1 },
-	{ "TCPA",	acpidump_tcpa,	1 },
-	{ "UEFI", 	acpidump_uefi, 	1 },
-	{ "XSDT", 	acpidump_xsdt, 	1 },
-	{ NULL,		NULL,		0 },
+	{ "APIC", 	acpidump_madt, 	1, "Multiple APIC Description Table" },
+	{ "ASF!", 	acpidump_asf, 	1, "Alert Standard Format Table" },
+	{ "ASPT",	acpidump_aspt,	1, "ACPI System Performance Tuning Table" },
+	{ "BERT", 	acpidump_bert, 	1, "Boot Error Record Table" },
+	{ "BGRT", 	acpidump_bgrt, 	1, "Boot Graphics Resource Table" },
+	{ "BOOT", 	acpidump_boot, 	1, "Simple Boot Flag Table", },
+	{ "CPEP", 	acpidump_cpep, 	1, "Corrected Platform Error Polling Table" },
+	{ "CSRT",	acpidump_csrt,	1, "Core System Resource Table" },
+	{ "DBG2", 	acpidump_dbg2,	1, "Debug Port Table 2" },
+	{ "DBGP", 	acpidump_dbgp,	1, "Debug Port Table", },
+	{ "DSDT", 	acpidump_amlcode, 1, "Differentiated System Description Table" },
+	{ "DMAR", 	acpidump_dmar,	1, "DMA Remapping Table", },
+	{ "ECDT", 	acpidump_ecdt, 	1, "Embedded Controller Boot Resources Table" },
+	{ "EINJ", 	acpidump_einj, 	1, "Error Injection Table" },
+	{ "ERST", 	acpidump_erst, 	1, "Error Record Serialization Table" },
+	{ "ETDT",	acpidump_etdt,	1, "Event Timer Description Table (Obsolete)" },
+	{ "FACP", 	acpidump_fadt, 	1, "Fixed ACPI Description Table" },
+	{ "FACS", 	acpidump_facs, 	0, "Firmware ACPI Control Structure" },
+	{ "FPDT",	acpidump_fpdt,	1, "Firmware Performance Data Table" },
+	{ "GTDT", 	acpidump_gtdt, 	1, "Generic Timer Description Table" },
+	{ "HEST", 	acpidump_hest, 	1, "Hardware Error Source Table" },
+	{ "HPET", 	acpidump_hpet, 	1, "IA-PC High Precision Event Timer Table" },
+	{ "IBFT",	acpidump_ibft,	1, "iSCSI Boot Firmware Table" },
+	{ "IVRS",	acpidump_ivrs,	1, "I/O Virtualization Reporting Structure" },
+	{ "MCFG", 	acpidump_mcfg, 	1, "PCI Express Memory Mapped Config Space Base Address Table" },
+	{ "MCHI", 	acpidump_mchi, 	1, "Management Controller Host Interface Table" },
+	{ "MPST",	acpidump_mpst,  1, "Memory Power State Table" },
+	{ "MSCT", 	acpidump_msct, 	1, "Maximum System Characteristics Table" },
+	{ "MSDM", 	acpidump_msdm, 	1, "Microsoft Data Management Table" },
+	{ "OEMB",	acpidump_oemb,	1, "OEM-define ACPI Table" },
+	{ "PCCT",	acpidump_pcct,	1, "Platform Communications Channel" },
+	{ "PMTT",	acpidump_pmtt,	1, "Platform Memory Topology Table", },
+	{ "PSDT", 	acpidump_amlcode, 1, "Persistent System Description Table" },
+	{ "RASF",	acpidump_rasf,	1, "ACPI RAS Feature Table" },
+	{ "RSDT", 	acpidump_rsdt, 	1, "Root System Description Table" },
+	{ "RSD PTR ", 	acpidump_rsdp, 	0, "Root System Description Pointer" },
+	{ "SBST", 	acpidump_sbst,  1, "Smart Battery Specification Table" },
+	{ "SPCR",	acpidump_spcr,  1, "Serial Port Console Redirection Table" },
+	{ "SSDT", 	acpidump_amlcode, 1, "Secondary System Description Table" },
+	{ "SLIC", 	acpidump_slic,  1, "Microsoft Software License Table" },
+	{ "SLIT", 	acpidump_slit,  1, "System Locality Distance Information Table" },
+	{ "SRAT", 	acpidump_srat,  1, "System Resource Affinity Tanle" },
+	{ "TCPA",	acpidump_tcpa,	1, "Trusted Computing Platform Alliance Capabilities Table" },
+	{ "UEFI", 	acpidump_uefi, 	1, "UEFI ACPI Data Table" },
+	{ "WAET",	acpidump_waet,	1, "Windows ACPI Emulated Devices Table" },
+	{ "WDAT",	acpidump_wdat,	1, "Watch Dog Action Table" },
+	{ "WDRT",	acpidump_wdrt,	1, "Watch Dog Resource Table" },
+	{ "WPBT",	acpidump_wpbt,	1, "Windows Platform Binary Table" },
+	{ "XSDT", 	acpidump_xsdt, 	1, "Extended System Description Table" },
+	{ NULL,		NULL,		0, NULL },
 };
 
 static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
@@ -1911,6 +1938,10 @@ static int acpidump_table(fwts_framework *fw, fwts_acpi_table_info *table)
 
 	for (i = 0; table_vec[i].name != NULL; i++) {
 		if (strncmp(table_vec[i].name, (char *)data, strlen(table_vec[i].name)) == 0) {
+			if (table_vec[i].description) {
+				fwts_log_info_verbatum(fw, "%s:", table_vec[i].description);
+				fwts_log_nl(fw);
+			}
 			if (table_vec[i].standard_header) {
 				fwts_acpi_table_get_header(&hdr, data);
 				acpidump_hdr(fw, &hdr, length);

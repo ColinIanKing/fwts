@@ -733,6 +733,25 @@ typedef struct {
 	uint16_t	address_size_offset;
 } __attribute__ ((packed)) fwts_acpi_table_dbg2_info;
 
+/*
+ *  http://www.dmtf.org/standards/published_documents/DSP0256_1.0.0.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		interface_type;
+	uint8_t		protocol_identifier;
+	uint64_t	protocol_data;
+	uint8_t		interrupt_type;
+	uint8_t		gpe;
+	uint8_t		pci_device_flag;
+	uint32_t	global_system_interrupt;
+	fwts_acpi_gas	base_address;
+	uint8_t		pci_segment_group_number;
+	uint8_t		pci_bus_number;
+	uint8_t		pci_device_number;
+	uint8_t		pci_function_number;
+} __attribute__ ((packed)) fwts_acpi_table_mchi;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

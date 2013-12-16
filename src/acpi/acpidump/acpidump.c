@@ -1850,6 +1850,33 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
 	}
 }
 
+/*
+ *  acpidump_mchi()
+ *	dump mchi, Management Controller Host Interface Table
+ *	http://www.dmtf.org/standards/published_documents/DSP0256_1.0.0.pdf
+ */
+static void acpidump_mchi(fwts_framework *fw, const fwts_acpi_table_info *table)
+{
+	static const fwts_acpidump_field mchi_fields[] = {
+		FIELD_UINT("Interface Type", 		fwts_acpi_table_mchi, interface_type),
+		FIELD_UINT("Protocol Identifier", 	fwts_acpi_table_mchi, protocol_identifier),
+		FIELD_UINT("Protocol Data", 		fwts_acpi_table_mchi, protocol_data),
+		FIELD_UINT("Interrupt Type", 		fwts_acpi_table_mchi, interrupt_type),
+		FIELD_UINT("GPE", 			fwts_acpi_table_mchi, gpe),
+		FIELD_UINT("PCI Device Flag", 		fwts_acpi_table_mchi, pci_device_flag),
+		FIELD_UINT("Global System Interrupt",	fwts_acpi_table_mchi, global_system_interrupt),
+		FIELD_GAS ("Base Address", 		fwts_acpi_table_mchi, base_address),
+		FIELD_UINT("PCI Segment Group Number",	fwts_acpi_table_mchi, pci_segment_group_number),
+		FIELD_UINT("PCI Bus Number", 		fwts_acpi_table_mchi, pci_bus_number),
+		FIELD_UINT("PCI Device Number",  	fwts_acpi_table_mchi, pci_device_number),
+		FIELD_UINT("PCI Function Number", 	fwts_acpi_table_mchi, pci_function_number),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, table->data, mchi_fields, 0, table->length);
+}
+
+
 typedef struct {
 	const char *name;		/* ACPI table signature */
 	void (*func)(fwts_framework *fw, const fwts_acpi_table_info *table);
@@ -1865,7 +1892,6 @@ typedef struct {
 #define acpidump_hest		acpi_dump_raw_table
 #define acpidump_ibft		acpi_dump_raw_table
 #define acpidump_ivrs		acpi_dump_raw_table
-#define acpidump_mchi		acpi_dump_raw_table
 #define acpidump_msct		acpi_dump_raw_table
 #define acpidump_msdm		acpi_dump_raw_table
 #define acpidump_mpst		acpi_dump_raw_table

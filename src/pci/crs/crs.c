@@ -72,15 +72,12 @@ static int crs_test1(fwts_framework *fw)
 					"The kernel could not determine the BIOS age "
 					"and has assumed that your BIOS is too old to correctly "
 					"specify the host bridge MMIO aperture using _CRS.");
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 				fwts_log_advice(fw, "You can override this by booting with \"pci=use_crs\".");
-
 			} else if (year < 2008) {
 				fwts_passed(fw,
 					"The kernel has detected an old BIOS (%d/%d/%d) "
 					"and has assumed that your BIOS is too old to correctly "
 					"specify the host bridge MMIO aperture using _CRS.", mon, day, year);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 				fwts_log_advice(fw, "You can override this by booting with \"pci=use_crs\".");
 			} else {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -88,7 +85,6 @@ static int crs_test1(fwts_framework *fw)
 					"The kernel is ignoring host bridge windows from ACPI for some unknown reason. "
 					"pci=nocrs has not been used as a boot parameter and the BIOS may be recent enough "
 					"to support this (%d/%d/%d)", mon, day, year);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			}
 		}
 	} else if (fwts_klog_regex_find(fw, klog, "PCI: Using host bridge windows from ACPI;") > 0) {
@@ -97,12 +93,10 @@ static int crs_test1(fwts_framework *fw)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"BIOSNoReleaseDate",
 					"The BIOS does not seem to have release date, hence pci=use_crs was required.");
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else if (year < 2008) {
 				fwts_passed(fw,
 					"The BIOS is relatively old (%d/%d/%d) and hence pci=use_crs was required to "
 					"enable host bridge windows _CRS settings from ACPI.", mon, day, year);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			} else {
 				fwts_failed(fw, LOG_LEVEL_LOW,
 					"BIOSSupportBridgeWindows",
@@ -110,7 +104,6 @@ static int crs_test1(fwts_framework *fw)
 					"the BIOS is new enough to support automatic bridge windows configuring using _CRS from ACPI. "
 					"However, the workaround may be necessary because _CRS is incorrect or not implemented in the "
 					"DSDT.");
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			}
 		}
 		else {

@@ -151,7 +151,6 @@ static int mcfg_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize",
 			"Invalid MCFG ACPI table size: got %zd bytes expecting more",
 			mcfg_size + sizeof(fwts_acpi_table_mcfg));
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		fwts_advice(fw,
 			"MCFG table must be least %zd bytes (header size) with "
 			"multiples of %zd bytes for each MCFG entry.",
@@ -170,7 +169,6 @@ static int mcfg_test1(fwts_framework *fw)
 	if (mcfg_size != (ssize_t)(nr * sizeof(fwts_acpi_mcfg_configuration))) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidSize2",
 			"MCFG table is not a multiple of record size");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
@@ -181,7 +179,6 @@ static int mcfg_test1(fwts_framework *fw)
 	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
 			"Invalid MCFG ACPI table");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 
@@ -204,8 +201,6 @@ static int mcfg_test1(fwts_framework *fw)
 				"MCFG MMIO config space at 0x%" PRIx64
 				" is not reserved in the memory map table",
 				config->base_address);
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
-
 			fwts_advice(fw,
 				"The PCI Express specification states that the "
 				"PCI Express configuration space should "
@@ -238,7 +233,6 @@ static int mcfg_test2(fwts_framework *fw)
 	if (mcfg == NULL) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "MCFGInvalidTable",
 			"Invalid MCFG ACPI table");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 

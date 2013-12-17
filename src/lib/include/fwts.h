@@ -30,7 +30,6 @@
 
 #include "fwts_version.h"
 #include "fwts_types.h"
-#include "fwts_tag.h"
 #include "fwts_binpaths.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"

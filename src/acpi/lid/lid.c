@@ -70,11 +70,10 @@ static int lid_test1(fwts_framework *fw)
 
 	lid_check_field_poll(fw, FWTS_BUTTON_LID_OPENED, &matching, &not_matching);
 
-	if ((matching == 0) || (not_matching > 0)) {
+	if ((matching == 0) || (not_matching > 0))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "LidNotOpen",
 			"Detected a closed LID state.");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
-	} else
+	else
 		fwts_passed(fw, "Detected open LID state.");
 
 	return FWTS_OK;
@@ -141,18 +140,15 @@ static int lid_test_state(fwts_framework *fw, int button)
 	fwts_gpe_free(gpes_start, gpe_count);
 	fwts_gpe_free(gpes_end, gpe_count);
 
-	if (events == 0) {
+	if (events == 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidEvents",
 			"Did not detect any ACPI LID events while waiting for to LID %s.", state);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
-	} else {
+	else {
 		fwts_passed(fw, "Detected ACPI LID events while waiting for LID to %s.", state);
-		if ((matching == 0) || (not_matching > 0)) {
+		if ((matching == 0) || (not_matching > 0))
 			fwts_failed(fw, LOG_LEVEL_HIGH, "NoLidState",
 				"Could not detect lid %s state.", state);
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_LID);
-		} else
+		else
 			fwts_passed(fw, "Detected lid %s state.", state);
 	}
 

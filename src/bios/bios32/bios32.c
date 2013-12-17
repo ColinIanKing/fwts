@@ -87,51 +87,47 @@ static int bios32_test1(fwts_framework *fw)
 				bios32->checksum);
 			fwts_log_nl(fw);
 
-			if (bios32->entry_point >= 0x100000) {
+			if (bios32->entry_point >= 0x100000)
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirEntryPointHighMem",
 					"Service Directory Entry Point 0x%8.8" PRIx32
 					" is in high memory and cannot be used "
 					"by the kernel.",
 					bios32->entry_point);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			} else
+			else
 				fwts_passed(fw, "Service Directory Entry Point "
 					"0x%8.8x is not in high memory.",
 					bios32->entry_point);
 
-			if (bios32->length != 1) {
+			if (bios32->length != 1)
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirEntryLength",
 					"Service Directory Length is 0x%8.8" PRIx8
 					", expected 1 (1 x 16 bytes).",
 					bios32->length);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			} else
+			else
 				fwts_passed(fw,
 					"Service Directory Length is 1 "
 					"(1 x 16 bytes) as expected.");
 
-			if (bios32->revision_level != 0) {
+			if (bios32->revision_level != 0)
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirRevision",
 					"Service Directory Revision is 0x%2.2" PRIx8
 					", only version 0 is supported by the "
 					"kernel.",
 					bios32->revision_level);
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			} else
+			else
 				fwts_passed(fw,
 					"Service Directory Revision is 0x%2.2" PRIx8
 					" and is supported by the kernel.",
 					bios32->revision_level);
 
-			if (fwts_checksum(mem + i, 16) != 0) {
+			if (fwts_checksum(mem + i, 16) != 0)
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"BIOS32SrvDirCheckSum",
 					"Service Directory checksum failed.");
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			} else
+			else
 				fwts_passed(fw,
 					"Service Directory checksum passed.");
 			found++;
@@ -140,13 +136,11 @@ static int bios32_test1(fwts_framework *fw)
 
 	if (found == 0)
 		fwts_log_info(fw, "Could not find BIOS32 Service Directory.");
-	else if (found > 1) {
+	else if (found > 1)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"BIOS32MultipleSrvDirInstances",
 			"Found %d instances of BIOS32 Service Directory, "
 			"there should only be 1.", found);
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-	}
 
         (void)fwts_munmap(mem, BIOS32_SD_REGION_SIZE);
 

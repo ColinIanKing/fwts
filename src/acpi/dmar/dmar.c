@@ -264,7 +264,6 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 	if (table->length <= DMAR_HEADER_SIZE) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "InvalidDMAR",
 			"Invalid DMAR ACPI table.");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_INVALID_TABLE);
 		return FWTS_ERROR;
 	}
 

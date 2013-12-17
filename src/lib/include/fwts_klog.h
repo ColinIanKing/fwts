@@ -40,7 +40,6 @@ typedef enum {
 typedef struct {
 	fwts_compare_mode compare_mode;
 	fwts_log_level level;
-	fwts_tag tag;
         const char *pattern;
 	const char *advice;
 	char *label;

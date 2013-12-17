@@ -56,11 +56,10 @@ static int power_button_test1(fwts_framework *fw)
 		}
 		fwts_printf(fw, "Waiting %2.2d/20\r", 20-i);
 	}
-	if (matching == 0) {
+	if (matching == 0)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "NoPowerButtonEvents",
 			"Did not detect any ACPI power buttons events while waiting for power button to be pressed.");
-		fwts_tag_failed(fw, FWTS_TAG_ACPI_EVENT);
-	} else  {
+	else  {
 		char button[4096];
 		memset(button, 0, sizeof(button));
 		sscanf(buffer, "%*s %s", button);

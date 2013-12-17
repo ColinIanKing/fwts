@@ -57,7 +57,6 @@ static int os2gap_test1(fwts_framework *fw)
 			OS2_GAP_SIZE / 1024,
 			(void*)OS2_GAP_ADDRESS,
 			(void*)(OS2_GAP_ADDRESS + OS2_GAP_SIZE));
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		fwts_log_nl(fw);
 		fwts_memory_map_table_dump(fw, os2gap_memory_map_info);
 	} else

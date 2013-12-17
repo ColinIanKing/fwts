@@ -184,9 +184,6 @@ static inline int fwts_log_type_count(fwts_log_type type)
 #define fwts_log_heading(fw, fmt, args...)	\
 	fwts_log_printf(fw->results, LOG_HEADING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
-#define fwts_log_tag(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_TAG | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
-
 #define fwts_log_nl(fw) \
 	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "", "", "", "%s", "")
 

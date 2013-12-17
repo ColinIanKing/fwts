@@ -384,7 +384,6 @@ static int validate_iomem(fwts_framework *fw)
 				"has incorrect attribute%s.",
 				start, end,
 				c2, cache_to_string(type & type_mustnot));
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			if (type_must == UNCACHED)
 				skiperror = true;
 		}
@@ -402,7 +401,6 @@ static int validate_iomem(fwts_framework *fw)
 				start, end,
 				c2,
 				cache_to_string( (type & type_must) ^ type_must));
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 		}
 
 	}
@@ -487,17 +485,14 @@ static int mtrr_test2(fwts_framework *fw)
 
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent fixed MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent fixed MTRR settings which the kernel fixed.");
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = true;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent variable MTRR settings") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = true;
 		}
 		if (fwts_klog_regex_find(fw, klog, "mtrr: your CPUs had inconsistent MTRRdefType") > 0) {
 			fwts_log_info(fw, "Detected CPUs with inconsistent variable MTRR settings which the kernel fixed.");
-			fwts_tag_failed(fw, FWTS_TAG_BIOS);
 			failed = true;
 		}
 
@@ -519,7 +514,7 @@ static int mtrr_test3(fwts_framework *fw)
 {
 	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
-			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0) {
+			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"MTRRFixDramModEnBit",
 					"The BIOS is expected to clear MtrrFixDramModEn bit, see for example "
@@ -528,11 +523,8 @@ static int mtrr_test3(fwts_framework *fw)
  					"\"13.2.1.2 SYSCFG Register\": \"The MtrrFixDramModEn bit should be set "
  					"to 1 during BIOS initialization of the fixed MTRRs, then cleared to "
  					"0 for operation.\"");
-				fwts_tag_failed(fw, FWTS_TAG_BIOS);
-			}
-			else {
+			else
 				fwts_passed(fw, "No MtrrFixDramModEn error detected.");
-			}
 		}
 	} else
 		fwts_skipped(fw, "CPU is not an AMD, cannot test.");

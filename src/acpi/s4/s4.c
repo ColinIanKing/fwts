@@ -180,33 +180,28 @@ static int s4_hibernate(fwts_framework *fw,
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedPreS4",
 			"pm-action failed before trying to put the system "
 			"in the requested power saving state.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status == 128) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionPowerStateS4",
 			"pm-action tried to put the machine in the requested "
 			"power state but failed.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	} else if (status > 128) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PMActionFailedS4",
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UserSpaceTaskFreeze",
 			"Failed to freeze user space processes.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "KernelTaskFreeze",
 			"Failed to freeze remaining non-user space processes.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
@@ -214,14 +209,12 @@ static int s4_hibernate(fwts_framework *fw,
 	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceFreeze",
 			"Failed to freeze devices.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 
 	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageAlloc",
 			"Failed to allocate memory for hibernate image.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		*failed_alloc_image = 1;
 		(*pm_errors)++;
 	}
@@ -229,7 +222,6 @@ static int s4_hibernate(fwts_framework *fw,
 	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageRestore",
 			"Failed to restore hibernate image.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 		(*pm_errors)++;
 	}
 

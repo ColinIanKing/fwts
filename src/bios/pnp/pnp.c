@@ -167,12 +167,10 @@ static int pnp_test1(fwts_framework *fw)
 		fwts_log_info(fw,
 			"Could not find PnP BIOS Support Installation Check structure. "
 			"This is not necessarily a failure.");
-	else if (found > 1) {
+	else if (found > 1)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"PNPMultipleTables",
 			"Found %d instances of PCI Routing Tables, there should only be 1.", found);
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-	}
 
         (void)fwts_munmap(mem, PNP_REGION_SIZE);
 

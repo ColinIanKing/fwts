@@ -65,7 +65,6 @@ libfwts_la_SOURCES = 		\
 	fwts_smbios.c 		\
 	fwts_stringextras.c 	\
 	fwts_summary.c 		\
-	fwts_tag.c 		\
 	fwts_text_list.c 	\
 	fwts_tty.c 		\
 	fwts_uefi.c 		\

@@ -252,7 +252,6 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 			if (pattern->level == LOG_LEVEL_INFO)
 				fwts_log_info(fw, "Kernel message: %s", line);
 			else {
-				fwts_tag_failed(fw, pattern->tag);
 				fwts_failed(fw, pattern->level, pattern->label,
 					"%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
 				fwts_error_inc(fw, pattern->label, errors);
@@ -375,10 +374,6 @@ static int fwts_klog_check(fwts_framework *fw,
 		if ((str = fwts_json_str(fw, table, i, obj, "log_level", true)) == NULL)
 			goto fail;
 		patterns[i].level   = fwts_log_str_to_level(str);
-
-		if ((str = fwts_json_str(fw, table, i, obj, "tag", true)) == NULL)
-			goto fail;
-		patterns[i].tag     = fwts_tag_id_str_to_tag(str);
 
 		if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern", true)) == NULL)
 			goto fail;

@@ -230,12 +230,10 @@ static int pciirq_test1(fwts_framework *fw)
 			"Could not find PCI IRQ Routing Table. Since this table "
 			"is for legacy BIOS systems which don't have ACPI support "
 			"this is generally not a problem.");
-	} else if (found > 1) {
+	} else if (found > 1)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"PCIIRQMultipleTables",
 			"Found %d instances of PCI Routing Tables, there should only be 1.", found);
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-	}
 
         (void)fwts_munmap(mem, PCIIRQ_REGION_SIZE);
 

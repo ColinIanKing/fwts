@@ -90,13 +90,11 @@ static int ebda_test1(fwts_framework *fw)
 			memory_map_name,
 			entry->start_address,
 			entry->end_address);
-	} else {
+	} else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"EBDAMappedNotReserved",
 			"EBDA region mapped at 0x%lx but not reserved in the %s table.",
 			ebda_addr, memory_map_name);
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
-	}
 		
 	return FWTS_OK;
 }

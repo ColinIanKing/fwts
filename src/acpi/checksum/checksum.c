@@ -133,8 +133,6 @@ static int checksum_scan_tables(fwts_framework *fw)
 				"error and still load it. This is not a "
 				"critical issue, but should be fixed if "
 				"possible to avoid the warning messages.");
-
-			fwts_tag_failed(fw, FWTS_TAG_ACPI_TABLE_CHECKSUM);
 		}
 	}
 	return FWTS_OK;

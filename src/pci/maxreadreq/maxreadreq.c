@@ -129,7 +129,6 @@ static int maxreadreq_test1(fwts_framework *fw)
 			"allow one to override the firmware settings. Where possible, this BIOS "
 			"configuration setting is worth increasing it a little more for better "
 			"performance at a small reduction of bus sharing.");
-		fwts_tag_failed(fw, FWTS_TAG_BIOS);
 	} else
 		fwts_passed(fw, "All devices have MaxReadReq set > 128.");
 

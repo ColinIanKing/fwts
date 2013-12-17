@@ -203,12 +203,10 @@ static int s3power_test(fwts_framework *fw)
 	duration = (int)(t_end - t_start);
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
-	if (duration < s3power_sleep_delay) {
+	if (duration < s3power_sleep_delay)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ShortSuspend",
 			"Unexpected: S3 slept for %d seconds, less than the expected %d seconds.",
 			duration, s3power_sleep_delay);
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
-	}
 	if (duration > (s3power_sleep_delay*2))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "LongSuspend",
 			"Unexpected: S3 much longer than expected (%d seconds).", duration);
@@ -218,17 +216,14 @@ static int s3power_test(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedPreS3",
 			"pm-action failed before trying to put the system "
 			"in the requested power saving state.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status == 128) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionPowerStateS3",
 			"pm-action tried to put the machine in the requested "
 			"power state but failed.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	} else if (status > 128) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PMActionFailedS3",
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
-		fwts_tag_failed(fw, FWTS_TAG_POWER_MANAGEMENT);
 	}
 
 	return FWTS_OK;

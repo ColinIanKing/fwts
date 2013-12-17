@@ -50,9 +50,7 @@ typedef enum {
 	FWTS_FLAG_TEST_ACPI			= 0x04000000,
 	FWTS_FLAG_UTILS				= 0x08000000,
 	FWTS_FLAG_QUIET				= 0x10000000,
-	FWTS_FLAG_LP_TAGS			= 0x20000000,
-	FWTS_FLAG_LP_TAGS_LOG			= 0x40000000,
-	FWTS_FLAG_SHOW_TESTS_FULL		= 0x80000000,
+	FWTS_FLAG_SHOW_TESTS_FULL		= 0x20000000,
 } fwts_framework_flags;
 
 #define FWTS_FLAG_TEST_MASK		\
@@ -131,9 +129,6 @@ typedef struct {
 	int minor_test_progress;		/* Percentage completion of current test */
 	bool print_summary;			/* Print summary of results at end of test runs */
 	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
-
-	fwts_list test_taglist;			/* List of tags found when running all minor tests */
-	fwts_list total_taglist;		/* List of tags found when running all tests */
 
 	int firmware_type;			/* Type of firmware */
 	bool show_progress;			/* Show progress while running current test */

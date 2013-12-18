@@ -46,14 +46,53 @@ void fwts_klog_free(fwts_list *klog)
 }
 
 /*
- *  fwts_klog_clear()
- *	clear messages out of kernel log
+ *  fwts_klog_find_changes()
+ *	find new lines added to kernel log, clone them from new list
+ *	must be freed with fwts_list_free(klog_diff, NULL);
  */
-int fwts_klog_clear(void)
+fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 {
-	if (klogctl(5, NULL, 0) < 0)
-		return FWTS_ERROR;
-	return FWTS_OK;
+	fwts_list_link *l_old, *l_new, *l_old_last = NULL;
+	fwts_list *klog_diff;
+	char *old;
+
+	if (klog_new == NULL) {
+		/* Nothing new to compare, return nothing */
+		return NULL;
+	}
+	if ((klog_diff = fwts_list_new()) == NULL)
+		return NULL;
+
+	if (klog_old == NULL) {
+		/* Nothing in old log, so clone all of new list */
+		l_new = klog_new->head;
+	} else {
+		/* Clone just the new differences */
+
+		/* Find last item in old log */
+		fwts_list_foreach(l_old, klog_old)
+			l_old_last = l_old;
+
+		/* And now look for that last line in the new log */
+		old = fwts_list_data(char *, l_old_last);
+		fwts_list_foreach(l_new, klog_new) {
+			char *new = fwts_list_data(char *, l_new);
+			if (!strcmp(new, old)) {
+				/* Found last line that matches, bump to next */
+				l_new = l_new->next;
+				break;
+			}
+		}
+	}
+
+	/* Clone the new unique lines to the klog_diff list */
+	for (; l_new; l_new = l_new->next) {
+		if (fwts_list_append(klog_diff, l_new->data) == NULL) {
+			fwts_list_free(klog_diff, NULL);
+			return NULL;
+		}
+	}
+	return klog_diff;
 }
 
 /*

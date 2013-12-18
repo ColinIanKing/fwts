@@ -53,9 +53,9 @@ typedef void (*fwts_klog_scan_func)(fwts_framework *fw, char *line, int repeated
 int        fwts_klog_scan(fwts_framework *fw, fwts_list *klog, fwts_klog_scan_func callback, fwts_klog_progress_func progress, void *private, int *errors);
 void       fwts_klog_scan_patterns(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors);
 fwts_list *fwts_klog_read(void);
+fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new);
 void       fwts_klog_free(fwts_list *list);
 
-int        fwts_klog_clear(void);
 
 int        fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);
 int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress, fwts_list *klog, int *errors);

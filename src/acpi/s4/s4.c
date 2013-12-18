@@ -27,6 +27,9 @@
 #include <unistd.h>
 
 #define PM_HIBERNATE	"pm-hibernate"
+#define FWTS_HIBERNATE	"FWTS_HIBERNATE"
+#define FWTS_RESUME	"FWTS_RESUME"
+
 
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
@@ -43,11 +46,6 @@ static bool s4_min_max_delay = false;
 static int s4_init(fwts_framework *fw)
 {
 	fwts_list* swap_devs;
-
-	if (fwts_klog_clear()) {
-		fwts_log_error(fw, "Cannot clear kernel log.");
-		return FWTS_ERROR;
-	}
 
 	swap_devs = fwts_file_open_and_read("/proc/swaps");
 	if (fwts_text_list_strstr(swap_devs, "/dev/") == NULL) {
@@ -100,18 +98,13 @@ static int s4_hibernate(fwts_framework *fw,
 	int percent)
 {
 	fwts_list *output;
-	fwts_list *klog;
+	fwts_list *klog_pre, *klog_post, *klog_diff;
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
 	int differences;
 	char *command;
 	char *quirks;
 	char buffer[80];
-
-	if (fwts_klog_clear()) {
-		fwts_log_error(fw, "S4 hibernate: Cannot clear kernel log.");
-		return FWTS_ERROR;
-	}
 
 	if (s4_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
@@ -137,11 +130,21 @@ static int s4_hibernate(fwts_framework *fw,
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);
 
 	/* Do s4 here */
+	if ((klog_pre = fwts_klog_read()) == NULL)
+		fwts_log_error(fw, "S4: hibernate: Cannot read kernel log.");
+
 	fwts_progress_message(fw, percent, "(Hibernating)");
+	(void)fwts_klog_write(fw, "Starting fwts hibernate\n");
+	(void)fwts_klog_write(fw, FWTS_HIBERNATE "\n");
 	(void)fwts_pipe_exec(command, &output, &status);
+	(void)fwts_klog_write(fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fw, "Finished fwts resume\n");
 	fwts_progress_message(fw, percent, "(Resumed)");
 	fwts_text_list_free(output);
 	free(command);
+
+	if ((klog_post = fwts_klog_read()) == NULL)
+		fwts_log_error(fw, "S4: hibernate: Cannot re-read kernel log.");
 
 	if (s4_device_check) {
 		int i;
@@ -166,12 +169,8 @@ static int s4_hibernate(fwts_framework *fw,
 
 	fwts_progress_message(fw, percent, "(Checking for errors)");
 
-	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "S4: hibernate: Cannot read kernel log.");
-		return FWTS_ERROR;
-	}
-
-	s4_check_log(fw, klog, klog_errors, klog_oopses, klog_warn_ons);
+	klog_diff = fwts_klog_find_changes(klog_pre, klog_post);
+	s4_check_log(fw, klog_diff, klog_errors, klog_oopses, klog_warn_ons);
 
 	fwts_progress_message(fw, percent, "(Checking for PM errors)");
 
@@ -193,39 +192,41 @@ static int s4_hibernate(fwts_framework *fw,
 		(*pm_errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "Freezing user space processes.*done") < 1) {
+	if (fwts_klog_regex_find(fw, klog_diff, "Freezing user space processes.*done") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UserSpaceTaskFreeze",
 			"Failed to freeze user space processes.");
 		(*pm_errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "Freezing remaining freezable tasks.*done") < 1) {
+	if (fwts_klog_regex_find(fw, klog_diff, "Freezing remaining freezable tasks.*done") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "KernelTaskFreeze",
 			"Failed to freeze remaining non-user space processes.");
 		(*pm_errors)++;
 	}
 
-	if ((fwts_klog_regex_find(fw, klog, "PM: freeze of devices complete") < 1) &&
-	    (fwts_klog_regex_find(fw, klog, "PM: late freeze of devices complete") < 1)) {
+	if ((fwts_klog_regex_find(fw, klog_diff, "PM: freeze of devices complete") < 1) &&
+	    (fwts_klog_regex_find(fw, klog_diff, "PM: late freeze of devices complete") < 1)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceFreeze",
 			"Failed to freeze devices.");
 		(*pm_errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "PM: Allocated.*kbytes") < 1) {
+	if (fwts_klog_regex_find(fw, klog_diff, "PM: Allocated.*kbytes") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageAlloc",
 			"Failed to allocate memory for hibernate image.");
 		*failed_alloc_image = 1;
 		(*pm_errors)++;
 	}
 
-	if (fwts_klog_regex_find(fw, klog, "PM: Image restored successfully") < 1) {
+	if (fwts_klog_regex_find(fw, klog_diff, "PM: Image restored successfully") < 1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "HibernateImageRestore",
 			"Failed to restore hibernate image.");
 		(*pm_errors)++;
 	}
 
-	fwts_klog_free(klog);
+	fwts_klog_free(klog_pre);
+	fwts_klog_free(klog_post);
+	fwts_list_free(klog_diff, NULL);
 
 	return FWTS_OK;
 }

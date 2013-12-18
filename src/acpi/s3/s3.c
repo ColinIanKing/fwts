@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define PM_SUSPEND "pm-suspend"
+#define PM_SUSPEND 	"pm-suspend"
 #define FWTS_SUSPEND	"FWTS_SUSPEND"
 #define FWTS_RESUME	"FWTS_RESUME"
 
@@ -50,10 +50,6 @@ static int s3_init(fwts_framework *fw)
 	int ret;
 
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
-	if (fwts_klog_clear()) {
-		fwts_log_error(fw, "Cannot clear kernel log.");
-		return FWTS_ERROR;
-	}
 	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3",
@@ -80,8 +76,6 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	char *command;
 	char *quirks;
 	char buffer[80];
-
-	fwts_klog_clear();
 
 	if (s3_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
@@ -271,23 +265,16 @@ static int s3_scan_times(
 
 static int s3_check_log(
 	fwts_framework *fw,
+	fwts_list *klog,
 	int *errors,
 	int *oopses,
 	int *warn_ons,
 	int *suspend_too_long,
 	int *resume_too_long)
 {
-	fwts_list *klog;
 	int error;
 	int oops;
 	int warn_on;
-
-	if ((klog = fwts_klog_read()) == NULL) {
-		fwts_log_error(fw, "Cannot read kernel log.");
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "KlogCheckS3",
-			"Unable to check kernel log for S3 suspend/resume test.");
-		return FWTS_ERROR;
-	}
 
 	if (fwts_klog_pm_check(fw, NULL, klog, &error))
 		fwts_log_error(fw, "Error parsing kernel log.");
@@ -304,8 +291,6 @@ static int s3_check_log(
 	*warn_ons += warn_on;
 
 	s3_scan_times(fw, klog, suspend_too_long, resume_too_long);
-
-	fwts_klog_free(klog);
 
 	return FWTS_OK;
 }
@@ -329,16 +314,29 @@ static int s3_test_multiple(fwts_framework *fw)
 	for (i=0; i<s3_multiple; i++) {
 		struct timeval tv;
 		int percent = (i * 100) / s3_multiple;
-
+		fwts_list *klog_pre, *klog_post, *klog_diff;
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
+
+		if ((klog_pre = fwts_klog_read()) == NULL)
+			fwts_log_error(fw, "Cannot read kernel log.");
 
 		if (s3_do_suspend_resume(fw, &hw_errors, &pm_errors, s3_sleep_delay, percent) == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
+			fwts_klog_free(klog_pre);
 			break;
 		}
+
+		if ((klog_post = fwts_klog_read()) == NULL)
+			fwts_log_error(fw, "Cannot re-read kernel log.");
+
 		fwts_progress_message(fw, percent, "(Checking logs for errors)");
-		s3_check_log(fw, &klog_errors, &klog_oopses, &klog_warn_ons,
+		klog_diff = fwts_klog_find_changes(klog_pre, klog_post);
+		s3_check_log(fw, klog_diff, &klog_errors, &klog_oopses, &klog_warn_ons,
 			&suspend_too_long, &resume_too_long);
+
+		fwts_klog_free(klog_pre);
+		fwts_klog_free(klog_post);
+		fwts_list_free(klog_diff, NULL);
 
 		if (!s3_device_check) {
 			char buffer[80];

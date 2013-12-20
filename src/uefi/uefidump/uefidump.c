@@ -326,14 +326,52 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 			break;
 		case FWTS_UEFI_VENDOR_MESSAGING_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_vendor_messaging_dev_path)) {
-				fwts_uefi_vendor_messaging_dev_path *v = (fwts_uefi_vendor_messaging_dev_path*)dev_path;
-				path = uefidump_vprintf(path, "\\VENDOR("
-					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
-					"%02" PRIx8 "-%02" PRIx8 "-"
-					"%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 ")",
-					v->guid.info1, v->guid.info2, v->guid.info3,
-					v->guid.info4[0], v->guid.info4[1], v->guid.info4[2], v->guid.info4[3],
-					v->guid.info4[4], v->guid.info4[5], v->guid.info4[6], v->guid.info4[7]);
+				fwts_uefi_vendor_messaging_dev_path *v = (fwts_uefi_vendor_messaging_dev_path *)dev_path;
+				size_t i;
+				static const fwts_uefi_guid guid[] = {
+					EFI_PC_ANSI_GUID,
+					EFI_VT_100_GUID,
+					EFI_VT_100_PLUS_GUID,
+					EFI_VT_UTF8_GUID,
+					EFI_UART_DEVICE_PATH_GUID,
+					EFI_SAS_DEVICE_PATH_GUID
+				};
+				static const char *str[] = {
+					"PC-ANSI",
+					"VT-100",
+					"VT-100+",
+					"VT-UTF8",
+					"UARTFLOWCTRL",
+					"SAS",
+					"UnknownGUID"
+				};
+				for (i = 0; i < sizeof(guid)/sizeof(guid[0]); i++)
+					if (memcmp(&v->guid, &guid[i], sizeof(fwts_uefi_guid)) == 0)
+						break;
+				path = uefidump_vprintf(path, "\\VENDOR(%s", str[i]);
+				if (i == 4) {
+					uint32_t flow_control_map = v->vendor_defined_data[0]
+							+ (((uint32_t)v->vendor_defined_data[1]) << 8)
+							+ (((uint32_t)v->vendor_defined_data[2]) << 16)
+							+ (((uint32_t)v->vendor_defined_data[3] << 24));
+					path = uefidump_vprintf(path, ",0x%" PRIx32, flow_control_map);
+				}
+				if (i == 5 && dev_path_len >= sizeof(fwts_uefi_sas_messaging_dev_path)) {
+					fwts_uefi_sas_messaging_dev_path *s = (fwts_uefi_sas_messaging_dev_path *)dev_path;
+					path = uefidump_vprintf(path, ",0x%" PRIx64
+						",0x%" PRIx64 ",0x%" PRIx16 ",0x%" PRIx16 ,
+						s->sas_addr, s->lun, s->dev_topology_info, s->rtp);
+				}
+				if (i == 6)
+					path = uefidump_vprintf(path, " %08" PRIx32
+						"-%04" PRIx16 "-%04" PRIx16 "-%02" PRIx8
+						"-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8
+						"-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 ,
+						v->guid.info1, v->guid.info2, v->guid.info3,
+						v->guid.info4[0], v->guid.info4[1], v->guid.info4[2], v->guid.info4[3],
+						v->guid.info4[4], v->guid.info4[5], v->guid.info4[6], v->guid.info4[7]);
+
+				path = uefidump_vprintf(path, ")");
 			}
 			break;
 		case FWTS_UEFI_FIBRE_CHANNEL_EX_DEVICE_PATH_SUBTYPE:

@@ -158,3 +158,22 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 	}
 	return FWTS_OK;
 }
+
+/*
+ *  fwts_exec()
+ *	execute a command
+ *	Return FWTS_OK if the exec worked, FWTS_EXEC_ERROR if
+ *	it failed.  status contains the child exit status.
+ */
+int fwts_exec(const char *command, int *status)
+{
+	pid_t 	pid;
+	int	fd;
+
+	if ((fd = fwts_pipe_open(command, &pid)) < 0)
+		return FWTS_ERROR;
+
+	if (!(*status = fwts_pipe_close(fd, pid)))
+		return FWTS_EXEC_ERROR;
+	return FWTS_OK;
+}

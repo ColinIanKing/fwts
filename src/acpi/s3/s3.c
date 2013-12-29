@@ -66,7 +66,6 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int delay,
 	int percent)
 {
-	fwts_list *output;
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
 	int duration;
@@ -105,12 +104,11 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	time(&t_start);
 	(void)fwts_klog_write(fw, "Starting fwts suspend\n");
 	(void)fwts_klog_write(fw, FWTS_SUSPEND "\n");
-	(void)fwts_pipe_exec(command, &output, &status);
+	(void)fwts_exec(command, &status);
 	(void)fwts_klog_write(fw, FWTS_RESUME "\n");
 	(void)fwts_klog_write(fw, "Finished fwts resume\n");
 	time(&t_end);
 	fwts_progress_message(fw, percent, "(Resumed)");
-	fwts_text_list_free(output);
 	free(command);
 
 	duration = (int)(t_end - t_start);

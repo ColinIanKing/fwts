@@ -49,7 +49,6 @@ static int check_module_loaded(void)
 int fwts_lib_efi_runtime_load_module(fwts_framework *fw)
 {
 	struct stat statbuf;
-	fwts_list *output;
 
 	if (check_module_loaded() != FWTS_OK) {
 		fwts_log_error(fw, "Could not open /proc/modules for checking module loaded.");
@@ -59,12 +58,10 @@ int fwts_lib_efi_runtime_load_module(fwts_framework *fw)
 	if (!module_already_loaded) {
 		int status;
 
-		if (fwts_pipe_exec("modprobe efi_runtime", &output, &status) != FWTS_OK) {
+		if (fwts_exec("modprobe efi_runtime", &status) != FWTS_OK) {
 			fwts_log_error(fw, "Load efi_runtime module error.");
 			return FWTS_ERROR;
 		} else {
-			if (output)
-				fwts_text_list_free(output);
 			(void)check_module_loaded();
 			if (!module_already_loaded) {
 				fwts_log_error(fw, "Could not load efi_runtime module.");
@@ -89,8 +86,6 @@ int fwts_lib_efi_runtime_load_module(fwts_framework *fw)
 
 int fwts_lib_efi_runtime_unload_module(fwts_framework *fw)
 {
-	fwts_list *output;
-
 	if (check_module_loaded() != FWTS_OK) {
 		fwts_log_error(fw, "Could not open /proc/modules for checking module loaded.");
 		return FWTS_ERROR;
@@ -98,12 +93,10 @@ int fwts_lib_efi_runtime_unload_module(fwts_framework *fw)
 	if (module_already_loaded) {
 		int status;
 
-		if (fwts_pipe_exec("modprobe -r efi_runtime", &output, &status) != FWTS_OK) {
+		if (fwts_exec("modprobe -r efi_runtime", &status) != FWTS_OK) {
 			fwts_log_error(fw, "Unload efi_runtime module error.");
 			return FWTS_ERROR;
 		} else {
-			if (output)
-				fwts_text_list_free(output);
 			(void)check_module_loaded();
 			if (module_already_loaded) {
 				fwts_log_error(fw, "Could not unload efi_runtime module.");

@@ -172,8 +172,6 @@ static int s3power_test(fwts_framework *fw)
 	uint32_t capacity_before_mWh;
 	uint32_t capacity_after_mWh;
 
-	fwts_list *output;
-
 	if (s3power_wait_for_adapter_offline(fw, &offline) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot check if machine is running on battery, aborting test.");
 		return FWTS_ABORTED;
@@ -190,10 +188,9 @@ static int s3power_test(fwts_framework *fw)
 	/* Do S3 here */
 	fwts_progress_message(fw, 100, "(Suspending)");
 	time(&t_start);
-	(void)fwts_pipe_exec(PM_SUSPEND, &output, &status);
+	(void)fwts_exec(PM_SUSPEND, &status);
 	time(&t_end);
 	fwts_progress_message(fw, 100, "(Resumed)");
-	fwts_text_list_free(output);
 
 	s3power_get_remaining_capacity(fw, &capacity_after_mAh, &capacity_after_mWh);
 

@@ -97,7 +97,6 @@ static int s4_hibernate(fwts_framework *fw,
 	int *failed_alloc_image,
 	int percent)
 {
-	fwts_list *output;
 	fwts_list *klog_pre, *klog_post, *klog_diff;
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
@@ -136,11 +135,10 @@ static int s4_hibernate(fwts_framework *fw,
 	fwts_progress_message(fw, percent, "(Hibernating)");
 	(void)fwts_klog_write(fw, "Starting fwts hibernate\n");
 	(void)fwts_klog_write(fw, FWTS_HIBERNATE "\n");
-	(void)fwts_pipe_exec(command, &output, &status);
+	(void)fwts_exec(command, &status);
 	(void)fwts_klog_write(fw, FWTS_RESUME "\n");
 	(void)fwts_klog_write(fw, "Finished fwts resume\n");
 	fwts_progress_message(fw, percent, "(Resumed)");
-	fwts_text_list_free(output);
 	free(command);
 
 	if ((klog_post = fwts_klog_read()) == NULL)

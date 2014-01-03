@@ -5,7 +5,7 @@ Source: git://kernel.ubuntu.com/hwe/fwts
 Files: *
        src/acpica/source/compiler/fwts_iasl_interface.c
        src/acpica/source/compiler/fwts_iasl_interface.h
-Copyright: 2010, Canonical Ltd
+Copyright: 2010-2014, Canonical Ltd
 License: GPL-2
  On Debian systems, the complete text of the GNU General Public
  License can be found in `/usr/share/common-licenses/GPL-2'.
@@ -26,7 +26,7 @@ Files: src/acpi/acpiinfo/acpiinfo.c
        src/lib/include/fwts_e820.h
        src/lib/src/e820.c
        src/pci/maxreadreq/maxreadreq.c
-Copyright: 2010, Canonical Ltd
+Copyright: 2010-2014, Canonical Ltd
            2006, Intel Corporation
 License: GPL-2
  On Debian systems, the complete text of the GNU General Public
@@ -35,7 +35,7 @@ License: GPL-2
 Files: src/cpu/virt/virt.c
        src/lib/include/fwts_virt.h
        src/lib/src/virt.c
-Copyright: 2010, Canonical Ltd
+Copyright: 2010-2014, Canonical Ltd
            2007, AMD Inc
            2006, Intel Corporation
 License: GPL-2
@@ -44,7 +44,7 @@ License: GPL-2
 
 Files: src/cpu/virt/virt_svm.c
        src/cpu/virt/virt_vmx.c
-Copyright: 2010, Canonical Ltd
+Copyright: 2010-2014, Canonical Ltd
            2007, AMD Inc
            2006, Intel Corporation
 License: LGPL
@@ -52,7 +52,7 @@ License: LGPL
  License can be found in `/usr/share/common-licenses/LGPL'.
 
 Files: src/acpcia/source/*
-Copyright: Copyright (c) 1999 - 2010, Intel Corp.
+Copyright: Copyright (c) 1999 - 2014, Intel Corp.
 License: other
    2. License
    .

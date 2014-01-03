@@ -497,7 +497,7 @@ static void crsdump_large_resource_items(
 	const uint64_t length)
 {
 	uint8_t tag_item = data[0] & 0x7f;
-	size_t crs_length = data[1];
+	size_t crs_length = data[1] + (data[2] << 8) + 3;
 
 	static const crsdump_info header[] = {
 		CRS_BITS("Tag Type",		0, 128),

@@ -27,6 +27,7 @@
 /* acpica headers */
 #include "acpi.h"
 #include "fwts_acpi_object_eval.h"
+#include "crsdump.h"
 
 typedef struct {
 	const char *label;				/* Field label */
@@ -303,6 +304,31 @@ static const char *crs_pin_configuration(const uint64_t val)
 }
 
 /*
+ *  Convert IRQ mask into list of IRQs
+ */
+static const char *crs_irq_map(const uint64_t val)
+{
+	unsigned int i;
+	static char buf[6 + (32 * 4)];
+	char tmp[5];
+	const size_t n = sizeof(buf) - 1;
+
+	strncpy(buf, "IRQ:", n);
+
+	if (!val) {
+		strncat(buf, " none", n);
+	} else {
+		for (i = 0; i < 32; i++) {
+			if (val & (1 << i)) {
+				snprintf(tmp, sizeof(tmp), " %u", i);
+				strncat(buf, tmp, n);
+			}
+		}
+	}
+	return buf;
+}
+
+/*
  *  CRS small resource checks, simple checking
  */
 static void crsdump_small_resource_items(
@@ -345,7 +371,7 @@ static void crsdump_small_resource_items(
 			};
 
 			static const crsdump_info info[] = {
-				CRS_UINT("IRQ Mask",		1, 16),
+				CRS_UINTX("IRQ Mask",		1, 16, crs_irq_map),
 				CRS_BITS("Reserved",		3, 128 | 64),
 				CRS_BITX("Interrupt Sharing",	3, 32 | 16, sharing),
 				CRS_BITX("Interrupt Polarity",	3, 8, polarity),
@@ -829,11 +855,13 @@ static void crsdump_large_resource_items(
 	fwts_log_nl(fw);
 }
 
-static int crsdump_test1(fwts_framework *fw)
+
+
+int resource_dump(fwts_framework *fw, const char *objname)
 {
 	fwts_list_link	*item;
 	fwts_list *objects;
-	const size_t name_len = 4;
+	const size_t name_len = strlen(objname);
 
 	if ((objects = fwts_acpi_object_get_names()) == NULL) {
 		fwts_log_info(fw, "Cannot find any ACPI objects");
@@ -843,7 +871,7 @@ static int crsdump_test1(fwts_framework *fw)
 	fwts_list_foreach(item, objects) {
 		char *name = fwts_list_data(char*, item);
 		const size_t len = strlen(name);
-		if (strncmp("_CRS", name + len - name_len, name_len) == 0) {
+		if (strncmp(objname, name + len - name_len, name_len) == 0) {
 			ACPI_OBJECT_LIST arg_list;
 			ACPI_BUFFER buf;
 			ACPI_OBJECT *obj;
@@ -857,7 +885,7 @@ static int crsdump_test1(fwts_framework *fw)
 			if ((ACPI_FAILURE(ret) != AE_OK) || (buf.Pointer == NULL))
 				continue;
 
-			/*  Do we have a valid _CRS buffer to dump? */
+			/*  Do we have a valid resource buffer to dump? */
 			obj = buf.Pointer;
 			if ((obj->Type == ACPI_TYPE_BUFFER) &&
 			    (obj->Buffer.Pointer != NULL) &&
@@ -875,13 +903,18 @@ static int crsdump_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int crsdump_test1(fwts_framework *fw)
+{
+	return resource_dump(fw, "_CRS");
+}
+
 static fwts_framework_minor_test crsdump_tests[] = {
-	{ crsdump_test1, "Dump ACPI _CRS buffers." },
+	{ crsdump_test1, "Dump ACPI _CRS (Current Resource Settings)." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops crsdump_ops = {
-	.description = "Dump ACPI _CRS buffers.",
+	.description = "Dump ACPI _CRS resources.",
 	.init        = crsdump_init,
 	.deinit      = crsdump_deinit,
 	.minor_tests = crsdump_tests

@@ -35,7 +35,7 @@ static void fwts_release_field_get(char *needle, char *delimiter, char *text, ch
 	if (strstr(text, needle) == NULL)
 		return;
 	str++;
-	while (*str == ' ')
+	while (*str == ' ' || *str == '\t')
 		str++;
 
 	if (*str)
@@ -53,10 +53,10 @@ void fwts_release_get_debian(fwts_list *list, fwts_release *release)
 	fwts_list_foreach(item, list) {
 		char *line = fwts_text_list_text(item);
 
-		fwts_release_field_get("DISTRIB_ID", "=", line, &release->distributor);
-		fwts_release_field_get("DISTRIB_RELEASE", "=", line, &release->description);
-		fwts_release_field_get("DISTRIB_CODENAME", "=", line, &release->release);
-		fwts_release_field_get("DISTRIB_DESCRIPTION", "=", line, &release->codename);
+		fwts_release_field_get("Distributor ID:", ":", line, &release->distributor);
+		fwts_release_field_get("Release", ":", line, &release->description);
+		fwts_release_field_get("Codename", ":", line, &release->release);
+		fwts_release_field_get("Description", ":", line, &release->codename);
 	}
 }
 
@@ -78,6 +78,7 @@ fwts_release *fwts_release_get(void)
 {
 	fwts_list *list;
 	fwts_release *release;
+	int status;
 
 	if ((release = calloc(1, sizeof(fwts_release))) == NULL)
 		return NULL;
@@ -86,7 +87,11 @@ fwts_release *fwts_release_get(void)
 	 *  For the moment, check in /etc/lsb-release, we need to add in
 	 *  support for different distros too.
 	 */
-	if ((list = fwts_file_open_and_read("/etc/lsb-release")) != NULL) {
+	if (fwts_pipe_exec("lsb_release -a", &list, &status) != FWTS_OK) {
+		free(release);
+		return NULL;
+	}
+	if (list) {
 		fwts_release_get_debian(list, release);
 		fwts_list_free(list, free);
 	}

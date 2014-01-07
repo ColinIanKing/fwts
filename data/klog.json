@@ -2,6 +2,13 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Path has too many parent prefixes.*reached beyond root node",
+   "advice": "The firmware specified an ACPI path using too many parent ^ prefixes and reached a point where thare are no parent nodes in the hierarchy and so the referenced object could not be found.  The kernel cannot find the named object because of this bug in the firmware and this may lead to broken or misbehaving behaviour.",
+   "label": "KlogAcpiPathTooManyParentPrefixes"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "mem=nopentium ignored! (only supported on x86_32)",

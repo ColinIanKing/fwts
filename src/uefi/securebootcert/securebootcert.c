@@ -267,12 +267,12 @@ static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, ch
 
 	fwts_release *release = fwts_release_get();
 	if (release == NULL) {
-		fwts_skipped(fw, "Cannot determine system, stop checking the Ubuntu Master CA certificate.");
+		fwts_skipped(fw, "Cannot determine system, stop checking the Master CA certificate.");
 		return;
 	}
 
 	if (strcmp(release->distributor, "Ubuntu") != 0) {
-		fwts_skipped(fw, "Not a Ubuntu system, it's not necessary checking the Ubuntu Master CA certificate.");
+		fwts_skipped(fw, "Not a Ubuntu system, skipping the Ubuntu Master CA certificate check.");
 		fwts_release_free(release);
 		return;
 	}
@@ -372,12 +372,12 @@ static int securebootcert_test1(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test securebootcert_tests[] = {
-	{ securebootcert_test1, "Ubuntu UEFI secure boot test." },
+	{ securebootcert_test1, "UEFI secure boot test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops securebootcert_ops = {
-	.description = "Ubuntu UEFI secure boot test.",
+	.description = "UEFI secure boot test.",
 	.init        = securebootcert_init,
 	.minor_tests = securebootcert_tests
 };

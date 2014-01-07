@@ -16,19 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include <stdbool.h>
 
 #include "fwts.h"
 
 static int version_test1(fwts_framework *fw)
 {
 	char *str;
+	fwts_release *release;
 
-	/* Following is Ubuntu specific, so don't fail */
+	release = fwts_release_get();
+        if (release) {
+		bool not_ubuntu = strcmp(release->distributor, "Ubuntu");
+
+		fwts_release_free(release);
+		/* Following is Ubuntu specific, so don't fail */
+		if (not_ubuntu) {
+			fwts_skipped(fw, "Information not available with this kernel.");
+			return FWTS_OK;
+		}
+        }
+
 	if ((str = fwts_get("/proc/version_signature")) == NULL)
-		fwts_log_info(fw,
+		fwts_skipped(fw,
 			"Cannot get version signature info from "
-			"/proc/version_signature (This is Ubuntu "
-			"specific, and is not necessarily a failure).");
+			"/proc/version_signature");
 	else {
 		fwts_chop_newline(str);
 		fwts_log_info(fw, "Signature: %s", str);

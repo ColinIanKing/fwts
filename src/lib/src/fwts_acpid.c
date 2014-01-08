@@ -105,9 +105,15 @@ char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
 			return NULL;
 		}
 		else {
-			ptr = realloc(ptr, size + n + 1);
-			if (ptr == NULL)
+			char *new_ptr;
+
+			new_ptr = realloc(ptr, size + n + 1);
+			if (new_ptr == NULL) {
+				free(ptr);
 				return NULL;
+			} else
+				ptr = new_ptr;
+
 			memcpy(ptr + size, buffer, n);
 			size += n;
 			*(ptr+size) = 0;

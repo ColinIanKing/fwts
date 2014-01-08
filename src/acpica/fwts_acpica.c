@@ -427,12 +427,17 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 		else
 			buffer_len = 0;
 	} else {
+		char *new_buf;
+
 		buffer_len += tmp_len;
-		buffer = realloc(buffer, buffer_len);
-		if (buffer)
+		new_buf = realloc(buffer, buffer_len);
+		if (new_buf) {
+			buffer = new_buf;
 			strcat(buffer, tmp);
-		else
+		} else {
+			free(buffer);
 			buffer_len = 0;
+		}
 	}
 
 	if (index(buffer, '\n') != NULL) {

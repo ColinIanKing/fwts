@@ -129,15 +129,20 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 
 			if (short_name && (len = strlen(short_name)) > 0) {
 				if (short_options) {
-					short_options = realloc(short_options,
+					char *new_short_options;
+
+					new_short_options = realloc(short_options,
 						short_options_len + len + 1);
-					if (short_options == NULL) {
+					if (new_short_options == NULL) {
+						free(short_options);
 						free(long_options);
 						fwts_log_error(fw,
 							"Out of memory "
 							"allocating options.");
 						return FWTS_ERROR;
-					}
+					} else
+						short_options = new_short_options;
+
 					strcat(short_options, short_name);
 					short_options_len += (len + 1);
 				} else {

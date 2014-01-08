@@ -578,11 +578,16 @@ char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 			}
 
 			if (filenames) {
+				char *new_filenames;
+
 				len += strlen(tmp) + 2;
-				if ((filenames = realloc(filenames, len)) == NULL) {
+				if ((new_filenames = realloc(filenames, len)) == NULL) {
+					free(filenames);
 					free(tmp);
 					return NULL;
-				}
+				} else
+					filenames = new_filenames;
+
 				strcat(filenames, " ");
 				strcat(filenames, tmp);
 			} else {

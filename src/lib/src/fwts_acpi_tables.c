@@ -415,6 +415,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 
 	/* Pull in 16 bytes at a time */
 	while (fgets(buffer, sizeof(buffer), fp) ) {
+		uint8_t *new_tmp;
 		int n;
 		buffer[56] = '\0';	/* truncate */
 		if ((n = sscanf(buffer,"  %x: %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx",
@@ -426,8 +427,12 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 			break;
 
 		len += (n - 1);
-		if ((tmp = realloc(tmp, len)) == NULL)
+		if ((new_tmp = realloc(tmp, len)) == NULL) {
+			free(tmp);
 			return NULL;
+		} else
+			tmp = new_tmp;
+
 		memcpy(tmp + offset, data, n-1);
 	}
 

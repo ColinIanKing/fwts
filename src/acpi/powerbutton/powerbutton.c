@@ -62,7 +62,7 @@ static int power_button_test1(fwts_framework *fw)
 	else  {
 		char button[4096];
 		memset(button, 0, sizeof(button));
-		sscanf(buffer, "%*s %s", button);
+		sscanf(buffer, "%*s %4095s", button);
 
 		fwts_passed(fw, "Detected %s power button event.", button);
 	}

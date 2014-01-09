@@ -77,14 +77,15 @@ static const char *pciirq_reserved(uint8_t *data)
 static const char *pciirq_irq_bitmap(uint16_t val)
 {
 	static char buf[40];
-	char tmp[5];
-	int i;
 
 	*buf = '\0';
 	if (val) {
-		for (i=0; i < 16; val >>= 1, i++) {
+		int i;
+
+		for (i = 0; i < 16; val >>= 1, i++) {
 			if (val & 1) {
-				snprintf(tmp, sizeof(tmp), "%s%u", *buf ? " ": "", i);
+				char tmp[5];
+				snprintf(tmp, sizeof(tmp), "%s%d", *buf ? " ": "", i);
 				strcat(buf, tmp);
 			}
 		}
@@ -117,7 +118,6 @@ static int pciirq_test1(fwts_framework *fw)
 	}
 
 	for (i=0; i < PCIIRQ_REGION_SIZE; i+= 16) {
-		bool slot_ok;
 		pci_irq_routing_table *pciirq = (pci_irq_routing_table*)(mem+i);
 		if ((memcmp(pciirq->signature, "$PIR", 4) == 0) &&
 		    (fwts_checksum(mem+i, pciirq->table_size) == 0)) {
@@ -125,6 +125,7 @@ static int pciirq_test1(fwts_framework *fw)
 			slot_entry *slot;
 			int slot_count = (pciirq->table_size - 32) / sizeof(slot_entry);
 			int expected_size = (32 + (slot_count * sizeof(slot_entry)));
+			bool slot_ok = true;
 
 			fwts_log_nl(fw);
 			fwts_log_info(fw, "Found PCI IRQ Routing Table at 0x%8.8x", PCIIRQ_REGION_START+i);
@@ -208,7 +209,6 @@ static int pciirq_test1(fwts_framework *fw)
 			/*
 			 *  This is a fairly shallow test
 			 */
-			slot_ok = true;
 			for (slot = pciirq->slots, j = 0; j < slot_count; j++, slot++) {
 				for (k = 0; k < 4; k++) {
 					if ((slot->INT[k].link != 0) && (slot->INT[k].bitmap == 0)) {

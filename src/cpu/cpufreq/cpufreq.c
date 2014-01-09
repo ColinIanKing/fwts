@@ -199,11 +199,11 @@ static char *HzToHuman(const uint32_t hz)
 			(Hz+50000.0) / 1000000);
 		return buffer;
 	} else if (Hz > 1000) {
-		snprintf(buffer, sizeof(buffer), "%lli MHz",
+		snprintf(buffer, sizeof(buffer), "%llu MHz",
 			(Hz+500) / 1000);
 		return buffer;
 	} else {
-		snprintf(buffer, sizeof(buffer), "%lli", Hz);
+		snprintf(buffer, sizeof(buffer), "%llu", Hz);
 		return buffer;
 	}
 }

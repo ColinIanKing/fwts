@@ -47,10 +47,8 @@ static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 
 static int s3_init(fwts_framework *fw)
 {
-	int ret;
-
 	/* Pre-init - make sure wakealarm works so that we can wake up after suspend */
-	if ((ret = fwts_wakealarm_test_firing(fw, 1))) {
+	if (fwts_wakealarm_test_firing(fw, 1) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot automatically wake machine up - aborting S3 test.");
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "BadWakeAlarmS3",
 			"Check if wakealarm works reliably for S3 tests.");

@@ -1,5 +1,5 @@
 	  AC_INIT([fwts],[0.1],[colin.king@canonical.com])
-          AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+          AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
           m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 	  AC_CANONICAL_HOST
 	  AC_CONFIG_MACRO_DIR([m4])
@@ -8,6 +8,7 @@
 	  AC_PROG_YACC
 	  AC_PROG_LIBTOOL
 	  AC_C_INLINE
+	  AM_PROG_CC_C_O
   	  AC_CHECK_FUNCS([localtime_r])
 	  AC_CHECK_FUNCS([dup2])
 	  AC_CHECK_FUNCS([getcwd])

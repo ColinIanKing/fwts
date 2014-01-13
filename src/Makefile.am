@@ -5,7 +5,7 @@
 # ... because the libs in this bundled acpica/ depend on lib/ (libfwts.so),
 # but libfwts.so depends on libraries produced by acpica/source/compiler.
 SUBDIRS = acpica/source/compiler lib acpica
- 
+
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include \
 	-I$(top_srcdir)/src/acpica/source/include \
@@ -14,6 +14,8 @@ AM_CPPFLAGS = \
 	-Wall -Werror -Wextra
 
 bin_PROGRAMS = fwts
+
+fwts_CPPFLAGS = $(AM_CPPFLAGS)
 
 #
 #  fwts main + tests

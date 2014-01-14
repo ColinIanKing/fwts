@@ -1,3 +1,55 @@
+fwts (14.01.00-0ubuntu1) trusty; urgency=low
+
+  [Alex Hung]
+  * dmi: change max value of "Upgrade" field" from 0x2a to 0x2c (LP: #1263634)
+
+  [Colin Ian King]
+  * cpu: microcode: test should skip if no microcound found (LP: #1259900)
+  * acpi: acpidump: add SPCR table (LP: #1260351)
+  * acpi: acpidump: add DBGP table (LP: #1260353)
+  * acpi: acpidump: add DBG2 table (LP: #1260356)
+  * Enable ACPI table dumping for non-x86 systems (LP: #1260470)
+  * Allow RSDP to be provided manually or scan for it in klog (LP: #1260400)
+  * Dump ACPI table addresses with correct address length (LP: #1260482)
+  * ACPICA: update to version 20131218 (LP: #1262348)
+  * acpi: acpidump: dump out table descriptions (LP: #1261483)
+  * acpi: acpidump: Add MCHI table (LP: #1261484)
+  * fwts: remove launchpad tagging from fwts
+  * doc: remove tag options --lp-tags and --lp-tags-log
+  * data: klog.json: remove redundant tags from database
+  * lib: klog: add fwts_klog_find_changes to compare klogs (LP: #1262208)
+  * acpi: s3: do kernel log comparisons without destroying klog (LP: #1262208)
+  * acpi: s4: do kernel log comparisons without destroying klog (LP: #1262208)
+  * lib: add fwts_exec() helper function
+  * fwts: use fwts_exec rather than fwts_pipe_exec
+  * acpi: crsdump: fix large resource length calculation (LP: #1255793)
+  * acpi: crsdump, prsdump: add support for _PRS dumping (LP: #1265827)
+  * fwts: all: update copyright year to 2014
+  * fwts: debian: update copyright dates
+  * fwts: doc: update dates, some of these are way too old
+  * dmi: dmicheck: add more checks for invalid DMI fields (LP: #1262236)
+  * data: klog: sync up with 3.13 kernel (LP: #1266786)
+  * fwts: attempt to make fwts less Ubuntu specific, (LP: #1246653)
+  * fwts: fix common realloc() memory leak anti-pattern (LP: #1267193)
+  * acpi: s3: remove redundant variable
+  * bios: pciirq: fix printf format and tidy some variable scopes
+  * acpi: powerbutton: ensure we don't get scanf buffer overflow
+  * cpu: cpufreq: use correct printf format specifiers
+
+  [IvanHu]
+  * lib: fwts_uefi header add attribure packed for struct typedef
+  * uefi: uefidump: add the Media Protocol subtype-5 support on media device
+    path type for uefidump (LP: #1260147)
+  * uefi: uefidump: add the PIWG Firmware File subtype-6 support on media device
+    path type for uefidump (LP: #1260147)
+  * uefi: uefidump: add the PIWG Firmware Volume subtype-7 support on media
+    device path type for uefidump (LP: #1260147)
+  * uefi: uefidump: extend the Messaging Device Path type Vedor subtype-10
+    (LP: #1262095)
+  
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 14 Jan 2014 16:13:37 +0800
+
 fwts (13.12.00-0ubuntu1) trusty; urgency=low
 
   [Alex Hung]

@@ -77,6 +77,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/debugger/dbmethod.c		\
 	source/components/debugger/dbnames.c		\
 	source/components/debugger/dbconvert.c		\
+	source/components/debugger/dbtest.c		\
 	source/components/disassembler/dmbuffer.c	\
 	source/components/disassembler/dmnames.c	\
 	source/components/disassembler/dmobject.c	\

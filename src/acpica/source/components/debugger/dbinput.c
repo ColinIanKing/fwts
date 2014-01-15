@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -165,7 +165,6 @@ enum AcpiExDebuggerCommands
     CMD_ALLOCATIONS,
     CMD_ARGS,
     CMD_ARGUMENTS,
-    CMD_BATCH,
     CMD_BREAKPOINT,
     CMD_BUSINFO,
     CMD_CALL,
@@ -219,6 +218,7 @@ enum AcpiExDebuggerCommands
     CMD_TABLES,
     CMD_TEMPLATE,
     CMD_TERMINATE,
+    CMD_TEST,
     CMD_THREADS,
     CMD_TRACE,
     CMD_TREE,
@@ -238,7 +238,6 @@ static const ACPI_DB_COMMAND_INFO   AcpiGbl_DbCommands[] =
     {"ALLOCATIONS",  0},
     {"ARGS",         0},
     {"ARGUMENTS",    0},
-    {"BATCH",        0},
     {"BREAKPOINT",   1},
     {"BUSINFO",      0},
     {"CALL",         0},
@@ -292,6 +291,7 @@ static const ACPI_DB_COMMAND_INFO   AcpiGbl_DbCommands[] =
     {"TABLES",       0},
     {"TEMPLATE",     1},
     {"TERMINATE",    0},
+    {"TEST",        1},
     {"THREADS",      3},
     {"TRACE",        1},
     {"TREE",         0},
@@ -318,8 +318,7 @@ static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
     {1, "  Locks",                             "Current status of internal mutexes\n"},
     {1, "  Osi [Install|Remove <name>]",       "Display or modify global _OSI list\n"},
     {1, "  Quit or Exit",                      "Exit this command\n"},
-    {9, "  Stats [Allocations|Memory|Misc|",   "\n"},
-    {1, "      Objects|Sizes|Stack|Tables]",   "Display namespace and memory statistics\n"},
+    {8, "  Stats <SubCommand>",                "Display namespace and memory statistics\n"},
     {1, "     Allocations",                    "Display list of current memory allocations\n"},
     {1, "     Memory",                         "Dump internal memory lists\n"},
     {1, "     Misc",                           "Namespace search and mutex stats\n"},
@@ -387,6 +386,11 @@ static const ACPI_DB_COMMAND_HELP   AcpiGbl_DbCommandHelp[] =
     {1, "  Close",                             "Close debug output file\n"},
     {1, "  Load <Input Filename>",             "Load ACPI table from a file\n"},
     {1, "  Open <Output Filename>",            "Open a file for debug output\n"},
+
+    {0, "\nDebug Test Commands:",              "\n"},
+    {3, "  Test <TestName>",                   "Invoke a debug test\n"},
+    {1, "     Objects",                        "Read/write/compare all namespace data objects\n"},
+    {1, "     Predefined",                     "Execute all ACPI predefined names (_STA, etc.)\n"},
     {0, NULL, NULL}
 };
 
@@ -864,11 +868,6 @@ AcpiDbCommandDispatch (
         AcpiDbDisplayArguments ();
         break;
 
-    case CMD_BATCH:
-
-        AcpiDbBatchExecute (AcpiGbl_DbArgs[1]);
-        break;
-
     case CMD_BREAKPOINT:
 
         AcpiDbSetMethodBreakpoint (AcpiGbl_DbArgs[1], WalkState, Op);
@@ -1169,6 +1168,11 @@ AcpiDbCommandDispatch (
          */
 
         /*  AcpiInitialize (NULL);  */
+        break;
+
+    case CMD_TEST:
+
+        AcpiDbExecuteTest (AcpiGbl_DbArgs[1]);
         break;
 
     case CMD_THREADS:

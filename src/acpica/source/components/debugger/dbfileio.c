@@ -9,7 +9,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -545,6 +545,7 @@ AcpiDbReadTableFromFile (
     ACPI_TABLE_HEADER       **Table)
 {
     FILE                    *File;
+    UINT32                  FileSize;
     UINT32                  TableLength;
     ACPI_STATUS             Status;
 
@@ -558,9 +559,17 @@ AcpiDbReadTableFromFile (
         return (AE_ERROR);
     }
 
+    /* Get the file size */
+
+    fseek (File, 0, SEEK_END);
+    FileSize = (UINT32) ftell (File);
+    fseek (File, 0, SEEK_SET);
+
     /* Get the entire file */
 
-    fprintf (stderr, "Loading Acpi table from file %s\n", Filename);
+    fprintf (stderr, "Loading Acpi table from file %10s - Length %.8u (%06X)\n",
+        Filename, FileSize, FileSize);
+
     Status = AcpiDbReadTable (File, Table, &TableLength);
     fclose(File);
 

@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -677,6 +677,10 @@ AnOtherSemanticAnalysisWalkBegin (
         ArgNode = Op->Asl.Parent;       /* Field definition */
         ArgNode = ArgNode->Asl.Child;   /* First child is the OpRegion Name */
         Node = ArgNode->Asl.Node;       /* OpRegion namespace node */
+        if (!Node)
+        {
+            break;
+        }
 
         ArgNode = Node->Op;             /* OpRegion definition */
         ArgNode = ArgNode->Asl.Child;   /* First child is the OpRegion Name */

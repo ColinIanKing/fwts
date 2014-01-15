@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -328,11 +328,6 @@ void
 EarlyAcpiOsUnmapMemory (
     void __iomem            *Virt,
     ACPI_SIZE               Size);
-
-ACPI_STATUS
-AcpiOsHotplugExecute (
-    ACPI_OSD_EXEC_CALLBACK  Function,
-    void                    *Context);
 
 #endif /* __KERNEL__ */
 

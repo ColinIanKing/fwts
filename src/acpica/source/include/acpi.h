@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2013, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -134,5 +134,8 @@
 #include "acrestyp.h"           /* Resource Descriptor structs */
 #include "acpiosxf.h"           /* OSL interfaces (ACPICA-to-OS) */
 #include "acpixf.h"             /* ACPI core subsystem external interfaces */
+#ifdef ACPI_NATIVE_INTERFACE_HEADER
+#include ACPI_NATIVE_INTERFACE_HEADER
+#endif
 
 #endif /* __ACPI_H__ */

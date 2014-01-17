@@ -9,6 +9,7 @@
 	  AC_PROG_LIBTOOL
 	  AC_C_INLINE
 	  AM_PROG_CC_C_O
+	  AC_SEARCH_LIBS([json_object_from_file], [json json-c], [], [ AC_MSG_ERROR([no available json library]) ])
   	  AC_CHECK_FUNCS([localtime_r])
 	  AC_CHECK_FUNCS([dup2])
 	  AC_CHECK_FUNCS([getcwd])

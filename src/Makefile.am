@@ -89,7 +89,7 @@ fwts_SOURCES = main.c 				\
 	uefi/securebootcert/securebootcert.c	\
 	uefi/uefivarinfo/uefivarinfo.c
 
-fwts_LDFLAGS = -ljson -lm
+fwts_LDFLAGS = -lm
 
 fwts_LDADD = \
 	-Llib/src -lfwts \

@@ -428,11 +428,8 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 	fwts_framework_underline(fw,'=');
 
 	if (fw->flags & FWTS_FLAG_STDOUT_SUMMARY) {
-		if (results->aborted > 0)
-			printf("%s\n", fwts_log_field_to_str_upper(LOG_ABORTED));
-		else if (results->skipped > 0)
-			printf("%s\n", fwts_log_field_to_str_upper(LOG_SKIPPED));
-		else if (results->failed > 0) {
+		/* Report in order of failure precedence */
+		if (results->failed > 0) {
 			/* We intentionally report the highest logged error level */
 			if (fw->failed_level & LOG_LEVEL_CRITICAL)
 				printf("%s_CRITICAL\n", fwts_log_field_to_str_upper(LOG_FAILED));
@@ -443,9 +440,12 @@ static int fwts_framework_test_summary(fwts_framework *fw)
 			else if (fw->failed_level & LOG_LEVEL_LOW)
 				printf("%s_LOW\n", fwts_log_field_to_str_upper(LOG_FAILED));
 			else printf("%s\n", fwts_log_field_to_str_upper(LOG_FAILED));
-		}
+		} else if (results->skipped > 0)
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_SKIPPED));
 		else if (results->warning > 0)
 			printf("%s\n", fwts_log_field_to_str_upper(LOG_WARNING));
+		else if (results->aborted > 0)
+			printf("%s\n", fwts_log_field_to_str_upper(LOG_ABORTED));
 		else
 			printf("%s\n", fwts_log_field_to_str_upper(LOG_PASSED));
 	}

@@ -179,7 +179,8 @@ int fwts_exec(const char *command, int *status)
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return FWTS_ERROR;
 
-	if (!(*status = fwts_pipe_close(fd, pid)))
+	*status = fwts_pipe_close(fd, pid);
+	if (*status)
 		return FWTS_EXEC_ERROR;
 	return FWTS_OK;
 }

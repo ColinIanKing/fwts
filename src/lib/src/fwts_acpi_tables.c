@@ -295,10 +295,6 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 	if (!rsdp_addr)
 		return FWTS_ERROR;
 
-	/* Must be on a 16 byte boundary */
-	if (((unsigned long)rsdp_addr & 0xf))
-		return FWTS_ERROR;
-
 	/* Load and save cached RSDP */
 	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;

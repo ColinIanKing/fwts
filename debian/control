@@ -56,7 +56,7 @@ Description: Firmware Test Suite frontend interface
 Package: fwts-efi-runtime-dkms
 Architecture: amd64
 Priority: optional
-Depends: ${shlibs:Depends}, ${misc:Depends}, dkms, linux-headers-generic | linux-headers | linux-headers-generic-lts-quantal | linux-headers-generic-lts-raring
+Depends: ${shlibs:Depends}, ${misc:Depends}, dkms, linux-headers-generic | linux-headers | linux-headers-generic-lts-quantal | linux-headers-generic-lts-raring | linux-headers-generic-lts-saucy
 Description: Firmware Test Suite UEFI Runtime Service kernel driver
  This package provides the efi_runtime kernel driver in DKMS format,
  which is required for accessing UEFI Runtime Services.

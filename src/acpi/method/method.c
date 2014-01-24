@@ -989,14 +989,14 @@ static void method_test_HID_return(
 			tmp, sizeof(tmp)))
 			fwts_passed(fw, "%s returned an integer "
 				"0x%8.8" PRIx64 " (EISA ID %s).",
-				name, obj->Integer.Value, tmp);
+				name, (uint64_t)obj->Integer.Value, tmp);
 		else
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodHIDInvalidInteger",
 				"%s returned a integer 0x%8.8" PRIx64 " "
 				"(EISA ID %s) but the this is not a valid "
 				"EISA ID encoded PNP ID.",
-				name, obj->Integer.Value, tmp);
+				name, (uint64_t)obj->Integer.Value, tmp);
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_HIDBadReturnType",
@@ -1876,7 +1876,8 @@ static void method_test_FIX_return(
 				"%s returned an integer "
 				"0x%8.8" PRIx64 " in package element "
 				"%" PRIu32 " that is not a valid "
-				"EISA ID.", name, obj->Integer.Value, i);
+				"EISA ID.", name,
+				(uint64_t)obj->Integer.Value, i);
 			failed = true;
 		}
 	}
@@ -2103,7 +2104,7 @@ static void method_test_SEG_return(
 			"%s returned value 0x%8.8" PRIx64 " and some of the "
 			"upper 16 reserved bits are set when they "
 			"should in fact be zero.",
-			name, obj->Integer.Value);
+			name, (uint64_t)obj->Integer.Value);
 	} else
 		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
@@ -2338,9 +2339,9 @@ static void method_test_Sx__return(
 	}
 
 	fwts_log_info(fw, "%s PM1a_CNT.SLP_TYP value: 0x%8.8" PRIx64, name,
-		obj->Package.Elements[0].Integer.Value);
+		(uint64_t)obj->Package.Elements[0].Integer.Value);
 	fwts_log_info(fw, "%s PM1b_CNT.SLP_TYP value: 0x%8.8" PRIx64, name,
-		obj->Package.Elements[1].Integer.Value);
+		(uint64_t)obj->Package.Elements[1].Integer.Value);
 
 	if (!failed)
 		method_passed_sane(fw, name, "package");
@@ -2487,7 +2488,7 @@ static void method_test_CSD_return(
 				"%s sub-package %d element 0 (NumEntries) "
 				"was expected to have value 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[0].Integer.Value);
+				(uint64_t)pkg->Package.Elements[0].Integer.Value);
 			failed = true;
 		}
 		/* Element 1 should contain zero */
@@ -2498,7 +2499,7 @@ static void method_test_CSD_return(
 				"was expected to have value 1, instead it "
 				"was 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[1].Integer.Value);
+				(uint64_t)pkg->Package.Elements[1].Integer.Value);
 			failed = true;
 		}
 		/* Element 3 should contain 0xfc..0xfe */
@@ -2512,7 +2513,7 @@ static void method_test_CSD_return(
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
 				"was 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[3].Integer.Value);
+				(uint64_t)pkg->Package.Elements[3].Integer.Value);
 			failed = true;
 		}
 		/* Element 4 number of processors, skip check */
@@ -2580,7 +2581,7 @@ static void method_test_CST_return(
 			"%" PRIu32 " returned C state sub-elements yet _CST "
 			"reports it has %" PRIu64 " C states.",
 			name, obj->Package.Count - 1,
-			obj->Package.Elements[0].Integer.Value);
+			(uint64_t)obj->Package.Elements[0].Integer.Value);
 		return;
 	}
 
@@ -2674,9 +2675,9 @@ static void method_test_CST_return(
 				fwts_log_info_verbatum(fw,
 					"%2" PRIu32 "     C%" PRIu64 "     %6" PRIu64 "    %6" PRIu64,
 					i,
-					pkg->Package.Elements[1].Integer.Value,
-					pkg->Package.Elements[2].Integer.Value,
-					pkg->Package.Elements[3].Integer.Value);
+					(uint64_t)pkg->Package.Elements[1].Integer.Value,
+					(uint64_t)pkg->Package.Elements[2].Integer.Value,
+					(uint64_t)pkg->Package.Elements[3].Integer.Value);
 			} else {
 				fwts_log_info_verbatum(fw,
 					"%2" PRIu32 "     --      -----     -----", i);
@@ -2845,10 +2846,10 @@ static void method_test_PSS_return(
 				fwts_log_info_verbatum(fw, " %3d   %7" PRIu64 " %8" PRIu64
 					" %5" PRIu64 "     %5" PRIu64,
 					i,
-					pstate->Package.Elements[0].Integer.Value,
-					pstate->Package.Elements[1].Integer.Value,
-					pstate->Package.Elements[2].Integer.Value,
-					pstate->Package.Elements[3].Integer.Value);
+					(uint64_t)pstate->Package.Elements[0].Integer.Value,
+					(uint64_t)pstate->Package.Elements[1].Integer.Value,
+					(uint64_t)pstate->Package.Elements[2].Integer.Value,
+					(uint64_t)pstate->Package.Elements[3].Integer.Value);
 			} else {
 				fwts_log_info_verbatum(fw,
 					" %3d      ----    -----    --        -- (invalid)", i);
@@ -2996,7 +2997,7 @@ static void method_test_TSD_return(
 				" element 0 (NumEntries) "
 				"was expected to have value 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[0].Integer.Value);
+				(uint64_t)pkg->Package.Elements[0].Integer.Value);
 			failed = true;
 		}
 		/* Element 1 should contain zero */
@@ -3008,7 +3009,7 @@ static void method_test_TSD_return(
 				"was expected to have value 1, instead it "
 				"was 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[1].Integer.Value);
+				(uint64_t)pkg->Package.Elements[1].Integer.Value);
 			failed = true;
 		}
 		/* Element 3 should contain 0xfc..0xfe */
@@ -3023,7 +3024,7 @@ static void method_test_TSD_return(
 				"0xfd (SW_ANY) or 0xfe (HW_ALL), instead it "
 				"was 0x%" PRIx64 ".",
 				name, i,
-				pkg->Package.Elements[3].Integer.Value);
+				(uint64_t)pkg->Package.Elements[3].Integer.Value);
 			failed = true;
 		}
 		/* Element 4 number of processors, skip check */
@@ -3126,7 +3127,7 @@ static void method_test_TSS_return(
 				"was expected to have value 1..100, instead "
 				"was %" PRIu64 ".",
 				name, i,
-				pkg->Package.Elements[0].Integer.Value);
+				(uint64_t)pkg->Package.Elements[0].Integer.Value);
 			failed = true;
 		}
 		/* Skip checking elements 1..4 */
@@ -3144,11 +3145,11 @@ static void method_test_TSS_return(
 				fwts_log_info_verbatum(fw,
 					"  %3d    %3" PRIu64 "%%  %7" PRIu64 "  %7" PRIu64
 					"      %2.2" PRIx64 "      %2.2" PRIx64, i,
-					pkg->Package.Elements[0].Integer.Value,
-					pkg->Package.Elements[1].Integer.Value,
-					pkg->Package.Elements[2].Integer.Value,
-					pkg->Package.Elements[3].Integer.Value,
-					pkg->Package.Elements[4].Integer.Value);
+					(uint64_t)pkg->Package.Elements[0].Integer.Value,
+					(uint64_t)pkg->Package.Elements[1].Integer.Value,
+					(uint64_t)pkg->Package.Elements[2].Integer.Value,
+					(uint64_t)pkg->Package.Elements[3].Integer.Value,
+					(uint64_t)pkg->Package.Elements[4].Integer.Value);
 			} else {
 				fwts_log_info_verbatum(fw,
 					"  %3d    ----    -----    -----      --      -- (invalid)", i);
@@ -3258,7 +3259,7 @@ static void method_test_GCP_return(
 			"%s returned %" PRId64 ", should be between 0 and 15, "
 			"one or more of the reserved bits 4..31 seem "
 			"to be set.",
-			name, obj->Integer.Value);
+			name, (uint64_t)obj->Integer.Value);
 	else
 		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
@@ -3321,7 +3322,7 @@ static void method_test_GWS_return(
 			"%s returned %" PRIu64 ", should be between 0 and 3, "
 			"one or more of the reserved bits 2..31 seem "
 			"to be set.",
-			name, obj->Integer.Value);
+			name, (uint64_t)obj->Integer.Value);
 	else
 		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
@@ -3412,13 +3413,13 @@ static void method_test_SBS_return(
 	switch (obj->Integer.Value) {
 	case 0 ... 4:
 		fwts_passed(fw, "%s correctly returned value %" PRIu64 " %s",
-			name, obj->Integer.Value,
+			name, (uint64_t)obj->Integer.Value,
 			sbs_info[obj->Integer.Value]);
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SBSReturn",
 			"%s returned %" PRIu64 ", should be between 0 and 4.",
-			name, obj->Integer.Value);
+			name, (uint64_t)obj->Integer.Value);
 		fwts_advice(fw,
 			"Smart Battery %s is incorrectly informing "
 			"the OS about the smart battery "
@@ -3496,7 +3497,7 @@ static void method_test_BIF_return(
 			"Method_BIFBadUnits",
 			"%s: Expected Power Unit (Element 0) to be "
 			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
-			name, obj->Package.Elements[0].Integer.Value);
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
 		failed = true;
 	}
 #ifdef FWTS_METHOD_PEDANDTIC
@@ -3530,7 +3531,7 @@ static void method_test_BIF_return(
 			"%s: Expected Battery Technology Unit "
 			"(Element 3) to be 0 (Primary) or 1 "
 			"(Secondary), got 0x%8.8" PRIx64 ".",
-			name, obj->Package.Elements[3].Integer.Value);
+			name, (uint64_t)obj->Package.Elements[3].Integer.Value);
 		failed = true;
 	}
 #ifdef FWTS_METHOD_PEDANDTIC
@@ -3634,7 +3635,7 @@ static void method_test_BIX_return(
 			"%s: Expected %s (Element 1) to be "
 			"0 (mWh) or 1 (mAh), got 0x%8.8" PRIx64 ".",
 			name, elements[1].name,
-			obj->Package.Elements[1].Integer.Value);
+			(uint64_t)obj->Package.Elements[1].Integer.Value);
 		failed = true;
 	}
 #ifdef FWTS_METHOD_PEDANDTIC
@@ -3671,7 +3672,7 @@ static void method_test_BIX_return(
 			"(Element 4) to be 0 (Primary) or 1 "
 			"(Secondary), got 0x%8.8" PRIx64 ".",
 			name, elements[4].name,
-			obj->Package.Elements[4].Integer.Value);
+			(uint64_t)obj->Package.Elements[4].Integer.Value);
 		failed = true;
 	}
 #ifdef FWTS_METHOD_PEDANDTIC
@@ -3782,7 +3783,7 @@ static void method_test_BST_return(
 			"Method_BSTBadState",
 			"%s: Expected Battery State (Element 0) to "
 			"be 0..7, got 0x%8.8" PRIx64 ".",
-			name, obj->Package.Elements[0].Integer.Value);
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
 		failed = true;
 	}
 	/* Ensure bits 0 (discharging) and 1 (charging) are not both set, see 10.2.2.6 */
@@ -3792,7 +3793,7 @@ static void method_test_BST_return(
 			"%s: Battery State (Element 0) is "
 			"indicating both charging and discharginng "
 			"which is not allowed. Got value 0x%8.8" PRIx64 ".",
-			name, obj->Package.Elements[0].Integer.Value);
+			name, (uint64_t)obj->Package.Elements[0].Integer.Value);
 		failed = true;
 	}
 	/* Battery Present Rate - cannot check, pulled from EC */
@@ -3937,7 +3938,7 @@ static void method_test_PSR_return(
 			"Method_PSRZeroOrOne",
 			"%s returned 0x%8.8" PRIx64 ", expected 0 "
 			"(offline) or 1 (online)",
-			name, obj->Integer.Value);
+			name, (uint64_t)obj->Integer.Value);
 	} else
 		method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
@@ -4125,7 +4126,7 @@ static void method_test_THERM_return(
 				"%s correctly returned sane looking "
 				"value 0x%8.8" PRIx64 " (%5.1f degrees K)",
 				method,
-				obj->Integer.Value,
+				(uint64_t)obj->Integer.Value,
 				(float)((uint64_t)obj->Integer.Value) / 10.0);
 		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -4134,7 +4135,7 @@ static void method_test_THERM_return(
 				"0 degrees C: 0x%8.8" PRIx64 " (%5.1f "
 				"degrees K)",
 				method,
-				obj->Integer.Value,
+				(uint64_t)obj->Integer.Value,
 				(float)((uint64_t)obj->Integer.Value) / 10.0);
 			fwts_advice(fw,
 				"The value returned was probably a "
@@ -4602,8 +4603,8 @@ static void method_test_BCL_return(
 			" power (%" PRIu64 ") is less than "
 				"brightness level when on "
 			"battery power (%" PRIu64 ").",
-			obj->Package.Elements[0].Integer.Value,
-			obj->Package.Elements[1].Integer.Value);
+			(uint64_t)obj->Package.Elements[0].Integer.Value,
+			(uint64_t)obj->Package.Elements[1].Integer.Value);
 		failed = true;
 	}
 
@@ -4616,8 +4617,8 @@ static void method_test_BCL_return(
 				"than brightness level %" PRIu64
 				" (index %d" PRIu32 "), should "
 				"be in ascending order.",
-				obj->Package.Elements[i].Integer.Value, i,
-				obj->Package.Elements[i+1].Integer.Value, i+1);
+				(uint64_t)obj->Package.Elements[i].Integer.Value, i,
+				(uint64_t)obj->Package.Elements[i+1].Integer.Value, i+1);
 			ascending_levels = true;
 			failed = true;
 		}
@@ -4633,14 +4634,16 @@ static void method_test_BCL_return(
 	}
 
 	fwts_log_info(fw, "Brightness levels for %s:" ,name);
-	fwts_log_info_verbatum(fw, "  Level on full power   : %" PRIu64, obj->Package.Elements[0].Integer.Value);
-	fwts_log_info_verbatum(fw, "  Level on battery power: %" PRIu64, obj->Package.Elements[1].Integer.Value);
+	fwts_log_info_verbatum(fw, "  Level on full power   : %" PRIu64,
+		(uint64_t)obj->Package.Elements[0].Integer.Value);
+	fwts_log_info_verbatum(fw, "  Level on battery power: %" PRIu64,
+		(uint64_t)obj->Package.Elements[1].Integer.Value);
 	for (i = 2; i < obj->Package.Count; i++) {
 		char tmp[12];
 
 		snprintf(tmp, sizeof(tmp), "%s%" PRIu64,
 			i == 2 ? "" : ", ",
-			obj->Package.Elements[i].Integer.Value);
+			(uint64_t)obj->Package.Elements[i].Integer.Value);
 		str = fwts_realloc_strcat(str, tmp);
 		if (!str)
 			break;

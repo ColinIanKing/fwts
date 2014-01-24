@@ -1,3 +1,20 @@
+fwts (14.01.01-0ubuntu0) trusty; urgency=low
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: add trusty
+  * debian: add dependency lts-saucy to fwts-efi-runtime-dkms
+
+  [Colin Ian King]
+  * fwts: add subdir-objects as required now by automake 1.14 (LP: #1268685)
+  * ACPICA: update to version 20140114 (LP: #1269423)
+  * fwts_log.h: remove LOG_TAG, fix up following bitfields (LP: #1269076)
+  * updated automake files for libjson-c (LP: #1268005)
+  * lib: fwts_framework: fix --stdout-summary output (LP: #1252186)
+  * Allow for RSDP that is not 16 byte aligned (LP: #1271522)
+  * fwts_exec: fix status check (LP: #1271607)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Fri, 24 Jan 2014 10:54:58 +0800
+
 fwts (14.01.00-0ubuntu1) trusty; urgency=low
 
   [Alex Hung]

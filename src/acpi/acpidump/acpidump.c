@@ -766,7 +766,7 @@ static void acpidump_xsdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
 	uint8_t *data = (uint8_t *)table->data;
-	size_t offset = 0, length = table->length;
+	size_t offset = 0;
 	int i = 0;
 	
 	static const fwts_acpidump_field fields[] = {
@@ -776,21 +776,47 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, fields, 0, length);
-	
-	data += sizeof(fwts_acpi_table_madt);	
-	length -= sizeof(fwts_acpi_table_madt);
+	static const char *types[] = {
+		"Processor Local APIC",		/* 0 */
+		"I/O APIC",			/* 1 */
+		"Interrupt Source Override",	/* 2 */
+		"Non-maskable Interrupt Source (NMI)", /* 3 */
+		"Local APIC NMI",		/* 4 */
+		"Local APIC Address Override",	/* 5 */
+		"I/O SAPIC",			/* 6 */
+		"Local SAPIC",			/* 7 */
+		"Platform Interrupt Sources",	/* 8 */
+		"Processor Local x2APIC",	/* 9 */
+		"Local x2APIC NMI",		/* 10 */
+		"GIC",				/* 11 */
+		"GIC Distributor",		/* 12 */
+		"OEM Defined"			/* 13 */
+	};
+	static const fwts_acpidump_field fields_sub_table_header[] = {
+		FIELD_STRS("  Type", fwts_acpi_madt_sub_table_header, type, types, 13),
+		FIELD_UINT("  Length", fwts_acpi_madt_sub_table_header, length),
+		FIELD_END
+	};
 
-	while (length > (int)sizeof(fwts_acpi_madt_sub_table_header)) {
+	acpi_dump_table_fields(fw, data, fields, 0, table->length);
+	
+	offset += sizeof(fwts_acpi_table_madt);
+	data += sizeof(fwts_acpi_table_madt);	
+
+
+	while (offset < table->length) {
 		int skip = 0;
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header *)data;
 
-		data += sizeof(fwts_acpi_madt_sub_table_header);
-		length -= sizeof(fwts_acpi_madt_sub_table_header);
-		offset += sizeof(fwts_acpi_madt_sub_table_header);
-		
-		fwts_log_nl(fw);
+		/* Check for unknown type or illegal size */
+		if (hdr->type > 12 || hdr->length < 6)
+			break;
+
 		fwts_log_info_verbatum(fw, "APIC Structure #%d:", ++i);
+		__acpi_dump_table_fields(fw, data, fields_sub_table_header, offset);
+
+		data += sizeof(fwts_acpi_madt_sub_table_header);
+		offset += sizeof(fwts_acpi_madt_sub_table_header);
 
 		switch (hdr->type) {
 		case 0: {
@@ -801,7 +827,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_BITF("   Enabled",    fwts_acpi_madt_processor_local_apic, flags, 1, 0),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Processor Local APIC:");
 				__acpi_dump_table_fields(fw, data, fields_processor_local_apic, offset);
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
@@ -813,7 +838,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, global_irq_base),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " I/O APIC:");
 				__acpi_dump_table_fields(fw, data, fields_io_apic, offset);
 				skip = sizeof(fwts_acpi_madt_io_apic);
 			}
@@ -824,9 +848,10 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Source", 		fwts_acpi_madt_interrupt_override, source),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_interrupt_override, gsi),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_interrupt_override, flags),
+					FIELD_BITF("   Polarity", 	fwts_acpi_madt_interrupt_override, flags, 2, 0),
+					FIELD_BITF("   Trigger Mode",	fwts_acpi_madt_interrupt_override, flags, 2, 2),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Interrupt Source Override:");
 				__acpi_dump_table_fields(fw, data, fields_madt_interrupt_override, offset);
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
@@ -837,7 +862,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_nmi, gsi),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Non-maskable Interrupt Source (NMI):");
 				__acpi_dump_table_fields(fw, data, fields_madt_nmi, offset);
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
@@ -849,7 +873,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Local APIC LINT", fwts_acpi_madt_local_apic_nmi, local_apic_lint),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Local APIC NMI:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_apic_nmi, offset);
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
@@ -859,7 +882,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Local APIC Address Override:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_apic_addr_override, offset);
 				skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
 			}
@@ -871,7 +893,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  I/O SAPIC Addr", 	fwts_acpi_madt_io_sapic, address),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " I/O SAPIC:");
 				__acpi_dump_table_fields(fw, data, fields_madt_io_sapic, offset);
 				skip = sizeof(fwts_acpi_madt_io_sapic);
 			}
@@ -887,7 +908,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  UID String", 	fwts_acpi_madt_local_sapic, uid_string),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Local SAPIC:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
 				skip = (sizeof(fwts_acpi_madt_local_sapic) +
 					strlen(local_sapic->uid_string) + 1);
@@ -904,7 +924,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  PIS Flags", 	fwts_acpi_madt_platform_int_source, pis_flags),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Platform Interrupt Sources:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
 				skip = (sizeof(fwts_acpi_madt_platform_int_source));
 			}
@@ -916,7 +935,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic, processor_uid),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Processor Local x2APIC:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic, offset);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic));
 			}
@@ -928,7 +946,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  LINT#", 		fwts_acpi_madt_local_x2apic_nmi, local_x2apic_lint),
 					FIELD_END
 				};
-				fwts_log_info_verbatum(fw, " Local x2APIC NMI:");
 				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic_nmi, offset);
 				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
 			}
@@ -944,7 +961,6 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
 					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
 				};
-				fwts_log_info_verbatum(fw, " GIC:");
 				__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
 				skip = (sizeof(fwts_acpi_madt_gic));
 			}
@@ -957,19 +973,16 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Sys Vector Base",	fwts_acpi_madt_gicd, system_vector_base),
 					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved2),
 				};
-				fwts_log_info_verbatum(fw, " GIC Distributor:");
 				__acpi_dump_table_fields(fw, data, fields_madt_gicd, offset);
 				skip = (sizeof(fwts_acpi_madt_gicd));
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, " Reserved for OEM use:");
 			skip = 0;
 			break;
 		}
 		data   += skip;
 		offset += skip;
-		length -= skip;
 	}
 }
 

@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -50,7 +51,7 @@ typedef struct {
 static int number_of_speeds = -1;
 static int total_tests = 1;
 static int performed_tests = 0;
-static int no_cpufreq = 0;
+static bool no_cpufreq = false;
 static uint64_t top_speed = 0;
 static int num_cpus;
 
@@ -58,29 +59,13 @@ static int num_cpus;
 #define GET_PERFORMANCE_MIN (1)
 #define GET_PERFORMANCE_AVG (2)
 
-static void cpu_mkpath(
+static inline void cpu_mkpath(
 	char *const path,
 	const int len,
 	const int cpu,
 	const char *const name)
 {
 	snprintf(path, len, "%s/cpu%i/cpufreq/%s", FWTS_CPU_PATH, cpu, name);
-}
-
-static int count_ints(char *text)
-{
-	char *str = text;
-	int count = 0;
-
-	while (str && strlen(str) > 0) {
-		char *str2 = strchr(str, ' ');
-		if (!str2)
-			break;
-		str = str2 + 1;
-		count++;
-	}
-
-	return count;
 }
 
 static void set_governor(fwts_framework *fw, const int cpu)
@@ -92,8 +77,8 @@ static void set_governor(fwts_framework *fw, const int cpu)
 	if (fwts_set("userspace", path) != FWTS_OK) {
 		if (!no_cpufreq) {
 			fwts_warning(fw,
-				"Frequency scaling not supported.");
-			no_cpufreq = 1;
+				"Cannot set CPU scaling governor to userspace scaling.");
+			no_cpufreq = true;
 		}
 	}
 }
@@ -130,7 +115,6 @@ static void set_HZ(fwts_framework *fw, const int cpu, const uint32_t Hz)
 	fwts_set(buffer, path);
 
 	sched_setaffinity(0, sizeof(oldset), &oldset);
-
 }
 
 #ifdef FWTS_ARCH_INTEL
@@ -187,7 +171,7 @@ static int get_performance_repeat(
 }
 #endif
 
-static char *HzToHuman(const uint32_t hz)
+static char *hz_to_human(const uint32_t hz)
 {
 	static char buffer[32];
 	unsigned long long Hz;
@@ -246,48 +230,23 @@ static int cpu_freq_compare(const void *v1, const void *v2)
 	return cpu_freq1->Hz - cpu_freq2->Hz;
 }
 
-static void do_cpu(fwts_framework *fw, const int cpu)
+static int read_freqs_available(const int cpu, fwts_cpu_freq *freqs)
 {
 	char path[PATH_MAX];
 	char line[4096];
-	fwts_cpu_freq freqs[MAX_FREQS];
 	FILE *file;
 	char *c, *c2;
-	int i;
-	int speedcount;
-	static int warned = 0;
-	bool warned_PSS = false;
-	uint64_t cpu_top_speed = 0;
-	int claimed_hz_too_low = 0;
-	int bios_limit_too_low = 0;
-	const uint32_t claimed_hz = get_claimed_hz(cpu);
-	const uint32_t bios_limit = get_bios_limit(cpu);
+	int i = 0;
 
-	memset(freqs, 0, sizeof(freqs));
 	memset(line, 0, sizeof(line));
-
-	set_governor(fw, cpu);
-
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
-	if ((file = fopen(path, "r")) == NULL) {
-		if (!no_cpufreq) {
-			fwts_warning(fw, "Frequency scaling not supported.");
-			no_cpufreq = 1;
-		}
-		return;
-	}
-	if (fgets(line, 4095, file) == NULL) {
-		fclose(file);
-		return;
-	}
+	if ((file = fopen(path, "r")) == NULL)
+		return 0;
+	c = fgets(line, 4095, file);
 	fclose(file);
+	if (!c)
+		return 0;
 
-	if (total_tests == 1)
-		total_tests = (2 + count_ints(line)) *
-			num_cpus + 2;
-
-	c = line;
-	i = 0;
 	while ((i < MAX_FREQS) && c && strlen(c) > 1) {
 		c2 = strchr(c, ' ');
 		if (c2) {
@@ -297,6 +256,49 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 			c2 = NULL;
 
 		freqs[i].Hz = strtoull(c, NULL, 10);
+		c = c2;
+		i++;
+	}
+	return i;
+}
+
+static void do_cpu(fwts_framework *fw, const int cpu)
+{
+	fwts_cpu_freq freqs[MAX_FREQS];
+	int i, speedcount;
+	static int warned = 0;
+	bool warned_PSS = false;
+	uint64_t cpu_top_speed = 0;
+	int claimed_hz_too_low = 0;
+	int bios_limit_too_low = 0;
+	const uint32_t claimed_hz = get_claimed_hz(cpu);
+	const uint32_t bios_limit = get_bios_limit(cpu);
+
+	memset(freqs, 0, sizeof(freqs));
+	set_governor(fw, cpu);
+
+	if ((speedcount = read_freqs_available(cpu, freqs)) == 0) {
+		if (!no_cpufreq) {
+			char path[PATH_MAX];
+			char *driver;
+
+			no_cpufreq = true;
+			fwts_warning(fw, "CPU frequency scaling not supported.");
+
+			cpu_mkpath(path, sizeof(path), cpu, "scaling_driver");
+			driver = fwts_get(path);
+			if (driver) {
+				fwts_advice(fw, "Scaling driver '%s' is enabled and this "
+					"does not seem to allow CPU frequency scaling.", driver);
+				free(driver);
+			}
+		}
+		return;
+	}
+	if (total_tests == 1)
+		total_tests = ((2 + speedcount) * num_cpus) + 2;
+
+	for (i = 0; i < speedcount; i++) {
 		set_HZ(fw, cpu, freqs[i].Hz);
 
 		if ((claimed_hz != 0) && (claimed_hz < freqs[i].Hz))
@@ -314,11 +316,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 
 		performed_tests++;
 		fwts_progress(fw, 100 * performed_tests/total_tests);
-
-		i++;
-		c = c2;
 	}
-	speedcount = i;
 
 	if (cpu_top_speed > top_speed)
 		top_speed = cpu_top_speed;
@@ -331,7 +329,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 			"There were %d CPU frequencies larger than the _PSS "
 			"maximum CPU frequency of %s for CPU %d. Has %s "
 			"been set too low?",
-			claimed_hz_too_low, HzToHuman(claimed_hz), cpu, path);
+			claimed_hz_too_low, hz_to_human(claimed_hz), cpu, path);
 	}
 
 	if (bios_limit_too_low) {
@@ -341,7 +339,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 		fwts_warning(fw,
 			"The CPU frequency BIOS limit %s for CPU %d was set to %s "
 			"which is lower than some of the ACPI scaling frequencies.",
-			path, cpu, HzToHuman(bios_limit));
+			path, cpu, hz_to_human(bios_limit));
 	}
 
 	if (claimed_hz_too_low || bios_limit_too_low)
@@ -352,7 +350,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
 	for (i = 0; i < speedcount; i++)
 		fwts_log_info_verbatum(fw, "%10s |     %5.1f %%    | %9" PRIu64,
-			HzToHuman(freqs[i].Hz),
+			hz_to_human(freqs[i].Hz),
 			100.0 * freqs[i].speed/cpu_top_speed,
 			freqs[i].speed);
 
@@ -384,8 +382,8 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 				"Supposedly higher frequency %s is slower (%" PRIu64
 				" bogo loops) than frequency %s (%" PRIu64
 				" bogo loops) on CPU %i.",
-				HzToHuman(freqs[i+1].Hz), freqs[i+1].speed,
-				HzToHuman(freqs[i].Hz), freqs[i].speed,
+				hz_to_human(freqs[i+1].Hz), freqs[i+1].speed,
+				hz_to_human(freqs[i].Hz), freqs[i].speed,
 				cpu);
 
 		if ((freqs[i].Hz > claimed_hz) && !warned_PSS) {

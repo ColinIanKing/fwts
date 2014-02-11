@@ -1,0 +1,17 @@
+acpitables      acpitables: ACPI table settings sanity tests.
+acpitables      ----------------------------------------------------------
+acpitables      Test 1 of 1: Test ACPI tables.
+acpitables      PASSED: Test 1, Table APIC passed.
+acpitables      Table ECDT not present to check.
+acpitables      PASSED: Test 1, Table FACP passed.
+acpitables      PASSED: Test 1, Table HPET passed.
+acpitables      PASSED: Test 1, Table MCFG passed.
+acpitables      PASSED: Test 1, Table RSDT passed.
+acpitables      PASSED: Test 1, Table RSDP passed.
+acpitables      Table SBST not present to check.
+acpitables      PASSED: Test 1, Table XSDT passed.
+acpitables      
+acpitables      ==========================================================
+acpitables      7 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+acpitables      info only.
+acpitables      ==========================================================

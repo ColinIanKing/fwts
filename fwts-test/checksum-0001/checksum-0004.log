@@ -1,0 +1,114 @@
+checksum        checksum: ACPI table checksum test.
+checksum        --------------------------------------------------------------------------------------------------
+checksum        Test 1 of 1: ACPI table checksum test.
+checksum        PASSED: Test 1, Table DSDT has correct checksum 0x11.
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table FACP has incorrect checksum, expected 0x52, got
+checksum        0x53.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table APIC has incorrect checksum, expected 0xcc, got
+checksum        0xcb.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table HPET has incorrect checksum, expected 0x0a, got
+checksum        0x09.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table MCFG has incorrect checksum, expected 0x32, got
+checksum        0x33.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table TCPA has incorrect checksum, expected 0x8f, got
+checksum        0xff.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table TMOR has incorrect checksum, expected 0xeb, got
+checksum        0xbe.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SLIC has incorrect checksum, expected 0x99, got
+checksum        0x88.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table APIC has incorrect checksum, expected 0x13, got
+checksum        0x12.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table BOOT has incorrect checksum, expected 0xa5, got
+checksum        0xa6.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SSDT has incorrect checksum, expected 0x59, got
+checksum        0x01.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SSDT has incorrect checksum, expected 0xed, got
+checksum        0xef.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SSDT has incorrect checksum, expected 0xc8, got
+checksum        0x00.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SSDT has incorrect checksum, expected 0x6d, got
+checksum        0xdd.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table SSDT has incorrect checksum, expected 0xdf, got
+checksum        0xde.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        FAILED [MEDIUM] ACPITableChecksum: Test 1, Table XSDT has incorrect checksum, expected 0xc2, got
+checksum        0xc3.
+checksum        
+checksum        ADVICE: The kernel will warn that this table has an invalid checksum but will ignore the error and
+checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
+checksum        messages.
+checksum        
+checksum        PASSED: Test 1, Table RSDT has correct checksum 0xd.
+checksum        
+checksum        ==================================================================================================
+checksum        4 passed, 15 failed, 0 warning, 0 aborted, 0 skipped, 0 info only.
+checksum        ==================================================================================================

@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+TEST="Test -T to load dumped tables produced by acpixtract"
+NAME=test-0002.sh
+TMPLOG=$TMP/acpidump.log.$$
+SORTED=$TMP/acpidump.log.sorted
+HERE=`pwd`
+
+#
+# Unfortunately we can pull in the tables in different order depending
+# on the way the tables are stored in the directory. Since we only care
+# about output content and not necessary table order, we sort and uniq
+# the output before we diff.
+#
+$FWTS --log-format="%line %owner " -w 80 -t $HERE acpidump - | grep "^[0-9]*[ ]*acpidump" | cut -c7- | sort | uniq > $TMPLOG
+sort acpidump-0001.log > $SORTED
+diff $TMPLOG $SORTED >> $FAILURE_LOG
+ret=$?
+if [ $ret -eq 0 ]; then 
+	echo PASSED: $TEST, $NAME
+else
+	echo FAILED: $TEST, $NAME
+fi
+
+rm $TMPLOG $SORTED
+exit $ret

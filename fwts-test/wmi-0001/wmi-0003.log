@@ -1,0 +1,59 @@
+wmi             wmi: Extract and analyse Windows Management
+wmi             Instrumentation (WMI).
+wmi             ----------------------------------------------------------
+wmi             Test 1 of 1: Windows Management Instrumentation test.
+wmi             
+wmi             \_SB_.AMW0._WDG (1 of 6)
+wmi               GUID: 8D9DDCBC-A997-11DA-B012-B622A1EF5492
+wmi               WMI Object:
+wmi                 Flags          : 0x00 (None)
+wmi                 Object ID      : AA
+wmi                 Instance       : 0x01
+wmi             
+wmi             \_SB_.AMW0._WDG (2 of 6)
+wmi               GUID: A80593CE-A997-11DA-B012-B622A1EF5492
+wmi               WMI Method:
+wmi                 Flags          : 0x02 (Method)
+wmi                 Object ID      : BA
+wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, A80593CE-A997-11DA-B012-B622A1EF5492 has
+wmi             associated method \_SB_.AMW0.WMBA
+wmi             
+wmi             \_SB_.AMW0._WDG (3 of 6)
+wmi               GUID: DD8C7670-1CB5-11DB-A98B-669A0C200008
+wmi               WMI Method:
+wmi                 Flags          : 0x02 (Method)
+wmi                 Object ID      : BC
+wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, DD8C7670-1CB5-11DB-A98B-669A0C200008 has
+wmi             associated method \_SB_.AMW0.WMBC
+wmi             
+wmi             \_SB_.AMW0._WDG (4 of 6)
+wmi               GUID: 9DBB5994-A997-11DA-B012-B622A1EF5492
+wmi               WMI Event:
+wmi                 Flags          : 0x08 (Event)
+wmi                 Notification ID: 0xd0
+wmi                 Reserved       : 0x00
+wmi                 Instance       : 0x01
+wmi                 Driver         : dell-wmi (Dell)
+wmi             
+wmi             \_SB_.AMW0._WDG (5 of 6)
+wmi               GUID: A3776CE0-1E88-11DB-A98B-0800200C9A66
+wmi               WMI Object:
+wmi                 Flags          : 0x00 (None)
+wmi                 Object ID      : BC
+wmi                 Instance       : 0x01
+wmi             
+wmi             \_SB_.AMW0._WDG (6 of 6)
+wmi               GUID: 05901221-D566-11D1-B2F0-00A0C9062910
+wmi               WMI Object:
+wmi                 Flags          : 0x00 (None)
+wmi                 Object ID      : MO
+wmi                 Instance       : 0x01
+wmi             PASSED: Test 1, All events associated with \_SB_.AMW0._WDG
+wmi             are handled by a kernel driver.
+wmi             
+wmi             ==========================================================
+wmi             3 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wmi             info only.
+wmi             ==========================================================

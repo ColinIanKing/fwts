@@ -1,0 +1,10 @@
+klog            klog: Scan kernel log for errors and warnings.
+klog            ----------------------------------------------------------
+klog            Test 1 of 1: Kernel log error check.
+klog            Cannot read file /xxxx/fooo/klog.json.
+klog            Error parsing kernel log.
+klog            
+klog            ==========================================================
+klog            0 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+klog            info only.
+klog            ==========================================================

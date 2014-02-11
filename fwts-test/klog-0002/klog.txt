@@ -1,0 +1,11 @@
+[ 0.408874] CPU1: Temperature above threshold, cpu clock throttled (total events = 1)
+[ 0.728985] Disabling IRQ #15
+[ 0.734767] Disabling IRQ #11
+[ 0.768555] CPU3: Temperature above threshold, cpu clock throttled (total events = 1)
+[ 1.128275] CPU5: Temperature above threshold, cpu clock throttled (total events = 1)
+[ 1.487778] CPU7: Temperature above threshold, cpu clock throttled (total events = 1)
+[ 2.131632] Disabling IRQ #16
+[ 3.220411] Disabling IRQ #18
+[ 10.027255] CPU0: Temperature above threshold, cpu clock throttled (total events = 1)
+[ 11.592319] CPU1: Temperature above threshold, cpu clock throttled (total events = 2)
+[ 17.353310] Disabling IRQ #10

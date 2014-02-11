@@ -1,0 +1,14 @@
+osilinux        osilinux: Disassemble DSDT to check for _OSI("Linux").
+osilinux        ----------------------------------------------------------
+osilinux        Test 1 of 1: Disassemble DSDT to check for _OSI("Linux").
+osilinux        This is not strictly a failure mode, it just alerts one
+osilinux        that this has been defined in the DSDT and probably should
+osilinux        be avoided since the Linux ACPI driver matches onto the
+osilinux        Windows _OSI strings
+osilinux        PASSED: Test 1, DSDT does not implement a deprecated
+osilinux        _OSI("Linux") test.
+osilinux        
+osilinux        ==========================================================
+osilinux        1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+osilinux        info only.
+osilinux        ==========================================================

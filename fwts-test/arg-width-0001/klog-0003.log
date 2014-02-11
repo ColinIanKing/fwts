@@ -1,0 +1,8 @@
+klog            klog: Scan kernel log for errors and warnings.
+klog            ------------------------------------------------------------------------------
+klog            Test 1 of 1: Kernel log error check.
+klog            PASSED: Test 1, Found no errors in kernel log.
+klog            
+klog            ==============================================================================
+klog            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only.
+klog            ==============================================================================

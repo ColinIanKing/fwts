@@ -1,0 +1,160 @@
+acpitables      acpitables: ACPI table settings sanity tests.
+acpitables      ----------------------------------------------------------
+acpitables      Test 1 of 1: Test ACPI tables.
+acpitables      Table APIC not present to check.
+acpitables      Table ECDT not present to check.
+acpitables      Table FACP not present to check.
+acpitables      Table HPET not present to check.
+acpitables      Table MCFG not present to check.
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 1 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 2 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 3 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 4 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 5 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 6 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 7 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 8 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 9 is null,
+acpitables      should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 10 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 11 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 12 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 13 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 14 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 15 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 16 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 17 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 18 is null
+acpitables      , should not be non-zero.
+acpitables      
+acpitables      ADVICE: A RSDT pointer is null and therefore erroneously
+acpitables      points to an invalid 32 bit ACPI table header. At worse
+acpitables      this will cause the kernel to oops, at best the kernel may
+acpitables      ignore this. However, it should be fixed where possible.
+acpitables      
+acpitables      PASSED: Test 1, Table RSDP passed.
+acpitables      Table SBST not present to check.
+acpitables      PASSED: Test 1, Table XSDT passed.
+acpitables      
+acpitables      ==========================================================
+acpitables      2 passed, 18 failed, 0 warning, 0 aborted, 0 skipped, 0
+acpitables      info only.
+acpitables      ==========================================================

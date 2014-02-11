@@ -1,0 +1,1589 @@
+[ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
+[ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008020/0000000000008028, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 0x00008020/0x0000000000008028, using 32 (20110112/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 00008030/0000000000008020, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 00008800/0000000000008100, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 0x00000900/0x0000000000000800, using 32 (20110112/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 0x00001218/0x0000000000001214, using 32 (20100428/tbfadt-427)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 0x00001218/0x0000000000001214, using 32 (20110413/tbfadt-430)
+[ 0.000000] ACPI Error: 32/64X address mismatch in Pm2ControlBlock: 0x00008800/0x0000000000008100, using 32 (20110112/tbfadt-427)
+[ 0.000000] ACPI Error: A valid RSDP was not found (20090903/tbxfroot-219)
+[ 0.000000] ACPI Error: A valid RSDP was not found (20100428/tbxfroot-219)
+[ 0.000000] ACPI Error: A valid RSDP was not found (20110112/tbxfroot-219)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! 20090521 tbfadt-370
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20090903/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20100121/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20100428/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20100702/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20101013/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20110112/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20110316/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20110413/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3776BF40/0x000000003776ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x38FE4E40/0x0000000038FE4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x38FE4E40/0x0000000038FE4D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F465F40/0x000000003F465F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F473F40/0x000000003F473F80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F509F40/0x000000003F509F80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F509F40/0x000000003F509F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F611E40/0x000000003F611D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F611E40/0x000000003F611D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3F611E40/0x000000003F611D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x6FB75F40/0x000000006FB75F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x77603F40/0x0000000077603F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x77603F40/0x0000000077603F80, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7762DF40/0x000000007762DF80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x77630F40/0x0000000077630F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7776BF40/0x000000007776ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7776BF40/0x000000007776ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x78FE4E40/0x0000000078FE4D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7A7E4E40/0x000000007A7E4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7BE20F40/0x000000007BE20F80, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7D7E4E40/0x000000007D7E4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7D8C4F40/0x000000007D8C5E40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7F611E40/0x000000007F611D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7FCEBF40/0x000000007FCE7F40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x7FD5AF40/0x000000007FD5FF40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAAD87F40/0x00000000AADA1D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAAD87F40/0x00000000AADA1D40, using 32 (20110316/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAAD87F40/0x00000000AADA1D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAADB7F40/0x00000000AADD1D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAADB7F40/0x00000000AADD1D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAADB9F40/0x00000000AADD3D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAAF2AF40/0x00000000AAF2DD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAAFE4E40/0x00000000AAFE4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAB62DF40/0x00000000AB62DF80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAB62DF40/0x00000000AB62DF80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xAFB77F40/0x00000000AFB77F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB5F17E40/0x00000000B5F17D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB5F1BE40/0x00000000B5F1BD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB6D5AF40/0x00000000B6D61D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB6DB9F40/0x00000000B6DD3D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB762CF40/0x00000000B762CF80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB7B1CE40/0x00000000B7B1CD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB7B1CE40/0x00000000B7B1CD40, using 32 (20110316/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB7B1CE40/0x00000000B7B1CD40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xB8FE4E40/0x00000000B8FE4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBAD17F40/0x00000000BAD31D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBAD87F40/0x00000000BADA1D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBADABF40/0x00000000BADAED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBADABF40/0x00000000BADAED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBAF1CF40/0x00000000BAF1FD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBAFE4E40/0x00000000BAFE4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBAFE5E40/0x00000000BAFE5D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB4D1F40/0x00000000BB4DFD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB583F40/0x00000000BB59DD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB583F40/0x00000000BB59DD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB5B3F40/0x00000000BB5CDD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB5B3F40/0x00000000BB5CDD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB5B3F40/0x00000000BB5CDD40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB62CF40/0x00000000BB62CF80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB62DF40/0x00000000BB62DF80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB648F40/0x00000000BB64BD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB649F40/0x00000000BB64CD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBB76BF40/0x00000000BB76ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBBE27F40/0x00000000BBE27F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBBE27F40/0x00000000BBE27F80, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBBE29F40/0x00000000BBE29F80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDB65F40/0x00000000BDB6BE40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF17E40/0x00000000BDF17D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF18E40/0x00000000BDF18D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF19E40/0x00000000BDF19D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF19E40/0x00000000BDF19D40, using 32 (20101013/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF19E40/0x00000000BDF19D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBDF1AE40/0x00000000BDF1AD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBE97CF40/0x00000000BE996D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBEDB7F40/0x00000000BEDD1D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBEDB8F40/0x00000000BEDD1D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBEDB8F40/0x00000000BEDD1D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBEDB9F40/0x00000000BEDD3D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBF4D1F40/0x00000000BF4DFD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBF62CF40/0x00000000BF62CF80, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBF62DF40/0x00000000BF62DF80, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBF654F40/0x00000000BF662D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBF7E4E40/0x00000000BF7E4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBFA4CF40/0x00000000BFA51F40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBFA4CF40/0x00000000BFA51F40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBFE17E40/0x00000000BFE17D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xBFE21F40/0x00000000BFE21E40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xC9E58F40/0x00000000C9E6ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCAB39F40/0x00000000CAB3CD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCAFE4E40/0x00000000CAFE4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCAFE4E40/0x00000000CAFE4D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCAFE5E40/0x00000000CAFE5D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCB61DF40/0x00000000CB61DE40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCB61DF40/0x00000000CB61DE40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCBE4CF40/0x00000000CBE51F40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCBE4CF40/0x00000000CBE51F40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCBF6BF40/0x00000000CBF6ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF27F40/0x00000000CEF2AD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF27F40/0x00000000CEF2AD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF27F40/0x00000000CEF2AD40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF28F40/0x00000000CEF2BD40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF28F40/0x00000000CEF2BD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF2BF40/0x00000000CEF2ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCEF2BF40/0x00000000CEF2ED40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF36BF40/0x00000000CF36ED40, using 32 (20100702/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF36BF40/0x00000000CF36ED40, using 32 (20101013/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF76BF40/0x00000000CF76ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF76BF40/0x00000000CF76ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF7E4E40/0x00000000CF7E4D40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF7E4E40/0x00000000CF7E4D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCF7E4E40/0x00000000CF7E4D40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCFBFAF40/0x00000000CFBF6F40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCFD56F40/0x00000000CFD52F40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xCFD5FF40/0x00000000CFD65E40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xD2F2DF40/0x00000000D2F30D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDB36BF40/0x00000000DB36ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDB36BF40/0x00000000DB36ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDB76BF40/0x00000000DB76ED40, using 32 (20100428/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDB76BF40/0x00000000DB76ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDB76BF40/0x00000000DB76ED40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDEB39F40/0x00000000DEB3CD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDEB3AF40/0x00000000DEB3DD40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDEEBAF40/0x00000000DEEBDD40, using 32 (20110413/tbfadt-489)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDEF2DF40/0x00000000DEF30D40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0xDF64BF40/0x00000000DF64ED40, using 32 (20110112/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 3762DF40/000000003762DF80, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 3F611E40/000000003F611D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 7776BF40/000000007776ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 7DB61F40/000000007DB66F40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 7F3ECF40/000000007F3E8F40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 7F611E40/000000007F611D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 9DCC4F40/000000009DCC5E40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - AFB75F40/00000000AFB75F80, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - B7B1CE40/00000000B7B1CD40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - B7B1CE40/00000000B7B1CD40, using 32 (20100121/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BADABF40/00000000BADAED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BAF2DF40/00000000BAF30D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BB62DF40/00000000BB62DF80, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BB76BF40/00000000BB76ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BBE28E40/00000000BBE28D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BDB5BF40/00000000BDB60F40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BDB5FF40/00000000BDB64F40, using 32 20090521 tbfadt-487
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BDF17E40/00000000BDF17D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BEDB7F40/00000000BEDD1D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BF62CF40/00000000BF62CF80, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - BF76BF40/00000000BF76ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - CBE4AF40/00000000CBE4FF40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - CBF6BF40/00000000CBF6ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - CEF28F40/00000000CEF2BD40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - CEF2CF40/00000000CEF2FD40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - D2F2DF40/00000000D2F30D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DADC1F40/00000000DADD5D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DB36BF40/00000000DB36ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DB76BF40/00000000DB76ED40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DEEBAF40/00000000DEEBDD40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DEF2DF40/00000000DEF30D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 20090521 tbfadt-527
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 (20090903/tbfadt-526)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 (20100428/tbfadt-526)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 (20101013/tbfadt-526)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 (20110112/tbfadt-526)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 (20110413/tbfadt-529)
+[ 0.000000] ACPI Warning: BIOS XSDT has NULL entry, using RSDT (20110112/tbutils-663)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x3E, should be 0x41 (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x65, should be 0x68 (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x69, should be 0x6C (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x69, should be 0x6C (20110413/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x9E, should be 0xA1 (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0xDF, should be 0xE2 (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0xE4, should be 0xE7 (20110112/tbutils-314)
+[ 0.000000] ACPI Warning: Incorrect checksum in table [XSDT] - 0x89, should be 0x7D (20110413/tbutils-314)
+[ 0.000000] ACPI Warning: Invalid length for Pm1aControlBlock: 32, using default 16 (20090903/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm1aControlBlock: 32, using default 16 (20100428/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm1aControlBlock: 32, using default 16 (20110112/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm1aControlBlock: 32, using default 16 (20110413/tbfadt-610)
+[ 0.000000] ACPI Warning: Invalid length for Pm1bControlBlock: 32, using default 16 (20090903/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 0, using default 8 (20090903/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 0, using default 8 (20100428/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 0, using default 8 (20110112/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 16, using default 8 (20100428/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 16, using default 8 (20110112/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 16, using default 8 (20110413/tbfadt-610)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 32, using default 8 (20090903/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for Pm2ControlBlock: 32, using default 8 (20110112/tbfadt-607)
+[ 0.000000] ACPI Warning: Invalid length for PmTimerBlock: 24, using default 32 (20100428/tbfadt-607)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 000000000000102C/0 20090521 tbfadt-558
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 000000000000102C/0 (20090903/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 000000000000802C/0 (20090903/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x0000000000000000/0x4 (20110413/tbfadt-560)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x000000000000102C/0x0 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x000000000000102C/0x0 (20101013/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x000000000000102C/0x0 (20110112/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x000000000000102C/0x0 (20110413/tbfadt-560)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 0x00000000000044A0/0x0 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0000000000000000/1 20090521 tbfadt-558
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0000000000000000/1 (20090903/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0000000000000050/0 (20090903/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000000/0x1 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000000/0x1 (20101013/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000000/0x1 (20110112/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000000/0x1 (20110413/tbfadt-560)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000450/0x0 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000450/0x0 (20110112/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000814/0x0 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000820/0x0 (20100428/tbfadt-557)
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0x0000000000000820/0x0 (20110112/tbfadt-557)
+[ 0.000000] ACPI Warning (tbfadt-0460): Optional field "Gpe1Block" has zero address or length: 000000000000102C/0 [20080926]
+[ 0.000000] mtrr: your BIOS has configured an incorrect mask, fixing it.
+[ 0.000000] WARNING: BIOS bug: CPU MTRRs don't cover all of memory, losing 1408MB of RAM.
+[ 0.000000] WARNING: BIOS bug: CPU MTRRs don't cover all of memory, losing 4MB of RAM.
+[ 0.022719] ACPI Error: Found unknown opcode 0xFD at AML address f7ffe14c offset 0xE8, ignoring (20110112/psloop-141)
+[ 0.025446] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x00BE (20110112/psloop-526)
+[ 0.025463] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x00C3 (20110112/psloop-526)
+[ 0.034090] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ee025630), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.040119] [Firmware Bug]: the BIOS has corrupted hw-PMU resources (MSR 186 is 400000)
+[ 0.042222] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x2366 (20100121/psloop-526)
+[ 0.042240] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x006C (20090903/psloop-522)
+[ 0.042253] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x006F (20090903/psloop-522)
+[ 0.042265] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x0070 (20090903/psloop-522)
+[ 0.042279] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x0077 (20090903/psloop-522)
+[ 0.042291] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x007C (20090903/psloop-522)
+[ 0.042302] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x007D (20090903/psloop-522)
+[ 0.042311] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x007F (20090903/psloop-522)
+[ 0.042322] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x0080 (20090903/psloop-522)
+[ 0.044066] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x678F (20100428/psloop-526)
+[ 0.045570] ACPI Warning: For _SB_.PCI0.LPCB.H_EC._GLK: Parameter count mismatch - ASL declared 1, ACPI requires 0 (20110112/nspredef-352)
+[ 0.050847] ACPI Warning: Package List length (0x10) larger than NumElements count (0x8), truncated
+[ 0.053909] ACPI Warning: Package List length (0x10) larger than NumElements count (0x6), truncated
+[ 0.074070] ACPI Error: The DSDT has been corrupted or replaced - old, new headers below (20110413/tbutils-372)
+[ 0.074090] ACPI Error: Please send DMI info to linux-acpi@vger.kernel.org
+[ 0.076767] ACPI Warning: Incorrect checksum in table [OEMB] - 0xA6, should be 0x97 (20100428/tbutils-314)
+[ 0.077157] ACPI Warning: Incorrect checksum in table [OEMB] - 0x4C, should be 0x21 (20100428/tbutils-314)
+[ 0.077854] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c250d8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.078226] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.APCT] (Node f7033090), AE_NO_MEMORY
+[ 0.078254] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.GCAP] (Node f7033078), AE_NO_MEMORY
+[ 0.078268] ACPI Warning: Incorrect checksum in table [OEMB] - 07, should be 06 (20090903/tbutils-314)
+[ 0.078278] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f7033048), AE_NO_MEMORY
+[ 0.078686] ACPI Warning: Incorrect checksum in table [OEMB] - 0x38, should be 0x81 (20110413/tbutils-314)
+[ 0.083817] ACPI Warning: Incorrect checksum in table [OEMB] - 0xF9, should be 0xF3 (20100428/tbutils-314)
+[ 0.085590] ACPI Error: Could not map memory at 0x000000007F5E3520, size 463 (20110112/exregion-178)
+[ 0.085606] ACPI Error: Method parse/execution failed [_PR_.CPU1.APPT] (Node f403d228), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.085618] ACPI Error: Method parse/execution failed [_PR_.CPU1.GCAP] (Node f403d1f8), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.085627] ACPI Error: Could not map memory at 0x000000007D3E1520, size 463 (20110112/exregion-178)
+[ 0.085628] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node f403d1c8), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.085974] ACPI Warning: Incorrect checksum in table [OEMB] - 0x6B, should be 0x39 (20110112/tbutils-314)
+[ 0.086054] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x96 (20110112/tbutils-314)
+[ 0.086081] ACPI Error: Could not map memory at 0x000000007F395420, size 141 (20110112/exregion-178)
+[ 0.086097] ACPI Error: Method parse/execution failed [_PR_.CPU1.APCT] (Node f403d210), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.086108] ACPI Error: Method parse/execution failed [_PR_.CPU2.GCAP] (Node f403d270), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.086118] ACPI Error: Method parse/execution failed [_PR_.CPU2._PDC] (Node f403d240), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.086119] ACPI Error: Could not map memory at 0x000000007D198120, size 141 (20110112/exregion-178)
+[ 0.088999] ACPI Warning: Incorrect checksum in table [OEMB] - 0xE8, should be 0xDB (20100428/tbutils-314)
+[ 0.089613] ACPI Warning: Incorrect checksum in table [OEMB] - 0xB3, should be 0xAE (20100428/tbutils-314)
+[ 0.089701] ACPI Warning: Incorrect checksum in table [OEMB] - 0x77, should be 0x6C (20100428/tbutils-314)
+[ 0.091402] ACPI Warning: Package List length (0x7) larger than NumElements count (0x3), truncated
+[ 0.091463] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.APPT] (Node f701e228), AE_INVALID_TABLE_LENGTH
+[ 0.091510] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.GCAP] (Node f701e1f8), AE_INVALID_TABLE_LENGTH
+[ 0.091541] ACPI Warning: Incorrect checksum in table [OEMB] - F6, should be E7 (20090903/tbutils-314)
+[ 0.091552] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f701e1c8), AE_INVALID_TABLE_LENGTH
+[ 0.091778] ACPI Warning: Incorrect checksum in table [OEMB] - 8E, should be 7F (20090903/tbutils-314)
+[ 0.091911] ACPI Warning: Incorrect checksum in table [APIC] - 0x8E, should be 0x91 (20110112/tbutils-314)
+[ 0.092524] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.APCT] (Node f701e210), AE_NO_MEMORY
+[ 0.092570] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2.GCAP] (Node f701e270), AE_NO_MEMORY
+[ 0.092612] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node f701e240), AE_NO_MEMORY
+[ 0.093544] ACPI Error: Needed type [Reference], found [Device] f7019f90 (20100428/exresop-104)
+[ 0.094477] ACPI Warning: Incorrect checksum in table [OEMB] - 0x97, should be 0x90 (20100428/tbutils-314)
+[ 0.094856] [Firmware Bug]: ACPI: No _BQC method, cannot determine initial brightness
+[ 0.095719] ACPI Error: Could not map memory at 0x0000000087127520, size 463 (20110112/exregion-178)
+[ 0.095737] ACPI Error: Method parse/execution failed [_PR_.CPU1.APPT] (Node f383e498), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.095749] ACPI Error: Method parse/execution failed [_PR_.CPU1.GCAP] (Node f383e468), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.095760] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node f383e438), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.095817] [Firmware Bug]: ACPI: ACPI brightness control misses _BQC function
+[ 0.096257] ACPI Error: Could not map memory at 0x0000000086DB1C20, size 141 (20110112/exregion-178)
+[ 0.096273] ACPI Error: Method parse/execution failed [_PR_.CPU1.APCT] (Node f383e480), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.096285] ACPI Error: Method parse/execution failed [_PR_.CPU2.GCAP] (Node f383e4e0), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.096295] ACPI Error: Method parse/execution failed [_PR_.CPU2._PDC] (Node f383e4b0), AE_NO_MEMORY (20110112/psparse-536)
+[ 0.096447] ACPI Warning: Incorrect checksum in table [OEMB] - 66, should be 62 (20090903/tbutils-314)
+[ 0.098113] ACPI Warning: Incorrect checksum in table [OEMB] - 0x2C, should be 0x28 (20100428/tbutils-314)
+[ 0.099413] ACPI Warning: Incorrect checksum in table [OEMB] - E2, should be D9 (20090903/tbutils-314)
+[ 0.101941] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 880 (bits) (20110112/dsopcode-597)
+[ 0.101946] ACPI Error: Method parse/execution failed [_SB_.MEM_._CRS] (Node f442af60), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 0.101953] ACPI Error: Method execution failed [_SB_.MEM_._CRS] (Node f442af60), AE_AML_BUFFER_LIMIT (20110112/uteval-103)
+[ 0.102803] ACPI Warning: Incorrect checksum in table [OEMB] - 6E, should be 40 (20090903/tbutils-314)
+[ 0.104297] ACPI Error (psargs-0359): [OSYS] Namespace lookup failure, AE_NOT_FOUND
+[ 0.104304] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ACEL._STA] (Node f701c4e0), AE_NOT_FOUND
+[ 0.105061] ACPI Warning: Package List length (0xCA) larger than NumElements count (0x4), truncated
+[ 0.106912] ACPI Warning: Package List length (0x5) larger than NumElements count (0x2), truncated
+[ 0.108470] ACPI Warning: Incorrect checksum in table [OEMB] - 3F, should be 3B (20090903/tbutils-314)
+[ 0.109343] ACPI Warning: Incorrect checksum in table [OEMB] - 0x29, should be 0x1C (20100428/tbutils-314)
+[ 0.109618] ACPI Error: Needed type [Reference], found [Device] f7012f90 (20090903/exresop-104)
+[ 0.109635] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701adc8), AE_AML_OPERAND_TYPE
+[ 0.110905] ACPI Warning: Incorrect checksum in table [OEMB] - 32, should be 25 (20090903/tbutils-314)
+[ 0.113709] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node f5822150), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
+[ 0.113864] ACPI Error: Method parse/execution failed [_PR_.CPU2._PDC] (Node f58221e0), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
+[ 0.114544] ACPI Error: Method parse/execution failed [_PR_.CPU0._PDC] (Node f54211c8), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
+[ 0.115838] ACPI Warning: Incorrect checksum in table [OEMB] - 79, should be 6C (20090903/tbutils-314)
+[ 0.118277] ACPI Error (psargs-0359): [SUPP] Namespace lookup failure, AE_NOT_FOUND
+[ 0.118284] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7012780), AE_NOT_FOUND
+[ 0.118568] ACPI Warning: Incorrect checksum in table [OEMB] - 2F, should be 22 (20090903/tbutils-314)
+[ 0.120765] ACPI Warning for _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 0.122347] ACPI Error: Could not map memory at 0x00000000000FFA32, size 0 (20100428/exregion-178)
+[ 0.122369] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PDC] (Node f70191c8), AE_NO_MEMORY
+[ 0.128150] ACPI Warning for _SB_.PCI0.P32_._PRT: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 0.132540] ACPI Warning: Incorrect checksum in table [OEMB] - CB, should be C6 (20090903/tbutils-314)
+[ 0.136585] ACPI Error: Field [ALB2] at 120 exceeds Buffer [CRSA] size 104 (bits) (20090903/dsopcode-596)
+[ 0.136600] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.PIB_.SIO0.LPT_._CRS] (Node dd8159d8), AE_AML_BUFFER_LIMIT
+[ 0.136637] ACPI Error (uteval-0250): Method execution failed [_SB_.PCI0.PIB_.SIO0.LPT_._CRS] (Node dd8159d8), AE_AML_BUFFER_LIMIT
+[ 0.137394] ACPI Warning: Incorrect checksum in table [OEMB] - 29, should be 1A (20090903/tbutils-314)
+[ 0.140000] [Firmware Bug]: the BIOS has corrupted hw-PMU resources (MSR 186 is 43003c)
+[ 0.141112] ACPI Warning: Incorrect checksum in table [OEMB] - ED, should be E8 20090521 tbutils-246
+[ 0.150000] ACPI Error: Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node ffff880137e47618), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.150000] ACPI Error: No handler for Region [ERAM] (ffff880137e58e10) [EmbeddedControl] (20110112/evregion-369)
+[ 0.154764] ACPI Warning: Incorrect checksum in table [OEMB] - 7D, should be 6E (20090903/tbutils-314)
+[ 0.159797] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node f4421648), AE_NOT_FOUND (20110413/psparse-536)
+[ 0.160246] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff880147830960), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.160246] ACPI Error: [_SB_.PHSR] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.160449] mtrr: your CPUs had inconsistent fixed MTRR settings
+[ 0.163431] ACPI Warning: Package List length (0x6) larger than NumElements count (0x3), truncated
+[ 0.163687] ACPI Warning: Incorrect checksum in table [TAMG] - 0xFC, should be 0xFB (20110112/tbutils-314)
+[ 0.164073] ACPI Warning: Incorrect checksum in table [TAMG] - 0xEE, should be 0xED (20110112/tbutils-314)
+[ 0.165683] ACPI Error: [CDW1] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.165689] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node f3821648), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.166264] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node f701a648), AE_NOT_FOUND
+[ 0.166294] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node f4021648), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.166323] ACPI Error: No handler for Region [ERAM] (f7022168) [EmbeddedControl] (20100428/evregion-369)
+[ 0.166336] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node f7021bb8), AE_NOT_EXIST
+[ 0.166808] ACPI Error: No handler for Region [ERAM] (f7023938) [EmbeddedControl] (20100428/evregion-369)
+[ 0.166808] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.HTEV] (Node f701be10), AE_NOT_EXIST
+[ 0.166808] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node f7024d08), AE_NOT_EXIST
+[ 0.169111] ACPI Error: [HPTF] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.169117] ACPI Error: Method parse/execution failed [_SB_.PCI0.HPET._STA] (Node f402ae58), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.169362] ACPI Warning: Incorrect checksum in table [OEMB] - 0x18, should be 0x13 (20100428/tbutils-314)
+[ 0.169398] ACPI Warning: Incorrect checksum in table [OEMB] - 0x15, should be 0xAC (20100428/tbutils-314)
+[ 0.170000] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a06440), AE_NOT_FOUND
+[ 0.170000] ACPI Warning: Package List length (0x6) larger than NumElements count (0x2), truncated
+[ 0.170352] ACPI Warning: Incorrect checksum in table [SSDT] - 0xEA, should be 0x42 (20100428/tbutils-314)
+[ 0.171073] ACPI Warning: Incorrect checksum in table [OEMB] - 0x67, should be 0x92 (20100428/tbutils-314)
+[ 0.171715] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0xAB (20110112/tbutils-314)
+[ 0.171916] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f700e3d8), AE_ALREADY_EXISTS
+[ 0.172406] ACPI Warning: Incorrect checksum in table [OEMB] - 0x22, should be 0x15 (20100428/tbutils-314)
+[ 0.172679] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0xA5 (20100428/tbutils-314)
+[ 0.172776] ACPI Warning: Package List length (1) larger than NumElements count (0), truncated
+[ 0.172868] ACPI Error: No handler for Region [RAM_] (f7014618) [EmbeddedControl] 20090521 evregion-319
+[ 0.172873] ACPI Error: Region EmbeddedControl(3) has no handler 20090521 exfldio-294
+[ 0.172880] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node f70159f0), AE_NOT_EXIST
+[ 0.173062] ACPI Warning: Incorrect checksum in table [SSDT] - 0xAA, should be 0xED (20110112/tbutils-314)
+[ 0.173605] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f70215e8), AE_ALREADY_EXISTS
+[ 0.173745] ACPI Warning: Incorrect checksum in table [TCPA] - 0x83, should be 0x27 (20110413/tbutils-314)
+[ 0.173917] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08d6804), AE_ALREADY_EXISTS
+[ 0.173917] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08d6804), AE_NOT_FOUND
+[ 0.175144] ACPI Warning: Incorrect checksum in table [OEMB] - 95, should be 8C (20090903/tbutils-314)
+[ 0.175379] ACPI Error: No handler for Region [ECXP] (f70218e8) [EmbeddedControl] (20100428/evregion-369)
+[ 0.175394] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._OSC] (Node f7025558), AE_NOT_EXIST
+[ 0.175428] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PDC] (Node f7025540), AE_NOT_EXIST
+[ 0.175892] ACPI Warning: Package List length (0x1) larger than NumElements count (0x0), truncated
+[ 0.175987] ACPI Warning: Incorrect checksum in table [OEMB] - D7, should be C8 20090521 tbutils-246
+[ 0.176309] ACPI Warning: Incorrect checksum in table [OEMB] - 0xCF, should be 0xCE (20100428/tbutils-314)
+[ 0.176410] ACPI Error: [RAMB] Namespace lookup failure, AE_NOT_FOUND (20110413/psargs-359)
+[ 0.176680] ACPI Warning: Incorrect checksum in table [OEMB] - D6, should be C7 20090521 tbutils-246
+[ 0.176840] ACPI Warning: Incorrect checksum in table [SSDT] - 0xAC, should be 0x4D (20100428/tbutils-314)
+[ 0.177033] ACPI Warning: Incorrect checksum in table [OEMB] - ED, should be EC 20090521 tbutils-246
+[ 0.177048] [Firmware Bug]: PCI: MMCONFIG at [mem 0xe0000000-0xe03fffff] not reserved in ACPI motherboard resources
+[ 0.177377] ACPI Error: Needed type [Reference], found [Device] f701af90 (20100428/exresop-104)
+[ 0.177377] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7022dc8), AE_AML_OPERAND_TYPE
+[ 0.177506] ACPI Warning: Incorrect checksum in table [SSDT] - 0xA1, should be 0x30 (20100428/tbutils-314)
+[ 0.177670] ACPI Warning: Incorrect checksum in table [OEMB] - 1C, should be 17 (20090903/tbutils-314)
+[ 0.178040] ACPI Warning: Incorrect checksum in table [OEMB] - 0xF7, should be 0xE8 (20100428/tbutils-314)
+[ 0.178420] ACPI Error: No handler for Region [SACS] (f701b500) [PCI_Config] (20090903/evregion-319)
+[ 0.178434] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node f7072000), AE_NOT_EXIST
+[ 0.178458] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node f7072000), AE_NOT_EXIST
+[ 0.178486] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node f70720a8), AE_NOT_EXIST
+[ 0.178510] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node f70720a8), AE_NOT_EXIST
+[ 0.178539] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node f7072210), AE_NOT_EXIST
+[ 0.178563] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node f7072210), AE_NOT_EXIST
+[ 0.178590] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node f70722b8), AE_NOT_EXIST
+[ 0.178614] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node f70722b8), AE_NOT_EXIST
+[ 0.179475] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0xAB (20100428/tbutils-314)
+[ 0.179688] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f74174c8), AE_ALREADY_EXISTS
+[ 0.181591] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7022db0), AE_AML_OPERAND_TYPE
+[ 0.181679] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f740f438), AE_ALREADY_EXISTS
+[ 0.181959] ACPI Warning: Incorrect checksum in table [OEMB] - 0x0A, should be 0x09 (20100428/tbutils-314)
+[ 0.182122] ACPI Warning: Incorrect checksum in table [OEMB] - 7D, should be 70 (20090903/tbutils-314)
+[ 0.182199] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c25228), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.182199] ACPI Error: [Z012] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.182639] ACPI Error (psargs-0359): [ECEN] Namespace lookup failure, AE_NOT_FOUND
+[ 0.182645] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c090665c), AE_NOT_FOUND
+[ 0.183306] ACPI Error: Method parse/execution failed [_PR_.CPU0._PDC] (Node f403a228), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.183518] ACPI Warning: Incorrect checksum in table [OEMB] - 10, should be 03 (20090903/tbutils-314)
+[ 0.183725] ACPI Error: No handler for Region [SACS] (f70c20f0) [PCI_Config] (20090903/evregion-319)
+[ 0.183734] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node f70c4180), AE_NOT_EXIST
+[ 0.183755] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node f70c4180), AE_NOT_EXIST
+[ 0.183773] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node f70c4240), AE_NOT_EXIST
+[ 0.183793] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node f70c4240), AE_NOT_EXIST
+[ 0.183812] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node f70c43c0), AE_NOT_EXIST
+[ 0.183832] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node f70c43c0), AE_NOT_EXIST
+[ 0.183850] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node f70c4480), AE_NOT_EXIST
+[ 0.183870] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node f70c4480), AE_NOT_EXIST
+[ 0.183948] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x8E (20110112/tbutils-314)
+[ 0.184086] ACPI Warning: Incorrect checksum in table [OEMB] - 0x69, should be 0x68 (20110112/tbutils-314)
+[ 0.184314] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7015eb8), AE_ALREADY_EXISTS
+[ 0.185673] ACPI Error (dswload-0659): [___P] Namespace lookup failure, AE_NOT_FOUND
+[ 0.185686] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f701a150), AE_INVALID_TABLE_LENGTH
+[ 0.185688] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._INI] (Node f700f6c0), AE_NOT_FOUND
+[ 0.185862] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node f701a1e0), AE_INVALID_TABLE_LENGTH
+[ 0.186281] ACPI Warning: Package List length (C) larger than NumElements count (4), truncated
+[ 0.186529] ACPI Warning: Incorrect checksum in table [OEMB] - B9, should be AC (20090903/tbutils-314)
+[ 0.187574] ACPI Warning: Incorrect checksum in table [OEMB] - 77, should be 76 (20090903/tbutils-314)
+[ 0.187800] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c0994f7c), AE_NOT_FOUND
+[ 0.187872] ACPI Warning: Incorrect checksum in table [OEMB] - B6, should be B3 (20090903/tbutils-314)
+[ 0.187981] ACPI Warning: Incorrect checksum in table [OEMB] - 8D, should be 8C (20090903/tbutils-314)
+[ 0.187992] ACPI Warning: Incorrect checksum in table [OEMB] - 40, should be 3F (20090903/tbutils-314)
+[ 0.188197] ACPI Warning: Incorrect checksum in table [OEMB] - 6A, should be 61 (20090903/tbutils-314)
+[ 0.188232] ACPI Warning: Incorrect checksum in table [ATKG] - 0x07, should be 0x59 (20100428/tbutils-314)
+[ 0.188487] ACPI Error (psargs-0359): q z Namespace lookup failure, AE_NOT_FOUND
+[ 0.188669] ACPI Warning: Incorrect checksum in table [ATKG] - 0x05, should be 0xE5 (20100428/tbutils-314)
+[ 0.189086] ACPI Error: Needed type [Reference], found [Device] f700ff90 (20090903/exresop-104)
+[ 0.189100] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7017dc8), AE_AML_OPERAND_TYPE
+[ 0.189451] ACPI Error: Needed type [Reference], found [Device] f700ef90 20090521 exresop-104
+[ 0.189466] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7016dc8), AE_AML_OPERAND_TYPE
+[ 0.189515] ACPI Error (psargs-0359): [CVCL] Namespace lookup failure, AE_NOT_FOUND
+[ 0.189522] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.DIGI._STA] (Node f702a390), AE_NOT_FOUND
+[ 0.191013] ACPI Warning: Incorrect checksum in table [ATKG] - 0x81, should be 0xE5 (20100428/tbutils-314)
+[ 0.191774] ACPI Warning: Incorrect checksum in table [OEMB] - 37, should be 28 (20090903/tbutils-314)
+[ 0.191906] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c098ff6c), AE_NOT_FOUND
+[ 0.192037] ACPI Warning: Incorrect checksum in table [OEMB] - 0xD9, should be 0xCC (20100428/tbutils-314)
+[ 0.192146] ACPI Error (dswload-0781): [_PSW] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.192182] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08ce7dc), AE_ALREADY_EXISTS
+[ 0.192983] ACPI Warning: Incorrect checksum in table [OEMB] - C0, should be B3 (20090903/tbutils-314)
+[ 0.193750] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08ce7dc), AE_NOT_FOUND
+[ 0.194184] ACPI Warning: Incorrect checksum in table [OEMB] - C8, should be BF (20090903/tbutils-314)
+[ 0.194314] ACPI Warning: Incorrect checksum in table [OEMB] - AA, should be 9D (20090903/tbutils-314)
+[ 0.194554] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node f5821150), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
+[ 0.194701] ACPI Error: Method parse/execution failed [_PR_.CPU2._PDC] (Node f58211e0), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
+[ 0.194897] ACPI Warning: Incorrect checksum in table [OEMB] - 0xDD, should be 0xD6 (20100428/tbutils-314)
+[ 0.195685] ACPI Warning: Incorrect checksum in table [OEMB] - 2A, should be 29 (20090903/tbutils-314)
+[ 0.195754] ACPI Warning: Incorrect checksum in table [OEMB] - 88, should be 83 (20090903/tbutils-314)
+[ 0.196934] ACPI Warning: Incorrect checksum in table [OEMB] - 0B, should be 02 (20090903/tbutils-314)
+[ 0.197082] ACPI Warning: Incorrect checksum in table [ATKG] - 0xC8, should be 0xE5 (20100428/tbutils-314)
+[ 0.197413] ACPI Error: No handler for Region [EC__] (f701c5c8) [EmbeddedControl] (20100428/evregion-369)
+[ 0.197451] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SBRG.EC__._REG] (Node f701e2a0), AE_NOT_EXIST
+[ 0.198490] ACPI Warning: Incorrect checksum in table [OEMB] - 0xB2, should be 0x47 (20100428/tbutils-314)
+[ 0.198823] ACPI Warning: Incorrect checksum in table [OEMB] - 01, should be F4 (20090903/tbutils-314)
+[ 0.199360] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be AB 20090521 tbutils-246
+[ 0.199465] ACPI Error: [CDW1] Namespace lookup failure, AE_NOT_FOUND (20110413/psargs-359)
+[ 0.199471] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node ffff880138e2ea78), AE_NOT_FOUND (20110413/psparse-536)
+[ 0.200426] ACPI Warning: Incorrect checksum in table [OEMB] - A3, should be 9E (20090903/tbutils-314)
+[ 0.200744] ACPI Warning: Incorrect checksum in table [ASF!] - 59, should be 08 20090521 tbutils-246
+[ 0.201013] ACPI Warning: Incorrect checksum in table [OEMB] - 8A, should be 7D (20090903/tbutils-314)
+[ 0.201466] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f700e180), AE_INVALID_TABLE_LENGTH
+[ 0.203079] ACPI Warning: Incorrect checksum in table [OEMB] - 0xE1, should be 0xDC (20100428/tbutils-314)
+[ 0.204335] ACPI Warning: Incorrect checksum in table [OEMB] - 0xC1, should be 0x11 (20110413/tbutils-314)
+[ 0.204344] ACPI Warning: Incorrect checksum in table [ATKG] - 07, should be 59 (20090903/tbutils-314)
+[ 0.205365] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5422e88), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.206075] ACPI Warning: Incorrect checksum in table [ATKG] - BB, should be E5 (20090903/tbutils-314)
+[ 0.207023] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be AB (20090903/tbutils-314)
+[ 0.208479] ACPI Warning: Incorrect checksum in table [OEMB] - 0x77, should be 0x72 (20100428/tbutils-314)
+[ 0.209105] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701f270), AE_NOT_FOUND
+[ 0.210543] ACPI Warning: Incorrect checksum in table [OEMB] - CD, should be CC (20090903/tbutils-314)
+[ 0.210667] ACPI Warning: Incorrect checksum in table [OEMB] - D3, should be C4 (20090903/tbutils-314)
+[ 0.211069] ACPI Warning: Incorrect checksum in table [OEMB] - 0x99, should be 0x92 (20100428/tbutils-314)
+[ 0.211113] ACPI Warning: Incorrect checksum in table [OEMB] - 7B, should be 76 (20090903/tbutils-314)
+[ 0.211904] ACPI Error: No handler for Region [ERAM] (ee422ed8) [EmbeddedControl] (20100428/evregion-369)
+[ 0.211928] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701fd08), AE_ALREADY_EXISTS
+[ 0.211938] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node ee423708), AE_NOT_EXIST
+[ 0.212633] ACPI Warning: Incorrect checksum in table [OEMB] - E1, should be D3 (20090903/tbutils-314)
+[ 0.212815] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f7424eb8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.213084] ACPI Error (dsfield-0143): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.213100] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7014ca8), AE_ALREADY_EXISTS
+[ 0.213771] ACPI Warning: Incorrect checksum in table [OEMB] - EC, should be E7 (20090903/tbutils-314)
+[ 0.213827] ACPI Warning: Package List length (0xC) larger than NumElements count (0x3), truncated
+[ 0.214423] ACPI Warning: Incorrect checksum in table [OEMB] - FD, should be EF (20090903/tbutils-314)
+[ 0.215632] ACPI Warning: Incorrect checksum in table [OEMB] - 0x0B, should be 0x5B (20100428/tbutils-314)
+[ 0.216249] ACPI Warning: Incorrect checksum in table [ATKG] - 0x27, should be 0xE5 (20110112/tbutils-314)
+[ 0.217060] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node dec13ca8), AE_ALREADY_EXISTS
+[ 0.217763] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7013030), AE_ALREADY_EXISTS
+[ 0.217957] ACPI Warning: Incorrect checksum in table [OEMB] - 69, should be 5F (20090903/tbutils-314)
+[ 0.218957] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701be88), AE_ALREADY_EXISTS
+[ 0.219691] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7013270), AE_NOT_FOUND
+[ 0.219959] ACPI Error: No handler for Region [SACS] (f70c52a8) [PCI_Config] (20090903/evregion-319)
+[ 0.219968] ACPI Error: Region PCI_Config(2) has no handler (20090903/exfldio-295)
+[ 0.219977] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node f701ba38), AE_NOT_EXIST
+[ 0.220034] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node f701ba38), AE_NOT_EXIST
+[ 0.220068] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node f701baf8), AE_NOT_EXIST
+[ 0.220107] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node f701baf8), AE_NOT_EXIST
+[ 0.220142] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node f701bc78), AE_NOT_EXIST
+[ 0.220180] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node f701bc78), AE_NOT_EXIST
+[ 0.220213] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node f701bd38), AE_NOT_EXIST
+[ 0.220252] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node f701bd38), AE_NOT_EXIST
+[ 0.221153] ACPI Error: Method parse/execution failed [_SB_.PCI0.HPET._CRS] (Node f402ae70), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.221220] ACPI Error: Method parse/execution failed [_SB_.PCI0.RTC_._CRS] (Node f402aee8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.221945] mtrr: your CPUs had inconsistent MTRRdefType settings
+[ 0.222211] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701beb8), AE_ALREADY_EXISTS
+[ 0.222869] ACPI Warning: Incorrect checksum in table [ATKG] - B0, should be 4A (20090903/tbutils-314)
+[ 0.222980] ACPI Error: Field [I9MN] at 544 exceeds Buffer [IORT] size 464 (bits) (20090903/dsopcode-596)
+[ 0.222987] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.PMIO._CRS] (Node f7015900), AE_AML_BUFFER_LIMIT
+[ 0.223020] ACPI Error (uteval-0250): Method execution failed [_SB_.PCI0.LPC0.PMIO._CRS] (Node f7015900), AE_AML_BUFFER_LIMIT
+[ 0.223245] ACPI Warning: Incorrect checksum in table [OEMB] - DB, should be DA (20090903/tbutils-314)
+[ 0.223485] [Firmware Bug]: PCI: MMCONFIG at [mem 0xf0000000-0xf3ffffff] not reserved in ACPI motherboard resources
+[ 0.224289] ACPI Warning for _SB_.PCI0.P32_._PRT: Return Package has no elements (empty) (20100428/nspredef-456)
+[ 0.224569] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701fca8), AE_ALREADY_EXISTS
+[ 0.224987] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 688 (bits) (20100428/dsopcode-597)
+[ 0.224994] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.MEM_._CRS] (Node f7021990), AE_AML_BUFFER_LIMIT
+[ 0.225018] ACPI Error (uteval-0250): Method execution failed [_SB_.MEM_._CRS] (Node f7021990), AE_AML_BUFFER_LIMIT
+[ 0.226224] ACPI Warning: Incorrect checksum in table [ATKG] - 53, should be 84 (20090903/tbutils-314)
+[ 0.227129] ACPI Warning: Incorrect checksum in table [ATKG] - 0x11, should be 0xE5 (20100428/tbutils-314)
+[ 0.228032] ACPI Error (psargs-0359): [_PR_.C002._PPC] Namespace lookup failure, AE_NOT_FOUND
+[ 0.228041] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node f742a558), AE_NOT_FOUND
+[ 0.228469] [Firmware Bug]: the BIOS has corrupted hw-PMU resources (MSR 38d is 30)
+[ 0.228535] ACPI Warning: Incorrect checksum in table [OEMB] - 77, should be 6F (20100121/tbutils-314)
+[ 0.228773] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4025450), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.229334] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7020750), AE_ALREADY_EXISTS
+[ 0.229639] ACPI Error (psargs-0359): [CDW1] Namespace lookup failure, AE_NOT_FOUND
+[ 0.229644] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7413270), AE_NOT_FOUND
+[ 0.230075] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7014630), AE_ALREADY_EXISTS
+[ 0.231134] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7012f00), AE_NOT_FOUND
+[ 0.232350] ACPI Warning: Incorrect checksum in table [ATKG] - 15, should be 73 (20090903/tbutils-314)
+[ 0.232460] ACPI Warning: Incorrect checksum in table [OEMB] - 8C, should be 87 (20090903/tbutils-314)
+[ 0.232733] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701ebd0), AE_ALREADY_EXISTS
+[ 0.232830] ACPI Warning: Incorrect checksum in table [OEMB] - 0xC2, should be 0x84 (20100428/tbutils-314)
+[ 0.233493] ACPI Warning: Incorrect checksum in table [GSCI] - 58, should be AA (20090903/tbutils-314)
+[ 0.233542] ACPI Warning: Incorrect checksum in table [GSCI] - 0x70, should be 0xD2 (20100428/tbutils-314)
+[ 0.233946] ACPI Warning: Incorrect checksum in table [ATKG] - 1E, should be E5 (20090903/tbutils-314)
+[ 0.235518] ACPI Warning: Incorrect checksum in table [ASF!] - D8, should be 6E (20090903/tbutils-314)
+[ 0.236465] ACPI Warning: Incorrect checksum in table [OEMB] - 1D, should be 10 (20090903/tbutils-314)
+[ 0.236739] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3c24f00), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.241360] ACPI Warning: Incorrect checksum in table [OEMB] - 0xBD, should be 0x89 (20100428/tbutils-314)
+[ 0.242473] ACPI Warning: Incorrect checksum in table [GSCI] - 0x28, should be 0x8A (20100428/tbutils-314)
+[ 0.244995] ACPI Warning: Incorrect checksum in table [OEMB] - 17, should be 67 (20090903/tbutils-314)
+[ 0.245794] ACPI Warning for _SB_.PCI0.PCIB._PRT: Return type mismatch - found Integer, expected Package (20100428/nspredef-1053)
+[ 0.245810] ACPI Error (uteval-0307): Return object type is incorrect [_SB_.PCI0.PCIB._PRT] (Node f7022c48), AE_TYPE
+[ 0.245830] ACPI Error: Type returned from _PRT was incorrect: Integer, expected Btypes: 0x8 (20100428/uteval-313)
+[ 0.246137] ACPI Warning: Incorrect checksum in table [ATKG] - F1, should be E5 (20090903/tbutils-314)
+[ 0.249246] ACPI Warning: Incorrect checksum in table [OEMB] - 70, should be 6D (20090903/tbutils-314)
+[ 0.249570] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._OSC] (Node f7010198), AE_ALREADY_EXISTS
+[ 0.249594] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f7010180), AE_ALREADY_EXISTS
+[ 0.249860] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._OSC] (Node f7010270), AE_ALREADY_EXISTS
+[ 0.249882] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node f7010258), AE_ALREADY_EXISTS
+[ 0.250005] ACPI Error: No handler for Region [EC__] (f4424bd0) [EmbeddedControl] (20110112/evregion-369)
+[ 0.250012] ACPI Error: Region EmbeddedControl(0x3) has no handler (20110112/exfldio-292)
+[ 0.250019] ACPI Error: Method parse/execution failed [_SB_.PCI0.SBRG.EC__._REG] (Node f4425bb8), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.250572] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7010e88), AE_ALREADY_EXISTS
+[ 0.250864] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7013e58), AE_ALREADY_EXISTS
+[ 0.250941] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4022e88), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.250986] [Firmware Bug]: ACPI: BIOS _OSI(Linux) query honored via DMI
+[ 0.251711] ACPI Warning: Incorrect checksum in table [ATKG] - B0, should be E5 (20090903/tbutils-314)
+[ 0.254947] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3c22e88), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.255884] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f70142b8), AE_ALREADY_EXISTS
+[ 0.256141] ACPI Warning: Incorrect checksum in table [ATKG] - 0xAF, should be 0x59 (20110413/tbutils-314)
+[ 0.257910] ACPI Warning: Incorrect checksum in table [OEMB] - 04, should be 54 (20090903/tbutils-314)
+[ 0.261013] ACPI Warning: Incorrect checksum in table [OEMB] - DF, should be 2F (20090903/tbutils-314)
+[ 0.262586] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701f390), AE_ALREADY_EXISTS
+[ 0.262663] pci 0000:00:1f.0: [Firmware Bug]: TigerPoint LPC.BM_STS cleared
+[ 0.264838] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701f2a0), AE_ALREADY_EXISTS
+[ 0.265119] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08d5804), AE_NOT_FOUND
+[ 0.265541] ACPI Warning: Incorrect checksum in table [OEMB] - E0, should be 30 (20090903/tbutils-314)
+[ 0.266577] ACPI Warning: Incorrect checksum in table [GSCI] - 3B, should be BF (20090903/tbutils-314)
+[ 0.267893] ACPI Warning for _TZ_.TZ01._PSL: Return Package type mismatch at index 0 - found Processor, expected Reference (20090903/nspredef-1012)
+[ 0.268093] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c0927024), AE_NOT_FOUND
+[ 0.268171] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c0927024), AE_ALREADY_EXISTS
+[ 0.268458] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f70142a0), AE_ALREADY_EXISTS
+[ 0.269488] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.APCT] (Node ffff88007af30560), AE_NO_MEMORY
+[ 0.269534] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1.GCAP] (Node ffff88007af30540), AE_NO_MEMORY
+[ 0.269576] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff88007af30500), AE_NO_MEMORY
+[ 0.272427] ACPI Error: No handler for Region [SACS] (f71004d8) [PCI_Config] (20090903/evregion-319)
+[ 0.272435] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node f7102150), AE_NOT_EXIST
+[ 0.272452] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node f7102150), AE_NOT_EXIST
+[ 0.272469] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node f71021f8), AE_NOT_EXIST
+[ 0.272486] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node f71021f8), AE_NOT_EXIST
+[ 0.272503] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node f7102360), AE_NOT_EXIST
+[ 0.272519] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node f7102360), AE_NOT_EXIST
+[ 0.272536] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node f7102408), AE_NOT_EXIST
+[ 0.272552] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node f7102408), AE_NOT_EXIST
+[ 0.279154] ACPI Warning: Incorrect checksum in table [OEMB] - B9, should be AE (20090903/tbutils-314)
+[ 0.284552] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.IDE1.GTM_] (Node f7014858), AE_AML_PACKAGE_LIMIT
+[ 0.284566] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.IDE1.CHN1._GTM] (Node f7014798), AE_AML_PACKAGE_LIMIT
+[ 0.285468] ACPI Error (psargs-0359): [_PR_.CPU0._PPC] Namespace lookup failure, AE_NOT_FOUND
+[ 0.285476] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.ADP0.ADJP] (Node f7015b10), AE_NOT_FOUND
+[ 0.285546] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.ADP0._PSR] (Node f7015ae0), AE_NOT_FOUND
+[ 0.288180] ACPI Warning: Incorrect checksum in table [ATKG] - 0x81, should be 0x59 (20110112/tbutils-314)
+[ 0.288591] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701fd50), AE_ALREADY_EXISTS
+[ 0.288966] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f34245b8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.296054] [Firmware Bug]: Invalid critical threshold (0)
+[ 0.296149] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701eca8), AE_ALREADY_EXISTS
+[ 0.296644] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88012fc16660), AE_NOT_FOUND
+[ 0.302946] ACPI Error (psargs-0359): [HPTF] Namespace lookup failure, AE_NOT_FOUND
+[ 0.302952] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.HPET._STA] (Node ffff88007db32200), AE_NOT_FOUND
+[ 0.307009] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c22e88), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.307757] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN0._GTM] (Node f74145a0), AE_NOT_FOUND
+[ 0.307837] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN1._GTM] (Node f7414690), AE_NOT_FOUND
+[ 0.308095] ACPI Warning: Incorrect checksum in table [SSDT] - 1F, should be 7F (20090903/tbutils-314)
+[ 0.308151] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN0._GTM] (Node f7414cd8), AE_NOT_FOUND
+[ 0.308213] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN1._GTM] (Node f7414dc8), AE_NOT_FOUND
+[ 0.310609] ACPI Warning for _PR_.CPU1._PSS: SubPackage[8,9] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 0.310767] ACPI Warning: Incorrect checksum in table [OEMB] - 0x72, should be 0x6A (20100428/tbutils-314)
+[ 0.311025] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c250d8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.311041] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f54250d8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.311335] ACPI Warning for _PR_.CPU2._PSS: SubPackage[8,9] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 0.311729] ACPI Error: Could not enable PowerButton event (20090903/evxfevnt-193)
+[ 0.311932] ACPI Warning: Could not enable fixed event 2 (20090903/evxface-146)
+[ 0.314160] ACPI Warning: Incorrect checksum in table [OEMB] - 91, should be 90 (20090903/tbutils-314)
+[ 0.314451] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a2b040), AE_ALREADY_EXISTS
+[ 0.314603] ACPI Warning: Incorrect checksum in table [OEMB] - 8B, should be 8A (20090903/tbutils-314)
+[ 0.314675] mtrr: your CPUs had inconsistent variable MTRR settings
+[ 0.316718] ACPI Warning: Incorrect checksum in table [OEMB] - 27, should be 22 (20090903/tbutils-314)
+[ 0.316734] ACPI Warning: Incorrect checksum in table [TAMG] - 0xF3, should be 0xF2 (20100428/tbutils-314)
+[ 0.316816] ACPI Error: No handler for Region [ERAM] (ffff88007a733d80) [EmbeddedControl] (20110112/evregion-369)
+[ 0.316829] ACPI Error: Method parse/execution failed [_SB_.HTEV] (Node ffff88007a730780), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.316839] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff88007a73a078), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.317152] ACPI Warning: Incorrect checksum in table [OEMB] - C1, should be B4 (20090903/tbutils-314)
+[ 0.317427] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff88007d735160), AE_ALREADY_EXISTS
+[ 0.317685] ACPI Warning: Incorrect checksum in table [ASF!] - 0xFC, should be 0x98 (20100428/tbutils-314)
+[ 0.319223] ACPI Warning: Incorrect checksum in table [OEMB] - E7, should be E2 (20090903/tbutils-314)
+[ 0.321587] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a12040), AE_NOT_FOUND
+[ 0.321722] ACPI Error: Needed type [Reference], found [Device] ffff88007552b900 (20100428/exresop-104)
+[ 0.321740] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff880075532ba0), AE_AML_OPERAND_TYPE
+[ 0.322869] ACPI Error: No handler for Region [RAM_] (f7425690) [EmbeddedControl] (20110112/evregion-369)
+[ 0.322886] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPCB.SNC_.SBRT] (Node f7435228), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.322899] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node f7428d98), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.323465] ACPI Warning: Incorrect checksum in table [OEMB] - 0x8D, should be 0x8C (20100428/tbutils-314)
+[ 0.323777] ACPI Warning: Package List length (0xC) larger than NumElements count (0x4), truncated
+[ 0.325321] ACPI Error: No handler for Region [ERAM] (ffff88007d32bf78) [EmbeddedControl] (20090903/evregion-319)
+[ 0.325334] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.KBC0.SMWR] (Node ffff88007d32c8c0), AE_NOT_EXIST
+[ 0.325357] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.THRM.SFAN] (Node ffff88007d328ec0), AE_NOT_EXIST
+[ 0.325376] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.THRM.THCK] (Node ffff88007d328f40), AE_NOT_EXIST
+[ 0.325396] ACPI Error (psparse-0537): Method parse/execution failed [_GPE._L02] (Node ffff88007d3289c0), AE_NOT_EXIST
+[ 0.325630] ACPI Error: Could not enable SleepButton event (20100428/evxfevnt-202)
+[ 0.325636] ACPI Warning: Could not enable fixed event 0x3 (20100428/evxface-146)
+[ 0.328929] ACPI Warning: Incorrect checksum in table [OEMB] - 0x45, should be 0x40 (20100428/tbutils-314)
+[ 0.328954] ACPI Warning: Incorrect checksum in table [ASF!] - D9, should be 6D (20090903/tbutils-314)
+[ 0.329218] ACPI Warning for _SB_.PCI0._OSC: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.329373] ACPI Error (dsfield-0143): [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.329378] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88012b63d760), AE_ALREADY_EXISTS
+[ 0.330000] ACPI Warning: Incorrect checksum in table [TCPA] - 0xD1, should be 0x75 (20100428/tbutils-314)
+[ 0.330140] ACPI Warning: Incorrect checksum in table [ATKG] - 0xE3, should be 0xDC (20110112/tbutils-314)
+[ 0.330280] ACPI Warning: Incorrect checksum in table [OEMB] - DE, should be D9 (20090903/tbutils-314)
+[ 0.330488] ACPI Error: No handler for Region [SACS] (ffff88011bf101f8) [PCI_Config] (20090903/evregion-319)
+[ 0.330496] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node ffff88011bf0d360), AE_NOT_EXIST
+[ 0.330513] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node ffff88011bf0d360), AE_NOT_EXIST
+[ 0.330528] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node ffff88011bf0d460), AE_NOT_EXIST
+[ 0.330545] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node ffff88011bf0d460), AE_NOT_EXIST
+[ 0.330560] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node ffff88011bf0d660), AE_NOT_EXIST
+[ 0.330576] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node ffff88011bf0d660), AE_NOT_EXIST
+[ 0.330590] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node ffff88011bf0d760), AE_NOT_EXIST
+[ 0.330606] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node ffff88011bf0d760), AE_NOT_EXIST
+[ 0.330759] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88011763c000), AE_ALREADY_EXISTS
+[ 0.330793] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x9A (20110112/tbutils-314)
+[ 0.331637] ACPI Error: Needed type [Reference], found [Device] ffff88014b82d820 (20090903/exresop-104)
+[ 0.331653] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88014b83cac0), AE_AML_OPERAND_TYPE
+[ 0.331820] ACPI Error: Needed type [Reference], found [Device] ffff8800379aa900 (20100428/exresop-104)
+[ 0.331838] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff8800379bbba0), AE_AML_OPERAND_TYPE
+[ 0.331948] ACPI Warning: Incorrect checksum in table [OEMB] - 0C, should be 0B (20090903/tbutils-314)
+[ 0.332160] ACPI Error (dswload-0677): [PCI0] Namespace lookup failure, AE_NOT_FOUND
+[ 0.332167] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81cf5eb0), AE_NOT_FOUND
+[ 0.333155] ACPI Warning: Incorrect checksum in table [SSDT] - 4A, should be D9 (20090903/tbutils-314)
+[ 0.333287] ACPI Error: No handler for Region [ERAM] (ffff8800bc638d80) [EmbeddedControl] (20090903/evregion-319)
+[ 0.333300] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.HTEV] (Node ffff8800bc62e600), AE_NOT_EXIST
+[ 0.333326] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff8800bc63e9a0), AE_NOT_EXIST
+[ 0.333559] ACPI Error: No handler for Region [ERAM] (ffff88007db2ad80) [EmbeddedControl] (20090903/evregion-319)
+[ 0.333573] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.HTEV] (Node ffff88007db28600), AE_NOT_EXIST
+[ 0.333591] ACPI Warning: Incorrect checksum in table [TAMG] - 0xF4, should be 0xF3 (20110112/tbutils-314)
+[ 0.333601] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff88007db309a0), AE_NOT_EXIST
+[ 0.333734] ACPI Warning for _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20090903/nspredef-336)
+[ 0.333765] ACPI Error (psargs-0359): [FZHD] Namespace lookup failure, AE_NOT_FOUND
+[ 0.333771] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN0._GTM] (Node f7014300), AE_NOT_FOUND
+[ 0.333853] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN1._GTM] (Node f70143f0), AE_NOT_FOUND
+[ 0.334143] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN0._GTM] (Node f7014a38), AE_NOT_FOUND
+[ 0.334206] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN1._GTM] (Node f7014b28), AE_NOT_FOUND
+[ 0.335658] ACPI Error: No handler for Region [ECOR] (ffff88007af355e8) [EmbeddedControl] (20110413/evregion-373)
+[ 0.335698] ACPI Error: Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node ffff88007af36730), AE_NOT_EXIST (20110413/psparse-536)
+[ 0.335745] ACPI Warning: Incorrect checksum in table [OEMB] - 80, should be 78 (20090903/tbutils-314)
+[ 0.337368] ACPI Warning: Incorrect checksum in table [OEMB] - 8B, should be 86 (20090903/tbutils-314)
+[ 0.337513] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f54243f0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.337662] ACPI Error (psargs-0359): [URES] Namespace lookup failure, AE_NOT_FOUND
+[ 0.337662] ACPI Error (psparse-0537): Method parse/execution failed [_PSW] (Node f701f0a8), AE_NOT_FOUND
+[ 0.338155] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88021302db60), AE_ALREADY_EXISTS
+[ 0.338440] ACPI Error: No handler for Region [SACS] (ffff88012bb0f1f8) [PCI_Config] (20090903/evregion-319)
+[ 0.338717] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node ffff88012bb111a0), AE_NOT_EXIST
+[ 0.338801] ACPI Warning: Incorrect checksum in table [OEMB] - 8B, should be 7E (20090903/tbutils-314)
+[ 0.338905] ACPI Error (uteval-0250): Method execution failed [PRID.P_D0._STA] (Node ffff88012bb111a0), AE_NOT_EXIST
+[ 0.339363] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D1._STA] (Node ffff88012bb11280), AE_NOT_EXIST
+[ 0.339551] ACPI Error (uteval-0250): Method execution failed [PRID.P_D1._STA] (Node ffff88012bb11280), AE_NOT_EXIST
+[ 0.339584] ACPI Warning: Incorrect checksum in table [OEMB] - 0xE2, should be 0xD5 (20100428/tbutils-314)
+[ 0.339628] ACPI Warning: Incorrect checksum in table [OEMB] - 91, should be 88 (20090903/tbutils-314)
+[ 0.339857] ACPI Warning: Incorrect checksum in table [OEMB] - 6D, should be 60 (20090903/tbutils-314)
+[ 0.340003] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D0._STA] (Node ffff88012bb11460), AE_NOT_EXIST
+[ 0.340121] ACPI Warning: Incorrect checksum in table [ATKG] - 0x1B, should be 0xE5 (20110112/tbutils-314)
+[ 0.340193] ACPI Error (uteval-0250): Method execution failed [SECD.S_D0._STA] (Node ffff88012bb11460), AE_NOT_EXIST
+[ 0.340651] ACPI Error (psparse-0537): Method parse/execution failed [SECD.S_D1._STA] (Node ffff88012bb11540), AE_NOT_EXIST
+[ 0.340838] ACPI Error (uteval-0250): Method execution failed [SECD.S_D1._STA] (Node ffff88012bb11540), AE_NOT_EXIST
+[ 0.341276] ACPI Warning: Incorrect checksum in table [ASF!] - F2, should be 8D (20090903/tbutils-314)
+[ 0.341759] ACPI Error: No handler for Region [RAM_] (f74212f8) [EmbeddedControl] (20100428/evregion-369)
+[ 0.341812] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._OSC] (Node ffff88017bc14660), AE_ALREADY_EXISTS
+[ 0.341843] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff88017bc14640), AE_ALREADY_EXISTS
+[ 0.342116] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.SNC_.SBRT] (Node f742f228), AE_NOT_EXIST
+[ 0.342130] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._OSC] (Node ffff88017bc14780), AE_ALREADY_EXISTS
+[ 0.342160] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node ffff88017bc14760), AE_ALREADY_EXISTS
+[ 0.342409] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node f7422d98), AE_NOT_EXIST
+[ 0.342985] ACPI Warning: Incorrect checksum in table [OEMB] - 18, should be 13 (20090903/tbutils-314)
+[ 0.343577] ACPI Warning: Incorrect checksum in table [OEMB] - 0xD1, should be 0xCA (20100428/tbutils-314)
+[ 0.344373] ACPI Warning: Incorrect checksum in table [OEMB] - C5, should be B8 (20090903/tbutils-314)
+[ 0.345244] ACPI Warning: Incorrect checksum in table [OEMB] - 0xA5, should be 0x9C (20100428/tbutils-314)
+[ 0.346079] ACPI Warning: Incorrect checksum in table [OEMB] - 7A, should be 71 (20090903/tbutils-314)
+[ 0.347557] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found [NULL Object Descriptor], expected Reference (20100428/nspredef-1059)
+[ 0.347883] ACPI Warning: Incorrect checksum in table [OEMB] - 5C, should be 53 (20090903/tbutils-314)
+[ 0.348936] ACPI Warning: Incorrect checksum in table [OEMB] - 0x56, should be 0x49 (20100428/tbutils-314)
+[ 0.349163] ACPI Warning: Incorrect checksum in table [OEMB] - E7, should be DA (20090903/tbutils-314)
+[ 0.350013] ACPI Warning: Incorrect checksum in table [OEMB] - D3, should be C6 (20090903/tbutils-314)
+[ 0.350096] ACPI Warning: Incorrect checksum in table [ATKG] - 13, should be 53 (20090903/tbutils-314)
+[ 0.350158] ACPI Warning: Incorrect checksum in table [ATKG] - 0x13, should be 0xC8 (20110112/tbutils-314)
+[ 0.350335] ACPI Warning: Incorrect checksum in table [SSDT] - 0x83, should be 0x37 (20110112/tbutils-314)
+[ 0.350784] ACPI Warning: Incorrect checksum in table [iEIT] - 0x5C, should be 0x51 (20100428/tbutils-314)
+[ 0.351065] ACPI Warning: Incorrect checksum in table [SSDT] - 0x04, should be 0xCA (20110112/tbutils-314)
+[ 0.353198] ACPI Error: No handler for Region [ERAM] (ffff88013be53e10) [EmbeddedControl] (20090903/evregion-319)
+[ 0.353215] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node ffff88013be520e0), AE_NOT_EXIST
+[ 0.353356] ACPI Warning: Incorrect checksum in table [ATKG] - 0x05, should be 0x36 (20100428/tbutils-314)
+[ 0.353401] ACPI Warning for _SB_.LATA._CRS: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.353406] ACPI Error (uteval-0307): Return object type is incorrect [_SB_.LATA._CRS] (Node ffff88006df2eb00), AE_TYPE
+[ 0.353652] ACPI Error: Needed type [Reference], found [Device] ffff8800379a6800 (20090903/exresop-104)
+[ 0.353652] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff8800379bba80), AE_AML_OPERAND_TYPE
+[ 0.355135] ACPI Error: Method parse/execution failed [_PR_.CPU0._PDC] (Node ffff88007a738ca8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.355798] ACPI Error: ACPI path has too many parent prefixes (^) - reached beyond root node (20090903/nsaccess-429)
+[ 0.356001] ..MP-BIOS bug: 8254 timer not connected to IO-APIC
+[ 0.356108] ACPI Error: No handler for Region [ECF2] (ffff88013ba313a8) [EmbeddedControl] (20090903/evregion-319)
+[ 0.356113] ACPI Error: Region EmbeddedControl(3) has no handler (20090903/exfldio-295)
+[ 0.356119] ACPI Error (psparse-0537): Method parse/execution failed [P8XH] (Node ffff88013ba28020), AE_NOT_EXIST
+[ 0.356143] ACPI Error (psparse-0537): Method parse/execution failed [_GPE._L02] (Node ffff88013ba32120), AE_NOT_EXIST
+[ 0.356280] ACPI Warning: Incorrect checksum in table [TCPA] - 0x33, should be 0xD7 (20100428/tbutils-314)
+[ 0.356754] ACPI Warning: Incorrect checksum in table [ASF!] - ED, should be 83 (20090903/tbutils-314)
+[ 0.357018] ACPI Warning: Incorrect checksum in table [OEMB] - 0xA6, should be 0xA1 (20100428/tbutils-314)
+[ 0.357902] ACPI Warning: Incorrect checksum in table [ATKG] - 0xE9, should be 0xFE (20110112/tbutils-314)
+[ 0.358086] ACPI Warning: Incorrect checksum in table [OEMB] - 0x11, should be 0x10 (20100428/tbutils-314)
+[ 0.359183] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7021a68), AE_ALREADY_EXISTS
+[ 0.359915] ACPI Warning: Incorrect checksum in table [ATKG] - 0x7D, should be 0x59 (20110112/tbutils-314)
+[ 0.360335] ACPI Warning: Incorrect checksum in table [GSCI] - 0x28, should be 0xD4 (20110112/tbutils-314)
+[ 0.361596] ACPI Error: ACPI path has too many parent prefixes (^) - reached beyond root node (20100428/nsaccess-429)
+[ 0.362481] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c091bffc), AE_NOT_FOUND
+[ 0.362557] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c091bffc), AE_ALREADY_EXISTS
+[ 0.362606] ACPI Error (dsfield-0487): [SMIC] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.362751] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f40255d0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.362859] [Firmware Bug]: ACPI: BIOS _OSI(Linux) query honored via cmdline
+[ 0.362870] ACPI Error (dsfield-0140): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.362886] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7014a80), AE_ALREADY_EXISTS
+[ 0.363488] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff880227048f60), AE_ALREADY_EXISTS
+[ 0.363621] ACPI Warning: Incorrect checksum in table [OEMB] - 3C, should be 3B 20090521 tbutils-246
+[ 0.363728] ACPI Warning: Incorrect checksum in table [OEMB] - 75, should be 74 (20090903/tbutils-314)
+[ 0.363981] ACPI Warning: Incorrect checksum in table [OEMB] - BB, should be AE (20090903/tbutils-314)
+[ 0.364356] ACPI Warning: For _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 0.364521] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f44285b8), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.366917] ACPI Warning: Incorrect checksum in table [OEMB] - BD, should be B6 (20090903/tbutils-314)
+[ 0.367185] ACPI Warning: Incorrect checksum in table [OEMB] - B2, should be A5 (20090903/tbutils-314)
+[ 0.367524] ACPI Warning: Incorrect checksum in table [ATKG] - 0xAA, should be 0x59 (20100428/tbutils-314)
+[ 0.368838] ACPI Warning: Incorrect checksum in table [OEMB] - 23, should be 1E (20090903/tbutils-314)
+[ 0.369986] ACPI Warning: Incorrect checksum in table [OEMB] - 0x61, should be 0x58 (20100428/tbutils-314)
+[ 0.370263] ACPI Warning: Incorrect checksum in table [ATKG] - 0x73, should be 0xE5 (20110112/tbutils-314)
+[ 0.371572] ACPI Warning: Incorrect checksum in table [ATKG] - 0xFB, should be 0xE5 (20100428/tbutils-314)
+[ 0.372475] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5426ca8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.372684] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node dd825ca8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.375383] ACPI Warning: Incorrect checksum in table [OEMB] - 0x90, should be 0x83 (20100428/tbutils-314)
+[ 0.375585] ACPI Error (dswload-0677): [USB0] Namespace lookup failure, AE_NOT_FOUND
+[ 0.375609] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c09fb6c8), AE_NOT_FOUND
+[ 0.375966] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c0992f7c), AE_NOT_FOUND
+[ 0.376047] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node dd825ca8), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.376092] ACPI Error: No handler for Region [ECXP] (ffff88007cf31ab0) [EmbeddedControl] (20100428/evregion-369)
+[ 0.376106] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._OSC] (Node ffff88007cf3f440), AE_NOT_EXIST
+[ 0.376141] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PDC] (Node ffff88007cf3f420), AE_NOT_EXIST
+[ 0.376733] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5026ca8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.378931] ACPI Warning: Incorrect checksum in table [OEMB] - 33, should be 2C (20090903/tbutils-314)
+[ 0.379815] ACPI Warning: Incorrect checksum in table [SSDT] - D5, should be 3E (20090903/tbutils-314)
+[ 0.380609] ACPI Warning: Incorrect checksum in table [SSDT] - 8C, should be DC (20090903/tbutils-314)
+[ 0.381039] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7016a38), AE_ALREADY_EXISTS
+[ 0.381211] ACPI Warning: Incorrect checksum in table [OEMB] - 8E, should be 89 (20090903/tbutils-314)
+[ 0.381478] [Firmware Bug]: PCI: MMCONFIG at [mem 0xe0000000-0xe06fffff] not reserved in ACPI motherboard resources
+[ 0.382740] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88003f013ca0), AE_NOT_FOUND
+[ 0.383518] ACPI Warning: Incorrect checksum in table [ATKG] - 0x0F, should be 0xE7 (20100428/tbutils-314)
+[ 0.384684] ACPI Warning: Incorrect checksum in table [OEMB] - 0x4E, should be 0x3F (20100428/tbutils-314)
+[ 0.384722] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.HPET._CRS] (Node ffff88007db32220), AE_NOT_FOUND
+[ 0.384811] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.RTC_._CRS] (Node ffff88007db322c0), AE_NOT_FOUND
+[ 0.385777] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 89 (20090903/tbutils-314)
+[ 0.388556] ACPI Warning: Incorrect checksum in table [ATKG] - 6A, should be E5 (20090903/tbutils-314)
+[ 0.388736] ACPI Warning: Incorrect checksum in table [OEMB] - 8C, should be 83 (20090903/tbutils-314)
+[ 0.390341] ACPI Error: [GUR_._BAS] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.390354] ACPI Error: Method parse/execution failed [_SB_.PCI0.MBIO._CRS] (Node ffff880078f30aa0), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.390975] [Firmware Bug]: PCI: MMCONFIG at [mem 0xe0000000-0xe08fffff] not reserved in ACPI motherboard resources
+[ 0.393086] ACPI Warning: For _TZ_.THRM._PSL: Return Package has no elements (empty) (20110413/nspredef-456)
+[ 0.395834] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88013ba393a0), AE_NOT_FOUND
+[ 0.396197] [Firmware Bug]: ACPI: Invalid BIOS _PSS frequency: 0x0 MHz
+[ 0.396945] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 96 (20090903/tbutils-314)
+[ 0.397644] ACPI Warning: Incorrect checksum in table [ATKG] - F9, should be E5 (20090903/tbutils-314)
+[ 0.398231] ACPI Warning: Incorrect checksum in table [ATKG] - 12, should be 07 (20090903/tbutils-314)
+[ 0.398290] ACPI Warning: Incorrect checksum in table [ATKG] - 01, should be 23 (20090903/tbutils-314)
+[ 0.399990] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 688 (bits) (20110112/dsopcode-597)
+[ 0.399996] ACPI Error: Method parse/execution failed [_SB_.MEM_._CRS] (Node ffff8800b8e38000), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 0.400012] ACPI Error: Method execution failed [_SB_.MEM_._CRS] (Node ffff8800b8e38000), AE_AML_BUFFER_LIMIT (20110112/uteval-103)
+[ 0.400212] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x88 (20110112/tbutils-314)
+[ 0.401117] ACPI Warning: Incorrect checksum in table [ATKG] - 0F, should be E7 (20090903/tbutils-314)
+[ 0.404616] ACPI Warning: Incorrect checksum in table [OEMB] - A5, should be A0 (20090903/tbutils-314)
+[ 0.406016] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.ADP0.ADJP] (Node ffff88013ba3c5a0), AE_NOT_FOUND
+[ 0.406038] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.ADP0._PSR] (Node ffff88013ba3c560), AE_NOT_FOUND
+[ 0.407719] ACPI Warning: Incorrect checksum in table [OEMB] - 72, should be 69 (20090903/tbutils-314)
+[ 0.408529] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c285b8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.414781] ACPI Warning: Incorrect checksum in table [OEMB] - CD, should be C8 (20090903/tbutils-314)
+[ 0.415975] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found [NULL Object Descriptor], expected Reference (20090903/nspredef-1012)
+[ 0.418105] ACPI Warning: Incorrect checksum in table [ATKG] - 76, should be FE (20090903/tbutils-314)
+[ 0.420210] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+[ 0.420218] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88022b749b18), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.420241] ACPI Error: Field [I9MN] at 544 exceeds Buffer [IORT] size 464 (bits) (20100428/dsopcode-597)
+[ 0.420248] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.PMIO._CRS] (Node ffff88013142fac0), AE_AML_BUFFER_LIMIT
+[ 0.420284] ACPI Error (uteval-0250): Method execution failed [_SB_.PCI0.LPC0.PMIO._CRS] (Node ffff88013142fac0), AE_AML_BUFFER_LIMIT
+[ 0.420323] ACPI Warning: Incorrect checksum in table [ATKG] - 0xC3, should be 0x59 (20110112/tbutils-314)
+[ 0.422032] ACPI Warning (dsobject-0501): Package List length (6) larger than NumElements count (3), truncated
+[ 0.424909] ACPI Warning for _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) (20100428/nspredef-456)
+[ 0.426823] ACPI Error (psargs-0359): [_PR_.CPU0._PSS] Namespace lookup failure, AE_NOT_FOUND
+[ 0.426833] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__.ADJP] (Node ffff88007b32ee00), AE_NOT_FOUND
+[ 0.426872] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node ffff88007b32edc0), AE_NOT_FOUND
+[ 0.429245] ACPI Warning for _PR_.CPU0._TSD: Incorrectly formed Package, attempting repair (20090903/nsrepair-200)
+[ 0.430887] ACPI Warning for _PR_.CPU1._TSD: Incorrectly formed Package, attempting repair (20090903/nsrepair-200)
+[ 0.434593] ACPI Warning: Incorrect checksum in table [GSCI] - D2, should be A5 (20090903/tbutils-314)
+[ 0.436921] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88013b62ccc0), AE_NOT_FOUND
+[ 0.438019] ACPI Warning: Incorrect checksum in table [ATKG] - C8, should be E5 (20090903/tbutils-314)
+[ 0.440405] ACPI Warning for _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20100428/nspredef-352)
+[ 0.441805] ACPI Warning: Incorrect checksum in table [OEMB] - B2, should be B1 (20090903/tbutils-314)
+[ 0.444897] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c252a0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.450562] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff8800b8e33ca8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.451517] ACPI Error (psargs-0359): [GUR_._BAS] Namespace lookup failure, AE_NOT_FOUND
+[ 0.451682] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.MBIO._CRS] (Node ffff88007bb2a880), AE_NOT_FOUND
+[ 0.453111] ACPI Warning for _SB_.BAT1._BIF: Return Package type mismatch at index 12 - found Integer, expected String/Buffer (20090903/nspredef-1012)
+[ 0.454555] ACPI Warning for _PR_.CPU0._PSS: Return Package type mismatch at index 3 - found Integer, expected Package (20100428/nspredef-1059)
+[ 0.454838] ACPI Warning for _PR_.CPU1._PSS: Return Package type mismatch at index 3 - found Integer, expected Package (20100428/nspredef-1059)
+[ 0.455674] ACPI Warning: Incorrect checksum in table [SSDT] - 83, should be 7F (20090903/tbutils-314)
+[ 0.459126] ACPI Warning: Incorrect checksum in table [SSDT] - 4C, should be 12 (20090903/tbutils-314)
+[ 0.460622] ACPI Warning: For _SB_.PCI0.P32_._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 0.461767] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+[ 0.461793] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003cdb0f00), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.462573] ACPI Warning: Incorrect checksum in table [OEMB] - 95, should be 5E 20090521 tbutils-246
+[ 0.468216] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._CST] (Node ffff88007c5cc380), AE_NOT_FOUND
+[ 0.468859] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003f1afdc0), AE_ALREADY_EXISTS
+[ 0.475076] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN0._GTM] (Node f701eb28), AE_NOT_FOUND
+[ 0.475159] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.CHN1._GTM] (Node f701ec18), AE_NOT_FOUND
+[ 0.475441] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN0._GTM] (Node f70202a0), AE_NOT_FOUND
+[ 0.475506] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT1.CHN1._GTM] (Node f7020390), AE_NOT_FOUND
+[ 0.479385] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x88 (20100428/tbutils-314)
+[ 0.479821] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3c28a68), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.481067] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4028a68), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.482955] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003d9b0f00), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.484974] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3c28a68), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.485955] ACPI Warning: For _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found [NULL Object Descriptor], expected Reference (20110112/nspredef-1059)
+[ 0.487180] ACPI Warning: Incorrect checksum in table [TAMG] - 0x33, should be 0x32 (20110112/tbutils-314)
+[ 0.487365] ACPI Warning: Incorrect checksum in table [TAMG] - 0x99, should be 0x98 (20110112/tbutils-314)
+[ 0.490256] ACPI Warning: Incorrect checksum in table [ATKG] - 0x22, should be 0x53 (20110112/tbutils-314)
+[ 0.490491] ACPI Warning: For _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20110413/nspredef-352)
+[ 0.491491] ACPI Warning: Incorrect checksum in table [SSDT] - 0x4A, should be 0xD9 (20110112/tbutils-314)
+[ 0.492569] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a08440), AE_NOT_FOUND
+[ 0.492648] ACPI Error (dswload-0781): [PRID] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 0.492655] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a08440), AE_ALREADY_EXISTS
+[ 0.492811] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5428a68), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.494198] ACPI Warning: Incorrect checksum in table [SSDT] - 0x37, should be 0xC7 (20110112/tbutils-314)
+[ 0.496094] ACPI Warning: Incorrect checksum in table [TCPA] - F8, should be 9C (20090903/tbutils-314)
+[ 0.497662] ACPI Warning (nspredef-0357): _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) [20080926]
+[ 0.497913] ACPI Warning: Incorrect checksum in table [TAMG] - 0xFA, should be 0xF9 (20100428/tbutils-314)
+[ 0.498775] ACPI Warning: Incorrect checksum in table [TAMG] - 0xB2, should be 0xB1 (20100428/tbutils-314)
+[ 0.498976] ACPI Warning: Incorrect checksum in table [GSCI] - 7B, should be 04 (20090903/tbutils-314)
+[ 0.500043] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff8800ac22d040), AE_NOT_FOUND
+[ 0.501138] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3c28a38), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.505041] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4028a38), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.513609] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5428a38), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.516158] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f74296c0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.526190] ACPI Warning (tbutils-0217): Incorrect checksum in table [OEMB] - F3, should be EE [20080926]
+[ 0.527455] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5422df8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.533028] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003d9b0bb8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.534826] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x7F (20110112/tbutils-314)
+[ 0.538081] ACPI Warning: Incorrect checksum in table [OEMB] - C1, should be BC (20090903/tbutils-314)
+[ 0.539131] ACPI Error: No handler for Region [RAM_] (ffff88012fa36a20) [EmbeddedControl] (20110112/evregion-369)
+[ 0.539149] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPCB.SNC_.SBRT] (Node ffff88012fa4f398), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.539161] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff88012fa396b8), AE_NOT_EXIST (20110112/psparse-536)
+[ 0.540036] ACPI Error: [_PR_.C002._PPC] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.540046] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node ffff880107e623c0), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.541238] ACPI Error: Method parse/execution failed [_TZ_.C2E8] (Node f482d108), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.541258] ACPI Error: Method parse/execution failed [_TZ_.C2E7] (Node f482d0f0), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.541277] ACPI Error: Method parse/execution failed [_TZ_.TZ2_._TMP] (Node f482d7c8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.548650] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 87 (20090903/tbutils-314)
+[ 0.550271] ACPI Warning: Incorrect checksum in table [ATKG] - 0xDC, should be 0x0E (20110112/tbutils-314)
+[ 0.563415] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003d9af848), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.566332] ACPI Warning: For _TZ_.THRM._AL0: Return Package has no elements (empty) (20110413/nspredef-456)
+[ 0.568235] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 7F 20090521 tbutils-246
+[ 0.581397] ACPI Warning: Incorrect checksum in table [ATKG] - 0x24, should be 0x16 (20110112/tbutils-314)
+[ 0.583718] ACPI Warning: _SB_.PCI0.PCI2._PRT: Return Package has no elements (empty) 20090521 nspredef-434
+[ 0.591409] ACPI Warning: Incorrect checksum in table [ATKG] - 0x1E, should be 0x16 (20110112/tbutils-314)
+[ 0.591722] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 880 (bits) (20100428/dsopcode-597)
+[ 0.591729] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.MEM_._CRS] (Node ffff8800b4040f60), AE_AML_BUFFER_LIMIT
+[ 0.591760] ACPI Error (uteval-0250): Method execution failed [_SB_.MEM_._CRS] (Node ffff8800b4040f60), AE_AML_BUFFER_LIMIT
+[ 0.593045] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node f702c7b0), AE_NOT_FOUND
+[ 0.593072] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node f7019648), AE_NOT_FOUND
+[ 0.593095] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node f702ea08), AE_NOT_FOUND
+[ 0.593119] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f702e9c0), AE_NOT_FOUND
+[ 0.593142] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node f702e678), AE_NOT_FOUND
+[ 0.597675] ACPI Warning for _SB_.PCI0.LPC_.EC__.BAT0._BIF: Converted Buffer to expected String at index 9 (20090903/nsrepair-132)
+[ 0.597680] ACPI Warning for _SB_.PCI0.LPC_.EC__.BAT0._BIF: Converted Buffer to expected String at index 10 (20090903/nsrepair-132)
+[ 0.597685] ACPI Warning for _SB_.PCI0.LPC_.EC__.BAT0._BIF: Converted Buffer to expected String at index 11 (20090903/nsrepair-132)
+[ 0.597689] ACPI Warning for _SB_.PCI0.LPC_.EC__.BAT0._BIF: Converted Buffer to expected String at index 12 (20090903/nsrepair-132)
+[ 0.600451] ACPI Error (psargs-0359): [_SB_.PCI0.EGBA] Namespace lookup failure, AE_NOT_FOUND
+[ 0.600456] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC_.MBRD._CRS] (Node f7416318), AE_NOT_FOUND
+[ 0.612305] ACPI Warning: Incorrect checksum in table [SSDT] - 6C, should be FB (20090903/tbutils-314)
+[ 0.612793] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
+[ 0.612820] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003d9ae190), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.614155] ACPI Warning: Incorrect checksum in table [SSDT] - 37, should be C7 (20090903/tbutils-314)
+[ 0.620955] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found Processor, expected Reference (20090903/nspredef-1012)
+[ 0.621415] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node f702c828), AE_NOT_FOUND
+[ 0.621443] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node f7019ed0), AE_NOT_FOUND
+[ 0.621468] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node f702ea98), AE_NOT_FOUND
+[ 0.621493] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f702ea50), AE_NOT_FOUND
+[ 0.621518] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node f702e708), AE_NOT_FOUND
+[ 0.625680] [Firmware Bug]: PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] not reserved in ACPI motherboard resources
+[ 0.627242] ACPI Error (psargs-0359): [_SB_.PCI0.EC__.HOTT] Namespace lookup failure, AE_NOT_FOUND
+[ 0.627255] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.TZ01._HOT] (Node ffff88013ba3ae60), AE_NOT_FOUND
+[ 0.628646] ACPI Warning: Incorrect checksum in table [OEMB] - 0xFA, should be 0x1E (20100428/tbutils-314)
+[ 0.628687] [Firmware Bug]: ERST: ERST table is invalid
+[ 0.630258] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88007af370a0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.641157] ACPI Warning: Incorrect checksum in table [OEMB] - C4, should be C1 (20090903/tbutils-314)
+[ 0.644838] [Firmware Bug]: PCI: MMCONFIG at [mem 0xe0000000-0xe09fffff] not reserved in ACPI motherboard resources
+[ 0.646493] ACPI Warning: Incorrect checksum in table [OEMB] - 0x5F, should be 0x5A (20100428/tbutils-314)
+[ 0.651383] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88007f416680), AE_NOT_FOUND
+[ 0.652133] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a2e040), AE_NOT_FOUND
+[ 0.652695] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a0f040), AE_NOT_FOUND
+[ 0.653163] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88007ab2f460), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.653985] ACPI Warning: Incorrect checksum in table [TAMG] - 0x4A, should be 0x49 (20110112/tbutils-314)
+[ 0.654642] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff88020f44deb0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.654994] ACPI Error: Method parse/execution failed [_PR_.CPU2._PDC] (Node ffff88020f44df50), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.655350] ACPI Error: Method parse/execution failed [_PR_.CPU3._PDC] (Node ffff88020f454000), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.655369] ACPI Error (psargs-0359): [_SB_.PCI0.PSKB] Namespace lookup failure, AE_NOT_FOUND
+[ 0.655376] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.SIO_.KBC0._STA] (Node ffff880236c47260), AE_NOT_FOUND
+[ 0.655576] ACPI Error (psargs-0359): [_SB_.PCI0.PSMS] Namespace lookup failure, AE_NOT_FOUND
+[ 0.655581] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.SIO_.MSE0._STA] (Node ffff880236c47340), AE_NOT_FOUND
+[ 0.656750] ACPI Warning: Incorrect checksum in table [OEMB] - 06, should be 05 20090521 tbutils-246
+[ 0.658002] ACPI Warning for _SB_.PCI0.SATA.PRT0._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.658697] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88023fc14aa0), AE_ALREADY_EXISTS
+[ 0.662008] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a0c440), AE_NOT_FOUND
+[ 0.663194] [Firmware Bug]: ACPI: no secondary bus range in _CRS
+[ 0.664875] ACPI Warning: Incorrect checksum in table [TAMG] - 0x45, should be 0x44 (20110112/tbutils-314)
+[ 0.666686] ACPI Warning: Incorrect checksum in table [TAMG] - 0x9E, should be 0x9D (20100428/tbutils-314)
+[ 0.670109] ACPI Warning: Incorrect checksum in table [OEMB] - 5B, should be 4E (20090903/tbutils-314)
+[ 0.670182] ACPI Warning: Incorrect checksum in table [TAMG] - C3, should be C2 (20090903/tbutils-314)
+[ 0.670980] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x7F (20100428/tbutils-314)
+[ 0.673104] ACPI Warning: Incorrect checksum in table [OEMB] - 8C, should be 7D (20090903/tbutils-314)
+[ 0.674282] ACPI Warning: Incorrect checksum in table [TAMG] - 0x15, should be 0x14 (20110112/tbutils-314)
+[ 0.674920] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
+[ 0.674938] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.GBIF] (Node f3829120), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.674963] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.BAT1._BIF] (Node f3829330), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 0.675162] ACPI Warning: Incorrect checksum in table [TAMG] - 0x05, should be 0x04 (20110413/tbutils-314)
+[ 0.677370] ACPI Warning for _SB_.PCI0.BAT0._BIF: Converted Buffer to expected String at index 9 (20090903/nsrepair-132)
+[ 0.677375] ACPI Warning for _SB_.PCI0.BAT0._BIF: Converted Buffer to expected String at index 12 (20090903/nsrepair-132)
+[ 0.677386] ACPI Warning: Incorrect checksum in table [OEMB] - 94, should be 93 (20090903/tbutils-314)
+[ 0.678233] ACPI Warning: Incorrect checksum in table [OEMB] - 0x55, should be 0x50 (20100428/tbutils-314)
+[ 0.678877] ACPI Warning: Incorrect checksum in table [OEMB] - 88, should be 7F (20090903/tbutils-314)
+[ 0.681297] ACPI Warning: Incorrect checksum in table [OEMB] - DA, should be D9 (20090903/tbutils-314)
+[ 0.688066] ACPI Warning: Incorrect checksum in table [OEMB] - 60, should be 5F (20090903/tbutils-314)
+[ 0.695029] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a0e440), AE_NOT_FOUND
+[ 0.695887] ACPI Warning: Incorrect checksum in table [OEMB] - C1, should be C0 (20090903/tbutils-314)
+[ 0.696587] ACPI Warning: Incorrect checksum in table [OEMB] - 0xEE, should be 0xE6 (20100428/tbutils-314)
+[ 0.697769] ACPI Warning: Incorrect checksum in table [OEMB] - 0xFC, should be 0xF7 (20100428/tbutils-314)
+[ 0.700202] [Firmware Bug]: powernow-k8: No PSB or ACPI _PSS objects
+[ 0.702121] ACPI Warning: Incorrect checksum in table [OEMB] - 0x84, should be 0x7B (20100428/tbutils-314)
+[ 0.705041] ACPI Warning: Incorrect checksum in table [OEMB] - 0xF3, should be 0xF2 (20100428/tbutils-314)
+[ 0.710267] ACPI Error: Method parse/execution failed [_TZ_.PSWT] (Node f7424bb8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.710275] ACPI Error: Method parse/execution failed [_TZ_.GTTP] (Node f7424b88), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.710281] ACPI Error: Method parse/execution failed [_TZ_.GFXZ._TMP] (Node f74249a8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.710890] ACPI Warning: Incorrect checksum in table [OEMB] - DF, should be D2 (20090903/tbutils-314)
+[ 0.712727] ACPI Error: Method parse/execution failed [_TZ_.DTSZ._TMP] (Node f7424ca8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 0.715065] ACPI Warning: Incorrect checksum in table [OEMB] - 67, should be 64 (20090903/tbutils-314)
+[ 0.715951] ACPI Warning: Incorrect checksum in table [OEMB] - 0x9B, should be 0x93 (20100428/tbutils-314)
+[ 0.717350] ACPI Warning: Incorrect checksum in table [OEMB] - 0x5C, should be 0x55 (20100428/tbutils-314)
+[ 0.719490] ACPI Warning: Incorrect checksum in table [OEMB] - 0x3A, should be 0x39 (20100428/tbutils-314)
+[ 0.721822] ACPI Error (dswload-0659): [USB0] Namespace lookup failure, AE_NOT_FOUND
+[ 0.722199] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a4d180), AE_NOT_FOUND
+[ 0.725417] ACPI Warning for _SB_.PCI0.LPC_.SYSR._CRS: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.725429] ACPI Error (uteval-0307): Return object type is incorrect [_SB_.PCI0.LPC_.SYSR._CRS] (Node ffff88013ba46cc0), AE_TYPE
+[ 0.725450] ACPI Error: Type returned from _CRS was incorrect: Integer, expected Btypes: 4 (20090903/uteval-313)
+[ 0.725974] ACPI Warning: Incorrect checksum in table [OEMB] - 0x7E, should be 0x75 (20100428/tbutils-314)
+[ 0.736425] ACPI Warning: For _SB_.PCI0.PT02._PRT: Return Package has no elements (empty) (20110413/nspredef-456)
+[ 0.743273] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701f0d8), AE_ALREADY_EXISTS
+[ 0.743525] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
+[ 0.743530] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f50273d8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.743538] ACPI Warning: For _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20110112/nspredef-352)
+[ 0.744106] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 880 (bits) (20090903/dsopcode-596)
+[ 0.744114] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.MEM_._CRS] (Node ffff88013ba44cc0), AE_AML_BUFFER_LIMIT
+[ 0.744142] ACPI Error (uteval-0250): Method execution failed [_SB_.MEM_._CRS] (Node ffff88013ba44cc0), AE_AML_BUFFER_LIMIT
+[ 0.755111] ACPI Warning: Incorrect checksum in table [OEMB] - 2F, should be 2A (20090903/tbutils-314)
+[ 0.772223] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c250d8), AE_ALREADY_EXISTS (20101013/psparse-537)
+[ 0.775831] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x87 (20110112/tbutils-314)
+[ 0.777581] ACPI Warning: Incorrect checksum in table [TAMG] - 0xF9, should be 0xF8 (20110112/tbutils-314)
+[ 0.779737] ACPI Warning: Incorrect checksum in table [TAMG] - 0x83, should be 0x82 (20110112/tbutils-314)
+[ 0.780967] ACPI Warning: Incorrect checksum in table [TAMG] - FA, should be F9 (20090903/tbutils-314)
+[ 0.781225] ACPI Warning: Incorrect checksum in table [TAMG] - 0x10, should be 0x0F (20110112/tbutils-314)
+[ 0.781345] ACPI Warning: Incorrect checksum in table [TAMG] - 0xB2, should be 0xB1 (20110112/tbutils-314)
+[ 0.782613] ACPI Error (psargs-0359): [RAMB] Namespace lookup failure, AE_NOT_FOUND
+[ 0.783246] ACPI Warning: Incorrect checksum in table [TAMG] - 0x7D, should be 0x7C (20100428/tbutils-314)
+[ 0.786539] ACPI Warning: Incorrect checksum in table [TAMG] - 0x2D, should be 0x2C (20110112/tbutils-314)
+[ 0.787253] ACPI Warning: Incorrect checksum in table [TAMG] - 0x10, should be 0x0F (20100428/tbutils-314)
+[ 0.788032] ACPI Warning: Incorrect checksum in table [TAMG] - 0x04, should be 0x03 (20110413/tbutils-314)
+[ 0.788418] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88030a048b40), AE_AML_BUFFER_LIMIT
+[ 0.788607] ACPI Warning: Incorrect checksum in table [TAMG] - 0xA2, should be 0xA1 (20110112/tbutils-314)
+[ 0.790513] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.GBIF] (Node ffff880079f39f78), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.790526] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.BAT0._BIF] (Node ffff880079f37118), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.791560] ACPI Warning: Incorrect checksum in table [SSDT] - 0x3F, should be 0x1F (20110112/tbutils-314)
+[ 0.794367] ACPI Warning for _PR_.P002._PSD: Return type mismatch - found Integer, expected Package (20090903/nspredef-1006)
+[ 0.795423] ACPI Warning: Incorrect checksum in table [SSDT] - 0x3F, should be 0x1F (20100428/tbutils-314)
+[ 0.805111] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 7E (20090903/tbutils-314)
+[ 0.810246] [Firmware Bug]: ACPI(Z01I) defines _DOD but not _DOS
+[ 0.810687] ACPI Error (dswload-0659): [DD02] Namespace lookup failure, AE_NOT_FOUND
+[ 0.810756] ACPI Error (dswload-0659): [EHC1] Namespace lookup failure, AE_NOT_FOUND
+[ 0.820565] ACPI Error: [FZHD] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 0.820571] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.CHN0._GTM] (Node ffff880127632b40), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.820632] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.CHN1._GTM] (Node ffff880127632cd0), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.821065] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT1.CHN0._GTM] (Node ffff880127634758), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.821112] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT1.CHN1._GTM] (Node ffff8801276348e8), AE_NOT_FOUND (20110112/psparse-536)
+[ 0.822836] ACPI Warning: For _SB_.PCI0.PCI2._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 0.831199] ACPI Warning: Incorrect checksum in table [OEMB] - B7, should be B6 (20090903/tbutils-314)
+[ 0.860349] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff88023704ea40), AE_NOT_FOUND
+[ 0.860380] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff8802370590e0), AE_NOT_FOUND
+[ 0.860410] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff8802370522a0), AE_NOT_FOUND
+[ 0.860439] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff880237052240), AE_NOT_FOUND
+[ 0.860468] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880237050de0), AE_NOT_FOUND
+[ 0.870147] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88013ba29e80), AE_NOT_FOUND
+[ 0.872036] ACPI Warning: Incorrect checksum in table [OEMB] - EC, should be E3 (20090903/tbutils-314)
+[ 0.873454] ACPI Warning for _SB_.PCI0.PCIB._PRT: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 0.875591] ACPI Warning: Incorrect checksum in table [OEMB] - 14, should be 13 (20090903/tbutils-314)
+[ 0.877093] ACPI Warning: Incorrect checksum in table [OEMB] - 0x89, should be 0x80 (20100428/tbutils-314)
+[ 0.879606] ACPI Error (psargs-0359): [MPEN] Namespace lookup failure, AE_NOT_FOUND
+[ 0.879794] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.TZ00._PSL] (Node ffff88015ba4de00), AE_NOT_FOUND
+[ 0.888177] ACPI Warning for _SB_.BAT1._BST: Return Package type mismatch at index 2 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 0.890080] ACPI Error: No handler for Region [RAM_] (ffff880133a35a20) [EmbeddedControl] (20100428/evregion-369)
+[ 0.890253] ACPI Error: Region EmbeddedControl(0x3) has no handler (20100428/exfldio-293)
+[ 0.890421] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.SNC_.SBRT] (Node ffff880133a49620), AE_NOT_EXIST
+[ 0.890696] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff880133a385e0), AE_NOT_EXIST
+[ 0.892097] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff88021704e920), AE_NOT_FOUND
+[ 0.892124] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff880217056700), AE_NOT_FOUND
+[ 0.892147] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff880217052180), AE_NOT_FOUND
+[ 0.892171] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff880217052120), AE_NOT_FOUND
+[ 0.892195] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880217050cc0), AE_NOT_FOUND
+[ 0.892915] ACPI Warning: Incorrect checksum in table [OEMB] - 0xCE, should be 0xCD (20100428/tbutils-314)
+[ 0.899338] ACPI Warning: Incorrect checksum in table [OEMB] - 0xDD, should be 0xD4 (20100428/tbutils-314)
+[ 0.900692] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff88021704e960), AE_NOT_FOUND
+[ 0.900729] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff880217059000), AE_NOT_FOUND
+[ 0.900753] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff8802170521c0), AE_NOT_FOUND
+[ 0.900776] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff880217052160), AE_NOT_FOUND
+[ 0.900801] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880217050d00), AE_NOT_FOUND
+[ 0.905032] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff88021304e940), AE_NOT_FOUND
+[ 0.905061] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff8802130576a0), AE_NOT_FOUND
+[ 0.905085] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff8802130521a0), AE_NOT_FOUND
+[ 0.905110] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff880213052140), AE_NOT_FOUND
+[ 0.905135] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880213050ce0), AE_NOT_FOUND
+[ 0.905920] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.C000.C264] (Node f7024e58), AE_AML_PACKAGE_LIMIT
+[ 0.905985] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.C000._PSS] (Node f7024f30), AE_AML_PACKAGE_LIMIT
+[ 0.906063] [Firmware Bug]: BIOS needs update for CPU frequency support
+[ 0.940265] ACPI Warning: Incorrect checksum in table [TAMG] - 0x14, should be 0x13 (20110112/tbutils-314)
+[ 0.940948] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7421fc0), AE_ALREADY_EXISTS
+[ 0.941821] ACPI Warning: Incorrect checksum in table [SSDT] - 0x3F, should be 0x91 (20110413/tbutils-314)
+[ 0.943511] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x7E (20110413/tbutils-314)
+[ 0.944156] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ACAD._PSR] (Node ffff88013384d720), AE_NOT_FOUND
+[ 0.967528] ACPI Warning for _TZ_.THRM._AL0: Return Package has no elements (empty) (20100428/nspredef-456)
+[ 0.972652] ACPI Warning: Incorrect checksum in table [OEMB] - FA, should be F7 (20090903/tbutils-314)
+[ 0.990917] ACPI Warning for _SB_.PCI0.FNC2.PRT0._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.991675] ACPI Warning for _SB_.PCI0.FNC2.PRT1._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 0.992685] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81cf6eb0), AE_NOT_FOUND
+[ 1.004972] ACPI Error (psparse-0537): Method parse/execution failed [CPUT] (Node f701c150), AE_NOT_FOUND
+[ 1.005015] ACPI Error (psparse-0537): Method parse/execution failed [PSSC] (Node f701c168), AE_NOT_FOUND
+[ 1.005055] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node f702f3c0), AE_NOT_FOUND
+[ 1.005834] ACPI Warning: Incorrect checksum in table [OEMB] - 0x1D, should be 0x1C (20100428/tbutils-314)
+[ 1.009421] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ACAD._PSR] (Node f701aa98), AE_NOT_FOUND
+[ 1.020525] ACPI Warning: Incorrect checksum in table [TAMG] - 0xE8, should be 0xE7 (20100428/tbutils-314)
+[ 1.020868] ACPI Warning for _PR_.CPU0._PSD: Incorrectly formed Package, attempting repair (20090903/nsrepair-200)
+[ 1.021557] ACPI Warning for _PR_.CPU1._PSD: Incorrectly formed Package, attempting repair (20090903/nsrepair-200)
+[ 1.023813] ACPI Warning: Incorrect checksum in table [OEMB] - 0x82, should be 0x81 (20100428/tbutils-314)
+[ 1.026272] ACPI Warning (processor_throttling-0843): Invalid throttling state, reset
+[ 1.027573] ACPI Error: No handler for Region [ERAM] (ffff880133e3e798) [EmbeddedControl] (20090903/evregion-319)
+[ 1.027587] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.DOCK._STA] (Node ffff880133e48620), AE_NOT_EXIST
+[ 1.027653] ACPI Error (uteval-0250): Method execution failed [_SB_.PCI0.DOCK._STA] (Node ffff880133e48620), AE_NOT_EXIST
+[ 1.125427] [Firmware Bug]: No valid trip found
+[ 1.158298] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node f701b648), AE_NOT_FOUND
+[ 1.167050] ACPI Error: [CDW1] Namespace lookup failure, AE_NOT_FOUND (20110316/psargs-359)
+[ 1.167226] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node f4422648), AE_NOT_FOUND (20110316/psparse-536)
+[ 1.168945] ACPI Warning: Incorrect checksum in table [OEMB] - 0x04, should be 0xFD (20100428/tbutils-314)
+[ 1.174038] ACPI Warning: Incorrect checksum in table [TCPA] - 0x00, should be 0x9B (20100428/tbutils-314)
+[ 1.176461] [Firmware Bug]: powernow-k8: No compatible ACPI _PSS objects found.
+[ 1.176462] [Firmware Bug]: powernow-k8: Try again with latest BIOS.
+[ 1.179893] ACPI Warning: Incorrect checksum in table [ATKG] - 0x81, should be 0x59 (20100428/tbutils-314)
+[ 1.183989] [Firmware Bug]: ACPI(PEGD) defines _DOD but not _DOS
+[ 1.184923] ACPI Warning: For _SB_.PCI0.P0P1._PRT: Return Package has no elements (empty) (20110413/nspredef-456)
+[ 1.186079] ACPI Error: [BRTW] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.186087] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD03._BCM] (Node f4c2a588), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.187842] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0.PPC_] (Node f7450168), AE_NOT_FOUND
+[ 1.187891] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PPC] (Node f74500c0), AE_NOT_FOUND
+[ 1.188370] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PPC] (Node f7450150), AE_NOT_FOUND
+[ 1.188776] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node f74502b8), AE_NOT_FOUND
+[ 1.189190] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node f7450258), AE_NOT_FOUND
+[ 1.196055] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3824270), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.210593] ACPI Warning: For _SB_.PCI0.PCIB._PRT: Return Package has no elements (empty) (20101013/nspredef-456)
+[ 1.212692] ACPI Warning: For _TZ_.THRM._AL0: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 1.214748] ACPI Error: [_T_1] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+[ 1.214761] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_.GBQC] (Node f3023438), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.214775] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_._BQC] (Node f3023420), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.222641] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1.GBQC] (Node f30235b8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.222655] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1._BQC] (Node f30235a0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.224060] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1._STA] (Node f7023b10), AE_TIME
+[ 1.228128] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._REG] (Node f702a570), AE_NOT_FOUND
+[ 1.229185] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f70140d8), AE_ALREADY_EXISTS
+[ 1.230869] ACPI Warning for _PR_.CPU0._PSS: SubPackage[15,16] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 1.231049] ACPI Warning for _PR_.CPU1._PSS: SubPackage[15,16] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 1.231224] ACPI Warning for _PR_.CPU2._PSS: SubPackage[15,16] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 1.231399] ACPI Warning for _PR_.CPU3._PSS: SubPackage[15,16] - suspicious power dissipation values (20100428/nsrepair2-403)
+[ 1.246159] ACPI Error: No handler for Region [ECRM] (f6cedba0) [EmbeddedControl] (20110413/evregion-373)
+[ 1.246164] ACPI Error: Region EmbeddedControl (ID=3) has no handler (20110413/exfldio-292)
+[ 1.246169] ACPI Error: Method parse/execution failed [_TZ_.RDEC] (Node f442fc60), AE_NOT_EXIST (20110413/psparse-536)
+[ 1.246176] ACPI Error: Method parse/execution failed [_TZ_.TZS0._TMP] (Node f442fca8), AE_NOT_EXIST (20110413/psparse-536)
+[ 1.270260] ACPI Error (psparse-0537): Method parse/execution failed [CPUT] (Node ffff880137a4e840), AE_NOT_FOUND
+[ 1.270297] ACPI Error (psparse-0537): Method parse/execution failed [PSSC] (Node ffff880137a4e860), AE_NOT_FOUND
+[ 1.270332] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff880137a3fd00), AE_NOT_FOUND
+[ 1.272398] ACPI Error: No handler for Region [ECRM] (f76d0c60) [EmbeddedControl] (20110112/evregion-369)
+[ 1.272407] ACPI Error: Method parse/execution failed [_TZ_.RDEC] (Node f742fc60), AE_NOT_EXIST (20110112/psparse-536)
+[ 1.272415] ACPI Error: Method parse/execution failed [_TZ_.TZS0._TMP] (Node f742fca8), AE_NOT_EXIST (20110112/psparse-536)
+[ 1.280955] ACPI Error: No handler for Region [PCFG] (ffff880137a733f0) [PCI_Config] (20090903/evregion-319)
+[ 1.280965] ACPI Error (psparse-0537): Method parse/execution failed [J380._STA] (Node ffff88013712b380), AE_NOT_EXIST
+[ 1.314561] ACPI Error: [ECPU] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.314567] ACPI Error: Method parse/execution failed [_TZ_.TZ00._TMP] (Node ffff88011763ca28), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.320114] ACPI Warning: Incorrect checksum in table [ATKG] - 0x9D, should be 0xE5 (20110112/tbutils-314)
+[ 1.336148] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88012b647200), AE_AML_BUFFER_LIMIT
+[ 1.337975] ACPI Error (uteval-0250): Method execution failed [J380._STA] (Node ffff88013712b380), AE_NOT_EXIST
+[ 1.371174] ACPI Error: Field [CDW3] at 96 exceeds Buffer [NULL] size 64 (bits) (20090903/dsopcode-596)
+[ 1.371180] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88044b85e4a0), AE_AML_BUFFER_LIMIT
+[ 1.381411] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a2b040), AE_NOT_FOUND
+[ 1.381481] ACPI Error (dswload-0659): [PCI0] Namespace lookup failure, AE_NOT_FOUND
+[ 1.384655] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff8801393f91f8 (20090903/exresop-590)
+[ 1.384672] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.VGA_._DSM] (Node ffff88013ba4c020), AE_AML_OPERAND_TYPE
+[ 1.384743] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.P0P1.VGA_._DSM] (Node ffff88013ba4d9c0), AE_AML_OPERAND_TYPE
+[ 1.398000] [Firmware Bug]: ACPI(Z00P) defines _DOD but not _DOS
+[ 1.398053] ACPI: acpi_idle yielding to intel_idleACPI Warning for _TZ_.TZ01._PSL: Return Package type mismatch at index 0 - found Processor, expected Reference (20100428/nspredef-1059)
+[ 1.399160] ACPI Warning for _SB_.PCI0.PT02._PRT: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 1.400736] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node f7018e58), AE_NOT_FOUND
+[ 1.436671] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node f7024e58), AE_NOT_FOUND
+[ 1.462866] ACPI Warning: _SB_.PCI0.VID2._DOD: Return Package has no elements (empty) 20090521 nspredef-434
+[ 1.480960] ACPI Warning: _SB_.PCI0.FNC2.PRT0._GTF: Return type mismatch - found Integer, expected Buffer 20090521 nspredef-940
+[ 1.488986] ACPI Error (psargs-0359): [GTF0] Namespace lookup failure, AE_NOT_FOUND
+[ 1.488991] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f702b708), AE_NOT_FOUND
+[ 1.489034] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f702b720), AE_NOT_FOUND
+[ 1.505441] ACPI Warning: Incorrect checksum in table [TAMG] - 7C, should be 7B (20090903/tbutils-314)
+[ 1.507734] ACPI Warning: Incorrect checksum in table [TAMG] - 2D, should be 2C (20090903/tbutils-314)
+[ 1.509153] ACPI Warning: Incorrect checksum in table [TAMG] - C0, should be BF (20090903/tbutils-314)
+[ 1.512057] ACPI Warning: Incorrect checksum in table [OEMB] - CA, should be C9 (20090903/tbutils-314)
+[ 1.515657] ACPI Warning: Incorrect checksum in table [TAMG] - 0xC5, should be 0xC4 (20110112/tbutils-314)
+[ 1.518091] ACPI Warning for _SB_.PCI0.IDE1.PRT0._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 1.528248] ACPI Warning: Incorrect checksum in table [TAMG] - 0x98, should be 0x97 (20100428/tbutils-314)
+[ 1.529653] ACPI Warning: Incorrect checksum in table [TAMG] - 0x7C, should be 0x7B (20100428/tbutils-314)
+[ 1.535278] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 88 (20090903/tbutils-314)
+[ 1.545790] ACPI Warning: Incorrect checksum in table [OEMB] - D0, should be CF (20090903/tbutils-314)
+[ 1.555599] ACPI Error (psparse-0537): Method parse/execution failed [CPUT] (Node ffff8801b90590c0), AE_NOT_FOUND
+[ 1.555652] ACPI Error (psparse-0537): Method parse/execution failed [PSSC] (Node ffff8801b90590e0), AE_NOT_FOUND
+[ 1.555703] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff8801b903b6e0), AE_NOT_FOUND
+[ 1.559068] ACPI Warning: Incorrect checksum in table [OEMB] - C5, should be C4 (20090903/tbutils-314)
+[ 1.570612] ACPI Error: No handler for Region [PCFG] (ffff8801b9074240) [PCI_Config] (20090903/evregion-319)
+[ 1.570624] ACPI Error (psparse-0537): Method parse/execution failed [J380._STA] (Node ffff8801b916ea40), AE_NOT_EXIST
+[ 1.586563] ACPI Warning: Incorrect checksum in table [OEMB] - D7, should be D3 (20090903/tbutils-314)
+[ 1.590337] ACPI Warning: For _TZ_.THRM._PSL: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 1.601784] ACPI Warning: Incorrect checksum in table [OEMB] - 5D, should be 55 (20090903/tbutils-314)
+[ 1.605121] ACPI Error: Current brightness invalid (20110112/video-377)
+[ 1.605465] ACPI Error: [RAMB] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.616034] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff88015334da00), AE_NOT_FOUND
+[ 1.616243] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff88015334d920), AE_NOT_FOUND
+[ 1.618281] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff88015334d9e0), AE_NOT_FOUND
+[ 1.620164] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff88015334dbc0), AE_NOT_FOUND
+[ 1.621081] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff88015334db40), AE_NOT_FOUND
+[ 1.648580] ACPI Error: [SMS_] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.648589] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node f3429e58), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.662849] ACPI Error (uteval-0250): Method execution failed [J380._STA] (Node ffff8801b916ea40), AE_NOT_EXIST
+[ 1.678325] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88022f7bb5e8 (20110112/exresop-590)
+[ 1.678342] ACPI Error: Method parse/execution failed [_SB_.PCI0.VGA_._DSM] (Node ffff88022f460190), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 1.678390] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88022f7bb8b8 (20110112/exresop-590)
+[ 1.678412] ACPI Error: Method parse/execution failed [_SB_.PCI0.P0P1.VGA_._DSM] (Node ffff88022f464230), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 1.701482] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff88022704e960), AE_NOT_FOUND
+[ 1.701521] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff880227059000), AE_NOT_FOUND
+[ 1.701557] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff8802270521c0), AE_NOT_FOUND
+[ 1.701592] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff880227052160), AE_NOT_FOUND
+[ 1.701628] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880227050d00), AE_NOT_FOUND
+[ 1.739479] ACPI Warning: Incorrect checksum in table [SSDT] - 0x3F, should be 0x91 (20110112/tbutils-314)
+[ 1.761428] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node ffff8800bc234d60), AE_NOT_FOUND
+[ 1.782803] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff8801d4d0ac60), AE_NOT_FOUND
+[ 1.783001] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff8801d4d0ab80), AE_NOT_FOUND
+[ 1.784831] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff8801d4d0ac40), AE_NOT_FOUND
+[ 1.786497] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff8801d4d0ae20), AE_NOT_FOUND
+[ 1.787299] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff8801d4d0ada0), AE_NOT_FOUND
+[ 1.849787] ACPI Warning for _PR_.CPU3._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer [<ffffffff81094378>] tick_dev_program_event+0x68/0xd0
+[ 1.861558] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+[ 1.861576] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.GBIF] (Node ffff880232c509b0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.861601] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.BAT1._BIF] (Node ffff880232c50d20), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 1.864413] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f3025828), AE_AML_PACKAGE_LIMIT (20110413/psparse-536)
+[ 1.893953] ACPI Error (psparse-0537): Method parse/execution failed [CPUT] (Node ffff8800b3c50000), AE_NOT_FOUND
+[ 1.894002] ACPI Error (psparse-0537): Method parse/execution failed [PSSC] (Node ffff8800b3c50020), AE_NOT_FOUND
+[ 1.894047] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff8800b3c49380), AE_NOT_FOUND
+[ 1.900224] ACPI Error: [NPSS] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.900238] ACPI Error: Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff88014f9a5140), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.900254] ACPI Error: Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff88014f9a5028), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.900769] ACPI Error: Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff88014f9a5118), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.901001] ACPI Error: Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff88014f9a5370), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.901211] ACPI Error: Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff88014f9a52d0), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.905440] ACPI Warning: For _SB_.PCI0.PCIB._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 1.907422] ACPI Error: [GTF0] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 1.907427] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f3431a50), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.907445] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f3431a68), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.911273] ACPI Warning for _SB_.PCI0.P0P1._PRT: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 1.929855] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.IDE1.GTM_] (Node f7414858), AE_AML_PACKAGE_LIMIT
+[ 1.929872] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.IDE1.CHN1._GTM] (Node f7414798), AE_AML_PACKAGE_LIMIT
+[ 1.958776] ACPI Warning for _PR_.CPU0._PSD:
+[ 1.958968] ACPI Warning for _PR_.CPU1._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959113] ACPI Warning for _PR_.CPU2._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959252] ACPI Warning for _PR_.CPU3._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959427] ACPI Warning for _PR_.CPU4._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959602] ACPI Warning for _PR_.CPU5._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959776] ACPI Warning for _PR_.CPU6._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.959951] ACPI Warning for _PR_.CPU7._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 1.962612] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff8801534e5dc0), AE_NOT_FOUND
+[ 1.962811] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff8801534e5ce0), AE_NOT_FOUND
+[ 1.964620] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff8801534e5da0), AE_NOT_FOUND
+[ 1.966282] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff8801534e5f80), AE_NOT_FOUND
+[ 1.967081] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff8801534e5f00), AE_NOT_FOUND
+[ 1.974827] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f3831a50), AE_NOT_FOUND (20110112/psparse-536)
+[ 1.974846] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f3831a68), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.001829] ACPI Error: Method parse/execution failed [_SB_.PCI0.PATA.GTM_] (Node f5423ba0), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 2.001850] ACPI Error: Method parse/execution failed [_SB_.PCI0.PATA.CHN0._GTM] (Node f54239c0), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 2.002809] ACPI Error: Method parse/execution failed [_SB_.PCI0.PATA.CHN1._GTM] (Node f5423ac8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 2.006621] ACPI Error (psparse-0537): Method parse/execution failed [CPUT] (Node ffff8801b90570c0), AE_NOT_FOUND
+[ 2.006671] ACPI Error (psparse-0537): Method parse/execution failed [PSSC] (Node ffff8801b90570e0), AE_NOT_FOUND
+[ 2.006718] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._REG] (Node ffff8801b903fa80), AE_NOT_FOUND
+[ 2.022076] ACPI Error: Could not enable SleepButton event (20110112/evxfevnt-198)
+[ 2.022090] ACPI Warning: Could not enable fixed event 0x3 (20110112/evxface-197)
+[ 2.033653] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f6031468), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.033670] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f6031480), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.039517] [Firmware Bug]: ACPI: Invalid BIOS _PSS frequency: 0x80000000 MHz
+[ 2.045931] ACPI Warning for _SB_.PCI0.P0P1._PRT: Return Package has no elements (empty) (20100428/nspredef-456)
+[ 2.049441] ACPI Warning for _PR_.CPU0._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer (20090903/nspredef-1012)
+[ 2.068617] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node f3c29e58), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.081502] ACPI Error (psargs-0359): [NPSS] Namespace lookup failure, AE_NOT_FOUND
+[ 2.081508] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff8801534e5c20), AE_NOT_FOUND
+[ 2.081585] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff8801534e5b40), AE_NOT_FOUND
+[ 2.083171] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff8801534e5c00), AE_NOT_FOUND
+[ 2.084838] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff8801534e5de0), AE_NOT_FOUND
+[ 2.085644] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff8801534e5d60), AE_NOT_FOUND
+[ 2.106307] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node ffff88023f45dca8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.106326] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node ffff88023f45dcd0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.113330] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f74317b0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.113367] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f74317c8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.132386] ACPI Error: Could not enable SleepButton event (20090903/evxfevnt-193)
+[ 2.132392] ACPI Warning: Could not enable fixed event 3 (20090903/evxface-146)
+[ 2.149905] ACPI Error: Method parse/execution failed [_SB_.C003.C099._DOD] (Node f30275a0), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 2.173036] ACPI Warning for _SB_._OSC: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 2.173935] ACPI Warning: Incorrect checksum in table [OEMB] - C3, should be C2 (20090903/tbutils-314)
+[ 2.200371] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f602bf30), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.200380] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f602d2d0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.206433] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742d018), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.206443] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d3a8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.222353] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+[ 2.222362] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f602d018), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.222372] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f602d3a8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.227407] ACPI Error (psargs-0359): [GTF1] Namespace lookup failure, AE_NOT_FOUND
+[ 2.227411] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._SDD] (Node f702b7b0), AE_NOT_FOUND
+[ 2.227454] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._GTF] (Node f702b7c8), AE_NOT_FOUND
+[ 2.229498] ACPI Warning: Incorrect checksum in table [TAMG] - 0xC6, should be 0xC5 (20100428/tbutils-314)
+[ 2.231431] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f602bf60), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.231442] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f602d300), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.250291] ACPI Error: Method parse/execution failed [_SB_.BAT1.UBIF] (Node ffff88013762f550), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.250306] ACPI Error: Method parse/execution failed [_SB_.BAT1._BIF] (Node ffff88013762f500), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.270835] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff880125e2c708), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.280398] ACPI Error (dswload-0781): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 2.280410] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1.UBIF] (Node ffff8800b3c2e100), AE_ALREADY_EXISTS
+[ 2.280443] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1._BIF] (Node ffff8800b3c2e0c0), AE_ALREADY_EXISTS
+[ 2.283579] ACPI Error (psargs-0359): [_T_0] Namespace lookup failure, AE_NOT_FOUND
+[ 2.283585] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1.UBIF] (Node ffff8800b3c2e100), AE_NOT_FOUND
+[ 2.283615] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._Q09] (Node ffff8800b3c410e0), AE_NOT_FOUND
+[ 2.288649] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node ffff88023f45dcd0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.288685] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node ffff88023f45dcf8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.294251] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742bf30), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.294262] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d2d0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.324547] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
+[ 2.324556] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742d018), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 2.324566] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d3a8), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 2.334361] ACPI Error: Attempt to CreateField of length zero (20110112/dsopcode-529)
+[ 2.334370] ACPI Error: Method parse/execution failed [_SB_.PCI0.IDE0.RATA] (Node ffff8801376322a8), AE_AML_OPERAND_VALUE (20110112/psparse-536)
+[ 2.334384] ACPI Error: Method parse/execution failed [_SB_.PCI0.IDE0.PRT1._GTF] (Node ffff880137632438), AE_AML_OPERAND_VALUE (20110112/psparse-536)
+[ 2.336604] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff88013b63c460), AE_AML_PACKAGE_LIMIT
+[ 2.384172] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node ffff8801c305dcd0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.384189] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node ffff8801c305dcf8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.440684] ACPI Error (psargs-0359): [SMS_] Namespace lookup failure, AE_NOT_FOUND
+[ 2.440692] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SATA.PRT0._SDD] (Node ffff88007db30c60), AE_NOT_FOUND
+[ 2.462687] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node ffff880147646cd0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.462711] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node ffff880147646cf8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.468708] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node f700f180), AE_INVALID_TABLE_LENGTH
+[ 2.468963] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node f700f240), AE_INVALID_TABLE_LENGTH
+[ 2.478380] [Firmware Bug]: ACPI(NGFX) defines _DOD but not _DOS
+[ 2.592359] ACPI Error: Method parse/execution failed [_PR_.CPU0.PPC_] (Node ffff88014f9a4140), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.592381] ACPI Error: Method parse/execution failed [_PR_.CPU0._PPC] (Node ffff88014f9a4028), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.593071] ACPI Error: Method parse/execution failed [_PR_.CPU1._PPC] (Node ffff88014f9a4118), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.593648] ACPI Error: Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff88014f9a4370), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.593935] ACPI Error: Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff88014f9a42d0), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.634350] ACPI Error: [GTF1] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 2.634355] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._SDD] (Node f3431af8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.634373] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._GTF] (Node f3431b10), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.671117] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f2c2d018), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.671128] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f2c2d3a8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.701908] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._SDD] (Node f3831af8), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.701933] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._GTF] (Node f3831b10), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.771747] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f402bf60), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.771758] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f402d300), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 2.787172] ACPI Warning: For _SB_.PCI0.P0P1._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
+[ 2.823916] ACPI Warning: _BQC returned an invalid level 20090521 video-629
+[ 2.837958] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._SDD] (Node f7431858), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.837994] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._GTF] (Node f7431870), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.838171] ACPI Warning for _SB_.BAT0._BIF: Return Package type mismatch at index 9 - found [NULL Object Descriptor], expected String/Buffer (20090903/nspredef-1012)
+[ 2.851027] ACPI Warning: _BQC returned an invalid level (20110316/video-473)
+[ 2.860339] ACPI Error: Method parse/execution failed [_SB_.C003.C098._DOD] (Node f4427588), AE_AML_PACKAGE_LIMIT (20110413/psparse-536)
+[ 2.861808] ACPI Error: [_SB_.PCI0.GFX0.DD02._BCL] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 2.861812] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG0.PEGP.DD02._BCL] (Node ffff88015746e168), AE_NOT_FOUND (20110112/psparse-536)
+[ 2.870589] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff880137632c80), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 2.906610] ACPI Warning: For _SB_.PCI0.P0P2.PEGP._DOD: Return type mismatch - found Integer, expected Package (20110413/nspredef-1053)
+[ 2.949708] ACPI Error: Field [CDW3] at 96 exceeds Buffer [NULL] size 64 (bits) (20110112/dsopcode-597)
+[ 2.949716] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node ffff880297016ca8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 3.005123] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88122fc1ea00), AE_NOT_FOUND
+[ 3.033154] ACPI Warning: Incorrect checksum in table [OEMB] - 0x87, should be 0x84 (20100428/tbutils-314)
+[ 3.112435] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node f74257c8), AE_NOT_FOUND
+[ 3.112465] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node f742c210), AE_NOT_FOUND
+[ 3.112494] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node f7427a20), AE_NOT_FOUND
+[ 3.112522] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f74279d8), AE_NOT_FOUND
+[ 3.112549] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node f7427690), AE_NOT_FOUND
+[ 3.139648] [Firmware Bug]: ACPI(XVS0) defines _DOD but not _DOS
+[ 3.208822] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.C003.C098._DOD] (Node ffff88007cf30b60), AE_AML_PACKAGE_LIMIT
+[ 3.223518] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff880236c469a0), AE_AML_PACKAGE_LIMIT
+[ 3.382436] ACPI Warning: Incorrect checksum in table [TCPA] - 00, should be 7F (20090903/tbutils-314)
+[ 3.382442] ACPI Warning: Incorrect checksum in table [_RAT] - 00, should be 63 (20090903/tbutils-314)
+[ 3.420672] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found Processor, expected Reference (20100428/nspredef-1059)
+[ 3.480092] ACPI Warning for _SB_.PCI0.SAT0.PRT0._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 3.490098] ACPI Warning for _SB_.PCI0.SAT0.PRT1._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
+[ 3.490832] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PMI0._GHL] (Node ffff88013bc2bdc0), AE_AML_BUFFER_LIMIT
+[ 3.490852] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PMI0._PMC] (Node ffff88013bc2bd40), AE_AML_BUFFER_LIMIT
+[ 3.502273] ACPI Error: Could not enable SleepButton event (20100428/evxfevnt-205)
+[ 3.601126] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f7420690), AE_AML_PACKAGE_LIMIT
+[ 3.644168] ACPI Warning: Incorrect checksum in table [TCPA] - 0xF8, should be 0x9C (20110413/tbutils-314)
+[ 3.663829] [Firmware Bug]: ACPI(GFX0) defines _DOD but not _DOS
+[ 3.675814] ACPI Error: Evaluating _BCM failed (20100428/video-532)
+[ 3.868794] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._SDD] (Node f3831b58), AE_NOT_FOUND (20110112/psparse-536)
+[ 3.868812] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node f3831b70), AE_NOT_FOUND (20110112/psparse-536)
+[ 3.983031] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node ffff88021d459028), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 3.983040] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node ffff88021d459618), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 4.002664] [Firmware Bug]: ACPI(EVGA) defines _DOD but not _DOS
+[ 4.046031] ACPI Warning: Incorrect checksum in table [OEMB] - 4A, should be 47 (20090903/tbutils-314)
+[ 4.115197] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node ffff88021d458eb0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 4.115206] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node ffff88021d4594b0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 4.190434] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff8801376342f8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 4.198699] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._SDD] (Node f3831c00), AE_NOT_FOUND (20110112/psparse-536)
+[ 4.198716] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT1._GTF] (Node f3831c18), AE_NOT_FOUND (20110112/psparse-536)
+[ 4.230508] ACPI Exception: AE_TIME, Returned by Handler for [EmbeddedControl] (20090903/evregion-424)
+[ 4.230527] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ISAB.ECDV.ECR1] (Node f7018ed0), AE_TIME
+[ 4.230612] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ISAB.ECDV.ECR2] (Node f7018ee8), AE_TIME
+[ 4.230643] ACPI Error (psparse-0537): Method parse/execution failed [ECRW] (Node f7018fa8), AE_TIME
+[ 4.230672] ACPI Error (psparse-0537): Method parse/execution failed [ECG1] (Node f7018fd8), AE_TIME
+[ 4.230701] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f70186f0), AE_TIME
+[ 4.230730] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ISAB.ECDV._Q66] (Node f7018eb8), AE_TIME
+[ 4.576415] ACPI Error: No handler for Region [ERAM] (f4830d50) [EmbeddedControl] (20110112/evregion-369)
+[ 4.576437] ACPI Error: Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node f48326d8), AE_NOT_EXIST (20110112/psparse-536)
+[ 4.638115] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node ffff880220c5b028), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 4.638127] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node ffff880220c5b618), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 4.838935] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.C2E8] (Node f701b108), AE_AML_PACKAGE_LIMIT
+[ 4.838984] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.C2E7] (Node f701b0f0), AE_AML_PACKAGE_LIMIT
+[ 4.839033] ACPI Error (psparse-0537): Method parse/execution failed [_TZ_.TZ2_._TMP] (Node f701b7c8), AE_AML_PACKAGE_LIMIT
+[ 4.890970] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node ffff880126e43f50), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 4.890980] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node ffff880126e44550), AE_ALREADY_EXISTS (20110413/psparse-536)
+[ 4.983204] [Firmware Bug]: ACPI(MXM3) defines _DOD but not _DOS
+[ 5.150560] ACPI Warning for _SB_.BAT0._BIF: Return Package type mismatch at index 12 - found Integer, expected String/Buffer (20090903/nspredef-1012)
+[ 5.332663] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f4425450), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 6.224974] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_.GBQC] (Node f3423438), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.224987] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_._BQC] (Node f3423420), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.227917] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1.GBQC] (Node f34235b8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.227930] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1._BQC] (Node f34235a0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.732287] ACPI Error: [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+[ 6.732310] ACPI Error: Method parse/execution failed [_SB_.BAT1.UBIF] (Node dd028fc0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.732334] ACPI Error: Method parse/execution failed [_SB_.BAT1._BIF] (Node dd028f90), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 6.773266] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20101013/dsfield-143)
+[ 6.773285] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ddc25ca8), AE_ALREADY_EXISTS (20101013/psparse-537)
+[ 7.365139] ACPI Error: No handler for Region [IPMI] (ffff8805ffa37240) [IPMI] (20110112/evregion-369)
+[ 7.365150] ACPI Error: Region IPMI(0x7) has no handler (20110112/exfldio-292)
+[ 7.365161] ACPI Error: Method parse/execution failed [_SB_.PMI0._GHL] (Node ffff8805ffa36b18), AE_NOT_EXIST (20110112/psparse-536)
+[ 7.365181] ACPI Error: Method parse/execution failed [_SB_.PMI0._PMC] (Node ffff8805ffa36a78), AE_NOT_EXIST (20110112/psparse-536)
+[ 8.137284] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node f702e720), AE_TIME
+[ 8.137317] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node f702e7f8), AE_TIME
+[ 8.137344] ACPI Error (psparse-0537): Method parse/execution failed [EC0A] (Node f702ea08), AE_TIME
+[ 8.137370] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AMW0._WED] (Node f7019ca8), AE_TIME
+[ 8.227953] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.C003.C098._DOD] (Node f7021588), AE_AML_PACKAGE_LIMIT
+[ 8.316300] [Firmware Bug]: ACPI(VGA0) defines _DOD but not _DOS
+[ 8.794633] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5824ab0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 9.141980] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node f702e690), AE_TIME
+[ 9.142017] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node f702e768), AE_TIME
+[ 9.142046] ACPI Error (psparse-0537): Method parse/execution failed [EC0A] (Node f702e978), AE_TIME
+[ 9.142076] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AMW0._WED] (Node f7019420), AE_TIME
+[ 9.267040] ACPI Warning for _SB_.SPM_._PMD: Return Package type mismatch at index 0 - found String, expected Reference (20090903/nspredef-1012)
+[ 9.391036] ACPI Error: Method parse/execution failed [_SB_.PCI0.IBCM] (Node f3828738), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 9.391049] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD03._BCM] (Node f3824b28), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 9.391061] ACPI Error: Evaluating _BCM failed (20110112/video-365)
+[ 9.393479] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012d8cfee8 (20110112/exresop-590)
+[ 9.393498] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02.GBQC] (Node ffff88012f83e6b8), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 9.393510] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BQC] (Node ffff88012f83e690), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 9.394098] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012d8cfd38 (20110112/exresop-590)
+[ 9.394109] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02.SBCM] (Node ffff88012f83e6e0), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 9.394118] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BCM] (Node ffff88012f83e668), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 9.957372] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT1.CHN0._GTM] (Node ffff88007af33780), AE_NOT_FOUND (20110112/psparse-536)
+[ 9.957372] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT1.CHN1._GTM] (Node ffff88007af33910), AE_NOT_FOUND (20110112/psparse-536)
+[ 9.957372] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.CHN0._GTM] (Node ffff88007af32b68), AE_NOT_FOUND (20110112/psparse-536)
+[ 9.957372] ACPI Error: Method parse/execution failed [_SB_.PCI0.SATA.CHN1._GTM] (Node ffff88007af32cf8), AE_NOT_FOUND (20110112/psparse-536)
+[ 10.080352] [Firmware Bug]: ACPI(VGA) defines _DOD but not _DOS
+[ 10.120967] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88023bcba438 (20110112/exresop-590)
+[ 10.120977] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DSM] (Node ffff88023f45edc0), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 10.121007] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88023bcba1b0 (20110112/exresop-590)
+[ 10.121018] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG0.GFX0._DSM] (Node ffff88023f474370), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 10.194089] ACPI Warning for _SB_.PCI0.PCIB._PRT: Return Package has no elements (empty) (20100428/nspredef-456)
+[ 10.289821] ACPI Error (psargs-0359): [_PR_.CPU0._CST] Namespace lookup failure, AE_NOT_FOUND
+[ 10.289828] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._CST] (Node f70c3288), AE_NOT_FOUND
+[ 10.344782] ACPI Error: SMBus or IPMI write requires Buffer of length 42, found length 20 (20090903/exfield-286)
+[ 10.344788] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PMI0._GHL] (Node ffff88122fc1ece0), AE_AML_BUFFER_LIMIT
+[ 10.344812] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PMI0._PMC] (Node ffff88122fc1ec60), AE_AML_BUFFER_LIMIT
+[ 10.380244] ACPI Warning (nspredef-0357): _SB_.PCI0.VID2._DOD: Return Package has no elements (empty) [20080926]
+[ 10.680422] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BCM] (Node ffff880117642ed8), AE_AML_INFINITE_LOOP (20110112/psparse-536)
+[ 10.692650] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR2] (Node f702e738), AE_TIME
+[ 10.692684] ACPI Error (psparse-0537): Method parse/execution failed [ECRW] (Node f702e810), AE_TIME
+[ 10.692710] ACPI Error (psparse-0537): Method parse/execution failed [ECG1] (Node f702e840), AE_TIME
+[ 10.692735] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f702ea50), AE_TIME
+[ 10.692761] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node f702e708), AE_TIME
+[ 10.708822] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node f7427738), AE_TIME
+[ 10.708876] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node f7427810), AE_TIME
+[ 10.708908] ACPI Error (psparse-0537): Method parse/execution failed [EC0A] (Node f7427a20), AE_TIME
+[ 10.708939] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AMW0._WED] (Node f742c078), AE_TIME
+[ 10.724353] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node ffff880213050d00), AE_TIME
+[ 10.724416] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node ffff880213050e20), AE_TIME
+[ 10.724449] ACPI Error (psparse-0537): Method parse/execution failed [EC0A] (Node ffff8802130520e0), AE_TIME
+[ 10.724482] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AMW0._WED] (Node ffff8802130573c0), AE_TIME
+[ 11.195653] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node f702e8a0), AE_TIME
+[ 11.195680] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node f702ec90), AE_TIME
+[ 11.383565] ACPI Error: Method parse/execution failed [_SB_.C003.C098._DOD] (Node ffff880137636938), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 11.660551] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR2] (Node f702e6a8), AE_TIME
+[ 11.660591] ACPI Error (psparse-0537): Method parse/execution failed [ECRW] (Node f702e780), AE_TIME
+[ 11.660615] ACPI Error (psparse-0537): Method parse/execution failed [ECG1] (Node f702e7b0), AE_TIME
+[ 11.660638] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node f702e9c0), AE_TIME
+[ 11.660661] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node f702e678), AE_TIME
+[ 11.800514] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff8801376342a8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 11.880473] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012125f558 (20110413/exresop-590)
+[ 11.880998] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012125f3a8 (20110413/exresop-590)
+[ 11.915871] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SWFS] (Node ffff880226c49320), AE_AML_INFINITE_LOOP
+[ 11.915905] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.RBYT] (Node ffff880226c493c0), AE_AML_INFINITE_LOOP
+[ 11.915932] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.SECV] (Node ffff880226c4a0e0), AE_AML_INFINITE_LOOP
+[ 11.915960] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.RVLT] (Node ffff880226c49b00), AE_AML_INFINITE_LOOP
+[ 12.160904] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node f702e810), AE_TIME
+[ 12.160929] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node f702ec00), AE_TIME
+[ 12.167076] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff8800b1753048 (20090903/exresop-590)
+[ 12.167089] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0.DD02.GBQC] (Node ffff8800b3c44ca0), AE_AML_OPERAND_TYPE
+[ 12.167143] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BQC] (Node ffff8800b3c44c80), AE_AML_OPERAND_TYPE
+[ 12.167205] ACPI Warning: Evaluating _BQC failed (20090903/video-641)
+[ 12.242368] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012ea6e6c0 (20110413/exresop-590)
+[ 12.242387] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02.GBQC] (Node ffff88013113f6b8), AE_AML_OPERAND_TYPE (20110413/psparse-536)
+[ 12.242397] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BQC] (Node ffff88013113f690), AE_AML_OPERAND_TYPE (20110413/psparse-536)
+[ 12.242409] ACPI Warning: Evaluating _BQC failed (20110413/video-484)
+[ 12.242974] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88012ea6e5e8 (20110413/exresop-590)
+[ 12.242986] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02.SBCM] (Node ffff88013113f6e0), AE_AML_OPERAND_TYPE (20110413/psparse-536)
+[ 12.242994] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BCM] (Node ffff88013113f668), AE_AML_OPERAND_TYPE (20110413/psparse-536)
+[ 12.243002] ACPI Error: Evaluating _BCM failed (20110413/video-365)
+[ 12.361137] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.C003.C09D._DOD] (Node ffff88013b630c00), AE_AML_PACKAGE_LIMIT
+[ 12.390421] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node ffff880213050f00), AE_TIME
+[ 12.390446] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node ffff880213052440), AE_TIME
+[ 12.553637] ACPI Warning: For _SB_.PCI0.P0P2.PEGP._DOD: Return type mismatch - found Integer, expected Package (20110112/nspredef-1053)
+[ 12.838979] cfg80211: Ignoring regulatory request Set by core since the driver uses its own custom regulatory domain ACPI Exception: AE_TIME, Returned by Handler for [EmbeddedControl] (20110112/evregion-474)
+[ 12.841008] cfg80211: Ignoring regulatory request Set by core since the driver uses its own custom regulatory domain ACPI Warning: _BQC returned an invalid level (20110112/video-473)
+[ 13.024512] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f7425450), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 13.396787] ACPI Error: Method parse/execution failed [_SB_.ADP1._PSR] (Node ffff88011763ba00), AE_TIME (20110112/psparse-536)
+[ 13.445954] ACPI Error: Field [D128] at 1040 exceeds Buffer [NULL] size 160 (bits) (20110112/dsopcode-597)
+[ 13.445980] ACPI Error: Method parse/execution failed [_SB_.WMID.HWMC] (Node f742a8b8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 13.446019] ACPI Error: Method parse/execution failed [_SB_.WMID.WMAD] (Node f742aac8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 13.452167] ACPI Error (psargs-0359): [_PR_.C001] Namespace lookup failure, AE_NOT_FOUND
+[ 13.452177] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_.TPAF] (Node f702bde0), AE_NOT_FOUND
+[ 13.452213] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_.TBOM] (Node f702bdf8), AE_NOT_FOUND
+[ 13.452247] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.EC0_._Q1D] (Node f702ba98), AE_NOT_FOUND
+[ 14.013275] ACPI Warning: _BQC returned an invalid level (20110112/video-473)
+[ 14.175645] ACPI Error: Method parse/execution failed [_SB_.PCI0.OVGA.DD03.GBQC] (Node f44247e0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 14.175656] ACPI Error: Method parse/execution failed [_SB_.PCI0.OVGA.DD03._BQC] (Node f44247c8), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 14.175667] ACPI Warning: Evaluating _BQC failed (20110112/video-484)
+[ 14.885219] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88013c6b58b8 (20110112/exresop-590)
+[ 14.885234] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DSM] (Node ffff88013f849eb0), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 14.885277] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88013c6b5828 (20110112/exresop-590)
+[ 14.885289] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG1.GFX0._DSM] (Node ffff88013f86f668), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 15.027464] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node ffff880075137920), AE_NOT_FOUND
+[ 15.027505] ACPI Error (psparse-0537): Method parse/execution failed [EV4_] (Node ffff880075140660), AE_NOT_FOUND
+[ 15.027542] ACPI Error (psparse-0537): Method parse/execution failed [SMIE] (Node ffff88007513b180), AE_NOT_FOUND
+[ 15.027579] ACPI Error (psparse-0537): Method parse/execution failed [NEVT] (Node ffff88007513b120), AE_NOT_FOUND
+[ 15.027616] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV._Q66] (Node ffff880075139cc0), AE_NOT_FOUND
+[ 15.287082] ACPI Warning: _BQC returned an invalid level (20100428/video-640)
+[ 15.395484] [Firmware Bug]: ACPI(PEGP) defines _DOD but not _DOS
+[ 15.846531] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff8800b3840360), AE_AML_PACKAGE_LIMIT
+[ 16.336080] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.EC0_._Q33] (Node f70244b0), AE_TIME
+[ 16.592600] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.SEFA] (Node ffff880226c4a120), AE_AML_INFINITE_LOOP
+[ 16.592628] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.RFAN] (Node ffff880226c49bc0), AE_AML_INFINITE_LOOP
+[ 16.719798] ACPI Warning for _SB_.PCI0.VID2._DOD: Return Package has no elements (empty) (20090903/nspredef-433)
+[ 16.942589] ACPI Error (dswload-0802): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
+[ 16.942606] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.OVGA.DD03.GBQC] (Node ffff8800b7e3c6e0), AE_ALREADY_EXISTS
+[ 16.942654] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.OVGA.DD03._BQC] (Node ffff8800b7e3c6c0), AE_ALREADY_EXISTS
+[ 17.125601] ACPI Error: Needed [Buffer/String/Package], found [Integer] eee27810 (20110112/exresop-590)
+[ 17.125618] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DSM] (Node f7431fa8), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 17.125669] ACPI Error: Needed [Buffer/String/Package], found [Integer] eee27780 (20110112/exresop-590)
+[ 17.125690] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG1.GFX0._DSM] (Node f7445c78), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 17.802564] ACPI Error: Method parse/execution failed [_SB_.WMID.HWMC] (Node ffff8801ffc5c078), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 17.802574] ACPI Error: Method parse/execution failed [_SB_.WMID.WMAD] (Node ffff8801ffc5c258), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+[ 17.847665] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG0.PEGP.DD02._BCL] (Node f444ebe8), AE_NOT_FOUND (20110112/psparse-536)
+[ 17.985672] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.IBCM] (Node ffff8800b3832600), AE_AML_BUFFER_LIMIT
+[ 17.985723] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0.DD03._BCM] (Node ffff8800b382b840), AE_AML_BUFFER_LIMIT
+[ 18.054842] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff880133a777e0 (20110112/exresop-590)
+[ 18.054860] ACPI Error: Method parse/execution failed [_SB_.PCI0.VGA_._DSM] (Node ffff880137659190), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 18.054909] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff880133a776c0 (20110112/exresop-590)
+[ 18.054932] ACPI Error: Method parse/execution failed [_SB_.PCI0.P0P1.VGA_._DSM] (Node ffff88013765d230), AE_AML_OPERAND_TYPE (20110112/psparse-536)
+[ 18.353938] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_.GBQC] (Node ffff88013762f708), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 18.353954] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_._BQC] (Node ffff88013762f6e0), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 18.367485] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1.GBQC] (Node ffff88013762f988), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 18.367501] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1._BQC] (Node ffff88013762f960), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 18.720899] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f70206d8), AE_AML_PACKAGE_LIMIT
+[ 19.086127] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node f702e6a8), AE_TIME
+[ 19.086176] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node f702e780), AE_TIME
+[ 19.086202] ACPI Error (psparse-0537): Method parse/execution failed [EC0A] (Node f702e990), AE_TIME
+[ 19.086228] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AMW0._WED] (Node f7019fd8), AE_TIME
+[ 19.408610] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f74256a8), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 20.135790] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88023b491318 (20110316/exresop-590)
+[ 20.135804] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DSM] (Node ffff88023ec61eb0), AE_AML_OPERAND_TYPE (20110316/psparse-536)
+[ 20.135849] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff88023b491708 (20110316/exresop-590)
+[ 20.135864] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEG1.GFX0._DSM] (Node ffff88023ec77668), AE_AML_OPERAND_TYPE (20110316/psparse-536)
+[ 20.149010] ACPI Error: Needed [Integer/String/Buffer], found [Package] f741ed48 (20100428/exresop-422)
+[ 20.149032] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.P0P2.PEGP.LCD_._BQC] (Node f741f978), AE_AML_OPERAND_TYPE
+[ 20.149063] ACPI Warning: Evaluating _BQC failed (20100428/video-651)
+[ 20.298134] [Firmware Bug]: _BCQ is used instead of _BQC
+[ 20.342464] ACPI Warning: _BQC returned an invalid level (20110413/video-473)
+[ 20.435766] [Firmware Bug]: Duplicate ACPI video bus devices for the same VGA controller, please try module parameter "video.allow_duplicates=1"if the current driver doesn't work.
+[ 20.634744] ACPI Warning for _SB_.PCI0.GFX0.DD02._BQC: Return type mismatch - found Reference, expected Integer (20100428/nspredef-1053)
+[ 21.460488] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node ffff880133632c80), AE_AML_PACKAGE_LIMIT (20110112/psparse-536)
+[ 21.562484] ACPI Error: Needed [Buffer/String/Package], found [Integer] f7260370 (20090903/exresop-590)
+[ 21.562496] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0.DD02.GBQC] (Node f7017a68), AE_AML_OPERAND_TYPE
+[ 21.562544] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.GFX0.DD02._BQC] (Node f7017a50), AE_AML_OPERAND_TYPE
+[ 22.154348] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node f74276a8), AE_TIME
+[ 22.154443] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node f7427780), AE_TIME
+[ 22.154516] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node f7427828), AE_TIME
+[ 22.154587] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node f7427c18), AE_TIME
+[ 24.824888] [Firmware Bug]: ACPI(IGPU) defines _DOD but not _DOS
+[ 25.859931] ACPI Error: Needed [Buffer/String/Package], found [Integer] ffff880139af5240 (20090903/exresop-590)
+[ 25.859949] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.VGA_._DSM] (Node ffff88013ba4c0e0), AE_AML_OPERAND_TYPE
+[ 25.860025] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.P0P1.VGA_._DSM] (Node ffff88013ba4da80), AE_AML_OPERAND_TYPE
+[ 26.653079] ACPI Exception: AE_TIME, Returned by Handler for [EmbeddedControl] (20100428/evregion-474)
+[ 26.653190] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node ffff880226c54ce0), AE_TIME
+[ 26.653252] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node ffff880226c54e00), AE_TIME
+[ 26.653283] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node ffff880226c54ee0), AE_TIME
+[ 26.653307] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node ffff880226c56420), AE_TIME
+[ 26.874386] ACPI Warning: _BQC returned an invalid level (20090903/video-631)
+[ 29.470614] ACPI Warning for _SB_.PCI0.GFX0.DD03._BQC: Return type mismatch - found Reference, expected Integer (20100428/nspredef-1053)
+[ 30.140339] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.ECDV.ECR1] (Node ffff880217050ce0), AE_TIME
+[ 30.140421] ACPI Error (psparse-0537): Method parse/execution failed [ECRB] (Node ffff880217050e00), AE_TIME
+[ 30.140448] ACPI Error (psparse-0537): Method parse/execution failed [ECG5] (Node ffff880217050ee0), AE_TIME
+[ 30.140475] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node ffff880217052420), AE_TIME
+[ 42.490181] ACPI Error: [_SB_.VDRV] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 42.490202] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC0.H_EC._Q51] (Node ffff88003d9b1e60), AE_NOT_FOUND (20110112/psparse-536)
+[ 44.661543] ACPI Warning for _SB_.PCI0.GFX0.DD01._BCL: Return type mismatch - found Integer, expected Package (20090903/nspredef-1006)
+[ 50.737630] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMI: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
+[ 50.737686] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMS: Excess arguments - needs 1, found 2 (20090903/nspredef-303)

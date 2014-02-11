@@ -1,0 +1,34 @@
+summary         
+summary         0 passed, 11 failed, 0 warning, 0 aborted, 0 skipped, 0
+summary         info only.
+summary         
+summary         Test Failure Summary
+summary         ==========================================================
+summary         
+summary         Critical failures: 11
+summary          klog: CRITICAL Kernel message: [ 0.408874] CPU1: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: CRITICAL Kernel message: [ 0.728985] Disabling IRQ #15
+summary          klog: CRITICAL Kernel message: [ 0.734767] Disabling IRQ #11
+summary          klog: CRITICAL Kernel message: [ 0.768555] CPU3: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: CRITICAL Kernel message: [ 1.128275] CPU5: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: CRITICAL Kernel message: [ 1.487778] CPU7: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: CRITICAL Kernel message: [ 2.131632] Disabling IRQ #16
+summary          klog: CRITICAL Kernel message: [ 3.220411] Disabling IRQ #18
+summary          klog: CRITICAL Kernel message: [ 10.027255] CPU0: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: CRITICAL Kernel message: [ 11.592319] CPU1: Temperature above threshold, cpu clock throttled (total events = 2)
+summary          klog: CRITICAL Kernel message: [ 17.353310] Disabling IRQ #10
+summary         
+summary         High failures: NONE
+summary         
+summary         Medium failures: NONE
+summary         
+summary         Low failures: NONE
+summary         
+summary         Other failures: NONE
+summary         
+summary         Test           |Pass |Fail |Abort|Warn |Skip |Info |
+summary         ---------------+-----+-----+-----+-----+-----+-----+
+summary         klog           |     |   11|     |     |     |     |
+summary         ---------------+-----+-----+-----+-----+-----+-----+
+summary         Total:         |    0|   11|    0|    0|    0|    0|
+summary         ---------------+-----+-----+-----+-----+-----+-----+

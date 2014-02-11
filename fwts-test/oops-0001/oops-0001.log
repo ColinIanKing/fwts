@@ -1,0 +1,1546 @@
+oops            oops: Scan kernel log for Oopses.
+oops            ----------------------------------------------------------
+oops            Test 1 of 1: Kernel log oops check.
+oops            Found OOPS (1):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c05a4fda>] __mutex_lock_slowpath+0x8a/0x130
+oops              *pde = af517067 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:14.1/host9/target9:0:1/9:0:1:0/block/sdh/dev
+oops              Modules linked in: snd_seq snd_timer snd_seq_device radeon(+) ttm drm_kms_helper fbcon tileblit font bitblit softcursor snd soundcore drm agpgart i2c_algo_bit shpchp joydev snd_page_alloc r8169 vga16fb usb_storage vgastate mii i2c_piix4 usbhid k8temp lp parport
+oops              
+oops              Pid: 410, comm: plymouthd Not tainted (2.6.32-13-generic #18-Ubuntu) A780GM-A
+oops              EIP: 0060:[<c05a4fda>] EFLAGS: 00010246 CPU: 0
+oops              EIP is at __mutex_lock_slowpath+0x8a/0x130
+oops              EAX: 00000000 EBX: f63f727c ECX: f63f7284 EDX: f6945ec4
+oops              ESI: f63f7280 EDI: f63f728c EBP: f6945edc ESP: f6945eb8
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 410, ti=f6944000 task=f649a670 task.ti=f6944000)
+oops              Stack:
+oops               00000000 f63f7284 f649a670 f63f7284 00000000 f63f7000 f63f727c f62b96c0
+oops              <0> f63f727c f6945eec c05a4f35 f62b96c0 f62b96c0 f6945f00 f81eb123 f62b96c0
+oops              <0> f64dd000 f63f7000 f6945f44 f81e2ecf 00000001 f81f2365 f81f1980 f81f3890
+oops              Call Trace:
+oops               [<c05a4f35>] ? mutex_lock+0x25/0x40
+oops               [<f81eb123>] ? drm_fb_release+0x23/0x70 [drm]
+oops               [<f81e2ecf>] ? drm_release+0x2ff/0x390 [drm]
+oops               [<c020736f>] ? __fput+0xdf/0x1f0
+oops               [<c020749d>] ? fput+0x1d/0x30
+oops               [<c020380c>] ? filp_close+0x4c/0x80
+oops               [<c02038b8>] ? sys_close+0x78/0xc0
+oops               [<c010344c>] ? syscall_call+0x7/0xb
+oops              Code: 18 63 7f bd 90 8d 74 26 00 8d 73 04 89 f0 e8 ce 11 00 00 8d 55 e8 8d 43 08 89 45 e0 8b 43 0c 89 53 0c 8b 4d e0 89 45 ec 89 4d e8 <89> 10 8b 45 e4 ba ff ff ff ff 89 45 f0 89 d0 87 03 83 f8 01 74 
+oops              EIP: [<c05a4fda>] __mutex_lock_slowpath+0x8a/0x130 SS:ESP 0068:f6945eb8
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (2):
+oops              BUG: unable to handle kernel NULL pointer dereference at 00000000000003a7
+oops              IP: [<ffffffff8133ae3b>] con_insert_unipair+0x4b/0x250
+oops              PGD 60954067 PUD 60220067 PMD 0 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/module/soundcore/initstate
+oops              CPU 0 
+oops              Modules linked in: amd64_edac_mod(+) uvcvideo(+) videodev v4l1_compat v4l2_compat_ioctl32 soundcore psmouse serio_raw jmb38x_ms k8temp snd_page_alloc i2c_piix4 edac_core edac_mce_amd sdhci_pci jme memstick sdhci mii led_class shpchp lp parport fbcon tileblit font bitblit softcursor vga16fb vgastate radeon ttm usbhid drm_kms_helper hid drm i2c_algo_bit ahci pata_atiixp video output
+oops              Pid: 638, comm: setfont Not tainted 2.6.32-21-generic #32-Ubuntu M77xK                           
+oops              RIP: 0010:[<ffffffff8133ae3b>]  [<ffffffff8133ae3b>] con_insert_unipair+0x4b/0x250
+oops              RSP: 0018:ffff880060a99cd8  EFLAGS: 00010206
+oops              RAX: 000000000000037f RBX: 0000000000000153 RCX: ffffffff8133aee6
+oops              RDX: 0000000000000005 RSI: 0000000000000153 RDI: ffff880060230a00
+oops              RBP: ffff880060a99d18 R08: 0000000000000000 R09: 0000000000000080
+oops              R10: 0000000000000001 R11: 0000000000000000 R12: ffff880060230a00
+oops              R13: 00000000000000e1 R14: 00000000000003a7 R15: 0000000000000000
+oops              FS:  00007f58fd4a5700(0000) GS:ffff880001c00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: 00000000000003a7 CR3: 0000000060bf1000 CR4: 00000000000006f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process setfont (pid: 638, threadinfo ffff880060a98000, task ffff880060cf44d0)
+oops              Stack:
+oops               0000004001c0ea78 ffff880000014100 ffff880000012a90 000000000000001f
+oops              <0> 0000000000000000 0000000000bb4280 ffff880060230a00 0000000000000000
+oops              <0> ffff880060a99d98 ffffffff8133b365 0000000000000002 ffff88006d2e0800
+oops              Call Trace:
+oops               [<ffffffff8133b365>] con_set_unimap+0x185/0x220
+oops               [<ffffffff8133620e>] vt_ioctl+0x159e/0x1820
+oops               [<ffffffff810f3b47>] ? unlock_page+0x27/0x30
+oops               [<ffffffff81111e29>] ? __do_fault+0x439/0x500
+oops               [<ffffffff8132a262>] tty_ioctl+0xa2/0x6e0
+oops               [<ffffffff81152a92>] vfs_ioctl+0x22/0xa0
+oops               [<ffffffff812b746a>] ? __up_read+0x9a/0xc0
+oops               [<ffffffff81152d41>] do_vfs_ioctl+0x81/0x380
+oops               [<ffffffff8108999e>] ? up_read+0xe/0x10
+oops               [<ffffffff81543838>] ? do_page_fault+0x158/0x3b0
+oops               [<ffffffff811530c1>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff810131b2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 41 89 f6 49 89 fc 89 f3 66 41 c1 ee 0b 41 89 d5 41 83 e6 1f 4a 8b 04 f7 48 85 c0 74 53 89 da 66 c1 ea 06 83 e2 1f 4c 8d 34 d0 <49> 8b 06 48 85 c0 0f 84 8e 00 00 00 48 89 da 0f b7 db 83 e2 3f 
+oops              RIP  [<ffffffff8133ae3b>] con_insert_unipair+0x4b/0x250
+oops               RSP <ffff880060a99cd8>
+oops              CR2: 00000000000003a7
+oops            
+oops            Found OOPS (3):
+oops              BUG: unable to handle kernel NULL pointer dereference at 00000040
+oops              IP: [<f830ea49>] radeon_agp_init+0x19/0x3d0 [radeon]
+oops              *pde = 00000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/module/usbhid/initstate
+oops              Modules linked in: radeon(+) ttm drm_kms_helper drm hid_sunplus usbhid hid nvidia_agp(+) i2c_algo_bit forcedeth(+) pata_amd(+) agpgart floppy
+oops              
+oops              Pid: 228, comm: modprobe Not tainted (2.6.32-22-generic #36-Ubuntu)  
+oops              EIP: 0060:[<f830ea49>] EFLAGS: 00010282 CPU: 0
+oops              EIP is at radeon_agp_init+0x19/0x3d0 [radeon]
+oops              EAX: f69a2c00 EBX: f68f5000 ECX: d8000000 EDX: 00000000
+oops              ESI: f69a2c00 EDI: 00000001 EBP: f69e1d48 ESP: f69e1cf4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 228, ti=f69e0000 task=f6998cd0 task.ti=f69e0000)
+oops              Stack:
+oops               f69e1d00 00000292 00000000 f69e1d28 c035d2b0 00000001 f69e1d18 0000000e
+oops              <0> 00000292 00000000 f68f5000 04000000 00000001 f69e1d40 f8333f85 f69e1d37
+oops              <0> 009a2c00 f68f5000 f68f5000 f69a2c00 00000001 f69e1d54 f833186f f68f5000
+oops              Call Trace:
+oops               [<c035d2b0>] ? pci_bus_read_config_byte+0x60/0x70
+oops               [<f8333f85>] ? r100_get_accessible_vram+0x55/0x150 [radeon]
+oops               [<f833186f>] ? r100_mc_init+0x9f/0xe0 [radeon]
+oops               [<f8335f72>] ? r100_init+0xd2/0x270 [radeon]
+oops               [<c058b5ff>] ? _spin_lock_irqsave+0x2f/0x50
+oops               [<c03cbf9b>] ? vga_client_register+0x6b/0x80
+oops               [<f830ab6f>] ? radeon_device_init+0x22f/0x2f0 [radeon]
+oops               [<f8309ed0>] ? radeon_vga_set_decode+0x0/0x30 [radeon]
+oops               [<f830b80a>] ? radeon_driver_load_kms+0x7a/0x190 [radeon]
+oops               [<f81ab685>] ? drm_get_dev+0x125/0x230 [drm]
+oops               [<c025f2b0>] ? sysfs_addrm_start+0x60/0xa0
+oops               [<f836b5d2>] ? radeon_pci_probe+0x12/0x17f [radeon]
+oops               [<c0363883>] ? local_pci_probe+0x13/0x20
+oops               [<c0364688>] ? pci_device_probe+0x68/0x90
+oops               [<c03e689d>] ? really_probe+0x4d/0x140
+oops               [<c03ed1ae>] ? pm_runtime_barrier+0x4e/0xc0
+oops               [<c03e69cc>] ? driver_probe_device+0x3c/0x60
+oops               [<c03e6a71>] ? __driver_attach+0x81/0x90
+oops               [<c03e5eb3>] ? bus_for_each_dev+0x53/0x80
+oops               [<c03e676e>] ? driver_attach+0x1e/0x20
+oops               [<c03e69f0>] ? __driver_attach+0x0/0x90
+oops               [<c03e6135>] ? bus_add_driver+0xd5/0x280
+oops               [<c03645c0>] ? pci_device_remove+0x0/0x40
+oops               [<c03e6d6a>] ? driver_register+0x6a/0x130
+oops               [<c03648c5>] ? __pci_register_driver+0x45/0xb0
+oops               [<f81a62a3>] ? drm_init+0xf3/0x100 [drm]
+oops               [<f83990df>] ? radeon_init+0xdf/0xe1 [radeon]
+oops               [<c0101131>] ? do_one_initcall+0x31/0x190
+oops               [<f8399000>] ? radeon_init+0x0/0xe1 [radeon]
+oops               [<c0182340>] ? sys_init_module+0xb0/0x210
+oops               [<c01033ec>] ? syscall_call+0x7/0xb
+oops              Code: 66 90 e8 eb db e9 ff 5d 66 90 c3 8d b4 26 00 00 00 00 55 89 e5 57 56 53 83 ec 48 0f 1f 44 00 00 89 c3 8b 40 04 8b 90 28 02 00 00 <8b> 4a 40 85 c9 75 12 e8 2b db e9 ff 85 c0 89 c7 0f 85 51 03 00 
+oops              EIP: [<f830ea49>] radeon_agp_init+0x19/0x3d0 [radeon] SS:ESP 0068:f69e1cf4
+oops              CR2: 0000000000000040
+oops            
+oops            Found OOPS (4):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c058a52a>] __mutex_lock_slowpath+0x8a/0x130
+oops              *pde = 5dfad067 
+oops              Oops: 0002 [#2] SMP 
+oops              last sysfs file: /sys/kernel/uevent_seqnum
+oops              Modules linked in: radeon(+) ttm drm_kms_helper drm hid_sunplus usbhid hid nvidia_agp i2c_algo_bit forcedeth pata_amd agpgart floppy
+oops              
+oops              Pid: 271, comm: plymouthd Tainted: G      D    (2.6.32-22-generic #36-Ubuntu)  
+oops              EIP: 0060:[<c058a52a>] EFLAGS: 00010246 CPU: 0
+oops              EIP is at __mutex_lock_slowpath+0x8a/0x130
+oops              EAX: 00000000 EBX: f69a2e88 ECX: f69a2e90 EDX: f6b0fec0
+oops              ESI: f69a2e8c EDI: f69a2e98 EBP: f6b0fed8 ESP: f6b0feb4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 271, ti=f6b0e000 task=f6a4a670 task.ti=f6b0e000)
+oops              Stack:
+oops               00000000 f69a2e90 f6a4a670 f69a2e90 00000000 f69a2c00 f69a2e88 f6819680
+oops              <0> f69a2e88 f6b0fee8 c058a485 f6819680 f6819680 f6b0fefc f81afa53 f6819680
+oops              <0> f68196e0 f69a2c00 f6b0ff44 f81a707f 00000001 f81b7265 f81b67c0 f81b87c4
+oops              Call Trace:
+oops               [<c058a485>] ? mutex_lock+0x25/0x40
+oops               [<f81afa53>] ? drm_fb_release+0x23/0x70 [drm]
+oops               [<f81a707f>] ? drm_release+0x3cf/0x490 [drm]
+oops               [<c020943f>] ? __fput+0xdf/0x1f0
+oops               [<c020956d>] ? fput+0x1d/0x30
+oops               [<c0205a8c>] ? filp_close+0x4c/0x80
+oops               [<c0205b35>] ? sys_close+0x75/0xc0
+oops               [<c01033ec>] ? syscall_call+0x7/0xb
+oops              Code: 18 63 7f bd 90 8d 74 26 00 8d 73 04 89 f0 e8 de 11 00 00 8d 55 e8 8d 43 08 89 45 e0 8b 43 0c 89 53 0c 8b 4d e0 89 45 ec 89 4d e8 <89> 10 8b 45 e4 ba ff ff ff ff 89 45 f0 89 d0 87 03 83 f8 01 74 
+oops              EIP: [<c058a52a>] __mutex_lock_slowpath+0x8a/0x130 SS:ESP 0068:f6b0feb4
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (5):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff8107f22e>] kfifo_alloc+0x2e/0xb0
+oops              PGD 9a43b067 PUD 9aba3067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/LNXSYSTM:00/LNXPWRBN:00/input/input3/name
+oops              CPU 1 
+oops              Modules linked in: lirc_ene0100(+) lirc_dev lp parport ahci sdhci_pci firewire_ohci firewire_core sdhci led_class libahci crc_itu_t pata_amd forcedeth
+oops              
+oops              Pid: 511, comm: modprobe Not tainted 2.6.35-6-generic #9-Ubuntu Fuquene/Aspire 5520     
+oops              RIP: 0010:[<ffffffff8107f22e>]  [<ffffffff8107f22e>] kfifo_alloc+0x2e/0xb0
+oops              RSP: 0018:ffff88009a579d08  EFLAGS: 00010286
+oops              RAX: ffff8800b9477000 RBX: 0000000000000000 RCX: ffffffff8107f229
+oops              RDX: 0000000000000000 RSI: 00000000000000d0 RDI: 0000000000000246
+oops              RBP: ffff88009a579d18 R08: 0000000000000000 R09: 0000000000000246
+oops              R10: 0000000000000030 R11: 0000000000000000 R12: 0000000000001000
+oops              R13: ffff88003787d800 R14: ffff8800bbc44c00 R15: 00000000fffffff4
+oops              FS:  00007f3022b1c700(0000) GS:ffff880001f00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000000 CR3: 000000009a43d000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 511, threadinfo ffff88009a578000, task ffff88009b2edb80)
+oops              Stack:
+oops               ffff88009abc7b40 ffff8800bbc58660 ffff88009a579d58 ffffffffa009ee4f
+oops              <0> ffff88009a579d38 ffffffffa009f060 ffff88003787d800 ffffffffa009f580
+oops              <0> ffffffffa009f540 00000000fffffff4 ffff88009a579d98 ffffffff8132a475
+oops              Call Trace:
+oops               [<ffffffffa009ee4f>] ene_probe+0x17f/0x350 [lirc_ene0100]
+oops               [<ffffffff8132a475>] pnp_device_probe+0x95/0x100
+oops               [<ffffffff813899b2>] ? driver_sysfs_add+0x62/0x90
+oops               [<ffffffff81389ad8>] really_probe+0x68/0x190
+oops               [<ffffffff81389c45>] driver_probe_device+0x45/0x70
+oops               [<ffffffff81389d0b>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff81389c70>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff81388f18>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff8138994e>] driver_attach+0x1e/0x20
+oops               [<ffffffff8138920e>] bus_add_driver+0xde/0x280
+oops               [<ffffffff8138a050>] driver_register+0x80/0x150
+oops               [<ffffffffa00a2000>] ? ene_init+0x0/0x3e [lirc_ene0100]
+oops               [<ffffffff8132a1f1>] pnp_register_driver+0x21/0x30
+oops               [<ffffffffa00a203c>] ene_init+0x3c/0x3e [lirc_ene0100]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109abfb>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: e5 41 54 53 0f 1f 44 00 00 48 89 fb 89 f7 41 89 f4 48 85 ff 48 8d 47 ff 74 33 48 85 f8 75 2e 89 d6 e8 b7 33 0c 00 48 85 c0 74 52 <48> 89 03 44 89 63 08 31 c0 c7 43 10 00 00 00 00 c7 43 0c 00 00 
+oops              RIP  [<ffffffff8107f22e>] kfifo_alloc+0x2e/0xb0
+oops               RSP <ffff88009a579d08>
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (6):
+oops              BUG: unable to handle kernel paging request at f815b540
+oops              IP: [<c040541e>] driver_register+0xfe/0x130
+oops              *pde = 3701b067 *pte = 00000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/tty/tty40/uevent
+oops              Modules linked in: amd64_agp(+) squashfs aufs isofs nls_iso8859_1 nls_cp437 vfat fat dm_raid45 xor hid_microsoft vga16fb vgastate usbhid hid nouveau ttm drm_kms_helper usb_storage drm floppy forcedeth sata_nv pata_amd i2c_algo_bit agpgart
+oops              
+oops              Pid: 818, comm: modprobe Not tainted 2.6.35-6-generic #8-Ubuntu 'K8N-E-Deluxe'/K8N-E-Deluxe
+oops              EIP: 0060:[<c040541e>] EFLAGS: 00010282 CPU: 0
+oops              EIP is at driver_register+0xfe/0x130
+oops              EAX: f815b510 EBX: 00000000 ECX: f801f419 EDX: f685eae0
+oops              ESI: f801f510 EDI: c03716d0 EBP: f5471f34 ESP: f5471f18
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 818, ti=f5470000 task=f689cc20 task.ti=f5470000)
+oops              Stack:
+oops               00000001 f801f780 00000000 c07e0ce0 f801f4e0 f801f780 f801f510 f5471f48
+oops              <0> c03719d5 b7779000 f801f780 00000000 f5471f54 f802202c 00000000 f5471f5c
+oops              <0> f80220a8 f5471f88 c0101131 f801f780 c07df060 b7779000 f801f780 08bdd1c0
+oops              Call Trace:
+oops               [<c03719d5>] ? __pci_register_driver+0x45/0xb0
+oops               [<f802202c>] ? agp_amd64_init+0x2c/0xa0 [amd64_agp]
+oops               [<f80220a8>] ? agp_amd64_mod_init+0x8/0xa [amd64_agp]
+oops               [<c0101131>] ? do_one_initcall+0x31/0x190
+oops               [<f80220a0>] ? agp_amd64_mod_init+0x0/0xa [amd64_agp]
+oops               [<c018169b>] ? sys_init_module+0x9b/0x1e0
+oops               [<c0217675>] ? sys_close+0x75/0xc0
+oops               [<c05cdc1c>] ? syscall_call+0x7/0xb
+oops              Code: 89 f0 e8 86 ea ff ff 83 c4 10 89 f8 5b 5e 5f 5d c3 8b 06 c7 04 24 08 61 77 c0 89 44 24 04 e8 78 5b 1c 00 8b 56 04 e9 56 ff ff ff <8b> 40 30 bf f0 ff ff ff e8 f5 14 f5 ff 8b 06 c7 04 24 48 61 77 
+oops              EIP: [<c040541e>] driver_register+0xfe/0x130 SS:ESP 0068:f5471f18
+oops              CR2: 00000000f815b540
+oops            
+oops            Found OOPS (7):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c01674d6>] kfifo_alloc+0x26/0x90
+oops              *pde = 7dae9067 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/LNXSYSTM:00/LNXPWRBN:00/input/input3/name
+oops              Modules linked in: lirc_ene0100(+) lirc_dev usbhid hid sdhci_pci firewire_ohci ahci sdhci led_class libahci firewire_core crc_itu_t tg3
+oops              
+oops              Pid: 445, comm: modprobe Not tainted 2.6.35-6-generic #9-Ubuntu Nettiling/Aspire 5720Z    
+oops              EIP: 0060:[<c01674d6>] EFLAGS: 00010286 CPU: 1
+oops              EIP is at kfifo_alloc+0x26/0x90
+oops              EAX: e10ef000 EBX: 00001000 ECX: c01674d2 EDX: c01674d2
+oops              ESI: 00000000 EDI: f69e9100 EBP: d1631e40 ESP: d1631e38
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 445, ti=d1630000 task=f6990cb0 task.ti=d1630000)
+oops              Stack:
+oops               f6b3f4e0 f6bf7840 d1631e68 f8273dc7 00000020 000080d0 d1631e68 f724ce00
+oops              <0> fffffff4 f8273fa0 f724ce00 f8274400 d1631e7c c03b7e9e f724ce00 f8274420
+oops              <0> f8274420 d1631ea0 c0404ead f724ced0 d1631ea0 c040c0f7 00000000 f724ce00
+oops              Call Trace:
+oops               [<f8273dc7>] ? ene_probe+0x157/0x30b [lirc_ene0100]
+oops               [<c03b7e9e>] ? pnp_device_probe+0x6e/0xd0
+oops               [<c0404ead>] ? really_probe+0x4d/0x150
+oops               [<c040c0f7>] ? pm_runtime_barrier+0x57/0xb0
+oops               [<c0404fec>] ? driver_probe_device+0x3c/0x60
+oops               [<c0405091>] ? __driver_attach+0x81/0x90
+oops               [<c04044b3>] ? bus_for_each_dev+0x53/0x80
+oops               [<c0404d7e>] ? driver_attach+0x1e/0x20
+oops               [<c0405010>] ? __driver_attach+0x0/0x90
+oops               [<c0404745>] ? bus_add_driver+0xd5/0x280
+oops               [<c03b7cd0>] ? pnp_device_remove+0x0/0x40
+oops               [<c040538a>] ? driver_register+0x6a/0x130
+oops               [<c01b1147>] ? tracepoint_module_notify+0x27/0x30
+oops               [<c03b7c8c>] ? pnp_register_driver+0x1c/0x20
+oops               [<f8277038>] ? ene_init+0x38/0x3a [lirc_ene0100]
+oops               [<c016bef4>] ? __blocking_notifier_call_chain+0x54/0x70
+oops               [<c0101131>] ? do_one_initcall+0x31/0x190
+oops               [<f8277000>] ? ene_init+0x0/0x3a [lirc_ene0100]
+oops               [<c018169b>] ? sys_init_module+0x9b/0x1e0
+oops               [<c0217675>] ? sys_close+0x75/0xc0
+oops               [<c05cdc1c>] ? syscall_call+0x7/0xb
+oops              Code: 89 3a eb d3 90 55 89 e5 56 53 0f 1f 44 00 00 89 d3 89 c6 85 db 89 ca 8d 4b ff 74 31 85 d9 75 25 89 d8 e8 de 64 0a 00 85 c0 74 38 <89> 06 31 c0 89 5e 04 c7 46 0c 00 00 00 00 c7 46 08 00 00 00 00 
+oops              EIP: [<c01674d6>] kfifo_alloc+0x26/0x90 SS:ESP 0068:d1631e38
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (8):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140
+oops              *pde = 3d9e2067 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/platform/i8042/serio0/input/input3/event3/uevent
+oops              Modules linked in: snd_hwdep snd_pcm i915(+) snd_seq_midi snd_rawmidi snd_seq_midi_event drm_kms_helper snd_seq lib80211_crypt_tkip snd_timer drm snd_seq_device uvcvideo dell_laptop wl(P) compal_laptop videodev dcdbas intel_agp snd psmouse v4l1_compat led_class soundcore serio_raw agpgart i2c_algo_bit snd_page_alloc lib80211 video coretemp output lp parport btrfs zlib_deflate r8169 mii crc32c libcrc32c
+oops              
+oops              Pid: 315, comm: plymouthd Tainted: P            2.6.35-7-generic #12-Ubuntu CN0Y53/Inspiron 1011
+oops              EIP: 0060:[<c05cb14a>] EFLAGS: 00010246 CPU: 0
+oops              EIP is at __mutex_lock_slowpath+0x9a/0x140
+oops              EAX: 00000000 EBX: ef5a9a90 ECX: ef5a9a98 EDX: f6ab7ec0
+oops              ESI: ef5a9a94 EDI: ef5a9a90 EBP: f6ab7ed8 ESP: f6ab7eb4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 315, ti=f6ab6000 task=f6ae3f70 task.ti=f6ab6000)
+oops              Stack:
+oops               f6ab7ec4 f6ae3f70 ef5a9a98 ef5a9a98 00000000 f6ab7ed8 ef5a9a90 f7109100
+oops              <0> ef5a9a90 f6ab7ee8 c05cb095 f7109100 f7109100 f6ab7efc f890fdc3 f7109100
+oops              <0> f7109160 ef5a9800 f6ab7f44 f8907337 00000001 f8917e25 f8917220 f8919590
+oops              Call Trace:
+oops               [<c05cb095>] ? mutex_lock+0x25/0x40
+oops               [<f890fdc3>] ? drm_fb_release+0x23/0x70 [drm]
+oops               [<f8907337>] ? drm_release+0x3e7/0x4c0 [drm]
+oops               [<c021a13f>] ? __fput+0xdf/0x1f0
+oops               [<c021a26d>] ? fput+0x1d/0x30
+oops               [<c0216b5c>] ? filp_close+0x4c/0x80
+oops               [<c0216c05>] ? sys_close+0x75/0xc0
+oops               [<c05cc7dc>] ? syscall_call+0x7/0xb
+oops              Code: 83 79 18 63 7f b3 8d 76 00 8d 73 04 89 f0 e8 5e 11 00 00 8d 53 08 89 55 e4 8d 55 e8 8b 43 0c 89 53 0c 8b 4d e4 89 45 ec 89 4d e8 <89> 10 8b 45 e0 ba ff ff ff ff 89 45 f0 89 d0 87 03 83 f8 01 74 
+oops              EIP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140 SS:ESP 0068:f6ab7eb4
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (9):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff81587a12>] __mutex_lock_slowpath+0xd2/0x190
+oops              PGD 1b4837067 PUD 1b4836067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/snd_hda_codec/initstate
+oops              CPU 0 
+oops              Modules linked in: snd_hda_codec_realtek snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm snd_seq_midi nouveau(+) snd_rawmidi snd_seq_midi_event snd_seq ttm snd_timer snd_seq_device drm_kms_helper ppdev parport_pc snd psmouse serio_raw drm i2c_algo_bit soundcore intel_agp snd_page_alloc lp parport hid floppy pata_jmicron ahci libahci r8169 mii
+oops              
+oops              Pid: 342, comm: plymouthd Not tainted 2.6.35-8-generic #13-Ubuntu P45 Neo3 (MS-7514)/MS-7514
+oops              RIP: 0010:[<ffffffff81587a12>]  [<ffffffff81587a12>] __mutex_lock_slowpath+0xd2/0x190
+oops              RSP: 0018:ffff8801b87d9d98  EFLAGS: 00010246
+oops              RAX: 0000000000000000 RBX: ffff8801b4ab4418 RCX: 0000000000000006
+oops              RDX: ffff8801b87d9da8 RSI: 0000000000000000 RDI: ffff8801b4ab441c
+oops              RBP: ffff8801b87d9df8 R08: 0000000000000156 R09: 000000000000e200
+oops              R10: fffffffffffffff0 R11: 0000000000000246 R12: ffff8801b49644a0
+oops              R13: ffff8801b4ab441c R14: 00000000ffffffff R15: ffff8801b4ab4420
+oops              FS:  00007f92f737b700(0000) GS:ffff880001e00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000000 CR3: 00000001b58a8000 CR4: 00000000000406f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process plymouthd (pid: 342, threadinfo ffff8801b87d8000, task ffff8801b49644a0)
+oops              Stack:
+oops               ffff880100000000 000000000000e200 ffff8801b4ab4420 0000000000000000
+oops              <0> 0000000000000000 ffffffffa00a7240 ffffffffa00a4f60 ffff8801b4ab4418
+oops              <0> ffff8801aab95840 ffff8801b4ab4418 ffff8801b4ab4320 ffff8801aab958e8
+oops              Call Trace:
+oops               [<ffffffffa00a7240>] ? drm_gem_object_release_handle+0x0/0x40 [drm]
+oops               [<ffffffffa00a4f60>] ? drm_version+0x0/0xb0 [drm]
+oops               [<ffffffff8158791b>] mutex_lock+0x2b/0x50
+oops               [<ffffffffa00afabf>] drm_fb_release+0x2f/0xb0 [drm]
+oops               [<ffffffffa00a5dc8>] drm_release+0x468/0x550 [drm]
+oops               [<ffffffff81152ea5>] __fput+0xf5/0x210
+oops               [<ffffffff81152fe5>] fput+0x25/0x30
+oops               [<ffffffff8114f52d>] filp_close+0x5d/0x90
+oops               [<ffffffff8114f617>] sys_close+0xb7/0x120
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 4c 8d 6b 04 4c 8d 7b 08 41 be ff ff ff ff 4c 89 ef e8 22 14 00 00 48 8b 43 10 48 8d 55 b0 48 89 53 10 4c 89 7d b0 48 89 45 b8 <48> 89 10 44 89 f0 4c 89 65 c0 87 03 83 f8 01 75 24 eb 2c 0f 1f 
+oops              RIP  [<ffffffff81587a12>] __mutex_lock_slowpath+0xd2/0x190
+oops               RSP <ffff8801b87d9d98>
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (10):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
+oops              IP: [<ffffffff812f5af0>] fb_release+0x30/0x70
+oops              PGD 1b8a7b067 PUD 1b8a77067 PMD 0 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/block/dm-3/uevent
+oops              CPU 1 
+oops              Modules linked in: deflate zlib_deflate ctr twofish twofish_common camellia serpent blowfish cast5 des_generic cryptd aes_x86_64 aes_generic xcbc rmd160 sha512_generic sha256_generic sha1_generic crypto_null af_key snd_hda_codec_atihdmi snd_hda_codec_analog tpm_infineon snd_hda_intel snd_usb_audio snd_hda_codec snd_pcm snd_seq_midi snd_hwdep snd_seq_midi_event radeon snd_seq snd_timer snd_usbmidi_lib snd_rawmidi tpm_tis i7core_edac btusb asus_atk0110 bluetooth ttm drm_kms_helper uvcvideo snd_seq_device videodev v4l1_compat v4l2_compat_ioctl32 joydev snd edac_core psmouse tpm tpm_bios drm serio_raw soundcore i2c_algo_bit snd_page_alloc lp parport hid_logitech ff_memless usbhid hid firewire_ohci firewire_core ahci libahci crc_itu_t sky2
+oops              
+oops              Pid: 451, comm: plymouthd Not tainted 2.6.35-11-generic #16-Ubuntu P6T DELUXE V2/System Product Name
+oops              RIP: 0010:[<ffffffff812f5af0>]  [<ffffffff812f5af0>] fb_release+0x30/0x70
+oops              RSP: 0018:ffff8801b6a4bea8  EFLAGS: 00010286
+oops              RAX: ffff8801b6a4a000 RBX: ffff8801b7124000 RCX: 0000000000000003
+oops              RDX: 0000000000000000 RSI: ffff8801a56206c0 RDI: ffff8801b7124008
+oops              RBP: ffff8801b6a4beb8 R08: 0000000000000000 R09: 0000000000000000
+oops              R10: 00007fff8969bed0 R11: 0000000000000246 R12: ffff8801b7124008
+oops              R13: ffff8801b88235f0 R14: ffff8801b640bc80 R15: ffff8801b55e8300
+oops              FS:  00007f890030c700(0000) GS:ffff880001e20000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000010 CR3: 00000001b53b7000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process plymouthd (pid: 451, threadinfo ffff8801b6a4a000, task ffff8801b3c596e0)
+oops              Stack:
+oops               ffff8801a56206c0 0000000000000008 ffff8801b6a4bf08 ffffffff81152df5
+oops              <0> ffff8801b88235f0 ffff8801b640bc80 00007f89001de000 ffff8801a56206c0
+oops              <0> ffff8801b8cd9e40 0000000000000000 000000000000000b 0000000002082db0
+oops              Call Trace:
+oops               [<ffffffff81152df5>] __fput+0xf5/0x210
+oops               [<ffffffff81152f35>] fput+0x25/0x30
+oops               [<ffffffff8114f47d>] filp_close+0x5d/0x90
+oops               [<ffffffff8114f567>] sys_close+0xb7/0x120
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 83 ec 10 48 89 1c 24 4c 89 64 24 08 0f 1f 44 00 00 48 8b 9e a0 00 00 00 4c 8d 63 08 4c 89 e7 e8 67 1b 29 00 48 8b 93 c0 03 00 00 <48> 8b 42 10 48 85 c0 74 11 be 01 00 00 00 48 89 df ff d0 48 8b 
+oops              RIP  [<ffffffff812f5af0>] fb_release+0x30/0x70
+oops               RSP <ffff8801b6a4bea8>
+oops              CR2: 0000000000000010
+oops            
+oops            Found OOPS (11):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000030c
+oops              IP: [<c0385f04>] fb_mmap+0x34/0x170
+oops              *pde = 3f809067 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:0a.0/device
+oops              Modules linked in: snd_emu10k1(+) arc4 snd_ac97_codec ac97_bus snd_pcm snd_page_alloc snd_util_mem snd_hwdep nouveau(+) snd_seq_midi rt2500pci rt2x00pci snd_rawmidi rt2x00lib led_class snd_seq_midi_event mac80211 snd_seq ttm snd_timer drm_kms_helper snd_seq_device drm i2c_viapro via_ircc usblp cfg80211 i2c_algo_bit irda psmouse serio_raw emu10k1_gp snd lp via_agp joydev gameport eeprom_93cx6 parport agpgart shpchp crc_ccitt soundcore usbhid hid pata_via floppy
+oops              
+oops              Pid: 278, comm: plymouthd Not tainted 2.6.35-11-generic #16-Ubuntu VT8367-8235/VT8367-8235
+oops              EIP: 0060:[<c0385f04>] EFLAGS: 00010293 CPU: 0
+oops              EIP is at fb_mmap+0x34/0x170
+oops              EAX: 00000000 EBX: f397f898 ECX: c05fdd60 EDX: 00000000
+oops              ESI: 00000000 EDI: b745f000 EBP: f6a73efc ESP: f6a73ed8
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 278, ti=f6a72000 task=f68b9960 task.ti=f6a72000)
+oops              Stack:
+oops               00000202 c01f8068 f6980960 0000012c 000080d0 00000058 f6892648 f689264c
+oops              <0> b745f000 f6a73f50 c01f810c b758b000 000000fa 00000000 f48fc580 00000000
+oops              <0> 00000000 00000000 f6892630 00000000 f73fc060 f48fc580 ffffffea 0000012c
+oops              Call Trace:
+oops               [<c01f8068>] ? mmap_region+0x298/0x490
+oops               [<c01f810c>] ? mmap_region+0x33c/0x490
+oops               [<c01f84bc>] ? do_mmap_pgoff+0x25c/0x300
+oops               [<c01f86f3>] ? sys_mmap_pgoff+0x193/0x1c0
+oops               [<c05c99b4>] ? syscall_call+0x7/0xb
+oops              Code: 89 75 f8 89 7d fc 0f 1f 44 00 00 8b 40 0c 89 d3 8b 52 44 8b 40 10 8b 40 34 25 ff ff 0f 00 81 fa ff ff 0f 00 8b 34 85 40 67 82 c0 <8b> 8e 0c 03 00 00 76 14 bf ea ff ff ff 89 f8 8b 5d f4 8b 75 f8 
+oops              EIP: [<c0385f04>] fb_mmap+0x34/0x170 SS:ESP 0068:f6a73ed8
+oops              CR2: 000000000000030c
+oops            
+oops            Found OOPS (12):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c05c834a>] __mutex_lock_slowpath+0x9a/0x140
+oops              *pde = 3df7b067 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/snd_rawmidi/initstate
+oops              Modules linked in: i915(+) drm_kms_helper snd_seq_midi_event snd_seq snd_rawmidi snd_timer drm snd_seq_device gspca_sonixj gspca_main snd videodev v4l1_compat dcdbas intel_agp lp soundcore snd_page_alloc i2c_algo_bit video output psmouse serio_raw parport agpgart usbhid hid e100 mii
+oops              
+oops              Pid: 219, comm: plymouthd Not tainted 2.6.35-11-generic #16-Ubuntu 0JC474/Dell DV051                   
+oops              EIP: 0060:[<c05c834a>] EFLAGS: 00010246 CPU: 0
+oops              EIP is at __mutex_lock_slowpath+0x9a/0x140
+oops              EAX: 00000000 EBX: f5288e90 ECX: f5288e98 EDX: f5b13ec0
+oops              ESI: f5288e94 EDI: f5288e90 EBP: f5b13ed8 ESP: f5b13eb4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 219, ti=f5b12000 task=f69bcc20 task.ti=f5b12000)
+oops              Stack:
+oops               f849c400 f69bcc20 f5288e98 f5288e98 00000000 f5b13ed8 f5288e90 f5381f80
+oops              <0> f5288e90 f5b13ee8 c05c8295 f5381f80 f5381f80 f5b13efc f848fd53 f5381f80
+oops              <0> f5381fe0 f5288c00 f5b13f44 f8487327 00000001 f8497d85 f8497180 f84994f0
+oops              Call Trace:
+oops               [<c05c8295>] ? mutex_lock+0x25/0x40
+oops               [<f848fd53>] ? drm_fb_release+0x23/0x70 [drm]
+oops               [<f8487327>] ? drm_release+0x3e7/0x4c0 [drm]
+oops               [<c02195e4>] ? __fput+0xe4/0x1e0
+oops               [<c02196fd>] ? fput+0x1d/0x30
+oops               [<c021607c>] ? filp_close+0x4c/0x80
+oops               [<c0216125>] ? sys_close+0x75/0xc0
+oops               [<c05c99b4>] ? syscall_call+0x7/0xb
+oops              Code: 83 79 18 63 7f b3 8d 76 00 8d 73 04 89 f0 e8 3e 11 00 00 8d 53 08 89 55 e4 8d 55 e8 8b 43 0c 89 53 0c 8b 4d e4 89 45 ec 89 4d e8 <89> 10 8b 45 e0 ba ff ff ff ff 89 45 f0 89 d0 87 03 83 f8 01 74 
+oops              EIP: [<c05c834a>] __mutex_lock_slowpath+0x9a/0x140 SS:ESP 0068:f5b13eb4
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (13):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff8107f12e>] kfifo_alloc+0x2e/0xb0
+oops              PGD 13a27b067 PUD 1375c6067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/snd/initstate
+oops              CPU 1 
+oops              Modules linked in: lirc_ene0100(+) lirc_dev v4l1_compat v4l2_compat_ioctl32 lp(+) led_class serio_raw intel_agp video output parport snd soundcore snd_page_alloc usb_storage ahci ssb r8169 mii libahci
+oops              
+oops              Pid: 687, comm: modprobe Not tainted 2.6.35-12-generic #17-Ubuntu 3602/HP Pavilion dv5 Notebook PC
+oops              RIP: 0010:[<ffffffff8107f12e>]  [<ffffffff8107f12e>] kfifo_alloc+0x2e/0xb0
+oops              RSP: 0018:ffff88013825fd08  EFLAGS: 00010286
+oops              RAX: ffff88013fc0f000 RBX: 0000000000000000 RCX: ffffffff8107f129
+oops              RDX: 0000000000000000 RSI: 00000000000000d0 RDI: 0000000000000246
+oops              RBP: ffff88013825fd18 R08: 0000000000000000 R09: 0000000000000246
+oops              R10: 0000000000000030 R11: 0000000000000000 R12: 0000000000001000
+oops              R13: ffff880139be1400 R14: ffff880136d58640 R15: 00000000fffffff4
+oops              FS:  00007f450591a700(0000) GS:ffff880001e80000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000000 CR3: 000000013a270000 CR4: 00000000000406e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 687, threadinfo ffff88013825e000, task ffff8801383ddb80)
+oops              Stack:
+oops               ffff8801379ee840 ffff8801379f14e0 ffff88013825fd58 ffffffffa009ee4f
+oops              <0> ffff88013825fd38 ffffffffa009f060 ffff880139be1400 ffffffffa009f580
+oops              <0> ffffffffa009f540 00000000fffffff4 ffff88013825fd98 ffffffff81341325
+oops              Call Trace:
+oops               [<ffffffffa009ee4f>] ene_probe+0x17f/0x350 [lirc_ene0100]
+oops               [<ffffffff81341325>] pnp_device_probe+0x95/0x100
+oops               [<ffffffff8138a172>] ? driver_sysfs_add+0x62/0x90
+oops               [<ffffffff8138a298>] really_probe+0x68/0x190
+oops               [<ffffffff8138a405>] driver_probe_device+0x45/0x70
+oops               [<ffffffff8138a4cb>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff8138a430>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff813896d8>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff8138a10e>] driver_attach+0x1e/0x20
+oops               [<ffffffff813899ce>] bus_add_driver+0xde/0x280
+oops               [<ffffffff8138a810>] driver_register+0x80/0x150
+oops               [<ffffffffa00a2000>] ? ene_init+0x0/0x3e [lirc_ene0100]
+oops               [<ffffffff813410a1>] pnp_register_driver+0x21/0x30
+oops               [<ffffffffa00a203c>] ene_init+0x3c/0x3e [lirc_ene0100]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109aaeb>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: e5 41 54 53 0f 1f 44 00 00 48 89 fb 89 f7 41 89 f4 48 85 ff 48 8d 47 ff 74 33 48 85 f8 75 2e 89 d6 e8 67 33 0c 00 48 85 c0 74 52 <48> 89 03 44 89 63 08 31 c0 c7 43 10 00 00 00 00 c7 43 0c 00 00 
+oops              RIP  [<ffffffff8107f12e>] kfifo_alloc+0x2e/0xb0
+oops               RSP <ffff88013825fd08>
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (14):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff81542d3b>] __mutex_lock_slowpath+0xbb/0x170
+oops              PGD 609c90067 PUD 6097fd067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/fbcon/initstate
+oops              CPU 1 
+oops              Modules linked in: fbcon(+) tileblit font bitblit softcursor vga16fb vgastate nouveau(+) ttm drm_kms_helper mce_xeon75xx(-) drm i2c_algo_bit snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm_oss snd_mixer_oss snd_pcm snd_seq_dummy snd_seq_oss snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq ppdev snd_timer snd_seq_device parport_pc snd dell_wmi dcdbas soundcore snd_page_alloc shpchp lp parport usbhid hid ohci1394 ieee1394 ahci tg3
+oops              Pid: 405, comm: plymouthd Not tainted 2.6.32-24-generic #38-Ubuntu Precision WorkStation T7500  
+oops              RIP: 0010:[<ffffffff81542d3b>]  [<ffffffff81542d3b>] __mutex_lock_slowpath+0xbb/0x170
+oops              RSP: 0018:ffff8806082ddd98  EFLAGS: 00010246
+oops              RAX: 0000000000000000 RBX: ffff880609d23c08 RCX: 0000000000000006
+oops              RDX: ffff8806082ddda8 RSI: ffffffffa01b3d10 RDI: ffff880609d23c0c
+oops              RBP: ffff8806082dddf8 R08: 0000000000000195 R09: 000000000000e200
+oops              R10: fffffffffffffff0 R11: 0000000000000246 R12: ffff8806089e44d0
+oops              R13: ffff880609d23c0c R14: ffffffffffffffff R15: ffff880609d23c10
+oops              FS:  00007f4dd6e70700(0000) GS:ffff88003e220000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000000 CR3: 00000006097d6000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process plymouthd (pid: 405, threadinfo ffff8806082dc000, task ffff8806089e44d0)
+oops              Stack:
+oops               ffff880600000001 ffff8806082ddfd8 ffff880609d23c10 0000000000000000
+oops              <0> 0000000000000000 ffffffffa01b3d10 ffff8806082dddd8 ffff880609d23c08
+oops              <0> ffff8806018bbe00 ffff880609d23c08 ffff880609d23b10 ffff8806018bbea8
+oops              Call Trace:
+oops               [<ffffffffa01b3d10>] ? drm_gem_object_release_handle+0x0/0x40 [drm]
+oops               [<ffffffff81542c5b>] mutex_lock+0x2b/0x50
+oops               [<ffffffffa01bc4bf>] drm_fb_release+0x2f/0xd0 [drm]
+oops               [<ffffffffa01b2918>] drm_release+0x448/0x510 [drm]
+oops               [<ffffffff81145525>] __fput+0xf5/0x210
+oops               [<ffffffff81145665>] fput+0x25/0x30
+oops               [<ffffffff8114175d>] filp_close+0x5d/0x90
+oops               [<ffffffff81141847>] sys_close+0xb7/0x120
+oops               [<ffffffff810131b2>] system_call_fastpath+0x16/0x1b
+oops              Code: 4c 8d 6b 04 4c 8d 7b 08 49 c7 c6 ff ff ff ff 4c 89 ef e8 29 15 00 00 48 8b 43 10 48 8d 55 b0 48 89 53 10 4c 89 7d b0 48 89 45 b8 <48> 89 10 4c 89 f0 4c 89 65 c0 87 03 83 f8 01 75 23 eb 2b 66 90 
+oops              RIP  [<ffffffff81542d3b>] __mutex_lock_slowpath+0xbb/0x170
+oops               RSP <ffff8806082ddd98>
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (15):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c0166456>] kfifo_alloc+0x26/0x90
+oops              *pde = 00000000 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:14.5/usb7/7-2/7-2:1.1/uevent
+oops              Modules linked in: k10temp lirc_ene0100(+) btusb agpgart i2c_piix4 joydev i2c_algo_bit videodev v4l1_compat wacom video psmouse bluetooth lirc_dev shpchp serio_raw output led_class lp(+) parport hp_wmi usbhid hid usb_storage ahci pata_atiixp ssb libahci r8169 mii
+oops              
+oops              Pid: 637, comm: modprobe Not tainted 2.6.35-15-generic #21-Ubuntu 30F1/HP Pavilion tx2500 Notebook PC
+oops              EIP: 0060:[<c0166456>] EFLAGS: 00010286 CPU: 1
+oops              EIP is at kfifo_alloc+0x26/0x90
+oops              EAX: d2079000 EBX: 00001000 ECX: c0166452 EDX: c0166452
+oops              ESI: 00000000 EDI: d27add60 EBP: d209de40 ESP: d209de38
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 637, ti=d209c000 task=d21d7230 task.ti=d209c000)
+oops              Stack:
+oops               f6ad12a0 d26a1a00 d209de68 f803bdb7 00000020 000080d0 d209de68 f724de00
+oops              <0> fffffff4 f803bf90 f724de00 f803c3e0 d209de7c c03ca5fe f724de00 f803c400
+oops              <0> f803c400 d209dea0 c0402cc0 f724ded0 d209dea0 c0409f07 00000000 f724de00
+oops              Call Trace:
+oops               [<f803bdb7>] ? ene_probe+0x157/0x30b [lirc_ene0100]
+oops              cfg80211: Calling CRDA to update world regulatory domain
+oops              b43-phy0: Broadcom 4312 WLAN found (core revision 15)
+oops               [<c03ca5fe>] ? pnp_device_probe+0x6e/0xd0
+oops               [<c0402cc0>] ? really_probe+0x50/0x150
+oops               [<c0409f07>] ? pm_runtime_barrier+0x57/0xb0
+oops               [<c0402dfc>] ? driver_probe_device+0x3c/0x60
+oops               [<c0402ea1>] ? __driver_attach+0x81/0x90
+oops               [<c04022c3>] ? bus_for_each_dev+0x53/0x80
+oops              Synaptics Touchpad, model: 1, fw: 6.3, id: 0x180b1, caps: 0xa04711/0xa00000/0x0
+oops              input: SynPS/2 Synaptics TouchPad as /devices/platform/i8042/serio1/input/input9
+oops               [<c0402b8e>] ? driver_attach+0x1e/0x20
+oops               [<c0402e20>] ? __driver_attach+0x0/0x90
+oops               [<c0402555>] ? bus_add_driver+0xd5/0x280
+oops               [<c03ca420>] ? pnp_device_remove+0x0/0x40
+oops               [<c040319a>] ? driver_register+0x6a/0x130
+oops               [<c01aff17>] ? tracepoint_module_notify+0x27/0x30
+oops               [<c03ca3dc>] ? pnp_register_driver+0x1c/0x20
+oops               [<f8043038>] ? ene_init+0x38/0x3a [lirc_ene0100]
+oops               [<c016ae64>] ? __blocking_notifier_call_chain+0x54/0x70
+oops               [<c0101132>] ? do_one_initcall+0x32/0x1a0
+oops               [<f8043000>] ? ene_init+0x0/0x3a [lirc_ene0100]
+oops               [<c018056b>] ? sys_init_module+0x9b/0x1e0
+oops               [<c02161c5>] ? sys_close+0x75/0xc0
+oops               [<c05c9904>] ? syscall_call+0x7/0xb
+oops              Code: 90 8d 74 26 00 55 89 e5 56 53 0f 1f 44 00 00 89 d3 89 c6 85 db 89 ca 8d 43 ff 74 31 85 d8 75 25 89 d8 e8 4e 60 0a 00 85 c0 74 39 <89> 06 31 c0 89 5e 04 c7 46 0c 00 00 00 00 c7 46 08 00 00 00 00 
+oops              EIP: [<c0166456>] kfifo_alloc+0x26/0x90 SS:ESP 0068:d209de38
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (16):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP:
+oops              agpgart-intel 0000:00:00.0: AGP aperture is 256M @ 0xc0000000
+oops               [<c01665b6>] kfifo_alloc+0x26/0x90
+oops              *pde = 00000000 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/intel_agp/initstate
+oops              Modules linked in: lirc_ene0100(+) i2c_algo_bit intel_agp lirc_dev video snd soundcore snd_page_alloc psmouse serio_raw lib80211 agpgart output lp parport usbhid hid usb_storage firewire_ohci ahci firewire_core sdhci_pci tg3 sdhci led_class crc_itu_t libahci
+oops              
+oops              Pid: 453, comm: modprobe Not tainted 2.6.35-17-generic #23-Ubuntu Nettiling/Aspire 5720Z    
+oops              EIP: 0060:[<c01665b6>] EFLAGS: 00010286 CPU: 0
+oops              EIP is at kfifo_alloc+0x26/0x90
+oops              EAX: f5faa000 EBX: 00001000 ECX: c01665b2 EDX: c01665b2
+oops              ESI: 00000000 EDI: f5d09e40 EBP: f5cf1e40 ESP: f5cf1e38
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 453, ti=f5cf0000 task=f68a3f70 task.ti=f5cf0000)
+oops              Stack:
+oops               f695ce40 f6a1d540 f5cf1e68 f806bdb7 00000020 000080d0 f5cf1e68 f7232200
+oops              <0> fffffff4 f806bf90 f7232200 f806c3e0 f5cf1e7c c03c737e f7232200 f806c400
+oops              <0> f806c400 f5cf1ea0 c03ffa30 f72322d0 f5cf1ea0 c0406c87 00000000 f7232200
+oops              Call Trace:
+oops               [<f806bdb7>] ? ene_probe+0x157/0x30b [lirc_ene0100]
+oops               [<c03c737e>] ? pnp_device_probe+0x6e/0xd0
+oops               [<c03ffa30>] ? really_probe+0x50/0x150
+oops               [<c0406c87>] ? pm_runtime_barrier+0x57/0xb0
+oops               [<c03ffb6c>] ? driver_probe_device+0x3c/0x60
+oops               [<c03ffc11>] ? __driver_attach+0x81/0x90
+oops               [<c03ff033>] ? bus_for_each_dev+0x53/0x80
+oops               [<c03ff8fe>] ? driver_attach+0x1e/0x20
+oops               [<c03ffb90>] ? __driver_attach+0x0/0x90
+oops               [<c03ff2c5>] ? bus_add_driver+0xd5/0x280
+oops               [<c03c71a0>] ? pnp_device_remove+0x0/0x40
+oops               [<c03fff0a>] ? driver_register+0x6a/0x130
+oops               [<c01b0097>] ? tracepoint_module_notify+0x27/0x30
+oops               [<c03c715c>] ? pnp_register_driver+0x1c/0x20
+oops               [<f806f038>] ? ene_init+0x38/0x3a [lirc_ene0100]
+oops               [<c016afc4>] ? __blocking_notifier_call_chain+0x54/0x70
+oops               [<c0101132>] ? do_one_initcall+0x32/0x1a0
+oops               [<f806f000>] ? ene_init+0x0/0x3a [lirc_ene0100]
+oops               [<c01806db>] ? sys_init_module+0x9b/0x1e0
+oops               [<c0216475>] ? sys_close+0x75/0xc0
+oops               [<c05c78c4>] ? syscall_call+0x7/0xb
+oops              Code: 90 8d 74 26 00 55 89 e5 56 53 0f 1f 44 00 00 89 d3 89 c6 85 db 89 ca 8d 43 ff 74 31 85 d8 75 25 89 d8 e8 7e 61 0a 00 85 c0 74 39 <89> 06 31 c0 89 5e 04 c7 46 0c 00 00 00 00 c7 46 08 00 00 00 00 
+oops              EIP: [<c01665b6>] kfifo_alloc+0x26/0x90 SS:ESP 0068:f5cf1e38
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (17):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops              PGD 13ad1b067 PUD 13ad1a067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:26/PNP0303:00/uevent
+oops              CPU 1 
+oops              Modules linked in: lirc_ene0100(+) input_polldev(+) lirc_dev parport(+) ahci r8169 mii sdhci_pci sdhci led_class pata_atiixp libahci
+oops              
+oops              Pid: 407, comm: modprobe Not tainted 2.6.35-17-generic #23-Ubuntu 30FC/HP Pavilion dv7 Notebook PC
+oops              RIP: 0010:[<ffffffff8107f19e>]  [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops              RSP: 0018:ffff88013b475d08  EFLAGS: 00010286
+oops              RAX: ffff8801384be000 RBX: 0000000000000000 RCX: ffffffff8107f199
+oops              RDX: ffff8801384ba000 RSI: 00000000000000d0 RDI: 0000000000000246
+oops              RBP: ffff88013b475d18 R08: 0000000000000000 R09: 0000000000000246
+oops              R10: 0000000000000030 R11: 0000000000000000 R12: 0000000000001000
+oops              R13: ffff8801394bc800 R14: ffff88013b64c280 R15: 00000000fffffff4
+oops              FS:  00007f5fb9cd0700(0000) GS:ffff880001e80000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: 0000000000000000 CR3: 000000013ad17000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 407, threadinfo ffff88013b474000, task ffff88013b478000)
+oops              Stack:
+oops               ffff88013a65cb40 ffff88013b61b7e0 ffff88013b475d58 ffffffffa005ee4f
+oops              [Firmware Bug]: ACPI: ACPI brightness control misses _BQC function
+oops              acpi device:03: registered as cooling_device2
+oops              input: Video Bus as /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:01/LNXVIDEO:00/input/input4
+oops              ACPI: Video Device [VGA] (multi-head: yes  rom: no  post: no)
+oops              lis3lv02d: hardware type DV7 found.
+oops              lis3lv02d: 8 bits sensor found
+oops              shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
+oops              
+oops              <0> ffff88013b475d38 ffffffffa005f060 ffff8801394bc800 ffffffffa005f580
+oops              <0> ffffffffa005f540 00000000fffffff4 ffff88013b475d98 ffffffff8133d7d5
+oops              Call Trace:
+oops               [<ffffffffa005ee4f>] ene_probe+0x17f/0x350 [lirc_ene0100]
+oops               [<ffffffff8133d7d5>] pnp_device_probe+0x95/0x100
+oops               [<ffffffff813866c2>] ? driver_sysfs_add+0x62/0x90
+oops               [<ffffffff813867e8>] really_probe+0x68/0x190
+oops               [<ffffffff81386955>] driver_probe_device+0x45/0x70
+oops               [<ffffffff81386a1b>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff81386980>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff81385c28>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff8138665e>] driver_attach+0x1e/0x20
+oops               [<ffffffff81385f1e>] bus_add_driver+0xde/0x280
+oops               [<ffffffff81386d60>] driver_register+0x80/0x150
+oops               [<ffffffffa0062000>] ? ene_init+0x0/0x3e [lirc_ene0100]
+oops               [<ffffffff8133d551>] pnp_register_driver+0x21/0x30
+oops               [<ffffffffa006203c>] ene_init+0x3c/0x3e [lirc_ene0100]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109ab6b>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: e5 41 54 53 0f 1f 44 00 00 48 89 fb 89 f7 41 89 f4 48 85 ff 48 8d 47 ff 74 33 48 85 f8 75 2e 89 d6 e8 07 35 0c 00 48 85 c0 74 52 <48> 89 03 44 89 63 08 31 c0 c7 43 10 00 00 00 00 c7 43 0c 00 00 
+oops              RIP  [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops               RSP <ffff88013b475d08>
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (18):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops              PGD 1375cb067 PUD 1375ce067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/vc/vcs6/uevent
+oops              CPU 1 
+oops              Modules linked in: lirc_ene0100(+) v4l2_compat_ioctl32(+) hp_wmi(+) snd(+) lirc_dev wl(P+) bluetooth(+) drm(+) video(+) psmouse output serio_raw k10temp edac_core soundcore i2c_algo_bit lib80211 i2c_piix4 snd_page_alloc edac_mce_amd shpchp lp parport usb_storage r8169 mii ahci libahci pata_atiixp
+oops              
+oops              Pid: 529, comm: modprobe Tainted: P            2.6.35-17-generic #23-Ubuntu 3045/HP TouchSmart tx2 Notebook PC
+oops              RIP: 0010:[<ffffffff8107f19e>]  [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops              RSP: 0018:ffff880138739d08  EFLAGS: 00010286
+oops              RAX: ffff880137500000 RBX: 0000000000000000 RCX: ffffffff8107f199
+oops              RDX: ffff880137504000 RSI: 00000000000000d0 RDI: 0000000000000246
+oops              RBP: ffff880138739d18 R08: 0000000000000000 R09: 0000000000000246
+oops              R10: 0000000000000030 R11: 0000000000000000 R12: 0000000000001000
+oops              R13: ffff88013b33c400 R14: ffff8801386a7280 R15: 00000000fffffff4
+oops              FS:  00007f3989a31700(0000) GS:ffff880001e80000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000000 CR3: 0000000139428000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 529, threadinfo ffff880138738000, task ffff88013b6cc4a0)
+oops              Stack:
+oops               ffff880137c3fb40 ffff88013b49dba0 ffff880138739d58 ffffffffa010ee4f
+oops              <0> ffff880138739d38 ffffffffa010f060 ffff88013b33c400 ffffffffa010f580
+oops              <0> ffffffffa010f540 00000000fffffff4 ffff880138739d98 ffffffff8133d7d5
+oops              Call Trace:
+oops               [<ffffffffa010ee4f>] ene_probe+0x17f/0x350 [lirc_ene0100]
+oops               [<ffffffff8133d7d5>] pnp_device_probe+0x95/0x100
+oops               [<ffffffff813866c2>] ? driver_sysfs_add+0x62/0x90
+oops               [<ffffffff813867e8>] really_probe+0x68/0x190
+oops               [<ffffffff81386955>] driver_probe_device+0x45/0x70
+oops               [<ffffffff81386a1b>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff81386980>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff81385c28>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff8138665e>] driver_attach+0x1e/0x20
+oops               [<ffffffff81385f1e>] bus_add_driver+0xde/0x280
+oops               [<ffffffff81386d60>] driver_register+0x80/0x150
+oops               [<ffffffffa0309000>] ? ene_init+0x0/0x3e [lirc_ene0100]
+oops               [<ffffffff8133d551>] pnp_register_driver+0x21/0x30
+oops               [<ffffffffa030903c>] ene_init+0x3c/0x3e [lirc_ene0100]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109ab6b>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: e5 41 54 53 0f 1f 44 00 00 48 89 fb 89 f7 41 89 f4 48 85 ff 48 8d 47 ff 74 33 48 85 f8 75 2e 89 d6 e8 07 35 0c 00 48 85 c0 74 52 <48> 89 03 44 89 63 08 31 c0 c7 43 10 00 00 00 00 c7 43 0c 00 00 
+oops              RIP  [<ffffffff8107f19e>] kfifo_alloc+0x2e/0xb0
+oops               RSP <ffff880138739d08>
+oops              CR2: 0000000000000000
+oops            
+oops            Found WARNING (1):
+oops              WARNING: at /build/buildd/linux-2.6.35/lib/kobject.c:595 kobject_put+0x50/0x60()
+oops              Hardware name: To Be Filled By O.E.M.
+oops              kobject: '(null)' (ffff8802374c5998): is not initialized, yet kobject_put() is being called.
+oops              Modules linked in: ip6table_filter ip6_tables nf_nat_irc nf_conntrack_irc snd_hda_intel(+) nf_nat_ftp nf_nat snd_hda_codec snd_ctxfi nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack_ftp nf_conntrack snd_hwdep snd_pcm snd_seq_midi snd_rawmidi iptable_filter snd_seq_midi_event ip_tables snd_seq snd_timer nouveau snd_seq_device ttm drm_kms_helper snd drm x_tables soundcore i2c_algo_bit snd_page_alloc joydev shpchp lp xhci_hcd psmouse i7core_edac serio_raw edac_core parport dm_raid45 xor usbhid hid sky2 pata_jmicron ahci libahci
+oops              Pid: 1302, comm: dmraid Tainted: G   M  D     2.6.35-19-generic #28-Ubuntu
+oops              Call Trace:
+oops               [<ffffffff8105f72f>] warn_slowpath_common+0x7f/0xc0
+oops               [<ffffffff8105f826>] warn_slowpath_fmt+0x46/0x50
+oops               [<ffffffff812b81b0>] kobject_put+0x50/0x60
+oops               [<ffffffff8145d7a6>] dm_sysfs_exit+0x16/0x20
+oops               [<ffffffff81455a2f>] dm_put+0x9f/0x120
+oops               [<ffffffff8145a864>] table_status+0x54/0xa0
+oops               [<ffffffff8145a810>] ? table_status+0x0/0xa0
+oops               [<ffffffff8145bf05>] ctl_ioctl+0x1a5/0x250
+oops               [<ffffffff8111b26b>] ? do_anonymous_page+0x11b/0x330
+oops               [<ffffffff8145bfc3>] dm_ctl_ioctl+0x13/0x20
+oops               [<ffffffff8116172d>] vfs_ioctl+0x3d/0xd0
+oops               [<ffffffff81162001>] do_vfs_ioctl+0x81/0x340
+oops               [<ffffffff8158b4ae>] ? do_page_fault+0x15e/0x350
+oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops            
+oops            Found OOPS (19):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
+oops              IP: [<ffffffff81182189>] bdput+0x9/0x20
+oops              PGD 2220c7067 PUD 2220c6067 PMD 0 
+oops              Oops: 0000 [#2] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:1f.2/host4/target4:0:0/4:0:0:0/block/sda/sda3/alignment_offset
+oops              CPU 4 
+oops              Modules linked in: ip6table_filter ip6_tables nf_nat_irc nf_conntrack_irc snd_hda_intel(+) nf_nat_ftp nf_nat snd_hda_codec snd_ctxfi nf_conntrack_ipv4 nf_defrag_ipv4 nf_conntrack_ftp nf_conntrack snd_hwdep snd_pcm snd_seq_midi snd_rawmidi iptable_filter snd_seq_midi_event ip_tables snd_seq snd_timer nouveau snd_seq_device ttm drm_kms_helper snd drm x_tables soundcore i2c_algo_bit snd_page_alloc joydev shpchp lp xhci_hcd psmouse i7core_edac serio_raw edac_core parport dm_raid45 xor usbhid hid sky2 pata_jmicron ahci libahci
+oops              
+oops              Pid: 1302, comm: dmraid Tainted: G   M  D W   2.6.35-19-generic #28-Ubuntu EVGA Classified SR-2/To Be Filled By O.E.M.
+oops              RIP: 0010:[<ffffffff81182189>]  [<ffffffff81182189>] bdput+0x9/0x20
+oops              RSP: 0018:ffff8803b5031d98  EFLAGS: 00010296
+oops              RAX: ffff8802374c5860 RBX: ffff8802374c5800 RCX: 000000000003ffff
+oops              RDX: 0000000000000000 RSI: ffffffff812b8280 RDI: 0000000000000000
+oops              RBP: ffff8803b5031d98 R08: 0000000000015629 R09: 0000000000000000
+oops              R10: 0000000000000000 R11: 0000000000000002 R12: 00000000ffffffff
+oops              R13: ffffc90013bd4000 R14: 0000000000004000 R15: 0000000000000000
+oops              FS:  00007f686410e7a0(0000) GS:ffff880245600000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000008 CR3: 0000000236c87000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process dmraid (pid: 1302, threadinfo ffff8803b5030000, task ffff8803b44744a0)
+oops              Stack:
+oops               ffff8803b5031db8 ffffffff81453ddb ffff8802374c5800 0000000000000000
+oops              <0> ffff8803b5031de8 ffffffff81455a81 0000000000000000 ffff8802374c5800
+oops              <0> 0000000000000000 ffffc90013bd4000 ffff8803b5031e28 ffffffff8145a864
+oops              Call Trace:
+oops               [<ffffffff81453ddb>] free_dev+0x2b/0xe0
+oops               [<ffffffff81455a81>] dm_put+0xf1/0x120
+oops               [<ffffffff8145a864>] table_status+0x54/0xa0
+oops               [<ffffffff8145a810>] ? table_status+0x0/0xa0
+oops               [<ffffffff8145bf05>] ctl_ioctl+0x1a5/0x250
+oops               [<ffffffff8111b26b>] ? do_anonymous_page+0x11b/0x330
+oops               [<ffffffff8145bfc3>] dm_ctl_ioctl+0x13/0x20
+oops               [<ffffffff8116172d>] vfs_ioctl+0x3d/0xd0
+oops               [<ffffffff81162001>] do_vfs_ioctl+0x81/0x340
+oops               [<ffffffff8158b4ae>] ? do_page_fault+0x15e/0x350
+oops               [<ffffffff81162341>] sys_ioctl+0x81/0xa0
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: c0 8f a2 81 e8 19 3c eb ff 66 90 48 85 db 74 09 48 8b 7b 08 e8 c9 66 fe ff 5b 41 5c c9 c3 eb 02 90 90 55 48 89 e5 0f 1f 44 00 00 <48> 8b 7f 08 e8 ae 66 fe ff c9 c3 eb 0a 90 90 90 90 90 90 90 90 
+oops              RIP  [<ffffffff81182189>] bdput+0x9/0x20
+oops               RSP <ffff8803b5031d98>
+oops              CR2: 0000000000000008
+oops            
+oops            Found OOPS (20):
+oops              BUG: unable to handle kernel paging request at f8147540
+oops              IP: [<c0400abe>] driver_register+0xfe/0x130
+oops              *pde = 3716d067 *pte = 00000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:18.3/uevent
+oops              Modules linked in: amd64_agp(+) squashfs aufs nls_iso8859_1 nls_cp437 vfat fat dm_raid45 xor btrfs zlib_deflate crc32c libcrc32c radeon ttm drm_kms_helper drm usb_storage forcedeth pata_amd sata_nv i2c_algo_bit agpgart
+oops              
+oops              Pid: 1879, comm: modprobe Not tainted 2.6.35-22-generic #33-Ubuntu 'K8N'/K8N
+oops              EIP: 0060:[<c0400abe>] EFLAGS: 00010282 CPU: 0
+oops              EIP is at driver_register+0xfe/0x130
+oops              EAX: f8147510 EBX: 00000000 ECX: f8006419 EDX: f681f780
+oops              ESI: f8006510 EDI: c036c8a0 EBP: f6899f34 ESP: f6899f18
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 1879, ti=f6898000 task=f642bf70 task.ti=f6898000)
+oops              Stack:
+oops               00000001 f8006780 00000000 c07d2ae0 f80064e0 f8006780 f8006510 f6899f48
+oops              <0> c036cba5 b78ba000 f8006780 00000000 f6899f54 f800902c 00000000 f6899f5c
+oops              <0> f80090a8 f6899f88 c0101132 f8006780 c07d0f60 b78ba000 f8006780 08b41228
+oops              Call Trace:
+oops               [<c036cba5>] ? __pci_register_driver+0x45/0xb0
+oops               [<f800902c>] ? agp_amd64_init+0x2c/0xa0 [amd64_agp]
+oops               [<f80090a8>] ? agp_amd64_mod_init+0x8/0xa [amd64_agp]
+oops               [<c0101132>] ? do_one_initcall+0x32/0x1a0
+oops               [<f80090a0>] ? agp_amd64_mod_init+0x0/0xa [amd64_agp]
+oops               [<c0180c2b>] ? sys_init_module+0x9b/0x1e0
+oops               [<c0218fa2>] ? sys_write+0x42/0x70
+oops               [<c05c90a4>] ? syscall_call+0x7/0xb
+oops              Code: 89 f0 e8 86 ea ff ff 83 c4 10 89 f8 5b 5e 5f 5d c3 8b 06 c7 04 24 2c 6a 76 c0 89 44 24 04 e8 85 59 1c 00 8b 56 04 e9 56 ff ff ff <8b> 40 30 bf f0 ff ff ff e8 d5 11 f5 ff 8b 06 c7 04 24 6c 6a 76 
+oops              EIP: [<c0400abe>] driver_register+0xfe/0x130 SS:ESP 0068:f6899f18
+oops              CR2: 00000000f8147540
+oops            
+oops            Found OOPS (21):
+oops              BUG: unable to handle kernel paging request at ffffc900102b8000
+oops              IP: [<ffffffffa014ac76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops              PGD 1d897067 PUD 1d898067 PMD 1693c067 PTE 800000fd00000173
+oops              Oops: 0009 [#1] SMP 
+oops              last sysfs file: /sys/devices/platform/i8042/serio1/input/input3/event3/uevent
+oops              CPU 0 
+oops              Modules linked in: snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq snd_timer snd_seq_device snd soundcore ppdev psmouse serio_raw parport_pc i2c_viapro edac_core lp snd_page_alloc parport k8temp edac_mce_amd shpchp 8139too 8139cp mii floppy pata_via sata_via
+oops              
+oops              Pid: 735, comm: work_for_cpu Not tainted 2.6.35-22-generic #34-Ubuntu 0A88h/HP dx2255 MT(RL028AV)
+oops              RIP: 0010:[<ffffffffa014ac76>]  [<ffffffffa014ac76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops              RSP: 0018:ffff88001a7d7e20  EFLAGS: 00010282
+oops              RAX: ffffc900102b8000 RBX: ffff88001a7d7e80 RCX: 0000000000000000
+oops              RDX: 0000000000000000 RSI: 0000000000000286 RDI: 0000000000000286
+oops              RBP: ffff88001a7d7e70 R08: 0000000000000001 R09: 0000000000000040
+oops              R10: 0000000000000008 R11: 0000000000000003 R12: ffff88001cf02000
+oops              R13: ffff880016b0b000 R14: 0000000000000000 R15: ffff880016b0b400
+oops              FS:  00007fe9f4940700(0000) GS:ffff880001e00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffc900102b8000 CR3: 000000001c49c000 CR4: 00000000000006f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process work_for_cpu (pid: 735, threadinfo ffff88001a7d6000, task ffff88001694c4a0)
+oops              Stack:
+oops               ffffffffa00b71e0 ffffffffa014cd78 ffffffff00000000 000000001a7d7e88
+oops              <0> 0000000000000000 ffff88001cf02000 ffffffffa014c520 ffff88001cf02090
+oops              <0> 0000000000000000 0000000000000000 ffff88001a7d7eb0 ffffffffa014b100
+oops              Call Trace:
+oops               [<ffffffffa014b100>] azx_probe+0xb8/0x284 [snd_hda_intel]
+oops               [<ffffffff8107ad10>] ? do_work_for_cpu+0x0/0x30
+oops               [<ffffffff812d6ee7>] local_pci_probe+0x17/0x20
+oops               [<ffffffff8107ad28>] do_work_for_cpu+0x18/0x30
+oops               [<ffffffff8107f0b6>] kthread+0x96/0xa0
+oops               [<ffffffff8100aee4>] kernel_thread_helper+0x4/0x10
+oops               [<ffffffff8107f020>] ? kthread+0x0/0xa0
+oops               [<ffffffff8100aee0>] ? kernel_thread_helper+0x0/0x10
+oops              Code: ef 31 f6 4c 89 ef 89 4d c0 e8 17 d5 ff ff 85 c0 0f 88 c3 03 00 00 4c 89 e7 e8 87 9d 18 e1 41 8b 7d 40 e8 1e 01 f8 e0 49 8b 45 38 <66> 44 8b 30 41 8b 45 14 8b 4d c0 8d 50 fd 83 fa 01 77 3f 31 d2 
+oops              RIP  [<ffffffffa014ac76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops               RSP <ffff88001a7d7e20>
+oops              CR2: ffffc900102b8000
+oops            
+oops            Found OOPS (22):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140
+oops              *pde = df469067 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/devices/platform/radeon_cp.0/firmware/radeon_cp.0/loading
+oops              Modules linked in: snd_seq_midi_event radeon(+) snd_seq sbp2 uvcvideo i82875p_edac snd_timer snd_seq_device ieee1394 sunrpc edac_core videodev ttm v4l1_compat drm_kms_helper snd drm i2c_algo_bit snd_page_alloc btusb soundcore intel_agp lp bluetooth agpgart parport shpchp serio_raw hid_logitech ff_memless usbhid hid usb_storage firewire_ohci e1000 firewire_core crc_itu_t
+oops              
+oops              Pid: 353, comm: plymouthd Not tainted 2.6.35-7-generic #11-Ubuntu Canterwood/ 
+oops              EIP: 0060:[<c05cb14a>] EFLAGS: 00010246 CPU: 0
+oops              EIP is at __mutex_lock_slowpath+0x9a/0x140
+oops              EAX: 00000000 EBX: f2796e90 ECX: f2796e98 EDX: f6a71ec0
+oops              ESI: f2796e94 EDI: f2796e90 EBP: f6a71ed8 ESP: f6a71eb4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 353, ti=f6a70000 task=c106cc20 task.ti=f6a70000)
+oops              Stack:
+oops               f6a71ec4 c106cc20 f2796e98 f2796e98 00000000 f2796c00 f2796e90 f6b1fb00
+oops              <0> f2796e90 f6a71ee8 c05cb095 f6b1fb00 f6b1fb00 f6a71efc f87e7dc3 f6b1fb00
+oops              <0> f6b1fb60 f2796c00 f6a71f44 f87df337 00000001 f87efe25 f87ef220 f87f1590
+oops              Call Trace:
+oops               [<c05cb095>] ? mutex_lock+0x25/0x40
+oops               [<f87e7dc3>] ? drm_fb_release+0x23/0x70 [drm]
+oops               [<f87df337>] ? drm_release+0x3e7/0x4c0 [drm]
+oops               [<c021a13f>] ? __fput+0xdf/0x1f0
+oops               [<c021a26d>] ? fput+0x1d/0x30
+oops               [<c0216b5c>] ? filp_close+0x4c/0x80
+oops               [<c0216c05>] ? sys_close+0x75/0xc0
+oops               [<c05cc7dc>] ? syscall_call+0x7/0xb
+oops              Code: 83 79 18 63 7f b3 8d 76 00 8d 73 04 89 f0 e8 5e 11 00 00 8d 53 08 89 55 e4 8d 55 e8 8b 43 0c 89 53 0c 8b 4d e4 89 45 ec 89 4d e8 <89> 10 8b 45 e0 ba ff ff ff ff 89 45 f0 89 d0 87 03 83 f8 01 74 
+oops              EIP: [<c05cb14a>] __mutex_lock_slowpath+0x9a/0x140 SS:ESP 0068:f6a71eb4
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (23):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
+oops              IP: [<ffffffffa012d3c6>] ips_detect_cpu+0x76/0x1d0 [intel_ips]
+oops              PGD 130ef4067 PUD 130ef3067 PMD 0 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:1a.0/usb1/1-1/1-1.2/1-1.2:1.0/input/input4/name
+oops              CPU 1 
+oops              Modules linked in: intel_ips(+) serio_raw snd_page_alloc squashfs aufs nls_cp437 isofs dm_raid45 xor btrfs zlib_deflate crc32c libcrc32c usb_storage usbhid hid i915 drm_kms_helper drm atl1c ahci intel_agp i2c_algo_bit video output libahci
+oops              
+oops              Pid: 1463, comm: modprobe Not tainted 2.6.35-22-generic #33-Ubuntu Base Board Product Name/Satellite L655
+oops              RIP: 0010:[<ffffffffa012d3c6>]  [<ffffffffa012d3c6>] ips_detect_cpu+0x76/0x1d0 [intel_ips]
+oops              RSP: 0018:ffff88012d92bc48  EFLAGS: 00010202
+oops              RAX: 0000000000c800c8 RBX: 0000000000000000 RCX: 0000000000c800c8
+oops              RDX: 0000000000000000 RSI: ffff88012d92bc64 RDI: 0000000000c800c8
+oops              RBP: ffff88012d92bc88 R08: 0000000000000000 R09: 0000000000000000
+oops              R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000c800c8
+oops              R13: ffff8801303a90c0 R14: ffff880131703090 R15: 00000000fffffff4
+oops              FS:  00007ff77fdc8700(0000) GS:ffff880001e40000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: 0000000000000008 CR3: 000000012e690000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1463, threadinfo ffff88012d92a000, task ffff880130ee16e0)
+oops              Stack:
+oops               ffff88012d92bc88 ffffffff81142fa4 ffff88012d92bc78 0000000031703000
+oops              <0> ffff880131703000 ffff8801303a90c0 ffff880131703000 00000000fffffff4
+oops              <0> ffff88012d92bcd8 ffffffffa012dfb1 ffff88012d92bcb8 ffff8801321edb90
+oops              Call Trace:
+oops               [<ffffffff81142fa4>] ? kmem_cache_alloc_notrace+0xb4/0xd0
+oops               [<ffffffffa012dfb1>] ips_probe+0x71/0x710 [intel_ips]
+oops               [<ffffffff812d6ec7>] local_pci_probe+0x17/0x20
+oops               [<ffffffff812d71b9>] __pci_device_probe+0xe9/0xf0
+oops               [<ffffffff812b951a>] ? kobject_get+0x1a/0x30
+oops               [<ffffffff81383c29>] ? get_device+0x19/0x20
+oops               [<ffffffff812d825a>] pci_device_probe+0x3a/0x60
+oops               [<ffffffff81387fe8>] really_probe+0x68/0x190
+oops               [<ffffffff81388155>] driver_probe_device+0x45/0x70
+oops               [<ffffffff8138821b>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff81388180>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff81387428>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff81387e5e>] driver_attach+0x1e/0x20
+oops               [<ffffffff8138771e>] bus_add_driver+0xde/0x280
+oops               [<ffffffff81388560>] driver_register+0x80/0x150
+oops               [<ffffffff8158d0f6>] ? notifier_call_chain+0x56/0x80
+oops               [<ffffffff812d84e6>] __pci_register_driver+0x56/0xd0
+oops               [<ffffffff81084f05>] ? __blocking_notifier_call_chain+0x65/0x80
+oops               [<ffffffffa0103000>] ? ips_init+0x0/0x20 [intel_ips]
+oops               [<ffffffffa010301e>] ips_init+0x1e/0x20 [intel_ips]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109bc6b>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: a0 48 c7 c7 88 ec ac 81 48 c7 c3 80 fa 12 a0 e8 c1 0c 19 e1 48 85 c0 74 44 bf ac 01 00 00 4c 89 e6 e8 3f 8e f0 e0 66 90 41 89 c4 <8b> 53 08 41 c1 e4 12 41 c1 ec 15 41 69 c4 e8 03 00 00 39 c2 0f 
+oops              RIP  [<ffffffffa012d3c6>] ips_detect_cpu+0x76/0x1d0 [intel_ips]
+oops               RSP <ffff88012d92bc48>
+oops              CR2: 0000000000000008
+oops            
+oops            Found OOPS (24):
+oops              BUG: unable to handle kernel NULL pointer dereference at 00000008
+oops              IP: [<f88f5452>] ips_detect_cpu+0x62/0x180 [intel_ips]
+oops              *pdpt = 0000000035926001 *pde = 0000000000000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/platform/pcspkr/uevent
+oops              Modules linked in: intel_ips(+) sony_laptop(+) video output lp parport usbhid hid firewire_ohci ahci sdhci_pci atl1c libahci firewire_core sdhci led_class crc_itu_t
+oops              
+oops              Pid: 569, comm: modprobe Not tainted 2.6.35-22-generic-pae #35-Ubuntu VAIO/VPCY21S1E
+oops              EIP: 0060:[<f88f5452>] EFLAGS: 00010286 CPU: 0
+oops              EIP is at ips_detect_cpu+0x62/0x180 [intel_ips]
+oops              EAX: 00580058 EBX: 00000000 ECX: 00580058 EDX: 00000000
+oops              ESI: f5965e04 EDI: f60eac00 EBP: f5965e14 ESP: f5965de4
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process modprobe (pid: 569, ti=f5964000 task=f593b2c0 task.ti=f5964000)
+oops              Stack:
+oops               f88f6efc f88f6e9e f759db40 f5965e14 c02162f1 f5965e08 c05ee9c9 f88f5eef
+oops              <0> 00000000 f60eac00 f75e9000 fffffff4 f5965e4c f88f5f2b c027b6cd f5965e4c
+oops              <0> c027ac77 f5965e4c c027b07a f5965e38 f75e9000 f75e9060 c037614e f75e9000
+oops              Call Trace:
+oops               [<c02162f1>] ? kmem_cache_alloc_notrace+0x91/0xb0
+oops               [<c05ee9c9>] ? mutex_lock+0x19/0x40
+oops               [<f88f5eef>] ? ips_probe+0x1f/0x6a0 [intel_ips]
+oops               [<f88f5f2b>] ? ips_probe+0x5b/0x6a0 [intel_ips]
+oops               [<c027b6cd>] ? sysfs_add_one+0x1d/0x110
+oops               [<c027ac77>] ? sysfs_new_dirent+0x67/0x100
+oops               [<c027b07a>] ? sysfs_addrm_finish+0x1a/0xb0
+oops               [<c037614e>] ? pci_match_device+0xbe/0xd0
+oops               [<c0375fe3>] ? local_pci_probe+0x13/0x20
+oops               [<c0376f98>] ? pci_device_probe+0x68/0x90
+oops               [<c0414d00>] ? really_probe+0x50/0x150
+oops               [<c041c387>] ? pm_runtime_barrier+0x57/0xb0
+oops               [<c0414e3c>] ? driver_probe_device+0x3c/0x60
+oops               [<c0414ee1>] ? __driver_attach+0x81/0x90
+oops               [<c0414303>] ? bus_for_each_dev+0x53/0x80
+oops               [<c0414bce>] ? driver_attach+0x1e/0x20
+oops               [<c0414e60>] ? __driver_attach+0x0/0x90
+oops               [<c0414595>] ? bus_add_driver+0xd5/0x280
+oops               [<c0376ed0>] ? pci_device_remove+0x0/0x40
+oops               [<c04151da>] ? driver_register+0x6a/0x130
+oops               [<c03771d5>] ? __pci_register_driver+0x45/0xb0
+oops               [<f88fa017>] ? ips_init+0x17/0x19 [intel_ips]
+oops               [<c0103042>] ? do_one_initcall+0x32/0x1a0
+oops               [<f88fa000>] ? ips_init+0x0/0x19 [intel_ips]
+oops               [<c0188f1b>] ? sys_init_module+0x9b/0x1e0
+oops               [<c0222ec2>] ? sys_write+0x42/0x70
+oops               [<c010939f>] ? sysenter_do_call+0x12/0x28
+oops              Code: d5 83 c7 90 ba f5 6d 8f f8 b8 8c 42 85 c0 e8 56 ea a6 c7 bb 80 74 8f f8 85 c0 74 35 b8 ac 01 00 00 89 f2 e8 21 d5 83 c7 90 89 c1 <8b> 53 08 c1 e1 12 c1 e9 15 69 c1 e8 03 00 00 39 c2 75 75 89 d8 
+oops              EIP: [<f88f5452>] ips_detect_cpu+0x62/0x180 [intel_ips] SS:ESP 0068:f5965de4
+oops              CR2: 0000000000000008
+oops            
+oops            Found OOPS (25):
+oops              BUG: unable to handle kernel paging request at ffffc90000360000
+oops              IP: [<ffffffffa0098c76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops              PGD 75417067 PUD 75418067 PMD 75522067 PTE 800000fd00000173
+oops              Oops: 0009 [#1] SMP 
+oops              last sysfs file: /sys/devices/pci0000:00/0000:00:0f.0/host0/target0:0:0/0:0:0:0/block/sda/sda17/alignment_offset
+oops              CPU 0 
+oops              Modules linked in: snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq snd_timer snd_seq_device snd soundcore snd_page_alloc ppdev lp parport_pc k8temp edac_core edac_mce_amd i2c_viapro parport shpchp psmouse joydev serio_raw usbhid hid floppy via_rhine pata_via mii sata_via
+oops              
+oops              Pid: 856, comm: work_for_cpu Not tainted 2.6.35-22-generic #35-Ubuntu MS-7253/MS-7253
+oops              RIP: 0010:[<ffffffffa0098c76>]  [<ffffffffa0098c76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops              RSP: 0018:ffff880073aa5e20  EFLAGS: 00010282
+oops              RAX: ffffc90000360000 RBX: ffff880073aa5e80 RCX: 0000000000000000
+oops              RDX: 0000000000000000 RSI: 0000000000000286 RDI: 0000000000000286
+oops              RBP: ffff880073aa5e70 R08: 0000000000000001 R09: 0000000000000040
+oops              R10: 0000000000000008 R11: 0000000000000003 R12: ffff8800752af000
+oops              R13: ffff88007575e400 R14: 0000000000000000 R15: ffff88007575d400
+oops              FS:  00007f7f480467a0(0000) GS:ffff880001e00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffc90000360000 CR3: 000000007536b000 CR4: 00000000000006f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process work_for_cpu (pid: 856, threadinfo ffff880073aa4000, task ffff88007417adc0)
+oops              Stack:
+oops               ffffffffa00bf1e0 ffffffffa009ad78 ffffffff00000000 0000000073aa5e88
+oops              <0> 0000000000000000 ffff8800752af000 ffffffffa009a520 ffff8800752af090
+oops              <0> 0000000000000000 0000000000000000 ffff880073aa5eb0 ffffffffa0099100
+oops              Call Trace:
+oops               [<ffffffffa0099100>] azx_probe+0xb8/0x284 [snd_hda_intel]
+oops               [<ffffffff8107ad10>] ? do_work_for_cpu+0x0/0x30
+oops               [<ffffffff812d6ee7>] local_pci_probe+0x17/0x20
+oops               [<ffffffff8107ad28>] do_work_for_cpu+0x18/0x30
+oops               [<ffffffff8107f0b6>] kthread+0x96/0xa0
+oops               [<ffffffff8100aee4>] kernel_thread_helper+0x4/0x10
+oops               [<ffffffff8107f020>] ? kthread+0x0/0xa0
+oops               [<ffffffff8100aee0>] ? kernel_thread_helper+0x0/0x10
+oops              Code: ef 31 f6 4c 89 ef 89 4d c0 e8 17 d5 ff ff 85 c0 0f 88 c3 03 00 00 4c 89 e7 e8 87 bd 23 e1 41 8b 7d 40 e8 1e 21 03 e1 49 8b 45 38 <66> 44 8b 30 41 8b 45 14 8b 4d c0 8d 50 fd 83 fa 01 77 3f 31 d2 
+oops              RIP  [<ffffffffa0098c76>] azx_create+0x36b/0x73d [snd_hda_intel]
+oops               RSP <ffff880073aa5e20>
+oops              CR2: ffffc90000360000
+oops            
+oops            Found OOPS (26):
+oops              BUG: unable to handle kernel paging request at ffffc90422101ffc
+oops              IP: [<ffffffffa03e0f7c>] evergreen_cp_start+0x4c/0x570 [radeon]
+oops              PGD 157c0c067 PUD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/snd_rawmidi/initstate
+oops              CPU 0 
+oops              Modules linked in: snd_rawmidi snd_seq_midi_event snd_seq arc4 snd_timer radeon(+) snd_seq_device snd ttm iwlagn i915 iwlcore soundcore drm_kms_helper uvcvideo drm joydev usbhid mac80211 hid snd_page_alloc videodev v4l1_compat v4l2_compat_ioctl32 intel_ips hp_wmi hp_accel lis3lv02d input_polldev video intel_agp btusb wacom cfg80211 bluetooth i2c_algo_bit led_class psmouse output serio_raw lp parport ahci libahci r8169 mii
+oops              
+oops              Pid: 564, comm: modprobe Not tainted 2.6.35-24-generic #42-Ubuntu 1486/HP TouchSmart tm2 Notebook PC   
+oops              RIP: 0010:[<ffffffffa03e0f7c>]  [<ffffffffa03e0f7c>] evergreen_cp_start+0x4c/0x570 [radeon]
+oops              RSP: 0018:ffff880145bcbb48  EFLAGS: 00010286
+oops              RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff880145bcbfd8
+oops              RDX: ffffc90422101ffc RSI: 0000000000000007 RDI: 0000000000000010
+oops              RBP: ffff880145bcbb58 R08: ffff880145bca000 R09: 00000000ffffffff
+oops              R10: 00000000ffffffff R11: 0000000000000001 R12: ffff880153604000
+oops              R13: 0000000000c10027 R14: 00000000fffffff4 R15: ffffffffa0408c80
+oops              FS:  00007f3dabda0700(0000) GS:ffff880001e00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffc90422101ffc CR3: 000000014eb1c000 CR4: 00000000000006f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 564, threadinfo ffff880145bca000, task ffff880145b80000)
+oops              Stack:
+oops               ffff880153604000 0000000008000911 ffff880145bcbb78 ffffffffa03e174d
+oops              <0> ffff880153604000 0000000000000000 ffff880145bcbb98 ffffffffa03e1a6f
+oops              <0> ffff880153604000 0000000000000000 ffff880145bcbbc8 ffffffffa03e1d63
+oops              Call Trace:
+oops               [<ffffffffa03e174d>] evergreen_cp_resume+0x2ad/0x520 [radeon]
+oops               [<ffffffffa03e1a6f>] evergreen_startup+0xaf/0x140 [radeon]
+oops               [<ffffffffa03e1d63>] evergreen_init+0x263/0x4d0 [radeon]
+oops               [<ffffffffa0362954>] radeon_device_init+0x344/0x4a0 [radeon]
+oops               [<ffffffffa03640f3>] radeon_driver_load_kms+0xa3/0x250 [radeon]
+oops               [<ffffffffa01fdf1f>] drm_get_dev+0x15f/0x2c0 [drm]
+oops               [<ffffffff811bfbac>] ? sysfs_add_one+0x2c/0x130
+oops               [<ffffffffa03e7821>] radeon_pci_probe+0x15/0x269 [radeon]
+oops               [<ffffffff812d7507>] local_pci_probe+0x17/0x20
+oops               [<ffffffff812d77f9>] __pci_device_probe+0xe9/0xf0
+oops               [<ffffffff812b9b5a>] ? kobject_get+0x1a/0x30
+oops               [<ffffffff813842e9>] ? get_device+0x19/0x20
+oops               [<ffffffff812d889a>] pci_device_probe+0x3a/0x60
+oops               [<ffffffff813886a8>] really_probe+0x68/0x190
+oops               [<ffffffff81388815>] driver_probe_device+0x45/0x70
+oops               [<ffffffff813888db>] __driver_attach+0x9b/0xa0
+oops               [<ffffffff81388840>] ? __driver_attach+0x0/0xa0
+oops               [<ffffffff81387ae8>] bus_for_each_dev+0x68/0x90
+oops               [<ffffffff8138851e>] driver_attach+0x1e/0x20
+oops               [<ffffffff81387dde>] bus_add_driver+0xde/0x280
+oops               [<ffffffff81388c20>] driver_register+0x80/0x150
+oops               [<ffffffff812d8b26>] __pci_register_driver+0x56/0xd0
+oops               [<ffffffffa01f7b71>] drm_init+0x111/0x120 [drm]
+oops               [<ffffffff8137947a>] ? vga_switcheroo_register_handler+0x3a/0x60
+oops               [<ffffffffa0228000>] ? radeon_init+0x0/0xc6 [radeon]
+oops               [<ffffffffa02280c4>] radeon_init+0xc4/0xc6 [radeon]
+oops               [<ffffffff8100204c>] do_one_initcall+0x3c/0x1a0
+oops               [<ffffffff8109bdcb>] sys_init_module+0xbb/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 00 41 8b bc 24 e4 09 00 00 85 ff 0f 8e ce 03 00 00 41 8b 84 24 d4 09 00 00 89 c2 83 c0 01 48 c1 e2 02 49 03 94 24 c8 09 00 00 <c7> 02 00 44 05 c0 41 8b 94 24 e4 09 00 00 41 23 84 24 f4 09 00 
+oops              RIP  [<ffffffffa03e0f7c>] evergreen_cp_start+0x4c/0x570 [radeon]
+oops               RSP <ffff880145bcbb48>
+oops              CR2: ffffc90422101ffc
+oops            
+oops            Found OOPS (27):
+oops              BUG: unable to handle kernel NULL pointer dereference at (null)
+oops              IP: [<(null)>] (null)
+oops              *pde = 00000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/kernel/uevent_seqnum
+oops              Modules linked in: joydev snd_hda_codec_intelhdmi snd_hda_codec_realtek btusb bluetooth tpm_infineon arc4 snd_hda_intel snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_rawmidi i915 iwlagn snd_seq_midi_event drm_kms_helper snd_seq drm snd_timer uvcvideo iwlcore snd_seq_device videodev v4l1_compat mac80211 tpm_tis tpm psmouse tpm_bios serio_raw snd toshiba_bluetooth toshiba_acpi intel_agp agpgart cfg80211 i2c_algo_bit soundcore intel_ips snd_page_alloc video output lp parport ahci sdhci_pci sdhci led_class libahci e1000e
+oops              
+oops              Pid: 624, comm: ips-adjust Not tainted 2.6.35-25-generic #44-Ubuntu Portable PC/TECRA R700
+oops              EIP: 0060:[<00000000>] EFLAGS: 00010202 CPU: 2
+oops              EIP is at 0x0
+oops              EAX: 00000292 EBX: f5ae5b00 ECX: 00002328 EDX: 00000292
+oops              ESI: f5ae5b2c EDI: 00000000 EBP: f5a61fbc ESP: f5a61f78
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process ips-adjust (pid: 624, ti=f5a60000 task=f51d8000 task.ti=f5a60000)
+oops              Stack:
+oops               f84eab93 c08c4700 c08c4700 f70a9960 00000001 c08c4700 c08c4700 f5a61fac
+oops              <0> 0000005a f6a3e200 008c4700 0000058f f51d005a 00000000 f5ae7dec f5ae5b00
+oops              <0> f84ea900 f5a61fe4 c0165ad4 00000000 00000000 00000000 f5a61fd0 f5a61fd0
+oops              Call Trace:
+oops               [<f84eab93>] ? ips_adjust+0x293/0x400 [intel_ips]
+oops               [<f84ea900>] ? ips_adjust+0x0/0x400 [intel_ips]
+oops               [<c0165ad4>] ? kthread+0x74/0x80
+oops               [<c0165a60>] ? kthread+0x0/0x80
+oops               [<c010363e>] ? kernel_thread_helper+0x6/0x10
+oops              Code:  Bad EIP value.
+oops              EIP: [<00000000>] 0x0 SS:ESP 0068:f5a61f78
+oops              CR2: 0000000000000000
+oops            
+oops            Found OOPS (28):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000018e
+oops              IP: [<c12aafb5>] fb_release+0x25/0x60
+oops              *pde = 00000000 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/vtconsole/vtcon1/uevent
+oops              Modules linked in: parport_pc ppdev snd_hda_codec_realtek snd_hda_intel snd_hda_codec snd_hwdep arc4 snd_pcm ath5k snd_seq_midi snd_rawmidi ath i915 snd_seq_midi_event mac80211 snd_seq joydev snd_timer snd_seq_device drm_kms_helper uvcvideo cfg80211 drm snd psmouse videodev serio_raw soundcore snd_page_alloc i2c_algo_bit eeepc_laptop video sparse_keymap lp parport usbhid hid usb_storage uas atl2
+oops              
+oops              Pid: 246, comm: plymouthd Not tainted 2.6.38-999-generic #201103011141 ASUSTeK Computer INC. 701/701
+oops              EIP: 0060:[<c12aafb5>] EFLAGS: 00210286 CPU: 0
+oops              EIP is at fb_release+0x25/0x60
+oops              EAX: 00000186 EBX: f41f1800 ECX: c12aaf90 EDX: f6df6000
+oops              ESI: f41f1808 EDI: f0a64e40 EBP: f6df7f40 ESP: f6df7f38
+oops               DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+oops              Process plymouthd (pid: 246, ti=f6df6000 task=f6e325e0 task.ti=f6df6000)
+oops              Stack:
+oops               f3e9e880 00000008 f6df7f74 c1127c39 00000001 00000000 00000000 f3e9e880
+oops               f41966c0 f43e83f0 f0a64e48 f43e83f0 f0a64e40 f6e03100 00000000 f6df7f7c
+oops               c1127d7e f6df7f94 c112467c 0012d000 f6e03140 f6e03100 0000000c f6df7fac
+oops              Call Trace:
+oops               [<c1127c39>] __fput+0x99/0x1c0
+oops               [<c1127d7e>] fput+0x1e/0x30
+oops               [<c112467c>] filp_close+0x4c/0x80
+oops               [<c112586e>] sys_close+0x6e/0xc0
+oops               [<c1002e1f>] sysenter_do_call+0x12/0x28
+oops               [<c1500000>] ? squash_the_stupid_serial_number+0xc0/0xe0
+oops              Code: b4 26 00 00 00 00 55 89 e5 83 ec 08 89 1c 24 89 74 24 04 3e 8d 74 26 00 8b 5a 74 8d 73 08 89 f0 e8 11 f9 25 00 8b 83 0c 03 00 00 <8b> 48 08 85 c9 74 0f ba 01 00 00 00 89 d8 ff d1 8b 83 0c 03 00 
+oops              EIP: [<c12aafb5>] fb_release+0x25/0x60 SS:ESP 0068:f6df7f38
+oops              CR2: 000000000000018e
+oops            
+oops            Found OOPS (29):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/pcmcia/initstate
+oops              CPU 1 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P+) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1089, comm: modprobe Tainted: P            2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff8801194a3d80  EFLAGS: 00010246
+oops              RAX: ffffffffa0067698 RBX: ffffffff817d6acc RCX: 000000000000000b
+oops              RDX: ffffffffa0c8d858 RSI: ffffc900110f526a RDI: ffffffff817d6acd
+oops              RBP: ffff8801194a3d88 R08: ffffffffa0067520 R09: ffffc900110f5948
+oops              R10: ffffc900110f5260 R11: 000000000000000c R12: ffffc900110f53c8
+oops              R13: 0000000000000000 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007f72c73de700(0000) GS:ffff880001e40000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: ffffffffa0c8d860 CR3: 00000001187f3000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1089, threadinfo ffff8801194a2000, task ffff880118cfc4a0)
+oops              Stack:
+oops               0000000000000000 ffff8801194a3df8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa0067520 ffffc900110f1000 ffffc900110f5348 ffffc900110f5260
+oops              <0> ffffc900110f5948 ffff8801194a3df8 ffffffffa0067520 ffffc900110f1000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff811533e2>] ? vfs_write+0x132/0x1a0
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff8801194a3d80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (30):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#2] SMP 
+oops              last sysfs file: /sys/module/snd_hda_codec/initstate
+oops              CPU 3 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P+) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1125, comm: modprobe Tainted: P      D     2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff88011bb7dd80  EFLAGS: 00010246
+oops              RAX: ffffffffa015d3b8 RBX: ffffffff817d6acc RCX: 000000000000000b
+oops              RDX: ffffffffa0c8d858 RSI: ffffc9001113804a RDI: ffffffff817d6acd
+oops              RBP: ffff88011bb7dd88 R08: ffffffffa015d240 R09: ffffc900111387b8
+oops              R10: ffffc90011138040 R11: 000000000000000c R12: ffffc900111381b8
+oops              R13: 0000000000000000 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007fa52f1e1700(0000) GS:ffff880001ec0000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: ffffffffa0c8d860 CR3: 0000000119c91000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1125, threadinfo ffff88011bb7c000, task ffff880117c496e0)
+oops              Stack:
+oops               0000000000000000 ffff88011bb7ddf8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa015d240 ffffc90011134000 ffffc90011138138 ffffc90011138040
+oops              <0> ffffc900111387b8 ffff88011bb7ddf8 ffffffffa015d240 ffffc90011134000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff88011bb7dd80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (31):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#3] SMP 
+oops              last sysfs file: /sys/module/snd_hda_intel/initstate
+oops              CPU 3 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P+) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1129, comm: modprobe Tainted: P      D     2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff88011ac0dd80  EFLAGS: 00010246
+oops              RAX: ffffffffa0c623b8 RBX: ffffffff817d6acc RCX: 000000000000000b
+oops              RDX: ffffffffa0c8d858 RSI: ffffc9001114204a RDI: ffffffff817d6acd
+oops              RBP: ffff88011ac0dd88 R08: ffffffffa0c62240 R09: ffffc900111427b8
+oops              R10: ffffc90011142040 R11: 000000000000000c R12: ffffc900111421b8
+oops              R13: 0000000000000000 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007f532b66d700(0000) GS:ffff880001ec0000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: ffffffffa0c8d860 CR3: 000000011b29c000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1129, threadinfo ffff88011ac0c000, task ffff880117c4c4a0)
+oops              Stack:
+oops               0000000000000000 ffff88011ac0ddf8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa0c62240 ffffc9001113e000 ffffc90011142138 ffffc90011142040
+oops              <0> ffffc900111427b8 ffff88011ac0ddf8 ffffffffa0c62240 ffffc9001113e000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff88011ac0dd80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (32):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#4] SMP 
+oops              last sysfs file: /sys/module/snd_hda_codec/initstate
+oops              CPU 3 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P+) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1140, comm: modprobe Tainted: P      D     2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff880127ea7d80  EFLAGS: 00010246
+oops              RAX: ffffffffa0c813b8 RBX: ffffffff817d6acc RCX: 000000000000000b
+oops              RDX: ffffffffa0c8d858 RSI: ffffc9001114f04a RDI: ffffffff817d6acd
+oops              RBP: ffff880127ea7d88 R08: ffffffffa0c81240 R09: ffffc9001114f7b8
+oops              R10: ffffc9001114f040 R11: 000000000000000c R12: ffffc9001114f1b8
+oops              R13: 0000000000000000 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007f2de6864700(0000) GS:ffff880001ec0000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffffffa0c8d860 CR3: 000000011ba76000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1140, threadinfo ffff880127ea6000, task ffff880117c4db80)
+oops              Stack:
+oops               0000000000000000 ffff880127ea7df8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa0c81240 ffffc9001114b000 ffffc9001114f138 ffffc9001114f040
+oops              <0> ffffc9001114f7b8 ffff880127ea7df8 ffffffffa0c81240 ffffc9001114b000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff880127ea7d80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (33):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#5] SMP 
+oops              last sysfs file: /sys/module/snd_hda_codec/initstate
+oops              CPU 3 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel(+) snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P+) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1144, comm: modprobe Tainted: P      D     2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff88011976dd80  EFLAGS: 00010246
+oops              RAX: ffffffffa0cee3b8 RBX: ffffffff817d6acc RCX: 000000000000000b
+oops              RDX: ffffffffa0c8d858 RSI: ffffc9001115904a RDI: ffffffff817d6acd
+oops              RBP: ffff88011976dd88 R08: ffffffffa0cee240 R09: ffffc900111597b8
+oops              R10: ffffc90011159040 R11: 000000000000000c R12: ffffc900111591b8
+oops              R13: 0000000000000000 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007f0d3b909700(0000) GS:ffff880001ec0000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffffffa0c8d860 CR3: 000000011acb9000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1144, threadinfo ffff88011976c000, task ffff880117c48000)
+oops              Stack:
+oops               0000000000000000 ffff88011976ddf8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa0cee240 ffffc90011155000 ffffc90011159138 ffffc90011159040
+oops              <0> ffffc900111597b8 ffff88011976ddf8 ffffffffa0cee240 ffffc90011155000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff88011976dd80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (34):
+oops              BUG: unable to handle kernel paging request at ffffffffa0c8d860
+oops              IP: [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              PGD 1a2c067 PUD 1a30063 PMD 1187c3067 PTE 0
+oops              Oops: 0002 [#6] SMP 
+oops              last sysfs file: /sys/bus/acpi/drivers/NVIDIA ACPI Video Driver/uevent
+oops              CPU 0 
+oops              Modules linked in: btusb tpm_infineon bluetooth snd_hda_codec_idt arc4 pcmcia iwlagn snd_hda_intel snd_hda_codec snd_hwdep snd_pcm iwlcore snd_seq_midi snd_rawmidi snd_seq_midi_event snd_seq nvidia(P) ppdev joydev mac80211 hp_wmi r852 sm_common snd_timer cfg80211 nand nand_ids nand_ecc video snd_seq_device tpm_tis yenta_socket tpm mtd output parport_pc tpm_bios pcmcia_rsrc pcmcia_core hp_accel lis3lv02d input_polldev snd intel_ips psmouse serio_raw xhci_hcd intel_agp soundcore snd_page_alloc lp parport usbhid hid firewire_ohci sdhci_pci e1000e firewire_core sdhci led_class crc_itu_t ahci libahci
+oops              
+oops              Pid: 1601, comm: modprobe Tainted: P      D     2.6.35-28-generic #50-Ubuntu 1521/HP EliteBook 8540w
+oops              RIP: 0010:[<ffffffff812b7eee>]  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops              RSP: 0018:ffff880116f57d80  EFLAGS: 00010a02
+oops              RAX: ffffffffa0b7d298 RBX: ffffffff817d6acc RCX: 0000000000000000
+oops              RDX: ffffffffa0c8d858 RSI: ffffc900121358f0 RDI: ffffffff817d6ad8
+oops              RBP: ffff880116f57d88 R08: ffffffffa0b7d120 R09: ffffc90012135e88
+oops              R10: ffffc90012135828 R11: 000000000000000c R12: ffffc90012135ac8
+oops              R13: ffffc90012135d48 R14: ffffffff817a67b7 R15: 0000000000000006
+oops              FS:  00007f53be4b8700(0000) GS:ffff880001e00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: ffffffffa0c8d860 CR3: 000000011794d000 CR4: 00000000000006f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 1601, threadinfo ffff880116f56000, task ffff880116f3db80)
+oops              Stack:
+oops               ffffc90012135e08 ffff880116f57df8 ffffffff8103273f ffffffff812c3970
+oops              <0> ffffffffa0b7d120 ffffc900120f9000 ffffc90012135a48 ffffc90012135828
+oops              <0> ffffc900121367c8 ffff880116f57df8 ffffffffa0b7d120 ffffc900120f9000
+oops              Call Trace:
+oops               [<ffffffff8103273f>] module_finalize+0x11f/0x160
+oops               [<ffffffff812c3970>] ? generic_swap+0x0/0x30
+oops               [<ffffffff8109bb55>] load_module+0xc65/0x1140
+oops               [<ffffffff8109c092>] sys_init_module+0x62/0x200
+oops               [<ffffffff8100a0f2>] system_call_fastpath+0x16/0x1b
+oops              Code: 89 d9 49 8d 34 32 f3 a6 74 43 83 c0 01 49 83 c1 40 39 d0 72 e4 eb 06 90 90 90 90 90 90 48 8b 15 09 2d 7a 00 49 8d 80 78 01 00 00 <48> 89 42 08 49 89 90 78 01 00 00 49 c7 80 80 01 00 00 f0 ab a5 
+oops              RIP  [<ffffffff812b7eee>] module_bug_finalize+0x7e/0xd0
+oops               RSP <ffff880116f57d80>
+oops              CR2: ffffffffa0c8d860
+oops            
+oops            Found OOPS (35):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000065
+oops              IP: [<ffffffffa0111689>] ReadVBIOSTablData+0x29/0x410 [xgifb]
+oops              PGD 20b5aa067 PUD 20b5a9067 PMD 0 
+oops              Oops: 0000 [#1] SMP 
+oops              last sysfs file: /sys/devices/virtual/block/loop4/removable
+oops              CPU 0 
+oops              Modules linked in: xgifb(C+) intel_rng(-) hed i3200_edac edac_core lp parport usb_storage tg3 btrfs zlib_deflate libcrc32c
+oops              
+oops              Pid: 414, comm: modprobe Tainted: G         C  2.6.38-8-server #42-Ubuntu ASUS RS100-E5/PI2/P5BV-M/RS100-E5
+oops              RIP: 0010:[<ffffffffa0111689>]  [<ffffffffa0111689>] ReadVBIOSTablData+0x29/0x410 [xgifb]
+oops              RSP: 0018:ffff88020c81f8c8  EFLAGS: 00010246
+oops              RAX: 0000000000000000 RBX: ffffffffa012eb80 RCX: 000000000003ffff
+oops              RDX: 0000000000000000 RSI: ffff88020c81f8d8 RDI: 0000000000000031
+oops              RBP: ffff88020c81f8c8 R08: 0000000000000000 R09: 000000000000c0c3
+oops              R10: 0000000000000000 R11: 0000000000000003 R12: 00000000fffffffb
+oops              R13: ffff88020e9b6090 R14: ffff88020e9b6200 R15: 000000000040506a
+oops              FS:  00007fddc20b9720(0000) GS:ffff8800dfc00000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+oops              CR2: 0000000000000065 CR3: 000000020b5a0000 CR4: 00000000000406f0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 414, threadinfo ffff88020c81e000, task ffff88020cde96e0)
+oops              Stack:
+oops               ffff88020c81fca8 ffffffffa01132da ffff88021fffcc00 000000000000ec44
+oops               000000000000ec54 000000000000ec40 000000000000ec4e 000000000000ec42
+oops               ffff880200000041 000000000000ec4a 000000000000ec46 000000000000ec47
+oops              Call Trace:
+oops               [<ffffffffa01132da>] XGIInitNew+0x1ea/0xaa0 [xgifb]
+oops               [<ffffffff81110000>] ? build_zonelists+0x1f0/0x290
+oops               [<ffffffff812e1659>] ? put_dec+0x59/0x60
+oops               [<ffffffff812e40ae>] ? vsnprintf+0x35e/0x620
+oops               [<ffffffffa012394a>] xgifb_probe+0x716/0x1051 [xgifb]
+oops               [<ffffffff812ff26f>] local_pci_probe+0x5f/0xd0
+oops               [<ffffffff81300b69>] pci_device_probe+0x129/0x130
+oops               [<ffffffff813bab9a>] ? driver_sysfs_add+0x7a/0xb0
+oops               [<ffffffff813bacc8>] really_probe+0x68/0x190
+oops               [<ffffffff813bafd5>] driver_probe_device+0x45/0x70
+oops               [<ffffffff813bb0ab>] __driver_attach+0xab/0xb0
+oops               [<ffffffff813bb000>] ? __driver_attach+0x0/0xb0
+oops               [<ffffffff813b9e4e>] bus_for_each_dev+0x5e/0x90
+oops               [<ffffffff813bab1e>] driver_attach+0x1e/0x20
+oops               [<ffffffff813ba685>] bus_add_driver+0xc5/0x280
+oops               [<ffffffffa01494ab>] ? xgifb_init_module+0x0/0xb55 [xgifb]
+oops               [<ffffffff813bb346>] driver_register+0x76/0x140
+oops               [<ffffffffa01494ab>] ? xgifb_init_module+0x0/0xb55 [xgifb]
+oops               [<ffffffff812ff916>] __pci_register_driver+0x56/0xd0
+oops               [<ffffffffa01494ab>] ? xgifb_init_module+0x0/0xb55 [xgifb]
+oops               [<ffffffffa014952a>] xgifb_init_module+0x7f/0xb55 [xgifb]
+oops               [<ffffffff81002175>] do_one_initcall+0x45/0x190
+oops               [<ffffffff810a472b>] sys_init_module+0xfb/0x250
+oops               [<ffffffff8100bfc2>] system_call_fastpath+0x16/0x1b
+oops              Code: 00 00 55 48 89 e5 0f 1f 44 00 00 48 8b 96 f0 00 00 00 40 80 ff 31 74 0a c9 c3 0f 1f 84 00 00 00 00 00 66 c7 86 b8 00 00 00 00 00 <0f> b6 42 65 a8 01 74 e5 66 c7 86 b8 00 00 00 01 00 0f b6 8a 16 
+oops              RIP  [<ffffffffa0111689>] ReadVBIOSTablData+0x29/0x410 [xgifb]
+oops               RSP <ffff88020c81f8c8>
+oops              CR2: 0000000000000065
+oops            
+oops            Found OOPS (36):
+oops              BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
+oops              IP: [<ffffffffa01ed840>] ses_enclosure_data_process+0x1a0/0x3a0 [ses]
+oops              PGD 13361f067 PUD 133627067 PMD 0 
+oops              Oops: 0002 [#1] SMP 
+oops              last sysfs file: /sys/module/snd_pcm/initstate
+oops              CPU 4 
+oops              Modules linked in: snd_usbmidi_lib snd_hda_codec snd_seq_midi snd_rawmidi iwlcore ir_lirc_codec rc_rc6_mce mac80211 lirc_dev psmouse ir_sony_decoder hp_accel(+) snd_seq_midi_event hp_wmi ir_jvc_decoder snd_seq ir_rc6_decoder snd_hwdep jmb38x_ms snd_seq_device snd_pcm sparse_keymap lis3lv02d ene_ir ir_rc5_decoder ir_nec_decoder btusb rc_core serio_raw memstick ses(+) snd_timer
+oops              input: ST LIS3LV02DL Accelerometer as /devices/platform/lis3lv02d/input/input10
+oops               input_polldev cfg80211
+oops              Registered led device: hp::hddprotect
+oops              hp_accel: driver loaded
+oops               bluetooth uvcvideo videodev video enclosure i7core_edac snd edac_core v4l2_compat_ioctl32 soundcore lp snd_page_alloc parport usb_storage uas hid_a4tech usbhid hid ahci firewire_ohci libahci r8169 sdhci_pci firewire_core sdhci crc_itu_t
+oops              
+oops              Pid: 548, comm: modprobe Not tainted 2.6.38-8-generic #42-Ubuntu Hewlett-Packard HP Pavilion dv6 Notebook PC/3659
+oops              RIP: 0010:[<ffffffffa01ed840>]  [<ffffffffa01ed840>] ses_enclosure_data_process+0x1a0/0x3a0 [ses]
+oops              RSP: 0018:ffff8801035e9d88  EFLAGS: 00010286
+oops              RAX: ffff880101b3aeb8 RBX: 0000000000000000 RCX: 0000000000000000
+oops              RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+oops              RBP: ffff8801035e9df8 R08: 00000000000007f9 R09: ffff880137022ddc
+oops              R10: 0000000000000000 R11: ffff880101a00000 R12: ffff880134e5f442
+oops              R13: 0000000000000000 R14: ffff880134e04ea4 R15: 0000000000000237
+oops              FS:  00007fe283dec720(0000) GS:ffff8800bf500000(0000) knlGS:0000000000000000
+oops              CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+oops              CR2: 0000000000000008 CR3: 0000000106387000 CR4: 00000000000006e0
+oops              DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+oops              DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+oops              Process modprobe (pid: 548, threadinfo ffff8801035e8000, task ffff8801059b8000)
+oops              Stack:
+oops               0000000000000000 ffff880133249148 ffff002000830112 ffffffff00000000
+oops               ffff880101a00000 ffff8801050dfae0 ffff880137022dd8 000000d3000000e0
+oops               ffff8801035e9df8 ffff880102913540 ffff880133249000 ffff880101a00000
+oops              Call Trace:
+oops               [<ffffffffa01edae5>] ses_match_to_enclosure+0xa5/0x1f0 [ses]
+oops               [<ffffffffa01ee0e8>] ses_intf_add+0x4b8/0x578 [ses]
+oops               [<ffffffffa0006000>] ? ses_init+0x0/0x1000 [ses]
+oops               [<ffffffff813bb719>] class_interface_register+0xa9/0xe0
+oops               [<ffffffff813eaec6>] scsi_register_interface+0x16/0x20
+oops               [<ffffffffa0006014>] ses_init+0x14/0x1000 [ses]
+oops               [<ffffffff81002175>] do_one_initcall+0x45/0x190
+oops               [<ffffffff810a4feb>] sys_init_module+0xfb/0x250
+oops               [<ffffffff8100c002>] system_call_fastpath+0x16/0x1b
+oops              Code: 49 63 c0 41 83 c0 01 48 69 c0 78 02 00 00 49 8d 84 03 78 02 00 00 48 3d 00 f0 ff ff 77 29 4d 85 e4 74 24 41 0f b6 14 24 48 8b 30 <4c> 89 66 08 f6 c2 80 75 13 89 d0 83 e0 0f 83 f8 06 0f 84 89 00 
+oops              RIP  [<ffffffffa01ed840>] ses_enclosure_data_process+0x1a0/0x3a0 [ses]
+oops               RSP <ffff8801035e9d88>
+oops              CR2: 0000000000000008
+oops            
+oops            FAILED [CRITICAL] KernelOops: Test 1, Found 36 oopses in
+oops            kernel log.
+oops            FAILED [HIGH] KernelWarnOns: Test 1, Found 1 WARN_ON
+oops            warnings in kernel log.
+oops            
+oops            ==========================================================
+oops            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+oops            info only.
+oops            ==========================================================

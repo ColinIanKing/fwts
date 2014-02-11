@@ -1,0 +1,365 @@
+Batch tests:
+ acpiinfo        (3 tests):
+  Determine Kernel ACPI version.
+  Determine machine's ACPI version.
+  Determine AML compiler.
+ acpitables      (1 test):
+  Test ACPI tables.
+ apicedge        (1 test):
+  Legacy and PCI Interrupt Edge/Level trigger tests.
+ apicinstance    (1 test):
+  Test for single instance of APIC/MADT table.
+ aspm            (2 tests):
+  PCIe ASPM ACPI test.
+  PCIe ASPM registers test.
+ autobrightness  (2 tests):
+  Test for maximum and actual brightness.
+  Change actual brightness.
+ bios32          (1 test):
+  BIOS32 Service Directory test.
+ bios_info       (1 test):
+  Gather BIOS DMI information
+ checksum        (1 test):
+  ACPI table checksum test.
+ cpufreq         (1 test):
+  CPU P-State tests.
+ crs             (1 test):
+  Test PCI host bridge configuration using _CRS.
+ csm             (1 test):
+  UEFI Compatibility Support Module test.
+ cstates         (1 test):
+  Test all CPUs C-states.
+ dmar            (1 test):
+  DMA Remapping test.
+ dmicheck        (2 tests):
+  Find and test SMBIOS Table Entry Point.
+  Test DMI/SMBIOS tables for errors.
+ ebda            (1 test):
+  Test EBDA is reserved in E820 table.
+ fadt            (2 tests):
+  Test FADT SCI_EN bit is enabled.
+  Test FADT reset register.
+ fan             (2 tests):
+  Test fan status.
+  Load system, check CPU fan status.
+ hda_audio       (1 test):
+  HDA Audio Pin Configuration test.
+ hpet_check      (4 tests):
+  Test HPET base in kernel log.
+  Test HPET base in HPET table. 
+  Test HPET base in DSDT and/or SSDT. 
+  Test HPET configuration.
+ klog            (1 test):
+  Kernel log error check.
+ maxfreq         (1 test):
+  Maximum CPU frequency test.
+ maxreadreq      (1 test):
+  Test firmware settings MaxReadReq for PCI Express devices.
+ mcfg            (2 tests):
+  Validate MCFG table.
+  Validate MCFG PCI config space.
+ method          (155 tests):
+  Test Method Names.
+  Test _AEI.
+  Test _PIC (Inform AML of Interrupt Model).
+  Test _CID (Compatible ID).
+  Test _DDN (DOS Device Name).
+  Test _HID (Hardware ID).
+  Test _HRV (Hardware Revision Number).
+  Test _PLD (Physical Device Location).
+  Test _SUB (Subsystem ID).
+  Test _SUN (Slot User Number).
+  Test _STR (String).
+  Test _UID (Unique ID).
+  Test _CDM (Clock Domain).
+  Test _CRS (Current Resource Settings).
+  Test _DIS (Disable).
+  Test _DMA (Direct Memory Access).
+  Test _FIX (Fixed Register Resource Provider).
+  Test _GSB (Global System Interrupt Base).
+  Test _HPP (Hot Plug Parameters).
+  Test _PRS (Possible Resource Settings).
+  Test _PXM (Proximity).
+  Test _EDL (Eject Device List).
+  Test _EJD (Ejection Dependent Device).
+  Test _EJ0 (Eject).
+  Test _EJ1 (Eject).
+  Test _EJ2 (Eject).
+  Test _EJ3 (Eject).
+  Test _EJ4 (Eject).
+  Test _LCK (Lock).
+  Test _RMV (Remove).
+  Test _STA (Status).
+  Test _BDN (BIOS Dock Name).
+  Test _BBN (Base Bus Number).
+  Test _DCK (Dock).
+  Test _INI (Initialize).
+  Test _SEG (Segment).
+  Test _OFF (Set resource off).
+  Test _ON  (Set resource on).
+  Test _DSW (Device Sleep Wake).
+  Test _IRC (In Rush Current).
+  Test _PRE (Power Resources for Enumeration).
+  Test _PR0 (Power Resources for D0).
+  Test _PR1 (Power Resources for D1).
+  Test _PR2 (Power Resources for D2).
+  Test _PR3 (Power Resources for D3).
+  Test _PS0 (Power State 0).
+  Test _PS1 (Power State 1).
+  Test _PS2 (Power State 2).
+  Test _PS3 (Power State 3).
+  Test _PSC (Power State Current).
+  Test _PSE (Power State for Enumeration).
+  Test _PSW (Power State Wake).
+  Test _S1D (S1 Device State).
+  Test _S2D (S2 Device State).
+  Test _S3D (S3 Device State).
+  Test _S4D (S4 Device State).
+  Test _S0W (S0 Device Wake State).
+  Test _S1W (S1 Device Wake State).
+  Test _S2W (S2 Device Wake State).
+  Test _S3W (S3 Device Wake State).
+  Test _S4W (S4 Device Wake State).
+  Test _S0_ (S0 System State).
+  Test _S1_ (S1 System State).
+  Test _S2_ (S2 System State).
+  Test _S3_ (S3 System State).
+  Test _S4_ (S4 System State).
+  Test _S5_ (S5 System State).
+  Test _SWS (System Wake Source).
+  Test _PSS (Performance Supported States).
+  Test _CPC (Continuous Performance Control).
+  Test _CSD (C State Dependencies).
+  Test _CST (C States).
+  Test _PCT (Performance Control).
+  Test _PDL (P-State Depth Limit).
+  Test _PPC (Performance Present Capabilities).
+  Test _PPE (Polling for Platform Error).
+  Test _TDL (T-State Depth Limit).
+  Test _TPC (Throttling Present Capabilities).
+  Test _TSD (Throttling State Dependencies).
+  Test _TSS (Throttling Supported States).
+  Test _MSG (Message).
+  Test _ALC (Ambient Light Colour Chromaticity).
+  Test _ALI (Ambient Light Illuminance).
+  Test _ALT (Ambient Light Temperature).
+  Test _ALP (Ambient Light Polling). 
+  Test _LID (Lid Status).
+  Test _UPD (User Presence Detect).
+  Test _UPP (User Presence Polling).
+  Test _GCP (Get Capabilities).
+  Test _GRT (Get Real Time).
+  Test _GWS (Get Wake Status).
+  Test _STP (Set Expired Timer Wake Policy).
+  Test _STV (Set Timer Value).
+  Test _TIP (Expired Timer Wake Policy).
+  Test _TIV (Timer Values).
+  Test _SBS (Smart Battery Subsystem).
+  Test _BCT (Battery Charge Time).
+  Test _BIF (Battery Information).
+  Test _BIX (Battery Information Extended).
+  Test _BMA (Battery Measurement Averaging).
+  Test _BMC (Battery Maintenance Control).
+  Test _BMD (Battery Maintenance Data).
+  Test _BMS (Battery Measurement Sampling Time).
+  Test _BST (Battery Status).
+  Test _BTP (Battery Trip Point).
+  Test _BTM (Battery Time).
+  Test _PCL (Power Consumer List).
+  Test _PIF (Power Source Information).
+  Test _PSR (Power Source).
+  Test _GAI (Get Averaging Level).
+  Test _PMM (Power Meter Measurement).
+  Test _FIF (Fan Information).
+  Test _FSL (Fan Set Level).
+  Test _FST (Fan Status).
+  Test _ACx (Active Cooling).
+  Test _CRT (Critical Trip Point).
+  Test _DTI (Device Temperature Indication).
+  Test _HOT (Hot Temperature).
+  Test _NTT (Notification Temp Threshold).
+  Test _PSV (Passive Temp).
+  Test _RTV (Relative Temp Values).
+  Test _SCP (Set Cooling Policy).
+  Test _TC1 (Thermal Constant 1).
+  Test _TC2 (Thermal Constant 2).
+  Test _TMP (Thermal Zone Current Temp).
+  Test _TPT (Trip Point Temperature).
+  Test _TSP (Thermal Sampling Period).
+  Test _TST (Temperature Sensor Threshold).
+  Test _TZP (Thermal Zone Polling).
+  Test _PTS (Prepare to Sleep).
+  Test _TTS (Transition to State).
+  Test _S0  (System S0 State).
+  Test _S1  (System S1 State).
+  Test _S2  (System S2 State).
+  Test _S3  (System S3 State).
+  Test _S4  (System S4 State).
+  Test _S5  (System S5 State).
+  Test _WAK (System Wake).
+  Test _ADR (Return Unique ID for Device).
+  Test _BCL (Query List of Brightness Control Levels Supported).
+  Test _BCM (Set Brightness Level).
+  Test _BQC (Brightness Query Current Level).
+  Test _DCS (Return the Status of Output Device).
+  Test _DDC (Return the EDID for this Device).
+  Test _DSS (Device Set State).
+  Test _DGS (Query Graphics State).
+  Test _DOD (Enumerate All Devices Attached to Display Adapter).
+  Test _DOS (Enable/Disable Output Switching).
+  Test _GPD (Get POST Device).
+  Test _ROM (Get ROM Data).
+  Test _SPD (Set POST Device).
+  Test _VPO (Video POST Options).
+  Test _CBA (Configuration Base Address).
+  Test _IFT (IPMI Interface Type).
+  Test _SRV (IPMI Interface Revision).
+ microcode       (1 test):
+  Test for most recent microcode being loaded.
+ mpcheck         (9 tests):
+  Test MP header.
+  Test MP CPU entries.
+  Test MP Bus entries.
+  Test MP IO APIC entries.
+  Test MP IO Interrupt entries.
+  Test MP Local Interrupt entries.
+  Test MP System Address entries.
+  Test MP Bus Hierarchy entries.
+  Test MP Compatible Bus Address Space entries.
+ msr             (5 tests):
+  Test CPU generic MSRs.
+  Test CPU specific model MSRs.
+  Test all P State Ratios.
+  Test C1 and C3 autodemotion.
+  Test SMRR MSR registers.
+ mtrr            (3 tests):
+  Validate the kernel MTRR IOMEM setup.
+  Validate the MTRR setup across all processors.
+  Test for AMD MtrrFixDramModEn being cleared by the BIOS.
+ nx              (3 tests):
+  Test CPU NX capability.
+  Test all CPUs have same BIOS set NX flag.
+  Test all CPUs have same msr setting in MSR 0x1a0.
+ oops            (1 test):
+  Kernel log oops check.
+ os2gap          (1 test):
+  Test the OS/2 15Mb memory hole is absent.
+ osilinux        (1 test):
+  Disassemble DSDT to check for _OSI("Linux").
+ pcc             (1 test):
+  Processor Clocking Control (PCC) test.
+ pciirq          (1 test):
+  PCI IRQ Routing Table test.
+ pnp             (1 test):
+  PnP BIOS Support Installation structure test.
+ securebootcert  (1 test):
+  UEFI secure boot test.
+ syntaxcheck     (2 tests):
+  Disassemble and reassemble DSDT
+  Disassemble and reassemble SSDT
+ version         (4 tests):
+  Gather kernel signature.
+  Gather kernel system information.
+  Gather kernel boot command line.
+  Gather ACPI driver version.
+ virt            (1 test):
+  CPU Virtualisation Configuration test.
+ wakealarm       (4 tests):
+  Test existence of RTC with alarm interface.
+  Trigger wakealarm for 1 seconds in the future.
+  Test if wakealarm is fired.
+  Multiple wakealarm firing tests.
+ wmi             (1 test):
+  Windows Management Instrumentation test.
+
+Interactive tests:
+ ac_adapter      (3 tests):
+  Test ACPI ac_adapter state.
+  Test ac_adapter initial on-line state.
+  Test ac_adapter state changes.
+ battery         (1 test):
+  Battery test.
+ brightness      (3 tests):
+  Observe all brightness changes.
+  Observe min, max brightness changes.
+  Test brightness hotkeys.
+ hotkey          (1 test):
+  Hotkey keypress checks.
+ lid             (3 tests):
+  Test LID buttons report open correctly.
+  Test LID buttons on a single open/close.
+  Test LID buttons on multiple open/close events.
+ power_button    (1 test):
+  Test press of power button and ACPI event.
+
+Power States tests:
+ s3              (1 test):
+  S3 suspend/resume test.
+ s3power         (1 test):
+  S3 power loss during suspend test.
+ s4              (1 test):
+  S4 hibernate/resume test.
+
+Utilities:
+ acpidump        (1 test):
+  Dump ACPI tables.
+ cmosdump        (1 test):
+  Dump CMOS Memory.
+ crsdump         (1 test):
+  Dump ACPI _CRS (Current Resource Settings).
+ ebdadump        (1 test):
+  Dump EBDA region.
+ memmapdump      (1 test):
+  Dump system memory map.
+ mpdump          (1 test):
+  Dump Multi Processor Data.
+ prsdump         (1 test):
+  Dump ACPI _PRS (Possible Resource Settings).
+ romdump         (1 test):
+  Dump ROM data.
+ uefidump        (1 test):
+  Dump UEFI Variables.
+ uefivarinfo     (1 test):
+  UEFI variable info query.
+
+Unsafe tests:
+ uefirtmisc      (2 tests):
+  Test for UEFI miscellaneous runtime service interfaces.
+  Stress test for UEFI miscellaneous runtime service interfaces.
+ uefirttime      (4 tests):
+  Test UEFI RT service get time interface.
+  Test UEFI RT service set time interface.
+  Test UEFI RT service get wakeup time interface.
+  Test UEFI RT service set wakeup time interface.
+ uefirtvariable  (7 tests):
+  Test UEFI RT service get variable interface.
+  Test UEFI RT service get next variable name interface.
+  Test UEFI RT service set variable interface.
+  Test UEFI RT service query variable info interface.
+  Test UEFI RT service variable interface stress test.
+  Test UEFI RT service set variable interface stress test.
+  Test UEFI RT service query variable info interface stress test.
+
+UEFI tests:
+ csm             (1 test):
+  UEFI Compatibility Support Module test.
+ securebootcert  (1 test):
+  UEFI secure boot test.
+ uefirtmisc      (2 tests):
+  Test for UEFI miscellaneous runtime service interfaces.
+  Stress test for UEFI miscellaneous runtime service interfaces.
+ uefirttime      (4 tests):
+  Test UEFI RT service get time interface.
+  Test UEFI RT service set time interface.
+  Test UEFI RT service get wakeup time interface.
+  Test UEFI RT service set wakeup time interface.
+ uefirtvariable  (7 tests):
+  Test UEFI RT service get variable interface.
+  Test UEFI RT service get next variable name interface.
+  Test UEFI RT service set variable interface.
+  Test UEFI RT service query variable info interface.
+  Test UEFI RT service variable interface stress test.
+  Test UEFI RT service set variable interface stress test.
+  Test UEFI RT service query variable info interface stress test.
+
+Total of 283 tests

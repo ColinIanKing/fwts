@@ -1,0 +1,54 @@
+klog            klog: Scan kernel log for errors and warnings.
+klog            Test 1 of 1: Kernel log error check.
+klog            FAILED [HIGH] KlogAcpiMultipleApicMadtFound: Test 1, HIGH
+klog            Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC
+klog            /MADT found, using 0
+klog            
+klog            ADVICE: The kernel has detected more than one ACPI
+klog            Multiple APIC Description Table (MADT) (these tables have
+klog            the "APIC" signature). There should only be one MADT and
+klog            the kernel will by default select the first one. However,
+klog            one can override this and select the Nth MADT using
+klog            acpi_apic_instance=N.
+klog            
+klog            Kernel message: [ 0.228089] [Firmware Bug]: ACPI: BIOS
+klog            _OSI(Linux) query ignored
+klog            
+klog            ADVICE: This is not exactly a failure mode but a warning
+klog            from the kernel. The _OSI() method has implemented a match
+klog            to the 'Linux' query in the DSDT and this is redundant
+klog            because the ACPI driver matches onto the Windows _OSI
+klog            strings by default.
+klog            
+klog            FAILED [CRITICAL] KlogPciAcpiOscRequestFailed: Test 1,
+klog            CRITICAL Kernel message: [ 0.396181] pci0000:00: ACPI _OSC
+klog            request failed (AE_NOT_FOUND), returned control mask: 0x1d
+klog            
+klog            ADVICE: The _OSC method evaluation failed, which will
+klog            result in disabling PCIe functionality, for example, the
+klog            Linux kernel has to disable Active State Power Management
+klog            (ASPM) which means that PCIe power management is not
+klog            optimally configured.
+klog            
+klog            FAILED [LOW] KlogAcpiDeprecatedProcfsInterface: Test 1,
+klog            LOW Kernel message: [ 0.534105] ACPI: Deprecated procfs I
+klog            /F for AC is loaded, please retry with
+klog            CONFIG_ACPI_PROCFS_POWER cleared
+klog            
+klog            ADVICE: Using an old procfs interface for ACPI AC Adapter,
+klog            this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This
+klog            should be disabled for kernels > 2.6.37.
+klog            
+klog            FAILED [LOW] KlogAcpiDeprecatedProcfsInterface: Test 1,
+klog            LOW Kernel message: [ 0.576306] ACPI: Deprecated procfs I
+klog            /F for battery is loaded, please retry with
+klog            CONFIG_ACPI_PROCFS_POWER cleared
+klog            
+klog            ADVICE: Using an old procfs interface for ACPI battery,
+klog            this occurs if CONFIG_ACPI_PROCFS_POWER is enabled. This
+klog            should be disabled for kernels > 2.6.37.
+klog            
+klog            Found 4 unique errors in kernel log.
+klog            
+klog            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+klog            info only.

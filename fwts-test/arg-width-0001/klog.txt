@@ -1,0 +1,8 @@
+00014 klog            Scan kernel log for errors and warnings.
+00015 klog            ---------------------------------------------------------
+00016 klog            Cannot read kernel log.
+00017 klog            Aborted test, initialisation failed.
+00018 klog            =========================================================
+00019 klog            0 passed, 0 failed, 0 warnings, 1 aborted, 0 skipped, 0
+00020 klog            info only.
+00021 klog            =========================================================

@@ -1,0 +1,435 @@
+acpidump        
+acpidump        ----
+acpidump        ----------------------------------------------------------
+acpidump          0000: 54 4d 4f 52 26 00 00 00 01 eb 50 54 4c 54 44 20  TMOR&.....PTLTD 
+acpidump          0010: 20 20 20 20 20 20 20 20 00 00 04 06 50 54 4c 20          ....PTL 
+acpidump          0020: 03 00 00 00 f3 f4                                ......
+acpidump        [0x000 0000   4]                                Signature: APIC
+acpidump        [0x000 0000   4]                                Signature: BOOT
+acpidump        [0x000 0000   4]                                Signature: DSDT
+acpidump        [0x000 0000   4]                                Signature: FACP
+acpidump        [0x000 0000   4]                                Signature: FACS
+acpidump        [0x000 0000   4]                                Signature: HPET
+acpidump        [0x000 0000   4]                                Signature: MCFG
+acpidump        [0x000 0000   4]                                Signature: RSDT
+acpidump        [0x000 0000   4]                                Signature: SLIC
+acpidump        [0x000 0000   4]                                Signature: SSDT
+acpidump        [0x000 0000   4]                                Signature: TCPA
+acpidump        [0x000 0000   4]                                Signature: TMOR
+acpidump        [0x000 0000   4]                                Signature: XSDT
+acpidump        [0x000 0000   8]                             Base Address: 0x00000000e0000000
+acpidump        [0x000 0000   8]                                Signature: RSD PTR 
+acpidump        [0x002 0002   1]                              ACPI CPU ID: 0x00
+acpidump        [0x003 0003   1]                                  APIC ID: 0x00
+acpidump        [0x004 0004   4]                                    Flags: 0x00000001
+acpidump        [0x004 0004   4]                                   Length: 0x00000026
+acpidump        [0x004 0004   4]                                   Length: 0x00000028
+acpidump        [0x004 0004   4]                                   Length: 0x00000032
+acpidump        [0x004 0004   4]                                   Length: 0x00000038
+acpidump        [0x004 0004   4]                                   Length: 0x0000003c
+acpidump        [0x004 0004   4]                                   Length: 0x00000040
+acpidump        [0x004 0004   4]                                   Length: 0x00000068
+acpidump        [0x004 0004   4]                                   Length: 0x000000a3
+acpidump        [0x004 0004   4]                                   Length: 0x000000a6
+acpidump        [0x004 0004   4]                                   Length: 0x000000ac
+acpidump        [0x004 0004   4]                                   Length: 0x000000f4
+acpidump        [0x004 0004   4]                                   Length: 0x00000176
+acpidump        [0x004 0004   4]                                   Length: 0x0000025f
+acpidump        [0x004 0004   4]                                   Length: 0x000002ad
+acpidump        [0x004 0004   4]                                   Length: 0x000004e6
+acpidump        [0x004 0004   4]                                   Length: 0x00005ff4
+acpidump        [0x008 0008   1]                                 Checksum: 0xc5
+acpidump        [0x008 0008   1]                                 Revision: 0x01
+acpidump        [0x008 0008   1]                                 Revision: 0x02
+acpidump        [0x008 0008   1]                                 Revision: 0x03
+acpidump        [0x008 0008   2]                          PCI Seg Grp Num: 0x0000
+acpidump        [0x008 0008   4]                            H/W Signature: 0x00000000
+acpidump        [0x009 0009   1]                                 Checksum: 0x0a
+acpidump        [0x009 0009   1]                                 Checksum: 0x11
+acpidump        [0x009 0009   1]                                 Checksum: 0x13
+acpidump        [0x009 0009   1]                                 Checksum: 0x30
+acpidump        [0x009 0009   1]                                 Checksum: 0x32
+acpidump        [0x009 0009   1]                                 Checksum: 0x52
+acpidump        [0x009 0009   1]                                 Checksum: 0x59
+acpidump        [0x009 0009   1]                                 Checksum: 0x6d
+acpidump        [0x009 0009   1]                                 Checksum: 0x8f
+acpidump        [0x009 0009   1]                                 Checksum: 0x99
+acpidump        [0x009 0009   1]                                 Checksum: 0xa5
+acpidump        [0x009 0009   1]                                 Checksum: 0xc8
+acpidump        [0x009 0009   1]                                 Checksum: 0xcc
+acpidump        [0x009 0009   1]                                 Checksum: 0xdf
+acpidump        [0x009 0009   1]                                 Checksum: 0xe5
+acpidump        [0x009 0009   1]                                 Checksum: 0xeb
+acpidump        [0x009 0009   1]                                 Checksum: 0xed
+acpidump        [0x009 0009   6]                                   OEM ID: LENOVO
+acpidump        [0x00a 0010   1]                              ACPI CPU ID: 0x01
+acpidump        [0x00a 0010   1]                            Start Bus Num: 0x00
+acpidump        [0x00a 0010   6]                                   OEM ID: BrtRef
+acpidump        [0x00a 0010   6]                                   OEM ID: FWTS  
+acpidump        [0x00a 0010   6]                                   OEM ID: Intel 
+acpidump        [0x00a 0010   6]                                   OEM ID: INTEL 
+acpidump        [0x00a 0010   6]                                   OEM ID: LENOVO
+acpidump        [0x00a 0010   6]                                   OEM ID:  PmRef
+acpidump        [0x00a 0010   6]                                   OEM ID: PTLTD 
+acpidump        [0x00a 0010   6]                                   OEM ID: SataRe
+acpidump        [0x00a 0010   6]                                   OEM ID: TOSCPL
+acpidump        [0x00b 0011   1]                                  APIC ID: 0x01
+acpidump        [0x00b 0011   1]                              End Bus Num: 0xff
+acpidump        [0x00c 0012   4]                                    Flags: 0x00000001
+acpidump        [0x00c 0012   4]                                 Reserved: 0x00000000
+acpidump        [0x00c 0012   4]                            Waking Vector: 0x00000000
+acpidump        [0x00f 0015   1]                                 Revision: 0x02
+acpidump        [0x010 0016   4]                              Global Lock: 0x00000000
+acpidump        [0x010 0016   4]                              RsdtAddress: 0xbf6d8794
+acpidump        [0x010 0016   8]                             OEM Table ID:         
+acpidump        [0x010 0016   8]                             OEM Table ID: 	 APIC  
+acpidump        [0x010 0016   8]                             OEM Table ID:  Cpu0Tst
+acpidump        [0x010 0016   8]                             OEM Table ID:  Cpu1Tst
+acpidump        [0x010 0016   8]                             OEM Table ID:    CpuPm
+acpidump        [0x010 0016   8]                             OEM Table ID: CRESTLNE
+acpidump        [0x010 0016   8]                             OEM Table ID:  DD01BRT
+acpidump        [0x010 0016   8]                             OEM Table ID: SataAhci
+acpidump        [0x010 0016   8]                             OEM Table ID: $SBFTBL$
+acpidump        [0x010 0016   8]                             OEM Table ID: TP-68   
+acpidump        [0x012 0018   1]                              I/O APIC ID: 0x01
+acpidump        [0x012 0018   1]                              I/O APIC ID: 0x02
+acpidump        [0x014 0020   4]                                    Flags: 0x00000000
+acpidump        [0x014 0020   4]                            I/O APIC Addr: 0xfec00000
+acpidump        [0x014 0020   4]                                   Length: 0x00000024
+acpidump        [0x018 0024   4]                          Global IRQ Base: 0x00000000
+acpidump        [0x018 0024   4]                             OEM Revision: 0x00000001
+acpidump        [0x018 0024   4]                             OEM Revision: 0x00001000
+acpidump        [0x018 0024   4]                             OEM Revision: 0x00003000
+acpidump        [0x018 0024   4]                             OEM Revision: 0x06040000
+acpidump        [0x018 0024   8]                              XsdtAddress: 0x00000000bf6d87f0
+acpidump        [0x018 0024   8]                          X Waking Vector: 0x0000000000000000
+acpidump        [0x01c 0028   4]                               Creator ID: ALAN
+acpidump        [0x01c 0028   4]                               Creator ID: FWTS
+acpidump        [0x01c 0028   4]                               Creator ID: INTL
+acpidump        [0x01c 0028   4]                               Creator ID: LOHR
+acpidump        [0x01c 0028   4]                               Creator ID:  LTP
+acpidump        [0x01c 0028   4]                               Creator ID: PTL 
+acpidump        [0x01c 0028   4]                               Creator ID: TBD 
+acpidump        [0x01e 0030   1]                              ACPI CPU ID: 0x00
+acpidump        [0x01e 0030   1]                                      Bus: 0x00
+acpidump        [0x01f 0031   1]                                   Source: 0x00
+acpidump        [0x01f 0031   2]                                    Flags: 0x0005
+acpidump        [0x020 0032   1]                        Extended Checksum: 0x39
+acpidump        [0x020 0032   1]                                  Version: 0x01
+acpidump        [0x020 0032   4]                         Creator Revision: 0x00000000
+acpidump        [0x020 0032   4]                         Creator Revision: 0x00000001
+acpidump        [0x020 0032   4]                         Creator Revision: 0x00000003
+acpidump        [0x020 0032   4]                         Creator Revision: 0x0000005a
+acpidump        [0x020 0032   4]                         Creator Revision: 0x20050624
+acpidump        [0x020 0032   4]                         Creator Revision: 0x20060608
+acpidump        [0x020 0032   4]                              Gbl Sys Int: 0x00000002
+acpidump        [0x021 0033   1]                          Local APIC LINT: 0x01
+acpidump        [0x021 0033   3]                                 Reserved: 0x00 [0]
+acpidump        [0x021 0033   3]                                 Reserved: 0x00 [1]
+acpidump        [0x021 0033   3]                                 Reserved: 0x00 [2]
+acpidump        [0x024 0036   1]                              ACPI CPU ID: 0x01
+acpidump        [0x024 0036   1]                              CMOS offset: 0x36
+acpidump        [0x024 0036   2]                                    Flags: 0x0000
+acpidump        [0x024 0036   4]                            Entry 00 APIC: 0xbff00000
+acpidump        [0x024 0036   4]                           Event Timer ID: 0x8086a201
+acpidump        [0x024 0036   4]                             FACS Address: 0xbf6e2fc0
+acpidump        [0x024 0036   4]                       Local APIC Address: 0xfee00000
+acpidump        [0x024 0036   4]                               OSPM Flags: 0x00000000
+acpidump        [0x024 0036   4]                                     Type: 0x00000000
+acpidump        [0x024 0036   8]                            Entry 00 APIC: 0x00000000bff00000
+acpidump        [0x024 0036   8]                                 Reserved: 0x0000000000000000
+acpidump        [0x025 0037   2]                                    Flags: 0x0005
+acpidump        [0x027 0039   1]                          Local APIC LINT: 0x01
+acpidump        [0x028 0040  12]                             Base Address: (Generic Address Structure)
+acpidump        [0x028 0040   1]                            addr_space_id: 0x00 (System Memory)
+acpidump        [0x028 0040   1]                                      Bus: 0x00
+acpidump        [0x028 0040   4]                             DSDT Address: 0xbf6d9b6a
+acpidump        [0x028 0040   4]                            Entry 01 APIC: 0xbff00078
+acpidump        [0x028 0040   4]                                    Flags: 0x00000001
+acpidump        [0x028 0040   4]                                   Length: 0x0000009c
+acpidump        [0x029 0041   1]                            reg_bit_width: 0x00
+acpidump        [0x029 0041   1]                                   Source: 0x09
+acpidump        [0x02a 0042   1]                                      Bus: 0x00
+acpidump        [0x02a 0042   1]                           reg_bit_offset: 0x00
+acpidump        [0x02a 0042   4]                              Gbl Sys Int: 0x00000009
+acpidump        [0x02b 0043   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x02b 0043   1]                                   Source: 0x00
+acpidump        [0x02c 0044   1]                                 Key Type: 0x06
+acpidump        [0x02c 0044   1]                                    Model: 0x00
+acpidump        [0x02c 0044   4]                            Entry 02 BOOT: 0xbff000f0
+acpidump        [0x02c 0044   4]                              Gbl Sys Int: 0x00000002
+acpidump        [0x02c 0044   8]                                  address: 0x00000000fed00000
+acpidump        [0x02c 0044   8]                            Entry 01 APIC: 0x00000000bff00078
+acpidump        [0x02d 0045   1]                               PM Profile: 0x02 (Mobile)
+acpidump        [0x02d 0045   1]                                  Version: 0x02
+acpidump        [0x02e 0046   2]                                    Flags: 0x000d
+acpidump        [0x02e 0046   2]                                 Reserved: 0x0000
+acpidump        [0x02e 0046   2]                            SCI Interrupt: 0x0009
+acpidump        [0x030 0048   2]                                    Flags: 0x0005
+acpidump        [0x030 0048   4]                                Algorithm: 0x00002400
+acpidump        [0x030 0048   4]                            Entry 03 DSDT: 0xbff00128
+acpidump        [0x030 0048   4]                         SMI Command Port: 0x000000b2
+acpidump        [0x032 0050   1]                              ACPI CPU ID: 0x00
+acpidump        [0x033 0051   2]                                    Flags: 0x0005
+acpidump        [0x034 0052   1]                        ACPI Enable Value: 0xf0
+acpidump        [0x034 0052   1]                                      Bus: 0x00
+acpidump        [0x034 0052   1]                              HPET Number: 0x00
+acpidump        [0x034 0052   4]                            Entry 04 FACP: 0xbff0612c
+acpidump        [0x034 0052   4]                                    Magic: 0x31415352
+acpidump        [0x034 0052   8]                            Entry 02 BOOT: 0x00000000bff000f0
+acpidump        [0x035 0053   1]                       ACPI Disable Value: 0xf1
+acpidump        [0x035 0053   1]                          Local APIC LINT: 0x01
+acpidump        [0x035 0053   1]                                   Source: 0x09
+acpidump        [0x035 0053   2]                         Main Counter Min: 0x0080
+acpidump        [0x036 0054   1]                           S4BIOS Command: 0x00
+acpidump        [0x036 0054   4]                              Gbl Sys Int: 0x00000009
+acpidump        [0x037 0055   1]                           Page Prot Attr: 0x00
+acpidump        [0x037 0055   1]                          P-State Control: 0x80
+acpidump        [0x038 0056   1]                              ACPI CPU ID: 0x01
+acpidump        [0x038 0056   4]                               Bit Length: 0x00000400
+acpidump        [0x038 0056   4]                            Entry 05 FACS: 0xbff06230
+acpidump        [0x038 0056   4]                         PM1A Event Block: 0x00001000
+acpidump        [0x039 0057   2]                                    Flags: 0x0005
+acpidump        [0x03a 0058   2]                                    Flags: 0x000d
+acpidump        [0x03b 0059   1]                          Local APIC LINT: 0x01
+acpidump        [0x03c 0060 128]                                  Modulus: 00 b2 3b 29 02 e2 4c 8d 
+acpidump        [0x03c 0060 128]                                  Modulus: 01 00 01 00 69 16 4a 9f 
+acpidump        [0x03c 0060 128]                                  Modulus: 29 a1 c1 f1 91 fd 48 86 
+acpidump        [0x03c 0060 128]                                  Modulus: 42 c5 d5 e9 b6 43 40 55 
+acpidump        [0x03c 0060 128]                                  Modulus: 44 c3 c9 37 99 5f 41 97 
+acpidump        [0x03c 0060 128]                                  Modulus: 65 26 72 1e cd bf 5f 2f 
+acpidump        [0x03c 0060 128]                                  Modulus: 70 f3 d1 f6 07 ec 7b 1a 
+acpidump        [0x03c 0060 128]                                  Modulus: 83 f8 5e c9 15 95 f9 fa 
+acpidump        [0x03c 0060 128]                                  Modulus: 96 d6 c0 0a 92 f5 06 b5 
+acpidump        [0x03c 0060 128]                                  Modulus: a7 6a 77 d1 b6 20 2a 76 
+acpidump        [0x03c 0060 128]                                  Modulus: b1 4b 3a fb 80 20 aa af 
+acpidump        [0x03c 0060 128]                                  Modulus: b3 84 33 20 e1 d1 79 2a 
+acpidump        [0x03c 0060 128]                                  Modulus: c2 f2 bc 41 77 9c 70 f0 
+acpidump        [0x03c 0060 128]                                  Modulus: c4 f9 3e c1 80 49 ee 6a 
+acpidump        [0x03c 0060 128]                                  Modulus: f3 1b 09 d2 63 5a dc a8 
+acpidump        [0x03c 0060 128]                                  Modulus: fd dc 05 b7 4d 67 7f 2d 
+acpidump        [0x03c 0060   4]                            Entry 06 HPET: 0xbff06280
+acpidump        [0x03c 0060   4]                         PM1B Event Block: 0x00000000
+acpidump        [0x03c 0060   8]                            Entry 03 DSDT: 0x00000000bff00128
+acpidump        [0x040 0064   4]                            Entry 07 MCFG: 0xbff062c8
+acpidump        [0x040 0064   4]                       PM1A Control Block: 0x00001004
+acpidump        [0x044 0068   4]                            Entry 08 RSDP: 0xbff06314
+acpidump        [0x044 0068   4]                       PM1B Control Block: 0x00000000
+acpidump        [0x044 0068   8]                            Entry 04 FACP: 0x00000000bff0612c
+acpidump        [0x048 0072   4]                            Entry 09 SLIC: 0xbff06348
+acpidump        [0x048 0072   4]                        PM2 Control Block: 0x00001020
+acpidump        [0x04c 0076   4]                            Entry 10 SSDT: 0xbff064ce
+acpidump        [0x04c 0076   4]                           PM Timer Block: 0x00001008
+acpidump        [0x04c 0076   8]                            Entry 05 FACS: 0x00000000bff06230
+acpidump        [0x050 0080   4]                            Entry 11 SSDT: 0xbff0678b
+acpidump        [0x050 0080   4]                               GPE0 Block: 0x00001028
+acpidump        [0x054 0084   4]                            Entry 12 SSDT: 0xbff0683e
+acpidump        [0x054 0084   4]                               GPE1 Block: 0x00000000
+acpidump        [0x054 0084   8]                            Entry 06 HPET: 0x00000000bff06280
+acpidump        [0x056 0086   2]                                 Reserved: 0x0000
+acpidump        [0x058 0088   1]                   PM1 Event Block Length: 0x04
+acpidump        [0x058 0088   4]                            Entry 13 SSDT: 0xbff06aad
+acpidump        [0x058 0088   4]                          Log Zone Length: 0x00010000
+acpidump        [0x059 0089   1]                 PM1 Control Block Length: 0x02
+acpidump        [0x05a 0090   1]                 PM2 Control Block Length: 0x01
+acpidump        [0x05b 0091   1]                    PM Timer Block Length: 0x04
+acpidump        [0x05c 0092   1]                        GPE0 Block Length: 0x08
+acpidump        [0x05c 0092   4]                            Entry 14 SSDT: 0xbff06b63
+acpidump        [0x05c 0092   8]                            Entry 07 MCFG: 0x00000000bff062c8
+acpidump        [0x05c 0092   8]                         Log Zone Address: 0x0000000000000000
+acpidump        [0x05d 0093   1]                        GPE1 Block Length: 0x00
+acpidump        [0x05f 0095   1]                             _CST Support: 0x85
+acpidump        [0x060 0096   2]                               C2 Latency: 0x0001
+acpidump        [0x060 0096   4]                            Entry 15 TCPA: 0xbff07059
+acpidump        [0x062 0098   2]                               C3 Latency: 0x0023
+acpidump        [0x064 0100   2]                           CPU Cache Size: 0x0000
+acpidump        [0x064 0100   4]                            Entry 16 TMOR: 0xbff0709b
+acpidump        [0x064 0100   8]                            Entry 08 RSDP: 0x00000000bff06314
+acpidump        [0x066 0102   2]                   CPU Cache Flush Stride: 0x0000
+acpidump        [0x068 0104   1]                        Duty Cycle Offset: 0x01
+acpidump        [0x069 0105   1]                         Duty Cycle Width: 0x03
+acpidump        [0x06a 0106   1]                      RTC Day Alarm Index: 0x0d
+acpidump        [0x06b 0107   1]                    RTC Month Alarm Index: 0x00
+acpidump        [0x06c 0108   1]                        RTC Century Index: 0x32
+acpidump        [0x06c 0108   8]                            Entry 09 SLIC: 0x00000000bff06348
+acpidump        [0x06d 0109   2]             IA-PC Boot Flags (see below): 0x0000
+acpidump        [0x070 0112   4]                        Flags (see below): 0x000000a5
+acpidump        [0x074 0116  12]                                RESET_REG: (Generic Address Structure)
+acpidump        [0x074 0116   1]                            addr_space_id: 0x00 (System Memory)
+acpidump        [0x074 0116   8]                            Entry 10 SSDT: 0x00000000bff064ce
+acpidump        [0x075 0117   1]                            reg_bit_width: 0x00
+acpidump        [0x076 0118   1]                           reg_bit_offset: 0x00
+acpidump        [0x077 0119   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x078 0120   8]                                  address: 0x0000000000000000
+acpidump        [0x07c 0124   8]                            Entry 11 SSDT: 0x00000000bff0678b
+acpidump        [0x080 0128   1]                              RESET_VALUE: 0x00
+acpidump        [0x084 0132   8]                            Entry 12 SSDT: 0x00000000bff0683e
+acpidump        [0x084 0132   8]                          X_FIRMWARE_CTRL: 0x00000000bf6e2fc0
+acpidump        [0x08c 0140   8]                            Entry 13 SSDT: 0x00000000bff06aad
+acpidump        [0x08c 0140   8]                                   X_DSDT: 0x00000000bf6d9b6a
+acpidump        [0x094 0148  12]                           X_PM1a_EVT_BLK: (Generic Address Structure)
+acpidump        [0x094 0148   1]                            addr_space_id: 0x01 (System I/O)
+acpidump        [0x094 0148   8]                            Entry 14 SSDT: 0x00000000bff06b63
+acpidump        [0x095 0149   1]                            reg_bit_width: 0x20
+acpidump        [0x096 0150   1]                           reg_bit_offset: 0x00
+acpidump        [0x097 0151   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x098 0152   8]                                  address: 0x0000000000001000
+acpidump        [0x09c 0156   8]                            Entry 15 TCPA: 0x00000000bff07059
+acpidump        [0x0a0 0160  12]                           X_PM1b_EVT_BLK: (Generic Address Structure)
+acpidump        [0x0a0 0160   1]                            addr_space_id: 0x00 (System Memory)
+acpidump        [0x0a1 0161   1]                            reg_bit_width: 0x00
+acpidump        [0x0a2 0162   1]                           reg_bit_offset: 0x00
+acpidump        [0x0a3 0163   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0a4 0164   8]                                  address: 0x0000000000000000
+acpidump        [0x0a4 0164   8]                            Entry 16 TMOR: 0x00000000bff0709b
+acpidump        [0x0ac 0172  12]                           X_PM1a_CNT_BLK: (Generic Address Structure)
+acpidump        [0x0ac 0172   1]                            addr_space_id: 0x01 (System I/O)
+acpidump        [0x0ad 0173   1]                            reg_bit_width: 0x10
+acpidump        [0x0ae 0174   1]                           reg_bit_offset: 0x00
+acpidump        [0x0af 0175   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0b0 0176   8]                                  address: 0x0000000000001004
+acpidump        [0x0b8 0184  12]                           X_PM1b_CNT_BLK: (Generic Address Structure)
+acpidump        [0x0b8 0184   1]                            addr_space_id: 0x00 (System Memory)
+acpidump        [0x0b9 0185   1]                            reg_bit_width: 0x00
+acpidump        [0x0ba 0186   1]                           reg_bit_offset: 0x00
+acpidump        [0x0bb 0187   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0bc 0188   8]                                  address: 0x0000000000000000
+acpidump        [0x0c0 0192   4]                                     Type: 0x00000001
+acpidump        [0x0c4 0196  12]                            X_PM2_CNT_BLK: (Generic Address Structure)
+acpidump        [0x0c4 0196   1]                            addr_space_id: 0x01 (System I/O)
+acpidump        [0x0c4 0196   4]                                   Length: 0x000000b6
+acpidump        [0x0c5 0197   1]                            reg_bit_width: 0x08
+acpidump        [0x0c6 0198   1]                           reg_bit_offset: 0x00
+acpidump        [0x0c7 0199   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0c8 0200   4]                                  Version: 0x00020000
+acpidump        [0x0c8 0200   8]                                  address: 0x0000000000001020
+acpidump        [0x0cc 0204   6]                                   OEM ID: LENOVO
+acpidump        [0x0d0 0208  12]                             X_PM_TMR_BLK: (Generic Address Structure)
+acpidump        [0x0d0 0208   1]                            addr_space_id: 0x01 (System I/O)
+acpidump        [0x0d1 0209   1]                            reg_bit_width: 0x20
+acpidump        [0x0d2 0210   1]                           reg_bit_offset: 0x00
+acpidump        [0x0d2 0210   8]                             OEM TABLE ID: TP-68   
+acpidump        [0x0d3 0211   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0d4 0212   8]                                  address: 0x0000000000001008
+acpidump        [0x0da 0218   8]                             Windows Flag: 57 49 4e 44 4f 57 53 20 
+acpidump        [0x0dc 0220  12]                               X_GPE0_BLK: (Generic Address Structure)
+acpidump        [0x0dc 0220   1]                            addr_space_id: 0x01 (System I/O)
+acpidump        [0x0dd 0221   1]                            reg_bit_width: 0x40
+acpidump        [0x0de 0222   1]                           reg_bit_offset: 0x00
+acpidump        [0x0df 0223   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0e0 0224   8]                                  address: 0x0000000000001028
+acpidump        [0x0e2 0226   4]                             SLIC Version: 0x00000000
+acpidump        [0x0e6 0230  16]                                 Reserved: 00 00 00 00 00 00 00 00 
+acpidump        [0x0e8 0232  12]                               X_GPE1_BLK: (Generic Address Structure)
+acpidump        [0x0e8 0232   1]                            addr_space_id: 0x00 (System Memory)
+acpidump        [0x0e9 0233   1]                            reg_bit_width: 0x00
+acpidump        [0x0ea 0234   1]                           reg_bit_offset: 0x00
+acpidump        [0x0eb 0235   1]                             access_width: 0x00 (Undefined (legacy reasons))
+acpidump        [0x0ec 0236   8]                                  address: 0x0000000000000000
+acpidump        [0x0f6 0246 128]                                Signature: 04 07 e3 2a 1e 14 f1 bd 
+acpidump        [0x0f6 0246 128]                                Signature: 1e 81 11 42 b1 35 52 57 
+acpidump        [0x0f6 0246 128]                                Signature: 4f 4c 34 cc 99 5e 62 e1 
+acpidump        [0x0f6 0246 128]                                Signature: 5c a1 d8 f9 a4 61 8a 1c 
+acpidump        [0x0f6 0246 128]                                Signature: 74 ca 11 9e dc 54 39 bf 
+acpidump        [0x0f6 0246 128]                                Signature: 7f 4c 09 ff 19 11 a9 d4 
+acpidump        [0x0f6 0246 128]                                Signature: 89 8a 95 c3 4d fc e9 56 
+acpidump        [0x0f6 0246 128]                                Signature: 8a 6e 2e c9 36 e6 7f 10 
+acpidump        [0x0f6 0246 128]                                Signature: 8a ea 14 ad d2 93 b7 6d 
+acpidump        [0x0f6 0246 128]                                Signature: 90 8a 54 be 4a 00 5c 9b 
+acpidump        [0x0f6 0246 128]                                Signature: 9b 73 ad 83 36 b8 6c a7 
+acpidump        [0x0f6 0246 128]                                Signature: a0 86 41 46 66 9d e2 f2 
+acpidump        [0x0f6 0246 128]                                Signature: a7 ee 37 47 16 fe f3 fc 
+acpidump        [0x0f6 0246 128]                                Signature: cd c7 89 84 06 16 91 0b 
+acpidump        [0x0f6 0246 128]                                Signature: e7 36 9c 33 91 27 e7 8d 
+acpidump        [0x0f6 0246 128]                                Signature: f6 6b bb 5f a5 81 e2 ff 
+acpidump                                             32 bit PM timer (V1): 0x0
+acpidump                                 8042 present on ports 60/64 (V2): 0x0
+acpidump        acpidump: Dump ACPI tables.
+acpidump                            ACPI hardware is not implemented (V5): 0x0
+acpidump                                         All CPUs support C1 (V1): 0x1
+acpidump        APIC @ bff00000 (104 bytes)
+acpidump        APIC @ bff00078 (104 bytes)
+acpidump        APIC Structure #1:
+acpidump        APIC Structure #2:
+acpidump        APIC Structure #3:
+acpidump        APIC Structure #4:
+acpidump        APIC Structure #5:
+acpidump        APIC Structure #6:
+acpidump        APIC Structure #7:
+acpidump        BOOT @ bff000f0 (40 bytes)
+acpidump                                       C2 works on MP system (V1): 0x0
+acpidump                                        CMOS RTC Not Present (V5): 0x0
+acpidump        Configuration #1:
+acpidump        Contains 0x23b bytes of AML byte code
+acpidump        Contains 0x289 bytes of AML byte code
+acpidump        Contains 0x4c2 bytes of AML byte code
+acpidump        Contains 0x5fd0 bytes of AML byte code
+acpidump        Contains 0x7f bytes of AML byte code
+acpidump        Contains 0x82 bytes of AML byte code
+acpidump                                 Control Method Power Button (V1): 0x0
+acpidump                                 Control Method Sleep Button (V1): 0x1
+acpidump                                                   Count Size Cap: 0x1
+acpidump        Differentiated System Description Table:
+acpidump                                          Docking Capability (V1): 0x0
+acpidump        DSDT @ bff00128 (24564 bytes)
+acpidump                                                          Enabled: 0x1
+acpidump        Extended System Description Table:
+acpidump        FACP @ bff0612c (244 bytes)
+acpidump        FACS @ bff06230 (64 bytes)
+acpidump        Firmware ACPI Control Structure:
+acpidump        Fixed ACPI Description Table:
+acpidump                                                     Hardware Rev: 0x01
+acpidump                                          Headless, No Video (V3): 0x0
+acpidump        HPET @ bff06280 (56 bytes)
+acpidump        IA-PC High Precision Event Timer Table:
+acpidump         Interrupt Source Override:
+acpidump         I/O APIC:
+acpidump                                                  IRQ Routing Cap: 0x1
+acpidump                                    Legacy Devices Supported (V2): 0x0
+acpidump         Local APIC NMI:
+acpidump        MCFG @ bff062c8 (60 bytes)
+acpidump        Microsoft Software License Table:
+acpidump                                           MSI Not Supported (V4): 0x0
+acpidump        Multiple APIC Description Table:
+acpidump                                                  Num Comparitors: 0x02
+acpidump                                                         OEM Attr: 0x0
+acpidump                                                  Page Protection: 0x0
+acpidump                                                      PCAT_COMPAT: 0x1
+acpidump                                     PCIe ASPM Not supported (V4): 0x0
+acpidump        PCI Express Memory Mapped Config Space Base Address Table:
+acpidump                                  PCI_EXP_WAK bits supported (V4): 0x0
+acpidump                                                    PCI Vendor ID: 0x8086
+acpidump         Processor Local APIC:
+acpidump                                     Remote power on capable (V4): 0x0
+acpidump                                                         Reserved: 0x0
+acpidump                                                         RESERVED: 0x000
+acpidump                                    Reset Register Supported (V2): 0x0
+acpidump        Root System Description Pointer:
+acpidump        Root System Description Table:
+acpidump        RSDP @ bff06314 (36 bytes)
+acpidump        RSDT @ bff070d1 (104 bytes)
+acpidump                                 RTC can wake system from S4 (V1): 0x1
+acpidump                                 RTC_STS Valid after S4 wake (V4): 0x0
+acpidump                             RTC wake not in fixed reg space (V1): 0x0
+acpidump                S0 power savings are equal or better than S3 (V5): 0x0
+acpidump                                                 Sealed Case (V3): 0x0
+acpidump        Secondary System Description Table:
+acpidump        Simple Boot Flag Table:
+acpidump        SLIC @ bff06348 (374 bytes)
+acpidump        SSDT @ bff064ce (685 bytes)
+acpidump        SSDT @ bff0678b (163 bytes)
+acpidump        SSDT @ bff0683e (607 bytes)
+acpidump        SSDT @ bff06aad (166 bytes)
+acpidump        SSDT @ bff06b63 (1254 bytes)
+acpidump        TCPA @ bff07059 (50 bytes)
+acpidump        Test 1 of 1: Dump ACPI tables.
+acpidump        TMOR @ bff0709b (38 bytes)
+acpidump        Trusted Computing Platform Alliance Capabilities Table:
+acpidump                                      Use APIC Cluster Model (V4): 0x0
+acpidump                                Use APIC Physical Dest. Mode (V4): 0x0
+acpidump                            Use native instr. after SLP_TYPx (V3): 0x0
+acpidump                                           Use patform clock (V4): 0x0
+acpidump                                             VGA Not Present (V4): 0x0
+acpidump                                   WBINVD flushes all caches (V1): 0x0
+acpidump                                          WBINVD instruction (V1): 0x1
+acpidump        XSDT @ bff07149 (172 bytes)

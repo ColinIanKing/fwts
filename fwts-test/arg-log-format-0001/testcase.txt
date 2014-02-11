@@ -1,0 +1,1 @@
+Test fwts --log-format options

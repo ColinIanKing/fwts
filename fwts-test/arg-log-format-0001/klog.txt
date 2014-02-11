@@ -1,0 +1,18 @@
+[ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
+[ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: A valid RSDP was not found (20090903/tbxfroot-219)
+[ 0.000000] ACPI Warning: 32/64 FACS address mismatch in FADT - two FACS tables! (20090903/tbfadt-369)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - DEF2DF40/00000000DEF30D40, using 32 (20090903/tbfadt-486)
+[ 0.000000] ACPI Warning: 32/64X length mismatch in Gpe1Block: 0/32 20090521 tbfadt-527
+[ 0.000000] ACPI Warning: BIOS XSDT has NULL entry, using RSDT (20110112/tbutils-663)
+[ 0.000000] ACPI Warning: Invalid length for Pm1aControlBlock: 32, using default 16 (20090903/tbfadt-607)
+[ 0.000000] ACPI Warning: Optional field Gpe1Block has zero address or length: 000000000000102C/0 20090521 tbfadt-558
+[ 0.000000] ACPI Warning: Optional field Pm2ControlBlock has zero address or length: 0000000000000000/1 20090521 tbfadt-558
+[ 0.000000] ACPI Warning (tbfadt-0460): Optional field "Gpe1Block" has zero address or length: 000000000000102C/0 [20080926]
+[ 0.000000] mtrr: your BIOS has configured an incorrect mask, fixing it.
+[ 0.000000] WARNING: BIOS bug: CPU MTRRs don't cover all of memory, losing 1408MB of RAM.
+[ 0.022719] ACPI Error: Found unknown opcode 0xFD at AML address f7ffe14c offset 0xE8, ignoring (20110112/psloop-141)
+[ 0.025463] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x00C3 (20110112/psloop-526)
+[ 0.034090] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ee025630), AE_ALREADY_EXISTS (20110112/psparse-536)
+[ 0.040119] [Firmware Bug]: the BIOS has corrupted hw-PMU resources (MSR 186 is 400000)
+[ 0.042222] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x2366 (20100121/psloop-526)

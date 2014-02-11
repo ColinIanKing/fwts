@@ -1,0 +1,37 @@
+wmi             wmi: Extract and analyse Windows Management
+wmi             Instrumentation (WMI).
+wmi             ----------------------------------------------------------
+wmi             Test 1 of 1: Windows Management Instrumentation test.
+wmi             
+wmi             \_SB_.ATKD._WDG (1 of 2)
+wmi               GUID: 97845ED0-4E6D-11DE-8A39-0800200C9A66
+wmi               WMI Method:
+wmi                 Flags          : 0x02 (Method)
+wmi                 Object ID      : NB
+wmi                 Instance       : 0x01
+wmi                 Driver         : eeepc-wmi (Asus)
+wmi             PASSED: Test 1, 97845ED0-4E6D-11DE-8A39-0800200C9A66 has
+wmi             associated method \_SB_.ATKD.WMNB
+wmi             
+wmi             \_SB_.ATKD._WDG (2 of 2)
+wmi               GUID: 0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C
+wmi               WMI Event:
+wmi                 Flags          : 0x08 (Event)
+wmi                 Notification ID: 0xff
+wmi                 Reserved       : 0x00
+wmi                 Instance       : 0x01
+wmi             FAILED [MEDIUM] WMIUnknownGUID: Test 1, GUID
+wmi             0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C is unknown to the
+wmi             kernel, a driver may need to be implemented for this GUID.
+wmi             A WMI driver probably needs to be written for this WMI
+wmi             event. It can checked for using:
+wmi             wmi_has_guid("0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C"). One
+wmi             can install a notify handler using
+wmi             wmi_install_notify_handler("0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C"
+wmi             , handler, NULL). http://lwn.net/Articles/391230 describes
+wmi             how to write an appropriate driver.
+wmi             
+wmi             ==========================================================
+wmi             1 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+wmi             info only.
+wmi             ==========================================================

@@ -1,0 +1,1 @@
+Test klog against known common failure patterns (was the dmesg_common test)

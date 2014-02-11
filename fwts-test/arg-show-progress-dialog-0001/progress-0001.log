@@ -1,0 +1,769 @@
+Running 3 tests, results appended to results.log
+XXX
+0
+So far: 0 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for Oopses.
+
+Running test #1: 
+XXX
+XXX
+0
+So far: 0 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for Oopses.
+
+Running test #1: Kernel log oops check.
+XXX
+XXX
+33
+So far: 0 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for Oopses.
+
+Running test #1: Kernel log oops check.
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: 
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+34
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+34
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+34
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+35
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+35
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+36
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+36
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+36
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+37
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+37
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+38
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+38
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+38
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+39
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+39
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+39
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+40
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+40
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+41
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+41
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+41
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+42
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+42
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+44
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+44
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+45
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+45
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+45
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+46
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+46
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+47
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+47
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+47
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+48
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+48
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+33
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+34
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+34
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+35
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+35
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+36
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+36
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+37
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+37
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+37
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+38
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+38
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+39
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+39
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+40
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+40
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+41
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+41
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+42
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+42
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+43
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+44
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+44
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+45
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+45
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+46
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+46
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+47
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+47
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+48
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+48
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+49
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+66
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+66
+So far: 2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Scan kernel log for errors and warnings.
+
+Running test #2: Kernel log error check.
+XXX
+XXX
+66
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: 
+XXX
+XXX
+66
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel signature.
+XXX
+XXX
+75
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel signature.
+XXX
+XXX
+75
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel system information.
+XXX
+XXX
+83
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel system information.
+XXX
+XXX
+83
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel boot command line.
+XXX
+XXX
+91
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather kernel boot command line.
+XXX
+XXX
+91
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather ACPI driver version.
+XXX
+XXX
+100
+So far: 2 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0 info only
+
+Gather kernel system information.
+
+Running test #3: Gather ACPI driver version.
+XXX

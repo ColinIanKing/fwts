@@ -1,0 +1,24 @@
+summary         
+summary         0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0 info only.
+summary         
+summary         Test Failure Summary
+summary         ==========================================================================================================================================================================================================================================================================================================================================================================================
+summary         
+summary         Critical failures: 1
+summary          oops: Found 36 oopses in kernel log.
+summary         
+summary         High failures: 1
+summary          oops: Found 1 WARN_ON warnings in kernel log.
+summary         
+summary         Medium failures: NONE
+summary         
+summary         Low failures: NONE
+summary         
+summary         Other failures: NONE
+summary         
+summary         Test           |Pass |Fail |Abort|Warn |Skip |Info |
+summary         ---------------+-----+-----+-----+-----+-----+-----+
+summary         oops           |     |    2|     |     |     |     |
+summary         ---------------+-----+-----+-----+-----+-----+-----+
+summary         Total:         |    0|    2|    0|    0|    0|    0|
+summary         ---------------+-----+-----+-----+-----+-----+-----+

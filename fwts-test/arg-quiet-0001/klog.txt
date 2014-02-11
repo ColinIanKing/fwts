@@ -1,0 +1,10 @@
+[ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
+[ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
+[ 0.000000] ACPI Error: A valid RSDP was not found (20110112/tbxfroot-219)
+[ 0.000000] ACPI Warning: 32/64X FACS address mismatch in FADT - 0x3776BF40/0x000000003776ED40, using 32 (20100428/tbfadt-486)
+[ 30.140475] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.AC__._PSR] (Node ffff880217052420), AE_TIME
+[ 42.490181] ACPI Error: [_SB_.VDRV] Namespace lookup failure, AE_NOT_FOUND (20110112/psargs-359)
+[ 42.490202] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC0.H_EC._Q51] (Node ffff88003d9b1e60), AE_NOT_FOUND (20110112/psparse-536)
+[ 44.661543] ACPI Warning for _SB_.PCI0.GFX0.DD01._BCL: Return type mismatch - found Integer, expected Package (20090903/nspredef-1006)
+[ 50.737630] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMI: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
+[ 50.737686] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMS: Excess arguments - needs 1, found 2 (20090903/nspredef-303)

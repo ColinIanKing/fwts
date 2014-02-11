@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+TEST="Test --log-format, all field operators"
+NAME=test-0001.sh
+TMPLOG=$TMP/klog.log.$$
+TMPLOG_ORIG=$TMP/klog-0001.log.$$
+TODAY=`date +%d/%m/%y`
+
+$FWTS -w 80 --klog=klog.txt --log-format="%owner (%line) <%date> %field %level: " klog - | grep "^klog" > $TMPLOG
+#
+#  Need to adjust reference log to today's date
+#
+sed sx16\/05\/12x${TODAY}x < klog-0001.log > $TMPLOG_ORIG
+diff $TMPLOG $TMPLOG_ORIG >> $FAILURE_LOG
+ret=$?
+if [ $ret -eq 0 ]; then 
+	echo PASSED: $TEST, $NAME
+else
+	echo FAILED: $TEST, $NAME
+fi
+
+rm $TMPLOG $TMPLOG_ORIG
+exit $ret

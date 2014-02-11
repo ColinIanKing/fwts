@@ -7,9 +7,7 @@ TMPLOG=$TMP/disassemble-aml.log.$$
 HERE=`pwd`
 
 mkdir $TMPDIR
-pushd $TMPDIR >& /dev/null
-$FWTS -w 80 --dumpfile=$HERE/acpidump.log --disassemble-aml - > $TMPLOG
-popd > /dev/null
+$FWTS -w 80 --dumpfile=$HERE/acpidump.log --disassemble-aml=$TMPDIR - > $TMPLOG
 
 failed=0
 TEST="Test --disassemble-aml output to stdout"

@@ -1,7 +1,7 @@
 /*
  * Intel ACPI Component Architecture
  * AML Disassembler version 20130418-64 [May  2 2013]
- * Copyright (c) 2000 - 2013 Intel Corporation
+ * Copyright (c) 2000 - 2014 Intel Corporation
  * 
  * Disassembly of /tmp/fwts_iasl_12884_DSDT.dat, Fri May  3 09:41:56 2013
  *

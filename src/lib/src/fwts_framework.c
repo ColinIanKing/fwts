@@ -73,7 +73,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "show-tests-full", 	"",   0, "Show available tests including all minor tests." },
 	{ "utils", 		"u",  0, "Run Utility 'tests'." },
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
-	{ "disassemble-aml", 	"",   0, "Disassemble AML from DSDT and SSDT tables." },
+	{ "disassemble-aml", 	"",   2, "Disassemble AML from DSDT and SSDT tables." },
 	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
 	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses)." },
 	{ "filter-error-discard", "", 1, "Discard errors that match any of the specified labels." },
@@ -1091,7 +1091,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
 		case 29: /* --disassemble-aml */
-			fwts_iasl_disassemble_all_to_file(fw);
+			fwts_iasl_disassemble_all_to_file(fw, optarg);
 			return FWTS_COMPLETE;
 		case 30: /* --log-type */
 			if (fwts_framework_log_type_parse(fw, optarg) != FWTS_OK)

@@ -137,26 +137,34 @@ int fwts_iasl_disassemble(fwts_framework *fw,
  *  fwts_iasl_disassemble_all_to_file()
  * 	Disassemble DSDT and SSDT tables to separate files.
  */
-int fwts_iasl_disassemble_all_to_file(fwts_framework *fw)
+int fwts_iasl_disassemble_all_to_file(fwts_framework *fw,
+	const char *path)
 {
 	int i;
 	int ret;
+	char filename[PATH_MAX];
+	char pathname[PATH_MAX];
 
-	ret = fwts_iasl_disassemble_to_file(fw, "DSDT", 0, "DSDT.dsl");
+	if (path == NULL)
+		strncpy(pathname, "", sizeof(pathname));
+	else
+		snprintf(pathname, sizeof(pathname), "%s/", path);
+
+	snprintf(filename, sizeof(filename), "%sDSDT.dsl", pathname);
+
+	ret = fwts_iasl_disassemble_to_file(fw, "DSDT", 0, filename);
 	if (ret == FWTS_ERROR_NO_PRIV) {
 		fprintf(stderr, "Need to have root privilege to read ACPI tables from memory! Re-run using sudo.\n");
 		return FWTS_ERROR;
 	}
 	if (ret == FWTS_OK)
-		printf("Disassembled DSDT to DSDT.dsl\n");
+		printf("Disassembled DSDT to %s\n", filename);
 
 	for (i=0; ;i++) {
-		char filename[PATH_MAX];
-
-		snprintf(filename, sizeof(filename), "SSDT%d.dsl", i);
+		snprintf(filename, sizeof(filename), "%sSSDT%d.dsl", pathname, i);
 		if (fwts_iasl_disassemble_to_file(fw, "SSDT", i, filename) != FWTS_OK)
 			break;
-		printf("Disassembled SSDT %d to SSDT%d.dsl\n", i, i);
+		printf("Disassembled SSDT %d to %s\n", i, filename);
 	}
 
 	return FWTS_OK;

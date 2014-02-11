@@ -4,7 +4,7 @@ TEST="Test --table-path to load dumped tables produced by acpixtract"
 NAME=test-0001.sh
 TMPLOG=$TMP/acpidump.log.$$
 SORTED=$TMP/acpidump.log.sorted
-HERE=`pwd`
+HERE=$FWTSTESTDIR/arg-table-path-0001
 
 #
 # Unfortunately we can pull in the tables in different order depending
@@ -13,7 +13,7 @@ HERE=`pwd`
 # the output before we diff.
 #
 $FWTS --log-format="%line %owner " -w 80 --table-path=$HERE acpidump - | grep "^[0-9]*[ ]*acpidump" | cut -c7- | sort | uniq > $TMPLOG
-sort acpidump-0001.log > $SORTED
+sort $HERE/acpidump-0001.log > $SORTED
 diff $TMPLOG $SORTED >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 

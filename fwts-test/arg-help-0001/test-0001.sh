@@ -7,7 +7,7 @@ HERE=`pwd`
 
 stty cols 80
 $FWTS -h | grep -v "Show version" | grep -v "Usage" > $TMPLOG
-diff $TMPLOG arg-help-0001.log >> $FAILURE_LOG
+diff $TMPLOG $FWTSTESTDIR/arg-help-0001/arg-help-0001.log >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME

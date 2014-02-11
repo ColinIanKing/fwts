@@ -6,7 +6,7 @@ TMPLOG=$TMP/arg-show-tests-full.log.$$
 
 stty cols 80
 $FWTS --show-tests-full > $TMPLOG
-diff $TMPLOG arg-show-tests-full-0001.log >> $FAILURE_LOG
+diff $TMPLOG $FWTSTESTDIR/arg-show-tests-full-0001/arg-show-tests-full-0001.log >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME

@@ -10,8 +10,8 @@ TODAY=`date +%d/%m/%y`
 #
 #  Need to adjust reference log to today's date
 #
-$FWTS -w 80 --klog=klog.txt --log-format="%owner %date %%level: " klog - | grep "^klog" > $TMPLOG
-sed sx10\/10\/11x${TODAY}x < klog-0004.log > $TMPLOG_ORIG
+$FWTS -w 80 -j $FWTSTESTDIR/../data --klog=$FWTSTESTDIR/arg-log-format-0001/klog.txt --log-format="%owner %date %%level: " klog - | grep "^klog" > $TMPLOG
+sed sx10\/10\/11x${TODAY}x < $FWTSTESTDIR/arg-log-format-0001/klog-0004.log > $TMPLOG_ORIG
 diff $TMPLOG $TMPLOG_ORIG >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 

@@ -1,197 +1,197 @@
-klog            00015: klog: Scan kernel log for errors and warnings.
-klog            00016: ---------------------------------------------------------
-klog            00017: Test 1 of 1: Kernel log error check.
-klog            00018: FAILED [HIGH] KlogAcpiMultipleApicMadtFound: Test 1, HIGH
-klog            00019: Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC
-klog            00020: /MADT found, using 0
-klog            00021: 
-klog            00022: ADVICE: The kernel has detected more than one ACPI
-klog            00023: Multiple APIC Description Table (MADT) (these tables have
-klog            00024: the "APIC" signature). There should only be one MADT and
-klog            00025: the kernel will by default select the first one. However,
-klog            00026: one can override this and select the Nth MADT using
-klog            00027: acpi_apic_instance=N.
-klog            00028: 
-klog            00029: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatch: Test 1,
-klog            00030: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X
-klog            00031: address mismatch in Gpe0Block: 00008018/0000000000008028,
-klog            00032: using 32 (20090903/tbfadt-427)
-klog            00033: 
-klog            00034: ADVICE: The FADT table contains a mismatch between a 32
-klog            00035: bit pointer and a 64 bit Generic Address pointer. Because
-klog            00036: these pointers are different, it suggests either one of
-klog            00037: them is incorrect. If a non-null 32 bit pointer exists,
-klog            00038: then the kernel will opt for this in preference to the 64
-klog            00039: bit pointer even though this is not in accordance to the
-klog            00040: ACPI specification.
-klog            00041: 
-klog            00042: FAILED [CRITICAL] KlogAcpiValidRsdpNotFound: Test 1,
-klog            00043: CRITICAL Kernel message: [ 0.000000] ACPI Error: A valid
-klog            00044: RSDP was not found (20090903/tbxfroot-219)
-klog            00045: 
-klog            00046: ADVICE: An ACPI compatible system must provide an RSDP
-klog            00047: (Root System Description Pointer). This structure
-klog            00048: provides the physical address of the RSDT and XSDT. Since
-klog            00049: this could not be found, the ACPI driver has had to
-klog            00050: disable ACPI support.
-klog            00051: 
-klog            00052: FAILED [HIGH] KlogAcpiTwoFacs: Test 1, HIGH Kernel
-klog            00053: message: [ 0.000000] ACPI Warning: 32/64 FACS address
-klog            00054: mismatch in FADT - two FACS tables! (20090903/tbfadt-369)
-klog            00055: 
-klog            00056: ADVICE: The FADT table contains a mismatch between the 32
-klog            00057: bit pointer (FIRMWARE_CTRL) and 64 bit pointer
-klog            00058: (X_FIRMWARE_CTRL) pointer to the FACS table. Section
-klog            00059: 5.2.9 of version 4.0a of the ACPI specification states
-klog            00060: that X_FIRMWARE_CTRL should be zero if FIRMWARE_CTRL is
-klog            00061: defined, or FIRMWARE_CTRL should be zero if
-klog            00062: X_FIRMWARE_CTRL is zero. With two different pointers
-klog            00063: defined, the kernel has to make a choice, and opts for
-klog            00064: the 32 bit pointer. Because these pointers are different,
-klog            00065: it suggests either one of them is incorrect, or different
-klog            00066: 32 bit and 64 bit FACS tables are present in your system,
-klog            00067: which is NOT complaint with the ACPI specification. The
-klog            00068: kernel has to make a choice and opts for the 32 bit
-klog            00069: FIRMWARE_CTRL.
-klog            00070: 
-klog            00071: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatchInFadt:
-klog            00072: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning: 32
-klog            00073: /64X FACS address mismatch in FADT - DEF2DF40
-klog            00074: /00000000DEF30D40, using 32 (20090903/tbfadt-486)
-klog            00075: 
-klog            00076: ADVICE: The FADT table contains Generic Address Structure
-klog            00077: that has a mismatch between the 32 bit and 64 bit
-klog            00078: versions of an address. This should be fixed so there are
-klog            00079: no mismatches. 
-klog            00080: 
-klog            00081: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatchInFadt:
-klog            00082: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning: 32
-klog            00083: /64X length mismatch in Gpe1Block: 0/32 20090521
-klog            00084: tbfadt-527
-klog            00085: 
-klog            00086: ADVICE: The FADT table contains Generic Address Structure
-klog            00087: that has a mismatch between the 32 bit and 64 bit
-klog            00088: versions of an address. This should be fixed so there are
-klog            00089: no mismatches. 
-klog            00090: 
-klog            00091: FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
-klog            00092: message: [ 0.000000] ACPI Warning: BIOS XSDT has NULL
-klog            00093: entry, using RSDT (20110112/tbutils-663)
-klog            00094: 
-klog            00095: ADVICE: ACPI AML intepreter has found some non-conforming
-klog            00096: AML code. This should be investigated and fixed.
-klog            00097: 
-klog            00098: FAILED [HIGH] KlogAcpiFadtInvalidLength: Test 1, HIGH
-klog            00099: Kernel message: [ 0.000000] ACPI Warning: Invalid length
-klog            00100: for Pm1aControlBlock: 32, using default 16 (20090903
-klog            00101: /tbfadt-607)
-klog            00102: 
-klog            00103: ADVICE: This item in the FADT is the incorrect length.
-klog            00104: Should be corrected.
-klog            00105: 
-klog            00106: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
-klog            00107: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning:
-klog            00108: Optional field Gpe1Block has zero address or length:
-klog            00109: 000000000000102C/0 20090521 tbfadt-558
-klog            00110: 
-klog            00111: ADVICE: An ACPI table contains Generic Address Structure
-klog            00112: that has an address that is incorrectly set to zero, or a
-klog            00113: zero length. This needs to be fixed. 
-klog            00114: 
-klog            00115: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
-klog            00116: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning:
-klog            00117: Optional field Pm2ControlBlock has zero address or length
-klog            00118: : 0000000000000000/1 20090521 tbfadt-558
-klog            00119: 
-klog            00120: ADVICE: An ACPI table contains Generic Address Structure
-klog            00121: that has an address that is incorrectly set to zero, or a
-klog            00122: zero length. This needs to be fixed. 
-klog            00123: 
-klog            00124: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
-klog            00125: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning
-klog            00126: (tbfadt-0460): Optional field "Gpe1Block" has zero
-klog            00127: address or length: 000000000000102C/0 [20080926]
-klog            00128: 
-klog            00129: ADVICE: An ACPI table contains Generic Address Structure
-klog            00130: that has an address that is incorrectly set to zero, or a
-klog            00131: zero length. This needs to be fixed. 
-klog            00132: 
-klog            00133: FAILED [MEDIUM] KlogBiosMtrrIncorrectMask: Test 1, MEDIUM
-klog            00134: Kernel message: [ 0.000000] mtrr: your BIOS has
-klog            00135: configured an incorrect mask, fixing it.
-klog            00136: 
-klog            00137: ADVICE: The Memory Type Range Registers (MTRRs) which
-klog            00138: define memory caching policy are misconfigued by the
-klog            00139: BIOS. In this case, the mask is incorrectly set and the
-klog            00140: kernel has detected this and worked around the firmware
-klog            00141: bug.
-klog            00142: 
-klog            00143: FAILED [CRITICAL] KlogBiosCpuMtrrMisconfigured: Test 1,
-klog            00144: CRITICAL Kernel message: [ 0.000000] WARNING: BIOS bug:
-klog            00145: CPU MTRRs don't cover all of memory, losing 1408MB of
-klog            00146: RAM.
-klog            00147: 
-klog            00148: ADVICE: The Memory Type Range Registers (MTRRs) which
-klog            00149: define memory caching policy are misconfigued by the BIOS
-klog            00150: and don't appear to cover all available physical memory.
-klog            00151: The kernel has detected this and has reduced the amount
-klog            00152: of memory available to be safe. Either check that the
-klog            00153: BIOS memory caching options are set correctly or contact
-klog            00154: your BIOS vendor to get this fixed.
-klog            00155: 
-klog            00156: FAILED [HIGH] KlogAcpiUnknownAmlOpcode: Test 1, HIGH
-klog            00157: Kernel message: [ 0.022719] ACPI Error: Found unknown
-klog            00158: opcode 0xFD at AML address f7ffe14c offset 0xE8, ignoring
-klog            00159: (20110112/psloop-141)
-klog            00160: 
-klog            00161: ADVICE: ACPI execution run time error: The ACPI
-klog            00162: interpreter has reached an opcode that is unknown, this
-klog            00163: normally is a bug in the underlying AML code either
-klog            00164: because of badly written AML code or the compiler has
-klog            00165: produced code that is incorrect or the ACPI interpreter
-klog            00166: does not support this valid opcode. 
-klog            00167: 
-klog            00168: FAILED [CRITICAL] KlogAcpiDetectedUnsupportedOpCode: Test
-klog            00169: 1, CRITICAL Kernel message: [ 0.025463] ACPI Warning:
-klog            00170: Detected an unsupported executable opcode at module-level
-klog            00171: : [0x007B] at table offset 0x00C3 (20110112/psloop-526)
-klog            00172: 
-klog            00173: ADVICE: An illegal AML opcode has been found and is
-klog            00174: ignored. This indicates either badly compiled code or
-klog            00175: opcode corruption in the DSDT or SSDT tables or a bug in
-klog            00176: the ACPI execution engine. Recommend disassembing using
-klog            00177: iasl to find any offending code.
-klog            00178: 
-klog            00179: FAILED [HIGH] KlogAcpiObjectAlreadyExists: Test 1, HIGH
-klog            00180: Kernel message: [ 0.034090] ACPI Error: Method parse
-klog            00181: /execution failed [_SB_.PCI0._OSC] (Node ee025630),
-klog            00182: AE_ALREADY_EXISTS (20110112/psparse-536)
-klog            00183: 
-klog            00184: ADVICE: This is a bug picked up by the kernel, but as yet
-klog            00185: , the firmware test suite has no diagnostic advice for
-klog            00186: this particular problem.
-klog            00187: 
-klog            00188: FAILED [HIGH] KlogAcpiFirmwareError: Test 1, HIGH Kernel
-klog            00189: message: [ 0.040119] [Firmware Bug]: the BIOS has
-klog            00190: corrupted hw-PMU resources (MSR 186 is 400000)
-klog            00191: 
-klog            00192: ADVICE: The kernel has detected a Firmware bug in the
-klog            00193: BIOS or ACPI which needs investigating and fixing.
-klog            00194: 
-klog            00195: FAILED [CRITICAL] KlogAcpiDetectedUnsupportedOpCode: Test
-klog            00196: 1, CRITICAL Kernel message: [ 0.042222] ACPI Warning:
-klog            00197: Detected an unsupported executable opcode at module-level
-klog            00198: : [0x0070] at table offset 0x2366 (20100121/psloop-526)
-klog            00199: 
-klog            00200: ADVICE: An illegal AML opcode has been found and is
-klog            00201: ignored. This indicates either badly compiled code or
-klog            00202: opcode corruption in the DSDT or SSDT tables or a bug in
-klog            00203: the ACPI execution engine. Recommend disassembing using
-klog            00204: iasl to find any offending code.
-klog            00205: 
-klog            00206: Found 18 unique errors in kernel log.
-klog            00207: 
-klog            00208: =========================================================
-klog            00209: 0 passed, 18 failed, 0 warning, 0 aborted, 0 skipped, 0
-klog            00210: info only.
-klog            00211: =========================================================
+klog            00016: klog: Scan kernel log for errors and warnings.
+klog            00017: ---------------------------------------------------------
+klog            00018: Test 1 of 1: Kernel log error check.
+klog            00019: FAILED [HIGH] KlogAcpiMultipleApicMadtFound: Test 1, HIGH
+klog            00020: Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC
+klog            00021: /MADT found, using 0
+klog            00022: 
+klog            00023: ADVICE: The kernel has detected more than one ACPI
+klog            00024: Multiple APIC Description Table (MADT) (these tables have
+klog            00025: the "APIC" signature). There should only be one MADT and
+klog            00026: the kernel will by default select the first one. However,
+klog            00027: one can override this and select the Nth MADT using
+klog            00028: acpi_apic_instance=N.
+klog            00029: 
+klog            00030: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatch: Test 1,
+klog            00031: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X
+klog            00032: address mismatch in Gpe0Block: 00008018/0000000000008028,
+klog            00033: using 32 (20090903/tbfadt-427)
+klog            00034: 
+klog            00035: ADVICE: The FADT table contains a mismatch between a 32
+klog            00036: bit pointer and a 64 bit Generic Address pointer. Because
+klog            00037: these pointers are different, it suggests either one of
+klog            00038: them is incorrect. If a non-null 32 bit pointer exists,
+klog            00039: then the kernel will opt for this in preference to the 64
+klog            00040: bit pointer even though this is not in accordance to the
+klog            00041: ACPI specification.
+klog            00042: 
+klog            00043: FAILED [CRITICAL] KlogAcpiValidRsdpNotFound: Test 1,
+klog            00044: CRITICAL Kernel message: [ 0.000000] ACPI Error: A valid
+klog            00045: RSDP was not found (20090903/tbxfroot-219)
+klog            00046: 
+klog            00047: ADVICE: An ACPI compatible system must provide an RSDP
+klog            00048: (Root System Description Pointer). This structure
+klog            00049: provides the physical address of the RSDT and XSDT. Since
+klog            00050: this could not be found, the ACPI driver has had to
+klog            00051: disable ACPI support.
+klog            00052: 
+klog            00053: FAILED [HIGH] KlogAcpiTwoFacs: Test 1, HIGH Kernel
+klog            00054: message: [ 0.000000] ACPI Warning: 32/64 FACS address
+klog            00055: mismatch in FADT - two FACS tables! (20090903/tbfadt-369)
+klog            00056: 
+klog            00057: ADVICE: The FADT table contains a mismatch between the 32
+klog            00058: bit pointer (FIRMWARE_CTRL) and 64 bit pointer
+klog            00059: (X_FIRMWARE_CTRL) pointer to the FACS table. Section
+klog            00060: 5.2.9 of version 4.0a of the ACPI specification states
+klog            00061: that X_FIRMWARE_CTRL should be zero if FIRMWARE_CTRL is
+klog            00062: defined, or FIRMWARE_CTRL should be zero if
+klog            00063: X_FIRMWARE_CTRL is zero. With two different pointers
+klog            00064: defined, the kernel has to make a choice, and opts for
+klog            00065: the 32 bit pointer. Because these pointers are different,
+klog            00066: it suggests either one of them is incorrect, or different
+klog            00067: 32 bit and 64 bit FACS tables are present in your system,
+klog            00068: which is NOT complaint with the ACPI specification. The
+klog            00069: kernel has to make a choice and opts for the 32 bit
+klog            00070: FIRMWARE_CTRL.
+klog            00071: 
+klog            00072: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatchInFadt:
+klog            00073: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning: 32
+klog            00074: /64X FACS address mismatch in FADT - DEF2DF40
+klog            00075: /00000000DEF30D40, using 32 (20090903/tbfadt-486)
+klog            00076: 
+klog            00077: ADVICE: The FADT table contains Generic Address Structure
+klog            00078: that has a mismatch between the 32 bit and 64 bit
+klog            00079: versions of an address. This should be fixed so there are
+klog            00080: no mismatches. 
+klog            00081: 
+klog            00082: FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatchInFadt:
+klog            00083: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning: 32
+klog            00084: /64X length mismatch in Gpe1Block: 0/32 20090521
+klog            00085: tbfadt-527
+klog            00086: 
+klog            00087: ADVICE: The FADT table contains Generic Address Structure
+klog            00088: that has a mismatch between the 32 bit and 64 bit
+klog            00089: versions of an address. This should be fixed so there are
+klog            00090: no mismatches. 
+klog            00091: 
+klog            00092: FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
+klog            00093: message: [ 0.000000] ACPI Warning: BIOS XSDT has NULL
+klog            00094: entry, using RSDT (20110112/tbutils-663)
+klog            00095: 
+klog            00096: ADVICE: ACPI AML intepreter has found some non-conforming
+klog            00097: AML code. This should be investigated and fixed.
+klog            00098: 
+klog            00099: FAILED [HIGH] KlogAcpiFadtInvalidLength: Test 1, HIGH
+klog            00100: Kernel message: [ 0.000000] ACPI Warning: Invalid length
+klog            00101: for Pm1aControlBlock: 32, using default 16 (20090903
+klog            00102: /tbfadt-607)
+klog            00103: 
+klog            00104: ADVICE: This item in the FADT is the incorrect length.
+klog            00105: Should be corrected.
+klog            00106: 
+klog            00107: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
+klog            00108: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning:
+klog            00109: Optional field Gpe1Block has zero address or length:
+klog            00110: 000000000000102C/0 20090521 tbfadt-558
+klog            00111: 
+klog            00112: ADVICE: An ACPI table contains Generic Address Structure
+klog            00113: that has an address that is incorrectly set to zero, or a
+klog            00114: zero length. This needs to be fixed. 
+klog            00115: 
+klog            00116: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
+klog            00117: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning:
+klog            00118: Optional field Pm2ControlBlock has zero address or length
+klog            00119: : 0000000000000000/1 20090521 tbfadt-558
+klog            00120: 
+klog            00121: ADVICE: An ACPI table contains Generic Address Structure
+klog            00122: that has an address that is incorrectly set to zero, or a
+klog            00123: zero length. This needs to be fixed. 
+klog            00124: 
+klog            00125: FAILED [HIGH] KlogAcpiOptionalFieldZeroAddressOrLength:
+klog            00126: Test 1, HIGH Kernel message: [ 0.000000] ACPI Warning
+klog            00127: (tbfadt-0460): Optional field "Gpe1Block" has zero
+klog            00128: address or length: 000000000000102C/0 [20080926]
+klog            00129: 
+klog            00130: ADVICE: An ACPI table contains Generic Address Structure
+klog            00131: that has an address that is incorrectly set to zero, or a
+klog            00132: zero length. This needs to be fixed. 
+klog            00133: 
+klog            00134: FAILED [MEDIUM] KlogBiosMtrrIncorrectMask: Test 1, MEDIUM
+klog            00135: Kernel message: [ 0.000000] mtrr: your BIOS has
+klog            00136: configured an incorrect mask, fixing it.
+klog            00137: 
+klog            00138: ADVICE: The Memory Type Range Registers (MTRRs) which
+klog            00139: define memory caching policy are misconfigued by the
+klog            00140: BIOS. In this case, the mask is incorrectly set and the
+klog            00141: kernel has detected this and worked around the firmware
+klog            00142: bug.
+klog            00143: 
+klog            00144: FAILED [CRITICAL] KlogBiosCpuMtrrMisconfigured: Test 1,
+klog            00145: CRITICAL Kernel message: [ 0.000000] WARNING: BIOS bug:
+klog            00146: CPU MTRRs don't cover all of memory, losing 1408MB of
+klog            00147: RAM.
+klog            00148: 
+klog            00149: ADVICE: The Memory Type Range Registers (MTRRs) which
+klog            00150: define memory caching policy are misconfigued by the BIOS
+klog            00151: and don't appear to cover all available physical memory.
+klog            00152: The kernel has detected this and has reduced the amount
+klog            00153: of memory available to be safe. Either check that the
+klog            00154: BIOS memory caching options are set correctly or contact
+klog            00155: your BIOS vendor to get this fixed.
+klog            00156: 
+klog            00157: FAILED [HIGH] KlogAcpiUnknownAmlOpcode: Test 1, HIGH
+klog            00158: Kernel message: [ 0.022719] ACPI Error: Found unknown
+klog            00159: opcode 0xFD at AML address f7ffe14c offset 0xE8, ignoring
+klog            00160: (20110112/psloop-141)
+klog            00161: 
+klog            00162: ADVICE: ACPI execution run time error: The ACPI
+klog            00163: interpreter has reached an opcode that is unknown, this
+klog            00164: normally is a bug in the underlying AML code either
+klog            00165: because of badly written AML code or the compiler has
+klog            00166: produced code that is incorrect or the ACPI interpreter
+klog            00167: does not support this valid opcode. 
+klog            00168: 
+klog            00169: FAILED [CRITICAL] KlogAcpiDetectedUnsupportedOpCode: Test
+klog            00170: 1, CRITICAL Kernel message: [ 0.025463] ACPI Warning:
+klog            00171: Detected an unsupported executable opcode at module-level
+klog            00172: : [0x007B] at table offset 0x00C3 (20110112/psloop-526)
+klog            00173: 
+klog            00174: ADVICE: An illegal AML opcode has been found and is
+klog            00175: ignored. This indicates either badly compiled code or
+klog            00176: opcode corruption in the DSDT or SSDT tables or a bug in
+klog            00177: the ACPI execution engine. Recommend disassembing using
+klog            00178: iasl to find any offending code.
+klog            00179: 
+klog            00180: FAILED [HIGH] KlogAcpiObjectAlreadyExists: Test 1, HIGH
+klog            00181: Kernel message: [ 0.034090] ACPI Error: Method parse
+klog            00182: /execution failed [_SB_.PCI0._OSC] (Node ee025630),
+klog            00183: AE_ALREADY_EXISTS (20110112/psparse-536)
+klog            00184: 
+klog            00185: ADVICE: This is a bug picked up by the kernel, but as yet
+klog            00186: , the firmware test suite has no diagnostic advice for
+klog            00187: this particular problem.
+klog            00188: 
+klog            00189: FAILED [HIGH] KlogAcpiFirmwareError: Test 1, HIGH Kernel
+klog            00190: message: [ 0.040119] [Firmware Bug]: the BIOS has
+klog            00191: corrupted hw-PMU resources (MSR 186 is 400000)
+klog            00192: 
+klog            00193: ADVICE: The kernel has detected a Firmware bug in the
+klog            00194: BIOS or ACPI which needs investigating and fixing.
+klog            00195: 
+klog            00196: FAILED [CRITICAL] KlogAcpiDetectedUnsupportedOpCode: Test
+klog            00197: 1, CRITICAL Kernel message: [ 0.042222] ACPI Warning:
+klog            00198: Detected an unsupported executable opcode at module-level
+klog            00199: : [0x0070] at table offset 0x2366 (20100121/psloop-526)
+klog            00200: 
+klog            00201: ADVICE: An illegal AML opcode has been found and is
+klog            00202: ignored. This indicates either badly compiled code or
+klog            00203: opcode corruption in the DSDT or SSDT tables or a bug in
+klog            00204: the ACPI execution engine. Recommend disassembing using
+klog            00205: iasl to find any offending code.
+klog            00206: 
+klog            00207: Found 18 unique errors in kernel log.
+klog            00208: 
+klog            00209: =========================================================
+klog            00210: 0 passed, 18 failed, 0 warning, 0 aborted, 0 skipped, 0
+klog            00211: info only.
+klog            00212: =========================================================

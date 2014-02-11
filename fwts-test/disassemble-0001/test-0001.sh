@@ -4,14 +4,14 @@ NAME=test-0001.sh
 
 TMPDIR=$TMP/disassemble-aml
 TMPLOG=$TMP/disassemble-aml.log.$$
-HERE=`pwd`
+HERE=$FWTSTESTDIR/disassemble-0001
 
 mkdir $TMPDIR
 $FWTS -w 80 --dumpfile=$HERE/acpidump.log --disassemble-aml=$TMPDIR - > $TMPLOG
 
 failed=0
 TEST="Test --disassemble-aml output to stdout"
-diff disassemble-aml-0001.log $TMPLOG >> $FAILURE_LOG
+diff $HERE/disassemble-aml-0001.log $TMPLOG >> $FAILURE_LOG
 if [ $? -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME
 else
@@ -26,7 +26,7 @@ do
 	#  Remove lines that contain a tmp file output name in disassembly
 	#
 	grep -v "/tmp/fwts_iasl" $TMPDIR/$I.dsl | grep -v "AML Disassembler version"  > $TMPDIR/$I.dsl.fixed.$$
-	grep -v "/tmp/fwts_iasl" $I.dsl.orig | grep -v "AML Disassembler version" > $TMPDIR/$I.dsl.orig.fixed.$$
+	grep -v "/tmp/fwts_iasl" $HERE/$I.dsl.orig | grep -v "AML Disassembler version" > $TMPDIR/$I.dsl.orig.fixed.$$
 	
 	diff $TMPDIR/$I.dsl.fixed.$$ $TMPDIR/$I.dsl.orig.fixed.$$
 	if [ $? -eq 0 ]; then 

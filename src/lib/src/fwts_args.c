@@ -264,7 +264,7 @@ void fwts_args_show_options(void)
 
 	fwts_list_init(&sorted_options);
 
-	width = fwts_tty_width(fileno(stderr), FWTS_MIN_TTY_WIDTH);
+	width = fwts_tty_width(fileno(stdin), FWTS_MIN_TTY_WIDTH);
 	if ((width - (FWTS_ARGS_WIDTH + 1)) < 0)
 		width = FWTS_MIN_TTY_WIDTH;
 

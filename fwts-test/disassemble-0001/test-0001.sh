@@ -26,7 +26,7 @@ do
 	#  Remove lines that contain a tmp file output name in disassembly
 	#
 	grep -v "/tmp/fwts_iasl" $TMPDIR/$I.dsl | grep -v "AML Disassembler version"  > $TMPDIR/$I.dsl.fixed.$$
-	grep -v "/tmp/fwts_iasl" $HERE/$I.dsl.orig | grep -v "AML Disassembler version" > $TMPDIR/$I.dsl.orig.fixed.$$
+	grep -v "/tmp/fwts_iasl" $HERE/$I.dsl.original | grep -v "AML Disassembler version" > $TMPDIR/$I.dsl.orig.fixed.$$
 	
 	diff $TMPDIR/$I.dsl.fixed.$$ $TMPDIR/$I.dsl.orig.fixed.$$
 	if [ $? -eq 0 ]; then 

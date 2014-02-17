@@ -908,7 +908,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	if (fwts_acpica_init_called)
 		return FWTS_ERROR;
 
-	AcpiGbl_AllMethodsSerialized =
+	AcpiGbl_AutoSerializeMethods =
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_SERIALIZED);
 	AcpiGbl_EnableInterpreterSlack =
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_SLACK);

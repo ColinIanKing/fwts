@@ -423,6 +423,8 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 			break;
 
 		len += (n - 1);
+		if (len == 0)
+			break;	/* No data, must be corrupt input */
 		if ((new_tmp = realloc(tmp, len)) == NULL) {
 			free(tmp);
 			return NULL;

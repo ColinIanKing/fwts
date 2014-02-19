@@ -1,3 +1,21 @@
+fwts (14.02.00-0ubuntu0) trusty; urgency=low
+
+  [Colin Ian King]
+  * acpi: method: fix ppc64el build failure (LP: #1272265)
+  * acpi: acpidump: handle invalid MADT table data (LP: #1278422)
+  * cpu: cpufreq: tidy code, show advice when cpu scaling unavailable
+    (LP: #1267959)
+  * lib: fwts_release: call lsb_release rather than parsing raw data
+    (LP: #1266823)
+  * ACPICA: update to version 20140214. (LP: #1281096)
+  * lib: fwts_acpi_tables: fix parsing of empty data (LP: #1281197)
+
+  [Ivan Hu]
+  * data: klog.json: lower the level of the failure when the _S1 and _S2 not
+    implemented (LP: #1279714)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 19 Feb 2014 11:48:01 +0800
+
 fwts (14.01.01-0ubuntu0) trusty; urgency=low
 
   [Alex Hung]

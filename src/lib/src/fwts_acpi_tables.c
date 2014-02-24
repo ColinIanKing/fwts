@@ -625,44 +625,62 @@ static bool fwts_acpi_table_fixable(fwts_acpi_table_info *table)
  */
 static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 {
-	int i;
-	int j;
-	int count;
+	int i, j, count;
 	char *oem_tbl_id = "FWTS    ";
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_rsdp *rsdp = NULL;
 	fwts_acpi_table_rsdt *rsdt = NULL;
 	fwts_acpi_table_xsdt *xsdt = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;
+	fwts_acpi_table_facs *facs = NULL;
+	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;
 
 	/* Fetch the OEM Table ID */
-	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK)
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "ACPI table find failure.");
 		return FWTS_ERROR;
+	}
 	if (table) {
 		fadt = (fwts_acpi_table_fadt *)table->data;
 		oem_tbl_id = fadt->header.oem_tbl_id;
+	} else {
+		fwts_log_error(fw, "Cannot find FACP.");
+		return FWTS_ERROR;
 	}
 
-	/* Get RSDP */
-	if (fwts_acpi_find_table(fw, "RSDP", 0, &table) != FWTS_OK)
+	/* Get FACS */
+	if (fwts_acpi_find_table(fw, "FACS", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "ACPI table find failure.");
 		return FWTS_ERROR;
+	}
 	if (table)
-		rsdp = (fwts_acpi_table_rsdp *)table->data;
+		facs = (fwts_acpi_table_facs *)table->data;
+	else {
+		size_t size = 64;
+		uint64_t facs_fake_addr;
 
-	/* Get RSDT */
-	if (fwts_acpi_find_table(fw, "RSDT", 0, &table) != FWTS_OK)
-		return FWTS_ERROR;
-	if (table)
-		rsdt = (fwts_acpi_table_rsdt *)table->data;
+		/* This is most unexpected, so warn about it */
+		fwts_log_warning(fw, "No FACS found, fwts has faked one instead.");
+		if ((facs = fwts_low_calloc(1, size)) == NULL) {
+			fwts_log_error(fw, "Cannot allocate fake FACS.");
+			return FWTS_ERROR;
+		}
+		strncpy(facs->signature, "FACS", 4);
+		facs->length = size;
+		facs->hardware_signature = 0xf000a200;	/* Some signature */
+		facs->flags = 0;
+		facs->version = 2;
+		facs_fake_addr = fwts_fake_physical_addr(size);
+		fadt->firmware_control = (uint32_t)facs_fake_addr;
+		if (fadt->header.length >= 140)
+			fadt->x_firmware_ctrl = (uint64_t)facs_fake_addr;
 
-	/* Get XSDT */
-	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK)
-		return FWTS_ERROR;
-	if (table)
-		xsdt = (fwts_acpi_table_xsdt *)table->data;
+		fwts_acpi_add_table("FACS", facs, (uint64_t)facs_fake_addr,
+			size, FWTS_ACPI_TABLE_FROM_FIXUP);
+	}
 
 	/* Figure out how many tables we need to put into RSDT and XSDT */
-	for (count=0,i=0;;i++) {
+	for (count = 0, i = 0; ; i++) {
 		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK)
 			break;
 		if (table == NULL)	/* No more tables */
@@ -671,11 +689,22 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 			count++;
 	}
 
-	/* No RSDT? go and fake one */
-	if (rsdt == NULL) {
+	/* Get RSDT */
+	if (fwts_acpi_find_table(fw, "RSDT", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "ACPI table find failure.");
+		return FWTS_ERROR;
+	}
+	if (table) {
+		rsdt = (fwts_acpi_table_rsdt *)table->data;
+		rsdt_fake_addr = table->addr;
+	} else {
+		/* No RSDT? go and fake one */
 		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint32_t));
-		if ((rsdt = fwts_low_calloc(1, size)) == NULL)
+
+		if ((rsdt = fwts_low_calloc(1, size)) == NULL) {
+			fwts_log_error(fw, "Cannot allocate fake RSDT.");
 			return FWTS_ERROR;
+		}
 
 		for (i=0,j=0; j<count ;i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
@@ -692,15 +721,26 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdt->header.creator_revision = 1;
 		rsdt->header.checksum = 256 - fwts_checksum((uint8_t*)rsdt, size);
 
-		fwts_acpi_add_table("RSDT", rsdt, (uint64_t)fwts_fake_physical_addr(size),
-			size, FWTS_ACPI_TABLE_FROM_FIXUP);
+		rsdt_fake_addr = fwts_fake_physical_addr(size);
+		fwts_acpi_add_table("RSDT", rsdt, rsdt_fake_addr, size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 
-	/* No XSDT? go and fake one */
-	if (xsdt == NULL) {
+	/* Get XSDT */
+	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "ACPI table find failure.");
+		return FWTS_ERROR;
+	}
+	if (table) {
+		xsdt = (fwts_acpi_table_xsdt *)table->data;
+		xsdt_fake_addr = table->addr;
+	} else {
+		/* No XSDT? go and fake one */
 		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint64_t));
-		if ((xsdt = fwts_low_calloc(1, size)) == NULL)
+
+		if ((xsdt = fwts_low_calloc(1, size)) == NULL) {
+			fwts_log_error(fw, "Cannot allocate fake XSDT.");
 			return FWTS_ERROR;
+		}
 
 		for (i=0,j=0; j<count ;i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
@@ -717,22 +757,28 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		xsdt->header.creator_revision = 1;
 		xsdt->header.checksum = 256 - fwts_checksum((uint8_t*)xsdt, size);
 
-		fwts_acpi_add_table("XSDT", xsdt, (uint64_t)fwts_fake_physical_addr(size),
-			size, FWTS_ACPI_TABLE_FROM_FIXUP);
+		xsdt_fake_addr = fwts_fake_physical_addr(size);
+		fwts_acpi_add_table("XSDT", xsdt, xsdt_fake_addr, size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 
-	/* No RSDP? go and fake one */
-	if (rsdp == NULL) {
+	/* Get RSDP */
+	if (fwts_acpi_find_table(fw, "RSDP", 0, &table) != FWTS_OK)
+		return FWTS_ERROR;
+	if (table)
+		rsdp = (fwts_acpi_table_rsdp *)table->data;
+	else {
+		/* No RSDP? go and fake one */
 		size_t size = sizeof(fwts_acpi_table_rsdp);
-		if ((rsdp = fwts_low_calloc(1, size)) == NULL)
+
+		if ((rsdp = fwts_low_calloc(1, size)) == NULL) {
+			fwts_log_error(fw, "Cannot allocate fake RSDP.");
 			return FWTS_ERROR;
+		}
 
 		strncpy(rsdp->signature, "RSD PTR ", 8);
 		strncpy(rsdp->oem_id, "FWTS  ", 6);
 		rsdp->revision = 2;
-		rsdp->rsdt_address = (unsigned long)rsdt;
 		rsdp->length = sizeof(fwts_acpi_table_rsdp);
-		rsdp->xsdt_address = (uint64_t)(unsigned long)xsdt;
 		rsdp->reserved[0] = 0;
 		rsdp->reserved[1] = 0;
 		rsdp->reserved[2] = 0;
@@ -743,6 +789,11 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size),
 			sizeof(fwts_acpi_table_rsdp), FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
+
+	/* Now we have all the tables, final fix up is required */
+	rsdp->rsdt_address = rsdt_fake_addr;
+	rsdp->xsdt_address = xsdt_fake_addr;
+
 	return FWTS_OK;
 }
 

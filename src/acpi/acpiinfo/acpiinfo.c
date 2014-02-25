@@ -18,8 +18,6 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -152,5 +150,3 @@ static fwts_framework_ops acpiinfo_ops = {
 };
 
 FWTS_REGISTER("acpiinfo", &acpiinfo_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH);
-
-#endif

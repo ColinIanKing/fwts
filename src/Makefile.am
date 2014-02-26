@@ -43,6 +43,7 @@ fwts_SOURCES = main.c 				\
 	acpi/osilinux/osilinux.c 		\
 	acpi/pcc/pcc.c 				\
 	acpi/powerbutton/powerbutton.c 		\
+	acpi/plddump/plddump.c			\
 	acpi/s3/s3.c 				\
 	acpi/s3power/s3power.c 			\
 	acpi/s4/s4.c 				\

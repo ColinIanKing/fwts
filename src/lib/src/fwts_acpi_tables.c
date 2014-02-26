@@ -22,6 +22,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -40,13 +42,20 @@
 #define ACPI_MAX_TABLES	(64)			/* Max number of ACPI tables */
 
 static fwts_acpi_table_info	tables[ACPI_MAX_TABLES];
-static int acpi_tables_loaded = 0;
+
+typedef enum {
+	ACPI_TABLES_NOT_LOADED		= 0,
+	ACPI_TABLES_LOADED_OK		= 1,
+	ACPI_TABLES_LOADED_FAILED	= 2
+} acpi_table_load_state;
+
+static acpi_table_load_state acpi_tables_loaded = ACPI_TABLES_NOT_LOADED;
 
 /*
  *  fwts_acpi_find_rsdp_efi()
  *  	Get RSDP address from EFI if possible
  */
-static void *fwts_acpi_find_rsdp_efi(void)
+static inline void *fwts_acpi_find_rsdp_efi(void)
 {
 	return fwts_scan_efi_systab("ACPI20");
 }
@@ -236,35 +245,114 @@ int fwts_acpi_free_tables(void)
 
 /*
  *  fwts_acpi_handle_fadt_tables()
- *	depending on whether 32 or 64 bit address is usable, get the FADT table
- *	address and load the FADT.
+ *	depending on whether 32 or 64 bit address is usable, get the table
+ *	address and load it. This handles the DSDT and FACS as pointed to
+ *	by the FADT
+ *
+ *	Note, we pass in the addresses of the 32 and 64 bit pointers in the
+ *	FADT because the FADT may be smaller than expected and we only want
+ *	to accesses these fields if the FADT is large enough.
  */
-static void fwts_acpi_handle_fadt_tables(
-	fwts_acpi_table_fadt *fadt,
-	const uint32_t *addr32,
-	const uint64_t *addr64,
+static int fwts_acpi_handle_fadt_tables(
+	fwts_framework *fw,
+	const fwts_acpi_table_fadt *fadt,/* FADT */
+	const char *name,		/* Name of Table addr32/addr 64 point to */
+	const char *name_addr32,	/* Name of 32 bit addr */
+	const char *name_addr64,	/* Name of 64 bit addr */
+	const uint32_t *addr32,		/* 32 bit addr */
+	const uint64_t *addr64,		/* 64 bit addr */
 	const fwts_acpi_table_provenance provenance)
 {
-	off_t addr;
+	off_t addr = 0;
 	fwts_acpi_table_header *header;
 
-	if ((addr64 != 0) && (fadt->header.length >= 140))
-		addr = (off_t)*addr64;
-	else if ((addr32 !=0) && (fadt->header.length >= 44))
+	/* newer version can have address in 64 and 32 bit pointers */
+	if ((addr64 != NULL) && (fadt->header.length >= 140)) {
+		if (*addr64 == 0) {
+			/* Work around buggy firmware, use 32 bit addr instead */
+			addr = (off_t)*addr32;
+			fwts_log_warning(fw, "FADT %s 64 bit pointer was zero, "
+				"falling back to using %s 32 bit pointer.",
+				name_addr64, name_addr32);
+		} else {
+			/* Use default 64 bit addr */
+			addr = (off_t)*addr64;
+		}
+		/* Is it sane? */
+		if (addr == 0) {
+			fwts_log_error(fw, "Failed to load %s: Cannot determine "
+				"address of %s from FADT, fields %s and %s are zero.",
+				name, name, name_addr32, name_addr64);
+			return FWTS_ERROR;
+		}
+	} else if ((addr32 != NULL) && (fadt->header.length >= 44)) {
 		addr = (off_t)*addr32;
-	else addr = 0;
-
-	if (addr) {
-		if ((header = fwts_acpi_load_table(addr)) != NULL)
-			fwts_acpi_add_table(header->signature, header,
-				(uint64_t)addr, header->length, provenance);
+		/* Is it sane? */
+		if (addr == 0)  {
+			fwts_log_error(fw, "Failed to load %s: Cannot determine "
+				"address of %s from FADT, field %s is zero.",
+				name, name, name_addr32);
+			return FWTS_ERROR;
+		}
+	} else if (fadt->header.length < 44) {
+		fwts_log_error(fw, "Failed to load %s: FADT is too small and "
+			"does not have any %s or %s fields.",
+			name, name_addr32, name_addr64);
+		return FWTS_ERROR;
+	} else {
+		/* This should not happen, addr64 or addr32 are NULL */
+		fwts_log_error(fw, "Failed to load %s: fwts error with FADT.", name);
+		return FWTS_ERROR;
 	}
+
+	/* Sane address found, load and add the table */
+	if ((header = fwts_acpi_load_table(addr)) == NULL) {
+		fwts_log_error(fw, "Could not load %s from address 0x%" PRIx64 ".",
+			name, (uint64_t)addr);
+		return FWTS_ERROR;
+	}
+	fwts_acpi_add_table(header->signature, header,
+		(uint64_t)addr, header->length, provenance);
+	return FWTS_OK;
 }
 
-static void fwts_acpi_handle_fadt(fwts_acpi_table_fadt *fadt, fwts_acpi_table_provenance provenance)
+/*
+ *  fwts_acpi_handle_fadt()
+ *	The FADT points to the FACS and DSDT with either 32 or 64 bit pointers.
+ *	Locate the FACS and DSDT tables and load them.
+ */
+static int fwts_acpi_handle_fadt(
+	fwts_framework *fw,
+	const uint64_t phys_addr,
+	const fwts_acpi_table_fadt *fadt,
+	const fwts_acpi_table_provenance provenance)
 {
-	fwts_acpi_handle_fadt_tables(fadt, &fadt->dsdt, &fadt->x_dsdt, provenance);
-	fwts_acpi_handle_fadt_tables(fadt, &fadt->firmware_control, &fadt->x_firmware_ctrl, provenance);
+	static uint64_t	facs_last_phys_addr;	/* default to zero */
+
+	/*
+	 *  The FADT handling may occur twice if it appears
+	 *  in the RSDT and the XDST, so as an optimisation
+	 *  we just need to handle it once.
+	 */
+	if (facs_last_phys_addr == phys_addr)
+		return FWTS_OK;
+
+	facs_last_phys_addr = phys_addr;
+
+	/* Determine FACS addr and load it */
+	if (fwts_acpi_handle_fadt_tables(fw, fadt,
+	    "FACS", "FIRMWARE_CTRL", "X_FIRMWARE_CTRL",
+	     &fadt->firmware_control, &fadt->x_firmware_ctrl,
+	     provenance) != FWTS_OK) {
+		return FWTS_ERROR;
+	}
+	/* Determine DSDT addr and load it */
+	if (fwts_acpi_handle_fadt_tables(fw, fadt,
+	    "DSDT", "DSTD", "X_DSDT",
+	    &fadt->dsdt, &fadt->x_dsdt, provenance) != FWTS_OK) {
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
 }
 
 /*
@@ -298,6 +386,7 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 	/* Load and save cached RSDP */
 	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;
+
 	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 
 	/* Load any tables from XSDT if it's valid */
@@ -310,8 +399,11 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 				if (xsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)xsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
-							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
-								FWTS_ACPI_TABLE_FROM_FIRMWARE);
+							if (fwts_acpi_handle_fadt(fw,
+							    (uint64_t)xsdt->entries[i],
+							    (fwts_acpi_table_fadt *)header,
+							    FWTS_ACPI_TABLE_FROM_FIRMWARE) != FWTS_OK)
+								goto fail;
 						fwts_acpi_add_table(header->signature, header, xsdt->entries[i],
 							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 					}
@@ -330,8 +422,11 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 				if (rsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
-							fwts_acpi_handle_fadt((fwts_acpi_table_fadt*)header,
-								FWTS_ACPI_TABLE_FROM_FIRMWARE);
+							if (fwts_acpi_handle_fadt(fw,
+							    (uint64_t)rsdt->entries[i],
+							    (fwts_acpi_table_fadt *)header,
+							    FWTS_ACPI_TABLE_FROM_FIRMWARE) != FWTS_OK)
+								goto fail;
 						fwts_acpi_add_table(header->signature, header, (uint64_t)rsdt->entries[i],
 							header->length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 					}
@@ -341,6 +436,13 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 	}
 
 	return FWTS_OK;
+fail:
+	/*
+	 * Free'ing the tables will cause acpica_init to fail
+	 * and so we abort any ACPI related tests
+	 */
+	fwts_acpi_free_tables();
+	return FWTS_ERROR;
 }
 
 /*
@@ -815,11 +917,13 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		ret = FWTS_ERROR_NO_PRIV;
 
 	if (ret == FWTS_OK) {
-		acpi_tables_loaded = 1;
+		acpi_tables_loaded = ACPI_TABLES_LOADED_OK;
 
 		/* Loading from file may require table address fixups */
 		if ((fw->acpi_table_path != NULL) || (fw->acpi_table_acpidump_file != NULL))
 			fwts_acpi_load_tables_fixup(fw);
+	} else {
+		acpi_tables_loaded = ACPI_TABLES_LOADED_FAILED;
 	}
 
 	return ret;
@@ -840,7 +944,7 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 
 	*info = NULL;
 
-	if (!acpi_tables_loaded)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
 
@@ -870,7 +974,7 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 
 	*info = NULL;
 
-	if (!acpi_tables_loaded)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
 
@@ -901,7 +1005,7 @@ int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_inf
 	if ((index < 0) || (index >= ACPI_MAX_TABLES))
 		return FWTS_ERROR;
 
-	if (!acpi_tables_loaded)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
 

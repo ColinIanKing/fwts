@@ -152,8 +152,10 @@ static int hda_audio_test1(fwts_framework *fw)
 	struct dirent *directory;
 	bool checked = false;
 
-	if ((dir = opendir("/sys/class/sound/")) == NULL)
-		return FWTS_ERROR;
+	if ((dir = opendir("/sys/class/sound")) == NULL) {
+		fwts_skipped(fw, "Cannot find any sound devices in /sys/class/sound.");
+		return FWTS_OK;
+	}
 
 	while ((directory = readdir(dir)) != NULL)
 		if (strncmp(directory->d_name, "hw", 2) == 0) {

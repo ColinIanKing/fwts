@@ -89,16 +89,6 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	} else {
 		if (table->length >= 140) {
 			if (fadt->x_firmware_ctrl != 0) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32And64BothDefined", "FADT 32 bit FIRMWARE_CONTROL is non-zero, and X_FIRMWARE_CONTROL is also non-zero. "
-						"Section 5.2.9 of the ACPI specification states that if the FIRMWARE_CONTROL is non-zero "
-						"then X_FIRMWARE_CONTROL must be set to zero.");
-				fwts_advice(fw, "The FADT FIRMWARE_CTRL is a 32 bit pointer that points to the physical memory address "
-						"of the Firmware ACPI Control Structure (FACS).  There is also an extended 64 bit version "
-						"of this, the X_FIRMWARE_CTRL pointer that also can point to the FACS.  Section 5.2.9 of "
-						"the ACPI specification states that if the X_FIRMWARE_CTRL field contains a non zero value "
-						"then the FIRMWARE_CTRL field *must* be zero.  This error is also detected by the Linux kernel. "
-						"If FIRMWARE_CTRL and X_FIRMWARE_CTRL are defined, then the kernel just uses the 64 bit version of "
-						"the pointer.");
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FwCtrl32and64Differ",
 						"FIRMWARE_CONTROL is 0x%" PRIx32 " and differs "

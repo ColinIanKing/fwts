@@ -60,8 +60,10 @@ Utilities:
  cmosdump        Dump CMOS Memory.
  crsdump         Dump ACPI _CRS resources.
  ebdadump        Dump EBDA region.
+ gpedump         Dump GPEs.
  memmapdump      Dump system memory map.
  mpdump          Dump MultiProcessor Data.
+ plddump         Dump ACPI _PLD (Physical Device Location).
  prsdump         Dump ACPI _PRS resources.
  romdump         Dump ROM data.
  uefidump        Dump UEFI variables.

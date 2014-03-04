@@ -1,16 +1,9 @@
 acpitables      acpitables: ACPI table settings sanity tests.
 acpitables      ----------------------------------------------------------
 acpitables      Test 1 of 1: Test ACPI tables.
+acpitables      No FACS found, fwts has faked one instead.
 acpitables      Table APIC not present to check.
 acpitables      Table ECDT not present to check.
-acpitables      FAILED [CRITICAL] FADTFACSZero: Test 1, FADT 32 bit
-acpitables      FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS
-acpitables      address) are null.
-acpitables      
-acpitables      ADVICE: The 32 bit FIRMWARE_CTRL or 64 bit X_FIRMWARE_CTRL
-acpitables      should point to a valid Firmware ACPI Control Structure
-acpitables      (FACS). This is a firmware bug and needs to be fixed.
-acpitables      
 acpitables      FAILED [MEDIUM] FADTDSTNull: Test 1, FADT DSDT address is
 acpitables      null.
 acpitables      FAILED [MEDIUM] FADT32And64Mismatch: Test 1, FADT 32 bit
@@ -82,6 +75,6 @@ acpitables      Table SBST not present to check.
 acpitables      PASSED: Test 1, Table XSDT passed.
 acpitables      
 acpitables      ==========================================================
-acpitables      3 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0
+acpitables      3 passed, 8 failed, 0 warning, 0 aborted, 0 skipped, 0
 acpitables      info only.
 acpitables      ==========================================================

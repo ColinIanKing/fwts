@@ -736,6 +736,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	fwts_acpi_table_fadt *fadt = NULL;
 	fwts_acpi_table_facs *facs = NULL;
 	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;
+	bool redo_rsdp_checksum = false;
 
 	/* Fetch the OEM Table ID */
 	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
@@ -886,15 +887,29 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdp->reserved[2] = 0;
 
 		rsdp->checksum = 256 - fwts_checksum((uint8_t*)rsdp, 20);
-		rsdp->extended_checksum = 256 - fwts_checksum((uint8_t*)rsdp, sizeof(fwts_acpi_table_rsdp));
+		rsdp->extended_checksum = 256 - fwts_checksum((uint8_t*)rsdp, rsdp->length);
 
 		fwts_acpi_add_table("RSDP", rsdp, (uint64_t)fwts_fake_physical_addr(size),
 			sizeof(fwts_acpi_table_rsdp), FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 
 	/* Now we have all the tables, final fix up is required */
-	rsdp->rsdt_address = rsdt_fake_addr;
-	rsdp->xsdt_address = xsdt_fake_addr;
+	if (rsdp->rsdt_address != rsdt_fake_addr) {
+		rsdp->rsdt_address = rsdt_fake_addr;
+		redo_rsdp_checksum = true;
+	}
+	if ((rsdp->revision > 0) && (rsdp->length >= 36) &&
+	    (rsdp->xsdt_address != xsdt_fake_addr)) {
+		rsdp->xsdt_address = xsdt_fake_addr;
+		redo_rsdp_checksum = true;
+	}
+	/* And update checksum if we've updated the rsdp */
+	if (redo_rsdp_checksum) {
+		rsdp->checksum = 0;	/* Clear old checksum */
+		rsdp->checksum = 256 - fwts_checksum((uint8_t*)rsdp, 20);
+		rsdp->extended_checksum = 0;	/* Clear old checksum */
+		rsdp->extended_checksum = 256 - fwts_checksum((uint8_t*)rsdp, rsdp->length);
+	}
 
 	return FWTS_OK;
 }

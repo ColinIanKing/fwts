@@ -23,6 +23,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 
@@ -44,15 +46,15 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 	checksum = fwts_checksum(table->data, 20);
 	if (checksum != 0) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "ACPITableChecksumRSDP",
-			"RSDP has incorrect checksum, expected 0x%2.2x, "
-			"got 0x%2.2x.",
-			(uint8_t)(rsdp->checksum)-checksum, rsdp->checksum);
+			"RSDP has incorrect checksum, expected 0x%2.2" PRIx8 ", "
+			"got 0x%2.2" PRIx8 ".",
+			(uint8_t)(rsdp->checksum-checksum), rsdp->checksum);
 		fwts_advice(fw,
 			"The kernel will not load the RSDP with an "
 			"invalid checksum and hence all other ACPI "
 			"tables will also fail to load.");
 	} else
-		fwts_passed(fw, "Table RSDP has correct checksum 0x%x.",
+		fwts_passed(fw, "Table RSDP has correct checksum 0x%2.2" PRIx8 ".",
 			rsdp->checksum);
 
 	/* 
@@ -75,7 +77,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"ACPITableChecksumRSDP",
 				"RSDP has incorrect extended checksum, "
-				"expected 0x%2.2x, got 0x%2.2x.",
+				"expected 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8 ".",
 				(uint8_t)(rsdp->extended_checksum-checksum),
 				rsdp->extended_checksum);
 			fwts_advice(fw, 
@@ -84,7 +86,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 				"other ACPI tables will also fail to load.");
 		} else
 			fwts_passed(fw, "Table RSDP has correct extended "
-				"checksum 0x%x.", rsdp->extended_checksum);
+				"checksum 0x%2.2" PRIx8 ".", rsdp->extended_checksum);
 	}
 
 }
@@ -118,12 +120,12 @@ static int checksum_scan_tables(fwts_framework *fw)
 
 		checksum = fwts_checksum(table->data, table->length);
 		if (checksum == 0)
-			fwts_passed(fw, "Table %s has correct checksum 0x%x.",
+			fwts_passed(fw, "Table %s has correct checksum 0x%2.2" PRIx8,
 				table->name, hdr->checksum);
 		else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "ACPITableChecksum",
 				"Table %s has incorrect checksum, "
-				"expected 0x%2.2x, got 0x%2.2x.",
+				"expected 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8 ".",
 				table->name, (uint8_t)(hdr->checksum-checksum),
 				hdr->checksum);
 

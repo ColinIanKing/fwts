@@ -1,17 +1,18 @@
 acpitables      acpitables: ACPI table settings sanity tests.
 acpitables      ----------------------------------------------------------
 acpitables      Test 1 of 1: Test ACPI tables.
+acpitables      Cannot find FACP.
 acpitables      Table APIC not present to check.
 acpitables      Table ECDT not present to check.
 acpitables      Table FACP not present to check.
 acpitables      Table HPET not present to check.
 acpitables      Table MCFG not present to check.
-acpitables      PASSED: Test 1, Table RSDT passed.
-acpitables      PASSED: Test 1, Table RSDP passed.
+acpitables      Table RSDT not present to check.
+acpitables      Table RSDP not present to check.
 acpitables      Table SBST not present to check.
-acpitables      PASSED: Test 1, Table XSDT passed.
+acpitables      Table XSDT not present to check.
 acpitables      
 acpitables      ==========================================================
-acpitables      3 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+acpitables      0 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
 acpitables      info only.
 acpitables      ==========================================================

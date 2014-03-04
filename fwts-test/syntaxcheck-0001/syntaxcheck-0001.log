@@ -2,6 +2,7 @@ syntaxcheck     syntaxcheck: Re-assemble DSDT and find syntax errors and
 syntaxcheck     warnings.
 syntaxcheck     ----------------------------------------------------------
 syntaxcheck     Test 1 of 2: Disassemble and reassemble DSDT
+syntaxcheck     Cannot find FACP.
 syntaxcheck     
 syntaxcheck     Checking ACPI table DSDT (#0)
 syntaxcheck     

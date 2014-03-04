@@ -309,10 +309,14 @@ Utilities:
   Dump ACPI _CRS (Current Resource Settings).
  ebdadump        (1 test):
   Dump EBDA region.
+ gpedump         (1 test):
+  Dump GPEs.
  memmapdump      (1 test):
   Dump system memory map.
  mpdump          (1 test):
   Dump Multi Processor Data.
+ plddump         (1 test):
+  Dump ACPI _PLD (Physical Device Location).
  prsdump         (1 test):
   Dump ACPI _PRS (Possible Resource Settings).
  romdump         (1 test):
@@ -362,4 +366,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 283 tests
+Total of 285 tests

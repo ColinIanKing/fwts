@@ -8,22 +8,22 @@ checksum        ADVICE: The kernel will warn that this table has an invalid chec
 checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
 checksum        messages.
 checksum        
-checksum        PASSED: Test 1, Table FACP has correct checksum 0x52.
-checksum        PASSED: Test 1, Table APIC has correct checksum 0xcc.
-checksum        PASSED: Test 1, Table HPET has correct checksum 0xa.
-checksum        PASSED: Test 1, Table MCFG has correct checksum 0x32.
-checksum        PASSED: Test 1, Table TCPA has correct checksum 0x8f.
-checksum        PASSED: Test 1, Table TMOR has correct checksum 0xeb.
-checksum        PASSED: Test 1, Table SLIC has correct checksum 0x99.
-checksum        PASSED: Test 1, Table APIC has correct checksum 0x13.
-checksum        PASSED: Test 1, Table BOOT has correct checksum 0xa5.
-checksum        PASSED: Test 1, Table SSDT has correct checksum 0x59.
-checksum        PASSED: Test 1, Table SSDT has correct checksum 0xed.
-checksum        PASSED: Test 1, Table SSDT has correct checksum 0xc8.
-checksum        PASSED: Test 1, Table SSDT has correct checksum 0x6d.
-checksum        PASSED: Test 1, Table SSDT has correct checksum 0xdf.
-checksum        PASSED: Test 1, Table XSDT has correct checksum 0xc2.
-checksum        PASSED: Test 1, Table RSDT has correct checksum 0xd.
+checksum        PASSED: Test 1, Table FACP has correct checksum 0x52
+checksum        PASSED: Test 1, Table APIC has correct checksum 0xcc
+checksum        PASSED: Test 1, Table HPET has correct checksum 0x0a
+checksum        PASSED: Test 1, Table MCFG has correct checksum 0x32
+checksum        PASSED: Test 1, Table TCPA has correct checksum 0x8f
+checksum        PASSED: Test 1, Table TMOR has correct checksum 0xeb
+checksum        PASSED: Test 1, Table SLIC has correct checksum 0x99
+checksum        PASSED: Test 1, Table APIC has correct checksum 0x13
+checksum        PASSED: Test 1, Table BOOT has correct checksum 0xa5
+checksum        PASSED: Test 1, Table SSDT has correct checksum 0x59
+checksum        PASSED: Test 1, Table SSDT has correct checksum 0xed
+checksum        PASSED: Test 1, Table SSDT has correct checksum 0xc8
+checksum        PASSED: Test 1, Table SSDT has correct checksum 0x6d
+checksum        PASSED: Test 1, Table SSDT has correct checksum 0xdf
+checksum        PASSED: Test 1, Table XSDT has correct checksum 0xc2
+checksum        PASSED: Test 1, Table RSDT has correct checksum 0x0d
 checksum        
 checksum        ==================================================================================================
 checksum        18 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0 info only.

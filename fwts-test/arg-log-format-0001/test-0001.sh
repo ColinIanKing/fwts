@@ -10,7 +10,7 @@ $FWTS -w 80 -j $FWTSTESTDIR/../data --klog=$FWTSTESTDIR/arg-log-format-0001/klog
 #
 #  Need to adjust reference log to today's date
 #
-sed sx10\/02\/14x${TODAY}x < $FWTSTESTDIR/arg-log-format-0001/klog-0001.log > $TMPLOG_ORIG
+sed "sx<[0-9][0-9]\/[0-9][0-9]\/[0-9][0-9]>x<${TODAY}>x" < $FWTSTESTDIR/arg-log-format-0001/klog-0001.log > $TMPLOG_ORIG
 diff $TMPLOG $TMPLOG_ORIG >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 

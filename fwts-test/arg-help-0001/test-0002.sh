@@ -14,16 +14,28 @@ if [ $? -eq 1 ]; then
 	exit 77
 fi
 
-stty cols 80
+cols=$(stty -a | tr ';' '\n' | grep "columns" | cut -d' ' -f3) 2> /dev/null
+#
+#  If we can't set the tty then we can't test
+#
+stty cols 50 2> /dev/null
+if [ $? -eq 1 ]; then
+        echo SKIP: $TEST, $NAME
+        exit 77
+fi
 
 $FWTS --help | grep -v "Show version" | grep -v "Usage" > $TMPLOG
-diff $TMPLOG fwts-test/arg-help-0001/arg-help-0002.log >> $FAILURE_LOG
+diff $TMPLOG $FWTSTESTDIR/arg-help-0001/arg-help-0002.log >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME
 else
 	echo FAILED: $TEST, $NAME
 fi
+if [ $cols -ne 0]; then
+	stty cols $cols 2> /dev/null
+fi
+tset 2> /dev/null
 
 rm $TMPLOG
 exit $ret

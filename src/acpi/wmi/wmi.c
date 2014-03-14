@@ -78,6 +78,8 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 	{ "95764E09-FB56-4e83-B31A-37761F60994A", "acer-wmi",	"Acer" },
 	{ "61EF69EA-865C-4BC3-A502-A0DEBA0CB531", "acer-wmi",	"Acer" },
 	{ "676AA15E-6A47-4D9F-A2CC-1E6D18D14026", "acer-wmi",	"Acer" },
+	{ "0B3CBB35-E3C2-45ED-91C2-4C5A6D195D1C", "asus-nb-wmi","Asus" },
+	{ "97845ED0-4E6D-11DE-8A39-0800200C9A66", "asus-wmi",	"Asus" },
 	{ "9DBB5994-A997-11DA-B012-B622A1EF5492", "dell-wmi",	"Dell" },
 	{ "284A0E6B-380E-472A-921F-E52786257FB4", "dell-wmi-aio","Dell" },
 	{ "02314822-307C-4F66-BF0E-48AEAEB26CC8", "dell-wmi-aio","Dell" },
@@ -87,6 +89,8 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 	{ "5FB7F034-2C63-45e9-BE91-3D44E2C707E4", "hp-wmi",	"HP"   },
 	{ "551A1F84-FBDD-4125-91DB-3EA8F44F1D45", "msi-wmi",	"MSI"  },
 	{ "B6F3EEF2-3D2F-49DC-9DE3-85BCE18C62F2", "msi-wmi",	"MSI"  },
+	{ "5B3CC38A-40D9-7245-8AE6-1145B751BE3F", "msi-wmi",	"MSI"  },
+	{ "F6CB5C3C-9CAE-4EBD-B577-931EA32A2CC0", "mxm-wmi",	"MXM"  },
 	{ "C364AC71-36DB-495A-8494-B439D472A505", "tc110-wmi",	"HP Compaq" },
 	{ NULL, NULL, NULL }
 };

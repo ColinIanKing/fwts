@@ -23,8 +23,9 @@ if [ $? -eq 1 ]; then
 	echo SKIP: $TEST, $NAME
 	exit 77
 fi
-$FWTS -h | grep -v "Show version" | grep -v "Usage" > $TMPLOG
-diff $TMPLOG $FWTSTESTDIR/arg-help-0001/arg-help-0001.log >> $FAILURE_LOG
+$FWTS -h | grep -v "Show version" | grep -v "Usage" | sed s/\(V[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ > $TMPLOG
+sed s/\(V[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ < $FWTSTESTDIR/arg-help-0001/arg-help-0001.log > $TMP/help.log.$$.orig
+diff $TMPLOG $TMP/help.log.$$.orig >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME

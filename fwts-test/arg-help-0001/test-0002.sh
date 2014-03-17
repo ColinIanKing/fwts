@@ -24,15 +24,16 @@ if [ $? -eq 1 ]; then
         exit 77
 fi
 
-$FWTS --help | grep -v "Show version" | grep -v "Usage" > $TMPLOG
-diff $TMPLOG $FWTSTESTDIR/arg-help-0001/arg-help-0002.log >> $FAILURE_LOG
+$FWTS --help | grep -v "Show version" | grep -v "Usage" | sed s/\(V[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/  > $TMPLOG
+sed s/\(V[0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ < $FWTSTESTDIR/arg-help-0001/arg-help-0001.log > $TMP/help.log.$$.orig
+diff $TMPLOG $TMP/help.log.$$.orig >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 
 	echo PASSED: $TEST, $NAME
 else
 	echo FAILED: $TEST, $NAME
 fi
-if [ $cols -ne 0]; then
+if [ $cols -ne 0 ]; then
 	stty cols $cols 2> /dev/null
 fi
 tset 2> /dev/null

@@ -352,7 +352,6 @@ static int fwts_hwinfo_net_cmp(void *data1, void *data2)
 	fwts_net_config *config2 = (fwts_net_config *)data2;
 
 	return strcmp(config1->name, config2->name) ||
-	       strcmp(config1->addr, config2->addr) ||
 	       strcmp(config1->hw_addr, config2->hw_addr);
 }
 

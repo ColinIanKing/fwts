@@ -112,6 +112,7 @@ acpidump        [0x021 0033   3]                                 Reserved: 0x00 
 acpidump        [0x021 0033   3]                                 Reserved: 0x00 [1]
 acpidump        [0x021 0033   3]                                 Reserved: 0x00 [2]
 acpidump        [0x024 0036   1]                              CMOS offset: 0x36
+acpidump        [0x024 0036   2]                                 Reserved: 0x0000
 acpidump        [0x024 0036   4]                            Entry 00 APIC: 0xbff00000
 acpidump        [0x024 0036   4]                           Event Timer ID: 0x8086a201
 acpidump        [0x024 0036   4]                             FACS Address: 0xbf6e2fc0
@@ -120,6 +121,7 @@ acpidump        [0x024 0036   4]                               OSPM Flags: 0x000
 acpidump        [0x024 0036   4]                                     Type: 0x00000000
 acpidump        [0x024 0036   8]                            Entry 00 APIC: 0x00000000bff00000
 acpidump        [0x024 0036   8]                                 Reserved: 0x0000000000000000
+acpidump        [0x026 0038   4]                          Log Zone Length: 0x00010000
 acpidump        [0x028 0040  12]                             Base Address: (Generic Address Structure)
 acpidump        [0x028 0040   1]                            addr_space_id: 0x00 (System Memory)
 acpidump        [0x028 0040   4]                             DSDT Address: 0xbf6d9b6a
@@ -128,6 +130,7 @@ acpidump        [0x028 0040   4]                                    Flags: 0x000
 acpidump        [0x028 0040   4]                                   Length: 0x0000009c
 acpidump        [0x029 0041   1]                            reg_bit_width: 0x00
 acpidump        [0x02a 0042   1]                           reg_bit_offset: 0x00
+acpidump        [0x02a 0042   8]                         Log Zone Address: 0x0000000000000000
 acpidump        [0x02b 0043   1]                             access_width: 0x00 (Undefined (legacy reasons))
 acpidump        [0x02c 0044   1]                                 Key Type: 0x06
 acpidump        [0x02c 0044   1]                                    Model: 0x00
@@ -227,13 +230,11 @@ acpidump        [0x054 0084   8]                            Entry 06 HPET: 0x000
 acpidump        [0x055 0085   1]                                   Length: 0x0a
 acpidump        [0x055 0085   1]                                   Source: 0x09
 acpidump        [0x056 0086   1]                                      Bus: 0x00
-acpidump        [0x056 0086   2]                                 Reserved: 0x0000
 acpidump        [0x056 0086   4]                              Gbl Sys Int: 0x00000009
 acpidump        [0x057 0087   1]                                   Source: 0x00
 acpidump        [0x058 0088   1]                   PM1 Event Block Length: 0x04
 acpidump        [0x058 0088   4]                            Entry 13 SSDT: 0xbff06aad
 acpidump        [0x058 0088   4]                              Gbl Sys Int: 0x00000002
-acpidump        [0x058 0088   4]                          Log Zone Length: 0x00010000
 acpidump        [0x059 0089   1]                 PM1 Control Block Length: 0x02
 acpidump        [0x05a 0090   1]                 PM2 Control Block Length: 0x01
 acpidump        [0x05a 0090   2]                                    Flags: 0x000d
@@ -243,7 +244,6 @@ acpidump        [0x05c 0092   1]                                     Type: 0x04 
 acpidump        [0x05c 0092   2]                                    Flags: 0x0005
 acpidump        [0x05c 0092   4]                            Entry 14 SSDT: 0xbff06b63
 acpidump        [0x05c 0092   8]                            Entry 07 MCFG: 0x00000000bff062c8
-acpidump        [0x05c 0092   8]                         Log Zone Address: 0x0000000000000000
 acpidump        [0x05d 0093   1]                        GPE1 Block Length: 0x00
 acpidump        [0x05d 0093   1]                                   Length: 0x06
 acpidump        [0x05e 0094   1]                              ACPI CPU ID: 0x00

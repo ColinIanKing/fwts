@@ -125,22 +125,16 @@ static uint64_t apci_dump_get_uint64_t(
 	const fwts_acpidump_field *info,
 	const void *data)
 {
-	uint64_t ret;
+	uint64_t ret = 0;
 	uint64_t mask = (1ULL << (uint64_t)info->bit_field_nbits) - 1;
 	int i;
 
 	switch (info->size) {
 	case 1:
-		ret  = (uint64_t)*(uint8_t *)data;
-		break;
 	case 2:
-		ret  = (uint64_t)*(uint16_t *)data;
-		break;
 	case 4:
-		ret  = (uint64_t)*(uint32_t *)data;
-		break;
 	case 8:
-		ret  = (uint64_t)*(uint64_t *)data;
+		memcpy(&ret, data, info->size);
 		break;
 	default:		
 		ret = 0;
@@ -443,7 +437,7 @@ static void acpidump_bert(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, fields, table->length, table->length);
+	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
 }
 
 static void acpidump_cpep(fwts_framework *fw, const fwts_acpi_table_info *table)
@@ -1117,7 +1111,7 @@ static void acpidump_tcpa(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, fields, table->length, table->length);
+	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
 }
 
 /*
@@ -1527,7 +1521,7 @@ static void acpidump_bgrt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, bgrt_fields, table->length, table->length);
+	acpi_dump_table_fields(fw, table->data, bgrt_fields, 0, table->length);
 }
 
 /*
@@ -1551,7 +1545,7 @@ static void acpidump_gtdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, gtdt_fields, table->length, table->length);
+	acpi_dump_table_fields(fw, table->data, gtdt_fields, 0, table->length);
 }
 
 /*
@@ -1648,7 +1642,7 @@ static void acpidump_rasf(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, rasf_fields, table->length, table->length);
+	acpi_dump_table_fields(fw, table->data, rasf_fields, 0, table->length);
 
 	/* No idea how to dump rest of table, spec is a rather poor */
 	acpi_dump_raw_table(fw, table);
@@ -1682,7 +1676,7 @@ static void acpidump_pcct(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, data, pcct_fields, table->length, table->length);
+	acpi_dump_table_fields(fw, data, pcct_fields, 0, table->length);
 
 	ptr += sizeof(fwts_acpi_table_pcct);
 

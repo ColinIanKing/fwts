@@ -1,3 +1,50 @@
+fwts (14.03.00-0ubuntu1) trusty; urgency=low
+
+  [Colin Ian King]
+  * acpi: fwts_acpi_tables: fix up missing FACS (LP: #1284097)
+  * acpi: acpidump: provide table provenance (LP: #1284205)
+  * apci: acpiinfo: enable for non-x86 arches (LP: #1284557)
+  * Add utility to dump _PLD (Physical Device Location) information
+    (LP: #1281835)
+  * acpi: add in a tool to dump GPE information (LP: #1283473)
+  * lib: fwts_acpi_tables: handle zero 64 bit addrs in FADT (LP: #1285167)
+  * bios: hda_audio: skip the test if audio devices don't exist (LP: #1285571)
+  * Remove copy-acpica.sh script, it is no longer used
+  * acpi: checksum: print RSDP checksum correctly (LP: #1287815)
+  * lib: fwts_acpi_tables: update RSDP checksum on fixed-up RSDP (LP: #1287852)
+  * acpi: acpitables: remove irrelevant test case (LP: #1287891)
+  * uefi: uefidump: small re-working of uefi GUID lookup
+  * fwts-test: update acpidump-0001
+  * fwts-test: acpitables-0002: sync with recent table fixing
+  * fwts-test: syntaxcheck-0001: update to sync with fwts
+  * fwts-test: arg-show-tests-0001: keep in sync with fwts
+  * fwts-test: arg-show-tests-full-0001: keep in sync with fwts
+  * fwts-test: checksum-0001: update due to fwts formatting fixes
+  * fwts-test: arg-table-path-0001: sync with fwts changes
+  * fwts-test: acpitables-0003: update to sync with fwts
+  * fwts-test: acpitables-0004: update test
+  * fwts-test: acpitables-0005: update test
+  * fwts-test: acpitables-0006: update test
+  * fwts-test: acpitables-0007: update test
+  * fwts-test: acpitables-0008: update test
+  * fwts-test: skip some tests on non-x86 builds
+  * fwts-test: fix tests not to compare against date (LP: #1289225)
+  * fwts-test: arg-help-0001: fix up some tests issues
+  * fwts-test: arg-log-format-0001: make test less pedandic on line numbers
+  * fwts-test: arg-show-progress-dialog: remove version from test
+  * acpica: ppc64el needs to be built as a 64 bit architecture
+  * debian: limit architectures to i386 amd64 armel armhf arm64 ppc64 ppc64el
+
+  [Keng-Yu Lin]
+  * fwts-test: Copy all files from fwts-test git tree (LP: #1201250)
+  * lib: Make --disassemble-aml accept the outputdir argument (LP: #1201250)
+  * fwts-test: Update disassemble-0001 test (LP: #1201250)
+  * fwts-test: Update the test scripts for new test environment (LP: #1201250)
+  * lib: fwts_args: determine tty width from stdin
+  * fwts-test: disassemble-0001: rename *.orig to *.original
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 17 Mar 2014 15:13:44 +0800
+
 fwts (14.02.00-0ubuntu0) trusty; urgency=low
 
   [Colin Ian King]

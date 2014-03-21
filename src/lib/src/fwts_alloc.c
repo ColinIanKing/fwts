@@ -46,7 +46,9 @@ typedef struct {
 	unsigned int magic;
 } fwts_mmap_header;
 
-#define LIMIT_2GB	0x80000000ULL
+#define CHUNK_SIZE	(8192)		/* page plus loads of slack */
+#define LIMIT_2GB	(0x80000000ULL)
+#define LIMIT_START	(0x00010000ULL)
 
 #ifndef MAP_32BIT
 /*
@@ -62,6 +64,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 	void *addr_start;
 	void *addr_end;
 	void *last_addr_end = NULL;
+	void *first_addr_start = NULL;
 	void *ret = MAP_FAILED;
 
 	if (requested_size == 0)	/* Illegal */
@@ -74,6 +77,35 @@ static void *fwts_low_mmap(const size_t requested_size)
 		sscanf(buffer, "%p-%p %*s %*x %*s %*u %s",
 			&addr_start, &addr_end, pathname);
 
+		/*
+		 *  Try and allocate under first mmap'd address space
+		 */
+		if ((first_addr_start == NULL) &&
+		    (addr_start > (void*)LIMIT_START)) {
+			size_t sz = (requested_size + CHUNK_SIZE) & ~(CHUNK_SIZE - 1);
+			void *addr = addr_start - sz;
+
+			/*
+			 * If addr is over the 2GB limit and we know
+			 * that this is the first mapping then we should
+			 * be able to map a region below the 2GB limit as
+			 * nothing is already mapped there
+			 */
+			if (addr > (void*)LIMIT_2GB)
+				addr = (void*)LIMIT_2GB - sz;
+
+			ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
+				MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+			if (ret != MAP_FAILED)
+				break;	/* Success! */
+
+			first_addr_start = addr_start;
+		}
+
+		/*
+		 *  No allocation yet, so try now to squeeze one
+		 *  in between already mapped regions
+		 */
 		if ((last_addr_end != NULL) &&
 		    (last_addr_end < (void*)LIMIT_2GB)) {
 			if ((addr_start - last_addr_end) > (ptrdiff_t)requested_size) {
@@ -85,9 +117,11 @@ static void *fwts_low_mmap(const size_t requested_size)
 			}
 		}
 
-		/* We really don't want to mmap at the end of the heap
+		/*
+		 * We really don't want to mmap at the end of the heap
 		 * and if we've reached the stack we've gone too far so
-		 * abort */
+		 * abort
+		 */
 		if ((strncmp("[heap]", pathname, 6) == 0) ||
 		    (strncmp("[stack]", pathname, 7) == 0)) {
 			ret = MAP_FAILED;

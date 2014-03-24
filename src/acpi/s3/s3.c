@@ -29,9 +29,10 @@
 #include <unistd.h>
 #include <time.h>
 
-#define PM_SUSPEND 	"pm-suspend"
-#define FWTS_SUSPEND	"FWTS_SUSPEND"
-#define FWTS_RESUME	"FWTS_RESUME"
+#define PM_SUSPEND 		"pm-suspend"
+#define PM_SUSPEND_HYBRID 	"pm-suspend-hybrid"
+#define FWTS_SUSPEND		"FWTS_SUSPEND"
+#define FWTS_RESUME		"FWTS_RESUME"
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -44,6 +45,7 @@ static int  s3_device_check_delay = 15;	/* Time to sleep after waking up and the
 static bool s3_min_max_delay = false;
 static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
+static bool s3_hybrid = false;
 
 static int s3_init(fwts_framework *fw)
 {
@@ -78,8 +80,13 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_get(fw, &hwinfo1);
 
 	/* Format up pm-suspend command with optional quirking arguments */
-	if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND)) == NULL)
-		return FWTS_OUT_OF_MEMORY;
+	if (s3_hybrid) {
+		if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_HYBRID)) == NULL)
+			return FWTS_OUT_OF_MEMORY;
+	} else {
+		if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND)) == NULL)
+			return FWTS_OUT_OF_MEMORY;
+	}
 
 	if (s3_quirks) {
 		if ((command = fwts_realloc_strcat(command, " ")) == NULL)
@@ -494,6 +501,9 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 9:
 			s3_resume_time = atof(optarg);
 			break;
+		case 10:
+			s3_hybrid = true;
+			break;
 		}
 	}
 	return FWTS_OK;
@@ -510,6 +520,7 @@ static fwts_option s3_options[] = {
 	{ "s3-device-check-delay", "", 1, "Sleep N seconds before we run a device check after waking up from suspend. Default is 15 seconds, e.g. --s3-device-check-delay=20" },
 	{ "s3-suspend-time",	"", 1, "Maximum expected suspend time in seconds, e.g. --s3-suspend-time=3.5" },
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
+	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
 	{ NULL, NULL, 0, NULL }
 };
 

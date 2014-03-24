@@ -4,6 +4,8 @@ export DEB_BUILD_HARDENING=1
 export AUTOMAKE=automake-1.11
 export ACLOCAL=aclocal-1.11
 
+DEB_BUILD_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+
 DEBVERS := $(shell dpkg-parsechangelog | grep ^Version: | cut -d' ' -f2 \
 		| cut -d- -f1)
 
@@ -19,6 +21,10 @@ override_dh_auto_install:
 override_dh_dkms:
 	dh_dkms -V $(VERSION)
 
+override_dh_auto_test:
+ifneq ($(DEB_BUILD_ARCH),arm64)
+	dh_auto_test $@
+endif
 
 %:
 	dh $@ --with autoreconf,dkms

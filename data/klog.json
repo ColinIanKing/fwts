@@ -4343,7 +4343,7 @@
   },
   {
    "compare_mode": "string",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_LOW",
    "pattern": "No _BQC method",
    "advice": "_BQC (Brightness Query Current level) seems to be missing. This method returns the current brightness level of a built-in display output device.",
    "label": "KlogAcpiMissingBqc"

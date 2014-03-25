@@ -193,7 +193,9 @@ libfwtsiasl_la_SOURCES = 			\
 	../common/adfile.c 			\
 	../common/adisasm.c 			\
 	../common/adwalk.c 			\
+	../common/ahids.c 			\
 	../common/ahpredef.c 			\
+	../common/cmfsize.c			\
 	../common/dmextern.c 			\
 	../common/dmrestag.c 			\
 	../common/dmtable.c 			\
@@ -211,6 +213,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/disassembler/dmwalk.c 	\
 	../components/disassembler/dmdeferred.c \
 	../components/disassembler/dmresrcl2.c 	\
+	../components/tables/tbdata.c		\
 	../components/tables/tbfadt.c 		\
 	../components/tables/tbinstal.c 	\
 	../components/tables/tbutils.c 		\

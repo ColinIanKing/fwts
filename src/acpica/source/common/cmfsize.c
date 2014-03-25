@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Name: actables.h - ACPI table management
+ * Module Name: cfsize - Common get file size function
  *
  *****************************************************************************/
 
@@ -113,212 +113,71 @@
  *
  *****************************************************************************/
 
-#ifndef __ACTABLES_H__
-#define __ACTABLES_H__
+#include "acpi.h"
+#include "accommon.h"
+#include "acapps.h"
+#include <stdio.h>
+
+#define _COMPONENT          ACPI_TOOLS
+        ACPI_MODULE_NAME    ("cmfsize")
 
 
-ACPI_STATUS
-AcpiAllocateRootTable (
-    UINT32                  InitialTableCount);
+/*******************************************************************************
+ *
+ * FUNCTION:    CmGetFileSize
+ *
+ * PARAMETERS:  File                    - Open file descriptor
+ *
+ * RETURN:      File Size. On error, -1 (ACPI_UINT32_MAX)
+ *
+ * DESCRIPTION: Get the size of a file. Uses seek-to-EOF. File must be open.
+ *              Does not disturb the current file pointer. Uses perror for
+ *              error messages.
+ *
+ ******************************************************************************/
 
-/*
- * tbxfroot - Root pointer utilities
- */
-ACPI_STATUS
-AcpiTbValidateRsdp (
-    ACPI_TABLE_RSDP         *Rsdp);
-
-UINT8 *
-AcpiTbScanMemoryForRsdp (
-    UINT8                   *StartAddress,
-    UINT32                  Length);
-
-
-/*
- * tbdata - table data structure management
- */
-ACPI_STATUS
-AcpiTbGetNextRootIndex (
-    UINT32                  *TableIndex);
-
-void
-AcpiTbInitTableDescriptor (
-    ACPI_TABLE_DESC         *TableDesc,
-    ACPI_PHYSICAL_ADDRESS   Address,
-    UINT8                   Flags,
-    ACPI_TABLE_HEADER       *Table);
-
-ACPI_STATUS
-AcpiTbAcquireTempTable (
-    ACPI_TABLE_DESC         *TableDesc,
-    ACPI_PHYSICAL_ADDRESS   Address,
-    UINT8                   Flags);
-
-void
-AcpiTbReleaseTempTable (
-    ACPI_TABLE_DESC         *TableDesc);
-
-BOOLEAN
-AcpiTbIsTableLoaded (
-    UINT32                  TableIndex);
-
-void
-AcpiTbSetTableLoadedFlag (
-    UINT32                  TableIndex,
-    BOOLEAN                 IsLoaded);
+UINT32
+CmGetFileSize (
+    FILE                    *File)
+{
+    long                    FileSize;
+    long                    CurrentOffset;
 
 
-/*
- * tbfadt - FADT parse/convert/validate
- */
-void
-AcpiTbParseFadt (
-    UINT32                  TableIndex);
+    /* Save the current file pointer, seek to EOF to obtain file size */
 
-void
-AcpiTbCreateLocalFadt (
-    ACPI_TABLE_HEADER       *Table,
-    UINT32                  Length);
+    CurrentOffset = ftell (File);
+    if (CurrentOffset < 0)
+    {
+        goto OffsetError;
+    }
 
+    if (fseek (File, 0, SEEK_END))
+    {
+        goto SeekError;
+    }
 
-/*
- * tbfind - find ACPI table
- */
-ACPI_STATUS
-AcpiTbFindTable (
-    char                    *Signature,
-    char                    *OemId,
-    char                    *OemTableId,
-    UINT32                  *TableIndex);
+    FileSize = ftell (File);
+    if (FileSize < 0)
+    {
+        goto OffsetError;
+    }
 
+    /* Restore original file pointer */
 
-/*
- * tbinstal - Table removal and deletion
- */
-ACPI_STATUS
-AcpiTbResizeRootTableList (
-    void);
+    if (fseek (File, CurrentOffset, SEEK_SET))
+    {
+        goto SeekError;
+    }
 
-ACPI_STATUS
-AcpiTbValidateTable (
-    ACPI_TABLE_DESC         *TableDesc);
-
-void
-AcpiTbInvalidateTable (
-    ACPI_TABLE_DESC         *TableDesc);
-
-ACPI_STATUS
-AcpiTbVerifyTable (
-    ACPI_TABLE_DESC         *TableDesc,
-    char                    *Signature);
-
-void
-AcpiTbOverrideTable (
-    ACPI_TABLE_DESC         *OldTableDesc);
-
-ACPI_STATUS
-AcpiTbAcquireTable (
-    ACPI_TABLE_DESC         *TableDesc,
-    ACPI_TABLE_HEADER       **TablePtr,
-    UINT32                  *TableLength,
-    UINT8                   *TableFlags);
-
-void
-AcpiTbReleaseTable (
-    ACPI_TABLE_HEADER       *Table,
-    UINT32                  TableLength,
-    UINT8                   TableFlags);
-
-ACPI_STATUS
-AcpiTbInstallStandardTable (
-    ACPI_PHYSICAL_ADDRESS   Address,
-    UINT8                   Flags,
-    BOOLEAN                 Reload,
-    BOOLEAN                 Override,
-    UINT32                  *TableIndex);
-
-ACPI_STATUS
-AcpiTbStoreTable (
-    ACPI_PHYSICAL_ADDRESS   Address,
-    ACPI_TABLE_HEADER       *Table,
-    UINT32                  Length,
-    UINT8                   Flags,
-    UINT32                  *TableIndex);
-
-void
-AcpiTbUninstallTable (
-    ACPI_TABLE_DESC        *TableDesc);
-
-void
-AcpiTbTerminate (
-    void);
-
-ACPI_STATUS
-AcpiTbDeleteNamespaceByOwner (
-    UINT32                  TableIndex);
-
-ACPI_STATUS
-AcpiTbAllocateOwnerId (
-    UINT32                  TableIndex);
-
-ACPI_STATUS
-AcpiTbReleaseOwnerId (
-    UINT32                  TableIndex);
-
-ACPI_STATUS
-AcpiTbGetOwnerId (
-    UINT32                  TableIndex,
-    ACPI_OWNER_ID           *OwnerId);
+    return ((UINT32) FileSize);
 
 
-/*
- * tbutils - table manager utilities
- */
-ACPI_STATUS
-AcpiTbInitializeFacs (
-    void);
+OffsetError:
+    perror ("Could not get file offset");
+    return (ACPI_UINT32_MAX);
 
-BOOLEAN
-AcpiTbTablesLoaded (
-    void);
-
-void
-AcpiTbPrintTableHeader(
-    ACPI_PHYSICAL_ADDRESS   Address,
-    ACPI_TABLE_HEADER       *Header);
-
-UINT8
-AcpiTbChecksum (
-    UINT8                   *Buffer,
-    UINT32                  Length);
-
-ACPI_STATUS
-AcpiTbVerifyChecksum (
-    ACPI_TABLE_HEADER       *Table,
-    UINT32                  Length);
-
-void
-AcpiTbCheckDsdtHeader (
-    void);
-
-ACPI_TABLE_HEADER *
-AcpiTbCopyDsdt (
-    UINT32                  TableIndex);
-
-void
-AcpiTbInstallTableWithOverride (
-    UINT32                  TableIndex,
-    ACPI_TABLE_DESC         *NewTableDesc,
-    BOOLEAN                 Override);
-
-ACPI_STATUS
-AcpiTbInstallFixedTable (
-    ACPI_PHYSICAL_ADDRESS   Address,
-    char                    *Signature,
-    UINT32                  TableIndex);
-
-ACPI_STATUS
-AcpiTbParseRootTable (
-    ACPI_PHYSICAL_ADDRESS   RsdpAddress);
-
-#endif /* __ACTABLES_H__ */
+SeekError:
+    perror ("Could not seek file");
+    return (ACPI_UINT32_MAX);
+}

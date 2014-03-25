@@ -119,8 +119,6 @@
 #include "amlresrc.h"
 
 
-#pragma pack(push) /* Set default struct packing */
-
 #define BLOCK_NONE              0
 #define BLOCK_PAREN             1
 #define BLOCK_BRACE             2
@@ -626,6 +624,14 @@ AcpiDmMethodFlags (
     ACPI_PARSE_OBJECT       *Op);
 
 void
+AcpiDmDisplayTargetPathname (
+    ACPI_PARSE_OBJECT       *Op);
+
+void
+AcpiDmNotifyDescription (
+    ACPI_PARSE_OBJECT       *Op);
+
+void
 AcpiDmPredefinedDescription (
     ACPI_PARSE_OBJECT       *Op);
 
@@ -705,11 +711,11 @@ AcpiDmByteList (
     ACPI_PARSE_OBJECT       *Op);
 
 void
-AcpiDmIsEisaId (
+AcpiDmCheckForHardwareId (
     ACPI_PARSE_OBJECT       *Op);
 
 void
-AcpiDmEisaId (
+AcpiDmDecompressEisaId (
     UINT32                  EncodedId);
 
 BOOLEAN
@@ -1002,7 +1008,5 @@ void
 AdDisassemblerHeader (
     char                    *Filename);
 
-
-#pragma pack(pop) /* Restore original struct packing */
 
 #endif  /* __ACDISASM_H__ */

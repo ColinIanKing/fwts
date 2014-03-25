@@ -197,6 +197,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/resources/rsxface.c		\
 	source/components/resources/rsserial.c		\
 	source/components/resources/rsdumpinfo.c	\
+	source/components/tables/tbdata.c		\
 	source/components/tables/tbfadt.c		\
 	source/components/tables/tbfind.c		\
 	source/components/tables/tbinstal.c		\
@@ -235,6 +236,8 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/uterror.c		\
 	source/components/utilities/utbuffer.c 		\
 	source/common/acgetline.c            		\
+	source/common/ahids.c				\
+	source/common/cmfsize.c            		\
 	source/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

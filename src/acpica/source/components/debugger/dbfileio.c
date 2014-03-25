@@ -214,6 +214,8 @@ AcpiDbOpenDebugFile (
 
 
 #ifdef ACPI_APPLICATION
+#include "acapps.h"
+
 /*******************************************************************************
  *
  * FUNCTION:    AcpiDbCheckTextModeCorruption
@@ -318,9 +320,11 @@ AcpiDbReadTable (
 
     /* Get the file size */
 
-    fseek (fp, 0, SEEK_END);
-    FileSize = (UINT32) ftell (fp);
-    fseek (fp, 0, SEEK_SET);
+    FileSize = CmGetFileSize (fp);
+    if (FileSize == ACPI_UINT32_MAX)
+    {
+        return (AE_ERROR);
+    }
 
     if (FileSize < 4)
     {
@@ -493,7 +497,7 @@ AeLocalLoadTable (
 
     /* Install the new table into the local data structures */
 
-    Status = AcpiTbInstallTable (&TableInfo);
+    Status = AcpiTbInitTableDescriptor (&TableInfo);
     if (ACPI_FAILURE (Status))
     {
         if (Status == AE_ALREADY_EXISTS)
@@ -547,23 +551,23 @@ AcpiDbReadTableFromFile (
     FILE                    *File;
     UINT32                  FileSize;
     UINT32                  TableLength;
-    ACPI_STATUS             Status;
+    ACPI_STATUS             Status = AE_ERROR;
 
 
-    /* Open the file */
+    /* Open the file, get current size */
 
     File = fopen (Filename, "rb");
     if (!File)
     {
         perror ("Could not open input file");
-        return (AE_ERROR);
+        return (Status);
     }
 
-    /* Get the file size */
-
-    fseek (File, 0, SEEK_END);
-    FileSize = (UINT32) ftell (File);
-    fseek (File, 0, SEEK_SET);
+    FileSize = CmGetFileSize (File);
+    if (FileSize == ACPI_UINT32_MAX)
+    {
+        goto Exit;
+    }
 
     /* Get the entire file */
 
@@ -571,15 +575,14 @@ AcpiDbReadTableFromFile (
         Filename, FileSize, FileSize);
 
     Status = AcpiDbReadTable (File, Table, &TableLength);
-    fclose(File);
-
     if (ACPI_FAILURE (Status))
     {
         AcpiOsPrintf ("Could not get table from the file\n");
-        return (Status);
     }
 
-    return (AE_OK);
+Exit:
+    fclose(File);
+    return (Status);
  }
 #endif
 
@@ -638,6 +641,8 @@ AcpiDbGetTableFromFile (
 
             return (Status);
         }
+
+        AcpiTbPrintTableHeader (0, Table);
 
         fprintf (stderr,
             "Acpi table [%4.4s] successfully installed and loaded\n",

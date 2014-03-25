@@ -117,8 +117,6 @@
 #define __ACGLOBAL_H__
 
 
-#pragma pack(push) /* Set default struct packing */
-
 /*
  * Ensure that the globals are actually defined and initialized only once.
  *
@@ -179,8 +177,8 @@ ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_AutoSerializeMethods, TRUE);
 
 /*
  * Create the predefined _OSI method in the namespace? Default is TRUE
- * because ACPI CA is fully compatible with other ACPI implementations.
- * Changing this will revert ACPI CA (and machine ASL) to pre-OSI behavior.
+ * because ACPICA is fully compatible with other ACPI implementations.
+ * Changing this will revert ACPICA (and machine ASL) to pre-OSI behavior.
  */
 ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_CreateOsiMethod, TRUE);
 
@@ -236,10 +234,10 @@ ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_TruncateIoAddresses, FALSE);
 ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_DisableAutoRepair, FALSE);
 
 /*
- * Optionally do not load any SSDTs from the RSDT/XSDT during initialization.
+ * Optionally do not install any SSDTs from the RSDT/XSDT during initialization.
  * This can be useful for debugging ACPI problems on some machines.
  */
-ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_DisableSsdtTableLoad, FALSE);
+ACPI_INIT_GLOBAL (UINT8,                AcpiGbl_DisableSsdtTableInstall, FALSE);
 
 /*
  * We keep track of the latest version of Windows that has been requested by
@@ -434,7 +432,7 @@ ACPI_GLOBAL (UINT32,                    AcpiGbl_MaxConcurrentNodeCount);
 ACPI_GLOBAL (ACPI_SIZE *,               AcpiGbl_EntryStackPointer);
 ACPI_GLOBAL (ACPI_SIZE *,               AcpiGbl_LowestStackPointer);
 ACPI_GLOBAL (UINT32,                    AcpiGbl_DeepestNesting);
-ACPI_INIT_GLOBAL (UINT32,               AcpiGbl_NestingLevel, 0);   
+ACPI_INIT_GLOBAL (UINT32,               AcpiGbl_NestingLevel, 0);
 #endif
 
 
@@ -591,8 +589,7 @@ ACPI_INIT_GLOBAL (ACPI_FILE,            AcpiGbl_DebugFile, NULL);
  ****************************************************************************/
 
 extern const AH_PREDEFINED_NAME         AslPredefinedInfo[];
+extern const AH_DEVICE_ID               AslDeviceIds[];
 
-
-#pragma pack(pop) /* Restore original struct packing */
 
 #endif /* __ACGLOBAL_H__ */

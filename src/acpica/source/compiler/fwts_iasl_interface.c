@@ -37,7 +37,9 @@ static void init_asl_core(void)
 {
 	int i;
 
+	AcpiGbl_ExternalFileList = NULL;
 	AcpiDbgLevel = 0;
+	PrInitializePreprocessor ();
 
 	for (i = 0; i < ASL_NUM_FILES; i++) {
 		Gbl_Files[i].Handle = NULL;
@@ -79,6 +81,7 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		Gbl_DoCompile = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)outputfile;
 		Gbl_UseDefaultAmlFilename = FALSE;
+		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
 
 		/* Throw away noisy errors */
 		if (freopen("/dev/null", "w", stderr) != NULL)
@@ -165,6 +168,7 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		Gbl_PreprocessFlag = TRUE;
 		Gbl_UseDefaultAmlFilename = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)source;
+		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
 
 		(void)AslDoOneFile((char *)source);
 

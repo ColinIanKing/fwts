@@ -30,7 +30,7 @@ summary          klog: CRITICAL Kernel message: [ 1.336148] ACPI Error (psparse-
 summary          klog: CRITICAL Kernel message: [ 1.371180] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88044b85e4a0), AE_AML_BUFFER_LIMIT
 summary          klog: CRITICAL Kernel message: [ 2.949716] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node ffff880297016ca8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
 summary         
-summary         High failures: 1222
+summary         High failures: 1221
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008020/0000000000008028, using 32 (20090903/tbfadt-427)
@@ -279,7 +279,6 @@ summary          klog: HIGH Kernel message: [ 0.092524] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.092570] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2.GCAP] (Node f701e270), AE_NO_MEMORY
 summary          klog: HIGH Kernel message: [ 0.092612] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PDC] (Node f701e240), AE_NO_MEMORY
 summary          klog: HIGH Kernel message: [ 0.093544] ACPI Error: Needed type [Reference], found [Device] f7019f90 (20100428/exresop-104)
-summary          klog: HIGH Kernel message: [ 0.094856] [Firmware Bug]: ACPI: No _BQC method, cannot determine initial brightness
 summary          klog: HIGH Kernel message: [ 0.095719] ACPI Error: Could not map memory at 0x0000000087127520, size 463 (20110112/exregion-178)
 summary          klog: HIGH Kernel message: [ 0.095737] ACPI Error: Method parse/execution failed [_PR_.CPU1.APPT] (Node f383e498), AE_NO_MEMORY (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.095749] ACPI Error: Method parse/execution failed [_PR_.CPU1.GCAP] (Node f383e468), AE_NO_MEMORY (20110112/psparse-536)
@@ -1587,7 +1586,8 @@ summary          klog: MEDIUM Kernel message: [ 3.382442] ACPI Warning: Incorrec
 summary          klog: MEDIUM Kernel message: [ 3.644168] ACPI Warning: Incorrect checksum in table [TCPA] - 0xF8, should be 0x9C (20110413/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 4.046031] ACPI Warning: Incorrect checksum in table [OEMB] - 4A, should be 47 (20090903/tbutils-314)
 summary         
-summary         Low failures: 13
+summary         Low failures: 14
+summary          klog: LOW Kernel message: [ 0.094856] [Firmware Bug]: ACPI: No _BQC method, cannot determine initial brightness
 summary          klog: LOW Kernel message: [ 0.810246] [Firmware Bug]: ACPI(Z01I) defines _DOD but not _DOS
 summary          klog: LOW Kernel message: [ 1.183989] [Firmware Bug]: ACPI(PEGD) defines _DOD but not _DOS
 summary          klog: LOW Kernel message: [ 1.398000] [Firmware Bug]: ACPI(Z00P) defines _DOD but not _DOS

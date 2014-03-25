@@ -2921,7 +2921,7 @@ klog            ADVICE: The ACPI table listed above has an incorrect
 klog            checksum, this could be a BIOS bug or due to table
 klog            corruption.
 klog            
-klog            FAILED [HIGH] KlogAcpiMissingBqc: Test 1, HIGH Kernel
+klog            FAILED [LOW] KlogAcpiMissingBqc: Test 1, LOW Kernel
 klog            message: [ 0.094856] [Firmware Bug]: ACPI: No _BQC method,
 klog            cannot determine initial brightness
 klog            

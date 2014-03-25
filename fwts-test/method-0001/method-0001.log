@@ -701,35 +701,35 @@ method          SKIPPED: Test 114, Skipping test for non-existant object
 method          _FST.
 method          
 method          Test 115 of 155: Test _ACx (Active Cooling).
-method          PASSED: Test 115, \_SB_.PCI0.LPCB.EC0_.BAC0 correctly
-method          returned a sane looking return type.
-method          
-method          PASSED: Test 115, \_SB_.PCI0.LPCB.EC0_.BAC1 correctly
-method          returned a sane looking return type.
+method          SKIPPED: Test 115, Skipping test for non-existant object
+method          _AC0.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC2.
+method          _AC1.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC3.
+method          _AC2.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC4.
+method          _AC3.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC5.
+method          _AC4.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC6.
+method          _AC5.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC7.
+method          _AC6.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC8.
+method          _AC7.
 method          
 method          SKIPPED: Test 115, Skipping test for non-existant object
-method          AC9.
+method          _AC8.
+method          
+method          SKIPPED: Test 115, Skipping test for non-existant object
+method          _AC9.
 method          
 method          
 method          Test 116 of 155: Test _CRT (Critical Trip Point).
@@ -1127,6 +1127,6 @@ method          SKIPPED: Test 155, Skipping test for non-existant object
 method          _SRV.
 method          
 method          ==========================================================
-method          237 passed, 0 failed, 0 warning, 0 aborted, 121 skipped, 0
+method          235 passed, 0 failed, 0 warning, 0 aborted, 123 skipped, 0
 method          info only.
 method          ==========================================================

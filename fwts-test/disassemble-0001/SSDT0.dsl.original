@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20130418-64 [May  2 2013]
+ * AML Disassembler version 20140325-64 [Mar 25 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_12884_SSDT.dat, Fri May  3 09:41:56 2013
+ * Disassembly of /tmp/fwts_iasl_27987_SSDT.dat, Tue Mar 25 20:18:15 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +16,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
+DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
 {
 
     External (_SB_.PCI0.SATA, DeviceObj)
@@ -47,24 +47,24 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "SataRe", "SataAhci
                     CreateWordField (Arg0, 0x9C, W780)
                     If (And (W780, 0x08))
                     {
-                        Store (0x10, GB00)
-                        Store (0x03, GB01)
-                        Store (0xEF, GB06)
+                        Store (0x10, GB00) /* \_SB_.PCI0.SATA.PRT0._SDD.GB00 */
+                        Store (0x03, GB01) /* \_SB_.PCI0.SATA.PRT0._SDD.GB01 */
+                        Store (0xEF, GB06) /* \_SB_.PCI0.SATA.PRT0._SDD.GB06 */
                     }
                     Else
                     {
-                        Store (0x90, GB00)
-                        Store (0x03, GB01)
-                        Store (0xEF, GB06)
+                        Store (0x90, GB00) /* \_SB_.PCI0.SATA.PRT0._SDD.GB00 */
+                        Store (0x03, GB01) /* \_SB_.PCI0.SATA.PRT0._SDD.GB01 */
+                        Store (0xEF, GB06) /* \_SB_.PCI0.SATA.PRT0._SDD.GB06 */
                     }
                 }
 
-                Store (GBU0, GTF0)
+                Store (GBU0, GTF0) /* External reference */
             }
 
             Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
             {
-                Return (GTF0)
+                Return (GTF0) /* External reference */
             }
         }
 
@@ -89,24 +89,24 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "SataRe", "SataAhci
                     CreateWordField (Arg0, 0x9C, W781)
                     If (And (W781, 0x08))
                     {
-                        Store (0x10, GB10)
-                        Store (0x03, GB11)
-                        Store (0xEF, GB16)
+                        Store (0x10, GB10) /* \_SB_.PCI0.SATA.PRT1._SDD.GB10 */
+                        Store (0x03, GB11) /* \_SB_.PCI0.SATA.PRT1._SDD.GB11 */
+                        Store (0xEF, GB16) /* \_SB_.PCI0.SATA.PRT1._SDD.GB16 */
                     }
                     Else
                     {
-                        Store (0x90, GB10)
-                        Store (0x03, GB11)
-                        Store (0xEF, GB16)
+                        Store (0x90, GB10) /* \_SB_.PCI0.SATA.PRT1._SDD.GB10 */
+                        Store (0x03, GB11) /* \_SB_.PCI0.SATA.PRT1._SDD.GB11 */
+                        Store (0xEF, GB16) /* \_SB_.PCI0.SATA.PRT1._SDD.GB16 */
                     }
                 }
 
-                Store (GBU1, GTF1)
+                Store (GBU1, GTF1) /* External reference */
             }
 
             Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
             {
-                Return (GTF1)
+                Return (GTF1) /* External reference */
             }
         }
 
@@ -131,24 +131,24 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "SataRe", "SataAhci
                     CreateWordField (Arg0, 0x9C, W782)
                     If (And (W782, 0x08))
                     {
-                        Store (0x10, GB20)
-                        Store (0x03, GB21)
-                        Store (0xEF, GB26)
+                        Store (0x10, GB20) /* \_SB_.PCI0.SATA.PRT2._SDD.GB20 */
+                        Store (0x03, GB21) /* \_SB_.PCI0.SATA.PRT2._SDD.GB21 */
+                        Store (0xEF, GB26) /* \_SB_.PCI0.SATA.PRT2._SDD.GB26 */
                     }
                     Else
                     {
-                        Store (0x90, GB20)
-                        Store (0x03, GB21)
-                        Store (0xEF, GB26)
+                        Store (0x90, GB20) /* \_SB_.PCI0.SATA.PRT2._SDD.GB20 */
+                        Store (0x03, GB21) /* \_SB_.PCI0.SATA.PRT2._SDD.GB21 */
+                        Store (0xEF, GB26) /* \_SB_.PCI0.SATA.PRT2._SDD.GB26 */
                     }
                 }
 
-                Store (GBU2, GTF2)
+                Store (GBU2, GTF2) /* External reference */
             }
 
             Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
             {
-                Return (GTF2)
+                Return (GTF2) /* External reference */
             }
         }
     }

@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20130418-64 [May  2 2013]
+ * AML Disassembler version 20140325-64 [Mar 25 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_12884_SSDT.dat, Fri May  3 09:41:56 2013
+ * Disassembly of /tmp/fwts_iasl_27987_SSDT.dat, Tue Mar 25 20:18:15 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,11 +16,11 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "BrtRef", "DD01BRT", 0x00001000)
+DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "BrtRef", "DD01BRT", 0x00001000)
 {
 
     External (_SB_.PCI0.GFX0.DD03, DeviceObj)
-    External (_SB_.PCI0.LPCB.EC0_.BRTS)
+    External (_SB_.PCI0.LPCB.EC0_.BRTS, UnknownObj)
 
     Scope (\_SB.PCI0.GFX0.DD03)
     {
@@ -44,7 +44,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_SSDT.aml", "SSDT", 1, "BrtRef", "DD01BRT"
         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
         {
             Divide (Arg0, 0x0A, Local0, Local1)
-            Store (Local1, \_SB.PCI0.LPCB.EC0.BRTS)
+            Store (Local1, \_SB.PCI0.LPCB.EC0.BRTS) /* External reference */
         }
 
         Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current

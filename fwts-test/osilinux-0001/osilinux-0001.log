@@ -8,24 +8,24 @@ osilinux        Windows _OSI strings
 osilinux                    {
 osilinux                        If (_OSI ("Linux"))
 osilinux                        {
-osilinux                            Store (One, LINX)
-osilinux                            Store (Zero, ECDY)
+osilinux                            Store (One, LINX) /* \LINX */
+osilinux                            Store (Zero, ECDY) /* \ECDY */
 osilinux                        }
 osilinux                        If (_OSI ("Windows 2001"))
 osilinux                        {
-osilinux                            Store (0x07D1, OSYS)
+osilinux                            Store (0x07D1, OSYS) /* \OSYS */
 osilinux                        }
 osilinux                        If (_OSI ("Windows 2001 SP1"))
 osilinux                        {
-osilinux                            Store (0x07D1, OSYS)
+osilinux                            Store (0x07D1, OSYS) /* \OSYS */
 osilinux                        }
 osilinux                        If (_OSI ("Windows 2001 SP2"))
 osilinux                        {
-osilinux                            Store (0x07D2, OSYS)
+osilinux                            Store (0x07D2, OSYS) /* \OSYS */
 osilinux                        }
 osilinux                        If (_OSI ("Windows 2006"))
 osilinux                        {
-osilinux                            Store (0x07D6, OSYS)
+osilinux                            Store (0x07D6, OSYS) /* \OSYS */
 osilinux                        }
 osilinux                    }
 osilinux        WARNING: Test 1, DSDT implements a deprecated

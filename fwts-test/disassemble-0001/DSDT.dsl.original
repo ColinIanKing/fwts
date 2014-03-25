@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20130418-64 [May  2 2013]
+ * AML Disassembler version 20140325-64 [Mar 25 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_12884_DSDT.dat, Fri May  3 09:41:56 2013
+ * Disassembly of /tmp/fwts_iasl_27987_DSDT.dat, Tue Mar 25 20:18:15 2014
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -16,13 +16,13 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20060608 (537265672)
  */
-DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
+DefinitionBlock ("/tmp/fwts_iasl_27987_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
 
-    External (_PR_.CPU0._PPC)
-    External (CFGD)
-    External (PDC0)
-    External (PDC1)
+    External (_PR_.CPU0._PPC, UnknownObj)
+    External (CFGD, UnknownObj)
+    External (PDC0, UnknownObj)
+    External (PDC1, UnknownObj)
 
     Name (Z000, One)
     Name (Z001, 0x02)
@@ -45,38 +45,38 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
     {
         If (LEqual (Arg0, Zero))
         {
-            Store (Or (And (P80D, 0xFFFFFF00), Arg1), P80D)
+            Store (Or (And (P80D, 0xFFFFFF00), Arg1), P80D) /* \P80D */
         }
 
         If (LEqual (Arg0, One))
         {
             Store (Or (And (P80D, 0xFFFF00FF), ShiftLeft (Arg1, 0x08)
-                ), P80D)
+                ), P80D) /* \P80D */
         }
 
         If (LEqual (Arg0, 0x02))
         {
             Store (Or (And (P80D, 0xFF00FFFF), ShiftLeft (Arg1, 0x10)
-                ), P80D)
+                ), P80D) /* \P80D */
         }
 
         If (LEqual (Arg0, 0x03))
         {
             Store (Or (And (P80D, 0x00FFFFFF), ShiftLeft (Arg1, 0x18)
-                ), P80D)
+                ), P80D) /* \P80D */
         }
 
-        Store (P80D, P80H)
+        Store (P80D, P80H) /* \P80H */
     }
 
     Method (_PIC, 1, NotSerialized)  // _PIC: Interrupt Model
     {
-        Store (Arg0, GPIC)
+        Store (Arg0, GPIC) /* \GPIC */
     }
 
     Method (_PTS, 1, NotSerialized)  // _PTS: Prepare To Sleep
     {
-        Store (Zero, P80D)
+        Store (Zero, P80D) /* \P80D */
         P8XH (Zero, Arg0)
         If (LEqual (Arg0, 0x03))
         {
@@ -106,32 +106,32 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
         If (LEqual (RP1D, Zero))
         {
-            Notify (\_SB.PCI0.RP01, Zero)
+            Notify (\_SB.PCI0.RP01, Zero) // Bus Check
         }
 
         If (LEqual (RP2D, Zero))
         {
-            Notify (\_SB.PCI0.RP02, Zero)
+            Notify (\_SB.PCI0.RP02, Zero) // Bus Check
         }
 
         If (LEqual (RP3D, Zero))
         {
-            Notify (\_SB.PCI0.RP03, Zero)
+            Notify (\_SB.PCI0.RP03, Zero) // Bus Check
         }
 
         If (LEqual (RP4D, Zero))
         {
-            Notify (\_SB.PCI0.RP04, Zero)
+            Notify (\_SB.PCI0.RP04, Zero) // Bus Check
         }
 
         If (LEqual (RP5D, Zero))
         {
-            Notify (\_SB.PCI0.RP05, Zero)
+            Notify (\_SB.PCI0.RP05, Zero) // Bus Check
         }
 
         If (LEqual (RP6D, Zero))
         {
-            Notify (\_SB.PCI0.RP06, Zero)
+            Notify (\_SB.PCI0.RP06, Zero) // Bus Check
         }
 
         If (LEqual (Arg0, 0x03))
@@ -145,12 +145,12 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             P8XH (Zero, 0x40)
             \_SB.PCI0.LPCB.PHSS (0x0F)
             Store (WAKF, Local0)
-            Store (Zero, WAKF)
+            Store (Zero, WAKF) /* \WAKF */
             And (Local0, 0x05, Local0)
             If (LEqual (Local0, One))
             {
                 P8XH (Zero, 0x41)
-                Notify (\_SB.PWRB, 0x02)
+                Notify (\_SB.PWRB, 0x02) // Device Wake
             }
 
             If (DTSE)
@@ -187,7 +187,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
         Multiply (Arg0, 0x08, Local0)
         Multiply (Arg1, 0x08, Local1)
         CreateField (Arg2, Local0, Local1, TBF3)
-        Return (TBF3)
+        Return (TBF3) /* \GETB.TBF3 */
     }
 
     Method (PNOT, 0, Serialized)
@@ -196,77 +196,77 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
         {
             If (And (PDC0, 0x08))
             {
-                Notify (\_PR.CPU0, 0x80)
+                Notify (\_PR.CPU0, 0x80) // Performance Capability Change
                 If (And (PDC0, 0x10))
                 {
                     Sleep (0x64)
-                    Notify (\_PR.CPU0, 0x81)
+                    Notify (\_PR.CPU0, 0x81) // C-State Change
                 }
             }
 
             If (And (PDC1, 0x08))
             {
-                Notify (\_PR.CPU1, 0x80)
+                Notify (\_PR.CPU1, 0x80) // Performance Capability Change
                 If (And (PDC1, 0x10))
                 {
                     Sleep (0x64)
-                    Notify (\_PR.CPU1, 0x81)
+                    Notify (\_PR.CPU1, 0x81) // C-State Change
                 }
             }
         }
         Else
         {
-            Notify (\_PR.CPU0, 0x80)
+            Notify (\_PR.CPU0, 0x80) // Performance Capability Change
             Sleep (0x64)
-            Notify (\_PR.CPU0, 0x81)
+            Notify (\_PR.CPU0, 0x81) // C-State Change
         }
     }
 
     Method (TRAP, 1, Serialized)
     {
-        Store (Arg0, SMIF)
-        Store (Zero, TRP0)
-        Return (SMIF)
+        Store (Arg0, SMIF) /* \SMIF */
+        Store (Zero, TRP0) /* \TRP0 */
+        Return (SMIF) /* \SMIF */
     }
 
     Scope (_SB)
     {
         Method (_INI, 0, NotSerialized)  // _INI: Initialize
         {
-            Store (0x9999, MARK)
+            Store (0x9999, MARK) /* \MARK */
             If (DTSE)
             {
                 TRAP (0x47)
                 ^PCI0.LPCB.PHSS (0x10)
             }
 
-            Store (0x07D0, OSYS)
+            Store (0x07D0, OSYS) /* \OSYS */
             If (CondRefOf (_OSI, Local0))
             {
                 If (_OSI ("Linux"))
                 {
-                    Store (One, LINX)
-                    Store (Zero, ECDY)
+                    Store (One, LINX) /* \LINX */
+                    Store (Zero, ECDY) /* \ECDY */
                 }
 
                 If (_OSI ("Windows 2001"))
                 {
-                    Store (0x07D1, OSYS)
+                    Store (0x07D1, OSYS) /* \OSYS */
                 }
 
                 If (_OSI ("Windows 2001 SP1"))
                 {
-                    Store (0x07D1, OSYS)
+                    Store (0x07D1, OSYS) /* \OSYS */
                 }
 
                 If (_OSI ("Windows 2001 SP2"))
                 {
-                    Store (0x07D2, OSYS)
+                    Store (0x07D2, OSYS) /* \OSYS */
                 }
 
                 If (_OSI ("Windows 2006"))
                 {
-                    Store (0x07D6, OSYS)
+                    Store (0x07D6, OSYS) /* \OSYS */
                 }
             }
 
@@ -418,7 +418,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
     {
         Method (_L01, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Add (L01C, One, L01C)
+            Add (L01C, One, L01C) /* \L01C */
             P8XH (Zero, One)
             P8XH (One, L01C)
             If (LAnd (LEqual (RP1D, Zero), \_SB.PCI0.RP01.HPSX))
@@ -428,7 +428,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP01.PDCX)
                     Store (One, \_SB.PCI0.RP01.HPSX)
-                    Notify (\_SB.PCI0.RP01, Zero)
+                    Notify (\_SB.PCI0.RP01, Zero) // Bus Check
                 }
                 Else
                 {
@@ -443,7 +443,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP02.PDCX)
                     Store (One, \_SB.PCI0.RP02.HPSX)
-                    Notify (\_SB.PCI0.RP02, Zero)
+                    Notify (\_SB.PCI0.RP02, Zero) // Bus Check
                 }
                 Else
                 {
@@ -458,7 +458,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP03.PDCX)
                     Store (One, \_SB.PCI0.RP03.HPSX)
-                    Notify (\_SB.PCI0.RP03, Zero)
+                    Notify (\_SB.PCI0.RP03, Zero) // Bus Check
                 }
                 Else
                 {
@@ -473,7 +473,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP04.PDCX)
                     Store (One, \_SB.PCI0.RP04.HPSX)
-                    Notify (\_SB.PCI0.RP04, Zero)
+                    Notify (\_SB.PCI0.RP04, Zero) // Bus Check
                 }
                 Else
                 {
@@ -488,7 +488,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP05.PDCX)
                     Store (One, \_SB.PCI0.RP05.HPSX)
-                    Notify (\_SB.PCI0.RP05, Zero)
+                    Notify (\_SB.PCI0.RP05, Zero) // Bus Check
                 }
                 Else
                 {
@@ -503,7 +503,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     Store (One, \_SB.PCI0.RP06.PDCX)
                     Store (One, \_SB.PCI0.RP06.HPSX)
-                    Notify (\_SB.PCI0.RP06, Zero)
+                    Notify (\_SB.PCI0.RP06, Zero) // Bus Check
                 }
                 Else
                 {
@@ -514,7 +514,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
         Method (_L02, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Store (Zero, GPEC)
+            Store (Zero, GPEC) /* \GPEC */
             If (\_SB.PCI0.LPCB.ECOK ())
             {
                 If (LEqual (DTSW, One))
@@ -548,17 +548,17 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
         Method (_L03, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.USB1, 0x02)
+            Notify (\_SB.PCI0.USB1, 0x02) // Device Wake
         }
 
         Method (_L04, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.USB2, 0x02)
+            Notify (\_SB.PCI0.USB2, 0x02) // Device Wake
         }
 
         Method (_L05, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.USB5, 0x02)
+            Notify (\_SB.PCI0.USB5, 0x02) // Device Wake
         }
 
         Method (_L06, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
@@ -569,7 +569,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             }
             Else
             {
-                Store (One, SCIS)
+                Store (One, SCIS) /* \SCIS */
             }
         }
 
@@ -579,53 +579,53 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             {
                 Store (One, \_SB.PCI0.RP01.PSPX)
                 Store (One, \_SB.PCI0.RP01.PMSX)
-                Notify (\_SB.PCI0.RP01, 0x02)
+                Notify (\_SB.PCI0.RP01, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.RP02.PSPX)
             {
                 Store (One, \_SB.PCI0.RP02.PSPX)
                 Store (One, \_SB.PCI0.RP02.PMSX)
-                Notify (\_SB.PCI0.RP02, 0x02)
+                Notify (\_SB.PCI0.RP02, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.RP03.PSPX)
             {
                 Store (One, \_SB.PCI0.RP03.PSPX)
                 Store (One, \_SB.PCI0.RP03.PMSX)
-                Notify (\_SB.PCI0.RP03, 0x02)
+                Notify (\_SB.PCI0.RP03, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.RP04.PSPX)
             {
                 Store (One, \_SB.PCI0.RP04.PSPX)
                 Store (One, \_SB.PCI0.RP04.PMSX)
-                Notify (\_SB.PCI0.RP04, 0x02)
+                Notify (\_SB.PCI0.RP04, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.RP05.PSPX)
             {
                 Store (One, \_SB.PCI0.RP05.PSPX)
                 Store (One, \_SB.PCI0.RP05.PMSX)
-                Notify (\_SB.PCI0.RP05, 0x02)
+                Notify (\_SB.PCI0.RP05, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.RP06.PSPX)
             {
                 Store (One, \_SB.PCI0.RP06.PSPX)
                 Store (One, \_SB.PCI0.RP06.PMSX)
-                Notify (\_SB.PCI0.RP06, 0x02)
+                Notify (\_SB.PCI0.RP06, 0x02) // Device Wake
             }
         }
 
         Method (_L0B, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.PCIB, 0x02)
+            Notify (\_SB.PCI0.PCIB, 0x02) // Device Wake
         }
 
         Method (_L0C, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.USB3, 0x02)
+            Notify (\_SB.PCI0.USB3, 0x02) // Device Wake
         }
 
         Method (_L0D, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
@@ -633,31 +633,31 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             If (\_SB.PCI0.EHC1.PMES)
             {
                 Store (One, \_SB.PCI0.EHC1.PMES)
-                Notify (\_SB.PCI0.EHC1, 0x02)
+                Notify (\_SB.PCI0.EHC1, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.EHC2.PMES)
             {
                 Store (One, \_SB.PCI0.EHC2.PMES)
-                Notify (\_SB.PCI0.EHC2, 0x02)
+                Notify (\_SB.PCI0.EHC2, 0x02) // Device Wake
             }
 
             If (\_SB.PCI0.HDEF.PMES)
             {
                 Store (One, \_SB.PCI0.HDEF.PMES)
-                Notify (\_SB.PCI0.HDEF, 0x02)
+                Notify (\_SB.PCI0.HDEF, 0x02) // Device Wake
             }
         }
 
         Method (_L0E, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Notify (\_SB.PCI0.USB4, 0x02)
+            Notify (\_SB.PCI0.USB4, 0x02) // Device Wake
         }
 
         Method (_L1B, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
         {
-            Not (LPOL, LPOL)
-            Notify (\_SB.LID0, 0x80)
+            Not (LPOL, LPOL) /* \LPOL */
+            Notify (\_SB.LID0, 0x80) // Status Change
         }
     }
 
@@ -673,16 +673,16 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (LGreater (^CPU0._PPC, Zero))
                     {
-                        Subtract (^CPU0._PPC, One, ^CPU0._PPC)
+                        Subtract (^CPU0._PPC, One, ^CPU0._PPC) /* External reference */
                         PNOT ()
-                        Add (^CPU0._PPC, One, ^CPU0._PPC)
+                        Add (^CPU0._PPC, One, ^CPU0._PPC) /* External reference */
                         PNOT ()
                     }
                     Else
                     {
-                        Add (^CPU0._PPC, One, ^CPU0._PPC)
+                        Add (^CPU0._PPC, One, ^CPU0._PPC) /* External reference */
                         PNOT ()
-                        Subtract (^CPU0._PPC, One, ^CPU0._PPC)
+                        Subtract (^CPU0._PPC, One, ^CPU0._PPC) /* External reference */
                         PNOT ()
                     }
                 }
@@ -695,12 +695,12 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
     Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
     {
         Store (_PSC, Local0)
-        Store (Zero, _PSC)
+        Store (Zero, _PSC) /* \_PSC */
     }
 
     Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3
     {
-        Store (0x03, _PSC)
+        Store (0x03, _PSC) /* \_PSC */
     }
 
     Scope (_SB)
@@ -727,7 +727,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             Method (WQAC, 1, NotSerialized)
             {
                 Store ("MXMTCConfigData", Debug)
-                Return (STAC)
+                Return (STAC) /* \_SB_.AMW0.STAC */
             }
 
             Name (STBC, Buffer (0x04)
@@ -738,17 +738,17 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
             {
                 Store ("Get MXMTCControlData: STBC = ", Debug)
                 Store (STBC, Debug)
-                Return (STBC)
+                Return (STBC) /* \_SB_.AMW0.STBC */
             }
 
             Method (WSBC, 2, NotSerialized)
             {
-                Store (Arg1, STBC)
+                Store (Arg1, STBC) /* \_SB_.AMW0.STBC */
                 Store ("Set MXMTCControlData: STBC = ", Debug)
                 Store (STBC, Debug)
                 If (LEqual (^^PCI0.LPCB.ECOK (), One))
                 {
-                    Store (DerefOf (Index (STBC, One)), ^^PCI0.LPCB.EC0.SKTC)
+                    Store (DerefOf (Index (STBC, One)), ^^PCI0.LPCB.EC0.SKTC) /* \_SB_.PCI0.LPCB.EC0_.SKTC */
                 }
             }
 
@@ -845,16 +845,16 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
         Device (LID0)
         {
-            Name (_HID, EisaId ("PNP0C0D"))  // _HID: Hardware ID
+            Name (_HID, EisaId ("PNP0C0D") /* Lid Device */)  // _HID: Hardware ID
             Method (_LID, 0, NotSerialized)  // _LID: Lid Status
             {
-                Return (LPOL)
+                Return (LPOL) /* \LPOL */
             }
         }
 
         Device (PWRB)
         {
-            Name (_HID, EisaId ("PNP0C0C"))  // _HID: Hardware ID
+            Name (_HID, EisaId ("PNP0C0C") /* Power Button Device */)  // _HID: Hardware ID
         }
 
         Device (PCI0)
@@ -869,8 +869,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 Return (0x02)
             }
 
-            Name (_HID, EisaId ("PNP0A08"))  // _HID: Hardware ID
-            Name (_CID, EisaId ("PNP0A03"))  // _CID: Compatible ID
+            Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
+            Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
             Device (MCHC)
             {
                 Name (_ADR, Zero)  // _ADR: Address
@@ -1089,157 +1089,157 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 If (^MCHC.PM1L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y00._LEN, C0LN)  // _LEN: Length
-                    Store (Zero, C0LN)
+                    Store (Zero, C0LN) /* \_SB_.PCI0._CRS.C0LN */
                 }
 
                 If (LEqual (^MCHC.PM1L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y00._RW, C0RW)  // _RW_: Read-Write Status
-                    Store (Zero, C0RW)
+                    Store (Zero, C0RW) /* \_SB_.PCI0._CRS.C0RW */
                 }
 
                 If (^MCHC.PM1H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y01._LEN, C4LN)  // _LEN: Length
-                    Store (Zero, C4LN)
+                    Store (Zero, C4LN) /* \_SB_.PCI0._CRS.C4LN */
                 }
 
                 If (LEqual (^MCHC.PM1H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y01._RW, C4RW)  // _RW_: Read-Write Status
-                    Store (Zero, C4RW)
+                    Store (Zero, C4RW) /* \_SB_.PCI0._CRS.C4RW */
                 }
 
                 If (^MCHC.PM2L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y02._LEN, C8LN)  // _LEN: Length
-                    Store (Zero, C8LN)
+                    Store (Zero, C8LN) /* \_SB_.PCI0._CRS.C8LN */
                 }
 
                 If (LEqual (^MCHC.PM2L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y02._RW, C8RW)  // _RW_: Read-Write Status
-                    Store (Zero, C8RW)
+                    Store (Zero, C8RW) /* \_SB_.PCI0._CRS.C8RW */
                 }
 
                 If (^MCHC.PM2H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y03._LEN, CCLN)  // _LEN: Length
-                    Store (Zero, CCLN)
+                    Store (Zero, CCLN) /* \_SB_.PCI0._CRS.CCLN */
                 }
 
                 If (LEqual (^MCHC.PM2H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y03._RW, CCRW)  // _RW_: Read-Write Status
-                    Store (Zero, CCRW)
+                    Store (Zero, CCRW) /* \_SB_.PCI0._CRS.CCRW */
                 }
 
                 If (^MCHC.PM3L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y04._LEN, D0LN)  // _LEN: Length
-                    Store (Zero, D0LN)
+                    Store (Zero, D0LN) /* \_SB_.PCI0._CRS.D0LN */
                 }
 
                 If (LEqual (^MCHC.PM3L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y04._RW, D0RW)  // _RW_: Read-Write Status
-                    Store (Zero, D0RW)
+                    Store (Zero, D0RW) /* \_SB_.PCI0._CRS.D0RW */
                 }
 
                 If (^MCHC.PM3H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y05._LEN, D4LN)  // _LEN: Length
-                    Store (Zero, D4LN)
+                    Store (Zero, D4LN) /* \_SB_.PCI0._CRS.D4LN */
                 }
 
                 If (LEqual (^MCHC.PM3H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y05._RW, D4RW)  // _RW_: Read-Write Status
-                    Store (Zero, D4RW)
+                    Store (Zero, D4RW) /* \_SB_.PCI0._CRS.D4RW */
                 }
 
                 If (^MCHC.PM4L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y06._LEN, D8LN)  // _LEN: Length
-                    Store (Zero, D8LN)
+                    Store (Zero, D8LN) /* \_SB_.PCI0._CRS.D8LN */
                 }
 
                 If (LEqual (^MCHC.PM4L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y06._RW, D8RW)  // _RW_: Read-Write Status
-                    Store (Zero, D8RW)
+                    Store (Zero, D8RW) /* \_SB_.PCI0._CRS.D8RW */
                 }
 
                 If (^MCHC.PM4H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y07._LEN, DCLN)  // _LEN: Length
-                    Store (Zero, DCLN)
+                    Store (Zero, DCLN) /* \_SB_.PCI0._CRS.DCLN */
                 }
 
                 If (LEqual (^MCHC.PM4H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y07._RW, DCRW)  // _RW_: Read-Write Status
-                    Store (Zero, DCRW)
+                    Store (Zero, DCRW) /* \_SB_.PCI0._CRS.DCRW */
                 }
 
                 If (^MCHC.PM5L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y08._LEN, E0LN)  // _LEN: Length
-                    Store (Zero, E0LN)
+                    Store (Zero, E0LN) /* \_SB_.PCI0._CRS.E0LN */
                 }
 
                 If (LEqual (^MCHC.PM5L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y08._RW, E0RW)  // _RW_: Read-Write Status
-                    Store (Zero, E0RW)
+                    Store (Zero, E0RW) /* \_SB_.PCI0._CRS.E0RW */
                 }
 
                 If (^MCHC.PM5H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y09._LEN, E4LN)  // _LEN: Length
-                    Store (Zero, E4LN)
+                    Store (Zero, E4LN) /* \_SB_.PCI0._CRS.E4LN */
                 }
 
                 If (LEqual (^MCHC.PM5H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y09._RW, E4RW)  // _RW_: Read-Write Status
-                    Store (Zero, E4RW)
+                    Store (Zero, E4RW) /* \_SB_.PCI0._CRS.E4RW */
                 }
 
                 If (^MCHC.PM6L)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y0A._LEN, E8LN)  // _LEN: Length
-                    Store (Zero, E8LN)
+                    Store (Zero, E8LN) /* \_SB_.PCI0._CRS.E8LN */
                 }
 
                 If (LEqual (^MCHC.PM6L, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y0A._RW, E8RW)  // _RW_: Read-Write Status
-                    Store (Zero, E8RW)
+                    Store (Zero, E8RW) /* \_SB_.PCI0._CRS.E8RW */
                 }
 
                 If (^MCHC.PM6H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y0B._LEN, ECLN)  // _LEN: Length
-                    Store (Zero, ECLN)
+                    Store (Zero, ECLN) /* \_SB_.PCI0._CRS.ECLN */
                 }
 
                 If (LEqual (^MCHC.PM6H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y0B._RW, ECRW)  // _RW_: Read-Write Status
-                    Store (Zero, ECRW)
+                    Store (Zero, ECRW) /* \_SB_.PCI0._CRS.ECRW */
                 }
 
                 If (^MCHC.PM0H)
                 {
                     CreateDWordField (BUF0, \_SB.PCI0._Y0C._LEN, F0LN)  // _LEN: Length
-                    Store (Zero, F0LN)
+                    Store (Zero, F0LN) /* \_SB_.PCI0._CRS.F0LN */
                 }
 
                 If (LEqual (^MCHC.PM0H, One))
                 {
                     CreateBitField (BUF0, \_SB.PCI0._Y0C._RW, F0RW)  // _RW_: Read-Write Status
-                    Store (Zero, F0RW)
+                    Store (Zero, F0RW) /* \_SB_.PCI0._CRS.F0RW */
                 }
 
                 CreateDWordField (BUF0, \_SB.PCI0._Y0D._MIN, M1MN)  // _MIN: Minimum Base Address
@@ -1248,14 +1248,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 CreateDWordField (BUF0, \_SB.PCI0._Y0E._MIN, M2MN)  // _MIN: Minimum Base Address
                 CreateDWordField (BUF0, \_SB.PCI0._Y0E._MAX, M2MX)  // _MAX: Maximum Base Address
                 CreateDWordField (BUF0, \_SB.PCI0._Y0E._LEN, M2LN)  // _LEN: Length
-                ShiftLeft (^MCHC.PXBR, 0x1A, M1MX)
+                ShiftLeft (^MCHC.PXBR, 0x1A, M1MX) /* \_SB_.PCI0._CRS.M1MX */
                 ShiftRight (0x10000000, ^MCHC.PXSZ, Local0)
-                Add (M1MX, Local0, M2MN)
-                Add (Subtract (M2MX, M2MN), One, M2LN)
-                Subtract (M1MX, One, M1MX)
-                ShiftLeft (^MCHC.TLUD, 0x14, M1MN)
-                Add (Subtract (M1MX, M1MN), One, M1LN)
-                Return (BUF0)
+                Add (M1MX, Local0, M2MN) /* \_SB_.PCI0._CRS.M2MN */
+                Add (Subtract (M2MX, M2MN), One, M2LN) /* \_SB_.PCI0._CRS.M2LN */
+                Subtract (M1MX, One, M1MX) /* \_SB_.PCI0._CRS.M1MX */
+                ShiftLeft (^MCHC.TLUD, 0x14, M1MN) /* \_SB_.PCI0._CRS.M1MN */
+                Add (Subtract (M1MX, M1MN), One, M1LN) /* \_SB_.PCI0._CRS.M1LN */
+                Return (BUF0) /* \_SB_.PCI0.BUF0 */
             }
 
             Method (_PRT, 0, NotSerialized)  // _PRT: PCI Routing Table
@@ -1578,7 +1578,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
             Device (PDRC)
             {
-                Name (_HID, EisaId ("PNP0C02"))  // _HID: Hardware ID
+                Name (_HID, EisaId ("PNP0C02") /* PNP Motherboard Resources */)  // _HID: Hardware ID
                 Name (_UID, One)  // _UID: Unique ID
                 Name (BUF0, ResourceTemplate ()
                 {
@@ -1618,18 +1618,18 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
                 {
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y0F._BAS, RBR0)  // _BAS: Base Address
-                    ShiftLeft (^^LPCB.RCBA, 0x0E, RBR0)
+                    ShiftLeft (^^LPCB.RCBA, 0x0E, RBR0) /* \_SB_.PCI0.PDRC._CRS.RBR0 */
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y10._BAS, MBR0)  // _BAS: Base Address
-                    ShiftLeft (^^MCHC.MHBR, 0x0E, MBR0)
+                    ShiftLeft (^^MCHC.MHBR, 0x0E, MBR0) /* \_SB_.PCI0.PDRC._CRS.MBR0 */
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y11._BAS, DBR0)  // _BAS: Base Address
-                    ShiftLeft (^^MCHC.DIBR, 0x0C, DBR0)
+                    ShiftLeft (^^MCHC.DIBR, 0x0C, DBR0) /* \_SB_.PCI0.PDRC._CRS.DBR0 */
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y12._BAS, EBR0)  // _BAS: Base Address
-                    ShiftLeft (^^MCHC.EPBR, 0x0C, EBR0)
+                    ShiftLeft (^^MCHC.EPBR, 0x0C, EBR0) /* \_SB_.PCI0.PDRC._CRS.EBR0 */
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y13._BAS, XBR0)  // _BAS: Base Address
-                    ShiftLeft (^^MCHC.PXBR, 0x1A, XBR0)
+                    ShiftLeft (^^MCHC.PXBR, 0x1A, XBR0) /* \_SB_.PCI0.PDRC._CRS.XBR0 */
                     CreateDWordField (BUF0, \_SB.PCI0.PDRC._Y13._LEN, XSZ0)  // _LEN: Length
-                    ShiftRight (0x10000000, ^^MCHC.PXSZ, XSZ0)
-                    Return (BUF0)
+                    ShiftRight (0x10000000, ^^MCHC.PXSZ, XSZ0) /* \_SB_.PCI0.PDRC._CRS.XSZ0 */
+                    Return (BUF0) /* \_SB_.PCI0.PDRC.BUF0 */
                 }
             }
 
@@ -1736,22 +1736,22 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     Name (_PSC, Zero)  // _PSC: Power State Current
                     Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
                     {
-                        Store (Zero, _PSC)
+                        Store (Zero, _PSC) /* \_SB_.PCI0.PEGP.VGA_._PSC */
                     }
 
                     Method (_PS1, 0, NotSerialized)  // _PS1: Power State 1
                     {
-                        Store (One, _PSC)
+                        Store (One, _PSC) /* \_SB_.PCI0.PEGP.VGA_._PSC */
                     }
 
                     Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3
                     {
-                        Store (0x03, _PSC)
+                        Store (0x03, _PSC) /* \_SB_.PCI0.PEGP.VGA_._PSC */
                     }
 
                     Method (_DOS, 1, NotSerialized)  // _DOS: Disable Output Switching
                     {
-                        Store (And (Arg0, 0x03), SWIT)
+                        Store (And (Arg0, 0x03), SWIT) /* \_SB_.PCI0.PEGP.VGA_.SWIT */
                     }
 
                     Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
@@ -1780,11 +1780,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             And (Local1, 0x02, Local1)
                             If (Local0)
                             {
-                                Store (One, CRTA)
+                                Store (One, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
                             }
                             Else
                             {
-                                Store (Zero, CRTA)
+                                Store (Zero, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
                             }
 
                             If (CRTA)
@@ -1844,11 +1844,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             And (Local1, One, Local1)
                             If (Local0)
                             {
-                                Store (One, LCDA)
+                                Store (One, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
                             }
                             Else
                             {
-                                Store (Zero, LCDA)
+                                Store (Zero, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
                             }
 
                             If (LCDA)
@@ -1911,7 +1911,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
                         {
                             Divide (Arg0, 0x0A, Local0, Local1)
-                            Store (Local1, ^^^^LPCB.EC0.BRTS)
+                            Store (Local1, ^^^^LPCB.EC0.BRTS) /* \_SB_.PCI0.LPCB.EC0_.BRTS */
                         }
 
                         Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
@@ -1937,11 +1937,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             And (Local1, 0x04, Local1)
                             If (Local0)
                             {
-                                Store (One, TVAA)
+                                Store (One, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                             }
                             Else
                             {
-                                Store (Zero, TVAA)
+                                Store (Zero, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                             }
 
                             If (TVAA)
@@ -1994,8 +1994,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             Store (CSTE, Local1)
                             If (LGreater (Local1, One))
                             {
-                                And (Local0, Local1, VLDF)
-                                And (VLDF, 0xFE, VLDF)
+                                And (Local0, Local1, VLDF) /* \_SB_.PCI0.PEGP.VGA_.VLDF */
+                                And (VLDF, 0xFE, VLDF) /* \_SB_.PCI0.PEGP.VGA_.VLDF */
                             }
 
                             If (VLDF)
@@ -2071,7 +2071,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             }
                             Else
                             {
-                                Store (One, VLDF)
+                                Store (One, VLDF) /* \_SB_.PCI0.PEGP.VGA_.VLDF */
                                 STBL (One)
                             }
                         }
@@ -2088,54 +2088,54 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (Arg0, One))
                         {
-                            Store (Zero, CRTA)
-                            Store (One, LCDA)
-                            Store (Zero, TVAA)
+                            Store (Zero, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (One, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (Zero, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x02))
                         {
-                            Store (One, CRTA)
-                            Store (Zero, LCDA)
-                            Store (Zero, TVAA)
+                            Store (One, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (Zero, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (Zero, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x03))
                         {
-                            Store (One, CRTA)
-                            Store (One, LCDA)
-                            Store (Zero, TVAA)
+                            Store (One, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (One, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (Zero, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x04))
                         {
-                            Store (Zero, CRTA)
-                            Store (Zero, LCDA)
-                            Store (One, TVAA)
+                            Store (Zero, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (Zero, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (One, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x05))
                         {
-                            Store (Zero, CRTA)
-                            Store (One, LCDA)
-                            Store (One, TVAA)
+                            Store (Zero, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (One, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (One, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x06))
                         {
-                            Store (One, CRTA)
-                            Store (Zero, LCDA)
-                            Store (One, TVAA)
+                            Store (One, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (Zero, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (One, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
                         If (LEqual (Arg0, 0x07))
                         {
-                            Store (One, CRTA)
-                            Store (One, LCDA)
-                            Store (One, TVAA)
+                            Store (One, CRTA) /* \_SB_.PCI0.PEGP.VGA_.CRTA */
+                            Store (One, LCDA) /* \_SB_.PCI0.PEGP.VGA_.LCDA */
+                            Store (One, TVAA) /* \_SB_.PCI0.PEGP.VGA_.TVAA */
                         }
 
-                        Notify (VGA, 0x80)
+                        Notify (VGA, 0x80) // Status Change
                     }
                 }
             }
@@ -2145,35 +2145,35 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 Name (_ADR, 0x00020000)  // _ADR: Address
                 Method (_DOS, 1, NotSerialized)  // _DOS: Disable Output Switching
                 {
-                    Store (And (Arg0, 0x07), DSEN)
+                    Store (And (Arg0, 0x07), DSEN) /* \DSEN */
                 }
 
                 Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
                 {
-                    Store (Zero, NDID)
+                    Store (Zero, NDID) /* \NDID */
                     If (LNotEqual (DIDL, Zero))
                     {
-                        Store (SDDL (DID1), DID1)
+                        Store (SDDL (DID1), DID1) /* \DID1 */
                     }
 
                     If (LNotEqual (DDL2, Zero))
                     {
-                        Store (SDDL (DID2), DID2)
+                        Store (SDDL (DID2), DID2) /* \DID2 */
                     }
 
                     If (LNotEqual (DDL3, Zero))
                     {
-                        Store (SDDL (DID3), DID3)
+                        Store (SDDL (DID3), DID3) /* \DID3 */
                     }
 
                     If (LNotEqual (DDL4, Zero))
                     {
-                        Store (SDDL (DID4), DID4)
+                        Store (SDDL (DID4), DID4) /* \DID4 */
                     }
 
                     If (LNotEqual (DDL5, Zero))
                     {
-                        Store (SDDL (DID5), DID5)
+                        Store (SDDL (DID5), DID5) /* \DID5 */
                     }
 
                     If (LEqual (NDID, One))
@@ -2183,7 +2183,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             0xFFFFFFFF
                         })
                         Store (Or (0x00010000, DID1), Index (TMP1, Zero))
-                        Return (TMP1)
+                        Return (TMP1) /* \_SB_.PCI0.GFX0._DOD.TMP1 */
                     }
 
                     If (LEqual (NDID, 0x02))
@@ -2195,7 +2195,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         })
                         Store (Or (0x00010000, DID1), Index (TMP2, Zero))
                         Store (Or (0x00010000, DID2), Index (TMP2, One))
-                        Return (TMP2)
+                        Return (TMP2) /* \_SB_.PCI0.GFX0._DOD.TMP2 */
                     }
 
                     If (LEqual (NDID, 0x03))
@@ -2209,7 +2209,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Store (Or (0x00010000, DID1), Index (TMP3, Zero))
                         Store (Or (0x00010000, DID2), Index (TMP3, One))
                         Store (Or (0x00010000, DID3), Index (TMP3, 0x02))
-                        Return (TMP3)
+                        Return (TMP3) /* \_SB_.PCI0.GFX0._DOD.TMP3 */
                     }
 
                     If (LEqual (NDID, 0x04))
@@ -2225,7 +2225,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Store (Or (0x00010000, DID2), Index (TMP4, One))
                         Store (Or (0x00010000, DID3), Index (TMP4, 0x02))
                         Store (Or (0x00010000, DID4), Index (TMP4, 0x03))
-                        Return (TMP4)
+                        Return (TMP4) /* \_SB_.PCI0.GFX0._DOD.TMP4 */
                     }
 
                     If (LGreater (NDID, 0x04))
@@ -2243,7 +2243,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Store (Or (0x00010000, DID3), Index (TMP5, 0x02))
                         Store (Or (0x00010000, DID4), Index (TMP5, 0x03))
                         Store (Or (0x00010000, DID4), Index (TMP5, 0x04))
-                        Return (TMP5)
+                        Return (TMP5) /* \_SB_.PCI0.GFX0._DOD.TMP5 */
                     }
 
                     Return (Package (0x01)
@@ -2280,7 +2280,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (And (Arg0, 0xC0000000), 0xC0000000))
                         {
-                            Store (NSTE, CSTE)
+                            Store (NSTE, CSTE) /* \CSTE */
                         }
                     }
                 }
@@ -2313,7 +2313,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (And (Arg0, 0xC0000000), 0xC0000000))
                         {
-                            Store (NSTE, CSTE)
+                            Store (NSTE, CSTE) /* \CSTE */
                         }
                     }
                 }
@@ -2353,7 +2353,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (And (Arg0, 0xC0000000), 0xC0000000))
                         {
-                            Store (NSTE, CSTE)
+                            Store (NSTE, CSTE) /* \CSTE */
                         }
                     }
                 }
@@ -2393,7 +2393,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (And (Arg0, 0xC0000000), 0xC0000000))
                         {
-                            Store (NSTE, CSTE)
+                            Store (NSTE, CSTE) /* \CSTE */
                         }
                     }
                 }
@@ -2433,7 +2433,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (And (Arg0, 0xC0000000), 0xC0000000))
                         {
-                            Store (NSTE, CSTE)
+                            Store (NSTE, CSTE) /* \CSTE */
                         }
                     }
                 }
@@ -2778,200 +2778,200 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (GESF, Zero))
                         {
-                            Store (0x0279, PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (0x0279, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, One))
                         {
-                            Store (0x0240, PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (0x0240, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x04))
                         {
-                            And (PARM, 0xEFFF0000, PARM)
+                            And (PARM, 0xEFFF0000, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             And (PARM, ShiftLeft (DerefOf (Index (DBTB, IBTT)), 0x10), 
-                                PARM)
-                            Or (IBTT, PARM, PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                                PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (IBTT, PARM, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x05))
                         {
-                            Store (IPSC, PARM)
-                            Or (PARM, ShiftLeft (IPAT, 0x08), PARM)
-                            Add (PARM, 0x0100, PARM)
-                            Or (PARM, ShiftLeft (LIDS, 0x10), PARM)
-                            Add (PARM, 0x00010000, PARM)
-                            Or (PARM, ShiftLeft (IBIA, 0x14), PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (IPSC, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, ShiftLeft (IPAT, 0x08), PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Add (PARM, 0x0100, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, ShiftLeft (LIDS, 0x10), PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Add (PARM, 0x00010000, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, ShiftLeft (IBIA, 0x14), PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x06))
                         {
-                            Store (ITVF, PARM)
-                            Or (PARM, ShiftLeft (ITVM, 0x04), PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (ITVF, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, ShiftLeft (ITVM, 0x04), PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x07))
                         {
-                            Store (GIVD, PARM)
-                            XOr (PARM, One, PARM)
-                            Or (PARM, ShiftLeft (GMFN, One), PARM)
-                            Or (PARM, 0x1000, PARM)
+                            Store (GIVD, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            XOr (PARM, One, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, ShiftLeft (GMFN, One), PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (PARM, 0x1000, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             If (IDMM)
                             {
-                                Or (PARM, ShiftLeft (IDMS, 0x11), PARM)
+                                Or (PARM, ShiftLeft (IDMS, 0x11), PARM) /* \_SB_.PCI0.GFX0.PARM */
                             }
                             Else
                             {
-                                Or (PARM, ShiftLeft (IDMS, 0x0D), PARM)
+                                Or (PARM, ShiftLeft (IDMS, 0x0D), PARM) /* \_SB_.PCI0.GFX0.PARM */
                             }
 
                             Or (ShiftLeft (DerefOf (Index (DerefOf (Index (CDCT, HVCO)), Subtract (
-                                CDVL, One))), 0x15), PARM, PARM)
-                            Store (One, GESF)
-                            Return (SUCC)
+                                CDVL, One))), 0x15), PARM, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (One, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x0A))
                         {
-                            Store (Zero, PARM)
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             If (ISSC)
                             {
-                                Or (PARM, 0x03, PARM)
+                                Or (PARM, 0x03, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             }
 
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
-                        Store (Zero, GESF)
-                        Return (CRIT)
+                        Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                        Return (CRIT) /* \_SB_.PCI0.GFX0.CRIT */
                     }
 
                     Method (SBCB, 0, Serialized)
                     {
                         If (LEqual (GESF, Zero))
                         {
-                            Store (Zero, PARM)
-                            Store (0xF77D, PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (0xF77D, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, One))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x03))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x04))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x05))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x06))
                         {
-                            Store (And (PARM, 0x0F), ITVF)
-                            Store (ShiftRight (And (PARM, 0xF0), 0x04), ITVM)
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (And (PARM, 0x0F), ITVF) /* \ITVF */
+                            Store (ShiftRight (And (PARM, 0xF0), 0x04), ITVM) /* \ITVM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x07))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x08))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x09))
                         {
-                            And (PARM, 0xFF, IBTT)
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            And (PARM, 0xFF, IBTT) /* \IBTT */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x0A))
                         {
-                            And (PARM, 0xFF, IPSC)
+                            And (PARM, 0xFF, IPSC) /* \IPSC */
                             If (And (ShiftRight (PARM, 0x08), 0xFF))
                             {
-                                And (ShiftRight (PARM, 0x08), 0xFF, IPAT)
+                                And (ShiftRight (PARM, 0x08), 0xFF, IPAT) /* \IPAT */
                                 Decrement (IPAT)
                             }
 
-                            And (ShiftRight (PARM, 0x14), 0x07, IBIA)
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            And (ShiftRight (PARM, 0x14), 0x07, IBIA) /* \IBIA */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x0B))
                         {
-                            And (ShiftRight (PARM, One), One, IF1E)
+                            And (ShiftRight (PARM, One), One, IF1E) /* \IF1E */
                             If (And (PARM, 0x0001E000))
                             {
-                                And (ShiftRight (PARM, 0x0D), 0x0F, IDMS)
-                                Store (Zero, IDMM)
+                                And (ShiftRight (PARM, 0x0D), 0x0F, IDMS) /* \IDMS */
+                                Store (Zero, IDMM) /* \IDMM */
                             }
                             Else
                             {
-                                And (ShiftRight (PARM, 0x11), 0x0F, IDMS)
-                                Store (One, IDMM)
+                                And (ShiftRight (PARM, 0x11), 0x0F, IDMS) /* \IDMS */
+                                Store (One, IDMM) /* \IDMM */
                             }
 
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x10))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x11))
                         {
-                            Or (PARM, 0x0100, PARM)
-                            Store (Zero, GESF)
-                            Return (SUCC)
+                            Or (PARM, 0x0100, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x12))
@@ -2980,49 +2980,49 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             {
                                 If (LEqual (ShiftRight (PARM, One), One))
                                 {
-                                    Store (One, ISSC)
+                                    Store (One, ISSC) /* \ISSC */
                                 }
                                 Else
                                 {
-                                    Store (Zero, GESF)
-                                    Return (CRIT)
+                                    Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                                    Return (CRIT) /* \_SB_.PCI0.GFX0.CRIT */
                                 }
                             }
                             Else
                             {
-                                Store (Zero, ISSC)
+                                Store (Zero, ISSC) /* \ISSC */
                             }
 
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
                         If (LEqual (GESF, 0x13))
                         {
-                            Store (Zero, GESF)
-                            Store (Zero, PARM)
-                            Return (SUCC)
+                            Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                            Store (Zero, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
 
-                        Store (Zero, GESF)
-                        Return (SUCC)
+                        Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
+                        Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                     }
 
                     If (LEqual (GEFC, 0x04))
                     {
-                        Store (GBDA (), GXFC)
+                        Store (GBDA (), GXFC) /* \_SB_.PCI0.GFX0.GXFC */
                     }
 
                     If (LEqual (GEFC, 0x06))
                     {
-                        Store (SBCB (), GXFC)
+                        Store (SBCB (), GXFC) /* \_SB_.PCI0.GFX0.GXFC */
                     }
 
-                    Store (Zero, GEFC)
-                    Store (One, SCIS)
-                    Store (Zero, GSSE)
-                    Store (Zero, SCIE)
+                    Store (Zero, GEFC) /* \_SB_.PCI0.GFX0.GEFC */
+                    Store (One, SCIS) /* \SCIS */
+                    Store (Zero, GSSE) /* \_SB_.PCI0.GFX0.GSSE */
+                    Store (Zero, SCIE) /* \_SB_.PCI0.GFX0.SCIE */
                     Return (Zero)
                 }
 
@@ -3058,8 +3058,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (One)
                     }
 
-                    Store (Arg0, CEVT)
-                    Store (0x03, CSTS)
+                    Store (Arg0, CEVT) /* \_SB_.PCI0.GFX0.CEVT */
+                    Store (0x03, CSTS) /* \_SB_.PCI0.GFX0.CSTS */
                     If (LAnd (LEqual (CHPD, Zero), LEqual (Arg1, Zero)))
                     {
                         If (LOr (LGreater (OSYS, 0x07D0), LLess (OSYS, 0x07D6)))
@@ -3072,10 +3072,10 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         }
                     }
 
-                    Notify (GFX0, 0x80)
+                    Notify (GFX0, 0x80) // Status Change
                     If (LNot (PSTS ()))
                     {
-                        Store (Zero, CEVT)
+                        Store (Zero, CEVT) /* \_SB_.PCI0.GFX0.CEVT */
                     }
 
                     Return (Zero)
@@ -3083,19 +3083,19 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Method (GHDS, 1, NotSerialized)
                 {
-                    Store (Arg0, TIDX)
+                    Store (Arg0, TIDX) /* \_SB_.PCI0.GFX0.TIDX */
                     Return (GNOT (One, Zero))
                 }
 
                 Method (GLID, 1, NotSerialized)
                 {
-                    Store (Arg0, CLID)
+                    Store (Arg0, CLID) /* \_SB_.PCI0.GFX0.CLID */
                     Return (GNOT (0x02, Zero))
                 }
 
                 Method (GDCK, 1, NotSerialized)
                 {
-                    Store (Arg0, CDCK)
+                    Store (Arg0, CDCK) /* \_SB_.PCI0.GFX0.CDCK */
                     Return (GNOT (0x04, 0x80))
                 }
 
@@ -3127,41 +3127,41 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         {
                             If (LEqual (CPFM, One))
                             {
-                                Store (0x06, PFIT)
+                                Store (0x06, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
                             }
 
                             If (LEqual (CPFM, 0x06))
                             {
-                                Store (0x08, PFIT)
+                                Store (0x08, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
                             }
 
                             If (LEqual (CPFM, 0x08))
                             {
-                                Store (One, PFIT)
+                                Store (One, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
                             }
                         }
                         Else
                         {
-                            XOr (PFIT, 0x07, PFIT)
+                            XOr (PFIT, 0x07, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
                         }
 
-                        Or (PFIT, 0x80000000, PFIT)
-                        Store (0x04, ASLC)
+                        Or (PFIT, 0x80000000, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
+                        Store (0x04, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
                     }
                     Else
                     {
                         If (LEqual (Arg0, One))
                         {
-                            Store (Divide (Multiply (Arg1, 0xFF), 0x64, ), BCLP)
-                            Or (BCLP, 0x80000000, BCLP)
-                            Store (0x02, ASLC)
+                            Store (Divide (Multiply (Arg1, 0xFF), 0x64, ), BCLP) /* \_SB_.PCI0.GFX0.BCLP */
+                            Or (BCLP, 0x80000000, BCLP) /* \_SB_.PCI0.GFX0.BCLP */
+                            Store (0x02, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
                         }
                         Else
                         {
                             If (LEqual (Arg0, Zero))
                             {
-                                Store (Arg1, ALSI)
-                                Store (One, ASLC)
+                                Store (Arg1, ALSI) /* \_SB_.PCI0.GFX0.ALSI */
+                                Store (One, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
                             }
                             Else
                             {
@@ -3170,7 +3170,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         }
                     }
 
-                    Store (Zero, LBPC)
+                    Store (Zero, LBPC) /* \_SB_.PCI0.GFX0.LBPC */
                     Return (Zero)
                 }
             }
@@ -3344,30 +3344,30 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     Name (TMPF, Zero)
                     If (Arg0)
                     {
-                        Or (TMPF, One, TMPF)
+                        Or (TMPF, One, TMPF) /* \GETF.TMPF */
                     }
 
                     If (And (Arg2, 0x02))
                     {
-                        Or (TMPF, 0x02, TMPF)
+                        Or (TMPF, 0x02, TMPF) /* \GETF.TMPF */
                     }
 
                     If (Arg1)
                     {
-                        Or (TMPF, 0x04, TMPF)
+                        Or (TMPF, 0x04, TMPF) /* \GETF.TMPF */
                     }
 
                     If (And (Arg2, 0x20))
                     {
-                        Or (TMPF, 0x08, TMPF)
+                        Or (TMPF, 0x08, TMPF) /* \GETF.TMPF */
                     }
 
                     If (And (Arg2, 0x4000))
                     {
-                        Or (TMPF, 0x10, TMPF)
+                        Or (TMPF, 0x10, TMPF) /* \GETF.TMPF */
                     }
 
-                    Return (TMPF)
+                    Return (TMPF) /* \GETF.TMPF */
                 }
 
                 Method (SETP, 3, Serialized)
@@ -4170,15 +4170,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (Arg0)
                     {
-                        Store (One, ACPW)
+                        Store (One, ACPW) /* \ACPW */
                         If (ACPW)
                         {
-                            Store (0x03, U1EN)
+                            Store (0x03, U1EN) /* \_SB_.PCI0.USB1.U1EN */
                         }
                     }
                     Else
                     {
-                        Store (Zero, U1EN)
+                        Store (Zero, U1EN) /* \_SB_.PCI0.USB1.U1EN */
                     }
                 }
 
@@ -4211,15 +4211,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (Arg0)
                     {
-                        Store (One, ACPW)
+                        Store (One, ACPW) /* \ACPW */
                         If (ACPW)
                         {
-                            Store (One, U2EN)
+                            Store (One, U2EN) /* \_SB_.PCI0.USB2.U2EN */
                         }
                     }
                     Else
                     {
-                        Store (Zero, U2EN)
+                        Store (Zero, U2EN) /* \_SB_.PCI0.USB2.U2EN */
                     }
                 }
 
@@ -4252,15 +4252,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (Arg0)
                     {
-                        Store (One, ACPW)
+                        Store (One, ACPW) /* \ACPW */
                         If (ACPW)
                         {
-                            Store (0x03, U3EN)
+                            Store (0x03, U3EN) /* \_SB_.PCI0.USB3.U3EN */
                         }
                     }
                     Else
                     {
-                        Store (Zero, U3EN)
+                        Store (Zero, U3EN) /* \_SB_.PCI0.USB3.U3EN */
                     }
                 }
 
@@ -4293,15 +4293,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (Arg0)
                     {
-                        Store (One, ACPW)
+                        Store (One, ACPW) /* \ACPW */
                         If (ACPW)
                         {
-                            Store (0x03, U4EN)
+                            Store (0x03, U4EN) /* \_SB_.PCI0.USB4.U4EN */
                         }
                     }
                     Else
                     {
-                        Store (Zero, U4EN)
+                        Store (Zero, U4EN) /* \_SB_.PCI0.USB4.U4EN */
                     }
                 }
 
@@ -4329,15 +4329,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 {
                     If (Arg0)
                     {
-                        Store (One, ACPW)
+                        Store (One, ACPW) /* \ACPW */
                         If (ACPW)
                         {
-                            Store (0x03, U5EN)
+                            Store (0x03, U5EN) /* \_SB_.PCI0.USB5.U5EN */
                         }
                     }
                     Else
                     {
-                        Store (Zero, U5EN)
+                        Store (Zero, U5EN) /* \_SB_.PCI0.USB5.U5EN */
                     }
                 }
 
@@ -4575,19 +4575,19 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                 Method (PHSS, 1, NotSerialized)
                 {
                     Acquire (PSMX, 0xFFFF)
-                    Store (0x80, BCMD)
-                    Store (Arg0, DID)
-                    Store (Zero, SMIC)
+                    Store (0x80, BCMD) /* \_SB_.PCI0.LPCB.BCMD */
+                    Store (Arg0, DID) /* \_SB_.PCI0.LPCB.DID_ */
+                    Store (Zero, SMIC) /* \_SB_.PCI0.LPCB.SMIC */
                     Release (PSMX)
                 }
 
                 Device (LNKA)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, One)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PARC)
+                        Store (0x80, PARC) /* \_SB_.PCI0.LPCB.PARC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4603,9 +4603,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLA, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PARC, 0x0F), IRQ0)
-                        Return (RTLA)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKA._CRS.IRQ0 */
+                        ShiftLeft (One, And (PARC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKA._CRS.IRQ0 */
+                        Return (RTLA) /* \_SB_.PCI0.LPCB.LNKA._CRS.RTLA */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4613,7 +4613,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PARC)
+                        Store (Local0, PARC) /* \_SB_.PCI0.LPCB.PARC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4631,11 +4631,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKB)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x02)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PBRC)
+                        Store (0x80, PBRC) /* \_SB_.PCI0.LPCB.PBRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4651,9 +4651,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLB, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PBRC, 0x0F), IRQ0)
-                        Return (RTLB)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKB._CRS.IRQ0 */
+                        ShiftLeft (One, And (PBRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKB._CRS.IRQ0 */
+                        Return (RTLB) /* \_SB_.PCI0.LPCB.LNKB._CRS.RTLB */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4661,7 +4661,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PBRC)
+                        Store (Local0, PBRC) /* \_SB_.PCI0.LPCB.PBRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4679,11 +4679,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKC)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x03)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PCRC)
+                        Store (0x80, PCRC) /* \_SB_.PCI0.LPCB.PCRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4699,9 +4699,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLC, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PCRC, 0x0F), IRQ0)
-                        Return (RTLC)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKC._CRS.IRQ0 */
+                        ShiftLeft (One, And (PCRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKC._CRS.IRQ0 */
+                        Return (RTLC) /* \_SB_.PCI0.LPCB.LNKC._CRS.RTLC */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4709,7 +4709,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PCRC)
+                        Store (Local0, PCRC) /* \_SB_.PCI0.LPCB.PCRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4727,11 +4727,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKD)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x04)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PDRC)
+                        Store (0x80, PDRC) /* \_SB_.PCI0.LPCB.PDRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4747,9 +4747,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLD, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PDRC, 0x0F), IRQ0)
-                        Return (RTLD)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKD._CRS.IRQ0 */
+                        ShiftLeft (One, And (PDRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKD._CRS.IRQ0 */
+                        Return (RTLD) /* \_SB_.PCI0.LPCB.LNKD._CRS.RTLD */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4757,7 +4757,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PDRC)
+                        Store (Local0, PDRC) /* \_SB_.PCI0.LPCB.PDRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4775,11 +4775,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKE)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x05)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PERC)
+                        Store (0x80, PERC) /* \_SB_.PCI0.LPCB.PERC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4795,9 +4795,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLE, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PERC, 0x0F), IRQ0)
-                        Return (RTLE)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKE._CRS.IRQ0 */
+                        ShiftLeft (One, And (PERC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKE._CRS.IRQ0 */
+                        Return (RTLE) /* \_SB_.PCI0.LPCB.LNKE._CRS.RTLE */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4805,7 +4805,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PERC)
+                        Store (Local0, PERC) /* \_SB_.PCI0.LPCB.PERC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4823,11 +4823,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKF)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x06)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PFRC)
+                        Store (0x80, PFRC) /* \_SB_.PCI0.LPCB.PFRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4843,9 +4843,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLF, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PFRC, 0x0F), IRQ0)
-                        Return (RTLF)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKF._CRS.IRQ0 */
+                        ShiftLeft (One, And (PFRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKF._CRS.IRQ0 */
+                        Return (RTLF) /* \_SB_.PCI0.LPCB.LNKF._CRS.RTLF */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4853,7 +4853,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PFRC)
+                        Store (Local0, PFRC) /* \_SB_.PCI0.LPCB.PFRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4871,11 +4871,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKG)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x07)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PGRC)
+                        Store (0x80, PGRC) /* \_SB_.PCI0.LPCB.PGRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4891,9 +4891,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLG, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PGRC, 0x0F), IRQ0)
-                        Return (RTLG)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKG._CRS.IRQ0 */
+                        ShiftLeft (One, And (PGRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKG._CRS.IRQ0 */
+                        Return (RTLG) /* \_SB_.PCI0.LPCB.LNKG._CRS.RTLG */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4901,7 +4901,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PGRC)
+                        Store (Local0, PGRC) /* \_SB_.PCI0.LPCB.PGRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4919,11 +4919,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LNKH)
                 {
-                    Name (_HID, EisaId ("PNP0C0F"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0F") /* PCI Interrupt Link Device */)  // _HID: Hardware ID
                     Name (_UID, 0x08)  // _UID: Unique ID
                     Method (_DIS, 0, Serialized)  // _DIS: Disable Device
                     {
-                        Store (0x80, PHRC)
+                        Store (0x80, PHRC) /* \_SB_.PCI0.LPCB.PHRC */
                     }
 
                     Name (_PRS, ResourceTemplate ()  // _PRS: Possible Resource Settings
@@ -4939,9 +4939,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 {}
                         })
                         CreateWordField (RTLH, One, IRQ0)
-                        Store (Zero, IRQ0)
-                        ShiftLeft (One, And (PHRC, 0x0F), IRQ0)
-                        Return (RTLH)
+                        Store (Zero, IRQ0) /* \_SB_.PCI0.LPCB.LNKH._CRS.IRQ0 */
+                        ShiftLeft (One, And (PHRC, 0x0F), IRQ0) /* \_SB_.PCI0.LPCB.LNKH._CRS.IRQ0 */
+                        Return (RTLH) /* \_SB_.PCI0.LPCB.LNKH._CRS.RTLH */
                     }
 
                     Method (_SRS, 1, Serialized)  // _SRS: Set Resource Settings
@@ -4949,7 +4949,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateWordField (Arg0, One, IRQ0)
                         FindSetRightBit (IRQ0, Local0)
                         Decrement (Local0)
-                        Store (Local0, PHRC)
+                        Store (Local0, PHRC) /* \_SB_.PCI0.LPCB.PHRC */
                     }
 
                     Method (_STA, 0, Serialized)  // _STA: Status
@@ -4967,7 +4967,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (DMAC)
                 {
-                    Name (_HID, EisaId ("PNP0200"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0200") /* PC-class DMA Controller */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5001,7 +5001,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (FWHD)
                 {
-                    Name (_HID, EisaId ("INT0800"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("INT0800") /* Intel 82802 Firmware Hub Device */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         Memory32Fixed (ReadOnly,
@@ -5013,8 +5013,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (HPET)
                 {
-                    Name (_HID, EisaId ("PNP0103"))  // _HID: Hardware ID
-                    Name (_CID, EisaId ("PNP0C01"))  // _CID: Compatible ID
+                    Name (_HID, EisaId ("PNP0103") /* HPET System Timer */)  // _HID: Hardware ID
+                    Name (_CID, EisaId ("PNP0C01") /* System Board */)  // _CID: Compatible ID
                     Name (BUF0, ResourceTemplate ()
                     {
                         Memory32Fixed (ReadOnly,
@@ -5049,27 +5049,27 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             CreateDWordField (BUF0, \_SB.PCI0.LPCB.HPET._Y14._BAS, HPT0)  // _BAS: Base Address
                             If (LEqual (HPAS, One))
                             {
-                                Store (0xFED01000, HPT0)
+                                Store (0xFED01000, HPT0) /* \_SB_.PCI0.LPCB.HPET._CRS.HPT0 */
                             }
 
                             If (LEqual (HPAS, 0x02))
                             {
-                                Store (0xFED02000, HPT0)
+                                Store (0xFED02000, HPT0) /* \_SB_.PCI0.LPCB.HPET._CRS.HPT0 */
                             }
 
                             If (LEqual (HPAS, 0x03))
                             {
-                                Store (0xFED03000, HPT0)
+                                Store (0xFED03000, HPT0) /* \_SB_.PCI0.LPCB.HPET._CRS.HPT0 */
                             }
                         }
 
-                        Return (BUF0)
+                        Return (BUF0) /* \_SB_.PCI0.LPCB.HPET.BUF0 */
                     }
                 }
 
                 Device (IPIC)
                 {
-                    Name (_HID, EisaId ("PNP0000"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0000") /* 8259-compatible Programmable Interrupt Controller */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5181,7 +5181,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (MATH)
                 {
-                    Name (_HID, EisaId ("PNP0C04"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C04") /* x87-compatible Floating Point Processing Unit */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5197,7 +5197,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (LDRC)
                 {
-                    Name (_HID, EisaId ("PNP0C02"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C02") /* PNP Motherboard Resources */)  // _HID: Hardware ID
                     Name (_UID, 0x02)  // _UID: Unique ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
@@ -5296,7 +5296,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (RTC)
                 {
-                    Name (_HID, EisaId ("PNP0B00"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0B00") /* AT Real-Time Clock */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5312,7 +5312,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (TIMR)
                 {
-                    Name (_HID, EisaId ("PNP0100"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0100") /* PC-class System Timer */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5334,15 +5334,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (ACAD)
                 {
-                    Name (_HID, "ACPI0003")  // _HID: Hardware ID
+                    Name (_HID, "ACPI0003" /* Power Source Device */)  // _HID: Hardware ID
                     Name (_PCL, Package (0x01)  // _PCL: Power Consumer List
                     {
                         _SB
                     })
                     Method (_PSR, 0, NotSerialized)  // _PSR: Power Source
                     {
-                        Store (One, ACPW)
-                        Return (ACPW)
+                        Store (One, ACPW) /* \ACPW */
+                        Return (ACPW) /* \ACPW */
                     }
                 }
 
@@ -5360,7 +5360,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Device (EC0)
                 {
-                    Name (_HID, EisaId ("PNP0C09"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C09") /* Embedded Controller Device */)  // _HID: Hardware ID
                     Name (_GPE, 0x1C)  // _GPE: General Purpose Events
                     Name (Z009, Zero)
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
@@ -5382,13 +5382,13 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (Arg0, 0x03))
                         {
-                            Store (Arg1, Z009)
+                            Store (Arg1, Z009) /* \_SB_.PCI0.LPCB.EC0_.Z009 */
                             If (CondRefOf (_OSI, Local0))
                             {
-                                Store (Zero, BTDS)
+                                Store (Zero, BTDS) /* \_SB_.PCI0.LPCB.EC0_.BTDS */
                                 If (_OSI ("Windows 2006"))
                                 {
-                                    Store (One, BTDS)
+                                    Store (One, BTDS) /* \_SB_.PCI0.LPCB.EC0_.BTDS */
                                 }
                             }
                         }
@@ -5559,27 +5559,27 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                     Method (_Q11, 0, NotSerialized)  // _Qxx: EC Query
                     {
-                        Store (0x87, P80H)
+                        Store (0x87, P80H) /* \P80H */
                         If (IGDS)
                         {
                             ^^^GFX0.BRTN (0x87)
                         }
                         Else
                         {
-                            Notify (^^^PEGP.VGA.LCD, 0x87)
+                            Notify (^^^PEGP.VGA.LCD, 0x87) // Device-Specific
                         }
                     }
 
                     Method (_Q12, 0, NotSerialized)  // _Qxx: EC Query
                     {
-                        Store (0x86, P80H)
+                        Store (0x86, P80H) /* \P80H */
                         If (IGDS)
                         {
                             ^^^GFX0.BRTN (0x86)
                         }
                         Else
                         {
-                            Notify (^^^PEGP.VGA.LCD, 0x86)
+                            Notify (^^^PEGP.VGA.LCD, 0x86) // Device-Specific
                         }
                     }
 
@@ -5597,7 +5597,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                 ^^^PEGP.VGA.DSSW ()
                             }
 
-                            Store (Zero, VIDO)
+                            Store (Zero, VIDO) /* \_SB_.PCI0.LPCB.EC0_.VIDO */
                         }
                     }
 
@@ -5617,9 +5617,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         Store ("=====QUERY_25=====", Debug)
                         Sleep (0x03E8)
-                        Notify (^^BAT1, 0x81)
+                        Notify (^^BAT1, 0x81) // Information Change
                         Sleep (0x03E8)
-                        Notify (^^BAT1, 0x80)
+                        Notify (^^BAT1, 0x80) // Status Change
                     }
 
                     Method (_Q34, 0, NotSerialized)  // _Qxx: EC Query
@@ -5628,37 +5628,37 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         If (BKEY)
                         {
                             PHSS (0x71)
-                            Store (Zero, BKEY)
+                            Store (Zero, BKEY) /* \_SB_.PCI0.LPCB.EC0_.BKEY */
                         }
                     }
 
                     Method (_Q37, 0, NotSerialized)  // _Qxx: EC Query
                     {
                         Store ("=====QUERY_37=====", Debug)
-                        Notify (ACAD, 0x80)
+                        Notify (ACAD, 0x80) // Status Change
                         Sleep (0x03E8)
-                        Notify (^^BAT1, 0x80)
+                        Notify (^^BAT1, 0x80) // Status Change
                     }
 
                     Method (_Q38, 0, NotSerialized)  // _Qxx: EC Query
                     {
                         Store ("=====QUERY_38=====", Debug)
-                        Notify (ACAD, 0x80)
+                        Notify (ACAD, 0x80) // Status Change
                         Sleep (0x03E8)
-                        Notify (^^BAT1, 0x80)
+                        Notify (^^BAT1, 0x80) // Status Change
                     }
 
                     Method (_Q2D, 0, NotSerialized)  // _Qxx: EC Query
                     {
                         Store ("=====QUERY_2D=====", Debug)
-                        Store (Zero, DTSM)
+                        Store (Zero, DTSM) /* \DTSM */
                         TRAP (0x46)
                     }
 
                     Method (_Q2E, 0, NotSerialized)  // _Qxx: EC Query
                     {
                         Store ("=====QUERY_2E=====", Debug)
-                        Store (One, DTSM)
+                        Store (One, DTSM) /* \DTSM */
                         TRAP (0x46)
                     }
 
@@ -5698,7 +5698,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     Method (FANG, 1, NotSerialized)
                     {
                         Acquire (FAMX, 0xFFFF)
-                        Store (Arg0, ERIB)
+                        Store (Arg0, ERIB) /* \_SB_.PCI0.LPCB.EC0_.ERIB */
                         Store (ERBD, Local0)
                         Release (FAMX)
                         Return (Local0)
@@ -5707,8 +5707,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     Method (FANW, 2, NotSerialized)
                     {
                         Acquire (FAMX, 0xFFFF)
-                        Store (Arg0, ERIB)
-                        Store (Arg1, ERBD)
+                        Store (Arg0, ERIB) /* \_SB_.PCI0.LPCB.EC0_.ERIB */
+                        Store (Arg1, ERBD) /* \_SB_.PCI0.LPCB.EC0_.ERBD */
                         Release (FAMX)
                         Return (Arg1)
                     }
@@ -5722,19 +5722,19 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (Arg0, Zero))
                         {
-                            Return (THEN)
+                            Return (THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
                         }
                         Else
                         {
                             If (LEqual (Arg0, One))
                             {
-                                Return (DUTY)
+                                Return (DUTY) /* \_SB_.PCI0.LPCB.EC0_.DUTY */
                             }
                             Else
                             {
                                 If (LEqual (Arg0, 0x02))
                                 {
-                                    Return (TTHR)
+                                    Return (TTHR) /* \_SB_.PCI0.LPCB.EC0_.TTHR */
                                 }
                                 Else
                                 {
@@ -5748,16 +5748,16 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     {
                         If (LEqual (Arg0, Zero))
                         {
-                            Store (Zero, THEN)
-                            Store (Zero, FTT)
+                            Store (Zero, THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
+                            Store (Zero, FTT) /* \_SB_.PCI0.LPCB.EC0_.FTT_ */
                         }
                         Else
                         {
-                            Store (Arg0, DUTY)
-                            Store (One, THEN)
+                            Store (Arg0, DUTY) /* \_SB_.PCI0.LPCB.EC0_.DUTY */
+                            Store (One, THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
                         }
 
-                        Return (THEN)
+                        Return (THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
                     }
 
                     Method (PCLK, 0, NotSerialized)
@@ -5765,23 +5765,23 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Store (PTVL, Local0)
                         If (LEqual (Local0, Zero))
                         {
-                            Store (Zero, THEN)
-                            Store (Zero, FTT)
+                            Store (Zero, THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
+                            Store (Zero, FTT) /* \_SB_.PCI0.LPCB.EC0_.FTT_ */
                         }
                         Else
                         {
                             Decrement (Local0)
                             Store (Not (Local0), Local1)
                             And (Local1, 0x07, Local1)
-                            Store (Local1, DUTY)
-                            Store (One, THEN)
+                            Store (Local1, DUTY) /* \_SB_.PCI0.LPCB.EC0_.DUTY */
+                            Store (One, THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
                         }
                     }
                 }
 
                 Device (BAT1)
                 {
-                    Name (_HID, EisaId ("PNP0C0A"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0C0A") /* Control Method Battery */)  // _HID: Hardware ID
                     Name (_UID, One)  // _UID: Unique ID
                     Name (_PCL, Package (0x01)  // _PCL: Power Consumer List
                     {
@@ -5843,7 +5843,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             }
 
                             Sleep (0x14)
-                            Store (^^EC0.BDC0, BFC1)
+                            Store (^^EC0.BDC0, BFC1) /* \BFC1 */
                             Sleep (0x14)
                         }
                         Else
@@ -5855,12 +5855,12 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         {
                             Divide (BFC1, 0x64, Local0, Local1)
                             Multiply (Local1, 0x64, Local1)
-                            Store (Local1, BFC1)
+                            Store (Local1, BFC1) /* \BFC1 */
                             Store (Local1, Index (STAT, One))
                             Store (Local1, Index (STAT, 0x02))
                         }
 
-                        Return (STAT)
+                        Return (STAT) /* \_SB_.PCI0.LPCB.BAT1._BIF.STAT */
                     }
 
                     Method (_BST, 0, NotSerialized)  // _BST: Battery Status
@@ -5876,9 +5876,9 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         If (LAnd (ECOK (), LEqual (ECDY, Zero)))
                         {
                             Sleep (0x14)
-                            Store (^^EC0.BST0, BST1)
+                            Store (^^EC0.BST0, BST1) /* \BST1 */
                             Sleep (0x14)
-                            Store (^^EC0.GAU0, BGU1)
+                            Store (^^EC0.GAU0, BGU1) /* \BGU1 */
                             Sleep (0x14)
                         }
 
@@ -5901,17 +5901,17 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             Decrement (ECDY)
                             If (LEqual (ECDY, Zero))
                             {
-                                Notify (BAT1, 0x80)
+                                Notify (BAT1, 0x80) // Status Change
                             }
                         }
 
-                        Return (PBST)
+                        Return (PBST) /* \_SB_.PCI0.LPCB.BAT1._BST.PBST */
                     }
                 }
 
                 Device (PS2K)
                 {
-                    Name (_HID, EisaId ("PNP0303"))  // _HID: Hardware ID
+                    Name (_HID, EisaId ("PNP0303") /* IBM Enhanced Keyboard (101/102-key, PS/2 Mouse) */)  // _HID: Hardware ID
                     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
                     {
                         IO (Decode16,
@@ -5982,47 +5982,47 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateDWordField (PBUF, 0x08, PIO1)
                         CreateDWordField (PBUF, 0x0C, DMA1)
                         CreateDWordField (PBUF, 0x10, FLAG)
-                        Store (GETP (PRIT), PIO0)
+                        Store (GETP (PRIT), PIO0) /* \_SB_.PCI0.PATA.PRID._GTM.PIO0 */
                         Store (GDMA (And (SYNC, One), And (ICR3, One), 
-                            And (ICR0, One), SDT0, And (ICR1, One)), DMA0)
+                            And (ICR0, One), SDT0, And (ICR1, One)), DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
                         If (LEqual (DMA0, 0xFFFFFFFF))
                         {
-                            Store (PIO0, DMA0)
+                            Store (PIO0, DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
                         }
 
                         If (And (PRIT, 0x4000))
                         {
                             If (LEqual (And (PRIT, 0x90), 0x80))
                             {
-                                Store (0x0384, PIO1)
+                                Store (0x0384, PIO1) /* \_SB_.PCI0.PATA.PRID._GTM.PIO1 */
                             }
                             Else
                             {
-                                Store (GETT (PSIT), PIO1)
+                                Store (GETT (PSIT), PIO1) /* \_SB_.PCI0.PATA.PRID._GTM.PIO1 */
                             }
                         }
                         Else
                         {
-                            Store (0xFFFFFFFF, PIO1)
+                            Store (0xFFFFFFFF, PIO1) /* \_SB_.PCI0.PATA.PRID._GTM.PIO1 */
                         }
 
                         Store (GDMA (And (SYNC, 0x02), And (ICR3, 0x02), 
-                            And (ICR0, 0x02), SDT1, And (ICR1, 0x02)), DMA1)
+                            And (ICR0, 0x02), SDT1, And (ICR1, 0x02)), DMA1) /* \_SB_.PCI0.PATA.PRID._GTM.DMA1 */
                         If (LEqual (DMA1, 0xFFFFFFFF))
                         {
-                            Store (PIO1, DMA1)
+                            Store (PIO1, DMA1) /* \_SB_.PCI0.PATA.PRID._GTM.DMA1 */
                         }
 
                         Store (GETF (And (SYNC, One), And (SYNC, 0x02), 
-                            PRIT), FLAG)
+                            PRIT), FLAG) /* \_SB_.PCI0.PATA.PRID._GTM.FLAG */
                         If (And (LEqual (PIO0, 0xFFFFFFFF), LEqual (DMA0, 0xFFFFFFFF)))
                         {
-                            Store (0x78, PIO0)
-                            Store (0x14, DMA0)
-                            Store (0x03, FLAG)
+                            Store (0x78, PIO0) /* \_SB_.PCI0.PATA.PRID._GTM.PIO0 */
+                            Store (0x14, DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
+                            Store (0x03, FLAG) /* \_SB_.PCI0.PATA.PRID._GTM.FLAG */
                         }
 
-                        Return (PBUF)
+                        Return (PBUF) /* \_SB_.PCI0.PATA.PRID._GTM.PBUF */
                     }
 
                     Method (_STM, 3, NotSerialized)  // _STM: Set Timing Mode
@@ -6034,100 +6034,100 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         CreateDWordField (Arg0, 0x10, FLAG)
                         If (LEqual (SizeOf (Arg1), 0x0200))
                         {
-                            And (PRIT, 0xC0F0, PRIT)
-                            And (SYNC, 0x02, SYNC)
-                            Store (Zero, SDT0)
-                            And (ICR0, 0x02, ICR0)
-                            And (ICR1, 0x02, ICR1)
-                            And (ICR3, 0x02, ICR3)
-                            And (ICR5, 0x02, ICR5)
+                            And (PRIT, 0xC0F0, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+                            And (SYNC, 0x02, SYNC) /* \_SB_.PCI0.PATA.SYNC */
+                            Store (Zero, SDT0) /* \_SB_.PCI0.PATA.SDT0 */
+                            And (ICR0, 0x02, ICR0) /* \_SB_.PCI0.PATA.ICR0 */
+                            And (ICR1, 0x02, ICR1) /* \_SB_.PCI0.PATA.ICR1 */
+                            And (ICR3, 0x02, ICR3) /* \_SB_.PCI0.PATA.ICR3 */
+                            And (ICR5, 0x02, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
                             CreateWordField (Arg1, 0x62, W490)
                             CreateWordField (Arg1, 0x6A, W530)
                             CreateWordField (Arg1, 0x7E, W630)
                             CreateWordField (Arg1, 0x80, W640)
                             CreateWordField (Arg1, 0xB0, W880)
                             CreateWordField (Arg1, 0xBA, W930)
-                            Or (PRIT, 0x8004, PRIT)
+                            Or (PRIT, 0x8004, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                             If (LAnd (And (FLAG, 0x02), And (W490, 0x0800)))
                             {
-                                Or (PRIT, 0x02, PRIT)
+                                Or (PRIT, 0x02, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                             }
 
-                            Or (PRIT, SETP (PIO0, W530, W640), PRIT)
+                            Or (PRIT, SETP (PIO0, W530, W640), PRIT) /* \_SB_.PCI0.PATA.PRIT */
                             If (And (FLAG, One))
                             {
-                                Or (SYNC, One, SYNC)
-                                Store (SDMA (DMA0), SDT0)
+                                Or (SYNC, One, SYNC) /* \_SB_.PCI0.PATA.SYNC */
+                                Store (SDMA (DMA0), SDT0) /* \_SB_.PCI0.PATA.SDT0 */
                                 If (LLess (DMA0, 0x1E))
                                 {
-                                    Or (ICR3, One, ICR3)
+                                    Or (ICR3, One, ICR3) /* \_SB_.PCI0.PATA.ICR3 */
                                 }
 
                                 If (LLess (DMA0, 0x3C))
                                 {
-                                    Or (ICR0, One, ICR0)
+                                    Or (ICR0, One, ICR0) /* \_SB_.PCI0.PATA.ICR0 */
                                 }
 
                                 If (And (W930, 0x2000))
                                 {
-                                    Or (ICR1, One, ICR1)
+                                    Or (ICR1, One, ICR1) /* \_SB_.PCI0.PATA.ICR1 */
                                 }
                             }
                         }
 
                         If (LEqual (SizeOf (Arg2), 0x0200))
                         {
-                            And (PRIT, 0xBF0F, PRIT)
-                            Store (Zero, PSIT)
-                            And (SYNC, One, SYNC)
-                            Store (Zero, SDT1)
-                            And (ICR0, One, ICR0)
-                            And (ICR1, One, ICR1)
-                            And (ICR3, One, ICR3)
-                            And (ICR5, One, ICR5)
+                            And (PRIT, 0xBF0F, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+                            Store (Zero, PSIT) /* \_SB_.PCI0.PATA.PSIT */
+                            And (SYNC, One, SYNC) /* \_SB_.PCI0.PATA.SYNC */
+                            Store (Zero, SDT1) /* \_SB_.PCI0.PATA.SDT1 */
+                            And (ICR0, One, ICR0) /* \_SB_.PCI0.PATA.ICR0 */
+                            And (ICR1, One, ICR1) /* \_SB_.PCI0.PATA.ICR1 */
+                            And (ICR3, One, ICR3) /* \_SB_.PCI0.PATA.ICR3 */
+                            And (ICR5, One, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
                             CreateWordField (Arg2, 0x62, W491)
                             CreateWordField (Arg2, 0x6A, W531)
                             CreateWordField (Arg2, 0x7E, W631)
                             CreateWordField (Arg2, 0x80, W641)
                             CreateWordField (Arg2, 0xB0, W881)
                             CreateWordField (Arg2, 0xBA, W931)
-                            Or (PRIT, 0x8040, PRIT)
+                            Or (PRIT, 0x8040, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                             If (LAnd (And (FLAG, 0x08), And (W491, 0x0800)))
                             {
-                                Or (PRIT, 0x20, PRIT)
+                                Or (PRIT, 0x20, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                             }
 
                             If (And (FLAG, 0x10))
                             {
-                                Or (PRIT, 0x4000, PRIT)
+                                Or (PRIT, 0x4000, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                                 If (LGreater (PIO1, 0xF0))
                                 {
-                                    Or (PRIT, 0x80, PRIT)
+                                    Or (PRIT, 0x80, PRIT) /* \_SB_.PCI0.PATA.PRIT */
                                 }
                                 Else
                                 {
-                                    Or (PRIT, 0x10, PRIT)
-                                    Store (SETT (PIO1, W531, W641), PSIT)
+                                    Or (PRIT, 0x10, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+                                    Store (SETT (PIO1, W531, W641), PSIT) /* \_SB_.PCI0.PATA.PSIT */
                                 }
                             }
 
                             If (And (FLAG, 0x04))
                             {
-                                Or (SYNC, 0x02, SYNC)
-                                Store (SDMA (DMA1), SDT1)
+                                Or (SYNC, 0x02, SYNC) /* \_SB_.PCI0.PATA.SYNC */
+                                Store (SDMA (DMA1), SDT1) /* \_SB_.PCI0.PATA.SDT1 */
                                 If (LLess (DMA1, 0x1E))
                                 {
-                                    Or (ICR3, 0x02, ICR3)
+                                    Or (ICR3, 0x02, ICR3) /* \_SB_.PCI0.PATA.ICR3 */
                                 }
 
                                 If (LLess (DMA1, 0x3C))
                                 {
-                                    Or (ICR0, 0x02, ICR0)
+                                    Or (ICR0, 0x02, ICR0) /* \_SB_.PCI0.PATA.ICR0 */
                                 }
 
                                 If (And (W931, 0x2000))
                                 {
-                                    Or (ICR1, 0x02, ICR1)
+                                    Or (ICR1, 0x02, ICR1) /* \_SB_.PCI0.PATA.ICR1 */
                                 }
                             }
                         }
@@ -6149,52 +6149,52 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             {
                                 If (LEqual (And (PRIT, 0x09), 0x08))
                                 {
-                                    Store (0x08, PMD0)
+                                    Store (0x08, PMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PMD0 */
                                 }
                                 Else
                                 {
-                                    Store (0x0A, PMD0)
+                                    Store (0x0A, PMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PMD0 */
                                     ShiftRight (And (PRIT, 0x0300), 0x08, Local0)
                                     ShiftRight (And (PRIT, 0x3000), 0x0C, Local1)
                                     Add (Local0, Local1, Local2)
                                     If (LEqual (0x03, Local2))
                                     {
-                                        Store (0x0B, PMD0)
+                                        Store (0x0B, PMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PMD0 */
                                     }
 
                                     If (LEqual (0x05, Local2))
                                     {
-                                        Store (0x0C, PMD0)
+                                        Store (0x0C, PMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PMD0 */
                                     }
                                 }
                             }
                             Else
                             {
-                                Store (One, PMD0)
+                                Store (One, PMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PMD0 */
                             }
 
                             If (And (SYNC, One))
                             {
-                                Store (Or (SDT0, 0x40), DMD0)
+                                Store (Or (SDT0, 0x40), DMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.DMD0 */
                                 If (And (ICR1, One))
                                 {
                                     If (And (ICR0, One))
                                     {
-                                        Add (DMD0, 0x02, DMD0)
+                                        Add (DMD0, 0x02, DMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.DMD0 */
                                     }
 
                                     If (And (ICR3, One))
                                     {
-                                        Store (0x45, DMD0)
+                                        Store (0x45, DMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.DMD0 */
                                     }
                                 }
                             }
                             Else
                             {
-                                Or (Subtract (And (PMD0, 0x07), 0x02), 0x20, DMD0)
+                                Or (Subtract (And (PMD0, 0x07), 0x02), 0x20, DMD0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.DMD0 */
                             }
 
-                            Return (PIB0)
+                            Return (PIB0) /* \_SB_.PCI0.PATA.PRID.P_D0._GTF.PIB0 */
                         }
                     }
 
@@ -6214,7 +6214,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             {
                                 If (LEqual (And (PRIT, 0x90), 0x80))
                                 {
-                                    Store (0x08, PMD1)
+                                    Store (0x08, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                 }
                                 Else
                                 {
@@ -6222,48 +6222,48 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                                         0x02), Local0)
                                     If (LEqual (0x05, Local0))
                                     {
-                                        Store (0x0C, PMD1)
+                                        Store (0x0C, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                     }
                                     Else
                                     {
                                         If (LEqual (0x03, Local0))
                                         {
-                                            Store (0x0B, PMD1)
+                                            Store (0x0B, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                         }
                                         Else
                                         {
-                                            Store (0x0A, PMD1)
+                                            Store (0x0A, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                         }
                                     }
                                 }
                             }
                             Else
                             {
-                                Store (One, PMD1)
+                                Store (One, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                             }
 
                             If (And (SYNC, 0x02))
                             {
-                                Store (Or (SDT1, 0x40), DMD1)
+                                Store (Or (SDT1, 0x40), DMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.DMD1 */
                                 If (And (ICR1, 0x02))
                                 {
                                     If (And (ICR0, 0x02))
                                     {
-                                        Add (DMD1, 0x02, DMD1)
+                                        Add (DMD1, 0x02, DMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.DMD1 */
                                     }
 
                                     If (And (ICR3, 0x02))
                                     {
-                                        Store (0x45, DMD1)
+                                        Store (0x45, DMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.DMD1 */
                                     }
                                 }
                             }
                             Else
                             {
-                                Or (Subtract (And (PMD1, 0x07), 0x02), 0x20, DMD1)
+                                Or (Subtract (And (PMD1, 0x07), 0x02), 0x20, DMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.DMD1 */
                             }
 
-                            Return (PIB1)
+                            Return (PIB1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PIB1 */
                         }
                     }
                 }
@@ -6334,14 +6334,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (Zero)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Arg0, TXSA)
-                    Store (Arg1, HCOM)
-                    Store (0x48, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Arg0, TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (0x48, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Return (One)
                     }
 
@@ -6355,14 +6355,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (0xFFFF)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Or (Arg0, One), TXSA)
-                    Store (0x44, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Or (Arg0, One), TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (0x44, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
-                        Return (DAT0)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                        Return (DAT0) /* \_SB_.PCI0.SBUS.DAT0 */
                     }
 
                     Return (0xFFFF)
@@ -6375,15 +6375,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (Zero)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Arg0, TXSA)
-                    Store (Arg1, HCOM)
-                    Store (Arg2, DAT0)
-                    Store (0x48, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Arg0, TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (Arg2, DAT0) /* \_SB_.PCI0.SBUS.DAT0 */
+                    Store (0x48, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Return (One)
                     }
 
@@ -6397,15 +6397,15 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (0xFFFF)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Or (Arg0, One), TXSA)
-                    Store (Arg1, HCOM)
-                    Store (0x48, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Or (Arg0, One), TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (0x48, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
-                        Return (DAT0)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                        Return (DAT0) /* \_SB_.PCI0.SBUS.DAT0 */
                     }
 
                     Return (0xFFFF)
@@ -6418,16 +6418,16 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (Zero)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Arg0, TXSA)
-                    Store (Arg1, HCOM)
-                    And (Arg2, 0xFF, DAT0)
-                    And (ShiftRight (Arg2, 0x08), 0xFF, DAT1)
-                    Store (0x4C, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Arg0, TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    And (Arg2, 0xFF, DAT0) /* \_SB_.PCI0.SBUS.DAT0 */
+                    And (ShiftRight (Arg2, 0x08), 0xFF, DAT1) /* \_SB_.PCI0.SBUS.DAT1 */
+                    Store (0x4C, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Return (One)
                     }
 
@@ -6441,14 +6441,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (0xFFFF)
                     }
 
-                    Store (Zero, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Or (Arg0, One), TXSA)
-                    Store (Arg1, HCOM)
-                    Store (0x4C, HCON)
+                    Store (Zero, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Or (Arg0, One), TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (0x4C, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Return (Or (ShiftLeft (DAT1, 0x08), DAT0))
                     }
 
@@ -6462,14 +6462,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (Zero)
                     }
 
-                    Store (Arg3, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Arg0, TXSA)
-                    Store (Arg1, HCOM)
-                    Store (SizeOf (Arg2), DAT0)
+                    Store (Arg3, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Arg0, TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (SizeOf (Arg2), DAT0) /* \_SB_.PCI0.SBUS.DAT0 */
                     Store (Zero, Local1)
-                    Store (DerefOf (Index (Arg2, Zero)), HBDR)
-                    Store (0x54, HCON)
+                    Store (DerefOf (Index (Arg2, Zero)), HBDR) /* \_SB_.PCI0.SBUS.HBDR */
+                    Store (0x54, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     While (LGreater (SizeOf (Arg2), Local1))
                     {
                         Store (0x0FA0, Local0)
@@ -6485,17 +6485,17 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                             Return (Zero)
                         }
 
-                        Store (0x80, HSTS)
+                        Store (0x80, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Increment (Local1)
                         If (LGreater (SizeOf (Arg2), Local1))
                         {
-                            Store (DerefOf (Index (Arg2, Local1)), HBDR)
+                            Store (DerefOf (Index (Arg2, Local1)), HBDR) /* \_SB_.PCI0.SBUS.HBDR */
                         }
                     }
 
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Return (One)
                     }
 
@@ -6510,11 +6510,11 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         Return (Zero)
                     }
 
-                    Store (Arg2, I2CE)
-                    Store (0xBF, HSTS)
-                    Store (Or (Arg0, One), TXSA)
-                    Store (Arg1, HCOM)
-                    Store (0x54, HCON)
+                    Store (Arg2, I2CE) /* \_SB_.PCI0.SBUS.I2CE */
+                    Store (0xBF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                    Store (Or (Arg0, One), TXSA) /* \_SB_.PCI0.SBUS.TXSA */
+                    Store (Arg1, HCOM) /* \_SB_.PCI0.SBUS.HCOM */
+                    Store (0x54, HCON) /* \_SB_.PCI0.SBUS.HCON */
                     Store (0x0FA0, Local0)
                     While (LAnd (LNot (And (HSTS, 0x80)), Local0))
                     {
@@ -6529,7 +6529,7 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                     }
 
                     Store (DAT0, Index (TBUF, Zero))
-                    Store (0x80, HSTS)
+                    Store (0x80, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                     Store (One, Local1)
                     While (LLess (Local1, DerefOf (Index (TBUF, Zero))))
                     {
@@ -6547,14 +6547,14 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
                         }
 
                         Store (HBDR, Index (TBUF, Local1))
-                        Store (0x80, HSTS)
+                        Store (0x80, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                         Increment (Local1)
                     }
 
                     If (COMP ())
                     {
-                        Or (HSTS, 0xFF, HSTS)
-                        Return (TBUF)
+                        Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
+                        Return (TBUF) /* \_SB_.PCI0.SBUS.SBLR.TBUF */
                     }
 
                     Return (Zero)
@@ -6626,8 +6626,8 @@ DefinitionBlock ("/tmp/fwts_iasl_12884_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE
 
                 Method (KILL, 0, Serialized)
                 {
-                    Or (HCON, 0x02, HCON)
-                    Or (HSTS, 0xFF, HSTS)
+                    Or (HCON, 0x02, HCON) /* \_SB_.PCI0.SBUS.HCON */
+                    Or (HSTS, 0xFF, HSTS) /* \_SB_.PCI0.SBUS.HSTS */
                 }
             }
         }

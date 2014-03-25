@@ -75,14 +75,14 @@ syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 2151
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     02148|                     Store (And (Arg0, 0x07), DSEN)
+syntaxcheck     02148|                     Store (And (Arg0, 0x07), DSEN) /* \DSEN */
 syntaxcheck     02149|                 }
 syntaxcheck     02150| 
 syntaxcheck     02151|                 Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
 syntaxcheck          |                           ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
 syntaxcheck     02152|                 {
-syntaxcheck     02153|                     Store (Zero, NDID)
+syntaxcheck     02153|                     Store (Zero, NDID) /* \NDID */
 syntaxcheck     02154|                     If (LNotEqual (DIDL, Zero))
 syntaxcheck     ==========================================================
 syntaxcheck     
@@ -119,7 +119,7 @@ syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 5866
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     05863|                         Return (STAT)
+syntaxcheck     05863|                         Return (STAT) /* \_SB_.PCI0.LPCB.BAT1._BIF.STAT */
 syntaxcheck     05864|                     }
 syntaxcheck     05865| 
 syntaxcheck     05866|                     Method (_BST, 0, NotSerialized)  // _BST: Battery Status
@@ -163,7 +163,7 @@ syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 6046
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06043|                             And (ICR5, 0x02, ICR5)
+syntaxcheck     06043|                             And (ICR5, 0x02, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
 syntaxcheck     06044|                             CreateWordField (Arg1, 0x62, W490)
 syntaxcheck     06045|                             CreateWordField (Arg1, 0x6A, W530)
 syntaxcheck     06046|                             CreateWordField (Arg1, 0x7E, W630)
@@ -184,14 +184,14 @@ syntaxcheck     06048|                             CreateWordField (Arg1, 0xB0, 
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
 syntaxcheck     06049|                             CreateWordField (Arg1, 0xBA, W930)
-syntaxcheck     06050|                             Or (PRIT, 0x8004, PRIT)
+syntaxcheck     06050|                             Or (PRIT, 0x8004, PRIT) /* \_SB_.PCI0.PATA.PRIT */
 syntaxcheck     06051|                             If (LAnd (And (FLAG, 0x02), And (W490, 0x0800)))
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 6090
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06087|                             And (ICR5, One, ICR5)
+syntaxcheck     06087|                             And (ICR5, One, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
 syntaxcheck     06088|                             CreateWordField (Arg2, 0x62, W491)
 syntaxcheck     06089|                             CreateWordField (Arg2, 0x6A, W531)
 syntaxcheck     06090|                             CreateWordField (Arg2, 0x7E, W631)
@@ -212,7 +212,7 @@ syntaxcheck     06092|                             CreateWordField (Arg2, 0xB0, 
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
 syntaxcheck     06093|                             CreateWordField (Arg2, 0xBA, W931)
-syntaxcheck     06094|                             Or (PRIT, 0x8040, PRIT)
+syntaxcheck     06094|                             Or (PRIT, 0x8040, PRIT) /* \_SB_.PCI0.PATA.PRIT */
 syntaxcheck     06095|                             If (LAnd (And (FLAG, 0x08), And (W491, 0x0800)))
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,

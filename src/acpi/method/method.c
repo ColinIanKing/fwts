@@ -4314,7 +4314,9 @@ static int method_test_PTS(fwts_framework *fw)
 				"controller before entering a sleep state. If "
 				"the machine cannot suspend (S3), "
 				"hibernate (S4) or shutdown (S5) then it "
-				"could be because _PTS is missing.");
+				"could be because _PTS is missing.  Note that "
+				"ACPI 1.0 wants _PTS to be executed before "
+				"suspending devices.");
 			break;
 		}
 		fwts_log_nl(fw);
@@ -4338,8 +4340,16 @@ static int method_test_TTS(fwts_framework *fw)
 
 			if (method_evaluate_method(fw, METHOD_MANDITORY,
 				"_TTS", arg, 1, method_test_NULL_return,
-				NULL) == FWTS_NOT_EXIST)
+				NULL) == FWTS_NOT_EXIST) {
+				fwts_advice(fw,
+					"Could not find _TTS. This method is invoked "
+					"at the beginning of the the sleep transition "
+					"for S1, S2, S3, S4 and S5 shutdown. The Linux "
+					"kernel caters for firmware that does not implement "
+					"_TTS, however, it will issue a warning that this "
+					"control method is missing.");
 				break;
+			}
 			fwts_log_nl(fw);
 		}
 	}
@@ -4413,8 +4423,18 @@ static int method_test_WAK(fwts_framework *fw)
 		arg[0].Integer.Value = i;
 		fwts_log_info(fw, "Test _WAK(%d) System Wake, State S%d.", i, i);
 		if (method_evaluate_method(fw, METHOD_MANDITORY, "_WAK", arg, 1,
-			method_test_WAK_return, &i) == FWTS_NOT_EXIST)
+			method_test_WAK_return, &i) == FWTS_NOT_EXIST) {
+			fwts_advice(fw,
+				"Section 7.3.7 states that a system that wakes "
+				"from a sleeping state will invoke the _WAK "
+				"control to issue device, thermal and other "
+				"notifications to ensure that the operating system "
+				"checks the states of various devices, thermal "
+				"zones, etc.  The Linux kernel will report an "
+				"ACPI exception if _WAK is does not exist when "
+				"it returns from a sleep state.");
 			break;
+		}
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;

@@ -4202,7 +4202,7 @@ static int method_test_ACx(fwts_framework *fw)
 	for (i = 0; i < 10; i++) {
 		char buffer[5];
 
-		snprintf(buffer, sizeof(buffer), "AC%d", i);
+		snprintf(buffer, sizeof(buffer), "_AC%d", i);
 		method_evaluate_method(fw, METHOD_OPTIONAL,
 			buffer, NULL, 0, method_test_THERM_return, buffer);
 		fwts_log_nl(fw);

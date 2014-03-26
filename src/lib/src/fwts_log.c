@@ -233,8 +233,14 @@ fwts_log_field fwts_log_str_to_field(const char *text)
 		{ "INF", LOG_INFO },
 		{ "SUM", LOG_SUMMARY },
 		{ "SEP", LOG_SEPARATOR },
+		{ "NLN", LOG_NEWLINE },
 		{ "ADV", LOG_ADVICE },
 		{ "HED", LOG_HEADING },
+		{ "PAS", LOG_PASSED },
+		{ "FAL", LOG_FAILED },
+		{ "SKP", LOG_SKIPPED },
+		{ "ABT", LOG_ABORTED },
+		{ "INO", LOG_INFOONLY },
 		{ "ALL", ~0 },
 		{ NULL, 0 }
 	};

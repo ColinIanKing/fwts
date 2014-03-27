@@ -1,3 +1,40 @@
+fwts (14.03.01-0ubuntu2) trusty; urgency=low
+
+  [Alex Hung]
+  * klog: ACPI does not specify _BQC as a mandatory method
+  * s3: add a "s3-hybrid" option to enable hybrid sleep for s3 (LP: #1295146)
+  * fwts-test: klog: updates for _BQC changes in
+    76c3ffd814cc882564f680b16f2c2d314ae58b07
+  * fwts-test: arg-help-0001: updates tests for new --s3-hybrid option
+  * fwts-test: arg-help-0001: fix test-0002.sh incorrectly uses
+    arg-help-0001.log
+  * doc: add --s3-hybrid man page entry
+
+  [Colin Ian King]
+  * acpi: wmi: add some newer UUIDs that are supported by linux (LP: #1292515)
+  * fwts_hwinfo: don't compare network addresses (LP: #1293297)
+  * acpi: acpidump: fix dump offsets in various table dumps (LP: #1293613)
+  * fwts-test: re-sync with fwts fix to acpidump
+  * lib: fwts_alloc: fix low 32 bit memory allocator (LP: #1295849)
+  * fwts-test: arg-help-0001: don't check the version field
+  * fwts-test: wmi-0001: update test to sync with WMI changes in fwts
+  * fwts-test: arg-log-format-0001: fix aarch64 failures
+  * acpi: method: add more advice for failed _PTS, _TTS and _WAK (LP: #1296737)
+  * lib: fwts_acpi_object_eval: report better advice on exec failure
+    (LP: #1296710)
+  * acpi: method: fix _ACx test (LP: #1297323)
+  * fwts-test: keep method-0001 test in sync with changes in fwts method
+  * acpica: update to version 20140325 (LP: #1297531)
+  * fwts-test: update ACPICA related tests due to ACPICA updates
+
+  [Keng-Yu Lin]
+  * debian: skip fwts-test on arm64
+
+  [Matt Fleming]
+  * lib: fwts_log: Add missing log field flags
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 27 Mar 2014 10:09:59 +0800
+
 fwts (14.03.00-0ubuntu1) trusty; urgency=low
 
   [Colin Ian King]

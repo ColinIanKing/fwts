@@ -440,7 +440,7 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 		}
 	}
 
-	if (index(buffer, '\n') != NULL) {
+	if (buffer_len && index(buffer, '\n') != NULL) {
 		fwts_log_info(fwts_acpica_fw, "%s", buffer);
 		free(buffer);
 		buffer_len = 0;

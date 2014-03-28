@@ -505,8 +505,99 @@ static int acpi_table_check_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+bool acpi_table_check_field(const char *field, const size_t len)
+{
+	size_t i;
+
+	for (i = 0; i < len; i++)
+		if (!isascii(field[i]))
+			return false;
+
+	return true;
+}
+
+bool acpi_table_check_field_test(
+	fwts_framework *fw,
+	const char *table_name,
+	const char *field_name,
+	const char *field,
+	const size_t len)
+{
+	if (!acpi_table_check_field(field, len)) {
+		fwts_failed(fw, LOG_LEVEL_LOW, "ACPITableHdrInfo",
+			"ACPI Table %s has non-ASCII characters in "
+			"header field %s\n", table_name, field_name);
+		return false;
+	}
+	return true;
+}
+
+static int acpi_table_check_test2(fwts_framework *fw)
+{
+	int i;
+	bool checked = false;
+
+	for (i = 0; ; i++) {
+		fwts_acpi_table_info *info;
+		fwts_acpi_table_header *hdr;
+		char name[50];
+		bool passed;
+
+		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
+			break;
+		if (info == NULL)
+			continue;
+
+		checked = true;
+		/* RSDP and FACS are special cases, skip these */
+		if (!strcmp(info->name, "RSDP") ||
+		    !strcmp(info->name, "FACS"))
+			continue;
+
+		hdr = (fwts_acpi_table_header *)info->data;
+		if (acpi_table_check_field(hdr->signature, 4)) {
+			snprintf(name, sizeof(name), "%4.4s", hdr->signature);
+		} else {
+			/* Table name not printable, so identify it by the address */
+			snprintf(name, sizeof(name), "at address 0x%" PRIx64, info->addr);
+		}
+
+		/*
+		 * Tables shouldn't be short, however, they do have at
+		 * least 4 bytes with their signature else they would not
+		 * have been loaded by this stage.
+		 */
+		if (hdr->length < sizeof(fwts_acpi_table_header)) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableHdrShort",
+				"ACPI Table %s is too short, only %d bytes long. Further "
+				"header checks will be ommitted.", name, hdr->length);
+			continue;
+		}
+		/* Warn about empty tables */
+		if (hdr->length == sizeof(fwts_acpi_table_header)) {
+			fwts_warning(fw,
+				"ACPI Table %s is empty and just contains a table header. Further "
+				"header checks will be ommitted.", name);
+			continue;
+		}
+
+		passed = acpi_table_check_field_test(fw, name, "Signature", hdr->signature, 4) &
+			 acpi_table_check_field_test(fw, name, "OEM ID", hdr->oem_id, 6) &
+			 acpi_table_check_field_test(fw, name, "OEM Table ID", hdr->oem_tbl_id, 8) &
+			acpi_table_check_field_test(fw, name, "OEM Creator ID", hdr->creator_id, 4);
+		if (passed)
+			fwts_passed(fw, "Table %s has valid signature and ID strings.", name);
+
+	}
+	if (!checked)
+		fwts_aborted(fw, "Cannot find any ACPI tables.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test acpi_table_check_tests[] = {
 	{ acpi_table_check_test1, "Test ACPI tables." },
+	{ acpi_table_check_test2, "Test ACPI headers." },
 	{ NULL, NULL }
 };
 

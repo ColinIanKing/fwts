@@ -661,7 +661,7 @@ static void acpidump_fadt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_BITF("  Headless, No Video (V3)", 		fwts_acpi_table_fadt, flags, 1, 12),
 		FIELD_BITF("  Use native instr. after SLP_TYPx (V3)",	fwts_acpi_table_fadt, flags, 1, 13),
 		FIELD_BITF("  PCI_EXP_WAK bits supported (V4)", 	fwts_acpi_table_fadt, flags, 1, 14),
-		FIELD_BITF("  Use patform clock (V4)", 			fwts_acpi_table_fadt, flags, 1, 15),
+		FIELD_BITF("  Use platform clock (V4)", 		fwts_acpi_table_fadt, flags, 1, 15),
 		FIELD_BITF("  RTC_STS Valid after S4 wake (V4)", 	fwts_acpi_table_fadt, flags, 1, 16),
 		FIELD_BITF("  Remote power on capable (V4)", 		fwts_acpi_table_fadt, flags, 1, 17),
 		FIELD_BITF("  Use APIC Cluster Model (V4)", 		fwts_acpi_table_fadt, flags, 1, 18),

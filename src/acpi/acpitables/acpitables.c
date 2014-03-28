@@ -121,15 +121,25 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		}
 	}
 
-	if (fadt->sci_int == 0)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSCIIRQZero", "FADT SCI Interrupt is 0x00, should be defined.");
-	if (fadt->smi_cmd == 0) {
+	/*
+	 *  Section 5.2.9 (Fixed ACPI Description Table) of the ACPI 5.0
+	 *  specification states that if SMI_CMD is zero then it is
+	 *  a system that does not support System Management Mode, so
+	 *  in that case, don't check SCI_INT being valid.
+	 */
+	if (fadt->smi_cmd != 0) {
+		if (fadt->sci_int == 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSCIIRQZero", "FADT SCI Interrupt is 0x00, should be defined.");
+		}
+	} else {
 		if ((fadt->acpi_enable == 0) &&
 		    (fadt->acpi_disable == 0) &&
 		    (fadt->s4bios_req == 0) &&
 		    (fadt->pstate_cnt == 0) &&
-		    (fadt->cst_cnt == 0))
-			fwts_warning(fw, "FADT SMI_CMD is 0x00, system appears to not support System Management mode.");
+		    (fadt->cst_cnt == 0)) {
+			/* Not an error, but intentional, but feedback this finding anyhow */
+			fwts_log_info(fw, "The FADT SMI_CMD is zero, system does not support System Management Mode.");
+		}
 		else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTSMICMDZero",
 					"FADT SMI_CMD is 0x00, however, one or more of ACPI_ENABLE, ACPI_DISABLE, "

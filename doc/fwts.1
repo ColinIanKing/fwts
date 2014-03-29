@@ -82,7 +82,7 @@ run the non-interactive batch tests. Batch tests require no user interaction.
 run only batch experimental tests.
 .TP
 .B \-\-disassemble\-aml
-Disassemble AML (ACPI machine language) byte code. This attempts to disassemble AML in DSDT and SSDT
+disassemble AML (ACPI machine language) byte code. This attempts to disassemble AML in DSDT and SSDT
 tables and generates DSDT.dsl and SSDTx.dsl sources.
 .TP
 .B \-d, \-\-dump
@@ -99,27 +99,27 @@ lspci.log \- containing the output from lspci \-vv \-nn
 README.txt \- containing a timestamp and kernel version information.
 .TP
 .B \-\-dumpfile=acpidump.log
-Load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump.  The
+load ACPI tables from output generated from acpidump or from sudo fwts \-\-dump.  The
 latter is preferred as fwts \-\-dump is able to dump more tables than acpidump. This
 allows one to dump tables from one machine and processes them with fwts on another machine.
 .TP
 .B \-\-uefi\-get\-var\-multiple
-Specifies the number of times to get a variable in the uefirtvariable get variable stress test.
+specifies the number of times to get a variable in the uefirtvariable get variable stress test.
 .TP
 .B \-\-uefi\-set\-var\-multiple
-Specifies the number of times to set a variable in the uefirtvariable set variable stress test.
+specifies the number of times to set a variable in the uefirtvariable set variable stress test.
 .TP
 .B \-\-uefi\-query\-var\-multiple
-Specifies the number of times to query a variable in the uefirtvariable query variable stress test.
+specifies the number of times to query a variable in the uefirtvariable query variable stress test.
 .TP
 .B \-\-filter\-error\-discard
-Specifies the errors that one wants to silently ignore.  One supplies a comma sperated
+specifies the errors that one wants to silently ignore.  One supplies a comma sperated
 list of fwts error message labels that one wants fwts to not report as errors. fwts will
 run the test but if there is a test failure and the label matches the one supplied in this
 list fwts will then just ignore this error. This cannot be used with \-\-filter\-error\-keep.
 .TP
 .B \-\-filter\-error\-keep
-Specifies the errors that one wants to keep, all other errors are silently ignored.
+specifies the errors that one wants to keep, all other errors are silently ignored.
 One supplies a comma sperated list of fwts error message labels that one wants fwts
 report as errors, other test failures will be not reported and silently ignored.
 This cannot be used with \-\-filter\-error\-discard.
@@ -209,7 +209,7 @@ before a device configuration check is run. The default is 15 seconds.  If this 
 device checking is assumed so one does not also need to use the \-\-s3\-device\-check flag.
 .TP
 .B \-\-s3\-hybrid
-Enables fwts to run Hybrid Sleep.
+enables fwts to run Hybrid Sleep.
 .TP
 .B \-\-s3\-min\-delay=N
 minimum time between S3 iterations.

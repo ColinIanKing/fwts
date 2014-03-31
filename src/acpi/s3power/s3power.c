@@ -255,7 +255,7 @@ static int s3power_options_handler(fwts_framework *fw, int argc, char * const ar
 }
 
 static fwts_option s3power_options[] = {
-	{ "s3power-sleep-delay","", 1, "Sleep N seconds between start of suspend and wakeup, e.g. --s3power-sleep-delay=60" },
+	{ "s3power-sleep-delay","", 1, "Sleep N seconds between start of suspend and wakeup, e.g. --s3power-sleep-delay=600" },
 	{ NULL, NULL, 0, NULL }
 };
 

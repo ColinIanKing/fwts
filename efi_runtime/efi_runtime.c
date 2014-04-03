@@ -100,235 +100,308 @@ static void convert_to_guid(efi_guid_t *vendor, EFI_GUID *vendor_guid)
 		vendor_guid->Data4[i] = vendor->b[i+8];
 }
 
+static long efi_runtime_get_variable(unsigned long arg)
+{
+	struct efi_getvariable __user *pgetvariable;
+	unsigned long datasize;
+	EFI_GUID vendor_guid;
+	efi_guid_t vendor;
+	efi_status_t status;
+	uint32_t attr;
+
+	pgetvariable = (struct efi_getvariable __user *)arg;
+
+	if (get_user(datasize, pgetvariable->DataSize) ||
+		copy_from_user(&vendor_guid, pgetvariable->VendorGuid,
+						sizeof(EFI_GUID)))
+		return -EFAULT;
+
+	convert_from_guid(&vendor, &vendor_guid);
+	status = efi.get_variable(pgetvariable->VariableName, &vendor,
+				&attr, &datasize, pgetvariable->Data);
+	if (put_user(status, pgetvariable->status))
+		return -EFAULT;
+	if (status == EFI_SUCCESS) {
+		if (put_user(attr, pgetvariable->Attributes) ||
+			put_user(datasize, pgetvariable->DataSize))
+			return -EFAULT;
+		return 0;
+	} else {
+		printk(KERN_ERR "efi_runtime: can't get variable\n");
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static long efi_runtime_set_variable(unsigned long arg)
+{
+	struct efi_setvariable __user *psetvariable;
+	unsigned long datasize;
+	EFI_GUID vendor_guid;
+	efi_guid_t vendor;
+	efi_status_t status;
+	uint32_t attr;
+
+	psetvariable = (struct efi_setvariable __user *)arg;
+	if (get_user(datasize, &psetvariable->DataSize) ||
+		get_user(attr, &psetvariable->Attributes) ||
+		copy_from_user(&vendor_guid, psetvariable->VendorGuid,
+						sizeof(EFI_GUID)))
+		return -EFAULT;
+
+	convert_from_guid(&vendor, &vendor_guid);
+	status = efi.set_variable(psetvariable->VariableName, &vendor,
+				attr, datasize, psetvariable->Data);
+
+	if (put_user(status, psetvariable->status))
+		return -EFAULT;
+	return status == EFI_SUCCESS ? 0 : -EINVAL;
+}
+
+static long efi_runtime_get_time(unsigned long arg)
+{
+	struct efi_gettime __user *pgettime;
+	efi_status_t status;
+	efi_time_cap_t cap;
+	efi_time_t eft;
+
+	status = efi.get_time(&eft, &cap);
+	pgettime = (struct efi_gettime __user *)arg;
+	if (put_user(status, pgettime->status))
+		return -EFAULT;
+	if (status != EFI_SUCCESS) {
+		printk(KERN_ERR "efitime: can't read time\n");
+		return -EINVAL;
+	}
+	if (put_user(cap.resolution,
+				&pgettime->Capabilities->Resolution) ||
+				put_user(cap.accuracy,
+				&pgettime->Capabilities->Accuracy) ||
+				put_user(cap.sets_to_zero,
+				&pgettime->Capabilities->SetsToZero))
+		return -EFAULT;
+	return copy_to_user(pgettime->Time, &eft,
+			sizeof(EFI_TIME)) ? -EFAULT : 0;
+}
+
+static long efi_runtime_set_time(unsigned long arg)
+{
+	struct efi_settime __user *psettime;
+	efi_status_t status;
+	EFI_TIME efi_time;
+	efi_time_t eft;
+
+	psettime = (struct efi_settime __user *)arg;
+	if (copy_from_user(&efi_time, psettime->Time,
+					sizeof(EFI_TIME)))
+		return -EFAULT;
+	convert_to_efi_time(&eft, &efi_time);
+	status = efi.set_time(&eft);
+
+	if (put_user(status, psettime->status))
+		return -EFAULT;
+
+	return status == EFI_SUCCESS ? 0 : -EINVAL;
+}
+
+static long efi_runtime_get_waketime(unsigned long arg)
+{
+	struct efi_getwakeuptime __user *pgetwakeuptime;
+	unsigned char enabled, pending;
+	efi_status_t status;
+	EFI_TIME efi_time;
+	efi_time_t eft;
+
+	status = efi.get_wakeup_time((efi_bool_t *)&enabled,
+					(efi_bool_t *)&pending, &eft);
+
+	pgetwakeuptime = (struct efi_getwakeuptime __user *)arg;
+
+	if (put_user(status, pgetwakeuptime->status))
+		return -EFAULT;
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
+	if (put_user(enabled, pgetwakeuptime->Enabled) ||
+			put_user(pending, pgetwakeuptime->Pending))
+		return -EFAULT;
+
+	convert_from_efi_time(&eft, &efi_time);
+
+	return copy_to_user(pgetwakeuptime->Time, &efi_time,
+			sizeof(EFI_TIME)) ? -EFAULT : 0;
+}
+
+static long efi_runtime_set_waketime(unsigned long arg)
+{
+	struct efi_setwakeuptime __user *psetwakeuptime;
+	unsigned char enabled;
+	efi_status_t status;
+	EFI_TIME efi_time;
+	efi_time_t eft;
+
+	psetwakeuptime = (struct efi_setwakeuptime __user *)arg;
+
+	if (get_user(enabled, &psetwakeuptime->Enabled) ||
+				copy_from_user(&efi_time,
+				psetwakeuptime->Time,
+				sizeof(EFI_TIME)))
+		return -EFAULT;
+
+	convert_to_efi_time(&eft, &efi_time);
+
+	status = efi.set_wakeup_time(enabled, &eft);
+
+	if (put_user(status, psetwakeuptime->status))
+		return -EFAULT;
+
+	return status == EFI_SUCCESS ? 0 : -EINVAL;
+}
+
+static long efi_runtime_get_nextvariablename(unsigned long arg)
+{
+	struct efi_getnextvariablename __user *pgetnextvariablename;
+	unsigned long name_size;
+	efi_status_t status;
+	efi_guid_t vendor;
+	EFI_GUID vendor_guid;
+
+	pgetnextvariablename = (struct efi_getnextvariablename
+							__user *)arg;
+
+	if (get_user(name_size, pgetnextvariablename->VariableNameSize)
+			|| copy_from_user(&vendor_guid,
+				pgetnextvariablename->VendorGuid,
+				sizeof(EFI_GUID)))
+		return -EFAULT;
+	if (name_size > 1024)
+		return -EFAULT;
+
+	convert_from_guid(&vendor, &vendor_guid);
+
+	status = efi.get_next_variable(&name_size,
+				pgetnextvariablename->VariableName,
+							&vendor);
+	if (put_user(status, pgetnextvariablename->status))
+		return -EFAULT;
+	convert_to_guid(&vendor, &vendor_guid);
+
+	if (put_user(name_size, pgetnextvariablename->VariableNameSize))
+		return -EFAULT;
+
+	if (copy_to_user(pgetnextvariablename->VendorGuid,
+					&vendor_guid, sizeof(EFI_GUID)))
+		return -EFAULT;
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+	return 0;
+}
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+static long efi_runtime_query_variableinfo(unsigned long arg)
+{
+	struct efi_queryvariableinfo __user *pqueryvariableinfo;
+	efi_status_t status;
+	uint32_t attr;
+
+	pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
+
+	if (get_user(attr, &pqueryvariableinfo->Attributes))
+		return -EFAULT;
+
+	status = efi.query_variable_info(attr,
+			pqueryvariableinfo->MaximumVariableStorageSize,
+			pqueryvariableinfo->RemainingVariableStorageSize
+			, pqueryvariableinfo->MaximumVariableSize);
+	if (put_user(status, pqueryvariableinfo->status))
+		return -EFAULT;
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
+	return 0;
+}
+#endif
+
+static long efi_runtime_get_nexthighmonocount(unsigned long arg)
+{
+	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
+	efi_status_t status;
+
+	pgetnexthighmonotoniccount = (struct
+			efi_getnexthighmonotoniccount __user *)arg;
+
+	status = efi.get_next_high_mono_count(pgetnexthighmonotoniccount
+							->HighCount);
+	if (put_user(status, pgetnexthighmonotoniccount->status))
+		return -EFAULT;
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
+	return 0;
+}
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+static long efi_runtime_query_capsulecaps(unsigned long arg)
+{
+	struct efi_querycapsulecapabilities __user *pquerycapsulecapabilities;
+	efi_status_t status;
+
+	pquerycapsulecapabilities = (struct
+			efi_querycapsulecapabilities __user *)arg;
+
+	status = efi.query_capsule_caps(
+			(efi_capsule_header_t **)
+			pquerycapsulecapabilities->CapsuleHeaderArray,
+			pquerycapsulecapabilities->CapsuleCount,
+			pquerycapsulecapabilities->MaximumCapsuleSize,
+			(int *)pquerycapsulecapabilities->ResetType);
+
+	if (put_user(status, pquerycapsulecapabilities->status))
+		return -EFAULT;
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
+	return 0;
+}
+#endif
+
 static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 							unsigned long arg)
 {
-	efi_status_t status;
-	struct efi_getvariable __user *pgetvariable;
-	struct efi_setvariable __user *psetvariable;
-
-	efi_guid_t vendor;
-	EFI_GUID vendor_guid;
-	unsigned long datasize;
-	uint32_t attr;
-
-	efi_time_t eft;
-	efi_time_cap_t cap;
-	struct efi_gettime __user *pgettime;
-	struct efi_settime __user *psettime;
-
-	unsigned char enabled, pending;
-	EFI_TIME efi_time;
-	struct efi_getwakeuptime __user *pgetwakeuptime;
-	struct efi_setwakeuptime __user *psetwakeuptime;
-
-	struct efi_getnextvariablename __user *pgetnextvariablename;
-	unsigned long name_size;
-
-	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
-	struct efi_queryvariableinfo __user *pqueryvariableinfo;
-	struct efi_querycapsulecapabilities __user *pquerycapsulecapabilities;
-#endif
-
 	switch (cmd) {
 	case EFI_RUNTIME_GET_VARIABLE:
-		pgetvariable = (struct efi_getvariable __user *)arg;
-
-		if (get_user(datasize, pgetvariable->DataSize) ||
-			copy_from_user(&vendor_guid, pgetvariable->VendorGuid,
-							sizeof(EFI_GUID)))
-			return -EFAULT;
-
-		convert_from_guid(&vendor, &vendor_guid);
-		status = efi.get_variable(pgetvariable->VariableName, &vendor,
-					&attr, &datasize, pgetvariable->Data);
-		if (put_user(status, pgetvariable->status))
-			return -EFAULT;
-		if (status == EFI_SUCCESS) {
-			if (put_user(attr, pgetvariable->Attributes) ||
-				put_user(datasize, pgetvariable->DataSize))
-				return -EFAULT;
-			return 0;
-		} else {
-			printk(KERN_ERR "efi_runtime: can't get variable\n");
-			return -EINVAL;
-		}
+		return efi_runtime_get_variable(arg);
 
 	case EFI_RUNTIME_SET_VARIABLE:
-		psetvariable = (struct efi_setvariable __user *)arg;
-		if (get_user(datasize, &psetvariable->DataSize) ||
-			get_user(attr, &psetvariable->Attributes) ||
-			copy_from_user(&vendor_guid, psetvariable->VendorGuid,
-							sizeof(EFI_GUID)))
-			return -EFAULT;
-
-		convert_from_guid(&vendor, &vendor_guid);
-		status = efi.set_variable(psetvariable->VariableName, &vendor,
-					attr, datasize, psetvariable->Data);
-
-		if (put_user(status, psetvariable->status))
-			return -EFAULT;
-		return status == EFI_SUCCESS ? 0 : -EINVAL;
+		return efi_runtime_set_variable(arg);
 
 	case EFI_RUNTIME_GET_TIME:
-		status = efi.get_time(&eft, &cap);
-		pgettime = (struct efi_gettime __user *)arg;
-		if (put_user(status, pgettime->status))
-			return -EFAULT;
-		if (status != EFI_SUCCESS) {
-			printk(KERN_ERR "efitime: can't read time\n");
-			return -EINVAL;
-		}
-		if (put_user(cap.resolution,
-					&pgettime->Capabilities->Resolution) ||
-					put_user(cap.accuracy,
-					&pgettime->Capabilities->Accuracy) ||
-					put_user(cap.sets_to_zero,
-					&pgettime->Capabilities->SetsToZero))
-			return -EFAULT;
-		return copy_to_user(pgettime->Time, &eft,
-				sizeof(EFI_TIME)) ? -EFAULT : 0;
+		return efi_runtime_get_time(arg);
 
 	case EFI_RUNTIME_SET_TIME:
-
-		psettime = (struct efi_settime __user *)arg;
-		if (copy_from_user(&efi_time, psettime->Time,
-						sizeof(EFI_TIME)))
-			return -EFAULT;
-		convert_to_efi_time(&eft, &efi_time);
-		status = efi.set_time(&eft);
-
-		if (put_user(status, psettime->status))
-			return -EFAULT;
-
-		return status == EFI_SUCCESS ? 0 : -EINVAL;
+		return efi_runtime_set_time(arg);
 
 	case EFI_RUNTIME_GET_WAKETIME:
-
-		status = efi.get_wakeup_time((efi_bool_t *)&enabled,
-						(efi_bool_t *)&pending, &eft);
-
-		pgetwakeuptime = (struct efi_getwakeuptime __user *)arg;
-
-		if (put_user(status, pgetwakeuptime->status))
-			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
-
-		if (put_user(enabled, pgetwakeuptime->Enabled) ||
-				put_user(pending, pgetwakeuptime->Pending))
-			return -EFAULT;
-
-		convert_from_efi_time(&eft, &efi_time);
-
-		return copy_to_user(pgetwakeuptime->Time, &efi_time,
-				sizeof(EFI_TIME)) ? -EFAULT : 0;
+		return efi_runtime_get_waketime(arg);
 
 	case EFI_RUNTIME_SET_WAKETIME:
-
-		psetwakeuptime = (struct efi_setwakeuptime __user *)arg;
-
-		if (get_user(enabled, &psetwakeuptime->Enabled) ||
-					copy_from_user(&efi_time,
-					psetwakeuptime->Time,
-					sizeof(EFI_TIME)))
-			return -EFAULT;
-
-		convert_to_efi_time(&eft, &efi_time);
-
-		status = efi.set_wakeup_time(enabled, &eft);
-
-		if (put_user(status, psetwakeuptime->status))
-			return -EFAULT;
-
-		return status == EFI_SUCCESS ? 0 : -EINVAL;
+		return efi_runtime_set_waketime(arg);
 
 	case EFI_RUNTIME_GET_NEXTVARIABLENAME:
-
-		pgetnextvariablename = (struct efi_getnextvariablename
-								__user *)arg;
-
-		if (get_user(name_size, pgetnextvariablename->VariableNameSize)
-				|| copy_from_user(&vendor_guid,
-					pgetnextvariablename->VendorGuid,
-					sizeof(EFI_GUID)))
-			return -EFAULT;
-		if (name_size > 1024)
-			return -EFAULT;
-
-		convert_from_guid(&vendor, &vendor_guid);
-
-		status = efi.get_next_variable(&name_size,
-					pgetnextvariablename->VariableName,
-								&vendor);
-		if (put_user(status, pgetnextvariablename->status))
-			return -EFAULT;
-		convert_to_guid(&vendor, &vendor_guid);
-
-		if (put_user(name_size, pgetnextvariablename->VariableNameSize))
-			return -EFAULT;
-
-		if (copy_to_user(pgetnextvariablename->VendorGuid,
-						&vendor_guid, sizeof(EFI_GUID)))
-			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
-		return 0;
+		return efi_runtime_get_nextvariablename(arg);
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
 	case EFI_RUNTIME_QUERY_VARIABLEINFO:
-
-		pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
-
-		if (get_user(attr, &pqueryvariableinfo->Attributes))
-			return -EFAULT;
-
-		status = efi.query_variable_info(attr,
-				pqueryvariableinfo->MaximumVariableStorageSize,
-				pqueryvariableinfo->RemainingVariableStorageSize
-				, pqueryvariableinfo->MaximumVariableSize);
-		if (put_user(status, pqueryvariableinfo->status))
-			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
-
-		return 0;
+		return efi_runtime_query_variableinfo(arg);
 #endif
 
 	case EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT:
-
-		pgetnexthighmonotoniccount = (struct
-				efi_getnexthighmonotoniccount __user *)arg;
-
-		status = efi.get_next_high_mono_count(pgetnexthighmonotoniccount
-								->HighCount);
-		if (put_user(status, pgetnexthighmonotoniccount->status))
-			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
-
-		return 0;
+		return efi_runtime_get_nexthighmonocount(arg);
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
 	case EFI_RUNTIME_QUERY_CAPSULECAPABILITIES:
-
-		pquerycapsulecapabilities = (struct
-				efi_querycapsulecapabilities __user *)arg;
-
-		status = efi.query_capsule_caps(
-				(efi_capsule_header_t **)
-				pquerycapsulecapabilities->CapsuleHeaderArray,
-				pquerycapsulecapabilities->CapsuleCount,
-				pquerycapsulecapabilities->MaximumCapsuleSize,
-				(int *)pquerycapsulecapabilities->ResetType);
-
-		if (put_user(status, pquerycapsulecapabilities->status))
-			return -EFAULT;
-		if (status != EFI_SUCCESS)
-			return -EINVAL;
-
-		return 0;
+		return efi_runtime_query_capsulecaps(arg);
 #endif
 	}
 

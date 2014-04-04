@@ -24,7 +24,7 @@
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/efi.h>
-
+#include <linux/slab.h>
 #include <linux/uaccess.h>
 
 #include "efi_runtime.h"
@@ -100,6 +100,107 @@ static void convert_to_guid(efi_guid_t *vendor, EFI_GUID *vendor_guid)
 		vendor_guid->Data4[i] = vendor->b[i+8];
 }
 
+/*
+ * Count the bytes in 'str', including the terminating NULL.
+ *
+ * Note this function returns the number of *bytes*, not the number of
+ * ucs2 characters.
+ */
+static inline size_t __ucs2_strsize(uint16_t *str)
+{
+	uint16_t *s = str;
+	size_t len;
+
+	if (!str)
+		return 0;
+
+	/* Include terminating NULL */
+	len = sizeof(uint16_t);
+
+	while (*s++ != 0)
+		len += sizeof(uint16_t);
+
+	return len;
+}
+
+/*
+ * Allocate a buffer and copy a ucs2 string from user space into it.
+ *
+ * We take an explicit number of bytes to use for the allocation and
+ * copy, and therefore do not make any assumptions about 'src' (such as
+ * it pointing to a valid string).
+ *
+ * If a non-zero value is returned, the caller MUST NOT access 'dst'.
+ *
+ * It is the caller's responsibility to free 'dst'.
+ */
+static inline int
+copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
+{
+	if (!src) {
+		*dst = NULL;
+		return 0;
+	}
+
+	if (!access_ok(VERIFY_READ, src, 1))
+		return -EFAULT;
+
+	*dst = kmalloc(len, GFP_KERNEL);
+	if (!*dst)
+		return -ENOMEM;
+
+	if (copy_from_user(*dst, src, len)) {
+		kfree(*dst);
+		return -EFAULT;
+	}
+
+	return 0;
+}
+
+/*
+ * Calculate the required buffer allocation size and copy a ucs2 string
+ * from user space into it.
+ *
+ * This function differs from copy_ucs2_from_user_len() because it
+ * calculates the size of the buffer to allocate by taking the length of
+ * the string 'src'.
+ *
+ * If a non-zero value is returned, the caller MUST NOT access 'dst'.
+ *
+ * It is the caller's responsibility to free 'dst'.
+ */
+static inline int copy_ucs2_from_user(uint16_t **dst, uint16_t __user *src)
+{
+	size_t len;
+
+	if (!access_ok(VERIFY_READ, src, 1))
+		return -EFAULT;
+
+	len = __ucs2_strsize(src);
+	return copy_ucs2_from_user_len(dst, src, len);
+}
+
+/*
+ * Copy a ucs2 string to a user buffer.
+ *
+ * This function is a simple wrapper around copy_to_user() that does
+ * nothing if 'src' is NULL, which is useful for reducing the amount of
+ * NULL checking the caller has to do.
+ *
+ * 'len' specifies the number of bytes to copy.
+ */
+static inline int
+copy_ucs2_to_user_len(uint16_t __user *dst, uint16_t *src, size_t len)
+{
+	if (!src)
+		return 0;
+
+	if (!access_ok(VERIFY_WRITE, dst, 1))
+		return -EFAULT;
+
+	return copy_to_user(dst, src, len);
+}
+
 static long efi_runtime_get_variable(unsigned long arg)
 {
 	struct efi_getvariable __user *pgetvariable;
@@ -107,7 +208,10 @@ static long efi_runtime_get_variable(unsigned long arg)
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
 	efi_status_t status;
+	uint16_t *name;
 	uint32_t attr;
+	void *data;
+	int rv = 0;
 
 	pgetvariable = (struct efi_getvariable __user *)arg;
 
@@ -117,8 +221,27 @@ static long efi_runtime_get_variable(unsigned long arg)
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
-	status = efi.get_variable(pgetvariable->VariableName, &vendor,
-				&attr, &datasize, pgetvariable->Data);
+
+	rv = copy_ucs2_from_user(&name, pgetvariable->VariableName);
+	if (rv)
+		return rv;
+
+	data = kmalloc(datasize, GFP_KERNEL);
+	if (!data) {
+		kfree(name);
+		return -ENOMEM;
+	}
+
+	status = efi.get_variable(name, &vendor, &attr, &datasize, data);
+
+	kfree(name);
+
+	rv = copy_to_user(pgetvariable->Data, data, datasize);
+	kfree(data);
+
+	if (rv)
+		return rv;
+
 	if (put_user(status, pgetvariable->status))
 		return -EFAULT;
 	if (status == EFI_SUCCESS) {
@@ -141,7 +264,10 @@ static long efi_runtime_set_variable(unsigned long arg)
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
 	efi_status_t status;
+	uint16_t *name;
 	uint32_t attr;
+	void *data;
+	int rv;
 
 	psetvariable = (struct efi_setvariable __user *)arg;
 	if (get_user(datasize, &psetvariable->DataSize) ||
@@ -151,8 +277,21 @@ static long efi_runtime_set_variable(unsigned long arg)
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
-	status = efi.set_variable(psetvariable->VariableName, &vendor,
-				attr, datasize, psetvariable->Data);
+
+	rv = copy_ucs2_from_user(&name, psetvariable->VariableName);
+	if (rv)
+		return rv;
+
+	data = kmalloc(datasize, GFP_KERNEL);
+	if (copy_from_user(data, psetvariable->Data, datasize)) {
+		kfree(name);
+		return -EFAULT;
+	}
+
+	status = efi.set_variable(name, &vendor, attr, datasize, data);
+
+	kfree(data);
+	kfree(name);
 
 	if (put_user(status, psetvariable->status))
 		return -EFAULT;
@@ -266,6 +405,8 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	efi_status_t status;
 	efi_guid_t vendor;
 	EFI_GUID vendor_guid;
+	uint16_t *name;
+	int rv;
 
 	pgetnextvariablename = (struct efi_getnextvariablename
 							__user *)arg;
@@ -280,9 +421,20 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 
 	convert_from_guid(&vendor, &vendor_guid);
 
-	status = efi.get_next_variable(&name_size,
-				pgetnextvariablename->VariableName,
-							&vendor);
+	rv = copy_ucs2_from_user_len(&name,
+			pgetnextvariablename->VariableName, 1024);
+	if (rv)
+		return rv;
+
+	status = efi.get_next_variable(&name_size, name, &vendor);
+
+	rv = copy_ucs2_to_user_len(pgetnextvariablename->VariableName,
+				   name, name_size);
+	kfree(name);
+
+	if (rv)
+		return -EFAULT;
+
 	if (put_user(status, pgetnextvariablename->status))
 		return -EFAULT;
 	convert_to_guid(&vendor, &vendor_guid);
@@ -302,14 +454,18 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 {
 	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
 	efi_status_t status;
+	uint32_t count;
 
 	pgetnexthighmonotoniccount = (struct
 			efi_getnexthighmonotoniccount __user *)arg;
 
-	status = efi.get_next_high_mono_count(pgetnexthighmonotoniccount
-							->HighCount);
+	status = efi.get_next_high_mono_count(&count);
 	if (put_user(status, pgetnexthighmonotoniccount->status))
 		return -EFAULT;
+
+	if (put_user(count, pgetnexthighmonotoniccount->HighCount))
+		return -EFAULT;
+
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
 
@@ -322,6 +478,7 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 {
 	struct efi_queryvariableinfo __user *pqueryvariableinfo;
 	efi_status_t status;
+	uint64_t max_storage, remaining, max_size;
 	uint32_t attr;
 
 	pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
@@ -329,10 +486,18 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 	if (get_user(attr, &pqueryvariableinfo->Attributes))
 		return -EFAULT;
 
-	status = efi.query_variable_info(attr,
-			pqueryvariableinfo->MaximumVariableStorageSize,
-			pqueryvariableinfo->RemainingVariableStorageSize
-			, pqueryvariableinfo->MaximumVariableSize);
+	status = efi.query_variable_info(attr, &max_storage,
+					 &remaining, &max_size);
+
+	if (put_user(max_storage, pqueryvariableinfo->MaximumVariableStorageSize))
+		return -EFAULT;
+
+	if (put_user(remaining, pqueryvariableinfo->RemainingVariableStorageSize))
+		return -EFAULT;
+
+	if (put_user(max_size, pqueryvariableinfo->MaximumVariableSize))
+		return -EFAULT;
+
 	if (put_user(status, pqueryvariableinfo->status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
@@ -343,21 +508,46 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 
 static long efi_runtime_query_capsulecaps(unsigned long arg)
 {
-	struct efi_querycapsulecapabilities __user *pquerycapsulecapabilities;
+	struct efi_querycapsulecapabilities __user *u_caps;
+	struct efi_querycapsulecapabilities caps;
+	EFI_CAPSULE_HEADER *capsules;
 	efi_status_t status;
+	uint64_t max_size;
+	int i, reset_type;
 
-	pquerycapsulecapabilities = (struct
-			efi_querycapsulecapabilities __user *)arg;
+	u_caps = (struct efi_querycapsulecapabilities __user *)arg;
 
-	status = efi.query_capsule_caps(
-			(efi_capsule_header_t **)
-			pquerycapsulecapabilities->CapsuleHeaderArray,
-			pquerycapsulecapabilities->CapsuleCount,
-			pquerycapsulecapabilities->MaximumCapsuleSize,
-			(int *)pquerycapsulecapabilities->ResetType);
-
-	if (put_user(status, pquerycapsulecapabilities->status))
+	if (copy_from_user(&caps, u_caps, sizeof(caps)))
 		return -EFAULT;
+
+	capsules = kcalloc(caps.CapsuleCount + 1,
+			   sizeof(EFI_CAPSULE_HEADER), GFP_KERNEL);
+	if (!capsules)
+		return -ENOMEM;
+
+	for (i = 0; i < caps.CapsuleCount; i++) {
+		if (copy_from_user(&capsules[i],
+				   (EFI_CAPSULE_HEADER *)u_caps->CapsuleHeaderArray[i],
+				   sizeof(EFI_CAPSULE_HEADER)))
+			return -EFAULT;
+	}
+
+	caps.CapsuleHeaderArray = &capsules;
+
+	status = efi.query_capsule_caps((efi_capsule_header_t **)
+					caps.CapsuleHeaderArray,
+					caps.CapsuleCount,
+					&max_size, &reset_type);
+
+	if (put_user(status, u_caps->status))
+		return -EFAULT;
+
+	if (put_user(max_size, u_caps->MaximumCapsuleSize))
+		return -EFAULT;
+
+	if (put_user(reset_type, u_caps->ResetType))
+		return -EFAULT;
+
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
 

@@ -319,7 +319,7 @@ typedef struct {
 	uint32_t reserved;
 	uint64_t wwn;
 	uint64_t lun;
-} fwts_uefi_fibre_channel_dev_path;
+} __attribute__((packed)) fwts_uefi_fibre_channel_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
@@ -468,7 +468,7 @@ typedef struct {
 	uint32_t partition_number;
 	uint64_t partition_start;
 	uint64_t partition_size;
-	uint8_t partition_signature[8];
+	uint8_t partition_signature[16];
 	uint8_t mbr_type;
 	uint8_t signature_type;
 } __attribute__((packed)) fwts_uefi_hard_drive_dev_path;

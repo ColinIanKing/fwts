@@ -464,6 +464,7 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				fwts_uefi_hard_drive_dev_path *h = (fwts_uefi_hard_drive_dev_path*)dev_path;
 				path = uefidump_vprintf(path, "\\HARDDRIVE("
 				"%" PRIu32 ",%" PRIx64 ",%" PRIx64 ","
+				"%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8
 				"%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 ","
 				"%" PRIx8 ",%" PRIx8 ")",
 				h->partition_number,
@@ -473,6 +474,10 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				h->partition_signature[2], h->partition_signature[3],
 				h->partition_signature[4], h->partition_signature[5],
 				h->partition_signature[6], h->partition_signature[7],
+				h->partition_signature[8], h->partition_signature[9],
+				h->partition_signature[10], h->partition_signature[11],
+				h->partition_signature[12], h->partition_signature[13],
+				h->partition_signature[14], h->partition_signature[15],
 				h->mbr_type, h->signature_type);
 			}
 			break;

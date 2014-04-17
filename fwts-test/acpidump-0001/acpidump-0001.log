@@ -143,7 +143,7 @@ acpidump                                                 Sealed Case (V3): 0x0
 acpidump                                          Headless, No Video (V3): 0x0
 acpidump                            Use native instr. after SLP_TYPx (V3): 0x0
 acpidump                                  PCI_EXP_WAK bits supported (V4): 0x0
-acpidump                                           Use patform clock (V4): 0x1
+acpidump                                          Use platform clock (V4): 0x1
 acpidump                                 RTC_STS Valid after S4 wake (V4): 0x0
 acpidump                                     Remote power on capable (V4): 0x0
 acpidump                                      Use APIC Cluster Model (V4): 0x0
@@ -610,7 +610,7 @@ acpidump                                                 Sealed Case (V3): 0x0
 acpidump                                          Headless, No Video (V3): 0x0
 acpidump                            Use native instr. after SLP_TYPx (V3): 0x0
 acpidump                                  PCI_EXP_WAK bits supported (V4): 0x0
-acpidump                                           Use patform clock (V4): 0x0
+acpidump                                          Use platform clock (V4): 0x0
 acpidump                                 RTC_STS Valid after S4 wake (V4): 0x0
 acpidump                                     Remote power on capable (V4): 0x0
 acpidump                                      Use APIC Cluster Model (V4): 0x0

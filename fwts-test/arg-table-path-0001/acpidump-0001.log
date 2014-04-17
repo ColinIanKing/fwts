@@ -451,7 +451,7 @@ acpidump        Trusted Computing Platform Alliance Capabilities Table:
 acpidump                                      Use APIC Cluster Model (V4): 0x0
 acpidump                                Use APIC Physical Dest. Mode (V4): 0x0
 acpidump                            Use native instr. after SLP_TYPx (V3): 0x0
-acpidump                                           Use patform clock (V4): 0x0
+acpidump                                          Use platform clock (V4): 0x0
 acpidump                                             VGA Not Present (V4): 0x0
 acpidump                                   WBINVD flushes all caches (V1): 0x0
 acpidump                                          WBINVD instruction (V1): 0x1

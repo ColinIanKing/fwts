@@ -141,7 +141,7 @@
                              between start of
                              suspend and wakeup,
                              e.g.
-                             --s3power-sleep-delay=60
+                             --s3power-sleep-delay=600
 --s4-delay-delta             Time to be added to
                              delay between S4
                              iterations. Used in

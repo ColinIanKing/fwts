@@ -3,8 +3,9 @@ Batch tests:
   Determine Kernel ACPI version.
   Determine machine's ACPI version.
   Determine AML compiler.
- acpitables      (1 test):
+ acpitables      (2 tests):
   Test ACPI tables.
+  Test ACPI headers.
  apicedge        (1 test):
   Legacy and PCI Interrupt Edge/Level trigger tests.
  apicinstance    (1 test):
@@ -366,4 +367,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 285 tests
+Total of 286 tests

@@ -2,6 +2,20 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Circular handler list in region object",
+   "advice": "Internal corruption to the ACPI region handler list has occurred and ACPI has detected this issue while detaching a region and aborted an infinite loop while attempting to traverse the list. This has been known to occur with some firmware tripping a possible internal ACPI bug.",
+   "label": "KlogAcpiCircularList"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Circular region list in address handler object",
+   "advice": "Internal corruption to the ACPI region handler list has occurred and ACPI has detected this issue during deletion of a region object and aborted an infinite loop while attempting to traverse the list. This has been known to occur with some firmware tripping a possible internal ACPI bug.",
+   "label": "KlogAcpiCircularList"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Path has too many parent prefixes.*reached beyond root node",

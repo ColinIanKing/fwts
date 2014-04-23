@@ -94,7 +94,7 @@ fwts_SOURCES = main.c 				\
 fwts_LDFLAGS = -lm
 
 fwts_LDADD = \
-	-Llib/src -lfwts \
-	-L$(top_srcdir)/src/acpica -lfwtsacpica
+	-L$(top_builddir)/src/acpica -lfwtsacpica \
+	-Llib/src -lfwts
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1

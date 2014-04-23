@@ -7,7 +7,7 @@
 AM_CPPFLAGS = 						\
 	-D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP	\
 	-I$(top_srcdir)/src/lib/include			\
-	-Isource/include				\
+	-I$(srcdir)/source/include			\
 	-Wall -fno-strict-aliasing
 
 #
@@ -241,5 +241,5 @@ libfwtsacpica_la_SOURCES =				\
 	source/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \
-	-L$(top_srcdir)/src/lib/src -lfwts -lrt
+	-L$(top_builddir)/src/lib/src -lfwts -lrt
 

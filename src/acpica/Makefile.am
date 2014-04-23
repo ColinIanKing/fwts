@@ -14,8 +14,8 @@ AM_CPPFLAGS = 						\
 #  We rename some of the functions so we can override them in fwts. This
 #  is a hack, I feel dirty now.
 #
-osunixxf_munged.c: source/os_specific/service_layers/osunixxf.c
-	cat  source/os_specific/service_layers/osunixxf.c |		\
+osunixxf_munged.c: $(srcdir)/source/os_specific/service_layers/osunixxf.c
+	cat  $^ |							\
 	sed 's/^AcpiOsPrintf/__AcpiOsPrintf/' |				\
 	sed 's/^AcpiOsReadPort/__AcpiOsReadPort/' |			\
 	sed 's/^AcpiOsReadPciConfiguration/__AcpiOsReadPciConfiguration/' | \
@@ -27,16 +27,16 @@ osunixxf_munged.c: source/os_specific/service_layers/osunixxf.c
 	sed 's/^AcpiOsSignal/__AcpiOsSignal/' |				\
 	sed 's/^AcpiOsSleep/__AcpiOsSleep/' |				\
 	sed 's/^AcpiOsExecute/__AcpiOsExecute/'				\
-	> osunixxf_munged.c
+	> $@
 #
 #  Force maximum loop iterations to be just 128 instead of 0xffff
 #  because we really don't want to wait until the sun turns into
 #  a lump of coal before we complete a blocked operation
 #
-dscontrol_munged.c: source/components/dispatcher/dscontrol.c
-	cat source/components/dispatcher/dscontrol.c |	\
+dscontrol_munged.c: $(srcdir)/source/components/dispatcher/dscontrol.c
+	cat $^ |					\
 	sed 's/ACPI_MAX_LOOP_ITERATIONS/0x0080/'	\
-	> dscontrol_munged.c
+	> $@
 
 BUILT_SOURCES = osunixxf_munged.c dscontrol_munged.c
 

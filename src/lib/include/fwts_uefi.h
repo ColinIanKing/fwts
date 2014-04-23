@@ -366,6 +366,18 @@ typedef struct {
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;
+	fwts_uefi_ipv4_addr local_ip_addr;
+	fwts_uefi_ipv4_addr remote_ip_addr;
+	uint16_t local_port;
+	uint16_t remote_port;
+	uint16_t protocol;
+	uint8_t static_ip_address;
+	fwts_uefi_ipv4_addr gateway_ip_addr;
+	fwts_uefi_ipv4_addr subnet_mask;
+} __attribute__((packed)) fwts_uefi_ipv4_dev_path_v2;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
   	fwts_uefi_ipv6_addr local_ip_addr;
   	fwts_uefi_ipv6_addr remote_ip_addr;
   	uint16_t local_port;
@@ -373,6 +385,18 @@ typedef struct {
   	uint16_t protocol;
   	uint8_t static_ip_address;
 } __attribute__((packed)) fwts_uefi_ipv6_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+  	fwts_uefi_ipv6_addr local_ip_addr;
+  	fwts_uefi_ipv6_addr remote_ip_addr;
+  	uint16_t local_port;
+  	uint16_t remote_port;
+  	uint16_t protocol;
+  	uint8_t ip_address_origin;
+	uint8_t prefix_length;
+  	fwts_uefi_ipv6_addr gateway_ip_addr;
+} __attribute__((packed)) fwts_uefi_ipv6_dev_path_v2;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

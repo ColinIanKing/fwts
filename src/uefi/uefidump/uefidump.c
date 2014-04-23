@@ -273,28 +273,41 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 			break;
 		case FWTS_UEFI_IPV4_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_ipv4_dev_path)) {
-				fwts_uefi_ipv4_dev_path *i = (fwts_uefi_ipv4_dev_path*)dev_path;
+				fwts_uefi_ipv4_dev_path *i = (fwts_uefi_ipv4_dev_path *)dev_path;
+				uint16_t len = i->dev_path.length[0] | (((uint16_t)i->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\IPv4("
 					"%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ","
 					"%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ","
-					"%" PRIu16 ",%" PRIu16 ",%" PRIx16 ",%" PRIx8 ")",
+					"%" PRIu16 ",%" PRIu16 ",%" PRIx16 ",%" PRIx8 ,
 					i->local_ip_addr[0], i->local_ip_addr[1],
 					i->local_ip_addr[2], i->local_ip_addr[3],
 					i->remote_ip_addr[0], i->remote_ip_addr[1],
 					i->remote_ip_addr[2], i->remote_ip_addr[3],
 					i->local_port, i->remote_port,
 					i->protocol, i->static_ip_address);
+				if (len >= sizeof(fwts_uefi_ipv4_dev_path_v2) && dev_path_len >= sizeof(fwts_uefi_ipv4_dev_path_v2)) {
+					fwts_uefi_ipv4_dev_path_v2 *i = (fwts_uefi_ipv4_dev_path_v2 *)dev_path;
+					path = uefidump_vprintf(path,
+						",%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ","
+						"%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ,
+						i->gateway_ip_addr[0], i->gateway_ip_addr[1],
+						i->gateway_ip_addr[2], i->gateway_ip_addr[3],
+						i->subnet_mask[0], i->subnet_mask[1],
+						i->subnet_mask[2], i->subnet_mask[3]);
+				}
+				path = uefidump_vprintf(path, ")");
 			}
 			break;
 		case FWTS_UEFI_IPV6_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_ipv6_dev_path)) {
-				fwts_uefi_ipv6_dev_path *i = (fwts_uefi_ipv6_dev_path*)dev_path;
+				fwts_uefi_ipv6_dev_path *i = (fwts_uefi_ipv6_dev_path *)dev_path;
+				uint16_t len = i->dev_path.length[0] | (((uint16_t)i->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\IPv6("
-					"%" PRIx8 ":%" PRIx8 ":%" PRIx8 ":%" PRIx8
-					":%" PRIx8 ":%" PRIx8 ":%" PRIx8 ":%" PRIx8 ","
-					"%" PRIx8 ":%" PRIx8 ":%" PRIx8 ":%" PRIx8
-					":%" PRIx8 ":%" PRIx8 ":%" PRIx8 ":%" PRIx8 ","
-					"%" PRIu16 ",%" PRIu16 ",%" PRIx16 ",%" PRIx8 ")",
+					"%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16
+					":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ","
+					"%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16
+					":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ","
+					"%" PRIu16 ",%" PRIu16 ",%" PRIx16 ",%" PRIx8,
 					i->local_ip_addr[0], i->local_ip_addr[1],
 					i->local_ip_addr[2], i->local_ip_addr[3],
 					i->local_ip_addr[4], i->local_ip_addr[5],
@@ -305,6 +318,19 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					i->remote_ip_addr[6], i->remote_ip_addr[7],
 					i->local_port, i->remote_port,
 					i->protocol, i->static_ip_address);
+				if (len >= sizeof(fwts_uefi_ipv6_dev_path_v2) && dev_path_len >= sizeof(fwts_uefi_ipv6_dev_path_v2)) {
+					fwts_uefi_ipv6_dev_path_v2 *i = (fwts_uefi_ipv6_dev_path_v2 *)dev_path;
+					path = uefidump_vprintf(path,
+					",%" PRIu8 ","
+					"%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16
+					":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16,
+					i->prefix_length,
+					i->gateway_ip_addr[0], i->gateway_ip_addr[1],
+					i->gateway_ip_addr[2], i->gateway_ip_addr[3],
+					i->gateway_ip_addr[4], i->gateway_ip_addr[5],
+					i->gateway_ip_addr[6], i->gateway_ip_addr[7]);
+				}
+				path = uefidump_vprintf(path, ")");
 			}
 			break;
 		case FWTS_UEFI_INFINIBAND_DEVICE_PATH_SUBTYPE:

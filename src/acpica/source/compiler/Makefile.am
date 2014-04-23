@@ -14,29 +14,29 @@ AM_YFLAGS = -v -d -y
 #
 AM_LFLAGS = -i
 
-aslcompilerparse.c: aslcompiler.y
-	${YACC} ${AM_YFLAGS} -baslcompiler -pAslCompiler aslcompiler.y
+aslcompilerparse.c: $(srcdir)/aslcompiler.y
+	${YACC} ${AM_YFLAGS} -baslcompiler -pAslCompiler $^
 	mv aslcompiler.tab.c aslcompilerparse.c
 	mv aslcompiler.tab.h aslcompiler.y.h
 
-aslcompilerlex.c: aslcompiler.l
-	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c aslcompiler.l
+aslcompilerlex.c: $(srcdir)/aslcompiler.l
+	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c $^
 
-dtparserparse.c: dtparser.y
-	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser dtparser.y
+dtparserparse.c: $(srcdir)/dtparser.y
+	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser $^
 	mv dtparser.tab.c dtparserparse.c
 	mv dtparser.tab.h dtparser.y.h
 
-dtparserlex.c: dtparser.l
-	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c dtparser.l
+dtparserlex.c: $(srcdir)/dtparser.l
+	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c $^
 
-prparserparse.c: prparser.y
-	${YACC} ${AM_YFLAGS} -bprparser -pPrParser prparser.y
+prparserparse.c: $(srcdir)/prparser.y
+	${YACC} ${AM_YFLAGS} -bprparser -pPrParser $^
 	mv prparser.tab.c prparserparse.c
 	mv prparser.tab.h prparser.y.h
 
-prparserlex.c: prparser.l
-	${LEX} ${AM_LFLAGS} -PPrParser -oprparserlex.c prparser.l
+prparserlex.c: $(srcdir)/prparser.l
+	${LEX} ${AM_LFLAGS} -PPrParser -oprparserlex.c $^
 
 pkglib_LTLIBRARIES = libfwtsiasl.la
 

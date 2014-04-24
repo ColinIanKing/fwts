@@ -321,7 +321,7 @@ static int securebootcert_init(fwts_framework *fw)
 {
 	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
 		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
-		return FWTS_ABORTED;
+		return FWTS_SKIP;
 	}
 
 	if (!fwts_uefi_efivars_iface_exist()) {

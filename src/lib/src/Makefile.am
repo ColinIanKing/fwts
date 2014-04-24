@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include 		\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
+	-DDATAROOTDIR=\"$(datarootdir)\"		\
 	-Wall -Werror -Wextra
 
 pkglib_LTLIBRARIES = libfwts.la

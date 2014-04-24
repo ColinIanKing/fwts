@@ -26,7 +26,7 @@
 
 #define FWTS_UNUSED(var)	(void)var
 
-#define FWTS_JSON_DATA_PATH	"/usr/share/fwts"
+#define FWTS_JSON_DATA_PATH	DATAROOTDIR "/fwts"
 
 #include "fwts_version.h"
 #include "fwts_types.h"

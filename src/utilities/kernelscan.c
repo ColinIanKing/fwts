@@ -242,7 +242,7 @@ static klog_pattern *klog_load(const char *table)
 	json_object *klog_table;
 	klog_pattern *patterns;
 
-	klog_objs = json_object_from_file("/usr/share/fwts/klog.json");
+	klog_objs = json_object_from_file(DATAROOTDIR "/fwts/klog.json");
 	if (JSON_ERROR(klog_objs)) {
 		fprintf(stderr, "Cannot load klog data\n");
 		exit(EXIT_FAILURE);

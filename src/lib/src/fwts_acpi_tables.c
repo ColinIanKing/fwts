@@ -959,6 +959,9 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 
 	*info = NULL;
 
+	if (acpi_tables_loaded == ACPI_TABLES_LOADED_FAILED)
+		return FWTS_ERROR;
+
 	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;

@@ -520,6 +520,7 @@ static void bucket_destroy(void)
 			struct efi_var_item *chain = item->next;
 
 			free(item->name);
+			free(item->guid);
 			free(item);
 			item = chain;
 		}
@@ -574,14 +575,24 @@ static int getnextvariable_test3(fwts_framework *fw)
 			goto err;
 		}
 
-		item->guid = &vendorguid;
-		item->next = NULL;
+		item->guid = malloc(sizeof(EFI_GUID));
+		if (!item->guid) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"UEFIRuntimeGetNextVariableName",
+				"Failed to allocate memory for test.");
+			free(item);
+			goto err;
+		}
 
+		memcpy(item->guid, &vendorguid, sizeof(EFI_GUID));
+
+		item->next = NULL;
 		item->name = malloc(variablenamesize);
 		if (!item->name) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to allocate memory for test.");
+			free(item->guid);
 			free(item);
 			goto err;
 		}
@@ -596,6 +607,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 				"UEFIRuntimeGetNextVariableName",
 				"Duplicate variable name found.");
 			free(item->name);
+			free(item->guid);
 			free(item);
 			goto err;
 		}

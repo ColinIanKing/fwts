@@ -1069,14 +1069,14 @@
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_INFO",
     "pattern": "While evaluating Sleep State [\\_S1_]",
-    "advice": "The exception comes from kernel cannot find _S1 namespace object that contains the register values for the sleep state when kernel would like to setup all the sleep state information. This means kernel don't know how to enter S1 sleep state. But it should not be a problem if the S1 sleep state isn't supported intentionally.",
+    "advice": "The exception comes from kernel cannot find _S1 namespace object that contains the register values for the sleep state when kernel would like to setup all the sleep state information. This means that the kernel does not know how to enter the S1 sleep state, however, it should not be a problem if the S1 sleep state isn't supported intentionally.",
     "label": "KlogAcpiSleepStateEvalFailed"
   },
   {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_INFO",
     "pattern": "While evaluating Sleep State [\\_S2_]",
-    "advice": "The exception comes from kernel cannot find _S2 namespace object that contains the register values for the sleep state when kernel would like to setup all the sleep state information. This means kernel don't know how to enter S2 sleep state. But it should not be a problem if the S2 sleep state isn't supported intentionally.",
+    "advice": "The exception comes from kernel cannot find _S2 namespace object that contains the register values for the sleep state when kernel would like to setup all the sleep state information. This means that the kernel does not know how to enter the S2 sleep state, however, it should not be a problem if the S2 sleep state isn't supported intentionally.",
     "label": "KlogAcpiSleepStateEvalFailed"
   },
   {

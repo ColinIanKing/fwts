@@ -1156,6 +1156,7 @@ static int setvariable_test5(fwts_framework *fw)
 
 static int setvariable_test6(fwts_framework *fw)
 {
+	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 	uint32_t attributesarray[] = {
@@ -1166,7 +1167,15 @@ static int setvariable_test6(fwts_framework *fw)
 	uint64_t index;
 
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		setvariable_invalidattr(fw, attributesarray[index], datasize, variablenametest, &gtestguid1, datadiff);
+		ret = setvariable_invalidattr(fw, attributesarray[index], datasize, variablenametest, &gtestguid1, datadiff);
+
+		if (ret == FWTS_ERROR) {
+			/* successfully set variable with invalid attributes, test fail */
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
+				"Successfully set variable with invalid attribute, expected fail.");
+			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			return FWTS_ERROR;
+		}
 
 		if (setvariable_checkvariable_notfound(fw, variablenametest,
 			&gtestguid1) == FWTS_ERROR) {

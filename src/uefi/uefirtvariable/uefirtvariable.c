@@ -59,6 +59,33 @@ static uint32_t attributes =
 	FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
 	FWTS_UEFI_VAR_RUNTIME_ACCESS;
 static uint16_t variablenametest[] = {'T', 'e', 's', 't', 'v', 'a', 'r', '\0'};
+static uint16_t variablenametest2[] = {'T', 'e', 's', 't', 'v', 'a', 'r', ' ', '\0'};
+static uint16_t variablenametest3[] = {'T', 'e', 's', 't', 'v', 'a', '\0'};
+
+static void uefirtvariable_env_cleanup(void)
+{
+	struct efi_setvariable setvariable;
+	uint64_t status;
+	uint8_t data = 0;
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = 0;
+	setvariable.DataSize = 0;
+	setvariable.Data = &data;
+	setvariable.status = &status;
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	setvariable.VariableName = variablenametest2;
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	setvariable.VariableName = variablenametest3;
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid2;
+	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+}
 
 static int uefirtvariable_init(fwts_framework *fw)
 {
@@ -77,6 +104,8 @@ static int uefirtvariable_init(fwts_framework *fw)
 		fwts_log_info(fw, "Cannot open efi_runtime driver. Aborted.");
 		return FWTS_ABORTED;
 	}
+
+	uefirtvariable_env_cleanup();
 
 	return FWTS_OK;
 }
@@ -1044,8 +1073,6 @@ static int setvariable_test3(fwts_framework *fw)
 	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff1 = 0, datadiff2 = 1, datadiff3 = 2;
-	uint16_t variablenametest2[] = {'T', 'e', 's', 't', 'v', 'a', 'r', ' ', '\0'};
-	uint16_t variablenametest3[] = {'T', 'e', 's', 't', 'v', 'a', '\0'};
 
 	ret = setvariable_insertvariable(fw, attributes, datasize,
 		variablenametest2, &gtestguid1, datadiff2);

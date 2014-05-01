@@ -172,8 +172,10 @@ static void *fwts_acpi_load_table(const off_t addr)
 		return NULL;
 
 	len = hdr->length;
-	if (len < (int)sizeof(fwts_acpi_table_header))
+	if (len < (int)sizeof(fwts_acpi_table_header)) {
+		(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
 		return NULL;
+	}
 
 	(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
 

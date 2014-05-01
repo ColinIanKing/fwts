@@ -86,6 +86,7 @@ static int fwts_button_match_state_proc(
 					(*matched)++;
 				else
 					(*not_matched)++;
+				free(data);
 			}
 		}
 	} while (entry);

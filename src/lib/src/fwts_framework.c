@@ -363,11 +363,12 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 	if (width > 256)
 		width = 256;
 
-	if (percent >=0 && percent <=100)
+	if (percent >= 0 && percent <= 100)
 		fw->minor_test_progress = percent;
 
-	major_percent = (float)100.0 / (float)fw->major_tests_total;
-	minor_percent = ((float)major_percent / (float)fw->current_major_test->ops->total_tests);
+	major_percent = fw->major_tests_total ? (float)100.0 / (float)fw->major_tests_total : 100.0;
+	minor_percent = fw->current_major_test->ops->total_tests ?
+			((float)major_percent / (float)fw->current_major_test->ops->total_tests) : 0.0;
 	process_percent = ((float)minor_percent / 100.0);
 
 	progress = (float)(fw->current_major_test_num-1) * major_percent;

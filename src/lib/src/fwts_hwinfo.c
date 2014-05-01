@@ -380,7 +380,7 @@ static int fwts_hwinfo_net_get(
 	}
 
 	while ((d = readdir(dp)) != NULL) {
-		struct	ifreq buf;
+		struct ifreq buf;
 		struct in_addr in_addr;
 		fwts_net_config *net_config;
 
@@ -397,7 +397,7 @@ static int fwts_hwinfo_net_get(
 			break;
 		}
 		memset(&buf, 0, sizeof(buf));
-		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
+		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name) - 1);
 		if (ioctl(sock, SIOCGIFHWADDR, &buf) < 0) {
 			fwts_log_error(fw, "Cannot get network information for device %s.", d->d_name);
 			fwts_hwinfo_net_free(net_config);
@@ -410,7 +410,7 @@ static int fwts_hwinfo_net_get(
 			break;
 		}
 		memset(&buf, 0, sizeof(buf));
-		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
+		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name) - 1);
 		if (ioctl(sock, SIOCGIFADDR, &buf) < 0) {
 			if (errno != EADDRNOTAVAIL)
 				fwts_log_error(fw, "Cannot get address for device %s.", d->d_name);

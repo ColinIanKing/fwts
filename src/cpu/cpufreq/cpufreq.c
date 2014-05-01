@@ -44,7 +44,7 @@
 #define MAX_FREQS	256
 
 typedef struct {
-	uint32_t	Hz;
+	uint64_t	Hz;
 	uint64_t	speed;
 } fwts_cpu_freq;
 
@@ -93,7 +93,7 @@ static int cpu_exists(const int cpu)
 }
 #endif
 
-static void set_HZ(fwts_framework *fw, const int cpu, const uint32_t Hz)
+static void set_HZ(fwts_framework *fw, const int cpu, const uint64_t Hz)
 {
 	cpu_set_t mask, oldset;
 	char path[PATH_MAX];
@@ -111,7 +111,7 @@ static void set_HZ(fwts_framework *fw, const int cpu, const uint32_t Hz)
 
 	/* then set the speed */
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_setspeed");
-	snprintf(buffer, sizeof(buffer), "%" PRIu32 , Hz);
+	snprintf(buffer, sizeof(buffer), "%" PRIu64 , Hz);
 	fwts_set(buffer, path);
 
 	sched_setaffinity(0, sizeof(oldset), &oldset);
@@ -171,32 +171,29 @@ static int get_performance_repeat(
 }
 #endif
 
-static char *hz_to_human(const uint32_t hz)
+static char *hz_to_human(const uint64_t hz)
 {
 	static char buffer[32];
-	unsigned long long Hz;
 
-	Hz = hz;
-
-	if (Hz > 1500000) {
+	if (hz > 1500000) {
 		snprintf(buffer, sizeof(buffer), "%.2f GHz",
-			(Hz+50000.0) / 1000000);
+			(hz+50000.0) / 1000000);
 		return buffer;
-	} else if (Hz > 1000) {
-		snprintf(buffer, sizeof(buffer), "%llu MHz",
-			(Hz+500) / 1000);
+	} else if (hz > 1000) {
+		snprintf(buffer, sizeof(buffer), "%" PRIu64 " MHz",
+			(hz+500) / 1000);
 		return buffer;
 	} else {
-		snprintf(buffer, sizeof(buffer), "%llu", Hz);
+		snprintf(buffer, sizeof(buffer), "%" PRIu64 " Hz", hz);
 		return buffer;
 	}
 }
 
-static uint32_t get_claimed_hz(const int cpu)
+static uint64_t get_claimed_hz(const int cpu)
 {
 	char path[PATH_MAX];
 	char *buffer;
-	uint32_t value = 0;
+	uint64_t value = 0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_max_freq");
 
@@ -207,11 +204,11 @@ static uint32_t get_claimed_hz(const int cpu)
 	return value;
 }
 
-static uint32_t get_bios_limit(const int cpu)
+static uint64_t get_bios_limit(const int cpu)
 {
 	char path[PATH_MAX];
 	char *buffer;
-	uint32_t value = 0;
+	uint64_t value = 0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "bios_limit");
 
@@ -271,8 +268,8 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 	uint64_t cpu_top_speed = 1;
 	int claimed_hz_too_low = 0;
 	int bios_limit_too_low = 0;
-	const uint32_t claimed_hz = get_claimed_hz(cpu);
-	const uint32_t bios_limit = get_bios_limit(cpu);
+	const uint64_t claimed_hz = get_claimed_hz(cpu);
+	const uint64_t bios_limit = get_bios_limit(cpu);
 
 	memset(freqs, 0, sizeof(freqs));
 	set_governor(fw, cpu);
@@ -308,7 +305,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 
 		if (fwts_cpu_performance(fw, cpu, &freqs[i].speed) != FWTS_OK) {
 			fwts_log_error(fw, "Failed to get CPU performance for "
-				"CPU frequency %" PRIu32 " Hz.", freqs[i].Hz);
+				"CPU frequency %" PRIu64 " Hz.", freqs[i].Hz);
 			freqs[i].speed = 0;
 		}
 		if (freqs[i].speed > cpu_top_speed)
@@ -388,8 +385,8 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 
 		if ((freqs[i].Hz > claimed_hz) && !warned_PSS) {
 			warned_PSS = true;
-			fwts_warning(fw, "Frequency %" PRIu32
-				" not achievable; _PSS limit of %" PRIu32 " in effect?",
+			fwts_warning(fw, "Frequency %" PRIu64
+				" not achievable; _PSS limit of %" PRIu64 " in effect?",
 				freqs[i].Hz, claimed_hz);
 		}
 	}
@@ -401,7 +398,7 @@ static void lowest_speed(fwts_framework *fw, const int cpu)
 	char path[PATH_MAX];
 	char *line;
 	char *c, *c2;
-	uint32_t Hz, lowspeed = 0;
+	uint64_t Hz, lowspeed = 0;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
 	if ((line = fwts_get(path)) == NULL)

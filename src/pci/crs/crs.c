@@ -52,11 +52,13 @@ static int crs_test1(fwts_framework *fw)
 
 	if (crs_get_bios_date(fw, &day, &mon, &year) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot determine age of BIOS.");
+		free(cmdline);
 		return FWTS_ERROR;
 	}
 
 	if ((klog = fwts_klog_read()) == NULL) {
 		fwts_log_error(fw, "Cannot read kernel log.");
+		free(cmdline);
 		return FWTS_ERROR;
 	}
 

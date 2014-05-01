@@ -111,6 +111,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 				switch (state) {
 				case FWTS_AC_ADAPTER_ANY:
 					(*matching)++;
+					free(data);
 					continue;
 				case FWTS_AC_ADAPTER_ONLINE:
 					state_text = ac_interface->online;

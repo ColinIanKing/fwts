@@ -20,6 +20,8 @@
 #ifndef __FWTS_H__
 #define __FWTS_H__
 
+#include "config.h"
+
 #if defined(__x86_64__) || defined(__x86_64) || defined(__i386__) || defined(__i386)
 #define FWTS_ARCH_INTEL	1
 #endif

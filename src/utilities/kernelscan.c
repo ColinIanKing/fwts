@@ -26,6 +26,7 @@
 
 #include <pcre.h>
 #include <json/json.h>
+#include "config.h"
 
 #define PARSER_OK		0
 #define PARSER_COMMENT_FOUND	1
@@ -248,11 +249,18 @@ static klog_pattern *klog_load(const char *table)
 		exit(EXIT_FAILURE);
 	}
 
+#if JSON_HAS_GET_EX
+	if (!json_object_object_get_ex(klog_objs, table, &klog_table)) {
+		fprintf(stderr, "Cannot fetch klog table object from %s.\n", table);
+		exit(EXIT_FAILURE);
+	}
+#else
 	klog_table = json_object_object_get(klog_objs, table);
 	if (JSON_ERROR(klog_table)) {
 		fprintf(stderr, "Cannot fetch klog table object from %s.\n", table);
 		exit(EXIT_FAILURE);
 	}
+#endif
 
 	n = json_object_array_length(klog_table);
 
@@ -265,9 +273,12 @@ static klog_pattern *klog_load(const char *table)
 	/* Now fetch json objects and compile regex */
 	for (i = 0; i < n; i++) {
 		const char *error;
-		char *str;
+		const char *str;
 		int erroffset;
 		json_object *obj;
+#if JSON_HAS_GET_EX
+		json_object *obj_str;
+#endif
 
 		obj = json_object_array_get_idx(klog_table, i);
 		if (JSON_ERROR(obj)) {
@@ -275,16 +286,32 @@ static klog_pattern *klog_load(const char *table)
 			exit(EXIT_FAILURE);
 		}
 
+#if JSON_HAS_GET_EX
+		if (!json_object_object_get_ex(obj, "compare_mode", &obj_str)) {
+			fprintf(stderr, "Cannot fetch compare_mode object, item %d from table %s.\n", i, table);
+			exit(EXIT_FAILURE);
+		}
+		str = json_object_get_string(obj_str);
+#else
 		str = (char*)json_object_get_string(json_object_object_get(obj, "compare_mode"));
+#endif
 		if (JSON_ERROR(str)) {
-			fprintf(stderr, "Cannot fetch compare_mode  object, item %d from table %s.\n", i, table);
+			fprintf(stderr, "Cannot fetch compare_mode string, item %d from table %s.\n", i, table);
 			exit(EXIT_FAILURE);
 		}
 		patterns[i].cm = klog_compare_mode_str_to_val(str);
 
-		str = (char*)json_object_get_string(json_object_object_get(obj, "pattern"));
-		if (JSON_ERROR(str)) {
+#if JSON_HAS_GET_EX
+		if (!json_object_object_get_ex(obj, "pattern", &obj_str)) {
 			fprintf(stderr, "Cannot fetch pattern object, item %d from table %s.\n", i, table);
+			exit(EXIT_FAILURE);
+		}
+		str = json_object_get_string(obj_str);
+#else
+		str = (char*)json_object_get_string(json_object_object_get(obj, "pattern"));
+#endif
+		if (JSON_ERROR(str)) {
+			fprintf(stderr, "Cannot fetch pattern string, item %d from table %s.\n", i, table);
 			exit(EXIT_FAILURE);
 		}
 		patterns[i].pattern = strdup(str);

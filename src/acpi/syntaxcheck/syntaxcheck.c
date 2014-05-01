@@ -342,12 +342,18 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot load objects table from %s.", json_data_path);
 		return FWTS_ERROR;
 	}
-
-        syntaxcheck_table = json_object_object_get(syntaxcheck_objs, "erroradvice");
-        if (FWTS_JSON_ERROR(syntaxcheck_table)) {
+#if JSON_HAS_GET_EX
+        if (!json_object_object_get_ex(syntaxcheck_objs, "erroradvice", &syntaxcheck_table)) {
                 fwts_log_error(fw, "Cannot fetch syntaxcheck table from %s.", json_data_path);
                 goto fail_put;
         }
+#else
+	syntaxcheck_table = json_object_object_get(syntaxcheck_objs, "erroradvice");
+	if (FWTS_JSON_ERROR(syntaxcheck_table)) {
+                fwts_log_error(fw, "Cannot fetch syntaxcheck table from %s.", json_data_path);
+                goto fail_put;
+        }
+#endif
 
 	n = json_object_array_length(syntaxcheck_table);
 
@@ -355,6 +361,9 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 	for (i = 0; i < n; i++) {
 		const char *advice, *id_str;
 		json_object *obj;
+#if JSON_HAS_GET_EX
+		json_object *obj_str;
+#endif
 		int j;
 
 		obj = json_object_array_get_idx(syntaxcheck_table, i);
@@ -362,14 +371,31 @@ static int syntaxcheck_load_advice(fwts_framework *fw)
 			fwts_log_error(fw, "Cannot fetch %d item from syntaxcheck table.", i);
 			break;
 		}
-		advice = json_object_get_string(json_object_object_get(obj, "advice"));
-		if (FWTS_JSON_ERROR(advice)) {
-                	fwts_log_error(fw, "Cannot fetch advice from item %d.", i);
+
+#if JSON_HAS_GET_EX
+		if (!json_object_object_get_ex(obj, "advice", &obj_str)) {
+			fwts_log_error(fw, "Cannot fetch advice object from item %d.", i);
 			break;
 		}
+		advice = json_object_get_string(obj_str);
+#else
+		advice = json_object_get_string(json_object_object_get(obj, "advice"));
+#endif
+		if (FWTS_JSON_ERROR(advice)) {
+			fwts_log_error(fw, "Cannot fetch advice string from item %d.", i);
+			break;
+		}
+#if JSON_HAS_GET_EX
+		if (!json_object_object_get_ex(obj, "id", &obj_str)) {
+			fwts_log_error(fw, "Cannot fetch ID object from item %d.", i);
+			break;
+		}
+		id_str = json_object_get_string(obj_str);
+#else
 		id_str = json_object_get_string(json_object_object_get(obj, "id"));
+#endif
 		if (FWTS_JSON_ERROR(id_str)) {
-                	fwts_log_error(fw, "Cannot fetch ID from item %d.", i);
+			fwts_log_error(fw, "Cannot fetch ID string from item %d.", i);
 			break;
 		}
 

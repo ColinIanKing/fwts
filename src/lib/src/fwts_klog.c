@@ -336,15 +336,25 @@ static const char *fwts_json_str(
 	bool log_error)
 {
 	const char *str;
+#if JSON_HAS_GET_EX
+	json_object *str_obj;
 
+	if (!json_object_object_get_ex(obj, key, &str_obj))
+		goto nullobj;
+	str = json_object_get_string(str_obj);
+	if (FWTS_JSON_ERROR(str))
+		goto nullobj;
+#else
 	str = json_object_get_string(json_object_object_get(obj, key));
-	if (FWTS_JSON_ERROR(str)) {
-		if (log_error)
-			fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.",
-				key, index, table);
-		return NULL;
-	}
+	if (FWTS_JSON_ERROR(str))
+		goto nullobj;
+#endif
 	return str;
+nullobj:
+	if (log_error)
+		fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.",
+			key, index, table);
+	return NULL;
 }
 
 static int fwts_klog_check(fwts_framework *fw,
@@ -380,11 +390,18 @@ static int fwts_klog_check(fwts_framework *fw,
 		return FWTS_ERROR;
 	}
 
+#if JSON_HAS_GET_EX
+	if (!json_object_object_get_ex(klog_objs, table, &klog_table)) {
+		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
+		goto fail_put;
+	}
+#else
 	klog_table = json_object_object_get(klog_objs, table);
 	if (FWTS_JSON_ERROR(klog_table)) {
 		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
 		goto fail_put;
 	}
+#endif
 
 	n = json_object_array_length(klog_table);
 

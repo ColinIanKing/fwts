@@ -268,7 +268,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 	int i, speedcount;
 	static int warned = 0;
 	bool warned_PSS = false;
-	uint64_t cpu_top_speed = 0;
+	uint64_t cpu_top_speed = 1;
 	int claimed_hz_too_low = 0;
 	int bios_limit_too_low = 0;
 	const uint32_t claimed_hz = get_claimed_hz(cpu);

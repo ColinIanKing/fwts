@@ -117,6 +117,7 @@ fwts_list *fwts_format_text(const char *text, const int width)
 			if (lastspace != NULL) {
 				if ((tmp = dup_line(linestart, lastspace, width)) == NULL) {
 					fwts_text_list_free(list);
+					free(tidied_text);
 					return NULL;
 				}
 				fwts_text_list_append(list, tmp);
@@ -132,6 +133,7 @@ fwts_list *fwts_format_text(const char *text, const int width)
 	}
 	if ((tmp = dup_line(linestart, textptr, width)) == NULL) {
 		fwts_text_list_free(list);
+		free(tidied_text);
 		return NULL;
 	}
 	fwts_text_list_append(list, tmp);

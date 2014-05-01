@@ -67,7 +67,7 @@ static void get_cstates(char *path, fwts_cstates *state)
 
 	while ((entry = readdir(dir)) != NULL) {
 		if (entry && strlen(entry->d_name)>3) {
-			int nr;
+			long int nr;
 			int count;
 
 			snprintf(filename, sizeof(filename), "%s/%s/name",
@@ -81,13 +81,13 @@ static void get_cstates(char *path, fwts_cstates *state)
 			 * where x is the C state number.
 			 */
 			if ((data[0] == 'C') && isdigit(data[1]))
-				nr = strtoull(data+1, NULL, 10);
+				nr = strtol(data + 1, NULL, 10);
 			else if (strcmp("POLL", data) == 0)
 				nr = 0;
 			else {
 				char *ptr = strstr(data, "-C");
 				if (ptr) 
-					nr = strtoull(ptr + 2, NULL, 10);
+					nr = strtol(ptr + 2, NULL, 10);
 				else
 					nr = 0;
 			}

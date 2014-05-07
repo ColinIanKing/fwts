@@ -1,3 +1,63 @@
+fwts (14.05.00-0ubuntu0) utopic; urgency=low
+
+  [Alex Hung]
+  * acpi: s3power: update usage example as 10 minutes or more is suggested
+
+  [Colin Ian King]
+  * fwts_acpica: fix potential null ptr dereference (LP: #1298419)
+  * acpi: acpitables: more ACPI table header sanity checking
+  * acpi: acpitables: better checking on FADT SCI_INT
+  * acpi: acpidump: fix typo "patform" --> "platform"
+  * doc: fwts: add --s3-power-sleep-delay option
+  * doc: fwts: use lower case for description
+  * fwts-test: acpidump-0001: sync test with fwts
+  * fwts-test: arg-help-0001: sync with recent changes in fwts
+  * fwts-test: arch-show-tests-full-0001: keep in sync with fwts
+  * fwts-test: acpitables-000*: sync with recent acpitables changes
+  * fwts-test: arg-table-path-0001: sync test with recent fwts changes
+  * data: klog.json: Add a circular list ACPI warning checks
+  * data: klog.json: re-work _S1 and _S2 advice
+  * Use json_object_object_get_ex if is available
+  * lib: fwts_acpi_tables: fix memory leak on error exit path
+  * lib: fwts_button: free data after successful fwts_get()
+  * pci: crs: fix memory leak on cmdline
+  * lib: fwts_ac_adapter: fix memory leak
+  * lib: fwts_formatting: fix memory leak
+  * cpu: cpufreq: avoid division by zero ob cpu_top_speed
+  * acpi: cstates: fix potential integer overflow
+  * cpu: cpufreq: use uint64_t for CPU frequencies on HZ.
+  * lib: fwts_framework: avoid division by zero in % calculations
+  * lib: fwts_hwinfo: ensure buf.ifr_name is null terminated
+
+  [Ivan Hu]
+  * uefi: uefidump: fix the Partition Signature length for the HD Media Device
+    Path isn't correct (LP: #1308415)
+  * uefi: uefidump: dumping the new definitions for ipv4 ipv6 device path
+    (LP: #1311538)
+  * uefi: uefirtvariable: fix the fail GUID checking for uniqueness of variable
+    (LP: #1311822)
+  * uefi: uefirtvariable: report failure when setting variable with invalid
+    attribute successfully (LP: #1310686)
+  * fwts: uefi: clean up all test variable before doing the uefirtvariable test
+    (LP: #1313554)
+  * auto-packager: mkpackage.sh: add utopic and remove raring saucy
+
+  [Jeremy Kerr]
+  * Don't hard-code the installation prefix
+  * uefi: Don't abort on non-UEFI firmware
+  * fwts: fix acpi table access on failed load
+  * Fix include and lib dirs for srcdir != builddir builds
+  * acpcia: Fix makefile rules for srcdir != builddir builds
+  * acpica/compile: Fix srcdir != builddir builds
+
+  [Matt Fleming]
+  * efi_runtime: Set default value for $KVER
+  * efi_runtime: Refactor ioctl code into helper functions
+  * efi_runtime: Group kernel version dependent functions
+  * efi_runtime: Do not pass user addresses to firmware
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 07 May 2014 09:46:52 +0800
+
 fwts (14.03.01-0ubuntu2) trusty; urgency=low
 
   [Alex Hung]

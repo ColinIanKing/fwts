@@ -173,6 +173,7 @@ static int fan_test2(fwts_framework *fw)
 	fwts_list *fans1, *fans2;
 	fwts_list_link *item1, *item2;
 	bool changed = false;
+	int i;
 
 	fwts_log_info(fw,
 		"Test how many fans there are in the system. "
@@ -188,7 +189,11 @@ static int fan_test2(fwts_framework *fw)
 	}
 
 	fwts_log_info(fw, "Loading CPUs for 20 seconds to try and get fan speeds to change.");
-	fwts_cpu_consume(20);
+	for (i = 0; i < 20; i++) {
+		fwts_progress(fw, (1+i) * 5);
+		fwts_cpu_consume(1);
+	}
+	fwts_progress(fw, 100);
 
 	if ((fans2 = get_fan_info(fw)) == NULL) {
 		fwts_list_free(fans1, free_fan_info);

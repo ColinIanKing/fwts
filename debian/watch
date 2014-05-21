@@ -1,0 +1,3 @@
+version=3
+
+http://fwts.ubuntu.com/release/fwts-V(\d.*)\.tar\.gz

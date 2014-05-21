@@ -293,7 +293,7 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 		return;
 	}
 	if (total_tests == 1)
-		total_tests = ((2 + speedcount) * num_cpus) + 2;
+		total_tests = ((2 + speedcount) * num_cpus) + 4;
 
 	for (i = 0; i < speedcount; i++) {
 		set_HZ(fw, cpu, freqs[i].Hz);
@@ -469,6 +469,7 @@ static void do_sw_all_test(fwts_framework *fw)
 	uint64_t highperf, lowperf;
 	int first_cpu_index = -1;
 	int cpu;
+	int ret;
 
 	if ((dir = opendir(FWTS_CPU_PATH)) == NULL) {
 		fwts_log_error(fw, "FATAL: cpufreq: sysfs not mounted.");
@@ -487,7 +488,10 @@ static void do_sw_all_test(fwts_framework *fw)
 	closedir(dir);
 
 	/* All CPUs at the lowest frequency */
-	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
+	ret = get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf);
+	performed_tests++;
+	fwts_progress(fw, 100 * performed_tests/total_tests);
+	if (ret != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
 		return;
@@ -495,7 +499,10 @@ static void do_sw_all_test(fwts_framework *fw)
 	lowperf = (lowperf * 100) / top_speed;
 
 	highest_speed(fw, first_cpu_index);
-	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
+	ret = get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf);
+	performed_tests++;
+	fwts_progress(fw, 100 * performed_tests/total_tests);
+	if (ret != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
 		return;
@@ -525,6 +532,7 @@ static void do_sw_any_test(fwts_framework *fw)
 	uint64_t highperf, lowperf;
 	int first_cpu_index = -1;
 	int cpu;
+	int ret;
 
 	if ((dir = opendir(FWTS_CPU_PATH)) == NULL) {
 		fwts_log_error(fw, "FATAL: cpufreq: sysfs not mounted.");
@@ -543,7 +551,10 @@ static void do_sw_any_test(fwts_framework *fw)
 	rewinddir(dir);
 
 	/* All CPUs at the lowest frequency */
-	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
+	ret = get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MIN, &lowperf);
+	performed_tests++;
+	fwts_progress(fw, 100 * performed_tests/total_tests);
+	if (ret != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
 			"Failed to get CPU performance.");
 		closedir(dir);
@@ -563,7 +574,10 @@ static void do_sw_any_test(fwts_framework *fw)
 	}
 	closedir(dir);
 
-	if (get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
+	ret = get_performance_repeat(fw, first_cpu_index, 5, GET_PERFORMANCE_MAX, &highperf);
+	performed_tests++;
+	fwts_progress(fw, 100 * performed_tests/total_tests);
+	if (ret != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
 			"Failed to get CPU performance.");
 		return;
@@ -734,13 +748,9 @@ static int cpufreq_test1(fwts_framework *fw)
 	 */
 	if (num_cpus > 1 && number_of_speeds > 1) {
 		do_sw_all_test(fw);
-		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
 		do_sw_any_test(fw);
-		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
 	} else if (number_of_speeds > 1) {
-		performed_tests += 2;
+		performed_tests += 4;
 		fwts_progress(fw, 100 * performed_tests/total_tests);
 	}
 #endif

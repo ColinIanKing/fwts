@@ -25,6 +25,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <sys/utsname.h>
+#include <sys/time.h>
 
 #include "fwts.h"
 
@@ -392,16 +393,27 @@ void fwts_framework_minor_test_progress(fwts_framework *fw, const int percent, c
 	/* Output for the dialog tool, dialog --title "fwts" --gauge "" 12 80 0 */
 	if (fw->flags & FWTS_FLAG_SHOW_PROGRESS_DIALOG) {
 		char buffer[128];
+		static struct timeval start_time;
+		struct timeval now_time;
+		int duration;
+
+		gettimeofday(&now_time, NULL);
+		if (!start_time.tv_sec)
+			start_time = now_time;
+		duration = (int)(now_time.tv_sec - start_time.tv_sec);
 
 		fwts_framework_format_results(buffer, sizeof(buffer), &fw->total, true);
 
 		fprintf(stdout, "XXX\n");
-		fprintf(stdout, "%d\n", (int)progress);
-		fprintf(stdout, "So far: %s\n\n", buffer);
+		fprintf(stdout, "%d\n", percent);
+		fprintf(stdout, "%s.\n", buffer);
+		fprintf(stdout, "%5.2f%% total run complete (%d seconds).\n",
+			progress, duration);
 		fprintf(stdout, "%s\n\n", fw->current_major_test->ops->description ?
 			fw->current_major_test->ops->description : "");
-		fprintf(stdout, "Running test #%d: %s\n",
+		fprintf(stdout, "Running test #%d of %d: %s\n",
 			fw->current_major_test_num,
+			fw->major_tests_total,
 			fw->current_minor_test_name);
 		fprintf(stdout, "XXX\n");
 		fflush(stdout);

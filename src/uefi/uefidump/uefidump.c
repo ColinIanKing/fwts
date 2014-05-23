@@ -573,6 +573,14 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					p->fw_volume_name.info4[6], p->fw_volume_name.info4[7]);
 			}
 			break;
+		case FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_relative_offset_range_path)) {
+				fwts_relative_offset_range_path *r = (fwts_relative_offset_range_path *)dev_path;
+				path = uefidump_vprintf(path, "\\RELATIVEOFFSETRANGE("
+					"0x%" PRIx64 ",0x%" PRIx64 ")",
+					r->starting_offset, r->ending_offset);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MEDIA-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

@@ -202,6 +202,12 @@ done_tests_finish()
         ln -sf $WORK_DIR/results.html /fwts/results.html
     fi
 
+	#
+	# Dump out firmware and system data, LP: #1322543
+	#
+	cd $WORK_DIR
+	fwts --dump > /dev/null
+
 	dialog  --backtitle "$FWTS" --title "Testing Complete" --yesno \
 "The results can be found on the USB stick in the\n
 the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n

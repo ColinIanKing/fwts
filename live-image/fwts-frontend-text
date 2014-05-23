@@ -253,7 +253,7 @@ The default below is to run just all the Batch Tests, but you can select more te
 		cd $WORK_DIR >& /dev/null
 		case `cat $OPTIONS` in
 		'1')
-  			do_test "--batch" 'Running Batch Tests'
+			do_test "--batch --uefi" 'Running Batch Tests'
 			done_tests_finish
 			;;
 		'2')

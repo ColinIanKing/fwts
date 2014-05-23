@@ -239,7 +239,8 @@ typedef enum {
 	FWTS_UEFI_FILE_PATH_DEVICE_PATH_SUBTYPE =	(0x04),
 	FWTS_UEFI_PROTOCOL_DEVICE_PATH_SUBTYPE =	(0x05),
 	FWTS_UEFI_PIWG_FW_FILE_DEVICE_PATH_SUBTYPE =	(0x06),
-	FWTS_UEFI_PIWG_FW_VOLUME_DEVICE_PATH_SUBTYPE =	(0x07)
+	FWTS_UEFI_PIWG_FW_VOLUME_DEVICE_PATH_SUBTYPE =	(0x07),
+	FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE = 	(0x08)
 } media_dev_path_subtypes;
 
 typedef enum {
@@ -425,6 +426,12 @@ typedef struct {
 typedef struct {
 	fwts_uefi_dev_path dev_path;
 	fwts_uefi_guid guid;
+	uint32_t flow_control_map;
+} __attribute__((packed)) fwts_uefi_uart_flowctl_messaging_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	fwts_uefi_guid guid;
 	uint32_t reserved;
 	uint64_t sas_addr;
 	uint64_t lun;
@@ -529,6 +536,13 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	fwts_uefi_guid fw_volume_name;
 } __attribute__((packed)) fwts_piwg_fw_volume_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint32_t reserved;
+	uint64_t starting_offset;
+	uint64_t ending_offset;
+} __attribute__((packed)) fwts_relative_offset_range_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

@@ -37,6 +37,7 @@ Batch tests:
  pnp             BIOS Support Installation structure test.
  securebootcert  UEFI secure boot test.
  syntaxcheck     Re-assemble DSDT and find syntax errors and warnings.
+ uefibootpath    Sanity check for UEFI Boot Path Boot####.
  version         Gather kernel system information.
  virt            CPU Virtualisation Configuration test.
  wakealarm       ACPI Wakealarm tests.
@@ -77,6 +78,7 @@ Unsafe tests:
 UEFI tests:
  csm             UEFI Compatibility Support Module test.
  securebootcert  UEFI secure boot test.
+ uefibootpath    Sanity check for UEFI Boot Path Boot####.
  uefirtmisc      UEFI miscellaneous runtime service interface tests.
  uefirttime      UEFI Runtime service time interface tests.
  uefirtvariable  UEFI Runtime service variable interface tests.

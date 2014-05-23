@@ -258,6 +258,8 @@ Batch tests:
  syntaxcheck     (2 tests):
   Disassemble and reassemble DSDT
   Disassemble and reassemble SSDT
+ uefibootpath    (1 test):
+  Test UEFI Boot Path Boot####.
  version         (4 tests):
   Gather kernel signature.
   Gather kernel system information.
@@ -350,6 +352,8 @@ UEFI tests:
   UEFI Compatibility Support Module test.
  securebootcert  (1 test):
   UEFI secure boot test.
+ uefibootpath    (1 test):
+  Test UEFI Boot Path Boot####.
  uefirtmisc      (2 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
@@ -367,4 +371,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 286 tests
+Total of 288 tests

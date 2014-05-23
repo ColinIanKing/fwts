@@ -89,7 +89,8 @@ fwts_SOURCES = main.c 				\
 	uefi/uefirtvariable/uefirtvariable.c	\
 	uefi/uefirtmisc/uefirtmisc.c		\
 	uefi/securebootcert/securebootcert.c	\
-	uefi/uefivarinfo/uefivarinfo.c
+	uefi/uefivarinfo/uefivarinfo.c		\
+	uefi/uefibootpath/uefibootpath.c
 
 fwts_LDFLAGS = -lm
 

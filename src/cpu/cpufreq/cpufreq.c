@@ -345,11 +345,20 @@ static void do_cpu(fwts_framework *fw, const int cpu)
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.", cpu, speedcount);
 	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
 	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
-	for (i = 0; i < speedcount; i++)
-		fwts_log_info_verbatum(fw, "%10s |     %5.1f %%    | %9" PRIu64,
+	for (i = 0; i < speedcount; i++) {
+		char *turbo = "";
+#ifdef FWTS_ARCH_INTEL
+		if ((i == 0) && (speedcount > 1) &&
+		    (hz_almost_equal(freqs[i].Hz, freqs[i + 1].Hz)))
+			turbo = " (Turbo Boost)";
+#endif
+
+		fwts_log_info_verbatum(fw, "%10s |     %5.1f %%    | %9" PRIu64 "%s",
 			hz_to_human(freqs[i].Hz),
 			100.0 * freqs[i].speed/cpu_top_speed,
-			freqs[i].speed);
+			freqs[i].speed,
+			turbo);
+	}
 
 	if (number_of_speeds == -1)
 		number_of_speeds = speedcount;

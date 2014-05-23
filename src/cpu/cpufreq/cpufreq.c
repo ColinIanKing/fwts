@@ -175,8 +175,8 @@ static char *hz_to_human(const uint64_t hz)
 {
 	static char buffer[32];
 
-	if (hz > 1500000) {
-		snprintf(buffer, sizeof(buffer), "%.2f GHz",
+	if (hz > 1000000) {
+		snprintf(buffer, sizeof(buffer), "%6.3f GHz",
 			(hz+50000.0) / 1000000);
 		return buffer;
 	} else if (hz > 1000) {

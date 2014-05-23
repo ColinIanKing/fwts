@@ -59,6 +59,34 @@ static int num_cpus;
 #define GET_PERFORMANCE_MIN (1)
 #define GET_PERFORMANCE_AVG (2)
 
+#define MAX_ABSOLUTE_ERROR	20.0		/* In Hz */
+#define MAX_RELATIVE_ERROR	0.0025		/* as fraction */
+
+/*
+ *  hz_almost_equal()
+ *	used to compare CPU _PSS levels, are they almost
+ *	equal?  E.g. within MAX_ABSOLUTE_ERROR Hz difference
+ *	between each other, or a relative difference of
+ *	MAX_RELATIVE_ERROR.  If they are, then they are deemed
+ *	almost equal.
+ */
+static int hz_almost_equal(const uint64_t a, const uint64_t b)
+{
+	double da = (double)a, db = (double)b;
+	double relative_error, abs_diff = fabs(da - db);
+
+	if (a == b)
+		return true;
+	if (abs_diff < MAX_ABSOLUTE_ERROR)
+		return true;
+	if (db > da)
+		relative_error = abs_diff / db;
+	else
+		relative_error = abs_diff / da;
+
+	return relative_error <= MAX_RELATIVE_ERROR;
+}
+
 static inline void cpu_mkpath(
 	char *const path,
 	const int len,
@@ -224,7 +252,16 @@ static int cpu_freq_compare(const void *v1, const void *v2)
 	const fwts_cpu_freq *cpu_freq1 = (fwts_cpu_freq *)v1;
 	const fwts_cpu_freq *cpu_freq2 = (fwts_cpu_freq *)v2;
 
-	return cpu_freq1->Hz - cpu_freq2->Hz;
+	/*
+	 * Some _PSS states can be the same or very nearly
+	 * the same when Turbo mode is available,
+	 * so if they are we also differentiate the two by
+	 * the speed to get a fully sorted ordering
+	 */
+	if (hz_almost_equal(cpu_freq1->Hz, cpu_freq2->Hz))
+		return cpu_freq1->speed - cpu_freq2->speed;
+	else
+		return cpu_freq1->Hz - cpu_freq2->Hz;
 }
 
 static int read_freqs_available(const int cpu, fwts_cpu_freq *freqs)

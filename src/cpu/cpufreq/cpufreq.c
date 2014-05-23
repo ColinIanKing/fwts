@@ -177,11 +177,11 @@ static char *hz_to_human(const uint64_t hz)
 
 	if (hz > 1000000) {
 		snprintf(buffer, sizeof(buffer), "%6.3f GHz",
-			(hz+50000.0) / 1000000);
+			(double)hz / 1000000.0);
 		return buffer;
 	} else if (hz > 1000) {
-		snprintf(buffer, sizeof(buffer), "%" PRIu64 " MHz",
-			(hz+500) / 1000);
+		snprintf(buffer, sizeof(buffer), "%6.3f MHz",
+			(double)hz / 1000.0);
 		return buffer;
 	} else {
 		snprintf(buffer, sizeof(buffer), "%" PRIu64 " Hz", hz);

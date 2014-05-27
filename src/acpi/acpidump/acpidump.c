@@ -340,7 +340,7 @@ static void acpi_dump_gas(
 	const void *data,
 	const int offset)
 {	
-	static const char const *access_width[] = {
+	static const char *access_width[] = {
 		"Undefined (legacy reasons)",
 		"Byte Access",
 		"Word Access",
@@ -1489,7 +1489,7 @@ static void acpidump_slic(fwts_framework *fw, const fwts_acpi_table_info *table)
  *  acpidump_uefi()
  *	dump out UEFI tables
  */
-static void acpidump_uefi(fwts_framework *fw, const const fwts_acpi_table_info *table)
+static void acpidump_uefi(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_uefi *uefi = (fwts_acpi_table_uefi *)table->data;
 

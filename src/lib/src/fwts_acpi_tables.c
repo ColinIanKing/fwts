@@ -57,7 +57,13 @@ static acpi_table_load_state acpi_tables_loaded = ACPI_TABLES_NOT_LOADED;
  */
 static inline void *fwts_acpi_find_rsdp_efi(void)
 {
-	return fwts_scan_efi_systab("ACPI20");
+	void *addr;
+
+	addr = fwts_scan_efi_systab("ACPI20");
+	if (!addr)
+		addr = fwts_scan_efi_systab("ACPI");
+
+	return addr;
 }
 
 /*

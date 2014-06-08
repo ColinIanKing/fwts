@@ -984,6 +984,7 @@ static void acpidump_mcfg(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg *)table->data;
 	size_t i, n = table->length - sizeof(fwts_acpi_table_mcfg);
+	fwts_acpi_mcfg_configuration *config = mcfg->configuration;
 
 	static const fwts_acpidump_field fields[] = {
 		FIELD_UINT("Reserved", 	fwts_acpi_table_mcfg,	reserved),
@@ -991,8 +992,6 @@ static void acpidump_mcfg(fwts_framework *fw, const fwts_acpi_table_info *table)
 	};
 
 	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
-
-	fwts_acpi_mcfg_configuration *config = mcfg->configuration;
 
 	for (i = 0; i < n / sizeof(fwts_acpi_mcfg_configuration); i++) {
 		static const fwts_acpidump_field fields_config[] = {
@@ -1450,10 +1449,10 @@ static void acpidump_slic(fwts_framework *fw, const fwts_acpi_table_info *table)
 	ptr += sizeof(fwts_acpi_table_header);
 
 	while (ptr < data + length) {
-		fwts_log_nl(fw);
 		fwts_acpi_table_slic_header *header =
 			(fwts_acpi_table_slic_header *)ptr;
 
+		fwts_log_nl(fw);
 		/*
 		 *  Some machines such as the Acer Veritas have a SLIC header that
 		 *  declares it's length as zero.  So to avoid spinning forever

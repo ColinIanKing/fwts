@@ -140,10 +140,10 @@ static int hpet_check_deinit(fwts_framework *fw)
 
 static int hpet_check_test1(fwts_framework *fw)
 {
+	fwts_list_link *item;
+
 	if (klog == NULL)
 		return FWTS_ERROR;
-
-	fwts_list_link *item;
 
 	fwts_log_info(fw,
 		"This test checks the HPET PCI BAR for each timer block "

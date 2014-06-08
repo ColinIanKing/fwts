@@ -1038,7 +1038,7 @@ static void acpidump_slit(fwts_framework *fw, const fwts_acpi_table_info *table)
 			}
 		}
 	}
-};
+}
 
 static void acpidump_srat(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
@@ -1123,9 +1123,7 @@ static void acpidump_asf(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
 	uint8_t *data = (uint8_t *)table->data;
 	size_t length = table->length;
-	uint8_t *ptr;
-
-	ptr = data + sizeof(fwts_acpi_table_header);
+	uint8_t *ptr = data + sizeof(fwts_acpi_table_header);
 
 	static const fwts_acpidump_field asf_info_fields[] = {
 		FIELD_UINT("Watchdog Reset Value", 	fwts_acpi_table_asf_info, watchdog_reset_value),
@@ -2036,4 +2034,4 @@ static fwts_framework_ops acpidump_ops = {
 	.minor_tests = acpidump_tests
 };
 
-FWTS_REGISTER("acpidump", &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("acpidump", &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)

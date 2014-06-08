@@ -48,7 +48,7 @@ typedef enum {
 	LOG_FIELD_MASK	    = 0x0000ffff,
 
 	LOG_VERBATUM	    = 0x10000000,
-	LOG_NO_FIELDS	    = 0x20000000,
+	LOG_NO_FIELDS	    = 0x20000000
 } fwts_log_field;
 
 typedef enum {
@@ -57,7 +57,7 @@ typedef enum {
 	LOG_LEVEL_HIGH      = 0x00000002,
 	LOG_LEVEL_MEDIUM    = 0x00000004,
 	LOG_LEVEL_LOW       = 0x00000008,
-	LOG_LEVEL_INFO      = 0x00000010,
+	LOG_LEVEL_INFO      = 0x00000010
 } fwts_log_level;
 
 /*
@@ -68,7 +68,7 @@ typedef enum {
 	LOG_TYPE_PLAINTEXT  = 0x00000001,
 	LOG_TYPE_JSON       = 0x00000002,
 	LOG_TYPE_XML        = 0x00000004,
-	LOG_TYPE_HTML       = 0x00000008,
+	LOG_TYPE_HTML       = 0x00000008
 } fwts_log_type;
 
 /*
@@ -77,7 +77,7 @@ typedef enum {
 typedef enum {
 	LOG_FILENAME_TYPE_STDOUT = 0x00000001,	/* log output to stdout */
 	LOG_FILENAME_TYPE_STDERR = 0x00000002,	/* log output to stderr */
-	LOG_FILENAME_TYPE_FILE   = 0x00000003,	/* log output to a file */
+	LOG_FILENAME_TYPE_FILE   = 0x00000003	/* log output to a file */
 } fwts_log_filename_type;
 
 /*

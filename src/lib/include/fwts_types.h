@@ -34,7 +34,7 @@ typedef enum {
 	FWTS_NOT_EXIST = -7,
 	FWTS_COMPLETE = -8,
 	FWTS_OUT_OF_MEMORY = -9,
-	FWTS_NO_EBDA = -10,
+	FWTS_NO_EBDA = -10
 } fwts_status;
 
 #define	FWTS_MAP_FAILED 	((void *)-1)

@@ -23,7 +23,7 @@ enum {
 	FWTS_FIRMWARE_UNKNOWN = 0,
 	FWTS_FIRMWARE_BIOS = 1,
 	FWTS_FIRMWARE_UEFI = 2,
-	FWTS_FIRMWARE_OTHER = 100,
+	FWTS_FIRMWARE_OTHER = 100
 };
 
 int fwts_firmware_detect(void);

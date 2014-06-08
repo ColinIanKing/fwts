@@ -34,7 +34,7 @@
 typedef enum {
 	FWTS_COMPARE_REGEX = 'r',
 	FWTS_COMPARE_STRING = 's',
-	FWTS_COMPARE_UNKNOWN = 'u',
+	FWTS_COMPARE_UNKNOWN = 'u'
 } fwts_compare_mode;
 
 typedef struct {

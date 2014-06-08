@@ -61,7 +61,7 @@
 typedef enum {
 	FWTS_SMBIOS_UNKNOWN = -1,
 	FWTS_SMBIOS_DMI_LEGACY = 0,
-	FWTS_SMBIOS = 1,
+	FWTS_SMBIOS = 1
 } fwts_smbios_type;
 
 typedef struct {

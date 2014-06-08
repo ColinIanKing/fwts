@@ -25,7 +25,7 @@
 typedef enum {
 	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
 	FWTS_ACPI_TABLE_FROM_FILE,	/* loaded from file, e.g. from acpidump */
-	FWTS_ACPI_TABLE_FROM_FIXUP,	/* auto-generated fixup by fwts */
+	FWTS_ACPI_TABLE_FROM_FIXUP	/* auto-generated fixup by fwts */
 } fwts_acpi_table_provenance;
 
 typedef struct {

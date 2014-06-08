@@ -118,4 +118,4 @@ static fwts_framework_ops version_ops = {
 	.minor_tests = version_tests
 };
 
-FWTS_REGISTER("version", &version_ops, FWTS_TEST_FIRST, FWTS_FLAG_BATCH);
+FWTS_REGISTER("version", &version_ops, FWTS_TEST_FIRST, FWTS_FLAG_BATCH)

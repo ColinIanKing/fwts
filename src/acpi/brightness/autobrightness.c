@@ -209,6 +209,6 @@ static fwts_framework_ops auto_brightness_ops = {
 	.minor_tests = auto_brightness_tests
 };
 
-FWTS_REGISTER("autobrightness", &auto_brightness_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("autobrightness", &auto_brightness_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
 #endif

@@ -466,6 +466,6 @@ static fwts_framework_ops pcc_ops = {
 	.minor_tests = pcc_tests
 };
 
-FWTS_REGISTER("pcc", &pcc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("pcc", &pcc_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
 #endif

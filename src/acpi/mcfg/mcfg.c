@@ -259,6 +259,6 @@ static fwts_framework_ops mcfg_ops = {
 	.minor_tests = mcfg_tests
 };
 
-FWTS_REGISTER("mcfg", &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("mcfg", &mcfg_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
 
 #endif

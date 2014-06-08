@@ -791,6 +791,6 @@ static fwts_framework_ops msr_ops = {
 	.minor_tests = msr_tests
 };
 
-FWTS_REGISTER("msr", &msr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("msr", &msr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
 
 #endif

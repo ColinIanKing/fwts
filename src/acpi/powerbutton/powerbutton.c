@@ -82,6 +82,6 @@ static fwts_framework_ops power_button_ops = {
 	.minor_tests = power_button_tests
 };
 
-FWTS_REGISTER("power_button", &power_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
+FWTS_REGISTER("power_button", &power_button_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE)
 
 #endif

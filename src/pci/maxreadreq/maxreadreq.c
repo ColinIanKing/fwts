@@ -145,4 +145,4 @@ static fwts_framework_ops maxreadreq_ops = {
 	.minor_tests = maxreadreq_tests
 };
 
-FWTS_REGISTER("maxreadreq", &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("maxreadreq", &maxreadreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)

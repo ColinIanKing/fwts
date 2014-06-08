@@ -546,6 +546,6 @@ static fwts_framework_ops mtrr_ops = {
 	.minor_tests = mtrr_tests
 };
 
-FWTS_REGISTER("mtrr", &mtrr_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("mtrr", &mtrr_ops, FWTS_TEST_EARLY, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
 
 #endif

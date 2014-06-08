@@ -162,6 +162,6 @@ static fwts_framework_ops ac_adapter_ops = {
 	.minor_tests = ac_adapter_tests
 };
 
-FWTS_REGISTER("ac_adapter", &ac_adapter_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE);
+FWTS_REGISTER("ac_adapter", &ac_adapter_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_INTERACTIVE)
 
 #endif

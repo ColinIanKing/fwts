@@ -179,4 +179,4 @@ static fwts_framework_ops gpedump_ops = {
 	.minor_tests = gpedump_tests
 };
 
-FWTS_REGISTER("gpedump", &gpedump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("gpedump", &gpedump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)

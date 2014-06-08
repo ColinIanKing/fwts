@@ -267,4 +267,4 @@ static fwts_framework_ops plddump_ops = {
 	.minor_tests = plddump_tests
 };
 
-FWTS_REGISTER("plddump", &plddump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("plddump", &plddump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)

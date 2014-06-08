@@ -63,4 +63,4 @@ static fwts_framework_ops prsdump_ops = {
 	.minor_tests = prsdump_tests
 };
 
-FWTS_REGISTER("prsdump", &prsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("prsdump", &prsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)

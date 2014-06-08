@@ -528,6 +528,6 @@ static fwts_framework_ops mpdump_ops = {
 	.minor_tests = mpdump_tests,
 };
 
-FWTS_REGISTER("mpdump", &mpdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("mpdump", &mpdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
 
 #endif

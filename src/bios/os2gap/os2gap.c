@@ -77,6 +77,6 @@ static fwts_framework_ops os2gap_ops = {
 	.minor_tests = os2gap_tests
 };
 
-FWTS_REGISTER("os2gap", &os2gap_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("os2gap", &os2gap_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
 #endif

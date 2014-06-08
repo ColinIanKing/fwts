@@ -1590,6 +1590,6 @@ static fwts_framework_ops dmicheck_ops = {
 	.minor_tests = dmicheck_tests
 };
 
-FWTS_REGISTER("dmicheck", &dmicheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("dmicheck", &dmicheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
 
 #endif

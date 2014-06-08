@@ -90,6 +90,6 @@ static fwts_framework_ops romdump_ops = {
 	.minor_tests = romdump_tests
 };
 
-FWTS_REGISTER("romdump", &romdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
+FWTS_REGISTER("romdump", &romdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
 
 #endif

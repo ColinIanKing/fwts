@@ -207,6 +207,6 @@ static fwts_framework_ops maxfreq_ops = {
 	.minor_tests = maxfreq_tests
 };
 
-FWTS_REGISTER("maxfreq", &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("maxfreq", &maxfreq_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
 #endif

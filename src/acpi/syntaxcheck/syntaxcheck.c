@@ -643,4 +643,4 @@ static fwts_framework_ops syntaxcheck_ops = {
 	.minor_tests = syntaxcheck_tests
 };
 
-FWTS_REGISTER("syntaxcheck", &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("syntaxcheck", &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)

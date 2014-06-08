@@ -920,4 +920,4 @@ static fwts_framework_ops crsdump_ops = {
 	.minor_tests = crsdump_tests
 };
 
-FWTS_REGISTER("crsdump", &crsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS);
+FWTS_REGISTER("crsdump", &crsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)

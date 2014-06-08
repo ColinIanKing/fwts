@@ -85,6 +85,6 @@ static fwts_framework_ops ebdadump_ops = {
 };
 
 FWTS_REGISTER("ebdadump", &ebdadump_ops, FWTS_TEST_ANYTIME,
-	FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV);
+	FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
 
 #endif

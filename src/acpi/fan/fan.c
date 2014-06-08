@@ -263,6 +263,6 @@ static fwts_framework_ops fan_ops = {
 	.minor_tests = fan_tests
 };
 
-FWTS_REGISTER("fan", &fan_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("fan", &fan_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
 
 #endif

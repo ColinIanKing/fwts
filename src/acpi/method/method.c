@@ -2594,9 +2594,9 @@ static void method_test_CST_return(
 
 	/* Could be one or more packages */
 	for (i = 1; i < obj->Package.Count; i++) {
-		cst_elements_ok[i] = true;
-
 		ACPI_OBJECT *pkg;
+
+		cst_elements_ok[i] = true;
 		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_CSTElementType",

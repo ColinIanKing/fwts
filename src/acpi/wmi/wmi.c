@@ -62,8 +62,8 @@ typedef struct {
 		struct {
 			uint8_t	notify_id;	/* Notify Identifier */
 			uint8_t	reserved;	/* Reserved */
-		};
-	};
+		} notify;
+	} id;
 	uint8_t	instance;			/* Instance */
 	uint8_t	flags;				/* fwts_wmi_flags */
 } __attribute__ ((packed)) fwts_wdg_info;
@@ -196,7 +196,7 @@ static void wmi_method_exist_count(
 	int  count = 0;
 
 	snprintf(wm_name, sizeof(wm_name), "WM%c%c",
-		info->obj_id[0], info->obj_id[1]);
+		info->id.obj_id[0], info->id.obj_id[1]);
 
 	if ((objects = fwts_acpi_object_get_names()) == NULL)
 		return;	/* Should not ever happen, bail out if it does */
@@ -215,13 +215,13 @@ static void wmi_method_exist_count(
 			"WMIMissingMethod",
 			"GUID %s should have an associated method WM%c%c defined, "
 			"however this does not seem to exist.",
-			guid_str, info->obj_id[0], info->obj_id[1]);
+			guid_str, info->id.obj_id[0], info->id.obj_id[1]);
 	} else if (count > 1) {
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"WMIMultipleMethod",
 			"GUID %s has multiple associated methods WM%c%c defined, "
 			"this is a firmware bug that leads to ambigous behaviour.",
-			guid_str, info->obj_id[0], info->obj_id[1]);
+			guid_str, info->id.obj_id[0], info->id.obj_id[1]);
 	} else
 		fwts_passed(fw, "%s has associated method %s", guid_str, objname);
 }
@@ -262,7 +262,7 @@ static void wmi_dump_object(fwts_framework *fw, const fwts_wdg_info *info)
 	fwts_log_info_verbatum(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
 		info->flags, wmi_wdg_flags_to_text(info->flags));
 	fwts_log_info_verbatum(fw, "    Object ID      : %c%c",
-		info->obj_id[0], info->obj_id[1]);
+		info->id.obj_id[0], info->id.obj_id[1]);
 	fwts_log_info_verbatum(fw, "    Instance       : 0x%2.2" PRIx8,
 		info->instance);
 }
@@ -320,9 +320,9 @@ static void wmi_parse_wdg_data(
 			fwts_log_info_verbatum(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
 				info->flags, wmi_wdg_flags_to_text(info->flags));
 			fwts_log_info_verbatum(fw, "    Notification ID: 0x%2.2" PRIx8,
-				info->notify_id);
+				info->id.notify.notify_id);
 			fwts_log_info_verbatum(fw, "    Reserved       : 0x%2.2" PRIx8,
-				info->reserved);
+				info->id.notify.reserved);
 			fwts_log_info_verbatum(fw, "    Instance       : 0x%2.2" PRIx8,
 				info->instance);
 			wmi_known_driver(fw, known);

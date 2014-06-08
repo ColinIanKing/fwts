@@ -323,9 +323,9 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	length -= sizeof(fwts_acpi_table_madt);
 
 	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
 		size_t skip = 0;
 		i++;
-		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
@@ -384,10 +384,8 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
-		case 5: {
-				//fwts_acpi_madt_local_apic_addr_override *override = (fwts_acpi_madt_local_apic_addr_override*)data;
-				skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
-			}
+		case 5:
+			skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
 			break;
 		case 6: {
 				fwts_acpi_madt_io_sapic *sapic = (fwts_acpi_madt_io_sapic*)data;
@@ -447,7 +445,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				skip = sizeof(fwts_acpi_madt_gic);
 			}
 			break;
-		case 12: 
+		case 12:
 			/* Not much to sanity check */
 			skip = sizeof(fwts_acpi_madt_gicd);
 			break;
@@ -616,4 +614,4 @@ static fwts_framework_ops acpi_table_check_ops = {
 	.minor_tests = acpi_table_check_tests
 };
 
-FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)

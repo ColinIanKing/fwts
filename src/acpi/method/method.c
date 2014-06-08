@@ -377,10 +377,11 @@ static int method_init(fwts_framework *fw)
 
 	/* Some systems have multiple FADTs, sigh */
 	for (i = 0; i < 256; i++) {
+		fwts_acpi_table_fadt *fadt;
 		int ret = fwts_acpi_find_table(fw, "FACP", i, &info);
 		if (ret == FWTS_NULL_POINTER || info == NULL)
 			break;
-		fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)info->data;
+		fadt = (fwts_acpi_table_fadt*)info->data;
 		got_fadt = true;
 		if (fadt->preferred_pm_profile == 2) {
 			fadt_mobile_platform = true;
@@ -5140,4 +5141,4 @@ static fwts_framework_ops method_ops = {
 	.minor_tests = method_tests
 };
 
-FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH);
+FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)

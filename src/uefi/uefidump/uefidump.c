@@ -188,10 +188,10 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 			if (dev_path_len >= sizeof(fwts_uefi_acpi_adr_dev_path)) {
 				fwts_uefi_acpi_adr_dev_path *a = (fwts_uefi_acpi_adr_dev_path *)dev_path;
 				uint16_t len = a->dev_path.length[0] | (((uint16_t)a->dev_path.length[1]) << 8);
+				uint8_t *adr_add = (uint8_t *)a + sizeof(fwts_uefi_acpi_adr_dev_path);
 				path = uefidump_vprintf(path, "\\ACPI_ADR(0x%" PRIx32, a->adr);
 
 				/* Adding additional _ADR */
-				uint8_t *adr_add = (uint8_t *)a + sizeof(fwts_uefi_acpi_adr_dev_path);
 				size_t offset = 0;
 				while ((len - sizeof(fwts_uefi_acpi_adr_dev_path) - offset) >= sizeof(uint32_t)) {
 					path = uefidump_vprintf(path, ", 0x%" PRIx32 , *(uint32_t *)(adr_add + offset));
@@ -416,12 +416,12 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 		case FWTS_UEFI_USB_WWID_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_usb_wwid_dev_path)) {
 				fwts_uefi_usb_wwid_dev_path *u = (fwts_uefi_usb_wwid_dev_path *)dev_path;
+				char *tmp;
+				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\USBWWID(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx16,
 					u->interface_num, u->vendor_id, u->product_id);
 
 				/* Adding Serial Number */
-				char *tmp;
-				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
 
 				if (len <= sizeof(fwts_uefi_usb_wwid_dev_path)) {
 					path = uefidump_vprintf(path, ")");
@@ -458,11 +458,11 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 		case FWTS_UEFI_ISCSI_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_iscsi_dev_path)) {
 				fwts_uefi_iscsi_dev_path *i = (fwts_uefi_iscsi_dev_path *)dev_path;
+				uint16_t len = i->dev_path.length[0] | (((uint16_t)i->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\iSCSI(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx64 ",0x%" PRIx16,
 					i->protocol, i->options, i->lun, i->tpg_tag);
 
 				/* Adding iSCSI target name */
-				uint16_t len = i->dev_path.length[0] | (((uint16_t)i->dev_path.length[1]) << 8);
 				if (len - sizeof(fwts_uefi_iscsi_dev_path) > 223) {
 					path = uefidump_vprintf(path, ")");
 					break;
@@ -1125,8 +1125,8 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 
 	do {
 		signature_list = (fwts_uefi_signature_list *)(var->data + list_start);
-		fwts_guid_buf_to_str(var->data, guid_str, sizeof(guid_str));
 		const char *str = "Unknown GUID";
+		fwts_guid_buf_to_str(var->data, guid_str, sizeof(guid_str));
 
 		for (i = 0; guids[i].str; i++)
 			if (!memcmp(var->data, &guids[i].guid, sizeof(fwts_uefi_guid))) {

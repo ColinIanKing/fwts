@@ -176,7 +176,7 @@ static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key
 		return key_found;
 
 	for (var_data_addr = var_data; var_data_addr < var_data + datalen; ) {
-
+		EFI_GUID SignatureOwner;
 		siglist = *((EFI_SIGNATURE_LIST *)var_data_addr);
 
 		/* check for potential overflow */
@@ -197,8 +197,7 @@ static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key
 		}
 
 		var_data_addr += sizeof(siglist) + siglist.SignatureHeaderSize;
-
-		EFI_GUID SignatureOwner = *(EFI_GUID *)var_data_addr;
+		SignatureOwner = *(EFI_GUID *)var_data_addr;
 
 		if (key_len != (siglist.SignatureSize - sizeof(SignatureOwner))) {
 			var_data_addr += siglist.SignatureSize;
@@ -251,6 +250,7 @@ static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, ch
 {
 
 	bool ident = false;
+	fwts_release *release;
 	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
 
 	if (strcmp(varname, "KEK"))
@@ -265,7 +265,7 @@ static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, ch
 		return;
 	}
 
-	fwts_release *release = fwts_release_get();
+	release = fwts_release_get();
 	if (release == NULL) {
 		fwts_skipped(fw, "Cannot determine system, stop checking the Master CA certificate.");
 		return;

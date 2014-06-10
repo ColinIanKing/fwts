@@ -21,6 +21,7 @@
 #define __IASL_H__
 
 #include "fwts.h"
+#include <stdint.h>
 
 int fwts_iasl_disassemble_all_to_file(fwts_framework *fw,
 	const char *path);
@@ -36,5 +37,7 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	fwts_list **iasl_disassembly,
 	fwts_list **iasl_stdout,
 	fwts_list **iasl_stderr);
+
+const char *fwts_iasl_exception_level(uint8_t level);
 
 #endif

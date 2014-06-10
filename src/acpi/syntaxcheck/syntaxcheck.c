@@ -27,8 +27,7 @@
 
 #include <json/json.h>
 
-#define ASL_EXCEPTIONS	/* so we can include AslErrorLevel in aslmessages.h */
-
+#define ASL_EXCEPTIONS
 #include "aslmessages.h"
 
 typedef struct {
@@ -277,7 +276,7 @@ static const char *syntaxcheck_error_level(uint32_t error_code)
 		return "Unknown";
 
 	/* AslErrorLevel strings are end-space padded, so strip off end spaces if any */
-	strncpy(buf, AslErrorLevel[error_level], sizeof(buf));
+	strncpy(buf, fwts_iasl_exception_level((uint8_t)error_level), sizeof(buf));
 	buf[sizeof(buf) -1] = '\0';
 	ptr = strchr(buf, ' ');
 	if (ptr)

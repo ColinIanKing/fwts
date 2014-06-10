@@ -21,6 +21,7 @@
 
 #include <unistd.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -200,4 +201,21 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 	}
 
 	return ret;
+}
+
+/*
+ *  fwts_iasl_exception_level__()
+ *	shim wrapper for AeDecodeExceptionLevel level decoding
+ */
+const char *fwts_iasl_exception_level__(uint8_t level)
+{
+	const char *str;
+
+	bool tmp = Gbl_VerboseErrors;
+
+	Gbl_VerboseErrors = true;
+	str = AeDecodeExceptionLevel((UINT8)level);
+	Gbl_VerboseErrors = tmp;
+
+	return str;
 }

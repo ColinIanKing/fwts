@@ -13,7 +13,7 @@ libfwts_la_LDFLAGS = 			\
 	-L$(top_builddir)/src/acpica/source/compiler \
 	-lfwtsiasl
 
-libfwts_la_CPPFLAGS = $(AM_CPPFLAGS)
+libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
 #
 #  Components of the fwts core helper library libfwts

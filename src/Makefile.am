@@ -15,7 +15,7 @@ AM_CPPFLAGS = \
 
 bin_PROGRAMS = fwts
 
-fwts_CPPFLAGS = $(AM_CPPFLAGS)
+fwts_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
 #
 #  fwts main + tests

@@ -238,3 +238,7 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	return FWTS_OK;
 }
 
+const char *fwts_iasl_exception_level(uint8_t level)
+{
+	return fwts_iasl_exception_level__(level);
+}

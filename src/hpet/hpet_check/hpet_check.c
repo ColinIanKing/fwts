@@ -76,15 +76,15 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
 		    (strstr(str, "ResourceTemplate") != NULL)) {
 			fwts_list_link *tmp_item = item->next;
 			for (; tmp_item != NULL; tmp_item = tmp_item->next) {
-				const char *str = fwts_text_list_text(tmp_item);
+				const char *tmpstr = fwts_text_list_text(tmp_item);
 
-				if (strstr(str, "Memory32Fixed") != NULL) {
+				if (strstr(tmpstr, "Memory32Fixed") != NULL) {
 					/* Next line contains base address */
 					if (tmp_item->next != NULL) {
 						hpet_parse_check_base(fw, table, tmp_item->next);
 						return;
 					}
-				} else if (strstr(str, "DWordMemory") != NULL) {
+				} else if (strstr(tmpstr, "DWordMemory") != NULL) {
 					if (tmp_item->next != NULL &&		/* Granularity */
 					    tmp_item->next->next != NULL) {	/* Base address */
 						hpet_parse_check_base(fw, table, tmp_item->next->next);

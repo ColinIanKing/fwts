@@ -787,7 +787,7 @@ static void crsdump_large_resource_items(
 				crsdump_show(fw, objname, "GPIO Connection Descriptor",
 					data, crs_length, header, info);
 			} else if (data[4] == 1) {
-				static const char *sharing[] = {
+				static const char *int_sharing[] = {
 					"Exclusive",
 					"Shared",
 				};
@@ -807,7 +807,7 @@ static void crsdump_large_resource_items(
 					CRS_BITX("Consumer/Producer",		5, 1, consumer),
 					CRS_UINT("Reserved",			6, 8),
 					CRS_BITS("Reserved",			7, 128 | 64 | 32 | 16),
-					CRS_BITX("Interrupt Sharing",		7, 8, sharing),
+					CRS_BITX("Interrupt Sharing",		7, 8, int_sharing),
 					CRS_BITS("Reserved",			7, 4),
 					CRS_BITX("I/O Restriction",		7, 2 | 1, restriction),
 					CRS_UINT("Interrupt and I/O Flags",	8, 8),

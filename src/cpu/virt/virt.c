@@ -23,6 +23,7 @@
 #define _GNU_SOURCE
 
 #include "fwts.h"
+#include "virt.h"
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -62,9 +63,6 @@ static int virt_deinit(fwts_framework *fw)
 
 static int virt_test1(fwts_framework *fw)
 {
-	extern void virt_check_svm(fwts_framework *);
-	extern void virt_check_vmx(fwts_framework *);
-
 	if (strstr(fwts_virt_cpuinfo->vendor_id, "AMD") != NULL) {
 		virt_check_svm(fw);
 	} else if (strstr(fwts_virt_cpuinfo->vendor_id, "Intel") != NULL) {

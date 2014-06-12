@@ -29,6 +29,7 @@
 #define _GNU_SOURCE
 
 #include "fwts.h"
+#include "virt.h"
 
 #ifdef FWTS_ARCH_INTEL
 

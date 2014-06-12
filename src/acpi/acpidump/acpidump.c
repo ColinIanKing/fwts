@@ -714,10 +714,10 @@ static void acpidump_rsdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 	for (i = 0; i < n; i++)  {
 		char label[80];
-		fwts_acpi_table_info *table;
+		fwts_acpi_table_info *table_info;
 
-		if (fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i], &table) == FWTS_OK) {
-			char *name = table == NULL ? "unknown" : table->name;
+		if (fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i], &table_info) == FWTS_OK) {
+			char *name = table_info == NULL ? "unknown" : table_info->name;
 			snprintf(label, sizeof(label), "Entry %2.2zu %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%8.8x",
 				acpi_dump_field_info(label, sizeof(rsdt->entries[i]), offsetof(fwts_acpi_table_rsdt, entries[i])),
@@ -745,10 +745,10 @@ static void acpidump_xsdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 	for (i = 0; i < n; i++)  {
 		char label[80];
-		fwts_acpi_table_info *table;
+		fwts_acpi_table_info *table_info;
 
-		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table) == FWTS_OK) {
-			char *name = table == NULL ? "unknown" : table->name;
+		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table_info) == FWTS_OK) {
+			char *name = table_info == NULL ? "unknown" : table_info->name;
 			snprintf(label, sizeof(label), "Entry %2.2zu %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%16.16" PRIx64,
 				acpi_dump_field_info(label, sizeof(xsdt->entries[i]), offsetof(fwts_acpi_table_xsdt, entries[i])),

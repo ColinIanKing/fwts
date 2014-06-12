@@ -687,7 +687,7 @@ static void dmi_str_check_index(fwts_framework *fw,
 	}
 }
 
-static inline void dmi_str_check(fwts_framework *fw,
+static void dmi_str_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
 	const char *field,
@@ -1092,11 +1092,11 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x17 + data[0x15] * data[0x16])
 				break;
 			if (data[0x16] >= 0x02) {
-				uint8_t *ptr = data + 0x17;
-				int i;
-				for (i = 0; i < data[0x15]; i++) {
-					int j = data[0x16] * i;
-					val = ptr[j];
+				uint8_t *tmpptr = data + 0x17;
+				int k;
+				for (k = 0; k < data[0x15]; k++) {
+					int j = data[0x16] * k;
+					val = tmpptr[j];
 					if (!(((val >= 0x01) && (val <= 0x0e)) ||
 					      ((val >= 0x10) && (val <= 0x17)) ||
 					      (val >= 0x80))) {
@@ -1105,16 +1105,16 @@ static void dmicheck_entry(fwts_framework *fw,
 							"(range allowed 0x01..0x0e, 0x10..0x17, "
 							"0x80..0xff) while accessing entry '%s' @ "
 							"0x%8.8" PRIx32 ", field '%s', item %d",
-							val, table, addr, "Log Descriptor Type", i);
+							val, table, addr, "Log Descriptor Type", k);
 					}
-					val = ptr[j + 1];
+					val = tmpptr[j + 1];
 					if ((val > 0x06) && (val < 0x80)) {
 						fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 							"Out of range value 0x%2.2" PRIx8 " "
 							"(range allowed 0x00..0x06, 0x80..0xff) "
 							"while accessing entry '%s' @ "
 							"0x%8.8" PRIx32 ", field '%s', item %d",
-							val, table, addr, "Log Descriptor Format", i);
+							val, table, addr, "Log Descriptor Format", k);
 					}
 				}
 			}

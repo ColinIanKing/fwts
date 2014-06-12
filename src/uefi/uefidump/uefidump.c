@@ -286,14 +286,14 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					i->local_port, i->remote_port,
 					i->protocol, i->static_ip_address);
 				if (len >= sizeof(fwts_uefi_ipv4_dev_path_v2) && dev_path_len >= sizeof(fwts_uefi_ipv4_dev_path_v2)) {
-					fwts_uefi_ipv4_dev_path_v2 *i = (fwts_uefi_ipv4_dev_path_v2 *)dev_path;
+					fwts_uefi_ipv4_dev_path_v2 *iv2 = (fwts_uefi_ipv4_dev_path_v2 *)dev_path;
 					path = uefidump_vprintf(path,
 						",%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ","
 						"%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ,
-						i->gateway_ip_addr[0], i->gateway_ip_addr[1],
-						i->gateway_ip_addr[2], i->gateway_ip_addr[3],
-						i->subnet_mask[0], i->subnet_mask[1],
-						i->subnet_mask[2], i->subnet_mask[3]);
+						iv2->gateway_ip_addr[0], iv2->gateway_ip_addr[1],
+						iv2->gateway_ip_addr[2], iv2->gateway_ip_addr[3],
+						iv2->subnet_mask[0], iv2->subnet_mask[1],
+						iv2->subnet_mask[2], iv2->subnet_mask[3]);
 				}
 				path = uefidump_vprintf(path, ")");
 			}
@@ -319,16 +319,16 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					i->local_port, i->remote_port,
 					i->protocol, i->static_ip_address);
 				if (len >= sizeof(fwts_uefi_ipv6_dev_path_v2) && dev_path_len >= sizeof(fwts_uefi_ipv6_dev_path_v2)) {
-					fwts_uefi_ipv6_dev_path_v2 *i = (fwts_uefi_ipv6_dev_path_v2 *)dev_path;
+					fwts_uefi_ipv6_dev_path_v2 *iv2 = (fwts_uefi_ipv6_dev_path_v2 *)dev_path;
 					path = uefidump_vprintf(path,
 					",%" PRIu8 ","
 					"%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16
 					":%" PRIx16 ":%" PRIx16 ":%" PRIx16 ":%" PRIx16,
-					i->prefix_length,
-					i->gateway_ip_addr[0], i->gateway_ip_addr[1],
-					i->gateway_ip_addr[2], i->gateway_ip_addr[3],
-					i->gateway_ip_addr[4], i->gateway_ip_addr[5],
-					i->gateway_ip_addr[6], i->gateway_ip_addr[7]);
+					iv2->prefix_length,
+					iv2->gateway_ip_addr[0], iv2->gateway_ip_addr[1],
+					iv2->gateway_ip_addr[2], iv2->gateway_ip_addr[3],
+					iv2->gateway_ip_addr[4], iv2->gateway_ip_addr[5],
+					iv2->gateway_ip_addr[6], iv2->gateway_ip_addr[7]);
 				}
 				path = uefidump_vprintf(path, ")");
 			}

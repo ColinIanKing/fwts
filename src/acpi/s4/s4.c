@@ -301,14 +301,15 @@ static int s4_test_multiple(fwts_framework *fw)
 
 		if (!s4_device_check) {
 			char buffer[80];
-			int i;
+			int j;
 
 			tv.tv_sec  = 0;
 			tv.tv_usec = (awake_delay % 1000)*1000;
 			select(0, NULL, NULL, NULL, &tv);
 
-			for (i=0; i<awake_delay/1000; i++) {
-				snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1, awake_delay/1000);
+			for (j = 0; j < awake_delay / 1000; i++) {
+				snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)",
+					j + 1, awake_delay / 1000);
 				fwts_progress_message(fw, percent, buffer);
 				sleep(1);
 			}

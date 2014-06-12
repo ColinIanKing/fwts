@@ -671,8 +671,8 @@ static void method_test_NULL_return(
 	 */
 	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
 		if ((buf != NULL) && (buf->Pointer != NULL)) {
-			ACPI_OBJECT *obj = buf->Pointer;
-			if (obj->Type == ACPI_TYPE_INTEGER) {
+			ACPI_OBJECT *objtmp = buf->Pointer;
+			if (objtmp->Type == ACPI_TYPE_INTEGER) {
 				fwts_passed(fw, "%s returned an ACPI_TYPE_INTEGER as expected in slack mode.",
 					name);
 				return;

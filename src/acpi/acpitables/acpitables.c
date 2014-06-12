@@ -513,7 +513,7 @@ static int acpi_table_check_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-bool acpi_table_check_field(const char *field, const size_t len)
+static bool acpi_table_check_field(const char *field, const size_t len)
 {
 	size_t i;
 
@@ -524,7 +524,7 @@ bool acpi_table_check_field(const char *field, const size_t len)
 	return true;
 }
 
-bool acpi_table_check_field_test(
+static bool acpi_table_check_field_test(
 	fwts_framework *fw,
 	const char *table_name,
 	const char *field_name,

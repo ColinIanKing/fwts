@@ -74,7 +74,7 @@ static int microcode_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-microcode_info *microcode_find_cpu(
+static microcode_info *microcode_find_cpu(
 	const int cpu,
 	fwts_list *microcode_info_list)
 {

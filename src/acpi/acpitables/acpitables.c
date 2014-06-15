@@ -309,7 +309,7 @@ static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *tabl
 static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)table->data;
-	const void *data = table->data;
+	const uint8_t *data = table->data;
 	size_t length = table->length;
 	int i = 0;
 
@@ -578,14 +578,14 @@ static int acpi_table_check_test2(fwts_framework *fw)
 		if (hdr->length < sizeof(fwts_acpi_table_header)) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableHdrShort",
 				"ACPI Table %s is too short, only %d bytes long. Further "
-				"header checks will be ommitted.", name, hdr->length);
+				"header checks will be omitted.", name, hdr->length);
 			continue;
 		}
 		/* Warn about empty tables */
 		if (hdr->length == sizeof(fwts_acpi_table_header)) {
 			fwts_warning(fw,
 				"ACPI Table %s is empty and just contains a table header. Further "
-				"header checks will be ommitted.", name);
+				"header checks will be omitted.", name);
 			continue;
 		}
 

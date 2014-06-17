@@ -222,6 +222,33 @@ static int dump_readme(void)
 }
 
 /*
+ *  dump_cpuinfo()
+ *	read cpuinfo, dump to path/filename
+ */
+static int dump_cpuinfo(void)
+{
+	FILE *source, *target;
+	char buffer[1024];
+	size_t bytes;
+
+	if ((source = fopen("/proc/cpuinfo", "r")) == NULL)
+		return FWTS_ERROR;
+
+	if ((target = fopen("cpuinfo.log", "w")) == NULL) {
+		fclose(source);
+		return FWTS_ERROR;
+	}
+
+	while (0 < (bytes = fread(buffer, 1, sizeof(buffer), source)))
+		fwrite(buffer, 1, bytes, target);
+
+	fclose(source);
+	fclose(target);
+
+	return FWTS_OK;
+}
+
+/*
  *  fwts_dump_info()
  *	dump various system specific information:
  *	kernel log, dmidecode output, lspci output,
@@ -272,6 +299,11 @@ int fwts_dump_info(fwts_framework *fw)
 			printf("Dumped ACPI tables to acpidump.log\n");
 	} else
 		fprintf(stderr, "Need root privilege to dump ACPI tables.\n");
+
+	if (dump_cpuinfo() != FWTS_OK)
+		fprintf(stderr, "Failed to dump cpuinfo.\n");
+	else
+		printf("Dumping cpuinfo to cpuinfo.log\n");
 
 	return FWTS_OK;
 }

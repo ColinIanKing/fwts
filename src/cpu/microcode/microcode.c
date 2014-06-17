@@ -230,13 +230,10 @@ static int microcode_test1(fwts_framework *fw)
 				}
 
 				/*
-				 * We found the old revision but not a
-				 * new revsion, failed
+				 * Kernel does not have newer version than BIOS
 				 */
 				if (info->new_revision == UNKNOWN) {
-					failed++;
-					fwts_failed(fw, LOG_LEVEL_MEDIUM, "MicrocodeNotUpdated",
-						"The kernel did not report that CPU %d has had a microcode update. "
+					fwts_log_info(fw, "The kernel did not report that CPU %d has had a microcode update. "
 						"The current firmware is revision 0x%x and probably has not been updated.",
 						cpu, info->old_revision);
 					continue;

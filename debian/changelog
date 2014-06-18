@@ -1,3 +1,29 @@
+fwts (14.06.00-0ubuntu0) utopic; urgency=low
+
+  [Colin Ian King]
+  * lib: fwts_framework: change fwts-live progress feedback (LP: #1321664)
+  * cpu: cpufreq: add more granularity to progress feedback
+  * acpi: fan: add more granularity to progress feedback
+  * acpi: acpidump: remove duplicate consts
+  * live-image: save various system and firmware data at end of test
+    (LP: #1322543)
+  * cpu: cpufreq: add more precision to GHz CPU frequency information
+  * cpu: cpufreq: print MHz as float, remove erroneous rounding
+  * cpu: cpufreq: show Turbo Boost with top _PSS value
+  * cpu: cpufreq: sort frequencies using almost equal comparison (LP: #1322531)
+  * acpica: update to version 20140424 (LP: #1312351)
+  * Add support for ACPI 1.0 GUID
+  * live-image: Add UEFI tests to the run all batch tests menu item
+    (LP: #1322545)
+  * fwts-test: arg-show-progress-dialog-0001: fix armhf failures
+  * fwts-test: arg-show-progress-dialog-0001: fix armhf failures, for test-0002
+
+  [Keng-Yu Lin]
+  * debian: add watch file
+  * fwts-test: arg-show-progress-dialog: sync with fwts
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 18 Jun 2014 10:20:44 +0800
+
 fwts (14.05.00-0ubuntu0) utopic; urgency=low
 
   [Alex Hung]

@@ -149,7 +149,7 @@ int fwts_wakealarm_check_fired(fwts_framework *fw, const int seconds)
 	/* Wait for data to be available or timeout */
 	rc = select(fd + 1, &rfds, NULL, NULL, &tv);
 	if (rc == -1) {
-		fwts_log_error(fw, "Select failed waitin for Real Time Clock device %s to fire.\n", fwts_rtc);
+		fwts_log_error(fw, "Select failed waiting for Real Time Clock device %s to fire.\n", fwts_rtc);
 		ret = FWTS_ERROR;
 		goto out;
 	}

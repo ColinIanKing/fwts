@@ -65,6 +65,7 @@ libfwtsacpica_la_SOURCES =				\
 	fwts_acpica.c					\
 	osunixxf_munged.c				\
 	dscontrol_munged.c				\
+	source/os_specific/service_layers/oslibcfs.c	\
 	source/components/debugger/dbcmds.c		\
 	source/components/debugger/dbdisply.c		\
 	source/components/debugger/dbexec.c		\
@@ -213,6 +214,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utdebug.c		\
 	source/components/utilities/utdelete.c		\
 	source/components/utilities/uteval.c		\
+	source/components/utilities/utfileio.c		\
 	source/components/utilities/utglobal.c		\
 	source/components/utilities/utids.c		\
 	source/components/utilities/utinit.c		\
@@ -230,6 +232,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utdecode.c		\
 	source/components/utilities/utexcep.c		\
 	source/components/utilities/utpredef.c		\
+	source/components/utilities/utprint.c		\
 	source/components/utilities/utstring.c		\
 	source/components/utilities/utownerid.c		\
 	source/components/utilities/utxfinit.c		\

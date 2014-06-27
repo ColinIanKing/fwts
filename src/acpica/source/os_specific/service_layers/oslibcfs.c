@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: cfsize - Common get file size function
+ * Module Name: oslibcfs - C library OSL for file IO
  *
  *****************************************************************************/
 
@@ -114,72 +114,210 @@
  *****************************************************************************/
 
 #include "acpi.h"
-#include "accommon.h"
-#include "acapps.h"
 #include <stdio.h>
+#include <stdarg.h>
 
-#define _COMPONENT          ACPI_TOOLS
-        ACPI_MODULE_NAME    ("cmfsize")
+#define _COMPONENT          ACPI_OS_SERVICES
+        ACPI_MODULE_NAME    ("oslibcfs")
 
 
 /*******************************************************************************
  *
- * FUNCTION:    CmGetFileSize
+ * FUNCTION:    AcpiOsOpenFile
  *
- * PARAMETERS:  File                    - Open file descriptor
+ * PARAMETERS:  Path                - File path
+ *              Modes               - File operation type
  *
- * RETURN:      File Size. On error, -1 (ACPI_UINT32_MAX)
+ * RETURN:      File descriptor.
  *
- * DESCRIPTION: Get the size of a file. Uses seek-to-EOF. File must be open.
- *              Does not disturb the current file pointer.
+ * DESCRIPTION: Open a file for reading (ACPI_FILE_READING) or/and writing
+ *              (ACPI_FILE_WRITING).
  *
  ******************************************************************************/
 
-UINT32
-CmGetFileSize (
+ACPI_FILE
+AcpiOsOpenFile (
+    const char              *Path,
+    UINT8                   Modes)
+{
+    ACPI_FILE               File;
+    char                    ModesStr[4];
+    UINT32                  i = 0;
+
+    if (Modes & ACPI_FILE_READING)
+    {
+        ModesStr[i++] = 'r';
+    }
+    if (Modes & ACPI_FILE_WRITING)
+    {
+        ModesStr[i++] = 'w';
+    }
+    if (Modes & ACPI_FILE_BINARY)
+    {
+        ModesStr[i++] = 'b';
+    }
+    ModesStr[i++] = '\0';
+
+    File = fopen (Path, ModesStr);
+    if (!File)
+    {
+        perror ("Could not open file");
+    }
+
+    return (File);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiOsCloseFile
+ *
+ * PARAMETERS:  File                - File descriptor
+ *
+ * RETURN:      None.
+ *
+ * DESCRIPTION: Close a file.
+ *
+ ******************************************************************************/
+
+void
+AcpiOsCloseFile (
     ACPI_FILE               File)
 {
-    long                    FileSize;
-    long                    CurrentOffset;
-    ACPI_STATUS             Status;
+    fclose (File);
+}
 
 
-    /* Save the current file pointer, seek to EOF to obtain file size */
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiOsReadFile
+ *
+ * PARAMETERS:  File                - File descriptor
+ *              Buffer              - Data buffer
+ *              Size                - Data block size
+ *              Count               - Number of data blocks
+ *
+ * RETURN:      Size of successfully read buffer.
+ *
+ * DESCRIPTION: Read a file.
+ *
+ ******************************************************************************/
 
-    CurrentOffset = AcpiOsGetFileOffset (File);
-    if (CurrentOffset < 0)
+int
+AcpiOsReadFile (
+    ACPI_FILE               File,
+    void                    *Buffer,
+    ACPI_SIZE               Size,
+    ACPI_SIZE               Count)
+{
+    int                     Length;
+
+    Length = fread (Buffer, Size, Count, File);
+    if (Length < 0)
     {
-        goto OffsetError;
+        perror ("Error reading file");
     }
 
-    Status = AcpiOsSetFileOffset (File, 0, ACPI_FILE_END);
-    if (ACPI_FAILURE (Status))
+    return (Length);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiOsWriteFile
+ *
+ * PARAMETERS:  File                - File descriptor
+ *              Buffer              - Data buffer
+ *              Size                - Data block size
+ *              Count               - Number of data blocks
+ *
+ * RETURN:      Size of successfully written buffer.
+ *
+ * DESCRIPTION: Write a file.
+ *
+ ******************************************************************************/
+
+int
+AcpiOsWriteFile (
+    ACPI_FILE               File,
+    void                    *Buffer,
+    ACPI_SIZE               Size,
+    ACPI_SIZE               Count)
+{
+    int                     Length;
+
+    Length = fwrite (Buffer, Size, Count, File);
+    if (Length < 0)
     {
-        goto SeekError;
+        perror ("Error writing file");
     }
 
-    FileSize = AcpiOsGetFileOffset (File);
-    if (FileSize < 0)
+    return (Length);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiOsGetFileOffset
+ *
+ * PARAMETERS:  File                - File descriptor
+ *
+ * RETURN:      Size of current position.
+ *
+ * DESCRIPTION: Get current file offset.
+ *
+ ******************************************************************************/
+
+long
+AcpiOsGetFileOffset (
+    ACPI_FILE               File)
+{
+    long                    Offset;
+
+    Offset = ftell (File);
+
+    return (Offset);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiOsSetFileOffset
+ *
+ * PARAMETERS:  File                - File descriptor
+ *              Offset              - File offset
+ *              From                - From begin/end of file
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Set current file offset.
+ *
+ ******************************************************************************/
+
+ACPI_STATUS
+AcpiOsSetFileOffset (
+    ACPI_FILE               File,
+    long                    Offset,
+    UINT8                   From)
+{
+    int                     Ret = 0;
+
+
+    if (From == ACPI_FILE_BEGIN)
     {
-        goto OffsetError;
+        Ret = fseek (File, Offset, SEEK_SET);
+    }
+    if (From == ACPI_FILE_END)
+    {
+        Ret = fseek (File, Offset, SEEK_END);
     }
 
-    /* Restore original file pointer */
-
-    Status = AcpiOsSetFileOffset (File, CurrentOffset, ACPI_FILE_BEGIN);
-    if (ACPI_FAILURE (Status))
+    if (Ret < 0)
     {
-        goto SeekError;
+        return (AE_ERROR);
     }
-
-    return ((UINT32) FileSize);
-
-
-OffsetError:
-    AcpiLogError ("Could not get file offset");
-    return (ACPI_UINT32_MAX);
-
-SeekError:
-    AcpiLogError ("Could not set file offset");
-    return (ACPI_UINT32_MAX);
+    else
+    {
+        return (AE_OK);
+    }
 }

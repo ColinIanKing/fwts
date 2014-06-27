@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: cfsize - Common get file size function
+ * Name: acenvex.h - Extra host and compiler configuration
  *
  *****************************************************************************/
 
@@ -113,73 +113,23 @@
  *
  *****************************************************************************/
 
-#include "acpi.h"
-#include "accommon.h"
-#include "acapps.h"
-#include <stdio.h>
+#ifndef __ACENVEX_H__
+#define __ACENVEX_H__
 
-#define _COMPONENT          ACPI_TOOLS
-        ACPI_MODULE_NAME    ("cmfsize")
+/*! [Begin] no source code translation */
 
-
-/*******************************************************************************
+/******************************************************************************
  *
- * FUNCTION:    CmGetFileSize
+ * Extra host configuration files. All ACPICA headers are included before
+ * including these files.
  *
- * PARAMETERS:  File                    - Open file descriptor
- *
- * RETURN:      File Size. On error, -1 (ACPI_UINT32_MAX)
- *
- * DESCRIPTION: Get the size of a file. Uses seek-to-EOF. File must be open.
- *              Does not disturb the current file pointer.
- *
- ******************************************************************************/
+ *****************************************************************************/
 
-UINT32
-CmGetFileSize (
-    ACPI_FILE               File)
-{
-    long                    FileSize;
-    long                    CurrentOffset;
-    ACPI_STATUS             Status;
+#if defined(_LINUX) || defined(__linux__)
+#include "aclinuxex.h"
 
+#endif
 
-    /* Save the current file pointer, seek to EOF to obtain file size */
+/*! [End] no source code translation !*/
 
-    CurrentOffset = AcpiOsGetFileOffset (File);
-    if (CurrentOffset < 0)
-    {
-        goto OffsetError;
-    }
-
-    Status = AcpiOsSetFileOffset (File, 0, ACPI_FILE_END);
-    if (ACPI_FAILURE (Status))
-    {
-        goto SeekError;
-    }
-
-    FileSize = AcpiOsGetFileOffset (File);
-    if (FileSize < 0)
-    {
-        goto OffsetError;
-    }
-
-    /* Restore original file pointer */
-
-    Status = AcpiOsSetFileOffset (File, CurrentOffset, ACPI_FILE_BEGIN);
-    if (ACPI_FAILURE (Status))
-    {
-        goto SeekError;
-    }
-
-    return ((UINT32) FileSize);
-
-
-OffsetError:
-    AcpiLogError ("Could not get file offset");
-    return (ACPI_UINT32_MAX);
-
-SeekError:
-    AcpiLogError ("Could not set file offset");
-    return (ACPI_UINT32_MAX);
-}
+#endif /* __ACENVEX_H__ */

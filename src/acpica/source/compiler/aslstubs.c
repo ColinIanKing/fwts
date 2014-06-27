@@ -129,13 +129,6 @@
  * Things like Events, Global Lock, etc. are not used
  * by the compiler, so they are stubbed out here.
  */
-ACPI_PHYSICAL_ADDRESS
-AeLocalGetRootPointer (
-    void)
-{
-    return (0);
-}
-
 void
 AcpiNsExecModuleCodeList (
     void)
@@ -301,24 +294,6 @@ AcpiTbFindTable (
     char                    *OemId,
     char                    *OemTableId,
     UINT32                  *TableIndex)
-{
-    return (AE_SUPPORT);
-}
-
-/* OSL interfaces */
-
-ACPI_THREAD_ID
-AcpiOsGetThreadId (
-    void)
-{
-    return (1);
-}
-
-ACPI_STATUS
-AcpiOsExecute (
-    ACPI_EXECUTE_TYPE       Type,
-    ACPI_OSD_EXEC_CALLBACK  Function,
-    void                    *Context)
 {
     return (AE_SUPPORT);
 }

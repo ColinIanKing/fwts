@@ -137,15 +137,10 @@
         ACPI_MODULE_NAME    ("osunixxf")
 
 
-FILE                           *AcpiGbl_OutputFile;
 BOOLEAN                        AcpiGbl_DebugTimeout = FALSE;
 
 
 /* Upcalls to AcpiExec */
-
-ACPI_PHYSICAL_ADDRESS
-AeLocalGetRootPointer (
-    void);
 
 void
 AeTableOverride (
@@ -286,10 +281,19 @@ ACPI_STATUS
 AcpiOsInitialize (
     void)
 {
+    ACPI_STATUS            Status;
+
 
     AcpiGbl_OutputFile = stdout;
 
     OsEnterLineEditMode ();
+
+    Status = AcpiOsCreateLock (&AcpiGbl_PrintLock);
+    if (ACPI_FAILURE (Status))
+    {
+        return (Status);
+    }
+
     return (AE_OK);
 }
 
@@ -303,6 +307,7 @@ AcpiOsTerminate (
 }
 
 
+#ifndef ACPI_USE_NATIVE_RSDP_POINTER
 /******************************************************************************
  *
  * FUNCTION:    AcpiOsGetRootPointer
@@ -320,8 +325,9 @@ AcpiOsGetRootPointer (
     void)
 {
 
-    return (AeLocalGetRootPointer ());
+    return (0);
 }
+#endif
 
 
 /******************************************************************************
@@ -620,6 +626,7 @@ AcpiOsGetLine (
 #endif
 
 
+#ifndef ACPI_USE_NATIVE_MEMORY_MAPPING
 /******************************************************************************
  *
  * FUNCTION:    AcpiOsMapMemory
@@ -665,6 +672,7 @@ AcpiOsUnmapMemory (
 
     return;
 }
+#endif
 
 
 /******************************************************************************
@@ -689,6 +697,32 @@ AcpiOsAllocate (
     Mem = (void *) malloc ((size_t) size);
     return (Mem);
 }
+
+
+#ifdef USE_NATIVE_ALLOCATE_ZEROED
+/******************************************************************************
+ *
+ * FUNCTION:    AcpiOsAllocateZeroed
+ *
+ * PARAMETERS:  Size                - Amount to allocate, in bytes
+ *
+ * RETURN:      Pointer to the new allocation. Null on error.
+ *
+ * DESCRIPTION: Allocate and zero memory. Algorithm is dependent on the OS.
+ *
+ *****************************************************************************/
+
+void *
+AcpiOsAllocateZeroed (
+    ACPI_SIZE               size)
+{
+    void                    *Mem;
+
+
+    Mem = (void *) calloc (1, (size_t) size);
+    return (Mem);
+}
+#endif
 
 
 /******************************************************************************
@@ -1524,6 +1558,26 @@ AcpiOsExecute (
         AcpiOsPrintf("Create thread failed");
     }
     return (0);
+}
+
+#else /* ACPI_SINGLE_THREADED */
+ACPI_THREAD_ID
+AcpiOsGetThreadId (
+    void)
+{
+    return (1);
+}
+
+ACPI_STATUS
+AcpiOsExecute (
+    ACPI_EXECUTE_TYPE       Type,
+    ACPI_OSD_EXEC_CALLBACK  Function,
+    void                    *Context)
+{
+
+    Function (Context);
+
+    return (AE_OK);
 }
 
 #endif /* ACPI_SINGLE_THREADED */

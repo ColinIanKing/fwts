@@ -385,10 +385,10 @@ static ACPI_STATUS fwts_region_handler(
 }
 
 /*
- *  AeLocalGetRootPointer()
+ *  AcpiOsGetRootPointer()
  *	override ACPICA AeLocalGetRootPointer to return a local copy of the RSDP
  */
-ACPI_PHYSICAL_ADDRESS AeLocalGetRootPointer(void)
+ACPI_PHYSICAL_ADDRESS AcpiOsGetRootPointer(void)
 {
 	return (ACPI_PHYSICAL_ADDRESS)fwts_acpica_RSDP;
 }

@@ -21,14 +21,12 @@
 #include <stdbool.h>
 #include <inttypes.h>
 #include <unistd.h>
-
-/* acpica headers */
+#include "fwts_acpi_object_eval.h"
 #include "acpi.h"
 #include "aclocal.h"
 #include "acobject.h"
 #include "acstruct.h"
 #include "acglobal.h"
-#include "fwts_acpi_object_eval.h"
 
 /*
  *  gpedump_init()

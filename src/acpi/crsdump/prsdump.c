@@ -17,9 +17,6 @@
  *
  */
 #include "fwts.h"
-
-/* acpica headers */
-#include "acpi.h"
 #include "fwts_acpi_object_eval.h"
 #include "crsdump.h"
 

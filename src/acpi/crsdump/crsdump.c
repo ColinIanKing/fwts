@@ -23,11 +23,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <inttypes.h>
-
-/* acpica headers */
-#include "acpi.h"
 #include "fwts_acpi_object_eval.h"
-#include "crsdump.h"
 
 typedef struct {
 	const char *label;				/* Field label */

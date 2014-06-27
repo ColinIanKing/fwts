@@ -24,7 +24,10 @@
 #include <unistd.h>
 
 /* acpica headers */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "acpi.h"
+#pragma GCC diagnostic pop
 #include "fwts_acpi_object_eval.h"
 
 typedef struct {

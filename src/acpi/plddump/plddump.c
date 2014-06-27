@@ -22,9 +22,6 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <inttypes.h>
-
-/* acpica headers */
-#include "acpi.h"
 #include "fwts_acpi_object_eval.h"
 
 /*

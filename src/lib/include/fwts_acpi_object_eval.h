@@ -23,7 +23,10 @@
 #include "fwts.h"
 
 /* acpica headers */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "acpi.h"
+#pragma GCC diagnostic pop
 
 int fwts_acpi_init(fwts_framework *fw);
 int fwts_acpi_deinit(fwts_framework *fw);

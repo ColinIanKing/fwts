@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140325-64 [Mar 25 2014]
+ * AML Disassembler version 20140627-64 [Jun 27 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_27987_SSDT.dat, Tue Mar 25 20:18:15 2014
+ * Disassembly of /tmp/fwts_iasl_24623_SSDT.dat, Fri Jun 27 19:11:41 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +16,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "BrtRef", "DD01BRT", 0x00001000)
+DefinitionBlock ("/tmp/fwts_iasl_24623_SSDT.aml", "SSDT", 1, "BrtRef", "DD01BRT", 0x00001000)
 {
 
     External (_SB_.PCI0.GFX0.DD03, DeviceObj)

@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140325-64 [Mar 25 2014]
+ * AML Disassembler version 20140627-64 [Jun 27 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_27987_SSDT.dat, Tue Mar 25 20:18:15 2014
+ * Disassembly of /tmp/fwts_iasl_24623_SSDT.dat, Fri Jun 27 19:11:41 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +16,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
+DefinitionBlock ("/tmp/fwts_iasl_24623_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
 {
 
     External (_PR_.CPU0, DeviceObj)
@@ -60,13 +60,13 @@ DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0
             CreateField (Arg0, 0x40, Multiply (Local1, 0x08), TEMP)
             Name (STS0, Buffer (0x04)
             {
-                 0x00, 0x00, 0x00, 0x00
+                 0x00, 0x00, 0x00, 0x00                           /* .... */
             })
             Concatenate (STS0, TEMP, Local2)
             _OSC (Buffer (0x10)
                 {
-                    /* 0000 */   0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,
-                    /* 0008 */   0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53
+                    /* 0000 */  0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,  /* ..w@.).G */
+                    /* 0008 */  0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53   /* ...pXq9S */
                 }, REVS, SIZE, Local2)
         }
 
@@ -80,8 +80,8 @@ DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0
             CreateDWordField (Arg0, 0x0C, IID3)
             Name (UID0, Buffer (0x10)
             {
-                /* 0000 */   0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,
-                /* 0008 */   0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53
+                /* 0000 */  0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,  /* ..w@.).G */
+                /* 0008 */  0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53   /* ...pXq9S */
             })
             CreateDWordField (UID0, 0x00, EID0)
             CreateDWordField (UID0, 0x04, EID1)
@@ -143,13 +143,13 @@ DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0
             CreateField (Arg0, 0x40, Multiply (Local1, 0x08), TEMP)
             Name (STS1, Buffer (0x04)
             {
-                 0x00, 0x00, 0x00, 0x00
+                 0x00, 0x00, 0x00, 0x00                           /* .... */
             })
             Concatenate (STS1, TEMP, Local2)
             _OSC (Buffer (0x10)
                 {
-                    /* 0000 */   0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,
-                    /* 0008 */   0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53
+                    /* 0000 */  0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,  /* ..w@.).G */
+                    /* 0008 */  0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53   /* ...pXq9S */
                 }, REVS, SIZE, Local2)
         }
 
@@ -163,8 +163,8 @@ DefinitionBlock ("/tmp/fwts_iasl_27987_SSDT.aml", "SSDT", 1, "PmRef", "CpuPm", 0
             CreateDWordField (Arg0, 0x0C, IID3)
             Name (UID1, Buffer (0x10)
             {
-                /* 0000 */   0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,
-                /* 0008 */   0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53
+                /* 0000 */  0x16, 0xA6, 0x77, 0x40, 0x0C, 0x29, 0xBE, 0x47,  /* ..w@.).G */
+                /* 0008 */  0x9E, 0xBD, 0xD8, 0x70, 0x58, 0x71, 0x39, 0x53   /* ...pXq9S */
             })
             CreateDWordField (UID1, 0x00, EID0)
             CreateDWordField (UID1, 0x04, EID1)

@@ -565,6 +565,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 	uint64_t variablenamesize = MAX_DATA_LENGTH;
 	uint16_t variablename[MAX_DATA_LENGTH];
 	EFI_GUID vendorguid;
+	char name[MAX_DATA_LENGTH];
 
 	getnextvariablename.VariableNameSize = &variablenamesize;
 	getnextvariablename.VariableName = variablename;
@@ -632,9 +633,10 @@ static int getnextvariable_test3(fwts_framework *fw)
 		item->hash = hash_func(variablename, variablenamesize);
 
 		if (bucket_insert(item)) {
+			fwts_uefi_str16_to_str(name, sizeof(name), variablename);
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
-				"Duplicate variable name found.");
+				"Duplicate variable name %s found.", name);
 			free(item->name);
 			free(item->guid);
 			free(item);

@@ -598,26 +598,32 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 {
 	uint8_t *ptr = NULL;
-	ssize_t n;
 	size_t size = 0;
 	char buffer[4096];
 
 	*length = 0;
 
-	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
+	for (;;) {
+		ssize_t n = read(fd, buffer, sizeof(buffer));
+		uint8_t *tmp;
+
+		if (n == 0)
+			break;
 		if (n < 0) {
 			if (errno != EINTR && errno != EAGAIN) {
 				fwts_low_free(ptr);
 				return NULL;
 			}
+			continue;
 		}
-		else {
-			ptr = (uint8_t*)fwts_low_realloc(ptr, size + n + 1);
-			if (ptr == NULL)
-				return NULL;
-			memcpy(ptr + size, buffer, n);
-			size += n;
+
+		if ((tmp = (uint8_t*)fwts_low_realloc(ptr, size + n + 1)) == NULL) {
+			free(ptr);
+			return NULL;
 		}
+		ptr = tmp;
+		memcpy(ptr + size, buffer, n);
+		size += n;
 	}
 	*length = size;
 	return ptr;

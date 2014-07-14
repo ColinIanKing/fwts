@@ -83,33 +83,33 @@ char *fwts_pipe_read(const int fd, ssize_t *length)
 {
 	char *ptr = NULL;
 	char buffer[8192];
-	ssize_t n;
 	ssize_t size = 0;
 	*length = 0;
 
 	ptr = NULL;
 
-	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
+	for (;;) {
+		ssize_t n = read(fd, buffer, sizeof(buffer));
+		char *tmp;
+
+		if (n == 0)
+			break;
 		if (n < 0) {
 			if (errno != EINTR && errno != EAGAIN) {
 				free(ptr);
 				return NULL;
 			}
+			continue;
 		}
-		else {
-			char *new_ptr;
 
-			new_ptr = realloc(ptr, size + n + 1);
-			if (new_ptr == NULL) {
-				free(ptr);
-				return NULL;
-			} else
-				ptr = new_ptr;
-
-			memcpy(ptr + size, buffer, n);
-			size += n;
-			*(ptr+size) = 0;
+		if ((tmp = realloc(ptr, size + n + 1)) == NULL) {
+			free(ptr);
+			return NULL;
 		}
+		ptr = tmp;
+		memcpy(ptr + size, buffer, n);
+		size += n;
+		*(ptr+size) = 0;
 	}
 	*length = size;
 	return ptr;

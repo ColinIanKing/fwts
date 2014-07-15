@@ -741,7 +741,7 @@ static void literal_strip_quotes(token *t)
 
 	t->token[len-1] = 0;
 
-	strcpy(t->token, t->token + 1);
+	memmove(t->token, t->token + 1, len - 1);
 }
 
 /*

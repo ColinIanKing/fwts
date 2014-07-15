@@ -476,6 +476,9 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 
 	if (fwts_iasl_reassemble(fw, table->data, table->length,
 				&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {
+		fwts_text_list_free(iasl_disassembly);
+		fwts_text_list_free(iasl_stderr);
+		fwts_text_list_free(iasl_stdout);
 		fwts_aborted(fw, "Cannot re-assasemble with iasl.");
 		return FWTS_ERROR;
 	}

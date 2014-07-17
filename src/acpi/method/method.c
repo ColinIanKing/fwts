@@ -135,7 +135,7 @@
  * _OSI  5.7.2		n/a
  * _OST  6.3.5		n/a
  * _PAI  10.4.4		n/a
- * _PCL  10.3.2		N
+ * _PCL  10.3.2		Y
  * _PCT  8.4.4.1	Y
  * _PDC  8.4.1		N
  * _PDL  8.4.4.6	Y
@@ -3843,7 +3843,13 @@ static void method_test_PCL_return(fwts_framework *fw,
 	FWTS_UNUSED(obj);
 	FWTS_UNUSED(private);
 
-	/* FIXME */
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
 }
 
 static int method_test_PCL(fwts_framework *fw)
@@ -5041,11 +5047,10 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BTP, "Test _BTP (Battery Trip Point)." },
 	{ method_test_BTM, "Test _BTM (Battery Time)." },
 	/* { method_test_BLT, "Test _BLT (Battery Level Threshold)." }, */
-	{ method_test_PCL, "Test _PCL (Power Consumer List)." },
 
 	/* Section 10.3 AC Adapters and Power Source Objects */
 
-	/* { method_test_PCL, "Test _PCL (Power Consumer List)." }, */
+	{ method_test_PCL, "Test _PCL (Power Consumer List)." },
 	{ method_test_PIF, "Test _PIF (Power Source Information)." },
 	/* { method_test_PRL, "Test _PRL (Power Source Redundancy List)." }, */
 	{ method_test_PSR, "Test _PSR (Power Source)." },

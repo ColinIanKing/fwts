@@ -198,6 +198,17 @@ One can also specify stdout and stderr to redirect to these output streams.
 specify the physical address of ACPI RSDP. This is useful on some systems where
 it cannot be automatically detected.
 .TP
+.B \-\-pm\-method=method
+specify the power method to use to enter S3 (or autodetection will be used). The following specifiers are available:
+.br
+logind   \- the default method, where available (requires dbus and logind).
+.br
+pm-utils \- the previous default method, now deprecated.
+.br
+sysfs    \- the fallback, used when logind is not available.
+.br
+e.g. \-\-pm\-method=sysfs
+.TP
 .B \-\-s3\-delay\-delta=N
 time to be added onto delay between each S3 iteration.
 .TP

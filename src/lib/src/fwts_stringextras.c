@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2010-2014 Canonical
  *
+ * The following functions are derivative work from systemd, and
+ * are covered by Copyright 2010 Lennart Poettering:
+ *     fwts_string_endswith()
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -59,4 +63,28 @@ char *fwts_realloc_strcat(char *orig, const char *newstr)
 		strcpy(orig, newstr);
 	}
 	return orig;
+}
+
+/*
+ * fwts_string_endswith()
+ * see if str ends with postfix
+ * return NULL if fails, otherwise return the matched substring
+ */
+char* fwts_string_endswith(const char *str, const char *postfix)
+{
+	size_t sl, pl;
+
+	sl = strlen(str);
+	pl = strlen(postfix);
+
+	if (pl == 0)
+		return (char*) str + sl;
+
+	if (sl < pl)
+		return NULL;
+
+	if (memcmp(str + sl - pl, postfix, pl) != 0)
+		return NULL;
+
+	return (char*) str + sl - pl;
 }

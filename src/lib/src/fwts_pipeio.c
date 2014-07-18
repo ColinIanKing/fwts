@@ -1,6 +1,11 @@
 /*
  * Copyright (C) 2010-2014 Canonical
  *
+ * The following functions are derivative work from systemd, and
+ * are covered by Copyright 2010 Lennart Poettering:
+ *     fwts_write_string_to_file(), fwts_write_string_file(),
+ *     fwts_write_string_file(), fwts_read_file_first_line()
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -29,8 +34,27 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <limits.h>
+#include <stdbool.h>
 
 #include "fwts.h"
+
+static inline void freep(void *);
+static inline void fclosep(FILE **);
+
+#define _cleanup_free_ __attribute__((cleanup(freep)))
+#define _cleanup_fclose_ __attribute__((cleanup(fclosep)))
+
+static inline void freep(void *p)
+{
+	free(*(void**) p);
+}
+
+static inline void fclosep(FILE **file)
+{
+	if (*file)
+		fclose(*file);
+}
 
 /*
  *  fwts_pipe_open()
@@ -183,4 +207,134 @@ int fwts_exec(const char *command, int *status)
 	if (*status)
 		return FWTS_EXEC_ERROR;
 	return FWTS_OK;
+}
+
+/*
+ *  fwts_write_string_to_file()
+ *	write a string to a file pointer
+ *	Return FWTS_OK if writing worked, FWTS_ERROR if it failed.
+ */
+int fwts_write_string_to_file(
+	const fwts_framework *fw,
+	FILE *file,
+	const char *str)
+{
+	errno = 0;
+	fputs(str, file);
+	if (!fwts_string_endswith(str, "\n"))
+		fputc('\n', file);
+
+	fflush(file);
+
+	if (ferror(file)) {
+		fwts_log_error(fw,
+			"Failed to write string '%s' to file descriptor, error: %d (%s).",
+			str,
+			errno,
+			strerror(errno));
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_write_string_file()
+ *	write a string to a file
+ *	Return FWTS_OK if writing worked, FWTS_ERROR if it failed.
+ */
+int fwts_write_string_file(
+	const fwts_framework *fw,
+	const char *file_name,
+	const char *str)
+{
+	_cleanup_fclose_ FILE *file = NULL;
+	errno = 0;
+
+	file = fopen(file_name, "we");
+	if (!file) {
+		fwts_log_error(fw,
+			"Failed to write string '%s' to %s, error: %d (%s).",
+			str,
+			file_name,
+			errno,
+			strerror(errno));
+		return FWTS_ERROR;
+	}
+
+	return fwts_write_string_to_file(fw, file, str);
+}
+
+/*
+ *  fwts_read_file_first_line()
+ *	read the first line of a file
+ *	Return FWTS_OK if reading worked, FWTS_ERROR if it failed,
+ *      or FWTS_OUT_OF_MEMORY if it went out of memory.
+ */
+int fwts_read_file_first_line(
+	const fwts_framework *fw,
+	const char *file_name,
+	char **line)
+{
+	_cleanup_fclose_ FILE *file = NULL;
+	char buffer[LINE_MAX], *temp;
+	errno = 0;
+
+	file = fopen(file_name, "re");
+	if (!file) {
+		fwts_log_error(fw,
+			"Failed to read first line from %s, error: %d (%s).",
+			file_name,
+			errno,
+			strerror(errno));
+		return FWTS_ERROR;
+	}
+
+	if (!fgets(buffer, sizeof(buffer), file)) {
+		if (ferror(file)) {
+			fwts_log_error(fw,
+				"Failed to read first line from %s, error: %d (%s).",
+				file_name,
+				errno,
+				strerror(errno));
+			return FWTS_ERROR;
+		}
+		buffer[0] = 0;
+	}
+
+	temp = strdup(buffer);
+	if (!temp) {
+		fwts_log_error(fw,
+			"Failed to read first line from %s: ran out of memory.",
+			file_name);
+		return FWTS_OUT_OF_MEMORY;
+	}
+
+	fwts_chop_newline(temp);
+	*line = temp;
+
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_file_first_line_contains_string()
+ *	read the first line of a file
+ *	Return true if the line contained the string, false if it didn't.
+ */
+bool fwts_file_first_line_contains_string(
+	const fwts_framework *fw,
+	const char *file_name,
+	const char *str)
+{
+	_cleanup_free_ char *contents = NULL;
+	int ret;
+
+	ret = fwts_read_file_first_line(fw, file_name, &contents);
+
+	if (ret != FWTS_OK) {
+		fwts_log_error(fw, "Failed to get the contents of %s.", file_name);
+		return false;
+	}
+
+	return (strstr(contents, str) != NULL);
 }

@@ -11,6 +11,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/include \
 	-I$(top_srcdir)/src/acpica/source/compiler \
 	-I$(top_srcdir)/efi_runtime \
+	-pthread -I/usr/include/glib-2.0 \
+	-I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
 	-Wall -Werror -Wextra
 
 bin_PROGRAMS = fwts
@@ -96,6 +98,6 @@ fwts_LDFLAGS = -lm
 
 fwts_LDADD = \
 	-L$(top_builddir)/src/acpica -lfwtsacpica \
-	-Llib/src -lfwts
+	-Llib/src -lfwts -lgio-2.0 -lgobject-2.0 -lglib-2.0
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1

@@ -61,6 +61,8 @@
 	  AC_CHECK_HEADERS([sys/ioctl.h])
 	  AC_CHECK_HEADERS([sys/time.h])
 	  AC_CHECK_HEADERS([json/json.h])
+	  AC_CHECK_HEADERS([glib.h])
+	  AC_CHECK_HEADERS([gio/gio.h])
 	  #AC_CHECK_LIB(pcre, pcre_compile)
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK

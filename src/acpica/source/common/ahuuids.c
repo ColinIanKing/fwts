@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Name: acnames.h - Global names and strings
+ * Module Name: ahuuids - Table of known ACPI-related UUIDs
  *
  *****************************************************************************/
 
@@ -113,46 +113,89 @@
  *
  *****************************************************************************/
 
-#ifndef __ACNAMES_H__
-#define __ACNAMES_H__
+#include "acpi.h"
+#include "accommon.h"
 
-/* Method names - these methods can appear anywhere in the namespace */
+#define _COMPONENT          ACPI_UTILITIES
+        ACPI_MODULE_NAME    ("ahuuids")
 
-#define METHOD_NAME__ADR        "_ADR"
-#define METHOD_NAME__AEI        "_AEI"
-#define METHOD_NAME__BBN        "_BBN"
-#define METHOD_NAME__CBA        "_CBA"
-#define METHOD_NAME__CID        "_CID"
-#define METHOD_NAME__CRS        "_CRS"
-#define METHOD_NAME__HID        "_HID"
-#define METHOD_NAME__INI        "_INI"
-#define METHOD_NAME__PLD        "_PLD"
-#define METHOD_NAME__DSD        "_DSD"
-#define METHOD_NAME__PRS        "_PRS"
-#define METHOD_NAME__PRT        "_PRT"
-#define METHOD_NAME__PRW        "_PRW"
-#define METHOD_NAME__REG        "_REG"
-#define METHOD_NAME__SB_        "_SB_"
-#define METHOD_NAME__SEG        "_SEG"
-#define METHOD_NAME__SRS        "_SRS"
-#define METHOD_NAME__STA        "_STA"
-#define METHOD_NAME__SUB        "_SUB"
-#define METHOD_NAME__UID        "_UID"
+/*
+ * Table of "known" (ACPI-related) UUIDs
+ */
+const AH_UUID  AcpiUuids[] =
+{
+    {"PCI Host Bridge Device",
+        "33db4d5b-1ff7-401c-9657-7441c03dd766"},
 
-/* Method names - these methods must appear at the namespace root */
+    {"Platform-wide Capabilities",
+        "0811b06e-4a27-44f9-8d60-3cbbc22e7b48"},
 
-#define METHOD_PATHNAME__PTS    "\\_PTS"
-#define METHOD_PATHNAME__SST    "\\_SI._SST"
-#define METHOD_PATHNAME__WAK    "\\_WAK"
+    {"Dynamic Enumeration",
+        "d8c1a3a6-be9b-4c9b-91bf-c3cb81fc5daf"},
 
-/* Definitions of the predefined namespace names  */
+    {"GPIO Controller",
+        "4f248f40-d5e2-499f-834c-27758ea1cd3f"},
 
-#define ACPI_UNKNOWN_NAME       (UINT32) 0x3F3F3F3F     /* Unknown name is "????" */
-#define ACPI_ROOT_NAME          (UINT32) 0x5F5F5F5C     /* Root name is    "\___" */
+    {"Battery Thermal Limit",
+        "4c2067e3-887d-475c-9720-4af1d3ed602e"},
 
-#define ACPI_PREFIX_MIXED       (UINT32) 0x69706341     /* "Acpi" */
-#define ACPI_PREFIX_LOWER       (UINT32) 0x69706361     /* "acpi" */
+    {"Thermal Extensions",
+        "14d399cd-7a27-4b18-8fb4-7cb7b9f4e500"},
 
-#define ACPI_NS_ROOT_PATH       "\\"
+    {"USB Controller",
+        "ce2ee385-00e6-48cb-9f05-2edb927c4899"},
 
-#endif  /* __ACNAMES_H__  */
+    {"HID I2C Device",
+        "3cdff6f7-4267-4555-ad05-b30a3d8938de"},
+
+    {"Power Button Device",
+        "dfbcf3c5-e7a5-44e6-9c1f-29c76f6e059c"},
+
+    {"Device Labeling Interface",
+        "e5c937d0-3553-4d7a-9117-ea4d19c3434d"},
+
+    {"SATA Controller",
+        "e4db149b-fcfe-425b-a6d8-92357d78fc7f"},
+
+    {"Physical Presence Interface",
+        "3dddfaa6-361b-4eb4-a424-8d10089d1653"},
+
+    {NULL, NULL}
+};
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiAhMatchUuid
+ *
+ * PARAMETERS:  Data                - Data buffer containing a UUID
+ *
+ * RETURN:      ASCII description string for the UUID if it is found.
+ *
+ * DESCRIPTION: Returns a description string for "known" UUIDs, which are
+ *              are UUIDs that are related to ACPI in some way.
+ *
+ ******************************************************************************/
+
+const char *
+AcpiAhMatchUuid (
+    UINT8                   *Data)
+{
+    const AH_UUID           *Info;
+    UINT8                   UuidBuffer[UUID_BUFFER_LENGTH];
+
+
+    /* Walk the table of known ACPI-related UUIDs */
+
+    for (Info = AcpiUuids; Info->Description; Info++)
+    {
+        AcpiUtConvertStringToUuid (Info->String, UuidBuffer);
+
+        if (!ACPI_MEMCMP (Data, UuidBuffer, UUID_BUFFER_LENGTH))
+        {
+            return (Info->Description);
+        }
+    }
+
+    return (NULL);
+}

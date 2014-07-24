@@ -124,6 +124,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/utilities/utdebug.c 	\
 	../components/utilities/utdelete.c 	\
 	../components/utilities/utglobal.c 	\
+	../components/utilities/uthex.c		\
 	../components/utilities/utinit.c 	\
 	../components/utilities/utlock.c 	\
 	../components/utilities/utobject.c 	\
@@ -140,6 +141,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/utilities/utaddress.c 	\
 	../components/utilities/utownerid.c 	\
 	../components/utilities/utexcep.c 	\
+	../components/utilities/utuuid.c	\
 	../components/namespace/nsaccess.c 	\
 	../components/namespace/nsalloc.c 	\
 	../components/namespace/nsdump.c 	\

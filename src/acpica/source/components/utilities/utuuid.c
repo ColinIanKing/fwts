@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Name: acnames.h - Global names and strings
+ * Module Name: utuuid -- UUID support functions
  *
  *****************************************************************************/
 
@@ -113,46 +113,63 @@
  *
  *****************************************************************************/
 
-#ifndef __ACNAMES_H__
-#define __ACNAMES_H__
+#define __UTUUID_C__
 
-/* Method names - these methods can appear anywhere in the namespace */
+#include "acpi.h"
+#include "accommon.h"
 
-#define METHOD_NAME__ADR        "_ADR"
-#define METHOD_NAME__AEI        "_AEI"
-#define METHOD_NAME__BBN        "_BBN"
-#define METHOD_NAME__CBA        "_CBA"
-#define METHOD_NAME__CID        "_CID"
-#define METHOD_NAME__CRS        "_CRS"
-#define METHOD_NAME__HID        "_HID"
-#define METHOD_NAME__INI        "_INI"
-#define METHOD_NAME__PLD        "_PLD"
-#define METHOD_NAME__DSD        "_DSD"
-#define METHOD_NAME__PRS        "_PRS"
-#define METHOD_NAME__PRT        "_PRT"
-#define METHOD_NAME__PRW        "_PRW"
-#define METHOD_NAME__REG        "_REG"
-#define METHOD_NAME__SB_        "_SB_"
-#define METHOD_NAME__SEG        "_SEG"
-#define METHOD_NAME__SRS        "_SRS"
-#define METHOD_NAME__STA        "_STA"
-#define METHOD_NAME__SUB        "_SUB"
-#define METHOD_NAME__UID        "_UID"
+#define _COMPONENT          ACPI_COMPILER
+        ACPI_MODULE_NAME    ("utuuid")
 
-/* Method names - these methods must appear at the namespace root */
 
-#define METHOD_PATHNAME__PTS    "\\_PTS"
-#define METHOD_PATHNAME__SST    "\\_SI._SST"
-#define METHOD_PATHNAME__WAK    "\\_WAK"
+/*
+ * UUID support functions.
+ *
+ * This table is used to convert an input UUID ascii string to a 16 byte
+ * buffer and the reverse. The table maps a UUID buffer index 0-15 to
+ * the index within the 36-byte UUID string where the associated 2-byte
+ * hex value can be found.
+ *
+ * 36-byte UUID strings are of the form:
+ *     aabbccdd-eeff-gghh-iijj-kkllmmnnoopp
+ * Where aa-pp are one byte hex numbers, made up of two hex digits
+ *
+ * Note: This table is basically the inverse of the string-to-offset table
+ * found in the ACPI spec in the description of the ToUUID macro.
+ */
+const UINT8    AcpiGbl_MapToUuidOffset[UUID_BUFFER_LENGTH] =
+{
+    6,4,2,0,11,9,16,14,19,21,24,26,28,30,32,34
+};
 
-/* Definitions of the predefined namespace names  */
 
-#define ACPI_UNKNOWN_NAME       (UINT32) 0x3F3F3F3F     /* Unknown name is "????" */
-#define ACPI_ROOT_NAME          (UINT32) 0x5F5F5F5C     /* Root name is    "\___" */
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiUtConvertStringToUuid
+ *
+ * PARAMETERS:  InString            - 36-byte formatted UUID string
+ *              UuidBuffer          - Where the 16-byte UUID buffer is returned
+ *
+ * RETURN:      None. Output data is returned in the UuidBuffer
+ *
+ * DESCRIPTION: Convert a 36-byte formatted UUID string to 16-byte UUID buffer
+ *
+ ******************************************************************************/
 
-#define ACPI_PREFIX_MIXED       (UINT32) 0x69706341     /* "Acpi" */
-#define ACPI_PREFIX_LOWER       (UINT32) 0x69706361     /* "acpi" */
+void
+AcpiUtConvertStringToUuid (
+    char                    *InString,
+    UINT8                   *UuidBuffer)
+{
+    UINT32                  i;
 
-#define ACPI_NS_ROOT_PATH       "\\"
 
-#endif  /* __ACNAMES_H__  */
+    for (i = 0; i < UUID_BUFFER_LENGTH; i++)
+    {
+        UuidBuffer[i] =
+            (AcpiUtAsciiCharToHex (InString[AcpiGbl_MapToUuidOffset[i]]) << 4);
+
+        UuidBuffer[i] |=
+            AcpiUtAsciiCharToHex (InString[AcpiGbl_MapToUuidOffset[i] + 1]);
+    }
+}

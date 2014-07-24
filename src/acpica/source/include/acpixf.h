@@ -118,7 +118,7 @@
 
 /* Current ACPICA subsystem version in YYYYMMDD format */
 
-#define ACPI_CA_VERSION                 0x20140627
+#define ACPI_CA_VERSION                 0x20140724
 
 #include "acconfig.h"
 #include "actypes.h"
@@ -918,6 +918,12 @@ AcpiSetGpe (
 ACPI_HW_DEPENDENT_RETURN_STATUS (
 ACPI_STATUS
 AcpiFinishGpe (
+    ACPI_HANDLE             GpeDevice,
+    UINT32                  GpeNumber))
+
+ACPI_HW_DEPENDENT_RETURN_STATUS (
+ACPI_STATUS
+AcpiMarkGpeForWake (
     ACPI_HANDLE             GpeDevice,
     UINT32                  GpeNumber))
 

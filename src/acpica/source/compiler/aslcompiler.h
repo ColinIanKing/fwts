@@ -347,6 +347,11 @@ void
 ApCheckRegMethod (
     ACPI_PARSE_OBJECT       *Op);
 
+BOOLEAN
+ApFindNameInScope (
+    char                    *Name,
+    ACPI_PARSE_OBJECT       *Op);
+
 
 /*
  * aslerror - error handling/reporting
@@ -962,10 +967,6 @@ void
 UtDisplaySummary (
     UINT32                  FileId);
 
-UINT8
-UtHexCharToValue (
-    int                     HexChar);
-
 void
 UtConvertByteToHex (
     UINT8                   RawByte,
@@ -1025,11 +1026,6 @@ UtStrtoul64 (
 ACPI_STATUS
 AuValidateUuid (
     char                    *InString);
-
-ACPI_STATUS
-AuConvertStringToUuid (
-    char                    *InString,
-    char                    *UuIdBuffer);
 
 ACPI_STATUS
 AuConvertUuidToString (

@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Name: acnames.h - Global names and strings
+ * Module Name: uthex -- Hex/ASCII support functions
  *
  *****************************************************************************/
 
@@ -113,46 +113,73 @@
  *
  *****************************************************************************/
 
-#ifndef __ACNAMES_H__
-#define __ACNAMES_H__
+#define __UTHEX_C__
 
-/* Method names - these methods can appear anywhere in the namespace */
+#include "acpi.h"
+#include "accommon.h"
 
-#define METHOD_NAME__ADR        "_ADR"
-#define METHOD_NAME__AEI        "_AEI"
-#define METHOD_NAME__BBN        "_BBN"
-#define METHOD_NAME__CBA        "_CBA"
-#define METHOD_NAME__CID        "_CID"
-#define METHOD_NAME__CRS        "_CRS"
-#define METHOD_NAME__HID        "_HID"
-#define METHOD_NAME__INI        "_INI"
-#define METHOD_NAME__PLD        "_PLD"
-#define METHOD_NAME__DSD        "_DSD"
-#define METHOD_NAME__PRS        "_PRS"
-#define METHOD_NAME__PRT        "_PRT"
-#define METHOD_NAME__PRW        "_PRW"
-#define METHOD_NAME__REG        "_REG"
-#define METHOD_NAME__SB_        "_SB_"
-#define METHOD_NAME__SEG        "_SEG"
-#define METHOD_NAME__SRS        "_SRS"
-#define METHOD_NAME__STA        "_STA"
-#define METHOD_NAME__SUB        "_SUB"
-#define METHOD_NAME__UID        "_UID"
+#define _COMPONENT          ACPI_COMPILER
+        ACPI_MODULE_NAME    ("uthex")
 
-/* Method names - these methods must appear at the namespace root */
 
-#define METHOD_PATHNAME__PTS    "\\_PTS"
-#define METHOD_PATHNAME__SST    "\\_SI._SST"
-#define METHOD_PATHNAME__WAK    "\\_WAK"
+/* Hex to ASCII conversion table */
 
-/* Definitions of the predefined namespace names  */
+static char                 AcpiGbl_HexToAscii[] =
+{
+    '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+};
 
-#define ACPI_UNKNOWN_NAME       (UINT32) 0x3F3F3F3F     /* Unknown name is "????" */
-#define ACPI_ROOT_NAME          (UINT32) 0x5F5F5F5C     /* Root name is    "\___" */
 
-#define ACPI_PREFIX_MIXED       (UINT32) 0x69706341     /* "Acpi" */
-#define ACPI_PREFIX_LOWER       (UINT32) 0x69706361     /* "acpi" */
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiUtHexToAsciiChar
+ *
+ * PARAMETERS:  Integer             - Contains the hex digit
+ *              Position            - bit position of the digit within the
+ *                                    integer (multiple of 4)
+ *
+ * RETURN:      The converted Ascii character
+ *
+ * DESCRIPTION: Convert a hex digit to an Ascii character
+ *
+ ******************************************************************************/
 
-#define ACPI_NS_ROOT_PATH       "\\"
+char
+AcpiUtHexToAsciiChar (
+    UINT64                  Integer,
+    UINT32                  Position)
+{
 
-#endif  /* __ACNAMES_H__  */
+    return (AcpiGbl_HexToAscii[(Integer >> Position) & 0xF]);
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiUtHexCharToValue
+ *
+ * PARAMETERS:  AsciiChar             - Hex character in Ascii
+ *
+ * RETURN:      The binary value of the ascii/hex character
+ *
+ * DESCRIPTION: Perform ascii-to-hex translation
+ *
+ ******************************************************************************/
+
+UINT8
+AcpiUtAsciiCharToHex (
+    int                     HexChar)
+{
+
+    if (HexChar <= 0x39)
+    {
+        return ((UINT8) (HexChar - 0x30));
+    }
+
+    if (HexChar <= 0x46)
+    {
+        return ((UINT8) (HexChar - 0x37));
+    }
+
+    return ((UINT8) (HexChar - 0x57));
+}

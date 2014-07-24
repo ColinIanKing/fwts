@@ -216,6 +216,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/uteval.c		\
 	source/components/utilities/utfileio.c		\
 	source/components/utilities/utglobal.c		\
+	source/components/utilities/uthex.c		\
 	source/components/utilities/utids.c		\
 	source/components/utilities/utinit.c		\
 	source/components/utilities/utlock.c		\
@@ -238,9 +239,11 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utxfinit.c		\
 	source/components/utilities/uterror.c		\
 	source/components/utilities/utbuffer.c 		\
+	source/components/utilities/utuuid.c		\
 	source/common/acgetline.c            		\
 	source/common/ahids.c				\
 	source/common/cmfsize.c            		\
+	source/common/ahuuids.c				\
 	source/tools/acpiexec/aehandlers.c
 
 libfwtsacpica_la_LIBADD = \

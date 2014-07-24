@@ -548,18 +548,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 2,
-syntaxcheck     Assembler remark in line 73
+syntaxcheck     Assembler remark in line 69
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00070|                 }, REVS, SIZE, Local2)
-syntaxcheck     00071|         }
-syntaxcheck     00072| 
-syntaxcheck     00073|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
+syntaxcheck     00066|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
+syntaxcheck     00067|         }
+syntaxcheck     00068| 
+syntaxcheck     00069|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
 syntaxcheck          |                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized (due to creation of named objects within)
-syntaxcheck     00074|         {
-syntaxcheck     00075|             CreateDWordField (Arg3, 0x00, STS0)
-syntaxcheck     00076|             CreateDWordField (Arg3, 0x04, CAP0)
+syntaxcheck     00070|         {
+syntaxcheck     00071|             CreateDWordField (Arg3, 0x00, STS0)
+syntaxcheck     00072|             CreateDWordField (Arg3, 0x04, CAP0)
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -570,18 +570,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 2,
-syntaxcheck     Assembler remark in line 137
+syntaxcheck     Assembler remark in line 129
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00134|     {
-syntaxcheck     00135|         Name (HI1, 0x00)
-syntaxcheck     00136|         Name (HC1, 0x00)
-syntaxcheck     00137|         Method (_PDC, 1, NotSerialized)  // _PDC: Processor Driver Capabilities
+syntaxcheck     00126|     {
+syntaxcheck     00127|         Name (HI1, 0x00)
+syntaxcheck     00128|         Name (HC1, 0x00)
+syntaxcheck     00129|         Method (_PDC, 1, NotSerialized)  // _PDC: Processor Driver Capabilities
 syntaxcheck          |                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized (due to creation of named objects within)
-syntaxcheck     00138|         {
-syntaxcheck     00139|             CreateDWordField (Arg0, 0x00, REVS)
-syntaxcheck     00140|             CreateDWordField (Arg0, 0x04, SIZE)
+syntaxcheck     00130|         {
+syntaxcheck     00131|             CreateDWordField (Arg0, 0x00, REVS)
+syntaxcheck     00132|             CreateDWordField (Arg0, 0x04, SIZE)
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -592,18 +592,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 2,
-syntaxcheck     Assembler remark in line 156
+syntaxcheck     Assembler remark in line 144
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00153|                 }, REVS, SIZE, Local2)
-syntaxcheck     00154|         }
-syntaxcheck     00155| 
-syntaxcheck     00156|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
+syntaxcheck     00141|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
+syntaxcheck     00142|         }
+syntaxcheck     00143| 
+syntaxcheck     00144|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
 syntaxcheck          |                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized (due to creation of named objects within)
-syntaxcheck     00157|         {
-syntaxcheck     00158|             CreateDWordField (Arg3, 0x00, STS1)
-syntaxcheck     00159|             CreateDWordField (Arg3, 0x04, CAP1)
+syntaxcheck     00145|         {
+syntaxcheck     00146|             CreateDWordField (Arg3, 0x00, STS1)
+syntaxcheck     00147|             CreateDWordField (Arg3, 0x04, CAP1)
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A

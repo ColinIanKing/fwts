@@ -671,6 +671,10 @@ method          SKIPPED: Test 106, Skipping test for non-existant object
 method          _BTM.
 method          
 method          Test 107 of 155: Test _PCL (Power Consumer List).
+method          PASSED: Test 107, \_SB_.PCI0.LPCB.ACAD._PCL returned a
+method          sane package of 1 references.
+method          PASSED: Test 107, \_SB_.PCI0.LPCB.BAT1._PCL returned a
+method          sane package of 1 references.
 method          
 method          Test 108 of 155: Test _PIF (Power Source Information).
 method          SKIPPED: Test 108, Skipping test for non-existant object
@@ -1127,6 +1131,6 @@ method          SKIPPED: Test 155, Skipping test for non-existant object
 method          _SRV.
 method          
 method          ==========================================================
-method          235 passed, 0 failed, 0 warning, 0 aborted, 123 skipped, 0
+method          237 passed, 0 failed, 0 warning, 0 aborted, 123 skipped, 0
 method          info only.
 method          ==========================================================

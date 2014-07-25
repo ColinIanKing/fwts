@@ -813,7 +813,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		offset += sizeof(fwts_acpi_madt_sub_table_header);
 
 		switch (hdr->type) {
-		case 0: {
+		case FWTS_ACPI_MADT_LOCAL_APIC: {
 				static const fwts_acpidump_field fields_processor_local_apic[] = {
 					FIELD_UINT("  ACPI CPU ID", fwts_acpi_madt_processor_local_apic, acpi_processor_id),
 					FIELD_UINT("  APIC ID",     fwts_acpi_madt_processor_local_apic, apic_id),
@@ -825,7 +825,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_processor_local_apic);
 			}
 			break;
-		case 1: {
+		case FWTS_ACPI_MADT_IO_APIC: {
 				static const fwts_acpidump_field fields_io_apic[] = {
 					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
 					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
@@ -836,7 +836,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_io_apic);
 			}
 			break;
-		case 2: {
+		case FWTS_ACPI_MADT_INTERRUPT_OVERRIDE: {
 				static const fwts_acpidump_field fields_madt_interrupt_override[] = {
 					FIELD_UINT("  Bus", 		fwts_acpi_madt_interrupt_override, bus),
 					FIELD_UINT("  Source", 		fwts_acpi_madt_interrupt_override, source),
@@ -850,7 +850,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_interrupt_override);
 			}
 			break;
-		case 3: {
+		case FWTS_ACPI_MADT_NMI_SOURCE: {
 				static const fwts_acpidump_field fields_madt_nmi[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_nmi, flags),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_nmi, gsi),
@@ -860,7 +860,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_nmi);
 			}
 			break;
-		case 4: {
+		case FWTS_ACPI_MADT_LOCAL_APIC_NMI: {
 				static const fwts_acpidump_field fields_madt_local_apic_nmi[] = {
 					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_apic_nmi, acpi_processor_id),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_apic_nmi, flags),
@@ -871,7 +871,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_local_apic_nmi);
 			}
 			break;
-		case 5: {
+		case FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE: {
 				static const fwts_acpidump_field fields_madt_local_apic_addr_override[] = {
 					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
 					FIELD_END
@@ -880,7 +880,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_local_apic_addr_override);
 			}
 			break;
-		case 6: {
+		case FWTS_ACPI_MADT_IO_SAPIC: {
 				static const fwts_acpidump_field fields_madt_io_sapic[] = {
 					FIELD_UINT("  I/O SAPIC ID", 	fwts_acpi_madt_io_sapic, io_sapic_id),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_io_sapic, gsi),
@@ -891,7 +891,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 				skip = sizeof(fwts_acpi_madt_io_sapic);
 			}
 			break;
-		case 7: {
+		case FWTS_ACPI_MADT_LOCAL_SAPIC: {
 				fwts_acpi_madt_local_sapic *local_sapic = (fwts_acpi_madt_local_sapic *)data;
 				static const fwts_acpidump_field fields_madt_local_sapic[] = {
 					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_sapic, acpi_processor_id),
@@ -907,7 +907,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					strlen(local_sapic->uid_string) + 1);
 			}
 			break;
-		case 8: {
+		case FWTS_ACPI_MADT_INTERRUPT_SOURCE: {
 				static const fwts_acpidump_field fields_madt_local_sapic[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_platform_int_source, flags),
 					FIELD_UINT("  Type", 		fwts_acpi_madt_platform_int_source, type),
@@ -919,10 +919,10 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_END
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_local_sapic, offset);
-				skip = (sizeof(fwts_acpi_madt_platform_int_source));
+				skip = sizeof(fwts_acpi_madt_platform_int_source);
 			}
 			break;
-		case 9: {
+		case FWTS_ACPI_MADT_LOCAL_X2APIC: {
 				static const fwts_acpidump_field fields_madt_local_x2apic[] = {
 					FIELD_UINT("  x2APIC ID", 	fwts_acpi_madt_local_x2apic, x2apic_id),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic, flags),
@@ -930,10 +930,10 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_END
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic, offset);
-				skip = (sizeof(fwts_acpi_madt_local_x2apic));
+				skip = sizeof(fwts_acpi_madt_local_x2apic);
 			}
 			break;
-		case 10: {
+		case FWTS_ACPI_MADT_LOCAL_X2APIC_NMI: {
 				static const fwts_acpidump_field fields_madt_local_x2apic_nmi[] = {
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic_nmi, flags),
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic_nmi, processor_uid),
@@ -941,10 +941,10 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_END
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic_nmi, offset);
-				skip = (sizeof(fwts_acpi_madt_local_x2apic_nmi));
+				skip = sizeof(fwts_acpi_madt_local_x2apic_nmi);
 			}
 			break;
-		case 11: {
+		case FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE: {
 				static const fwts_acpidump_field fields_madt_gic[] = {
 					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic, reserved),
 					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gic, gic_id),
@@ -954,12 +954,17 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Perf. Int. GSIV",	fwts_acpi_madt_gic, performance_interrupt_gsiv),
 					FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
 					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
+					FIELD_UINT("  GICV",		fwts_acpi_madt_gic, gicv),
+					FIELD_UINT("  GICH",		fwts_acpi_madt_gic, gich),
+					FIELD_UINT("  VGIC Interrupt",	fwts_acpi_madt_gic, vgic),
+					FIELD_UINT("  GICR Base. Addr", fwts_acpi_madt_gic, gicr_base_address),
+					FIELD_UINT("  MPIDR",		fwts_acpi_madt_gic, mpidr),
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
-				skip = (sizeof(fwts_acpi_madt_gic));
+				skip = sizeof(fwts_acpi_madt_gic);
 			}
 			break;
-		case 12: {
+		case FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR: {
 				static const fwts_acpidump_field fields_madt_gicd[] = {
 					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved),
 					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gicd, gic_id),
@@ -968,7 +973,31 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved2),
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_gicd, offset);
-				skip = (sizeof(fwts_acpi_madt_gicd));
+				skip = sizeof(fwts_acpi_madt_gicd);
+			}
+			break;
+		case FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME: {
+				static const fwts_acpidump_field fields_madt_gic_msi[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic_msi, reserved),
+					FIELD_UINT("  Frame ID", 	fwts_acpi_madt_gic_msi, frame_id),
+					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic_msi, physical_base_address),
+					FIELD_UINT("  Flags", 		fwts_acpi_madt_gic_msi, flags),
+					FIELD_UINT("  SPI Count", 	fwts_acpi_madt_gic_msi, spi_count),
+					FIELD_UINT("  SPI Base", 	fwts_acpi_madt_gic_msi, spi_base),
+					FIELD_UINT("  SPI Flags", 	fwts_acpi_madt_gic_msi, spi_flags),
+				};
+				__acpi_dump_table_fields(fw, data, fields_madt_gic_msi, offset);
+				skip = sizeof(fwts_acpi_madt_gic_msi);
+			}
+			break;
+		case FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR: {
+				static const fwts_acpidump_field fields_madt_gicr[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicr, reserved),
+					FIELD_UINT("  Disc. Base Addr",	fwts_acpi_madt_gicr, discovery_range_base_address),
+					FIELD_UINT("  Disc. Range Len", fwts_acpi_madt_gicr, discovery_range_length),
+				};
+				__acpi_dump_table_fields(fw, data, fields_madt_gicr, offset);
+				skip = sizeof(fwts_acpi_madt_gicr);
 			}
 			break;
 		default:

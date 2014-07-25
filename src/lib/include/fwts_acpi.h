@@ -333,15 +333,21 @@ typedef enum {
         FWTS_ACPI_MADT_INTERRUPT_SOURCE,
         FWTS_ACPI_MADT_LOCAL_X2APIC,
         FWTS_ACPI_MADT_LOCAL_X2APIC_NMI,
+	FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE,
+	FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR,
+	FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME,
+	FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR,
         FWTS_ACPI_MADT_RESERVED
 } fwts_acpi_madt_type;
 
+/* Type 0, FWTS_ACPI_MADT_LOCAL_APIC */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint8_t		apic_id;
 	uint32_t	flags;
 }  __attribute__ ((packed)) fwts_acpi_madt_processor_local_apic;
 
+/* Type 1, FWTS_ACPI_MADT_IO_APIC */
 typedef struct {
 	uint8_t		io_apic_id;
 	uint8_t		reserved;
@@ -349,6 +355,7 @@ typedef struct {
 	uint32_t	global_irq_base;
 } __attribute__ ((packed)) fwts_acpi_madt_io_apic;
 
+/* Type 2, FWTS_ACPI_MADT_INTERRUPT_OVERRIDE */
 typedef struct {
 	uint8_t		bus;
 	uint8_t		source;
@@ -356,22 +363,26 @@ typedef struct {
 	uint16_t	flags;
 } __attribute__ ((packed)) fwts_acpi_madt_interrupt_override;
 
+/* Type 3, FWTS_ACPI_MADT_NMI_SOURCE */
 typedef struct {
 	uint16_t	flags;	
 	uint32_t	gsi;
 } __attribute__ ((packed)) fwts_acpi_madt_nmi;
 
+/* Type 4, FWTS_ACPI_MADT_LOCAL_APIC_NMI */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint16_t	flags;	
 	uint8_t		local_apic_lint;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_nmi;
 
+/* Type 5, FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE */
 typedef struct {
 	uint16_t	reserved;
 	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_addr_override;
 
+/* Type 6, FWTS_ACPI_MADT_IO_SAPIC */
 typedef struct {
 	uint8_t		io_sapic_id;
 	uint8_t		reserved;
@@ -379,6 +390,7 @@ typedef struct {
 	uint64_t	address;
 } __attribute__ ((packed)) fwts_acpi_madt_io_sapic;
 
+/* Type 7, FWTS_ACPI_MADT_LOCAL_SAPIC */
 typedef struct {
 	uint8_t		acpi_processor_id;
 	uint8_t		local_sapic_id;
@@ -389,6 +401,7 @@ typedef struct {
 	char		uid_string[0];
 } __attribute__ ((packed)) fwts_acpi_madt_local_sapic;
 
+/* Type 8, FWTS_ACPI_MADT_INTERRUPT_SOURCE */
 typedef struct {
 	uint16_t	flags;
 	uint8_t		type;
@@ -399,6 +412,7 @@ typedef struct {
 	uint32_t	pis_flags;
 } __attribute__ ((packed)) fwts_acpi_madt_platform_int_source;
 
+/* Type 9, FWTS_ACPI_MADT_LOCAL_X2APIC */
 typedef struct {
 	uint16_t	reserved;
 	uint32_t	x2apic_id;
@@ -406,6 +420,7 @@ typedef struct {
 	uint32_t	processor_uid;
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic;
 
+/* Type 10, FWTS_ACPI_MADT_LOCAL_X2APIC_NMI */
 typedef struct {
 	uint16_t	flags;
 	uint32_t	processor_uid;
@@ -413,9 +428,10 @@ typedef struct {
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_madt_local_x2apic_nmi;
 
+/* Type 11, FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE */
 /* New in ACPI 5.0, GIC, section 5.2.12.14 */
 typedef struct {
-	uint8_t		reserved[2];
+	uint16_t	reserved;
 	uint32_t	gic_id;
 	uint32_t	processor_uid;
 	uint32_t	flags;
@@ -423,16 +439,42 @@ typedef struct {
 	uint32_t	performance_interrupt_gsiv;
 	uint64_t	parked_address;
 	uint64_t	physical_base_address;
+	uint64_t	gicv;
+	uint64_t	gich;
+	uint32_t	vgic;
+	uint64_t	gicr_base_address;
+	uint64_t	mpidr;
 } __attribute__ ((packed)) fwts_acpi_madt_gic;
 
 /* New in ACPI 5.0, GICD, section 5.2.12.15 */
+/* Type 12, FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR */
 typedef struct {
-	uint8_t		reserved[2];
+	uint16_t	reserved;
 	uint32_t	gic_id;
 	uint64_t	physical_base_address;
 	uint32_t	system_vector_base;
 	uint32_t	reserved2;
 } __attribute__ ((packed)) fwts_acpi_madt_gicd;
+
+/* New in ACPI 5.1, GIC MSI Frame structure, 5.2.12.16 */
+/* Type 13, FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME */
+typedef struct {
+	uint16_t	reserved;
+	uint32_t	frame_id;
+	uint64_t	physical_base_address;
+	uint32_t	flags;
+	uint16_t	spi_count;
+	uint16_t	spi_base;
+	uint32_t	spi_flags;	/* bit 0 just used at the moment */
+} __attribute__ ((packed)) fwts_acpi_madt_gic_msi;
+
+/* New in ACPI 5.1, GICR structure, 5.2.12.17 */
+/* Type 14, FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR */
+typedef struct {
+	uint16_t	reserved;
+	uint64_t	discovery_range_base_address;
+	uint32_t	discovery_range_length;
+} __attribute__ ((packed)) fwts_acpi_madt_gicr;
 
 /* From http://www.kuro5hin.org/story/2002/10/27/16622/530,
    and also http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html */

@@ -150,7 +150,7 @@ acpidump                                      Use APIC Cluster Model (V4): 0x0
 acpidump                                Use APIC Physical Dest. Mode (V4): 0x0
 acpidump                            ACPI hardware is not implemented (V5): 0x0
 acpidump                S0 power savings are equal or better than S3 (V5): 0x0
-acpidump                                                         RESERVED: 0x000
+acpidump                                           Reserved (bits 22..31): 0x000
 acpidump        
 acpidump        APIC @ bf6dfcc6 (104 bytes) (loaded from file)
 acpidump        ----
@@ -617,7 +617,11 @@ acpidump                                      Use APIC Cluster Model (V4): 0x0
 acpidump                                Use APIC Physical Dest. Mode (V4): 0x0
 acpidump                            ACPI hardware is not implemented (V5): 0x0
 acpidump                S0 power savings are equal or better than S3 (V5): 0x0
-acpidump                                                         RESERVED: 0x000
+acpidump                                           Reserved (bits 22..31): 0x000
+acpidump        [0x081 0129   2]                    ARM Boot Flags (V5.1): 0x0000
+acpidump                                            PSCI Compliant (V5.1): 0x0
+acpidump                               PSCI Use HSC instead of SMC (V5.1): 0x0
+acpidump        [0x083 0131   1]                       FADT Minor Version: 0x00
 acpidump        
 acpidump        [0x074 0116  12]                                RESET_REG: (Generic Address Structure)
 acpidump        [0x074 0116   1]                            addr_space_id: 0x00 (System Memory)

@@ -285,6 +285,8 @@ acpidump        [0x077 0119   1]                             access_width: 0x00 
 acpidump        [0x078 0120   8]                                  address: 0x0000000000000000
 acpidump        [0x07c 0124   8]                            Entry 11 SSDT: 0x00000000bff0678b
 acpidump        [0x080 0128   1]                              RESET_VALUE: 0x00
+acpidump        [0x081 0129   2]                    ARM Boot Flags (V5.1): 0x0000
+acpidump        [0x083 0131   1]                       FADT Minor Version: 0x00
 acpidump        [0x084 0132   8]                            Entry 12 SSDT: 0x00000000bff0683e
 acpidump        [0x084 0132   8]                          X_FIRMWARE_CTRL: 0x00000000bf6e2fc0
 acpidump        [0x08c 0140   8]                            Entry 13 SSDT: 0x00000000bff06aad
@@ -420,9 +422,11 @@ acpidump                                  PCI_EXP_WAK bits supported (V4): 0x0
 acpidump                                                    PCI Vendor ID: 0x8086
 acpidump                                                         Polarity: 0x0
 acpidump                                                         Polarity: 0x1
+acpidump                                            PSCI Compliant (V5.1): 0x0
+acpidump                               PSCI Use HSC instead of SMC (V5.1): 0x0
 acpidump                                     Remote power on capable (V4): 0x0
 acpidump                                                         Reserved: 0x0
-acpidump                                                         RESERVED: 0x000
+acpidump                                           Reserved (bits 22..31): 0x000
 acpidump                                    Reset Register Supported (V2): 0x0
 acpidump        Root System Description Pointer:
 acpidump        Root System Description Table:

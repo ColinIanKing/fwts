@@ -198,7 +198,8 @@ typedef struct {
 	uint32_t	flags;
 	fwts_acpi_gas	reset_reg;
 	uint8_t		reset_value;
-	uint8_t		reserved2[3];
+	uint16_t	arm_boot_flags;
+	uint8_t		minor_version;
 	uint64_t	x_firmware_ctrl;
 	uint64_t	x_dsdt;
 	fwts_acpi_gas	x_pm1a_evt_blk;

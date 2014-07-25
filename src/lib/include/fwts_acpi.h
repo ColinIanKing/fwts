@@ -682,8 +682,8 @@ typedef struct {
 
 /* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec */
 typedef struct {
-	uint64_t	phys_addr;
-	uint32_t	global_flags;
+	uint64_t	cnt_control_base_phys_addr;
+	uint32_t	reserved;
 	uint32_t	secure_PL1_timer_GSIV;
 	uint32_t	secure_PL1_timer_flags;
 	uint32_t	non_secure_PL1_timer_GSIV;
@@ -692,7 +692,15 @@ typedef struct {
 	uint32_t	virtual_timer_flags;
 	uint32_t	non_secure_PL2_timer_GSIV;
 	uint32_t	non_secure_PL2_timer_flags;
+	uint64_t	cnt_read_base_phys_addr;
+	uint32_t	platform_timer_count;
+	uint32_t	platform_timer_offset;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt;
+
+/* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec, table 5-117 */
+typedef struct {
+	uint32_t	timer_flags;
+} __attribute__ ((packed)) fwts_acpi_table_gtdt_platform_timer;
 
 /* 5.2.20 ACPI RAS FeatureTable (RASF) */
 typedef struct {

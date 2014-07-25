@@ -1561,21 +1561,41 @@ static void acpidump_bgrt(fwts_framework *fw, const fwts_acpi_table_info *table)
  */
 static void acpidump_gtdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
+	uint8_t *data = (uint8_t *)table->data, *ptr = data;
+
 	static const fwts_acpidump_field gtdt_fields[] = {
-		FIELD_UINT("Physical Address", 		fwts_acpi_table_gtdt, phys_addr),
-		FIELD_UINT("Global Flags", 		fwts_acpi_table_gtdt, global_flags),
+		FIELD_UINT("Count Ctrl Physical Addr", 	fwts_acpi_table_gtdt, cnt_control_base_phys_addr),
+		FIELD_UINT("Reserved", 			fwts_acpi_table_gtdt, reserved),
 		FIELD_UINT("Secure PL1 Timer GSIV", 	fwts_acpi_table_gtdt, secure_PL1_timer_GSIV),
 		FIELD_UINT("Secure PL1 Timer Flags", 	fwts_acpi_table_gtdt, secure_PL1_timer_flags),
 		FIELD_UINT("Non-Secure PL1 Timer GSIV", fwts_acpi_table_gtdt, non_secure_PL1_timer_GSIV),
-		FIELD_UINT("Non-Secure PL1 Timer Flags", fwts_acpi_table_gtdt, non_secure_PL1_timer_flags),
+		FIELD_UINT("Non-Secure PL1 Timer Flags",fwts_acpi_table_gtdt, non_secure_PL1_timer_flags),
 		FIELD_UINT("Virtual Timer GSIV", 	fwts_acpi_table_gtdt, virtual_timer_GSIV),
 		FIELD_UINT("Virtual Timer flags", 	fwts_acpi_table_gtdt, virtual_timer_flags),
 		FIELD_UINT("Non-Secure PL2 Timer GSIV", fwts_acpi_table_gtdt, non_secure_PL2_timer_GSIV),
-		FIELD_UINT("Non-Secure PL2 Timer Flags", fwts_acpi_table_gtdt, non_secure_PL2_timer_flags),
+		FIELD_UINT("Non-Secure PL2 Timer Flags",fwts_acpi_table_gtdt, non_secure_PL2_timer_flags),
+		FIELD_UINT("Count Read Physical Addr",	fwts_acpi_table_gtdt, cnt_read_base_phys_addr),
+		FIELD_UINT("Platform Timer Count",	fwts_acpi_table_gtdt, platform_timer_count),
+		FIELD_UINT("Platform Timer Offset",	fwts_acpi_table_gtdt, platform_timer_offset),
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, gtdt_fields, 0, table->length);
+	static const fwts_acpidump_field gtdt_platform_timer_fields[] = {
+		FIELD_BITF("  Timer Interrupt Mode", 	fwts_acpi_table_gtdt_platform_timer, timer_flags, 1, 0),
+		FIELD_BITF("  Timer Interrupt Polarity",fwts_acpi_table_gtdt_platform_timer, timer_flags, 1, 1),
+		FIELD_BITF("  Always-on Capability", 	fwts_acpi_table_gtdt_platform_timer, timer_flags, 1, 2),
+		FIELD_END
+	};
+
+	acpi_dump_table_fields(fw, data, gtdt_fields, 0, table->length);
+
+	ptr += sizeof(fwts_acpi_table_gtdt);
+
+	/* Now scan through the array of platform timer structures */
+	while (ptr < data + table->length) {
+		__acpi_dump_table_fields(fw, ptr, gtdt_platform_timer_fields, ptr - data);
+		ptr += sizeof(fwts_acpi_table_gtdt_platform_timer);
+	}
 }
 
 /*

@@ -42,6 +42,14 @@ License: GPL-2
  On Debian systems, the complete text of the GNU General Public
  License can be found in `/usr/share/common-licenses/GPL-2'.
 
+Files: src/lib/src/fwts_pipeio.c
+       src/lib/src/fwts_stringextras.c
+Copyright: 2010-2014, Canonical Ltd
+           2010, Lennart Poettering
+License: GPL-2
+ On Debian systems, the complete text of the GNU General Public
+ License can be found in `/usr/share/common-licenses/GPL-2'.
+
 Files: src/cpu/virt/virt_svm.c
        src/cpu/virt/virt_vmx.c
 Copyright: 2010-2014, Canonical Ltd

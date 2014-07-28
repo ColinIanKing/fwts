@@ -36,10 +36,17 @@ static int osilinux_test1(fwts_framework *fw)
 	int dumpdepth = 0;
 	int found = 0;
 
-	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
-		fwts_aborted(fw, "Cannot disassemble DSDT with iasl.");
+	if (fwts_iasl_init(fw) != FWTS_OK) {
+		fwts_aborted(fw, "Failure to initialise iasl, aborting.");
+		fwts_iasl_deinit();
 		return FWTS_ERROR;
 	}
+	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
+		fwts_aborted(fw, "Cannot disassemble DSDT with iasl.");
+		fwts_iasl_deinit();
+		return FWTS_ERROR;
+	}
+	fwts_iasl_deinit();
 
 	if (disassembly == NULL) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoDSDT",

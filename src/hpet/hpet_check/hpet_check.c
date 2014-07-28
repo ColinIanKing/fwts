@@ -106,8 +106,10 @@ static void hpet_check_base_acpi_table(fwts_framework *fw,
 	fwts_list *output;
 	fwts_list_link *item;
 
-	if (fwts_iasl_disassemble(fw, table, which, &output) != FWTS_OK)
+	if (fwts_iasl_disassemble(fw, table, which, &output) != FWTS_OK) {
+		fwts_iasl_deinit();
 		return;
+	}
 	if (output == NULL)
 		return;
 
@@ -362,10 +364,18 @@ static int hpet_check_test3(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
+	if (fwts_iasl_init(fw) != FWTS_OK) {
+		fwts_warning(fw, "Failure to initialise iasl, aborting.");
+		fwts_iasl_deinit();
+		return FWTS_ERROR;
+	}
+
 	hpet_check_base_acpi_table(fw, "DSDT", 0);
 
-	for (i = 0; i< 11; i++)
+	for (i = 0; i < 11; i++)
 		hpet_check_base_acpi_table(fw, "SSDT", i);
+
+	fwts_iasl_deinit();
 
 	return FWTS_OK;
 }

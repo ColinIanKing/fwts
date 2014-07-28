@@ -28,6 +28,7 @@
 #include "fwts_iasl_interface.h"
 
 #include "aslcompiler.h"
+#include "acdisasm.h"
 #include "acapps.h"
 
 /*
@@ -62,16 +63,21 @@ static void init_asl_core(void)
  *  fwts_iasl_disassemble_aml()
  *	invoke iasl to disassemble AML
  */
-int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
+int fwts_iasl_disassemble_aml(
+	char *tables[],
+	const int table_entries,
+	const int which,
+	const char *outputfile)
 {
 	pid_t	pid;
-	int	status;
+	int	status, i;
 
 	pid = fork();
 	switch (pid) {
 	case -1:
 		return -1;
 	case 0:
+
 		/* Child */
 		init_asl_core();
 
@@ -84,9 +90,28 @@ int fwts_iasl_disassemble_aml(const char *aml, const char *outputfile)
 		Gbl_UseDefaultAmlFilename = FALSE;
 		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
 
+		/*
+		 * Add in external files and NOT the one we want
+		 * disassemble
+		 */
+		for (i = 0; i < table_entries; i++) {
+			if (i != which) {
+				ACPI_STATUS	acpi_status;
+				/*
+				 *  Add in external tables that are NOT the table
+				 *  we intent to disassemble
+				 */
+				acpi_status = AcpiDmAddToExternalFileList(tables[i]);
+				if (ACPI_FAILURE(acpi_status)) {
+					(void)unlink(outputfile);
+					_exit(1);
+				}
+			}
+		}
+
 		/* Throw away noisy errors */
 		if (freopen("/dev/null", "w", stderr) != NULL)
-			AslDoOneFile((char *)aml);
+			AslDoOneFile((char *)tables[which]);
 
 		_exit(0);
 		break;

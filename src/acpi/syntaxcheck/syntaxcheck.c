@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include <json/json.h>
+#define MAX_TABLES	(128)
 
 #define ASL_EXCEPTIONS
 #include "aslmessages.h"
@@ -225,6 +226,10 @@ static int syntaxcheck_init(fwts_framework *fw)
 {
 	(void)syntaxcheck_load_advice(fw);
 
+	if (fwts_iasl_init(fw) != FWTS_OK) {
+		fwts_aborted(fw, "Failure to initialise iasl, aborting.");
+		return FWTS_ERROR;
+	}
 	return FWTS_OK;
 }
 
@@ -232,6 +237,7 @@ static int syntaxcheck_deinit(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
+	fwts_iasl_deinit();
 	syntaxcheck_free_advice();
 
 	return FWTS_OK;
@@ -455,27 +461,19 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 /*
  *  syntaxcheck_table()
  *	disassemble and reassemble a table, check for errors. which indicates the Nth
- *	table, for example, SSDT may have tables 1..N
+ *	table
  */
-static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
+static int syntaxcheck_table(fwts_framework *fw, int which)
 {
 	fwts_list_link *item;
 	int errors = 0;
 	int warnings = 0;
 	int remarks = 0;
-	fwts_acpi_table_info *table;
+	char *tablename = fwts_iasl_aml_name(which);
 	fwts_list *iasl_stdout, *iasl_stderr, *iasl_disassembly;
 
-	if (fwts_acpi_find_table(fw, tablename, which, &table) != FWTS_OK) {
-		fwts_aborted(fw, "Cannot load ACPI table %s.", tablename);
-		return FWTS_ERROR;
-	}
-
-	if (table == NULL)
-		return FWTS_NO_TABLE;		/* Table does not exist */
-
-	if (fwts_iasl_reassemble(fw, table->data, table->length,
-				&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {
+	if (fwts_iasl_reassemble(fw, which,
+		&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {
 		fwts_text_list_free(iasl_disassembly);
 		fwts_text_list_free(iasl_stderr);
 		fwts_text_list_free(iasl_stdout);
@@ -613,34 +611,24 @@ static int syntaxcheck_table(fwts_framework *fw, char *tablename, int which)
 	return FWTS_OK;
 }
 
-static int syntaxcheck_DSDT(fwts_framework *fw)
-{
-	return syntaxcheck_table(fw, "DSDT", 0);
-}
-
-static int syntaxcheck_SSDT(fwts_framework *fw)
+static int syntaxcheck_tables(fwts_framework *fw)
 {
 	int i;
+	const int n = fwts_iasl_aml_file_count();
 
-	for (i=0; i < 100; i++) {
-		int ret = syntaxcheck_table(fw, "SSDT", i);
-		if (ret == FWTS_NO_TABLE)
-			return FWTS_OK;	/* Hit the last table */
-		if (ret != FWTS_OK)
-			return FWTS_ERROR;
-	}
+	for (i = 0; i < n; i++)
+		syntaxcheck_table(fw, i);
 
 	return FWTS_OK;
 }
 
 static fwts_framework_minor_test syntaxcheck_tests[] = {
-	{ syntaxcheck_DSDT, "Disassemble and reassemble DSDT" },
-	{ syntaxcheck_SSDT, "Disassemble and reassemble SSDT" },
+	{ syntaxcheck_tables, "Disassemble and reassemble DSDT and SSDTs." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops syntaxcheck_ops = {
-	.description = "Re-assemble DSDT and find syntax errors and warnings.",
+	.description = "Re-assemble DSDT and SSDTs to find syntax errors and warnings.",
 	.init        = syntaxcheck_init,
 	.deinit      = syntaxcheck_deinit,
 	.minor_tests = syntaxcheck_tests

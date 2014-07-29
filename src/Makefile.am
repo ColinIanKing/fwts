@@ -11,8 +11,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/include \
 	-I$(top_srcdir)/src/acpica/source/compiler \
 	-I$(top_srcdir)/efi_runtime \
-	-pthread -I/usr/include/glib-2.0 \
-	-I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
+	-pthread `pkg-config --cflags glib-2.0 gio-2.0` \
 	-Wall -Werror -Wextra
 
 bin_PROGRAMS = fwts
@@ -94,10 +93,10 @@ fwts_SOURCES = main.c 				\
 	uefi/uefivarinfo/uefivarinfo.c		\
 	uefi/uefibootpath/uefibootpath.c
 
-fwts_LDFLAGS = -lm
+fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`
 
 fwts_LDADD = \
 	-L$(top_builddir)/src/acpica -lfwtsacpica \
-	-Llib/src -lfwts -lgio-2.0 -lgobject-2.0 -lglib-2.0
+	-Llib/src -lfwts
 
 man_MANS = ../doc/fwts.1 ../doc/fwts-collect.1 ../doc/fwts-frontend-text.1

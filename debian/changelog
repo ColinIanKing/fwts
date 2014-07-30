@@ -1,3 +1,64 @@
+fwts (14.07.00-0ubuntu0) utopic; urgency=low
+
+  [Alberto Milone]
+  * src/Makefile.am: depend on glib and gio
+  * Add build dependency on libglib2.0-dev
+  * Add support for different power methods to suspend
+  * debian/copyright: add copyright for the derivative work from systemd
+  * doc/fwts.1: update man page with information on the --pm-method parameter
+  * src/Makefile.am: use pkg-config to include glib and gio
+  * debian/control: add build dependency on pkg-config
+
+  [Alex Hung]
+  * cpu: microcode: remove failures when kernel does not have newer version
+    (LP: #1322534)
+  * lib: fwts_dump: add cpuinfo dump
+  * doc: fwts_dump: add cpuinfo.log to man page
+  * acpi: method: add _PCL control method test (LP:1343070)
+
+  [Colin Ian King]
+  * src/lib/*.h: remove extraneous , at end of enum lists
+  * acpi: acpidump: minor tidy up of code
+  * acpi: acpitables: minor code tidy up
+  * acpi: acpidump: re-arrange code to avoid declarations after code
+  * acpi: method: re-arrange code to avoid declarations after code
+  * acpi: method: re-arrange code to avoid declarations after code
+  * Remove extraneous ; following FWTS_REGISTER macro
+  * acpi: wmi: don't use unnamed struct/unions
+  * hpet/hpet_check: re-arrange code to avoid declarations after code
+  * uefi: uefidump: re-arrange code to avoid declarations after code
+  * uefi: securebootcert: re-arrange code to avoid declarations after code
+  * kernel tests: Remove extraneous ; following FWTS_REGISTER macro
+  * acpi: acpitables: make two more functions static
+  * acpi: crsdump: fix shadowing of variable 'sharing'
+  * acpi: method: fix shadowing of variable 'obj'
+  * acpi: s3: fix shadowing of variable 'i'
+  * acpi: s4: fix shadowing of variable 'i'
+  * cpu: virt: put extern virt helper func declarations in virt.h
+  * cpu: microcode: make microcode_find_cpu static
+  * dmi: dmicheck: don't inline dmi_str_check and fix variable shadowing
+  * hpet: hpet_check: fix shadowing of variable 'str'
+  * uefi: uefidump: fix shadowing of variable 'i'
+  * acpi: acpidump: fix shadowing of variable table
+  * acpi: acpitables: fix spelling mistake (LP: #1330186)
+  * lib: wakealarm: fix spelling mistake
+  * acpica: update to version 20140627 (LP: #1335280)
+  * Re-work include of acpi.h to work around warnings
+  * fwts-test: dissassemble-0001: update disassembly logs to sync with ACPICA
+  * fwts-test: method-0001: update test to be in sync with method test
+  * lib: fix handling of -ve read returns
+  * utilities: kernelscan: use memmove instead of strcpy
+  * acpi: syntaxcheck: free lists on error exit return
+  * acpi: s3: fix spelling mistake
+
+  [Ivan Hu]
+  * uefi: add a test for sanity checking for the UEFI Boot path (LP: #1316019)
+  * uefi: uefirtvariable: print out the duplicate variable name (LP: #1340492)
+  * uefidump: add Relative Offset Range subtype support for Media device path
+    (LP: #1322465)
+
+ -- Kun Yang <kun.yang@canonical.com>  Wed, 30 Jul 2014 19:08:27 +0800
+
 fwts (14.06.00-0ubuntu0) utopic; urgency=low
 
   [Colin Ian King]

@@ -19,6 +19,7 @@
 #include <getopt.h>
 
 #include "fwts.h"
+#include "fwts_pm_method.h"
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -27,34 +28,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
-#include <time.h>
-#include <glib.h>
-#include <gio/gio.h>
 
-static inline void free_fwts_vars(void *);
 static inline void freep(void *);
 
 #define _cleanup_free_ __attribute__((cleanup(freep)))
-#define _cleanup_free_fw_ __attribute__((cleanup(free_fwts_vars)))
 
-#define PM_SUSPEND_LOGIND			"Suspend"
-#define PM_SUSPEND_HYBRID_LOGIND	"HybridSleep"
-#define PM_SUSPEND_PMUTILS			"pm-suspend"
+#define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
-
-#define FWTS_SUSPEND		"FWTS_SUSPEND"
-#define FWTS_RESUME		"FWTS_RESUME"
-
-typedef struct
-{
-	fwts_framework *fw;
-	time_t t_start;
-	time_t t_end;
-	GDBusProxy *logind_proxy;
-	GDBusConnection *logind_connection;
-	GMainLoop *gmainloop;
-} fwts_vars;
 
 static int  s3_multiple = 1;		/* number of s3 multiple tests to run */
 static int  s3_min_delay = 0;		/* min time between resume and next suspend */
@@ -68,28 +48,6 @@ static bool s3_min_max_delay = false;
 static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
-
-static inline void free_fwts_vars(void *vars)
-{
-	fwts_vars *var = *(void**)vars;
-
-	if (var) {
-		if (var->logind_proxy) {
-			g_object_unref(var->logind_proxy);
-			var->logind_proxy = NULL;
-		}
-		if (var->logind_connection) {
-			g_object_unref(var->logind_connection);
-			var->logind_connection = NULL;
-		}
-		if (var->gmainloop) {
-			g_main_loop_unref(var->gmainloop);
-			var->gmainloop = NULL;
-		}
-	}
-	free(var);
-	var = NULL;
-}
 
 static inline void freep(void *p)
 {
@@ -109,338 +67,39 @@ static int s3_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-/* Initialise the Dbus proxy for Logind */
-static int logind_init_proxy(fwts_vars *fwts_settings)
-{
-	int status = 0;
-
-	if (fwts_settings->logind_connection == NULL)
-		fwts_settings->logind_connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, NULL);
-
-	if (fwts_settings->logind_connection == NULL) {
-		status = 1;
-		fwts_log_error(fwts_settings->fw, "Cannot establish a connection to Dbus\n");
-		goto out;
-	}
-
-	if (fwts_settings->logind_proxy == NULL) {
-		fwts_settings->logind_proxy = g_dbus_proxy_new_sync(fwts_settings->logind_connection,
-			G_DBUS_PROXY_FLAGS_NONE,
-			NULL, "org.freedesktop.login1",
-			"/org/freedesktop/login1",
-			"org.freedesktop.login1.Manager",
-			NULL, NULL);
-	}
-
-	if (fwts_settings->logind_proxy == NULL) {
-		status = 1;
-		fwts_log_error(fwts_settings->fw,
-			"Cannot establish a connection to login1.Manager\n");
-		goto out;
-	}
-
-out:
-	return status;
-}
-
-/* Callback to handle suspend and resume events */
-static void logind_on_suspend_signal(
-	GDBusConnection *connection,
-	const gchar *sender_name,
-	const gchar *object_path,
-	const gchar *interface_name,
-	const gchar *signal_name,
-	GVariant *parameters,
-	gpointer user_data)
-{
-	gboolean status;
-	fwts_vars *fwts_settings = (fwts_vars *)user_data;
-
-	/* Prevent -Werror=unused-parameter from complaining */
-	FWTS_UNUSED(connection);
-	FWTS_UNUSED(sender_name);
-	FWTS_UNUSED(object_path);
-	FWTS_UNUSED(interface_name);
-	FWTS_UNUSED(signal_name);
-
-	if (!g_variant_is_of_type(parameters, G_VARIANT_TYPE ("(b)"))) {
-		fwts_log_error(fwts_settings->fw, "Suspend type %s\n",
-			g_variant_get_type_string(parameters));
-		return;
-	}
-	else {
-		g_variant_get(parameters, "(b)", &status);
-		fwts_log_info(fwts_settings->fw,
-			"Suspend status: %s\n",
-			status ? "true" : "false");
-
-		if (status) {
-			time(&(fwts_settings->t_start));
-			(void)fwts_klog_write(fwts_settings->fw, "Starting fwts suspend\n");
-			(void)fwts_klog_write(fwts_settings->fw, FWTS_SUSPEND "\n");
-		}
-		else {
-			time(&(fwts_settings->t_end));
-			(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
-			(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
-			/*
-			 * Let's give the system some time to get back from S3
-			 * or Logind will refuse to suspend and shoot both events
-			 * without doing anything
-			 */
-			if (s3_min_delay < 3) {
-				fwts_log_info(fwts_settings->fw,
-					"Skipping the minimum delay (%d) and using a 3 seconds delay instead\n",
-					s3_min_delay);
-				sleep(3);
-			}
-			g_main_loop_quit(fwts_settings->gmainloop);
-		}
-	}
-}
-
-/* Generic function to test supported Logind actions that reply
- * with a string
- */
-static bool logind_can_do_action(fwts_vars *fwts_settings, const gchar *action)
-{
-	GVariant *reply;
-	GError *error = NULL;
-	bool status = false;
-	gchar *response;
-
-	if (logind_init_proxy(fwts_settings) != 0)
-		return false;
-
-	reply = g_dbus_proxy_call_sync(fwts_settings->logind_proxy,
-		action,
-		NULL,
-		G_DBUS_CALL_FLAGS_NONE,
-		-1,
-		NULL,
-		&error);
-
-	if (reply != NULL) {
-		if (!g_variant_is_of_type(reply, G_VARIANT_TYPE ("(s)"))) {
-			fwts_log_error(fwts_settings->fw,
-				"Unexpected response to %s action: %s\n",
-				action,
-				g_variant_get_type_string (reply));
-
-			g_variant_unref(reply);
-			return status;
-		}
-
-		g_variant_get(reply, "(&s)", &response);
-		fwts_log_info(fwts_settings->fw, "Response to %s is %s\n",
-			action, response);
-
-		if (strcmp(response, "challenge") == 0) {
-			fwts_log_error(fwts_settings->fw,
-				"%s action available only after authorisation\n",
-				action);
-		} else if (strcmp(response, "yes") == 0) {
-			fwts_log_info(fwts_settings->fw,
-				"User allowed to execute the %s action\n",
-				action);
-			status = true;
-		} else if (strcmp(response, "no") == 0) {
-			fwts_log_error(fwts_settings->fw,
-				"User not allowed to execute the %s action\n",
-				action);
-		} else if (strcmp(response, "na") == 0) {
-			fwts_log_error(fwts_settings->fw,
-				"Hardware doesn't support %s action\n",
-				action);
-		}
-
-		g_variant_unref(reply);
-	}
-	else {
-		fwts_log_error(fwts_settings->fw,
-			"Invalid response from Logind on %s action\n",
-			action);
-		g_error_free(error);
-	}
-
-	return status;
-}
-
-static bool logind_can_suspend(fwts_vars *fwts_settings)
-{
-	return logind_can_do_action(fwts_settings, "CanSuspend");
-}
-
-static bool logind_can_hybrid_suspend(fwts_vars *fwts_settings)
-{
-	return logind_can_do_action(fwts_settings, "CanHybridSleep");
-}
-
-static bool sysfs_can_suspend(const fwts_vars *fwts_settings)
-{
-	return fwts_file_first_line_contains_string(fwts_settings->fw,
-		"/sys/power/state",
-		"mem");
-}
-
-static bool sysfs_can_hybrid_suspend(const fwts_vars *fwts_settings)
-{
-	bool status;
-
-	status = fwts_file_first_line_contains_string(fwts_settings->fw,
-		"/sys/power/state",
-		"disk");
-
-	if (!status)
-		return FALSE;
-
-	return fwts_file_first_line_contains_string(fwts_settings->fw,
-		"/sys/power/disk",
-		"suspend");
-}
-
 /* Detect the best available power method */
-static void detect_pm_method(fwts_vars *fwts_settings)
+static void detect_pm_method(fwts_pm_method_vars *fwts_settings)
 {
 	if (s3_hybrid ?
-		logind_can_hybrid_suspend(fwts_settings) :
-		logind_can_suspend(fwts_settings))
-		fwts_settings->fw->pm_method = logind;
+		fwts_logind_can_hybrid_suspend(fwts_settings) :
+		fwts_logind_can_suspend(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_LOGIND;
 	else if (s3_hybrid ?
-		sysfs_can_hybrid_suspend(fwts_settings) :
-		sysfs_can_suspend(fwts_settings))
-		fwts_settings->fw->pm_method = sysfs;
+		fwts_sysfs_can_hybrid_suspend(fwts_settings) :
+		fwts_sysfs_can_suspend(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_SYSFS;
 	else
-		fwts_settings->fw->pm_method = pm_utils;
+		fwts_settings->fw->pm_method = FWTS_PM_PMUTILS;
 }
 
-/* Call Logind to suspend.
- * action can be either "Suspend" or "HybridSleep"
- */
-static gboolean logind_do_suspend(gpointer data)
-{
-	GError *error = NULL;
-	GVariant *reply;
-	fwts_vars *fwts_settings = (fwts_vars *)data;
-
-	/* If the loop is not running, return TRUE so as to repeat the operation */
-	if (g_main_loop_is_running (fwts_settings->gmainloop)) {
-		gchar *action = s3_hybrid ? PM_SUSPEND_HYBRID_LOGIND : PM_SUSPEND_LOGIND;
-		fwts_log_info(fwts_settings->fw, "Requesting %s action\n", action);
-		reply = g_dbus_proxy_call_sync(fwts_settings->logind_proxy,
-			action,
-			g_variant_new ("(b)",
-					FALSE),
-			G_DBUS_CALL_FLAGS_NONE,
-			-1,
-			NULL,
-			&error);
-
-		if (reply != NULL) {
-			g_variant_unref(reply);
-		}
-		else {
-			fwts_log_error(fwts_settings->fw,
-				"Error from Logind: %s\n",
-				error->message);
-			g_error_free(error);
-		}
-
-		return FALSE;
-
-	}
-	fwts_log_info(fwts_settings->fw, "Glib loop not ready\n");
-	return TRUE;
-}
-
-/* Start Glib mainloop and listen to suspend/resume events
- * coming from Logind.
- * Exit the loop and return the duration after an event.
- */
-static int logind_wait_for_suspend_resume(fwts_vars *fwts_settings)
-{
-	guint subscription_id = 0;
-	int duration = 0;
-
-	if (logind_init_proxy(fwts_settings) != 0)
-		return 0;
-
-	subscription_id = g_dbus_connection_signal_subscribe (fwts_settings->logind_connection,
-				"org.freedesktop.login1", /* sender */
-				"org.freedesktop.login1.Manager",
-				"PrepareForSleep",
-				"/org/freedesktop/login1",
-				NULL, /* arg0 */
-				G_DBUS_SIGNAL_FLAGS_NONE,
-				logind_on_suspend_signal,
-				fwts_settings,
-				NULL);
-
-	fwts_settings->gmainloop = g_main_loop_new(NULL, FALSE);
-	if (fwts_settings->gmainloop) {
-		g_timeout_add(0.1,
-					  logind_do_suspend,
-					  fwts_settings);
-
-		g_main_loop_run(fwts_settings->gmainloop);
-		duration = (int)(fwts_settings->t_end - fwts_settings->t_start);
-
-		/* Optional, as it will be freed together with the struct */
-		g_main_loop_unref(fwts_settings->gmainloop);
-		fwts_settings->gmainloop = NULL;
-	}
-	else {
-		fwts_log_error(fwts_settings->fw, "Failed to start glib mainloop\n");
-	}
-
-	g_dbus_connection_signal_unsubscribe(fwts_settings->logind_connection,
-		subscription_id);
-
-	return duration;
-}
-
-static int sysfs_do_suspend(const fwts_vars *fwts_settings)
-{
-	int status;
-
-	if (s3_hybrid) {
-		status = fwts_write_string_file(fwts_settings->fw,
-			"/sys/power/disk",
-			"suspend");
-
-		if (status != FWTS_OK)
-			return status;
-
-		status = fwts_write_string_file(fwts_settings->fw,
-			"/sys/power/state",
-			"disk");
-	}
-	else {
-		status = fwts_write_string_file(fwts_settings->fw,
-			"/sys/power/state",
-			"mem");
-	}
-
-	return status;
-}
-
-static int wrap_logind_do_suspend(fwts_vars *fwts_settings,
+static int wrap_logind_do_suspend(fwts_pm_method_vars *fwts_settings,
 	const int percent,
 	int *duration,
 	const char *str)
 {
 	FWTS_UNUSED(str);
-	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
+	char *action = s3_hybrid ? PM_SUSPEND_HYBRID_LOGIND : PM_SUSPEND_LOGIND;
 
-	/* This enters a glib mainloop */
-	*duration = logind_wait_for_suspend_resume(fwts_settings);
+	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
+	/* This blocks by entering a glib mainloop */
+	*duration = fwts_logind_wait_for_resume_from_action(fwts_settings, action, s3_min_delay);
 	fwts_log_info(fwts_settings->fw, "S3 duration = %d.", *duration);
 	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
 
 	return *duration > 0 ? 0 : 1;
 }
 
-static int wrap_sysfs_do_suspend(fwts_vars *fwts_settings,
+static int wrap_sysfs_do_suspend(fwts_pm_method_vars *fwts_settings,
 	const int percent,
 	int *duration,
 	const char *str)
@@ -452,7 +111,7 @@ static int wrap_sysfs_do_suspend(fwts_vars *fwts_settings,
 	time(&(fwts_settings->t_start));
 	(void)fwts_klog_write(fwts_settings->fw, "Starting fwts suspend\n");
 	(void)fwts_klog_write(fwts_settings->fw, FWTS_SUSPEND "\n");
-	status = sysfs_do_suspend(fwts_settings);
+	status = fwts_sysfs_do_suspend(fwts_settings, s3_hybrid);
 	(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
 	(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
 	time(&(fwts_settings->t_end));
@@ -463,7 +122,7 @@ static int wrap_sysfs_do_suspend(fwts_vars *fwts_settings,
 	return status;
 }
 
-static int wrap_pmutils_do_suspend(fwts_vars *fwts_settings,
+static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
 	const int percent,
 	int *duration,
 	const char *command)
@@ -497,37 +156,37 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int differences;
 	_cleanup_free_ char *command = NULL;
 	_cleanup_free_ char *quirks = NULL;
-	_cleanup_free_fw_ fwts_vars * fwts_settings = NULL;
+	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
 	char buffer[80];
 
 
-	int (*do_suspend)(fwts_vars *, const int, int*, const char*);
+	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
-	fwts_settings = calloc(1, sizeof(fwts_vars));
+	fwts_settings = calloc(1, sizeof(fwts_pm_method_vars));
 	if (fwts_settings == NULL)
 		return FWTS_OUT_OF_MEMORY;
 	fwts_settings->fw = fw;
 
-	if (fw->pm_method == undefined) {
+	if (fw->pm_method == FWTS_PM_UNDEFINED) {
 		/* Autodetection */
 		fwts_log_info(fw, "Detecting the power method.");
 		detect_pm_method(fwts_settings);
 	}
 
 	switch (fw->pm_method) {
-		case logind:
+		case FWTS_PM_LOGIND:
 			fwts_log_info(fw, "Using logind as the default power method.");
-			if (logind_init_proxy(fwts_settings) != 0) {
+			if (fwts_logind_init_proxy(fwts_settings) != 0) {
 				fwts_log_error(fw, "Failure to connect to Logind.");
 				return FWTS_ERROR;
 			}
 			do_suspend = &wrap_logind_do_suspend;
 			break;
-		case pm_utils:
+		case FWTS_PM_PMUTILS:
 			fwts_log_info(fw, "Using pm-utils as the default power method.");
 			do_suspend = &wrap_pmutils_do_suspend;
 			break;
-		case sysfs:
+		case FWTS_PM_SYSFS:
 			fwts_log_info(fw, "Using sysfs as the default power method.");
 			do_suspend = &wrap_sysfs_do_suspend;
 			break;
@@ -542,7 +201,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_get(fw, &hwinfo1);
 
 	/* Format up pm-suspend command with optional quirking arguments */
-	if (fw->pm_method == pm_utils) {
+	if (fw->pm_method == FWTS_PM_PMUTILS) {
 		if (s3_hybrid) {
 			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_HYBRID_PMUTILS)) == NULL)
 				return FWTS_OUT_OF_MEMORY;
@@ -551,7 +210,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 				return FWTS_OUT_OF_MEMORY;
 		}
 
-		/* For now we only support quirks with pm_utils */
+		/* For now we only support quirks with pm-utils */
 		if (s3_quirks) {
 			if ((command = fwts_realloc_strcat(command, " ")) == NULL)
 				return FWTS_OUT_OF_MEMORY;

@@ -40,8 +40,10 @@ typedef struct
 } fwts_pm_method_vars;
 
 static inline void free_pm_method_vars(void *);
+static inline void freep(void *);
 
 #define _cleanup_free_pm_vars_ __attribute__((cleanup(free_pm_method_vars)))
+#define _cleanup_free_ __attribute__((cleanup(freep)))
 
 #define PM_SUSPEND_LOGIND		"Suspend"
 #define PM_SUSPEND_HYBRID_LOGIND	"HybridSleep"
@@ -76,6 +78,11 @@ static inline void free_pm_method_vars(void *vars)
 	}
 	free(var);
 	var = NULL;
+}
+
+static inline void freep(void *p)
+{
+	free(*(void**) p);
 }
 
 int fwts_logind_init_proxy(fwts_pm_method_vars *fwts_settings);

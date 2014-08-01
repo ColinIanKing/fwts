@@ -27,10 +27,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-static inline void freep(void *);
-
-#define _cleanup_free_ __attribute__((cleanup(freep)))
-
 #define PM_HIBERNATE	"pm-hibernate"
 
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
@@ -44,11 +40,6 @@ static bool s4_device_check = false;	/* check for device config changes */
 static char *s4_quirks = NULL;		/* Quirks to be passed to pm-hibernate */
 static int  s4_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 static bool s4_min_max_delay = false;
-
-static inline void freep(void *p)
-{
-	free(*(void**) p);
-}
 
 static int s4_init(fwts_framework *fw)
 {

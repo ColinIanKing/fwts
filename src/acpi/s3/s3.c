@@ -29,10 +29,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-static inline void freep(void *);
-
-#define _cleanup_free_ __attribute__((cleanup(freep)))
-
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
 
@@ -48,11 +44,6 @@ static bool s3_min_max_delay = false;
 static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
-
-static inline void freep(void *p)
-{
-	free(*(void**) p);
-}
 
 static int s3_init(fwts_framework *fw)
 {

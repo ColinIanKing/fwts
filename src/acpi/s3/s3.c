@@ -46,14 +46,6 @@ static inline void freep(void *);
 #define FWTS_SUSPEND		"FWTS_SUSPEND"
 #define FWTS_RESUME		"FWTS_RESUME"
 
-enum pm_methods
-{
-	logind,
-	pm_utils,
-	sysfs,
-	undefined
-};
-
 typedef struct
 {
 	fwts_framework *fw;
@@ -76,7 +68,6 @@ static bool s3_min_max_delay = false;
 static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
-static enum pm_methods pm_method = undefined; /* Default pm-method to use to suspend */
 
 static inline void free_fwts_vars(void *vars)
 {
@@ -309,18 +300,18 @@ static bool sysfs_can_hybrid_suspend(const fwts_vars *fwts_settings)
 }
 
 /* Detect the best available power method */
-static enum pm_methods detect_pm_method(fwts_vars *fwts_settings)
+static void detect_pm_method(fwts_vars *fwts_settings)
 {
 	if (s3_hybrid ?
 		logind_can_hybrid_suspend(fwts_settings) :
 		logind_can_suspend(fwts_settings))
-		return logind;
+		fwts_settings->fw->pm_method = logind;
 	else if (s3_hybrid ?
 		sysfs_can_hybrid_suspend(fwts_settings) :
 		sysfs_can_suspend(fwts_settings))
-		return sysfs;
+		fwts_settings->fw->pm_method = sysfs;
 	else
-		return pm_utils;
+		fwts_settings->fw->pm_method = pm_utils;
 }
 
 /* Call Logind to suspend.
@@ -517,13 +508,13 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		return FWTS_OUT_OF_MEMORY;
 	fwts_settings->fw = fw;
 
-	if (pm_method == undefined) {
+	if (fw->pm_method == undefined) {
 		/* Autodetection */
 		fwts_log_info(fw, "Detecting the power method.");
-		pm_method = detect_pm_method(fwts_settings);
+		detect_pm_method(fwts_settings);
 	}
 
-	switch (pm_method) {
+	switch (fw->pm_method) {
 		case logind:
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (logind_init_proxy(fwts_settings) != 0) {
@@ -551,7 +542,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 		fwts_hwinfo_get(fw, &hwinfo1);
 
 	/* Format up pm-suspend command with optional quirking arguments */
-	if (pm_method == pm_utils) {
+	if (fw->pm_method == pm_utils) {
 		if (s3_hybrid) {
 			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_HYBRID_PMUTILS)) == NULL)
 				return FWTS_OUT_OF_MEMORY;
@@ -966,16 +957,6 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 10:
 			s3_hybrid = true;
 			break;
-		case 11:
-			if (strcmp(optarg, "logind") == 0)
-				pm_method = logind;
-			else if (strcmp(optarg, "pm-utils") == 0)
-				pm_method = pm_utils;
-			else if (strcmp(optarg, "sysfs") == 0)
-				pm_method = sysfs;
-			else
-				return FWTS_ERROR;
-			break;
 		}
 	}
 	return FWTS_OK;
@@ -993,7 +974,6 @@ static fwts_option s3_options[] = {
 	{ "s3-suspend-time",	"", 1, "Maximum expected suspend time in seconds, e.g. --s3-suspend-time=3.5" },
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
-	{ "pm-method",      "", 1, "Select the power method to use. Accepted values are \"logind\", \"pm-utils\", \"sysfs\""},
 	{ NULL, NULL, 0, NULL }
 };
 

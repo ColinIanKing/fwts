@@ -27,6 +27,7 @@
 #include "fwts_log.h"
 #include "fwts_list.h"
 #include "fwts_acpica_mode.h"
+#include "fwts_pm_method.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
@@ -140,6 +141,7 @@ typedef struct {
 	bool error_filtered_out;		/* True if a klog message has been filtered out */
 	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 	void *rsdp;				/* ACPI RSDP address */
+	fwts_pm_method pm_method;
 } fwts_framework;
 
 typedef struct {

@@ -83,6 +83,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "acpica",		"",   1, "Enable ACPICA run time options." },
 	{ "uefi",		"",   0, "Run UEFI tests." },
 	{ "rsdp",		"R:", 1, "Specify the physical address of the ACPI RSDP." },
+	{ "pm-method",  "",   1, "Select the power method to use. Accepted values are \"logind\", \"pm-utils\", \"sysfs\""},
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -998,6 +999,26 @@ static int fwts_framework_acpica_parse(fwts_framework *fw, const char *arg)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_pm_method_parse()
+ *	parse optarg of pm-method mode flag
+ */
+static int fwts_framework_pm_method_parse(fwts_framework *fw, const char *arg)
+{
+	if (strcmp(arg, "logind") == 0)
+		fw->pm_method = logind;
+	else if (strcmp(arg, "pm-utils") == 0)
+		fw->pm_method = pm_utils;
+	else if (strcmp(arg, "sysfs") == 0)
+		fw->pm_method = sysfs;
+	else {
+		fprintf(stderr, "--pm-method only supports logind, pm-utils, and sysfs methods\n");
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
 	FWTS_UNUSED(argc);
@@ -1134,6 +1155,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 37: /* --rsdp */
 			fw->rsdp = (void *)strtoul(optarg, NULL, 0);
 			break;
+		case 38: /* --pm-method */
+			if (fwts_framework_pm_method_parse(fw, optarg) != FWTS_OK)
+				return FWTS_ERROR;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1230,6 +1255,9 @@ int fwts_framework_args(const int argc, char **argv)
 
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
+
+	/* Set the power method to undefined before we parse arguments */
+	fw->pm_method = undefined;
 
 	ret = fwts_args_add_options(fwts_framework_options,
 		fwts_framework_options_handler, NULL);

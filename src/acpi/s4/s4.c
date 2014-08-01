@@ -17,6 +17,7 @@
  *
  */
 #include "fwts.h"
+#include "fwts_pm_method.h"
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -26,10 +27,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define PM_HIBERNATE	"pm-hibernate"
-#define FWTS_HIBERNATE	"FWTS_HIBERNATE"
-#define FWTS_RESUME	"FWTS_RESUME"
+static inline void freep(void *);
 
+#define _cleanup_free_ __attribute__((cleanup(freep)))
+
+#define PM_HIBERNATE	"pm-hibernate"
 
 #define FWTS_TRACING_BUFFER_SIZE	"/sys/kernel/debug/tracing/buffer_size_kb"
 
@@ -42,6 +44,11 @@ static bool s4_device_check = false;	/* check for device config changes */
 static char *s4_quirks = NULL;		/* Quirks to be passed to pm-hibernate */
 static int  s4_device_check_delay = 15;	/* Time to sleep after waking up and then running device check */
 static bool s4_min_max_delay = false;
+
+static inline void freep(void *p)
+{
+	free(*(void**) p);
+}
 
 static int s4_init(fwts_framework *fw)
 {
@@ -88,6 +95,79 @@ static void s4_check_log(fwts_framework *fw,
 	*warn_ons += warn_on;
 }
 
+/* Detect the best power method available */
+static void detect_pm_method(fwts_pm_method_vars *fwts_settings)
+{
+	if (fwts_logind_can_hibernate(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_LOGIND;
+	else if (fwts_sysfs_can_hibernate(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_SYSFS;
+	else
+		fwts_settings->fw->pm_method = FWTS_PM_PMUTILS;
+}
+
+static int wrap_logind_do_s4(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *str)
+{
+	FWTS_UNUSED(str);
+	char *action = PM_HIBERNATE_LOGIND;
+	fwts_progress_message(fwts_settings->fw, percent, "(Hibernating)");
+
+	/* This blocks by entering a glib mainloop */
+	*duration = fwts_logind_wait_for_resume_from_action(fwts_settings, action, s4_min_delay);
+	fwts_log_info(fwts_settings->fw, "S4 duration = %d.", *duration);
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	return *duration > 0 ? 0 : 1;
+}
+
+static int wrap_sysfs_do_s4(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *str)
+{
+	int status;
+
+	FWTS_UNUSED(str);
+	fwts_progress_message(fwts_settings->fw, percent, "(Hibernating)");
+	time(&(fwts_settings->t_start));
+	(void)fwts_klog_write(fwts_settings->fw, "Starting fwts hibernate\n");
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_HIBERNATE "\n");
+	status = fwts_sysfs_do_hibernate(fwts_settings);
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
+	time(&(fwts_settings->t_end));
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	*duration = (int)(fwts_settings->t_end - fwts_settings->t_start);
+
+	return status;
+}
+
+static int wrap_pmutils_do_s4(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *command)
+{
+	int status;
+
+	fwts_progress_message(fwts_settings->fw, percent, "(Hibernating)");
+	time(&(fwts_settings->t_start));
+	(void)fwts_klog_write(fwts_settings->fw, "Starting fwts hibernate\n");
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_HIBERNATE "\n");
+	(void)fwts_exec(command, &status);
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
+	time(&(fwts_settings->t_end));
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	*duration = (int)(fwts_settings->t_end - fwts_settings->t_start);
+
+	return status;
+}
+
 static int s4_hibernate(fwts_framework *fw,
 	int *klog_errors,
 	int *hw_errors,
@@ -100,30 +180,70 @@ static int s4_hibernate(fwts_framework *fw,
 	fwts_list *klog_pre, *klog_post, *klog_diff;
 	fwts_hwinfo hwinfo1, hwinfo2;
 	int status;
+	int duration;
 	int differences;
-	char *command;
-	char *quirks;
+	_cleanup_free_ char *command = NULL;
+	_cleanup_free_ char *quirks = NULL;
+	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
 	char buffer[80];
+
+
+	int (*do_s4)(fwts_pm_method_vars *, const int, int*, const char*);
+
+	fwts_settings = calloc(1, sizeof(fwts_pm_method_vars));
+	if (fwts_settings == NULL)
+		return FWTS_OUT_OF_MEMORY;
+	fwts_settings->fw = fw;
+
+	if (fw->pm_method == FWTS_PM_UNDEFINED) {
+		/* Autodetection */
+		fwts_log_info(fw, "Detecting the power method.");
+		detect_pm_method(fwts_settings);
+	}
+
+	switch (fw->pm_method) {
+		case FWTS_PM_LOGIND:
+			fwts_log_info(fw, "Using logind as the default power method.");
+			if (fwts_logind_init_proxy(fwts_settings) != 0) {
+				fwts_log_error(fw, "Failure to connect to Logind.");
+				return FWTS_ERROR;
+			}
+			do_s4 = &wrap_logind_do_s4;
+			break;
+		case FWTS_PM_PMUTILS:
+			fwts_log_info(fw, "Using pm-utils as the default power method.");
+			do_s4 = &wrap_pmutils_do_s4;
+			break;
+		case FWTS_PM_SYSFS:
+			fwts_log_info(fw, "Using sysfs as the default power method.");
+			do_s4 = &wrap_sysfs_do_s4;
+			break;
+		default:
+			/* This should never happen */
+			fwts_log_info(fw, "Using sysfs as the default power method.");
+			do_s4 = &wrap_sysfs_do_s4;
+			break;
+	}
 
 	if (s4_device_check)
 		fwts_hwinfo_get(fw, &hwinfo1);
 
-	/* Format up pm-hibernate command with optional quirking arguments */
-	if ((command = fwts_realloc_strcat(NULL, PM_HIBERNATE)) == NULL)
-		return FWTS_OUT_OF_MEMORY;
+	if (fw->pm_method == FWTS_PM_PMUTILS) {
+		/* Format up pm-hibernate command with optional quirking arguments */
+		if ((command = fwts_realloc_strcat(NULL, PM_HIBERNATE)) == NULL)
+			return FWTS_OUT_OF_MEMORY;
 
-	if (s4_quirks) {
-		if ((command = fwts_realloc_strcat(command, " ")) == NULL)
-			return FWTS_OUT_OF_MEMORY;
-		if ((quirks = fwts_args_comma_list(s4_quirks)) == NULL) {
-			free(command);
-			return FWTS_OUT_OF_MEMORY;
+		/* For now we only support quirks with pm-utils */
+		if (s4_quirks) {
+			if ((command = fwts_realloc_strcat(command, " ")) == NULL)
+				return FWTS_OUT_OF_MEMORY;
+			if ((quirks = fwts_args_comma_list(s4_quirks)) == NULL) {
+				return FWTS_OUT_OF_MEMORY;
+			}
+			if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
+				return FWTS_OUT_OF_MEMORY;
+			}
 		}
-		if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
-			free(quirks);
-			return FWTS_OUT_OF_MEMORY;
-		}
-		free(quirks);
 	}
 
 	fwts_wakealarm_trigger(fw, s4_sleep_delay);
@@ -132,14 +252,7 @@ static int s4_hibernate(fwts_framework *fw,
 	if ((klog_pre = fwts_klog_read()) == NULL)
 		fwts_log_error(fw, "S4: hibernate: Cannot read kernel log.");
 
-	fwts_progress_message(fw, percent, "(Hibernating)");
-	(void)fwts_klog_write(fw, "Starting fwts hibernate\n");
-	(void)fwts_klog_write(fw, FWTS_HIBERNATE "\n");
-	(void)fwts_exec(command, &status);
-	(void)fwts_klog_write(fw, FWTS_RESUME "\n");
-	(void)fwts_klog_write(fw, "Finished fwts resume\n");
-	fwts_progress_message(fw, percent, "(Resumed)");
-	free(command);
+	status = do_s4(fwts_settings, percent, &duration, command);
 
 	if ((klog_post = fwts_klog_read()) == NULL)
 		fwts_log_error(fw, "S4: hibernate: Cannot re-read kernel log.");

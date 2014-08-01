@@ -1006,11 +1006,11 @@ static int fwts_framework_acpica_parse(fwts_framework *fw, const char *arg)
 static int fwts_framework_pm_method_parse(fwts_framework *fw, const char *arg)
 {
 	if (strcmp(arg, "logind") == 0)
-		fw->pm_method = logind;
+		fw->pm_method = FWTS_PM_LOGIND;
 	else if (strcmp(arg, "pm-utils") == 0)
-		fw->pm_method = pm_utils;
+		fw->pm_method = FWTS_PM_PMUTILS;
 	else if (strcmp(arg, "sysfs") == 0)
-		fw->pm_method = sysfs;
+		fw->pm_method = FWTS_PM_SYSFS;
 	else {
 		fprintf(stderr, "--pm-method only supports logind, pm-utils, and sysfs methods\n");
 		return FWTS_ERROR;
@@ -1256,8 +1256,8 @@ int fwts_framework_args(const int argc, char **argv)
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
 
-	/* Set the power method to undefined before we parse arguments */
-	fw->pm_method = undefined;
+	/* Set the power method to FWTS_PM_UNDEFINED before we parse arguments */
+	fw->pm_method = FWTS_PM_UNDEFINED;
 
 	ret = fwts_args_add_options(fwts_framework_options,
 		fwts_framework_options_handler, NULL);

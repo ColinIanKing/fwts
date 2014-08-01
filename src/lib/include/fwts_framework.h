@@ -27,7 +27,7 @@
 #include "fwts_log.h"
 #include "fwts_list.h"
 #include "fwts_acpica_mode.h"
-#include "fwts_pm_method.h"
+#include "fwts_types.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 

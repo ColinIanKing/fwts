@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include 		\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
+	`pkg-config --cflags glib-2.0 gio-2.0` \
 	-DDATAROOTDIR=\"$(datarootdir)\"		\
 	-Wall -Werror -Wextra
 
@@ -11,7 +12,7 @@ libfwts_la_LDFLAGS = 			\
 	-lm -lpcre -lpthread 		\
 	-version-info 1:0:0 		\
 	-L$(top_builddir)/src/acpica/source/compiler \
-	-lfwtsiasl
+	-lfwtsiasl `pkg-config --libs glib-2.0 gio-2.0`
 
 libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
@@ -71,4 +72,5 @@ libfwts_la_SOURCES = 		\
 	fwts_text_list.c 	\
 	fwts_tty.c 		\
 	fwts_uefi.c 		\
-	fwts_wakealarm.c 
+	fwts_wakealarm.c \
+	fwts_pm_method.c

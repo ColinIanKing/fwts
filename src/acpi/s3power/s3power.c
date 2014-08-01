@@ -19,6 +19,7 @@
 #include <getopt.h>
 
 #include "fwts.h"
+#include "fwts_pm_method.h"
 
 #ifdef FWTS_ARCH_INTEL
 
@@ -114,6 +115,78 @@ static int s3power_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+/* Detect the best available power method */
+static void detect_pm_method(fwts_pm_method_vars *fwts_settings)
+{
+	if (fwts_logind_can_suspend(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_LOGIND;
+	else if (fwts_sysfs_can_suspend(fwts_settings))
+		fwts_settings->fw->pm_method = FWTS_PM_SYSFS;
+	else
+		fwts_settings->fw->pm_method = FWTS_PM_PMUTILS;
+}
+
+static int wrap_logind_do_suspend(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *str)
+{
+	FWTS_UNUSED(str);
+
+	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
+	/* This blocks by entering a glib mainloop */
+	*duration = fwts_logind_wait_for_resume_from_action(fwts_settings, PM_SUSPEND_LOGIND, 0);
+	fwts_log_info(fwts_settings->fw, "S3 duration = %d.", *duration);
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	return *duration > 0 ? 0 : 1;
+}
+
+static int wrap_sysfs_do_suspend(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *str)
+{
+	int status;
+
+	FWTS_UNUSED(str);
+	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
+	time(&(fwts_settings->t_start));
+	(void)fwts_klog_write(fwts_settings->fw, "Starting fwts suspend\n");
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_SUSPEND "\n");
+	status = fwts_sysfs_do_suspend(fwts_settings, false);
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
+	time(&(fwts_settings->t_end));
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	*duration = (int)(fwts_settings->t_end - fwts_settings->t_start);
+
+	return status;
+}
+
+static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
+	const int percent,
+	int *duration,
+	const char *command)
+{
+	int status;
+
+	fwts_progress_message(fwts_settings->fw, percent, "(Suspending)");
+	time(&(fwts_settings->t_start));
+	(void)fwts_klog_write(fwts_settings->fw, "Starting fwts suspend\n");
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_SUSPEND "\n");
+	(void)fwts_exec(command, &status);
+	(void)fwts_klog_write(fwts_settings->fw, FWTS_RESUME "\n");
+	(void)fwts_klog_write(fwts_settings->fw, "Finished fwts resume\n");
+	time(&(fwts_settings->t_end));
+	fwts_progress_message(fwts_settings->fw, percent, "(Resumed)");
+
+	*duration = (int)(fwts_settings->t_end - fwts_settings->t_start);
+
+	return status;
+}
+
 static void s3power_difference(fwts_framework *fw,
 	uint32_t before, uint32_t after,
 	uint32_t battery_capacity, char *units)
@@ -163,14 +236,51 @@ static int s3power_test(fwts_framework *fw)
 	int status;
 	int duration;
 
-	time_t t_start;
-	time_t t_end;
 	bool offline;
 
 	uint32_t capacity_before_mAh;
 	uint32_t capacity_after_mAh;
 	uint32_t capacity_before_mWh;
 	uint32_t capacity_after_mWh;
+
+	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
+
+	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
+
+	fwts_settings = calloc(1, sizeof(fwts_pm_method_vars));
+	if (fwts_settings == NULL)
+		return FWTS_OUT_OF_MEMORY;
+	fwts_settings->fw = fw;
+
+	if (fw->pm_method == FWTS_PM_UNDEFINED) {
+		/* Autodetection */
+		fwts_log_info(fw, "Detecting the power method.");
+		detect_pm_method(fwts_settings);
+	}
+
+	switch (fw->pm_method) {
+		case FWTS_PM_LOGIND:
+			fwts_log_info(fw, "Using logind as the default power method.");
+			if (fwts_logind_init_proxy(fwts_settings) != 0) {
+				fwts_log_error(fw, "Failure to connect to Logind.");
+				return FWTS_ERROR;
+			}
+			do_suspend = &wrap_logind_do_suspend;
+			break;
+		case FWTS_PM_PMUTILS:
+			fwts_log_info(fw, "Using pm-utils as the default power method.");
+			do_suspend = &wrap_pmutils_do_suspend;
+			break;
+		case FWTS_PM_SYSFS:
+			fwts_log_info(fw, "Using sysfs as the default power method.");
+			do_suspend = &wrap_sysfs_do_suspend;
+			break;
+		default:
+			/* This should never happen */
+			fwts_log_info(fw, "Using sysfs as the default power method.");
+			do_suspend = &wrap_sysfs_do_suspend;
+			break;
+	}
 
 	if (s3power_wait_for_adapter_offline(fw, &offline) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot check if machine is running on battery, aborting test.");
@@ -186,18 +296,13 @@ static int s3power_test(fwts_framework *fw)
 	fwts_wakealarm_trigger(fw, s3power_sleep_delay);
 
 	/* Do S3 here */
-	fwts_progress_message(fw, 100, "(Suspending)");
-	time(&t_start);
-	(void)fwts_exec(PM_SUSPEND, &status);
-	time(&t_end);
-	fwts_progress_message(fw, 100, "(Resumed)");
+	status = do_suspend(fwts_settings, 100, &duration, PM_SUSPEND);
 
 	s3power_get_remaining_capacity(fw, &capacity_after_mAh, &capacity_after_mWh);
 
 	s3power_difference(fw, capacity_before_mAh, capacity_after_mAh, battery_capacity_mAh, "mAh");
 	s3power_difference(fw, capacity_before_mWh, capacity_after_mWh, battery_capacity_mWh, "mWh");
 
-	duration = (int)(t_end - t_start);
 	fwts_log_info(fw, "pm-suspend returned %d after %d seconds.", status, duration);
 
 	if (duration < s3power_sleep_delay)

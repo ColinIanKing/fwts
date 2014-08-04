@@ -413,6 +413,11 @@ static int s3_test_multiple(fwts_framework *fw)
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
 
+#if !GLIB_CHECK_VERSION(2,35,0)
+	/* This is for backward compatibility with old glib versions */
+	g_type_init();
+#endif
+
 	if (s3_multiple == 1)
 		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
 

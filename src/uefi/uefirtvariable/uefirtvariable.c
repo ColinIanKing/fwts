@@ -1012,35 +1012,25 @@ static int setvariable_test2(fwts_framework *fw, uint16_t *varname)
 	if (ret != FWTS_OK)
 		goto err_restore_env1;
 
-	ret = setvariable_insertvariable(fw, attributes, 0,
-		varname, &gtestguid1, datadiff1);
-	if (ret != FWTS_OK)
-		return ret;
-
 	/* insert different data */
 	datasize = 20;
 
 	ret = setvariable_insertvariable(fw, attributes, datasize,
 		varname, &gtestguid1, datadiff2);
 	if (ret != FWTS_OK)
-		return ret;
+		goto err_restore_env1;
 
 	ret = setvariable_checkvariable(fw, datasize, varname,
 		&gtestguid1, datadiff2);
 	if (ret != FWTS_OK)
 		goto err_restore_env2;
 
-	ret = setvariable_insertvariable(fw, attributes, 0,
-		varname, &gtestguid1, datadiff2);
-	if (ret != FWTS_OK)
-		return ret;
-
 	datasize = 5;
 
 	ret = setvariable_insertvariable(fw, attributes, datasize,
 		varname, &gtestguid1, datadiff3);
 	if (ret != FWTS_OK)
-		return ret;
+		goto err_restore_env2;
 
 	ret = setvariable_checkvariable(fw, datasize, varname,
 		&gtestguid1, datadiff3);

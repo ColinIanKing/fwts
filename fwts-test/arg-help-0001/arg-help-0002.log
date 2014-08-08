@@ -68,6 +68,11 @@
                              width in characters.
 --lspci                      Specify path to lspci
                              , e.g. --lspci=path.
+--pm-method                  Select the power
+                             method to use.
+                             Accepted values are
+                             "logind", "pm-utils",
+                             "sysfs"
 -P, --power-states           Test S3, S4 power
                              states.
 -q, --quiet                  Run quietly.

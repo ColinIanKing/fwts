@@ -684,14 +684,14 @@ typedef struct {
 typedef struct {
 	uint64_t	cnt_control_base_phys_addr;
 	uint32_t	reserved;
-	uint32_t	secure_PL1_timer_GSIV;
-	uint32_t	secure_PL1_timer_flags;
-	uint32_t	non_secure_PL1_timer_GSIV;
-	uint32_t	non_secure_PL1_timer_flags;
+	uint32_t	secure_EL1_timer_GSIV;
+	uint32_t	secure_EL1_timer_flags;
+	uint32_t	non_secure_EL1_timer_GSIV;
+	uint32_t	non_secure_EL1_timer_flags;
 	uint32_t	virtual_timer_GSIV;
 	uint32_t	virtual_timer_flags;
-	uint32_t	non_secure_PL2_timer_GSIV;
-	uint32_t	non_secure_PL2_timer_flags;
+	uint32_t	non_secure_EL2_timer_GSIV;
+	uint32_t	non_secure_EL2_timer_flags;
 	uint64_t	cnt_read_base_phys_addr;
 	uint32_t	platform_timer_count;
 	uint32_t	platform_timer_offset;

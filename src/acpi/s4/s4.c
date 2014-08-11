@@ -348,6 +348,11 @@ static int s4_test_multiple(fwts_framework *fw)
 	bool retried = false;
 	char tmp[32];
 
+#if !GLIB_CHECK_VERSION(2,35,0)
+	/* This is for backward compatibility with old glib versions */
+	g_type_init();
+#endif
+
         if (s4_multiple == 1)
                 fwts_log_info(fw, "Defaulted to run 1 test, run --s4-multiple=N to run more S4 cycles\n");
 

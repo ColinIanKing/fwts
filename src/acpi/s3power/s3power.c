@@ -247,6 +247,11 @@ static int s3power_test(fwts_framework *fw)
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
+#if !GLIB_CHECK_VERSION(2,35,0)
+	/* This is for backward compatibility with old glib versions */
+	g_type_init();
+#endif
+
 	fwts_settings = calloc(1, sizeof(fwts_pm_method_vars));
 	if (fwts_settings == NULL)
 		return FWTS_OUT_OF_MEMORY;

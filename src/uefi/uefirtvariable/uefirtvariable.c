@@ -780,6 +780,19 @@ static int setvariable_insertvariable(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if (ioret == -1) {
+		if ((status == EFI_INVALID_PARAMETER) &&
+			((attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
+			(attributes | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
+			(attributes | FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw,
+				"EFI_INVALID_PARAMETER shall be returned, "
+				"when firmware doesn't support these operations "
+				"with EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS or "
+				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS "
+				"EFI_VARIABLE_APPEND_WRITE attributes is set.");
+			return FWTS_SKIP;
+		}
 		if (datasize == 0)
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeSetVariable",

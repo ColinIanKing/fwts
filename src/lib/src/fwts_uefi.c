@@ -458,6 +458,7 @@ static uefistatus_info uefistatus_info_table[] = {
 	{ EFI_END_OF_FILE,		"EFI_END_OF_FILE",		"The end of the file was reached." },
 	{ EFI_INVALID_LANGUAGE,		"EFI_INVALID_LANGUAGE",		"The language specified was invalid." },
 	{ EFI_COMPROMISED_DATA,		"EFI_COMPROMISED_DATA",		"The security status of the data is unknown or compromised and the data must be updated or replaced to restore a valid security status." },
+	{ EFI_IP_ADDRESS_CONFLICT,		"EFI_IP_ADDRESS_CONFLICT",		"There is an address conflict address allocation." },
 	{ ~0, NULL, NULL }
 };
 

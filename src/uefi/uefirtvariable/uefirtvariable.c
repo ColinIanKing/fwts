@@ -941,11 +941,20 @@ static int setvariable_invalidattr(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if ((status == EFI_SUCCESS) && (ioret != -1)) {
-		fwts_warning(fw,
-			"After ExitBootServices() is performed, the "
-			"attributes %" PRIu32 ", "
-			"for SetVariable shouldn't be set successfully.",
-			attributes);
+		if ((attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) &&
+			(attributes | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) &&
+			(status != EFI_INVALID_PARAMETER)) {
+			fwts_warning(fw,
+				"Both the EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS attribute and the "
+				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS attribute are set "
+				"in a SetVariable call, then the firmware must return EFI_INVALID_PARAMETER.");
+		} else {
+			fwts_warning(fw,
+				"After ExitBootServices() is performed, the "
+				"attributes %" PRIu32 ", "
+				"for SetVariable shouldn't be set successfully.",
+				attributes);
+		}
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -1225,6 +1234,36 @@ static int setvariable_test6(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int setvariable_test7(fwts_framework *fw)
+{
+	int ret;
+	uint64_t datasize = 10;
+	uint8_t datadiff = 0;
+	uint32_t attr;
+
+	attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS;
+	ret = setvariable_invalidattr(fw, attr, datasize, variablenametest, &gtestguid1, datadiff);
+		if (ret == FWTS_ERROR) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
+				"Successfully set variable with both authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) attributes are set, expected fail.");
+			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			return FWTS_ERROR;
+		}
+
+		if (setvariable_checkvariable_notfound(fw, variablenametest,
+			&gtestguid1) == FWTS_ERROR) {
+			fwts_log_info(fw,
+				"Get the variable which is set by SetVariable with both "
+				"authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) "
+				"attributes are set %" PRIu32 " , test failed.", attr);
+			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+			return FWTS_ERROR;
+		}
+	return FWTS_OK;
+}
+
 static int do_queryvariableinfo(
 	uint64_t *status,
 	uint64_t *remvarstoragesize,
@@ -1428,6 +1467,12 @@ static int uefirtvariable_test3(fwts_framework *fw)
 	if (ret != FWTS_OK)
 		return ret;
 	fwts_passed(fw, "SetVariable on Invalid Attributes passed.");
+
+	fwts_log_info(fw, "Testing SetVariable with both Authenticated Attributes set.");
+	ret = setvariable_test7(fw);
+	if (ret != FWTS_OK)
+		return ret;
+	fwts_passed(fw, "Testing SetVariable with both Authenticated Attributes set passed.");
 
 	return FWTS_OK;
 }

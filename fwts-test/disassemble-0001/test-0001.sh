@@ -19,14 +19,14 @@ else
 	failed=1
 fi
 
-for I in DSDT SSDT0 SSDT1 SSDT2 SSDT3 SSDT4
+for I in DSDT0 SSDT1 SSDT2 SSDT3 SSDT4 SSDT5
 do
 	TEST="Test --disassemble-aml against known $I"
 	#
 	#  Remove lines that contain a tmp file output name in disassembly
 	#
-	grep -v "/tmp/fwts_iasl" $TMPDIR/$I.dsl | grep -v "AML Disassembler version"  > $TMPDIR/$I.dsl.fixed.$$
-	grep -v "/tmp/fwts_iasl" $HERE/$I.dsl.original | grep -v "AML Disassembler version" > $TMPDIR/$I.dsl.orig.fixed.$$
+	grep -v "/tmp/fwts_" $TMPDIR/$I.dsl | grep -v "AML Disassembler version" | grep -v "Disassembly of" > $TMPDIR/$I.dsl.fixed.$$
+	grep -v "/tmp/fwts_" $HERE/$I.dsl.original | grep -v "AML Disassembler version" | grep -v "Disassembly of" > $TMPDIR/$I.dsl.orig.fixed.$$
 	
 	diff $TMPDIR/$I.dsl.fixed.$$ $TMPDIR/$I.dsl.orig.fixed.$$
 	if [ $? -eq 0 ]; then 
@@ -39,5 +39,5 @@ do
 	rm $TMPDIR/$I.dsl.fixed.$$ $TMPDIR/$I.dsl.orig.fixed.$$
 done
 
-rm -rf $TMPDIR $TMPLOG
+#rm -rf $TMPDIR $TMPLOG
 exit $failed

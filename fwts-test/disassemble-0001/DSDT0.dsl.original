@@ -1,9 +1,9 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140724-64 [Jul 24 2014]
+ * AML Disassembler version 20140627-64 [Jul 28 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_1052_DSDT.dat, Thu Jul 24 20:48:05 2014
+ * Disassembly of /tmp/fwts_tmp_table_8156_DSDT_0.dsl, Mon Jul 28 11:24:19 2014
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -16,13 +16,13 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20060608 (537265672)
  */
-DefinitionBlock ("/tmp/fwts_iasl_1052_DSDT.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
+DefinitionBlock ("/tmp/fwts_tmp_table_8156_DSDT_0.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
 
     External (_PR_.CPU0._PPC, UnknownObj)
-    External (CFGD, UnknownObj)
-    External (PDC0, UnknownObj)
-    External (PDC1, UnknownObj)
+    External (CFGD, IntObj)
+    External (PDC0, IntObj)
+    External (PDC1, IntObj)
 
     Name (Z000, One)
     Name (Z001, 0x02)

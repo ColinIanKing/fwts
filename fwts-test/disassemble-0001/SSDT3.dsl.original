@@ -1,46 +1,262 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140724-64 [Jul 24 2014]
+ * AML Disassembler version 20140724-64 [Aug  4 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_iasl_1052_SSDT.dat, Thu Jul 24 20:48:06 2014
+ * Disassembly of /tmp/fwts_tmp_table_3185_SSDT_2.dsl, Thu Aug 14 17:39:37 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
- *     Length           0x000000A6 (166)
+ *     Length           0x0000025F (607)
  *     Revision         0x01
- *     Checksum         0x6D
+ *     Checksum         0xC8
  *     OEM ID           "PmRef"
- *     OEM Table ID     "Cpu1Tst"
+ *     OEM Table ID     "Cpu0Tst"
  *     OEM Revision     0x00003000 (12288)
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_iasl_1052_SSDT.aml", "SSDT", 1, "PmRef", "Cpu1Tst", 0x00003000)
+DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
 {
 
-    External (_PR_.CPU0._PTC, IntObj)
-    External (_PR_.CPU0._TSS, IntObj)
-    External (_PR_.CPU1, DeviceObj)
-    External (CFGD, UnknownObj)
-    External (PDC1, UnknownObj)
+    External (_PR_.CPU0, ProcessorObj)
+    External (_PSS, IntObj)
+    External (CFGD, IntObj)
+    External (PDC0, IntObj)
 
-    Scope (\_PR.CPU1)
+    Scope (\_PR.CPU0)
     {
         Name (_TPC, 0x00)  // _TPC: Throttling Present Capabilities
         Method (_PTC, 0, NotSerialized)  // _PTC: Processor Throttling Control
         {
-            Return (\_PR.CPU0._PTC) /* External reference */
+            If (And (PDC0, 0x04))
+            {
+                Return (Package (0x02)
+                {
+                    ResourceTemplate ()
+                    {
+                        Register (FFixedHW, 
+                            0x00,               // Bit Width
+                            0x00,               // Bit Offset
+                            0x0000000000000000, // Address
+                            ,)
+                    }, 
+
+                    ResourceTemplate ()
+                    {
+                        Register (FFixedHW, 
+                            0x00,               // Bit Width
+                            0x00,               // Bit Offset
+                            0x0000000000000000, // Address
+                            ,)
+                    }
+                })
+            }
+
+            Return (Package (0x02)
+            {
+                ResourceTemplate ()
+                {
+                    Register (SystemIO, 
+                        0x04,               // Bit Width
+                        0x01,               // Bit Offset
+                        0x0000000000001010, // Address
+                        ,)
+                }, 
+
+                ResourceTemplate ()
+                {
+                    Register (SystemIO, 
+                        0x04,               // Bit Width
+                        0x01,               // Bit Offset
+                        0x0000000000001010, // Address
+                        ,)
+                }
+            })
         }
 
+        Name (TSSI, Package (0x08)
+        {
+            Package (0x05)
+            {
+                0x64, 
+                0x03E8, 
+                0x00, 
+                0x00, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x58, 
+                0x036B, 
+                0x00, 
+                0x0F, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x4B, 
+                0x02EE, 
+                0x00, 
+                0x0E, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x3F, 
+                0x0271, 
+                0x00, 
+                0x0D, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x32, 
+                0x01F4, 
+                0x00, 
+                0x0C, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x26, 
+                0x0177, 
+                0x00, 
+                0x0B, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x19, 
+                0xFA, 
+                0x00, 
+                0x0A, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x0D, 
+                0x7D, 
+                0x00, 
+                0x09, 
+                0x00
+            }
+        })
+        Name (TSSM, Package (0x08)
+        {
+            Package (0x05)
+            {
+                0x64, 
+                0x03E8, 
+                0x00, 
+                0x00, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x58, 
+                0x036B, 
+                0x00, 
+                0x1E, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x4B, 
+                0x02EE, 
+                0x00, 
+                0x1C, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x3F, 
+                0x0271, 
+                0x00, 
+                0x1A, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x32, 
+                0x01F4, 
+                0x00, 
+                0x18, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x26, 
+                0x0177, 
+                0x00, 
+                0x16, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x19, 
+                0xFA, 
+                0x00, 
+                0x14, 
+                0x00
+            }, 
+
+            Package (0x05)
+            {
+                0x0D, 
+                0x7D, 
+                0x00, 
+                0x12, 
+                0x00
+            }
+        })
+        Name (TSSF, 0x00)
         Method (_TSS, 0, NotSerialized)  // _TSS: Throttling Supported States
         {
-            Return (\_PR.CPU0._TSS) /* External reference */
+            If (LAnd (LNot (TSSF), CondRefOf (_PSS)))
+            {
+                Store (_PSS, Local0)
+                Store (SizeOf (Local0), Local1)
+                Decrement (Local1)
+                Store (DerefOf (Index (DerefOf (Index (Local0, Local1)), 0x01)), 
+                    Local2)
+                Store (0x00, Local3)
+                While (LLess (Local3, SizeOf (TSSI)))
+                {
+                    Store (Divide (Multiply (Local2, Subtract (0x08, Local3)), 0x08, 
+                        ), Local4)
+                    Store (Local4, Index (DerefOf (Index (TSSI, Local3)), 0x01))
+                    Store (Local4, Index (DerefOf (Index (TSSM, Local3)), 0x01))
+                    Increment (Local3)
+                }
+
+                Store (Ones, TSSF) /* \_PR_.CPU0.TSSF */
+            }
+
+            If (And (PDC0, 0x04))
+            {
+                Return (TSSM) /* \_PR_.CPU0.TSSM */
+            }
+
+            Return (TSSI) /* \_PR_.CPU0.TSSI */
         }
 
         Method (_TSD, 0, NotSerialized)  // _TSD: Throttling State Dependencies
         {
-            If (LAnd (And (CFGD, 0x01000000), LNot (And (PDC1, 0x04
+            If (LAnd (And (CFGD, 0x01000000), LNot (And (PDC0, 0x04
                 ))))
             {
                 Return (Package (0x01)
@@ -62,7 +278,7 @@ DefinitionBlock ("/tmp/fwts_iasl_1052_SSDT.aml", "SSDT", 1, "PmRef", "Cpu1Tst", 
                 {
                     0x05, 
                     0x00, 
-                    0x01, 
+                    0x00, 
                     0xFC, 
                     0x01
                 }

@@ -255,9 +255,8 @@ Batch tests:
   PnP BIOS Support Installation structure test.
  securebootcert  (1 test):
   UEFI secure boot test.
- syntaxcheck     (2 tests):
-  Disassemble and reassemble DSDT
-  Disassemble and reassemble SSDT
+ syntaxcheck     (1 test):
+  Disassemble and reassemble DSDT and SSDTs.
  uefibootpath    (1 test):
   Test UEFI Boot Path Boot####.
  version         (4 tests):
@@ -371,4 +370,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 288 tests
+Total of 287 tests

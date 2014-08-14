@@ -36,7 +36,7 @@ Batch tests:
  pciirq          PCI IRQ Routing Table test.
  pnp             BIOS Support Installation structure test.
  securebootcert  UEFI secure boot test.
- syntaxcheck     Re-assemble DSDT and find syntax errors and warnings.
+ syntaxcheck     Re-assemble DSDT and SSDTs to find syntax errors and warnings.
  uefibootpath    Sanity check for UEFI Boot Path Boot####.
  version         Gather kernel system information.
  virt            CPU Virtualisation Configuration test.

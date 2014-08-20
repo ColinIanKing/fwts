@@ -456,7 +456,7 @@ static int s3_test_multiple(fwts_framework *fw)
 			tv.tv_usec = (awake_delay % 1000)*1000;
 			select(0, NULL, NULL, NULL, &tv);
 
-			for (j = 0; j < awake_delay / 1000; i++) {
+			for (j = 0; j < awake_delay / 1000; j++) {
 				snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)",
 					j + 1, awake_delay / 1000);
 				fwts_progress_message(fw, percent, buffer);

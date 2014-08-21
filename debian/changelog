@@ -1,3 +1,48 @@
+fwts (14.08.00-0ubuntu0) utopic; urgency=low
+ 
+  [Alberto Milone]
+  * Make the --pm-method argument part of fwts_framework
+  * Store all the pm_method related functions in fwts_pm_method.c
+  * s3.c: make use of the functions in fwts_power_method.h
+  * s4.c: add support for logind and sysfs methods
+  * fwts_pm_method.h: move _cleanup_free_ here and share it with s3 and s4
+  * s3power.c: add support for logind and sysfs methods
+  * doc/fwts.1: update man page since --pm-method parameter also applies to S4
+  * s3.c: add backward compatibility with older glib releases
+  * s3power.c, s4.c: add backward compatibility with older glib releases
+
+  [Alex Hung]
+  * ACPI: change GTDT field names in ACPI 5.1 (LP: #1350170)
+  * fwts-test: update arg-help-0001/0002 for pm-method changes
+  * fwts-test: fix up tests related to iasl and syntaxcheck changes
+
+  [Colin Ian King]
+  * ACPICA: update to version 20140724 (LP: #1348342)
+  * fwts-test: update disassemble test to sync with latest ACPICA changes
+  * fwts-test: update syntaxcheck test to sync with latest ACPICA changes
+  * ACPI: Add new ACPI 5.1 MADT stuctures and checks (LP: #1348581)
+  * ACPI: Add new ACPI 5.1 FADT fields and update acpidump (LP: #1348598)
+  * fwts-test: update ACPI table related tests due to ACPI 5.1 fwts changes
+  * ACPI: Fix up GTDT corrections as in ACPI 5.1 (LP: #1348618)
+  * lib + tests: re-work iASL backand and API to handle externals 
+    (LP: #1317390)
+  * Update contributors in man page
+  * lib: don't use #pragma GCC push and pop
+
+  [Ivan Hu]
+  * uefirtvariable: setvariable without deleting the original variable 
+    (LP: #1354301)
+  * uefi: add the variable attribute definition for append write (LP: #1356194)
+  * lib: uefi: add the status error report for the IP addr conflict 
+    (LP: #1356195)
+  * uefirtvariable: skip test when specific attributes not supported 
+    (LP: #1356199)
+  * uefirtvariable: add test for setvariable with both authenticated attributes
+    are set (LP: #1356207)
+  * s3: fix multiple s3 tests stop working (LP: #1359037)
+
+ -- Kun Yang <kun.yang@canonical.com>  Thu, 21 Aug 2014 20:48:36 +0800
+
 fwts (14.07.00-0ubuntu0) utopic; urgency=low
 
   [Alberto Milone]

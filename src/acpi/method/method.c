@@ -2400,7 +2400,7 @@ static void method_test_CPC_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	/* Something is really wrong if we don't have any elements in _PCT */
+	/* Something is really wrong if we don't have any elements in _CPC */
 	if (method_package_count_equal(fw, name, "_CPC", obj, 17) != FWTS_OK)
 		return;
 

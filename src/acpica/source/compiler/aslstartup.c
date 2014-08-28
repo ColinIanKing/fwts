@@ -113,7 +113,6 @@
  *
  *****************************************************************************/
 
-
 #include "aslcompiler.h"
 #include "actables.h"
 #include "acdisasm.h"
@@ -356,8 +355,11 @@ AslDoDisassembly (
         return (AE_CTRL_CONTINUE);
     }
 
-    ACPI_FREE (Gbl_Files[ASL_FILE_INPUT].Filename);
+    /* No need to free the filename string */
+
     Gbl_Files[ASL_FILE_INPUT].Filename = NULL;
+
+    CmDeleteCaches ();
     return (AE_OK);
 }
 
@@ -397,8 +399,13 @@ AslDoOneFile (
         return (Status);
     }
 
-    Gbl_Files[ASL_FILE_INPUT].Filename = Filename;
-    UtConvertBackslashes (Filename);
+    /* Take a copy of the input filename, convert any backslashes */
+
+    Gbl_Files[ASL_FILE_INPUT].Filename =
+        UtStringCacheCalloc (strlen (Filename) + 1);
+
+    strcpy (Gbl_Files[ASL_FILE_INPUT].Filename, Filename);
+    UtConvertBackslashes (Gbl_Files[ASL_FILE_INPUT].Filename);
 
     /*
      * AML Disassembly (Optional)
@@ -468,7 +475,6 @@ AslDoOneFile (
 
         if (Gbl_Signature)
         {
-            ACPI_FREE (Gbl_Signature);
             Gbl_Signature = NULL;
         }
 

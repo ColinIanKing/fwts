@@ -113,7 +113,6 @@
  *
  *****************************************************************************/
 
-
 #ifndef __ASLCOMPILER_H
 #define __ASLCOMPILER_H
 
@@ -183,6 +182,11 @@ AslPushInputFileStack (
     FILE                    *InputFile,
     char                    *Filename);
 
+void
+AslParserCleanup (
+    void);
+
+
 /*
  * aslstartup - entered from main()
  */
@@ -226,6 +230,14 @@ void
 CmCleanupAndExit (
     void);
 
+void
+CmDeleteCaches (
+    void);
+
+
+/*
+ * aslascii - ascii support
+ */
 ACPI_STATUS
 FlCheckForAcpiTable (
     FILE                    *Handle);
@@ -986,11 +998,15 @@ UtSetParseOpName (
     ACPI_PARSE_OBJECT       *Op);
 
 char *
-UtGetStringBuffer (
+UtStringCacheCalloc (
     UINT32                  Length);
 
 void
 UtExpandLineBuffers (
+    void);
+
+void
+UtFreeLineBuffers (
     void);
 
 ACPI_STATUS

@@ -113,7 +113,6 @@
  *
  *****************************************************************************/
 
-
 #define __UTRESRC_C__
 
 #include "acpi.h"
@@ -172,7 +171,9 @@ const char                      *AcpiGbl_IoDecode[] =
 const char                      *AcpiGbl_LlDecode[] =
 {
     "ActiveHigh",
-    "ActiveLow"
+    "ActiveLow",
+    "ActiveBoth",
+    "Reserved"
 };
 
 const char                      *AcpiGbl_MaxDecode[] =

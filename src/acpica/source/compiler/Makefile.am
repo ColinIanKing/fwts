@@ -59,6 +59,7 @@ CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h \
 libfwtsiasl_la_CPPFLAGS = $(AM_CPPFLAGS)
 libfwtsiasl_la_SOURCES = 			\
 	fwts_iasl_interface.c 			\
+	aslascii.c				\
 	aslcompile.c 				\
 	aslcompilerlex.c 			\
 	aslcompilerparse.c 			\

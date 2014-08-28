@@ -250,6 +250,8 @@
 #define METHOD_OPTIONAL		2
 #define METHOD_MOBILE		4
 
+#define ACPI_TYPE_INTBUF	(ACPI_TYPE_INVALID + 1)
+
 #define method_check_type(fw, name, buf, type) 			\
 	method_check_type__(fw, name, buf, type, #type)
 
@@ -270,6 +272,19 @@ typedef void (*method_test_return)(fwts_framework *fw, char *name,
  */
 
 /****************************************************************************/
+
+static bool method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
+{
+	if (t1 == ACPI_TYPE_INTBUF &&
+	    (t2 == ACPI_TYPE_INTEGER || t2 == ACPI_TYPE_BUFFER))
+		return true;
+
+	if (t2 == ACPI_TYPE_INTBUF &&
+	    (t1 == ACPI_TYPE_INTEGER || t1 == ACPI_TYPE_BUFFER))
+		return true;
+
+	return t1 == t2;
+}
 
 /*
  *  method_passed_sane()
@@ -586,7 +601,7 @@ static int method_check_type__(
 
 	obj = buf->Pointer;
 
-	if (obj->Type != type) {
+	if (!method_type_matches(obj->Type, type)) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType",
 			"Method %s did not return %s.", name, type_name);
 		return FWTS_ERROR;
@@ -669,7 +684,7 @@ static void method_test_NULL_return(
 	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
 		if ((buf != NULL) && (buf->Pointer != NULL)) {
 			ACPI_OBJECT *objtmp = buf->Pointer;
-			if (objtmp->Type == ACPI_TYPE_INTEGER) {
+			if (method_type_matches(objtmp->Type, ACPI_TYPE_INTEGER)) {
 				fwts_passed(fw, "%s returned an ACPI_TYPE_INTEGER as expected in slack mode.",
 					name);
 				return;
@@ -754,7 +769,6 @@ static void method_test_polling_return(
 	}
 }
 
-#define ACPI_TYPE_INTBUF	(ACPI_TYPE_INVALID + 1)
 
 /*
  *  Common types that can be returned. This is not a complete
@@ -800,7 +814,7 @@ static int method_package_elements_all_type(
 	char tmp[128];
 
 	for (i = 0; i < obj->Package.Count; i++) {
-		if (obj->Package.Elements[i].Type != type) {
+		if (!method_type_matches(obj->Package.Elements[i].Type, type)) {
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s package element %" PRIu32 " was not the expected "
@@ -841,7 +855,7 @@ static int method_package_elements_type(
 		return FWTS_ERROR;
 
 	for (i = 0; i < obj->Package.Count; i++) {
-		if (obj->Package.Elements[i].Type != info[i].type) {
+		if (!method_type_matches(obj->Package.Elements[i].Type, info[i].type)) {
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s package element %" PRIu32 " (%s) was not the expected "

@@ -1038,7 +1038,7 @@ static int method_test_HRV(fwts_framework *fw)
 static int method_test_STR(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_STR", NULL, 0, method_test_string_return, NULL);
+		"_STR", NULL, 0, method_test_buffer_return, NULL);
 }
 
 static void method_test_PLD_return(

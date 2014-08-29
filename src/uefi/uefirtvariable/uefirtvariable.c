@@ -781,9 +781,9 @@ static int setvariable_insertvariable(
 
 	if (ioret == -1) {
 		if ((status == EFI_INVALID_PARAMETER) &&
-			((attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
-			(attributes | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
-			(attributes | FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
+			((attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
+			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
+			(attributes & FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
 			fwts_uefi_print_status_info(fw, status);
 			fwts_skipped(fw,
 				"EFI_INVALID_PARAMETER shall be returned, "
@@ -941,8 +941,8 @@ static int setvariable_invalidattr(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if ((status == EFI_SUCCESS) && (ioret != -1)) {
-		if ((attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) &&
-			(attributes | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) &&
+		if ((attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) &&
+			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) &&
 			(status != EFI_INVALID_PARAMETER)) {
 			fwts_warning(fw,
 				"Both the EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS attribute and the "

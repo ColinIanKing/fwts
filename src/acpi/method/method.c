@@ -60,6 +60,7 @@
  * _BTM  10.2.2.8	Y
  * _BTP  10.2.2.7	Y
  * _CBA  PCI f/w spec	Y
+ * _CCA  6.2.17		Y
  * _CDM  6.2.1		Y
  * _CID  6.1.2		N
  * _CLS  6.1.3		N requires PCI SIG class info
@@ -2006,6 +2007,12 @@ static int method_test_PXM(fwts_framework *fw)
 		"_PXM", NULL, 0, method_test_integer_return, NULL);
 }
 
+/* Section 6.2.17 _CCA */
+static int method_test_CCA(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CCA", NULL, 0, method_test_integer_return, NULL);
+}
 
 /*
  * Section 6.3 Device Insertion, Removal and Status Objects
@@ -5006,6 +5013,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PXM, "Test _PXM (Proximity)." },
 	/* { method_test_SLI, "Test _SLI (System Locality Information)." }, */
 	/* { method_test_SRS, "Test _SRS (Set Resource Settings)." }, */
+	{ method_test_CCA, "Test _CCA (Cache Coherency Attribute)." },
 
 	/* Section 6.3 Device Insertion, Removal and Status Objects */
 

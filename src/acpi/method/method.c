@@ -80,6 +80,7 @@
  * _DMA  6.2.4		Y
  * _DOD  B.4.2		Y
  * _DOS  B.4.1		Y
+ * _DSD  6.2.5		Y
  * _DSM  9.14.1		N
  * _DSS  B.6.8		Y
  * _DSW  7.2.1		Y
@@ -1902,6 +1903,60 @@ static int method_test_FIX(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_FIX", NULL, 0, method_test_FIX_return, NULL);
+}
+
+/*
+ *  Section 6.2.5 _DSD Device Specific Data, ACPI 5.1
+ */
+static void method_test_DSD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Must be an even number of items in package */
+	if (obj->Package.Count & 1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_DSDElementCount",
+			"There must be an even number of items in the %s "
+			"package, instead, got %" PRIu32 " elements.",
+			name, obj->Package.Count);
+		return;
+	}
+	for (i = 0; i < obj->Package.Count; i += 2) {
+		/* UUID should be a buffer */
+		if (!method_type_matches(obj->Package.Elements[i].Type, ACPI_TYPE_BUFFER)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DSDElementBuffer",
+				"%s package element %" PRIu32 " was not the expected "
+				"type '%s', was instead type '%s'.",
+				name, i,
+				method_type_name(ACPI_TYPE_BUFFER),
+				method_type_name(obj->Package.Elements[i].Type));
+		}
+
+		/* Data should be a package */
+		if (!method_type_matches(obj->Package.Elements[i + 1].Type, ACPI_TYPE_PACKAGE)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DSDElementPackage",
+				"%s package element %" PRIu32 " was not the expected "
+				"type '%s', was instead type '%s'.",
+				name, i + 1,
+				method_type_name(ACPI_TYPE_PACKAGE),
+				method_type_name(obj->Package.Elements[i + 1].Type));
+		}
+	}
+}
+
+static int method_test_DSD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_DSD", NULL, 0, method_test_DSD_return, NULL);
 }
 
 static int method_test_DIS(fwts_framework *fw)
@@ -4939,6 +4994,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	{ method_test_CDM, "Test _CDM (Clock Domain)." },
 	{ method_test_CRS, "Test _CRS (Current Resource Settings)." },
+	{ method_test_DSD, "Test _DSD (Device Specific Data)." },
 	{ method_test_DIS, "Test _DIS (Disable)." },
 	{ method_test_DMA, "Test _DMA (Direct Memory Access)." },
 	{ method_test_FIX, "Test _FIX (Fixed Register Resource Provider)." },

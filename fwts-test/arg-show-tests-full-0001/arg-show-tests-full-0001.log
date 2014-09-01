@@ -59,7 +59,7 @@ Batch tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
- method          (156 tests):
+ method          (157 tests):
   Test Method Names.
   Test _AEI.
   Test _PIC (Inform AML of Interrupt Model).
@@ -82,6 +82,7 @@ Batch tests:
   Test _HPP (Hot Plug Parameters).
   Test _PRS (Possible Resource Settings).
   Test _PXM (Proximity).
+  Test _CCA (Cache Coherency Attribute).
   Test _EDL (Eject Device List).
   Test _EJD (Ejection Dependent Device).
   Test _EJ0 (Eject).
@@ -371,4 +372,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 288 tests
+Total of 289 tests

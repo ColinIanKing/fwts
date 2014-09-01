@@ -2161,17 +2161,68 @@ static int method_test_DSW(fwts_framework *fw)
 		arg, 3, method_test_NULL_return, NULL);
 }
 
-#define method_test_PSx(name)						\
-static int method_test ## name(fwts_framework *fw)			\
-{									\
-	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
-		# name, NULL, 0, method_test_NULL_return, # name);	\
+static int method_test_PSx(fwts_framework *fw, char *name)
+{
+	/*
+	 *  iASL (ACPICA commit 6922796cfdfca041fdb96dc9e3918cbc7f43d830)
+	 *  checks that _PS0 must exist if we have _PS1, _PS2, _PS3
+	 *  so check this here too.
+	 */
+	if ((fwts_acpi_object_exists(name) != NULL) &&
+            (fwts_acpi_object_exists("_PS0") == NULL)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_PSx",
+			"%s requires that the _PS0 "
+			"control method must also exist, however, "
+			"it was not found.", name);
+	}
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		name, NULL, 0, method_test_NULL_return, name);
 }
 
-method_test_PSx(_PS0)
-method_test_PSx(_PS1)
-method_test_PSx(_PS2)
-method_test_PSx(_PS3)
+static int method_test_PS0(fwts_framework *fw)
+{
+	/*
+	 *  iASL (ACPICA commit 6922796cfdfca041fdb96dc9e3918cbc7f43d830)
+	 *  checks that one of _PS1, _PS2, _PS3 must exist if _PS0 exists.
+	 */
+	if (fwts_acpi_object_exists("_PS0") != NULL) {
+		bool ok = false;
+		int i;
+
+		for (i = 1; i < 4; i++) {
+			char name[5];
+
+			snprintf(name, sizeof(name), "_PS%1d", i);
+			if (fwts_acpi_object_exists(name) != NULL) {
+				ok = true;
+				break;
+			}
+		}
+		if (!ok) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_PS0",
+				"_PS0 requires that one of the _PS1, _PS2, _PS3 "
+				"control methods must also exist, however, "
+				"none were found.");
+		}
+	}
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PS0",
+		 NULL, 0, method_test_NULL_return, "_PS0");
+}
+
+static int method_test_PS1(fwts_framework *fw)
+{
+	return method_test_PSx(fw, "_PS1");
+}
+
+static int method_test_PS2(fwts_framework *fw)
+{
+	return method_test_PSx(fw, "_PS2");
+}
+
+static int method_test_PS3(fwts_framework *fw)
+{
+	return method_test_PSx(fw, "_PS3");
+}
 
 static int method_test_PSC(fwts_framework *fw)
 {

@@ -23,6 +23,7 @@
 #include "fwts.h"
 #include "fwts_pm_method.h"
 
+#if FWTS_ENABLE_LOGIND
 /*
  *  logind_do()
  *  call Logind to perform an action
@@ -360,6 +361,7 @@ bool fwts_logind_can_hibernate(fwts_pm_method_vars *fwts_settings)
 {
 	return logind_can_do_action(fwts_settings, "CanHibernate");
 }
+#endif
 
 /*
  *  fwts_sysfs_can_suspend()

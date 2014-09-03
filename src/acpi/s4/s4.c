@@ -89,14 +89,18 @@ static void s4_check_log(fwts_framework *fw,
 /* Detect the best power method available */
 static void detect_pm_method(fwts_pm_method_vars *fwts_settings)
 {
+#if FWTS_ENABLE_LOGIND
 	if (fwts_logind_can_hibernate(fwts_settings))
 		fwts_settings->fw->pm_method = FWTS_PM_LOGIND;
-	else if (fwts_sysfs_can_hibernate(fwts_settings))
+	else
+#endif
+	if (fwts_sysfs_can_hibernate(fwts_settings))
 		fwts_settings->fw->pm_method = FWTS_PM_SYSFS;
 	else
 		fwts_settings->fw->pm_method = FWTS_PM_PMUTILS;
 }
 
+#if FWTS_ENABLE_LOGIND
 static int wrap_logind_do_s4(fwts_pm_method_vars *fwts_settings,
 	const int percent,
 	int *duration,
@@ -113,6 +117,7 @@ static int wrap_logind_do_s4(fwts_pm_method_vars *fwts_settings,
 
 	return *duration > 0 ? 0 : 1;
 }
+#endif
 
 static int wrap_sysfs_do_s4(fwts_pm_method_vars *fwts_settings,
 	const int percent,
@@ -193,6 +198,7 @@ static int s4_hibernate(fwts_framework *fw,
 	}
 
 	switch (fw->pm_method) {
+#if FWTS_ENABLE_LOGIND
 		case FWTS_PM_LOGIND:
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (fwts_logind_init_proxy(fwts_settings) != 0) {
@@ -201,6 +207,7 @@ static int s4_hibernate(fwts_framework *fw,
 			}
 			do_s4 = &wrap_logind_do_s4;
 			break;
+#endif
 		case FWTS_PM_PMUTILS:
 			fwts_log_info(fw, "Using pm-utils as the default power method.");
 			do_s4 = &wrap_pmutils_do_s4;
@@ -348,9 +355,11 @@ static int s4_test_multiple(fwts_framework *fw)
 	bool retried = false;
 	char tmp[32];
 
+#if FWTS_ENABLE_LOGIND
 #if !GLIB_CHECK_VERSION(2,35,0)
 	/* This is for backward compatibility with old glib versions */
 	g_type_init();
+#endif
 #endif
 
         if (s4_multiple == 1)

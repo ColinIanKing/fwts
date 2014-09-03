@@ -118,14 +118,18 @@ static int s3power_init(fwts_framework *fw)
 /* Detect the best available power method */
 static void detect_pm_method(fwts_pm_method_vars *fwts_settings)
 {
+#if FWTS_ENABLE_LOGIND
 	if (fwts_logind_can_suspend(fwts_settings))
 		fwts_settings->fw->pm_method = FWTS_PM_LOGIND;
-	else if (fwts_sysfs_can_suspend(fwts_settings))
+	else
+#endif
+	if (fwts_sysfs_can_suspend(fwts_settings))
 		fwts_settings->fw->pm_method = FWTS_PM_SYSFS;
 	else
 		fwts_settings->fw->pm_method = FWTS_PM_PMUTILS;
 }
 
+#if FWTS_ENABLE_LOGIND
 static int wrap_logind_do_suspend(fwts_pm_method_vars *fwts_settings,
 	const int percent,
 	int *duration,
@@ -141,6 +145,7 @@ static int wrap_logind_do_suspend(fwts_pm_method_vars *fwts_settings,
 
 	return *duration > 0 ? 0 : 1;
 }
+#endif
 
 static int wrap_sysfs_do_suspend(fwts_pm_method_vars *fwts_settings,
 	const int percent,
@@ -247,9 +252,11 @@ static int s3power_test(fwts_framework *fw)
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
+#if FWTS_ENABLE_LOGIND
 #if !GLIB_CHECK_VERSION(2,35,0)
 	/* This is for backward compatibility with old glib versions */
 	g_type_init();
+#endif
 #endif
 
 	fwts_settings = calloc(1, sizeof(fwts_pm_method_vars));
@@ -264,6 +271,7 @@ static int s3power_test(fwts_framework *fw)
 	}
 
 	switch (fw->pm_method) {
+#if FWTS_ENABLE_LOGIND
 		case FWTS_PM_LOGIND:
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (fwts_logind_init_proxy(fwts_settings) != 0) {
@@ -272,6 +280,7 @@ static int s3power_test(fwts_framework *fw)
 			}
 			do_suspend = &wrap_logind_do_suspend;
 			break;
+#endif
 		case FWTS_PM_PMUTILS:
 			fwts_log_info(fw, "Using pm-utils as the default power method.");
 			do_suspend = &wrap_pmutils_do_suspend;

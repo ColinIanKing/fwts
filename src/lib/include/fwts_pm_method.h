@@ -25,6 +25,9 @@
 #include <time.h>
 #include <stdbool.h>
 
+#define FWTS_ENABLE_LOGIND 	\
+	((GLIB_MAJOR_VERSION >= 2) && (GLIB_MINOR_VERSION >= 26))
+
 #include "fwts_types.h"
 
 typedef struct
@@ -32,10 +35,12 @@ typedef struct
 	fwts_framework *fw;
 	time_t t_start;
 	time_t t_end;
+#if FWTS_ENABLE_LOGIND
 	GDBusProxy *logind_proxy;
 	GDBusConnection *logind_connection;
 	GMainLoop *gmainloop;
 	char *action;
+#endif
 	int  min_delay;
 } fwts_pm_method_vars;
 
@@ -58,6 +63,7 @@ static inline void free_pm_method_vars(void *vars)
 {
 	fwts_pm_method_vars *var = *(void**)vars;
 
+#if FWTS_ENABLE_LOGIND
 	if (var) {
 		if (var->logind_proxy) {
 			g_object_unref(var->logind_proxy);
@@ -76,6 +82,7 @@ static inline void free_pm_method_vars(void *vars)
 			var->action = NULL;
 		}
 	}
+#endif
 	free(var);
 	var = NULL;
 }

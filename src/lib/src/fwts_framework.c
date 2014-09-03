@@ -28,6 +28,7 @@
 #include <sys/time.h>
 
 #include "fwts.h"
+#include "fwts_pm_method.h"
 
 /* Suffix ".log", ".xml", etc gets automatically appended */
 #define RESULTS_LOG	"results"
@@ -1005,14 +1006,21 @@ static int fwts_framework_acpica_parse(fwts_framework *fw, const char *arg)
  */
 static int fwts_framework_pm_method_parse(fwts_framework *fw, const char *arg)
 {
+#if FWTS_ENABLE_LOGIND
 	if (strcmp(arg, "logind") == 0)
 		fw->pm_method = FWTS_PM_LOGIND;
-	else if (strcmp(arg, "pm-utils") == 0)
+	else
+#endif
+	if (strcmp(arg, "pm-utils") == 0)
 		fw->pm_method = FWTS_PM_PMUTILS;
 	else if (strcmp(arg, "sysfs") == 0)
 		fw->pm_method = FWTS_PM_SYSFS;
 	else {
-		fprintf(stderr, "--pm-method only supports logind, pm-utils, and sysfs methods\n");
+#if FWTS_ENABLE_LOGIND
+		fprintf(stderr, "--pm-method only supports logind, pm-utils and sysfs methods\n");
+#else
+		fprintf(stderr, "--pm-method only supports pm-utils and sysfs methods\n");
+#endif
 		return FWTS_ERROR;
 	}
 

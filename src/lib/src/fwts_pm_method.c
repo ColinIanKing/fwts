@@ -170,6 +170,9 @@ static bool logind_can_do_action(fwts_pm_method_vars *fwts_settings, const char*
 	bool status = false;
 	gchar *response;
 
+	if (glib_check_version(2, 26, 0) != NULL)
+		return false;
+
 	if (fwts_logind_init_proxy(fwts_settings) != 0)
 		return false;
 

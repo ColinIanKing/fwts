@@ -104,7 +104,7 @@
  * _GCP  9.18.2		Y
  * _GHL  10.4.7		Y
  * _GL   5.7.1		n/a
- * _GLK  6.5.7		n/a
+ * _GLK  6.5.7		Y
  * _GPD  B.4.4		Y
  * _GPE  5.3.1, 12.11	N
  * _GRT  9.18.3		Y
@@ -2204,6 +2204,40 @@ static int method_test_SEG(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_SEG",
 		NULL, 0, method_test_SEG_return, "_SEG");
+}
+
+static void method_test_GLK_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	switch (obj->Type) {
+	case ACPI_TYPE_INTEGER:
+		if (obj->Integer.Value == 0 || obj->Integer.Value == 1)
+			fwts_passed(fw, "%s returned an integer 0x%8.8" PRIx64,
+				name, (uint64_t)obj->Integer.Value);
+		else
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"MethodGLKInvalidInteger",
+				"%s returned an invalid integer 0x%8.8" PRIx64,
+				name, (uint64_t)obj->Integer.Value);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GLKBadReturnType",
+			"%s did not return an integer.", name);
+		break;
+	}
+}
+
+static int method_test_GLK(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL, "_GLK",
+		NULL, 0, method_test_GLK_return, "_GLK");
 }
 
 /*
@@ -5061,7 +5095,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BBN, "Test _BBN (Base Bus Number)." },
 	{ method_test_DCK, "Test _DCK (Dock)." },
 	{ method_test_INI, "Test _INI (Initialize)." },
-	/* { method_test_GLK, "Test _GLK (Global Lock)." }, */
+	{ method_test_GLK, "Test _GLK (Global Lock)." },
 	/* { method_test_REG, "Test _REG (Region)." }, */
 	{ method_test_SEG, "Test _SEG (Segment)." },
 

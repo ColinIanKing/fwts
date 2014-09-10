@@ -4,6 +4,27 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Could not acquire table length at",
+   "advice": "ACPI could not determine the length of an ACPI table. This can occur, for example, if the table cannot be mapped into memory or the header is corrupted or non-standard.",
+   "label": "KlogAcpiTableLength"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Attempted table install failed",
+   "advice": "An ACPI table could not be installed because the checksum was invalid.",
+   "label": "KlogAcpiTableInstall"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Evaluating _STA",
+   "advice": "The ACPI method _STA (Status) failed to evaluate. This may cause some device drivers to not function as expected, for example, this error is reported when the ACPI battery status cannot be evaluated and so the battery updates will not function.",
+   "label": "KlogAcpiSTAEval"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Circular handler list in region object",
    "advice": "Internal corruption to the ACPI region handler list has occurred and ACPI has detected this issue while detaching a region and aborted an infinite loop while attempting to traverse the list. This has been known to occur with some firmware tripping a possible internal ACPI bug.",
    "label": "KlogAcpiCircularList"

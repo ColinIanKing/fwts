@@ -91,7 +91,7 @@
  * _EDL  6.3.1		Y
  * _EJD  6.3.2		Y
  * _EJx  6.3.3		Y
- * _EVT  5.6.5.3	n/a
+ * _EVT  5.6.5.3	Y
  * _FDE  9.9.1		N (floppy controller, ignore)
  * _FDI  9.9.2		N (floppy controller, ignore)
  * _FDM  9.9.3		N (floppy controller, ignore)
@@ -881,6 +881,23 @@ static int method_test_AEI(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_AEI", NULL, 0, method_test_buffer_return, NULL);
+}
+
+static int method_test_EVT(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	int ret, i;
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	for (i = 0; i < 65535; i++) {
+		arg[0].Integer.Value = i;
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_EVT", arg, 1, method_test_NULL_return, NULL);
+
+		if (ret != FWTS_OK)
+			break;
+	}
+	return ret;
 }
 
 /*
@@ -4972,7 +4989,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_Wxx, "Test _Wxx (Wake Event)." }, */
 
 	{ method_test_AEI, "Test _AEI." },
-	/* { method_test_EVT, "Test _EVT (Event Method)." }, */
+	{ method_test_EVT, "Test _EVT (Event Method)." },
 
 	/* Section 5.7 Predefined Objects */
 	/* { method_test_DLM, "Test _DLM (Device Lock Mutex)." }, */

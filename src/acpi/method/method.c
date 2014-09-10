@@ -102,7 +102,7 @@
  * _FST  11.3.1.4	Y
  * _GAI  10.4.5		Y
  * _GCP  9.18.2		Y
- * _GHL  10.4.7		N
+ * _GHL  10.4.7		Y
  * _GL   5.7.1		n/a
  * _GLK  6.5.7		n/a
  * _GPD  B.4.4		Y
@@ -4145,6 +4145,12 @@ static int method_test_GAI(fwts_framework *fw)
 		"_GAI", NULL, 0, method_test_integer_return, NULL);
 }
 
+static int method_test_GHL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GHL", NULL, 0, method_test_integer_return, NULL);
+}
+
 static int method_test_PMM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -5203,7 +5209,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 10.4 Power Meters */
 	{ method_test_GAI, "Test _GAI (Get Averaging Level)." },
-	/* { method_test_GHL, "Test _GHL (Get Harware Limit)." }, */
+	{ method_test_GHL, "Test _GHL (Get Harware Limit)." },
 	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
 	/* { method_test_PMC, "Test _PMC (Power Meter Capabilities)." }, */
 	/* { method_test_PMD, "Test _PMD (Power Meter Devices)." }, */

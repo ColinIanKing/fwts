@@ -19,6 +19,7 @@
 #include <sys/mman.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <stddef.h>
 
@@ -83,7 +84,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		if ((first_addr_start == NULL) &&
 		    (addr_start > (void*)LIMIT_START)) {
 			size_t sz = (requested_size + CHUNK_SIZE) & ~(CHUNK_SIZE - 1);
-			void *addr = addr_start - sz;
+			void *addr = (uint8_t*)addr_start - sz;
 
 			/*
 			 * If addr is over the 2GB limit and we know
@@ -108,7 +109,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		 */
 		if ((last_addr_end != NULL) &&
 		    (last_addr_end < (void*)LIMIT_2GB)) {
-			if ((addr_start - last_addr_end) > (ptrdiff_t)requested_size) {
+			if (((uint8_t *)addr_start - (uint8_t *)last_addr_end) > (ptrdiff_t)requested_size) {
 				void *addr = last_addr_end;
 				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
 					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
@@ -176,7 +177,7 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 	hdr->size = n;
 	hdr->magic = FWTS_ALLOC_MAGIC;
 
-	return (ret + sizeof(fwts_mmap_header));
+	return (void *)((uint8_t *)ret + sizeof(fwts_mmap_header));
 }
 
 /*
@@ -201,7 +202,7 @@ void *fwts_low_realloc(const void *ptr, const size_t size)
 		return fwts_low_malloc(size);
 
 	hdr = (fwts_mmap_header *)
-		(ptr - sizeof(fwts_mmap_header));
+		((uint8_t *)ptr - sizeof(fwts_mmap_header));
 
 	/* sanity check */
 	if (hdr->magic != FWTS_ALLOC_MAGIC)
@@ -224,7 +225,7 @@ void fwts_low_free(const void *ptr)
 {
 	if (ptr) {
 		fwts_mmap_header *hdr = (fwts_mmap_header *)
-			(ptr - sizeof(fwts_mmap_header));
+			((uint8_t *)ptr - sizeof(fwts_mmap_header));
 		if (hdr->magic == FWTS_ALLOC_MAGIC)
 			munmap(hdr, hdr->size);
 	}

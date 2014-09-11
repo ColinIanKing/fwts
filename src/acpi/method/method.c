@@ -174,7 +174,7 @@
  * _PTC  8.4.3.1	N
  * _PTP  10.4.2		n/a
  * _PTS  7.3.2		Y
- * _PUR  8.5.11		N
+ * _PUR  8.5.11		Y
  * _PXM  6.2.13 	Y
  * _Qxx  5.6.4.1	n/a
  * _REG  6.5.4		n/a
@@ -3344,6 +3344,51 @@ static int method_test_TSS(fwts_framework *fw)
 		"_TSS", NULL, 0, method_test_TSS_return, NULL);
 }
 
+/*
+ * Section 8.5 Processor Aggregator Device
+ */
+
+static void method_test_PUR_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	static fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"RevisionID" },
+		{ ACPI_TYPE_INTEGER,	"NumProcessors" },
+	};
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_PUR", obj, 2) != FWTS_OK)
+		return;
+
+	if (method_package_elements_type(fw, name, "_PUR", obj, elements, 2) != FWTS_OK)
+		return;
+
+	/* RevisionID */
+	if (obj->Package.Elements[0].Integer.Value != 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PURBadID",
+			"%s: Expected RevisionID to be 1, "
+			"got 0x%8.8" PRIx64 ".", name,
+			(uint64_t)obj->Package.Elements[0].Integer.Value);
+		return;
+	}
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PUR(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PUR", NULL, 0, method_test_PUR_return, NULL);
+}
 
 /*
  * Section 9.1 System Indicators
@@ -5176,7 +5221,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TSS, "Test _TSS (Throttling Supported States)." },
 
 	/* Section 8.5 Processor Aggregator Device */
-	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
+	{ method_test_PUR, "Test _PUR (Processor Utilization Request)." },
 
 	/* Section 9.1 System Indicators */
 	{ method_test_MSG, "Test _MSG (Message)." },

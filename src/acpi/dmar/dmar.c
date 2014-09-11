@@ -187,13 +187,13 @@ error:
 }
 
 static int acpi_parse_dev_scope(fwts_framework *fw,
-	void *start, void *end, const uint16_t seg)
+	uint8_t *start, uint8_t *end, const uint16_t seg)
 {
 	struct acpi_dev_scope *scope;
 	int ret;
 
 	while (start < end) {
-		scope = start;
+		scope = (struct acpi_dev_scope *)start;
 		ret = acpi_parse_one_dev_scope(fw, scope, seg);
 		if (ret)
 			return ret;
@@ -221,8 +221,8 @@ static int acpi_parse_one_drhd(fwts_framework *fw,
 		}
 		include_all = 1;
 	} else {
-		return acpi_parse_dev_scope(fw, (void *)(drhd + 1),
-			((void *)drhd) + header->length, drhd->segment);
+		return acpi_parse_dev_scope(fw, (uint8_t *)(drhd + 1),
+			((uint8_t *)drhd) + header->length, drhd->segment);
 	}
 	return FWTS_OK;
 }
@@ -239,8 +239,8 @@ static int acpi_parse_one_rmrr(fwts_framework *fw,
 			"Invalid rmrr range address.");
 		return FWTS_ERROR;
 	}
-	return acpi_parse_dev_scope(fw, (void *)(rmrr + 1),
-		((void*)rmrr) + header->length, rmrr->segment);
+	return acpi_parse_dev_scope(fw, (uint8_t *)(rmrr + 1),
+		((uint8_t *)rmrr) + header->length, rmrr->segment);
 }
 
 static int dmar_acpi_table_check(fwts_framework *fw)

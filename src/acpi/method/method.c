@@ -208,7 +208,7 @@
  * _SRS  6.2.15		n/a
  * _SRT  9.18.4		n/a
  * _SRV  IPMI		Y
- * _SST  9.1.1		n/a
+ * _SST  9.1.1		Y
  * _STA  6.3.7, 7.1.4	Y
  * _STM  9.8.2.1.2	n/a
  * _STP  9.18.7		Y
@@ -3349,6 +3349,23 @@ static int method_test_TSS(fwts_framework *fw)
  * Section 9.1 System Indicators
  */
 
+static int method_test_SST(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	int ret, i;
+
+	arg[0].Type = ACPI_TYPE_INTEGER;
+	for (i = 0; i <= 4; i++) {
+		arg[0].Integer.Value = i;
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_SST", arg, 1, method_test_NULL_return, NULL);
+
+		if (ret != FWTS_OK)
+			break;
+	}
+	return ret;
+}
+
 static int method_test_MSG(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
@@ -5159,11 +5176,11 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TSS, "Test _TSS (Throttling Supported States)." },
 
 	/* Section 8.5 Processor Aggregator Device */
+	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
 
 	/* Section 9.1 System Indicators */
 	{ method_test_MSG, "Test _MSG (Message)." },
-	/* { method_test_PUR, "Test _PUR (Processor Utilization Request)." }, */
-	/* { method_test_SST, "Test _SST (System Status)." }, */
+	{ method_test_SST, "Test _SST (System Status)." },
 
 	/* Section 9.2 Ambient Light Sensor Device */
 

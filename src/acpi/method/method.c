@@ -233,8 +233,8 @@
  * _TST  11.4.18	Y
  * _TTS  7.3.6		Y
  * _TZ_  5.3.1		n/a
- * _TZD  11.4.19	N
- * _TZM  11.4.20	N
+ * _TZD  11.4.19	Y
+ * _TZM  11.4.20	Y
  * _TZP  11.4.21	Y
  * _UID  6.1.9		Y
  * _UPC  9.13		N
@@ -663,6 +663,24 @@ static void method_test_string_return(
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a string.", name);
+}
+
+/*
+ *  method_test_reference_return
+ *	check if a reference object was returned
+ */
+static void method_test_reference_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_LOCAL_REFERENCE) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a reference.", name);
 }
 
 /*
@@ -4534,6 +4552,36 @@ static int method_test_TPT(fwts_framework *fw)
 		"_TPT", arg, 1, method_test_NULL_return, NULL);
 }
 
+static void method_test_TZD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_TZD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
+}
+
+static int method_test_TZD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TZD", NULL, 0, method_test_TZD_return, "_TZD");
+}
+
+static int method_test_TZM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TZM", NULL, 0, method_test_reference_return, "_TZM");
+}
+
 static int method_test_TZP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -5340,7 +5388,8 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_TRT, "Test _TRT (Thermal Relationship Table)." }, */
 	{ method_test_TSP, "Test _TSP (Thermal Sampling Period)." },
 	{ method_test_TST, "Test _TST (Temperature Sensor Threshold)." },
-	/* { method_test_TZD, "Test _TZD (Thermal Zone Devices)." }, */
+	{ method_test_TZD, "Test _TZD (Thermal Zone Devices)." },
+	{ method_test_TZM, "Test _TZM (Thermal Zone member)." },
 	{ method_test_TZP, "Test _TZP (Thermal Zone Polling)." },
 
 	/* Section 16 Waking and Sleeping */

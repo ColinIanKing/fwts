@@ -39,23 +39,6 @@
 
 #include "fwts.h"
 
-static inline void freep(void *);
-static inline void fclosep(FILE **);
-
-#define _cleanup_free_ __attribute__((cleanup(freep)))
-#define _cleanup_fclose_ __attribute__((cleanup(fclosep)))
-
-static inline void freep(void *p)
-{
-	free(*(void**) p);
-}
-
-static inline void fclosep(FILE **file)
-{
-	if (*file)
-		fclose(*file);
-}
-
 /*
  *  fwts_pipe_open()
  *	execl a command, return pid in *childpid and
@@ -248,9 +231,10 @@ int fwts_write_string_file(
 	const char *file_name,
 	const char *str)
 {
-	_cleanup_fclose_ FILE *file = NULL;
-	errno = 0;
+	FILE *file = NULL;
+	int ret;
 
+	errno = 0;
 	file = fopen(file_name, "we");
 	if (!file) {
 		fwts_log_error(fw,
@@ -262,7 +246,10 @@ int fwts_write_string_file(
 		return FWTS_ERROR;
 	}
 
-	return fwts_write_string_to_file(fw, file, str);
+	ret = fwts_write_string_to_file(fw, file, str);
+	fclose(file);
+
+	return ret;
 }
 
 /*
@@ -276,7 +263,7 @@ int fwts_read_file_first_line(
 	const char *file_name,
 	char **line)
 {
-	_cleanup_fclose_ FILE *file = NULL;
+	FILE *file = NULL;
 	char buffer[LINE_MAX], *temp;
 	errno = 0;
 
@@ -292,6 +279,7 @@ int fwts_read_file_first_line(
 
 	if (!fgets(buffer, sizeof(buffer), file)) {
 		if (ferror(file)) {
+			fclose(file);
 			fwts_log_error(fw,
 				"Failed to read first line from %s, error: %d (%s).",
 				file_name,
@@ -304,6 +292,7 @@ int fwts_read_file_first_line(
 
 	temp = strdup(buffer);
 	if (!temp) {
+		fclose(file);
 		fwts_log_error(fw,
 			"Failed to read first line from %s: ran out of memory.",
 			file_name);
@@ -312,6 +301,7 @@ int fwts_read_file_first_line(
 
 	fwts_chop_newline(temp);
 	*line = temp;
+	fclose(file);
 
 	return FWTS_OK;
 }
@@ -326,15 +316,19 @@ bool fwts_file_first_line_contains_string(
 	const char *file_name,
 	const char *str)
 {
-	_cleanup_free_ char *contents = NULL;
+	char *contents = NULL;
 	int ret;
+	bool contains;
 
 	ret = fwts_read_file_first_line(fw, file_name, &contents);
 
 	if (ret != FWTS_OK) {
 		fwts_log_error(fw, "Failed to get the contents of %s.", file_name);
-		return false;
-	}
+		contains = false;
+	} else
+		contains = (strstr(contents, str) != NULL);
 
-	return (strstr(contents, str) != NULL);
+	free(contents);
+	return contains;
 }
+

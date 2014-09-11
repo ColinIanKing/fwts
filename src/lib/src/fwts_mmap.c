@@ -17,6 +17,7 @@
  *
  */
 #include <unistd.h>
+#include <stdint.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -63,7 +64,7 @@ void *fwts_mmap(const off_t start, const size_t size)
 		return ret;
 
 	if ((mem = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, start - offset)) != MAP_FAILED)
-		ret = (mem + offset);
+		ret = (void *)((uint8_t *)mem + offset);
 
 	close(fd);
 
@@ -82,7 +83,7 @@ int fwts_munmap(void *mem, const size_t size)
 	page_size = fwts_page_size();
 	offset = ((off_t)(mem)) & (page_size - 1);
 
-	if (munmap(mem - offset, size + offset) < 0)
+	if (munmap((void *)((uint8_t *)mem - offset), size + offset) < 0)
 		return FWTS_ERROR;
 
 	return FWTS_OK;

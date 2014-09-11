@@ -78,7 +78,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 		if ((mem = fwts_mmap(start, size)) == FWTS_MAP_FAILED)
 			continue;
 
-		for (ptr = mem; ptr < (uint8_t*)(mem + size); ptr+=16) {
+		for (ptr = mem; ptr < (uint8_t*)mem + size; ptr+=16) {
 			if ((*ptr == '_') &&
 			    (*(ptr + 1) == 'M') &&
 			    (*(ptr + 2) == 'P') &&
@@ -176,7 +176,7 @@ int fwts_mp_data_get(fwts_mp_data *data)
 			tmp += sizeof(fwts_mp_compat_bus_address_space_entry);
 			break;
 		default:
-			tmp = mem + data->size; /* Force abort */
+			tmp = (uint8_t *)mem + data->size; /* Force abort */
 			break;
 		}
 	}

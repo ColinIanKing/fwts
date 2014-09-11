@@ -127,6 +127,7 @@ static uint64_t apci_dump_get_uint64_t(
 {
 	uint64_t ret = 0;
 	uint64_t mask = (1ULL << (uint64_t)info->bit_field_nbits) - 1;
+	uint8_t *ptr;
 	int i;
 
 	switch (info->size) {
@@ -138,8 +139,9 @@ static uint64_t apci_dump_get_uint64_t(
 		break;
 	default:		
 		ret = 0;
+		ptr = (uint8_t *)data;
 		for (i = 0; (i < info->size) && (i < 8); i++) {
-			uint8_t val8 = *(uint8_t *)data++;
+			uint8_t val8 = *ptr++;
 			ret = (ret << 8) | val8;
 		}
 		break;
@@ -156,6 +158,7 @@ static void acpi_dump_uint(
 {
 	int i, hexdigits = info->size << 1;
 	uint64_t val = apci_dump_get_uint64_t(info, data);
+	uint8_t *ptr;
 
 	switch (info->size) {
 	case 1:
@@ -172,8 +175,9 @@ static void acpi_dump_uint(
 				hexdigits, hexdigits, val);
 		break;
 	default:		
+		ptr = (uint8_t *)data;
 		for (i = 0; i < info->size; i++) {
-			uint8_t val8 = *(uint8_t *)data++;
+			uint8_t val8 = *ptr++;
 			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]",
 				acpi_dump_field_info(info->label, info->size, info->offset + offset), val8, i);
 		}

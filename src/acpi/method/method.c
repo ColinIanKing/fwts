@@ -226,7 +226,7 @@
  * _TMP  11.4.14	Y
  * _TPC  8.4.3.3	Y
  * _TPT  11.4.15	Y
- * _TRT  11.4.16	N
+ * _TRT  11.4.16	Y
  * _TSD  8.4.3.4	Y
  * _TSP  11.4.17	Y
  * _TSS  8.4.3.2	Y
@@ -4434,6 +4434,82 @@ method_test_THERM(_NTT, METHOD_OPTIONAL)
 method_test_THERM(_PSV, METHOD_OPTIONAL)
 method_test_THERM(_TST, METHOD_OPTIONAL)
 
+static void method_test_TRT_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_TRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		uint32_t j;
+		bool elements_ok = true;
+
+		pkg = &obj->Package.Elements[i];
+		if (pkg->Package.Count != 8) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_TRTSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 8 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		/* First two elements are references, and rests are integers */
+		for (j = 0; j < 2; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_TRTSubPackageElementCount",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"a reference.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		for (j = 2; j < 8; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_TRTSubPackageElementCount",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_TRT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TRT", NULL, 0, method_test_TRT_return, "_TRT");
+}
+
 static int method_test_TSP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -5385,7 +5461,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TC2, "Test _TC2 (Thermal Constant 2)." },
 	{ method_test_TMP, "Test _TMP (Thermal Zone Current Temp)." },
 	{ method_test_TPT, "Test _TPT (Trip Point Temperature)." },
-	/* { method_test_TRT, "Test _TRT (Thermal Relationship Table)." }, */
+	{ method_test_TRT, "Test _TRT (Thermal Relationship Table)." },
 	{ method_test_TSP, "Test _TSP (Thermal Sampling Period)." },
 	{ method_test_TST, "Test _TST (Temperature Sensor Threshold)." },
 	{ method_test_TZD, "Test _TZD (Thermal Zone Devices)." },

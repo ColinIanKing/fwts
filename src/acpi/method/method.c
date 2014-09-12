@@ -41,7 +41,7 @@
  * _ALR  9.2.5		N
  * _ALT  9.2.3		Y
  * _ALx  11.4.2		N
- * _ART  11.4.3		N
+ * _ART  11.4.3		Y
  * _BBN  6.5.5		Y
  * _BCL  B.6.2 		Y
  * _BCM  B.6.3		Y
@@ -4434,6 +4434,102 @@ method_test_THERM(_NTT, METHOD_OPTIONAL)
 method_test_THERM(_PSV, METHOD_OPTIONAL)
 method_test_THERM(_TST, METHOD_OPTIONAL)
 
+static void method_test_ART_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
+		if (obj->Package.Elements[0].Integer.Value != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_ARTBadRevision",
+				"%s element 0 is not revision 0.", name);
+			failed = true;
+		}
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_ARTBadReturnType",
+			"%s element 0 is not an integer.", name);
+		failed = true;
+	}
+
+	/* Could be one or more sub-packages */
+	for (i = 1; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		uint32_t j;
+		bool elements_ok = true;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_ARTBadReturnType",
+				"%s element %" PRIu32 " is not a package.",
+				name, i);
+			failed = true;
+			continue;
+		}
+
+		pkg = &obj->Package.Elements[i];
+		if (pkg->Package.Count != 13) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_ARTBadSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 13 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		/* First two elements are references, and rests are integers */
+		for (j = 0; j < 2; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_ARTBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"a reference.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		for (j = 2; j < 13; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_ARTBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_ART(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_ART", NULL, 0, method_test_ART_return, "_ART");
+}
+
 static void method_test_PSL_return(
 	fwts_framework *fw,
 	char *name,
@@ -5471,7 +5567,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 11.4 Thermal Objects */
 
 	{ method_test_ACx, "Test _ACx (Active Cooling)." },
-	/* { method_test_ART, "Test _ART (Active Cooling Relationship Table)." }, */
+	{ method_test_ART, "Test _ART (Active Cooling Relationship Table)." },
 	/* { method_test_ALx, "Test _ALx (Active List)". }, */
 	{ method_test_CRT, "Test _CRT (Critical Trip Point)." },
 	{ method_test_DTI, "Test _DTI (Device Temperature Indication)." },

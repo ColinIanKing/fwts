@@ -75,7 +75,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		return MAP_FAILED;
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		sscanf(buffer, "%p-%p %*s %*x %*s %*u %s",
+		sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s",
 			&addr_start, &addr_end, pathname);
 
 		/*

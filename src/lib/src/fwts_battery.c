@@ -156,7 +156,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
 					if (strstr(buffer, field) &&
 					    strlen(buffer) > 25) {
-						sscanf(buffer+25, "%d %s", &val, units);
+						sscanf(buffer+25, "%d %63s", &val, units);
 						if (strncmp(units, "mAh",3) == 0) {
 							*capacity_mAh += val;
 							(*count)++;

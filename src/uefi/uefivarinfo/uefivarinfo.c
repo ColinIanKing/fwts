@@ -29,7 +29,6 @@
 #include "fwts_efi_module.h"
 
 #define MAX_VARNAME_LENGTH	1024
-#define DATA_LENGTH		1024
 
 static int fd;
 
@@ -66,7 +65,7 @@ static int do_checkvariables(
 	fwts_framework *fw,
 	uint64_t *usedvars,
 	uint64_t *usedvarssize,
-	uint64_t maxvarsize)
+	const uint64_t maxvarsize)
 {
 	long ioret;
 	uint64_t status;
@@ -114,46 +113,50 @@ static int do_checkvariables(
 
 		(*usedvars)++;
 
-		data = malloc(DATA_LENGTH);
+		data = malloc(maxvarsize);
 		if (!data) {
 			fwts_log_info(fw, "Failed to allocate memory for test.");
 			return FWTS_ERROR;
 		}
 
-		getdatasize = DATA_LENGTH;
+		getdatasize = maxvarsize;
 		getvariable.VariableName = variablename;
 		getvariable.VendorGuid = &vendorguid;
 		getvariable.DataSize = &getdatasize;
 		getvariable.Data = data;
-		while (true) {
-			ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
-			if (ioret == -1) {
-				if (status != EFI_BUFFER_TOO_SMALL) {
-					fwts_log_info(fw, "Failed to get variable with UEFI runtime service.");
-					fwts_uefi_print_status_info(fw, status);
-					free(data);
-					return FWTS_ERROR;
-				}
-				if (getdatasize == maxvarsize) {
-					fwts_log_info(fw, "Variable is larger than maximum variable length.");
-					fwts_uefi_print_status_info(fw, status);
-					free(data);
-					return FWTS_ERROR;
-				}
-				getdatasize += DATA_LENGTH;
-				getdatasize = (getdatasize > maxvarsize) ? maxvarsize : getdatasize;
-				data = realloc(data, getdatasize);
-				if (data) {
-					getvariable.DataSize = &getdatasize;
-					getvariable.Data = data;
-					continue;
-				} else {
+
+		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+		if (ioret == -1) {
+			free(data);
+			if (status != EFI_BUFFER_TOO_SMALL) {
+				fwts_log_info(fw, "Failed to get variable with UEFI runtime service.");
+				fwts_uefi_print_status_info(fw, status);
+				return FWTS_ERROR;
+			} else if (getdatasize > maxvarsize) {
+				fwts_log_info(fw, "Variable is larger than maximum variable length.");
+				fwts_uefi_print_status_info(fw, status);
+
+				/*
+				 * Although the variable is larger than maximum variable length,
+				 * still try to calculate the total sizes of the used variables.
+				 */
+				data = malloc(getdatasize);
+				if (!data) {
 					fwts_log_info(fw, "Failed to allocate memory for test.");
 					return FWTS_ERROR;
 				}
+
+				getvariable.Data = data;
+				ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
+				if (ioret == -1) {
+					fwts_log_info(fw, "Failed to get variable with variable larger than maximum variable length.");
+					fwts_uefi_print_status_info(fw, status);
+					free(data);
+					return FWTS_ERROR;
+				}
 			}
-			break;
-		};
+		}
+
 		free(data);
 
 		(*usedvarssize) += getdatasize;

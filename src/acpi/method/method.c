@@ -109,8 +109,8 @@
  * _GPE  5.3.1, 12.11	N
  * _GRT  9.18.3		Y
  * _GSB  6.2.6		Y
- * _GTF  9.8.1.1	N
- * _GTM  9.8.2.1.1	N
+ * _GTF  9.8.1.1	Y
+ * _GTM  9.8.2.1.1	Y
  * _GTS  7.3.3		deprecated
  * _GWS  9.18.5		Y
  * _HID  6.1.5		Y
@@ -3478,6 +3478,63 @@ static int method_test_LID(fwts_framework *fw)
 		"_LID", NULL, 0, method_test_LID_return, NULL);
 }
 
+
+/*
+ * Section 9.8 ATA Controllers
+ */
+
+static void method_test_GTF_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (obj->Buffer.Length % 7)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_GTFBadBufferSize",
+			"%s should return a buffer with size of multiple of 7.",
+			name);
+	else
+		method_passed_sane(fw, name, "buffer");
+}
+
+static int method_test_GTF(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GTF", NULL, 0, method_test_GTF_return, NULL);
+}
+
+static void method_test_GTM_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (obj->Buffer.Length != (5 * sizeof(uint32_t)))
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_GTMBadBufferSize",
+			"%s should return a buffer with size of 20.",
+			name);
+	else
+		method_passed_sane(fw, name, "buffer");
+}
+
+static int method_test_GTM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GTM", NULL, 0, method_test_GTM_return, NULL);
+}
+
 /*
  * Section 9.16 User Presence Detection Device
  */
@@ -5486,8 +5543,8 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_LID, "Test _LID (Lid Status)." },
 
 	/* Section 9.8 ATA Controllers */
-	/* { method_test_GTF, "Test _GTF (Get Task File)." }, */
-	/* { method_test_GTM, "Test _GTM (Get Timing Mode)." }, */
+	{ method_test_GTF, "Test _GTF (Get Task File)." },
+	{ method_test_GTM, "Test _GTM (Get Timing Mode)." },
 	/* { method_test_SDD, "Test _SDD (Set Device Data)." }, */
 	/* { method_test_STM, "Test _STM (Set Timing Mode)." }, */
 

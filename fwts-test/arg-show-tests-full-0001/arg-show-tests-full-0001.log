@@ -59,9 +59,10 @@ Batch tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
- method          (157 tests):
+ method          (169 tests):
   Test Method Names.
   Test _AEI.
+  Test _EVT (Event Method).
   Test _PIC (Inform AML of Interrupt Model).
   Test _CID (Compatible ID).
   Test _DDN (DOS Device Name).
@@ -97,6 +98,7 @@ Batch tests:
   Test _BBN (Base Bus Number).
   Test _DCK (Dock).
   Test _INI (Initialize).
+  Test _GLK (Global Lock).
   Test _SEG (Segment).
   Test _OFF (Set resource off).
   Test _ON  (Set resource on).
@@ -142,12 +144,16 @@ Batch tests:
   Test _TPC (Throttling Present Capabilities).
   Test _TSD (Throttling State Dependencies).
   Test _TSS (Throttling Supported States).
+  Test _PUR (Processor Utilization Request).
   Test _MSG (Message).
+  Test _SST (System Status).
   Test _ALC (Ambient Light Colour Chromaticity).
   Test _ALI (Ambient Light Illuminance).
   Test _ALT (Ambient Light Temperature).
   Test _ALP (Ambient Light Polling). 
   Test _LID (Lid Status).
+  Test _GTF (Get Task File).
+  Test _GTM (Get Timing Mode).
   Test _UPD (User Presence Detect).
   Test _UPP (User Presence Polling).
   Test _GCP (Get Capabilities).
@@ -172,15 +178,18 @@ Batch tests:
   Test _PIF (Power Source Information).
   Test _PSR (Power Source).
   Test _GAI (Get Averaging Level).
+  Test _GHL (Get Harware Limit).
   Test _PMM (Power Meter Measurement).
   Test _FIF (Fan Information).
   Test _FSL (Fan Set Level).
   Test _FST (Fan Status).
   Test _ACx (Active Cooling).
+  Test _ART (Active Cooling Relationship Table).
   Test _CRT (Critical Trip Point).
   Test _DTI (Device Temperature Indication).
   Test _HOT (Hot Temperature).
   Test _NTT (Notification Temp Threshold).
+  Test _PSL (Passive List).
   Test _PSV (Passive Temp).
   Test _RTV (Relative Temp Values).
   Test _SCP (Set Cooling Policy).
@@ -188,8 +197,11 @@ Batch tests:
   Test _TC2 (Thermal Constant 2).
   Test _TMP (Thermal Zone Current Temp).
   Test _TPT (Trip Point Temperature).
+  Test _TRT (Thermal Relationship Table).
   Test _TSP (Thermal Sampling Period).
   Test _TST (Temperature Sensor Threshold).
+  Test _TZD (Thermal Zone Devices).
+  Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
@@ -372,4 +384,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 289 tests
+Total of 301 tests

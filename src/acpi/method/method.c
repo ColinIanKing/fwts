@@ -4650,7 +4650,7 @@ static void method_test_TRT_return(
 		for (j = 0; j < 2; j++) {
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TRTSubPackageElementCount",
+					"Method_TRTBadSubPackageReturnType",
 					"%s sub-package %" PRIu32
 					" element %" PRIu32 " is not "
 					"a reference.",
@@ -4662,7 +4662,7 @@ static void method_test_TRT_return(
 		for (j = 2; j < 8; j++) {
 			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"Method_TRTSubPackageElementCount",
+					"Method_TRTBadSubPackageReturnType",
 					"%s sub-package %" PRIu32
 					" element %" PRIu32 " is not "
 					"an integer.",

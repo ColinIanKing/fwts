@@ -26,7 +26,7 @@
 #include <signal.h>
 #include <setjmp.h>
 
-static jmp_buf jmpbuf;
+static sigjmp_buf jmpbuf;
 
 /*
  *  If we hit a SIGSEGV then the port read
@@ -38,7 +38,7 @@ static void segv_handler(int dummy)
 	FWTS_UNUSED(dummy);
 
 	signal(SIGSEGV, SIG_DFL);
-	longjmp(jmpbuf, 1);
+	siglongjmp(jmpbuf, 1);
 }
 
 /*
@@ -47,7 +47,7 @@ static void segv_handler(int dummy)
  */
 int fwts_inb(uint32_t port, uint8_t *value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
@@ -63,7 +63,7 @@ int fwts_inb(uint32_t port, uint8_t *value)
  */
 int fwts_inw(uint32_t port, uint16_t *value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
@@ -79,7 +79,7 @@ int fwts_inw(uint32_t port, uint16_t *value)
  */
 int fwts_inl(uint32_t port, uint32_t *value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
@@ -95,7 +95,7 @@ int fwts_inl(uint32_t port, uint32_t *value)
  */
 int fwts_outb(uint32_t port, uint8_t value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
@@ -111,7 +111,7 @@ int fwts_outb(uint32_t port, uint8_t value)
  */
 int fwts_outw(uint32_t port, uint16_t value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);
@@ -127,7 +127,7 @@ int fwts_outw(uint32_t port, uint16_t value)
  */
 int fwts_outl(uint32_t port, uint32_t value)
 {
-	if (setjmp(jmpbuf) != 0)
+	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
 	signal(SIGSEGV, segv_handler);

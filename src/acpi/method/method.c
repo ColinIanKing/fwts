@@ -62,7 +62,7 @@
  * _CBA  PCI f/w spec	Y
  * _CCA  6.2.17		Y
  * _CDM  6.2.1		Y
- * _CID  6.1.2		N
+ * _CID  6.1.2		Y
  * _CLS  6.1.3		N requires PCI SIG class info
  * _CPC  8.4.5		Y
  * _CRS  6.2.2		Y
@@ -1060,10 +1060,94 @@ static int method_test_HID(fwts_framework *fw)
 		"_HID", NULL, 0, method_test_HID_return, NULL);
 }
 
+static void method_valid_CID_Type(
+	fwts_framework *fw,
+	char *name,
+	ACPI_OBJECT *obj)
+{
+	char tmp[8];
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer) {
+			if (method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"%s returned a string '%s' "
+					"as expected.",
+					name, obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodCIDInvalidString",
+					"%s returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					name, obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CIDNullString",
+				"%s returned a NULL string.", name);
+		}
+		break;
+	case ACPI_TYPE_INTEGER:
+		if (method_valid_EISA_ID((uint32_t)obj->Integer.Value,
+			tmp, sizeof(tmp)))
+			fwts_passed(fw, "%s returned an integer "
+				"0x%8.8" PRIx64 " (EISA ID %s).",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodCIDInvalidInteger",
+				"%s returned a integer 0x%8.8" PRIx64 " "
+				"(EISA ID %s) but the this is not a valid "
+				"EISA ID encoded PNP ID.",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		break;
+	}
+}
+
+static void method_test_CID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	ACPI_OBJECT *pkg;
+
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	if (obj == NULL) {
+		method_failed_null_object(fw, name, "a buffer or integer");
+		return;
+	}
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+	case ACPI_TYPE_INTEGER:
+		method_valid_CID_Type(fw, name, obj);
+		break;
+	case ACPI_TYPE_PACKAGE:
+		if (method_package_count_min(fw, name, "_CID", obj, 1) != FWTS_OK)
+			return;
+
+		for (i = 0; i < obj->Package.Count; i++){
+			pkg = &obj->Package.Elements[i];
+			method_valid_CID_Type(fw, name, pkg);
+		}
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CIDBadReturnType",
+			"%s did not return a string or an integer.", name);
+		break;
+	}
+}
+
 static int method_test_CID(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CID", NULL, 0, method_test_HID_return, NULL);
+		"_CID", NULL, 0, method_test_CID_return, NULL);
 }
 
 static int method_test_HRV(fwts_framework *fw)

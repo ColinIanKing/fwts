@@ -127,12 +127,13 @@ static int do_checkvariables(
 
 		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 		if (ioret == -1) {
-			free(data);
 			if (status != EFI_BUFFER_TOO_SMALL) {
+				free(data);
 				fwts_log_info(fw, "Failed to get variable with UEFI runtime service.");
 				fwts_uefi_print_status_info(fw, status);
 				return FWTS_ERROR;
 			} else if (getdatasize > maxvarsize) {
+				free(data);
 				fwts_log_info(fw, "Variable is larger than maximum variable length.");
 				fwts_uefi_print_status_info(fw, status);
 
@@ -156,7 +157,6 @@ static int do_checkvariables(
 				}
 			}
 		}
-
 		free(data);
 
 		(*usedvarssize) += getdatasize;

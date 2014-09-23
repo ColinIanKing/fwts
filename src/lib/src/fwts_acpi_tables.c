@@ -112,9 +112,16 @@ static void *fwts_acpi_find_rsdp_bios(void)
 	/* Scan BIOS for RSDP, ACPI spec states it is aligned on 16 byte intervals */
 	for (ptr = bios; ptr < (bios+BIOS_LENGTH); ptr += 16) {
 		rsdp = (fwts_acpi_table_rsdp*)ptr;
+
+		/* Can we read this memory w/o segfaulting? */
+		if (fwts_safe_memread(rsdp, 8) != FWTS_OK)
+			continue;
+
 		/* Look for RSD PTR string */
 		if (strncmp(rsdp->signature, "RSD PTR ",8) == 0) {
 			int length = (rsdp->revision < 1) ? 20 : 36;
+			if (fwts_safe_memread(ptr, length) != FWTS_OK)
+				continue;
 			if (fwts_checksum(ptr, length) == 0) {
 				addr = (void*)(BIOS_START+(ptr - bios));
 				break;
@@ -134,7 +141,7 @@ static void *fwts_acpi_find_rsdp_bios(void)
  *	given the address of the rsdp, map in the region, copy it and
  *	return the rsdp table. Return NULL if fails.
  */
-static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(void *addr, size_t *rsdp_len)
+static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(fwts_framework *fw, void *addr, size_t *rsdp_len)
 {
 	uint8_t *mem;
 	fwts_acpi_table_rsdp *rsdp = NULL;
@@ -143,17 +150,27 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(void *addr, size_t *rsdp_len)
 	if ((mem = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
+	if (fwts_safe_memread(mem, sizeof(fwts_acpi_table_rsdp)) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot safely read RSDP from address %p.", mem);
+		goto out;
+	}
+
 	rsdp = (fwts_acpi_table_rsdp*)mem;
 	/* Determine original RSDP size from revision. */
 	*rsdp_len = (rsdp->revision < 1) ? 20 : 36;
 
 	/* Must have the correct signature */
-	if (strncmp(rsdp->signature, "RSD PTR ", 8))
+	if (strncmp(rsdp->signature, "RSD PTR ", 8)) {
+		fwts_log_error(fw, "RSDP did not have expected signature.");
+		rsdp = NULL;
 		goto out;
+	}
 
 	/* Assume version 2.0 size, we don't care about a few bytes over allocation if it's version 1.0 */
-	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL)
+	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL) {
+		rsdp = NULL;
 		goto out;
+	}
 
 	memcpy(rsdp, mem, *rsdp_len);
 out:
@@ -177,6 +194,11 @@ static void *fwts_acpi_load_table(const off_t addr)
 	if ((hdr = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_header))) == FWTS_MAP_FAILED)
 		return NULL;
 
+	if (fwts_safe_memread(hdr, sizeof(fwts_acpi_table_header)) != FWTS_OK) {
+		(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
+		return NULL;
+	}
+
 	len = hdr->length;
 	if (len < (int)sizeof(fwts_acpi_table_header)) {
 		(void)fwts_munmap(hdr, sizeof(fwts_acpi_table_header));
@@ -187,11 +209,12 @@ static void *fwts_acpi_load_table(const off_t addr)
 
 	if ((table = fwts_low_calloc(1, len)) == NULL)
 		return NULL;
-
 	if ((mem = fwts_mmap((off_t)addr, len)) == FWTS_MAP_FAILED)
 		return NULL;
-
-	memcpy(table, mem, len);
+	if (fwts_safe_memcpy(table, mem, len) != FWTS_OK) {
+		(void)fwts_munmap(mem, len);
+		return NULL;
+	}
 	(void)fwts_munmap(mem, len);
 
 	return table;
@@ -392,7 +415,7 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 		return FWTS_ERROR;
 
 	/* Load and save cached RSDP */
-	if ((rsdp = fwts_acpi_get_rsdp(rsdp_addr, &rsdp_len)) == NULL)
+	if ((rsdp = fwts_acpi_get_rsdp(fw, rsdp_addr, &rsdp_len)) == NULL)
 		return FWTS_ERROR;
 
 	fwts_acpi_add_table("RSDP", rsdp, (uint64_t)(off_t)rsdp_addr, rsdp_len, FWTS_ACPI_TABLE_FROM_FIRMWARE);

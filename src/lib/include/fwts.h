@@ -80,5 +80,6 @@
 #include "fwts_ioport.h"
 #include "fwts_release.h"
 #include "fwts_pci.h"
+#include "fwts_safe_mem.h"
 
 #endif

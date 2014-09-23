@@ -89,6 +89,10 @@ static fwts_wmi_known_guid fwts_wmi_known_guids[] = {
 	{ "5B3CC38A-40D9-7245-8AE6-1145B751BE3F", "msi-wmi",	"MSI"  },
 	{ "F6CB5C3C-9CAE-4EBD-B577-931EA32A2CC0", "mxm-wmi",	"MXM"  },
 	{ "C364AC71-36DB-495A-8494-B439D472A505", "tc110-wmi",	"HP Compaq" },
+	{ "A90597CE-A997-11DA-B012-B622A1EF5492", "alienware-wmi", "Alienware" },
+	{ "A80593CE-A997-11DA-B012-B622A1EF5492", "alienware-wmi", "Alienware" },
+	{ "A70591CE-A997-11DA-B012-B622A1EF5492", "alienware-wmi", "Alienware" },
+	{ "59142400-C6A3-40FA-BADB-8A2652834100", "toshiba_acpi", "Toshiba" },
 	{ NULL, NULL, NULL }
 };
 

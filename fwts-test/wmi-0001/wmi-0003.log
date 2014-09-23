@@ -16,6 +16,7 @@ wmi               WMI Method:
 wmi                 Flags          : 0x02 (Method)
 wmi                 Object ID      : BA
 wmi                 Instance       : 0x01
+wmi                 Driver         : alienware-wmi (Alienware)
 wmi             PASSED: Test 1, A80593CE-A997-11DA-B012-B622A1EF5492 has
 wmi             associated method \_SB_.AMW0.WMBA
 wmi             

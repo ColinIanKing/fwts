@@ -1,3 +1,63 @@
+fwts (14.09.00-0ubuntu1) utopic; urgency=low
+
+  [Alex Hung]
+  * acpi: method: fix incorrect comment in _CPC test
+  * acpi: method: fix incorrect type comparison of
+    ACPI_TYPE_INTBUF (LP: #1362426)
+  * acpi: method: fix _STR's output should be buffer, not string
+    (LP: #1362503)
+  * acpi: method: add check for _EVT
+  * acpi: method: add check for _GHL
+  * acpi: method: method: add check for _GLK
+  * acpi: method: add check for _SST
+  * acpi: method: add check for _PUR
+  * acpi: method: add check for _TZD and _TZM
+  * acpi: method: add check for _TRT
+  * acpi: method: add check for _PSL
+  * acpi: method: add check for _ART
+  * acpi: method: add check for _GTF and _GTM
+  * fwts-test: update tests for new acpi method tests
+  * acpi: method: fix incorrect failure messages for _TRT
+  * acpi: method: fix _CID errors when it returns a package (LP: #1370924)
+
+  [Colin Ian King]
+  * ACPICA: update to version 20140828 (LP: #1362786)
+  * acpi: method: extra sanity checks for _PSx objects, (LP: #1363904)
+  * acpi: method: add check for ACPI 5.1 _DSD (LP: #1363925)
+  * fwts-test: update tests because of new _DSD method check
+  * acpi: method: acpi: method: add check for ACPI 5.1 _CCA (LP: #1363936)
+  * fwts-test: update tests because of new _CCA method check
+  * lib + tests: make --pm-method logind dependant on glib version
+    (LP: #1364998)
+  * Check that we are at least using glib that supports logind
+  * data: klog.json: add a few more error message patterns
+  * acpi: acpidump: avoid using void * pointer arithmetic
+  * acpi: dmar: avoid using void * pointer arithmetic
+  * lib: fwts_alloc: avoid using void * pointer arithmetic
+  * lib: fwts_mmap: avoid using void * pointer arithmetic
+  * lib: fwts_multiproc: avoid using void * pointer arithmetic
+  * lib: fwts_pipeio: remove gcc cleanup attribute, it confuses cppcheck
+  * lib: fwts_alloc: add field width limit for sscanf
+  * lib: fwts_battery: add field width limit for sscanf
+  * lib: fwts_ioport: use sigsetjmp and siglongjmp
+  * acpi: wmi: update WMI GUIDs to be in sync with 3.17 kernel
+  * lib: fwts: add more sanity checks when fetching the RSDP (LP: #1372849)
+  * fwts-test: wmi: update test to sync with new GUIDs added to wmi test
+  * uefi: uefivarinfo: fix double free on data (LP: #1372874)
+
+  [Ivan Hu]
+  * uefirtvariable: fix the wrong operator used, coverity scan error
+    (LP: #1362893)
+  * uefivarinfo: allocate buffer rewrite to avoid realloc failure
+    (LP: #1362540)
+
+  [Keng-Yu Lin]
+  * debian: unrestrict automake and aclocal to be v1.11
+  * debian: increment Standards-Version to 3.9.5
+  * debian: unrestrict the automake version in Build-Depends
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 24 Sep 2014 15:41:17 +0800
+
 fwts (14.08.00-0ubuntu0) utopic; urgency=low
  
   [Alberto Milone]

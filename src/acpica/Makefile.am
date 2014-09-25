@@ -8,6 +8,8 @@ AM_CPPFLAGS = 						\
 	-D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP	\
 	-I$(top_srcdir)/src/lib/include			\
 	-I$(srcdir)/source/include			\
+	-I/usr/include/json				\
+	-I/usr/include/json-c				\
 	-Wall -fno-strict-aliasing
 
 #

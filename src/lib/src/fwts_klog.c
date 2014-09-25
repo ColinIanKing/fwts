@@ -23,7 +23,6 @@
 #include <stdbool.h>
 #include <sys/types.h>
 #include <pcre.h>
-#include <json/json.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>

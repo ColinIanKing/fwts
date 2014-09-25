@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#include <json/json.h>
 #define MAX_TABLES	(128)
 
 #define ASL_EXCEPTIONS

@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include <pcre.h>
-#include <json/json.h>
+#include <json.h>
 #include "config.h"
 
 #define PARSER_OK		0

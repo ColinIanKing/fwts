@@ -26,7 +26,6 @@
 #include <sys/ioctl.h>
 #include <time.h>
 
-#include <json/json.h>
 #include "fwts.h"
 
 #define MAX_JSON_STACK	(64)

@@ -20,7 +20,7 @@
 #ifndef __FWTS_JSON_H__
 #define __FWTS_JSON_H__
 
-#include <json/json.h>
+#include <json.h>
 
 #define __FWTS_JSON_ERR_PTR__ ((json_object*) -1)
 /*

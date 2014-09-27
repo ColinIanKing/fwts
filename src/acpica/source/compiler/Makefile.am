@@ -73,6 +73,8 @@ libfwtsiasl_la_SOURCES = 			\
 	aslload.c 				\
 	asllookup.c 				\
 	aslmap.c 				\
+	aslmapoutput.c				\
+	aslmaputils.c				\
 	aslmessages.c				\
 	aslopcodes.c 				\
 	asloperands.c 				\

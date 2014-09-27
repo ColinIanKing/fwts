@@ -45,6 +45,7 @@
 #include "actables.h"
 #include "acinterp.h"
 #include "acapps.h"
+#include "amlresrc.h"
 
 #define ACPI_MAX_INIT_TABLES		(64)	/* Number of ACPI tables */
 
@@ -383,6 +384,33 @@ static ACPI_STATUS fwts_region_handler(
 
 	return AE_OK;
 }
+
+void
+MpSaveGpioInfo (
+	ACPI_PARSE_OBJECT	*Op,
+	AML_RESOURCE		*Resource,
+	UINT32			PinCount,
+	UINT16			*PinList,
+	char			*DeviceName)
+{
+	FWTS_UNUSED(Op);
+	FWTS_UNUSED(Resource);
+	FWTS_UNUSED(PinCount);
+	FWTS_UNUSED(PinList);
+	FWTS_UNUSED(DeviceName);
+}
+
+void
+MpSaveSerialInfo (
+	ACPI_PARSE_OBJECT	*Op,
+	AML_RESOURCE		*Resource,
+	char			*DeviceName)
+{
+	FWTS_UNUSED(Op);
+	FWTS_UNUSED(Resource);
+	FWTS_UNUSED(DeviceName);
+}
+
 
 /*
  *  AcpiOsGetRootPointer()

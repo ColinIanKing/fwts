@@ -246,7 +246,8 @@ libfwtsacpica_la_SOURCES =				\
 	source/common/ahids.c				\
 	source/common/cmfsize.c            		\
 	source/common/ahuuids.c				\
-	source/tools/acpiexec/aehandlers.c
+	source/tools/acpiexec/aehandlers.c		\
+	source/tools/acpiexec/aeregion.c
 
 libfwtsacpica_la_LIBADD = \
 	-L$(top_builddir)/src/lib/src -lfwts -lrt

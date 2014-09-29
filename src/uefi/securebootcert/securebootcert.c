@@ -62,6 +62,7 @@ typedef struct _EFI_SIGNATURE_LIST {
 }
 
 static uint8_t var_found;
+static bool securebooted = false;
 
 static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)
 {
@@ -118,6 +119,8 @@ static void securebootcert_secure_boot(fwts_framework *fw, fwts_uefi_var *var, c
 				"The secure boot variable data invalid.");
 			return;
 		}
+		if (value == 1)
+			securebooted = true;
 		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
 		fwts_passed(fw, "Secure boot relative variable %s check passed.", varname);
 	}
@@ -359,12 +362,19 @@ static int securebootcert_test1(fwts_framework *fw)
 	if (!(var_found & VAR_SETUPMODE_FOUND))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
 			"The secure boot variable SetupMode not found.");
-	if (!(var_found & VAR_DB_FOUND))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-			"The secure boot variable DB not found.");
-	if (!(var_found & VAR_KEK_FOUND))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-			"The secure boot variable KEK not found.");
+	if (securebooted) {
+		if (!(var_found & VAR_DB_FOUND))
+			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
+				"The secure boot variable DB not found.");
+		if (!(var_found & VAR_KEK_FOUND))
+			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
+				"The secure boot variable KEK not found.");
+	} else {
+		if (!(var_found & VAR_DB_FOUND))
+			fwts_log_info(fw, "Not in readiness for secureboot, variable DB not found.");		
+		if (!(var_found & VAR_KEK_FOUND))
+			fwts_log_info(fw, "Not in readiness for secureboot, variable KEK not found.");
+	}
 
 	fwts_uefi_free_variable_names(&name_list);
 

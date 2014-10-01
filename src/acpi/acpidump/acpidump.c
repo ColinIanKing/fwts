@@ -1055,6 +1055,13 @@ static void acpidump_slit(fwts_framework *fw, const fwts_acpi_table_info *table)
 	uint64_t n = table->length - sizeof(fwts_acpi_table_slit);
 	const uint8_t *entry;
 
+	if (table->length < sizeof(fwts_acpi_table_slit)) {
+		fwts_log_info_verbatum(fw, "SLIT header length too short, expected %zu "
+			"bytes, got %" PRIu64 " bytes instead. Aborting SLIT table dump.",
+			sizeof(fwts_acpi_table_slit), table->length);
+		return;
+	}
+
 	fwts_log_info_verbatum(fw, "# Sys Localities: 0x%" PRIx64 "(%" PRIu64 ")",
 		slit->num_of_system_localities, slit->num_of_system_localities);
 	if (n < slit->num_of_system_localities * slit->num_of_system_localities) {
@@ -1250,6 +1257,13 @@ static void acpidump_asf(fwts_framework *fw, const fwts_acpi_table_info *table)
 		uint8_t i;
 		uint8_t *asf_ptr = ptr;
 
+		/* Minimal header check */
+		if (hdr->length < sizeof(fwts_acpi_table_asf_header)) {
+			fwts_log_info_verbatum(fw, "ASF header length too short, expected %zu "
+				"bytes, got %" PRIu16 " bytes instead. Aborting ASF table dump.",
+				sizeof(fwts_acpi_table_asf_header), hdr->length);
+			break;
+		}
 		fwts_log_nl(fw);
 		__acpi_dump_table_fields(fw, asf_ptr, asf_header_fields, asf_ptr - data);
 
@@ -1333,18 +1347,25 @@ static void acpidump_dmar_device_scope(
 
 	/* Parse through multiple device scope entries */
 	while (length > 0) {
-		unsigned int i;
+		ssize_t i, len;
 
 		fwts_acpi_table_dmar_device_scope *device_scope_entry =
 			(fwts_acpi_table_dmar_device_scope *)device_scope;
 		__acpi_dump_table_fields(fw, device_scope, dmar_device_scope_fields, device_scope - data);
+		len = device_scope_entry->length - sizeof(fwts_acpi_table_dmar_device_scope);
+		/* Something not good about the data */
+		if (len <= 0) {
+			fwts_log_info_verbatum(fw, "DMAR device scope entry length "
+				"too short. Aborting device scope dump.");
+			break;
+		}
 		/*
 		 *  The device scope has a variable length path,
 		 *  so just dump this raw data out for now.
 		 */
-		for (i = 0; i < device_scope_entry->length - sizeof(fwts_acpi_table_dmar_device_scope); i++) {
+		for (i = 0; i < len; i++) {
 			uint8_t val8 = device_scope_entry->path[i];
-			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%d]", acpi_dump_field_info("Path", 1,
+			fwts_log_info_verbatum(fw, "%s 0x%2.2x [%zd]", acpi_dump_field_info("Path", 1,
 				(device_scope - data) + sizeof(fwts_acpi_table_dmar_device_scope) + i),
 				val8, i);
 		}
@@ -1407,6 +1428,14 @@ static void acpidump_dmar(fwts_framework *fw, const fwts_acpi_table_info *table)
 			(fwts_acpi_table_dmar_header *)ptr;
 
 		fwts_log_nl(fw);
+		/* Something not good with the data */
+		if (header->length < sizeof(fwts_acpi_table_dmar_header)) {
+			fwts_log_info_verbatum(fw, "DMAR header length "
+				"too short, expected %zu bytes, got %" PRIu16
+				" bytes instead. Aborting DMAR dump.",
+				sizeof(fwts_acpi_table_dmar_header), header->length);
+			break;
+		}
 
 		switch (header->type) {
 		case 0:
@@ -1644,7 +1673,7 @@ static void acpidump_fpdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		/* fpdt not long enough, bail out early */
 		if (fpdt->length < 16) {
 			size_t offset = ptr - data;
-			fwts_log_info_verbatum(fw, "Cannot decode FPDT header, size %" 
+			fwts_log_info_verbatum(fw, "Cannot decode FPDT header, size %"
 				PRIu8 " less than 16 bytes. Data:", fpdt->length);
 			acpi_dump_raw_data(fw, ptr, table->length - offset, offset);
 			break;
@@ -1747,6 +1776,13 @@ static void acpidump_pcct(fwts_framework *fw, const fwts_acpi_table_info *table)
 	while (ptr < data + table->length) {
 		fwts_acpi_table_pcct_subspace_header *header =
 			(fwts_acpi_table_pcct_subspace_header *)ptr;
+
+		if (header->length < sizeof(fwts_acpi_table_pcct_subspace_header)) {
+			fwts_log_info_verbatum(fw, "PCCT subspace header length too short, expected %zu "
+				"bytes, got %" PRIu8 " bytes instead. Aborting PCCT table dump.",
+				sizeof(fwts_acpi_table_pcct_subspace_header), header->length);
+			break;
+		}
 
 		/* Currently just type 0 is supported */
 		switch (header->type) {
@@ -1886,6 +1922,13 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
 		uint8_t *oem_data       = (uint8_t *)dbg2_info + dbg2_info->oem_data_offset;
 
 		__acpi_dump_table_fields(fw, table->data + offset, dbg2_info_fields, offset);
+
+		if (dbg2_info->length < sizeof(fwts_acpi_table_dbg2_info)) {
+			fwts_log_info_verbatum(fw, "DBG2 info header length too short, expected %zu "
+				"bytes, got %" PRIu16 " bytes instead. Aborting PCCT table dump.",
+				sizeof(fwts_acpi_table_dbg2_info), dbg2_info->length);
+			break;
+		}
 
 		if (dbg2_info->number_of_regs) {
 			/* Dump out the register GAS and sizes */

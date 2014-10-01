@@ -1641,6 +1641,15 @@ static void acpidump_fpdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 	while (ptr < data + table->length) {
 		fwts_acpi_table_fpdt_header *fpdt = (fwts_acpi_table_fpdt_header *)ptr;
 
+		/* fpdt not long enough, bail out early */
+		if (fpdt->length < 16) {
+			size_t offset = ptr - data;
+			fwts_log_info_verbatum(fw, "Cannot decode FPDT header, size %" 
+				PRIu8 " less than 16 bytes. Data:", fpdt->length);
+			acpi_dump_raw_data(fw, ptr, table->length - offset, offset);
+			break;
+		}
+
 		fwts_log_nl(fw);
 
 		switch (fpdt->type) {

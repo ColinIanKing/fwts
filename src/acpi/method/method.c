@@ -237,7 +237,7 @@
  * _TZM  11.4.20	Y
  * _TZP  11.4.21	Y
  * _UID  6.1.9		Y
- * _UPC  9.13		N
+ * _UPC  9.13		Y
  * _UPD  9.16.1		Y
  * _UPP  9.16.2		Y
  * _VPO  B.4.6		Y
@@ -3620,6 +3620,55 @@ static int method_test_GTM(fwts_framework *fw)
 }
 
 /*
+ * Section 9.13 USB Port Capabilities
+ */
+
+static void method_test_UPC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, connector_type;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_UPC", obj, 4) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_UPC", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	connector_type = obj->Package.Elements[1].Integer.Value;
+	if (connector_type  > 6 && connector_type < 0xFF) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UPCBadReturnType",
+			"%s element 1 returned reserved value.", name);
+		return;
+	}
+
+	for (i = 2; i < 4; i++) {
+		if (obj->Package.Elements[i].Integer.Value != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_UPCBadReturnType",
+				"%s element %" PRIu32 " is not zero.", name, i);
+			return;
+		}
+	}
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_UPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_UPC", NULL, 0, method_test_UPC_return, NULL);
+}
+
+/*
  * Section 9.16 User Presence Detection Device
  */
 
@@ -5642,7 +5691,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_MSM, "Test _MSM (Memory Set Monitoring)." }, */
 
 	/* Section 9.13 USB Port Capabilities */
-	/* { method_test_UPC, "Test _UPC (USB Port Capabilities)." }, */
+	{ method_test_UPC, "Test _UPC (USB Port Capabilities)." },
 
 	/* Section 9.14 Device Object Name Collision */
 	/* { method_test_DSM, "Test _DSM (Device Specific Method)." }, */

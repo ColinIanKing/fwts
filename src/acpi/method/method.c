@@ -145,7 +145,7 @@
  * _PIF  10.3.3		Y
  * _PLD  6.1.8		Y
  * _PMC  10.4.1		N
- * _PMD  10.4.8		N
+ * _PMD  10.4.8		Y
  * _PMM  10.4.3		Y
  * _PPC  8.4.4.3	Y
  * _PPE  8.4.6		Y
@@ -4455,6 +4455,30 @@ static int method_test_GHL(fwts_framework *fw)
 		"_GHL", NULL, 0, method_test_integer_return, NULL);
 }
 
+static void method_test_PMD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PMD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PMD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PMD", NULL, 0, method_test_PMD_return, NULL);
+}
+
 static int method_test_PMM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -5742,7 +5766,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GHL, "Test _GHL (Get Harware Limit)." },
 	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
 	/* { method_test_PMC, "Test _PMC (Power Meter Capabilities)." }, */
-	/* { method_test_PMD, "Test _PMD (Power Meter Devices)." }, */
+	{ method_test_PMD, "Test _PMD (Power Meter Devices)." },
 	{ method_test_PMM, "Test _PMM (Power Meter Measurement)." },
 	/* { method_test_PTP, "Test _PTP (Power Trip Points)." }, */
 	/* { method_test_SHL, "Test _SHL (Set Hardware Limit)." }, */

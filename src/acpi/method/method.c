@@ -155,7 +155,7 @@
  * _PR2  7.2.10		Y
  * _PR3  7.2.11		Y
  * _PRE  7.2.12		Y
- * _PRL  10.3.4		N
+ * _PRL  10.3.4		Y
  * _PRT  6.2.12		N
  * _PRS  6.2.11		Y
  * _PRW  7.2.11		N
@@ -4373,6 +4373,30 @@ static int method_test_BMC(fwts_framework *fw)
 /*
  * Section 10.3 AC Adapters and Power Sources Objects
  */
+static void method_test_PRL_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PRL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PRL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PRL", NULL, 0, method_test_PRL_return, NULL);
+}
+
 static void method_test_PSR_return(
 	fwts_framework *fw,
 	char *name,
@@ -5758,7 +5782,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	{ method_test_PCL, "Test _PCL (Power Consumer List)." },
 	{ method_test_PIF, "Test _PIF (Power Source Information)." },
-	/* { method_test_PRL, "Test _PRL (Power Source Redundancy List)." }, */
+	{ method_test_PRL, "Test _PRL (Power Source Redundancy List)." },
 	{ method_test_PSR, "Test _PSR (Power Source)." },
 
 	/* Section 10.4 Power Meters */

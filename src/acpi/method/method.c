@@ -97,7 +97,7 @@
  * _FDM  9.9.3		N (floppy controller, ignore)
  * _FIF  11.3.1.1	Y
  * _FIX  6.2.5		Y
- * _FPS  11.3.1.2	N
+ * _FPS  11.3.1.2	Y
  * _FSL  11.3.1.3	Y
  * _FST  11.3.1.4	Y
  * _GAI  10.4.5		Y
@@ -4550,6 +4550,92 @@ static int method_test_FIF(fwts_framework *fw)
 		"_FIF", NULL, 0, method_test_FIF_return, NULL);
 }
 
+static void method_test_FPS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
+		if (obj->Package.Elements[0].Integer.Value != 0) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FPSBadRevision",
+				"%s element 0 is not revision 0.", name);
+			failed = true;
+		}
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_FPSBadReturnType",
+			"%s element 0 is not an integer.", name);
+		failed = true;
+	}
+
+	/* Could be one or more sub-packages */
+	for (i = 1; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		uint32_t j;
+		bool elements_ok = true;
+
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FPSBadReturnType",
+				"%s element %" PRIu32 " is not a package.",
+				name, i);
+			failed = true;
+			continue;
+		}
+
+		pkg = &obj->Package.Elements[i];
+		if (pkg->Package.Count != 5) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_FPSBadSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 5 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		for (j = 0; j < 5; j++) {
+			/* TODO - field 0 and 1 can be related to other control method */
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_FPSBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_FPS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_FPS", NULL, 0, method_test_FPS_return, NULL);
+}
+
 static int method_test_FSL(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[1];
@@ -5798,7 +5884,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 11.3 Fan Devices */
 
 	{ method_test_FIF, "Test _FIF (Fan Information)." },
-	/* { method_test_FPS, "Test _FPS (Fan Performance States)." }, */
+	{ method_test_FPS, "Test _FPS (Fan Performance States)." },
 	{ method_test_FSL, "Test _FSL (Fan Set Level)." },
 	{ method_test_FST, "Test _FST (Fan Status)." },
 

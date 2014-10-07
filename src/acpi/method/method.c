@@ -38,7 +38,7 @@
  * _ALC  9.2.5		Y
  * _ALI  9.2.2		Y
  * _ALP  9.2.6		Y
- * _ALR  9.2.5		N
+ * _ALR  9.2.5		Y
  * _ALT  9.2.3		Y
  * _ALx  11.4.2		N
  * _ART  11.4.3		Y
@@ -3681,7 +3681,69 @@ method_test_integer(_ALC, METHOD_OPTIONAL)
 method_test_integer(_ALI, METHOD_OPTIONAL)
 method_test_integer(_ALT, METHOD_OPTIONAL)
 
-/* TODO _ALR */
+static void method_test_ALR_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more sub-packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		uint32_t adjustment = 0, illuminance = 0;
+
+		pkg = &obj->Package.Elements[i];
+		if (pkg->Package.Count != 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_ALRBadSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 2 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+		} else {
+			/* elements should be listed in monotonically increasing order */
+			if (pkg->Package.Elements[0].Type != ACPI_TYPE_INTEGER ||
+			    adjustment > pkg->Package.Elements[0].Integer.Value) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_ALRBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element 0 is an invalid integer.",
+					name, i);
+				failed = true;
+			}
+
+			if (pkg->Package.Elements[1].Type != ACPI_TYPE_INTEGER ||
+			    illuminance > pkg->Package.Elements[1].Integer.Value) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_ALRBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element 1 is an invalid integer.",
+					name, i);
+				failed = true;
+			}
+			adjustment = pkg->Package.Elements[0].Integer.Value;
+			illuminance = pkg->Package.Elements[1].Integer.Value;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_ALR(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_ALR", NULL, 0, method_test_ALR_return, NULL);
+}
 
 static int method_test_ALP(fwts_framework *fw)
 {
@@ -5994,7 +6056,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_ALI, "Test _ALI (Ambient Light Illuminance)." },
 	{ method_test_ALT, "Test _ALT (Ambient Light Temperature)." },
 	{ method_test_ALP, "Test _ALP (Ambient Light Polling). "},
-	/* { method_test_ALR, "Test _ALR (Ambient Light Response). "}, */
+	{ method_test_ALR, "Test _ALR (Ambient Light Response). "},
 
 	/* Section 9.3 Battery Device */
 

@@ -126,7 +126,7 @@
  * _LID  9.4.1		Y
  * _MAT  6.2.9		N
  * _MBM  9.12.2.1	Y
- * _MLS  6.1.7		N
+ * _MLS  6.1.7		Y
  * _MSG  9.1.2		Y
  * _MSM  9.12.2.2	N
  * _NTT  11.4.7		Y
@@ -1216,6 +1216,66 @@ static int method_test_CID(fwts_framework *fw)
 		"_CID", NULL, 0, method_test_CID_return, NULL);
 }
 
+static void method_test_MLS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_MLS", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+
+		if (pkg->Package.Count != 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 2 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		if (pkg->Package.Elements[0].Type != ACPI_TYPE_STRING) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 0 is not a string.",
+				name, i);
+			failed = true;
+		}
+
+		if (pkg->Package.Elements[1].Type != ACPI_TYPE_BUFFER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 1 is not a buffer.",
+				name, i);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_MLS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_MLS", NULL, 0, method_test_MLS_return, NULL);
+}
 static int method_test_HRV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -5810,7 +5870,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_DDN, "Test _DDN (DOS Device Name)." },
 	{ method_test_HID, "Test _HID (Hardware ID)." },
 	{ method_test_HRV, "Test _HRV (Hardware Revision Number)." },
-	/* { method_test_MLS, "Test _MLS (Multiple Language String)." }, */
+	{ method_test_MLS, "Test _MLS (Multiple Language String)." },
 	{ method_test_PLD, "Test _PLD (Physical Device Location)." },
 	{ method_test_SUB, "Test _SUB (Subsystem ID)." },
 	{ method_test_SUN, "Test _SUN (Slot User Number)." },

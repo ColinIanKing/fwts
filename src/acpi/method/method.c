@@ -125,7 +125,7 @@
  * _LCK  6.3.4		Y
  * _LID  9.4.1		Y
  * _MAT  6.2.9		N
- * _MBM  9.12.2.1	N
+ * _MBM  9.12.2.1	Y
  * _MLS  6.1.7		N
  * _MSG  9.1.2		Y
  * _MSM  9.12.2.2	N
@@ -3710,6 +3710,49 @@ static int method_test_GTM(fwts_framework *fw)
 }
 
 /*
+ * Section 9.12 Memory Devices
+ */
+
+static void method_test_MBM_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	static fwts_package_element elements[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Window Size" },
+		{ ACPI_TYPE_INTEGER,	"Sampling Interval" },
+		{ ACPI_TYPE_INTEGER,	"Maximum Bandwidth" },
+		{ ACPI_TYPE_INTEGER,	"Average Bandwidth" },
+		{ ACPI_TYPE_INTEGER,	"Low Bandwidth" },
+		{ ACPI_TYPE_INTEGER,	"Low Notification Threshold" },
+		{ ACPI_TYPE_INTEGER,	"High Notification Threshold" },
+	};
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_MBM", obj, 8) != FWTS_OK)
+		return;
+
+	/* For now, just check types */
+	if (method_package_elements_type(fw, name, "_MBM", obj, elements, 8) != FWTS_OK)
+		return;
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_MBM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_MBM", NULL, 0, method_test_MBM_return, NULL);
+}
+
+/*
  * Section 9.13 USB Port Capabilities
  */
 
@@ -5911,7 +5954,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_FDM, "Test _FDM (Floppy Drive Mode)." }, */
 
 	/* Section 9.12 Memory Devices */
-	/* { method_test_MBM, "Test _MBM (Memory Bandwidth Monitoring Data)." }, */
+	{ method_test_MBM, "Test _MBM (Memory Bandwidth Monitoring Data)." },
 	/* { method_test_MSM, "Test _MSM (Memory Set Monitoring)." }, */
 
 	/* Section 9.13 USB Port Capabilities */

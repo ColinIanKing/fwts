@@ -77,7 +77,7 @@
  * _DEP  6.5.8		Y
  * _DGS  B.6.7		Y
  * _DIS  6.2.3		Y
- * _DLM  5.7.5		N
+ * _DLM  5.7.5		Y
  * _DMA  6.2.4		Y
  * _DOD  B.4.2		Y
  * _DOS  B.4.1		Y
@@ -916,6 +916,72 @@ static int method_test_EVT(fwts_framework *fw)
 			break;
 	}
 	return ret;
+}
+
+/*
+ * Section 5.7 Predefined Objects
+ */
+
+static void method_test_DLM_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_DLM", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+
+		if (pkg->Package.Count != 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_DLMSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 2 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_DLMBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 0 is not a reference.",
+				name, i);
+			failed = true;
+		}
+
+		if (pkg->Package.Elements[1].Type != ACPI_TYPE_LOCAL_REFERENCE &&
+		    pkg->Package.Elements[1].Type != ACPI_TYPE_BUFFER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_DLMBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 1 is not a reference or a buffer.",
+				name, i);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_DLM(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_DLM", NULL, 0, method_test_DLM_return, NULL);
 }
 
 /*
@@ -5686,7 +5752,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_EVT, "Test _EVT (Event Method)." },
 
 	/* Section 5.7 Predefined Objects */
-	/* { method_test_DLM, "Test _DLM (Device Lock Mutex)." }, */
+	{ method_test_DLM, "Test _DLM (Device Lock Mutex)." },
 	/* { method_test_GL , "Test _GL  (Global Lock)." }, */
 	/* { method_test_OS , "Test _OS  (Operating System)." }, */
 	/* { method_test_REV, "Test _REV (Revision)." }, */

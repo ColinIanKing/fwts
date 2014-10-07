@@ -74,7 +74,7 @@
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
  * _DDN  6.1.4		Y
- * _DEP  6.5.8		N
+ * _DEP  6.5.8		Y
  * _DGS  B.6.7		Y
  * _DIS  6.2.3		Y
  * _DLM  5.7.5		N
@@ -2255,6 +2255,30 @@ static int method_test_BDN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MOBILE, "_BDN",
 		NULL, 0, method_test_integer_return, "_BDN");
+}
+
+static void method_test_DEP_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_DEP", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+		return;
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_DEP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_DEP", NULL, 0, method_test_DEP_return, NULL);
 }
 
 static int method_test_DCK(fwts_framework *fw)
@@ -5720,7 +5744,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 6.5 Other Objects and Controls */
 
-	/* { method_test_DEP, "Test _DEP (Operational Region Dependencies)." }, */
+	{ method_test_DEP, "Test _DEP (Operational Region Dependencies)." },
 	{ method_test_BDN, "Test _BDN (BIOS Dock Name)." },
 	{ method_test_BBN, "Test _BBN (Base Bus Number)." },
 	{ method_test_DCK, "Test _DCK (Dock)." },

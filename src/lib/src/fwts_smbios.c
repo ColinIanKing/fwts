@@ -19,7 +19,7 @@
 
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
+#if defined(FWTS_ARCH_INTEL) || defined(FWTS_ARCH_AARCH64)
 /*
  *  fwts_smbios_find_entry_uefi()
  *	find SMBIOS structure table entry from UEFI systab

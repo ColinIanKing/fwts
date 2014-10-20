@@ -26,6 +26,10 @@
 #define FWTS_ARCH_INTEL	1
 #endif
 
+#if defined(__aarch64__)
+#define FWTS_ARCH_AARCH64	1
+#endif
+
 #define FWTS_UNUSED(var)	(void)var
 
 #define FWTS_JSON_DATA_PATH	DATAROOTDIR "/fwts"

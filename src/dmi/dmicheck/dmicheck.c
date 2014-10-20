@@ -24,7 +24,7 @@
 
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
+#if defined(FWTS_ARCH_INTEL) || defined(FWTS_ARCH_AARCH64)
 
 #include <stdlib.h>
 #include <stdio.h>

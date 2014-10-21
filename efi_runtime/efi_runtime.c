@@ -394,8 +394,8 @@ static long efi_runtime_set_waketime(unsigned long arg)
 	if (copy_from_user(&psetwakeuptime_local, psetwakeuptime, sizeof(psetwakeuptime_local)))
 		return -EFAULT;
 
-	if (get_user(enabled, &(psetwakeuptime_local.Enabled)) ||
-				copy_from_user(&efi_time, psetwakeuptime_local.Time, sizeof(EFI_TIME)))
+	enabled = psetwakeuptime_local.Enabled;
+	if (copy_from_user(&efi_time, psetwakeuptime_local.Time, sizeof(EFI_TIME)))
 		return -EFAULT;
 
 	convert_to_efi_time(&eft, &efi_time);

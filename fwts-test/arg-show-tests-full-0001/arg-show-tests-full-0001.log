@@ -59,15 +59,17 @@ Batch tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
- method          (169 tests):
+ method          (178 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
+  Test _DLM (Device Lock Mutex).
   Test _PIC (Inform AML of Interrupt Model).
   Test _CID (Compatible ID).
   Test _DDN (DOS Device Name).
   Test _HID (Hardware ID).
   Test _HRV (Hardware Revision Number).
+  Test _MLS (Multiple Language String).
   Test _PLD (Physical Device Location).
   Test _SUB (Subsystem ID).
   Test _SUN (Slot User Number).
@@ -94,6 +96,7 @@ Batch tests:
   Test _LCK (Lock).
   Test _RMV (Remove).
   Test _STA (Status).
+  Test _DEP (Operational Region Dependencies).
   Test _BDN (BIOS Dock Name).
   Test _BBN (Base Bus Number).
   Test _DCK (Dock).
@@ -151,9 +154,12 @@ Batch tests:
   Test _ALI (Ambient Light Illuminance).
   Test _ALT (Ambient Light Temperature).
   Test _ALP (Ambient Light Polling). 
+  Test _ALR (Ambient Light Response). 
   Test _LID (Lid Status).
   Test _GTF (Get Task File).
   Test _GTM (Get Timing Mode).
+  Test _MBM (Memory Bandwidth Monitoring Data).
+  Test _UPC (USB Port Capabilities).
   Test _UPD (User Presence Detect).
   Test _UPP (User Presence Polling).
   Test _GCP (Get Capabilities).
@@ -176,11 +182,14 @@ Batch tests:
   Test _BTM (Battery Time).
   Test _PCL (Power Consumer List).
   Test _PIF (Power Source Information).
+  Test _PRL (Power Source Redundancy List).
   Test _PSR (Power Source).
   Test _GAI (Get Averaging Level).
   Test _GHL (Get Harware Limit).
+  Test _PMD (Power Meter Devices).
   Test _PMM (Power Meter Measurement).
   Test _FIF (Fan Information).
+  Test _FPS (Fan Performance States).
   Test _FSL (Fan Set Level).
   Test _FST (Fan Status).
   Test _ACx (Active Cooling).
@@ -384,4 +393,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 301 tests
+Total of 310 tests

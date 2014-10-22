@@ -258,9 +258,45 @@ static int uefirtauthvar_test2(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * With one existing variable, but set authenticated variable which created by another valid key,
+ * expect EFI_SECURITY_VIOLATION returned.
+ */
+static int uefirtauthvar_test3(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+	int supcheck;
+
+	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreateDiff), AuthVarCreateDiff, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		if (status == EFI_SECURITY_VIOLATION) {
+			fwts_passed(fw, "Authenticated variable test with another valid authenticated variable passed.");
+			return FWTS_OK;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"UEFISetDiffAuthVar",
+			"Set different valid authenticated variable fail");
+			fwts_uefi_print_status_info(fw, status);
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFISetDiffAuthVar",
+		"Set authenticated variable expected fail but success");
+
+	return FWTS_ERROR;
+}
+
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
 	{ uefirtauthvar_test2, "Authenticated variable test with the same authenticated variable." },
+	{ uefirtauthvar_test3, "Authenticated variable test with another valid authenticated variable." },
 	{ NULL, NULL }
 };
 

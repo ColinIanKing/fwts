@@ -515,6 +515,40 @@ static int uefirtauthvar_test7(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * Set the authenticated variable with invalid modified data,
+ * expect EFI_SECURITY_VIOLATION returned.
+ */
+static int uefirtauthvar_test8(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+	int supcheck;
+
+	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarModData), AuthVarModData, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		if (status == EFI_SECURITY_VIOLATION) {
+			fwts_passed(fw, "Set authenticated variable test with invalid modified data passed.");
+			return FWTS_OK;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"UEFISetAuthVarInvalidData",
+			"Set authenticated variable fail");
+			fwts_uefi_print_status_info(fw, status);
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFISetAuthVarInvalidData",
+		"Set authenticated variable expected fail but success");
+
+	return FWTS_ERROR;
+}
 
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
@@ -524,6 +558,7 @@ static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test5, "Update authenticated variable test." },
 	{ uefirtauthvar_test6, "Authenticated variable test with old authenticated variable." },
 	{ uefirtauthvar_test7, "Delete authenticated variable test." },
+	{ uefirtauthvar_test8, "Authenticated variable test with invalid modified data." },
 	{ NULL, NULL }
 };
 

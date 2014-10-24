@@ -32,6 +32,7 @@
 static int fd;
 
 #define TEST_GUID {0x7f5c5d52, 0x2f14, 0x4f12, {0x96, 0x7c, 0xdb, 0x60, 0xdb, 0x05, 0xa0, 0xfd} }
+#define TEST_GUID1 {0x0ef2aa27, 0x1e93, 0x4284, {0xa1, 0xf9, 0x34, 0xd5, 0x6c, 0x5c, 0xde, 0x84} }
 
 #define getvar_buf_size 100
 
@@ -585,6 +586,42 @@ static int uefirtauthvar_test9(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * Set the authenticated variable with different guid, expect
+ * EFI_SECURITY_VIOLATION returned.
+ */
+static int uefirtauthvar_test10(fwts_framework *fw)
+{
+	long ioret;
+	uint64_t status;
+	int supcheck;
+	EFI_GUID gtestguiddiff = TEST_GUID1;
+
+	ioret = setvar(&gtestguiddiff, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		if (status == EFI_SECURITY_VIOLATION) {
+			fwts_passed(fw, "Set authenticated variable test with different guid passed.");
+			return FWTS_OK;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"UEFISetAuthVarDiffGuid",
+			"Set authenticated variable fail");
+			fwts_uefi_print_status_info(fw, status);
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFISetAuthVarDiffGuid",
+		"Set authenticated variable expected fail but success");
+
+	return FWTS_ERROR;
+}
+
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
 	{ uefirtauthvar_test2, "Authenticated variable test with the same authenticated variable." },
@@ -595,6 +632,7 @@ static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test7, "Delete authenticated variable test." },
 	{ uefirtauthvar_test8, "Authenticated variable test with invalid modified data." },
 	{ uefirtauthvar_test9, "Authenticated variable test with invalid modified timestamp." },
+	{ uefirtauthvar_test10, "Authenticated variable test with different guid." },
 	{ NULL, NULL }
 };
 

@@ -464,6 +464,58 @@ static int uefirtauthvar_test6(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * Delete the test authenticated variable.
+ */
+static int uefirtauthvar_test7(fwts_framework *fw)
+{
+	long ioret;
+	int supcheck;
+
+	uint8_t data[getvar_buf_size];
+	uint64_t getdatasize = sizeof(data);
+	uint64_t status;
+	uint32_t attributestest;
+
+	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarDel), AuthVarDel, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIDelAuthVar",
+			"Failed to delete authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
+	if (ioret == -1) {
+		if (status == EFI_NOT_FOUND) {
+			fwts_passed(fw, "Delete authenticated variable tests passed.");
+			return FWTS_OK;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"UEFIDelAuthVar",
+			"Failed to get authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFIDelAuthVar",
+		"Failed to delete authenticated variable still get the test"
+		"authenticated variable.");
+
+	return FWTS_ERROR;
+}
+
+
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
 	{ uefirtauthvar_test2, "Authenticated variable test with the same authenticated variable." },
@@ -471,6 +523,7 @@ static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test4, "Append authenticated variable test." },
 	{ uefirtauthvar_test5, "Update authenticated variable test." },
 	{ uefirtauthvar_test6, "Authenticated variable test with old authenticated variable." },
+	{ uefirtauthvar_test7, "Delete authenticated variable test." },
 	{ NULL, NULL }
 };
 

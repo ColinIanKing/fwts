@@ -293,10 +293,84 @@ static int uefirtauthvar_test3(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * Execute the normal append operation.
+ */
+static int uefirtauthvar_test4(fwts_framework *fw)
+{
+	long ioret;
+	int supcheck;
+
+	uint8_t data[getvar_buf_size];
+	uint64_t getdatasize = sizeof(data);
+	uint64_t status;
+	uint32_t attributestest;
+	size_t i;
+	uint32_t attribappend = attributes | FWTS_UEFI_VARIABLE_APPEND_WRITE;
+
+	ioret = setvar(&gtestguid, attribappend, sizeof(AuthVarAppend), AuthVarAppend, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIAppendAuthVar",
+			"Failed to append authenticated variable with UEFI "
+			"runtime service.");
+
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIAppendAuthVar",
+			"Failed to get authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	if (getdatasize != (sizeof(AuthVarCreateData) + sizeof(AuthVarAppendData))) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIAppendAuthVar",
+			"Get total authenticated variable data size is not the "
+			"same as it set and appended.");
+	}
+
+	for (i = 0; i < getdatasize; i++) {
+		if (i < sizeof(AuthVarCreateData)) {
+			if (data[i] != AuthVarCreateData[i]) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+				"UEFIAppendAuthVar",
+				"Get authenticated variable data are not the "
+				"same as it set.");
+				return FWTS_ERROR;
+			}
+		} else {
+			if (data[i] != AuthVarAppendData[i - sizeof(AuthVarCreateData)]) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+				"UEFIAppendAuthVar",
+				"Get authenticated variable data are not the "
+				"same as it set.");
+				return FWTS_ERROR;
+			}
+		}
+	}
+
+	fwts_passed(fw, "Append authenticated variable tests passed.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
 	{ uefirtauthvar_test2, "Authenticated variable test with the same authenticated variable." },
 	{ uefirtauthvar_test3, "Authenticated variable test with another valid authenticated variable." },
+	{ uefirtauthvar_test4, "Append authenticated variable test." },
 	{ NULL, NULL }
 };
 

@@ -713,6 +713,101 @@ static int uefirtauthvar_test12(fwts_framework *fw)
 	return FWTS_ERROR;
 }
 
+/*
+ * Test with setting and deleting another authenticated variable,
+ * after previous test authenticated variable was deleted.
+ */
+static int uefirtauthvar_test13(fwts_framework *fw)
+{
+	long ioret;
+
+	uint8_t data[getvar_buf_size];
+	uint64_t getdatasize = sizeof(data);
+	uint64_t status;
+	int supcheck;
+	uint32_t attributestest;
+	size_t i;
+
+	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreateDiff), AuthVarCreateDiff, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFISetAuthVarDiff",
+			"Failed to set authenticated variable with UEFI "
+			"runtime service.");
+
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFISetAuthVarDiff",
+			"Failed to get authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+	if (getdatasize != sizeof(AuthVarCreateData)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFISetAuthVarDiff",
+			"Get authenticated variable data size is not the "
+			"same as it set.");
+	}
+	for (i = 0; i < sizeof(AuthVarCreateData); i++) {
+		if (data[i] != AuthVarCreateData[i]) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFISetAuthVarDiff",
+			"Get authenticated variable data are not the "
+			"same as it set.");
+		return FWTS_ERROR;
+		}
+	}
+
+	fwts_passed(fw, "Set authenticated variable created by different key test passed.");
+
+	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarDelDiff), AuthVarDelDiff, &status);
+
+	if (ioret == -1) {
+		supcheck = check_fw_support(fw, status);
+		if (supcheck != FWTS_OK)
+			return supcheck;
+
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIDelAuthVarDiff",
+			"Failed to delete authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
+	if (ioret == -1) {
+		if (status == EFI_NOT_FOUND) {
+			fwts_passed(fw, "Delete authenticated variable created by different key test passed.");
+			return FWTS_OK;
+		}
+
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIDelAuthVarDiff",
+			"Failed to get authenticated variable with UEFI "
+			"runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFIDelAuthVarDiff",
+		"Failed to delete authenticated variable still get the test"
+		"authenticated variable.");
+
+	return FWTS_ERROR;
+}
 
 static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test1, "Create authenticated variable test." },
@@ -727,6 +822,7 @@ static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test10, "Authenticated variable test with different guid." },
 	{ uefirtauthvar_test11, "Authenticated variable test with invalid attributes." },
 	{ uefirtauthvar_test12, "Test with both authenticated attributes are set." },
+	{ uefirtauthvar_test13, "Set and delete authenticated variable created by different key test." },
 	{ NULL, NULL }
 };
 

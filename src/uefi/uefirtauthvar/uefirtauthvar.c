@@ -87,6 +87,19 @@ static long getvar(
 	return ioret;
 }
 
+static void uefirtvariable_env_cleanup(void)
+{
+	uint64_t status;
+	uint8_t data[getvar_buf_size];
+	uint64_t getdatasize = sizeof(data);
+	uint32_t attributestest;
+
+	long ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
+	if (ioret != -1 && status == EFI_SUCCESS)
+		setvar(&gtestguid, attributes, sizeof(AuthVarDel), AuthVarDel, &status);
+	return;
+}
+
 static int uefirtauthvar_init(fwts_framework *fw)
 {
 	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
@@ -104,6 +117,8 @@ static int uefirtauthvar_init(fwts_framework *fw)
 		fwts_log_info(fw, "Cannot open efi_runtime driver. Aborted.");
 		return FWTS_ABORTED;
 	}
+
+	uefirtvariable_env_cleanup();
 
 	return FWTS_OK;
 }

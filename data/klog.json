@@ -1907,9 +1907,9 @@
   },
   {
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "32-bit FADT register is too long .* to convert to GAS struct - 255 bits max, truncating",
-   "advice": "The Generic Address Structure bit_width was greater than 31 which is too large for a 32 bit ACPI FADT register and was truncated.  This is firmware bug.",
+   "advice": "The Generic Address Structure bit_width was greater than 31 which is too large for a 32 bit ACPI FADT register and was truncated.",
    "label": "KlogAcpiFadtGasBitWidthTooLong"
   },
   {

@@ -71,6 +71,7 @@ Utilities:
  uefivarinfo     UEFI variable info query.
 
 Unsafe tests:
+ uefirtauthvar   Authenticated variable tests.
  uefirtmisc      UEFI miscellaneous runtime service interface tests.
  uefirttime      UEFI Runtime service time interface tests.
  uefirtvariable  UEFI Runtime service variable interface tests.
@@ -79,6 +80,7 @@ UEFI tests:
  csm             UEFI Compatibility Support Module test.
  securebootcert  UEFI secure boot test.
  uefibootpath    Sanity check for UEFI Boot Path Boot####.
+ uefirtauthvar   Authenticated variable tests.
  uefirtmisc      UEFI miscellaneous runtime service interface tests.
  uefirttime      UEFI Runtime service time interface tests.
  uefirtvariable  UEFI Runtime service variable interface tests.

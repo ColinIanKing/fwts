@@ -352,6 +352,20 @@ Utilities:
   UEFI variable info query.
 
 Unsafe tests:
+ uefirtauthvar   (13 tests):
+  Create authenticated variable test.
+  Authenticated variable test with the same authenticated variable.
+  Authenticated variable test with another valid authenticated variable.
+  Append authenticated variable test.
+  Update authenticated variable test.
+  Authenticated variable test with old authenticated variable.
+  Delete authenticated variable test.
+  Authenticated variable test with invalid modified data.
+  Authenticated variable test with invalid modified timestamp.
+  Authenticated variable test with different guid.
+  Authenticated variable test with invalid attributes.
+  Test with both authenticated attributes are set.
+  Set and delete authenticated variable created by different key test.
  uefirtmisc      (2 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
@@ -376,6 +390,20 @@ UEFI tests:
   UEFI secure boot test.
  uefibootpath    (1 test):
   Test UEFI Boot Path Boot####.
+ uefirtauthvar   (13 tests):
+  Create authenticated variable test.
+  Authenticated variable test with the same authenticated variable.
+  Authenticated variable test with another valid authenticated variable.
+  Append authenticated variable test.
+  Update authenticated variable test.
+  Authenticated variable test with old authenticated variable.
+  Delete authenticated variable test.
+  Authenticated variable test with invalid modified data.
+  Authenticated variable test with invalid modified timestamp.
+  Authenticated variable test with different guid.
+  Authenticated variable test with invalid attributes.
+  Test with both authenticated attributes are set.
+  Set and delete authenticated variable created by different key test.
  uefirtmisc      (2 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
@@ -393,4 +421,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 310 tests
+Total of 336 tests

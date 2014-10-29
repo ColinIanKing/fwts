@@ -96,8 +96,10 @@ static void uefirtvariable_env_cleanup(void)
 	uint32_t attributestest;
 
 	long ioret = getvar(&gtestguid, &attributestest, &getdatasize, data, &status);
-	if (ioret != -1 && status == EFI_SUCCESS)
+	if (ioret != -1 && status == EFI_SUCCESS) {
 		setvar(&gtestguid, attributes, sizeof(AuthVarDel), AuthVarDel, &status);
+		setvar(&gtestguid, attributes, sizeof(AuthVarDelDiff), AuthVarDelDiff, &status);
+	}
 	return;
 }
 

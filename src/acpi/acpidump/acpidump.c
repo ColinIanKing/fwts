@@ -1057,7 +1057,7 @@ static void acpidump_slit(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 	if (table->length < sizeof(fwts_acpi_table_slit)) {
 		fwts_log_info_verbatum(fw, "SLIT header length too short, expected %zu "
-			"bytes, got %" PRIu64 " bytes instead. Aborting SLIT table dump.",
+			"bytes, got %zu bytes instead. Aborting SLIT table dump.",
 			sizeof(fwts_acpi_table_slit), table->length);
 		return;
 	}

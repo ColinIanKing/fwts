@@ -99,7 +99,7 @@ static int uefirtvariable_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 	}
 
-	fd = open("/dev/efi_runtime", O_RDONLY);
+	fd = open("/dev/efi_runtime", O_WRONLY | O_RDWR);
 	if (fd == -1) {
 		fwts_log_info(fw, "Cannot open efi_runtime driver. Aborted.");
 		return FWTS_ABORTED;

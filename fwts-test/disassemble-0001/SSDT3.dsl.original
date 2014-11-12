@@ -1,9 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140724-64 [Aug  4 2014]
+ * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_tmp_table_3185_SSDT_2.dsl, Thu Aug 14 17:39:37 2014
+ * Disassembling to non-symbolic legacy ASL operators
+ *
+ * Disassembly of /tmp/fwts_tmp_table_21295_SSDT_2.dsl, Wed Nov 12 10:53:32 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
+DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
 {
 
     External (_PR_.CPU0, ProcessorObj)
@@ -231,13 +233,12 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu
                 Store (_PSS, Local0)
                 Store (SizeOf (Local0), Local1)
                 Decrement (Local1)
-                Store (DerefOf (Index (DerefOf (Index (Local0, Local1)), 0x01)), 
-                    Local2)
+                Store (DerefOf (Index (DerefOf (Index (Local0, Local1)), 0x01)), Local2)
                 Store (0x00, Local3)
                 While (LLess (Local3, SizeOf (TSSI)))
                 {
-                    Store (Divide (Multiply (Local2, Subtract (0x08, Local3)), 0x08, 
-                        ), Local4)
+                    Store (Divide (Multiply (Local2, Subtract (0x08, Local3)), 0x08, ), 
+                        Local4)
                     Store (Local4, Index (DerefOf (Index (TSSI, Local3)), 0x01))
                     Store (Local4, Index (DerefOf (Index (TSSM, Local3)), 0x01))
                     Increment (Local3)
@@ -256,8 +257,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu
 
         Method (_TSD, 0, NotSerialized)  // _TSD: Throttling State Dependencies
         {
-            If (LAnd (And (CFGD, 0x01000000), LNot (And (PDC0, 0x04
-                ))))
+            If (LAnd (And (CFGD, 0x01000000), LNot (And (PDC0, 0x04))))
             {
                 Return (Package (0x01)
                 {

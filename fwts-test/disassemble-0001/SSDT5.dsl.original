@@ -1,9 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140724-64 [Aug  4 2014]
+ * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_tmp_table_3185_SSDT_4.dsl, Thu Aug 14 17:39:37 2014
+ * Disassembling to non-symbolic legacy ASL operators
+ *
+ * Disassembly of /tmp/fwts_tmp_table_21295_SSDT_4.dsl, Wed Nov 12 10:53:32 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_4.aml", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
+DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_4.aml", "SSDT", 1, "PmRef", "CpuPm", 0x00003000)
 {
 
     External (_PR_.CPU0, ProcessorObj)
@@ -79,8 +81,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_4.aml", "SSDT", 1, "PmRef", "Cpu
             CreateDWordField (UID0, 0x04, EID1)
             CreateDWordField (UID0, 0x08, EID2)
             CreateDWordField (UID0, 0x0C, EID3)
-            If (LNot (LAnd (LAnd (LEqual (IID0, EID0), LEqual (IID1, EID1)), 
-                LAnd (LEqual (IID2, EID2), LEqual (IID3, EID3)))))
+            If (LNot (LAnd (LAnd (LEqual (IID0, EID0), LEqual (IID1, EID1)), LAnd (LEqual (
+                IID2, EID2), LEqual (IID3, EID3)))))
             {
                 Store (0x06, STS0) /* \_PR_.CPU0._OSC.STS0 */
                 Return (Arg3)
@@ -96,24 +98,22 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_4.aml", "SSDT", 1, "PmRef", "Cpu
             Store (And (PDC0, 0xFF), PCP0) /* \PCP0 */
             If (And (CFGD, 0x01))
             {
-                If (LAnd (LAnd (And (CFGD, 0x01000000), LEqual (And (PDC0, 
-                    0x09), 0x09)), LNot (And (SDTL, 0x01))))
+                If (LAnd (LAnd (And (CFGD, 0x01000000), LEqual (And (PDC0, 0x09), 
+                    0x09)), LNot (And (SDTL, 0x01))))
                 {
                     Or (SDTL, 0x01, SDTL) /* \SDTL */
-                    OperationRegion (IST0, SystemMemory, DerefOf (Index (SSDT, 0x01)), DerefOf (Index (SSDT, 0x02
-                        )))
+                    OperationRegion (IST0, SystemMemory, DerefOf (Index (SSDT, 0x01)), DerefOf (Index (SSDT, 0x02)))
                     Load (IST0, HI0) /* \_PR_.CPU0.HI0_ */
                 }
             }
 
             If (And (CFGD, 0xF0))
             {
-                If (LAnd (LAnd (And (CFGD, 0x01000000), And (PDC0, 0x18
-                    )), LNot (And (SDTL, 0x02))))
+                If (LAnd (LAnd (And (CFGD, 0x01000000), And (PDC0, 0x18)), LNot (
+                    And (SDTL, 0x02))))
                 {
                     Or (SDTL, 0x02, SDTL) /* \SDTL */
-                    OperationRegion (CST0, SystemMemory, DerefOf (Index (SSDT, 0x07)), DerefOf (Index (SSDT, 0x08
-                        )))
+                    OperationRegion (CST0, SystemMemory, DerefOf (Index (SSDT, 0x07)), DerefOf (Index (SSDT, 0x08)))
                     Load (CST0, HC0) /* \_PR_.CPU0.HC0_ */
                 }
             }
@@ -154,8 +154,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_4.aml", "SSDT", 1, "PmRef", "Cpu
             CreateDWordField (UID1, 0x04, EID1)
             CreateDWordField (UID1, 0x08, EID2)
             CreateDWordField (UID1, 0x0C, EID3)
-            If (LNot (LAnd (LAnd (LEqual (IID0, EID0), LEqual (IID1, EID1)), 
-                LAnd (LEqual (IID2, EID2), LEqual (IID3, EID3)))))
+            If (LNot (LAnd (LAnd (LEqual (IID0, EID0), LEqual (IID1, EID1)), LAnd (LEqual (
+                IID2, EID2), LEqual (IID3, EID3)))))
             {
                 Store (0x06, STS1) /* \_PR_.CPU1._OSC.STS1 */
                 Return (Arg3)
@@ -171,24 +171,22 @@ DefinitionBlock ("/tmp/fwts_tmp_table_3185_SSDT_4.aml", "SSDT", 1, "PmRef", "Cpu
             Store (And (PDC1, 0xFF), PCP1) /* \PCP1 */
             If (And (CFGD, 0x01))
             {
-                If (LAnd (LAnd (And (CFGD, 0x01000000), LEqual (And (PDC1, 
-                    0x09), 0x09)), LNot (And (SDTL, 0x10))))
+                If (LAnd (LAnd (And (CFGD, 0x01000000), LEqual (And (PDC1, 0x09), 
+                    0x09)), LNot (And (SDTL, 0x10))))
                 {
                     Or (SDTL, 0x10, SDTL) /* \SDTL */
-                    OperationRegion (IST1, SystemMemory, DerefOf (Index (SSDT, 0x04)), DerefOf (Index (SSDT, 0x05
-                        )))
+                    OperationRegion (IST1, SystemMemory, DerefOf (Index (SSDT, 0x04)), DerefOf (Index (SSDT, 0x05)))
                     Load (IST1, HI1) /* \_PR_.CPU1.HI1_ */
                 }
             }
 
             If (And (CFGD, 0xF0))
             {
-                If (LAnd (LAnd (And (CFGD, 0x01000000), And (PDC1, 0x18
-                    )), LNot (And (SDTL, 0x20))))
+                If (LAnd (LAnd (And (CFGD, 0x01000000), And (PDC1, 0x18)), LNot (
+                    And (SDTL, 0x20))))
                 {
                     Or (SDTL, 0x20, SDTL) /* \SDTL */
-                    OperationRegion (CST1, SystemMemory, DerefOf (Index (SSDT, 0x0A)), DerefOf (Index (SSDT, 0x0B
-                        )))
+                    OperationRegion (CST1, SystemMemory, DerefOf (Index (SSDT, 0x0A)), DerefOf (Index (SSDT, 0x0B)))
                     Load (CST1, HC1) /* \_PR_.CPU1.HC1_ */
                 }
             }

@@ -7,18 +7,18 @@ syntaxcheck
 syntaxcheck     Checking ACPI table DSDT (#0)
 syntaxcheck     
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_UPPER_CASE: Test 1, Assembler
-syntaxcheck     error in line 710
+syntaxcheck     error in line 709
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00707|     {
-syntaxcheck     00708|         Device (AMW0)
-syntaxcheck     00709|         {
-syntaxcheck     00710|             Name (_HID, "pnp0c14")  // _HID: Hardware ID
+syntaxcheck     00706|     {
+syntaxcheck     00707|         Device (AMW0)
+syntaxcheck     00708|         {
+syntaxcheck     00709|             Name (_HID, "pnp0c14")  // _HID: Hardware ID
 syntaxcheck          |                                ^
 syntaxcheck          | Error 6136: Non-hex letters must be upper case    (pnp0c14)
-syntaxcheck     00711|             Name (_UID, Zero)  // _UID: Unique ID
-syntaxcheck     00712|             Name (_WDG, Buffer (0x3C)
-syntaxcheck     00713|             {
+syntaxcheck     00710|             Name (_UID, Zero)  // _UID: Unique ID
+syntaxcheck     00711|             Name (_WDG, Buffer (0x3C)
+syntaxcheck     00712|             {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Error #6136, ASL_MSG_UPPER_CASE): Characters
@@ -26,18 +26,18 @@ syntaxcheck     in literal string that are not hexadecimal letters must be
 syntaxcheck     upper case.
 syntaxcheck     
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
-syntaxcheck     Assembler error in line 1070
+syntaxcheck     Assembler error in line 1066
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     01067|                     0x00000000,         // Range Minimum
-syntaxcheck     01068|                     0xDFFFFFFF,         // Range Maximum
-syntaxcheck     01069|                     0x00000000,         // Translation Offset
-syntaxcheck     01070|                     0x00000000,         // Length
+syntaxcheck     01063|                     0x00000000,         // Range Minimum
+syntaxcheck     01064|                     0xDFFFFFFF,         // Range Maximum
+syntaxcheck     01065|                     0x00000000,         // Translation Offset
+syntaxcheck     01066|                     0x00000000,         // Length
 syntaxcheck          |                             ^
 syntaxcheck          | Error 6043: Invalid combination of Length and Min/Max fixed flags  
-syntaxcheck     01071|                     ,, _Y0D, AddressRangeMemory, TypeStatic)
-syntaxcheck     01072|                 DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
-syntaxcheck     01073|                     0x00000000,         // Granularity
+syntaxcheck     01067|                     ,, _Y0D, AddressRangeMemory, TypeStatic)
+syntaxcheck     01068|                 DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
+syntaxcheck     01069|                     0x00000000,         // Granularity
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Error #6043, ASL_MSG_INVALID_ADDR_FLAGS):
@@ -49,18 +49,18 @@ syntaxcheck     Address Space Resource Descriptors of the ACPI
 syntaxcheck     specification for more details.
 syntaxcheck     
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
-syntaxcheck     Assembler error in line 1084
+syntaxcheck     Assembler error in line 1080
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     01081|                     0xFED40000,         // Range Minimum
-syntaxcheck     01082|                     0xFED44FFF,         // Range Maximum
-syntaxcheck     01083|                     0x00000000,         // Translation Offset
-syntaxcheck     01084|                     0x00000000,         // Length
+syntaxcheck     01077|                     0xFED40000,         // Range Minimum
+syntaxcheck     01078|                     0xFED44FFF,         // Range Maximum
+syntaxcheck     01079|                     0x00000000,         // Translation Offset
+syntaxcheck     01080|                     0x00000000,         // Length
 syntaxcheck          |                             ^
 syntaxcheck          | Error 6043: Invalid combination of Length and Min/Max fixed flags  
-syntaxcheck     01085|                     ,, , AddressRangeMemory, TypeStatic)
-syntaxcheck     01086|             })
-syntaxcheck     01087|             Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
+syntaxcheck     01081|                     ,, , AddressRangeMemory, TypeStatic)
+syntaxcheck     01082|             })
+syntaxcheck     01083|             Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Error #6043, ASL_MSG_INVALID_ADDR_FLAGS):
@@ -72,18 +72,18 @@ syntaxcheck     Address Space Resource Descriptors of the ACPI
 syntaxcheck     specification for more details.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 2151
+syntaxcheck     Assembler remark in line 2147
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     02148|                     Store (And (Arg0, 0x07), DSEN) /* \DSEN */
-syntaxcheck     02149|                 }
-syntaxcheck     02150| 
-syntaxcheck     02151|                 Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
+syntaxcheck     02144|                     Store (And (Arg0, 0x07), DSEN) /* \DSEN */
+syntaxcheck     02145|                 }
+syntaxcheck     02146| 
+syntaxcheck     02147|                 Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
 syntaxcheck          |                           ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     02152|                 {
-syntaxcheck     02153|                     Store (Zero, NDID) /* \NDID */
-syntaxcheck     02154|                     If (LNotEqual (DIDL, Zero))
+syntaxcheck     02148|                 {
+syntaxcheck     02149|                     Store (Zero, NDID) /* \NDID */
+syntaxcheck     02150|                     If (LNotEqual (DIDL, Zero))
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -94,18 +94,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 5812
+syntaxcheck     Assembler remark in line 5806
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     05809|                         }
-syntaxcheck     05810|                     }
-syntaxcheck     05811| 
-syntaxcheck     05812|                     Method (_BIF, 0, NotSerialized)  // _BIF: Battery Information
+syntaxcheck     05803|                         }
+syntaxcheck     05804|                     }
+syntaxcheck     05805| 
+syntaxcheck     05806|                     Method (_BIF, 0, NotSerialized)  // _BIF: Battery Information
 syntaxcheck          |                               ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     05813|                     {
-syntaxcheck     05814|                         Name (STAT, Package (0x0D)
-syntaxcheck     05815|                         {
+syntaxcheck     05807|                     {
+syntaxcheck     05808|                         Name (STAT, Package (0x0D)
+syntaxcheck     05809|                         {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -116,18 +116,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 5866
+syntaxcheck     Assembler remark in line 5860
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     05863|                         Return (STAT) /* \_SB_.PCI0.LPCB.BAT1._BIF.STAT */
-syntaxcheck     05864|                     }
-syntaxcheck     05865| 
-syntaxcheck     05866|                     Method (_BST, 0, NotSerialized)  // _BST: Battery Status
+syntaxcheck     05857|                         Return (STAT) /* \_SB_.PCI0.LPCB.BAT1._BIF.STAT */
+syntaxcheck     05858|                     }
+syntaxcheck     05859| 
+syntaxcheck     05860|                     Method (_BST, 0, NotSerialized)  // _BST: Battery Status
 syntaxcheck          |                               ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     05867|                     {
-syntaxcheck     05868|                         Name (PBST, Package (0x04)
-syntaxcheck     05869|                         {
+syntaxcheck     05861|                     {
+syntaxcheck     05862|                         Name (PBST, Package (0x04)
+syntaxcheck     05863|                         {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -138,18 +138,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 5972
+syntaxcheck     Assembler remark in line 5966
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     05969|                 Device (PRID)
-syntaxcheck     05970|                 {
-syntaxcheck     05971|                     Name (_ADR, Zero)  // _ADR: Address
-syntaxcheck     05972|                     Method (_GTM, 0, NotSerialized)  // _GTM: Get Timing Mode
+syntaxcheck     05963|                 Device (PRID)
+syntaxcheck     05964|                 {
+syntaxcheck     05965|                     Name (_ADR, Zero)  // _ADR: Address
+syntaxcheck     05966|                     Method (_GTM, 0, NotSerialized)  // _GTM: Get Timing Mode
 syntaxcheck          |                               ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     05973|                     {
-syntaxcheck     05974|                         Name (PBUF, Buffer (0x14)
-syntaxcheck     05975|                         {
+syntaxcheck     05967|                     {
+syntaxcheck     05968|                         Name (PBUF, Buffer (0x14)
+syntaxcheck     05969|                         {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -160,74 +160,74 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 6046
+syntaxcheck     Assembler remark in line 6039
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06043|                             And (ICR5, 0x02, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
-syntaxcheck     06044|                             CreateWordField (Arg1, 0x62, W490)
-syntaxcheck     06045|                             CreateWordField (Arg1, 0x6A, W530)
-syntaxcheck     06046|                             CreateWordField (Arg1, 0x7E, W630)
+syntaxcheck     06036|                             And (ICR5, 0x02, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
+syntaxcheck     06037|                             CreateWordField (Arg1, 0x62, W490)
+syntaxcheck     06038|                             CreateWordField (Arg1, 0x6A, W530)
+syntaxcheck     06039|                             CreateWordField (Arg1, 0x7E, W630)
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
-syntaxcheck     06047|                             CreateWordField (Arg1, 0x80, W640)
-syntaxcheck     06048|                             CreateWordField (Arg1, 0xB0, W880)
-syntaxcheck     06049|                             CreateWordField (Arg1, 0xBA, W930)
+syntaxcheck     06040|                             CreateWordField (Arg1, 0x80, W640)
+syntaxcheck     06041|                             CreateWordField (Arg1, 0xB0, W880)
+syntaxcheck     06042|                             CreateWordField (Arg1, 0xBA, W930)
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 6048
+syntaxcheck     Assembler remark in line 6041
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06045|                             CreateWordField (Arg1, 0x6A, W530)
-syntaxcheck     06046|                             CreateWordField (Arg1, 0x7E, W630)
-syntaxcheck     06047|                             CreateWordField (Arg1, 0x80, W640)
-syntaxcheck     06048|                             CreateWordField (Arg1, 0xB0, W880)
+syntaxcheck     06038|                             CreateWordField (Arg1, 0x6A, W530)
+syntaxcheck     06039|                             CreateWordField (Arg1, 0x7E, W630)
+syntaxcheck     06040|                             CreateWordField (Arg1, 0x80, W640)
+syntaxcheck     06041|                             CreateWordField (Arg1, 0xB0, W880)
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
-syntaxcheck     06049|                             CreateWordField (Arg1, 0xBA, W930)
-syntaxcheck     06050|                             Or (PRIT, 0x8004, PRIT) /* \_SB_.PCI0.PATA.PRIT */
-syntaxcheck     06051|                             If (LAnd (And (FLAG, 0x02), And (W490, 0x0800)))
+syntaxcheck     06042|                             CreateWordField (Arg1, 0xBA, W930)
+syntaxcheck     06043|                             Or (PRIT, 0x8004, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+syntaxcheck     06044|                             If (LAnd (And (FLAG, 0x02), And (W490, 0x0800)))
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 6090
+syntaxcheck     Assembler remark in line 6083
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06087|                             And (ICR5, One, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
-syntaxcheck     06088|                             CreateWordField (Arg2, 0x62, W491)
-syntaxcheck     06089|                             CreateWordField (Arg2, 0x6A, W531)
-syntaxcheck     06090|                             CreateWordField (Arg2, 0x7E, W631)
+syntaxcheck     06080|                             And (ICR5, One, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
+syntaxcheck     06081|                             CreateWordField (Arg2, 0x62, W491)
+syntaxcheck     06082|                             CreateWordField (Arg2, 0x6A, W531)
+syntaxcheck     06083|                             CreateWordField (Arg2, 0x7E, W631)
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
-syntaxcheck     06091|                             CreateWordField (Arg2, 0x80, W641)
-syntaxcheck     06092|                             CreateWordField (Arg2, 0xB0, W881)
-syntaxcheck     06093|                             CreateWordField (Arg2, 0xBA, W931)
+syntaxcheck     06084|                             CreateWordField (Arg2, 0x80, W641)
+syntaxcheck     06085|                             CreateWordField (Arg2, 0xB0, W881)
+syntaxcheck     06086|                             CreateWordField (Arg2, 0xBA, W931)
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 6092
+syntaxcheck     Assembler remark in line 6085
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06089|                             CreateWordField (Arg2, 0x6A, W531)
-syntaxcheck     06090|                             CreateWordField (Arg2, 0x7E, W631)
-syntaxcheck     06091|                             CreateWordField (Arg2, 0x80, W641)
-syntaxcheck     06092|                             CreateWordField (Arg2, 0xB0, W881)
+syntaxcheck     06082|                             CreateWordField (Arg2, 0x6A, W531)
+syntaxcheck     06083|                             CreateWordField (Arg2, 0x7E, W631)
+syntaxcheck     06084|                             CreateWordField (Arg2, 0x80, W641)
+syntaxcheck     06085|                             CreateWordField (Arg2, 0xB0, W881)
 syntaxcheck          |                                                            ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_STM])
-syntaxcheck     06093|                             CreateWordField (Arg2, 0xBA, W931)
-syntaxcheck     06094|                             Or (PRIT, 0x8040, PRIT) /* \_SB_.PCI0.PATA.PRIT */
-syntaxcheck     06095|                             If (LAnd (And (FLAG, 0x08), And (W491, 0x0800)))
+syntaxcheck     06086|                             CreateWordField (Arg2, 0xBA, W931)
+syntaxcheck     06087|                             Or (PRIT, 0x8040, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+syntaxcheck     06088|                             If (LAnd (And (FLAG, 0x08), And (W491, 0x0800)))
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 6139
+syntaxcheck     Assembler remark in line 6132
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06136|                     Device (P_D0)
-syntaxcheck     06137|                     {
-syntaxcheck     06138|                         Name (_ADR, Zero)  // _ADR: Address
-syntaxcheck     06139|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
+syntaxcheck     06129|                     Device (P_D0)
+syntaxcheck     06130|                     {
+syntaxcheck     06131|                         Name (_ADR, Zero)  // _ADR: Address
+syntaxcheck     06132|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
 syntaxcheck          |                                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     06140|                         {
-syntaxcheck     06141|                             Name (PIB0, Buffer (0x0E)
-syntaxcheck     06142|                             {
+syntaxcheck     06133|                         {
+syntaxcheck     06134|                             Name (PIB0, Buffer (0x0E)
+syntaxcheck     06135|                             {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -238,18 +238,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 6204
+syntaxcheck     Assembler remark in line 6197
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     06201|                     Device (P_D1)
-syntaxcheck     06202|                     {
-syntaxcheck     06203|                         Name (_ADR, One)  // _ADR: Address
-syntaxcheck     06204|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
+syntaxcheck     06194|                     Device (P_D1)
+syntaxcheck     06195|                     {
+syntaxcheck     06196|                         Name (_ADR, One)  // _ADR: Address
+syntaxcheck     06197|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
 syntaxcheck          |                                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     06205|                         {
-syntaxcheck     06206|                             Name (PIB1, Buffer (0x0E)
-syntaxcheck     06207|                             {
+syntaxcheck     06198|                         {
+syntaxcheck     06199|                             Name (PIB1, Buffer (0x0E)
+syntaxcheck     06200|                             {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -266,18 +266,18 @@ syntaxcheck
 syntaxcheck     Checking ACPI table SSDT (#1)
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 32
+syntaxcheck     Assembler remark in line 34
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00029|         Device (PRT0)
-syntaxcheck     00030|         {
-syntaxcheck     00031|             Name (_ADR, 0xFFFF)  // _ADR: Address
-syntaxcheck     00032|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
+syntaxcheck     00031|         Device (PRT0)
+syntaxcheck     00032|         {
+syntaxcheck     00033|             Name (_ADR, 0xFFFF)  // _ADR: Address
+syntaxcheck     00034|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
 syntaxcheck          |                       ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     00033|             {
-syntaxcheck     00034|                 Name (GBU0, Buffer (0x07)
-syntaxcheck     00035|                 {
+syntaxcheck     00035|             {
+syntaxcheck     00036|                 Name (GBU0, Buffer (0x07)
+syntaxcheck     00037|                 {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -288,74 +288,74 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 40
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00037|                 })
-syntaxcheck     00038|                 CreateByteField (GBU0, 0x00, GB00)
-syntaxcheck     00039|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 41
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00038|                 CreateByteField (GBU0, 0x00, GB00)
-syntaxcheck     00039|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 42
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00039|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x04, GB04)
+syntaxcheck     00039|                 })
+syntaxcheck     00040|                 CreateByteField (GBU0, 0x00, GB00)
+syntaxcheck     00041|                 CreateByteField (GBU0, 0x01, GB01)
+syntaxcheck     00042|                 CreateByteField (GBU0, 0x02, GB02)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     00045|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00043|                 CreateByteField (GBU0, 0x03, GB03)
+syntaxcheck     00044|                 CreateByteField (GBU0, 0x04, GB04)
+syntaxcheck     00045|                 CreateByteField (GBU0, 0x05, GB05)
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 43
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x05, GB05)
+syntaxcheck     00040|                 CreateByteField (GBU0, 0x00, GB00)
+syntaxcheck     00041|                 CreateByteField (GBU0, 0x01, GB01)
+syntaxcheck     00042|                 CreateByteField (GBU0, 0x02, GB02)
+syntaxcheck     00043|                 CreateByteField (GBU0, 0x03, GB03)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     00045|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00046|                 {
+syntaxcheck     00044|                 CreateByteField (GBU0, 0x04, GB04)
+syntaxcheck     00045|                 CreateByteField (GBU0, 0x05, GB05)
+syntaxcheck     00046|                 CreateByteField (GBU0, 0x06, GB06)
 syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 74
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 44
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00071|         Device (PRT1)
-syntaxcheck     00072|         {
-syntaxcheck     00073|             Name (_ADR, 0x0001FFFF)  // _ADR: Address
-syntaxcheck     00074|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
+syntaxcheck     00041|                 CreateByteField (GBU0, 0x01, GB01)
+syntaxcheck     00042|                 CreateByteField (GBU0, 0x02, GB02)
+syntaxcheck     00043|                 CreateByteField (GBU0, 0x03, GB03)
+syntaxcheck     00044|                 CreateByteField (GBU0, 0x04, GB04)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00045|                 CreateByteField (GBU0, 0x05, GB05)
+syntaxcheck     00046|                 CreateByteField (GBU0, 0x06, GB06)
+syntaxcheck     00047|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 45
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00042|                 CreateByteField (GBU0, 0x02, GB02)
+syntaxcheck     00043|                 CreateByteField (GBU0, 0x03, GB03)
+syntaxcheck     00044|                 CreateByteField (GBU0, 0x04, GB04)
+syntaxcheck     00045|                 CreateByteField (GBU0, 0x05, GB05)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00046|                 CreateByteField (GBU0, 0x06, GB06)
+syntaxcheck     00047|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00048|                 {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 76
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00073|         Device (PRT1)
+syntaxcheck     00074|         {
+syntaxcheck     00075|             Name (_ADR, 0x0001FFFF)  // _ADR: Address
+syntaxcheck     00076|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
 syntaxcheck          |                       ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     00075|             {
-syntaxcheck     00076|                 Name (GBU1, Buffer (0x07)
-syntaxcheck     00077|                 {
+syntaxcheck     00077|             {
+syntaxcheck     00078|                 Name (GBU1, Buffer (0x07)
+syntaxcheck     00079|                 {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -366,74 +366,74 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 82
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00079|                 })
-syntaxcheck     00080|                 CreateByteField (GBU1, 0x00, GB10)
-syntaxcheck     00081|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 83
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00080|                 CreateByteField (GBU1, 0x00, GB10)
-syntaxcheck     00081|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 84
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00081|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x04, GB14)
+syntaxcheck     00081|                 })
+syntaxcheck     00082|                 CreateByteField (GBU1, 0x00, GB10)
+syntaxcheck     00083|                 CreateByteField (GBU1, 0x01, GB11)
+syntaxcheck     00084|                 CreateByteField (GBU1, 0x02, GB12)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     00087|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00085|                 CreateByteField (GBU1, 0x03, GB13)
+syntaxcheck     00086|                 CreateByteField (GBU1, 0x04, GB14)
+syntaxcheck     00087|                 CreateByteField (GBU1, 0x05, GB15)
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 85
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x05, GB15)
+syntaxcheck     00082|                 CreateByteField (GBU1, 0x00, GB10)
+syntaxcheck     00083|                 CreateByteField (GBU1, 0x01, GB11)
+syntaxcheck     00084|                 CreateByteField (GBU1, 0x02, GB12)
+syntaxcheck     00085|                 CreateByteField (GBU1, 0x03, GB13)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     00087|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00088|                 {
+syntaxcheck     00086|                 CreateByteField (GBU1, 0x04, GB14)
+syntaxcheck     00087|                 CreateByteField (GBU1, 0x05, GB15)
+syntaxcheck     00088|                 CreateByteField (GBU1, 0x06, GB16)
 syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 116
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 86
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00113|         Device (PRT2)
-syntaxcheck     00114|         {
-syntaxcheck     00115|             Name (_ADR, 0x0002FFFF)  // _ADR: Address
-syntaxcheck     00116|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
+syntaxcheck     00083|                 CreateByteField (GBU1, 0x01, GB11)
+syntaxcheck     00084|                 CreateByteField (GBU1, 0x02, GB12)
+syntaxcheck     00085|                 CreateByteField (GBU1, 0x03, GB13)
+syntaxcheck     00086|                 CreateByteField (GBU1, 0x04, GB14)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00087|                 CreateByteField (GBU1, 0x05, GB15)
+syntaxcheck     00088|                 CreateByteField (GBU1, 0x06, GB16)
+syntaxcheck     00089|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 87
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00084|                 CreateByteField (GBU1, 0x02, GB12)
+syntaxcheck     00085|                 CreateByteField (GBU1, 0x03, GB13)
+syntaxcheck     00086|                 CreateByteField (GBU1, 0x04, GB14)
+syntaxcheck     00087|                 CreateByteField (GBU1, 0x05, GB15)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00088|                 CreateByteField (GBU1, 0x06, GB16)
+syntaxcheck     00089|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00090|                 {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 118
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00115|         Device (PRT2)
+syntaxcheck     00116|         {
+syntaxcheck     00117|             Name (_ADR, 0x0002FFFF)  // _ADR: Address
+syntaxcheck     00118|             Method (_SDD, 1, NotSerialized)  // _SDD: Set Device Data
 syntaxcheck          |                       ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     00117|             {
-syntaxcheck     00118|                 Name (GBU2, Buffer (0x07)
-syntaxcheck     00119|                 {
+syntaxcheck     00119|             {
+syntaxcheck     00120|                 Name (GBU2, Buffer (0x07)
+syntaxcheck     00121|                 {
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -444,60 +444,60 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 124
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00121|                 })
-syntaxcheck     00122|                 CreateByteField (GBU2, 0x00, GB20)
-syntaxcheck     00123|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 125
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00122|                 CreateByteField (GBU2, 0x00, GB20)
-syntaxcheck     00123|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 126
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00123|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x04, GB24)
+syntaxcheck     00123|                 })
+syntaxcheck     00124|                 CreateByteField (GBU2, 0x00, GB20)
+syntaxcheck     00125|                 CreateByteField (GBU2, 0x01, GB21)
+syntaxcheck     00126|                 CreateByteField (GBU2, 0x02, GB22)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     00129|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00127|                 CreateByteField (GBU2, 0x03, GB23)
+syntaxcheck     00128|                 CreateByteField (GBU2, 0x04, GB24)
+syntaxcheck     00129|                 CreateByteField (GBU2, 0x05, GB25)
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
 syntaxcheck     Assembler remark in line 127
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x05, GB25)
+syntaxcheck     00124|                 CreateByteField (GBU2, 0x00, GB20)
+syntaxcheck     00125|                 CreateByteField (GBU2, 0x01, GB21)
+syntaxcheck     00126|                 CreateByteField (GBU2, 0x02, GB22)
+syntaxcheck     00127|                 CreateByteField (GBU2, 0x03, GB23)
 syntaxcheck          |                                                ^
 syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     00129|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00130|                 {
+syntaxcheck     00128|                 CreateByteField (GBU2, 0x04, GB24)
+syntaxcheck     00129|                 CreateByteField (GBU2, 0x05, GB25)
+syntaxcheck     00130|                 CreateByteField (GBU2, 0x06, GB26)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 128
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00125|                 CreateByteField (GBU2, 0x01, GB21)
+syntaxcheck     00126|                 CreateByteField (GBU2, 0x02, GB22)
+syntaxcheck     00127|                 CreateByteField (GBU2, 0x03, GB23)
+syntaxcheck     00128|                 CreateByteField (GBU2, 0x04, GB24)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00129|                 CreateByteField (GBU2, 0x05, GB25)
+syntaxcheck     00130|                 CreateByteField (GBU2, 0x06, GB26)
+syntaxcheck     00131|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 129
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00126|                 CreateByteField (GBU2, 0x02, GB22)
+syntaxcheck     00127|                 CreateByteField (GBU2, 0x03, GB23)
+syntaxcheck     00128|                 CreateByteField (GBU2, 0x04, GB24)
+syntaxcheck     00129|                 CreateByteField (GBU2, 0x05, GB25)
+syntaxcheck          |                                                ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name is within method [_SDD])
+syntaxcheck     00130|                 CreateByteField (GBU2, 0x06, GB26)
+syntaxcheck     00131|                 If (LEqual (SizeOf (Arg0), 0x0200))
+syntaxcheck     00132|                 {
 syntaxcheck     ==========================================================
 syntaxcheck     Table SSDT (1) reassembly: Found 0 errors, 0 warnings, 15
 syntaxcheck     remarks.
@@ -524,18 +524,18 @@ syntaxcheck
 syntaxcheck     Checking ACPI table SSDT (#5)
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 54
+syntaxcheck     Assembler remark in line 56
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00051|     {
-syntaxcheck     00052|         Name (HI0, 0x00)
-syntaxcheck     00053|         Name (HC0, 0x00)
-syntaxcheck     00054|         Method (_PDC, 1, NotSerialized)  // _PDC: Processor Driver Capabilities
+syntaxcheck     00053|     {
+syntaxcheck     00054|         Name (HI0, 0x00)
+syntaxcheck     00055|         Name (HC0, 0x00)
+syntaxcheck     00056|         Method (_PDC, 1, NotSerialized)  // _PDC: Processor Driver Capabilities
 syntaxcheck          |                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     00055|         {
-syntaxcheck     00056|             CreateDWordField (Arg0, 0x00, REVS)
-syntaxcheck     00057|             CreateDWordField (Arg0, 0x04, SIZE)
+syntaxcheck     00057|         {
+syntaxcheck     00058|             CreateDWordField (Arg0, 0x00, REVS)
+syntaxcheck     00059|             CreateDWordField (Arg0, 0x04, SIZE)
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
@@ -546,18 +546,18 @@ syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
-syntaxcheck     Assembler remark in line 69
+syntaxcheck     Assembler remark in line 71
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00066|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
-syntaxcheck     00067|         }
-syntaxcheck     00068| 
-syntaxcheck     00069|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
+syntaxcheck     00068|             _OSC (ToUUID ("4077a616-290c-47be-9ebd-d87058713953"), REVS, SIZE, Local2)
+syntaxcheck     00069|         }
+syntaxcheck     00070| 
+syntaxcheck     00071|         Method (_OSC, 4, NotSerialized)  // _OSC: Operating System Capabilities
 syntaxcheck          |                   ^
 syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
-syntaxcheck     00070|         {
-syntaxcheck     00071|             CreateDWordField (Arg3, 0x00, STS0)
-syntaxcheck     00072|             CreateDWordField (Arg3, 0x04, CAP0)
+syntaxcheck     00072|         {
+syntaxcheck     00073|             CreateDWordField (Arg3, 0x00, STS0)
+syntaxcheck     00074|             CreateDWordField (Arg3, 0x04, CAP0)
 syntaxcheck     ==========================================================
 syntaxcheck     
 syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A

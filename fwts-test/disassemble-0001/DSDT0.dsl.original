@@ -1,9 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140926-64 [Sep 27 2014]
+ * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_tmp_table_20488_DSDT_0.dsl, Sat Sep 27 18:46:19 2014
+ * Disassembling to non-symbolic legacy ASL operators
+ *
+ * Disassembly of /tmp/fwts_tmp_table_21295_DSDT_0.dsl, Wed Nov 12 10:53:32 2014
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -16,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20060608 (537265672)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
+DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
 
     External (_PR_.CPU0._PPC, UnknownObj)
@@ -50,20 +52,17 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
 
         If (LEqual (Arg0, One))
         {
-            Store (Or (And (P80D, 0xFFFF00FF), ShiftLeft (Arg1, 0x08)
-                ), P80D) /* \P80D */
+            Store (Or (And (P80D, 0xFFFF00FF), ShiftLeft (Arg1, 0x08)), P80D) /* \P80D */
         }
 
         If (LEqual (Arg0, 0x02))
         {
-            Store (Or (And (P80D, 0xFF00FFFF), ShiftLeft (Arg1, 0x10)
-                ), P80D) /* \P80D */
+            Store (Or (And (P80D, 0xFF00FFFF), ShiftLeft (Arg1, 0x10)), P80D) /* \P80D */
         }
 
         If (LEqual (Arg0, 0x03))
         {
-            Store (Or (And (P80D, 0x00FFFFFF), ShiftLeft (Arg1, 0x18)
-                ), P80D) /* \P80D */
+            Store (Or (And (P80D, 0x00FFFFFF), ShiftLeft (Arg1, 0x18)), P80D) /* \P80D */
         }
 
         Store (P80D, P80H) /* \P80H */
@@ -730,10 +729,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                 Return (STAC) /* \_SB_.AMW0.STAC */
             }
 
-            Name (STBC, Buffer (0x04)
-            {
-                 0x01, 0x00, 0x00, 0x00                           /* .... */
-            })
+            Name (STBC, Unicode ("\x01"))
             Method (WQBC, 1, NotSerialized)
             {
                 Store ("Get MXMTCControlData: STBC = ", Debug)
@@ -2793,8 +2789,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                         If (LEqual (GESF, 0x04))
                         {
                             And (PARM, 0xEFFF0000, PARM) /* \_SB_.PCI0.GFX0.PARM */
-                            And (PARM, ShiftLeft (DerefOf (Index (DBTB, IBTT)), 0x10), 
-                                PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            And (PARM, ShiftLeft (DerefOf (Index (DBTB, IBTT)), 0x10), PARM) /* \_SB_.PCI0.GFX0.PARM */
                             Or (IBTT, PARM, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             Store (Zero, GESF) /* \_SB_.PCI0.GFX0.GESF */
                             Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
@@ -2835,8 +2830,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                 Or (PARM, ShiftLeft (IDMS, 0x0D), PARM) /* \_SB_.PCI0.GFX0.PARM */
                             }
 
-                            Or (ShiftLeft (DerefOf (Index (DerefOf (Index (CDCT, HVCO)), Subtract (
-                                CDVL, One))), 0x15), PARM, PARM) /* \_SB_.PCI0.GFX0.PARM */
+                            Or (ShiftLeft (DerefOf (Index (DerefOf (Index (CDCT, HVCO)), Subtract (CDVL, One
+                                ))), 0x15), PARM, PARM) /* \_SB_.PCI0.GFX0.PARM */
                             Store (One, GESF) /* \_SB_.PCI0.GFX0.GESF */
                             Return (SUCC) /* \_SB_.PCI0.GFX0.SUCC */
                         }
@@ -3309,8 +3304,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
 
                     ShiftRight (And (Arg0, 0x0300), 0x08, Local0)
                     ShiftRight (And (Arg0, 0x3000), 0x0C, Local1)
-                    Return (Multiply (0x1E, Subtract (0x09, Add (Local0, Local1))
-                        ))
+                    Return (Multiply (0x1E, Subtract (0x09, Add (Local0, Local1))))
                 }
 
                 Method (GDMA, 5, Serialized)
@@ -3335,8 +3329,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
 
                 Method (GETT, 1, Serialized)
                 {
-                    Return (Multiply (0x1E, Subtract (0x09, Add (And (ShiftRight (Arg0, 0x02
-                        ), 0x03), And (Arg0, 0x03)))))
+                    Return (Multiply (0x1E, Subtract (0x09, Add (And (ShiftRight (Arg0, 0x02), 0x03
+                        ), And (Arg0, 0x03)))))
                 }
 
                 Method (GETF, 3, Serialized)
@@ -5983,8 +5977,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                         CreateDWordField (PBUF, 0x0C, DMA1)
                         CreateDWordField (PBUF, 0x10, FLAG)
                         Store (GETP (PRIT), PIO0) /* \_SB_.PCI0.PATA.PRID._GTM.PIO0 */
-                        Store (GDMA (And (SYNC, One), And (ICR3, One), 
-                            And (ICR0, One), SDT0, And (ICR1, One)), DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
+                        Store (GDMA (And (SYNC, One), And (ICR3, One), And (ICR0, 
+                            One), SDT0, And (ICR1, One)), DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
                         If (LEqual (DMA0, 0xFFFFFFFF))
                         {
                             Store (PIO0, DMA0) /* \_SB_.PCI0.PATA.PRID._GTM.DMA0 */
@@ -6006,15 +6000,14 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                             Store (0xFFFFFFFF, PIO1) /* \_SB_.PCI0.PATA.PRID._GTM.PIO1 */
                         }
 
-                        Store (GDMA (And (SYNC, 0x02), And (ICR3, 0x02), 
-                            And (ICR0, 0x02), SDT1, And (ICR1, 0x02)), DMA1) /* \_SB_.PCI0.PATA.PRID._GTM.DMA1 */
+                        Store (GDMA (And (SYNC, 0x02), And (ICR3, 0x02), And (ICR0, 
+                            0x02), SDT1, And (ICR1, 0x02)), DMA1) /* \_SB_.PCI0.PATA.PRID._GTM.DMA1 */
                         If (LEqual (DMA1, 0xFFFFFFFF))
                         {
                             Store (PIO1, DMA1) /* \_SB_.PCI0.PATA.PRID._GTM.DMA1 */
                         }
 
-                        Store (GETF (And (SYNC, One), And (SYNC, 0x02), 
-                            PRIT), FLAG) /* \_SB_.PCI0.PATA.PRID._GTM.FLAG */
+                        Store (GETF (And (SYNC, One), And (SYNC, 0x02), PRIT), FLAG) /* \_SB_.PCI0.PATA.PRID._GTM.FLAG */
                         If (And (LEqual (PIO0, 0xFFFFFFFF), LEqual (DMA0, 0xFFFFFFFF)))
                         {
                             Store (0x78, PIO0) /* \_SB_.PCI0.PATA.PRID._GTM.PIO0 */
@@ -6218,8 +6211,8 @@ DefinitionBlock ("/tmp/fwts_tmp_table_20488_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                 }
                                 Else
                                 {
-                                    Add (And (PSIT, 0x03), ShiftRight (And (PSIT, 0x0C), 
-                                        0x02), Local0)
+                                    Add (And (PSIT, 0x03), ShiftRight (And (PSIT, 0x0C), 0x02), 
+                                        Local0)
                                     If (LEqual (0x05, Local0))
                                     {
                                         Store (0x0C, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */

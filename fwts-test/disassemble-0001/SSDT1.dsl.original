@@ -1,9 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML Disassembler version 20140724-64 [Aug  4 2014]
+ * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
  * Copyright (c) 2000 - 2014 Intel Corporation
  * 
- * Disassembly of /tmp/fwts_tmp_table_886_SSDT_0.dsl, Thu Aug 14 17:37:51 2014
+ * Disassembling to non-symbolic legacy ASL operators
+ *
+ * Disassembly of /tmp/fwts_tmp_table_21295_SSDT_0.dsl, Wed Nov 12 10:53:32 2014
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -16,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_886_SSDT_0.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
+DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
 {
 
     External (_SB_.PCI0.SATA, DeviceObj)

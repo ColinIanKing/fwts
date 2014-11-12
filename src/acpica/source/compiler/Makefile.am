@@ -14,25 +14,26 @@ AM_YFLAGS = -v -d -y
 #
 AM_LFLAGS = -i
 
-aslcompilerparse.c: $(srcdir)/aslcompiler.y
-	${YACC} ${AM_YFLAGS} -baslcompiler -pAslCompiler $^
-	mv aslcompiler.tab.c aslcompilerparse.c
+aslcompiler.c: $(srcdir)/aslparser.y
+	m4 -P -I$(srcdir) $^ > aslcompiler.y
+	${YACC} ${AM_YFLAGS} -baslcompiler -pAslCompiler aslcompiler.y
+	mv aslcompiler.tab.c aslcompiler.c
 	mv aslcompiler.tab.h aslcompiler.y.h
 
 aslcompilerlex.c: $(srcdir)/aslcompiler.l
 	${LEX} ${AM_LFLAGS} -PAslCompiler -oaslcompilerlex.c $^
 
-dtparserparse.c: $(srcdir)/dtparser.y
+dtparser.c: $(srcdir)/dtparser.y
 	${YACC} ${AM_YFLAGS} -bdtparser -pDtParser $^
-	mv dtparser.tab.c dtparserparse.c
+	mv dtparser.tab.c dtparser.c
 	mv dtparser.tab.h dtparser.y.h
 
 dtparserlex.c: $(srcdir)/dtparser.l
 	${LEX} ${AM_LFLAGS} -PDtParser -odtparserlex.c $^
 
-prparserparse.c: $(srcdir)/prparser.y
+prparser.c: $(srcdir)/prparser.y
 	${YACC} ${AM_YFLAGS} -bprparser -pPrParser $^
-	mv prparser.tab.c prparserparse.c
+	mv prparser.tab.c prparser.c
 	mv prparser.tab.h prparser.y.h
 
 prparserlex.c: $(srcdir)/prparser.l
@@ -40,11 +41,11 @@ prparserlex.c: $(srcdir)/prparser.l
 
 pkglib_LTLIBRARIES = libfwtsiasl.la
 
-BUILT_SOURCES = aslcompilerparse.c 		\
+BUILT_SOURCES = aslcompiler.c 			\
 		aslcompilerlex.c		\
-		dtparserparse.c			\
+		dtparser.c			\
 		dtparserlex.c 			\
-		prparserparse.c			\
+		prparser.c			\
 		prparserlex.c
 
 #
@@ -52,9 +53,7 @@ BUILT_SOURCES = aslcompilerparse.c 		\
 #
 libfwtsiasl_la_LDFLAGS = -export-symbols-regex "fwts_.*" -lpthread -version-info 1:0:0
 
-CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h \
-	aslcompilerparse.c aslcompilerlex.c 	\
-	dtparserparse.c dtparserlex.c
+CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h $(BUILT_SOURCES)
 
 libfwtsiasl_la_CPPFLAGS = $(AM_CPPFLAGS)
 libfwtsiasl_la_SOURCES = 			\
@@ -62,7 +61,7 @@ libfwtsiasl_la_SOURCES = 			\
 	aslascii.c				\
 	aslcompile.c 				\
 	aslcompilerlex.c 			\
-	aslcompilerparse.c 			\
+	aslcompiler.c 				\
 	aslanalyze.c 				\
 	aslcodegen.c 				\
 	aslerror.c 				\
@@ -104,6 +103,8 @@ libfwtsiasl_la_SOURCES = 			\
 	asloffset.c 				\
 	aslxref.c 				\
 	aslprepkg.c 				\
+	aslprintf.c				\
+	aslprune.c				\
 	dtfield.c 				\
 	dtio.c 					\
 	dtsubtable.c 				\
@@ -112,9 +113,9 @@ libfwtsiasl_la_SOURCES = 			\
 	dtutils.c 				\
 	dtexpress.c 				\
 	dtcompile.c 				\
-	dtparserparse.c 			\
+	dtparser.c	 			\
 	dtparserlex.c 				\
-	prparserparse.c 			\
+	prparser.c 				\
 	prparserlex.c 				\
 	prscan.c 				\
 	aslrestype2s.c 				\
@@ -145,6 +146,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/utilities/utownerid.c 	\
 	../components/utilities/utexcep.c 	\
 	../components/utilities/utuuid.c	\
+	../components/utilities/utxfinit.c	\
 	../components/namespace/nsaccess.c 	\
 	../components/namespace/nsalloc.c 	\
 	../components/namespace/nsdump.c 	\
@@ -209,6 +211,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../common/dmtbdump.c 			\
 	../components/debugger/dbfileio.c 	\
 	../components/disassembler/dmbuffer.c 	\
+	../components/disassembler/dmcstyle.c	\
 	../components/disassembler/dmnames.c 	\
 	../components/disassembler/dmopcode.c 	\
 	../components/disassembler/dmobject.c 	\
@@ -224,5 +227,6 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/tables/tbinstal.c 	\
 	../components/tables/tbutils.c 		\
 	../components/tables/tbxface.c 		\
+	../tools/acpiexec/aeinitfile.c		\
 	../os_specific/service_layers/osunixxf.c
 

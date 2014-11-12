@@ -1,7 +1,7 @@
 %{
 /******************************************************************************
  *
- * Module Name: aslcompiler.y - Bison/Yacc input file (ASL grammar and actions)
+ * Module Name: aslparser.y - Master Bison/Yacc input file for iASL
  *
  *****************************************************************************/
 
@@ -115,9 +115,6 @@
  *****************************************************************************/
 
 #include "aslcompiler.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "acpi.h"
 #include "accommon.h"
 
@@ -137,11 +134,15 @@
  *      ResourceMacroList, and FieldUnitList
  */
 
-void *                      AslLocalAllocate (unsigned int Size);
+void *
+AslLocalAllocate (
+    unsigned int            Size);
 
 /* Bison/yacc configuration */
 
 #define static
+#undef malloc
+#define malloc              AslLocalAllocate
 #undef alloca
 #define alloca              AslLocalAllocate
 #define yytname             AslCompilername
@@ -149,22 +150,12 @@ void *                      AslLocalAllocate (unsigned int Size);
 #define YYINITDEPTH         600             /* State stack depth */
 #define YYDEBUG             1               /* Enable debug output */
 #define YYERROR_VERBOSE     1               /* Verbose error messages */
+#define YYFLAG              -32768
 
 /* Define YYMALLOC/YYFREE to prevent redefinition errors  */
 
-#define YYMALLOC            malloc
-#define YYFREE              free
-
-/*
- * The windows version of bison defines this incorrectly as "32768" (Not negative).
- * We use a custom (edited binary) version of bison that defines YYFLAG as YYFBAD
- * instead (#define YYFBAD 32768), so we can define it correctly here.
- *
- * The problem is that if YYFLAG is positive, the extended syntax error messages
- * are disabled.
- */
-#define YYFLAG              -32768
-
+#define YYMALLOC            AslLocalAllocate
+#define YYFREE              ACPI_FREE
 %}
 
 /*
@@ -176,13 +167,24 @@ void *                      AslLocalAllocate (unsigned int Size);
     ACPI_PARSE_OBJECT   *n;
 }
 
-/*! [Begin] no source code translation */
-
 /*
  * These shift/reduce conflicts are expected. There should be zero
  * reduce/reduce conflicts.
  */
-%expect 86
+%expect 89
+
+/*! [Begin] no source code translation */
+
+/*
+ * The M4 macro processor is used to bring in the parser items,
+ * in order to keep this master file smaller, and to break up
+ * the various parser items.
+ */
+
+
+/* Token types */
+
+
 
 /******************************************************************************
  *
@@ -516,6 +518,88 @@ void *                      AslLocalAllocate (unsigned int Size);
 %token <i> PARSEOP_XOR
 %token <i> PARSEOP_ZERO
 
+/* ToPld macro */
+
+%token <i> PARSEOP_TOPLD
+%token <i> PARSEOP_PLD_REVISION
+%token <i> PARSEOP_PLD_IGNORECOLOR
+%token <i> PARSEOP_PLD_RED
+%token <i> PARSEOP_PLD_GREEN
+%token <i> PARSEOP_PLD_BLUE
+%token <i> PARSEOP_PLD_WIDTH
+%token <i> PARSEOP_PLD_HEIGHT
+%token <i> PARSEOP_PLD_USERVISIBLE
+%token <i> PARSEOP_PLD_DOCK
+%token <i> PARSEOP_PLD_LID
+%token <i> PARSEOP_PLD_PANEL
+%token <i> PARSEOP_PLD_VERTICALPOSITION
+%token <i> PARSEOP_PLD_HORIZONTALPOSITION
+%token <i> PARSEOP_PLD_SHAPE
+%token <i> PARSEOP_PLD_GROUPORIENTATION
+%token <i> PARSEOP_PLD_GROUPTOKEN
+%token <i> PARSEOP_PLD_GROUPPOSITION
+%token <i> PARSEOP_PLD_BAY
+%token <i> PARSEOP_PLD_EJECTABLE
+%token <i> PARSEOP_PLD_EJECTREQUIRED
+%token <i> PARSEOP_PLD_CABINETNUMBER
+%token <i> PARSEOP_PLD_CARDCAGENUMBER
+%token <i> PARSEOP_PLD_REFERENCE
+%token <i> PARSEOP_PLD_ROTATION
+%token <i> PARSEOP_PLD_ORDER
+%token <i> PARSEOP_PLD_RESERVED
+%token <i> PARSEOP_PLD_VERTICALOFFSET
+%token <i> PARSEOP_PLD_HORIZONTALOFFSET
+
+/*
+ * C-style expression parser. These must appear after all of the
+ * standard ASL operators and keywords.
+ *
+ * Note: The order of these tokens implements the precedence rules
+ * (low precedence to high). See aslrules.y for an exhaustive list.
+ */
+%right <i> PARSEOP_EXP_EQUALS
+           PARSEOP_EXP_ADD_EQ
+           PARSEOP_EXP_SUB_EQ
+           PARSEOP_EXP_MUL_EQ
+           PARSEOP_EXP_DIV_EQ
+           PARSEOP_EXP_MOD_EQ
+           PARSEOP_EXP_SHL_EQ
+           PARSEOP_EXP_SHR_EQ
+           PARSEOP_EXP_AND_EQ
+           PARSEOP_EXP_XOR_EQ
+           PARSEOP_EXP_OR_EQ
+
+%left <i>  PARSEOP_EXP_LOGICAL_OR
+%left <i>  PARSEOP_EXP_LOGICAL_AND
+%left <i>  PARSEOP_EXP_OR
+%left <i>  PARSEOP_EXP_XOR
+%left <i>  PARSEOP_EXP_AND
+%left <i>  PARSEOP_EXP_EQUAL
+           PARSEOP_EXP_NOT_EQUAL
+%left <i>  PARSEOP_EXP_GREATER
+           PARSEOP_EXP_LESS
+           PARSEOP_EXP_GREATER_EQUAL
+           PARSEOP_EXP_LESS_EQUAL
+%left <i>  PARSEOP_EXP_SHIFT_RIGHT
+           PARSEOP_EXP_SHIFT_LEFT
+%left <i>  PARSEOP_EXP_ADD
+           PARSEOP_EXP_SUBTRACT
+%left <i>  PARSEOP_EXP_MULTIPLY
+           PARSEOP_EXP_DIVIDE
+           PARSEOP_EXP_MODULO
+
+%right <i> PARSEOP_EXP_NOT
+           PARSEOP_EXP_LOGICAL_NOT
+
+%left <i>  PARSEOP_EXP_INCREMENT
+           PARSEOP_EXP_DECREMENT
+
+%token <i> PARSEOP_PRINTF
+%token <i> PARSEOP_FPRINTF
+/* Specific parentheses tokens are not used at this time */
+           /* PARSEOP_EXP_PAREN_OPEN */
+           /* PARSEOP_EXP_PAREN_CLOSE */
+
 /*
  * Special functions. These should probably stay at the end of this
  * table.
@@ -524,6 +608,10 @@ void *                      AslLocalAllocate (unsigned int Size);
 %token <i> PARSEOP___FILE__
 %token <i> PARSEOP___LINE__
 %token <i> PARSEOP___PATH__
+
+
+/* Production types/names */
+
 
 
 /******************************************************************************
@@ -767,8 +855,14 @@ void *                      AslLocalAllocate (unsigned int Size);
 %type <n> ResourceMacroList
 %type <n> ResourceMacroTerm
 %type <n> ResourceTemplateTerm
+%type <n> PldKeyword
+%type <n> PldKeywordList
+%type <n> ToPLDTerm
 %type <n> ToUUIDTerm
 %type <n> UnicodeTerm
+%type <n> PrintfArgList
+%type <n> PrintfTerm
+%type <n> FprintfTerm
 
 /* Resource Descriptors */
 
@@ -862,7 +956,18 @@ void *                      AslLocalAllocate (unsigned int Size);
 %type <n> OptionalWordConstExpr
 %type <n> OptionalXferSize
 
+/*
+ * C-style expression parser
+ */
+%type <n> Expression
+%type <n> EqualsTerm
+
 %%
+
+/* Production rules */
+
+
+
 /*******************************************************************************
  *
  * Production rules start here
@@ -871,10 +976,7 @@ void *                      AslLocalAllocate (unsigned int Size);
 
 /*
  * ASL Names
- */
-
-
-/*
+ *
  * Root rule. Allow multiple #line directives before the definition block
  * to handle output from preprocessors
  */
@@ -914,6 +1016,149 @@ DefinitionBlockTerm
             '{' TermList '}'        {$$ = TrLinkChildren ($<n>3,7,$4,$6,$8,$10,$12,$14,$18);}
     ;
 
+    /*
+     * ASL Extensions: C-style math/logical operators and expressions.
+     * The implementation transforms these operators into the standard
+     * AML opcodes and syntax.
+     *
+     * Supported operators and precedence rules (high-to-low)
+     *
+     * NOTE: The operator precedence and associativity rules are
+     * implemented by the tokens in asltokens.y
+     *
+     * (left-to-right):
+     *  1)      ( ) expr++ expr--
+     *
+     * (right-to-left):
+     *  2)      ! ~
+     *
+     * (left-to-right):
+     *  3)      *   /   %
+     *  4)      +   -
+     *  5)      >>  <<
+     *  6)      <   >   <=  >=
+     *  7)      ==  !=
+     *  8)      &
+     *  9)      ^
+     *  10)     |
+     *  11)     &&
+     *  12)     ||
+     *
+     * (right-to-left):
+     *  13)     = += -= *= /= %= <<= >>= &= ^= |=
+     */
+Expression
+
+    /* Unary operators */
+
+    : PARSEOP_EXP_LOGICAL_NOT           {$<n>$ = TrCreateLeafNode (PARSEOP_LNOT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>2,1,$3);}
+    | PARSEOP_EXP_NOT                   {$<n>$ = TrCreateLeafNode (PARSEOP_NOT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>2,2,$3,TrCreateLeafNode (PARSEOP_ZERO));}
+
+    | SuperName PARSEOP_EXP_INCREMENT   {$<n>$ = TrCreateLeafNode (PARSEOP_INCREMENT);}
+                                        {$$ = TrLinkChildren ($<n>3,1,$1);}
+    | SuperName PARSEOP_EXP_DECREMENT   {$<n>$ = TrCreateLeafNode (PARSEOP_DECREMENT);}
+                                        {$$ = TrLinkChildren ($<n>3,1,$1);}
+
+    /* Binary operators: math and logical */
+
+    | TermArg PARSEOP_EXP_ADD           {$<n>$ = TrCreateLeafNode (PARSEOP_ADD);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_DIVIDE        {$<n>$ = TrCreateLeafNode (PARSEOP_DIVIDE);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,4,$1,$4,TrCreateLeafNode (PARSEOP_ZERO),
+                                            TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_MODULO        {$<n>$ = TrCreateLeafNode (PARSEOP_MOD);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_MULTIPLY      {$<n>$ = TrCreateLeafNode (PARSEOP_MULTIPLY);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_SHIFT_LEFT    {$<n>$ = TrCreateLeafNode (PARSEOP_SHIFTLEFT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_SHIFT_RIGHT   {$<n>$ = TrCreateLeafNode (PARSEOP_SHIFTRIGHT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_SUBTRACT      {$<n>$ = TrCreateLeafNode (PARSEOP_SUBTRACT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+
+    | TermArg PARSEOP_EXP_AND           {$<n>$ = TrCreateLeafNode (PARSEOP_AND);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_OR            {$<n>$ = TrCreateLeafNode (PARSEOP_OR);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+    | TermArg PARSEOP_EXP_XOR           {$<n>$ = TrCreateLeafNode (PARSEOP_XOR);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,TrCreateLeafNode (PARSEOP_ZERO));}
+
+    | TermArg PARSEOP_EXP_GREATER       {$<n>$ = TrCreateLeafNode (PARSEOP_LGREATER);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+    | TermArg PARSEOP_EXP_GREATER_EQUAL {$<n>$ = TrCreateLeafNode (PARSEOP_LGREATEREQUAL);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+    | TermArg PARSEOP_EXP_LESS          {$<n>$ = TrCreateLeafNode (PARSEOP_LLESS);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+    | TermArg PARSEOP_EXP_LESS_EQUAL    {$<n>$ = TrCreateLeafNode (PARSEOP_LLESSEQUAL);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+
+    | TermArg PARSEOP_EXP_EQUAL         {$<n>$ = TrCreateLeafNode (PARSEOP_LEQUAL);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+    | TermArg PARSEOP_EXP_NOT_EQUAL     {$<n>$ = TrCreateLeafNode (PARSEOP_LNOTEQUAL);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+
+    | TermArg PARSEOP_EXP_LOGICAL_AND   {$<n>$ = TrCreateLeafNode (PARSEOP_LAND);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+    | TermArg PARSEOP_EXP_LOGICAL_OR    {$<n>$ = TrCreateLeafNode (PARSEOP_LOR);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,2,$1,$4);}
+
+      /* Parentheses */
+
+    | '(' TermArg ')'                   { $$ = $2;}
+    ;
+
+EqualsTerm
+
+    /* All assignment-type operations */
+
+    : SuperName PARSEOP_EXP_EQUALS
+        TermArg                         {$$ = TrCreateAssignmentNode ($1, $3);}
+
+    | TermArg PARSEOP_EXP_ADD_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_ADD);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_DIV_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_DIVIDE);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,4,$1,$4,TrCreateLeafNode (PARSEOP_ZERO),
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_MOD_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_MOD);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_MUL_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_MULTIPLY);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_SHL_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_SHIFTLEFT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_SHR_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_SHIFTRIGHT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_SUB_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_SUBTRACT);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_AND_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_AND);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_OR_EQ         {$<n>$ = TrCreateLeafNode (PARSEOP_OR);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+
+    | TermArg PARSEOP_EXP_XOR_EQ        {$<n>$ = TrCreateLeafNode (PARSEOP_XOR);}
+        TermArg                         {$$ = TrLinkChildren ($<n>3,3,$1,$4,
+                                            TrSetNodeFlags (TrCreateTargetOperand ($1, NULL), NODE_IS_TARGET));}
+    ;
+
+
 /* ACPI 3.0 -- allow semicolons between terms */
 
 TermList
@@ -926,6 +1171,7 @@ TermList
 
 Term
     : Object                        {}
+    | Expression                    {}
     | Type1Opcode                   {}
     | Type2Opcode                   {}
     | Type2IntegerOpcode            {}
@@ -1033,7 +1279,8 @@ Removed from TermArg due to reduce/reduce conflicts
 */
 
 TermArg
-    : Type2Opcode                   {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
+    : Expression                    {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
+    | Type2Opcode                   {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
     | DataObject                    {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
     | NameString                    {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
     | ArgTerm                       {$$ = TrSetNodeFlags ($1, NODE_IS_TERM_ARG);}
@@ -1127,6 +1374,7 @@ Type2Opcode
     | RefOfTerm                     {}
     | SizeOfTerm                    {}
     | StoreTerm                     {}
+    | EqualsTerm                    {}
     | TimerTerm                     {}
     | WaitTerm                      {}
     | UserTerm                      {}
@@ -1184,6 +1432,8 @@ Type2BufferOpcode                   /* "Type5" Opcodes */
 
 Type2BufferOrStringOpcode
     : ConcatTerm                    {}
+    | PrintfTerm                    {}
+    | FprintfTerm                   {}
     | MidTerm                       {}
     ;
 
@@ -1209,6 +1459,7 @@ Type4Opcode
 Type5Opcode
     : ResourceTemplateTerm          {}
     | UnicodeTerm                   {}
+    | ToPLDTerm                     {}
     | ToUUIDTerm                    {}
     ;
 
@@ -2189,6 +2440,86 @@ ToIntegerTerm
         Target
         ')'                         {$$ = TrLinkChildren ($<n>3,2,$4,$5);}
     | PARSEOP_TOINTEGER '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+PldKeyword
+    : PARSEOP_PLD_REVISION          {$$ = TrCreateLeafNode (PARSEOP_PLD_REVISION);}
+    | PARSEOP_PLD_IGNORECOLOR       {$$ = TrCreateLeafNode (PARSEOP_PLD_IGNORECOLOR);}
+    | PARSEOP_PLD_RED               {$$ = TrCreateLeafNode (PARSEOP_PLD_RED);}
+    | PARSEOP_PLD_GREEN             {$$ = TrCreateLeafNode (PARSEOP_PLD_GREEN);}
+    | PARSEOP_PLD_BLUE              {$$ = TrCreateLeafNode (PARSEOP_PLD_BLUE);}
+    | PARSEOP_PLD_WIDTH             {$$ = TrCreateLeafNode (PARSEOP_PLD_WIDTH);}
+    | PARSEOP_PLD_HEIGHT            {$$ = TrCreateLeafNode (PARSEOP_PLD_HEIGHT);}
+    | PARSEOP_PLD_USERVISIBLE       {$$ = TrCreateLeafNode (PARSEOP_PLD_USERVISIBLE);}
+    | PARSEOP_PLD_DOCK              {$$ = TrCreateLeafNode (PARSEOP_PLD_DOCK);}
+    | PARSEOP_PLD_LID               {$$ = TrCreateLeafNode (PARSEOP_PLD_LID);}
+    | PARSEOP_PLD_PANEL             {$$ = TrCreateLeafNode (PARSEOP_PLD_PANEL);}
+    | PARSEOP_PLD_VERTICALPOSITION  {$$ = TrCreateLeafNode (PARSEOP_PLD_VERTICALPOSITION);}
+    | PARSEOP_PLD_HORIZONTALPOSITION {$$ = TrCreateLeafNode (PARSEOP_PLD_HORIZONTALPOSITION);}
+    | PARSEOP_PLD_SHAPE             {$$ = TrCreateLeafNode (PARSEOP_PLD_SHAPE);}
+    | PARSEOP_PLD_GROUPORIENTATION  {$$ = TrCreateLeafNode (PARSEOP_PLD_GROUPORIENTATION);}
+    | PARSEOP_PLD_GROUPTOKEN        {$$ = TrCreateLeafNode (PARSEOP_PLD_GROUPTOKEN);}
+    | PARSEOP_PLD_GROUPPOSITION     {$$ = TrCreateLeafNode (PARSEOP_PLD_GROUPPOSITION);}
+    | PARSEOP_PLD_BAY               {$$ = TrCreateLeafNode (PARSEOP_PLD_BAY);}
+    | PARSEOP_PLD_EJECTABLE         {$$ = TrCreateLeafNode (PARSEOP_PLD_EJECTABLE);}
+    | PARSEOP_PLD_EJECTREQUIRED     {$$ = TrCreateLeafNode (PARSEOP_PLD_EJECTREQUIRED);}
+    | PARSEOP_PLD_CABINETNUMBER     {$$ = TrCreateLeafNode (PARSEOP_PLD_CABINETNUMBER);}
+    | PARSEOP_PLD_CARDCAGENUMBER    {$$ = TrCreateLeafNode (PARSEOP_PLD_CARDCAGENUMBER);}
+    | PARSEOP_PLD_REFERENCE         {$$ = TrCreateLeafNode (PARSEOP_PLD_REFERENCE);}
+    | PARSEOP_PLD_ROTATION          {$$ = TrCreateLeafNode (PARSEOP_PLD_ROTATION);}
+    | PARSEOP_PLD_ORDER             {$$ = TrCreateLeafNode (PARSEOP_PLD_ORDER);}
+    | PARSEOP_PLD_RESERVED          {$$ = TrCreateLeafNode (PARSEOP_PLD_RESERVED);}
+    | PARSEOP_PLD_VERTICALOFFSET    {$$ = TrCreateLeafNode (PARSEOP_PLD_VERTICALOFFSET);}
+    | PARSEOP_PLD_HORIZONTALOFFSET  {$$ = TrCreateLeafNode (PARSEOP_PLD_HORIZONTALOFFSET);}
+    ;
+
+PldKeywordList
+    :                               {$$ = NULL;}
+    | PldKeyword
+        PARSEOP_EXP_EQUALS Integer  {$$ = TrLinkChildren ($1,1,$3);}
+    | PldKeyword
+        PARSEOP_EXP_EQUALS String   {$$ = TrLinkChildren ($1,1,$3);}
+    | PldKeywordList ','            /* Allows a trailing comma at list end */
+    | PldKeywordList ','
+        PldKeyword
+        PARSEOP_EXP_EQUALS Integer  {$$ = TrLinkPeerNode ($1,TrLinkChildren ($3,1,$5));}
+    | PldKeywordList ','
+        PldKeyword
+        PARSEOP_EXP_EQUALS String   {$$ = TrLinkPeerNode ($1,TrLinkChildren ($3,1,$5));}
+    ;
+
+ToPLDTerm
+    : PARSEOP_TOPLD '('             {$<n>$ = TrCreateLeafNode (PARSEOP_TOPLD);}
+        PldKeywordList
+        ')'                         {$$ = TrLinkChildren ($<n>3,1,$4);}
+    | PARSEOP_TOPLD '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+PrintfArgList
+    :                               {$$ = NULL;}
+    | TermArg                       {$$ = $1;}
+    | PrintfArgList ','
+       TermArg                      {$$ = TrLinkPeerNode ($1, $3);}
+    ;
+
+PrintfTerm
+    : PARSEOP_PRINTF '('            {$<n>$ = TrCreateLeafNode (PARSEOP_PRINTF);}
+        StringData
+        PrintfArgList
+        ')'                         {$$ = TrLinkChildren ($<n>3,2,$4,$5);}
+    | PARSEOP_PRINTF '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+FprintfTerm
+    : PARSEOP_FPRINTF '('            {$<n>$ = TrCreateLeafNode (PARSEOP_FPRINTF);}
+        TermArg ','
+        StringData
+        PrintfArgList
+        ')'                         {$$ = TrLinkChildren ($<n>3,3,$4,$6,$7);}
+    | PARSEOP_FPRINTF '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
 
@@ -3585,35 +3916,45 @@ OptionalXferSize
     ;
 
 %%
+
+/*! [End] no source code translation !*/
+
+/* Local support functions in C */
+
+
+
 /******************************************************************************
  *
  * Local support functions
  *
  *****************************************************************************/
 
+/*! [Begin] no source code translation */
 int
 AslCompilerwrap(void)
 {
   return (1);
 }
-
 /*! [End] no source code translation !*/
 
+
 void *
-AslLocalAllocate (unsigned int Size)
+AslLocalAllocate (
+    unsigned int        Size)
 {
     void                *Mem;
 
 
-    DbgPrint (ASL_PARSE_OUTPUT, "\nAslLocalAllocate: Expanding Stack to %u\n\n", Size);
+    DbgPrint (ASL_PARSE_OUTPUT,
+        "\nAslLocalAllocate: Expanding Stack to %u\n\n", Size);
 
     Mem = ACPI_ALLOCATE_ZEROED (Size);
     if (!Mem)
     {
         AslCommonError (ASL_ERROR, ASL_MSG_MEMORY_ALLOCATION,
-                        Gbl_CurrentLineNumber, Gbl_LogicalLineNumber,
-                        Gbl_InputByteCount, Gbl_CurrentColumn,
-                        Gbl_Files[ASL_FILE_INPUT].Filename, NULL);
+            Gbl_CurrentLineNumber, Gbl_LogicalLineNumber,
+            Gbl_InputByteCount, Gbl_CurrentColumn,
+            Gbl_Files[ASL_FILE_INPUT].Filename, NULL);
         exit (1);
     }
 
@@ -3621,12 +3962,11 @@ AslLocalAllocate (unsigned int Size)
 }
 
 ACPI_PARSE_OBJECT *
-AslDoError (void)
+AslDoError (
+    void)
 {
 
-
     return (TrCreateLeafNode (PARSEOP_ERRORNODE));
-
 }
 
 
@@ -3657,3 +3997,4 @@ UtGetOpName (
     return ("[Unknown parser generator]");
 #endif
 }
+

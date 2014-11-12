@@ -82,6 +82,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/debugger/dbconvert.c		\
 	source/components/debugger/dbtest.c		\
 	source/components/disassembler/dmbuffer.c	\
+	source/components/disassembler/dmcstyle.c	\
 	source/components/disassembler/dmnames.c	\
 	source/components/disassembler/dmobject.c	\
 	source/components/disassembler/dmopcode.c	\
@@ -246,6 +247,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/common/ahids.c				\
 	source/common/cmfsize.c            		\
 	source/common/ahuuids.c				\
+	source/tools/acpiexec/aeinitfile.c		\
 	source/tools/acpiexec/aehandlers.c		\
 	source/tools/acpiexec/aeregion.c
 

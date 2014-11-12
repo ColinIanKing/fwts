@@ -88,6 +88,7 @@ int fwts_iasl_disassemble_aml(
 		Gbl_DoCompile = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)outputfile;
 		Gbl_UseDefaultAmlFilename = FALSE;
+		AcpiGbl_CstyleDisassembly = FALSE;
 		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
 
 		/*

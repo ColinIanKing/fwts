@@ -1,3 +1,66 @@
+fwts (14.11.00-0ubuntu1) vivid; urgency=low
+
+  [Alex Hung]
+  * acpi: method: add check for _UPC
+  * acpi: method: add check for _PMD
+  * acpi: method: add check for _PRL
+  * acpi: method: add check for _FPS
+  * acpi: method: add check for _DEP
+  * acpi: method: add check for _DLM
+  * acpi: method: add check for _MBM
+  * acpi: method: add check for _MLS
+  * acpi: method: add check for _ALR
+
+  [Colin Ian King]
+  * bios: mpcheck: reduce error level if ACPI is being used (LP: #1373340)
+  * json: allow for different paths to json.h (LP: #1326911)
+  * ACPICA: update to version 20140926. (LP: #1374816)
+  * fwts-test: disassemble-0001: update to sync with latest ACPCIA changes
+  * acpi: acpidump: don't assume FPDT tables are correct about their record
+    sizes (LP: #1375258)
+  * acpi: acpidump: check for short length headers (LP: #1375300)
+  * fwts-test: update tests to sync with method test
+  * acpi: acpidump: fix 32 bit build error
+  * ACPICA: update to version 20141107. (LP: #1391860)
+  * fwts-test: sync tests with new ACPICA 20141107 changes
+  * fwts-test: fix disassemble test to work with latest ACPICA changes
+
+  [Ivan Hu]
+  * securebootcert: report info instead of failure for missing DB and KEK when
+    secureboot disabled (LP: #1374351 )
+  * uefirtauthvar: add the test for creating authenticated variable
+  * uefirtauthvar: cleanup environment before testing
+  * uefirtauthvar: add test with setting the same authenticated variable
+  * uefirtauthvar: add test for setting authenticated variable created by
+    another key
+  * uefirtauthvar: add the normal append operation test
+  * uefirtauthvar: add test update the authenticated variable
+  * uefirtauthvar: add setting old authenticated variable test
+  * uefirtauthvar: delete authenticated variable test
+  * uefirtauthvar: setting authenticated variable with invalid modified data
+    test
+  * uefirtauthvar: setting authenticated variable with invalid modified
+    timestamp
+  * uefirtauthvar: setting authenticated variable with different guid test
+  * uefirtauthvar: setting authenticated variable with invalid attribute test
+  * uefirtauthvar: test with both authenticated attributes are set
+  * uefirtauthvar: Set and delete authenticated variable created by different
+    key test
+  * uefirtauthvar: cleanup environment for another authenticated variable
+  * fwts-test: update tests for the new uefirtauthvar tests
+  * uefi: open efi_runtime driver with flag O_WRONLY | O_RDWR
+
+  [Matt Fleming]
+  * efi_runtime: Don't use get_user() on non-pointer
+
+  [Pradeep Gaddam]
+  * efi_runtime: Copied the structure from userland locally in kernel space
+
+  [Yi Li]
+  * Add arm64 to support dmicheck test
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 18 Nov 2014 16:55:31 +0800
+
 fwts (14.09.00-0ubuntu1) utopic; urgency=low
 
   [Alex Hung]

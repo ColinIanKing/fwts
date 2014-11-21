@@ -4,6 +4,62 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Get fan state failed",
+   "advice": "ACPI could not evaluate the fan state via the _FST object, perhaps this object does not exist or the object fails to evaluate correctly.",
+   "label": "KlogAcpiGetFanState"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FST data",
+   "advice": "ACPI could not evaluate the fan state via the _FST object, one of the elements in the package may be an incorrect ACPI type.",
+   "label": "KlogAcpiGetFanStateBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FIF data",
+   "advice": "ACPI could not evaluate the fan device information via the _FIF object, the returned object was not an ACPI package as expected.",
+   "label": "KlogAcpiGetFanInfo"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FIF element",
+   "advice": "ACPI could not evaluate the fan device information via the _FIF object, the returned package contained an element that was not of the correct ACPI type.",
+   "label": "KlogAcpiGetFanInfoBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FPS data",
+   "advice": "ACPI could not evaluate the fan device information via the _FPS object, the returned object was not an ACPI package as expected.",
+   "label": "KlogAcpiGetFanDevInfo"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FPS element",
+   "advice": "ACPI could not evaluate the fan device information via the _FPS object, the returned package contained an element that was not of the correct ACPI type.",
+   "label": "KlogAcpiGetFanDevInfoBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "No memory for fan",
+   "advice": "ACPI failed to create an ACPI fan device, there was not enough memory to allocate the device.",
+   "label": "KlogAcpiFanNoMem"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Invalid _FIF element",
+   "advice": "ACPI could not evaluate the fan state via the _FST object, one of the elements in the package may be an incorrect ACPI type.",
+   "label": "KlogAcpiGetFanStateBadData"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not acquire table length at",
    "advice": "ACPI could not determine the length of an ACPI table. This can occur, for example, if the table cannot be mapped into memory or the header is corrupted or non-standard.",
    "label": "KlogAcpiTableLength"
@@ -112,6 +168,13 @@
    "pattern": "Invalid reference in package",
    "advice": "An error occurred while trying to evaluate an ACPI reference. An element in the package had a NULL reference handle.",
    "label": "KlogAcpiNullReferenceInPackage"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid package element.*got reference",
+   "advice": "An error occurred while trying to extract a ACPI package, got an ACPI reference in a package element, but was expecting a different type.",
+   "label": "KlogAcpiInvalidPackageElement"
   },
   {
    "compare_mode": "regex",

@@ -35,6 +35,7 @@
 #define FWTS_JSON_DATA_PATH	DATAROOTDIR "/fwts"
 
 #include "fwts_version.h"
+#include "fwts_backtrace.h"
 #include "fwts_types.h"
 #include "fwts_binpaths.h"
 #include "fwts_framework.h"

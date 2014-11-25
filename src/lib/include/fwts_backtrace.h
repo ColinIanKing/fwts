@@ -16,18 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#ifndef __FWTS_BACKTRACE__
+#define __FWTS_BACKTRACE__
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <signal.h>
 
-#include "fwts.h"
+void fwts_print_backtrace(void);
+int fwts_fault_catch(void);
+void fwts_sig_handler_set(int signum, void (*handler)(int), struct sigaction *old_action);
+void fwts_sig_handler_restore(int signum, struct sigaction *old_action);
 
-int main(int argc, char **argv)
-{
-	(void)fwts_fault_catch();
-
-	if (fwts_framework_args(argc, argv) == FWTS_OK)
-		exit(EXIT_SUCCESS);
-	else
-		exit(EXIT_FAILURE);
-}
+#endif

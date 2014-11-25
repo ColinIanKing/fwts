@@ -377,7 +377,7 @@ int fwts_cpu_performance(
  */
 static void fwts_cpu_consume_cycles(void)
 {
-	signal(SIGUSR1, fwts_cpu_consume_sighandler);
+	fwts_sig_handler_set(SIGUSR1, fwts_cpu_consume_sighandler, NULL);
 	uint64_t i = 0;
 
 	for (;;) {
@@ -410,8 +410,7 @@ int fwts_cpu_consume_start(void)
 	if ((fwts_cpu_pids = (pid_t*)calloc(fwts_cpu_num, sizeof(pid_t))) == NULL)
 		return FWTS_ERROR;
 
-	signal(SIGINT, fwts_cpu_sigint_handler);
-
+	fwts_sig_handler_set(SIGINT, fwts_cpu_sigint_handler, NULL);
 	for (i=0;i<fwts_cpu_num;i++) {
 		pid_t pid;
 

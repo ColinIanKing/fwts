@@ -23,6 +23,7 @@
 #include "fwts.h"
 
 static sigjmp_buf jmpbuf;
+static struct sigaction old_action;
 
 /*
  *  If we hit a SIGSEGV then the port read
@@ -33,7 +34,7 @@ static void segv_handler(int dummy)
 {
 	FWTS_UNUSED(dummy);
 
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 	siglongjmp(jmpbuf, 1);
 }
 
@@ -48,9 +49,9 @@ int fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 	
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	memcpy(dst, src, n);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }

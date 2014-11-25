@@ -27,6 +27,7 @@
 #include <setjmp.h>
 
 static sigjmp_buf jmpbuf;
+static struct sigaction old_action;
 
 /*
  *  If we hit a SIGSEGV then the port read
@@ -37,7 +38,7 @@ static void segv_handler(int dummy)
 {
 	FWTS_UNUSED(dummy);
 
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 	siglongjmp(jmpbuf, 1);
 }
 
@@ -50,9 +51,9 @@ int fwts_inb(uint32_t port, uint8_t *value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	*value = inb(port);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }
@@ -66,9 +67,9 @@ int fwts_inw(uint32_t port, uint16_t *value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	*value = inw(port);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }
@@ -82,9 +83,9 @@ int fwts_inl(uint32_t port, uint32_t *value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	*value = inl(port);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }
@@ -98,9 +99,9 @@ int fwts_outb(uint32_t port, uint8_t value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	outb(port, value);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }
@@ -114,9 +115,9 @@ int fwts_outw(uint32_t port, uint16_t value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	outw(port, value);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }
@@ -130,9 +131,9 @@ int fwts_outl(uint32_t port, uint32_t value)
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 
-	signal(SIGSEGV, segv_handler);
+	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
 	outl(port, value);
-	signal(SIGSEGV, SIG_DFL);
+	fwts_sig_handler_restore(SIGSEGV, &old_action);
 
 	return FWTS_OK;
 }

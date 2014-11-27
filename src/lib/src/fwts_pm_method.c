@@ -318,7 +318,7 @@ int fwts_logind_wait_for_resume_from_action(
 	/* Start the main loop */
 	fwts_settings->gmainloop = g_main_loop_new(NULL, FALSE);
 	if (fwts_settings->gmainloop) {
-		g_timeout_add(0.1, logind_do, fwts_settings);
+		g_timeout_add(1, logind_do, fwts_settings);
 
 		g_main_loop_run(fwts_settings->gmainloop);
 		duration = (int)(fwts_settings->t_end - fwts_settings->t_start);

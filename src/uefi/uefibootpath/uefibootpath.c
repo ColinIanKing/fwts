@@ -41,7 +41,7 @@ static int uefibootpath_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int *uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *dev_path, const size_t dev_path_len)
+static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *dev_path, const size_t dev_path_len)
 {
 	uint16_t len;
 

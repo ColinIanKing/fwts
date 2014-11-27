@@ -265,7 +265,7 @@ static int cmosdump_test1(fwts_framework *fw)
 		primary_display[(data[20] >> 4) & 3]);
 	if (data[20] & 1) {
 		int drives = (data[20] >> 6) & 3;
-		fwts_log_info_verbatum(fw, "  Floppy Drives:          0x%2.2x (%hhu drive%s)",
+		fwts_log_info_verbatum(fw, "  Floppy Drives:          0x%2.2x (%d drive%s)",
 			drives, drives + 1, drives > 0 ? "s" : "");
 	} else {
 		fwts_log_info_verbatum(fw, "  Floppy Drives:          None.");

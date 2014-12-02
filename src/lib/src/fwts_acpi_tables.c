@@ -373,6 +373,7 @@ static int fwts_acpi_handle_fadt(
 	const fwts_acpi_table_provenance provenance)
 {
 	static uint64_t	facs_last_phys_addr;	/* default to zero */
+	int result = FWTS_ERROR;
 
 	/*
 	 *  The FADT handling may occur twice if it appears
@@ -384,13 +385,22 @@ static int fwts_acpi_handle_fadt(
 
 	facs_last_phys_addr = phys_addr;
 
-	/* Determine FACS addr and load it */
-	if (fwts_acpi_handle_fadt_tables(fw, fadt,
-	    "FACS", "FIRMWARE_CTRL", "X_FIRMWARE_CTRL",
-	     &fadt->firmware_control, &fadt->x_firmware_ctrl,
-	     provenance) != FWTS_OK) {
-		fwts_log_error(fw, "Failed to load FACS.");
-		return FWTS_ERROR;
+	/* Determine FACS addr and load it.
+	 * Will ignore the missing FACS in the hardware-reduced mode.
+	 */
+	result = fwts_acpi_handle_fadt_tables(fw, fadt,
+			"FACS", "FIRMWARE_CTRL", "X_FIRMWARE_CTRL",
+			&fadt->firmware_control, &fadt->x_firmware_ctrl,
+			provenance);
+	if (result != FWTS_OK) {
+		if ((result == FWTS_NULL_POINTER) &&
+				fwts_acpi_is_reduced_hardware(fadt)) {
+			fwts_log_info(fw, "Ignore the missing FACS. "
+					"It is optional in hardware-reduced mode");
+		} else {
+			fwts_log_error(fw, "Failed to load FACS.");
+			return FWTS_ERROR;
+		}
 	}
 	/* Determine DSDT addr and load it */
 	if (fwts_acpi_handle_fadt_tables(fw, fadt,

@@ -75,10 +75,11 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 	if (fadt->firmware_control == 0) {
 		if (table->length >= 140) {
-			if (fadt->x_firmware_ctrl == 0) {
+			if ((fadt->x_firmware_ctrl == 0) && !(fwts_acpi_is_reduced_hardware(fadt))) {
 				fwts_failed(fw, LOG_LEVEL_CRITICAL, "FADTFACSZero", "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
 				fwts_advice(fw, "The 32 bit FIRMWARE_CTRL or 64 bit X_FIRMWARE_CTRL should point to a valid "
-						"Firmware ACPI Control Structure (FACS). This is a firmware bug and needs to be fixed.");
+						"Firmware ACPI Control Structure (FACS) when ACPI hardware reduced mode is not set. "
+						"This is a firmware bug and needs to be fixed.");
 			}
 		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADT32BitFACSNull", "FADT 32 bit FIRMWARE_CONTROL is null.");

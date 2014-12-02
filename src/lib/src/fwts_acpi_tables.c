@@ -275,6 +275,20 @@ int fwts_acpi_free_tables(void)
 }
 
 /*
+ *  fwts_acpi_is_reduced_hardware()
+ *	Check the ACPI tables for HW_REDUCED_ACPI bit in flag field.
+ */
+fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt)
+{
+	if ((fadt->header.revision >= 5) &&
+			(fadt->header.length >= 116)&&
+			(fadt->flags && FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI)) {
+		return FWTS_TRUE;
+	}
+	return FWTS_FALSE;
+}
+
+/*
  *  fwts_acpi_handle_fadt_tables()
  *	depending on whether 32 or 64 bit address is usable, get the table
  *	address and load it. This handles the DSDT and FACS as pointed to

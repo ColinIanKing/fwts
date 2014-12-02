@@ -45,4 +45,6 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info);
 uint8_t fwts_acpi_checksum(const uint8_t *data, const int length);
 
+fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);
+
 #endif

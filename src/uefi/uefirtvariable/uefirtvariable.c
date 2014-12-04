@@ -74,17 +74,17 @@ static void uefirtvariable_env_cleanup(void)
 	setvariable.DataSize = 0;
 	setvariable.Data = &data;
 	setvariable.status = &status;
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	setvariable.VariableName = variablenametest2;
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	setvariable.VariableName = variablenametest3;
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid2;
-	ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 }
 
 static int uefirtvariable_init(fwts_framework *fw)

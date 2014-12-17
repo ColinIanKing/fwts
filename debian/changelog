@@ -1,3 +1,35 @@
+fwts (14.12.00-0ubuntu1) vivid; urgency=low
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: add vivid and remove quantal
+  * data: klog: set "Gpe0Block - 32-bit FADT register is too long" to medium
+
+  [Colin Ian King]
+  * data: klog.json: Update with latest errors in ACPI
+  * fwts-test: remove .swp file
+  * acpi: s4: fix infinite loop because wrong variable being incremented
+  * fwts: catch segfaults and bus errors and dump stack
+  * Fix g_timeout_add to wait an integer number of seconds
+  * cmos: just print drives + 1 with %d, fixes clang warning
+  * uefibootpath: uefibootpath_check_dev_path: return int rather than int *
+  * lib: fwts_klog: fix vector size and handle errors from pcre_exec
+    (LP: #1401184)
+
+  [Fu Wei]
+  * ACPI: improve the return values and the log info in the
+    fwts_acpi_handle_fadt_tables function.
+  * ACPI: add the hardware reduced mode check function in
+    src/lib/src/fwts_acpi_tables.c.
+  * ACPI: a missing FACS table can be ignored under some circumstances
+
+  [Ivan Hu]
+  * uefirtvariable: fix the uncheck return value warnings
+
+  [Phidias Chiang]
+  * README: Fix missing libglib2.0-dev dependency in README
+ 
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 17 Dec 2014 15:57:35 +0800
+
 fwts (14.11.00-0ubuntu1) vivid; urgency=low
 
   [Alex Hung]

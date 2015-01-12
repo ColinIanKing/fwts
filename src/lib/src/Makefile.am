@@ -2,8 +2,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/lib/include 		\
 	-I$(top_srcdir)/src/acpica/source/include	\
 	-I$(top_srcdir)/src/acpica/source/compiler	\
-	-I/usr/include/json				\
-	-I/usr/include/json-c				\
+	-I=/usr/include/json				\
+	-I=/usr/include/json-c				\
 	`pkg-config --cflags glib-2.0 gio-2.0` 		\
 	-DDATAROOTDIR=\"$(datarootdir)\"		\
 	-Wall -Werror -Wextra

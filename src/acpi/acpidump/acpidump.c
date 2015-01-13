@@ -721,10 +721,10 @@ static void acpidump_rsdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 	fwts_acpi_table_rsdt *rsdt = (fwts_acpi_table_rsdt *)table->data;
 
 	for (i = 0; i < n; i++)  {
-		char label[80];
 		fwts_acpi_table_info *table_info;
 
 		if (fwts_acpi_find_table_by_addr(fw, (uint64_t)rsdt->entries[i], &table_info) == FWTS_OK) {
+			char label[80];
 			char *name = table_info == NULL ? "unknown" : table_info->name;
 			snprintf(label, sizeof(label), "Entry %2.2zu %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%8.8x",
@@ -752,10 +752,10 @@ static void acpidump_xsdt(fwts_framework *fw, const fwts_acpi_table_info *table)
 	fwts_acpi_table_xsdt *xsdt = (fwts_acpi_table_xsdt *)table->data;
 
 	for (i = 0; i < n; i++)  {
-		char label[80];
 		fwts_acpi_table_info *table_info;
 
 		if (fwts_acpi_find_table_by_addr(fw, xsdt->entries[i], &table_info) == FWTS_OK) {
+			char label[80];
 			char *name = table_info == NULL ? "unknown" : table_info->name;
 			snprintf(label, sizeof(label), "Entry %2.2zu %s", i, name);
 			fwts_log_info_verbatum(fw, "%s 0x%16.16" PRIx64,
@@ -1050,10 +1050,7 @@ static void acpidump_mcfg(fwts_framework *fw, const fwts_acpi_table_info *table)
 static void acpidump_slit(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_slit *slit = (fwts_acpi_table_slit *)table->data;
-	uint64_t j = 0;
-	uint64_t k = 0;
 	uint64_t n = table->length - sizeof(fwts_acpi_table_slit);
-	const uint8_t *entry;
 
 	if (table->length < sizeof(fwts_acpi_table_slit)) {
 		fwts_log_info_verbatum(fw, "SLIT header length too short, expected %zu "
@@ -1069,7 +1066,9 @@ static void acpidump_slit(fwts_framework *fw, const fwts_acpi_table_info *table)
 			(slit->num_of_system_localities * slit->num_of_system_localities), n);
 	}
 	else {
-		uint64_t i;
+		uint64_t i, j = 0, k = 0;
+		const uint8_t *entry;
+
 		entry = table->data + sizeof(fwts_acpi_table_slit);
 
 		for (i = 0; i < n; i++) {
@@ -1914,7 +1913,6 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 	/* Dump out info_count number of instances */
 	for (i = 0; i < dbg2->info_count; i++) {
-		uint32_t j;
 		fwts_acpi_table_dbg2_info *dbg2_info = (fwts_acpi_table_dbg2_info *)(table->data + offset);
 		uint8_t *base_addr_regs = (uint8_t *)dbg2_info + dbg2_info->base_address_offset;
 		uint8_t *address_size   = (uint8_t *)dbg2_info + dbg2_info->address_size_offset;
@@ -1931,6 +1929,8 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
 		}
 
 		if (dbg2_info->number_of_regs) {
+			uint32_t j;
+
 			/* Dump out the register GAS and sizes */
 			for (j = 0; j < dbg2_info->number_of_regs; j++) {
 				__acpi_dump_table_fields(fw, &base_addr_regs[j], dbg2_gas_fields,

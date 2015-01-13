@@ -139,7 +139,6 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 		entry = readdir(dir);
 		if (entry && strlen(entry->d_name) > 2) {
 			char path[PATH_MAX];
-			char units[64];
 			int  val;
 			FILE *fp;
 			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
@@ -156,6 +155,8 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
 					if (strstr(buffer, field) &&
 					    strlen(buffer) > 25) {
+						char units[64];
+
 						sscanf(buffer+25, "%d %63s", &val, units);
 						if (strncmp(units, "mAh",3) == 0) {
 							*capacity_mAh += val;

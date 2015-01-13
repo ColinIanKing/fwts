@@ -40,7 +40,7 @@ static int fwts_fwts_memory_map_entry_compare(void *data1, void *data2)
 
 	if (entry1->start_address < entry2->start_address)
 		return -1;
-	else if (entry1->start_address < entry2->start_address)
+	else if (entry1->start_address > entry2->start_address)
 		return 1;
 	else
 		return 0;

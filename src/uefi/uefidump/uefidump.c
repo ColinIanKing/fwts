@@ -993,9 +993,7 @@ static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
 static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 {
 	fwts_uefi_load_option *load_option;
-	char *path;
-	char *tmp;
-	size_t len, offset;
+	size_t len;
 
 	if (var->datalen < sizeof(fwts_uefi_load_option))
 		return;
@@ -1006,7 +1004,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 
 	len = fwts_uefi_str16len(load_option->description);
 	if (len != 0) {
-		tmp = malloc(len + 1);
+		char *tmp = malloc(len + 1);
 		if (tmp) {
 			fwts_uefi_str16_to_str(tmp, len + 1, load_option->description);
 			fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
@@ -1015,6 +1013,9 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 	}
 
 	if (load_option->file_path_list_length != 0) {
+		char *path;
+		size_t offset;
+
 		/* Skip over description to get to packed path, unpack path and print */
 		offset = sizeof(load_option->attributes) +
 			 sizeof(load_option->file_path_list_length) +
@@ -1102,9 +1103,8 @@ static void uefidump_info_keyoption(fwts_framework *fw, fwts_uefi_var *var)
 
 static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *var)
 {
-	fwts_uefi_signature_list *signature_list;
 	char guid_str[37];
-	size_t offset = 0, list_start = 0;
+	size_t list_start = 0;
 	size_t i;
 
 	typedef struct {
@@ -1132,8 +1132,11 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 		return;
 
 	do {
-		signature_list = (fwts_uefi_signature_list *)(var->data + list_start);
+		fwts_uefi_signature_list *signature_list = 
+			(fwts_uefi_signature_list *)(var->data + list_start);
 		const char *str = "Unknown GUID";
+		size_t offset = 0;
+
 		fwts_guid_buf_to_str(var->data, guid_str, sizeof(guid_str));
 
 		for (i = 0; guids[i].str; i++)

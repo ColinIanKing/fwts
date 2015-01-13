@@ -164,28 +164,28 @@ static int cmosdump_test1(fwts_framework *fw)
 		data[11]);
 	fwts_log_info_verbatum(fw, "  Daylight savings:       %1.1x (%s)",
 		data[11] & 1,
-		data[11] & 1 ? "Enabled" : "Disabled");
+		(data[11] & 1) ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  24 Hour Clock:          %1.1x (%s)",
 		(data[11] >> 1) & 1,
-		(data[11] >> 1) & 1 ? "24 Hour" : "12 Hour");
+		((data[11] >> 1) & 1) ? "24 Hour" : "12 Hour");
 	fwts_log_info_verbatum(fw, "  Data Mode (DM):         %1.1x (%s)",
 		(data[11] >> 2) & 1,
-		(data[11] >> 2) & 1 ? "Binary" : "BCD");
+		((data[11] >> 2) & 1) ? "Binary" : "BCD");
 	fwts_log_info_verbatum(fw, "  Square Wave:            %1.1x (%s)",
 		(data[11] >> 3) & 1,
-		(data[11] >> 3) & 1 ? "Enabled" : "Disabled");
+		((data[11] >> 3) & 1) ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Update ended IRQ:       %1.1x (%s)",
 		(data[11] >> 4) & 1,
-		(data[11] >> 4) & 1 ? "Enabled" : "Disabled");
+		((data[11] >> 4) & 1) ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Alarm IRQ:              %1.1x (%s)",
 		(data[11] >> 5) & 1,
-		(data[11] >> 5) & 1 ? "Enabled" : "Disabled");
+		((data[11] >> 5) & 1) ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Periodic IRQ:           %1.1x (%s)",
 		(data[11] >> 6) & 1,
-		(data[11] >> 6) & 1 ? "Enabled" : "Disabled");
+		((data[11] >> 6) & 1) ? "Enabled" : "Disabled");
 	fwts_log_info_verbatum(fw, "  Clock update cycle:     %1.1x (%s)",
 		(data[11] >> 7) & 1,
-		(data[11] >> 7) & 1 ? "Abort update in progress" : "Update normally");
+		((data[11] >> 7) & 1) ? "Abort update in progress" : "Update normally");
 	fwts_log_nl(fw);
 
 	fwts_log_info_verbatum(fw, "Status Register C: (CMOS 0x0c): 0x%2.2x",
@@ -204,29 +204,29 @@ static int cmosdump_test1(fwts_framework *fw)
 		data[13]);
 	fwts_log_info_verbatum(fw, "  Valid CMOS RAM flag:    0x%1.1x (%s)",
 		(data[13] >> 7) & 1,
-		(data[13] >> 7) & 1 ? "Battery Good": "Battery Dead");
+		((data[13] >> 7) & 1) ? "Battery Good": "Battery Dead");
 	fwts_log_nl(fw);
 
 	fwts_log_info_verbatum(fw, "Diagnostic Status: (CMOS 0x0e): 0x%2.2x",
 		data[14]);
 	fwts_log_info_verbatum(fw, "  CMOS time status:       0x%1.1x (%s)",
 		(data[14] >> 2) & 1,
-		(data[14] >> 2) & 1 ? "Invalid": "Valid");
+		((data[14] >> 2) & 1) ? "Invalid": "Valid");
 	fwts_log_info_verbatum(fw, "  Fixed disk init:        0x%1.1x (%s)",
 		(data[14] >> 3) & 1,
-		(data[14] >> 3) & 1 ? "Bad": "Good");
+		((data[14] >> 3) & 1) ? "Bad": "Good");
 	fwts_log_info_verbatum(fw, "  Memory size check:      0x%1.1x (%s)",
 		(data[14] >> 4) & 1,
-		(data[14] >> 4) & 1 ? "Bad": "Good");
+		((data[14] >> 4) & 1) ? "Bad": "Good");
 	fwts_log_info_verbatum(fw, "  Config info status:     0x%1.1x (%s)",
 		(data[14] >> 5) & 1,
-		(data[14] >> 5) & 1 ? "Invalid": "Valid");
+		((data[14] >> 5) & 1) ? "Invalid": "Valid");
 	fwts_log_info_verbatum(fw, "  CMOS checksum status:   0x%1.1x (%s)",
 		(data[14] >> 6) & 1,
-		(data[14] >> 6) & 1 ? "Bad": "Good");
+		((data[14] >> 6) & 1) ? "Bad": "Good");
 	fwts_log_info_verbatum(fw, "  CMOS power loss:        0x%1.1x (%s)",
 		(data[14] >> 7) & 1,
-		(data[14] >> 7) & 1 ? "Lost power": "Not lost power");
+		((data[14] >> 7) & 1) ? "Lost power": "Not lost power");
 	fwts_log_nl(fw);
 
 	fwts_log_info_verbatum(fw, "CMOS Shutdown Status: (CMOS 0x0f): 0x%2.2x (%s)",
@@ -253,13 +253,13 @@ static int cmosdump_test1(fwts_framework *fw)
 		data[20]);
 	fwts_log_info_verbatum(fw, "  Maths Coprocessor:      0x%1.1x (%s)",
 		(data[20] >> 1) & 1,
-		(data[20] >> 1) & 1 ? "Installed": "Not Installed");
+		((data[20] >> 1) & 1) ? "Installed": "Not Installed");
 	fwts_log_info_verbatum(fw, "  Keyboard:               0x%1.1x (%s)",
 		(data[20] >> 2) & 1,
-		(data[20] >> 2) & 1 ? "Installed": "Not Installed");
+		((data[20] >> 2) & 1) ? "Installed": "Not Installed");
 	fwts_log_info_verbatum(fw, "  Display Adaptor:        0x%1.1x (%s)",
 		(data[20] >> 3) & 1,
-		(data[20] >> 3) & 1 ? "Installed": "Not Installed");
+		((data[20] >> 3) & 1) ? "Installed": "Not Installed");
 	fwts_log_info_verbatum(fw, "  Primary Display:        0x%1.1x (%s)",
 		(data[20] >> 4) & 3,
 		primary_display[(data[20] >> 4) & 3]);
@@ -304,9 +304,9 @@ static int cmosdump_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 	fwts_log_info_verbatum(fw, "POST Information Flag (CMOS 0x33):");
 	fwts_log_info_verbatum(fw, "  POST cache test:        0x%1.1x %s",
-		(data[51] >> 0) & 1, (data[51] >> 0) & 1 ? "Failed" : "Passed");
+		(data[51] >> 0) & 1, ((data[51] >> 0) & 1) ? "Failed" : "Passed");
 	fwts_log_info_verbatum(fw, "  BIOS size:              0x%1.1x %s",
-		(data[51] >> 7) & 1, (data[51] >> 7) & 1 ? "128KB" : "64KB");
+		(data[51] >> 7) & 1, ((data[51] >> 7) & 1) ? "128KB" : "64KB");
 	fwts_log_nl(fw);
 
 	fwts_infoonly(fw);

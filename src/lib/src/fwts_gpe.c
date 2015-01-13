@@ -32,10 +32,10 @@
  */
 void fwts_gpe_free(fwts_gpe *gpe, const int count)
 {
-	int i;
-
 	if (gpe) {
-		for (i=0;i<count;i++) {
+		int i;
+
+		for (i = 0; i < count; i++) {
 			if (gpe[i].name)
 				free(gpe[i].name);
 		}

@@ -67,7 +67,6 @@ static bool securebooted = false;
 static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)
 {
 	bool ident = true;
-	int i;
 	uint32_t data1 = guid2[0] + (guid2[1] << 8) + (guid2[2] << 16) + (guid2[3] << 24);
 	uint16_t data2 = guid2[4] + (guid2[5] << 8);
 	uint16_t data3 = guid2[6] + (guid2[7] << 8);
@@ -75,6 +74,8 @@ static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)
 	if ((guid1->Data1 != data1) || (guid1->Data2 != data2) || (guid1->Data3 != data3))
 		ident = false;
 	else {
+		int i;
+
 		for (i = 0; i < 8; i++) {
 			if (guid1->Data4[i] != guid2[i+8])
 				ident = false;

@@ -67,7 +67,6 @@ static int do_checkvariables(
 	uint64_t *usedvarssize,
 	const uint64_t maxvarsize)
 {
-	long ioret;
 	uint64_t status;
 
 	struct efi_getnextvariablename getnextvariablename;
@@ -97,6 +96,8 @@ static int do_checkvariables(
 	 */
 	variablename[0] = '\0';
 	while (true) {
+		long ioret;
+
 		variablenamesize = MAX_VARNAME_LENGTH;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 

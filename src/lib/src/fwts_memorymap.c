@@ -118,11 +118,10 @@ static int fwts_register_memory_map_line(fwts_list *memory_map_list, const uint6
  */
 int fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory)
 {
-	fwts_memory_map_entry *entry;
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, memory_map_list) {
-		entry = fwts_list_data(fwts_memory_map_entry*, item);
+		fwts_memory_map_entry *entry = fwts_list_data(fwts_memory_map_entry*, item);
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry->type;
 	}
@@ -132,11 +131,10 @@ int fwts_memory_map_type(fwts_list *memory_map_list, const uint64_t memory)
 
 fwts_memory_map_entry *fwts_memory_map_info(fwts_list *memory_map_list, const uint64_t memory)
 {
-	fwts_memory_map_entry *entry;
 	fwts_list_link *item;
 
 	fwts_list_foreach(item, memory_map_list) {
-		entry = fwts_list_data(fwts_memory_map_entry*, item);
+		fwts_memory_map_entry *entry = fwts_list_data(fwts_memory_map_entry*, item);
 		if (entry->start_address <= memory && entry->end_address > memory)
 			return entry;
 	}
@@ -181,11 +179,12 @@ static void fwts_memory_map_dmesg_info(void *data, void *private)
 
 	if ((str = strstr(line,"BIOS-memory_map:")) != NULL) {
 		uint64_t start;
-		uint64_t end;
 
 		start = strtoull(str+10, NULL, 16);
 		str = strstr(line," - ");
 		if (str) {
+			uint64_t end;
+
 			str += 3;
 			end = strtoull(str, NULL, 16) - 1;
 

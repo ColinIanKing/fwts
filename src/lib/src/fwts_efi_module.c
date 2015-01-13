@@ -30,10 +30,11 @@ static bool module_already_loaded = false;
 static int check_module_loaded(void)
 {
 	FILE *fp;
-	char buffer[1024];
 
 	module_already_loaded = false;
 	if ((fp = fopen("/proc/modules", "r")) != NULL) {
+		char buffer[1024];
+
 		while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 			if (strstr(buffer, "efi_runtime") != NULL) {
 				module_already_loaded = true;

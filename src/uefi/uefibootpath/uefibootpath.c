@@ -734,7 +734,6 @@ static int uefibootpath_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 static void uefibootpath_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
-	int ret;
 
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 
@@ -742,6 +741,8 @@ static void uefibootpath_var(fwts_framework *fw, fwts_uefi_var *var)
 	if ((strlen(varname) == 8) && (strncmp(varname, "Boot", 4) == 0)
 			&& isxdigit(varname[4]) && isxdigit(varname[5])
 			&& isxdigit(varname[6]) && isxdigit(varname[7])) {
+		int ret;
+
 		fwts_log_info_verbatum(fw, "Name: %s", varname);
 		errors = 0;
 		ret = uefibootpath_info_bootdev(fw, var);

@@ -297,11 +297,11 @@ static char *mpdump_find_bus_name(uint8_t bus_id)
 
 static char *mpdump_dst_io_apic(uint8_t apic)
 {
-	static char buffer[4];
-
 	if (apic == 255)
 		return "all";
 	else {
+		static char buffer[4];
+
 		snprintf(buffer, sizeof(buffer), "%d", apic);
 		return buffer;
 	}

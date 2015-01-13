@@ -120,7 +120,6 @@ static int msr_consistent_check(fwts_framework *fw,
 	uint64_t *vals;
 	bool *inconsistent;
 	int inconsistent_count;
-	int cpu;
 
 	if ((vals = calloc(ncpus, sizeof(uint64_t))) == NULL) {
 		fwts_log_error(fw, "Out of memory allocating msr value buffers.");
@@ -138,6 +137,8 @@ static int msr_consistent_check(fwts_framework *fw,
 		return FWTS_ERROR;
 	}
 	if (inconsistent_count > 0) {
+		int cpu;
+
 		fwts_failed(fw, level, "MSRCPUsInconsistent",
 			"MSR 0x%8.8" PRIx32 " %s has %d inconsistent values across "
 			"%d CPUs (shift: %d mask: 0x%" PRIx64 ").",

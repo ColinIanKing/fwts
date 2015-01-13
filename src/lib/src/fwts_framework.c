@@ -237,14 +237,16 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 
 	/* Dump out tests registered under all categories */
 	for (i = 0; categories[i].title != NULL; i++) {
-		fwts_framework_test *test;
 
 		/* If no category flags are set, or category matches user requested
 		   category go and dump name and purpose of tests */
 		if (((fw->flags & FWTS_FLAG_RUN_ALL) == 0) ||
 		    ((fw->flags & FWTS_FLAG_RUN_ALL) & categories[i].flag)) {
+			fwts_framework_test *test;
+
 			fwts_list_init(&sorted);
 			fwts_list_foreach(item, &fwts_framework_test_list) {
+
 				test = fwts_list_data(fwts_framework_test *, item);
 				if ((test->flags & FWTS_FLAG_RUN_ALL) & categories[i].flag)
 					fwts_list_add_ordered(&sorted, test,
@@ -256,7 +258,7 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 					printf("\n");
 				need_nl = true;
 				printf("%s%s:\n", categories[i].title,
-					categories[i].flag & FWTS_FLAG_UTILS ? "" : " tests");
+					(categories[i].flag & FWTS_FLAG_UTILS) ? "" : " tests");
 
 				fwts_list_foreach(item, &sorted) {
 					test = fwts_list_data(fwts_framework_test *, item);
@@ -904,9 +906,10 @@ static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_s
 	char *str;
 	char *token;
 	char *saveptr = NULL;
-	fwts_framework_test *test;
 
 	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+		fwts_framework_test *test;
+
 		if ((test = fwts_framework_test_find(token)) == NULL) {
 			fprintf(stderr, "No such test '%s'\n", token);
 			return FWTS_ERROR;
@@ -1350,7 +1353,7 @@ int fwts_framework_args(const int argc, char **argv)
 	/* Results log */
 	if ((fw->results = fwts_log_open("fwts",
 			fw->results_logname,
-			fw->flags & FWTS_FLAG_FORCE_CLEAN ? "w" : "a",
+			(fw->flags & FWTS_FLAG_FORCE_CLEAN) ? "w" : "a",
 			fw->log_type)) == NULL) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Cannot open results log '%s'.\n", argv[0], fw->results_logname);

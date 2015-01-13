@@ -31,7 +31,6 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 	FILE 		*fp;
 	uint16_t	pin;
 	uint32_t	setting;
-	hda_audio_pin_setting *pin_setting;
 	char 		name[PATH_MAX];
 
 	fwts_list_init(settings);
@@ -42,7 +41,9 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 		return FWTS_ERROR;
 
 	while (fscanf(fp, "0x%hx 0x%x\n", &pin, &setting) == 2) {
-		pin_setting = calloc(1, sizeof(hda_audio_pin_setting));
+		hda_audio_pin_setting *pin_setting;
+
+		pin_setting  = calloc(1, sizeof(hda_audio_pin_setting));
 		if (pin_setting == NULL) {
 			fwts_list_free_items(settings, free);
 			fclose(fp);
@@ -60,9 +61,9 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 static void hda_audio_dump_pins(fwts_framework *fw, const char *config,
 	fwts_list *settings)
 {
-	fwts_list_link *item;
-
 	if (fwts_list_len(settings) > 0) {
+		fwts_list_link *item;
+
 		fwts_log_info(fw, "%s:", config);
 
 		fwts_log_info_verbatum(fw, "  Pin  Setting");

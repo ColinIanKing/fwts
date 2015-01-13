@@ -193,16 +193,14 @@ static int dump_readme(void)
 {
 	time_t now = time(NULL);
 	struct tm *tm = localtime(&now);
+	char *str, buf[64];
 	FILE *fp;
-	char *str;
-	int len;
 
 	if ((fp = fopen("README.txt", "w")) == NULL)
 		return FWTS_ERROR;
 
-	str = asctime(tm);
-	len = strlen(str) - 1;
-	fprintf(fp, "This is output captured by fwts on %*.*s.\n\n", len, len, str);
+	(void)strftime(buf, sizeof(buf), "%a %b %e %T %Y", tm);
+	fprintf(fp, "This is output captured by fwts on %s.\n\n", buf);
 
 	fwts_framework_show_version(fp, "fwts");
 

@@ -407,7 +407,6 @@ static int pcc_test1(fwts_framework *fw)
 {
 	ACPI_BUFFER       buf;
 	ACPI_STATUS	  ret;
-	fwts_list_link	*item;
 	fwts_list *pccs;
 	static char *name = "PCCH";
 	size_t name_len = strlen(name);
@@ -421,6 +420,8 @@ static int pcc_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if ((pccs = fwts_acpi_object_get_names()) != NULL) {
+		fwts_list_link	*item;
+
 		fwts_list_foreach(item, pccs) {
 			char *pcc_name = fwts_list_data(char*, item);
 			size_t len = strlen(pcc_name);

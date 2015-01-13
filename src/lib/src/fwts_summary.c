@@ -181,8 +181,6 @@ static void fwts_summary_format_field(
 int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 {
 	int i;
-	fwts_list      *sorted;
-	fwts_list_link *item;
 
 	fwts_log_summary(fw, "Test Failure Summary");
 	fwts_log_underline(fw->results, '=');
@@ -223,7 +221,9 @@ int fwts_summary_report(fwts_framework *fw, fwts_list *test_list)
 
 	if ((fw->log_type & (LOG_TYPE_PLAINTEXT| LOG_TYPE_HTML)) &&
 	     fw->total_run > 0) {
-		sorted = fwts_list_new();
+		fwts_list_link *item;
+		fwts_list *sorted = fwts_list_new();
+
 		fwts_list_foreach(item, test_list)
 			fwts_list_add_ordered(sorted, fwts_list_data(fwts_framework_test *,item), fwts_framework_compare_test_name);
 

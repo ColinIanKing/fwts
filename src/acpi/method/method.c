@@ -486,12 +486,13 @@ static int method_evaluate_method(fwts_framework *fw,
 	method_test_return check_func,
 	void *private)
 {
-	fwts_list_link	*item;
 	fwts_list *methods;
 	size_t name_len = strlen(name);
 	bool found = false;
 
 	if ((methods = fwts_acpi_object_get_names()) != NULL) {
+		fwts_list_link	*item;
+
 		fwts_list_foreach(item, methods) {
 			char *method_name = fwts_list_data(char*, item);
 			size_t len = strlen(method_name);
@@ -548,11 +549,12 @@ static int method_evaluate_method(fwts_framework *fw,
  */
 static int method_name_check(fwts_framework *fw)
 {
-	fwts_list_link	*item;
 	fwts_list *methods;
-	bool failed = false;
 
  	if ((methods = fwts_acpi_object_get_names()) != NULL) {
+		fwts_list_link	*item;
+		bool failed = false;
+
 		fwts_log_info(fw, "Found %d Objects\n", methods->len);
 
 		fwts_list_foreach(item, methods) {
@@ -1179,7 +1181,6 @@ static void method_test_CID_return(
 	void *private)
 {
 	uint32_t i;
-	ACPI_OBJECT *pkg;
 
 	FWTS_UNUSED(buf);
 	FWTS_UNUSED(private);
@@ -1199,7 +1200,7 @@ static void method_test_CID_return(
 			return;
 
 		for (i = 0; i < obj->Package.Count; i++){
-			pkg = &obj->Package.Elements[i];
+			ACPI_OBJECT *pkg = &obj->Package.Elements[i];
 			method_valid_CID_Type(fw, name, pkg);
 		}
 		break;
@@ -3690,6 +3691,7 @@ static void method_test_ALR_return(
 {
 	uint32_t i;
 	bool failed = false;
+	uint32_t adjustment = 0, illuminance = 0;
 
 	FWTS_UNUSED(private);
 
@@ -3699,7 +3701,6 @@ static void method_test_ALR_return(
 	/* Could be one or more sub-packages */
 	for (i = 0; i < obj->Package.Count; i++) {
 		ACPI_OBJECT *pkg;
-		uint32_t adjustment = 0, illuminance = 0;
 
 		pkg = &obj->Package.Elements[i];
 		if (pkg->Package.Count != 2) {
@@ -5399,9 +5400,9 @@ static int method_test_PTS(fwts_framework *fw)
 
 static int method_test_TTS(fwts_framework *fw)
 {
-	int i;
-
 	if (fwts_acpi_object_exists("_TTS") != NULL) {
+		int i;
+
 		for (i = 1; i < 6; i++) {
 			ACPI_OBJECT arg[1];
 

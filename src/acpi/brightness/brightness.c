@@ -117,8 +117,6 @@ static int brightness_test2(fwts_framework *fw)
 
 	rewinddir(brightness_dir);
 	do {
-		int i;
-
 		entry = readdir(brightness_dir);
 		if (entry == NULL || entry->d_name[0] == '.')
 			continue;
@@ -141,7 +139,7 @@ static int brightness_test2(fwts_framework *fw)
 		fwts_printf(fw, "==== Backlight will now slowly transition from dim to bright ====\n");
 		if (brightness_get_setting(entry->d_name, "actual_brightness", &saved_brightness) == FWTS_OK) {
 			long delay = 5000000 / max_brightness;
-			int ch;
+			int ch, i;
 
 			if (delay > 1000000)
 				delay = 1000000;
@@ -170,7 +168,6 @@ static int brightness_wait_event(fwts_framework *fw)
 {
 	int fd;
 	int events = 0;
-	char *buffer;
 	size_t len;
 	int i;
 
@@ -180,6 +177,8 @@ static int brightness_wait_event(fwts_framework *fw)
 	}
 
 	for (i = 0; i <= 20; i++) {
+		char *buffer;
+
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL)
 			if (strstr(buffer, "video")) {
 				free(buffer);

@@ -33,9 +33,10 @@
 static double maxfreq_max(const char *str)
 {
 	double max = -1.0;
-	double val;
 
 	while (str && *str) {
+		double val;
+
 		while ((*str != '\0') && isspace(*str))
 			str++;
 

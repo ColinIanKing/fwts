@@ -158,9 +158,11 @@ static int auto_brightness_test2(fwts_framework *fw)
 
 			/* Find the ranges of the failed levels */
 			for (i = 0; i <= max_brightness; i++) {
-				int j, end = i;
+				int end = i;
 
 				if (brightness_fail[i]) {
+					int j;
+
 					/* Scan until we don't find a failure */
 					for (j = i; j <= max_brightness && brightness_fail[j]; j++)
 						end = j;

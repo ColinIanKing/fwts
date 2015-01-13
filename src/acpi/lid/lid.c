@@ -87,7 +87,6 @@ static int lid_test_state(fwts_framework *fw, int button)
 	int not_matching = 0;
 	int events = 0;
 	size_t len;
-	char *buffer;
 	char *state;
 	int i;
 
@@ -117,7 +116,9 @@ static int lid_test_state(fwts_framework *fw, int button)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i<=20; i++) {
+	for (i = 0; i <= 20; i++) {
+		char *buffer;
+
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "button/lid")) {
 				events++;
@@ -172,11 +173,12 @@ static int lid_test2(fwts_framework *fw)
 
 static int lid_test3(fwts_framework *fw)
 {
-	int ret;
 	int i;
 	fwts_log_info(fw, "Some machines may have EC or ACPI faults that cause detection of multiple open/close events to fail.");
 
-	for (i=1; i<4; i++) {
+	for (i = 1; i < 4; i++) {
+		int ret;
+
 		fwts_printf(fw, "==== %d of %d: Please close laptop lid for 2 seconds and then re-open. ====\n", i,3);
 
 		if ((ret = lid_test_state(fw, FWTS_BUTTON_LID_CLOSED)) != FWTS_OK)

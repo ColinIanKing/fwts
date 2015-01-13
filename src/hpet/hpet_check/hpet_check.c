@@ -37,11 +37,11 @@ static void     *hpet_base_v = 0;
 static void hpet_parse_check_base(fwts_framework *fw,
 	const char *table, fwts_list_link *item)
 {
-	char *val, *idx;
+	char *val;
 
 	if ((val = strstr(fwts_text_list_text(item), "0x")) != NULL) {
 		uint64_t address_base;
-		idx = index(val, ',');
+		char *idx = index(val, ',');
 		if (idx)
 			*idx = '\0';
 

@@ -77,7 +77,6 @@ static int nx_test1(fwts_framework *fw)
 
 static int nx_test2(fwts_framework *fw)
 {
-	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 	int i;
 	int n;
 	int cpu0_has_nx = 0;
@@ -98,7 +97,9 @@ static int nx_test2(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	for (i=0; i<n; i++) {
+	for (i = 0; i < n; i++) {
+		fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
+
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUInfoRead", "Cannot get CPU%d info", i);
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
@@ -130,7 +131,6 @@ static int nx_test3(fwts_framework *fw)
 	int failed = 0;
 	uint64_t msr_value = 0;
 	const uint64_t nx_bit = 1ULL << 34;
-	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 
 	fwts_log_info(fw,
 		"This test verifies that all CPUs have the same NX flag setting by examining the per CPU MSR register 0x1a0.");
@@ -140,8 +140,10 @@ static int nx_test3(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i<n; i++) {
+	for (i = 0; i < n; i++) {
+		fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 		uint64_t val;
+
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 			fwts_log_error(fw, "Cannot get CPU info");
 			return FWTS_ERROR;

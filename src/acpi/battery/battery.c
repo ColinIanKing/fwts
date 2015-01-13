@@ -67,7 +67,6 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 	int events = 0;
 	int matching = 0;
 	size_t len;
-	char *buffer;
 	int i;
 
 	fwts_gpe *gpes_start;
@@ -84,7 +83,9 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 		return FWTS_ERROR;
 	}
 
-	for (i=0;i<=20;i++) {
+	for (i = 0;i <= 20; i++) {
+		char *buffer;
+
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			char *str;
 			if ((str = strstr(buffer, "battery")) != NULL) {
@@ -130,13 +131,14 @@ static void check_charging(fwts_framework *fw, int index, char *name)
 {
 	int i;
 	/* when we get here we KNOW the state is "charging" */
-	uint32_t initial_value, new_value;
+	uint32_t initial_value;
 
 	fwts_printf(fw, "==== Waiting to see if battery '%s' charges ====\n", name);
 
 	initial_value = get_full(fw, index);
-	for (i=0; i<=120; i++) {
-		new_value = get_full(fw, index);
+	for (i=0; i <= 120; i++) {
+		uint32_t new_value = get_full(fw, index);
+
 		if (new_value>initial_value) {
 			fwts_passed(fw, "Battery %s charge is incrementing as expected.", name);
 			return;

@@ -189,12 +189,9 @@ error:
 static int acpi_parse_dev_scope(fwts_framework *fw,
 	uint8_t *start, uint8_t *end, const uint16_t seg)
 {
-	struct acpi_dev_scope *scope;
-	int ret;
-
 	while (start < end) {
-		scope = (struct acpi_dev_scope *)start;
-		ret = acpi_parse_one_dev_scope(fw, scope, seg);
+		struct acpi_dev_scope *scope = (struct acpi_dev_scope *)start;
+		int ret = acpi_parse_one_dev_scope(fw, scope, seg);
 		if (ret)
 			return ret;
 		start += scope->length;
@@ -205,7 +202,6 @@ static int acpi_parse_dev_scope(fwts_framework *fw,
 static int acpi_parse_one_drhd(fwts_framework *fw,
 	struct acpi_dmar_entry_header *header)
 {
-	static int include_all;
 	struct acpi_table_drhd *drhd = (struct acpi_table_drhd*)header;
 
 	if (drhd->address & MASK_4K) {
@@ -214,6 +210,8 @@ static int acpi_parse_one_drhd(fwts_framework *fw,
 		return FWTS_ERROR;
 	}
 	if (drhd->flags & 1) {
+		static int include_all;
+
 		if (include_all == 1) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MultipleDRHDSFlag",
 				"Multiple drhds have include_all flag set.");

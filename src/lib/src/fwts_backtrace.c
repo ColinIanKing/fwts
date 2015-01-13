@@ -41,11 +41,11 @@ static size_t bt_size = 0;
  */
 void fwts_print_backtrace(void)
 {
-	char **bt_strings;
-	size_t i;
-
 	fprintf(stderr, "Backtrace:\n");
 	if (bt_size) {
+		char **bt_strings;
+		size_t i;
+
 		bt_strings = backtrace_symbols(bt_buff, bt_size);
 
 		for (i = 0; i < bt_size; i++) {

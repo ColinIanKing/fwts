@@ -202,11 +202,10 @@ char *fwts_log_level_to_str(const fwts_log_level level)
 void fwts_log_print_fields(void)
 {
 	fwts_log_field field = 1;
-	char *str;
 
 	printf("Available fields: ");
 	for (field=1; ; field <<= 1) {
-		str = fwts_log_field_to_str(field);
+		char *str = fwts_log_field_to_str(field);
 		if (strcmp(str, LOG_UNKOWN_FIELD) == 0)
 			break;
 		printf("%s%s", field == 1 ? "" : ",", str);
@@ -277,11 +276,12 @@ void fwts_log_filter_unset_field(const fwts_log_field filter)
  */
 void fwts_log_set_field_filter(const char *str)
 {
-	char *token;
 	char *saveptr;
 	fwts_log_field field;
 
 	for (;; str=NULL) {
+		char *token;
+
 		if ((token = strtok_r((char*)str, ",|", &saveptr)) == NULL)
 			break;
 		if (*token == '^' || *token == '~') {
@@ -336,7 +336,6 @@ static char *fwts_log_filename(const char *filename, const fwts_log_type type)
 	char *new_name;
 	char *suffix;
 	size_t suffix_len;
-	size_t trunc_len;
 	size_t filename_len;
 	struct stat stat_buf;
 
@@ -366,8 +365,8 @@ static char *fwts_log_filename(const char *filename, const fwts_log_type type)
 		 !strcmp(ptr, ".json") ||
 		 !strcmp(ptr, ".xml") ||
 		 !strcmp(ptr, ".html"))) {
+		size_t trunc_len = ptr - filename;
 
-		trunc_len = ptr - filename;
 		if ((new_name = calloc(trunc_len + suffix_len + 1, 1)) == NULL) {
 			fprintf(stderr, "Cannot allocate log name.\n");
 			return NULL;
@@ -408,13 +407,12 @@ int fwts_log_printf(fwts_log *log,
 	va_list	args;
 	int ret = 0;
 
-	char buffer[LOG_MAX_BUF_SIZE];
-
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return ret;
 
 	if (log && log->magic == LOG_MAGIC) {
 		fwts_list_link *item;
+		char buffer[LOG_MAX_BUF_SIZE];
 
 		/*
 		 * With the possibility of having multiple logs being written

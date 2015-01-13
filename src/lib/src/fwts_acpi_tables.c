@@ -103,7 +103,6 @@ static void *fwts_acpi_find_rsdp_bios(void)
 #ifdef FWTS_ARCH_INTEL
 	uint8_t *bios;
 	uint8_t *ptr;
-	fwts_acpi_table_rsdp *rsdp;
 	void *addr = 0;
 
 	if ((bios = fwts_mmap(BIOS_START, BIOS_LENGTH)) == FWTS_MAP_FAILED)
@@ -111,7 +110,7 @@ static void *fwts_acpi_find_rsdp_bios(void)
 
 	/* Scan BIOS for RSDP, ACPI spec states it is aligned on 16 byte intervals */
 	for (ptr = bios; ptr < (bios+BIOS_LENGTH); ptr += 16) {
-		rsdp = (fwts_acpi_table_rsdp*)ptr;
+		fwts_acpi_table_rsdp *rsdp = (fwts_acpi_table_rsdp*)ptr;
 
 		/* Can we read this memory w/o segfaulting? */
 		if (fwts_safe_memread(rsdp, 8) != FWTS_OK)
@@ -1015,7 +1014,6 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info)
 {
 	int i;
-	int ret;
 
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
@@ -1025,9 +1023,12 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 	if (acpi_tables_loaded == ACPI_TABLES_LOADED_FAILED)
 		return FWTS_ERROR;
 
-	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED) {
+		int ret;
+
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
+	}
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
@@ -1048,16 +1049,17 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info)
 {
 	int i;
-	int ret;
 
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
 
 	*info = NULL;
 
-	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED) {
+		int ret;
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
+	}
 
 	for (i=0;i<ACPI_MAX_TABLES;i++) {
 		if (tables[i].data == NULL)
@@ -1076,8 +1078,6 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
  */
 int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info)
 {
-	int ret;
-
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
 
@@ -1086,9 +1086,11 @@ int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_inf
 	if ((index < 0) || (index >= ACPI_MAX_TABLES))
 		return FWTS_ERROR;
 
-	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED)
+	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED) {
+		int ret;
 		if ((ret = fwts_acpi_load_tables(fw)) != FWTS_OK)
 			return ret;
+	}
 
 	if (tables[index].data == NULL)
 		return FWTS_OK;

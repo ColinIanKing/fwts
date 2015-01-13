@@ -38,8 +38,6 @@ static int hotkey_check_key(fwts_framework *fw,
 	struct input_event *ev, fwts_list *hotkeys)
 {
 	static int scancode = 0;
-	fwts_list_link *item;
-	int found = 0;
 
 	if ((ev->code == MSC_SCAN) &&
 	    (ev->type == EV_MSC))
@@ -47,6 +45,9 @@ static int hotkey_check_key(fwts_framework *fw,
 
 	if ((ev->type == EV_KEY) &&
 	    (ev->value != 0)) {
+		fwts_list_link *item;
+		int found = 0;
+
 		fwts_list_foreach(item, hotkeys) {
 			fwts_keycode *keycode =
 				fwts_list_data(fwts_keycode*, item);

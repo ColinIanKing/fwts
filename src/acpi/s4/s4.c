@@ -181,8 +181,6 @@ static int s4_hibernate(fwts_framework *fw,
 	_cleanup_free_ char *command = NULL;
 	_cleanup_free_ char *quirks = NULL;
 	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
-	char buffer[80];
-
 
 	int (*do_s4)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -258,7 +256,9 @@ static int s4_hibernate(fwts_framework *fw,
 	if (s4_device_check) {
 		int i;
 
-		for (i=0;i<s4_device_check_delay;i++) {
+		for (i = 0; i < s4_device_check_delay; i++) {
+			char buffer[80];
+
 			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1, s4_device_check_delay);
 			fwts_progress_message(fw, percent, buffer);
 			sleep(1);
@@ -353,7 +353,6 @@ static int s4_test_multiple(fwts_framework *fw)
 	int tracing_buffer_size = -1;
 	int ret = FWTS_OK;
 	bool retried = false;
-	char tmp[32];
 
 #if FWTS_ENABLE_LOGIND
 #if !GLIB_CHECK_VERSION(2,35,0)
@@ -439,6 +438,8 @@ static int s4_test_multiple(fwts_framework *fw)
 	}
 
 	if (tracing_buffer_size > 0) {
+		char tmp[32];
+
 		/* Restore tracking buffer size */
 		snprintf(tmp, sizeof(tmp), "%d", tracing_buffer_size);
 		fwts_set(tmp, FWTS_TRACING_BUFFER_SIZE);

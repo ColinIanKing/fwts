@@ -76,7 +76,6 @@ static int fwts_uefi_get_interface(char **path)
 	static char efivar_path[4096];
 
 	FILE *fp;
-	char fstype[1024];
 	struct statfs statbuf;
 
 	if (path == NULL)	/* Sanity check */
@@ -94,6 +93,7 @@ static int fwts_uefi_get_interface(char **path)
 	if ((fp = fopen("/proc/mounts", "r")) != NULL) {
 		while (!feof(fp)) {
 			char mount[4096];
+			char fstype[1024];
 
 			if (fscanf(fp, "%*s %4095s %1023s", mount, fstype) == 2) {
 				/* Always try to find the newer interface first */

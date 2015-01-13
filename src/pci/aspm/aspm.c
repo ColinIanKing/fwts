@@ -224,12 +224,12 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 
 	/* Check aspm registers from the list of pci devices */
 	for (lcur = dev_list.head; lcur; lcur = lcur->next) {
-		struct pci_device *target, *cur = (struct pci_device *)lcur->data;
+		struct pci_device *cur = (struct pci_device *)lcur->data;
 
 		/* Find PCI Bridge (PCIE Root Port) and the attached device  */
 		if (cur->config[FWTS_PCI_CONFIG_HEADER_TYPE] & 0x01) {
 			for (ltarget = dev_list.head; ltarget; ltarget = ltarget->next) {
-				target = (struct pci_device *)ltarget->data;
+				struct pci_device *target = (struct pci_device *)ltarget->data;
 				if (target->bus == cur->config[FWTS_PCI_CONFIG_TYPE1_SECONDARY_BUS_NUMBER]) {
 					pcie_compare_rp_dev_aspm_registers(fw, cur, target);
 					break;

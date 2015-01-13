@@ -31,11 +31,12 @@
 static gboolean logind_do(gpointer data)
 {
 	GError *error = NULL;
-	GVariant *reply;
 	fwts_pm_method_vars *fwts_settings = (fwts_pm_method_vars *)data;
 
 	/* If the loop is not running, return TRUE so as to repeat the operation */
 	if (g_main_loop_is_running (fwts_settings->gmainloop)) {
+		GVariant *reply;
+
 		fwts_log_info(fwts_settings->fw, "Requesting %s action\n", fwts_settings->action);
 		reply = g_dbus_proxy_call_sync(fwts_settings->logind_proxy,
 			fwts_settings->action,
@@ -108,7 +109,6 @@ static void logind_on_signal(
 	gpointer user_data)
 {
 	gboolean status, is_s3;
-	char buffer[50];
 	fwts_pm_method_vars *fwts_settings = (fwts_pm_method_vars *)user_data;
 
 	/* Prevent -Werror=unused-parameter from complaining */
@@ -133,7 +133,9 @@ static void logind_on_signal(
 			status ? "true" : "false");
 
 		if (status) {
-			time(&(fwts_settings->t_start));
+			char buffer[50];
+
+			(void)time(&(fwts_settings->t_start));
 			snprintf(buffer, sizeof(buffer), "Starting fwts %s\n", is_s3 ? "suspend" : "hibernate");
 			(void)fwts_klog_write(fwts_settings->fw, buffer);
 			snprintf(buffer, sizeof(buffer), "%s\n", fwts_settings->action);

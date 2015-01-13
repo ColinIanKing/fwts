@@ -304,9 +304,7 @@ static const char *crs_pin_configuration(const uint64_t val)
  */
 static const char *crs_irq_map(const uint64_t val)
 {
-	unsigned int i;
 	static char buf[6 + (32 * 4)];
-	char tmp[5];
 	const size_t n = sizeof(buf) - 1;
 
 	strncpy(buf, "IRQ:", n);
@@ -314,8 +312,12 @@ static const char *crs_irq_map(const uint64_t val)
 	if (!val) {
 		strncat(buf, " none", n);
 	} else {
+		unsigned int i;
+
 		for (i = 0; i < 32; i++) {
 			if (val & (1 << i)) {
+				char tmp[5];
+
 				snprintf(tmp, sizeof(tmp), " %u", i);
 				strncat(buf, tmp, n);
 			}
@@ -871,7 +873,6 @@ int resource_dump(fwts_framework *fw, const char *objname)
 			ACPI_OBJECT_LIST arg_list;
 			ACPI_BUFFER buf;
 			ACPI_OBJECT *obj;
-			uint8_t *data;
 			int ret;
 
 			arg_list.Count   = 0;
@@ -886,7 +887,7 @@ int resource_dump(fwts_framework *fw, const char *objname)
 			if ((obj->Type == ACPI_TYPE_BUFFER) &&
 			    (obj->Buffer.Pointer != NULL) &&
 			    (obj->Buffer.Length > 0)) {
-				data = (uint8_t*)obj->Buffer.Pointer;
+				uint8_t *data = (uint8_t*)obj->Buffer.Pointer;
 
 				if (data[0] & 128)
 					crsdump_large_resource_items(fw, name, data, obj->Buffer.Length);

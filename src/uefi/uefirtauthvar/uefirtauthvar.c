@@ -178,12 +178,12 @@ static int uefirtauthvar_test1(fwts_framework *fw)
 	uint64_t status;
 	uint32_t attributestest;
 	size_t i;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -234,12 +234,12 @@ static int uefirtauthvar_test2(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -269,12 +269,12 @@ static int uefirtauthvar_test3(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreateDiff), AuthVarCreateDiff, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -302,7 +302,6 @@ static int uefirtauthvar_test3(fwts_framework *fw)
 static int uefirtauthvar_test4(fwts_framework *fw)
 {
 	long ioret;
-	int supcheck;
 
 	uint8_t data[getvar_buf_size];
 	uint64_t getdatasize = sizeof(data);
@@ -314,7 +313,8 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 	ioret = setvar(&gtestguid, attribappend, sizeof(AuthVarAppend), AuthVarAppend, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -376,7 +376,6 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 static int uefirtauthvar_test5(fwts_framework *fw)
 {
 	long ioret;
-	int supcheck;
 
 	uint8_t data[getvar_buf_size];
 	uint64_t getdatasize = sizeof(data);
@@ -387,7 +386,8 @@ static int uefirtauthvar_test5(fwts_framework *fw)
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarUpdate), AuthVarUpdate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -440,12 +440,12 @@ static int uefirtauthvar_test6(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -473,7 +473,6 @@ static int uefirtauthvar_test6(fwts_framework *fw)
 static int uefirtauthvar_test7(fwts_framework *fw)
 {
 	long ioret;
-	int supcheck;
 
 	uint8_t data[getvar_buf_size];
 	uint64_t getdatasize = sizeof(data);
@@ -483,7 +482,8 @@ static int uefirtauthvar_test7(fwts_framework *fw)
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarDel), AuthVarDel, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -526,12 +526,12 @@ static int uefirtauthvar_test8(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarModData), AuthVarModData, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -561,12 +561,12 @@ static int uefirtauthvar_test9(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarModTime), AuthVarModTime, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -596,13 +596,13 @@ static int uefirtauthvar_test10(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
-	int supcheck;
 	EFI_GUID gtestguiddiff = TEST_GUID1;
 
 	ioret = setvar(&gtestguiddiff, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -636,7 +636,6 @@ static int uefirtauthvar_test11(fwts_framework *fw)
 	long ioret;
 
 	uint64_t status;
-	int supcheck;
 	uint32_t attr = FWTS_UEFI_VAR_NON_VOLATILE |
 			FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
 			FWTS_UEFI_VAR_RUNTIME_ACCESS |
@@ -645,7 +644,8 @@ static int uefirtauthvar_test11(fwts_framework *fw)
 	ioret = setvar(&gtestguid, attr, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -726,14 +726,14 @@ static int uefirtauthvar_test13(fwts_framework *fw)
 	uint8_t data[getvar_buf_size];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
-	int supcheck;
 	uint32_t attributestest;
 	size_t i;
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreateDiff), AuthVarCreateDiff, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 
@@ -776,7 +776,8 @@ static int uefirtauthvar_test13(fwts_framework *fw)
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarDelDiff), AuthVarDelDiff, &status);
 
 	if (ioret == -1) {
-		supcheck = check_fw_support(fw, status);
+		int supcheck = check_fw_support(fw, status);
+
 		if (supcheck != FWTS_OK)
 			return supcheck;
 

@@ -122,15 +122,13 @@ static void parser_new(parser *p, FILE *fp, bool skip_white_space)
  */
 static int get_next(parser *p)
 {
-	int ch;
-
 	/*
 	 * If we have chars pushed using unget_next
 	 * then pop them off the list first
 	 */
 	if (p->get_chars) {
 		get_stack *tmp = p->get_chars;
-		ch = tmp->ch;
+		int ch = tmp->ch;
 
 		p->get_chars = tmp->next;
 		free(tmp);
@@ -434,7 +432,6 @@ static int skip_comments(parser *p)
  */
 static int parse_number(parser *p, token *t, int ch)
 {
-	int nextch1, nextch2;
 	bool ishex = false;
 	bool isoct = false;
 
@@ -442,6 +439,8 @@ static int parse_number(parser *p, token *t, int ch)
 	 *  Crude way to detect the kind of integer
 	 */
 	if (ch == '0') {
+		int nextch1, nextch2;
+
 		token_append(t, ch);
 
 		nextch1 = get_next(p);
@@ -549,14 +548,13 @@ static int parse_identifier(parser *p, token *t, int ch)
 static int parse_literal(parser *p, token *t, int literal, token_type type)
 {
 	bool escaped = false;
-	int ch;
 
 	t->type = type;
 
 	token_append(t, literal);
 
 	for (;;) {
-		ch = get_next(p);
+		int ch = get_next(p);
 		if (ch == EOF) {
 			return PARSER_OK;
 		}
@@ -637,11 +635,10 @@ static int parse_minus(parser *p, token *t, int op)
  */
 static int get_token(parser *p, token *t)
 {
-	int ch;
 	int ret;
 
 	for (;;) {
-		ch = get_next(p);
+		int ch = get_next(p);
 
 		switch (ch) {
 		case EOF:
@@ -780,7 +777,6 @@ static char *strdupcat(char *old, char *new)
  */
 static int parse_kernel_message(parser *p, token *t)
 {
-	int ret;
 	bool got_string = false;
 	bool emit = false;
 	bool found = false;
@@ -802,7 +798,7 @@ static int parse_kernel_message(parser *p, token *t)
 	token_clear(t);
 
 	for (;;) {
-		ret = get_token(p, t);
+		int ret = get_token(p, t);
 		if (ret == EOF) {
 			free(line);
 			return EOF;

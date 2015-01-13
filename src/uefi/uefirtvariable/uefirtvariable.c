@@ -251,13 +251,14 @@ err_restore_env:
 static bool compare_guid(const EFI_GUID *guid1, const EFI_GUID *guid2)
 {
 	bool ident = true;
-	int i;
 
 	if ((guid1->Data1 != guid2->Data1) ||
 	    (guid1->Data2 != guid2->Data2) ||
 	    (guid1->Data3 != guid2->Data3))
 		ident = false;
 	else {
+		int i;
+
 		for (i = 0; i < 8; i++) {
 			if (guid1->Data4[i] != guid2->Data4[i])
 				ident = false;
@@ -1197,7 +1198,6 @@ static int setvariable_test5(fwts_framework *fw)
 
 static int setvariable_test6(fwts_framework *fw)
 {
-	int ret;
 	uint64_t datasize = 10;
 	uint8_t datadiff = 0;
 	uint32_t attributesarray[] = {
@@ -1208,7 +1208,7 @@ static int setvariable_test6(fwts_framework *fw)
 	uint64_t index;
 
 	for (index = 0; index < (sizeof(attributesarray)/(sizeof attributesarray[0])); index++) {
-		ret = setvariable_invalidattr(fw, attributesarray[index], datasize, variablenametest, &gtestguid1, datadiff);
+		int ret = setvariable_invalidattr(fw, attributesarray[index], datasize, variablenametest, &gtestguid1, datadiff);
 
 		if (ret == FWTS_ERROR) {
 			/* successfully set variable with invalid attributes, test fail */

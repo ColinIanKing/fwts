@@ -153,8 +153,6 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	_cleanup_free_ char *command = NULL;
 	_cleanup_free_ char *quirks = NULL;
 	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
-	char buffer[80];
-
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -231,7 +229,9 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	if (s3_device_check) {
 		int i;
 
-		for (i=0;i<s3_device_check_delay;i++) {
+		for (i = 0;i < s3_device_check_delay; i++) {
+			char buffer[80];
+
 			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1,s3_device_check_delay);
 			fwts_progress_message(fw, percent, buffer);
 			sleep(1);

@@ -58,7 +58,6 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 {
 	int fd;
 	size_t len;
-	char *buffer;
 	int i;
 
 	if (s3power_adapter_offline(fw, offline) == FWTS_ERROR)
@@ -73,7 +72,9 @@ static int s3power_wait_for_adapter_offline(fwts_framework *fw, bool *offline)
 
 	fwts_printf(fw, "==== Please unplug the laptop power. ====\n");
 
-	for (i=0; (i<=20) && !*offline ;i++) {
+	for (i = 0; (i <= 20) && !*offline; i++) {
+		char *buffer;
+
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "ac_adapter") != NULL)
 				s3power_adapter_offline(fw, offline);
@@ -197,9 +198,10 @@ static void s3power_difference(fwts_framework *fw,
 	uint32_t battery_capacity, char *units)
 {
 	int32_t diff = before - after;
-	float hourly_loss;
 
 	if (before != 0) {
+		float hourly_loss;
+
 		fwts_log_info(fw, "Change in capacity: %" PRId32 " %s\n", diff, units);
 		hourly_loss = ((float)diff * 3600.0) / (float)s3power_sleep_delay;
 		if (diff < 0) {

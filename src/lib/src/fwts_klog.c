@@ -51,9 +51,8 @@ void fwts_klog_free(fwts_list *klog)
  */
 fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 {
-	fwts_list_link *l_old, *l_new, *l_old_last = NULL;
+	fwts_list_link *l_old, *l_new;
 	fwts_list *klog_diff;
-	char *old;
 
 	if (klog_new == NULL) {
 		/* Nothing new to compare, return nothing */
@@ -66,6 +65,9 @@ fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 		/* Nothing in old log, so clone all of new list */
 		l_new = klog_new->head;
 	} else {
+		fwts_list_link *l_old_last = NULL;
+		char *old;
+
 		/* Clone just the new differences */
 
 		/* Find last item in old log */
@@ -543,9 +545,6 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 	const char *error;
 	int erroffset;
 	pcre *re;
-	pcre_extra *extra;
-	int rc;
-	int vector[1];
 
 	FWTS_UNUSED(fw);
 	FWTS_UNUSED(repeated);
@@ -553,7 +552,10 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 
 	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
 	if (re != NULL) {
-		extra = pcre_study(re, 0, &error);
+		int rc;
+		int vector[1];
+		pcre_extra *extra = pcre_study(re, 0, &error);
+
 		if (error)
 			return;
 

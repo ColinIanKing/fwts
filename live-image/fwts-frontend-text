@@ -195,13 +195,6 @@ no_tests_finish()
 #
 done_tests_finish()
 {
-    if [ -n "${CASPER_DETECTED:+x}" ]; then
-        cd $WORK_DIR
-        mv ./results.html ../../results.html
-    else
-        ln -sf $WORK_DIR/results.html /fwts/results.html
-    fi
-
 	#
 	# Dump out firmware and system data, LP: #1322543
 	#

@@ -606,7 +606,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 					"The length of File Path Media Device Path is %" PRIu16 " bytes "
 					"is not matching with adding the length of Path String %" PRIu16 " bytes.",
 					len,
-					(uint16_t)(sizeof(fwts_uefi_file_path_dev_path) + (fwts_uefi_str16len(f->path_name) * sizeof(uint16_t))));
+					(uint16_t)(sizeof(fwts_uefi_file_path_dev_path) + ((fwts_uefi_str16len(f->path_name) + 1) * sizeof(uint16_t))));
 				errors++;
 				break;
 			}
@@ -660,12 +660,12 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				break;
 			}
 			fwts_uefi_bios_dev_path *b = (fwts_uefi_bios_dev_path *)dev_path;
-			if (len != (sizeof(fwts_uefi_bios_dev_path) + strlen(b->description))) {
+			if (len != (sizeof(fwts_uefi_bios_dev_path) + strlen(b->description) + 1)) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIBiosBootDevPathLength",
 					"The length of BIOS Boot Specification Device Path is %" PRIu16 " bytes "
 					"is not matching with adding the length of Description String %" PRIu16 " bytes.",
 					len,
-					(uint16_t)(sizeof(fwts_uefi_bios_dev_path) + strlen(b->description)));
+					(uint16_t)(sizeof(fwts_uefi_bios_dev_path) + strlen(b->description) + 1));
 				errors++;
 			}
 			break;

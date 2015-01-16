@@ -158,7 +158,7 @@
  * _PRL  10.3.4		Y
  * _PRT  6.2.12		N
  * _PRS  6.2.11		Y
- * _PRW  7.2.11		N
+ * _PRW  7.2.11		Y
  * _PS0  7.2.2		Y
  * _PS1  7.2.3		Y
  * _PS2  7.2.4		Y
@@ -2543,6 +2543,89 @@ static int method_test_PSx(fwts_framework *fw, char *name)
 	}
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		name, NULL, 0, method_test_NULL_return, name);
+}
+
+static void method_test_PRW_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_min(fw, name, "_PRW", obj, 2) != FWTS_OK)
+		return;
+
+	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER &&
+	    obj->Package.Elements[0].Type != ACPI_TYPE_PACKAGE) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PRWBadPackageReturnType",
+			"%s element 0 is not an integer or an package.", name);
+		failed = true;
+	}
+
+	if (obj->Package.Elements[0].Type == ACPI_TYPE_PACKAGE) {
+		ACPI_OBJECT *pkg;
+		pkg = &obj->Package.Elements[0];
+		if (pkg->Package.Count != 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PRWSubPackageElementCount",
+				"%s sub-package 0  was expected to have 2"
+				"elements, got %" PRIu32 " elements instead.",
+				name, pkg->Package.Count);
+			failed = true;
+		}
+
+		if (pkg->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PRWBadSubPackageElementType",
+				"%s sub-package 0 element 0 is not "
+				"a reference.",name);
+			failed = true;
+		}
+
+		if (pkg->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PRWBadSubPackageElementType",
+				"%s sub-package 0 element 0 is not "
+				"an integer.",name);
+			failed = true;
+		}
+	}
+
+	if (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PRWBadPackageReturnType",
+			"%s element 1 is not an integer.", name);
+		failed = true;
+	}
+
+	for (i = 2; i < obj->Package.Count - 1; i++) {
+		if (obj->Package.Elements[i].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PRWBadPackageReturnType",
+				"%s package %" PRIu32
+				" element 0 is not a reference.",
+				name, i);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PRW(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PRW", NULL, 0, method_test_PRW_return, NULL);
 }
 
 static int method_test_PS0(fwts_framework *fw)
@@ -6063,7 +6146,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PR1, "Test _PR1 (Power Resources for D1)." },
 	{ method_test_PR2, "Test _PR2 (Power Resources for D2)." },
 	{ method_test_PR3, "Test _PR3 (Power Resources for D3)." },
-	/* { method_test_PRW, "Test _PRW (Power Resources for Wake)." }, */
+	{ method_test_PRW, "Test _PRW (Power Resources for Wake)." },
 	{ method_test_PS0, "Test _PS0 (Power State 0)." },
 	{ method_test_PS1, "Test _PS1 (Power State 1)." },
 	{ method_test_PS2, "Test _PS2 (Power State 2)." },

@@ -164,7 +164,7 @@
  * _PS2  7.2.4		Y
  * _PS3  7.2.5		Y
  * _PSC  7.2.6		Y
- * _PSD  8.4.4.5	N
+ * _PSD  8.4.4.5	Y
  * _PSE  7.2.7		Y
  * _PSL  11.4.8		Y
  * _PSR  10.3.1		Y
@@ -3336,6 +3336,70 @@ static int method_test_PPE(fwts_framework *fw)
 		"_PPE", NULL, 0, method_test_integer_return, NULL);
 }
 
+static void method_test_PSD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PSD", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		uint32_t j;
+		bool elements_ok = true;
+
+		pkg = &obj->Package.Elements[i];
+		if (pkg->Package.Count != 5) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_PSDSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 5 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		/* Elements in Sub-packages are integers */
+		for (j = 0; j < 5; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_PSDBadSubPackageReturnType",
+					"%s sub-package %" PRIu32
+					" element %" PRIu32 " is not "
+					"an integer.",
+					name, i, j);
+				elements_ok = false;
+			}
+		}
+
+		if (!elements_ok) {
+			failed = true;
+			continue;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PSD(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PSD", NULL, 0, method_test_PSD_return, NULL);
+}
+
 static int method_test_PDL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -6037,7 +6101,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PDL, "Test _PDL (P-State Depth Limit)." },
 	{ method_test_PPC, "Test _PPC (Performance Present Capabilities)." },
 	{ method_test_PPE, "Test _PPE (Polling for Platform Error)." },
-	/* { method_test_PSD, "Test _PSD (Power State Dependencies)." }, */
+	{ method_test_PSD, "Test _PSD (Power State Dependencies)." },
 	/* { method_test_PTC, "Test _PTC (Processor Throttling Control)." }, */
 	{ method_test_TDL, "Test _TDL (T-State Depth Limit)." },
 	{ method_test_TPC, "Test _TPC (Throttling Present Capabilities)." },

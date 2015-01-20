@@ -59,7 +59,7 @@ Batch tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
- method          (178 tests):
+ method          (180 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -112,6 +112,7 @@ Batch tests:
   Test _PR1 (Power Resources for D1).
   Test _PR2 (Power Resources for D2).
   Test _PR3 (Power Resources for D3).
+  Test _PRW (Power Resources for Wake).
   Test _PS0 (Power State 0).
   Test _PS1 (Power State 1).
   Test _PS2 (Power State 2).
@@ -143,6 +144,7 @@ Batch tests:
   Test _PDL (P-State Depth Limit).
   Test _PPC (Performance Present Capabilities).
   Test _PPE (Polling for Platform Error).
+  Test _PSD (Power State Dependencies).
   Test _TDL (T-State Depth Limit).
   Test _TPC (Throttling Present Capabilities).
   Test _TSD (Throttling State Dependencies).
@@ -421,4 +423,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 336 tests
+Total of 338 tests

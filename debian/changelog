@@ -1,3 +1,68 @@
+fwts (15.01.00-0ubuntu0) vivid; urgency=low
+
+  [Alex Hung]
+  * live-image/fwts-frontend-text: skip moving and avoid overwritting
+    results.html (LP: #1322520)
+  * acpi: method: add check for _PSD
+  * acpi: method: add check for _PRW
+
+  [Colin Ian King]
+  * acpi: acpidump: reduce scope of variables
+  * acpi: battery: reduce scope of variables
+  * acpi: brightness: reduce scope of variables
+  * acpi: brightness: reduce scope of variables
+  * acpi: crsdump: reduce scope of variables
+  * acpi: lid: reduce scope of variables
+  * utilities: kernelscan: reduce scope of variables
+  * uefi: uefirtvariable: reduce scope of variables
+  * acpi: dmar: reduce scope of variables
+  * acpi: pcc: reduce scope of variables
+  * acpi: method: reduce scope of variables
+  * acpi: s3: reduce scope of variables
+  * acpi: s3power: reduce scope of variables
+  * acpi: s4: reduce scope of variables
+  * bios: hdaaudio: reduce scope of variables
+  * bios: mtrr: reduce scope of variables
+  * bios: multiproc: reduce scope of variables
+  * cpu: cpufreq: reduce scope of variables
+  * cpu: maxfreq: reduce scope of variables
+  * cpu: microcode: reduce scope of variables
+  * cpu: msr: reduce scope of variables
+  * cpu: nx: reduce scope of variables
+  * hotkey: reduce scope of variables
+  * hpet: hpet_check: reduce scope of variables
+  * lib: fwts_acpi_tables: reduce scope of variables
+  * lib: fwts_backtrace: reduce scope of variables
+  * lib: fwts_battery: reduce scope of variables
+  * lib: fwts_dump: replace asctime with strftime
+  * lib: fwts_efi_module: reduce scope of variable
+  * cmos: cmosdump: clarify precedence for & and ?
+  * lib: fwts_framework: fix some minor style warnings from cppcheck
+  * lib: fwts_gpe: reduce scope of variables
+  * lib: fwts_memorymap: fix typo on memory comparison sort
+  * lib: fwts_memorymap: reduce scope of variables
+  * lib: fwts_log: reduce scope of variables
+  * lib: fwts_pm_method: reduce scope of variables
+  * reduce scope of variables
+  * lib: fwts_uefi: reduce scope of variables
+  * pci: aspm: reduce scope of variables
+  * lib: klog: reduce scope of variables
+  * uefi: uefibootpath: reduce scope of variables
+  * uefi: securebootcert: reduce scope of variables
+  * uefi: uefidump: reduce scope of variables
+  * uefi: uefirtauthvar: reduce scope of variables
+  * uefi: uefirtmisc: reduce scope of variables
+  * uefi: uefivarinfo: reduce scope of variables
+
+  [Ivan Hu]
+  * uefibootpath: include the null-terminated space in device path length
+  * fwts-test: update fwts tests to sync with method tests
+
+  [Naresh Bhat]
+  * makefile.am : Use sysroot path for json
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 21 Jan 2015 10:39:00 +0800
+
 fwts (14.12.00-0ubuntu1) vivid; urgency=low
 
   [Alex Hung]

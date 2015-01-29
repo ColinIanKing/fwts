@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <time.h>
 #include <getopt.h>
 #include <sys/utsname.h>
@@ -29,6 +30,11 @@
 
 #include "fwts.h"
 #include "fwts_pm_method.h"
+
+typedef struct {
+	const char *title;		/* Test category */
+	fwts_framework_flags flag;	/* Mask of category */
+} fwts_categories;
 
 /* Suffix ".log", ".xml", etc gets automatically appended */
 #define RESULTS_LOG	"results"
@@ -42,6 +48,18 @@
 	 FWTS_FLAG_UTILS |			\
 	 FWTS_FLAG_UNSAFE |			\
 	 FWTS_FLAG_TEST_UEFI)
+
+static fwts_categories categories[] = {
+	{ "Batch",			FWTS_FLAG_BATCH },
+	{ "Interactive",		FWTS_FLAG_INTERACTIVE },
+	{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
+	{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
+	{ "Power States",		FWTS_FLAG_POWER_STATES },
+	{ "Utilities",			FWTS_FLAG_UTILS },
+	{ "Unsafe",			FWTS_FLAG_UNSAFE },
+	{ "UEFI",			FWTS_FLAG_TEST_UEFI },
+	{ NULL,				0 },
+};
 
 static fwts_list tests_to_skip;
 
@@ -85,6 +103,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "uefi",		"",   0, "Run UEFI tests." },
 	{ "rsdp",		"R:", 1, "Specify the physical address of the ACPI RSDP." },
 	{ "pm-method",  "",   1, "Select the power method to use. Accepted values are \"logind\", \"pm-utils\", \"sysfs\""},
+	{ "show-tests-categories","", 0, "Show tests and associated categories." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -173,7 +192,7 @@ int fwts_framework_compare_test_name(void *data1, void *data2)
 }
 
 /*
- *  fwts_framework_show_tests()
+ *  fwts_framework_show_tests_brief()
  *	dump out registered tests in brief form
  */
 static void fwts_framework_show_tests_brief(void)
@@ -207,6 +226,49 @@ static void fwts_framework_show_tests_brief(void)
 }
 
 /*
+ *  fwts_framework_show_tests_categories()
+ *	dump out registered tests in brief form with categories
+ */
+static void fwts_framework_show_tests_categories(void)
+{
+	fwts_list sorted;
+	fwts_list_link *item;
+
+	fwts_list_init(&sorted);
+
+	fwts_list_foreach(item, &fwts_framework_test_list) {
+		fwts_list_add_ordered(&sorted,
+			fwts_list_data(fwts_framework_test *, item),
+			fwts_framework_compare_test_name);
+	}
+
+	fwts_list_foreach(item, &sorted) {
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
+		int i, n = 0;
+
+		printf("%-17.17s", test->name);
+
+		for (i = 0; categories[i].title != NULL; i++) {
+			if (categories[i].flag & test->flags) {
+				char *src = (char *)categories[i].title, *dst;
+				size_t len = strlen(src) + 1;
+				char buf[len];
+
+				for (dst = buf; *src; src++, dst++)
+					*dst = tolower(*src);
+				*dst = '\0';
+
+				printf("%s%s",
+					n == 0 ? " " : ", ", buf);
+				n++;
+			}
+		}
+		putchar('\n');
+	}
+	fwts_list_free_items(&sorted, NULL);
+}
+
+/*
  *  fwts_framework_show_tests()
  *	dump out registered tests.
  */
@@ -217,23 +279,6 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 	int i;
 	bool need_nl = false;
 	int total = 0;
-
-	typedef struct {
-		const char *title;		/* Test category */
-		fwts_framework_flags flag;	/* Mask of category */
-	} fwts_categories;
-
-	static fwts_categories categories[] = {
-		{ "Batch",			FWTS_FLAG_BATCH },
-		{ "Interactive",		FWTS_FLAG_INTERACTIVE },
-		{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
-		{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
-		{ "Power States",		FWTS_FLAG_POWER_STATES },
-		{ "Utilities",			FWTS_FLAG_UTILS },
-		{ "Unsafe",			FWTS_FLAG_UNSAFE },
-		{ "UEFI",			FWTS_FLAG_TEST_UEFI },
-		{ NULL,				0 },
-	};
 
 	/* Dump out tests registered under all categories */
 	for (i = 0; categories[i].title != NULL; i++) {
@@ -1170,6 +1215,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			if (fwts_framework_pm_method_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
+		case 39: /* --show-tests-categories */
+			fw->flags |= FWTS_FLAG_SHOW_TESTS_CATEGORIES;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1320,6 +1368,10 @@ int fwts_framework_args(const int argc, char **argv)
 	}
 	if (fw->flags & FWTS_FLAG_SHOW_TESTS_FULL) {
 		fwts_framework_show_tests(fw, true);
+		goto tidy_close;
+	}
+	if (fw->flags & FWTS_FLAG_SHOW_TESTS_CATEGORIES) {
+		fwts_framework_show_tests_categories();
 		goto tidy_close;
 	}
 	if ((fw->flags & FWTS_FLAG_RUN_ALL) == 0)

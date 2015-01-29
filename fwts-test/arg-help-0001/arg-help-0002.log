@@ -189,6 +189,9 @@
                              for use in dialog
                              tool.
 -s, --show-tests             Show available tests.
+--show-tests-categories      Show tests and
+                             associated
+                             categories.
 --show-tests-full            Show available tests
                              including all minor
                              tests.
@@ -217,7 +220,7 @@
                              that can potentially
                              cause kernel oopses).
 -u, --utils                  Run Utility 'tests'.
-                             (V14.02.00).
+                             (Vxx.xx.xx).
 
 Some of this work - Copyright (c) 1999 - 2014, Intel Corp. All rights reserved.
 Some of this work - Copyright (c) 2010 - 2014, Canonical.

@@ -1392,7 +1392,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 38: /* 7.39 */
 			table = "IPMI Device Information (Type 38)";
-			dmi_min_max_uint8_check(fw, table, addr, "Interface Type", hdr, 0x4, 0x0, 0x4);
+			dmi_min_max_uint8_check(fw, table, addr, "Interface Type", hdr, 0x4, 0x0, 0x3);
 			break;
 
 		case 39: /* 7.40 */

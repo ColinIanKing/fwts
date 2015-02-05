@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2015, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -160,6 +160,7 @@ AslInitializeGlobals (
 
     /* Init compiler globals */
 
+    Gbl_SyntaxError = 0;
     Gbl_CurrentColumn = 0;
     Gbl_CurrentLineNumber = 1;
     Gbl_LogicalLineNumber = 1;

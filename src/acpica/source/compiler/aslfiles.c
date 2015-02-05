@@ -8,7 +8,7 @@
  *
  * 1. Copyright Notice
  *
- * Some or all of this work - Copyright (c) 1999 - 2014, Intel Corp.
+ * Some or all of this work - Copyright (c) 1999 - 2015, Intel Corp.
  * All rights reserved.
  *
  * 2. License
@@ -557,6 +557,8 @@ FlOpenAmlOutputFile (
                 0, 0, 0, 0, NULL, NULL);
             return (AE_ERROR);
         }
+
+        Gbl_Files[ASL_FILE_AML_OUTPUT].Filename = Filename;
     }
 
     /* Open the output AML file in binary mode */
@@ -635,9 +637,14 @@ FlOpenMiscOutputFiles (
 
         if (!Gbl_Files[ASL_FILE_DEBUG_OUTPUT].Handle)
         {
-            AslCommonError (ASL_ERROR, ASL_MSG_DEBUG_FILENAME,
-                0, 0, 0, 0, NULL, NULL);
-            return (AE_ERROR);
+            /*
+             * A problem with freopen is that on error,
+             * we no longer have stderr.
+             */
+            Gbl_DebugFlag = FALSE;
+            memcpy (stderr, stdout, sizeof (FILE));
+            FlFileError (ASL_FILE_DEBUG_OUTPUT, ASL_MSG_DEBUG_FILENAME);
+            AslAbort ();
         }
 
         AslCompilerSignon (ASL_FILE_DEBUG_OUTPUT);
@@ -828,6 +835,26 @@ FlOpenMiscOutputFiles (
 
         AslCompilerSignon (ASL_FILE_NAMESPACE_OUTPUT);
         AslCompilerFileHeader (ASL_FILE_NAMESPACE_OUTPUT);
+    }
+
+    /* Create/Open a map file if requested */
+
+    if (Gbl_MapfileFlag)
+    {
+        Filename = FlGenerateFilename (FilenamePrefix, FILE_SUFFIX_MAP);
+        if (!Filename)
+        {
+            AslCommonError (ASL_ERROR, ASL_MSG_LISTING_FILENAME,
+                0, 0, 0, 0, NULL, NULL);
+            return (AE_ERROR);
+        }
+
+        /* Open the hex file, text mode (closed at compiler exit) */
+
+        FlOpenFile (ASL_FILE_MAP_OUTPUT, Filename, "w+t");
+
+        AslCompilerSignon (ASL_FILE_MAP_OUTPUT);
+        AslCompilerFileHeader (ASL_FILE_MAP_OUTPUT);
     }
 
     return (AE_OK);

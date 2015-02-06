@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <limits.h>
 
-#define DMI_VERSION			(0x0207)
+#define DMI_VERSION			(0x0208)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -1457,7 +1457,7 @@ static void dmicheck_entry(fwts_framework *fw,
 static int dmi_version_check(fwts_framework *fw, uint16_t version)
 {
 	if (version > DMI_VERSION) {
-		fwts_warning(fw,
+		fwts_skipped(fw,
 			"SMBIOS version %" PRIu16 ".%" PRIu16
 			" is not supported by the dmicheck "
 			"test. This test only supports SMBIOS version "

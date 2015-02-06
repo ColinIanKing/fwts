@@ -213,6 +213,7 @@ copy_ucs2_to_user_len(uint16_t __user *dst, uint16_t *src, size_t len)
 static long efi_runtime_get_variable(unsigned long arg)
 {
 	struct efi_getvariable __user *pgetvariable;
+	struct efi_getvariable pgetvariable_local;
 	unsigned long datasize;
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
@@ -224,14 +225,18 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	pgetvariable = (struct efi_getvariable __user *)arg;
 
-	if (get_user(datasize, pgetvariable->DataSize) ||
-		copy_from_user(&vendor_guid, pgetvariable->VendorGuid,
-						sizeof(EFI_GUID)))
+	if (copy_from_user(&pgetvariable_local, pgetvariable,
+			   sizeof(pgetvariable_local)))
+		return -EFAULT;
+
+	if (get_user(datasize, pgetvariable_local.DataSize) ||
+	    copy_from_user(&vendor_guid, pgetvariable_local.VendorGuid,
+			   sizeof(vendor_guid)))
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
 
-	rv = copy_ucs2_from_user(&name, pgetvariable->VariableName);
+	rv = copy_ucs2_from_user(&name, pgetvariable_local.VariableName);
 	if (rv)
 		return rv;
 
@@ -245,17 +250,17 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	kfree(name);
 
-	rv = copy_to_user(pgetvariable->Data, data, datasize);
+	rv = copy_to_user(pgetvariable_local.Data, data, datasize);
 	kfree(data);
 
 	if (rv)
 		return rv;
 
-	if (put_user(status, pgetvariable->status))
+	if (put_user(status, pgetvariable_local.status))
 		return -EFAULT;
 	if (status == EFI_SUCCESS) {
-		if (put_user(attr, pgetvariable->Attributes) ||
-			put_user(datasize, pgetvariable->DataSize))
+		if (put_user(attr, pgetvariable_local.Attributes) ||
+		    put_user(datasize, pgetvariable_local.DataSize))
 			return -EFAULT;
 		return 0;
 	} else {
@@ -269,40 +274,43 @@ static long efi_runtime_get_variable(unsigned long arg)
 static long efi_runtime_set_variable(unsigned long arg)
 {
 	struct efi_setvariable __user *psetvariable;
-	unsigned long datasize;
+	struct efi_setvariable psetvariable_local;
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
 	efi_status_t status;
 	uint16_t *name;
-	uint32_t attr;
 	void *data;
 	int rv;
 
 	psetvariable = (struct efi_setvariable __user *)arg;
-	if (get_user(datasize, &psetvariable->DataSize) ||
-		get_user(attr, &psetvariable->Attributes) ||
-		copy_from_user(&vendor_guid, psetvariable->VendorGuid,
-						sizeof(EFI_GUID)))
+
+	if (copy_from_user(&psetvariable_local, psetvariable,
+			   sizeof(psetvariable_local)))
+		return -EFAULT;
+	if (copy_from_user(&vendor_guid, psetvariable_local.VendorGuid,
+			   sizeof(vendor_guid)))
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
 
-	rv = copy_ucs2_from_user(&name, psetvariable->VariableName);
+	rv = copy_ucs2_from_user(&name, psetvariable_local.VariableName);
 	if (rv)
 		return rv;
 
-	data = kmalloc(datasize, GFP_KERNEL);
-	if (copy_from_user(data, psetvariable->Data, datasize)) {
+	data = kmalloc(psetvariable_local.DataSize, GFP_KERNEL);
+	if (copy_from_user(data, psetvariable_local.Data,
+			   psetvariable_local.DataSize)) {
 		kfree(name);
 		return -EFAULT;
 	}
 
-	status = efi.set_variable(name, &vendor, attr, datasize, data);
+	status = efi.set_variable(name, &vendor, psetvariable_local.Attributes,
+				  psetvariable_local.DataSize, data);
 
 	kfree(data);
 	kfree(name);
 
-	if (put_user(status, psetvariable->status))
+	if (put_user(status, psetvariable_local.status))
 		return -EFAULT;
 	return status == EFI_SUCCESS ? 0 : -EINVAL;
 }
@@ -420,6 +428,7 @@ static long efi_runtime_set_waketime(unsigned long arg)
 static long efi_runtime_get_nextvariablename(unsigned long arg)
 {
 	struct efi_getnextvariablename __user *pgetnextvariablename;
+	struct efi_getnextvariablename pgetnextvariablename_local;
 	unsigned long name_size;
 	efi_status_t status;
 	efi_guid_t vendor;
@@ -430,39 +439,44 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	pgetnextvariablename = (struct efi_getnextvariablename
 							__user *)arg;
 
-	if (get_user(name_size, pgetnextvariablename->VariableNameSize)
-			|| copy_from_user(&vendor_guid,
-				pgetnextvariablename->VendorGuid,
-				sizeof(EFI_GUID)))
+	if (copy_from_user(&pgetnextvariablename_local, pgetnextvariablename,
+			   sizeof(pgetnextvariablename_local)))
 		return -EFAULT;
+
+	if (get_user(name_size, pgetnextvariablename_local.VariableNameSize) ||
+	    copy_from_user(&vendor_guid, pgetnextvariablename_local.VendorGuid,
+			   sizeof(vendor_guid)))
+		return -EFAULT;
+
 	if (name_size > 1024)
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
 
 	rv = copy_ucs2_from_user_len(&name,
-			pgetnextvariablename->VariableName, 1024);
+				     pgetnextvariablename_local.VariableName,
+				     1024);
 	if (rv)
 		return rv;
 
 	status = efi.get_next_variable(&name_size, name, &vendor);
 
-	rv = copy_ucs2_to_user_len(pgetnextvariablename->VariableName,
+	rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
 				   name, name_size);
 	kfree(name);
 
 	if (rv)
 		return -EFAULT;
 
-	if (put_user(status, pgetnextvariablename->status))
+	if (put_user(status, pgetnextvariablename_local.status))
 		return -EFAULT;
 	convert_to_guid(&vendor, &vendor_guid);
 
-	if (put_user(name_size, pgetnextvariablename->VariableNameSize))
+	if (put_user(name_size, pgetnextvariablename_local.VariableNameSize))
 		return -EFAULT;
 
-	if (copy_to_user(pgetnextvariablename->VendorGuid,
-					&vendor_guid, sizeof(EFI_GUID)))
+	if (copy_to_user(pgetnextvariablename_local.VendorGuid,
+			 &vendor_guid, sizeof(EFI_GUID)))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
@@ -472,6 +486,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 {
 	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
+	struct efi_getnexthighmonotoniccount pgetnexthighmonotoniccount_local;
 	efi_status_t status;
 	uint32_t count;
 
@@ -479,10 +494,15 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 			efi_getnexthighmonotoniccount __user *)arg;
 
 	status = efi.get_next_high_mono_count(&count);
-	if (put_user(status, pgetnexthighmonotoniccount->status))
+
+	if (copy_from_user(&pgetnexthighmonotoniccount_local,
+			   pgetnexthighmonotoniccount,
+			   sizeof(pgetnexthighmonotoniccount_local)))
+		return -EFAULT;
+	if (put_user(status, pgetnexthighmonotoniccount_local.status))
 		return -EFAULT;
 
-	if (put_user(count, pgetnexthighmonotoniccount->HighCount))
+	if (put_user(count, pgetnexthighmonotoniccount_local.HighCount))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)
@@ -496,28 +516,31 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 static long efi_runtime_query_variableinfo(unsigned long arg)
 {
 	struct efi_queryvariableinfo __user *pqueryvariableinfo;
+	struct efi_queryvariableinfo pqueryvariableinfo_local;
 	efi_status_t status;
 	uint64_t max_storage, remaining, max_size;
-	uint32_t attr;
 
 	pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
 
-	if (get_user(attr, &pqueryvariableinfo->Attributes))
+	if (copy_from_user(&pqueryvariableinfo_local, pqueryvariableinfo,
+			   sizeof(pqueryvariableinfo_local)))
 		return -EFAULT;
 
-	status = efi.query_variable_info(attr, &max_storage,
-					 &remaining, &max_size);
+	status = efi.query_variable_info(pqueryvariableinfo_local.Attributes,
+					 &max_storage, &remaining, &max_size);
 
-	if (put_user(max_storage, pqueryvariableinfo->MaximumVariableStorageSize))
+	if (put_user(max_storage,
+		     pqueryvariableinfo_local.MaximumVariableStorageSize))
 		return -EFAULT;
 
-	if (put_user(remaining, pqueryvariableinfo->RemainingVariableStorageSize))
+	if (put_user(remaining,
+		     pqueryvariableinfo_local.RemainingVariableStorageSize))
 		return -EFAULT;
 
-	if (put_user(max_size, pqueryvariableinfo->MaximumVariableSize))
+	if (put_user(max_size, pqueryvariableinfo_local.MaximumVariableSize))
 		return -EFAULT;
 
-	if (put_user(status, pqueryvariableinfo->status))
+	if (put_user(status, pqueryvariableinfo_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
@@ -545,9 +568,15 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		return -ENOMEM;
 
 	for (i = 0; i < caps.CapsuleCount; i++) {
-		if (copy_from_user(&capsules[i],
-				   (EFI_CAPSULE_HEADER *)u_caps->CapsuleHeaderArray[i],
-				   sizeof(EFI_CAPSULE_HEADER)))
+		EFI_CAPSULE_HEADER *c;
+		/*
+		 * We cannot dereference caps.CapsuleHeaderArray directly to
+		 * obtain the address of the capsule as it resides in the
+		 * user space
+		 */
+		if (get_user(c, caps.CapsuleHeaderArray + i))
+			return -EFAULT;
+		if (copy_from_user(&capsules[i], c, sizeof(EFI_CAPSULE_HEADER)))
 			return -EFAULT;
 	}
 
@@ -558,13 +587,13 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 					caps.CapsuleCount,
 					&max_size, &reset_type);
 
-	if (put_user(status, u_caps->status))
+	if (put_user(status, caps.status))
 		return -EFAULT;
 
-	if (put_user(max_size, u_caps->MaximumCapsuleSize))
+	if (put_user(max_size, caps.MaximumCapsuleSize))
 		return -EFAULT;
 
-	if (put_user(reset_type, u_caps->ResetType))
+	if (put_user(reset_type, caps.ResetType))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)

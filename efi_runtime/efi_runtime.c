@@ -106,9 +106,9 @@ static void convert_to_guid(efi_guid_t *vendor, EFI_GUID *vendor_guid)
  * Note this function returns the number of *bytes*, not the number of
  * ucs2 characters.
  */
-static inline size_t __ucs2_strsize(uint16_t *str)
+static inline size_t __ucs2_strsize(uint16_t  __user *str)
 {
-	uint16_t *s = str;
+	uint16_t *s = str, c;
 	size_t len;
 
 	if (!str)
@@ -117,9 +117,18 @@ static inline size_t __ucs2_strsize(uint16_t *str)
 	/* Include terminating NULL */
 	len = sizeof(uint16_t);
 
-	while (*s++ != 0)
-		len += sizeof(uint16_t);
+	if (get_user(c, s++)) {
+		WARN(1, "fwts: Can't read userspace memory for size");
+		return 0;
+	}
 
+	while (c != 0) {
+		if (get_user(c, s++)) {
+			WARN(1, "Can't read userspace memory for size");
+			return 0;
+		}
+		len += sizeof(uint16_t);
+	}
 	return len;
 }
 

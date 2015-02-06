@@ -214,7 +214,7 @@ static long efi_runtime_get_variable(unsigned long arg)
 {
 	struct efi_getvariable __user *pgetvariable;
 	struct efi_getvariable pgetvariable_local;
-	unsigned long datasize;
+	unsigned long datasize, prev_datasize;
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
 	efi_status_t status;
@@ -246,11 +246,13 @@ static long efi_runtime_get_variable(unsigned long arg)
 		return -ENOMEM;
 	}
 
+	prev_datasize = datasize;
 	status = efi.get_variable(name, &vendor, &attr, &datasize, data);
 
 	kfree(name);
 
-	rv = copy_to_user(pgetvariable_local.Data, data, datasize);
+	if (status == EFI_SUCCESS && prev_datasize >= datasize)
+		rv = copy_to_user(pgetvariable_local.Data, data, datasize);
 	kfree(data);
 
 	if (rv)
@@ -258,7 +260,7 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	if (put_user(status, pgetvariable_local.status))
 		return -EFAULT;
-	if (status == EFI_SUCCESS) {
+	if (status == EFI_SUCCESS && prev_datasize >= datasize) {
 		if (put_user(attr, pgetvariable_local.Attributes) ||
 		    put_user(datasize, pgetvariable_local.DataSize))
 			return -EFAULT;
@@ -429,7 +431,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 {
 	struct efi_getnextvariablename __user *pgetnextvariablename;
 	struct efi_getnextvariablename pgetnextvariablename_local;
-	unsigned long name_size;
+	unsigned long name_size, prev_name_size;
 	efi_status_t status;
 	efi_guid_t vendor;
 	EFI_GUID vendor_guid;
@@ -459,10 +461,12 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	if (rv)
 		return rv;
 
+	prev_name_size = name_size;
 	status = efi.get_next_variable(&name_size, name, &vendor);
 
-	rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
-				   name, name_size);
+	if (status == EFI_SUCCESS && prev_name_size >= name_size)
+		rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
+					   name, name_size);
 	kfree(name);
 
 	if (rv)
@@ -478,7 +482,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	if (copy_to_user(pgetnextvariablename_local.VendorGuid,
 			 &vendor_guid, sizeof(EFI_GUID)))
 		return -EFAULT;
-	if (status != EFI_SUCCESS)
+	if (status != EFI_SUCCESS || name_size > prev_name_size)
 		return -EINVAL;
 	return 0;
 }

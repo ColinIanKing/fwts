@@ -457,7 +457,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 
 	rv = copy_ucs2_from_user_len(&name,
 				     pgetnextvariablename_local.VariableName,
-				     1024);
+				     name_size);
 	if (rv)
 		return rv;
 

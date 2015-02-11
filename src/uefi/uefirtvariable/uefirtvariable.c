@@ -295,9 +295,11 @@ static int getnextvariable_test1(fwts_framework *fw)
 
 	struct efi_getnextvariablename getnextvariablename;
 	uint64_t variablenamesize = MAX_DATA_LENGTH;
-	uint16_t variablename[MAX_DATA_LENGTH];
+	uint64_t maxvariablenamesize = variablenamesize;
+	uint16_t *variablename;
 	EFI_GUID vendorguid;
 	bool found_name = false, found_guid = false;
+	int ret;
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;
@@ -329,6 +331,12 @@ static int getnextvariable_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	variablename = malloc(sizeof(uint16_t) * variablenamesize);
+	if (!variablename) {
+		fwts_skipped(fw, "Unable to alloc memory for variable name");
+		ret = FWTS_SKIP;
+		goto err_restore_env;
+	}
 	getnextvariablename.VariableNameSize = &variablenamesize;
 	getnextvariablename.VariableName = variablename;
 	getnextvariablename.VendorGuid = &vendorguid;
@@ -340,7 +348,7 @@ static int getnextvariable_test1(fwts_framework *fw)
 	 */
 	variablename[0] = '\0';
 	while (true) {
-		variablenamesize = MAX_DATA_LENGTH;
+		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
@@ -349,11 +357,32 @@ static int getnextvariable_test1(fwts_framework *fw)
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
 
+			/*
+			 * If the buffer we provided is too small for the name,
+			 * allocate a larger buffer and try again
+			 */
+			if (*getnextvariablename.status == EFI_BUFFER_TOO_SMALL) {
+				uint16_t *tmp;
+
+				tmp = realloc(variablename,
+					      sizeof(uint16_t) * variablenamesize);
+				if (tmp) {
+					variablename = tmp;
+					getnextvariablename.VariableName = variablename;
+					maxvariablenamesize = variablenamesize;
+					continue;
+				}
+				fwts_skipped(fw, "Unable to reallocate memory for variable name");
+				ret = FWTS_SKIP;
+				goto err_restore_env;
+			}
+
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with UEFI "
 				"runtime service.");
 			fwts_uefi_print_status_info(fw, status);
+			ret = FWTS_ERROR;
 			goto err_restore_env;
 		}
 		if (compare_name(getnextvariablename.VariableName, variablenametest))
@@ -363,6 +392,12 @@ static int getnextvariable_test1(fwts_framework *fw)
 		if (found_name && found_guid)
 			break;
 	};
+
+	if (variablename) {
+		free(variablename);
+		getnextvariablename.VariableName = NULL;
+		variablename = NULL;
+	}
 
 	if (!found_name) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -404,7 +439,10 @@ err_restore_env:
 		return FWTS_ERROR;
 	}
 
-	return FWTS_ERROR;
+	if (variablename)
+		free(variablename);
+
+	return ret;
 }
 
 /*
@@ -434,8 +472,16 @@ static int getnextvariable_test2(fwts_framework *fw)
 
 	struct efi_getnextvariablename getnextvariablename;
 	uint64_t variablenamesize = MAX_DATA_LENGTH;
-	uint16_t variablename[MAX_DATA_LENGTH];
+	uint64_t maxvariablenamesize = variablenamesize;
+	uint16_t *variablename;
 	EFI_GUID vendorguid;
+	int ret = FWTS_OK;
+
+	variablename = malloc(sizeof(uint16_t) * variablenamesize);
+	if (!variablename) {
+		fwts_skipped(fw, "Unable to alloc memory for variable name");
+		return FWTS_SKIP;
+	}
 
 	getnextvariablename.VariableNameSize = &variablenamesize;
 	getnextvariablename.VariableName = variablename;
@@ -448,7 +494,7 @@ static int getnextvariable_test2(fwts_framework *fw)
 	 */
 	variablename[0] = '\0';
 	while (true) {
-		variablenamesize = MAX_DATA_LENGTH;
+		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
@@ -456,27 +502,47 @@ static int getnextvariable_test2(fwts_framework *fw)
 			/* no next variable was found*/
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
+			/*
+			 * If the buffer we provided is too small for the name,
+			 * allocate a larger buffer and try again
+			 */
+			if (*getnextvariablename.status == EFI_BUFFER_TOO_SMALL) {
+				uint16_t *tmp;
+
+				tmp = realloc(variablename,
+					      sizeof(uint16_t) * variablenamesize);
+				if (tmp) {
+					variablename = tmp;
+					getnextvariablename.VariableName = variablename;
+					maxvariablenamesize = variablenamesize;
+					continue;
+				}
+				fwts_skipped(fw, "Unable to reallocate memory for variable name");
+				ret = FWTS_SKIP;
+				break;
+			}
 
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with UEFI "
 				"runtime service.");
 			fwts_uefi_print_status_info(fw, status);
-			goto err;
+			ret = FWTS_ERROR;
+			break;
+
 		}
 
-		if (variablenamesize != MAX_DATA_LENGTH &&
-		    !strlen_valid(variablename, variablenamesize)) {
+		if (!strlen_valid(variablename, variablenamesize)) {
 			fwts_warning(fw, "UEFIRuntimeGetNextVariableName "
 				"Unexpected variable name size returned.");
-			goto err;
+			ret = FWTS_ERROR;
+			break;
 		}
 	};
 
-	return FWTS_OK;
-
-err:
-	return FWTS_ERROR;
+	if (variablename)
+		free(variablename);
+	return ret;
 }
 
 struct efi_var_item {
@@ -564,9 +630,17 @@ static int getnextvariable_test3(fwts_framework *fw)
 
 	struct efi_getnextvariablename getnextvariablename;
 	uint64_t variablenamesize = MAX_DATA_LENGTH;
-	uint16_t variablename[MAX_DATA_LENGTH];
+	uint64_t maxvariablenamesize = variablenamesize;
+	uint16_t *variablename;
 	EFI_GUID vendorguid;
-	char name[MAX_DATA_LENGTH];
+	char *name;
+	int ret;
+
+	variablename = malloc(sizeof(uint16_t) * variablenamesize);
+	if (!variablename) {
+		fwts_skipped(fw, "Unable to alloc memory for variable name");
+		return FWTS_SKIP;
+	}
 
 	getnextvariablename.VariableNameSize = &variablenamesize;
 	getnextvariablename.VariableName = variablename;
@@ -581,7 +655,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 	while (true) {
 		struct efi_var_item *item;
 
-		variablenamesize = MAX_DATA_LENGTH;
+		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
@@ -589,12 +663,31 @@ static int getnextvariable_test3(fwts_framework *fw)
 			/* no next variable was found*/
 			if (*getnextvariablename.status == EFI_NOT_FOUND)
 				break;
+			/*
+			 * if the buffer we provided is too small for the name,
+			 * allocate a larger buffer and try again
+			 */
+			if (*getnextvariablename.status == EFI_BUFFER_TOO_SMALL) {
+				uint16_t *tmp;
+				tmp = realloc(variablename,
+					      sizeof(uint16_t) * variablenamesize);
+				 if (tmp) {
+					variablename = tmp;
+					getnextvariablename.VariableName = variablename;
+					maxvariablenamesize = variablenamesize;
+					continue;
+				}
+				fwts_skipped(fw, "Unable to reallocate memory for variable name");
+				ret = FWTS_SKIP;
+				goto err;
+			}
 
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to get next variable name with UEFI "
 				"runtime service.");
 			fwts_uefi_print_status_info(fw, status);
+			ret = FWTS_ERROR;
 			goto err;
 		}
 
@@ -603,6 +696,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to allocate memory for test.");
+			ret = FWTS_ERROR;
 			goto err;
 		}
 
@@ -612,6 +706,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 				"UEFIRuntimeGetNextVariableName",
 				"Failed to allocate memory for test.");
 			free(item);
+			ret = FWTS_ERROR;
 			goto err;
 		}
 
@@ -625,6 +720,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 				"Failed to allocate memory for test.");
 			free(item->guid);
 			free(item);
+			ret = FWTS_ERROR;
 			goto err;
 		}
 
@@ -634,23 +730,31 @@ static int getnextvariable_test3(fwts_framework *fw)
 		item->hash = hash_func(variablename, variablenamesize);
 
 		if (bucket_insert(item)) {
-			fwts_uefi_str16_to_str(name, sizeof(name), variablename);
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"UEFIRuntimeGetNextVariableName",
-				"Duplicate variable name %s found.", name);
+			name = malloc(variablenamesize * sizeof(char));
+			if (name) {
+				fwts_uefi_str16_to_str(name, sizeof(name), variablename);
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"UEFIRuntimeGetNextVariableName",
+					"Duplicate variable name %s found.", name);
+				free(name);
+			} else
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"UEFIRuntimeGetNextVariableName",
+					"Duplicate variable name found (too long name).");
 			free(item->name);
 			free(item->guid);
 			free(item);
+			ret = FWTS_ERROR;
 			goto err;
 		}
 	};
 
-	bucket_destroy();
-	return FWTS_OK;
-
+	ret = FWTS_OK;
 err:
 	bucket_destroy();
-	return FWTS_ERROR;
+	if (variablename)
+		free(variablename);
+	return ret;
 }
 
 static int getnextvariable_test4(fwts_framework *fw)

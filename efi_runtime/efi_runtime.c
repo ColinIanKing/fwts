@@ -450,9 +450,6 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 			   sizeof(vendor_guid)))
 		return -EFAULT;
 
-	if (name_size > 1024)
-		return -EFAULT;
-
 	convert_from_guid(&vendor, &vendor_guid);
 
 	rv = copy_ucs2_from_user_len(&name,

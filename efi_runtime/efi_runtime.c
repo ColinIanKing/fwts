@@ -300,8 +300,13 @@ static long efi_runtime_set_variable(unsigned long arg)
 		return rv;
 
 	data = kmalloc(psetvariable_local.DataSize, GFP_KERNEL);
+	if (!data) {
+		kfree(name);
+		return -ENOMEM;
+	}
 	if (copy_from_user(data, psetvariable_local.Data,
 			   psetvariable_local.DataSize)) {
+		kfree(data);
 		kfree(name);
 		return -EFAULT;
 	}

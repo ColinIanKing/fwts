@@ -281,7 +281,7 @@ fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt)
 {
 	if ((fadt->header.revision >= 5) &&
 			(fadt->header.length >= 116)&&
-			(fadt->flags && FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI)) {
+			(fadt->flags & FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI)) {
 		return FWTS_TRUE;
 	}
 	return FWTS_FALSE;

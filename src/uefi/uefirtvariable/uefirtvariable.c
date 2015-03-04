@@ -299,7 +299,7 @@ static int getnextvariable_test1(fwts_framework *fw)
 	uint16_t *variablename;
 	EFI_GUID vendorguid;
 	bool found_name = false, found_guid = false;
-	int ret;
+	int ret = FWTS_OK;
 
 	for (dataindex = 0; dataindex < datasize; dataindex++)
 		data[dataindex] = (uint8_t)dataindex;

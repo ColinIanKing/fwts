@@ -950,9 +950,8 @@ static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_s
 {
 	char *str;
 	char *token;
-	char *saveptr = NULL;
 
-	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+	for (str = (char*)arg; (token = strtok(str, ",")) != NULL; str = NULL) {
 		fwts_framework_test *test;
 
 		if ((test = fwts_framework_test_find(token)) == NULL) {
@@ -969,9 +968,8 @@ static int fwts_framework_filter_error_parse(const char *arg, fwts_list *list)
 {
 	char *str;
 	char *token;
-	char *saveptr = NULL;
 
-	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+	for (str = (char*)arg; (token = strtok(str, ",")) != NULL; str = NULL) {
 		if (fwts_list_append(list, token) == NULL) {
 			fprintf(stderr, "Out of memory parsing argument %s\n", arg);
 			fwts_list_free_items(list, NULL);
@@ -990,11 +988,10 @@ static int fwts_framework_log_type_parse(fwts_framework *fw, const char *arg)
 {
 	char *str;
 	char *token;
-	char *saveptr = NULL;
 
 	fw->log_type = 0;
 
-	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+	for (str = (char*)arg; (token = strtok(str, ",")) != NULL; str = NULL) {
 		if (!strcmp(token, "plaintext"))
 			fw->log_type |= LOG_TYPE_PLAINTEXT;
 		else if (!strcmp(token, "json"))
@@ -1023,11 +1020,10 @@ static int fwts_framework_acpica_parse(fwts_framework *fw, const char *arg)
 {
 	char *str;
 	char *token;
-	char *saveptr = NULL;
 
 	fw->acpica_mode = 0;
 
-	for (str = (char*)arg; (token = strtok_r(str, ",", &saveptr)) != NULL; str = NULL) {
+	for (str = (char*)arg; (token = strtok(str, ",")) != NULL; str = NULL) {
 		if (!strcmp(token, "serialized"))
 			fw->acpica_mode |= FWTS_ACPICA_MODE_SERIALIZED;
 		else if (!strcmp(token, "slack"))

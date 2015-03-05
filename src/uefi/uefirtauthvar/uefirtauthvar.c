@@ -415,6 +415,7 @@ static int uefirtauthvar_test5(fwts_framework *fw)
 			"UEFIUpdateAuthVar",
 			"Get authenticated variable data size is not the "
 			"same as it set.");
+		return FWTS_ERROR;
 	}
 
 	for (i = 0; i < getdatasize; i++) {

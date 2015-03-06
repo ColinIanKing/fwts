@@ -1,3 +1,30 @@
+fwts (15.03.00-0ubuntu1) vivid; urgency=low
+
+  [Colin Ian King]
+  * lib: fwts_framework: add --show-tests-categories option (LP: #1415953)
+  * fwts-test: arg-help-* - add new --show-tests-categories option
+  * ACPICA: Update to use ACPICA version 20150204 (LP:#1418453)
+  * fwts-test: disassemble-0001: ignore any copyright year changes
+  * fwts: update copyright year to 2015
+  * efi: uefirtvariable: fix build error on Ubuntu Precise
+  * lib: fwts_acpi_tables: fix logcal/bit-wise & thinko
+  * lib: fwts_framework: use strtok instead of strtok_r
+
+  [Ivan Hu]
+  * dmicheck: fix the range of Interface Type on Type38 (LP: #1416092)
+  * dmicheck: support smbios check for version 2.8.0 (LP: #1418869)
+  * uefirtauthvar: missing return error when mismatch size of set/get test data
+
+  [Ricardo Neri]
+  * efi_runtime: do not dereference userspace pointers from strings
+  * efi_runtime: do not access userspace addresses directly
+  * efi_runtime: limit the amount of data copied to userspace
+  * efi_runtime: get_nextvariable: copy only the needed name bytes
+  * uefirtvariable: allow large sizes for variable names
+  * efi_runtime: handle memory errors when setting variables
+ 
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Fri, 06 Mar 2015 11:01:50 +0800
+
 fwts (15.01.00-0ubuntu0) vivid; urgency=low
 
   [Alex Hung]

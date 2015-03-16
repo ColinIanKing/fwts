@@ -133,6 +133,15 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
 }
 
 /*
+ * Free a buffer allocated by copy_ucs2_from_user_len()
+ */
+static inline void ucs2_kfree(uint16_t *buf)
+{
+	if (buf)
+		kfree(buf - 1);
+}
+
+/*
  * Allocate a buffer and copy a ucs2 string from user space into it.
  *
  * We take an explicit number of bytes to use for the allocation and
@@ -141,11 +150,22 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
  *
  * If a non-zero value is returned, the caller MUST NOT access 'dst'.
  *
- * It is the caller's responsibility to free 'dst'.
+ * It is the caller's responsibility to free 'dst' using ucs2_kfree()
+ *
+ * We cater for zero sized len by always allocating a buffer that is 1
+ * uint16_t larger than the requested size and passing back the buffer
+ * offset by 1 uint16_t.  That way, the returned buffer size is the
+ * size that is requested and the buffer ptr is a valid pointer (and not
+ * NULL or ZERO_SIZE_PTR).  This allows EFI services to be passed a valid
+ * allocated buffer of zero length size and to see if the services handle
+ * this as an EFI_BUFFER_TOO_SMALL error.
+ * 
  */
 static inline int
 copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
 {
+	uint16_t *buf;
+
 	if (!src) {
 		*dst = NULL;
 		return 0;
@@ -154,12 +174,15 @@ copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
 
-	*dst = kmalloc(len, GFP_KERNEL);
-	if (!*dst)
+	buf = kmalloc(len + sizeof(uint16_t), GFP_KERNEL);
+	if (!buf) {
+		*dst = 0;
 		return -ENOMEM;
+	}
+	*dst = buf + 1;
 
 	if (copy_from_user(*dst, src, len)) {
-		kfree(*dst);
+		kfree(buf);
 		return -EFAULT;
 	}
 
@@ -242,14 +265,13 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	data = kmalloc(datasize, GFP_KERNEL);
 	if (!data) {
-		kfree(name);
+		ucs2_kfree(name);
 		return -ENOMEM;
 	}
 
 	prev_datasize = datasize;
 	status = efi.get_variable(name, &vendor, &attr, &datasize, data);
-
-	kfree(name);
+	ucs2_kfree(name);
 
 	if (status == EFI_SUCCESS && prev_datasize >= datasize)
 		rv = copy_to_user(pgetvariable_local.Data, data, datasize);
@@ -301,12 +323,12 @@ static long efi_runtime_set_variable(unsigned long arg)
 
 	data = kmalloc(psetvariable_local.DataSize, GFP_KERNEL);
 	if (!data) {
-		kfree(name);
+		ucs2_kfree(name);
 		return -ENOMEM;
 	}
 	if (copy_from_user(data, psetvariable_local.Data,
 			   psetvariable_local.DataSize)) {
-		kfree(data);
+		ucs2_kfree(data);
 		kfree(name);
 		return -EFAULT;
 	}
@@ -315,7 +337,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 				  psetvariable_local.DataSize, data);
 
 	kfree(data);
-	kfree(name);
+	ucs2_kfree(name);
 
 	if (put_user(status, psetvariable_local.status))
 		return -EFAULT;
@@ -469,7 +491,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	if (status == EFI_SUCCESS && prev_name_size >= name_size)
 		rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
 					   name, name_size);
-	kfree(name);
+	ucs2_kfree(name);
 
 	if (rv)
 		return -EFAULT;

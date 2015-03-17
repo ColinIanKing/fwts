@@ -371,11 +371,42 @@ Unsafe tests:
  uefirtmisc      (2 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
- uefirttime      (4 tests):
+ uefirttime      (35 tests):
   Test UEFI RT service get time interface.
+  Test UEFI RT service get time interface, NULL time parameter.
+  Test UEFI RT service get time interface, NULL time and NULL capabilties parameters.
   Test UEFI RT service set time interface.
+  Test UEFI RT service set time interface, invalid year 1899.
+  Test UEFI RT service set time interface, invalid year 10000.
+  Test UEFI RT service set time interface, invalid month 0.
+  Test UEFI RT service set time interface, invalid month 13.
+  Test UEFI RT service set time interface, invalid day 0.
+  Test UEFI RT service set time interface, invalid day 32.
+  Test UEFI RT service set time interface, invalid hour 24.
+  Test UEFI RT service set time interface, invalid minute 60.
+  Test UEFI RT service set time interface, invalid second 60.
+  Test UEFI RT service set time interface, invalid nanosecond 1000000000.
+  Test UEFI RT service set time interface, invalid timezone -1441.
+  Test UEFI RT service set time interface, invalid timezone 1441.
   Test UEFI RT service get wakeup time interface.
+  Test UEFI RT service get wakeup time interface, NULL enabled parameter.
+  Test UEFI RT service get wakeup time interface, NULL pending parameter.
+  Test UEFI RT service get wakeup time interface, NULL time parameter.
+  Test UEFI RT service get wakeup time interface, NULL enabled, pending and time parameters.
   Test UEFI RT service set wakeup time interface.
+  Test UEFI RT service set wakeup time interface, NULL time parameter.
+  Test UEFI RT service set wakeup time interface, invalid year 1899.
+  Test UEFI RT service set wakeup time interface, invalid year 10000.
+  Test UEFI RT service set wakeup time interface, invalid month 0.
+  Test UEFI RT service set wakeup time interface, invalid month 13.
+  Test UEFI RT service set wakeup time interface, invalid day 0.
+  Test UEFI RT service set wakeup time interface, invalid day 32.
+  Test UEFI RT service set wakeup time interface, invalid hour 24.
+  Test UEFI RT service set wakeup time interface, invalid minute 60.
+  Test UEFI RT service set wakeup time interface, invalid second 60.
+  Test UEFI RT service set wakeup time interface, invalid nanosecond 1000000000.
+  Test UEFI RT service set wakeup time interface, invalid timezone -1441.
+  Test UEFI RT service set wakeup time interface, invalid timezone 1441.
  uefirtvariable  (7 tests):
   Test UEFI RT service get variable interface.
   Test UEFI RT service get next variable name interface.
@@ -409,11 +440,42 @@ UEFI tests:
  uefirtmisc      (2 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
- uefirttime      (4 tests):
+ uefirttime      (35 tests):
   Test UEFI RT service get time interface.
+  Test UEFI RT service get time interface, NULL time parameter.
+  Test UEFI RT service get time interface, NULL time and NULL capabilties parameters.
   Test UEFI RT service set time interface.
+  Test UEFI RT service set time interface, invalid year 1899.
+  Test UEFI RT service set time interface, invalid year 10000.
+  Test UEFI RT service set time interface, invalid month 0.
+  Test UEFI RT service set time interface, invalid month 13.
+  Test UEFI RT service set time interface, invalid day 0.
+  Test UEFI RT service set time interface, invalid day 32.
+  Test UEFI RT service set time interface, invalid hour 24.
+  Test UEFI RT service set time interface, invalid minute 60.
+  Test UEFI RT service set time interface, invalid second 60.
+  Test UEFI RT service set time interface, invalid nanosecond 1000000000.
+  Test UEFI RT service set time interface, invalid timezone -1441.
+  Test UEFI RT service set time interface, invalid timezone 1441.
   Test UEFI RT service get wakeup time interface.
+  Test UEFI RT service get wakeup time interface, NULL enabled parameter.
+  Test UEFI RT service get wakeup time interface, NULL pending parameter.
+  Test UEFI RT service get wakeup time interface, NULL time parameter.
+  Test UEFI RT service get wakeup time interface, NULL enabled, pending and time parameters.
   Test UEFI RT service set wakeup time interface.
+  Test UEFI RT service set wakeup time interface, NULL time parameter.
+  Test UEFI RT service set wakeup time interface, invalid year 1899.
+  Test UEFI RT service set wakeup time interface, invalid year 10000.
+  Test UEFI RT service set wakeup time interface, invalid month 0.
+  Test UEFI RT service set wakeup time interface, invalid month 13.
+  Test UEFI RT service set wakeup time interface, invalid day 0.
+  Test UEFI RT service set wakeup time interface, invalid day 32.
+  Test UEFI RT service set wakeup time interface, invalid hour 24.
+  Test UEFI RT service set wakeup time interface, invalid minute 60.
+  Test UEFI RT service set wakeup time interface, invalid second 60.
+  Test UEFI RT service set wakeup time interface, invalid nanosecond 1000000000.
+  Test UEFI RT service set wakeup time interface, invalid timezone -1441.
+  Test UEFI RT service set wakeup time interface, invalid timezone 1441.
  uefirtvariable  (7 tests):
   Test UEFI RT service get variable interface.
   Test UEFI RT service get next variable name interface.
@@ -423,4 +485,4 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
 
-Total of 338 tests
+Total of 400 tests

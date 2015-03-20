@@ -210,7 +210,9 @@ static int uefirtauthvar_test1(fwts_framework *fw)
 			"UEFICreateAuthVar",
 			"Get authenticated variable data size is not the "
 			"same as it set.");
+		return FWTS_ERROR;
 	}
+
 	for (i = 0; i < sizeof(AuthVarCreateData); i++) {
 		if (data[i] != AuthVarCreateData[i]) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -342,6 +344,7 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 			"UEFIAppendAuthVar",
 			"Get total authenticated variable data size is not the "
 			"same as it set and appended.");
+		return FWTS_ERROR;
 	}
 
 	for (i = 0; i < getdatasize; i++) {
@@ -761,7 +764,9 @@ static int uefirtauthvar_test13(fwts_framework *fw)
 			"UEFISetAuthVarDiff",
 			"Get authenticated variable data size is not the "
 			"same as it set.");
+		return FWTS_ERROR;
 	}
+
 	for (i = 0; i < sizeof(AuthVarCreateData); i++) {
 		if (data[i] != AuthVarCreateData[i]) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,

@@ -714,58 +714,10 @@ static int uefirtauthvar_test11(fwts_framework *fw)
 }
 
 /*
- * Set the authenticated variable with both EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS
- * and the EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS attributes, firmware
- * should return EFI_INVALID_PARAMETER.
- */
-static int uefirtauthvar_test12(fwts_framework *fw)
-{
-	long ioret;
-
-	uint64_t status;
-	uint32_t attr_both = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS;
-
-	ioret = setvar(&gtestguid, attr_both, sizeof(AuthVarCreate), AuthVarCreate, &status);
-
-	if (ioret == -1) {
-		if (status == EFI_INVALID_PARAMETER) {
-			fwts_passed(fw, "Test with both authenticated attributes are set passed.");
-
-			return FWTS_OK;
-		}
-		if (status == EFI_OUT_OF_RESOURCES) {
-			fwts_uefi_print_status_info(fw, status);
-			fwts_skipped(fw,
-				"Run out of resources for SetVariable "
-				"UEFI runtime interface: cannot test.");
-			fwts_advice(fw,
-				"Firmware may reclaim some resources "
-				"after rebooting. Reboot and test "
-				"again may be helpful to continue "
-				"the test.");
-			return FWTS_SKIP;
-		}
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"UEFIRuntimeSetVariable",
-			"Failed to set variable with UEFI "
-			"runtime service.");
-
-		fwts_uefi_print_status_info(fw, status);
-		return FWTS_ERROR;
-	}
-
-	fwts_failed(fw, LOG_LEVEL_HIGH,
-		"UEFSetAuthVarWithBothAuthAttr",
-		"Should not pass setting the authenticated variable "
-		"with both authenticated attributes are set.");
-	return FWTS_ERROR;
-}
-
-/*
  * Test with setting and deleting another authenticated variable,
  * after previous test authenticated variable was deleted.
  */
-static int uefirtauthvar_test13(fwts_framework *fw)
+static int uefirtauthvar_test12(fwts_framework *fw)
 {
 	long ioret;
 
@@ -872,8 +824,7 @@ static fwts_framework_minor_test uefirtauthvar_tests[] = {
 	{ uefirtauthvar_test9, "Authenticated variable test with invalid modified timestamp." },
 	{ uefirtauthvar_test10, "Authenticated variable test with different guid." },
 	{ uefirtauthvar_test11, "Authenticated variable test with invalid attributes." },
-	{ uefirtauthvar_test12, "Test with both authenticated attributes are set." },
-	{ uefirtauthvar_test13, "Set and delete authenticated variable created by different key test." },
+	{ uefirtauthvar_test12, "Set and delete authenticated variable created by different key test." },
 	{ NULL, NULL }
 };
 

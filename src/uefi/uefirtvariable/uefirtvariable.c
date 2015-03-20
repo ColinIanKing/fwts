@@ -1345,7 +1345,7 @@ static int setvariable_test7(fwts_framework *fw)
 	uint8_t datadiff = 0;
 	uint32_t attr;
 
-	attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS;
+	attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS;
 	ret = setvariable_invalidattr(fw, attr, datasize, variablenametest, &gtestguid1, datadiff);
 		if (ret == FWTS_ERROR) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",

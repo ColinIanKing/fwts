@@ -36,6 +36,12 @@ static int fd;
 
 #define getvar_buf_size 100
 
+#define E_AUTHVARCREATE	1
+#define E_AUTHVARAPPEND	(1 << 1)
+#define E_AUTHVARUPDATE (1 << 2)
+
+static uint8_t data_exist = 0;
+
 static EFI_GUID gtestguid = TEST_GUID;
 
 static const uint32_t attributes =
@@ -223,6 +229,8 @@ static int uefirtauthvar_test1(fwts_framework *fw)
 		}
 	}
 
+	data_exist |= E_AUTHVARCREATE;
+
 	fwts_passed(fw, "Create authenticated variable test passed.");
 
 	return FWTS_OK;
@@ -236,6 +244,11 @@ static int uefirtauthvar_test2(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
+
+	if (!(data_exist & E_AUTHVARCREATE)) {
+		fwts_skipped(fw,"The test variable, AuthVarCreate, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
@@ -271,6 +284,11 @@ static int uefirtauthvar_test3(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
+
+	if (!(data_exist & E_AUTHVARCREATE)) {
+		fwts_skipped(fw,"The test variable, AuthVarCreate, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreateDiff), AuthVarCreateDiff, &status);
 
@@ -311,6 +329,11 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 	uint32_t attributestest;
 	size_t i;
 	uint32_t attribappend = attributes | FWTS_UEFI_VARIABLE_APPEND_WRITE;
+
+	if (!(data_exist & E_AUTHVARCREATE)) {
+		fwts_skipped(fw,"The test variable, AuthVarCreate, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attribappend, sizeof(AuthVarAppend), AuthVarAppend, &status);
 
@@ -367,6 +390,8 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 		}
 	}
 
+	data_exist |= E_AUTHVARAPPEND;
+
 	fwts_passed(fw, "Append authenticated variable tests passed.");
 
 	return FWTS_OK;
@@ -385,6 +410,11 @@ static int uefirtauthvar_test5(fwts_framework *fw)
 	uint64_t status;
 	uint32_t attributestest;
 	size_t i;
+
+	if (!(data_exist & E_AUTHVARAPPEND)) {
+		fwts_skipped(fw,"The test data, AuthVarAppend, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarUpdate), AuthVarUpdate, &status);
 
@@ -431,6 +461,8 @@ static int uefirtauthvar_test5(fwts_framework *fw)
 		}
 	}
 
+	data_exist |= E_AUTHVARUPDATE;
+
 	fwts_passed(fw, "Update authenticated variable tests passed.");
 
 	return FWTS_OK;
@@ -444,6 +476,11 @@ static int uefirtauthvar_test6(fwts_framework *fw)
 {
 	long ioret;
 	uint64_t status;
+
+	if (!(data_exist & E_AUTHVARUPDATE)) {
+		fwts_skipped(fw,"The test variable, AuthVarUpdate, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarCreate), AuthVarCreate, &status);
 
@@ -482,6 +519,11 @@ static int uefirtauthvar_test7(fwts_framework *fw)
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;
+
+	if (!(data_exist & E_AUTHVARCREATE)) {
+		fwts_skipped(fw,"The test data, AuthVarCreate, doesn't exist, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	ioret = setvar(&gtestguid, attributes, sizeof(AuthVarDel), AuthVarDel, &status);
 

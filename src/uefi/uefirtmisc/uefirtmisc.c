@@ -211,9 +211,37 @@ static int uefirtmisc_test2(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int uefirtmisc_test3(fwts_framework *fw)
+{
+	uint64_t status;
+	long ioret;
+	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
+
+	getnexthighmonotoniccount.HighCount = NULL;
+	getnexthighmonotoniccount.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT, &getnexthighmonotoniccount);
+	if (ioret == -1) {
+		if (status == EFI_INVALID_PARAMETER) {
+			fwts_passed(fw, "Test with invalid NULL parameter returned "
+				"EFI_INVALID_PARAMETER as expected.");
+			return FWTS_OK;
+		}
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextHighMonotonicCountInvalid",
+			"Failed to get correct return status from UEFI runtime service, expecting EFI_INVALID_PARAMETER.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+	fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeGetNextHighMonotonicCountInvalid",
+		"Failed to get error return status from UEFI runtime service, expected EFI_INAVLID_PARAMETER.");
+	return FWTS_ERROR;
+}
+
+
 static fwts_framework_minor_test uefirtmisc_tests[] = {
 	{ uefirtmisc_test1, "Test for UEFI miscellaneous runtime service interfaces." },
 	{ uefirtmisc_test2, "Stress test for UEFI miscellaneous runtime service interfaces." },
+	{ uefirtmisc_test3, "Test GetNextHighMonotonicCount with invalid NULL parameter." },
 	{ NULL, NULL }
 };
 

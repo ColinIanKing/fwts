@@ -534,16 +534,19 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 	pgetnexthighmonotoniccount = (struct
 			efi_getnexthighmonotoniccount __user *)arg;
 
-	status = efi.get_next_high_mono_count(&count);
-
 	if (copy_from_user(&pgetnexthighmonotoniccount_local,
 			   pgetnexthighmonotoniccount,
 			   sizeof(pgetnexthighmonotoniccount_local)))
 		return -EFAULT;
+
+	status = efi.get_next_high_mono_count(
+		pgetnexthighmonotoniccount_local.HighCount ? &count : NULL);
+
 	if (put_user(status, pgetnexthighmonotoniccount_local.status))
 		return -EFAULT;
 
-	if (put_user(count, pgetnexthighmonotoniccount_local.HighCount))
+	if (pgetnexthighmonotoniccount_local.HighCount &&
+	    put_user(count, pgetnexthighmonotoniccount_local.HighCount))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)

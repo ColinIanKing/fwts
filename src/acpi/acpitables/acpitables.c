@@ -312,7 +312,7 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt*)table->data;
 	fwts_list msi_frame_ids;
 	const uint8_t *data = table->data;
-	size_t length = table->length;
+	ssize_t length = table->length;
 	int i = 0;
 
 	fwts_list_init(&msi_frame_ids);
@@ -326,9 +326,9 @@ static void acpi_table_check_madt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	data += sizeof(fwts_acpi_table_madt);
 	length -= sizeof(fwts_acpi_table_madt);
 
-	while (length > sizeof(fwts_acpi_madt_sub_table_header)) {
+	while (length > (ssize_t)sizeof(fwts_acpi_madt_sub_table_header)) {
 		fwts_acpi_madt_sub_table_header *hdr = (fwts_acpi_madt_sub_table_header*)data;
-		size_t skip = 0;
+		ssize_t skip = 0;
 		i++;
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);

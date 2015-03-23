@@ -768,19 +768,35 @@ static void uefidump_info_dump_type0(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char *ptr = (char*)var->data;
 	size_t len = var->datalen;
+	bool printable = true;
 
 	while (len && *ptr) {
-		char *start = ptr;
-		while (len && *ptr && *ptr != '\n') {
-			ptr++;
-			len--;
+		if (!(isspace(*ptr) || isprint(*ptr))) {
+			printable = false;
+			break;
 		}
+		ptr++;
+		len--;
+	}
 
-		if (*ptr == '\n') {
-			*ptr++ = '\0';
-			len--;
-			fwts_log_info_verbatum(fw, "  KLog: %s.", start);
+	ptr = (char*)var->data;
+	len = var->datalen;
+
+	if (printable) {
+		while (len && *ptr) {
+			char *start = ptr;
+			while (len && *ptr && *ptr != '\n') {
+				ptr++;
+				len--;
+			}
+			if (*ptr == '\n') {
+				*ptr++ = '\0';
+				len--;
+				fwts_log_info_verbatum(fw, "  KLog: %s.", start);
+			}
 		}
+	} else {
+		uefidump_var_hexdump(fw, var);
 	}
 }
 

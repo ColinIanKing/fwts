@@ -526,9 +526,139 @@ static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *tabl
 {
 	FWTS_UNUSED(fw);
 	FWTS_UNUSED(table);
+}
 
-	/* FIXME */
-	/*fwts_acpi_table_mcfg *mcfg = (fwts_acpi_table_mcfg*)table->data;*/
+static void acpi_table_check_gtdt(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	uint8_t *ptr, *end_ptr;
+	uint32_t i = 0, n;
+	fwts_acpi_table_gtdt *gtdt = (fwts_acpi_table_gtdt*)table->data;
+
+	if (gtdt->virtual_timer_flags & ~3)
+		fwts_failed(fw, LOG_LEVEL_LOW, "GTDTFlagReservedNonZero",
+			"GTDT flag reserved bits 2 to 31 are non-zero, "
+			"instead got 0x%" PRIx32 ".", gtdt->virtual_timer_flags);
+
+	ptr = (uint8_t *)table->data + gtdt->platform_timer_offset;
+	n = gtdt->platform_timer_count;
+	end_ptr = (uint8_t *)table->data + table->length;
+
+	while ((i < n) && (ptr < end_ptr)) {
+		uint32_t len, j;
+		fwts_acpi_table_gtdt_block *block;
+		fwts_acpi_table_gtdt_block_timer *block_timer;
+		fwts_acpi_table_gtdt_watchdog *watchdog;
+
+		switch (*ptr) {
+		case 0x00:
+			/* GT Block Structure */
+			block = (fwts_acpi_table_gtdt_block *)ptr;
+			if (ptr + 20 < end_ptr) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTShortBlock",
+					"GTDT block is too short");
+				return;
+			}
+			if (block->length < 20) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidBlockLength",
+					"GTDT block %" PRIu32 " length has in invalid length: %" PRIu32 " bytes",
+					i, block->length);
+				return;
+			}
+			if (block->reserved)
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidBlockReserved",
+					"GTDT block %" PRIu32 " reserved is non-zero, got 0x%" PRIx8,
+					i, block->reserved);
+			if (block->block_timer_count > 8) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidBlockTimerCount",
+					"GTDT block %" PRIu32 " timer count is too large, %"
+					PRIu32 ", must be <= 8",
+					i, block->block_timer_count);
+				break;
+			}
+			len = (block->block_timer_count * 40) + 20;
+			if (len != block->length) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidTimerCountOrLength",
+					"GTDT block %" PRIu32 " timer count  %" PRIu32 " and block length %" PRIu32 ", "
+					"expected length of %" PRIu32,
+					i, block->block_timer_count, block->length, len);
+				/* length may be inconsistent, don't trust it so stop here */
+				return;
+			}
+			block_timer = &block->block_timers[0];
+
+			for (j = 0; j < block->block_timer_count; j++) {
+				if (((uint8_t *)block_timer + sizeof(*block_timer)) > end_ptr)
+					break;
+				if (block_timer->frame_number > 7) {
+					fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidGTFrameNumber",
+						"GTDT block frame number is %" PRIu8 ", expecting 0..7",
+						block_timer->frame_number);
+				}
+				if (block_timer->reserved[0] |
+				    block_timer->reserved[1] |
+				    block_timer->reserved[2])
+					fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTBlockTimerReservedNotZero",
+						"GTDT block %" PRIu32 " timer reserved space is not zero, got 0x"
+						"%" PRIx8 "%" PRIx8 "%" PRIx8
+						" instead",
+						i,
+						block_timer->reserved[0],
+						block_timer->reserved[1],
+						block_timer->reserved[2]);
+				if (block_timer->phys_timer_flags & ~0x3)
+					fwts_failed(fw, LOG_LEVEL_LOW, "GTDTFBlockPhysTimerFlagReservedNonZero",
+						"GTDT block %" PRIu32 " physical timer flags reserved bits 2 to 31 are "
+						"non-zero, instead got 0x%" PRIx32 ".",
+						i, block_timer->phys_timer_flags);
+				if (block_timer->virt_timer_flags & ~0x3)
+					fwts_failed(fw, LOG_LEVEL_LOW, "GTDTFBlockVirtTimerFlagReservedNonZero",
+						"GTDT block %" PRIu32 " virtual timer flags reserved bits 2 to 31 are "
+						"non-zero, instead got 0x%" PRIx32 ".",
+						i, block_timer->virt_timer_flags);
+				if (block_timer->common_flags & ~0x3)
+					fwts_failed(fw, LOG_LEVEL_LOW, "GTDTFBlockCommonFlagReservedNonZero",
+						"GTDT block %" PRIu32 " common flags reserved bits 2 to 31 are "
+						"non-zero, instead got 0x%" PRIx32 ".",
+						i, block_timer->common_flags);
+			}
+			ptr += block->length;
+			break;
+		case 0x01:
+			/* SBSA Generic Watchdog Timer Structure */
+			watchdog = (fwts_acpi_table_gtdt_watchdog *)ptr;
+			if (ptr + 28 < end_ptr) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTShortWatchDogTimer",
+					"GTDT SBSA generic watchdog timer %" PRIu32 " is too short", i);
+				return;
+			}
+			if (watchdog->length != 28) {
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidWatchDogTimeLength",
+					"GTDT SBSA generic watchdog timer %" PRIu32
+					" length has in invalid length: %" PRIu32 " bytes",
+					i, watchdog->length);
+				return;
+			}
+			if (watchdog->reserved)
+				fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidWatchDogReserved",
+					"GTDT SBSA generic watchdog timer %" PRIu32
+					" reserved is non-zero, got 0x%" PRIx8,
+					i, watchdog->reserved);
+			if (watchdog->watchdog_timer_flags & ~0x7)
+				fwts_failed(fw, LOG_LEVEL_LOW, "GTDTWatchDogTimerFlagReservedNonZero",
+					"GTDT SBSA generic watchdog timer %" PRIu32
+					" flags reserved bits 3 to 31 are non-zero, instead got 0x%" PRIx8 ".",
+					i, watchdog->watchdog_timer_flags);
+			ptr += watchdog->length;
+			break;
+		default:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "GTDTInvalidType",
+				"GTDT platform timer strucuture %" PRIu32 " has an invalid type: 0x%" PRIx8,
+				i, *ptr);
+			/* Can't determine field length, so end of parsing */
+			return;
+		}
+		i++;
+	}
 }
 
 typedef void (*check_func)(fwts_framework *fw, fwts_acpi_table_info *table);
@@ -542,6 +672,7 @@ static acpi_table_check_table check_table[] = {
 	{ "APIC", acpi_table_check_madt },
 	{ "ECDT", acpi_table_check_ecdt },
 	{ "FACP", acpi_table_check_fadt },
+	{ "GTDT", acpi_table_check_gtdt },
 	{ "HPET", acpi_table_check_hpet },
 	{ "MCFG", acpi_table_check_mcfg },
 	{ "RSDT", acpi_table_check_rsdt },

@@ -683,6 +683,7 @@ typedef struct {
 
 /* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec */
 typedef struct {
+	fwts_acpi_table_header header;
 	uint64_t	cnt_control_base_phys_addr;
 	uint32_t	reserved;
 	uint32_t	secure_EL1_timer_GSIV;
@@ -702,6 +703,41 @@ typedef struct {
 typedef struct {
 	uint32_t	timer_flags;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt_platform_timer;
+
+typedef struct {
+	uint8_t		frame_number;		/* 0..7 */
+	uint8_t		reserved[3];		/* 0 */
+	uint64_t	cntbase;
+	uint64_t	cntel0base;
+	uint32_t	gsiv;
+	uint32_t	phys_timer_gsiv;
+	uint32_t	phys_timer_flags;
+	uint32_t	virt_timer_gsiv;
+	uint32_t	virt_timer_flags;
+	uint32_t	common_flags;
+} __attribute__ ((packed)) fwts_acpi_table_gtdt_block_timer;
+
+/* 5.2.24.1.1 GT Block Structure */
+typedef struct {
+	uint8_t		type;			/* 0x00 */
+	uint16_t	length;			/* 20 + n * 40 */
+	uint8_t		reserved;		/* 0x00 */
+	uint64_t	physical_address;
+	uint32_t	block_timer_count;	/* 0..8 */
+	uint32_t	block_timer_offset;
+	fwts_acpi_table_gtdt_block_timer	block_timers[0];
+} __attribute__ ((packed)) fwts_acpi_table_gtdt_block;
+
+/* 5.2.24.0.1 SBSA Generic Watchdog Structure */
+typedef struct {
+	uint8_t		type;			/* 0x01 */
+	uint16_t	length;			/* 28 */
+	uint8_t		reserved;		/* 0x00 */
+	uint64_t	refresh_frame_addr;
+	uint64_t	watchdog_control_frame_addr;
+	uint32_t	watchdog_timer_gsiv;
+	uint32_t	watchdog_timer_flags;
+} __attribute__ ((packed)) fwts_acpi_table_gtdt_watchdog;
 
 /* 5.2.20 ACPI RAS FeatureTable (RASF) */
 typedef struct {

@@ -677,10 +677,17 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 	return ptr;
 }
 
-static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
+/*
+ *  fwts_acpi_load_tables_from_file_generic()
+ *	load acpi tables from a given path with a given file extention
+ */
+static int fwts_acpi_load_tables_from_file_generic(
+	fwts_framework *fw,
+	char *acpi_table_path,
+	const char *extention,
+	int *count)
 {
 	struct dirent **dir_entries;
-	int count = 0;
 	int i;
 
 	/*
@@ -688,22 +695,38 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 	 * to ensure the tables are always loaded into memory
 	 * in some form of deterministic order
 	 */
-	if ((count = scandir(fw->acpi_table_path, &dir_entries, 0, alphasort)) < 0) {
+	if ((*count = scandir(acpi_table_path, &dir_entries, 0, alphasort)) < 0) {
 		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.",
 			fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
 
-	for (i = 0; i < count; i++) {
-		if (strstr(dir_entries[i]->d_name, ".dat")) {
+	for (i = 0; i < *count; i++) {
+		/* Ignore . directories */
+		if (dir_entries[i]->d_name[0] == '.')
+			continue;
+
+		if (strstr(dir_entries[i]->d_name, extention)) {
 			char path[PATH_MAX];
 			int fd;
 
 			snprintf(path, sizeof(path), "%s/%s",
-				fw->acpi_table_path, dir_entries[i]->d_name);
+				acpi_table_path, dir_entries[i]->d_name);
 			if ((fd = open(path, O_RDONLY)) >= 0) {
 				uint8_t *table;
 				size_t length;
+				struct stat buf;
+
+				if (fstat(fd, &buf) < 0) {
+					fwts_log_error(fw, "Cannot stat file '%s'\n", path);
+					close(fd);
+					continue;
+				}
+				/* Must be a regular file */
+				if (!S_ISREG(buf.st_mode)) {
+					close(fd);
+					continue;
+				}
 
 				if ((table = fwts_acpi_load_table_from_file(fd, &length)) != NULL) {
 					char name[9];	/* "RSD PTR " or standard ACPI 4 letter name */
@@ -749,12 +772,22 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 		free(dir_entries[i]);
 	}
 	free(dir_entries);
+	return FWTS_OK;
+}
 
+/*
+ *  fwts_acpi_load_tables_from_file()
+ *	load raw acpi tables from a user given path, files must end in ".dat"
+ */
+static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
+{
+	int count;
+
+	fwts_acpi_load_tables_from_file_generic(fw, fw->acpi_table_path, ".dat", &count);
 	if (count == 0) {
 		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
-
 	return FWTS_OK;
 }
 
@@ -976,6 +1009,20 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+
+static int fwts_acpi_load_tables_from_sysfs(fwts_framework *fw)
+{
+	int count, total;
+	fwts_acpi_load_tables_from_file_generic(fw, "/sys/firmware/acpi/tables", "", &total);
+	fwts_acpi_load_tables_from_file_generic(fw, "/sys/firmware/acpi/tables/dynamic", "", &count);
+	total += count;
+	if (total == 0) {
+		fwts_log_error(fw, "Could not find any APCI tables in directory '/sys/firmware/acpi/tables'.\n");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 /*
  *  fwts_acpi_load_tables()
  *	Load from firmware or from files in a specified directory
@@ -988,9 +1035,13 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		ret = fwts_acpi_load_tables_from_file(fw);
 	else if (fw->acpi_table_acpidump_file != NULL)
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
-	else if (fwts_check_root_euid(fw, true) == FWTS_OK)
+	else if (fwts_check_root_euid(fw, true) == FWTS_OK) {
 		ret = fwts_acpi_load_tables_from_firmware(fw);
-	else
+
+		/* Load from memory failed (e.g. no /dev/mem), so try sysfs */
+		if (ret != FWTS_OK)
+			ret = fwts_acpi_load_tables_from_sysfs(fw);
+	} else
 		ret = FWTS_ERROR_NO_PRIV;
 
 	if (ret == FWTS_OK) {

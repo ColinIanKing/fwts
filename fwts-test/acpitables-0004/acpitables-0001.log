@@ -5,6 +5,7 @@ acpitables      Cannot find FACP.
 acpitables      Table APIC not present to check.
 acpitables      Table ECDT not present to check.
 acpitables      Table FACP not present to check.
+acpitables      Table GTDT not present to check.
 acpitables      FAILED [MEDIUM] HPETBaseZero: Test 1, HPET base is
 acpitables      0x000000000000, which is invalid.
 acpitables      FAILED [MEDIUM] HPETVendorIdZero: Test 1, HPET PCI Vendor

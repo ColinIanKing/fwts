@@ -65,6 +65,7 @@ acpitables      correctly then ACPI writes to this register *may* nor work
 acpitables      correctly, meaning a reboot via this mechanism may not
 acpitables      work.
 acpitables      
+acpitables      Table GTDT not present to check.
 acpitables      Table HPET not present to check.
 acpitables      Table MCFG not present to check.
 acpitables      PASSED: Test 1, Table RSDT passed.

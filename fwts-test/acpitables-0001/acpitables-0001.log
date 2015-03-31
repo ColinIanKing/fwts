@@ -4,6 +4,7 @@ acpitables      Test 1 of 2: Test ACPI tables.
 acpitables      PASSED: Test 1, Table APIC passed.
 acpitables      Table ECDT not present to check.
 acpitables      PASSED: Test 1, Table FACP passed.
+acpitables      Table GTDT not present to check.
 acpitables      PASSED: Test 1, Table HPET passed.
 acpitables      PASSED: Test 1, Table MCFG passed.
 acpitables      PASSED: Test 1, Table RSDT passed.

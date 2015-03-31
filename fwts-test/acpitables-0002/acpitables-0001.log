@@ -5,6 +5,7 @@ acpitables      Cannot find FACP.
 acpitables      PASSED: Test 1, Table APIC passed.
 acpitables      Table ECDT not present to check.
 acpitables      Table FACP not present to check.
+acpitables      Table GTDT not present to check.
 acpitables      Table HPET not present to check.
 acpitables      Table MCFG not present to check.
 acpitables      Table RSDT not present to check.

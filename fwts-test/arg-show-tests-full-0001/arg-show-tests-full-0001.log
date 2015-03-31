@@ -354,7 +354,7 @@ Utilities:
   UEFI variable info query.
 
 Unsafe tests:
- uefirtauthvar   (13 tests):
+ uefirtauthvar   (12 tests):
   Create authenticated variable test.
   Authenticated variable test with the same authenticated variable.
   Authenticated variable test with another valid authenticated variable.
@@ -366,11 +366,11 @@ Unsafe tests:
   Authenticated variable test with invalid modified timestamp.
   Authenticated variable test with different guid.
   Authenticated variable test with invalid attributes.
-  Test with both authenticated attributes are set.
   Set and delete authenticated variable created by different key test.
- uefirtmisc      (2 tests):
+ uefirtmisc      (3 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
+  Test GetNextHighMonotonicCount with invalid NULL parameter.
  uefirttime      (35 tests):
   Test UEFI RT service get time interface.
   Test UEFI RT service get time interface, NULL time parameter.
@@ -423,7 +423,7 @@ UEFI tests:
   UEFI secure boot test.
  uefibootpath    (1 test):
   Test UEFI Boot Path Boot####.
- uefirtauthvar   (13 tests):
+ uefirtauthvar   (12 tests):
   Create authenticated variable test.
   Authenticated variable test with the same authenticated variable.
   Authenticated variable test with another valid authenticated variable.
@@ -435,11 +435,11 @@ UEFI tests:
   Authenticated variable test with invalid modified timestamp.
   Authenticated variable test with different guid.
   Authenticated variable test with invalid attributes.
-  Test with both authenticated attributes are set.
   Set and delete authenticated variable created by different key test.
- uefirtmisc      (2 tests):
+ uefirtmisc      (3 tests):
   Test for UEFI miscellaneous runtime service interfaces.
   Stress test for UEFI miscellaneous runtime service interfaces.
+  Test GetNextHighMonotonicCount with invalid NULL parameter.
  uefirttime      (35 tests):
   Test UEFI RT service get time interface.
   Test UEFI RT service get time interface, NULL time parameter.

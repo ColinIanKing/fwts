@@ -1,3 +1,28 @@
+fwts (15.03.01-0ubuntu1) vivid; urgency=low
+ 
+  [Colin Ian King]
+  * efi_runtime: ensure we don't allocate a zero byte buffer
+      (LP: #1429890)]
+  * uefi: uefirttime: Add tests to exercise invalid parameters
+  * acpi: acpitables: make length and skip signed to handle -ve underflow
+      (LP: #1435272)
+  * uefi: uefidump: don't dump non-printable variable contents (LP: #1435346)
+  * uefi: uefirtmisc: Add null count argument check for
+      GetNextHighMonotonicCount
+  * acpi: acpitables: add GTDT checking
+  * lib: fwts_acpi_tables: load tables from /sys (LP: #1437043)
+  * fwts-test: fix up acpitables tests
+  * fwts-tests: fix up arg-show-tests-full test
+
+  [Ivan Hu]
+  * uefirtauthvar: return error when get mismatch size
+  * uefirtauthvar: dependency checking for existence of test data
+      (LP: #1434408)
+  * uefirtauthvar: remove duplicate authenticated attribute test
+      (LP: #1432752)
+
+ -- Keng-Yu Lin <kengyu@ubuntu.com>  Wed, 01 Apr 2015 11:42:51 +0800
+
 fwts (15.03.00-0ubuntu1) vivid; urgency=low
 
   [Colin Ian King]

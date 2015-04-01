@@ -280,6 +280,8 @@ Batch tests:
   PnP BIOS Support Installation structure test.
  securebootcert  (1 test):
   UEFI secure boot test.
+ spcr            (1 test):
+  SPCR Serial Port Console Redirection Table test.
  syntaxcheck     (1 test):
   Disassemble and reassemble DSDT and SSDTs.
  uefibootpath    (1 test):
@@ -487,4 +489,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 402 tests
+Total of 403 tests

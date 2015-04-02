@@ -288,7 +288,6 @@ static long efi_runtime_get_variable(unsigned long arg)
 			return -EFAULT;
 		return 0;
 	} else {
-		printk(KERN_ERR "efi_runtime: can't get variable\n");
 		return -EINVAL;
 	}
 

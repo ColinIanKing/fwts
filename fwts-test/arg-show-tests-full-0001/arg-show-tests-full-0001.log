@@ -407,7 +407,7 @@ Unsafe tests:
   Test UEFI RT service set wakeup time interface, invalid nanosecond 1000000000.
   Test UEFI RT service set wakeup time interface, invalid timezone -1441.
   Test UEFI RT service set wakeup time interface, invalid timezone 1441.
- uefirtvariable  (7 tests):
+ uefirtvariable  (8 tests):
   Test UEFI RT service get variable interface.
   Test UEFI RT service get next variable name interface.
   Test UEFI RT service set variable interface.
@@ -415,6 +415,7 @@ Unsafe tests:
   Test UEFI RT service variable interface stress test.
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
+  Test UEFI RT service get variable interface, invalid parameters.
 
 UEFI tests:
  csm             (1 test):
@@ -476,7 +477,7 @@ UEFI tests:
   Test UEFI RT service set wakeup time interface, invalid nanosecond 1000000000.
   Test UEFI RT service set wakeup time interface, invalid timezone -1441.
   Test UEFI RT service set wakeup time interface, invalid timezone 1441.
- uefirtvariable  (7 tests):
+ uefirtvariable  (8 tests):
   Test UEFI RT service get variable interface.
   Test UEFI RT service get next variable name interface.
   Test UEFI RT service set variable interface.
@@ -484,5 +485,6 @@ UEFI tests:
   Test UEFI RT service variable interface stress test.
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
+  Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 400 tests
+Total of 402 tests

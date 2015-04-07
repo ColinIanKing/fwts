@@ -2096,7 +2096,7 @@ static int method_test_CRS(fwts_framework *fw)
 static int method_test_PRS(fwts_framework *fw)
 {
 	/* Re-use the _CRS checking on the returned buffer */
-	return method_evaluate_method(fw, METHOD_MANDITORY,
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_PRS", NULL, 0, method_test_CRS_return, "_PRS");
 }
 

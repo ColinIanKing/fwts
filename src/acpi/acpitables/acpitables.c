@@ -69,12 +69,10 @@ static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *tabl
 
 }
 
-static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
+static void acpi_table_check_fadt_firmware_control(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
 {
-	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)table->data;
-
 	if (fadt->firmware_control == 0) {
-		if (table->length >= 140) {
+		if (fadt->header.length >= 140) {
 			if ((fadt->x_firmware_ctrl == 0) && !(fwts_acpi_is_reduced_hardware(fadt))) {
 				fwts_failed(fw, LOG_LEVEL_CRITICAL, "FADTFACSZero", "FADT 32 bit FIRMWARE_CONTROL and 64 bit X_FIRMWARE_CONTROL (FACS address) are null.");
 				fwts_advice(fw, "The 32 bit FIRMWARE_CTRL or 64 bit X_FIRMWARE_CTRL should point to a valid "
@@ -88,7 +86,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"bug and needs to be fixed.");
 		}
 	} else {
-		if (table->length >= 140) {
+		if (fadt->header.length >= 140) {
 			if (fadt->x_firmware_ctrl != 0) {
 				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
 					fwts_failed(fw, LOG_LEVEL_MEDIUM, "FwCtrl32and64Differ",
@@ -103,10 +101,14 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 			}
 		}
 	}
+}
 
+static void acpi_table_check_fadt_dsdt(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
+{
 	if (fadt->dsdt == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTDSTNull", "FADT DSDT address is null.");
-	if (table->length >= 148) {
+
+	if (fadt->header.length >= 148) {
 		if (fadt->x_dsdt == 0) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTXDSTDNull", "FADT X_DSDT address is null.");
 			fwts_advice(fw, "An ACPI 2.0 FADT is being used however the 64 bit X_DSDT is null."
@@ -120,6 +122,16 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"pointers to point to the same DSDT, however they don't which is clearly ambiguous and wrong. "
 					"The kernel works around this by using the 64 bit X_DSDT pointer to the DSDT. ");
 		}
+	}
+}
+
+
+static void acpi_table_check_fadt_smi(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
+{
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fadt->smi_cmd != 0)
+			fwts_warning(fw, "FADT SMI_CMD is not zero but should be in reduced hardware mode.");
+		return;
 	}
 
 	/*
@@ -153,6 +165,15 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 					"specific functions will not work.");
 		}
 	}
+}
+
+static void acpi_table_check_fadt_pm_tmr(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
+{
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fadt->pm_tmr_len != 0)
+			fwts_warning(fw, "FADT PM_TMR_LEN is not zero but should be in reduced hardware mode.");
+		return;
+	}
 
 	if (fadt->pm_tmr_len != 4) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadPMTMRLEN",
@@ -161,6 +182,18 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				"This fields value must be 4. If it is not the correct size then the kernel "
 				"will not request a region for the pm timer block. ");
 	}
+}
+
+static void acpi_table_check_fadt_gpe(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
+{
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fadt->gpe0_blk_len != 0)
+			fwts_warning(fw, "FADT GPE0_BLK_LEN is not zero but should be in reduced hardware mode.");
+		if (fadt->gpe1_blk_len != 0)
+			fwts_warning(fw, "FADT GPE1_BLK_LEN is not zero but should be in reduced hardware mode.");
+		return;
+	}
+
 	if (fadt->gpe0_blk_len & 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadGPEBLKLEN", "FADT GPE0_BLK_LEN is %" PRIu8
 			", should a multiple of 2.", fadt->gpe0_blk_len);
@@ -175,6 +208,36 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 				"not map in the GPE1 region. This could mean that General Purpose Events will not "
 				"function correctly (for example lid or ac-power events).");
 	}
+}
+
+static void acpi_table_check_fadt_reset(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
+{
+	if (fadt->header.length>=129) {
+		if ((fadt->reset_reg.address_space_id != 0) &&
+		    (fadt->reset_reg.address_space_id != 1) &&
+		    (fadt->reset_reg.address_space_id != 2)) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG",
+				"FADT RESET_REG address space ID was %" PRIu8 ", must be System Memory space (0), "
+				"System I/O space (1), or PCI configuration space (2).",
+				fadt->reset_reg.address_space_id);
+			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
+					"to this register *may* nor work correctly, meaning a reboot via this mechanism may not work.");
+		}
+		if ((fadt->reset_value == 0) && (fadt->reset_reg.address != 0))
+			fwts_warning(fw, "FADT RESET_VALUE is zero, which may be incorrect, it is usually non-zero.");
+	}
+}
+
+static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *table)
+{
+	fwts_acpi_table_fadt *fadt = (fwts_acpi_table_fadt*)table->data;
+
+	acpi_table_check_fadt_firmware_control(fw, fadt);
+	acpi_table_check_fadt_dsdt(fw, fadt);
+	acpi_table_check_fadt_smi(fw, fadt);
+	acpi_table_check_fadt_pm_tmr(fw, fadt);
+	acpi_table_check_fadt_gpe(fw, fadt);
+
 	/*
 	 * Bug LP: /833644
 	 *
@@ -208,20 +271,7 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 		fwts_warning(fw, "FADT CENTURY is zero, RTC does not support centenary feature is not supported.");
 	*/
 
-	if (table->length>=129) {
-		if ((fadt->reset_reg.address_space_id != 0) &&
-		    (fadt->reset_reg.address_space_id != 1) &&
-		    (fadt->reset_reg.address_space_id != 2)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTBadRESETREG",
-				"FADT RESET_REG address space ID was %" PRIu8 ", must be System Memory space (0), "
-				"System I/O space (1), or PCI configuration space (2).",
-				fadt->reset_reg.address_space_id);
-			fwts_advice(fw, "If the FADT RESET_REG address space ID is not set correctly then ACPI writes "
-					"to this register *may* nor work correctly, meaning a reboot via this mechanism may not work.");
-		}
-		if ((fadt->reset_value == 0) && (fadt->reset_reg.address != 0))
-			fwts_warning(fw, "FADT RESET_VALUE is zero, which may be incorrect, it is usually non-zero.");
-	}
+	acpi_table_check_fadt_reset(fw, fadt);
 }
 
 static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)

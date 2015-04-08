@@ -237,13 +237,12 @@ static long efi_runtime_get_variable(unsigned long arg)
 {
 	struct efi_getvariable __user *pgetvariable;
 	struct efi_getvariable pgetvariable_local;
-	unsigned long datasize, prev_datasize;
-	EFI_GUID vendor_guid;
-	efi_guid_t vendor;
+	unsigned long datasize, prev_datasize, *pdatasize;
+	efi_guid_t vendor, *pvendor = NULL;
 	efi_status_t status;
-	uint16_t *name;
-	uint32_t attr;
-	void *data;
+	uint16_t *name = NULL;
+	uint32_t attr, *pattr;
+	void *data = NULL;
 	int rv = 0;
 
 	pgetvariable = (struct efi_getvariable __user *)arg;
@@ -251,31 +250,45 @@ static long efi_runtime_get_variable(unsigned long arg)
 	if (copy_from_user(&pgetvariable_local, pgetvariable,
 			   sizeof(pgetvariable_local)))
 		return -EFAULT;
-
-	if (get_user(datasize, pgetvariable_local.DataSize) ||
-	    copy_from_user(&vendor_guid, pgetvariable_local.VendorGuid,
-			   sizeof(vendor_guid)))
+	if (pgetvariable_local.DataSize &&
+	    get_user(datasize, pgetvariable_local.DataSize))
 		return -EFAULT;
+	if (pgetvariable_local.VendorGuid) {
+		EFI_GUID vendor_guid;
 
-	convert_from_guid(&vendor, &vendor_guid);
+		if (copy_from_user(&vendor_guid, pgetvariable_local.VendorGuid,
+			   sizeof(vendor_guid)))
+			return -EFAULT;
+		convert_from_guid(&vendor, &vendor_guid);
+		pvendor = &vendor;
+	}
 
-	rv = copy_ucs2_from_user(&name, pgetvariable_local.VariableName);
-	if (rv)
-		return rv;
+	if (pgetvariable_local.VariableName) {
+		rv = copy_ucs2_from_user(&name, pgetvariable_local.VariableName);
+		if (rv)
+			return rv;
+	}
 
-	data = kmalloc(datasize, GFP_KERNEL);
-	if (!data) {
-		ucs2_kfree(name);
-		return -ENOMEM;
+	pattr = pgetvariable_local.Attributes ? &attr : NULL;
+	pdatasize = pgetvariable_local.DataSize ? &datasize : NULL;
+
+	if (pgetvariable_local.DataSize && pgetvariable_local.Data) {
+		data = kmalloc(datasize, GFP_KERNEL);
+		if (!data) {
+			ucs2_kfree(name);
+			return -ENOMEM;
+		}
 	}
 
 	prev_datasize = datasize;
-	status = efi.get_variable(name, &vendor, &attr, &datasize, data);
+	status = efi.get_variable(name, pvendor, pattr, pdatasize, data);
 	ucs2_kfree(name);
 
-	if (status == EFI_SUCCESS && prev_datasize >= datasize)
-		rv = copy_to_user(pgetvariable_local.Data, data, datasize);
-	kfree(data);
+	if (data) {
+		if (status == EFI_SUCCESS && prev_datasize >= datasize)
+			rv = copy_to_user(pgetvariable_local.Data, data, datasize);
+		kfree(data);
+	}
 
 	if (rv)
 		return rv;
@@ -283,8 +296,9 @@ static long efi_runtime_get_variable(unsigned long arg)
 	if (put_user(status, pgetvariable_local.status))
 		return -EFAULT;
 	if (status == EFI_SUCCESS && prev_datasize >= datasize) {
-		if (put_user(attr, pgetvariable_local.Attributes) ||
-		    put_user(datasize, pgetvariable_local.DataSize))
+		if (pattr && put_user(attr, pgetvariable_local.Attributes))
+			return -EFAULT;
+		if (pdatasize && put_user(datasize, pgetvariable_local.DataSize))
 			return -EFAULT;
 		return 0;
 	} else {

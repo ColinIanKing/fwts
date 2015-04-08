@@ -1773,6 +1773,128 @@ static int uefirtvariable_test7(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static void getvariable_test_invalid(
+	fwts_framework *fw,
+	struct efi_getvariable *getvariable,
+	const char *test)
+{
+	long ioret;
+
+	fwts_log_info(fw, "Testing GetVariable with %s.", test);
+
+	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, getvariable);
+	if (ioret == -1) {
+		if (*(getvariable->status) == EFI_INVALID_PARAMETER) {
+			fwts_passed(fw, "GetVariable with %s returned error "
+				"EFI_INVALID_PARAMETER as expected.", test);
+			return;
+		}
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFIRuntimeGetVariableInvalid",
+			"GetVariable with %s failed to get expected error return "
+			"status, expected EFI_INVALID_PARAMETER.", test);
+		fwts_uefi_print_status_info(fw, *(getvariable->status));
+		return;
+	}
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"UEFIRuntimeGetVariableInvalid",
+		"GetVariable wuth %s failed to get an error return status, "
+		"expected EFI_INVALID_PARAMETER.", test);
+
+	return;
+
+}
+
+static int uefirtvariable_test8(fwts_framework *fw)
+{
+	struct efi_getvariable getvariable;
+	struct efi_setvariable setvariable;
+	uint8_t data[16];
+	uint64_t status, dataindex;
+	uint64_t getdatasize = sizeof(data);
+	uint32_t attr;
+	int ioret;
+
+	for (dataindex = 0; dataindex < sizeof(data); dataindex++)
+		data[dataindex] = (uint8_t)dataindex;
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = sizeof(data);
+	setvariable.Data = data;
+	setvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	if (ioret == -1) {
+		if (status == EFI_OUT_OF_RESOURCES) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw,
+				"Run out of resources for SetVariable UEFI "
+				"runtime interface: cannot test.");
+			fwts_advice(fw,
+				"Firmware may reclaim some resources after "
+				"rebooting. Reboot and test again may be "
+				"helpful to continue the test.");
+			return FWTS_SKIP;
+		}
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to set variable with UEFI runtime service.");
+		return FWTS_ERROR;
+	}
+
+	getvariable.VariableName = NULL;
+	getvariable.VendorGuid = &gtestguid1;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = data;
+	getvariable.status = &status;
+	getvariable_test_invalid(fw, &getvariable, "NULL variable name");
+
+	getvariable.VariableName = variablenametest;
+	getvariable.VendorGuid = NULL;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = data;
+	getvariable.status = &status;
+	getvariable_test_invalid(fw, &getvariable, "NULL vendor GUID");
+
+	getvariable.VariableName = variablenametest;
+	getvariable.VendorGuid = &gtestguid1;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = NULL;
+	getvariable.Data = data;
+	getvariable.status = &status;
+	getvariable_test_invalid(fw, &getvariable, "NULL datasize");
+
+	getvariable.VariableName = variablenametest;
+	getvariable.VendorGuid = &gtestguid1;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = &getdatasize;
+	getvariable.Data = NULL;
+	getvariable.status = &status;
+	getvariable_test_invalid(fw, &getvariable, "NULL data");
+
+	getvariable.VariableName = NULL;
+	getvariable.VendorGuid = NULL;
+	getvariable.Attributes = &attr;
+	getvariable.DataSize = NULL;
+	getvariable.Data = NULL;
+	getvariable.status = &status;
+	getvariable_test_invalid(fw, &getvariable, "NULL variable name, vendor GUID, datasize and data");
+
+	/* delete the variable */
+	setvariable.DataSize = 0;
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+	if (ioret == -1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",
+			"Failed to delete variable with UEFI runtime service.");
+		fwts_uefi_print_status_info(fw, status);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 static int options_check(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
@@ -1843,6 +1965,7 @@ static fwts_framework_minor_test uefirtvariable_tests[] = {
 	{ uefirtvariable_test5, "Test UEFI RT service variable interface stress test." },
 	{ uefirtvariable_test6, "Test UEFI RT service set variable interface stress test." },
 	{ uefirtvariable_test7, "Test UEFI RT service query variable info interface stress test." },
+	{ uefirtvariable_test8, "Test UEFI RT service get variable interface, invalid parameters." },
 	{ NULL, NULL }
 };
 

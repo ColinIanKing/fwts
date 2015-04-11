@@ -313,13 +313,6 @@ static const char           *AcpiDmPmttSubnames[] =
     "Unknown SubTable Type"         /* Reserved */
 };
 
-static const char           *AcpiDmSlicSubnames[] =
-{
-    "Public Key Structure",
-    "Windows Marker Structure",
-    "Unknown SubTable Type"         /* Reserved */
-};
-
 static const char           *AcpiDmSratSubnames[] =
 {
     "Processor Local APIC/SAPIC Affinity",
@@ -411,6 +404,7 @@ ACPI_DMTABLE_DATA    AcpiDmTableData[] =
     {ACPI_SIG_MCHI, AcpiDmTableInfoMchi,    NULL,           NULL,           TemplateMchi,   "Management Controller Host Interface table"},
     {ACPI_SIG_MPST, AcpiDmTableInfoMpst,    AcpiDmDumpMpst, DtCompileMpst,  TemplateMpst,   "Memory Power State Table"},
     {ACPI_SIG_MSCT, NULL,                   AcpiDmDumpMsct, DtCompileMsct,  TemplateMsct,   "Maximum System Characteristics Table"},
+    {ACPI_SIG_MSDM, NULL,                   AcpiDmDumpSlic, DtCompileSlic,  TemplateMsdm,   "Microsoft Data Management table"},
     {ACPI_SIG_MTMR, NULL,                   AcpiDmDumpMtmr, DtCompileMtmr,  TemplateMtmr,   "MID Timer Table"},
     {ACPI_SIG_PCCT, AcpiDmTableInfoPcct,    AcpiDmDumpPcct, DtCompilePcct,  TemplatePcct,   "Platform Communications Channel Table"},
     {ACPI_SIG_PMTT, NULL,                   AcpiDmDumpPmtt, DtCompilePmtt,  TemplatePmtt,   "Platform Memory Topology Table"},
@@ -587,10 +581,20 @@ AcpiDmDumpDataTable (
             }
             else
             {
-                AcpiOsPrintf ("\n**** Unknown ACPI table type [%4.4s]\n\n",
+                AcpiOsPrintf ("\n**** Unknown ACPI table signature [%4.4s]\n\n",
                     Table->Signature);
-                fprintf (stderr, "Unknown ACPI table signature [%4.4s], decoding header only\n",
+
+                fprintf (stderr, "Unknown ACPI table signature [%4.4s], ",
                     Table->Signature);
+
+                if (!AcpiGbl_ForceAmlDisassembly)
+                {
+                    fprintf (stderr, "decoding ACPI table header only\n");
+                }
+                else
+                {
+                    fprintf (stderr, "assuming table contains valid AML code\n");
+                }
             }
         }
         else if (TableData->TableHandler)
@@ -758,6 +762,7 @@ AcpiDmDumpTable (
     UINT32                  ByteLength;
     UINT8                   Temp8;
     UINT16                  Temp16;
+    UINT32                  Temp32;
     UINT64                  Value;
     ACPI_DMTABLE_DATA       *TableData;
     const char              *Name;
@@ -787,7 +792,8 @@ AcpiDmDumpTable (
         if ((CurrentOffset >= TableLength) ||
             (SubtableLength && (Info->Offset >= SubtableLength)))
         {
-            AcpiOsPrintf ("**** ACPI table terminates in the middle of a data structure!\n");
+            AcpiOsPrintf (
+                "**** ACPI table terminates in the middle of a data structure! (dump table)\n");
             return (AE_BAD_DATA);
         }
 
@@ -832,7 +838,6 @@ AcpiDmDumpTable (
         case ACPI_DMT_UINT32:
         case ACPI_DMT_NAME4:
         case ACPI_DMT_SIG:
-        case ACPI_DMT_SLIC:
         case ACPI_DMT_LPIT:
 
             ByteLength = 4;
@@ -877,6 +882,12 @@ AcpiDmDumpTable (
             ByteLength = 128;
             break;
 
+        case ACPI_DMT_BUFFER:
+        case ACPI_DMT_RAW_BUFFER:
+
+            ByteLength = SubtableLength;
+            break;
+
         case ACPI_DMT_STRING:
 
             ByteLength = ACPI_STRLEN (ACPI_CAST_PTR (char, Target)) + 1;
@@ -910,7 +921,8 @@ AcpiDmDumpTable (
 
         if (CurrentOffset + ByteLength > TableLength)
         {
-            AcpiOsPrintf ("**** ACPI table terminates in the middle of a data structure!\n");
+            AcpiOsPrintf (
+                "**** ACPI table terminates in the middle of a data structure!\n");
             return (AE_BAD_DATA);
         }
 
@@ -1077,8 +1089,9 @@ AcpiDmDumpTable (
 
             AcpiOsPrintf ("%2.2X", *Target);
             Temp8 = AcpiDmGenerateChecksum (Table,
-                        ACPI_CAST_PTR (ACPI_TABLE_HEADER, Table)->Length,
-                        ACPI_CAST_PTR (ACPI_TABLE_HEADER, Table)->Checksum);
+                ACPI_CAST_PTR (ACPI_TABLE_HEADER, Table)->Length,
+                ACPI_CAST_PTR (ACPI_TABLE_HEADER, Table)->Checksum);
+
             if (Temp8 != ACPI_CAST_PTR (ACPI_TABLE_HEADER, Table)->Checksum)
             {
                 AcpiOsPrintf (
@@ -1104,7 +1117,7 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_GAS_WIDTH_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, Temp8, AcpiDmGasAccessWidth[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmGasAccessWidth[Temp8]);
             break;
 
         case ACPI_DMT_GAS:
@@ -1141,7 +1154,8 @@ AcpiDmDumpTable (
                 Temp16 = ACPI_DMAR_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT16_FORMAT, ACPI_GET16 (Target), AcpiDmDmarSubnames[Temp16]);
+            AcpiOsPrintf (UINT16_FORMAT, ACPI_GET16 (Target),
+                AcpiDmDmarSubnames[Temp16]);
             break;
 
         case ACPI_DMT_DMAR_SCOPE:
@@ -1154,7 +1168,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_DMAR_SCOPE_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmDmarScope[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmDmarScope[Temp8]);
             break;
 
         case ACPI_DMT_EINJACT:
@@ -1167,7 +1182,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_EINJ_ACTION_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmEinjActions[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmEinjActions[Temp8]);
             break;
 
         case ACPI_DMT_EINJINST:
@@ -1180,7 +1196,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_EINJ_INSTRUCTION_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmEinjInstructions[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmEinjInstructions[Temp8]);
             break;
 
         case ACPI_DMT_ERSTACT:
@@ -1193,7 +1210,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_ERST_ACTION_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmErstActions[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmErstActions[Temp8]);
             break;
 
         case ACPI_DMT_ERSTINST:
@@ -1206,7 +1224,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_ERST_INSTRUCTION_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmErstInstructions[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmErstInstructions[Temp8]);
             break;
 
         case ACPI_DMT_GTDT:
@@ -1219,7 +1238,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_GTDT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmGtdtSubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmGtdtSubnames[Temp8]);
             break;
 
         case ACPI_DMT_HEST:
@@ -1232,12 +1252,15 @@ AcpiDmDumpTable (
                 Temp16 = ACPI_HEST_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT16_FORMAT, ACPI_GET16 (Target), AcpiDmHestSubnames[Temp16]);
+            AcpiOsPrintf (UINT16_FORMAT, ACPI_GET16 (Target),
+                AcpiDmHestSubnames[Temp16]);
             break;
 
         case ACPI_DMT_HESTNTFY:
 
-            AcpiOsPrintf (STRING_FORMAT, "Hardware Error Notification Structure");
+            AcpiOsPrintf (STRING_FORMAT,
+                "Hardware Error Notification Structure");
+
             AcpiDmDumpTable (TableLength, CurrentOffset, Target,
                 sizeof (ACPI_HEST_NOTIFY), AcpiDmTableInfoHestNotify);
             AcpiOsPrintf ("\n");
@@ -1254,7 +1277,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_HEST_NOTIFY_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmHestNotifySubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmHestNotifySubnames[Temp8]);
             break;
 
         case ACPI_DMT_MADT:
@@ -1267,7 +1291,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_MADT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmMadtSubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmMadtSubnames[Temp8]);
             break;
 
         case ACPI_DMT_PCCT:
@@ -1280,7 +1305,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_PCCT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmPcctSubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmPcctSubnames[Temp8]);
             break;
 
         case ACPI_DMT_PMTT:
@@ -1293,20 +1319,20 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_PMTT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmPmttSubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmPmttSubnames[Temp8]);
             break;
 
-        case ACPI_DMT_SLIC:
+        case ACPI_DMT_RAW_BUFFER:
+            /*
+             * Currently only used for SLIC table
+             */
+            AcpiOsPrintf ("/* Proprietary data structure */ ");
 
-            /* SLIC subtable types */
-
-            Temp8 = *Target;
-            if (Temp8 > ACPI_SLIC_TYPE_RESERVED)
-            {
-                Temp8 = ACPI_SLIC_TYPE_RESERVED;
-            }
-
-            AcpiOsPrintf (UINT32_FORMAT, *Target, AcpiDmSlicSubnames[Temp8]);
+            AcpiDmDumpBuffer (Table, sizeof (ACPI_TABLE_HEADER),
+                ByteLength, sizeof (ACPI_TABLE_HEADER),
+                "Licensing Data", TRUE);
+            AcpiOsPrintf ("\n");
             break;
 
         case ACPI_DMT_SRAT:
@@ -1319,7 +1345,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_SRAT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmSratSubnames[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmSratSubnames[Temp8]);
             break;
 
         case ACPI_DMT_FADTPM:
@@ -1332,7 +1359,8 @@ AcpiDmDumpTable (
                 Temp8 = ACPI_FADT_PM_RESERVED;
             }
 
-            AcpiOsPrintf (UINT8_FORMAT, *Target, AcpiDmFadtProfiles[Temp8]);
+            AcpiOsPrintf (UINT8_FORMAT, *Target,
+                AcpiDmFadtProfiles[Temp8]);
             break;
 
         case ACPI_DMT_IVRS:
@@ -1367,26 +1395,14 @@ AcpiDmDumpTable (
 
             /* LPIT subtable types */
 
-            Temp8 = *Target;
-            switch (Temp8)
+            Temp32 = ACPI_GET32 (Target);
+            if (Temp32 > ACPI_LPIT_TYPE_RESERVED)
             {
-            case ACPI_LPIT_TYPE_NATIVE_CSTATE:
-
-                Name = AcpiDmLpitSubnames[0];
-                break;
-
-            case ACPI_LPIT_TYPE_SIMPLE_IO:
-
-                Name = AcpiDmLpitSubnames[1];
-                break;
-
-            default:
-
-                Name = AcpiDmLpitSubnames[2];
-                break;
+                Temp32 = ACPI_LPIT_TYPE_RESERVED;
             }
 
-            AcpiOsPrintf (UINT32_FORMAT, *Target, Name);
+            AcpiOsPrintf (UINT32_FORMAT, ACPI_GET32 (Target),
+                AcpiDmLpitSubnames[Temp32]);
             break;
 
         case ACPI_DMT_EXIT:
@@ -1403,8 +1419,10 @@ AcpiDmDumpTable (
 
     if (TableOffset && !SubtableLength)
     {
-        /* If this table is not the main table, subtable must have valid length */
-
+        /*
+         * If this table is not the main table, the subtable must have a
+         * valid length
+         */
         AcpiOsPrintf ("Invalid zero length subtable\n");
         return (AE_BAD_DATA);
     }

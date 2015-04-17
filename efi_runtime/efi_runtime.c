@@ -138,28 +138,11 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
 static inline void ucs2_kfree(uint16_t *buf)
 {
 	if (buf)
-		kfree(buf - 1);
+		kfree(buf);
 }
 
 /*
  * Allocate a buffer and copy a ucs2 string from user space into it.
- *
- * We take an explicit number of bytes to use for the allocation and
- * copy, and therefore do not make any assumptions about 'src' (such as
- * it pointing to a valid string).
- *
- * If a non-zero value is returned, the caller MUST NOT access 'dst'.
- *
- * It is the caller's responsibility to free 'dst' using ucs2_kfree()
- *
- * We cater for zero sized len by always allocating a buffer that is 1
- * uint16_t larger than the requested size and passing back the buffer
- * offset by 1 uint16_t.  That way, the returned buffer size is the
- * size that is requested and the buffer ptr is a valid pointer (and not
- * NULL or ZERO_SIZE_PTR).  This allows EFI services to be passed a valid
- * allocated buffer of zero length size and to see if the services handle
- * this as an EFI_BUFFER_TOO_SMALL error.
- * 
  */
 static inline int
 copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
@@ -174,17 +157,34 @@ copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
 
-	buf = kmalloc(len + sizeof(uint16_t), GFP_KERNEL);
+	buf = kmalloc(len, GFP_KERNEL);
 	if (!buf) {
 		*dst = 0;
 		return -ENOMEM;
 	}
-	*dst = buf + 1;
+	*dst = buf;
 
 	if (copy_from_user(*dst, src, len)) {
 		kfree(buf);
 		return -EFAULT;
 	}
+
+	return 0;
+}
+
+/*
+ * Count the bytes in 'str', including the terminating NULL.
+ *
+ * Just a wrap for __ucs2_strsize
+ */
+static inline int get_ucs2_strsize_from_user(uint16_t __user *src, size_t *len)
+{
+	if (!access_ok(VERIFY_READ, src, 1))
+		return -EFAULT;
+
+	*len = __ucs2_strsize(src);
+	if (*len == 0)
+		return -EFAULT;
 
 	return 0;
 }
@@ -484,11 +484,11 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 {
 	struct efi_getnextvariablename __user *pgetnextvariablename;
 	struct efi_getnextvariablename pgetnextvariablename_local;
-	unsigned long name_size, prev_name_size;
+	unsigned long name_size, prev_name_size = 0, *pname_size = NULL;
 	efi_status_t status;
-	efi_guid_t vendor;
+	efi_guid_t vendor, *pvendor = NULL;
 	EFI_GUID vendor_guid;
-	uint16_t *name;
+	uint16_t *name = NULL;
 	int rv;
 
 	pgetnextvariablename = (struct efi_getnextvariablename
@@ -498,41 +498,67 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 			   sizeof(pgetnextvariablename_local)))
 		return -EFAULT;
 
-	if (get_user(name_size, pgetnextvariablename_local.VariableNameSize) ||
-	    copy_from_user(&vendor_guid, pgetnextvariablename_local.VendorGuid,
+	if (pgetnextvariablename_local.VariableNameSize) {
+		if (get_user(name_size, pgetnextvariablename_local.VariableNameSize))
+			return -EFAULT;
+		pname_size = &name_size;
+		prev_name_size = name_size;
+	}
+
+	if (pgetnextvariablename_local.VendorGuid) {
+		if (copy_from_user(&vendor_guid, pgetnextvariablename_local.VendorGuid,
 			   sizeof(vendor_guid)))
-		return -EFAULT;
+			return -EFAULT;
+		convert_from_guid(&vendor, &vendor_guid);
+		pvendor = &vendor;
+	}
 
-	convert_from_guid(&vendor, &vendor_guid);
+	if (pgetnextvariablename_local.VariableName) {
+		size_t name_string_size = 0;
+		rv = get_ucs2_strsize_from_user(pgetnextvariablename_local.VariableName, &name_string_size);
+		if (rv)
+			return rv;
+		/*
+		 * name_size may be smaller than the real buffer size where VariableName
+		 * located in some use cases. The most typical case is passing a 0 to
+		 * get the required buffer size for the 1st time call. So we need to
+		 * copy the content from user space for at least the string size of
+		 * VariableName, or else the name passed to UEFI may not be terminated
+		 * as we expected.
+		 */
+		rv = copy_ucs2_from_user_len(&name,
+					     pgetnextvariablename_local.VariableName,
+					     prev_name_size > name_string_size ? prev_name_size : name_string_size);
+		if (rv)
+			return rv;
+	}
 
-	rv = copy_ucs2_from_user_len(&name,
-				     pgetnextvariablename_local.VariableName,
-				     name_size);
-	if (rv)
-		return rv;
+	status = efi.get_next_variable(pname_size, name, pvendor);
 
-	prev_name_size = name_size;
-	status = efi.get_next_variable(&name_size, name, &vendor);
-
-	if (status == EFI_SUCCESS && prev_name_size >= name_size)
+	if (name) {
 		rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
-					   name, name_size);
-	ucs2_kfree(name);
-
-	if (rv)
-		return -EFAULT;
+					   name, prev_name_size);
+		ucs2_kfree(name);
+		if (rv)
+			return -EFAULT;
+	}
 
 	if (put_user(status, pgetnextvariablename_local.status))
 		return -EFAULT;
-	convert_to_guid(&vendor, &vendor_guid);
 
-	if (put_user(name_size, pgetnextvariablename_local.VariableNameSize))
-		return -EFAULT;
+	if (pname_size) {
+		if (put_user(*pname_size, pgetnextvariablename_local.VariableNameSize))
+			return -EFAULT;
+	}
 
-	if (copy_to_user(pgetnextvariablename_local.VendorGuid,
-			 &vendor_guid, sizeof(EFI_GUID)))
-		return -EFAULT;
-	if (status != EFI_SUCCESS || name_size > prev_name_size)
+	if (pvendor) {
+		convert_to_guid(pvendor, &vendor_guid);
+		if (copy_to_user(pgetnextvariablename_local.VendorGuid,
+				 &vendor_guid, sizeof(EFI_GUID)))
+			return -EFAULT;
+	}
+
+	if (status != EFI_SUCCESS)
 		return -EINVAL;
 	return 0;
 }

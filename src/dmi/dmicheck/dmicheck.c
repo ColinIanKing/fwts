@@ -236,7 +236,10 @@ static const fwts_chassis_type_map fwts_dmi_chassis_type[] = {
 	{ "Compact PCI",	FWTS_SMBIOS_CHASSIS_COMPACT_PCI,		CHASSIS_OTHER },
 	{ "Advanced TCA",	FWTS_SMBIOS_CHASSIS_ADVANCED_TCA,		CHASSIS_OTHER },
 	{ "Blade",		FWTS_SMBIOS_CHASSIS_BLADE,			CHASSIS_SERVER },
-	{ "Enclosure",		FWTS_SMBIOS_CHASSIS_BLASE_ENCLOSURE,		CHASSIS_SERVER }
+	{ "Enclosure",		FWTS_SMBIOS_CHASSIS_BLADE_ENCLOSURE,		CHASSIS_SERVER },
+	{ "Tablet",		FWTS_SMBIOS_CHASSIS_TABLET,			CHASSIS_MOBILE },
+	{ "Convertible",	FWTS_SMBIOS_CHASSIS_CONVERTIBLE,		CHASSIS_MOBILE },
+	{ "Detachable",		FWTS_SMBIOS_CHASSIS_DETACHABLE,			CHASSIS_MOBILE },
 };
 
 static const fwts_chassis_type_map fwts_acpi_pm_profile_type[] = {

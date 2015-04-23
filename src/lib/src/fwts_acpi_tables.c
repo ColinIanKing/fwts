@@ -618,6 +618,9 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 {
 	FILE *fp;
 
+	if (!fw->acpi_table_acpidump_file)
+		return FWTS_ERROR;
+
 	if ((fp = fopen(fw->acpi_table_acpidump_file, "r")) == NULL) {
 		fwts_log_error(fw, "Cannot open '%s' to read ACPI tables.",
 			fw->acpi_table_acpidump_file);

@@ -697,7 +697,7 @@ static int fwts_acpi_load_tables_from_file_generic(
 	 */
 	if ((*count = scandir(acpi_table_path, &dir_entries, 0, alphasort)) < 0) {
 		fwts_log_error(fw, "Cannot open directory '%s' to read ACPI tables.",
-			fw->acpi_table_path);
+			acpi_table_path);
 		return FWTS_ERROR;
 	}
 

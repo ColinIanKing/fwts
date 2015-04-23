@@ -56,6 +56,8 @@ static int facp_get_aspm_control(fwts_framework *fw)
 	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
 		return FWTS_ERROR;
 	}
+	if (table == NULL)
+		return FWTS_ERROR;
 	fadt = (fwts_acpi_table_fadt*)table->data;
 
 	if ((fadt->iapc_boot_arch & FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS) == 0) {

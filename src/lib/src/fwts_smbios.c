@@ -41,6 +41,7 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 	return addr;
 }
 
+#if defined(FWTS_ARCH_INTEL)
 /*
  *  fwts_smbios_find_entry_bios()
  *	find SMBIOS structure table entry by scanning memory
@@ -87,6 +88,7 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 
 	return addr;
 }
+#endif
 
 /*
  *  fwts_smbios_find_entry()
@@ -102,7 +104,8 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 
 	/* Check EFI first */
 	if ((addr = fwts_smbios_find_entry_uefi(fw, entry, type)) == NULL) {
-		/* Failed? then scan memory */
+#if defined(FWTS_ARCH_INTEL)
+		/* Failed? then scan x86 memory for SMBIOS tag  */
 		addr = fwts_smbios_find_entry_bios(fw, entry, type);
 		if (addr) {
 			switch (*type) {
@@ -118,6 +121,9 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 				break;
 			}
 		}
+#else
+		(void)version;
+#endif
 	}
 	return addr;
 }

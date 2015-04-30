@@ -32,6 +32,16 @@
 #include <fcntl.h>
 #include <inttypes.h>
 
+static int maxreadreq_init(fwts_framework *fw)
+{
+	if (access(FWTS_PCI_DEV_PATH, R_OK) < 0) {
+		fwts_log_info(fw, "Could not access %s, skipping test",
+			FWTS_PCI_DEV_PATH);
+		return FWTS_SKIP;
+	}
+	return FWTS_OK;
+}
+
 /*
  * This test checks if MaxReadReq is set > 128 for non-internal stuff
  * A too low value hurts performance
@@ -141,6 +151,7 @@ static fwts_framework_minor_test maxreadreq_tests[] = {
 };
 
 static fwts_framework_ops maxreadreq_ops = {
+	.init        = maxreadreq_init,
 	.description = "Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.",
 	.minor_tests = maxreadreq_tests
 };

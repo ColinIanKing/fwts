@@ -55,6 +55,7 @@ static int spcr_test1(fwts_framework *fw)
 	char *str;
 	bool reserved = false;
 	bool pci = true;
+	bool passed = true;
 
 	/* Assuming revision 2 */
 	switch (spcr->interface_type) {
@@ -80,6 +81,7 @@ static int spcr_test1(fwts_framework *fw)
 
 	fwts_log_info_verbatum(fw, "Serial Interface: %s", str);
 	if (reserved) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRInterfaceReserved",
 			"SPCR Serial interface type 0x%2.2" PRIx8
@@ -89,6 +91,7 @@ static int spcr_test1(fwts_framework *fw)
 	if ((spcr->reserved1[0] |
 	     spcr->reserved1[1] |
 	     spcr->reserved1[2])) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"SPCRReservedNonZero",
 			"SPCR reserved field must be zero, got "
@@ -99,11 +102,13 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->interrupt_type == 0) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRUnknownInterruptType",
 			"SPCR interrupt type field is zero, expecting support bits to be set");
 	}
 	if (spcr->interrupt_type & 0xf0) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRIllegalReservedInterruptType",
 			"SPCR interrupt type reserved bits are non-zero zero, got 0x%" PRIx8,
@@ -118,6 +123,7 @@ static int spcr_test1(fwts_framework *fw)
 		case 14 ... 15:
 			break;
 		default:
+			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SPCRIllegalIRQ",
 				"SPCR PC-AT compatible IRQ 0x%" PRIx8 " is invalid", spcr->irq);
@@ -145,6 +151,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 	fwts_log_info_verbatum(fw, "Baud Rate:        %s", str);
 	if (reserved) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRBaudRateReserved",
 			"SPCR Serial baud rate type 0x%2.2" PRIx8
@@ -152,6 +159,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->parity & ~1) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRParityReserved",
 			"SPCR parity reserved bits 1..7 are non-zero, value is 0x%2.2" PRIx8,
@@ -160,6 +168,7 @@ static int spcr_test1(fwts_framework *fw)
 
 	/* Stop bit *really* is bit 1 according to the spec */
 	if (spcr->parity & ~2) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRStopBitReserved",
 			"SPCR stop bit reserved bits 0,2..7 are non-zero, value is 0x%2.2" PRIx8,
@@ -167,6 +176,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->flow_control & ~7) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRFlowControlReserved",
 			"SPCR flow control reserved bits 3..7 are non-zero, value is 0x%2.2" PRIx8,
@@ -193,6 +203,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 	fwts_log_info_verbatum(fw, "Terminal Type:    %s", str);
 	if (reserved) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRTerminalTypeReserved",
 			"SPCR terminal type type 0x%2.2" PRIx8
@@ -200,6 +211,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->reserved2) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"SPCRReservedNonZero",
 			"SPCR reserved field must be zero, got "
@@ -217,6 +229,7 @@ static int spcr_test1(fwts_framework *fw)
 	/* Now validate all pci specific fields if not-PCI enabled */
 	if (pci) {
 		if (spcr->pci_device_id == 0xffff) {
+			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SPCRPciDeviceID",
 				"SPCR PCI device ID is 0x%4.4" PRIx16
@@ -224,6 +237,7 @@ static int spcr_test1(fwts_framework *fw)
 				spcr->pci_device_id);
 		}
 		if (spcr->pci_vendor_id == 0xffff) {
+			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SPCRPciVendorID",
 				"SPCR PCI vendor ID is 0x%4.4" PRIx16
@@ -231,6 +245,7 @@ static int spcr_test1(fwts_framework *fw)
 				spcr->pci_vendor_id);
 		}
 		if ((spcr->pci_flags & 1) == 0) {
+			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"SPCRPciFlagsBit0",
 				"SPCR PCI flags compatibility bit 0 is %" PRIx32
@@ -240,6 +255,7 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->pci_flags & 0xfffe) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRPciFlags",
 			"SPCR PCI flags reserved bits 1-31 are %" PRIx32
@@ -248,11 +264,15 @@ static int spcr_test1(fwts_framework *fw)
 	}
 
 	if (spcr->reserved3) {
+		passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"SPCRReservedNonZero",
 			"SPCR reserved field must be zero, got "
 			"0x%2.2" PRIx8 " instead", spcr->reserved3);
 	}
+
+	if (passed)
+		fwts_passed(fw, "No issues found in SPCR table.");
 
 	return FWTS_OK;
 }

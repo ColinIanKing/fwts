@@ -22,13 +22,14 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stddef.h>
+#include <errno.h>
 
-#include "fwts_alloc.h"
+#include "fwts.h"
 
 /*
  * We implement a low memory allocator to allow us to allocate
  * memory < 2G limit for the ACPICA table handling.  On 64 bit
- * machines we habe to ensure that cached copies of ACPI tables
+ * machines we have to ensure that cached copies of ACPI tables
  * have addresses that can be addressed by the legacy 32 bit
  * ACPI table pointers.
  *
@@ -47,11 +48,61 @@ typedef struct {
 	unsigned int magic;
 } fwts_mmap_header;
 
-#define CHUNK_SIZE	(8192)		/* page plus loads of slack */
+/*
+ * CHUNK_SIZE controls the gap between mappings. This creates gaps
+ * between each low memory allocation so that we have some chance
+ * of catching memory accesses that fall off the mapping.  Without
+ * a gap, memory mappings potentially become contiguous and hence
+ * memory access errors are harder to catch.   This is wasteful
+ * in terms of address space, but fwts doesn't do too many low memory
+ * mappings since they are just used for cached copies of ACPI tables.
+ */
+#define CHUNK_SIZE	(64*1024)
+
 #define LIMIT_2GB	(0x80000000ULL)
 #define LIMIT_START	(0x00010000ULL)
 
-#ifndef MAP_32BIT
+/*
+ *  fwts_low_mmap_walkdown()
+ *	try to allocate a free space under the 2GB limit by
+ *	walking down memory in CHUNK_SIZE steps for an unmapped region
+ */
+static void *fwts_low_mmap_walkdown(const size_t requested_size)
+{
+	void *addr;
+	size_t page_size = fwts_page_size();
+	size_t sz = (requested_size + page_size) & ~(page_size - 1);
+	size_t pages = sz / page_size;
+	unsigned char vec[pages];
+	static void *last_addr = (void *)LIMIT_2GB;
+
+	if (requested_size == 0)	/* Illegal */
+		return MAP_FAILED;
+
+	for (addr = last_addr - sz; addr > (void *)LIMIT_START; addr -= CHUNK_SIZE) {
+		void *mapping;
+
+		/* Already mapped? */
+		if (mincore(addr, pages, vec) == 0)
+			continue;
+
+		/* Not mapped but mincore returned something unexpected? */
+		if (errno != ENOMEM)
+			continue;
+
+		mapping = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
+			MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+		if (mapping != MAP_FAILED) {
+			last_addr = mapping;
+			return mapping;
+		}
+	}
+	/* We've scanned all of memory, give up on subsequent calls */
+	last_addr = (void *)LIMIT_START;
+
+	return MAP_FAILED;
+}
+
 /*
  *  fwts_low_mmap()
  *	try to find a free space under the 2GB limit and mmap it.
@@ -71,13 +122,16 @@ static void *fwts_low_mmap(const size_t requested_size)
 	if (requested_size == 0)	/* Illegal */
 		return MAP_FAILED;
 
+	/*
+	 *  If we can't access our own mappings then find a
+	 *  free page by just walking down memory
+ 	 */
 	if ((fp = fopen("/proc/self/maps", "r")) == NULL)
-		return MAP_FAILED;
+		return fwts_low_mmap_walkdown(requested_size);
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s",
 			&addr_start, &addr_end, pathname);
-
 		/*
 		 *  Try and allocate under first mmap'd address space
 		 */
@@ -111,6 +165,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		    (last_addr_end < (void*)LIMIT_2GB)) {
 			if (((uint8_t *)addr_start - (uint8_t *)last_addr_end) > (ptrdiff_t)requested_size) {
 				void *addr = last_addr_end;
+
 				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
 					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 				if (ret != MAP_FAILED)
@@ -133,9 +188,15 @@ static void *fwts_low_mmap(const size_t requested_size)
 	}
 	fclose(fp);
 
+	/*
+	 *  The "intelligent" memory hole finding strategy failed,
+	 *  so try walking down memory instead.
+	 */
+	if (ret == MAP_FAILED)
+		ret = fwts_low_mmap_walkdown(requested_size);
+
 	return ret;
 }
-#endif
 
 /*
  *  fwts_low_calloc()
@@ -147,7 +208,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 void *fwts_low_calloc(const size_t nmemb, const size_t size)
 {
 	size_t n = nmemb * size;
-	void *ret;
+	void *ret = MAP_FAILED;
 	fwts_mmap_header *hdr;
 
 	n += sizeof(fwts_mmap_header);
@@ -161,11 +222,13 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 		/* 32 bit mmap by default */
 		ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-	} else {
-		/* We don't have a native MAP_32BIT, so bodge our own */
-		ret = fwts_low_mmap(n);
 	}
 #endif
+	/* 32 bit mmap failed, so bodge our own 32 bit mmap */
+	if (ret == MAP_FAILED)
+		ret = fwts_low_mmap(n);
+
+	/* OK, really can't mmap, give up */
 	if (ret == MAP_FAILED)
 		return NULL;
 

@@ -57,14 +57,16 @@
  * _BMS  10.2.2.5	Y
  * _BQC  B.6.4		Y
  * _BST  10.2.2.6	Y
- * _BTM  10.2.2.8	Y
- * _BTP  10.2.2.7	Y
+ * _BTH  10.2.2.7	N
+ * _BTM  10.2.2.9	Y
+ * _BTP  10.2.2.8	Y
  * _CBA  PCI f/w spec	Y
  * _CCA  6.2.17		Y
  * _CDM  6.2.1		Y
  * _CID  6.1.2		Y
  * _CLS  6.1.3		N requires PCI SIG class info
  * _CPC  8.4.5		Y
+ * _CR3  11.5.4		N
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CSD  8.4.2.2	Y
@@ -124,12 +126,14 @@
  * _Lxx  5.6.4.1	n/a
  * _LCK  6.3.4		Y
  * _LID  9.4.1		Y
+ * _LPI  8.4.4.3	N
  * _MAT  6.2.9		N
  * _MBM  9.12.2.1	Y
  * _MLS  6.1.7		Y
  * _MSG  9.1.2		Y
  * _MSM  9.12.2.2	N
- * _NTT  11.4.7		Y
+ * _MTL  11.4.8		N
+ * _NTT  11.4.9		Y
  * _OFF  7.1.2		Y
  * _ON_  7.1.3		Y
  * _OS   5.7.3		N
@@ -139,7 +143,7 @@
  * _PAI  10.4.4		n/a
  * _PCL  10.3.2		Y
  * _PCT  8.4.4.1	Y
- * _PDC  8.4.1		N
+ * _PDC  8.4.1		deprecated
  * _PDL  8.4.4.6	Y
  * _PIC  5.8.1		Y
  * _PIF  10.3.3		Y
@@ -156,8 +160,9 @@
  * _PR3  7.2.11		Y
  * _PRE  7.2.12		Y
  * _PRL  10.3.4		Y
- * _PRT  6.2.12		N
+ * _PRR  7.3.26		N
  * _PRS  6.2.11		Y
+ * _PRT  6.2.12		N
  * _PRW  7.2.11		Y
  * _PS0  7.2.2		Y
  * _PS1  7.2.3		Y
@@ -177,10 +182,12 @@
  * _PUR  8.5.11		Y
  * _PXM  6.2.13 	Y
  * _Qxx  5.6.4.1	n/a
+ * _RDI  8.5		N
  * _REG  6.5.4		n/a
  * _REV  5.7.4		n/a
  * _RMV  6.3.6		Y
  * _ROM  B.4.3		Y
+ * _RST  7.3.25		N
  * _RTV  11.4.10	Y
  * _S0_  7.3.4.1	Y
  * _S1_  7.3.4.2	Y
@@ -221,6 +228,7 @@
  * _TC1  11.4.12	Y
  * _TC2  11.4.13	Y
  * _TDL  8.4.3.5	Y
+ * _TFP  11.4.16	N
  * _TIP  9.18.9		Y
  * _TIV  9.18.10	Y
  * _TMP  11.4.14	Y
@@ -228,6 +236,7 @@
  * _TPT  11.4.15	Y
  * _TRT  11.4.16	Y
  * _TSD  8.4.3.4	Y
+ * _TSN  11.4.20	N
  * _TSP  11.4.17	Y
  * _TSS  8.4.3.2	Y
  * _TST  11.4.18	Y

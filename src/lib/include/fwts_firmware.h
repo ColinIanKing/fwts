@@ -29,13 +29,15 @@ enum firmware_type {
 };
 
 enum firmware_feature {
-	FWTS_FW_FEATURE_ACPI = 1 << 0,
+	FWTS_FW_FEATURE_ACPI		= 0x1,
+	FWTS_FW_FEATURE_ALL		= FWTS_FW_FEATURE_ACPI
 };
 
 int fwts_firmware_detect(void);
 int fwts_firmware_features(void);
+const char *fwts_firmware_feature_string(const int features);
 
-static inline bool fwts_firmware_has_features(int features)
+static inline bool fwts_firmware_has_features(const int features)
 {
 	return (fwts_firmware_features() & features) == features;
 }

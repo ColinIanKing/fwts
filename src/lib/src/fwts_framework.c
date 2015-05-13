@@ -569,8 +569,8 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 
 	if (!fwts_firmware_has_features(test->fw_features)) {
 		int missing = test->fw_features & ~fwts_firmware_features();
-		fwts_log_info(fw, "Test skipped, missing features 0x%08x",
-				missing);
+		fwts_log_info(fw, "Test skipped, missing features: %s",
+				fwts_firmware_feature_string(missing));
 		fw->current_major_test->results.skipped +=
 			test->ops->total_tests;
 		fw->total.skipped += test->ops->total_tests;

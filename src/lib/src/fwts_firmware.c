@@ -26,6 +26,13 @@
 static enum firmware_type firmware_type;
 static bool firmware_type_valid;
 
+static struct {
+	enum firmware_feature feature;
+	const char name[16];
+} feature_names[] = {
+	{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
+};
+
 /*
  *  fwts_memory_map_entry_compare()
  *	callback used to sort memory_map entries on start address
@@ -63,4 +70,45 @@ int fwts_firmware_features(void)
 	}
 
 	return features;
+}
+
+const char *fwts_firmware_feature_string(const int features)
+{
+	const int n = FWTS_ARRAY_LEN(feature_names);
+	const char sep[] = ", ";
+	static char str[50];
+	size_t len;
+	char *p;
+	int i;
+
+	/* ensure we have enough space in str to store n names, plus n-1
+	 * separators, plus a trailing nul */
+	FWTS_ASSERT((n * (sizeof(feature_names[0].name) - 1)) +
+				((n-1) * (sizeof(sep) - 1)) + 1 <
+			sizeof(str), str_too_small);
+
+	/* ensure we have a name defined for all features */
+	FWTS_ASSERT(((1 << n) - 1) == FWTS_FW_FEATURE_ALL,
+			invalid_feature_names);
+
+	for (p = str, i = 0; i < n; i++) {
+
+		if (!(features & feature_names[i].feature))
+			continue;
+
+		/* if this isn't the first feature, add a separator */
+		if (p != str) {
+			len = sizeof(sep) - 1;
+			memcpy(p, sep, len);
+			p += len;
+		}
+
+		len = strlen(feature_names[i].name);
+		memcpy(p, feature_names[i].name, len);
+		p += len;
+	}
+
+	*p = '\0';
+
+	return str;
 }

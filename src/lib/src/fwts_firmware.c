@@ -36,3 +36,20 @@ int fwts_firmware_detect(void)
 	else
 		return FWTS_FIRMWARE_UEFI;
 }
+
+int fwts_firmware_features(void)
+{
+	int features = 0;
+
+	/* we just have static feature definitions for now */
+	switch (fwts_firmware_detect()) {
+	case FWTS_FIRMWARE_BIOS:
+	case FWTS_FIRMWARE_UEFI:
+		features = FWTS_FW_FEATURE_ACPI;
+		break;
+	default:
+		break;
+	}
+
+	return features;
+}

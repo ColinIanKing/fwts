@@ -19,6 +19,8 @@
 #ifndef __FWTS_FIRMWARE_H__
 #define __FWTS_FIRMWARE_H__
 
+#include <stdbool.h>
+
 enum {
 	FWTS_FIRMWARE_UNKNOWN = 0,
 	FWTS_FIRMWARE_BIOS = 1,
@@ -26,6 +28,16 @@ enum {
 	FWTS_FIRMWARE_OTHER = 100
 };
 
+enum firmware_feature {
+	FWTS_FW_FEATURE_ACPI = 1 << 0,
+};
+
 int fwts_firmware_detect(void);
+int fwts_firmware_features(void);
+
+static inline bool fwts_firmware_has_features(int features)
+{
+	return (fwts_firmware_features() & features) == features;
+}
 
 #endif

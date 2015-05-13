@@ -45,11 +45,14 @@ int fwts_firmware_detect(void)
 	if (firmware_type_valid)
 		return firmware_type;
 
-	if (stat("/sys/firmware/efi", &statbuf)) {
-		/* No UEFI, Assume BIOS */
-		firmware_type = FWTS_FIRMWARE_BIOS;
-	} else {
+	if (!stat("/sys/firmware/efi", &statbuf)) {
 		firmware_type = FWTS_FIRMWARE_UEFI;
+
+	} else if (!stat("/sys/firmware/opal", &statbuf)) {
+		firmware_type = FWTS_FIRMWARE_OPAL;
+
+	} else {
+		firmware_type = FWTS_FIRMWARE_BIOS;
 	}
 
 	firmware_type_valid = true;
@@ -65,6 +68,9 @@ int fwts_firmware_features(void)
 	case FWTS_FIRMWARE_BIOS:
 	case FWTS_FIRMWARE_UEFI:
 		features = FWTS_FW_FEATURE_ACPI;
+		break;
+	case FWTS_FIRMWARE_OPAL:
+		features = FWTS_FW_FEATURE_DEVICETREE;
 		break;
 	default:
 		break;

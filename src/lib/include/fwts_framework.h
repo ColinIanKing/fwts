@@ -176,12 +176,14 @@ typedef struct fwts_framework_test {
 	fwts_framework_ops *ops;
 	fwts_priority priority;
 	fwts_framework_flags flags;
+	int fw_features;
 	fwts_results results;			/* Per test results */
 	bool	    was_run;
+
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char **argv);
-void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const fwts_priority priority, const fwts_framework_flags flags);
+void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const fwts_priority priority, const fwts_framework_flags flags, int fw_features);
 int  fwts_framework_compare_test_name(void *, void *);
 void fwts_framework_show_version(FILE *fp, const char *name);
 
@@ -256,16 +258,18 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 #define FWTS_ASSERT(e, m) 	\
 enum { FWTS_CONCAT_EXPAND(FWTS_ASSERT_ ## m ## _in_line_, __LINE__) = 1 / !!(e) }
 
-#define FWTS_REGISTER(name, ops, priority, flags)		\
-/* Ensure name is not too long */				\
-FWTS_ASSERT(FWTS_ARRAY_LEN(name) < 16,				\
-	fwts_register_name_too_long);				\
-								\
-static void __test_init (void) __attribute__ ((constructor));	\
-								\
-static void __test_init (void)					\
-{								\
-	fwts_framework_test_add(name, ops, priority, flags);	\
+#define FWTS_REGISTER_FEATURES(name, ops, priority, flags, features)	\
+/* Ensure name is not too long */					\
+FWTS_ASSERT(FWTS_ARRAY_LEN(name) < 16,					\
+	fwts_register_name_too_long);					\
+									\
+static void __test_init (void) __attribute__ ((constructor));		\
+									\
+static void __test_init (void)						\
+{									\
+	fwts_framework_test_add(name, ops, priority, flags, features);	\
 }
-							
+
+#define FWTS_REGISTER(name, ops, priority, flags) \
+	FWTS_REGISTER_FEATURES(name, ops, priority, flags, 0)
 #endif

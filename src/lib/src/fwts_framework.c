@@ -138,7 +138,8 @@ void fwts_framework_test_add(
 	const char *name,
 	fwts_framework_ops *ops,
 	const fwts_priority priority,
-	const fwts_framework_flags flags)
+	const fwts_framework_flags flags,
+	int fw_features)
 {
 	fwts_framework_test *new_test;
 
@@ -164,6 +165,7 @@ void fwts_framework_test_add(
 	new_test->ops  = ops;
 	new_test->priority = priority;
 	new_test->flags = flags;
+	new_test->fw_features = fw_features;
 
 	/* Add test, sorted on run order priority */
 	fwts_list_add_ordered(&fwts_framework_test_list, new_test, fwts_framework_compare_priority);
@@ -564,6 +566,16 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 	}
 
 	fwts_framework_minor_test_progress(fw, 0, "");
+
+	if (!fwts_firmware_has_features(test->fw_features)) {
+		int missing = test->fw_features & ~fwts_firmware_features();
+		fwts_log_info(fw, "Test skipped, missing features 0x%08x",
+				missing);
+		fw->current_major_test->results.skipped +=
+			test->ops->total_tests;
+		fw->total.skipped += test->ops->total_tests;
+		goto done;
+	}
 
 	if ((test->flags & FWTS_FLAG_ROOT_PRIV) &&
 	    (fwts_check_root_euid(fw, true) != FWTS_OK)) {

@@ -21,7 +21,7 @@
 
 #include <stdbool.h>
 
-enum {
+enum firmware_type {
 	FWTS_FIRMWARE_UNKNOWN = 0,
 	FWTS_FIRMWARE_BIOS = 1,
 	FWTS_FIRMWARE_UEFI = 2,

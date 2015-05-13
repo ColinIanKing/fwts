@@ -23,6 +23,9 @@
 
 #include "fwts.h"
 
+static enum firmware_type firmware_type;
+static bool firmware_type_valid;
+
 /*
  *  fwts_memory_map_entry_compare()
  *	callback used to sort memory_map entries on start address
@@ -31,10 +34,18 @@ int fwts_firmware_detect(void)
 {
 	struct stat statbuf;
 
-	if (stat("/sys/firmware/efi", &statbuf))
-		return FWTS_FIRMWARE_BIOS;		/* No UEFI, Assume BIOS */
-	else
-		return FWTS_FIRMWARE_UEFI;
+	if (firmware_type_valid)
+		return firmware_type;
+
+	if (stat("/sys/firmware/efi", &statbuf)) {
+		/* No UEFI, Assume BIOS */
+		firmware_type = FWTS_FIRMWARE_BIOS;
+	} else {
+		firmware_type = FWTS_FIRMWARE_UEFI;
+	}
+
+	firmware_type_valid = true;
+	return firmware_type;
 }
 
 int fwts_firmware_features(void)

@@ -31,6 +31,7 @@ static struct {
 	const char name[16];
 } feature_names[] = {
 	{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
+	{ FWTS_FW_FEATURE_DEVICETREE,	"devicetree" },
 };
 
 /*

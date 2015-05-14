@@ -90,20 +90,20 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 	}
 
 	while (do_test) {
-		switch (read(fd, &ev, sizeof(ev))) {
-		case -1:
-		case 0:
+		ssize_t ret = read(fd, &ev, sizeof(ev));
+
+		if (ret < (ssize_t)sizeof(ev)) {
 			do_test = 0;
 			break;
-		default:
-			if ((ev.type == EV_KEY) &&
-		 	    (ev.code == KEY_ESC) &&
-			    (ev.value == 0))
-				do_test = 0;
-			else
-				hotkey_check_key(fw, &ev, hotkeys);
-			break;
 		}
+
+		if ((ev.type == EV_KEY) &&
+		    (ev.code == KEY_ESC) &&
+		    (ev.value == 0))
+			do_test = 0;
+		else
+			hotkey_check_key(fw, &ev, hotkeys);
+		break;
 	}
 
 	if (ioctl(fd, EVIOCGRAB, (void*)0)) {	/* Release */

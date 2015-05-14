@@ -119,18 +119,24 @@ static int get_mtrrs(void)
 		 */
 
 		/* Get register, in decimal  */
-		if (strncmp(line, "reg", 3))
+		if (strncmp(line, "reg", 3)) {
+			free(entry);
 			continue;
+		}
 		entry->reg = strtoul(line + 3, NULL, 10);
 
 		/* Get base, in hex */
-		if ((ptr1 = strstr(line, "base=0x")) == NULL)
+		if ((ptr1 = strstr(line, "base=0x")) == NULL) {
+			free(entry);
 			continue;
+		}
 		entry->start = strtoull(ptr1 + 5, NULL, 16);
 
 		/* Get size, in decimal */
-		if ((ptr1 = strstr(line, "size=")) == NULL)
+		if ((ptr1 = strstr(line, "size=")) == NULL) {
+			free(entry);
 			continue;
+		}
 
 		entry->size = strtoull(ptr1 + 5, &ptr2, 10);
 		if (ptr2 && (*ptr2 == 'm'))

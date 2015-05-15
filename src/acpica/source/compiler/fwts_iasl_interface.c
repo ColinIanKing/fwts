@@ -71,13 +71,13 @@ int fwts_iasl_disassemble_aml(
 {
 	pid_t	pid;
 	int	status, i;
+	FILE *fp;
 
 	pid = fork();
 	switch (pid) {
 	case -1:
 		return -1;
 	case 0:
-
 		/* Child */
 		init_asl_core();
 
@@ -111,9 +111,10 @@ int fwts_iasl_disassemble_aml(
 		}
 
 		/* Throw away noisy errors */
-		if (freopen("/dev/null", "w", stderr) != NULL)
+		if ((fp = freopen("/dev/null", "w", stderr)) != NULL) {
 			AslDoOneFile((char *)tables[which]);
-
+			fclose(fp);
+		}
 		_exit(0);
 		break;
 	default:

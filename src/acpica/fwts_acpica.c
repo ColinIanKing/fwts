@@ -452,8 +452,10 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 		buffer = malloc(buffer_len);
 		if (buffer)
 			strcpy(buffer, tmp);
-		else
+		else {
+			buffer = NULL;
 			buffer_len = 0;
+		}
 	} else {
 		char *new_buf;
 
@@ -464,11 +466,12 @@ void fwts_acpica_vprintf(const char *fmt, va_list args)
 			strcat(buffer, tmp);
 		} else {
 			free(buffer);
+			buffer = NULL;
 			buffer_len = 0;
 		}
 	}
 
-	if (buffer_len && index(buffer, '\n') != NULL) {
+	if (buffer && index(buffer, '\n') != NULL) {
 		fwts_log_info(fwts_acpica_fw, "%s", buffer);
 		free(buffer);
 		buffer_len = 0;

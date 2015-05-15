@@ -48,6 +48,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 {
 	int pipefds[2];
 	pid_t pid;
+	FILE *fp;
 
 	if (pipe(pipefds) < 0)
 		return -1;
@@ -61,7 +62,7 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		return -1;
 	case 0:
 		/* Child */
-		if (freopen("/dev/null", "w", stderr) == NULL) {
+		if ((fp = freopen("/dev/null", "w", stderr)) == NULL) {
 			fprintf(stderr, "Cannot redirect stderr\n");
 		}
 		if (pipefds[0] != STDOUT_FILENO) {
@@ -70,6 +71,8 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		}
 		close(pipefds[0]);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
+		if (fp)
+			fclose(fp);
 		_exit(FWTS_EXEC_ERROR);
 	default:
 		/* Parent */

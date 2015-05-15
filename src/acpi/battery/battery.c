@@ -154,14 +154,15 @@ static void check_discharging(fwts_framework *fw, int index, char *name)
 {
 	int i;
 	/* when we get here we KNOW the state is "discharging" */
-	uint32_t initial_value, new_value;
+	uint32_t initial_value;
 
 	fwts_printf(fw, "==== Waiting to see if battery '%s' discharges ====\n", name);
 	fwts_cpu_consume_start();
 
 	initial_value = get_full(fw, index);
-	for (i=0; i<=120; i++) {
-		new_value = get_full(fw, index);
+	for (i = 0; i <= 120; i++) {
+		uint32_t new_value = get_full(fw, index);
+
 		if (new_value<initial_value) {
 			fwts_passed(fw, "Battery %s charge is decrementing as expected.", name);
 			fwts_cpu_consume_complete();

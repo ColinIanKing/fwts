@@ -667,6 +667,10 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 			}
 			continue;
 		}
+		if (n > (ssize_t)sizeof(buffer))
+			goto too_big;	/* Unlikely */
+		if (size + n > 0xffffffff)
+			goto too_big;	/* Very unlikely */
 
 		if ((tmp = (uint8_t*)fwts_low_realloc(ptr, size + n + 1)) == NULL) {
 			free(ptr);
@@ -678,6 +682,11 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 	}
 	*length = size;
 	return ptr;
+
+too_big:
+	free(ptr);
+	*length = 0;
+	return NULL;
 }
 
 /*

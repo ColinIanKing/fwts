@@ -633,7 +633,6 @@ static int getnextvariable_test3(fwts_framework *fw)
 	uint64_t maxvariablenamesize = variablenamesize;
 	uint16_t *variablename;
 	EFI_GUID vendorguid;
-	char *name;
 	int ret;
 
 	variablename = malloc(sizeof(uint16_t) * variablenamesize);
@@ -730,17 +729,13 @@ static int getnextvariable_test3(fwts_framework *fw)
 		item->hash = hash_func(variablename, variablenamesize);
 
 		if (bucket_insert(item)) {
-			name = malloc(variablenamesize * sizeof(char));
-			if (name) {
-				fwts_uefi_str16_to_str(name, sizeof(name), variablename);
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"UEFIRuntimeGetNextVariableName",
-					"Duplicate variable name %s found.", name);
-				free(name);
-			} else
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"UEFIRuntimeGetNextVariableName",
-					"Duplicate variable name found (too long name).");
+			char name[variablenamesize];
+
+			fwts_uefi_str16_to_str(name, sizeof(name), variablename);
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"UEFIRuntimeGetNextVariableName",
+				"Duplicate variable name %s found.", name);
+
 			free(item->name);
 			free(item->guid);
 			free(item);

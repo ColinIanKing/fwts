@@ -246,6 +246,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/common/acgetline.c            		\
 	source/common/ahids.c				\
 	source/common/cmfsize.c            		\
+	source/common/ahtable.c				\
 	source/common/ahuuids.c				\
 	source/tools/acpiexec/aeinitfile.c		\
 	source/tools/acpiexec/aehandlers.c		\

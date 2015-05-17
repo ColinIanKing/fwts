@@ -448,6 +448,7 @@ DtGetFieldType (
 
     case ACPI_DMT_GAS:
     case ACPI_DMT_HESTNTFY:
+    case ACPI_DMT_IORTMEM:
 
         Type = DT_FIELD_TYPE_INLINE_SUBTABLE;
         break;
@@ -592,6 +593,7 @@ DtGetFieldLength (
     case ACPI_DMT_UINT16:
     case ACPI_DMT_DMAR:
     case ACPI_DMT_HEST:
+    case ACPI_DMT_NFIT:
     case ACPI_DMT_PCI_PATH:
 
         ByteLength = 2;
@@ -657,6 +659,11 @@ DtGetFieldLength (
     case ACPI_DMT_HESTNTFY:
 
         ByteLength = sizeof (ACPI_HEST_NOTIFY);
+        break;
+
+    case ACPI_DMT_IORTMEM:
+
+        ByteLength = sizeof (ACPI_IORT_MEMORY_ACCESS);
         break;
 
     case ACPI_DMT_BUFFER:

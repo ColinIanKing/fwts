@@ -671,6 +671,41 @@ static int cpufreq_test_consistency(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int cpufreq_test_duplicates(fwts_framework *fw)
+{
+	struct cpu *cpu0 = &cpus[0];
+	bool dup = false;
+	uint64_t freq;
+	int i;
+
+	/* the frequency list is sorted, so we can do this in one pass */
+	for (i = 0; i < cpu0->n_freqs - 1; i++) {
+
+		freq = cpu0->freqs[i].Hz;
+
+		if (cpu0->freqs[i+1].Hz != freq)
+			continue;
+
+		dup = true;
+		fwts_log_error(fw, "duplicate cpu frequency %" PRIx64,
+				freq);
+
+		/* don't report further duplicates for this entry */
+		for (i++; i < cpu0->n_freqs - 1; i++)
+			if (cpu0->freqs[i].Hz != freq)
+				break;
+	}
+
+	if (dup) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqDuplicate",
+				"duplicates found in CPU frequency table");
+	} else {
+		fwts_passed(fw, "No duplicates in CPU frequency table");
+	}
+
+	return FWTS_OK;
+}
+
 static int cpu_freq_compare(const void *v1, const void *v2)
 {
 	const fwts_cpu_freq *f1 = v1;
@@ -761,6 +796,7 @@ static int cpufreq_deinit(fwts_framework *fw)
 
 static fwts_framework_minor_test cpufreq_tests[] = {
 	{ cpufreq_test_consistency,	"CPU frequency table consistency" },
+	{ cpufreq_test_duplicates,	"CPU frequency table duplicates" },
 #ifdef FWTS_ARCH_INTEL
 	{ cpufreq_test1, "CPU P-State tests." },
 #else

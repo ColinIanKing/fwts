@@ -45,7 +45,7 @@
 
 typedef struct {
 	uint64_t	Hz;
-	uint64_t	speed;
+	fwts_cpu_benchmark_result perf;
 } fwts_cpu_freq;
 
 struct cpu {
@@ -149,6 +149,7 @@ static int get_performance_repeat(
 	const int type,
 	uint64_t *retval)
 {
+	fwts_cpu_benchmark_result result;
 	int i;
 
 	uint64_t max = 0;
@@ -159,9 +160,10 @@ static int get_performance_repeat(
 	for (i = 0; i < count; i++) {
 		uint64_t temp;
 
-		if (fwts_cpu_performance(fw, cpu->idx, &temp) != FWTS_OK)
+		if (fwts_cpu_benchmark(fw, cpu->idx, &result) != FWTS_OK)
 			return FWTS_ERROR;
 
+		temp = fwts_cpu_benchmark_best_result(&result);
 		if (temp) {
 			if (temp < min)
 				min = temp;
@@ -276,17 +278,19 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 	int i;
 
 	for (i = 0; i < cpu->n_freqs; i++) {
+		uint64_t perf;
+
 		cpu_set_frequency(fw, cpu, cpu->freqs[i].Hz);
 
-		if (fwts_cpu_performance(fw, cpu->idx, &cpu->freqs[i].speed)
+		if (fwts_cpu_benchmark(fw, cpu->idx, &cpu->freqs[i].perf)
 				!= FWTS_OK) {
 			fwts_log_error(fw, "Failed to get CPU performance for "
 				"CPU frequency %" PRId64 " Hz.",
 				cpu->freqs[i].Hz);
-			cpu->freqs[i].speed = 0;
 		}
-		if (cpu->freqs[i].speed > cpu_top_perf)
-			cpu_top_perf = cpu->freqs[i].speed;
+		perf = fwts_cpu_benchmark_best_result(&cpu->freqs[i].perf);
+		if (perf > cpu_top_perf)
+			cpu_top_perf = perf;
 
 		fwts_progress(fw, (100 * ((cpu_idx * cpu->n_freqs) + i)) /
 				(n_online_cpus * cpu->n_freqs));
@@ -294,37 +298,46 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.",
 			cpu->idx, cpu->n_freqs);
-	fwts_log_info_verbatum(fw, " Frequency | Relative Speed | Bogo loops");
-	fwts_log_info_verbatum(fw, "-----------+----------------+-----------");
+	fwts_log_info_verbatum(fw,
+		" Frequency | Relative Speed |  Cycles    | Bogo loops");
+	fwts_log_info_verbatum(fw,
+		"-----------+----------------+------------+-----------");
 	for (i = 0; i < cpu->n_freqs; i++) {
 		char *turbo = "";
 #ifdef FWTS_ARCH_INTEL
 		if ((i == 0) && (cpu->n_freqs > 1) &&
-		    (hz_almost_equal(cpu->freqs[i].Hz, cpu->freqs[i + 1].Hz)))
+			(hz_almost_equal(cpu->freqs[i].Hz, cpu->freqs[i + 1].Hz)))
 			turbo = " (Turbo Boost)";
 #endif
-		fwts_log_info_verbatum(fw, "%10s |     %5.1f %%    | %9" PRIu64
-				"%s",
+		uint64_t perf = fwts_cpu_benchmark_best_result(
+				&cpu->freqs[i].perf);
+		fwts_log_info_verbatum(fw,
+				"%10s |     %5.1f %%    "
+				"| %10" PRIu64 " | %9" PRIu64 "%s",
 			hz_to_human(cpu->freqs[i].Hz),
-			100.0 * cpu->freqs[i].speed / cpu_top_perf,
-			cpu->freqs[i].speed, turbo);
+			100.0 * perf / cpu_top_perf,
+			cpu->freqs[i].perf.cycles,
+			cpu->freqs[i].perf.loops,
+			turbo);
 	}
 
 	fwts_log_nl(fw);
 
 	/* now check for increasing performance */
 	for (i = 0; i < cpu->n_freqs - 1; i++) {
-		if (cpu->freqs[i].speed <= cpu->freqs[i+1].speed)
+		uint64_t perf, last_perf;
+
+		last_perf = fwts_cpu_benchmark_best_result(&cpu->freqs[i].perf);
+		perf = fwts_cpu_benchmark_best_result(&cpu->freqs[i+1].perf);
+		if (last_perf <= perf)
 			continue;
 
 		fwts_log_warning(fw,
 			"Supposedly higher frequency %s is slower (%" PRIu64
-			" bogo loops) than frequency %s (%" PRIu64
-			" bogo loops) on CPU %i.",
-			hz_to_human(cpu->freqs[i+1].Hz),
-			cpu->freqs[i+1].speed,
-			hz_to_human(cpu->freqs[i].Hz),
-			cpu->freqs[i].speed,
+			") than frequency %s (%" PRIu64
+			") on CPU %i.",
+			hz_to_human(cpu->freqs[i+1].Hz), perf,
+			hz_to_human(cpu->freqs[i].Hz), last_perf,
 			cpu->idx);
 		return FWTS_ERROR;
 	}
@@ -459,6 +472,7 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 {
 	uint64_t low_perf, high_perf, newhigh_perf;
 	int i, j, rc, n_tests, performed_tests;
+	fwts_cpu_benchmark_result result;
 	bool ok;
 
 	rc = sw_tests_possible(fw);
@@ -478,12 +492,13 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 		cpu_set_lowest_frequency(fw, &cpus[i]);
 
 	/* assume that all processors have the same low performance */
-	if (fwts_cpu_performance(fw, cpus[0].idx, &low_perf) != FWTS_OK) {
+	if (fwts_cpu_benchmark(fw, cpus[0].idx, &result) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"CPUFreqCPsSetToSW_ANYGetPerf",
 			"Cannot get CPU performance.");
 		return FWTS_ERROR;
 	}
+	low_perf = fwts_cpu_benchmark_best_result(&result);
 
 	ok = true;
 
@@ -497,12 +512,13 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 		if (!cpu->online)
 			continue;
 
-		if (fwts_cpu_performance(fw, cpu->idx, &high_perf) != FWTS_OK) {
+		if (fwts_cpu_benchmark(fw, cpu->idx, &result) != FWTS_OK) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPsSetToSW_ANYGetPerf",
 				"Cannot get CPU performance.");
 			return FWTS_ERROR;
 		}
+		high_perf = fwts_cpu_benchmark_best_result(&result);
 
 		performed_tests++;
 		fwts_progress(fw, 100 * performed_tests/n_tests);
@@ -514,13 +530,14 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 		for (j = 0; j < num_cpus; j++)
 			if (i != j)
 				cpu_set_lowest_frequency(fw, &cpus[j]);
-		if (fwts_cpu_performance(fw, cpu->idx, &newhigh_perf)
+		if (fwts_cpu_benchmark(fw, cpu->idx, &result)
 				!= FWTS_OK) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPsSetToSW_ANYGetPerf",
 				"Cannot get CPU performance.");
 			return FWTS_ERROR;
 		}
+		newhigh_perf = fwts_cpu_benchmark_best_result(&result);
 		if ((high_perf > newhigh_perf) &&
 		    (high_perf - newhigh_perf > (high_perf - low_perf)/4) &&
 		    (high_perf - low_perf > 20)) {

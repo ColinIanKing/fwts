@@ -133,9 +133,9 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 		if ((i & 7) < 4)
 			sleep(1);
 		else {
-			uint64_t loop_count;
+			fwts_cpu_benchmark_result result;
 
-			if (fwts_cpu_performance(fw, cpu, &loop_count) != FWTS_OK) {
+			if (fwts_cpu_benchmark(fw, cpu, &result) != FWTS_OK) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, "CPUFailedPerformance",
 					"Could not determine the CPU performance, this "
 					"may be due to not being able to get or set the "

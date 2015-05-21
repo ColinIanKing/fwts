@@ -33,6 +33,12 @@ typedef struct cpuinfo_x86 {
 	char *flags;		/* String containing flags */
 } fwts_cpuinfo_x86;
 
+typedef struct cpu_benchmark_result {
+	bool		cycles_valid;
+	uint64_t	loops;
+	uint64_t	cycles;
+} fwts_cpu_benchmark_result;
+
 int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val);
 
 int fwts_cpu_is_Intel(bool *is_intel);
@@ -46,6 +52,9 @@ int fwts_cpu_enumerate(void);
 int fwts_cpu_consume(const int seconds);
 int fwts_cpu_consume_start(void);
 void fwts_cpu_consume_complete(void);
-int fwts_cpu_performance(fwts_framework *fw, const int cpu, uint64_t *loop_count);
+int fwts_cpu_benchmark(fwts_framework *fw, const int cpu,
+		fwts_cpu_benchmark_result *result);
+
+uint64_t fwts_cpu_benchmark_best_result(fwts_cpu_benchmark_result *res);
 
 #endif

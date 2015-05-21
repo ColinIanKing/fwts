@@ -26,14 +26,18 @@
 #include <limits.h>
 #include <string.h>
 #include <dirent.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <math.h>
 #include <sched.h>
 #include <time.h>
+
+#include <linux/perf_event.h>
 
 #include "fwts_types.h"
 #include "fwts_cpu.h"
@@ -312,26 +316,93 @@ static void fwts_cpu_burn_cycles(void)
 	}
 }
 
+static int perf_setup_counter(int cpu)
+{
+	struct perf_event_attr attr;
+	int fd;
+
+	memset(&attr, 0, sizeof(attr));
+	attr.type = PERF_TYPE_HARDWARE;
+	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+	attr.disabled = 1;
+	attr.size = sizeof(attr);
+
+	fd = syscall(__NR_perf_event_open, &attr, -1, cpu, -1, 0);
+	return fd;
+}
+
+static int perf_start_counter(int fd)
+{
+	int rc;
+
+	rc = ioctl(fd, PERF_EVENT_IOC_ENABLE);
+	return rc == 0 ? FWTS_OK : FWTS_ERROR;
+}
+
+static int perf_stop_counter(int fd)
+{
+	int rc;
+
+	rc = ioctl(fd, PERF_EVENT_IOC_DISABLE);
+	return rc == 0 ? FWTS_OK : FWTS_ERROR;
+}
+
+static int perf_read_counter(int fd, unsigned long long *result)
+{
+	unsigned long long buf;
+	int rc;
+
+	rc = read(fd, &buf, sizeof(buf));
+	if (rc == sizeof(buf)) {
+		*result = buf;
+		rc = FWTS_OK;
+	} else {
+		rc = FWTS_ERROR;
+	}
+
+	close(fd);
+	return rc;
+}
+
 /*
- *  fwts_cpu_performance()
+ *  fwts_cpu_benchmark()
  *
  */
-int fwts_cpu_performance(
+int fwts_cpu_benchmark(
 	fwts_framework *fw,
 	const int cpu,		/* CPU we want to measure performance */
-	uint64_t *loop_count)	/* Returned measure of bogo compute power */
+	fwts_cpu_benchmark_result *result)
 {
+	unsigned long long perfctr_result;
+	fwts_cpu_benchmark_result tmp;
 	cpu_set_t mask, oldset;
+	int perfctr, ncpus, rc;
+	static bool warned;
 	time_t current;
-	int ncpus = fwts_cpu_enumerate();
+	bool perf_ok;
 
-	*loop_count = 0;
+	ncpus = fwts_cpu_enumerate();
+	memset(&tmp, 0, sizeof(tmp));
 
 	if (ncpus == FWTS_ERROR)
 		return FWTS_ERROR;
 
 	if (cpu < 0 || cpu > ncpus)
 		return FWTS_ERROR;
+
+	/* setup perf counter */
+	perf_ok = true;
+	perfctr = perf_setup_counter(cpu);
+	if (perfctr < 0) {
+		if (!warned) {
+			fwts_log_warning(fw, "Can't use linux performance "
+					"counters (perf), falling back to "
+					"relative measurements");
+			warned = true;
+		}
+		perf_ok = false;
+	}
+
 
 	/* Pin to the specified CPU */
 
@@ -352,6 +423,9 @@ int fwts_cpu_performance(
 	while (current == time(NULL))
 		sched_yield();
 
+	if (perf_ok)
+		perf_start_counter(perfctr);
+
 	current = time(NULL);
 
 	/*
@@ -360,15 +434,36 @@ int fwts_cpu_performance(
 	 */
 	do {
 		fwts_cpu_burn_cycles();
-		(*loop_count)++;
+		tmp.loops++;
 	} while (current == time(NULL));
+
+	if (perf_ok)
+		perf_stop_counter(perfctr);
 
 	if (sched_setaffinity(0, sizeof(oldset), &oldset) < 0) {
 		fwts_log_error(fw, "Cannot restore old CPU affinity settings.");
 		return FWTS_ERROR;
 	}
 
+	if (perf_ok) {
+		rc = perf_read_counter(perfctr, &perfctr_result);
+		if (rc == FWTS_OK) {
+			tmp.cycles = perfctr_result;
+			tmp.cycles_valid = true;
+		} else {
+			fwts_log_warning(fw, "failed to read perf counters");
+		}
+
+	}
+
+	*result = tmp;
+
 	return FWTS_OK;
+}
+
+uint64_t fwts_cpu_benchmark_best_result(fwts_cpu_benchmark_result *res)
+{
+	return res->cycles_valid ? res->cycles : res->loops;
 }
 
 /*

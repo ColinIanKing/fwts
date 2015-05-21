@@ -63,7 +63,7 @@ struct cpu {
 
 static struct cpu *cpus;
 static int num_cpus;
-static bool no_cpufreq = false;
+static bool cpufreq_settable = true;
 
 #define GET_PERFORMANCE_MAX (0)
 #define GET_PERFORMANCE_MIN (1)
@@ -83,24 +83,33 @@ static inline void cpu_mkpath(
 			cpu->sysfs_path, name);
 }
 
-static void cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
+static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
 		const char *governor)
 {
-	char path[PATH_MAX];
+	char path[PATH_MAX], *tmp;
 	int rc;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_governor");
 	rc = fwts_set(governor, path);
-	if (rc != FWTS_OK && !no_cpufreq) {
-		fwts_warning(fw, "Cannot set CPU governor to %s.", governor);
-		no_cpufreq = true;
-	}
+	if (rc != FWTS_OK)
+		goto out;
+
+	tmp = fwts_get(path);
+	rc = tmp && !strncmp(tmp, governor, strlen(governor))
+		? FWTS_OK : FWTS_ERROR;
+	free(tmp);
+
+out:
+	if (rc != FWTS_OK)
+		fwts_warning(fw, "Cannot set CPU %d governor to %s.",
+				cpu->idx, governor);
+	return rc;
 }
 
-static void cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
+static int cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
 		uint64_t freq_hz)
 {
-	char path[PATH_MAX];
+	char path[PATH_MAX], *tmp;
 	char buffer[64];
 	int rc;
 
@@ -108,17 +117,28 @@ static void cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
 	snprintf(buffer, sizeof(buffer), "%" PRIu64 , freq_hz);
 	rc = fwts_set(buffer, path);
 	if (rc != FWTS_OK)
-		fwts_warning(fw, "Cannot set CPU frequency to %s.", buffer);
+		goto out;
+
+	tmp = fwts_get(path);
+	rc = tmp && !strncmp(tmp, buffer, strlen(buffer))
+		? FWTS_OK : FWTS_ERROR;
+	free(tmp);
+
+out:
+	if (rc != FWTS_OK)
+		fwts_warning(fw, "Cannot set CPU %d frequency to %s.",
+				cpu->idx, buffer);
+	return rc;
 }
 
-static void cpu_set_lowest_frequency(fwts_framework *fw, struct cpu *cpu)
+static int cpu_set_lowest_frequency(fwts_framework *fw, struct cpu *cpu)
 {
-	cpu_set_frequency(fw, cpu, cpu->freqs[0].Hz);
+	return cpu_set_frequency(fw, cpu, cpu->freqs[0].Hz);
 }
 
-static void cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
+static int cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
 {
-	cpu_set_frequency(fw, cpu, cpu->freqs[cpu->n_freqs-1].Hz);
+	return cpu_set_frequency(fw, cpu, cpu->freqs[cpu->n_freqs-1].Hz);
 }
 
 
@@ -320,10 +340,20 @@ static int cpufreq_test_cpu_performance(fwts_framework *fw)
 
 	n_online_cpus = 0;
 
-	for (i = 0; i < num_cpus; i++) {
-		cpu_set_lowest_frequency(fw, &cpus[i]);
+
+	for (i = 0; cpufreq_settable && i < num_cpus; i++) {
 		if (cpus[i].online)
 			n_online_cpus++;
+		rc = cpu_set_lowest_frequency(fw, &cpus[i]);
+		if (rc != FWTS_OK)
+			cpufreq_settable = false;
+	}
+
+	if (!cpufreq_settable) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"CPUFreqSetFailed",
+				"Can't set CPU frequencies");
+		return FWTS_OK;
 	}
 
 	/* then do the benchmark */
@@ -355,6 +385,11 @@ static int sw_tests_possible(fwts_framework *fw)
 	fwts_skipped(fw, "Platform doesn't perform SW_ cpu frequency control");
 	return FWTS_SKIP;
 #endif
+
+	if (!cpufreq_settable) {
+		fwts_skipped(fw, "Can't set CPU frequencies");
+		return FWTS_SKIP;
+	}
 
 	/* count the number of CPUs online now */
 	for (i = 0; i < num_cpus; i++)
@@ -736,7 +771,7 @@ static int is_cpu_dir(const struct dirent *dir)
 static int cpufreq_init(fwts_framework *fw __attribute__((unused)))
 {
 	struct dirent **dirs;
-	int i;
+	int i, rc;
 
 	num_cpus = scandir(FWTS_CPU_PATH, &dirs, is_cpu_dir, versionsort);
 	cpus = calloc(num_cpus, sizeof(*cpus));
@@ -745,8 +780,15 @@ static int cpufreq_init(fwts_framework *fw __attribute__((unused)))
 		parse_cpu_info(&cpus[i], dirs[i]);
 
 	/* all test require a userspace governor */
-	for (i = 0; i < num_cpus; i++)
-		cpu_set_governor(fw, &cpus[i], "userspace");
+	for (i = 0; i < num_cpus; i++) {
+		rc = cpu_set_governor(fw, &cpus[i], "userspace");
+		if (rc != FWTS_OK) {
+			fwts_log_warning(fw, "Failed to intialise cpufreq "
+					"to set CPU speed");
+			cpufreq_settable = false;
+			break;
+		}
+	}
 
 	return FWTS_OK;
 }

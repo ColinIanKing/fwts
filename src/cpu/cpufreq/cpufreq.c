@@ -63,11 +63,7 @@ struct cpu {
 
 static struct cpu *cpus;
 static int num_cpus;
-static int number_of_speeds = -1;
-static int total_tests = 1;
-static int performed_tests = 0;
 static bool no_cpufreq = false;
-static uint64_t top_speed = 0;
 
 #define GET_PERFORMANCE_MAX (0)
 #define GET_PERFORMANCE_MIN (1)
@@ -126,7 +122,6 @@ static void cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
 }
 
 
-#ifdef FWTS_ARCH_INTEL
 static int get_performance_repeat(
 	fwts_framework *fw,
 	struct cpu *cpu,
@@ -179,6 +174,7 @@ static int get_performance_repeat(
 	return FWTS_OK;
 }
 
+#ifdef FWTS_ARCH_INTEL
 /*
  *  hz_almost_equal()
  *	used to compare CPU _PSS levels, are they almost
@@ -203,7 +199,6 @@ static int hz_almost_equal(const uint64_t a, const uint64_t b)
 
 	return relative_error <= MAX_RELATIVE_ERROR;
 }
-
 #endif
 
 static char *hz_to_human(const uint64_t hz)
@@ -254,34 +249,11 @@ static uint64_t get_bios_limit(struct cpu *cpu)
 	return value;
 }
 
-static void do_cpu(fwts_framework *fw, struct cpu *cpu)
+static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
+		int cpu_idx, int n_online_cpus)
 {
-	int i;
-	static int warned = 0;
 	uint64_t cpu_top_perf = 0;
-
-	cpu_set_governor(fw, cpu, "userspace");
-
-	if (cpu->n_freqs == 0) {
-		if (!no_cpufreq) {
-			char path[PATH_MAX];
-			char *driver;
-
-			no_cpufreq = true;
-			fwts_warning(fw, "CPU frequency scaling not supported.");
-
-			cpu_mkpath(path, sizeof(path), cpu, "scaling_driver");
-			driver = fwts_get(path);
-			if (driver) {
-				fwts_advice(fw, "Scaling driver '%s' is enabled and this "
-					"does not seem to allow CPU frequency scaling.", driver);
-				free(driver);
-			}
-		}
-		return;
-	}
-	if (total_tests == 1)
-		total_tests = ((2 + cpu->n_freqs) * num_cpus) + 2;
+	int i;
 
 	for (i = 0; i < cpu->n_freqs; i++) {
 		cpu_set_frequency(fw, cpu, cpu->freqs[i].Hz);
@@ -296,12 +268,9 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 		if (cpu->freqs[i].speed > cpu_top_perf)
 			cpu_top_perf = cpu->freqs[i].speed;
 
-		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
+		fwts_progress(fw, (100 * ((cpu_idx * cpu->n_freqs) + i)) /
+				(n_online_cpus * cpu->n_freqs));
 	}
-
-	if (cpu_top_perf > top_speed)
-		top_speed = cpu_top_perf;
 
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.",
 			cpu->idx, cpu->n_freqs);
@@ -323,41 +292,102 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 
 	fwts_log_nl(fw);
 
-	if (cpu->n_freqs < 2)
-		return;
-
-	/* now check for 1) increasing HZ and 2) increasing speed */
+	/* now check for increasing performance */
 	for (i = 0; i < cpu->n_freqs - 1; i++) {
-		if (cpu->freqs[i].Hz == cpu->freqs[i+1].Hz && !warned++)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"CPUFreqDupFreq",
-				"Duplicate frequency reported.");
-		if (cpu->freqs[i].speed > cpu->freqs[i+1].speed)
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"CPUFreqSlowerOnCPU",
-				"Supposedly higher frequency %s is slower (%" PRIu64
-				" bogo loops) than frequency %s (%" PRIu64
-				" bogo loops) on CPU %i.",
-				hz_to_human(cpu->freqs[i+1].Hz),
-				cpu->freqs[i+1].speed,
-				hz_to_human(cpu->freqs[i].Hz),
-				cpu->freqs[i].speed,
-				cpu->idx);
+		if (cpu->freqs[i].speed <= cpu->freqs[i+1].speed)
+			continue;
+
+		fwts_log_warning(fw,
+			"Supposedly higher frequency %s is slower (%" PRIu64
+			" bogo loops) than frequency %s (%" PRIu64
+			" bogo loops) on CPU %i.",
+			hz_to_human(cpu->freqs[i+1].Hz),
+			cpu->freqs[i+1].speed,
+			hz_to_human(cpu->freqs[i].Hz),
+			cpu->freqs[i].speed,
+			cpu->idx);
+		return FWTS_ERROR;
 	}
+
+	fwts_log_info(fw, "CPU %d performance scaling OK", cpu->idx);
+	return FWTS_OK;
 }
 
+static int cpufreq_test_cpu_performance(fwts_framework *fw)
+{
+	int n_online_cpus, i, c, rc;
+	bool ok = true;
 
-#ifdef FWTS_ARCH_INTEL
+	n_online_cpus = 0;
+
+	for (i = 0; i < num_cpus; i++) {
+		cpu_set_lowest_frequency(fw, &cpus[i]);
+		if (cpus[i].online)
+			n_online_cpus++;
+	}
+
+	/* then do the benchmark */
+	for (i = 0, c = 0; i < num_cpus; i++) {
+		if (!cpus[i].online)
+			continue;
+
+		rc = test_one_cpu_performance(fw, &cpus[i], c++, n_online_cpus);
+		if (rc != FWTS_OK)
+			ok = false;
+
+		cpu_set_lowest_frequency(fw, &cpus[i]);
+	}
+
+	if (ok)
+		fwts_passed(fw, "CPU performance scaling OK");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqSlowerOnCPU",
+			"CPU frequencies do not refelect actual performance");
+	return FWTS_OK;
+}
+
+static int sw_tests_possible(fwts_framework *fw)
+{
+	int i, online_cpus = 0;
+
+#ifndef FWTS_ARCH_INTEL
+	fwts_skipped(fw, "Platform doesn't perform SW_ cpu frequency control");
+	return FWTS_SKIP;
+#endif
+
+	/* count the number of CPUs online now */
+	for (i = 0; i < num_cpus; i++)
+		if (cpus[i].online)
+			online_cpus++;
+
+	if (online_cpus < 2) {
+		fwts_skipped(fw, "Machine only has one CPU online");
+		return FWTS_SKIP;
+	}
+
+	if (cpus[0].n_freqs < 2) {
+		fwts_skipped(fw, "No frequency changes possible");
+		return FWTS_SKIP;
+	}
+
+	return FWTS_OK;
+}
+
 /*
  * 4) Is BIOS wrongly doing Sw_All P-state coordination across cpus
  * - Change frequency on all CPU to the lowest value
  * - Change frequency on one particular CPU to the highest
  * - If BIOS is doing Sw_All, the last high freq request will not work
  */
-static void do_sw_all_test(fwts_framework *fw)
+static int cpufreq_test_sw_all(fwts_framework *fw)
 {
 	uint64_t highperf, lowperf;
-	int i;
+	int i, rc;
+
+	rc = sw_tests_possible(fw);
+	if (rc != FWTS_OK)
+		return rc;
 
 	/* All CPUs at the lowest frequency */
 	for (i = 0; i < num_cpus; i++)
@@ -366,85 +396,47 @@ static void do_sw_all_test(fwts_framework *fw)
 	if (get_performance_repeat(fw, &cpus[0], 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
-		return;
+		return FWTS_ERROR;
 	}
-	lowperf = (lowperf * 100) / top_speed;
 
 	cpu_set_highest_frequency(fw, &cpus[0]);
 	if (get_performance_repeat(fw, &cpus[0], 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
-		return;
+		return FWTS_ERROR;
 	}
-	highperf = (highperf * 100) / top_speed;
 
-	if (lowperf >= highperf)
+	if (lowperf >= highperf) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"CPUFreqSW_ALL",
 			"Firmware not implementing hardware "
 			"coordination cleanly. Firmware using SW_ALL "
 			"instead?");
+		return FWTS_ERROR;
+	}
+
+	fwts_passed(fw, "Firmware SW_ALL OK");
+	return FWTS_OK;
 }
 
 
-/*
- * 5) Is BIOS wrongly doing Sw_Any P-state coordination across cpus
- * - Change frequency on all CPU to the lowest value
- * - Change frequency on one particular CPU to the highest
- * - Change frequency on all CPU to the lowest value
- * - If BIOS is doing Sw_Any, the high freq request will not work
- */
-static void do_sw_any_test(fwts_framework *fw)
-{
-	uint64_t highperf, lowperf;
-	int i, rc;
-
-	for (i = 0; i < num_cpus; i++)
-		cpu_set_lowest_frequency(fw, &cpus[i]);
-
-	/* All CPUs at the lowest frequency */
-	rc = get_performance_repeat(fw, &cpus[0], 5,
-			GET_PERFORMANCE_MIN, &lowperf);
-
-	if (rc != FWTS_OK) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
-			"Failed to get CPU performance.");
-		return;
-	}
-
-	lowperf = (100 * lowperf) / top_speed;
-
-	cpu_set_highest_frequency(fw, &cpus[0]);
-
-	for (i = 0; i < num_cpus; i++)
-		cpu_set_lowest_frequency(fw, &cpus[i]);
-
-	rc = get_performance_repeat(fw, &cpus[0], 5, GET_PERFORMANCE_MAX,
-				&highperf);
-	if (rc != FWTS_OK) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ANYGetPerf",
-			"Failed to get CPU performance.");
-		return;
-	}
-	highperf = (100 * highperf) / top_speed;
-
-	if (lowperf >= highperf)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"CPUFreqSW_ANY",
-			"Firmware not implementing hardware "
-			"coordination cleanly. Firmware using SW_ANY "
-			"instead?.");
-}
-
-static void check_sw_any(fwts_framework *fw)
+static int cpufreq_test_sw_any(fwts_framework *fw)
 {
 	uint64_t low_perf, high_perf, newhigh_perf;
-	static int once = 0;
-	int i, j;
+	int i, j, rc, n_tests, performed_tests;
+	bool ok;
 
-	/* Single processor machine, no point in checking anything */
-	if (num_cpus < 2)
-		return;
+	rc = sw_tests_possible(fw);
+	if (rc != FWTS_OK)
+		return rc;
+
+	n_tests = performed_tests = 0;
+	for (i = 0; i < num_cpus; i++)
+		if (cpus[i].online)
+			n_tests++;
+
+	/* we do two performance measurements per cpu */
+	n_tests *= 2;
 
 	/* First set all processors to their lowest speed */
 	for (i = 0; i < num_cpus; i++)
@@ -455,11 +447,16 @@ static void check_sw_any(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"CPUFreqCPsSetToSW_ANYGetPerf",
 			"Cannot get CPU performance.");
-		return;
+		return FWTS_ERROR;
 	}
+
+	ok = true;
 
 	for (i = 0; i <= num_cpus; i++) {
 		struct cpu *cpu = &cpus[i];
+
+		if (!cpu->online)
+			continue;
 
 		cpu_set_highest_frequency(fw, cpu);
 		if (!cpu->online)
@@ -469,10 +466,11 @@ static void check_sw_any(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPsSetToSW_ANYGetPerf",
 				"Cannot get CPU performance.");
-			return;
+			return FWTS_ERROR;
 		}
+
 		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
+		fwts_progress(fw, 100 * performed_tests/n_tests);
 		/*
 		 * now set all the others to low again; sw_any will cause
 		 * the core in question to now also get the low speed, while
@@ -486,85 +484,25 @@ static void check_sw_any(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"CPUFreqCPsSetToSW_ANYGetPerf",
 				"Cannot get CPU performance.");
-			return;
+			return FWTS_ERROR;
 		}
 		if ((high_perf > newhigh_perf) &&
 		    (high_perf - newhigh_perf > (high_perf - low_perf)/4) &&
-		    (once == 0) && (high_perf - low_perf > 20)) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"CPUFreqCPUsSetToSW_ANY",
-				"Processors are set to SW_ANY.");
-			once++;
+		    (high_perf - low_perf > 20)) {
 			cpu_set_lowest_frequency(fw, cpu);
+			ok = false;
 		}
 		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
-	}
-	if (!once)
-		fwts_passed(fw, "P-state coordination under hardware control.");
-}
-#endif
-
-static int cpufreq_test1(fwts_framework *fw)
-{
-	int i;
-
-#ifdef FWTS_ARCH_INTEL
-	fwts_log_info(fw,
-		"For each processor in the system, this test steps through the "
-		"various frequency states (P-states) that the BIOS advertises "
-		"for the processor. For each processor/frequency combination, "
-		"a quick performance value is measured. The test then validates that:");
-	fwts_log_info_verbatum(fw, "  1. Each processor has the same number of frequency states.");
-	fwts_log_info_verbatum(fw, "  2. Higher advertised frequencies have a higher performance.");
-	fwts_log_info_verbatum(fw, "  3. No duplicate frequency values are reported by the BIOS.");
-	fwts_log_info_verbatum(fw, "  4. BIOS doing Sw_All P-state coordination across cores.");
-	fwts_log_info_verbatum(fw, "  5. BIOS doing Sw_Any P-state coordination across cores.");
-#else
-	fwts_log_info(fw,
-		"For each processor in the system, this test steps through the "
-		"various frequency states that the CPU supports. "
-		"For each processor/frequency combination, "
-		"a quick performance value is measured. The test then validates that:");
-	fwts_log_info_verbatum(fw, "  1. Each processor has the same number of frequency states.");
-	fwts_log_info_verbatum(fw, "  2. Higher advertised frequencies have a higher performance.");
-	fwts_log_info_verbatum(fw, "  3. No duplicate frequency values exist.");
-#endif
-	fwts_log_nl(fw);
-
-	for (i = 0; i < num_cpus; i++)
-		cpu_set_lowest_frequency(fw, &cpus[i]);
-
-	/* then do the benchmark */
-	for (i = 0; i < num_cpus; i++) {
-		do_cpu(fw, &cpus[i]);
-		cpu_set_lowest_frequency(fw, &cpus[i]);
-		if (no_cpufreq)
-			break;
+		fwts_progress(fw, 100 * performed_tests/n_tests);
 	}
 
-	/* set everything back to the highest speed again */
-	for (i = 0; i < num_cpus; i++)
-		cpu_set_highest_frequency(fw, &cpus[i]);
-
-
-#ifdef FWTS_ARCH_INTEL
-	if (!no_cpufreq)
-		check_sw_any(fw);
-
-	/*
-	 * Check for more than one CPU and more than one frequency and
-	 * then do the benchmark set 2
-	 */
-	if (num_cpus > 1 && number_of_speeds > 1) {
-		do_sw_all_test(fw);
-		do_sw_any_test(fw);
-	} else if (number_of_speeds > 1) {
-		performed_tests += 4;
-		fwts_progress(fw, 100 * performed_tests/total_tests);
-	}
-#endif
-	fwts_progress(fw, 100);
+	if (!ok)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"CPUFreqCPUsSetToSW_ANY",
+			"Processors are set to SW_ANY.");
+	else
+		fwts_passed(fw, "P-state coordination "
+				"under hardware control.");
 
 	return FWTS_OK;
 }
@@ -806,6 +744,10 @@ static int cpufreq_init(fwts_framework *fw __attribute__((unused)))
 	for (i = 0; i < num_cpus; i++)
 		parse_cpu_info(&cpus[i], dirs[i]);
 
+	/* all test require a userspace governor */
+	for (i = 0; i < num_cpus; i++)
+		cpu_set_governor(fw, &cpus[i], "userspace");
+
 	return FWTS_OK;
 }
 
@@ -834,11 +776,9 @@ static fwts_framework_minor_test cpufreq_tests[] = {
 	{ cpufreq_test_duplicates,	"CPU frequency table duplicates" },
 	{ cpufreq_test_bios_limits,	"CPU frequency firmware limits" },
 	{ cpufreq_test_claimed_max,	"CPU frequency claimed maximum" },
-#ifdef FWTS_ARCH_INTEL
-	{ cpufreq_test1, "CPU P-State tests." },
-#else
-	{ cpufreq_test1, "CPU Frequency tests." },
-#endif
+	{ cpufreq_test_sw_any,		"CPU frequency SW_ANY control" },
+	{ cpufreq_test_sw_all,		"CPU frequency SW_ALL control" },
+	{ cpufreq_test_cpu_performance,	"CPU frequency performance tests." },
 	{ NULL, NULL }
 };
 

@@ -258,12 +258,7 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 {
 	int i;
 	static int warned = 0;
-	bool warned_PSS = false;
 	uint64_t cpu_top_perf = 0;
-	int claimed_hz_too_low = 0;
-	int bios_limit_too_low = 0;
-	const uint64_t claimed_hz = get_claimed_hz(cpu);
-	const uint64_t bios_limit = get_bios_limit(cpu);
 
 	cpu_set_governor(fw, cpu, "userspace");
 
@@ -291,11 +286,6 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 	for (i = 0; i < cpu->n_freqs; i++) {
 		cpu_set_frequency(fw, cpu, cpu->freqs[i].Hz);
 
-		if ((claimed_hz != 0) && (claimed_hz < cpu->freqs[i].Hz))
-			claimed_hz_too_low++;
-		if ((bios_limit != 0) && (bios_limit < cpu->freqs[i].Hz))
-			bios_limit_too_low++;
-
 		if (fwts_cpu_performance(fw, cpu->idx, &cpu->freqs[i].speed)
 				!= FWTS_OK) {
 			fwts_log_error(fw, "Failed to get CPU performance for "
@@ -312,31 +302,6 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 
 	if (cpu_top_perf > top_speed)
 		top_speed = cpu_top_perf;
-
-	if (claimed_hz_too_low) {
-		char path[PATH_MAX];
-
-		cpu_mkpath(path, sizeof(path), cpu, "scaling_max_freq");
-		fwts_warning(fw,
-			"There were %d CPU frequencies larger than the _PSS "
-			"maximum CPU frequency of %s for CPU %d. Has %s "
-			"been set too low?",
-			claimed_hz_too_low, hz_to_human(claimed_hz),
-			cpu->idx, path);
-	}
-
-	if (bios_limit_too_low) {
-		char path[PATH_MAX];
-
-		cpu_mkpath(path, sizeof(path), cpu, "bios_limit");
-		fwts_warning(fw,
-			"The CPU frequency BIOS limit %s for CPU %d was set to %s "
-			"which is lower than some of the ACPI scaling frequencies.",
-			path, cpu->idx, hz_to_human(bios_limit));
-	}
-
-	if (claimed_hz_too_low || bios_limit_too_low)
-		fwts_log_nl(fw);
 
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.",
 			cpu->idx, cpu->n_freqs);
@@ -378,14 +343,6 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 				hz_to_human(cpu->freqs[i].Hz),
 				cpu->freqs[i].speed,
 				cpu->idx);
-
-		if ((cpu->freqs[i].Hz > claimed_hz) && !warned_PSS) {
-			warned_PSS = true;
-			fwts_warning(fw, "Frequency %" PRIu64
-				" not achievable; _PSS limit of %" PRIu64
-					" in effect?",
-				cpu->freqs[i].Hz, claimed_hz);
-		}
 	}
 }
 
@@ -706,6 +663,84 @@ static int cpufreq_test_duplicates(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int cpufreq_test_bios_limits(fwts_framework *fw)
+{
+	bool ok, present;
+	int i;
+
+	present = false;
+	ok = true;
+
+	for (i = 0; i < num_cpus; i++) {
+		struct cpu *cpu = &cpus[i];
+		uint64_t bios_limit;
+
+		bios_limit = get_bios_limit(cpu);
+
+		if (!bios_limit)
+			continue;
+
+		present = true;
+
+		if (bios_limit < cpu->freqs[cpu->n_freqs-1].Hz) {
+			ok = false;
+			fwts_warning(fw, "cpu %d has bios limit of %" PRId64
+					", lower than max freq of %"
+					PRId64, cpu->idx, bios_limit,
+					cpu->freqs[cpu->n_freqs-1].Hz);
+		}
+	}
+
+	if (!present)
+		fwts_passed(fw, "No BIOS limits imposed");
+	else if (ok)
+		fwts_passed(fw, "CPU BIOS limit OK");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqBIOSLimit",
+				"CPU BIOS limit is set too low");
+
+	return FWTS_OK;
+}
+
+static int cpufreq_test_claimed_max(fwts_framework *fw)
+{
+	bool ok, present;
+	int i;
+
+	present = false;
+	ok = true;
+
+	for (i = 0; i < num_cpus; i++) {
+		struct cpu *cpu = &cpus[i];
+		uint64_t max;
+
+		max = get_claimed_hz(cpu);
+
+		if (!max)
+			continue;
+
+		present = true;
+
+		if (max > cpu->freqs[cpu->n_freqs-1].Hz) {
+			ok = false;
+			fwts_warning(fw, "cpu %d has claimed frequency of %"
+					PRId64 ", higher than max freq of %"
+					PRId64, cpu->idx, max,
+					cpu->freqs[cpu->n_freqs-1].Hz);
+		}
+	}
+
+	if (!present)
+		fwts_passed(fw, "No max frequencies present");
+	else if (ok)
+		fwts_passed(fw, "CPU max frequencies OK");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqClaimedMax",
+				"CPU max frequency is unreachable");
+
+	return FWTS_OK;
+}
+
 static int cpu_freq_compare(const void *v1, const void *v2)
 {
 	const fwts_cpu_freq *f1 = v1;
@@ -797,6 +832,8 @@ static int cpufreq_deinit(fwts_framework *fw)
 static fwts_framework_minor_test cpufreq_tests[] = {
 	{ cpufreq_test_consistency,	"CPU frequency table consistency" },
 	{ cpufreq_test_duplicates,	"CPU frequency table duplicates" },
+	{ cpufreq_test_bios_limits,	"CPU frequency firmware limits" },
+	{ cpufreq_test_claimed_max,	"CPU frequency claimed maximum" },
 #ifdef FWTS_ARCH_INTEL
 	{ cpufreq_test1, "CPU P-State tests." },
 #else

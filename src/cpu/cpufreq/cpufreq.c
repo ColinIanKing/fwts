@@ -77,31 +77,6 @@ static uint64_t top_speed = 0;
 #define MAX_ABSOLUTE_ERROR	20.0		/* In Hz */
 #define MAX_RELATIVE_ERROR	0.0025		/* as fraction */
 
-/*
- *  hz_almost_equal()
- *	used to compare CPU _PSS levels, are they almost
- *	equal?  E.g. within MAX_ABSOLUTE_ERROR Hz difference
- *	between each other, or a relative difference of
- *	MAX_RELATIVE_ERROR.  If they are, then they are deemed
- *	almost equal.
- */
-static int hz_almost_equal(const uint64_t a, const uint64_t b)
-{
-	double da = (double)a, db = (double)b;
-	double relative_error, abs_diff = fabs(da - db);
-
-	if (a == b)
-		return true;
-	if (abs_diff < MAX_ABSOLUTE_ERROR)
-		return true;
-	if (db > da)
-		relative_error = abs_diff / db;
-	else
-		relative_error = abs_diff / da;
-
-	return relative_error <= MAX_RELATIVE_ERROR;
-}
-
 static inline void cpu_mkpath(
 	char *const path,
 	const int len,
@@ -203,6 +178,32 @@ static int get_performance_repeat(
 	}
 	return FWTS_OK;
 }
+
+/*
+ *  hz_almost_equal()
+ *	used to compare CPU _PSS levels, are they almost
+ *	equal?  E.g. within MAX_ABSOLUTE_ERROR Hz difference
+ *	between each other, or a relative difference of
+ *	MAX_RELATIVE_ERROR.  If they are, then they are deemed
+ *	almost equal.
+ */
+static int hz_almost_equal(const uint64_t a, const uint64_t b)
+{
+	double da = (double)a, db = (double)b;
+	double relative_error, abs_diff = fabs(da - db);
+
+	if (a == b)
+		return true;
+	if (abs_diff < MAX_ABSOLUTE_ERROR)
+		return true;
+	if (db > da)
+		relative_error = abs_diff / db;
+	else
+		relative_error = abs_diff / da;
+
+	return relative_error <= MAX_RELATIVE_ERROR;
+}
+
 #endif
 
 static char *hz_to_human(const uint64_t hz)

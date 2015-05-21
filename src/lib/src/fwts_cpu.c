@@ -378,6 +378,7 @@ int fwts_cpu_benchmark(
 	fwts_cpu_benchmark_result tmp;
 	cpu_set_t mask, oldset;
 	int perfctr, ncpus, rc;
+	double duration_sec;
 	static bool warned;
 	bool perf_ok;
 
@@ -445,12 +446,15 @@ int fwts_cpu_benchmark(
 		return FWTS_ERROR;
 	}
 
+	duration_sec = duration.tv_sec +
+		((1.0 * duration.tv_usec) / 1000000.0);
+
+	tmp.loops = (1.0 * tmp.loops) / duration_sec;
+
 	if (perf_ok) {
 		rc = perf_read_counter(perfctr, &perfctr_result);
 		if (rc == FWTS_OK) {
-			tmp.cycles = perfctr_result /
-				((1.0 * duration.tv_usec / 1000000) +
-				 duration.tv_sec);
+			tmp.cycles = (1.0 * perfctr_result) / duration_sec;
 			tmp.cycles_valid = true;
 		} else {
 			fwts_log_warning(fw, "failed to read perf counters");

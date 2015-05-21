@@ -356,15 +356,7 @@ static void do_cpu(fwts_framework *fw, struct cpu *cpu)
 			cpu->freqs[i].speed, turbo);
 	}
 
-	if (number_of_speeds == -1)
-		number_of_speeds = cpu->n_freqs;
-
 	fwts_log_nl(fw);
-
-	if (number_of_speeds != cpu->n_freqs)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"CPUFreqPStates",
-			"Not all processors support the same number of P states.");
 
 	if (cpu->n_freqs < 2)
 		return;
@@ -620,6 +612,65 @@ static int cpufreq_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int cpufreq_compare_freqs(fwts_framework *fw, struct cpu *c1,
+		struct cpu *c2)
+{
+	int i;
+
+	if (c1->n_freqs != c2->n_freqs) {
+		fwts_log_warning(fw, "cpu %d has %d freqs, cpu %d has %d freqs",
+				c1->idx, c1->n_freqs,
+				c2->idx, c2->n_freqs);
+		return FWTS_ERROR;
+	}
+
+	for (i = 0; i < c1->n_freqs; i++) {
+		if (c1->freqs[i].Hz != c2->freqs[i].Hz) {
+			fwts_log_warning(fw, "freq entry %d: "
+						"cpu %d is %" PRId64 ", "
+						"cpu %d is %" PRId64, i,
+					c1->idx, c1->freqs[i].Hz,
+					c2->idx, c2->freqs[i].Hz);
+			return FWTS_ERROR;
+		}
+	}
+
+	return FWTS_OK;
+}
+
+static int cpufreq_test_consistency(fwts_framework *fw)
+{
+	struct cpu *cpu, *cpu0;
+	bool consistent = true;
+	int i;
+
+	if (num_cpus < 2) {
+		fwts_skipped(fw, "Test skipped, only one processor present");
+		return FWTS_SKIP;
+	}
+
+	cpu0 = &cpus[0];
+
+	for (i = 1; i < num_cpus; i++) {
+		cpu = &cpus[i];
+		if (cpufreq_compare_freqs(fw, cpu0, cpu) != FWTS_OK) {
+			consistent = false;
+			fwts_log_error(fw,
+				"cpu %d has an inconsistent frequency table",
+				cpu->idx);
+		}
+	}
+
+	if (!consistent)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqInconsistent",
+				"inconsistencies found in CPU "
+				"frequency tables");
+	else
+		fwts_passed(fw, "CPU frequency tables are consistent");
+
+	return FWTS_OK;
+}
+
 static int cpu_freq_compare(const void *v1, const void *v2)
 {
 	const fwts_cpu_freq *f1 = v1;
@@ -709,6 +760,7 @@ static int cpufreq_deinit(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test cpufreq_tests[] = {
+	{ cpufreq_test_consistency,	"CPU frequency table consistency" },
 #ifdef FWTS_ARCH_INTEL
 	{ cpufreq_test1, "CPU P-State tests." },
 #else

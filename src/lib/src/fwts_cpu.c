@@ -31,11 +31,11 @@
 #include <sys/types.h>
 #include <sys/syscall.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <math.h>
 #include <sched.h>
-#include <time.h>
 
 #include <linux/perf_event.h>
 
@@ -373,12 +373,12 @@ int fwts_cpu_benchmark(
 	const int cpu,		/* CPU we want to measure performance */
 	fwts_cpu_benchmark_result *result)
 {
+	struct timeval start, end, duration;
 	unsigned long long perfctr_result;
 	fwts_cpu_benchmark_result tmp;
 	cpu_set_t mask, oldset;
 	int perfctr, ncpus, rc;
 	static bool warned;
-	time_t current;
 	bool perf_ok;
 
 	ncpus = fwts_cpu_enumerate();
@@ -418,24 +418,24 @@ int fwts_cpu_benchmark(
 		return FWTS_ERROR;
 	}
 
-	/* Wait until we get a new second */
-	current = time(NULL);
-	while (current == time(NULL))
-		sched_yield();
-
 	if (perf_ok)
 		perf_start_counter(perfctr);
-
-	current = time(NULL);
+	gettimeofday(&start, NULL);
 
 	/*
 	 * And burn some CPU cycles and get a bogo-compute like
 	 * loop count measure of CPU performance.
 	 */
-	do {
+	for (;;) {
 		fwts_cpu_burn_cycles();
+
 		tmp.loops++;
-	} while (current == time(NULL));
+
+		gettimeofday(&end, NULL);
+		timersub(&end, &start, &duration);
+		if (duration.tv_sec >= 1)
+			break;
+	}
 
 	if (perf_ok)
 		perf_stop_counter(perfctr);
@@ -448,7 +448,9 @@ int fwts_cpu_benchmark(
 	if (perf_ok) {
 		rc = perf_read_counter(perfctr, &perfctr_result);
 		if (rc == FWTS_OK) {
-			tmp.cycles = perfctr_result;
+			tmp.cycles = perfctr_result /
+				((1.0 * duration.tv_usec / 1000000) +
+				 duration.tv_sec);
 			tmp.cycles_valid = true;
 		} else {
 			fwts_log_warning(fw, "failed to read perf counters");

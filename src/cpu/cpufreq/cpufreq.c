@@ -29,6 +29,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <limits.h>
 #include <dirent.h>
 #include <stdint.h>
@@ -52,6 +53,7 @@ struct cpu {
 	int		idx;
 	char		sysfs_path[PATH_MAX];
 	bool		online;
+	bool		master;
 
 	int		n_freqs;
 	fwts_cpu_freq	freqs[MAX_FREQS];
@@ -79,8 +81,10 @@ static inline void cpu_mkpath(
 	const struct cpu *cpu,
 	const char *const name)
 {
-	snprintf(path, len, "%s/%s/cpufreq/%s", FWTS_CPU_PATH,
-			cpu->sysfs_path, name);
+	snprintf(path, len, "%s/%s/cpufreq%s%s", FWTS_CPU_PATH,
+			cpu->sysfs_path,
+			name ? "/" : "",
+			name ?: "");
 }
 
 static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
@@ -348,15 +352,16 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 
 static int cpufreq_test_cpu_performance(fwts_framework *fw)
 {
-	int n_online_cpus, i, c, rc;
+	int n_master_cpus, i, c, rc;
 	bool ok = true;
 
-	n_online_cpus = 0;
+	n_master_cpus = 0;
 
 
 	for (i = 0; cpufreq_settable && i < num_cpus; i++) {
-		if (cpus[i].online)
-			n_online_cpus++;
+		if (!(cpus[i].online && cpus[i].master))
+			continue;
+		n_master_cpus++;
 		rc = cpu_set_lowest_frequency(fw, &cpus[i]);
 		if (rc != FWTS_OK)
 			cpufreq_settable = false;
@@ -371,10 +376,10 @@ static int cpufreq_test_cpu_performance(fwts_framework *fw)
 
 	/* then do the benchmark */
 	for (i = 0, c = 0; i < num_cpus; i++) {
-		if (!cpus[i].online)
+		if (!(cpus[i].online && cpus[i].master))
 			continue;
 
-		rc = test_one_cpu_performance(fw, &cpus[i], c++, n_online_cpus);
+		rc = test_one_cpu_performance(fw, &cpus[i], c++, n_master_cpus);
 		if (rc != FWTS_OK)
 			ok = false;
 
@@ -738,14 +743,28 @@ static int cpu_freq_compare(const void *v1, const void *v2)
 	return f1->Hz - f2->Hz;
 }
 
-static int parse_cpu_info(struct cpu *cpu, struct dirent *dir)
+static int parse_cpu_info(fwts_framework *fw,
+		struct cpu *cpu, struct dirent *dir)
 {
 	char *end, path[PATH_MAX+1], *str, *tmp, *tok;
-	int i;
+	struct stat statbuf;
+	int i, rc;
 
 	strcpy(cpu->sysfs_path, dir->d_name);
 	cpu->idx = strtoul(cpu->sysfs_path + strlen("cpu"), &end, 10);
 	cpu->online = true;
+
+	/* check if this is the master of a group of CPUs; we only
+	 * need to do perf checks on those that are the master */
+	cpu_mkpath(path, sizeof(path), cpu, NULL);
+	rc = lstat(path, &statbuf);
+	if (rc) {
+		fwts_log_warning(fw, "Can't stat cpufreq info!");
+		return FWTS_ERROR;
+	}
+
+	/* non-master CPUs will have a link, not a dir */
+	cpu->master = S_ISDIR(statbuf.st_mode);
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_governor");
 	cpu->orig_governor = fwts_get(path);
@@ -785,7 +804,7 @@ static int is_cpu_dir(const struct dirent *dir)
 		isdigit(dir->d_name[3]);
 }
 
-static int cpufreq_init(fwts_framework *fw __attribute__((unused)))
+static int cpufreq_init(fwts_framework *fw)
 {
 	struct dirent **dirs;
 	int i, rc;
@@ -794,7 +813,7 @@ static int cpufreq_init(fwts_framework *fw __attribute__((unused)))
 	cpus = calloc(num_cpus, sizeof(*cpus));
 
 	for (i = 0; i < num_cpus; i++)
-		parse_cpu_info(&cpus[i], dirs[i]);
+		parse_cpu_info(fw, &cpus[i], dirs[i]);
 
 	/* all test require a userspace governor */
 	for (i = 0; i < num_cpus; i++) {

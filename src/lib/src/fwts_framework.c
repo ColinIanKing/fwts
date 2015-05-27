@@ -47,9 +47,11 @@ typedef struct {
 	 FWTS_FLAG_POWER_STATES |		\
 	 FWTS_FLAG_UTILS |			\
 	 FWTS_FLAG_UNSAFE |			\
-	 FWTS_FLAG_TEST_UEFI)
+	 FWTS_FLAG_TEST_UEFI |			\
+	 FWTS_FLAG_TEST_ACPI)
 
 static fwts_categories categories[] = {
+	{ "ACPI",			FWTS_FLAG_TEST_ACPI },
 	{ "Batch",			FWTS_FLAG_BATCH },
 	{ "Interactive",		FWTS_FLAG_INTERACTIVE },
 	{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
@@ -104,6 +106,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "rsdp",		"R:", 1, "Specify the physical address of the ACPI RSDP." },
 	{ "pm-method",  "",   1, "Select the power method to use. Accepted values are \"logind\", \"pm-utils\", \"sysfs\""},
 	{ "show-tests-categories","", 0, "Show tests and associated categories." },
+	{ "acpi",		"",   0, "Run ACPI tests." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1225,6 +1228,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 39: /* --show-tests-categories */
 			fw->flags |= FWTS_FLAG_SHOW_TESTS_CATEGORIES;
+			break;
+		case 40: /* --acpi */
+			fw->flags |= FWTS_FLAG_TEST_ACPI;
 			break;
 		}
 		break;

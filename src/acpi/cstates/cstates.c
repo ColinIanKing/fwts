@@ -254,6 +254,6 @@ static fwts_framework_ops cstates_ops = {
 	.minor_tests = cstates_tests
 };
 
-FWTS_REGISTER("cstates", &cstates_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
+FWTS_REGISTER("cstates", &cstates_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
 
 #endif

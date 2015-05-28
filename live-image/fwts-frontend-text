@@ -235,10 +235,12 @@ do
 	dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
   		"This will run a suite of firmware tests that will check the BIOS and ACPI tables. It can also find issues that can cause Linux problems.\n\n\
 The default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue:" \
-		18 70 4 \
+		20 70 6 \
 		1 "All Batch Tests" on \
-		2 "Select Individual Tests" off \
-		3 "Abort Testing" off \
+		2 "ACPI Tests" off \
+		3 "UEFI Tests" off \
+		4 "Select Individual Tests" off \
+		5 "Abort Testing" off \
 	2> $OPTIONS
 
 	case $? in
@@ -250,9 +252,17 @@ The default below is to run just all the Batch Tests, but you can select more te
 			done_tests_finish
 			;;
 		'2')
-			select_tests
+			do_test "--acpi" 'Running ACPI Tests'
+			done_tests_finish
 			;;
 		'3')
+			do_test "--uefi" 'Running UEFI Tests'
+			done_tests_finish
+			;;
+		'4')
+			select_tests
+			;;
+		'5')
 			no_tests_finish
 			;;
 		esac

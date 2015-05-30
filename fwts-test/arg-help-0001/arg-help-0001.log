@@ -1,3 +1,4 @@
+--acpi                       Run ACPI tests.
 --acpica                     Enable ACPICA run
                              time options.
 --acpica-debug               Enable ACPICA debug

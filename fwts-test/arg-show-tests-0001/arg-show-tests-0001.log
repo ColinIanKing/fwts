@@ -1,3 +1,18 @@
+ACPI tests:
+ acpiinfo        General ACPI information test.
+ acpitables      ACPI table settings sanity tests.
+ apicinstance    Test for single instance of APIC/MADT table.
+ checksum        ACPI table checksum test.
+ cstates         Processor C state support test.
+ dmar            DMA Remapping (VT-d) test.
+ fadt            FADT SCI_EN enabled tests.
+ hpet_check      HPET configuration tests.
+ mcfg            MCFG PCI Express* memory mapped config space test.
+ method          ACPI DSDT Method Semantic tests.
+ pcc             Processor Clocking Control (PCC) test.
+ spcr            SPCR Serial Port Console Redirection Table test.
+ wmi             Extract and analyse Windows Management Instrumentation (WMI).
+
 Batch tests:
  acpiinfo        General ACPI information test.
  acpitables      ACPI table settings sanity tests.

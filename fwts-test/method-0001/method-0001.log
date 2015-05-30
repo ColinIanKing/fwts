@@ -641,11 +641,11 @@ method          Test 95 of 180: Test _ALT (Ambient Light Temperature).
 method          SKIPPED: Test 95, Skipping test for non-existant object
 method          _ALT.
 method          
-method          Test 96 of 180: Test _ALP (Ambient Light Polling). 
+method          Test 96 of 180: Test _ALP (Ambient Light Polling).
 method          SKIPPED: Test 96, Skipping test for non-existant object
 method          _ALP.
 method          
-method          Test 97 of 180: Test _ALR (Ambient Light Response). 
+method          Test 97 of 180: Test _ALR (Ambient Light Response).
 method          SKIPPED: Test 97, Skipping test for non-existant object
 method          _ALR.
 method          

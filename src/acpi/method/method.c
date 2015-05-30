@@ -6212,8 +6212,8 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_ALC, "Test _ALC (Ambient Light Colour Chromaticity)." },
 	{ method_test_ALI, "Test _ALI (Ambient Light Illuminance)." },
 	{ method_test_ALT, "Test _ALT (Ambient Light Temperature)." },
-	{ method_test_ALP, "Test _ALP (Ambient Light Polling). "},
-	{ method_test_ALR, "Test _ALR (Ambient Light Response). "},
+	{ method_test_ALP, "Test _ALP (Ambient Light Polling)."},
+	{ method_test_ALR, "Test _ALR (Ambient Light Response)."},
 
 	/* Section 9.3 Battery Device */
 

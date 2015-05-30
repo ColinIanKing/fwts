@@ -19,8 +19,8 @@ ACPI tests:
   Test FADT reset register.
  hpet_check      (4 tests):
   Test HPET base in kernel log.
-  Test HPET base in HPET table. 
-  Test HPET base in DSDT and/or SSDT. 
+  Test HPET base in HPET table.
+  Test HPET base in DSDT and/or SSDT.
   Test HPET configuration.
  mcfg            (2 tests):
   Validate MCFG table.
@@ -121,8 +121,8 @@ ACPI tests:
   Test _ALC (Ambient Light Colour Chromaticity).
   Test _ALI (Ambient Light Illuminance).
   Test _ALT (Ambient Light Temperature).
-  Test _ALP (Ambient Light Polling). 
-  Test _ALR (Ambient Light Response). 
+  Test _ALP (Ambient Light Polling).
+  Test _ALR (Ambient Light Response).
   Test _LID (Lid Status).
   Test _GTF (Get Task File).
   Test _GTM (Get Timing Mode).
@@ -262,8 +262,8 @@ Batch tests:
   HDA Audio Pin Configuration test.
  hpet_check      (4 tests):
   Test HPET base in kernel log.
-  Test HPET base in HPET table. 
-  Test HPET base in DSDT and/or SSDT. 
+  Test HPET base in HPET table.
+  Test HPET base in DSDT and/or SSDT.
   Test HPET configuration.
  klog            (1 test):
   Kernel log error check.
@@ -370,8 +370,8 @@ Batch tests:
   Test _ALC (Ambient Light Colour Chromaticity).
   Test _ALI (Ambient Light Illuminance).
   Test _ALT (Ambient Light Temperature).
-  Test _ALP (Ambient Light Polling). 
-  Test _ALR (Ambient Light Response). 
+  Test _ALP (Ambient Light Polling).
+  Test _ALR (Ambient Light Response).
   Test _LID (Lid Status).
   Test _GTF (Get Task File).
   Test _GTM (Get Timing Mode).

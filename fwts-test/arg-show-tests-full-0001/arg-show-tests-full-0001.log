@@ -237,8 +237,14 @@ Batch tests:
   Gather BIOS DMI information
  checksum        (1 test):
   ACPI table checksum test.
- cpufreq         (1 test):
-  CPU P-State tests.
+ cpufreq         (7 tests):
+  CPU frequency table consistency
+  CPU frequency table duplicates
+  CPU frequency firmware limits
+  CPU frequency claimed maximum
+  CPU frequency SW_ANY control
+  CPU frequency SW_ALL control
+  CPU frequency performance tests.
  crs             (1 test):
   Test PCI host bridge configuration using _CRS.
  csm             (1 test):
@@ -704,4 +710,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 603 tests
+Total of 609 tests

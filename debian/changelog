@@ -1,3 +1,75 @@
+fwts (15.06.00-0ubuntu1) wily; urgency=low
+
+  [Alex Hung]
+  * acpi: method: update method list according to Table 5-162 in ACPI 6
+  * lib: acpi: add an acpi category
+  * live-image/fwts-frontend-text: add selections of acpi and uefi tests
+  * acpi: add tests to acpi category
+  * fwts-test: Update tests with new acpi category
+  * acpi: fwts-tests: Remove redundant tailing space and update fwts-tests
+  * fwts-test: Update tests with cpufreq changes
+  * auto-packager: mkpackage.sh: remove lucid
+  * auto-packager: mkpackage.sh: add wily
+
+  [Colin Ian King]
+  * Debian: control: remove Chris from uploaders list
+  * uefi: uefirtvariable: Add invalid NULL parameter sanity checks
+  * fwts-test: update to sync with UEFI test changes
+  * acpi: Add SPCR ACPI table check (LP: #1433604)
+  * fwts-test: Update tests with new SPCR test
+  * ACPICA: Update version to 20150410 (LP: #1441773)
+  * lib: fwts_acpi_tables: print correct pathname on error
+  * lib: fwts_acpi_tables: set count correctly on error
+  * lib: fwts_acpi_tables: only attempt to open a dumpfile if name is defined
+  * pci: aspm: check that a table exists, fixes segv on arm64
+  * lib: fwts_smbios: only scan memory for DMI table if x86
+  * dmi: dmicheck: add 4 new DMI chassis types
+  * acpi: spcr: remove unnecessary include files and fix ARM build issue
+  * pci: maxreadreq: skip test if /sys/bus/pci/devices is not available
+  * acpi: spcr: issue a passed message if SPCR test passes
+  * doc: fwts manual: update list of contributors at end of the manual
+  * fwts-test: arg-help-0001: modify regex to match upper/lower case version
+  * lib: fwts_alloc: provide fallback low memory allocator strategy
+    (LP: #1452168)
+  * bios: mtrr: fix memory leak on mtrr entries
+  * hotkey: only process reads of hotkey events that are at least the correct
+    length
+  * uefi: uefirtvariable: fix incorrect buffer size being passed
+  * lib: fwts_acpi_tables: enforce stricter table loading checks
+  * acpi: battery: clean up source, no functional change
+  * lib: acpica: explicitly set buffer to NULL to remove cppcheck warning
+  * acpica: fwts_iasl_interface: clean up static analyzer warning on freopen
+  * lib: fwts_pipe: clean up static analyzer warning on freopen
+  * ACPICA: Update version to 20150515 (LP: #1455946)
+
+  [Heyi Guo]
+  * uefi: efi_runtime: eliminate confusing error message of get_variable
+  * acpi: method: _PRS is not mandatory method
+  * acpi: acpitables: FADT: Ignore fields at offset 46 through 108 for
+    HW_REDUCED_ACPI
+  * efi_runtime: get_nextvariablename: Fix bug of name string copy
+
+  [Jeremy Kerr]
+  * fwts: Add fwts_firmware_has_features
+  * fwts: Only run firmware detection once
+  * fwts: Allow tests to be conditional on available features
+  * fwts: Print names of missing features, rather than a cryptic bitmask
+  * fwts: Add FWTS_FW_FEATURE_DEVICETREE
+  * fwts: Add OPAL firmware type
+  * cpu/cpufreq: Don't reparse cpu information
+  * cpu/cpufreq: hz_almost_equal is unused if !FWTS_ARCH_INTEL
+  * cpu/cpufreq: Add a separate cpufreq consistency test
+  * cpu/cpufreq: Add test for duplicate entries in cpufreq tables
+  * cpu/cpufreq: Do bios limit and claimed max checks as separate tests
+  * cpu/cpufreq: Refactor CPU performance tests
+  * cpu/cpufreq: Always check that cpufreq changes have taken
+  * fwts: Use linux perf counters for cpu benchmarking
+  * fwts: Use gettimeofday for cpu benchmark
+  * fwts: scale cpu benchmark results to one second
+  * cpu/cpufreq: Only run performance tests on master threads
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 03 Jun 2015 16:37:55 +0800
+
 fwts (15.03.01-0ubuntu1) vivid; urgency=low
  
   [Colin Ian King]

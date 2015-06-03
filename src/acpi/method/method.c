@@ -350,7 +350,7 @@ static int method_package_count_min(
 	if (obj->Package.Count < min) {
 		char tmp[128];
 
-		snprintf(tmp, sizeof(tmp), "Method_%sElementCount", objname);
+		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 			"%s should return package of at least %" PRIu32
 			" element%s, got %" PRIu32 " element%s instead.",
@@ -375,7 +375,7 @@ static int method_package_count_equal(
 	if (obj->Package.Count != count) {
 		char tmp[128];
 
-		snprintf(tmp, sizeof(tmp), "Method_%sElementCount", objname);
+		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 			"%s should return package of %" PRIu32
 			" element%s, got %" PRIu32 " element%s instead.",

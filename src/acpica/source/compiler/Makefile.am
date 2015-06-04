@@ -227,6 +227,9 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/tables/tbinstal.c 	\
 	../components/tables/tbutils.c 		\
 	../components/tables/tbxface.c 		\
+	../components/tables/tbxfroot.c		\
+	../components/tables/tbxfload.c		\
+	../components/tables/tbprint.c		\
 	../tools/acpiexec/aeinitfile.c		\
 	../os_specific/service_layers/osunixxf.c
 

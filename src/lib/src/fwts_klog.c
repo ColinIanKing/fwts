@@ -34,6 +34,7 @@
  *  klog pattern matching strings data file, data stored in json format
  */
 #define KLOG_DATA_JSON_FILE		"klog.json"
+#define VECTOR_SIZE			(3)	/* Must be a multiple of 3 */
 
 /*
  *  fwts_klog_free()
@@ -259,8 +260,6 @@ static char *fwts_klog_unique_label(const char *str)
 	*dst = '\0';
 	return buffer;
 }
-
-#define VECTOR_SIZE	(3)	/* Must be a multiple of 3 */
 
 void fwts_klog_scan_patterns(fwts_framework *fw,
 	char *line,
@@ -553,13 +552,12 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
 	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
 	if (re != NULL) {
 		int rc;
-		int vector[1];
+		int vector[VECTOR_SIZE];
 		pcre_extra *extra = pcre_study(re, 0, &error);
 
 		if (error)
 			return;
-
-		rc = pcre_exec(re, extra, line, strlen(line), 0, 0, vector, 1);
+		rc = pcre_exec(re, extra, line, strlen(line), 0, 0, vector, VECTOR_SIZE);
 		free(extra);
 		pcre_free(re);
 		if (rc == 0)

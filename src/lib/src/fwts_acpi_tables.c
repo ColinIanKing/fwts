@@ -1041,17 +1041,22 @@ static int fwts_acpi_load_tables_from_sysfs(fwts_framework *fw)
 int fwts_acpi_load_tables(fwts_framework *fw)
 {
 	int ret = FWTS_ERROR;
+	bool require_fixup = false;
 
-	if (fw->acpi_table_path != NULL)
+	if (fw->acpi_table_path != NULL) {
 		ret = fwts_acpi_load_tables_from_file(fw);
-	else if (fw->acpi_table_acpidump_file != NULL)
+		require_fixup = true;
+	} else if (fw->acpi_table_acpidump_file != NULL) {
 		ret = fwts_acpi_load_tables_from_acpidump(fw);
-	else if (fwts_check_root_euid(fw, true) == FWTS_OK) {
+		require_fixup = true;
+	} else if (fwts_check_root_euid(fw, true) == FWTS_OK) {
 		ret = fwts_acpi_load_tables_from_firmware(fw);
 
 		/* Load from memory failed (e.g. no /dev/mem), so try sysfs */
-		if (ret != FWTS_OK)
+		if (ret != FWTS_OK) {
 			ret = fwts_acpi_load_tables_from_sysfs(fw);
+			require_fixup = true;
+		}
 	} else
 		ret = FWTS_ERROR_NO_PRIV;
 
@@ -1059,7 +1064,7 @@ int fwts_acpi_load_tables(fwts_framework *fw)
 		acpi_tables_loaded = ACPI_TABLES_LOADED_OK;
 
 		/* Loading from file may require table address fixups */
-		if ((fw->acpi_table_path != NULL) || (fw->acpi_table_acpidump_file != NULL))
+		if (require_fixup)
 			fwts_acpi_load_tables_fixup(fw);
 	} else {
 		acpi_tables_loaded = ACPI_TABLES_LOADED_FAILED;

@@ -38,6 +38,14 @@
 #define FWTS_FACP_IAPC_BOOT_ARCH_MSI_NOT_SUPPORTED	(0x0008)
 #define FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS	(0x0010)
 
+#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY		(0x00)
+#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO		(0x01)
+#define FWTS_GAS_ADDR_SPACE_ID_PCI_CONFIG		(0x02)
+#define FWTS_GAS_ADDR_SPACE_ID_EC			(0x03)
+#define FWTS_GAS_ADDR_SPACE_ID_SMBUS			(0x04)
+#define FWTS_GAS_ADDR_SPACE_ID_PCC			(0x0a)
+#define FWTS_GAS_ADDR_SPACE_ID_FFH			(0x7f)
+
 #include "fwts_types.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"
@@ -51,7 +59,7 @@ extern const char *fwts_acpi_fadt_preferred_pm_profile[];
 /* 5.2.3.1 Generic Address Structure */
 typedef struct {
 	uint8_t 	address_space_id;
-	uint8_t	register_bit_width;
+	uint8_t		register_bit_width;
         uint8_t 	register_bit_offset;
         uint8_t 	access_width;
         uint64_t 	address;

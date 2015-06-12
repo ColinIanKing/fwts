@@ -8,6 +8,8 @@ ACPI tests:
   Test ACPI headers.
  apicinstance    (1 test):
   Test for single instance of APIC/MADT table.
+ bert            (1 test):
+  BERT Boot Error Record Table test.
  checksum        (1 test):
   ACPI table checksum test.
  cstates         (1 test):
@@ -233,6 +235,8 @@ Batch tests:
  autobrightness  (2 tests):
   Test for maximum and actual brightness.
   Change actual brightness.
+ bert            (1 test):
+  BERT Boot Error Record Table test.
  bios32          (1 test):
   BIOS32 Service Directory test.
  bios_info       (1 test):
@@ -714,4 +718,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 611 tests
+Total of 613 tests

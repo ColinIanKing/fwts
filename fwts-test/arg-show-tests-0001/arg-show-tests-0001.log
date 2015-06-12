@@ -2,6 +2,7 @@ ACPI tests:
  acpiinfo        General ACPI information test.
  acpitables      ACPI table settings sanity tests.
  apicinstance    Test for single instance of APIC/MADT table.
+ bert            BERT Boot Error Record Table test.
  checksum        ACPI table checksum test.
  cstates         Processor C state support test.
  dmar            DMA Remapping (VT-d) test.
@@ -21,6 +22,7 @@ Batch tests:
  apicinstance    Test for single instance of APIC/MADT table.
  aspm            PCIe ASPM test.
  autobrightness  Automated LCD brightness test.
+ bert            BERT Boot Error Record Table test.
  bios32          BIOS32 Service Directory test.
  bios_info       Gather BIOS DMI information.
  checksum        ACPI table checksum test.

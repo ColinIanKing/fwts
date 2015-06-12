@@ -82,6 +82,15 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_bert;
 
 typedef struct {
+	uint32_t	block_status;
+	uint32_t	raw_data_offset;
+	uint32_t	raw_data_length;
+	uint32_t	data_length;
+	uint32_t	error_severity;
+	uint8_t		generic_error_data[0];
+} __attribute__ ((packed)) fwts_acpi_table_boot_error_region;
+
+typedef struct {
 	uint8_t		type;
 	uint8_t		length;
 	uint8_t		processor_id;

@@ -6,6 +6,7 @@ ACPI tests:
  checksum        ACPI table checksum test.
  cstates         Processor C state support test.
  dmar            DMA Remapping (VT-d) test.
+ ecdt            Embedded Controller Boot Resources Table test.
  fadt            FADT SCI_EN enabled tests.
  hpet_check      HPET configuration tests.
  mcfg            MCFG PCI Express* memory mapped config space test.
@@ -33,6 +34,7 @@ Batch tests:
  dmar            DMA Remapping (VT-d) test.
  dmicheck        DMI/SMBIOS table tests.
  ebda            Test EBDA region is mapped and reserved in memory map table.
+ ecdt            Embedded Controller Boot Resources Table test.
  fadt            FADT SCI_EN enabled tests.
  fan             Simple fan tests.
  hda_audio       HDA Audio Pin Configuration test.

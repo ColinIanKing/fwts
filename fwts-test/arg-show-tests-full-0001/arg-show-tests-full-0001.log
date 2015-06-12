@@ -16,6 +16,8 @@ ACPI tests:
   Test all CPUs C-states.
  dmar            (1 test):
   DMA Remapping test.
+ ecdt            (1 test):
+  ECDT Embedded Controller Boot Resources Table test.
  fadt            (2 tests):
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
@@ -264,6 +266,8 @@ Batch tests:
   Test DMI/SMBIOS tables for errors.
  ebda            (1 test):
   Test EBDA is reserved in E820 table.
+ ecdt            (1 test):
+  ECDT Embedded Controller Boot Resources Table test.
  fadt            (2 tests):
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
@@ -718,4 +722,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 613 tests
+Total of 615 tests

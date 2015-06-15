@@ -279,6 +279,15 @@ typedef struct {
 	uint32_t	reserved2;
 } __attribute__ ((packed)) fwts_acpi_table_local_x2apic_affinity;
 
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+	uint32_t	proximity_domain;
+	uint32_t	acpi_processor_uid;
+	uint32_t	flags;
+	uint32_t	clock_domain;
+} __attribute__ ((packed)) fwts_acpi_table_gicc_affinity;
+
 /* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
 
 typedef struct {

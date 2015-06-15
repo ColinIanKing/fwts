@@ -13,6 +13,7 @@ ACPI tests:
  method          ACPI DSDT Method Semantic tests.
  pcc             Processor Clocking Control (PCC) test.
  spcr            SPCR Serial Port Console Redirection Table test.
+ spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
 
@@ -57,6 +58,7 @@ Batch tests:
  pnp             BIOS Support Installation structure test.
  securebootcert  UEFI secure boot test.
  spcr            SPCR Serial Port Console Redirection Table test.
+ spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
  syntaxcheck     Re-assemble DSDT and SSDTs to find syntax errors and warnings.
  uefibootpath    Sanity check for UEFI Boot Path Boot####.

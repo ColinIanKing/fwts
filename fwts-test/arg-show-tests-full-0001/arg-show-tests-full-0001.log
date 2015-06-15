@@ -214,6 +214,8 @@ ACPI tests:
   Processor Clocking Control (PCC) test.
  spcr            (1 test):
   SPCR Serial Port Console Redirection Table test.
+ spmi            (1 test):
+  SPMI Service Processor Management Interface Description Table test.
  srat            (1 test):
   SRAT System Resource Affinity Table test.
  wmi             (1 test):
@@ -513,6 +515,8 @@ Batch tests:
   UEFI secure boot test.
  spcr            (1 test):
   SPCR Serial Port Console Redirection Table test.
+ spmi            (1 test):
+  SPMI Service Processor Management Interface Description Table test.
  srat            (1 test):
   SRAT System Resource Affinity Table test.
  syntaxcheck     (1 test):
@@ -722,4 +726,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 615 tests
+Total of 617 tests

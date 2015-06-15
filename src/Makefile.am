@@ -43,6 +43,7 @@ fwts_SOURCES = main.c 				\
 	acpi/fadt/fadt.c 			\
 	acpi/fan/fan.c 				\
 	acpi/gpedump/gpedump.c			\
+	acpi/hest/hest.c			\
 	acpi/lid/lid.c 				\
 	acpi/mcfg/mcfg.c 			\
 	acpi/method/method.c 			\

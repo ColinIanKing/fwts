@@ -1091,50 +1091,50 @@ static void acpidump_srat(fwts_framework *fw, const fwts_acpi_table_info *table)
 		switch (*ptr) {
 		case 0:	{
 				static const fwts_acpidump_field fields_lasa[] = {
-					FIELD_UINT("  Proximity [7:0]", fwts_acpi_table_slit_local_apic_sapic_affinity, proximity_domain_0),
-					FIELD_UINT("  APIC ID", fwts_acpi_table_slit_local_apic_sapic_affinity, apic_id),
-					FIELD_UINT("  Flags", fwts_acpi_table_slit_local_apic_sapic_affinity, flags),
-					FIELD_UINT("  L_SAPIC_EID", fwts_acpi_table_slit_local_apic_sapic_affinity, local_sapic_eid),
-					FIELD_UINT("  Proximity [31:24]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_3),
-					FIELD_UINT("  Proximity [23:16]",fwts_acpi_table_slit_local_apic_sapic_affinity,  proximity_domain_2),
-					FIELD_UINT("  Proximity [15:8]",fwts_acpi_table_slit_local_apic_sapic_affinity,   proximity_domain_1),
-					FIELD_UINT("  Clock Domain:   0x", fwts_acpi_table_slit_local_apic_sapic_affinity, clock_domain),
+					FIELD_UINT("  Proximity [7:0]", fwts_acpi_table_local_apic_sapic_affinity, proximity_domain_0),
+					FIELD_UINT("  APIC ID", fwts_acpi_table_local_apic_sapic_affinity, apic_id),
+					FIELD_UINT("  Flags", fwts_acpi_table_local_apic_sapic_affinity, flags),
+					FIELD_UINT("  L_SAPIC_EID", fwts_acpi_table_local_apic_sapic_affinity, local_sapic_eid),
+					FIELD_UINT("  Proximity [31:24]",fwts_acpi_table_local_apic_sapic_affinity,  proximity_domain_3),
+					FIELD_UINT("  Proximity [23:16]",fwts_acpi_table_local_apic_sapic_affinity,  proximity_domain_2),
+					FIELD_UINT("  Proximity [15:8]",fwts_acpi_table_local_apic_sapic_affinity,   proximity_domain_1),
+					FIELD_UINT("  Clock Domain:   0x", fwts_acpi_table_local_apic_sapic_affinity, clock_domain),
 					FIELD_END,
 				};
 				fwts_log_info_verbatum(fw, " Processor Local APIC/SAPID Affinity Structure:");
 				__acpi_dump_table_fields(fw, ptr, fields_lasa, offset);
-				ptr += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
-				offset += sizeof(fwts_acpi_table_slit_local_apic_sapic_affinity);
+				ptr += sizeof(fwts_acpi_table_local_apic_sapic_affinity);
+				offset += sizeof(fwts_acpi_table_local_apic_sapic_affinity);
 			}
 			break;
 		case 1:	{
 				static const fwts_acpidump_field fields_ma[] = {
-					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_memory_affinity, proximity_domain),
-					FIELD_UINT("  Base Addr Lo", fwts_acpi_table_slit_memory_affinity, base_addr_lo),
-					FIELD_UINT("  Base Addr Hi", fwts_acpi_table_slit_memory_affinity, base_addr_hi),
-					FIELD_UINT("  Length Lo", fwts_acpi_table_slit_memory_affinity, length_lo),
-					FIELD_UINT("  Length Hi", fwts_acpi_table_slit_memory_affinity, length_hi),
-					FIELD_UINT("  Flags", fwts_acpi_table_slit_memory_affinity, flags),
+					FIELD_UINT("  Prox. Domain", fwts_acpi_table_memory_affinity, proximity_domain),
+					FIELD_UINT("  Base Addr Lo", fwts_acpi_table_memory_affinity, base_addr_lo),
+					FIELD_UINT("  Base Addr Hi", fwts_acpi_table_memory_affinity, base_addr_hi),
+					FIELD_UINT("  Length Lo", fwts_acpi_table_memory_affinity, length_lo),
+					FIELD_UINT("  Length Hi", fwts_acpi_table_memory_affinity, length_hi),
+					FIELD_UINT("  Flags", fwts_acpi_table_memory_affinity, flags),
 					FIELD_END,
 				};
 				fwts_log_info_verbatum(fw, " Memory Affinity Structure:");
 				__acpi_dump_table_fields(fw, ptr, fields_ma, offset);
-				ptr += sizeof(fwts_acpi_table_slit_memory_affinity);
-				offset += sizeof(fwts_acpi_table_slit_memory_affinity);
+				ptr += sizeof(fwts_acpi_table_memory_affinity);
+				offset += sizeof(fwts_acpi_table_memory_affinity);
 			}
 			break;
 		case 2: {
 				static const fwts_acpidump_field fields_xa[] = {
-					FIELD_UINT("  Prox. Domain", fwts_acpi_table_slit_local_x2apic_affinity, proximity_domain),
-					FIELD_UINT("  X2APIC ID",    fwts_acpi_table_slit_local_x2apic_affinity, x2apic_id),
-					FIELD_UINT("  Flags",        fwts_acpi_table_slit_local_x2apic_affinity, flags),
-					FIELD_UINT("  Clock Domain", fwts_acpi_table_slit_local_x2apic_affinity, clock_domain),
+					FIELD_UINT("  Prox. Domain", fwts_acpi_table_local_x2apic_affinity, proximity_domain),
+					FIELD_UINT("  X2APIC ID",    fwts_acpi_table_local_x2apic_affinity, x2apic_id),
+					FIELD_UINT("  Flags",        fwts_acpi_table_local_x2apic_affinity, flags),
+					FIELD_UINT("  Clock Domain", fwts_acpi_table_local_x2apic_affinity, clock_domain),
 					FIELD_END,
 				};
 				fwts_log_info_verbatum(fw, " Processor Local x2APIC Affinit Structure:");
 				__acpi_dump_table_fields(fw, ptr, fields_xa, offset);
-				ptr += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
-				offset += sizeof(fwts_acpi_table_slit_local_x2apic_affinity);
+				ptr += sizeof(fwts_acpi_table_local_x2apic_affinity);
+				offset += sizeof(fwts_acpi_table_local_x2apic_affinity);
 			}
 			break;
 		default:

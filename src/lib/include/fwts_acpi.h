@@ -251,8 +251,8 @@ typedef struct {
 	uint8_t		proximity_domain_1;
 	uint8_t		proximity_domain_2;
 	uint8_t		proximity_domain_3;
-	uint32_t		clock_domain;
-} __attribute__ ((packed)) fwts_acpi_table_slit_local_apic_sapic_affinity;
+	uint32_t	clock_domain;
+} __attribute__ ((packed)) fwts_acpi_table_local_apic_sapic_affinity;
 
 typedef struct {
 	uint8_t		type;
@@ -266,7 +266,7 @@ typedef struct {
 	uint32_t	reserved2;
 	uint32_t	flags;
 	uint64_t	reserved3;
-} __attribute__ ((packed)) fwts_acpi_table_slit_memory_affinity;
+} __attribute__ ((packed)) fwts_acpi_table_memory_affinity;
 
 typedef struct {
 	uint8_t		type;
@@ -277,7 +277,7 @@ typedef struct {
 	uint32_t	flags;
 	uint32_t	clock_domain;
 	uint32_t	reserved2;
-} __attribute__ ((packed)) fwts_acpi_table_slit_local_x2apic_affinity;
+} __attribute__ ((packed)) fwts_acpi_table_local_x2apic_affinity;
 
 /* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
 

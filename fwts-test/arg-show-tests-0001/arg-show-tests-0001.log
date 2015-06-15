@@ -8,6 +8,7 @@ ACPI tests:
  dmar            DMA Remapping (VT-d) test.
  ecdt            Embedded Controller Boot Resources Table test.
  fadt            FADT SCI_EN enabled tests.
+ hest            HEST Hardware Error Source Table test.
  hpet_check      HPET configuration tests.
  mcfg            MCFG PCI Express* memory mapped config space test.
  method          ACPI DSDT Method Semantic tests.
@@ -40,6 +41,7 @@ Batch tests:
  fadt            FADT SCI_EN enabled tests.
  fan             Simple fan tests.
  hda_audio       HDA Audio Pin Configuration test.
+ hest            HEST Hardware Error Source Table test.
  hpet_check      HPET configuration tests.
  klog            Scan kernel log for errors and warnings.
  maxfreq         Test max CPU frequencies against max scaling frequency.

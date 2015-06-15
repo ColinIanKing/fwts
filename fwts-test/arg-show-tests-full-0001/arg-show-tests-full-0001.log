@@ -21,6 +21,8 @@ ACPI tests:
  fadt            (2 tests):
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
+ hest            (1 test):
+  HEST Hardware Error Source Table test.
  hpet_check      (4 tests):
   Test HPET base in kernel log.
   Test HPET base in HPET table.
@@ -280,6 +282,8 @@ Batch tests:
   Load system, check CPU fan status.
  hda_audio       (1 test):
   HDA Audio Pin Configuration test.
+ hest            (1 test):
+  HEST Hardware Error Source Table test.
  hpet_check      (4 tests):
   Test HPET base in kernel log.
   Test HPET base in HPET table.
@@ -730,4 +734,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 619 tests
+Total of 621 tests

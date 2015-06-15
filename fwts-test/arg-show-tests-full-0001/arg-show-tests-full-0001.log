@@ -10,6 +10,8 @@ ACPI tests:
   Test for single instance of APIC/MADT table.
  bert            (1 test):
   BERT Boot Error Record Table test.
+ boot            (1 test):
+  BOOT Table test.
  checksum        (1 test):
   ACPI table checksum test.
  cstates         (1 test):
@@ -249,6 +251,8 @@ Batch tests:
   BIOS32 Service Directory test.
  bios_info       (1 test):
   Gather BIOS DMI information
+ boot            (1 test):
+  BOOT Table test.
  checksum        (1 test):
   ACPI table checksum test.
  cpufreq         (7 tests):
@@ -734,4 +738,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 621 tests
+Total of 623 tests

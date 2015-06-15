@@ -3,6 +3,7 @@ ACPI tests:
  acpitables      ACPI table settings sanity tests.
  apicinstance    Test for single instance of APIC/MADT table.
  bert            BERT Boot Error Record Table test.
+ boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cstates         Processor C state support test.
  dmar            DMA Remapping (VT-d) test.
@@ -29,6 +30,7 @@ Batch tests:
  bert            BERT Boot Error Record Table test.
  bios32          BIOS32 Service Directory test.
  bios_info       Gather BIOS DMI information.
+ boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cpufreq         CPU frequency scaling tests.
  crs             Test PCI host bridge configuration using _CRS.

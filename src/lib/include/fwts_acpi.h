@@ -866,6 +866,28 @@ typedef struct {
 	uint8_t		pci_function_number;
 } __attribute__ ((packed)) fwts_acpi_table_mchi;
 
+/*
+ *   http://www.intel.com/content/www/us/en/servers/ipmi/ipmi-intelligent-platform-mgt-interface-spec-2nd-gen-v2-0-spec-update.html
+ *	page 600-606
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		interface_type;
+	uint8_t		reserved1;
+	uint16_t	specification_revision;
+	uint8_t		interrupt_type;
+	uint8_t		gpe;
+	uint8_t		reserved2;
+	uint8_t		pci_device_flag;
+	uint32_t	global_system_interrupt;
+	fwts_acpi_gas	base_address;
+	uint8_t		pci_segment_group_number;
+	uint8_t		pci_bus_number;
+	uint8_t		pci_device_number;
+	uint8_t		pci_function_number;
+	uint8_t		reserved3;
+} __attribute__ ((packed)) fwts_acpi_table_spmi;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

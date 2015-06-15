@@ -888,6 +888,160 @@ typedef struct {
 	uint8_t		reserved3;
 } __attribute__ ((packed)) fwts_acpi_table_spmi;
 
+/*
+ *  Hardware Error Source Table (HEST), ACPI section 18.3.2
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	error_source_count;
+} __attribute__ ((packed)) fwts_acpi_table_hest;
+
+/* Section 18.3.2.7, table 18-332 */
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+	uint16_t	configuration_write_enable;
+	uint32_t	poll_interval;
+	uint32_t	vector;
+	uint32_t	switch_to_polling_threshold_value;
+	uint32_t	switch_to_polling_threshold_window;
+	uint32_t	error_threshold_value;
+	uint32_t	error_threshold_window;
+} __attribute__ ((packed)) fwts_acpi_table_hest_hardware_error_notification;
+
+/* Section 18.3.2.1.1 IA-32 Architecture Machine Check Bank Structure */
+typedef struct {
+	uint8_t		bank_number;
+	uint8_t		clear_status_on_initialization;
+	uint8_t		status_data_format;
+	uint8_t		reserved;
+	uint32_t	control_register_msr_address;
+	uint64_t	control_init_data;
+	uint32_t	status_register_msr_address;
+	uint32_t	address_register_msr_address;
+	uint32_t	misc_register_msr_address;
+} __attribute__ ((packed)) fwts_acpi_table_hest_machine_check_bank;
+
+/* Section 18.3.2.1 Table 18-322, Type 0x00 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint64_t	global_capability_init_data;
+	uint64_t	global_control_init_data;
+	uint8_t		number_of_hardware_banks;
+	uint8_t		reserved2[7];
+	fwts_acpi_table_hest_machine_check_bank	bank[0];
+} __attribute__ ((packed)) fwts_acpi_table_hest_ia32_machine_check_exception;
+
+/* Section 18.3.2.2 Table 18-324, Type 0x01 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	fwts_acpi_table_hest_hardware_error_notification notification;
+	uint8_t		number_of_hardware_banks;
+	uint8_t		reserved2[3];
+	fwts_acpi_table_hest_machine_check_bank	bank[0];
+} __attribute__ ((packed)) fwts_acpi_table_hest_ia32_corrected_machine_check;
+
+/* Section 18.3.2.2.1, 18-325, Type 0x02 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	max_raw_data_length;
+} __attribute__ ((packed)) fwts_acpi_table_hest_nmi_error;
+
+/* Section 18.3.2.3, Table 18-326, Type 0x06 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	bus;
+	uint16_t	device;
+	uint16_t	function;
+	uint16_t	device_control;
+	uint16_t	reserved2;
+	uint32_t	uncorrectable_error_mask;
+	uint32_t	uncorrectable_error_severity;
+	uint32_t	correctable_error_mask;
+	uint32_t	advanced_error_capabilities_and_control;
+	uint32_t	root_error_command;
+} __attribute__ ((packed)) fwts_acpi_table_hest_pci_express_root_port_aer;
+
+/* Section 18.3.2.4, Table 18-327, Type 0x07 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	bus;
+	uint16_t	device;
+	uint16_t	function;
+	uint16_t	device_control;
+	uint16_t	reserved2;
+	uint32_t	uncorrectable_error_mask;
+	uint32_t	uncorrectable_error_severity;
+	uint32_t	correctable_error_mask;
+	uint32_t	advanced_error_capabilities_and_control;
+} __attribute__ ((packed)) fwts_acpi_table_hest_pci_express_device_aer;
+
+/* Section 18.3.2.5, Table 18-328, Type 0x08 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	reserved1;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	bus;
+	uint16_t	device;
+	uint16_t	function;
+	uint16_t	device_control;
+	uint16_t	reserved2;
+	uint32_t	uncorrectable_error_mask;
+	uint32_t	uncorrectable_error_severity;
+	uint32_t	correctable_error_mask;
+	uint32_t	advanced_error_capabilities_and_control;
+	uint32_t	secondary_uncorrectable_error_mask;
+	uint32_t	secondary_uncorrectable_error_severity;
+	uint32_t	secondary_advanced_error_capabilities_and_control;
+} __attribute__ ((packed)) fwts_acpi_table_hest_pci_express_bridge_aer;
+
+/* Section 18.3.2.6, Table 18-329, Type 0x09 */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	related_source_id;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	max_raw_data_length;
+	fwts_acpi_gas	error_status_address;
+	fwts_acpi_table_hest_hardware_error_notification notification;
+	uint32_t	error_status_block_length;
+} __attribute__ ((packed)) fwts_acpi_table_hest_generic_hardware_error_source;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 #endif

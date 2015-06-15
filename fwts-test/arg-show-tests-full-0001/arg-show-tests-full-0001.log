@@ -212,6 +212,8 @@ ACPI tests:
   Test _SRV (IPMI Interface Revision).
  pcc             (1 test):
   Processor Clocking Control (PCC) test.
+ slit            (1 test):
+  SLIT System Locality Distance Information test.
  spcr            (1 test):
   SPCR Serial Port Console Redirection Table test.
  spmi            (1 test):
@@ -513,6 +515,8 @@ Batch tests:
   PnP BIOS Support Installation structure test.
  securebootcert  (1 test):
   UEFI secure boot test.
+ slit            (1 test):
+  SLIT System Locality Distance Information test.
  spcr            (1 test):
   SPCR Serial Port Console Redirection Table test.
  spmi            (1 test):
@@ -726,4 +730,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 617 tests
+Total of 619 tests

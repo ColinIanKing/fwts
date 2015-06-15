@@ -12,6 +12,7 @@ ACPI tests:
  mcfg            MCFG PCI Express* memory mapped config space test.
  method          ACPI DSDT Method Semantic tests.
  pcc             Processor Clocking Control (PCC) test.
+ slit            SLIT System Locality Distance Information test.
  spcr            SPCR Serial Port Console Redirection Table test.
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
@@ -57,6 +58,7 @@ Batch tests:
  pciirq          PCI IRQ Routing Table test.
  pnp             BIOS Support Installation structure test.
  securebootcert  UEFI secure boot test.
+ slit            SLIT System Locality Distance Information test.
  spcr            SPCR Serial Port Console Redirection Table test.
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.

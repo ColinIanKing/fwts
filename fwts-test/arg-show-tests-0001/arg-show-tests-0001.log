@@ -6,6 +6,7 @@ ACPI tests:
  boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cstates         Processor C state support test.
+ dbg2            DBG2 (Debug Port Table 2) test.
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  ecdt            Embedded Controller Boot Resources Table test.
@@ -37,6 +38,7 @@ Batch tests:
  crs             Test PCI host bridge configuration using _CRS.
  csm             UEFI Compatibility Support Module test.
  cstates         Processor C state support test.
+ dbg2            DBG2 (Debug Port Table 2) test.
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  dmicheck        DMI/SMBIOS table tests.

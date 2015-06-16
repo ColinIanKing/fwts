@@ -16,6 +16,8 @@ ACPI tests:
   ACPI table checksum test.
  cstates         (1 test):
   Test all CPUs C-states.
+ dbgp            (1 test):
+  DBGP (Debug Port) Table test.
  dmar            (1 test):
   DMA Remapping test.
  ecdt            (1 test):
@@ -269,6 +271,8 @@ Batch tests:
   UEFI Compatibility Support Module test.
  cstates         (1 test):
   Test all CPUs C-states.
+ dbgp            (1 test):
+  DBGP (Debug Port) Table test.
  dmar            (1 test):
   DMA Remapping test.
  dmicheck        (2 tests):
@@ -738,4 +742,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 623 tests
+Total of 625 tests

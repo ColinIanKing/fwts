@@ -1,0 +1,100 @@
+srat            srat: SRAT System Resource Affinity Table test.
+srat            ----------------------------------------------------------
+srat            Test 1 of 1: SRAT System Resource Affinity Table test.
+srat            FAILED [MEDIUM] SRATInterfaceReserved: Test 1, SRAT
+srat            reserved field 1 should be 1, instead was 0x7
+srat            SRAT Local APIC/SAPIC Affinity Structure:
+srat              Type:                     0x00
+srat              Length:                   0x10
+srat              Proximity Domain:   [7:0] 0x00
+srat              APIC ID:                  0x00
+srat              Flags:                    0x00000009
+srat              Local SAPIC EID:          0x00
+srat              Proximity Domain:  [8:15] 0x00
+srat              Proximity Domain: [16:23] 0x00
+srat              Proximity Domain: [23:31] 0x00
+srat              Clock Domain              0x00000000
+srat            
+srat            FAILED [MEDIUM] SRATLocalApicSapicAffinityFlags: Test 1,
+srat            SRAT Local APIC/SPAIC Affinity Flags field reserved bits
+srat            1..31 should be zero, got 0x9
+srat            SRAT Local APIC/SAPIC Affinity Structure:
+srat              Type:                     0x00
+srat              Length:                   0x10
+srat              Proximity Domain:   [7:0] 0x00
+srat              APIC ID:                  0x01
+srat              Flags:                    0x00000001
+srat              Local SAPIC EID:          0x00
+srat              Proximity Domain:  [8:15] 0x00
+srat              Proximity Domain: [16:23] 0x00
+srat              Proximity Domain: [23:31] 0x00
+srat              Clock Domain              0x00000001
+srat            
+srat            SRAT Local APIC/SAPIC Affinity Structure:
+srat              Type:                     0x00
+srat              Length:                   0x10
+srat              Proximity Domain:   [7:0] 0x00
+srat              APIC ID:                  0x02
+srat              Flags:                    0x00000001
+srat              Local SAPIC EID:          0x00
+srat              Proximity Domain:  [8:15] 0x00
+srat              Proximity Domain: [16:23] 0x00
+srat              Proximity Domain: [23:31] 0x00
+srat              Clock Domain              0x00000002
+srat            
+srat            SRAT Local APIC/SAPIC Affinity Structure:
+srat              Type:                     0x00
+srat              Length:                   0x10
+srat              Proximity Domain:   [7:0] 0x00
+srat              APIC ID:                  0x03
+srat              Flags:                    0x00000001
+srat              Local SAPIC EID:          0x00
+srat              Proximity Domain:  [8:15] 0x00
+srat              Proximity Domain: [16:23] 0x00
+srat              Proximity Domain: [23:31] 0x00
+srat              Clock Domain              0x00000003
+srat            
+srat            SRAT Memory Affinity Structure:
+srat              Type:                     0x01
+srat              Length:                   0x28
+srat              Proximity Domain:         0x00000000
+srat              Reserved:                 0x0000
+srat              Base Address:             0x0000000000000000
+srat              Length:                   0x00000000000a0000
+srat              Reserved:                 0x00000001
+srat              Flags:                    0x00000001
+srat              Reserved:                 0x0000000000000000
+srat            
+srat            SRAT Memory Affinity Structure:
+srat              Type:                     0x01
+srat              Length:                   0x28
+srat              Proximity Domain:         0x00000000
+srat              Reserved:                 0x0000
+srat              Base Address:             0x0000000000100000
+srat              Length:                   0x00000000cff00000
+srat              Reserved:                 0x0000000f
+srat              Flags:                    0x000000ff
+srat              Reserved:                 0x0000000000000000
+srat            
+srat            FAILED [MEDIUM] SRATMemoryAffinityFlags: Test 1, SRAT
+srat            Memory Affinity Flags field reserved bits 3..31 should be
+srat            zero, got 0xff
+srat            SRAT Memory Affinity Structure:
+srat              Type:                     0x01
+srat              Length:                   0x28
+srat              Proximity Domain:         0x00000000
+srat              Reserved:                 0x0000
+srat              Base Address:             0x0000000100000000
+srat              Length:                   0x0000000130000000
+srat              Reserved:                 0x00000001
+srat              Flags:                    0x00000008
+srat              Reserved:                 0x0000000000000000
+srat            
+srat            FAILED [MEDIUM] SRATMemoryAffinityFlags: Test 1, SRAT
+srat            Memory Affinity Flags field reserved bits 3..31 should be
+srat            zero, got 0x8
+srat            
+srat            ==========================================================
+srat            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+srat            info only.
+srat            ==========================================================

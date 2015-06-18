@@ -13,7 +13,6 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/acpitables-0003/test-0001.sh \
 	fwts-test/acpitables-0004/test-0001.sh \
 	fwts-test/acpitables-0005/test-0001.sh \
-	fwts-test/acpitables-0008/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0002.sh \
 	fwts-test/arg-help-0001/test-0001.sh \
@@ -53,6 +52,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/arg-width-0001/test-0006.sh \
 	fwts-test/arg-width-0001/test-0007.sh \
 	fwts-test/arg-width-0001/test-0008.sh \
+	fwts-test/bert-0001/test-0001.sh \
+	fwts-test/bert-0001/test-0002.sh \
 	fwts-test/checksum-0001/test-0001.sh \
 	fwts-test/checksum-0001/test-0003.sh \
 	fwts-test/checksum-0001/test-0004.sh \
@@ -71,6 +72,7 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/oops-0001/test-0003.sh \
 	fwts-test/osilinux-0001/test-0001.sh \
 	fwts-test/osilinux-0001/test-0002.sh \
+	fwts-test/rsdp-0001/test-0001.sh \
 	fwts-test/rsdt-0001/test-0001.sh \
 	fwts-test/syntaxcheck-0001/test-0001.sh \
 	fwts-test/wmi-0001/test-0001.sh \

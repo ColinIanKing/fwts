@@ -1,0 +1,9 @@
+rsdp            rsdp: RSDP Root System Description Pointer test.
+rsdp            ----------------------------------------------------------
+rsdp            Test 1 of 1: RSDP Root System Description Pointer test.
+rsdp            PASSED: Test 1, No issues found in RSDP table.
+rsdp            
+rsdp            ==========================================================
+rsdp            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+rsdp            info only.
+rsdp            ==========================================================

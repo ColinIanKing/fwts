@@ -1,0 +1,16 @@
+bert            bert: BERT Boot Error Record Table test.
+bert            ----------------------------------------------------------
+bert            Test 1 of 1: BERT Boot Error Record Table test.
+bert            Boot Error Record Table:
+bert              Error Region Length       0x00000400
+bert              Error Region              0x00000000afe96000
+bert            
+bert            ACPI table loaded from file so fwts will not memory map
+bert            BERT boot error region 0x00000000afe96000, skipping boot
+bert            error region sanity checks.
+bert            PASSED: Test 1, No issues found in BERT table.
+bert            
+bert            ==========================================================
+bert            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+bert            info only.
+bert            ==========================================================

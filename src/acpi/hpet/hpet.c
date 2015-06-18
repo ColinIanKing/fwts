@@ -28,6 +28,7 @@
 
 static fwts_list *klog;
 
+
 #define HPET_REG_SIZE  (0x400)
 #define MAX_CLK_PERIOD (100000000)
 
@@ -293,6 +294,19 @@ static int hpet_check_test2(fwts_framework *fw)
 		passed = false;
 	}
 
+	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorIdZero",
+			"HPET PCI Vendor ID is 0x0000, which is invalid.");
+		fwts_advice(fw,
+			"The HPET specification (http://www.intel.com/hardwaredesign/hpetspec_1.pdf) "
+			"describes the HPET table in section 3.2.4 'The ACPI "
+			"2.0 HPET Description Table (HPET)'. The top 16 bits "
+			"of the Event Timer Block ID specify the Vendor ID "
+			"and this should not be zero.  This won't affect the "
+			"kernel behaviour, but should be fixed as it is an "
+			"undefined ID value.");
+	}
+
 	/*
 	 * We don't need to check for GAS address space widths etc
 	 * since the kernel does not care and the spec doesn't
@@ -431,13 +445,13 @@ static fwts_framework_minor_test hpet_check_tests[] = {
 };
 
 static fwts_framework_ops hpet_check_ops = {
-	.description = "HPET configuration tests.",
+	.description = "HPET IA-PC High Precision Event Timer Tanble tests.",
 	.init        = hpet_check_init,
 	.deinit      = hpet_check_deinit,
 	.minor_tests = hpet_check_tests
 };
 
-FWTS_REGISTER("hpet_check", &hpet_check_ops, FWTS_TEST_ANYTIME,
+FWTS_REGISTER("hpet", &hpet_check_ops, FWTS_TEST_ANYTIME,
 	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
 
 #endif

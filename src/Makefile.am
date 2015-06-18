@@ -47,6 +47,7 @@ fwts_SOURCES = main.c 				\
 	acpi/fan/fan.c 				\
 	acpi/gpedump/gpedump.c			\
 	acpi/hest/hest.c			\
+	acpi/hpet/hpet.c 			\
 	acpi/lid/lid.c 				\
 	acpi/mcfg/mcfg.c 			\
 	acpi/method/method.c 			\
@@ -89,7 +90,6 @@ fwts_SOURCES = main.c 				\
 	cpu/microcode/microcode.c 		\
 	dmi/dmicheck/dmicheck.c 		\
 	hotkey/hotkey/hotkey.c 			\
-	hpet/hpet_check/hpet_check.c 		\
 	kernel/klog/klog.c 			\
 	kernel/oops/oops.c 			\
 	kernel/version/version.c 		\

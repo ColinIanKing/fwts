@@ -85,7 +85,7 @@ static int spcr_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRInterfaceReserved",
 			"SPCR Serial interface type 0x%2.2" PRIx8
-			"is a reserved interface", spcr->interface_type);
+			" is a reserved interface", spcr->interface_type);
 	}
 
 	if ((spcr->reserved1[0] |
@@ -155,7 +155,7 @@ static int spcr_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRBaudRateReserved",
 			"SPCR Serial baud rate type 0x%2.2" PRIx8
-			"is a reserved baud rate", spcr->baud_rate);
+			" is a reserved baud rate", spcr->baud_rate);
 	}
 
 	if (spcr->parity & ~1) {
@@ -207,7 +207,7 @@ static int spcr_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SPCRTerminalTypeReserved",
 			"SPCR terminal type type 0x%2.2" PRIx8
-			"is a reserved terminal type", spcr->terminal_type);
+			" is a reserved terminal type", spcr->terminal_type);
 	}
 
 	if (spcr->reserved2) {

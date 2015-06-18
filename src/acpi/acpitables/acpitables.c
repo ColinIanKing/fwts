@@ -230,32 +230,6 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	acpi_table_check_fadt_reset(fw, fadt);
 }
 
-static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
-
-	if (sbst->critical_energy_level > sbst->low_energy_level) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevel1",
-			"SBST Critical Energy Level (%" PRIu32 ") "
-			"is greater than the Low Energy Level (%" PRIu32 ").",
-			sbst->critical_energy_level, sbst->low_energy_level);
-		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
-	}
-
-	if (sbst->low_energy_level > sbst->warning_energy_level) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergeyLevel2",
-			"SBST Low Energy Energy Level (%" PRIu32 ") "
-			"is greater than the Warning Energy Level (%" PRIu32 ").",
-			sbst->low_energy_level, sbst->warning_energy_level);
-		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
-	}
-
-	if (sbst->warning_energy_level == 0) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "SBSTEnergyLevelZero", "SBST Warning Energy Level is zero, which is probably too low.");
-		fwts_advice(fw, "This could affect system behaviour based on incorrect smart battery information. This should be fixed.");
-	}
-}
-
 typedef void (*check_func)(fwts_framework *fw, fwts_acpi_table_info *table);
 
 typedef struct {
@@ -265,7 +239,6 @@ typedef struct {
 
 static acpi_table_check_table check_table[] = {
 	{ "FACP", acpi_table_check_fadt },
-	{ "SBST", acpi_table_check_sbst },
 	{ NULL  , NULL },
 } ;
 

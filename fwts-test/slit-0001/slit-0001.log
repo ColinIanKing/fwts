@@ -1,0 +1,12 @@
+slit            slit: SLIT System Locality Distance Information test.
+slit            ----------------------------------------------------------
+slit            Test 1 of 1: SLIT System Locality Distance Information
+slit            test.
+slit            SLIT System Locality Distance Information Table:
+slit              Number of Localities:     0x8
+slit            PASSED: Test 1, No issues found in SLIT table.
+slit            
+slit            ==========================================================
+slit            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+slit            info only.
+slit            ==========================================================

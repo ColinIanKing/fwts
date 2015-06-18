@@ -72,6 +72,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/klog-0002/test-0001.sh \
 	fwts-test/klog-0002/test-0002.sh \
 	fwts-test/klog-0002/test-0003.sh \
+	fwts-test/slit-0001/test-0001.sh \
+	fwts-test/slit-0001/test-0002.sh \
 	fwts-test/madt-0001/test-0001.sh \
 	fwts-test/madt-0001/test-0002.sh \
 	fwts-test/method-0001/test-0001.sh \

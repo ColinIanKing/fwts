@@ -25,33 +25,6 @@
 
 #include "fwts.h"
 
-static void acpi_table_check_ecdt(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	fwts_acpi_table_ecdt *ecdt = (fwts_acpi_table_ecdt*)table->data;
-
-	if ((ecdt->ec_control.address_space_id != 0) &&
-            (ecdt->ec_control.address_space_id != 1)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECCtrlAddrSpaceID",
-				"ECDT EC_CONTROL address space id = %" PRIu8
-				", should be 0 or 1 (System I/O Space or System Memory Space)",
-				ecdt->ec_control.address_space_id);
-		fwts_advice(fw, "The ECDT EC_CONTROL address space id was invalid, however the kernel ACPI EC driver "
-				"will just assume it an I/O port address.  This will not affect "
-				"the system behaviour and can probably be ignored.");
-	}
-
-	if ((ecdt->ec_data.address_space_id != 0) &&
-            (ecdt->ec_data.address_space_id != 1)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "ECDTECDataAddrSpaceID",
-				"ECDT EC_CONTROL address space id = %" PRIu8
-				", should be 0 or 1 (System I/O Space or System Memory Space)",
-				ecdt->ec_data.address_space_id);
-		fwts_advice(fw, "The ECDT EC_DATA address space id was invalid, however the kernel ACPI EC driver "
-				"will just assume it an I/O port address.  This will not affect "
-				"the system behaviour and can probably be ignored.");
-	}
-}
-
 static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)table->data;
@@ -720,7 +693,6 @@ typedef struct {
 
 static acpi_table_check_table check_table[] = {
 	{ "APIC", acpi_table_check_madt },
-	{ "ECDT", acpi_table_check_ecdt },
 	{ "FACP", acpi_table_check_fadt },
 	{ "GTDT", acpi_table_check_gtdt },
 	{ "HPET", acpi_table_check_hpet },

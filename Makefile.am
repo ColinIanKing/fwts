@@ -10,9 +10,6 @@ TESTS_ENVIRONMENT += export FAILURE_LOG=/tmp/failure.log;
 
 TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/acpitables-0001/test-0001.sh \
-	fwts-test/acpitables-0003/test-0001.sh \
-	fwts-test/acpitables-0004/test-0001.sh \
-	fwts-test/acpitables-0005/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0002.sh \
 	fwts-test/arg-help-0001/test-0001.sh \

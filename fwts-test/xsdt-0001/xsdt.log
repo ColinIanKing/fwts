@@ -1,0 +1,121 @@
+xsdt            xsdt: XSDT Extended System Description Table test.
+xsdt            ----------------------------------------------------------
+xsdt            Cannot find FACP.
+xsdt            Test 1 of 1: XSDT Extended System Description Table test.
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 0 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 1 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 2 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 3 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 4 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 5 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 6 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 7 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 8 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 9 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 10 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 11 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 12 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            FAILED [MEDIUM] XSDTEntryNull: Test 1, XSDT Entry 13 is
+xsdt            null, should not be non-zero.
+xsdt            
+xsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+xsdt            points to an invalid 64 bit ACPI table header. At worse
+xsdt            this will cause the kernel to oops, at best the kernel may
+xsdt            ignore this. However, it should be fixed where possible.
+xsdt            
+xsdt            
+xsdt            ==========================================================
+xsdt            0 passed, 14 failed, 0 warning, 0 aborted, 0 skipped, 0
+xsdt            info only.
+xsdt            ==========================================================

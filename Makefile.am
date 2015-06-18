@@ -13,7 +13,6 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/acpitables-0003/test-0001.sh \
 	fwts-test/acpitables-0004/test-0001.sh \
 	fwts-test/acpitables-0005/test-0001.sh \
-	fwts-test/acpitables-0007/test-0001.sh \
 	fwts-test/acpitables-0008/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0001.sh \
 	fwts-test/apicinstance-0001/test-0002.sh \
@@ -76,4 +75,5 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/syntaxcheck-0001/test-0001.sh \
 	fwts-test/wmi-0001/test-0001.sh \
 	fwts-test/wmi-0001/test-0002.sh \
-	fwts-test/wmi-0001/test-0003.sh
+	fwts-test/wmi-0001/test-0003.sh \
+	fwts-test/xsdt-0001/test-0001.sh

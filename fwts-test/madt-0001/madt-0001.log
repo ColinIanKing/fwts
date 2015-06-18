@@ -1,0 +1,10 @@
+madt            madt: MADT Multiple APIC Description Table test.
+madt            ----------------------------------------------------------
+madt            Cannot find FACP.
+madt            Test 1 of 1: MADT Multiple APIC Description Table test.
+madt            PASSED: Test 1, No issues found in MADT table.
+madt            
+madt            ==========================================================
+madt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+madt            info only.
+madt            ==========================================================

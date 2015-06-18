@@ -1,0 +1,33 @@
+madt            madt: MADT Multiple APIC Description Table test.
+madt            ----------------------------------------------------------
+madt            Cannot find FACP.
+madt            Test 1 of 1: MADT Multiple APIC Description Table test.
+madt            FAILED [MEDIUM] MADTAPICFlagsNonZero: Test 1, MADT Local
+madt            APIC flags field, bits 1..31 are reserved and should be
+madt            zero, but are set as: f.
+madt            FAILED [MEDIUM] MADTAPICFlagsNonZero: Test 1, MADT Local
+madt            APIC flags field, bits 1..31 are reserved and should be
+madt            zero, but are set as: d.
+madt            FAILED [MEDIUM] MADTIOAPICAddrZero: Test 1, MADT IO APIC
+madt            address is zero, appears not to be defined.
+madt            FAILED [MEDIUM] MADTIRQSrcISA: Test 1, MADT Interrupt
+madt            Source Override Bus should be 0 for ISA bus.
+madt            FAILED [MEDIUM] MADTIRQSrcFlags: Test 1, MADT Interrupt
+madt            Source Override flags, bits 4..31 are reserved and should
+madt            be zero, but are set as: ee.
+madt            FAILED [MEDIUM] MADTIRQSrcISA: Test 1, MADT Interrupt
+madt            Source Override Bus should be 0 for ISA bus.
+madt            FAILED [MEDIUM] MADTIRQSrcFlags: Test 1, MADT Interrupt
+madt            Source Override flags, bits 4..31 are reserved and should
+madt            be zero, but are set as: fd.
+madt            FAILED [MEDIUM] MADTLAPICNMIFlags: Test 1, MADT Local APIC
+madt            NMI flags, bits 4..31 are reserved and should be zero, but
+madt            are set as: ff.
+madt            FAILED [MEDIUM] MADTLAPICNMIFlags: Test 1, MADT Local APIC
+madt            NMI flags, bits 4..31 are reserved and should be zero, but
+madt            are set as: 10.
+madt            
+madt            ==========================================================
+madt            0 passed, 9 failed, 0 warning, 0 aborted, 0 skipped, 0
+madt            info only.
+madt            ==========================================================

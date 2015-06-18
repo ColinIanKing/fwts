@@ -10,8 +10,6 @@ TESTS_ENVIRONMENT += export FAILURE_LOG=/tmp/failure.log;
 
 TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/acpitables-0001/test-0001.sh \
-	fwts-test/acpitables-0002/test-0001.sh \
-	fwts-test/acpitables-0002/test-0002.sh \
 	fwts-test/acpitables-0003/test-0001.sh \
 	fwts-test/acpitables-0004/test-0001.sh \
 	fwts-test/acpitables-0005/test-0001.sh \
@@ -67,6 +65,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/klog-0002/test-0001.sh \
 	fwts-test/klog-0002/test-0002.sh \
 	fwts-test/klog-0002/test-0003.sh \
+	fwts-test/madt-0001/test-0001.sh \
+	fwts-test/madt-0001/test-0002.sh \
 	fwts-test/method-0001/test-0001.sh \
 	fwts-test/oops-0001/test-0001.sh \
 	fwts-test/oops-0001/test-0002.sh \

@@ -1,0 +1,17 @@
+boot            boot: BOOT Table test.
+boot            ----------------------------------------------------------
+boot            Test 1 of 1: BOOT Table test.
+boot            BOOT Table:
+boot              CMOS Index:               0x44
+boot              Reserved:                 0x00
+boot              Reserved:                 0x00
+boot              Reserved:                 0x00
+boot            
+boot            ACPI table loaded from file so fwts will skip the read of
+boot            the CMOS boot register
+boot            PASSED: Test 1, No issues found in BOOT table.
+boot            
+boot            ==========================================================
+boot            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+boot            info only.
+boot            ==========================================================

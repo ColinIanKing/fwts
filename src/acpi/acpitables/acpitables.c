@@ -256,12 +256,6 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 }
 
-static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	FWTS_UNUSED(fw);
-	FWTS_UNUSED(table);
-}
-
 typedef void (*check_func)(fwts_framework *fw, fwts_acpi_table_info *table);
 
 typedef struct {
@@ -271,7 +265,6 @@ typedef struct {
 
 static acpi_table_check_table check_table[] = {
 	{ "FACP", acpi_table_check_fadt },
-	{ "MCFG", acpi_table_check_mcfg },
 	{ "SBST", acpi_table_check_sbst },
 	{ NULL  , NULL },
 } ;

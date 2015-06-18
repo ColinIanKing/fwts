@@ -67,6 +67,7 @@ fwts_SOURCES = main.c 				\
 	acpi/syntaxcheck/syntaxcheck.c 		\
 	acpi/wakealarm/wakealarm.c 		\
 	acpi/wmi/wmi.c 				\
+	acpi/xsdt/xsdt.c			\
 	apic/apicedge/apicedge.c 		\
 	bios/bios_info/bios_info.c 		\
 	bios/bios32/bios32.c 			\

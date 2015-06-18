@@ -296,23 +296,6 @@ static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *tabl
 	}
 }
 
-static void acpi_table_check_xsdt(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	int i;
-	int n;
-	fwts_acpi_table_xsdt *xsdt = (fwts_acpi_table_xsdt*)table->data;
-
-	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint64_t);
-	for (i=0; i<n; i++)  {
-		if (xsdt->entries[i] == 0) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "XSDTEntryNull", "XSDT Entry %d is null, should not be non-zero.", i);
-			fwts_advice(fw, "A XSDT pointer is null and therefore erroneously points to an invalid 64 bit "
-					"ACPI table header. At worse this will cause the kernel to oops, at best the kernel "
-					"may ignore this.  However, it should be fixed where possible.");
-		}
-	}
-}
-
 static void acpi_table_check_mcfg(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	FWTS_UNUSED(fw);
@@ -332,7 +315,6 @@ static acpi_table_check_table check_table[] = {
 	{ "RSDT", acpi_table_check_rsdt },
 	{ "RSDP", acpi_table_check_rsdp },
 	{ "SBST", acpi_table_check_sbst },
-	{ "XSDT", acpi_table_check_xsdt },
 	{ NULL  , NULL },
 } ;
 

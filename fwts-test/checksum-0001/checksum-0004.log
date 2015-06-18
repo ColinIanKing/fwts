@@ -107,7 +107,7 @@ checksum        ADVICE: The kernel will warn that this table has an invalid chec
 checksum        still load it. This is not a critical issue, but should be fixed if possible to avoid the warning
 checksum        messages.
 checksum        
-checksum        PASSED: Test 1, Table RSDT has correct checksum 0x0d
+checksum        PASSED: Test 1, Table RSDT has correct checksum 0xc0
 checksum        
 checksum        ==================================================================================================
 checksum        4 passed, 15 failed, 0 warning, 0 aborted, 0 skipped, 0 info only.

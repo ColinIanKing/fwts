@@ -44,24 +44,24 @@ acpidump        [0x008 0008   4]                            H/W Signature: 0x000
 acpidump        [0x009 0009   1]                                 Checksum: 0x0a
 acpidump        [0x009 0009   1]                                 Checksum: 0x11
 acpidump        [0x009 0009   1]                                 Checksum: 0x13
-acpidump        [0x009 0009   1]                                 Checksum: 0x30
 acpidump        [0x009 0009   1]                                 Checksum: 0x32
 acpidump        [0x009 0009   1]                                 Checksum: 0x52
 acpidump        [0x009 0009   1]                                 Checksum: 0x59
 acpidump        [0x009 0009   1]                                 Checksum: 0x6d
 acpidump        [0x009 0009   1]                                 Checksum: 0x8f
+acpidump        [0x009 0009   1]                                 Checksum: 0x98
 acpidump        [0x009 0009   1]                                 Checksum: 0x99
 acpidump        [0x009 0009   1]                                 Checksum: 0xa5
 acpidump        [0x009 0009   1]                                 Checksum: 0xc8
 acpidump        [0x009 0009   1]                                 Checksum: 0xcc
 acpidump        [0x009 0009   1]                                 Checksum: 0xdf
-acpidump        [0x009 0009   1]                                 Checksum: 0xe5
+acpidump        [0x009 0009   1]                                 Checksum: 0xe3
 acpidump        [0x009 0009   1]                                 Checksum: 0xeb
 acpidump        [0x009 0009   1]                                 Checksum: 0xed
 acpidump        [0x009 0009   6]                                   OEM ID: LENOVO
 acpidump        [0x00a 0010   1]                            Start Bus Num: 0x00
 acpidump        [0x00a 0010   6]                                   OEM ID: BrtRef
-acpidump        [0x00a 0010   6]                                   OEM ID: FWTS  
+acpidump        [0x00a 0010   6]                                   OEM ID: FWTSID
 acpidump        [0x00a 0010   6]                                   OEM ID: Intel 
 acpidump        [0x00a 0010   6]                                   OEM ID: INTEL 
 acpidump        [0x00a 0010   6]                                   OEM ID: LENOVO

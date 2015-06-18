@@ -1,0 +1,49 @@
+dbg2            dbg2: DBG2 (Debug Port Table 2) test.
+dbg2            ----------------------------------------------------------
+dbg2            Test 1 of 1: DBG2 (Debug Port Table 2) test.
+dbg2            DBG2 Table:
+dbg2              Info Offset:              0x0000002c
+dbg2              Info Count:               0x00000001
+dbg2            
+dbg2            DBG2 Info Structure 0:
+dbg2              Revision:                 0x01
+dbg2              Length:                   0x003f
+dbg2              Number of Registers       0x07
+dbg2              Namespace String Length:  0x0019
+dbg2              Namespace String Offset:  0x0026
+dbg2              OEM Data Length:          0x4030
+dbg2              OEM Data Offset:          0xfeff
+dbg2              Port Type:                0x8002 (USB)
+dbg2              Port Subtype:             0x0008 ((Reserved))
+dbg2              Reserved:                 0x00f0
+dbg2              Base Address Offset:      0x0016
+dbg2              Address Size Offset:      0x3022
+dbg2            
+dbg2            FAILED [HIGH] DBG2NonZeroRevision: Test 1, DBG2 Info
+dbg2            Structure Revision is 0x01 and was expecting 0x00
+dbg2            FAILED [HIGH] DBG2PortSubTypeReserved: Test 1, DBG2 Info
+dbg2            Structure Port Subtype is 0x0008 which is a reserved type.
+dbg2              Namespace String:         '\_SB.PCI0.EHC1.HUB0.PRT2'
+dbg2            FAILED [HIGH] DBG2DeviceNotFound: Test 1, DBG2 Device
+dbg2            '\_SB_.PCI0.EHC1.HUB0.PRT2' not found in ACPI object name
+dbg2            space.
+dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
+dbg2            expecting 65323 bytes, instead got 107 bytes for a DBG2
+dbg2            table and DBG2 Info Structure OEM Data Offset
+dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
+dbg2            expecting 81755 bytes, instead got 107 bytes for a DBG2
+dbg2            table and DBG2 Info Structure OEM Data End
+dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
+dbg2            expecting 150 bytes, instead got 107 bytes for a DBG2
+dbg2            table and DBG2 Info Structure Base Address End
+dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
+dbg2            expecting 12366 bytes, instead got 107 bytes for a DBG2
+dbg2            table and DBG2 Info Structure Address Size Offset
+dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
+dbg2            expecting 12394 bytes, instead got 107 bytes for a DBG2
+dbg2            table and DBG2 Info Structure Address Size End
+dbg2            
+dbg2            ==========================================================
+dbg2            0 passed, 8 failed, 0 warning, 0 aborted, 0 skipped, 0
+dbg2            info only.
+dbg2            ==========================================================

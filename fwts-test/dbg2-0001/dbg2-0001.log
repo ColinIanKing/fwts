@@ -1,0 +1,34 @@
+dbg2            dbg2: DBG2 (Debug Port Table 2) test.
+dbg2            ----------------------------------------------------------
+dbg2            Test 1 of 1: DBG2 (Debug Port Table 2) test.
+dbg2            DBG2 Table:
+dbg2              Info Offset:              0x0000002c
+dbg2              Info Count:               0x00000001
+dbg2            
+dbg2            DBG2 Info Structure 0:
+dbg2              Revision:                 0x00
+dbg2              Length:                   0x003f
+dbg2              Number of Registers       0x01
+dbg2              Namespace String Length:  0x0019
+dbg2              Namespace String Offset:  0x0026
+dbg2              OEM Data Length:          0x0000
+dbg2              OEM Data Offset:          0x0000
+dbg2              Port Type:                0x8002 (USB)
+dbg2              Port Subtype:             0x0001 (EHCI controller)
+dbg2              Reserved:                 0x0000
+dbg2              Base Address Offset:      0x0016
+dbg2              Address Size Offset:      0x0022
+dbg2            
+dbg2              Namespace String:         '\_SB.PCI0.EHC1.HUB0.PRT1'
+dbg2                Address Space ID:       0x00
+dbg2                Register Bit Width      0x20
+dbg2                Register Bit Offset     0x00
+dbg2                Access Size             0x00
+dbg2                Address                 0x00000000f18190a0
+dbg2            
+dbg2            PASSED: Test 1, No issues found in DBG2 table.
+dbg2            
+dbg2            ==========================================================
+dbg2            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+dbg2            info only.
+dbg2            ==========================================================

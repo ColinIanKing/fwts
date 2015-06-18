@@ -1,6 +1,6 @@
 ACPI tests:
  acpiinfo        General ACPI information test.
- acpitables      ACPI table settings sanity tests.
+ acpitables      ACPI table headers sanity tests.
  apicinstance    Test for single instance of APIC/MADT table.
  bert            BERT Boot Error Record Table test.
  boot            BOOT Table test.
@@ -10,21 +10,27 @@ ACPI tests:
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  ecdt            Embedded Controller Boot Resources Table test.
- fadt            FADT SCI_EN enabled tests.
+ fadt            FADT Fixed ACPI Description Table tests.
+ gtdt            GTDT Generic Timer Description Table test.
  hest            HEST Hardware Error Source Table test.
- hpet_check      HPET configuration tests.
+ hpet            HPET IA-PC High Precision Event Timer Tanble tests.
+ madt            MADT Multiple APIC Description Table test.
  mcfg            MCFG PCI Express* memory mapped config space test.
  method          ACPI DSDT Method Semantic tests.
  pcc             Processor Clocking Control (PCC) test.
+ rsdp            RSDP Root System Description Pointer test.
+ rsdt            RSDT Root System Description Table test.
+ sbst            SBST Smart Battery Specification Table test.
  slit            SLIT System Locality Distance Information test.
  spcr            SPCR Serial Port Console Redirection Table test.
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
+ xsdt            XSDT Extended System Description Table test.
 
 Batch tests:
  acpiinfo        General ACPI information test.
- acpitables      ACPI table settings sanity tests.
+ acpitables      ACPI table headers sanity tests.
  apicedge        APIC edge/level test.
  apicinstance    Test for single instance of APIC/MADT table.
  aspm            PCIe ASPM test.
@@ -44,12 +50,14 @@ Batch tests:
  dmicheck        DMI/SMBIOS table tests.
  ebda            Test EBDA region is mapped and reserved in memory map table.
  ecdt            Embedded Controller Boot Resources Table test.
- fadt            FADT SCI_EN enabled tests.
+ fadt            FADT Fixed ACPI Description Table tests.
  fan             Simple fan tests.
+ gtdt            GTDT Generic Timer Description Table test.
  hda_audio       HDA Audio Pin Configuration test.
  hest            HEST Hardware Error Source Table test.
- hpet_check      HPET configuration tests.
+ hpet            HPET IA-PC High Precision Event Timer Tanble tests.
  klog            Scan kernel log for errors and warnings.
+ madt            MADT Multiple APIC Description Table test.
  maxfreq         Test max CPU frequencies against max scaling frequency.
  maxreadreq      Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.
  mcfg            MCFG PCI Express* memory mapped config space test.
@@ -65,6 +73,9 @@ Batch tests:
  pcc             Processor Clocking Control (PCC) test.
  pciirq          PCI IRQ Routing Table test.
  pnp             BIOS Support Installation structure test.
+ rsdp            RSDP Root System Description Pointer test.
+ rsdt            RSDT Root System Description Table test.
+ sbst            SBST Smart Battery Specification Table test.
  securebootcert  UEFI secure boot test.
  slit            SLIT System Locality Distance Information test.
  spcr            SPCR Serial Port Console Redirection Table test.
@@ -76,6 +87,7 @@ Batch tests:
  virt            CPU Virtualisation Configuration test.
  wakealarm       ACPI Wakealarm tests.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
+ xsdt            XSDT Extended System Description Table test.
 
 Interactive tests:
  ac_adapter      Interactive ac_adapter power test.

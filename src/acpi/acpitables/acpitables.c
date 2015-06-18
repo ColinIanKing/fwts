@@ -230,23 +230,6 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	acpi_table_check_fadt_reset(fw, fadt);
 }
 
-static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	int i;
-	int n;
-	fwts_acpi_table_rsdt *rsdt = (fwts_acpi_table_rsdt*)table->data;
-
-	n = (table->length - sizeof(fwts_acpi_table_header)) / sizeof(uint32_t);
-	for (i=0; i<n; i++)  {
-		if (rsdt->entries[i] == 0) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "RSDTEntryNull", "RSDT Entry %d is null, should not be non-zero.", i);
-			fwts_advice(fw, "A RSDT pointer is null and therefore erroneously points to an invalid 32 bit "
-					"ACPI table header. At worse this will cause the kernel to oops, at best the kernel "
-					"may ignore this.  However, it should be fixed where possible.");
-		}
-	}
-}
-
 static void acpi_table_check_sbst(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	fwts_acpi_table_sbst *sbst = (fwts_acpi_table_sbst*)table->data;
@@ -289,7 +272,6 @@ typedef struct {
 static acpi_table_check_table check_table[] = {
 	{ "FACP", acpi_table_check_fadt },
 	{ "MCFG", acpi_table_check_mcfg },
-	{ "RSDT", acpi_table_check_rsdt },
 	{ "SBST", acpi_table_check_sbst },
 	{ NULL  , NULL },
 } ;

@@ -230,29 +230,6 @@ static void acpi_table_check_fadt(fwts_framework *fw, fwts_acpi_table_info *tabl
 	acpi_table_check_fadt_reset(fw, fadt);
 }
 
-static void acpi_table_check_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	fwts_acpi_table_rsdp *rsdp = (fwts_acpi_table_rsdp*)table->data;
-	int i;
-	int passed;
-
-	for (passed=0,i=0;i<6;i++) {
-		if (isalnum(rsdp->oem_id[i]))
-			passed++;
-	}
-	if (!passed) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadOEMId", "RSDP: oem_id does not contain any alpha numeric characters.");
-		fwts_advice(fw, "The RSDP OEM Id is non-conforming, but this will not affect the system behaviour. However "
-				"this should be fixed if possible to make the firmware ACPI complaint.");
-	}
-
-	if (rsdp->revision > 2) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "RSDPBadRevisionId", "RSDP: revision is %" PRIu8
-			", expected value less than 2.", rsdp->revision);
-		fwts_advice(fw, "A RSDP revision number greater than 2 probably won't cause any system problems.");
-	}
-}
-
 static void acpi_table_check_rsdt(fwts_framework *fw, fwts_acpi_table_info *table)
 {
 	int i;
@@ -313,7 +290,6 @@ static acpi_table_check_table check_table[] = {
 	{ "FACP", acpi_table_check_fadt },
 	{ "MCFG", acpi_table_check_mcfg },
 	{ "RSDT", acpi_table_check_rsdt },
-	{ "RSDP", acpi_table_check_rsdp },
 	{ "SBST", acpi_table_check_sbst },
 	{ NULL  , NULL },
 } ;

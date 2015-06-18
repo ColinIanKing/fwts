@@ -240,4 +240,4 @@ static fwts_framework_ops spmi_ops = {
 	.minor_tests = spmi_tests
 };
 
-FWTS_REGISTER("spmi", &spmi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("spmi", &spmi_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

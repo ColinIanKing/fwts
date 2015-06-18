@@ -92,4 +92,4 @@ static fwts_framework_ops sbst_ops = {
 	.minor_tests = sbst_tests
 };
 
-FWTS_REGISTER("sbst", &sbst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("sbst", &sbst_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

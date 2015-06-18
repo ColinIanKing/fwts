@@ -185,4 +185,4 @@ static fwts_framework_ops bert_ops = {
 	.minor_tests = bert_tests
 };
 
-FWTS_REGISTER("bert", &bert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("bert", &bert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

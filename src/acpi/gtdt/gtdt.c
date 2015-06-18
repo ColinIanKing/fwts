@@ -245,4 +245,4 @@ static fwts_framework_ops gtdt_ops = {
 	.minor_tests = gtdt_tests
 };
 
-FWTS_REGISTER("gtdt", &gtdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("gtdt", &gtdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

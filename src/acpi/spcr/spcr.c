@@ -288,4 +288,4 @@ static fwts_framework_ops spcr_ops = {
 	.minor_tests = spcr_tests
 };
 
-FWTS_REGISTER("spcr", &spcr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("spcr", &spcr_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

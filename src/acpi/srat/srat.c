@@ -352,4 +352,4 @@ static fwts_framework_ops srat_ops = {
 	.minor_tests = srat_tests
 };
 
-FWTS_REGISTER("srat", &srat_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("srat", &srat_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)

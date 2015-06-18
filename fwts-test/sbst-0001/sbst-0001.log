@@ -1,0 +1,9 @@
+sbst            sbst: SBST Smart Battery Specification Table test.
+sbst            ----------------------------------------------------------
+sbst            Test 1 of 1: SBST Smart Battery Specificiation Table test.
+sbst            PASSED: Test 1, No issues found in SBST table.
+sbst            
+sbst            ==========================================================
+sbst            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+sbst            info only.
+sbst            ==========================================================

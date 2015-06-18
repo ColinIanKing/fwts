@@ -1,0 +1,13 @@
+sbst            sbst: SBST Smart Battery Specification Table test.
+sbst            ----------------------------------------------------------
+sbst            Test 1 of 1: SBST Smart Battery Specificiation Table test.
+sbst            FAILED [MEDIUM] SBSTEnergeyLevel2: Test 1, SBST Low Energy
+sbst            Energy Level (1) is greater than the Warning Energy Level
+sbst            (0).
+sbst            FAILED [MEDIUM] SBSTEnergyLevelZero: Test 1, SBST Warning
+sbst            Energy Level is zero, which is probably too low.
+sbst            
+sbst            ==========================================================
+sbst            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+sbst            info only.
+sbst            ==========================================================

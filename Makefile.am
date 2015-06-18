@@ -82,6 +82,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/osilinux-0001/test-0002.sh \
 	fwts-test/rsdp-0001/test-0001.sh \
 	fwts-test/rsdt-0001/test-0001.sh \
+	fwts-test/sbst-0001/test-0001.sh \
+	fwts-test/sbst-0001/test-0002.sh \
 	fwts-test/syntaxcheck-0001/test-0001.sh \
 	fwts-test/wmi-0001/test-0001.sh \
 	fwts-test/wmi-0001/test-0002.sh \

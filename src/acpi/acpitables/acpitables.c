@@ -25,43 +25,6 @@
 
 #include "fwts.h"
 
-typedef void (*check_func)(fwts_framework *fw, fwts_acpi_table_info *table);
-
-typedef struct {
-	char *name;
-	check_func func;
-} acpi_table_check_table;
-
-static acpi_table_check_table check_table[] = {
-	{ NULL  , NULL },
-} ;
-
-static int acpi_table_check_test1(fwts_framework *fw)
-{
-	int i;
-
-	for (i=0; check_table[i].name != NULL; i++) {
-		uint32_t failed = fw->minor_tests.failed;
-		fwts_acpi_table_info *table;
-
-		if (fwts_acpi_find_table(fw, check_table[i].name, 0, &table) != FWTS_OK) {
-			fwts_aborted(fw, "Cannot load ACPI table %s.", check_table[i].name);
-			/* If this fails, we cannot load any subsequent tables so abort */
-			break;
-		}
-
-		if (table) {
-			check_table[i].func(fw, table);
-			if (failed == fw->minor_tests.failed)
-				fwts_passed(fw, "Table %s passed.", check_table[i].name);
-		} else {
-			fwts_log_info(fw, "Table %s not present to check.", check_table[i].name);
-		}
-	}
-
-	return FWTS_OK;
-}
-
 static bool acpi_table_check_field(const char *field, const size_t len)
 {
 	size_t i;
@@ -89,7 +52,7 @@ static bool acpi_table_check_field_test(
 	return true;
 }
 
-static int acpi_table_check_test2(fwts_framework *fw)
+static int acpi_table_check_test1(fwts_framework *fw)
 {
 	int i;
 	bool checked = false;
@@ -153,13 +116,12 @@ static int acpi_table_check_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test acpi_table_check_tests[] = {
-	{ acpi_table_check_test1, "Test ACPI tables." },
-	{ acpi_table_check_test2, "Test ACPI headers." },
+	{ acpi_table_check_test1, "Test ACPI headers." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops acpi_table_check_ops = {
-	.description = "ACPI table settings sanity tests.",
+	.description = "ACPI table headers sanity tests.",
 	.minor_tests = acpi_table_check_tests
 };
 

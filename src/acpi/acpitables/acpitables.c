@@ -25,23 +25,6 @@
 
 #include "fwts.h"
 
-static void acpi_table_check_hpet(fwts_framework *fw, fwts_acpi_table_info *table)
-{
-	fwts_acpi_table_hpet *hpet = (fwts_acpi_table_hpet*)table->data;
-
-	if (hpet->base_address.address == 0)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETBaseZero", "HPET base is 0x000000000000, which is invalid.");
-
-	if (((hpet->event_timer_block_id >> 16) & 0xffff) == 0) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HPETVendorIdZero", "HPET PCI Vendor ID is 0x0000, which is invalid.");
-		fwts_advice(fw, "The HPET specification (http://www.intel.com/hardwaredesign/hpetspec_1.pdf)  describes "
-				"the HPET table in section 3.2.4 'The ACPI 2.0 HPET Description Table (HPET)'. The top "
-				"16 bits of the Event Timer Block ID specify the Vendor ID and this should not be zero. "
-				"This won't affect the kernel behaviour, but should be fixed as it is an undefined ID value.");
-	}
-
-}
-
 static void acpi_table_check_fadt_firmware_control(fwts_framework *fw, fwts_acpi_table_fadt *fadt)
 {
 	if (fadt->firmware_control == 0) {
@@ -695,7 +678,6 @@ static acpi_table_check_table check_table[] = {
 	{ "APIC", acpi_table_check_madt },
 	{ "FACP", acpi_table_check_fadt },
 	{ "GTDT", acpi_table_check_gtdt },
-	{ "HPET", acpi_table_check_hpet },
 	{ "MCFG", acpi_table_check_mcfg },
 	{ "RSDT", acpi_table_check_rsdt },
 	{ "RSDP", acpi_table_check_rsdp },

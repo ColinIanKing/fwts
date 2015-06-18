@@ -1,0 +1,21 @@
+dbgp            dbgp: DBGP (Debug Port) Table test.
+dbgp            ----------------------------------------------------------
+dbgp            Test 1 of 1: DBGP (Debug Port) Table test.
+dbgp            DBGP Table:
+dbgp              Interface Type            0x00 (Full 16550 interface)
+dbgp              Reserved:                 0x00
+dbgp              Reserved:                 0x00
+dbgp              Reserved:                 0x00
+dbgp              Base Address:
+dbgp                Address Space ID:       0x01
+dbgp                Register Bit Width      0x08
+dbgp                Register Bit Offset     0x00
+dbgp                Access Size             0x00
+dbgp                Address                 0x0000000000000260
+dbgp            
+dbgp            PASSED: Test 1, No issues found in DBGP table.
+dbgp            
+dbgp            ==========================================================
+dbgp            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+dbgp            info only.
+dbgp            ==========================================================

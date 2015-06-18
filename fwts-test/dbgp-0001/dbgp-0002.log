@@ -1,0 +1,27 @@
+dbgp            dbgp: DBGP (Debug Port) Table test.
+dbgp            ----------------------------------------------------------
+dbgp            Test 1 of 1: DBGP (Debug Port) Table test.
+dbgp            DBGP Table:
+dbgp              Interface Type            0x04 (Reserved)
+dbgp              Reserved:                 0x00
+dbgp              Reserved:                 0x00
+dbgp              Reserved:                 0x00
+dbgp              Base Address:
+dbgp                Address Space ID:       0x05
+dbgp                Register Bit Width      0x00
+dbgp                Register Bit Offset     0x00
+dbgp                Access Size             0x00
+dbgp                Address                 0x0000000000000260
+dbgp            
+dbgp            FAILED [HIGH] DBGPReservedInterfaceType: Test 1, DBGP
+dbgp            Interface Type is 0x04 which is a reserved interface type.
+dbgp            Expecting 0x00 (Full 16550) or 0x01 (16550 subset)
+dbgp            FAILED [HIGH] DBGPBaseAddrBitWidthZero: Test 1, DBGP Base
+dbgp            Address Bit Width is zero.
+dbgp            FAILED [HIGH] DBGPBaseAddrAddrSpaceID: Test 1, DBGP Base
+dbgp            Address, Address Space ID 0x5 which is a reserved value.
+dbgp            
+dbgp            ==========================================================
+dbgp            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0
+dbgp            info only.
+dbgp            ==========================================================

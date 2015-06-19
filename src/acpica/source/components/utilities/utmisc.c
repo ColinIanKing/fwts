@@ -143,10 +143,10 @@ AcpiUtIsPciRootBridge (
      * Check if this is a PCI root bridge.
      * ACPI 3.0+: check for a PCI Express root also.
      */
-    if (!(ACPI_STRCMP (Id,
+    if (!(strcmp (Id,
             PCI_ROOT_HID_STRING)) ||
 
-        !(ACPI_STRCMP (Id,
+        !(strcmp (Id,
             PCI_EXPRESS_ROOT_HID_STRING)))
     {
         return (TRUE);
@@ -180,7 +180,8 @@ AcpiUtIsAmlTable (
 
     if (ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_DSDT) ||
         ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_PSDT) ||
-        ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_SSDT))
+        ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_SSDT) ||
+        ACPI_COMPARE_NAME (Table->Signature, ACPI_SIG_OSDT))
     {
         return (TRUE);
     }

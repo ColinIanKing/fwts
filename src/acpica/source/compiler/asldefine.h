@@ -177,7 +177,8 @@
 
 /* filename suffixes for output files */
 
-#define FILE_SUFFIX_PREPROCESSOR    "i"
+#define FILE_SUFFIX_PREPROC_USER    "i  "
+#define FILE_SUFFIX_PREPROCESSOR    "pre"
 #define FILE_SUFFIX_AML_CODE        "aml"
 #define FILE_SUFFIX_MAP             "map"
 #define FILE_SUFFIX_LISTING         "lst"
@@ -208,6 +209,8 @@
 #define ASL_ABORT                   TRUE
 #define ASL_NO_ABORT                FALSE
 #define ASL_EOF                     ACPI_UINT32_MAX
+#define ASL_WITHIN_COMMENT          (ACPI_UINT32_MAX -1)
+#define ASL_BLANK_LINE              (ACPI_UINT32_MAX -1)
 
 
 /* Listings */

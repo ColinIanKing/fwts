@@ -201,7 +201,7 @@ DtTrim (
 
     /* Skip lines that start with a space */
 
-    if (!ACPI_STRCMP (String, " "))
+    if (!strcmp (String, " "))
     {
         ReturnString = UtStringCacheCalloc (1);
         return (ReturnString);
@@ -210,7 +210,7 @@ DtTrim (
     /* Setup pointers to start and end of input string */
 
     Start = String;
-    End = String + ACPI_STRLEN (String) - 1;
+    End = String + strlen (String) - 1;
 
     /* Find first non-whitespace character */
 
@@ -252,9 +252,9 @@ DtTrim (
 
     Length = ACPI_PTR_DIFF (End, Start) + 1;
     ReturnString = UtStringCacheCalloc (Length + 1);
-    if (ACPI_STRLEN (Start))
+    if (strlen (Start))
     {
-        ACPI_STRNCPY (ReturnString, Start, Length);
+        strncpy (ReturnString, Start, Length);
     }
 
     ReturnString[Length] = 0;
@@ -385,7 +385,7 @@ DtParseLine (
     Length = ACPI_PTR_DIFF (End, Start);
 
     TmpName = UtLocalCalloc (Length + 1);
-    ACPI_STRNCPY (TmpName, Start, Length);
+    strncpy (TmpName, Start, Length);
     Name = DtTrim (TmpName);
     ACPI_FREE (TmpName);
 
@@ -432,7 +432,7 @@ DtParseLine (
     Length = ACPI_PTR_DIFF (End, Start);
     TmpValue = UtLocalCalloc (Length + 1);
 
-    ACPI_STRNCPY (TmpValue, Start, Length);
+    strncpy (TmpValue, Start, Length);
     Value = DtTrim (TmpValue);
     ACPI_FREE (TmpValue);
 
@@ -478,7 +478,8 @@ DtParseLine (
 
 UINT32
 DtGetNextLine (
-    FILE                    *Handle)
+    FILE                    *Handle,
+    UINT32                  Flags)
 {
     BOOLEAN                 LineNotAllBlanks = FALSE;
     UINT32                  State = DT_NORMAL_TEXT;
@@ -487,7 +488,7 @@ DtGetNextLine (
     int                     c;
 
 
-    ACPI_MEMSET (Gbl_CurrentLineBuffer, 0, Gbl_LineBufferSize);
+    memset (Gbl_CurrentLineBuffer, 0, Gbl_LineBufferSize);
     for (i = 0; ;)
     {
         /*
@@ -622,9 +623,12 @@ DtGetNextLine (
 
             case '\n':
 
-                AcpiOsPrintf ("ERROR at line %u: Unterminated quoted string\n",
-                    Gbl_CurrentLineNumber++);
-                State = DT_NORMAL_TEXT;
+                if (!(Flags & DT_ALLOW_MULTILINE_QUOTES))
+                {
+                    AcpiOsPrintf ("ERROR at line %u: Unterminated quoted string\n",
+                        Gbl_CurrentLineNumber++);
+                    State = DT_NORMAL_TEXT;
+                }
                 break;
 
             default:    /* Get next character */
@@ -818,7 +822,7 @@ DtScanFile (
 
     /* Scan line-by-line */
 
-    while ((Offset = DtGetNextLine (Handle)) != ASL_EOF)
+    while ((Offset = DtGetNextLine (Handle, 0)) != ASL_EOF)
     {
         ACPI_DEBUG_PRINT ((ACPI_DB_PARSE, "Line %2.2u/%4.4X - %s",
             Gbl_CurrentLineNumber, Offset, Gbl_CurrentLineBuffer));
@@ -969,7 +973,7 @@ DtDumpBuffer (
             }
 
             BufChar = Buffer[(ACPI_SIZE) i + j];
-            if (ACPI_IS_PRINT (BufChar))
+            if (isprint (BufChar))
             {
                 FlPrintFile (FileId, "%c", BufChar);
             }

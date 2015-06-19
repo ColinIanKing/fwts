@@ -513,17 +513,20 @@ UtDisplaySummary (
             "%-14s %s - %u lines, %u bytes, %u keywords\n",
             "ASL Input:",
             Gbl_Files[ASL_FILE_INPUT].Filename, Gbl_CurrentLineNumber,
-            Gbl_InputByteCount, TotalKeywords);
+            Gbl_OriginalInputFileSize, TotalKeywords);
 
         /* AML summary */
 
         if ((Gbl_ExceptionCount[ASL_ERROR] == 0) || (Gbl_IgnoreErrors))
         {
-            FlPrintFile (FileId,
-                "%-14s %s - %u bytes, %u named objects, %u executable opcodes\n",
-                "AML Output:",
-                Gbl_Files[ASL_FILE_AML_OUTPUT].Filename, Gbl_TableLength,
-                TotalNamedObjects, TotalExecutableOpcodes);
+            if (Gbl_Files[ASL_FILE_AML_OUTPUT].Handle)
+            {
+                FlPrintFile (FileId,
+                    "%-14s %s - %u bytes, %u named objects, %u executable opcodes\n",
+                    "AML Output:",
+                    Gbl_Files[ASL_FILE_AML_OUTPUT].Filename, Gbl_TableLength,
+                    TotalNamedObjects, TotalExecutableOpcodes);
+            }
         }
     }
 
@@ -543,9 +546,9 @@ UtDisplaySummary (
             continue;
         }
 
-        /* .I is a temp file unless specifically requested */
+        /* .PRE is the preprocessor intermediate file */
 
-        if ((i == ASL_FILE_PREPROCESSOR) && (!Gbl_PreprocessorOutputFlag))
+        if ((i == ASL_FILE_PREPROCESSOR)  && (!Gbl_KeepPreprocessorTempFile))
         {
             continue;
         }
@@ -1004,7 +1007,7 @@ UtDoConstant (
     char                    ErrBuf[64];
 
 
-    Status = UtStrtoul64 (String, 0, &Converted);
+    Status = stroul64 (String, 0, &Converted);
     if (ACPI_FAILURE (Status))
     {
         sprintf (ErrBuf, "%s %s\n", "Conversion error:",
@@ -1020,7 +1023,7 @@ UtDoConstant (
 
 /*******************************************************************************
  *
- * FUNCTION:    UtStrtoul64
+ * FUNCTION:    stroul64
  *
  * PARAMETERS:  String              - Null terminated string
  *              Terminater          - Where a pointer to the terminating byte
@@ -1034,7 +1037,7 @@ UtDoConstant (
  ******************************************************************************/
 
 ACPI_STATUS
-UtStrtoul64 (
+stroul64 (
     char                    *String,
     UINT32                  Base,
     UINT64                  *RetInteger)

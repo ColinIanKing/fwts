@@ -526,7 +526,8 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 		high_perf = fwts_cpu_benchmark_best_result(&result);
 
 		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/n_tests);
+		if (n_tests)
+			fwts_progress(fw, 100 * performed_tests / n_tests);
 		/*
 		 * now set all the others to low again; sw_any will cause
 		 * the core in question to now also get the low speed, while
@@ -550,7 +551,8 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 			ok = false;
 		}
 		performed_tests++;
-		fwts_progress(fw, 100 * performed_tests/n_tests);
+		if (n_tests)
+			fwts_progress(fw, 100 * performed_tests / n_tests);
 	}
 
 	if (!ok)

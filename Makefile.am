@@ -67,6 +67,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/disassemble-0001/test-0001.sh \
 	fwts-test/erst-0001/test-0001.sh \
 	fwts-test/erst-0001/test-0002.sh \
+	fwts-test/facs-0001/test-0001.sh \
+	fwts-test/facs-0001/test-0002.sh \
 	fwts-test/hest-0001/test-0001.sh \
 	fwts-test/hest-0001/test-0002.sh \
 	fwts-test/klog-0001/test-0001.sh \

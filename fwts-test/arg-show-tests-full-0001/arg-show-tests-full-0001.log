@@ -29,6 +29,8 @@ ACPI tests:
   ECDT Embedded Controller Boot Resources Table test.
  erst            (1 test):
   ERST Error Record Serialization Table test.
+ facs            (1 test):
+  FACS Firmware ACPI Control Structure test.
  fadt            (3 tests):
   Test FADT ACPI Description Table tests.
   Test FADT SCI_EN bit is enabled.
@@ -309,6 +311,8 @@ Batch tests:
   ECDT Embedded Controller Boot Resources Table test.
  erst            (1 test):
   ERST Error Record Serialization Table test.
+ facs            (1 test):
+  FACS Firmware ACPI Control Structure test.
  fadt            (3 tests):
   Test FADT ACPI Description Table tests.
   Test FADT SCI_EN bit is enabled.
@@ -782,4 +786,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 645 tests
+Total of 647 tests

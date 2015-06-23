@@ -1,0 +1,36 @@
+facs            facs: FACS Firmware ACPI Control Structure test.
+facs            ----------------------------------------------------------
+facs            Cannot find FACP.
+facs            Test 1 of 1: FACS Firmware ACPI Control Structure test.
+facs            FACS Firmware ACPI Control Structure:
+facs              Signature:                'FACS'
+facs              Length:                   0x00000040
+facs              Hardware Signature:       0xdeadbeef
+facs              Firmware Waking Vector:   0x00000000
+facs              Global Lock:              0x00000000
+facs              Flags:                    0xffffffff
+facs              X-Firmware Waking Vector: 0x0000000000000000
+facs              Version:                  0x01
+facs              Reserved:                 0xaa 0x55 0xaa
+facs              OSPM Flags:               0xefefefef
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x01 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs            FAILED [LOW] FACSInvalidReserved1: Test 1, FACS: 1st
+facs            Reserved field is non-zero
+facs            FAILED [MEDIUM] FACSFlagsReservedBitsSet: Test 1, FACS:
+facs            Flags field is 0xffffffff and some of the reserved bits
+facs            [31:2] are set
+facs            FAILED [MEDIUM] FACSFlagsReservedBitsSet: Test 1, FACS:
+facs            OSPM Flags field is 0xefefefef and some of the reserved
+facs            bits [31:1] are set
+facs            FAILED [LOW] FACSInvalidReserved1: Test 1, FACS: 2nd
+facs            Reserved field is non-zero
+facs            
+facs            ==========================================================
+facs            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+facs            info only.
+facs            ==========================================================

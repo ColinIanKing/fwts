@@ -1,0 +1,27 @@
+facs            facs: FACS Firmware ACPI Control Structure test.
+facs            ----------------------------------------------------------
+facs            Cannot find FACP.
+facs            Test 1 of 1: FACS Firmware ACPI Control Structure test.
+facs            FACS Firmware ACPI Control Structure:
+facs              Signature:                'FACS'
+facs              Length:                   0x00000040
+facs              Hardware Signature:       0x00000000
+facs              Firmware Waking Vector:   0x00000000
+facs              Global Lock:              0x00000000
+facs              Flags:                    0x00000000
+facs              X-Firmware Waking Vector: 0x0000000000000000
+facs              Version:                  0x01
+facs              Reserved:                 0x00 0x00 0x00
+facs              OSPM Flags:               0x00000000
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs              Reserved:                 0x00 0x00 0x00 0x00
+facs            PASSED: Test 1, No issues found in FACS table.
+facs            
+facs            ==========================================================
+facs            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+facs            info only.
+facs            ==========================================================

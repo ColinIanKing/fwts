@@ -3,6 +3,7 @@ ACPI tests:
  acpitables      ACPI table headers sanity tests.
  apicinstance    Test for single instance of APIC/MADT table.
  bert            BERT Boot Error Record Table test.
+ bgrt            BGRT Boot Graphics Resource Table test.
  boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cstates         Processor C state support test.
@@ -37,6 +38,7 @@ Batch tests:
  aspm            PCIe ASPM test.
  autobrightness  Automated LCD brightness test.
  bert            BERT Boot Error Record Table test.
+ bgrt            BGRT Boot Graphics Resource Table test.
  bios32          BIOS32 Service Directory test.
  bios_info       Gather BIOS DMI information.
  boot            BOOT Table test.

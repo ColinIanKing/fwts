@@ -1,0 +1,16 @@
+bgrt            bgrt: BGRT Boot Graphics Resource Table test.
+bgrt            ----------------------------------------------------------
+bgrt            Test 1 of 1: BGRT Boot Graphics Resource Table test.
+bgrt            BGRT Boot Graphics Resource Table:
+bgrt              Version:                  0x0001
+bgrt              Status:                   0x00
+bgrt              Image Type:               0x00
+bgrt              Image Memory Address:     0x035f701800000001
+bgrt              Image Offset X:           0x00000000
+bgrt              Image Offset Y:           0x00000000
+bgrt            PASSED: Test 1, No issues found in BGRT table.
+bgrt            
+bgrt            ==========================================================
+bgrt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+bgrt            info only.
+bgrt            ==========================================================

@@ -1,0 +1,21 @@
+bgrt            bgrt: BGRT Boot Graphics Resource Table test.
+bgrt            ----------------------------------------------------------
+bgrt            Test 1 of 1: BGRT Boot Graphics Resource Table test.
+bgrt            BGRT Boot Graphics Resource Table:
+bgrt              Version:                  0x0002
+bgrt              Status:                   0xff
+bgrt              Image Type:               0x01
+bgrt              Image Memory Address:     0x035f701800000000
+bgrt              Image Offset X:           0x00000000
+bgrt              Image Offset Y:           0x00000000
+bgrt            FAILED [MEDIUM] BGRTInvalidVersion: Test 1, BGRT: Version
+bgrt            field is 0x2 and not the expected value of 0x01
+bgrt            FAILED [MEDIUM] BGRTStatusRersevedBits: Test 1, BGRT:
+bgrt            Status field is 0xff, reserved bits [1:7] should be zero
+bgrt            FAILED [MEDIUM] BGRTInvalidImageType: Test 1, BGRT: Image
+bgrt            Type field is 0x1, the only allowed type is 0x00
+bgrt            
+bgrt            ==========================================================
+bgrt            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0
+bgrt            info only.
+bgrt            ==========================================================

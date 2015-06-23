@@ -31,6 +31,7 @@ fwts_SOURCES = main.c 				\
 	acpi/apicinstance/apicinstance.c 	\
 	acpi/battery/battery.c 			\
 	acpi/bert/bert.c			\
+	acpi/bgrt/bgrt.c			\
 	acpi/boot/boot.c			\
 	acpi/brightness/brightness-helper.c	\
 	acpi/brightness/brightness.c 		\

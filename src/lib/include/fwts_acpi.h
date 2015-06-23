@@ -678,12 +678,13 @@ typedef struct {
 
 /* 5.2.22 Boot Graphics Resource Table (BGRT) ACPI 5.0 Spec */
 typedef struct {
+	fwts_acpi_table_header header;
 	uint16_t	version;
 	uint8_t		status;
 	uint8_t		image_type;
 	uint64_t	image_addr;
 	uint32_t	image_offset_x;
-	uint32_t	image_offset_t;
+	uint32_t	image_offset_y;
 } __attribute__ ((packed)) fwts_acpi_table_bgrt;
 
 /* 5.2.23 Firmware Performance Data Table (FPDT) ACPI 5.0 spec */

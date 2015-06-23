@@ -1579,7 +1579,7 @@ static void acpidump_bgrt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_UINT("Image Type", 	fwts_acpi_table_bgrt, image_type),
 		FIELD_UINT("Image Address", 	fwts_acpi_table_bgrt, image_addr),
 		FIELD_UINT("Image Offset X", 	fwts_acpi_table_bgrt, image_offset_x),
-		FIELD_UINT("Image Offset Y", 	fwts_acpi_table_bgrt, image_offset_t),
+		FIELD_UINT("Image Offset Y", 	fwts_acpi_table_bgrt, image_offset_y),
 		FIELD_END
 	};
 

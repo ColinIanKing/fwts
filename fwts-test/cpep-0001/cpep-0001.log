@@ -1,0 +1,15 @@
+cpep            cpep: CPEP Corrected Platform Error Polling Table test.
+cpep            ----------------------------------------------------------
+cpep            Test 1 of 1: CPEP Corrected Platform Error Polling Table
+cpep            test.
+cpep            CPEP Corrected Platform Error Polling Table:
+cpep              Reserved:                 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+cpep            CPEP Processor Structure 0 looks sane.
+cpep            CPEP Processor Structure 1 looks sane.
+cpep            CPEP Processor Structure 2 looks sane.
+cpep            PASSED: Test 1, No issues found in CPEP table.
+cpep            
+cpep            ==========================================================
+cpep            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+cpep            info only.
+cpep            ==========================================================

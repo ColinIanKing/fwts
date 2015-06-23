@@ -15,6 +15,8 @@ ACPI tests:
   BOOT Table test.
  checksum        (1 test):
   ACPI table checksum test.
+ cpep            (1 test):
+  CPEP Corrected Platform Error Polling Table test.
  cstates         (1 test):
   Test all CPUs C-states.
  dbg2            (1 test):
@@ -276,6 +278,8 @@ Batch tests:
   BOOT Table test.
  checksum        (1 test):
   ACPI table checksum test.
+ cpep            (1 test):
+  CPEP Corrected Platform Error Polling Table test.
  cpufreq         (7 tests):
   CPU frequency table consistency
   CPU frequency table duplicates
@@ -778,4 +782,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 643 tests
+Total of 645 tests

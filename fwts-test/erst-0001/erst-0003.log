@@ -1,0 +1,15 @@
+erst            erst: ERST Error Record Serialization Table test.
+erst            ----------------------------------------------------------
+erst            Test 1 of 1: ERST Error Record Serialization Table test.
+erst            ERST Error Record Serialization Table :
+erst              Serialization Hdr. Size:  0x00000030
+erst              Reserved:                 0x00000000
+erst              Instruction Entry Count:  0x00000011
+erst            FAILED [HIGH] ERSTTooManyEntries: Test 1, ERST size of 592
+erst            based on 17 Serialization Instruction Entries of 32 bytes
+erst            is longer the entire table length of 576
+erst            
+erst            ==========================================================
+erst            0 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+erst            info only.
+erst            ==========================================================

@@ -1,0 +1,30 @@
+erst            erst: ERST Error Record Serialization Table test.
+erst            ----------------------------------------------------------
+erst            Test 1 of 1: ERST Error Record Serialization Table test.
+erst            ERST Error Record Serialization Table :
+erst              Serialization Hdr. Size:  0x00000030
+erst              Reserved:                 0x00000000
+erst              Instruction Entry Count:  0x00000010
+erst            ERST header looks sane.
+erst            ERST Serialization Entry 0x0 looks sane.
+erst            ERST Serialization Entry 0x1 looks sane.
+erst            ERST Serialization Entry 0x2 looks sane.
+erst            ERST Serialization Entry 0x3 looks sane.
+erst            ERST Serialization Entry 0x4 looks sane.
+erst            ERST Serialization Entry 0x5 looks sane.
+erst            ERST Serialization Entry 0x6 looks sane.
+erst            ERST Serialization Entry 0x7 looks sane.
+erst            ERST Serialization Entry 0x8 looks sane.
+erst            ERST Serialization Entry 0x9 looks sane.
+erst            ERST Serialization Entry 0xa looks sane.
+erst            ERST Serialization Entry 0xb looks sane.
+erst            ERST Serialization Entry 0xc looks sane.
+erst            ERST Serialization Entry 0xd looks sane.
+erst            ERST Serialization Entry 0xe looks sane.
+erst            ERST Serialization Entry 0xf looks sane.
+erst            PASSED: Test 1, No issues found in ERST table.
+erst            
+erst            ==========================================================
+erst            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+erst            info only.
+erst            ==========================================================

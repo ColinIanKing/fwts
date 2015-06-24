@@ -1,0 +1,38 @@
+erst            erst: ERST Error Record Serialization Table test.
+erst            ----------------------------------------------------------
+erst            Test 1 of 1: ERST Error Record Serialization Table test.
+erst            ERST Error Record Serialization Table :
+erst              Serialization Hdr. Size:  0x00000030
+erst              Reserved:                 0x000000f0
+erst              Instruction Entry Count:  0x00000010
+erst            FAILED [LOW] ERSTReservedNonZero: Test 1, ERST Reserved
+erst            field must be non-zero, got 0xf0 instead
+erst            FAILED [HIGH] ERSTIInvalidFlag: Test 1, ERST Serialization
+erst            Flag 0xff is an invalid value, values allowed are
+erst            0x00..0x01 for the WRITE_REGISTER and WRITE_REGISTER_VALUE
+erst            instructions
+erst            FAILED [HIGH] ERSTIInvalidGasAccessSize: Test 1, ERST
+erst            Serialization Generic Address Access Size 0x5 is invalid,
+erst            should be 0x00 .. 0x04
+erst            ERST Serialization Entry 0x1 looks sane.
+erst            FAILED [HIGH] ERSTIInvalidInstruction: Test 1, ERST
+erst            Serialization Instruction 0x13 is an invalid value, values
+erst            allowed are 0x00..0x12
+erst            ERST Serialization Entry 0x3 looks sane.
+erst            ERST Serialization Entry 0x4 looks sane.
+erst            ERST Serialization Entry 0x5 looks sane.
+erst            ERST Serialization Entry 0x6 looks sane.
+erst            ERST Serialization Entry 0x7 looks sane.
+erst            ERST Serialization Entry 0x8 looks sane.
+erst            ERST Serialization Entry 0x9 looks sane.
+erst            ERST Serialization Entry 0xa looks sane.
+erst            ERST Serialization Entry 0xb looks sane.
+erst            ERST Serialization Entry 0xc looks sane.
+erst            ERST Serialization Entry 0xd looks sane.
+erst            ERST Serialization Entry 0xe looks sane.
+erst            ERST Serialization Entry 0xf looks sane.
+erst            
+erst            ==========================================================
+erst            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+erst            info only.
+erst            ==========================================================

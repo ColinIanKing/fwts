@@ -10,6 +10,7 @@ ACPI tests:
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  ecdt            Embedded Controller Boot Resources Table test.
+ erst            ERST Error Record Serialization Table test.
  fadt            FADT Fixed ACPI Description Table tests.
  gtdt            GTDT Generic Timer Description Table test.
  hest            HEST Hardware Error Source Table test.
@@ -50,6 +51,7 @@ Batch tests:
  dmicheck        DMI/SMBIOS table tests.
  ebda            Test EBDA region is mapped and reserved in memory map table.
  ecdt            Embedded Controller Boot Resources Table test.
+ erst            ERST Error Record Serialization Table test.
  fadt            FADT Fixed ACPI Description Table tests.
  fan             Simple fan tests.
  gtdt            GTDT Generic Timer Description Table test.

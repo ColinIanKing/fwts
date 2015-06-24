@@ -23,6 +23,8 @@ ACPI tests:
   DMA Remapping test.
  ecdt            (1 test):
   ECDT Embedded Controller Boot Resources Table test.
+ erst            (1 test):
+  ERST Error Record Serialization Table test.
  fadt            (3 tests):
   Test FADT ACPI Description Table tests.
   Test FADT SCI_EN bit is enabled.
@@ -297,6 +299,8 @@ Batch tests:
   Test EBDA is reserved in E820 table.
  ecdt            (1 test):
   ECDT Embedded Controller Boot Resources Table test.
+ erst            (1 test):
+  ERST Error Record Serialization Table test.
  fadt            (3 tests):
   Test FADT ACPI Description Table tests.
   Test FADT SCI_EN bit is enabled.
@@ -770,4 +774,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 639 tests
+Total of 641 tests

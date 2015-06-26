@@ -112,7 +112,7 @@ acpidump        [0x021 0033   3]                                 Reserved: 0x00 
 acpidump        [0x021 0033   3]                                 Reserved: 0x00 [1]
 acpidump        [0x021 0033   3]                                 Reserved: 0x00 [2]
 acpidump        [0x024 0036   1]                              CMOS offset: 0x36
-acpidump        [0x024 0036   2]                                 Reserved: 0x0000
+acpidump        [0x024 0036   2]                           Platform Class: 0x0000
 acpidump        [0x024 0036   4]                            Entry 00 APIC: 0xbff00000
 acpidump        [0x024 0036   4]                           Event Timer ID: 0x8086a201
 acpidump        [0x024 0036   4]                             FACS Address: 0xbf6e2fc0

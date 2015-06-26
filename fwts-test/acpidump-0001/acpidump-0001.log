@@ -702,7 +702,7 @@ acpidump        [0x010 0016   8]                             OEM Table ID: CREST
 acpidump        [0x018 0024   4]                             OEM Revision: 0x06040000
 acpidump        [0x01c 0028   4]                               Creator ID: LOHR
 acpidump        [0x020 0032   4]                         Creator Revision: 0x0000005a
-acpidump        [0x024 0036   2]                                 Reserved: 0x0000
+acpidump        [0x024 0036   2]                           Platform Class: 0x0000
 acpidump        [0x026 0038   4]                          Log Zone Length: 0x00010000
 acpidump        [0x02a 0042   8]                         Log Zone Address: 0x0000000000000000
 acpidump        

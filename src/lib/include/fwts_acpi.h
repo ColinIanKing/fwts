@@ -508,9 +508,31 @@ typedef struct {
    and also http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html */
 typedef struct {
 	fwts_acpi_table_header	header;
-	uint16_t	reserved;
-	uint32_t	log_zone_length;
-	uint64_t	log_zone_addr;
+	uint16_t	platform_class;
+	union {
+		struct client_hdr {
+			uint32_t log_zone_length;
+			uint64_t log_zone_addr;
+		}  __attribute__ ((packed)) client;
+		struct server_hdr {
+			uint16_t reserved;
+			uint64_t log_zone_length;
+			uint64_t log_zone_addr;
+			uint16_t spec_revision;
+			uint8_t device_flag;
+			uint8_t interrupt_flag;
+			uint8_t gpe;
+			uint8_t reserved2[3];
+			uint32_t global_sys_interrupt;
+			fwts_acpi_gas base_addr;
+			uint32_t reserved3;
+			fwts_acpi_gas config_addr;
+			uint8_t pci_seg_number;
+			uint8_t pci_bus_number;
+			uint8_t pci_dev_number;
+			uint8_t pci_func_number;
+		} __attribute__ ((packed)) server;
+	};
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
 
 /* Following ASF definitions from

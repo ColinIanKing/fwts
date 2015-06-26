@@ -1146,14 +1146,47 @@ static void acpidump_srat(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 static void acpidump_tcpa(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
-	static const fwts_acpidump_field fields[] = {
-		FIELD_UINT("Reserved", 		fwts_acpi_table_tcpa, reserved),
-		FIELD_UINT("Log Zone Length", 	fwts_acpi_table_tcpa, log_zone_length),
-		FIELD_UINT("Log Zone Address", 	fwts_acpi_table_tcpa, log_zone_addr),
-		FIELD_END
-	};
+	fwts_acpi_table_tcpa *tcpa = (fwts_acpi_table_tcpa*)table->data;
 
-	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
+	switch (tcpa->platform_class) {
+		case 0: {
+				static const fwts_acpidump_field fields[] = {
+					FIELD_UINT("Platform Class",	fwts_acpi_table_tcpa, platform_class),
+					FIELD_UINT("Log Zone Length", 	fwts_acpi_table_tcpa, client.log_zone_length),
+					FIELD_UINT("Log Zone Address", 	fwts_acpi_table_tcpa, client.log_zone_addr),
+					FIELD_END
+				};
+
+				acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
+			}
+			break;
+		case 1: {
+				static const fwts_acpidump_field fields[] = {
+					FIELD_UINT("Platform Class",		fwts_acpi_table_tcpa, platform_class),
+					FIELD_UINT("Reserved",			fwts_acpi_table_tcpa, server.reserved),
+					FIELD_UINT("Log Zone Length", 		fwts_acpi_table_tcpa, server.log_zone_length),
+					FIELD_UINT("Log Zone Address",	 	fwts_acpi_table_tcpa, server.log_zone_addr),
+					FIELD_UINT("Specification Revision",	fwts_acpi_table_tcpa, server.spec_revision),
+					FIELD_UINT("Device Flag", 		fwts_acpi_table_tcpa, server.device_flag),
+					FIELD_UINT("Interrupt Flag", 		fwts_acpi_table_tcpa, server.interrupt_flag),
+					FIELD_UINT("GPE",			fwts_acpi_table_tcpa, server.gpe),
+					FIELD_UINT("Reserved",			fwts_acpi_table_tcpa, server.reserved2),
+					FIELD_UINT("Global System Interrupt",	fwts_acpi_table_tcpa, server.global_sys_interrupt),
+					FIELD_GAS ("Base Address", 		fwts_acpi_table_tcpa, server.base_addr),
+					FIELD_UINT("Reserved",	 		fwts_acpi_table_tcpa, server.reserved3),
+					FIELD_GAS ("Configuration Address",	fwts_acpi_table_tcpa, server.config_addr),
+					FIELD_UINT("PCI Segment Group", 	fwts_acpi_table_tcpa, server.pci_seg_number),
+					FIELD_UINT("PCI Bus Number",	 	fwts_acpi_table_tcpa, server.pci_bus_number),
+					FIELD_UINT("PCI Device Number", 	fwts_acpi_table_tcpa, server.pci_dev_number),
+					FIELD_UINT("PCI Function Number", 	fwts_acpi_table_tcpa, server.pci_func_number),
+					FIELD_END
+				};
+				acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
+
+			}
+			break;
+	}
+
 }
 
 /*

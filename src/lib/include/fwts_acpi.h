@@ -678,6 +678,7 @@ typedef struct {
 	uint32_t	algorithm;
 	uint8_t		magic[4];
 	uint32_t	bit_length;
+	uint32_t	exponent;
 	uint8_t		modulus[128];
 } __attribute__ ((packed)) fwts_acpi_table_slic_key;
 

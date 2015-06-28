@@ -1529,6 +1529,7 @@ static void acpidump_slic(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_UINT("Algorithm", fwts_acpi_table_slic_key, algorithm),
 		FIELD_UINT("Magic", 	fwts_acpi_table_slic_key, magic),
 		FIELD_UINT("Bit Length",fwts_acpi_table_slic_key, bit_length),
+		FIELD_UINT("Exponent",  fwts_acpi_table_slic_key, exponent),
 		FIELD_UINTS("Modulus", 	fwts_acpi_table_slic_key, modulus),
 		FIELD_END
 	};

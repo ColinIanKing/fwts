@@ -70,6 +70,7 @@ fwts_SOURCES = main.c 				\
 	acpi/slit/slit.c 			\
 	acpi/spcr/spcr.c 			\
 	acpi/spmi/spmi.c 			\
+	acpi/tcpa/tcpa.c 			\
 	acpi/srat/srat.c 			\
 	acpi/syntaxcheck/syntaxcheck.c 		\
 	acpi/wakealarm/wakealarm.c 		\

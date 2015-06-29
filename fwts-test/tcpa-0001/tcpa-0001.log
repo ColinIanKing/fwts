@@ -1,0 +1,14 @@
+tcpa            tcpa: Trusted Computing Platform Alliance Capabilities
+tcpa            Table test.
+tcpa            ----------------------------------------------------------
+tcpa            Test 1 of 1: Validate TCPA table.
+tcpa            TCPA Table:
+tcpa              Platform Class:                  0x0000
+tcpa              Log Area Minimum Length:         0x00010000
+tcpa              Log Area Start Address:          0x00000000cacbc010
+tcpa            PASSED: Test 1, No issues found in TCPA table.
+tcpa            
+tcpa            ==========================================================
+tcpa            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+tcpa            info only.
+tcpa            ==========================================================

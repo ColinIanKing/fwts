@@ -246,6 +246,8 @@ ACPI tests:
   SPMI Service Processor Management Interface Description Table test.
  srat            (1 test):
   SRAT System Resource Affinity Table test.
+ tcpa            (1 test):
+  Validate TCPA table.
  wmi             (1 test):
   Windows Management Instrumentation test.
  xsdt            (1 test):
@@ -579,6 +581,8 @@ Batch tests:
   SRAT System Resource Affinity Table test.
  syntaxcheck     (1 test):
   Disassemble and reassemble DSDT and SSDTs.
+ tcpa            (1 test):
+  Validate TCPA table.
  uefibootpath    (1 test):
   Test UEFI Boot Path Boot####.
  version         (4 tests):
@@ -786,4 +790,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 647 tests
+Total of 649 tests

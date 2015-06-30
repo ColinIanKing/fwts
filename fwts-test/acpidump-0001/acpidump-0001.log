@@ -327,22 +327,23 @@ acpidump        [0x02e 0046   2]                                 Reserved: 0x000
 acpidump        [0x030 0048   4]                                Algorithm: 0x00002400
 acpidump        [0x034 0052   4]                                    Magic: 0x31415352
 acpidump        [0x038 0056   4]                               Bit Length: 0x00000400
-acpidump        [0x03c 0060 128]                                  Modulus: 01 00 01 00 69 16 4a 9f 
-acpidump        [0x03c 0060 128]                                  Modulus: b1 4b 3a fb 80 20 aa af 
-acpidump        [0x03c 0060 128]                                  Modulus: c4 f9 3e c1 80 49 ee 6a 
-acpidump        [0x03c 0060 128]                                  Modulus: 65 26 72 1e cd bf 5f 2f 
-acpidump        [0x03c 0060 128]                                  Modulus: 96 d6 c0 0a 92 f5 06 b5 
-acpidump        [0x03c 0060 128]                                  Modulus: 00 b2 3b 29 02 e2 4c 8d 
-acpidump        [0x03c 0060 128]                                  Modulus: c2 f2 bc 41 77 9c 70 f0 
-acpidump        [0x03c 0060 128]                                  Modulus: f3 1b 09 d2 63 5a dc a8 
-acpidump        [0x03c 0060 128]                                  Modulus: 83 f8 5e c9 15 95 f9 fa 
-acpidump        [0x03c 0060 128]                                  Modulus: fd dc 05 b7 4d 67 7f 2d 
-acpidump        [0x03c 0060 128]                                  Modulus: b3 84 33 20 e1 d1 79 2a 
-acpidump        [0x03c 0060 128]                                  Modulus: a7 6a 77 d1 b6 20 2a 76 
-acpidump        [0x03c 0060 128]                                  Modulus: 42 c5 d5 e9 b6 43 40 55 
-acpidump        [0x03c 0060 128]                                  Modulus: 44 c3 c9 37 99 5f 41 97 
-acpidump        [0x03c 0060 128]                                  Modulus: 70 f3 d1 f6 07 ec 7b 1a 
-acpidump        [0x03c 0060 128]                                  Modulus: 29 a1 c1 f1 91 fd 48 86 
+acpidump        [0x03c 0060   4]                                 Exponent: 0x00010001
+acpidump        [0x040 0064 128]                                  Modulus: 69 16 4a 9f b1 4b 3a fb 
+acpidump        [0x040 0064 128]                                  Modulus: 80 20 aa af c4 f9 3e c1 
+acpidump        [0x040 0064 128]                                  Modulus: 80 49 ee 6a 65 26 72 1e 
+acpidump        [0x040 0064 128]                                  Modulus: cd bf 5f 2f 96 d6 c0 0a 
+acpidump        [0x040 0064 128]                                  Modulus: 92 f5 06 b5 00 b2 3b 29 
+acpidump        [0x040 0064 128]                                  Modulus: 02 e2 4c 8d c2 f2 bc 41 
+acpidump        [0x040 0064 128]                                  Modulus: 77 9c 70 f0 f3 1b 09 d2 
+acpidump        [0x040 0064 128]                                  Modulus: 63 5a dc a8 83 f8 5e c9 
+acpidump        [0x040 0064 128]                                  Modulus: 15 95 f9 fa fd dc 05 b7 
+acpidump        [0x040 0064 128]                                  Modulus: 4d 67 7f 2d b3 84 33 20 
+acpidump        [0x040 0064 128]                                  Modulus: e1 d1 79 2a a7 6a 77 d1 
+acpidump        [0x040 0064 128]                                  Modulus: b6 20 2a 76 42 c5 d5 e9 
+acpidump        [0x040 0064 128]                                  Modulus: b6 43 40 55 44 c3 c9 37 
+acpidump        [0x040 0064 128]                                  Modulus: 99 5f 41 97 70 f3 d1 f6 
+acpidump        [0x040 0064 128]                                  Modulus: 07 ec 7b 1a 29 a1 c1 f1 
+acpidump        [0x040 0064 128]                                  Modulus: 91 fd 48 86 6e 3e ce cb 
 acpidump        
 acpidump        [0x0c0 0192   4]                                     Type: 0x00000001
 acpidump        [0x0c4 0196   4]                                   Length: 0x000000b6

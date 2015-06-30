@@ -7,6 +7,7 @@ ACPI tests:
  boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cpep            CPEP Corrected Platform Error Polling Table test.
+ csrt            CSRT Core System Resource Table test.
  cstates         Processor C state support test.
  dbg2            DBG2 (Debug Port Table 2) test.
  dbgp            DBGP (Debug Port) Table test.
@@ -50,6 +51,7 @@ Batch tests:
  cpufreq         CPU frequency scaling tests.
  crs             Test PCI host bridge configuration using _CRS.
  csm             UEFI Compatibility Support Module test.
+ csrt            CSRT Core System Resource Table test.
  cstates         Processor C state support test.
  dbg2            DBG2 (Debug Port Table 2) test.
  dbgp            DBGP (Debug Port) Table test.

@@ -17,6 +17,8 @@ ACPI tests:
   ACPI table checksum test.
  cpep            (1 test):
   CPEP Corrected Platform Error Polling Table test.
+ csrt            (1 test):
+  CSRT Core System Resource Table test.
  cstates         (1 test):
   Test all CPUs C-states.
  dbg2            (1 test):
@@ -296,6 +298,8 @@ Batch tests:
   Test PCI host bridge configuration using _CRS.
  csm             (1 test):
   UEFI Compatibility Support Module test.
+ csrt            (1 test):
+  CSRT Core System Resource Table test.
  cstates         (1 test):
   Test all CPUs C-states.
  dbg2            (1 test):
@@ -790,4 +794,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 649 tests
+Total of 651 tests

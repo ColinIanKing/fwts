@@ -1,0 +1,21 @@
+csrt            csrt: CSRT Core System Resource Table test.
+csrt            ----------------------------------------------------------
+csrt            Test 1 of 1: CSRT Core System Resource Table test.
+csrt            FAILED [HIGH] CSRTResourceGroupReservedFieldNonZero: Test
+csrt            1, CSRT Resource Group 0 Reserved Field is 0x2317 and was
+csrt            expecting a zero value
+csrt            FAILED [HIGH] CSRTResourceDescriptorResourceTypeInvalid:
+csrt            Test 1, CSRT Resource Group 1 Descriptor 0 Resource Type
+csrt            is 0x0000 which is a reserved type
+csrt            FAILED [HIGH] CSRTResourceDescriptorResourceSubTypeInvalid
+csrt            : Test 1, CSRT Resource Group 2 Descriptor 0 Resource
+csrt            Subtype is 0x0008 which is a reserved type, expecting
+csrt            0x0000 (Interrupt Line) or 0x0001 (Interrupt Controller)
+csrt            FAILED [HIGH] CSRTResourceDescriptorReservedUID: Test 1,
+csrt            CSRT Resource Group 2 Descriptor 0 UID Field is 0xffffffff
+csrt            and this is a reserved UID value
+csrt            
+csrt            ==========================================================
+csrt            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+csrt            info only.
+csrt            ==========================================================

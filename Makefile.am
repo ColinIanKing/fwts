@@ -60,6 +60,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/checksum-0001/test-0004.sh \
 	fwts-test/cpep-0001/test-0001.sh \
 	fwts-test/cpep-0001/test-0002.sh \
+	fwts-test/csrt-0001/test-0001.sh \
+	fwts-test/csrt-0001/test-0002.sh \
 	fwts-test/dbg2-0001/test-0001.sh \
 	fwts-test/dbg2-0001/test-0002.sh \
 	fwts-test/dbgp-0001/test-0001.sh \

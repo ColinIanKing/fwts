@@ -705,8 +705,15 @@ typedef struct {
 typedef struct {
 	fwts_acpi_table_header header;
 	uint8_t		uuid[16];
+	uint16_t	dataoffset;
 	uint8_t		data[0];
 } __attribute__ ((packed)) fwts_acpi_table_uefi;
+
+typedef struct {
+	fwts_acpi_table_uefi boot;
+	uint32_t	sw_smi_number;
+	uint64_t	buf_ptr_addr;
+} __attribute__ ((packed)) fwts_acpi_table_uefi_smmcomm;
 
 /* 5.2.22 Boot Graphics Resource Table (BGRT) ACPI 5.0 Spec */
 typedef struct {

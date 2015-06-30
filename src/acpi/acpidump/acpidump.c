@@ -1587,17 +1587,35 @@ static void acpidump_slic(fwts_framework *fw, const fwts_acpi_table_info *table)
  */
 static void acpidump_uefi(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
+
+	/*
+	 * GUID for SMM Communication ACPI Table
+	 * {0xc68ed8e2, 0x9dc6, 0x4cbd, 0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32}
+	*/
+	static const uint8_t guid_smm[16] = { 0xe2, 0xd8, 0x8e, 0xc6, 0xc6, 0x9d, 0xbd, 0x4c,
+						0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32 };
+
 	fwts_acpi_table_uefi *uefi = (fwts_acpi_table_uefi *)table->data;
 
-	static const fwts_acpidump_field uefi_fields[] = {
+	static const fwts_acpidump_field boot_fields[] = {
 		FIELD_GUID("UUID", 	fwts_acpi_table_uefi, uuid),
+		FIELD_UINT("DataOffset", fwts_acpi_table_uefi, dataoffset),
 		FIELD_END
 	};
 
-	__acpi_dump_table_fields(fw, table->data, uefi_fields, 0);
-	fwts_log_nl(fw);
-	acpi_dump_raw_data(fw, uefi->data, table->length - sizeof(fwts_acpi_table_uefi),
-		sizeof(fwts_acpi_table_uefi));
+	static const fwts_acpidump_field smmcomm_fields[] = {
+		FIELD_UINT("SW SMI Number", 	fwts_acpi_table_uefi_smmcomm, sw_smi_number),
+		FIELD_UINT("Buffer Prt Address", fwts_acpi_table_uefi_smmcomm, buf_ptr_addr),
+		FIELD_END
+	};
+	__acpi_dump_table_fields(fw, table->data, boot_fields, 0);
+
+	if (memcmp(uefi->uuid, guid_smm, 16) != 0) {
+		fwts_log_nl(fw);
+		acpi_dump_raw_data(fw, uefi->data, table->length - sizeof(fwts_acpi_table_uefi),
+				sizeof(fwts_acpi_table_uefi));
+	} else
+		__acpi_dump_table_fields(fw, table->data, smmcomm_fields, 0);
 }
 
 /*

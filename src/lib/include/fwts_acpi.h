@@ -1099,4 +1099,28 @@ typedef struct {
 #define FWTS_ACPI_TABLE_CSRT_TYPE_TIMER		(0x0002)
 #define FWTS_ACPI_TABLE_CSRT_TYPE_DMA		(0x0003)
 
+/*
+ *  ACPI Low Power Idle Table
+ *    http://www.uefi.org/sites/default/files/resources/ACPI_Low_Power_Idle_Table.pdf
+ */
+
+/* LPI struct type 0 */
+typedef struct {
+	uint32_t	type;
+	uint32_t	length;
+	uint16_t	id;
+	uint16_t	reserved;
+	uint32_t	flags;
+	fwts_acpi_gas	entry_trigger;
+	uint32_t	residency;
+	uint32_t	latency;
+	fwts_acpi_gas	residency_counter;
+	uint64_t	residency_counter_freq;
+} __attribute__ ((packed)) fwts_acpi_table_lpit_c_state;
+
+typedef struct {
+	fwts_acpi_table_header  header;
+	/* followed by 1 or more LPI structure types */
+} __attribute__ ((packed)) fwts_acpi_table_lpit;
+
 #endif

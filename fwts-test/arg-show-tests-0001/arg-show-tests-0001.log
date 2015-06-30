@@ -19,6 +19,7 @@ ACPI tests:
  gtdt            GTDT Generic Timer Description Table test.
  hest            HEST Hardware Error Source Table test.
  hpet            HPET IA-PC High Precision Event Timer Tanble tests.
+ lpit            LPIT LPIT Low Power Idle Table test.
  madt            MADT Multiple APIC Description Table test.
  mcfg            MCFG PCI Express* memory mapped config space test.
  method          ACPI DSDT Method Semantic tests.
@@ -68,6 +69,7 @@ Batch tests:
  hest            HEST Hardware Error Source Table test.
  hpet            HPET IA-PC High Precision Event Timer Tanble tests.
  klog            Scan kernel log for errors and warnings.
+ lpit            LPIT LPIT Low Power Idle Table test.
  madt            MADT Multiple APIC Description Table test.
  maxfreq         Test max CPU frequencies against max scaling frequency.
  maxreadreq      Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.

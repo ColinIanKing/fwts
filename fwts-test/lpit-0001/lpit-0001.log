@@ -1,0 +1,47 @@
+lpit            lpit: LPIT LPIT Low Power Idle Table test.
+lpit            ----------------------------------------------------------
+lpit            Test 1 of 1: LPIT Low Power Idle Table test.
+lpit            Native C-state based LPI structure:
+lpit              Type:                     0x00000000
+lpit              Length:                   0x00000038
+lpit              ID:                       0xdead
+lpit              Reserved:                 0x0000
+lpit              Flags:                    0x00000000
+lpit              Entry Trigger:
+lpit                Address Space ID:       0x7f
+lpit                Register Bit Width      0x40
+lpit                Register Bit Offset     0x00
+lpit                Access Size             0x00
+lpit                Address                 0x1020304050607080
+lpit              Residency:                0x00000011
+lpit              Latency:                  0x00000020
+lpit              Residency Counter:
+lpit                Address Space ID:       0x7f
+lpit                Register Bit Width      0x40
+lpit                Register Bit Offset     0x00
+lpit                Access Size             0x00
+lpit                Address                 0x1020304050607080
+lpit              Residency Counter Freq:   0x000000000000b0a0
+lpit            
+lpit            Native C-state based LPI structure:
+lpit              Type:                     0x00000000
+lpit              Length:                   0x00000038
+lpit              ID:                       0xbeef
+lpit              Reserved:                 0x0000
+lpit              Flags:                    0x00000002
+lpit              Entry Trigger:
+lpit                Address Space ID:       0x7f
+lpit                Register Bit Width      0x40
+lpit                Register Bit Offset     0x00
+lpit                Access Size             0x00
+lpit                Address                 0xf020304050607080
+lpit              Residency:                0x00000023
+lpit              Latency:                  0x00000070
+lpit              Residency Counter not available
+lpit            
+lpit            PASSED: Test 1, No issues found in LPIT table.
+lpit            
+lpit            ==========================================================
+lpit            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+lpit            info only.
+lpit            ==========================================================

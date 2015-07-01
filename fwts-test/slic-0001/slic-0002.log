@@ -1,0 +1,13 @@
+slic            slic: SLIC Software Licensing Description Table test.
+slic            ----------------------------------------------------------
+slic            Test 1 of 1: SLIC Software Licensing Description Table
+slic            test.
+slic            Software Licensing Description Table
+slic            FAILED [HIGH] SLICInvaldType: Test 1, SLIC subtable type
+slic            0x00000004 is invalid, should be either 0x0000 (Public
+slic            Key) or 0x0001 (Windows Marker)
+slic            
+slic            ==========================================================
+slic            0 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+slic            info only.
+slic            ==========================================================

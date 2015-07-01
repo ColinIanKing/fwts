@@ -242,6 +242,8 @@ ACPI tests:
   RSDT Root System Description Table test.
  sbst            (1 test):
   SBST Smart Battery Specificiation Table test.
+ slic            (1 test):
+  SLIC Software Licensing Description Table test.
  slit            (1 test):
   SLIT System Locality Distance Information test.
  spcr            (1 test):
@@ -581,6 +583,8 @@ Batch tests:
   SBST Smart Battery Specificiation Table test.
  securebootcert  (1 test):
   UEFI secure boot test.
+ slic            (1 test):
+  SLIC Software Licensing Description Table test.
  slit            (1 test):
   SLIT System Locality Distance Information test.
  spcr            (1 test):
@@ -802,4 +806,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 655 tests
+Total of 657 tests

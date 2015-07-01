@@ -1123,4 +1123,13 @@ typedef struct {
 	/* followed by 1 or more LPI structure types */
 } __attribute__ ((packed)) fwts_acpi_table_lpit;
 
+/*
+ *  Windows ACPI Emulated Devices Table
+ *    http://msdn.microsoft.com/en-us/windows/hardware/gg487524.aspx
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	flags;
+} __attribute__ ((packed)) fwts_acpi_table_waet;
+
 #endif

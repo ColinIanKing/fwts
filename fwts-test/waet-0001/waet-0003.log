@@ -1,0 +1,10 @@
+waet            waet: Windows ACPI Emulated Devices Table test.
+waet            ----------------------------------------------------------
+waet            Test 1 of 1: Windows ACPI Emulated Devices Table test.
+waet            FAILED [HIGH] WAETTooShort: Test 1, WAET table too short,
+waet            expecting 40 bytes, instead got 38 bytes
+waet            
+waet            ==========================================================
+waet            0 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+waet            info only.
+waet            ==========================================================

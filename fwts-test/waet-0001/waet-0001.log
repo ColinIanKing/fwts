@@ -1,0 +1,14 @@
+waet            waet: Windows ACPI Emulated Devices Table test.
+waet            ----------------------------------------------------------
+waet            Test 1 of 1: Windows ACPI Emulated Devices Table test.
+waet            WAET Table:
+waet              Emulated Device Flags:    0x00000002
+waet                Bit [0] RTC Good:       0
+waet                Bit [1] PM Timer Good:  1
+waet            
+waet            PASSED: Test 1, No issues found in WAET table.
+waet            
+waet            ==========================================================
+waet            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+waet            info only.
+waet            ==========================================================

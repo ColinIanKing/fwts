@@ -252,6 +252,8 @@ ACPI tests:
   SRAT System Resource Affinity Table test.
  tcpa            (1 test):
   Validate TCPA table.
+ waet            (1 test):
+  Windows ACPI Emulated Devices Table test.
  wmi             (1 test):
   Windows Management Instrumentation test.
  xsdt            (1 test):
@@ -600,6 +602,8 @@ Batch tests:
   Gather ACPI driver version.
  virt            (1 test):
   CPU Virtualisation Configuration test.
+ waet            (1 test):
+  Windows ACPI Emulated Devices Table test.
  wakealarm       (4 tests):
   Test existence of RTC with alarm interface.
   Trigger wakealarm for 1 seconds in the future.
@@ -798,4 +802,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 653 tests
+Total of 655 tests

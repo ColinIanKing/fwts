@@ -32,6 +32,7 @@ ACPI tests:
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
  tcpa            Trusted Computing Platform Alliance Capabilities Table test.
+ waet            Windows ACPI Emulated Devices Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
  xsdt            XSDT Extended System Description Table test.
 
@@ -99,6 +100,7 @@ Batch tests:
  uefibootpath    Sanity check for UEFI Boot Path Boot####.
  version         Gather kernel system information.
  virt            CPU Virtualisation Configuration test.
+ waet            Windows ACPI Emulated Devices Table test.
  wakealarm       ACPI Wakealarm tests.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
  xsdt            XSDT Extended System Description Table test.

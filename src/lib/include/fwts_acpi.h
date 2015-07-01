@@ -1132,4 +1132,19 @@ typedef struct {
 	uint32_t	flags;
 } __attribute__ ((packed)) fwts_acpi_table_waet;
 
+
+/*
+ *  Microsoft Data Management (MSDM) Table
+ *   http://feishare.com/attachments/article/265/microsoft-software-licensing-tables.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	version;
+	uint32_t	reserved;
+	uint32_t	data_type;
+	uint32_t	data_reserved;
+	uint32_t	data_length;
+	uint8_t		data[0];	/* Proprietary data */
+} __attribute__ ((packed)) fwts_acpi_table_msdm;
+
 #endif

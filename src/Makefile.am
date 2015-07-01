@@ -40,6 +40,7 @@ fwts_SOURCES = main.c 				\
 	acpi/cpep/cpep.c			\
 	acpi/crsdump/crsdump.c			\
 	acpi/crsdump/prsdump.c			\
+	acpi/csrt/csrt.c			\
 	acpi/cstates/cstates.c 			\
 	acpi/dbgp/dbgp.c 			\
 	acpi/dbg2/dbg2.c 			\

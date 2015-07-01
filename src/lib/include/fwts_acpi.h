@@ -1068,4 +1068,35 @@ typedef struct {
 
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
+/*
+ * Core System Resources Table (CSRT)
+ *   https://acpica.org/sites/acpica/files/CSRT.doc
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+} __attribute__ ((packed)) fwts_acpi_table_csrt;
+
+typedef struct {
+	uint32_t	length;
+	uint32_t	vendor_id;
+	uint32_t	subvendor_id;
+	uint16_t	device_id;
+	uint16_t	subdevice_id;
+	uint16_t	revision;
+	uint16_t	reserved;
+	uint32_t	shared_info_length;
+} __attribute__ ((packed)) fwts_acpi_table_csrt_resource_group;
+
+typedef struct {
+	uint32_t	length;
+	uint16_t	type;
+	uint16_t	subtype;
+	uint32_t	uid;
+	uint8_t		silicon_vendor_info[0];
+} __attribute__ ((packed)) fwts_acpi_table_csrt_resource_descriptor;
+
+#define FWTS_ACPI_TABLE_CSRT_TYPE_INTERRUPT	(0x0001)
+#define FWTS_ACPI_TABLE_CSRT_TYPE_TIMER		(0x0002)
+#define FWTS_ACPI_TABLE_CSRT_TYPE_DMA		(0x0003)
+
 #endif

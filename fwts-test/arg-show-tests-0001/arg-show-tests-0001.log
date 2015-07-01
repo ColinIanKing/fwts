@@ -85,7 +85,6 @@ Batch tests:
  mtrr            MTRR tests.
  nx              Test if CPU NX is disabled by the BIOS.
  oops            Scan kernel log for Oopses.
- os2gap          OS/2 memory hole test.
  osilinux        Disassemble DSDT to check for _OSI("Linux").
  pcc             Processor Clocking Control (PCC) test.
  pciirq          PCI IRQ Routing Table test.

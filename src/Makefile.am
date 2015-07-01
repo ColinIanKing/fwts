@@ -91,7 +91,6 @@ fwts_SOURCES = main.c 				\
 	bios/mtrr/mtrr.c 			\
 	bios/multiproc/mpcheck.c 		\
 	bios/multiproc/mpdump.c 		\
-	bios/os2gap/os2gap.c 			\
 	bios/pciirq/pciirq.c 			\
 	bios/pnp/pnp.c 				\
 	bios/romdump/romdump.c 			\

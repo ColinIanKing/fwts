@@ -569,8 +569,6 @@ Batch tests:
   Test all CPUs have same msr setting in MSR 0x1a0.
  oops            (1 test):
   Kernel log oops check.
- os2gap          (1 test):
-  Test the OS/2 15Mb memory hole is absent.
  osilinux        (1 test):
   Disassemble DSDT to check for _OSI("Linux").
  pcc             (1 test):
@@ -810,4 +808,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 659 tests
+Total of 658 tests

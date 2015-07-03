@@ -23,6 +23,7 @@ ACPI tests:
  madt            MADT Multiple APIC Description Table test.
  mcfg            MCFG PCI Express* memory mapped config space test.
  method          ACPI DSDT Method Semantic tests.
+ msdm            MSDM Microsoft Data Management Table test.
  pcc             Processor Clocking Control (PCC) test.
  rsdp            RSDP Root System Description Pointer test.
  rsdt            RSDT Root System Description Table test.
@@ -79,6 +80,7 @@ Batch tests:
  method          ACPI DSDT Method Semantic tests.
  microcode       Test if system is using latest microcode.
  mpcheck         MultiProcessor Tables tests.
+ msdm            MSDM Microsoft Data Management Table test.
  msr             MSR register tests.
  mtrr            MTRR tests.
  nx              Test if CPU NX is disabled by the BIOS.

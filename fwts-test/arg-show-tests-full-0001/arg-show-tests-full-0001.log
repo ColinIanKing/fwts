@@ -234,6 +234,8 @@ ACPI tests:
   Test _CBA (Configuration Base Address).
   Test _IFT (IPMI Interface Type).
   Test _SRV (IPMI Interface Revision).
+ msdm            (1 test):
+  MSDM Microsoft Data Management Table test.
  pcc             (1 test):
   Processor Clocking Control (PCC) test.
  rsdp            (1 test):
@@ -549,6 +551,8 @@ Batch tests:
   Test MP System Address entries.
   Test MP Bus Hierarchy entries.
   Test MP Compatible Bus Address Space entries.
+ msdm            (1 test):
+  MSDM Microsoft Data Management Table test.
  msr             (5 tests):
   Test CPU generic MSRs.
   Test CPU specific model MSRs.
@@ -806,4 +810,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 657 tests
+Total of 659 tests

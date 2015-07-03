@@ -87,6 +87,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/slit-0001/test-0002.sh \
 	fwts-test/madt-0001/test-0001.sh \
 	fwts-test/madt-0001/test-0002.sh \
+	fwts-test/msdm-0001/test-0001.sh \
+	fwts-test/msdm-0001/test-0002.sh \
 	fwts-test/method-0001/test-0001.sh \
 	fwts-test/oops-0001/test-0001.sh \
 	fwts-test/oops-0001/test-0002.sh \

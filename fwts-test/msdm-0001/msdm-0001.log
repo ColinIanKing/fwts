@@ -1,0 +1,16 @@
+msdm            msdm: MSDM Microsoft Data Management Table test.
+msdm            ----------------------------------------------------------
+msdm            Test 1 of 1: MSDM Microsoft Data Management Table test.
+msdm              Reserved:                 0x00000000
+msdm              Data Type:                0x00000001
+msdm              Data Reserved:            0x00000000
+msdm              Data Length:              0x0000001d
+msdm              Data:                     'AH3NR-B8FDN-C1WTG-5CR9X-1AKMH'
+msdm            MSDM has had minimal check due to proprietary nature of
+msdm            the table
+msdm            PASSED: Test 1, No issues found in MSDM table.
+msdm            
+msdm            ==========================================================
+msdm            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+msdm            info only.
+msdm            ==========================================================

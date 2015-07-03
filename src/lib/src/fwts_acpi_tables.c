@@ -31,6 +31,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "fwts.h"
 
@@ -520,9 +521,14 @@ static uint32_t fwts_fake_physical_addr(const size_t size)
  *  fwts_acpi_load_table_from_acpidump()
  *	Load an ACPI table from the output of acpidump or fwts --dump
  */
-static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_t *addr, size_t *size)
+static uint8_t *fwts_acpi_load_table_from_acpidump(
+	fwts_framework *fw,
+	FILE *fp,
+	char *name,
+	uint64_t *addr,
+	size_t *size)
 {
-	uint32_t offset;
+	uint32_t offset, expected_offset = 0;
 	uint8_t  data[16];
 	char buffer[128];
 	uint8_t *table;
@@ -567,34 +573,93 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(FILE *fp, char *name, uint64_
 	if (strncmp(name, "RSD PTR", 7) == 0)
 		strcpy(name, "RSDP");
 
-	/* Pull in 16 bytes at a time */
+	/*
+	 *  Pull in 16 bytes at a time, data MUST be conforming to the
+	 *  acpidump format, e.g.:
+	 *   0000: 46 41 43 50 f4 00 00 00 03 f9 41 4d 44 20 20 20  FACP......AMD
+	 *
+	 *  This parser expects hex data to be separated by one space,
+	 *  anything not conforming to this rigid format will be prematurely
+	 *  aborted
+	 */
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		uint8_t *new_tmp;
+		char *ptr;
 		int n;
-		buffer[56] = '\0';	/* truncate */
-		if ((n = sscanf(buffer,"  %x: %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx %hhx",
-			&offset,
-			&data[0], &data[1], &data[2], &data[3],
-			&data[4], &data[5], &data[6], &data[7],
-			&data[8], &data[9], &data[10], &data[11],
-			&data[12], &data[13], &data[14], &data[15])) < 1)
+
+		/* Get offset */
+		if (sscanf(buffer,"  %" SCNx32 ": ", &offset) < 1)
 			break;
 
-		len += (n - 1);
-		if (len == 0)
-			break;	/* No data, must be corrupt input */
+		/* Offset are not correct, abort with truncated table */
+		if (offset != expected_offset) {
+			fwts_log_error(fw, "ACPI dump offsets in table '%s'"
+				" are not incrementing by 16 bytes per row. "
+				" Table truncated prematurely due to bad acpidump data.",
+				name);
+			break;
+		}
+
+		expected_offset += 16;
+
+		/* Data follows the colon, abort if not found */
+		ptr = strstr(buffer, ": ");
+		if (!ptr) {
+			fwts_log_error(fw, "ACPI dump in table '%s' did not contain "
+				"any data, expecting at least 1 hex byte of data per row.",
+				name);
+			break;
+		}
+
+		ptr += 2;
+		/* Now expect 16 lots of 2 hex digits and a space */
+		for (n = 0; n < 16; n++) {
+			/*
+			 *  Need to be 100% sure 2 hex digits. Maybe a short row
+		 	 *  because it is the end of the table, so assume it is the
+			 *  end of the table if not hex digits.
+			 */
+			if (!isxdigit(*ptr) || !isxdigit(*(ptr + 1))) {
+				break;
+			}
+			if (sscanf(ptr, "%2" SCNx8, &data[n]) != 1) {
+				/* Bug in parsing! should never happen! */
+				fwts_log_error(fw, "ACPI dump in table '%s' at hex byte position "
+					"%d did parse correctly, got "
+					"'%2.2s' which could not be parsed as a hex value.",
+					name, n, ptr);
+				break;
+			}
+			ptr += 3;
+		}
+
+		/* Got no data? */
+		if (n == 0) {
+			fwts_log_error(fw, "ACPI dump in table '%s' did not contain "
+				"any data, expecting at least 1 hex byte of data per row.",
+				name);
+			break;
+		}
+
+		len += n;
 		if ((new_tmp = realloc(tmp, len)) == NULL) {
 			free(tmp);
+			fwts_log_error(fw, "ACPI table parser run out of memory parsing table '%s'.", name);
 			return NULL;
 		} else
 			tmp = new_tmp;
 
-		memcpy(tmp + offset, data, n-1);
+		memcpy(tmp + offset, data, n);
+
+		/* Treat less than a full row as last one */
+		if (n != 16)
+			break;
 	}
 
 	/* Allocate the table using low 32 bit memory */
 	if ((table = fwts_low_malloc(len)) == NULL) {
 		free(tmp);
+		fwts_log_error(fw, "ACPI table parser run out of 32 bit memory parsing table '%s'.", name);
 		return NULL;
 	}
 	memcpy(table, tmp, len);
@@ -633,7 +698,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 		size_t length;
 		char name[16];
 
-		if ((table = fwts_acpi_load_table_from_acpidump(fp, name, &addr, &length)) != NULL)
+		if ((table = fwts_acpi_load_table_from_acpidump(fw, fp, name, &addr, &length)) != NULL)
 			fwts_acpi_add_table(name, table, addr, length, FWTS_ACPI_TABLE_FROM_FILE);
 	}
 

@@ -260,6 +260,8 @@ ACPI tests:
   Windows ACPI Emulated Devices Table test.
  wmi             (1 test):
   Windows Management Instrumentation test.
+ xenv            (1 test):
+  Validate XEVN table.
  xsdt            (1 test):
   XSDT Extended System Description Table test.
 
@@ -617,6 +619,8 @@ Batch tests:
   Multiple wakealarm firing tests.
  wmi             (1 test):
   Windows Management Instrumentation test.
+ xenv            (1 test):
+  Validate XEVN table.
  xsdt            (1 test):
   XSDT Extended System Description Table test.
 
@@ -808,4 +812,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 658 tests
+Total of 660 tests

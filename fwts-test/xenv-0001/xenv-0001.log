@@ -1,0 +1,14 @@
+xenv            xenv: Xen Environment Table tests.
+xenv            ----------------------------------------------------------
+xenv            Test 1 of 1: Validate XEVN table.
+xenv            XENV Table:
+xenv              GNT Start Address                0x0000000010000000
+xenv              GNT Sizne                        0x0000000000002000
+xenv              Evtchn Intr:                     0x25000000
+xenv              Evtchn Intr Flags:               0x03
+xenv            PASSED: Test 1, No issues found in XENV table.
+xenv            
+xenv            ==========================================================
+xenv            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+xenv            info only.
+xenv            ==========================================================

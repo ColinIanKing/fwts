@@ -36,6 +36,7 @@ ACPI tests:
  tcpa            Trusted Computing Platform Alliance Capabilities Table test.
  waet            Windows ACPI Emulated Devices Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
+ xenv            Xen Environment Table tests.
  xsdt            XSDT Extended System Description Table test.
 
 Batch tests:
@@ -106,6 +107,7 @@ Batch tests:
  waet            Windows ACPI Emulated Devices Table test.
  wakealarm       ACPI Wakealarm tests.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
+ xenv            Xen Environment Table tests.
  xsdt            XSDT Extended System Description Table test.
 
 Interactive tests:

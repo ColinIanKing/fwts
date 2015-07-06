@@ -535,6 +535,15 @@ typedef struct {
 	};
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
 
+/* From http://wiki.xenproject.org/mediawiki/images/c/c4/Xen-environment-table.pdf */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint64_t	gnt_start;
+	uint64_t	gnt_size;
+	uint32_t	evtchn_intr;
+	uint8_t		evtchn_intr_flags;
+}  __attribute__ ((packed)) fwts_acpi_table_xenv;
+
 /* Following ASF definitions from
    http://dmtf.org/documents/asf/alert-standard-format-asf-specification-200 */
 typedef struct {

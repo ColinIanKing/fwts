@@ -102,11 +102,11 @@ static fwts_option fwts_framework_options[] = {
 	{ "filter-error-keep",	"",   1, "Keep errors that match any of the specified labels." },
 	{ "acpica-debug",	"",   0, "Enable ACPICA debug/warning messages." },
 	{ "acpica",		"",   1, "Enable ACPICA run time options." },
-	{ "uefi",		"",   0, "Run UEFI tests." },
+	{ "uefitests",		"",   0, "Run UEFI tests." },
 	{ "rsdp",		"R:", 1, "Specify the physical address of the ACPI RSDP." },
 	{ "pm-method",  "",   1, "Select the power method to use. Accepted values are \"logind\", \"pm-utils\", \"sysfs\""},
 	{ "show-tests-categories","", 0, "Show tests and associated categories." },
-	{ "acpi",		"",   0, "Run ACPI tests." },
+	{ "acpitests",		"",   0, "Run ACPI tests." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1216,7 +1216,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			if (fwts_framework_acpica_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 36: /* --uefi */
+		case 36: /* --uefitests */
 			fw->flags |= FWTS_FLAG_TEST_UEFI;
 			break;
 		case 37: /* --rsdp */
@@ -1229,7 +1229,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 39: /* --show-tests-categories */
 			fw->flags |= FWTS_FLAG_SHOW_TESTS_CATEGORIES;
 			break;
-		case 40: /* --acpi */
+		case 40: /* --acpitests */
 			fw->flags |= FWTS_FLAG_TEST_ACPI;
 			break;
 		}

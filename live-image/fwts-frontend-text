@@ -92,7 +92,7 @@ select_tests()
 		#
 		#  Discover available tests
 		#
-		fwts --batch --batch-experimental --uefi --unsafe --show-tests | grep "^ "| sort | uniq > $OPTIONS
+		fwts --batch --batch-experimental --uefitests --unsafe --show-tests | grep "^ "| sort | uniq > $OPTIONS
 		while read test text
 		do
 			((x++))
@@ -248,15 +248,15 @@ The default below is to run just all the Batch Tests, but you can select more te
 		cd $WORK_DIR >& /dev/null
 		case `cat $OPTIONS` in
 		'1')
-			do_test "--batch --uefi" 'Running Batch Tests'
+			do_test "--batch --uefitests" 'Running Batch Tests'
 			done_tests_finish
 			;;
 		'2')
-			do_test "--acpi" 'Running ACPI Tests'
+			do_test "--acpitests" 'Running ACPI Tests'
 			done_tests_finish
 			;;
 		'3')
-			do_test "--uefi" 'Running UEFI Tests'
+			do_test "--uefitests" 'Running UEFI Tests'
 			done_tests_finish
 			;;
 		'4')

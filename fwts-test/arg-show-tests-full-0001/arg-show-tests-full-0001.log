@@ -256,6 +256,8 @@ ACPI tests:
   SRAT System Resource Affinity Table test.
  tcpa            (1 test):
   Validate TCPA table.
+ uefi            (1 test):
+  UEFI Data Table test.
  waet            (1 test):
   Windows ACPI Emulated Devices Table test.
  wmi             (1 test):
@@ -601,6 +603,8 @@ Batch tests:
   Disassemble and reassemble DSDT and SSDTs.
  tcpa            (1 test):
   Validate TCPA table.
+ uefi            (1 test):
+  UEFI Data Table test.
  uefibootpath    (1 test):
   Test UEFI Boot Path Boot####.
  version         (4 tests):
@@ -812,4 +816,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 660 tests
+Total of 662 tests

@@ -1,0 +1,14 @@
+uefi            uefi: UEFI Data Table test.
+uefi            ----------------------------------------------------------
+uefi            Test 1 of 1: UEFI Data Table test.
+uefi            UEFI ACPI Data Table:
+uefi              Identifier: C68ED8E2-9DC6-4CBD-9D94-DB65ACC5C332
+uefi              DataOffset: 0x0036
+uefi              SW SMI Number: 0x00000003
+uefi              Buffer Ptr Address: 0x0000000000000000
+uefi            PASSED: Test 1, No issues found in UEFI table.
+uefi            
+uefi            ==========================================================
+uefi            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+uefi            info only.
+uefi            ==========================================================

@@ -1,8 +1,8 @@
---acpi                       Run ACPI tests.
 --acpica                     Enable ACPICA run
                              time options.
 --acpica-debug               Enable ACPICA debug
                              /warning messages.
+--acpitests                  Run ACPI tests.
 -a, --all                    Run all tests.
 -b, --batch                  Run non-Interactive
                              tests.
@@ -207,7 +207,6 @@
                              and then acpixtract,
                              e.g. --table-path=
                              /some/path/to/acpidumps
---uefi                       Run UEFI tests.
 --uefi-get-var-multiple      Run uefirtvariable
                              get variable test
                              multiple times.
@@ -217,6 +216,7 @@
 --uefi-set-var-multiple      Run uefirtvariable
                              set variable test
                              multiple times.
+--uefitests                  Run UEFI tests.
 -U, --unsafe                 Unsafe tests (tests
                              that can potentially
                              cause kernel oopses).

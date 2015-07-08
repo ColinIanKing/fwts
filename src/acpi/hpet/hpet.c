@@ -445,7 +445,7 @@ static fwts_framework_minor_test hpet_check_tests[] = {
 };
 
 static fwts_framework_ops hpet_check_ops = {
-	.description = "HPET IA-PC High Precision Event Timer Tanble tests.",
+	.description = "HPET IA-PC High Precision Event Timer Table tests.",
 	.init        = hpet_check_init,
 	.deinit      = hpet_check_deinit,
 	.minor_tests = hpet_check_tests

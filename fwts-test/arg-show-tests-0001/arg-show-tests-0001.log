@@ -18,7 +18,7 @@ ACPI tests:
  fadt            FADT Fixed ACPI Description Table tests.
  gtdt            GTDT Generic Timer Description Table test.
  hest            HEST Hardware Error Source Table test.
- hpet            HPET IA-PC High Precision Event Timer Tanble tests.
+ hpet            HPET IA-PC High Precision Event Timer Table tests.
  lpit            LPIT Low Power Idle Table test.
  madt            MADT Multiple APIC Description Table test.
  mcfg            MCFG PCI Express* memory mapped config space test.
@@ -72,7 +72,7 @@ Batch tests:
  gtdt            GTDT Generic Timer Description Table test.
  hda_audio       HDA Audio Pin Configuration test.
  hest            HEST Hardware Error Source Table test.
- hpet            HPET IA-PC High Precision Event Timer Tanble tests.
+ hpet            HPET IA-PC High Precision Event Timer Table tests.
  klog            Scan kernel log for errors and warnings.
  lpit            LPIT Low Power Idle Table test.
  madt            MADT Multiple APIC Description Table test.

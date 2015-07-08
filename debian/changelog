@@ -1,3 +1,113 @@
+fwts (15.07.00-0ubuntu1) wily; urgency=low
+
+  [Alex Hung]
+  * acpi: dmar: add FWTS_FLAG_ROOT_PRIV to dmar test
+  * fwts_acpi: acpidump: update TCPA table and acpidump accordingly
+  * fwts-test: update according to TCPA structure changes
+  * fwts-test: Remove TMPLOG in make check
+  * tcpa: Add ACPI TCPA test
+  * fwts-test: Add regression test for TCPA, update fwst-tests
+  * acpi: add XENV table test
+  * fwts-test: Add XENV table regression test
+  * lib: fwts_framework: Append "tests" to --uefi and --acpi
+  * fwts-tests: modify according to changes to --uefitests and --acpitests
+  * live-image/fwts-frontend-text: update to --uefitests and --acpitests
+
+  [Colin Ian King]
+  * acpi: method: remove extraneous "_" in error message
+  * lib: acpica: compiler: link in missing objects (LP: #1461936)
+  * lib: fwts_klog: fix vector size and handle errors from pcre_exec
+    (LP: #1461520)
+  * acpi: lib: fwts_acpi_tables: force fixup when loading tables from
+    /sys/firmware
+  * lib: acpi, acpidump: rename slit tables types
+  * lib: acpi: add in new GICC table fwts_acpi_table_gicc_affinity
+  * acpi: add SRAT table sanity checking (LP: #1464658)
+  * fwts-test: Update tests to accommodate new SRAT test
+  * acpi: add BERT table sanity checking (LP: #1464712)
+  * fwts-test: Update tests to accommodate new BERT test
+  * lib: acpi: Add in GAS address types
+  * acpi: add ECDT table sanity checking (LP: #1464716)
+  * fwts-test: Update tests to accommodate new ECDT test
+  * lib: acpi: Add support for the SPMI table
+  * acpi: add ACPI SPMI table sanity checking (LP: #1465256)
+  * fwts-test: Update tests to accommodate new SPMI test
+  * add ACPI SLIT table sanity checking (LP: #1465276)
+  * fwts-test: Update tests to accommodate new SLIT test
+  * lib: acpi: Add support for the HEST family of ACPI tables
+  * add ACPI HEST table sanity checking (LP: #1465379)
+  * fwts-test: Update tests to accommodate new HEST test
+  * acpi: Add BOOT table test (LP: #1465435)
+  * fwts-test: Update tests to accommodate new BOOT table test
+  * acpi: Add DBGP table test (LP: #1465441)
+  * fwts-test: Update tests to accommodate new DBGP table test
+  * acpi: Add DBG2 table test (LP: #1465710)
+  * fwts-test: Update tests to accommodate new DBG2 table test
+  * acpi: acpitables: remove ECDT test as we now have a full ECDT test
+  * acpi: re-orgainise HPET tests #1
+  * acpi: re-orgainise HPET tests #2
+  * acpi: move MADT test from acpitables into new MADT test
+  * acpi: move GTDT test from acpitables into new GTDT test
+  * acpi: move XSDT test from acpitables into new XSDT test
+  * acpi: move RSDP test from acpitables into new RSDP test
+  * acpi: move RSDT test from acpitables into new RSDT test
+  * acpi: acpitables: remove no-op MCFG test
+  * acpi: move SBST test from acpitables into new SBST test
+  * acpi: move FADT test from acpitables into existing FADT test
+  * acpi: acpitables: remove redudant acpi table checking
+  * fwts-test: acpitables-0001: update to match changes in acpitables test
+  * acpi: allow various ACPI table tests to run without root access
+  * fwts-test: update arg-show-tests-* to be in sync with acpitable changes
+  * add MADT specific test, replaces old acpitables-0002 test
+  * fwts-test: add RSDT specific test, replaces old acpitables-0006 test
+  * fwts-test: add XSDT specific test, replaces old acpitables-0007 test
+  * lib: fwts_acpi_tables: fully pad out fixed up ACPI OEM IDs
+  * fwts-test: Add BERT test
+  * fwts-test: Add BOOT test
+  * fwts-test: Add DBG2 test
+  * fwts-test: Add DBGP test
+  * fwts-test: Add HEST test
+  * fwts-test: Add SBST test
+  * fwts-test: Add SLIT test
+  * fwts-test: Add SRAT test
+  * acpi: spcr: add missing white space in error messages
+  * fwts-test: Add SPCR test
+  * fwst-test: remove old redundant acpitables test
+  * ACPICA: Update version to 20150619. (LP: #1466142)
+  * fwts: cpufreq: fix theoretical division by zero (LP: #1466905)
+  * acpi: Add ACPI ERST test (LP: #1467835)
+  * fwts-test: Add regression test for ERST, update fwst-tests
+  * acpi: correct ACPI BGRT table type
+  * acpi: Add ACPI BGRT test (LP: #1467863)
+  * fwts-test: Add regression test for BGRT, update fwst-tests
+  * acpi: Add ACPI CPEP test (LP: #1467870)
+  * fwts-test: Add regression test for CPEP, update fwst-tests
+  * acpi: Add ACPI FACS test (LP: #1467966)
+  * fwts-test: Add regression test for FACS, update fwst-tests
+  * acpi: acpidump: add in missing exponent field to SLIC
+  * fwts-test: update tests because of exponent field in SLIC
+  * acpi: Add CSRT ACPI Table test (LP: #1470116)
+  * fwts-test: Add CSRT table regression test
+  * acpi: Add LPIT ACPI test (LP: #1470184)
+  * fwts-test: Add LPIT table regression test
+  * acpi: Add WAET ACPI table test (LP: #1470495)
+  * fwts-test: Add WAET table regression tests
+  * acpi: add SLIC table test (LP: #1470518)
+  * fwts-test: Add SLIC table regression test
+  * acpi: add MSDM table test (LP: #1470538)
+  * fwts-test: Add MSDM table regression test
+  * bios: os2gap: remove ancient legacy test (LP:#1470573)
+  * fwts-test: facs: fix repeated offset in data
+  * lib: make acpidump parser more robust (LP: #1471202)
+  * fwts-test: fix hand crafted acpidump data
+
+  [Ivan Hu]
+  * acpi: acpidump: update SMM Communication fields on UEFI table
+  * acpi: Add UEFI ACPI data table test (LP: #1471698)
+  * fwts-test: Add UEFI ACPI data table regression tests
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 08 Jul 2015 13:34:44 +0800
+
 fwts (15.06.00-0ubuntu1) wily; urgency=low
 
   [Alex Hung]

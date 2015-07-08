@@ -263,7 +263,7 @@ ACPI tests:
  wmi             (1 test):
   Windows Management Instrumentation test.
  xenv            (1 test):
-  Validate XEVN table.
+  Validate XENV table.
  xsdt            (1 test):
   XSDT Extended System Description Table test.
 
@@ -624,7 +624,7 @@ Batch tests:
  wmi             (1 test):
   Windows Management Instrumentation test.
  xenv            (1 test):
-  Validate XEVN table.
+  Validate XENV table.
  xsdt            (1 test):
   XSDT Extended System Description Table test.
 

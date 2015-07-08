@@ -1,9 +1,9 @@
 xenv            xenv: Xen Environment Table tests.
 xenv            ----------------------------------------------------------
-xenv            Test 1 of 1: Validate XEVN table.
+xenv            Test 1 of 1: Validate XENV table.
 xenv            XENV Table:
-xenv              GNT Start Address                0x0000000010000000
-xenv              GNT Sizne                        0x0000000000002000
+xenv              GNT Start Address:               0x0000000010000000
+xenv              GNT Size:                        0x0000000000002000
 xenv              Evtchn Intr:                     0x25000000
 xenv              Evtchn Intr Flags:               0x07
 xenv            FAILED [HIGH] XENVBadEvtchnIntrFlags: Test 1, XENV Evtchn

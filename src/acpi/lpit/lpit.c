@@ -221,7 +221,7 @@ static fwts_framework_minor_test lpit_tests[] = {
 };
 
 static fwts_framework_ops lpit_ops = {
-	.description = "LPIT LPIT Low Power Idle Table test.",
+	.description = "LPIT Low Power Idle Table test.",
 	.init        = lpit_init,
 	.minor_tests = lpit_tests
 };

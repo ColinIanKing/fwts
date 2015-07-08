@@ -1,4 +1,4 @@
-lpit            lpit: LPIT LPIT Low Power Idle Table test.
+lpit            lpit: LPIT Low Power Idle Table test.
 lpit            ----------------------------------------------------------
 lpit            Test 1 of 1: LPIT Low Power Idle Table test.
 lpit            Native C-state based LPI structure:

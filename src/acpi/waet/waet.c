@@ -92,7 +92,7 @@ static fwts_framework_minor_test waet_tests[] = {
 };
 
 static fwts_framework_ops waet_ops = {
-	.description = "Windows ACPI Emulated Devices Table test.",
+	.description = "WAET Windows ACPI Emulated Devices Table test.",
 	.init        = waet_init,
 	.minor_tests = waet_tests
 };

@@ -90,7 +90,7 @@ static fwts_framework_minor_test xenv_tests[] = {
 };
 
 static fwts_framework_ops xenv_check_ops = {
-	.description = "Xen Environment Table tests.",
+	.description = "XENV Xen Environment Table tests.",
 	.init        = xenv_init,
 	.minor_tests = xenv_tests
 };

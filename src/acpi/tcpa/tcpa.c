@@ -220,7 +220,7 @@ static fwts_framework_minor_test tcpa_tests[] = {
 };
 
 static fwts_framework_ops tcpa_ops = {
-	.description = "Trusted Computing Platform Alliance Capabilities Table test.",
+	.description = "TCPA Trusted Computing Platform Alliance Capabilities Table test.",
 	.init        = tcpa_init,
 	.minor_tests = tcpa_tests
 };

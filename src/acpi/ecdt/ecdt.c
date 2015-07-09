@@ -212,7 +212,7 @@ static fwts_framework_minor_test ecdt_tests[] = {
 };
 
 static fwts_framework_ops ecdt_ops = {
-	.description = "Embedded Controller Boot Resources Table test.",
+	.description = "ECDT Embedded Controller Boot Resources Table test.",
 	.init        = ecdt_init,
 	.minor_tests = ecdt_tests
 };

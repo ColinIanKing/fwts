@@ -1,5 +1,5 @@
-tcpa            tcpa: Trusted Computing Platform Alliance Capabilities
-tcpa            Table test.
+tcpa            tcpa: TCPA Trusted Computing Platform Alliance
+tcpa            Capabilities Table test.
 tcpa            ----------------------------------------------------------
 tcpa            Test 1 of 1: Validate TCPA table.
 tcpa            FAILED [HIGH] TCPABadSize: Test 1, TCPA size is incorrect,

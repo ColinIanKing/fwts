@@ -1,4 +1,4 @@
-xenv            xenv: Xen Environment Table tests.
+xenv            xenv: XENV Xen Environment Table tests.
 xenv            ----------------------------------------------------------
 xenv            Test 1 of 1: Validate XENV table.
 xenv            XENV Table:

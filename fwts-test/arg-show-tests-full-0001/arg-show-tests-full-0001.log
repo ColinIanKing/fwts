@@ -46,6 +46,8 @@ ACPI tests:
   Test HPET base in HPET table.
   Test HPET base in DSDT and/or SSDT.
   Test HPET configuration.
+ iort            (1 test):
+  IORT IO Remapping Table test.
  lpit            (1 test):
   LPIT Low Power Idle Table test.
  madt            (1 test):
@@ -351,6 +353,8 @@ Batch tests:
   Test HPET base in HPET table.
   Test HPET base in DSDT and/or SSDT.
   Test HPET configuration.
+ iort            (1 test):
+  IORT IO Remapping Table test.
  klog            (1 test):
   Kernel log error check.
  lpit            (1 test):
@@ -820,4 +824,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 664 tests
+Total of 666 tests

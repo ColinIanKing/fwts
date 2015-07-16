@@ -1,0 +1,217 @@
+iort            iort: IORT IO Remapping Table test.
+iort            ----------------------------------------------------------
+iort            Test 1 of 1: IORT IO Remapping Table test.
+iort            IORT IO Remapping Table test
+iort              Number of IORT Nodes:     0x0005
+iort              IORT Node Array Offset:   0x0030
+iort              Reserved:                 0x0000
+iort            
+iort            IORT ITS Group Node:
+iort              Type:                     0x00
+iort              Length:                   0x0020
+iort              Revision:                 0x03
+iort              Reserved:                 0xffffffff
+iort              Number of ID mappings:    0x00000080
+iort              Reference to ID Array:    0x000000e0
+iort              Number of ITSs:           0x00000004
+iort            FAILED [HIGH] IORTItsIdArrayOutsideTable: Test 1, IORT ITS
+iort            Identifier Array end is outside the IORT ACPI table.
+iort            Either the Number of ID mappings is too large or the IORT
+iort            table size or ITS Group Node is too small.
+iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
+iort            Revision field is 0x03 and should be zero.
+iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
+iort            Reserved field is 0x0ffffffff and should be zero.
+iort            FAILED [LOW] IORTNodeMappingsCountNonZero: Test 1, IORT
+iort            Node Number of ID Mappings field is 0x000000080 and should
+iort            be zero for this node type.
+iort            FAILED [LOW] IORTNodeRefToIdArrayNonZero: Test 1, IORT
+iort            Node Referenced to ID Array field is 0x0000000e0 and
+iort            should be zero for this node type.
+iort            
+iort            IORT Named Component Node:
+iort              Type:                     0x01
+iort              Length:                   0x0050
+iort              Revision:                 0x02
+iort              Reserved:                 0x0000f001
+iort              Number of ID mappings:    0x00000003
+iort              Reference to ID Array:    0x00000024
+iort              Node Flags:               0xffffffff
+iort              Cache Coherent Attribute: 0x00000004
+iort              Allocation Hints:         0x0f
+iort              Reserved:                 0xdead
+iort              Memory Access Flags       0x03
+iort              Device Memory Addr. Size: 0x20
+iort              Device Object Name:       TEST
+iort            ID Mapping 0
+iort              Input Base:               0x00000001
+iort              ID Count:                 0x00000001
+iort              Output Base:              0x00000002
+iort              Output Reference:         0xffffffff
+iort              Flags:                    0x00000001
+iort            ID Mapping 1
+iort              Input Base:               0x00000002
+iort              ID Count:                 0x00000002
+iort              Output Base:              0x00000003
+iort              Output Reference:         0x88888888
+iort              Flags:                    0x00000001
+iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
+iort            Revision field is 0x02 and should be zero.
+iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
+iort            Reserved field is 0x00000f001 and should be zero.
+iort            FAILED [HIGH] IORTNamedComponentNodeFlagsNonZero: Test 1,
+iort            IORT Named Component Node Flags is 0xffffffff and is
+iort            reserved and should be zero.
+iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
+iort            Named Component Node Coherent Attribute is 0x4 and should
+iort            be either 0 (device is fully coherent) or 1 (device is not
+iort            coherent).
+iort            FAILED [MEDIUM] IORTNodeReservedNonZero: Test 1, IORT
+iort            Named Component Node Node Reserved is 0xdead and is
+iort            reserved and should be zero.
+iort            FAILED [HIGH] IORTMemAttrInvalid: Test 1, IORT Named
+iort            Component Node Memory Attributes are illegal, CCA cannot
+iort            be 0 if CPM and DACS are 1. If the device has a coherent
+iort            path to memory and natively outputs IWB-OWB-ISH then CCA
+iort            must be 1.
+iort            FAILED [HIGH] IORTIdMappingOutsideTable: Test 1, IORT ID
+iort            Mapping 2 is outside the IORT ACPI table. Either the
+iort            offset is incorrect or the IORT table size or the node is
+iort            too small.
+iort            
+iort            IORT PCI Root Complex Node:
+iort              Type:                     0x02
+iort              Length:                   0x0040
+iort              Revision:                 0x50
+iort              Reserved:                 0x0000000f
+iort              Number of ID mappings:    0x00000010
+iort              Reference to ID Array:    0x00000020
+iort              Cache Coherent Attribute: 0x000000d1
+iort              Allocation Hints:         0xfe
+iort              Reserved:                 0x8000
+iort              Memory Access Flags       0x0003
+iort              ATS Attribute:            0x00000003
+iort              PCI Segment Number:       0xc0bbeeff
+iort            ID Mapping 0
+iort              Input Base:               0x00000002
+iort              ID Count:                 0x00000003
+iort              Output Base:              0x00000004
+iort              Output Reference:         0x00000005
+iort              Flags:                    0x00000001
+iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
+iort            Revision field is 0x50 and should be zero.
+iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
+iort            Reserved field is 0x00000000f and should be zero.
+iort            FAILED [HIGH] IORTCPCIRootComplexAtsAttrInvalid: Test 1,
+iort            IORT PCI Root Complex Node ATS Attribute is 0x3 and was
+iort            expecting either 0 (root complex supports ATS) or 1 (root
+iort            complex does not support ATS).
+iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
+iort            PCI Root Complex Node Coherent Attribute is 0xd1 and
+iort            should be either 0 (device is fully coherent) or 1 (device
+iort            is not coherent).
+iort            FAILED [HIGH] IORTAllocHintsReservedNonZero: Test 1, IORT
+iort            PCI Root Complex Node Allocation Hints reserved bits [7:4]
+iort            are reserved and should be zero.
+iort            FAILED [MEDIUM] IORTNodeReservedNonZero: Test 1, IORT PCI
+iort            Root Complex Node Node Reserved is 0x8000 and is reserved
+iort            and should be zero.
+iort            FAILED [HIGH] IORTIdMappingOutsideTable: Test 1, IORT ID
+iort            Mapping 1 is outside the IORT ACPI table. Either the
+iort            offset is incorrect or the IORT table size or the node is
+iort            too small.
+iort            
+iort            IORT SMMU node:
+iort              Type:                     0x03
+iort              Length:                   0x0094
+iort              Revision:                 0xa0
+iort              Reserved:                 0x00008100
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000090
+iort              Base Address:             0xf01030c020908000
+iort              Span:                     0x0000000020000000
+iort              Model:                    0x00000004
+iort              Flags:                    0x000000aa
+iort              Global Intr. Offset:      0x0000003c
+iort              Number of Context Intr.:  0x00000004
+iort              Context Intr. Offset:     0x00000050
+iort              Number of PMU Intr.:      0x00000005
+iort              PMU Intr. Offset:         0x00000070
+iort            Global Interrupt Array:
+iort              SMMU_NSgIrpt:             0x000000f0
+iort              SMMU_NSgIrpt Flags:       0x00000002
+iort              SMMU_NSgCfgIrpt:          0x000000f1
+iort              SMMU_NSgCfgIrpt Flags:    0x00000004
+iort            Context Interrupt Array:
+iort              GSIV:                     0xe0800000
+iort              Interrupt Flags:          0x00000008
+iort              GSIV:                     0xd0700000
+iort              Interrupt Flags:          0x00000010
+iort              GSIV:                     0xc0600000
+iort              Interrupt Flags:          0x00000020
+iort              GSIV:                     0xb0500000
+iort              Interrupt Flags:          0x00000040
+iort            PMU Interrupt Array:
+iort              GSIV:                     0xf00080c0
+iort              Interrupt Flags:          0x000000aa
+iort              GSIV:                     0xf0008080
+iort              Interrupt Flags:          0x000000ab
+iort              GSIV:                     0xf0008040
+iort              Interrupt Flags:          0x00000092
+iort              GSIV:                     0xf0008000
+iort              Interrupt Flags:          0x00000004
+iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
+iort            Revision field is 0xa0 and should be zero.
+iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
+iort            Reserved field is 0x000008100 and should be zero.
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_NsgIrpt Flags field reserved bits [31:1] should
+iort            be all zero, got 0x2
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_NsgCfgIrpt Flags field reserved bits [31:1]
+iort            should be all zero, got 0x4
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x8
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x10
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x20
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x40
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0xaa
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0xab
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x92
+iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
+iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
+iort            all zero, got 0x4
+iort            FAILED [HIGH] IORTSmmuInterruptsOutsideTable: Test 1, IORT
+iort            SMMU Interrupt 4 is outside the IORT ACPI table. Either
+iort            the offset is incorrect or the IORT table size is too
+iort            small.
+iort            FAILED [HIGH] IORTIdMappingOutsideTable: Test 1, IORT ID
+iort            Mapping 0 is outside the IORT ACPI table. Either the
+iort            offset is incorrect or the IORT table size or the node is
+iort            too small.
+iort            FAILED [HIGH] IORTSmmuInvalidModel: Test 1, IORT SMMU
+iort            Model is 0x4 and was expecting a model value 0 to 3.
+iort            FAILED [HIGH] IORTSmmuReservedFlags: Test 1, IORT SMMU
+iort            Reserved Flags is 0xaa and has some reserved bits [31:2]
+iort            set when they should be zero.
+iort            
+iort            FAILED [HIGH] IORTInvalidType: Test 1, IORT Type 0xff is
+iort            invalid, aborting check
+iort            
+iort            ==========================================================
+iort            0 passed, 36 failed, 0 warning, 0 aborted, 0 skipped, 0
+iort            info only.
+iort            ==========================================================

@@ -1,0 +1,119 @@
+iort            iort: IORT IO Remapping Table test.
+iort            ----------------------------------------------------------
+iort            Test 1 of 1: IORT IO Remapping Table test.
+iort            IORT IO Remapping Table test
+iort              Number of IORT Nodes:     0x0004
+iort              IORT Node Array Offset:   0x0030
+iort              Reserved:                 0x0000
+iort            
+iort            IORT ITS Group Node:
+iort              Type:                     0x00
+iort              Length:                   0x0020
+iort              Revision:                 0x00
+iort              Reserved:                 0x00000000
+iort              Number of ID mappings:    0x00000000
+iort              Reference to ID Array:    0x00000000
+iort              Number of ITSs:           0x00000003
+iort              GIC ITS Identifier:       0x01020304
+iort              GIC ITS Identifier:       0x05060708
+iort              GIC ITS Identifier:       0x090a0b0c
+iort            
+iort            IORT Named Component Node:
+iort              Type:                     0x01
+iort              Length:                   0x0050
+iort              Revision:                 0x00
+iort              Reserved:                 0x00000000
+iort              Number of ID mappings:    0x00000002
+iort              Reference to ID Array:    0x00000024
+iort              Node Flags:               0x00000000
+iort              Cache Coherent Attribute: 0x00000001
+iort              Allocation Hints:         0x0f
+iort              Reserved:                 0x0000
+iort              Memory Access Flags       0x03
+iort              Device Memory Addr. Size: 0x20
+iort              Device Object Name:       TEST
+iort            ID Mapping 0
+iort              Input Base:               0x00000001
+iort              ID Count:                 0x00000001
+iort              Output Base:              0x00000002
+iort              Output Reference:         0xffffffff
+iort              Flags:                    0x00000001
+iort            ID Mapping 1
+iort              Input Base:               0x00000002
+iort              ID Count:                 0x00000002
+iort              Output Base:              0x00000003
+iort              Output Reference:         0x88888888
+iort              Flags:                    0x00000001
+iort            
+iort            IORT PCI Root Complex Node:
+iort              Type:                     0x02
+iort              Length:                   0x0040
+iort              Revision:                 0x00
+iort              Reserved:                 0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000020
+iort              Cache Coherent Attribute: 0x00000001
+iort              Allocation Hints:         0x0e
+iort              Reserved:                 0x0000
+iort              Memory Access Flags       0x0003
+iort              ATS Attribute:            0x00000001
+iort              PCI Segment Number:       0xc0bbeeff
+iort            ID Mapping 0
+iort              Input Base:               0x00000002
+iort              ID Count:                 0x00000003
+iort              Output Base:              0x00000004
+iort              Output Reference:         0x00000005
+iort              Flags:                    0x00000001
+iort            
+iort            IORT SMMU node:
+iort              Type:                     0x03
+iort              Length:                   0x00a4
+iort              Revision:                 0x00
+iort              Reserved:                 0x00000000
+iort              Number of ID mappings:    0x00000001
+iort              Reference to ID Array:    0x00000090
+iort              Base Address:             0xf01030c020908000
+iort              Span:                     0x0000000020000000
+iort              Model:                    0x00000002
+iort              Flags:                    0x00000001
+iort              Global Intr. Offset:      0x0000003c
+iort              Number of Context Intr.:  0x00000004
+iort              Context Intr. Offset:     0x00000050
+iort              Number of PMU Intr.:      0x00000004
+iort              PMU Intr. Offset:         0x00000070
+iort            Global Interrupt Array:
+iort              SMMU_NSgIrpt:             0x000000f0
+iort              SMMU_NSgIrpt Flags:       0x00000001
+iort              SMMU_NSgCfgIrpt:          0x000000f1
+iort              SMMU_NSgCfgIrpt Flags:    0x00000001
+iort            Context Interrupt Array:
+iort              GSIV:                     0xe0800000
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xd0700000
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xc0600000
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xb0500000
+iort              Interrupt Flags:          0x00000001
+iort            PMU Interrupt Array:
+iort              GSIV:                     0xf00080c0
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xf0008080
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xf0008040
+iort              Interrupt Flags:          0x00000001
+iort              GSIV:                     0xf0008000
+iort              Interrupt Flags:          0x00000001
+iort            ID Mapping 0
+iort              Input Base:               0xffff0000
+iort              ID Count:                 0x00000001
+iort              Output Base:              0x50403020
+iort              Output Reference:         0x00000000
+iort              Flags:                    0x00000001
+iort            
+iort            PASSED: Test 1, No issues found in IORT.
+iort            
+iort            ==========================================================
+iort            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+iort            info only.
+iort            ==========================================================

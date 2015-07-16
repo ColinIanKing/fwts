@@ -535,6 +535,15 @@ typedef struct {
 	};
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
 
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint16_t	platform_class;
+	uint16_t	reserved;
+	uint64_t	address_of_control_area;
+	uint32_t	start_method;
+	uint8_t		platform_specific_parameters[0];
+}  __attribute__ ((packed)) fwts_acpi_table_tpm2;
+
 /* From http://wiki.xenproject.org/mediawiki/images/c/c4/Xen-environment-table.pdf */
 typedef struct {
 	fwts_acpi_table_header	header;

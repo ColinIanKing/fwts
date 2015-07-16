@@ -1172,4 +1172,100 @@ typedef struct {
 	uint8_t		data[0];	/* Proprietary data */
 } __attribute__ ((packed)) fwts_acpi_table_msdm;
 
+/*
+ *  IORT IO Remapping Table
+ *    http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	io_rt_nodes_count;
+	uint32_t	io_rt_offset;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_iort;
+
+typedef struct {
+	uint8_t		type;
+	uint16_t	length;
+	uint8_t		revision;
+	uint32_t	reserved;
+	uint32_t	id_mappings_count;
+	uint32_t	id_array_offset;
+} __attribute__ ((packed)) fwts_acpi_table_iort_node;
+
+typedef struct {
+	uint32_t	input_base;
+	uint32_t	id_count;
+	uint32_t	output_base;
+	uint32_t	output_reference;
+	uint32_t	flags;
+} __attribute__ ((packed)) fwts_acpi_table_iort_id_mapping;
+
+typedef struct {
+	uint32_t	gsiv;
+	uint32_t	flags;
+} __attribute__ ((packed)) fwts_acpi_table_iort_smmu_interrupt;
+
+typedef struct {
+	/* Global Interrupt Array Section */
+	uint32_t	smmu_nsgirpt;
+	uint32_t	smmu_nsgirpt_flags;
+	uint32_t	smmu_nsgcfgirpt;
+	uint32_t	smmu_nsgcfgirpt_flags;
+} __attribute__ ((packed)) fwts_acpi_table_iort_smmu_global_interrupt_array;
+
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	uint64_t	base_address;
+	uint64_t	span;
+	uint32_t	model;
+	uint32_t	flags;
+	uint32_t	global_interrupt_array_offset;
+	uint32_t	context_interrupt_count;
+	uint32_t	context_interrupt_array_offset;
+	uint32_t	pmu_interrupt_count;
+	uint32_t	pmu_interrupt_array_offset;
+
+	/*
+	 * Global Interrupt array, Context Interrupt Array
+	 * and PMU Interrupt arrays follow at offsets into
+	 * the table
+	 */
+} __attribute__ ((packed)) fwts_acpi_table_iort_smmu_node;
+
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	uint32_t	its_count;
+	uint32_t	identifier_array[0];
+} __attribute__ ((packed)) fwts_acpi_table_iort_its_group_node;
+
+typedef struct {
+	uint32_t	cache_coherent;
+	uint8_t		allocation_hints;
+	uint16_t	reserved;
+	uint8_t		memory_access_flags;
+}  __attribute__ ((packed)) fwts_acpi_table_iort_properties;
+
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	uint32_t	flags;
+	fwts_acpi_table_iort_properties properties;
+	uint8_t		device_memory_address_size;
+	uint8_t		device_object_name[0];
+	/*
+	   followed by padding and array of ids_mappings at some offset
+	   uint32_t	identifier_array[0];
+	*/
+} __attribute__ ((packed)) fwts_acpi_table_iort_named_component_node;
+
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	fwts_acpi_table_iort_properties properties;
+	uint32_t	ats_attribute;
+	uint32_t	pci_segment_number;
+	/*
+	   followed by array of ids_mappings at some offset
+	   uint32_t	identifier_array[0];
+	*/
+} __attribute__ ((packed)) fwts_acpi_table_iort_pci_root_complex_node;
+
 #endif

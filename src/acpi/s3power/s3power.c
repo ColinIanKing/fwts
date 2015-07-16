@@ -50,7 +50,7 @@ static int s3power_adapter_offline(fwts_framework *fw, bool *offline)
 	/* Any online, then we're not totally offlined */
 
 	*offline = matching > 0 ? false : true;
-	
+
 	return FWTS_OK;
 }
 

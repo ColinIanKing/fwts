@@ -78,13 +78,13 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_header;
 
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	uint8_t		cmos_index;
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_boot;
 
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	uint32_t	boot_error_region_length;
 	uint64_t	boot_error_region;
 } __attribute__ ((packed)) fwts_acpi_table_bert;
@@ -107,13 +107,13 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_cpep_processor_info;
 
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	uint8_t		reserved[8];
 	fwts_acpi_cpep_processor_info	cpep_info[0];
 } __attribute__ ((packed)) fwts_acpi_table_cpep;
 
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	fwts_acpi_gas	ec_control;
 	fwts_acpi_gas	ec_data;
 	uint32_t	uid;
@@ -175,7 +175,7 @@ typedef struct {
  *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
  */
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	uint32_t	firmware_control;
 	uint32_t	dsdt;
 	uint8_t		reserved;
@@ -393,14 +393,14 @@ typedef struct {
 
 /* Type 3, FWTS_ACPI_MADT_NMI_SOURCE */
 typedef struct {
-	uint16_t	flags;	
+	uint16_t	flags;
 	uint32_t	gsi;
 } __attribute__ ((packed)) fwts_acpi_madt_nmi;
 
 /* Type 4, FWTS_ACPI_MADT_LOCAL_APIC_NMI */
 typedef struct {
 	uint8_t		acpi_processor_id;
-	uint16_t	flags;	
+	uint16_t	flags;
 	uint8_t		local_apic_lint;
 } __attribute__ ((packed)) fwts_acpi_madt_local_apic_nmi;
 
@@ -812,7 +812,7 @@ typedef struct {
 
 /* Section 14.1, Platform Communications Channel Table */
 typedef struct {
-	fwts_acpi_table_header	header;	
+	fwts_acpi_table_header	header;
 	uint32_t	flags;
 	uint8_t		reserved[8];
 } __attribute__ ((packed)) fwts_acpi_table_pcct;

@@ -122,7 +122,7 @@ static fwts_list *get_fan_info(fwts_framework *fw)
 	} while (entry);
 
 	closedir(dir);
-	
+
 	return fans;
 }
 
@@ -243,7 +243,7 @@ static int fan_test2(fwts_framework *fw)
 			"to the driver and/or the fan speed is automatically being "
 			"controlled by firmware using System Management Mode in which case "
 			"the kernel interfaces being examined may not work anyway.");
-			
+
 
 	}
 

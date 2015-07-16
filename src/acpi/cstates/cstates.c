@@ -86,7 +86,7 @@ static void get_cstates(char *path, fwts_cstates *state)
 				nr = 0;
 			else {
 				char *ptr = strstr(data, "-C");
-				if (ptr) 
+				if (ptr)
 					nr = strtol(ptr + 2, NULL, 10);
 				else
 					nr = 0;

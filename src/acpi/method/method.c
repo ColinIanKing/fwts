@@ -2911,7 +2911,7 @@ static void method_test_CPC_return(
 		{ ACPI_TYPE_BUFFER,	"Maximum Performance Register" },
 		{ ACPI_TYPE_BUFFER,	"Performance Reduction Tolerance Register" },
 		{ ACPI_TYPE_BUFFER,	"Timed Window Register" },
-		{ ACPI_TYPE_INTBUF,	"Counter Wraparound Time" },	
+		{ ACPI_TYPE_INTBUF,	"Counter Wraparound Time" },
 		{ ACPI_TYPE_BUFFER,	"Nominal Counter Register" },
 		{ ACPI_TYPE_BUFFER,	"Delivered Counter Register" },
 		{ ACPI_TYPE_BUFFER,	"Performance Limited Register" },
@@ -4876,7 +4876,7 @@ static int method_test_PIF(fwts_framework *fw)
 }
 
 /*
- * Section 10.4 Power Meters 
+ * Section 10.4 Power Meters
  */
 
 static int method_test_GAI(fwts_framework *fw)

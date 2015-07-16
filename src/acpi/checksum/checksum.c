@@ -57,7 +57,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 		fwts_passed(fw, "Table RSDP has correct checksum 0x%2.2" PRIx8 ".",
 			rsdp->checksum);
 
-	/* 
+	/*
 	 * Version 2.0 RSP or more. Note ACPI 1.0 is indicated by a
 	 * zero version number
 	 */
@@ -80,7 +80,7 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 				"expected 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8 ".",
 				(uint8_t)(rsdp->extended_checksum-checksum),
 				rsdp->extended_checksum);
-			fwts_advice(fw, 
+			fwts_advice(fw,
 				"The kernel will not load the RSDP with an "
 				"invalid extended checksum and hence all "
 				"other ACPI tables will also fail to load.");

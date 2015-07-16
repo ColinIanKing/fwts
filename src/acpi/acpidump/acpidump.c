@@ -137,7 +137,7 @@ static uint64_t apci_dump_get_uint64_t(
 	case 8:
 		memcpy(&ret, data, info->size);
 		break;
-	default:		
+	default:
 		ret = 0;
 		ptr = (uint8_t *)data;
 		for (i = 0; (i < info->size) && (i < 8); i++) {
@@ -174,7 +174,7 @@ static void acpi_dump_uint(
 				acpi_dump_field_info(info->label, info->size, info->offset + offset),
 				hexdigits, hexdigits, val);
 		break;
-	default:		
+	default:
 		ptr = (uint8_t *)data;
 		for (i = 0; i < info->size; i++) {
 			uint8_t val8 = *ptr++;
@@ -305,7 +305,7 @@ static char *acpi_dump_gas_address_space_id(const uint64_t index)
 	char *txt;
 
 	switch (index) {
-	case 0x00:	
+	case 0x00:
 		txt = "System Memory";
 		break;
 	case 0x01:
@@ -334,7 +334,7 @@ static char *acpi_dump_gas_address_space_id(const uint64_t index)
 		txt = "Unknown";
 		break;
 	}
-	
+
 	return txt;
 }
 
@@ -343,7 +343,7 @@ static void acpi_dump_gas(
 	const fwts_acpidump_field *info,
 	const void *data,
 	const int offset)
-{	
+{
 	static const char *access_width[] = {
 		"Undefined (legacy reasons)",
 		"Byte Access",
@@ -367,7 +367,7 @@ static void acpi_dump_gas(
 	fwts_log_nl(fw);
 	fwts_log_info_verbatum(fw, "%s (Generic Address Structure)",
 		acpi_dump_field_info(info->label, info->size, offset + info->offset));
-	
+
 	__acpi_dump_table_fields(fw, data, fields, offset + info->offset);
 }
 
@@ -430,7 +430,7 @@ static void acpidump_boot(fwts_framework *fw, const fwts_acpi_table_info *table)
 		fwts_log_info_verbatum(fw, "%56.56s: %x",  "Parity", (cmos_data & FWTS_BOOT_REGISTER_PARITY) ? 1 : 0);
 	} else
 		fwts_log_error(fw, "Cannot get read/write permission on I/O ports.");
-	
+
 }
 
 static void acpidump_bert(fwts_framework *fw, const fwts_acpi_table_info *table)
@@ -491,7 +491,7 @@ static void acpidump_erst(fwts_framework *fw, const fwts_acpi_table_info *table)
 		"BEGIN_READ_OPERATION",
 		"BEGIN_CLEAR_OPERATION",
 		"END_OPERATION",
-		
+
 		"SET_RECORD_offsetof",
 		"EXECUTE_OPERATION",
 		"CHECK_BUSY_STATUS",
@@ -499,9 +499,9 @@ static void acpidump_erst(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 		"GET_RECORD_IDENTIFIER",
 		"SET_RECORD_IDENTIFIER",
-		"GET_RECOERD_COUNT",		
+		"GET_RECOERD_COUNT",
 		"BEGIN_DUMMY_WRITE_OPERATION",
-		
+
 		"RESERVED",
 		"GET_ERROR_LOG_ADDRESS_RANGE",
 		"GET_ERROR_LOG_ADDRESS_RANGE_LENGTH",
@@ -517,8 +517,8 @@ static void acpidump_erst(fwts_framework *fw, const fwts_acpi_table_info *table)
 		"NOOP",
 		"LOAD_VAR1",
 		"LOAD_VAR2",
-		"STORE_VAR1",	
-	
+		"STORE_VAR1",
+
 		"ADD",
 		"SUBTRACT",
 		"ADD_VALUE",
@@ -543,7 +543,7 @@ static void acpidump_erst(fwts_framework *fw, const fwts_acpi_table_info *table)
 	};
 
 	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
-	
+
 	for (i = 0; i < erst->instruction_entry_count; i++) {
 		fwts_acpidump_field entry_fields[] = {
 			FIELD_STRS("  Action", 		fwts_acpi_table_erst, entries[i].serialization_action, serialization_actions, 16),
@@ -770,7 +770,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 	uint8_t *data = (uint8_t *)table->data;
 	size_t offset = 0;
 	int i = 0;
-	
+
 	static const fwts_acpidump_field fields[] = {
 		FIELD_UINT("Local APIC Address", 	fwts_acpi_table_madt, lapic_address),
 		FIELD_UINT("Flags", 			fwts_acpi_table_madt, flags),
@@ -801,9 +801,9 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 	};
 
 	acpi_dump_table_fields(fw, data, fields, 0, table->length);
-	
+
 	offset += sizeof(fwts_acpi_table_madt);
-	data += sizeof(fwts_acpi_table_madt);	
+	data += sizeof(fwts_acpi_table_madt);
 
 
 	while (offset < table->length) {
@@ -1837,11 +1837,11 @@ static void acpidump_pcct(fwts_framework *fw, const fwts_acpi_table_info *table)
 
 		/* Currently just type 0 is supported */
 		switch (header->type) {
-		case 0: 
+		case 0:
 			fwts_log_info_verbatum(fw,
 				"General Communications Subspace Structure (type 0):");
 			__acpi_dump_table_fields(fw, ptr, type0_fields, ptr - data);
-			
+
 			break;
 		default:
 			break;

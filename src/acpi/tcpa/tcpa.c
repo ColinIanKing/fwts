@@ -1,8 +1,6 @@
 /*
  * Copyright (C) 2010-2015 Canonical
  *
- * Portions of this code original from the Linux-ready Firmware Developer Kit
- *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -185,7 +183,7 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 
 /*
  * TCPA table
- *   available @ https://www.trustedcomputinggroup.org/files/static_page_files/5DB17390-1A4B-B294-D029166C91F3512B/TCG_D-RTM_Architecture_v1%200_Published_06172013.pdf
+ *   available @ http://www.trustedcomputinggroup.org/files/static_page_files/648D7D46-1A4B-B294-D088037B8F73DAAF/TCG_ACPIGeneralSpecification_1-10_0-37-Published.pdf
  */
 static int tcpa_test1(fwts_framework *fw)
 {

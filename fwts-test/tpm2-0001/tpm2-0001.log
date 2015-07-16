@@ -1,0 +1,14 @@
+tpm2            tpm2: TPM2 Trusted Platform Module 2 test.
+tpm2            ----------------------------------------------------------
+tpm2            Test 1 of 1: Validate TPM2 table.
+tpm2            TPM2 Table:
+tpm2              Platform Class:                  0x0000
+tpm2              Reserved:                        0x0000
+tpm2              Address of Control Area:         0x0011223344556677
+tpm2              Start Method:                    0x00000001
+tpm2            PASSED: Test 1, No issues found in TPM2 table.
+tpm2            
+tpm2            ==========================================================
+tpm2            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+tpm2            info only.
+tpm2            ==========================================================

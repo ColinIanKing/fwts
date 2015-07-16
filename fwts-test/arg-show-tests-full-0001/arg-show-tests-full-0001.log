@@ -256,6 +256,8 @@ ACPI tests:
   SRAT System Resource Affinity Table test.
  tcpa            (1 test):
   Validate TCPA table.
+ tpm2            (1 test):
+  Validate TPM2 table.
  uefi            (1 test):
   UEFI Data Table test.
  waet            (1 test):
@@ -603,6 +605,8 @@ Batch tests:
   Disassemble and reassemble DSDT and SSDTs.
  tcpa            (1 test):
   Validate TCPA table.
+ tpm2            (1 test):
+  Validate TPM2 table.
  uefi            (1 test):
   UEFI Data Table test.
  uefibootpath    (1 test):
@@ -816,4 +820,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 662 tests
+Total of 664 tests

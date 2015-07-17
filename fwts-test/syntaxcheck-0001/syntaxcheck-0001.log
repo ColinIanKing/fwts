@@ -6,6 +6,34 @@ syntaxcheck     Test 1 of 1: Disassemble and reassemble DSDT and SSDTs.
 syntaxcheck     
 syntaxcheck     Checking ACPI table DSDT (#0)
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 243
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00240|             }
+syntaxcheck     00241| 
+syntaxcheck     00242|             Store (0x07D0, OSYS) /* \OSYS */
+syntaxcheck     00243|             If (CondRefOf (_OSI, Local0))
+syntaxcheck          |                                      ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     00244|             {
+syntaxcheck     00245|                 If (_OSI ("Linux"))
+syntaxcheck     00246|                 {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 696
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00693|     Name (_PSC, Zero)  // _PSC: Power State Current
+syntaxcheck     00694|     Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+syntaxcheck     00695|     {
+syntaxcheck     00696|         Store (_PSC, Local0)
+syntaxcheck          |                          ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     00697|         Store (Zero, _PSC) /* \_PSC */
+syntaxcheck     00698|     }
+syntaxcheck     00699| 
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_UPPER_CASE: Test 1, Assembler
 syntaxcheck     error in line 709
 syntaxcheck     Line | AML source
@@ -25,6 +53,48 @@ syntaxcheck     ADVICE: (for Error #6136, ASL_MSG_UPPER_CASE): Characters
 syntaxcheck     in literal string that are not hexadecimal letters must be
 syntaxcheck     upper case.
 syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 726
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00723|             {
+syntaxcheck     00724|                  0x01, 0x14, 0x03, 0x00                           /* .... */
+syntaxcheck     00725|             })
+syntaxcheck     00726|             Method (WQAC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00727|             {
+syntaxcheck     00728|                 Store ("MXMTCConfigData", Debug)
+syntaxcheck     00729|                 Return (STAC) /* \_SB_.AMW0.STAC */
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 733
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00730|             }
+syntaxcheck     00731| 
+syntaxcheck     00732|             Name (STBC, Unicode ("\x01"))
+syntaxcheck     00733|             Method (WQBC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00734|             {
+syntaxcheck     00735|                 Store ("Get MXMTCControlData: STBC = ", Debug)
+syntaxcheck     00736|                 Store (STBC, Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 740
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00737|                 Return (STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00738|             }
+syntaxcheck     00739| 
+syntaxcheck     00740|             Method (WSBC, 2, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00741|             {
+syntaxcheck     00742|                 Store (Arg1, STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00743|                 Store ("Set MXMTCControlData: STBC = ", Debug)
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
 syntaxcheck     Assembler error in line 1066
 syntaxcheck     Line | AML source
@@ -71,6 +141,20 @@ syntaxcheck     combinations and need to be fixed. See section 6.4.3.5
 syntaxcheck     Address Space Resource Descriptors of the ACPI
 syntaxcheck     specification for more details.
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 1909
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     01906| 
+syntaxcheck     01907|                         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
+syntaxcheck     01908|                         {
+syntaxcheck     01909|                             Divide (Arg0, 0x0A, Local0, Local1)
+syntaxcheck          |                                                     ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     01910|                             Store (Local1, ^^^^LPCB.EC0.BRTS) /* \_SB_.PCI0.LPCB.EC0_.BRTS */
+syntaxcheck     01911|                         }
+syntaxcheck     01912| 
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 2147
 syntaxcheck     Line | AML source
@@ -93,6 +177,34 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 5380
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05377|                         If (LEqual (Arg0, 0x03))
+syntaxcheck     05378|                         {
+syntaxcheck     05379|                             Store (Arg1, Z009) /* \_SB_.PCI0.LPCB.EC0_.Z009 */
+syntaxcheck     05380|                             If (CondRefOf (_OSI, Local0))
+syntaxcheck          |                                                      ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     05381|                             {
+syntaxcheck     05382|                                 Store (Zero, BTDS) /* \_SB_.PCI0.LPCB.EC0_.BTDS */
+syntaxcheck     05383|                                 If (_OSI ("Windows 2006"))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 5710
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05707|                         Return (Arg1)
+syntaxcheck     05708|                     }
+syntaxcheck     05709| 
+syntaxcheck     05710|                     Method (TUVR, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     05711|                     {
+syntaxcheck     05712|                         Return (0x03)
+syntaxcheck     05713|                     }
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 5806
 syntaxcheck     Line | AML source
@@ -137,6 +249,20 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 5882
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05879|                         If (BFC1)
+syntaxcheck     05880|                         {
+syntaxcheck     05881|                             Multiply (BGU1, BFC1, Local2)
+syntaxcheck     05882|                             Divide (Local2, 0x64, Local4, Local2)
+syntaxcheck          |                                                       ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local4)
+syntaxcheck     05883|                         }
+syntaxcheck     05884|                         Else
+syntaxcheck     05885|                         {
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 5966
 syntaxcheck     Line | AML source
@@ -259,7 +385,7 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 0 warnings, 10
+syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 14
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
@@ -505,8 +631,22 @@ syntaxcheck
 syntaxcheck     
 syntaxcheck     Checking ACPI table SSDT (#2)
 syntaxcheck     
-syntaxcheck     PASSED: Test 1, SSDT (2) reassembly, Found 0 errors, 0
-syntaxcheck     warnings, 0 remarks.
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 48
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00045| 
+syntaxcheck     00046|         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
+syntaxcheck     00047|         {
+syntaxcheck     00048|             Divide (Arg0, 0x0A, Local0, Local1)
+syntaxcheck          |                                     ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     00049|             Store (Local1, \_SB.PCI0.LPCB.EC0.BRTS)
+syntaxcheck     00050|         }
+syntaxcheck     00051| 
+syntaxcheck     ==========================================================
+syntaxcheck     Table SSDT (2) reassembly: Found 0 errors, 1 warnings, 0
+syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     Checking ACPI table SSDT (#3)
@@ -616,6 +756,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     3 passed, 32 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     2 passed, 42 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

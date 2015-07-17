@@ -209,6 +209,12 @@ AcpiDbSleep (
     char                    *ObjectArg);
 
 void
+AcpiDbTrace (
+    char                    *EnableArg,
+    char                    *MethodArg,
+    char                    *OnceArg);
+
+void
 AcpiDbDisplayLocks (
     void);
 
@@ -494,6 +500,32 @@ AcpiDbGetNextToken (
     char                    *String,
     char                    **Next,
     ACPI_OBJECT_TYPE        *ReturnType);
+
+
+/*
+ * dbobject
+ */
+void
+AcpiDbDecodeInternalObject (
+    ACPI_OPERAND_OBJECT     *ObjDesc);
+
+void
+AcpiDbDisplayInternalObject (
+    ACPI_OPERAND_OBJECT     *ObjDesc,
+    ACPI_WALK_STATE         *WalkState);
+
+void
+AcpiDbDecodeArguments (
+    ACPI_WALK_STATE         *WalkState);
+
+void
+AcpiDbDecodeLocals (
+    ACPI_WALK_STATE         *WalkState);
+
+void
+AcpiDbDumpMethodInfo (
+    ACPI_STATUS             Status,
+    ACPI_WALK_STATE         *WalkState);
 
 
 /*

@@ -259,6 +259,7 @@ AdInitialize (
     AcpiGbl_RootTableList.CurrentTableCount = 0;
     AcpiGbl_RootTableList.Tables = LocalTables;
 
+    AcpiGbl_PreviousOp = NULL;
     return (Status);
 }
 
@@ -868,8 +869,8 @@ AdStoreTable (
 
     AcpiTbInitTableDescriptor (TableDesc, ACPI_PTR_TO_PHYSADDR (Table),
         ACPI_TABLE_ORIGIN_INTERNAL_VIRTUAL, Table);
-    AcpiTbValidateTable (TableDesc);
-    return (AE_OK);
+    Status = AcpiTbValidateTable (TableDesc);
+    return (Status);
 }
 
 
@@ -964,7 +965,7 @@ AdParseTable (
 
     /* Create the root object */
 
-    AcpiGbl_ParseOpRoot = AcpiPsCreateScopeOp ();
+    AcpiGbl_ParseOpRoot = AcpiPsCreateScopeOp (AmlStart);
     if (!AcpiGbl_ParseOpRoot)
     {
         return (AE_NO_MEMORY);

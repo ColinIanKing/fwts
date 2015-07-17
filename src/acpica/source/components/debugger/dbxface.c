@@ -117,7 +117,9 @@
 #include "accommon.h"
 #include "amlcode.h"
 #include "acdebug.h"
+#ifdef ACPI_DISASSEMBLER
 #include "acdisasm.h"
+#endif
 
 
 #ifdef ACPI_DEBUGGER
@@ -251,6 +253,7 @@ AcpiDbSingleStep (
     UINT32                  OriginalDebugLevel;
     ACPI_PARSE_OBJECT       *DisplayOp;
     ACPI_PARSE_OBJECT       *ParentOp;
+    UINT32                  AmlOffset;
 
 
     ACPI_FUNCTION_ENTRY ();
@@ -264,15 +267,18 @@ AcpiDbSingleStep (
         return (AE_ABORT_METHOD);
     }
 
+    AmlOffset = (UINT32) ACPI_PTR_DIFF (Op->Common.Aml,
+                    WalkState->ParserState.AmlStart);
+
     /* Check for single-step breakpoint */
 
     if (WalkState->MethodBreakpoint &&
-       (WalkState->MethodBreakpoint <= Op->Common.AmlOffset))
+       (WalkState->MethodBreakpoint <= AmlOffset))
     {
         /* Check if the breakpoint has been reached or passed */
         /* Hit the breakpoint, resume single step, reset breakpoint */
 
-        AcpiOsPrintf ("***Break*** at AML offset %X\n", Op->Common.AmlOffset);
+        AcpiOsPrintf ("***Break*** at AML offset %X\n", AmlOffset);
         AcpiGbl_CmSingleStep = TRUE;
         AcpiGbl_StepToNextCall = FALSE;
         WalkState->MethodBreakpoint = 0;
@@ -281,10 +287,10 @@ AcpiDbSingleStep (
     /* Check for user breakpoint (Must be on exact Aml offset) */
 
     else if (WalkState->UserBreakpoint &&
-            (WalkState->UserBreakpoint == Op->Common.AmlOffset))
+            (WalkState->UserBreakpoint == AmlOffset))
     {
         AcpiOsPrintf ("***UserBreakpoint*** at AML offset %X\n",
-            Op->Common.AmlOffset);
+            AmlOffset);
         AcpiGbl_CmSingleStep = TRUE;
         AcpiGbl_StepToNextCall = FALSE;
         WalkState->MethodBreakpoint = 0;
@@ -380,7 +386,9 @@ AcpiDbSingleStep (
 
         /* Now we can display it */
 
+#ifdef ACPI_DISASSEMBLER
         AcpiDmDisassemble (WalkState, DisplayOp, ACPI_UINT32_MAX);
+#endif
 
         if ((Op->Common.AmlOpcode == AML_IF_OP) ||
             (Op->Common.AmlOpcode == AML_WHILE_OP))

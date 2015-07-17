@@ -75,6 +75,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/debugger/dbhistry.c		\
 	source/components/debugger/dbinput.c		\
 	source/components/debugger/dbstats.c		\
+	source/components/debugger/dbobject.c		\
 	source/components/debugger/dbutils.c		\
 	source/components/debugger/dbxface.c		\
 	source/components/debugger/dbmethod.c		\
@@ -93,6 +94,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/disassembler/dmwalk.c		\
 	source/components/disassembler/dmresrcl2.c	\
 	source/components/disassembler/dmdeferred.c 	\
+	source/components/dispatcher/dsdebug.c		\
 	source/components/dispatcher/dsfield.c		\
 	source/components/dispatcher/dsinit.c		\
 	source/components/dispatcher/dsmethod.c		\
@@ -226,6 +228,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utmath.c		\
 	source/components/utilities/utmisc.c		\
 	source/components/utilities/utmutex.c		\
+	source/components/utilities/utnonansi.c		\
 	source/components/utilities/utobject.c		\
 	source/components/utilities/utresrc.c		\
 	source/components/utilities/utstate.c		\

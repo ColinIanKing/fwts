@@ -1168,7 +1168,7 @@ static ACPI_STATUS fwts_acpi_walk_for_object_names(
 	buffer.Pointer = tmpbuf;
 	buffer.Length  = sizeof(tmpbuf);
 
-	if (!ACPI_FAILURE(AcpiNsHandleToPathname(objHandle, &buffer)))
+	if (!ACPI_FAILURE(AcpiNsHandleToPathname(objHandle, &buffer, FALSE)))
 		fwts_list_append(list, strdup((char *)buffer.Pointer));
 
 	return AE_OK;

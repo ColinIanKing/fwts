@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: asldefine.h - Common defines for the iASL compiler
+ * Module Name: dsdebug - Parser/Interpreter interface - debugging
  *
  *****************************************************************************/
 
@@ -113,139 +113,209 @@
  *
  *****************************************************************************/
 
-#ifndef __ASLDEFINE_H
-#define __ASLDEFINE_H
+#include "acpi.h"
+#include "accommon.h"
+#include "acdispat.h"
+#include "acnamesp.h"
+#include "acdisasm.h"
+#include "acinterp.h"
 
 
-/*
- * Compiler versions and names
- */
-#define ASL_COMPILER_NAME           "ASL+ Optimizing Compiler"
-#define AML_DISASSEMBLER_NAME       "AML/ASL+ Disassembler"
-#define ASL_INVOCATION_NAME         "iasl"
-#define ASL_CREATOR_ID              "INTL"
-#define ASL_DEFINE                  "__IASL__"
-
-#define ASL_COMPLIANCE              "Supports ACPI Specification Revision 6.0"
+#define _COMPONENT          ACPI_DISPATCHER
+        ACPI_MODULE_NAME    ("dsdebug")
 
 
-/* Configuration constants */
+#if defined(ACPI_DEBUG_OUTPUT) || defined(ACPI_DEBUGGER)
 
-#define ASL_MAX_ERROR_COUNT         200
-#define ASL_PARSEOP_CACHE_SIZE      (1024 * 16)
-#define ASL_STRING_CACHE_SIZE       (1024 * 64)
+/* Local prototypes */
 
-#define ASL_FIRST_PARSE_OPCODE      PARSEOP_ACCESSAS
-#define ASL_PARSE_OPCODE_BASE       PARSEOP_ACCESSAS        /* First Lex type */
+static void
+AcpiDsPrintNodePathname (
+    ACPI_NAMESPACE_NODE     *Node,
+    const char              *Message);
 
 
-/*
- * Per-parser-generator configuration. These values are used to cheat and
- * directly access the bison/yacc token name table (yyname or yytname).
- * Note: These values are the index in yyname for the first lex token
- * (PARSEOP_ACCCESSAS).
- */
-#if defined (YYBISON)
-#define ASL_YYTNAME_START           3   /* Bison */
-#elif defined (YYBYACC)
-#define ASL_YYTNAME_START           257 /* Berkeley yacc */
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDsPrintNodePathname
+ *
+ * PARAMETERS:  Node            - Object
+ *              Message         - Prefix message
+ *
+ * DESCRIPTION: Print an object's full namespace pathname
+ *              Manages allocation/freeing of a pathname buffer
+ *
+ ******************************************************************************/
+
+static void
+AcpiDsPrintNodePathname (
+    ACPI_NAMESPACE_NODE     *Node,
+    const char              *Message)
+{
+    ACPI_BUFFER             Buffer;
+    ACPI_STATUS             Status;
+
+
+    ACPI_FUNCTION_TRACE (DsPrintNodePathname);
+
+    if (!Node)
+    {
+        ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH, "[NULL NAME]"));
+        return_VOID;
+    }
+
+    /* Convert handle to full pathname and print it (with supplied message) */
+
+    Buffer.Length = ACPI_ALLOCATE_LOCAL_BUFFER;
+
+    Status = AcpiNsHandleToPathname (Node, &Buffer, FALSE);
+    if (ACPI_SUCCESS (Status))
+    {
+        if (Message)
+        {
+            ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH, "%s ", Message));
+        }
+
+        ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH, "[%s] (Node %p)",
+            (char *) Buffer.Pointer, Node));
+        ACPI_FREE (Buffer.Pointer);
+    }
+
+    return_VOID;
+}
+
+
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiDsDumpMethodStack
+ *
+ * PARAMETERS:  Status          - Method execution status
+ *              WalkState       - Current state of the parse tree walk
+ *              Op              - Executing parse op
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Called when a method has been aborted because of an error.
+ *              Dumps the method execution stack.
+ *
+ ******************************************************************************/
+
+void
+AcpiDsDumpMethodStack (
+    ACPI_STATUS             Status,
+    ACPI_WALK_STATE         *WalkState,
+    ACPI_PARSE_OBJECT       *Op)
+{
+    ACPI_PARSE_OBJECT       *Next;
+    ACPI_THREAD_STATE       *Thread;
+    ACPI_WALK_STATE         *NextWalkState;
+    ACPI_NAMESPACE_NODE     *PreviousMethod = NULL;
+    ACPI_OPERAND_OBJECT     *MethodDesc;
+
+
+    ACPI_FUNCTION_TRACE (DsDumpMethodStack);
+
+    /* Ignore control codes, they are not errors */
+
+    if ((Status & AE_CODE_MASK) == AE_CODE_CONTROL)
+    {
+        return_VOID;
+    }
+
+    /* We may be executing a deferred opcode */
+
+    if (WalkState->DeferredNode)
+    {
+        ACPI_DEBUG_PRINT ((ACPI_DB_DISPATCH,
+            "Executing subtree for Buffer/Package/Region\n"));
+        return_VOID;
+    }
+
+    /*
+     * If there is no Thread, we are not actually executing a method.
+     * This can happen when the iASL compiler calls the interpreter
+     * to perform constant folding.
+     */
+    Thread = WalkState->Thread;
+    if (!Thread)
+    {
+        return_VOID;
+    }
+
+    /* Display exception and method name */
+
+    ACPI_DEBUG_PRINT ((ACPI_DB_DISPATCH,
+        "\n**** Exception %s during execution of method ",
+        AcpiFormatException (Status)));
+    AcpiDsPrintNodePathname (WalkState->MethodNode, NULL);
+
+    /* Display stack of executing methods */
+
+    ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH,
+        "\n\nMethod Execution Stack:\n"));
+    NextWalkState = Thread->WalkStateList;
+
+    /* Walk list of linked walk states */
+
+    while (NextWalkState)
+    {
+        MethodDesc = NextWalkState->MethodDesc;
+        if (MethodDesc)
+        {
+            AcpiExStopTraceMethod (
+                    (ACPI_NAMESPACE_NODE *) MethodDesc->Method.Node,
+                    MethodDesc, WalkState);
+        }
+
+        ACPI_DEBUG_PRINT ((ACPI_DB_DISPATCH,
+            "    Method [%4.4s] executing: ",
+            AcpiUtGetNodeName (NextWalkState->MethodNode)));
+
+        /* First method is the currently executing method */
+
+        if (NextWalkState == WalkState)
+        {
+            if (Op)
+            {
+                /* Display currently executing ASL statement */
+
+                Next = Op->Common.Next;
+                Op->Common.Next = NULL;
+
+#ifdef ACPI_DISASSEMBLER
+                AcpiDmDisassemble (NextWalkState, Op, ACPI_UINT32_MAX);
 #endif
+                Op->Common.Next = Next;
+            }
+        }
+        else
+        {
+            /*
+             * This method has called another method
+             * NOTE: the method call parse subtree is already deleted at this
+             * point, so we cannot disassemble the method invocation.
+             */
+            ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH, "Call to method "));
+            AcpiDsPrintNodePathname (PreviousMethod, NULL);
+        }
 
+        PreviousMethod = NextWalkState->MethodNode;
+        NextWalkState = NextWalkState->Next;
+        ACPI_DEBUG_PRINT_RAW ((ACPI_DB_DISPATCH, "\n"));
+    }
 
-/*
- * Macros
- */
-#define ASL_RESDESC_OFFSET(m)       ACPI_OFFSET (AML_RESOURCE, m)
-#define ASL_PTR_DIFF(a,b)           ((UINT8 *)(b) - (UINT8 *)(a))
-#define ASL_PTR_ADD(a,b)            ((UINT8 *)(a) = ((UINT8 *)(a) + (b)))
-#define ASL_GET_CHILD_NODE(a)       (a)->Asl.Child
-#define ASL_GET_PEER_NODE(a)        (a)->Asl.Next
-#define OP_TABLE_ENTRY(a,b,c,d)     {b,d,a,c}
+    return_VOID;
+}
 
+#else
 
-/* Internal AML opcodes */
+void
+AcpiDsDumpMethodStack (
+    ACPI_STATUS             Status,
+    ACPI_WALK_STATE         *WalkState,
+    ACPI_PARSE_OBJECT       *Op)
+{
+    return;
+}
 
-#define AML_RAW_DATA_BYTE           (UINT16) 0xAA01 /* write one raw byte */
-#define AML_RAW_DATA_WORD           (UINT16) 0xAA02 /* write 2 raw bytes */
-#define AML_RAW_DATA_DWORD          (UINT16) 0xAA04 /* write 4 raw bytes */
-#define AML_RAW_DATA_QWORD          (UINT16) 0xAA08 /* write 8 raw bytes */
-#define AML_RAW_DATA_BUFFER         (UINT16) 0xAA0B /* raw buffer with length */
-#define AML_RAW_DATA_CHAIN          (UINT16) 0xAA0C /* chain of raw buffers */
-#define AML_PACKAGE_LENGTH          (UINT16) 0xAA10
-#define AML_UNASSIGNED_OPCODE       (UINT16) 0xEEEE
-#define AML_DEFAULT_ARG_OP          (UINT16) 0xDDDD
-
-
-/* filename suffixes for output files */
-
-#define FILE_SUFFIX_PREPROC_USER    "i  "
-#define FILE_SUFFIX_PREPROCESSOR    "pre"
-#define FILE_SUFFIX_AML_CODE        "aml"
-#define FILE_SUFFIX_MAP             "map"
-#define FILE_SUFFIX_LISTING         "lst"
-#define FILE_SUFFIX_HEX_DUMP        "hex"
-#define FILE_SUFFIX_DEBUG           "txt"
-#define FILE_SUFFIX_SOURCE          "src"
-#define FILE_SUFFIX_NAMESPACE       "nsp"
-#define FILE_SUFFIX_ASM_SOURCE      "asm"
-#define FILE_SUFFIX_C_SOURCE        "c"
-#define FILE_SUFFIX_DISASSEMBLY     "dsl"
-#define FILE_SUFFIX_ASM_INCLUDE     "inc"
-#define FILE_SUFFIX_C_INCLUDE       "h"
-#define FILE_SUFFIX_ASL_CODE        "asl"
-#define FILE_SUFFIX_C_OFFSET        "offset.h"
-
-
-/* Types for input files */
-
-#define ASL_INPUT_TYPE_BINARY       0
-#define ASL_INPUT_TYPE_ACPI_TABLE   1
-#define ASL_INPUT_TYPE_ASCII_ASL    2
-#define ASL_INPUT_TYPE_ASCII_DATA   3
-
-
-/* Misc */
-
-#define ASL_EXTERNAL_METHOD         255
-#define ASL_ABORT                   TRUE
-#define ASL_NO_ABORT                FALSE
-#define ASL_EOF                     ACPI_UINT32_MAX
-#define ASL_WITHIN_COMMENT          (ACPI_UINT32_MAX -1)
-#define ASL_BLANK_LINE              (ACPI_UINT32_MAX -1)
-
-
-/* Listings */
-
-#define ASL_LISTING_LINE_PREFIX         ":  "
-
-
-/* Support for reserved method names */
-
-#define ACPI_VALID_RESERVED_NAME_MAX    0x80000000
-#define ACPI_NOT_RESERVED_NAME          ACPI_UINT32_MAX
-#define ACPI_PREDEFINED_NAME            (ACPI_UINT32_MAX - 1)
-#define ACPI_EVENT_RESERVED_NAME        (ACPI_UINT32_MAX - 2)
-#define ACPI_COMPILER_RESERVED_NAME     (ACPI_UINT32_MAX - 3)
-
-
-/* Helper macros for resource tag creation */
-
-#define RsCreateMultiBitField \
-    RsCreateResourceField
-
-#define RsCreateBitField(Op, Name, ByteOffset, BitOffset) \
-    RsCreateResourceField (Op, Name, ByteOffset, BitOffset, 1)
-
-#define RsCreateByteField(Op, Name, ByteOffset) \
-    RsCreateResourceField (Op, Name, ByteOffset, 0, 8);
-
-#define RsCreateWordField(Op, Name, ByteOffset) \
-    RsCreateResourceField (Op, Name, ByteOffset, 0, 16);
-
-#define RsCreateDwordField(Op, Name, ByteOffset) \
-    RsCreateResourceField (Op, Name, ByteOffset, 0, 32);
-
-#define RsCreateQwordField(Op, Name, ByteOffset) \
-    RsCreateResourceField (Op, Name, ByteOffset, 0, 64);
-
-#endif /* ASLDEFINE.H */
+#endif

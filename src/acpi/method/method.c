@@ -1653,7 +1653,7 @@ static uint64_t method_CRS_val64(const uint8_t *data)
 {
 	uint64_t val =
 		((uint64_t)data[7] << 56) | ((uint64_t)data[6] << 48) |
-		((uint64_t)data[5] << 40) | ((uint64_t)data[0] << 32) |
+		((uint64_t)data[5] << 40) | ((uint64_t)data[4] << 32) |
 		((uint64_t)data[3] << 24) | ((uint64_t)data[2] << 16) |
 		((uint64_t)data[1] << 8)  | (uint64_t)data[0];
 

@@ -370,7 +370,7 @@ acpidump        [0x0f6 0246 128]                                Signature: f6 6b
 acpidump                                             32 bit PM timer (V1): 0x0
 acpidump                                 8042 present on ports 60/64 (V2): 0x0
 acpidump        acpidump: Dump ACPI tables.
-acpidump                            ACPI hardware is not implemented (V5): 0x0
+acpidump                                       Hardware-reduced ACPI (V5): 0x0
 acpidump                                         All CPUs support C1 (V1): 0x1
 acpidump        APIC @ bff00000 (104 bytes) (loaded from file)
 acpidump        APIC @ bff00078 (104 bytes) (loaded from file)

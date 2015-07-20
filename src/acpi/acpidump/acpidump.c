@@ -670,7 +670,7 @@ static void acpidump_fadt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_BITF("  Remote power on capable (V4)", 		fwts_acpi_table_fadt, flags, 1, 17),
 		FIELD_BITF("  Use APIC Cluster Model (V4)", 		fwts_acpi_table_fadt, flags, 1, 18),
 		FIELD_BITF("  Use APIC Physical Dest. Mode (V4)", 	fwts_acpi_table_fadt, flags, 1, 19),
-		FIELD_BITF("  ACPI hardware is not implemented (V5)",	fwts_acpi_table_fadt, flags, 1, 20),
+		FIELD_BITF("  Hardware-reduced ACPI (V5)",		fwts_acpi_table_fadt, flags, 1, 20),
 		FIELD_BITF("  S0 power savings are equal or better than S3 (V5)", fwts_acpi_table_fadt, flags, 1, 21),
 		FIELD_BITF("  Reserved (bits 22..31)",			fwts_acpi_table_fadt, flags, 10, 22),
 		FIELD_UINT("ARM Boot Flags (V5.1)",			fwts_acpi_table_fadt, arm_boot_flags),

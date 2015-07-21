@@ -481,7 +481,8 @@ typedef struct {
 	uint32_t	gic_id;
 	uint64_t	physical_base_address;
 	uint32_t	system_vector_base;
-	uint32_t	reserved2;
+	uint8_t		gic_version;
+	uint8_t		reserved2[3];
 } __attribute__ ((packed)) fwts_acpi_madt_gicd;
 
 /* New in ACPI 5.1, GIC MSI Frame structure, 5.2.12.16 */

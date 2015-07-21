@@ -978,7 +978,8 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gicd, gic_id),
 					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gicd, physical_base_address),
 					FIELD_UINT("  Sys Vector Base",	fwts_acpi_madt_gicd, system_vector_base),
-					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gicd, reserved2),
+					FIELD_UINT("  GIC Version",	fwts_acpi_madt_gicd, gic_version),
+					FIELD_UINTS("  Reserved", 	fwts_acpi_madt_gicd, reserved2),
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_gicd, offset);
 				skip = sizeof(fwts_acpi_madt_gicd);

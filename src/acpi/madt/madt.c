@@ -239,6 +239,7 @@ static int madt_test1(fwts_framework *fw)
 			break;
 		case FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR: {
 				fwts_acpi_madt_gicd *gicd = (fwts_acpi_madt_gicd*)data;
+				uint32_t gicd_reserve2 = gicd->reserved2[0] + (gicd->reserved2[1] << 4) + (gicd->reserved2[2] << 8);
 
 				if (gicd->reserved) {
 					passed = false;
@@ -247,12 +248,12 @@ static int madt_test1(fwts_framework *fw)
 						"MADT GIC Distributor Structure reserved field should be zero, "
 						"instead got 0x%" PRIx32 ".", gicd->reserved);
 				}
-				if (gicd->reserved2) {
+				if (gicd_reserve2) {
 					passed = false;
 					fwts_failed(fw, LOG_LEVEL_LOW,
 						"MADTGICDReserved2NonZero",
 						"MADT GIC Distributor Structure second reserved field should be zero, "
-						"instead got 0x%" PRIx32 ".", gicd->reserved2);
+						"instead got 0x%" PRIx32 ".", gicd_reserve2);
 				}
 			}
 			skip = sizeof(fwts_acpi_madt_gicd);

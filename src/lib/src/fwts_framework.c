@@ -1146,8 +1146,8 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_show_version(stdout, argv[0]);
 			return FWTS_COMPLETE;
 		case 16: /* --dump */
-			fwts_dump_info(fw);
-			return FWTS_COMPLETE;
+			fw->flags |= FWTS_FLAG_DUMP;
+			break;
 		case 17: /* --table-path */
 			fwts_framework_strdup(&fw->acpi_table_path, optarg);
 			break;
@@ -1241,8 +1241,8 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FLAG_BATCH;
 		break;
 	case 'd': /* --dump */
-		fwts_dump_info(fw);
-		return FWTS_COMPLETE;
+		fw->flags |= FWTS_FLAG_DUMP;
+		break;
 	case 'D': /* --show-progress-dialog */
 		fw->flags = (fw->flags &
 				~(FWTS_FLAG_QUIET |
@@ -1386,6 +1386,10 @@ int fwts_framework_args(const int argc, char **argv)
 	}
 	if (fw->flags & FWTS_FLAG_SHOW_TESTS_CATEGORIES) {
 		fwts_framework_show_tests_categories();
+		goto tidy_close;
+	}
+	if (fw->flags & FWTS_FLAG_DUMP) {
+		fwts_dump_info(fw);
 		goto tidy_close;
 	}
 	if ((fw->flags & FWTS_FLAG_RUN_ALL) == 0)

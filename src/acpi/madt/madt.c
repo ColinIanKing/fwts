@@ -235,6 +235,18 @@ static int madt_test1(fwts_framework *fw)
 						gic->flags & 0xfffffffc);
 				}
 				skip = sizeof(fwts_acpi_madt_gic);
+
+				// new in ACPI 6.0
+				if (table->length == 80) {
+					uint32_t gic_reserve2 = gic->reserved2[0] + (gic->reserved2[1] << 4) + (gic->reserved2[2] << 8);
+					if (gic_reserve2) {
+						passed = false;
+						fwts_failed(fw, LOG_LEVEL_LOW,
+							"MADTGICCReserved2NonZero",
+							"MADT GICC Structure second reserved field should be zero, "
+							"instead got 0x%" PRIx32 ".", gic_reserve2);
+					}
+				}
 			}
 			break;
 		case FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR: {

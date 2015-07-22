@@ -472,6 +472,8 @@ typedef struct {
 	uint32_t	vgic;
 	uint64_t	gicr_base_address;
 	uint64_t	mpidr;
+	uint8_t		processor_power_efficiency_class;
+	uint8_t		reserved2[3];
 } __attribute__ ((packed)) fwts_acpi_madt_gic;
 
 /* New in ACPI 5.0, GICD, section 5.2.12.15 */

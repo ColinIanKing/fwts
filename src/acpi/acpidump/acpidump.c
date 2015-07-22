@@ -953,22 +953,48 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 			}
 			break;
 		case FWTS_ACPI_MADT_GIC_C_CPU_INTERFACE: {
-				static const fwts_acpidump_field fields_madt_gic[] = {
-					FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic, reserved),
-					FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gic, gic_id),
-					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_gic, processor_uid),
-					FIELD_UINT("  Flags", 		fwts_acpi_madt_gic, flags),
-					FIELD_UINT("  Parking Protocol",fwts_acpi_madt_gic, parking_protocol_version),
-					FIELD_UINT("  Perf. Int. GSIV",	fwts_acpi_madt_gic, performance_interrupt_gsiv),
-					FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
-					FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
-					FIELD_UINT("  GICV",		fwts_acpi_madt_gic, gicv),
-					FIELD_UINT("  GICH",		fwts_acpi_madt_gic, gich),
-					FIELD_UINT("  VGIC Interrupt",	fwts_acpi_madt_gic, vgic),
-					FIELD_UINT("  GICR Base. Addr", fwts_acpi_madt_gic, gicr_base_address),
-					FIELD_UINT("  MPIDR",		fwts_acpi_madt_gic, mpidr),
-				};
-				__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
+				/* ACPI 5.1 */
+				if (table->length == 76) {
+					static const fwts_acpidump_field fields_madt_gic[] = {
+						FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic, reserved),
+						FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gic, gic_id),
+						FIELD_UINT("  Processor UID", 	fwts_acpi_madt_gic, processor_uid),
+						FIELD_UINT("  Flags", 		fwts_acpi_madt_gic, flags),
+						FIELD_UINT("  Parking Protocol",fwts_acpi_madt_gic, parking_protocol_version),
+						FIELD_UINT("  Perf. Int. GSIV",	fwts_acpi_madt_gic, performance_interrupt_gsiv),
+						FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
+						FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
+						FIELD_UINT("  GICV",		fwts_acpi_madt_gic, gicv),
+						FIELD_UINT("  GICH",		fwts_acpi_madt_gic, gich),
+						FIELD_UINT("  VGIC Interrupt",	fwts_acpi_madt_gic, vgic),
+						FIELD_UINT("  GICR Base. Addr", fwts_acpi_madt_gic, gicr_base_address),
+						FIELD_UINT("  MPIDR",		fwts_acpi_madt_gic, mpidr),
+					};
+					__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
+				}
+
+				/* ACPI 6.0 */
+				if (table->length == 80) {
+					static const fwts_acpidump_field fields_madt_gic[] = {
+						FIELD_UINT("  Reserved", 	fwts_acpi_madt_gic, reserved),
+						FIELD_UINT("  GIC ID", 		fwts_acpi_madt_gic, gic_id),
+						FIELD_UINT("  Processor UID", 	fwts_acpi_madt_gic, processor_uid),
+						FIELD_UINT("  Flags", 		fwts_acpi_madt_gic, flags),
+						FIELD_UINT("  Parking Protocol",fwts_acpi_madt_gic, parking_protocol_version),
+						FIELD_UINT("  Perf. Int. GSIV",	fwts_acpi_madt_gic, performance_interrupt_gsiv),
+						FIELD_UINT("  Parked Address",	fwts_acpi_madt_gic, parked_address),
+						FIELD_UINT("  Phys. Base. Addr",fwts_acpi_madt_gic, physical_base_address),
+						FIELD_UINT("  GICV",		fwts_acpi_madt_gic, gicv),
+						FIELD_UINT("  GICH",		fwts_acpi_madt_gic, gich),
+						FIELD_UINT("  VGIC Interrupt",	fwts_acpi_madt_gic, vgic),
+						FIELD_UINT("  GICR Base. Addr", fwts_acpi_madt_gic, gicr_base_address),
+						FIELD_UINT("  MPIDR",		fwts_acpi_madt_gic, mpidr),
+						FIELD_UINT("  Processor Power Efficiency Class",	fwts_acpi_madt_gic, processor_power_efficiency_class),
+						FIELD_UINTS("  Reserved", 	fwts_acpi_madt_gic, reserved2),
+					};
+					__acpi_dump_table_fields(fw, data, fields_madt_gic, offset);
+				}
+
 				skip = sizeof(fwts_acpi_madt_gic);
 			}
 			break;

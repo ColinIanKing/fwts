@@ -170,10 +170,11 @@ static int dump_acpi_tables(fwts_framework *fw)
 	for (i=0;;i++) {
 		fwts_acpi_table_info *table;
 
-		if (fwts_acpi_get_table(fw, i, &table) == FWTS_ERROR) {
+		int ret = fwts_acpi_get_table(fw, i, &table);
+		if (ret != FWTS_OK) {
 			fprintf(stderr, "Cannot read ACPI tables.\n");
 			fclose(fp);
-			return FWTS_ERROR;
+			return ret;
 		}
 		if (table == NULL)
 			break;
@@ -290,13 +291,17 @@ int fwts_dump_info(fwts_framework *fw)
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
-	if (root_priv) {
-		if (dump_acpi_tables(fw) != FWTS_OK)
-			fprintf(stderr, "Failed to dump ACPI tables.\n");
-		else
+	switch (dump_acpi_tables(fw)) {
+		case FWTS_OK:
 			printf("Dumped ACPI tables to acpidump.log\n");
-	} else
-		fprintf(stderr, "Need root privilege to dump ACPI tables.\n");
+			break;
+		case FWTS_ERROR_NO_PRIV:
+			fprintf(stderr, "Need root privilege to dump ACPI tables.\n");
+			break;
+		default:
+			fprintf(stderr, "Failed to dump ACPI tables.\n");
+			break;
+	}
 
 	if (dump_cpuinfo() != FWTS_OK)
 		fprintf(stderr, "Failed to dump cpuinfo.\n");

@@ -616,7 +616,7 @@ static int iort_test1(fwts_framework *fw)
 	uint8_t *data_end;
 	uint32_t count;
 
-	if (table->length < (ssize_t)iort->header.length) {
+	if (table->length < (size_t)iort->header.length) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"IORTTooShort",
 			"IORT table incorrectly sized, IORT "

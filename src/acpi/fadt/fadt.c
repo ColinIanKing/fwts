@@ -305,6 +305,9 @@ static void acpi_table_check_fadt_reset(
 	const fwts_acpi_table_fadt *fadt,
 	bool *passed)
 {
+	if (!(fadt->flags & FADT_RESET_SUPPORTED))
+		return;
+
 	if (fadt->header.length>=129) {
 		if ((fadt->reset_reg.address_space_id != 0) &&
 		    (fadt->reset_reg.address_space_id != 1) &&

@@ -507,7 +507,7 @@ static int cpufreq_test_sw_any(fwts_framework *fw)
 
 	ok = true;
 
-	for (i = 0; i <= num_cpus; i++) {
+	for (i = 0; i < num_cpus; i++) {
 		struct cpu *cpu = &cpus[i];
 
 		if (!cpu->online)

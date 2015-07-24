@@ -123,25 +123,33 @@ static void acpi_table_check_fadt_dsdt(
 	const fwts_acpi_table_fadt *fadt,
 	bool *passed)
 {
-	if (fadt->dsdt == 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FADTDSTNull",
-			"FADT DSDT address is null.");
-	}
 
-	if (fadt->header.length >= 148) {
-		if (fadt->x_dsdt == 0) {
+	if (fadt->header.length < 148) {
+		if (fadt->dsdt == 0) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADTXDSTDNull",
-				"FADT X_DSDT address is null.");
-			fwts_advice(fw,
-				"An ACPI 2.0 FADT is being used however "
-				"the 64 bit X_DSDT is null."
-				"The kernel will fall back to using "
-				"the 32 bit DSDT pointer instead.");
-		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt) {
+				"FADTDSDTNull",
+				"FADT DSDT address is null.");
+		}
+	} else {
+		if (fadt->x_dsdt == 0) {
+			if (fadt->dsdt == 0) {
+				*passed = false;
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"FADTXDSDTNull",
+					"FADT X_DSDT and DSDT address are null.");
+			} else {
+				*passed = false;
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"FADTXDSDTNull",
+					"FADT X_DSDT address is null.");
+				fwts_advice(fw,
+					"An ACPI 2.0 FADT is being used however "
+					"the 64 bit X_DSDT is null."
+					"The kernel will fall back to using "
+					"the 32 bit DSDT pointer instead.");
+			}
+		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt && fadt->dsdt != 0) {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"FADT32And64Mismatch",

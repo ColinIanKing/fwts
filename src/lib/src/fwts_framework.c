@@ -330,8 +330,6 @@ static void fwts_framework_show_tests(fwts_framework *fw, const bool full)
 			fwts_list_free_items(&sorted, NULL);
 		}
 	}
-	if (full)
-		printf("\nTotal of %d tests\n", total);
 }
 
 /*

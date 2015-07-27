@@ -50,6 +50,7 @@ fwts_SOURCES = main.c 				\
 	acpi/facs/facs.c 			\
 	acpi/fadt/fadt.c 			\
 	acpi/fan/fan.c 				\
+	acpi/fpdt/fpdt.c 			\
 	acpi/gpedump/gpedump.c			\
 	acpi/gtdt/gtdt.c			\
 	acpi/hest/hest.c			\

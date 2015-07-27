@@ -37,6 +37,8 @@ ACPI tests:
   Test FADT ACPI Description Table tests.
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
+ fpdt            (1 test):
+  FPDT Firmware Performance Data Table test.
  gtdt            (1 test):
   GTDT Generic Timer Description Table test.
  hest            (1 test):
@@ -342,6 +344,8 @@ Batch tests:
  fan             (2 tests):
   Test fan status.
   Load system, check CPU fan status.
+ fpdt            (1 test):
+  FPDT Firmware Performance Data Table test.
  gtdt            (1 test):
   GTDT Generic Timer Description Table test.
  hda_audio       (1 test):
@@ -824,4 +828,4 @@ UEFI tests:
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
 
-Total of 666 tests
+Total of 668 tests

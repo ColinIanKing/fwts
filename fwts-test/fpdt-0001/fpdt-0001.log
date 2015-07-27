@@ -1,0 +1,25 @@
+fpdt            fpdt: FPDT Firmware Performance Data Table test.
+fpdt            ----------------------------------------------------------
+fpdt            Test 1 of 1: FPDT Firmware Performance Data Table test.
+fpdt              S3 Performance Table Pointer Record:
+fpdt                Perf Rec Type:	0x0001
+fpdt                Rec Length:	0x10
+fpdt                Revision:	0x01
+fpdt                Reserved:	0x00000000
+fpdt                S3PT Pointer:	0x00000000d9ec0018
+fpdt            Note: currently fwts does not check S3PT validity and the
+fpdt            associated data
+fpdt                Firmware Basic Boot Performance Pointer Record:
+fpdt                Perf Rec Type:	0x0000
+fpdt                Rec Length:	0x10
+fpdt                Revision:	0x01
+fpdt                Reserved:	0x00000000
+fpdt                FBPT Pointer:	0x00000000d9ec0038
+fpdt            Note: currently fwts does not check FBPT validity and the
+fpdt            associated data
+fpdt            PASSED: Test 1, No issues found in FPDT table.
+fpdt            
+fpdt            ==========================================================
+fpdt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+fpdt            info only.
+fpdt            ==========================================================

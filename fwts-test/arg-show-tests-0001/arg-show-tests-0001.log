@@ -16,6 +16,7 @@ ACPI tests:
  erst            ERST Error Record Serialization Table test.
  facs            FACS Firmware ACPI Control Structure test.
  fadt            FADT Fixed ACPI Description Table tests.
+ fpdt            FPDT Firmware Performance Data Table test.
  gtdt            GTDT Generic Timer Description Table test.
  hest            HEST Hardware Error Source Table test.
  hpet            HPET IA-PC High Precision Event Timer Table tests.
@@ -71,6 +72,7 @@ Batch tests:
  facs            FACS Firmware ACPI Control Structure test.
  fadt            FADT Fixed ACPI Description Table tests.
  fan             Simple fan tests.
+ fpdt            FPDT Firmware Performance Data Table test.
  gtdt            GTDT Generic Timer Description Table test.
  hda_audio       HDA Audio Pin Configuration test.
  hest            HEST Hardware Error Source Table test.

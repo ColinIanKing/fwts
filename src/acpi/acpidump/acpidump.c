@@ -2049,23 +2049,40 @@ static void acpidump_dbg2(fwts_framework *fw, const fwts_acpi_table_info *table)
  */
 static void acpidump_mchi(fwts_framework *fw, const fwts_acpi_table_info *table)
 {
-	static const fwts_acpidump_field mchi_fields[] = {
+	static const fwts_acpidump_field mchi_fields_pci_dev_flag0[] = {
 		FIELD_UINT("Interface Type", 		fwts_acpi_table_mchi, interface_type),
 		FIELD_UINT("Protocol Identifier", 	fwts_acpi_table_mchi, protocol_identifier),
-		FIELD_UINT("Protocol Data", 		fwts_acpi_table_mchi, protocol_data),
+		FIELD_UINTS("Protocol Data", 		fwts_acpi_table_mchi, protocol_data),
 		FIELD_UINT("Interrupt Type", 		fwts_acpi_table_mchi, interrupt_type),
 		FIELD_UINT("GPE", 			fwts_acpi_table_mchi, gpe),
 		FIELD_UINT("PCI Device Flag", 		fwts_acpi_table_mchi, pci_device_flag),
 		FIELD_UINT("Global System Interrupt",	fwts_acpi_table_mchi, global_system_interrupt),
 		FIELD_GAS ("Base Address", 		fwts_acpi_table_mchi, base_address),
-		FIELD_UINT("PCI Segment Group Number",	fwts_acpi_table_mchi, pci_segment_group_number),
-		FIELD_UINT("PCI Bus Number", 		fwts_acpi_table_mchi, pci_bus_number),
-		FIELD_UINT("PCI Device Number",  	fwts_acpi_table_mchi, pci_device_number),
-		FIELD_UINT("PCI Function Number", 	fwts_acpi_table_mchi, pci_function_number),
+		FIELD_UINTS("UID Bytes 1-4",		fwts_acpi_table_mchi, bytes),
 		FIELD_END
 	};
 
-	acpi_dump_table_fields(fw, table->data, mchi_fields, 0, table->length);
+	static const fwts_acpidump_field mchi_fields_pci_dev_flag1[] = {
+		FIELD_UINT("Interface Type", 		fwts_acpi_table_mchi, interface_type),
+		FIELD_UINT("Protocol Identifier", 	fwts_acpi_table_mchi, protocol_identifier),
+		FIELD_UINTS("Protocol Data", 		fwts_acpi_table_mchi, protocol_data),
+		FIELD_UINT("Interrupt Type", 		fwts_acpi_table_mchi, interrupt_type),
+		FIELD_UINT("GPE", 			fwts_acpi_table_mchi, gpe),
+		FIELD_UINT("PCI Device Flag", 		fwts_acpi_table_mchi, pci_device_flag),
+		FIELD_UINT("Global System Interrupt",	fwts_acpi_table_mchi, global_system_interrupt),
+		FIELD_GAS ("Base Address", 		fwts_acpi_table_mchi, base_address),
+		FIELD_UINT("PCI Segment Group Number",	fwts_acpi_table_mchi, bytes[0]),
+		FIELD_UINT("PCI Bus Number", 		fwts_acpi_table_mchi, bytes[1]),
+		FIELD_UINT("PCI Device Number",  	fwts_acpi_table_mchi, bytes[2]),
+		FIELD_UINT("PCI Function Number", 	fwts_acpi_table_mchi, bytes[3]),
+		FIELD_END
+	};
+
+	const fwts_acpi_table_mchi *mchi = (fwts_acpi_table_mchi *)table->data;
+	const fwts_acpidump_field *fields = (mchi->pci_device_flag & 1) ? 
+		mchi_fields_pci_dev_flag1 : mchi_fields_pci_dev_flag0;
+
+	acpi_dump_table_fields(fw, table->data, fields, 0, table->length);
 }
 
 

@@ -900,22 +900,21 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_dbg2_info;
 
 /*
- *  http://www.dmtf.org/standards/published_documents/DSP0256_1.0.0.pdf
+ *  MCHI Management Controller Host Interface Table
+ *    http://www.dmtf.org/sites/default/files/standards/documents/DSP0256_1.0.0.pdf
  */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint8_t		interface_type;
 	uint8_t		protocol_identifier;
-	uint64_t	protocol_data;
+	uint8_t		protocol_data[8];
 	uint8_t		interrupt_type;
 	uint8_t		gpe;
 	uint8_t		pci_device_flag;
 	uint32_t	global_system_interrupt;
 	fwts_acpi_gas	base_address;
-	uint8_t		pci_segment_group_number;
-	uint8_t		pci_bus_number;
-	uint8_t		pci_device_number;
-	uint8_t		pci_function_number;
+	/* PCI Segment Group or  UID bytes */
+	uint8_t		bytes[4];
 } __attribute__ ((packed)) fwts_acpi_table_mchi;
 
 /*

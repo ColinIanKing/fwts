@@ -1,0 +1,31 @@
+mchi            mchi: MCHI Management Controller Host Interface Table
+mchi            test.
+mchi            ----------------------------------------------------------
+mchi            Test 1 of 1: MCHI Management Controller Host Interface
+mchi            Table test.
+mchi            MCHI Table:
+mchi              Interface Type:           0x02
+mchi              Protocol Identifier       0x01
+mchi              Protocol Data:            0x87 0x96 0xa5 0xb4
+mchi                                        0xc3 0xd2 0xe1 0xf0
+mchi              Interrupt Type:           0x02
+mchi              GPE:                      0x00
+mchi              PCI Device Flag:          0x01
+mchi              Global System Interrupt:  0x00000234
+mchi              Base Address:
+mchi                Address Space ID:       0x01
+mchi                Register Bit Width      0x08
+mchi                Register Bit Offset     0x00
+mchi                Access Size             0x00
+mchi                Address                 0xffee80000008c080
+mchi              PCI Segment Group:       0x01
+mchi              PCI Bus Number:          0x02
+mchi              PCI Device Number:       0x1f
+mchi              PCI Function Number:     0x47
+mchi            
+mchi            PASSED: Test 1, No issues found in MCHI table.
+mchi            
+mchi            ==========================================================
+mchi            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+mchi            info only.
+mchi            ==========================================================

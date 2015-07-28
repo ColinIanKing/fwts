@@ -1,0 +1,70 @@
+mchi            mchi: MCHI Management Controller Host Interface Table
+mchi            test.
+mchi            ----------------------------------------------------------
+mchi            Test 1 of 1: MCHI Management Controller Host Interface
+mchi            Table test.
+mchi            MCHI Table:
+mchi              Interface Type:           0x01
+mchi              Protocol Identifier       0xfe
+mchi              Protocol Data:            0x87 0x96 0xa5 0xb4
+mchi                                        0xc3 0xd2 0xe1 0xf0
+mchi              Interrupt Type:           0x80
+mchi              GPE:                      0xf0
+mchi              PCI Device Flag:          0xf1
+mchi              Global System Interrupt:  0x00000234
+mchi              Base Address:
+mchi                Address Space ID:       0x04
+mchi                Register Bit Width      0xf0
+mchi                Register Bit Offset     0x20
+mchi                Access Size             0x20
+mchi                Address                 0xffee80000008c080
+mchi              PCI Segment Group:       0xff
+mchi              PCI Bus Number:          0xff
+mchi              PCI Device Number:       0xff
+mchi              PCI Function Number:     0xff
+mchi            
+mchi            FAILED [HIGH] MCHIInvalidInterfaceType: Test 1, MCHI
+mchi            Interface Type is 0x01 which is reserved, allowed values
+mchi            are 0x02..0x08
+mchi            FAILED [HIGH] MCHIInvalidProtocolIdentifier: Test 1, MCHI
+mchi            Protocol Indentifier 0xfe which is reserved, allowed
+mchi            values are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or
+mchi            255 (OEM defined)
+mchi            FAILED [HIGH] MCHIInterruptTypeReservedNonZero: Test 1,
+mchi            MCHI Interrupt Type 0x80 has some reserved bits [7:2] set,
+mchi            these should be all zero.
+mchi            FAILED [HIGH] MCHIGpeNonZero: Test 1, MCHI GPE is 0xf0 and
+mchi            should be zero when bit 0 of the Interrupt Type field is 0
+mchi            (SCI triggered through GPE non-supported)
+mchi            FAILED [HIGH] MCHIPciDeviceFlagReservedNonZero: Test 1,
+mchi            MCHI PCI Device Flag 0xf1 has some reserved bits [7:1] set
+mchi            , these should be all zero.
+mchi            FAILED [HIGH] MCHIGsiNonZero: Test 1, MCHI Global System
+mchi            Interrupt is 0x234 and should be zero when bit 1 of the
+mchi            Interrupt Type field is 0
+mchi            FAILED [HIGH] MCHIPciDeviceFlagInvalid: Test 1, MCHI PCI
+mchi            Device Flag is 0xf1 and bit [0] should be 0 for a SMBus
+mchi            Address Space ID
+mchi            FAILED [MEDIUM] MCHISmbusRegBitWidthNonZero: Test 1, MCHI
+mchi            Base Address Register Bit Width is 0xf0 and should be zero
+mchi            for a SMBus Address Space ID
+mchi            FAILED [MEDIUM] MCHISmbusRegBitOffsetNonZero: Test 1, MCHI
+mchi            Base Address Register Bit Offset is 0x20 and should be
+mchi            zero for a SMBus Address Space ID
+mchi            FAILED [MEDIUM] MCHISmbusRegAddressSizeInvalid: Test 1,
+mchi            MCHI Base Address Register Address Size is 0x20 and should
+mchi            be 1 (byte access) for a SMBus Address Space ID
+mchi            FAILED [MEDIUM] MCHISmbusAddressInvalid: Test 1, MCHI Base
+mchi            Address is 0xffee80000008c080 and should be 0x00..0x7f a
+mchi            SMBus Address Space ID
+mchi            FAILED [MEDIUM] MCHIPciDeviceNumberInvalid: Test 1, MCHI
+mchi            PCI Device Number is 0xff and reserved bits [7:5] should
+mchi            be zero
+mchi            FAILED [MEDIUM] MCHIPciFunctionNumberInvalid: Test 1, MCHI
+mchi            PCI Function Number is 0xff and reserved bits [7] and [5
+mchi            :3] should be zero
+mchi            
+mchi            ==========================================================
+mchi            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+mchi            info only.
+mchi            ==========================================================

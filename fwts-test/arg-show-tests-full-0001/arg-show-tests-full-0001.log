@@ -57,6 +57,8 @@ ACPI tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
+ mchi            (1 test):
+  MCHI Management Controller Host Interface Table test.
  method          (180 tests):
   Test Method Names.
   Test _AEI.
@@ -372,6 +374,8 @@ Batch tests:
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
+ mchi            (1 test):
+  MCHI Management Controller Host Interface Table test.
  method          (180 tests):
   Test Method Names.
   Test _AEI.

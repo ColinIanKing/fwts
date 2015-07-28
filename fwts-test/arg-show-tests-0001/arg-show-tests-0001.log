@@ -24,6 +24,7 @@ ACPI tests:
  lpit            LPIT Low Power Idle Table test.
  madt            MADT Multiple APIC Description Table test.
  mcfg            MCFG PCI Express* memory mapped config space test.
+ mchi            MCHI Management Controller Host Interface Table test.
  method          ACPI DSDT Method Semantic tests.
  msdm            MSDM Microsoft Data Management Table test.
  pcc             Processor Clocking Control (PCC) test.
@@ -84,6 +85,7 @@ Batch tests:
  maxfreq         Test max CPU frequencies against max scaling frequency.
  maxreadreq      Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.
  mcfg            MCFG PCI Express* memory mapped config space test.
+ mchi            MCHI Management Controller Host Interface Table test.
  method          ACPI DSDT Method Semantic tests.
  microcode       Test if system is using latest microcode.
  mpcheck         MultiProcessor Tables tests.

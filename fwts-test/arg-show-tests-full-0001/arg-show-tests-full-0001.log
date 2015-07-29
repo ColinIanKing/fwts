@@ -260,6 +260,8 @@ ACPI tests:
   SPMI Service Processor Management Interface Description Table test.
  srat            (1 test):
   SRAT System Resource Affinity Table test.
+ stao            (1 test):
+  STAO Status Override Table test.
  tcpa            (1 test):
   Validate TCPA table.
  tpm2            (1 test):
@@ -613,6 +615,8 @@ Batch tests:
   SPMI Service Processor Management Interface Description Table test.
  srat            (1 test):
   SRAT System Resource Affinity Table test.
+ stao            (1 test):
+  STAO Status Override Table test.
  syntaxcheck     (1 test):
   Disassemble and reassemble DSDT and SSDTs.
  tcpa            (1 test):

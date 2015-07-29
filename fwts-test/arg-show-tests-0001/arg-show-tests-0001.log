@@ -36,6 +36,7 @@ ACPI tests:
  spcr            SPCR Serial Port Console Redirection Table test.
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
+ stao            STAO Status Override Table test.
  tcpa            TCPA Trusted Computing Platform Alliance Capabilities Table test.
  tpm2            TPM2 Trusted Platform Module 2 test.
  uefi            UEFI Data Table test.
@@ -107,6 +108,7 @@ Batch tests:
  spcr            SPCR Serial Port Console Redirection Table test.
  spmi            SPMI Service Processor Management Interface Description Table test.
  srat            SRAT System Resource Affinity Table test.
+ stao            STAO Status Override Table test.
  syntaxcheck     Re-assemble DSDT and SSDTs to find syntax errors and warnings.
  tcpa            TCPA Trusted Computing Platform Alliance Capabilities Table test.
  tpm2            TPM2 Trusted Platform Module 2 test.

@@ -1,0 +1,14 @@
+stao            stao: STAO Status Override Table test.
+stao            ----------------------------------------------------------
+stao            Test 1 of 1: STAO Status Override Table test.
+stao            STAO Status Override Table:
+stao              UART:                     0x01
+stao              ACPI String:              '\_SB.C00E'
+stao              ACPI String:              '\_SB.C020'
+stao              ACPI String:              '\_SB.C01E'
+stao            PASSED: Test 1, No issues found in STAO table.
+stao            
+stao            ==========================================================
+stao            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+stao            info only.
+stao            ==========================================================

@@ -109,6 +109,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/spcr-0001/test-0002.sh \
 	fwts-test/srat-0001/test-0001.sh \
 	fwts-test/srat-0001/test-0002.sh \
+	fwts-test/stao-0001/test-0001.sh \
+	fwts-test/stao-0001/test-0002.sh \
 	fwts-test/syntaxcheck-0001/test-0001.sh \
 	fwts-test/tcpa-0001/test-0001.sh \
 	fwts-test/tcpa-0001/test-0002.sh \

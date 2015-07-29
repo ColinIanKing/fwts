@@ -256,7 +256,6 @@ static int dump_cpuinfo(void)
 int fwts_dump_info(fwts_framework *fw)
 {
 	char path[PATH_MAX+1];
-	bool root_priv = (fwts_check_root_euid(fw, false) == FWTS_OK);
 
 	if (getcwd(path, PATH_MAX) == NULL)
 		strcpy(path, "./");
@@ -277,7 +276,7 @@ int fwts_dump_info(fwts_framework *fw)
 		printf("Dumping dmesg to dmesg.log\n");
 
 #ifdef FWTS_ARCH_INTEL
-	if (root_priv) {
+	if (fwts_check_root_euid(fw, false) == FWTS_OK) {
 		if (dump_dmidecode(fw) != FWTS_OK)
 			fprintf(stderr, "Failed to dump output from dmidecode.\n");
 		else

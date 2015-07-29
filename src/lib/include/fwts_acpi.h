@@ -1270,4 +1270,14 @@ typedef struct {
 	*/
 } __attribute__ ((packed)) fwts_acpi_table_iort_pci_root_complex_node;
 
+/*
+ *  STAO Status Override Table
+ *    http://wiki.xenproject.org/mediawiki/images/0/02/Status-override-table.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint8_t		uart;
+	uint8_t		namelist[0];
+} __attribute__ ((packed)) fwts_acpi_table_stao;
+
 #endif

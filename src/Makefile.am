@@ -60,6 +60,7 @@ fwts_SOURCES = main.c 				\
 	acpi/lpit/lpit.c 			\
 	acpi/madt/madt.c			\
 	acpi/mcfg/mcfg.c 			\
+	acpi/mchi/mchi.c 			\
 	acpi/msdm/msdm.c 			\
 	acpi/method/method.c 			\
 	acpi/osilinux/osilinux.c 		\

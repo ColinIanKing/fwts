@@ -7,6 +7,8 @@ ACPI tests:
   Test ACPI headers.
  apicinstance    (1 test):
   Test for single instance of APIC/MADT table.
+ asf             (1 test):
+  ASF! Alert Standard Format Table test.
  bert            (1 test):
   BERT Boot Error Record Table test.
  bgrt            (1 test):
@@ -288,6 +290,8 @@ Batch tests:
   Legacy and PCI Interrupt Edge/Level trigger tests.
  apicinstance    (1 test):
   Test for single instance of APIC/MADT table.
+ asf             (1 test):
+  ASF! Alert Standard Format Table test.
  aspm            (2 tests):
   PCIe ASPM ACPI test.
   PCIe ASPM registers test.

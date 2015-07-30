@@ -2,6 +2,7 @@ ACPI tests:
  acpiinfo        General ACPI information test.
  acpitables      ACPI table headers sanity tests.
  apicinstance    Test for single instance of APIC/MADT table.
+ asf             ASF! Alert Standard Format Table test.
  bert            BERT Boot Error Record Table test.
  bgrt            BGRT Boot Graphics Resource Table test.
  boot            BOOT Table test.
@@ -50,6 +51,7 @@ Batch tests:
  acpitables      ACPI table headers sanity tests.
  apicedge        APIC edge/level test.
  apicinstance    Test for single instance of APIC/MADT table.
+ asf             ASF! Alert Standard Format Table test.
  aspm            PCIe ASPM test.
  autobrightness  Automated LCD brightness test.
  bert            BERT Boot Error Record Table test.

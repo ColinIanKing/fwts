@@ -1,0 +1,35 @@
+asf             asf: ASF! Alert Standard Format Table test.
+asf             ----------------------------------------------------------
+asf             Test 1 of 1: ASF! Alert Standard Format Table test.
+asf             ASF! Hardware Error Source Table
+asf             FAILED [HIGH] ASF!InfoMinWatchDogInvalid: Test 1, ASF!
+asf             ASF_INFO Minimum Watchdog Reset Value is 0x00 and must be
+asf             in the range 0x01..0xff
+asf             FAILED [HIGH] ASF!InfoMinPollWaitTimeInvalid: Test 1, ASF!
+asf             ASF_INFO Minimum Poll Wait Time is 0x0 and must be in the
+asf             range 0x02..0xff
+asf             FAILED [HIGH] ASF!InfoFeatureFlagsReserved: Test 1, ASF!
+asf             ASF_INFO Feature Flags is 0xff, however reserved bits [7
+asf             :1] must be zero
+asf             FAILED [HIGH] ASF!InfoReservedNonZero: Test 1, ASF!
+asf             ASF_INFO Reserved fields must be zero, however one or more
+asf             of them are non-zero
+asf             FAILED [HIGH] ASF!AlrtNumOfAlertsInvalid: Test 1, ASF!
+asf             ASF_ALRT Number of Alerts field is 0x23 and must be in the
+asf             range 0x01..0x08
+asf             FAILED [HIGH] ASF!RctlArrayElementLengthInvalid: Test 1,
+asf             ASF! ASF_RCTL Array Element Length is 0x5 and must be
+asf             instead 0x4
+asf             FAILED [HIGH] ASF!RctlCtrlFuncInvalid: Test 1, ASF!
+asf             ASF_RCTL Control Function is 0x8 and must be in the range
+asf             0x00..0x03
+asf             PASSED: Test 1, No issues found in ASF! ASF_RMCP record.
+asf             FAILED [HIGH] ASF!InfoRecordLengthTooLong: Test 1, ASF!
+asf             Information Record Reserved length is 24 and this is too
+asf             long for the size given by the ASF! table. Expected at
+asf             most 22 bytes.
+asf             
+asf             ==========================================================
+asf             1 passed, 8 failed, 0 warning, 0 aborted, 0 skipped, 0
+asf             info only.
+asf             ==========================================================

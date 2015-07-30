@@ -614,13 +614,13 @@ typedef struct {
 
 typedef struct {
 	uint8_t		remote_control_capabilities[7];
-	uint8_t		rcmp_completion_code;
-	uint8_t		rcmp_iana[4];
-	uint8_t		rcmp_special_command;
-	uint8_t		rcmp_special_command_param[2];
-	uint8_t		rcmp_boot_options[2];
-	uint8_t		rcmp_oem_parameters[2];
-} __attribute__ ((packed)) fwts_acpi_table_asf_rcmp;
+	uint8_t		completion_code;
+	uint32_t	iana;
+	uint8_t		special_command;
+	uint16_t	special_command_param;
+	uint8_t		boot_options[2];
+	uint16_t	oem_parameters;
+} __attribute__ ((packed)) fwts_acpi_table_asf_rmcp;
 
 typedef struct {
 	uint8_t		fixed_smbus_addr;

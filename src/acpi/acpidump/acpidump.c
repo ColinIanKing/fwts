@@ -1278,14 +1278,14 @@ static void acpidump_asf(fwts_framework *fw, const fwts_acpi_table_info *table)
 		FIELD_END
 	};
 
-	static const fwts_acpidump_field asf_rcmp_fields[] = {
-		FIELD_UINT("Remote Control Capabilities", fwts_acpi_table_asf_rcmp, remote_control_capabilities),
-		FIELD_UINT("RMCP Boot Options Completion Code", fwts_acpi_table_asf_rcmp, rcmp_completion_code),
-		FIELD_UINT("RMCP IANA Enterprise ID", 	fwts_acpi_table_asf_rcmp, rcmp_iana),
-		FIELD_UINT("RMCP Special Command", 	fwts_acpi_table_asf_rcmp, rcmp_special_command),
-		FIELD_UINT("RMCP Special Command Parameter", fwts_acpi_table_asf_rcmp, rcmp_special_command_param),
-		FIELD_UINT("RMCP Boot Options", 	fwts_acpi_table_asf_rcmp, rcmp_boot_options),
-		FIELD_UINT("RMCP OEM Parameters", 	fwts_acpi_table_asf_rcmp, rcmp_oem_parameters),
+	static const fwts_acpidump_field asf_rmcp_fields[] = {
+		FIELD_UINT("Remote Control Capabilities", fwts_acpi_table_asf_rmcp, remote_control_capabilities),
+		FIELD_UINT("RMCP Boot Options Completion Code", fwts_acpi_table_asf_rmcp, completion_code),
+		FIELD_UINT("RMCP IANA Enterprise ID", 	fwts_acpi_table_asf_rmcp, iana),
+		FIELD_UINT("RMCP Special Command", 	fwts_acpi_table_asf_rmcp, special_command),
+		FIELD_UINT("RMCP Special Command Parameter", fwts_acpi_table_asf_rmcp, special_command_param),
+		FIELD_UINT("RMCP Boot Options", 	fwts_acpi_table_asf_rmcp, boot_options),
+		FIELD_UINT("RMCP OEM Parameters", 	fwts_acpi_table_asf_rmcp, oem_parameters),
 		FIELD_END
 	};
 
@@ -1360,7 +1360,7 @@ static void acpidump_asf(fwts_framework *fw, const fwts_acpi_table_info *table)
 			break;
 		case 3:
 			/* remote control capabilties */
-			__acpi_dump_table_fields(fw, asf_ptr, asf_rcmp_fields, asf_ptr - data);
+			__acpi_dump_table_fields(fw, asf_ptr, asf_rmcp_fields, asf_ptr - data);
 			break;
 		case 4:
 			/* fixed SMBus addresses */

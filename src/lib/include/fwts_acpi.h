@@ -1380,4 +1380,34 @@ typedef struct {
 	uint8_t		namelist[0];
 } __attribute__ ((packed)) fwts_acpi_table_stao;
 
+/*
+ * ACPI WDAT (Watchdog Action Table)
+ *  https://msdn.microsoft.com/en-us/windows/hardware/gg463320.aspx
+ */
+typedef struct {
+	uint8_t		watchdog_action;
+	uint8_t		instruction_flags;
+	uint8_t		reserved[2];
+	fwts_acpi_gas	register_region;
+	uint32_t	value;
+	uint32_t	mask;
+} __attribute__ ((packed)) fwts_acpi_table_wdat_instr_entries;
+
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	watchdog_header_length;
+	uint16_t	pci_segment;
+	uint8_t		pci_bus_number;
+	uint8_t		pci_device_number;
+	uint8_t		pci_function_number;
+	uint8_t		reserved1[3];
+	uint32_t	timer_period;
+	uint32_t	maximum_count;
+	uint32_t	minimum_count;
+	uint8_t		watchdog_flags;
+	uint8_t		reserved2[3];
+	uint32_t	number_of_entries;
+	fwts_acpi_table_wdat_instr_entries entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_wdat;
+
 #endif

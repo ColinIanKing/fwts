@@ -42,6 +42,7 @@ ACPI tests:
  tpm2            TPM2 Trusted Platform Module 2 test.
  uefi            UEFI Data Table test.
  waet            WAET Windows ACPI Emulated Devices Table test.
+ wdat            WDAT Microsoft Hardware Watchdog Action Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
  xenv            XENV Xen Environment Table tests.
  xsdt            XSDT Extended System Description Table test.
@@ -120,6 +121,7 @@ Batch tests:
  virt            CPU Virtualisation Configuration test.
  waet            WAET Windows ACPI Emulated Devices Table test.
  wakealarm       ACPI Wakealarm tests.
+ wdat            WDAT Microsoft Hardware Watchdog Action Table test.
  wmi             Extract and analyse Windows Management Instrumentation (WMI).
  xenv            XENV Xen Environment Table tests.
  xsdt            XSDT Extended System Description Table test.

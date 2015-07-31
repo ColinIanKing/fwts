@@ -1,0 +1,12 @@
+wdat            wdat: WDAT Microsoft Hardware Watchdog Action Table test.
+wdat            ----------------------------------------------------------
+wdat            Test 1 of 1: WDAT Microsoft Hardware Watchdog Action Table
+wdat            test.
+wdat            PASSED: Test 1, All 20 WDAT Watchdog Instruction Entries
+wdat            look sane.
+wdat            PASSED: Test 1, No issues found in WDAT table.
+wdat            
+wdat            ==========================================================
+wdat            2 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wdat            info only.
+wdat            ==========================================================

@@ -272,6 +272,8 @@ ACPI tests:
   UEFI Data Table test.
  waet            (1 test):
   Windows ACPI Emulated Devices Table test.
+ wdat            (1 test):
+  WDAT Microsoft Hardware Watchdog Action Table test.
  wmi             (1 test):
   Windows Management Instrumentation test.
  xenv            (1 test):
@@ -645,6 +647,8 @@ Batch tests:
   Trigger wakealarm for 1 seconds in the future.
   Test if wakealarm is fired.
   Multiple wakealarm firing tests.
+ wdat            (1 test):
+  WDAT Microsoft Hardware Watchdog Action Table test.
  wmi             (1 test):
   Windows Management Instrumentation test.
  xenv            (1 test):

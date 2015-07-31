@@ -1,0 +1,31 @@
+wdat            wdat: WDAT Microsoft Hardware Watchdog Action Table test.
+wdat            ----------------------------------------------------------
+wdat            Test 1 of 1: WDAT Microsoft Hardware Watchdog Action Table
+wdat            test.
+wdat            FAILED [MEDIUM] WDATReservedFieldsNonZero: Test 1, WDAT
+wdat            Reserved Fields contain a non-zero value, these all should
+wdat            be zero.
+wdat            FAILED [MEDIUM] WDATMinGreaterThanMax: Test 1, WDAT
+wdat            Minimum Count is 0x409 and is greater than the Maximum
+wdat            Count of 0x3ff
+wdat            FAILED [HIGH] WDATWatchdogActionInvalid: Test 1, WDAT
+wdat            Watchdog Instruction Entry 1 Watchdog Action field is 0x7
+wdat            and should be one of 0x00, 0x04, 0x05, 0x06, 0x08, 0x09,
+wdat            0x0a, 0x0b, 0x10, 0x11, 0x12, 0x13, 0x20 or 0x21
+wdat            FAILED [HIGH] WDATInstructionFlagsInvalid: Test 1, WDAT
+wdat            Watchdog Instruction Entry 1 Instruction Flags field is
+wdat            0x46 and should be one of 0x00, 0x01, 0x02, 0x03 or 0x80,
+wdat            0x81, 0x82, 0x83
+wdat            FAILED [HIGH] WDATWatchdogActionInvalid: Test 1, WDAT
+wdat            Watchdog Instruction Entry 20 Watchdog Action field is
+wdat            0xff and should be one of 0x00, 0x04, 0x05, 0x06, 0x08,
+wdat            0x09, 0x0a, 0x0b, 0x10, 0x11, 0x12, 0x13, 0x20 or 0x21
+wdat            FAILED [HIGH] WDATInstructionFlagsInvalid: Test 1, WDAT
+wdat            Watchdog Instruction Entry 20 Instruction Flags field is
+wdat            0xff and should be one of 0x00, 0x01, 0x02, 0x03 or 0x80,
+wdat            0x81, 0x82, 0x83
+wdat            
+wdat            ==========================================================
+wdat            0 passed, 6 failed, 0 warning, 0 aborted, 0 skipped, 0
+wdat            info only.
+wdat            ==========================================================

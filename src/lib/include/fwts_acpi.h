@@ -22,15 +22,15 @@
 
 #define FWTS_ACPI_TABLES_PATH   "/sys/firmware/acpi/tables"
 
-#define FWTS_FACP_UNSPECIFIED		(0x00)
-#define FWTS_FACP_DESKTOP		(0x01)
-#define FWTS_FACP_MOBILE		(0x02)
-#define FWTS_FACP_WORKSTATION		(0x03)
-#define FWTS_FACP_ENTERPRISE_SERVER	(0x04)
-#define FWTS_FACP_SOHO_SERVER		(0x05)
-#define FWTS_FACP_APPLIANCE_PC		(0x06)
-#define FWTS_FACP_PERFORMANCE_SERVER	(0x07)
-#define FWTS_FACP_TABLET		(0x08)
+#define FWTS_FACP_UNSPECIFIED			(0x00)
+#define FWTS_FACP_DESKTOP			(0x01)
+#define FWTS_FACP_MOBILE			(0x02)
+#define FWTS_FACP_WORKSTATION			(0x03)
+#define FWTS_FACP_ENTERPRISE_SERVER		(0x04)
+#define FWTS_FACP_SOHO_SERVER			(0x05)
+#define FWTS_FACP_APPLIANCE_PC			(0x06)
+#define FWTS_FACP_PERFORMANCE_SERVER		(0x07)
+#define FWTS_FACP_TABLET			(0x08)
 
 #define FWTS_FACP_IAPC_BOOT_ARCH_LEGACY_DEVICES		(0x0001)
 #define FWTS_FACP_IAPC_BOOT_ARCH_8042			(0x0002)
@@ -38,13 +38,13 @@
 #define FWTS_FACP_IAPC_BOOT_ARCH_MSI_NOT_SUPPORTED	(0x0008)
 #define FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS	(0x0010)
 
-#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY		(0x00)
-#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO		(0x01)
-#define FWTS_GAS_ADDR_SPACE_ID_PCI_CONFIG		(0x02)
-#define FWTS_GAS_ADDR_SPACE_ID_EC			(0x03)
-#define FWTS_GAS_ADDR_SPACE_ID_SMBUS			(0x04)
-#define FWTS_GAS_ADDR_SPACE_ID_PCC			(0x0a)
-#define FWTS_GAS_ADDR_SPACE_ID_FFH			(0x7f)
+#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY	(0x00)
+#define FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO	(0x01)
+#define FWTS_GAS_ADDR_SPACE_ID_PCI_CONFIG	(0x02)
+#define FWTS_GAS_ADDR_SPACE_ID_EC		(0x03)
+#define FWTS_GAS_ADDR_SPACE_ID_SMBUS		(0x04)
+#define FWTS_GAS_ADDR_SPACE_ID_PCC		(0x0a)
+#define FWTS_GAS_ADDR_SPACE_ID_FFH		(0x7f)
 
 #include "fwts_types.h"
 #include "fwts_framework.h"
@@ -56,7 +56,9 @@ extern const char *fwts_acpi_fadt_preferred_pm_profile[];
 	((x) > 8) ? "Reserved" : fwts_acpi_fadt_preferred_pm_profile[x]
 #define FWTS_ACPI_FADT_FLAGS_HW_REDUCED_ACPI (1<<20)
 
-/* 5.2.3.1 Generic Address Structure */
+/*
+ * ACPI GAS (Generic Address Structure), 5.2.3.1
+ */
 typedef struct {
 	uint8_t 	address_space_id;
 	uint8_t		register_bit_width;
@@ -65,6 +67,9 @@ typedef struct {
         uint64_t 	address;
 } __attribute__ ((packed)) fwts_acpi_gas;
 
+/*
+ * ACPI Common Table Header
+ */
 typedef struct {
 	char		signature[4];
 	uint32_t	length;
@@ -77,12 +82,19 @@ typedef struct {
 	uint32_t	creator_revision;
 } __attribute__ ((packed)) fwts_acpi_table_header;
 
+/*
+ * ACPI BOOT,
+ *    https://msdn.microsoft.com/en-us/windows/hardware/gg463443.aspx
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint8_t		cmos_index;
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_boot;
 
+/*
+ * ACPI BERT (Boot Error Source) 18.3.1
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	boot_error_region_length;
@@ -98,6 +110,9 @@ typedef struct {
 	uint8_t		generic_error_data[0];
 } __attribute__ ((packed)) fwts_acpi_table_boot_error_region;
 
+/*
+ * ACPI CPEP (Corrected Platform Error Polling Table), 5.2.18
+ */
 typedef struct {
 	uint8_t		type;
 	uint8_t		length;
@@ -112,6 +127,9 @@ typedef struct {
 	fwts_acpi_cpep_processor_info	cpep_info[0];
 } __attribute__ ((packed)) fwts_acpi_table_cpep;
 
+/*
+ * ACPI ECDT (Embedded Controller Boot Resources Table), 5.2.15
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	fwts_acpi_gas	ec_control;
@@ -129,6 +147,9 @@ typedef enum {
 	FWTS_BOOT_REGISTER_PARITY	= 0x80
 } ftws_acpi_cmos_boot_register;
 
+/*
+ * ACPI FACS (Firmware ACPI Control Structure), 5.2.10
+ */
 typedef struct {
 	char		signature[4];
 	uint32_t	length;
@@ -143,6 +164,9 @@ typedef struct {
 	uint8_t		reserved2[24];
 } __attribute__ ((packed)) fwts_acpi_table_facs;
 
+/*
+ * ACPI RSDP (Root System Description Table), 5.2.5
+ */
 typedef struct {
 	char		signature[8];
 	uint8_t		checksum;
@@ -155,24 +179,34 @@ typedef struct {
 	uint8_t		reserved[3];
 } __attribute__ ((packed)) fwts_acpi_table_rsdp;
 
+/*
+ * ACPI XSDT (Extended System Description Table), 5.2.8
+ */
 typedef struct {
 	fwts_acpi_table_header header;
 	uint64_t	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_xsdt;
 
+/*
+ * ACPI RSDT (Root System Description Table), 5.2.7
+ */
 typedef struct {
 	fwts_acpi_table_header header;
 	uint32_t	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_rsdt;
 
+/*
+ * ACPI SBST (Smart Battery Specification Table), 5.2.14
+ */
 typedef struct {
 	fwts_acpi_table_header header;
 	uint32_t	warning_energy_level;
 	uint32_t	low_energy_level;
 	uint32_t	critical_energy_level;
 } __attribute__ ((packed)) fwts_acpi_table_sbst;
+
 /*
- *  From ACPI Spec, section 5.2.9 Fixed ACPI Description Field
+ * ACPI FADT (Fixed ACPI Description Table), 5.2.9
  */
 typedef struct {
 	fwts_acpi_table_header	header;
@@ -232,6 +266,10 @@ typedef struct {
 	fwts_acpi_gas	sleep_status_reg;
 } __attribute__ ((packed)) fwts_acpi_table_fadt;
 
+/*
+ * ACPI MCFG (PCI Express memory mapped configuration space
+ *   base address Description Table) http://pcisig.com
+ */
 typedef struct {
 	uint64_t	base_address;
 	uint16_t	pci_segment_group_number;
@@ -246,12 +284,18 @@ typedef struct {
 	fwts_acpi_mcfg_configuration configuration[0];
 } __attribute__ ((packed)) fwts_acpi_table_mcfg;
 
+/*
+ * ACPI SLIT (System Locality Distance Information Table), 5.2.17
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint64_t	num_of_system_localities;
 	/* matrix follows */
 } __attribute__ ((packed)) fwts_acpi_table_slit;
 
+/*
+ * ACPI SRAT (System Resource Affinity Table), 5.2.16
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	reserved1;
@@ -305,8 +349,11 @@ typedef struct {
 	uint32_t	clock_domain;
 } __attribute__ ((packed)) fwts_acpi_table_gicc_affinity;
 
-/* from 3.2.4 The ACPI 2.0 HPET Description Table (HPET) http://www.intel.com/hardwaredesign/hpetspec_1.pdf */
-
+/*
+ * ACPI HPET (HPET IA-PC High Precision Event Timer Table),
+ *    3.2.4 The ACPI 2.0 HPET Description Table (HPET)
+ *    http://www.intel.com/hardwaredesign/hpetspec_1.pdf
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	event_timer_block_id;
@@ -315,7 +362,6 @@ typedef struct {
 	uint16_t	main_counter_minimum;
 	uint8_t		page_prot_and_oem_attribute;
 } __attribute__ ((packed)) fwts_acpi_table_hpet;
-
 
 typedef struct {
 	uint8_t		serialization_action;
@@ -327,6 +373,9 @@ typedef struct {
 	uint64_t	mask;
 } __attribute__ ((packed)) fwts_acpi_serialization_instruction_entries;
 
+/*
+ * ACPI ERST (Error Record Serialization Table), 18.5
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	serialization_header_size;
@@ -336,8 +385,9 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_erst;
 
 
-/* MADT, Section 5.2.12 of ACPI spec, Multiple APIC Description Table */
-
+/*
+ * ACPI MADT (Multiple APIC Description Table), 5.2.12
+ */
 typedef struct {
 	uint8_t		type;
 	uint8_t		length;
@@ -507,8 +557,11 @@ typedef struct {
 	uint32_t	discovery_range_length;
 } __attribute__ ((packed)) fwts_acpi_madt_gicr;
 
-/* From http://www.kuro5hin.org/story/2002/10/27/16622/530,
-   and also http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html */
+/*
+ * ACPI TCPA (Trusted Computing Platform Alliance Capabilities Table)
+ *   http://www.kuro5hin.org/story/2002/10/27/16622/530,
+ *   http://www.cl.cam.ac.uk/~rja14/tcpa-faq.html
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint16_t	platform_class;
@@ -538,6 +591,10 @@ typedef struct {
 	};
 }  __attribute__ ((packed)) fwts_acpi_table_tcpa;
 
+/*
+ * ACPI TPM2 (Trusted Platform Module 2 Table)
+ *   http://www.trustedcomputinggroup.org/files/static_page_files/648D7D46-1A4B-B294-D088037B8F73DAAF/TCG_ACPIGeneralSpecification_1-10_0-37-Published.pdf
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint16_t	platform_class;
@@ -547,7 +604,10 @@ typedef struct {
 	uint8_t		platform_specific_parameters[0];
 }  __attribute__ ((packed)) fwts_acpi_table_tpm2;
 
-/* From http://wiki.xenproject.org/mediawiki/images/c/c4/Xen-environment-table.pdf */
+/*
+ * ACPI XENV (Xen Environment Table)
+ *   http://wiki.xenproject.org/mediawiki/images/c/c4/Xen-environment-table.pdf
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint64_t	gnt_start;
@@ -556,8 +616,10 @@ typedef struct {
 	uint8_t		evtchn_intr_flags;
 }  __attribute__ ((packed)) fwts_acpi_table_xenv;
 
-/* Following ASF definitions from
-   http://dmtf.org/documents/asf/alert-standard-format-asf-specification-200 */
+/*
+ * ACPI ASF! (Alert Standard Format Table)
+ *   http://dmtf.org/documents/asf/alert-standard-format-asf-specification-200
+ */
 typedef struct {
 	uint8_t		type;
 	uint8_t		reserved;
@@ -633,8 +695,8 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_asf_addr;
 
 /*
- *  DMAR
- *  See http://download.intel.com/technology/computing/vptech/Intel(r)_VT_for_Direct_IO.pdf
+ * ACPI DMAR (DMA Remapping (VT-d))
+ *   http://download.intel.com/technology/computing/vptech/Intel(r)_VT_for_Direct_IO.pdf
  */
 typedef struct {
 	fwts_acpi_table_header header;
@@ -667,7 +729,9 @@ typedef struct {
 	uint64_t	end_address;
 } __attribute__ ((packed)) fwts_acpi_table_dmar_reserved_memory;
 
-/* Root Port ATS capability reporting structure */
+/*
+ * ACPI ATSR (Root Port ATS capability reporting structure)
+ */
 typedef struct {
 	fwts_acpi_table_dmar_header header;
 	uint8_t		flags;
@@ -685,7 +749,10 @@ typedef struct {
 	uint8_t		path[0];
 } __attribute__ ((packed)) fwts_acpi_table_dmar_device_scope;
 
-/* SLIC, see "OEM Activation 2.0 for Windows Vista Operating Systems" */
+/*
+ * ACPI SLIC (Microsoft Software Licensing Table)
+ *  see "OEM Activation 2.0 for Windows Vista Operating Systems"
+ */
 typedef struct {
 	uint32_t	type;
 	uint32_t	length;
@@ -727,7 +794,9 @@ typedef struct {
 	uint64_t	buf_ptr_addr;
 } __attribute__ ((packed)) fwts_acpi_table_uefi_smmcomm;
 
-/* 5.2.22 Boot Graphics Resource Table (BGRT) ACPI 5.0 Spec */
+/*
+ * ACPI BGRT (Boot Graphics Resource Table), 5.2.22
+ */
 typedef struct {
 	fwts_acpi_table_header header;
 	uint16_t	version;
@@ -738,28 +807,36 @@ typedef struct {
 	uint32_t	image_offset_y;
 } __attribute__ ((packed)) fwts_acpi_table_bgrt;
 
-/* 5.2.23 Firmware Performance Data Table (FPDT) ACPI 5.0 spec */
+/*
+ * ACPI FPDT (Firmware Performance Data Table), 5.2.23
+ */
 typedef struct {
 	uint16_t	type;
 	uint8_t		length;
 	uint8_t		revision;
 } __attribute__ ((packed)) fwts_acpi_table_fpdt_header;
 
-/* 5.2.23.4 S3 Performance Table Pointer Record */
+/*
+ * ACPI S3 Performance Table Pointer Record, 5.2.23.4
+ */
 typedef struct {
 	fwts_acpi_table_fpdt_header	fpdt;
 	uint32_t	reserved;
 	uint64_t	s3pt_addr;
 } __attribute__ ((packed)) fwts_acpi_table_fpdt_s3_perf_ptr;
 
-/* 5.2.23.5 Firmware Basic Boot Performance Pointer Record */
+/*
+ * ACPI Firmware Basic Boot Performance Pointer Record, 5.2.23.5
+ */
 typedef struct {
 	fwts_acpi_table_fpdt_header	fpdt;
 	uint32_t	reserved;
 	uint64_t	fbpt_addr;
 } __attribute__ ((packed)) fwts_acpi_table_fpdt_basic_boot_perf_ptr;
 
-/* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec */
+/*
+ * ACPI GTDT (Generic Timer Description Table), 5.2.24
+ */
 typedef struct {
 	fwts_acpi_table_header header;
 	uint64_t	cnt_control_base_phys_addr;
@@ -777,7 +854,9 @@ typedef struct {
 	uint32_t	platform_timer_offset;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt;
 
-/* 5.2.24 Generic Timer Description Table (GTDT) ACPI 5.0 Spec, table 5-117 */
+/*
+ * ACPI GTDT Generic Timer Description Table, 5.2.24, table 5-117
+ */
 typedef struct {
 	uint32_t	timer_flags;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt_platform_timer;
@@ -795,7 +874,9 @@ typedef struct {
 	uint32_t	common_flags;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt_block_timer;
 
-/* 5.2.24.1.1 GT Block Structure */
+/*
+ * ACPI GTDT GT Block Structure, 5.2.24.1.1
+ */
 typedef struct {
 	uint8_t		type;			/* 0x00 */
 	uint16_t	length;			/* 20 + n * 40 */
@@ -806,7 +887,9 @@ typedef struct {
 	fwts_acpi_table_gtdt_block_timer	block_timers[0];
 } __attribute__ ((packed)) fwts_acpi_table_gtdt_block;
 
-/* 5.2.24.0.1 SBSA Generic Watchdog Structure */
+/*
+ * ACPI GTDT SBSA Generic Watchdog Structure, 5.2.24.0.1
+ */
 typedef struct {
 	uint8_t		type;			/* 0x01 */
 	uint16_t	length;			/* 28 */
@@ -817,12 +900,16 @@ typedef struct {
 	uint32_t	watchdog_timer_flags;
 } __attribute__ ((packed)) fwts_acpi_table_gtdt_watchdog;
 
-/* 5.2.20 ACPI RAS FeatureTable (RASF) */
+/*
+ * ACPI RASF (RAS Feature Table), 5.2.20
+ */
 typedef struct {
         uint8_t         platform_cc_id[12];
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
-/* Section 14.1, Platform Communications Channel Table */
+/*
+ * ACPI PCCT (Platform Communications Channel Table), 14.1
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	flags;
@@ -847,6 +934,10 @@ typedef struct {
 	uint16_t	min_request_turnaround_time;
 } __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_0;
 
+/*
+ * ACPI SPCR (Serial Port Console Redirection Table)
+ *  http://msdn.microsoft.com/en-us/library/windows/hardware/dn639132(v=vs.85).aspx
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint8_t		interface_type;
@@ -871,6 +962,10 @@ typedef struct {
 	uint32_t	reserved3;
 } __attribute__ ((packed)) fwts_acpi_table_spcr;
 
+/*
+ * ACPI DBGP (Debug Port Table)
+ *  http://msdn.microsoft.com/en-us/library/windows/hardware/dn639130(v=vs.85).aspx
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint8_t		interface_type;
@@ -878,6 +973,10 @@ typedef struct {
 	fwts_acpi_gas	base_address;
 } __attribute__ ((packed)) fwts_acpi_table_dbgp;
 
+/*
+ * ACPI DBG2 (Debug Port Table 2)
+ *   http://msdn.microsoft.com/en-us/library/windows/hardware/dn639131(v=vs.85).aspx
+ */
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	info_offset;
@@ -900,7 +999,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_dbg2_info;
 
 /*
- *  MCHI Management Controller Host Interface Table
+ * ACPI MCHI (Management Controller Host Interface Table)
  *    http://www.dmtf.org/sites/default/files/standards/documents/DSP0256_1.0.0.pdf
  */
 typedef struct {
@@ -918,6 +1017,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_mchi;
 
 /*
+ * ACPI SPMI (Server Platform Management Interface Table)
  *   http://www.intel.com/content/www/us/en/servers/ipmi/ipmi-intelligent-platform-mgt-interface-spec-2nd-gen-v2-0-spec-update.html
  *	page 600-606
  */
@@ -940,7 +1040,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_spmi;
 
 /*
- *  Hardware Error Source Table (HEST), ACPI section 18.3.2
+ * ACPI HEST (Hardware Error Source Table), 18.3.2
  */
 typedef struct {
 	fwts_acpi_table_header	header;
@@ -1096,7 +1196,7 @@ typedef struct {
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 /*
- * Core System Resources Table (CSRT)
+ * ACPI CSTR (Core System Resources Table)
  *   https://acpica.org/sites/acpica/files/CSRT.doc
  */
 typedef struct {
@@ -1127,8 +1227,8 @@ typedef struct {
 #define FWTS_ACPI_TABLE_CSRT_TYPE_DMA		(0x0003)
 
 /*
- *  ACPI Low Power Idle Table
- *    http://www.uefi.org/sites/default/files/resources/ACPI_Low_Power_Idle_Table.pdf
+ * ACPI LPTI (Low Power Idle Table)
+ *   http://www.uefi.org/sites/default/files/resources/ACPI_Low_Power_Idle_Table.pdf
  */
 
 /* LPI struct type 0 */
@@ -1151,8 +1251,8 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_lpit;
 
 /*
- *  Windows ACPI Emulated Devices Table
- *    http://msdn.microsoft.com/en-us/windows/hardware/gg487524.aspx
+ * ACPI WAET (Windows ACPI Emulated Devices Table)
+ *   http://msdn.microsoft.com/en-us/windows/hardware/gg487524.aspx
  */
 typedef struct {
 	fwts_acpi_table_header  header;
@@ -1161,7 +1261,7 @@ typedef struct {
 
 
 /*
- *  Microsoft Data Management (MSDM) Table
+ * ACPI MSDM (Microsoft Data Management Table)
  *   http://feishare.com/attachments/article/265/microsoft-software-licensing-tables.pdf
  */
 typedef struct {
@@ -1175,8 +1275,8 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_msdm;
 
 /*
- *  IORT IO Remapping Table
- *    http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
+ * ACPI IORT (IO Remapping Table)
+ *   http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
  */
 typedef struct {
 	fwts_acpi_table_header  header;
@@ -1271,8 +1371,8 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_iort_pci_root_complex_node;
 
 /*
- *  STAO Status Override Table
- *    http://wiki.xenproject.org/mediawiki/images/0/02/Status-override-table.pdf
+ * ACPI STAO (Status Override Table)
+ *   http://wiki.xenproject.org/mediawiki/images/0/02/Status-override-table.pdf
  */
 typedef struct {
 	fwts_acpi_table_header  header;

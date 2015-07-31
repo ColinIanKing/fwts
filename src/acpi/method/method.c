@@ -906,10 +906,56 @@ static int method_package_elements_type(
 /*
  * Section 5.6 ACPI Event Programming Model
  */
+static void method_test_AEI_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	ACPI_STATUS status;
+	ACPI_RESOURCE *resource;
+	ACPI_RESOURCE_GPIO* gpio;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	status = AcpiBufferToResource(obj->Buffer.Pointer, obj->Buffer.Length, &resource);
+	if (ACPI_FAILURE(status))
+		return;
+
+	do {
+		if (resource->Type == ACPI_RESOURCE_TYPE_GPIO) {
+			gpio = &resource->Data.Gpio;
+			if (gpio->ConnectionType != ACPI_RESOURCE_GPIO_TYPE_INT) {
+				failed = true;
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_AEIBadGpioElement",
+					"%s should contain only GPIO Connection Type 0, got %" PRIu32,
+					name, gpio->ConnectionType);
+			}
+		} else {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_AEIBadElement",
+				"%s should contain only Resource Type 17, got%" PRIu32,
+					name, resource->Type);
+		}
+
+		resource = ACPI_NEXT_RESOURCE(resource);
+	} while (resource->Type != ACPI_RESOURCE_TYPE_END_TAG);
+
+	if (!failed)
+		method_passed_sane(fw, name, "buffer");
+}
+
 static int method_test_AEI(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_AEI", NULL, 0, method_test_buffer_return, NULL);
+		"_AEI", NULL, 0, method_test_AEI_return, NULL);
 }
 
 static int method_test_EVT(fwts_framework *fw)

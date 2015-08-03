@@ -27,6 +27,7 @@
 #include <inttypes.h>
 #include "fwts_acpi_object_eval.h"
 
+
 /*
  * ACPI methods + objects used in Linux ACPI driver:
  *
@@ -260,6 +261,7 @@
 #define	METHOD_MANDITORY	1
 #define METHOD_OPTIONAL		2
 #define METHOD_MOBILE		4
+#define METHOD_SILENT		8
 
 #define ACPI_TYPE_INTBUF	(ACPI_TYPE_INVALID + 1)
 
@@ -530,25 +532,27 @@ static int method_evaluate_method(fwts_framework *fw,
 		}
 		return FWTS_OK;
 	} else {
-		/* Manditory not-found test are a failure */
-		if (test_type & METHOD_MANDITORY) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodNotExist",
-				"Object %s did not exist.", name);
-		}
+		if (!(test_type & METHOD_SILENT)) {
+			/* Manditory not-found test are a failure */
+			if (test_type & METHOD_MANDITORY) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodNotExist",
+					"Object %s did not exist.", name);
+			}
 
-		/* Mobile specific tests on non-mobile platform? */
-		if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
-			fwts_skipped(fw,
-				"Machine is not a mobile platform, skipping "
-				"test for non-existant mobile platform "
-				"related object %s.", name);
-		} else {
-			fwts_skipped(fw,
-				"Skipping test for non-existant object %s.",
-				name);
+			/* Mobile specific tests on non-mobile platform? */
+			if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
+				fwts_skipped(fw,
+					"Machine is not a mobile platform, skipping "
+					"test for non-existant mobile platform "
+					"related object %s.", name);
+			} else {
+				fwts_skipped(fw,
+					"Skipping test for non-existant object %s.",
+					name);
+			}
 		}
-
 		return FWTS_NOT_EXIST;
+
 	}
 }
 
@@ -958,20 +962,93 @@ static int method_test_AEI(fwts_framework *fw)
 		"_AEI", NULL, 0, method_test_AEI_return, NULL);
 }
 
-static int method_test_EVT(fwts_framework *fw)
+static void check_evt_event (
+	fwts_framework *fw,
+	ACPI_RESOURCE_GPIO *gpio)
 {
 	ACPI_OBJECT arg[1];
-	int ret, i;
+	ACPI_HANDLE evt_handle;
+	ACPI_STATUS status;
+	char path[256];
+	uint16_t i;
 
-	arg[0].Type = ACPI_TYPE_INTEGER;
-	for (i = 0; i < 65535; i++) {
-		arg[0].Integer.Value = i;
-		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_EVT", arg, 1, method_test_NULL_return, NULL);
-
-		if (ret != FWTS_OK)
+	/* Skip the leading spaces in ResourceSource. */
+	for (i = 0; i < gpio->ResourceSource.StringLength; i++) {
+		if (gpio->ResourceSource.StringPtr[i] != ' ')
 			break;
 	}
+
+	if (i == gpio->ResourceSource.StringLength) {
+		fwts_log_warning(fw, "Invalid ResourceSource");
+		return;
+	}
+
+	/* Get the handle of return;the _EVT method. */
+	snprintf (path, 251, "%s._EVT", &gpio->ResourceSource.StringPtr[i]);
+
+	status = AcpiGetHandle (NULL, path, &evt_handle);
+	if (ACPI_FAILURE(status)) {
+		fwts_log_warning(fw, "Failed to find valid handle for _EVT method (0x%x), %s",	status, path);
+		return;
+	}
+
+	/* Call the _EVT method with all the pins defined for the GpioInt */
+	for (i = 0; i < gpio->PinTableLength; i++) {
+		ACPI_OBJECT_LIST arg_list;
+
+		arg[0].Type = ACPI_TYPE_INTEGER;
+		arg[0].Integer.Value = gpio->PinTable[i];
+		arg_list.Count = 1;
+		arg_list.Pointer = arg;
+
+		method_evaluate_found_method(fw, path, method_test_NULL_return, NULL, &arg_list);
+	}
+}
+
+static void method_test_EVT_return (
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	ACPI_RESOURCE *resource;
+	ACPI_STATUS   status;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	status = AcpiBufferToResource(obj->Buffer.Pointer, obj->Buffer.Length, &resource);
+	if (ACPI_FAILURE(status))
+		return;
+
+	do {
+		if (!resource->Length) {
+			fwts_log_warning(fw, "Invalid zero length descriptor in resource list\n");
+			break;
+		}
+
+		if (resource->Type == ACPI_RESOURCE_TYPE_GPIO &&
+				resource->Data.Gpio.ConnectionType == ACPI_RESOURCE_GPIO_TYPE_INT)
+				check_evt_event(fw, &resource->Data.Gpio);
+
+		resource = ACPI_NEXT_RESOURCE(resource);
+	} while (resource->Type != ACPI_RESOURCE_TYPE_END_TAG);
+}
+
+static int method_test_EVT(fwts_framework *fw)
+{
+	int ret;
+
+	/* Only test the _EVT method with pins defined in AEI. */
+	ret = method_evaluate_method(fw, METHOD_OPTIONAL | METHOD_SILENT,
+		"_AEI", NULL, 0, method_test_EVT_return, NULL);
+
+	if (ret == FWTS_NOT_EXIST)
+		fwts_skipped(fw, "Skipping test for non-existant object _EVT.");
+
 	return ret;
 }
 

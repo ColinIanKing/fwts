@@ -594,7 +594,7 @@ static int cpufreq_compare_freqs(fwts_framework *fw, struct cpu *c1,
 
 static int cpufreq_test_consistency(fwts_framework *fw)
 {
-	struct cpu *cpu, *cpu0;
+	struct cpu *cpu0;
 	bool consistent = true;
 	int i;
 
@@ -606,7 +606,7 @@ static int cpufreq_test_consistency(fwts_framework *fw)
 	cpu0 = &cpus[0];
 
 	for (i = 1; i < num_cpus; i++) {
-		cpu = &cpus[i];
+		struct cpu *cpu = &cpus[i];
 		if (cpufreq_compare_freqs(fw, cpu0, cpu) != FWTS_OK) {
 			consistent = false;
 			fwts_log_error(fw,
@@ -629,13 +629,11 @@ static int cpufreq_test_duplicates(fwts_framework *fw)
 {
 	struct cpu *cpu0 = &cpus[0];
 	bool dup = false;
-	uint64_t freq;
 	int i;
 
 	/* the frequency list is sorted, so we can do this in one pass */
 	for (i = 0; i < cpu0->n_freqs - 1; i++) {
-
-		freq = cpu0->freqs[i].Hz;
+		uint64_t freq = cpu0->freqs[i].Hz;
 
 		if (cpu0->freqs[i+1].Hz != freq)
 			continue;
@@ -748,7 +746,7 @@ static int cpu_freq_compare(const void *v1, const void *v2)
 static int parse_cpu_info(fwts_framework *fw,
 		struct cpu *cpu, struct dirent *dir)
 {
-	char *end, path[PATH_MAX+1], *str, *tmp, *tok;
+	char *end, path[PATH_MAX+1], *str, *tmp;
 	struct stat statbuf;
 	int i, rc;
 
@@ -783,7 +781,7 @@ static int parse_cpu_info(fwts_framework *fw,
 	str = fwts_get(path);
 
 	for (tmp = str, i = 0; ; tmp = NULL) {
-		tok = strtok(tmp, " ");
+		char *tok = strtok(tmp, " ");
 		if (!tok)
 			break;
 		if (!isdigit(tok[0]))
@@ -809,7 +807,7 @@ static int is_cpu_dir(const struct dirent *dir)
 static int cpufreq_init(fwts_framework *fw)
 {
 	struct dirent **dirs;
-	int i, rc;
+	int i;
 
 	num_cpus = scandir(FWTS_CPU_PATH, &dirs, is_cpu_dir, versionsort);
 	cpus = calloc(num_cpus, sizeof(*cpus));
@@ -819,7 +817,8 @@ static int cpufreq_init(fwts_framework *fw)
 
 	/* all test require a userspace governor */
 	for (i = 0; i < num_cpus; i++) {
-		rc = cpu_set_governor(fw, &cpus[i], "userspace");
+		int rc = cpu_set_governor(fw, &cpus[i], "userspace");
+
 		if (rc != FWTS_OK) {
 			fwts_log_warning(fw, "Failed to intialise cpufreq "
 					"to set CPU speed");

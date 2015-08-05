@@ -1,3 +1,63 @@
+fwts (15.08.00-0ubuntu1) wily; urgency=low
+
+  [Alex Hung]
+  * acpi: add table names in test description
+  * fwts-test: update for prefix for ECDT, TCPA, WAET and XENV
+  * acpi: remove redundant tailing spaces - no functional changes
+  * acpi: tcpa: fix incorrect comments - no functional changes
+  * acpi: tpm2: Add ACPI TPM2 test
+  * fwts-test: Add regression test for TPM2, update fwst-tests
+  * acpi: method: fix incorrect shift of 64-bit integer in CRS
+  * acpi: method: add support for _CPC revision 2
+  * acpi: acpidump: change FADT flag BIT20 to Hardware-reduce ACPI
+  * fwts-test: update for changing to Hardware-reduce ACPI
+  * acpi: update MADT GIC Distributor Structure and related tests
+  * acpi: update MADT GICC Structure and related tests
+  * acpi: fadt: update fadt_dsdt test with x_dsdt field
+  * acpi: fadt: check RESET_REG_SUP before checking the reset register
+  * acpi: method: refine _AEI control method
+  * acpi: method: refine _EVT test
+
+  [Anthony Wong]
+  * fwts: Better options handling for --dump
+  * lib: Allow reading ACPI dump file by non-root user
+
+  [Colin Ian King]
+  * acpi: XENV: fix a few spelling mistakes and fix up copyright
+  * fwts-test: Update tests to sync with last XENV fixes
+  * acpi: LPIT: remove duplicate "LPIT" from test description
+  * fwts-test: Update tests to sync with last LPIT fixes
+  * acpi: HPET: fix typo in HPET description field
+  * fwts-test: Update tests to sync with HPET fix
+  * Add ACPI IORT test (LP: #1450440)
+  * Update fwts-test for the new IORT table test
+  * ACPICA: Update to version 20150717 (LP: #1475733)
+  * fwts-test: update syntaxcheck test now IASL finds more errors
+  * acpi: iort: fix build warning on older versions of GCC
+  * lib: fwts_framework: remove dubious total of --show-tests-full
+  * acpidump: update mchi to latest revision of MCHI specification
+  * acpi: Add support for MCHI Table (LP: #1478951)
+  * fwts-test: Add MCHI table regression tests
+  * acpi: Add support for STAO Table (LP: #1478957)
+  * fwts-test: Add STAO table regression tests
+  * lib: fix build error on non-Intel platforms
+  * acpi: correct ASF! table definitions
+  * acpi: Add support for ASF! Table (LP: #1479736)
+  * fwts-test: Add ASF! table regression tests
+  * lib: acpi.h: clean up comments and code - add more references
+  * acpi: Add support for WDAT Table (LP: #1480257)
+  *     fwts-test: Add WDAT table regression tests
+
+  [Ivan Hu]
+  * fwts-test: uefi: remove redundant files
+  * acpi: add support for FPDT table (LP: #1476954)
+  * fwts-test: Add FPDT table regression tests
+
+  [Ricardo Neri]
+  * cpu/cpufreq: Iterate over the correct number of CPUs in _test_sw_any
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 05 Aug 2015 14:18:41 +0800
+
 fwts (15.07.00-0ubuntu1) wily; urgency=low
 
   [Alex Hung]

@@ -87,8 +87,8 @@ static void gpu_dump_gpes(
 			gpe_block_info->BlockBaseNumber + gpe);
 		fwts_log_info_verbatum(fw, "        Flags:    0x%2.2" PRIx8 " (trigger: %s, wake: %s)",
 			GpeEventInfo->Flags,
-			GpeEventInfo->Flags & ACPI_GPE_LEVEL_TRIGGERED ? "level" : "edge",
-			GpeEventInfo->Flags & ACPI_GPE_CAN_WAKE ? "can wake" : "run only");
+			(GpeEventInfo->Flags & ACPI_GPE_LEVEL_TRIGGERED) ? "level" : "edge",
+			(GpeEventInfo->Flags & ACPI_GPE_CAN_WAKE) ? "can wake" : "run only");
 		fwts_log_info_verbatum(fw, "        Dispatch: %s", buf);
 	}
 }

@@ -467,7 +467,6 @@ static bool strlen_valid(const uint16_t *variablename, const uint64_t variablena
 
 static int getnextvariable_test2(fwts_framework *fw)
 {
-	long ioret;
 	uint64_t status;
 
 	struct efi_getnextvariablename getnextvariablename;
@@ -494,6 +493,8 @@ static int getnextvariable_test2(fwts_framework *fw)
 	 */
 	variablename[0] = '\0';
 	while (true) {
+		long ioret;
+
 		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 

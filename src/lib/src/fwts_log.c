@@ -404,15 +404,14 @@ int fwts_log_printf(fwts_log *log,
 	const char *prefix,
 	const char *fmt, ...)
 {
-	va_list	args;
 	int ret = 0;
 
 	if (!((field & LOG_FIELD_MASK) & fwts_log_filter))
 		return ret;
 
 	if (log && log->magic == LOG_MAGIC) {
-		fwts_list_link *item;
 		char buffer[LOG_MAX_BUF_SIZE];
+		va_list	args;
 
 		/*
 		 * With the possibility of having multiple logs being written
@@ -423,17 +422,17 @@ int fwts_log_printf(fwts_log *log,
 		 */
 		va_start(args, fmt);
 		ret = vsnprintf(buffer, sizeof(buffer), fmt, args);
-		if (ret < 0)
-			return ret;
+		if (ret >= 0) {
+			fwts_list_link *item;
 
-		fwts_list_foreach(item, &log->log_files) {
-			fwts_log_file *log_file = fwts_list_data(fwts_log_file *, item);
+			fwts_list_foreach(item, &log->log_files) {
+				fwts_log_file *log_file = fwts_list_data(fwts_log_file *, item);
 
-			if (log_file->ops && log_file->ops->print)
-				log_file->ops->print(log_file, field, level,
-					status, label, prefix, buffer);
+				if (log_file->ops && log_file->ops->print)
+					log_file->ops->print(log_file, field, level,
+						status, label, prefix, buffer);
+			}
 		}
-
 		va_end(args);
 	}
 	return ret;

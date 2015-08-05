@@ -377,9 +377,8 @@ int fwts_cpu_benchmark(
 	unsigned long long perfctr_result;
 	fwts_cpu_benchmark_result tmp;
 	cpu_set_t mask, oldset;
-	int perfctr, ncpus, rc;
+	int perfctr, ncpus;
 	double duration_sec;
-	static bool warned;
 	bool perf_ok;
 
 	ncpus = fwts_cpu_enumerate();
@@ -395,6 +394,8 @@ int fwts_cpu_benchmark(
 	perf_ok = true;
 	perfctr = perf_setup_counter(cpu);
 	if (perfctr < 0) {
+		static bool warned;
+
 		if (!warned) {
 			fwts_log_warning(fw, "Can't use linux performance "
 					"counters (perf), falling back to "
@@ -404,9 +405,7 @@ int fwts_cpu_benchmark(
 		perf_ok = false;
 	}
 
-
 	/* Pin to the specified CPU */
-
 	if (sched_getaffinity(0, sizeof(oldset), &oldset) < 0) {
 		fwts_log_error(fw, "Cannot get scheduling affinity.");
 		return FWTS_ERROR;
@@ -452,7 +451,8 @@ int fwts_cpu_benchmark(
 	tmp.loops = (1.0 * tmp.loops) / duration_sec;
 
 	if (perf_ok) {
-		rc = perf_read_counter(perfctr, &perfctr_result);
+		int rc = perf_read_counter(perfctr, &perfctr_result);
+
 		if (rc == FWTS_OK) {
 			tmp.cycles = (1.0 * perfctr_result) / duration_sec;
 			tmp.cycles_valid = true;

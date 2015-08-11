@@ -161,7 +161,7 @@
  * _PR3  7.2.11		Y
  * _PRE  7.2.12		Y
  * _PRL  10.3.4		Y
- * _PRR  7.3.26		N
+ * _PRR  7.3.26		Y
  * _PRS  6.2.11		Y
  * _PRT  6.2.12		N
  * _PRW  7.2.11		Y
@@ -2896,6 +2896,38 @@ static int method_test_RST(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_RST", NULL, 0, method_test_NULL_return, NULL);
+}
+
+static void method_test_PRR_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_PRR", obj, 1) != FWTS_OK)
+		return;
+
+	if (obj->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PRRElementType",
+			"%s returned a package that does not contain "
+			"a reference.", name);
+		return;
+	}
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PRR(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PRR", NULL, 0, method_test_PRR_return, NULL);
 }
 
 static int method_test_IRC(fwts_framework *fw)
@@ -6383,6 +6415,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S3W, "Test _S3W (S3 Device Wake State)." },
 	{ method_test_S4W, "Test _S4W (S4 Device Wake State)." },
 	{ method_test_RST, "Test _RST (Device Reset)." },
+	{ method_test_PRR, "Test _PRR (Power Resource for Reset)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
 	{ method_test_S0_, "Test _S0_ (S0 System State)." },

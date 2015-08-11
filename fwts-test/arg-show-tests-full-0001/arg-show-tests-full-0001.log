@@ -61,7 +61,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (180 tests):
+ method          (184 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -131,6 +131,8 @@ ACPI tests:
   Test _S2W (S2 Device Wake State).
   Test _S3W (S3 Device Wake State).
   Test _S4W (S4 Device Wake State).
+  Test _RST (Device Reset).
+  Test _PRR (Power Resource for Reset).
   Test _S0_ (S0 System State).
   Test _S1_ (S1 System State).
   Test _S2_ (S2 System State).
@@ -199,8 +201,10 @@ ACPI tests:
   Test _ACx (Active Cooling).
   Test _ART (Active Cooling Relationship Table).
   Test _CRT (Critical Trip Point).
+  Test _CR3 (Warm/Standby Temperature).
   Test _DTI (Device Temperature Indication).
   Test _HOT (Hot Temperature).
+  Test _MTL (Minimum Throttle Limit).
   Test _NTT (Notification Temp Threshold).
   Test _PSL (Passive List).
   Test _PSV (Passive Temp).
@@ -384,7 +388,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (180 tests):
+ method          (184 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -454,6 +458,8 @@ Batch tests:
   Test _S2W (S2 Device Wake State).
   Test _S3W (S3 Device Wake State).
   Test _S4W (S4 Device Wake State).
+  Test _RST (Device Reset).
+  Test _PRR (Power Resource for Reset).
   Test _S0_ (S0 System State).
   Test _S1_ (S1 System State).
   Test _S2_ (S2 System State).
@@ -522,8 +528,10 @@ Batch tests:
   Test _ACx (Active Cooling).
   Test _ART (Active Cooling Relationship Table).
   Test _CRT (Critical Trip Point).
+  Test _CR3 (Warm/Standby Temperature).
   Test _DTI (Device Temperature Indication).
   Test _HOT (Hot Temperature).
+  Test _MTL (Minimum Throttle Limit).
   Test _NTT (Notification Temp Threshold).
   Test _PSL (Passive List).
   Test _PSV (Passive Temp).

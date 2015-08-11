@@ -133,7 +133,7 @@
  * _MLS  6.1.7		Y
  * _MSG  9.1.2		Y
  * _MSM  9.12.2.2	N
- * _MTL  11.4.8		N
+ * _MTL  11.4.8		Y
  * _NTT  11.4.9		Y
  * _OFF  7.1.2		Y
  * _ON_  7.1.3		Y
@@ -5339,6 +5339,41 @@ method_test_THERM(_NTT, METHOD_OPTIONAL)
 method_test_THERM(_PSV, METHOD_OPTIONAL)
 method_test_THERM(_TST, METHOD_OPTIONAL)
 
+static void method_test_MTL_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint64_t val;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	val = (uint64_t) obj->Integer.Value;
+	if (val > 100) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_MTLBadReturnType",
+			"%s should return a percentage, got %" PRIu64 " instead", name, val);
+	}
+
+	if (!failed)
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+
+	return;
+}
+
+static int method_test_MTL(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_MTL", NULL, 0, method_test_MTL_return, NULL);
+}
+
 static void method_test_ART_return(
 	fwts_framework *fw,
 	char *name,
@@ -6478,6 +6513,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_CR3, "Test _CR3 (Warm/Standby Temperature)." },
 	{ method_test_DTI, "Test _DTI (Device Temperature Indication)." },
 	{ method_test_HOT, "Test _HOT (Hot Temperature)." },
+	{ method_test_MTL, "Test _MTL (Minimum Throttle Limit)." },
 	{ method_test_NTT, "Test _NTT (Notification Temp Threshold)." },
 	{ method_test_PSL, "Test _PSL (Passive List)." },
 	{ method_test_PSV, "Test _PSV (Passive Temp)." },

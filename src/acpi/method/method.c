@@ -188,7 +188,7 @@
  * _REV  5.7.4		n/a
  * _RMV  6.3.6		Y
  * _ROM  B.4.3		Y
- * _RST  7.3.25		N
+ * _RST  7.3.25		Y
  * _RTV  11.4.10	Y
  * _S0_  7.3.4.1	Y
  * _S1_  7.3.4.2	Y
@@ -2891,6 +2891,12 @@ method_test_SxW(_S1W)
 method_test_SxW(_S2W)
 method_test_SxW(_S3W)
 method_test_SxW(_S4W)
+
+static int method_test_RST(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_RST", NULL, 0, method_test_NULL_return, NULL);
+}
 
 static int method_test_IRC(fwts_framework *fw)
 {
@@ -6376,6 +6382,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_S2W, "Test _S2W (S2 Device Wake State)." },
 	{ method_test_S3W, "Test _S3W (S3 Device Wake State)." },
 	{ method_test_S4W, "Test _S4W (S4 Device Wake State)." },
+	{ method_test_RST, "Test _RST (Device Reset)." },
 
 	/* Section 7.3 OEM-Supplied System-Level Control Methods */
 	{ method_test_S0_, "Test _S0_ (S0 System State)." },

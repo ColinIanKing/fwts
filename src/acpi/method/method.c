@@ -67,7 +67,7 @@
  * _CID  6.1.2		Y
  * _CLS  6.1.3		N requires PCI SIG class info
  * _CPC  8.4.5		Y
- * _CR3  11.5.4		N
+ * _CR3  11.5.4		Y
  * _CRS  6.2.2		Y
  * _CRT  11.4.4		Y
  * _CSD  8.4.2.2	Y
@@ -5332,6 +5332,7 @@ static int method_test ## name(fwts_framework *fw)	\
 }
 
 method_test_THERM(_CRT, METHOD_OPTIONAL)
+method_test_THERM(_CR3, METHOD_OPTIONAL)
 method_test_THERM(_HOT, METHOD_OPTIONAL)
 method_test_THERM(_TMP, METHOD_OPTIONAL)
 method_test_THERM(_NTT, METHOD_OPTIONAL)
@@ -6474,6 +6475,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_ART, "Test _ART (Active Cooling Relationship Table)." },
 	/* { method_test_ALx, "Test _ALx (Active List)". }, */
 	{ method_test_CRT, "Test _CRT (Critical Trip Point)." },
+	{ method_test_CR3, "Test _CR3 (Warm/Standby Temperature)." },
 	{ method_test_DTI, "Test _DTI (Device Temperature Indication)." },
 	{ method_test_HOT, "Test _HOT (Hot Temperature)." },
 	{ method_test_NTT, "Test _NTT (Notification Temp Threshold)." },

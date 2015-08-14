@@ -103,7 +103,11 @@ void *fwts_smbios_find_entry(fwts_framework *fw,
 	*type = FWTS_SMBIOS_UNKNOWN;
 
 	/* Check EFI first */
-	if ((addr = fwts_smbios_find_entry_uefi(fw, entry, type)) == NULL) {
+	addr = fwts_smbios_find_entry_uefi(fw, entry, type);
+	if (addr) {
+		*version = (entry->major_version << 8) +
+					(entry->minor_version & 0xff);
+	} else {
 #if defined(FWTS_ARCH_INTEL)
 		/* Failed? then scan x86 memory for SMBIOS tag  */
 		addr = fwts_smbios_find_entry_bios(fw, entry, type);

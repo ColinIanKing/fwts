@@ -300,39 +300,6 @@ static void acpi_table_check_fadt_gpe(
 	}
 }
 
-static void acpi_table_check_fadt_reset(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
-{
-	if (!(fadt->flags & FADT_RESET_SUPPORTED))
-		return;
-
-	if (fadt->header.length>=129) {
-		if ((fadt->reset_reg.address_space_id != 0) &&
-		    (fadt->reset_reg.address_space_id != 1) &&
-		    (fadt->reset_reg.address_space_id != 2)) {
-			*passed = false;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADTBadRESETREG",
-				"FADT RESET_REG address space ID was %"
-				PRIu8 ", must be System Memory space (0), "
-				"System I/O space (1), or PCI configuration "
-				"space (2).",
-				fadt->reset_reg.address_space_id);
-			fwts_advice(fw,
-				"If the FADT RESET_REG address space ID is "
-				"not set correctly then ACPI writes "
-				"to this register *may* nor work correctly, "
-				"meaning a reboot via this mechanism may not work.");
-		}
-		if ((fadt->reset_value == 0) &&
-		    (fadt->reset_reg.address != 0))
-			fwts_warning(fw, "FADT RESET_VALUE is zero, which "
-				"may be incorrect, it is usually non-zero.");
-	}
-}
-
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -367,7 +334,6 @@ static int fadt_test1(fwts_framework *fw)
 				"ACPI processor idle routine will not use C3 power states.");
 	}
 	*/
-	acpi_table_check_fadt_reset(fw, fadt, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in FADT table.");
@@ -490,6 +456,29 @@ static int fadt_test3(fwts_framework *fw)
 				"specification states that the FADT register bit offset should be 0.");
 		} else
 			fwts_passed(fw, "FADT register bit offset is 0 as expected.");
+
+		if (fadt->header.length >= 129) {
+			if ((fadt->reset_reg.address_space_id != 0) &&
+					(fadt->reset_reg.address_space_id != 1) &&
+					(fadt->reset_reg.address_space_id != 2)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"FADTBadRESETREG",
+					"FADT RESET_REG address space ID was %"
+					PRIu8 ", must be System Memory space (0), "
+					"System I/O space (1), or PCI configuration "
+					"space (2).",
+					fadt->reset_reg.address_space_id);
+				fwts_advice(fw,
+					"If the FADT RESET_REG address space ID is "
+					"not set correctly then ACPI writes "
+					"to this register *may* nor work correctly, "
+					"meaning a reboot via this mechanism may not work.");
+			}
+			if ((fadt->reset_value == 0) &&
+					(fadt->reset_reg.address != 0))
+				fwts_warning(fw, "FADT RESET_VALUE is zero, which "
+					"may be incorrect, it is usually non-zero.");
+		}
 	} else {
 		fwts_skipped(fw, "FADT flags indicates reset register not supported, skipping test.");
 		return FWTS_SKIP;

@@ -320,7 +320,8 @@ static int dbg2_test1(fwts_framework *fw)
 			char *str = (char *)table->data + offset + info->namespace_offset;
 			dbg2_check_namespace_string(fw, str, info->namespace_length, &passed);
 			fwts_log_info_verbatum(fw, "  Namespace String:         '%s'", str);
-			dbg2_obj_find(fw, str, &ok);
+			if (strcmp(str, "."))
+				dbg2_obj_find(fw, str, &ok);
 		}
 		passed &= ok;
 

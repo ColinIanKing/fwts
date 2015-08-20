@@ -117,12 +117,7 @@
 #include "accommon.h"
 #include "amlcode.h"
 #include "acdebug.h"
-#ifdef ACPI_DISASSEMBLER
-#include "acdisasm.h"
-#endif
 
-
-#ifdef ACPI_DEBUGGER
 
 #define _COMPONENT          ACPI_CA_DEBUGGER
         ACPI_MODULE_NAME    ("dbxface")
@@ -214,7 +209,8 @@ AcpiDbStartCommand (
                 ACPI_DB_LINE_BUFFER_SIZE, NULL);
             if (ACPI_FAILURE (Status))
             {
-                ACPI_EXCEPTION ((AE_INFO, Status, "While parsing command line"));
+                ACPI_EXCEPTION ((AE_INFO, Status,
+                    "While parsing command line"));
                 return (Status);
             }
         }
@@ -268,7 +264,7 @@ AcpiDbSingleStep (
     }
 
     AmlOffset = (UINT32) ACPI_PTR_DIFF (Op->Common.Aml,
-                    WalkState->ParserState.AmlStart);
+        WalkState->ParserState.AmlStart);
 
     /* Check for single-step breakpoint */
 
@@ -472,7 +468,7 @@ AcpiDbSingleStep (
 
 /*******************************************************************************
  *
- * FUNCTION:    AcpiDbInitialize
+ * FUNCTION:    AcpiInitializeDebugger
  *
  * PARAMETERS:  None
  *
@@ -483,13 +479,13 @@ AcpiDbSingleStep (
  ******************************************************************************/
 
 ACPI_STATUS
-AcpiDbInitialize (
+AcpiInitializeDebugger (
     void)
 {
     ACPI_STATUS             Status;
 
 
-    ACPI_FUNCTION_TRACE (DbInitialize);
+    ACPI_FUNCTION_TRACE (AcpiInitializeDebugger);
 
 
     /* Init globals */
@@ -502,8 +498,6 @@ AcpiDbInitialize (
     AcpiGbl_DbConsoleDebugLevel = ACPI_NORMAL_DEFAULT | ACPI_LV_TABLES;
     AcpiGbl_DbOutputFlags       = ACPI_DB_CONSOLE_OUTPUT;
 
-    AcpiGbl_DbOpt_Disasm        = FALSE;
-    AcpiGbl_DbOpt_Verbose       = TRUE;
     AcpiGbl_DbOpt_NoIniMethods  = FALSE;
 
     AcpiGbl_DbBuffer = AcpiOsAllocate (ACPI_DEBUG_BUFFER_SIZE);
@@ -544,26 +538,25 @@ AcpiDbInitialize (
 
         /* Create the debug execution thread to execute commands */
 
-        Status = AcpiOsExecute (OSL_DEBUGGER_THREAD, AcpiDbExecuteThread, NULL);
+        Status = AcpiOsExecute (OSL_DEBUGGER_THREAD,
+            AcpiDbExecuteThread, NULL);
         if (ACPI_FAILURE (Status))
         {
-            ACPI_EXCEPTION ((AE_INFO, Status, "Could not start debugger thread"));
+            ACPI_EXCEPTION ((AE_INFO, Status,
+                "Could not start debugger thread"));
             return_ACPI_STATUS (Status);
         }
-    }
-
-    if (!AcpiGbl_DbOpt_Verbose)
-    {
-        AcpiGbl_DbOpt_Disasm = TRUE;
     }
 
     return_ACPI_STATUS (AE_OK);
 }
 
+ACPI_EXPORT_SYMBOL (AcpiInitializeDebugger)
+
 
 /*******************************************************************************
  *
- * FUNCTION:    AcpiDbTerminate
+ * FUNCTION:    AcpiTerminateDebugger
  *
  * PARAMETERS:  None
  *
@@ -574,7 +567,7 @@ AcpiDbInitialize (
  ******************************************************************************/
 
 void
-AcpiDbTerminate (
+AcpiTerminateDebugger (
     void)
 {
 
@@ -588,6 +581,8 @@ AcpiDbTerminate (
 
     AcpiGbl_DbOutputFlags = ACPI_DB_DISABLE_OUTPUT;
 }
+
+ACPI_EXPORT_SYMBOL (AcpiTerminateDebugger)
 
 
 #ifdef ACPI_OBSOLETE_FUNCTIONS
@@ -618,5 +613,3 @@ AcpiDbMethodEnd (
     AcpiDbStartCommand (WalkState, NULL);
 }
 #endif
-
-#endif /* ACPI_DEBUGGER */

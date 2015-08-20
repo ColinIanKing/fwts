@@ -171,14 +171,6 @@ AcpiTerminate (
 
     AcpiUtMutexTerminate ();
 
-
-#ifdef ACPI_DEBUGGER
-
-    /* Shut down the debugger */
-
-    AcpiDbTerminate ();
-#endif
-
     /* Now we can shutdown the OS-dependent layer */
 
     Status = AcpiOsTerminate ();
@@ -676,7 +668,7 @@ AcpiDecodePldBuffer (
 
     /* Parameter validation */
 
-    if (!InBuffer || !ReturnBuffer || (Length < 16))
+    if (!InBuffer || !ReturnBuffer || (Length < ACPI_PLD_REV1_BUFFER_SIZE))
     {
         return (AE_BAD_PARAMETER);
     }
@@ -728,7 +720,7 @@ AcpiDecodePldBuffer (
     PldInfo->Rotation =             ACPI_PLD_GET_ROTATION (&Dword);
     PldInfo->Order =                ACPI_PLD_GET_ORDER (&Dword);
 
-    if (Length >= ACPI_PLD_BUFFER_SIZE)
+    if (Length >= ACPI_PLD_REV2_BUFFER_SIZE)
     {
         /* Fifth 32-bit DWord (Revision 2 of _PLD) */
 

@@ -117,11 +117,8 @@
 #include "accommon.h"
 #include "acparser.h"
 #include "amlcode.h"
-#include "acdisasm.h"
 #include "acdebug.h"
 
-
-#ifdef ACPI_DISASSEMBLER
 
 #define _COMPONENT          ACPI_CA_DEBUGGER
         ACPI_MODULE_NAME    ("dmwalk")
@@ -189,10 +186,11 @@ AcpiDmDisassemble (
         return;
     }
 
-    Info.Flags = 0;
-    Info.Level = 0;
-    Info.Count = 0;
+    memset (&Info, 0, sizeof (ACPI_OP_WALK_INFO));
     Info.WalkState = WalkState;
+    Info.StartAml = Op->Common.Aml - sizeof (ACPI_TABLE_HEADER);
+    Info.AmlOffset = Op->Common.Aml - Info.StartAml;
+
     AcpiDmWalkParseTree (Op, AcpiDmDescendingOp, AcpiDmAscendingOp, &Info);
     return;
 }
@@ -487,20 +485,40 @@ AcpiDmDescendingOp (
     UINT32                  AmlOffset;
 
 
-    if (AcpiGbl_DbOpt_Verbose && AcpiGbl_PreviousOp)
-    {
-        /* Dump the entire statement in AML byte code */
+    OpInfo = AcpiPsGetOpcodeInfo (Op->Common.AmlOpcode);
 
-        if (Op->Common.Aml > AcpiGbl_PreviousOp->Common.Aml)
+    /* Listing support to dump the AML code after the ASL statement */
+
+    if (AcpiGbl_DmOpt_Listing)
+    {
+        /* We only care about these classes of objects */
+
+        if ((OpInfo->Class == AML_CLASS_NAMED_OBJECT) ||
+            (OpInfo->Class == AML_CLASS_CONTROL) ||
+            (OpInfo->Class == AML_CLASS_CREATE) ||
+            ((OpInfo->Class == AML_CLASS_EXECUTE) && (!Op->Common.Next)))
         {
-            AcpiOsPrintf ("\n");
-            AcpiUtDumpBuffer (AcpiGbl_PreviousOp->Common.Aml,
-                (Op->Common.Aml - AcpiGbl_PreviousOp->Common.Aml),
-                DB_BYTE_DISPLAY, 0);
-            AcpiDmIndent (Level);
+            if (AcpiGbl_DmOpt_Listing && Info->PreviousAml)
+            {
+                /* Dump the AML byte code for the previous Op */
+
+                if (Op->Common.Aml > Info->PreviousAml)
+                {
+                    AcpiOsPrintf ("\n");
+                    AcpiUtDumpBuffer (
+                        (Info->StartAml + Info->AmlOffset),
+                        (Op->Common.Aml - Info->PreviousAml),
+                        DB_BYTE_DISPLAY,
+                        Info->AmlOffset);
+                    AcpiOsPrintf ("\n");
+                }
+
+                Info->AmlOffset = (Op->Common.Aml - Info->StartAml);
+            }
+
+            Info->PreviousAml = Op->Common.Aml;
         }
     }
-    AcpiGbl_PreviousOp = Op;
 
     if (Op->Common.DisasmFlags & ACPI_PARSEOP_IGNORE)
     {
@@ -519,10 +537,13 @@ AcpiDmDescendingOp (
         {
             AmlOffset = (UINT32) ACPI_PTR_DIFF (Op->Common.Aml,
                             Info->WalkState->ParserState.AmlStart);
-            VERBOSE_PRINT ((DB_FULL_OP_INFO,
-                (Info->WalkState->MethodNode ?
-                    Info->WalkState->MethodNode->Name.Ascii : "   "),
-                AmlOffset, (UINT32) Op->Common.AmlOpcode));
+            if (AcpiGbl_DmOpt_Verbose)
+            {
+                AcpiOsPrintf (DB_FULL_OP_INFO,
+                    (Info->WalkState->MethodNode ?
+                        Info->WalkState->MethodNode->Name.Ascii : "   "),
+                    AmlOffset, (UINT32) Op->Common.AmlOpcode);
+            }
         }
 
         if (Op->Common.AmlOpcode == AML_SCOPE_OP)
@@ -613,8 +634,6 @@ AcpiDmDescendingOp (
 
     /* Start the opcode argument list if necessary */
 
-    OpInfo = AcpiPsGetOpcodeInfo (Op->Common.AmlOpcode);
-
     if ((OpInfo->Flags & AML_HAS_ARGS) ||
         (Op->Common.AmlOpcode == AML_EVENT_OP))
     {
@@ -654,7 +673,7 @@ AcpiDmDescendingOp (
 
                 if (Op->Common.AmlOpcode != AML_INT_NAMEDFIELD_OP)
                 {
-                    if (AcpiGbl_DbOpt_Verbose)
+                    if (AcpiGbl_DmOpt_Verbose)
                     {
                         (void) AcpiPsDisplayObjectPathname (NULL, Op);
                     }
@@ -1118,5 +1137,3 @@ AcpiDmAscendingOp (
 
     return (AE_OK);
 }
-
-#endif  /* ACPI_DISASSEMBLER */

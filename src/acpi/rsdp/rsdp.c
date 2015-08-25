@@ -52,16 +52,16 @@ static int rsdp_test1(fwts_framework *fw)
 	size_t i;
 
 	for (i = 0; i < 6; i++) {
-		if (!isalnum(rsdp->oem_id[i])) {
+		if (!isprint(rsdp->oem_id[i])) {
 			passed = false;
 			break;
 		}
 	}
 	if (!passed) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+		fwts_failed(fw, LOG_LEVEL_LOW,
 			"RSDPBadOEMId",
-			"RSDP: oem_id does not contain any alpha "
-			"numeric characters.");
+			"RSDP: oem_id contains non-printable "
+			"characters.");
 		fwts_advice(fw,
 			"The RSDP OEM Id is non-conforming, but this "
 			"will not affect the system behaviour. However "

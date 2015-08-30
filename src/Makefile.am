@@ -11,8 +11,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/acpica/source/include \
 	-I$(top_srcdir)/src/acpica/source/compiler \
 	-I$(top_srcdir)/efi_runtime \
-	-I=/usr/include/json \
-	-I=/usr/include/json-c \
+	`pkg-config --silence-errors --cflags json` \
+	`pkg-config --silence-errors --cflags json-c` \
 	-pthread `pkg-config --cflags glib-2.0 gio-2.0` \
 	-Wall -Werror -Wextra
 

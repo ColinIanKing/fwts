@@ -1708,10 +1708,76 @@ static void dmi_scan_tables(fwts_framework *fw,
 				struct_count, i);
 }
 
+static void dmi_scan_smbios30_table(fwts_framework *fw,
+	fwts_smbios30_entry *entry,
+	uint8_t  *table)
+{
+	uint8_t *entry_data = table;
+	uint16_t table_max_length;
+	int i = 0;
+
+	table_max_length = entry->struct_table_max_size;
+
+	for (i = 0; entry_data <= (table + table_max_length - 4); i++) {
+		uint64_t addr = entry->struct_table_address + (entry_data - table);
+		fwts_dmi_header hdr;
+		uint8_t *next_entry;
+
+		hdr.type   = entry_data[0];
+		hdr.length = entry_data[1];
+		hdr.handle = GET_UINT16(entry_data + 2);
+		hdr.data   = entry_data;
+
+		/* We found DMI end of table */
+		if (hdr.type == SMBIOS_END_OF_TABLE)
+			break;
+
+		/* Sanity check */
+		if (hdr.length < 4) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_ENTRY_LENGTH,
+				"Invald header length of entry #%d, "
+				"length was 0x%2.2" PRIx8 ".",
+				i, hdr.length);
+			fwts_advice(fw,
+				"DMI entry header lengths must be 4 or more bytes long "
+				"so this error indicates that the DMI table is unreliable "
+				"and DMI table checking has been aborted at entry #%d.", i);
+			break;
+		}
+
+		/* Real Physical Address */
+		next_entry = entry_data + hdr.length;
+
+		/* Look for structure terminator, ends in two zero bytes */
+		while (((next_entry - table + 1) < table_max_length) &&
+		       ((next_entry[0] != 0) || (next_entry[1] != 0))) {
+			next_entry++;
+		}
+
+		/* Skip over terminating two zero bytes, see section 6.1 of spec */
+		next_entry += 2;
+
+		if ((next_entry - table) <= table_max_length)
+			dmicheck_entry(fw, addr, &hdr);
+		else {
+			fwts_failed(fw, LOG_LEVEL_HIGH, DMI_BAD_TABLE_LENGTH,
+				"DMI table maximum size was %" PRId32 " bytes (as specified by "
+				"the SMBIOS 3.0 header) but the DMI entries over the maximum "
+				"length without finding the End-of-Table(Type 127).",
+				table_max_length);
+			break;
+		}
+
+		entry_data = next_entry;
+	}
+
+}
+
 static int dmicheck_test2(fwts_framework *fw)
 {
 	void *addr;
 	fwts_smbios_entry entry;
+	fwts_smbios30_entry entry30;
 	fwts_smbios_type  type;
 	uint16_t version = 0;
 	uint8_t  *table;
@@ -1751,6 +1817,33 @@ static int dmicheck_test2(fwts_framework *fw)
 	dmi_scan_tables(fw, &entry, table);
 
 	(void)fwts_munmap(table, (size_t)entry.struct_table_length);
+
+
+	if (!smbios30_found) {
+		fwts_skipped(fw, "Cannot find SMBIOS30 table entry, skip the test.");
+		return FWTS_SKIP;
+	}
+
+	addr = fwts_smbios30_find_entry(fw, &entry30, &version);
+	if (addr == NULL) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, DMI_NO_TABLE_HEADER,
+			"Cannot find SMBIOS 3.0 table entry.");
+		return FWTS_ERROR;
+	}
+
+	table = fwts_mmap((off_t)entry30.struct_table_address,
+			 (size_t)entry30.struct_table_max_size);
+	if (table == FWTS_MAP_FAILED) {
+		fwts_log_error(fw, "Cannot mmap SMBIOS 3.0 table from "
+			"%16.16" PRIx64 "..%16.16" PRIx64 ".",
+			entry30.struct_table_address,
+			entry30.struct_table_address + entry30.struct_table_max_size);
+		return FWTS_ERROR;
+	}
+
+	dmi_scan_smbios30_table(fw, &entry30, table);
+
+	(void)fwts_munmap(table, (size_t)entry30.struct_table_max_size);
 
 	return FWTS_OK;
 }

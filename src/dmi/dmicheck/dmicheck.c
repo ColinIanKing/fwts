@@ -85,6 +85,7 @@ typedef struct {
 } fwts_dmi_used_by_kernel;
 
 static bool smbios_found = false;
+static bool smbios30_found = false;
 
 /*
  *  Table derived by scanning thousands of DMI table dumps from bug reports
@@ -337,6 +338,23 @@ static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_sm
 		fwts_log_info_verbatum(fw, "    BCD Revision 00 indicates compliance with specification stated in Major/Minor Version.");
 }
 
+static void dmi_dump_entry30(fwts_framework *fw, fwts_smbios30_entry *entry)
+{
+
+	fwts_log_info_verbatum(fw, "SMBIOS30 Entry Point Structure:");
+	fwts_log_info_verbatum(fw, "  Anchor String          : %5.5s", entry->signature);
+	fwts_log_info_verbatum(fw, "  Checksum               : 0x%2.2" PRIx8, entry->checksum);
+	fwts_log_info_verbatum(fw, "  Entry Point Length     : 0x%2.2" PRIx8, entry->length);
+	fwts_log_info_verbatum(fw, "  Major Version          : 0x%2.2" PRIx8, entry->major_version);
+	fwts_log_info_verbatum(fw, "  Minor Version          : 0x%2.2" PRIx8, entry->minor_version);
+	fwts_log_info_verbatum(fw, "  Docrev                 : 0x%2.2" PRIx8, entry->docrev);
+	fwts_log_info_verbatum(fw, "  Entry Point Revision   : 0x%2.2" PRIx8, entry->revision);
+	fwts_log_info_verbatum(fw, "  Reserved               : 0x%2.2" PRIx8, entry->reserved);
+	fwts_log_info_verbatum(fw, "  Table maximum size     : 0x%8.8" PRIx32, entry->struct_table_max_size);
+	fwts_log_info_verbatum(fw, "  Table address          : 0x%16.16" PRIx64, entry->struct_table_address);
+
+}
+
 static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 {
 	uint8_t	*table, *ptr;
@@ -492,6 +510,135 @@ static int smbios_entry_check(fwts_framework *fw)
 
 }
 
+static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
+{
+	uint8_t	*table, *ptr;
+	uint8_t struct_length;
+	uint8_t struct_type = 0;
+	uint16_t i = 0;
+	uint32_t table_length = entry->struct_table_max_size;
+	int ret = FWTS_OK;
+
+	ptr = table = fwts_mmap((off_t)entry->struct_table_address,
+			  (size_t)table_length);
+	if (table == FWTS_MAP_FAILED) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SMBIOS30TableAddressNotMapped",
+			"Cannot mmap SMBIOS 3.0 tables from "
+			"%16.16" PRIx64 "..%16.16" PRIx64 ".",
+			entry->struct_table_address,
+			entry->struct_table_address + table_length);
+			return FWTS_ERROR;
+	}
+
+	while (1)
+	{
+		if (ptr > table + table_length) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"SMBIOS30TableLengthTooSmall",
+				"The maximum size indicated by the SMBIOS 3.0 table length is "
+				"smaller than the dmi data or the DMI end of table not found.");
+			ret = FWTS_ERROR;
+			break;
+		}
+
+		struct_type = ptr[0];
+		struct_length = ptr[1];
+
+		if (struct_length < 4) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"SMBIOSIllegalTableEntry",
+				"The size of a DMI entry %" PRIu16 " is illegal, "
+				"DMI data is either wrong or the SMBIOS Table "
+				"Pointer is pointing to the wrong memory region.", i);
+			ret = FWTS_ERROR;
+			break;
+		}
+		ptr += struct_length;
+
+		/* Scan for end of DMI entry, must be 2 zero bytes */
+		while (((ptr - table + 1) < table_length) &&
+		       ((ptr[0] != 0) || (ptr[1] != 0)))
+				ptr++;
+		/* Skip over the two zero bytes */
+		ptr += 2;
+
+		/* We found DMI end of table and inside the maximum length? */
+		if (struct_type == 127) {
+			if (ptr <= table + table_length)
+				break;
+			else {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"SMBIOS30TableLengthTooSmall",
+					"The end of DMI table marker structure was found "
+					"but outside the structure table maximum size");
+				ret = FWTS_ERROR;
+				break;
+			}
+		}
+	}
+
+	(void)fwts_munmap(table, (size_t)entry->struct_table_max_size);
+
+	return ret;
+}
+
+static int smbios30_entry_check(fwts_framework *fw)
+{
+	void *addr = 0;
+
+	fwts_smbios30_entry entry;
+	uint16_t version;
+	uint8_t checksum;
+
+	if ((addr = fwts_smbios30_find_entry(fw, &entry, &version)) == NULL)
+		return FWTS_ERROR;
+
+	fwts_passed(fw, "Found SMBIOS30 Table Entry Point at %p", addr);
+	dmi_dump_entry30(fw, &entry);
+	fwts_log_nl(fw);
+
+	checksum = fwts_checksum((uint8_t *)&entry, sizeof(fwts_smbios30_entry));
+	if (checksum != 0)
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOS30BadChecksum",
+			"SMBIOS30 Table Entry Point Checksum is 0x%2.2" PRIx8
+			", should be 0x%2.2" PRIx8,
+			entry.checksum, (uint8_t)(entry.checksum - checksum));
+	else
+		fwts_passed(fw, "SMBIOS30 Table Entry Point Checksum is valid.");
+
+	if (entry.length != 0x18) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SMBIOS30BadEntryLength",
+			"SMBIOS30 Table Entry Point Length is 0x%2.2"  PRIx8
+			", should be 0x18", entry.length);
+	} else
+		fwts_passed(fw, "SMBIOS30 Table Entry Point Length is valid.");
+
+	if (entry.reserved)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SMBIOSBadReserved",
+			"SMBIOS30 Table Entry Point Reserved is 0x%2.2" PRIx8
+			", should be 0", entry.reserved);
+
+	if ((entry.revision == 1) && (entry.struct_table_address == 0)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOS30BadTableAddress",
+			"SMBIOS Table Entry Structure Table Address is NULL and should be defined.");
+	} else {
+		/*
+		 * Now does the SMBIOS 3.0.0 table look sane? If not,
+		 * the SMBIOS Structure Table could be bad
+		 */
+		if (dmi_smbios30_sane(fw, &entry) == FWTS_OK)
+			fwts_passed(fw, "SMBIOS 3.0 Table Entry Structure Table Address and Length looks valid.");
+	}
+
+	return FWTS_OK;
+
+}
+
 static int dmicheck_test1(fwts_framework *fw)
 {
 
@@ -499,10 +646,14 @@ static int dmicheck_test1(fwts_framework *fw)
 		smbios_found = true;
 	}
 
-	if (!smbios_found) {
+	if (smbios30_entry_check(fw) != FWTS_ERROR) {
+		smbios30_found = true;
+	}
+
+	if (!smbios_found && !smbios30_found) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"SMBIOSNoEntryPoint",
-			"Could not find SMBIOS Table Entry Point.");
+			"Could not find any SMBIOS Table Entry Points.");
 		return FWTS_ERROR;
 	}
 
@@ -1605,7 +1756,7 @@ static int dmicheck_test2(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test dmicheck_tests[] = {
-	{ dmicheck_test1, "Find and test SMBIOS Table Entry Point." },
+	{ dmicheck_test1, "Find and test SMBIOS Table Entry Points." },
 	{ dmicheck_test2, "Test DMI/SMBIOS tables for errors." },
 	{ NULL, NULL }
 };

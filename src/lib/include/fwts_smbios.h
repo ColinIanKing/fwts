@@ -95,6 +95,22 @@ typedef struct {
 	uint8_t		smbios_bcd_revision;
 }  __attribute__ ((packed)) fwts_smbios_entry;
 
+/*
+ * From System Management BIOS (SMBIOS) Reference Specification 3.0.0
+ */
+typedef struct {
+	uint8_t		signature[5];
+	uint8_t		checksum;
+	uint8_t		length;
+	uint8_t		major_version;
+	uint8_t		minor_version;
+	uint8_t		docrev;
+	uint8_t		revision;
+	uint8_t		reserved;
+	uint32_t	struct_table_max_size;
+	uint64_t	struct_table_address;
+}  __attribute__ ((packed)) fwts_smbios30_entry;
+
 void *fwts_smbios_find_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type, uint16_t *version);
 
 #endif

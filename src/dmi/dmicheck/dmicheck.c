@@ -84,6 +84,8 @@ typedef struct {
 	uint8_t	offset;
 } fwts_dmi_used_by_kernel;
 
+static bool smbios_found = false;
+
 /*
  *  Table derived by scanning thousands of DMI table dumps from bug reports
  */
@@ -406,9 +408,10 @@ static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 	return ret;
 }
 
-static int dmicheck_test1(fwts_framework *fw)
+static int smbios_entry_check(fwts_framework *fw)
 {
 	void *addr = 0;
+
 	fwts_smbios_entry entry;
 	fwts_smbios_type  type;
 	uint16_t	  version;
@@ -422,12 +425,8 @@ static int dmicheck_test1(fwts_framework *fw)
 		"This test tries to find and sanity check the SMBIOS "
 		"data structures.");
 
-	if ((addr = fwts_smbios_find_entry(fw, &entry, &type, &version)) == NULL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SMBIOSNoEntryPoint",
-			"Could not find SMBIOS Table Entry Point.");
-		return FWTS_OK;
-	}
+	if ((addr = fwts_smbios_find_entry(fw, &entry, &type, &version)) == NULL)
+		return FWTS_ERROR;
 
 	fwts_passed(fw, "Found SMBIOS Table Entry Point at %p", addr);
 	dmi_dump_entry(fw, &entry, type);
@@ -487,6 +486,24 @@ static int dmicheck_test1(fwts_framework *fw)
 		 */
 		if (dmi_sane(fw, &entry) == FWTS_OK)
 			fwts_passed(fw, "SMBIOS Table Entry Structure Table Address and Length looks valid.");
+	}
+
+	return FWTS_OK;
+
+}
+
+static int dmicheck_test1(fwts_framework *fw)
+{
+
+	if (smbios_entry_check(fw) != FWTS_ERROR) {
+		smbios_found = true;
+	}
+
+	if (!smbios_found) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"SMBIOSNoEntryPoint",
+			"Could not find SMBIOS Table Entry Point.");
+		return FWTS_ERROR;
 	}
 
 	return FWTS_OK;
@@ -1547,6 +1564,11 @@ static int dmicheck_test2(fwts_framework *fw)
 	fwts_smbios_type  type;
 	uint16_t version = 0;
 	uint8_t  *table;
+
+	if (!smbios_found) {
+		fwts_skipped(fw, "Cannot find SMBIOS or DMI table entry, skip the test.");
+		return FWTS_SKIP;
+	}
 
 	addr = fwts_smbios_find_entry(fw, &entry, &type, &version);
 	if (addr == NULL) {

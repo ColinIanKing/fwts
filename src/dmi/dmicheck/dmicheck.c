@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <limits.h>
 
-#define DMI_VERSION			(0x0208)
+#define DMI_VERSION			(0x0300)
 #define VERSION_MAJOR(v)		((v) >> 8)
 #define VERSION_MINOR(v)		((v) & 0xff)
 
@@ -51,6 +51,7 @@
 #define DMI_MGMT_CTRL_HOST_TYPE		"DMIMgmtCtrlHostType"
 #define DMI_INVALID_ENTRY_LENGTH	"DMIInvalidEntryLength"
 #define DMI_INVALID_HARDWARE_ENTRY	"DMIInvalidHardwareEntry"
+#define DMI_RESERVED_VALUE_USED		"DMIReservedValueUsed"
 
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
@@ -1089,12 +1090,21 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Type", hdr, 0x5, 0x1, 0x6);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
-			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x2c);
+			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x30);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x21);
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x22);
+			if (hdr->length < 0x28)
+				break;
+			if (GET_UINT16(data + 0x26) & 0xf0)
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
+					"Reserved bits 0x%4.4" PRIx16 " was used"
+					"bits 8..15 would be reserved while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+					GET_UINT16(data + 0x26),
+					table, addr, "Processor Characteristics", 0x26);
 			break;
 
 		case 5: /* 7.6 */
@@ -1174,7 +1184,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0c)
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
-			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x13)) ||
+			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x20)) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2x" PRIx8 " "
@@ -1184,7 +1194,16 @@ static void dmicheck_entry(fwts_framework *fw,
 					data[0x5], table, addr, "Slot Type", 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
 			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x4);
-			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x4);
+			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x6);
+			if (hdr->length < 0x0d)
+				break;
+			if (data[0xc] & 0xf8)
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
+					"Reserved bits 0x%2.2" PRIx8 " was used"
+					"bits 3..7 would be reserved while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+					data[0xc],
+					table, addr, "Slot Characteristics 2", 0xc);
 			break;
 
 		case 10: /* 7.11 */
@@ -1314,7 +1333,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0xf);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
-			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x19);
+			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x1e);
 			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x17);

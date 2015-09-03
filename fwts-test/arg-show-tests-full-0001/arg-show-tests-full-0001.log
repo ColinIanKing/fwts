@@ -341,7 +341,7 @@ Batch tests:
  dmar            (1 test):
   DMA Remapping test.
  dmicheck        (2 tests):
-  Find and test SMBIOS Table Entry Point.
+  Find and test SMBIOS Table Entry Points.
   Test DMI/SMBIOS tables for errors.
  ebda            (1 test):
   Test EBDA is reserved in E820 table.

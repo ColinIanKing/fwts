@@ -110,7 +110,7 @@ static int mchi_test1(fwts_framework *fw)
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"MCHIInvalidProtocolIdentifier",
-			"MCHI Protocol Indentifier 0x%2.2" PRIx8 " which is reserved, "
+			"MCHI Protocol Identifier 0x%2.2" PRIx8 " which is reserved, "
 			"allowed values are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or "
 			"255 (OEM defined)", mchi->protocol_identifier);
 	}

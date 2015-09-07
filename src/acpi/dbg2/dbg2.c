@@ -384,7 +384,7 @@ static int dbg2_test1(fwts_framework *fw)
 		if (!length_ok)
 			break;
 
-		/* ..and onto the next info stucture .. */
+		/* ..and onto the next info structure .. */
 		info = (fwts_acpi_table_dbg2_info *)
 			((uint8_t *)info + info->length);
 	}

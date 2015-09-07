@@ -96,7 +96,7 @@ static int erst_test1(fwts_framework *fw)
 
 #if defined(ERST_DEBUG_ENTRY)
 		/*  Disable this for now, it causes the test to be too verbose */
-		fwts_log_info_verbatum(fw, "ERST Serialization Instuction Entry %" PRIu32 ":", i);
+		fwts_log_info_verbatum(fw, "ERST Serialization Instruction Entry %" PRIu32 ":", i);
 		fwts_log_info_verbatum(fw, "  Serialization Action:     0x%8.8" PRIx8, entry->serialization_action);
 		fwts_log_info_verbatum(fw, "  Instruction:              0x%8.8" PRIx8, entry->instruction);
 		fwts_log_info_verbatum(fw, "  Flags:                    0x%8.8" PRIx8, entry->flags);

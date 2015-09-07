@@ -571,7 +571,7 @@ static void hest_check_generic_error_source(
 	fwts_acpi_table_hest_generic_hardware_error_source *source =
 		(fwts_acpi_table_hest_generic_hardware_error_source *)*data;
 
-	/* Enough data for an empty machine check exceptions stucture? */
+	/* Enough data for an empty machine check exceptions structure? */
 	if (*length < (ssize_t)sizeof(fwts_acpi_table_hest_generic_hardware_error_source)) {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTGenericHardwareErrorSourceTooShort",

@@ -27,9 +27,9 @@ mchi            FAILED [HIGH] MCHIInvalidInterfaceType: Test 1, MCHI
 mchi            Interface Type is 0x01 which is reserved, allowed values
 mchi            are 0x02..0x08
 mchi            FAILED [HIGH] MCHIInvalidProtocolIdentifier: Test 1, MCHI
-mchi            Protocol Indentifier 0xfe which is reserved, allowed
-mchi            values are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or
-mchi            255 (OEM defined)
+mchi            Protocol Identifier 0xfe which is reserved, allowed values
+mchi            are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or 255
+mchi            (OEM defined)
 mchi            FAILED [HIGH] MCHIInterruptTypeReservedNonZero: Test 1,
 mchi            MCHI Interrupt Type 0x80 has some reserved bits [7:2] set,
 mchi            these should be all zero.

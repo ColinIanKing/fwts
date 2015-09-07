@@ -4,7 +4,105 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
-   "pattern": "Get fan state failed",
+   "pattern": "failed to find NFIT",
+   "advice": "ACPI NFIT driver could not find an ACPI NFIT table",
+   "label": "KlogAcpiNfitNoTable"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "spa.* exceeds max mappings",
+   "advice": "ACPI NFIT driver failed to make a NFIT DIMM mapping, exceeded the configured maximum allowed",
+   "label": "KlogAcpiNfitMappingsExceeded"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "spa.* dimm: .* not found",
+   "advice": "ACPI NFIT driver could not map a NFIT DIMM, device is not enabled.",
+   "label": "KlogAcpiNfitDimmNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "failed to find DCR",
+   "advice": "ACPI NFIT driver could not find a Device Control Region for a DIMM, device is not enabled.",
+   "label": "KlogAcpiNfitNoDcr"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "duplicate DCR detected:",
+   "advice": "ACPI NFIT driver found multiple Device Control Regions for a DIMM, the first one found was selected.",
+   "label": "KlogAcpiNfitDuplicateDcr"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "failed to retrieve_STA, disabling...",
+   "advice": "ACPI NFIT driver could not evaluate the _STA object for an NFIT device, so it was not enabled",
+   "label": "KlogAcpiNfitNoAddr"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "no ACPI.NFIT device with _ADR .*, disabling...",
+   "advice": "ACPI NFIT driver could not find a child device with a specific address, so it was not enabled",
+   "label": "KlogAcpiNfitNoAddr"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "unknown table .* parsing nfit",
+   "advice": "ACPI NFIT driver found an unknown NFIT structure type and cannot parse this particular NFIT structure",
+   "label": "KlogAcpiNfitInvalidType"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "underrun cmd: .* buf_len: .* out_len:",
+   "advice": "ACPI NFIT driver could not send a control message, output buffer overran",
+   "label": "KlogAcpiNfit"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ACPI Table .* OEM:.* not found in RSDT/XSDT",
+   "advice": "ACPI could not found a specified ACPI table while evaluating table region operands. The table does not exist in the RSDT or XSDT table pointers",
+   "label": "KlogAcpiTableNotFound"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "[DSDT] table load failed",
+   "advice": "ACPI was unable to load the DSDT, system will be missing AML from the Differentiated System Description Table",
+   "label": "KlogAcpiDSDTLoadFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "(.*:.*) while loading table",
+   "advice": "ACPI was unable to load an ACPI table, an ACPI exception occurred trying to load it",
+   "label": "KlogAcpiTableLoadFailed"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": ".* table load failures, .* successful",
+   "advice": "ACPI was unable to load one or more ACPI tables",
+   "label": "KlogAcpiTableLoadFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Node is unresolved or uninitialized",
+   "advice": "Internal ACPI error while trying to resolve an ACPI object node",
+   "label": "KlogAcpiNodeError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "fan state failed",
    "advice": "ACPI could not evaluate the fan state via the _FST object, perhaps this object does not exist or the object fails to evaluate correctly.",
    "label": "KlogAcpiGetFanState"
   },

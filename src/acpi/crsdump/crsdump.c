@@ -305,12 +305,11 @@ static const char *crs_pin_configuration(const uint64_t val)
 static const char *crs_irq_map(const uint64_t val)
 {
 	static char buf[6 + (32 * 4)];
-	const size_t n = sizeof(buf) - 1;
 
-	strncpy(buf, "IRQ:", n);
+	strncpy(buf, "IRQ:", 5);
 
 	if (!val) {
-		strncat(buf, " none", n);
+		strncat(buf, " none", 6);
 	} else {
 		unsigned int i;
 
@@ -319,7 +318,7 @@ static const char *crs_irq_map(const uint64_t val)
 				char tmp[5];
 
 				snprintf(tmp, sizeof(tmp), " %u", i);
-				strncat(buf, tmp, n);
+				strncat(buf, tmp, 4);
 			}
 		}
 	}

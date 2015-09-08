@@ -655,6 +655,11 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(
 		if (n != 16)
 			break;
 	}
+	/* Unlikely, but an empty table should be checked for */
+	if (!tmp) {
+		fwts_log_error(fw, "ACPI table parser found an empty table '%s'.", name);
+		return NULL;
+	}
 
 	/* Allocate the table using low 32 bit memory */
 	if ((table = fwts_low_malloc(len)) == NULL) {

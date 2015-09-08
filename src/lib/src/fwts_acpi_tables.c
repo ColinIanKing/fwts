@@ -533,7 +533,7 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(
 	char buffer[128];
 	uint8_t *table;
 	uint8_t *tmp = NULL;
-	char *ptr = buffer;
+	char *ptr;
 	size_t len = 0;
 	unsigned long long table_addr;
 	ptrdiff_t name_len;

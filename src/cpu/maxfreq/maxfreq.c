@@ -78,6 +78,11 @@ static int maxfreq_test1(fwts_framework *fw)
 		if (strstr(fwts_text_list_text(item), "model name"))
 			cpus++;
 	}
+	if (!cpus) {
+		fwts_log_error(fw, "Cannot find any CPUs.");
+		fwts_list_free(cpuinfo, free);
+		return FWTS_ERROR;
+	}
 
 	if ((cpufreq = calloc(cpus, sizeof(double))) == NULL) {
 		fwts_log_error(fw, "Cannot create cpu frequency array.");

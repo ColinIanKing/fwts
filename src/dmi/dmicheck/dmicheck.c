@@ -1068,7 +1068,7 @@ static void dmicheck_entry(fwts_framework *fw,
 						if ((val < 0x1) || (val > 0xd)) {
 							fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 								"Out of range value 0x%2.2" PRIx8
-								" (range allowed 0x00..0x42) "
+								" (range allowed 0x01..0x0d) "
 								"while accessing entry '%s' @ "
 								"0x%8.8" PRIx32 ", field "
 								"'Base Board Type %d', offset 0x%2.2x",

@@ -558,7 +558,7 @@ static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
 		ptr += struct_length;
 
 		/* Scan for end of DMI entry, must be 2 zero bytes */
-		while (((ptr - table + 1) < table_length) &&
+		while (((ptr - table + 1) < (ssize_t)table_length) &&
 		       ((ptr[0] != 0) || (ptr[1] != 0)))
 				ptr++;
 		/* Skip over the two zero bytes */

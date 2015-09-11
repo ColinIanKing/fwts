@@ -1,3 +1,52 @@
+fwts (15.09.00-0ubuntu1) wily; urgency=low
+
+  [Alex Hung]
+  * acpi: method: add _CR3 test
+  * acpi: method: add _MTL test
+  * acpi: method: add _RST test
+  * acpi: method: add _PRR test
+  * fwts-test: update for _CR3, _MTL, _RST and _PRR method tests
+  * acpi: fadt: merge tests for reset register
+
+  [Colin Ian King]
+  * cpu: cpufreq: reduce scope of variables
+  * acpi: gpedump: clarify precedence for & and ?
+  * lib: fwts_cpu: reduce scope on variables
+  * lib: fwts_log: re-work to clean up va_arg scoping
+  * uefi: uefirtvariable: clean up cppcheck style warning
+  * doc: fwts manpage: Update contribution authors
+  * ACPICA: Update to version 20150717 (LP: #1486253)
+  * acpi: rsdp: make OEM ID test less strict
+  * doc: update authors and add some warranty info at end of manual
+  * data: klog.json: sync with latest 4.2 kernel messages (LP: #1493039)
+  * fix some spelling mistakes in code and sync fwts-tests accordingly
+  * cpu: maxfreq: check for unlikely event that no CPUs in cpu list
+  * acpi: crsdump: fix incorrect use of string size in string copies
+  * lib: fwts_acpi_tables: add checking for empty table parsing
+  * lib: fwts_acpi_table: remove dead initialisation of ptr
+  * dmi: dmicheck: fix build error on 32 bit builds
+
+  [David Ward]
+  * Makefile.am: use pkg-config for json-c
+
+  [Ivan Hu]
+  * fwts-test: fix typos for uefi acpi table regression test
+  * lib: fwts_smbios: fix the smbios version from uefi always zero
+    (LP: #1484023)
+  * lib: fwts_scan_efi_systable: fix getting wrong smbios entry (LP: #1484046)
+  * acpi: dbg2: won't find obj when no namespace device path (lp: #1486893)
+  * lib: fwts_smbios: add the struct definition for smbios 3.0.0
+  * dmicheck: re-orgainise the smbios entry point check
+  * lib: smbios: add smbios version 3.0.0 entry find helper
+  * dmicheck: add test for smbios 3.0.0 entry point
+  * dmicheck: add error test for SMBIOS 3.0.0 table
+  * dmicheck: sync the dmi value test with smbios 3.0.0 spec
+  * fwts-test: update test to sync with smbios 3.0.0
+  * dmicheck: fix the Base Board type range typos
+  * auto-packager: mkpackage.sh: remove utopic
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Fri, 11 Sep 2015 10:40:40 +0800
+
 fwts (15.08.00-0ubuntu1) wily; urgency=low
 
   [Alex Hung]

@@ -13,5 +13,5 @@ else
 	echo FAILED: $TEST, $NAME
 fi
 
-#rm $TMPLOG
+rm $TMPLOG
 exit $ret

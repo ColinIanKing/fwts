@@ -109,7 +109,7 @@
  * _GL   5.7.1		n/a
  * _GLK  6.5.7		Y
  * _GPD  B.4.4		Y
- * _GPE  5.3.1, 12.11	N
+ * _GPE  12.11		Y
  * _GRT  9.18.3		Y
  * _GSB  6.2.6		Y
  * _GTF  9.8.1.1	Y
@@ -5779,6 +5779,58 @@ static int method_test_TZP(fwts_framework *fw)
 		"_TZP", NULL, 0, method_test_polling_return, "_TZP");
 }
 
+static void method_test_GPE_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+	FWTS_UNUSED(buf);
+	bool failed = false;
+
+	switch (obj->Type) {
+	case ACPI_TYPE_INTEGER:
+		if (obj->Integer.Value <= 255)
+			fwts_passed(fw, "%s returned an integer 0x%8.8" PRIx64,
+				name, (uint64_t)obj->Integer.Value);
+		else
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"MethodGPEInvalidInteger",
+				"%s returned an invalid integer 0x%8.8" PRIx64,
+				name, (uint64_t)obj->Integer.Value);
+		break;
+	case ACPI_TYPE_PACKAGE:
+		if (obj->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GPEBadSubPackageReturnType",
+			"%s sub-package element 0 is not a reference.",	name);
+		}
+
+		if (obj->Package.Elements[1].Type != ACPI_TYPE_INTEGER) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GPEBadSubPackageReturnType",
+			"%s sub-package element 1 is not an integer.", name);
+		}
+
+		if (!failed)
+			method_passed_sane(fw, name, "package");
+
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_HIGH, "Method_GPEBadSubReturnType",
+			"%s did not return an integer or a package.", name);
+		break;
+	}
+}
+
+static int method_test_GPE(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_GPE", NULL, 0, method_test_GPE_return, "_GPE");
+}
+
 /*
  * Section 16 Waking and Sleeping
  */
@@ -6323,7 +6375,6 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_name_check, "Test Method Names." },
 
 	/* Section 5.3 */
-	/* { method_test_GPE, "Test _GPE (General Purpose Events)." }, */
 	/* { method_test_PR , "Test _PR  (Processor)." }, */
 
 	/* Section 5.6 ACPI Event Programming Model */
@@ -6586,6 +6637,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TZD, "Test _TZD (Thermal Zone Devices)." },
 	{ method_test_TZM, "Test _TZM (Thermal Zone member)." },
 	{ method_test_TZP, "Test _TZP (Thermal Zone Polling)." },
+
+	/* Section 12 Embedded Controller Interface */
+	{ method_test_GPE, "Test _GPE (General Purpose Events)." },
 
 	/* Section 16 Waking and Sleeping */
 

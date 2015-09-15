@@ -61,7 +61,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (184 tests):
+ method          (185 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -220,6 +220,7 @@ ACPI tests:
   Test _TZD (Thermal Zone Devices).
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
+  Test _GPE (General Purpose Events).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
   Test _S0  (System S0 State).
@@ -388,7 +389,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (184 tests):
+ method          (185 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -547,6 +548,7 @@ Batch tests:
   Test _TZD (Thermal Zone Devices).
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
+  Test _GPE (General Purpose Events).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
   Test _S0  (System S0 State).

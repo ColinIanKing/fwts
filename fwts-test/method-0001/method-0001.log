@@ -1,37 +1,37 @@
 method          method: ACPI DSDT Method Semantic tests.
 method          ----------------------------------------------------------
-method          Test 1 of 184: Test Method Names.
+method          Test 1 of 185: Test Method Names.
 method          Found 1061 Objects 
 method          PASSED: Test 1, Method names contain legal characters.
 method          
-method          Test 2 of 184: Test _AEI.
+method          Test 2 of 185: Test _AEI.
 method          SKIPPED: Test 2, Skipping test for non-existant object
 method          _AEI.
 method          
-method          Test 3 of 184: Test _EVT (Event Method).
+method          Test 3 of 185: Test _EVT (Event Method).
 method          SKIPPED: Test 3, Skipping test for non-existant object
 method          _EVT.
 method          
-method          Test 4 of 184: Test _DLM (Device Lock Mutex).
+method          Test 4 of 185: Test _DLM (Device Lock Mutex).
 method          SKIPPED: Test 4, Skipping test for non-existant object
 method          _DLM.
 method          
-method          Test 5 of 184: Test _PIC (Inform AML of Interrupt Model).
+method          Test 5 of 185: Test _PIC (Inform AML of Interrupt Model).
 method          PASSED: Test 5, \_PIC returned no values as expected.
 method          PASSED: Test 5, \_PIC returned no values as expected.
 method          PASSED: Test 5, \_PIC returned no values as expected.
 method          
-method          Test 6 of 184: Test _CID (Compatible ID).
+method          Test 6 of 185: Test _CID (Compatible ID).
 method          PASSED: Test 6, \_SB_.PCI0._CID returned an integer
 method          0x030ad041 (EISA ID PNP0A03).
 method          PASSED: Test 6, \_SB_.PCI0.LPCB.HPET._CID returned an
 method          integer 0x010cd041 (EISA ID PNP0C01).
 method          
-method          Test 7 of 184: Test _DDN (DOS Device Name).
+method          Test 7 of 185: Test _DDN (DOS Device Name).
 method          SKIPPED: Test 7, Skipping test for non-existant object
 method          _DDN.
 method          
-method          Test 8 of 184: Test _HID (Hardware ID).
+method          Test 8 of 185: Test _HID (Hardware ID).
 method          PASSED: Test 8, \_SB_.AMW0._HID returned a string
 method          'PNP0C14' as expected.
 method          PASSED: Test 8, \_SB_.LID0._HID returned an integer
@@ -85,31 +85,31 @@ method          integer 0x0303d041 (EISA ID PNP0303).
 method          PASSED: Test 8, \_SB_.PCI0.LPCB.PS2M._HID returned an
 method          integer 0x130fd041 (EISA ID PNP0F13).
 method          
-method          Test 9 of 184: Test _HRV (Hardware Revision Number).
+method          Test 9 of 185: Test _HRV (Hardware Revision Number).
 method          SKIPPED: Test 9, Skipping test for non-existant object
 method          _HRV.
 method          
-method          Test 10 of 184: Test _MLS (Multiple Language String).
+method          Test 10 of 185: Test _MLS (Multiple Language String).
 method          SKIPPED: Test 10, Skipping test for non-existant object
 method          _MLS.
 method          
-method          Test 11 of 184: Test _PLD (Physical Device Location).
+method          Test 11 of 185: Test _PLD (Physical Device Location).
 method          SKIPPED: Test 11, Skipping test for non-existant object
 method          _PLD.
 method          
-method          Test 12 of 184: Test _SUB (Subsystem ID).
+method          Test 12 of 185: Test _SUB (Subsystem ID).
 method          SKIPPED: Test 12, Skipping test for non-existant object
 method          _SUB.
 method          
-method          Test 13 of 184: Test _SUN (Slot User Number).
+method          Test 13 of 185: Test _SUN (Slot User Number).
 method          SKIPPED: Test 13, Skipping test for non-existant object
 method          _SUN.
 method          
-method          Test 14 of 184: Test _STR (String).
+method          Test 14 of 185: Test _STR (String).
 method          SKIPPED: Test 14, Skipping test for non-existant object
 method          _STR.
 method          
-method          Test 15 of 184: Test _UID (Unique ID).
+method          Test 15 of 185: Test _UID (Unique ID).
 method          PASSED: Test 15, \_SB_.AMW0._UID correctly returned sane
 method          looking value 0x00000000.
 method          PASSED: Test 15, \_SB_.PCI0.PDRC._UID correctly returned
@@ -135,11 +135,11 @@ method          returned sane looking value 0x00000002.
 method          PASSED: Test 15, \_SB_.PCI0.LPCB.BAT1._UID correctly
 method          returned sane looking value 0x00000001.
 method          
-method          Test 16 of 184: Test _CDM (Clock Domain).
+method          Test 16 of 185: Test _CDM (Clock Domain).
 method          SKIPPED: Test 16, Skipping test for non-existant object
 method          _CDM.
 method          
-method          Test 17 of 184: Test _CRS (Current Resource Settings).
+method          Test 17 of 185: Test _CRS (Current Resource Settings).
 method          PASSED: Test 17, \_SB_.PCI0._CRS (WORD Address Space
 method          Descriptor) looks sane.
 method          PASSED: Test 17, \_SB_.PCI0.PDRC._CRS (32-bit Fixed
@@ -183,11 +183,11 @@ method          Descriptor) looks sane.
 method          PASSED: Test 17, \_SB_.PCI0.LPCB.PS2M._CRS (IRQ
 method          Descriptor) looks sane.
 method          
-method          Test 18 of 184: Test _DSD (Device Specific Data).
+method          Test 18 of 185: Test _DSD (Device Specific Data).
 method          SKIPPED: Test 18, Skipping test for non-existant object
 method          _DSD.
 method          
-method          Test 19 of 184: Test _DIS (Disable).
+method          Test 19 of 185: Test _DIS (Disable).
 method          PASSED: Test 19, \_SB_.PCI0.LPCB.LNKA._DIS returned no
 method          values as expected.
 method          PASSED: Test 19, \_SB_.PCI0.LPCB.LNKB._DIS returned no
@@ -205,24 +205,24 @@ method          values as expected.
 method          PASSED: Test 19, \_SB_.PCI0.LPCB.LNKH._DIS returned no
 method          values as expected.
 method          
-method          Test 20 of 184: Test _DMA (Direct Memory Access).
+method          Test 20 of 185: Test _DMA (Direct Memory Access).
 method          SKIPPED: Test 20, Skipping test for non-existant object
 method          _DMA.
 method          
-method          Test 21 of 184: Test _FIX (Fixed Register Resource
+method          Test 21 of 185: Test _FIX (Fixed Register Resource
 method          Provider).
 method          SKIPPED: Test 21, Skipping test for non-existant object
 method          _FIX.
 method          
-method          Test 22 of 184: Test _GSB (Global System Interrupt Base).
+method          Test 22 of 185: Test _GSB (Global System Interrupt Base).
 method          SKIPPED: Test 22, Skipping test for non-existant object
 method          _GSB.
 method          
-method          Test 23 of 184: Test _HPP (Hot Plug Parameters).
+method          Test 23 of 185: Test _HPP (Hot Plug Parameters).
 method          SKIPPED: Test 23, Skipping test for non-existant object
 method          _HPP.
 method          
-method          Test 24 of 184: Test _PRS (Possible Resource Settings).
+method          Test 24 of 185: Test _PRS (Possible Resource Settings).
 method          PASSED: Test 24, \_SB_.PCI0.LPCB.LNKA._PRS (IRQ
 method          Descriptor) looks sane.
 method          PASSED: Test 24, \_SB_.PCI0.LPCB.LNKB._PRS (IRQ
@@ -240,51 +240,51 @@ method          Descriptor) looks sane.
 method          PASSED: Test 24, \_SB_.PCI0.LPCB.LNKH._PRS (IRQ
 method          Descriptor) looks sane.
 method          
-method          Test 25 of 184: Test _PXM (Proximity).
+method          Test 25 of 185: Test _PXM (Proximity).
 method          SKIPPED: Test 25, Skipping test for non-existant object
 method          _PXM.
 method          
-method          Test 26 of 184: Test _CCA (Cache Coherency Attribute).
+method          Test 26 of 185: Test _CCA (Cache Coherency Attribute).
 method          SKIPPED: Test 26, Skipping test for non-existant object
 method          _CCA.
 method          
-method          Test 27 of 184: Test _EDL (Eject Device List).
+method          Test 27 of 185: Test _EDL (Eject Device List).
 method          SKIPPED: Test 27, Skipping test for non-existant object
 method          _EDL.
 method          
-method          Test 28 of 184: Test _EJD (Ejection Dependent Device).
+method          Test 28 of 185: Test _EJD (Ejection Dependent Device).
 method          SKIPPED: Test 28, Skipping test for non-existant object
 method          _EJD.
 method          
-method          Test 29 of 184: Test _EJ0 (Eject).
+method          Test 29 of 185: Test _EJ0 (Eject).
 method          SKIPPED: Test 29, Skipping test for non-existant object
 method          _EJ0.
 method          
-method          Test 30 of 184: Test _EJ1 (Eject).
+method          Test 30 of 185: Test _EJ1 (Eject).
 method          SKIPPED: Test 30, Skipping test for non-existant object
 method          _EJ1.
 method          
-method          Test 31 of 184: Test _EJ2 (Eject).
+method          Test 31 of 185: Test _EJ2 (Eject).
 method          SKIPPED: Test 31, Skipping test for non-existant object
 method          _EJ2.
 method          
-method          Test 32 of 184: Test _EJ3 (Eject).
+method          Test 32 of 185: Test _EJ3 (Eject).
 method          SKIPPED: Test 32, Skipping test for non-existant object
 method          _EJ3.
 method          
-method          Test 33 of 184: Test _EJ4 (Eject).
+method          Test 33 of 185: Test _EJ4 (Eject).
 method          SKIPPED: Test 33, Skipping test for non-existant object
 method          _EJ4.
 method          
-method          Test 34 of 184: Test _LCK (Lock).
+method          Test 34 of 185: Test _LCK (Lock).
 method          SKIPPED: Test 34, Skipping test for non-existant object
 method          _LCK.
 method          
-method          Test 35 of 184: Test _RMV (Remove).
+method          Test 35 of 185: Test _RMV (Remove).
 method          PASSED: Test 35, \_SB_.PCI0.RP03.PXSX._RMV correctly
 method          returned sane looking value 0x00000001.
 method          
-method          Test 36 of 184: Test _STA (Status).
+method          Test 36 of 185: Test _STA (Status).
 method          PASSED: Test 36, \_SB_.PCI0.PEGP.VGA_._STA correctly
 method          returned sane looking value 0x0000000f.
 method          PASSED: Test 36, \_SB_.PCI0.LPCB.LNKA._STA correctly
@@ -308,73 +308,73 @@ method          returned sane looking value 0x00000000.
 method          PASSED: Test 36, \_SB_.PCI0.LPCB.BAT1._STA correctly
 method          returned sane looking value 0x0000001f.
 method          
-method          Test 37 of 184: Test _DEP (Operational Region
+method          Test 37 of 185: Test _DEP (Operational Region
 method          Dependencies).
 method          SKIPPED: Test 37, Skipping test for non-existant object
 method          _DEP.
 method          
-method          Test 38 of 184: Test _BDN (BIOS Dock Name).
+method          Test 38 of 185: Test _BDN (BIOS Dock Name).
 method          SKIPPED: Test 38, Skipping test for non-existant object
 method          _BDN.
 method          
-method          Test 39 of 184: Test _BBN (Base Bus Number).
+method          Test 39 of 185: Test _BBN (Base Bus Number).
 method          SKIPPED: Test 39, Skipping test for non-existant object
 method          _BBN.
 method          
-method          Test 40 of 184: Test _DCK (Dock).
+method          Test 40 of 185: Test _DCK (Dock).
 method          SKIPPED: Test 40, Skipping test for non-existant object
 method          _DCK.
 method          
-method          Test 41 of 184: Test _INI (Initialize).
+method          Test 41 of 185: Test _INI (Initialize).
 method          PASSED: Test 41, \_SB_._INI returned no values as
 method          expected.
 method          
-method          Test 42 of 184: Test _GLK (Global Lock).
+method          Test 42 of 185: Test _GLK (Global Lock).
 method          SKIPPED: Test 42, Skipping test for non-existant object
 method          _GLK.
 method          
-method          Test 43 of 184: Test _SEG (Segment).
+method          Test 43 of 185: Test _SEG (Segment).
 method          SKIPPED: Test 43, Skipping test for non-existant object
 method          _SEG.
 method          
-method          Test 44 of 184: Test _OFF (Set resource off).
+method          Test 44 of 185: Test _OFF (Set resource off).
 method          SKIPPED: Test 44, Skipping test for non-existant object
 method          _OFF.
 method          
-method          Test 45 of 184: Test _ON (Set resource on).
+method          Test 45 of 185: Test _ON (Set resource on).
 method          SKIPPED: Test 45, Skipping test for non-existant object
 method          _ON.
 method          
-method          Test 46 of 184: Test _DSW (Device Sleep Wake).
+method          Test 46 of 185: Test _DSW (Device Sleep Wake).
 method          SKIPPED: Test 46, Skipping test for non-existant object
 method          _DSW.
 method          
-method          Test 47 of 184: Test _IRC (In Rush Current).
+method          Test 47 of 185: Test _IRC (In Rush Current).
 method          SKIPPED: Test 47, Skipping test for non-existant object
 method          _IRC.
 method          
-method          Test 48 of 184: Test _PRE (Power Resources for
+method          Test 48 of 185: Test _PRE (Power Resources for
 method          Enumeration).
 method          SKIPPED: Test 48, Skipping test for non-existant object
 method          _PRE.
 method          
-method          Test 49 of 184: Test _PR0 (Power Resources for D0).
+method          Test 49 of 185: Test _PR0 (Power Resources for D0).
 method          SKIPPED: Test 49, Skipping test for non-existant object
 method          _PR0.
 method          
-method          Test 50 of 184: Test _PR1 (Power Resources for D1).
+method          Test 50 of 185: Test _PR1 (Power Resources for D1).
 method          SKIPPED: Test 50, Skipping test for non-existant object
 method          _PR1.
 method          
-method          Test 51 of 184: Test _PR2 (Power Resources for D2).
+method          Test 51 of 185: Test _PR2 (Power Resources for D2).
 method          SKIPPED: Test 51, Skipping test for non-existant object
 method          _PR2.
 method          
-method          Test 52 of 184: Test _PR3 (Power Resources for D3).
+method          Test 52 of 185: Test _PR3 (Power Resources for D3).
 method          SKIPPED: Test 52, Skipping test for non-existant object
 method          _PR3.
 method          
-method          Test 53 of 184: Test _PRW (Power Resources for Wake).
+method          Test 53 of 185: Test _PRW (Power Resources for Wake).
 method          PASSED: Test 53, \_SB_.PCI0.HDEF._PRW correctly returned a
 method          sane looking package.
 method          PASSED: Test 53, \_SB_.PCI0.RP03.PXSX._PRW correctly
@@ -394,34 +394,34 @@ method          sane looking package.
 method          PASSED: Test 53, \_SB_.PCI0.EHC2._PRW correctly returned a
 method          sane looking package.
 method          
-method          Test 54 of 184: Test _PS0 (Power State 0).
+method          Test 54 of 185: Test _PS0 (Power State 0).
 method          PASSED: Test 54, \_SB_.PCI0.PEGP.VGA_._PS0 returned no
 method          values as expected.
 method          PASSED: Test 54, \_PS0 returned no values as expected.
 method          
-method          Test 55 of 184: Test _PS1 (Power State 1).
+method          Test 55 of 185: Test _PS1 (Power State 1).
 method          PASSED: Test 55, \_SB_.PCI0.PEGP.VGA_._PS1 returned no
 method          values as expected.
 method          
-method          Test 56 of 184: Test _PS2 (Power State 2).
+method          Test 56 of 185: Test _PS2 (Power State 2).
 method          SKIPPED: Test 56, Skipping test for non-existant object
 method          _PS2.
 method          
-method          Test 57 of 184: Test _PS3 (Power State 3).
+method          Test 57 of 185: Test _PS3 (Power State 3).
 method          PASSED: Test 57, \_SB_.PCI0.PEGP.VGA_._PS3 returned no
 method          values as expected.
 method          PASSED: Test 57, \_PS3 returned no values as expected.
 method          
-method          Test 58 of 184: Test _PSC (Power State Current).
+method          Test 58 of 185: Test _PSC (Power State Current).
 method          PASSED: Test 58, \_SB_.PCI0.PEGP.VGA_._PSC correctly
 method          returned an integer.
 method          PASSED: Test 58, \_PSC correctly returned an integer.
 method          
-method          Test 59 of 184: Test _PSE (Power State for Enumeration).
+method          Test 59 of 185: Test _PSE (Power State for Enumeration).
 method          SKIPPED: Test 59, Skipping test for non-existant object
 method          _PSE.
 method          
-method          Test 60 of 184: Test _PSW (Power State Wake).
+method          Test 60 of 185: Test _PSW (Power State Wake).
 method          PASSED: Test 60, \_SB_.PCI0.USB1._PSW returned no values
 method          as expected.
 method          PASSED: Test 60, \_SB_.PCI0.USB2._PSW returned no values
@@ -433,15 +433,15 @@ method          as expected.
 method          PASSED: Test 60, \_SB_.PCI0.USB5._PSW returned no values
 method          as expected.
 method          
-method          Test 61 of 184: Test _S1D (S1 Device State).
+method          Test 61 of 185: Test _S1D (S1 Device State).
 method          SKIPPED: Test 61, Skipping test for non-existant object
 method          _S1D.
 method          
-method          Test 62 of 184: Test _S2D (S2 Device State).
+method          Test 62 of 185: Test _S2D (S2 Device State).
 method          SKIPPED: Test 62, Skipping test for non-existant object
 method          _S2D.
 method          
-method          Test 63 of 184: Test _S3D (S3 Device State).
+method          Test 63 of 185: Test _S3D (S3 Device State).
 method          PASSED: Test 63, \_SB_.PCI0._S3D correctly returned an
 method          integer.
 method          PASSED: Test 63, \_SB_.PCI0.USB1._S3D correctly returned
@@ -459,7 +459,7 @@ method          an integer.
 method          PASSED: Test 63, \_SB_.PCI0.EHC2._S3D correctly returned
 method          an integer.
 method          
-method          Test 64 of 184: Test _S4D (S4 Device State).
+method          Test 64 of 185: Test _S4D (S4 Device State).
 method          PASSED: Test 64, \_SB_.PCI0._S4D correctly returned an
 method          integer.
 method          PASSED: Test 64, \_SB_.PCI0.USB1._S4D correctly returned
@@ -477,126 +477,126 @@ method          an integer.
 method          PASSED: Test 64, \_SB_.PCI0.EHC2._S4D correctly returned
 method          an integer.
 method          
-method          Test 65 of 184: Test _S0W (S0 Device Wake State).
+method          Test 65 of 185: Test _S0W (S0 Device Wake State).
 method          SKIPPED: Test 65, Skipping test for non-existant object
 method          _S0W.
 method          
-method          Test 66 of 184: Test _S1W (S1 Device Wake State).
+method          Test 66 of 185: Test _S1W (S1 Device Wake State).
 method          SKIPPED: Test 66, Skipping test for non-existant object
 method          _S1W.
 method          
-method          Test 67 of 184: Test _S2W (S2 Device Wake State).
+method          Test 67 of 185: Test _S2W (S2 Device Wake State).
 method          SKIPPED: Test 67, Skipping test for non-existant object
 method          _S2W.
 method          
-method          Test 68 of 184: Test _S3W (S3 Device Wake State).
+method          Test 68 of 185: Test _S3W (S3 Device Wake State).
 method          SKIPPED: Test 68, Skipping test for non-existant object
 method          _S3W.
 method          
-method          Test 69 of 184: Test _S4W (S4 Device Wake State).
+method          Test 69 of 185: Test _S4W (S4 Device Wake State).
 method          SKIPPED: Test 69, Skipping test for non-existant object
 method          _S4W.
 method          
-method          Test 70 of 184: Test _RST (Device Reset).
+method          Test 70 of 185: Test _RST (Device Reset).
 method          SKIPPED: Test 70, Skipping test for non-existant object
 method          _RST.
 method          
-method          Test 71 of 184: Test _PRR (Power Resource for Reset).
+method          Test 71 of 185: Test _PRR (Power Resource for Reset).
 method          SKIPPED: Test 71, Skipping test for non-existant object
 method          _PRR.
 method          
-method          Test 72 of 184: Test _S0_ (S0 System State).
+method          Test 72 of 185: Test _S0_ (S0 System State).
 method          \_S0_ PM1a_CNT.SLP_TYP value: 0x00000000
 method          \_S0_ PM1b_CNT.SLP_TYP value: 0x00000000
 method          PASSED: Test 72, \_S0_ correctly returned a sane looking
 method          package.
 method          
-method          Test 73 of 184: Test _S1_ (S1 System State).
+method          Test 73 of 185: Test _S1_ (S1 System State).
 method          SKIPPED: Test 73, Skipping test for non-existant object
 method          _S1_.
 method          
-method          Test 74 of 184: Test _S2_ (S2 System State).
+method          Test 74 of 185: Test _S2_ (S2 System State).
 method          SKIPPED: Test 74, Skipping test for non-existant object
 method          _S2_.
 method          
-method          Test 75 of 184: Test _S3_ (S3 System State).
+method          Test 75 of 185: Test _S3_ (S3 System State).
 method          \_S3_ PM1a_CNT.SLP_TYP value: 0x00000005
 method          \_S3_ PM1b_CNT.SLP_TYP value: 0x00000005
 method          PASSED: Test 75, \_S3_ correctly returned a sane looking
 method          package.
 method          
-method          Test 76 of 184: Test _S4_ (S4 System State).
+method          Test 76 of 185: Test _S4_ (S4 System State).
 method          \_S4_ PM1a_CNT.SLP_TYP value: 0x00000006
 method          \_S4_ PM1b_CNT.SLP_TYP value: 0x00000006
 method          PASSED: Test 76, \_S4_ correctly returned a sane looking
 method          package.
 method          
-method          Test 77 of 184: Test _S5_ (S5 System State).
+method          Test 77 of 185: Test _S5_ (S5 System State).
 method          \_S5_ PM1a_CNT.SLP_TYP value: 0x00000007
 method          \_S5_ PM1b_CNT.SLP_TYP value: 0x00000007
 method          PASSED: Test 77, \_S5_ correctly returned a sane looking
 method          package.
 method          
-method          Test 78 of 184: Test _SWS (System Wake Source).
+method          Test 78 of 185: Test _SWS (System Wake Source).
 method          SKIPPED: Test 78, Skipping test for non-existant object
 method          _SWS.
 method          
-method          Test 79 of 184: Test _PSS (Performance Supported States).
+method          Test 79 of 185: Test _PSS (Performance Supported States).
 method          SKIPPED: Test 79, Skipping test for non-existant object
 method          _PSS.
 method          
-method          Test 80 of 184: Test _CPC (Continuous Performance
+method          Test 80 of 185: Test _CPC (Continuous Performance
 method          Control).
 method          SKIPPED: Test 80, Skipping test for non-existant object
 method          _CPC.
 method          
-method          Test 81 of 184: Test _CSD (C State Dependencies).
+method          Test 81 of 185: Test _CSD (C State Dependencies).
 method          SKIPPED: Test 81, Skipping test for non-existant object
 method          _CSD.
 method          
-method          Test 82 of 184: Test _CST (C States).
+method          Test 82 of 185: Test _CST (C States).
 method          SKIPPED: Test 82, Skipping test for non-existant object
 method          _CST.
 method          
-method          Test 83 of 184: Test _PCT (Performance Control).
+method          Test 83 of 185: Test _PCT (Performance Control).
 method          SKIPPED: Test 83, Skipping test for non-existant object
 method          _PCT.
 method          
-method          Test 84 of 184: Test _PDL (P-State Depth Limit).
+method          Test 84 of 185: Test _PDL (P-State Depth Limit).
 method          SKIPPED: Test 84, Skipping test for non-existant object
 method          _PDL.
 method          
-method          Test 85 of 184: Test _PPC (Performance Present
+method          Test 85 of 185: Test _PPC (Performance Present
 method          Capabilities).
 method          SKIPPED: Test 85, Skipping test for non-existant object
 method          _PPC.
 method          
-method          Test 86 of 184: Test _PPE (Polling for Platform Error).
+method          Test 86 of 185: Test _PPE (Polling for Platform Error).
 method          SKIPPED: Test 86, Skipping test for non-existant object
 method          _PPE.
 method          
-method          Test 87 of 184: Test _PSD (Power State Dependencies).
+method          Test 87 of 185: Test _PSD (Power State Dependencies).
 method          SKIPPED: Test 87, Skipping test for non-existant object
 method          _PSD.
 method          
-method          Test 88 of 184: Test _TDL (T-State Depth Limit).
+method          Test 88 of 185: Test _TDL (T-State Depth Limit).
 method          SKIPPED: Test 88, Skipping test for non-existant object
 method          _TDL.
 method          
-method          Test 89 of 184: Test _TPC (Throttling Present
+method          Test 89 of 185: Test _TPC (Throttling Present
 method          Capabilities).
 method          PASSED: Test 89, \_PR_.CPU0._TPC correctly returned an
 method          integer.
 method          PASSED: Test 89, \_PR_.CPU1._TPC correctly returned an
 method          integer.
 method          
-method          Test 90 of 184: Test _TSD (Throttling State Dependencies).
+method          Test 90 of 185: Test _TSD (Throttling State Dependencies).
 method          PASSED: Test 90, \_PR_.CPU0._TSD correctly returned a sane
 method          looking package.
 method          PASSED: Test 90, \_PR_.CPU1._TSD correctly returned a sane
 method          looking package.
 method          
-method          Test 91 of 184: Test _TSS (Throttling Supported States).
+method          Test 91 of 185: Test _TSS (Throttling Supported States).
 method          \_PR_.CPU0._TSS values:
 method          T-State  CPU     Power   Latency  Control  Status
 method                   Freq    (mW)    (usecs)
@@ -624,44 +624,44 @@ method              7     13%      125        0      09      00
 method          PASSED: Test 91, \_PR_.CPU1._TSS correctly returned a sane
 method          looking package.
 method          
-method          Test 92 of 184: Test _PUR (Processor Utilization Request).
+method          Test 92 of 185: Test _PUR (Processor Utilization Request).
 method          SKIPPED: Test 92, Skipping test for non-existant object
 method          _PUR.
 method          
-method          Test 93 of 184: Test _MSG (Message).
+method          Test 93 of 185: Test _MSG (Message).
 method          SKIPPED: Test 93, Skipping test for non-existant object
 method          _MSG.
 method          
-method          Test 94 of 184: Test _SST (System Status).
+method          Test 94 of 185: Test _SST (System Status).
 method          SKIPPED: Test 94, Skipping test for non-existant object
 method          _SST.
 method          
-method          Test 95 of 184: Test _ALC (Ambient Light Colour
+method          Test 95 of 185: Test _ALC (Ambient Light Colour
 method          Chromaticity).
 method          SKIPPED: Test 95, Skipping test for non-existant object
 method          _ALC.
 method          
-method          Test 96 of 184: Test _ALI (Ambient Light Illuminance).
+method          Test 96 of 185: Test _ALI (Ambient Light Illuminance).
 method          SKIPPED: Test 96, Skipping test for non-existant object
 method          _ALI.
 method          
-method          Test 97 of 184: Test _ALT (Ambient Light Temperature).
+method          Test 97 of 185: Test _ALT (Ambient Light Temperature).
 method          SKIPPED: Test 97, Skipping test for non-existant object
 method          _ALT.
 method          
-method          Test 98 of 184: Test _ALP (Ambient Light Polling).
+method          Test 98 of 185: Test _ALP (Ambient Light Polling).
 method          SKIPPED: Test 98, Skipping test for non-existant object
 method          _ALP.
 method          
-method          Test 99 of 184: Test _ALR (Ambient Light Response).
+method          Test 99 of 185: Test _ALR (Ambient Light Response).
 method          SKIPPED: Test 99, Skipping test for non-existant object
 method          _ALR.
 method          
-method          Test 100 of 184: Test _LID (Lid Status).
+method          Test 100 of 185: Test _LID (Lid Status).
 method          PASSED: Test 100, \_SB_.LID0._LID correctly returned sane
 method          looking value 0x00000000.
 method          
-method          Test 101 of 184: Test _GTF (Get Task File).
+method          Test 101 of 185: Test _GTF (Get Task File).
 method          PASSED: Test 101, \_SB_.PCI0.PATA.PRID.P_D0._GTF correctly
 method          returned a sane looking buffer.
 method          PASSED: Test 101, \_SB_.PCI0.PATA.PRID.P_D1._GTF correctly
@@ -676,153 +676,153 @@ method          FAILED [MEDIUM] Method_GTFBadBufferSize: Test 101,
 method          \_SB_.PCI0.SATA.PRT2._GTF should return a buffer with size
 method          of multiple of 7.
 method          
-method          Test 102 of 184: Test _GTM (Get Timing Mode).
+method          Test 102 of 185: Test _GTM (Get Timing Mode).
 method          PASSED: Test 102, \_SB_.PCI0.PATA.PRID._GTM correctly
 method          returned a sane looking buffer.
 method          
-method          Test 103 of 184: Test _MBM (Memory Bandwidth Monitoring
+method          Test 103 of 185: Test _MBM (Memory Bandwidth Monitoring
 method          Data).
 method          SKIPPED: Test 103, Skipping test for non-existant object
 method          _MBM.
 method          
-method          Test 104 of 184: Test _UPC (USB Port Capabilities).
+method          Test 104 of 185: Test _UPC (USB Port Capabilities).
 method          SKIPPED: Test 104, Skipping test for non-existant object
 method          _UPC.
 method          
-method          Test 105 of 184: Test _UPD (User Presence Detect).
+method          Test 105 of 185: Test _UPD (User Presence Detect).
 method          SKIPPED: Test 105, Skipping test for non-existant object
 method          _UPD.
 method          
-method          Test 106 of 184: Test _UPP (User Presence Polling).
+method          Test 106 of 185: Test _UPP (User Presence Polling).
 method          SKIPPED: Test 106, Skipping test for non-existant object
 method          _UPP.
 method          
-method          Test 107 of 184: Test _GCP (Get Capabilities).
+method          Test 107 of 185: Test _GCP (Get Capabilities).
 method          SKIPPED: Test 107, Skipping test for non-existant object
 method          _GCP.
 method          
-method          Test 108 of 184: Test _GRT (Get Real Time).
+method          Test 108 of 185: Test _GRT (Get Real Time).
 method          SKIPPED: Test 108, Skipping test for non-existant object
 method          _GRT.
 method          
-method          Test 109 of 184: Test _GWS (Get Wake Status).
+method          Test 109 of 185: Test _GWS (Get Wake Status).
 method          SKIPPED: Test 109, Skipping test for non-existant object
 method          _GWS.
 method          
-method          Test 110 of 184: Test _STP (Set Expired Timer Wake
+method          Test 110 of 185: Test _STP (Set Expired Timer Wake
 method          Policy).
 method          SKIPPED: Test 110, Skipping test for non-existant object
 method          _STP.
 method          
-method          Test 111 of 184: Test _STV (Set Timer Value).
+method          Test 111 of 185: Test _STV (Set Timer Value).
 method          SKIPPED: Test 111, Skipping test for non-existant object
 method          _STV.
 method          
-method          Test 112 of 184: Test _TIP (Expired Timer Wake Policy).
+method          Test 112 of 185: Test _TIP (Expired Timer Wake Policy).
 method          SKIPPED: Test 112, Skipping test for non-existant object
 method          _TIP.
 method          
-method          Test 113 of 184: Test _TIV (Timer Values).
+method          Test 113 of 185: Test _TIV (Timer Values).
 method          SKIPPED: Test 113, Skipping test for non-existant object
 method          _TIV.
 method          
-method          Test 114 of 184: Test _SBS (Smart Battery Subsystem).
+method          Test 114 of 185: Test _SBS (Smart Battery Subsystem).
 method          SKIPPED: Test 114, Skipping test for non-existant object
 method          _SBS.
 method          
-method          Test 115 of 184: Test _BCT (Battery Charge Time).
+method          Test 115 of 185: Test _BCT (Battery Charge Time).
 method          SKIPPED: Test 115, Skipping test for non-existant object
 method          _BCT.
 method          
-method          Test 116 of 184: Test _BIF (Battery Information).
+method          Test 116 of 185: Test _BIF (Battery Information).
 method          PASSED: Test 116, \_SB_.PCI0.LPCB.BAT1._BIF correctly
 method          returned a sane looking package.
 method          
-method          Test 117 of 184: Test _BIX (Battery Information Extended).
+method          Test 117 of 185: Test _BIX (Battery Information Extended).
 method          SKIPPED: Test 117, Skipping test for non-existant object
 method          _BIX.
 method          
-method          Test 118 of 184: Test _BMA (Battery Measurement
+method          Test 118 of 185: Test _BMA (Battery Measurement
 method          Averaging).
 method          SKIPPED: Test 118, Skipping test for non-existant object
 method          _BMA.
 method          
-method          Test 119 of 184: Test _BMC (Battery Maintenance Control).
+method          Test 119 of 185: Test _BMC (Battery Maintenance Control).
 method          SKIPPED: Test 119, Skipping test for non-existant object
 method          _BMC.
 method          
-method          Test 120 of 184: Test _BMD (Battery Maintenance Data).
+method          Test 120 of 185: Test _BMD (Battery Maintenance Data).
 method          SKIPPED: Test 120, Skipping test for non-existant object
 method          _BMD.
 method          
-method          Test 121 of 184: Test _BMS (Battery Measurement Sampling
+method          Test 121 of 185: Test _BMS (Battery Measurement Sampling
 method          Time).
 method          SKIPPED: Test 121, Skipping test for non-existant object
 method          _BMS.
 method          
-method          Test 122 of 184: Test _BST (Battery Status).
+method          Test 122 of 185: Test _BST (Battery Status).
 method          PASSED: Test 122, \_SB_.PCI0.LPCB.BAT1._BST correctly
 method          returned a sane looking package.
 method          
-method          Test 123 of 184: Test _BTP (Battery Trip Point).
+method          Test 123 of 185: Test _BTP (Battery Trip Point).
 method          SKIPPED: Test 123, Skipping test for non-existant object
 method          _BTP.
 method          
-method          Test 124 of 184: Test _BTM (Battery Time).
+method          Test 124 of 185: Test _BTM (Battery Time).
 method          SKIPPED: Test 124, Skipping test for non-existant object
 method          _BTM.
 method          
-method          Test 125 of 184: Test _PCL (Power Consumer List).
+method          Test 125 of 185: Test _PCL (Power Consumer List).
 method          PASSED: Test 125, \_SB_.PCI0.LPCB.ACAD._PCL returned a
 method          sane package of 1 references.
 method          PASSED: Test 125, \_SB_.PCI0.LPCB.BAT1._PCL returned a
 method          sane package of 1 references.
 method          
-method          Test 126 of 184: Test _PIF (Power Source Information).
+method          Test 126 of 185: Test _PIF (Power Source Information).
 method          SKIPPED: Test 126, Skipping test for non-existant object
 method          _PIF.
 method          
-method          Test 127 of 184: Test _PRL (Power Source Redundancy List).
+method          Test 127 of 185: Test _PRL (Power Source Redundancy List).
 method          SKIPPED: Test 127, Skipping test for non-existant object
 method          _PRL.
 method          
-method          Test 128 of 184: Test _PSR (Power Source).
+method          Test 128 of 185: Test _PSR (Power Source).
 method          PASSED: Test 128, \_SB_.PCI0.LPCB.ACAD._PSR correctly
 method          returned sane looking value 0x00000000.
 method          
-method          Test 129 of 184: Test _GAI (Get Averaging Level).
+method          Test 129 of 185: Test _GAI (Get Averaging Level).
 method          SKIPPED: Test 129, Skipping test for non-existant object
 method          _GAI.
 method          
-method          Test 130 of 184: Test _GHL (Get Harware Limit).
+method          Test 130 of 185: Test _GHL (Get Harware Limit).
 method          SKIPPED: Test 130, Skipping test for non-existant object
 method          _GHL.
 method          
-method          Test 131 of 184: Test _PMD (Power Meter Devices).
+method          Test 131 of 185: Test _PMD (Power Meter Devices).
 method          SKIPPED: Test 131, Skipping test for non-existant object
 method          _PMD.
 method          
-method          Test 132 of 184: Test _PMM (Power Meter Measurement).
+method          Test 132 of 185: Test _PMM (Power Meter Measurement).
 method          SKIPPED: Test 132, Skipping test for non-existant object
 method          _PMM.
 method          
-method          Test 133 of 184: Test _FIF (Fan Information).
+method          Test 133 of 185: Test _FIF (Fan Information).
 method          SKIPPED: Test 133, Skipping test for non-existant object
 method          _FIF.
 method          
-method          Test 134 of 184: Test _FPS (Fan Performance States).
+method          Test 134 of 185: Test _FPS (Fan Performance States).
 method          SKIPPED: Test 134, Skipping test for non-existant object
 method          _FPS.
 method          
-method          Test 135 of 184: Test _FSL (Fan Set Level).
+method          Test 135 of 185: Test _FSL (Fan Set Level).
 method          SKIPPED: Test 135, Skipping test for non-existant object
 method          _FSL.
 method          
-method          Test 136 of 184: Test _FST (Fan Status).
+method          Test 136 of 185: Test _FST (Fan Status).
 method          SKIPPED: Test 136, Skipping test for non-existant object
 method          _FST.
 method          
-method          Test 137 of 184: Test _ACx (Active Cooling).
+method          Test 137 of 185: Test _ACx (Active Cooling).
 method          SKIPPED: Test 137, Skipping test for non-existant object
 method          _AC0.
 method          
@@ -854,360 +854,364 @@ method          SKIPPED: Test 137, Skipping test for non-existant object
 method          _AC9.
 method          
 method          
-method          Test 138 of 184: Test _ART (Active Cooling Relationship
+method          Test 138 of 185: Test _ART (Active Cooling Relationship
 method          Table).
 method          SKIPPED: Test 138, Skipping test for non-existant object
 method          _ART.
 method          
-method          Test 139 of 184: Test _CRT (Critical Trip Point).
+method          Test 139 of 185: Test _CRT (Critical Trip Point).
 method          SKIPPED: Test 139, Skipping test for non-existant object
 method          _CRT.
 method          
-method          Test 140 of 184: Test _CR3 (Warm/Standby Temperature).
+method          Test 140 of 185: Test _CR3 (Warm/Standby Temperature).
 method          SKIPPED: Test 140, Skipping test for non-existant object
 method          _CR3.
 method          
-method          Test 141 of 184: Test _DTI (Device Temperature
+method          Test 141 of 185: Test _DTI (Device Temperature
 method          Indication).
 method          SKIPPED: Test 141, Skipping test for non-existant object
 method          _DTI.
 method          
-method          Test 142 of 184: Test _HOT (Hot Temperature).
+method          Test 142 of 185: Test _HOT (Hot Temperature).
 method          SKIPPED: Test 142, Skipping test for non-existant object
 method          _HOT.
 method          
-method          Test 143 of 184: Test _MTL (Minimum Throttle Limit).
+method          Test 143 of 185: Test _MTL (Minimum Throttle Limit).
 method          SKIPPED: Test 143, Skipping test for non-existant object
 method          _MTL.
 method          
-method          Test 144 of 184: Test _NTT (Notification Temp Threshold).
+method          Test 144 of 185: Test _NTT (Notification Temp Threshold).
 method          SKIPPED: Test 144, Skipping test for non-existant object
 method          _NTT.
 method          
-method          Test 145 of 184: Test _PSL (Passive List).
+method          Test 145 of 185: Test _PSL (Passive List).
 method          SKIPPED: Test 145, Skipping test for non-existant object
 method          _PSL.
 method          
-method          Test 146 of 184: Test _PSV (Passive Temp).
+method          Test 146 of 185: Test _PSV (Passive Temp).
 method          SKIPPED: Test 146, Skipping test for non-existant object
 method          _PSV.
 method          
-method          Test 147 of 184: Test _RTV (Relative Temp Values).
+method          Test 147 of 185: Test _RTV (Relative Temp Values).
 method          SKIPPED: Test 147, Skipping test for non-existant object
 method          _RTV.
 method          
-method          Test 148 of 184: Test _SCP (Set Cooling Policy).
+method          Test 148 of 185: Test _SCP (Set Cooling Policy).
 method          SKIPPED: Test 148, Skipping test for non-existant object
 method          _DTI.
 method          
-method          Test 149 of 184: Test _TC1 (Thermal Constant 1).
+method          Test 149 of 185: Test _TC1 (Thermal Constant 1).
 method          SKIPPED: Test 149, Skipping test for non-existant object
 method          _TC1.
 method          
-method          Test 150 of 184: Test _TC2 (Thermal Constant 2).
+method          Test 150 of 185: Test _TC2 (Thermal Constant 2).
 method          SKIPPED: Test 150, Skipping test for non-existant object
 method          _TC2.
 method          
-method          Test 151 of 184: Test _TMP (Thermal Zone Current Temp).
+method          Test 151 of 185: Test _TMP (Thermal Zone Current Temp).
 method          SKIPPED: Test 151, Skipping test for non-existant object
 method          _TMP.
 method          
-method          Test 152 of 184: Test _TPT (Trip Point Temperature).
+method          Test 152 of 185: Test _TPT (Trip Point Temperature).
 method          SKIPPED: Test 152, Skipping test for non-existant object
 method          _TPT.
 method          
-method          Test 153 of 184: Test _TRT (Thermal Relationship Table).
+method          Test 153 of 185: Test _TRT (Thermal Relationship Table).
 method          SKIPPED: Test 153, Skipping test for non-existant object
 method          _TRT.
 method          
-method          Test 154 of 184: Test _TSP (Thermal Sampling Period).
+method          Test 154 of 185: Test _TSP (Thermal Sampling Period).
 method          SKIPPED: Test 154, Skipping test for non-existant object
 method          _TSP.
 method          
-method          Test 155 of 184: Test _TST (Temperature Sensor Threshold).
+method          Test 155 of 185: Test _TST (Temperature Sensor Threshold).
 method          SKIPPED: Test 155, Skipping test for non-existant object
 method          _TST.
 method          
-method          Test 156 of 184: Test _TZD (Thermal Zone Devices).
+method          Test 156 of 185: Test _TZD (Thermal Zone Devices).
 method          SKIPPED: Test 156, Skipping test for non-existant object
 method          _TZD.
 method          
-method          Test 157 of 184: Test _TZM (Thermal Zone member).
+method          Test 157 of 185: Test _TZM (Thermal Zone member).
 method          SKIPPED: Test 157, Skipping test for non-existant object
 method          _TZM.
 method          
-method          Test 158 of 184: Test _TZP (Thermal Zone Polling).
+method          Test 158 of 185: Test _TZP (Thermal Zone Polling).
 method          SKIPPED: Test 158, Skipping test for non-existant object
 method          _TZP.
 method          
-method          Test 159 of 184: Test _PTS (Prepare to Sleep).
+method          Test 159 of 185: Test _GPE (General Purpose Events).
+method          PASSED: Test 159, \_SB_.PCI0.LPCB.EC0_._GPE returned an
+method          integer 0x0000001c
+method          
+method          Test 160 of 185: Test _PTS (Prepare to Sleep).
 method          Test _PTS(1).
-method          PASSED: Test 159, \_PTS returned no values as expected.
+method          PASSED: Test 160, \_PTS returned no values as expected.
 method          
 method          Test _PTS(2).
-method          PASSED: Test 159, \_PTS returned no values as expected.
+method          PASSED: Test 160, \_PTS returned no values as expected.
 method          
 method          Test _PTS(3).
-method          PASSED: Test 159, \_PTS returned no values as expected.
+method          PASSED: Test 160, \_PTS returned no values as expected.
 method          
 method          Test _PTS(4).
-method          PASSED: Test 159, \_PTS returned no values as expected.
+method          PASSED: Test 160, \_PTS returned no values as expected.
 method          
 method          Test _PTS(5).
-method          PASSED: Test 159, \_PTS returned no values as expected.
+method          PASSED: Test 160, \_PTS returned no values as expected.
 method          
 method          
-method          Test 160 of 184: Test _TTS (Transition to State).
-method          SKIPPED: Test 160, Optional control method _TTS does not
+method          Test 161 of 185: Test _TTS (Transition to State).
+method          SKIPPED: Test 161, Optional control method _TTS does not
 method          exist.
 method          
-method          Test 161 of 184: Test _S0 (System S0 State).
-method          SKIPPED: Test 161, Skipping test for non-existant object
+method          Test 162 of 185: Test _S0 (System S0 State).
+method          SKIPPED: Test 162, Skipping test for non-existant object
 method          _S0.
 method          
-method          Test 162 of 184: Test _S1 (System S1 State).
-method          SKIPPED: Test 162, Skipping test for non-existant object
+method          Test 163 of 185: Test _S1 (System S1 State).
+method          SKIPPED: Test 163, Skipping test for non-existant object
 method          _S1.
 method          
-method          Test 163 of 184: Test _S2 (System S2 State).
-method          SKIPPED: Test 163, Skipping test for non-existant object
+method          Test 164 of 185: Test _S2 (System S2 State).
+method          SKIPPED: Test 164, Skipping test for non-existant object
 method          _S2.
 method          
-method          Test 164 of 184: Test _S3 (System S3 State).
-method          SKIPPED: Test 164, Skipping test for non-existant object
+method          Test 165 of 185: Test _S3 (System S3 State).
+method          SKIPPED: Test 165, Skipping test for non-existant object
 method          _S3.
 method          
-method          Test 165 of 184: Test _S4 (System S4 State).
-method          SKIPPED: Test 165, Skipping test for non-existant object
+method          Test 166 of 185: Test _S4 (System S4 State).
+method          SKIPPED: Test 166, Skipping test for non-existant object
 method          _S4.
 method          
-method          Test 166 of 184: Test _S5 (System S5 State).
-method          SKIPPED: Test 166, Skipping test for non-existant object
+method          Test 167 of 185: Test _S5 (System S5 State).
+method          SKIPPED: Test 167, Skipping test for non-existant object
 method          _S5.
 method          
-method          Test 167 of 184: Test _WAK (System Wake).
+method          Test 168 of 185: Test _WAK (System Wake).
 method          Test _WAK(1) System Wake, State S1.
-method          PASSED: Test 167, \_WAK correctly returned a sane looking
+method          PASSED: Test 168, \_WAK correctly returned a sane looking
 method          package.
 method          
 method          Test _WAK(2) System Wake, State S2.
-method          PASSED: Test 167, \_WAK correctly returned a sane looking
+method          PASSED: Test 168, \_WAK correctly returned a sane looking
 method          package.
 method          
 method          Test _WAK(3) System Wake, State S3.
-method          PASSED: Test 167, \_WAK correctly returned a sane looking
+method          PASSED: Test 168, \_WAK correctly returned a sane looking
 method          package.
 method          
 method          Test _WAK(4) System Wake, State S4.
-method          PASSED: Test 167, \_WAK correctly returned a sane looking
+method          PASSED: Test 168, \_WAK correctly returned a sane looking
 method          package.
 method          
 method          Test _WAK(5) System Wake, State S5.
-method          PASSED: Test 167, \_WAK correctly returned a sane looking
+method          PASSED: Test 168, \_WAK correctly returned a sane looking
 method          package.
 method          
 method          
-method          Test 168 of 184: Test _ADR (Return Unique ID for Device).
-method          PASSED: Test 168, \_SB_.PCI0.MCHC._ADR correctly returned
+method          Test 169 of 185: Test _ADR (Return Unique ID for Device).
+method          PASSED: Test 169, \_SB_.PCI0.MCHC._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PEGP._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.PEGP._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PEGP.VGA_._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PEGP.VGA_._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PEGP.VGA_.CRT_._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PEGP.VGA_.CRT_._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PEGP.VGA_.LCD_._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PEGP.VGA_.LCD_._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PEGP.VGA_.TV__._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PEGP.VGA_.TV__._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.GFX0._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0.DD01._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD01._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0.DD02._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD02._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0.DD03._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD03._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0.DD04._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD04._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.GFX0.DD05._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD05._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.HDEF._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.HDEF._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP01._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP01._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP01.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP01.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP02._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP02._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP02.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP02.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP03._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP03._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP03.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP03.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP04._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP04._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP04.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP04.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP05._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP05._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP05.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP05.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP06._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.RP06._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.RP06.PXSX._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.RP06.PXSX._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.USB1._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.USB1._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.USB2._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.USB2._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.USB3._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.USB3._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.USB4._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.USB4._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.USB5._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.USB5._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.EHC1._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT1._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT1._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT2._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT2._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT3._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT3._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT4._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT4._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT5._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT5._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC1.HUB7.PRT6._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC1.HUB7.PRT6._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.EHC2._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2.HUB7._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC2.HUB7._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2.HUB7.PRT1._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC2.HUB7.PRT1._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2.HUB7.PRT2._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC2.HUB7.PRT2._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2.HUB7.PRT3._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC2.HUB7.PRT3._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.EHC2.HUB7.PRT4._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.EHC2.HUB7.PRT4._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PCIB._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.PCIB._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.LPCB._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.LPCB._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PATA._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.PATA._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PATA.PRID._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PATA.PRID._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PATA.PRID.P_D0._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PATA.PRID.P_D0._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.PATA.PRID.P_D1._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.PATA.PRID.P_D1._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.SATA._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.SATA._ADR correctly returned
 method          an integer.
-method          PASSED: Test 168, \_SB_.PCI0.SATA.PRT0._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.SATA.PRT0._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.SATA.PRT1._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.SATA.PRT1._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.SATA.PRT2._ADR correctly
+method          PASSED: Test 169, \_SB_.PCI0.SATA.PRT2._ADR correctly
 method          returned an integer.
-method          PASSED: Test 168, \_SB_.PCI0.SBUS._ADR correctly returned
+method          PASSED: Test 169, \_SB_.PCI0.SBUS._ADR correctly returned
 method          an integer.
 method          
-method          Test 169 of 184: Test _BCL (Query List of Brightness
+method          Test 170 of 185: Test _BCL (Query List of Brightness
 method          Control Levels Supported).
 method          Brightness levels for \_SB_.PCI0.PEGP.VGA_.LCD_._BCL:
 method            Level on full power   : 70
 method            Level on battery power: 40
 method            Brightness Levels     : 0, 10, 20, 30, 40, 50, 60, 70
-method          PASSED: Test 169, \_SB_.PCI0.PEGP.VGA_.LCD_._BCL returned
+method          PASSED: Test 170, \_SB_.PCI0.PEGP.VGA_.LCD_._BCL returned
 method          a sane package of 10 integers.
 method          Brightness levels for \_SB_.PCI0.GFX0.DD03._BCL:
 method            Level on full power   : 70
 method            Level on battery power: 40
 method            Brightness Levels     : 0, 10, 20, 30, 40, 50, 60, 70
-method          PASSED: Test 169, \_SB_.PCI0.GFX0.DD03._BCL returned a
+method          PASSED: Test 170, \_SB_.PCI0.GFX0.DD03._BCL returned a
 method          sane package of 10 integers.
 method          
-method          Test 170 of 184: Test _BCM (Set Brightness Level).
-method          PASSED: Test 170, \_SB_.PCI0.PEGP.VGA_.LCD_._BCM returned
+method          Test 171 of 185: Test _BCM (Set Brightness Level).
+method          PASSED: Test 171, \_SB_.PCI0.PEGP.VGA_.LCD_._BCM returned
 method          no values as expected.
-method          PASSED: Test 170, \_SB_.PCI0.GFX0.DD03._BCM returned no
+method          PASSED: Test 171, \_SB_.PCI0.GFX0.DD03._BCM returned no
 method          values as expected.
 method          
-method          Test 171 of 184: Test _BQC (Brightness Query Current
+method          Test 172 of 185: Test _BQC (Brightness Query Current
 method          Level).
-method          PASSED: Test 171, \_SB_.PCI0.PEGP.VGA_.LCD_._BQC correctly
+method          PASSED: Test 172, \_SB_.PCI0.PEGP.VGA_.LCD_._BQC correctly
 method          returned an integer.
-method          PASSED: Test 171, \_SB_.PCI0.GFX0.DD03._BQC correctly
-method          returned an integer.
-method          
-method          Test 172 of 184: Test _DCS (Return the Status of Output
-method          Device).
-method          PASSED: Test 172, \_SB_.PCI0.PEGP.VGA_.CRT_._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.PEGP.VGA_.LCD_._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.PEGP.VGA_.TV__._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD01._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD02._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD03._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD04._DCS correctly
-method          returned an integer.
-method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD05._DCS correctly
+method          PASSED: Test 172, \_SB_.PCI0.GFX0.DD03._BQC correctly
 method          returned an integer.
 method          
-method          Test 173 of 184: Test _DDC (Return the EDID for this
+method          Test 173 of 185: Test _DCS (Return the Status of Output
 method          Device).
-method          SKIPPED: Test 173, Skipping test for non-existant object
+method          PASSED: Test 173, \_SB_.PCI0.PEGP.VGA_.CRT_._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.PEGP.VGA_.LCD_._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.PEGP.VGA_.TV__._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.GFX0.DD01._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.GFX0.DD02._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.GFX0.DD03._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.GFX0.DD04._DCS correctly
+method          returned an integer.
+method          PASSED: Test 173, \_SB_.PCI0.GFX0.DD05._DCS correctly
+method          returned an integer.
+method          
+method          Test 174 of 185: Test _DDC (Return the EDID for this
+method          Device).
+method          SKIPPED: Test 174, Skipping test for non-existant object
 method          _DDC.
 method          
-method          Test 174 of 184: Test _DSS (Device Set State).
-method          PASSED: Test 174, \_SB_.PCI0.PEGP.VGA_.CRT_._DSS returned
+method          Test 175 of 185: Test _DSS (Device Set State).
+method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.CRT_._DSS returned
 method          no values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.PEGP.VGA_.LCD_._DSS returned
+method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.LCD_._DSS returned
 method          no values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.PEGP.VGA_.TV__._DSS returned
+method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.TV__._DSS returned
 method          no values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.GFX0.DD01._DSS returned no
+method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD01._DSS returned no
 method          values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.GFX0.DD02._DSS returned no
+method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD02._DSS returned no
 method          values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.GFX0.DD03._DSS returned no
+method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD03._DSS returned no
 method          values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.GFX0.DD04._DSS returned no
+method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD04._DSS returned no
 method          values as expected.
-method          PASSED: Test 174, \_SB_.PCI0.GFX0.DD05._DSS returned no
+method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD05._DSS returned no
 method          values as expected.
 method          
-method          Test 175 of 184: Test _DGS (Query Graphics State).
-method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.CRT_._DGS correctly
+method          Test 176 of 185: Test _DGS (Query Graphics State).
+method          PASSED: Test 176, \_SB_.PCI0.PEGP.VGA_.CRT_._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.LCD_._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.PEGP.VGA_.LCD_._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.PEGP.VGA_.TV__._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.PEGP.VGA_.TV__._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD01._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.GFX0.DD01._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD02._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.GFX0.DD02._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD03._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.GFX0.DD03._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD04._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.GFX0.DD04._DGS correctly
 method          returned an integer.
-method          PASSED: Test 175, \_SB_.PCI0.GFX0.DD05._DGS correctly
+method          PASSED: Test 176, \_SB_.PCI0.GFX0.DD05._DGS correctly
 method          returned an integer.
 method          
-method          Test 176 of 184: Test _DOD (Enumerate All Devices Attached
+method          Test 177 of 185: Test _DOD (Enumerate All Devices Attached
 method          to Display Adapter).
 method          Device 0:
 method            Instance:                0
@@ -1230,7 +1234,7 @@ method            Type of display:         2 (TV/HDTV or other Analog-Video Moni
 method            BIOS can detect device:  0
 method            Non-VGA device:          0
 method            Head or pipe ID:         0
-method          PASSED: Test 176, \_SB_.PCI0.PEGP.VGA_._DOD correctly
+method          PASSED: Test 177, \_SB_.PCI0.PEGP.VGA_._DOD correctly
 method          returned a sane looking package.
 method          Device 0:
 method            Instance:                0
@@ -1239,45 +1243,45 @@ method            Type of display:         4 (Internal/Integrated Digital Flat P
 method            BIOS can detect device:  0
 method            Non-VGA device:          0
 method            Head or pipe ID:         0
-method          PASSED: Test 176, \_SB_.PCI0.GFX0._DOD correctly returned
+method          PASSED: Test 177, \_SB_.PCI0.GFX0._DOD correctly returned
 method          a sane looking package.
 method          
-method          Test 177 of 184: Test _DOS (Enable/Disable Output
+method          Test 178 of 185: Test _DOS (Enable/Disable Output
 method          Switching).
-method          PASSED: Test 177, \_SB_.PCI0.PEGP.VGA_._DOS returned no
+method          PASSED: Test 178, \_SB_.PCI0.PEGP.VGA_._DOS returned no
 method          values as expected.
-method          PASSED: Test 177, \_SB_.PCI0.GFX0._DOS returned no values
+method          PASSED: Test 178, \_SB_.PCI0.GFX0._DOS returned no values
 method          as expected.
 method          
-method          Test 178 of 184: Test _GPD (Get POST Device).
-method          SKIPPED: Test 178, Skipping test for non-existant object
+method          Test 179 of 185: Test _GPD (Get POST Device).
+method          SKIPPED: Test 179, Skipping test for non-existant object
 method          _GPD.
 method          
-method          Test 179 of 184: Test _ROM (Get ROM Data).
-method          SKIPPED: Test 179, Skipping test for non-existant object
+method          Test 180 of 185: Test _ROM (Get ROM Data).
+method          SKIPPED: Test 180, Skipping test for non-existant object
 method          _ROM.
 method          
-method          Test 180 of 184: Test _SPD (Set POST Device).
-method          SKIPPED: Test 180, Skipping test for non-existant object
+method          Test 181 of 185: Test _SPD (Set POST Device).
+method          SKIPPED: Test 181, Skipping test for non-existant object
 method          _SPD.
 method          
-method          Test 181 of 184: Test _VPO (Video POST Options).
-method          SKIPPED: Test 181, Skipping test for non-existant object
+method          Test 182 of 185: Test _VPO (Video POST Options).
+method          SKIPPED: Test 182, Skipping test for non-existant object
 method          _VPO.
 method          
-method          Test 182 of 184: Test _CBA (Configuration Base Address).
-method          SKIPPED: Test 182, Skipping test for non-existant object
+method          Test 183 of 185: Test _CBA (Configuration Base Address).
+method          SKIPPED: Test 183, Skipping test for non-existant object
 method          _CBA.
 method          
-method          Test 183 of 184: Test _IFT (IPMI Interface Type).
-method          SKIPPED: Test 183, Skipping test for non-existant object
+method          Test 184 of 185: Test _IFT (IPMI Interface Type).
+method          SKIPPED: Test 184, Skipping test for non-existant object
 method          _IFT.
 method          
-method          Test 184 of 184: Test _SRV (IPMI Interface Revision).
-method          SKIPPED: Test 184, Skipping test for non-existant object
+method          Test 185 of 185: Test _SRV (IPMI Interface Revision).
+method          SKIPPED: Test 185, Skipping test for non-existant object
 method          _SRV.
 method          
 method          ==========================================================
-method          249 passed, 3 failed, 0 warning, 0 aborted, 149 skipped, 0
+method          250 passed, 3 failed, 0 warning, 0 aborted, 149 skipped, 0
 method          info only.
 method          ==========================================================

@@ -501,14 +501,31 @@ static int method_evaluate_method(fwts_framework *fw,
 	size_t name_len = strlen(name);
 	bool found = false;
 
+
 	if ((methods = fwts_acpi_object_get_names()) != NULL) {
 		fwts_list_link	*item;
 
 		fwts_list_foreach(item, methods) {
 			char *method_name = fwts_list_data(char*, item);
+			ACPI_HANDLE method_handle;
+			ACPI_OBJECT_TYPE type;
+			ACPI_STATUS status;
+
 			size_t len = strlen(method_name);
 			if (strncmp(name, method_name + len - name_len, name_len) == 0) {
 				ACPI_OBJECT_LIST  arg_list;
+
+				status = AcpiGetHandle (NULL, method_name, &method_handle);
+				if (ACPI_FAILURE(status)) {
+					fwts_warning(fw, "Failed to get handle for object %s.", name);
+				}
+				status = AcpiGetType(method_handle, &type);
+				if (ACPI_FAILURE(status)) {
+					fwts_warning(fw, "Failed to get object type for %s.",name);
+				}
+
+				if (type == ACPI_TYPE_LOCAL_SCOPE)
+					continue;
 
 				found = true;
 				arg_list.Count   = num_args;

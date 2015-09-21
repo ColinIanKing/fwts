@@ -229,7 +229,7 @@
  * _TC1  11.4.12	Y
  * _TC2  11.4.13	Y
  * _TDL  8.4.3.5	Y
- * _TFP  11.4.16	N
+ * _TFP  11.4.16	Y
  * _TIP  9.18.9		Y
  * _TIV  9.18.10	Y
  * _TMP  11.4.14	Y
@@ -5660,6 +5660,12 @@ static int method_test_TC2(fwts_framework *fw)
 		"_TC2", NULL, 0, method_test_TCx_return, "_TC1");
 }
 
+static int method_test_TFP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TFP", NULL, 0, method_test_integer_return, NULL);
+}
+
 static int method_test_ACx(fwts_framework *fw)
 {
 	int i;
@@ -6635,6 +6641,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_SCP, "Test _SCP (Set Cooling Policy)." },
 	{ method_test_TC1, "Test _TC1 (Thermal Constant 1)." },
 	{ method_test_TC2, "Test _TC2 (Thermal Constant 2)." },
+	{ method_test_TFP, "Test _TFP (Thermal fast Sampling Period)." },
 	{ method_test_TMP, "Test _TMP (Thermal Zone Current Temp)." },
 	{ method_test_TPT, "Test _TPT (Trip Point Temperature)." },
 	{ method_test_TRT, "Test _TRT (Thermal Relationship Table)." },

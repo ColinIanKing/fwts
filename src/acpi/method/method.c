@@ -237,7 +237,7 @@
  * _TPT  11.4.15	Y
  * _TRT  11.4.16	Y
  * _TSD  8.4.3.4	Y
- * _TSN  11.4.20	N
+ * _TSN  11.4.20	Y
  * _TSP  11.4.17	Y
  * _TSS  8.4.3.2	Y
  * _TST  11.4.18	Y
@@ -5625,6 +5625,12 @@ static int method_test_TRT(fwts_framework *fw)
 		"_TRT", NULL, 0, method_test_TRT_return, "_TRT");
 }
 
+static int method_test_TSN(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_TSN", NULL, 0, method_test_reference_return, "_TSN");
+}
+
 static int method_test_TSP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -6632,6 +6638,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TMP, "Test _TMP (Thermal Zone Current Temp)." },
 	{ method_test_TPT, "Test _TPT (Trip Point Temperature)." },
 	{ method_test_TRT, "Test _TRT (Thermal Relationship Table)." },
+	{ method_test_TSN, "Test _TSN (Thermal Sensor Device)." },
 	{ method_test_TSP, "Test _TSP (Thermal Sampling Period)." },
 	{ method_test_TST, "Test _TST (Temperature Sensor Threshold)." },
 	{ method_test_TZD, "Test _TZD (Thermal Zone Devices)." },

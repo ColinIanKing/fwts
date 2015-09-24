@@ -90,7 +90,7 @@
  * _DSW  7.2.1		Y
  * _DTI  11.4.5		N
  * _Exx  5.6.4.1	n/a
- * _EC   1.12		n/a
+ * _EC   12.12		Y
  * _EDL  6.3.1		Y
  * _EJD  6.3.2		Y
  * _EJx  6.3.3		Y
@@ -5791,6 +5791,10 @@ static int method_test_TZP(fwts_framework *fw)
 		"_TZP", NULL, 0, method_test_polling_return, "_TZP");
 }
 
+/*
+ * Section 12 Embedded Controller
+ */
+
 static void method_test_GPE_return(
 	fwts_framework *fw,
 	char *name,
@@ -5841,6 +5845,12 @@ static int method_test_GPE(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_GPE", NULL, 0, method_test_GPE_return, "_GPE");
+}
+
+static int method_test_EC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_EC", NULL, 0, method_test_integer_return, NULL);
 }
 
 /*
@@ -6654,6 +6664,7 @@ static fwts_framework_minor_test method_tests[] = {
 
 	/* Section 12 Embedded Controller Interface */
 	{ method_test_GPE, "Test _GPE (General Purpose Events)." },
+	{ method_test_EC,  "Test _EC  (EC Offset Query)." },
 
 	/* Section 16 Waking and Sleeping */
 

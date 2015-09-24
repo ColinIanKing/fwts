@@ -61,7 +61,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (187 tests):
+ method          (190 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -171,6 +171,7 @@ ACPI tests:
   Test _GCP (Get Capabilities).
   Test _GRT (Get Real Time).
   Test _GWS (Get Wake Status).
+  Test _CWS (Clear Wake Status).
   Test _STP (Set Expired Timer Wake Policy).
   Test _STV (Set Timer Value).
   Test _TIP (Expired Timer Wake Policy).
@@ -185,6 +186,7 @@ ACPI tests:
   Test _BMS (Battery Measurement Sampling Time).
   Test _BST (Battery Status).
   Test _BTP (Battery Trip Point).
+  Test _BTH (Battery Throttle Limit).
   Test _BTM (Battery Time).
   Test _PCL (Power Consumer List).
   Test _PIF (Power Source Information).
@@ -223,6 +225,7 @@ ACPI tests:
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
   Test _GPE (General Purpose Events).
+  Test _EC  (EC Offset Query).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
   Test _S0  (System S0 State).
@@ -391,7 +394,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (187 tests):
+ method          (190 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -501,6 +504,7 @@ Batch tests:
   Test _GCP (Get Capabilities).
   Test _GRT (Get Real Time).
   Test _GWS (Get Wake Status).
+  Test _CWS (Clear Wake Status).
   Test _STP (Set Expired Timer Wake Policy).
   Test _STV (Set Timer Value).
   Test _TIP (Expired Timer Wake Policy).
@@ -515,6 +519,7 @@ Batch tests:
   Test _BMS (Battery Measurement Sampling Time).
   Test _BST (Battery Status).
   Test _BTP (Battery Trip Point).
+  Test _BTH (Battery Throttle Limit).
   Test _BTM (Battery Time).
   Test _PCL (Power Consumer List).
   Test _PIF (Power Source Information).
@@ -553,6 +558,7 @@ Batch tests:
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
   Test _GPE (General Purpose Events).
+  Test _EC  (EC Offset Query).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
   Test _S0  (System S0 State).

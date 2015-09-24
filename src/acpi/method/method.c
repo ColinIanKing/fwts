@@ -58,7 +58,7 @@
  * _BMS  10.2.2.5	Y
  * _BQC  B.6.4		Y
  * _BST  10.2.2.6	Y
- * _BTH  10.2.2.7	N
+ * _BTH  10.2.2.7	Y
  * _BTM  10.2.2.9	Y
  * _BTP  10.2.2.8	Y
  * _CBA  PCI f/w spec	Y
@@ -4980,6 +4980,23 @@ static int method_test_PCL(fwts_framework *fw)
 		"_PCL", NULL, 0, method_test_PCL_return, "_PCL");
 }
 
+static int method_test_BTH(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	int i, ret;
+	arg[0].Type = ACPI_TYPE_INTEGER;
+
+	for (i = 0; i <= 100; i++) {
+		arg[0].Integer.Value = i;
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_BTH", arg, 1, method_test_NULL_return, NULL);
+
+		if (ret != FWTS_OK)
+			break;
+	}
+	return ret;
+}
+
 static int method_test_BTM(fwts_framework *fw)
 {
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
@@ -6646,6 +6663,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_BMS, "Test _BMS (Battery Measurement Sampling Time)." },
 	{ method_test_BST, "Test _BST (Battery Status)." },
 	{ method_test_BTP, "Test _BTP (Battery Trip Point)." },
+	{ method_test_BTH, "Test _BTH (Battery Throttle Limit)." },
 	{ method_test_BTM, "Test _BTM (Battery Time)." },
 	/* { method_test_BLT, "Test _BLT (Battery Level Threshold)." }, */
 

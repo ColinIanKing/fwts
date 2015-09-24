@@ -72,7 +72,7 @@
  * _CRT  11.4.4		Y
  * _CSD  8.4.2.2	Y
  * _CST  8.4.2.1	Y
- * _CWS  9.18.6		N not easily tested
+ * _CWS  9.18.6		Y
  * _DCK  6.5.2		Y
  * _DCS  B.6.6		Y
  * _DDC  B.6.5		Y
@@ -4419,6 +4419,45 @@ static int method_test_GWS(fwts_framework *fw)
 		"_GWS", arg, 1, method_test_GWS_return, "_GWS");
 }
 
+static void method_test_CWS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value != 0 && obj->Integer.Value != 1)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_CWSInvalidInteger",
+			"%s returned %" PRIu64 ", should be 0 or 1.",
+			name, (uint64_t)obj->Integer.Value);
+	else
+		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+}
+
+static int method_test_CWS(fwts_framework *fw)
+{
+	ACPI_OBJECT arg[1];
+	int i, ret;
+	arg[0].Type = ACPI_TYPE_INTEGER;
+
+	for (i = 0; i < 2; i++) {
+		arg[0].Integer.Value = i;
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_CWS", arg, 1, method_test_CWS_return, NULL);
+
+		if (ret != FWTS_OK)
+			break;
+	}
+	return ret;
+}
+
+
 static int method_test_STP(fwts_framework *fw)
 {
 	ACPI_OBJECT arg[2];
@@ -6585,7 +6624,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GCP, "Test _GCP (Get Capabilities)." },
 	{ method_test_GRT, "Test _GRT (Get Real Time)." },
 	{ method_test_GWS, "Test _GWS (Get Wake Status)." },
-	/* { method_test_CWS, "Test _CWS (Clear Wake Status)." }, */
+	{ method_test_CWS, "Test _CWS (Clear Wake Status)." },
 	/* { method_test_SRT, "Test _SRT (Set Real Time)." }, */
 	{ method_test_STP, "Test _STP (Set Expired Timer Wake Policy)." },
 	{ method_test_STV, "Test _STV (Set Timer Value)." },

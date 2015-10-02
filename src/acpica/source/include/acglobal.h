@@ -389,7 +389,6 @@ ACPI_INIT_GLOBAL (BOOLEAN,              AcpiGbl_IgnoreNoopOperator, FALSE);
 ACPI_INIT_GLOBAL (BOOLEAN,              AcpiGbl_CstyleDisassembly, TRUE);
 ACPI_INIT_GLOBAL (BOOLEAN,              AcpiGbl_ForceAmlDisassembly, FALSE);
 ACPI_INIT_GLOBAL (BOOLEAN,              AcpiGbl_DmOpt_Verbose, TRUE);
-//ACPI_INIT_GLOBAL (BOOLEAN,              AcpiGbl_DmOpt_Verbose, FALSE);	OK
 
 ACPI_GLOBAL (BOOLEAN,                   AcpiGbl_DmOpt_Disasm);
 ACPI_GLOBAL (BOOLEAN,                   AcpiGbl_DmOpt_Listing);
@@ -433,6 +432,9 @@ ACPI_GLOBAL (UINT16,                    AcpiGbl_ObjTypeCountMisc);
 ACPI_GLOBAL (UINT16,                    AcpiGbl_NodeTypeCountMisc);
 ACPI_GLOBAL (UINT32,                    AcpiGbl_NumNodes);
 ACPI_GLOBAL (UINT32,                    AcpiGbl_NumObjects);
+
+ACPI_GLOBAL (ACPI_MUTEX,                AcpiGbl_DbCommandReady);
+ACPI_GLOBAL (ACPI_MUTEX,                AcpiGbl_DbCommandComplete);
 
 #endif /* ACPI_DEBUGGER */
 

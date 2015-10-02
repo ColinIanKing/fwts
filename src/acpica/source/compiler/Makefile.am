@@ -214,7 +214,6 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/disassembler/dmcstyle.c	\
 	../components/disassembler/dmnames.c 	\
 	../components/disassembler/dmopcode.c 	\
-	../components/disassembler/dmobject.c 	\
 	../components/disassembler/dmresrc.c 	\
 	../components/disassembler/dmresrcl.c 	\
 	../components/disassembler/dmresrcs.c 	\

@@ -85,7 +85,6 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/disassembler/dmbuffer.c	\
 	source/components/disassembler/dmcstyle.c	\
 	source/components/disassembler/dmnames.c	\
-	source/components/disassembler/dmobject.c	\
 	source/components/disassembler/dmopcode.c	\
 	source/components/disassembler/dmresrc.c	\
 	source/components/disassembler/dmresrcl.c	\

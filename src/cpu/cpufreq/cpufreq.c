@@ -74,6 +74,7 @@ static bool cpufreq_settable = true;
 
 #define MAX_ABSOLUTE_ERROR	20.0		/* In Hz */
 #define MAX_RELATIVE_ERROR	0.0025		/* as fraction */
+#define MAX_REPEATS		(5)
 
 static inline void cpu_mkpath(
 	char *const path,
@@ -130,8 +131,8 @@ static int cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
 
 out:
 	if (rc != FWTS_OK)
-		fwts_warning(fw, "Cannot set CPU %d frequency to %s.",
-				cpu->idx, buffer);
+		fwts_warning(fw, "Cannot set CPU %d frequency to %s when setting %s.",
+			cpu->idx, buffer, path);
 	return rc;
 }
 
@@ -446,14 +447,14 @@ static int cpufreq_test_sw_all(fwts_framework *fw)
 	for (i = 0; i < num_cpus; i++)
 		cpu_set_lowest_frequency(fw, &cpus[i]);
 
-	if (get_performance_repeat(fw, &cpus[0], 5, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
+	if (get_performance_repeat(fw, &cpus[0], MAX_REPEATS, GET_PERFORMANCE_MIN, &lowperf) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
 		return FWTS_ERROR;
 	}
 
 	cpu_set_highest_frequency(fw, &cpus[0]);
-	if (get_performance_repeat(fw, &cpus[0], 5, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
+	if (get_performance_repeat(fw, &cpus[0], MAX_REPEATS, GET_PERFORMANCE_MAX, &highperf) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "CPUFreqSW_ALLGetPerf",
 			"Failed to get CPU performance.");
 		return FWTS_ERROR;

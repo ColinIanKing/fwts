@@ -433,7 +433,7 @@ int fwts_cpu_benchmark(
 
 		gettimeofday(&end, NULL);
 		timersub(&end, &start, &duration);
-		if (duration.tv_sec >= 1)
+		if (duration.tv_usec >= 250000)
 			break;
 	}
 

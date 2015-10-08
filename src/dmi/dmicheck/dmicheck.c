@@ -33,6 +33,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <limits.h>
+#include <fcntl.h>
 
 #define DMI_VERSION			(0x0300)
 #define VERSION_MAJOR(v)		((v) >> 8)
@@ -309,6 +310,94 @@ static fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	{ TYPE_EOD, 0xff },
 };
 
+static int dmi_load_file(const char* filename, void *buf, size_t size)
+{
+	int fd;
+	ssize_t ret;
+
+	if ((fd = open(filename, O_RDONLY)) < 0)
+		return FWTS_ERROR;
+	ret = read(fd, buf, size);
+	close(fd);
+	if (ret != (ssize_t)size)
+		return FWTS_ERROR;
+	return FWTS_OK;
+}
+
+static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
+{
+	off_t addr = (off_t)entry->struct_table_address;
+	size_t length = (size_t)entry->struct_table_length;
+	void *table;
+	void *mem;
+	char anchor[8];
+
+	mem = fwts_mmap(addr, length);
+	if (mem != FWTS_MAP_FAILED) {
+		table = malloc(length);
+		if (table)
+			memcpy(table, mem, length);
+		(void)fwts_munmap(mem, length);
+		return table;
+	}
+
+	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 4) == FWTS_OK
+			&& strncmp(anchor, "_SM_", 4) == 0) {
+		table = malloc(length);
+		if (!table)
+			return NULL;
+		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
+			fwts_log_info(fw, "SMBIOS table loaded from /sys/firmware/dmi/tables/DMI\n");
+			return table;
+		}
+		free(table);
+	}
+
+	fwts_log_error(fw, "Cannot mmap SMBIOS table from %8.8" PRIx32 "..%8.8" PRIx32 ".",
+			entry->struct_table_address, entry->struct_table_address + entry->struct_table_length);
+	return NULL;
+}
+
+static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
+{
+	off_t addr = (off_t)entry->struct_table_address;
+	size_t length = (size_t)entry->struct_table_max_size;
+	void *table;
+	void *mem;
+	char anchor[8];
+
+	mem = fwts_mmap(addr, length);
+	if (mem != FWTS_MAP_FAILED) {
+		table = malloc(length);
+		if (table)
+			memcpy(table, mem, length);
+		(void)fwts_munmap(mem, length);
+		return table;
+	}
+
+	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 5) == FWTS_OK
+			&& strncmp(anchor, "_SM3_", 5) == 0) {
+		table = malloc(length);
+		if (!table)
+			return NULL;
+		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
+			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI\n");
+			return table;
+		}
+		free(table);
+	}
+
+	fwts_log_error(fw, "Cannot mmap SMBIOS 3.0 table from %16.16" PRIx64 "..%16.16" PRIx64 ".",
+			entry->struct_table_address, entry->struct_table_address + entry->struct_table_max_size);
+	return NULL;
+}
+
+static void dmi_table_free(void* table)
+{
+	if (table)
+		free(table);
+}
+
 static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type type)
 {
 	if (type == FWTS_SMBIOS) {
@@ -365,17 +454,9 @@ static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 	uint16_t table_length = entry->struct_table_length;
 	int ret = FWTS_OK;
 
-	ptr = table = fwts_mmap((off_t)entry->struct_table_address,
-			  (size_t)table_length);
-	if (table == FWTS_MAP_FAILED) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SMBIOSTableAddressNotMapped",
-			"Cannot mmap SMBIOS tables from "
-			"%8.8" PRIx32 "..%8.8" PRIx32 ".",
-			entry->struct_table_address,
-			entry->struct_table_address + table_length);
-			return FWTS_ERROR;
-	}
+	ptr = table = dmi_table_smbios(fw, entry);
+	if (table == NULL)
+		return FWTS_ERROR;
 
 	for (i = 0; i < entry->number_smbios_structures; i++) {
 		if (ptr > table + table_length) {
@@ -422,7 +503,7 @@ static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 		ret = FWTS_ERROR;
 	}
 
-	(void)fwts_munmap(table, (size_t)entry->struct_table_length);
+	dmi_table_free(table);
 
 	return ret;
 }
@@ -520,17 +601,9 @@ static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
 	uint32_t table_length = entry->struct_table_max_size;
 	int ret = FWTS_OK;
 
-	ptr = table = fwts_mmap((off_t)entry->struct_table_address,
-			  (size_t)table_length);
-	if (table == FWTS_MAP_FAILED) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SMBIOS30TableAddressNotMapped",
-			"Cannot mmap SMBIOS 3.0 tables from "
-			"%16.16" PRIx64 "..%16.16" PRIx64 ".",
-			entry->struct_table_address,
-			entry->struct_table_address + table_length);
-			return FWTS_ERROR;
-	}
+	ptr = table = dmi_table_smbios30(fw, entry);
+	if (table == NULL)
+		return FWTS_ERROR;
 
 	while (1)
 	{
@@ -579,7 +652,7 @@ static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
 		}
 	}
 
-	(void)fwts_munmap(table, (size_t)entry->struct_table_max_size);
+	dmi_table_free(table);
 
 	return ret;
 }
@@ -1796,7 +1869,6 @@ static int dmicheck_test2(fwts_framework *fw)
 {
 	void *addr;
 	fwts_smbios_entry entry;
-	fwts_smbios30_entry entry30;
 	fwts_smbios_type  type;
 	uint16_t version = 0;
 	uint8_t  *table;
@@ -1823,20 +1895,23 @@ static int dmicheck_test2(fwts_framework *fw)
 	if (dmi_version_check(fw, version) != FWTS_OK)
 		return FWTS_SKIP;
 
-	table = fwts_mmap((off_t)entry.struct_table_address,
-			 (size_t)entry.struct_table_length);
-	if (table == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap SMBIOS tables from "
-			"%8.8" PRIx32 "..%8.8" PRIx32 ".",
-			entry.struct_table_address,
-			entry.struct_table_address + entry.struct_table_length);
+	table = dmi_table_smbios(fw, &entry);
+	if (table == NULL)
 		return FWTS_ERROR;
-	}
 
 	dmi_scan_tables(fw, &entry, table);
 
-	(void)fwts_munmap(table, (size_t)entry.struct_table_length);
+	dmi_table_free(table);
 
+	return FWTS_OK;
+}
+
+static int dmicheck_test3(fwts_framework *fw)
+{
+	void *addr;
+	fwts_smbios30_entry entry30;
+	uint16_t version = 0;
+	uint8_t  *table;
 
 	if (!smbios30_found) {
 		fwts_skipped(fw, "Cannot find SMBIOS30 table entry, skip the test.");
@@ -1850,19 +1925,13 @@ static int dmicheck_test2(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	table = fwts_mmap((off_t)entry30.struct_table_address,
-			 (size_t)entry30.struct_table_max_size);
-	if (table == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap SMBIOS 3.0 table from "
-			"%16.16" PRIx64 "..%16.16" PRIx64 ".",
-			entry30.struct_table_address,
-			entry30.struct_table_address + entry30.struct_table_max_size);
+	table = dmi_table_smbios30(fw, &entry30);
+	if (table == NULL)
 		return FWTS_ERROR;
-	}
 
 	dmi_scan_smbios30_table(fw, &entry30, table);
 
-	(void)fwts_munmap(table, (size_t)entry30.struct_table_max_size);
+	dmi_table_free(table);
 
 	return FWTS_OK;
 }
@@ -1870,6 +1939,7 @@ static int dmicheck_test2(fwts_framework *fw)
 static fwts_framework_minor_test dmicheck_tests[] = {
 	{ dmicheck_test1, "Find and test SMBIOS Table Entry Points." },
 	{ dmicheck_test2, "Test DMI/SMBIOS tables for errors." },
+	{ dmicheck_test3, "Test DMI/SMBIOS3 tables for errors." },
 	{ NULL, NULL }
 };
 

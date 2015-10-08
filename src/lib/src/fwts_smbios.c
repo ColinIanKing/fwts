@@ -17,9 +17,32 @@
  *
  */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "fwts.h"
 
 #if defined(FWTS_ARCH_INTEL) || defined(FWTS_ARCH_AARCH64)
+
+/*
+ *  fwts_load_file()
+ *	loads file to memory
+ */
+static int fwts_load_file(const char* filename, void *buf, size_t size)
+{
+	int fd;
+	ssize_t ret;
+
+	if ((fd = open(filename, O_RDONLY)) < 0)
+		return FWTS_ERROR;
+	ret = read(fd, buf, size);
+	close(fd);
+	if (ret != (ssize_t)size)
+		return FWTS_ERROR;
+	return FWTS_OK;
+}
+
 /*
  *  fwts_smbios_find_entry_uefi()
  *	find SMBIOS structure table entry from UEFI systab
@@ -30,15 +53,24 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 	fwts_smbios_entry *mapped_entry;
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
-		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) == FWTS_MAP_FAILED) {
-			fwts_log_error(fw, "Cannot mmap SMBIOS entry at %p\n", addr);
-			return NULL;
+
+		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) != FWTS_MAP_FAILED) {
+			*entry = *mapped_entry;
+			(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
+			*type  = FWTS_SMBIOS;
+			return addr;
 		}
-		*entry = *mapped_entry;
-		*type  = FWTS_SMBIOS;
-		(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
+
+		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
+				entry, sizeof(fwts_smbios_entry)) == FWTS_OK && !strncmp((char*)entry, "_SM_", 4)) {
+			fwts_log_info(fw, "SMBIOS entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n");
+			*type  = FWTS_SMBIOS;
+			return addr;
+		}
+
+		fwts_log_error(fw, "Cannot mmap SMBIOS entry at %p\n", addr);
 	}
-	return addr;
+	return NULL;
 }
 
 /*
@@ -51,14 +83,22 @@ static void *fwts_smbios30_find_entry_uefi(fwts_framework *fw, fwts_smbios30_ent
 	fwts_smbios30_entry *mapped_entry;
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS3")) != NULL) {
-		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios30_entry))) == FWTS_MAP_FAILED) {
-			fwts_log_error(fw, "Cannot mmap SMBIOS30 entry at %p\n", addr);
-			return NULL;
+
+		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios30_entry))) != FWTS_MAP_FAILED) {
+			*entry = *mapped_entry;
+			(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios30_entry));
+			return addr;
 		}
-		*entry = *mapped_entry;
-		(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios30_entry));
+
+		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
+				entry, sizeof(fwts_smbios30_entry)) == FWTS_OK && !strncmp((char*)entry, "_SM3_", 5)) {
+			fwts_log_info(fw, "SMBIOS30 entry loaded from /sys/firmware/dmi/tables/smbios_entry_point\n");
+			return addr;
+		}
+
+		fwts_log_error(fw, "Cannot mmap SMBIOS30 entry at %p\n", addr);
 	}
-	return addr;
+	return NULL;
 }
 
 #if defined(FWTS_ARCH_INTEL)

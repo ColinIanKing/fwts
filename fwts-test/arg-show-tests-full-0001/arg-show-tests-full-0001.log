@@ -346,9 +346,10 @@ Batch tests:
   DBGP (Debug Port) Table test.
  dmar            (1 test):
   DMA Remapping test.
- dmicheck        (2 tests):
+ dmicheck        (3 tests):
   Find and test SMBIOS Table Entry Points.
   Test DMI/SMBIOS tables for errors.
+  Test DMI/SMBIOS3 tables for errors.
  ebda            (1 test):
   Test EBDA is reserved in E820 table.
  ecdt            (1 test):

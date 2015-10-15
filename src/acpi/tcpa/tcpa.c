@@ -93,7 +93,7 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 
 	fwts_log_info_verbatum(fw, "TCPA Table:");
 	fwts_log_info_verbatum(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
-	fwts_log_info_verbatum(fw, "  Reserved:	                       0x%4.4"   PRIx16, tcpa->server.reserved);
+	fwts_log_info_verbatum(fw, "  Reserved:                        0x%4.4"   PRIx16, tcpa->server.reserved);
 	fwts_log_info_verbatum(fw, "  Log Area Minimum Length:         0x%16.16" PRIx64, tcpa->server.log_zone_length);
 	fwts_log_info_verbatum(fw, "  Log Area Start Address:          0x%16.16" PRIx64, tcpa->server.log_zone_addr);
 	fwts_log_info_verbatum(fw, "  Specification Revision:          0x%4.4"   PRIx16, tcpa->server.spec_revision);

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2010-2015 Canonical
  *
-  * This program is free software; you can redistribute it and/or
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -73,6 +73,18 @@ static int tpm2_test1(fwts_framework *fw)
 			"TPM2BadStartMethod",
 			"TPM2's Start Method must be between one to eight, got 0x%" PRIx16,
 			tpm2->start_method);
+	}
+	/*
+	 * Kernel: drivers/char/tpm/tpm_crb.c checks for a zero address for
+	 * the control area because some versions of AMI BIOS have a bug where
+	 * this address is zero and the kernel driver aborts on this.
+         */
+	if (!tpm2->address_of_control_area) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"TPM2BadControlAreaAddress",
+			"TPM2's Control Area Address is expected to be non-zero, got 0x%16.16" PRIx64,
+			tpm2->address_of_control_area);
 	}
 
 	if (tpm2->start_method == 2 && table->length != sizeof(fwts_acpi_table_tpm2) + 4) {

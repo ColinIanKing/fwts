@@ -53,7 +53,8 @@ typedef enum {
 	FWTS_FLAG_UTILS				= 0x08000000,
 	FWTS_FLAG_QUIET				= 0x10000000,
 	FWTS_FLAG_SHOW_TESTS_FULL		= 0x20000000,
-	FWTS_FLAG_SHOW_TESTS_CATEGORIES		= 0x40000000
+	FWTS_FLAG_SHOW_TESTS_CATEGORIES		= 0x40000000,
+	FWTS_FLAG_TEST_COMPLIANCE_ACPI	       = 0x100000000
 } fwts_framework_flags;
 
 #define FWTS_FLAG_TEST_MASK		\
@@ -163,7 +164,7 @@ typedef struct {
 typedef struct fwts_framework_ops {
 	char *description;			/* description of test */
 	int (*init)(fwts_framework *);		/* Initialise */
-	int (*deinit)(fwts_framework *);	/* De-init */		
+	int (*deinit)(fwts_framework *);	/* De-init */
 	int (*getopts)(fwts_framework *, int argc, char **argv);	/* Arg handling */
 	fwts_option *options;
 	fwts_args_optarg_handler options_handler;
@@ -248,10 +249,10 @@ static inline int fwts_tests_passed(const fwts_framework *fw)
 #define FWTS_ARRAY_LEN(s) (sizeof(s)/sizeof(s[0]))
 
 /*
- * FWTS_ASSERT(test, message) 
+ * FWTS_ASSERT(test, message)
  *	compile time assertion that throws a division by zero
  *	error to stop compilation if condition "test" is not true.
- * 	See http://www.pixelbeat.org/programming/gcc/static_assert.html 
+ * 	See http://www.pixelbeat.org/programming/gcc/static_assert.html
  *
  */
 #define FWTS_CONCAT(a, b) a ## b

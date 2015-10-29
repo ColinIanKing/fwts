@@ -473,7 +473,7 @@ typedef struct {
 	uint8_t		acpi_processor_id;
 	uint8_t		local_sapic_id;
 	uint8_t		local_sapic_eid;
-	uint8_t		reserved;
+	uint8_t		reserved[3];
 	uint32_t	flags;
 	uint32_t	uid_value;
 	char		uid_string[0];

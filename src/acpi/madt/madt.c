@@ -226,7 +226,7 @@ static int madt_test1(fwts_framework *fw)
 						"MADT GIC C Structure reserved field should be zero, "
 						"instead got 0x%" PRIx32 ".", gic->reserved);
 				}
-				if (gic->flags & 0xfffffffc) {
+				if (gic->flags & 0xfffffff8) {
 					passed = false;
 					fwts_failed(fw, LOG_LEVEL_MEDIUM,
 						"MADTGICFLags",

@@ -836,6 +836,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		case FWTS_ACPI_MADT_IO_APIC: {
 				static const fwts_acpidump_field fields_io_apic[] = {
 					FIELD_UINT("  I/O APIC ID", 	fwts_acpi_madt_io_apic, io_apic_id),
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_io_apic, reserved),
 					FIELD_UINT("  I/O APIC Addr", 	fwts_acpi_madt_io_apic, io_apic_phys_address),
 					FIELD_UINT("  Global IRQ Base", fwts_acpi_madt_io_apic, global_irq_base),
 					FIELD_END
@@ -881,6 +882,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 			break;
 		case FWTS_ACPI_MADT_LOCAL_APIC_OVERRIDE: {
 				static const fwts_acpidump_field fields_madt_local_apic_addr_override[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_local_apic_addr_override, reserved),
 					FIELD_UINT("  Local APIC Addr", fwts_acpi_madt_local_apic_addr_override, address),
 					FIELD_END
 				};
@@ -891,6 +893,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 		case FWTS_ACPI_MADT_IO_SAPIC: {
 				static const fwts_acpidump_field fields_madt_io_sapic[] = {
 					FIELD_UINT("  I/O SAPIC ID", 	fwts_acpi_madt_io_sapic, io_sapic_id),
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_io_sapic, reserved),
 					FIELD_UINT("  Gbl Sys Int", 	fwts_acpi_madt_io_sapic, gsi),
 					FIELD_UINT("  I/O SAPIC Addr", 	fwts_acpi_madt_io_sapic, address),
 					FIELD_END
@@ -905,6 +908,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  ACPI CPU ID", 	fwts_acpi_madt_local_sapic, acpi_processor_id),
 					FIELD_UINT("  Local SAPIC ID", 	fwts_acpi_madt_local_sapic, local_sapic_id),
 					FIELD_UINT("  Local SAPIC EID",	fwts_acpi_madt_local_sapic, local_sapic_eid),
+					FIELD_UINTS(" Reserved", 	fwts_acpi_madt_local_sapic, reserved),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_sapic, flags),
 					FIELD_UINT("  UID Value", 	fwts_acpi_madt_local_sapic, uid_value),
 					FIELD_UINT("  UID String", 	fwts_acpi_madt_local_sapic, uid_string),
@@ -932,6 +936,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 			break;
 		case FWTS_ACPI_MADT_LOCAL_X2APIC: {
 				static const fwts_acpidump_field fields_madt_local_x2apic[] = {
+					FIELD_UINT("  Reserved", 	fwts_acpi_madt_local_x2apic, reserved),
 					FIELD_UINT("  x2APIC ID", 	fwts_acpi_madt_local_x2apic, x2apic_id),
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic, flags),
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic, processor_uid),
@@ -946,6 +951,7 @@ static void acpidump_madt(fwts_framework *fw, const fwts_acpi_table_info *table)
 					FIELD_UINT("  Flags", 		fwts_acpi_madt_local_x2apic_nmi, flags),
 					FIELD_UINT("  Processor UID", 	fwts_acpi_madt_local_x2apic_nmi, processor_uid),
 					FIELD_UINT("  LINT#", 		fwts_acpi_madt_local_x2apic_nmi, local_x2apic_lint),
+					FIELD_UINTS(" Reserved", 	fwts_acpi_madt_local_x2apic_nmi, reserved),
 					FIELD_END
 				};
 				__acpi_dump_table_fields(fw, data, fields_madt_local_x2apic_nmi, offset);

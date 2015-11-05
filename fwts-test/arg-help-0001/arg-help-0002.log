@@ -2,7 +2,10 @@
                              time options.
 --acpica-debug               Enable ACPICA debug
                              /warning messages.
---acpitests                  Run ACPI tests.
+--acpicompliance             Run ACPI tests for
+                             spec compliance.
+--acpitests                  Run general ACPI
+                             tests.
 -a, --all                    Run all tests.
 -b, --batch                  Run non-Interactive
                              tests.

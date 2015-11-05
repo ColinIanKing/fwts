@@ -186,6 +186,7 @@ acpidump        APIC Structure #3:
 acpidump        [0x03c 0060   1]                                     Type: 0x01 (I/O APIC)
 acpidump        [0x03d 0061   1]                                   Length: 0x0c
 acpidump        [0x03e 0062   1]                              I/O APIC ID: 0x01
+acpidump        [0x03f 0063   1]                                 Reserved: 0x00
 acpidump        [0x040 0064   4]                            I/O APIC Addr: 0xfec00000
 acpidump        [0x044 0068   4]                          Global IRQ Base: 0x00000000
 acpidump        APIC Structure #4:
@@ -405,6 +406,7 @@ acpidump        APIC Structure #3:
 acpidump        [0x03c 0060   1]                                     Type: 0x01 (I/O APIC)
 acpidump        [0x03d 0061   1]                                   Length: 0x0c
 acpidump        [0x03e 0062   1]                              I/O APIC ID: 0x02
+acpidump        [0x03f 0063   1]                                 Reserved: 0x00
 acpidump        [0x040 0064   4]                            I/O APIC Addr: 0xfec00000
 acpidump        [0x044 0068   4]                          Global IRQ Base: 0x00000000
 acpidump        APIC Structure #4:

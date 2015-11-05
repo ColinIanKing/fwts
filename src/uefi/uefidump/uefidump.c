@@ -148,6 +148,13 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					c->controller);
 			}
 			break;
+		case FWTS_UEFI_BMC_DEV_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_bmc_dev_path)) {
+				fwts_uefi_bmc_dev_path *b = (fwts_uefi_bmc_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\BMC(0x%" PRIx8 ",0x%" PRIx64 ")",
+					b->interface_type, b->base_addr);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-HW-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

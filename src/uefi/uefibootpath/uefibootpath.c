@@ -119,6 +119,24 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_BMC_DEV_PATH_SUBTYPE:
+			if (len != sizeof(fwts_uefi_bmc_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIBMCDevPathLength",
+					"The length of BMC Device Path is %" PRIu16 " bytes "
+					"and differs from UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_uefi_bmc_dev_path));
+				errors++;
+			}
+
+			fwts_uefi_bmc_dev_path *b = (fwts_uefi_bmc_dev_path *)dev_path;
+			if (b->interface_type > 3) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIBMCDevPathIntfTypeInvalid",
+					"The definition on interface type of BMC Device Path is 0-3"
+					", which is out of the defined range.");
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatum(fw, "Unknow subtype of Hardware Device Path.");
 			break;

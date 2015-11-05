@@ -201,7 +201,8 @@ typedef enum {
 	FWTS_UEFI_PCCARD_DEV_PATH_SUBTYPE =		(0x02),
 	FWTS_UEFI_MEMORY_MAPPED_DEV_PATH_SUBTYPE =	(0x03),
 	FWTS_UEFI_VENDOR_DEV_PATH_SUBTYPE =		(0x04),
-	FWTS_UEFI_CONTROLLER_DEV_PATH_SUBTYPE =		(0x05)
+	FWTS_UEFI_CONTROLLER_DEV_PATH_SUBTYPE =		(0x05),
+	FWTS_UEFI_BMC_DEV_PATH_SUBTYPE =		(0x06)
 } hw_dev_path_subtypes;
 
 typedef enum {
@@ -284,6 +285,12 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	uint32_t controller;
 } __attribute__ ((packed)) fwts_uefi_controller_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint8_t interface_type;
+	uint64_t base_addr;
+} __attribute__ ((packed)) fwts_uefi_bmc_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

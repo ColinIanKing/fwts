@@ -553,6 +553,16 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_URI_DEVICE_PATH_SUBTYPE:
+			if (len <= sizeof(fwts_uefi_uri_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIURIDevPathLength",
+					"The length of URI Device Path is %" PRIu16 " bytes "
+					"should be larger than UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_uefi_uri_dev_path));
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatum(fw, "Unknow subtype of Messaging Device PaERRORth.");
 			break;

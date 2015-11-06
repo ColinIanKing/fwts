@@ -62,7 +62,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of End of Hardware Device Path.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of End of Hardware Device Path.");
 			break;
 		}
 		break;
@@ -138,7 +138,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of Hardware Device Path.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of Hardware Device Path.");
 			break;
 		}
 		break;
@@ -202,7 +202,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of ACPI Device Path.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of ACPI Device Path.");
 			break;
 		}
 		break;
@@ -563,8 +563,29 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_UFS_DEVICE_PATH_SUBTYPE:
+			if (len != sizeof(fwts_uefi_ufs_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIUFSDevPathLength",
+					"The length of UFS(Universal Flash Storage) is %" PRIu16 " bytes "
+					"and differs from UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_uefi_ufs_dev_path));
+				errors++;
+			}
+
+			fwts_uefi_ufs_dev_path *ufs = (fwts_uefi_ufs_dev_path *)dev_path;
+			if (ufs->target_id != 0) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIPUNFieldInvalid",
+					"The Target ID on the UFS interface(PUN) is %" PRIu8 " ."
+					"This value should be 0 for current UFS2.0 spec compliance "
+					"and reserve/introduce this field to support multiple devices "
+					"per UFS port.",
+					ufs->target_id);
+				errors++;
+			}
+			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of Messaging Device PaERRORth.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of Messaging Device Path.");
 			break;
 		}
 		break;
@@ -670,7 +691,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of Media Device Path.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of Media Device Path.");
 			break;
 		}
 		break;
@@ -698,12 +719,12 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknow subtype of BIOS Boot Specification Device Path.");
+			fwts_log_info_verbatum(fw, "Unknown subtype of BIOS Boot Specification Device Path.");
 			break;
 		}
 		break;
 	default:
-		fwts_log_info_verbatum(fw, "Unknow Type of Device Path.");
+		fwts_log_info_verbatum(fw, "Unknown Type of Device Path.");
 		break;
 
 	}

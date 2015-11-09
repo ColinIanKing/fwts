@@ -151,7 +151,7 @@ void fwts_framework_test_add(
 	fwts_framework_test *new_test;
 
 	if (flags & ~(FWTS_FLAG_RUN_ALL | FWTS_FLAG_ROOT_PRIV)) {
-		fprintf(stderr, "Test %s flags must be a bit field in 0x%lx, got 0x%lx\n",
+		fprintf(stderr, "Test %s flags must be a bit field in 0x%x, got 0x%x\n",
 			name, FWTS_FLAG_RUN_ALL, flags);
 		exit(EXIT_FAILURE);
 	}

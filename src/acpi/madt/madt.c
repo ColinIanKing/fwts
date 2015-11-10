@@ -232,7 +232,7 @@ static int madt_test1(fwts_framework *fw)
 						"MADTGICFLags",
 						"MADT GIC, flags, bits 2..31 are reserved "
 						"and should be zero, but are set as: %" PRIx32 ".",
-						gic->flags & 0xfffffffc);
+						gic->flags & 0xfffffff8);
 				}
 				skip = sizeof(fwts_acpi_madt_gic);
 

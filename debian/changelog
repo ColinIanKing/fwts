@@ -1,3 +1,53 @@
+fwts (15.11.00-0ubuntu1) xenial; urgency=low
+
+  [Al Stone]
+  * Add in the notion of ACPI compliance tests.
+  * MADT subtables: Local SAPIC structure has 3 reserved bytes, not 1
+  * ACPI: MADT: update GICC flag checks for ACPI 6.0
+  * ACPI: MADT: further update to GICC flag checks for 6.0
+
+  [Alex Hung]
+  * acpi: method: skip scope names in method_evaluate_method
+  * acpi: method: add _GPE test
+  * fwts-test: update for _GPE method test
+  * fwts-test: remove tmp log for LPIT
+  * acpi: method: add _TSN test
+  * acpi: method: add _TFP test
+  * fwts-test: update for _TSN and _TFP tests
+  * acpi: method: add _EC test
+  * acpi: method: add _CWS test
+  * acpi: method: add _BTH test
+  * fwts-test: update for _EC, _CWS and _BTH tests
+  * acpidump: add missing reserved fields to MADT structures
+  * fwts-test: update for madt and acpidump changes
+  * auto-packager: mkpackage.sh: add xenial
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20150930 (LP: #1502044)
+  * cpufreq: the calibration is taking a long time, make it faster
+  * fwts-test: update dmicheck regression test
+  * acpi: tpm2: add check for zero control area address (LP: #1506442)
+  * acpi: tcpa: replace tab with spaces to fix formatting alignment
+  * lib: framework: pack fwts_framework_flags to ensure it is a 32 bit int
+  * man page: update author contributions
+
+  [Ivan Hu]
+  * securebootcert: change fail to warning when MS UEFI CA not found in DB
+  * lib: fwts_uefi: add BMC device path define
+  * uefidump: add dumping the BMC device path
+  * uefibootpath: add test for the BMC device path
+  * lib: fwts_uefi: add the URI device path define
+  * uefibootpath: add test for the URI device path
+  * uefidump: add dumping for the URI device path
+  * lib: fwts_uefi: add the UFS device path define
+  * uefidump: add dumping for the UFS device path
+  * uefibootpath: add test for the UFS device path
+
+  [Jiri Vohanka]
+  * dmi: dmicheck: fix SMBIOS issues on aarch64 systems
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 12 Nov 2015 14:24:44 +0800
+
 fwts (15.09.00-0ubuntu1) wily; urgency=low
 
   [Alex Hung]

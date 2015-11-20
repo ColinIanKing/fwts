@@ -604,6 +604,22 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_WIRELESS_DEVICE_PATH_SUBTYPE:
+			if (len <= sizeof(fwts_uefi_wireless_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIWirelessDevPathLength",
+					"The length of wireless Device Path is %" PRIu16 " bytes, "
+					"should at least include the SSID filed.",
+					len);
+				errors++;
+			}
+			if (len > (sizeof(fwts_uefi_wireless_dev_path) + 32)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIWirelessDevPathLength",
+					"The length of wireless Device Path is %" PRIu16 " bytes, "
+					"the ssid field should not be larger than 32 bytes.",
+					len);
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatum(fw, "Unknown subtype of Messaging Device Path.");
 			break;

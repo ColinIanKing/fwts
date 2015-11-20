@@ -511,6 +511,15 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, "\\SD(0x%" PRIx8 ")", s->slot_number);
 			}
 			break;
+		case FWTS_UEFI_BLUETOOTH_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_bluetooth_dev_path)) {
+				fwts_uefi_bluetooth_dev_path *b = (fwts_uefi_bluetooth_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\BT("
+					"%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 "%02" PRIx8 ")",
+					b->bluetooth_addr[0], b->bluetooth_addr[1], b->bluetooth_addr[2],
+					b->bluetooth_addr[3], b->bluetooth_addr[4], b->bluetooth_addr[5]);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

@@ -520,6 +520,12 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					b->bluetooth_addr[3], b->bluetooth_addr[4], b->bluetooth_addr[5]);
 			}
 			break;
+		case FWTS_UEFI_WIRELESS_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len > sizeof(fwts_uefi_wireless_dev_path)) {
+				fwts_uefi_wireless_dev_path *w = (fwts_uefi_wireless_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\WiFi(%s)", w->ssid);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

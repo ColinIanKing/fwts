@@ -234,7 +234,8 @@ typedef enum {
 	FWTS_UEFI_SAS_EX_DEVICE_PATH_SUBTYPE =		(0x16),
 	FWTS_UEFI_NVM_EXPRESS_NAMESP_DEVICE_PATH_SUBTYPE = (0x17),
 	FWTS_UEFI_URI_DEVICE_PATH_SUBTYPE = 		(0x18),
-	FWTS_UEFI_UFS_DEVICE_PATH_SUBTYPE = 		(0x19)
+	FWTS_UEFI_UFS_DEVICE_PATH_SUBTYPE = 		(0x19),
+	FWTS_UEFI_SD_DEVICE_PATH_SUBTYPE = 		(0x1a)
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -515,6 +516,11 @@ typedef struct {
 	uint8_t target_id;
 	uint8_t lun;
 } __attribute__((packed)) fwts_uefi_ufs_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint8_t slot_number;
+} __attribute__((packed)) fwts_uefi_sd_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

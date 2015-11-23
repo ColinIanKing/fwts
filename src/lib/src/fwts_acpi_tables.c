@@ -936,7 +936,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		facs = (fwts_acpi_table_facs *)table->data;
 	else {
 		size_t size = 64;
-		uint64_t facs_fake_addr;
+		uint64_t facs_addr;
 
 		/* This is most unexpected, so warn about it */
 		fwts_log_warning(fw, "No FACS found, fwts has faked one instead.");
@@ -949,12 +949,23 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		facs->hardware_signature = 0xf000a200;	/* Some signature */
 		facs->flags = 0;
 		facs->version = 2;
-		facs_fake_addr = fwts_fake_physical_addr(size);
-		fadt->firmware_control = (uint32_t)facs_fake_addr;
-		if (fadt->header.length >= 140)
-			fadt->x_firmware_ctrl = (uint64_t)facs_fake_addr;
 
-		fwts_acpi_add_table("FACS", facs, (uint64_t)facs_fake_addr,
+		/* Get physical address of FACS, try to take it from FACS first,
+		   and if that fails, create a fake one and update FACS */
+		if (fadt->header.length >= 140 && fadt->x_firmware_ctrl != 0) {
+			facs_addr = fadt->x_firmware_ctrl;
+		} else if (fadt->firmware_control != 0) {
+			facs_addr = (uint64_t)fadt->firmware_control;
+		} else {
+			facs_addr = (uint64_t)fwts_fake_physical_addr(size);
+			if (fadt->header.length >= 140)
+				fadt->x_firmware_ctrl = facs_addr;
+			else
+				fadt->firmware_control = (uint32_t)facs_addr;
+			fadt->header.checksum -= fwts_checksum((uint8_t*)&facs_addr, sizeof(facs_addr));
+		}
+
+		fwts_acpi_add_table("FACS", facs, (uint64_t)facs_addr,
 			size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
 

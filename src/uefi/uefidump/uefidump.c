@@ -487,14 +487,15 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 		case FWTS_UEFI_URI_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_uri_dev_path)) {
 				fwts_uefi_uri_dev_path *u = (fwts_uefi_uri_dev_path *)dev_path;
-				char *tmp;
 				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
-				tmp = malloc(len - sizeof(fwts_uefi_uri_dev_path) + 1);
-				if (tmp) {
-					memcpy(tmp, u->uri, len - sizeof(fwts_uefi_uri_dev_path));
-					tmp[len - sizeof(fwts_uefi_uri_dev_path)] = '\0';
+				if ((len > sizeof(fwts_uefi_uri_dev_path)) &&
+				    (len <= dev_path_len - sizeof(fwts_uefi_uri_dev_path))) {
+					uint16_t tmp_len = len - sizeof(fwts_uefi_uri_dev_path);
+					char tmp[tmp_len + 1];
+
+					memcpy(tmp, u->uri, tmp_len);
+					tmp[tmp_len] = '\0';
 					path = uefidump_vprintf(path, "\\URI(%s)", tmp);
-					free(tmp);
 				}
 			}
 			break;

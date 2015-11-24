@@ -22,10 +22,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <pcre.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <regex.h>
 #include <fcntl.h>
 
 #include "fwts.h"
@@ -34,7 +34,6 @@
  *  klog pattern matching strings data file, data stored in json format
  */
 #define KLOG_DATA_JSON_FILE		"klog.json"
-#define VECTOR_SIZE			(3)	/* Must be a multiple of 3 */
 
 /*
  *  fwts_klog_free()
@@ -269,7 +268,6 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 	int *errors)
 {
 	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
-	int vector[VECTOR_SIZE];
 	static char *advice =
 		"This is a bug picked up by the kernel, but as yet, the "
 		"firmware test suite has no diagnostic advice for this particular problem.";
@@ -280,43 +278,16 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 		bool matched = false;
 		switch (pattern->compare_mode) {
 		case FWTS_COMPARE_REGEX:
-			if (pattern->re) {
-				int ret = pcre_exec(pattern->re, pattern->extra, line, strlen(line), 0, 0, vector, VECTOR_SIZE);
-				if (ret < 0) {
-					char *errmsg = NULL;
-					/*
-					 *  We should handle -ve conditions other
-					 *  than PCRE_ERROR_NOMATCH as pcre internal
-					 *  errors..
-					 */
-					switch (ret) {
-					case PCRE_ERROR_NOMATCH:
-						break;
-					case PCRE_ERROR_NULL:
-						errmsg = "internal NULL error";
-						break;
-					case PCRE_ERROR_BADOPTION:
-						errmsg = "invalid option passed to pcre_exec()";
-						break;
-					case PCRE_ERROR_BADMAGIC:
-						errmsg = "bad magic number, (corrupt regular expression)";
-						break;
-					case PCRE_ERROR_UNKNOWN_NODE:
-						errmsg = "compiled regular expression broken";
-						break;
-					case PCRE_ERROR_NOMEMORY:
-						errmsg = "out of memory";
-						break;
-					default:
-						errmsg = "unknown error";
-						break;
-					}
-					if (errmsg)
-						fwts_log_info(fw, "regular expression engine error: %s.", errmsg);
-				}
-				else {
+			if (pattern->compiled_ok) {
+				int ret = regexec(&pattern->compiled, line, 0, NULL, 0);
+				if (!ret) {
 					/* A successful regular expression match! */
 					matched = true;
+				} else if (ret != REG_NOMATCH) {
+					char msg[1024];
+
+					regerror(ret, &pattern->compiled, msg, sizeof(msg));
+					fwts_log_info(fw, "regular expression engine error: %s.", msg);
 				}
 			}
 			break;
@@ -452,8 +423,6 @@ static int fwts_klog_check(fwts_framework *fw,
 
 	/* Now fetch json objects and compile regex */
 	for (i = 0; i < n; i++) {
-		const char *error;
-		int erroffset;
 		const char *str;
 		json_object *obj;
 
@@ -488,21 +457,15 @@ static int fwts_klog_check(fwts_framework *fw,
 			goto fail;
 
 		if (patterns[i].compare_mode == FWTS_COMPARE_REGEX) {
-			if ((patterns[i].re = pcre_compile(patterns[i].pattern, 0, &error, &erroffset, NULL)) == NULL) {
-				fwts_log_error(fw, "Regex %s failed to compile: %s.", patterns[i].pattern, error);
-				patterns[i].re = NULL;
-				patterns[i].extra = NULL;
+			int rc;
+
+			rc = regcomp(&patterns[i].compiled, patterns[i].pattern, REG_EXTENDED);
+			if (rc) {
+				fwts_log_error(fw, "Regex %s failed to compile: %d.", patterns[i].pattern, rc);
+				patterns[i].compiled_ok = false;
 			} else {
-				patterns[i].extra = pcre_study(patterns[i].re, 0, &error);
-				if (error != NULL) {
-					fwts_log_error(fw, "Regex %s failed to optimize: %s.", patterns[i].pattern, error);
-					patterns[i].re = NULL;
-					patterns[i].extra = NULL;
-				}
+				patterns[i].compiled_ok = true;
 			}
-		} else {
-			patterns[i].re = NULL;
-			patterns[i].extra = NULL;
 		}
 	}
 	/* We've now collected up the scan patterns, lets scan the log for errors */
@@ -510,10 +473,8 @@ static int fwts_klog_check(fwts_framework *fw,
 
 fail:
 	for (i = 0; i < n; i++) {
-		if (patterns[i].re)
-			pcre_free(patterns[i].re);
-		if (patterns[i].extra)
-			pcre_free(patterns[i].extra);
+		if (patterns[i].compiled_ok)
+			regfree(&patterns[i].compiled);
 		if (patterns[i].label)
 			free(patterns[i].label);
 	}
@@ -541,26 +502,20 @@ int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress,
 static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int repeated,
 	char *prev, void *pattern, int *match)
 {
-	const char *error;
-	int erroffset;
-	pcre *re;
+	int rc;
+	regex_t compiled;
 
 	FWTS_UNUSED(fw);
 	FWTS_UNUSED(repeated);
 	FWTS_UNUSED(prev);
 
-	re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
-	if (re != NULL) {
-		int rc;
-		int vector[VECTOR_SIZE];
-		pcre_extra *extra = pcre_study(re, 0, &error);
-
-		if (error)
-			return;
-		rc = pcre_exec(re, extra, line, strlen(line), 0, 0, vector, VECTOR_SIZE);
-		free(extra);
-		pcre_free(re);
-		if (rc == 0)
+	rc = regcomp(&compiled, (char *)pattern, REG_EXTENDED);
+	if (rc) {
+		fwts_log_error(fw, "Regex %s failed to compile: %d.", (char *)pattern, rc);
+	} else {
+		rc = regexec(&compiled, line, 0, NULL, 0);
+		regfree(&compiled);
+		if (!rc)
 			(*match)++;
 	}
 }

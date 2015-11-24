@@ -21,7 +21,7 @@
 #define __FWTS_KLOG_H__
 
 #include <sys/types.h>
-#include <pcre.h>
+#include <regex.h>
 
 #include "fwts_list.h"
 #include "fwts_framework.h"
@@ -43,8 +43,8 @@ typedef struct {
         const char *pattern;
 	const char *advice;
 	char *label;
-	pcre *re;
-	pcre_extra *extra;
+	regex_t compiled;
+	bool compiled_ok;
 } fwts_klog_pattern;
 
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);

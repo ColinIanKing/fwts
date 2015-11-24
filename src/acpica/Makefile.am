@@ -140,6 +140,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/executer/exstoren.c		\
 	source/components/executer/exstorob.c		\
 	source/components/executer/exsystem.c		\
+	source/components/executer/extrace.c		\
 	source/components/executer/exutils.c		\
 	source/components/executer/exconvrt.c		\
 	source/components/executer/excreate.c		\
@@ -245,6 +246,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/uterror.c		\
 	source/components/utilities/utbuffer.c 		\
 	source/components/utilities/utuuid.c		\
+	source/common/acfileio.c			\
 	source/common/acgetline.c            		\
 	source/common/ahids.c				\
 	source/common/cmfsize.c            		\

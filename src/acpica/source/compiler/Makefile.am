@@ -110,6 +110,8 @@ libfwtsiasl_la_SOURCES = 			\
 	dtsubtable.c 				\
 	dttemplate.c 				\
 	dttable.c 				\
+	dttable1.c				\
+	dttable2.c				\
 	dtutils.c 				\
 	dtexpress.c 				\
 	dtcompile.c 				\
@@ -207,6 +209,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../common/dmextern.c 			\
 	../common/dmrestag.c 			\
 	../common/dmtable.c 			\
+	../common/dmtables.c			\
 	../common/dmtbinfo.c 			\
 	../common/dmtbdump.c 			\
 	../components/debugger/dbfileio.c 	\

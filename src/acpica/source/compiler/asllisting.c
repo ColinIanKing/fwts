@@ -284,6 +284,12 @@ LsAmlListingWalk (
         return (AE_OK);
     }
 
+    if ((FileId == ASL_FILE_ASM_INCLUDE_OUTPUT) ||
+        (FileId == ASL_FILE_C_INCLUDE_OUTPUT))
+    {
+        return (AE_OK);
+    }
+
     /* Write the hex bytes to the listing file(s) (if requested) */
 
     for (i = 0; i < Op->Asl.FinalAmlLength; i++)
@@ -293,6 +299,7 @@ LsAmlListingWalk (
             FlFileError (ASL_FILE_AML_OUTPUT, ASL_MSG_READ);
             AslAbort ();
         }
+
         LsWriteListingHexBytes (&FileByte, 1, FileId);
     }
 
@@ -388,7 +395,7 @@ LsWriteNodeToListing (
     {
         switch (Op->Asl.ParseOpcode)
         {
-        case PARSEOP_DEFINITIONBLOCK:
+        case PARSEOP_DEFINITION_BLOCK:
         case PARSEOP_METHODCALL:
         case PARSEOP_INCLUDE:
         case PARSEOP_INCLUDE_END:
@@ -434,36 +441,46 @@ LsWriteNodeToListing (
 
     switch (Op->Asl.ParseOpcode)
     {
-    case PARSEOP_DEFINITIONBLOCK:
+    case PARSEOP_DEFINITION_BLOCK:
 
         LsWriteSourceLines (Op->Asl.EndLine, Op->Asl.EndLogicalLine, FileId);
 
         /* Use the table Signature and TableId to build a unique name */
 
-        if (FileId == ASL_FILE_ASM_SOURCE_OUTPUT)
+        switch (FileId)
         {
+        case ASL_FILE_ASM_SOURCE_OUTPUT:
+
             FlPrintFile (FileId,
                 "%s_%s_Header \\\n",
                 Gbl_TableSignature, Gbl_TableId);
-        }
-        if (FileId == ASL_FILE_C_SOURCE_OUTPUT)
-        {
+            break;
+
+        case ASL_FILE_C_SOURCE_OUTPUT:
+
             FlPrintFile (FileId,
                 "    unsigned char    %s_%s_Header [] =\n    {\n",
                 Gbl_TableSignature, Gbl_TableId);
-        }
-        if (FileId == ASL_FILE_ASM_INCLUDE_OUTPUT)
-        {
+            break;
+
+        case ASL_FILE_ASM_INCLUDE_OUTPUT:
+
             FlPrintFile (FileId,
                 "extrn %s_%s_Header : byte\n",
                 Gbl_TableSignature, Gbl_TableId);
-        }
-        if (FileId == ASL_FILE_C_INCLUDE_OUTPUT)
-        {
+            break;
+
+        case ASL_FILE_C_INCLUDE_OUTPUT:
+
             FlPrintFile (FileId,
                 "extern unsigned char    %s_%s_Header [];\n",
                 Gbl_TableSignature, Gbl_TableId);
+            break;
+
+        default:
+            break;
         }
+
         return;
 
 
@@ -612,31 +629,41 @@ LsWriteNodeToListing (
 
                         /* Create the appropriate symbol in the output file */
 
-                        if (FileId == ASL_FILE_ASM_SOURCE_OUTPUT)
+                        switch (FileId)
                         {
+                        case ASL_FILE_ASM_SOURCE_OUTPUT:
+
                             FlPrintFile (FileId,
                                 "%s_%s_%s  \\\n",
                                 Gbl_TableSignature, Gbl_TableId, &Pathname[1]);
-                        }
-                        if (FileId == ASL_FILE_C_SOURCE_OUTPUT)
-                        {
+                            break;
+
+                        case ASL_FILE_C_SOURCE_OUTPUT:
+
                             FlPrintFile (FileId,
                                 "    unsigned char    %s_%s_%s [] =\n    {\n",
                                 Gbl_TableSignature, Gbl_TableId, &Pathname[1]);
-                        }
-                        if (FileId == ASL_FILE_ASM_INCLUDE_OUTPUT)
-                        {
+                            break;
+
+                        case ASL_FILE_ASM_INCLUDE_OUTPUT:
+
                             FlPrintFile (FileId,
                                 "extrn %s_%s_%s : byte\n",
                                 Gbl_TableSignature, Gbl_TableId, &Pathname[1]);
-                        }
-                        if (FileId == ASL_FILE_C_INCLUDE_OUTPUT)
-                        {
+                            break;
+
+                        case ASL_FILE_C_INCLUDE_OUTPUT:
+
                             FlPrintFile (FileId,
                                 "extern unsigned char    %s_%s_%s [];\n",
                                 Gbl_TableSignature, Gbl_TableId, &Pathname[1]);
+                            break;
+
+                        default:
+                            break;
                         }
                     }
+
                     ACPI_FREE (Pathname);
                 }
                 break;

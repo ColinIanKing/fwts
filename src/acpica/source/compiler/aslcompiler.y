@@ -266,7 +266,7 @@ AslLocalAllocate (
 %token <i> PARSEOP_DECREMENT
 %token <i> PARSEOP_DEFAULT
 %token <i> PARSEOP_DEFAULT_ARG
-%token <i> PARSEOP_DEFINITIONBLOCK
+%token <i> PARSEOP_DEFINITION_BLOCK
 %token <i> PARSEOP_DEREFOF
 %token <i> PARSEOP_DEVICE
 %token <i> PARSEOP_DEVICEPOLARITY_HIGH
@@ -606,6 +606,9 @@ AslLocalAllocate (
            /* PARSEOP_EXP_PAREN_OPEN */
            /* PARSEOP_EXP_PAREN_CLOSE */
 
+
+%token <i> PARSEOP_ASL_CODE
+
 /*
  * Special functions. These should probably stay at the end of this
  * table.
@@ -627,12 +630,13 @@ AslLocalAllocate (
  *****************************************************************************/
 
 %type <n> ArgList
-%type <n> ASLCode
+%type <n> AslCode
 %type <n> BufferData
 %type <n> BufferTermData
 %type <n> CompilerDirective
 %type <n> DataObject
 %type <n> DefinitionBlockTerm
+%type <n> DefinitionBlockList
 %type <n> IntegerData
 %type <n> NamedObject
 %type <n> NameSpaceModifier
@@ -985,10 +989,11 @@ AslLocalAllocate (
  * Root term. Allow multiple #line directives before the definition block
  * to handle output from preprocessors
  */
-ASLCode
-    : DefinitionBlockTerm
+AslCode
+    : DefinitionBlockList           {$<n>$ = TrLinkChildren (TrCreateLeafNode (PARSEOP_ASL_CODE),1, $1);}
     | error                         {YYABORT; $$ = NULL;}
     ;
+
 
 /*
  * Note concerning support for "module-level code".
@@ -1006,7 +1011,7 @@ ASLCode
  * of Type1 and Type2 opcodes at module level.
  */
 DefinitionBlockTerm
-    : PARSEOP_DEFINITIONBLOCK '('   {$<n>$ = TrCreateLeafNode (PARSEOP_DEFINITIONBLOCK);}
+    : PARSEOP_DEFINITION_BLOCK '('  {$<n>$ = TrCreateLeafNode (PARSEOP_DEFINITION_BLOCK);}
         String ','
         String ','
         ByteConst ','
@@ -1015,6 +1020,12 @@ DefinitionBlockTerm
         DWordConst
         ')'                         {TrSetEndLineNumber ($<n>3);}
             '{' TermList '}'        {$$ = TrLinkChildren ($<n>3,7,$4,$6,$8,$10,$12,$14,$18);}
+    ;
+
+DefinitionBlockList
+    : DefinitionBlockTerm
+    | DefinitionBlockTerm
+        DefinitionBlockList         {$$ = TrLinkPeerNodes (2, $1,$2);}
     ;
 
 SuperName

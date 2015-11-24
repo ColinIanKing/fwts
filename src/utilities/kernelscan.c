@@ -862,6 +862,7 @@ static int parse_kernel_message(parser *p, token *t)
 
 		token_clear(t);
 	}
+	free(line);
 }
 
 /*

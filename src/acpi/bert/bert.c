@@ -80,7 +80,6 @@ static int bert_test1(fwts_framework *fw)
 			bert->boot_error_region);
 	} else {
 		void *mapping;
-		uint32_t length = 0;
 
 		mapping = fwts_mmap(bert->boot_error_region, (size_t)bert->boot_error_region_length);
 		if (mapping == FWTS_MAP_FAILED) {
@@ -160,7 +159,7 @@ static int bert_test1(fwts_framework *fw)
 						" is larger than the remaining region size of %" PRIu32
 						" bytes",
 						region->raw_data_length,
-						bert->boot_error_region_length - length);
+						bert->boot_error_region_length);
 				passed = false;
 			}
 			fwts_munmap(mapping, (size_t)bert->boot_error_region_length);

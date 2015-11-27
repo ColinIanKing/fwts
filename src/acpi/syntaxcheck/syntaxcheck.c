@@ -462,16 +462,18 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
  *	disassemble and reassemble a table, check for errors. which indicates the Nth
  *	table
  */
-static int syntaxcheck_table(fwts_framework *fw, int which)
+static int syntaxcheck_table(
+	fwts_framework *fw,
+	const fwts_acpi_table_info *info,
+	const int n)
 {
 	fwts_list_link *item;
 	int errors = 0;
 	int warnings = 0;
 	int remarks = 0;
-	char *tablename = fwts_iasl_aml_name(which);
 	fwts_list *iasl_stdout, *iasl_stderr, *iasl_disassembly;
 
-	if (fwts_iasl_reassemble(fw, which,
+	if (fwts_iasl_reassemble(fw, info,
 		&iasl_disassembly, &iasl_stdout, &iasl_stderr) != FWTS_OK) {
 		fwts_text_list_free(iasl_disassembly);
 		fwts_text_list_free(iasl_stderr);
@@ -481,7 +483,7 @@ static int syntaxcheck_table(fwts_framework *fw, int which)
 	}
 
 	fwts_log_nl(fw);
-	fwts_log_info(fw, "Checking ACPI table %s (#%d)", tablename, which);
+	fwts_log_info(fw, "Checking ACPI table %s (#%d)", info->name, n);
 	fwts_log_nl(fw);
 
 	if (iasl_stdout) {
@@ -601,9 +603,9 @@ static int syntaxcheck_table(fwts_framework *fw, int which)
 
 	if (errors + warnings + remarks > 0)
 		fwts_log_info(fw, "Table %s (%d) reassembly: Found %d errors, %d warnings, %d remarks.",
-			tablename, which, errors, warnings, remarks);
+			info->name, n, errors, warnings, remarks);
 	else
-		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings, 0 remarks.", tablename, which);
+		fwts_passed(fw, "%s (%d) reassembly, Found 0 errors, 0 warnings, 0 remarks.", info->name, n);
 
 	fwts_log_nl(fw);
 
@@ -612,11 +614,16 @@ static int syntaxcheck_table(fwts_framework *fw, int which)
 
 static int syntaxcheck_tables(fwts_framework *fw)
 {
-	int i;
-	const int n = fwts_iasl_aml_file_count();
+	int i, n;
 
-	for (i = 0; i < n; i++)
-		syntaxcheck_table(fw, i);
+	for (i = 0, n = 0; i < ACPI_MAX_TABLES; i++) {
+		fwts_acpi_table_info *info;
+
+		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
+			break;
+		if (info && info->has_aml)
+			syntaxcheck_table(fw, info, n++);
+	}
 
 	return FWTS_OK;
 }

@@ -65,13 +65,18 @@ static void init_asl_core(void)
  */
 int fwts_iasl_disassemble_aml(
 	char *tables[],
+	char *names[],
 	const int table_entries,
 	const int which,
+	const bool use_externals,
 	const char *outputfile)
 {
 	pid_t	pid;
 	int	status, i;
-	FILE *fp;
+	FILE	*fpout, *fperr;
+
+	fflush(stdout);
+	fflush(stderr);
 
 	pid = fork();
 	switch (pid) {
@@ -92,30 +97,45 @@ int fwts_iasl_disassemble_aml(
 		AcpiGbl_DmOpt_Verbose = FALSE;
 		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
 
-		/*
-		 * Add in external files and NOT the one we want
-		 * disassemble
-		 */
-		for (i = 0; i < table_entries; i++) {
-			if (i != which) {
-				ACPI_STATUS	acpi_status;
-				/*
-				 *  Add in external tables that are NOT the table
-				 *  we intent to disassemble
-				 */
-				acpi_status = AcpiDmAddToExternalFileList(tables[i]);
-				if (ACPI_FAILURE(acpi_status)) {
-					(void)unlink(outputfile);
-					_exit(1);
+		/* Do we need to include external tables in? */
+		if (use_externals) {
+			/*
+			 * Add in external SSDT files and NOT the one we want
+			 * disassemble
+			 */
+			for (i = 0; i < table_entries; i++) {
+				if ((i != which) &&
+				    (names[i] != NULL) &&
+				    (tables[i] != NULL) &&
+				    (!strcmp(names[i], "SSDT") ||
+				     !strcmp(names[i], "DSDT"))) {
+					ACPI_STATUS	acpi_status;
+					/*
+					 *  Add in external tables that are NOT the table
+					 *  we intent to disassemble
+					 */
+					acpi_status = AcpiDmAddToExternalFileList(tables[i]);
+					if (ACPI_FAILURE(acpi_status)) {
+						(void)unlink(outputfile);
+						_exit(1);
+					}
 				}
 			}
 		}
-
 		/* Throw away noisy errors */
-		if ((fp = freopen("/dev/null", "w", stderr)) != NULL) {
-			AslDoOneFile((char *)tables[which]);
-			fclose(fp);
+		if ((fpout = freopen("/dev/null", "w", stdout)) == NULL) {
+			_exit(1);
 		}
+		if ((fperr = freopen("/dev/null", "w", stderr)) == NULL) {
+			fclose(fpout);
+			_exit(1);
+		}
+
+		/* ...and do the ACPICA disassambly... */
+		AslDoOneFile((char *)tables[which]);
+
+		fclose(fperr);
+		fclose(fpout);
 		_exit(0);
 		break;
 	default:
@@ -162,6 +182,9 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 	size_t	stdout_len = 0, stderr_len = 0;
 	pid_t	pid;
 	bool	stdout_eof = false, stderr_eof = false;
+
+	fflush(stdout);
+	fflush(stderr);
 
 	if (pipe(stdout_fds) < 0)
 		return -1;

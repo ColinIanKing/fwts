@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -29,22 +30,29 @@
 
 static int osilinux_test1(fwts_framework *fw)
 {
+	fwts_acpi_table_info *info;
 	fwts_list_link *item;
 	fwts_list_link *dumpitem = NULL;
-	fwts_list* disassembly;
+	fwts_list* disassembly = NULL;
 	int depth = 0;
 	int dumpdepth = 0;
-	int found = 0;
+	bool found = false;
 
 	if (fwts_iasl_init(fw) != FWTS_OK) {
 		fwts_aborted(fw, "Failure to initialise iasl, aborting.");
 		fwts_iasl_deinit();
 		return FWTS_ERROR;
 	}
-	if (fwts_iasl_disassemble(fw, "DSDT", 0, &disassembly) != FWTS_OK) {
-		fwts_aborted(fw, "Cannot disassemble DSDT with iasl.");
-		fwts_iasl_deinit();
-		return FWTS_ERROR;
+	if (fwts_acpi_find_table(fw, "DSDT", 0, &info) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot located DSDT.");
+                return FWTS_ERROR;
+        }
+        if (info) {
+		if (fwts_iasl_disassemble(fw, info, true, &disassembly) != FWTS_OK) {
+			fwts_aborted(fw, "Cannot disassemble DSDT with iasl.");
+			fwts_iasl_deinit();
+			return FWTS_ERROR;
+		}
 	}
 	fwts_iasl_deinit();
 
@@ -73,7 +81,7 @@ static int osilinux_test1(fwts_framework *fw)
 		if (strstr(line, "}")) {
 			depth--;
 			if (dumpdepth != 0 && dumpdepth != depth) {
-				found++;
+				found = true;
 				while (dumpitem != NULL &&
 				       dumpitem != item->next) {
 					fwts_log_warning_verbatum(fw, "%s", fwts_text_list_text(dumpitem));

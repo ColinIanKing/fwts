@@ -22,6 +22,8 @@
 
 #include "fwts.h"
 
+#define ACPI_MAX_TABLES		(128)
+
 typedef enum {
 	FWTS_ACPI_TABLE_FROM_FIRMWARE,	/* directly from firmware */
 	FWTS_ACPI_TABLE_FROM_FILE,	/* loaded from file, e.g. from acpidump */
@@ -33,6 +35,8 @@ typedef struct {
 	const void *data;
 	size_t	length;
 	int 	which;
+	int	index;
+	bool	has_aml;
 	uint64_t addr;
 	fwts_acpi_table_provenance provenance;
 } fwts_acpi_table_info;

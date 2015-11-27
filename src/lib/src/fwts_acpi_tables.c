@@ -40,8 +40,6 @@
 #define BIOS_LENGTH	(BIOS_END - BIOS_START)	/* Length of BIOS memory */
 #define PAGE_SIZE	(4096)
 
-#define ACPI_MAX_TABLES	(64)			/* Max number of ACPI tables */
-
 static fwts_acpi_table_info	tables[ACPI_MAX_TABLES];
 
 typedef enum {
@@ -236,7 +234,7 @@ static void fwts_acpi_add_table(
 	int i;
 	int which = 0;
 
-	for (i=0;i<ACPI_MAX_TABLES;i++) {
+	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		if (addr && tables[i].addr == addr) {
 			/* We don't need it, it's a duplicate, so free and return */
 			fwts_low_free(table);
@@ -251,7 +249,11 @@ static void fwts_acpi_add_table(
 			tables[i].addr = addr;
 			tables[i].length = length;
 			tables[i].which = which;
+			tables[i].index = i;
 			tables[i].provenance = provenance;
+			tables[i].has_aml =
+				((!strcmp(tables[i].name, "DSDT")) ||
+				 (!strcmp(tables[i].name, "SSDT")));
 			return;
 		}
 	}

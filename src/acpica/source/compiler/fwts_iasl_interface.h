@@ -22,8 +22,13 @@
 
 #include <stdint.h>
 
-int fwts_iasl_disassemble_aml(char *tables[], const int table_entries, const int which, const char *outputfile);
-int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stderr_output);
+int fwts_iasl_disassemble_aml(
+	char *tables[], char *names[], const int table_entries,
+	const int which, const bool use_externals,
+	const char *outputfile);
+int fwts_iasl_assemble_aml(
+	const char *source, char **stdout_output,
+	char **stderr_output);
 const char *fwts_iasl_exception_level__(uint8_t level);
 
 #endif

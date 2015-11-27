@@ -101,13 +101,14 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
  *  check_hpet_base_dsdt()
  *	used to parse the DSDT for HPET base info
  */
-static void hpet_check_base_acpi_table(fwts_framework *fw,
-	const char *table, const int which)
+static void hpet_check_base_acpi_table(
+	fwts_framework *fw,
+	fwts_acpi_table_info *info)
 {
 	fwts_list *output;
 	fwts_list_link *item;
 
-	if (fwts_iasl_disassemble(fw, table, which, &output) != FWTS_OK) {
+	if (fwts_iasl_disassemble(fw, info, true, &output) != FWTS_OK) {
 		fwts_iasl_deinit();
 		return;
 	}
@@ -116,7 +117,7 @@ static void hpet_check_base_acpi_table(fwts_framework *fw,
 
 	fwts_list_foreach(item, output)
 		if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
-			hpet_parse_device_hpet(fw, table, item);
+			hpet_parse_device_hpet(fw, info->name, item);
 
 	fwts_text_list_free(output);
 }
@@ -384,10 +385,14 @@ static int hpet_check_test3(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	hpet_check_base_acpi_table(fw, "DSDT", 0);
+	for (i = 0; i < ACPI_MAX_TABLES; i++) {
+		fwts_acpi_table_info *info;
 
-	for (i = 0; i < 11; i++)
-		hpet_check_base_acpi_table(fw, "SSDT", i);
+		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
+			break;
+		if (info && info->has_aml)
+			hpet_check_base_acpi_table(fw, info);
+	}
 
 	fwts_iasl_deinit();
 

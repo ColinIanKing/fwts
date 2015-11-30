@@ -1,6 +1,0 @@
-00014 acpidump        Dump ACPI tables.
-00015 acpidump        ----------------------------------------------------------
-00016 acpidump        Test 1 of 1: Dump ACPI tables.
-00017 acpidump        Cannot open directory '/home/king/firmware/fwts/fwts-test
-00018 acpidump        /arg-table-path-0001/acpidump.dat' to read ACPI tables.
-00019 acpidump        

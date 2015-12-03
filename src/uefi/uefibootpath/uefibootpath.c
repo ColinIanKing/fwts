@@ -726,6 +726,16 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_RAM_DISK_SUBTYPE:
+			if (len != sizeof(fwts_ram_disk_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRamDiskDevPathLength",
+					"The length of Ram Disk Device Path is %" PRIu16 " bytes "
+					"and differs from UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_ram_disk_path));
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatum(fw, "Unknown subtype of Media Device Path.");
 			break;

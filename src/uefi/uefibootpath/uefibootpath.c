@@ -543,16 +543,6 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
-		case FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE:
-			if (len != sizeof(fwts_relative_offset_range_path)) {
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRelativeOffsetRangeLength",
-					"The length of Relative Offset Range is %" PRIu16 " bytes "
-					"and differs from UEFI specification defined %" PRIu16 " bytes.",
-					len,
-					(uint16_t)sizeof(fwts_relative_offset_range_path));
-				errors++;
-			}
-			break;
 		case FWTS_UEFI_URI_DEVICE_PATH_SUBTYPE:
 			if (len <= sizeof(fwts_uefi_uri_dev_path)) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIURIDevPathLength",
@@ -723,6 +713,16 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 					"and differs from UEFI specification defined %" PRIu16 " bytes.",
 					len,
 					(uint16_t)sizeof(fwts_piwg_fw_volume_dev_path));
+				errors++;
+			}
+			break;
+		case FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE:
+			if (len != sizeof(fwts_relative_offset_range_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRelativeOffsetRangeLength",
+					"The length of Relative Offset Range is %" PRIu16 " bytes "
+					"and differs from UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_relative_offset_range_path));
 				errors++;
 			}
 			break;

@@ -248,7 +248,8 @@ typedef enum {
 	FWTS_UEFI_PROTOCOL_DEVICE_PATH_SUBTYPE =	(0x05),
 	FWTS_UEFI_PIWG_FW_FILE_DEVICE_PATH_SUBTYPE =	(0x06),
 	FWTS_UEFI_PIWG_FW_VOLUME_DEVICE_PATH_SUBTYPE =	(0x07),
-	FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE = 	(0x08)
+	FWTS_UEFI_RELATIVE_OFFSET_RANGE_SUBTYPE = 	(0x08),
+	FWTS_UEFI_RAM_DISK_SUBTYPE =			(0x09)
 } media_dev_path_subtypes;
 
 typedef enum {
@@ -583,6 +584,14 @@ typedef struct {
 	uint64_t starting_offset;
 	uint64_t ending_offset;
 } __attribute__((packed)) fwts_relative_offset_range_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint64_t starting_addr;
+	uint64_t ending_addr;
+	fwts_uefi_guid disk_type_guid;
+	uint16_t disk_instance;
+} __attribute__((packed)) fwts_ram_disk_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

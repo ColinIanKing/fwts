@@ -631,6 +631,23 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					r->starting_offset, r->ending_offset);
 			}
 			break;
+		case FWTS_UEFI_RAM_DISK_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_ram_disk_path)) {
+				fwts_ram_disk_path *r = (fwts_ram_disk_path *)dev_path;
+				path = uefidump_vprintf(path, "\\RAMDISK("
+					"0x%" PRIx64 ",0x%" PRIx64
+					"%08" PRIx32 "-%04" PRIx16 "-%04" PRIx16 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-"
+					"%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8 "-%02" PRIx8
+					",0x%" PRIx16 ")",
+					r->starting_addr, r->ending_addr,
+					r->disk_type_guid.info1, r->disk_type_guid.info2, r->disk_type_guid.info3,
+					r->disk_type_guid.info4[0], r->disk_type_guid.info4[1], r->disk_type_guid.info4[2],
+					r->disk_type_guid.info4[3], r->disk_type_guid.info4[4], r->disk_type_guid.info4[5],
+					r->disk_type_guid.info4[6], r->disk_type_guid.info4[7],
+					r->disk_instance);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MEDIA-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

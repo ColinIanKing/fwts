@@ -547,7 +547,8 @@ int fwts_klog_write(fwts_framework *fw, const char *msg)
 		return FWTS_ERROR;
 	}
 
-	fprintf(fp, "%s", msg);
+	fprintf(fp, "<7>fwts: %s", msg);
+	fflush(fp);
 	fclose(fp);
 
 	return FWTS_OK;

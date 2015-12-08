@@ -9,6 +9,8 @@ ACPI tests:
   Test for single instance of APIC/MADT table.
  asf             (1 test):
   ASF! Alert Standard Format Table test.
+ aspt            (1 test):
+  ASPT Table test.
  bert            (1 test):
   BERT Boot Error Record Table test.
  bgrt            (1 test):
@@ -307,6 +309,8 @@ Batch tests:
  aspm            (2 tests):
   PCIe ASPM ACPI test.
   PCIe ASPM registers test.
+ aspt            (1 test):
+  ASPT Table test.
  autobrightness  (2 tests):
   Test for maximum and actual brightness.
   Change actual brightness.

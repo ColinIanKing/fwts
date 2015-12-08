@@ -1410,4 +1410,16 @@ typedef struct {
 	fwts_acpi_table_wdat_instr_entries entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_wdat;
 
+/*
+ *  ACPI ASPT
+ *	determined by reverse engineering
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	sptt_addr_start;
+	uint32_t	sptt_addr_end;
+	uint32_t	amrt_addr_start;
+	uint32_t	amrt_addr_end;
+} __attribute__ ((packed)) fwts_acpi_table_aspt;
+
 #endif

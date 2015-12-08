@@ -30,6 +30,7 @@ fwts_SOURCES = main.c 				\
 	acpi/acpitables/acpitables.c 		\
 	acpi/apicinstance/apicinstance.c 	\
 	acpi/asf/asf.c				\
+	acpi/aspt/aspt.c			\
 	acpi/battery/battery.c 			\
 	acpi/bert/bert.c			\
 	acpi/bgrt/bgrt.c			\

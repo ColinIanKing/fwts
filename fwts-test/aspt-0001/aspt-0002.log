@@ -1,0 +1,18 @@
+aspt            aspt: ASPT Table test.
+aspt            ----------------------------------------------------------
+aspt            Test 1 of 1: ASPT Table test.
+aspt            ASPT Table:
+aspt              SPTT Start Address: 0xf0000020
+aspt              SPTT End Address:   0xf0000000
+aspt              AMRT Start Address: 0xe0000010
+aspt              AMRT End Address:   0xe0000000
+aspt            
+aspt            FAILED [HIGH] ASPTSpttEndError: Test 1, ASPT SPTT end
+aspt            address is less than the APTT start address.
+aspt            FAILED [HIGH] ASPTAmrtEndError: Test 1, ASPT AMRT end
+aspt            address is less than the AMRT start address.
+aspt            
+aspt            ==========================================================
+aspt            0 passed, 2 failed, 0 warning, 0 aborted, 0 skipped, 0
+aspt            info only.
+aspt            ==========================================================

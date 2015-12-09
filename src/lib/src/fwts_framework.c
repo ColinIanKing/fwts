@@ -1330,6 +1330,7 @@ int fwts_framework_args(const int argc, char **argv)
 
 	fwts_list tests_to_run;
 	fwts_framework *fw;
+	fwts_list_link *item;
 
 	if ((fw = (fwts_framework *)calloc(1, sizeof(fwts_framework))) == NULL)
 		return FWTS_ERROR;
@@ -1397,8 +1398,6 @@ int fwts_framework_args(const int argc, char **argv)
 		fwts_dump_info(fw);
 		goto tidy_close;
 	}
-	if ((fw->flags & FWTS_FLAG_RUN_ALL) == 0)
-		fw->flags |= FWTS_FLAG_BATCH;
 	if ((fw->lspci == NULL) || (fw->results_logname == NULL)) {
 		ret = FWTS_ERROR;
 		fprintf(stderr, "%s: Memory allocation failure.", argv[0]);
@@ -1453,15 +1452,17 @@ int fwts_framework_args(const int argc, char **argv)
 			fwts_list_append(&tests_to_run, test);
 	}
 
-	if (fwts_list_len(&tests_to_run) == 0) {
-		/* Find tests that are eligible for running */
-		fwts_list_link *item;
-		fwts_list_foreach(item, &fwts_framework_test_list) {
-			fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
-			if (fw->flags & test->flags & FWTS_FLAG_RUN_ALL)
-				if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
-					fwts_list_append(&tests_to_run, test);
-		}
+	/* No options given and no tests, so default to run batch tests */
+	if (!(FWTS_FLAG_RUN_ALL & fw->flags) &&
+	    (fwts_list_len(&tests_to_run) == 0))
+		fw->flags |= FWTS_FLAG_BATCH;
+
+	/* Find tests that are eligible for running */
+	fwts_list_foreach(item, &fwts_framework_test_list) {
+		fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
+		if (fw->flags & test->flags & FWTS_FLAG_RUN_ALL)
+			if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
+				fwts_list_append(&tests_to_run, test);
 	}
 
 	if (!(fw->flags & FWTS_FLAG_QUIET)) {

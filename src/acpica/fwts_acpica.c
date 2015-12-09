@@ -261,6 +261,10 @@ static ACPI_STATUS fwts_region_handler(
 	ACPI_CONNECTION_INFO    *context;
 	int			i;
 
+	if (!regionobject)
+		return AE_BAD_PARAMETER;
+	if (!value)
+		return AE_BAD_PARAMETER;
 	if (regionobject->Region.Type != ACPI_TYPE_REGION)
 		return AE_OK;
 
@@ -306,6 +310,8 @@ static ACPI_STATUS fwts_region_handler(
 			case AML_FIELD_ATTRIB_MULTIBYTE:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
 			case AML_FIELD_ATTRIB_RAW_PROCESS:
+				if (!context)
+					return AE_BAD_PARAMETER;
 				length = context->AccessLength - 2;
 				break;
 			default:
@@ -331,6 +337,8 @@ static ACPI_STATUS fwts_region_handler(
 			case AML_FIELD_ATTRIB_MULTIBYTE:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
 			case AML_FIELD_ATTRIB_RAW_PROCESS:
+				if (!context)
+					return AE_BAD_PARAMETER;
 				length = context->AccessLength - 2;
 				break;
 			default:

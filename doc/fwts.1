@@ -177,6 +177,13 @@ specify the information in each log line. The following specifiers are available
 .br
 e.g. \-\-log\-format="%date %time [%field] (%owner): "
 .TP
+.B \-\-log\-level [critical|high|medium|low|info|all]
+specify the test failure level to log. Test failure levels equal to and
+higher than the specified are logged and recorded as failures. The default
+is 'all' (which is identical to 'info').  For example, a log level of 'medium'
+will just log test failures of level 'medium', 'high' and 'critical',
+where as a log level of 'critical' will just log 'critical' level failures.
+.TP
 .B \-\-log\-type
 specify the log type. Currently plaintext, json and xml log types are available and the
 default is plaintext.

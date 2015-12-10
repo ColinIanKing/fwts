@@ -24,6 +24,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+typedef struct fwts_framework fwts_framework;
+
 #include "fwts_log.h"
 #include "fwts_list.h"
 #include "fwts_acpica_mode.h"
@@ -104,7 +106,7 @@ static inline void fwts_framework_summate_results(fwts_results *total, fwts_resu
 /*
  *  Test framework context
  */
-typedef struct {
+typedef struct fwts_framework {
 	uint32_t magic;				/* identify struct magic */
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
@@ -133,6 +135,7 @@ typedef struct {
 	int minor_test_progress;		/* Percentage completion of current test */
 	bool print_summary;			/* Print summary of results at end of test runs */
 	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
+	fwts_log_level filter_level;		/* --log-level option filter */
 
 	int firmware_type;			/* Type of firmware */
 	bool show_progress;			/* Show progress while running current test */
@@ -274,4 +277,8 @@ static void __test_init (void)						\
 
 #define FWTS_REGISTER(name, ops, priority, flags) \
 	FWTS_REGISTER_FEATURES(name, ops, priority, flags, 0)
+
+#define FWTS_LEVEL_IGNORE(fw, level)	\
+	((level) && !((level) & fw->filter_level))
+
 #endif

@@ -36,6 +36,11 @@ typedef struct {
 	fwts_framework_flags flag;	/* Mask of category */
 } fwts_categories;
 
+typedef struct {
+	const char *name;
+	const fwts_log_level filter_level;
+} fwts_log_levels;
+
 /* Suffix ".log", ".xml", etc gets automatically appended */
 #define RESULTS_LOG	"results"
 
@@ -63,6 +68,16 @@ static fwts_categories categories[] = {
 	{ "Unsafe",			FWTS_FLAG_UNSAFE },
 	{ "UEFI",			FWTS_FLAG_TEST_UEFI },
 	{ "ACPI Spec Compliance",	FWTS_FLAG_TEST_COMPLIANCE_ACPI },
+	{ NULL,				0 },
+};
+
+static fwts_log_levels log_levels[] = {
+	{ "critical",			LOG_LEVEL_CRITICAL },
+	{ "high",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH },
+	{ "medium",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH | LOG_LEVEL_MEDIUM },
+	{ "low",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH | LOG_LEVEL_MEDIUM | LOG_LEVEL_LOW },
+	{ "info",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH | LOG_LEVEL_MEDIUM | LOG_LEVEL_LOW | LOG_LEVEL_INFO },
+	{ "all",			LOG_LEVEL_ALL },
 	{ NULL,				0 },
 };
 
@@ -111,6 +126,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "show-tests-categories","", 0, "Show tests and associated categories." },
 	{ "acpitests",		"",   0, "Run general ACPI tests." },
 	{ "acpicompliance",	"",   0, "Run ACPI tests for spec compliance." },
+	{ "log-level",		"",   1, "Specify error level to report failed test messages," },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -768,7 +784,8 @@ void fwts_error_inc(fwts_framework *fw, const char *label, int *count)
  *  fwts_framework_log()
  *	log a test result
  */
-void fwts_framework_log(fwts_framework *fw,
+void fwts_framework_log(
+	fwts_framework *fw,
 	fwts_log_field field,
 	const char *label,
 	fwts_log_level level,
@@ -778,7 +795,7 @@ void fwts_framework_log(fwts_framework *fw,
 	char buffer[4096];
 	char prefix[256];
 	char *str = fwts_log_field_to_str_upper(field);
-	bool do_count = true;
+	bool do_count = !FWTS_LEVEL_IGNORE(fw, level);
 
 	if (fmt) {
 		va_list ap;
@@ -797,7 +814,7 @@ void fwts_framework_log(fwts_framework *fw,
 		} else {
 			fwts_log_nl(fw);
 			snprintf(prefix, sizeof(prefix), "%s: ", str);
-			fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+			fwts_log_printf(fw, field, level, str, label, prefix, "%s", buffer);
 			fwts_log_nl(fw);
 		}
 		break;
@@ -812,7 +829,7 @@ void fwts_framework_log(fwts_framework *fw,
 			fwts_summary_add(fw, fw->current_major_test->name, level, buffer);
 			snprintf(prefix, sizeof(prefix), "%s [%s] %s: Test %d, ",
 				str, fwts_log_level_to_str(level), label, fw->current_minor_test_num);
-			fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+			fwts_log_printf(fw, field, level, str, label, prefix, "%s", buffer);
 		}
 		break;
 	case LOG_PASSED:
@@ -821,7 +838,7 @@ void fwts_framework_log(fwts_framework *fw,
 	case LOG_ABORTED:
 		snprintf(prefix, sizeof(prefix), "%s: Test %d, ",
 			str, fw->current_minor_test_num);
-		fwts_log_printf(fw->results, field, level, str, label, prefix, "%s", buffer);
+		fwts_log_printf(fw, field, level, str, label, prefix, "%s", buffer);
 		break;
 	case LOG_INFOONLY:
 		break;	/* no-op */
@@ -1088,6 +1105,28 @@ static int fwts_framework_pm_method_parse(fwts_framework *fw, const char *arg)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_framework_ll_parse()
+ *	parse log level option
+ */
+static int fwts_framework_ll_parse(fwts_framework *fw, const char *arg)
+{
+	int i;
+
+	for (i = 0; log_levels[i].name; i++) {
+		if (!strcmp(arg, log_levels[i].name)) {
+			fw->filter_level = log_levels[i].filter_level;
+			return FWTS_OK;
+		}
+	}
+	fprintf(stderr, "--log-level supports levels:");
+	for (i = 0; log_levels[i].name; i++)
+		fprintf(stderr, " %s", log_levels[i].name);
+	fprintf(stderr, "\n");
+
+	return FWTS_ERROR;
+}
+
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
 	FWTS_UNUSED(argc);
@@ -1237,6 +1276,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 41: /* --acpicompliance */
 			fw->flags |= FWTS_FLAG_TEST_COMPLIANCE_ACPI;
 			break;
+		case 42: /* --log-level */
+			if (fwts_framework_ll_parse(fw, optarg) != FWTS_OK)
+				return FWTS_ERROR;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1349,6 +1392,7 @@ int fwts_framework_args(const int argc, char **argv)
 	fw->flags = FWTS_FLAG_DEFAULT |
 		    FWTS_FLAG_SHOW_PROGRESS;
 	fw->log_type = LOG_TYPE_PLAINTEXT;
+	fw->filter_level = LOG_LEVEL_ALL;
 
 	fwts_list_init(&fw->errors_filter_keep);
 	fwts_list_init(&fw->errors_filter_discard);

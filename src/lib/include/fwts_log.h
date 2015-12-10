@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include "fwts_framework.h"
 #include "fwts_list.h"
 
 #define LOG_MAGIC		(0xfe23ab13)
@@ -57,7 +58,8 @@ typedef enum {
 	LOG_LEVEL_HIGH      = 0x00000002,
 	LOG_LEVEL_MEDIUM    = 0x00000004,
 	LOG_LEVEL_LOW       = 0x00000008,
-	LOG_LEVEL_INFO      = 0x00000010
+	LOG_LEVEL_INFO      = 0x00000010,
+	LOG_LEVEL_ALL       = 0x0000001f
 } fwts_log_level;
 
 /*
@@ -122,9 +124,8 @@ extern const char *fwts_log_format;
 
 fwts_log *fwts_log_open(const char* owner, const char *name, const char *mode, const fwts_log_type);
 int       fwts_log_close(fwts_log *log);
-int       fwts_log_printf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *fmt, ...)
+int       fwts_log_printf(const fwts_framework *fw, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *fmt, ...)
 	__attribute__((format(printf, 7, 8)));
-int       fwts_log_vprintf(fwts_log *log, const fwts_log_field field, const fwts_log_level level, const char *status, const char *label, const char *prefix, const char *fmt, va_list args);
 void      fwts_log_newline(fwts_log *log);
 void      fwts_log_underline(fwts_log *log, const int ch);
 void      fwts_log_set_field_filter(const char *str);
@@ -151,39 +152,39 @@ static inline int fwts_log_type_count(fwts_log_type type)
 }
 
 #define fwts_log_result(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_RESULT, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_RESULT, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_warning(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_WARNING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_WARNING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_warning_verbatum(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_error(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_ERROR, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_ERROR, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_error_verbatum(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_ERROR | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_ERROR | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_info(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_INFO, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_INFO, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_info_verbatum(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_INFO | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_INFO | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_summary(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_SUMMARY, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_SUMMARY, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_summary_verbatum(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_SUMMARY | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_SUMMARY | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_advice(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_ADVICE, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_ADVICE, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_heading(fw, fmt, args...)	\
-	fwts_log_printf(fw->results, LOG_HEADING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
+	fwts_log_printf(fw, LOG_HEADING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_nl(fw) \
-	fwts_log_printf(fw->results, LOG_NEWLINE, LOG_LEVEL_NONE, "", "", "", "%s", "")
+	fwts_log_printf(fw, LOG_NEWLINE, LOG_LEVEL_NONE, "", "", "", "%s", "")
 
 #endif

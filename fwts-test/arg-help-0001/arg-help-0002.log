@@ -65,6 +65,9 @@
                              failure error level,
                              %line - log line
                              number.
+--log-level                  Specify error level
+                             to report failed test
+                             messages,
 --log-type                   Specify log type
                              (plaintext, json,
                              html or xml).

@@ -110,7 +110,10 @@ static int acpidump_test1(fwts_framework *fw)
 	int i;
 
 	fwts_infoonly(fw);
-	fwts_iasl_init(fw);
+	if (fwts_iasl_init(fw) != FWTS_OK) {
+		fwts_aborted(fw, "Failure to initialise iasl, aborting.");
+		return FWTS_ERROR;
+	}
 
 	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		fwts_acpi_table_info *table;

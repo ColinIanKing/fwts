@@ -772,19 +772,21 @@ static int fwts_acpi_load_tables_from_file_generic(
 	int *count)
 {
 	struct dirent **dir_entries;
-	int i;
+	int i, n;
+
+	*count = 0;
+	if (!acpi_table_path)
+		return FWTS_ERROR;
 
 	/*
  	 * Read in directory in alphabetical name sorted order
 	 * to ensure the tables are always loaded into memory
 	 * in some form of deterministic order
 	 */
-	if ((*count = scandir(acpi_table_path, &dir_entries, 0, alphasort)) < 0) {
-		*count = 0;
+	if ((n = scandir(acpi_table_path, &dir_entries, 0, alphasort)) < 0)
 		return FWTS_ERROR;
-	}
 
-	for (i = 0; i < *count; i++) {
+	for (i = 0; i < n; i++) {
 		/* Ignore . directories */
 		if (dir_entries[i]->d_name[0] == '.')
 			continue;
@@ -829,6 +831,8 @@ static int fwts_acpi_load_tables_from_file_generic(
 						name[4] = '\0';
 					}
 
+					(*count)++;
+
 					if (!strncmp(name, "XSDT", 4) || !strncmp(name, "RSDT", 4)) {
 						/*
 						 * For XSDT and RSDT we don't bother loading at this point.
@@ -865,6 +869,9 @@ static int fwts_acpi_load_tables_from_file_generic(
 static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 {
 	int count;
+
+	if (!fw->acpi_table_path)
+		return FWTS_ERROR;
 
 	fwts_acpi_load_tables_from_file_generic(fw, fw->acpi_table_path, ".dat", &count);
 	if (count == 0) {

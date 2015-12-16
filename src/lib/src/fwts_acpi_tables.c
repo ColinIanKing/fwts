@@ -1004,7 +1004,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 
 		for (i=0,j=0; j<count ;i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
-				if (fwts_acpi_table_fixable(table))
+				if (table && fwts_acpi_table_fixable(table))
 					rsdt->entries[j++] = (uint32_t)table->addr;
 
 		strncpy(rsdt->header.signature, "RSDT", 4);
@@ -1041,7 +1041,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 
 		for (i=0,j=0; j<count ;i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
-				if (fwts_acpi_table_fixable(table))
+				if (table && fwts_acpi_table_fixable(table))
 					xsdt->entries[j++] = table->addr;
 
 		strncpy(xsdt->header.signature, "XSDT", 4);

@@ -271,7 +271,6 @@ static ACPI_STATUS fwts_region_handler(
 	fwts_acpi_region_handler_called_set(true);
 
 	context = ACPI_CAST_PTR (ACPI_CONNECTION_INFO, handlercontext);
-	length = (ACPI_SIZE)regionobject->Region.Length;
 
 	switch (regionobject->Region.SpaceId) {
 	case ACPI_ADR_SPACE_SYSTEM_IO:

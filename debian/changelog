@@ -1,3 +1,60 @@
+fwts (15.12.00-0ubuntu1) xenial; urgency=low
+
+ [Alex Hung]
+  * acpi: fpdt: add a terminate for buggy BIOS that reports zero length
+  * live-image/fwts-frontend-text: add a selection for recommended
+
+ [Colin Ian King]
+  * lib: klog: remove use of pcre, use regex instead
+  * utilities: kernelscan: remove use of pcre, use regex instead
+  * uefidump: add more bounds checking and remove need for heap
+  * utilities: fix memory leak, line not being free'd
+  * acpi: bert: remove redundant variable 'length'
+  * data: klog.json: add in some more kernel error messages for 4.3
+  * ACPICA: Update to version 20151124 (LP: #1519425)
+  * lib: iasl: rework IASL interface to ACPICA
+  * acpi: acpidump: use IASL rather than fwts custom table dump code
+  * fwts-test: fix up acpidump releated tests
+  * s3 + klog: make log scanning more robust for S3 (LP: #1522292)
+  * ACPI: Add ASPT test
+  * lib: framework: allow mixed tests and test category options
+  * lib: acpica: make region handler more robust (LP: #1524217)
+  * fwts: framework: Add --log-level option
+  * fwts-test: update arg-help tests with new --log-level option
+  * debian: copyright, fix lintian warnings
+  * Debian: update Standards-Version to 3.9.6
+  * acpi: acpidump: check for fwts_iasl_init failure
+  * lib: fwts_acpi_tables: fix segfault when tables fail to load (LP: #1452201)
+  * acpi: dbg2: remove dead store to ptr1
+  * hotkey: fix key reading loop, it needs to loop more than once
+  * lib: fwts_framework: remove dead store to len in for loop
+  * lib: fwts_acpi_table: remove redundant store to rsdt
+  * acpi: gpedump: remove redundant store to gpe_xrupt_info
+  * lib: fwts_acpi_tables: remove dead store to facs
+  * acpica: fwts_acpica: remove redundant store to length
+  * lib: fwts_acpi_tables: remove redundant store to xsdt
+  * lib: fwts_acpi_tables: check table to avoid dereferencing NULL ptr
+
+ [Ivan Hu]
+  * lib: fwts_uefi: add SD device path define
+  * uefibootpath: add test for the SD device path
+  * uefidump: add dumping for the SD device path
+  * lib: fwts_uefi: add efi bluetooth device path define
+  * uefibootpath: add test for the bluetooth device path
+  * uefidump: add dumping for the bluetooth device path
+  * lib: fwts_uefi: add wireless device path define
+  * uefibootpath: add test for the wireless device path
+  * uefidump: add dumping for the wireless device path
+  * lib: fwts_uefi: add ramdisk device path define
+  * uefibootpath: add test for the ramdisk device path
+  * uefidump: add dumping for the ramdisk device path
+  * uefibootpath: fix the wrong type for relative offset range path
+
+ [Jiri Vohanka]
+  * lib: fwts_acpi_table: Fix FADT update in creation of fake FACS table.
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 16 Dec 2015 15:08:32 +0800
+
 fwts (15.11.00-0ubuntu1) xenial; urgency=low
 
   [Al Stone]

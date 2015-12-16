@@ -71,7 +71,6 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 {
 	struct input_event ev;
 	char path[PATH_MAX];
-	int do_test = 1;
 	int fd;
 
 	snprintf(path, sizeof(path), "/dev/%s", dev);
@@ -89,21 +88,18 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 		return FWTS_ERROR;
 	}
 
-	while (do_test) {
+	for (;;) {
 		ssize_t ret = read(fd, &ev, sizeof(ev));
 
-		if (ret < (ssize_t)sizeof(ev)) {
-			do_test = 0;
+		if (ret < (ssize_t)sizeof(ev))
 			break;
-		}
-
 		if ((ev.type == EV_KEY) &&
 		    (ev.code == KEY_ESC) &&
-		    (ev.value == 0))
-			do_test = 0;
-		else
+		    (ev.value == 0)) {
+			break;
+		} else {
 			hotkey_check_key(fw, &ev, hotkeys);
-		break;
+		}
 	}
 
 	if (ioctl(fd, EVIOCGRAB, (void*)0)) {	/* Release */

@@ -150,17 +150,18 @@ static void gpedump_block(
 
 static int gpedump_test1(fwts_framework *fw)
 {
-	ACPI_GPE_BLOCK_INFO     *gpe_block_info;
-	ACPI_GPE_XRUPT_INFO     *gpe_xrupt_info;
+	ACPI_GPE_XRUPT_INFO     *gpe_xrupt_info = AcpiGbl_GpeXruptListHead;
 	uint32_t		block = 0;
 
-	gpe_xrupt_info = AcpiGbl_GpeXruptListHead;
-
-	for (gpe_xrupt_info = AcpiGbl_GpeXruptListHead; gpe_xrupt_info; gpe_xrupt_info = gpe_xrupt_info->Next) {
-		for (gpe_block_info = gpe_xrupt_info->GpeBlockListHead; gpe_block_info; gpe_block_info = gpe_block_info->Next) {
+	while (gpe_xrupt_info) {
+		ACPI_GPE_BLOCK_INFO *gpe_block_info =
+			gpe_xrupt_info->GpeBlockListHead;
+		while (gpe_block_info) {
 			gpedump_block(fw, gpe_xrupt_info, gpe_block_info, block);
 			block++;
+			gpe_block_info = gpe_block_info->Next;
 		}
+		gpe_xrupt_info = gpe_xrupt_info->Next;
 	}
 	return FWTS_OK;
 }

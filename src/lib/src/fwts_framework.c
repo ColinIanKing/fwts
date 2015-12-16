@@ -932,7 +932,7 @@ static void fwts_framework_heading_info(
 		len += strlen(argv[i]) + 1;
 
 	if ((args = calloc(len, 1)) != NULL) {
-		for (len = 1, i = 1; i < argc; i++) {
+		for (i = 1; i < argc; i++) {
 			strcat(args, " ");
 			strcat(args, argv[i]);
 		}

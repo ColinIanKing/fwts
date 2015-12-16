@@ -994,7 +994,6 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table) {
-		rsdt = (fwts_acpi_table_rsdt *)table->data;
 		rsdt_fake_addr = table->addr;
 	} else {
 		/* No RSDT? go and fake one */

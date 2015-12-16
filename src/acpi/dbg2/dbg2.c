@@ -128,7 +128,6 @@ static void dbg2_obj_find(
 	 *	     \_SB_.A___.BB__.CCC_.DDDD.EE__
 	 */
 	expanded = alloca(1 + (5 * (i + 1)));
-	ptr1 = obj_name;
 	ptr2 = expanded;
 
 	for (i = -1, ptr1 = obj_name; ; ptr1++) {

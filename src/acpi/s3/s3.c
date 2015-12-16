@@ -153,9 +153,10 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int status;
 	int duration;
 	int differences;
-	_cleanup_free_ char *command = NULL;
-	_cleanup_free_ char *quirks = NULL;
-	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
+	int rc = FWTS_OK;
+	char *command = NULL;
+	char *quirks = NULL;
+	fwts_pm_method_vars *fwts_settings = NULL;
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -176,7 +177,8 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (fwts_logind_init_proxy(fwts_settings) != 0) {
 				fwts_log_error(fw, "Failure to connect to Logind.");
-				return FWTS_ERROR;
+				rc = FWTS_ERROR;
+				goto tidy;
 			}
 			do_suspend = &wrap_logind_do_suspend;
 			break;
@@ -202,22 +204,30 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	/* Format up pm-suspend command with optional quirking arguments */
 	if (fw->pm_method == FWTS_PM_PMUTILS) {
 		if (s3_hybrid) {
-			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_HYBRID_PMUTILS)) == NULL)
-				return FWTS_OUT_OF_MEMORY;
+			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_HYBRID_PMUTILS)) == NULL) {
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
+			}
 		} else {
-			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_PMUTILS)) == NULL)
-				return FWTS_OUT_OF_MEMORY;
+			if ((command = fwts_realloc_strcat(NULL, PM_SUSPEND_PMUTILS)) == NULL) {
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
+			}
 		}
 
 		/* For now we only support quirks with pm-utils */
 		if (s3_quirks) {
-			if ((command = fwts_realloc_strcat(command, " ")) == NULL)
-				return FWTS_OUT_OF_MEMORY;
+			if ((command = fwts_realloc_strcat(command, " ")) == NULL) {
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
+			}
 			if ((quirks = fwts_args_comma_list(s3_quirks)) == NULL) {
-				return FWTS_OUT_OF_MEMORY;
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
 			}
 			if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
-				return FWTS_OUT_OF_MEMORY;
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
 			}
 		}
 	}
@@ -294,7 +304,12 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 			"enter the requested power saving state.");
 	}
 
-	return FWTS_OK;
+tidy:
+	free(command);
+	free(quirks);
+	free_pm_method_vars(fwts_settings);
+
+	return rc;
 }
 
 static int s3_scan_times(

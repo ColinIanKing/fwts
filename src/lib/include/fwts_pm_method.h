@@ -44,52 +44,30 @@ typedef struct
 	int  min_delay;
 } fwts_pm_method_vars;
 
-static inline void free_pm_method_vars(void *);
-static inline void freep(void *);
-
-#define _cleanup_free_pm_vars_ __attribute__((cleanup(free_pm_method_vars)))
-#define _cleanup_free_ __attribute__((cleanup(freep)))
-
 #define PM_SUSPEND_LOGIND		"Suspend"
 #define PM_SUSPEND_HYBRID_LOGIND	"HybridSleep"
 #define PM_HIBERNATE_LOGIND		"Hibernate"
 
 #define FWTS_SUSPEND		"FWTS_SUSPEND"
 #define FWTS_RESUME		"FWTS_RESUME"
-#define FWTS_HIBERNATE	"FWTS_HIBERNATE"
-#define FWTS_RESUME	"FWTS_RESUME"
+#define FWTS_HIBERNATE		"FWTS_HIBERNATE"
+#define FWTS_RESUME		"FWTS_RESUME"
 
-static inline void free_pm_method_vars(void *vars)
+static inline void free_pm_method_vars(fwts_pm_method_vars *var)
 {
-	fwts_pm_method_vars *var = *(void**)vars;
-
+	if (!var)
+		return;
 #if FWTS_ENABLE_LOGIND
-	if (var) {
-		if (var->logind_proxy) {
-			g_object_unref(var->logind_proxy);
-			var->logind_proxy = NULL;
-		}
-		if (var->logind_connection) {
-			g_object_unref(var->logind_connection);
-			var->logind_connection = NULL;
-		}
-		if (var->gmainloop) {
-			g_main_loop_unref(var->gmainloop);
-			var->gmainloop = NULL;
-		}
-		if (var->action) {
-			free(var->action);
-			var->action = NULL;
-		}
-	}
+	if (var->logind_proxy)
+		g_object_unref(var->logind_proxy);
+	if (var->logind_connection)
+		g_object_unref(var->logind_connection);
+	if (var->gmainloop)
+		g_main_loop_unref(var->gmainloop);
+	if (var->action)
+		free(var->action);
 #endif
 	free(var);
-	var = NULL;
-}
-
-static inline void freep(void *p)
-{
-	free(*(void**) p);
 }
 
 int fwts_logind_init_proxy(fwts_pm_method_vars *fwts_settings);

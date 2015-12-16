@@ -178,9 +178,10 @@ static int s4_hibernate(fwts_framework *fw,
 	int status;
 	int duration;
 	int differences;
-	_cleanup_free_ char *command = NULL;
-	_cleanup_free_ char *quirks = NULL;
-	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
+	int rc = FWTS_OK;
+	char *command = NULL;
+	char *quirks = NULL;
+	fwts_pm_method_vars *fwts_settings = NULL;
 
 	int (*do_s4)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -201,7 +202,8 @@ static int s4_hibernate(fwts_framework *fw,
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (fwts_logind_init_proxy(fwts_settings) != 0) {
 				fwts_log_error(fw, "Failure to connect to Logind.");
-				return FWTS_ERROR;
+				rc = FWTS_ERROR;
+				goto tidy;
 			}
 			do_s4 = &wrap_logind_do_s4;
 			break;
@@ -226,18 +228,24 @@ static int s4_hibernate(fwts_framework *fw,
 
 	if (fw->pm_method == FWTS_PM_PMUTILS) {
 		/* Format up pm-hibernate command with optional quirking arguments */
-		if ((command = fwts_realloc_strcat(NULL, PM_HIBERNATE)) == NULL)
-			return FWTS_OUT_OF_MEMORY;
+		if ((command = fwts_realloc_strcat(NULL, PM_HIBERNATE)) == NULL) {
+			rc = FWTS_OUT_OF_MEMORY;
+			goto tidy;
+		}
 
 		/* For now we only support quirks with pm-utils */
 		if (s4_quirks) {
-			if ((command = fwts_realloc_strcat(command, " ")) == NULL)
-				return FWTS_OUT_OF_MEMORY;
+			if ((command = fwts_realloc_strcat(command, " ")) == NULL) {
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
+			}
 			if ((quirks = fwts_args_comma_list(s4_quirks)) == NULL) {
-				return FWTS_OUT_OF_MEMORY;
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
 			}
 			if ((command = fwts_realloc_strcat(command, quirks)) == NULL) {
-				return FWTS_OUT_OF_MEMORY;
+				rc = FWTS_OUT_OF_MEMORY;
+				goto tidy;
 			}
 		}
 	}
@@ -336,8 +344,12 @@ static int s4_hibernate(fwts_framework *fw,
 	fwts_klog_free(klog_pre);
 	fwts_klog_free(klog_post);
 	fwts_list_free(klog_diff, NULL);
+tidy:
+	free(command);
+	free(quirks);
+	free_pm_method_vars(fwts_settings);
 
-	return FWTS_OK;
+	return rc;
 }
 
 static int s4_test_multiple(fwts_framework *fw)

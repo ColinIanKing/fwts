@@ -242,6 +242,7 @@ static int s3power_test(fwts_framework *fw)
 {
 	int status;
 	int duration;
+	int rc = FWTS_OK;
 
 	bool offline;
 
@@ -250,7 +251,7 @@ static int s3power_test(fwts_framework *fw)
 	uint32_t capacity_before_mWh;
 	uint32_t capacity_after_mWh;
 
-	_cleanup_free_pm_vars_ fwts_pm_method_vars * fwts_settings = NULL;
+	fwts_pm_method_vars *fwts_settings = NULL;
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 
@@ -278,7 +279,8 @@ static int s3power_test(fwts_framework *fw)
 			fwts_log_info(fw, "Using logind as the default power method.");
 			if (fwts_logind_init_proxy(fwts_settings) != 0) {
 				fwts_log_error(fw, "Failure to connect to Logind.");
-				return FWTS_ERROR;
+				rc = FWTS_ERROR;
+				goto tidy;
 			}
 			do_suspend = &wrap_logind_do_suspend;
 			break;
@@ -300,11 +302,13 @@ static int s3power_test(fwts_framework *fw)
 
 	if (s3power_wait_for_adapter_offline(fw, &offline) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot check if machine is running on battery, aborting test.");
-		return FWTS_ABORTED;
+		rc = FWTS_ABORTED;
+		goto tidy;
 	}
 	if (!offline) {
 		fwts_log_error(fw, "Machine needs to be running on battery to run test, aborting test.");
-		return FWTS_ABORTED;
+		rc = FWTS_ABORTED;
+		goto tidy;
 	}
 
 	s3power_get_remaining_capacity(fw, &capacity_before_mAh, &capacity_before_mWh);
@@ -343,8 +347,10 @@ static int s3power_test(fwts_framework *fw)
 			"pm-action encountered an error and also failed to "
 			"enter the requested power saving state.");
 	}
+tidy:
+	free_pm_method_vars(fwts_settings);
 
-	return FWTS_OK;
+	return rc;
 }
 
 static int s3power_options_check(fwts_framework *fw)

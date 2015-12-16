@@ -172,6 +172,7 @@ static void token_new(token *t)
 	t->len = 1024;
 	t->ptr = t->token;
 	t->type = TOKEN_UNKNOWN;
+	*(t->ptr) = '\0';
 }
 
 /*
@@ -191,6 +192,9 @@ static void token_free(token *t)
 {
 	free(t->token);
 	t->token = NULL;
+	t->ptr = NULL;
+	t->len = 0;
+	t->type = TOKEN_UNKNOWN;
 }
 
 /*
@@ -207,11 +211,14 @@ static void token_append(token *t, int ch)
 		*(t->ptr) = 0;
 	} else {
 		/* No more space, add 1K more space */
+		ptrdiff_t diff = t->ptr - t->token;
+
 		t->len += 1024;
 		if ((t->token = realloc(t->token, t->len)) == NULL) {
 			fprintf(stderr, "token_append: Out of memory!\n");
 			exit(EXIT_FAILURE);
 		}
+		t->ptr = t->token + diff;
 		*(t->ptr) = ch;
 		t->ptr++;
 		*(t->ptr) = 0;
@@ -797,6 +804,7 @@ static int parse_kernel_message(parser *p, token *t)
 		int ret = get_token(p, t);
 		if (ret == EOF) {
 			free(line);
+			free(str);
 			return EOF;
 		}
 
@@ -810,8 +818,9 @@ static int parse_kernel_message(parser *p, token *t)
 				} else {
 					printf("ADD: %s\n", line);
 				}
-				free(line);
 			}
+			free(line);
+			free(str);
 			return PARSER_OK;
 		}
 
@@ -952,16 +961,20 @@ static int parse_cpp_includes(FILE *fp)
 		if (t.type == TOKEN_CPP) {
 			for (;;) {
 				token_clear(&t);
-				if (get_token(&p, &t) == EOF)
+				if (get_token(&p, &t) == EOF) {
+					token_free(&t);
 					return EOF;
+				}
 				if (strcmp(t.token, "\n") == 0)
 					break;
 				if (t.type == TOKEN_WHITE_SPACE) {
 					continue;
 				}
 				if (strcmp(t.token, "include") == 0) {
-					if (parse_cpp_include(&p, &t) == EOF)
+					if (parse_cpp_include(&p, &t) == EOF) {
+						token_free(&t);
 						return EOF;
+					}
 					break;
 				}
 				printf("#%s", t.token);
@@ -972,6 +985,7 @@ static int parse_cpp_includes(FILE *fp)
 		}
 		token_clear(&t);
 	}
+	token_free(&t);
 	return EOF;
 }
 

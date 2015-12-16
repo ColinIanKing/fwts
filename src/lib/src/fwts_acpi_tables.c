@@ -916,8 +916,6 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	char *oem_tbl_id = "FWTSIDXX";
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_rsdp *rsdp = NULL;
-	fwts_acpi_table_rsdt *rsdt = NULL;
-	fwts_acpi_table_xsdt *xsdt = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;
 	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;
 	bool redo_rsdp_checksum = false;
@@ -995,6 +993,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		rsdt_fake_addr = table->addr;
 	} else {
 		/* No RSDT? go and fake one */
+
+		fwts_acpi_table_rsdt *rsdt;
 		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint32_t));
 
 		if ((rsdt = fwts_low_calloc(1, size)) == NULL) {
@@ -1027,10 +1027,11 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table) {
-		xsdt = (fwts_acpi_table_xsdt *)table->data;
 		xsdt_fake_addr = table->addr;
 	} else {
 		/* No XSDT? go and fake one */
+
+		fwts_acpi_table_xsdt *xsdt;
 		size_t size = sizeof(fwts_acpi_table_rsdt) + (count * sizeof(uint64_t));
 
 		if ((xsdt = fwts_low_calloc(1, size)) == NULL) {

@@ -1330,6 +1330,21 @@ static void uefidump_info_osrecoverorder(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_info_syspreporder(fwts_framework *fw, fwts_uefi_var *var)
+{
+	uint16_t *data = (uint16_t*)var->data;
+	int i;
+	int n = (int)var->datalen / sizeof(uint16_t);
+	char *str = NULL;
+
+	for (i = 0; i < n; i++) {
+		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
+			*data++, i < (n - 1) ? "," : "");
+	}
+	fwts_log_info_verbatum(fw, "  SysPrep Order: %s.", str);
+	free(str);
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -1363,6 +1378,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "AuditMode",		uefidump_info_audit_mode },
 	{ "DeployedMode",	uefidump_info_deployed_mode },
 	{ "OsRecoveryOrder",	uefidump_info_osrecoverorder },
+	{ "SysPrepOrder",	uefidump_info_syspreporder },
 	{ NULL, NULL }
 };
 

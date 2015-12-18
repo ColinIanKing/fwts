@@ -1260,6 +1260,31 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 	} while ((var->datalen - list_start) > sizeof(fwts_uefi_signature_list));
 
 }
+
+static void uefidump_info_audit_mode(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen != 1) {
+		/* Should be 1 byte, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value) {
+		case 0:
+			mode = " (Not in Audit Mode)";
+			break;
+		case 1:
+			mode = " (In Audit Mode)";
+			break;
+		default:
+			mode = "";
+			break;
+		}
+		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -1290,6 +1315,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "db",			uefidump_info_signaturedatabase },
 	{ "KEK",		uefidump_info_signaturedatabase },
 	{ "PK",			uefidump_info_signaturedatabase },
+	{ "AuditMode",		uefidump_info_audit_mode },
 	{ NULL, NULL }
 };
 

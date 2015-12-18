@@ -2,6 +2,69 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Could not start debugger thread",
+   "advice": "The ACPI debugger could not start a kernel thread to execute a debug command, most probably a kernel resource issue.",
+   "label": "KlogAcpiDbgThreadErr",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Possible overflow of internal debugger buffer",
+   "advice": "The ACPI debugger detected a error when evaluating an ACPI object or method, possibly a buffer overflow bug in the ACPI debugger.",
+   "label": "KlogAcpiDbgBufOverflow",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "while executing .* from debugger",
+   "advice": "The ACPI debugger detected a error when evaluating an ACPI object or method.",
+   "label": "KlogAcpiDbgErr",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "While parsing method arguments",
+   "advice": "The ACPI debugger could not parse the debugger command line (incorrect method arguments), most probably a user error.",
+   "label": "KlogAcpiDbgCmdLine",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "While parsing command line",
+   "advice": "The ACPI debugger could not parse the debugger command line, most probably a user error.",
+   "label": "KlogAcpiDbgCmdLine",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "(.*): Object must be a control method",
+   "advice": "An error occurred disassembling an ACPI method, the namespace node was not an ACPI method.",
+   "label": "KlogAcpiObjNotControlMethod"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Target must be [Buffer/Integer/String/Reference]",
+   "advice": "An error occurred storing an ACPI object that was not the expected object type of ACPU buffer, integer, string or reference.",
+   "label": "KlogAcpiObjStoreInvalidSrcType"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Cannot assign type .* to .*source must be type Pkg",
+   "advice": "An error occurred storing an ACPI object that was not an ACPI package to a named object that was an ACPI package, this is not allowed.",
+   "label": "KlogAcpiObjStoreInvalidSrcType"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid _FIT",
+   "advice": "ACPI _FIT (Firmware Interface Table) method returned an object that was not the expected ACPI buffer object type.",
+   "label": "KlogAcpiInvalidFitObject"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Target is not of type .*Package.*BufferField",

@@ -1411,6 +1411,17 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 		return;
 	}
 
+	/*
+	 * Check the platformRecovery of boot option PlatformRecovery####. #### is a printed hex value.
+	 * PlatformRecovery#### variables share the same structure as Boot#### variables.
+	 */
+	if ((strlen(varname) == 20) && (strncmp(varname, "PlatformRecovery", 16) == 0)
+			&& isxdigit(varname[16]) && isxdigit(varname[17])
+			&& isxdigit(varname[18]) && isxdigit(varname[19])) {
+		uefidump_info_bootdev(fw, var);
+		return;
+	}
+
 	/* otherwise just do a plain old hex dump */
 	uefidump_var_hexdump(fw, var);
 }

@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
- * Copyright (c) 2000 - 2014 Intel Corporation
+ * AML/ASL+ Disassembler version 20151218-64
+ * Copyright (c) 2000 - 2015 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_21295_DSDT_0.dsl, Wed Nov 12 10:53:32 2014
+ * Disassembly of /tmp/fwts_tmp_table_24115_DSDT_2.dsl, Fri Dec 18 18:58:02 2015
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20060608 (537265672)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
+DefinitionBlock ("/tmp/fwts_tmp_table_24115_DSDT_2.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
 
     External (_PR_.CPU0._PPC, UnknownObj)
@@ -527,16 +527,13 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                         Store (DTS2, \_SB.PCI0.LPCB.EC0.SKTA)
                     }
                 }
+                ElseIf (LGreaterEqual (ODT1, ODT2))
+                {
+                    Store (ODT1, \_SB.PCI0.LPCB.EC0.SKTA)
+                }
                 Else
                 {
-                    If (LGreaterEqual (ODT1, ODT2))
-                    {
-                        Store (ODT1, \_SB.PCI0.LPCB.EC0.SKTA)
-                    }
-                    Else
-                    {
-                        Store (ODT2, \_SB.PCI0.LPCB.EC0.SKTA)
-                    }
+                    Store (ODT2, \_SB.PCI0.LPCB.EC0.SKTA)
                 }
             }
             Else
@@ -1794,16 +1791,13 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                     Return (0x1D)
                                 }
                             }
+                            ElseIf (LEqual (Local1, 0x02))
+                            {
+                                Return (0x0F)
+                            }
                             Else
                             {
-                                If (LEqual (Local1, 0x02))
-                                {
-                                    Return (0x0F)
-                                }
-                                Else
-                                {
-                                    Return (0x0D)
-                                }
+                                Return (0x0D)
                             }
                         }
 
@@ -1858,16 +1852,13 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                     Return (0x1D)
                                 }
                             }
+                            ElseIf (LEqual (Local1, One))
+                            {
+                                Return (0x0F)
+                            }
                             Else
                             {
-                                If (LEqual (Local1, One))
-                                {
-                                    Return (0x0F)
-                                }
-                                Else
-                                {
-                                    Return (0x0D)
-                                }
+                                Return (0x0D)
                             }
                         }
 
@@ -1951,16 +1942,13 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                     Return (0x1D)
                                 }
                             }
+                            ElseIf (LEqual (Local1, 0x04))
+                            {
+                                Return (0x0F)
+                            }
                             Else
                             {
-                                If (LEqual (Local1, 0x04))
-                                {
-                                    Return (0x0F)
-                                }
-                                Else
-                                {
-                                    Return (0x0D)
-                                }
+                                Return (0x0D)
                             }
                         }
 
@@ -2071,12 +2059,9 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                 STBL (One)
                             }
                         }
-                        Else
+                        ElseIf (LEqual (SWIT, One))
                         {
-                            If (LEqual (SWIT, One))
-                            {
-                                ^^^LPCB.PHSS (One)
-                            }
+                            ^^^LPCB.PHSS (One)
                         }
                     }
 
@@ -3143,26 +3128,20 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                         Or (PFIT, 0x80000000, PFIT) /* \_SB_.PCI0.GFX0.PFIT */
                         Store (0x04, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
                     }
+                    ElseIf (LEqual (Arg0, One))
+                    {
+                        Store (Divide (Multiply (Arg1, 0xFF), 0x64, ), BCLP) /* \_SB_.PCI0.GFX0.BCLP */
+                        Or (BCLP, 0x80000000, BCLP) /* \_SB_.PCI0.GFX0.BCLP */
+                        Store (0x02, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
+                    }
+                    ElseIf (LEqual (Arg0, Zero))
+                    {
+                        Store (Arg1, ALSI) /* \_SB_.PCI0.GFX0.ALSI */
+                        Store (One, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
+                    }
                     Else
                     {
-                        If (LEqual (Arg0, One))
-                        {
-                            Store (Divide (Multiply (Arg1, 0xFF), 0x64, ), BCLP) /* \_SB_.PCI0.GFX0.BCLP */
-                            Or (BCLP, 0x80000000, BCLP) /* \_SB_.PCI0.GFX0.BCLP */
-                            Store (0x02, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
-                        }
-                        Else
-                        {
-                            If (LEqual (Arg0, Zero))
-                            {
-                                Store (Arg1, ALSI) /* \_SB_.PCI0.GFX0.ALSI */
-                                Store (One, ASLC) /* \_SB_.PCI0.GFX0.ASLC */
-                            }
-                            Else
-                            {
-                                Return (One)
-                            }
-                        }
+                        Return (One)
                     }
 
                     Store (Zero, LBPC) /* \_SB_.PCI0.GFX0.LBPC */
@@ -3370,22 +3349,17 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                     {
                         Return (0x08)
                     }
-                    Else
+                    ElseIf (And (Arg1, 0x02))
                     {
-                        If (And (Arg1, 0x02))
+                        If (LAnd (LLessEqual (Arg0, 0x78), And (Arg2, 0x02)))
                         {
-                            If (LAnd (LLessEqual (Arg0, 0x78), And (Arg2, 0x02)))
-                            {
-                                Return (0x2301)
-                            }
-
-                            If (LAnd (LLessEqual (Arg0, 0xB4), And (Arg2, One)))
-                            {
-                                Return (0x2101)
-                            }
+                            Return (0x2301)
                         }
 
-                        Return (0x1001)
+                        If (LAnd (LLessEqual (Arg0, 0xB4), And (Arg2, One)))
+                        {
+                            Return (0x2101)
+                        }
                     }
                 }
 
@@ -5025,12 +4999,9 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                 Return (0x0F)
                             }
                         }
-                        Else
+                        ElseIf (HPAE)
                         {
-                            If (HPAE)
-                            {
-                                Return (0x0B)
-                            }
+                            Return (0x0B)
                         }
 
                         Return (Zero)
@@ -5718,23 +5689,17 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                         {
                             Return (THEN) /* \_SB_.PCI0.LPCB.EC0_.THEN */
                         }
+                        ElseIf (LEqual (Arg0, One))
+                        {
+                            Return (DUTY) /* \_SB_.PCI0.LPCB.EC0_.DUTY */
+                        }
+                        ElseIf (LEqual (Arg0, 0x02))
+                        {
+                            Return (TTHR) /* \_SB_.PCI0.LPCB.EC0_.TTHR */
+                        }
                         Else
                         {
-                            If (LEqual (Arg0, One))
-                            {
-                                Return (DUTY) /* \_SB_.PCI0.LPCB.EC0_.DUTY */
-                            }
-                            Else
-                            {
-                                If (LEqual (Arg0, 0x02))
-                                {
-                                    Return (TTHR) /* \_SB_.PCI0.LPCB.EC0_.TTHR */
-                                }
-                                Else
-                                {
-                                    Return (0xFF)
-                                }
-                            }
+                            Return (0xFF)
                         }
                     }
 
@@ -6217,16 +6182,13 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_DSDT_0.aml", "DSDT", 2, "TOSCPL", "C
                                     {
                                         Store (0x0C, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                     }
+                                    ElseIf (LEqual (0x03, Local0))
+                                    {
+                                        Store (0x0B, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
+                                    }
                                     Else
                                     {
-                                        If (LEqual (0x03, Local0))
-                                        {
-                                            Store (0x0B, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
-                                        }
-                                        Else
-                                        {
-                                            Store (0x0A, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
-                                        }
+                                        Store (0x0A, PMD1) /* \_SB_.PCI0.PATA.PRID.P_D1._GTF.PMD1 */
                                     }
                                 }
                             }

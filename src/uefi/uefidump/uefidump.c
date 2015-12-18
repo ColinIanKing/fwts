@@ -1438,6 +1438,16 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 		return;
 	}
 
+	/*
+	 * Check the System Prep application load option SysPrep####. #### is a printed hex value.
+	 */
+	if ((strlen(varname) == 11) && (strncmp(varname, "SysPrep", 7) == 0)
+			&& isxdigit(varname[7]) && isxdigit(varname[8])
+			&& isxdigit(varname[9]) && isxdigit(varname[10])) {
+		uefidump_info_bootdev(fw, var);
+		return;
+	}
+
 	/* otherwise just do a plain old hex dump */
 	uefidump_var_hexdump(fw, var);
 }

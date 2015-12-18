@@ -1309,6 +1309,27 @@ static void uefidump_info_deployed_mode(fwts_framework *fw, fwts_uefi_var *var)
 	}
 }
 
+static void uefidump_info_osrecoverorder(fwts_framework *fw, fwts_uefi_var *var)
+{
+	if (var->datalen % 16) {
+		/* Should be multiple of 16 bytes, of not, dump it out as a hex dump */
+		uefidump_var_hexdump(fw, var);
+	} else {
+		/* OSRecoveryOrder are an array of GUIDs */
+		uint8_t *data = var->data;
+		char guid_str[37];
+
+		if (var->datalen)
+			fwts_log_info_verbatum(fw, "  OSRecoveryOrder GUIDs:");
+
+		while (data - var->data < (ptrdiff_t)var->datalen) {
+			fwts_guid_buf_to_str(data, guid_str, sizeof(guid_str));
+			fwts_log_info_verbatum(fw, "    %s", guid_str);
+			data += 16;
+		}
+	}
+}
+
 static uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
@@ -1341,6 +1362,7 @@ static uefidump_info uefidump_info_table[] = {
 	{ "PK",			uefidump_info_signaturedatabase },
 	{ "AuditMode",		uefidump_info_audit_mode },
 	{ "DeployedMode",	uefidump_info_deployed_mode },
+	{ "OsRecoveryOrder",	uefidump_info_osrecoverorder },
 	{ NULL, NULL }
 };
 

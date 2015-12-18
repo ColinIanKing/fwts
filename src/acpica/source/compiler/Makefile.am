@@ -212,6 +212,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../common/dmtables.c			\
 	../common/dmtbinfo.c 			\
 	../common/dmtbdump.c 			\
+	../common/getopt.c			\
 	../components/debugger/dbfileio.c 	\
 	../components/disassembler/dmbuffer.c 	\
 	../components/disassembler/dmcstyle.c	\

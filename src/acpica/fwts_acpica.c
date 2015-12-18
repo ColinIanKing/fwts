@@ -1099,6 +1099,8 @@ int fwts_acpica_init(fwts_framework *fw)
 		fwts_acpica_RSDP = NULL;
 	}
 
+	AcpiGbl_OverrideDefaultRegionHandlers = TRUE;
+
 	if (ACPI_FAILURE(AcpiInitializeSubsystem())) {
 		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
 		goto failed;

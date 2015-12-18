@@ -239,11 +239,7 @@ CmDeleteCaches (
  * aslascii - ascii support
  */
 ACPI_STATUS
-FlCheckForAcpiTable (
-    FILE                    *Handle);
-
-ACPI_STATUS
-FlCheckForAscii (
+FlIsFileAsciiSource (
     char                    *Filename,
     BOOLEAN                 DisplayErrors);
 
@@ -813,6 +809,10 @@ TrSetEndLineNumber (
     ACPI_PARSE_OBJECT       *Op);
 
 void
+TrSetCurrentFilename (
+    ACPI_PARSE_OBJECT       *Op);
+
+void
 TrWalkTree (
     void);
 
@@ -994,6 +994,10 @@ DbgPrint (
 #define ASL_DEBUG_OUTPUT    0
 #define ASL_PARSE_OUTPUT    1
 #define ASL_TREE_OUTPUT     2
+
+BOOLEAN
+UtQueryForOverwrite (
+    char                    *Pathname);
 
 void
 UtDisplaySupportedTables (
@@ -1353,6 +1357,6 @@ DtDoCompile(
 
 ACPI_STATUS
 DtCreateTemplates (
-    char                    *Signature);
+    char                    **argv);
 
 #endif /*  __ASLCOMPILER_H */

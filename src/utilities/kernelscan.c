@@ -29,6 +29,9 @@
 
 #include "config.h"
 
+#undef DATAROOTDIR
+#define DATAROOTDIR "/usr/share/"
+
 #define PARSER_OK		0
 #define PARSER_COMMENT_FOUND	1
 

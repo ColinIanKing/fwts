@@ -1,7 +1,6 @@
 /******************************************************************************
  *
- * Module Name: evxfregn - External Interfaces, ACPI Operation Regions and
- *                         Address Spaces.
+ * Module Name: getopt
  *
  *****************************************************************************/
 
@@ -114,239 +113,236 @@
  *
  *****************************************************************************/
 
-#define EXPORT_ACPI_INTERFACES
+/*
+ * ACPICA getopt() implementation
+ *
+ * Option strings:
+ *    "f"       - Option has no arguments
+ *    "f:"      - Option requires an argument
+ *    "f+"      - Option has an optional argument
+ *    "f^"      - Option has optional single-char sub-options
+ *    "f|"      - Option has required single-char sub-options
+ */
 
 #include "acpi.h"
 #include "accommon.h"
-#include "acnamesp.h"
-#include "acevents.h"
+#include "acapps.h"
 
-#define _COMPONENT          ACPI_EVENTS
-        ACPI_MODULE_NAME    ("evxfregn")
+#define ACPI_OPTION_ERROR(msg, badchar) \
+    if (AcpiGbl_Opterr) {AcpiLogError ("%s%c\n", msg, badchar);}
+
+
+int                 AcpiGbl_Opterr = 1;
+int                 AcpiGbl_Optind = 1;
+int                 AcpiGbl_SubOptChar = 0;
+char                *AcpiGbl_Optarg;
+
+static int          CurrentCharPtr = 1;
 
 
 /*******************************************************************************
  *
- * FUNCTION:    AcpiInstallAddressSpaceHandler
+ * FUNCTION:    AcpiGetoptArgument
  *
- * PARAMETERS:  Device          - Handle for the device
- *              SpaceId         - The address space ID
- *              Handler         - Address of the handler
- *              Setup           - Address of the setup function
- *              Context         - Value passed to the handler on each access
+ * PARAMETERS:  argc, argv          - from main
  *
- * RETURN:      Status
+ * RETURN:      0 if an argument was found, -1 otherwise. Sets AcpiGbl_Optarg
+ *              to point to the next argument.
  *
- * DESCRIPTION: Install a handler for all OpRegions of a given SpaceId.
- *
- * NOTE: This function should only be called after AcpiEnableSubsystem has
- * been called. This is because any _REG methods associated with the Space ID
- * are executed here, and these methods can only be safely executed after
- * the default handlers have been installed and the hardware has been
- * initialized (via AcpiEnableSubsystem.)
+ * DESCRIPTION: Get the next argument. Used to obtain arguments for the
+ *              two-character options after the original call to AcpiGetopt.
+ *              Note: Either the argument starts at the next character after
+ *              the option, or it is pointed to by the next argv entry.
+ *              (After call to AcpiGetopt, we need to backup to the previous
+ *              argv entry).
  *
  ******************************************************************************/
 
-ACPI_STATUS
-AcpiInstallAddressSpaceHandler (
-    ACPI_HANDLE             Device,
-    ACPI_ADR_SPACE_TYPE     SpaceId,
-    ACPI_ADR_SPACE_HANDLER  Handler,
-    ACPI_ADR_SPACE_SETUP    Setup,
-    void                    *Context)
+int
+AcpiGetoptArgument (
+    int                     argc,
+    char                    **argv)
 {
-    ACPI_NAMESPACE_NODE     *Node;
-    ACPI_STATUS             Status;
 
+    AcpiGbl_Optind--;
+    CurrentCharPtr++;
 
-    ACPI_FUNCTION_TRACE (AcpiInstallAddressSpaceHandler);
-
-    /* Parameter validation */
-
-    if (!Device)
+    if (argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)] != '\0')
     {
-        return_ACPI_STATUS (AE_BAD_PARAMETER);
+        AcpiGbl_Optarg = &argv[AcpiGbl_Optind++][(int) (CurrentCharPtr+1)];
+    }
+    else if (++AcpiGbl_Optind >= argc)
+    {
+        ACPI_OPTION_ERROR ("Option requires an argument: -", 'v');
+
+        CurrentCharPtr = 1;
+        return (-1);
+    }
+    else
+    {
+        AcpiGbl_Optarg = argv[AcpiGbl_Optind++];
     }
 
-    Status = AcpiUtAcquireMutex (ACPI_MTX_NAMESPACE);
-    if (ACPI_FAILURE (Status))
-    {
-        return_ACPI_STATUS (Status);
-    }
-
-    /* Convert and validate the device handle */
-
-    Node = AcpiNsValidateHandle (Device);
-    if (!Node)
-    {
-        Status = AE_BAD_PARAMETER;
-        goto UnlockAndExit;
-    }
-
-    /* Install the handler for all Regions for this Space ID */
-
-    Status = AcpiEvInstallSpaceHandler (
-        Node, SpaceId, Handler, Setup, Context);
-    if (ACPI_FAILURE (Status))
-    {
-        goto UnlockAndExit;
-    }
-
-    /* Run all _REG methods for this address space */
-
-    AcpiEvExecuteRegMethods (Node, SpaceId, ACPI_REG_CONNECT);
-
-
-UnlockAndExit:
-    (void) AcpiUtReleaseMutex (ACPI_MTX_NAMESPACE);
-    return_ACPI_STATUS (Status);
+    CurrentCharPtr = 1;
+    return (0);
 }
 
-ACPI_EXPORT_SYMBOL (AcpiInstallAddressSpaceHandler)
-
 
 /*******************************************************************************
  *
- * FUNCTION:    AcpiRemoveAddressSpaceHandler
+ * FUNCTION:    AcpiGetopt
  *
- * PARAMETERS:  Device          - Handle for the device
- *              SpaceId         - The address space ID
- *              Handler         - Address of the handler
+ * PARAMETERS:  argc, argv          - from main
+ *              opts                - options info list
  *
- * RETURN:      Status
+ * RETURN:      Option character or ACPI_OPT_END
  *
- * DESCRIPTION: Remove a previously installed handler.
+ * DESCRIPTION: Get the next option
  *
  ******************************************************************************/
 
-ACPI_STATUS
-AcpiRemoveAddressSpaceHandler (
-    ACPI_HANDLE             Device,
-    ACPI_ADR_SPACE_TYPE     SpaceId,
-    ACPI_ADR_SPACE_HANDLER  Handler)
+int
+AcpiGetopt(
+    int                     argc,
+    char                    **argv,
+    char                    *opts)
 {
-    ACPI_OPERAND_OBJECT     *ObjDesc;
-    ACPI_OPERAND_OBJECT     *HandlerObj;
-    ACPI_OPERAND_OBJECT     *RegionObj;
-    ACPI_OPERAND_OBJECT     **LastObjPtr;
-    ACPI_NAMESPACE_NODE     *Node;
-    ACPI_STATUS             Status;
+    int                     CurrentChar;
+    char                    *OptsPtr;
 
 
-    ACPI_FUNCTION_TRACE (AcpiRemoveAddressSpaceHandler);
-
-
-    /* Parameter validation */
-
-    if (!Device)
+    if (CurrentCharPtr == 1)
     {
-        return_ACPI_STATUS (AE_BAD_PARAMETER);
-    }
-
-    Status = AcpiUtAcquireMutex (ACPI_MTX_NAMESPACE);
-    if (ACPI_FAILURE (Status))
-    {
-        return_ACPI_STATUS (Status);
-    }
-
-    /* Convert and validate the device handle */
-
-    Node = AcpiNsValidateHandle (Device);
-    if (!Node ||
-        ((Node->Type != ACPI_TYPE_DEVICE)    &&
-         (Node->Type != ACPI_TYPE_PROCESSOR) &&
-         (Node->Type != ACPI_TYPE_THERMAL)   &&
-         (Node != AcpiGbl_RootNode)))
-    {
-        Status = AE_BAD_PARAMETER;
-        goto UnlockAndExit;
-    }
-
-    /* Make sure the internal object exists */
-
-    ObjDesc = AcpiNsGetAttachedObject (Node);
-    if (!ObjDesc)
-    {
-        Status = AE_NOT_EXIST;
-        goto UnlockAndExit;
-    }
-
-    /* Find the address handler the user requested */
-
-    HandlerObj = ObjDesc->CommonNotify.Handler;
-    LastObjPtr = &ObjDesc->CommonNotify.Handler;
-    while (HandlerObj)
-    {
-        /* We have a handler, see if user requested this one */
-
-        if (HandlerObj->AddressSpace.SpaceId == SpaceId)
+        if (AcpiGbl_Optind >= argc ||
+            argv[AcpiGbl_Optind][0] != '-' ||
+            argv[AcpiGbl_Optind][1] == '\0')
         {
-            /* Handler must be the same as the installed handler */
+            return (ACPI_OPT_END);
+        }
+        else if (strcmp (argv[AcpiGbl_Optind], "--") == 0)
+        {
+            AcpiGbl_Optind++;
+            return (ACPI_OPT_END);
+        }
+    }
 
-            if (HandlerObj->AddressSpace.Handler != Handler)
-            {
-                Status = AE_BAD_PARAMETER;
-                goto UnlockAndExit;
-            }
+    /* Get the option */
 
-            /* Matched SpaceId, first dereference this in the Regions */
+    CurrentChar = argv[AcpiGbl_Optind][CurrentCharPtr];
 
-            ACPI_DEBUG_PRINT ((ACPI_DB_OPREGION,
-                "Removing address handler %p(%p) for region %s "
-                "on Device %p(%p)\n",
-                HandlerObj, Handler, AcpiUtGetRegionName (SpaceId),
-                Node, ObjDesc));
+    /* Make sure that the option is legal */
 
-            RegionObj = HandlerObj->AddressSpace.RegionList;
+    if (CurrentChar == ':' ||
+       (OptsPtr = strchr (opts, CurrentChar)) == NULL)
+    {
+        ACPI_OPTION_ERROR ("Illegal option: -", CurrentChar);
 
-            /* Walk the handler's region list */
-
-            while (RegionObj)
-            {
-                /*
-                 * First disassociate the handler from the region.
-                 *
-                 * NOTE: this doesn't mean that the region goes away
-                 * The region is just inaccessible as indicated to
-                 * the _REG method
-                 */
-                AcpiEvDetachRegion (RegionObj, TRUE);
-
-                /*
-                 * Walk the list: Just grab the head because the
-                 * DetachRegion removed the previous head.
-                 */
-                RegionObj = HandlerObj->AddressSpace.RegionList;
-
-            }
-
-            /* Remove this Handler object from the list */
-
-            *LastObjPtr = HandlerObj->AddressSpace.Next;
-
-            /* Now we can delete the handler object */
-
-            AcpiUtRemoveReference (HandlerObj);
-            goto UnlockAndExit;
+        if (argv[AcpiGbl_Optind][++CurrentCharPtr] == '\0')
+        {
+            AcpiGbl_Optind++;
+            CurrentCharPtr = 1;
         }
 
-        /* Walk the linked list of handlers */
-
-        LastObjPtr = &HandlerObj->AddressSpace.Next;
-        HandlerObj = HandlerObj->AddressSpace.Next;
+        return ('?');
     }
 
-    /* The handler does not exist */
+    /* Option requires an argument? */
 
-    ACPI_DEBUG_PRINT ((ACPI_DB_OPREGION,
-        "Unable to remove address handler %p for %s(%X), DevNode %p, obj %p\n",
-        Handler, AcpiUtGetRegionName (SpaceId), SpaceId, Node, ObjDesc));
+    if (*++OptsPtr == ':')
+    {
+        if (argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)] != '\0')
+        {
+            AcpiGbl_Optarg = &argv[AcpiGbl_Optind++][(int) (CurrentCharPtr+1)];
+        }
+        else if (++AcpiGbl_Optind >= argc)
+        {
+            ACPI_OPTION_ERROR (
+                "Option requires an argument: -", CurrentChar);
 
-    Status = AE_NOT_EXIST;
+            CurrentCharPtr = 1;
+            return ('?');
+        }
+        else
+        {
+            AcpiGbl_Optarg = argv[AcpiGbl_Optind++];
+        }
 
-UnlockAndExit:
-    (void) AcpiUtReleaseMutex (ACPI_MTX_NAMESPACE);
-    return_ACPI_STATUS (Status);
+        CurrentCharPtr = 1;
+    }
+
+    /* Option has an optional argument? */
+
+    else if (*OptsPtr == '+')
+    {
+        if (argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)] != '\0')
+        {
+            AcpiGbl_Optarg = &argv[AcpiGbl_Optind++][(int) (CurrentCharPtr+1)];
+        }
+        else if (++AcpiGbl_Optind >= argc)
+        {
+            AcpiGbl_Optarg = NULL;
+        }
+        else
+        {
+            AcpiGbl_Optarg = argv[AcpiGbl_Optind++];
+        }
+
+        CurrentCharPtr = 1;
+    }
+
+    /* Option has optional single-char arguments? */
+
+    else if (*OptsPtr == '^')
+    {
+        if (argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)] != '\0')
+        {
+            AcpiGbl_Optarg = &argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)];
+        }
+        else
+        {
+            AcpiGbl_Optarg = "^";
+        }
+
+        AcpiGbl_SubOptChar = AcpiGbl_Optarg[0];
+        AcpiGbl_Optind++;
+        CurrentCharPtr = 1;
+    }
+
+    /* Option has a required single-char argument? */
+
+    else if (*OptsPtr == '|')
+    {
+        if (argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)] != '\0')
+        {
+            AcpiGbl_Optarg = &argv[AcpiGbl_Optind][(int) (CurrentCharPtr+1)];
+        }
+        else
+        {
+            ACPI_OPTION_ERROR (
+                "Option requires a single-character suboption: -",
+                CurrentChar);
+
+            CurrentCharPtr = 1;
+            return ('?');
+        }
+
+        AcpiGbl_SubOptChar = AcpiGbl_Optarg[0];
+        AcpiGbl_Optind++;
+        CurrentCharPtr = 1;
+    }
+
+    /* Option with no arguments */
+
+    else
+    {
+        if (argv[AcpiGbl_Optind][++CurrentCharPtr] == '\0')
+        {
+            CurrentCharPtr = 1;
+            AcpiGbl_Optind++;
+        }
+
+        AcpiGbl_Optarg = NULL;
+    }
+
+    return (CurrentChar);
 }
-
-ACPI_EXPORT_SYMBOL (AcpiRemoveAddressSpaceHandler)

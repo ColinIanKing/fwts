@@ -412,7 +412,7 @@ static int hpet_check_test4(fwts_framework *fw)
 	}
 
 	hpet_base_v = fwts_mmap(hpet_base_p, HPET_REG_SIZE);
-	if (hpet_base_v == NULL) {
+	if (hpet_base_v == FWTS_MAP_FAILED) {
 		fwts_log_error(fw, "Cannot mmap to /dev/mem.");
 		return FWTS_ERROR;
 	}

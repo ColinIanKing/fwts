@@ -110,7 +110,7 @@ static void pcc_check_pcc_header(
 	fwts_pcc_header *hdr;
 
 	hdr = (fwts_pcc_header *)fwts_mmap((off_t)addr, (size_t)length);
-	if (hdr == NULL) {
+	if (hdr == FWTS_MAP_FAILED) {
 		fwts_log_info(fw, "Failed to memory map PCC header 0x%" PRIx64
 			"..0x%" PRIx64 ".", addr, addr + length);
 		return;

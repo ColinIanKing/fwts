@@ -547,7 +547,10 @@ static int syntaxcheck_table(
 							fwts_failed(fw, LOG_LEVEL_HIGH, label, "Assembler error in line %d", num);
 							break;
 						case ASL_REMARK:
-							fwts_failed(fw, LOG_LEVEL_LOW, label, "Assembler remark in line %d", num);
+							if (syntaxcheck_error_code_to_error_number(error_code) == ASL_MSG_COMPILER_RESERVED)
+								fwts_log_info(fw, "Assembler remark in line %d", num);
+							else
+								fwts_failed(fw, LOG_LEVEL_LOW, label, "Assembler remark in line %d", num);
 							break;
 						case ASL_OPTIMIZATION:
 							skip = true;

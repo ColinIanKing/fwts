@@ -1171,7 +1171,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x22);
 			if (hdr->length < 0x28)
 				break;
-			if (GET_UINT16(data + 0x26) & 0xf0)
+			if (GET_UINT16(data + 0x26) & 0xff00)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
 					"Reserved bits 0x%4.4" PRIx16 " was used"
 					"bits 8..15 would be reserved while accessing entry '%s' @ "

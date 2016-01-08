@@ -146,6 +146,7 @@ Utilities:
  cmosdump        Dump CMOS Memory.
  crsdump         Dump ACPI _CRS resources.
  ebdadump        Dump EBDA region.
+ esrtdump        Dump ESRT table.
  gpedump         Dump GPEs.
  memmapdump      Dump system memory map.
  mpdump          Dump MultiProcessor Data.

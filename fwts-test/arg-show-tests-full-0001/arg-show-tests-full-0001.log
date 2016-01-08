@@ -718,6 +718,8 @@ Utilities:
   Dump ACPI _CRS (Current Resource Settings).
  ebdadump        (1 test):
   Dump EBDA region.
+ esrtdump        (1 test):
+  Dump ESRT Table.
  gpedump         (1 test):
   Dump GPEs.
  memmapdump      (1 test):

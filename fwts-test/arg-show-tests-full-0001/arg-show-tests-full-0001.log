@@ -63,7 +63,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (190 tests):
+ method          (191 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -151,6 +151,7 @@ ACPI tests:
   Test _PPC (Performance Present Capabilities).
   Test _PPE (Polling for Platform Error).
   Test _PSD (Power State Dependencies).
+  Test _PTC (Processor Throttling Control).
   Test _TDL (T-State Depth Limit).
   Test _TPC (Throttling Present Capabilities).
   Test _TSD (Throttling State Dependencies).
@@ -399,7 +400,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (190 tests):
+ method          (191 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -487,6 +488,7 @@ Batch tests:
   Test _PPC (Performance Present Capabilities).
   Test _PPE (Polling for Platform Error).
   Test _PSD (Power State Dependencies).
+  Test _PTC (Processor Throttling Control).
   Test _TDL (T-State Depth Limit).
   Test _TPC (Throttling Present Capabilities).
   Test _TSD (Throttling State Dependencies).

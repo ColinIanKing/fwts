@@ -38,5 +38,5 @@ if [ $cols -ne 0 ]; then
 fi
 tset 2> /dev/null
 
-rm $TMPLOG
+rm $TMPLOG ${TMPLOG}.orig
 exit $ret

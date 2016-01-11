@@ -35,5 +35,5 @@ fi
 stty cols 80 2> /dev/null
 tset 2> /dev/null
 
-rm $TMPLOG
+rm $TMPLOG ${TMPLOG}.orig
 exit $ret

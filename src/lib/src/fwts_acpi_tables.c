@@ -875,7 +875,7 @@ static int fwts_acpi_load_tables_from_file(fwts_framework *fw)
 
 	fwts_acpi_load_tables_from_file_generic(fw, fw->acpi_table_path, ".dat", &count);
 	if (count == 0) {
-		fwts_log_error(fw, "Could not find any APCI tables in directory '%s'.\n", fw->acpi_table_path);
+		fwts_log_error(fw, "Could not find any ACPI tables in directory '%s'.\n", fw->acpi_table_path);
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;
@@ -1116,7 +1116,7 @@ static int fwts_acpi_load_tables_from_sysfs(fwts_framework *fw)
 	fwts_acpi_load_tables_from_file_generic(fw, "/sys/firmware/acpi/tables/dynamic", "", &count);
 	total += count;
 	if (total == 0) {
-		fwts_log_error(fw, "Could not find any APCI tables in directory '/sys/firmware/acpi/tables'.\n");
+		fwts_log_error(fw, "Could not find any ACPI tables in directory '/sys/firmware/acpi/tables'.\n");
 		return FWTS_ERROR;
 	}
 	return FWTS_OK;

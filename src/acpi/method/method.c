@@ -31,7 +31,7 @@
 /*
  * ACPI methods + objects used in Linux ACPI driver:
  *
- * Name	 APCI Spec.	Tested
+ * Name	 ACPI Spec.	Tested
  *	 section
  * _ACx  11.4.1		Y
  * _ADR  6.1.1, B.6.1,	Y

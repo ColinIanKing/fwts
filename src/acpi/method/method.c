@@ -177,7 +177,7 @@
  * _PSS  8.4.4.2	Y
  * _PSV  11.4.9		Y
  * _PSW  7.2.12		Y
- * _PTC  8.4.3.1	N
+ * _PTC  8.4.3.1	Y
  * _PTP  10.4.2		n/a
  * _PTS  7.3.2		Y
  * _PUR  8.5.11		Y
@@ -3721,6 +3721,61 @@ static int method_test_PDL(fwts_framework *fw)
 		"_PDL", NULL, 0, method_test_integer_return, NULL);
 }
 
+
+static void method_test_PTC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PTC", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_PTC", obj, 2) != FWTS_OK)
+		return;
+
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_RESOURCE *resource;
+		ACPI_STATUS   status;
+		ACPI_OBJECT *element_buf = &obj->Package.Elements[i];
+
+		status = AcpiBufferToResource(element_buf->Buffer.Pointer, element_buf->Buffer.Length, &resource);
+		if (ACPI_FAILURE(status)) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"Method_PTCBadElement",
+				"%s should contain only Resource Descriptors", name);
+			continue;
+		}
+
+		if (resource->Type != ACPI_RESOURCE_TYPE_GENERIC_REGISTER) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"Method_PTCBadElement",
+				"%s should contain only Resource Type 16, got %" PRIu32 "\n",
+					name, resource->Type);
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PTC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PTC", NULL, 0, method_test_PTC_return, NULL);
+}
+
 static int method_test_TDL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -6584,7 +6639,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PPC, "Test _PPC (Performance Present Capabilities)." },
 	{ method_test_PPE, "Test _PPE (Polling for Platform Error)." },
 	{ method_test_PSD, "Test _PSD (Power State Dependencies)." },
-	/* { method_test_PTC, "Test _PTC (Processor Throttling Control)." }, */
+	{ method_test_PTC, "Test _PTC (Processor Throttling Control)." },
 	{ method_test_TDL, "Test _TDL (T-State Depth Limit)." },
 	{ method_test_TPC, "Test _TPC (Throttling Present Capabilities)." },
 	{ method_test_TSD, "Test _TSD (Throttling State Dependencies)." },

@@ -163,7 +163,7 @@
  * _PRL  10.3.4		Y
  * _PRR  7.3.26		Y
  * _PRS  6.2.11		Y
- * _PRT  6.2.12		N
+ * _PRT  6.2.12		Y
  * _PRW  7.2.11		Y
  * _PS0  7.2.2		Y
  * _PS1  7.2.3		Y
@@ -2247,6 +2247,94 @@ static int method_test_PRS(fwts_framework *fw)
 	/* Re-use the _CRS checking on the returned buffer */
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_PRS", NULL, 0, method_test_CRS_return, "_PRS");
+}
+
+static void method_test_PRT_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, j;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_PRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		ACPI_OBJECT *element;
+		pkg = &obj->Package.Elements[i];
+
+		/* check size of sub-packages */
+		if (pkg->Package.Count != 4) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_PRTSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to have 4"
+				"elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		/* check types of sub-packages' elements */
+		for (j = 0; j < 4; j++) {
+			element = &pkg->Package.Elements[j];
+
+			if (j == 2) {
+				if (element->Type != ACPI_TYPE_INTEGER && element->Type != ACPI_TYPE_LOCAL_REFERENCE) {
+					fwts_failed(fw, LOG_LEVEL_CRITICAL,
+						"Method_PRTBadSubElementType",
+						"%s element %" PRIu32 " is not an integer or a NamePath.", name, j);
+					failed = true;
+				}
+				continue;
+			}
+
+			if (element->Type != ACPI_TYPE_INTEGER) {
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"Method_PRTBadSubElementType",
+					"%s element %" PRIu32 " is not an integer.", name, j);
+				failed = true;
+			}
+		}
+
+		/* check sub-packages's PCI address */
+		element = &pkg->Package.Elements[0];
+		if ((element->Integer.Value & 0xFFFF) != 0xFFFF) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_PRTBadSubElement",
+				"%s element 0 is expected to end with 0xFFFF, got 0x%" PRIx32 ".",
+				name, (uint32_t) element->Integer.Value);
+			failed = true;
+		}
+
+		/* check sub-packages's PCI pin number */
+		element = &pkg->Package.Elements[1];
+		if (element->Integer.Value > 3) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"Method_PRTBadSubElement",
+				"%s element 1 is expected to be 0..3, got 0x%" PRIx32 ".",
+				name, (uint32_t) element->Integer.Value);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PRT(fwts_framework *fw)
+{
+	/* Re-use the _CRS checking on the returned buffer */
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PRT", NULL, 0, method_test_PRT_return, "_PRT");
 }
 
 static int method_test_DMA(fwts_framework *fw)
@@ -6652,6 +6740,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_HPX, "Test _HPX (Hot Plug Extensions)." }, */
 	/* { method_test_MAT, "Test _MAT (Multiple APIC Table Entry)." }, */
 	{ method_test_PRS, "Test _PRS (Possible Resource Settings)." },
+	{ method_test_PRT, "Test _PRT (PCI Routing Table)." },
 	{ method_test_PXM, "Test _PXM (Proximity)." },
 	/* { method_test_SLI, "Test _SLI (System Locality Information)." }, */
 	/* { method_test_SRS, "Test _SRS (Set Resource Settings)." }, */

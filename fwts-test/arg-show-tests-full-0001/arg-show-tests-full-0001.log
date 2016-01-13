@@ -63,7 +63,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (191 tests):
+ method          (193 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -88,6 +88,7 @@ ACPI tests:
   Test _GSB (Global System Interrupt Base).
   Test _HPP (Hot Plug Parameters).
   Test _PRS (Possible Resource Settings).
+  Test _PRT (PCI Routing Table).
   Test _PXM (Proximity).
   Test _CCA (Cache Coherency Attribute).
   Test _EDL (Eject Device List).
@@ -197,6 +198,7 @@ ACPI tests:
   Test _PSR (Power Source).
   Test _GAI (Get Averaging Level).
   Test _GHL (Get Harware Limit).
+  Test _PMC (Power Meter Capabilities).
   Test _PMD (Power Meter Devices).
   Test _PMM (Power Meter Measurement).
   Test _FIF (Fan Information).
@@ -400,7 +402,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (191 tests):
+ method          (193 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -425,6 +427,7 @@ Batch tests:
   Test _GSB (Global System Interrupt Base).
   Test _HPP (Hot Plug Parameters).
   Test _PRS (Possible Resource Settings).
+  Test _PRT (PCI Routing Table).
   Test _PXM (Proximity).
   Test _CCA (Cache Coherency Attribute).
   Test _EDL (Eject Device List).
@@ -534,6 +537,7 @@ Batch tests:
   Test _PSR (Power Source).
   Test _GAI (Get Averaging Level).
   Test _GHL (Get Harware Limit).
+  Test _PMC (Power Meter Capabilities).
   Test _PMD (Power Meter Devices).
   Test _PMM (Power Meter Measurement).
   Test _FIF (Fan Information).

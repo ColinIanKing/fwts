@@ -1,10 +1,52 @@
+fwts (16.01.00-0ubuntu1) xenial; urgency=low
+
+  [Alex Hung]
+  * Fix spelling mistakes of "ACPI"
+  * method: update method status
+  * acpi: method: add _PTC test
+  * fwts-test: update for ACPI method _PTC test
+  * fwts-test: arg-help-0001: remove TMPLOG.orig files
+
+  [Colin Ian King]
+  * utilities: kernelscan: fix memory leaks and a segfault
+  * acpi: cstates: fix clang build warning on zero CPUs.
+  * acpi: s3, s3power, s4: replace cleanup free with explicit frees
+  * data: klog.json: add in some more kernel error messages for 4.4
+    (LP: #1526746)
+  * ACPICA: Update to version 20151218 (LP: #1527733)
+  * fwts-test: keep test results in-sync with latest ACPICA output
+  * acpi: hpet: fwts_mmap failure is FWTS_MAP_FAILED and not NULL
+  * acpi: pcc: fwts_mmap failure is FWTS_MAP_FAILED and not NULL
+  * bios: ebdadump: fwts_mmap failure is FWTS_MAP_FAILED and not MAP_FAILED
+  * acpi: syntaxcheck: ASL_MSG_COMPILER_RESERVED failure should be an info
+    (LP: #1529717)
+  * Update copyright year to 2016
+  * fwts-test: sync arg-help with copyright year changes
+  * ACPICA: Update to version 20160108 (LP: #1532268)
+
+  [Fan Wu]
+  * dmi: dmicheck: fix reserved bits mask for Processor Information
+
+  [Ivan Hu]
+  * uefidump: add dumping global variabl AuditMode
+  * uefidump: add dumping global variabl DeployedMode
+  * uefidump: add dumping global variable OsRecoveryOrder
+  * uefidump: add dumping global variable PlatformRecovery####
+  * uefidump: add dumping global variable SysPrepOrder
+  * uefidump: add dumping global variable SysPrep####
+  * uefirtvariable: fix decalred VLA have zero size (LP: #1526815)
+  * esrtdump: add dumping for esrt table (LP: #1532103)
+  * fwts-test: sync up with esrtdump changes
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 13 Jan 2016 16:12:49 +0800
+
 fwts (15.12.00-0ubuntu1) xenial; urgency=low
 
- [Alex Hung]
+  [Alex Hung]
   * acpi: fpdt: add a terminate for buggy BIOS that reports zero length
   * live-image/fwts-frontend-text: add a selection for recommended
 
- [Colin Ian King]
+  [Colin Ian King]
   * lib: klog: remove use of pcre, use regex instead
   * utilities: kernelscan: remove use of pcre, use regex instead
   * uefidump: add more bounds checking and remove need for heap
@@ -35,7 +77,7 @@ fwts (15.12.00-0ubuntu1) xenial; urgency=low
   * lib: fwts_acpi_tables: remove redundant store to xsdt
   * lib: fwts_acpi_tables: check table to avoid dereferencing NULL ptr
 
- [Ivan Hu]
+  [Ivan Hu]
   * lib: fwts_uefi: add SD device path define
   * uefibootpath: add test for the SD device path
   * uefidump: add dumping for the SD device path
@@ -50,7 +92,7 @@ fwts (15.12.00-0ubuntu1) xenial; urgency=low
   * uefidump: add dumping for the ramdisk device path
   * uefibootpath: fix the wrong type for relative offset range path
 
- [Jiri Vohanka]
+  [Jiri Vohanka]
   * lib: fwts_acpi_table: Fix FADT update in creation of fake FACS table.
 
  -- Alex Hung <alex.hung@ubuntu.com>  Wed, 16 Dec 2015 15:08:32 +0800

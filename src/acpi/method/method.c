@@ -149,7 +149,7 @@
  * _PIC  5.8.1		Y
  * _PIF  10.3.3		Y
  * _PLD  6.1.8		Y
- * _PMC  10.4.1		N
+ * _PMC  10.4.1		Y
  * _PMD  10.4.8		Y
  * _PMM  10.4.3		Y
  * _PPC  8.4.4.3	Y
@@ -5225,6 +5225,106 @@ static int method_test_GHL(fwts_framework *fw)
 		"_GHL", NULL, 0, method_test_integer_return, NULL);
 }
 
+static void method_test_PMC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+	ACPI_OBJECT *element;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_equal(fw, name, "_PMC", obj, 14) != FWTS_OK)
+		return;
+
+	/* check element types */
+	for (i = 0; i < 14; i++) {
+		element = &obj->Package.Elements[i];
+		if (i > 10) {
+			if (element->Type != ACPI_TYPE_STRING) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"Method_PMCBadElementType",
+					"%s element %" PRIu32 " is not a string.", name, i);
+				failed = true;
+			}
+		} else {
+				if (element->Type != ACPI_TYPE_INTEGER) {
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"Method_PMCBadElementType",
+						"%s element %" PRIu32 " is not an integer.", name, i);
+					failed = true;
+				}
+		}
+	}
+
+	/* check element's constraints */
+	element = &obj->Package.Elements[0];
+	if (element->Integer.Value & 0xFFFFFEF0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PMCBadElement",
+			"%s element 0 has reserved bits that are non-zero, got "
+			"0x%" PRIx32 " and expected 0 for these field. ", name,
+			(uint32_t) element->Integer.Value);
+		failed = true;
+	}
+
+	element = &obj->Package.Elements[1];
+	if (element->Integer.Value != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PMCBadElement",
+			"%s element 1 is expected to be 0, got 0x%" PRIx32 ".",
+			name, (uint32_t) element->Integer.Value);
+		failed = true;
+	}
+
+	element = &obj->Package.Elements[2];
+	if (element->Integer.Value != 0 && element->Integer.Value != 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PMCBadElement",
+			"%s element 2 is expected to be 0 or 1, got 0x%" PRIx32 ".",
+			name, (uint32_t) element->Integer.Value);
+		failed = true;
+	}
+
+	element = &obj->Package.Elements[3];
+	if (element->Integer.Value > 100000) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PMCBadElement",
+			"%s element 3 exceeds 100000 (100 percent) = 0x%" PRIx32 ".",
+			name, (uint32_t) element->Integer.Value);
+		failed = true;
+	}
+
+	/* nothing to check for elements 4~7 */
+
+	element = &obj->Package.Elements[8];
+	if (element->Integer.Value != 0 && element->Integer.Value != 0xFFFFFFFF) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"Method_PMCBadElement",
+			"%s element 8 is expected to be 0 or 1, got 0x%" PRIx32 ".",
+			name, (uint32_t) element->Integer.Value);
+		failed = true;
+	}
+
+	/* nothing to check for elements 9~13 */
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_PMC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_PMC", NULL, 0, method_test_PMC_return, NULL);
+}
+
 static void method_test_PMD_return(
 	fwts_framework *fw,
 	char *name,
@@ -6733,7 +6833,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GAI, "Test _GAI (Get Averaging Level)." },
 	{ method_test_GHL, "Test _GHL (Get Harware Limit)." },
 	/* { method_test_PAI, "Test _PAI (Power Averaging Interval)." }, */
-	/* { method_test_PMC, "Test _PMC (Power Meter Capabilities)." }, */
+	{ method_test_PMC, "Test _PMC (Power Meter Capabilities)." },
 	{ method_test_PMD, "Test _PMD (Power Meter Devices)." },
 	{ method_test_PMM, "Test _PMM (Power Meter Measurement)." },
 	/* { method_test_PTP, "Test _PTP (Power Trip Points)." }, */

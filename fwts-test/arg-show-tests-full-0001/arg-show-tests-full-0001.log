@@ -673,11 +673,12 @@ Batch tests:
   CPU Virtualisation Configuration test.
  waet            (1 test):
   Windows ACPI Emulated Devices Table test.
- wakealarm       (4 tests):
+ wakealarm       (5 tests):
   Test existence of RTC with alarm interface.
   Trigger wakealarm for 1 seconds in the future.
   Test if wakealarm is fired.
   Multiple wakealarm firing tests.
+  Reset wakealarm time.
  wdat            (1 test):
   WDAT Microsoft Hardware Watchdog Action Table test.
  wmi             (1 test):

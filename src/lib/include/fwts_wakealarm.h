@@ -20,11 +20,15 @@
 #ifndef __FWTS_WAKEALARM_H__
 #define __FWTS_WAKEALARM_H__
 
+#include <linux/rtc.h>
+
 #include "fwts_framework.h"
 
 int fwts_wakealarm_exits(fwts_framework *fw);
 int fwts_wakealarm_test_firing(fwts_framework *fw, const int sleep);
 int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds);
 int fwts_wakealarm_cancel(fwts_framework *fw);
+int fwts_wakealarm_get(fwts_framework *fw, struct rtc_time *rtc_tm);
+int fwts_wakealarm_set(fwts_framework *fw, struct rtc_time *rtc_tm);
 
 #endif

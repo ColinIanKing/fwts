@@ -24,12 +24,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <linux/rtc.h>
+
+static struct rtc_time rtc_tm;
 
 static int wakealarm_test1(fwts_framework *fw)
 {
-	if (fwts_wakealarm_exits(fw) == FWTS_OK)
+	if (fwts_wakealarm_get(fw, &rtc_tm) == FWTS_OK) {
 		fwts_passed(fw, "RTC with a RTC alarm ioctl() interface found.");
-	else {
+	} else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoWakeAlarmTest1",
 			"Could not find an RTC with an alarm ioctl() interface.");
 #ifdef FWTS_ARCH_INTEL
@@ -46,7 +49,6 @@ static int wakealarm_test1(fwts_framework *fw)
 #endif
 		return FWTS_ABORTED;
 	}
-
 	return FWTS_OK;
 }
 
@@ -114,11 +116,52 @@ static int wakealarm_test4(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int wakealarm_test5(fwts_framework *fw)
+{
+	struct rtc_time rtc_now;
+
+	if (fwts_wakealarm_set(fw, &rtc_tm) == FWTS_OK) {
+		fwts_passed(fw, "RTC wakealarm set.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"WakeAlarmNotResetTest5",
+			"RTC wakealarm failed to be reset back to original state.");
+		return FWTS_ERROR;
+	}
+
+	if (fwts_wakealarm_get(fw, &rtc_now) == FWTS_OK) {
+		if (rtc_now.tm_year == rtc_tm.tm_year &&
+		    rtc_now.tm_mon  == rtc_tm.tm_mon &&
+		    rtc_now.tm_mday == rtc_tm.tm_mday &&
+		    rtc_now.tm_hour == rtc_tm.tm_hour &&
+		    rtc_now.tm_min  == rtc_tm.tm_min &&
+		    rtc_now.tm_sec  == rtc_tm.tm_sec) {
+			fwts_passed(fw, "RTC wakealarm reset correctly back to "
+				"%d/%d/%d %2.2d:%2.2d:%2.2d.",
+					rtc_tm.tm_mday, rtc_tm.tm_mon + 1,
+					rtc_tm.tm_year + 1900, rtc_tm.tm_hour,
+					rtc_tm.tm_min, rtc_tm.tm_sec);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"WakeAlarmNotResetTest5",
+				"RTC wakealarm failed to be reset back to original time.");
+			return FWTS_ERROR;
+		}
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"WakeAlarmNotReadTest5",
+			"RTC wakealarm failed to be read to verify original time.");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test wakealarm_tests[] = {
 	{ wakealarm_test1, "Test existence of RTC with alarm interface." },
 	{ wakealarm_test2, "Trigger wakealarm for 1 seconds in the future." },
 	{ wakealarm_test3, "Test if wakealarm is fired." },
 	{ wakealarm_test4, "Multiple wakealarm firing tests." },
+	{ wakealarm_test5, "Reset wakealarm time." },
 	{ NULL, NULL }
 };
 

@@ -30,7 +30,53 @@
 
 #include "fwts.h"
 
-static char *fwts_rtc = "/dev/rtc0";
+static const char *fwts_rtc = "/dev/rtc0";
+
+/*
+ *  fwts_wakealarm_get()
+ *	get wakealarm
+ */
+int fwts_wakealarm_get(fwts_framework *fw, struct rtc_time *rtc_tm)
+{
+	int fd;
+	int ret = FWTS_OK;
+
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
+		return FWTS_ERROR;
+	}
+
+	if (ioctl(fd, RTC_ALM_READ, rtc_tm) < 0) {
+		fwts_log_error(fw, "Cannot read Real Time Clock Alarm with ioctl RTC_ALM_READ %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+	(void)close(fd);
+
+	return ret;
+}
+
+/*
+ *  fwts_wakealarm_set()
+ *	set wakealarm
+ */
+int fwts_wakealarm_set(fwts_framework *fw, struct rtc_time *rtc_tm)
+{
+	int fd;
+	int ret = FWTS_OK;
+
+	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
+		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
+		return FWTS_ERROR;
+	}
+
+	if (ioctl(fd, RTC_ALM_SET, rtc_tm) < 0) {
+		fwts_log_error(fw, "Cannot set Real Time Clock Alarm with ioctl RTC_ALM_SET %s.", fwts_rtc);
+		ret = FWTS_ERROR;
+	}
+	(void)close(fd);
+
+	return ret;
+}
 
 /*
  *  fwts_wakealarm_exits()
@@ -38,22 +84,9 @@ static char *fwts_rtc = "/dev/rtc0";
  */
 int fwts_wakealarm_exits(fwts_framework *fw)
 {
-	int fd;
-	int ret = FWTS_OK;
 	struct rtc_time rtc_tm;
 
-	if ((fd = open(fwts_rtc, O_RDWR)) < 0) {
-		fwts_log_error(fw, "Cannot access Real Time Clock device %s.", fwts_rtc);
-		return FWTS_ERROR;
-	}
-
-	if (ioctl(fd, RTC_ALM_READ, &rtc_tm) < 0) {
-		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
-		ret = FWTS_ERROR;
-	}
-	(void)close(fd);
-
-	return ret;
+	return fwts_wakealarm_get(fw, &rtc_tm);
 }
 
 /*
@@ -116,7 +149,7 @@ int fwts_wakealarm_cancel(fwts_framework *fw)
 	}
 
 	if (ioctl(fd, RTC_AIE_OFF, 0) < 0) {
-		fwts_log_error(fw, "Cannot read Real Time Clock with ioctl RTC_RD_TIME %s.", fwts_rtc);
+		fwts_log_error(fw, "Cannot cancel Real Time Clock Alarm with ioctl RTC_AIE_OFF %s.", fwts_rtc);
 		ret = FWTS_ERROR;
 	}
 	(void)close(fd);

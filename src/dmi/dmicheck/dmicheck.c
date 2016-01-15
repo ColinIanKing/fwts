@@ -332,6 +332,13 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 	void *mem;
 	char anchor[8];
 
+	/* 32 bit entry sanity check on length */
+	if ((length == 0) || (length > 0xffff)) {
+		fwts_log_info(fw, "SMBIOS table size of %zu bytes looks "
+			"suspicious",  length);
+		return NULL;
+	}
+
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {
 		table = malloc(length);
@@ -365,6 +372,13 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 	void *table;
 	void *mem;
 	char anchor[8];
+
+	/* 64 bit entry sanity check on length */
+	if ((length == 0) || (length > 0xffffff)) {
+		fwts_log_info(fw, "SMBIOS table size of %zu bytes looks "
+			"suspicious",  length);
+		return NULL;
+	}
 
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {

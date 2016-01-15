@@ -284,6 +284,7 @@ void fwts_args_show_options(void)
 		char buffer[80];
 		char *ptr = buffer;
 		fwts_option *option = fwts_list_data(fwts_option *, item);
+		size_t n = sizeof(buffer) - 1;
 
 		/* Format up short name, skip over : fields */
 		*ptr = '\0';
@@ -296,11 +297,14 @@ void fwts_args_show_options(void)
 					*ptr++ = ',';
 					*ptr++ = ' ';
 					*ptr = '\0';
+					n -= 4;
 				}
 			}
 		}
-		strcat(ptr, "--");
-		strcat(ptr, option->long_name);
+		*ptr++ = '-';
+		*ptr++ = '-';
+		*ptr = '\0';
+		strncat(ptr, option->long_name, n - 2);
 
 		fwts_args_show_option(width, buffer, option->explanation);
 	}

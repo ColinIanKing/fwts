@@ -720,15 +720,19 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
  */
 static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 {
-	uint8_t *ptr = NULL;
+	uint8_t *ptr = NULL, *tmp;
 	size_t size = 0;
 	char buffer[4096];
 
 	*length = 0;
 
+	/*
+	 *  read table into buffer in the normal heap
+	 *  so we don't have to do expensive fwts_low_reallocs
+	 *  per iteration on long tables
+	 */
 	for (;;) {
 		ssize_t n = read(fd, buffer, sizeof(buffer));
-		uint8_t *tmp;
 
 		if (n == 0)
 			break;
@@ -740,11 +744,11 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 			continue;
 		}
 		if (n > (ssize_t)sizeof(buffer))
-			goto too_big;	/* Unlikely */
+			goto err;	/* Unlikely */
 		if (size + n > 0xffffffff)
-			goto too_big;	/* Very unlikely */
+			goto err;	/* Very unlikely */
 
-		if ((tmp = (uint8_t*)fwts_low_realloc(ptr, size + n + 1)) == NULL) {
+		if ((tmp = (uint8_t*)realloc(ptr, size + n + 1)) == NULL) {
 			free(ptr);
 			return NULL;
 		}
@@ -752,10 +756,19 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 		memcpy(ptr + size, buffer, n);
 		size += n;
 	}
-	*length = size;
-	return ptr;
 
-too_big:
+	/*
+	 *  ..and copy table into a 32 bit memory space buffer
+	 */
+	if ((tmp = fwts_low_malloc(size)) == NULL)
+		goto err;
+
+	*length = size;
+	memcpy(tmp, ptr, size);
+	free(ptr);
+	return tmp;
+
+err:
 	free(ptr);
 	*length = 0;
 	return NULL;

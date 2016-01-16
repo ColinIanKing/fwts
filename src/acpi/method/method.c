@@ -183,7 +183,7 @@
  * _PUR  8.5.11		Y
  * _PXM  6.2.13 	Y
  * _Qxx  5.6.4.1	n/a
- * _RDI  8.5		N
+ * _RDI  8.5		Y
  * _REG  6.5.4		n/a
  * _REV  5.7.4		n/a
  * _RMV  6.3.6		Y
@@ -4120,6 +4120,69 @@ static int method_test_TSS(fwts_framework *fw)
 }
 
 /*
+ * Section 8.4.4 Lower Power Idle States
+*/
+
+static void method_test_RDI_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, j;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* First element is Revision */
+	if (obj->Package.Elements[0].Integer.Value != 0) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_RDIBadID",
+			"%s: Expected Revision to be 0, "
+			"got 0x%4.4" PRIx64 ".", name,
+			(uint64_t)obj->Package.Elements[0].Integer.Value);
+		failed = true;
+	}
+
+	/* The rest of elements are packages with references */
+	for (i = 1; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg;
+		pkg = &obj->Package.Elements[i];
+
+		if (pkg->Type != ACPI_TYPE_PACKAGE) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+				"Method_RDIBadElementType",
+				"%s element %" PRIu32 " is not a package.", name, i);
+			failed = true;
+			continue;
+		}
+
+		for (j = 0; j < pkg->Package.Count; j++) {
+			if (pkg->Package.Elements[j].Type != ACPI_TYPE_LOCAL_REFERENCE) {
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_RDIBadESublementType",
+					"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+					"a Reference.", name, i, j);
+				failed = true;
+			}
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_RDI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_RDI", NULL, 0, method_test_RDI_return, NULL);
+}
+
+/*
  * Section 8.5 Processor Aggregator Device
  */
 
@@ -6833,6 +6896,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TPC, "Test _TPC (Throttling Present Capabilities)." },
 	{ method_test_TSD, "Test _TSD (Throttling State Dependencies)." },
 	{ method_test_TSS, "Test _TSS (Throttling Supported States)." },
+
+	/* Section 8.4.4 Lower Power Idle States */
+	{ method_test_RDI, "Test _RDI (Resource Dependencies for Idle)." },
 
 	/* Section 8.5 Processor Aggregator Device */
 	{ method_test_PUR, "Test _PUR (Processor Utilization Request)." },

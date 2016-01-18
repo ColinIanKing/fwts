@@ -127,7 +127,7 @@
  * _Lxx  5.6.4.1	n/a
  * _LCK  6.3.4		Y
  * _LID  9.4.1		Y
- * _LPI  8.4.4.3	N
+ * _LPI  8.4.4.3	Y
  * _MAT  6.2.9		N
  * _MBM  9.12.2.1	Y
  * _MLS  6.1.7		Y
@@ -4123,6 +4123,126 @@ static int method_test_TSS(fwts_framework *fw)
  * Section 8.4.4 Lower Power Idle States
 */
 
+static void method_test_LPI_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i, j;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_count_min(fw, name, "_LPI", obj, 3) != FWTS_OK)
+		return;
+
+	/* first 3 elements are integers, and rests are packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (i < 3) {
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_LPIBadElementType",
+					"%s element %" PRIu32 " is not an integer.", name, i);
+				failed = true;
+				continue;
+			}
+
+			if (i == 0) {
+				if (obj->Package.Elements[i].Integer.Value != 0) {
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"Method_LPIBadRevision",
+						"%s: Expected Revision to be 0, "
+						"got 0x%4.4" PRIx64 ".", name,
+						(uint64_t)obj->Package.Elements[i].Integer.Value);
+					failed = true;
+				}
+			} else if (i == 2) {
+				if (obj->Package.Elements[i].Integer.Value != obj->Package.Count - 3) {
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_LPIBadCount",
+					"%s Count reports %" PRIu32 ", but there are %" PRIu32 " sub-packages.",
+					name, (uint32_t) obj->Package.Elements[i].Integer.Value,
+					obj->Package.Count - 3);
+					failed = true;
+				}
+			}
+		} else {
+			ACPI_OBJECT *pkg;
+			if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+					"Method_LPIBadElementType",
+					"%s element %" PRIu32 " is not a package.", name, i);
+				failed = true;
+				continue;
+			}
+
+			pkg = &obj->Package.Elements[i];
+			for (j = 0; j < pkg->Package.Count; j++) {
+				switch (j) {
+				case 0 ... 5:
+					if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER) {
+						fwts_failed(fw, LOG_LEVEL_HIGH,
+							"Method_LPIBadESublementType",
+							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+							"an integer.", name, i, j);
+						failed = true;
+					}
+					break;
+				case 6:
+					if (pkg->Package.Elements[j].Type != ACPI_TYPE_INTEGER &&
+					    pkg->Package.Elements[j].Type != ACPI_TYPE_BUFFER) {
+						fwts_failed(fw, LOG_LEVEL_HIGH,
+							"Method_LPIBadESublementType",
+							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+							"a buffer or an integer.", name, i, j);
+						failed = true;
+					}
+					break;
+				case 7 ... 8:
+					if (pkg->Package.Elements[j].Type != ACPI_TYPE_BUFFER) {
+						fwts_failed(fw, LOG_LEVEL_HIGH,
+							"Method_LPIBadESublementType",
+							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+							"a buffer.", name, i, j);
+						failed = true;
+					}
+					break;
+				case 9:
+					if (pkg->Package.Elements[j].Type != ACPI_TYPE_STRING) {
+						fwts_failed(fw, LOG_LEVEL_HIGH,
+							"Method_LPIBadESublementType",
+							"%s sub-package %" PRIu32 " element %" PRIu32 " is not "
+							"a string.", name, i, j);
+						failed = true;
+					}
+					break;
+				default:
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"Method_LPIBadESublement",
+						"%s sub-package %" PRIu32 " element %" PRIu32 " should have "
+						"9 elements, got .", name, i, j+1);
+					failed = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (!failed)
+		method_passed_sane(fw, name, "package");
+}
+
+static int method_test_LPI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_LPI", NULL, 0, method_test_LPI_return, NULL);
+}
+
 static void method_test_RDI_return(
 	fwts_framework *fw,
 	char *name,
@@ -6898,6 +7018,7 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_TSS, "Test _TSS (Throttling Supported States)." },
 
 	/* Section 8.4.4 Lower Power Idle States */
+	{ method_test_LPI, "Test _LPI (Low Power Idle States)." },
 	{ method_test_RDI, "Test _RDI (Resource Dependencies for Idle)." },
 
 	/* Section 8.5 Processor Aggregator Device */

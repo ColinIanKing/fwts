@@ -26,6 +26,7 @@
 
 typedef struct fwts_framework fwts_framework;
 
+#include "fwts_arch.h"
 #include "fwts_log.h"
 #include "fwts_list.h"
 #include "fwts_acpica_mode.h"
@@ -148,6 +149,8 @@ typedef struct fwts_framework {
 	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 	void *rsdp;				/* ACPI RSDP address */
 	fwts_pm_method pm_method;
+	fwts_architecture host_arch;		/* arch FWTS was built for */
+	fwts_architecture target_arch;		/* arch being tested */
 } fwts_framework;
 
 typedef struct {

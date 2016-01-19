@@ -127,6 +127,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "acpitests",		"",   0, "Run general ACPI tests." },
 	{ "acpicompliance",	"",   0, "Run ACPI tests for spec compliance." },
 	{ "log-level",		"",   1, "Specify error level to report failed test messages," },
+	{ "arch",		"",   1, "Specify arch of the tables being tested (defaults to current host)." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1127,6 +1128,22 @@ static int fwts_framework_ll_parse(fwts_framework *fw, const char *arg)
 	return FWTS_ERROR;
 }
 
+/*
+ *  fwts_framework_an_parse()
+ *	parse arch (architecture) name option
+ */
+static int fwts_framework_an_parse(fwts_framework *fw, const char *arg)
+{
+	fw->target_arch = fwts_arch_get_arch(arg);
+	if (fw->target_arch == FWTS_ARCH_OTHER) {
+		fprintf(stderr, "--arch can be one of: %s\n",
+			fwts_arch_names());
+		return FWTS_ERROR;
+	}
+
+	return FWTS_OK;
+}
+
 int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const argv[], int option_char, int long_index)
 {
 	FWTS_UNUSED(argc);
@@ -1280,6 +1297,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			if (fwts_framework_ll_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
+		case 43: /* --arch */
+			if (fwts_framework_an_parse(fw, optarg) != FWTS_OK)
+				return FWTS_ERROR;
+			break;
 		}
 		break;
 	case 'a': /* --all */
@@ -1380,6 +1401,10 @@ int fwts_framework_args(const int argc, char **argv)
 
 	/* Set the power method to FWTS_PM_UNDEFINED before we parse arguments */
 	fw->pm_method = FWTS_PM_UNDEFINED;
+
+	/* Set host/target test architecture defaults */
+	fw->host_arch = fwts_arch_get_host();
+	fw->target_arch = fw->host_arch;
 
 	ret = fwts_args_add_options(fwts_framework_options,
 		fwts_framework_options_handler, NULL);

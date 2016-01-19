@@ -30,4 +30,8 @@ typedef enum {
 	FWTS_ARCH_OTHER
 } fwts_architecture;
 
+extern fwts_architecture fwts_arch_get_host(void);
+extern fwts_architecture fwts_arch_get_arch(const char *name);
+extern const char *fwts_arch_names(void);
+
 #endif

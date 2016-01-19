@@ -28,6 +28,7 @@ libfwts_la_SOURCES = 		\
 	fwts_acpi.c 		\
 	fwts_acpid.c 		\
 	fwts_alloc.c 		\
+	fwts_arch.c 		\
 	fwts_args.c 		\
 	fwts_backtrace.c	\
 	fwts_battery.c 		\

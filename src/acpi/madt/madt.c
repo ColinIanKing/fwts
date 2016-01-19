@@ -200,6 +200,7 @@ static fwts_acpi_table_info *mtable;
 static fwts_acpi_table_info *ftable;
 
 static fwts_list msi_frame_ids;
+static fwts_list its_ids;
 
 static int madt_init(fwts_framework *fw)
 {
@@ -261,8 +262,12 @@ static int madt_init(fwts_framework *fw)
 		ms++;
 	}
 
-	/* initialize the MSI frame ID list should we need it later */
+	/*
+	 * Initialize the MSI frame ID and ITS ID lists should we need
+	 * them later
+	 */
 	fwts_list_init(&msi_frame_ids);
+	fwts_list_init(&its_ids);
 
 	return (spec_data) ? FWTS_OK : FWTS_ERROR;
 }
@@ -1100,6 +1105,75 @@ static int madt_gicr(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static int madt_gic_its(fwts_framework *fw,
+			     fwts_acpi_madt_sub_table_header *hdr,
+			     const uint8_t *data)
+{
+	/* specific checks for subtable type 0xf: GIC ITS */
+	fwts_acpi_madt_gic_its *gic_its = (fwts_acpi_madt_gic_its *)data;
+	fwts_list_link *item;
+	bool found;
+
+	if (gic_its->reserved)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTGICITSReservedNonZero",
+			    "MADT %s first reserved field should be zero, "
+			    "instead got 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], gic_its->reserved);
+	else
+		fwts_passed(fw,
+			    "MADT %s first reserved field is properly set "
+			    "to zero.",
+			    madt_sub_names[hdr->type]);
+
+	/*
+	 * Check ITS ID against previously found IDs to see if it
+	 * is unique.  According to the spec, they must be.
+	 */
+	found = false;
+	fwts_list_foreach(item, &its_ids) {
+		uint32_t *its_id = fwts_list_data(uint32_t *, item);
+
+		if (*its_id == gic_its->its_id)
+			found = true;
+	}
+	if (found) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "SPECMADTGICITSNonUniqueId",
+			    "MADT %s ITS ID 0x%" PRIx32 " is not unique "
+			    "and has already be defined in a previous %s.",
+			    madt_sub_names[hdr->type],
+			    gic_its->its_id,
+			    madt_sub_names[hdr->type]);
+	} else {
+		fwts_list_append(&its_ids, &(gic_its->its_id));
+		fwts_passed(fw,
+			    "MADT %s ITS ID 0x%" PRIx32 " is unique "
+			    "as is required.",
+			    madt_sub_names[hdr->type],
+			    gic_its->its_id);
+	}
+
+	/*
+	 * TODO: can the physical base address be tested, or is zero
+	 * allowed?
+	 */
+
+	if (gic_its->reserved2)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "SPECMADTGICITSReserved2NonZero",
+			    "MADT %s second reserved field should be zero, "
+			    "instead got 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type], gic_its->reserved2);
+	else
+		fwts_passed(fw,
+			    "MADT %s second reserved field is properly set "
+			    "to zero.",
+			    madt_sub_names[hdr->type]);
+
+	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
+}
+
 static int madt_subtables(fwts_framework *fw)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
@@ -1248,6 +1322,10 @@ static int madt_subtables(fwts_framework *fw)
 			skip = madt_gicr(fw, hdr, data);
 			break;
 
+		case FWTS_ACPI_MADT_GIC_ITS:
+			skip = madt_gic_its(fw, hdr, data);
+			break;
+
 		default:
 			if (hdr->type >= 0x10 && hdr->type <= 0x7f)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -1278,8 +1356,9 @@ static int madt_subtables(fwts_framework *fw)
 
 static int madt_deinit(fwts_framework *fw)
 {
-	/* only one minor clean up needed */
+	/* only minor clean up needed */
 	fwts_list_free_items(&msi_frame_ids, NULL);
+	fwts_list_free_items(&its_ids, NULL);
 
 	return (fw) ? FWTS_ERROR : FWTS_OK;
 }

@@ -47,6 +47,7 @@
 #include "fwts_acpi.h"
 #include "fwts_acpi_tables.h"
 #include "fwts_acpid.h"
+#include "fwts_arch.h"
 #include "fwts_checkeuid.h"
 #include "fwts_cpu.h"
 #include "fwts_dump.h"

@@ -415,6 +415,7 @@ typedef enum {
 	FWTS_ACPI_MADT_GIC_D_GOC_DISTRIBUTOR,
 	FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME,
 	FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR,
+	FWTS_ACPI_MADT_GIC_ITS,
         FWTS_ACPI_MADT_RESERVED
 } fwts_acpi_madt_type;
 
@@ -556,6 +557,15 @@ typedef struct {
 	uint64_t	discovery_range_base_address;
 	uint32_t	discovery_range_length;
 } __attribute__ ((packed)) fwts_acpi_madt_gicr;
+
+/* New in ACPI 6.0, GIC ITS structure, 5.2.12.18 */
+/* Type 15, FWTS_ACPI_MADT_GIC_ITS */
+typedef struct {
+	uint16_t	reserved;
+	uint32_t	its_id;
+	uint64_t	physical_base_address;
+	uint32_t	reserved2;
+} __attribute__ ((packed)) fwts_acpi_madt_gic_its;
 
 /*
  * ACPI TCPA (Trusted Computing Platform Alliance Capabilities Table)

@@ -300,6 +300,55 @@ static void acpi_table_check_fadt_gpe(
 	}
 }
 
+static void acpi_table_check_fadt_addr(
+	fwts_framework *fw,
+	const char *name,
+	const uint32_t addr32,
+	const fwts_acpi_gas *addr64,
+	bool *passed)
+{
+	/* Don't compare if addresses are zero */
+	if ((addr32 == 0) || (addr64->address == 0))
+		return;
+	if (addr32 == addr64->address)
+		return;
+
+	*passed = false;
+	/*
+	 * Since this can cause systems to misbehave
+	 * if the kernel uses the incorrect address we
+	 * make this LOG_LEVEL_HIGH
+	 */
+	fwts_failed(fw, LOG_LEVEL_HIGH,
+		"FADTPmAddr32Addr64Different",
+		"FADT %s (32 bit address) 0x%" PRIx32 " is different from "
+		"X_%s (64 bit address) 0x%" PRIx64 ".",
+		name, addr32, name, addr64->address);
+}
+
+static void acpi_table_check_fadt_pm_addr(
+	fwts_framework *fw,
+	const fwts_acpi_table_fadt *fadt,
+	bool *passed)
+{
+	if (fadt->header.length < 148) {
+		/* No 64 bit PM addresses to sanity check */
+		return;
+	}
+	acpi_table_check_fadt_addr(fw, "PM1a_EVT_BLK", fadt->pm1a_evt_blk,
+			&fadt->x_pm1a_evt_blk, passed);
+	acpi_table_check_fadt_addr(fw, "PM1b_EVT_BLK", fadt->pm1b_evt_blk,
+			&fadt->x_pm1b_evt_blk, passed);
+	acpi_table_check_fadt_addr(fw, "PM1a_CNT_BLK", fadt->pm1a_cnt_blk,
+			&fadt->x_pm1a_cnt_blk, passed);
+	acpi_table_check_fadt_addr(fw, "PM1b_CNT_BLK", fadt->pm1b_cnt_blk,
+			&fadt->x_pm1b_cnt_blk, passed);
+	acpi_table_check_fadt_addr(fw, "PM2_CNT_BLK", fadt->pm2_cnt_blk,
+			&fadt->x_pm2_cnt_blk, passed);
+	acpi_table_check_fadt_addr(fw, "PM_TMR_BLK", fadt->pm_tmr_blk,
+			&fadt->x_pm_tmr_blk, passed);
+}
+
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -309,6 +358,7 @@ static int fadt_test1(fwts_framework *fw)
 	acpi_table_check_fadt_smi(fw, fadt, &passed);
 	acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
 	acpi_table_check_fadt_gpe(fw, fadt, &passed);
+	acpi_table_check_fadt_pm_addr(fw, fadt, &passed);
 
 	/*
 	 * Bug LP: #833644
@@ -340,7 +390,6 @@ static int fadt_test1(fwts_framework *fw)
 
 	return FWTS_OK;
 }
-
 
 static int fadt_test2(fwts_framework *fw)
 {

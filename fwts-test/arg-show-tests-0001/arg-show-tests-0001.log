@@ -24,7 +24,7 @@ ACPI tests:
  hpet            HPET IA-PC High Precision Event Timer Table tests.
  iort            IORT IO Remapping Table test.
  lpit            LPIT Low Power Idle Table test.
- madt            MADT Multiple APIC Description Table test.
+ madt            MADT Multiple APIC Description Table (spec compliant).
  mcfg            MCFG PCI Express* memory mapped config space test.
  mchi            MCHI Management Controller Host Interface Table test.
  method          ACPI DSDT Method Semantic tests.
@@ -87,7 +87,7 @@ Batch tests:
  iort            IORT IO Remapping Table test.
  klog            Scan kernel log for errors and warnings.
  lpit            LPIT Low Power Idle Table test.
- madt            MADT Multiple APIC Description Table test.
+ madt            MADT Multiple APIC Description Table (spec compliant).
  maxfreq         Test max CPU frequencies against max scaling frequency.
  maxreadreq      Test firmware has set PCI Express MaxReadReq to a higher value on non-motherboard devices.
  mcfg            MCFG PCI Express* memory mapped config space test.
@@ -170,3 +170,7 @@ UEFI tests:
  uefirtmisc      UEFI miscellaneous runtime service interface tests.
  uefirttime      UEFI Runtime service time interface tests.
  uefirtvariable  UEFI Runtime service variable interface tests.
+
+ACPI Spec Compliance tests:
+ madt            MADT Multiple APIC Description Table (spec compliant).
+ rsdp            RSDP Root System Description Pointer test.

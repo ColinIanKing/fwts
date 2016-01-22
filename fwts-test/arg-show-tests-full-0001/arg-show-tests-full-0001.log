@@ -56,8 +56,12 @@ ACPI tests:
   IORT IO Remapping Table test.
  lpit            (1 test):
   LPIT Low Power Idle Table test.
- madt            (1 test):
-  MADT Multiple APIC Description Table test.
+ madt            (5 tests):
+  MADT checksum test.
+  MADT revision test.
+  MADT architecture minimum revision test.
+  MADT flags field reserved bits test.
+  MADT subtable tests.
  mcfg            (2 tests):
   Validate MCFG table.
   Validate MCFG PCI config space.
@@ -393,8 +397,12 @@ Batch tests:
   Kernel log error check.
  lpit            (1 test):
   LPIT Low Power Idle Table test.
- madt            (1 test):
-  MADT Multiple APIC Description Table test.
+ madt            (5 tests):
+  MADT checksum test.
+  MADT revision test.
+  MADT architecture minimum revision test.
+  MADT flags field reserved bits test.
+  MADT subtable tests.
  maxfreq         (1 test):
   Maximum CPU frequency test.
  maxreadreq      (1 test):
@@ -881,3 +889,13 @@ UEFI tests:
   Test UEFI RT service set variable interface stress test.
   Test UEFI RT service query variable info interface stress test.
   Test UEFI RT service get variable interface, invalid parameters.
+
+ACPI Spec Compliance tests:
+ madt            (5 tests):
+  MADT checksum test.
+  MADT revision test.
+  MADT architecture minimum revision test.
+  MADT flags field reserved bits test.
+  MADT subtable tests.
+ rsdp            (1 test):
+  RSDP Root System Description Pointer test.

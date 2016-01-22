@@ -7,6 +7,10 @@
 --acpitests                  Run general ACPI
                              tests.
 -a, --all                    Run all tests.
+--arch                       Specify arch of the
+                             tables being tested
+                             (defaults to current
+                             host).
 -b, --batch                  Run non-Interactive
                              tests.
 --batch-experimental         Run Batch

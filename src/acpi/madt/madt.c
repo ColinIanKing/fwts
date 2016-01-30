@@ -642,7 +642,7 @@ static int madt_local_sapic(fwts_framework *fw,
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLSAPICLength",
 			    "MADT %s length of %d bytes does not match "
-			    "actual length of %ld bytes.",
+			    "actual length of %zd bytes.",
 			    madt_sub_names[hdr->type], hdr->length,
 			    strlen(lsapic->uid_string) + 16);
 	else

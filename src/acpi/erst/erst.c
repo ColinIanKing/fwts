@@ -60,7 +60,7 @@ static int erst_test1(fwts_framework *fw)
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"ERSTReservedNonZero",
-			"ERST Reserved field must be non-zero, got 0x%" PRIx32
+			"ERST Reserved field must be zero, got 0x%" PRIx32
 			" instead", erst->reserved);
 	}
 	if (erst->serialization_header_size > table->length) {

@@ -6,7 +6,7 @@ erst              Serialization Hdr. Size:  0x00000030
 erst              Reserved:                 0x000000f0
 erst              Instruction Entry Count:  0x00000010
 erst            FAILED [LOW] ERSTReservedNonZero: Test 1, ERST Reserved
-erst            field must be non-zero, got 0xf0 instead
+erst            field must be zero, got 0xf0 instead
 erst            FAILED [HIGH] ERSTIInvalidFlag: Test 1, ERST Serialization
 erst            Flag 0xff is an invalid value, values allowed are
 erst            0x00..0x01 for the WRITE_REGISTER and WRITE_REGISTER_VALUE

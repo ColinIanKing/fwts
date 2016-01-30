@@ -123,7 +123,7 @@ static int microcode_test1(fwts_framework *fw)
 		ptr = strstr(line, "revision=0x");
 		if (ptr) {
 			int cpu;
-			int revision;
+			unsigned int revision;
 
 			if (sscanf(line, "%*s CPU%d sig=0x%*x, pf=0x%*x, revision=0x%x", &cpu, &revision) != 2)
 				continue;
@@ -149,7 +149,7 @@ static int microcode_test1(fwts_framework *fw)
 		ptr = strstr(line, "updated to revision");
 		if (ptr) {
 			int cpu;
-			int revision;
+			unsigned int revision;
 			int year;
 			int month;
 			int day;

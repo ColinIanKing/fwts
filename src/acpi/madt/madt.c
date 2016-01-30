@@ -1182,10 +1182,8 @@ static int madt_subtables(fwts_framework *fw)
 	struct acpi_madt_subtable_lengths *ms = spec_data;
 	const uint8_t *data = mtable->data;
 	ssize_t length = mtable->length;
-	ssize_t skip;
 	int ii = 0;
-	int len, proper_len;
-	bool passed = true;
+	int proper_len;
 
 	/*
 	 * check the correctness of each subtable type, and whether or
@@ -1206,8 +1204,11 @@ static int madt_subtables(fwts_framework *fw)
 	}
 
 	while (length > (ssize_t)sizeof(fwts_acpi_madt_sub_table_header)) {
+		ssize_t skip = 0;
+		int len;
+		bool passed = true;
+
 		hdr = (fwts_acpi_madt_sub_table_header *)data;
-		skip = 0;
 		ii++;
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
@@ -1228,7 +1229,6 @@ static int madt_subtables(fwts_framework *fw)
 		}
 
 		/* verify that the length is what we expect */
-		passed = true;
 		if (len == SUBTABLE_VARIABLE) {
 			if (hdr->type == FWTS_ACPI_MADT_LOCAL_SAPIC) {
 				lsapic = (fwts_acpi_madt_local_sapic *)hdr;

@@ -1101,14 +1101,23 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	}
 
 	/* Now we have all the tables, final fix up is required */
-	if (rsdp->rsdt_address != rsdt_fake_addr) {
-		rsdp->rsdt_address = rsdt_fake_addr;
-		redo_rsdp_checksum = true;
-	}
-	if ((rsdp->revision > 0) && (rsdp->length >= 36) &&
-	    (rsdp->xsdt_address != xsdt_fake_addr)) {
-		rsdp->xsdt_address = xsdt_fake_addr;
-		redo_rsdp_checksum = true;
+	if (fw->target_arch == FWTS_ARCH_ARM64) {
+		if ((rsdp->revision > 0) && (rsdp->length >= 36) &&
+		    (rsdp->xsdt_address != xsdt_fake_addr)) {
+			rsdp->xsdt_address = xsdt_fake_addr;
+			redo_rsdp_checksum = true;
+		}
+	} else {
+		if (rsdp->rsdt_address != rsdt_fake_addr) {
+			rsdp->rsdt_address = rsdt_fake_addr;
+			redo_rsdp_checksum = true;
+		}
+
+		if ((rsdp->revision > 0) && (rsdp->length >= 36) &&
+		    (rsdp->xsdt_address != xsdt_fake_addr)) {
+			rsdp->xsdt_address = xsdt_fake_addr;
+			redo_rsdp_checksum = true;
+		}
 	}
 	/* And update checksum if we've updated the rsdp */
 	if (redo_rsdp_checksum) {

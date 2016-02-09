@@ -1,9 +1,22 @@
 rsdp            rsdp: RSDP Root System Description Pointer test.
 rsdp            ----------------------------------------------------------
 rsdp            Test 1 of 1: RSDP Root System Description Pointer test.
-rsdp            PASSED: Test 1, No issues found in RSDP table.
+rsdp            PASSED: Test 1, RSDP first checksum is correct
+rsdp            PASSED: Test 1, RSDP: oem_id contains only printable
+rsdp            characters.
+rsdp            PASSED: Test 1, RSDP: revision is 2.
+rsdp            PASSED: Test 1, RSDP: at least one of RsdtAddress or
+rsdp            XsdtAddress is non-zero.
+rsdp            FAILED [MEDIUM] RSDPBothAddressesFound: Test 1, RSDP: only
+rsdp            one of RsdtAddress or XsdtAddress should be non-zero. Both
+rsdp            fields are non-zero.
+rsdp            PASSED: Test 1, RSDP: the correct RSDT/XSDT address is
+rsdp            being used.
+rsdp            PASSED: Test 1, RSDP: the table is the correct length.
+rsdp            PASSED: Test 1, RSDP second checksum is correct
+rsdp            PASSED: Test 1, RSDP: the reserved field is zero.
 rsdp            
 rsdp            ==========================================================
-rsdp            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+rsdp            8 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
 rsdp            info only.
 rsdp            ==========================================================

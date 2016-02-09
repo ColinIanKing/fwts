@@ -33,6 +33,13 @@ static const struct fwts_arch_info arch_info[] = {
 	{ FWTS_ARCH_OTHER, "other" }
 };
 
+static const struct fwts_arch_info arch_name[] = {
+	{ FWTS_ARCH_X86, "x86" },
+	{ FWTS_ARCH_IA64, "ia64" },
+	{ FWTS_ARCH_ARM64, "arm64" },
+	{ FWTS_ARCH_OTHER, "other" },
+};
+
 static char *arch_names;
 
 static fwts_architecture __fwts_arch_get_arch(const char *name)
@@ -81,4 +88,15 @@ const char *fwts_arch_names(void)
 	}
 
 	return arch_names;
+}
+
+const char *fwts_arch_get_name(const fwts_architecture arch)
+{
+	const struct fwts_arch_info *ptr;
+
+	for (ptr = arch_name; ptr->arch != FWTS_ARCH_OTHER; ptr++)
+		if (ptr->arch == arch)
+			break;
+
+	return ptr->name;
 }

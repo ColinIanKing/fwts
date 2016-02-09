@@ -13,10 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
  */
 #include "fwts.h"
 
@@ -47,7 +43,7 @@ static int rsdp_init(fwts_framework *fw)
  */
 static int rsdp_test1(fwts_framework *fw)
 {
-	fwts_acpi_table_rsdp *rsdp = (fwts_acpi_table_rsdp*)table->data;
+	fwts_acpi_table_rsdp *rsdp = (fwts_acpi_table_rsdp *)table->data;
 	bool passed = true;
 	size_t i;
 
@@ -93,4 +89,5 @@ static fwts_framework_ops rsdp_ops = {
 	.minor_tests = rsdp_tests
 };
 
-FWTS_REGISTER("rsdp", &rsdp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("rsdp", &rsdp_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
+	      FWTS_FLAG_TEST_ACPI)

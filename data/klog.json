@@ -4,37 +4,65 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "While parsing/handling command line",
+   "advice": "The ACPI debugger failed to parse the debug command",
+   "label": "KlogAcpiDbgParseError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid Reference Class 0x",
+   "advice": "An ACPI error occurred getting an ACPI object reference. The reference class was not LOCAL, ARG or DEBUG.",
+   "label": "KlogAcpiRefClassInvalid"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "error while performing ARS to find poison:",
+   "advice": "The ACPI NFIT (NVDIMM Firmware Interface Table) driver encountered an error while performing Address Range Scrub, so aborting initialization. ARS should never fail.",
+   "label": "KlogAcpiNfitArsPoison"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to set initial power state",
+   "advice": "The ACPI fan driver was unable to update the fan device power state",
+   "label": "KlogAcpiFanPowerState"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Could not start debugger thread",
    "advice": "The ACPI debugger could not start a kernel thread to execute a debug command, most probably a kernel resource issue.",
-   "label": "KlogAcpiDbgThreadErr",
+   "label": "KlogAcpiDbgThreadErr"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Possible overflow of internal debugger buffer",
    "advice": "The ACPI debugger detected a error when evaluating an ACPI object or method, possibly a buffer overflow bug in the ACPI debugger.",
-   "label": "KlogAcpiDbgBufOverflow",
+   "label": "KlogAcpiDbgBufOverflow"
   },
   {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "while executing .* from debugger",
    "advice": "The ACPI debugger detected a error when evaluating an ACPI object or method.",
-   "label": "KlogAcpiDbgErr",
+   "label": "KlogAcpiDbgErr"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "While parsing method arguments",
    "advice": "The ACPI debugger could not parse the debugger command line (incorrect method arguments), most probably a user error.",
-   "label": "KlogAcpiDbgCmdLine",
+   "label": "KlogAcpiDbgCmdLine"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "While parsing command line",
    "advice": "The ACPI debugger could not parse the debugger command line, most probably a user error.",
-   "label": "KlogAcpiDbgCmdLine",
+   "label": "KlogAcpiDbgCmdLine"
   },
   {
    "compare_mode": "regex",

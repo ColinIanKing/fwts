@@ -724,7 +724,13 @@ ApCheckPackage (
  * asltransform - parse tree transformations
  */
 ACPI_STATUS
-TrAmlTransformWalk (
+TrAmlTransformWalkBegin (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level,
+    void                    *Context);
+
+ACPI_STATUS
+TrAmlTransformWalkEnd (
     ACPI_PARSE_OBJECT       *Op,
     UINT32                  Level,
     void                    *Context);
@@ -740,6 +746,25 @@ TrWalkParseTree (
     ASL_WALK_CALLBACK       DescendingCallback,
     ASL_WALK_CALLBACK       AscendingCallback,
     void                    *Context);
+
+/*
+ * aslexternal - External opcode support
+ */
+ACPI_STATUS
+ExAmlExternalWalkBegin (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level,
+    void                    *Context);
+
+ACPI_STATUS
+ExAmlExternalWalkEnd (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level,
+    void                    *Context);
+
+void
+ExDoExternal (
+    ACPI_PARSE_OBJECT       *Op);
 
 /* Values for "Visitation" parameter above */
 
@@ -981,6 +1006,24 @@ XfCrossReferenceNamespace (
 
 
 /*
+ * aslxrefout
+ */
+void
+OtPrintHeaders (
+    char                    *Message);
+
+void
+OtCreateXrefFile (
+    void);
+
+void
+OtXrefWalkPart1 (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level,
+    ASL_METHOD_INFO         *MethodInfo);
+
+
+/*
  * aslutils - common compiler utilites
  */
 void
@@ -995,9 +1038,29 @@ DbgPrint (
 #define ASL_PARSE_OUTPUT    1
 #define ASL_TREE_OUTPUT     2
 
+UINT8
+UtIsBigEndianMachine (
+    void);
+
 BOOLEAN
 UtQueryForOverwrite (
     char                    *Pathname);
+
+void
+UtDumpStringOp (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level);
+
+void
+UtDumpIntegerOp (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level,
+    UINT32                  IntegerLength);
+
+void
+UtDumpBasicOp (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level);
 
 void
 UtDisplaySupportedTables (
@@ -1018,11 +1081,6 @@ UtEndEvent (
 void *
 UtLocalCalloc (
     UINT32                  Size);
-
-void
-UtPrintFormattedName (
-    UINT16                  ParseOpcode,
-    UINT32                  Level);
 
 void
 UtDisplaySummary (
@@ -1077,12 +1135,6 @@ UtCheckIntegerRange (
 UINT64
 UtDoConstant (
     char                    *String);
-
-ACPI_STATUS
-stroul64 (
-    char                    *String,
-    UINT32                  Base,
-    UINT64                  *RetInteger);
 
 
 /*

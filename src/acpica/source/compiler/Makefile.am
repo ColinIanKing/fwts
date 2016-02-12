@@ -58,13 +58,15 @@ CLEANFILES = y.output y.tab.c y.tab.h aslcompiler.y.h $(BUILT_SOURCES)
 libfwtsiasl_la_CPPFLAGS = $(AM_CPPFLAGS)
 libfwtsiasl_la_SOURCES = 			\
 	fwts_iasl_interface.c 			\
+	aslanalyze.c 				\
 	aslascii.c				\
 	aslcompile.c 				\
 	aslcompilerlex.c 			\
 	aslcompiler.c 				\
-	aslanalyze.c 				\
 	aslcodegen.c 				\
+	asldebug.c				\
 	aslerror.c 				\
+	aslexternal.c				\
 	aslfiles.c 				\
 	aslfold.c 				\
 	asllength.c 				\
@@ -102,6 +104,7 @@ libfwtsiasl_la_SOURCES = 			\
 	asllistsup.c 				\
 	asloffset.c 				\
 	aslxref.c 				\
+	aslxrefout.c				\
 	aslprepkg.c 				\
 	aslprintf.c				\
 	aslprune.c				\

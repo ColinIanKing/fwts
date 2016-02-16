@@ -757,6 +757,9 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 		size += n;
 	}
 
+	if (!ptr || !size)
+		goto err_no_data;
+
 	/*
 	 *  ..and copy table into a 32 bit memory space buffer
 	 */
@@ -770,6 +773,7 @@ static uint8_t *fwts_acpi_load_table_from_file(const int fd, size_t *length)
 
 err:
 	free(ptr);
+err_no_data:
 	*length = 0;
 	return NULL;
 }

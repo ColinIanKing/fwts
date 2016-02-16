@@ -219,9 +219,12 @@ fwts_bool fwts_cpu_has_c1e(void)
                  * by erratum #400
                  */
 		if (strstr(cpu->flags, "osvw") != NULL) {
-			fwts_cpu_readmsr(0, MSR_AMD64_OSVW_ID_LENGTH, &val);
+			if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_ID_LENGTH, &val) != FWTS_OK)
+				return FWTS_BOOL_ERROR;
+
                         if (val >= 2) {
-                                fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val);
+                                if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val) != FWTS_OK)
+					return FWTS_BOOL_ERROR;
                                 if (!(val & 2)) {
 					fwts_cpu_free_info(cpu);
 					return FWTS_FALSE;

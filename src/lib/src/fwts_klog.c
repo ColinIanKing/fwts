@@ -51,7 +51,7 @@ void fwts_klog_free(fwts_list *klog)
  */
 fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 {
-	fwts_list_link *l_old, *l_new;
+	fwts_list_link *l_old, *l_new = NULL;
 	fwts_list *klog_diff;
 
 	if (klog_new == NULL) {
@@ -74,14 +74,17 @@ fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 		fwts_list_foreach(l_old, klog_old)
 			l_old_last = l_old;
 
-		/* And now look for that last line in the new log */
-		old = fwts_list_data(char *, l_old_last);
-		fwts_list_foreach(l_new, klog_new) {
-			char *new = fwts_list_data(char *, l_new);
-			if (!strcmp(new, old)) {
-				/* Found last line that matches, bump to next */
-				l_new = l_new->next;
-				break;
+		if (l_old_last) {
+			/* And now look for that last line in the new log */
+			old = fwts_list_data(char *, l_old_last);
+			fwts_list_foreach(l_new, klog_new) {
+				const char *new = fwts_list_data(char *, l_new);
+
+				if (!strcmp(new, old)) {
+					/* Found last line that matches, bump to next */
+					l_new = l_new->next;
+					break;
+				}
 			}
 		}
 	}

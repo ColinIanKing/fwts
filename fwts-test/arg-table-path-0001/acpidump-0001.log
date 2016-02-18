@@ -171,7 +171,7 @@ acpidump        [018h 0024   4]                 Oem Revision : 00000001
 acpidump        [018h 0024   4]                 Oem Revision : 00001000
 acpidump        [018h 0024   4]                 Oem Revision : 00003000
 acpidump        [018h 0024   4]                 Oem Revision : 06040000
-acpidump        [018h 0024   8]                 XSDT Address : 00000000bf6d87f0
+acpidump        [018h 0024   8]                 XSDT Address : 00000000bff07149
 acpidump        [018h 0024   8]    64 Firmware Waking Vector : 0000000000000000
 acpidump        [01Ch 0028   4]              Asl Compiler ID : " LTP"
 acpidump        [01Ch 0028   4]              Asl Compiler ID : "ALAN"
@@ -181,7 +181,7 @@ acpidump        [01Ch 0028   4]              Asl Compiler ID : "LOHR"
 acpidump        [01Ch 0028   4]              Asl Compiler ID : "PTL "
 acpidump        [01Ch 0028   4]              Asl Compiler ID : "TBD "
 acpidump        [020h 0032   1]                      Version : 01
-acpidump        [020h 0032   1]            Extended Checksum : 39
+acpidump        [020h 0032   1]            Extended Checksum : 73
 acpidump        [020h 0032   4]        Asl Compiler Revision : 00000000
 acpidump        [020h 0032   4]        Asl Compiler Revision : 00000001
 acpidump        [020h 0032   4]        Asl Compiler Revision : 00000003

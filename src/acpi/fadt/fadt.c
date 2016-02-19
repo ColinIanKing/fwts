@@ -56,10 +56,17 @@ static int fadt_init(fwts_framework *fw)
 	fadt = (const fwts_acpi_table_fadt*)table->data;
 	fadt_size = table->length;
 
-	/*  Not having a FADT is not a failure */
+	/*  Not having a FADT is not a failure on x86 */
 	if (fadt_size == 0) {
-		fwts_log_info(fw, "FADT does not exist, this is not necessarily a failure, skipping tests.");
-		return FWTS_SKIP;
+		if (fw->target_arch == FWTS_ARCH_X86) {
+			fwts_log_info(fw,
+				      "FADT does not exist, this is not "
+				      "necessarily a failure, skipping tests.");
+			return FWTS_SKIP;
+		} else {
+			fwts_log_error(fw, "ACPI table FACP has zero length!");
+			return FWTS_ERROR;
+		}
 	}
 
 	return FWTS_OK;

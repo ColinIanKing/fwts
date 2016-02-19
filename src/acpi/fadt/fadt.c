@@ -1475,6 +1475,66 @@ static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
 	return;
 }
 
+static void acpi_table_check_fadt_sleep_control_reg(fwts_framework *fw)
+{
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fadt->sleep_control_reg.address == 0)
+			fwts_passed(fw, "FADT SLEEP_CONTROL_REG not in use.");
+		else {
+			if (fadt->sleep_control_reg.register_bit_width == 8 &&
+			    fadt->sleep_control_reg.register_bit_offset == 0)
+				fwts_passed(fw, "FADT SLEEP_CONTROL_REG is "
+					    "in use and well-defined.");
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "SleepControlRegHasBadGAS",
+					    "FADT SLEEP_CONTROL_REG is "
+					    "in use but register width or "
+					    "offset is incorrect.");
+		}
+	} else {
+		if (fadt->sleep_control_reg.address == 0)
+			fwts_passed(fw, "FADT SLEEP_CONTROL_REG is null and "
+				    "not available when not in reduced "
+				    "hardware mode.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SleepControlRegNotAllowed",
+				    "FADT SLEEP_CONTROL_REG is defined but "
+				    "will be ignored reduced hardware mode.");
+	}
+}
+
+static void acpi_table_check_fadt_sleep_status_reg(fwts_framework *fw)
+{
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fadt->sleep_status_reg.address == 0)
+			fwts_passed(fw, "FADT SLEEP_STATUS_REG not in use.");
+		else {
+			if (fadt->sleep_status_reg.register_bit_width == 8 &&
+			    fadt->sleep_status_reg.register_bit_offset == 0)
+				fwts_passed(fw, "FADT SLEEP_STATUS_REG is "
+					    "in use and well-defined.");
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "SleepStatusRegHasBadGAS",
+					    "FADT SLEEP_STATUS_REG is "
+					    "in use but register width or "
+					    "offset is incorrect.");
+		}
+	} else {
+		if (fadt->sleep_status_reg.address == 0)
+			fwts_passed(fw, "FADT SLEEP_STATUS_REG is null and "
+				    "not available when not in reduced "
+				    "hardware mode.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SleepStatusRegNotAllowed",
+				    "FADT SLEEP_STATUS_REG is defined but "
+				    "will be ignored reduced hardware mode.");
+	}
+}
+
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -1540,6 +1600,9 @@ static int fadt_test1(fwts_framework *fw)
 		fwts_log_info(fw, "FADT MON_ALRM is %" PRIu8, fadt->mon_alrm);
 		fwts_log_info(fw, "FADT CENTURY is %" PRIu8, fadt->century);
 	}
+
+	acpi_table_check_fadt_sleep_control_reg(fw);
+	acpi_table_check_fadt_sleep_status_reg(fw);
 
 	/*
 	 * Cannot really test the Hypervisor Vendor Identity since

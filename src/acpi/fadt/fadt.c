@@ -203,61 +203,105 @@ static int fadt_revision(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-static void acpi_table_check_fadt_firmware_control(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
+static void acpi_table_check_fadt_firmware_ctrl(fwts_framework *fw)
 {
-	if (fadt->firmware_control == 0) {
-		if (fadt->header.length >= 140) {
-			if ((fadt->x_firmware_ctrl == 0) &&
-			    !(fwts_acpi_is_reduced_hardware(fadt))) {
-				*passed = false;
-				fwts_failed(fw, LOG_LEVEL_CRITICAL,
-					"FADTFACSZero",
-					"FADT 32 bit FIRMWARE_CONTROL and "
-					"64 bit X_FIRMWARE_CONTROL (FACS "
-					"address) are null.");
-				fwts_advice(fw,
-					"The 32 bit FIRMWARE_CTRL or 64 "
-					"bit X_FIRMWARE_CTRL should point "
-					"to a valid Firmware ACPI Control "
-					"Structure (FACS) when ACPI hardware "
-					"reduced mode is not set. ");
-			}
-		} else {
-			*passed = false;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADT32BitFACSNull",
-				"FADT 32 bit FIRMWARE_CONTROL is null.");
+	/* tests for very old FADTs */
+	if (fadt->header.length < 140 && fadt->firmware_control == 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADT32BitFACSNull",
+			    "FADT 32 bit FIRMWARE_CONTROL is null.");
+		fwts_advice(fw,
+			    "The ACPI version 1.0 FADT has a NULL "
+			    "FIRMWARE_CTRL and it needs to be defined "
+			    "to point to a valid Firmware ACPI Control "
+			    "Structure (FACS).");
+
+		/* can't do much else */
+		return;
+	}
+
+	/* for more recent FADTs, things get more complicated */
+	if (fadt->firmware_control == 0 && fadt->x_firmware_ctrl == 0) {
+		if (fwts_acpi_is_reduced_hardware(fadt)) {
+			fwts_passed(fw,
+				    "FADT 32 bit FIRMWARE_CONTROL and "
+				    "64 bit X_FIRMWARE_CONTROL (FACS "
+				    "address) are null in hardware reduced "
+				    "mode.");
 			fwts_advice(fw,
-				"The ACPI version 1.0 FADT has a NULL "
-				"FIRMWARE_CTRL and it needs to be defined "
-				"to point to a valid Firmware ACPI Control "
-				"Structure (FACS).");
+				    "When in hardware reduced mode, it is "
+				    "allowed to have both the 32-bit "
+				    "FIRMWARE_CTRL and 64-bit X_FIRMWARE_CTRL "
+				    "fields set to zero as they are.  This "
+				    "indicates that no FACS is available.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				    "FADTFACSZero",
+				    "FADT 32 bit FIRMWARE_CONTROL and "
+				    "64 bit X_FIRMWARE_CONTROL (FACS "
+				    "address) are both null.");
+			fwts_advice(fw,
+				    "The 32 bit FIRMWARE_CTRL or 64 "
+				    "bit X_FIRMWARE_CTRL should point "
+				    "to a valid Firmware ACPI Control "
+				    "Structure (FACS) when ACPI hardware "
+				    "reduced mode is not set. ");
 		}
+
+	}
+
+	if ((fadt->firmware_control != 0 && fadt->x_firmware_ctrl == 0) ||
+	    (fadt->firmware_control == 0 && fadt->x_firmware_ctrl != 0)) {
+		fwts_passed(fw,
+			    "Only one of FIRMWARE_CTRL and X_FIRMWARE_CTRL "
+			    "is non-zero.");
 	} else {
-		if (fadt->header.length >= 140) {
-			if (fadt->x_firmware_ctrl != 0) {
-				if (((uint64_t)fadt->firmware_control != fadt->x_firmware_ctrl)) {
-					*passed = false;
-					fwts_failed(fw, LOG_LEVEL_MEDIUM,
-						"FwCtrl32and64Differ",
-						"FIRMWARE_CONTROL is 0x%" PRIx32
-						" and differs from X_FIRMWARE_CONTROL "
-						"0x%" PRIx64,
-						fadt->firmware_control,
-						fadt->x_firmware_ctrl);
-					fwts_advice(fw,
-						"One would expect the 32 bit FIRMWARE_CTRL "
-						"and 64 bit X_FIRMWARE_CTRL pointers to "
-						"point to the same FACS, however they don't "
-						"which is clearly ambiguous and wrong. "
-						"The kernel works around this by using the "
-						"64 bit X_FIRMWARE_CTRL pointer to the FACS. ");
-				}
-			}
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTFACSBothSet",
+			    "Both 32-bit FIRMWARE_CTRL and 64-bit "
+			    "X_FIRMWARE_CTRL pointers to the FACS are "
+			    "set but only one is allowed.");
+		fwts_advice(fw,
+			    "Having both FACS pointers set is ambiguous; "
+			    "there is no way to determine which one is "
+			    "the correct address.  The kernel workaround "
+			    "is to always use the 64-bit X_FIRMWARE_CTRL.");
+	}
+
+
+	if (fadt->firmware_control != 0 && fadt->x_firmware_ctrl != 0) {
+		if ((uint64_t)fadt->firmware_control == fadt->x_firmware_ctrl) {
+			fwts_passed(fw,
+				    "Both FIRMWARE_CTRL and X_FIRMWARE_CTRL "
+				    "are being used and contain the same FACS "
+				    "address.");
+			fwts_advice(fw,
+				    "While having FIRMWARE_CTRL and "
+				    "X_FIRMWARE_CTRL both set to an address "
+				    "is not compliant with the ACPI "
+				    "specification, they are both set to "
+				    "the same address, which at least "
+				    "mitigates the ambiguity in determining "
+				    "which address is the correct one to use "
+				    "for the FACS.  Ideally, only one of the "
+				    "two addresses should be set but as a "
+				    "practical matter, this will work.");
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FwCtrl32and64Differ",
+				    "FIRMWARE_CONTROL is 0x%" PRIx32
+				    " and differs from X_FIRMWARE_CONTROL "
+				    "0x%" PRIx64,
+				    fadt->firmware_control,
+				    fadt->x_firmware_ctrl);
+			fwts_advice(fw,
+				    "One would expect the 32 bit FIRMWARE_CTRL "
+				    "and 64 bit X_FIRMWARE_CTRL pointers to "
+				    "point to the same FACS, however they do "
+				    "not which is clearly ambiguous and wrong. "
+				    "The kernel works around this by using the "
+				    "64-bit X_FIRMWARE_CTRL pointer to the "
+				    "FACS. ");
 		}
 	}
 }
@@ -497,7 +541,7 @@ static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
 
-	acpi_table_check_fadt_firmware_control(fw, fadt, &passed);
+	acpi_table_check_fadt_firmware_ctrl(fw);
 	acpi_table_check_fadt_dsdt(fw, fadt, &passed);
 	acpi_table_check_fadt_smi(fw, fadt, &passed);
 	acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);

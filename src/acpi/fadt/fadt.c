@@ -490,10 +490,6 @@ static int fadt_test2(fwts_framework *fw)
 	uint32_t port, width, val32;
 	int ret = FWTS_OK;
 
-	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
-		fadt->preferred_pm_profile,
-		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
-
 	if (fwts_acpi_is_reduced_hardware(fadt)) {
 		fwts_skipped(fw, "In reduced hardware mode, skipping test.");
 		return FWTS_OK;

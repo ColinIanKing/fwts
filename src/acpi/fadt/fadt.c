@@ -908,20 +908,336 @@ static void acpi_table_check_fadt_pstate_cnt(fwts_framework *fw)
 	return;
 }
 
-static void acpi_table_check_fadt_pm_tmr(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
+static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 {
-	if (fwts_acpi_is_reduced_hardware(fadt)) {
-		if (fadt->pm_tmr_len != 0)
-			fwts_warning(fw, "FADT PM_TMR_LEN is not zero "
-				"but should be in reduced hardware mode.");
+	bool both_zero;
+	bool both_nonzero;
+
+	if (fadt->pm1a_evt_blk == 0 && fadt->x_pm1a_evt_blk.address == 0) {
+		both_zero = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aEvtBlkNotSet",
+			    "FADT PM1A_EVT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+	} else {
+		both_zero = false;
+		fwts_passed(fw,
+			    "FADT required PM1A_EVT_BLK field is non-zero");
+	}
+
+	if (fadt->pm1a_evt_blk != 0 && fadt->x_pm1a_evt_blk.address != 0) {
+		both_nonzero = true;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aEvtBlkBothtSet",
+			    "FADT PM1A_EVT_BLK has both a 32-bit and a "
+			    "64-bit address set; only one should be used.");
+	} else {
+		both_nonzero = false;
+		if (!both_zero)
+			fwts_passed(fw,
+				    "FADT one required PM1A_EVT_BLK field "
+				    "is non-zero");
+	}
+
+	if (both_nonzero &&
+	    ((uint64_t)fadt->pm1a_evt_blk == fadt->x_pm1a_evt_blk.address)) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM1A_EVT_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1A_EVT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aEvtBlkNotSet",
+			    "FADT PM1A_EVT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		if (!both_zero)
+			fwts_advice(fw,
+				    "Both FADT 32- and 64-bit PM1A_EVT_BLK "
+				    "fields are being used, but only one "
+				    "should be non-zero.  Since the fields "
+				    "value are not equal the kernel cannot "
+				    "unambiguously determine which value "
+				    "is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm1b_evt_blk(fwts_framework *fw)
+{
+	if (fadt->pm1b_evt_blk == 0 && fadt->x_pm1b_evt_blk.address == 0) {
+		fwts_skipped(fw, "FADT PM1B_EVT_BLK not being used.");
 		return;
 	}
 
-	if (fadt->pm_tmr_len != 4) {
-		*passed = false;
+	if ((fadt->pm1b_evt_blk != 0 && fadt->x_pm1b_evt_blk.address == 0) ||
+	    (fadt->pm1b_evt_blk == 0 && fadt->x_pm1b_evt_blk.address != 0))
+		fwts_passed(fw,
+			    "FADT only one of the 32-bit or 64-bit "
+			    "PM1B_EVT_BLK fields is being used.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1bEvtBlkOnlyOneField",
+			    "FADT PM1B_EVT_BLK field has both the 32-bit "
+			    "and the 64-bit field set.");
+
+	if ((uint64_t)fadt->pm1b_evt_blk == fadt->x_pm1b_evt_blk.address) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM1B_EVT_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1B_EVT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1bEvtBlkNotSet",
+			    "FADT PM1A_EVT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1B_EVT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  Since the fields value are not equal "
+			    "the kernel cannot unambiguously determine which "
+			    "value is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm1a_cnt_blk(fwts_framework *fw)
+{
+	if (fadt->pm1a_cnt_blk != 0 || fadt->x_pm1a_cnt_blk.address != 0)
+		fwts_passed(fw,
+			    "FADT required PM1A_CNT_BLK field is non-zero");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aCntBlkNotSet",
+			    "FADT PM1A_CNT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+
+	if ((fadt->pm1a_cnt_blk != 0 && fadt->x_pm1a_cnt_blk.address == 0) ||
+	    (fadt->pm1a_cnt_blk == 0 && fadt->x_pm1a_cnt_blk.address != 0))
+		fwts_passed(fw,
+			    "FADT only one of the 32-bit or 64-bit "
+			    "PM1A_CNT_BLK fields is being used.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aCntBlkOnlyOneField",
+			    "FADT PM1A_CNT_BLK field has both the 32-bit "
+			    "and the 64-bit field set.");
+
+	if ((uint64_t)fadt->pm1a_cnt_blk == fadt->x_pm1a_cnt_blk.address) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM1A_CNT_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1A_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1aCntBlkNotSet",
+			    "FADT PM1A_CNT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1A_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  Since the fields value are not equal "
+			    "the kernel cannot unambiguously determine which "
+			    "value is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm1b_cnt_blk(fwts_framework *fw)
+{
+	if (fadt->pm1b_cnt_blk == 0 && fadt->x_pm1b_cnt_blk.address == 0) {
+		fwts_skipped(fw, "FADT PM1B_CNT_BLK not being used.");
+		return;
+	}
+
+	if ((fadt->pm1b_cnt_blk != 0 && fadt->x_pm1b_cnt_blk.address == 0) ||
+	    (fadt->pm1b_cnt_blk == 0 && fadt->x_pm1b_cnt_blk.address != 0))
+		fwts_passed(fw,
+			    "FADT only one of the 32-bit or 64-bit "
+			    "PM1B_CNT_BLK fields is being used.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1bCntBlkOnlyOneField",
+			    "FADT PM1B_CNT_BLK field has both the 32-bit "
+			    "and the 64-bit field set.");
+
+	if ((uint64_t)fadt->pm1b_cnt_blk == fadt->x_pm1b_cnt_blk.address) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM1B_CNT_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1B_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm1bCntBlkNotSet",
+			    "FADT PM1A_CNT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM1B_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  Since the fields value are not equal "
+			    "the kernel cannot unambiguously determine which "
+			    "value is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm2_cnt_blk(fwts_framework *fw)
+{
+	if (fadt->pm2_cnt_blk == 0 && fadt->x_pm2_cnt_blk.address == 0) {
+		fwts_skipped(fw, "FADT PM2_CNT_BLK not being used.");
+		return;
+	}
+
+	if ((fadt->pm2_cnt_blk != 0 && fadt->x_pm2_cnt_blk.address == 0) ||
+	    (fadt->pm2_cnt_blk == 0 && fadt->x_pm2_cnt_blk.address != 0))
+		fwts_passed(fw,
+			    "FADT only one of the 32-bit or 64-bit "
+			    "PM2_CNT_BLK fields is being used.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm2CntBlkOnlyOneField",
+			    "FADT PM2_CNT_BLK field has both the 32-bit "
+			    "and the 64-bit field set.");
+
+	if ((uint64_t)fadt->pm2_cnt_blk == fadt->x_pm2_cnt_blk.address) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM2_CNT_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM2_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm2CntBlkNotSet",
+			    "FADT PM2_CNT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM2_CNT_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  Since the fields value are not equal "
+			    "the kernel cannot unambiguously determine which "
+			    "value is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm_tmr_blk(fwts_framework *fw)
+{
+	if (fadt->pm_tmr_blk == 0 && fadt->x_pm_tmr_blk.address == 0) {
+		fwts_skipped(fw, "FADT PM_TMR_BLK not being used.");
+		return;
+	}
+
+	if ((fadt->pm_tmr_blk != 0 && fadt->x_pm_tmr_blk.address == 0) ||
+	    (fadt->pm_tmr_blk == 0 && fadt->x_pm_tmr_blk.address != 0))
+		fwts_passed(fw,
+			    "FADT only one of the 32-bit or 64-bit "
+			    "PM_TMR_BLK fields is being used.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm2CntBlkOnlyOneField",
+			    "FADT PM_TMR_BLK field has both the 32-bit "
+			    "and the 64-bit field set.");
+
+	if ((uint64_t)fadt->pm_tmr_blk == fadt->x_pm_tmr_blk.address) {
+		fwts_passed(fw,
+			    "FADT 32- and 64-bit PM_TMR_BLK fields are "
+			    "at least equal.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM_TMR_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  However, they are at least equal so "
+			    "the kernel will at least have a usable value.");
+	} else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTPm2CntBlkNotSet",
+			    "FADT PM1A_CNT_BLK is a required field and must "
+			    "have either a 32-bit or 64-bit address set.");
+		fwts_advice(fw,
+			    "Both FADT 32- and 64-bit PM_TMR_BLK "
+			    "fields are being used, but only one should be "
+			    "non-zero.  Since the fields value are not equal "
+			    "the kernel cannot unambiguously determine which "
+			    "value is the correct one.");
+	}
+}
+
+static void acpi_table_check_fadt_pm1_evt_len(fwts_framework *fw)
+{
+	if (fadt->pm1_evt_len >= 4)
+		fwts_passed(fw, "FADT PM1_EVT_LEN >= 4.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm1EvtLenTooSmall",
+			    "FADT PM1_EVT_LEN must be >= 4, but is %d.",
+			    fadt->pm1_evt_len);
+	return;
+}
+
+static void acpi_table_check_fadt_pm1_cnt_len(fwts_framework *fw)
+{
+	if (fadt->pm1_cnt_len >= 2)
+		fwts_passed(fw, "FADT PM1_CNT_LEN >= 2.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm1CntLenTooSmall",
+			    "FADT PM1_CNT_LEN must be >= 2, but is %d.",
+			    fadt->pm1_cnt_len);
+	return;
+}
+
+static void acpi_table_check_fadt_pm2_cnt_len(fwts_framework *fw)
+{
+	if (fadt->pm2_cnt_blk == 0) {
+		if (fadt->pm2_cnt_len == 0)
+			fwts_passed(fw, "FADT PM2_CNT_LEN is zero and "
+				    "PM2_CNT_BLK is not supported.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm2CntLenInconsistent",
+				    "FADT PM2_CNT_LEN must be zero because "
+				    "PM2_CNT_BLK is not supported, but is %d.",
+				    fadt->pm2_cnt_len);
+		return;
+	}
+
+	if (fadt->pm2_cnt_len >= 1)
+		fwts_passed(fw, "FADT PM2_CNT_LEN >= 1.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm2CntLenTooSmall",
+			    "FADT PM2_CNT_LEN must be >= 1, but is %d.",
+			    fadt->pm2_cnt_len);
+	return;
+}
+
+static void acpi_table_check_fadt_pm_tmr_len(fwts_framework *fw)
+{
+	if (fadt->pm_tmr_len == 0) {
+		if (fadt->pm_tmr_blk == 0)
+			fwts_passed(fw, "FADT PM_TMR_LEN is zero and "
+				    "PM_TMR_BLK is not supported.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPmTmrLenInconsistent",
+				    "FADT PM_TMR_LEN must be zero because "
+				    "PM_TMR_BLK is not supported, but is %d.",
+				    fadt->pm_tmr_len);
+		return;
+	}
+
+	if (fadt->pm_tmr_len == 4)
+		fwts_passed(fw, "FADT PM_TMR_LEN is 4.");
+	else {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"FADTBadPMTMRLEN",
 			"FADT PM_TMR_LEN is %" PRIu8
@@ -982,55 +1298,6 @@ static void acpi_table_check_fadt_gpe(
 	}
 }
 
-static void acpi_table_check_fadt_addr(
-	fwts_framework *fw,
-	const char *name,
-	const uint32_t addr32,
-	const fwts_acpi_gas *addr64,
-	bool *passed)
-{
-	/* Don't compare if addresses are zero */
-	if ((addr32 == 0) || (addr64->address == 0))
-		return;
-	if (addr32 == addr64->address)
-		return;
-
-	*passed = false;
-	/*
-	 * Since this can cause systems to misbehave
-	 * if the kernel uses the incorrect address we
-	 * make this LOG_LEVEL_HIGH
-	 */
-	fwts_failed(fw, LOG_LEVEL_HIGH,
-		"FADTPmAddr32Addr64Different",
-		"FADT %s (32 bit address) 0x%" PRIx32 " is different from "
-		"X_%s (64 bit address) 0x%" PRIx64 ".",
-		name, addr32, name, addr64->address);
-}
-
-static void acpi_table_check_fadt_pm_addr(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
-{
-	if (fadt->header.length < 148) {
-		/* No 64 bit PM addresses to sanity check */
-		return;
-	}
-	acpi_table_check_fadt_addr(fw, "PM1a_EVT_BLK", fadt->pm1a_evt_blk,
-			&fadt->x_pm1a_evt_blk, passed);
-	acpi_table_check_fadt_addr(fw, "PM1b_EVT_BLK", fadt->pm1b_evt_blk,
-			&fadt->x_pm1b_evt_blk, passed);
-	acpi_table_check_fadt_addr(fw, "PM1a_CNT_BLK", fadt->pm1a_cnt_blk,
-			&fadt->x_pm1a_cnt_blk, passed);
-	acpi_table_check_fadt_addr(fw, "PM1b_CNT_BLK", fadt->pm1b_cnt_blk,
-			&fadt->x_pm1b_cnt_blk, passed);
-	acpi_table_check_fadt_addr(fw, "PM2_CNT_BLK", fadt->pm2_cnt_blk,
-			&fadt->x_pm2_cnt_blk, passed);
-	acpi_table_check_fadt_addr(fw, "PM_TMR_BLK", fadt->pm_tmr_blk,
-			&fadt->x_pm_tmr_blk, passed);
-}
-
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -1055,9 +1322,17 @@ static int fadt_test1(fwts_framework *fw)
 		acpi_table_check_fadt_acpi_disable(fw);
 		acpi_table_check_fadt_s4bios_req(fw);
 		acpi_table_check_fadt_pstate_cnt(fw);
-		acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
+		acpi_table_check_fadt_pm1a_evt_blk(fw);
+		acpi_table_check_fadt_pm1b_evt_blk(fw);
+		acpi_table_check_fadt_pm1a_cnt_blk(fw);
+		acpi_table_check_fadt_pm1b_cnt_blk(fw);
+		acpi_table_check_fadt_pm2_cnt_blk(fw);
+		acpi_table_check_fadt_pm_tmr_blk(fw);
+		acpi_table_check_fadt_pm1_evt_len(fw);
+		acpi_table_check_fadt_pm1_cnt_len(fw);
+		acpi_table_check_fadt_pm2_cnt_len(fw);
+		acpi_table_check_fadt_pm_tmr_len(fw);
 		acpi_table_check_fadt_gpe(fw, fadt, &passed);
-		acpi_table_check_fadt_pm_addr(fw, fadt, &passed);
 		fwts_log_info(fw, "FADT GPE1_BASE is %" PRIu8, fadt->gpe1_base);
 
 		fwts_log_info(fw, "FADT FLUSH_SIZE is %" PRIu16,

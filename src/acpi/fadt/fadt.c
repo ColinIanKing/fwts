@@ -1251,50 +1251,72 @@ static void acpi_table_check_fadt_pm_tmr_len(fwts_framework *fw)
 	}
 }
 
-static void acpi_table_check_fadt_gpe(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
+static void acpi_table_check_fadt_gpe0_blk_len(fwts_framework *fw)
 {
-	if (fwts_acpi_is_reduced_hardware(fadt)) {
-		if (fadt->gpe0_blk_len != 0) {
-			fwts_warning(fw, "FADT GPE0_BLK_LEN is not zero "
-				"but should be in reduced hardware mode.");
-		}
-		if (fadt->gpe1_blk_len != 0) {
-			fwts_warning(fw, "FADT GPE1_BLK_LEN is not zero but "
-				"should be in reduced hardware mode.");
-		}
+	if (fadt->gpe0_blk_len & 1) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTBadGPE0BLKLEN",
+			    "FADT GPE0_BLK_LEN is %" PRIu8
+			    ", should a multiple of 2.",
+			    fadt->gpe0_blk_len);
+		fwts_advice(fw,
+			    "The FADT GPE0_BLK_LEN should be a multiple of 2. "
+			    "Because it isn't, the ACPI driver will not map in "
+			    "the GPE0 region. This could mean that General "
+			    "Purpose Events will not function correctly (for "
+			    "example lid or AC-power events).");
+	} else {
+		if (fadt->gpe0_blk_len)
+			fwts_passed(fw, "FADT GPE0_BLK_LEN non-zero and a "
+				    "non-negative multiple of 2: %" PRIu8 ".",
+				    fadt->gpe0_blk_len);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTZeroGPE0BlkLen",
+				    "FADT GPE0_BLK_LEN is zero, but must be "
+				    "set to a non-negative multiple of 2.");
+
+	}
+}
+
+static void acpi_table_check_fadt_gpe1_blk_len(fwts_framework *fw)
+{
+	if (fadt->gpe1_blk_len == 0) {
+		if (fadt->gpe1_blk == 0)
+			fwts_passed(fw, "FADT GPE1_BLK_LEN is zero and "
+				    "GPE1_BLK is not supported.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTGPE1BlkLenInconsistent",
+				    "FADT GPE1_BLK_LEN must be zero because "
+				    "GPE1_BLK is not supported, but is %d.",
+				    fadt->gpe1_blk_len);
 		return;
 	}
 
-	if (fadt->gpe0_blk_len & 1) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FADTBadGPEBLKLEN",
-			"FADT GPE0_BLK_LEN is %" PRIu8
-			", should a multiple of 2.",
-			fadt->gpe0_blk_len);
-		fwts_advice(fw,
-			"The FADT GPE_BLK_LEN should be a multiple of 2. "
-			"Because it isn't, the ACPI driver will not map in "
-			"the GPE0 region. This could mean that General "
-			"Purpose Events will not function correctly (for "
-			"example lid or ac-power events).");
-	}
 	if (fadt->gpe1_blk_len & 1) {
-		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FADTBadGPE1BLKLEN",
-			"FADT GPE1_BLK_LEN is %" PRIu8
-			", should a multiple of 2.",
-			fadt->gpe1_blk_len);
+			    "FADTBadGPE1BLKLEN",
+			    "FADT GPE1_BLK_LEN is %" PRIu8
+			    ", should a multiple of 2.",
+			    fadt->gpe1_blk_len);
 		fwts_advice(fw,
-			"The FADT GPE1_BLK_LEN should be a multiple of 2. "
-			"Because it isn't, the ACPI driver will not map in "
-			"the GPE1 region. This could mean that General "
-			"Purpose Events will not function correctly (for "
-			"example lid or ac-power events).");
+			    "The FADT GPE1_BLK_LEN should be a multiple of 2. "
+			    "Because it isn't, the ACPI driver will not map in "
+			    "the GPE1 region. This could mean that General "
+			    "Purpose Events will not function correctly (for "
+			    "example lid or AC-power events).");
+	} else {
+		if (fadt->gpe1_blk_len)
+			fwts_passed(fw, "FADT GPE1_BLK_LEN non-zero and a "
+				    "non-negative multiple of 2: %" PRIu8 ".",
+				    fadt->gpe1_blk_len);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTZeroGPE1BlkLen",
+				    "FADT GPE1_BLK_LEN is zero, but must be "
+				    "set to a non-negative multiple of 2.");
+
 	}
 }
 
@@ -1332,7 +1354,8 @@ static int fadt_test1(fwts_framework *fw)
 		acpi_table_check_fadt_pm1_cnt_len(fw);
 		acpi_table_check_fadt_pm2_cnt_len(fw);
 		acpi_table_check_fadt_pm_tmr_len(fw);
-		acpi_table_check_fadt_gpe(fw, fadt, &passed);
+		acpi_table_check_fadt_gpe0_blk_len(fw);
+		acpi_table_check_fadt_gpe1_blk_len(fw);
 		fwts_log_info(fw, "FADT GPE1_BASE is %" PRIu8, fadt->gpe1_base);
 
 		fwts_log_info(fw, "FADT FLUSH_SIZE is %" PRIu16,

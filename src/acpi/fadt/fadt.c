@@ -684,19 +684,8 @@ static void acpi_table_check_fadt_reduced_hardware(fwts_framework *fw)
 			    "hardware mode.");
 }
 
-static void acpi_table_check_fadt_smi(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
+static void acpi_table_check_fadt_smi_cmd(fwts_framework *fw)
 {
-	if (fwts_acpi_is_reduced_hardware(fadt)) {
-		if (fadt->smi_cmd != 0) {
-			fwts_warning(fw, "FADT SMI_CMD is not zero "
-				"but should be in reduced hardware mode.");
-		}
-		return;
-	}
-
 	/*
 	 *  Section 5.2.9 (Fixed ACPI Description Table) of the ACPI 5.0
 	 *  specification states that if SMI_CMD is zero then it is
@@ -704,38 +693,49 @@ static void acpi_table_check_fadt_smi(
 	 *  in that case, don't check SCI_INT being valid.
 	 */
 	if (fadt->smi_cmd != 0) {
-		if (fadt->sci_int == 0) {
-			*passed = false;
+		if (fadt->sci_int == 0)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADTSCIIRQZero",
-				"FADT SCI Interrupt is 0x00, should be defined.");
-		}
+				    "FADTSCIIRQZero",
+				    "FADT SCI Interrupt is 0x00, but must "
+				    "be defined since SMI command indicates "
+				    "System Management Mode is supported.");
+		else
+			fwts_passed(fw,
+				    "FADT SMI_CMD indicates System Management "
+				    "Mode is supported, and the SCI Interrupt "
+				    "is non-zero.");
 	} else {
 		if ((fadt->acpi_enable == 0) &&
 		    (fadt->acpi_disable == 0) &&
 		    (fadt->s4bios_req == 0) &&
 		    (fadt->pstate_cnt == 0) &&
 		    (fadt->cst_cnt == 0)) {
-			/* Not an error, but intentional, but feedback this finding anyhow */
-			fwts_log_info(fw, "The FADT SMI_CMD is zero, system "
-				"does not support System Management Mode.");
+			/*
+			 * Not an error, but intentional, so feedback
+			 * this finding.
+			 */
+			fwts_passed(fw, "The FADT SMI_CMD is zero, system "
+				    "does not support System Management Mode.");
 		}
 		else {
-			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADTSMICMDZero",
-				"FADT SMI_CMD is 0x00, however, one or more of "
-				"ACPI_ENABLE, ACPI_DISABLE, S4BIOS_REQ, PSTATE_CNT "
-				"and CST_CNT are defined which means SMI_CMD should "
-				"be defined otherwise SMI commands cannot be sent.");
+				    "FADTSMICMDZero",
+				    "FADT SMI_CMD is 0x00, however, one or "
+				    "more of ACPI_ENABLE, ACPI_DISABLE, "
+				    "S4BIOS_REQ, PSTATE_CNT and CST_CNT are "
+				    "defined which means SMI_CMD should be "
+				    "defined, otherwise SMI commands cannot "
+				    "be sent.");
 			fwts_advice(fw,
-				"The configuration seems to suggest that SMI command "
-				"should be defined to allow the kernel to trigger "
-				"system management interrupts via the SMD_CMD port. "
-				"The fact that SMD_CMD is zero which is invalid means "
-				"that SMIs are not possible through the normal ACPI "
-				"mechanisms. This means some firmware based machine "
-				"specific functions will not work.");
+				    "The configuration seems to suggest that "
+				    "SMI command should be defined to allow "
+				    "the kernel to trigger system management "
+				    "interrupts via the SMD_CMD port.  The "
+				    "fact that SMD_CMD is zero which is "
+				    "invalid means that SMIs are not possible "
+				    "through the normal ACPI mechanisms. This "
+				    "means some firmware based machine "
+				    "specific functions will not work.");
 		}
 	}
 }
@@ -882,7 +882,7 @@ static int fadt_test1(fwts_framework *fw)
 	 */
 	if (!fwts_acpi_is_reduced_hardware(fadt)) {
 		fwts_log_info(fw, "FADT SCI_INT is %" PRIu8, fadt->sci_int);
-		acpi_table_check_fadt_smi(fw, fadt, &passed);
+		acpi_table_check_fadt_smi_cmd(fw);
 		acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
 		acpi_table_check_fadt_gpe(fw, fadt, &passed);
 		acpi_table_check_fadt_pm_addr(fw, fadt, &passed);

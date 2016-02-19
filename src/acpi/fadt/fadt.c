@@ -872,10 +872,34 @@ static int fadt_test1(fwts_framework *fw)
 	acpi_table_check_fadt_reserved(fw);
 	acpi_table_check_fadt_pm_profile(fw);
 	acpi_table_check_fadt_reduced_hardware(fw);
-	acpi_table_check_fadt_smi(fw, fadt, &passed);
-	acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
-	acpi_table_check_fadt_gpe(fw, fadt, &passed);
-	acpi_table_check_fadt_pm_addr(fw, fadt, &passed);
+
+	/*
+	 * If a field can be tested, we call a function to do so.  If
+	 * any value is reasonable and allowable, we simply log the value.
+	 * For example, the SCI_INT is one byte and can be from 0..255, and
+	 * there is no other info (as far as this author knows) that can be
+	 * used to verify that the value is correct.
+	 */
+	if (!fwts_acpi_is_reduced_hardware(fadt)) {
+		fwts_log_info(fw, "FADT SCI_INT is %" PRIu8, fadt->sci_int);
+		acpi_table_check_fadt_smi(fw, fadt, &passed);
+		acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
+		acpi_table_check_fadt_gpe(fw, fadt, &passed);
+		acpi_table_check_fadt_pm_addr(fw, fadt, &passed);
+		fwts_log_info(fw, "FADT GPE1_BASE is %" PRIu8, fadt->gpe1_base);
+
+		fwts_log_info(fw, "FADT FLUSH_SIZE is %" PRIu16,
+			      fadt->flush_size);
+		fwts_log_info(fw, "FADT FLUSH_STRIDE is %" PRIu16,
+			      fadt->flush_stride);
+		fwts_log_info(fw, "FADT DUTY_OFFSET is %" PRIu8,
+			      fadt->duty_offset);
+		fwts_log_info(fw, "FADT DUTY_WIDTH is %" PRIu8,
+			      fadt->duty_width);
+		fwts_log_info(fw, "FADT DAY_ALRM is %" PRIu8, fadt->day_alrm);
+		fwts_log_info(fw, "FADT MON_ALRM is %" PRIu8, fadt->mon_alrm);
+		fwts_log_info(fw, "FADT CENTURY is %" PRIu8, fadt->century);
+	}
 
 	/*
 	 * Bug LP: #833644
@@ -902,6 +926,14 @@ static int fadt_test1(fwts_framework *fw)
 	}
 	*/
 
+	/*
+	 * Cannot really test the Hypervisor Vendor Identity since
+	 * the value is provided by the hypervisor to the OS (as a
+	 * sign that the ACPI tables have been fabricated), if it
+	 * being used at all.  Or, it's set to zero.
+	 */
+	fwts_log_info(fw, "FADT Hypervisor Vendor Identity is %" PRIu64,
+		      fadt->hypervisor_id);
 	if (passed)
 		fwts_passed(fw, "No issues found in FADT table.");
 

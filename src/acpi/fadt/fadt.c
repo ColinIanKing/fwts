@@ -334,6 +334,8 @@ static void acpi_table_check_fadt_dsdt(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"FADTDSDTNull",
 				"FADT DSDT address is null.");
+		/* can't do much else */
+		return;
 	}
 
 	/* if one field is being used, the other should be null */
@@ -411,6 +413,9 @@ static void acpi_table_check_fadt_reserved(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
 			    "FADT first reserved field is not zero: 0x%02x",
 			    fadt->reserved);
+
+	if (fadt->header.length < 112)
+		return;
 
 	if (fadt->reserved1 == (uint8_t)0)
 		fwts_passed(fw, "FADT second reserved field is zero.");
@@ -914,6 +919,21 @@ static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 	bool both_zero;
 	bool both_nonzero;
 
+	if (fadt->header.length < 160) {
+		if (fadt->pm1a_evt_blk == 0)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1aEvtBlkNotSet",
+				    "FADT PM1A_EVT_BLK is a required field "
+				    "and must have a 32-bit address set.");
+		else
+			fwts_passed(fw,
+				    "FADT required PM1A_EVT_BLK field is "
+				    "non-zero.");
+
+		/* can't do much else */
+		return;
+	}
+
 	if (fadt->pm1a_evt_blk == 0 && fadt->x_pm1a_evt_blk.address == 0) {
 		both_zero = true;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -968,6 +988,11 @@ static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm1b_evt_blk(fwts_framework *fw)
 {
+	if (fadt->pm1b_evt_blk == 0 && fadt->header.length < 172) {
+		fwts_skipped(fw, "FADT PM1B_EVT_BLK not being used.");
+		return;
+	}
+
 	if (fadt->pm1b_evt_blk == 0 && fadt->x_pm1b_evt_blk.address == 0) {
 		fwts_skipped(fw, "FADT PM1B_EVT_BLK not being used.");
 		return;
@@ -1009,6 +1034,21 @@ static void acpi_table_check_fadt_pm1b_evt_blk(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm1a_cnt_blk(fwts_framework *fw)
 {
+	if (fadt->header.length < 184) {
+		if (fadt->pm1a_cnt_blk == 0)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "FADTPm1aCntBlkNotSet",
+				    "FADT PM1A_CNT_BLK is a required field "
+				    "and must have a 32-bit address set.");
+		else
+			fwts_passed(fw,
+				    "FADT required PM1A_EVT_BLK field is "
+				    "non-zero.");
+
+		/* can't do much else */
+		return;
+	}
+
 	if (fadt->pm1a_cnt_blk != 0 || fadt->x_pm1a_cnt_blk.address != 0)
 		fwts_passed(fw,
 			    "FADT required PM1A_CNT_BLK field is non-zero");
@@ -1054,6 +1094,11 @@ static void acpi_table_check_fadt_pm1a_cnt_blk(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm1b_cnt_blk(fwts_framework *fw)
 {
+	if (fadt->pm1b_cnt_blk == 0 && fadt->header.length < 196) {
+		fwts_skipped(fw, "FADT PM1B_CNT_BLK not being used.");
+		return;
+	}
+
 	if (fadt->pm1b_cnt_blk == 0 && fadt->x_pm1b_cnt_blk.address == 0) {
 		fwts_skipped(fw, "FADT PM1B_CNT_BLK not being used.");
 		return;
@@ -1095,6 +1140,11 @@ static void acpi_table_check_fadt_pm1b_cnt_blk(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm2_cnt_blk(fwts_framework *fw)
 {
+	if (fadt->pm2_cnt_blk == 0 && fadt->header.length < 208) {
+		fwts_skipped(fw, "FADT PM2_CNT_BLK not being used.");
+		return;
+	}
+
 	if (fadt->pm2_cnt_blk == 0 && fadt->x_pm2_cnt_blk.address == 0) {
 		fwts_skipped(fw, "FADT PM2_CNT_BLK not being used.");
 		return;
@@ -1136,6 +1186,11 @@ static void acpi_table_check_fadt_pm2_cnt_blk(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm_tmr_blk(fwts_framework *fw)
 {
+	if (fadt->pm_tmr_blk == 0 && fadt->header.length < 220) {
+		fwts_skipped(fw, "FADT PM_TMR_BLK not being used.");
+		return;
+	}
+
 	if (fadt->pm_tmr_blk == 0 && fadt->x_pm_tmr_blk.address == 0) {
 		fwts_skipped(fw, "FADT PM_TMR_BLK not being used.");
 		return;

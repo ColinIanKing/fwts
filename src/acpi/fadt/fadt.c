@@ -41,6 +41,8 @@ static inline int ioperm(int a, ...)
 static const fwts_acpi_table_fadt *fadt;
 static int fadt_size;
 
+static const fwts_acpi_table_facs *facs;
+
 static int fadt_init(fwts_framework *fw)
 {
 	fwts_acpi_table_info *table;
@@ -67,6 +69,23 @@ static int fadt_init(fwts_framework *fw)
 			fwts_log_error(fw, "ACPI table FACP has zero length!");
 			return FWTS_ERROR;
 		}
+	}
+
+	/*
+	 * Some tests require data from the FACS, also, which is
+	 * required (5.2.10) is we are not in reduced hardware
+	 * mode
+	 */
+	if (!fwts_acpi_is_reduced_hardware(fadt)) {
+		if (fwts_acpi_find_table(fw, "FACS", 0, &table) != FWTS_OK) {
+			fwts_log_error(fw, "Cannot read ACPI table FACS.");
+			return FWTS_ERROR;
+		}
+		if (table == NULL) {
+			fwts_log_error(fw, "ACPI table FACS does not exist!");
+			return FWTS_ERROR;
+		}
+		facs = (const fwts_acpi_table_facs *)table->data;
 	}
 
 	return FWTS_OK;
@@ -793,6 +812,102 @@ static void acpi_table_check_fadt_acpi_disable(fwts_framework *fw)
 	return;
 }
 
+static void acpi_table_check_fadt_s4bios_req(fwts_framework *fw)
+{
+	if (facs && facs->length >= 24)
+		fwts_passed(fw,
+			    "FADT indicates we are not in reduced hardware "
+			    "mode, and required FACS is present.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FACSMustBePresent",
+			    "FADT indicates we are not in reduced hardware "
+			    "mode, which requires an FACS be present, but "
+			    "none has been found.");
+
+	if (facs && (facs->flags & FWTS_FACS_FLAG_S4BIOS_F)) {
+		if (fadt->s4bios_req == 0) {
+			if (fadt->smi_cmd == 0) {
+				fwts_passed(fw,
+					    "FADT indicates System Management "
+					    "Mode is not supported, which "
+					    "allows a zero S4BIOS_REQ value.");
+				fwts_advice(fw,
+					    "There is an inconsistency between "
+					    "the FADT and FACS.  The FADT "
+					    "indicates no SMM support, and "
+					    "no S4BIOS_REQ command, but the "
+					    "FACS indicates S4BIOS_REQ is "
+					    "supported.  One of these may "
+					    "be incorrect.");
+			} else {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "SMMHasNoS4BIOSReqCmd",
+					    "FADT SMI S4BIOS_REQ command is "
+					    "zero, but this is not allowed "
+					    "when SMM is supported, and the "
+					    "S4BIOS_F flag is set in the "
+					    "FACS.");
+			}
+		} else {
+			if (fadt->smi_cmd == 0) {
+				fwts_passed(fw,
+					    "FADT indicates System Management "
+					    "Mode is not supported, but a "
+					    "S4BIOS_REQ command is defined.");
+				fwts_advice(fw,
+					    "There is an inconsistency between "
+					    "the FADT and FACS.  The FADT "
+					    "indicates no SMM support, but it "
+					    "defines an S4BIOS_REQ command, "
+					    "and the FACS indicates "
+					    "S4BIOS_REQ is supported.  One "
+					    "of these may be incorrect.");
+			} else {
+				fwts_passed(fw,
+					    "FADT S4BIOS_REQ command is "
+					    "non-zero, SMM is supported so "
+					    "the command can be used, and "
+					    "the FACS indicates S4BIOS_REQ "
+					    "is supported.");
+			}
+		}
+	} else {
+		if (fadt->s4bios_req == 0)
+			fwts_passed(fw, "FADT S4BIOS_REQ command is not set "
+				    "and FACS indicates it is not supported.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SMMS4BIOSCmdDefined",
+				    "FADT S4BIOS_REQ command is defined "
+				    "but FACS indicates it is not supported.");
+	}
+
+	return;
+}
+
+static void acpi_table_check_fadt_pstate_cnt(fwts_framework *fw)
+{
+	if (fadt->pstate_cnt == 0) {
+		if (fadt->smi_cmd == 0)
+			fwts_passed(fw,
+				    "FADT SMI PSTATE_CNT command is zero, "
+				    "which is allowed since SMM is not "
+				    "supported.");
+	} else {
+		if (fadt->smi_cmd == 0)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SMMHasExtraPstateCntCmd",
+				    "FADT SMI PSTATE_CNT command is "
+				    "non-zero, but SMM is not supported.");
+		else
+			fwts_passed(fw, "FADT SMI PSTATE_CNT command is "
+				    "non-zero, and SMM is supported.");
+	}
+
+	return;
+}
+
 static void acpi_table_check_fadt_pm_tmr(
 	fwts_framework *fw,
 	const fwts_acpi_table_fadt *fadt,
@@ -938,6 +1053,8 @@ static int fadt_test1(fwts_framework *fw)
 		acpi_table_check_fadt_smi_cmd(fw);
 		acpi_table_check_fadt_acpi_enable(fw);
 		acpi_table_check_fadt_acpi_disable(fw);
+		acpi_table_check_fadt_s4bios_req(fw);
+		acpi_table_check_fadt_pstate_cnt(fw);
 		acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
 		acpi_table_check_fadt_gpe(fw, fadt, &passed);
 		acpi_table_check_fadt_pm_addr(fw, fadt, &passed);

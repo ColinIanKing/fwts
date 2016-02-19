@@ -1537,8 +1537,6 @@ static void acpi_table_check_fadt_sleep_status_reg(fwts_framework *fw)
 
 static int fadt_test1(fwts_framework *fw)
 {
-	bool passed = true;
-
 	acpi_table_check_fadt_firmware_ctrl(fw);
 	acpi_table_check_fadt_dsdt(fw);
 	acpi_table_check_fadt_reserved(fw);
@@ -1612,8 +1610,6 @@ static int fadt_test1(fwts_framework *fw)
 	 */
 	fwts_log_info(fw, "FADT Hypervisor Vendor Identity is %" PRIu64,
 		      fadt->hypervisor_id);
-	if (passed)
-		fwts_passed(fw, "No issues found in FADT table.");
 
 	return FWTS_OK;
 }

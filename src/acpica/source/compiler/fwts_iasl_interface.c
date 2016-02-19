@@ -39,9 +39,15 @@ static void init_asl_core(void)
 {
 	int i;
 
+	AcpiOsInitialize();
+	ACPI_DEBUG_INITIALIZE();
 	AcpiGbl_ExternalFileList = NULL;
 	AcpiDbgLevel = 0;
-	PrInitializePreprocessor ();
+	PrInitializePreprocessor();
+	AcpiGbl_DmOpt_Verbose = FALSE;
+	AcpiGbl_IntegerBitWidth = 64;
+	AcpiGbl_IntegerNybbleWidth = 16;
+	AcpiGbl_IntegerByteWidth = 8;
 
 	for (i = 0; i < ASL_NUM_FILES; i++) {
 		Gbl_Files[i].Handle = NULL;
@@ -53,7 +59,7 @@ static void init_asl_core(void)
 	Gbl_Files[ASL_FILE_STDERR].Handle   = stdout;
 	Gbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
 
-	Gbl_LineBufferSize = 16384;
+	Gbl_LineBufferSize = 1024;
 	Gbl_CurrentLineBuffer = NULL;
 	Gbl_MainTokenBuffer = NULL;
 	UtExpandLineBuffers();
@@ -133,6 +139,10 @@ int fwts_iasl_disassemble_aml(
 
 		/* ...and do the ACPICA disassambly... */
 		AslDoOneFile((char *)tables[which]);
+		UtFreeLineBuffers();
+		AslParserCleanup();
+		if (AcpiGbl_ExternalFileList)
+			AcpiDmClearExternalFileList();
 
 		fclose(fperr);
 		fclose(fpout);

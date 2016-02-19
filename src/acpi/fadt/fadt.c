@@ -19,6 +19,7 @@
  *
  */
 #include "fwts.h"
+#include "fwts_acpi_object_eval.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1342,6 +1343,138 @@ static void acpi_table_check_fadt_cst_cnt(fwts_framework *fw)
 	return;
 }
 
+static uint64_t fadt_find_p_blk(fwts_framework *fw)
+{
+	uint64_t pblk;
+	fwts_list *objects;
+
+	pblk = 0;
+	objects = fwts_acpi_object_get_names();
+	if (objects) {
+		fwts_list_link *obj;
+
+		fwts_list_foreach(obj, objects) {
+			char *name = fwts_list_data(char*, obj);
+			ACPI_OBJECT pr = { 0 };
+			ACPI_BUFFER buf = { sizeof(ACPI_OBJECT), &pr };
+			ACPI_HANDLE handle;
+			ACPI_OBJECT_TYPE type;
+			ACPI_STATUS status;
+
+			status = AcpiGetHandle(NULL, name, &handle);
+			if (ACPI_FAILURE(status)) {
+				fwts_warning(fw, "Failed to get handle for "
+					     "object %s.", name);
+				continue;
+			}
+			status = AcpiGetType(handle, &type);
+			if (ACPI_FAILURE(status)) {
+				fwts_warning(fw, "Failed to get type for "
+					     "object %s.", name);
+				continue;
+			}
+
+			/*
+			 * If a CPU is not defined as a Processor object,
+			 * we don't care here.  Per section 8.1.2 and 8.1.3,
+			 * defining a CPU with a Device object implies that
+			 * a _CST method must be defined, and whatever is
+			 * in the _CST overrides the P_BLK and P_LVL*_LAT
+			 * values.  Since we're only trying to validate the
+			 * P_LVL*_LAT values, and they're only used if the
+			 * CPUs are defined as Processor objects, we can
+			 * ignore any CPUs defined as Device objects.
+			 */
+			if (type == ACPI_TYPE_PROCESSOR) {
+				status = AcpiEvaluateObject(handle, NULL, NULL,
+							    &buf);
+				if (ACPI_FAILURE(status))
+					fwts_warning(fw, "Could not evaluate "
+						     "Processor %s", name);
+				else {
+					if (pr.Processor.PblkAddress)
+						pblk = pr.Processor.PblkAddress;
+				}
+			}
+		}
+	}
+
+	fwts_log_info(fw, "Using P_BLK address of 0x%" PRIx64, pblk);
+	return pblk;
+}
+
+static void acpi_table_check_fadt_p_lvl2_lat(fwts_framework *fw, uint64_t pblk)
+{
+	if (pblk) {
+		if (fadt->p_lvl2_lat <= 100)
+			fwts_passed(fw,
+				    "FADT P_LVL2_LAT is within proper range "
+				    "at %" PRIu16, fadt->p_lvl2_lat);
+		else
+			fwts_warning(fw,
+				     "FADT P_LVL2_LAT is > 100 (%" PRIu16 ") "
+				     "but a P_BLK is defined.  This implies "
+				     "a C2 state is not supported, but there "
+				     "is a P_BLK register block defined which "
+				     "implies there might be a C2 state that "
+				     "works.  There is not enough information "
+				     "to determine if this is expected or not.",
+				     fadt->p_lvl2_lat);
+	} else {
+		if (fadt->p_lvl2_lat <= 100)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "PLvl2LatDefinedButNotUsable",
+				    "FADT P_LVL2_LAT is <= 100 (%" PRIu16 ") "
+				    "which implies a C2 state is supported "
+				    "but there is no P_BLK register block "
+				    "defined to enable the C2 transition.",
+				    fadt->p_lvl2_lat);
+		else
+			fwts_passed(fw,
+				    "FADT P_LVL2_LAT is > 100 (%" PRIu16 ") "
+				    "and no P_BLK is defined.",
+				    fadt->p_lvl2_lat);
+	}
+
+	return;
+}
+
+static void acpi_table_check_fadt_p_lvl3_lat(fwts_framework *fw, uint64_t pblk)
+{
+	if (pblk) {
+		if (fadt->p_lvl3_lat <= 1000)
+			fwts_passed(fw,
+				    "FADT P_LVL3_LAT is within proper range "
+				    "at %" PRIu16, fadt->p_lvl3_lat);
+		else
+			fwts_warning(fw,
+				     "FADT P_LVL3_LAT is > 1000 (%" PRIu16 ") "
+				     "but a P_BLK is defined.  This implies "
+				     "a C3 state is not supported, but there "
+				     "is a P_BLK register block defined which "
+				     "implies there might be a C3 state that "
+				     "works.  There is not enough information "
+				     "to determine if this is expected or not.",
+				     fadt->p_lvl3_lat);
+	} else {
+		if (fadt->p_lvl3_lat <= 1000)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "PLvl3LatDefinedButNotUsable",
+				    "FADT P_LVL3_LAT is <= 1000 (%" PRIu16 ") "
+				    "which implies a C3 state is supported "
+				    "but there is no P_BLK register block "
+				    "defined to enable the C3 transition.",
+				    fadt->p_lvl3_lat);
+		else
+			fwts_passed(fw,
+				    "FADT P_LVL3_LAT is > 100 (%" PRIu16 ") "
+				    "and no P_BLK is defined.",
+				    fadt->p_lvl3_lat);
+	}
+
+	return;
+}
+
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -1381,6 +1514,20 @@ static int fadt_test1(fwts_framework *fw)
 		fwts_log_info(fw, "FADT GPE1_BASE is %" PRIu8, fadt->gpe1_base);
 		acpi_table_check_fadt_cst_cnt(fw);
 
+		if (fwts_acpi_init(fw) == FWTS_OK) {
+			uint64_t pblk = fadt_find_p_blk(fw);
+
+			acpi_table_check_fadt_p_lvl2_lat(fw, pblk);
+			acpi_table_check_fadt_p_lvl3_lat(fw, pblk);
+			fwts_acpi_deinit(fw);
+		} else {
+			fwts_log_error(fw, "Cannot initialize ACPI namespace.");
+			fwts_log_info(fw,
+				      "Without a namespace, cannot test "
+				      "values of P_LVL2_LAT or P_LVL3_LAT "
+				      "for correctness.");
+		}
+
 		fwts_log_info(fw, "FADT FLUSH_SIZE is %" PRIu16,
 			      fadt->flush_size);
 		fwts_log_info(fw, "FADT FLUSH_STRIDE is %" PRIu16,
@@ -1393,31 +1540,6 @@ static int fadt_test1(fwts_framework *fw)
 		fwts_log_info(fw, "FADT MON_ALRM is %" PRIu8, fadt->mon_alrm);
 		fwts_log_info(fw, "FADT CENTURY is %" PRIu8, fadt->century);
 	}
-
-	/*
-	 * Bug LP: #833644
-	 *
-	 *   Remove these tests, really need to put more intelligence into it
-	 *   perhaps in the cstates test rather than here. For the moment we
- 	 *   shall remove this warning as it's giving users false alarms
-	 *   See: https://bugs.launchpad.net/ubuntu/+source/fwts/+bug/833644
-	 */
-	/*
-	if (fadt->p_lvl2_lat > 100) {
-		fwts_warning(fw, "FADT P_LVL2_LAT is %" PRIi16 ", a value > 100 indicates a "
-			"system not to support a C2 state.", fadt->p_lvl2_lat);
-		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C2 latency in microseconds. The ACPI specification "
-				"states that a value > 100 indicates that C2 is not supported and hence the "
-				"ACPI processor idle routine will not use C2 power states.");
-	}
-	if (fadt->p_lvl3_lat > 1000) {
-		fwts_warning(fw, "FADT P_LVL3_LAT is %" PRIu16 ", a value > 1000 indicates a "
-			"system not to support a C3 state.", fadt->p_lvl3_lat);
-		fwts_advice(fw, "The FADT P_LVL2_LAT setting specifies the C3 latency in microseconds. The ACPI specification "
-				"states that a value > 1000 indicates that C3 is not supported and hence the "
-				"ACPI processor idle routine will not use C3 power states.");
-	}
-	*/
 
 	/*
 	 * Cannot really test the Hypervisor Vendor Identity since

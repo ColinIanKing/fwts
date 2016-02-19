@@ -1320,6 +1320,28 @@ static void acpi_table_check_fadt_gpe1_blk_len(fwts_framework *fw)
 	}
 }
 
+static void acpi_table_check_fadt_cst_cnt(fwts_framework *fw)
+{
+	if (fadt->cst_cnt == 0) {
+		if (fadt->smi_cmd == 0)
+			fwts_passed(fw,
+				    "FADT SMI CST_CNT command is zero, "
+				    "which is allowed since SMM is not "
+				    "supported.");
+	} else {
+		if (fadt->smi_cmd == 0)
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SMMHasExtraCSTCntCmd",
+				    "FADT SMI CST_CNT command is "
+				    "non-zero, but SMM is not supported.");
+		else
+			fwts_passed(fw, "FADT SMI CST_CNT command is "
+				    "non-zero, and SMM is supported.");
+	}
+
+	return;
+}
+
 static int fadt_test1(fwts_framework *fw)
 {
 	bool passed = true;
@@ -1357,6 +1379,7 @@ static int fadt_test1(fwts_framework *fw)
 		acpi_table_check_fadt_gpe0_blk_len(fw);
 		acpi_table_check_fadt_gpe1_blk_len(fw);
 		fwts_log_info(fw, "FADT GPE1_BASE is %" PRIu8, fadt->gpe1_base);
+		acpi_table_check_fadt_cst_cnt(fw);
 
 		fwts_log_info(fw, "FADT FLUSH_SIZE is %" PRIu16,
 			      fadt->flush_size);

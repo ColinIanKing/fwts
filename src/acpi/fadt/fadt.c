@@ -20,8 +20,8 @@
  */
 #include "fwts.h"
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef FWTS_ARCH_INTEL
@@ -53,7 +53,7 @@ static int fadt_init(fwts_framework *fw)
 		fwts_log_error(fw, "ACPI table FACP does not exist!");
 		return FWTS_ERROR;
 	}
-	fadt = (const fwts_acpi_table_fadt*)table->data;
+	fadt = (const fwts_acpi_table_fadt *)table->data;
 	fadt_size = table->length;
 
 	/*  Not having a FADT is not a failure on x86 */
@@ -153,6 +153,56 @@ static int fadt_info(fwts_framework *fw)
 	fwts_infoonly(fw);
 	return FWTS_OK;
 }
+
+static int fadt_checksum(fwts_framework *fw)
+{
+	const uint8_t *data = (const uint8_t *)fadt;
+	ssize_t length = fadt->header.length;
+	uint8_t checksum = 0;
+
+	/* verify the table checksum */
+	checksum = fwts_checksum(data, length);
+	if (checksum == 0)
+		fwts_passed(fw, "FADT checksum is correct");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "SPECMADTChecksum",
+			    "FADT checksum is incorrect: 0x%x", checksum);
+
+	return FWTS_OK;
+}
+
+static int fadt_revision(fwts_framework *fw)
+{
+	const uint8_t LATEST_MAJOR = 6;
+	const uint8_t LATEST_MINOR = 1;
+	uint8_t major;
+	uint8_t minor;
+
+	major = fadt->header.revision;
+	minor = 0;
+	if (major >= 5 && fadt->header.length >= 268)
+		minor = fadt->minor_version;   /* field added ACPI 5.1 */
+
+	fwts_log_info(fw, "FADT revision: %d.%d", major, minor);
+	fwts_log_info(fw, "FADT table length: %d", fadt->header.length);
+
+	if (major == LATEST_MAJOR && minor == LATEST_MINOR)
+		fwts_passed(fw, "FADT revision is up to date.");
+	else {
+		fwts_warning(fw, "FADT revision is outdated: %d.%d",
+			     major, minor);
+		fwts_advice(fw, "The most recent revision of the FADT "
+			    "defined in the ACPI specification is %d.%d.  "
+			    "While older revisions of the FADT can be used, "
+			    "newer ones may enable additional functionality "
+			    "that cannot be used until the FADT is updated.",
+			    LATEST_MAJOR, LATEST_MINOR);
+	}
+
+	return FWTS_OK;
+}
+
 
 static void acpi_table_check_fadt_firmware_control(
 	fwts_framework *fw,
@@ -637,8 +687,10 @@ static int fadt_test3(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test fadt_tests[] = {
-	{ fadt_info, "FADT ACPI Description Table flag info." },
-	{ fadt_test1, "Test FADT ACPI Description Table tests." },
+	{ fadt_info, "ACPI FADT Description Table flag info." },
+	{ fadt_checksum, "FADT checksum test." },
+	{ fadt_revision, "FADT revision test." },
+	{ fadt_test1, "ACPI FADT Description Table tests." },
 	{ fadt_test2, "Test FADT SCI_EN bit is enabled." },
 	{ fadt_test3, "Test FADT reset register." },
 	{ NULL, NULL }

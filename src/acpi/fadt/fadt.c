@@ -306,54 +306,80 @@ static void acpi_table_check_fadt_firmware_ctrl(fwts_framework *fw)
 	}
 }
 
-static void acpi_table_check_fadt_dsdt(
-	fwts_framework *fw,
-	const fwts_acpi_table_fadt *fadt,
-	bool *passed)
+static void acpi_table_check_fadt_dsdt(fwts_framework *fw)
 {
-
+	/* check out older FADTs */
 	if (fadt->header.length < 148) {
-		if (fadt->dsdt == 0) {
-			*passed = false;
+		if (fadt->dsdt == 0)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"FADTDSDTNull",
 				"FADT DSDT address is null.");
-		}
-	} else {
-		if (fadt->x_dsdt == 0) {
-			if (fadt->dsdt == 0) {
-				*passed = false;
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"FADTXDSDTNull",
-					"FADT X_DSDT and DSDT address are null.");
-			} else {
-				*passed = false;
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"FADTXDSDTNull",
-					"FADT X_DSDT address is null.");
-				fwts_advice(fw,
-					"An ACPI 2.0 FADT is being used however "
-					"the 64 bit X_DSDT is null."
-					"The kernel will fall back to using "
-					"the 32 bit DSDT pointer instead.");
-			}
-		} else if ((uint64_t)fadt->dsdt != fadt->x_dsdt && fadt->dsdt != 0) {
-			*passed = false;
+	}
+
+	/* if one field is being used, the other should be null */
+	if ((fadt->dsdt != 0 && fadt->x_dsdt == 0) ||
+	    (fadt->dsdt == 0 && fadt->x_dsdt != 0))
+		fwts_passed(fw,
+			    "FADT has only one of X_DSDT or DSDT addresses "
+			    "being used.");
+	else {
+		if (fadt->dsdt == 0 && fadt->x_dsdt == 0)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"FADT32And64Mismatch",
-				"FADT 32 bit DSDT (0x%" PRIx32 ") "
-				"does not point to same "
-				"physical address as 64 bit X_DSDT "
-				"(0x%" PRIx64 ").",
-				fadt->dsdt, fadt->x_dsdt);
-			fwts_advice(fw,
-				"One would expect the 32 bit DSDT and "
-				"64 bit X_DSDT pointers to point to the "
-				"same DSDT, however they don't which is "
-				"clearly ambiguous and wrong. "
-				"The kernel works around this by using the "
-				"64 bit X_DSDT pointer to the DSDT. ");
-		}
+				    "FADTOneDSDTNull",
+				    "FADT X_DSDT and DSDT addresses cannot "
+				    "both be null.");
+	}
+
+	/* unexpected use of addresses */
+	if (fadt->dsdt != 0 && fadt->x_dsdt == 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTXDSDTNull",
+			    "FADT X_DSDT address is null.");
+		fwts_advice(fw,
+			    "An ACPI 2.0 or newer FADT is being used but "
+			    "the 64 bit X_DSDT is null.  "
+			    "The kernel will fall back to using "
+			    "the 32 bit DSDT pointer instead.");
+	}
+
+	/*
+	 * If you are going to insist on using both fields, even though
+	 * that is incorrect, at least make it unambiguous as to which
+	 * address is the one to use, by using the same value in both
+	 * fields.
+	 */
+	if ((uint64_t)fadt->dsdt == fadt->x_dsdt && fadt->dsdt != 0) {
+		fwts_passed(fw,
+			    "FADT 32 bit DSDT and 64 bit X_DSDT "
+			    "both point to the same physical address "
+			    "(0x%" PRIx64 ").", fadt->x_dsdt);
+		fwts_advice(fw,
+			    "While it is not correct to use both of the "
+			    "32- and 64-bit DSDT address fields in recent "
+			    "versions of ACPI, they are at least the same "
+			    "address, which keeps the kernel from getting "
+			    "confused.  At some point, the 32-bit DSDT "
+			    "address may get ignored so it is recommended "
+			    "that the FADT be upgraded to only use the 64-"
+			    "bit X_DSDT field.  In the meantime, however, "
+			    "ACPI will still behave correctly.");
+	}
+	if ((uint64_t)fadt->dsdt != fadt->x_dsdt && fadt->dsdt != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADT32And64Mismatch",
+			    "FADT 32 bit DSDT (0x%" PRIx32 ") "
+			    "does not point to same "
+			    "physical address as 64 bit X_DSDT "
+			    "(0x%" PRIx64 ").",
+			    fadt->dsdt, fadt->x_dsdt);
+		fwts_advice(fw,
+			    "One would expect the 32 bit DSDT and "
+			    "64 bit X_DSDT pointers to point to the "
+			    "same DSDT, however they don't which is "
+			    "clearly ambiguous and wrong. "
+			    "The kernel works around this by assuming the "
+			    "64 bit X_DSDT pointer to the DSDT is the correct "
+			    "one to use.");
 	}
 }
 
@@ -542,7 +568,7 @@ static int fadt_test1(fwts_framework *fw)
 	bool passed = true;
 
 	acpi_table_check_fadt_firmware_ctrl(fw);
-	acpi_table_check_fadt_dsdt(fw, fadt, &passed);
+	acpi_table_check_fadt_dsdt(fw);
 	acpi_table_check_fadt_smi(fw, fadt, &passed);
 	acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
 	acpi_table_check_fadt_gpe(fw, fadt, &passed);

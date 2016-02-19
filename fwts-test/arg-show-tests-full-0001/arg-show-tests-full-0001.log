@@ -37,8 +37,11 @@ ACPI tests:
   ERST Error Record Serialization Table test.
  facs            (1 test):
   FACS Firmware ACPI Control Structure test.
- fadt            (3 tests):
-  Test FADT ACPI Description Table tests.
+ fadt            (6 tests):
+  ACPI FADT Description Table flag info.
+  FADT checksum test.
+  FADT revision test.
+  ACPI FADT Description Table tests.
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
  fpdt            (1 test):
@@ -371,8 +374,11 @@ Batch tests:
   ERST Error Record Serialization Table test.
  facs            (1 test):
   FACS Firmware ACPI Control Structure test.
- fadt            (3 tests):
-  Test FADT ACPI Description Table tests.
+ fadt            (6 tests):
+  ACPI FADT Description Table flag info.
+  FADT checksum test.
+  FADT revision test.
+  ACPI FADT Description Table tests.
   Test FADT SCI_EN bit is enabled.
   Test FADT reset register.
  fan             (2 tests):
@@ -891,6 +897,13 @@ UEFI tests:
   Test UEFI RT service get variable interface, invalid parameters.
 
 ACPI Spec Compliance tests:
+ fadt            (6 tests):
+  ACPI FADT Description Table flag info.
+  FADT checksum test.
+  FADT revision test.
+  ACPI FADT Description Table tests.
+  Test FADT SCI_EN bit is enabled.
+  Test FADT reset register.
  madt            (5 tests):
   MADT checksum test.
   MADT revision test.

@@ -172,5 +172,6 @@ UEFI tests:
  uefirtvariable  UEFI Runtime service variable interface tests.
 
 ACPI Spec Compliance tests:
+ fadt            FADT Fixed ACPI Description Table tests.
  madt            MADT Multiple APIC Description Table (spec compliant).
  rsdp            RSDP Root System Description Pointer test.

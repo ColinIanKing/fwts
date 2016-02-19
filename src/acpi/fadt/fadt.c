@@ -20,13 +20,18 @@
  */
 #include "fwts.h"
 
-#ifdef FWTS_ARCH_INTEL
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef FWTS_ARCH_INTEL
 #include <sys/io.h>
+#else
+static inline int ioperm(int a, ...)
+{
+	return a * 0;
+}
+#endif
 #include <unistd.h>
 #include <inttypes.h>
 #include <string.h>
@@ -549,6 +554,7 @@ static fwts_framework_ops fadt_ops = {
 	.minor_tests = fadt_tests
 };
 
-FWTS_REGISTER("fadt", &fadt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("fadt", &fadt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
+	      FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI |
+	      FWTS_FLAG_TEST_COMPLIANCE_ACPI)
 
-#endif

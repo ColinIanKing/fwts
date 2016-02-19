@@ -72,6 +72,88 @@ static int fadt_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static void flag_info(fwts_framework *fw, const char *name, int state)
+{
+	const char *enabled = "set";
+	const char *disabled = "not set";
+	const char *ptr;
+
+	ptr = (state) ? enabled : disabled;
+	fwts_log_info(fw, "     %s is %s", name, ptr);
+}
+
+static int fadt_info(fwts_framework *fw)
+{
+	fwts_log_info(fw, "FADT: flag states");
+	flag_info(fw, "WBINVD",
+		  fadt->flags & FWTS_FACP_FLAG_WBINVD);
+	flag_info(fw, "WBINVD_FLUSH",
+		  fadt->flags & FWTS_FACP_FLAG_WBINVD_FLUSH);
+	flag_info(fw, "PROC_C1",
+		  fadt->flags & FWTS_FACP_FLAG_PROC_C1);
+	flag_info(fw, "P_LVL2_UP",
+		  fadt->flags & FWTS_FACP_FLAG_P_LVL2_UP);
+	flag_info(fw, "PWR_BUTTON",
+		  fadt->flags & FWTS_FACP_FLAG_PWR_BUTTON);
+	flag_info(fw, "SLP_BUTTON",
+		  fadt->flags & FWTS_FACP_FLAG_SLP_BUTTON);
+	flag_info(fw, "FIX_RTC",
+		  fadt->flags & FWTS_FACP_FLAG_FIX_RTC);
+	flag_info(fw, "RTC_S4",
+		  fadt->flags & FWTS_FACP_FLAG_RTC_S4);
+	flag_info(fw, "TMR_VAL_EXT",
+		  fadt->flags & FWTS_FACP_FLAG_TMR_VAL_EXT);
+	flag_info(fw, "DCK_CAP",
+		  fadt->flags & FWTS_FACP_FLAG_DCK_CAP);
+	flag_info(fw, "RESET_REG_SUP",
+		  fadt->flags & FWTS_FACP_FLAG_RESET_REG_SUP);
+	flag_info(fw, "SEALED_CASE",
+		  fadt->flags & FWTS_FACP_FLAG_SEALED_CASE);
+	flag_info(fw, "HEADLESS",
+		  fadt->flags & FWTS_FACP_FLAG_HEADLESS);
+	flag_info(fw, "CPU_SW_SLP",
+		  fadt->flags & FWTS_FACP_FLAG_CPU_SW_SLP);
+	flag_info(fw, "PCI_EXP_WAK",
+		  fadt->flags & FWTS_FACP_FLAG_PCI_EXP_WAK);
+	flag_info(fw, "USE_PLATFORM_CLOCK",
+		  fadt->flags & FWTS_FACP_FLAG_USE_PLATFORM_CLOCK);
+	flag_info(fw, "S4_RTC_STS_VALID",
+		  fadt->flags & FWTS_FACP_FLAG_S4_RTC_STS_VALID);
+	flag_info(fw, "REMOTE_POWER_ON_CAPABLE",
+		  fadt->flags & FWTS_FACP_FLAG_REMOTE_POWER_ON_CAPABLE);
+	flag_info(fw, "FORCE_APIC_CLUSTER_MODEL",
+		  fadt->flags & FWTS_FACP_FLAG_FORCE_APIC_CLUSTER_MODEL);
+	flag_info(fw, "FORCE_APIC_PHYSICAL_DESTINATION_MODE",
+		  fadt->flags & FWTS_FACP_FLAG_FORCE_APIC_PHYSICAL_DESTINATION_MODE);
+	flag_info(fw, "HW_REDUCED_ACPI",
+		  fadt->flags & FWTS_FACP_FLAG_HW_REDUCED_ACPI);
+	flag_info(fw, "LOW_POWER_S0_IDLE_CAPABLE",
+		  fadt->flags & FWTS_FACP_FLAG_LOW_POWER_S0_IDLE_CAPABLE);
+
+	fwts_log_info(fw, "FADT: IA-PC Boot Architecture flag states");
+	flag_info(fw, "LEGACY_DEVICES", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_LEGACY_DEVICES);
+	flag_info(fw, "8042", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_8042);
+	flag_info(fw, "VGA_NOT_PRESENT", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_VGA_NOT_PRESENT);
+	flag_info(fw, "MSI_NOT_SUPPORTED", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_MSI_NOT_SUPPORTED);
+	flag_info(fw, "PCIE_ASPM_CONTROLS", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_PCIE_ASPM_CONTROLS);
+	flag_info(fw, "CMOS_RTC_NOT_PRESENT", fadt->iapc_boot_arch &
+		  FWTS_FACP_IAPC_BOOT_ARCH_CMOS_RTC_NOT_PRESENT);
+
+	fwts_log_info(fw, "FADT: ARM Boot Architecture flag states");
+	flag_info(fw, "PSCI_COMPLIANT", fadt->arm_boot_flags &
+		  FWTS_FACP_ARM_BOOT_ARCH_PSCI_COMPLIANT);
+	flag_info(fw, "PSCI_USE_HVC", fadt->arm_boot_flags &
+		  FWTS_FACP_ARM_BOOT_ARCH_PSCI_USE_HVC);
+
+	fwts_infoonly(fw);
+	return FWTS_OK;
+}
+
 static void acpi_table_check_fadt_firmware_control(
 	fwts_framework *fw,
 	const fwts_acpi_table_fadt *fadt,
@@ -559,6 +641,7 @@ static int fadt_test3(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test fadt_tests[] = {
+	{ fadt_info, "FADT ACPI Description Table flag info." },
 	{ fadt_test1, "Test FADT ACPI Description Table tests." },
 	{ fadt_test2, "Test FADT SCI_EN bit is enabled." },
 	{ fadt_test3, "Test FADT reset register." },

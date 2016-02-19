@@ -412,6 +412,11 @@ static int fadt_test2(fwts_framework *fw)
 		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
 
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		fwts_skipped(fw, "In reduced hardware mode, skipping test.");
+		return FWTS_OK;
+	}
+
 	port = fadt->pm1a_cnt_blk;
 	width = fadt->pm1_cnt_len * 8;	/* In bits */
 
@@ -487,6 +492,11 @@ static int fadt_test2(fwts_framework *fw)
 
 static int fadt_test3(fwts_framework *fw)
 {
+	if (fwts_acpi_is_reduced_hardware(fadt)) {
+		fwts_skipped(fw, "In reduced hardware mode, skipping test.");
+		return FWTS_OK;
+	}
+
 	if ((fadt->header.revision == 1) || (fadt->header.length < 244)) {
 		fwts_skipped(fw, "Header size indicates an ACPI 1.0 FADT, skipping test.");
 		return FWTS_SKIP;

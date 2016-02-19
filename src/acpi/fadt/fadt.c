@@ -383,6 +383,306 @@ static void acpi_table_check_fadt_dsdt(fwts_framework *fw)
 	}
 }
 
+static void acpi_table_check_fadt_reserved(fwts_framework *fw)
+{
+	if (fadt->reserved == (uint8_t)0)
+		fwts_passed(fw, "FADT first reserved field is zero.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
+			    "FADT first reserved field is not zero: 0x%02x",
+			    fadt->reserved);
+
+	if (fadt->reserved1 == (uint8_t)0)
+		fwts_passed(fw, "FADT second reserved field is zero.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
+			    "FADT second reserved field is not zero: 0x%02x",
+			    fadt->reserved1);
+}
+
+static void acpi_table_check_fadt_pm_profile(fwts_framework *fw)
+{
+	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
+		fadt->preferred_pm_profile,
+		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
+
+	if (fadt->preferred_pm_profile <= 8)
+		fwts_passed(fw, "FADT has a valid preferred PM profile.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPMProfile",
+			    "FADT preferred PM profile is invalid.");
+}
+
+static void acpi_table_check_fadt_reduced_hardware(fwts_framework *fw)
+{
+	const char *IS = "IS";
+	const char *IS_NOT = "IS NOT";
+	bool rhw;
+	bool passed;
+	const fwts_acpi_gas null_gas = { 0 };
+	uint32_t flag_mask;
+
+	rhw = fwts_acpi_is_reduced_hardware(fadt);
+	fwts_log_info(fw, "FADT indicates ACPI %s in reduced hardware mode.",
+		      rhw ? IS : IS_NOT);
+
+	if (!rhw)
+		return;
+
+	passed = true;
+
+	/* check all the fields that will be ignored */
+	if (fadt->smi_cmd != 0) {
+		passed = false;
+		fwts_log_info(fw, "SMI_CMD is non-zero: 0x%x",
+			      fadt->smi_cmd);
+	}
+	if (fadt->acpi_enable != 0) {
+		passed = false;
+		fwts_log_info(fw, "ACPI_ENABLE is non-zero: 0x%x",
+			      fadt->acpi_enable);
+	}
+	if (fadt->acpi_disable != 0) {
+		passed = false;
+		fwts_log_info(fw, "ACPI_DISABLE is non-zero: 0x%x",
+			      fadt->acpi_disable);
+	}
+	if (fadt->s4bios_req != 0) {
+		passed = false;
+		fwts_log_info(fw, "S4BIOS_REQ is non-zero: 0x%x",
+			      fadt->s4bios_req);
+	}
+	if (fadt->pstate_cnt != 0) {
+		passed = false;
+		fwts_log_info(fw, "PSTATE_CNT is non-zero: 0x%x",
+			      fadt->pstate_cnt);
+	}
+	if (fadt->pm1a_evt_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1A_EVT_BLK is non-zero: 0x%x",
+			      fadt->pm1a_evt_blk);
+	}
+	if (fadt->pm1b_evt_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1B_EVT_BLK is non-zero: 0x%x",
+			      fadt->pm1b_evt_blk);
+	}
+	if (fadt->pm1a_cnt_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1A_CNT_BLK is non-zero: 0x%x",
+			      fadt->pm1a_cnt_blk);
+	}
+	if (fadt->pm1b_cnt_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1B_CNT_BLK is non-zero: 0x%x",
+			      fadt->pm1b_cnt_blk);
+	}
+	if (fadt->pm2_cnt_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM2_CNT_BLK is non-zero: 0x%x",
+			      fadt->pm2_cnt_blk);
+	}
+	if (fadt->pm_tmr_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM_TMR_BLK is non-zero: 0x%x",
+			      fadt->pm_tmr_blk);
+	}
+	if (fadt->gpe0_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "GPE0_BLK is non-zero: 0x%x",
+			      fadt->gpe0_blk);
+	}
+	if (fadt->gpe1_blk != 0) {
+		passed = false;
+		fwts_log_info(fw, "GPE1_BLK is non-zero: 0x%x",
+			      fadt->gpe1_blk);
+	}
+	if (fadt->pm1_evt_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1_EVT_LEN is non-zero: 0x%x",
+			      fadt->pm1_evt_len);
+	}
+	if (fadt->pm1_cnt_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM1_CNT_LEN is non-zero: 0x%x",
+			      fadt->pm1_cnt_len);
+	}
+	if (fadt->pm2_cnt_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM2_CNT_LEN is non-zero: 0x%x",
+			      fadt->pm2_cnt_len);
+	}
+	if (fadt->pm_tmr_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "PM_TMR_LEN is non-zero: 0x%x",
+			      fadt->pm_tmr_len);
+	}
+	if (fadt->gpe0_blk_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "GPE0_BLK_LEN is non-zero: 0x%x",
+			      fadt->gpe0_blk_len);
+	}
+	if (fadt->gpe1_blk_len != 0) {
+		passed = false;
+		fwts_log_info(fw, "GPE1_BLK_LEN is non-zero: 0x%x",
+			      fadt->gpe1_blk_len);
+	}
+	if (fadt->gpe1_base != 0) {
+		passed = false;
+		fwts_log_info(fw, "GPE1_BASE is non-zero: 0x%x",
+			      fadt->gpe1_base);
+	}
+	if (fadt->cst_cnt != 0) {
+		passed = false;
+		fwts_log_info(fw, "CST_CNT is non-zero: 0x%x",
+			      fadt->cst_cnt);
+	}
+	if (fadt->p_lvl2_lat != 0) {
+		passed = false;
+		fwts_log_info(fw, "P_LVL2_LAT is non-zero: 0x%x",
+			      fadt->p_lvl2_lat);
+	}
+	if (fadt->p_lvl3_lat != 0) {
+		passed = false;
+		fwts_log_info(fw, "P_LVL3_LAT is non-zero: 0x%x",
+			      fadt->p_lvl3_lat);
+	}
+	if (fadt->flush_size != 0) {
+		passed = false;
+		fwts_log_info(fw, "FLUSH_SIZE is non-zero: 0x%x",
+			      fadt->flush_size);
+	}
+	if (fadt->flush_stride != 0) {
+		passed = false;
+		fwts_log_info(fw, "FLUSH_STRIDE is non-zero: 0x%x",
+			      fadt->flush_stride);
+	}
+	if (fadt->duty_offset != 0) {
+		passed = false;
+		fwts_log_info(fw, "DUTY_OFFSET is non-zero: 0x%x",
+			      fadt->duty_offset);
+	}
+	if (fadt->duty_width != 0) {
+		passed = false;
+		fwts_log_info(fw, "DUTY_WIDTH is non-zero: 0x%x",
+			      fadt->duty_width);
+	}
+	if (fadt->day_alrm != 0) {
+		passed = false;
+		fwts_log_info(fw, "DAY_ALRM is non-zero: 0x%x",
+			      fadt->day_alrm);
+	}
+	if (fadt->mon_alrm != 0) {
+		passed = false;
+		fwts_log_info(fw, "MON_ALRM is non-zero: 0x%x",
+			      fadt->mon_alrm);
+	}
+	if (fadt->century != 0) {
+		passed = false;
+		fwts_log_info(fw, "CENTURY is non-zero: 0x%x",
+			      fadt->century);
+	}
+	if (memcmp((void *)&fadt->x_pm1a_evt_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM1A_EVT_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_pm1b_evt_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM1B_EVT_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_pm1a_cnt_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM1A_CNT_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_pm1b_cnt_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM1B_CNT_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_pm2_cnt_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM2_CNT_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_pm_tmr_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_PM_TMR_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_gpe0_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_GPE0_BLK is a non-zero general "
+			      "address structure.");
+	}
+	if (memcmp((void *)&fadt->x_gpe1_blk,
+		   (void *)&null_gas,
+		   sizeof(fwts_acpi_gas))) {
+		passed = false;
+		fwts_log_info(fw,
+			      "X_GPE1_BLK is a non-zero general "
+			      "address structure.");
+	}
+
+	if (passed)
+		fwts_passed(fw, "All FADT reduced hardware fields are zero.");
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTRHWNonZero",
+			    "Some FADT reduced hardware fields are non-zero.");
+
+	/* now check all the reserved flags */
+	flag_mask = FWTS_FACP_FLAG_WBINVD_FLUSH		|
+		    FWTS_FACP_FLAG_PROC_C1		|
+		    FWTS_FACP_FLAG_P_LVL2_UP		|
+		    FWTS_FACP_FLAG_RTC_S4		|
+		    FWTS_FACP_FLAG_TMR_VAL_EXT		|
+		    FWTS_FACP_FLAG_HEADLESS		|
+		    FWTS_FACP_FLAG_CPU_SW_SLP		|
+		    FWTS_FACP_FLAG_PCI_EXP_WAK		|
+		    FWTS_FACP_FLAG_S4_RTC_STS_VALID	|
+		    FWTS_FACP_FLAG_REMOTE_POWER_ON_CAPABLE;
+
+	if (fadt->flags & flag_mask)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTRHWFlagsNonZero",
+			    "Some FADT reduced hardware flags are set.");
+	else
+		fwts_passed(fw, "All FADT reduced hardware flags are not set.");
+
+
+	if ((fadt->flags & FWTS_FACP_FLAG_FORCE_APIC_CLUSTER_MODEL) ||
+	    (fadt->flags & FWTS_FACP_FLAG_FORCE_APIC_PHYSICAL_DESTINATION_MODE))
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "FADTRHWAPICFlags",
+			    "FADT APIC flags are set for reduced hardware "
+			    "mode but may be irrelevant.");
+	else
+		fwts_passed(fw,
+			    "FADT APIC flags are not set in reduced "
+			    "hardware mode.");
+}
 
 static void acpi_table_check_fadt_smi(
 	fwts_framework *fw,
@@ -569,6 +869,9 @@ static int fadt_test1(fwts_framework *fw)
 
 	acpi_table_check_fadt_firmware_ctrl(fw);
 	acpi_table_check_fadt_dsdt(fw);
+	acpi_table_check_fadt_reserved(fw);
+	acpi_table_check_fadt_pm_profile(fw);
+	acpi_table_check_fadt_reduced_hardware(fw);
 	acpi_table_check_fadt_smi(fw, fadt, &passed);
 	acpi_table_check_fadt_pm_tmr(fw, fadt, &passed);
 	acpi_table_check_fadt_gpe(fw, fadt, &passed);

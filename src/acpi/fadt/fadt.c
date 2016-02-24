@@ -444,7 +444,7 @@ static void acpi_table_check_fadt_reduced_hardware(fwts_framework *fw)
 	const char *IS_NOT = "IS NOT";
 	bool rhw;
 	bool passed;
-	const fwts_acpi_gas null_gas = { 0 };
+	static const fwts_acpi_gas null_gas;
 	uint32_t flag_mask;
 
 	rhw = fwts_acpi_is_reduced_hardware(fadt);

@@ -195,22 +195,25 @@ int fwts_cpu_is_AMD(bool *is_amd)
  */
 fwts_bool fwts_cpu_has_c1e(void)
 {
+#if FWTS_ARCH_X86
 	uint64_t val;
+	fwts_bool rc = FWTS_FALSE;
 
 	fwts_cpuinfo_x86 *cpu;
 
 	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_BOOL_ERROR;
 
+	/* no C1E on AMD */
         if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {
-		fwts_cpu_free_info(cpu);
-		return FWTS_FALSE;
+		rc = FWTS_FALSE;
+		goto free_info;
 	}
 
         /* Family 0x0f models < rev F do not have C1E */
         if (cpu->x86 == 0x0F && cpu->x86_model >= 0x40) {
-		fwts_cpu_free_info(cpu);
-                return FWTS_TRUE;
+                rc = FWTS_FALSE;
+		goto free_info;
 	}
 
         if (cpu->x86 == 0x10) {
@@ -219,23 +222,30 @@ fwts_bool fwts_cpu_has_c1e(void)
                  * by erratum #400
                  */
 		if (strstr(cpu->flags, "osvw") != NULL) {
-			if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_ID_LENGTH, &val) != FWTS_OK)
-				return FWTS_BOOL_ERROR;
+			if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_ID_LENGTH, &val) != FWTS_OK) {
+				rc = FWTS_BOOL_ERROR;
+				goto free_info;
+			}
 
                         if (val >= 2) {
                                 if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val) != FWTS_OK)
-					return FWTS_BOOL_ERROR;
+					rc = FWTS_BOOL_ERROR;
+					goto free_info;
                                 if (!(val & 2)) {
-					fwts_cpu_free_info(cpu);
-					return FWTS_FALSE;
+					rc = FWTS_FALSE;
+					goto free_info;
 				}
                         }
                 }
-		fwts_cpu_free_info(cpu);
-                return FWTS_TRUE;
+                rc = FWTS_TRUE;
         }
+
+free_info:
 	fwts_cpu_free_info(cpu);
+	return rc;
+#else
 	return FWTS_FALSE;
+#endif
 }
 
 /*

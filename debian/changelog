@@ -1,3 +1,89 @@
+fwts (16.02.00-0ubuntu1) xenial; urgency=low
+
+  [Al Stone]
+  * Start defining FWTS architectures as variables
+  * Define some utility functions for using the fwts_architecture enum
+  * Add mechanism to tell FWTS what architecture is being tested
+  * ACPI: MADT: add in compliance tests for the MADT and subtables
+  * ACPI: Add in MADT subtable description for GIC ITS subtable
+  * ACPI: MADT: add in compliance checks for the GIC ITS subtable
+  * Documentation: add --acpicompliance to man page
+  * Documentation: add --arch to the man page
+  * RSDP: minor cleanups to rsdp.c for checkpatch issues
+  * utilities: add a helper function for printing out architecture names
+  * ACPI tables: when bodging up an RSDP, do the right thing for the arch
+  * ACPI RSDP: flesh out the tests to check for full spec compliance.
+  * Update regression test rsdp-0001/test-0001.sh
+  * Update the regression test arg-help-0001/test-0001.sh
+  * Update regression test for arg-help-0001/test-0002.sh
+  * Update regression test for arg-show-tests-0001/test-0001.sh
+  * Update regression test arg-show-tests-full-0001/test-0001.sh
+  * Update the regression test arg-table-path-0001/test-0001.sh
+  * Update the regression test madt-0001/test-0001.sh
+  * Update the regression test madt-0001/test-0002.sh
+  * FADT: enable compiling on non-x86 architectures
+  * FADT: non-x86 machines need an FADT but x86 can survive without one
+  * FADT: disable SCI_EN and RESET_REG tests when in reduced hardware mode
+  * FADT: add in code to log basic info about the various FADT flag fields
+  * Add in bit masks for FACS flags.
+  * FADT: move log info out of test2, will provide it elsewhere
+  * ACPI: Add hypervisor ID field to FADT.
+  * FADT: minor cleanup and initial compliance tests
+  * FADT: expand the compliance test for FIRMWARE_CTRL fields
+  * FADT: expand compliance checks for DSDT and X_DSDT fields
+  * FADT: add compliance tests for reserved fields, PM profile, reduced hardware
+  * FADT: restructure test sequence around reduced hardware mode
+  * FADT: expand compliance tests for the SMI_CMD field
+  * FADT: add compliance tests for the ACPI_ENABLE and ACPI_DISABLE fields
+  * FADT: add compliance tests for S4BIOS_REQ and PSTATE_CNT fields
+  * FADT: extend and add PM address block compliance tests
+  * FADT: enhance compliance tests for GPE blocks
+  * FADT: add compliance test for the CST_CNT field
+  * FADT: add in compliance tests for C2/C3 latency fields
+  * FADT: add in SLEEP_CONTROL_REG and SLEEP_STATUS_REG compliance tests
+  * FADT: remove no longer useful variables from test1
+  * FADT: add safety checks for older versions of FADT
+  * FADT: update regression tests to incorporate new/changed tests
+
+  [Alex Hung]
+  * acpi: method: add _PMC test
+  * acpi: method: add _PRT test
+  * fwts-test: update for _PMC and _PRT tests
+  * acpi: method: add _RDI test
+  * acpi: method: add _LPI test
+  * fwts-test: update for _RDI and _LPI tests
+  * acpi: method: remove non-method names from the top comments
+  * acpi: erst: fix incorrect error message for reserved field
+  * fwts-test: update erst test for the fix of reserved field
+
+  [Colin Ian King]
+  * lib: fwts_klog: fix incorrect indentation, detected by gcc-6
+  * lib: fwts_hwinfo: clean up type punning, fixes warning with gcc-6
+  * fwts: wakealarm: reset wakealarm timer at end of test (LP: #1534003)
+  * Update arg-show-tests-full now that we have an extra test in wakealarm
+  * dmi: dmicheck: add some simple sanity checks to table size
+  * lib: fwts_args: use safer strncat than strcat
+  * lib: fwts_acpi_tables: don't do expensive low allocs multiple times
+  * acpi: fadt: check 32/64 bit PM register addresses for inconsistency
+    (LP: #1536606)
+  * acpi: madt: fix incorrect format specifier for size_t
+  * cpu: microcode: fix a couple of warnings found by cppcheck:
+  * acpi: madt: clean up some minor style issues detected by cppcheck
+  * data: klog.json: update to sync with 4.6 kernel changes
+  * ACPICA: Update to version 20160212 (LP: #1545099)
+  * lib: fwts_acpi_tables: fix warnings found by clang scan-build
+  * lib: fwts_cpu: check for MSR read failures
+  * lib: fwts_klog: handle the case where klog_old is empty list
+  * acpica: fix disassembly on i386 platforms (LP: #1547469)
+  * lib: fwts_arch: i686 arch name is also an X86 arch (LP: #1547554)
+  * fwts-test: only run rsdp regression test on specific arches (LP: #1547602)
+  * Fix null_gass initializer for older versions of gcc (LP: #1549429)
+
+  [Ivan Hu]
+  * fwts-test: sync up with the arg-table-path
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 25 Feb 2016 15:47:39 +0800
+
 fwts (16.01.00-0ubuntu1) xenial; urgency=low
 
   [Alex Hung]

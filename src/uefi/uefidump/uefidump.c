@@ -16,11 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
+
 #include <stddef.h>
 #include <inttypes.h>
 #include <ctype.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 
 
@@ -1500,3 +1503,5 @@ static fwts_framework_ops uefidump_ops = {
 };
 
 FWTS_REGISTER("uefidump", &uefidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
+
+#endif

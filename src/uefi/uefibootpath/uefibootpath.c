@@ -16,12 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
 
 #include <inttypes.h>
 #include <stddef.h>
 #include <ctype.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 
 static int errors;
@@ -888,3 +890,5 @@ static fwts_framework_ops uefibootpath_ops = {
 };
 
 FWTS_REGISTER("uefibootpath", &uefibootpath_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV);
+
+#endif

@@ -16,11 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
 
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 
 #define FWTS_ESRT_DIR_PATH		"/sys/firmware/efi/esrt/entries"
@@ -205,3 +207,5 @@ static fwts_framework_ops esrtdump_ops = {
 };
 
 FWTS_REGISTER("esrtdump", &esrtdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
+
+#endif

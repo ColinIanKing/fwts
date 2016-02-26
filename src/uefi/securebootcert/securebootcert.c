@@ -16,10 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
+
 #include <stddef.h>
 #include <inttypes.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 #include "sbkeydefs.h"
 
@@ -400,3 +403,5 @@ static fwts_framework_ops securebootcert_ops = {
 };
 
 FWTS_REGISTER("securebootcert", &securebootcert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
+
+#endif

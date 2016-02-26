@@ -16,6 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -23,7 +26,6 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 #include "efi_runtime.h"
 #include "fwts_efi_module.h"
@@ -1976,3 +1978,5 @@ static fwts_framework_ops uefirtvariable_ops = {
 };
 
 FWTS_REGISTER("uefirtvariable", &uefirtvariable_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV)
+
+#endif

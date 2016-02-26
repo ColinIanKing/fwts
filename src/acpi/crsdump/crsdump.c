@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -917,3 +919,5 @@ static fwts_framework_ops crsdump_ops = {
 };
 
 FWTS_REGISTER("crsdump", &crsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)
+
+#endif

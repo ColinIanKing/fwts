@@ -35,6 +35,8 @@
 
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 /* ACPICA specific headers */
 #include "acpi.h"
 #include "accommon.h"
@@ -1195,3 +1197,5 @@ fwts_list *fwts_acpica_get_object_names(int type)
 
 	return list;
 }
+
+#endif

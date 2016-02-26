@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -455,3 +457,4 @@ ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw,
         return AcpiEvaluateObject(NULL, name, arg_list, buf);
 }
 
+#endif

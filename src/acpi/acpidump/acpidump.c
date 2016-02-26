@@ -13,6 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -22,8 +26,6 @@
 #include <dirent.h>
 #include <inttypes.h>
 #include <unistd.h>
-
-#include "fwts.h"
 
 static void acpi_dump_raw_table(
 	fwts_framework *fw,
@@ -212,3 +214,5 @@ static fwts_framework_ops acpidump_ops = {
 };
 
 FWTS_REGISTER("acpidump", &acpidump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)
+
+#endif

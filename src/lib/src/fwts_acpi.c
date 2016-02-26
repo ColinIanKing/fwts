@@ -28,6 +28,8 @@
 
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 const char *fwts_acpi_fadt_preferred_pm_profile[] = {
 	"Unspecified",
 	"Desktop",
@@ -48,3 +50,5 @@ void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data)
 {
 	memcpy(hdr, data, sizeof(fwts_acpi_table_header));
 }
+
+#endif

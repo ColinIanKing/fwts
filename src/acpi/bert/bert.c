@@ -20,6 +20,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -185,3 +187,5 @@ static fwts_framework_ops bert_ops = {
 };
 
 FWTS_REGISTER("bert", &bert_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+
+#endif

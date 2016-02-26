@@ -13,6 +13,9 @@
  *
  */
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -114,3 +117,5 @@ static fwts_framework_ops tpm2_ops = {
 };
 
 FWTS_REGISTER("tpm2", &tpm2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+
+#endif

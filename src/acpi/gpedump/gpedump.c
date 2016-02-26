@@ -17,6 +17,9 @@
  *
  */
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <inttypes.h>
@@ -179,3 +182,5 @@ static fwts_framework_ops gpedump_ops = {
 };
 
 FWTS_REGISTER("gpedump", &gpedump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)
+
+#endif

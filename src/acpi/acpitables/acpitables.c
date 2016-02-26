@@ -13,6 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -22,8 +26,6 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <inttypes.h>
-
-#include "fwts.h"
 
 static bool acpi_table_check_field(const char *field, const size_t len)
 {
@@ -126,3 +128,5 @@ static fwts_framework_ops acpi_table_check_ops = {
 };
 
 FWTS_REGISTER("acpitables", &acpi_table_check_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+
+#endif

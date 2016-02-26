@@ -19,6 +19,9 @@
  *
  */
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include "fwts_acpi_object_eval.h"
 
 #include <stdio.h>
@@ -1839,4 +1842,4 @@ static fwts_framework_ops fadt_ops = {
 FWTS_REGISTER("fadt", &fadt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
 	      FWTS_FLAG_ROOT_PRIV | FWTS_FLAG_TEST_ACPI |
 	      FWTS_FLAG_TEST_COMPLIANCE_ACPI)
-
+#endif

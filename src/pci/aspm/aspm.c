@@ -16,6 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -29,7 +33,6 @@
 #include <fcntl.h>
 #include <limits.h>
 #include <inttypes.h>
-#include "fwts.h"
 
 /* PCI Express Capability Structure Fields */
 #define FWTS_PCIE_ASPM_SUPPORT_L0_FIELD	0x0400
@@ -278,3 +281,5 @@ static fwts_framework_ops aspm_ops = {
 };
 
 FWTS_REGISTER("aspm", &aspm_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
+
+#endif

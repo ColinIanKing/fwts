@@ -22,6 +22,8 @@
 
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #define ACPI_MAX_TABLES		(128)
 
 typedef enum {
@@ -50,5 +52,7 @@ int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_inf
 uint8_t fwts_acpi_checksum(const uint8_t *data, const int length);
 
 fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);
+
+#endif
 
 #endif

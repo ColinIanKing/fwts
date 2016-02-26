@@ -134,6 +134,7 @@ static int dump_lspci(fwts_framework *fw)
 	return dump_exec("lspci.log", command);
 }
 
+#if defined(FWTS_HAS_ACPI)
 /*
  *  dump_acpi_table()
  *	hex dump of a ACPI table
@@ -185,6 +186,7 @@ static int dump_acpi_tables(fwts_framework *fw)
 
 	return FWTS_OK;
 }
+#endif
 
 /*
  *  dump_readme()
@@ -290,6 +292,7 @@ int fwts_dump_info(fwts_framework *fw)
 	else
 		printf("Dumped lspci data to lspci.log\n");
 
+#if defined(FWTS_HAS_ACPI)
 	switch (dump_acpi_tables(fw)) {
 		case FWTS_OK:
 			printf("Dumped ACPI tables to acpidump.log\n");
@@ -301,6 +304,7 @@ int fwts_dump_info(fwts_framework *fw)
 			fprintf(stderr, "Failed to dump ACPI tables.\n");
 			break;
 	}
+#endif
 
 	if (dump_cpuinfo() != FWTS_OK)
 		fprintf(stderr, "Failed to dump cpuinfo.\n");

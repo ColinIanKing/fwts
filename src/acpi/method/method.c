@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +28,6 @@
 #include <ctype.h>
 #include <inttypes.h>
 #include "fwts_acpi_object_eval.h"
-
 
 /*
  * ACPI methods + objects used in Linux ACPI driver:
@@ -7197,3 +7198,5 @@ static fwts_framework_ops method_ops = {
 };
 
 FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+
+#endif

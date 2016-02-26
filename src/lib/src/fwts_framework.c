@@ -1250,8 +1250,13 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
 		case 29: /* --disassemble-aml */
+#if defined(FWTS_HAS_ACPI)
 			fwts_iasl_disassemble_all_to_file(fw, optarg);
 			return FWTS_COMPLETE;
+#else
+			fprintf(stderr, "option not available on this architecture\n");
+			return FWTS_ERROR;
+#endif
 		case 30: /* --log-type */
 			if (fwts_framework_log_type_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
@@ -1569,7 +1574,9 @@ tidy:
 	fwts_log_close(fw->results);
 
 tidy_close:
+#if defined(FWTS_HAS_ACPI)
 	fwts_acpi_free_tables();
+#endif
 	fwts_summary_deinit();
 
 	free(fw->lspci);

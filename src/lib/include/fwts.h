@@ -24,11 +24,20 @@
 
 #if defined(__x86_64__) || defined(__x86_64) || defined(__i386__) || defined(__i386)
 #define FWTS_ARCH_INTEL	1
+#define FWTS_HAS_ACPI	1
+#define FWTS_HAS_UEFI	1
 #endif
 
 #if defined(__aarch64__)
 #define FWTS_ARCH_AARCH64	1
+#define FWTS_HAS_ACPI	1
+#define FWTS_HAS_UEFI	1
 #endif
+
+#if defined(__s390x__)
+#define FWTS_ARCH_S390X	1
+#endif
+
 
 #define FWTS_UNUSED(var)	(void)var
 

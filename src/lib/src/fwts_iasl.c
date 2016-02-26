@@ -28,6 +28,9 @@
 #include <limits.h>
 
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include "fwts_iasl_interface.h"
 #include "fwts_acpica.h"
 
@@ -317,3 +320,5 @@ const char *fwts_iasl_exception_level(uint8_t level)
 {
 	return fwts_iasl_exception_level__(level);
 }
+
+#endif

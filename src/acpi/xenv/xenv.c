@@ -16,10 +16,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
+#include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include <string.h>
 #include <inttypes.h>
-
-#include "fwts.h"
 
 static fwts_acpi_table_info *table;
 
@@ -97,3 +99,5 @@ static fwts_framework_ops xenv_check_ops = {
 
 FWTS_REGISTER("xenv", &xenv_check_ops, FWTS_TEST_ANYTIME,
 	FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+
+#endif

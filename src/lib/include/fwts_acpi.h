@@ -20,6 +20,10 @@
 #ifndef __FWTS_ACPI_H__
 #define __FWTS_ACPI_H__
 
+#include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #define FWTS_ACPI_TABLES_PATH   "/sys/firmware/acpi/tables"
 
 #define FWTS_FACP_UNSPECIFIED			(0x00)
@@ -1466,5 +1470,7 @@ typedef struct {
 	uint32_t	amrt_addr_start;
 	uint32_t	amrt_addr_end;
 } __attribute__ ((packed)) fwts_acpi_table_aspt;
+
+#endif
 
 #endif

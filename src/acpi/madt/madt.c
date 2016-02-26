@@ -15,6 +15,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -1380,3 +1382,5 @@ static fwts_framework_ops madt_ops = {
 };
 
 FWTS_REGISTER("madt", &madt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_COMPLIANCE_ACPI)
+
+#endif

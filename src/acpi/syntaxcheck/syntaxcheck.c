@@ -18,6 +18,8 @@
  */
 #include "fwts.h"
 
+#if defined(FWTS_HAS_ACPI)
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -644,3 +646,5 @@ static fwts_framework_ops syntaxcheck_ops = {
 };
 
 FWTS_REGISTER("syntaxcheck", &syntaxcheck_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
+
+#endif

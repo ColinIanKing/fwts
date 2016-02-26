@@ -17,6 +17,9 @@
  *
  */
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include "fwts_acpi_object_eval.h"
 #include "crsdump.h"
 
@@ -61,3 +64,5 @@ static fwts_framework_ops prsdump_ops = {
 };
 
 FWTS_REGISTER("prsdump", &prsdump_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS)
+
+#endif

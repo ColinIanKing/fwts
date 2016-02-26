@@ -6,6 +6,12 @@ TMPDIR=$TMP/disassemble-aml
 TMPLOG=$TMP/disassemble-aml.log.$$
 HERE=$FWTSTESTDIR/disassemble-0001
 
+($FWTS fwts --disassemble-aml 2>&1 | grep "option not available") > /dev/null
+if [ $? -eq 0 ]; then
+	echo SKIP: $TEST, $NAME
+	exit 77
+fi
+
 mkdir $TMPDIR
 $FWTS -w 80 --dumpfile=$HERE/acpidump.log --disassemble-aml=$TMPDIR - > $TMPLOG
 

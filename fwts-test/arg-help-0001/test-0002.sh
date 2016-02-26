@@ -8,7 +8,7 @@ HERE=`pwd`
 #
 #  Non-x86 tests don't have WMI so skip this test
 #
-$FWTS --show-tests | grep wmi > /dev/null
+$FWTS --show-tests | grep WMI > /dev/null
 if [ $? -eq 1 ]; then
 	echo SKIP: $TEST, $NAME
 	exit 77

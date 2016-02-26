@@ -4,6 +4,13 @@ TEST="Test --table-path to load dumped tables produced by acpixtract"
 NAME=test-0001.sh
 TMPLOG=$TMP/acpidump.log.$$
 HERE=$FWTSTESTDIR/arg-table-path-0001
+
+$FWTS --show-tests | grep acpidump > /dev/null
+if [ $? -eq 1 ]; then
+	echo SKIP: $TEST, $NAME
+	exit 77
+fi
+
 #
 # Unfortunately we can pull in the tables in different order depending
 # on the way the tables are stored in the directory. Since we only care

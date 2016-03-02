@@ -124,7 +124,8 @@ static int csrt_test1(fwts_framework *fw)
 
 		/* Do we have enough space for a resource descriptor? */
 		if (rg_length > sizeof(fwts_acpi_table_csrt_resource_descriptor)) {
-			size_t rd_offset = sizeof(fwts_acpi_table_csrt_resource_group);
+			size_t rd_offset = sizeof(fwts_acpi_table_csrt_resource_group) +
+					   rg->shared_info_length;
 			int rd_count = 0;
 			fwts_acpi_table_csrt_resource_descriptor *rd =
 				(fwts_acpi_table_csrt_resource_descriptor *)

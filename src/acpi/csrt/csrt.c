@@ -54,7 +54,7 @@ static int csrt_test1(fwts_framework *fw)
 	bool passed = true;
 	int rg_count = 0;
 
-	/* Note: CSRT header is actually just and ACPI header */
+	/* Note: CSRT header is actually just an ACPI header */
 	if (table->length < sizeof(fwts_acpi_table_csrt)) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

@@ -673,7 +673,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 				uint16_t *tmp;
 				tmp = realloc(variablename,
 					      sizeof(uint16_t) * variablenamesize);
-				 if (tmp) {
+				if (tmp) {
 					variablename = tmp;
 					getnextvariablename.VariableName = variablename;
 					maxvariablenamesize = variablenamesize;
@@ -1345,24 +1345,24 @@ static int setvariable_test7(fwts_framework *fw)
 
 	attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS;
 	ret = setvariable_invalidattr(fw, attr, datasize, variablenametest, &gtestguid1, datadiff);
-		if (ret == FWTS_ERROR) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
-				"Successfully set variable with both authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
-				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) attributes are set, expected fail.");
-			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
-			return FWTS_ERROR;
-		}
+	if (ret == FWTS_ERROR) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
+			"Successfully set variable with both authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) attributes are set, expected fail.");
+		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+		return FWTS_ERROR;
+	}
 
-		if (setvariable_checkvariable_notfound(fw, variablenametest,
-			&gtestguid1) == FWTS_ERROR) {
-			fwts_log_info(fw,
-				"Get the variable which is set by SetVariable with both "
-				"authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
-				"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) "
-				"attributes are set %" PRIu32 " , test failed.", attr);
-			setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
-			return FWTS_ERROR;
-		}
+	if (setvariable_checkvariable_notfound(fw, variablenametest,
+		&gtestguid1) == FWTS_ERROR) {
+		fwts_log_info(fw,
+			"Get the variable which is set by SetVariable with both "
+			"authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) "
+			"attributes are set %" PRIu32 " , test failed.", attr);
+		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
+		return FWTS_ERROR;
+	}
 	return FWTS_OK;
 }
 

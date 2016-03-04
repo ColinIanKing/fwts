@@ -92,7 +92,7 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 								"0x%2.2" PRIx8 ".",
 								n, phys_addr1, m, phys_addr2,
 								cpu_entry1->local_apic_id);
-								failed = true;
+							failed = true;
 							break;
 						}
 					}

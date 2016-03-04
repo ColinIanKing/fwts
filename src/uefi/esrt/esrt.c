@@ -17,11 +17,14 @@
  *
  */
 
+#include "fwts.h"
+
+#if defined(FWTS_HAS_UEFI)
+
 #include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "fwts.h"
 #include "fwts_uefi.h"
 
 #define FWTS_ESRT_DIR_PATH		"/sys/firmware/efi/esrt"
@@ -259,3 +262,5 @@ static fwts_framework_ops esrt_ops = {
 };
 
 FWTS_REGISTER("esrt", &esrt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_TEST_UEFI | FWTS_FLAG_ROOT_PRIV)
+
+#endif

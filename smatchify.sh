@@ -98,7 +98,7 @@ smatch_fwts()
 	./configure > /dev/null
 	make clean
 
-	make CHECK="${HERE}/${SMATCH_DIR}/smatch --full-path" \
+	make CHECK="${HERE}/${SMATCH_DIR}/smatch --full-path --two-passes" \
 		CC="${HERE}/${SMATCH_DIR}/cgcc $INCLUDES" | tee smatch.log
 }
 

@@ -268,7 +268,7 @@ static int uefirtauthvar_test2(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetSameAuthVar",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -308,7 +308,7 @@ static int uefirtauthvar_test3(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetDiffAuthVar",
 			"Set different valid authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -376,17 +376,17 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 		if (i < sizeof(AuthVarCreateData)) {
 			if (data[i] != AuthVarCreateData[i]) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
-				"UEFIAppendAuthVar",
-				"Get authenticated variable data are not the "
-				"same as it set.");
+					"UEFIAppendAuthVar",
+					"Get authenticated variable data are not the "
+					"same as it set.");
 				return FWTS_ERROR;
 			}
 		} else {
 			if (data[i] != AuthVarAppendData[i - sizeof(AuthVarCreateData)]) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,
-				"UEFIAppendAuthVar",
-				"Get authenticated variable data are not the "
-				"same as it set.");
+					"UEFIAppendAuthVar",
+					"Get authenticated variable data are not the "
+					"same as it set.");
 				return FWTS_ERROR;
 			}
 		}
@@ -500,7 +500,7 @@ static int uefirtauthvar_test6(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetOldAuthVar",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -591,7 +591,7 @@ static int uefirtauthvar_test8(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetAuthVarInvalidData",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -626,7 +626,7 @@ static int uefirtauthvar_test9(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetAuthVarInvalidTime",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -662,7 +662,7 @@ static int uefirtauthvar_test10(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetAuthVarDiffGuid",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -705,7 +705,7 @@ static int uefirtauthvar_test11(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"UEFISetAuthVarInvalidAttr",
 			"Set authenticated variable fail");
-			fwts_uefi_print_status_info(fw, status);
+		fwts_uefi_print_status_info(fw, status);
 	}
 
 	fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -766,10 +766,10 @@ static int uefirtauthvar_test12(fwts_framework *fw)
 	for (i = 0; i < sizeof(AuthVarCreateData); i++) {
 		if (data[i] != AuthVarCreateData[i]) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
-			"UEFISetAuthVarDiff",
-			"Get authenticated variable data are not the "
-			"same as it set.");
-		return FWTS_ERROR;
+				"UEFISetAuthVarDiff",
+				"Get authenticated variable data are not the "
+				"same as it set.");
+			return FWTS_ERROR;
 		}
 	}
 

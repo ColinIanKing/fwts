@@ -164,6 +164,7 @@ Unsafe tests:
 
 UEFI tests:
  csm             UEFI Compatibility Support Module test.
+ esrt            Sanity check UEFI ESRT Table.
  securebootcert  UEFI secure boot test.
  uefibootpath    Sanity check for UEFI Boot Path Boot####.
  uefirtauthvar   Authenticated variable tests.

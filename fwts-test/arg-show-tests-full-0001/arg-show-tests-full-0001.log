@@ -829,6 +829,8 @@ Unsafe tests:
 UEFI tests:
  csm             (1 test):
   UEFI Compatibility Support Module test.
+ esrt            (1 test):
+  Sanity check UEFI ESRT Table.
  securebootcert  (1 test):
   UEFI secure boot test.
  uefibootpath    (1 test):

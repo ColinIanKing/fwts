@@ -219,13 +219,13 @@ static int fan_test2(fwts_framework *fw)
 							"Fan %s current state decreased from %d to %d "
 							"while CPUs were busy, expected an increase.",
 							info1->name, info1->cur_state, info2->cur_state);
-							changed = true;
+						changed = true;
 					}
 					if (info2->cur_state > info1->cur_state) {
 						fwts_passed(fw, "Fan %s current state increased from %d to %d "
 							"while CPUs were busy.",
 							info1->name, info1->cur_state, info2->cur_state);
-							changed = true;
+						changed = true;
 					}
 					if (info2->cur_state == info1->cur_state)
 						fwts_log_info(fw, "Fan %s current state did not change from value %d "

@@ -347,9 +347,10 @@ static void mpdump_dump_apics(fwts_framework *fw)
 	fwts_log_info_verbatum(fw, "   ID  Type");
 	fwts_list_foreach(entry, &sorted) {
 		uint8_t *data = fwts_list_data(uint8_t *, entry);
-			fwts_log_info_verbatum(fw, "  %3d  %s APIC",
-				mpdump_get_apic_id(data),
-		 		(*data == FWTS_MP_CPU_ENTRY) ? "CPU Local" : "I/O");
+
+		fwts_log_info_verbatum(fw, "  %3d  %s APIC",
+			mpdump_get_apic_id(data),
+			(*data == FWTS_MP_CPU_ENTRY) ? "CPU Local" : "I/O");
 	}
 	fwts_log_nl(fw);
 	fwts_list_free_items(&sorted, NULL);

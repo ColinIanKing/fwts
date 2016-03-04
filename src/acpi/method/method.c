@@ -2139,7 +2139,7 @@ static void method_test_CRS_large_resource_items(
 				"%s GPIO Connection Descriptor has an invalid "
 				"Connection Type 0x%" PRIx8 ".",
 				name, data[2]);
-				*passed = false;
+			*passed = false;
 			fwts_advice(fw,
 				"The GPIO pin connection type is "
 				"not recognised. It should be either "
@@ -2154,7 +2154,7 @@ static void method_test_CRS_large_resource_items(
 				"%s GPIO Connection Descriptor has an invalid "
 				"Pin Configuration Type 0x%" PRIx8 ".",
 				name, data[9]);
-				*passed = false;
+			*passed = false;
 			fwts_advice(fw,
 				"The GPIO pin configuration type "
 				"is not recognised. It should be one of:"
@@ -4140,7 +4140,7 @@ static void method_test_LPI_return(
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (i < 3) {
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_INTEGER) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
+				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"Method_LPIBadElementType",
 					"%s element %" PRIu32 " is not an integer.", name, i);
 				failed = true;
@@ -4169,7 +4169,7 @@ static void method_test_LPI_return(
 		} else {
 			ACPI_OBJECT *pkg;
 			if (obj->Package.Elements[i].Type != ACPI_TYPE_PACKAGE) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
+				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"Method_LPIBadElementType",
 					"%s element %" PRIu32 " is not a package.", name, i);
 				failed = true;
@@ -4269,7 +4269,7 @@ static void method_test_RDI_return(
 		pkg = &obj->Package.Elements[i];
 
 		if (pkg->Type != ACPI_TYPE_PACKAGE) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
+			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"Method_RDIBadElementType",
 				"%s element %" PRIu32 " is not a package.", name, i);
 			failed = true;

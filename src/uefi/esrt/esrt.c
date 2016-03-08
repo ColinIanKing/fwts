@@ -24,6 +24,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <inttypes.h>
 
 #include "fwts_uefi.h"
 

@@ -38,12 +38,13 @@
 
 static int esrt_init(fwts_framework *fw)
 {
-	DIR *dir = opendir(FWTS_ESRT_DIR_PATH);
 
 	if (fwts_firmware_detect() != FWTS_FIRMWARE_UEFI) {
 		fwts_log_info(fw, "Cannot detect any UEFI firmware. Aborted.");
 		return FWTS_ABORTED;
 	}
+
+	DIR *dir = opendir(FWTS_ESRT_DIR_PATH);
 
 	if (dir) {
 		/* Directory exists. */

@@ -1,3 +1,37 @@
+fwts (16.03.00-0ubuntu1) xenial; urgency=low
+
+  [Alex Hung]
+  * acpi: csrt: fix a spelling mistake in a comment
+  * acpi: csrt: fix resource descriptor can go over boundary
+
+  [Colin Ian King]
+  * debian/control: Add s390x to Architecture list (LP: #1549737)
+  * lib: fwts_cpu: fix memory leak and incorrect return (LP: #1549723)
+  * Add s390x build support, don't build ACPI specific code for this arch
+  * Add s390x build support: skip tests that are not build in for this arch
+  * Add s390x build support, don't build UEFI specific code for this arch
+  * Debian/control: don't build UEFI kernel module for s390x
+  * acpi: fan: fix indentation, remove extraneous tab
+  * acpi: method: fix a few incorrectly idented lines of code
+  * bios: mpcheck: fix trivial indentation issue
+  * bios: mpdump: fix trivial indentation issue
+  * uefi: uefirtvariable: fix trivial indentation issues
+  * uefi: uefirtauthvar: fix trivial indentation issues
+  * smatchify: add two passes option
+
+  [Ivan Hu]
+  * uefi: add sanity check for UEFI ESRT table (LP: #1553043)
+  * uefi: esrt: don't build UEFI specific code for s390x
+  * fwts-test: Update tests to sync with esrt test adding
+  * uefi: esrt: fix the resource leak found by Coverity Scan
+  * uefi: esrt: fix build failure due to lack of header file
+  * acpi: method: fix faile check on _EC control method (LP: #1556720)
+  * acpi: method: fix _ON method never be tested.
+  * acpi: method: remove some reduntant and unused tests.
+  * fwts-test: sync up with the fwts method tests changed
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Mon, 14 Mar 2016 17:09:08 +0800
+
 fwts (16.02.00-0ubuntu1) xenial; urgency=low
 
   [Al Stone]

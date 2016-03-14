@@ -6400,38 +6400,6 @@ static int method_test_TTS(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void method_test_Sx_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	char *method = (char *)private;
-
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
-
-	if (method_package_count_equal(fw, name, method, obj, 3) != FWTS_OK)
-		return;
-
-	fwts_acpi_object_dump(fw, obj);
-}
-
-#define method_test_Sx(name)					\
-static int method_test ## name(fwts_framework *fw)		\
-{								\
-	return method_evaluate_method(fw, METHOD_OPTIONAL,	\
-		# name, NULL, 0, method_test_Sx_return, # name);\
-}
-
-method_test_Sx(_S0)
-method_test_Sx(_S1)
-method_test_Sx(_S2)
-method_test_Sx(_S3)
-method_test_Sx(_S4)
-method_test_Sx(_S5)
-
 static void method_test_WAK_return(
 	fwts_framework *fw,
 	char *name,
@@ -7153,12 +7121,6 @@ static fwts_framework_minor_test method_tests[] = {
 
 	{ method_test_PTS, "Test _PTS (Prepare to Sleep)." },
 	{ method_test_TTS, "Test _TTS (Transition to State)." },
-	{ method_test_S0,  "Test _S0  (System S0 State)." },
-	{ method_test_S1,  "Test _S1  (System S1 State)." },
-	{ method_test_S2,  "Test _S2  (System S2 State)." },
-	{ method_test_S3,  "Test _S3  (System S3 State)." },
-	{ method_test_S4,  "Test _S4  (System S4 State)." },
-	{ method_test_S5,  "Test _S5  (System S5 State)." },
 	{ method_test_WAK, "Test _WAK (System Wake)." },
 
 	/* Appendix B, ACPI Extensions for Display Adapters */

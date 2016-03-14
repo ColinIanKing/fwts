@@ -70,7 +70,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (195 tests):
+ method          (189 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -116,7 +116,7 @@ ACPI tests:
   Test _GLK (Global Lock).
   Test _SEG (Segment).
   Test _OFF (Set resource off).
-  Test _ON  (Set resource on).
+  Test _ON_ (Set resource on).
   Test _DSW (Device Sleep Wake).
   Test _IRC (In Rush Current).
   Test _PRE (Power Resources for Enumeration).
@@ -239,15 +239,9 @@ ACPI tests:
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
   Test _GPE (General Purpose Events).
-  Test _EC  (EC Offset Query).
+  Test _EC_ (EC Offset Query).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
-  Test _S0  (System S0 State).
-  Test _S1  (System S1 State).
-  Test _S2  (System S2 State).
-  Test _S3  (System S3 State).
-  Test _S4  (System S4 State).
-  Test _S5  (System S5 State).
   Test _WAK (System Wake).
   Test _ADR (Return Unique ID for Device).
   Test _BCL (Query List of Brightness Control Levels Supported).
@@ -418,7 +412,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (195 tests):
+ method          (189 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -464,7 +458,7 @@ Batch tests:
   Test _GLK (Global Lock).
   Test _SEG (Segment).
   Test _OFF (Set resource off).
-  Test _ON  (Set resource on).
+  Test _ON_ (Set resource on).
   Test _DSW (Device Sleep Wake).
   Test _IRC (In Rush Current).
   Test _PRE (Power Resources for Enumeration).
@@ -587,15 +581,9 @@ Batch tests:
   Test _TZM (Thermal Zone member).
   Test _TZP (Thermal Zone Polling).
   Test _GPE (General Purpose Events).
-  Test _EC  (EC Offset Query).
+  Test _EC_ (EC Offset Query).
   Test _PTS (Prepare to Sleep).
   Test _TTS (Transition to State).
-  Test _S0  (System S0 State).
-  Test _S1  (System S1 State).
-  Test _S2  (System S2 State).
-  Test _S3  (System S3 State).
-  Test _S4  (System S4 State).
-  Test _S5  (System S5 State).
   Test _WAK (System Wake).
   Test _ADR (Return Unique ID for Device).
   Test _BCL (Query List of Brightness Control Levels Supported).

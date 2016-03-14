@@ -2728,10 +2728,10 @@ static int method_test_GLK(fwts_framework *fw)
 /*
  * Section 7.1 Declaring a Power Resource Object
  */
-static int method_test_ON(fwts_framework *fw)
+static int method_test_ON_(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_ON", NULL, 0, method_test_NULL_return, NULL);
+		"_ON_", NULL, 0, method_test_NULL_return, NULL);
 }
 
 static int method_test_OFF(fwts_framework *fw)
@@ -6954,7 +6954,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 7.1 Declaring a Power Resource Object */
 
 	{ method_test_OFF, "Test _OFF (Set resource off)." },
-	{ method_test_ON,  "Test _ON  (Set resource on)." },
+	{ method_test_ON_,  "Test _ON_ (Set resource on)." },
 
 	/* Section 7.2 Device Power Management Objects */
 

@@ -20,7 +20,6 @@
  */
 DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
 {
-
     External (_PR_.CPU0, ProcessorObj)
     External (_PSS, IntObj)
     External (CFGD, IntObj)

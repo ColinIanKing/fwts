@@ -20,7 +20,6 @@
  */
 DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
 {
-
     External (_SB_.PCI0.SATA, DeviceObj)
     External (GTF0, FieldUnitObj)
     External (GTF1, FieldUnitObj)

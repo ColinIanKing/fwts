@@ -20,7 +20,6 @@
  */
 DefinitionBlock ("/tmp/fwts_tmp_table_24115_DSDT_2.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
-
     External (_PR_.CPU0._PPC, UnknownObj)
     External (CFGD, IntObj)
     External (PDC0, IntObj)

@@ -20,7 +20,6 @@
  */
 DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_1.aml", "SSDT", 1, "BrtRef", "DD01BRT", 0x00001000)
 {
-
     External (_SB_.PCI0.GFX0.DD03, DeviceObj)
     External (_SB_.PCI0.LPCB.EC0_.BRTS, FieldUnitObj)
 

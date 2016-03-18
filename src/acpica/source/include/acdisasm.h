@@ -391,6 +391,7 @@ extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIort3[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIort3a[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIort3b[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIort3c[];
+extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIort4[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIortAcc[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIortHdr[];
 extern ACPI_DMTABLE_INFO        AcpiDmTableInfoIortMap[];
@@ -880,22 +881,22 @@ AcpiDmGetExternalsFromFile (
 void
 AcpiDmDumpInteger8 (
     UINT8                   Value,
-    char                    *Name);
+    const char              *Name);
 
 void
 AcpiDmDumpInteger16 (
     UINT16                  Value,
-    char                    *Name);
+    const char              *Name);
 
 void
 AcpiDmDumpInteger32 (
     UINT32                  Value,
-    char                    *Name);
+    const char              *Name);
 
 void
 AcpiDmDumpInteger64 (
     UINT64                  Value,
-    char                    *Name);
+    const char              *Name);
 
 void
 AcpiDmResourceTemplate (
@@ -1007,7 +1008,7 @@ AcpiDmSerialBusDescriptor (
 
 void
 AcpiDmVendorCommon (
-    char                    *Name,
+    const char              *Name,
     UINT8                   *ByteData,
     UINT32                  Length,
     UINT32                  Level);

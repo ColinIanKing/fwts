@@ -80,6 +80,7 @@ libfwtsiasl_la_SOURCES = 			\
 	aslopcodes.c 				\
 	asloperands.c 				\
 	aslopt.c 				\
+	aslpld.c				\
 	aslpredef.c 				\
 	aslresource.c 				\
 	aslrestype1.c 				\

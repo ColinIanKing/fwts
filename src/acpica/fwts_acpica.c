@@ -379,8 +379,8 @@ static ACPI_STATUS fwts_region_handler(
 
 		switch (function) {
 		case ACPI_READ:
-			/* Fake it, return all zeros */
-			memset(value, 0, bytewidth);
+			/* Fake it, return all set */
+			memset(value, 0x00, bytewidth);
 		break;
 		case ACPI_WRITE:
 			/* Fake it, do nothing */
@@ -809,26 +809,35 @@ void AcpiOsSleep(UINT64 milliseconds)
 {
 }
 
-int fwtsInstallEarlyHandlers(fwts_framework *fw)
+static void fwtsOverrideRegionHandlers(fwts_framework *fw)
 {
 	int i;
-	ACPI_HANDLE	handle;
-
-	static ACPI_ADR_SPACE_TYPE fwts_space_id_list[] =
-	{
+	static ACPI_ADR_SPACE_TYPE fwts_default_space_id_list[] = {
 		ACPI_ADR_SPACE_SYSTEM_MEMORY,
 		ACPI_ADR_SPACE_SYSTEM_IO,
-		ACPI_ADR_SPACE_EC,
-		ACPI_ADR_SPACE_SMBUS,
-		ACPI_ADR_SPACE_CMOS,
-		ACPI_ADR_SPACE_GSBUS,
-		ACPI_ADR_SPACE_GPIO,
-		ACPI_ADR_SPACE_PCI_BAR_TARGET,
-		ACPI_ADR_SPACE_IPMI,
-		ACPI_ADR_SPACE_FIXED_HARDWARE,
-		ACPI_ADR_SPACE_USER_DEFINED1,
-		ACPI_ADR_SPACE_USER_DEFINED2
+		ACPI_ADR_SPACE_PCI_CONFIG,
+		ACPI_ADR_SPACE_EC
 	};
+
+	for (i = 0; i < ACPI_ARRAY_LENGTH(fwts_default_space_id_list); i++) {
+		/* Install handler at the root object */
+		ACPI_STATUS status;
+
+		status = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
+				fwts_default_space_id_list[i], fwts_region_handler,
+				fwts_region_init, NULL);
+
+		if ((status != AE_OK) && (status != AE_SAME_HANDLER)) {
+			fwts_log_error(fw, "Failed to install an OpRegion handler for %s space(%u)",
+				AcpiUtGetRegionName((UINT8)fwts_default_space_id_list[i]),
+				fwts_default_space_id_list[i]);
+		}
+	}
+}
+
+static int fwtsInstallEarlyHandlers(fwts_framework *fw)
+{
+	ACPI_HANDLE	handle;
 
 	if (AcpiInstallInterfaceHandler(fwts_interface_handler) != AE_OK) {
 		fwts_log_error(fw, "Failed to install interface handler.");
@@ -896,11 +905,37 @@ int fwtsInstallEarlyHandlers(fwts_framework *fw)
 		}
 	}
 
+	fwtsOverrideRegionHandlers(fw);
+
+	return FWTS_OK;
+}
+
+static int fwtsInstallLateHandlers(fwts_framework *fw)
+{
+	int i;
+	ACPI_STATUS status;
+	static ACPI_ADR_SPACE_TYPE fwts_space_id_list[] =
+	{
+		ACPI_ADR_SPACE_SYSTEM_MEMORY,
+		ACPI_ADR_SPACE_SYSTEM_IO,
+		ACPI_ADR_SPACE_EC,
+		ACPI_ADR_SPACE_SMBUS,
+		ACPI_ADR_SPACE_CMOS,
+		ACPI_ADR_SPACE_GSBUS,
+		ACPI_ADR_SPACE_GPIO,
+		ACPI_ADR_SPACE_PCI_BAR_TARGET,
+		ACPI_ADR_SPACE_IPMI,
+		ACPI_ADR_SPACE_FIXED_HARDWARE,
+		ACPI_ADR_SPACE_USER_DEFINED1,
+		ACPI_ADR_SPACE_USER_DEFINED2
+	};
+
 	for (i = 0; i < ACPI_ARRAY_LENGTH(fwts_space_id_list); i++) {
-		if (AcpiInstallAddressSpaceHandler(AcpiGbl_RootNode,
-		    fwts_space_id_list[i], fwts_region_handler, fwts_region_init, NULL) != AE_OK) {
+		status = AcpiInstallAddressSpaceHandler(ACPI_ROOT_OBJECT,
+		    fwts_space_id_list[i], fwts_region_handler, fwts_region_init, NULL);
+		if ((status != AE_OK) && (status != AE_SAME_HANDLER)) {
 			fwts_log_error(fw,
-				"Could not install an OpRegion handler for %s space(%u)",
+				"Failed to install an OpRegion handler for %s space(%u)",
 				AcpiUtGetRegionName((UINT8)fwts_space_id_list[i]),
 				fwts_space_id_list[i]);
 			return FWTS_ERROR;
@@ -908,16 +943,17 @@ int fwtsInstallEarlyHandlers(fwts_framework *fw)
 	}
 
 	if (!AcpiGbl_ReducedHardware) {
-		if (AcpiInstallFixedEventHandler(ACPI_EVENT_GLOBAL, fwts_event_handler, NULL) != AE_OK) {
+		status = AcpiInstallFixedEventHandler(ACPI_EVENT_GLOBAL, fwts_event_handler, NULL);
+		if ((status != AE_OK) && (status != AE_SAME_HANDLER)) {
 			fwts_log_error(fw, "Failed to install global event handler.");
 			return FWTS_ERROR;
 		}
-		if (AcpiInstallFixedEventHandler(ACPI_EVENT_RTC, fwts_event_handler, NULL) != AE_OK) {
+		status = AcpiInstallFixedEventHandler(ACPI_EVENT_RTC, fwts_event_handler, NULL);
+		if ((status != AE_OK) && (status != AE_SAME_HANDLER)) {
 			fwts_log_error(fw, "Failed to install RTC event handler.");
 			return FWTS_ERROR;
 		}
 	}
-
 	return FWTS_OK;
 }
 
@@ -956,6 +992,8 @@ int fwts_acpica_init(fwts_framework *fw)
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_IGNORE_ERRORS);
 	AcpiGbl_DisableAutoRepair =
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_DISABLE_AUTO_REPAIR);
+	AcpiGbl_GroupModuleLevelCode = FALSE;
+	AcpiGbl_CstyleDisassembly = FALSE;
 
 	pthread_mutex_init(&mutex_lock_sem_table, NULL);
 	pthread_mutex_init(&mutex_thread_info, NULL);
@@ -1105,23 +1143,46 @@ int fwts_acpica_init(fwts_framework *fw)
 		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
 		goto failed;
 	}
-
+#if 0
+	if (ACPI_FAILURE(AcpiInitializeDebugger())) {
+		fwts_log_error(fw, "Failed to initialise ACPICA subsystem.");
+		goto failed;
+	}
+#endif
 	if (AcpiInitializeTables(Tables, ACPI_MAX_INIT_TABLES, TRUE) != AE_OK) {
 		fwts_log_error(fw, "Failed to initialise tables.");
 		goto failed;
 	}
-	if (AcpiReallocateRootTable() != AE_OK) {
+	if (fwtsInstallEarlyHandlers(fw) != FWTS_OK) {
+		fwts_log_error(fw, "Failed to install early handlers.");
+		goto failed;
+	}
+	if (ACPI_FAILURE(AcpiReallocateRootTable())) {
 		fwts_log_error(fw, "Failed to reallocate root table.");
 		goto failed;
 	}
-	if (AcpiLoadTables() != AE_OK) {
+
+	init_flags = (ACPI_NO_HANDLER_INIT | ACPI_NO_ACPI_ENABLE |
+		      ACPI_NO_DEVICE_INIT | ACPI_NO_OBJECT_INIT);
+	AcpiGbl_MaxLoopIterations = 0x10;
+
+	if (ACPI_FAILURE(AcpiEnableSubsystem(init_flags))) {
+		fwts_log_error(fw, "Failed to enable ACPI subsystem.");
+		goto failed;
+	}
+	if (ACPI_FAILURE(AcpiLoadTables() != AE_OK)) {
 		fwts_log_error(fw, "Failed to load tables.");
 		goto failed;
 	}
 
-	(void)fwtsInstallEarlyHandlers(fw);
-	AcpiEnableSubsystem(init_flags);
-	AcpiInitializeObjects(init_flags);
+	if (fwtsInstallLateHandlers(fw) != FWTS_OK) {
+		fwts_log_error(fw, "Failed to install late handlers.");
+		goto failed;
+	}
+	if (ACPI_FAILURE(AcpiInitializeObjects(init_flags))) {
+		fwts_log_error(fw, "Failed to initialize ACPI objects.");
+		goto failed;
+	}
 
 	fwts_acpica_init_called = true;
 	return FWTS_OK;

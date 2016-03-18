@@ -122,6 +122,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/events/evxfregn.c		\
 	source/components/events/evglock.c		\
 	source/components/events/evhandler.c		\
+	source/components/executer/exconcat.c		\
 	source/components/executer/exfield.c		\
 	source/components/executer/exfldio.c		\
 	source/components/executer/exmisc.c		\

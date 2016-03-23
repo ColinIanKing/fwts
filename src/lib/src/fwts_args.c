@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011-2016 Canonical
+ * Some of this work - Copyright (C) 2016 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -102,6 +103,8 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 	int i;
 	int c;
 	int option_index;
+	int master_option_index;
+	int translated_long_option_index;
 	int ret = FWTS_OK;
 	char *short_options = NULL;
 	size_t short_options_len = 0;
@@ -162,6 +165,8 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 	}
 
 	for (;;) {
+		master_option_index = total_options;
+		translated_long_option_index = 0;
 		c = getopt_long(argc, argv, short_options, long_options, &option_index);
 		if (c == -1)
 			break;
@@ -170,38 +175,36 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 			bool found = false;
 
 			if (c != 0) {
-				for (i=0; i<options_table->num_options; i++, n++) {
+				for (i=0; i<options_table->num_options; i++) {
 					char *short_name = options_table->options[i].short_name;
 					if (index(short_name, c) != NULL) {
 						found = true;
 						break;
 					}
 				}
-			} else if (options_table->num_options > option_index)
-				found = true;
+			} else {  /* c is zero for long option cases but we need the right optarg_handler set */
+				for (i=0; i<options_table->num_options; i++) {
+					if (strcmp(options_table->options[i].long_name,long_options[option_index].name) == 0) {
+						translated_long_option_index = i;
+						found = true;
+						break;
+					}
+				}
+			}
 
 			/*  Found an option, then run the appropriate handler */
 			if (found) {
-				ret = options_table->optarg_handler(fw, argc, argv, c, option_index);
+				ret = options_table->optarg_handler(fw, argc, argv, c, translated_long_option_index);
 				if (ret != FWTS_OK)
 					goto exit;
 				break;
 			} else {
-				option_index -= options_table->num_options;
+				master_option_index -= options_table->num_options;
 			}
+
 		}
 	}
 
-	/* We've collected all the args, now sanity check the values */
-
-	fwts_list_foreach(item, &options_list) {
-		options_table = fwts_list_data(fwts_options_table *, item);
-		if (options_table->optarg_check != NULL) {
-			ret = options_table->optarg_check(fw);
-			if (ret != FWTS_OK)
-				break;
-		}
-	}
 exit:
 	free(short_options);
 	free(long_options);

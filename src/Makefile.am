@@ -116,6 +116,7 @@ fwts_SOURCES = main.c 				\
 	dmi/dmicheck/dmicheck.c 		\
 	hotkey/hotkey/hotkey.c 			\
 	kernel/klog/klog.c 			\
+	kernel/olog/olog.c			\
 	kernel/oops/oops.c 			\
 	kernel/version/version.c 		\
 	pci/aspm/aspm.c 			\

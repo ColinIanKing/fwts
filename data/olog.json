@@ -1,0 +1,33 @@
+{
+ "olog_error_warning_patterns":
+ [
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "CRITICAL",
+   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
+   "label": "OLOG_Filter_GROUP1"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "STOP",
+   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
+   "label": "OLOG_Filter_GROUPA"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "STOP",
+   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
+   "label": "OLOG_Filter_GROUPB"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Trying.*",
+   "advice": "SAMPLE TEXT -> This needs further investigation and review, please take xyz corrective action.",
+   "label": "OLOG_Filter_GROUPC"
+  }
+ ]
+}

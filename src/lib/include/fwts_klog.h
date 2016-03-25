@@ -26,6 +26,7 @@
 #include "fwts_list.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"
+#include "fwts_json.h"
 
 #define KERN_WARNING            0x00000001
 #define KERN_ERROR              0x00000002
@@ -47,6 +48,7 @@ typedef struct {
 	bool compiled_ok;
 } fwts_klog_pattern;
 
+
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);
 typedef void (*fwts_klog_scan_func)(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors);
 
@@ -62,5 +64,9 @@ int        fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progre
 int	   fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern);
 char      *fwts_klog_remove_timestamp(char *text);
 int        fwts_klog_write(fwts_framework *fw, const char *msg);
+
+fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str);
+char *fwts_klog_unique_label(const char *str);
+const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key, bool log_error);
 
 #endif

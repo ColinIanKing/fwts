@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010-2016 Canonical
+ * Some of this work - Copyright (C) 2016 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -117,7 +118,9 @@ typedef struct fwts_framework {
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
+	char *olog;				/* path to OLOG */
 	char *json_data_path;			/* path to application json data files, e.g. json klog data */
+	char *json_data_file;			/* json file to use for olog analysis */
 
 	fwts_framework_flags flags;
 

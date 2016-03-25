@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010-2016 Canonical
+ * Some of this work - Copyright (C) 2016 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -94,6 +95,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "show-progress", 	"p",  0, "Output test progress report to stderr." },
 	{ "show-tests", 	"s",  0, "Show available tests." },
 	{ "klog", 		"k:", 1, "Specify kernel log file rather than reading it from the kernel, e.g. --klog=dmesg.log" },
+	{ "olog",		"o:", 1, "Specify Other logs to be analyzed, main usage is for custom log analysis, best to use custom json file for pattern matching, e.g. -o /var/log/my_opal_msglog --json-data-file=olog.json --json-data-path=/home/myuser, on PPC this will default to dumping the OPAL msglog for analysis." },
 	{ "log-width", 		"w:", 1, "Define the output log width in characters." },
 	{ "lspci", 		"",   1, "Specify path to lspci, e.g. --lspci=path." },
 	{ "batch", 		"b",  0, "Run non-Interactive tests." },
@@ -113,6 +115,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "show-tests-full", 	"",   0, "Show available tests including all minor tests." },
 	{ "utils", 		"u",  0, "Run Utility 'tests'." },
 	{ "json-data-path", 	"j:", 1, "Specify path to fwts json data files - default is /usr/share/fwts." },
+	{ "json-data-file",	"J:", 1, "Specify the file to use for pattern matching on --olog, you may need to specify the json-data-path also if non-default location." },
 	{ "disassemble-aml", 	"",   2, "Disassemble AML from DSDT and SSDT tables." },
 	{ "log-type",		"",   1, "Specify log type (plaintext, json, html or xml)." },
 	{ "unsafe",		"U",  0, "Unsafe tests (tests that can potentially cause kernel oopses)." },
@@ -136,6 +139,7 @@ static fwts_list fwts_framework_test_list = FWTS_LIST_INIT;
 static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 1999 - 2016, Intel Corp. All rights reserved.",
 	"Some of this work - Copyright (c) 2010 - 2016, Canonical.",
+	"Some of this work - Copyright (c) 2016 IBM.",
 	NULL
 };
 
@@ -1185,71 +1189,77 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 9: /* --klog */
 			fwts_framework_strdup(&fw->klog, optarg);
 			break;
-		case 10: /* --log-width=N */
+		case 10: /* --olog */
+			fwts_framework_strdup(&fw->olog, optarg);
+			break;
+		case 11: /* --log-width=N */
 			fwts_log_set_line_width(atoi(optarg));
 			break;
-		case 11: /* --lspci=pathtolspci */
+		case 12: /* --lspci=pathtolspci */
 			fwts_framework_strdup(&fw->lspci, optarg);
 			break;
-		case 12: /* --batch */
+		case 13: /* --batch */
 			fw->flags |= FWTS_FLAG_BATCH;
 			break;
-		case 13: /* --interactive */
+		case 14: /* --interactive */
 			fw->flags |= FWTS_FLAG_INTERACTIVE;
 			break;
-		case 14: /* --force-clean */
+		case 15: /* --force-clean */
 			fw->flags |= FWTS_FLAG_FORCE_CLEAN;
 			break;
-		case 15: /* --version */
+		case 16: /* --version */
 			fwts_framework_show_version(stdout, argv[0]);
 			return FWTS_COMPLETE;
-		case 16: /* --dump */
+		case 17: /* --dump */
 			fw->flags |= FWTS_FLAG_DUMP;
 			break;
-		case 17: /* --table-path */
+		case 18: /* --table-path */
 			fwts_framework_strdup(&fw->acpi_table_path, optarg);
 			break;
-		case 18: /* --batch-experimental */
+		case 19: /* --batch-experimental */
 			fw->flags |= FWTS_FLAG_BATCH_EXPERIMENTAL;
 			break;
-		case 19: /* --interactive-experimental */
+		case 20: /* --interactive-experimental */
 			fw->flags |= FWTS_FLAG_INTERACTIVE_EXPERIMENTAL;
 			break;
-		case 20: /* --power-states */
+		case 21: /* --power-states */
 			fw->flags |= FWTS_FLAG_POWER_STATES;
 			break;
-		case 21: /* --all */
+		case 22: /* --all */
 			fw->flags |= FWTS_FLAG_RUN_ALL;
 			break;
-		case 22: /* --show-progress-dialog */
+		case 23: /* --show-progress-dialog */
 			fw->flags = (fw->flags &
 					~(FWTS_FLAG_QUIET |
 					  FWTS_FLAG_SHOW_PROGRESS))
 					| FWTS_FLAG_SHOW_PROGRESS_DIALOG;
 			break;
-		case 23: /* --skip-test */
+		case 24: /* --skip-test */
 			if (fwts_framework_skip_test_parse(optarg, &tests_to_skip) != FWTS_OK)
 				return FWTS_COMPLETE;
 			break;
-		case 24: /* --quiet */
+		case 25: /* --quiet */
 			fw->flags = (fw->flags &
 					~(FWTS_FLAG_SHOW_PROGRESS |
 					  FWTS_FLAG_SHOW_PROGRESS_DIALOG))
 					| FWTS_FLAG_QUIET;
 			break;
-		case 25: /* --dumpfile */
+		case 26: /* --dumpfile */
 			fwts_framework_strdup(&fw->acpi_table_acpidump_file, optarg);
 			break;
-		case 26: /* --show-tests-full */
+		case 27: /* --show-tests-full */
 			fw->flags |= FWTS_FLAG_SHOW_TESTS_FULL;
 			break;
-		case 27: /* --utils */
+		case 28: /* --utils */
 			fw->flags |= FWTS_FLAG_UTILS;
 			break;
-		case 28: /* --json-data-path */
+		case 29: /* --json-data-path */
 			fwts_framework_strdup(&fw->json_data_path, optarg);
 			break;
-		case 29: /* --disassemble-aml */
+		case 30: /* --json-data-file */
+			fwts_framework_strdup(&fw->json_data_file, optarg);
+			break;
+		case 31: /* --disassemble-aml */
 #if defined(FWTS_HAS_ACPI)
 			fwts_iasl_disassemble_all_to_file(fw, optarg);
 			return FWTS_COMPLETE;
@@ -1257,52 +1267,52 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			fprintf(stderr, "option not available on this architecture\n");
 			return FWTS_ERROR;
 #endif
-		case 30: /* --log-type */
+		case 32: /* --log-type */
 			if (fwts_framework_log_type_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 31: /* --unsafe */
+		case 33: /* --unsafe */
 			fw->flags |= FWTS_FLAG_UNSAFE;
 			break;
-		case 32: /* --filter-error-discard */
+		case 34: /* --filter-error-discard */
 			if (fwts_framework_filter_error_parse(optarg, &fw->errors_filter_discard) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 33: /* --filter-error-keep */
+		case 35: /* --filter-error-keep */
 			if (fwts_framework_filter_error_parse(optarg, &fw->errors_filter_keep) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 34: /* --acpica-debug */
+		case 36: /* --acpica-debug */
 			fw->flags |= FWTS_FLAG_ACPICA_DEBUG;
 			break;
-		case 35: /* --acpica */
+		case 37: /* --acpica */
 			if (fwts_framework_acpica_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 36: /* --uefitests */
+		case 38: /* --uefitests */
 			fw->flags |= FWTS_FLAG_TEST_UEFI;
 			break;
-		case 37: /* --rsdp */
+		case 39: /* --rsdp */
 			fw->rsdp = (void *)strtoul(optarg, NULL, 0);
 			break;
-		case 38: /* --pm-method */
+		case 40: /* --pm-method */
 			if (fwts_framework_pm_method_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 39: /* --show-tests-categories */
+		case 41: /* --show-tests-categories */
 			fw->flags |= FWTS_FLAG_SHOW_TESTS_CATEGORIES;
 			break;
-		case 40: /* --acpitests */
+		case 42: /* --acpitests */
 			fw->flags |= FWTS_FLAG_TEST_ACPI;
 			break;
-		case 41: /* --acpicompliance */
+		case 43: /* --acpicompliance */
 			fw->flags |= FWTS_FLAG_TEST_COMPLIANCE_ACPI;
 			break;
-		case 42: /* --log-level */
+		case 44: /* --log-level */
 			if (fwts_framework_ll_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
-		case 43: /* --arch */
+		case 45: /* --arch */
 			if (fwts_framework_an_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
 			break;
@@ -1336,10 +1346,16 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 	case 'j': /* --json-data-path */
 		fwts_framework_strdup(&fw->json_data_path, optarg);
 		break;
+	case 'J': /* --json-data-file */
+		fwts_framework_strdup(&fw->json_data_file, optarg);
+		break;
 	case 'k': /* --klog */
 		fwts_framework_strdup(&fw->klog, optarg);
 		break;
 	case 'l': /* --lp-flags */
+		break;
+	case 'o': /* --olog */
+		fwts_framework_strdup(&fw->olog, optarg);
 		break;
 	case 'p': /* --show-progress */
 		fw->flags = (fw->flags &
@@ -1582,7 +1598,9 @@ tidy_close:
 	free(fw->lspci);
 	free(fw->results_logname);
 	free(fw->klog);
+	free(fw->olog);
 	free(fw->json_data_path);
+	free(fw->json_data_file);
 
 	fwts_list_free_items(&fw->errors_filter_discard, NULL);
 	fwts_list_free_items(&fw->errors_filter_keep, NULL);

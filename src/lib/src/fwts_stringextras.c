@@ -42,6 +42,10 @@ void fwts_chop_newline(char *str)
 
 	while (len > 0 && str[len-1] == ' ')
 		str[--len] = '\0';
+
+	while (len > 0 && str[len-1] == '\r')
+		str[--len] = '\0';
+
 }
 
 /*

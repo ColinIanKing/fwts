@@ -1,2 +1,2 @@
 fwtsdatadir = $(pkgdatadir)
-fwtsdata_DATA = klog.json syntaxcheck.json
+fwtsdata_DATA = klog.json syntaxcheck.json olog.json

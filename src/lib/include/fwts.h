@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010-2016 Canonical
+ * Some of this work - Copyright (C) 2016 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,6 +39,10 @@
 #define FWTS_ARCH_S390X	1
 #endif
 
+#if defined(__PPC64__)
+#define FWTS_HAS_ACPI  0
+#define FWTS_HAS_UEFI  0
+#endif
 
 #define FWTS_UNUSED(var)	(void)var
 
@@ -67,6 +72,7 @@
 #include "fwts_gpe.h"
 #include "fwts_iasl.h"
 #include "fwts_klog.h"
+#include "fwts_olog.h"
 #include "fwts_pipeio.h"
 #include "fwts_stringextras.h"
 #include "fwts_tty.h"

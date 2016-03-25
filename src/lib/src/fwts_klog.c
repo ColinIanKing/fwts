@@ -229,7 +229,7 @@ int fwts_klog_scan(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static char *fwts_klog_unique_label(const char *str)
+char *fwts_klog_unique_label(const char *str)
 {
 	static char buffer[1024];
 	const char *src = str;
@@ -325,7 +325,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
  *  fwts_klog_compare_mode_str_to_val()
  *	convert compare mode strings (from json database) to compare_mode values
  */
-static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
+fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
 {
 	if (strcmp(str, "regex") == 0)
 		return FWTS_COMPARE_REGEX;
@@ -340,7 +340,7 @@ static fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
  *	given a key, fetch the string value associated with this object
  *	and report an error if it cannot be found.
  */
-static const char *fwts_json_str(
+const char *fwts_json_str(
 	fwts_framework *fw,
 	const char *table,
 	int index,
@@ -385,14 +385,19 @@ static int fwts_klog_check(fwts_framework *fw,
 	fwts_klog_pattern *patterns;
 	char json_data_path[PATH_MAX];
 
-	snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, KLOG_DATA_JSON_FILE);
+	if (fw->json_data_file) {
+		snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path,(fw->json_data_file));
+	}
+	else { /* use the hard coded KLOG JSON as default */
+		snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, KLOG_DATA_JSON_FILE);
+	}
 
 	/*
 	 * json_object_from_file() can fail when files aren't readable
 	 * so check if we can open for read before calling json_object_from_file()
 	 */
 	if ((fd = open(json_data_path, O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot read file %s.", json_data_path);
+		fwts_log_error(fw, "Cannot read file %s, check the path and check that the file exists, you may need to specify -j or -J.", json_data_path);
 		return FWTS_ERROR;
 	}
 	close(fd);

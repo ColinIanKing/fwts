@@ -32,224 +32,223 @@
 /*
  * ACPI methods + objects used in Linux ACPI driver:
  *
- * Name	 ACPI Spec.	Tested
- *	 section
- * _ACx  11.4.1		Y
- * _ADR  6.1.1, B.6.1,	Y
- * _AEI  5.6.5.2	Y
- * _ALC  9.2.5		Y
- * _ALI  9.2.2		Y
- * _ALP  9.2.6		Y
- * _ALR  9.2.5		Y
- * _ALT  9.2.3		Y
- * _ALx  11.4.2		N
- * _ART  11.4.3		Y
- * _BBN  6.5.5		Y
- * _BCL  B.6.2 		Y
- * _BCM  B.6.3		Y
- * _BCT  10.2.29	Y
- * _BDN  6.5.3		Y
- * _BFS  7.3.1		deprecated
- * _BIF  10.2.2.1	Y
- * _BIX  10.2.2.2	Y
- * _BLT  9.1.3		N not easily tested
- * _BMA  10.2.2.4	Y
- * _BMC	 10.2.2.11	Y
- * _BMD  10.2.2.10	Y
- * _BMS  10.2.2.5	Y
- * _BQC  B.6.4		Y
- * _BST  10.2.2.6	Y
- * _BTH  10.2.2.7	Y
- * _BTM  10.2.2.9	Y
- * _BTP  10.2.2.8	Y
- * _CBA  PCI f/w spec	Y
- * _CCA  6.2.17		Y
- * _CDM  6.2.1		Y
- * _CID  6.1.2		Y
- * _CLS  6.1.3		N requires PCI SIG class info
- * _CPC  8.4.5		Y
- * _CR3  11.5.4		Y
- * _CRS  6.2.2		Y
- * _CRT  11.4.4		Y
- * _CSD  8.4.2.2	Y
- * _CST  8.4.2.1	Y
- * _CWS  9.18.6		Y
- * _DCK  6.5.2		Y
- * _DCS  B.6.6		Y
- * _DDC  B.6.5		Y
- * _DDN  6.1.4		Y
- * _DEP  6.5.8		Y
- * _DGS  B.6.7		Y
- * _DIS  6.2.3		Y
- * _DLM  5.7.5		Y
- * _DMA  6.2.4		Y
- * _DOD  B.4.2		Y
- * _DOS  B.4.1		Y
- * _DSD  6.2.5		Y
- * _DSM  9.14.1		N
- * _DSS  B.6.8		Y
- * _DSW  7.2.1		Y
- * _DTI  11.4.5		Y
- * _Exx  5.6.4.1	n/a
- * _EC_  12.12		Y
- * _EDL  6.3.1		Y
- * _EJD  6.3.2		Y
- * _EJx  6.3.3		Y
- * _EVT  5.6.5.3	Y
- * _FDE  9.9.1		N (floppy controller, ignore)
- * _FDI  9.9.2		N (floppy controller, ignore)
- * _FDM  9.9.3		N (floppy controller, ignore)
- * _FIF  11.3.1.1	Y
- * _FIX  6.2.5		Y
- * _FPS  11.3.1.2	Y
- * _FSL  11.3.1.3	Y
- * _FST  11.3.1.4	Y
- * _GAI  10.4.5		Y
- * _GCP  9.18.2		Y
- * _GHL  10.4.7		Y
- * _GL   5.7.1		n/a
- * _GLK  6.5.7		Y
- * _GPD  B.4.4		Y
- * _GPE  12.11		Y
- * _GRT  9.18.3		Y
- * _GSB  6.2.6		Y
- * _GTF  9.8.1.1	Y
- * _GTM  9.8.2.1.1	Y
- * _GTS  7.3.3		deprecated
- * _GWS  9.18.5		Y
- * _HID  6.1.5		Y
- * _HOT  11.4.6		Y
- * _HPP  6.2.7		Y
- * _HPX  6.2.8		N
- * _HRV  6.1.6		Y
- * _IFT  IPMI		Y
- * _INI  6.5.1		Y
- * _IRC  7.2.13		Y
- * _Lxx  5.6.4.1	n/a
- * _LCK  6.3.4		Y
- * _LID  9.4.1		Y
- * _LPI  8.4.4.3	Y
- * _MAT  6.2.9		N
- * _MBM  9.12.2.1	Y
- * _MLS  6.1.7		Y
- * _MSG  9.1.2		Y
- * _MSM  9.12.2.2	N
- * _MTL  11.4.8		Y
- * _NTT  11.4.9		Y
- * _OFF  7.1.2		Y
- * _ON_  7.1.3		Y
- * _OSC  6.2.10		n/a
- * _OST  6.3.5		n/a
- * _PAI  10.4.4		n/a
- * _PCL  10.3.2		Y
- * _PCT  8.4.4.1	Y
- * _PDC  8.4.1		deprecated
- * _PDL  8.4.4.6	Y
- * _PIC  5.8.1		Y
- * _PIF  10.3.3		Y
- * _PLD  6.1.8		Y
- * _PMC  10.4.1		Y
- * _PMD  10.4.8		Y
- * _PMM  10.4.3		Y
- * _PPC  8.4.4.3	Y
- * _PPE  8.4.6		Y
- * _PR0  7.2.8		Y
- * _PR1	 7.2.9		Y
- * _PR2  7.2.10		Y
- * _PR3  7.2.11		Y
- * _PRE  7.2.12		Y
- * _PRL  10.3.4		Y
- * _PRR  7.3.26		Y
- * _PRS  6.2.11		Y
- * _PRT  6.2.12		Y
- * _PRW  7.2.11		Y
- * _PS0  7.2.2		Y
- * _PS1  7.2.3		Y
- * _PS2  7.2.4		Y
- * _PS3  7.2.5		Y
- * _PSC  7.2.6		Y
- * _PSD  8.4.4.5	Y
- * _PSE  7.2.7		Y
- * _PSL  11.4.8		Y
- * _PSR  10.3.1		Y
- * _PSS  8.4.4.2	Y
- * _PSV  11.4.9		Y
- * _PSW  7.2.12		Y
- * _PTC  8.4.3.1	Y
- * _PTP  10.4.2		n/a
- * _PTS  7.3.2		Y
- * _PUR  8.5.11		Y
- * _PXM  6.2.13 	Y
- * _Qxx  5.6.4.1	n/a
- * _RDI  8.5		Y
- * _REG  6.5.4		n/a
- * _RMV  6.3.6		Y
- * _ROM  B.4.3		Y
- * _RST  7.3.25		Y
- * _RTV  11.4.10	Y
- * _S0_  7.3.4.1	Y
- * _S1_  7.3.4.2	Y
- * _S2_  7.3.4.3	Y
- * _S3_  7.3.4.4	Y
- * _S4_  7.3.4.5	Y
- * _S5_  7.3.4.6	Y
- * _S1D  7.2.16		Y
- * _S2D  7.2.17		Y
- * _S3D  7.2.18		Y
- * _S4D  7.2.19		Y
- * _S0W  7.2.20		Y
- * _S1W  7.2.21		Y
- * _S2W	 7.2.22		Y
- * _S3W  7.2.23		Y
- * _S4W  7.2.24		Y
- * _SBS  10.1.3		Y
- * _SCP  11.4.11	Y
- * _SDD  9.8.3.3.1	n/a
- * _SEG  6.5.6		Y
- * _SHL  10.4.5		n/a
- * _SLI  6.2.14		N
- * _SPD  B.4.5		Y
- * _SRS  6.2.15		n/a
- * _SRT  9.18.4		n/a
- * _SRV  IPMI		Y
- * _SST  9.1.1		Y
- * _STA  6.3.7, 7.1.4	Y
- * _STM  9.8.2.1.2	n/a
- * _STP  9.18.7		Y
- * _STR  6.1.9		Y
- * _STV  9.18.8		Y
- * _SUB  6.1.9		Y
- * _SUN  6.1.8		Y
- * _SWS  7.3.5		Y
- * _T_x  18.2.1.1	n/a
- * _TC1  11.4.12	Y
- * _TC2  11.4.13	Y
- * _TDL  8.4.3.5	Y
- * _TFP  11.4.16	Y
- * _TIP  9.18.9		Y
- * _TIV  9.18.10	Y
- * _TMP  11.4.14	Y
- * _TPC  8.4.3.3	Y
- * _TPT  11.4.15	Y
- * _TRT  11.4.16	Y
- * _TSD  8.4.3.4	Y
- * _TSN  11.4.20	Y
- * _TSP  11.4.17	Y
- * _TSS  8.4.3.2	Y
- * _TST  11.4.18	Y
- * _TTS  7.3.6		Y
- * _TZD  11.4.19	Y
- * _TZM  11.4.20	Y
- * _TZP  11.4.21	Y
- * _UID  6.1.9		Y
- * _UPC  9.13		Y
- * _UPD  9.16.1		Y
- * _UPP  9.16.2		Y
- * _VPO  B.4.6		Y
- * _WAK  7.3.7 		Y
- * _Wxx  5.6.4.2.2	n/a
- * _WDG  WMI		N
- * _WED  WMI		N
+ * Name 	 Tested
+ * _ACx 	 Y
+ * _ADR 	 Y
+ * _AEI 	 Y
+ * _ALC 	 Y
+ * _ALI 	 Y
+ * _ALP 	 Y
+ * _ALR 	 Y
+ * _ALT 	 Y
+ * _ALx 	 N
+ * _ART 	 Y
+ * _BBN 	 Y
+ * _BCL 	 Y
+ * _BCM 	 Y
+ * _BCT 	 Y
+ * _BDN 	 Y
+ * _BFS 	 deprecated
+ * _BIF 	 Y
+ * _BIX 	 Y
+ * _BLT 	 N not easily tested
+ * _BMA 	 Y
+ * _BMC 	 Y
+ * _BMD 	 Y
+ * _BMS 	 Y
+ * _BQC 	 Y
+ * _BST 	 Y
+ * _BTH 	 Y
+ * _BTM 	 Y
+ * _BTP 	 Y
+ * _CBA 	 Y
+ * _CCA 	 Y
+ * _CDM 	 Y
+ * _CID 	 Y
+ * _CLS 	 N requires PCI SIG class info
+ * _CPC 	 Y
+ * _CR3 	 Y
+ * _CRS 	 Y
+ * _CRT 	 Y
+ * _CSD 	 Y
+ * _CST 	 Y
+ * _CWS 	 Y
+ * _DCK 	 Y
+ * _DCS 	 Y
+ * _DDC 	 Y
+ * _DDN 	 Y
+ * _DEP 	 Y
+ * _DGS 	 Y
+ * _DIS 	 Y
+ * _DLM 	 Y
+ * _DMA 	 Y
+ * _DOD 	 Y
+ * _DOS 	 Y
+ * _DSD 	 Y
+ * _DSM 	 N
+ * _DSS 	 Y
+ * _DSW 	 Y
+ * _DTI 	 Y
+ * _Exx 	 n/a
+ * _EC_ 	 Y
+ * _EDL 	 Y
+ * _EJD 	 Y
+ * _EJx 	 Y
+ * _EVT 	 Y
+ * _FDE 	 N (floppy controller, ignore)
+ * _FDI 	 N (floppy controller, ignore)
+ * _FDM 	 N (floppy controller, ignore)
+ * _FIF 	 Y
+ * _FIX 	 Y
+ * _FPS 	 Y
+ * _FSL 	 Y
+ * _FST 	 Y
+ * _GAI 	 Y
+ * _GCP 	 Y
+ * _GHL 	 Y
+ * _GL	 	 n/a
+ * _GLK 	 Y
+ * _GPD 	 Y
+ * _GPE 	 Y
+ * _GRT 	 Y
+ * _GSB 	 Y
+ * _GTF 	 Y
+ * _GTM 	 Y
+ * _GTS 	 deprecated
+ * _GWS 	 Y
+ * _HID 	 Y
+ * _HOT 	 Y
+ * _HPP 	 Y
+ * _HPX 	 N
+ * _HRV 	 Y
+ * _IFT 	 Y
+ * _INI 	 Y
+ * _IRC 	 Y
+ * _Lxx 	 n/a
+ * _LCK 	 Y
+ * _LID 	 Y
+ * _LPI 	 Y
+ * _MAT 	 N
+ * _MBM 	 Y
+ * _MLS 	 Y
+ * _MSG 	 Y
+ * _MSM 	 N
+ * _MTL 	 Y
+ * _NTT 	 Y
+ * _OFF 	 Y
+ * _ON_ 	 Y
+ * _OSC 	 n/a
+ * _OST 	 n/a
+ * _PAI 	 n/a
+ * _PCL 	 Y
+ * _PCT 	 Y
+ * _PDC 	 deprecated
+ * _PDL 	 Y
+ * _PIC 	 Y
+ * _PIF 	 Y
+ * _PLD 	 Y
+ * _PMC 	 Y
+ * _PMD 	 Y
+ * _PMM 	 Y
+ * _PPC 	 Y
+ * _PPE 	 Y
+ * _PR0 	 Y
+ * _PR1 	 Y
+ * _PR2 	 Y
+ * _PR3 	 Y
+ * _PRE 	 Y
+ * _PRL 	 Y
+ * _PRR 	 Y
+ * _PRS 	 Y
+ * _PRT 	 Y
+ * _PRW 	 Y
+ * _PS0 	 Y
+ * _PS1 	 Y
+ * _PS2 	 Y
+ * _PS3 	 Y
+ * _PSC 	 Y
+ * _PSD 	 Y
+ * _PSE 	 Y
+ * _PSL 	 Y
+ * _PSR 	 Y
+ * _PSS 	 Y
+ * _PSV 	 Y
+ * _PSW 	 Y
+ * _PTC 	 Y
+ * _PTP 	 n/a
+ * _PTS 	 Y
+ * _PUR 	 Y
+ * _PXM 	 Y
+ * _Qxx 	 n/a
+ * _RDI 	 Y
+ * _REG 	 n/a
+ * _RMV 	 Y
+ * _ROM 	 Y
+ * _RST 	 Y
+ * _RTV 	 Y
+ * _S0_ 	 Y
+ * _S1_ 	 Y
+ * _S2_ 	 Y
+ * _S3_ 	 Y
+ * _S4_ 	 Y
+ * _S5_ 	 Y
+ * _S1D 	 Y
+ * _S2D 	 Y
+ * _S3D 	 Y
+ * _S4D 	 Y
+ * _S0W 	 Y
+ * _S1W 	 Y
+ * _S2W 	 Y
+ * _S3W 	 Y
+ * _S4W 	 Y
+ * _SBS 	 Y
+ * _SCP 	 Y
+ * _SDD 	 n/a
+ * _SEG 	 Y
+ * _SHL 	 n/a
+ * _SLI 	 N
+ * _SPD 	 Y
+ * _SRS 	 n/a
+ * _SRT 	 n/a
+ * _SRV 	 Y
+ * _SST 	 Y
+ * _STA 	 Y
+ * _STM 	 n/a
+ * _STP 	 Y
+ * _STR 	 Y
+ * _STV 	 Y
+ * _SUB 	 Y
+ * _SUN 	 Y
+ * _SWS 	 Y
+ * _T_x 	 n/a
+ * _TC1 	 Y
+ * _TC2 	 Y
+ * _TDL 	 Y
+ * _TFP 	 Y
+ * _TIP 	 Y
+ * _TIV 	 Y
+ * _TMP 	 Y
+ * _TPC 	 Y
+ * _TPT 	 Y
+ * _TRT 	 Y
+ * _TSD 	 Y
+ * _TSN 	 Y
+ * _TSP 	 Y
+ * _TSS 	 Y
+ * _TST 	 Y
+ * _TTS 	 Y
+ * _TZD 	 Y
+ * _TZM 	 Y
+ * _TZP 	 Y
+ * _UID 	 Y
+ * _UPC 	 Y
+ * _UPD 	 Y
+ * _UPP 	 Y
+ * _VPO 	 Y
+ * _WAK 	 Y
+ * _Wxx 	 n/a
+ * _WDG 	 N
+ * _WED 	 N
  */
 
 /* Test types */

@@ -181,7 +181,7 @@ static int gtdt_test1(fwts_framework *fw)
 		case 0x01:
 			/* SBSA Generic Watchdog Timer Structure */
 			watchdog = (fwts_acpi_table_gtdt_watchdog *)ptr;
-			if (ptr + 28 < end_ptr) {
+			if (ptr + 28 > end_ptr) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"GTDTShortWatchDogTimer",

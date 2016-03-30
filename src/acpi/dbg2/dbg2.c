@@ -358,12 +358,11 @@ static int dbg2_test1(fwts_framework *fw)
 				fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, gas->address);
 				fwts_log_nl(fw);
 
-				if (*addrsize != sizeof(fwts_acpi_gas)) {
+				if (*addrsize == 0) {
 					passed = false;
 					fwts_failed(fw, LOG_LEVEL_HIGH,
 						"DBG2InvalidAddressSize",
-						"DBG2 Address Size is not the size of a "
-						"Generic Address Structure");
+						"DBG2 Address Size is 0");
 				}
 
 				if (gas->register_bit_width == 0) {

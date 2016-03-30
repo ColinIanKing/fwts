@@ -75,7 +75,7 @@ static int gtdt_test1(fwts_framework *fw)
 		case 0x00:
 			/* GT Block Structure */
 			block = (fwts_acpi_table_gtdt_block *)ptr;
-			if (ptr + 20 < end_ptr) {
+			if (ptr + 20 > end_ptr) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"GTDTShortBlock",

@@ -103,13 +103,13 @@ static int bert_test1(fwts_framework *fw)
 				(region->block_status >> 3) & 1);
 			fwts_log_info_verbatum(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
 				(region->block_status >> 4) & 0x3ff);
-			fwts_log_info_verbatum(fw, "  Raw Data Offset:          0x8.8%" PRIx32,
+			fwts_log_info_verbatum(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
 				region->raw_data_offset);
-			fwts_log_info_verbatum(fw, "  Raw Data Length:          0x8.8%" PRIx32,
+			fwts_log_info_verbatum(fw, "  Raw Data Length:          0x%8.8" PRIx32,
 				region->raw_data_length);
-			fwts_log_info_verbatum(fw, "  Data Length:              0x8.8%" PRIx32,
+			fwts_log_info_verbatum(fw, "  Data Length:              0x%8.8" PRIx32,
 				region->data_length);
-			fwts_log_info_verbatum(fw, "  Error Severity            0x8.8%" PRIx32,
+			fwts_log_info_verbatum(fw, "  Error Severity            0x%8.8" PRIx32,
 				region->error_severity);
 
 			/* Sanity check raw data fields */

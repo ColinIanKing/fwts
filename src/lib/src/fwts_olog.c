@@ -94,6 +94,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 
 	if (!(msglog_outfile_f = fopen(msglog_outfile, "w"))) {
 		/* create the output file for the sysfs msglog */
+		free(buffer);
 		goto olog_cleanup_msglog;
 	}
 

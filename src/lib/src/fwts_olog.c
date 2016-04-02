@@ -47,12 +47,12 @@ static const char msglog_outfile[] = "/var/log/opal_msglog";
  */
 fwts_list *fwts_olog_read(fwts_framework *fw)
 {
-	long len;
 	fwts_list *list;
 	char *buffer;
 	struct stat filestat;
-	long read_actual=0;
-	long write_actual=0;
+	long len;
+	size_t read_actual = 0;
+	size_t write_actual = 0;
 	FILE* msglog_f;
 	FILE* msglog_outfile_f;
 
@@ -62,7 +62,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	 * and not just for PPC.  We don't use compiler flags since we want
 	 * to run this as a custom job cross platform
 	 */
-	if (stat(msglog,&filestat)) {
+	if (stat(msglog, &filestat)) {
 		/*
 		 * stat fails so not PPC with OPAL msglog and
 		 * no -o OLOG sent
@@ -88,7 +88,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 		goto olog_cleanup_msglog;
 	}
 
-	if ((buffer = calloc(1,len+1)) == NULL) {
+	if ((buffer = calloc(1, len + 1)) == NULL) {
 		goto olog_cleanup_msglog;
 	}
 
@@ -98,11 +98,13 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 		goto olog_cleanup_msglog;
 	}
 
-	while (!feof (msglog_f)) {
-		read_actual = fread(buffer,1,len,msglog_f);
-		if (read_actual == len) {
+	while (!feof(msglog_f)) {
+		read_actual = fread(buffer, 1, len, msglog_f);
+		buffer[read_actual] = '\0';
+
+		if (read_actual == (size_t)len) {
 			write_actual = fwrite(buffer, 1, len, msglog_outfile_f);
-			if (!(write_actual == len)) {
+			if (!(write_actual == (size_t)len)) {
 				free(buffer);
 				goto olog_cleanup_common;
 			}
@@ -133,20 +135,20 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	if (!(msglog_outfile_f = fopen(msglog_outfile, "r")))
 		goto olog_common_exit;
 
-	if (fseek(msglog_outfile_f,0,SEEK_END))
+	if (fseek(msglog_outfile_f, 0, SEEK_END))
 		goto olog_cleanup_msglog_outfile;
 
 	if ((len = ftell(msglog_outfile_f)) == -1)
 		goto olog_cleanup_msglog_outfile;
 
-	if ((fseek(msglog_outfile_f,0,SEEK_SET)) != 0)
+	if ((fseek(msglog_outfile_f, 0, SEEK_SET)) != 0)
 		goto olog_cleanup_msglog_outfile;
 
 	if ((buffer = calloc(1, len+1)) == NULL)
 		goto olog_cleanup_msglog_outfile;
 
-	read_actual = fread(buffer,1,len,msglog_outfile_f);
-	if (read_actual == len) {
+	read_actual = fread(buffer, 1, len, msglog_outfile_f);
+	if (read_actual == (size_t)len) {
 		list = fwts_list_from_text(buffer);
 		free(buffer);
 		(void)fclose(msglog_outfile_f);

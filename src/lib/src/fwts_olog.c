@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <regex.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include "fwts.h"
 
@@ -57,20 +58,6 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	FILE* msglog_outfile_f;
 
 	/*
-	 * Check for the existance of the opal msglog and only if it exists
-	 * dump it out.  This makes the use of the OLOG as a custom option
-	 * and not just for PPC.  We don't use compiler flags since we want
-	 * to run this as a custom job cross platform
-	 */
-	if (stat(msglog, &filestat)) {
-		/*
-		 * stat fails so not PPC with OPAL msglog and
-		 * no -o OLOG sent
-		 */
-		return NULL;
-	}
-
-	/*
 	 * Special file handling to sequentially fread the sysfs msglog into
 	 * a static buffer based on inodes in the stat.  The sysfs msglog has
 	 * a 0 byte file size since it is a sysfs object.
@@ -80,7 +67,24 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	 */
 	if (!(msglog_f = fopen(msglog, "r"))) {
 		/* open the sysfs msglog for read only */
+		if (errno == ENOENT) {
+			/*
+			 * If file does not exist, treat as non-fatal
+			 * for non PPC devices that don't have the
+			 * arch specific sys file.
+			 */
+			return NULL;
+		}
 		goto olog_common_exit;
+	}
+
+	if (fstat(fileno(msglog_f), &filestat)) {
+		/*
+		 * stat fails so not PPC with OPAL msglog and
+		 * no -o OLOG sent
+		 */
+		fclose(msglog_f);
+		return NULL;
 	}
 
 	if ((len = filestat.st_blksize) < 1) {
@@ -88,9 +92,8 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 		goto olog_cleanup_msglog;
 	}
 
-	if ((buffer = calloc(1, len + 1)) == NULL) {
+	if ((buffer = calloc(1, len + 1)) == NULL)
 		goto olog_cleanup_msglog;
-	}
 
 	if (!(msglog_outfile_f = fopen(msglog_outfile, "w"))) {
 		/* create the output file for the sysfs msglog */

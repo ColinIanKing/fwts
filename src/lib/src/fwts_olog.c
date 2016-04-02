@@ -130,7 +130,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	 * Now work on the dumped out msglog as a real file system file
 	 */
 	if (!(msglog_outfile_f = fopen(msglog_outfile, "r")))
-		goto olog_cleanup_common;
+		goto olog_common_exit;
 
 	if (fseek(msglog_outfile_f,0,SEEK_END))
 		goto olog_cleanup_msglog_outfile;

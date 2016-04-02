@@ -630,6 +630,8 @@ Batch tests:
   Test CPU NX capability.
   Test all CPUs have same BIOS set NX flag.
   Test all CPUs have same msr setting in MSR 0x1a0.
+ olog            (1 test):
+  OLOG scan and analysis checks results.
  oops            (1 test):
   Kernel log oops check.
  osilinux        (1 test):

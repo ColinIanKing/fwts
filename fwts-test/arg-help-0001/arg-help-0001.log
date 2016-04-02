@@ -37,6 +37,14 @@
                              tests.
 --interactive-experimental   Just run Interactive
                              Experimental tests.
+-J, --json-data-file         Specify the file to
+                             use for pattern
+                             matching on --olog,
+                             you may need to
+                             specify the
+                             json-data-path also
+                             if non-default
+                             location.
 -j, --json-data-path         Specify path to fwts
                              json data files -
                              default is /usr/share
@@ -79,6 +87,20 @@
                              width in characters.
 --lspci                      Specify path to lspci
                              , e.g. --lspci=path.
+-o, --olog                   Specify Other logs to
+                             be analyzed, main
+                             usage is for custom
+                             log analysis, best to
+                             use custom json file
+                             for pattern matching,
+                             e.g. -o /var/log
+                             /my_opal_msglog
+                             --json-data-file=olog.json
+                             --json-data-path=/home/myuser
+                             , on PPC this will
+                             default to dumping
+                             the OPAL msglog for
+                             analysis.
 --pm-method                  Select the power
                              method to use.
                              Accepted values are
@@ -235,3 +257,4 @@
 
 Some of this work - Copyright (c) 1999 - 2016, Intel Corp. All rights reserved.
 Some of this work - Copyright (c) 2010 - 2016, Canonical.
+Some of this work - Copyright (c) 2016 IBM.

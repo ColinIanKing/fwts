@@ -1,7 +1,9 @@
 klog            klog: Scan kernel log for errors and warnings.
 klog            ----------------------------------------------------------
 klog            Test 1 of 1: Kernel log error check.
-klog            Cannot read file /xxxx/fooo/klog.json.
+klog            Cannot read file /xxxx/fooo/klog.json, check the path and
+klog            check that the file exists, you may need to specify -j or
+klog            -J.
 klog            Error parsing kernel log.
 klog            
 klog            ==========================================================

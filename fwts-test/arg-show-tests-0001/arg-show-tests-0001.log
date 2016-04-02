@@ -99,6 +99,7 @@ Batch tests:
  msr             MSR register tests.
  mtrr            MTRR tests.
  nx              Test if CPU NX is disabled by the BIOS.
+ olog            Run OLOG scan and analysis checks.
  oops            Scan kernel log for Oopses.
  osilinux        Disassemble DSDT to check for _OSI("Linux").
  pcc             Processor Clocking Control (PCC) test.

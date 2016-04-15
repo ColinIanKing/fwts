@@ -358,6 +358,10 @@ static int cpufreq_test_cpu_performance(fwts_framework *fw)
 
 	n_master_cpus = 0;
 
+	if (!cpufreq_settable) {
+		fwts_skipped(fw, "Can't set CPU frequencies");
+		return FWTS_SKIP;
+	}
 
 	for (i = 0; cpufreq_settable && i < num_cpus; i++) {
 		if (!(cpus[i].online && cpus[i].master))
@@ -366,13 +370,6 @@ static int cpufreq_test_cpu_performance(fwts_framework *fw)
 		rc = cpu_set_lowest_frequency(fw, &cpus[i]);
 		if (rc != FWTS_OK)
 			cpufreq_settable = false;
-	}
-
-	if (!cpufreq_settable) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"CPUFreqSetFailed",
-				"Can't set CPU frequencies");
-		return FWTS_OK;
 	}
 
 	/* then do the benchmark */

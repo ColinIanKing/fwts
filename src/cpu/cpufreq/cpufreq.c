@@ -712,6 +712,9 @@ static int cpufreq_test_claimed_max(fwts_framework *fw)
 		if (!max)
 			continue;
 
+		if (!cpu->n_freqs)
+			continue;
+
 		present = true;
 
 		if (max > cpu->freqs[cpu->n_freqs-1].Hz) {
@@ -778,20 +781,22 @@ static int parse_cpu_info(fwts_framework *fw,
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_available_frequencies");
 	str = fwts_get(path);
 
-	for (tmp = str, i = 0; ; tmp = NULL) {
-		char *tok = strtok(tmp, " ");
-		if (!tok)
-			break;
-		if (!isdigit(tok[0]))
-			continue;
-		cpu->freqs[i++].Hz = strtoull(tok, NULL, 10);
+	/* cpu driver like intel_pstate has no scaling_available_frequencies */
+	if (str != NULL) {
+		for (tmp = str, i = 0; ; tmp = NULL) {
+			char *tok = strtok(tmp, " ");
+			if (!tok)
+				break;
+			if (!isdigit(tok[0]))
+				continue;
+			cpu->freqs[i++].Hz = strtoull(tok, NULL, 10);
+		}
+		cpu->n_freqs = i;
+		qsort(cpu->freqs, cpu->n_freqs, sizeof(cpu->freqs[0]),
+			cpu_freq_compare);
 	}
 
 	free(str);
-
-	cpu->n_freqs = i;
-	qsort(cpu->freqs, cpu->n_freqs, sizeof(cpu->freqs[0]),
-			cpu_freq_compare);
 
 	return FWTS_OK;
 }

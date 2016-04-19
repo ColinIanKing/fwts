@@ -15,6 +15,7 @@ ACPI tests:
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  ecdt            ECDT Embedded Controller Boot Resources Table test.
+ einj            EINJ Error Injection Table test.
  erst            ERST Error Record Serialization Table test.
  facs            FACS Firmware ACPI Control Structure test.
  fadt            FADT Fixed ACPI Description Table tests.
@@ -28,6 +29,7 @@ ACPI tests:
  mcfg            MCFG PCI Express* memory mapped config space test.
  mchi            MCHI Management Controller Host Interface Table test.
  method          ACPI DSDT Method Semantic tests.
+ msct            MSCT Maximum System Characteristics Table test.
  msdm            MSDM Microsoft Data Management Table test.
  pcc             Processor Clocking Control (PCC) test.
  rsdp            RSDP Root System Description Pointer test.
@@ -75,6 +77,7 @@ Batch tests:
  dmicheck        DMI/SMBIOS table tests.
  ebda            Test EBDA region is mapped and reserved in memory map table.
  ecdt            ECDT Embedded Controller Boot Resources Table test.
+ einj            EINJ Error Injection Table test.
  erst            ERST Error Record Serialization Table test.
  facs            FACS Firmware ACPI Control Structure test.
  fadt            FADT Fixed ACPI Description Table tests.
@@ -95,6 +98,7 @@ Batch tests:
  method          ACPI DSDT Method Semantic tests.
  microcode       Test if system is using latest microcode.
  mpcheck         MultiProcessor Tables tests.
+ msct            MSCT Maximum System Characteristics Table test.
  msdm            MSDM Microsoft Data Management Table test.
  msr             MSR register tests.
  mtrr            MTRR tests.

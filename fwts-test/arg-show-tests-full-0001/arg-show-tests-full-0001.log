@@ -33,6 +33,8 @@ ACPI tests:
   DMA Remapping test.
  ecdt            (1 test):
   ECDT Embedded Controller Boot Resources Table test.
+ einj            (1 test):
+  EINJ Error Injection Table test.
  erst            (1 test):
   ERST Error Record Serialization Table test.
  facs            (1 test):
@@ -260,6 +262,8 @@ ACPI tests:
   Test _CBA (Configuration Base Address).
   Test _IFT (IPMI Interface Type).
   Test _SRV (IPMI Interface Revision).
+ msct            (1 test):
+  MSCT Maximum System Characteristics Table test.
  msdm            (1 test):
   MSDM Microsoft Data Management Table test.
  pcc             (1 test):
@@ -364,6 +368,8 @@ Batch tests:
   Test EBDA is reserved in E820 table.
  ecdt            (1 test):
   ECDT Embedded Controller Boot Resources Table test.
+ einj            (1 test):
+  EINJ Error Injection Table test.
  erst            (1 test):
   ERST Error Record Serialization Table test.
  facs            (1 test):
@@ -614,6 +620,8 @@ Batch tests:
   Test MP System Address entries.
   Test MP Bus Hierarchy entries.
   Test MP Compatible Bus Address Space entries.
+ msct            (1 test):
+  MSCT Maximum System Characteristics Table test.
  msdm            (1 test):
   MSDM Microsoft Data Management Table test.
  msr             (5 tests):

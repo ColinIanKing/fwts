@@ -166,6 +166,28 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_cpep;
 
 /*
+ * ACPI MSCT (Maximum System Characteristics Table), 5.2.19
+ */
+
+typedef struct {
+	uint8_t		revision;
+	uint8_t		length;
+	uint32_t	range_start;
+	uint32_t	range_end;
+	uint32_t	processor_capacity;
+	uint64_t	memory_capacity;
+} __attribute__ ((packed)) fwts_acpi_msct_proximity;
+
+typedef struct {
+	fwts_acpi_table_header	 header;
+	uint32_t		 proximity_offset;
+	uint32_t		 max_proximity_domains;
+	uint32_t		 max_clock_domains;
+	uint64_t		 max_address;
+	fwts_acpi_msct_proximity msct_proximity[0];
+} __attribute__ ((packed)) fwts_acpi_table_msct;
+
+/*
  * ACPI ECDT (Embedded Controller Boot Resources Table), 5.2.15
  */
 typedef struct {

@@ -807,7 +807,6 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 {
 	fwts_uefi_load_option *load_option;
 	char tmp[2048];
-	char *path;
 	size_t len, offset;
 
 	if (var->datalen < sizeof(fwts_uefi_load_option))
@@ -820,15 +819,19 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	len = fwts_uefi_str16len(load_option->description);
 	fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
 
-	/* Skip over description to get to packed path, unpack path and print */
-	offset = sizeof(load_option->attributes) +
-		 sizeof(load_option->file_path_list_length) +
-		 (sizeof(uint16_t) * (len + 1));
+	if (load_option->file_path_list_length != 0) {
+		char *path;
 
-	path = uefidump_build_dev_path(NULL,
-			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
-	fwts_log_info_verbatum(fw, "  Path: %s.", path);
-	free(path);
+		/* Skip over description to get to packed path, unpack path and print */
+		offset = sizeof(load_option->attributes) +
+			 sizeof(load_option->file_path_list_length) +
+			 (sizeof(uint16_t) * (len + 1));
+
+		path = uefidump_build_dev_path(NULL,
+				(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
+		fwts_log_info_verbatum(fw, "  Path: %s.", path);
+		free(path);
+	}
 
 	offset = sizeof(load_option->attributes) +
 		 sizeof(load_option->file_path_list_length) +

@@ -18,6 +18,10 @@ libfwts_la_LDFLAGS = 			\
 
 libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
+if HAVE_LIBFDT
+dt_sources = fwts_devicetree.c
+endif
+
 #
 #  Components of the fwts core helper library libfwts
 #
@@ -79,4 +83,5 @@ libfwts_la_SOURCES = 		\
 	fwts_uefi.c 		\
 	fwts_wakealarm.c 	\
 	fwts_pm_method.c	\
-	fwts_safe_mem.c
+	fwts_safe_mem.c		\
+	$(dt_sources)

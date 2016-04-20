@@ -1524,6 +1524,9 @@ int fwts_framework_args(const int argc, char **argv)
 		goto tidy_close;
 	}
 
+	/* Init firmware data required by tests */
+	fwts_devicetree_read(fw);
+
 	/* Collect up tests to run */
 	for (i = optind; i < argc; i++) {
 		fwts_framework_test *test;

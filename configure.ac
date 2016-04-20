@@ -64,6 +64,11 @@
 	  AC_CHECK_HEADERS([glib.h])
 	  AC_CHECK_HEADERS([gio/gio.h])
 	  #AC_CHECK_LIB(pcre, pcre_compile)
+	  AC_SEARCH_LIBS([fdt_check_header], [fdt], [
+		AC_DEFINE([HAVE_LIBFDT], [1], [Define if we have libfdt])
+	  ])
+	  AM_CONDITIONAL([HAVE_LIBFDT],
+		  [test "x$ac_cv_search_fdt_check_header" != "xno"])
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK
 	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK

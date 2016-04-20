@@ -20,6 +20,10 @@ bin_PROGRAMS = fwts
 
 fwts_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
+if HAVE_LIBFDT
+dt_tests =
+endif
+
 #
 #  fwts main + tests
 #
@@ -132,7 +136,8 @@ fwts_SOURCES = main.c 				\
 	uefi/uefibootpath/uefibootpath.c	\
 	uefi/uefirtauthvar/uefirtauthvar.c	\
 	uefi/esrtdump/esrtdump.c		\
-	uefi/esrt/esrt.c
+	uefi/esrt/esrt.c			\
+	$(dt_tests)
 
 fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`
 

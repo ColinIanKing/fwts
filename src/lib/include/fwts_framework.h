@@ -151,6 +151,7 @@ typedef struct fwts_framework {
 	bool error_filtered_out;		/* True if a klog message has been filtered out */
 	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 	void *rsdp;				/* ACPI RSDP address */
+	void *fdt;				/* Flattened device tree data */
 	fwts_pm_method pm_method;
 	fwts_architecture host_arch;		/* arch FWTS was built for */
 	fwts_architecture target_arch;		/* arch being tested */

@@ -829,6 +829,15 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
 	fwts_log_info_verbatum(fw, "  Path: %s.", path);
 	free(path);
+
+	offset = sizeof(load_option->attributes) +
+		 sizeof(load_option->file_path_list_length) +
+		 (sizeof(uint16_t) * (len + 1)) +
+		 load_option->file_path_list_length;
+	if ((var->datalen - offset) > 0) {
+		fwts_log_info_verbatum(fw, "  OptionalData:");
+		uefidump_data_hexdump(fw, var->data + offset, var->datalen - offset);
+	}
 }
 
 /*

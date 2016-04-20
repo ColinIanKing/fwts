@@ -1089,6 +1089,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 {
 	fwts_uefi_load_option *load_option;
 	size_t len;
+	size_t offset;
 
 	if (var->datalen < sizeof(fwts_uefi_load_option))
 		return;
@@ -1109,7 +1110,6 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 
 	if (load_option->file_path_list_length != 0) {
 		char *path;
-		size_t offset;
 
 		/* Skip over description to get to packed path, unpack path and print */
 		offset = sizeof(load_option->attributes) +
@@ -1119,6 +1119,15 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
 		fwts_log_info_verbatum(fw, "  Path: %s.", path);
 		free(path);
+	}
+
+	offset = sizeof(load_option->attributes) +
+		 sizeof(load_option->file_path_list_length) +
+		 (sizeof(uint16_t) * (len + 1)) +
+		 load_option->file_path_list_length;
+	if ((var->datalen - offset) > 0) {
+		fwts_log_info_verbatum(fw, "  OptionalData:");
+		uefidump_data_hexdump(fw, var->data + offset, var->datalen - offset);
 	}
 }
 

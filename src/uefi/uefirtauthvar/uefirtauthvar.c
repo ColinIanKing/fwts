@@ -36,9 +36,9 @@ static int fd;
 #define TEST_GUID {0x7f5c5d52, 0x2f14, 0x4f12, {0x96, 0x7c, 0xdb, 0x60, 0xdb, 0x05, 0xa0, 0xfd} }
 #define TEST_GUID1 {0x0ef2aa27, 0x1e93, 0x4284, {0xa1, 0xf9, 0x34, 0xd5, 0x6c, 0x5c, 0xde, 0x84} }
 
-#define getvar_buf_size 100
+#define GETVAR_BUF_SIZE (100)
 
-#define E_AUTHVARCREATE	1
+#define E_AUTHVARCREATE	(1)
 #define E_AUTHVARAPPEND	(1 << 1)
 #define E_AUTHVARUPDATE (1 << 2)
 
@@ -99,7 +99,7 @@ static long getvar(
 static void uefirtvariable_env_cleanup(void)
 {
 	uint64_t status;
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint32_t attributestest;
 
@@ -181,7 +181,7 @@ static int uefirtauthvar_test1(fwts_framework *fw)
 {
 	long ioret;
 
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;
@@ -325,7 +325,7 @@ static int uefirtauthvar_test4(fwts_framework *fw)
 {
 	long ioret;
 
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;
@@ -407,7 +407,7 @@ static int uefirtauthvar_test5(fwts_framework *fw)
 {
 	long ioret;
 
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;
@@ -517,7 +517,7 @@ static int uefirtauthvar_test7(fwts_framework *fw)
 {
 	long ioret;
 
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;
@@ -723,7 +723,7 @@ static int uefirtauthvar_test12(fwts_framework *fw)
 {
 	long ioret;
 
-	uint8_t data[getvar_buf_size];
+	uint8_t data[GETVAR_BUF_SIZE];
 	uint64_t getdatasize = sizeof(data);
 	uint64_t status;
 	uint32_t attributestest;

@@ -21,7 +21,8 @@ bin_PROGRAMS = fwts
 fwts_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
 if HAVE_LIBFDT
-dt_tests =
+dt_tests = \
+	devicetree/dt_sysinfo/dt_sysinfo.c
 endif
 
 #

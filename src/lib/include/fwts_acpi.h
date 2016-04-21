@@ -445,6 +445,17 @@ typedef struct {
 	fwts_acpi_serialization_instruction_entries	entries[0];
 } __attribute__ ((packed)) fwts_acpi_table_erst;
 
+/*
+ * ACPI EINJ (Error Injection Table), 18.6
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	header_size;
+	uint8_t		flags;
+	uint8_t		reserved[3];
+	uint32_t	count;
+	fwts_acpi_serialization_instruction_entries	entries[0];
+} __attribute__ ((packed)) fwts_acpi_table_einj;
 
 /*
  * ACPI MADT (Multiple APIC Description Table), 5.2.12

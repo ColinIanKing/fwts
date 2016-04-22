@@ -38,6 +38,7 @@ int   fwts_pipe_readwrite(
 		const int in_fd, const char *in_buf, const size_t in_len,
 		const int out_fd, char **out_buf, ssize_t *out_len);
 int   fwts_pipe_close(const int fd, const pid_t pid);
+int   fwts_pipe_close2(const int in_fd, const int out_fd, const pid_t pid);
 int   fwts_pipe_exec(const char *command, fwts_list **list, int *status);
 int   fwts_exec(const char *command, int *status);
 int   fwts_write_string_to_file(const fwts_framework *fw, FILE *file, const char *str);

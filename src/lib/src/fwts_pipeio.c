@@ -259,6 +259,12 @@ int fwts_pipe_close(const int fd, const pid_t pid)
 	}
 }
 
+int fwts_pipe_close2(const int in_fd, const int out_fd, const pid_t pid)
+{
+	close(out_fd);
+	return fwts_pipe_close(in_fd, pid);
+}
+
 /*
  *  fwts_pipe_exec()
  *	execute a command, return a list containing lines

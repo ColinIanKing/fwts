@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20151218-64
- * Copyright (c) 2000 - 2015 Intel Corporation
+ * AML/ASL+ Disassembler version 20160422-64
+ * Copyright (c) 2000 - 2016 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_24115_DSDT_2.dsl, Fri Dec 18 18:58:02 2015
+ * Disassembly of /tmp/fwts_tmp_table_12309_DSDT_2.dsl, Fri Apr 22 19:00:06 2016
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20060608 (537265672)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_24115_DSDT_2.aml", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
+DefinitionBlock ("", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 {
     External (_PR_.CPU0._PPC, UnknownObj)
     External (CFGD, IntObj)
@@ -3348,17 +3348,22 @@ DefinitionBlock ("/tmp/fwts_tmp_table_24115_DSDT_2.aml", "DSDT", 2, "TOSCPL", "C
                     {
                         Return (0x08)
                     }
-                    ElseIf (And (Arg1, 0x02))
+                    Else
                     {
-                        If (LAnd (LLessEqual (Arg0, 0x78), And (Arg2, 0x02)))
+                        If (And (Arg1, 0x02))
                         {
-                            Return (0x2301)
+                            If (LAnd (LLessEqual (Arg0, 0x78), And (Arg2, 0x02)))
+                            {
+                                Return (0x2301)
+                            }
+
+                            If (LAnd (LLessEqual (Arg0, 0xB4), And (Arg2, One)))
+                            {
+                                Return (0x2101)
+                            }
                         }
 
-                        If (LAnd (LLessEqual (Arg0, 0xB4), And (Arg2, One)))
-                        {
-                            Return (0x2101)
-                        }
+                        Return (0x1001)
                     }
                 }
 

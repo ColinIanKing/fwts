@@ -32,6 +32,7 @@
 #include <paths.h>
 
 #include <sys/param.h>
+#include <sys/poll.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
@@ -128,48 +129,114 @@ int fwts_pipe_open_ro(const char *command, pid_t *childpid, int *fd)
 	return fwts_pipe_open_rw(command, childpid, NULL, fd);
 }
 
+static int fwts_pipeio_set_nonblock(const int fd)
+{
+	int flags;
+	if (fd < 0)
+		return 0;
+	flags = fcntl(fd, F_GETFL, 0);
+	flags |= O_NONBLOCK;
+	return !!fcntl(fd, F_SETFL, flags);
+}
+
 /*
- *  fwts_pipe_read()
- *	read output from fwts_pipe_open_ro(), *out_buf is populated with
- *	returned data (allocated, must be free()-ed after use), and length in
- *	*out_len.
+ *  fwts_pipe_readwrite()
+ *	send input to and read output from fwts_pipe_open_rw(), in_len bytes
+ *	of in_buf are written to the pipe, and data is read into *out_buf,
+ *	*out_len indicating output length. *out_buf is allocated, and
+ *	must be free()-ed after use.
  *	Returns non-zero on failure.
  */
-int fwts_pipe_read(const int fd, char **out_buf, ssize_t *out_len)
+int fwts_pipe_readwrite(
+		const int in_fd, const char *in_buf, const size_t in_len,
+		const int out_fd, char **out_buf, ssize_t *out_len)
 {
+	struct pollfd pollfds[2];
+	size_t in_size = in_len;
+	ssize_t out_size = 0;
 	char *ptr = NULL;
 	char buffer[8192];
-	ssize_t size = 0;
+
 	*out_len = 0;
 
-	ptr = NULL;
+	pollfds[0].fd = out_fd;
+	pollfds[0].events = POLLIN;
+	pollfds[1].fd = in_fd;
+	pollfds[1].events = POLLOUT;
+
+	/* we need non-blocking IO */
+	if (fwts_pipeio_set_nonblock(in_fd))
+		return -1;
+
+	if (fwts_pipeio_set_nonblock(out_fd))
+		return -1;
 
 	for (;;) {
-		ssize_t n = read(fd, buffer, sizeof(buffer));
+		ssize_t n;
 		char *tmp;
+		int rc;
 
-		if (n == 0)
+		if (in_size == 0 || in_fd < 0 || in_buf == NULL)
+			pollfds[1].events = 0;
+
+		rc = poll(pollfds, 2, -1);
+		if (rc < 0)
 			break;
-		if (n < 0) {
-			if (errno != EINTR && errno != EAGAIN) {
+
+		if (pollfds[0].revents) {
+			n = read(out_fd, buffer, sizeof(buffer));
+
+			if (n == 0)
+				break;
+			if (n < 0) {
+				if (errno != EINTR && errno != EAGAIN) {
+					free(ptr);
+					return -1;
+				}
+				continue;
+			}
+
+			if ((tmp = realloc(ptr, out_size + n + 1)) == NULL) {
 				free(ptr);
 				return -1;
 			}
-			continue;
+			ptr = tmp;
+			memcpy(ptr + out_size, buffer, n);
+			out_size += n;
+			*(ptr+out_size) = 0;
 		}
 
-		if ((tmp = realloc(ptr, size + n + 1)) == NULL) {
-			free(ptr);
-			return -1;
+		if (pollfds[1].revents) {
+			n = write(in_fd, in_buf, in_size);
+
+			if (n < 0) {
+				if (errno != EINTR && errno != EAGAIN) {
+					free(ptr);
+					return -1;
+				}
+				continue;
+			}
+
+			in_buf += n;
+			in_size -= n;
 		}
-		ptr = tmp;
-		memcpy(ptr + size, buffer, n);
-		size += n;
-		*(ptr+size) = 0;
+
 	}
-	*out_len = size;
+
+	*out_len = out_size;
 	*out_buf = ptr;
 	return 0;
+}
+
+/*
+ *  fwts_pipe_read()
+ *	read output from fwts_pipe_open_ro(), *length is
+ *	set to the number of chars read and we return
+ *	a buffer of read data.
+ */
+int fwts_pipe_read(const int fd, char **out_buf, ssize_t *out_len)
+{
+	return fwts_pipe_readwrite(-1, NULL, 0, fd, out_buf, out_len);
 }
 
 /*

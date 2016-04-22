@@ -24,6 +24,7 @@
 
 #include <signal.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,48 +41,91 @@
 #include "fwts.h"
 
 /*
- *  fwts_pipe_open_ro()
+ *  fwts_pipe_open_rw()
  *	execl a command, return pid in *childpid and a pipe connected
- *	to stdout in *fd. Return value < 0 indicates error.
+ *	to stdout in *in_fd, and stdout in *out_fd. Return value < 0
+ *	indicates error.
  */
-int fwts_pipe_open_ro(const char *command, pid_t *childpid, int *fd)
+int fwts_pipe_open_rw(const char *command, pid_t *childpid,
+		int *in_fd, int *out_fd)
 {
-	int pipefds[2];
+	int out_pipefds[2];
+	int in_pipefds[2];
 	pid_t pid;
 	FILE *fp;
 
-	if (pipe(pipefds) < 0)
-		return -1;
+	if (in_fd != NULL) {
+		if (pipe(in_pipefds) < 0)
+			return -1;
+	} else {
+		in_pipefds[0] = open("/dev/null", O_RDONLY);
+		in_pipefds[1] = -1;
+	}
+
+	if (out_fd != NULL) {
+		if (pipe(out_pipefds) < 0)
+			goto err_close_in;
+	} else {
+		out_pipefds[0] = -1;
+		out_pipefds[1] = open("/dev/null", O_WRONLY);
+	}
 
 	pid = fork();
 	switch (pid) {
 	case -1:
 		/* Ooops */
-		close(pipefds[0]);
-		close(pipefds[1]);
-		return -1;
+		goto err_close_out;
 	case 0:
 		/* Child */
 		if ((fp = freopen("/dev/null", "w", stderr)) == NULL) {
 			fprintf(stderr, "Cannot redirect stderr\n");
 		}
-		if (pipefds[0] != STDOUT_FILENO) {
-			dup2(pipefds[1], STDOUT_FILENO);
-			close(pipefds[1]);
+		if (out_pipefds[0] != STDOUT_FILENO) {
+			dup2(out_pipefds[1], STDOUT_FILENO);
+			close(out_pipefds[1]);
 		}
-		close(pipefds[0]);
+		if (in_pipefds[1] != STDIN_FILENO) {
+			dup2(in_pipefds[0], STDIN_FILENO);
+			close(in_pipefds[0]);
+		}
+
+		close(out_pipefds[0]);
+		close(in_pipefds[1]);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
 		if (fp)
 			fclose(fp);
 		_exit(FWTS_EXEC_ERROR);
 	default:
 		/* Parent */
-		close(pipefds[1]);
+		close(out_pipefds[1]);
+		close(in_pipefds[0]);
+
 		*childpid = pid;
-		*fd = pipefds[0];
+		if (out_fd)
+			*out_fd = out_pipefds[0];
+		if (in_fd)
+			*in_fd = in_pipefds[1];
 
 		return 0;
 	}
+
+err_close_in:
+	close(in_pipefds[0]);
+	close(in_pipefds[1]);
+err_close_out:
+	close(out_pipefds[0]);
+	close(out_pipefds[1]);
+	return -1;
+}
+
+/*
+ *  fwts_pipe_open_ro()
+ *	execl a command, return pid in *childpid and a pipe connected
+ *	to stdout in *fd. Return value < 0 indicates error.
+ */
+int fwts_pipe_open_ro(const char *command, pid_t *childpid, int *fd)
+{
+	return fwts_pipe_open_rw(command, childpid, NULL, fd);
 }
 
 /*

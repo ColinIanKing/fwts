@@ -85,16 +85,16 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 
 /*
  *  fwts_pipe_read()
- *	read output from fwts_pipe_open(), *length is
- *	set to the number of chars read and we return
- *	a buffer of read data.
+ *	read output from fwts_pipe_open(), *out_buf is populated with returned
+ *	data (allocated, must be free()-ed after use), and length in *out_len.
+ *	Returns non-zero on failure.
  */
-char *fwts_pipe_read(const int fd, ssize_t *length)
+int fwts_pipe_read(const int fd, char **out_buf, ssize_t *out_len)
 {
 	char *ptr = NULL;
 	char buffer[8192];
 	ssize_t size = 0;
-	*length = 0;
+	*out_len = 0;
 
 	ptr = NULL;
 
@@ -107,22 +107,23 @@ char *fwts_pipe_read(const int fd, ssize_t *length)
 		if (n < 0) {
 			if (errno != EINTR && errno != EAGAIN) {
 				free(ptr);
-				return NULL;
+				return -1;
 			}
 			continue;
 		}
 
 		if ((tmp = realloc(ptr, size + n + 1)) == NULL) {
 			free(ptr);
-			return NULL;
+			return -1;
 		}
 		ptr = tmp;
 		memcpy(ptr + size, buffer, n);
 		size += n;
 		*(ptr+size) = 0;
 	}
-	*length = size;
-	return ptr;
+	*out_len = size;
+	*out_buf = ptr;
+	return 0;
 }
 
 /*
@@ -162,7 +163,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return FWTS_ERROR;
 
-	text = fwts_pipe_read(fd, &len);
+	fwts_pipe_read(fd, &text, &len);
 	*list = fwts_list_from_text(text);
 	free(text);
 

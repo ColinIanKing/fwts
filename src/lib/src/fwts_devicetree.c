@@ -46,15 +46,15 @@ int fwts_devicetree_read(fwts_framework *fwts)
 	}
 	free(command);
 
-	data = fwts_pipe_read(fd, &len);
-	if (data == NULL) {
+	rc = fwts_pipe_read(fd, &data, &len);
+	if (rc) {
 		fwts_pipe_close(fd, pid);
 		return FWTS_ERROR;
 	}
 
 	status = fwts_pipe_close(fd, pid);
 
-	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0 || len == 0) {
 		fprintf(stderr, "Cannot read devicetree data: dtc failed\n");
 		return FWTS_ERROR;
 	}

@@ -64,7 +64,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 	if ((fd = open(buffer, O_RDONLY)) < 0) {
 		/* Hrm, msr not there, so force modprobe msr and see what happens */
 		pid_t pid;
-		if ((fd = fwts_pipe_open("modprobe msr", &pid)) < 0)
+		if (fwts_pipe_open_ro("modprobe msr", &pid, &fd) < 0)
 			return FWTS_ERROR;
 		fwts_pipe_close(fd, pid);
 

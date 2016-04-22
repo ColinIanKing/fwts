@@ -91,7 +91,7 @@ static int dump_exec(const char *filename, const char *command)
 	char *data;
 	int ret;
 
-	if ((fd = fwts_pipe_open(command, &pid)) < 0)
+	if (fwts_pipe_open_ro(command, &pid, &fd) < 0)
 		return FWTS_ERROR;
 
 	if (fwts_pipe_read(fd, &data, &len) != 0) {

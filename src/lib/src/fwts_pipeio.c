@@ -40,11 +40,11 @@
 #include "fwts.h"
 
 /*
- *  fwts_pipe_open()
- *	execl a command, return pid in *childpid and
- *	return fd. fd < 0 indicates error.
+ *  fwts_pipe_open_ro()
+ *	execl a command, return pid in *childpid and a pipe connected
+ *	to stdout in *fd. Return value < 0 indicates error.
  */
-int fwts_pipe_open(const char *command, pid_t *childpid)
+int fwts_pipe_open_ro(const char *command, pid_t *childpid, int *fd)
 {
 	int pipefds[2];
 	pid_t pid;
@@ -78,15 +78,17 @@ int fwts_pipe_open(const char *command, pid_t *childpid)
 		/* Parent */
 		close(pipefds[1]);
 		*childpid = pid;
+		*fd = pipefds[0];
 
-		return pipefds[0];
+		return 0;
 	}
 }
 
 /*
  *  fwts_pipe_read()
- *	read output from fwts_pipe_open(), *out_buf is populated with returned
- *	data (allocated, must be free()-ed after use), and length in *out_len.
+ *	read output from fwts_pipe_open_ro(), *out_buf is populated with
+ *	returned data (allocated, must be free()-ed after use), and length in
+ *	*out_len.
  *	Returns non-zero on failure.
  */
 int fwts_pipe_read(const int fd, char **out_buf, ssize_t *out_len)
@@ -160,7 +162,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 	ssize_t	len;
 	char 	*text;
 
-	if ((fd = fwts_pipe_open(command, &pid)) < 0)
+	if (fwts_pipe_open_ro(command, &pid, &fd) < 0)
 		return FWTS_ERROR;
 
 	rc = fwts_pipe_read(fd, &text, &len);
@@ -192,7 +194,7 @@ int fwts_exec(const char *command, int *status)
 	pid_t 	pid;
 	int	fd;
 
-	if ((fd = fwts_pipe_open(command, &pid)) < 0)
+	if (fwts_pipe_open_ro(command, &pid, &fd) < 0)
 		return FWTS_ERROR;
 
 	*status = fwts_pipe_close(fd, pid);

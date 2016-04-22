@@ -39,8 +39,8 @@ int fwts_devicetree_read(fwts_framework *fwts)
 	if (rc < 0)
 		return FWTS_ERROR;
 
-	fd = fwts_pipe_open(command, &pid);
-	if (fd < 0) {
+	rc = fwts_pipe_open_ro(command, &pid, &fd);
+	if (rc < 0) {
 		free(command);
 		return FWTS_ERROR;
 	}

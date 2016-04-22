@@ -156,20 +156,25 @@ int fwts_pipe_close(const int fd, const pid_t pid)
 int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 {
 	pid_t 	pid;
-	int	fd;
+	int	rc, fd;
 	ssize_t	len;
 	char 	*text;
 
 	if ((fd = fwts_pipe_open(command, &pid)) < 0)
 		return FWTS_ERROR;
 
-	fwts_pipe_read(fd, &text, &len);
-	*list = fwts_list_from_text(text);
-	free(text);
+	rc = fwts_pipe_read(fd, &text, &len);
+	if (!rc && len > 0) {
+		*list = fwts_list_from_text(text);
+		free(text);
+	} else {
+		list = NULL;
+	}
 
 	*status = fwts_pipe_close(fd, pid);
-	if (*status) {
-		fwts_list_free(*list, free);
+	if (rc || *status) {
+		if (*list)
+			fwts_list_free(*list, free);
 		*list = NULL;
 		return FWTS_EXEC_ERROR;
 	}

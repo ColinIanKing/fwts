@@ -215,6 +215,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/tables/tbprint.c		\
 	source/components/utilities/utaddress.c		\
 	source/components/utilities/utalloc.c		\
+	source/components/utilities/utascii.c		\
 	source/components/utilities/utcache.c		\
 	source/components/utilities/utcopy.c		\
 	source/components/utilities/utdebug.c		\

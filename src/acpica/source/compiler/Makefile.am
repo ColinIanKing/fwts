@@ -5,7 +5,8 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
 AM_CPPFLAGS = -Wall -Wstrict-prototypes -fno-strict-aliasing -D_LINUX \
-		-DACPI_ASL_COMPILER $(CFLAGS) -I$(top_srcdir)/src/acpica/source/include
+		-DACPI_ASL_COMPILER $(CFLAGS) -I$(top_srcdir)/src/acpica/source/include \
+	-g
 
 AM_YFLAGS = -v -d -y
 

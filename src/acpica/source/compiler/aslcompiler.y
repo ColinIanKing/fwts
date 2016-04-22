@@ -130,7 +130,7 @@
  * each list element and possibly overflow on very large lists (>4000 items).
  * This dramatically reduces use of the parse stack overall.
  *
- *      ArgList, TermList, Objectlist, ByteList, DWordList, PackageList,
+ *      ArgList, TermList, ByteList, DWordList, PackageList,
  *      ResourceMacroList, and FieldUnitList
  */
 
@@ -171,7 +171,7 @@ AslLocalAllocate (
  * These shift/reduce conflicts are expected. There should be zero
  * reduce/reduce conflicts.
  */
-%expect 89
+%expect 101
 
 /*! [Begin] no source code translation */
 
@@ -308,6 +308,7 @@ AslLocalAllocate (
 %token <i> PARSEOP_GPIO_INT
 %token <i> PARSEOP_GPIO_IO
 %token <i> PARSEOP_I2C_SERIALBUS
+%token <i> PARSEOP_I2C_SERIALBUS_V2
 %token <i> PARSEOP_IF
 %token <i> PARSEOP_INCLUDE
 %token <i> PARSEOP_INCLUDE_END
@@ -465,6 +466,7 @@ AslLocalAllocate (
 %token <i> PARSEOP_SLAVEMODE_DEVICEINIT
 %token <i> PARSEOP_SLEEP
 %token <i> PARSEOP_SPI_SERIALBUS
+%token <i> PARSEOP_SPI_SERIALBUS_V2
 %token <i> PARSEOP_STALL
 %token <i> PARSEOP_STARTDEPENDENTFN
 %token <i> PARSEOP_STARTDEPENDENTFN_NOPRI
@@ -490,6 +492,7 @@ AslLocalAllocate (
 %token <i> PARSEOP_TYPE_STATIC
 %token <i> PARSEOP_TYPE_TRANSLATION
 %token <i> PARSEOP_UART_SERIALBUS
+%token <i> PARSEOP_UART_SERIALBUS_V2
 %token <i> PARSEOP_UNICODE
 %token <i> PARSEOP_UNLOAD
 %token <i> PARSEOP_UPDATERULE_ONES
@@ -599,8 +602,11 @@ AslLocalAllocate (
 %left <i>  PARSEOP_EXP_INDEX_LEFT
 %right <i> PARSEOP_EXP_INDEX_RIGHT
 
+/* Macros */
+
 %token <i> PARSEOP_PRINTF
 %token <i> PARSEOP_FPRINTF
+%token <i> PARSEOP_FOR
 
 /* Specific parentheses tokens are not used at this time */
            /* PARSEOP_EXP_PAREN_OPEN */
@@ -641,7 +647,6 @@ AslLocalAllocate (
 %type <n> NamedObject
 %type <n> NameSpaceModifier
 %type <n> Object
-%type <n> ObjectList
 %type <n> PackageData
 %type <n> ParameterTypePackage
 %type <n> ParameterTypePackageList
@@ -874,6 +879,7 @@ AslLocalAllocate (
 %type <n> PrintfArgList
 %type <n> PrintfTerm
 %type <n> FprintfTerm
+%type <n> ForTerm
 
 /* Resource Descriptors */
 
@@ -891,6 +897,7 @@ AslLocalAllocate (
 %type <n> GpioIntTerm
 %type <n> GpioIoTerm
 %type <n> I2cSerialBusTerm
+%type <n> I2cSerialBusTermV2
 %type <n> InterruptTerm
 %type <n> IOTerm
 %type <n> IRQNoFlagsTerm
@@ -905,9 +912,11 @@ AslLocalAllocate (
 %type <n> QWordSpaceTerm
 %type <n> RegisterTerm
 %type <n> SpiSerialBusTerm
+%type <n> SpiSerialBusTermV2
 %type <n> StartDependentFnNoPriTerm
 %type <n> StartDependentFnTerm
 %type <n> UartSerialBusTerm
+%type <n> UartSerialBusTermV2
 %type <n> VendorLongTerm
 %type <n> VendorShortTerm
 %type <n> WordBusNumberTerm
@@ -926,6 +935,7 @@ AslLocalAllocate (
 %type <n> OptionalAddressRange
 %type <n> OptionalBitsPerByte
 %type <n> OptionalBuffer_Last
+%type <n> OptionalBufferLength
 %type <n> OptionalByteConstExpr
 %type <n> OptionalCount
 %type <n> OptionalDecodeType
@@ -945,6 +955,7 @@ AslLocalAllocate (
 %type <n> OptionalParameterTypePackage
 %type <n> OptionalParameterTypesPackage
 %type <n> OptionalParityType
+%type <n> OptionalPredicate
 %type <n> OptionalQWordConstExpr
 %type <n> OptionalRangeType
 %type <n> OptionalReference
@@ -1009,6 +1020,10 @@ AslCode
  * {ObjectList} portion of the DefinitionBlockTerm in ACPI 2.0 to the
  * original use of {TermList} instead (see below.) This allows the use
  * of Type1 and Type2 opcodes at module level.
+ *
+ * 04/2016: The module-level code is now allowed in the following terms:
+ * DeviceTerm, PowerResTerm, ProcessorTerm, ScopeTerm, ThermalZoneTerm.
+ * The ObjectList term is obsolete and has been removed.
  */
 DefinitionBlockTerm
     : PARSEOP_DEFINITION_BLOCK '('  {$<n>$ = TrCreateLeafNode (PARSEOP_DEFINITION_BLOCK);}
@@ -1122,12 +1137,6 @@ FieldUnitEntry
     : ',' AmlPackageLengthTerm      {$$ = TrCreateNode (PARSEOP_RESERVED_BYTES,1,$2);}
     | NameSeg ','
         AmlPackageLengthTerm        {$$ = TrLinkChildNode ($1,$3);}
-    ;
-
-ObjectList
-    :                               {$$ = NULL;}
-    | ObjectList Object             {$$ = TrLinkPeerNode ($1,$2);}
-    | error                         {$$ = AslDoError(); yyclearin;}
     ;
 
 Object
@@ -1424,6 +1433,7 @@ Type1Opcode
     | BreakPointTerm                {}
     | ContinueTerm                  {}
     | FatalTerm                     {}
+    | ForTerm                       {}
     | ElseIfTerm                    {}
     | LoadTerm                      {}
     | NoOpTerm                      {}
@@ -1632,7 +1642,7 @@ BreakPointTerm
 
 BufferTerm
     : PARSEOP_BUFFER '('            {$<n>$ = TrCreateLeafNode (PARSEOP_BUFFER);}
-        OptionalTermArg
+        OptionalBufferLength
         ')' '{'
             BufferTermData '}'      {$$ = TrLinkChildren ($<n>3,2,$4,$7);}
     | PARSEOP_BUFFER '('
@@ -1813,7 +1823,7 @@ DeviceTerm
     : PARSEOP_DEVICE '('            {$<n>$ = TrCreateLeafNode (PARSEOP_DEVICE);}
         NameString
         ')' '{'
-            ObjectList '}'          {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
+            TermList '}'            {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
     | PARSEOP_DEVICE '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
@@ -1922,6 +1932,23 @@ FindSetRightBitTerm
         ')'                         {$$ = TrLinkChildren ($<n>3,2,$4,$5);}
     | PARSEOP_FINDSETRIGHTBIT '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+    /* Convert a For() loop to a While() loop */
+ForTerm
+    : PARSEOP_FOR '('               {$<n>$ = TrCreateLeafNode (PARSEOP_WHILE);}
+        OptionalTermArg ','         {}
+        OptionalPredicate ','
+        OptionalTermArg             {$<n>$ = TrLinkPeerNode ($4,$<n>3);
+                                        TrSetParent ($9,$<n>3);}                /* New parent is WHILE */
+        ')' '{' TermList '}'        {$<n>$ = TrLinkChildren ($<n>3,2,$7,$13);}
+                                    {$<n>$ = TrLinkPeerNode ($13,$9);
+                                        $$ = $<n>10;}
+    ;
+
+OptionalPredicate
+    :                               {$$ = TrCreateValuedLeafNode (PARSEOP_INTEGER, 1);}
+    | TermArg                       {$$ = $1;}
     ;
 
 FprintfTerm
@@ -2296,7 +2323,7 @@ PowerResTerm
         ',' ByteConstExpr
         ',' WordConstExpr
         ')' '{'
-            ObjectList '}'          {$$ = TrLinkChildren ($<n>3,4,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$6,$8,$11);}
+            TermList '}'            {$$ = TrLinkChildren ($<n>3,4,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$6,$8,$11);}
     | PARSEOP_POWERRESOURCE '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
@@ -2324,7 +2351,7 @@ ProcessorTerm
         OptionalDWordConstExpr
         OptionalByteConstExpr
         ')' '{'
-            ObjectList '}'          {$$ = TrLinkChildren ($<n>3,5,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$6,$7,$8,$11);}
+            TermList '}'            {$$ = TrLinkChildren ($<n>3,5,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$6,$7,$8,$11);}
     | PARSEOP_PROCESSOR '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
@@ -2379,7 +2406,7 @@ ScopeTerm
     : PARSEOP_SCOPE '('             {$<n>$ = TrCreateLeafNode (PARSEOP_SCOPE);}
         NameString
         ')' '{'
-            ObjectList '}'          {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
+            TermList '}'            {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
     | PARSEOP_SCOPE '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
@@ -2468,7 +2495,7 @@ ThermalZoneTerm
     : PARSEOP_THERMALZONE '('       {$<n>$ = TrCreateLeafNode (PARSEOP_THERMALZONE);}
         NameString
         ')' '{'
-            ObjectList '}'          {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
+            TermList '}'            {$$ = TrLinkChildren ($<n>3,2,TrSetNodeFlags ($4, NODE_IS_NAME_DECLARATION),$7);}
     | PARSEOP_THERMALZONE '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
@@ -2650,6 +2677,11 @@ OptionalSerializeRuleKeyword
     ;
 
 OptionalTermArg
+    :                               {$$ = TrCreateLeafNode (PARSEOP_DEFAULT_ARG);}
+    | TermArg                       {$$ = $1;}
+    ;
+
+OptionalBufferLength
     :                               {$$ = NULL;}
     | TermArg                       {$$ = $1;}
     ;
@@ -3175,6 +3207,7 @@ ResourceMacroTerm
     | GpioIntTerm                   {}
     | GpioIoTerm                    {}
     | I2cSerialBusTerm              {}
+    | I2cSerialBusTermV2            {}
     | InterruptTerm                 {}
     | IOTerm                        {}
     | IRQNoFlagsTerm                {}
@@ -3187,9 +3220,11 @@ ResourceMacroTerm
     | QWordSpaceTerm                {}
     | RegisterTerm                  {}
     | SpiSerialBusTerm              {}
+    | SpiSerialBusTermV2            {}
     | StartDependentFnNoPriTerm     {}
     | StartDependentFnTerm          {}
     | UartSerialBusTerm             {}
+    | UartSerialBusTermV2           {}
     | VendorLongTerm                {}
     | VendorShortTerm               {}
     | WordBusNumberTerm             {}
@@ -3413,8 +3448,27 @@ I2cSerialBusTerm
         OptionalResourceType        /* 12: ResourceType */
         OptionalNameString          /* 13: DescriptorName */
         OptionalBuffer_Last         /* 14: VendorData */
-        ')'                         {$$ = TrLinkChildren ($<n>3,9,$4,$5,$7,$8,$10,$11,$12,$13,$14);}
+        ')'                         {$$ = TrLinkChildren ($<n>3,10,$4,$5,$7,$8,$10,$11,$12,$13,
+                                        TrCreateLeafNode (PARSEOP_DEFAULT_ARG),$14);}
     | PARSEOP_I2C_SERIALBUS '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+I2cSerialBusTermV2
+    : PARSEOP_I2C_SERIALBUS_V2 '('  {$<n>$ = TrCreateLeafNode (PARSEOP_I2C_SERIALBUS_V2);}
+        WordConstExpr               /* 04: SlaveAddress */
+        OptionalSlaveMode           /* 05: SlaveMode */
+        ',' DWordConstExpr          /* 07: ConnectionSpeed */
+        OptionalAddressingMode      /* 08: AddressingMode */
+        ',' StringData              /* 10: ResourceSource */
+        OptionalByteConstExpr       /* 11: ResourceSourceIndex */
+        OptionalResourceType        /* 12: ResourceType */
+        OptionalNameString          /* 13: DescriptorName */
+        OptionalShareType           /* 14: Share */
+        OptionalBuffer_Last         /* 15: VendorData */
+        ')'                         {$$ = TrLinkChildren ($<n>3,10,$4,$5,$7,$8,$10,$11,$12,$13,
+                                        $14,$15);}
+    | PARSEOP_I2C_SERIALBUS_V2 '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
 
@@ -3598,8 +3652,31 @@ SpiSerialBusTerm
         OptionalResourceType        /* 19: ResourceType */
         OptionalNameString          /* 20: DescriptorName */
         OptionalBuffer_Last         /* 21: VendorData */
-        ')'                         {$$ = TrLinkChildren ($<n>3,13,$4,$5,$6,$8,$9,$11,$13,$15,$17,$18,$19,$20,$21);}
+        ')'                         {$$ = TrLinkChildren ($<n>3,14,$4,$5,$6,$8,$9,$11,$13,$15,$17,$18,$19,$20,
+                                        TrCreateLeafNode (PARSEOP_DEFAULT_ARG),$21);}
     | PARSEOP_SPI_SERIALBUS '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+SpiSerialBusTermV2
+    : PARSEOP_SPI_SERIALBUS_V2 '('  {$<n>$ = TrCreateLeafNode (PARSEOP_SPI_SERIALBUS_V2);}
+        WordConstExpr               /* 04: DeviceSelection */
+        OptionalDevicePolarity      /* 05: DevicePolarity */
+        OptionalWireMode            /* 06: WireMode */
+        ',' ByteConstExpr           /* 08: DataBitLength */
+        OptionalSlaveMode           /* 09: SlaveMode */
+        ',' DWordConstExpr          /* 11: ConnectionSpeed */
+        ',' ClockPolarityKeyword    /* 13: ClockPolarity */
+        ',' ClockPhaseKeyword       /* 15: ClockPhase */
+        ',' StringData              /* 17: ResourceSource */
+        OptionalByteConstExpr       /* 18: ResourceSourceIndex */
+        OptionalResourceType        /* 19: ResourceType */
+        OptionalNameString          /* 20: DescriptorName */
+        OptionalShareType           /* 21: Share */
+        OptionalBuffer_Last         /* 22: VendorData */
+        ')'                         {$$ = TrLinkChildren ($<n>3,14,$4,$5,$6,$8,$9,$11,$13,$15,$17,$18,$19,$20,
+                                        $21,$22);}
+    | PARSEOP_SPI_SERIALBUS_V2 '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
 
@@ -3637,8 +3714,32 @@ UartSerialBusTerm
         OptionalResourceType        /* 19: ResourceType */
         OptionalNameString          /* 20: DescriptorName */
         OptionalBuffer_Last         /* 21: VendorData */
-        ')'                         {$$ = TrLinkChildren ($<n>3,14,$4,$5,$6,$8,$9,$10,$11,$13,$15,$17,$18,$19,$20,$21);}
+        ')'                         {$$ = TrLinkChildren ($<n>3,15,$4,$5,$6,$8,$9,$10,$11,$13,$15,$17,$18,$19,$20,
+                                        TrCreateLeafNode (PARSEOP_DEFAULT_ARG),$21);}
     | PARSEOP_UART_SERIALBUS '('
+        error ')'                   {$$ = AslDoError(); yyclearin;}
+    ;
+
+UartSerialBusTermV2
+    : PARSEOP_UART_SERIALBUS_V2 '(' {$<n>$ = TrCreateLeafNode (PARSEOP_UART_SERIALBUS_V2);}
+        DWordConstExpr              /* 04: ConnectionSpeed */
+        OptionalBitsPerByte         /* 05: BitsPerByte */
+        OptionalStopBits            /* 06: StopBits */
+        ',' ByteConstExpr           /* 08: LinesInUse */
+        OptionalEndian              /* 09: Endianess */
+        OptionalParityType          /* 10: Parity */
+        OptionalFlowControl         /* 11: FlowControl */
+        ',' WordConstExpr           /* 13: Rx BufferSize */
+        ',' WordConstExpr           /* 15: Tx BufferSize */
+        ',' StringData              /* 17: ResourceSource */
+        OptionalByteConstExpr       /* 18: ResourceSourceIndex */
+        OptionalResourceType        /* 19: ResourceType */
+        OptionalNameString          /* 20: DescriptorName */
+        OptionalShareType           /* 21: Share */
+        OptionalBuffer_Last         /* 22: VendorData */
+        ')'                         {$$ = TrLinkChildren ($<n>3,15,$4,$5,$6,$8,$9,$10,$11,$13,$15,$17,$18,$19,$20,
+                                        $21,$22);}
+    | PARSEOP_UART_SERIALBUS_V2 '('
         error ')'                   {$$ = AslDoError(); yyclearin;}
     ;
 

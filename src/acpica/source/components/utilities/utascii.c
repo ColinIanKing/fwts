@@ -1,7 +1,6 @@
-%{
 /******************************************************************************
  *
- * Module Name: aslparser.y - Master Bison/Yacc input file for iASL
+ * Module Name: utascii - Utility ascii functions
  *
  *****************************************************************************/
 
@@ -114,92 +113,121 @@
  *
  *****************************************************************************/
 
-#include "aslcompiler.h"
 #include "acpi.h"
 #include "accommon.h"
 
-#define _COMPONENT          ACPI_COMPILER
-        ACPI_MODULE_NAME    ("aslparse")
 
-/*
- * Global Notes:
+/*******************************************************************************
  *
- * October 2005: The following list terms have been optimized (from the
- * original ASL grammar in the ACPI specification) to force the immediate
- * reduction of each list item so that the parse stack use doesn't increase on
- * each list element and possibly overflow on very large lists (>4000 items).
- * This dramatically reduces use of the parse stack overall.
+ * FUNCTION:    AcpiUtValidNameseg
  *
- *      ArgList, TermList, ByteList, DWordList, PackageList,
- *      ResourceMacroList, and FieldUnitList
- */
+ * PARAMETERS:  Name            - The name or table signature to be examined.
+ *                                Four characters, does not have to be a
+ *                                NULL terminated string.
+ *
+ * RETURN:      TRUE if signature is has 4 valid ACPI characters
+ *
+ * DESCRIPTION: Validate an ACPI table signature.
+ *
+ ******************************************************************************/
 
-void *
-AslLocalAllocate (
-    unsigned int            Size);
+BOOLEAN
+AcpiUtValidNameseg (
+    char                    *Name)
+{
+    UINT32                  i;
 
-/* Bison/yacc configuration */
 
-#define static
-#undef malloc
-#define malloc              AslLocalAllocate
-#undef alloca
-#define alloca              AslLocalAllocate
-#define yytname             AslCompilername
+    /* Validate each character in the signature */
 
-#define YYINITDEPTH         600             /* State stack depth */
-#define YYDEBUG             1               /* Enable debug output */
-#define YYERROR_VERBOSE     1               /* Verbose error messages */
-#define YYFLAG              -32768
+    for (i = 0; i < ACPI_NAME_SIZE; i++)
+    {
+        if (!AcpiUtValidNameChar (Name[i], i))
+        {
+            return (FALSE);
+        }
+    }
 
-/* Define YYMALLOC/YYFREE to prevent redefinition errors  */
-
-#define YYMALLOC            AslLocalAllocate
-#define YYFREE              ACPI_FREE
-%}
-
-/*
- * Declare the type of values in the grammar
- */
-%union {
-    UINT64              i;
-    char                *s;
-    ACPI_PARSE_OBJECT   *n;
+    return (TRUE);
 }
 
-/*
- * These shift/reduce conflicts are expected. There should be zero
- * reduce/reduce conflicts.
- */
-%expect 101
 
-/*! [Begin] no source code translation */
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiUtValidNameChar
+ *
+ * PARAMETERS:  Char            - The character to be examined
+ *              Position        - Byte position (0-3)
+ *
+ * RETURN:      TRUE if the character is valid, FALSE otherwise
+ *
+ * DESCRIPTION: Check for a valid ACPI character. Must be one of:
+ *              1) Upper case alpha
+ *              2) numeric
+ *              3) underscore
+ *
+ *              We allow a '!' as the last character because of the ASF! table
+ *
+ ******************************************************************************/
 
-/*
- * The M4 macro processor is used to bring in the parser items,
- * in order to keep this master file smaller, and to break up
- * the various parser items.
- */
-m4_define(NoEcho)
+BOOLEAN
+AcpiUtValidNameChar (
+    char                    Character,
+    UINT32                  Position)
+{
 
-/* Token types */
+    if (!((Character >= 'A' && Character <= 'Z') ||
+          (Character >= '0' && Character <= '9') ||
+          (Character == '_')))
+    {
+        /* Allow a '!' in the last position */
 
-m4_include(asltokens.y)
+        if (Character == '!' && Position == 3)
+        {
+            return (TRUE);
+        }
 
-/* Production types/names */
+        return (FALSE);
+    }
 
-m4_include(asltypes.y)
-%%
+    return (TRUE);
+}
 
-/* Production rules */
 
-m4_include(aslrules.y)
-m4_include(aslcstyle.y)
-m4_include(aslresources.y)
-%%
+/*******************************************************************************
+ *
+ * FUNCTION:    AcpiUtCheckAndRepairAscii
+ *
+ * PARAMETERS:  Name                - Ascii string
+ *              Count               - Number of characters to check
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Ensure that the requested number of characters are printable
+ *              Ascii characters. Sets non-printable and null chars to <space>.
+ *
+ ******************************************************************************/
 
-/*! [End] no source code translation !*/
+void
+AcpiUtCheckAndRepairAscii (
+    UINT8                   *Name,
+    char                    *RepairedName,
+    UINT32                  Count)
+{
+    UINT32                  i;
 
-/* Local support functions in C */
 
-m4_include(aslsupport.y)
+    for (i = 0; i < Count; i++)
+    {
+        RepairedName[i] = (char) Name[i];
+
+        if (!Name[i])
+        {
+            return;
+        }
+        if (!isprint (Name[i]))
+        {
+            RepairedName[i] = ' ';
+        }
+    }
+}

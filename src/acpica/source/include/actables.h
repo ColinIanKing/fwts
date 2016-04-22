@@ -318,10 +318,6 @@ ACPI_STATUS
 AcpiTbParseRootTable (
     ACPI_PHYSICAL_ADDRESS   RsdpAddress);
 
-BOOLEAN
-AcpiIsValidSignature (
-    char                    *Signature);
-
 
 /*
  * tbxfload

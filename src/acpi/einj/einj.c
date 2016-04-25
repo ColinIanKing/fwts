@@ -13,6 +13,9 @@
  *
  */
 #include "fwts.h"
+
+#if defined(FWTS_HAS_ACPI)
+
 #include "fwts_acpi_object_eval.h"
 
 #include <stdlib.h>
@@ -165,3 +168,5 @@ static fwts_framework_ops einj_ops = {
 
 FWTS_REGISTER("einj", &einj_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH |
 	      FWTS_FLAG_TEST_ACPI)
+
+#endif

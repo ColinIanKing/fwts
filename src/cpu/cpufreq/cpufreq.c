@@ -760,7 +760,7 @@ static int parse_cpu_info(fwts_framework *fw,
 	cpu_mkpath(path, sizeof(path), cpu, NULL);
 	rc = lstat(path, &statbuf);
 	if (rc) {
-		fwts_log_warning(fw, "Can't stat cpufreq info!");
+		fwts_log_warning(fw, "Can't access cpufreq info for CPU %d", cpu->idx);
 		return FWTS_ERROR;
 	}
 

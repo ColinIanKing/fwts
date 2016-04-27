@@ -174,7 +174,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
-		if (entry->end > start && entry->start < end)
+		if (entry->end > start && entry->start <= end)
 			type |= entry->type;
 	}
 

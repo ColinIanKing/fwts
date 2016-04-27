@@ -364,6 +364,9 @@ Batch tests:
   Find and test SMBIOS Table Entry Points.
   Test DMI/SMBIOS tables for errors.
   Test DMI/SMBIOS3 tables for errors.
+ dt_sysinfo      (2 tests):
+  Check model property
+  Check system-id property
  ebda            (1 test):
   Test EBDA is reserved in E820 table.
  ecdt            (1 test):

@@ -75,6 +75,7 @@ Batch tests:
  dbgp            DBGP (Debug Port) Table test.
  dmar            DMA Remapping (VT-d) test.
  dmicheck        DMI/SMBIOS table tests.
+ dt_sysinfo      Device tree system information test
  ebda            Test EBDA region is mapped and reserved in memory map table.
  ecdt            ECDT Embedded Controller Boot Resources Table test.
  einj            EINJ Error Injection Table test.

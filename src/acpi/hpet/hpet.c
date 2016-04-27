@@ -35,8 +35,11 @@ static fwts_list *klog;
 static uint64_t	hpet_base_p = 0;
 static void     *hpet_base_v = 0;
 
-static void hpet_parse_check_base(fwts_framework *fw,
-	const char *table, fwts_list_link *item)
+static void hpet_parse_check_base(
+	fwts_framework *fw,
+	const char *table,
+	fwts_list_link *item,
+	bool *parsed)
 {
 	char *val;
 
@@ -49,6 +52,7 @@ static void hpet_parse_check_base(fwts_framework *fw,
 		address_base = strtoul(val, NULL, 0x10);
 
 		if (hpet_base_p != 0) {
+			*parsed = true;
 			if (hpet_base_p != address_base)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"HPETBaseMismatch",
@@ -67,8 +71,11 @@ static void hpet_parse_check_base(fwts_framework *fw,
 	}
 }
 
-static void hpet_parse_device_hpet(fwts_framework *fw,
-	const char *table, fwts_list_link *item)
+static void hpet_parse_device_hpet(
+	fwts_framework *fw,
+	const char *table,
+	fwts_list_link *item,
+	bool *parsed)
 {
 	for (;item != NULL; item = item->next) {
 		const char *str = fwts_text_list_text(item);
@@ -82,13 +89,13 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
 				if (strstr(tmpstr, "Memory32Fixed") != NULL) {
 					/* Next line contains base address */
 					if (tmp_item->next != NULL) {
-						hpet_parse_check_base(fw, table, tmp_item->next);
+						hpet_parse_check_base(fw, table, tmp_item->next, parsed);
 						return;
 					}
 				} else if (strstr(tmpstr, "DWordMemory") != NULL) {
 					if (tmp_item->next != NULL &&		/* Granularity */
 					    tmp_item->next->next != NULL) {	/* Base address */
-						hpet_parse_check_base(fw, table, tmp_item->next->next);
+						hpet_parse_check_base(fw, table, tmp_item->next->next, parsed);
 						return;
 					}
 				}
@@ -103,7 +110,8 @@ static void hpet_parse_device_hpet(fwts_framework *fw,
  */
 static void hpet_check_base_acpi_table(
 	fwts_framework *fw,
-	fwts_acpi_table_info *info)
+	fwts_acpi_table_info *info,
+	bool *parsed)
 {
 	fwts_list *output;
 	fwts_list_link *item;
@@ -117,7 +125,7 @@ static void hpet_check_base_acpi_table(
 
 	fwts_list_foreach(item, output)
 		if (strstr(fwts_text_list_text(item), "Device (HPET)") != NULL)
-			hpet_parse_device_hpet(fw, info->name, item);
+			hpet_parse_device_hpet(fw, info->name, item, parsed);
 
 	fwts_text_list_free(output);
 }
@@ -373,6 +381,7 @@ static int hpet_check_test2(fwts_framework *fw)
 static int hpet_check_test3(fwts_framework *fw)
 {
 	int i;
+	bool parsed = false;
 
 	if (hpet_base_p == 0) {
 		fwts_log_info(fw, "Test skipped because HPET address was not found.");
@@ -391,10 +400,12 @@ static int hpet_check_test3(fwts_framework *fw)
 		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
 			break;
 		if (info && info->has_aml)
-			hpet_check_base_acpi_table(fw, info);
+			hpet_check_base_acpi_table(fw, info, &parsed);
 	}
-
 	fwts_iasl_deinit();
+
+	if (!parsed)
+		fwts_warning(fw, "Test skipped because HPET Device address was not found in DSDT/SSDT.");
 
 	return FWTS_OK;
 }

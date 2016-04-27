@@ -976,93 +976,6 @@ static void parse_kernel_messages(FILE *fp)
 	token_free(&t);
 }
 
-/*
- *  This is evil.  We parse the input stream
- *  and throw away all #includes so we don't get
- *  gcc -E breaking on include files that we haven't
- *  got.  We don't really care at this level about
- *  macros being expanded as we want to see tokens
- *  such as KERN_ERR later on.
- */
-static int parse_cpp_include(parser *p, token *t)
-{
-	/*
-	 *  Gloop up #include "foo.h"
-	 */
-	do {
-		token_clear(t);
-		if (get_token(p, t) == EOF)
-			return EOF;
-		/* End of line, we're done! */
-		if (strcmp(t->token, "\n") == 0)
-			return PARSER_OK;
-	} while (t->type == TOKEN_WHITE_SPACE);
-
-
-	/*
-	 *  Ah, we gobbled up white spaces and
-	 *  now we should be at a '<' token
-	 *  Parse #include <something/foo.h>
-	 */
-	if (t->type == TOKEN_LESS_THAN) {
-		do {
-			if (get_token(p, t) == EOF)
-				return EOF;
-		} while (t->type != TOKEN_GREATER_THAN);
-	}
-
-	token_clear(t);
-
-	return PARSER_OK;
-}
-
-/*
- *  CPP phase, find and remove #includes
- */
-static int parse_cpp_includes(FILE *fp)
-{
-	token t;
-	parser p;
-
-	parser_new(&p, fp, false);
-	p.fp = fp;
-	p.skip_white_space = false;
-
-	token_new(&t);
-
-	while ((get_token(&p, &t)) != EOF) {
-		if (t.type == TOKEN_CPP) {
-			for (;;) {
-				token_clear(&t);
-				if (get_token(&p, &t) == EOF) {
-					token_free(&t);
-					return EOF;
-				}
-				if (strcmp(t.token, "\n") == 0)
-					break;
-				if (t.type == TOKEN_WHITE_SPACE) {
-					continue;
-				}
-				if (strcmp(t.token, "include") == 0) {
-					if (parse_cpp_include(&p, &t) == EOF) {
-						token_free(&t);
-						return EOF;
-					}
-					break;
-				}
-				printf("#%s", t.token);
-				break;
-			}
-		} else {
-			printf("%s", t.token);
-		}
-		token_clear(&t);
-	}
-	token_free(&t);
-	return EOF;
-}
-
-
 static void hash_init(void)
 {
 	size_t i;
@@ -1106,28 +1019,13 @@ static void hash_init(void)
  */
 int main(int argc, char **argv)
 {
-	if (argc < 2) {
-		fprintf(stderr, "%s: [-E] [-P]\n", argv[0]);
-		exit(EXIT_FAILURE);
-	}
+	(void)argc;
+	(void)argv;
 
-	/*
-	 *  GCC -E preprocess phase
-	 */
-	if (strcmp(argv[1], "-E") == 0) {
-		parse_cpp_includes(stdin);
-		exit(EXIT_SUCCESS);
-	}
-
-	/*
-	 *  Parse kernel printk and dev_err phase
-	 */
-	if (strcmp(argv[1], "-P") == 0) {
-		patterns = klog_load("firmware_error_warning_patterns");
-		hash_init();
-		parse_kernel_messages(stdin);
-		klog_free(patterns);
-	}
+	patterns = klog_load("firmware_error_warning_patterns");
+	hash_init();
+	parse_kernel_messages(stdin);
+	klog_free(patterns);
 
 	exit(EXIT_SUCCESS);
 }

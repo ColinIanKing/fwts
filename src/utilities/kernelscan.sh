@@ -42,7 +42,7 @@ fi
 scan_source_file()
 {
 	if [ -f $1 ]; then
-		$KERNELSCAN < $1 -E | gcc -E $CONFIGS - | $KERNELSCAN -P > $TMP
+		$KERNELSCAN -P < $1 > $TMP
 		if [ $(stat -c%s $TMP) -gt 0 ]; then
 			echo "Source: $1"
 			cat $TMP

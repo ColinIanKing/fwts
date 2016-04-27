@@ -144,7 +144,7 @@ static int get_mtrrs(void)
 		if (ptr2 && (*ptr2 == 'k'))
 			entry->size *= 1024;
 
-		entry->end = entry->start + entry->size;
+		entry->end = entry->start + entry->size - 1;
 
 		if (strstr(line, "write-back"))
 			entry->type = WRITE_BACK;
@@ -174,7 +174,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
-		if (entry->end > start && entry->start <= end)
+		if (entry->end >= start && entry->start <= end)
 			type |= entry->type;
 	}
 
@@ -186,7 +186,7 @@ restart:
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
-		if (entry->end > end && entry->start < end) {
+		if (entry->end >= end && entry->start < end) {
 			end = entry->start;
 			if (end < start)
 				end = start;

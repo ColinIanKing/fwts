@@ -186,7 +186,7 @@ restart:
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
-		if (entry->end >= end && entry->start < end) {
+		if (entry->end > end && entry->start < end) {
 			end = entry->start;
 			if (end < start)
 				end = start;

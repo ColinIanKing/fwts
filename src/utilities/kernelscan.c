@@ -109,7 +109,101 @@ typedef struct {
  */
 static klog_pattern *patterns;
 
+static unsigned int hash_size;
+
+static char *funcs[] = {
+	"printk",
+	"printf",
+	"early_printk",
+	"vprintk_emit",
+	"vprintk",
+	"printk_emit",
+	"printk_once",
+	"printk_deferred",
+	"printk_deferred_once",
+	"pr_emerg",
+	"pr_alert",
+	"pr_crit",
+	"pr_err",
+	"pr_warning",
+	"pr_warn",
+	"pr_notice",
+	"pr_info",
+	"pr_cont",
+	"pr_devel",
+	"pr_debug",
+	"pr_emerg_once",
+	"pr_alert_once",
+	"pr_crit_once",
+	"pr_err_once",
+	"pr_warning_once",
+	"pr_warn_once",
+	"pr_notice_once",
+	"pr_info_once",
+	"pr_cont_once",
+	"pr_devel_once",
+	"pr_debug_once",
+	"dynamic_pr_debug",
+	"dev_vprintk_emit",
+	"dev_printk_emit",
+	"dev_printk",
+	"dev_emerg",
+	"dev_alert",
+	"dev_crit",
+	"dev_err",
+	"dev_warn",
+	"dev_dbg",
+	"dev_notice",
+	"dev_level_once",
+	"dev_emerg_once",
+	"dev_alert_once",
+	"dev_crit_once",
+	"dev_err_once",
+	"dev_warn_once",
+	"dev_notice_once",
+	"dev_info_once",
+	"dev_dbg_once",
+	"dev_level_ratelimited",
+	"dev_emerg_ratelimited",
+	"dev_alert_ratelimited",
+	"dev_crit_ratelimited",
+	"dev_err_ratelimited",
+	"dev_warn_ratelimited",
+	"dev_notice_ratelimited",
+	"dev_info_ratelimited",
+	"dbg",
+	"ACPI_ERROR",
+	"ACPI_INFO",
+	"ACPI_WARNING",
+	"ACPI_EXCEPTION",
+	"ACPI_BIOS_WARNING",
+	"ACPI_BIOS_ERROR",
+	"ACPI_ERROR_METHOD",
+	/*
+	"ACPI_DEBUG_PRINT",
+	"ACPI_DEBUG_PRINT_RAW",
+	"DEBUG",
+	*/
+	NULL
+};
+
+#define TABLE_SIZE	(5000)
+
+static char *hash_funcs[TABLE_SIZE];
+
 static int get_token(parser *p, token *t);
+
+static inline unsigned int djb2a(const char *str)
+{
+        register unsigned int hash = 5381;
+        register unsigned int c;
+
+        while ((c = *str++)) {
+                /* (hash * 33) ^ c */
+                hash = ((hash << 5) + hash) ^ c;
+        }
+        return hash;
+}
 
 /*
  *  Initialise the parser
@@ -784,21 +878,10 @@ static char *strdupcat(char *old, char *new)
 static int parse_kernel_message(parser *p, token *t)
 {
 	bool got_string = false;
-	bool emit = false;
 	bool found = false;
 	token_type prev_token_type = TOKEN_UNKNOWN;
 	char *str = NULL;
 	char *line = NULL;
-	bool printk;
-
-	printk = (strcmp(t->token, "printk") == 0);
-
-	if ((strcmp(t->token, "dev_err") == 0) ||
-	    (strcmp(t->token, "ACPI_ERROR") == 0) ||
-	    (strcmp(t->token, "ACPI_BIOS_ERROR") == 0) ||
-	    (strcmp(t->token, "ACPI_EXCEPTION") == 0) ||
-	    (strcmp(t->token, "ACPI_ERROR_METHOD") == 0))
-		emit = true;
 
 	line = strdupcat(line, t->token);
 	token_clear(t);
@@ -815,30 +898,14 @@ static int parse_kernel_message(parser *p, token *t)
 		 *  Hit ; so lets push out what we've parsed
 		 */
 		if (t->type == TOKEN_TERMINAL) {
-			if (emit) {
-				if (found) {
-					printf("OK : %s\n", line);
-				} else {
-					printf("ADD: %s\n", line);
-				}
+			if (found) {
+				printf("OK : %s\n", line);
+			} else {
+				printf("ADD: %s\n", line);
 			}
 			free(line);
 			free(str);
 			return PARSER_OK;
-		}
-
-		/*
-		 *  We are only interested in KERN_ERR
-		 *  printk messages
-		 */
-		if (printk &&
-		    (t->type == TOKEN_IDENTIFIER) &&
-		    (prev_token_type == TOKEN_PAREN_OPENED) &&
-		    ((strcmp(t->token, "KERN_ERR") == 0) ||
-		     (strcmp(t->token, "KERN_CRIT") == 0) ||
-		     (strcmp(t->token, "KERN_EMERG") == 0) ||
-		     (strcmp(t->token, "KERN_WARNING") == 0))) {
-			emit = true;
 		}
 
 		if (t->type == TOKEN_LITERAL_STRING) {
@@ -877,6 +944,14 @@ static int parse_kernel_message(parser *p, token *t)
 	free(line);
 }
 
+static bool hash_find(char *token)
+{
+	unsigned int h = djb2a(token) % hash_size;
+	char *hf = hash_funcs[h];
+
+	return (hf && !strcmp(token, hf));
+}
+
 /*
  *  Parse input looking for printk or dev_err calls
  */
@@ -892,14 +967,9 @@ static void parse_kernel_messages(FILE *fp)
 	token_new(&t);
 
 	while ((get_token(&p, &t)) != EOF) {
-		if ((strcmp(t.token, "printk") == 0) ||
-		    (strcmp(t.token, "dev_err") == 0) ||
-		    (strcmp(t.token, "ACPI_ERROR") == 0) ||
-		    (strcmp(t.token, "ACPI_BIOS_ERROR") == 0) ||
-		    (strcmp(t.token, "ACPI_EXCEPTION") == 0) ||
-		    (strcmp(t.token, "ACPI_ERROR_METHOD") == 0)) {
+		if (hash_find(t.token))
 			parse_kernel_message(&p, &t);
-		} else
+		else
 			token_clear(&t);
 	}
 
@@ -992,6 +1062,35 @@ static int parse_cpp_includes(FILE *fp)
 	return EOF;
 }
 
+
+static void hash_init(void)
+{
+	size_t i;
+
+	/* Find optimal hash table size */
+	for (hash_size = 50; hash_size < TABLE_SIZE; hash_size++) {
+		bool collision = false;
+
+		memset(hash_funcs, 0, sizeof(hash_funcs));
+
+		for (i = 0; funcs[i]; i++) {
+			unsigned int h = djb2a(funcs[i]) % hash_size;
+
+			if (hash_funcs[h]) {
+				collision = true;
+				break;
+			}
+			hash_funcs[h] = funcs[i];
+		}
+		if (!collision)
+			break;
+	}
+	if (hash_size == TABLE_SIZE) {
+		fprintf(stderr, "Increase TABLE_SIZE for hash table\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
 /*
  *  Scan kernel source for printk KERN_ERR and dev_err
  *  calls.
@@ -1025,6 +1124,7 @@ int main(int argc, char **argv)
 	 */
 	if (strcmp(argv[1], "-P") == 0) {
 		patterns = klog_load("firmware_error_warning_patterns");
+		hash_init();
 		parse_kernel_messages(stdin);
 		klog_free(patterns);
 	}

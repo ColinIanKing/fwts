@@ -30,6 +30,10 @@
 #include <unistd.h>
 #include <string.h>
 
+#define UNDEFINED	(-1)
+#define NOT_EDGE	(0)
+#define EDGE		(1)
+
 /*
  * This test sanity checks apic irq information
  * rule of thumb:
@@ -51,7 +55,7 @@ static int apicedge_test1(fwts_framework *fw)
 
 	while (!feof(file)) {
 		char line[4096], *c;
-		int edge = -1;
+		int edge = UNDEFINED;
 		int irq = 0;
 
 		memset(line, 0, sizeof(line));
@@ -64,34 +68,34 @@ static int apicedge_test1(fwts_framework *fw)
 		irq = strtoul(line, &c, 10);
 		if (c == line)
 			continue;
-		if (strstr(line, "IO-APIC-edge"))
-			edge = 1;
-		if (strstr(line, "IO-APIC-fasteoi"))
-			edge = 0;
-		if (strstr(line, "PCI-MSI-level"))
-			edge = 0;
-		if (strstr(line, "PCI-MSI-edge"))
-			edge = 1;
-		if (strstr(line, "IO-APIC-level"))
-			edge = 0;
+		if (strstr(line, "IO-APIC") && strstr(line, "edge"))
+			edge = EDGE;
+		else if (strstr(line, "IO-APIC") && strstr(line, "fasteoi"))
+			edge = NOT_EDGE;
+		else if (strstr(line, "PCI-MSI") && strstr(line, "level"))
+			edge = NOT_EDGE;
+		else if (strstr(line, "PCI-MSI") && strstr(line, "edge"))
+			edge = EDGE;
+		else if (strstr(line, "IO-APIC") && strstr(line, "level"))
+			edge = NOT_EDGE;
 
 		if (strstr(line,"acpi")) {
-			if (edge == 1)
+			if (edge == EDGE)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"ACPIIRQEdgeTrig",
 					"ACPI Interrupt is incorrectly edge triggered.");
 			continue;
 		}
-		if ((irq < 15) && (edge == 0))
+		if ((irq < 15) && (edge == NOT_EDGE))
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"LegacyIRQLevelTrig",
 				"Legacy interrupt %i is incorrectly level triggered.", irq);
-		if ((irq < 15) && (edge == -1))
+		if ((irq < 15) && (edge == UNDEFINED))
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"NonLegacyIRQLevelTrig",
 				"Non-Legacy interrupt %i is incorrectly level triggered.", irq);
 	}
-	fclose(file);
+	(void)fclose(file);
 
 	if (fwts_tests_passed(fw))
 		fwts_passed(fw, "Legacy interrupts are edge and PCI interrupts are level triggered.");

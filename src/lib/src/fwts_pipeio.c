@@ -287,7 +287,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 		*list = fwts_list_from_text(text);
 		free(text);
 	} else {
-		list = NULL;
+		*list = NULL;
 	}
 
 	*status = fwts_pipe_close(fd, pid);

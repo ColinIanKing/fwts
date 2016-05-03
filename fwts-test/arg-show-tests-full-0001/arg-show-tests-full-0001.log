@@ -364,6 +364,10 @@ Batch tests:
   Find and test SMBIOS Table Entry Points.
   Test DMI/SMBIOS tables for errors.
   Test DMI/SMBIOS3 tables for errors.
+ dt_base         (3 tests):
+  Check device tree presence
+  Check device tree baseline validity
+  Check device tree warnings
  dt_sysinfo      (2 tests):
   Check model property
   Check system-id property

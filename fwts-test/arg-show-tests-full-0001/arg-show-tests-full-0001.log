@@ -332,6 +332,8 @@ Batch tests:
   BIOS32 Service Directory test.
  bios_info       (1 test):
   Gather BIOS DMI information
+ bmc_info        (1 test):
+  BMC Info
  boot            (1 test):
   BOOT Table test.
  checksum        (1 test):

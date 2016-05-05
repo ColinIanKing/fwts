@@ -32,6 +32,7 @@ static struct {
 } feature_names[] = {
 	{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
 	{ FWTS_FW_FEATURE_DEVICETREE,	"devicetree" },
+	{ FWTS_FW_FEATURE_IPMI,		"IPMI" },
 };
 
 /*
@@ -63,7 +64,8 @@ int fwts_firmware_features(void)
 {
 	int features = 0;
 
-	/* we just have static feature definitions for now */
+	struct stat ipmi_statbuf;
+
 	switch (fwts_firmware_detect()) {
 	case FWTS_FIRMWARE_BIOS:
 	case FWTS_FIRMWARE_UEFI:
@@ -76,6 +78,11 @@ int fwts_firmware_features(void)
 		break;
 	}
 
+	/* just check for IPMI device presence */
+
+	if (!stat("/dev/ipmi0", &ipmi_statbuf))
+		features |= FWTS_FW_FEATURE_IPMI;
+
 	return features;
 }
 
@@ -83,7 +90,7 @@ const char *fwts_firmware_feature_string(const int features)
 {
 	const int n = FWTS_ARRAY_LEN(feature_names);
 	const char sep[] = ", ";
-	static char str[50];
+	static char str[60];
 	size_t len;
 	char *p;
 	int i;

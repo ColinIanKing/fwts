@@ -71,6 +71,7 @@
 #include "fwts_firmware.h"
 #include "fwts_gpe.h"
 #include "fwts_iasl.h"
+#include "fwts_ipmi.h"
 #include "fwts_klog.h"
 #include "fwts_olog.h"
 #include "fwts_pipeio.h"

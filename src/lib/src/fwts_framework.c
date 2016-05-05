@@ -593,16 +593,6 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 
 	fwts_framework_minor_test_progress(fw, 0, "");
 
-	if (!fwts_firmware_has_features(test->fw_features)) {
-		int missing = test->fw_features & ~fwts_firmware_features();
-		fwts_log_info(fw, "Test skipped, missing features: %s",
-				fwts_firmware_feature_string(missing));
-		fw->current_major_test->results.skipped +=
-			test->ops->total_tests;
-		fw->total.skipped += test->ops->total_tests;
-		goto done;
-	}
-
 	if ((test->flags & FWTS_FLAG_ROOT_PRIV) &&
 	    (fwts_check_root_euid(fw, true) != FWTS_OK)) {
 		fwts_log_error(fw, "Aborted test, insufficient privilege.");
@@ -612,6 +602,16 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 			fwts_framework_minor_test_progress_clear_line();
 			fprintf(stderr, " Test aborted.\n");
 		}
+		goto done;
+	}
+
+	if (!fwts_firmware_has_features(test->fw_features)) {
+		int missing = test->fw_features & ~fwts_firmware_features();
+		fwts_log_info(fw, "Test skipped, missing features: %s",
+			fwts_firmware_feature_string(missing));
+		fw->current_major_test->results.skipped +=
+			test->ops->total_tests;
+		fw->total.skipped += test->ops->total_tests;
 		goto done;
 	}
 

@@ -123,6 +123,7 @@ fwts_SOURCES = main.c 				\
 	cpu/microcode/microcode.c 		\
 	dmi/dmicheck/dmicheck.c 		\
 	hotkey/hotkey/hotkey.c 			\
+	ipmi/bmc/bmc_info.c			\
 	kernel/klog/klog.c 			\
 	kernel/olog/olog.c			\
 	kernel/oops/oops.c 			\

@@ -57,6 +57,7 @@ libfwts_la_SOURCES = 		\
 	fwts_iasl.c 		\
 	fwts_interactive.c 	\
 	fwts_ioport.c		\
+	fwts_ipmi.c		\
 	fwts_keymap.c 		\
 	fwts_klog.c 		\
 	fwts_olog.c		\

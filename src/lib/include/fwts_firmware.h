@@ -32,8 +32,10 @@ enum firmware_type {
 enum firmware_feature {
 	FWTS_FW_FEATURE_ACPI		= 0x1,
 	FWTS_FW_FEATURE_DEVICETREE	= 0x2,
+	FWTS_FW_FEATURE_IPMI		= 0x4,
 	FWTS_FW_FEATURE_ALL		= FWTS_FW_FEATURE_ACPI |
-					  FWTS_FW_FEATURE_DEVICETREE
+					  FWTS_FW_FEATURE_DEVICETREE |
+					  FWTS_FW_FEATURE_IPMI
 };
 
 int fwts_firmware_detect(void);

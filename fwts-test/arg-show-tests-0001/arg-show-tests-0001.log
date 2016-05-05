@@ -63,6 +63,7 @@ Batch tests:
  bgrt            BGRT Boot Graphics Resource Table test.
  bios32          BIOS32 Service Directory test.
  bios_info       Gather BIOS DMI information.
+ bmc_info        BMC Info
  boot            BOOT Table test.
  checksum        ACPI table checksum test.
  cpep            CPEP Corrected Platform Error Polling Table test.

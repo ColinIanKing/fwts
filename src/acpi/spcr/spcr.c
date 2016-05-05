@@ -59,7 +59,10 @@ static int spcr_test1(fwts_framework *fw)
 	bool pci = true;
 	bool passed = true;
 
-	/* Assuming revision 2 */
+	/*
+	 * Assuming revision 2, full list from
+	 * http://go.microsoft.com/fwlink/p/?LinkId=234837)
+	 */
 	switch (spcr->interface_type) {
 	case 0x00:
 		str = "16550 compatible";
@@ -74,6 +77,18 @@ static int spcr_test1(fwts_framework *fw)
 	case 0x04 ... 0x09:
 		str = "Reserved (Do not Use)";
 		reserved = true;
+		break;
+	case 0x0d:
+		str = "(deprecated) ARM SBSA";
+		break;
+	case 0x0e:
+		str = "ARM SBSA Generic UART";
+		break;
+	case 0x0f:
+		str = "ARM DCC";
+		break;
+	case 0x10:
+		str = "BCM2835";
 		break;
 	default:
 		str = "Reserved";

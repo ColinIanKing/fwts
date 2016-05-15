@@ -139,7 +139,7 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 			"The ASPM L0s low power Link state is optimized for "
 			"short entry and exit latencies, while providing "
 			"substantial power savings. Disabling L0s of a PCIe "
-			"device may increases power consumption, and will  "
+			"device may increase power consumption, and will  "
 			"impact the battery life of a mobile system.");
 	}
 

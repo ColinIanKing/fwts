@@ -1,4 +1,4 @@
-	  AC_INIT([fwts],[0.1],[colin.king@canonical.com])
+	  AC_INIT([fwts],[0.1],[fwts-devel@lists.ubuntu.com])
           AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
           m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 	  AC_CANONICAL_HOST

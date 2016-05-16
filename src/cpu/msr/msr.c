@@ -253,9 +253,14 @@ typedef struct {
 /* From AMD Architecture Programmer's Manual, Volume 2: System Programming, Appending A */
 static const msr_info AMD_MSRs[] = {
 	{ "MTRRCAP",			0x000000fe,	0x0000000000000fffULL, NULL },
+	/*
+	 * LP#1582005 - Do not check sysenter MSRs, they will be different on
+	 * each CPU, so checking them across CPUs is incorrect
+	 *
 	{ "SYSENTER_CS",		0x00000174,	0x000000000000ffffULL, NULL },
 	{ "SYSENTER_ESP",		0x00000175,	0xffffffffffffffffULL, NULL },
 	{ "SYSENTER_EIP",		0x00000176,	0xffffffffffffffffULL, NULL },
+	 */
 	{ "MCG_CAP",			0x00000179,	0x0000000001ff0fffULL, NULL },
 	{ "MCG_STATUS",			0x0000017a,	0xffffffffffffffffULL, NULL },
 	{ "MCG_CTL",			0x0000017b,	0xffffffffffffffffULL, NULL },

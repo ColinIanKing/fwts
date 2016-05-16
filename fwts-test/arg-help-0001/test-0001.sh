@@ -20,6 +20,7 @@ cols=$(stty -a | tr ';' '\n' | grep "columns" | cut -d' ' -f3) 2> /dev/null
 #
 stty cols 50 2> /dev/null
 if [ $? -eq 1 ]; then
+	tset 2> /dev/null
 	echo SKIP: $TEST, $NAME
 	exit 77
 fi

@@ -20,8 +20,9 @@ cols=$(stty -a | tr ';' '\n' | grep "columns" | cut -d' ' -f3) 2> /dev/null
 #
 stty cols 50 2> /dev/null
 if [ $? -eq 1 ]; then
-        echo SKIP: $TEST, $NAME
-        exit 77
+	tset 2> /dev/null
+	echo SKIP: $TEST, $NAME
+	exit 77
 fi
 
 $FWTS --help | grep -v "Show version" | grep -v "Usage" | sed s/\([Vv][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/  > $TMPLOG

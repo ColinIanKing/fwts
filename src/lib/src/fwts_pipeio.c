@@ -206,7 +206,7 @@ int fwts_pipe_readwrite(
 			*(ptr+out_size) = 0;
 		}
 
-		if (pollfds[1].revents) {
+		if ((in_fd > 0) && in_buf && pollfds[1].revents) {
 			n = write(in_fd, in_buf, in_size);
 
 			if (n < 0) {

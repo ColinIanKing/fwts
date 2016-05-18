@@ -1,3 +1,94 @@
+fwts (16.05.00-0ubuntu1) yakkety; urgency=low
+
+  [Alex Hung]
+  * acpi:method: remove ACPI section from the top comments
+  * acpi: dbg2: fix incorrect address size check with GAS struct
+  * cpufreq: skip frequency performance test if cpufreq_settable is false
+  * cpufreq: skip frequency claimed maximum test with intel_pstate
+  * acpi: add MSCT table sanity check
+  * acpi: add EINJ table sanity check
+  * fwts-test: sync up with MSCT and EINJ table tests
+  * fwts-test: add dt_base to show-tests* regression tests
+
+  [Anthony Wong]
+  * Add .gitignore
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20160318 (LP: #1559312)
+  * fwts-test: sync tests with latest ACPICA output changes
+  * data: klog.json: Fix typo in docking label text
+  * acpi: gtdt: fix buffer overrun comparison
+  * acpi: gtdt: fix buffer overrun comparison (for SBSA)
+  * acpi: bert: fix format specifiers for boot error region
+  * lib: fwts_olog: minor fwts coding style reformatting
+  * lib: fwts_olog: fix fclose on already closed files.
+  * lib: fwts_olog: fix memory leak on buffer on error exit path
+  * lib: fwts_olog: ensure buffer is '\0' terminated per read, minor cleanups
+  * lib: fwts_olog: avoid TOCTOU race on stat and fopen
+  * fwts-test: update tests for new olog test from IBM
+  * doc: fwts.1: Update contributors list and man page date
+  * Add cppcheck static analysis checking script
+  * uefi: uefirtauthvar: capitalize macro getvar_buf_size
+  * Revert "acpi: tpm2: add check for zero control area address
+    (LP: #1506442)"
+  * ACPICA: Update to version 20160422
+  * fwts-test: update disassemble and syntaxcheck tests to sync with latest
+    ACPICA
+  * cpufreq: make stat failure message a little more human friendly
+  * acpi: einj, msct: only build in these tests on ACPI enabled systems
+  * fwts-test: add dt_sysinfo to show-tests* regression tests
+  * hpet: warn if HPET Device address not found in DSDT/SSDT
+  * kernelscan: speed up parser using hash lookup, add more print funcs
+  * kernelscan: remove need to pre-process with a CPP phase
+  * kernelscan.sh: remove -E and -P phases to parsing
+  * apic: apicedge: fix parsing of /proc/interrupts (LP: #1575783)
+  * lib: fwts_pipeio: set *list to NULL on fwts_pipe_read error
+  * acpi: spcr: add missing debug port types (LP: #1578433)
+  * debian/control: add libfdt-dev and device-tree-compiler
+  * Revert "debian/control: add libfdt-dev and device-tree-compiler"
+  * debian/control: add libfdt-dev and device-tree-compiler
+  * configure.ac: update email address, use fwts-devel instead
+  * fwts-test/arg-help-0001: ensure tty is reset on exit path
+  * fwts-test: arg-show-tests-0001: reset tty after forcing column width
+  * cpu: msr: do not check SYSENTER_* MSRs (LP: #1582005)
+  * fwts: manual: update date, add new contributor, add dtc to SEE ALSO
+  * fwts: manual: ommitted Paul Menzel from the contributions list
+  * fwts: lib: clean up static analysis warnings
+
+  [Deb McLemore]
+  * v2 - lib: fwts_args: handle cases to set optarg_handler for long options.
+  * v2 - Introduce olog scan, to check OPAL msglog.
+  * V3 Introduce IPMI BMC Info
+
+  [Ivan Hu]
+  * uefidump: dump the optional data for load option on boot device
+  * uefidump: dump the optional data for load option on driver device
+  * uefidump: add checking the resonable path list length for load option
+  * uefidump: clean up the unnecessary period
+
+  [Jeremy Kerr]
+  * devicetree: add infrastructure for device-tree tests
+  * devicetree/dt_sysinfo: Add device tree system information tests
+  * pipeio: fix fwts_pipe_read return value when child produces no output
+  * pipeio: Fix error handling in fwts_pipe_exec
+  * pipeio: Rename fwts_pipe_open to fwts_pipe_open_ro, add fd as output
+    argument
+  * pipeio: Add fwts_pipe_open_rw
+  * pipeio: Add fwts_pipe_readwrite
+  * pipeio: Add fwts_pipe_close2 to cleanup from fwts_open_pipe_rw.
+  * devicetree/dt_base: Add base device-tree validity checks
+
+Paul Menzel (1):
+  * pci/aspm: Fix grammar in ASPM advice (LP: #1581988)
+
+Ricardo Neri (3):
+  * bios: mtrr: fix cache type corner case at start of mtrr range
+  * bios: mtrr: fix cache type corner case at end of mtrr range
+  * bios: mtrr: redefine the end point of memory ranges
+ 
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 18 May 2016 16:24:13 +0800
+
 fwts (16.03.00-0ubuntu1) xenial; urgency=low
 
   [Alex Hung]

@@ -437,7 +437,7 @@ static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_sm
 	fwts_log_info_verbatum(fw, "  Structure Table Length : 0x%4.4x", entry->struct_table_length);
 	fwts_log_info_verbatum(fw, "  Structure Table Address: 0x%8.8x", entry->struct_table_address);
 	fwts_log_info_verbatum(fw, "  # of SMBIOS Structures : 0x%4.4x", entry->number_smbios_structures);
-	fwts_log_info_verbatum(fw, "  SBMIOS BCD Revision    : %2.2x", entry->smbios_bcd_revision);
+	fwts_log_info_verbatum(fw, "  SMBIOS BCD Revision    : %2.2x", entry->smbios_bcd_revision);
 	if (entry->smbios_bcd_revision == 0)
 		fwts_log_info_verbatum(fw, "    BCD Revision 00 indicates compliance with specification stated in Major/Minor Version.");
 }

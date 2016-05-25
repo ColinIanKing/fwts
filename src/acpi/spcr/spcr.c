@@ -96,7 +96,7 @@ static int spcr_test1(fwts_framework *fw)
 		break;
 	}
 
-	fwts_log_info_verbatum(fw, "Serial Interface: %s", str);
+	fwts_log_info_verbatim(fw, "Serial Interface: %s", str);
 	if (reserved) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -166,7 +166,7 @@ static int spcr_test1(fwts_framework *fw)
 		str = "Reserved";
 		reserved = true;
 	}
-	fwts_log_info_verbatum(fw, "Baud Rate:        %s", str);
+	fwts_log_info_verbatim(fw, "Baud Rate:        %s", str);
 	if (reserved) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -218,7 +218,7 @@ static int spcr_test1(fwts_framework *fw)
 		str = "Reserved";
 		reserved = true;
 	}
-	fwts_log_info_verbatum(fw, "Terminal Type:    %s", str);
+	fwts_log_info_verbatim(fw, "Terminal Type:    %s", str);
 	if (reserved) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

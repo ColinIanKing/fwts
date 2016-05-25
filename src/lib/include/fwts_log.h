@@ -157,25 +157,25 @@ static inline int fwts_log_type_count(fwts_log_type type)
 #define fwts_log_warning(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_WARNING, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
-#define fwts_log_warning_verbatum(fw, fmt, args...)	\
+#define fwts_log_warning_verbatim(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_WARNING | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_error(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_ERROR, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
-#define fwts_log_error_verbatum(fw, fmt, args...)	\
+#define fwts_log_error_verbatim(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_ERROR | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_info(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_INFO, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
-#define fwts_log_info_verbatum(fw, fmt, args...)	\
+#define fwts_log_info_verbatim(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_INFO | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_summary(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_SUMMARY, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
-#define fwts_log_summary_verbatum(fw, fmt, args...)	\
+#define fwts_log_summary_verbatim(fw, fmt, args...)	\
 	fwts_log_printf(fw, LOG_SUMMARY | LOG_VERBATUM, LOG_LEVEL_NONE, "", "", "", fmt, ## args)
 
 #define fwts_log_advice(fw, fmt, args...)	\

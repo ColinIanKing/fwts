@@ -39,14 +39,14 @@ static void uefidump_var_hexdump(fwts_framework *fw, fwts_uefi_var *var)
 	int i;
 	uint8_t *data = (uint8_t*)var->data;
 
-	fwts_log_info_verbatum(fw,  "  Size: %zd bytes of data", var->datalen);
+	fwts_log_info_verbatim(fw,  "  Size: %zd bytes of data", var->datalen);
 
 	for (i = 0; i < (int)var->datalen; i+= 16) {
 		char buffer[128];
 		int left = (int)var->datalen - i;
 
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
-		fwts_log_info_verbatum(fw,  "  Data: %s", buffer+2);
+		fwts_log_info_verbatim(fw,  "  Data: %s", buffer+2);
 	}
 }
 
@@ -59,7 +59,7 @@ static void uefidump_data_hexdump(fwts_framework *fw, uint8_t *data, size_t size
 		size_t left = size - i;
 
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, left > 16 ? 16 : left);
-		fwts_log_info_verbatum(fw,  "  Data: %s", buffer+2);
+		fwts_log_info_verbatim(fw,  "  Data: %s", buffer+2);
 	}
 }
 
@@ -695,7 +695,7 @@ static void uefidump_info_dev_path(fwts_framework *fw, fwts_uefi_var *var)
 
 	path = uefidump_build_dev_path(NULL, (fwts_uefi_dev_path*)var->data, var->datalen);
 
-	fwts_log_info_verbatum(fw, "  Device Path: %s", path);
+	fwts_log_info_verbatim(fw, "  Device Path: %s", path);
 
 	free(path);
 }
@@ -703,7 +703,7 @@ static void uefidump_info_dev_path(fwts_framework *fw, fwts_uefi_var *var)
 static void uefidump_info_lang(fwts_framework *fw, fwts_uefi_var *var)
 {
 	uint8_t *data = (uint8_t*)var->data;
-	fwts_log_info_verbatum(fw, "  Language: %c%c%c%c", data[0], data[1], data[2], data[3]);
+	fwts_log_info_verbatim(fw, "  Language: %c%c%c%c", data[0], data[1], data[2], data[3]);
 }
 
 static void uefidump_info_langcodes(fwts_framework *fw, fwts_uefi_var *var)
@@ -722,13 +722,13 @@ static void uefidump_info_langcodes(fwts_framework *fw, fwts_uefi_var *var)
 	}
 	*dst = '\0';
 
-	fwts_log_info_verbatum(fw, "  Language Codes: %s", buffer);
+	fwts_log_info_verbatim(fw, "  Language Codes: %s", buffer);
 }
 
 static void uefidump_info_platform_lang(fwts_framework *fw, fwts_uefi_var *var)
 {
 	uint8_t *data = (uint8_t*)var->data;
-	fwts_log_info_verbatum(fw, "  Platform Language: %c%c%c%c%c%c.", data[0], data[1], data[2], data[3], data[4], data[5]);
+	fwts_log_info_verbatim(fw, "  Platform Language: %c%c%c%c%c%c.", data[0], data[1], data[2], data[3], data[4], data[5]);
 }
 
 static void uefidump_info_platform_langcodes(fwts_framework *fw, fwts_uefi_var *var)
@@ -749,7 +749,7 @@ static void uefidump_info_platform_langcodes(fwts_framework *fw, fwts_uefi_var *
 	}
 	*dst = '\0';
 
-	fwts_log_info_verbatum(fw, "  Platform Language Codes: %s", buffer);
+	fwts_log_info_verbatim(fw, "  Platform Language Codes: %s", buffer);
 }
 
 static void uefidump_info_timeout(fwts_framework *fw, fwts_uefi_var *var)
@@ -757,7 +757,7 @@ static void uefidump_info_timeout(fwts_framework *fw, fwts_uefi_var *var)
 	if (var->datalen >= sizeof(uint16_t)) {
 		uint16_t *data = (uint16_t*)var->data;
 
-		fwts_log_info_verbatum(fw, "  Timeout: %" PRId16 " seconds", *data);
+		fwts_log_info_verbatim(fw, "  Timeout: %" PRId16 " seconds", *data);
 	}
 }
 
@@ -766,7 +766,7 @@ static void uefidump_info_bootcurrent(fwts_framework *fw, fwts_uefi_var *var)
 	if (var->datalen >= sizeof(uint16_t)) {
 		uint16_t *data = (uint16_t *)var->data;
 
-		fwts_log_info_verbatum(fw, "  BootCurrent: 0x%4.4" PRIx16, *data);
+		fwts_log_info_verbatim(fw, "  BootCurrent: 0x%4.4" PRIx16, *data);
 	}
 }
 
@@ -775,7 +775,7 @@ static void uefidump_info_bootnext(fwts_framework *fw, fwts_uefi_var *var)
 	if (var->datalen >= sizeof(uint16_t)) {
 		uint16_t *data = (uint16_t *)var->data;
 
-		fwts_log_info_verbatum(fw, "  BootNext: 0x%4.4" PRIx16, *data);
+		fwts_log_info_verbatim(fw, "  BootNext: 0x%4.4" PRIx16, *data);
 	}
 }
 
@@ -784,7 +784,7 @@ static void uefidump_info_bootoptionsupport(fwts_framework *fw, fwts_uefi_var *v
 	if (var->datalen >= sizeof(uint16_t)) {
 		uint16_t *data = (uint16_t *)var->data;
 
-		fwts_log_info_verbatum(fw, "  BootOptionSupport: 0x%4.4" PRIx16, *data);
+		fwts_log_info_verbatim(fw, "  BootOptionSupport: 0x%4.4" PRIx16, *data);
 	}
 }
 
@@ -799,7 +799,7 @@ static void uefidump_info_bootorder(fwts_framework *fw, fwts_uefi_var *var)
 		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
 			*data++, i < (n - 1) ? "," : "");
 	}
-	fwts_log_info_verbatum(fw, "  Boot Order: %s", str);
+	fwts_log_info_verbatim(fw, "  Boot Order: %s", str);
 	free(str);
 }
 
@@ -813,11 +813,11 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 		return;
 
  	load_option = (fwts_uefi_load_option *)var->data;
-	fwts_log_info_verbatum(fw, "  Active: %s\n",
+	fwts_log_info_verbatim(fw, "  Active: %s\n",
 		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_ACTIVE) ? "Yes" : "No");
 	fwts_uefi_str16_to_str(tmp, sizeof(tmp), load_option->description);
 	len = fwts_uefi_str16len(load_option->description);
-	fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
+	fwts_log_info_verbatim(fw, "  Info: %s\n", tmp);
 
 	if (load_option->file_path_list_length != 0) {
 		char *path;
@@ -829,7 +829,7 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 
 		path = uefidump_build_dev_path(NULL,
 				(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
-		fwts_log_info_verbatum(fw, "  Path: %s", path);
+		fwts_log_info_verbatim(fw, "  Path: %s", path);
 		free(path);
 	}
 
@@ -838,7 +838,7 @@ static void uefidump_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 		 (sizeof(uint16_t) * (len + 1)) +
 		 load_option->file_path_list_length;
 	if ((var->datalen - offset) > 0) {
-		fwts_log_info_verbatum(fw, "  OptionalData:");
+		fwts_log_info_verbatim(fw, "  OptionalData:");
 		uefidump_data_hexdump(fw, var->data + offset, var->datalen - offset);
 	}
 }
@@ -874,7 +874,7 @@ static void uefidump_info_dump_type0(fwts_framework *fw, fwts_uefi_var *var)
 			if (*ptr == '\n') {
 				*ptr++ = '\0';
 				len--;
-				fwts_log_info_verbatum(fw, "  KLog: %s", start);
+				fwts_log_info_verbatim(fw, "  KLog: %s", start);
 			}
 		}
 	} else {
@@ -902,7 +902,7 @@ static void uefidump_info_secure_boot(fwts_framework *fw, fwts_uefi_var *var)
 			mode = "";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2x%s", value, mode);
 	}
 }
 
@@ -926,7 +926,7 @@ static void uefidump_info_setup_mode(fwts_framework *fw, fwts_uefi_var *var)
 			mode = "";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 "%s", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2" PRIx8 "%s", value, mode);
 	}
 }
 
@@ -954,7 +954,7 @@ static void uefidump_info_morc(fwts_framework *fw, fwts_uefi_var *var)
 			mode = "";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 "%s", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2" PRIx8 "%s", value, mode);
 	}
 }
 
@@ -970,7 +970,7 @@ static void uefidump_info_acpi_global_variable(fwts_framework *fw, fwts_uefi_var
 		uint64_t value;
 
 		memcpy(&value, var->data, sizeof(uint64_t));
-		fwts_log_info_verbatum(fw, "  ACPI Global Variable Address: 0x%16.16" PRIx64, value);
+		fwts_log_info_verbatim(fw, "  ACPI Global Variable Address: 0x%16.16" PRIx64, value);
 	}
 }
 
@@ -988,11 +988,11 @@ static void uefidump_info_signature_support(fwts_framework *fw, fwts_uefi_var *v
 		char guid_str[37];
 
 		if (var->datalen)
-			fwts_log_info_verbatum(fw, "  Signature GUIDs:");
+			fwts_log_info_verbatim(fw, "  Signature GUIDs:");
 
 		while (data - var->data < (ptrdiff_t)var->datalen) {
 			fwts_guid_buf_to_str(data, guid_str, sizeof(guid_str));
-			fwts_log_info_verbatum(fw, "    %s", guid_str);
+			fwts_log_info_verbatim(fw, "    %s", guid_str);
 			data += 16;
 		}
 	}
@@ -1018,7 +1018,7 @@ static void uefidump_info_hwerrrec_support(fwts_framework *fw, fwts_uefi_var *va
 			support = " (reserved value)";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%4.4" PRIx16 "%s", *value, support);
+		fwts_log_info_verbatim(fw, "  Value: 0x%4.4" PRIx16 "%s", *value, support);
 	}
 }
 
@@ -1061,7 +1061,7 @@ static void uefidump_info_osindications_supported(fwts_framework *fw, fwts_uefi_
 			strcat(str, "EFI_OS_INDICATIONS_CAPSULE_RESULT_VAR_SUPPORTED");
 		}
 
-		fwts_log_info_verbatum(fw, "  Value: 0x%16.16" PRIx64 " (%s)", value, str);
+		fwts_log_info_verbatim(fw, "  Value: 0x%16.16" PRIx64 " (%s)", value, str);
 	}
 }
 
@@ -1070,7 +1070,7 @@ static void uefidump_info_vendor_keys(fwts_framework *fw, fwts_uefi_var *var)
 	if (var->datalen >= sizeof(uint8_t)) {
 		uint8_t value = (uint8_t)var->data[0];
 
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8, value);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2" PRIx8, value);
 	}
 }
 
@@ -1084,7 +1084,7 @@ static void uefidump_info_driverorder(fwts_framework *fw, fwts_uefi_var *var)
 		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
 			*data++, i < (n - 1) ? "," : "");
 	}
-	fwts_log_info_verbatum(fw, "  Driver Order: %s", str);
+	fwts_log_info_verbatim(fw, "  Driver Order: %s", str);
 	free(str);
 }
 
@@ -1098,7 +1098,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 		return;
 
 	load_option = (fwts_uefi_load_option *)var->data;
-	fwts_log_info_verbatum(fw, "  Force Reconnect: %s\n",
+	fwts_log_info_verbatim(fw, "  Force Reconnect: %s\n",
 		(load_option->attributes & FWTS_UEFI_LOAD_OPTION_FORCE_RECONNECT) ? "Yes" : "No");
 
 	len = fwts_uefi_str16len(load_option->description);
@@ -1106,7 +1106,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 		char *tmp = malloc(len + 1);
 		if (tmp) {
 			fwts_uefi_str16_to_str(tmp, len + 1, load_option->description);
-			fwts_log_info_verbatum(fw, "  Info: %s\n", tmp);
+			fwts_log_info_verbatim(fw, "  Info: %s\n", tmp);
 			free(tmp);
 		}
 	}
@@ -1120,7 +1120,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 			 (sizeof(uint16_t) * (len + 1));
 		path = uefidump_build_dev_path(NULL,
 			(fwts_uefi_dev_path *)(var->data + offset), var->datalen - offset);
-		fwts_log_info_verbatum(fw, "  Path: %s", path);
+		fwts_log_info_verbatim(fw, "  Path: %s", path);
 		free(path);
 	}
 
@@ -1129,7 +1129,7 @@ static void uefidump_info_driverdev(fwts_framework *fw, fwts_uefi_var *var)
 		 (sizeof(uint16_t) * (len + 1)) +
 		 load_option->file_path_list_length;
 	if ((var->datalen - offset) > 0) {
-		fwts_log_info_verbatum(fw, "  OptionalData:");
+		fwts_log_info_verbatim(fw, "  OptionalData:");
 		uefidump_data_hexdump(fw, var->data + offset, var->datalen - offset);
 	}
 }
@@ -1182,17 +1182,17 @@ static void uefidump_info_keyoption(fwts_framework *fw, fwts_uefi_var *var)
 	}
 
 	if (*str != 0)
-		fwts_log_info_verbatum(fw, "  PackedValue: 0x%8.8" PRIx32 " (%s)", key_option->keydata, str);
+		fwts_log_info_verbatim(fw, "  PackedValue: 0x%8.8" PRIx32 " (%s)", key_option->keydata, str);
 	else
-		fwts_log_info_verbatum(fw, "  PackedValue: 0x%8.8" PRIx32, key_option->keydata);
+		fwts_log_info_verbatim(fw, "  PackedValue: 0x%8.8" PRIx32, key_option->keydata);
 
-	fwts_log_info_verbatum(fw, "  BootOptionCrc: 0x%8.8" PRIx32, key_option->bootoptioncrc);
-	fwts_log_info_verbatum(fw, "  BootOption: %4.4" PRIx16, key_option->bootoption);
+	fwts_log_info_verbatim(fw, "  BootOptionCrc: 0x%8.8" PRIx32, key_option->bootoptioncrc);
+	fwts_log_info_verbatim(fw, "  BootOption: %4.4" PRIx16, key_option->bootoption);
 
 	inputkeycount = (key_option->keydata & 0xC0000000) >> 30;
 	for (index = 0; index < inputkeycount; index++) {
-		fwts_log_info_verbatum(fw, "  ScanCode: 0x%4.4" PRIx16, inputkey[index].scancode);
-		fwts_log_info_verbatum(fw, "  UnicodeChar: 0x%4.4" PRIx16, inputkey[index].unicodechar);
+		fwts_log_info_verbatim(fw, "  ScanCode: 0x%4.4" PRIx16, inputkey[index].scancode);
+		fwts_log_info_verbatim(fw, "  UnicodeChar: 0x%4.4" PRIx16, inputkey[index].unicodechar);
 	}
 
 	keyoptionsize = sizeof (fwts_uefi_key_option) + inputkeycount * sizeof (fwts_uefi_input_key);
@@ -1252,28 +1252,28 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 				break;
 			}
 
-		fwts_log_info_verbatum(fw, "  SignatureType: %s (%s)", guid_str, str);
-		fwts_log_info_verbatum(fw, "  SignatureListSize: 0x%" PRIx32, signature_list->signaturelistsize);
-		fwts_log_info_verbatum(fw, "  SignatureHeaderSize: 0x%" PRIx32, signature_list->signatureheadersize);
-		fwts_log_info_verbatum(fw, "  SignatureSize: 0x%" PRIx32, signature_list->signaturesize);
+		fwts_log_info_verbatim(fw, "  SignatureType: %s (%s)", guid_str, str);
+		fwts_log_info_verbatim(fw, "  SignatureListSize: 0x%" PRIx32, signature_list->signaturelistsize);
+		fwts_log_info_verbatim(fw, "  SignatureHeaderSize: 0x%" PRIx32, signature_list->signatureheadersize);
+		fwts_log_info_verbatim(fw, "  SignatureSize: 0x%" PRIx32, signature_list->signaturesize);
 
 		offset = list_start + sizeof (fwts_uefi_signature_list);
 		if (signature_list->signatureheadersize > 0) {
-			fwts_log_info_verbatum(fw, "  SignatureHeader:");
+			fwts_log_info_verbatim(fw, "  SignatureHeader:");
 			uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), signature_list->signatureheadersize);
 		}
 		offset += signature_list->signatureheadersize;
 		while ((signature_list->signaturelistsize - offset + list_start) > 0) {
 			if ((signature_list->signaturelistsize - offset + list_start) >= signature_list->signaturesize) {
 				fwts_guid_buf_to_str((uint8_t *)(var->data + offset), guid_str, sizeof(guid_str));
-				fwts_log_info_verbatum(fw, "  SignatureOwner: %s", guid_str);
+				fwts_log_info_verbatim(fw, "  SignatureOwner: %s", guid_str);
 				offset += sizeof(fwts_uefi_guid);
-				fwts_log_info_verbatum(fw, "  SignatureData:");
+				fwts_log_info_verbatim(fw, "  SignatureData:");
 				uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), signature_list->signaturesize - sizeof(fwts_uefi_guid));
 				offset += signature_list->signaturesize - sizeof(fwts_uefi_guid);
 			} else {
 				/* have Signature data left, but not correspond to the SignatureSize, just dump raw data */
-				fwts_log_info_verbatum(fw, "  Data:");
+				fwts_log_info_verbatim(fw, "  Data:");
 				uefidump_data_hexdump(fw, (uint8_t *)(var->data + offset), (signature_list->signaturelistsize - offset + list_start));
 				break;
 			}
@@ -1305,7 +1305,7 @@ static void uefidump_info_audit_mode(fwts_framework *fw, fwts_uefi_var *var)
 			mode = "";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2x%s", value, mode);
 	}
 }
 
@@ -1329,7 +1329,7 @@ static void uefidump_info_deployed_mode(fwts_framework *fw, fwts_uefi_var *var)
 			mode = "";
 			break;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2x%s", value, mode);
 	}
 }
 
@@ -1344,11 +1344,11 @@ static void uefidump_info_osrecoverorder(fwts_framework *fw, fwts_uefi_var *var)
 		char guid_str[37];
 
 		if (var->datalen)
-			fwts_log_info_verbatum(fw, "  OSRecoveryOrder GUIDs:");
+			fwts_log_info_verbatim(fw, "  OSRecoveryOrder GUIDs:");
 
 		while (data - var->data < (ptrdiff_t)var->datalen) {
 			fwts_guid_buf_to_str(data, guid_str, sizeof(guid_str));
-			fwts_log_info_verbatum(fw, "    %s", guid_str);
+			fwts_log_info_verbatim(fw, "    %s", guid_str);
 			data += 16;
 		}
 	}
@@ -1365,7 +1365,7 @@ static void uefidump_info_syspreporder(fwts_framework *fw, fwts_uefi_var *var)
 		str = uefidump_vprintf(str, "0x%04" PRIx16 "%s",
 			*data++, i < (n - 1) ? "," : "");
 	}
-	fwts_log_info_verbatum(fw, "  SysPrep Order: %s", str);
+	fwts_log_info_verbatim(fw, "  SysPrep Order: %s", str);
 	free(str);
 }
 
@@ -1414,10 +1414,10 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 
-	fwts_log_info_verbatum(fw, "Name: %s", varname);
+	fwts_log_info_verbatim(fw, "Name: %s", varname);
 	fwts_guid_buf_to_str(var->guid, guid_str, sizeof(guid_str));
-	fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
-	fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s)", var->attributes, fwts_uefi_attribute_info(var->attributes));
+	fwts_log_info_verbatim(fw, "  GUID: %s", guid_str);
+	fwts_log_info_verbatim(fw, "  Attr: 0x%x (%s)", var->attributes, fwts_uefi_attribute_info(var->attributes));
 
 	/* If we've got an appropriate per variable dump mechanism, use this */
 	for (info = uefidump_info_table; info->description != NULL; info++) {

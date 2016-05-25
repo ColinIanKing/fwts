@@ -192,11 +192,11 @@ static void fwts_hwinfo_bluetooth_dump(fwts_framework *fw, fwts_list *devices)
 	fwts_list_foreach(item, devices) {
 		fwts_bluetooth_config *bluetooth_config = fwts_list_data(fwts_bluetooth_config *, item);
 
-		fwts_log_info_verbatum(fw, "  Device:  %s", bluetooth_config->name);
-		fwts_log_info_verbatum(fw, "  Name:    %s", bluetooth_config->bt_name);
-		fwts_log_info_verbatum(fw, "  Address: %s", bluetooth_config->address);
-		fwts_log_info_verbatum(fw, "  Bus:     %s", bluetooth_config->bus);
-		fwts_log_info_verbatum(fw, "  Type:    %s", bluetooth_config->type);
+		fwts_log_info_verbatim(fw, "  Device:  %s", bluetooth_config->name);
+		fwts_log_info_verbatim(fw, "  Name:    %s", bluetooth_config->bt_name);
+		fwts_log_info_verbatim(fw, "  Address: %s", bluetooth_config->address);
+		fwts_log_info_verbatim(fw, "  Bus:     %s", bluetooth_config->bus);
+		fwts_log_info_verbatim(fw, "  Type:    %s", bluetooth_config->type);
 		fwts_log_nl(fw);
 	}
 }
@@ -309,9 +309,9 @@ static void fwts_hwinfo_input_dump(fwts_framework *fw, fwts_list *devices)
 	fwts_list_foreach(item, devices) {
 		fwts_input_config *input_config = fwts_list_data(fwts_input_config *, item);
 
-		fwts_log_info_verbatum(fw, "  Device:      %s", input_config->name);
-		fwts_log_info_verbatum(fw, "  Device Name: %s", input_config->dev_name);
-		fwts_log_info_verbatum(fw, "  Phy:         %s", input_config->phys);
+		fwts_log_info_verbatim(fw, "  Device:      %s", input_config->name);
+		fwts_log_info_verbatim(fw, "  Device Name: %s", input_config->dev_name);
+		fwts_log_info_verbatim(fw, "  Phy:         %s", input_config->phys);
 		fwts_log_nl(fw);
 	}
 }
@@ -442,9 +442,9 @@ static void fwts_hwinfo_net_dump(fwts_framework *fw, fwts_list *devices)
 	fwts_list_foreach(item, devices) {
 		fwts_net_config *net_config = fwts_list_data(fwts_net_config *, item);
 
-		fwts_log_info_verbatum(fw, "  Device:      %s", net_config->name);
-		fwts_log_info_verbatum(fw, "  Address:     %s", net_config->addr);
-		fwts_log_info_verbatum(fw, "  H/W Address: %s", net_config->hw_addr);
+		fwts_log_info_verbatim(fw, "  Device:      %s", net_config->name);
+		fwts_log_info_verbatim(fw, "  Address:     %s", net_config->addr);
+		fwts_log_info_verbatim(fw, "  H/W Address: %s", net_config->hw_addr);
 		fwts_log_nl(fw);
 	}
 }
@@ -535,7 +535,7 @@ static void fwts_hwinfo_pci_dump(fwts_framework *fw, fwts_list *configs)
 		ssize_t n;
 
 		fwts_pci_config *pci_config = fwts_list_data(fwts_pci_config *, item);
-		fwts_log_info_verbatum(fw, "  PCI: %s, VID: %2.2" PRIx8 ":%2.2" PRIx8
+		fwts_log_info_verbatim(fw, "  PCI: %s, VID: %2.2" PRIx8 ":%2.2" PRIx8
 			", Class: %2.2" PRIx8 ":%2.2" PRIx8 " (%s)",
 			pci_config->name,
 			pci_config->config[FWTS_PCI_CONFIG_VENDOR_ID],
@@ -544,7 +544,7 @@ static void fwts_hwinfo_pci_dump(fwts_framework *fw, fwts_list *configs)
 			pci_config->config[FWTS_PCI_CONFIG_SUBCLASS],
 			fwts_pci_description(pci_config->config[FWTS_PCI_CONFIG_CLASS_CODE],
 				pci_config->config[FWTS_PCI_CONFIG_SUBCLASS]));
-		fwts_log_info_verbatum(fw, "  Config:");
+		fwts_log_info_verbatim(fw, "  Config:");
 
 		/* and do a raw hex dump of the config space */
 		for (n = 0; n < pci_config->config_len; n += 16) {
@@ -553,7 +553,7 @@ static void fwts_hwinfo_pci_dump(fwts_framework *fw, fwts_list *configs)
 
 			fwts_dump_raw_data(buffer, sizeof(buffer), pci_config->config + n,
 				n, left > 16 ? 16 : left);
-			fwts_log_info_verbatum(fw, "  %s", buffer);
+			fwts_log_info_verbatim(fw, "  %s", buffer);
 		}
 		fwts_log_nl(fw);
 	}

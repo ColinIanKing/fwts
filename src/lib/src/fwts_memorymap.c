@@ -202,7 +202,7 @@ static void fwts_memory_map_dump_info(void *data, void *private)
 	fwts_memory_map_entry *entry = (fwts_memory_map_entry *)data;
 	fwts_framework *fw = (fwts_framework *)private;
 
-	fwts_log_info_verbatum(fw, "0x%16.16" PRIx64 " - 0x%16.16" PRIx64 " %s",
+	fwts_log_info_verbatim(fw, "0x%16.16" PRIx64 " - 0x%16.16" PRIx64 " %s",
 			entry->start_address, entry->end_address,
 			fwts_memory_map_type_to_str(entry->type));
 }
@@ -213,8 +213,8 @@ static void fwts_memory_map_dump_info(void *data, void *private)
  */
 void fwts_memory_map_table_dump(fwts_framework *fw, fwts_list *memory_map_list)
 {
-	fwts_log_info_verbatum(fw, "Memory Map Layout");
-	fwts_log_info_verbatum(fw, "-----------------");
+	fwts_log_info_verbatim(fw, "Memory Map Layout");
+	fwts_log_info_verbatim(fw, "-----------------");
 
 	fwts_list_iterate(memory_map_list, fwts_memory_map_dump_info, fw);
 }

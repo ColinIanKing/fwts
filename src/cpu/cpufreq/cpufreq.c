@@ -303,9 +303,9 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 
 	fwts_log_info(fw, "CPU %d: %i CPU frequency steps supported.",
 			cpu->idx, cpu->n_freqs);
-	fwts_log_info_verbatum(fw,
+	fwts_log_info_verbatim(fw,
 		" Frequency | Relative Speed |  Cycles    | Bogo loops");
-	fwts_log_info_verbatum(fw,
+	fwts_log_info_verbatim(fw,
 		"-----------+----------------+------------+-----------");
 	for (i = 0; i < cpu->n_freqs; i++) {
 		char *turbo = "";
@@ -316,7 +316,7 @@ static int test_one_cpu_performance(fwts_framework *fw, struct cpu *cpu,
 #endif
 		uint64_t perf = fwts_cpu_benchmark_best_result(
 				&cpu->freqs[i].perf);
-		fwts_log_info_verbatum(fw,
+		fwts_log_info_verbatim(fw,
 				"%10s |     %5.1f %%    "
 				"| %10" PRIu64 " | %9" PRIu64 "%s",
 			hz_to_human(cpu->freqs[i].Hz),

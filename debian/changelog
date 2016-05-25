@@ -2311,10 +2311,10 @@ fwts (0.25.03) quantal; urgency=low
   * Update README
   * lib: fwts_acpi_tables: fake table start address when loading from file.
   * lib: fwts_framework: set log name suffix when using --log-type option
-  * lib: fwts_summary: HTML summary should not be in verbatum
+  * lib: fwts_summary: HTML summary should not be in verbatim
   * lib: fwts_log_html: tweak style and table format
-  * lib: fwts_memorymap: output should be in verbatum style
-  * bios: mtrr: make MTRR overview all verbatum style, looks better on HTML log
+  * lib: fwts_memorymap: output should be in verbatim style
+  * bios: mtrr: make MTRR overview all verbatim style, looks better on HTML log
   * lib: add HTML logging backend
   * lib: fwts_framework: log advice as LOG_ADVICE and not LOG_RESULT
   * lib: fwts_framework: remove fwts_framework_results, remove redundant code
@@ -2353,7 +2353,7 @@ fwts (0.25.02) quantal; urgency=low
 
   [Colin Ian King]
   * doc: update man page
-  * lib: fwts_summary.c: force non-word wrap using *_verbatum logging
+  * lib: fwts_summary.c: force non-word wrap using *_verbatim logging
   * lib: fwts_framework: default to plaintext log type
   * lib: re-work logging to add in json formatted log output
   * lib: fwts_log: tidy up white spaces and strncmps

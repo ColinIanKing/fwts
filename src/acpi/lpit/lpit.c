@@ -54,9 +54,9 @@ static void lpit_check_type_0(
 	fwts_acpi_table_lpit_c_state *lpi = (fwts_acpi_table_lpit_c_state *)*data;
 
 	/* We know table is at least long enough to access type and length.. */
-	fwts_log_info_verbatum(fw, "Native C-state based LPI structure:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%8.8" PRIx32, lpi->type);
-	fwts_log_info_verbatum(fw, "  Length:                   0x%8.8" PRIx32, lpi->length);
+	fwts_log_info_verbatim(fw, "Native C-state based LPI structure:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%8.8" PRIx32, lpi->type);
+	fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32, lpi->length);
 
 	if (lpi->length < sizeof(fwts_acpi_table_lpit_c_state)) {
 		*passed = false;
@@ -70,29 +70,29 @@ static void lpit_check_type_0(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "  ID:                       0x%4.4" PRIx16, lpi->id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, lpi->reserved);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%8.8" PRIx32, lpi->flags);
-	fwts_log_info_verbatum(fw, "  Entry Trigger:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, lpi->entry_trigger.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, lpi->entry_trigger.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, lpi->entry_trigger.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, lpi->entry_trigger.access_width);
-	fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, lpi->entry_trigger.address);
-	fwts_log_info_verbatum(fw, "  Residency:                0x%8.8" PRIx32, lpi->residency);
-	fwts_log_info_verbatum(fw, "  Latency:                  0x%8.8" PRIx32, lpi->latency);
+	fwts_log_info_verbatim(fw, "  ID:                       0x%4.4" PRIx16, lpi->id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, lpi->reserved);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, lpi->flags);
+	fwts_log_info_verbatim(fw, "  Entry Trigger:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, lpi->entry_trigger.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, lpi->entry_trigger.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, lpi->entry_trigger.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, lpi->entry_trigger.access_width);
+	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, lpi->entry_trigger.address);
+	fwts_log_info_verbatim(fw, "  Residency:                0x%8.8" PRIx32, lpi->residency);
+	fwts_log_info_verbatim(fw, "  Latency:                  0x%8.8" PRIx32, lpi->latency);
 
 	/* If flags [1] set, then counter is not available */
 	if (lpi->flags & 0x2) {
-		fwts_log_info_verbatum(fw, "  Residency Counter not available");
+		fwts_log_info_verbatim(fw, "  Residency Counter not available");
 	} else {
-		fwts_log_info_verbatum(fw, "  Residency Counter:");
-		fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, lpi->residency_counter.address_space_id);
-		fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, lpi->residency_counter.register_bit_width);
-		fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, lpi->residency_counter.register_bit_offset);
-		fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, lpi->residency_counter.access_width);
-		fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, lpi->residency_counter.address);
-		fwts_log_info_verbatum(fw, "  Residency Counter Freq:   0x%16.16" PRIx64, lpi->residency_counter_freq);
+		fwts_log_info_verbatim(fw, "  Residency Counter:");
+		fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, lpi->residency_counter.address_space_id);
+		fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, lpi->residency_counter.register_bit_width);
+		fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, lpi->residency_counter.register_bit_offset);
+		fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, lpi->residency_counter.access_width);
+		fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, lpi->residency_counter.address);
+		fwts_log_info_verbatim(fw, "  Residency Counter Freq:   0x%16.16" PRIx64, lpi->residency_counter_freq);
 	}
 	fwts_log_nl(fw);
 

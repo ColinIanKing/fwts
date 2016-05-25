@@ -86,13 +86,13 @@ static void gpu_dump_gpes(
 			snprintf(buf, sizeof(buf), "notifes %" PRIu32 " devices", n);
 			break;
 		}
-		fwts_log_info_verbatum(fw, "      GPE 0x%2.2" PRIx8 ":",
+		fwts_log_info_verbatim(fw, "      GPE 0x%2.2" PRIx8 ":",
 			gpe_block_info->BlockBaseNumber + gpe);
-		fwts_log_info_verbatum(fw, "        Flags:    0x%2.2" PRIx8 " (trigger: %s, wake: %s)",
+		fwts_log_info_verbatim(fw, "        Flags:    0x%2.2" PRIx8 " (trigger: %s, wake: %s)",
 			GpeEventInfo->Flags,
 			(GpeEventInfo->Flags & ACPI_GPE_LEVEL_TRIGGERED) ? "level" : "edge",
 			(GpeEventInfo->Flags & ACPI_GPE_CAN_WAKE) ? "can wake" : "run only");
-		fwts_log_info_verbatum(fw, "        Dispatch: %s", buf);
+		fwts_log_info_verbatim(fw, "        Dispatch: %s", buf);
 	}
 }
 
@@ -115,17 +115,17 @@ static void gpedump_block(
 		strncpy(name, "unknown", sizeof(name));
 
 	fwts_log_nl(fw);
-	fwts_log_info_verbatum(fw, "Block %" PRIu32": DeviceNode %s (%s)\n",
+	fwts_log_info_verbatim(fw, "Block %" PRIu32": DeviceNode %s (%s)\n",
 		block, name,
 		gpe_block_info->Node == AcpiGbl_FadtGpeDevice ?
 			"FADT Defined GPE Block" :
 			"GPE Block Device");
 
-	fwts_log_info_verbatum(fw, "  GPE range: 0x%2.2" PRIx8 " to 0x%2.2" PRIx8 " on interrupt %" PRIu32 "\n",
+	fwts_log_info_verbatim(fw, "  GPE range: 0x%2.2" PRIx8 " to 0x%2.2" PRIx8 " on interrupt %" PRIu32 "\n",
 		(uint8_t)gpe_block_info->BlockBaseNumber,
 		(uint8_t)gpe_block_info->BlockBaseNumber + (gpe_block_info->GpeCount - 1),
 		(uint32_t)gpe_xrupt_info->InterruptNumber);
-	fwts_log_info_verbatum(fw, "  GPE count: %" PRIu32 " (%" PRIu32 " registers)\n",
+	fwts_log_info_verbatim(fw, "  GPE count: %" PRIu32 " (%" PRIu32 " registers)\n",
 		(uint32_t)gpe_block_info->GpeCount,
 		(uint32_t)gpe_block_info->RegisterCount);
 
@@ -133,18 +133,18 @@ static void gpedump_block(
 		ACPI_GPE_REGISTER_INFO *gpe_reg_info = &gpe_block_info->RegisterInfo[reg];
 
 		fwts_log_nl(fw);
-		fwts_log_info_verbatum(fw,
+		fwts_log_info_verbatim(fw,
 			"    Register %" PRIu32 ": (GPE 0x%2.2" PRIx8 "-0x%2.2" PRIx8 ")",
 			reg,
 			gpe_reg_info->BaseGpeNumber,
 			gpe_reg_info->BaseGpeNumber + (ACPI_GPE_REGISTER_WIDTH - 1));
-		fwts_log_info_verbatum(fw, "      Run Enable:     0x%2.2" PRIx8,
+		fwts_log_info_verbatim(fw, "      Run Enable:     0x%2.2" PRIx8,
 			gpe_reg_info->EnableForRun);
-		fwts_log_info_verbatum(fw, "      Wake Enable:    0x%2.2" PRIx8,
+		fwts_log_info_verbatim(fw, "      Wake Enable:    0x%2.2" PRIx8,
 			gpe_reg_info->EnableForWake);
-		fwts_log_info_verbatum(fw, "      Status Address: 0x%8.8" PRIx64,
+		fwts_log_info_verbatim(fw, "      Status Address: 0x%8.8" PRIx64,
 			(uint64_t)gpe_reg_info->StatusAddress.Address);
-		fwts_log_info_verbatum(fw, "      Enable Address: 0x%8.8" PRIx64,
+		fwts_log_info_verbatim(fw, "      Enable Address: 0x%8.8" PRIx64,
 			(uint64_t)gpe_reg_info->EnableAddress.Address);
 
 		gpu_dump_gpes(fw, reg, gpe_block_info);

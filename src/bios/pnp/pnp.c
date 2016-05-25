@@ -97,27 +97,27 @@ static int pnp_test1(fwts_framework *fw)
 		if ((memcmp(pnp->signature, PNP_SIGNATURE, 4) == 0) &&
 		    (fwts_checksum(mem+i, sizeof(pnp_header)) == 0)) {
 			fwts_log_info(fw, "Found PnP Installation Check structure at 0x%8.8x", PNP_REGION_START+i);
-			fwts_log_info_verbatum(fw, "  Signature                          : %4.4s",
+			fwts_log_info_verbatim(fw, "  Signature                          : %4.4s",
 				pnp->signature);
-			fwts_log_info_verbatum(fw, "  Version                            : 0x%2.2x (%d.%d)",
+			fwts_log_info_verbatim(fw, "  Version                            : 0x%2.2x (%d.%d)",
 				pnp->version, pnp->version >> 4, pnp->version & 0xf);
-			fwts_log_info_verbatum(fw, "  Length                             : 0x%4.4x bytes",
+			fwts_log_info_verbatim(fw, "  Length                             : 0x%4.4x bytes",
 				pnp->length);
-			fwts_log_info_verbatum(fw, "  Control Field                      : 0x%4.4x (%s)",
+			fwts_log_info_verbatim(fw, "  Control Field                      : 0x%4.4x (%s)",
 				pnp->control_field, pnp_control_field[pnp->control_field & 0x3]);
-			fwts_log_info_verbatum(fw, "  Event Notification Flag Address    : 0x%8.8x%s",
+			fwts_log_info_verbatim(fw, "  Event Notification Flag Address    : 0x%8.8x%s",
 				pnp->event_notification_addr,
 				pnp->event_notification_addr ? "" : " (undefined)");
-			fwts_log_info_verbatum(fw, "  Real Mode 16 bit Code Address      : 0x%4.4x:%4.4x",
+			fwts_log_info_verbatim(fw, "  Real Mode 16 bit Code Address      : 0x%4.4x:%4.4x",
 				pnp->RM_code_segment_addr, pnp->RM_offset_entry);
-			fwts_log_info_verbatum(fw, "  Real Mode 16 bit Data Address      : 0x%4.4x:%4.4x",
+			fwts_log_info_verbatim(fw, "  Real Mode 16 bit Data Address      : 0x%4.4x:%4.4x",
 				pnp->RM_data_addr, 0);
-			fwts_log_info_verbatum(fw, "  16 bit Protected Mode Code Address : 0x%8.8x",
+			fwts_log_info_verbatim(fw, "  16 bit Protected Mode Code Address : 0x%8.8x",
 				pnp->PM_code_segment_addr + pnp->PM_offset_entry);
-			fwts_log_info_verbatum(fw, "  16 bit Protected Mode Data Address : 0x%8.8x",
+			fwts_log_info_verbatim(fw, "  16 bit Protected Mode Data Address : 0x%8.8x",
 				pnp->PM_data_addr);
 
-			fwts_log_info_verbatum(fw, "  OEM Device Identifier              : 0x%8.8x%s",
+			fwts_log_info_verbatim(fw, "  OEM Device Identifier              : 0x%8.8x%s",
 				pnp->OEM_device_ID, oem_device_id(pnp->OEM_device_ID));
 			fwts_log_nl(fw);
 			found++;

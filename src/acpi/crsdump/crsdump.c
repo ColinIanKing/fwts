@@ -50,7 +50,7 @@ static void crsdump_show_header(
 	const char *objname,
 	const char *crs_name)
 {
-	fwts_log_info_verbatum(fw, "%s (%s):", objname, crs_name);
+	fwts_log_info_verbatim(fw, "%s (%s):", objname, crs_name);
 }
 
 static void crsdump_show_info(
@@ -106,15 +106,15 @@ static void crsdump_show_info(
 		val = val << info->shift;
 
 		if (info->annotation) {
-			fwts_log_info_verbatum(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64 " (%s)",
+			fwts_log_info_verbatim(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64 " (%s)",
 				(uint16_t)info->offset, info->label, hexdigits, hexdigits, val,
 				info->annotation[val]);
 		} else if (info->callback) {
-			fwts_log_info_verbatum(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64 " (%s)",
+			fwts_log_info_verbatim(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64 " (%s)",
 				(uint16_t)info->offset, info->label, hexdigits, hexdigits, val,
 				info->callback(val));
 		} else {
-			fwts_log_info_verbatum(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64,
+			fwts_log_info_verbatim(fw, "  0x%4.4" PRIx16 ": %-30.30s: 0x%-*.*" PRIx64,
 				(uint16_t)info->offset, info->label, hexdigits, hexdigits, val);
 		}
 	}
@@ -149,7 +149,7 @@ static void crsdump_data(
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, n > 16 ? 16 : n);
 		buffer[56] = '\0';	/* Truncate off text version of hex dump */
 
-		fwts_log_info_verbatum(fw, "  0x%4.4" PRIx16 ": %-30.30s: %s",
+		fwts_log_info_verbatim(fw, "  0x%4.4" PRIx16 ": %-30.30s: %s",
 			(uint16_t)i, "Hex Dump", buffer + 8);
 	}
 }

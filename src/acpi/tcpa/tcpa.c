@@ -61,10 +61,10 @@ static int tcpa_client_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 			tcpa->header.revision);
 	}
 
-	fwts_log_info_verbatum(fw, "TCPA Table:");
-	fwts_log_info_verbatum(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
-	fwts_log_info_verbatum(fw, "  Log Area Minimum Length:         0x%8.8"   PRIx32, tcpa->client.log_zone_length);
-	fwts_log_info_verbatum(fw, "  Log Area Start Address:          0x%16.16" PRIx64, tcpa->client.log_zone_addr);
+	fwts_log_info_verbatim(fw, "TCPA Table:");
+	fwts_log_info_verbatim(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
+	fwts_log_info_verbatim(fw, "  Log Area Minimum Length:         0x%8.8"   PRIx32, tcpa->client.log_zone_length);
+	fwts_log_info_verbatim(fw, "  Log Area Start Address:          0x%16.16" PRIx64, tcpa->client.log_zone_addr);
 
 	return passed;
 }
@@ -94,34 +94,34 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 
 	reserved2 = tcpa->server.reserved2[0] + (tcpa->server.reserved2[1] << 4) + (tcpa->server.reserved2[2] << 8);
 
-	fwts_log_info_verbatum(fw, "TCPA Table:");
-	fwts_log_info_verbatum(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
-	fwts_log_info_verbatum(fw, "  Reserved:                        0x%4.4"   PRIx16, tcpa->server.reserved);
-	fwts_log_info_verbatum(fw, "  Log Area Minimum Length:         0x%16.16" PRIx64, tcpa->server.log_zone_length);
-	fwts_log_info_verbatum(fw, "  Log Area Start Address:          0x%16.16" PRIx64, tcpa->server.log_zone_addr);
-	fwts_log_info_verbatum(fw, "  Specification Revision:          0x%4.4"   PRIx16, tcpa->server.spec_revision);
-	fwts_log_info_verbatum(fw, "  Device Flags:                    0x%2.2"   PRIx16, tcpa->server.device_flag);
-	fwts_log_info_verbatum(fw, "  Interrupt Flags:                 0x%2.2"   PRIx16, tcpa->server.interrupt_flag);
-	fwts_log_info_verbatum(fw, "  GPE:                             0x%2.2"   PRIx16, tcpa->server.gpe);
-	fwts_log_info_verbatum(fw, "  Reserved:                        0x%8.8"   PRIx32, reserved2);
-	fwts_log_info_verbatum(fw, "  Global System Interrupt:         0x%8.8"   PRIx32, tcpa->server.global_sys_interrupt);
-	fwts_log_info_verbatum(fw, "  Base Address:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:              0x%2.2"   PRIx8, tcpa->server.base_addr.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width             0x%2.2"   PRIx8, tcpa->server.base_addr.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset            0x%2.2"   PRIx8, tcpa->server.base_addr.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size                    0x%2.2"   PRIx8, tcpa->server.base_addr.access_width);
-	fwts_log_info_verbatum(fw, "    Address                        0x%16.16" PRIx64, tcpa->server.base_addr.address);
-	fwts_log_info_verbatum(fw, "  Reserved:                        0x%8.8"   PRIx32, tcpa->server.reserved3);
-	fwts_log_info_verbatum(fw, "  Configuration Address:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:              0x%2.2"   PRIx8, tcpa->server.config_addr.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width             0x%2.2"   PRIx8, tcpa->server.config_addr.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset            0x%2.2"   PRIx8, tcpa->server.config_addr.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size                    0x%2.2"   PRIx8, tcpa->server.config_addr.access_width);
-	fwts_log_info_verbatum(fw, "    Address                        0x%16.16" PRIx64, tcpa->server.config_addr.address);
-	fwts_log_info_verbatum(fw, "  PCI Segment Group:               0x%2.2"   PRIx8, tcpa->server.pci_seg_number);
-	fwts_log_info_verbatum(fw, "  PCI Bus:                         0x%2.2"   PRIx8, tcpa->server.pci_bus_number);
-	fwts_log_info_verbatum(fw, "  PCI Device:                      0x%2.2"   PRIx8, tcpa->server.pci_dev_number);
-	fwts_log_info_verbatum(fw, "  PCI Function:                    0x%2.2"   PRIx8, tcpa->server.pci_func_number);
+	fwts_log_info_verbatim(fw, "TCPA Table:");
+	fwts_log_info_verbatim(fw, "  Platform Class:                  0x%4.4"   PRIx16, tcpa->platform_class);
+	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4"   PRIx16, tcpa->server.reserved);
+	fwts_log_info_verbatim(fw, "  Log Area Minimum Length:         0x%16.16" PRIx64, tcpa->server.log_zone_length);
+	fwts_log_info_verbatim(fw, "  Log Area Start Address:          0x%16.16" PRIx64, tcpa->server.log_zone_addr);
+	fwts_log_info_verbatim(fw, "  Specification Revision:          0x%4.4"   PRIx16, tcpa->server.spec_revision);
+	fwts_log_info_verbatim(fw, "  Device Flags:                    0x%2.2"   PRIx16, tcpa->server.device_flag);
+	fwts_log_info_verbatim(fw, "  Interrupt Flags:                 0x%2.2"   PRIx16, tcpa->server.interrupt_flag);
+	fwts_log_info_verbatim(fw, "  GPE:                             0x%2.2"   PRIx16, tcpa->server.gpe);
+	fwts_log_info_verbatim(fw, "  Reserved:                        0x%8.8"   PRIx32, reserved2);
+	fwts_log_info_verbatim(fw, "  Global System Interrupt:         0x%8.8"   PRIx32, tcpa->server.global_sys_interrupt);
+	fwts_log_info_verbatim(fw, "  Base Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:              0x%2.2"   PRIx8, tcpa->server.base_addr.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width             0x%2.2"   PRIx8, tcpa->server.base_addr.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset            0x%2.2"   PRIx8, tcpa->server.base_addr.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size                    0x%2.2"   PRIx8, tcpa->server.base_addr.access_width);
+	fwts_log_info_verbatim(fw, "    Address                        0x%16.16" PRIx64, tcpa->server.base_addr.address);
+	fwts_log_info_verbatim(fw, "  Reserved:                        0x%8.8"   PRIx32, tcpa->server.reserved3);
+	fwts_log_info_verbatim(fw, "  Configuration Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:              0x%2.2"   PRIx8, tcpa->server.config_addr.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width             0x%2.2"   PRIx8, tcpa->server.config_addr.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset            0x%2.2"   PRIx8, tcpa->server.config_addr.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size                    0x%2.2"   PRIx8, tcpa->server.config_addr.access_width);
+	fwts_log_info_verbatim(fw, "    Address                        0x%16.16" PRIx64, tcpa->server.config_addr.address);
+	fwts_log_info_verbatim(fw, "  PCI Segment Group:               0x%2.2"   PRIx8, tcpa->server.pci_seg_number);
+	fwts_log_info_verbatim(fw, "  PCI Bus:                         0x%2.2"   PRIx8, tcpa->server.pci_bus_number);
+	fwts_log_info_verbatim(fw, "  PCI Device:                      0x%2.2"   PRIx8, tcpa->server.pci_dev_number);
+	fwts_log_info_verbatim(fw, "  PCI Function:                    0x%2.2"   PRIx8, tcpa->server.pci_func_number);
 
 	if (tcpa->server.reserved != 0) {
 		passed = false;

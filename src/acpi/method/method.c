@@ -3492,20 +3492,20 @@ static void method_test_CST_return(
 
 	/*  Now dump out per CPU C-state information */
 	if (an_element_ok) {
-		fwts_log_info_verbatum(fw, "%s values:", name);
-		fwts_log_info_verbatum(fw, "#   C-State   Latency     Power");
-		fwts_log_info_verbatum(fw, "                (us)      (mW)");
+		fwts_log_info_verbatim(fw, "%s values:", name);
+		fwts_log_info_verbatim(fw, "#   C-State   Latency     Power");
+		fwts_log_info_verbatim(fw, "                (us)      (mW)");
 		for (i = 1; i < obj->Package.Count; i++){
 			if (cst_elements_ok[i]) {
 				ACPI_OBJECT *pkg = &obj->Package.Elements[i];
-				fwts_log_info_verbatum(fw,
+				fwts_log_info_verbatim(fw,
 					"%2" PRIu32 "     C%" PRIu64 "     %6" PRIu64 "    %6" PRIu64,
 					i,
 					(uint64_t)pkg->Package.Elements[1].Integer.Value,
 					(uint64_t)pkg->Package.Elements[2].Integer.Value,
 					(uint64_t)pkg->Package.Elements[3].Integer.Value);
 			} else {
-				fwts_log_info_verbatum(fw,
+				fwts_log_info_verbatim(fw,
 					"%2" PRIu32 "     --      -----     -----", i);
 			}
 		}
@@ -3663,13 +3663,13 @@ static void method_test_PSS_return(
 	 *  If we have some valid data then dump it out, it is useful to see
 	 */
 	if (dump_elements) {
-		fwts_log_info_verbatum(fw, "%s values:", name);
-		fwts_log_info_verbatum(fw, "P-State  Freq     Power  Latency   Bus Master");
-		fwts_log_info_verbatum(fw, "         (MHz)    (mW)    (us)    Latency (us)");
+		fwts_log_info_verbatim(fw, "%s values:", name);
+		fwts_log_info_verbatim(fw, "P-State  Freq     Power  Latency   Bus Master");
+		fwts_log_info_verbatim(fw, "         (MHz)    (mW)    (us)    Latency (us)");
 		for (i = 0; i < obj->Package.Count; i++) {
 			ACPI_OBJECT *pstate = &obj->Package.Elements[i];
 			if (element_ok[i]) {
-				fwts_log_info_verbatum(fw, " %3d   %7" PRIu64 " %8" PRIu64
+				fwts_log_info_verbatim(fw, " %3d   %7" PRIu64 " %8" PRIu64
 					" %5" PRIu64 "     %5" PRIu64,
 					i,
 					(uint64_t)pstate->Package.Elements[0].Integer.Value,
@@ -3677,7 +3677,7 @@ static void method_test_PSS_return(
 					(uint64_t)pstate->Package.Elements[2].Integer.Value,
 					(uint64_t)pstate->Package.Elements[3].Integer.Value);
 			} else {
-				fwts_log_info_verbatum(fw,
+				fwts_log_info_verbatim(fw,
 					" %3d      ----    -----    --        -- (invalid)", i);
 			}
 		}
@@ -4080,14 +4080,14 @@ static void method_test_TSS_return(
 
 	/* Summary info */
 	if (an_element_ok) {
-		fwts_log_info_verbatum(fw, "%s values:", name);
-		fwts_log_info_verbatum(fw, "T-State  CPU     Power   Latency  Control  Status");
-		fwts_log_info_verbatum(fw, "         Freq    (mW)    (usecs)");
+		fwts_log_info_verbatim(fw, "%s values:", name);
+		fwts_log_info_verbatim(fw, "T-State  CPU     Power   Latency  Control  Status");
+		fwts_log_info_verbatim(fw, "         Freq    (mW)    (usecs)");
 		for (i = 0; i < obj->Package.Count; i++) {
 			if (tss_elements_ok[i]) {
 				ACPI_OBJECT *pkg = &obj->Package.Elements[i];
 
-				fwts_log_info_verbatum(fw,
+				fwts_log_info_verbatim(fw,
 					"  %3d    %3" PRIu64 "%%  %7" PRIu64 "  %7" PRIu64
 					"      %2.2" PRIx64 "      %2.2" PRIx64, i,
 					(uint64_t)pkg->Package.Elements[0].Integer.Value,
@@ -4096,7 +4096,7 @@ static void method_test_TSS_return(
 					(uint64_t)pkg->Package.Elements[3].Integer.Value,
 					(uint64_t)pkg->Package.Elements[4].Integer.Value);
 			} else {
-				fwts_log_info_verbatum(fw,
+				fwts_log_info_verbatim(fw,
 					"  %3d    ----    -----    -----      --      -- (invalid)", i);
 			}
 		}
@@ -6508,17 +6508,17 @@ static void method_test_DOD_return(
 			failed = true;
 		else {
 			uint32_t val = obj->Package.Elements[i].Integer.Value;
-			fwts_log_info_verbatum(fw, "Device %" PRIu32 ":", i);
+			fwts_log_info_verbatim(fw, "Device %" PRIu32 ":", i);
 			if ((val & 0x80000000)) {
-				fwts_log_info_verbatum(fw, "  Video Chip Vendor Scheme %" PRIu32, val);
+				fwts_log_info_verbatim(fw, "  Video Chip Vendor Scheme %" PRIu32, val);
 			} else {
-				fwts_log_info_verbatum(fw, "  Instance:                %" PRIu32, val & 0xf);
-				fwts_log_info_verbatum(fw, "  Display port attachment: %" PRIu32, (val >> 4) & 0xf);
-				fwts_log_info_verbatum(fw, "  Type of display:         %" PRIu32 " (%s)",
+				fwts_log_info_verbatim(fw, "  Instance:                %" PRIu32, val & 0xf);
+				fwts_log_info_verbatim(fw, "  Display port attachment: %" PRIu32, (val >> 4) & 0xf);
+				fwts_log_info_verbatim(fw, "  Type of display:         %" PRIu32 " (%s)",
 					(val >> 8) & 0xf, dod_type[(val >> 8) & 0xf]);
-				fwts_log_info_verbatum(fw, "  BIOS can detect device:  %" PRIu32, (val >> 16) & 1);
-				fwts_log_info_verbatum(fw, "  Non-VGA device:          %" PRIu32, (val >> 17) & 1);
-				fwts_log_info_verbatum(fw, "  Head or pipe ID:         %" PRIu32, (val >> 18) & 0x7);
+				fwts_log_info_verbatim(fw, "  BIOS can detect device:  %" PRIu32, (val >> 16) & 1);
+				fwts_log_info_verbatim(fw, "  Non-VGA device:          %" PRIu32, (val >> 17) & 1);
+				fwts_log_info_verbatim(fw, "  Head or pipe ID:         %" PRIu32, (val >> 18) & 0x7);
 			}
 		}
 	}
@@ -6661,9 +6661,9 @@ static void method_test_BCL_return(
 	}
 
 	fwts_log_info(fw, "Brightness levels for %s:" ,name);
-	fwts_log_info_verbatum(fw, "  Level on full power   : %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Level on full power   : %" PRIu64,
 		(uint64_t)obj->Package.Elements[0].Integer.Value);
-	fwts_log_info_verbatum(fw, "  Level on battery power: %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Level on battery power: %" PRIu64,
 		(uint64_t)obj->Package.Elements[1].Integer.Value);
 	for (i = 2; i < obj->Package.Count; i++) {
 		char tmp[12];
@@ -6676,7 +6676,7 @@ static void method_test_BCL_return(
 			break;
 	}
 	if (str) {
-		fwts_log_info_verbatum(fw, "  Brightness Levels     : %s", str);
+		fwts_log_info_verbatim(fw, "  Brightness Levels     : %s", str);
 		free(str);
 	}
 

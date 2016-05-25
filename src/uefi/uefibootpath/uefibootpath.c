@@ -64,7 +64,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of End of Hardware Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of End of Hardware Device Path.");
 			break;
 		}
 		break;
@@ -140,7 +140,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of Hardware Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of Hardware Device Path.");
 			break;
 		}
 		break;
@@ -204,7 +204,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of ACPI Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of ACPI Device Path.");
 			break;
 		}
 		break;
@@ -613,7 +613,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of Messaging Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of Messaging Device Path.");
 			break;
 		}
 		break;
@@ -739,7 +739,7 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of Media Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of Media Device Path.");
 			break;
 		}
 		break;
@@ -767,12 +767,12 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 			}
 			break;
 		default:
-			fwts_log_info_verbatum(fw, "Unknown subtype of BIOS Boot Specification Device Path.");
+			fwts_log_info_verbatim(fw, "Unknown subtype of BIOS Boot Specification Device Path.");
 			break;
 		}
 		break;
 	default:
-		fwts_log_info_verbatum(fw, "Unknown Type of Device Path.");
+		fwts_log_info_verbatim(fw, "Unknown Type of Device Path.");
 		break;
 
 	}
@@ -807,7 +807,7 @@ static int uefibootpath_info_bootdev(fwts_framework *fw, fwts_uefi_var *var)
 	load_option = (fwts_uefi_load_option *)var->data;
 	fwts_uefi_str16_to_str(tmp, sizeof(tmp), load_option->description);
 	len = fwts_uefi_str16len(load_option->description);
-	fwts_log_info_verbatum(fw, "Info: %s\n", tmp);
+	fwts_log_info_verbatim(fw, "Info: %s\n", tmp);
 
 	if (var->datalen < (sizeof(uint16_t) * (len + 1))) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -840,7 +840,7 @@ static void uefibootpath_var(fwts_framework *fw, fwts_uefi_var *var)
 			&& isxdigit(varname[6]) && isxdigit(varname[7])) {
 		int ret;
 
-		fwts_log_info_verbatum(fw, "Name: %s", varname);
+		fwts_log_info_verbatim(fw, "Name: %s", varname);
 		errors = 0;
 		ret = uefibootpath_info_bootdev(fw, var);
 

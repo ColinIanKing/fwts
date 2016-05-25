@@ -53,10 +53,10 @@ static int erst_test1(fwts_framework *fw)
 	uint64_t total_length;
 	uint32_t i;
 
-	fwts_log_info_verbatum(fw, "ERST Error Record Serialization Table :");
-        fwts_log_info_verbatum(fw, "  Serialization Hdr. Size:  0x%8.8" PRIx32, erst->serialization_header_size);
-        fwts_log_info_verbatum(fw, "  Reserved:                 0x%8.8" PRIx32, erst->reserved);
-        fwts_log_info_verbatum(fw, "  Instruction Entry Count:  0x%8.8" PRIx32, erst->instruction_entry_count);
+	fwts_log_info_verbatim(fw, "ERST Error Record Serialization Table :");
+	fwts_log_info_verbatim(fw, "  Serialization Hdr. Size:  0x%8.8" PRIx32, erst->serialization_header_size);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, erst->reserved);
+	fwts_log_info_verbatim(fw, "  Instruction Entry Count:  0x%8.8" PRIx32, erst->instruction_entry_count);
 
 	if (erst->reserved) {
 		passed = false;
@@ -98,18 +98,18 @@ static int erst_test1(fwts_framework *fw)
 
 #if defined(ERST_DEBUG_ENTRY)
 		/*  Disable this for now, it causes the test to be too verbose */
-		fwts_log_info_verbatum(fw, "ERST Serialization Instruction Entry %" PRIu32 ":", i);
-		fwts_log_info_verbatum(fw, "  Serialization Action:     0x%8.8" PRIx8, entry->serialization_action);
-		fwts_log_info_verbatum(fw, "  Instruction:              0x%8.8" PRIx8, entry->instruction);
-		fwts_log_info_verbatum(fw, "  Flags:                    0x%8.8" PRIx8, entry->flags);
-		fwts_log_info_verbatum(fw, "  Reserved:                 0x%8.8" PRIx8, entry->reserved);
-		fwts_log_info_verbatum(fw, "  Value:                    0x%16.16" PRIx64, entry->value);
-		fwts_log_info_verbatum(fw, "  Mask:                     0x%16.16" PRIx64, entry->mask);
-		fwts_log_info_verbatum(fw, "  Address Space ID:         0x%2.2" PRIx8, entry->register_region.address_space_id);
-		fwts_log_info_verbatum(fw, "  Register Bit Width        0x%2.2" PRIx8, entry->register_region.register_bit_width);
-		fwts_log_info_verbatum(fw, "  Register Bit Offset       0x%2.2" PRIx8, entry->register_region.register_bit_offset);
-		fwts_log_info_verbatum(fw, "  Access Size               0x%2.2" PRIx8, entry->register_region.access_width);
-		fwts_log_info_verbatum(fw, "  Address                   0x%16.16" PRIx64, entry->register_region.address);
+		fwts_log_info_verbatim(fw, "ERST Serialization Instruction Entry %" PRIu32 ":", i);
+		fwts_log_info_verbatim(fw, "  Serialization Action:     0x%8.8" PRIx8, entry->serialization_action);
+		fwts_log_info_verbatim(fw, "  Instruction:              0x%8.8" PRIx8, entry->instruction);
+		fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx8, entry->flags);
+		fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx8, entry->reserved);
+		fwts_log_info_verbatim(fw, "  Value:                    0x%16.16" PRIx64, entry->value);
+		fwts_log_info_verbatim(fw, "  Mask:                     0x%16.16" PRIx64, entry->mask);
+		fwts_log_info_verbatim(fw, "  Address Space ID:         0x%2.2" PRIx8, entry->register_region.address_space_id);
+		fwts_log_info_verbatim(fw, "  Register Bit Width        0x%2.2" PRIx8, entry->register_region.register_bit_width);
+		fwts_log_info_verbatim(fw, "  Register Bit Offset       0x%2.2" PRIx8, entry->register_region.register_bit_offset);
+		fwts_log_info_verbatim(fw, "  Access Size               0x%2.2" PRIx8, entry->register_region.access_width);
+		fwts_log_info_verbatim(fw, "  Address                   0x%16.16" PRIx64, entry->register_region.address);
 #endif
 
 		switch (entry->serialization_action) {

@@ -64,10 +64,10 @@ static int msdm_test1(fwts_framework *fw)
 			sizeof(fwts_acpi_table_msdm), table->length);
 		goto done;
 	}
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%8.8" PRIx32, msdm->reserved);
-	fwts_log_info_verbatum(fw, "  Data Type:                0x%8.8" PRIx32, msdm->data_type);
-	fwts_log_info_verbatum(fw, "  Data Reserved:            0x%8.8" PRIx32, msdm->data_reserved);
-	fwts_log_info_verbatum(fw, "  Data Length:              0x%8.8" PRIx32, msdm->data_length);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, msdm->reserved);
+	fwts_log_info_verbatim(fw, "  Data Type:                0x%8.8" PRIx32, msdm->data_type);
+	fwts_log_info_verbatim(fw, "  Data Reserved:            0x%8.8" PRIx32, msdm->data_reserved);
+	fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32, msdm->data_length);
 
 	if (msdm->reserved) {
 		passed = false;
@@ -116,7 +116,7 @@ static int msdm_test1(fwts_framework *fw)
 			bool invalid = false;
 			/* Note, no checks to see if this is a valid key! */
 
-			fwts_log_info_verbatum(fw, "  Data:                     '%*.*s'",
+			fwts_log_info_verbatim(fw, "  Data:                     '%*.*s'",
 				msdm->data_length, msdm->data_length, msdm->data);
 			/* Expect XXXXX-XXXXX-XXXXX-XXXXX-XXXXX */
 

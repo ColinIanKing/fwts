@@ -75,9 +75,9 @@ static int uefi_test1(fwts_framework *fw)
 
 	fwts_guid_buf_to_str(uefi->uuid, guid, sizeof(guid));
 
-	fwts_log_info_verbatum(fw, "UEFI ACPI Data Table:");
-	fwts_log_info_verbatum(fw, "  Identifier: %s", guid);
-	fwts_log_info_verbatum(fw, "  DataOffset: 0x%4.4" PRIx16, uefi->dataoffset);
+	fwts_log_info_verbatim(fw, "UEFI ACPI Data Table:");
+	fwts_log_info_verbatim(fw, "  Identifier: %s", guid);
+	fwts_log_info_verbatim(fw, "  DataOffset: 0x%4.4" PRIx16, uefi->dataoffset);
 
 	/* Sanity check the dataoffset */
 	if (uefi->dataoffset > table->length) {
@@ -103,16 +103,16 @@ static int uefi_test1(fwts_framework *fw)
 				, uefi_smmcomm->boot.dataoffset);
 		}
 
-		fwts_log_info_verbatum(fw, "  SW SMI Number: 0x%8.8" PRIx32, uefi_smmcomm->sw_smi_number);
-		fwts_log_info_verbatum(fw, "  Buffer Ptr Address: 0x%16.16" PRIx64, uefi_smmcomm->buf_ptr_addr);
+		fwts_log_info_verbatim(fw, "  SW SMI Number: 0x%8.8" PRIx32, uefi_smmcomm->sw_smi_number);
+		fwts_log_info_verbatim(fw, "  Buffer Ptr Address: 0x%16.16" PRIx64, uefi_smmcomm->buf_ptr_addr);
 	} else {
 		/* dump the remaining data */
-		fwts_log_info_verbatum(fw, "  Data:");
+		fwts_log_info_verbatim(fw, "  Data:");
 		for (i = 0; i < (table->length - uefi->dataoffset) ; i += 16) {
 			int left = table->length - uefi->dataoffset -i;
 			char buffer[128];
 			fwts_dump_raw_data(buffer,sizeof(buffer), uefi->data + i, i, left > 16 ? 16 : left);
-			fwts_log_info_verbatum(fw, "%s", buffer);
+			fwts_log_info_verbatim(fw, "%s", buffer);
 		}
 	}
 

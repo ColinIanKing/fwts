@@ -129,37 +129,37 @@ static int pciirq_test1(fwts_framework *fw)
 
 			fwts_log_nl(fw);
 			fwts_log_info(fw, "Found PCI IRQ Routing Table at 0x%8.8x", PCIIRQ_REGION_START+i);
-			fwts_log_info_verbatum(fw, "  Signature             : %4.4s",
+			fwts_log_info_verbatim(fw, "  Signature             : %4.4s",
 				pciirq->signature);
-			fwts_log_info_verbatum(fw, "  Version               : 0x%4.4x (%u.%u)",
+			fwts_log_info_verbatim(fw, "  Version               : 0x%4.4x (%u.%u)",
 				pciirq->version,
 				pciirq->version >> 8,
 				pciirq->version & 0xff);
-			fwts_log_info_verbatum(fw, "  Table Size            : 0x%4.4x bytes (%d slot entries)",
+			fwts_log_info_verbatim(fw, "  Table Size            : 0x%4.4x bytes (%d slot entries)",
 				pciirq->table_size, (pciirq->table_size - 32) / 16);
-			fwts_log_info_verbatum(fw, "  PCI Router ID         : %02x:%02x.%1x",
+			fwts_log_info_verbatim(fw, "  PCI Router ID         : %02x:%02x.%1x",
 				pciirq->routers_bus,
 				pciirq->routers_devfunc >> 3,
 				pciirq->routers_devfunc & 0x7);
-			fwts_log_info_verbatum(fw, "  PCI Exclusive IRQs    : 0x%4.4x (%s)",
+			fwts_log_info_verbatim(fw, "  PCI Exclusive IRQs    : 0x%4.4x (%s)",
 				pciirq->exclusive_irqs,
 				pciirq_irq_bitmap(pciirq->exclusive_irqs));
-			fwts_log_info_verbatum(fw, "  Compatible PCI Router : %4.4x:%4.4x",
+			fwts_log_info_verbatim(fw, "  Compatible PCI Router : %4.4x:%4.4x",
 				pciirq->compatible_pci_router & 0xffff,
 				pciirq->compatible_pci_router >> 16);
-			fwts_log_info_verbatum(fw, "  Miniport Data         : 0x%8.8x%s",
+			fwts_log_info_verbatim(fw, "  Miniport Data         : 0x%8.8x%s",
 				pciirq->miniport_data,
 				pciirq->miniport_data ? "" : " (none)");
-			fwts_log_info_verbatum(fw, "  Reserved              : %s",
+			fwts_log_info_verbatim(fw, "  Reserved              : %s",
 				pciirq_reserved(pciirq->reserved));
-			fwts_log_info_verbatum(fw, "  Checksum              : 0x%2.2x",
+			fwts_log_info_verbatim(fw, "  Checksum              : 0x%2.2x",
 				pciirq->checksum);
 			fwts_log_nl(fw);
 
 			/*
 			 *  Dump table
 			 */
-			fwts_log_info_verbatum(fw, "Bus:Dev Slot  INTA#   INTB#   INTC#   INTD#");
+			fwts_log_info_verbatim(fw, "Bus:Dev Slot  INTA#   INTB#   INTC#   INTD#");
 			for (slot = pciirq->slots, j = 0; j < slot_count; j++, slot++) {
 				char buffer[80];
 				char *ptr = buffer;
@@ -175,7 +175,7 @@ static int pciirq_test1(fwts_framework *fw)
 					else
 						ptr += snprintf(ptr, sizeof(buffer) - (ptr - buffer), "        ");
 				}
-				fwts_log_info_verbatum(fw, "%s", buffer);
+				fwts_log_info_verbatim(fw, "%s", buffer);
 			}
 			fwts_log_nl(fw);
 

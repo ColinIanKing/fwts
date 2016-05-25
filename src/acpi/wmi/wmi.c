@@ -260,11 +260,11 @@ static void wmi_no_known_driver(
  */
 static void wmi_dump_object(fwts_framework *fw, const fwts_wdg_info *info)
 {
-	fwts_log_info_verbatum(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
+	fwts_log_info_verbatim(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
 		info->flags, wmi_wdg_flags_to_text(info->flags));
-	fwts_log_info_verbatum(fw, "    Object ID      : %c%c",
+	fwts_log_info_verbatim(fw, "    Object ID      : %c%c",
 		info->id.obj_id[0], info->id.obj_id[1]);
-	fwts_log_info_verbatum(fw, "    Instance       : 0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "    Instance       : 0x%2.2" PRIx8,
 		info->instance);
 }
 
@@ -278,7 +278,7 @@ static void wmi_known_driver(
 {
 	/* If we recognise the GUID then we may as well report this info */
 	if (known) {
-		fwts_log_info_verbatum(fw, "    Driver         : %s (%s)",
+		fwts_log_info_verbatim(fw, "    Driver         : %s (%s)",
 			known->driver, known->vendor);
 	}
 }
@@ -305,26 +305,26 @@ static void wmi_parse_wdg_data(
 
 		fwts_guid_buf_to_str(guid, guid_str, sizeof(guid_str));
 		fwts_log_nl(fw);
-		fwts_log_info_verbatum(fw, "%s (%zd of %zd)",
+		fwts_log_info_verbatim(fw, "%s (%zd of %zd)",
 			name, i + 1, size / sizeof(fwts_wdg_info));
-		fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
+		fwts_log_info_verbatim(fw, "  GUID: %s", guid_str);
 		known = wmi_find_guid(guid_str);
 
 		if (info->flags & FWTS_WMI_METHOD) {
-			fwts_log_info_verbatum(fw, "  WMI Method:");
+			fwts_log_info_verbatim(fw, "  WMI Method:");
 			wmi_dump_object(fw, info);
 			wmi_known_driver(fw, known);
 			wmi_method_exist_count(fw, info, guid_str);
 		} else if (info->flags & FWTS_WMI_EVENT) {
 			events = true;
-			fwts_log_info_verbatum(fw, "  WMI Event:");
-			fwts_log_info_verbatum(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
+			fwts_log_info_verbatim(fw, "  WMI Event:");
+			fwts_log_info_verbatim(fw, "    Flags          : 0x%2.2" PRIx8 " (%s)",
 				info->flags, wmi_wdg_flags_to_text(info->flags));
-			fwts_log_info_verbatum(fw, "    Notification ID: 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "    Notification ID: 0x%2.2" PRIx8,
 				info->id.notify.notify_id);
-			fwts_log_info_verbatum(fw, "    Reserved       : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "    Reserved       : 0x%2.2" PRIx8,
 				info->id.notify.reserved);
-			fwts_log_info_verbatum(fw, "    Instance       : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "    Instance       : 0x%2.2" PRIx8,
 				info->instance);
 			wmi_known_driver(fw, known);
 
@@ -334,7 +334,7 @@ static void wmi_parse_wdg_data(
 				all_events_known = false;
 			}
 		} else {
-			fwts_log_info_verbatum(fw, "  WMI Object:");
+			fwts_log_info_verbatim(fw, "  WMI Object:");
 			wmi_dump_object(fw, info);
 			wmi_known_driver(fw, known);
 		}

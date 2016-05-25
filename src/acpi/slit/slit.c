@@ -70,8 +70,8 @@ static int slit_test1(fwts_framework *fw)
 	}
 
 	n = slit->num_of_system_localities;
-	fwts_log_info_verbatum(fw, "SLIT System Locality Distance Information Table:");
-	fwts_log_info_verbatum(fw, "  Number of Localities:     0x%" PRIx64, n);
+	fwts_log_info_verbatim(fw, "SLIT System Locality Distance Information Table:");
+	fwts_log_info_verbatim(fw, "  Number of Localities:     0x%" PRIx64, n);
 
 	/*
 	 *  ACPI table length is 32 bits, so maximum matrix of entries size is

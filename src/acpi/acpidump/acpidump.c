@@ -41,7 +41,7 @@ static void acpi_dump_raw_table(
                 int left = length - n;
 		char buffer[128];
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + n, n, left > 16 ? 16 : left);
-		fwts_log_info_verbatum(fw, "%s", buffer);
+		fwts_log_info_verbatim(fw, "%s", buffer);
         }
 }
 
@@ -55,23 +55,23 @@ static void acpidump_hdr(
 {
 	if (length < sizeof(fwts_acpi_table_header))
 		return;
-	fwts_log_info_verbatum(fw, "[000h 0000   4]                    Signature : \"%4.4s\"",
+	fwts_log_info_verbatim(fw, "[000h 0000   4]                    Signature : \"%4.4s\"",
 		hdr->signature);
-	fwts_log_info_verbatum(fw, "[004h 0004   4]                 Table Length : %8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "[004h 0004   4]                 Table Length : %8.8" PRIx32,
 		hdr->length);
-	fwts_log_info_verbatum(fw, "[008h 0008   1]                     Revision : %2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "[008h 0008   1]                     Revision : %2.2" PRIx8,
 		hdr->revision);
-	fwts_log_info_verbatum(fw, "[009h 0009   1]                     Checksum : %2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "[009h 0009   1]                     Checksum : %2.2" PRIx8,
 		hdr->checksum);
-	fwts_log_info_verbatum(fw, "[00Ah 0010   6]                       Oem ID : \"%6.6s\"",
+	fwts_log_info_verbatim(fw, "[00Ah 0010   6]                       Oem ID : \"%6.6s\"",
 		hdr->oem_id);
-	fwts_log_info_verbatum(fw, "[010h 0016   8]                 Oem Table ID : \"%8.8s\"",
+	fwts_log_info_verbatim(fw, "[010h 0016   8]                 Oem Table ID : \"%8.8s\"",
 		hdr->oem_tbl_id);
-	fwts_log_info_verbatum(fw, "[018h 0024   4]                 Oem Revision : %8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "[018h 0024   4]                 Oem Revision : %8.8" PRIx32,
 		hdr->oem_revision);
-	fwts_log_info_verbatum(fw, "[01Ch 0028   4]              Asl Compiler ID : \"%4.4s\"",
+	fwts_log_info_verbatim(fw, "[01Ch 0028   4]              Asl Compiler ID : \"%4.4s\"",
 		hdr->creator_id);
-	fwts_log_info_verbatum(fw, "[020h 0032   4]        Asl Compiler Revision : %8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "[020h 0032   4]        Asl Compiler Revision : %8.8" PRIx32,
 		hdr->creator_revision);
 }
 
@@ -87,23 +87,23 @@ static void acpidump_rsdp(
 	if (table->length < sizeof(fwts_acpi_table_rsdp))
 		return;
 
-	fwts_log_info_verbatum(fw, "[000h 0000   8]                    Signature : \"%8.8s\"",
+	fwts_log_info_verbatim(fw, "[000h 0000   8]                    Signature : \"%8.8s\"",
 		rsdp->signature);
-	fwts_log_info_verbatum(fw, "[008h 0008   1]                     Checksum : %1.1" PRIx8,
+	fwts_log_info_verbatim(fw, "[008h 0008   1]                     Checksum : %1.1" PRIx8,
 		rsdp->checksum);
-	fwts_log_info_verbatum(fw, "[009h 0009   6]                       Oem ID : \"%6.6s\"",
+	fwts_log_info_verbatim(fw, "[009h 0009   6]                       Oem ID : \"%6.6s\"",
 		rsdp->oem_id);
-	fwts_log_info_verbatum(fw, "[00fh 0015   1]                     Revision : %2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "[00fh 0015   1]                     Revision : %2.2" PRIx8,
 		rsdp->revision);
-	fwts_log_info_verbatum(fw, "[010h 0016   4]                 RSDT Address : %8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "[010h 0016   4]                 RSDT Address : %8.8" PRIx32,
 		rsdp->rsdt_address);
-	fwts_log_info_verbatum(fw, "[014h 0020   4]                 Table Length : %8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "[014h 0020   4]                 Table Length : %8.8" PRIx32,
 		rsdp->length);
-	fwts_log_info_verbatum(fw, "[018h 0024   8]                 XSDT Address : %16.16" PRIx64,
+	fwts_log_info_verbatim(fw, "[018h 0024   8]                 XSDT Address : %16.16" PRIx64,
 		rsdp->xsdt_address);
-	fwts_log_info_verbatum(fw, "[020h 0032   1]            Extended Checksum : %2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "[020h 0032   1]            Extended Checksum : %2.2" PRIx8,
 		rsdp->extended_checksum);
-	fwts_log_info_verbatum(fw, "[021h 0033   3]                     Reserved : %2.2" PRIx8 " %2.2" PRIx8 " %2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "[021h 0033   3]                     Reserved : %2.2" PRIx8 " %2.2" PRIx8 " %2.2" PRIx8,
 		rsdp->reserved[0], rsdp->reserved[1], rsdp->reserved[2]);
 }
 
@@ -139,9 +139,9 @@ static int acpidump_test1(fwts_framework *fw)
 			break;
 		}
 
-		fwts_log_info_verbatum(fw, "%s @ %lx (%zd bytes)%s",
+		fwts_log_info_verbatim(fw, "%s @ %lx (%zd bytes)%s",
 			table->name, (unsigned long)table->addr, table->length, provenance);
-		fwts_log_info_verbatum(fw, "----");
+		fwts_log_info_verbatim(fw, "----");
 
 		if (!strcmp(table->name, "RSDP")) {
 			/* RSDP is a special case */
@@ -155,7 +155,7 @@ static int acpidump_test1(fwts_framework *fw)
 
 			fwts_acpi_table_get_header(&hdr, data);
 			acpidump_hdr(fw, &hdr, table->length);
-			fwts_log_info_verbatum(fw, "Contains AML Object Code.");
+			fwts_log_info_verbatim(fw, "Contains AML Object Code.");
 		} else if (fwts_iasl_disassemble(fw, table, true, &output) != FWTS_OK) {
 			/* Cannot find, assume standard table header */
 
@@ -184,7 +184,7 @@ static int acpidump_test1(fwts_framework *fw)
 				if (!strncmp(text, "/*", 2))
 					skip = true;
 				if (!(ignore | skip | unknown))
-					fwts_log_info_verbatum(fw, "%s", fwts_text_list_text(line));
+					fwts_log_info_verbatim(fw, "%s", fwts_text_list_text(line));
 				if (!strncmp(text, " */", 3))
 					skip = false;
 			}

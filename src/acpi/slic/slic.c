@@ -72,15 +72,15 @@ static int slic_test1(fwts_framework *fw)
 	}
 	ptr = (uint8_t *)table->data + sizeof(fwts_acpi_table_header);
 
-	fwts_log_info_verbatum(fw, "Software Licensing Description Table");
+	fwts_log_info_verbatim(fw, "Software Licensing Description Table");
 	while (length < table->length) {
 		fwts_acpi_table_slic_header *hdr =
 			(fwts_acpi_table_slic_header *)ptr;
 		if (hdr->length < sizeof(fwts_acpi_table_slic_header))
 			break;
 #if DUMP_SLIC
-		fwts_log_info_verbatum(fw, "  Type:                     0x%8.8" PRIx32, hdr->type);
-		fwts_log_info_verbatum(fw, "  Length:                   0x%8.8" PRIx32, hdr->length);
+		fwts_log_info_verbatim(fw, "  Type:                     0x%8.8" PRIx32, hdr->type);
+		fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32, hdr->length);
 #endif
 
 		switch (hdr->type) {
@@ -99,15 +99,15 @@ static int slic_test1(fwts_framework *fw)
 				fwts_log_info(fw, "SLIC Public Key Structure has had minimal check due to proprietary nature of the table");
 #if DUMP_SLIC
 
-				fwts_log_info_verbatum(fw, "  SLIC Public Key:\n");
-				fwts_log_info_verbatum(fw, "    Key Type:               0x%2.2" PRIx8, key->key_type);
-				fwts_log_info_verbatum(fw, "    Version:                0x%2.2" PRIx8, key->version);
-				fwts_log_info_verbatum(fw, "    Reserved:               0x%4.4" PRIx16, key->reserved);
-				fwts_log_info_verbatum(fw, "    Algorithm:              0x%8.8" PRIx32, key->algorithm);
-				fwts_log_info_verbatum(fw, "    Magic:                  '%c%c%c%c'",
+				fwts_log_info_verbatim(fw, "  SLIC Public Key:\n");
+				fwts_log_info_verbatim(fw, "    Key Type:               0x%2.2" PRIx8, key->key_type);
+				fwts_log_info_verbatim(fw, "    Version:                0x%2.2" PRIx8, key->version);
+				fwts_log_info_verbatim(fw, "    Reserved:               0x%4.4" PRIx16, key->reserved);
+				fwts_log_info_verbatim(fw, "    Algorithm:              0x%8.8" PRIx32, key->algorithm);
+				fwts_log_info_verbatim(fw, "    Magic:                  '%c%c%c%c'",
 					key->magic[0], key->magic[1], key->magic[2], key->magic[3]);
-				fwts_log_info_verbatum(fw, "    Bit Length:             0x%8.8" PRIx32, key->bit_length);
-				fwts_log_info_verbatum(fw, "    Exponent:               0x%8.8" PRIx32, key->exponent);
+				fwts_log_info_verbatim(fw, "    Bit Length:             0x%8.8" PRIx32, key->bit_length);
+				fwts_log_info_verbatim(fw, "    Exponent:               0x%8.8" PRIx32, key->exponent);
 				/* For the moment, don't dump the modulus */
 #endif
 			}
@@ -128,22 +128,22 @@ static int slic_test1(fwts_framework *fw)
 #endif
 				fwts_log_info(fw, "SLIC Windows Marker Structure has had minimal check due to proprietary nature of the table");
 #if DUMP_SLIC
-				fwts_log_info_verbatum(fw, "  SLIC Windows Marker:\n");
-				fwts_log_info_verbatum(fw, "    Version:                0x%2.2" PRIx8, marker->version);
-				fwts_log_info_verbatum(fw, "    OEM ID:                 '%6.6s'", marker->oem_id);
-				fwts_log_info_verbatum(fw, "    OEM Table ID:           '%8.8s'", marker->oem_table_id);
-				fwts_log_info_verbatum(fw, "    Windows Flag:           '%8.8s'", marker->windows_flag);
-				fwts_log_info_verbatum(fw, "    SLIC Version:           0x%4.4" PRIx32, marker->slic_version);
-				fwts_log_info_verbatum(fw, "    Reserved:               "
+				fwts_log_info_verbatim(fw, "  SLIC Windows Marker:\n");
+				fwts_log_info_verbatim(fw, "    Version:                0x%2.2" PRIx8, marker->version);
+				fwts_log_info_verbatim(fw, "    OEM ID:                 '%6.6s'", marker->oem_id);
+				fwts_log_info_verbatim(fw, "    OEM Table ID:           '%8.8s'", marker->oem_table_id);
+				fwts_log_info_verbatim(fw, "    Windows Flag:           '%8.8s'", marker->windows_flag);
+				fwts_log_info_verbatim(fw, "    SLIC Version:           0x%4.4" PRIx32, marker->slic_version);
+				fwts_log_info_verbatim(fw, "    Reserved:               "
 					"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 					marker->reserved[0], marker->reserved[1], marker->reserved[2], marker->reserved[3]);
-				fwts_log_info_verbatum(fw, "    Reserved:               "
+				fwts_log_info_verbatim(fw, "    Reserved:               "
 					"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 					marker->reserved[4], marker->reserved[5], marker->reserved[6], marker->reserved[7]);
-				fwts_log_info_verbatum(fw, "    Reserved:               "
+				fwts_log_info_verbatim(fw, "    Reserved:               "
 					"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 					marker->reserved[8], marker->reserved[9], marker->reserved[10], marker->reserved[11]);
-				fwts_log_info_verbatum(fw, "    Reserved:               "
+				fwts_log_info_verbatim(fw, "    Reserved:               "
 					"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 					marker->reserved[12], marker->reserved[13], marker->reserved[14], marker->reserved[15]);
 				/* For the moment, don't dump the signature */

@@ -77,18 +77,18 @@ static int dbgp_test1(fwts_framework *fw)
 		break;
 	}
 
-	fwts_log_info_verbatum(fw, "DBGP Table:");
-	fwts_log_info_verbatum(fw, "  Interface Type            0x%2.2" PRIx8 " (%s)",
+	fwts_log_info_verbatim(fw, "DBGP Table:");
+	fwts_log_info_verbatim(fw, "  Interface Type            0x%2.2" PRIx8 " (%s)",
 		dbgp->interface_type, interface_type);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[0]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[1]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[2]);
-	fwts_log_info_verbatum(fw, "  Base Address:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, dbgp->base_address.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, dbgp->base_address.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, dbgp->base_address.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, dbgp->base_address.access_width);
-	fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, dbgp->base_address.address);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[0]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[1]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, dbgp->reserved1[2]);
+	fwts_log_info_verbatim(fw, "  Base Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, dbgp->base_address.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, dbgp->base_address.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, dbgp->base_address.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, dbgp->base_address.access_width);
+	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, dbgp->base_address.address);
 	fwts_log_nl(fw);
 
 	if (dbgp->interface_type > 2) {

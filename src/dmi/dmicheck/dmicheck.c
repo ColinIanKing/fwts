@@ -415,47 +415,47 @@ static void dmi_table_free(void* table)
 static void dmi_dump_entry(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type type)
 {
 	if (type == FWTS_SMBIOS) {
-		fwts_log_info_verbatum(fw, "SMBIOS Entry Point Structure:");
-		fwts_log_info_verbatum(fw, "  Anchor String          : %4.4s", entry->signature);
-		fwts_log_info_verbatum(fw, "  Checksum               : 0x%2.2x", entry->checksum);
-		fwts_log_info_verbatum(fw, "  Entry Point Length     : 0x%2.2x", entry->length);
-		fwts_log_info_verbatum(fw, "  Major Version          : 0x%2.2x", entry->major_version);
-		fwts_log_info_verbatum(fw, "  Minor Version          : 0x%2.2x", entry->minor_version);
-		fwts_log_info_verbatum(fw, "  Maximum Struct Size    : 0x%2.2x", entry->max_struct_size);
-		fwts_log_info_verbatum(fw, "  Entry Point Revision   : 0x%2.2x", entry->revision);
-		fwts_log_info_verbatum(fw, "  Formatted Area         : 0x%2.2x 0x%2.2x 0x%2.2x 0x%2.2x 0x%2.2x",
+		fwts_log_info_verbatim(fw, "SMBIOS Entry Point Structure:");
+		fwts_log_info_verbatim(fw, "  Anchor String          : %4.4s", entry->signature);
+		fwts_log_info_verbatim(fw, "  Checksum               : 0x%2.2x", entry->checksum);
+		fwts_log_info_verbatim(fw, "  Entry Point Length     : 0x%2.2x", entry->length);
+		fwts_log_info_verbatim(fw, "  Major Version          : 0x%2.2x", entry->major_version);
+		fwts_log_info_verbatim(fw, "  Minor Version          : 0x%2.2x", entry->minor_version);
+		fwts_log_info_verbatim(fw, "  Maximum Struct Size    : 0x%2.2x", entry->max_struct_size);
+		fwts_log_info_verbatim(fw, "  Entry Point Revision   : 0x%2.2x", entry->revision);
+		fwts_log_info_verbatim(fw, "  Formatted Area         : 0x%2.2x 0x%2.2x 0x%2.2x 0x%2.2x 0x%2.2x",
 			entry->formatted_area[0], entry->formatted_area[1],
 			entry->formatted_area[2], entry->formatted_area[3],
 			entry->formatted_area[4]);
 	}
 	if (type == FWTS_SMBIOS_DMI_LEGACY)
-		fwts_log_info_verbatum(fw, "Legacy DMI Entry Point Structure:");
+		fwts_log_info_verbatim(fw, "Legacy DMI Entry Point Structure:");
 
 	/* Common to SMBIOS and SMBIOS_DMI_LEGACY */
-	fwts_log_info_verbatum(fw, "  Intermediate Anchor    : %5.5s", (char *)entry->anchor_string);
-	fwts_log_info_verbatum(fw, "  Intermediate Checksum  : 0x%2.2x", entry->intermediate_checksum);
-	fwts_log_info_verbatum(fw, "  Structure Table Length : 0x%4.4x", entry->struct_table_length);
-	fwts_log_info_verbatum(fw, "  Structure Table Address: 0x%8.8x", entry->struct_table_address);
-	fwts_log_info_verbatum(fw, "  # of SMBIOS Structures : 0x%4.4x", entry->number_smbios_structures);
-	fwts_log_info_verbatum(fw, "  SMBIOS BCD Revision    : %2.2x", entry->smbios_bcd_revision);
+	fwts_log_info_verbatim(fw, "  Intermediate Anchor    : %5.5s", (char *)entry->anchor_string);
+	fwts_log_info_verbatim(fw, "  Intermediate Checksum  : 0x%2.2x", entry->intermediate_checksum);
+	fwts_log_info_verbatim(fw, "  Structure Table Length : 0x%4.4x", entry->struct_table_length);
+	fwts_log_info_verbatim(fw, "  Structure Table Address: 0x%8.8x", entry->struct_table_address);
+	fwts_log_info_verbatim(fw, "  # of SMBIOS Structures : 0x%4.4x", entry->number_smbios_structures);
+	fwts_log_info_verbatim(fw, "  SMBIOS BCD Revision    : %2.2x", entry->smbios_bcd_revision);
 	if (entry->smbios_bcd_revision == 0)
-		fwts_log_info_verbatum(fw, "    BCD Revision 00 indicates compliance with specification stated in Major/Minor Version.");
+		fwts_log_info_verbatim(fw, "    BCD Revision 00 indicates compliance with specification stated in Major/Minor Version.");
 }
 
 static void dmi_dump_entry30(fwts_framework *fw, fwts_smbios30_entry *entry)
 {
 
-	fwts_log_info_verbatum(fw, "SMBIOS30 Entry Point Structure:");
-	fwts_log_info_verbatum(fw, "  Anchor String          : %5.5s", entry->signature);
-	fwts_log_info_verbatum(fw, "  Checksum               : 0x%2.2" PRIx8, entry->checksum);
-	fwts_log_info_verbatum(fw, "  Entry Point Length     : 0x%2.2" PRIx8, entry->length);
-	fwts_log_info_verbatum(fw, "  Major Version          : 0x%2.2" PRIx8, entry->major_version);
-	fwts_log_info_verbatum(fw, "  Minor Version          : 0x%2.2" PRIx8, entry->minor_version);
-	fwts_log_info_verbatum(fw, "  Docrev                 : 0x%2.2" PRIx8, entry->docrev);
-	fwts_log_info_verbatum(fw, "  Entry Point Revision   : 0x%2.2" PRIx8, entry->revision);
-	fwts_log_info_verbatum(fw, "  Reserved               : 0x%2.2" PRIx8, entry->reserved);
-	fwts_log_info_verbatum(fw, "  Table maximum size     : 0x%8.8" PRIx32, entry->struct_table_max_size);
-	fwts_log_info_verbatum(fw, "  Table address          : 0x%16.16" PRIx64, entry->struct_table_address);
+	fwts_log_info_verbatim(fw, "SMBIOS30 Entry Point Structure:");
+	fwts_log_info_verbatim(fw, "  Anchor String          : %5.5s", entry->signature);
+	fwts_log_info_verbatim(fw, "  Checksum               : 0x%2.2" PRIx8, entry->checksum);
+	fwts_log_info_verbatim(fw, "  Entry Point Length     : 0x%2.2" PRIx8, entry->length);
+	fwts_log_info_verbatim(fw, "  Major Version          : 0x%2.2" PRIx8, entry->major_version);
+	fwts_log_info_verbatim(fw, "  Minor Version          : 0x%2.2" PRIx8, entry->minor_version);
+	fwts_log_info_verbatim(fw, "  Docrev                 : 0x%2.2" PRIx8, entry->docrev);
+	fwts_log_info_verbatim(fw, "  Entry Point Revision   : 0x%2.2" PRIx8, entry->revision);
+	fwts_log_info_verbatim(fw, "  Reserved               : 0x%2.2" PRIx8, entry->reserved);
+	fwts_log_info_verbatim(fw, "  Table maximum size     : 0x%8.8" PRIx32, entry->struct_table_max_size);
+	fwts_log_info_verbatim(fw, "  Table address          : 0x%16.16" PRIx64, entry->struct_table_address);
 
 }
 

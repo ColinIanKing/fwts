@@ -71,15 +71,15 @@ static void asf_check_info(
 	}
 
 #if ASF_DUMP
-	fwts_log_info_verbatum(fw, "ASF! ASF_INFO Record:");
-	fwts_log_info_verbatum(fw, "  Min Watchdog Reset Value: 0x%2.2" PRIx8, info->watchdog_reset_value);
-	fwts_log_info_verbatum(fw, "  Min Poll Wait Time:       0x%2.2" PRIx8, info->min_sensor_poll_wait_time);
-	fwts_log_info_verbatum(fw, "  System ID:                0x%2.2" PRIx8, info->id);
-	fwts_log_info_verbatum(fw, "  IANA Manufacturer ID:     0x%2.2" PRIx8, info->iana_id);
-	fwts_log_info_verbatum(fw, "  Feature Flags:            0x%2.2" PRIx8, info->flags);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved1);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved2);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved3);
+	fwts_log_info_verbatim(fw, "ASF! ASF_INFO Record:");
+	fwts_log_info_verbatim(fw, "  Min Watchdog Reset Value: 0x%2.2" PRIx8, info->watchdog_reset_value);
+	fwts_log_info_verbatim(fw, "  Min Poll Wait Time:       0x%2.2" PRIx8, info->min_sensor_poll_wait_time);
+	fwts_log_info_verbatim(fw, "  System ID:                0x%2.2" PRIx8, info->id);
+	fwts_log_info_verbatim(fw, "  IANA Manufacturer ID:     0x%2.2" PRIx8, info->iana_id);
+	fwts_log_info_verbatim(fw, "  Feature Flags:            0x%2.2" PRIx8, info->flags);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved1);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved2);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, info->reserved3);
 #endif
 
 	if (info->watchdog_reset_value == 0) {
@@ -144,11 +144,11 @@ static void asf_check_alrt(
 	}
 
 #if ASF_DUMP
-	fwts_log_info_verbatum(fw, "ASF! ASF_ALRT Record:");
-	fwts_log_info_verbatum(fw, "  Assertion Event Mask:     0x%2.2" PRIx8, alrt->assertion_mask);
-	fwts_log_info_verbatum(fw, "  De-Assertion Event Mask:  0x%2.2" PRIx8, alrt->deassertion_mask);
-	fwts_log_info_verbatum(fw, "  Number of Alerts:         0x%2.2" PRIx8, alrt->number_of_alerts);
-	fwts_log_info_verbatum(fw, "  Array Element Length:     0x%2.2" PRIx8, alrt->array_length);
+	fwts_log_info_verbatim(fw, "ASF! ASF_ALRT Record:");
+	fwts_log_info_verbatim(fw, "  Assertion Event Mask:     0x%2.2" PRIx8, alrt->assertion_mask);
+	fwts_log_info_verbatim(fw, "  De-Assertion Event Mask:  0x%2.2" PRIx8, alrt->deassertion_mask);
+	fwts_log_info_verbatim(fw, "  Number of Alerts:         0x%2.2" PRIx8, alrt->number_of_alerts);
+	fwts_log_info_verbatim(fw, "  Array Element Length:     0x%2.2" PRIx8, alrt->array_length);
 #endif
 
 	if ((alrt->number_of_alerts < 1) ||
@@ -193,19 +193,19 @@ static void asf_check_alrt(
 			(fwts_acpi_table_asf_alrt_element *)data;
 
 #if ASF_DUMP
-		fwts_log_info_verbatum(fw, "ASF! ASF_ALRT Element %" PRIu8 ":", i);
-		fwts_log_info_verbatum(fw, "  Device Address:           0x%2.2" PRIx8, element->device_addr);
-		fwts_log_info_verbatum(fw, "  Alert Command:            0x%2.2" PRIx8, element->command);
-		fwts_log_info_verbatum(fw, "  Alert Data Mask:          0x%2.2" PRIx8, element->data_mask);
-		fwts_log_info_verbatum(fw, "  Alert Compare Value:      0x%2.2" PRIx8, element->compare_value);
-		fwts_log_info_verbatum(fw, "  Alert Event Sensor Type:  0x%2.2" PRIx8, element->sensor_type);
-		fwts_log_info_verbatum(fw, "  Alert Event Type:         0x%2.2" PRIx8, element->event_type);
-		fwts_log_info_verbatum(fw, "  Alert Event Offset:       0x%2.2" PRIx8, element->event_offset);
-		fwts_log_info_verbatum(fw, "  Alert Source Type:        0x%2.2" PRIx8, element->event_source_type);
-		fwts_log_info_verbatum(fw, "  Alert Event Severity:     0x%2.2" PRIx8, element->event_severity);
-		fwts_log_info_verbatum(fw, "  Alert Sensor Number:      0x%2.2" PRIx8, element->sensor_number);
-		fwts_log_info_verbatum(fw, "  Alert Entity:             0x%2.2" PRIx8, element->entity);
-		fwts_log_info_verbatum(fw, "  Alert Entity Instance:    0x%2.2" PRIx8, element->entity_instance);
+		fwts_log_info_verbatim(fw, "ASF! ASF_ALRT Element %" PRIu8 ":", i);
+		fwts_log_info_verbatim(fw, "  Device Address:           0x%2.2" PRIx8, element->device_addr);
+		fwts_log_info_verbatim(fw, "  Alert Command:            0x%2.2" PRIx8, element->command);
+		fwts_log_info_verbatim(fw, "  Alert Data Mask:          0x%2.2" PRIx8, element->data_mask);
+		fwts_log_info_verbatim(fw, "  Alert Compare Value:      0x%2.2" PRIx8, element->compare_value);
+		fwts_log_info_verbatim(fw, "  Alert Event Sensor Type:  0x%2.2" PRIx8, element->sensor_type);
+		fwts_log_info_verbatim(fw, "  Alert Event Type:         0x%2.2" PRIx8, element->event_type);
+		fwts_log_info_verbatim(fw, "  Alert Event Offset:       0x%2.2" PRIx8, element->event_offset);
+		fwts_log_info_verbatim(fw, "  Alert Source Type:        0x%2.2" PRIx8, element->event_source_type);
+		fwts_log_info_verbatim(fw, "  Alert Event Severity:     0x%2.2" PRIx8, element->event_severity);
+		fwts_log_info_verbatim(fw, "  Alert Sensor Number:      0x%2.2" PRIx8, element->sensor_number);
+		fwts_log_info_verbatim(fw, "  Alert Entity:             0x%2.2" PRIx8, element->entity);
+		fwts_log_info_verbatim(fw, "  Alert Entity Instance:    0x%2.2" PRIx8, element->entity_instance);
 #endif
 
 		if (element->event_offset & 0x80) {
@@ -247,10 +247,10 @@ static void asf_check_rctl(
 		return;
 	}
 #if ASF_DUMP
-	fwts_log_info_verbatum(fw, "ASF! ASF_RCTL Record:");
-	fwts_log_info_verbatum(fw, "  Number of Controls:       0x%2.2" PRIx8, rctl->number_of_controls);
-	fwts_log_info_verbatum(fw, "  Array Element Length:     0x%2.2" PRIx8, rctl->array_element_length);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, rctl->array_element_length);
+	fwts_log_info_verbatim(fw, "ASF! ASF_RCTL Record:");
+	fwts_log_info_verbatim(fw, "  Number of Controls:       0x%2.2" PRIx8, rctl->number_of_controls);
+	fwts_log_info_verbatim(fw, "  Array Element Length:     0x%2.2" PRIx8, rctl->array_element_length);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, rctl->array_element_length);
 #endif
 	if (rctl->array_element_length != sizeof(fwts_acpi_table_asf_rctl_element)) {
 		*passed = false;
@@ -282,11 +282,11 @@ static void asf_check_rctl(
 		fwts_acpi_table_asf_rctl_element *element =
 			(fwts_acpi_table_asf_rctl_element *)data;
 #if ASF_DUMP
-		fwts_log_info_verbatum(fw, "ASF! ASF_RCTL Element %" PRIu8 ":", i);
-		fwts_log_info_verbatum(fw, "  Control Function:         0x%2.2" PRIx8, element->control_function);
-		fwts_log_info_verbatum(fw, "  Control Device Address:   0x%2.2" PRIx8, element->control_device_addr);
-		fwts_log_info_verbatum(fw, "  Control Command:          0x%2.2" PRIx8, element->control_command);
-		fwts_log_info_verbatum(fw, "  Control Value:            0x%2.2" PRIx8, element->control_value);
+		fwts_log_info_verbatim(fw, "ASF! ASF_RCTL Element %" PRIu8 ":", i);
+		fwts_log_info_verbatim(fw, "  Control Function:         0x%2.2" PRIx8, element->control_function);
+		fwts_log_info_verbatim(fw, "  Control Device Address:   0x%2.2" PRIx8, element->control_device_addr);
+		fwts_log_info_verbatim(fw, "  Control Command:          0x%2.2" PRIx8, element->control_command);
+		fwts_log_info_verbatim(fw, "  Control Value:            0x%2.2" PRIx8, element->control_value);
 #endif
 
 		if (element->control_function > 0x03) {
@@ -328,8 +328,8 @@ static void asf_check_rmcp(
 		return;
 	}
 #if ASF_DUMP
-	fwts_log_info_verbatum(fw, "ASF! ASF_RMCP Record:");
-	fwts_log_info_verbatum(fw, "  Remote Control Cap.:      "
+	fwts_log_info_verbatim(fw, "ASF! ASF_RMCP Record:");
+	fwts_log_info_verbatim(fw, "  Remote Control Cap.:      "
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " "
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 		rmcp->remote_control_capabilities[0],
@@ -339,13 +339,13 @@ static void asf_check_rmcp(
 		rmcp->remote_control_capabilities[4],
 		rmcp->remote_control_capabilities[5],
 		rmcp->remote_control_capabilities[6]);
-	fwts_log_info_verbatum(fw, "  Boot Opt. Completion Code:0x%2.2" PRIx8, rmcp->completion_code);
-	fwts_log_info_verbatum(fw, "  IANA Enterprise ID:       0x%8.8" PRIx32, rmcp->iana);
-	fwts_log_info_verbatum(fw, "  Special Command:          0x%2.2" PRIx8, rmcp->special_command);
-	fwts_log_info_verbatum(fw, "  Special Command Parameter:0x%4.4" PRIx16, rmcp->special_command_param);
-	fwts_log_info_verbatum(fw, "  Boot Options:             0x%2.2" PRIx8 " 0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "  Boot Opt. Completion Code:0x%2.2" PRIx8, rmcp->completion_code);
+	fwts_log_info_verbatim(fw, "  IANA Enterprise ID:       0x%8.8" PRIx32, rmcp->iana);
+	fwts_log_info_verbatim(fw, "  Special Command:          0x%2.2" PRIx8, rmcp->special_command);
+	fwts_log_info_verbatim(fw, "  Special Command Parameter:0x%4.4" PRIx16, rmcp->special_command_param);
+	fwts_log_info_verbatim(fw, "  Boot Options:             0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 		rmcp->boot_options[0], rmcp->boot_options[1]);
-	fwts_log_info_verbatum(fw, "  OEM Parameters:           0x%4.4" PRIx16, rmcp->oem_parameters);
+	fwts_log_info_verbatim(fw, "  OEM Parameters:           0x%4.4" PRIx16, rmcp->oem_parameters);
 #endif
 
 	/* Specification, page 33-34 */
@@ -394,9 +394,9 @@ static void asf_check_addr(
 		return;
 	}
 #if ASF_DUMP
-	fwts_log_info_verbatum(fw, "ASF! ASF_ADDR Record:");
-	fwts_log_info_verbatum(fw, "  SEEPROM Address:          0x%2.2" PRIx8, addr->seeprom_addr);
-	fwts_log_info_verbatum(fw, "  Number of Devices:        0x%2.2" PRIx8, addr->number_of_devices);
+	fwts_log_info_verbatim(fw, "ASF! ASF_ADDR Record:");
+	fwts_log_info_verbatim(fw, "  SEEPROM Address:          0x%2.2" PRIx8, addr->seeprom_addr);
+	fwts_log_info_verbatim(fw, "  Number of Devices:        0x%2.2" PRIx8, addr->number_of_devices);
 #endif
 	total_length = sizeof(fwts_acpi_table_asf_addr) +
 		(addr->number_of_devices * sizeof(fwts_acpi_table_asf_addr_element));
@@ -418,7 +418,7 @@ static void asf_check_addr(
 	for (i = 0; i < addr->number_of_devices; i++) {
 		fwts_acpi_table_asf_addr_element *element =
 			(fwts_acpi_table_asf_addr_element *)data;
-		fwts_log_info_verbatum(fw, "  Fixed SMBus Address       0x%2.2" PRIx8, element->fixed_smbus_addr);
+		fwts_log_info_verbatim(fw, "  Fixed SMBus Address       0x%2.2" PRIx8, element->fixed_smbus_addr);
 		data += sizeof(fwts_acpi_table_asf_addr_element);
 	}
 #endif
@@ -439,7 +439,7 @@ static int asf_test1(fwts_framework *fw)
         uint8_t *data = (uint8_t *)table->data;
         ssize_t length = (ssize_t)hdr->length;
 
-	fwts_log_info_verbatum(fw, "ASF! Hardware Error Source Table");
+	fwts_log_info_verbatim(fw, "ASF! Hardware Error Source Table");
 
         data += sizeof(fwts_acpi_table_header);
         length -= sizeof(fwts_acpi_table_header);
@@ -463,9 +463,9 @@ static int asf_test1(fwts_framework *fw)
 		}
 
 #if ASF_DUMP
-		fwts_log_info_verbatum(fw, "Type:                       0x%2.2" PRIx8, asf_hdr->type);
-		fwts_log_info_verbatum(fw, "Reserved:                   0x%2.2" PRIx8, asf_hdr->reserved);
-		fwts_log_info_verbatum(fw, "Length:                     0x%4.4" PRIx16, asf_hdr->length);
+		fwts_log_info_verbatim(fw, "Type:                       0x%2.2" PRIx8, asf_hdr->type);
+		fwts_log_info_verbatim(fw, "Reserved:                   0x%2.2" PRIx8, asf_hdr->reserved);
+		fwts_log_info_verbatim(fw, "Length:                     0x%4.4" PRIx16, asf_hdr->length);
 #endif
 
 		if (asf_hdr->reserved) {

@@ -65,11 +65,11 @@ static int xenv_test1(fwts_framework *fw)
 			xenv->header.revision);
 	}
 
-	fwts_log_info_verbatum(fw, "XENV Table:");
-	fwts_log_info_verbatum(fw, "  GNT Start Address:               0x%16.16" PRIx64, xenv->gnt_start);
-	fwts_log_info_verbatum(fw, "  GNT Size:                        0x%16.16" PRIx64, xenv->gnt_size);
-	fwts_log_info_verbatum(fw, "  Evtchn Intr:                     0x%8.8"   PRIx32, xenv->evtchn_intr);
-	fwts_log_info_verbatum(fw, "  Evtchn Intr Flags:               0x%2.2"   PRIx8,  xenv->evtchn_intr_flags);
+	fwts_log_info_verbatim(fw, "XENV Table:");
+	fwts_log_info_verbatim(fw, "  GNT Start Address:               0x%16.16" PRIx64, xenv->gnt_start);
+	fwts_log_info_verbatim(fw, "  GNT Size:                        0x%16.16" PRIx64, xenv->gnt_size);
+	fwts_log_info_verbatim(fw, "  Evtchn Intr:                     0x%8.8"   PRIx32, xenv->evtchn_intr);
+	fwts_log_info_verbatim(fw, "  Evtchn Intr Flags:               0x%2.2"   PRIx8,  xenv->evtchn_intr_flags);
 
 	if (xenv->evtchn_intr_flags & ~3) {
 		passed = false;

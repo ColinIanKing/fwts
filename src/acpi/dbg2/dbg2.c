@@ -187,9 +187,9 @@ static int dbg2_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	fwts_log_info_verbatum(fw, "DBG2 Table:");
-	fwts_log_info_verbatum(fw, "  Info Offset:              0x%8.8" PRIx32, dbg2->info_offset);
-	fwts_log_info_verbatum(fw, "  Info Count:               0x%8.8" PRIx32, dbg2->info_count);
+	fwts_log_info_verbatim(fw, "DBG2 Table:");
+	fwts_log_info_verbatim(fw, "  Info Offset:              0x%8.8" PRIx32, dbg2->info_offset);
+	fwts_log_info_verbatim(fw, "  Info Count:               0x%8.8" PRIx32, dbg2->info_count);
 	fwts_log_nl(fw);
 
 	total_size = dbg2->info_offset +
@@ -265,21 +265,21 @@ static int dbg2_test1(fwts_framework *fw)
 			break;
 		}
 
-		fwts_log_info_verbatum(fw, "DBG2 Info Structure %" PRIu32 ":", i);
-		fwts_log_info_verbatum(fw, "  Revision:                 0x%2.2" PRIx8, info->revision);
-		fwts_log_info_verbatum(fw, "  Length:                   0x%4.4" PRIx16, info->length);
-		fwts_log_info_verbatum(fw, "  Number of Registers       0x%2.2" PRIx8, info->number_of_regs);
-		fwts_log_info_verbatum(fw, "  Namespace String Length:  0x%4.4" PRIx16, info->namespace_length);
-		fwts_log_info_verbatum(fw, "  Namespace String Offset:  0x%4.4" PRIx16, info->namespace_offset);
-		fwts_log_info_verbatum(fw, "  OEM Data Length:          0x%4.4" PRIx16, info->oem_data_length);
-		fwts_log_info_verbatum(fw, "  OEM Data Offset:          0x%4.4" PRIx16, info->oem_data_offset);
-		fwts_log_info_verbatum(fw, "  Port Type:                0x%4.4" PRIx16 " (%s)", info->port_type,
+		fwts_log_info_verbatim(fw, "DBG2 Info Structure %" PRIu32 ":", i);
+		fwts_log_info_verbatim(fw, "  Revision:                 0x%2.2" PRIx8, info->revision);
+		fwts_log_info_verbatim(fw, "  Length:                   0x%4.4" PRIx16, info->length);
+		fwts_log_info_verbatim(fw, "  Number of Registers       0x%2.2" PRIx8, info->number_of_regs);
+		fwts_log_info_verbatim(fw, "  Namespace String Length:  0x%4.4" PRIx16, info->namespace_length);
+		fwts_log_info_verbatim(fw, "  Namespace String Offset:  0x%4.4" PRIx16, info->namespace_offset);
+		fwts_log_info_verbatim(fw, "  OEM Data Length:          0x%4.4" PRIx16, info->oem_data_length);
+		fwts_log_info_verbatim(fw, "  OEM Data Offset:          0x%4.4" PRIx16, info->oem_data_offset);
+		fwts_log_info_verbatim(fw, "  Port Type:                0x%4.4" PRIx16 " (%s)", info->port_type,
 			port ? port : "(Reserved)");
-		fwts_log_info_verbatum(fw, "  Port Subtype:             0x%4.4" PRIx16 " (%s)", info->port_subtype,
+		fwts_log_info_verbatim(fw, "  Port Subtype:             0x%4.4" PRIx16 " (%s)", info->port_subtype,
 			subport ? subport : "(Reserved)");
-		fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, info->reserved);
-		fwts_log_info_verbatum(fw, "  Base Address Offset:      0x%4.4" PRIx16, info->base_address_offset);
-		fwts_log_info_verbatum(fw, "  Address Size Offset:      0x%4.4" PRIx16, info->address_size_offset);
+		fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, info->reserved);
+		fwts_log_info_verbatim(fw, "  Base Address Offset:      0x%4.4" PRIx16, info->base_address_offset);
+		fwts_log_info_verbatim(fw, "  Address Size Offset:      0x%4.4" PRIx16, info->address_size_offset);
 		fwts_log_nl(fw);
 
 		if (info->revision != 0) {
@@ -320,7 +320,7 @@ static int dbg2_test1(fwts_framework *fw)
 		if (ok) {
 			char *str = (char *)table->data + offset + info->namespace_offset;
 			dbg2_check_namespace_string(fw, str, info->namespace_length, &passed);
-			fwts_log_info_verbatum(fw, "  Namespace String:         '%s'", str);
+			fwts_log_info_verbatim(fw, "  Namespace String:         '%s'", str);
 			if (strcmp(str, "."))
 				dbg2_obj_find(fw, str, &ok);
 		}
@@ -351,11 +351,11 @@ static int dbg2_test1(fwts_framework *fw)
 			uint32_t *addrsize = (uint32_t *)(table->data + offset + info->address_size_offset);
 
 			for (j = 0; j < info->number_of_regs; j++, gas++, addrsize++) {
-				fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, gas->address_space_id);
-				fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, gas->register_bit_width);
-				fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, gas->register_bit_offset);
-				fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, gas->access_width);
-				fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, gas->address);
+				fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, gas->address_space_id);
+				fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, gas->register_bit_width);
+				fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, gas->register_bit_offset);
+				fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, gas->access_width);
+				fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, gas->address);
 				fwts_log_nl(fw);
 
 				if (*addrsize == 0) {

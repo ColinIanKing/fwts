@@ -66,12 +66,12 @@ static void hda_audio_dump_pins(fwts_framework *fw, const char *config,
 
 		fwts_log_info(fw, "%s:", config);
 
-		fwts_log_info_verbatum(fw, "  Pin  Setting");
+		fwts_log_info_verbatim(fw, "  Pin  Setting");
 		fwts_list_foreach(item, settings) {
 			hda_audio_pin_setting *pin_setting =
 				fwts_list_data(hda_audio_pin_setting *, item);
 
-			fwts_log_info_verbatum(fw, "  0x%4.4hx 0x%8.8x",
+			fwts_log_info_verbatim(fw, "  0x%4.4hx 0x%8.8x",
 				pin_setting->pin, pin_setting->setting);
 		}
 	} else
@@ -89,7 +89,7 @@ static void hda_audio_dev_info(fwts_framework *fw, const char *label,
 	if ((info = fwts_get(fullpath)) != NULL) {
 		fwts_chop_newline(info);
 		if (*info)
-			fwts_log_info_verbatum(fw, "%-15.15s: %s", label, info);
+			fwts_log_info_verbatim(fw, "%-15.15s: %s", label, info);
 		free(info);
 	}
 }

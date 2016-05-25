@@ -104,8 +104,8 @@ static int stao_test1(fwts_framework *fw)
 	}
 
 	/* Now we have got some sane data, dump the STAO */
-        fwts_log_info_verbatum(fw, "STAO Status Override Table:");
-        fwts_log_info_verbatum(fw, "  UART:                     0x%2.2" PRIx8, stao->uart);
+        fwts_log_info_verbatim(fw, "STAO Status Override Table:");
+        fwts_log_info_verbatim(fw, "  UART:                     0x%2.2" PRIx8, stao->uart);
 
 	ptr = (char *)stao->namelist;
 	end = (char *)table->data + stao->header.length;
@@ -116,7 +116,7 @@ static int stao_test1(fwts_framework *fw)
 		if (!stao_acpi_string(fw, ptr, end, &passed, &len))
 			break;
 
-		fwts_log_info_verbatum(fw, "  ACPI String:              '%s'", ptr);
+		fwts_log_info_verbatim(fw, "  ACPI String:              '%s'", ptr);
 		strings++;
 		/*  String length + null byte */
 		ptr += len + 1;

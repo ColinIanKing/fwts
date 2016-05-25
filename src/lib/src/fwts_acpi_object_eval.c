@@ -360,19 +360,19 @@ static void fwts_acpi_object_dump_recursive(
 
 	switch (obj->Type) {
 	case ACPI_TYPE_INTEGER:
-		fwts_log_info_verbatum(fw, "%*s%sINTEGER: 0x%8.8llx", depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sINTEGER: 0x%8.8llx", depth * 2, "",
 			index_buf, (unsigned long long)obj->Integer.Value);
 		break;
 	case ACPI_TYPE_STRING:
-		fwts_log_info_verbatum(fw, "%*s%sSTRING:  %s", depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sSTRING:  %s", depth * 2, "",
 			index_buf, obj->String.Pointer);
 		break;
 	case ACPI_TYPE_BUFFER:
-		fwts_log_info_verbatum(fw, "%*s%sBUFFER:  (%d bytes)", depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sBUFFER:  (%d bytes)", depth * 2, "",
 			index_buf, obj->Buffer.Length);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		fwts_log_info_verbatum(fw, "%*s%sPackage has %d elements:",depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sPackage has %d elements:",depth * 2, "",
 			index_buf, obj->Package.Count);
 		for (i = 0; i < obj->Package.Count; i++) {
 			ACPI_OBJECT *element = &obj->Package.Elements[i];
@@ -380,7 +380,7 @@ static void fwts_acpi_object_dump_recursive(
 		}
 		break;
 	default:
-		fwts_log_info_verbatum(fw, "%*s%sUnknown type %d\n", depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sUnknown type %d\n", depth * 2, "",
 			index_buf, obj->Type);
 		break;
 	}

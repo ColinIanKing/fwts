@@ -127,78 +127,78 @@ static void plddump_buffer(
 	const uint32_t length)
 {
 	fwts_log_nl(fw);
-	fwts_log_info_verbatum(fw, "Name: %s", name);
-	fwts_log_info_verbatum(fw, "  Revision:            %" PRIu64,
+	fwts_log_info_verbatim(fw, "Name: %s", name);
+	fwts_log_info_verbatim(fw, "  Revision:            %" PRIu64,
 		get_bits(data, 0, 7));
-	fwts_log_info_verbatum(fw, "  Ignore Color:        %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Ignore Color:        %" PRIu64 " (%s)",
 		get_bits(data, 7, 1),
 		yesno[get_bits(data, 7, 1)]);
 	if (!get_bits(data, 7, 1)) {
-		fwts_log_info_verbatum(fw, "  Red:                 0x%2.2" PRIx64,
+		fwts_log_info_verbatim(fw, "  Red:                 0x%2.2" PRIx64,
 			get_bits(data, 8, 8));
-		fwts_log_info_verbatum(fw, "  Green:               0x%2.2" PRIx64,
+		fwts_log_info_verbatim(fw, "  Green:               0x%2.2" PRIx64,
 			get_bits(data, 16, 8));
-		fwts_log_info_verbatum(fw, "  Blue:                0x%2.2" PRIx64,
+		fwts_log_info_verbatim(fw, "  Blue:                0x%2.2" PRIx64,
 			get_bits(data, 24, 8));
 	}
-	fwts_log_info_verbatum(fw, "  Width:               %" PRIu64 " mm",
+	fwts_log_info_verbatim(fw, "  Width:               %" PRIu64 " mm",
 		get_bits(data, 32, 16));
-	fwts_log_info_verbatum(fw, "  Height:              %" PRIu64 " mm",
+	fwts_log_info_verbatim(fw, "  Height:              %" PRIu64 " mm",
 		get_bits(data, 48, 16));
-	fwts_log_info_verbatum(fw, "  User Visible:        %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  User Visible:        %" PRIu64 " (%s)",
 		get_bits(data, 64, 1),
 		yesno[get_bits(data, 64, 1)]);
-	fwts_log_info_verbatum(fw, "  Dock:                %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Dock:                %" PRIu64 " (%s)",
 		get_bits(data, 65, 1),
 		yesno[get_bits(data, 65, 1)]);
-	fwts_log_info_verbatum(fw, "  Lid:                 %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Lid:                 %" PRIu64 " (%s)",
 		get_bits(data, 66, 1),
 		yesno[get_bits(data, 66, 1)]);
-	fwts_log_info_verbatum(fw, "  Panel Surface:       %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Panel Surface:       %" PRIu64 " (%s)",
 		get_bits(data, 67, 3),
 		panel_surface[get_bits(data, 67, 3)]);
 	if (get_bits(data, 67, 3) < 6) {
-		fwts_log_info_verbatum(fw, "  Vertical Position:   %" PRIu64 " (%s)",
+		fwts_log_info_verbatim(fw, "  Vertical Position:   %" PRIu64 " (%s)",
 			get_bits(data, 70, 2),
 			vertical_position[get_bits(data, 70, 2)]);
-		fwts_log_info_verbatum(fw, "  Horizontal Position: %" PRIu64 " (%s)",
+		fwts_log_info_verbatim(fw, "  Horizontal Position: %" PRIu64 " (%s)",
 			get_bits(data, 72, 2),
 			horizontal_position[get_bits(data, 72, 2)]);
 	}
-	fwts_log_info_verbatum(fw, "  Shape:               %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Shape:               %" PRIu64 " (%s)",
 		get_bits(data, 74, 4),
 		shape[get_bits(data, 74, 4)]);
-	fwts_log_info_verbatum(fw, "  Group Orientation:   %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Group Orientation:   %" PRIu64,
 		get_bits(data, 78, 1));
-	fwts_log_info_verbatum(fw, "  Group Token:         %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Group Token:         %" PRIu64,
 		get_bits(data, 79, 8));
-	fwts_log_info_verbatum(fw, "  Group Position:      %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Group Position:      %" PRIu64,
 		get_bits(data, 87, 8));
-	fwts_log_info_verbatum(fw, "  Bay:                 %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Bay:                 %" PRIu64 " (%s)",
 		get_bits(data, 95, 1),
 		yesno[get_bits(data, 95, 1)]);
-	fwts_log_info_verbatum(fw, "  Ejectable:           %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Ejectable:           %" PRIu64 " (%s)",
 		get_bits(data, 96, 1),
 		yesno[get_bits(data, 96, 1)]);
-	fwts_log_info_verbatum(fw, "  OSPM Ejection Rqd:   %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  OSPM Ejection Rqd:   %" PRIu64 " (%s)",
 		get_bits(data, 97, 1),
 		yesno[get_bits(data, 97, 1)]);
-	fwts_log_info_verbatum(fw, "  Cabinet Number:      %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Cabinet Number:      %" PRIu64,
 		get_bits(data, 98, 8));
-	fwts_log_info_verbatum(fw, "  Card Cage Number:    %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Card Cage Number:    %" PRIu64,
 		get_bits(data, 106, 8));
-	fwts_log_info_verbatum(fw, "  Reference:           %" PRIu64 " (%s)",
+	fwts_log_info_verbatim(fw, "  Reference:           %" PRIu64 " (%s)",
 		get_bits(data, 114, 1),
 		yesno[get_bits(data, 114, 1)]);
-	fwts_log_info_verbatum(fw, "  Rotation:            %" PRIu64 " (%" PRIu64 " degrees)",
+	fwts_log_info_verbatim(fw, "  Rotation:            %" PRIu64 " (%" PRIu64 " degrees)",
 		get_bits(data, 115, 3),
 		get_bits(data, 115, 3) * 45);
-	fwts_log_info_verbatum(fw, "  Order:               %" PRIu64,
+	fwts_log_info_verbatim(fw, "  Order:               %" PRIu64,
 		get_bits(data, 119, 5));
 	if (length >= 20) {
-		fwts_log_info_verbatum(fw, "  Vertical Offset:     %" PRIu64 " mm",
+		fwts_log_info_verbatim(fw, "  Vertical Offset:     %" PRIu64 " mm",
 			get_bits(data, 128, 16));
-		fwts_log_info_verbatum(fw, "  Horizontal Offset:   %" PRIu64 " mm",
+		fwts_log_info_verbatim(fw, "  Horizontal Offset:   %" PRIu64 " mm",
 			get_bits(data, 144, 16));
 	}
 }
@@ -250,7 +250,7 @@ static int plddump_test1(fwts_framework *fw)
 	}
 
 	if (!found)
-		fwts_log_info_verbatum(fw, "No _PLD objects found.");
+		fwts_log_info_verbatim(fw, "No _PLD objects found.");
 
 	return FWTS_OK;
 }

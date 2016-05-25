@@ -57,13 +57,13 @@ static int get_entries_info(fwts_framework *fw)
 			int count = -1;
 
 			fwts_log_nl(fw);
-			fwts_log_info_verbatum(fw, "%s", entry->d_name);
+			fwts_log_info_verbatim(fw, "%s", entry->d_name);
 
 			snprintf(path, sizeof(path), FWTS_ESRT_DIR_PATH "/%s/fw_class", entry->d_name);
 			if ((str = fwts_get(path)) == NULL) {
 				fwts_log_error(fw, "Failed to get FwClass");
 			} else {
-				fwts_log_info_verbatum(fw, "  FwClass:                  %s", str);
+				fwts_log_info_verbatim(fw, "  FwClass:                  %s", str);
 				free(str);
 			}
 
@@ -88,14 +88,14 @@ static int get_entries_info(fwts_framework *fw)
 					str_info = "";
 					break;
 				}
-				fwts_log_info_verbatum(fw, "  FwType:                   %d %s", count, str_info);
+				fwts_log_info_verbatim(fw, "  FwType:                   %d %s", count, str_info);
 			}
 
 			snprintf(path, sizeof(path), FWTS_ESRT_DIR_PATH "/%s/fw_version", entry->d_name);
 			if ((str = fwts_get(path)) == NULL) {
 				fwts_log_error(fw, "Failed to get FwVersion");
 			} else {
-				fwts_log_info_verbatum(fw, "  FwVersion:                %s", str);
+				fwts_log_info_verbatim(fw, "  FwVersion:                %s", str);
 				free(str);
 			}
 
@@ -103,7 +103,7 @@ static int get_entries_info(fwts_framework *fw)
 			if ((str = fwts_get(path)) == NULL) {
 				fwts_log_error(fw, "Failed to get LowestSupportedFwVersion");
 			} else {
-				fwts_log_info_verbatum(fw, "  LowestSupportedFwVersion: %s", str);
+				fwts_log_info_verbatim(fw, "  LowestSupportedFwVersion: %s", str);
 				free(str);
 			}
 
@@ -111,7 +111,7 @@ static int get_entries_info(fwts_framework *fw)
 			if ((str = fwts_get(path)) == NULL) {
 				fwts_log_error(fw, "Failed to get CapsuleFlags");
 			} else {
-				fwts_log_info_verbatum(fw, "  CapsuleFlags:             %s", str);
+				fwts_log_info_verbatim(fw, "  CapsuleFlags:             %s", str);
 				free(str);
 			}
 
@@ -119,7 +119,7 @@ static int get_entries_info(fwts_framework *fw)
 			if ((str = fwts_get(path)) == NULL) {
 				fwts_log_error(fw, "Failed to get LastAttemptVersion");
 			} else {
-				fwts_log_info_verbatum(fw, "  LastAttemptVersion:       %s", str);
+				fwts_log_info_verbatim(fw, "  LastAttemptVersion:       %s", str);
 				free(str);
 			}
 
@@ -156,7 +156,7 @@ static int get_entries_info(fwts_framework *fw)
 					str_info = "";
 					break;
 				}
-				fwts_log_info_verbatum(fw, "  LastAttemptStatus:        %d %s", count, str_info);
+				fwts_log_info_verbatim(fw, "  LastAttemptStatus:        %d %s", count, str_info);
 			}
 		}
 	} while (entry);
@@ -172,21 +172,21 @@ static int esrtdump_test1(fwts_framework *fw)
 	if ((str = fwts_get(FWTS_ESRT_RES_COUNT_PATH)) == NULL)
 		fwts_log_error(fw, "Failed to get FwResourceCount");
 	else {
-		fwts_log_info_verbatum(fw, "  FwResourceCount:          %s", str);
+		fwts_log_info_verbatim(fw, "  FwResourceCount:          %s", str);
 		free(str);
 	}
 
 	if ((str = fwts_get(FWTS_ESRT_RES_COUNT_MAX_PATH)) == NULL)
 		fwts_log_error(fw, "Failed to get FwResourceCountMax");
 	else {
-		fwts_log_info_verbatum(fw, "  FwResourceCountMax:       %s", str);
+		fwts_log_info_verbatim(fw, "  FwResourceCountMax:       %s", str);
 		free(str);
 	}
 
 	if ((str = fwts_get(FWTS_ESRT_RES_VERSION_PATH)) == NULL)
 		fwts_log_error(fw, "Failed to get FwResourceVersion");
 	else {
-		fwts_log_info_verbatum(fw, "  FwResourceVersion:        %s", str);
+		fwts_log_info_verbatim(fw, "  FwResourceVersion:        %s", str);
 		free(str);
 	}
 

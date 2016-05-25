@@ -116,20 +116,20 @@ static void pcc_check_pcc_header(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "PCC header at 0x%" PRIx64 ".", addr);
-	fwts_log_info_verbatum(fw, "  Signature:          0x%" PRIx32, hdr->signature);
-	fwts_log_info_verbatum(fw, "  Length:             0x%" PRIx16, hdr->length);
-	fwts_log_info_verbatum(fw, "  Major:              0x%" PRIx8,  hdr->major);
-	fwts_log_info_verbatum(fw, "  Minor:              0x%" PRIx8,  hdr->minor);
-	fwts_log_info_verbatum(fw, "  Features:           0x%" PRIx32, hdr->features);
-	fwts_log_info_verbatum(fw, "  Commend:            0x%" PRIx16, hdr->command);
-	fwts_log_info_verbatum(fw, "  Status:             0x%" PRIx16, hdr->status);
-	fwts_log_info_verbatum(fw, "  Latency:            0x%" PRIx32, hdr->latency);
-	fwts_log_info_verbatum(fw, "  Minimum Time:       0x%" PRIx32, hdr->minimum_time);
-	fwts_log_info_verbatum(fw, "  Maximum Time:       0x%" PRIx32, hdr->maximum_time);
-	fwts_log_info_verbatum(fw, "  Nominal:            0x%" PRIx32, hdr->nominal);
-	fwts_log_info_verbatum(fw, "  Throttled Freq.:    0x%" PRIx32, hdr->throttled_frequency);
-	fwts_log_info_verbatum(fw, "  Minimum Freq.:      0x%" PRIx32, hdr->minimum_frequency);
+	fwts_log_info_verbatim(fw, "PCC header at 0x%" PRIx64 ".", addr);
+	fwts_log_info_verbatim(fw, "  Signature:          0x%" PRIx32, hdr->signature);
+	fwts_log_info_verbatim(fw, "  Length:             0x%" PRIx16, hdr->length);
+	fwts_log_info_verbatim(fw, "  Major:              0x%" PRIx8,  hdr->major);
+	fwts_log_info_verbatim(fw, "  Minor:              0x%" PRIx8,  hdr->minor);
+	fwts_log_info_verbatim(fw, "  Features:           0x%" PRIx32, hdr->features);
+	fwts_log_info_verbatim(fw, "  Commend:            0x%" PRIx16, hdr->command);
+	fwts_log_info_verbatim(fw, "  Status:             0x%" PRIx16, hdr->status);
+	fwts_log_info_verbatim(fw, "  Latency:            0x%" PRIx32, hdr->latency);
+	fwts_log_info_verbatim(fw, "  Minimum Time:       0x%" PRIx32, hdr->minimum_time);
+	fwts_log_info_verbatim(fw, "  Maximum Time:       0x%" PRIx32, hdr->maximum_time);
+	fwts_log_info_verbatim(fw, "  Nominal:            0x%" PRIx32, hdr->nominal);
+	fwts_log_info_verbatim(fw, "  Throttled Freq.:    0x%" PRIx32, hdr->throttled_frequency);
+	fwts_log_info_verbatim(fw, "  Minimum Freq.:      0x%" PRIx32, hdr->minimum_frequency);
 
 	fwts_munmap(hdr, (size_t)length);
 	fwts_log_nl(fw);
@@ -183,16 +183,16 @@ static void pcc_check_shared_memory_region(
 
 	pcc_mr = (fwts_pcc_memory_resource *)pcc_obj->Buffer.Pointer;
 
-	fwts_log_info_verbatum(fw, "PCC Memory Resource (Shared Memory Region) for %s:", name);
-	fwts_log_info_verbatum(fw, "  Descriptor:         0x%" PRIx8, pcc_mr->descriptor);
-	fwts_log_info_verbatum(fw, "  Length:             0x%" PRIx8, pcc_mr->length);
-	fwts_log_info_verbatum(fw, "  Space ID:           0x%" PRIx8, pcc_mr->space_id);
-	fwts_log_info_verbatum(fw, "  Resource Usage:     0x%" PRIx8, pcc_mr->resource_usage);
-	fwts_log_info_verbatum(fw, "  Type Specific:      0x%" PRIx8, pcc_mr->type_specific);
-	fwts_log_info_verbatum(fw, "  Minimum:            0x%" PRIx64, pcc_mr->minimum);
-	fwts_log_info_verbatum(fw, "  Maximum:            0x%" PRIx64, pcc_mr->maximum);
-	fwts_log_info_verbatum(fw, "  Translation Offset: 0x%" PRIx64, pcc_mr->translation_offset);
-	fwts_log_info_verbatum(fw, "  Address Length:     0x%" PRIx64, pcc_mr->address_length);
+	fwts_log_info_verbatim(fw, "PCC Memory Resource (Shared Memory Region) for %s:", name);
+	fwts_log_info_verbatim(fw, "  Descriptor:         0x%" PRIx8, pcc_mr->descriptor);
+	fwts_log_info_verbatim(fw, "  Length:             0x%" PRIx8, pcc_mr->length);
+	fwts_log_info_verbatim(fw, "  Space ID:           0x%" PRIx8, pcc_mr->space_id);
+	fwts_log_info_verbatim(fw, "  Resource Usage:     0x%" PRIx8, pcc_mr->resource_usage);
+	fwts_log_info_verbatim(fw, "  Type Specific:      0x%" PRIx8, pcc_mr->type_specific);
+	fwts_log_info_verbatim(fw, "  Minimum:            0x%" PRIx64, pcc_mr->minimum);
+	fwts_log_info_verbatim(fw, "  Maximum:            0x%" PRIx64, pcc_mr->maximum);
+	fwts_log_info_verbatim(fw, "  Translation Offset: 0x%" PRIx64, pcc_mr->translation_offset);
+	fwts_log_info_verbatim(fw, "  Address Length:     0x%" PRIx64, pcc_mr->address_length);
 
 	if (pcc_mr->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PCCMemoryResourceSpaceIdWrongType",
@@ -283,14 +283,14 @@ static void pcc_check_doorbell_address(
 
 	pcc_rr = (fwts_pcc_register_resource *)pcc_obj->Buffer.Pointer;
 
-	fwts_log_info_verbatum(fw, "PCC Register Resource (Doorbell) for %s:", name);
-	fwts_log_info_verbatum(fw, "  Descriptor:         0x%" PRIx8, pcc_rr->descriptor);
-	fwts_log_info_verbatum(fw, "  Length:             0x%" PRIx8, pcc_rr->length);
-	fwts_log_info_verbatum(fw, "  Space ID:           0x%" PRIx8, pcc_rr->space_id);
-	fwts_log_info_verbatum(fw, "  Bit Width:          0x%" PRIx8, pcc_rr->bit_width);
-	fwts_log_info_verbatum(fw, "  Bit Offset:         0x%" PRIx8, pcc_rr->bit_offset);
-	fwts_log_info_verbatum(fw, "  Access Size:        0x%" PRIx8, pcc_rr->access_size);
-	fwts_log_info_verbatum(fw, "  Address:            0x%" PRIx64, pcc_rr->address);
+	fwts_log_info_verbatim(fw, "PCC Register Resource (Doorbell) for %s:", name);
+	fwts_log_info_verbatim(fw, "  Descriptor:         0x%" PRIx8, pcc_rr->descriptor);
+	fwts_log_info_verbatim(fw, "  Length:             0x%" PRIx8, pcc_rr->length);
+	fwts_log_info_verbatim(fw, "  Space ID:           0x%" PRIx8, pcc_rr->space_id);
+	fwts_log_info_verbatim(fw, "  Bit Width:          0x%" PRIx8, pcc_rr->bit_width);
+	fwts_log_info_verbatim(fw, "  Bit Offset:         0x%" PRIx8, pcc_rr->bit_offset);
+	fwts_log_info_verbatim(fw, "  Access Size:        0x%" PRIx8, pcc_rr->access_size);
+	fwts_log_info_verbatim(fw, "  Address:            0x%" PRIx64, pcc_rr->address);
 
 	if (pcc_rr->space_id != ACPI_ADR_SPACE_SYSTEM_IO) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "PCCRegisterResourceSpaceIdWrongType",
@@ -332,8 +332,8 @@ static void pcc_check_doorbell_preserve_mask(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "PCC Doorbell Preserve Mask for %s:", name);
-	fwts_log_info_verbatum(fw, "  Preserve Mask:      0x%" PRIx64, pcc_obj->Integer.Value);
+	fwts_log_info_verbatim(fw, "PCC Doorbell Preserve Mask for %s:", name);
+	fwts_log_info_verbatim(fw, "  Preserve Mask:      0x%" PRIx64, pcc_obj->Integer.Value);
 	fwts_log_nl(fw);
 }
 
@@ -352,8 +352,8 @@ static void pcc_check_doorbell_write_mask(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "PCC Doorbell Write Mask for %s:", name);
-	fwts_log_info_verbatum(fw, "  Write Mask:         0x%" PRIx64, pcc_obj->Integer.Value);
+	fwts_log_info_verbatim(fw, "PCC Doorbell Write Mask for %s:", name);
+	fwts_log_info_verbatim(fw, "  Write Mask:         0x%" PRIx64, pcc_obj->Integer.Value);
 	fwts_log_nl(fw);
 
 	if (pcc_obj->Integer.Value == 0) {

@@ -85,27 +85,27 @@ static int spmi_test1(fwts_framework *fw)
 		break;
 	}
 
-	fwts_log_info_verbatum(fw, "SPMI Service Processor Management Interface Description Table:");
-	fwts_log_info_verbatum(fw, "  Interface Type:           0x%2.2" PRIx8 " (%s)",
+	fwts_log_info_verbatim(fw, "SPMI Service Processor Management Interface Description Table:");
+	fwts_log_info_verbatim(fw, "  Interface Type:           0x%2.2" PRIx8 " (%s)",
 		spmi->interface_type, interface_type);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved1);
-	fwts_log_info_verbatum(fw, "  Specification Revision:   0x%2.2" PRIx8, spmi->specification_revision);
-	fwts_log_info_verbatum(fw, "  Interrupt Type:           0x%2.2" PRIx8, spmi->interrupt_type);
-	fwts_log_info_verbatum(fw, "  GPE:                      0x%2.2" PRIx8, spmi->gpe);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved2);
-	fwts_log_info_verbatum(fw, "  PCI Device Flag:          0x%2.2" PRIx8, spmi->pci_device_flag);
-	fwts_log_info_verbatum(fw, "  Global System Interrupt   0x%8.8" PRIx32, spmi->global_system_interrupt);
-	fwts_log_info_verbatum(fw, "  Base Address:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, spmi->base_address.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, spmi->base_address.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, spmi->base_address.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, spmi->base_address.access_width);
-	fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, spmi->base_address.address);
-	fwts_log_info_verbatum(fw, "  PCI Segment Group:        0x%2.2" PRIx8, spmi->pci_segment_group_number);
-	fwts_log_info_verbatum(fw, "  PCI Bus:                  0x%2.2" PRIx8, spmi->pci_bus_number);
-	fwts_log_info_verbatum(fw, "  PCI Device:               0x%2.2" PRIx8, spmi->pci_device_number);
-	fwts_log_info_verbatum(fw, "  PCI Function:             0x%2.2" PRIx8, spmi->pci_function_number);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved3);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved1);
+	fwts_log_info_verbatim(fw, "  Specification Revision:   0x%2.2" PRIx8, spmi->specification_revision);
+	fwts_log_info_verbatim(fw, "  Interrupt Type:           0x%2.2" PRIx8, spmi->interrupt_type);
+	fwts_log_info_verbatim(fw, "  GPE:                      0x%2.2" PRIx8, spmi->gpe);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved2);
+	fwts_log_info_verbatim(fw, "  PCI Device Flag:          0x%2.2" PRIx8, spmi->pci_device_flag);
+	fwts_log_info_verbatim(fw, "  Global System Interrupt   0x%8.8" PRIx32, spmi->global_system_interrupt);
+	fwts_log_info_verbatim(fw, "  Base Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, spmi->base_address.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, spmi->base_address.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, spmi->base_address.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, spmi->base_address.access_width);
+	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, spmi->base_address.address);
+	fwts_log_info_verbatim(fw, "  PCI Segment Group:        0x%2.2" PRIx8, spmi->pci_segment_group_number);
+	fwts_log_info_verbatim(fw, "  PCI Bus:                  0x%2.2" PRIx8, spmi->pci_bus_number);
+	fwts_log_info_verbatim(fw, "  PCI Device:               0x%2.2" PRIx8, spmi->pci_device_number);
+	fwts_log_info_verbatim(fw, "  PCI Function:             0x%2.2" PRIx8, spmi->pci_function_number);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, spmi->reserved3);
 	fwts_log_nl(fw);
 
 	if (spmi->interface_type < 1 || spmi->interface_type > 4) {

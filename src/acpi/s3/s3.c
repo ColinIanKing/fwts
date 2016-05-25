@@ -376,20 +376,20 @@ static int s3_scan_times(
 
 	fwts_log_info(fw, "Suspend/Resume Timings:");
 	if (s3_suspend_start > 0.0 && s3_suspend_finish > 0.0) {
-		fwts_log_info_verbatum(fw, "  Suspend: %.3f seconds.",
+		fwts_log_info_verbatim(fw, "  Suspend: %.3f seconds.",
 			s3_suspend_finish - s3_suspend_start);
 		if (s3_suspend_finish - s3_suspend_start > s3_suspend_time)
 			(*suspend_too_long)++;
 	} else
-		fwts_log_info_verbatum(fw, "  Could not determine time to suspend.");
+		fwts_log_info_verbatim(fw, "  Could not determine time to suspend.");
 
 	if (s3_resume_start > 0.0 && s3_resume_finish > 0.0) {
-		fwts_log_info_verbatum(fw, "  Resume:  %.3f seconds.",
+		fwts_log_info_verbatim(fw, "  Resume:  %.3f seconds.",
 			s3_resume_finish - s3_resume_start);
 		if (s3_resume_finish - s3_resume_start > s3_resume_time)
 			(*resume_too_long)++;
 	} else
-		fwts_log_info_verbatum(fw, "  Could not determine time to resume.");
+		fwts_log_info_verbatim(fw, "  Could not determine time to resume.");
 
 	return FWTS_OK;
 }

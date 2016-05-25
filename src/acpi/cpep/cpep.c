@@ -53,8 +53,8 @@ static int cpep_test1(fwts_framework *fw)
 	bool passed = true;
 	uint32_t i, n;
 
-	fwts_log_info_verbatum(fw, "CPEP Corrected Platform Error Polling Table:");
-	fwts_log_info_verbatum(fw, "  Reserved:                "
+	fwts_log_info_verbatim(fw, "CPEP Corrected Platform Error Polling Table:");
+	fwts_log_info_verbatim(fw, "  Reserved:                "
 		" 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8
 		" 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 ,
 		cpep->reserved[0], cpep->reserved[1], cpep->reserved[2], cpep->reserved[3],

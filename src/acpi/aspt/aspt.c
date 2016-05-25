@@ -64,14 +64,14 @@ static int aspt_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	fwts_log_info_verbatum(fw, "ASPT Table:");
-	fwts_log_info_verbatum(fw, "  SPTT Start Address: 0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "ASPT Table:");
+	fwts_log_info_verbatim(fw, "  SPTT Start Address: 0x%8.8" PRIx32,
 		aspt->sptt_addr_start);
-	fwts_log_info_verbatum(fw, "  SPTT End Address:   0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  SPTT End Address:   0x%8.8" PRIx32,
 		aspt->sptt_addr_end);
-	fwts_log_info_verbatum(fw, "  AMRT Start Address: 0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  AMRT Start Address: 0x%8.8" PRIx32,
 		aspt->amrt_addr_start);
-	fwts_log_info_verbatum(fw, "  AMRT End Address:   0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  AMRT End Address:   0x%8.8" PRIx32,
 		aspt->amrt_addr_end);
 	fwts_log_nl(fw);
 

@@ -75,15 +75,15 @@ static int bios32_test1(fwts_framework *fw)
 			fwts_log_info(fw,
 				"Found BIOS32 Service Directory at 0x%8.8x",
 				BIOS32_SD_REGION_START+i);
-			fwts_log_info_verbatum(fw, "  Signature  : %4.4s",
+			fwts_log_info_verbatim(fw, "  Signature  : %4.4s",
 				bios32->signature);
-			fwts_log_info_verbatum(fw, "  Entry Point: 0x%8.8" PRIx32,
+			fwts_log_info_verbatim(fw, "  Entry Point: 0x%8.8" PRIx32,
 				bios32->entry_point);
-			fwts_log_info_verbatum(fw, "  Revsion    : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "  Revsion    : 0x%2.2" PRIx8,
 				bios32->revision_level);
-			fwts_log_info_verbatum(fw, "  Length     : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "  Length     : 0x%2.2" PRIx8,
 				bios32->length);
-			fwts_log_info_verbatum(fw, "  Checksum   : 0x%2.2" PRIx8,
+			fwts_log_info_verbatim(fw, "  Checksum   : 0x%2.2" PRIx8,
 				bios32->checksum);
 			fwts_log_nl(fw);
 

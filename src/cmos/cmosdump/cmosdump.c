@@ -126,186 +126,186 @@ static int cmosdump_test1(fwts_framework *fw)
 		}
 	}
 
-	fwts_log_info_verbatum(fw, "CMOS Memory Dump:");
+	fwts_log_info_verbatim(fw, "CMOS Memory Dump:");
 	for (i = 0; i < (int)sizeof(data); i += 16) {
 		char buffer[128];
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + i, i, 16);
-		fwts_log_info_verbatum(fw, "%s", buffer);
+		fwts_log_info_verbatim(fw, "%s", buffer);
 	}
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "RTC Current Time: (CMOS 0x00..0x09)");
-	fwts_log_info_verbatum(fw, "  RTC seconds:            %2.2x", data[0]);
-	fwts_log_info_verbatum(fw, "  RTC minutes:            %2.2x", data[2]);
-	fwts_log_info_verbatum(fw, "  RTC hours:              %2.2x", data[4]);
-	fwts_log_info_verbatum(fw, "  RTC day of week:        %2.2x", data[6]);
-	fwts_log_info_verbatum(fw, "  RTC date day:           %2.2x", data[7]);
-	fwts_log_info_verbatum(fw, "  RTC date month:         %2.2x", data[8]);
-	fwts_log_info_verbatum(fw, "  RTC date year:          %2.2x", data[9]);
+	fwts_log_info_verbatim(fw, "RTC Current Time: (CMOS 0x00..0x09)");
+	fwts_log_info_verbatim(fw, "  RTC seconds:            %2.2x", data[0]);
+	fwts_log_info_verbatim(fw, "  RTC minutes:            %2.2x", data[2]);
+	fwts_log_info_verbatim(fw, "  RTC hours:              %2.2x", data[4]);
+	fwts_log_info_verbatim(fw, "  RTC day of week:        %2.2x", data[6]);
+	fwts_log_info_verbatim(fw, "  RTC date day:           %2.2x", data[7]);
+	fwts_log_info_verbatim(fw, "  RTC date month:         %2.2x", data[8]);
+	fwts_log_info_verbatim(fw, "  RTC date year:          %2.2x", data[9]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "RTC Alarm:");
-	fwts_log_info_verbatum(fw, "  RTC seconds:            %2.2x", data[1]);
-	fwts_log_info_verbatum(fw, "  RTC minutes:            %2.2x", data[3]);
-	fwts_log_info_verbatum(fw, "  RTC hours:              %2.2x", data[5]);
+	fwts_log_info_verbatim(fw, "RTC Alarm:");
+	fwts_log_info_verbatim(fw, "  RTC seconds:            %2.2x", data[1]);
+	fwts_log_info_verbatim(fw, "  RTC minutes:            %2.2x", data[3]);
+	fwts_log_info_verbatim(fw, "  RTC hours:              %2.2x", data[5]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Status Register A: (CMOS 0x0a): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Status Register A: (CMOS 0x0a): 0x%2.2x",
 		data[10]);
-	fwts_log_info_verbatum(fw, "  Rate freq:              %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Rate freq:              %1.1x (%s)",
 		data[10] & 0xf, rate_selection[data[10] & 0xf]);
-	fwts_log_info_verbatum(fw, "  Timer freq divider:     %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Timer freq divider:     %1.1x (%s)",
 		(data[10] >> 4) & 0x7, divider[(data[10] >> 4) & 0x7]);
-	fwts_log_info_verbatum(fw, "  Update in progress:     %1.1x",
+	fwts_log_info_verbatim(fw, "  Update in progress:     %1.1x",
 		(data[10] >> 7) & 1);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Status Register B: (CMOS 0x0b): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Status Register B: (CMOS 0x0b): 0x%2.2x",
 		data[11]);
-	fwts_log_info_verbatum(fw, "  Daylight savings:       %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Daylight savings:       %1.1x (%s)",
 		data[11] & 1,
 		(data[11] & 1) ? "Enabled" : "Disabled");
-	fwts_log_info_verbatum(fw, "  24 Hour Clock:          %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  24 Hour Clock:          %1.1x (%s)",
 		(data[11] >> 1) & 1,
 		((data[11] >> 1) & 1) ? "24 Hour" : "12 Hour");
-	fwts_log_info_verbatum(fw, "  Data Mode (DM):         %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Data Mode (DM):         %1.1x (%s)",
 		(data[11] >> 2) & 1,
 		((data[11] >> 2) & 1) ? "Binary" : "BCD");
-	fwts_log_info_verbatum(fw, "  Square Wave:            %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Square Wave:            %1.1x (%s)",
 		(data[11] >> 3) & 1,
 		((data[11] >> 3) & 1) ? "Enabled" : "Disabled");
-	fwts_log_info_verbatum(fw, "  Update ended IRQ:       %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Update ended IRQ:       %1.1x (%s)",
 		(data[11] >> 4) & 1,
 		((data[11] >> 4) & 1) ? "Enabled" : "Disabled");
-	fwts_log_info_verbatum(fw, "  Alarm IRQ:              %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Alarm IRQ:              %1.1x (%s)",
 		(data[11] >> 5) & 1,
 		((data[11] >> 5) & 1) ? "Enabled" : "Disabled");
-	fwts_log_info_verbatum(fw, "  Periodic IRQ:           %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Periodic IRQ:           %1.1x (%s)",
 		(data[11] >> 6) & 1,
 		((data[11] >> 6) & 1) ? "Enabled" : "Disabled");
-	fwts_log_info_verbatum(fw, "  Clock update cycle:     %1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Clock update cycle:     %1.1x (%s)",
 		(data[11] >> 7) & 1,
 		((data[11] >> 7) & 1) ? "Abort update in progress" : "Update normally");
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Status Register C: (CMOS 0x0c): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Status Register C: (CMOS 0x0c): 0x%2.2x",
 		data[12]);
-	fwts_log_info_verbatum(fw, "  UF flag:                0x%1.1x",
+	fwts_log_info_verbatim(fw, "  UF flag:                0x%1.1x",
 		(data[12] >> 4) & 1);
-	fwts_log_info_verbatum(fw, "  AF flag:                0x%1.1x",
+	fwts_log_info_verbatim(fw, "  AF flag:                0x%1.1x",
 		(data[12] >> 5) & 1);
-	fwts_log_info_verbatum(fw, "  PF flag:                0x%1.1x",
+	fwts_log_info_verbatim(fw, "  PF flag:                0x%1.1x",
 		(data[12] >> 6) & 1);
-	fwts_log_info_verbatum(fw, "  IRQF flag:              0x%1.1x",
+	fwts_log_info_verbatim(fw, "  IRQF flag:              0x%1.1x",
 		(data[12] >> 7) & 1);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Status Register D: (CMOS 0x0d): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Status Register D: (CMOS 0x0d): 0x%2.2x",
 		data[13]);
-	fwts_log_info_verbatum(fw, "  Valid CMOS RAM flag:    0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Valid CMOS RAM flag:    0x%1.1x (%s)",
 		(data[13] >> 7) & 1,
 		((data[13] >> 7) & 1) ? "Battery Good": "Battery Dead");
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Diagnostic Status: (CMOS 0x0e): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Diagnostic Status: (CMOS 0x0e): 0x%2.2x",
 		data[14]);
-	fwts_log_info_verbatum(fw, "  CMOS time status:       0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  CMOS time status:       0x%1.1x (%s)",
 		(data[14] >> 2) & 1,
 		((data[14] >> 2) & 1) ? "Invalid": "Valid");
-	fwts_log_info_verbatum(fw, "  Fixed disk init:        0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Fixed disk init:        0x%1.1x (%s)",
 		(data[14] >> 3) & 1,
 		((data[14] >> 3) & 1) ? "Bad": "Good");
-	fwts_log_info_verbatum(fw, "  Memory size check:      0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Memory size check:      0x%1.1x (%s)",
 		(data[14] >> 4) & 1,
 		((data[14] >> 4) & 1) ? "Bad": "Good");
-	fwts_log_info_verbatum(fw, "  Config info status:     0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Config info status:     0x%1.1x (%s)",
 		(data[14] >> 5) & 1,
 		((data[14] >> 5) & 1) ? "Invalid": "Valid");
-	fwts_log_info_verbatum(fw, "  CMOS checksum status:   0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  CMOS checksum status:   0x%1.1x (%s)",
 		(data[14] >> 6) & 1,
 		((data[14] >> 6) & 1) ? "Bad": "Good");
-	fwts_log_info_verbatum(fw, "  CMOS power loss:        0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  CMOS power loss:        0x%1.1x (%s)",
 		(data[14] >> 7) & 1,
 		((data[14] >> 7) & 1) ? "Lost power": "Not lost power");
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "CMOS Shutdown Status: (CMOS 0x0f): 0x%2.2x (%s)",
+	fwts_log_info_verbatim(fw, "CMOS Shutdown Status: (CMOS 0x0f): 0x%2.2x (%s)",
 		data[15],
 		data[15] < 0xb ? cmos_shutdown_status[data[15]] : "Perform power-on reset");
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Floppy Disk Type: (CMOS 0x10): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Floppy Disk Type: (CMOS 0x10): 0x%2.2x",
 		data[16]);
-	fwts_log_info_verbatum(fw, "  Drive 0: %s",
+	fwts_log_info_verbatim(fw, "  Drive 0: %s",
 		floppy_disk[((data[16] >> 4) & 0xf)]);
-	fwts_log_info_verbatum(fw, "  Drive 1: %s",
+	fwts_log_info_verbatim(fw, "  Drive 1: %s",
 		floppy_disk[((data[16] >> 0) & 0xf)]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Hard Disk Type: (CMOS 0x12, Obsolete): 0x%2.2x", data[18]);
-	fwts_log_info_verbatum(fw, "  Drive 0: %s",
+	fwts_log_info_verbatim(fw, "Hard Disk Type: (CMOS 0x12, Obsolete): 0x%2.2x", data[18]);
+	fwts_log_info_verbatim(fw, "  Drive 0: %s",
 		hard_disk[((data[18] >> 4) & 0xf)]);
-	fwts_log_info_verbatum(fw, "  Drive 1: %s",
+	fwts_log_info_verbatim(fw, "  Drive 1: %s",
 		hard_disk[((data[18] >> 0) & 0xf)]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Installed H/W: (CMOS 0x14): 0x%2.2x",
+	fwts_log_info_verbatim(fw, "Installed H/W: (CMOS 0x14): 0x%2.2x",
 		data[20]);
-	fwts_log_info_verbatum(fw, "  Maths Coprocessor:      0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Maths Coprocessor:      0x%1.1x (%s)",
 		(data[20] >> 1) & 1,
 		((data[20] >> 1) & 1) ? "Installed": "Not Installed");
-	fwts_log_info_verbatum(fw, "  Keyboard:               0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Keyboard:               0x%1.1x (%s)",
 		(data[20] >> 2) & 1,
 		((data[20] >> 2) & 1) ? "Installed": "Not Installed");
-	fwts_log_info_verbatum(fw, "  Display Adaptor:        0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Display Adaptor:        0x%1.1x (%s)",
 		(data[20] >> 3) & 1,
 		((data[20] >> 3) & 1) ? "Installed": "Not Installed");
-	fwts_log_info_verbatum(fw, "  Primary Display:        0x%1.1x (%s)",
+	fwts_log_info_verbatim(fw, "  Primary Display:        0x%1.1x (%s)",
 		(data[20] >> 4) & 3,
 		primary_display[(data[20] >> 4) & 3]);
 	if (data[20] & 1) {
 		int drives = (data[20] >> 6) & 3;
-		fwts_log_info_verbatum(fw, "  Floppy Drives:          0x%2.2x (%d drive%s)",
+		fwts_log_info_verbatim(fw, "  Floppy Drives:          0x%2.2x (%d drive%s)",
 			drives, drives + 1, drives > 0 ? "s" : "");
 	} else {
-		fwts_log_info_verbatum(fw, "  Floppy Drives:          None.");
+		fwts_log_info_verbatim(fw, "  Floppy Drives:          None.");
 	}
 	fwts_log_nl(fw);
 
 	tmp = ((data[22] << 8) | (data[21]));
-	fwts_log_info_verbatum(fw, "Base Mem: (CMOS 0x16):");
-	fwts_log_info_verbatum(fw, "  0x%2.2x%2.2x (%luK)",
+	fwts_log_info_verbatim(fw, "Base Mem: (CMOS 0x16):");
+	fwts_log_info_verbatim(fw, "  0x%2.2x%2.2x (%luK)",
 		data[22], data[21], tmp);
 	fwts_log_nl(fw);
 
 	tmp = ((data[24] << 8) | (data[25]));
-	fwts_log_info_verbatum(fw, "Extended Mem: (CMOS 0x18):");
-	fwts_log_info_verbatum(fw, "  0x%2.2x%2.2x (%luK) %s",
+	fwts_log_info_verbatim(fw, "Extended Mem: (CMOS 0x18):");
+	fwts_log_info_verbatim(fw, "  0x%2.2x%2.2x (%luK) %s",
 		data[24], data[23], tmp,
 		tmp > (16 * 1024) ? "[untrustworthy]" : "");
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Hard Disk Extended Types (CMOS 0x19, 0x1a):");
-	fwts_log_info_verbatum(fw, "  Hard Disk 0:            0x%2.2x",
+	fwts_log_info_verbatim(fw, "Hard Disk Extended Types (CMOS 0x19, 0x1a):");
+	fwts_log_info_verbatim(fw, "  Hard Disk 0:            0x%2.2x",
 		data[25]);
-	fwts_log_info_verbatum(fw, "  Hard Disk 1:            0x%2.2x",
+	fwts_log_info_verbatim(fw, "  Hard Disk 1:            0x%2.2x",
 		data[26]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "CMOS Checksum:(CMOS 0x2e):0x%2.2x%2.2x",
+	fwts_log_info_verbatim(fw, "CMOS Checksum:(CMOS 0x2e):0x%2.2x%2.2x",
 		data[47], data[46]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Extended Mem: (CMOS 0x30):0x%2.2x%2.2x",
+	fwts_log_info_verbatim(fw, "Extended Mem: (CMOS 0x30):0x%2.2x%2.2x",
 		data[49], data[48]);
 	fwts_log_nl(fw);
 
-	fwts_log_info_verbatum(fw, "Century Date: (CMOS 0x32):%2.2x", data[50]);
+	fwts_log_info_verbatim(fw, "Century Date: (CMOS 0x32):%2.2x", data[50]);
 	fwts_log_nl(fw);
-	fwts_log_info_verbatum(fw, "POST Information Flag (CMOS 0x33):");
-	fwts_log_info_verbatum(fw, "  POST cache test:        0x%1.1x %s",
+	fwts_log_info_verbatim(fw, "POST Information Flag (CMOS 0x33):");
+	fwts_log_info_verbatim(fw, "  POST cache test:        0x%1.1x %s",
 		(data[51] >> 0) & 1, ((data[51] >> 0) & 1) ? "Failed" : "Passed");
-	fwts_log_info_verbatum(fw, "  BIOS size:              0x%1.1x %s",
+	fwts_log_info_verbatim(fw, "  BIOS size:              0x%1.1x %s",
 		(data[51] >> 7) & 1, ((data[51] >> 7) & 1) ? "128KB" : "64KB");
 	fwts_log_nl(fw);
 

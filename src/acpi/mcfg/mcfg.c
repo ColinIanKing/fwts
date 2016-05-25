@@ -188,11 +188,11 @@ static int mcfg_test1(fwts_framework *fw)
 
 	config = &mcfg->configuration[0];
 	for (i = 0; i < nr; i++, config++) {
-		fwts_log_info_verbatum(fw, "Configuration Entry #%d:", i);
-		fwts_log_info_verbatum(fw, "  Base Address  : 0x%" PRIx64, config->base_address);
-		fwts_log_info_verbatum(fw, "  Segment       : %" PRIu8, config->pci_segment_group_number);
-		fwts_log_info_verbatum(fw, "  Start bus     : %" PRIu8, config->start_bus_number);
-		fwts_log_info_verbatum(fw, "  End bus       : %" PRIu8, config->end_bus_number);
+		fwts_log_info_verbatim(fw, "Configuration Entry #%d:", i);
+		fwts_log_info_verbatim(fw, "  Base Address  : 0x%" PRIx64, config->base_address);
+		fwts_log_info_verbatim(fw, "  Segment       : %" PRIu8, config->pci_segment_group_number);
+		fwts_log_info_verbatim(fw, "  Start bus     : %" PRIu8, config->start_bus_number);
+		fwts_log_info_verbatim(fw, "  End bus       : %" PRIu8, config->end_bus_number);
 
 		if ((memory_map_list != NULL) &&
 		    (!fwts_memory_map_is_reserved(memory_map_list, config->base_address))) {

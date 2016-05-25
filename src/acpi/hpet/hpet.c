@@ -325,31 +325,31 @@ static int hpet_check_test2(fwts_framework *fw)
 	/*
 	 *   Dump out HPET
 	 */
-	fwts_log_info_verbatum(fw, "Hardware ID of Event Block:");
-	fwts_log_info_verbatum(fw, "  PCI Vendor ID              : 0x%" PRIx32,
+	fwts_log_info_verbatim(fw, "Hardware ID of Event Block:");
+	fwts_log_info_verbatim(fw, "  PCI Vendor ID              : 0x%" PRIx32,
 		(hpet->event_timer_block_id >> 16) & 0xffff);
-	fwts_log_info_verbatum(fw, "  Legacy IRQ Routing Capable : %" PRIu32,
+	fwts_log_info_verbatim(fw, "  Legacy IRQ Routing Capable : %" PRIu32,
 		(hpet->event_timer_block_id >> 15) & 1);
-	fwts_log_info_verbatum(fw, "  COUNT_SIZE_CAP counter size: %" PRIu32,
+	fwts_log_info_verbatim(fw, "  COUNT_SIZE_CAP counter size: %" PRIu32,
 		(hpet->event_timer_block_id >> 13) & 1);
-	fwts_log_info_verbatum(fw, "  Number of comparitors      : %" PRIu32,
+	fwts_log_info_verbatim(fw, "  Number of comparitors      : %" PRIu32,
 		(hpet->event_timer_block_id >> 8) & 0x1f);
-	fwts_log_info_verbatum(fw, "  Hardwre Revision ID        : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "  Hardwre Revision ID        : 0x%" PRIx8,
 		hpet->event_timer_block_id & 0xff);
 
-	fwts_log_info_verbatum(fw, "Lower 32 bit base Address    : 0x%" PRIx64,
+	fwts_log_info_verbatim(fw, "Lower 32 bit base Address    : 0x%" PRIx64,
 		hpet->base_address.address);
-	fwts_log_info_verbatum(fw, "  Address Space ID           : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "  Address Space ID           : 0x%" PRIx8,
 		hpet->base_address.address_space_id);
-	fwts_log_info_verbatum(fw, "  Register Bit Width         : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "  Register Bit Width         : 0x%" PRIx8,
 		hpet->base_address.register_bit_width);
-	fwts_log_info_verbatum(fw, "  Register Bit Offset        : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "  Register Bit Offset        : 0x%" PRIx8,
 		hpet->base_address.register_bit_offset);
-	fwts_log_info_verbatum(fw, "  Address Width              : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "  Address Width              : 0x%" PRIx8,
 		hpet->base_address.access_width);
-	fwts_log_info_verbatum(fw, "HPET sequence number         : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "HPET sequence number         : 0x%" PRIx8,
 		hpet->hpet_number);
-	fwts_log_info_verbatum(fw, "Minimum clock tick           : 0x%" PRIx16,
+	fwts_log_info_verbatim(fw, "Minimum clock tick           : 0x%" PRIx16,
 		hpet->main_counter_minimum);
 
 	switch (hpet->page_prot_and_oem_attribute & 0xf) {
@@ -366,10 +366,10 @@ static int hpet_check_test2(fwts_framework *fw)
 		page_prot = "Reserved";
 		break;
 	}
-	fwts_log_info_verbatum(fw, "Page Protection              : 0x%" PRIx8 " (%s)",
+	fwts_log_info_verbatim(fw, "Page Protection              : 0x%" PRIx8 " (%s)",
 		hpet->page_prot_and_oem_attribute & 0xf,
 		page_prot);
-	fwts_log_info_verbatum(fw, "OEM attributes               : 0x%" PRIx8,
+	fwts_log_info_verbatim(fw, "OEM attributes               : 0x%" PRIx8,
 		(hpet->page_prot_and_oem_attribute >> 4) & 0xf);
 
 	if (passed)

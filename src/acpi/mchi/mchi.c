@@ -65,35 +65,35 @@ static int mchi_test1(fwts_framework *fw)
 	}
 
 #if DUMP_MCHI_TABLE
-	fwts_log_info_verbatum(fw, "MCHI Table:");
-	fwts_log_info_verbatum(fw, "  Interface Type:           0x%2.2" PRIx8, mchi->interface_type);
-	fwts_log_info_verbatum(fw, "  Protocol Identifier       0x%2.2" PRIx8, mchi->protocol_identifier);
-	fwts_log_info_verbatum(fw, "  Protocol Data:            "
+	fwts_log_info_verbatim(fw, "MCHI Table:");
+	fwts_log_info_verbatim(fw, "  Interface Type:           0x%2.2" PRIx8, mchi->interface_type);
+	fwts_log_info_verbatim(fw, "  Protocol Identifier       0x%2.2" PRIx8, mchi->protocol_identifier);
+	fwts_log_info_verbatim(fw, "  Protocol Data:            "
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			mchi->protocol_data[0], mchi->protocol_data[1],
 			mchi->protocol_data[2], mchi->protocol_data[3]);
-	fwts_log_info_verbatum(fw, "                            "
+	fwts_log_info_verbatim(fw, "                            "
 		"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			mchi->protocol_data[4], mchi->protocol_data[5],
 			mchi->protocol_data[6], mchi->protocol_data[7]);
-	fwts_log_info_verbatum(fw, "  Interrupt Type:           0x%2.2" PRIx8, mchi->interrupt_type);
-	fwts_log_info_verbatum(fw, "  GPE:                      0x%2.2" PRIx8, mchi->gpe);
-	fwts_log_info_verbatum(fw, "  PCI Device Flag:          0x%2.2" PRIx8, mchi->pci_device_flag);
-	fwts_log_info_verbatum(fw, "  Global System Interrupt:  0x%8.8" PRIx32, mchi->global_system_interrupt);
-	fwts_log_info_verbatum(fw, "  Base Address:");
-	fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8, mchi->base_address.address_space_id);
-	fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8, mchi->base_address.register_bit_width);
-	fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8, mchi->base_address.register_bit_offset);
-	fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8, mchi->base_address.access_width);
-	fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64, mchi->base_address.address);
+	fwts_log_info_verbatim(fw, "  Interrupt Type:           0x%2.2" PRIx8, mchi->interrupt_type);
+	fwts_log_info_verbatim(fw, "  GPE:                      0x%2.2" PRIx8, mchi->gpe);
+	fwts_log_info_verbatim(fw, "  PCI Device Flag:          0x%2.2" PRIx8, mchi->pci_device_flag);
+	fwts_log_info_verbatim(fw, "  Global System Interrupt:  0x%8.8" PRIx32, mchi->global_system_interrupt);
+	fwts_log_info_verbatim(fw, "  Base Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8, mchi->base_address.address_space_id);
+	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8, mchi->base_address.register_bit_width);
+	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8, mchi->base_address.register_bit_offset);
+	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8, mchi->base_address.access_width);
+	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, mchi->base_address.address);
 	if ((mchi->pci_device_flag & 1) == 1) {
-		fwts_log_info_verbatum(fw, "  PCI Segment Group:       0x%2.2" PRIx8, mchi->bytes[0]);
-		fwts_log_info_verbatum(fw, "  PCI Bus Number:          0x%2.2" PRIx8, mchi->bytes[1]);
-		fwts_log_info_verbatum(fw, "  PCI Device Number:       0x%2.2" PRIx8, mchi->bytes[2]);
-		fwts_log_info_verbatum(fw, "  PCI Function Number:     0x%2.2" PRIx8, mchi->bytes[3]);
+		fwts_log_info_verbatim(fw, "  PCI Segment Group:       0x%2.2" PRIx8, mchi->bytes[0]);
+		fwts_log_info_verbatim(fw, "  PCI Bus Number:          0x%2.2" PRIx8, mchi->bytes[1]);
+		fwts_log_info_verbatim(fw, "  PCI Device Number:       0x%2.2" PRIx8, mchi->bytes[2]);
+		fwts_log_info_verbatim(fw, "  PCI Function Number:     0x%2.2" PRIx8, mchi->bytes[3]);
 	} else {
 		/* Zero -> UIDS */
-		fwts_log_info_verbatum(fw, "  UID Bytes 1-4:            "
+		fwts_log_info_verbatim(fw, "  UID Bytes 1-4:            "
 			"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			mchi->bytes[0], mchi->bytes[1], mchi->bytes[2], mchi->bytes[3]);
 	}

@@ -33,7 +33,7 @@ static void ebdadump_data(fwts_framework *fw,
 
 	for (i=0; i<length; i+=16) {
 		fwts_dump_raw_data(buffer, sizeof buffer, data+i, offset+i, 16);
-		fwts_log_info_verbatum(fw, "%s", buffer);
+		fwts_log_info_verbatim(fw, "%s", buffer);
 	}
 }
 

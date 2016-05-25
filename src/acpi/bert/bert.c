@@ -53,9 +53,9 @@ static int bert_test1(fwts_framework *fw)
 	bool passed = true;
 	const fwts_acpi_table_bert *bert = (const fwts_acpi_table_bert *)table->data;
 
-	fwts_log_info_verbatum(fw, "Boot Error Record Table:");
-	fwts_log_info_verbatum(fw, "  Error Region Length       0x%8.8" PRIx32, bert->boot_error_region_length);
-	fwts_log_info_verbatum(fw, "  Error Region              0x%16.16" PRIx64, bert->boot_error_region);
+	fwts_log_info_verbatim(fw, "Boot Error Record Table:");
+	fwts_log_info_verbatim(fw, "  Error Region Length       0x%8.8" PRIx32, bert->boot_error_region_length);
+	fwts_log_info_verbatim(fw, "  Error Region              0x%16.16" PRIx64, bert->boot_error_region);
 	fwts_log_nl(fw);
 
 	/* Sanity check length */
@@ -92,24 +92,24 @@ static int bert_test1(fwts_framework *fw)
 			fwts_acpi_table_boot_error_region *region =
 				(fwts_acpi_table_boot_error_region *)mapping;
 
-			fwts_log_info_verbatum(fw, "Boot Error Region:");
-			fwts_log_info_verbatum(fw, "  Block Status:  bit [0]    0x%" PRIx32 " (Uncorrectable Error Valid)",
+			fwts_log_info_verbatim(fw, "Boot Error Region:");
+			fwts_log_info_verbatim(fw, "  Block Status:  bit [0]    0x%" PRIx32 " (Uncorrectable Error Valid)",
 				(region->block_status >> 0) & 1);
-			fwts_log_info_verbatum(fw, "  Block Status:  bit [1]    0x%" PRIx32 " (Correctable Error Valid)",
+			fwts_log_info_verbatim(fw, "  Block Status:  bit [1]    0x%" PRIx32 " (Correctable Error Valid)",
 				(region->block_status >> 1) & 1);
-			fwts_log_info_verbatum(fw, "  Block Status:  bit [2]    0x%" PRIx32 " (Multiple Uncorrectable Errors)",
+			fwts_log_info_verbatim(fw, "  Block Status:  bit [2]    0x%" PRIx32 " (Multiple Uncorrectable Errors)",
 				(region->block_status >> 2) & 1);
-			fwts_log_info_verbatum(fw, "  Block Status:  bit [3]    0x%" PRIx32 " (Multiple Correctable Errors)",
+			fwts_log_info_verbatim(fw, "  Block Status:  bit [3]    0x%" PRIx32 " (Multiple Correctable Errors)",
 				(region->block_status >> 3) & 1);
-			fwts_log_info_verbatum(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
+			fwts_log_info_verbatim(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
 				(region->block_status >> 4) & 0x3ff);
-			fwts_log_info_verbatum(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
+			fwts_log_info_verbatim(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
 				region->raw_data_offset);
-			fwts_log_info_verbatum(fw, "  Raw Data Length:          0x%8.8" PRIx32,
+			fwts_log_info_verbatim(fw, "  Raw Data Length:          0x%8.8" PRIx32,
 				region->raw_data_length);
-			fwts_log_info_verbatum(fw, "  Data Length:              0x%8.8" PRIx32,
+			fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32,
 				region->data_length);
-			fwts_log_info_verbatum(fw, "  Error Severity            0x%8.8" PRIx32,
+			fwts_log_info_verbatim(fw, "  Error Severity            0x%8.8" PRIx32,
 				region->error_severity);
 
 			/* Sanity check raw data fields */

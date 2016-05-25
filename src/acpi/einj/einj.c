@@ -53,14 +53,14 @@ static int einj_test1(fwts_framework *fw)
 	reserved = einj->reserved[0] + (einj->reserved[1] << 4) +
 		   (einj->reserved[2] << 8);
 
-	fwts_log_info_verbatum(fw, "EINJ Error Injection Table:");
-	fwts_log_info_verbatum(fw, "  Injection Header Size: 0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "EINJ Error Injection Table:");
+	fwts_log_info_verbatim(fw, "  Injection Header Size: 0x%8.8" PRIx32,
 			einj->header_size);
-	fwts_log_info_verbatum(fw, "  Injection Flags:       0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  Injection Flags:       0x%8.8" PRIx32,
 			einj->flags);
-	fwts_log_info_verbatum(fw, "  Reserved:              0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  Reserved:              0x%8.8" PRIx32,
 			reserved);
-	fwts_log_info_verbatum(fw, "  Injection Entry Count: 0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  Injection Entry Count: 0x%8.8" PRIx32,
 			einj->count);
 
 	if (einj->flags) {
@@ -85,29 +85,29 @@ static int einj_test1(fwts_framework *fw)
 			(char *) einj + 48;
 	for (i = 0; i < einj->count; i++,  entry++) {
 		fwts_acpi_gas gas = entry->register_region;
-		fwts_log_info_verbatum(fw, "  Injection Instruction Entry %2.2"
+		fwts_log_info_verbatim(fw, "  Injection Instruction Entry %2.2"
 				PRId8, i);
-		fwts_log_info_verbatum(fw, "    Injection Action    : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Injection Action    : 0x%2.2"
 				PRIx8, entry->serialization_action);
-		fwts_log_info_verbatum(fw, "    Instruction         : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Instruction         : 0x%2.2"
 				PRIx8, entry->instruction);
-		fwts_log_info_verbatum(fw, "    Flags               : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Flags               : 0x%2.2"
 				PRIx8, entry->flags);
-		fwts_log_info_verbatum(fw, "    Reserved            : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Reserved            : 0x%2.2"
 				PRIx8, entry->reserved);
-		fwts_log_info_verbatum(fw, "    Address Space ID    : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Address Space ID    : 0x%2.2"
 				PRIx8, gas.address_space_id);
-		fwts_log_info_verbatum(fw, "    Register Bit Width  : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Register Bit Width  : 0x%2.2"
 				PRIx8, gas.register_bit_width);
-		fwts_log_info_verbatum(fw, "    Register Bit Offset : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Register Bit Offset : 0x%2.2"
 				PRIx8, gas.register_bit_offset);
-		fwts_log_info_verbatum(fw, "    Access Size         : 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Access Size         : 0x%2.2"
 				PRIx8, gas.access_width);
-		fwts_log_info_verbatum(fw, "    Address             : 0x%16.16"
+		fwts_log_info_verbatim(fw, "    Address             : 0x%16.16"
 				PRIx64, gas.address);
-		fwts_log_info_verbatum(fw, "    Value               : 0x%16.16"
+		fwts_log_info_verbatim(fw, "    Value               : 0x%16.16"
 				PRIx64, entry->value);
-		fwts_log_info_verbatum(fw, "    Mask                : 0x%16.16"
+		fwts_log_info_verbatim(fw, "    Mask                : 0x%16.16"
 				PRIx64, entry->mask);
 
 		if (entry->serialization_action > 0x8 &&

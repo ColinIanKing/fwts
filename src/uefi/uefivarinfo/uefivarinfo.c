@@ -223,14 +223,14 @@ static int uefivarinfo_test1(fwts_framework *fw)
 		}
 	}
 
-	fwts_log_info_verbatum(fw, "UEFI NVRAM storage:");
-	fwts_log_info_verbatum(fw, "  Maximum storage:       %8" PRIu64 " bytes", maxvarstoragesize);
-	fwts_log_info_verbatum(fw, "  Remaining storage:     %8" PRIu64 " bytes", remvarstoragesize);
-	fwts_log_info_verbatum(fw, "  Maximum variable size: %8" PRIu64 " bytes", maxvariablesize);
+	fwts_log_info_verbatim(fw, "UEFI NVRAM storage:");
+	fwts_log_info_verbatim(fw, "  Maximum storage:       %8" PRIu64 " bytes", maxvarstoragesize);
+	fwts_log_info_verbatim(fw, "  Remaining storage:     %8" PRIu64 " bytes", remvarstoragesize);
+	fwts_log_info_verbatim(fw, "  Maximum variable size: %8" PRIu64 " bytes", maxvariablesize);
 
 	if (do_checkvariables(fw, &usedvars, &usedvarssize, maxvariablesize) == FWTS_OK) {
-		fwts_log_info_verbatum(fw, "Currently used:");
-		fwts_log_info_verbatum(fw, "  %" PRIu64 " variables, storage used: %" PRIu64 " bytes", usedvars, usedvarssize);
+		fwts_log_info_verbatim(fw, "Currently used:");
+		fwts_log_info_verbatim(fw, "  %" PRIu64 " variables, storage used: %" PRIu64 " bytes", usedvars, usedvarssize);
 	}
 
 	return FWTS_OK;

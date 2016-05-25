@@ -51,14 +51,14 @@ static int msct_test1(fwts_framework *fw)
 	uint32_t i;
 	bool passed = true;
 
-	fwts_log_info_verbatum(fw, "MSCT Max System Characteristics Table:");
-	fwts_log_info_verbatum(fw, "  Proximity Offset:      0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "MSCT Max System Characteristics Table:");
+	fwts_log_info_verbatim(fw, "  Proximity Offset:      0x%8.8" PRIx32,
 			msct->proximity_offset);
-	fwts_log_info_verbatum(fw, "  Max Proximity Domains: 0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  Max Proximity Domains: 0x%8.8" PRIx32,
 			msct->max_proximity_domains);
-	fwts_log_info_verbatum(fw, "  Max Clock Domains:     0x%8.8" PRIx32,
+	fwts_log_info_verbatim(fw, "  Max Clock Domains:     0x%8.8" PRIx32,
 			msct->max_clock_domains);
-	fwts_log_info_verbatum(fw, "  Max Physical Address:  0x%16.16" PRIx64,
+	fwts_log_info_verbatim(fw, "  Max Physical Address:  0x%16.16" PRIx64,
 			msct->max_address);
 
 	if (msct->proximity_offset < 0x38) {
@@ -98,18 +98,18 @@ static int msct_test1(fwts_framework *fw)
 
 	proximity = (fwts_acpi_msct_proximity *)((char *) msct + offset_proximity);
 	for (i = 0; i < num_proximity; i++, proximity++) {
-		fwts_log_info_verbatum(fw, "  Proximity Domain %2.2" PRIu8, i);
-		fwts_log_info_verbatum(fw, "    Revision:               0x%2.2"
+		fwts_log_info_verbatim(fw, "  Proximity Domain %2.2" PRIu8, i);
+		fwts_log_info_verbatim(fw, "    Revision:               0x%2.2"
 				PRIx8, proximity->revision);
-		fwts_log_info_verbatum(fw, "    Length:                 0x%2.2"
+		fwts_log_info_verbatim(fw, "    Length:                 0x%2.2"
 				PRIx8,	proximity->length);
-		fwts_log_info_verbatum(fw, "    Domain Range (low):     0x%8.8"
+		fwts_log_info_verbatim(fw, "    Domain Range (low):     0x%8.8"
 				PRIx32, proximity->range_start);
-		fwts_log_info_verbatum(fw, "    Domain Range (high):    0x%8.8"
+		fwts_log_info_verbatim(fw, "    Domain Range (high):    0x%8.8"
 				PRIx32, proximity->range_end);
-		fwts_log_info_verbatum(fw, "    Max Processor Capacity: 0x%8.8"
+		fwts_log_info_verbatim(fw, "    Max Processor Capacity: 0x%8.8"
 				PRIx32, proximity->processor_capacity);
-		fwts_log_info_verbatum(fw, "    Max Memory Capacity:    "
+		fwts_log_info_verbatim(fw, "    Max Memory Capacity:    "
 				"0x%16.16" PRIx64, proximity->memory_capacity);
 		fwts_log_nl(fw);
 	}

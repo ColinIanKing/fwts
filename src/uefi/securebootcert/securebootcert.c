@@ -125,7 +125,7 @@ static void securebootcert_secure_boot(fwts_framework *fw, fwts_uefi_var *var, c
 		}
 		if (value == 1)
 			securebooted = true;
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2x%s.", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2x%s.", value, mode);
 		fwts_passed(fw, "Secure boot relative variable %s check passed.", varname);
 	}
 }
@@ -166,7 +166,7 @@ static void securebootcert_setup_mode(fwts_framework *fw, fwts_uefi_var *var, ch
 				"The secure boot variable %s data invalid.", varname);
 			return;
 		}
-		fwts_log_info_verbatum(fw, "  Value: 0x%2.2" PRIx8 "%s.", value, mode);
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2" PRIx8 "%s.", value, mode);
 		fwts_passed(fw, "Secure boot relative variable %s check passed.", varname);
 	}
 }
@@ -245,7 +245,7 @@ static void securebootcert_data_base(fwts_framework *fw, fwts_uefi_var *var, cha
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "Check Microsoft UEFI CA certificate presence in %s", varname);
+	fwts_log_info_verbatim(fw, "Check Microsoft UEFI CA certificate presence in %s", varname);
 	if (check_sigdb_presence(var->data, var->datalen, ms_uefi_ca_2011_key, ms_uefi_ca_2011_key_len))
 		fwts_passed(fw, "MS UEFI CA 2011 key check passed.");
 	else {
@@ -291,11 +291,11 @@ static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, ch
 	}
 	fwts_release_free(release);
 
-	fwts_log_info_verbatum(fw, "Check Ubuntu master CA certificate presence in %s", varname);
+	fwts_log_info_verbatim(fw, "Check Ubuntu master CA certificate presence in %s", varname);
 	if (check_sigdb_presence(var->data, var->datalen, ubuntu_key, ubuntu_key_len))
 		fwts_passed(fw, "Ubuntu UEFI CA 2011 key check passed.");
 	else {
-		fwts_log_info_verbatum(fw, "No Ubuntu master CA certificate presence in %s", varname);
+		fwts_log_info_verbatim(fw, "No Ubuntu master CA certificate presence in %s", varname);
 		fwts_infoonly(fw);
 	}
 }
@@ -318,10 +318,10 @@ static void securebootcert_var(fwts_framework *fw, fwts_uefi_var *var)
 
 	for (info = securebootcert_info_table; info->description != NULL; info++) {
 		if (strcmp(varname, info->description) == 0) {
-			fwts_log_info_verbatum(fw, "The %s variable check.", varname);
+			fwts_log_info_verbatim(fw, "The %s variable check.", varname);
 			fwts_guid_buf_to_str(var->guid, guid_str, sizeof(guid_str));
-			fwts_log_info_verbatum(fw, "  GUID: %s", guid_str);
-			fwts_log_info_verbatum(fw, "  Attr: 0x%x (%s).", var->attributes,
+			fwts_log_info_verbatim(fw, "  GUID: %s", guid_str);
+			fwts_log_info_verbatim(fw, "  Attr: 0x%x (%s).", var->attributes,
 							fwts_uefi_attribute_info(var->attributes));
 			info->func(fw, var, varname);
 			fwts_log_nl(fw);

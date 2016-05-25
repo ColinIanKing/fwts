@@ -49,10 +49,10 @@ static void fpdt_rec_header_dump(
 	const char *type_name,
 	fwts_acpi_table_fpdt_header *header)
 {
-	fwts_log_info_verbatum(fw, "  %s:", type_name);
-	fwts_log_info_verbatum(fw, "    Perf Rec Type:	0x%4.4" PRIx16, header->type);
-	fwts_log_info_verbatum(fw, "    Rec Length:	0x%2.2" PRIx8, header->length);
-	fwts_log_info_verbatum(fw, "    Revision:	0x%2.2" PRIx8, header->revision);
+	fwts_log_info_verbatim(fw, "  %s:", type_name);
+	fwts_log_info_verbatim(fw, "    Perf Rec Type:	0x%4.4" PRIx16, header->type);
+	fwts_log_info_verbatim(fw, "    Rec Length:	0x%2.2" PRIx8, header->length);
+	fwts_log_info_verbatim(fw, "    Revision:	0x%2.2" PRIx8, header->revision);
 }
 
 static void fpdt_dump_raw_data(
@@ -63,12 +63,12 @@ static void fpdt_dump_raw_data(
 {
         size_t n;
 
-	fwts_log_info_verbatum(fw, "    Data:");
-        for (n = 0; n < length; n += 16) {
-                int left = length - n;
+	fwts_log_info_verbatim(fw, "    Data:");
+	for (n = 0; n < length; n += 16) {
+		int left = length - n;
 		char buffer[128];
 		fwts_dump_raw_data(buffer, sizeof(buffer), data + n, n + offset, left > 16 ? 16 : left);
-		fwts_log_info_verbatum(fw, "%s", buffer);
+		fwts_log_info_verbatim(fw, "%s", buffer);
         }
 }
 
@@ -127,8 +127,8 @@ static int fpdt_test1(fwts_framework *fw)
 					fbbpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_basic_boot_perf_ptr));
 			} else {
 				fpdt_rec_header_dump(fw, "  Firmware Basic Boot Performance Pointer Record", fpdt);
-				fwts_log_info_verbatum(fw, "    Reserved:	0x%8.8" PRIx32, fbbpr->reserved);
-				fwts_log_info_verbatum(fw, "    FBPT Pointer:	0x%16.16" PRIx64, fbbpr->fbpt_addr);
+				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, fbbpr->reserved);
+				fwts_log_info_verbatim(fw, "    FBPT Pointer:	0x%16.16" PRIx64, fbbpr->fbpt_addr);
 
 				/*
 				 * For the moment, only dump the 64-bit processor-relative physical address
@@ -158,8 +158,8 @@ static int fpdt_test1(fwts_framework *fw)
 					s3ptpr->fpdt.length, sizeof(fwts_acpi_table_fpdt_s3_perf_ptr));
 			} else {
 				fpdt_rec_header_dump(fw, "S3 Performance Table Pointer Record", fpdt);
-				fwts_log_info_verbatum(fw, "    Reserved:	0x%8.8" PRIx32, s3ptpr->reserved);
-				fwts_log_info_verbatum(fw, "    S3PT Pointer:	0x%16.16" PRIx64, s3ptpr->s3pt_addr);
+				fwts_log_info_verbatim(fw, "    Reserved:	0x%8.8" PRIx32, s3ptpr->reserved);
+				fwts_log_info_verbatim(fw, "    S3PT Pointer:	0x%16.16" PRIx64, s3ptpr->s3pt_addr);
 
 				/*
 				 * For the moment, only dump 64-bit processor-relative physical

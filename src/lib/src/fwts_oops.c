@@ -100,7 +100,7 @@ static void fwts_klog_stack_dump(
 
 	if (dumpstack) {
 		while (bug_item != NULL && bug_item != item) {
-			fwts_log_info_verbatum(fw, "  %s",
+			fwts_log_info_verbatim(fw, "  %s",
 				fwts_klog_remove_timestamp(fwts_list_data(char *, bug_item)));
 			bug_item = bug_item->next;
 		}

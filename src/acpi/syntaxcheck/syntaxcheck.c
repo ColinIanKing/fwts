@@ -307,7 +307,7 @@ static void syntaxcheck_dump_code(fwts_framework *fw,
 	int i = 0;
 	fwts_list_link *item;
 
-	fwts_log_info_verbatum(fw, "Line | AML source\n");
+	fwts_log_info_verbatim(fw, "Line | AML source\n");
 	fwts_log_underline(fw->results, '-');
 
 	fwts_list_foreach(item, iasl_disassembly) {
@@ -315,11 +315,11 @@ static void syntaxcheck_dump_code(fwts_framework *fw,
 		if (i >= error_line + (howmany / 2))
 			break;
 		if (i > error_line - (howmany / 2)) {
-			fwts_log_info_verbatum(fw, "%5.5d| %s\n", i,
+			fwts_log_info_verbatim(fw, "%5.5d| %s\n", i,
 				fwts_text_list_text(item));
 			if (i == error_line) {
-				fwts_log_info_verbatum(fw, "     | %*.*s", carat_offset, carat_offset, "^");
-				fwts_log_info_verbatum(fw, "     | %s %d: %s\n",
+				fwts_log_info_verbatim(fw, "     | %*.*s", carat_offset, carat_offset, "^");
+				fwts_log_info_verbatim(fw, "     | %s %d: %s\n",
 					syntaxcheck_error_level(error_code), error_code, error_message);
 			}
 		}

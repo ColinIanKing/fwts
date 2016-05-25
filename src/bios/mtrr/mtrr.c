@@ -422,16 +422,16 @@ static void do_mtrr_resource(fwts_framework *fw)
 {
 	fwts_list_link *item;
 
-	fwts_log_info_verbatum(fw,"MTRR overview");
-	fwts_log_info_verbatum(fw,"-------------");
+	fwts_log_info_verbatim(fw,"MTRR overview");
+	fwts_log_info_verbatim(fw,"-------------");
 
 	fwts_list_foreach(item, mtrr_list) {
 		struct mtrr_entry *entry = fwts_list_data(struct mtrr_entry *, item);
 
 		if (entry->type & DISABLED)
-			fwts_log_info_verbatum(fw, "Reg %hhu: disabled", entry->reg);
+			fwts_log_info_verbatim(fw, "Reg %hhu: disabled", entry->reg);
 		else
-			fwts_log_info_verbatum(fw,
+			fwts_log_info_verbatim(fw,
 				"Reg %hhu: 0x%16.16" PRIx64 " - 0x%16.16" PRIx64 " (%6" PRId64 " %cB)  %s",
 				entry->reg,
 				entry->start,

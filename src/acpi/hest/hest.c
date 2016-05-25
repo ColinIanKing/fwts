@@ -81,39 +81,39 @@ static void hest_check_ia32_arch_machine_check_exception(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST IA-32 Architecture Machine Check Exception:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, exception->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, exception->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, exception->reserved1);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, exception->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, exception->enabled);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, exception->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, exception->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Global Capability Data:   0x%16.16" PRIx64, exception->global_capability_init_data);
-	fwts_log_info_verbatum(fw, "  Global Control Data:      0x%16.16" PRIx64, exception->global_control_init_data);
-	fwts_log_info_verbatum(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, exception->number_of_hardware_banks);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[0]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[1]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[2]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[3]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[4]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[5]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[6]);
+	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check Exception:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, exception->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, exception->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, exception->reserved1);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, exception->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, exception->enabled);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, exception->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, exception->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Global Capability Data:   0x%16.16" PRIx64, exception->global_capability_init_data);
+	fwts_log_info_verbatim(fw, "  Global Control Data:      0x%16.16" PRIx64, exception->global_control_init_data);
+	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, exception->number_of_hardware_banks);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[0]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[1]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[2]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[3]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[4]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[5]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[6]);
 	fwts_log_nl(fw);
 
 	for (i = 0; i < exception->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &exception->bank[i];
 
-		fwts_log_info_verbatum(fw, "  HEST IA-32 Architecture Machine Check Exception Bank %zd", i);
-		fwts_log_info_verbatum(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
-		fwts_log_info_verbatum(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
-		fwts_log_info_verbatum(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
-		fwts_log_info_verbatum(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
-		fwts_log_info_verbatum(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
-		fwts_log_info_verbatum(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
+		fwts_log_info_verbatim(fw, "  HEST IA-32 Architecture Machine Check Exception Bank %zd", i);
+		fwts_log_info_verbatim(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
+		fwts_log_info_verbatim(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
+		fwts_log_info_verbatim(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
+		fwts_log_info_verbatim(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
+		fwts_log_info_verbatim(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
+		fwts_log_info_verbatim(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
 		fwts_log_nl(fw);
 
 		if (bank->clear_status_on_initialization > 1) {
@@ -177,50 +177,50 @@ static void hest_check_ia32_arch_corrected_machine_check(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST IA-32 Architecture Machine Check:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, check->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, check->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, check->reserved1);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, check->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, check->enabled);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, check->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, check->max_sections_per_record);
-        fwts_log_info_verbatum(fw, "  Hardware Error Notification:");
-        fwts_log_info_verbatum(fw, "    Type:                   0x%2.2" PRIx8, check->notification.type);
-        fwts_log_info_verbatum(fw, "    Length:                 0x%2.2" PRIx8, check->notification.length);
-        fwts_log_info_verbatum(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Machine Check:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, check->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, check->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, check->reserved1);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, check->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, check->enabled);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, check->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, check->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
+	fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, check->notification.type);
+	fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, check->notification.length);
+	fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
 		check->notification.configuration_write_enable);
-        fwts_log_info_verbatum(fw, "    Poll Interval:          0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
 		check->notification.poll_interval);
-        fwts_log_info_verbatum(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
 		check->notification.vector);
-        fwts_log_info_verbatum(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
 		check->notification.switch_to_polling_threshold_value);
-        fwts_log_info_verbatum(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
 		check->notification.switch_to_polling_threshold_window);
-        fwts_log_info_verbatum(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
 		check->notification.error_threshold_value);
-        fwts_log_info_verbatum(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
 		check->notification.error_threshold_window);
-	fwts_log_info_verbatum(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, check->number_of_hardware_banks);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[0]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[1]);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[2]);
+	fwts_log_info_verbatim(fw, "  Number of Hardware Banks: 0x%8.8" PRIx32, check->number_of_hardware_banks);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[0]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[1]);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[2]);
 	fwts_log_nl(fw);
 
 	for (i = 0; i < check->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &check->bank[i];
 
-		fwts_log_info_verbatum(fw, "  HEST IA-32 Architecture Machine Check Bank %zd", i);
-		fwts_log_info_verbatum(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
-		fwts_log_info_verbatum(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
-		fwts_log_info_verbatum(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
-		fwts_log_info_verbatum(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
-		fwts_log_info_verbatum(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
-		fwts_log_info_verbatum(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
-		fwts_log_info_verbatum(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
+		fwts_log_info_verbatim(fw, "  HEST IA-32 Architecture Machine Check Bank %zd", i);
+		fwts_log_info_verbatim(fw, "    Bank Number:            0x%2.2" PRIx8, bank->bank_number);
+		fwts_log_info_verbatim(fw, "    Clear Status On Init.:  0x%2.2" PRIx8, bank->clear_status_on_initialization);
+		fwts_log_info_verbatim(fw, "    Status Data Format:     0x%2.2" PRIx8, bank->status_data_format);
+		fwts_log_info_verbatim(fw, "    Reserved:               0x%2.2" PRIx8, bank->reserved);
+		fwts_log_info_verbatim(fw, "    Control Reg. MSR Addr:  0x%8.8" PRIx32, bank->control_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Control Init Data:      0x%16.16" PRIx64, bank->control_init_data);
+		fwts_log_info_verbatim(fw, "    Status Reg. MSR Addr:   0x%8.8" PRIx32, bank->status_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Addr Reg. MSR Addr:     0x%8.8" PRIx32, bank->address_register_msr_address);
+		fwts_log_info_verbatim(fw, "    Misc Reg. MSR Addr:     0x%8.8" PRIx32, bank->misc_register_msr_address);
 		fwts_log_nl(fw);
 
 		if (bank->clear_status_on_initialization > 1) {
@@ -274,13 +274,13 @@ static void hest_check_fwts_acpi_table_hest_nmi_error(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST IA-32 Architecture Non-Maskable Interrupt:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, err->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, err->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, err->reserved1);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, err->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, err->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Max Raw Data Length:      0x%8.8" PRIx32, err->max_raw_data_length);
+	fwts_log_info_verbatim(fw, "HEST IA-32 Architecture Non-Maskable Interrupt:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, err->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, err->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, err->reserved1);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, err->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, err->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Max Raw Data Length:      0x%8.8" PRIx32, err->max_raw_data_length);
 	fwts_log_nl(fw);
 
 	if (err->reserved1) {
@@ -338,24 +338,24 @@ static void hest_check_pci_express_root_port_aer(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST PCI Express Root Port AER:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatum(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatum(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatum(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatum(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatum(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
-	fwts_log_info_verbatum(fw, "  Root Error Command:       0x%8.8" PRIx32, aer->root_error_command);
+	fwts_log_info_verbatim(fw, "HEST PCI Express Root Port AER:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
+	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
+	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
+	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
+	fwts_log_info_verbatim(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
+	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
+	fwts_log_info_verbatim(fw, "  Root Error Command:       0x%8.8" PRIx32, aer->root_error_command);
 	fwts_log_nl(fw);
 
 	if (aer->flags & ~0x3) {
@@ -420,22 +420,22 @@ static void hest_check_pci_express_device_aer(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST PCI Express Device AER:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatum(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatum(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatum(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatum(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatum(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
+	fwts_log_info_verbatim(fw, "HEST PCI Express Device AER:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
+	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
+	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
+	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
+	fwts_log_info_verbatim(fw, "  Correctable Error Mask:   0x%8.8" PRIx32, aer->correctable_error_mask);
+	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
 	if (aer->flags & ~0x3) {
@@ -500,26 +500,26 @@ static void hest_heck_pci_express_bridge_aer(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST PCI Express Bridge AER:");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
-	fwts_log_info_verbatum(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
-	fwts_log_info_verbatum(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
-	fwts_log_info_verbatum(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
-	fwts_log_info_verbatum(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
-	fwts_log_info_verbatum(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
-	fwts_log_info_verbatum(fw, "  Correctable Mask:         0x%8.8" PRIx32, aer->correctable_error_mask);
-	fwts_log_info_verbatum(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
-	fwts_log_info_verbatum(fw, "  2nd Uncorrectable Mask:   0x%8.8" PRIx32, aer->secondary_uncorrectable_error_mask);
-	fwts_log_info_verbatum(fw, "  2nd Uncurrectable Svrity: 0x%8.8" PRIx32, aer->secondary_uncorrectable_error_severity);
-	fwts_log_info_verbatum(fw, "  2nd Advanced Capabilities:0x%8.8" PRIx32, aer->secondary_advanced_error_capabilities_and_control);
+	fwts_log_info_verbatim(fw, "HEST PCI Express Bridge AER:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, aer->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, aer->source_id);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved1);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, aer->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, aer->enabled);
+	fwts_log_info_verbatim(fw, "  Number of Records:        0x%8.8" PRIx32, aer->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max Sections Per Record:  0x%8.8" PRIx32, aer->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Bus:                      0x%8.8" PRIx32, aer->bus);
+	fwts_log_info_verbatim(fw, "  Device:                   0x%4.4" PRIx16, aer->device);
+	fwts_log_info_verbatim(fw, "  Function:                 0x%4.4" PRIx16, aer->function);
+	fwts_log_info_verbatim(fw, "  Device Control:           0x%4.4" PRIx16, aer->device_control);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, aer->reserved2);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Mask:       0x%8.8" PRIx32, aer->uncorrectable_error_mask);
+	fwts_log_info_verbatim(fw, "  Uncorrectable Severity:   0x%8.8" PRIx32, aer->uncorrectable_error_severity);
+	fwts_log_info_verbatim(fw, "  Correctable Mask:         0x%8.8" PRIx32, aer->correctable_error_mask);
+	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
+	fwts_log_info_verbatim(fw, "  2nd Uncorrectable Mask:   0x%8.8" PRIx32, aer->secondary_uncorrectable_error_mask);
+	fwts_log_info_verbatim(fw, "  2nd Uncurrectable Svrity: 0x%8.8" PRIx32, aer->secondary_uncorrectable_error_severity);
+	fwts_log_info_verbatim(fw, "  2nd Advanced Capabilities:0x%8.8" PRIx32, aer->secondary_advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
 	if (aer->flags & ~0x3) {
@@ -586,45 +586,45 @@ static void hest_check_generic_error_source(
 		return;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST Generic Hardware Error Source");
-	fwts_log_info_verbatum(fw, "  Type:                     0x%2.2" PRIx8, source->type);
-	fwts_log_info_verbatum(fw, "  Source ID:                0x%4.4" PRIx16, source->source_id);
-	fwts_log_info_verbatum(fw, "  Related Source ID:        0x%4.4" PRIx16, source->related_source_id);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%2.2" PRIx8, source->flags);
-	fwts_log_info_verbatum(fw, "  Enabled:                  0x%2.2" PRIx8, source->enabled);
-	fwts_log_info_verbatum(fw, "  Num. Records. Prealloc.:  0x%8.8" PRIx32, source->number_of_records_to_preallocate);
-	fwts_log_info_verbatum(fw, "  Max. Sections Per Rec.:   0x%8.8" PRIx32, source->max_sections_per_record);
-	fwts_log_info_verbatum(fw, "  Max. Raw Data Length:     0x%8.8" PRIx32, source->max_raw_data_length);
+	fwts_log_info_verbatim(fw, "HEST Generic Hardware Error Source");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, source->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, source->source_id);
+	fwts_log_info_verbatim(fw, "  Related Source ID:        0x%4.4" PRIx16, source->related_source_id);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, source->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, source->enabled);
+	fwts_log_info_verbatim(fw, "  Num. Records. Prealloc.:  0x%8.8" PRIx32, source->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max. Sections Per Rec.:   0x%8.8" PRIx32, source->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Max. Raw Data Length:     0x%8.8" PRIx32, source->max_raw_data_length);
 
-        fwts_log_info_verbatum(fw, "  Error Status Address:");
-        fwts_log_info_verbatum(fw, "    Address Space ID:       0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "  Error Status Address:");
+	fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
 		source->error_status_address.address_space_id);
-        fwts_log_info_verbatum(fw, "    Register Bit Width      0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
 		source->error_status_address.register_bit_width);
-        fwts_log_info_verbatum(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
 		source->error_status_address.register_bit_offset);
-        fwts_log_info_verbatum(fw, "    Access Size             0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
 		source->error_status_address.access_width);
-        fwts_log_info_verbatum(fw, "    Address                 0x%16.16" PRIx64,
+	fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
 			source->error_status_address.address);
-        fwts_log_info_verbatum(fw, "  Hardware Error Notification:");
-        fwts_log_info_verbatum(fw, "    Type:                   0x%2.2" PRIx8, source->notification.type);
-        fwts_log_info_verbatum(fw, "    Length:                 0x%2.2" PRIx8, source->notification.length);
-        fwts_log_info_verbatum(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
+	fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, source->notification.type);
+	fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, source->notification.length);
+	fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
 		source->notification.configuration_write_enable);
-        fwts_log_info_verbatum(fw, "    Poll Interval:          0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
 		source->notification.poll_interval);
-        fwts_log_info_verbatum(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
 		source->notification.vector);
-        fwts_log_info_verbatum(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
 		source->notification.switch_to_polling_threshold_value);
-        fwts_log_info_verbatum(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
 		source->notification.switch_to_polling_threshold_window);
-        fwts_log_info_verbatum(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
 		source->notification.error_threshold_value);
-        fwts_log_info_verbatum(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+	fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
 		source->notification.error_threshold_window);
-	fwts_log_info_verbatum(fw, "  Error Status Blk. Length: 0x%8.8" PRIx32, source->error_status_block_length);
+	fwts_log_info_verbatim(fw, "  Error Status Blk. Length: 0x%8.8" PRIx32, source->error_status_block_length);
 	fwts_log_nl(fw);
 
 	if (source->number_of_records_to_preallocate < 1) {
@@ -694,8 +694,8 @@ static int hest_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	fwts_log_info_verbatum(fw, "HEST Hardware Error Source Table test");
-	fwts_log_info_verbatum(fw, "  Error Source Count:       0x%2.2" PRIx8, hest->error_source_count);
+	fwts_log_info_verbatim(fw, "HEST Hardware Error Source Table test");
+	fwts_log_info_verbatim(fw, "  Error Source Count:       0x%2.2" PRIx8, hest->error_source_count);
 	fwts_log_nl(fw);
 
         data += sizeof(fwts_acpi_table_hest);

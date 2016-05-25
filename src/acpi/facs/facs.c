@@ -63,20 +63,20 @@ static int facs_test1(fwts_framework *fw)
 		goto done;
 	}
 
-	fwts_log_info_verbatum(fw, "FACS Firmware ACPI Control Structure:");
-	fwts_log_info_verbatum(fw, "  Signature:                '%4.4s'", facs->signature);
-	fwts_log_info_verbatum(fw, "  Length:                   0x%8.8" PRIx32, facs->length);
-	fwts_log_info_verbatum(fw, "  Hardware Signature:       0x%8.8" PRIx32, facs->hardware_signature);
-	fwts_log_info_verbatum(fw, "  Firmware Waking Vector:   0x%8.8" PRIx32, facs->firmware_waking_vector);
-	fwts_log_info_verbatum(fw, "  Global Lock:              0x%8.8" PRIx32, facs->global_lock);
-	fwts_log_info_verbatum(fw, "  Flags:                    0x%8.8" PRIx32, facs->flags);
-	fwts_log_info_verbatum(fw, "  X-Firmware Waking Vector: 0x%16.16" PRIx64, facs->x_firmware_waking_vector);
-	fwts_log_info_verbatum(fw, "  Version:                  0x%2.2" PRIx8, facs->version);
-	fwts_log_info_verbatum(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
+	fwts_log_info_verbatim(fw, "FACS Firmware ACPI Control Structure:");
+	fwts_log_info_verbatim(fw, "  Signature:                '%4.4s'", facs->signature);
+	fwts_log_info_verbatim(fw, "  Length:                   0x%8.8" PRIx32, facs->length);
+	fwts_log_info_verbatim(fw, "  Hardware Signature:       0x%8.8" PRIx32, facs->hardware_signature);
+	fwts_log_info_verbatim(fw, "  Firmware Waking Vector:   0x%8.8" PRIx32, facs->firmware_waking_vector);
+	fwts_log_info_verbatim(fw, "  Global Lock:              0x%8.8" PRIx32, facs->global_lock);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, facs->flags);
+	fwts_log_info_verbatim(fw, "  X-Firmware Waking Vector: 0x%16.16" PRIx64, facs->x_firmware_waking_vector);
+	fwts_log_info_verbatim(fw, "  Version:                  0x%2.2" PRIx8, facs->version);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 		facs->reserved[0], facs->reserved[1], facs->reserved[2]);
-	fwts_log_info_verbatum(fw, "  OSPM Flags:               0x%8.8" PRIx32, facs->ospm_flags);
+	fwts_log_info_verbatim(fw, "  OSPM Flags:               0x%8.8" PRIx32, facs->ospm_flags);
 	for (i = 0; i < 24; i+= 4) {
-		fwts_log_info_verbatum(fw, "  Reserved:                 "
+		fwts_log_info_verbatim(fw, "  Reserved:                 "
 			"0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8 " 0x%2.2" PRIx8,
 			facs->reserved2[i + 0], facs->reserved2[i + 1],
 			facs->reserved2[i + 2], facs->reserved2[i + 3]);

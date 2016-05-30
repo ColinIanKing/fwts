@@ -444,7 +444,7 @@
     ACPI_TRACE_ENTRY (Name, AcpiUtTraceU32, UINT32, Value)
 
 #define ACPI_FUNCTION_TRACE_STR(Name, String) \
-    ACPI_TRACE_ENTRY (Name, AcpiUtTraceStr, char *, String)
+    ACPI_TRACE_ENTRY (Name, AcpiUtTraceStr, const char *, String)
 
 #define ACPI_FUNCTION_ENTRY() \
     AcpiUtTrackStackPtr()
@@ -504,6 +504,9 @@
 #define return_PTR(Pointer) \
     ACPI_TRACE_EXIT (AcpiUtPtrExit, void *, Pointer)
 
+#define return_STR(String) \
+    ACPI_TRACE_EXIT (AcpiUtStrExit, const char *, String)
+
 #define return_VALUE(Value) \
     ACPI_TRACE_EXIT (AcpiUtValueExit, UINT64, Value)
 
@@ -558,6 +561,7 @@
 #define return_VOID                     return
 #define return_ACPI_STATUS(s)           return(s)
 #define return_PTR(s)                   return(s)
+#define return_STR(s)                   return(s)
 #define return_VALUE(s)                 return(s)
 #define return_UINT8(s)                 return(s)
 #define return_UINT32(s)                return(s)

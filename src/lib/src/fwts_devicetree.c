@@ -27,7 +27,7 @@ static const char *devicetree_fs_path = "/sys/firmware/devicetree/base";
 
 int fwts_devicetree_read(fwts_framework *fwts)
 {
-	char *command, *data;
+	char *command, *data = NULL;
 	int fd, rc, status;
 	ssize_t len;
 	pid_t pid;
@@ -56,6 +56,7 @@ int fwts_devicetree_read(fwts_framework *fwts)
 
 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0 || len == 0) {
 		fprintf(stderr, "Cannot read devicetree data: dtc failed\n");
+		free(data);
 		return FWTS_ERROR;
 	}
 

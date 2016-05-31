@@ -57,10 +57,10 @@ static int dt_base_check_valid(fwts_framework *fw)
 
 static int dt_base_check_warnings(fwts_framework *fw)
 {
-	int rc, status, in_fd, out_fd;
+	int rc, status, in_fd, out_fd, ret = FWTS_ERROR;
 	ssize_t in_len, out_len;
 	const char *command;
-	char *output;
+	char *output = NULL;
 	pid_t pid;
 
 	if (!fw->fdt)
@@ -88,18 +88,23 @@ static int dt_base_check_warnings(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceTreeBaseDTCFailed",
 				"dtc reports fatal device tree errors:\n%s\n",
 				output);
-		return FWTS_ERROR;
+		goto err;
 	}
 
 	if (out_len > 0) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DeviceTreeBaseDTCWarnings",
 				"dtc reports warnings from device tree:\n%s\n",
 				output);
-		return FWTS_ERROR;
+		goto err;
 	}
 
 	fwts_passed(fw, "No warnings from dtc");
-	return FWTS_OK;
+
+	ret = FWTS_OK;
+
+err:
+	free(output);
+	return ret;
 }
 
 static fwts_framework_minor_test dt_base_tests[] = {

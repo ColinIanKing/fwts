@@ -55,16 +55,12 @@ int fwts_ipmi_exec_query(
 		return FWTS_ERROR;
 	}
 
-	for (;;) {
-		fwts_pfd.events = POLLIN | POLLPRI;
-		fwts_pfd.fd = fd;
-		fwts_pollfd_rc = poll(&fwts_pfd,1,5000);
-		if (fwts_pollfd_rc > 0) {
-			break;
-		} else {
-			close(fd);
-			return FWTS_ERROR;
-		}
+	fwts_pfd.events = POLLIN | POLLPRI;
+	fwts_pfd.fd = fd;
+	fwts_pollfd_rc = poll(&fwts_pfd, 1, 5000);
+	if (fwts_pollfd_rc <= 0) {
+		close(fd);
+		return FWTS_ERROR;
 	}
 
 	memset(&recv_data, 0, sizeof(IPMI_MAX_MSG_LENGTH));

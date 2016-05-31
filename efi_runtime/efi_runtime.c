@@ -235,44 +235,44 @@ copy_ucs2_to_user_len(uint16_t __user *dst, uint16_t *src, size_t len)
 
 static long efi_runtime_get_variable(unsigned long arg)
 {
-	struct efi_getvariable __user *pgetvariable;
-	struct efi_getvariable pgetvariable_local;
-	unsigned long datasize, prev_datasize, *pdatasize;
-	efi_guid_t vendor, *pvendor = NULL;
+	struct efi_getvariable __user *getvariable;
+	struct efi_getvariable getvariable_local;
+	unsigned long datasize, prev_datasize, *dz;
+	efi_guid_t vendor, *vd = NULL;
 	efi_status_t status;
 	uint16_t *name = NULL;
-	uint32_t attr, *pattr;
+	uint32_t attr, *at;
 	void *data = NULL;
 	int rv = 0;
 
-	pgetvariable = (struct efi_getvariable __user *)arg;
+	getvariable = (struct efi_getvariable __user *)arg;
 
-	if (copy_from_user(&pgetvariable_local, pgetvariable,
-			   sizeof(pgetvariable_local)))
+	if (copy_from_user(&getvariable_local, getvariable,
+			   sizeof(getvariable_local)))
 		return -EFAULT;
-	if (pgetvariable_local.DataSize &&
-	    get_user(datasize, pgetvariable_local.DataSize))
+	if (getvariable_local.DataSize &&
+	    get_user(datasize, getvariable_local.DataSize))
 		return -EFAULT;
-	if (pgetvariable_local.VendorGuid) {
+	if (getvariable_local.VendorGuid) {
 		EFI_GUID vendor_guid;
 
-		if (copy_from_user(&vendor_guid, pgetvariable_local.VendorGuid,
+		if (copy_from_user(&vendor_guid, getvariable_local.VendorGuid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
 		convert_from_guid(&vendor, &vendor_guid);
-		pvendor = &vendor;
+		vd = &vendor;
 	}
 
-	if (pgetvariable_local.VariableName) {
-		rv = copy_ucs2_from_user(&name, pgetvariable_local.VariableName);
+	if (getvariable_local.VariableName) {
+		rv = copy_ucs2_from_user(&name, getvariable_local.VariableName);
 		if (rv)
 			return rv;
 	}
 
-	pattr = pgetvariable_local.Attributes ? &attr : NULL;
-	pdatasize = pgetvariable_local.DataSize ? &datasize : NULL;
+	at = getvariable_local.Attributes ? &attr : NULL;
+	dz = getvariable_local.DataSize ? &datasize : NULL;
 
-	if (pgetvariable_local.DataSize && pgetvariable_local.Data) {
+	if (getvariable_local.DataSize && getvariable_local.Data) {
 		data = kmalloc(datasize, GFP_KERNEL);
 		if (!data) {
 			ucs2_kfree(name);
@@ -281,24 +281,24 @@ static long efi_runtime_get_variable(unsigned long arg)
 	}
 
 	prev_datasize = datasize;
-	status = efi.get_variable(name, pvendor, pattr, pdatasize, data);
+	status = efi.get_variable(name, vd, at, dz, data);
 	ucs2_kfree(name);
 
 	if (data) {
 		if (status == EFI_SUCCESS && prev_datasize >= datasize)
-			rv = copy_to_user(pgetvariable_local.Data, data, datasize);
+			rv = copy_to_user(getvariable_local.Data, data, datasize);
 		kfree(data);
 	}
 
 	if (rv)
 		return rv;
 
-	if (put_user(status, pgetvariable_local.status))
+	if (put_user(status, getvariable_local.status))
 		return -EFAULT;
 	if (status == EFI_SUCCESS && prev_datasize >= datasize) {
-		if (pattr && put_user(attr, pgetvariable_local.Attributes))
+		if (at && put_user(attr, getvariable_local.Attributes))
 			return -EFAULT;
-		if (pdatasize && put_user(datasize, pgetvariable_local.DataSize))
+		if (dz && put_user(datasize, getvariable_local.DataSize))
 			return -EFAULT;
 		return 0;
 	} else {
@@ -310,8 +310,8 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 static long efi_runtime_set_variable(unsigned long arg)
 {
-	struct efi_setvariable __user *psetvariable;
-	struct efi_setvariable psetvariable_local;
+	struct efi_setvariable __user *setvariable;
+	struct efi_setvariable setvariable_local;
 	EFI_GUID vendor_guid;
 	efi_guid_t vendor;
 	efi_status_t status;
@@ -319,99 +319,99 @@ static long efi_runtime_set_variable(unsigned long arg)
 	void *data;
 	int rv;
 
-	psetvariable = (struct efi_setvariable __user *)arg;
+	setvariable = (struct efi_setvariable __user *)arg;
 
-	if (copy_from_user(&psetvariable_local, psetvariable,
-			   sizeof(psetvariable_local)))
+	if (copy_from_user(&setvariable_local, setvariable,
+			   sizeof(setvariable_local)))
 		return -EFAULT;
-	if (copy_from_user(&vendor_guid, psetvariable_local.VendorGuid,
+	if (copy_from_user(&vendor_guid, setvariable_local.VendorGuid,
 			   sizeof(vendor_guid)))
 		return -EFAULT;
 
 	convert_from_guid(&vendor, &vendor_guid);
 
-	rv = copy_ucs2_from_user(&name, psetvariable_local.VariableName);
+	rv = copy_ucs2_from_user(&name, setvariable_local.VariableName);
 	if (rv)
 		return rv;
 
-	data = kmalloc(psetvariable_local.DataSize, GFP_KERNEL);
+	data = kmalloc(setvariable_local.DataSize, GFP_KERNEL);
 	if (!data) {
 		ucs2_kfree(name);
 		return -ENOMEM;
 	}
-	if (copy_from_user(data, psetvariable_local.Data,
-			   psetvariable_local.DataSize)) {
+	if (copy_from_user(data, setvariable_local.Data,
+			   setvariable_local.DataSize)) {
 		ucs2_kfree(data);
 		kfree(name);
 		return -EFAULT;
 	}
 
-	status = efi.set_variable(name, &vendor, psetvariable_local.Attributes,
-				  psetvariable_local.DataSize, data);
+	status = efi.set_variable(name, &vendor, setvariable_local.Attributes,
+				  setvariable_local.DataSize, data);
 
 	kfree(data);
 	ucs2_kfree(name);
 
-	if (put_user(status, psetvariable_local.status))
+	if (put_user(status, setvariable_local.status))
 		return -EFAULT;
 	return status == EFI_SUCCESS ? 0 : -EINVAL;
 }
 
 static long efi_runtime_get_time(unsigned long arg)
 {
-	struct efi_gettime __user *pgettime;
-	struct efi_gettime  pgettime_local;
+	struct efi_gettime __user *gettime;
+	struct efi_gettime  gettime_local;
 	efi_status_t status;
 	efi_time_cap_t cap;
 	efi_time_t eft;
 
-	pgettime = (struct efi_gettime __user *)arg;
-	if (copy_from_user(&pgettime_local, pgettime, sizeof(pgettime_local)))
+	gettime = (struct efi_gettime __user *)arg;
+	if (copy_from_user(&gettime_local, gettime, sizeof(gettime_local)))
 		return -EFAULT;
 
-	status = efi.get_time(pgettime_local.Time ? &eft : NULL,
-			      pgettime_local.Capabilities ? &cap : NULL);
+	status = efi.get_time(gettime_local.Time ? &eft : NULL,
+			      gettime_local.Capabilities ? &cap : NULL);
 
-	if (put_user(status, pgettime_local.status))
+	if (put_user(status, gettime_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS) {
 		printk(KERN_ERR "efitime: can't read time\n");
 		return -EINVAL;
 	}
-	if (pgettime_local.Capabilities) {
+	if (gettime_local.Capabilities) {
 		EFI_TIME_CAPABILITIES __user *cap_local;
 
-		cap_local = (EFI_TIME_CAPABILITIES *)pgettime_local.Capabilities;
+		cap_local = (EFI_TIME_CAPABILITIES *)gettime_local.Capabilities;
 		if (put_user(cap.resolution,
 				&(cap_local->Resolution)) ||
 				put_user(cap.accuracy, &(cap_local->Accuracy)) ||
 				put_user(cap.sets_to_zero,&(cap_local->SetsToZero)))
 			return -EFAULT;
 	}
-	if (pgettime_local.Time)
-		return copy_to_user(pgettime_local.Time, &eft,
+	if (gettime_local.Time)
+		return copy_to_user(gettime_local.Time, &eft,
 			sizeof(EFI_TIME)) ? -EFAULT : 0;
 	return 0;
 }
 
 static long efi_runtime_set_time(unsigned long arg)
 {
-	struct efi_settime __user *psettime;
-	struct efi_settime psettime_local;
+	struct efi_settime __user *settime;
+	struct efi_settime settime_local;
 	efi_status_t status;
 	EFI_TIME efi_time;
 	efi_time_t eft;
 
-	psettime = (struct efi_settime __user *)arg;
-	if (copy_from_user(&psettime_local, psettime, sizeof(psettime_local)))
+	settime = (struct efi_settime __user *)arg;
+	if (copy_from_user(&settime_local, settime, sizeof(settime_local)))
 		return -EFAULT;
-	if (copy_from_user(&efi_time, psettime_local.Time,
+	if (copy_from_user(&efi_time, settime_local.Time,
 					sizeof(EFI_TIME)))
 		return -EFAULT;
 	convert_to_efi_time(&eft, &efi_time);
 	status = efi.set_time(&eft);
 
-	if (put_user(status, psettime_local.status))
+	if (put_user(status, settime_local.status))
 		return -EFAULT;
 
 	return status == EFI_SUCCESS ? 0 : -EINVAL;
@@ -419,53 +419,53 @@ static long efi_runtime_set_time(unsigned long arg)
 
 static long efi_runtime_get_waketime(unsigned long arg)
 {
-	struct efi_getwakeuptime __user *pgetwakeuptime;
-	struct efi_getwakeuptime pgetwakeuptime_local;
+	struct efi_getwakeuptime __user *getwakeuptime;
+	struct efi_getwakeuptime getwakeuptime_local;
 	unsigned char enabled, pending;
 	efi_status_t status;
 	EFI_TIME efi_time;
 	efi_time_t eft;
 
-	pgetwakeuptime = (struct efi_getwakeuptime __user *)arg;
-	if (copy_from_user(&pgetwakeuptime_local, pgetwakeuptime, sizeof(pgetwakeuptime_local)))
+	getwakeuptime = (struct efi_getwakeuptime __user *)arg;
+	if (copy_from_user(&getwakeuptime_local, getwakeuptime, sizeof(getwakeuptime_local)))
 		return -EFAULT;
 
 	status = efi.get_wakeup_time(
-		pgetwakeuptime_local.Enabled ? (efi_bool_t *)&enabled : NULL,
-		pgetwakeuptime_local.Pending ? (efi_bool_t *)&pending : NULL,
-		pgetwakeuptime_local.Time ? &eft : NULL);
+		getwakeuptime_local.Enabled ? (efi_bool_t *)&enabled : NULL,
+		getwakeuptime_local.Pending ? (efi_bool_t *)&pending : NULL,
+		getwakeuptime_local.Time ? &eft : NULL);
 
-	if (put_user(status, pgetwakeuptime_local.status))
+	if (put_user(status, getwakeuptime_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
-	if (pgetwakeuptime_local.Enabled && put_user(enabled, pgetwakeuptime_local.Enabled))
+	if (getwakeuptime_local.Enabled && put_user(enabled, getwakeuptime_local.Enabled))
 		return -EFAULT;
 	convert_from_efi_time(&eft, &efi_time);
 
-	if (pgetwakeuptime_local.Time)
-		return copy_to_user(pgetwakeuptime_local.Time, &efi_time,
+	if (getwakeuptime_local.Time)
+		return copy_to_user(getwakeuptime_local.Time, &efi_time,
 			sizeof(EFI_TIME)) ? -EFAULT : 0;
 	return 0;
 }
 
 static long efi_runtime_set_waketime(unsigned long arg)
 {
-	struct efi_setwakeuptime __user *psetwakeuptime;
-	struct efi_setwakeuptime psetwakeuptime_local;
+	struct efi_setwakeuptime __user *setwakeuptime;
+	struct efi_setwakeuptime setwakeuptime_local;
 	unsigned char enabled;
 	efi_status_t status;
 	EFI_TIME efi_time;
 	efi_time_t eft;
 
-	psetwakeuptime = (struct efi_setwakeuptime __user *)arg;
+	setwakeuptime = (struct efi_setwakeuptime __user *)arg;
 
-	if (copy_from_user(&psetwakeuptime_local, psetwakeuptime, sizeof(psetwakeuptime_local)))
+	if (copy_from_user(&setwakeuptime_local, setwakeuptime, sizeof(setwakeuptime_local)))
 		return -EFAULT;
 
-	enabled = psetwakeuptime_local.Enabled;
-	if (psetwakeuptime_local.Time) {
-		if (copy_from_user(&efi_time, psetwakeuptime_local.Time, sizeof(EFI_TIME)))
+	enabled = setwakeuptime_local.Enabled;
+	if (setwakeuptime_local.Time) {
+		if (copy_from_user(&efi_time, setwakeuptime_local.Time, sizeof(EFI_TIME)))
 			return -EFAULT;
 
 		convert_to_efi_time(&eft, &efi_time);
@@ -474,7 +474,7 @@ static long efi_runtime_set_waketime(unsigned long arg)
 		status = efi.set_wakeup_time(enabled, NULL);
 	}
 
-	if (put_user(status, psetwakeuptime_local.status))
+	if (put_user(status, setwakeuptime_local.status))
 		return -EFAULT;
 
 	return status == EFI_SUCCESS ? 0 : -EINVAL;
@@ -482,40 +482,40 @@ static long efi_runtime_set_waketime(unsigned long arg)
 
 static long efi_runtime_get_nextvariablename(unsigned long arg)
 {
-	struct efi_getnextvariablename __user *pgetnextvariablename;
-	struct efi_getnextvariablename pgetnextvariablename_local;
-	unsigned long name_size, prev_name_size = 0, *pname_size = NULL;
+	struct efi_getnextvariablename __user *getnextvariablename;
+	struct efi_getnextvariablename getnextvariablename_local;
+	unsigned long name_size, prev_name_size = 0, *ns = NULL;
 	efi_status_t status;
-	efi_guid_t vendor, *pvendor = NULL;
+	efi_guid_t vendor, *vd = NULL;
 	EFI_GUID vendor_guid;
 	uint16_t *name = NULL;
 	int rv;
 
-	pgetnextvariablename = (struct efi_getnextvariablename
+	getnextvariablename = (struct efi_getnextvariablename
 							__user *)arg;
 
-	if (copy_from_user(&pgetnextvariablename_local, pgetnextvariablename,
-			   sizeof(pgetnextvariablename_local)))
+	if (copy_from_user(&getnextvariablename_local, getnextvariablename,
+			   sizeof(getnextvariablename_local)))
 		return -EFAULT;
 
-	if (pgetnextvariablename_local.VariableNameSize) {
-		if (get_user(name_size, pgetnextvariablename_local.VariableNameSize))
+	if (getnextvariablename_local.VariableNameSize) {
+		if (get_user(name_size, getnextvariablename_local.VariableNameSize))
 			return -EFAULT;
-		pname_size = &name_size;
+		ns = &name_size;
 		prev_name_size = name_size;
 	}
 
-	if (pgetnextvariablename_local.VendorGuid) {
-		if (copy_from_user(&vendor_guid, pgetnextvariablename_local.VendorGuid,
+	if (getnextvariablename_local.VendorGuid) {
+		if (copy_from_user(&vendor_guid, getnextvariablename_local.VendorGuid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
 		convert_from_guid(&vendor, &vendor_guid);
-		pvendor = &vendor;
+		vd = &vendor;
 	}
 
-	if (pgetnextvariablename_local.VariableName) {
+	if (getnextvariablename_local.VariableName) {
 		size_t name_string_size = 0;
-		rv = get_ucs2_strsize_from_user(pgetnextvariablename_local.VariableName, &name_string_size);
+		rv = get_ucs2_strsize_from_user(getnextvariablename_local.VariableName, &name_string_size);
 		if (rv)
 			return rv;
 		/*
@@ -527,33 +527,33 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		 * as we expected.
 		 */
 		rv = copy_ucs2_from_user_len(&name,
-					     pgetnextvariablename_local.VariableName,
+					     getnextvariablename_local.VariableName,
 					     prev_name_size > name_string_size ? prev_name_size : name_string_size);
 		if (rv)
 			return rv;
 	}
 
-	status = efi.get_next_variable(pname_size, name, pvendor);
+	status = efi.get_next_variable(ns, name, vd);
 
 	if (name) {
-		rv = copy_ucs2_to_user_len(pgetnextvariablename_local.VariableName,
+		rv = copy_ucs2_to_user_len(getnextvariablename_local.VariableName,
 					   name, prev_name_size);
 		ucs2_kfree(name);
 		if (rv)
 			return -EFAULT;
 	}
 
-	if (put_user(status, pgetnextvariablename_local.status))
+	if (put_user(status, getnextvariablename_local.status))
 		return -EFAULT;
 
-	if (pname_size) {
-		if (put_user(*pname_size, pgetnextvariablename_local.VariableNameSize))
+	if (ns) {
+		if (put_user(*ns, getnextvariablename_local.VariableNameSize))
 			return -EFAULT;
 	}
 
-	if (pvendor) {
-		convert_to_guid(pvendor, &vendor_guid);
-		if (copy_to_user(pgetnextvariablename_local.VendorGuid,
+	if (vd) {
+		convert_to_guid(vd, &vendor_guid);
+		if (copy_to_user(getnextvariablename_local.VendorGuid,
 				 &vendor_guid, sizeof(EFI_GUID)))
 			return -EFAULT;
 	}
@@ -565,27 +565,27 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 
 static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 {
-	struct efi_getnexthighmonotoniccount __user *pgetnexthighmonotoniccount;
-	struct efi_getnexthighmonotoniccount pgetnexthighmonotoniccount_local;
+	struct efi_getnexthighmonotoniccount __user *getnexthighmonotoniccount;
+	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount_local;
 	efi_status_t status;
 	uint32_t count;
 
-	pgetnexthighmonotoniccount = (struct
+	getnexthighmonotoniccount = (struct
 			efi_getnexthighmonotoniccount __user *)arg;
 
-	if (copy_from_user(&pgetnexthighmonotoniccount_local,
-			   pgetnexthighmonotoniccount,
-			   sizeof(pgetnexthighmonotoniccount_local)))
+	if (copy_from_user(&getnexthighmonotoniccount_local,
+			   getnexthighmonotoniccount,
+			   sizeof(getnexthighmonotoniccount_local)))
 		return -EFAULT;
 
 	status = efi.get_next_high_mono_count(
-		pgetnexthighmonotoniccount_local.HighCount ? &count : NULL);
+		getnexthighmonotoniccount_local.HighCount ? &count : NULL);
 
-	if (put_user(status, pgetnexthighmonotoniccount_local.status))
+	if (put_user(status, getnexthighmonotoniccount_local.status))
 		return -EFAULT;
 
-	if (pgetnexthighmonotoniccount_local.HighCount &&
-	    put_user(count, pgetnexthighmonotoniccount_local.HighCount))
+	if (getnexthighmonotoniccount_local.HighCount &&
+	    put_user(count, getnexthighmonotoniccount_local.HighCount))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)
@@ -598,32 +598,32 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
 static long efi_runtime_query_variableinfo(unsigned long arg)
 {
-	struct efi_queryvariableinfo __user *pqueryvariableinfo;
-	struct efi_queryvariableinfo pqueryvariableinfo_local;
+	struct efi_queryvariableinfo __user *queryvariableinfo;
+	struct efi_queryvariableinfo queryvariableinfo_local;
 	efi_status_t status;
 	uint64_t max_storage, remaining, max_size;
 
-	pqueryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
+	queryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
 
-	if (copy_from_user(&pqueryvariableinfo_local, pqueryvariableinfo,
-			   sizeof(pqueryvariableinfo_local)))
+	if (copy_from_user(&queryvariableinfo_local, queryvariableinfo,
+			   sizeof(queryvariableinfo_local)))
 		return -EFAULT;
 
-	status = efi.query_variable_info(pqueryvariableinfo_local.Attributes,
+	status = efi.query_variable_info(queryvariableinfo_local.Attributes,
 					 &max_storage, &remaining, &max_size);
 
 	if (put_user(max_storage,
-		     pqueryvariableinfo_local.MaximumVariableStorageSize))
+		     queryvariableinfo_local.MaximumVariableStorageSize))
 		return -EFAULT;
 
 	if (put_user(remaining,
-		     pqueryvariableinfo_local.RemainingVariableStorageSize))
+		     queryvariableinfo_local.RemainingVariableStorageSize))
 		return -EFAULT;
 
-	if (put_user(max_size, pqueryvariableinfo_local.MaximumVariableSize))
+	if (put_user(max_size, queryvariableinfo_local.MaximumVariableSize))
 		return -EFAULT;
 
-	if (put_user(status, pqueryvariableinfo_local.status))
+	if (put_user(status, queryvariableinfo_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;

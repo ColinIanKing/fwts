@@ -18,7 +18,9 @@
  *
  */
 
-#include <sys/fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/poll.h>
 #include <sys/ioctl.h>
 #include <linux/ipmi.h>
@@ -43,10 +45,8 @@ int fwts_ipmi_exec_query(
 	struct ipmi_addr fwts_ipmi_addr;
 	struct pollfd fwts_pfd;
 
-	if ((fd = open(fwts_ipmi_devnode, O_RDWR)) < 0){
-		close(fd);
+	if ((fd = open(fwts_ipmi_devnode, O_RDWR)) < 0)
 		return FWTS_ERROR;
-	};
 
 	fwts_send_rc = ioctl(fd, IPMICTL_SEND_COMMAND, (char *)fwts_ipmi_req);
 

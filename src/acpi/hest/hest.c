@@ -667,6 +667,124 @@ static void hest_check_generic_error_source(
 }
 
 /*
+ *  ACPI Section 18.3.2.8 Generic Error Source version 2
+ */
+static void hest_check_generic_error_source_v2(
+	fwts_framework *fw,
+	ssize_t *length,
+	uint8_t **data,
+	bool *passed)
+{
+	fwts_acpi_table_hest_generic_hardware_error_source_v2 *source =
+		(fwts_acpi_table_hest_generic_hardware_error_source_v2 *)*data;
+
+	/* Enough data for an empty machine check exceptions structure? */
+	if (*length < (ssize_t)sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTGenericHardwareErrorSourceTooShort",
+			"HEST Generic Hardware Error Source Too Short "
+			"too short, expecting %zu bytes, "
+			"instead got %zu bytes",
+			sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2), *length);
+		*passed = false;
+		*length = 0;	/* Forces an early abort */
+		return;
+	}
+
+	fwts_log_info_verbatim(fw, "HEST Generic Hardware Error Source version 2");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, source->type);
+	fwts_log_info_verbatim(fw, "  Source ID:                0x%4.4" PRIx16, source->source_id);
+	fwts_log_info_verbatim(fw, "  Related Source ID:        0x%4.4" PRIx16, source->related_source_id);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%2.2" PRIx8, source->flags);
+	fwts_log_info_verbatim(fw, "  Enabled:                  0x%2.2" PRIx8, source->enabled);
+	fwts_log_info_verbatim(fw, "  Num. Records. Prealloc.:  0x%8.8" PRIx32, source->number_of_records_to_preallocate);
+	fwts_log_info_verbatim(fw, "  Max. Sections Per Rec.:   0x%8.8" PRIx32, source->max_sections_per_record);
+	fwts_log_info_verbatim(fw, "  Max. Raw Data Length:     0x%8.8" PRIx32, source->max_raw_data_length);
+
+        fwts_log_info_verbatim(fw, "  Error Status Address:");
+        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
+		source->error_status_address.address_space_id);
+        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
+		source->error_status_address.register_bit_width);
+        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+		source->error_status_address.register_bit_offset);
+        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
+		source->error_status_address.access_width);
+        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
+			source->error_status_address.address);
+        fwts_log_info_verbatim(fw, "  Hardware Error Notification:");
+        fwts_log_info_verbatim(fw, "    Type:                   0x%2.2" PRIx8, source->notification.type);
+        fwts_log_info_verbatim(fw, "    Length:                 0x%2.2" PRIx8, source->notification.length);
+        fwts_log_info_verbatim(fw, "    Config. Write. Enable:  0x%4.4" PRIx16,
+		source->notification.configuration_write_enable);
+        fwts_log_info_verbatim(fw, "    Poll Interval:          0x%4.4" PRIx16,
+		source->notification.poll_interval);
+        fwts_log_info_verbatim(fw, "    Interrupt Vector:       0x%4.4" PRIx16,
+		source->notification.vector);
+        fwts_log_info_verbatim(fw, "    Sw. to Polling Value:   0x%4.4" PRIx16,
+		source->notification.switch_to_polling_threshold_value);
+        fwts_log_info_verbatim(fw, "    Sw. to Polling Window:  0x%4.4" PRIx16,
+		source->notification.switch_to_polling_threshold_window);
+        fwts_log_info_verbatim(fw, "    Error: Thresh. Value:   0x%4.4" PRIx16,
+		source->notification.error_threshold_value);
+        fwts_log_info_verbatim(fw, "    Error: Thresh. Window:  0x%4.4" PRIx16,
+		source->notification.error_threshold_window);
+	fwts_log_info_verbatim(fw, "  Error Status Blk. Length: 0x%8.8" PRIx32, source->error_status_block_length);
+        fwts_log_info_verbatim(fw, "  Read Ack Register:");
+        fwts_log_info_verbatim(fw, "    Address Space ID:       0x%2.2" PRIx8,
+		source->read_ack_register.address_space_id);
+        fwts_log_info_verbatim(fw, "    Register Bit Width      0x%2.2" PRIx8,
+		source->read_ack_register.register_bit_width);
+        fwts_log_info_verbatim(fw, "    Register Bit Offset     0x%2.2" PRIx8,
+		source->read_ack_register.register_bit_offset);
+        fwts_log_info_verbatim(fw, "    Access Size             0x%2.2" PRIx8,
+		source->read_ack_register.access_width);
+        fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64,
+			source->read_ack_register.address);
+	fwts_log_info_verbatim(fw, "  Read Ack Preserve:        0x%16.16" PRIx64, source->read_ack_preserve);
+	fwts_log_info_verbatim(fw, "  Read Ack Write:           0x%16.16" PRIx64, source->read_ack_write);
+	fwts_log_nl(fw);
+
+	if (source->number_of_records_to_preallocate < 1) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTInvalidRecordsToPreallocate",
+			"HEST Hardware Error Source Number of Records "
+			"to Preallocate is 0x%" PRIx16 " and must be "
+			"more than zero.",
+			source->number_of_records_to_preallocate);
+	}
+	if (source->max_sections_per_record < 1) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTInvalidMaxSectionsPerRecord",
+			"HEST Hardware Error Source Max Sections Per "
+			"Record is 0x%" PRIx16 " and must be "
+			"more than zero.",
+			source->max_sections_per_record);
+	}
+	if (source->notification.type > 7) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTInvalidHardwareErrorNotificationType",
+			"HEST Hardware Error Notification Type is "
+			"an invalid reserved value of 0x%2.2" PRIx8 ","
+			"expecting value 0x00 to 0x07",
+			source->notification.type);
+	}
+	if (source->notification.configuration_write_enable & ~0x3f) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"HESTIA32ConfigWriteEnabledReservedNonZero",
+			"HEST Configuration Write Enabled Reserved bits [6:31] "
+			"are non-zero.");
+	}
+
+	*length -= sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);
+	*data += sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);
+}
+
+/*
  *  ACPI Section 18.3.2.8
  */
 
@@ -728,6 +846,9 @@ static int hest_test1(fwts_framework *fw)
 			break;
 		case 0x09:
 			hest_check_generic_error_source(fw, &length, &data, &passed);
+			break;
+		case 0x0a:
+			hest_check_generic_error_source_v2(fw, &length, &data, &passed);
 			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH,

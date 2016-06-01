@@ -1275,6 +1275,24 @@ typedef struct {
 	uint32_t	error_status_block_length;
 } __attribute__ ((packed)) fwts_acpi_table_hest_generic_hardware_error_source;
 
+/* Section 18.3.2.8, Table 18-344, Type 0x0A */
+typedef struct {
+	uint16_t	type;
+	uint16_t	source_id;
+	uint16_t	related_source_id;
+	uint8_t		flags;
+	uint8_t		enabled;
+	uint32_t	number_of_records_to_preallocate;
+	uint32_t	max_sections_per_record;
+	uint32_t	max_raw_data_length;
+	fwts_acpi_gas	error_status_address;
+	fwts_acpi_table_hest_hardware_error_notification notification;
+	uint32_t	error_status_block_length;
+	fwts_acpi_gas	read_ack_register;
+	uint64_t	read_ack_preserve;
+	uint64_t	read_ack_write;
+} __attribute__ ((packed)) fwts_acpi_table_hest_generic_hardware_error_source_v2;
+
 void fwts_acpi_table_get_header(fwts_acpi_table_header *hdr, uint8_t *data);
 
 /*

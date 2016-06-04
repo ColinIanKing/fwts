@@ -77,7 +77,7 @@ const char *fwts_arch_names(void)
 	if (arch_names)
 		return arch_names;
 
-	for (ptr = arch_info, len = 0; ptr->arch != FWTS_ARCH_OTHER; ptr++)
+	for (ptr = arch_info, len = 1; ptr->arch != FWTS_ARCH_OTHER; ptr++)
 		len += strlen(ptr->name) + 1;
 
 	arch_names = calloc(len, 1);

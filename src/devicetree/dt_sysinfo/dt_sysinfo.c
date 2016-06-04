@@ -61,6 +61,7 @@ static int check_property_printable(fwts_framework *fw, const char *name,
 		fwts_failed(fw, LOG_LEVEL_LOW, "DTPrintablePropertyNoNul",
 				"property %s isn't nul-terminated", name);
 		rc = FWTS_ERROR;
+		goto out;
 	}
 
 	rc = FWTS_OK;

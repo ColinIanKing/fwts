@@ -647,8 +647,6 @@ static int parse_identifier(parser *p, token *t, int ch)
  */
 static int parse_literal(parser *p, token *t, int literal, token_type type)
 {
-	bool escaped = false;
-
 	t->type = type;
 
 	token_append(t, literal);
@@ -660,16 +658,18 @@ static int parse_literal(parser *p, token *t, int literal, token_type type)
 		}
 
 		if (ch == '\\') {
-			escaped = true;
+			ch = get_next(p);
+			if (ch == EOF)
+				return PARSER_OK;
+			token_append(t, '\\');
 			token_append(t, ch);
 			continue;
 		}
 
-		if (!escaped && ch == literal) {
+		if (ch == literal) {
 			token_append(t, ch);
 			return PARSER_OK;
 		}
-		escaped = false;
 
 		token_append(t, ch);
 	}

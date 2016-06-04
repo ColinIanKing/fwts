@@ -175,16 +175,20 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 			bool found = false;
 
 			if (c != 0) {
-				for (i=0; i<options_table->num_options; i++) {
-					char *short_name = options_table->options[i].short_name;
-					if (index(short_name, c) != NULL) {
+				for (i = 0; i < options_table->num_options; i++) {
+					const char *short_name = options_table->options[i].short_name;
+
+					if (short_name && index(short_name, c) != NULL) {
 						found = true;
 						break;
 					}
 				}
 			} else {  /* c is zero for long option cases but we need the right optarg_handler set */
-				for (i=0; i<options_table->num_options; i++) {
-					if (strcmp(options_table->options[i].long_name,long_options[option_index].name) == 0) {
+				for (i = 0; i < options_table->num_options; i++) {
+					const char *long_name = options_table->options[i].long_name;
+					const char *name = long_options[option_index].name;
+
+					if (long_name && name && !strcmp(long_name, name)) {
 						translated_long_option_index = i;
 						found = true;
 						break;

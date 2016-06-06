@@ -4599,7 +4599,7 @@ static void method_test_UPC_return(
 		return;
 
 	connector_type = obj->Package.Elements[1].Integer.Value;
-	if (connector_type  > 6 && connector_type < 0xFF) {
+	if (connector_type  > 0x0a && connector_type < 0xFF) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UPCBadReturnType",
 			"%s element 1 returned reserved value.", name);
 		return;

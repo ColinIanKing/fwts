@@ -72,7 +72,7 @@ ACPI tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (189 tests):
+ method          (191 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -212,6 +212,8 @@ ACPI tests:
   Test _PMC (Power Meter Capabilities).
   Test _PMD (Power Meter Devices).
   Test _PMM (Power Meter Measurement).
+  Test _WPC (Wireless Power Calibration).
+  Test _WPP (Wireless Power Polling).
   Test _FIF (Fan Information).
   Test _FPS (Fan Performance States).
   Test _FSL (Fan Set Level).
@@ -427,7 +429,7 @@ Batch tests:
   Validate MCFG PCI config space.
  mchi            (1 test):
   MCHI Management Controller Host Interface Table test.
- method          (189 tests):
+ method          (191 tests):
   Test Method Names.
   Test _AEI.
   Test _EVT (Event Method).
@@ -567,6 +569,8 @@ Batch tests:
   Test _PMC (Power Meter Capabilities).
   Test _PMD (Power Meter Devices).
   Test _PMM (Power Meter Measurement).
+  Test _WPC (Wireless Power Calibration).
+  Test _WPP (Wireless Power Polling).
   Test _FIF (Fan Information).
   Test _FPS (Fan Performance States).
   Test _FSL (Fan Set Level).

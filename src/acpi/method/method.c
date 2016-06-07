@@ -246,6 +246,7 @@
  * _UPP 	 Y
  * _VPO 	 Y
  * _WAK 	 Y
+ * _WPP 	 Y
  * _Wxx 	 n/a
  * _WDG 	 N
  * _WED 	 N
@@ -5621,6 +5622,15 @@ static int method_test_PMM(fwts_framework *fw)
 }
 
 /*
+ * Section 10.5 Wireless Power Controllers
+ */
+static int method_test_WPP(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_WPP", NULL, 0, method_test_integer_return, NULL);
+}
+
+/*
  * Section 11.3 Fan Devices
  */
 static void method_test_FIF_return(
@@ -7076,6 +7086,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_PMM, "Test _PMM (Power Meter Measurement)." },
 	/* { method_test_PTP, "Test _PTP (Power Trip Points)." }, */
 	/* { method_test_SHL, "Test _SHL (Set Hardware Limit)." }, */
+
+	/* Section 10.5 Wireless Power Controllers */
+	{ method_test_WPP, "Test _WPP (Wireless Power Polling)." },
 
 	/* Section 11.3 Fan Devices */
 

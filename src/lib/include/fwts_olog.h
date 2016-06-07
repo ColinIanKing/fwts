@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef __FWTS_OPAL_H__
-#define __FWTS_OPAL_H__
+#ifndef __FWTS_OLOG_H__
+#define __FWTS_OLOG_H__
 
 #include <sys/types.h>
 #include <regex.h>

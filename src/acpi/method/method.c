@@ -246,6 +246,7 @@
  * _UPP 	 Y
  * _VPO 	 Y
  * _WAK 	 Y
+ * _WPC 	 Y
  * _WPP 	 Y
  * _Wxx 	 n/a
  * _WDG 	 N
@@ -5624,6 +5625,33 @@ static int method_test_PMM(fwts_framework *fw)
 /*
  * Section 10.5 Wireless Power Controllers
  */
+static void method_test_WPC_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	if (obj->Integer.Value <= 0x02 || obj->Integer.Value == 0xff)
+		method_passed_sane(fw, name, "integer");
+	else
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"Method_WPCInvalidInteger",
+			"%s returned an invalid integer 0x%8.8" PRIx64,
+			name, (uint64_t)obj->Integer.Value);
+}
+
+static int method_test_WPC(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_WPC", NULL, 0, method_test_WPC_return, "_WPC");
+}
+
 static int method_test_WPP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -7088,6 +7116,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* { method_test_SHL, "Test _SHL (Set Hardware Limit)." }, */
 
 	/* Section 10.5 Wireless Power Controllers */
+	{ method_test_WPC, "Test _WPC (Wireless Power Calibration)." },
 	{ method_test_WPP, "Test _WPP (Wireless Power Polling)." },
 
 	/* Section 11.3 Fan Devices */

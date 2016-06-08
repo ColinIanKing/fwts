@@ -363,7 +363,7 @@ char *fwts_args_comma_list(const char *arg)
 
 	/* Any empty list should return an empty string and not NULL */
 	if (retstr == NULL)
-		retstr = calloc(1, 1);
+		retstr = calloc(1, sizeof(char));
 		/* Return NULL on calloc failure must be handled by caller */
 
 	return retstr;

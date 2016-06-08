@@ -80,7 +80,7 @@ const char *fwts_arch_names(void)
 	for (ptr = arch_info, len = 1; ptr->arch != FWTS_ARCH_OTHER; ptr++)
 		len += strlen(ptr->name) + 1;
 
-	arch_names = calloc(len, 1);
+	arch_names = calloc(len, sizeof(char));
 	if (arch_names) {
 		for (ptr = arch_info; ptr->arch != FWTS_ARCH_OTHER; ptr++) {
 			strcat(arch_names, ptr->name);

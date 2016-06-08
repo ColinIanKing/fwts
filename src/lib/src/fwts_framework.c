@@ -936,7 +936,7 @@ static void fwts_framework_heading_info(
 	for (len = 1, i = 1; i < argc; i++)
 		len += strlen(argv[i]) + 1;
 
-	if ((args = calloc(len, 1)) != NULL) {
+	if ((args = calloc(len, sizeof(char))) != NULL) {
 		for (i = 1; i < argc; i++) {
 			strcat(args, " ");
 			strcat(args, argv[i]);
@@ -951,7 +951,7 @@ static void fwts_framework_heading_info(
 		len += strlen(test->name) + 1;
 	}
 
-	if ((tests = calloc(len, 1)) != NULL) {
+	if ((tests = calloc(len, sizeof(char))) != NULL) {
 		fwts_list_foreach(item, tests_to_run) {
 			fwts_framework_test *test = fwts_list_data(fwts_framework_test *, item);
 			if (item != fwts_list_head(tests_to_run))

@@ -4656,11 +4656,11 @@ static void method_test_GCP_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
-	if (obj->Integer.Value & ~0xf)
+	if (obj->Integer.Value & ~0x1f)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"Method_GCPReturn",
-			"%s returned %" PRId64 ", should be between 0 and 15, "
-			"one or more of the reserved bits 4..31 seem "
+			"%s returned %" PRId64 ", should be between 0 and 31, "
+			"one or more of the reserved bits 5..31 seem "
 			"to be set.",
 			name, (uint64_t)obj->Integer.Value);
 	else

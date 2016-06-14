@@ -78,7 +78,6 @@ typedef struct {
 typedef struct {
 	const char *name;
 	uint8_t   original;
-	uint8_t   mapped;
 } fwts_chassis_type_map;
 
 typedef struct {
@@ -212,51 +211,39 @@ static const char *uuid_patterns[] = {
 };
 
 static const fwts_chassis_type_map fwts_dmi_chassis_type[] = {
-	{ "Invalid",		FWTS_SMBIOS_CHASSIS_INVALID,			CHASSIS_OTHER },
-	{ "Other",		FWTS_SMBIOS_CHASSIS_OTHER,			CHASSIS_OTHER },
-	{ "Unknown",		FWTS_SMBIOS_CHASSIS_UNKNOWN,			CHASSIS_OTHER },
-	{ "Desktop",		FWTS_SMBIOS_CHASSIS_DESKTOP,			CHASSIS_DESKTOP },
-	{ "Low Profile Desktop",FWTS_SMBIOS_CHASSIS_LOW_PROFILE_DESKTOP,	CHASSIS_DESKTOP },
-	{ "Pizza Box",		FWTS_SMBIOS_CHASSIS_PIZZA_BOX,			CHASSIS_DESKTOP },
-	{ "Mini Tower",		FWTS_SMBIOS_CHASSIS_MINI_TOWER,			CHASSIS_DESKTOP },
-	{ "Chassis Tower",	FWTS_SMBIOS_CHASSIS_TOWER,			CHASSIS_DESKTOP },
-	{ "Portable",		FWTS_SMBIOS_CHASSIS_PORTABLE,			CHASSIS_MOBILE },
-	{ "Laptop",		FWTS_SMBIOS_CHASSIS_LAPTOP,			CHASSIS_MOBILE },
-	{ "Notebook",		FWTS_SMBIOS_CHASSIS_NOTEBOOK,			CHASSIS_MOBILE },
-	{ "Handheld",		FWTS_SMBIOS_CHASSIS_HANDHELD,			CHASSIS_MOBILE },
-	{ "Docking Station",	FWTS_SMBIOS_CHASSIS_DOCKING_STATION,		CHASSIS_DESKTOP },
-	{ "All In One",		FWTS_SMBIOS_CHASSIS_ALL_IN_ONE,			CHASSIS_DESKTOP },
-	{ "Sub Notebook",	FWTS_SMBIOS_CHASSIS_SUB_NOTEBOOK,		CHASSIS_MOBILE },
-	{ "Space Saving",	FWTS_SMBIOS_CHASSIS_SPACE_SAVING,		CHASSIS_DESKTOP },
-	{ "Lunch Box",		FWTS_SMBIOS_CHASSIS_LUNCH_BOX,			CHASSIS_DESKTOP | CHASSIS_MOBILE},
-	{ "Server Chassis",	FWTS_SMBIOS_CHASSIS_MAIN_SERVER_CHASSIS,	CHASSIS_SERVER },
-	{ "Expansion Chassis",	FWTS_SMBIOS_CHASSIS_EXPANISON_CHASSIS,		CHASSIS_OTHER },
-	{ "Sub Chassis",	FWTS_SMBIOS_CHASSIS_SUB_CHASSIS,		CHASSIS_OTHER },
-	{ "Bus Expansion Chassis", FWTS_SMBIOS_CHASSIS_BUS_EXPANSION_CHASSIS,	CHASSIS_OTHER },
-	{ "Peripheral Chassis",	FWTS_SMBIOS_CHASSIS_PERIPHERAL_CHASSIS,		CHASSIS_OTHER },
-	{ "Raid Chassis",	FWTS_SMBIOS_CHASSIS_RAID_CHASSIS,		CHASSIS_OTHER },
-	{ "Rack Mount Chassis",	FWTS_SMBIOS_CHASSIS_RACK_MOUNT_CHASSIS,		CHASSIS_OTHER },
-	{ "Sealed Case PC",	FWTS_SMBIOS_CHASSIS_SEALED_CASE_PC,		CHASSIS_DESKTOP },
-	{ "Multi System Chassis",FWTS_SMBIOS_CHASSIS_MULTI_SYSTEM_CHASSIS,	CHASSIS_OTHER },
-	{ "Compact PCI",	FWTS_SMBIOS_CHASSIS_COMPACT_PCI,		CHASSIS_OTHER },
-	{ "Advanced TCA",	FWTS_SMBIOS_CHASSIS_ADVANCED_TCA,		CHASSIS_OTHER },
-	{ "Blade",		FWTS_SMBIOS_CHASSIS_BLADE,			CHASSIS_SERVER },
-	{ "Enclosure",		FWTS_SMBIOS_CHASSIS_BLADE_ENCLOSURE,		CHASSIS_SERVER },
-	{ "Tablet",		FWTS_SMBIOS_CHASSIS_TABLET,			CHASSIS_MOBILE },
-	{ "Convertible",	FWTS_SMBIOS_CHASSIS_CONVERTIBLE,		CHASSIS_MOBILE },
-	{ "Detachable",		FWTS_SMBIOS_CHASSIS_DETACHABLE,			CHASSIS_MOBILE },
-};
-
-static const fwts_chassis_type_map fwts_acpi_pm_profile_type[] = {
-	{ "Unspecified",	FWTS_FACP_UNSPECIFIED,		CHASSIS_OTHER },
-	{ "Desktop",		FWTS_FACP_DESKTOP,		CHASSIS_DESKTOP },
-	{ "Mobile",		FWTS_FACP_MOBILE,		CHASSIS_MOBILE },
-	{ "Workstation",	FWTS_FACP_WORKSTATION,		CHASSIS_WORKSTATION },
-	{ "Enterprise Server",	FWTS_FACP_ENTERPRISE_SERVER,	CHASSIS_SERVER },
-	{ "SOHO Server",	FWTS_FACP_SOHO_SERVER,		CHASSIS_SERVER | CHASSIS_DESKTOP },
-	{ "Appliance PC",	FWTS_FACP_APPLIANCE_PC,		CHASSIS_DESKTOP },
-	{ "Performance Server",	FWTS_FACP_PERFORMANCE_SERVER,	CHASSIS_SERVER },
-	{ "Tablet",		FWTS_FACP_TABLET,		CHASSIS_MOBILE }
+	{ "Invalid",		FWTS_SMBIOS_CHASSIS_INVALID },
+	{ "Other",		FWTS_SMBIOS_CHASSIS_OTHER },
+	{ "Unknown",		FWTS_SMBIOS_CHASSIS_UNKNOWN },
+	{ "Desktop",		FWTS_SMBIOS_CHASSIS_DESKTOP },
+	{ "Low Profile Desktop",FWTS_SMBIOS_CHASSIS_LOW_PROFILE_DESKTOP },
+	{ "Pizza Box",		FWTS_SMBIOS_CHASSIS_PIZZA_BOX },
+	{ "Mini Tower",		FWTS_SMBIOS_CHASSIS_MINI_TOWER },
+	{ "Chassis Tower",	FWTS_SMBIOS_CHASSIS_TOWER },
+	{ "Portable",		FWTS_SMBIOS_CHASSIS_PORTABLE },
+	{ "Laptop",		FWTS_SMBIOS_CHASSIS_LAPTOP },
+	{ "Notebook",		FWTS_SMBIOS_CHASSIS_NOTEBOOK },
+	{ "Handheld",		FWTS_SMBIOS_CHASSIS_HANDHELD },
+	{ "Docking Station",	FWTS_SMBIOS_CHASSIS_DOCKING_STATION },
+	{ "All In One",		FWTS_SMBIOS_CHASSIS_ALL_IN_ONE },
+	{ "Sub Notebook",	FWTS_SMBIOS_CHASSIS_SUB_NOTEBOOK },
+	{ "Space Saving",	FWTS_SMBIOS_CHASSIS_SPACE_SAVING },
+	{ "Lunch Box",		FWTS_SMBIOS_CHASSIS_LUNCH_BOX},
+	{ "Server Chassis",	FWTS_SMBIOS_CHASSIS_MAIN_SERVER_CHASSIS },
+	{ "Expansion Chassis",	FWTS_SMBIOS_CHASSIS_EXPANISON_CHASSIS },
+	{ "Sub Chassis",	FWTS_SMBIOS_CHASSIS_SUB_CHASSIS },
+	{ "Bus Expansion Chassis", FWTS_SMBIOS_CHASSIS_BUS_EXPANSION_CHASSIS },
+	{ "Peripheral Chassis",	FWTS_SMBIOS_CHASSIS_PERIPHERAL_CHASSIS },
+	{ "Raid Chassis",	FWTS_SMBIOS_CHASSIS_RAID_CHASSIS },
+	{ "Rack Mount Chassis",	FWTS_SMBIOS_CHASSIS_RACK_MOUNT_CHASSIS },
+	{ "Sealed Case PC",	FWTS_SMBIOS_CHASSIS_SEALED_CASE_PC },
+	{ "Multi System Chassis",FWTS_SMBIOS_CHASSIS_MULTI_SYSTEM_CHASSIS },
+	{ "Compact PCI",	FWTS_SMBIOS_CHASSIS_COMPACT_PCI },
+	{ "Advanced TCA",	FWTS_SMBIOS_CHASSIS_ADVANCED_TCA },
+	{ "Blade",		FWTS_SMBIOS_CHASSIS_BLADE },
+	{ "Enclosure",		FWTS_SMBIOS_CHASSIS_BLADE_ENCLOSURE },
+	{ "Tablet",		FWTS_SMBIOS_CHASSIS_TABLET },
+	{ "Convertible",	FWTS_SMBIOS_CHASSIS_CONVERTIBLE },
+	{ "Detachable",		FWTS_SMBIOS_CHASSIS_DETACHABLE },
 };
 
 /* Remapping table from buggy version numbers to correct values */
@@ -1002,9 +989,6 @@ static void dmicheck_entry(fwts_framework *fw,
 	uint32_t failed_count = fw->minor_tests.failed;
 	int	battery_count;
 	int	ret;
-	int	both_ok;
-	fwts_acpi_table_info *acpi_table;
-	fwts_acpi_table_fadt *fadt;
 	bool	advice_given = false;
 
 	switch (hdr->type) {
@@ -1058,74 +1042,16 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x1d, 0x0, 0x7f);
-			if (fwts_acpi_find_table(fw, "FACP", 0, &acpi_table) != FWTS_OK)
-				break;
-			if (acpi_table == NULL)
-				break;
-			fadt = (fwts_acpi_table_fadt *)acpi_table->data;
 
-			if (fadt->preferred_pm_profile >=
-				(sizeof(fwts_acpi_pm_profile_type) / sizeof(fwts_chassis_type_map))) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
-					"Incorrect Chassis Type "
-					"ACPI FACP reports 0x%" PRIx8,
-					fadt->preferred_pm_profile);
-				break;
-			}
 			if (data[5] >=
 				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
 					"SMBIOS Type 3 reports 0x%" PRIx8,
 					data[5]);
-				fwts_advice(fw,
-					"The Chassis Type in the ACPI FADT is out of range "
-					"and hence we cannot identify the preferred power "
-					"management profile for this machine.");
 				break;
 			}
 
-			/*
-			 * LP: #1021674
-			 * We should only check profile and chassis types when we know for sure
-			 * that we can compare valid types togther.  So it is only valid to do
-			 * a check if both aren't CHASSIS_OTHER types
-			 */
-			both_ok = (fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].mapped != CHASSIS_OTHER) &
-				  (fwts_dmi_chassis_type[data[5]].mapped != CHASSIS_OTHER);
-
-			if (both_ok &&
-			     !(fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].mapped &
-			       fwts_dmi_chassis_type[data[5]].mapped)) {
-				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
-					"Unmatched Chassis Type: "
-					"SMBIOS Type 3 reports 0x%" PRIx8 " '%s' "
-					"ACPI FACP reports 0x%" PRIx8 " '%s'",
-					data[5],
-					fwts_dmi_chassis_type[data[5]].name,
-					fadt->preferred_pm_profile,
-					fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].name);
-				/*
-				 * Make it a bit more wordy to explain the ramifications
-				 */
-				fwts_advice(fw,
-					"The SMBIOS System Enclosure/Chassis type is defined as "
-					"0x%" PRIx8 " '%s' where as the ACPI FACP reports the preferred "
-					"power management profile is 0x%" PRIx8 " '%s' so we possibly "
-					"have conflicting definitions of the machine's PM profile "
-					"for the type of machine. "
-					"See Table 16 of section 4.5.1 of the SMBIOS specification "
-					"and Table 5-34 of section 5.2.9 of the ACPI specification "
-					"for more details. "
-					"This kind of mismatch may lead to incorrect power "
-					"management handling for the type of workload expected "
-					"for this hardware.",
-					data[5],
-					fwts_dmi_chassis_type[data[5]].name,
-					fadt->preferred_pm_profile,
-					fwts_acpi_pm_profile_type[fadt->preferred_pm_profile].name);
-				advice_given = true;
-			}
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Lock", hdr, 0x5, 0x0, 0x1, 0x7, 0x1);
 			dmi_str_check(fw, table, addr, "Version", hdr, 0x6);
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);

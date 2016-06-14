@@ -113,7 +113,7 @@ static int erst_test1(fwts_framework *fw)
 #endif
 
 		switch (entry->serialization_action) {
-		case 0x00 ... 0x0f:
+		case 0x00 ... 0x10:
 			/* Allow for reserved too */
 			break;
 		default:
@@ -122,7 +122,7 @@ static int erst_test1(fwts_framework *fw)
 				"ERSTIInvalidAction",
 				"ERST Serialization Action 0x%" PRIx8
 				" is an invalid value, values allowed are "
-				"0x00..0x0f",
+				"0x00..0x10",
 				entry->serialization_action);
 			break;
 		}

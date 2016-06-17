@@ -812,8 +812,7 @@ static int getnextvariable_test4(fwts_framework *fw)
 		goto err;
 	}
 
-	/* No first result can be 0 or 1 byte in size. */
-	for (i = 0; i < 2; i++) {
+	for (i = 0; i < 3; i++) {
 		variablenamesize = i;
 		getnextvariablename.VariableNameSize = &variablenamesize;
 
@@ -831,6 +830,8 @@ static int getnextvariable_test4(fwts_framework *fw)
 		 * EFI_NOT_FOUND at this point.
 		 */
 		if (ioret != -1 || status != EFI_BUFFER_TOO_SMALL) {
+			if (i != 2 && status == EFI_INVALID_PARAMETER)
+				continue;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"UEFIRuntimeGetNextVariableName",
 				"Expected EFI_BUFFER_TOO_SMALL with small "

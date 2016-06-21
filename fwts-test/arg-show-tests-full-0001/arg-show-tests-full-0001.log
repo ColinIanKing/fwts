@@ -372,9 +372,10 @@ Batch tests:
   Check device tree presence
   Check device tree baseline validity
   Check device tree warnings
- dt_sysinfo      (2 tests):
+ dt_sysinfo      (3 tests):
   Check model property
   Check system-id property
+  Check OpenPOWER Reference compatible
  ebda            (1 test):
   Test EBDA is reserved in E820 table.
  ecdt            (1 test):

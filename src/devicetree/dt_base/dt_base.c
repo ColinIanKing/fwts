@@ -28,8 +28,9 @@
 static int dt_base_check_present(fwts_framework *fw)
 {
 	if (fw->fdt == NULL) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceTreeBaseAbsent",
-				"No device tree could be loaded");
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DeviceTreeBaseAbsent",
+			"No device tree could be loaded");
 		return FWTS_ERROR;
 	}
 
@@ -41,13 +42,18 @@ static int dt_base_check_valid(fwts_framework *fw)
 {
 	int rc;
 
-	if (fw->fdt == NULL)
-		return FWTS_ABORTED;
+	if (fw->fdt == NULL) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DeviceTreeBaseInvalid",
+			"No device tree could be loaded");
+		return FWTS_ERROR;
+	}
 
 	rc = fdt_check_header(fw->fdt);
 	if (rc != 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceTreeBaseInvalid",
-				"Device tree data is invalid");
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DeviceTreeBaseInvalid",
+			"Device tree data is invalid");
 		return FWTS_ERROR;
 	}
 
@@ -57,44 +63,56 @@ static int dt_base_check_valid(fwts_framework *fw)
 
 static int dt_base_check_warnings(fwts_framework *fw)
 {
-	int rc, status, in_fd, out_fd, ret = FWTS_ERROR;
+	int status = 0, in_fd = 0, out_fd = 0, ret = FWTS_ERROR;
 	ssize_t in_len, out_len;
 	const char *command;
 	char *output = NULL;
 	pid_t pid;
 
-	if (!fw->fdt)
-		return FWTS_ABORTED;
+	if (!fw->fdt) {
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"DTMissing",
+			"Device Tree is missing,"
+			" unable to continue without DT");
+		goto err;
+	}
 
 	command = "dtc -I dtb -O dtb -o /dev/null 2>&1";
-	rc = fwts_pipe_open_rw(command, &pid, &in_fd, &out_fd);
-	if (rc)
-		return FWTS_ABORTED;
+	if (fwts_pipe_open_rw(command, &pid, &in_fd, &out_fd)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DTMissing",
+			"There was a problem obtaining the"
+			" device tree info,"
+			" unable to continue without DT data");
+		goto err;
+	}
 
 	in_len = fdt_totalsize(fw->fdt);
 
-	rc = fwts_pipe_readwrite(in_fd, fw->fdt, in_len,
-			out_fd, &output, &out_len);
-	if (rc) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceTreeBaseDTCPipe",
-				"failed to pipe data to dtc");
-		fwts_pipe_close2(in_fd, out_fd, pid);
-		return FWTS_ERROR;
+	if (fwts_pipe_readwrite(in_fd, fw->fdt, in_len,
+			out_fd, &output, &out_len)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DeviceTreeBaseDTCPipe",
+			"failed to pipe data to dtc");
+		goto err;
 	}
 
 	status = fwts_pipe_close2(in_fd, out_fd, pid);
+	in_fd = out_fd = 0;
 
 	if (status) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DeviceTreeBaseDTCFailed",
-				"dtc reports fatal device tree errors:\n%s\n",
-				output);
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DeviceTreeBaseDTCFailed",
+			"dtc reports fatal device tree errors:%s",
+			output);
 		goto err;
 	}
 
 	if (out_len > 0) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DeviceTreeBaseDTCWarnings",
-				"dtc reports warnings from device tree:\n%s\n",
-				output);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"DeviceTreeBaseDTCWarnings",
+			"dtc reports warnings from device tree:%s",
+			output);
 		goto err;
 	}
 
@@ -103,14 +121,20 @@ static int dt_base_check_warnings(fwts_framework *fw)
 	ret = FWTS_OK;
 
 err:
-	free(output);
+	if (output)
+		free(output);
+	if (in_fd || out_fd)
+		fwts_pipe_close2(in_fd, out_fd, pid);
 	return ret;
 }
 
 static fwts_framework_minor_test dt_base_tests[] = {
-	{ dt_base_check_present,  "Check device tree presence" },
-	{ dt_base_check_valid,    "Check device tree baseline validity" },
-	{ dt_base_check_warnings, "Check device tree warnings" },
+	{ dt_base_check_present,
+		"Check device tree presence" },
+	{ dt_base_check_valid,
+		"Check device tree baseline validity" },
+	{ dt_base_check_warnings,
+		"Check device tree warnings" },
 	{ NULL, NULL },
 };
 

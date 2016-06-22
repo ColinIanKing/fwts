@@ -1,3 +1,43 @@
+fwts (16.06.00-0ubuntu1) yakkety; urgency=low
+
+  [Alex Hung]
+  * acpi: method: acpi 6.0 adds USB-C Connection to _UPC
+  * acpi: method: add _WPP method test (introduced in ACPI 6.1)
+  * acpi: method: add _WPC method test (introduced in ACPI 6.1)
+  * fwts-test: sync up tests for _WPC and _WPP methods
+  * lib: replace hardcoded size=1 in calloc by sizeof(char)
+  * dmi: dmicheck: remove chassis check with acpi pm_profile
+  * acpi: method: update _GCP test according to ACPI 6.1
+  * acpi: einj: erst: update serialization action for ACPI 6.1
+
+  [Colin Ian King]
+  * dmi: dmicheck: fix typo: SBMBIOS should be SMBIOS
+  * Rename fwts_log_*_verbatum to fwts_log_*_verbatim
+  * ACPICA: Update to version 20160527
+  * lib: fwts_ipmi: don't close a -ve fd on error exit return path
+  * lib: fwts_ipmi: remove redundant for loop
+  * lib: fwts_devicetree: fix memory leak on data
+  * devicetree: dt_base: fix resource leak on error exit paths
+  * lib: fwts_arch: set len to 1 to ensure space for '\0'
+  * lib: fwts_args: clean up some scan-build warnings
+  * devicetree/dt_sysinfo: report FWTS_ERROR on non-null termimated property
+  * src/utilities/kernelscan: fix parsing of escaped C strings
+  * lib: fwts_olog.h: fix include guard
+
+  [Deb McLemore]
+  * devicetree/dt_sysinfo: Add OPAL reference compatible checks
+
+  [Ivan Hu]
+  * efi_runtime: changing naming convention without p for pointer
+  * lib: fwts_uefi: update uefi status codes to UEFI 2.6
+  * uefirtvariable: modify getnextvariablename test for VariableNameSize smaller    than 2 (LP: #1593597)
+
+  [Jeffrey Hugo]
+  * lib: acpi: Add support for HEST GHESv2
+  * acpi: hest: Add GHESv2 checking (LP: #1587624)
+ 
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 22 Jun 2016 15:43:04 +0800
+
 fwts (16.05.01-0ubuntu1) yakkety; urgency=low
 
   [Alex Hung]

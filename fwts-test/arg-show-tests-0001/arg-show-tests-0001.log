@@ -112,6 +112,7 @@ Batch tests:
  pcc             Processor Clocking Control (PCC) test.
  pciirq          PCI IRQ Routing Table test.
  pnp             BIOS Support Installation structure test.
+ prd_info        OPAL Processor Recovery Diagnostics Info
  rsdp            RSDP Root System Description Pointer test.
  rsdt            RSDT Root System Description Table test.
  sbst            SBST Smart Battery Specification Table test.

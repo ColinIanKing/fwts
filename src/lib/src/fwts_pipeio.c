@@ -321,6 +321,35 @@ int fwts_exec(const char *command, int *status)
 }
 
 /*
+ *	fwts_exec2()
+ *	execute a command
+ *	Return to the parent/caller the exit status from the command
+ *	status is -1 if errors.
+ */
+
+int fwts_exec2(const char *command, char **output)
+{
+	pid_t   pid;
+	int     status = -1, in_fd, out_fd;
+	ssize_t out_len;
+
+	if (fwts_pipe_open_rw(command, &pid,
+		&in_fd, &out_fd) < 0) {
+		return -1;
+	}
+
+	if (fwts_pipe_readwrite(in_fd,
+		command, sizeof(command),
+		out_fd, output, &out_len)) {
+		return -1;
+	}
+
+	status = fwts_pipe_close2(in_fd, out_fd, pid);
+
+	return status;
+}
+
+/*
  *  fwts_write_string_to_file()
  *	write a string to a file pointer
  *	Return FWTS_OK if writing worked, FWTS_ERROR if it failed.

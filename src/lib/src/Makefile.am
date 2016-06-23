@@ -19,7 +19,8 @@ libfwts_la_LDFLAGS = 			\
 libfwts_la_CPPFLAGS = $(AM_CPPFLAGS) -DACPI_DEBUG_OUTPUT
 
 if HAVE_LIBFDT
-dt_sources = fwts_devicetree.c
+dt_sources = \
+	fwts_devicetree.c
 endif
 
 #

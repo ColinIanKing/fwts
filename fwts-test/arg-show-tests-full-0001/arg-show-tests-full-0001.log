@@ -664,6 +664,8 @@ Batch tests:
   PCI IRQ Routing Table test.
  pnp             (1 test):
   PnP BIOS Support Installation structure test.
+ prd_info        (1 test):
+  OPAL Processor Recovery Diagnostics Info
  rsdp            (1 test):
   RSDP Root System Description Pointer test.
  rsdt            (1 test):

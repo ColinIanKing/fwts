@@ -30,6 +30,7 @@ static const char op_powernv[] = "ibm,powernv";
 
 static const char *firestone_models[] = {
 	"8335-GTA        ",
+	"8335-GCA        ",
 	"8335-GTX        ",
 };
 

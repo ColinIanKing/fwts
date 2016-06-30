@@ -145,7 +145,7 @@ static int dt_sysinfo_check_system_id(fwts_framework *fw)
 	return dt_sysinfo_check_root_property(fw, "system-id", true);
 }
 
-static int prd_fdt_stringlist_contains_last(const char *strlist,
+static bool dt_fdt_stringlist_contains_last(const char *strlist,
 	int listlen,
 	const char *str)
 {
@@ -153,19 +153,17 @@ static int prd_fdt_stringlist_contains_last(const char *strlist,
 	const char *p;
 
 	/* checking for either str only or last in string */
-	if (listlen < 2 ) /* need at least one byte plus nul */
-		return 0;
+	if (listlen < 2) /* need at least one byte plus nul */
+		return false;
 
 	p = memrchr(strlist, '\0', listlen-1);
-	if (!p) {
-		if (memcmp(str, strlist, len+1) == 0)
-			return 1;
+	if (p) {
+		p++;
 	} else {
-		if (memcmp(str, p+1, len+1) == 0)
-			return 1;
+		p = strlist;
 	}
 
-	return 0;
+	return !memcmp(str, p, len+1);
 }
 
 static bool machine_matches_reference_model(fwts_framework *fw,
@@ -181,7 +179,7 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 		i++) {
 		struct reference_platform *plat =
 			&openpower_reference_platforms[i];
-		if (prd_fdt_stringlist_contains_last(compatible,
+		if (dt_fdt_stringlist_contains_last(compatible,
 			compat_len, plat->compatible)) {
 			for (j = 0; j < plat->n_models; j++) {
 				if (!strcmp(model, plat->models[j])) {

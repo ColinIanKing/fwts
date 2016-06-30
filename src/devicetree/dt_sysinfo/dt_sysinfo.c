@@ -171,34 +171,42 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 	int compat_len,
 	const char *model)
 {
-	int i, j;
-	bool found = false;
+	bool compatible_is_reference = false, model_is_reference = false;
+	struct reference_platform *plat;
+	int i;
 
-	for (i = 0;
-		i < (int)FWTS_ARRAY_LEN(openpower_reference_platforms);
-		i++) {
-		struct reference_platform *plat =
-			&openpower_reference_platforms[i];
+	for (i = 0; i < (int)FWTS_ARRAY_LEN(openpower_reference_platforms);
+			i++) {
+		plat = &openpower_reference_platforms[i];
 		if (dt_fdt_stringlist_contains_last(compatible,
-			compat_len, plat->compatible)) {
-			for (j = 0; j < plat->n_models; j++) {
-				if (!strcmp(model, plat->models[j])) {
-					fwts_log_info_verbatim(fw,
-			"Matched reference model, "
-			"device tree \"compatible\" is \"%s\" and "
-			"\"model\" is \"%s\"",
-			plat->compatible, model);
-					found = true;
-					break;
-				}
-			}
-		} else {
-			continue;
-		}
-		if (found)
+				compat_len, plat->compatible)) {
+			compatible_is_reference = true;
 			break;
+		}
 	}
-	return found;
+
+	/* Not a reference platform, nothing to check */
+	if (!compatible_is_reference)
+		return true;
+
+	/* Since we're on a reference platform, ensure that the model is also
+	 * one of the reference model numbers */
+	for (i = 0; i < plat->n_models; i++) {
+		if (!strcmp(model, plat->models[i])) {
+			model_is_reference = true;
+			break;
+		}
+	}
+
+	if (model_is_reference) {
+		fwts_log_info_verbatim(fw,
+			"Matched reference model, device tree "
+			"\"compatible\" is \"%s\" and \"model\" is "
+			"\"%s\"",
+			plat->compatible, model);
+	}
+
+	return model_is_reference;
 }
 
 static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)

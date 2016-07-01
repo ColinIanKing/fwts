@@ -3,6 +3,48 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: SRAT not used",
+   "advice": "The NUMA affinity configuration could not be determined because of errors in the ACPI SRAT table",
+   "label": "KlogAcpiSratNotUsed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "SRAT: Failed to mark hotplug range",
+   "advice": "A hotpluggable memory range failed to be marked as hotpluggable. This generally occurs because the memory range is invalid and may overlap other memory regions.",
+   "label": "KlogAcpiSratNotUsed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Unexpected header length",
+   "advice": "The NUMA affinity configuration could not be determined because the ACPI SRAT table header was the incorrect size.",
+   "label": "KlogAcpiSratBadHeader"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Too many proximity domains",
+   "advice": "The NUMA affinity configuration failed because the number of NUMA nodes is greater than the system defined hard limit of 1 << CONFIG_NODES_SHIFT.  The kernel config value for CONFIG_NODES_SHIFT needs to be increased.",
+   "label": "KlogAcpiSratTooManyNodes"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Failed to add memblk to node",
+   "advice": "The per-architecture NUMA implementation was unable to add a NUMA memory block to the memory information data structures. This may occur if the node id is more than the maximum system configured number of NUMA nodes or all the allowed memory block ranges are used.",
+   "label": "KlogAcpiSratMemBlkAddFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SLIT table looks invalid. Not used",
+   "advice": "The ACPI SLIT (System Locality Distance Information) is not parsable or looks suspect, NUMA affinity cannot be configured.",
+   "label": "KlogAcpiSratMemBlkAddFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "While parsing/handling command line",
    "advice": "The ACPI debugger failed to parse the debug command",

@@ -68,6 +68,8 @@ typedef enum {
 	TOKEN_IDENTIFIER,	/* identifier */
 	TOKEN_PAREN_OPENED,	/* ( */
 	TOKEN_PAREN_CLOSED,	/* ) */
+	TOKEN_SQUARE_OPENED,	/* [ */
+	TOKEN_SQUARE_CLOSED,	/* ] */
 	TOKEN_CPP,		/* # C pre-propressor */
 	TOKEN_WHITE_SPACE,	/* ' ', '\t', '\r', '\n' white space */
 	TOKEN_LESS_THAN,	/* < */
@@ -776,6 +778,14 @@ static int get_token(parser *p, token *t)
 		case ')':
 			token_append(t, ch);
 			t->type = TOKEN_PAREN_CLOSED;
+			return PARSER_OK;
+		case '[':
+			token_append(t, ch);
+			t->type = TOKEN_SQUARE_OPENED;
+			return PARSER_OK;
+		case ']':
+			token_append(t, ch);
+			t->type = TOKEN_SQUARE_CLOSED;
 			return PARSER_OK;
 		case '<':
 			token_append(t, ch);

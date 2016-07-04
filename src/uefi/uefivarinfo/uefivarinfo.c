@@ -27,7 +27,7 @@
 #include <fcntl.h>
 
 #include "fwts_uefi.h"
-#include "efi_runtime.h"
+#include "fwts_efi_runtime.h"
 #include "fwts_efi_module.h"
 
 #define MAX_VARNAME_LENGTH	1024

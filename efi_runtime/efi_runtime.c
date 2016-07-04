@@ -74,32 +74,6 @@ static void convert_to_efi_time(efi_time_t *eft, EFI_TIME *time)
 	eft->pad2 = time->Pad2;
 }
 
-static void convert_from_guid(efi_guid_t *vendor, EFI_GUID *vendor_guid)
-{
-	int i;
-	for (i = 0; i < 16; i++) {
-		if (i < 4)
-			vendor->b[i] = (vendor_guid->Data1 >> (8*i)) & 0xff;
-		else if (i < 6)
-			vendor->b[i] = (vendor_guid->Data2 >> (8*(i-4))) & 0xff;
-		else if (i < 8)
-			vendor->b[i] = (vendor_guid->Data3 >> (8*(i-6))) & 0xff;
-		else
-			vendor->b[i] = (vendor_guid->Data4[i-8]);
-	}
-}
-
-static void convert_to_guid(efi_guid_t *vendor, EFI_GUID *vendor_guid)
-{
-	int i;
-	vendor_guid->Data1 = vendor->b[0] + (vendor->b[1] << 8) +
-				(vendor->b[2] << 16) + (vendor->b[3] << 24);
-	vendor_guid->Data2 = vendor->b[4] + (vendor->b[5] << 8);
-	vendor_guid->Data3 = vendor->b[6] + (vendor->b[7] << 8);
-	for (i = 0; i < 8; i++)
-		vendor_guid->Data4[i] = vendor->b[i+8];
-}
-
 /*
  * Count the bytes in 'str', including the terminating NULL.
  *
@@ -238,7 +212,7 @@ static long efi_runtime_get_variable(unsigned long arg)
 	struct efi_getvariable __user *getvariable;
 	struct efi_getvariable getvariable_local;
 	unsigned long datasize, prev_datasize, *dz;
-	efi_guid_t vendor, *vd = NULL;
+	efi_guid_t vendor_guid, *vd = NULL;
 	efi_status_t status;
 	uint16_t *name = NULL;
 	uint32_t attr, *at;
@@ -254,13 +228,11 @@ static long efi_runtime_get_variable(unsigned long arg)
 	    get_user(datasize, getvariable_local.DataSize))
 		return -EFAULT;
 	if (getvariable_local.VendorGuid) {
-		EFI_GUID vendor_guid;
 
 		if (copy_from_user(&vendor_guid, getvariable_local.VendorGuid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
-		convert_from_guid(&vendor, &vendor_guid);
-		vd = &vendor;
+		vd = &vendor_guid;
 	}
 
 	if (getvariable_local.VariableName) {
@@ -312,8 +284,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 {
 	struct efi_setvariable __user *setvariable;
 	struct efi_setvariable setvariable_local;
-	EFI_GUID vendor_guid;
-	efi_guid_t vendor;
+	efi_guid_t vendor_guid;
 	efi_status_t status;
 	uint16_t *name;
 	void *data;
@@ -327,8 +298,6 @@ static long efi_runtime_set_variable(unsigned long arg)
 	if (copy_from_user(&vendor_guid, setvariable_local.VendorGuid,
 			   sizeof(vendor_guid)))
 		return -EFAULT;
-
-	convert_from_guid(&vendor, &vendor_guid);
 
 	rv = copy_ucs2_from_user(&name, setvariable_local.VariableName);
 	if (rv)
@@ -346,7 +315,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 		return -EFAULT;
 	}
 
-	status = efi.set_variable(name, &vendor, setvariable_local.Attributes,
+	status = efi.set_variable(name, &vendor_guid, setvariable_local.Attributes,
 				  setvariable_local.DataSize, data);
 
 	kfree(data);
@@ -486,8 +455,8 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	struct efi_getnextvariablename getnextvariablename_local;
 	unsigned long name_size, prev_name_size = 0, *ns = NULL;
 	efi_status_t status;
-	efi_guid_t vendor, *vd = NULL;
-	EFI_GUID vendor_guid;
+	efi_guid_t *vd = NULL;
+	efi_guid_t vendor_guid;
 	uint16_t *name = NULL;
 	int rv;
 
@@ -509,8 +478,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		if (copy_from_user(&vendor_guid, getnextvariablename_local.VendorGuid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
-		convert_from_guid(&vendor, &vendor_guid);
-		vd = &vendor;
+		vd = &vendor_guid;
 	}
 
 	if (getnextvariablename_local.VariableName) {
@@ -552,9 +520,8 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	}
 
 	if (vd) {
-		convert_to_guid(vd, &vendor_guid);
 		if (copy_to_user(getnextvariablename_local.VendorGuid,
-				 &vendor_guid, sizeof(EFI_GUID)))
+				 vd, sizeof(efi_guid_t)))
 			return -EFAULT;
 	}
 

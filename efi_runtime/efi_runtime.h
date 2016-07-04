@@ -21,18 +21,13 @@
 #ifndef _EFI_RUNTIME_H_
 #define _EFI_RUNTIME_H_
 
+#include <linux/efi.h>
+
 typedef enum {
 	EfiResetCold,
 	EfiResetWarm,
 	EfiResetShutdown
 } EFI_RESET_TYPE;
-
-typedef struct {
-	uint32_t	Data1;
-	uint16_t	Data2;
-	uint16_t	Data3;
-	uint8_t		Data4[8];
-} __attribute__ ((packed)) EFI_GUID;
 
 typedef struct {
 	uint16_t	Year;		/* 1900 – 9999 */
@@ -55,7 +50,7 @@ typedef struct {
 } __attribute__ ((packed)) EFI_TIME_CAPABILITIES;
 
 typedef struct {
-	EFI_GUID CapsuleGuid;
+	efi_guid_t CapsuleGuid;
 	uint32_t HeaderSize;
 	uint32_t Flags;
 	uint32_t CapsuleImageSize;
@@ -63,7 +58,7 @@ typedef struct {
 
 struct efi_getvariable {
 	uint16_t	*VariableName;
-	EFI_GUID	*VendorGuid;
+	efi_guid_t	*VendorGuid;
 	uint32_t	*Attributes;
 	uint64_t	*DataSize;
 	void		*Data;
@@ -72,7 +67,7 @@ struct efi_getvariable {
 
 struct efi_setvariable {
 	uint16_t	*VariableName;
-	EFI_GUID	*VendorGuid;
+	efi_guid_t	*VendorGuid;
 	uint32_t	Attributes;
 	uint64_t	DataSize;
 	void		*Data;
@@ -82,7 +77,7 @@ struct efi_setvariable {
 struct efi_getnextvariablename {
 	uint64_t	*VariableNameSize;
 	uint16_t	*VariableName;
-	EFI_GUID	*VendorGuid;
+	efi_guid_t	*VendorGuid;
 	uint64_t	*status;
 } __attribute__ ((packed));
 

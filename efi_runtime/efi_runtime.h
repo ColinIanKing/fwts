@@ -29,13 +29,6 @@ typedef enum {
 	EfiResetShutdown
 } EFI_RESET_TYPE;
 
-typedef struct {
-	efi_guid_t CapsuleGuid;
-	uint32_t HeaderSize;
-	uint32_t Flags;
-	uint32_t CapsuleImageSize;
-} __attribute__ ((packed)) EFI_CAPSULE_HEADER;
-
 struct efi_getvariable {
 	uint16_t	*VariableName;
 	efi_guid_t	*VendorGuid;
@@ -99,7 +92,7 @@ struct efi_getnexthighmonotoniccount {
 } __attribute__ ((packed));
 
 struct efi_querycapsulecapabilities {
-	EFI_CAPSULE_HEADER	**CapsuleHeaderArray;
+	efi_capsule_header_t	**CapsuleHeaderArray;
 	uint64_t		CapsuleCount;
 	uint64_t		*MaximumCapsuleSize;
 	EFI_RESET_TYPE		*ResetType;

@@ -564,7 +564,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 {
 	struct efi_querycapsulecapabilities __user *u_caps;
 	struct efi_querycapsulecapabilities caps;
-	EFI_CAPSULE_HEADER *capsules;
+	efi_capsule_header_t *capsules;
 	efi_status_t status;
 	uint64_t max_size;
 	int i, reset_type;
@@ -575,12 +575,12 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		return -EFAULT;
 
 	capsules = kcalloc(caps.CapsuleCount + 1,
-			   sizeof(EFI_CAPSULE_HEADER), GFP_KERNEL);
+			   sizeof(efi_capsule_header_t), GFP_KERNEL);
 	if (!capsules)
 		return -ENOMEM;
 
 	for (i = 0; i < caps.CapsuleCount; i++) {
-		EFI_CAPSULE_HEADER *c;
+		efi_capsule_header_t *c;
 		/*
 		 * We cannot dereference caps.CapsuleHeaderArray directly to
 		 * obtain the address of the capsule as it resides in the
@@ -588,7 +588,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		 */
 		if (get_user(c, caps.CapsuleHeaderArray + i))
 			return -EFAULT;
-		if (copy_from_user(&capsules[i], c, sizeof(EFI_CAPSULE_HEADER)))
+		if (copy_from_user(&capsules[i], c, sizeof(efi_capsule_header_t)))
 			return -EFAULT;
 	}
 

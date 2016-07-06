@@ -45,6 +45,27 @@
   },
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "stale EC events cleared",
+   "advice": "The ACPI Embedded Controller (EC) driver has cleared the maximum number of pending ACPI _Q events that have accumulated in the EC before giving up. There may be more events pending that have not been cleared.",
+   "label": "KlogAcpiEcStaleEvents"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "failed to remove space handler",
+   "advice": "The ACPI Embedded Controller (EC) driver failed to remove the EC address space handler.",
+   "label": "KlogAcpiEcHandlerRemoveFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "failed to remove gpe handler",
+   "advice": "The ACPI Embedded Controller (EC) driver failed to remove the EC General Purpose Events (GPE) handler.",
+   "label": "KlogAcpiEcHandlerRemoveFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "While parsing/handling command line",
    "advice": "The ACPI debugger failed to parse the debug command",

@@ -22,7 +22,8 @@
 typedef enum {
 	EfiResetCold,
 	EfiResetWarm,
-	EfiResetShutdown
+	EfiResetShutdown,
+	EfiResetPlatformSpecific
 } EFI_RESET_TYPE;
 
 typedef struct {

@@ -36,9 +36,6 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/arg-results-no-separators-0001/test-0001.sh \
 	fwts-test/arg-show-progress-dialog-0001/test-0001.sh \
 	fwts-test/arg-show-progress-dialog-0001/test-0002.sh \
-	fwts-test/arg-show-tests-0001/test-0001.sh \
-	fwts-test/arg-show-tests-0001/test-0002.sh \
-	fwts-test/arg-show-tests-full-0001/test-0001.sh \
 	fwts-test/arg-table-path-0001/test-0001.sh \
 	fwts-test/arg-table-path-0001/test-0002.sh \
 	fwts-test/arg-width-0001/test-0001.sh \

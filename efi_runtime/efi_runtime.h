@@ -30,26 +30,6 @@ typedef enum {
 } EFI_RESET_TYPE;
 
 typedef struct {
-	uint16_t	Year;		/* 1900 – 9999 */
-	uint8_t		Month;		/* 1 – 12 */
-	uint8_t		Day;		/* 1 – 31 */
-	uint8_t		Hour;		/* 0 – 23 */
-	uint8_t		Minute;		/* 0 – 59 */
-	uint8_t		Second;		/* 0 – 59 */
-	uint8_t		Pad1;
-	uint32_t	Nanosecond;	/* 0 – 999,999,999 */
-	int16_t		TimeZone;	/* -1440 to 1440 or 2047 */
-	uint8_t		Daylight;
-	uint8_t		Pad2;
-} __attribute__ ((packed)) EFI_TIME;
-
-typedef struct {
-	uint32_t	Resolution;
-	uint32_t	Accuracy;
-	uint8_t		SetsToZero;
-} __attribute__ ((packed)) EFI_TIME_CAPABILITIES;
-
-typedef struct {
 	efi_guid_t CapsuleGuid;
 	uint32_t HeaderSize;
 	uint32_t Flags;
@@ -90,26 +70,26 @@ struct efi_queryvariableinfo {
 } __attribute__ ((packed));
 
 struct efi_gettime {
-	EFI_TIME		*Time;
-	EFI_TIME_CAPABILITIES	*Capabilities;
+	efi_time_t		*Time;
+	efi_time_cap_t		*Capabilities;
 	uint64_t		*status;
 } __attribute__ ((packed));
 
 struct efi_settime {
-	EFI_TIME		*Time;
+	efi_time_t		*Time;
 	uint64_t		*status;
 } __attribute__ ((packed));
 
 struct efi_getwakeuptime {
 	uint8_t		*Enabled;
 	uint8_t		*Pending;
-	EFI_TIME	*Time;
+	efi_time_t	*Time;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_setwakeuptime {
 	uint8_t		Enabled;
-	EFI_TIME	*Time;
+	efi_time_t	*Time;
 	uint64_t	*status;
 } __attribute__ ((packed));
 

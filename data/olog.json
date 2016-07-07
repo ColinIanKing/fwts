@@ -1,33 +1,445 @@
 {
- "olog_error_warning_patterns":
- [
+ "olog_error_warning_patterns": [
   {
-   "compare_mode": "string",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "CRITICAL",
-   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
-   "label": "OLOG_Filter_GROUP1"
-  },
-  {
-   "compare_mode": "string",
-   "log_level": "LOG_LEVEL_HIGH",
-   "pattern": "STOP",
-   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
-   "label": "OLOG_Filter_GROUPA"
-  },
-  {
-   "compare_mode": "string",
-   "log_level": "LOG_LEVEL_MEDIUM",
-   "pattern": "STOP",
-   "advice": "SAMPLE TEXT -> Check your log for this condition and give some specific investigative and action steps.",
-   "label": "OLOG_Filter_GROUPB"
-  },
-  {
+   "advice": "Start debugging why we didn't find the right device. End result is that NVLink will not function properly",
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_LOW",
-   "pattern": "Trying.*",
-   "advice": "SAMPLE TEXT -> This needs further investigation and review, please take xyz corrective action.",
-   "label": "OLOG_Filter_GROUPC"
+   "label": "NPUNotBound",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: NPU device [0-9a-f]+:00:[0-9a-f]+.0 not binding to PCI device"
+  },
+  {
+   "advice": "NVLink not functional",
+   "compare_mode": "regex",
+   "label": "NPUisnInvalid",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "NPU[0-9]+: isn 0x[0-9a-f]+ not valid for this NPU"
+  },
+  {
+   "advice": "NVLink not functional",
+   "compare_mode": "string",
+   "label": "NPUATBARDisabled",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "AT BAR disabled!"
+  },
+  {
+   "advice": "Error adding the PHB device node. The only real reason for this is that firmware may have run out of memory.",
+   "compare_mode": "regex",
+   "label": "NPUPHBDeviceNodeFailure",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Cannot create PHB device node"
+  },
+  {
+   "advice": "Firmware probably ran out of memory creating NPU slot. NVLink functionality could be broken.",
+   "compare_mode": "string",
+   "label": "NPUCannotCreatePHBSlot",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "NPU: Cannot create PHB slot"
+  },
+  {
+   "advice": "OPAL failed to add the power-mgt device tree node. This could mean that firmware ran out of memory, or there's a bug somewhere.",
+   "compare_mode": "string",
+   "label": "CreateDTPowerMgtNodeFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "creating dt node /ibm,opal/power-mgt failed"
+  },
+  {
+   "advice": "An error condition occured in sleep/winkle engines timer state machine. Dumping debug information to root-cause. OPAL/skiboot may be stuck on some operation that requires SLW timer state machine (e.g. core powersaving)",
+   "compare_mode": "string",
+   "label": "SLWRegisterDump",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "SLW: Register state:"
+  },
+  {
+   "advice": "The HOMER base address for a chip was not valid. This means that OCC (On Chip Controller) will be non-functional and CPU frequency scaling will not be functional. CPU may be set to a safe, low frequency. Power savings in CPU idle or CPU hotplug may be impacted.",
+   "compare_mode": "regex",
+   "label": "OCCInvalidHomerBase",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: Chip: [0-9a-f]+ homer_base is not valid"
+  },
+  {
+   "advice": "The pstate table for a chip was not valid. This means that OCC (On Chip Controller) will be non-functional and CPU frequency scaling will not be functional. CPU may be set to a low, safe frequency. This means that CPU idle states and CPU frequency scaling may not be functional.",
+   "compare_mode": "regex",
+   "label": "OCCInvalidPStateTable",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: Chip: [0-9a-f]+ PState table is not valid"
+  },
+  {
+   "advice": "The pstate table for the first chip was not valid. This means that OCC (On Chip Controller) will be non-functional. This means that CPU idle states and CPU frequency scaling will not be functional as OPAL doesn't populate the device tree with pstates in this case.",
+   "compare_mode": "string",
+   "label": "OCCInvalidPStateTableDT",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: PState table is not valid"
+  },
+  {
+   "advice": "The number of pstates is outside the valid range (currently <=1 or > 128), so OPAL has not added pstates to the device tree. This means that OCC (On Chip Controller) will be non-functional. This means that CPU idle states and CPU frequency scaling will not be functional.",
+   "compare_mode": "string",
+   "label": "OCCInvalidPStateRange",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: OCC range is not valid"
+  },
+  {
+   "advice": "Device tree node /ibm,opal/power-mgt not found. OPAL didn't add pstate information to device tree. Probably a firmware bug.",
+   "compare_mode": "string",
+   "label": "OCCDTNodeNotFound",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt node /ibm,opal/power-mgt not found"
+  },
+  {
+   "advice": "Out of memory when allocating pstates array. No Pstates added to device tree, pstates not functional.",
+   "compare_mode": "string",
+   "label": "OCCdt_idENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt_id array alloc failure"
+  },
+  {
+   "advice": "Out of memory when allocating pstates array. No Pstates added to device tree, pstates not functional.",
+   "compare_mode": "string",
+   "label": "OCCdt_freqENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt_freq array alloc failure"
+  },
+  {
+   "advice": "Out of memory when allocating pstates array. No Pstates added to device tree, pstates not functional.",
+   "compare_mode": "string",
+   "label": "OCCdt_vddENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt_vdd array alloc failure"
+  },
+  {
+   "advice": "Out of memory when allocating pstates array. No Pstates added to device tree, pstates not functional.",
+   "compare_mode": "string",
+   "label": "OCCdt_vcsENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt_vcs array alloc failure"
+  },
+  {
+   "advice": "Out of memory allocating dt_core_max array. No PStates in Device Tree: non-functional power/frequency management.",
+   "compare_mode": "string",
+   "label": "OCCdt_core_maxENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: dt_core_max alloc failure"
+  },
+  {
+   "advice": "ENOMEM while allocating OCC load message. OCCs not started, consequently no power/frequency scaling will be functional.",
+   "compare_mode": "string",
+   "label": "OCCload_reqENOMEM",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: Could not allocate occ_load_req"
+  },
+  {
+   "advice": "Invalid request for loading OCCs. Power and frequency management not functional",
+   "compare_mode": "regex",
+   "label": "OCCLoadInvalidScope",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: Load message with invalid scope 0x[0-9a-f]+"
+  },
+  {
+   "advice": "Invalid request for resetting OCCs. Power and frequency management not functional",
+   "compare_mode": "regex",
+   "label": "OCCResetInvalidScope",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OCC: Reset message with invalid scope 0x[0-9a-f]+"
+  },
+  {
+   "advice": "OPAL had trouble creating the sensor nodes in the device tree as there was already one there. This indicates either the device tree from Hostboot already filled in sensors or an OPAL bug.",
+   "compare_mode": "regex",
+   "label": "OPALSensorNodeExists",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "SENSOR: node .* exists"
+  },
+  {
+   "advice": "Failed to update System Attention Indicator. Likely means some bug with OPAL interacting with FSP.",
+   "compare_mode": "regex",
+   "label": "FSPSAIFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Update SAI cmd failed [rc=[0-9]+]."
+  },
+  {
+   "advice": "OPAL ran out of memory while trying to allocate an FSP message in SAI code path. This indicates an OPAL bug that caused OPAL to run out of memory.",
+   "compare_mode": "regex",
+   "label": "SAIMallocFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Memory allocation failed."
+  },
+  {
+   "advice": "Error in queueing message to FSP in SAI code path. Likely an OPAL bug.",
+   "compare_mode": "regex",
+   "label": "SAIQueueFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Failed to queue the message"
+  },
+  {
+   "advice": "Possibly an error on FSP side, OPAL failed to read state from FSP.",
+   "compare_mode": "regex",
+   "label": "FSPSAIGetFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Read real SAI cmd failed [rc = 0x[0-9a-f]+]."
+  },
+  {
+   "advice": "OPAL ran out of memory: OPAL bug.",
+   "compare_mode": "regex",
+   "label": "FSPGetSAIMallocFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Memory allocation failed."
+  },
+  {
+   "advice": "Failed to queue message to FSP: OPAL bug",
+   "compare_mode": "regex",
+   "label": "FSPGetSAIQueueFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Failed to queue the message"
+  },
+  {
+   "advice": "OPAL failed to allocate memory for FSP LED command. Likely an OPAL bug led to out of memory.",
+   "compare_mode": "string",
+   "label": "FSPLEDRequestMallocFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "SPCN set command node allocation failed"
+  },
+  {
+   "advice": "Inconsistent state between OPAL and FSP in code path for handling failure of fetching error log from FSP. Likely a bug in interaction between FSP and OPAL.",
+   "compare_mode": "regex",
+   "label": "ElogFetchFailureInconsistent",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Inconsistent internal list state !"
+  },
+  {
+   "advice": "Bug in interaction between FSP and OPAL. We expected there to be a pending read from FSP but the list was empty.",
+   "compare_mode": "regex",
+   "label": "ElogQueueInconsistent",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Inconsistent internal list state !"
+  },
+  {
+   "advice": "We expected there to be an entry in the list of error logs for the error log we're fetching information for. There wasn't. This means there's a bug.",
+   "compare_mode": "regex",
+   "label": "ElogInfoInconsistentState",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Inconsistent internal list state !"
+  },
+  {
+   "advice": "Inconsistent state while reading error log from FSP. Bug in OPAL and FSP interaction.",
+   "compare_mode": "regex",
+   "label": "ElogReadInconsistentState",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Inconsistent internal list state !"
+  },
+  {
+   "advice": "Error in acknowledging heartbeat to FSP. This could mean the FSP has gone away or it may mean the FSP may kill us for missing too many heartbeats.",
+   "compare_mode": "string",
+   "label": "FSPHeartbeatAckError",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "SURV: Heartbeat Acknowledgment error from FSP"
+  },
+  {
+   "advice": "Bug in interaction between FSP and OPAL. The state maintained by OPAL didn't match what the FSP sent.",
+   "compare_mode": "regex",
+   "label": "ElogListInconsistent",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": ".*: Inconsistent internal list state !"
+  },
+  {
+   "advice": "Bug in skiboot/FSP code for EPOW event handling",
+   "compare_mode": "string",
+   "label": "EPOWSignatureMismatch",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Signature mismatch"
+  },
+  {
+   "advice": "Queueing a message from OPAL to FSP failed. This is likely due to either an OPAL bug or the FSP going away.",
+   "compare_mode": "string",
+   "label": "EPOWMessageQueueFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OPAL EPOW message queuing failed"
+  },
+  {
+   "advice": "In negotiating PNOR access with BMC, we got an odd/invalid request from the BMC. Likely a bug in OPAL/BMC interaction.",
+   "compare_mode": "regex",
+   "label": "InvalidPNORAccessRequest",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "invalid PNOR access requested: [0-9a-f]+"
+  },
+  {
+   "advice": "Likely bug in what sent us the OCC reset.",
+   "compare_mode": "regex",
+   "label": "SELUnknownOCCReset",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "SEL message to reset an unknown OCC (sensor ID 0x[0-9a-f]+)"
+  },
+  {
+   "advice": "opal_i2c_request was passed an invalid bus ID. This has likely come from the OS rather than OPAL and thus could indicate an OS bug rather than an OPAL bug.",
+   "compare_mode": "string",
+   "label": "I2CInvalidBusID",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "I2C: Invalid 'bus_id' passed to the OPAL"
+  },
+  {
+   "advice": "OPAL failed to allocate memory for an i2c_request. This points to an OPAL bug as OPAL ran out of memory and this should never happen.",
+   "compare_mode": "string",
+   "label": "I2CFailedAllocation",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "I2C: Failed to allocate 'i2c_request'"
+  },
+  {
+   "advice": "HBRT triggered assert: you need to debug HBRT",
+   "compare_mode": "string",
+   "label": "HBRTassert",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "HBRT: Assertion from hostservices"
+  },
+  {
+   "advice": "Firmware should have aborted boot",
+   "compare_mode": "string",
+   "label": "HBRTlidLoadFail",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "HBRT: LID Load failed"
+  },
+  {
+   "advice": "OPAL could not find an NVRAM partition on the system flash. Check that the system flash has a valid partition table, and that the firmware build process has added a NVRAM partition.",
+   "compare_mode": "string",
+   "label": "NVRAMNoPartition",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "FLASH: Can't parse ffs info for NVRAM"
+  },
+  {
+   "advice": "More than one flash device was registered as the system flash device. Check for duplicate calls to flash_register(..., true).",
+   "compare_mode": "regex",
+   "label": "SystemFlashDuplicate",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "FLASH: attempted to register a second system flash device .*"
+  },
+  {
+   "advice": "OPAL Could not read a partition table on system flash. Since we've still booted the machine (which requires flash), check that we're registering the proper system flash device.",
+   "compare_mode": "regex",
+   "label": "SystemFlashNoPartitionTable",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "FLASH: attempted to register system flash .*, which has no partition info"
+  },
+  {
+   "advice": "System has more flash chips than skiboot was configured to know about. Your system will not be able to access some of the flash it has.",
+   "compare_mode": "string",
+   "label": "NoFlashSlots",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "FLASH: No flash slots available"
+  },
+  {
+   "advice": "System flash isn't formatted as expected. This could mean several OPAL utilities do not function as expected. e.g. gard, pflash.",
+   "compare_mode": "string",
+   "label": "NoFFS",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "FLASH: No ffs info; using raw device only"
+  },
+  {
+   "advice": "OPAL was called with a bad token. On POWER8 and earlier, Linux kernels had a bug where they wouldn't check if firmware supported particular OPAL calls before making them. It is, in fact, harmless for these cases. On systems newer than POWER8, this should never happen and indicates a kernel bug where OPAL_CHECK_TOKEN isn't being called where it should be.",
+   "compare_mode": "regex",
+   "label": "OPALBadToken",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OPAL: Called with bad token [0-9]+ !"
+  },
+  {
+   "advice": "Currently removing a poller is DANGEROUS and MUST NOT be done in production firmware.",
+   "compare_mode": "string",
+   "label": "UnsupportedOPALdelpoller",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "WARNING: Unsupported opal_del_poller. Interesting locking issues, don't call this."
+  },
+  {
+   "advice": "Recursion detected in opal_run_pollers(). This indicates a bug in OPAL where a poller ended up running pollers, which doesn't lead anywhere good.",
+   "compare_mode": "string",
+   "label": "OPALPollerRecursion",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "OPAL: Poller recursion detected."
+  },
+  {
+   "advice": "opal_run_pollers() was called with a lock held, which could lead to deadlock if not excessively lucky/careful.",
+   "compare_mode": "string",
+   "label": "OPALPollerWithLock",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Running pollers with lock held !"
+  },
+  {
+   "advice": "Your firmware is buggy, see the 64 messages complaining about opal_run_pollers with lock held.",
+   "compare_mode": "string",
+   "label": "OPALPollerWithLock64",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "opal_run_pollers with lock run 64 times, disabling warning."
+  },
+  {
+   "advice": "OPAL hit an assert(). During normal usage (even testing) we should never hit an assert. There are other code paths for controlled shutdown/panic in the event of catastrophic errors.",
+   "compare_mode": "regex",
+   "label": "FailedAssert",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Assert fail: .*"
+  },
+  {
+   "advice": "Device tree didn't contain enough information to correctly report back PCI inventory. Service processor is likely to be missing information about what hardware is physically present in the machine.",
+   "compare_mode": "regex",
+   "label": "FirenzePCIInventory",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "No chip device node for PHB[0-9a-f]+"
+  },
+  {
+   "advice": "More PCI inventory than we can send to service processor. The service processor will have an incomplete view of the world.",
+   "compare_mode": "regex",
+   "label": "FirenzePCIInventoryTooLarge",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Inventory ([0-9]+ bytes) too large"
+  },
+  {
+   "advice": "Error communicating with service processor when sending PCI Inventory.",
+   "compare_mode": "regex",
+   "label": "FirenzePCIInventoryError",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Error [0-9]+ sending inventory"
+  },
+  {
+   "advice": "On Firenze platforms, I2C is used to control power to PCI slots. Errors here mean we may be in trouble in regards to PCI slot power on/off.",
+   "compare_mode": "regex",
+   "label": "FirenzePCII2CError",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Error [0-9]+ from I2C request on slot [0-9a-f]+"
+  },
+  {
+   "advice": "Likely a coding error: invalid I2C request.",
+   "compare_mode": "regex",
+   "label": "FirenzePCII2CInvalid",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Invalid I2C request [0-9]+ on slot [0-9a-f]+"
+  },
+  {
+   "advice": "The Firenze platform uses I2C to control power to PCI slots. Something went wrong in the state machine controlling that. Slots may/may not have power.",
+   "compare_mode": "regex",
+   "label": "FirenzePCISlotI2CStateError",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Wrong state [0-9a-f]+ on slot [0-9a-f]+"
+  },
+  {
+   "advice": "Unexpected state in the FIRENZE PCI Slot state machine. This could mean PCI is not functioning correctly.",
+   "compare_mode": "regex",
+   "label": "FirenzePCISlotGPowerState",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "[0-9a-f]+ GPOWER: Unexpected state [0-9a-f]+"
+  },
+  {
+   "advice": "Unexpected state in the FIRENZE PCI Slot state machine. This could mean PCI is not functioning correctly.",
+   "compare_mode": "regex",
+   "label": "FirenzePCISlotSPowerState",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "[0-9a-f]+ SPOWER: Unexpected state [0-9a-f]+"
+  },
+  {
+   "advice": "AST BMC is likely to be non-functional when accessed from host.",
+   "compare_mode": "string",
+   "label": "ASTBMCFailedSetEnables",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "ASTBMC: failed to set enables"
+  },
+  {
+   "advice": "HDAT described an invalid size for timebase, which means there's a disagreement between HDAT and OPAL. This is most certainly a firmware bug.",
+   "compare_mode": "regex",
+   "label": "HDATBadTimebaseSize",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "HDAT: Bad timebase size [0-9]+ @ (0x[0-9a-f]+|nil)"
   }
  ]
 }

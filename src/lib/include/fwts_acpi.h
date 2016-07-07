@@ -488,7 +488,8 @@ typedef enum {
 	FWTS_ACPI_MADT_GIC_V2M_MSI_FRAME,
 	FWTS_ACPI_MADT_GIC_R_REDISTRIBUTOR,
 	FWTS_ACPI_MADT_GIC_ITS,
-        FWTS_ACPI_MADT_RESERVED
+	FWTS_ACPI_MADT_RESERVED, /* does not have defined structure */
+	FWTS_ACPI_MADT_OEM /* does not have defined structure */
 } fwts_acpi_madt_type;
 
 /* Type 0, FWTS_ACPI_MADT_LOCAL_APIC */

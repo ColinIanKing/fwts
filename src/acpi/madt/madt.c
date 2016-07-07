@@ -399,6 +399,8 @@ static const char *madt_sub_names[] = {
 	/* 0x0d */ "GICv2m MSI Frame",
 	/* 0x0e */ "GICR Redistributor",
 	/* 0x0f */ "GIC Interrupt Translation Service (ITS)",
+	/* 0x10 - 0x7f */ "Reserved. OSPM skips structures of the reserved type.",
+	/* 0x80 - 0xff */ "Reserved for OEM use",
 	NULL
 };
 
@@ -1207,8 +1209,9 @@ static int madt_subtables(fwts_framework *fw)
 
 	while (length > (ssize_t)sizeof(fwts_acpi_madt_sub_table_header)) {
 		ssize_t skip = 0;
-		int len;
+		int len = 0;
 		bool passed = true;
+		int type;
 
 		hdr = (fwts_acpi_madt_sub_table_header *)data;
 		ii++;
@@ -1216,18 +1219,32 @@ static int madt_subtables(fwts_framework *fw)
 		data += sizeof(fwts_acpi_madt_sub_table_header);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
 
-		/* is this subtable type defined? */
-		len = ms->lengths[hdr->type];
+		/* set initial type value, will be overriden for OEM and
+		 * reserved entries */
+		type = hdr->type;
+
+		/* check for OEM and reserved entries */
+		if (hdr->type >= NUM_SUBTABLE_TYPES) {
+			if (hdr->type < 0x80)
+				type = FWTS_ACPI_MADT_RESERVED;
+			else
+				type = FWTS_ACPI_MADT_OEM;
+			len = hdr->length;
+		} else {
+			/* this subtable is defined */
+			len = ms->lengths[hdr->type];
+		}
+
 		if (!len) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubType",
 				    "Undefined MADT subtable type for this "
 				    "version of the MADT: %d (%s)",
-				    hdr->type, madt_sub_names[hdr->type]);
+				    hdr->type, madt_sub_names[type]);
 		} else {
 			fwts_passed(fw,
 				    "MADT subtable type %d (%s) is defined.",
-				    hdr->type, madt_sub_names[hdr->type]);
+				    hdr->type, madt_sub_names[type]);
 		}
 
 		/* verify that the length is what we expect */
@@ -1250,7 +1267,7 @@ static int madt_subtables(fwts_framework *fw)
 				    "Subtable %d of type %d (%s) is the "
 				    " correct length: %d",
 				    ii, hdr->type,
-				    madt_sub_names[hdr->type],
+				    madt_sub_names[type],
 				    hdr->length);
 		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -1258,12 +1275,12 @@ static int madt_subtables(fwts_framework *fw)
 				    "Subtable %d of type %d (%s) is %d bytes "
 				    " long but should be %d bytes",
 				    ii, hdr->type,
-				    madt_sub_names[hdr->type],
+				    madt_sub_names[type],
 				    hdr->length, len);
 		}
 
 		/* perform checks specific to subtable types */
-		switch (hdr->type) {
+		switch (type) {
 		case FWTS_ACPI_MADT_LOCAL_APIC:
 			skip = madt_local_apic(fw, hdr, data);
 			break;
@@ -1328,17 +1345,32 @@ static int madt_subtables(fwts_framework *fw)
 			skip = madt_gic_its(fw, hdr, data);
 			break;
 
+		case FWTS_ACPI_MADT_RESERVED:
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SPECMADTSubReservedID",
+				    "MADT subtable %d is using the "
+				    "reserved value 0x%x for a type. "
+				    "Subtable type values 0x10..0x7f "
+				    "are reserved; 0x80..0xff can be "
+				    "used by OEMs.",
+				    ii, hdr->type);
+			skip = (hdr->length -
+				sizeof(fwts_acpi_madt_sub_table_header));
+			break;
+		case FWTS_ACPI_MADT_OEM:
+			/* OEM entries must be assumed to be valid */
+			skip = (hdr->length -
+				sizeof(fwts_acpi_madt_sub_table_header));
+			break;
 		default:
-			if (hdr->type >= 0x10 && hdr->type <= 0x7f)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					    "SPECMADTSubReservedID",
-					    "MADT subtable %d is using the "
-					    "reserved value 0x%x for a type. "
-					    "Subtable type values 0x10..0x7f "
-					    "are reserved; 0x80..0xff can be "
-					    "used by OEMs.",
-					    ii, hdr->type);
-			skip = hdr->length;
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "SPECMADTSubReservedID",
+				    "MADT subtable %d is using value 0x%x "
+				    "for a type.  This value is out of the "
+				    "expected range of 0x00 .. 0xff.",
+				    ii, hdr->type);
+			skip = (hdr->length -
+				sizeof(fwts_acpi_madt_sub_table_header));
 			break;
 		}
 

@@ -2,6 +2,20 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "found a zero length table .* parsing nfit",
+   "advice": "An ACPI NVDIMM Firmware Interface Table (NFIT) header indicates a NFIT table has an invalid zero size and has been ignored. This will lead to a NVDIMM not being recognised by the system",
+   "label": "KlogAcpiNfitZereSize"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SPA .* missing DCR",
+   "advice": "An ACPI NVDIMM Firmware Interface Table (NFIT) Control Region Structure (DCR) is missing a System Physical Address (SPA), NFIT table is incorrect.",
+   "label": "KlogAcpiNfitDcrSpaError"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Error installing CMOS-RTC region handler",

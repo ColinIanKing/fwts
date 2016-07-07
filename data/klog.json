@@ -2,6 +2,20 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "no secondary bus range in _CRS",
+   "advice": "ACPI evaluated a _CRS (Current Resource Setting) object to determine the start and end of of a PCI downsteam bus range and did not find the end address, so an end address of 0xff is being assumed",
+   "label": "KlogAcpiPciCrsNoEndAddr"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "failed to parse _CRS method, error code",
+   "advice": "ACPI tried to evaluateda _CRS (Current Resource Setting) object to determine PCI root resources, but the _CRS object could not be parsed.",
+   "label": "KlogAcpiPciCrsParseError"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "found a zero length table .* parsing nfit",

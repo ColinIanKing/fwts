@@ -1253,7 +1253,7 @@ summary          klog: HIGH Kernel message: [ 44.661543] ACPI Warning for _SB_.P
 summary          klog: HIGH Kernel message: [ 50.737630] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMI: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
 summary          klog: HIGH Kernel message: [ 50.737686] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMS: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
 summary         
-summary         Medium failures: 331
+summary         Medium failures: 330
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x3E, should be 0x41 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x65, should be 0x68 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x69, should be 0x6C (20110112/tbutils-314)
@@ -1504,7 +1504,6 @@ summary          klog: MEDIUM Kernel message: [ 0.644838] [Firmware Bug]: PCI: M
 summary          klog: MEDIUM Kernel message: [ 0.646493] ACPI Warning: Incorrect checksum in table [OEMB] - 0x5F, should be 0x5A (20100428/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.653985] ACPI Warning: Incorrect checksum in table [TAMG] - 0x4A, should be 0x49 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.656750] ACPI Warning: Incorrect checksum in table [OEMB] - 06, should be 05 20090521 tbutils-246
-summary          klog: MEDIUM Kernel message: [ 0.663194] [Firmware Bug]: ACPI: no secondary bus range in _CRS
 summary          klog: MEDIUM Kernel message: [ 0.664875] ACPI Warning: Incorrect checksum in table [TAMG] - 0x45, should be 0x44 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.666686] ACPI Warning: Incorrect checksum in table [TAMG] - 0x9E, should be 0x9D (20100428/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.670109] ACPI Warning: Incorrect checksum in table [OEMB] - 5B, should be 4E (20090903/tbutils-314)
@@ -1586,8 +1585,9 @@ summary          klog: MEDIUM Kernel message: [ 3.382442] ACPI Warning: Incorrec
 summary          klog: MEDIUM Kernel message: [ 3.644168] ACPI Warning: Incorrect checksum in table [TCPA] - 0xF8, should be 0x9C (20110413/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 4.046031] ACPI Warning: Incorrect checksum in table [OEMB] - 4A, should be 47 (20090903/tbutils-314)
 summary         
-summary         Low failures: 14
+summary         Low failures: 15
 summary          klog: LOW Kernel message: [ 0.094856] [Firmware Bug]: ACPI: No _BQC method, cannot determine initial brightness
+summary          klog: LOW Kernel message: [ 0.663194] [Firmware Bug]: ACPI: no secondary bus range in _CRS
 summary          klog: LOW Kernel message: [ 0.810246] [Firmware Bug]: ACPI(Z01I) defines _DOD but not _DOS
 summary          klog: LOW Kernel message: [ 1.183989] [Firmware Bug]: ACPI(PEGD) defines _DOD but not _DOS
 summary          klog: LOW Kernel message: [ 1.398000] [Firmware Bug]: ACPI(Z00P) defines _DOD but not _DOS

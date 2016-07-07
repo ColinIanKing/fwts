@@ -9094,13 +9094,14 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [MEDIUM] KlogAcpiCrsSecondaryBusRangeMissing: Test
-klog            1, MEDIUM Kernel message: [ 0.663194] [Firmware Bug]: ACPI
-klog            : no secondary bus range in _CRS
+klog            FAILED [LOW] KlogAcpiPciCrsNoEndAddr: Test 1, LOW Kernel
+klog            message: [ 0.663194] [Firmware Bug]: ACPI: no secondary
+klog            bus range in _CRS
 klog            
-klog            ADVICE: _CRS Method should return a secondary bus address
-klog            for the status/command port. The kernel is having to guess
-klog            this based on the _BBN or assume it's 0x00-0xff.
+klog            ADVICE: ACPI evaluated a _CRS (Current Resource Setting)
+klog            object to determine the start and end of of a PCI
+klog            downsteam bus range and did not find the end address, so
+klog            an end address of 0xff is being assumed
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
 klog            MEDIUM Kernel message: [ 0.664875] ACPI Warning: Incorrect

@@ -67,7 +67,10 @@ static int olog_test1(fwts_framework *fw)
 	int errors = 0;
 
 	if (fwts_olog_firmware_check(fw, olog_progress, olog, &errors)) {
-		fwts_log_error(fw, "Problem in the OLOG processing, see earlier in this log for details on the problem.");
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			"olog_firmware_check",
+			"Problem in the OLOG processing, see earlier in"
+			" this log for details on the problem.");
 		return FWTS_ERROR;
 	}
 

@@ -174,9 +174,10 @@ olog_cleanup_common:
 	(void)fclose(msglog_outfile_f);
 
 olog_common_exit:
-	fwts_log_error(fw, "Problem with the file handling on the default dumped "
-		"OPAL msglog, %s, try using -o to specify a specific saved OPAL "
-		"msglog for analysis.", msglog_outfile);
+	fwts_log_error(fw, "Problem with the file handling on the"
+		" default dumped OPAL msglog, %s, try running with"
+		" sudo first then try using -o to specify a specific"
+		" saved OPAL msglog for analysis.", msglog_outfile);
 	return NULL;
 }
 

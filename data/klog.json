@@ -3,6 +3,13 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Failed to parse MCFG",
+   "advice": "The ACPI MCFG (PCI Express memory mapped configuration space base address Description Table) cannot be parsed (due to an error in the table) and so PCIe memory mapped configuration has failed - expect PCIe devices not to function",
+   "label": "KlogAcpiMcfgParseFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "no secondary bus range in _CRS",
    "advice": "ACPI evaluated a _CRS (Current Resource Setting) object to determine the start and end of of a PCI downsteam bus range and did not find the end address, so an end address of 0xff is being assumed",

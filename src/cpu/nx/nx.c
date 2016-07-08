@@ -34,6 +34,12 @@ static int nx_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	if (fwts_nx_cpuinfo->flags == NULL) {
+		fwts_log_error(fw, "Cannot get CPU flags");
+		fwts_cpu_free_info(fwts_nx_cpuinfo);
+		return FWTS_ERROR;
+	}
+
 	if (strstr(fwts_nx_cpuinfo->flags," nx")) {
 		fwts_passed(fw, "CPU has NX flags, BIOS is not disabling it.");
 		fwts_cpu_free_info(fwts_nx_cpuinfo);
@@ -105,6 +111,11 @@ static int nx_test2(fwts_framework *fw)
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
+		if (fwts_nx_cpuinfo->flags == NULL) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUInfoRead", "Cannot get CPU%d flags", i);
+			fwts_cpu_free_info(fwts_nx_cpuinfo);
+			return FWTS_ERROR;
+		}
 		if (i == 0) {
 			cpu0_has_nx = (strstr(fwts_nx_cpuinfo->flags," nx") != NULL);
 		} else {
@@ -146,6 +157,11 @@ static int nx_test3(fwts_framework *fw)
 
 		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
 			fwts_log_error(fw, "Cannot get CPU info");
+			return FWTS_ERROR;
+		}
+		if (fwts_nx_cpuinfo->vendor_id == NULL) {
+			fwts_log_error(fw, "Cannot get CPU vendor ID");
+			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
 		}
 		if (strstr(fwts_nx_cpuinfo->vendor_id, "Intel") == NULL) {

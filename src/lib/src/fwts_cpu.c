@@ -171,6 +171,10 @@ static int fwts_cpu_matches_vendor_id(const char *vendor_id, bool *matches)
 
 	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_ERROR;
+	if (cpu->vendor_id == NULL) {
+		fwts_cpu_free_info(cpu);
+		return FWTS_ERROR;
+	}
 
         *matches = (strstr(cpu->vendor_id, vendor_id) != NULL);
 
@@ -203,6 +207,14 @@ fwts_bool fwts_cpu_has_c1e(void)
 
 	if ((cpu = fwts_cpu_get_info(0)) == NULL)
 		return FWTS_BOOL_ERROR;
+	if (cpu->flags == NULL) {
+		rc FWTS_BOOL_ERROR;
+		goto free_info;
+	}
+	if (cpu->vendor_id == NULL) {
+		rc FWTS_BOOL_ERROR;
+		goto free_info;
+	}
 
 	/* no C1E on AMD */
         if (strstr(cpu->vendor_id, "AuthenticAMD") == NULL) {

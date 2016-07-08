@@ -48,6 +48,16 @@ static int virt_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	if (fwts_virt_cpuinfo->vendor_id == NULL) {
+		fwts_log_error(fw, "Cannot get CPU vendor ID");
+		return FWTS_ERROR;
+	}
+
+	if (fwts_virt_cpuinfo->flags == NULL) {
+		fwts_log_error(fw, "Cannot get CPU flags");
+		return FWTS_ERROR;
+	}
+
 	return FWTS_OK;
 }
 

@@ -518,6 +518,10 @@ static int mtrr_test2(fwts_framework *fw)
 
 static int mtrr_test3(fwts_framework *fw)
 {
+	if (fwts_cpuinfo->vendor_id == NULL) {
+		fwts_log_error(fw, "Cannot get CPU vendor_id");
+		return FWTS_ERROR;
+	}
 	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
 		if (klog != NULL) {
 			if (fwts_klog_regex_find(fw, klog, "SYSCFG[MtrrFixDramModEn] not cleared by BIOS, clearing this bit") > 0)

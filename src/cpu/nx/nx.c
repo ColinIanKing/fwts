@@ -29,7 +29,7 @@ static int nx_test1(fwts_framework *fw)
 {
 	fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 
-	if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+	if ((fwts_nx_cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}
@@ -106,7 +106,7 @@ static int nx_test2(fwts_framework *fw)
 	for (i = 0; i < n; i++) {
 		fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 
-		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NXCPUInfoRead", "Cannot get CPU%d info", i);
 			fwts_cpu_free_info(fwts_nx_cpuinfo);
 			return FWTS_ERROR;
@@ -155,7 +155,7 @@ static int nx_test3(fwts_framework *fw)
 		fwts_cpuinfo_x86 *fwts_nx_cpuinfo;
 		uint64_t val;
 
-		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+		if ((fwts_nx_cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 			fwts_log_error(fw, "Cannot get CPU info");
 			return FWTS_ERROR;
 		}

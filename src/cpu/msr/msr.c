@@ -33,7 +33,7 @@ static int msr_init(fwts_framework *fw)
 {
 	char *bios_vendor;
 
-	if ((cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+	if ((cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}

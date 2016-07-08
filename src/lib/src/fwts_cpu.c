@@ -99,9 +99,10 @@ void fwts_cpu_free_info(fwts_cpuinfo_x86 *cpu)
 
 /*
  *  fwts_cpu_get_info()
- *	get CPU information for specified CPU
+ *	get CPU information for specified CPU.
+ *	Specify the CPU as -1 to query the first online CPU.
  */
-fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
+fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 {
 	FILE *fp;
 	char buffer[1024];
@@ -127,6 +128,8 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(const int which_cpu)
 
 		if (!strncmp(buffer, "processor", 9)) {
 			sscanf(ptr, "%d", &cpu_num);
+			if (which_cpu == -1)
+				which_cpu = cpu_num;
 			if (cpu_num > which_cpu)
 				break;
 			continue;
@@ -176,7 +179,7 @@ static int fwts_cpu_matches_vendor_id(const char *vendor_id, bool *matches)
 {
 	fwts_cpuinfo_x86 *cpu;
 
-	if ((cpu = fwts_cpu_get_info(0)) == NULL)
+	if ((cpu = fwts_cpu_get_info(-1)) == NULL)
 		return FWTS_ERROR;
 	if (cpu->vendor_id == NULL) {
 		fwts_cpu_free_info(cpu);
@@ -212,7 +215,7 @@ fwts_bool fwts_cpu_has_c1e(void)
 
 	fwts_cpuinfo_x86 *cpu;
 
-	if ((cpu = fwts_cpu_get_info(0)) == NULL)
+	if ((cpu = fwts_cpu_get_info(-1)) == NULL)
 		return FWTS_BOOL_ERROR;
 	if (cpu->flags == NULL) {
 		rc FWTS_BOOL_ERROR;

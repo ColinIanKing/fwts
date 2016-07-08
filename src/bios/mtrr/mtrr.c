@@ -457,7 +457,7 @@ static int mtrr_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if ((fwts_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+	if ((fwts_cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}

@@ -43,7 +43,7 @@ fwts_cpuinfo_x86 *fwts_virt_cpuinfo;
 
 static int virt_init(fwts_framework *fw)
 {
-	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(0)) == NULL) {
+	if ((fwts_virt_cpuinfo = fwts_cpu_get_info(-1)) == NULL) {
 		fwts_log_error(fw, "Cannot get CPU info");
 		return FWTS_ERROR;
 	}

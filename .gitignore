@@ -1,5 +1,7 @@
 *~
+.*
 *.o
+*.lo
 *.swp
 Makefile
 Makefile.in
@@ -20,9 +22,11 @@ Makefile.in
 /ltmain.sh
 /missing
 /stamp-h1
-.deps
-.dirstamp
 test-driver
+results.log
 debian/*.debhelper.log
 debian/autoreconf.after
 debian/autoreconf.before
+src/fwts
+src/lib/src/libfwts.la
+src/utilities/kernelscan

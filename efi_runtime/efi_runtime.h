@@ -24,72 +24,72 @@
 #include <linux/efi.h>
 
 struct efi_getvariable {
-	uint16_t	*VariableName;
-	efi_guid_t	*VendorGuid;
-	uint32_t	*Attributes;
-	uint64_t	*DataSize;
-	void		*Data;
+	uint16_t	*variable_name;
+	efi_guid_t	*vendor_guid;
+	uint32_t	*attributes;
+	uint64_t	*data_size;
+	void		*data;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_setvariable {
-	uint16_t	*VariableName;
-	efi_guid_t	*VendorGuid;
-	uint32_t	Attributes;
-	uint64_t	DataSize;
-	void		*Data;
+	uint16_t	*variable_name;
+	efi_guid_t	*vendor_guid;
+	uint32_t	attributes;
+	uint64_t	data_size;
+	void		*data;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_getnextvariablename {
-	uint64_t	*VariableNameSize;
-	uint16_t	*VariableName;
-	efi_guid_t	*VendorGuid;
+	uint64_t	*variable_name_size;
+	uint16_t	*variable_name;
+	efi_guid_t	*vendor_guid;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_queryvariableinfo {
-	uint32_t	Attributes;
-	uint64_t	*MaximumVariableStorageSize;
-	uint64_t	*RemainingVariableStorageSize;
-	uint64_t	*MaximumVariableSize;
+	uint32_t	attributes;
+	uint64_t	*maximum_variable_storage_size;
+	uint64_t	*remaining_variable_storage_size;
+	uint64_t	*maximum_variable_size;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_gettime {
-	efi_time_t		*Time;
-	efi_time_cap_t		*Capabilities;
+	efi_time_t		*time;
+	efi_time_cap_t		*capabilities;
 	uint64_t		*status;
 } __attribute__ ((packed));
 
 struct efi_settime {
-	efi_time_t		*Time;
+	efi_time_t		*time;
 	uint64_t		*status;
 } __attribute__ ((packed));
 
 struct efi_getwakeuptime {
-	uint8_t		*Enabled;
-	uint8_t		*Pending;
-	efi_time_t	*Time;
+	uint8_t		*enabled;
+	uint8_t		*pending;
+	efi_time_t	*time;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_setwakeuptime {
-	uint8_t		Enabled;
-	efi_time_t	*Time;
+	uint8_t		enabled;
+	efi_time_t	*time;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_getnexthighmonotoniccount {
-	uint32_t	*HighCount;
+	uint32_t	*high_count;
 	uint64_t	*status;
 } __attribute__ ((packed));
 
 struct efi_querycapsulecapabilities {
-	efi_capsule_header_t	**CapsuleHeaderArray;
-	uint64_t		CapsuleCount;
-	uint64_t		*MaximumCapsuleSize;
-	int			*ResetType;
+	efi_capsule_header_t	**capsule_header_array;
+	uint64_t		capsule_count;
+	uint64_t		*maximum_capsule_size;
+	int			*reset_type;
 	uint64_t		*status;
 } __attribute__ ((packed));
 

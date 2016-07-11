@@ -192,27 +192,27 @@ static long efi_runtime_get_variable(unsigned long arg)
 	if (copy_from_user(&getvariable_local, getvariable,
 			   sizeof(getvariable_local)))
 		return -EFAULT;
-	if (getvariable_local.DataSize &&
-	    get_user(datasize, getvariable_local.DataSize))
+	if (getvariable_local.data_size &&
+	    get_user(datasize, getvariable_local.data_size))
 		return -EFAULT;
-	if (getvariable_local.VendorGuid) {
+	if (getvariable_local.vendor_guid) {
 
-		if (copy_from_user(&vendor_guid, getvariable_local.VendorGuid,
+		if (copy_from_user(&vendor_guid, getvariable_local.vendor_guid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
 		vd = &vendor_guid;
 	}
 
-	if (getvariable_local.VariableName) {
-		rv = copy_ucs2_from_user(&name, getvariable_local.VariableName);
+	if (getvariable_local.variable_name) {
+		rv = copy_ucs2_from_user(&name, getvariable_local.variable_name);
 		if (rv)
 			return rv;
 	}
 
-	at = getvariable_local.Attributes ? &attr : NULL;
-	dz = getvariable_local.DataSize ? &datasize : NULL;
+	at = getvariable_local.attributes ? &attr : NULL;
+	dz = getvariable_local.data_size ? &datasize : NULL;
 
-	if (getvariable_local.DataSize && getvariable_local.Data) {
+	if (getvariable_local.data_size && getvariable_local.data) {
 		data = kmalloc(datasize, GFP_KERNEL);
 		if (!data) {
 			ucs2_kfree(name);
@@ -226,7 +226,7 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	if (data) {
 		if (status == EFI_SUCCESS && prev_datasize >= datasize)
-			rv = copy_to_user(getvariable_local.Data, data, datasize);
+			rv = copy_to_user(getvariable_local.data, data, datasize);
 		kfree(data);
 	}
 
@@ -236,9 +236,9 @@ static long efi_runtime_get_variable(unsigned long arg)
 	if (put_user(status, getvariable_local.status))
 		return -EFAULT;
 	if (status == EFI_SUCCESS && prev_datasize >= datasize) {
-		if (at && put_user(attr, getvariable_local.Attributes))
+		if (at && put_user(attr, getvariable_local.attributes))
 			return -EFAULT;
-		if (dz && put_user(datasize, getvariable_local.DataSize))
+		if (dz && put_user(datasize, getvariable_local.data_size))
 			return -EFAULT;
 		return 0;
 	} else {
@@ -263,28 +263,28 @@ static long efi_runtime_set_variable(unsigned long arg)
 	if (copy_from_user(&setvariable_local, setvariable,
 			   sizeof(setvariable_local)))
 		return -EFAULT;
-	if (copy_from_user(&vendor_guid, setvariable_local.VendorGuid,
+	if (copy_from_user(&vendor_guid, setvariable_local.vendor_guid,
 			   sizeof(vendor_guid)))
 		return -EFAULT;
 
-	rv = copy_ucs2_from_user(&name, setvariable_local.VariableName);
+	rv = copy_ucs2_from_user(&name, setvariable_local.variable_name);
 	if (rv)
 		return rv;
 
-	data = kmalloc(setvariable_local.DataSize, GFP_KERNEL);
+	data = kmalloc(setvariable_local.data_size, GFP_KERNEL);
 	if (!data) {
 		ucs2_kfree(name);
 		return -ENOMEM;
 	}
-	if (copy_from_user(data, setvariable_local.Data,
-			   setvariable_local.DataSize)) {
+	if (copy_from_user(data, setvariable_local.data,
+			   setvariable_local.data_size)) {
 		ucs2_kfree(data);
 		kfree(name);
 		return -EFAULT;
 	}
 
-	status = efi.set_variable(name, &vendor_guid, setvariable_local.Attributes,
-				  setvariable_local.DataSize, data);
+	status = efi.set_variable(name, &vendor_guid, setvariable_local.attributes,
+				  setvariable_local.data_size, data);
 
 	kfree(data);
 	ucs2_kfree(name);
@@ -306,8 +306,8 @@ static long efi_runtime_get_time(unsigned long arg)
 	if (copy_from_user(&gettime_local, gettime, sizeof(gettime_local)))
 		return -EFAULT;
 
-	status = efi.get_time(gettime_local.Time ? &efi_time : NULL,
-			      gettime_local.Capabilities ? &cap : NULL);
+	status = efi.get_time(gettime_local.time ? &efi_time : NULL,
+			      gettime_local.capabilities ? &cap : NULL);
 
 	if (put_user(status, gettime_local.status))
 		return -EFAULT;
@@ -315,18 +315,18 @@ static long efi_runtime_get_time(unsigned long arg)
 		printk(KERN_ERR "efitime: can't read time\n");
 		return -EINVAL;
 	}
-	if (gettime_local.Capabilities) {
+	if (gettime_local.capabilities) {
 		efi_time_cap_t __user *cap_local;
 
-		cap_local = (efi_time_cap_t *)gettime_local.Capabilities;
+		cap_local = (efi_time_cap_t *)gettime_local.capabilities;
 		if (put_user(cap.resolution,
 				&(cap_local->resolution)) ||
 				put_user(cap.accuracy, &(cap_local->accuracy)) ||
 				put_user(cap.sets_to_zero,&(cap_local->sets_to_zero)))
 			return -EFAULT;
 	}
-	if (gettime_local.Time)
-		return copy_to_user(gettime_local.Time, &efi_time,
+	if (gettime_local.time)
+		return copy_to_user(gettime_local.time, &efi_time,
 			sizeof(efi_time_t)) ? -EFAULT : 0;
 	return 0;
 }
@@ -341,7 +341,7 @@ static long efi_runtime_set_time(unsigned long arg)
 	settime = (struct efi_settime __user *)arg;
 	if (copy_from_user(&settime_local, settime, sizeof(settime_local)))
 		return -EFAULT;
-	if (copy_from_user(&efi_time, settime_local.Time,
+	if (copy_from_user(&efi_time, settime_local.time,
 					sizeof(efi_time_t)))
 		return -EFAULT;
 	status = efi.set_time(&efi_time);
@@ -365,19 +365,19 @@ static long efi_runtime_get_waketime(unsigned long arg)
 		return -EFAULT;
 
 	status = efi.get_wakeup_time(
-		getwakeuptime_local.Enabled ? (efi_bool_t *)&enabled : NULL,
-		getwakeuptime_local.Pending ? (efi_bool_t *)&pending : NULL,
-		getwakeuptime_local.Time ? &efi_time : NULL);
+		getwakeuptime_local.enabled ? (efi_bool_t *)&enabled : NULL,
+		getwakeuptime_local.pending ? (efi_bool_t *)&pending : NULL,
+		getwakeuptime_local.time ? &efi_time : NULL);
 
 	if (put_user(status, getwakeuptime_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
-	if (getwakeuptime_local.Enabled && put_user(enabled, getwakeuptime_local.Enabled))
+	if (getwakeuptime_local.enabled && put_user(enabled, getwakeuptime_local.enabled))
 		return -EFAULT;
 
-	if (getwakeuptime_local.Time)
-		return copy_to_user(getwakeuptime_local.Time, &efi_time,
+	if (getwakeuptime_local.time)
+		return copy_to_user(getwakeuptime_local.time, &efi_time,
 			sizeof(efi_time_t)) ? -EFAULT : 0;
 	return 0;
 }
@@ -395,9 +395,9 @@ static long efi_runtime_set_waketime(unsigned long arg)
 	if (copy_from_user(&setwakeuptime_local, setwakeuptime, sizeof(setwakeuptime_local)))
 		return -EFAULT;
 
-	enabled = setwakeuptime_local.Enabled;
-	if (setwakeuptime_local.Time) {
-		if (copy_from_user(&efi_time, setwakeuptime_local.Time, sizeof(efi_time_t)))
+	enabled = setwakeuptime_local.enabled;
+	if (setwakeuptime_local.time) {
+		if (copy_from_user(&efi_time, setwakeuptime_local.time, sizeof(efi_time_t)))
 			return -EFAULT;
 
 		status = efi.set_wakeup_time(enabled, &efi_time);
@@ -429,23 +429,23 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 			   sizeof(getnextvariablename_local)))
 		return -EFAULT;
 
-	if (getnextvariablename_local.VariableNameSize) {
-		if (get_user(name_size, getnextvariablename_local.VariableNameSize))
+	if (getnextvariablename_local.variable_name_size) {
+		if (get_user(name_size, getnextvariablename_local.variable_name_size))
 			return -EFAULT;
 		ns = &name_size;
 		prev_name_size = name_size;
 	}
 
-	if (getnextvariablename_local.VendorGuid) {
-		if (copy_from_user(&vendor_guid, getnextvariablename_local.VendorGuid,
+	if (getnextvariablename_local.vendor_guid) {
+		if (copy_from_user(&vendor_guid, getnextvariablename_local.vendor_guid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
 		vd = &vendor_guid;
 	}
 
-	if (getnextvariablename_local.VariableName) {
+	if (getnextvariablename_local.variable_name) {
 		size_t name_string_size = 0;
-		rv = get_ucs2_strsize_from_user(getnextvariablename_local.VariableName, &name_string_size);
+		rv = get_ucs2_strsize_from_user(getnextvariablename_local.variable_name, &name_string_size);
 		if (rv)
 			return rv;
 		/*
@@ -457,7 +457,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		 * as we expected.
 		 */
 		rv = copy_ucs2_from_user_len(&name,
-					     getnextvariablename_local.VariableName,
+					     getnextvariablename_local.variable_name,
 					     prev_name_size > name_string_size ? prev_name_size : name_string_size);
 		if (rv)
 			return rv;
@@ -466,7 +466,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	status = efi.get_next_variable(ns, name, vd);
 
 	if (name) {
-		rv = copy_ucs2_to_user_len(getnextvariablename_local.VariableName,
+		rv = copy_ucs2_to_user_len(getnextvariablename_local.variable_name,
 					   name, prev_name_size);
 		ucs2_kfree(name);
 		if (rv)
@@ -477,12 +477,12 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		return -EFAULT;
 
 	if (ns) {
-		if (put_user(*ns, getnextvariablename_local.VariableNameSize))
+		if (put_user(*ns, getnextvariablename_local.variable_name_size))
 			return -EFAULT;
 	}
 
 	if (vd) {
-		if (copy_to_user(getnextvariablename_local.VendorGuid,
+		if (copy_to_user(getnextvariablename_local.vendor_guid,
 				 vd, sizeof(efi_guid_t)))
 			return -EFAULT;
 	}
@@ -508,13 +508,13 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 		return -EFAULT;
 
 	status = efi.get_next_high_mono_count(
-		getnexthighmonotoniccount_local.HighCount ? &count : NULL);
+		getnexthighmonotoniccount_local.high_count ? &count : NULL);
 
 	if (put_user(status, getnexthighmonotoniccount_local.status))
 		return -EFAULT;
 
-	if (getnexthighmonotoniccount_local.HighCount &&
-	    put_user(count, getnexthighmonotoniccount_local.HighCount))
+	if (getnexthighmonotoniccount_local.high_count &&
+	    put_user(count, getnexthighmonotoniccount_local.high_count))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)
@@ -538,18 +538,18 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 			   sizeof(queryvariableinfo_local)))
 		return -EFAULT;
 
-	status = efi.query_variable_info(queryvariableinfo_local.Attributes,
+	status = efi.query_variable_info(queryvariableinfo_local.attributes,
 					 &max_storage, &remaining, &max_size);
 
 	if (put_user(max_storage,
-		     queryvariableinfo_local.MaximumVariableStorageSize))
+		     queryvariableinfo_local.maximum_variable_storage_size))
 		return -EFAULT;
 
 	if (put_user(remaining,
-		     queryvariableinfo_local.RemainingVariableStorageSize))
+		     queryvariableinfo_local.remaining_variable_storage_size))
 		return -EFAULT;
 
-	if (put_user(max_size, queryvariableinfo_local.MaximumVariableSize))
+	if (put_user(max_size, queryvariableinfo_local.maximum_variable_size))
 		return -EFAULT;
 
 	if (put_user(status, queryvariableinfo_local.status))
@@ -574,38 +574,38 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 	if (copy_from_user(&caps, u_caps, sizeof(caps)))
 		return -EFAULT;
 
-	capsules = kcalloc(caps.CapsuleCount + 1,
+	capsules = kcalloc(caps.capsule_count + 1,
 			   sizeof(efi_capsule_header_t), GFP_KERNEL);
 	if (!capsules)
 		return -ENOMEM;
 
-	for (i = 0; i < caps.CapsuleCount; i++) {
+	for (i = 0; i < caps.capsule_count; i++) {
 		efi_capsule_header_t *c;
 		/*
 		 * We cannot dereference caps.CapsuleHeaderArray directly to
 		 * obtain the address of the capsule as it resides in the
 		 * user space
 		 */
-		if (get_user(c, caps.CapsuleHeaderArray + i))
+		if (get_user(c, caps.capsule_header_array + i))
 			return -EFAULT;
 		if (copy_from_user(&capsules[i], c, sizeof(efi_capsule_header_t)))
 			return -EFAULT;
 	}
 
-	caps.CapsuleHeaderArray = &capsules;
+	caps.capsule_header_array = &capsules;
 
 	status = efi.query_capsule_caps((efi_capsule_header_t **)
-					caps.CapsuleHeaderArray,
-					caps.CapsuleCount,
+					caps.capsule_header_array,
+					caps.capsule_count,
 					&max_size, &reset_type);
 
 	if (put_user(status, caps.status))
 		return -EFAULT;
 
-	if (put_user(max_size, caps.MaximumCapsuleSize))
+	if (put_user(max_size, caps.maximum_capsule_size))
 		return -EFAULT;
 
-	if (put_user(reset_type, caps.ResetType))
+	if (put_user(reset_type, caps.reset_type))
 		return -EFAULT;
 
 	if (status != EFI_SUCCESS)

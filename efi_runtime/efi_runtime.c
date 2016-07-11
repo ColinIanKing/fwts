@@ -15,7 +15,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+ *  USA.
  */
 
 #include <linux/version.h>
@@ -79,8 +80,7 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
  */
 static inline void ucs2_kfree(uint16_t *buf)
 {
-	if (buf)
-		kfree(buf);
+	kfree(buf);
 }
 
 /*
@@ -204,7 +204,8 @@ static long efi_runtime_get_variable(unsigned long arg)
 	}
 
 	if (getvariable_local.variable_name) {
-		rv = copy_ucs2_from_user(&name, getvariable_local.variable_name);
+		rv = copy_ucs2_from_user(&name,
+				getvariable_local.variable_name);
 		if (rv)
 			return rv;
 	}
@@ -226,7 +227,8 @@ static long efi_runtime_get_variable(unsigned long arg)
 
 	if (data) {
 		if (status == EFI_SUCCESS && prev_datasize >= datasize)
-			rv = copy_to_user(getvariable_local.data, data, datasize);
+			rv = copy_to_user(getvariable_local.data, data,
+				datasize);
 		kfree(data);
 	}
 
@@ -283,8 +285,9 @@ static long efi_runtime_set_variable(unsigned long arg)
 		return -EFAULT;
 	}
 
-	status = efi.set_variable(name, &vendor_guid, setvariable_local.attributes,
-				  setvariable_local.data_size, data);
+	status = efi.set_variable(name, &vendor_guid,
+				setvariable_local.attributes,
+				setvariable_local.data_size, data);
 
 	kfree(data);
 	ucs2_kfree(name);
@@ -312,7 +315,7 @@ static long efi_runtime_get_time(unsigned long arg)
 	if (put_user(status, gettime_local.status))
 		return -EFAULT;
 	if (status != EFI_SUCCESS) {
-		printk(KERN_ERR "efitime: can't read time\n");
+		pr_err("efitime: can't read time\n");
 		return -EINVAL;
 	}
 	if (gettime_local.capabilities) {
@@ -320,9 +323,9 @@ static long efi_runtime_get_time(unsigned long arg)
 
 		cap_local = (efi_time_cap_t *)gettime_local.capabilities;
 		if (put_user(cap.resolution,
-				&(cap_local->resolution)) ||
-				put_user(cap.accuracy, &(cap_local->accuracy)) ||
-				put_user(cap.sets_to_zero,&(cap_local->sets_to_zero)))
+			&(cap_local->resolution)) ||
+			put_user(cap.accuracy, &(cap_local->accuracy)) ||
+			put_user(cap.sets_to_zero, &(cap_local->sets_to_zero)))
 			return -EFAULT;
 	}
 	if (gettime_local.time)
@@ -361,7 +364,8 @@ static long efi_runtime_get_waketime(unsigned long arg)
 	efi_time_t efi_time;
 
 	getwakeuptime = (struct efi_getwakeuptime __user *)arg;
-	if (copy_from_user(&getwakeuptime_local, getwakeuptime, sizeof(getwakeuptime_local)))
+	if (copy_from_user(&getwakeuptime_local, getwakeuptime,
+				sizeof(getwakeuptime_local)))
 		return -EFAULT;
 
 	status = efi.get_wakeup_time(
@@ -373,7 +377,8 @@ static long efi_runtime_get_waketime(unsigned long arg)
 		return -EFAULT;
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
-	if (getwakeuptime_local.enabled && put_user(enabled, getwakeuptime_local.enabled))
+	if (getwakeuptime_local.enabled && put_user(enabled,
+						getwakeuptime_local.enabled))
 		return -EFAULT;
 
 	if (getwakeuptime_local.time)
@@ -392,12 +397,14 @@ static long efi_runtime_set_waketime(unsigned long arg)
 
 	setwakeuptime = (struct efi_setwakeuptime __user *)arg;
 
-	if (copy_from_user(&setwakeuptime_local, setwakeuptime, sizeof(setwakeuptime_local)))
+	if (copy_from_user(&setwakeuptime_local, setwakeuptime,
+				sizeof(setwakeuptime_local)))
 		return -EFAULT;
 
 	enabled = setwakeuptime_local.enabled;
 	if (setwakeuptime_local.time) {
-		if (copy_from_user(&efi_time, setwakeuptime_local.time, sizeof(efi_time_t)))
+		if (copy_from_user(&efi_time, setwakeuptime_local.time,
+					sizeof(efi_time_t)))
 			return -EFAULT;
 
 		status = efi.set_wakeup_time(enabled, &efi_time);
@@ -430,35 +437,41 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		return -EFAULT;
 
 	if (getnextvariablename_local.variable_name_size) {
-		if (get_user(name_size, getnextvariablename_local.variable_name_size))
+		if (get_user(name_size,
+				getnextvariablename_local.variable_name_size))
 			return -EFAULT;
 		ns = &name_size;
 		prev_name_size = name_size;
 	}
 
 	if (getnextvariablename_local.vendor_guid) {
-		if (copy_from_user(&vendor_guid, getnextvariablename_local.vendor_guid,
-			   sizeof(vendor_guid)))
+		if (copy_from_user(&vendor_guid,
+				getnextvariablename_local.vendor_guid,
+				sizeof(vendor_guid)))
 			return -EFAULT;
 		vd = &vendor_guid;
 	}
 
 	if (getnextvariablename_local.variable_name) {
 		size_t name_string_size = 0;
-		rv = get_ucs2_strsize_from_user(getnextvariablename_local.variable_name, &name_string_size);
+
+		rv = get_ucs2_strsize_from_user(
+				getnextvariablename_local.variable_name,
+				&name_string_size);
 		if (rv)
 			return rv;
 		/*
-		 * name_size may be smaller than the real buffer size where VariableName
-		 * located in some use cases. The most typical case is passing a 0 to
-		 * get the required buffer size for the 1st time call. So we need to
-		 * copy the content from user space for at least the string size of
-		 * VariableName, or else the name passed to UEFI may not be terminated
-		 * as we expected.
+		 * name_size may be smaller than the real buffer size where
+		 * VariableName located in some use cases. The most typical
+		 * case is passing a 0 toget the required buffer size for the
+		 * 1st time call. So we need to copy the content from user
+		 * space for at least the string size ofVariableName, or else
+		 * the name passed to UEFI may not be terminatedas we expected.
 		 */
 		rv = copy_ucs2_from_user_len(&name,
-					     getnextvariablename_local.variable_name,
-					     prev_name_size > name_string_size ? prev_name_size : name_string_size);
+				getnextvariablename_local.variable_name,
+				prev_name_size > name_string_size ?
+				prev_name_size : name_string_size);
 		if (rv)
 			return rv;
 	}
@@ -466,8 +479,9 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	status = efi.get_next_variable(ns, name, vd);
 
 	if (name) {
-		rv = copy_ucs2_to_user_len(getnextvariablename_local.variable_name,
-					   name, prev_name_size);
+		rv = copy_ucs2_to_user_len(
+				getnextvariablename_local.variable_name,
+				name, prev_name_size);
 		ucs2_kfree(name);
 		if (rv)
 			return -EFAULT;
@@ -477,7 +491,8 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		return -EFAULT;
 
 	if (ns) {
-		if (put_user(*ns, getnextvariablename_local.variable_name_size))
+		if (put_user(*ns,
+			getnextvariablename_local.variable_name_size))
 			return -EFAULT;
 	}
 
@@ -524,7 +539,7 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 }
 
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 1, 0)
 static long efi_runtime_query_variableinfo(unsigned long arg)
 {
 	struct efi_queryvariableinfo __user *queryvariableinfo;
@@ -588,7 +603,8 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		 */
 		if (get_user(c, caps.capsule_header_array + i))
 			return -EFAULT;
-		if (copy_from_user(&capsules[i], c, sizeof(efi_capsule_header_t)))
+		if (copy_from_user(&capsules[i], c,
+				sizeof(efi_capsule_header_t)))
 			return -EFAULT;
 	}
 
@@ -643,7 +659,7 @@ static long efi_runtime_ioctl(struct file *file, unsigned int cmd,
 	case EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT:
 		return efi_runtime_get_nexthighmonocount(arg);
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,1,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 1, 0)
 	case EFI_RUNTIME_QUERY_VARIABLEINFO:
 		return efi_runtime_query_variableinfo(arg);
 
@@ -691,17 +707,15 @@ static int __init efi_runtime_init(void)
 {
 	int ret;
 
-	printk(KERN_INFO "EFI_RUNTIME Driver v%s\n", EFI_FWTS_EFI_VERSION);
-
 	if (!EFI_RUNTIME_ENABLED) {
-		printk(KERN_INFO "EFI runtime services not enabled.\n");
+		pr_err("EFI runtime services not enabled.\n");
 		return -ENODEV;
 	}
 
 	ret = misc_register(&efi_runtime_dev);
 	if (ret) {
-		printk(KERN_ERR "efi_runtime: can't misc_register on minor=%d\n",
-				MISC_DYNAMIC_MINOR);
+		pr_err("efi_runtime: can't misc_register on minor=%d\n",
+			MISC_DYNAMIC_MINOR);
 		return ret;
 	}
 
@@ -710,7 +724,6 @@ static int __init efi_runtime_init(void)
 
 static void __exit efi_runtime_exit(void)
 {
-	printk(KERN_INFO "EFI_RUNTIME Driver Exit.\n");
 	misc_deregister(&efi_runtime_dev);
 }
 

@@ -23,13 +23,6 @@
 
 #include <linux/efi.h>
 
-typedef enum {
-	EfiResetCold,
-	EfiResetWarm,
-	EfiResetShutdown,
-	EfiResetPlatformSpecific
-} EFI_RESET_TYPE;
-
 struct efi_getvariable {
 	uint16_t	*VariableName;
 	efi_guid_t	*VendorGuid;
@@ -96,7 +89,7 @@ struct efi_querycapsulecapabilities {
 	efi_capsule_header_t	**CapsuleHeaderArray;
 	uint64_t		CapsuleCount;
 	uint64_t		*MaximumCapsuleSize;
-	EFI_RESET_TYPE		*ResetType;
+	int			*ResetType;
 	uint64_t		*status;
 } __attribute__ ((packed));
 

@@ -200,8 +200,15 @@ static int prd_info_init(fwts_framework *fw)
 		}
 #endif
 	} else {
-		fwts_log_info(fw, "The OPAL PRD device tree node"
-			" is not present so skipping test");
+		fwts_log_info(fw, "The OPAL PRD device tree node is not"
+			" able to be detected so skipping the prd_info"
+			" test.  There may be tools missing such as"
+			" libfdt-dev or dtc, check that the packages"
+			" are installed and re-build if needed."
+			" If this condition persists try running the"
+			" dt_base test to further diagnose. If dt_base"
+			" test is not available this is probably a"
+			" setup problem.");
 		return FWTS_SKIP;
 	}
 

@@ -3,6 +3,35 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Err sending PCC mbox message. cmd",
+   "advice": "The ACPI CPPC (Collaborative Processor Performance Control) driver attempted to send a command via the PCC mailbox but it failed to be sent. If this persists then the CPU freq drivers cannot control CPU performance using the _CPC ACPI tables.",
+   "label": "KlogAcpiCppcSendError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to find PCC communication channel",
+   "advice": "The ACPI CPPC (Collaborative Processor Performance Control) driver could not find the requested PCC communication channel and so the CPU freq driver cannot control CPU performance via the _CPC ACPI tables.  This error occurs because the requested PCC communication channel is not defined in the ACPI Platform Communications Channel Table (PCCT).",
+   "label": "KlogAcpiPccFailure"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "No PCC subspace found for CPPC",
+   "advice": "The PCC mailbox controller could not parse the ACPI Pl
+atform Communications Channel Table (PCCT) and find the PCC subspace communication region. The CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
+   "label": "KlogAcpiPccNoSubspace"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to ioremap PCC comm region mem",
+   "advice": "The ACPI CPPC driver could not map the PCC subspace communication region, so the CPU freq driver cannot control CPU performance via the _CPC ACPI tables.",
+   "label": "KlogAcpiCppcIomapFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Failed to parse MCFG",
    "advice": "The ACPI MCFG (PCI Express memory mapped configuration space base address Description Table) cannot be parsed (due to an error in the table) and so PCIe memory mapped configuration has failed - expect PCIe devices not to function",

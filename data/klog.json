@@ -2,6 +2,20 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "detected - limiting to C.* max_cstate",
+   "advice": "The maximum C state has been limited by the ACPI processor idle driver because of a known bug on this platform, for instance, going to a deeper C state can hang the machine. This can be overridden using the kernel parameter processor.max_cstate to set to a deeper C state if required.",
+   "label": "KlogAcpiIdleMaxCStateLimited"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ACPI: processor limited to max C-state",
+   "advice": "The maximum C state is less than the maxium allowed processor C states, so the CPU cannot go into a deep idle C state which means it is not optimally configured for power saving.",
+   "label": "KlogAcpiIdleMaxCStateLimited"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "battery: (dis)charge rate invalid",

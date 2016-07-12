@@ -1212,11 +1212,13 @@ static int madt_subtables(fwts_framework *fw)
 		int len = 0;
 		bool passed = true;
 		int type;
+		int offset = 0;
 
 		hdr = (fwts_acpi_madt_sub_table_header *)data;
 		ii++;
 
 		data += sizeof(fwts_acpi_madt_sub_table_header);
+		offset = (int)(mtable->length - length);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
 
 		/* set initial type value, will be overriden for OEM and
@@ -1264,17 +1266,18 @@ static int madt_subtables(fwts_framework *fw)
 		}
 		if (passed) {
 			fwts_passed(fw,
-				    "Subtable %d of type %d (%s) is the "
-				    " correct length: %d",
-				    ii, hdr->type,
+				    "Subtable %d (offset 0x%x) of "
+				    "type %d (%s) is the correct length: %d",
+				    ii, offset, hdr->type,
 				    madt_sub_names[type],
 				    hdr->length);
 		} else {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubLen",
-				    "Subtable %d of type %d (%s) is %d bytes "
-				    " long but should be %d bytes",
-				    ii, hdr->type,
+				    "Subtable %d (offset 0x%x) of "
+				    "type %d (%s) is %d bytes "
+				    "long but should be %d bytes",
+				    ii, offset, hdr->type,
 				    madt_sub_names[type],
 				    hdr->length, len);
 		}
@@ -1348,12 +1351,12 @@ static int madt_subtables(fwts_framework *fw)
 		case FWTS_ACPI_MADT_RESERVED:
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
-				    "MADT subtable %d is using the "
-				    "reserved value 0x%x for a type. "
-				    "Subtable type values 0x10..0x7f "
+				    "MADT subtable %d (offset 0x%x) is "
+				    "using the reserved value 0x%x for a "
+				    "type.  Subtable type values 0x10..0x7f "
 				    "are reserved; 0x80..0xff can be "
 				    "used by OEMs.",
-				    ii, hdr->type);
+				    ii, offset, hdr->type);
 			skip = (hdr->length -
 				sizeof(fwts_acpi_madt_sub_table_header));
 			break;
@@ -1365,10 +1368,11 @@ static int madt_subtables(fwts_framework *fw)
 		default:
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
-				    "MADT subtable %d is using value 0x%x "
-				    "for a type.  This value is out of the "
-				    "expected range of 0x00 .. 0xff.",
-				    ii, hdr->type);
+				    "MADT subtable %d (offset 0x%x) is "
+				    "using value 0x%x for a type.  This "
+				    "value is out of the expected range "
+				    "of 0x00 .. 0xff.",
+				    ii, offset, hdr->type);
 			skip = (hdr->length -
 				sizeof(fwts_acpi_madt_sub_table_header));
 			break;
@@ -1377,8 +1381,9 @@ static int madt_subtables(fwts_framework *fw)
 		if (hdr->length == 0) {
 			fwts_log_error(fw, "INTERNAL ERROR: "
 				       "zero length subtable means something "
-				       "is seriously broken. Subtable %d has "
-				       "the problem.", ii);
+				       "is seriously broken. Subtable %d "
+				       "(offset 0x%0x) has the problem.",
+				       ii, offset);
 			break;
 		}
 		data   += skip;

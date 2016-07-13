@@ -22,5 +22,7 @@
 
 int fwts_lib_efi_runtime_load_module(fwts_framework *fw);
 int fwts_lib_efi_runtime_unload_module(fwts_framework *fw);
+int fwts_lib_efi_runtime_open(void);
+int fwts_lib_efi_runtime_close(int fd);
 
 #endif

@@ -55,9 +55,9 @@ static int uefirtmisc_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 	}
 
-	fd = open("/dev/efi_runtime", O_WRONLY | O_RDWR);
+	fd = fwts_lib_efi_runtime_open();
 	if (fd == -1) {
-		fwts_log_info(fw, "Cannot open efi_runtime driver. Aborted.");
+		fwts_log_info(fw, "Cannot open EFI test driver. Aborted.");
 		return FWTS_ABORTED;
 	}
 
@@ -68,7 +68,7 @@ static int uefirtmisc_deinit(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
-	close(fd);
+	fwts_lib_efi_runtime_close(fd);
 	fwts_lib_efi_runtime_unload_module(fw);
 
 	return FWTS_OK;

@@ -99,6 +99,7 @@
  * _FDI 	 N (floppy controller, ignore)
  * _FDM 	 N (floppy controller, ignore)
  * _FIF 	 Y
+ * _FIT 	 Y
  * _FIX 	 Y
  * _FPS 	 Y
  * _FSL 	 Y
@@ -2639,6 +2640,12 @@ static int method_test_DEP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_DEP", NULL, 0, method_test_DEP_return, NULL);
+}
+
+static int method_test_FIT(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_FIT", NULL, 0, method_test_buffer_return, NULL);
 }
 
 static int method_test_DCK(fwts_framework *fw)
@@ -6948,6 +6955,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 6.5 Other Objects and Controls */
 
 	{ method_test_DEP, "Test _DEP (Operational Region Dependencies)." },
+	{ method_test_FIT, "Test _FIT (Firmware Interface Table)." },
 	{ method_test_BDN, "Test _BDN (BIOS Dock Name)." },
 	{ method_test_BBN, "Test _BBN (Base Bus Number)." },
 	{ method_test_DCK, "Test _DCK (Dock)." },

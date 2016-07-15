@@ -49,6 +49,8 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 #define DISABLED	0x0040
 #define UNKNOWN		0x0080
 
+#define MTRR_DEF_TYPE_MSR	0x2FF
+
 struct mtrr_entry {
 	uint8_t  reg;
 	uint64_t start;
@@ -170,6 +172,7 @@ static int cache_types(uint64_t start, uint64_t end)
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
 	int type = 0;
+	uint64_t mtrr_default = UNCACHED;
 
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
@@ -198,6 +201,35 @@ restart:
 	/* if there is no full coverage it's also uncached */
 	if (start != end)
 		type |= DEFAULT;
+
+	if (fwts_cpu_readmsr(0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
+		switch (mtrr_default & 0xFF) {
+			case 0:
+				mtrr_default = UNCACHED;
+				break;
+			case 1:
+				mtrr_default = WRITE_COMBINING;
+				break;
+			case 4:
+				mtrr_default = WRITE_THROUGH;
+				break;
+			case 5:
+				mtrr_default = WRITE_PROTECT;
+				break;
+			case 6:
+				mtrr_default = WRITE_BACK;
+				break;
+			default:
+				mtrr_default = UNKNOWN;
+				break;
+		}
+
+		if ((type & DEFAULT) && mtrr_default != UNCACHED) {
+			type &= ~DEFAULT;
+			type |= mtrr_default;
+		}
+	}
+
 	return type;
 }
 

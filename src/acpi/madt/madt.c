@@ -121,6 +121,7 @@
 #define SUBTABLE_UNDEFINED	0x00
 #define SUBTABLE_VARIABLE	0xff
 #define NUM_SUBTABLE_TYPES	16
+#define MAX_IO_APIC_ID		256 /* IO APIC ID field is 1 byte */
 
 struct acpi_madt_subtable_lengths {
 	unsigned short major_version;	/* from revision in FADT header */
@@ -434,6 +435,7 @@ static int madt_local_apic(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static unsigned char madt_io_apics[MAX_IO_APIC_ID];
 static int madt_io_apic(fwts_framework *fw,
 			fwts_acpi_madt_sub_table_header *hdr,
 			const uint8_t *data)
@@ -460,6 +462,14 @@ static int madt_io_apic(fwts_framework *fw,
 	else
 		fwts_passed(fw, "MADT %s address in non-zero.",
 			    madt_sub_names[hdr->type]);
+
+	if (!madt_io_apics[ioapic->io_apic_id])
+		madt_io_apics[ioapic->io_apic_id] = 1;
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADIOSAPICNotUnique",
+			    "There are multiple entries for id %d.",
+			    ioapic->io_apic_id);
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
@@ -588,6 +598,7 @@ static int madt_lapic_addr_override(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static unsigned char madt_io_sapics[MAX_IO_APIC_ID];
 static int madt_io_sapic(fwts_framework *fw,
 			 fwts_acpi_madt_sub_table_header *hdr,
 			 const uint8_t *data)
@@ -608,7 +619,7 @@ static int madt_io_sapic(fwts_framework *fw,
 
 	if (sapic->address == 0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "MADIOSPAICAddrZero",
+			    "MADIOSAPICAddrZero",
 			    "MADT %s address is zero, needs to be defined.",
 			    madt_sub_names[hdr->type]);
 	else
@@ -616,12 +627,13 @@ static int madt_io_sapic(fwts_framework *fw,
 			    "MADT %s address set to non-zero value.",
 			    madt_sub_names[hdr->type]);
 
-	/*
-	 * TODO: if both I/O APIC and I/O SAPIC subtables exist, there
-	 * must be at least as many I/O SAPIC subtables as I/O APIC subtables,
-	 * and that every I/O APIC has a corresponding I/O SAPIC with the
-	 * same APIC ID.
-	 */
+	if (!madt_io_sapics[sapic->io_sapic_id])
+		madt_io_sapics[sapic->io_sapic_id] = 1;
+	else
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADIOSAPICNotUnique",
+			    "There are multiple entries for id %d.",
+			    sapic->io_sapic_id);
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
@@ -1178,6 +1190,49 @@ static int madt_gic_its(fwts_framework *fw,
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
+static void madt_ioapic_sapic_compare(fwts_framework *fw,
+				     int num_ioapics,
+				     int num_iosapics)
+{
+	bool failed;
+	int ioapic;
+
+	if (!num_iosapics)
+		return; /* Nothing to do */
+
+	/*
+	 * If both I/O APIC and I/O SAPIC subtables exist, there must be at
+	 * least as many I/O SAPIC subtables as I/O APIC subtables.
+	 */
+	if (num_iosapics < num_ioapics)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			    "MADTIOAPICSAPICCOMPARELessThan ",
+			    "The number of IO SAPICS (%d) is less than "
+			    "the number of IO APICS (%d).",
+			    num_iosapics, num_ioapics);
+	else
+		fwts_passed(fw, "The number of IO SAPICS (%d) is at least"
+			    "equal to the number of IO APICS (%d)",
+			    num_iosapics, num_ioapics);
+
+	/* Every I/O APIC must have a corresponding I/O SAPIC. */
+	failed = false;
+	for (ioapic = 0; ioapic < MAX_IO_APIC_ID; ioapic++)
+		if (madt_io_apics[ioapic] &&
+		    (madt_io_apics[ioapic] != madt_io_sapics[ioapic])) {
+			failed = true;
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTIOAPICSAPICCOMPARENoSAPIC ",
+				    "IO APIC %d does not have a IO "
+				    "SAPIC entry",
+				    ioapic);
+		}
+
+	if (!failed)
+		fwts_passed(fw, "Each IO APIC entry has a corresponding"
+			    "SAPIC entry.");
+}
+
 static int madt_subtables(fwts_framework *fw)
 {
 	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *)mtable->data;
@@ -1188,6 +1243,8 @@ static int madt_subtables(fwts_framework *fw)
 	ssize_t length = mtable->length;
 	int ii = 0;
 	int proper_len;
+	int num_ioapics = 0;
+	int num_iosapics = 0;
 
 	/*
 	 * check the correctness of each subtable type, and whether or
@@ -1290,6 +1347,7 @@ static int madt_subtables(fwts_framework *fw)
 
 		case FWTS_ACPI_MADT_IO_APIC:
 			skip = madt_io_apic(fw, hdr, data);
+			num_ioapics++;
 			break;
 
 		case FWTS_ACPI_MADT_INTERRUPT_OVERRIDE:
@@ -1310,6 +1368,7 @@ static int madt_subtables(fwts_framework *fw)
 
 		case FWTS_ACPI_MADT_IO_SAPIC:
 			skip = madt_io_sapic(fw, hdr, data);
+			num_iosapics++;
 			break;
 
 		case FWTS_ACPI_MADT_LOCAL_SAPIC:
@@ -1389,6 +1448,9 @@ static int madt_subtables(fwts_framework *fw)
 		data   += skip;
 		length -= skip;
 	}
+
+	/* run comparison tests */
+	madt_ioapic_sapic_compare(fw, num_ioapics, num_iosapics);
 
 	return FWTS_OK;
 }

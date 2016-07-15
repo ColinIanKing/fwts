@@ -2,6 +2,34 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Failure in evaluating _TTS object",
+   "advice": "The APCI Transition To State (_TTS) control failed to be evaluated. This control is executated by the OS when a sleep transition occurs, however, failure to execute this generally is not an issue because firmware generally does not include it and not having it will not break transitioning to sleep states.",
+   "label": "KlogAcpiSleepEvalTts"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failure in evaluating _PTS object",
+   "advice": "The APCI Prepare To State (_PTS) control failed to be evaluated. This control is executated by the OS when a sleep transition occurs, however, failure to execute this generally is not an issue and will not break the transitioning to sleep.",
+   "label": "KlogAcpiSleepEvalPts"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ACPI does not support sleep state S",
+   "advice": "The ACPI driver could not put the machine into the desired sleep state because the sleep state is not suppoted.",
+   "label": "KlogAcpiSleepStateNoSupport"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Hardware changed while hibernated, success doubtful",
+   "advice": "The FACS hardware signature does not match the saved hardware signature. The kernel detected a change in the hardware so the resume from hibernate may not work or be possibly broken.",
+   "label": "KlogAcpiHibernateHwChange"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "detected - limiting to C.* max_cstate",

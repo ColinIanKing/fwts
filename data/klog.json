@@ -3,6 +3,41 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "IRQ method execution failed",
+   "advice": "The ACPI Generic Eventi Device (GED) Driver failed to execute an _EVT method when handling a GE interrupt in a kernel thread. Note: this error is reported only once, but may be occurring multiple times.",
+   "label": "KlogAcpiGedIrqExecFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "unable to parse IRQ resource",
+   "advice": "The ACPI Generic Event Device (GED) Driver failed to get IRQ resources for a GED, the evaluation of an ACPI _CRS object associated with it failed. The device will not be enabled.",
+   "label": "KlogAcpiGedIrqCrsFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "cannot locate _EVT method",
+   "advice": "The ACPI Generic Event Device (GED) Driver failed to find the _EVT method associated with the GED. The device will not be enabled.",
+   "label": "KlogAcpiGedEvtNotAvailable"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "failed to setup event handler for irq",
+   "advice": "The ACPI Generic Event Device (GED) Driver failed to start a kernel thread to handle the GED events. The device will not be enabled.",
+   "label": "KlogAcpiGedHandlerFailed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "unable to parse the _CRS record",
+   "advice": "The ACPI Generic Event Device (GED) Driver failed to parse the _CRS object associated with a GED and hence could not determine the interrupt resources for the device.  he device will not be enabled.",
+   "label": "KlogAcpiGedCrsFailed"
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
    "pattern": "Misaligned resource pointer (get):",
    "advice": "The ACPI driver detected a resource pointer that is not naturally aligned to a 32 bit boundary. This has been automatically fixed and should not cause any issues.",

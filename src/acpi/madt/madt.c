@@ -184,7 +184,15 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		.madt_version = 3,
 		.num_types = 16,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
-			     16, 16, 12, 80, 24, 24, 16, 16 }
+			     16, 16, 12, 80, 24, 24, 16, 20 }
+		/*
+		 * The spec technically defines the GIC ITS node length to be
+		 * 16, but this is a clear mistake as the fields add up to be
+		 * length 20, and the length was corrected in the next revision.
+		 * Test for 20, as that is what is expected to be used in real,
+		 * implementations and using length 20 ensures that the test can
+		 * correctly find the start of any following nodes.
+		 */
 	},
 	{ /* terminator */
 		.major_version = 0,

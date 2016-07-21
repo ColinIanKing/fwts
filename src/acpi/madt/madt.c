@@ -84,27 +84,27 @@
  * subtable is doing okay.  And that's what our tests below check.
  *
  *
- * FADT Major Version ->       1    3    4     4     5     5     6
- * FADT Minor Version ->       x    x    x     x     x     1     0
- * MADT revision ->            1    1    2     3     3     3     3
- * Spec Version ->            1.0  2.0  3.0b  4.0a  5.0b  5.1a  6.0
+ * FADT Major Version ->       1    3    4     4     5     5     6    6
+ * FADT Minor Version ->       x    x    x     x     x     1     0    0
+ * MADT revision ->            1    1    2     3     3     3     3    4
+ * Spec Version ->            1.0  2.0  3.0b  4.0a  5.0b  5.1a  6.0  6.0a
  * Subtable Name	Type  Expected Length ->
- * Processor Local APIC  0x0    8    8    8     8     8     8     8
- * IO APIC               0x1   12   12   12    12    12    12    12
- * Int Src Override      0x2   10   10   10    10    10    10    10
- * NMI Src               0x3    8    8    8     8     8     8     8
- * Local APIC NMI Struct 0x4    6    6    6     6     6     6     6
- * Local APIC Addr Ovrrd 0x5        16   12    12    12    12    12
- * IO SAPIC              0x6        20   16    16    16    16    16
- * Local SAPIC           0x7         8  >16   >16   >16   >16   >16
- * Platform Int Src      0x8        16   16    16    16    16    16
- * Proc Local x2APIC     0x9                   16    16    16    16
- * Local x2APIC NMI      0xa                   12    12    12    12
- * GICC CPU I/F          0xb                         40    76    80
- * GICD                  0xc                         24    24    24
- * GICv2m MSI            0xd                               24    24
- * GICR                  0xe                               16    16
- * GIC ITS               0xf                                     20
+ * Processor Local APIC  0x0    8    8    8     8     8     8     8    8
+ * IO APIC               0x1   12   12   12    12    12    12    12   12
+ * Int Src Override      0x2   10   10   10    10    10    10    10   10
+ * NMI Src               0x3    8    8    8     8     8     8     8    8
+ * Local APIC NMI Struct 0x4    6    6    6     6     6     6     6    6
+ * Local APIC Addr Ovrrd 0x5        16   12    12    12    12    12   12
+ * IO SAPIC              0x6        20   16    16    16    16    16   16
+ * Local SAPIC           0x7         8  >16   >16   >16   >16   >16  >16
+ * Platform Int Src      0x8        16   16    16    16    16    16   16
+ * Proc Local x2APIC     0x9                   16    16    16    16   16
+ * Local x2APIC NMI      0xa                   12    12    12    12   12
+ * GICC CPU I/F          0xb                         40    76    80   80
+ * GICD                  0xc                         24    24    24   24
+ * GICv2m MSI            0xd                               24    24   24
+ * GICR                  0xe                               16    16   16
+ * GIC ITS               0xf                                     20   20
  *
  * In the table, each length entry is what should be in the length
  * field of the subtable, and -- in general -- it should match the
@@ -193,6 +193,14 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 		 * implementations and using length 20 ensures that the test can
 		 * correctly find the start of any following nodes.
 		 */
+	},
+	{ /* for ACPI 6.0a */
+		.major_version = 6,
+		.minor_version = 0,
+		.madt_version = 4,
+		.num_types = 16,
+		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
+			     16, 16, 12, 80, 24, 24, 16, 20 }
 	},
 	{ /* terminator */
 		.major_version = 0,

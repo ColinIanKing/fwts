@@ -814,8 +814,6 @@ static int madt_local_x2apic(fwts_framework *fw,
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	/* TODO: do we need to verify that the x2APIC ID is > 255? */
-
 	if (lx2apic->flags & 0xfffffffe)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTX2APICFlagsNonZero",

@@ -123,33 +123,14 @@ static int rsdp_test1(fwts_framework *fw)
 			    "RSDP: at least one of RsdtAddress or XsdtAddress "
 			    "is non-zero.");
 
-	if (rsdp->rsdt_address != 0 && rsdp->xsdt_address != 0)
-		if ((uint64_t)rsdp->rsdt_address == rsdp->xsdt_address) {
-			fwts_warning(fw,
-				     "Both RSDT and XSDT addresses are set. "
-				     "Since they are the same address, this "
-				     "is unambiguous to the OS.");
-			fwts_advice(fw,
-				    "Set only one of the 32-bit RSDT or the "
-				    "64-bit XSDT addresses.  Recent versions "
-				    "of the spec require that only one of "
-				    "these be used but as a practical matter, "
-				    "many vendors do use both.  If both "
-				    "fields must be used, make sure they at "
-				    "least contain the same value so that "
-				    "the OS can unambiguously determine "
-				    "which address is the correct one.");
-		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "RSDPBothAddressesFound",
-				    "RSDP: only one of RsdtAddress or "
-				    "XsdtAddress should be non-zero.  Both "
-				    "fields are non-zero.");
-		}
-	else
-		fwts_passed(fw,
-			    "RSDP: only one of RsdtAddress or XsdtAddress "
-			    "is non-zero.");
+	if (rsdp->rsdt_address && rsdp->xsdt_address) {
+		fwts_log_warning(fw, "NOTE: The RSDT and XSDT are both "
+			"defined. An operating system supporting ACPI "
+			"1.0 should use the RSDT, otherwise it will "
+			"use the XSDT. RSDT = 0x%" PRIu32 ", "
+			"XSDT = 0x%" PRIu64,
+			rsdp->rsdt_address, rsdp->xsdt_address);
+	}
 
 	passed = false;
 	switch (fw->target_arch) {

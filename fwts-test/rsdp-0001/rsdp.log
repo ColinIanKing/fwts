@@ -7,9 +7,10 @@ rsdp            characters.
 rsdp            PASSED: Test 1, RSDP: revision is 2.
 rsdp            PASSED: Test 1, RSDP: at least one of RsdtAddress or
 rsdp            XsdtAddress is non-zero.
-rsdp            FAILED [MEDIUM] RSDPBothAddressesFound: Test 1, RSDP: only
-rsdp            one of RsdtAddress or XsdtAddress should be non-zero. Both
-rsdp            fields are non-zero.
+rsdp            NOTE: The RSDT and XSDT are both defined. An operating
+rsdp            system supporting ACPI 1.0 should use the RSDT, otherwise
+rsdp            it will use the XSDT. RSDT = 0x3674202324, XSDT =
+rsdp            0x3220176896
 rsdp            PASSED: Test 1, RSDP: the correct RSDT/XSDT address is
 rsdp            being used.
 rsdp            PASSED: Test 1, RSDP: the table is the correct length.
@@ -17,6 +18,6 @@ rsdp            PASSED: Test 1, RSDP second checksum is correct
 rsdp            PASSED: Test 1, RSDP: the reserved field is zero.
 rsdp            
 rsdp            ==========================================================
-rsdp            8 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+rsdp            8 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
 rsdp            info only.
 rsdp            ==========================================================

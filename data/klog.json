@@ -4,6 +4,27 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Misaligned resource pointer (get):",
+   "advice": "The ACPI driver detected a resource pointer that is not naturally aligned to a 32 bit boundary. This has been automatically fixed and should not cause any issues.",
+   "label": "KlogAcpiResourceDescriptorError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid interrupt polarity/trigger in resource list",
+   "advice": "The ACPI driver detected invalid interrupt polarity/trigger settings in a resource list. Only active high / edge_sensitive and active_low / level_senstive are allowed, so IRQ flags 0x00 and 0x09 are invalid.",
+   "label": "KlogAcpiResourceDescriptorError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid DMA.Transfer preference",
+   "advice": "The ACPI driver detected invalid DMA Transfer preference in a resource list. DMA Transfer preference 0x03 is invalid.",
+   "label": "KlogAcpiResourceDescriptorError"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
    "pattern": "Failure in evaluating _TTS object",
    "advice": "The APCI Transition To State (_TTS) control failed to be evaluated. This control is executated by the OS when a sleep transition occurs, however, failure to execute this generally is not an issue because firmware generally does not include it and not having it will not break transitioning to sleep states.",
    "label": "KlogAcpiSleepEvalTts"

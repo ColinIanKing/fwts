@@ -91,7 +91,7 @@ static void *fwts_low_mmap_walkdown(const size_t requested_size)
 			continue;
 
 		mapping = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
-			MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+			MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 		if (mapping != MAP_FAILED) {
 			last_addr = mapping;
 			return mapping;
@@ -130,8 +130,9 @@ static void *fwts_low_mmap(const size_t requested_size)
 		return fwts_low_mmap_walkdown(requested_size);
 
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s",
-			&addr_start, &addr_end, pathname);
+		if (sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s",
+		    &addr_start, &addr_end, pathname) != 3)
+			continue;
 		/*
 		 *  Try and allocate under first mmap'd address space
 		 */
@@ -150,7 +151,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 				addr = (void*)LIMIT_2GB - sz;
 
 			ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
-				MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+				MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 			if (ret != MAP_FAILED)
 				break;	/* Success! */
 
@@ -167,7 +168,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 				void *addr = last_addr_end;
 
 				ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
-					MAP_PRIVATE | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
+					MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 				if (ret != MAP_FAILED)
 					break;	/* Success! */
 			}
@@ -216,12 +217,12 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 #ifdef MAP_32BIT
 	/* Not portable, only x86 */
 	ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
-		MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
+		MAP_SHARED | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
 #else
 	if (sizeof(void *) == 4) {
 		/* 32 bit mmap by default */
 		ret = mmap(NULL, n, PROT_READ | PROT_WRITE,
-			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+			MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 	}
 #endif
 	/* 32 bit mmap failed, so bodge our own 32 bit mmap */

@@ -230,6 +230,18 @@ static int dbg2_test1(fwts_framework *fw)
 			case 0x0003:
 				subport = "ARMPL011 UART";
 				break;
+			case 0x000d:
+				subport = "ARM SBSA Generic UART (deprecated)";
+				break;
+			case 0x000e:
+				subport = "ARM SBSA Generic UART";
+				break;
+			case 0x000f:
+				subport = "ARM DCC";
+				break;
+			case 0x0010:
+				subport = "BCM2835";
+				break;
 			default:
 				break;
 			}

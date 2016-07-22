@@ -78,9 +78,11 @@ int fwts_pipe_open_rw(const char *command, pid_t *childpid,
 		goto err_close_out;
 	case 0:
 		/* Child */
-		if ((fp = freopen("/dev/null", "w", stderr)) == NULL) {
-			fprintf(stderr, "Cannot redirect stderr\n");
-		}
+		fp = freopen("/dev/null", "w", stderr);
+		/*
+		 * if null, we can't report freopen failed
+		 * to stderr as it is now free
+		 */
 		if (out_pipefds[0] != STDOUT_FILENO) {
 			dup2(out_pipefds[1], STDOUT_FILENO);
 			close(out_pipefds[1]);

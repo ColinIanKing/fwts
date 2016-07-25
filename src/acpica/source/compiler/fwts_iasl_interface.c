@@ -78,7 +78,7 @@ int fwts_iasl_disassemble_aml(
 	const char *outputfile)
 {
 	pid_t	pid;
-	int	status, i;
+	int	status;
 	FILE	*fpout, *fperr;
 
 	fflush(stdout);
@@ -105,6 +105,7 @@ int fwts_iasl_disassemble_aml(
 
 		/* Do we need to include external tables in? */
 		if (use_externals) {
+			int i;
 			/*
 			 * Add in external SSDT files and NOT the one we want
 			 * disassemble

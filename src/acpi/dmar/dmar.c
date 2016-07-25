@@ -278,7 +278,8 @@ static int dmar_acpi_table_check(fwts_framework *fw)
 			failed++;
 			break;
 		}
-		header = ((void *)header) + header->length;
+		header = (struct acpi_dmar_entry_header *)
+				(((char *)header) + header->length);
 	}
 
 	if (!failed)

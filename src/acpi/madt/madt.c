@@ -17,6 +17,8 @@
 
 #if defined(FWTS_HAS_ACPI)
 
+#include "fwts_acpi_object_eval.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -228,6 +230,89 @@ static fwts_acpi_table_info *ftable;
 
 static fwts_list msi_frame_ids;
 static fwts_list its_ids;
+static fwts_list processor_uids;
+
+struct acpi_processor {
+	ACPI_OBJECT_TYPE type;
+	uint32_t proc_id;
+	ACPI_IO_ADDRESS pblk_address;
+	uint32_t pblk_length;
+};
+
+struct acpi_integer {
+	ACPI_OBJECT_TYPE type;
+	uint64_t value;
+};
+
+static ACPI_STATUS madt_processor_handler(ACPI_HANDLE ObjHandle, uint32_t level,
+					  void *context, void **returnvalue)
+{
+	ACPI_OBJECT_TYPE acpi_type;
+	ACPI_STATUS status;
+	struct acpi_processor processor;
+	struct acpi_integer integer;
+	struct acpi_buffer pbuf = {sizeof(struct acpi_processor), &processor};
+	struct acpi_buffer ibuf = {sizeof(struct acpi_integer), &integer};
+	struct acpi_integer *listint;
+
+	/* Prevent -Werror=unused-parameter from complaining */
+	FWTS_UNUSED(level);
+	FWTS_UNUSED(context);
+	FWTS_UNUSED(returnvalue);
+
+	listint = malloc(sizeof(struct acpi_integer));
+	if (!listint)
+		return (!AE_OK);
+
+	status = AcpiGetType(ObjHandle, &acpi_type);
+	if (ACPI_FAILURE(status))
+		return (!AE_OK);
+
+	switch(acpi_type) {
+	case ACPI_TYPE_PROCESSOR:
+		status = AcpiEvaluateObject(ObjHandle, NULL, NULL, &pbuf);
+		if (ACPI_FAILURE(status))
+			return status;
+		listint->value = processor.proc_id;
+		break;
+	case ACPI_TYPE_DEVICE:
+		status = AcpiEvaluateObject(ObjHandle, "_UID", NULL, &ibuf);
+		if (ACPI_FAILURE(status))
+			return status;
+		listint->value = integer.value;
+		break;
+	default:
+		return (!AE_OK);
+	}
+	listint->type = acpi_type;
+	fwts_list_append(&processor_uids, listint);
+
+	return (AE_OK);
+}
+
+static ACPI_OBJECT_TYPE madt_find_processor_uid(fwts_framework *fw,
+						uint64_t uid,
+						char *table_name)
+{
+	char table_label[64];
+	fwts_list_link *item;
+	struct acpi_integer *listint;
+
+	fwts_list_foreach(item, &processor_uids) {
+		listint = fwts_list_data(struct acpi_integer *, item);
+		if (uid == listint->value) {
+			fwts_passed(fw, "MADT %s has matching processor "
+				    "UID %lu.", table_name, uid);
+			return listint->type;
+		}
+	}
+
+	sprintf(table_label, "MADT%sUidMismatch", table_name);
+	fwts_failed(fw, LOG_LEVEL_MEDIUM,
+		    table_label, "%s has no matching processor UID %lu",
+		    table_name, uid);
+	return ACPI_NUM_TYPES;
+}
 
 static int madt_init(fwts_framework *fw)
 {
@@ -295,6 +380,14 @@ static int madt_init(fwts_framework *fw)
 	 */
 	fwts_list_init(&msi_frame_ids);
 	fwts_list_init(&its_ids);
+	fwts_list_init(&processor_uids);
+
+	if (fwts_acpica_init(fw) != FWTS_OK)
+		return FWTS_ERROR;
+
+	AcpiWalkNamespace(0x0c, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
+			  madt_processor_handler, NULL, NULL, NULL);
+	AcpiGetDevices("ACPI0007", madt_processor_handler, NULL, NULL);
 
 	return (spec_data) ? FWTS_OK : FWTS_ERROR;
 }
@@ -437,11 +530,7 @@ static int madt_local_apic(fwts_framework *fw,
 	fwts_acpi_madt_processor_local_apic *lapic =
 		(fwts_acpi_madt_processor_local_apic *)data;
 
-	/*
-	 *  TODO: verify UID field has a corresponding
-	 *  Processor device object with a matching
-	 *  _UID result
-	 */
+	madt_find_processor_uid(fw, lapic->acpi_processor_id, "LAPIC");
 
 	if (lapic->flags & 0xfffffffe)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -561,11 +650,7 @@ static int madt_local_apic_nmi(fwts_framework *fw,
 	fwts_acpi_madt_local_apic_nmi *nmi =
 		(fwts_acpi_madt_local_apic_nmi *)data;
 
-	/*
-	 *  TODO: verify UID field has a corresponding
-	 *  Processor device object with a matching
-	 *  _UID result
-	 */
+	madt_find_processor_uid(fw, nmi->acpi_processor_id, "LAPICNMI");
 
 	if (nmi->flags & 0xfffffff0)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -670,6 +755,7 @@ static int madt_local_sapic(fwts_framework *fw,
 	fwts_acpi_madt_local_sapic *lsapic = (fwts_acpi_madt_local_sapic *)data;
 	uint8_t tmp;
 	int ii;
+	ACPI_OBJECT_TYPE type;
 
 	/*
 	 * TODO: if using the SAPIC model, check that each processor in
@@ -691,13 +777,44 @@ static int madt_local_sapic(fwts_framework *fw,
 			    madt_sub_names[hdr->type], hdr->length);
 
 	/*
-	 * TODO: should the processor ID field be zero?  The use of
-	 * the Processor object has been deprecated in 6.0, and this
-	 * field is used to match this local SAPIC to the processor
-	 * via the ID.  This has been replaced, I believe, with the
-	 * processor device object _UID result.  On the other hand,
-	 * perhaps older tables are still using Processor objects....
+	 * There are three values that need to be checked for a valid
+	 * processor UID: the ACPI processor ID, the UID value, and the UID
+	 * string (which is an ascii representation of the UID value).  All
+	 * three should have the same value in order for the test to pass.
 	 */
+	type = madt_find_processor_uid(fw, lsapic->acpi_processor_id, "LSAPIC");
+	switch(type) {
+	case ACPI_TYPE_PROCESSOR:
+		break; /* nothing more to do */
+	case ACPI_TYPE_DEVICE:
+		if (lsapic->uid_value == lsapic->acpi_processor_id)
+			fwts_passed(fw, "MADT LSAPIC UID value is %d.",
+				    lsapic->uid_value);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTLSAPICUidCompare",
+				    "MADT LSAPIC UID value (%d) does not "
+				    "match ACPI processor ID (%d).",
+				    lsapic->uid_value,
+				    lsapic->acpi_processor_id);
+		if (atoi(lsapic->uid_string) == lsapic->acpi_processor_id)
+			fwts_passed(fw, "MADT ACPI processor id string is %s.",
+				    lsapic->uid_string);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				    "MADTLSAPICUidCompare",
+				    "MADT LSAPIC UID string (%s) does not "
+				    "match UID value (%d).",
+				    lsapic->uid_string,
+				    lsapic->acpi_processor_id);
+		break;
+	default:
+		/* Error already reported in madt_find_processor_uid() call */
+		fwts_warning(fw, "MADT LSAPIC UID value (%d) and UID string "
+			     "(%s) may be incorrect.",
+			     lsapic->uid_value, lsapic->uid_string);
+		break;
+	}
 
 	for (tmp = 0, ii = 0; ii < 3; tmp |= lsapic->reserved[ii], ii++)
 		continue;
@@ -728,12 +845,6 @@ static int madt_local_sapic(fwts_framework *fw,
 			    "MADT %s flags field, bits 1..31 are "
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
-
-	/*
-	 *  TODO: verify UID field has a corresponding
-	 *  Processor device object with a matching
-	 *  _UID result (or Processor object ID?)
-	 */
 
 	for (tmp = 0, ii = 0; ii < (int)strlen(lsapic->uid_string); ii++)
 		if (isascii(lsapic->uid_string[ii]))
@@ -851,11 +962,7 @@ static int madt_local_x2apic(fwts_framework *fw,
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	/*
-	 *  TODO: verify UID field has a corresponding
-	 *  Processor device object with a matching
-	 *  _UID result
-	 */
+	madt_find_processor_uid(fw, lx2apic->processor_uid, "X2APIC");
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
@@ -903,11 +1010,7 @@ static int madt_gicc(fwts_framework *fw,
 			    "MADT %s reserved field properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	/*
-	 *  TODO: verify UID field has a corresponding
-	 *  Processor device object with a matching
-	 *  _UID result
-	 */
+	madt_find_processor_uid(fw, gic->processor_uid, "GICC");
 
 	mask = 0xfffffffc;
 	start = 2;
@@ -1479,9 +1582,12 @@ static int madt_subtables(fwts_framework *fw)
 
 static int madt_deinit(fwts_framework *fw)
 {
+	fwts_acpica_deinit();
+
 	/* only minor clean up needed */
 	fwts_list_free_items(&msi_frame_ids, NULL);
 	fwts_list_free_items(&its_ids, NULL);
+	fwts_list_free_items(&processor_uids, NULL);
 
 	return (fw) ? FWTS_ERROR : FWTS_OK;
 }

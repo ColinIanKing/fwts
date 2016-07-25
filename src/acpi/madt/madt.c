@@ -303,10 +303,9 @@ static ACPI_OBJECT_TYPE madt_find_processor_uid(fwts_framework *fw,
 {
 	char table_label[64];
 	fwts_list_link *item;
-	struct acpi_integer *listint;
 
 	fwts_list_foreach(item, &processor_uids) {
-		listint = fwts_list_data(struct acpi_integer *, item);
+		struct acpi_integer *listint = fwts_list_data(struct acpi_integer *, item);
 		if (uid == listint->value) {
 			fwts_passed(fw, "MADT %s has matching processor "
 				    "UID %" PRIu64 ".", table_name, uid);

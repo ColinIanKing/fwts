@@ -996,7 +996,7 @@ typedef struct {
 typedef struct {
 	fwts_acpi_table_header	header;
 	uint32_t	flags;
-	uint8_t		reserved[8];
+	uint64_t	reserved;
 } __attribute__ ((packed)) fwts_acpi_table_pcct;
 
 typedef struct {
@@ -1016,6 +1016,39 @@ typedef struct {
 	uint32_t	max_periodic_access_rate;
 	uint16_t	min_request_turnaround_time;
 } __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_0;
+
+typedef struct {
+	fwts_acpi_table_pcct_subspace_header	header;
+	uint32_t	doorbell_interrupt;
+	uint8_t		doorbell_interrupt_flags;
+	uint8_t		reserved;
+	uint64_t	base_address;
+	uint64_t	length;
+	fwts_acpi_gas	doorbell_register;
+	uint64_t	doorbell_preserve;
+	uint64_t	doorbell_write;
+	uint32_t	nominal_latency;
+	uint32_t	max_periodic_access_rate;
+	uint16_t	min_request_turnaround_time;
+} __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_1;
+
+typedef struct {
+	fwts_acpi_table_pcct_subspace_header	header;
+	uint32_t	doorbell_interrupt;
+	uint8_t		doorbell_interrupt_flags;
+	uint8_t		reserved;
+	uint64_t	base_address;
+	uint64_t	length;
+	fwts_acpi_gas	doorbell_register;
+	uint64_t	doorbell_preserve;
+	uint64_t	doorbell_write;
+	uint32_t	nominal_latency;
+	uint32_t	max_periodic_access_rate;
+	uint16_t	min_request_turnaround_time;
+	fwts_acpi_gas	doorbell_ack_register;
+	uint64_t	doorbell_ack_preserve;
+	uint64_t	doorbell_ack_write;
+} __attribute__ ((packed)) fwts_acpi_table_pcct_subspace_type_2;
 
 /*
  * ACPI SPCR (Serial Port Console Redirection Table)

@@ -27,7 +27,6 @@
 #include <unistd.h>
 #include <inttypes.h>
 #include <string.h>
-#include <alloca.h>
 
 #include "fwts_acpi_object_eval.h"
 
@@ -102,8 +101,7 @@ static void dbg2_obj_find(
 	fwts_list_link  *item;
 	fwts_list *objects;
 	int i = -1;
-	char *ptr1, *ptr2;
-	char *expanded;
+	char *ptr1;
 
         if (fwts_acpi_init(fw) != FWTS_OK) {
                 fwts_log_error(fw, "Cannot initialise ACPI.");
@@ -129,36 +127,38 @@ static void dbg2_obj_find(
 	 *  Converts \_SB.A.BB.CCC.DDDD.EE to
 	 *	     \_SB_.A___.BB__.CCC_.DDDD.EE__
 	 */
-	expanded = alloca(1 + (5 * (i + 1)));
-	ptr2 = expanded;
+	{
+		char expanded[1 + (5 * (i + 1))];
+		char *ptr2 = expanded;
 
-	for (i = -1, ptr1 = obj_name; ; ptr1++) {
-		if (*ptr1 == '.' || *ptr1 == '\0') {
-			while (i < 4) {
-				*ptr2++ = '_';
+		for (i = -1, ptr1 = obj_name; ; ptr1++) {
+			if (*ptr1 == '.' || *ptr1 == '\0') {
+				while (i < 4) {
+					*ptr2++ = '_';
+					i++;
+				}
+				i = 0;
+			} else {
 				i++;
 			}
-			i = 0;
-		} else {
-			i++;
+			*ptr2++ = *ptr1;
+			if (!*ptr1)
+				break;
 		}
-		*ptr2++ = *ptr1;
-		if (!*ptr1)
-			break;
-	}
 
-	/* Search for object */
-	fwts_list_foreach(item, objects) {
-		char *name = fwts_list_data(char*, item);
-		if (!strcmp(expanded, name))
-			goto done;
+		/* Search for object */
+		fwts_list_foreach(item, objects) {
+			char *name = fwts_list_data(char*, item);
+			if (!strcmp(expanded, name))
+				goto done;
+		}
+		/* Not found */
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DBG2DeviceNotFound",
+			"DBG2 Device '%s' not found in ACPI object name space.",
+			expanded);
 	}
-	/* Not found */
-	*passed = false;
-	fwts_failed(fw, LOG_LEVEL_HIGH,
-		"DBG2DeviceNotFound",
-		"DBG2 Device '%s' not found in ACPI object name space.",
-		expanded);
 done:
 	fwts_acpi_deinit(fw);
 }

@@ -50,9 +50,9 @@ static int fwts_load_file(const char* filename, void *buf, size_t size)
 static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *entry, fwts_smbios_type *type)
 {
 	void *addr;
-	fwts_smbios_entry *mapped_entry;
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
+		fwts_smbios_entry *mapped_entry;
 
 		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) != FWTS_MAP_FAILED) {
 			*entry = *mapped_entry;
@@ -80,9 +80,9 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 static void *fwts_smbios30_find_entry_uefi(fwts_framework *fw, fwts_smbios30_entry *entry)
 {
 	void *addr;
-	fwts_smbios30_entry *mapped_entry;
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS3")) != NULL) {
+		fwts_smbios30_entry *mapped_entry;
 
 		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios30_entry))) != FWTS_MAP_FAILED) {
 			*entry = *mapped_entry;

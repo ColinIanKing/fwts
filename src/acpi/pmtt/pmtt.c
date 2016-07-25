@@ -131,7 +131,7 @@ static void pmmt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 
 	offset = sizeof(fwts_acpi_table_pmtt_controller);
 	if (entry->header.length < offset + sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count) {
-		passed = false;
+		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"PMTTOutOfBound",
 			"PMTT's length is too small to contain all fields");

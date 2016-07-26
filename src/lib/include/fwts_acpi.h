@@ -205,7 +205,7 @@ typedef enum {
 	FWTS_BOOT_REGISTER_DIAG		= 0x04,
 	FWTS_BOOT_REGISTER_SUPPRESS_BOOT_DISPLAY = 0x08,
 	FWTS_BOOT_REGISTER_PARITY	= 0x80
-} ftws_acpi_cmos_boot_register;
+} fwts_acpi_cmos_boot_register;
 
 /*
  * ACPI FACS (Firmware ACPI Control Structure), 5.2.10

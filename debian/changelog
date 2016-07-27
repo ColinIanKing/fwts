@@ -1,3 +1,88 @@
+fwts (16.07.00-0ubuntu1) yakkety; urgency=low
+
+  [Alex Hung]
+  * acpi: method: add _FIT test
+  * fwts-test: sync up tests for _FIT method
+  * bios: mtrr: check MTRR default memory type
+  * acpi: pcct: add ACPI PCCT test
+  * fwts-test: Add regression test for PCCT
+  * lib: acpi: fix a typo in fwts_acpi.h
+
+  [Colin Ian King]
+  * utilities: kernelscan: Add in missing [ ] brackets tokenisation
+  * klog: data.json: Add klog checking for kernel NUMA errors from
+    drivers/acpi/numa.c
+  * fwts-test: remove arg-show-tests and arg-show-tests-full
+  * klog: data.json: Add klog checking for kernel EC errors from
+    drivers/acpi/ec.c
+  * klog: data.json: Add klog checking for errors from
+    drivers/acpi/acpi_cmos_rtc.c
+  * klog: data.json: Add klog checking for errors from drivers/acpi/nfit.c
+  * klog: data.json: Add klog checking for errors from drivers/acpi/pci_root.c
+  * klog: data.json: Add klog checking for errors from drivers/acpi/pci_mcfg.c
+  * fwts-test: update fwts klog regression tests due to klog json changes
+  * klog: data.json: Add klog checking for errors from drivers/acpi/cppc_acpi.c
+  * klog: data.json: Add klog checking for errors from drivers/acpi/battery.c
+  * klog: data.json: Add klog checking for errors from
+    drivers/acpi/processor_idle.c
+  * efi: enable module loading to load legacy or new efi driver
+  * klog: data.json: Add klog checking for errors from drivers/acpi/sleep.c
+  * klog: data.json: Add klog checking for errors from
+    drivers/acpi/acpica/rsmisc.c
+  * klog: data.json: Add klog checking for errors from drivers/acpi/evged.c
+  * acpi: rsdp: don't fail if RSDT and XSDT are both defined and different
+  * fwts-test: rsdp-0001: sync test with latest rsdp test changes
+  * lib: fwts_alloc: make allocator more robust
+  * lib: fwts_pipeio: don't report failure on freopen failure
+  * Add klog checking for errors from drivers/acpi/tables.c
+  * doc: update contributors and date to the manual
+
+  [Deb McLemore]
+  * opal/prd_info: Add OPAL Processor Recovery Diagnostics
+  * olog: olog.json: Add OPAL skiboot errors for olog scan
+  * lib: olog: Improve message when sudo usage may help
+  * opal/prd_info: Improve message when libfdt not installed
+  * lib: framework: Improve message for results log file handling
+
+  [Ivan Hu]
+  * uefi: add the header for using efi runtime service
+  * efi_runtime: reuse the in-kernel guid structure
+  * efi_runtime: reuse the in-kernel time structure
+  * efi_runtime: reuse the in-kernel capsule header structure
+  * uefi: update reset type to uefi 2.6
+  * uefi: remove the enum of reset type
+  * efi_runtime: naming convention modification
+  * efi_runtime: fix the style problems
+  * debian/control: Fix incomplete dependencies for Linux headers (LP: #1606480)
+  * fwts-test: sync up with the klog test
+  * acpi: madt: fix build fail for i386
+
+  [Jeffrey Hugo]
+  * acpi: madt: Use 20 as the GIC ITS node length
+  * acpi: madt: Add support for ACPI 6.0a
+  * acpi: madt: Add support for ACPI 6.1
+  * acpi: dbg2: Add missing debug port types
+
+  [Jeremy Kerr]
+  * devicetree/dt_sysinfo: clean up logic in stringlist_contains_last
+  * devicetree/dt_sysinfo: fix reference platform compatible vs. model check
+  * devicetree/dt_sysinfo: Add firestone model
+
+  [Prarit Bhargava]
+  * fwts: Fix madt testing with broken MADT entries
+  * fwts: Update .gitignore files
+  * fwts/madt: Add address of subtable to messages
+  * fwts/madt: Implement I/O APIC and I/O SAPIC value comparison test
+  * fwts/madt: Remove TODO for x2apic > 255 check
+  * fwts/madt: Add processor UID checking to madt tests
+
+  [Ricardo Neri]
+  * fwts_cpuinfo_x86: check for null pointers when using
+  * lib: fwts_cpu: return info struct only when requested CPU is found
+  * lib: fwts_cpu: query info from the first online CPU
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 27 Jul 2016 15:35:54 +0800
+
 fwts (16.06.00-0ubuntu1) yakkety; urgency=low
 
   [Alex Hung]

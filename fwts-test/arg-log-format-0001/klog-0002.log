@@ -1,15 +1,14 @@
 klog           : klog: Scan kernel log for errors and warnings.
 klog           : ---------------------------------------------------------------
 klog           : Test 1 of 1: Kernel log error check.
-klog           : FAILED [HIGH] KlogAcpiMultipleApicMadtFound: Test 1, HIGH
-klog           : Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC/MADT
-klog           : found, using 0
+klog           : FAILED [MEDIUM] KlogAcpiMultipleMadt: Test 1, MEDIUM Kernel
+klog           : message: [ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found,
+klog           : using 0
 klog           : 
-klog           : ADVICE: The kernel has detected more than one ACPI Multiple
-klog           : APIC Description Table (MADT) (these tables have the "APIC"
-klog           : signature). There should only be one MADT and the kernel will
-klog           : by default select the first one. However, one can override this
-klog           : and select the Nth MADT using acpi_apic_instance=N.
+klog           : ADVICE: The BIOS is supposed to supply just one APIC/MADT,
+klog           : however, more than one has been found. One can use
+klog           : acpi_apic_instance=N to specify the Nth ACPI/MADT to use as an
+klog           : override if required.
 klog           : 
 klog           : FAILED [HIGH] KlogAcpi32Bit64BitAddressMismatch: Test 1, HIGH
 klog           : Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch

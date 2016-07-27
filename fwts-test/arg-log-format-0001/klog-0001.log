@@ -1,275 +1,271 @@
-klog            (00021) <10/02/14> HED  : klog: Scan kernel log for errors and
-klog            (00022) <10/02/14> HED  : warnings.
-klog            (00023) <10/02/14> SEP  : --------------------------------------
-klog            (00024) <10/02/14> INF  : Test 1 of 1: Kernel log error check.
-klog            (00025) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00026) <10/02/14> FAL H: KlogAcpiMultipleApicMadtFound: Test 1,
-klog            (00027) <10/02/14> FAL H: HIGH Kernel message: [ 0.000000] ACPI:
-klog            (00028) <10/02/14> FAL H: BIOS bug: multiple APIC/MADT found,
-klog            (00029) <10/02/14> FAL H: using 0
-klog            (00030) <10/02/14> NLN  : 
-klog            (00031) <10/02/14> ADV  : ADVICE: The kernel has detected more
-klog            (00032) <10/02/14> ADV  : than one ACPI Multiple APIC
-klog            (00033) <10/02/14> ADV  : Description Table (MADT) (these tables
-klog            (00034) <10/02/14> ADV  : have the "APIC" signature). There
-klog            (00035) <10/02/14> ADV  : should only be one MADT and the kernel
-klog            (00036) <10/02/14> ADV  : will by default select the first one.
-klog            (00037) <10/02/14> ADV  : However, one can override this and
-klog            (00038) <10/02/14> ADV  : select the Nth MADT using
-klog            (00039) <10/02/14> ADV  : acpi_apic_instance=N.
-klog            (00040) <10/02/14> NLN  : 
-klog            (00041) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00042) <10/02/14> FAL H: KlogAcpi32Bit64BitAddressMismatch:
-klog            (00043) <10/02/14> FAL H: Test 1, HIGH Kernel message: [
-klog            (00044) <10/02/14> FAL H: 0.000000] ACPI Error: 32/64X address
-klog            (00045) <10/02/14> FAL H: mismatch in Gpe0Block: 00008018
-klog            (00046) <10/02/14> FAL H: /0000000000008028, using 32 (20090903
-klog            (00047) <10/02/14> FAL H: /tbfadt-427)
-klog            (00048) <10/02/14> NLN  : 
-klog            (00049) <10/02/14> ADV  : ADVICE: The FADT table contains a
-klog            (00050) <10/02/14> ADV  : mismatch between a 32 bit pointer and
-klog            (00051) <10/02/14> ADV  : a 64 bit Generic Address pointer.
-klog            (00052) <10/02/14> ADV  : Because these pointers are different,
-klog            (00053) <10/02/14> ADV  : it suggests either one of them is
-klog            (00054) <10/02/14> ADV  : incorrect. If a non-null 32 bit
-klog            (00055) <10/02/14> ADV  : pointer exists, then the kernel will
-klog            (00056) <10/02/14> ADV  : opt for this in preference to the 64
-klog            (00057) <10/02/14> ADV  : bit pointer even though this is not in
-klog            (00058) <10/02/14> ADV  : accordance to the ACPI specification.
-klog            (00059) <10/02/14> NLN  : 
-klog            (00060) <10/02/14> FAL C: FAILED [CRITICAL]
-klog            (00061) <10/02/14> FAL C: KlogAcpiValidRsdpNotFound: Test 1,
-klog            (00062) <10/02/14> FAL C: CRITICAL Kernel message: [ 0.000000]
-klog            (00063) <10/02/14> FAL C: ACPI Error: A valid RSDP was not found
-klog            (00064) <10/02/14> FAL C: (20090903/tbxfroot-219)
-klog            (00065) <10/02/14> NLN  : 
-klog            (00066) <10/02/14> ADV  : ADVICE: An ACPI compatible system must
-klog            (00067) <10/02/14> ADV  : provide an RSDP (Root System
-klog            (00068) <10/02/14> ADV  : Description Pointer). This structure
-klog            (00069) <10/02/14> ADV  : provides the physical address of the
-klog            (00070) <10/02/14> ADV  : RSDT and XSDT. Since this could not be
-klog            (00071) <10/02/14> ADV  : found, the ACPI driver has had to
-klog            (00072) <10/02/14> ADV  : disable ACPI support.
-klog            (00073) <10/02/14> NLN  : 
-klog            (00074) <10/02/14> FAL H: FAILED [HIGH] KlogAcpiTwoFacs: Test 1,
-klog            (00075) <10/02/14> FAL H: HIGH Kernel message: [ 0.000000] ACPI
-klog            (00076) <10/02/14> FAL H: Warning: 32/64 FACS address mismatch
-klog            (00077) <10/02/14> FAL H: in FADT - two FACS tables! (20090903
-klog            (00078) <10/02/14> FAL H: /tbfadt-369)
-klog            (00079) <10/02/14> NLN  : 
-klog            (00080) <10/02/14> ADV  : ADVICE: The FADT table contains a
-klog            (00081) <10/02/14> ADV  : mismatch between the 32 bit pointer
-klog            (00082) <10/02/14> ADV  : (FIRMWARE_CTRL) and 64 bit pointer
-klog            (00083) <10/02/14> ADV  : (X_FIRMWARE_CTRL) pointer to the FACS
-klog            (00084) <10/02/14> ADV  : table. Section 5.2.9 of version 4.0a
-klog            (00085) <10/02/14> ADV  : of the ACPI specification states that
-klog            (00086) <10/02/14> ADV  : X_FIRMWARE_CTRL should be zero if
-klog            (00087) <10/02/14> ADV  : FIRMWARE_CTRL is defined, or
-klog            (00088) <10/02/14> ADV  : FIRMWARE_CTRL should be zero if
-klog            (00089) <10/02/14> ADV  : X_FIRMWARE_CTRL is zero. With two
-klog            (00090) <10/02/14> ADV  : different pointers defined, the kernel
-klog            (00091) <10/02/14> ADV  : has to make a choice, and opts for the
-klog            (00092) <10/02/14> ADV  : 32 bit pointer. Because these pointers
-klog            (00093) <10/02/14> ADV  : are different, it suggests either one
-klog            (00094) <10/02/14> ADV  : of them is incorrect, or different 32
-klog            (00095) <10/02/14> ADV  : bit and 64 bit FACS tables are present
-klog            (00096) <10/02/14> ADV  : in your system, which is NOT complaint
-klog            (00097) <10/02/14> ADV  : with the ACPI specification. The
-klog            (00098) <10/02/14> ADV  : kernel has to make a choice and opts
-klog            (00099) <10/02/14> ADV  : for the 32 bit FIRMWARE_CTRL.
-klog            (00100) <10/02/14> NLN  : 
-klog            (00101) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00102) <10/02/14> FAL H: KlogAcpi32Bit64BitAddressMismatchInFadt
-klog            (00103) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00104) <10/02/14> FAL H: 0.000000] ACPI Warning: 32/64X FACS
-klog            (00105) <10/02/14> FAL H: address mismatch in FADT - DEF2DF40
-klog            (00106) <10/02/14> FAL H: /00000000DEF30D40, using 32 (20090903
-klog            (00107) <10/02/14> FAL H: /tbfadt-486)
-klog            (00108) <10/02/14> NLN  : 
-klog            (00109) <10/02/14> ADV  : ADVICE: The FADT table contains
-klog            (00110) <10/02/14> ADV  : Generic Address Structure that has a
-klog            (00111) <10/02/14> ADV  : mismatch between the 32 bit and 64 bit
-klog            (00112) <10/02/14> ADV  : versions of an address. This should be
-klog            (00113) <10/02/14> ADV  : fixed so there are no mismatches. 
-klog            (00114) <10/02/14> NLN  : 
-klog            (00115) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00116) <10/02/14> FAL H: KlogAcpi32Bit64BitAddressMismatchInFadt
-klog            (00117) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00118) <10/02/14> FAL H: 0.000000] ACPI Warning: 32/64X length
-klog            (00119) <10/02/14> FAL H: mismatch in Gpe1Block: 0/32 20090521
-klog            (00120) <10/02/14> FAL H: tbfadt-527
-klog            (00121) <10/02/14> NLN  : 
-klog            (00122) <10/02/14> ADV  : ADVICE: The FADT table contains
-klog            (00123) <10/02/14> ADV  : Generic Address Structure that has a
-klog            (00124) <10/02/14> ADV  : mismatch between the 32 bit and 64 bit
-klog            (00125) <10/02/14> ADV  : versions of an address. This should be
-klog            (00126) <10/02/14> ADV  : fixed so there are no mismatches. 
-klog            (00127) <10/02/14> NLN  : 
-klog            (00128) <10/02/14> FAL H: FAILED [HIGH] KlogAcpiBadAmlCode: Test
-klog            (00129) <10/02/14> FAL H: 1, HIGH Kernel message: [ 0.000000]
-klog            (00130) <10/02/14> FAL H: ACPI Warning: BIOS XSDT has NULL entry
-klog            (00131) <10/02/14> FAL H: , using RSDT (20110112/tbutils-663)
-klog            (00132) <10/02/14> NLN  : 
-klog            (00133) <10/02/14> ADV  : ADVICE: ACPI AML intepreter has found
-klog            (00134) <10/02/14> ADV  : some non-conforming AML code. This
-klog            (00135) <10/02/14> ADV  : should be investigated and fixed.
-klog            (00136) <10/02/14> NLN  : 
-klog            (00137) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00138) <10/02/14> FAL H: KlogAcpiFadtInvalidLength: Test 1,
-klog            (00139) <10/02/14> FAL H: HIGH Kernel message: [ 0.000000] ACPI
-klog            (00140) <10/02/14> FAL H: Warning: Invalid length for
-klog            (00141) <10/02/14> FAL H: Pm1aControlBlock: 32, using default 16
-klog            (00142) <10/02/14> FAL H: (20090903/tbfadt-607)
-klog            (00143) <10/02/14> NLN  : 
-klog            (00144) <10/02/14> ADV  : ADVICE: This item in the FADT is the
-klog            (00145) <10/02/14> ADV  : incorrect length. Should be corrected.
-klog            (00146) <10/02/14> NLN  : 
-klog            (00147) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00148) <10/02/14> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
-klog            (00149) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00150) <10/02/14> FAL H: 0.000000] ACPI Warning: Optional field
-klog            (00151) <10/02/14> FAL H: Gpe1Block has zero address or length:
-klog            (00152) <10/02/14> FAL H: 000000000000102C/0 20090521 tbfadt-558
-klog            (00153) <10/02/14> NLN  : 
-klog            (00154) <10/02/14> ADV  : ADVICE: An ACPI table contains Generic
-klog            (00155) <10/02/14> ADV  : Address Structure that has an address
-klog            (00156) <10/02/14> ADV  : that is incorrectly set to zero, or a
-klog            (00157) <10/02/14> ADV  : zero length. This needs to be fixed. 
-klog            (00158) <10/02/14> NLN  : 
-klog            (00159) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00160) <10/02/14> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
-klog            (00161) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00162) <10/02/14> FAL H: 0.000000] ACPI Warning: Optional field
-klog            (00163) <10/02/14> FAL H: Pm2ControlBlock has zero address or
-klog            (00164) <10/02/14> FAL H: length: 0000000000000000/1 20090521
-klog            (00165) <10/02/14> FAL H: tbfadt-558
-klog            (00166) <10/02/14> NLN  : 
-klog            (00167) <10/02/14> ADV  : ADVICE: An ACPI table contains Generic
-klog            (00168) <10/02/14> ADV  : Address Structure that has an address
-klog            (00169) <10/02/14> ADV  : that is incorrectly set to zero, or a
-klog            (00170) <10/02/14> ADV  : zero length. This needs to be fixed. 
-klog            (00171) <10/02/14> NLN  : 
-klog            (00172) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00173) <10/02/14> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
-klog            (00174) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00175) <10/02/14> FAL H: 0.000000] ACPI Warning (tbfadt-0460):
-klog            (00176) <10/02/14> FAL H: Optional field "Gpe1Block" has zero
-klog            (00177) <10/02/14> FAL H: address or length: 000000000000102C/0
-klog            (00178) <10/02/14> FAL H: [20080926]
-klog            (00179) <10/02/14> NLN  : 
-klog            (00180) <10/02/14> ADV  : ADVICE: An ACPI table contains Generic
-klog            (00181) <10/02/14> ADV  : Address Structure that has an address
-klog            (00182) <10/02/14> ADV  : that is incorrectly set to zero, or a
-klog            (00183) <10/02/14> ADV  : zero length. This needs to be fixed. 
-klog            (00184) <10/02/14> NLN  : 
-klog            (00185) <10/02/14> FAL M: FAILED [MEDIUM]
-klog            (00186) <10/02/14> FAL M: KlogBiosMtrrIncorrectMask: Test 1,
-klog            (00187) <10/02/14> FAL M: MEDIUM Kernel message: [ 0.000000]
-klog            (00188) <10/02/14> FAL M: mtrr: your BIOS has configured an
-klog            (00189) <10/02/14> FAL M: incorrect mask, fixing it.
-klog            (00190) <10/02/14> NLN  : 
-klog            (00191) <10/02/14> ADV  : ADVICE: The Memory Type Range
-klog            (00192) <10/02/14> ADV  : Registers (MTRRs) which define memory
-klog            (00193) <10/02/14> ADV  : caching policy are misconfigued by the
-klog            (00194) <10/02/14> ADV  : BIOS. In this case, the mask is
-klog            (00195) <10/02/14> ADV  : incorrectly set and the kernel has
-klog            (00196) <10/02/14> ADV  : detected this and worked around the
-klog            (00197) <10/02/14> ADV  : firmware bug.
-klog            (00198) <10/02/14> NLN  : 
-klog            (00199) <10/02/14> FAL C: FAILED [CRITICAL]
-klog            (00200) <10/02/14> FAL C: KlogBiosCpuMtrrMisconfigured: Test 1,
-klog            (00201) <10/02/14> FAL C: CRITICAL Kernel message: [ 0.000000]
-klog            (00202) <10/02/14> FAL C: WARNING: BIOS bug: CPU MTRRs don't
-klog            (00203) <10/02/14> FAL C: cover all of memory, losing 1408MB of
-klog            (00204) <10/02/14> FAL C: RAM.
-klog            (00205) <10/02/14> NLN  : 
-klog            (00206) <10/02/14> ADV  : ADVICE: The Memory Type Range
-klog            (00207) <10/02/14> ADV  : Registers (MTRRs) which define memory
-klog            (00208) <10/02/14> ADV  : caching policy are misconfigued by the
-klog            (00209) <10/02/14> ADV  : BIOS and don't appear to cover all
-klog            (00210) <10/02/14> ADV  : available physical memory. The kernel
-klog            (00211) <10/02/14> ADV  : has detected this and has reduced the
-klog            (00212) <10/02/14> ADV  : amount of memory available to be safe.
-klog            (00213) <10/02/14> ADV  : Either check that the BIOS memory
-klog            (00214) <10/02/14> ADV  : caching options are set correctly or
-klog            (00215) <10/02/14> ADV  : contact your BIOS vendor to get this
-klog            (00216) <10/02/14> ADV  : fixed.
-klog            (00217) <10/02/14> NLN  : 
-klog            (00218) <10/02/14> FAL H: FAILED [HIGH] KlogAcpiUnknownAmlOpcode
-klog            (00219) <10/02/14> FAL H: : Test 1, HIGH Kernel message: [
-klog            (00220) <10/02/14> FAL H: 0.022719] ACPI Error: Found unknown
-klog            (00221) <10/02/14> FAL H: opcode 0xFD at AML address f7ffe14c
-klog            (00222) <10/02/14> FAL H: offset 0xE8, ignoring (20110112
-klog            (00223) <10/02/14> FAL H: /psloop-141)
-klog            (00224) <10/02/14> NLN  : 
-klog            (00225) <10/02/14> ADV  : ADVICE: ACPI execution run time error:
-klog            (00226) <10/02/14> ADV  : The ACPI interpreter has reached an
-klog            (00227) <10/02/14> ADV  : opcode that is unknown, this normally
-klog            (00228) <10/02/14> ADV  : is a bug in the underlying AML code
-klog            (00229) <10/02/14> ADV  : either because of badly written AML
-klog            (00230) <10/02/14> ADV  : code or the compiler has produced code
-klog            (00231) <10/02/14> ADV  : that is incorrect or the ACPI
-klog            (00232) <10/02/14> ADV  : interpreter does not support this
-klog            (00233) <10/02/14> ADV  : valid opcode. 
-klog            (00234) <10/02/14> NLN  : 
-klog            (00235) <10/02/14> FAL C: FAILED [CRITICAL]
-klog            (00236) <10/02/14> FAL C: KlogAcpiDetectedUnsupportedOpCode:
-klog            (00237) <10/02/14> FAL C: Test 1, CRITICAL Kernel message: [
-klog            (00238) <10/02/14> FAL C: 0.025463] ACPI Warning: Detected an
-klog            (00239) <10/02/14> FAL C: unsupported executable opcode at
-klog            (00240) <10/02/14> FAL C: module-level: [0x007B] at table offset
-klog            (00241) <10/02/14> FAL C: 0x00C3 (20110112/psloop-526)
-klog            (00242) <10/02/14> NLN  : 
-klog            (00243) <10/02/14> ADV  : ADVICE: An illegal AML opcode has been
-klog            (00244) <10/02/14> ADV  : found and is ignored. This indicates
-klog            (00245) <10/02/14> ADV  : either badly compiled code or opcode
-klog            (00246) <10/02/14> ADV  : corruption in the DSDT or SSDT tables
-klog            (00247) <10/02/14> ADV  : or a bug in the ACPI execution engine.
-klog            (00248) <10/02/14> ADV  : Recommend disassembing using iasl to
-klog            (00249) <10/02/14> ADV  : find any offending code.
-klog            (00250) <10/02/14> NLN  : 
-klog            (00251) <10/02/14> FAL H: FAILED [HIGH]
-klog            (00252) <10/02/14> FAL H: KlogAcpiObjectAlreadyExists: Test 1,
-klog            (00253) <10/02/14> FAL H: HIGH Kernel message: [ 0.034090] ACPI
-klog            (00254) <10/02/14> FAL H: Error: Method parse/execution failed
-klog            (00255) <10/02/14> FAL H: [_SB_.PCI0._OSC] (Node ee025630),
-klog            (00256) <10/02/14> FAL H: AE_ALREADY_EXISTS (20110112
-klog            (00257) <10/02/14> FAL H: /psparse-536)
-klog            (00258) <10/02/14> NLN  : 
-klog            (00259) <10/02/14> ADV  : ADVICE: This is a bug picked up by the
-klog            (00260) <10/02/14> ADV  : kernel, but as yet, the firmware test
-klog            (00261) <10/02/14> ADV  : suite has no diagnostic advice for
-klog            (00262) <10/02/14> ADV  : this particular problem.
-klog            (00263) <10/02/14> NLN  : 
-klog            (00264) <10/02/14> FAL H: FAILED [HIGH] KlogAcpiFirmwareError:
-klog            (00265) <10/02/14> FAL H: Test 1, HIGH Kernel message: [
-klog            (00266) <10/02/14> FAL H: 0.040119] [Firmware Bug]: the BIOS has
-klog            (00267) <10/02/14> FAL H: corrupted hw-PMU resources (MSR 186 is
-klog            (00268) <10/02/14> FAL H: 400000)
-klog            (00269) <10/02/14> NLN  : 
-klog            (00270) <10/02/14> ADV  : ADVICE: The kernel has detected a
-klog            (00271) <10/02/14> ADV  : Firmware bug in the BIOS or ACPI which
-klog            (00272) <10/02/14> ADV  : needs investigating and fixing.
-klog            (00273) <10/02/14> NLN  : 
-klog            (00274) <10/02/14> FAL C: FAILED [CRITICAL]
-klog            (00275) <10/02/14> FAL C: KlogAcpiDetectedUnsupportedOpCode:
-klog            (00276) <10/02/14> FAL C: Test 1, CRITICAL Kernel message: [
-klog            (00277) <10/02/14> FAL C: 0.042222] ACPI Warning: Detected an
-klog            (00278) <10/02/14> FAL C: unsupported executable opcode at
-klog            (00279) <10/02/14> FAL C: module-level: [0x0070] at table offset
-klog            (00280) <10/02/14> FAL C: 0x2366 (20100121/psloop-526)
-klog            (00281) <10/02/14> NLN  : 
-klog            (00282) <10/02/14> ADV  : ADVICE: An illegal AML opcode has been
-klog            (00283) <10/02/14> ADV  : found and is ignored. This indicates
-klog            (00284) <10/02/14> ADV  : either badly compiled code or opcode
-klog            (00285) <10/02/14> ADV  : corruption in the DSDT or SSDT tables
-klog            (00286) <10/02/14> ADV  : or a bug in the ACPI execution engine.
-klog            (00287) <10/02/14> ADV  : Recommend disassembing using iasl to
-klog            (00288) <10/02/14> ADV  : find any offending code.
-klog            (00289) <10/02/14> NLN  : 
-klog            (00290) <10/02/14> INF  : Found 18 unique errors in kernel log.
-klog            (00291) <10/02/14> NLN  : 
-klog            (00292) <10/02/14> SEP  : ======================================
-klog            (00293) <10/02/14> SUM  : 0 passed, 18 failed, 0 warning, 0
-klog            (00294) <10/02/14> SUM  : aborted, 0 skipped, 0 info only.
-klog            (00295) <10/02/14> SEP  : ======================================
+klog            (00023) <27/07/16> HED  : klog: Scan kernel log for errors and
+klog            (00024) <27/07/16> HED  : warnings.
+klog            (00025) <27/07/16> SEP  : --------------------------------------
+klog            (00026) <27/07/16> INF  : Test 1 of 1: Kernel log error check.
+klog            (00027) <27/07/16> FAL M: FAILED [MEDIUM] KlogAcpiMultipleMadt:
+klog            (00028) <27/07/16> FAL M: Test 1, MEDIUM Kernel message: [
+klog            (00029) <27/07/16> FAL M: 0.000000] ACPI: BIOS bug: multiple
+klog            (00030) <27/07/16> FAL M: APIC/MADT found, using 0
+klog            (00031) <27/07/16> NLN  : 
+klog            (00032) <27/07/16> ADV  : ADVICE: The BIOS is supposed to supply
+klog            (00033) <27/07/16> ADV  : just one APIC/MADT, however, more than
+klog            (00034) <27/07/16> ADV  : one has been found. One can use
+klog            (00035) <27/07/16> ADV  : acpi_apic_instance=N to specify the
+klog            (00036) <27/07/16> ADV  : Nth ACPI/MADT to use as an override if
+klog            (00037) <27/07/16> ADV  : required.
+klog            (00038) <27/07/16> NLN  : 
+klog            (00039) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00040) <27/07/16> FAL H: KlogAcpi32Bit64BitAddressMismatch:
+klog            (00041) <27/07/16> FAL H: Test 1, HIGH Kernel message: [
+klog            (00042) <27/07/16> FAL H: 0.000000] ACPI Error: 32/64X address
+klog            (00043) <27/07/16> FAL H: mismatch in Gpe0Block: 00008018
+klog            (00044) <27/07/16> FAL H: /0000000000008028, using 32 (20090903
+klog            (00045) <27/07/16> FAL H: /tbfadt-427)
+klog            (00046) <27/07/16> NLN  : 
+klog            (00047) <27/07/16> ADV  : ADVICE: The FADT table contains a
+klog            (00048) <27/07/16> ADV  : mismatch between a 32 bit pointer and
+klog            (00049) <27/07/16> ADV  : a 64 bit Generic Address pointer.
+klog            (00050) <27/07/16> ADV  : Because these pointers are different,
+klog            (00051) <27/07/16> ADV  : it suggests either one of them is
+klog            (00052) <27/07/16> ADV  : incorrect. If a non-null 32 bit
+klog            (00053) <27/07/16> ADV  : pointer exists, then the kernel will
+klog            (00054) <27/07/16> ADV  : opt for this in preference to the 64
+klog            (00055) <27/07/16> ADV  : bit pointer even though this is not in
+klog            (00056) <27/07/16> ADV  : accordance to the ACPI specification.
+klog            (00057) <27/07/16> NLN  : 
+klog            (00058) <27/07/16> FAL C: FAILED [CRITICAL]
+klog            (00059) <27/07/16> FAL C: KlogAcpiValidRsdpNotFound: Test 1,
+klog            (00060) <27/07/16> FAL C: CRITICAL Kernel message: [ 0.000000]
+klog            (00061) <27/07/16> FAL C: ACPI Error: A valid RSDP was not found
+klog            (00062) <27/07/16> FAL C: (20090903/tbxfroot-219)
+klog            (00063) <27/07/16> NLN  : 
+klog            (00064) <27/07/16> ADV  : ADVICE: An ACPI compatible system must
+klog            (00065) <27/07/16> ADV  : provide an RSDP (Root System
+klog            (00066) <27/07/16> ADV  : Description Pointer). This structure
+klog            (00067) <27/07/16> ADV  : provides the physical address of the
+klog            (00068) <27/07/16> ADV  : RSDT and XSDT. Since this could not be
+klog            (00069) <27/07/16> ADV  : found, the ACPI driver has had to
+klog            (00070) <27/07/16> ADV  : disable ACPI support.
+klog            (00071) <27/07/16> NLN  : 
+klog            (00072) <27/07/16> FAL H: FAILED [HIGH] KlogAcpiTwoFacs: Test 1,
+klog            (00073) <27/07/16> FAL H: HIGH Kernel message: [ 0.000000] ACPI
+klog            (00074) <27/07/16> FAL H: Warning: 32/64 FACS address mismatch
+klog            (00075) <27/07/16> FAL H: in FADT - two FACS tables! (20090903
+klog            (00076) <27/07/16> FAL H: /tbfadt-369)
+klog            (00077) <27/07/16> NLN  : 
+klog            (00078) <27/07/16> ADV  : ADVICE: The FADT table contains a
+klog            (00079) <27/07/16> ADV  : mismatch between the 32 bit pointer
+klog            (00080) <27/07/16> ADV  : (FIRMWARE_CTRL) and 64 bit pointer
+klog            (00081) <27/07/16> ADV  : (X_FIRMWARE_CTRL) pointer to the FACS
+klog            (00082) <27/07/16> ADV  : table. Section 5.2.9 of version 4.0a
+klog            (00083) <27/07/16> ADV  : of the ACPI specification states that
+klog            (00084) <27/07/16> ADV  : X_FIRMWARE_CTRL should be zero if
+klog            (00085) <27/07/16> ADV  : FIRMWARE_CTRL is defined, or
+klog            (00086) <27/07/16> ADV  : FIRMWARE_CTRL should be zero if
+klog            (00087) <27/07/16> ADV  : X_FIRMWARE_CTRL is zero. With two
+klog            (00088) <27/07/16> ADV  : different pointers defined, the kernel
+klog            (00089) <27/07/16> ADV  : has to make a choice, and opts for the
+klog            (00090) <27/07/16> ADV  : 32 bit pointer. Because these pointers
+klog            (00091) <27/07/16> ADV  : are different, it suggests either one
+klog            (00092) <27/07/16> ADV  : of them is incorrect, or different 32
+klog            (00093) <27/07/16> ADV  : bit and 64 bit FACS tables are present
+klog            (00094) <27/07/16> ADV  : in your system, which is NOT complaint
+klog            (00095) <27/07/16> ADV  : with the ACPI specification. The
+klog            (00096) <27/07/16> ADV  : kernel has to make a choice and opts
+klog            (00097) <27/07/16> ADV  : for the 32 bit FIRMWARE_CTRL.
+klog            (00098) <27/07/16> NLN  : 
+klog            (00099) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00100) <27/07/16> FAL H: KlogAcpi32Bit64BitAddressMismatchInFadt
+klog            (00101) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00102) <27/07/16> FAL H: 0.000000] ACPI Warning: 32/64X FACS
+klog            (00103) <27/07/16> FAL H: address mismatch in FADT - DEF2DF40
+klog            (00104) <27/07/16> FAL H: /00000000DEF30D40, using 32 (20090903
+klog            (00105) <27/07/16> FAL H: /tbfadt-486)
+klog            (00106) <27/07/16> NLN  : 
+klog            (00107) <27/07/16> ADV  : ADVICE: The FADT table contains
+klog            (00108) <27/07/16> ADV  : Generic Address Structure that has a
+klog            (00109) <27/07/16> ADV  : mismatch between the 32 bit and 64 bit
+klog            (00110) <27/07/16> ADV  : versions of an address. This should be
+klog            (00111) <27/07/16> ADV  : fixed so there are no mismatches. 
+klog            (00112) <27/07/16> NLN  : 
+klog            (00113) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00114) <27/07/16> FAL H: KlogAcpi32Bit64BitAddressMismatchInFadt
+klog            (00115) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00116) <27/07/16> FAL H: 0.000000] ACPI Warning: 32/64X length
+klog            (00117) <27/07/16> FAL H: mismatch in Gpe1Block: 0/32 20090521
+klog            (00118) <27/07/16> FAL H: tbfadt-527
+klog            (00119) <27/07/16> NLN  : 
+klog            (00120) <27/07/16> ADV  : ADVICE: The FADT table contains
+klog            (00121) <27/07/16> ADV  : Generic Address Structure that has a
+klog            (00122) <27/07/16> ADV  : mismatch between the 32 bit and 64 bit
+klog            (00123) <27/07/16> ADV  : versions of an address. This should be
+klog            (00124) <27/07/16> ADV  : fixed so there are no mismatches. 
+klog            (00125) <27/07/16> NLN  : 
+klog            (00126) <27/07/16> FAL H: FAILED [HIGH] KlogAcpiBadAmlCode: Test
+klog            (00127) <27/07/16> FAL H: 1, HIGH Kernel message: [ 0.000000]
+klog            (00128) <27/07/16> FAL H: ACPI Warning: BIOS XSDT has NULL entry
+klog            (00129) <27/07/16> FAL H: , using RSDT (20110112/tbutils-663)
+klog            (00130) <27/07/16> NLN  : 
+klog            (00131) <27/07/16> ADV  : ADVICE: ACPI AML intepreter has found
+klog            (00132) <27/07/16> ADV  : some non-conforming AML code. This
+klog            (00133) <27/07/16> ADV  : should be investigated and fixed.
+klog            (00134) <27/07/16> NLN  : 
+klog            (00135) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00136) <27/07/16> FAL H: KlogAcpiFadtInvalidLength: Test 1,
+klog            (00137) <27/07/16> FAL H: HIGH Kernel message: [ 0.000000] ACPI
+klog            (00138) <27/07/16> FAL H: Warning: Invalid length for
+klog            (00139) <27/07/16> FAL H: Pm1aControlBlock: 32, using default 16
+klog            (00140) <27/07/16> FAL H: (20090903/tbfadt-607)
+klog            (00141) <27/07/16> NLN  : 
+klog            (00142) <27/07/16> ADV  : ADVICE: This item in the FADT is the
+klog            (00143) <27/07/16> ADV  : incorrect length. Should be corrected.
+klog            (00144) <27/07/16> NLN  : 
+klog            (00145) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00146) <27/07/16> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
+klog            (00147) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00148) <27/07/16> FAL H: 0.000000] ACPI Warning: Optional field
+klog            (00149) <27/07/16> FAL H: Gpe1Block has zero address or length:
+klog            (00150) <27/07/16> FAL H: 000000000000102C/0 20090521 tbfadt-558
+klog            (00151) <27/07/16> NLN  : 
+klog            (00152) <27/07/16> ADV  : ADVICE: An ACPI table contains Generic
+klog            (00153) <27/07/16> ADV  : Address Structure that has an address
+klog            (00154) <27/07/16> ADV  : that is incorrectly set to zero, or a
+klog            (00155) <27/07/16> ADV  : zero length. This needs to be fixed. 
+klog            (00156) <27/07/16> NLN  : 
+klog            (00157) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00158) <27/07/16> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
+klog            (00159) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00160) <27/07/16> FAL H: 0.000000] ACPI Warning: Optional field
+klog            (00161) <27/07/16> FAL H: Pm2ControlBlock has zero address or
+klog            (00162) <27/07/16> FAL H: length: 0000000000000000/1 20090521
+klog            (00163) <27/07/16> FAL H: tbfadt-558
+klog            (00164) <27/07/16> NLN  : 
+klog            (00165) <27/07/16> ADV  : ADVICE: An ACPI table contains Generic
+klog            (00166) <27/07/16> ADV  : Address Structure that has an address
+klog            (00167) <27/07/16> ADV  : that is incorrectly set to zero, or a
+klog            (00168) <27/07/16> ADV  : zero length. This needs to be fixed. 
+klog            (00169) <27/07/16> NLN  : 
+klog            (00170) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00171) <27/07/16> FAL H: KlogAcpiOptionalFieldZeroAddressOrLength
+klog            (00172) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00173) <27/07/16> FAL H: 0.000000] ACPI Warning (tbfadt-0460):
+klog            (00174) <27/07/16> FAL H: Optional field "Gpe1Block" has zero
+klog            (00175) <27/07/16> FAL H: address or length: 000000000000102C/0
+klog            (00176) <27/07/16> FAL H: [20080926]
+klog            (00177) <27/07/16> NLN  : 
+klog            (00178) <27/07/16> ADV  : ADVICE: An ACPI table contains Generic
+klog            (00179) <27/07/16> ADV  : Address Structure that has an address
+klog            (00180) <27/07/16> ADV  : that is incorrectly set to zero, or a
+klog            (00181) <27/07/16> ADV  : zero length. This needs to be fixed. 
+klog            (00182) <27/07/16> NLN  : 
+klog            (00183) <27/07/16> FAL M: FAILED [MEDIUM]
+klog            (00184) <27/07/16> FAL M: KlogBiosMtrrIncorrectMask: Test 1,
+klog            (00185) <27/07/16> FAL M: MEDIUM Kernel message: [ 0.000000]
+klog            (00186) <27/07/16> FAL M: mtrr: your BIOS has configured an
+klog            (00187) <27/07/16> FAL M: incorrect mask, fixing it.
+klog            (00188) <27/07/16> NLN  : 
+klog            (00189) <27/07/16> ADV  : ADVICE: The Memory Type Range
+klog            (00190) <27/07/16> ADV  : Registers (MTRRs) which define memory
+klog            (00191) <27/07/16> ADV  : caching policy are misconfigued by the
+klog            (00192) <27/07/16> ADV  : BIOS. In this case, the mask is
+klog            (00193) <27/07/16> ADV  : incorrectly set and the kernel has
+klog            (00194) <27/07/16> ADV  : detected this and worked around the
+klog            (00195) <27/07/16> ADV  : firmware bug.
+klog            (00196) <27/07/16> NLN  : 
+klog            (00197) <27/07/16> FAL C: FAILED [CRITICAL]
+klog            (00198) <27/07/16> FAL C: KlogBiosCpuMtrrMisconfigured: Test 1,
+klog            (00199) <27/07/16> FAL C: CRITICAL Kernel message: [ 0.000000]
+klog            (00200) <27/07/16> FAL C: WARNING: BIOS bug: CPU MTRRs don't
+klog            (00201) <27/07/16> FAL C: cover all of memory, losing 1408MB of
+klog            (00202) <27/07/16> FAL C: RAM.
+klog            (00203) <27/07/16> NLN  : 
+klog            (00204) <27/07/16> ADV  : ADVICE: The Memory Type Range
+klog            (00205) <27/07/16> ADV  : Registers (MTRRs) which define memory
+klog            (00206) <27/07/16> ADV  : caching policy are misconfigued by the
+klog            (00207) <27/07/16> ADV  : BIOS and don't appear to cover all
+klog            (00208) <27/07/16> ADV  : available physical memory. The kernel
+klog            (00209) <27/07/16> ADV  : has detected this and has reduced the
+klog            (00210) <27/07/16> ADV  : amount of memory available to be safe.
+klog            (00211) <27/07/16> ADV  : Either check that the BIOS memory
+klog            (00212) <27/07/16> ADV  : caching options are set correctly or
+klog            (00213) <27/07/16> ADV  : contact your BIOS vendor to get this
+klog            (00214) <27/07/16> ADV  : fixed.
+klog            (00215) <27/07/16> NLN  : 
+klog            (00216) <27/07/16> FAL H: FAILED [HIGH] KlogAcpiUnknownAmlOpcode
+klog            (00217) <27/07/16> FAL H: : Test 1, HIGH Kernel message: [
+klog            (00218) <27/07/16> FAL H: 0.022719] ACPI Error: Found unknown
+klog            (00219) <27/07/16> FAL H: opcode 0xFD at AML address f7ffe14c
+klog            (00220) <27/07/16> FAL H: offset 0xE8, ignoring (20110112
+klog            (00221) <27/07/16> FAL H: /psloop-141)
+klog            (00222) <27/07/16> NLN  : 
+klog            (00223) <27/07/16> ADV  : ADVICE: ACPI execution run time error:
+klog            (00224) <27/07/16> ADV  : The ACPI interpreter has reached an
+klog            (00225) <27/07/16> ADV  : opcode that is unknown, this normally
+klog            (00226) <27/07/16> ADV  : is a bug in the underlying AML code
+klog            (00227) <27/07/16> ADV  : either because of badly written AML
+klog            (00228) <27/07/16> ADV  : code or the compiler has produced code
+klog            (00229) <27/07/16> ADV  : that is incorrect or the ACPI
+klog            (00230) <27/07/16> ADV  : interpreter does not support this
+klog            (00231) <27/07/16> ADV  : valid opcode. 
+klog            (00232) <27/07/16> NLN  : 
+klog            (00233) <27/07/16> FAL C: FAILED [CRITICAL]
+klog            (00234) <27/07/16> FAL C: KlogAcpiDetectedUnsupportedOpCode:
+klog            (00235) <27/07/16> FAL C: Test 1, CRITICAL Kernel message: [
+klog            (00236) <27/07/16> FAL C: 0.025463] ACPI Warning: Detected an
+klog            (00237) <27/07/16> FAL C: unsupported executable opcode at
+klog            (00238) <27/07/16> FAL C: module-level: [0x007B] at table offset
+klog            (00239) <27/07/16> FAL C: 0x00C3 (20110112/psloop-526)
+klog            (00240) <27/07/16> NLN  : 
+klog            (00241) <27/07/16> ADV  : ADVICE: An illegal AML opcode has been
+klog            (00242) <27/07/16> ADV  : found and is ignored. This indicates
+klog            (00243) <27/07/16> ADV  : either badly compiled code or opcode
+klog            (00244) <27/07/16> ADV  : corruption in the DSDT or SSDT tables
+klog            (00245) <27/07/16> ADV  : or a bug in the ACPI execution engine.
+klog            (00246) <27/07/16> ADV  : Recommend disassembing using iasl to
+klog            (00247) <27/07/16> ADV  : find any offending code.
+klog            (00248) <27/07/16> NLN  : 
+klog            (00249) <27/07/16> FAL H: FAILED [HIGH]
+klog            (00250) <27/07/16> FAL H: KlogAcpiObjectAlreadyExists: Test 1,
+klog            (00251) <27/07/16> FAL H: HIGH Kernel message: [ 0.034090] ACPI
+klog            (00252) <27/07/16> FAL H: Error: Method parse/execution failed
+klog            (00253) <27/07/16> FAL H: [_SB_.PCI0._OSC] (Node ee025630),
+klog            (00254) <27/07/16> FAL H: AE_ALREADY_EXISTS (20110112
+klog            (00255) <27/07/16> FAL H: /psparse-536)
+klog            (00256) <27/07/16> NLN  : 
+klog            (00257) <27/07/16> ADV  : ADVICE: This is a bug picked up by the
+klog            (00258) <27/07/16> ADV  : kernel, but as yet, the firmware test
+klog            (00259) <27/07/16> ADV  : suite has no diagnostic advice for
+klog            (00260) <27/07/16> ADV  : this particular problem.
+klog            (00261) <27/07/16> NLN  : 
+klog            (00262) <27/07/16> FAL H: FAILED [HIGH] KlogAcpiFirmwareError:
+klog            (00263) <27/07/16> FAL H: Test 1, HIGH Kernel message: [
+klog            (00264) <27/07/16> FAL H: 0.040119] [Firmware Bug]: the BIOS has
+klog            (00265) <27/07/16> FAL H: corrupted hw-PMU resources (MSR 186 is
+klog            (00266) <27/07/16> FAL H: 400000)
+klog            (00267) <27/07/16> NLN  : 
+klog            (00268) <27/07/16> ADV  : ADVICE: The kernel has detected a
+klog            (00269) <27/07/16> ADV  : Firmware bug in the BIOS or ACPI which
+klog            (00270) <27/07/16> ADV  : needs investigating and fixing.
+klog            (00271) <27/07/16> NLN  : 
+klog            (00272) <27/07/16> FAL C: FAILED [CRITICAL]
+klog            (00273) <27/07/16> FAL C: KlogAcpiDetectedUnsupportedOpCode:
+klog            (00274) <27/07/16> FAL C: Test 1, CRITICAL Kernel message: [
+klog            (00275) <27/07/16> FAL C: 0.042222] ACPI Warning: Detected an
+klog            (00276) <27/07/16> FAL C: unsupported executable opcode at
+klog            (00277) <27/07/16> FAL C: module-level: [0x0070] at table offset
+klog            (00278) <27/07/16> FAL C: 0x2366 (20100121/psloop-526)
+klog            (00279) <27/07/16> NLN  : 
+klog            (00280) <27/07/16> ADV  : ADVICE: An illegal AML opcode has been
+klog            (00281) <27/07/16> ADV  : found and is ignored. This indicates
+klog            (00282) <27/07/16> ADV  : either badly compiled code or opcode
+klog            (00283) <27/07/16> ADV  : corruption in the DSDT or SSDT tables
+klog            (00284) <27/07/16> ADV  : or a bug in the ACPI execution engine.
+klog            (00285) <27/07/16> ADV  : Recommend disassembing using iasl to
+klog            (00286) <27/07/16> ADV  : find any offending code.
+klog            (00287) <27/07/16> NLN  : 
+klog            (00288) <27/07/16> INF  : Found 18 unique errors in kernel log.
+klog            (00289) <27/07/16> NLN  : 
+klog            (00290) <27/07/16> SEP  : ======================================
+klog            (00291) <27/07/16> SUM  : 0 passed, 18 failed, 0 warning, 0
+klog            (00292) <27/07/16> SUM  : aborted, 0 skipped, 0 info only.
+klog            (00293) <27/07/16> SEP  : ======================================

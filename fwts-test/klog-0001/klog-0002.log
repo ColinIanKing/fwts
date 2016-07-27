@@ -30,8 +30,7 @@ summary          klog: CRITICAL Kernel message: [ 1.336148] ACPI Error (psparse-
 summary          klog: CRITICAL Kernel message: [ 1.371180] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88044b85e4a0), AE_AML_BUFFER_LIMIT
 summary          klog: CRITICAL Kernel message: [ 2.949716] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node ffff880297016ca8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
 summary         
-summary         High failures: 1221
-summary          klog: HIGH Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
+summary         High failures: 1220
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008020/0000000000008028, using 32 (20090903/tbfadt-427)
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 0x00008020/0x0000000000008028, using 32 (20110112/tbfadt-427)
@@ -1253,7 +1252,8 @@ summary          klog: HIGH Kernel message: [ 44.661543] ACPI Warning for _SB_.P
 summary          klog: HIGH Kernel message: [ 50.737630] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMI: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
 summary          klog: HIGH Kernel message: [ 50.737686] ACPI Warning for _SB_.PCI0.AGP_.VID_.MXMS: Excess arguments - needs 1, found 2 (20090903/nspredef-303)
 summary         
-summary         Medium failures: 330
+summary         Medium failures: 331
+summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI: BIOS bug: multiple APIC/MADT found, using 0
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x3E, should be 0x41 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x65, should be 0x68 (20110112/tbutils-314)
 summary          klog: MEDIUM Kernel message: [ 0.000000] ACPI Warning: Incorrect checksum in table [APIC] - 0x69, should be 0x6C (20110112/tbutils-314)

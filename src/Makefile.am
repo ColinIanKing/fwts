@@ -73,6 +73,7 @@ fwts_SOURCES = main.c 				\
 	acpi/msct/msct.c 			\
 	acpi/msdm/msdm.c 			\
 	acpi/method/method.c 			\
+	acpi/nfit/nfit.c 			\
 	acpi/osilinux/osilinux.c 		\
 	acpi/pcc/pcc.c 				\
 	acpi/pcct/pcct.c			\

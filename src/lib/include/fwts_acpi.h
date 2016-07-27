@@ -991,6 +991,116 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
 /*
+ * ACPI NFIT (NVDIMM Firmware Interface), 5.2.25
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_nfit;
+
+typedef struct {
+	uint16_t		type;
+	uint16_t		length;
+} __attribute__ ((packed)) fwts_acpi_table_nfit_struct_header;
+
+typedef enum {
+	FWTS_ACPI_NFIT_TYPE_SYSTEM_ADDRESS       = 0,
+	FWTS_ACPI_NFIT_TYPE_MEMORY_MAP           = 1,
+	FWTS_ACPI_NFIT_TYPE_INTERLEAVE           = 2,
+	FWTS_ACPI_NFIT_TYPE_SMBIOS               = 3,
+	FWTS_ACPI_NFIT_TYPE_CONTROL_REGION       = 4,
+	FWTS_ACPI_NFIT_TYPE_DATA_REGION          = 5,
+	FWTS_ACPI_NFIT_TYPE_FLUSH_ADDRESS        = 6,
+	FWTS_ACPI_NFIT_TYPE_RESERVED             = 7     /* >= 7 are reserved */
+} fwts_acpi_nfit_type;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint16_t	range_index;
+	uint16_t	flags;
+	uint32_t	reserved;
+	uint32_t	proximity_domain;
+	uint8_t		range_guid[16];
+	uint64_t	address;
+	uint64_t	length;
+	uint64_t	memory_mapping;
+} __attribute__ ((packed)) fwts_acpi_table_nfit_system_memory;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint32_t	device_handle;
+	uint16_t	physical_id;
+	uint16_t	region_id;
+	uint16_t	range_index;
+	uint16_t	region_index;
+	uint64_t	region_size;
+	uint64_t	region_offset;
+	uint64_t	address;
+	uint16_t	interleave_index;
+	uint16_t	interleave_ways;
+	uint16_t	flags;
+	uint16_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_nfit_memory_map;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint16_t	interleave_index;
+	uint16_t	reserved;
+	uint32_t	line_count;
+	uint32_t	line_size;
+	uint32_t   line_offset[];
+} __attribute__ ((packed)) fwts_acpi_table_nfit_interleave;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint32_t	reserved;
+	uint8_t		smbios[];
+} __attribute__ ((packed)) fwts_acpi_table_nfit_smbios;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint16_t	region_index;
+	uint16_t	vendor_id;
+	uint16_t	device_id;
+	uint16_t	revision_id;
+	uint16_t	subsystem_vendor_id;
+	uint16_t	subsystem_device_id;
+	uint16_t	subsystem_revision_id;
+	uint8_t		valid_fields;
+	uint8_t		manufacturing_location;
+	uint16_t	manufacturing_date;
+	uint16_t	reserved;
+	uint32_t	serial_number;
+	uint16_t	interface_code;
+	uint16_t	windows_num;
+	uint64_t	window_size;
+	uint64_t	command_offset;
+	uint64_t	command_size;
+	uint64_t	status_offset;
+	uint64_t	status_size;
+	uint16_t	flags;
+	uint8_t		reserved1[6];
+} __attribute__ ((packed)) fwts_acpi_table_nfit_control_range;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint16_t	region_index;
+	uint16_t	window_num;
+	uint64_t	window_offset;
+	uint64_t	window_size;
+	uint64_t	capacity;
+	uint64_t	start_address;
+} __attribute__ ((packed)) fwts_acpi_table_nfit_data_range;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint32_t	device_handle;
+	uint16_t	hint_count;
+	uint8_t		reserved[6];
+	uint64_t	hint_address[];
+} __attribute__ ((packed)) fwts_acpi_table_nfit_flush_addr;
+
+/*
  * ACPI PCCT (Platform Communications Channel Table), 14.1
  */
 typedef struct {

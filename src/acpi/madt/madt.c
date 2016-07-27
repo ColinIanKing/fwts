@@ -302,14 +302,14 @@ static ACPI_OBJECT_TYPE madt_find_processor_uid(fwts_framework *fw,
 		listint = fwts_list_data(struct acpi_integer *, item);
 		if (uid == listint->value) {
 			fwts_passed(fw, "MADT %s has matching processor "
-				    "UID %lu.", table_name, uid);
+				    "UID %" PRIu64 ".", table_name, uid);
 			return listint->type;
 		}
 	}
 
 	sprintf(table_label, "MADT%sUidMismatch", table_name);
 	fwts_failed(fw, LOG_LEVEL_MEDIUM,
-		    table_label, "%s has no matching processor UID %lu",
+		    table_label, "%s has no matching processor UID %" PRIu64,
 		    table_name, uid);
 	return ACPI_NUM_TYPES;
 }

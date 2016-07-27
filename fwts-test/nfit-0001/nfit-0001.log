@@ -1,0 +1,101 @@
+nfit            nfit: NFIT NVDIMM Firmware Interface Table test.
+nfit            ----------------------------------------------------------
+nfit            Test 1 of 1: NFIT NVDIMM Firmware Interface Table test.
+nfit            NFIT NVDIMM Firmware Interface Table:
+nfit              Reserved:                 0x00000000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0000
+nfit                Length:                                 0x0038
+nfit                SPA Range Structure Index:              0x0001
+nfit                Flags:                                  0x0000
+nfit                Reserved:                               0x00000000
+nfit                Proximity Domain:                       0x00000000
+nfit                Address Range Type GUID:                91AF0530-5D86-470E-A6B0-0A2DB9408249
+nfit                System Physical Address Range Base:     0x000000037c000000
+nfit                System Physical Address Range Length:   0x000000000c000000
+nfit                Address Range Memory Mapping Attribute: 0x0000000000000008
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0001
+nfit                Length:                                 0x0030
+nfit                NFIT Device Handle:                     0x00000001
+nfit                NVDIMM Physical ID:                     0x0004
+nfit                NVDIMM Region ID:                       0x0000
+nfit                SPA Range Structure Index:              0x0001
+nfit                NVDIMM Control Region Structure Index:  0x0001
+nfit                NVDIMM Region Size:                     0x0000000004000000
+nfit                Region Offset:                          0x0000000000000000
+nfit                NVDIMM Physical Address Region Base:    0x0000000008000000
+nfit                Interleave Structure Index:             0x0001
+nfit                Interleave Ways:                        0x0003
+nfit                NVDIMM State Flags:                     0x002a
+nfit                Reserved:                               0x0000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0002
+nfit                Length:                                 0x0020
+nfit                Interleave Structure Index:             0x0001
+nfit                Reserved:                               0x0000
+nfit                Number of Lines Described:              0x00000004
+nfit                Line Size:                              0x00000100
+nfit                Line Offset:                            0x00000000
+nfit                Line Offset:                            0x00000200
+nfit                Line Offset:                            0x00000500
+nfit                Line Offset:                            0x00001000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0003
+nfit                Length:                                 0x0028
+nfit                Reserved:                               0x00000000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0004
+nfit                Length:                                 0x0050
+nfit                NVDIMM Control Region Structure Index:  0x0001
+nfit                Vendor ID:                              0x8086
+nfit                Device ID:                              0x2017
+nfit                Revision ID:                            0x0001
+nfit                Subsystem Vendor ID:                    0x8086
+nfit                Subsystem Device ID:                    0x2017
+nfit                Subsystem Revision ID:                  0x0001
+nfit                Valid Fields:                           0x00
+nfit                Manufacturing Location:                 0x00
+nfit                Manufacturing Date:                     0x0000
+nfit                Reserved:                               0x0000
+nfit                Serial Number:                          0x76540089
+nfit                Region Format Interface Code:           0x0301
+nfit                Number of Block Control Windows:        0x0100
+nfit                Size of Block Control Window:           0x0000000000002000
+nfit                Command Register Offset:                0x0000000000800000
+nfit                Size of Command Register:               0x0000000000000008
+nfit                Status RegisterOffset:                  0x0000000000801000
+nfit                Size of Status Register:                0x0000000000000004
+nfit                NVDIMM Control Region Flag:             0x0000
+nfit                Reserved:                               0x0000000000000000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0005
+nfit                Length:                                 0x0028
+nfit                NVDIMM Control Region Structure Index:  0x0001
+nfit                Number of Block Data Windows:           0x0100
+nfit                Block Data Window Start Offset:         0x0000000000000000
+nfit                Size of Block Data Window:              0x0000000000002000
+nfit                NBlock Accessible Memory Capacity:      0x0000000fe0000000
+nfit                Beginning address of First Block:       0x0000000010000000
+nfit            
+nfit              NFIT Subtable:
+nfit                Type:                                   0x0006
+nfit                Length:                                 0x0020
+nfit                NFIT Device Handle:                     0x00000001
+nfit                Number of Flush Hint Addresses:         0x0002
+nfit                Reserved:                               0x0000000000000000
+nfit                Flush Hint Address:                     0x0000000418000000
+nfit                Flush Hint Address:                     0x0000000618000000
+nfit            
+nfit            PASSED: Test 1, No issues found in NFIT table.
+nfit            
+nfit            ==========================================================
+nfit            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+nfit            info only.
+nfit            ==========================================================

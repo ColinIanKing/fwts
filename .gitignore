@@ -3,6 +3,8 @@
 *.o
 *.lo
 *.swp
+*.dsl
+test-suite.log
 Makefile
 Makefile.in
 /aclocal.m4
@@ -30,3 +32,5 @@ debian/autoreconf.before
 src/fwts
 src/lib/src/libfwts.la
 src/utilities/kernelscan
+fwts-test/*/*.sh.trs
+fwts-test/*/*.sh.log

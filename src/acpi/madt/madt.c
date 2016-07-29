@@ -265,23 +265,30 @@ static ACPI_STATUS madt_processor_handler(ACPI_HANDLE ObjHandle, uint32_t level,
 		return (!AE_OK);
 
 	status = AcpiGetType(ObjHandle, &acpi_type);
-	if (ACPI_FAILURE(status))
+	if (ACPI_FAILURE(status)) {
+		free(listint);
 		return (!AE_OK);
+	}
 
 	switch(acpi_type) {
 	case ACPI_TYPE_PROCESSOR:
 		status = AcpiEvaluateObject(ObjHandle, NULL, NULL, &pbuf);
-		if (ACPI_FAILURE(status))
+		if (ACPI_FAILURE(status)) {
+			free(listint);
 			return status;
+		}
 		listint->value = processor.proc_id;
 		break;
 	case ACPI_TYPE_DEVICE:
 		status = AcpiEvaluateObject(ObjHandle, "_UID", NULL, &ibuf);
-		if (ACPI_FAILURE(status))
+		if (ACPI_FAILURE(status)) {
+			free(listint);
 			return status;
+		}
 		listint->value = integer.value;
 		break;
 	default:
+		free(listint);
 		return (!AE_OK);
 	}
 	listint->type = acpi_type;

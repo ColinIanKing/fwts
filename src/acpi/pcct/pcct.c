@@ -64,7 +64,7 @@ static int pcct_test1(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"PCCTReservedNonZero",
 			"PCCT reserved field must be zero, got "
-			"0x%8.8" PRIx64 " instead", pcct->reserved);
+			"0x%16.16" PRIx64 " instead", pcct->reserved);
 	}
 
 	offset = sizeof(fwts_acpi_table_pcct);

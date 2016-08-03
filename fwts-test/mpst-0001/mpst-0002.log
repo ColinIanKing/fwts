@@ -1,0 +1,88 @@
+mpst            mpst: MPST Memory Power State Table test.
+mpst            ----------------------------------------------------------
+mpst            Test 1 of 1: Validate MPST table.
+mpst            MPST Table:
+mpst              Communication Channel ID:        0x00
+mpst              Reserved:                        0x00010000
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x00010000 instead
+mpst              Memory Power Node Count:         0x0002
+mpst              Reserved:                        0x0003
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x0003 instead
+mpst              MPST Power Node:
+mpst                Flags:                         0x00
+mpst                Reserved:                      0x04
+mpst                Memory Power Node Id:          0x0001
+mpst                Power Node Length:             0x0000012a
+mpst                Base Address:                  0x00000000f0000000
+mpst                Memory Length:                 0x00000000e0000000
+mpst                Number of Power States:        0x00000002
+mpst                Number of Physical Components: 0x00000003
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x04 instead
+mpst            FAILED [HIGH] MPSTBadPowerNodeLength: Test 1, MPST Power
+mpst            Node Length should be 0x0000002a, got 0x0000012a instead
+mpst                Power State Value:             0x01
+mpst                Power State Information Index: 0x02
+mpst                Power State Value:             0x03
+mpst                Power State Information Index: 0x04
+mpst                Physical Component Id:         0x00
+mpst                Physical Component Id:         0x01
+mpst                Physical Component Id:         0x02
+mpst              MPST Power Node:
+mpst                Flags:                         0x00
+mpst                Reserved:                      0x05
+mpst                Memory Power Node Id:          0x0002
+mpst                Power Node Length:             0x00000124
+mpst                Base Address:                  0x00000000a0000000
+mpst                Memory Length:                 0x00000000b0000000
+mpst                Number of Power States:        0x00000001
+mpst                Number of Physical Components: 0x00000001
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x05 instead
+mpst            FAILED [HIGH] MPSTBadPowerNodeLength: Test 1, MPST Power
+mpst            Node Length should be 0x00000024, got 0x00000124 instead
+mpst                Power State Value:             0x05
+mpst                Power State Information Index: 0x06
+mpst                Physical Component Id:         0x03
+mpst              Memory Characteristics Count:    0x0002
+mpst              Reserved:                        0x0006
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x0006 instead
+mpst              MPST Power Characteristics:
+mpst                Power State Structure ID:      0x02
+mpst                Flags:                         0x00
+mpst                Reserved:                      0x0000
+mpst                Average Power Consumed:        0x00001000
+mpst                Relative Power Saving:         0x00002000
+mpst                Exit Latency:                  0x123456789abcdef0
+mpst                Reserved:                      0x0000000000000007
+mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsID: Test 1, MPST
+mpst            Power Characteristics ID must be 1, got 0x02 instead
+mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsRevision: Test 1,
+mpst            MPST Power Characteristics Revision must be 1, got 0x00
+mpst            instead
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x0000000000000007 instead
+mpst              MPST Power Characteristics:
+mpst                Power State Structure ID:      0x03
+mpst                Flags:                         0x00
+mpst                Reserved:                      0x0000
+mpst                Average Power Consumed:        0x00003000
+mpst                Relative Power Saving:         0x00004000
+mpst                Exit Latency:                  0xfedcba9876543210
+mpst                Reserved:                      0x0000000000000008
+mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsID: Test 1, MPST
+mpst            Power Characteristics ID must be 1, got 0x03 instead
+mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsRevision: Test 1,
+mpst            MPST Power Characteristics Revision must be 1, got 0x00
+mpst            instead
+mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            field must be zero, got 0x0000000000000008 instead
+mpst            
+mpst            
+mpst            ==========================================================
+mpst            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+mpst            info only.
+mpst            ==========================================================

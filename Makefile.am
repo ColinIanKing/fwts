@@ -108,6 +108,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/osilinux-0001/test-0002.sh \
 	fwts-test/pcct-0001/test-0001.sh \
 	fwts-test/pcct-0001/test-0002.sh \
+	fwts-test/pmtt-0001/test-0001.sh \
+	fwts-test/pmtt-0001/test-0002.sh \
 	fwts-test/rsdp-0001/test-0001.sh \
 	fwts-test/rsdt-0001/test-0001.sh \
 	fwts-test/sbst-0001/test-0001.sh \

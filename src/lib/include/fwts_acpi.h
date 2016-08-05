@@ -1040,6 +1040,59 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_mpst_power_char_list;
 
 /*
+ * ACPI PMTT (Memory Topology Table, 5.2.21.12
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		reserved1;
+	uint16_t	length;
+	uint16_t	flags;
+	uint16_t	reserved2;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt_header;
+
+typedef enum {
+	FWTS_ACPI_PMTT_TYPE_SOCKET		= 0,
+	FWTS_ACPI_PMTT_TYPE_CONTROLLER		= 1,
+	FWTS_ACPI_PMTT_TYPE_DIMM		= 2,
+	FWTS_ACPI_PMTT_TYPE_RESERVED		= 3 /* 0x03-0xFF are reserved */
+} fwts_acpi_pmtt_type;
+
+typedef struct {
+	fwts_acpi_table_pmtt_header	header;
+	uint16_t	socket_id;
+	uint16_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt_socket;
+
+typedef struct {
+	fwts_acpi_table_pmtt_header	header;
+	uint32_t	read_latency;
+	uint32_t	write_latency;
+	uint32_t	read_bandwidth;
+	uint32_t	write_bandwidth;
+	uint16_t	access_width;
+	uint16_t	alignment;
+	uint16_t	reserved;
+	uint16_t	domain_count;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt_controller;
+
+typedef struct {
+	uint32_t	proximity_domain;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt_domain;
+
+typedef struct {
+	fwts_acpi_table_pmtt_header	header;
+	uint16_t	component_id;
+	uint16_t	reserved;
+	uint32_t	memory_size;
+	uint32_t	bios_handle;
+} __attribute__ ((packed)) fwts_acpi_table_pmtt_physical_component;
+
+/*
  * ACPI NFIT (NVDIMM Firmware Interface), 5.2.25
  */
 typedef struct {

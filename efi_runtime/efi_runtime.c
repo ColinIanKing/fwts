@@ -30,8 +30,6 @@
 
 #include "efi_runtime.h"
 
-#define EFI_FWTS_EFI_VERSION	"0.1"
-
 MODULE_AUTHOR("Ivan Hu");
 MODULE_DESCRIPTION("EFI Runtime Driver");
 MODULE_LICENSE("GPL");
@@ -93,7 +91,7 @@ copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
 
 	buf = kmalloc(len, GFP_KERNEL);
 	if (!buf) {
-		*dst = 0;
+		*dst = NULL;
 		return -ENOMEM;
 	}
 	*dst = buf;
@@ -188,7 +186,6 @@ static long efi_runtime_get_variable(unsigned long arg)
 	    get_user(datasize, getvariable_local.data_size))
 		return -EFAULT;
 	if (getvariable_local.vendor_guid) {
-
 		if (copy_from_user(&vendor_guid, getvariable_local.vendor_guid,
 			   sizeof(vendor_guid)))
 			return -EFAULT;
@@ -457,12 +454,12 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		if (rv)
 			return rv;
 		/*
-		 * name_size may be smaller than the real buffer size where
-		 * VariableName located in some use cases. The most typical
-		 * case is passing a 0 toget the required buffer size for the
+		 * The name_size may be smaller than the real buffer size where
+		 * variable name located in some use cases. The most typical
+		 * case is passing a 0 to get the required buffer size for the
 		 * 1st time call. So we need to copy the content from user
-		 * space for at least the string size ofVariableName, or else
-		 * the name passed to UEFI may not be terminatedas we expected.
+		 * space for at least the string size of variable name, or else
+		 * the name passed to UEFI may not be terminated as we expected.
 		 */
 		rv = copy_ucs2_from_user_len(&name,
 				getnextvariablename_local.variable_name,
@@ -594,7 +591,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 	for (i = 0; i < caps.capsule_count; i++) {
 		efi_capsule_header_t *c;
 		/*
-		 * We cannot dereference caps.CapsuleHeaderArray directly to
+		 * We cannot dereference caps.capsule_header_array directly to
 		 * obtain the address of the capsule as it resides in the
 		 * user space
 		 */

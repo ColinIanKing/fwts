@@ -235,6 +235,10 @@ static long efi_runtime_get_variable(unsigned long arg)
 		if (dz && put_user(datasize, getvariable_local.data_size))
 			return -EFAULT;
 		return 0;
+	} else if (status == EFI_BUFFER_TOO_SMALL) {
+		if (dz && put_user(datasize, getvariable_local.data_size))
+			return -EFAULT;
+		return -EINVAL;
 	} else {
 		return -EINVAL;
 	}

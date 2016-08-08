@@ -579,6 +579,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 	efi_status_t status;
 	uint64_t max_size;
 	int i, reset_type;
+	int rv;
 
 	u_caps = (struct efi_querycapsulecapabilities __user *)arg;
 
@@ -597,11 +598,15 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		 * obtain the address of the capsule as it resides in the
 		 * user space
 		 */
-		if (get_user(c, caps.capsule_header_array + i))
-			return -EFAULT;
+		if (get_user(c, caps.capsule_header_array + i)) {
+			rv = -EFAULT;
+			goto err_exit;
+		}
 		if (copy_from_user(&capsules[i], c,
-				sizeof(efi_capsule_header_t)))
-			return -EFAULT;
+				sizeof(efi_capsule_header_t))) {
+			rv = -EFAULT;
+			goto err_exit;
+		}
 	}
 
 	caps.capsule_header_array = &capsules;
@@ -611,19 +616,32 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 					caps.capsule_count,
 					&max_size, &reset_type);
 
-	if (put_user(status, caps.status))
-		return -EFAULT;
+	if (put_user(status, caps.status)) {
+		rv = -EFAULT;
+		goto err_exit;
+	}
 
-	if (put_user(max_size, caps.maximum_capsule_size))
-		return -EFAULT;
+	if (put_user(max_size, caps.maximum_capsule_size)) {
+		rv = -EFAULT;
+		goto err_exit;
+	}
 
-	if (put_user(reset_type, caps.reset_type))
-		return -EFAULT;
+	if (put_user(reset_type, caps.reset_type)) {
+		rv = -EFAULT;
+		goto err_exit;
+	}
 
-	if (status != EFI_SUCCESS)
-		return -EINVAL;
+	if (status != EFI_SUCCESS) {
+		rv = -EINVAL;
+		goto err_exit;
+	}
 
+	kfree(capsules);
 	return 0;
+
+err_exit:
+	kfree(capsules);
+	return rv;
 }
 #endif
 

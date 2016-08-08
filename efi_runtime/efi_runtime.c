@@ -76,14 +76,6 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
 }
 
 /*
- * Free a buffer allocated by copy_ucs2_from_user_len()
- */
-static inline void ucs2_kfree(uint16_t *buf)
-{
-	kfree(buf);
-}
-
-/*
  * Allocate a buffer and copy a ucs2 string from user space into it.
  */
 static inline int
@@ -216,14 +208,14 @@ static long efi_runtime_get_variable(unsigned long arg)
 	if (getvariable_local.data_size && getvariable_local.data) {
 		data = kmalloc(datasize, GFP_KERNEL);
 		if (!data) {
-			ucs2_kfree(name);
+			kfree(name);
 			return -ENOMEM;
 		}
 	}
 
 	prev_datasize = datasize;
 	status = efi.get_variable(name, vd, at, dz, data);
-	ucs2_kfree(name);
+	kfree(name);
 
 	if (data) {
 		if (status == EFI_SUCCESS && prev_datasize >= datasize)
@@ -275,12 +267,12 @@ static long efi_runtime_set_variable(unsigned long arg)
 
 	data = kmalloc(setvariable_local.data_size, GFP_KERNEL);
 	if (!data) {
-		ucs2_kfree(name);
+		kfree(name);
 		return -ENOMEM;
 	}
 	if (copy_from_user(data, setvariable_local.data,
 			   setvariable_local.data_size)) {
-		ucs2_kfree(data);
+		kfree(data);
 		kfree(name);
 		return -EFAULT;
 	}
@@ -290,7 +282,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 				setvariable_local.data_size, data);
 
 	kfree(data);
-	ucs2_kfree(name);
+	kfree(name);
 
 	if (put_user(status, setvariable_local.status))
 		return -EFAULT;
@@ -482,7 +474,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 		rv = copy_ucs2_to_user_len(
 				getnextvariablename_local.variable_name,
 				name, prev_name_size);
-		ucs2_kfree(name);
+		kfree(name);
 		if (rv)
 			return -EFAULT;
 	}

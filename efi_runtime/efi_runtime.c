@@ -141,6 +141,8 @@ static inline int copy_ucs2_from_user(uint16_t **dst, uint16_t __user *src)
 		return -EFAULT;
 
 	len = __ucs2_strsize(src);
+	if (len == 0)
+		return -EFAULT;
 	return copy_ucs2_from_user_len(dst, src, len);
 }
 

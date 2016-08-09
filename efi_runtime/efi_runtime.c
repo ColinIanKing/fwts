@@ -251,7 +251,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 	struct efi_setvariable setvariable_local;
 	efi_guid_t vendor_guid;
 	efi_status_t status;
-	uint16_t *name;
+	uint16_t *name = NULL;
 	void *data;
 	int rv;
 
@@ -264,9 +264,11 @@ static long efi_runtime_set_variable(unsigned long arg)
 			   sizeof(vendor_guid)))
 		return -EFAULT;
 
-	rv = copy_ucs2_from_user(&name, setvariable_local.variable_name);
-	if (rv)
-		return rv;
+	if (setvariable_local.variable_name) {
+		rv = copy_ucs2_from_user(&name, setvariable_local.variable_name);
+		if (rv)
+			return rv;
+	}
 
 	data = kmalloc(setvariable_local.data_size, GFP_KERNEL);
 	if (!data) {

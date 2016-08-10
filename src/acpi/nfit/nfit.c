@@ -76,6 +76,14 @@ static int nfit_test1(fwts_framework *fw)
 		fwts_log_info_verbatim(fw, "    Type:                                   0x%4.4" PRIx16, entry->type);
 		fwts_log_info_verbatim(fw, "    Length:                                 0x%4.4" PRIx16, entry->length);
 
+		if (entry->length == 0) {
+			passed = false;
+			fwts_failed(fw, LOG_LEVEL_HIGH, "NFITLengthZero",
+				    "NFIT Subtable (offset 0x%x) length "
+				    "cannot be 0", (int)offset);
+			break;
+		}
+
 		if (entry->type == FWTS_ACPI_NFIT_TYPE_SYSTEM_ADDRESS) {
 			fwts_acpi_table_nfit_system_memory *nfit_struct = (fwts_acpi_table_nfit_system_memory *) entry;
 			char guid_str[37];

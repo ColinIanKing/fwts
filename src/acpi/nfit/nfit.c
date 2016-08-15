@@ -51,7 +51,7 @@ static int nfit_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_nfit *nfit = (fwts_acpi_table_nfit*) table->data;
 	fwts_acpi_table_nfit_struct_header *entry;
-	size_t offset;
+	uint32_t offset;
 	bool passed = true;
 
 	fwts_log_info_verbatim(fw, "NFIT NVDIMM Firmware Interface Table:");
@@ -79,8 +79,8 @@ static int nfit_test1(fwts_framework *fw)
 		if (entry->length == 0) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH, "NFITLengthZero",
-				    "NFIT Subtable (offset 0x%x) length "
-				    "cannot be 0", (int)offset);
+				    "NFIT Subtable (offset 0x%4.4" PRIx32 ") "
+				    "length cannot be 0", offset);
 			break;
 		}
 

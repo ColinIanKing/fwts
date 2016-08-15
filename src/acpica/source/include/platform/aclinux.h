@@ -161,6 +161,8 @@
 #include <asm/acenv.h>
 #endif
 
+#define ACPI_INIT_FUNCTION __init
+
 #ifndef CONFIG_ACPI
 
 /* External globals for __KERNEL__, stubs is needed */
@@ -245,11 +247,11 @@
 
 #else /* !__KERNEL__ */
 
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
+#define ACPI_USE_STANDARD_HEADERS
+
+#ifdef ACPI_USE_STANDARD_HEADERS
 #include <unistd.h>
+#endif
 
 /* Define/disable kernel-specific declarators */
 
@@ -279,9 +281,5 @@
 #endif
 
 #endif /* __KERNEL__ */
-
-/* Linux uses GCC */
-
-#include "acgcc.h"
 
 #endif /* __ACLINUX_H__ */

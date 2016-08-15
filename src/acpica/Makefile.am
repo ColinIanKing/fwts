@@ -67,7 +67,6 @@ libfwtsacpica_la_SOURCES =				\
 	fwts_acpica.c					\
 	osunixxf_munged.c				\
 	dscontrol_munged.c				\
-	source/os_specific/service_layers/oslibcfs.c	\
 	source/components/debugger/dbcmds.c		\
 	source/components/debugger/dbdisply.c		\
 	source/components/debugger/dbexec.c		\

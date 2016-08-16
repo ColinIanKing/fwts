@@ -80,6 +80,7 @@ fwts_SOURCES = main.c 				\
 	acpi/pcct/pcct.c			\
 	acpi/powerbutton/powerbutton.c 		\
 	acpi/plddump/plddump.c			\
+	acpi/pmtt/pmtt.c 			\
 	acpi/rsdp/rsdp.c			\
 	acpi/rsdt/rsdt.c			\
 	acpi/s3/s3.c 				\

@@ -991,6 +991,55 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
 /*
+ * ACPI MPST (Memory Power State Table), 5.2.21
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		channel_id;
+	uint8_t		reserved[3];
+} __attribute__ ((packed)) fwts_acpi_table_mpst;
+
+typedef struct {
+	uint8_t		value;
+	uint8_t 	info_index;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_power_state;
+
+typedef struct {
+	uint16_t	id;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_component;
+
+typedef struct {
+	uint8_t		flags;
+	uint8_t		reserved;
+	uint16_t	node_id;
+	uint32_t	length;
+	uint64_t	range_address;
+	uint64_t	range_length;
+	uint32_t	num_states;
+	uint32_t	num_components;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_power_node;
+
+typedef struct {
+	uint16_t	count;
+	uint16_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_power_node_list;
+
+typedef struct {
+	uint8_t		structure_id;
+	uint8_t		flags;
+	uint16_t	reserved1;
+	uint32_t	average_power;
+	uint32_t	power_saving;
+	uint64_t	exit_latency;
+	uint64_t	reserved2;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_power_char;
+
+typedef struct {
+	uint16_t	count;
+	uint16_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_mpst_power_char_list;
+
+/*
  * ACPI NFIT (NVDIMM Firmware Interface), 5.2.25
  */
 typedef struct {

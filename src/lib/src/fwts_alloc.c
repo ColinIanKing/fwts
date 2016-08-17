@@ -69,28 +69,28 @@ typedef struct {
  */
 static void *fwts_low_mmap_walkdown(const size_t requested_size)
 {
-	void *addr;
+	uint8_t *addr;
 	size_t page_size = fwts_page_size();
 	size_t sz = (requested_size + page_size) & ~(page_size - 1);
 	size_t pages = sz / page_size;
 	unsigned char vec[pages];
-	static void *last_addr = (void *)LIMIT_2GB;
+	static uint8_t *last_addr = (uint8_t *)LIMIT_2GB;
 
 	if (requested_size == 0)	/* Illegal */
 		return MAP_FAILED;
 
-	for (addr = last_addr - sz; addr > (void *)LIMIT_START; addr -= CHUNK_SIZE) {
+	for (addr = last_addr - sz; addr > (uint8_t *)LIMIT_START; addr -= CHUNK_SIZE) {
 		void *mapping;
 
 		/* Already mapped? */
-		if (mincore(addr, pages, vec) == 0)
+		if (mincore((void *)addr, pages, vec) == 0)
 			continue;
 
 		/* Not mapped but mincore returned something unexpected? */
 		if (errno != ENOMEM)
 			continue;
 
-		mapping = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
+		mapping = mmap((void *)addr, requested_size, PROT_READ | PROT_WRITE,
 			MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS, -1, 0);
 		if (mapping != MAP_FAILED) {
 			last_addr = mapping;
@@ -98,7 +98,7 @@ static void *fwts_low_mmap_walkdown(const size_t requested_size)
 		}
 	}
 	/* We've scanned all of memory, give up on subsequent calls */
-	last_addr = (void *)LIMIT_START;
+	last_addr = (uint8_t *)LIMIT_START;
 
 	return MAP_FAILED;
 }
@@ -139,7 +139,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		if ((first_addr_start == NULL) &&
 		    (addr_start > (void*)LIMIT_START)) {
 			size_t sz = (requested_size + CHUNK_SIZE) & ~(CHUNK_SIZE - 1);
-			void *addr = (uint8_t*)addr_start - sz;
+			uint8_t *addr = (uint8_t *)addr_start - sz;
 
 			/*
 			 * If addr is over the 2GB limit and we know
@@ -147,8 +147,8 @@ static void *fwts_low_mmap(const size_t requested_size)
 			 * be able to map a region below the 2GB limit as
 			 * nothing is already mapped there
 			 */
-			if (addr > (void*)LIMIT_2GB)
-				addr = (void*)LIMIT_2GB - sz;
+			if (addr > (uint8_t *)LIMIT_2GB)
+				addr = (uint8_t *)LIMIT_2GB - sz;
 
 			ret = mmap(addr, requested_size, PROT_READ | PROT_WRITE,
 				MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS, -1, 0);

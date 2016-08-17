@@ -66,7 +66,6 @@ fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 		l_new = klog_new->head;
 	} else {
 		fwts_list_link *l_old_last = NULL;
-		char *old;
 
 		/* Clone just the new differences */
 
@@ -76,7 +75,7 @@ fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 
 		if (l_old_last) {
 			/* And now look for that last line in the new log */
-			old = fwts_list_data(char *, l_old_last);
+			char *old = fwts_list_data(char *, l_old_last);
 			fwts_list_foreach(l_new, klog_new) {
 				const char *new = fwts_list_data(char *, l_new);
 

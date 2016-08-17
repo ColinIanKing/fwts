@@ -749,7 +749,7 @@ static int parse_cpu_info(fwts_framework *fw,
 {
 	char *end, path[PATH_MAX+1], *str, *tmp;
 	struct stat statbuf;
-	int i, rc;
+	int rc;
 
 	strcpy(cpu->sysfs_path, dir->d_name);
 	cpu->idx = strtoul(cpu->sysfs_path + strlen("cpu"), &end, 10);
@@ -783,7 +783,9 @@ static int parse_cpu_info(fwts_framework *fw,
 
 	/* cpu driver like intel_pstate has no scaling_available_frequencies */
 	if (str != NULL) {
-		for (tmp = str, i = 0; ; tmp = NULL) {
+		int i = 0;
+
+		for (tmp = str; ; tmp = NULL) {
 			char *tok = strtok(tmp, " ");
 			if (!tok)
 				break;

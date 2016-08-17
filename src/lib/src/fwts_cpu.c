@@ -250,9 +250,10 @@ fwts_bool fwts_cpu_has_c1e(void)
 			}
 
                         if (val >= 2) {
-                                if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val) != FWTS_OK)
+				if (fwts_cpu_readmsr(0, MSR_AMD64_OSVW_STATUS, &val) != FWTS_OK) {
 					rc = FWTS_BOOL_ERROR;
 					goto free_info;
+				}
                                 if (!(val & 2)) {
 					rc = FWTS_FALSE;
 					goto free_info;

@@ -82,10 +82,9 @@ static int fwts_iasl_cache_tables_to_file(fwts_framework *fw)
 	pid_t pid = getpid();
 	char tmpname[PATH_MAX];
 	fwts_acpi_table_info *table;
-	int ret;
 
 	for (cached_max = 0; cached_max < ACPI_MAX_TABLES; cached_max++) {
-		ret = fwts_acpi_get_table(fw, cached_max, &table);
+		int ret = fwts_acpi_get_table(fw, cached_max, &table);
 		if (ret != FWTS_OK)
 			return ret;
 		if (table == NULL)

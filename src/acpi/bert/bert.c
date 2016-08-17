@@ -126,12 +126,29 @@ static int bert_test1(fwts_framework *fw)
 			}
 			if (region->raw_data_offset <
 				sizeof(fwts_acpi_table_boot_error_region) + region->data_length) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"BERTBootErrorRegionRawDataOffset",
-					"BERT Boot Error Region Raw Data Offset %" PRIu32
-						" is smaller than end of the data region",
-						region->raw_data_offset);
-				passed = false;
+				if (region->raw_data_length) {
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"BERTBootErrorRegionRawDataOffset",
+						"BERT Boot Error Region Raw Data Offset %" PRIu32
+							" is smaller than end of the data region and"
+							" BERT Boot Error Region Raw Data Length %" PRIu32
+							" is non-zero.",
+							region->raw_data_offset,
+							region->raw_data_length);
+					passed = false;
+				} else {
+					fwts_warning(fw, "BERT Boot Error Region Raw Data Offset %"
+							PRIu32 " is smaller than end of the data"
+							"region. BERT Boot Error Region Data Lenght "
+							"is zero.",
+							region->raw_data_offset);
+					fwts_advice(fw,
+						"If there is raw data in the BERT Boot Error Region, "
+						"Raw Data Offset must be larger than the end of the "
+						"data region if there is raw data. However, since "
+						"BERT Boot Error Region Raw Data Lenght is zero, "
+						"this may mean that there is no raw data.");
+				}
 			}
 			if (region->raw_data_length + region->raw_data_offset > bert->boot_error_region_length) {
 				fwts_failed(fw, LOG_LEVEL_HIGH,

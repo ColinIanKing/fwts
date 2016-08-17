@@ -124,8 +124,8 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 		    (*(mem+i+2) == 'M') &&
 		    (*(mem+i+3) == '_') &&
 		    (fwts_checksum(mem + i, 16) == 0)) {
-			addr = (void*)FWTS_SMBIOS_REGION_START + i;
-			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios_entry));
+			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
+			memcpy(entry, (void *)(mem + i), sizeof(fwts_smbios_entry));
 			*type  = FWTS_SMBIOS;
 			break;
 		}
@@ -137,8 +137,8 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 		    (*(mem+i+4) == '_') &&
 		    (fwts_checksum(mem + i, 15) == 0)) {
 			memset(entry, 0, 16);
-			addr = (void*)FWTS_SMBIOS_REGION_START + i;
-			memcpy(16+((void*)entry), (void*)(mem + i), 15);
+			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
+			memcpy(16 + ((uint8_t *)entry), (void *)(mem + i), 15);
 			*type = FWTS_SMBIOS_DMI_LEGACY;
 			break;
 		}
@@ -172,7 +172,7 @@ static void *fwts_smbios30_find_entry_bios(fwts_framework *fw, fwts_smbios30_ent
 		    (*(mem+i+3) == '3') &&
 		    (*(mem+i+4) == '_') &&
 		    (fwts_checksum(mem + i, 24 ) == 0)) {
-			addr = (void *)FWTS_SMBIOS_REGION_START + i;
+			addr = (void *)((uint8_t *)FWTS_SMBIOS_REGION_START + i);
 			memcpy(entry, (void*)(mem + i), sizeof(fwts_smbios30_entry));
 			break;
 		}

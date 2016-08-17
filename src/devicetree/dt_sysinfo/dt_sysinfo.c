@@ -213,7 +213,6 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 {
 	int node, compat_len, model_len;
-	const char *model_buf, *compat_buf;
 
 	node = fdt_path_offset(fw->fdt, "/");
 	if (node < 0) {
@@ -228,6 +227,8 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 			"root of the device tree", "ibm,powernv");
 		return FWTS_ERROR;
 	} else {
+		const char *model_buf, *compat_buf;
+
 		compat_buf = fdt_getprop(fw->fdt, node,
 				"compatible", &compat_len);
 		model_buf = fdt_getprop(fw->fdt, node,

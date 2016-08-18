@@ -687,7 +687,6 @@ static void acpi_table_check_fadt_reduced_hardware(fwts_framework *fw)
 		    FWTS_FACP_FLAG_P_LVL2_UP		|
 		    FWTS_FACP_FLAG_RTC_S4		|
 		    FWTS_FACP_FLAG_TMR_VAL_EXT		|
-		    FWTS_FACP_FLAG_HEADLESS		|
 		    FWTS_FACP_FLAG_CPU_SW_SLP		|
 		    FWTS_FACP_FLAG_PCI_EXP_WAK		|
 		    FWTS_FACP_FLAG_S4_RTC_STS_VALID	|

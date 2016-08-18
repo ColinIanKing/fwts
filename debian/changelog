@@ -1,3 +1,11 @@
+fwts (16.08.01-0ubuntu1) yakkety; urgency=low
+
+  [Colin Ian King]
+  * acpica: rename vsnprintf and sprintf in utprint.c to avoid name clash
+    conflicts
+ 
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 18 Aug 2016 17:46:32 +0800
+
 fwts (16.08.00-0ubuntu1) yakkety; urgency=low
 
   [Alex Hung]

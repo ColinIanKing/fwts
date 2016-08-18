@@ -1,3 +1,53 @@
+fwts (16.08.00-0ubuntu1) yakkety; urgency=low
+
+  [Alex Hung]
+  * fwts: update .gitignore for files genereated by "make check"
+  * acpi: nfit: add ACPI NFIT test
+  * fwts-test: Add regression test for NFIT
+  * acpi: pcct: fix incorrect printing length for PRIx64
+  * lib: acpi: add support for MPST
+  * acpi: mpst: add ACPI MPST test
+  * fwts-test: Add regression test for MPST
+  * lib: acpi: add support for PMTT
+  * acpi: pmtt: add ACPI PMTT test
+  * fwts-test: Add regression test for PMTT
+  * acpi: nfit: change %x to marco PRIx32 for portability
+  * auto-packager: mkpackage.sh: remove wily
+
+  [Colin Ian King]
+  * acpi: madt: fix memory leak on return paths
+  * ACPICA: Update to version 20160729
+  * acpi: pmtt: fix incorrect assignment on passed
+  * acpi: dmar: fix portability warning from cppcheck on void * cast
+  * acpi: dbg2: remove alloca(), replace with variable length array
+  * acpi: madt: reduce scope of variable 'listint'
+  * acpica: fwts_iasl_interface: reduce scope of variable 'i'
+  * lib: fwts_smbios: reduce scope of variable 'mapped_entry'
+  * lib: fwts_klog: reduce scope of variable 'old'
+  * lib: fwts_iasl: reduce scope of variable 'ret'
+  * lib: fwts_cpu: fix missing { } on an if statement
+  * devicetree: dt_sysinfo: reduce scope of variables 'model_buf' and
+    'compat_buf'
+  * cpu: cpufreq: reduce scope of variable 'i'
+  * lib: fwts_smbios: fix portability warning from cppcheck on void * cast
+  * lib: fwts_alloc: fix portability warnings from cppcheck on void * arithmetic
+
+  [Ivan Hu]
+  * efi_runtime: call kfree directly instead of inline wrapper
+  * efi_runtime: add datasize return when getting the EFI_BUFFER_TOO_SMALL
+  * efi_runtime: fix memory leak of capsulecaps function
+  * efi_runtime: clean up some comments and unused code
+  * efi_runtime: add chceking the len for reading userspace memory
+  * efi_runtime: add checking variable_name input
+
+  [Prarit Bhargava]
+  * acpi/nfit: Fix endless loop on broken NFIT tables
+
+  [Ricardo Neri]
+  * acpi: bert: do not fail if BERT error region raw_data_length is zero
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 18 Aug 2016 12:14:11 +0800
+
 fwts (16.07.00-0ubuntu1) yakkety; urgency=low
 
   [Alex Hung]

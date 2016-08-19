@@ -1757,6 +1757,23 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_wdat;
 
 /*
+ * ACPI WPDT (Windows Platform Binary Table)
+ *  https://msdn.microsoft.com/en-US/library/windows/hardware/dn550976
+ */
+typedef struct {
+	uint16_t	arguments_length;
+	uint8_t		arguments[];
+} __attribute__ ((packed)) fwts_acpi_table_wpbt_type1;
+
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	handoff_size;
+	uint64_t	handoff_address;
+	uint8_t		layout;
+	uint8_t		type;
+} __attribute__ ((packed)) fwts_acpi_table_wpbt;
+
+/*
  *  ACPI ASPT
  *	determined by reverse engineering
  */

@@ -47,16 +47,16 @@ MODULE_LICENSE("GPL");
  * Note this function returns the number of *bytes*, not the number of
  * ucs2 characters.
  */
-static inline size_t user_ucs2_strsize(uint16_t  __user *str)
+static inline size_t user_ucs2_strsize(efi_char16_t  __user *str)
 {
-	uint16_t *s = str, c;
+	efi_char16_t *s = str, c;
 	size_t len;
 
 	if (!str)
 		return 0;
 
 	/* Include terminating NULL */
-	len = sizeof(uint16_t);
+	len = sizeof(efi_char16_t);
 
 	if (get_user(c, s++)) {
 		/* Can't read userspace memory for size */
@@ -68,7 +68,7 @@ static inline size_t user_ucs2_strsize(uint16_t  __user *str)
 			/* Can't read userspace memory for size */
 			return 0;
 		}
-		len += sizeof(uint16_t);
+		len += sizeof(efi_char16_t);
 	}
 	return len;
 }
@@ -77,9 +77,10 @@ static inline size_t user_ucs2_strsize(uint16_t  __user *str)
  * Allocate a buffer and copy a ucs2 string from user space into it.
  */
 static inline int
-copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
+copy_ucs2_from_user_len(efi_char16_t **dst, efi_char16_t __user *src,
+			size_t len)
 {
-	uint16_t *buf;
+	efi_char16_t *buf;
 
 	if (!src) {
 		*dst = NULL;
@@ -109,7 +110,8 @@ copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
  *
  * Just a wrap for user_ucs2_strsize
  */
-static inline int get_ucs2_strsize_from_user(uint16_t __user *src, size_t *len)
+static inline int
+get_ucs2_strsize_from_user(efi_char16_t __user *src, size_t *len)
 {
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
@@ -133,7 +135,8 @@ static inline int get_ucs2_strsize_from_user(uint16_t __user *src, size_t *len)
  *
  * It is the caller's responsibility to free 'dst'.
  */
-static inline int copy_ucs2_from_user(uint16_t **dst, uint16_t __user *src)
+static inline int
+copy_ucs2_from_user(efi_char16_t **dst, efi_char16_t __user *src)
 {
 	size_t len;
 
@@ -156,7 +159,7 @@ static inline int copy_ucs2_from_user(uint16_t **dst, uint16_t __user *src)
  * 'len' specifies the number of bytes to copy.
  */
 static inline int
-copy_ucs2_to_user_len(uint16_t __user *dst, uint16_t *src, size_t len)
+copy_ucs2_to_user_len(efi_char16_t __user *dst, efi_char16_t *src, size_t len)
 {
 	if (!src)
 		return 0;
@@ -174,8 +177,8 @@ static long efi_runtime_get_variable(unsigned long arg)
 	unsigned long datasize, prev_datasize, *dz;
 	efi_guid_t vendor_guid, *vd = NULL;
 	efi_status_t status;
-	uint16_t *name = NULL;
-	uint32_t attr, *at;
+	efi_char16_t *name = NULL;
+	u32 attr, *at;
 	void *data = NULL;
 	int rv = 0;
 
@@ -251,7 +254,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 	struct efi_setvariable setvariable_local;
 	efi_guid_t vendor_guid;
 	efi_status_t status;
-	uint16_t *name = NULL;
+	efi_char16_t *name = NULL;
 	void *data;
 	int rv;
 
@@ -265,7 +268,8 @@ static long efi_runtime_set_variable(unsigned long arg)
 		return -EFAULT;
 
 	if (setvariable_local.variable_name) {
-		rv = copy_ucs2_from_user(&name, setvariable_local.variable_name);
+		rv = copy_ucs2_from_user(&name,
+					setvariable_local.variable_name);
 		if (rv)
 			return rv;
 	}
@@ -356,7 +360,7 @@ static long efi_runtime_get_waketime(unsigned long arg)
 {
 	struct efi_getwakeuptime __user *getwakeuptime;
 	struct efi_getwakeuptime getwakeuptime_local;
-	unsigned char enabled, pending;
+	efi_bool_t enabled, pending;
 	efi_status_t status;
 	efi_time_t efi_time;
 
@@ -388,7 +392,7 @@ static long efi_runtime_set_waketime(unsigned long arg)
 {
 	struct efi_setwakeuptime __user *setwakeuptime;
 	struct efi_setwakeuptime setwakeuptime_local;
-	unsigned char enabled;
+	efi_bool_t enabled;
 	efi_status_t status;
 	efi_time_t efi_time;
 
@@ -423,7 +427,7 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	efi_status_t status;
 	efi_guid_t *vd = NULL;
 	efi_guid_t vendor_guid;
-	uint16_t *name = NULL;
+	efi_char16_t *name = NULL;
 	int rv;
 
 	getnextvariablename = (struct efi_getnextvariablename
@@ -509,7 +513,7 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 	struct efi_getnexthighmonotoniccount __user *getnexthighmonotoniccount;
 	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount_local;
 	efi_status_t status;
-	uint32_t count;
+	u32 count;
 
 	getnexthighmonotoniccount = (struct
 			efi_getnexthighmonotoniccount __user *)arg;
@@ -542,7 +546,7 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 	struct efi_queryvariableinfo __user *queryvariableinfo;
 	struct efi_queryvariableinfo queryvariableinfo_local;
 	efi_status_t status;
-	uint64_t max_storage, remaining, max_size;
+	u64 max_storage, remaining, max_size;
 
 	queryvariableinfo = (struct efi_queryvariableinfo __user *)arg;
 
@@ -578,7 +582,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 	struct efi_querycapsulecapabilities caps;
 	efi_capsule_header_t *capsules;
 	efi_status_t status;
-	uint64_t max_size;
+	u64 max_size;
 	int i, reset_type;
 	int rv;
 

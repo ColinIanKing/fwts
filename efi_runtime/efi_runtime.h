@@ -25,73 +25,73 @@
 #include <linux/efi.h>
 
 struct efi_getvariable {
-	uint16_t	*variable_name;
+	efi_char16_t	*variable_name;
 	efi_guid_t	*vendor_guid;
-	uint32_t	*attributes;
-	uint64_t	*data_size;
+	u32		*attributes;
+	unsigned long	*data_size;
 	void		*data;
-	uint64_t	*status;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_setvariable {
-	uint16_t	*variable_name;
+	efi_char16_t	*variable_name;
 	efi_guid_t	*vendor_guid;
-	uint32_t	attributes;
-	uint64_t	data_size;
+	u32		attributes;
+	unsigned long	data_size;
 	void		*data;
-	uint64_t	*status;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_getnextvariablename {
-	uint64_t	*variable_name_size;
-	uint16_t	*variable_name;
+	unsigned long	*variable_name_size;
+	efi_char16_t	*variable_name;
 	efi_guid_t	*vendor_guid;
-	uint64_t	*status;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_queryvariableinfo {
-	uint32_t	attributes;
-	uint64_t	*maximum_variable_storage_size;
-	uint64_t	*remaining_variable_storage_size;
-	uint64_t	*maximum_variable_size;
-	uint64_t	*status;
+	u32		attributes;
+	u64		*maximum_variable_storage_size;
+	u64		*remaining_variable_storage_size;
+	u64		*maximum_variable_size;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_gettime {
-	efi_time_t		*time;
-	efi_time_cap_t		*capabilities;
-	uint64_t		*status;
+	efi_time_t	*time;
+	efi_time_cap_t	*capabilities;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_settime {
-	efi_time_t		*time;
-	uint64_t		*status;
+	efi_time_t	*time;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_getwakeuptime {
-	uint8_t		*enabled;
-	uint8_t		*pending;
+	efi_bool_t	*enabled;
+	efi_bool_t	*pending;
 	efi_time_t	*time;
-	uint64_t	*status;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_setwakeuptime {
-	uint8_t		enabled;
+	efi_bool_t	enabled;
 	efi_time_t	*time;
-	uint64_t	*status;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_getnexthighmonotoniccount {
-	uint32_t	*high_count;
-	uint64_t	*status;
+	u32		*high_count;
+	efi_status_t	*status;
 } __packed;
 
 struct efi_querycapsulecapabilities {
 	efi_capsule_header_t	**capsule_header_array;
-	uint64_t		capsule_count;
-	uint64_t		*maximum_capsule_size;
+	unsigned long		capsule_count;
+	u64			*maximum_capsule_size;
 	int			*reset_type;
-	uint64_t		*status;
+	efi_status_t		*status;
 } __packed;
 
 /* ioctl calls that are permitted to the /dev/efi_runtime interface. */

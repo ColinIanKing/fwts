@@ -255,7 +255,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 	efi_status_t status;
 	efi_char16_t *name = NULL;
 	void *data;
-	int rv;
+	int rv = 0;
 
 	setvariable_user = (struct efi_setvariable __user *)arg;
 
@@ -280,21 +280,26 @@ static long efi_runtime_set_variable(unsigned long arg)
 	}
 	if (copy_from_user(data, setvariable.data,
 			   setvariable.data_size)) {
-		kfree(data);
-		kfree(name);
-		return -EFAULT;
+		rv = -EFAULT;
+		goto out;
 	}
 
 	status = efi.set_variable(name, &vendor_guid,
 				setvariable.attributes,
 				setvariable.data_size, data);
 
+	if (put_user(status, setvariable.status)) {
+		rv = -EFAULT;
+		goto out;
+	}
+
+	rv = status == EFI_SUCCESS ? 0 : -EINVAL;
+
+out:
 	kfree(data);
 	kfree(name);
 
-	if (put_user(status, setvariable.status))
-		return -EFAULT;
-	return status == EFI_SUCCESS ? 0 : -EINVAL;
+	return rv;
 }
 
 static long efi_runtime_get_time(unsigned long arg)
@@ -583,7 +588,7 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 	efi_status_t status;
 	u64 max_size;
 	int i, reset_type;
-	int rv;
+	int rv = 0;
 
 	qcaps_user = (struct efi_querycapsulecapabilities __user *)arg;
 
@@ -604,12 +609,12 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		 */
 		if (get_user(c, qcaps.capsule_header_array + i)) {
 			rv = -EFAULT;
-			goto err_exit;
+			goto out;
 		}
 		if (copy_from_user(&capsules[i], c,
 				sizeof(efi_capsule_header_t))) {
 			rv = -EFAULT;
-			goto err_exit;
+			goto out;
 		}
 	}
 
@@ -622,28 +627,25 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 
 	if (put_user(status, qcaps.status)) {
 		rv = -EFAULT;
-		goto err_exit;
+		goto out;
 	}
 
 	if (put_user(max_size, qcaps.maximum_capsule_size)) {
 		rv = -EFAULT;
-		goto err_exit;
+		goto out;
 	}
 
 	if (put_user(reset_type, qcaps.reset_type)) {
 		rv = -EFAULT;
-		goto err_exit;
+		goto out;
 	}
 
 	if (status != EFI_SUCCESS) {
 		rv = -EINVAL;
-		goto err_exit;
+		goto out;
 	}
 
-	kfree(capsules);
-	return 0;
-
-err_exit:
+out:
 	kfree(capsules);
 	return rv;
 }

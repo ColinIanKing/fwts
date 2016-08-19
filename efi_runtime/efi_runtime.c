@@ -218,31 +218,31 @@ static long efi_runtime_get_variable(unsigned long arg)
 	status = efi.get_variable(name, vd, at, dz, data);
 	kfree(name);
 
-	if (data) {
-		if (status == EFI_SUCCESS && prev_datasize >= datasize)
-			rv = copy_to_user(getvariable.data, data,
-				datasize);
-		kfree(data);
-	}
-
-	if (rv)
-		return rv;
-
 	if (put_user(status, getvariable.status))
 		return -EFAULT;
-	if (status == EFI_SUCCESS && prev_datasize >= datasize) {
-		if (at && put_user(attr, getvariable.attributes))
-			return -EFAULT;
-		if (dz && put_user(datasize, getvariable.data_size))
-			return -EFAULT;
-		return 0;
-	} else if (status == EFI_BUFFER_TOO_SMALL) {
-		if (dz && put_user(datasize, getvariable.data_size))
-			return -EFAULT;
-		return -EINVAL;
-	} else {
+
+	if (status != EFI_SUCCESS) {
+		if (status == EFI_BUFFER_TOO_SMALL) {
+			if (dz && put_user(datasize, getvariable.data_size))
+				return -EFAULT;
+		}
 		return -EINVAL;
 	}
+
+	if (prev_datasize < datasize)
+		return -EINVAL;
+
+	if (data) {
+		rv = copy_to_user(getvariable.data, data, datasize);
+		kfree(data);
+		if (rv)
+			return rv;
+	}
+
+	if (at && put_user(attr, getvariable.attributes))
+		return -EFAULT;
+	if (dz && put_user(datasize, getvariable.data_size))
+		return -EFAULT;
 
 	return 0;
 }

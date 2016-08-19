@@ -47,7 +47,7 @@ MODULE_LICENSE("GPL");
  * Note this function returns the number of *bytes*, not the number of
  * ucs2 characters.
  */
-static inline size_t __ucs2_strsize(uint16_t  __user *str)
+static inline size_t user_ucs2_strsize(uint16_t  __user *str)
 {
 	uint16_t *s = str, c;
 	size_t len;
@@ -59,13 +59,13 @@ static inline size_t __ucs2_strsize(uint16_t  __user *str)
 	len = sizeof(uint16_t);
 
 	if (get_user(c, s++)) {
-		WARN(1, "fwts: Can't read userspace memory for size");
+		/* Can't read userspace memory for size */
 		return 0;
 	}
 
 	while (c != 0) {
 		if (get_user(c, s++)) {
-			WARN(1, "Can't read userspace memory for size");
+			/* Can't read userspace memory for size */
 			return 0;
 		}
 		len += sizeof(uint16_t);
@@ -107,14 +107,14 @@ copy_ucs2_from_user_len(uint16_t **dst, uint16_t __user *src, size_t len)
 /*
  * Count the bytes in 'str', including the terminating NULL.
  *
- * Just a wrap for __ucs2_strsize
+ * Just a wrap for user_ucs2_strsize
  */
 static inline int get_ucs2_strsize_from_user(uint16_t __user *src, size_t *len)
 {
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
 
-	*len = __ucs2_strsize(src);
+	*len = user_ucs2_strsize(src);
 	if (*len == 0)
 		return -EFAULT;
 
@@ -140,7 +140,7 @@ static inline int copy_ucs2_from_user(uint16_t **dst, uint16_t __user *src)
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
 
-	len = __ucs2_strsize(src);
+	len = user_ucs2_strsize(src);
 	if (len == 0)
 		return -EFAULT;
 	return copy_ucs2_from_user_len(dst, src, len);

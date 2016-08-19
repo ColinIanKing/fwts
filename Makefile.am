@@ -133,6 +133,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/wdat-0001/test-0001.sh \
 	fwts-test/wdat-0001/test-0002.sh \
 	fwts-test/wmi-0001/test-0001.sh \
+	fwts-test/wpbt-0001/test-0001.sh \
+	fwts-test/wpbt-0001/test-0002.sh \
 	fwts-test/wmi-0001/test-0002.sh \
 	fwts-test/wmi-0001/test-0003.sh \
 	fwts-test/xenv-0001/test-0001.sh \

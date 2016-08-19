@@ -1,0 +1,16 @@
+wpbt            wpbt: WPBT Windows Platform Binary Table test.
+wpbt            ----------------------------------------------------------
+wpbt            Test 1 of 1: WPBT Windows Platform Binary Table test.
+wpbt            WPBT Windows Platform Binary Table:
+wpbt              Handoff Memory Size:      0x12345678
+wpbt              Handoff Memory Location:  0xaa000000bb000000
+wpbt              Content Layout:           0x01
+wpbt              Content Type:             0x01
+wpbt              Arguments Length:         0x0064
+wpbt            
+wpbt            PASSED: Test 1, No issues found in WPBT table.
+wpbt            
+wpbt            ==========================================================
+wpbt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wpbt            info only.
+wpbt            ==========================================================

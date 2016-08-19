@@ -333,10 +333,12 @@ static long efi_runtime_get_time(unsigned long arg)
 			put_user(cap.sets_to_zero, &(cap_local->sets_to_zero)))
 			return -EFAULT;
 	}
-	if (gettime.time)
-		return copy_to_user(gettime.time, &efi_time,
-			sizeof(efi_time_t)) ? -EFAULT : 0;
-	return 0;
+	if (gettime.time) {
+		if(copy_to_user(gettime.time, &efi_time, sizeof(efi_time_t)))
+			return -EFAULT;
+	}
+
+	return status == EFI_SUCCESS ? 0 : -EINVAL;
 }
 
 static long efi_runtime_set_time(unsigned long arg)
@@ -386,10 +388,13 @@ static long efi_runtime_get_waketime(unsigned long arg)
 						getwakeuptime.enabled))
 		return -EFAULT;
 
-	if (getwakeuptime.time)
-		return copy_to_user(getwakeuptime.time, &efi_time,
-			sizeof(efi_time_t)) ? -EFAULT : 0;
-	return 0;
+	if (getwakeuptime.time) {
+		if (copy_to_user(getwakeuptime.time, &efi_time,
+				sizeof(efi_time_t)))
+			return -EFAULT;
+	}
+
+	return status == EFI_SUCCESS ? 0 : -EINVAL;
 }
 
 static long efi_runtime_set_waketime(unsigned long arg)

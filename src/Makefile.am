@@ -101,6 +101,7 @@ fwts_SOURCES = main.c 				\
 	acpi/wakealarm/wakealarm.c 		\
 	acpi/wdat/wdat.c			\
 	acpi/wmi/wmi.c 				\
+	acpi/wpbt/wpbt.c			\
 	acpi/xsdt/xsdt.c			\
 	acpi/xenv/xenv.c			\
 	apic/apicedge/apicedge.c 		\

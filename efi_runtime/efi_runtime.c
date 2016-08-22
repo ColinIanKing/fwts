@@ -334,7 +334,7 @@ static long efi_runtime_get_time(unsigned long arg)
 			return -EFAULT;
 	}
 	if (gettime.time) {
-		if(copy_to_user(gettime.time, &efi_time, sizeof(efi_time_t)))
+		if (copy_to_user(gettime.time, &efi_time, sizeof(efi_time_t)))
 			return -EFAULT;
 	}
 
@@ -488,33 +488,47 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 
 	status = efi.get_next_variable(ns, name, vd);
 
-	if (name) {
-		rv = copy_ucs2_to_user_len(
-				getnextvariablename.variable_name,
-				name, prev_name_size);
-		kfree(name);
-		if (rv)
-			return -EFAULT;
+	if (put_user(status, getnextvariablename.status)) {
+		rv = -EFAULT;
+		goto out;
 	}
 
-	if (put_user(status, getnextvariablename.status))
-		return -EFAULT;
+	if (status != EFI_SUCCESS) {
+		if (status == EFI_BUFFER_TOO_SMALL) {
+			if (ns && put_user(*ns,
+				getnextvariablename.variable_name_size)) {
+				rv = -EFAULT;
+				goto out;
+			}
+		}
+		rv = -EINVAL;
+		goto out;
+	}
+
+	if (name) {
+		if (copy_ucs2_to_user_len(getnextvariablename.variable_name,
+						name, prev_name_size)) {
+			rv = -EFAULT;
+			goto out;
+		}
+	}
 
 	if (ns) {
-		if (put_user(*ns,
-			getnextvariablename.variable_name_size))
-			return -EFAULT;
+		if (put_user(*ns, getnextvariablename.variable_name_size)) {
+			rv = -EFAULT;
+			goto out;
+		}
 	}
 
 	if (vd) {
-		if (copy_to_user(getnextvariablename.vendor_guid,
-				 vd, sizeof(efi_guid_t)))
-			return -EFAULT;
+		if (copy_to_user(getnextvariablename.vendor_guid, vd,
+							sizeof(efi_guid_t)))
+			rv = -EFAULT;
 	}
 
-	if (status != EFI_SUCCESS)
-		return -EINVAL;
-	return 0;
+out:
+	kfree(name);
+	return rv;
 }
 
 static long efi_runtime_get_nexthighmonocount(unsigned long arg)

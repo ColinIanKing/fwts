@@ -240,7 +240,6 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utdecode.c		\
 	source/components/utilities/utexcep.c		\
 	source/components/utilities/utpredef.c		\
-	source/components/utilities/utprint.c		\
 	source/components/utilities/utstring.c		\
 	source/components/utilities/utownerid.c		\
 	source/components/utilities/utxfinit.c		\

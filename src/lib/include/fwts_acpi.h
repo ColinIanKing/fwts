@@ -688,6 +688,44 @@ typedef struct {
 }  __attribute__ ((packed)) fwts_acpi_table_tpm2;
 
 /*
+ * ACPI Trusted Computing Group DRTM Architecture Specification
+ *   http://www.trustedcomputinggroup.org/wp-content/uploads/TCG_D-RTM_Architecture_v1-0_Published_06172013.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint64_t	entry_base_address;
+	uint64_t	entry_length;
+	uint32_t	entry_address32;
+	uint64_t	entry_address64;
+	uint64_t	exit_address;
+	uint64_t	log_area_address;
+	uint32_t	log_area_length;
+	uint64_t	arch_dependent_address;
+	uint32_t	flags;
+}  __attribute__ ((packed)) fwts_acpi_table_drtm;
+
+typedef struct {
+	uint32_t	validated_table_count;
+	uint64_t	validated_tables[];
+}  __attribute__ ((packed)) fwts_acpi_table_drtm_vtl;
+
+typedef struct  {
+	uint8_t		size[7];
+	uint8_t		type;
+	uint64_t	address;
+}__attribute__ ((packed)) fwts_acpi_drtm_resource;
+
+typedef struct {
+	uint32_t	resource_count;
+	fwts_acpi_drtm_resource	resources[];
+}  __attribute__ ((packed)) fwts_acpi_table_drtm_rtl;
+
+typedef struct {
+	uint32_t	dps_id_length;
+	uint8_t		dps_id[16];
+}  __attribute__ ((packed)) fwts_acpi_table_drtm_dps;
+
+/*
  * ACPI XENV (Xen Environment Table)
  *   http://wiki.xenproject.org/mediawiki/images/c/c4/Xen-environment-table.pdf
  */

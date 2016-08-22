@@ -1,0 +1,55 @@
+drtm            drtm: DRTM D-RTM Resources Table test.
+drtm            ----------------------------------------------------------
+drtm            Test 1 of 1: DRTM D-RTM Resources Table test.
+drtm            DRTM D-RTM Resources Table:
+drtm              DL_Entry_Base:            0x00000000f0000000
+drtm              DL_Entry_Length:          0x0000000010000000
+drtm              DL_Entry32:               0x00002000
+drtm              DL_Entry64:               0x0000000030000000
+drtm              DLME_Exit:                0x0000000040000000
+drtm              Log_Area_Start:           0x0000000050000000
+drtm              Log_Area_Length:          0x00006000
+drtm              Architecture_Dependent:   0x0000000070000000
+drtm              DRT_Flags:                0x0000000f
+drtm            
+drtm              VTL_Length:               0x00000002
+drtm              Validated_Tables:         0x00000000a0000000
+drtm              Validated_Tables:         0x00000000b0000000
+drtm            
+drtm              RL_Length:                0x00000003
+drtm              Resource Size:            0x0000000000000100
+drtm              Resource Type:            0x00
+drtm              Resource Address:         0x00000000000000aa
+drtm            
+drtm              Resource Size:            0x0000000000000200
+drtm              Resource Type:            0x00
+drtm              Resource Address:         0x00000000000000bb
+drtm            
+drtm              Resource Size:            0x0000000000000300
+drtm              Resource Type:            0x00
+drtm              Resource Address:         0x00000000000000cc
+drtm            
+drtm              DPS_Length:               0x00000000
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm              DLME Platform Id:         0x00
+drtm            
+drtm            PASSED: Test 1, No issues found in DRTM table.
+drtm            
+drtm            ==========================================================
+drtm            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+drtm            info only.
+drtm            ==========================================================

@@ -192,7 +192,7 @@ static long efi_runtime_get_variable(unsigned long arg)
 		return -EFAULT;
 	if (getvariable.vendor_guid) {
 		if (copy_from_user(&vendor_guid, getvariable.vendor_guid,
-			   sizeof(vendor_guid)))
+					sizeof(vendor_guid)))
 			return -EFAULT;
 		vd = &vendor_guid;
 	}
@@ -272,16 +272,14 @@ static long efi_runtime_set_variable(unsigned long arg)
 
 	setvariable_user = (struct efi_setvariable __user *)arg;
 
-	if (copy_from_user(&setvariable, setvariable_user,
-			   sizeof(setvariable)))
+	if (copy_from_user(&setvariable, setvariable_user, sizeof(setvariable)))
 		return -EFAULT;
 	if (copy_from_user(&vendor_guid, setvariable.vendor_guid,
-			   sizeof(vendor_guid)))
+				sizeof(vendor_guid)))
 		return -EFAULT;
 
 	if (setvariable.variable_name) {
-		rv = copy_ucs2_from_user(&name,
-					setvariable.variable_name);
+		rv = copy_ucs2_from_user(&name, setvariable.variable_name);
 		if (rv)
 			return rv;
 	}
@@ -291,8 +289,7 @@ static long efi_runtime_set_variable(unsigned long arg)
 		kfree(name);
 		return -ENOMEM;
 	}
-	if (copy_from_user(data, setvariable.data,
-			   setvariable.data_size)) {
+	if (copy_from_user(data, setvariable.data, setvariable.data_size)) {
 		rv = -EFAULT;
 		goto out;
 	}
@@ -332,16 +329,15 @@ static long efi_runtime_get_time(unsigned long arg)
 
 	if (put_user(status, gettime.status))
 		return -EFAULT;
-	if (status != EFI_SUCCESS) {
-		pr_err("efitime: can't read time\n");
+
+	if (status != EFI_SUCCESS)
 		return -EINVAL;
-	}
+
 	if (gettime.capabilities) {
 		efi_time_cap_t __user *cap_local;
 
 		cap_local = (efi_time_cap_t *)gettime.capabilities;
-		if (put_user(cap.resolution,
-			&(cap_local->resolution)) ||
+		if (put_user(cap.resolution, &(cap_local->resolution)) ||
 			put_user(cap.accuracy, &(cap_local->accuracy)) ||
 			put_user(cap.sets_to_zero, &(cap_local->sets_to_zero)))
 			return -EFAULT;
@@ -351,7 +347,7 @@ static long efi_runtime_get_time(unsigned long arg)
 			return -EFAULT;
 	}
 
-	return status == EFI_SUCCESS ? 0 : -EINVAL;
+	return 0;
 }
 
 static long efi_runtime_set_time(unsigned long arg)
@@ -409,7 +405,7 @@ static long efi_runtime_get_waketime(unsigned long arg)
 			return -EFAULT;
 	}
 
-	return status == EFI_SUCCESS ? 0 : -EINVAL;
+	return 0;
 }
 
 static long efi_runtime_set_waketime(unsigned long arg)
@@ -433,9 +429,8 @@ static long efi_runtime_set_waketime(unsigned long arg)
 			return -EFAULT;
 
 		status = efi.set_wakeup_time(enabled, &efi_time);
-	} else {
+	} else
 		status = efi.set_wakeup_time(enabled, NULL);
-	}
 
 	if (put_user(status, setwakeuptime.status))
 		return -EFAULT;
@@ -454,16 +449,14 @@ static long efi_runtime_get_nextvariablename(unsigned long arg)
 	efi_char16_t *name = NULL;
 	int rv;
 
-	getnextvariablename_user = (struct efi_getnextvariablename
-							__user *)arg;
+	getnextvariablename_user = (struct efi_getnextvariablename __user *)arg;
 
 	if (copy_from_user(&getnextvariablename, getnextvariablename_user,
 			   sizeof(getnextvariablename)))
 		return -EFAULT;
 
 	if (getnextvariablename.variable_name_size) {
-		if (get_user(name_size,
-				getnextvariablename.variable_name_size))
+		if (get_user(name_size, getnextvariablename.variable_name_size))
 			return -EFAULT;
 		ns = &name_size;
 		prev_name_size = name_size;

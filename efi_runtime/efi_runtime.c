@@ -395,8 +395,10 @@ static long efi_runtime_get_waketime(unsigned long arg)
 
 	if (put_user(status, getwakeuptime.status))
 		return -EFAULT;
+
 	if (status != EFI_SUCCESS)
 		return -EINVAL;
+
 	if (getwakeuptime.enabled && put_user(enabled,
 						getwakeuptime.enabled))
 		return -EFAULT;
@@ -565,12 +567,12 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 	if (put_user(status, getnexthighmonocount.status))
 		return -EFAULT;
 
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
 	if (getnexthighmonocount.high_count &&
 	    put_user(count, getnexthighmonocount.high_count))
 		return -EFAULT;
-
-	if (status != EFI_SUCCESS)
-		return -EINVAL;
 
 	return 0;
 }
@@ -593,6 +595,12 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 	status = efi.query_variable_info(queryvariableinfo.attributes,
 					 &max_storage, &remaining, &max_size);
 
+	if (put_user(status, queryvariableinfo.status))
+		return -EFAULT;
+
+	if (status != EFI_SUCCESS)
+		return -EINVAL;
+
 	if (put_user(max_storage,
 		     queryvariableinfo.maximum_variable_storage_size))
 		return -EFAULT;
@@ -603,11 +611,6 @@ static long efi_runtime_query_variableinfo(unsigned long arg)
 
 	if (put_user(max_size, queryvariableinfo.maximum_variable_size))
 		return -EFAULT;
-
-	if (put_user(status, queryvariableinfo.status))
-		return -EFAULT;
-	if (status != EFI_SUCCESS)
-		return -EINVAL;
 
 	return 0;
 }
@@ -662,20 +665,18 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 		goto out;
 	}
 
+	if (status != EFI_SUCCESS) {
+		rv = -EINVAL;
+		goto out;
+	}
+
 	if (put_user(max_size, qcaps.maximum_capsule_size)) {
 		rv = -EFAULT;
 		goto out;
 	}
 
-	if (put_user(reset_type, qcaps.reset_type)) {
+	if (put_user(reset_type, qcaps.reset_type))
 		rv = -EFAULT;
-		goto out;
-	}
-
-	if (status != EFI_SUCCESS) {
-		rv = -EINVAL;
-		goto out;
-	}
 
 out:
 	kfree(capsules);

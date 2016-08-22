@@ -53,6 +53,7 @@ fwts_SOURCES = main.c 				\
 	acpi/dbgp/dbgp.c 			\
 	acpi/dbg2/dbg2.c 			\
 	acpi/dmar/dmar.c 			\
+	acpi/drtm/drtm.c 			\
 	acpi/ecdt/ecdt.c			\
 	acpi/einj/einj.c			\
 	acpi/erst/erst.c			\

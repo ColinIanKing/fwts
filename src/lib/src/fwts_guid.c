@@ -49,3 +49,18 @@ void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, const size_t guid
 			&guid[8], &guid[9], &guid[10], &guid[11], &guid[12], &guid[13], &guid[14], &guid[15]);
 	}
 }
+/*
+ *  fwts_guid_match()
+ *	compare whether two GUIDs are the same
+ */
+bool fwts_guid_match(const uint8_t *guid, const uint8_t *guid2, const size_t guid_size)
+{
+	size_t i;
+
+	for (i = 0; i < guid_size; i++) {
+		if (guid[i] != guid2[i])
+			return false;
+	}
+
+	return true;
+}

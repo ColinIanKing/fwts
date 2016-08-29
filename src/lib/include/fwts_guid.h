@@ -18,12 +18,13 @@
  */
 
 #ifndef __FWTS_GUID_H__
-#define __FWTS_GUID_H__ 
+#define __FWTS_GUID_H__
 
 #include <stdlib.h>
 #include <stdint.h>
 
 void fwts_guid_buf_to_str(const uint8_t *guid, char *guid_str, const size_t guid_str_len);
 void fwts_guid_str_to_buf(const char *guid_str, uint8_t *guid, const size_t guid_len);
+bool fwts_guid_match(const uint8_t *guid, const uint8_t *guid2, const size_t guid_size);
 
 #endif

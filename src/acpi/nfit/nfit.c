@@ -27,6 +27,17 @@
 #include <string.h>
 #include <ctype.h>
 
+static const uint8_t guid_virtual_device[4][16] = {
+	// Virtual Disk Region - Volatile
+	{ 0x5a, 0x53, 0xab, 0x77, 0xfc, 0x45, 0x4b, 0x62, 0x55, 0x60, 0xf7, 0xb2, 0x81, 0xd1, 0xf9, 0x6e },
+	// Virtual CD Region - Volatile
+	{ 0x30, 0xbd, 0x5a, 0x3d, 0x75, 0x41, 0xce, 0x87, 0x6d, 0x64, 0xd2, 0xad, 0xe5, 0x23, 0xc4, 0xbb },
+	// Virtual Disk Region - Persistent
+	{ 0xc9, 0x02, 0xea, 0x5c, 0x07, 0x4d, 0xd3, 0x69, 0x26, 0x9f, 0x44, 0x96, 0xfb, 0xe0, 0x96, 0xf9 },
+	// Virtual CD Region - Persistent
+	{ 0x88, 0x81, 0x01, 0x08, 0xcd, 0x42, 0x48, 0xbb, 0x10, 0x0f, 0x53, 0x87, 0xd5, 0x3d, 0xed, 0x3d },
+};
+
 static fwts_acpi_table_info *table;
 
 static int nfit_init(fwts_framework *fw)
@@ -85,6 +96,8 @@ static int nfit_test1(fwts_framework *fw)
 		if (entry->type == FWTS_ACPI_NFIT_TYPE_SYSTEM_ADDRESS) {
 			fwts_acpi_table_nfit_system_memory *nfit_struct = (fwts_acpi_table_nfit_system_memory *) entry;
 			char guid_str[37];
+			bool guid_skip = false;
+			size_t i;
 
 			fwts_guid_buf_to_str(nfit_struct->range_guid, guid_str, sizeof(guid_str));
 
@@ -97,7 +110,16 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_verbatim(fw, "    System Physical Address Range Length:   0x%16.16" PRIx64, nfit_struct->length);
 			fwts_log_info_verbatim(fw, "    Address Range Memory Mapping Attribute: 0x%16.16" PRIx64, nfit_struct->memory_mapping);
 
-			if (nfit_struct->range_index == 0) {
+			/* SPA Range Structure Index can be 0 for Virtual CD Region and
+			   Virtual Disk Region (both volatile and persistent) */
+			for (i = 0; i < 4; i++) {
+				if (fwts_guid_match(nfit_struct->range_guid, guid_virtual_device[i], 16)) {
+					guid_skip = true;
+					break;
+				}
+			}
+
+			if (guid_skip == false && nfit_struct->range_index == 0) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"NFITBadRangeIndexZero",

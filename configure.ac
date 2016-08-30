@@ -64,7 +64,9 @@
 	  AC_CHECK_HEADERS([glib.h])
 	  AC_CHECK_HEADERS([gio/gio.h])
 	  AC_CHECK_HEADERS([asm/opal-prd.h])
+	  AC_CHECK_HEADERS([mtd/mtd-abi.h])
 	  AM_CONDITIONAL([HAVE_ASM_OPAL_PRD_H], [test "x$ac_cv_header_asm_opal_prd_h" = "xyes"])
+	  AM_CONDITIONAL([HAVE_MTD_ABI_H], [test "x$ac_cv_header_mtd_abi_h" = "xyes"])
 	  #AC_CHECK_LIB(pcre, pcre_compile)
 	  AC_SEARCH_LIBS([fdt_check_header], [fdt], [
 		AC_DEFINE([HAVE_LIBFDT], [1], [Define if we have libfdt])

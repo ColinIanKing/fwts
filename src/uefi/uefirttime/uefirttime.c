@@ -877,6 +877,7 @@ static int uefirttime_test24(fwts_framework *fw)
 {
 	struct efi_setwakeuptime setwakeuptime;
 
+	setwakeuptime.Enabled = true;
 	setwakeuptime.Time = NULL;
 	return uefirttime_test_setwakeuptime_invalid(fw, &setwakeuptime);
 }

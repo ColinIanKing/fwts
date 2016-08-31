@@ -40,8 +40,8 @@
 #endif
 
 #if defined(__PPC64__)
-#define FWTS_HAS_ACPI  0
-#define FWTS_HAS_UEFI  0
+#undef FWTS_HAS_ACPI
+#undef FWTS_HAS_UEFI
 #endif
 
 #define FWTS_UNUSED(var)	(void)var

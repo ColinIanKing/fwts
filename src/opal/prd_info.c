@@ -227,5 +227,6 @@ static fwts_framework_ops prd_info_ops = {
 	.minor_tests = prd_info_tests
 };
 
-FWTS_REGISTER("prd_info", &prd_info_ops, FWTS_TEST_EARLY,
-		FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV)
+FWTS_REGISTER_FEATURES("prd_info", &prd_info_ops, FWTS_TEST_EARLY,
+		FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV,
+		FWTS_FW_FEATURE_DEVICETREE)

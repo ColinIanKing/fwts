@@ -85,6 +85,7 @@ static int version_test3(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+#if defined(FWTS_HAS_ACPI)
 static int version_test4(fwts_framework *fw)
 {
 	char *str;
@@ -104,12 +105,15 @@ static int version_test4(fwts_framework *fw)
 
 	return FWTS_OK;
 }
+#endif
 
 static fwts_framework_minor_test version_tests[] = {
 	{ version_test1, "Gather kernel signature." },
 	{ version_test2, "Gather kernel system information." },
 	{ version_test3, "Gather kernel boot command line." },
+#if defined(FWTS_HAS_ACPI)
 	{ version_test4, "Gather ACPI driver version." },
+#endif
 	{ NULL, NULL },
 };
 

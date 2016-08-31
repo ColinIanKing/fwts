@@ -21,6 +21,8 @@
 
 #include "fwts.h"
 
+#ifdef FWTS_ARCH_INTEL
+
 typedef struct {
 	uint16_t	pin;
 	uint32_t	setting;
@@ -189,3 +191,5 @@ static fwts_framework_ops hda_audio_ops = {
 };
 
 FWTS_REGISTER("hda_audio", &hda_audio_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH)
+
+#endif

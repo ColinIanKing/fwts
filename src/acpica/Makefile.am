@@ -232,6 +232,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utobject.c		\
 	source/components/utilities/utresrc.c		\
 	source/components/utilities/utstate.c		\
+	source/components/utilities/utstrtoul64.c	\
 	source/components/utilities/uttrack.c		\
 	source/components/utilities/utosi.c		\
 	source/components/utilities/utxferror.c		\

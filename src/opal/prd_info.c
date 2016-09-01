@@ -162,8 +162,8 @@ static int prd_info_test1(fwts_framework *fw)
 	if (!prd_present(R_OK | W_OK)) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "OPAL PRD Info",
 			"Cannot read and write to the OPAL PRD"
-			" device interface,"
-			" check your user privileges.");
+			" device interface %s, check your system"
+			" installation and user privileges.", prd_devnode);
 		return FWTS_ERROR;
 	}
 

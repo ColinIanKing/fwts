@@ -204,6 +204,7 @@ static int mtd_info_test1(fwts_framework *fw)
 			"candidates. Check the installation "
 			"for the MTD device config.",
 			SYSFS_MTD_PATH);
+		return FWTS_ERROR;
 	}
 
 	bytes = 0;

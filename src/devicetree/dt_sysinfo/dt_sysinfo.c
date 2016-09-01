@@ -187,8 +187,13 @@ static bool machine_matches_reference_model(fwts_framework *fw,
 	}
 
 	/* Not a reference platform, nothing to check */
-	if (!compatible_is_reference)
+	if (!compatible_is_reference) {
+		fwts_log_info(fw, "Informational: no reference model found,"
+			" device tree \"compatible\" is \"%s\" and"
+			" \"model\" is \"%s\"",
+			compatible, model);
 		return true;
+	}
 
 	/* Since we're on a reference platform, ensure that the model is also
 	 * one of the reference model numbers */

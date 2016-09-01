@@ -220,7 +220,6 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utdebug.c		\
 	source/components/utilities/utdelete.c		\
 	source/components/utilities/uteval.c		\
-	source/components/utilities/utfileio.c		\
 	source/components/utilities/utglobal.c		\
 	source/components/utilities/uthex.c		\
 	source/components/utilities/utids.c		\

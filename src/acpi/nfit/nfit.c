@@ -126,6 +126,48 @@ static int nfit_test1(fwts_framework *fw)
 					"NFIT SPA Range Structure Index must not be zero");
 			}
 
+			if (guid_skip) {
+				if (nfit_struct->range_index != 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"NFITBadRangeIndexNonZero",
+						"NFIT SPA Range Structure Index must "
+						"be zero when region is Virtual CD or "
+						"Virtual Disk, got 0x%4.4" PRIx32 " instead",
+						nfit_struct->range_index);
+				}
+
+				if (nfit_struct->flags != 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"NFITBadFlagsNonZero",
+						"NFIT Flags must be zero when "
+						"region is Virtual CD or Virtual Disk, got "
+						"0x%4.4" PRIx32 " instead",
+						nfit_struct->flags);
+				}
+
+				if (nfit_struct->proximity_domain != 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"NFITBadProximityDomainNonZero",
+						"NFIT Proximity Domain must be zero when "
+						"region is Virtual CD or Virtual Disk, got "
+						"0x%8.8" PRIx32 " instead",
+						nfit_struct->proximity_domain);
+				}
+
+				if (nfit_struct->memory_mapping != 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"NFITBadMemoryAttributeNonZero",
+						"NFIT Address Range Memory Mapping Attribute "
+						"must be zero when region is Virtual CD or "
+						"Virtual Disk, got 0x%16.16" PRIx64 " instead",
+						nfit_struct->memory_mapping);
+				}
+			}
+
 			if (nfit_struct->flags & ~0x03) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,

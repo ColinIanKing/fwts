@@ -83,13 +83,13 @@ int fwts_gpe_read(fwts_gpe **gpes)
 		}
 	}
 
-	closedir(dir);
+	(void)closedir(dir);
 	return n;
 
 error:
 	fwts_gpe_free(*gpes, n);
 	*gpes = NULL;
-	closedir(dir);
+	(void)closedir(dir);
 	return FWTS_ERROR;
 }
 

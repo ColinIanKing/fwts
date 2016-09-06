@@ -129,7 +129,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 		}
 	} while (entry);
 
-	closedir(ac_power_dir);
+	(void)closedir(ac_power_dir);
 
 	return FWTS_OK;
 }

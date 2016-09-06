@@ -103,7 +103,7 @@ static int get_mtrrs(void)
 
 		if ((entry = calloc(1, sizeof(struct mtrr_entry))) == NULL) {
 			fwts_list_free(mtrr_list, free);
-			fclose(fp);
+			(void)fclose(fp);
 			return FWTS_ERROR;
 		}
 
@@ -162,7 +162,7 @@ static int get_mtrrs(void)
 
 		fwts_list_append(mtrr_list, entry);
 	}
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -252,7 +252,7 @@ static int check_prefetchable(
 	}
 
 	n = read(fd, config, sizeof(config));
-	close(fd);
+	(void)close(fd);
 
 	/* config space too small? ignore for now */
 	if (n < 64)
@@ -410,7 +410,7 @@ static int validate_iomem(fwts_framework *fw)
 			/*  This has failed, give up at this point */
 			fwts_skipped(fw,
 				"Could not guess cache type.");
-			fclose(file);
+			(void)fclose(file);
 			return FWTS_ERROR;
 		}
 
@@ -442,7 +442,7 @@ static int validate_iomem(fwts_framework *fw)
 		}
 
 	}
-	fclose(file);
+	(void)fclose(file);
 
 	if (!failed)
 		fwts_passed(fw, "Memory ranges seem to have correct attributes.");

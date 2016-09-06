@@ -66,7 +66,7 @@ void *fwts_mmap(const off_t start, const size_t size)
 	if ((mem = mmap(NULL, length, PROT_READ, MAP_PRIVATE, fd, start - offset)) != MAP_FAILED)
 		ret = (void *)((uint8_t *)mem + offset);
 
-	close(fd);
+	(void)close(fd);
 
 	return ret;
 }

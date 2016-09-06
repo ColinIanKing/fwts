@@ -43,11 +43,11 @@ static int dump_data(const char *filename, char *data, const size_t len)
 		return FWTS_ERROR;
 
 	if ((fwrite(data, sizeof(char), len, fp) != len)) {
-		fclose(fp);
+		(void)fclose(fp);
 		return FWTS_ERROR;
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 	return FWTS_OK;
 }
 
@@ -174,7 +174,7 @@ static int dump_acpi_tables(fwts_framework *fw)
 		int ret = fwts_acpi_get_table(fw, i, &table);
 		if (ret != FWTS_OK) {
 			fprintf(stderr, "Cannot read ACPI tables.\n");
-			fclose(fp);
+			(void)fclose(fp);
 			return ret;
 		}
 		if (table == NULL)
@@ -182,7 +182,7 @@ static int dump_acpi_tables(fwts_framework *fw)
 
 		dump_acpi_table(table, fp);
 	}
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -217,7 +217,7 @@ static int dump_readme(void)
 		free(str);
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -236,15 +236,15 @@ static int dump_cpuinfo(void)
 		return FWTS_ERROR;
 
 	if ((target = fopen("cpuinfo.log", "w")) == NULL) {
-		fclose(source);
+		(void)fclose(source);
 		return FWTS_ERROR;
 	}
 
 	while (0 < (bytes = fread(buffer, 1, sizeof(buffer), source)))
 		fwrite(buffer, 1, bytes, target);
 
-	fclose(source);
-	fclose(target);
+	(void)fclose(source);
+	(void)fclose(target);
 
 	return FWTS_OK;
 }

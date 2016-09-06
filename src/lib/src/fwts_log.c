@@ -725,7 +725,7 @@ int fwts_log_close(fwts_log *log)
 			/* Close opened log file */
 			if (log_file->fp &&
 			    log_file->filename_type == LOG_FILENAME_TYPE_FILE)
-				fclose(log_file->fp);
+				(void)fclose(log_file->fp);
 		}
 
 		/* ..and free log files */

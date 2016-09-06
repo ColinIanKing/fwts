@@ -84,7 +84,7 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 
 	if (ioctl(fd, EVIOCGRAB, (void*)1)) {	/* Get focus */
 		fwts_log_error(fw, "Cannot grab device %s.", path);
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
@@ -104,10 +104,10 @@ static int hotkey_test(fwts_framework *fw, char *dev, fwts_list *hotkeys)
 
 	if (ioctl(fd, EVIOCGRAB, (void*)0)) {	/* Release */
 		fwts_log_error(fw, "Cannot un-grab device %s.", path);
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 
 	return FWTS_OK;
 }
@@ -130,7 +130,7 @@ static char *hotkey_device(char *path)
 			break;
 		}
 	}
-	closedir(scan);
+	(void)closedir(scan);
 
 	return dev;
 }
@@ -170,7 +170,7 @@ static char *hotkey_find_keyboard(char *path)
 		}
 	}
 
-	closedir(dir);
+	(void)closedir(dir);
 
 	return dev;
 }

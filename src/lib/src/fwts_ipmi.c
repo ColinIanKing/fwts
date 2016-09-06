@@ -51,7 +51,7 @@ int fwts_ipmi_exec_query(
 	fwts_send_rc = ioctl(fd, IPMICTL_SEND_COMMAND, (char *)fwts_ipmi_req);
 
 	if (fwts_send_rc != 0) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
@@ -59,7 +59,7 @@ int fwts_ipmi_exec_query(
 	fwts_pfd.fd = fd;
 	fwts_pollfd_rc = poll(&fwts_pfd, 1, 5000);
 	if (fwts_pollfd_rc <= 0) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
@@ -71,7 +71,7 @@ int fwts_ipmi_exec_query(
 	fwts_recv_rc = ioctl(fd, IPMICTL_RECEIVE_MSG_TRUNC, &fwts_ipmi_recv);
 
 	if (fwts_recv_rc != 0) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
@@ -79,11 +79,11 @@ int fwts_ipmi_exec_query(
 
 	/* Future completion_code non-zero with good results to pass back */
 	if (fwts_base_rsp->completion_code != 0) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
-	close(fd);
+	(void)close(fd);
 	return FWTS_OK;
 }
 

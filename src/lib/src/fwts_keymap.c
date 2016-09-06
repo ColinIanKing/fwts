@@ -106,7 +106,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 		}
 
 		if ((key = (fwts_keycode*)calloc(1, sizeof(fwts_keycode))) == NULL) {
-			fclose(fp);
+			(void)fclose(fp);
 			fwts_keymap_free(keymap_list);
 			return NULL;
 		} else {
@@ -117,7 +117,7 @@ fwts_list *fwts_keymap_load(const char *machine)
 		}
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return keymap_list;
 }

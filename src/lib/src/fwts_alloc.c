@@ -187,7 +187,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 
 		last_addr_end = addr_end;
 	}
-	fclose(fp);
+	(void)fclose(fp);
 
 	/*
 	 *  The "intelligent" memory hole finding strategy failed,

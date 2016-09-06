@@ -73,7 +73,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 	}
 
 	ret = pread(fd, &value, 8, reg);
-	close(fd);
+	(void)close(fd);
 
 	*val = value;
 
@@ -165,7 +165,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 			continue;
 		}
 	}
-	fclose(fp);
+	(void)fclose(fp);
 
 	if (!found) {
 		free(cpu);
@@ -396,7 +396,7 @@ static int perf_read_counter(int fd, unsigned long long *result)
 		rc = FWTS_ERROR;
 	}
 
-	close(fd);
+	(void)close(fd);
 	return rc;
 }
 

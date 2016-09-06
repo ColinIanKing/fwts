@@ -91,7 +91,7 @@ static int fwts_button_match_state_proc(
 		}
 	} while (entry);
 
-	closedir(dir);
+	(void)closedir(dir);
 
 	return FWTS_OK;
 }

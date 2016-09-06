@@ -57,7 +57,7 @@ fwts_list* fwts_file_open_and_read(const char *file)
 		return NULL;
 
 	list = fwts_file_read(fp);
-	fclose(fp);
+	(void)fclose(fp);
 
 	return list;
 }

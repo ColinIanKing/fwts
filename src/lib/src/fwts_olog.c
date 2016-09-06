@@ -83,7 +83,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 		 * stat fails so not PPC with OPAL msglog and
 		 * no -o OLOG sent
 		 */
-		fclose(msglog_f);
+		(void)fclose(msglog_f);
 		return NULL;
 	}
 

@@ -300,7 +300,7 @@ fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 		return fwts_memory_map_table_load_from_klog(fw);
 
 	if ((memory_map_list = fwts_list_new()) == NULL) {
-		closedir(dir);
+		(void)closedir(dir);
 		return NULL;
 	}
 
@@ -310,7 +310,7 @@ fwts_list *fwts_memory_map_table_load(fwts_framework *fw)
 			fwts_list_add_ordered(memory_map_list, entry, fwts_fwts_memory_map_entry_compare);
 		}
 	}
-	closedir(dir);
+	(void)closedir(dir);
 
 	return memory_map_list;
 }

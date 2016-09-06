@@ -177,7 +177,7 @@ static int fwts_hwinfo_bluetooth_get(
 		}
 		fwts_list_add_ordered(devices, bluetooth_config, fwts_hwinfo_bluetooth_name_cmp);
 	}
-	closedir(dp);
+	(void)closedir(dp);
 	return FWTS_OK;
 }
 
@@ -294,7 +294,7 @@ static int fwts_hwinfo_input_get(
 		}
 		fwts_list_add_ordered(devices, input_config, fwts_hwinfo_input_name_cmp);
 	}
-	closedir(dp);
+	(void)closedir(dp);
 	return FWTS_OK;
 }
 
@@ -375,7 +375,7 @@ static int fwts_hwinfo_net_get(
 
 	if ((dp = opendir(FWTS_HWINFO_SYS_NET)) == NULL) {
 		fwts_log_error(fw, "Cannot open %s to scan network devices.", FWTS_HWINFO_SYS_NET);
-		close(sock);
+		(void)close(sock);
 		return FWTS_ERROR;
 	}
 
@@ -425,8 +425,8 @@ static int fwts_hwinfo_net_get(
 		}
 		fwts_list_add_ordered(devices, net_config, fwts_hwinfo_net_name_cmp);
 	}
-	closedir(dp);
-	close(sock);
+	(void)closedir(dp);
+	(void)close(sock);
 
 	return FWTS_OK;
 }
@@ -486,10 +486,10 @@ static int fwts_hwinfo_pci_get(
 
 		if ((n = read(fd, config, sizeof(config))) < 0) {
 			fwts_log_error(fw, "Cannot read PCI config from %s.", d->d_name);
-			close(fd);
+			(void)close(fd);
 			continue;
 		}
-		close(fd);
+		(void)close(fd);
 
 		if (config[FWTS_PCI_CONFIG_CLASS_CODE] != class_code)
 			continue;
@@ -504,7 +504,7 @@ static int fwts_hwinfo_pci_get(
 
 		fwts_list_append(configs, pci_config);
 	}
-	closedir(pci);
+	(void)closedir(pci);
 
 	return FWTS_OK;
 }

@@ -399,7 +399,7 @@ static int fwts_klog_check(fwts_framework *fw,
 		fwts_log_error(fw, "Cannot read file %s, check the path and check that the file exists, you may need to specify -j or -J.", json_data_path);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 
 	klog_objs = json_object_from_file(json_data_path);
 	if (FWTS_JSON_ERROR(klog_objs)) {
@@ -556,7 +556,7 @@ int fwts_klog_write(fwts_framework *fw, const char *msg)
 
 	fprintf(fp, "<7>fwts: %s", msg);
 	fflush(fp);
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }

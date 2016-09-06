@@ -75,10 +75,10 @@ static int maxreadreq_test1(fwts_framework *fw)
 		}
 		if ((n = read(fd, config, sizeof(config))) < 0) {
 			fwts_log_warning(fw, "Could not read %s PCI config data\n", entry->d_name);
-			close(fd);
+			(void)close(fd);
 			continue;
 		}
-		close(fd);
+		(void)close(fd);
 
 		/* Ignore Host Bridge */
 		if ((config[FWTS_PCI_CONFIG_CLASS_CODE] == FWTS_PCI_CLASS_CODE_BRIDGE_CONTROLLER) &&
@@ -122,7 +122,7 @@ static int maxreadreq_test1(fwts_framework *fw)
 			offset = cap->next_cap_point;
 		}
 	}
-	closedir(dirp);
+	(void)closedir(dirp);
 
 	if (warnings > 0) {
 		fwts_failed(fw, LOG_LEVEL_LOW,

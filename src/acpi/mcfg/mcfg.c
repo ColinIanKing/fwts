@@ -59,7 +59,7 @@ static int compare_config_space(
 		return FWTS_ERROR;
 	}
 	n = fread(config_space, 1, sizeof(config_space), fp);
-	fclose(fp);
+	(void)fclose(fp);
 	if (n != sizeof(config_space)) {
 		fwts_log_warning(fw, "Could only read %zd bytes from %s, expecting %zd.", n, path, sizeof(config_space));
 		return FWTS_ERROR;

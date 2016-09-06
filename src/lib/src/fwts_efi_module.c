@@ -51,7 +51,7 @@ static int check_module_loaded(
 				break;
 			}
 		}
-		fclose(fp);
+		(void)fclose(fp);
 		return FWTS_OK;
 	}
 	fwts_log_error(fw, "Could not open /proc/modules to check if efi module '%s' is loaded.", module);

@@ -711,7 +711,7 @@ static int fwts_acpi_load_tables_from_acpidump(fwts_framework *fw)
 			fwts_acpi_add_table(name, table, addr, length, FWTS_ACPI_TABLE_FROM_FILE);
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -823,12 +823,12 @@ static int fwts_acpi_load_tables_from_file_generic(
 
 				if (fstat(fd, &buf) < 0) {
 					fwts_log_error(fw, "Cannot stat file '%s'\n", path);
-					close(fd);
+					(void)close(fd);
 					continue;
 				}
 				/* Must be a regular file */
 				if (!S_ISREG(buf.st_mode)) {
-					close(fd);
+					(void)close(fd);
 					continue;
 				}
 
@@ -871,7 +871,7 @@ static int fwts_acpi_load_tables_from_file_generic(
 							FWTS_ACPI_TABLE_FROM_FILE);
 					}
 				}
-				close(fd);
+				(void)close(fd);
 			} else
 				fwts_log_error(fw, "Cannot load ACPI table from file '%s'\n", path);
 		}

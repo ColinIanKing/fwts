@@ -48,14 +48,14 @@ static int hda_audio_read_pins(const char *path, const char *file, fwts_list *se
 		pin_setting  = calloc(1, sizeof(hda_audio_pin_setting));
 		if (pin_setting == NULL) {
 			fwts_list_free_items(settings, free);
-			fclose(fp);
+			(void)fclose(fp);
 			return FWTS_ERROR;
 		}
 		pin_setting->pin = pin;
 		pin_setting->setting = setting;
 		fwts_list_append(settings, pin_setting);
 	}
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -172,7 +172,7 @@ static int hda_audio_test1(fwts_framework *fw)
 			fwts_log_nl(fw);
 		}
 
-	closedir(dir);
+	(void)closedir(dir);
 
 	if (!checked)
 		fwts_skipped(fw, "Cannot find any BIOS set audio pin configurations.");

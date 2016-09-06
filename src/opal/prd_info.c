@@ -56,7 +56,7 @@ int prd_dev_query(fwts_framework *fw)
 	memset(&info, 0, sizeof(info));
 
 	if (ioctl(fd, OPAL_PRD_GET_INFO, &info)) {
-		close(fd);
+		(void)close(fd);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "OPAL PRD Info",
 			"Cannot get data from the"
 			" OPAL PRD device interface.");
@@ -64,7 +64,7 @@ int prd_dev_query(fwts_framework *fw)
 	} else {
 		fwts_log_info(fw, "OPAL PRD Version is %lu",
 			info.version);
-		close(fd);
+		(void)close(fd);
 		return FWTS_OK;
 	}
 }

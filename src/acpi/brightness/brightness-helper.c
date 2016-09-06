@@ -92,7 +92,7 @@ int brightness_deinit(fwts_framework *fw)
 	FWTS_UNUSED(fw);
 
 	if (brightness_dir)
-		closedir(brightness_dir);
+		(void)closedir(brightness_dir);
 
 	brightness_path = NULL;
 	brightness_dir = NULL;
@@ -114,11 +114,11 @@ int brightness_get_setting(const char *entry_name, const char *setting, int *val
 		return FWTS_ERROR;
 
 	if (fscanf(fp, "%d", value) != 1) {
-		fclose(fp);
+		(void)fclose(fp);
 		return FWTS_ERROR;
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }
@@ -137,11 +137,11 @@ int brightness_set_setting(const char *entry_name, const char *setting, const in
 		return FWTS_ERROR;
 
 	if (fprintf(fp, "%d", value) < 1) {
-		fclose(fp);
+		(void)fclose(fp);
 		return FWTS_ERROR;
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }

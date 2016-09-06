@@ -56,12 +56,12 @@ int fwts_acpi_event_open(void)
         strcpy(addr.sun_path, ACPID_SOCKET);
 
         if ((ret = connect(fd, (struct sockaddr *)&addr, sizeof(addr))) < 0) {
-		close(fd);
+		(void)close(fd);
                 return ret;
 	}
 
 	if ((ret = fcntl(fd, F_SETFD, FD_CLOEXEC)) < 0) {
-		close(fd);
+		(void)close(fd);
 		return ret;
 	}
 
@@ -129,5 +129,5 @@ char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
  */
 void fwts_acpi_event_close(const int fd)
 {
-	close(fd);
+	(void)close(fd);
 }

@@ -305,7 +305,7 @@ static int dmi_load_file(const char* filename, void *buf, size_t size)
 	if ((fd = open(filename, O_RDONLY)) < 0)
 		return FWTS_ERROR;
 	ret = read(fd, buf, size);
-	close(fd);
+	(void)close(fd);
 	if (ret != (ssize_t)size)
 		return FWTS_ERROR;
 	return FWTS_OK;

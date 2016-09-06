@@ -101,7 +101,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 						(*count)++;
 					}
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -169,7 +169,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 						break;
 					}
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -320,7 +320,7 @@ static int fwts_battery_get_cycle_count_sys_fs(
 						*cycle_count = val;
 					}
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -368,7 +368,7 @@ static int fwts_battery_get_cycle_count_proc_fs(
 						break;
 					}
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -413,7 +413,7 @@ static int fwts_battery_set_trip_point_sys_fs(
 				char buffer[512];
 				sprintf(buffer, "%d", trip_point * 1000);
 				fputs(buffer, fp);
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -463,7 +463,7 @@ static int fwts_battery_get_trip_point_sys_fs(
 					sscanf(buffer, "%d", &val);
 					*trip_point = val / 1000;
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -498,7 +498,7 @@ static int fwts_battery_set_trip_point_proc_fs(
 				char buffer[512];
 				sprintf(buffer, "%d", trip_point);
 				fputs(buffer, fp);
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -541,7 +541,7 @@ static int fwts_battery_get_trip_point_proc_fs(
 						break;
 					}
 				}
-				fclose(fp);
+				(void)fclose(fp);
 			}
 		}
 	} while (entry);
@@ -559,10 +559,10 @@ int fwts_battery_set_trip_point(
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_set_trip_point_sys_fs(fw, dir, index, trip_point);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_set_trip_point_proc_fs(fw, dir, index, trip_point);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;
 	}
@@ -579,10 +579,10 @@ int fwts_battery_get_trip_point(
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_trip_point_sys_fs(fw, dir, index, trip_point);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_get_trip_point_proc_fs(fw, dir, index, trip_point);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;
 	}
@@ -615,10 +615,10 @@ int fwts_battery_get_cycle_count(
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_cycle_count_sys_fs(fw, dir, index, cycle_count);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_get_cycle_count_proc_fs(fw, dir, index, cycle_count);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;
 	}
@@ -638,10 +638,10 @@ int fwts_battery_get_name(
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_name_sys_fs(dir, index, name);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_get_name_proc_fs(dir, index, name);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;
 	}
@@ -658,10 +658,10 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_count_sys_fs(dir, count);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_get_count_proc_fs(dir, count);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		return FWTS_ERROR;
 	}
@@ -683,10 +683,10 @@ int fwts_battery_get_capacity(fwts_framework *fw,
 
 	if ((dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY)) != NULL) {
 		ret = fwts_battery_get_capacity_sys_fs(fw, dir, type, index, capacity_mAh, capacity_mWh, &n);
-		closedir(dir);
+		(void)closedir(dir);
 	} else if ((dir = opendir(FWTS_PROC_ACPI_BATTERY)) != NULL) {
 		ret = fwts_battery_get_capacity_proc_fs(fw, dir, type, index, capacity_mAh, capacity_mWh, &n);
-		closedir(dir);
+		(void)closedir(dir);
 	} else {
 		fwts_log_info(fw, "No battery information present: cannot test.");
 		return FWTS_ERROR;

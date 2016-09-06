@@ -36,11 +36,11 @@ char *fwts_get(const char *file)
 		return NULL;
 
 	if (fgets(buffer, sizeof(buffer), fp) == NULL) {
-		fclose(fp);
+		(void)fclose(fp);
 		return NULL;
 	}
 
-	fclose(fp);
+	(void)fclose(fp);
 
 	return strdup(buffer);
 }

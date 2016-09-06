@@ -35,7 +35,7 @@ int fwts_set(const char *text, const char *file)
 		return FWTS_ERROR;
 
 	fprintf(fp, "%s\n", text);
-	fclose(fp);
+	(void)fclose(fp);
 
 	return FWTS_OK;
 }

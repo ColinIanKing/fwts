@@ -85,23 +85,23 @@ int fwts_pipe_open_rw(const char *command, pid_t *childpid,
 		 */
 		if (out_pipefds[0] != STDOUT_FILENO) {
 			dup2(out_pipefds[1], STDOUT_FILENO);
-			close(out_pipefds[1]);
+			(void)close(out_pipefds[1]);
 		}
 		if (in_pipefds[1] != STDIN_FILENO) {
 			dup2(in_pipefds[0], STDIN_FILENO);
-			close(in_pipefds[0]);
+			(void)close(in_pipefds[0]);
 		}
 
-		close(out_pipefds[0]);
-		close(in_pipefds[1]);
+		(void)close(out_pipefds[0]);
+		(void)close(in_pipefds[1]);
 		execl(_PATH_BSHELL, "sh", "-c", command, NULL);
 		if (fp)
-			fclose(fp);
+			(void)fclose(fp);
 		_exit(FWTS_EXEC_ERROR);
 	default:
 		/* Parent */
-		close(out_pipefds[1]);
-		close(in_pipefds[0]);
+		(void)close(out_pipefds[1]);
+		(void)close(in_pipefds[0]);
 
 		*childpid = pid;
 		if (out_fd)
@@ -113,11 +113,11 @@ int fwts_pipe_open_rw(const char *command, pid_t *childpid,
 	}
 
 err_close_in:
-	close(in_pipefds[0]);
-	close(in_pipefds[1]);
+	(void)close(in_pipefds[0]);
+	(void)close(in_pipefds[1]);
 err_close_out:
-	close(out_pipefds[0]);
-	close(out_pipefds[1]);
+	(void)close(out_pipefds[0]);
+	(void)close(out_pipefds[1]);
 	return -1;
 }
 
@@ -249,7 +249,7 @@ int fwts_pipe_close(const int fd, const pid_t pid)
 {
 	int status;
 
-	close(fd);
+	(void)close(fd);
 
 	for (;;) {
 		if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
@@ -263,7 +263,7 @@ int fwts_pipe_close(const int fd, const pid_t pid)
 
 int fwts_pipe_close2(const int in_fd, const int out_fd, const pid_t pid)
 {
-	close(out_fd);
+	(void)close(out_fd);
 	return fwts_pipe_close(in_fd, pid);
 }
 
@@ -406,7 +406,7 @@ int fwts_write_string_file(
 	}
 
 	ret = fwts_write_string_to_file(fw, file, str);
-	fclose(file);
+	(void)fclose(file);
 
 	return ret;
 }
@@ -438,7 +438,7 @@ int fwts_read_file_first_line(
 
 	if (!fgets(buffer, sizeof(buffer), file)) {
 		if (ferror(file)) {
-			fclose(file);
+			(void)fclose(file);
 			fwts_log_error(fw,
 				"Failed to read first line from %s, error: %d (%s).",
 				file_name,
@@ -451,7 +451,7 @@ int fwts_read_file_first_line(
 
 	temp = strdup(buffer);
 	if (!temp) {
-		fclose(file);
+		(void)fclose(file);
 		fwts_log_error(fw,
 			"Failed to read first line from %s: ran out of memory.",
 			file_name);
@@ -460,7 +460,7 @@ int fwts_read_file_first_line(
 
 	fwts_chop_newline(temp);
 	*line = temp;
-	fclose(file);
+	(void)fclose(file);
 
 	return FWTS_OK;
 }

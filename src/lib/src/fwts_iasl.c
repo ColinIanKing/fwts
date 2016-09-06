@@ -61,11 +61,11 @@ static int fwts_iasl_dump_aml_to_file(
 
 	if (write(fd, data, length) != length) {
 		fwts_log_error(fw, "Cannot write all data to temporary file");
-		close(fd);
+		(void)close(fd);
 		(void)unlink(filename);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 
 	return FWTS_OK;
 }

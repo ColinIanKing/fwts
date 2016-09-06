@@ -134,7 +134,7 @@ int fwts_iasl_disassemble_aml(
 			_exit(1);
 		}
 		if ((fperr = freopen("/dev/null", "w", stderr)) == NULL) {
-			fclose(fpout);
+			(void)fclose(fpout);
 			_exit(1);
 		}
 
@@ -145,8 +145,8 @@ int fwts_iasl_disassemble_aml(
 		if (AcpiGbl_ExternalFileList)
 			AcpiDmClearExternalFileList();
 
-		fclose(fperr);
-		fclose(fpout);
+		(void)fclose(fperr);
+		(void)fclose(fpout);
 		_exit(0);
 		break;
 	default:

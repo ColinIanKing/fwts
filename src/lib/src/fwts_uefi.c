@@ -107,7 +107,7 @@ static int fwts_uefi_get_interface(char **path)
 					strcpy(efivar_path, "/sys/firmware/efi/vars");
 			}
 		}
-		fclose(fp);
+		(void)fclose(fp);
 	}
 
 	*path = NULL;
@@ -214,10 +214,10 @@ static int fwts_uefi_get_variable_sys_fs(const char *varname, fwts_uefi_var *var
 
 	/* Read the raw fixed sized data */
 	if (read(fd, &uefi_sys_fs_var, sizeof(uefi_sys_fs_var)) != sizeof(uefi_sys_fs_var)) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 
 	/* Sanity check datalen is OK */
 	if (uefi_sys_fs_var.datalen > sizeof(uefi_sys_fs_var.data))
@@ -274,14 +274,14 @@ static int fwts_uefi_get_variable_efivars_fs(const char *varname, fwts_uefi_var 
 		return FWTS_ERROR;
 
 	if (fstat(fd, &statbuf) < 0) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
 	/* Variable name, less the GUID, in 16 bit ints */
 	var->varname = calloc(1, (varname_len + 1 - 36)  * sizeof(uint16_t));
 	if (var->varname == NULL) {
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
@@ -290,18 +290,18 @@ static int fwts_uefi_get_variable_efivars_fs(const char *varname, fwts_uefi_var 
 
 	/* Need to read the data in one read, so allocate a buffer big enough */
 	if ((efivars_fs_var = calloc(1, statbuf.st_size)) == NULL) {
-		close(fd);
+		(void)close(fd);
 		free(var->varname);
 		return FWTS_ERROR;
 	}
 
 	if (read(fd, efivars_fs_var, statbuf.st_size) != statbuf.st_size) {
-		close(fd);
+		(void)close(fd);
 		free(var->varname);
 		free(efivars_fs_var);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 
 	var->status = 0;
 

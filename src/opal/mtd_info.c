@@ -73,7 +73,7 @@ int mtd_hdr_query(fwts_framework *fw, char *mtd_devnode) {
 				" not able to be"
 				" verified. Check the system setup.\n",
 				mtd_devnode);
-			close(fd);
+			(void)close(fd);
 			return FWTS_ERROR;
 		}
 	} else {
@@ -82,11 +82,11 @@ int mtd_hdr_query(fwts_framework *fw, char *mtd_devnode) {
 			" Cannot validate the integrity of the MTD."
 			" Check the system setup.\n",
 			mtd_devnode);
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
 
-	close(fd);
+	(void)close(fd);
 	return FWTS_OK;
 }
 
@@ -127,7 +127,7 @@ int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
 	}
 
 	if (ioctl(fd, MEMGETINFO, &mtd_info)) {
-		close(fd);
+		(void)close(fd);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "OPAL MTD Info",
 			"Cannot get data from '%s'"
 			" device interface.", mtd_devnode);
@@ -147,7 +147,7 @@ int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
 			mtd_info.erasesize,
 			mtd_info.writesize,
 			mtd_info.oobsize);
-		close(fd);
+		(void)close(fd);
 		return FWTS_OK;
 	}
 }
@@ -189,10 +189,10 @@ static int mtd_info_test1(fwts_framework *fw)
 			" Check the installation "
 			"for the path %s.\n",
 			FDT_FLASH_PATH);
-		close(fd);
+		(void)close(fd);
 		return FWTS_ERROR;
 	}
-	close(fd);
+	(void)close(fd);
 	fdt_node_path[PATH_MAX] = '\0';
 	fwts_log_info(fw, "MTD Info validated FDT of '%s'.",
 			fdt_node_path);

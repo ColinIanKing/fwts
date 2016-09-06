@@ -218,10 +218,10 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 			if (read(fd, device->config, sizeof(device->config)) < 0) {
 				fwts_log_warning(fw, "Could not read config from PCI device %s\n", entry->d_name);
 				free(device);
-				close(fd);
+				(void)close(fd);
 				continue;
 			}
-			close(fd);
+			(void)close(fd);
 			fwts_list_append(&dev_list, device);
 		}
 	}

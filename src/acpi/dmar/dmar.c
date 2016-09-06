@@ -115,7 +115,7 @@ static int read_pci_device_secondary_bus_number(const uint8_t seg,
 		return -1;
 
 	count = fread(configs, sizeof(char), 64, file);
-	fclose(file);
+	(void)fclose(file);
 
 	if (count < 64)
 		return -1;

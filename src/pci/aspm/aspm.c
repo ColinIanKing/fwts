@@ -108,29 +108,29 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 
 	if (((rp_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=
 		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
-		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L0s not enabled.",
-			 rp->bus, rp->dev, rp->func);
+		fwts_warning(fw, "RP %04Xh:%02Xh:%02Xh.%02Xh L0s not enabled.",
+			 rp->segment, rp->bus, rp->dev, rp->func);
 		l0s_disabled = true;
 	}
 
 	if (((rp_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
 		(rp_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
-		fwts_warning(fw, "RP %02Xh:%02Xh.%02Xh L1 not enabled.",
-			rp->bus, rp->dev, rp->func);
+		fwts_warning(fw, "RP %04Xh:%02Xh:%02Xh.%02Xh L1 not enabled.",
+			rp->segment, rp->bus, rp->dev, rp->func);
 		l1_disabled = true;
 	}
 
 	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L0_FIELD) >> 10) !=
 		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L0_FIELD)) {
-		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L0s not enabled.",
-			dev->bus, dev->dev, dev->func);
+		fwts_warning(fw, "Device %04Xh:%02Xh:%02Xh.%02Xh L0s not enabled.",
+			dev->segment, dev->bus, dev->dev, dev->func);
 		l0s_disabled = true;
 	}
 
 	if (((device_cap->link_cap & FWTS_PCIE_ASPM_SUPPORT_L1_FIELD) >> 10) !=
 		(device_cap->link_contrl & FWTS_PCIE_ASPM_CONTROL_L1_FIELD)) {
-		fwts_warning(fw, "Device %02Xh:%02Xh.%02Xh L1 not enabled.",
-			dev->bus, dev->dev, dev->func);
+		fwts_warning(fw, "Device %04Xh:%02Xh:%02Xh.%02Xh L1 not enabled.",
+			dev->segment, dev->bus, dev->dev, dev->func);
 		l1_disabled = true;
 	}
 
@@ -157,10 +157,10 @@ static int pcie_compare_rp_dev_aspm_registers(fwts_framework *fw,
 	if (rp_aspm_cntrl != device_aspm_cntrl) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "PCIEASPM_Unmatched",
 			"PCIe ASPM setting was not matched.");
-		fwts_log_error(fw, "RP %02Xh:%02Xh.%02Xh has ASPM = %02Xh."
-			, rp->bus, rp->dev, rp->func, rp_aspm_cntrl);
-		fwts_log_error(fw, "Device %02Xh:%02Xh.%02Xh has ASPM = %02Xh.",
-			dev->bus, dev->dev, dev->func, device_aspm_cntrl);
+		fwts_log_error(fw, "RP %04Xh:%02Xh:%02Xh.%02Xh has ASPM = %02Xh."
+			, rp->segment, rp->bus, rp->dev, rp->func, rp_aspm_cntrl);
+		fwts_log_error(fw, "Device %04Xh:%02Xh:%02Xh.%02Xh has ASPM = %02Xh.",
+			dev->segment, dev->bus, dev->dev, dev->func, device_aspm_cntrl);
 		fwts_advice(fw,
 			"ASPM control registers between root port and device "
 			"must match in order for ASPM to be active. Unmatched "
@@ -189,11 +189,12 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 	}
 	while ((entry = readdir(dirp)) != NULL) {
 		uint8_t bus, dev, func;
+		uint16_t segment;
 
 		if (entry->d_name[0] == '.')
 			continue;
 
-		if (sscanf(entry->d_name, "%*x:%" SCNx8 ":%" SCNx8 ".%" SCNx8, &bus, &dev, &func) == 3) {
+		if (sscanf(entry->d_name, "%" SCNx16 ":%" SCNx8 ":%" SCNx8 ".%" SCNx8, &segment, &bus, &dev, &func) == 4) {
 			int fd;
 			char path[PATH_MAX];
 			struct pci_device *device;
@@ -204,6 +205,7 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 				closedir(dirp);
 				return FWTS_ERROR;
 			}
+			device->segment = segment;
 			device->bus = bus;
 			device->dev = dev;
 			device->func = func;
@@ -235,9 +237,11 @@ static int pcie_check_aspm_registers(fwts_framework *fw)
 		if (cur->config[FWTS_PCI_CONFIG_HEADER_TYPE] & 0x01) {
 			for (ltarget = dev_list.head; ltarget; ltarget = ltarget->next) {
 				struct pci_device *target = (struct pci_device *)ltarget->data;
-				if (target->bus == cur->config[FWTS_PCI_CONFIG_TYPE1_SECONDARY_BUS_NUMBER]) {
-					pcie_compare_rp_dev_aspm_registers(fw, cur, target);
-					break;
+				if (target->segment == cur->segment) {
+					if (target->bus == cur->config[FWTS_PCI_CONFIG_TYPE1_SECONDARY_BUS_NUMBER]) {
+						pcie_compare_rp_dev_aspm_registers(fw, cur, target);
+						break;
+					}
 				}
 			}
 		}

@@ -165,7 +165,7 @@ int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
 
 static int mtd_info_test1(fwts_framework *fw)
 {
-	char fdt_node_path[PATH_MAX];
+	char fdt_node_path[PATH_MAX + 1];
 	int count, i, fd;
 	ssize_t bytes = 0, bytes_read = 0;
 	struct dirent **namelist;
@@ -181,7 +181,7 @@ static int mtd_info_test1(fwts_framework *fw)
 			FDT_FLASH_PATH);
 		return FWTS_ERROR;
 	}
-	bytes_read = read(fd, fdt_node_path, sizeof(fdt_node_path));
+	bytes_read = read(fd, fdt_node_path, PATH_MAX);
 	if (bytes_read < 0) {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"OPAL MTD Info",
@@ -193,6 +193,7 @@ static int mtd_info_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	close(fd);
+	fdt_node_path[PATH_MAX] = '\0';
 	fwts_log_info(fw, "MTD Info validated FDT of '%s'.",
 			fdt_node_path);
 

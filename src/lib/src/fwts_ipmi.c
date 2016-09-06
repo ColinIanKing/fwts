@@ -63,7 +63,7 @@ int fwts_ipmi_exec_query(
 		return FWTS_ERROR;
 	}
 
-	memset(&recv_data, 0, sizeof(IPMI_MAX_MSG_LENGTH));
+	memset(&recv_data, 0, sizeof(recv_data));
 	fwts_ipmi_recv.msg.data = recv_data;
 	fwts_ipmi_recv.msg.data_len = sizeof (recv_data);
 	fwts_ipmi_recv.addr = (unsigned char *)&fwts_ipmi_addr;

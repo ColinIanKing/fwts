@@ -1,3 +1,54 @@
+fwts (16.09.00-0ubuntu1) yakkety; urgency=low
+
+  [Alex Hung]
+  * lib: acpi: add supports for WPBT
+  * acpi: wpbt: add ACPI WPBT test
+  * fwts-test: Add regression test for WPBT
+  * lib: acpi: add supports for DRTM
+  * acpi: drtm: add ACPI DRTM test
+  * fwts-test: Add regression test for DRTM
+  * acpi: remove "Linux-ready Firmware Developer Kit" from license header
+  * lib: fwts_guid: add a compare function
+  * acpi: nfit: skip SPA Range Structure Index for four GUIDs
+  * acpi: nfit: check fields equals 0 for Virtual CD and Disk
+  * cpu: msr: change SMRR_PHYSBASE from 8MB boundary to 4KB boundary
+
+  [Colin Ian King]
+  * acpica: remove utprint.c, it is not required
+  * ACPICA: Remove utfileio.c, it is deprecated and not used
+  * ACPICA: Update to version 20160831
+  * opal: ensure fdt_node_path buffer is null terminated
+  * fwts: treewide: voidify return from close(), closedir() and fclose()
+  * lib: fwts_ipmi: fix incorrect memset size
+
+  [Deb McLemore]
+  * opal: mtd: Add OPAL MTD Validation
+  * acpi: ACPI Platform check updates
+  * opal: mtd: Add error exit when no MTD's
+  * opal: prd: Improve message when no PRD detected
+  * devicetree: dt_sysinfo: Improve message for non-reference model
+
+  [Ivan Hu]
+  * efi_runtime: change __usc2_strsize name to distinguish from ucs2_strsize
+  * efi_runtime: redefine all uint*_t types by following the header efi.h
+  * efi_runtime: exchange the user and local name define
+  * efi_runtime: refactor the success and error path
+  * efi_runtime: add label to reduce the number of kfree
+  * efi_runtime: expand to a full if-conditional instead of using terneary
+    operator
+  * efi_runtime: add VariableNameSize return when getting the
+    EFI_BUFFER_TOO_SMALL
+  * efi_runtime: fix memory leak of getvariable funtion
+  * efi_runtime: move the checking status forward
+  * efi_runtime: clean up some return and alignment code
+  * uefirttime: specify enable to true for setwakeuptime wiht null time test
+
+  [Jeffrey Hugo]
+  * acpi: fadt: Remove HEADLESS check on reduced hardware
+  * pci: aspm: Add segment support
+ 
+ -- Alex Hung <alex.hung@ubuntu.com>  Fri, 09 Sep 2016 09:47:45 +0800
+
 fwts (16.08.01-0ubuntu1) yakkety; urgency=low
 
   [Colin Ian King]

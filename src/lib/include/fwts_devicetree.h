@@ -28,6 +28,16 @@
 #define FWTS_HAS_DEVICETREE 0
 #endif
 
+#define DT_FS_PATH "/sys/firmware/devicetree/base"
+#define DT_LINUX_PCI_DEVICES "/sys/bus/pci/devices"
+#define DT_PROPERTY_OPAL_PCI_SLOT "ibm,slot-label"
+#define DT_PROPERTY_OPAL_SLOT_LOC "ibm,slot-location-code"
+#define DT_PROPERTY_OPAL_PART_NUM "part-number"
+#define DT_PROPERTY_OPAL_SERIAL_NUM "serial-number"
+#define DT_PROPERTY_OPAL_MANUFACTURER_ID "manufacturer-id"
+#define DT_PROPERTY_OPAL_STATUS "status"
+#define DT_PROPERTY_OPAL_VENDOR "vendor"
+
 #if FWTS_HAS_DEVICETREE
 
 int fwts_devicetree_read(fwts_framework *fwts);

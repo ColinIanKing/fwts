@@ -23,8 +23,6 @@
 
 #include "fwts.h"
 
-static const char *devicetree_fs_path = "/sys/firmware/devicetree/base";
-
 int fwts_devicetree_read(fwts_framework *fwts)
 {
 	char *command, *data = NULL;
@@ -35,7 +33,7 @@ int fwts_devicetree_read(fwts_framework *fwts)
 	if (!fwts_firmware_has_features(FWTS_FW_FEATURE_DEVICETREE))
 		return FWTS_OK;
 
-	rc = asprintf(&command, "dtc -I fs -O dtb %s", devicetree_fs_path);
+	rc = asprintf(&command, "dtc -I fs -O dtb %s", DT_FS_PATH);
 	if (rc < 0)
 		return FWTS_ERROR;
 

@@ -50,4 +50,9 @@ static inline int fwts_devicetree_read(fwts_framework *fwts
 }
 #endif
 
+int check_property_printable(fwts_framework *fw,
+			const char *name,
+			const char *buf,
+			size_t len);
+
 #endif

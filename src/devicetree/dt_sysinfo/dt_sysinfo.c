@@ -49,53 +49,6 @@ static struct reference_platform {
 		FWTS_ARRAY_LEN(garrison_models)},
 };
 
-static int check_property_printable(fwts_framework *fw,
-	const char *name,
-	const char *buf,
-	size_t len)
-{
-	bool printable = true;
-	unsigned int i;
-
-	/* we need at least one character plus a nul */
-	if (len < 2) {
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"DTPrintablePropertyShort",
-			"property %s is too short", name);
-		return FWTS_ERROR;
-	}
-
-	/* check all characters are printable */
-	for (i = 0; i < len - 1; i++) {
-		printable = printable && isprint(buf[i]);
-		if (!printable)
-			break;
-	}
-
-	if (!printable) {
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"DTPrintablePropertyInvalid",
-			"property %s contains unprintable characters",
-			name);
-		return FWTS_ERROR;
-	}
-
-	/* check for a trailing nul */
-	if (buf[len-1] != '\0') {
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"DTPrintablePropertyNoNul",
-			"property %s isn't nul-terminated", name);
-		return FWTS_ERROR;
-	}
-
-	fwts_log_info_verbatim(fw,
-		"DTPrintableProperty with a string"
-		" value of \"%s\" passed",
-		buf);
-
-	return FWTS_OK;
-}
-
 static int dt_sysinfo_check_root_property(
 	fwts_framework *fw,
 	const char *name,

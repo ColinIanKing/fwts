@@ -37,6 +37,7 @@
 #define DT_PROPERTY_OPAL_MANUFACTURER_ID "manufacturer-id"
 #define DT_PROPERTY_OPAL_STATUS "status"
 #define DT_PROPERTY_OPAL_VENDOR "vendor"
+#define DT_PROPERTY_OPAL_BOARD_INFO "board-info"
 
 #if FWTS_HAS_DEVICETREE
 
@@ -54,5 +55,7 @@ int check_property_printable(fwts_framework *fw,
 			const char *name,
 			const char *buf,
 			size_t len);
+
+char *hidewhitespace(char *name);
 
 #endif

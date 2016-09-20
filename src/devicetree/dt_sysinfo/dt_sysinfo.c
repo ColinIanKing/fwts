@@ -29,13 +29,13 @@
 static const char op_powernv[] = "ibm,powernv";
 
 static const char *firestone_models[] = {
-	"8335-GTA        ",
-	"8335-GCA        ",
-	"8335-GTX        ",
+	"8335-GTA",
+	"8335-GCA",
+	"8335-GTX",
 };
 
 static const char *garrison_models[] = {
-	"8335-GTB        ",
+	"8335-GTB",
 };
 
 static struct reference_platform {
@@ -186,6 +186,7 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 		return FWTS_ERROR;
 	} else {
 		const char *model_buf, *compat_buf;
+		char *orig_model_buf, *tmp_model_buf;
 
 		compat_buf = fdt_getprop(fw->fdt, node,
 				"compatible", &compat_len);
@@ -194,16 +195,54 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 
 		if (!model_buf || !compat_buf) {
 			fwts_failed(fw,LOG_LEVEL_HIGH,
-				"DTSysinfoPropertyMissing",
-				"can't read properties for OpenPOWER"
+				"DTSysInfoCheck:",
+				" Cannot read the properties for OpenPOWER"
 				" Reference Compatible check");
 			return FWTS_ERROR;
 		}
 
+		/* need modifiable memory    */
+		/* save original ptr to free */
+		tmp_model_buf = orig_model_buf = strdup(model_buf);
+		if (!tmp_model_buf) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"DTSysInfoCheck:",
+				" Unable to get memory for model"
+				" compare for OpenPOWER"
+				" Reference Compatible check");
+			return FWTS_ERROR;
+		}
+
+		tmp_model_buf = hidewhitespace(tmp_model_buf);
+		if (!(strcmp(model_buf, tmp_model_buf) == 0)) {
+			fwts_warning(fw,
+				"DTSysInfoCheck:"
+				" See further advice in the log.\n");
+			fwts_log_nl(fw);
+			fwts_log_info_verbatim(fw,
+				"DTSysInfoCheck:"
+				" Check the root \"model\" property"
+				" from the device tree %s \"%s\".\n",
+				DT_FS_PATH,
+				model_buf);
+			fwts_advice(fw,
+				"Check the root \"model\" property"
+				" from the device tree %s, "
+				"there are whitespace inconsistentencies"
+				" between the \"model\" property and "
+				" the trimmed value of \"%s\", report"
+				" this as a possible bug."
+				"  Run \"hexdump -C model\""
+				" from the \"%s\" directory to view"
+				" the raw contents of the property.",
+				DT_FS_PATH,
+				tmp_model_buf,
+				DT_FS_PATH);
+		}
 		if (machine_matches_reference_model(fw,
 				compat_buf,
 				compat_len,
-				model_buf)) {
+				tmp_model_buf)) {
 			fwts_passed(fw, "OpenPOWER Reference "
 				"Compatible passed");
 		} else {
@@ -214,9 +253,11 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 			/* adding verbatim to show proper string */
 			fwts_log_info_verbatim(fw,
 			"Unable to find an OpenPOWER reference"
-			" match for \"%s\"", model_buf);
+			" match for \"%s\"", tmp_model_buf);
+			free(orig_model_buf);
 			return FWTS_ERROR;
 		}
+		free(orig_model_buf);
 	}
 
 	return FWTS_OK;

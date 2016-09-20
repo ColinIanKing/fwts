@@ -109,5 +109,35 @@ int check_property_printable(fwts_framework *fw,
 		name,
 		buf);
 
+	fwts_passed(fw,
+		"DTPrintableProperty \"%s\" passed",
+		name);
+
 	return FWTS_OK;
+}
+
+/* hidewhitespace (char *name)                    */
+/*                                                */
+/* Caller must pass in modifiable memory for name */
+/* Caller must save original memory ptr to free   */
+/* the original allocated memory if needed        */
+
+char *hidewhitespace(char *name)
+{
+	char *end;
+
+	while (isspace(*name))
+		name++;
+
+	if (!*name)
+		return name;
+
+	end = name + strlen(name) - 1;
+	while (end > name && isspace(*end))
+		end--;
+
+	*(end + 1) = '\0';
+
+	return name;
+
 }

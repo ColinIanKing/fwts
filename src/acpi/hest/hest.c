@@ -645,13 +645,13 @@ static void hest_check_generic_error_source(
 			"more than zero.",
 			source->max_sections_per_record);
 	}
-	if (source->notification.type > 7) {
+	if (source->notification.type > 0xA) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidHardwareErrorNotificationType",
 			"HEST Hardware Error Notification Type is "
 			"an invalid reserved value of 0x%2.2" PRIx8 ","
-			"expecting value 0x00 to 0x07",
+			"expecting value 0x00 to 0x0A",
 			source->notification.type);
 	}
 	if (source->notification.configuration_write_enable & ~0x3f) {
@@ -763,13 +763,13 @@ static void hest_check_generic_error_source_v2(
 			"more than zero.",
 			source->max_sections_per_record);
 	}
-	if (source->notification.type > 7) {
+	if (source->notification.type > 0xA) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidHardwareErrorNotificationType",
 			"HEST Hardware Error Notification Type is "
 			"an invalid reserved value of 0x%2.2" PRIx8 ","
-			"expecting value 0x00 to 0x07",
+			"expecting value 0x00 to 0x0A",
 			source->notification.type);
 	}
 	if (source->notification.configuration_write_enable & ~0x3f) {

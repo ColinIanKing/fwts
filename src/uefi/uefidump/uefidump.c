@@ -530,6 +530,12 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				path = uefidump_vprintf(path, "\\WiFi(%s)", w->ssid);
 			}
 			break;
+		case FWTS_UEFI_EMMC_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len >= sizeof(fwts_uefi_emmc_dev_path)) {
+				fwts_uefi_emmc_dev_path *e = (fwts_uefi_emmc_dev_path *)dev_path;
+				path = uefidump_vprintf(path, "\\eMMC(0x%" PRIx8 ")", e->slot_num);
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

@@ -252,7 +252,8 @@ typedef enum {
 	FWTS_UEFI_UFS_DEVICE_PATH_SUBTYPE = 		(0x19),
 	FWTS_UEFI_SD_DEVICE_PATH_SUBTYPE = 		(0x1a),
 	FWTS_UEFI_BLUETOOTH_DEVICE_PATH_SUBTYPE = 	(0x1b),
-	FWTS_UEFI_WIRELESS_DEVICE_PATH_SUBTYPE = 	(0x1c)
+	FWTS_UEFI_WIRELESS_DEVICE_PATH_SUBTYPE = 	(0x1c),
+	FWTS_UEFI_EMMC_DEVICE_PATH_SUBTYPE =		(0x1d)
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -549,6 +550,11 @@ typedef struct {
 	fwts_uefi_dev_path dev_path;
 	char ssid[0];
 } __attribute__((packed)) fwts_uefi_wireless_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint8_t slot_num;
+} __attribute__((packed)) fwts_uefi_emmc_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

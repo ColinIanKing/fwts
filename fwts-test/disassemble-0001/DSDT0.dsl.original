@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20160422-64
+ * AML/ASL+ Disassembler version 20160930-64
  * Copyright (c) 2000 - 2016 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_12309_DSDT_2.dsl, Fri Apr 22 19:00:06 2016
+ * Disassembly of /tmp/fwts_tmp_table_425_DSDT_2.dsl, Mon Oct  3 10:28:27 2016
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -942,7 +942,7 @@ DefinitionBlock ("", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
                     0x00000CF7,         // Range Maximum
                     0x00000000,         // Translation Offset
                     0x00000CF8,         // Length
-                    ,, , TypeStatic)
+                    ,, , TypeStatic, DenseTranslation)
                 IO (Decode16,
                     0x0CF8,             // Range Minimum
                     0x0CF8,             // Range Maximum
@@ -955,7 +955,7 @@ DefinitionBlock ("", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
                     0x0000FFFF,         // Range Maximum
                     0x00000000,         // Translation Offset
                     0x0000F300,         // Length
-                    ,, , TypeStatic)
+                    ,, , TypeStatic, DenseTranslation)
                 DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
                     0x00000000,         // Granularity
                     0x000A0000,         // Range Minimum

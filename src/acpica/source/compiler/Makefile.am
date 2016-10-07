@@ -185,6 +185,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../components/dispatcher/dswload2.c 	\
 	../components/dispatcher/dsargs.c 	\
 	../components/dispatcher/dscontrol.c 	\
+	../components/executer/exconcat.c	\
 	../components/executer/exconvrt.c 	\
 	../components/executer/excreate.c 	\
 	../components/executer/exdump.c 	\

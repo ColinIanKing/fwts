@@ -232,13 +232,6 @@ static fwts_list msi_frame_ids;
 static fwts_list its_ids;
 static fwts_list processor_uids;
 
-struct acpi_processor {
-	ACPI_OBJECT_TYPE type;
-	uint32_t proc_id;
-	ACPI_IO_ADDRESS pblk_address;
-	uint32_t pblk_length;
-};
-
 struct acpi_integer {
 	ACPI_OBJECT_TYPE type;
 	uint64_t value;
@@ -249,10 +242,8 @@ static ACPI_STATUS madt_processor_handler(ACPI_HANDLE ObjHandle, uint32_t level,
 {
 	ACPI_OBJECT_TYPE acpi_type;
 	ACPI_STATUS status;
-	struct acpi_processor processor;
-	struct acpi_integer integer;
-	struct acpi_buffer pbuf = {sizeof(struct acpi_processor), &processor};
-	struct acpi_buffer ibuf = {sizeof(struct acpi_integer), &integer};
+	ACPI_OBJECT obj;
+	struct acpi_buffer buf = {sizeof(ACPI_OBJECT), &obj};
 	struct acpi_integer *listint;
 
 	/* Prevent -Werror=unused-parameter from complaining */
@@ -272,20 +263,20 @@ static ACPI_STATUS madt_processor_handler(ACPI_HANDLE ObjHandle, uint32_t level,
 
 	switch(acpi_type) {
 	case ACPI_TYPE_PROCESSOR:
-		status = AcpiEvaluateObject(ObjHandle, NULL, NULL, &pbuf);
+		status = AcpiEvaluateObject(ObjHandle, NULL, NULL, &buf);
 		if (ACPI_FAILURE(status)) {
 			free(listint);
 			return status;
 		}
-		listint->value = processor.proc_id;
+		listint->value = obj.Processor.ProcId;
 		break;
 	case ACPI_TYPE_DEVICE:
-		status = AcpiEvaluateObject(ObjHandle, "_UID", NULL, &ibuf);
+		status = AcpiEvaluateObject(ObjHandle, "_UID", NULL, &buf);
 		if (ACPI_FAILURE(status)) {
 			free(listint);
 			return status;
 		}
-		listint->value = integer.value;
+		listint->value = obj.Integer.Value;
 		break;
 	default:
 		free(listint);

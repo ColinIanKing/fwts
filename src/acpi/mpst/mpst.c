@@ -33,7 +33,7 @@ static int mpst_init(fwts_framework *fw)
 	}
 	if (table == NULL) {
 		fwts_log_error(fw, "ACPI MPST table does not exist, skipping test");
-		return FWTS_ERROR;
+		return FWTS_SKIP;
 	}
 
 	return FWTS_OK;

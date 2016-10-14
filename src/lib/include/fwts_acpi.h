@@ -987,7 +987,6 @@ typedef struct {
 	uint8_t		reserved[3];		/* 0 */
 	uint64_t	cntbase;
 	uint64_t	cntel0base;
-	uint32_t	gsiv;
 	uint32_t	phys_timer_gsiv;
 	uint32_t	phys_timer_flags;
 	uint32_t	virt_timer_gsiv;

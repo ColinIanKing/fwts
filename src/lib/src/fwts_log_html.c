@@ -44,7 +44,7 @@ typedef struct {
  * ISO 10646, ISO 8879, ISO 8859-1 Latin alphabet No. 1
  * Browser support: All browsers
  */
-static fwts_log_html_ascii_t fwts_log_html_ascii_table[] = {
+static const fwts_log_html_ascii_t fwts_log_html_ascii_table[] = {
 	{ '"',	"&quot;" },
 	{ '&', 	"&amp;" },
 	{ '<', 	"&lt;" },

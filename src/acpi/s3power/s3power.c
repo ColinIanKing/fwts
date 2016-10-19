@@ -251,7 +251,7 @@ static int s3power_test(fwts_framework *fw)
 	uint32_t capacity_before_mWh;
 	uint32_t capacity_after_mWh;
 
-	fwts_pm_method_vars *fwts_settings = NULL;
+	fwts_pm_method_vars *fwts_settings;
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 

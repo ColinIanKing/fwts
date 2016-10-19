@@ -449,7 +449,6 @@ static void dmi_dump_entry30(fwts_framework *fw, fwts_smbios30_entry *entry)
 static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 {
 	uint8_t	*table, *ptr;
-	uint8_t dmi_entry_length;
 	uint8_t dmi_entry_type = 0;
 	uint16_t i = 0;
 	uint16_t table_length = entry->struct_table_length;
@@ -460,6 +459,8 @@ static int dmi_sane(fwts_framework *fw, fwts_smbios_entry *entry)
 		return FWTS_ERROR;
 
 	for (i = 0; i < entry->number_smbios_structures; i++) {
+		uint8_t dmi_entry_length;
+
 		if (ptr > table + table_length) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"SMBIOSTableLengthTooSmall",
@@ -596,8 +597,6 @@ static int smbios_entry_check(fwts_framework *fw)
 static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
 {
 	uint8_t	*table, *ptr;
-	uint8_t struct_length;
-	uint8_t struct_type = 0;
 	uint16_t i = 0;
 	uint32_t table_length = entry->struct_table_max_size;
 	int ret = FWTS_OK;
@@ -606,8 +605,10 @@ static int dmi_smbios30_sane(fwts_framework *fw, fwts_smbios30_entry *entry)
 	if (table == NULL)
 		return FWTS_ERROR;
 
-	while (1)
-	{
+	for (;;) {
+		uint8_t struct_length;
+		uint8_t struct_type;
+
 		if (ptr > table + table_length) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"SMBIOS30TableLengthTooSmall",

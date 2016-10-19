@@ -26,7 +26,7 @@
 static enum firmware_type firmware_type;
 static bool firmware_type_valid;
 
-static struct {
+static const struct {
 	enum firmware_feature feature;
 	const char name[16];
 } feature_names[] = {

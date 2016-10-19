@@ -156,7 +156,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	int rc = FWTS_OK;
 	char *command = NULL;
 	char *quirks = NULL;
-	fwts_pm_method_vars *fwts_settings = NULL;
+	fwts_pm_method_vars *fwts_settings;
 
 	int (*do_suspend)(fwts_pm_method_vars *, const int, int*, const char*);
 

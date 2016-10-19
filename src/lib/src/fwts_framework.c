@@ -58,7 +58,7 @@ typedef struct {
 	 FWTS_FLAG_TEST_ACPI |			\
 	 FWTS_FLAG_TEST_COMPLIANCE_ACPI)
 
-static fwts_categories categories[] = {
+static const fwts_categories categories[] = {
 	{ "ACPI",			FWTS_FLAG_TEST_ACPI },
 	{ "Batch",			FWTS_FLAG_BATCH },
 	{ "Interactive",		FWTS_FLAG_INTERACTIVE },
@@ -72,7 +72,7 @@ static fwts_categories categories[] = {
 	{ NULL,				0 },
 };
 
-static fwts_log_levels log_levels[] = {
+static const fwts_log_levels log_levels[] = {
 	{ "critical",			LOG_LEVEL_CRITICAL },
 	{ "high",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH },
 	{ "medium",			LOG_LEVEL_CRITICAL | LOG_LEVEL_HIGH | LOG_LEVEL_MEDIUM },

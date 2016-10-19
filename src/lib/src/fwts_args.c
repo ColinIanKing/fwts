@@ -28,6 +28,9 @@
 
 #include "fwts.h"
 
+#define FWTS_ARGS_WIDTH         (28)
+#define FWTS_MIN_TTY_WIDTH      (50)
+
 /*
  *  Internal options table, we keep a list of all of the added options and keep a tally
  *  of how many options there are in each table.
@@ -228,9 +231,6 @@ static int fwts_args_compare_options(void *data1, void *data2)
 
 	return strcmp(opt1->long_name, opt2->long_name);
 }
-
-#define FWTS_ARGS_WIDTH         28
-#define FWTS_MIN_TTY_WIDTH      50
 
 /*
  *  fwts_args_show_option()

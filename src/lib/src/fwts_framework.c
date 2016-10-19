@@ -607,13 +607,13 @@ static int fwts_framework_run_test(fwts_framework *fw, fwts_framework_test *test
 
 	if (!fwts_firmware_has_features(test->fw_features)) {
 		int missing = test->fw_features & ~fwts_firmware_features();
-		char *msg = NULL;
+		static const char *msg = "Test skipped, missing features";
+
 		fwts_log_info(fw, "Test skipped, missing features: %s",
 			fwts_firmware_feature_string(missing));
 		fw->current_major_test->results.skipped +=
 			test->ops->total_tests;
 		fw->total.skipped += test->ops->total_tests;
-		msg = "Test skipped, missing features";
 		if (fw->show_progress) {
 			fwts_framework_minor_test_progress_clear_line();
 			fprintf(stderr, "  %s: %s\n",

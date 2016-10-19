@@ -181,7 +181,7 @@ static int s4_hibernate(fwts_framework *fw,
 	int rc = FWTS_OK;
 	char *command = NULL;
 	char *quirks = NULL;
-	fwts_pm_method_vars *fwts_settings = NULL;
+	fwts_pm_method_vars *fwts_settings;
 
 	int (*do_s4)(fwts_pm_method_vars *, const int, int*, const char*);
 

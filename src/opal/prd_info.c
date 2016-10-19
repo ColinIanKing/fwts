@@ -73,7 +73,7 @@ int prd_dev_query(fwts_framework *fw)
 static int prd_service_check(fwts_framework *fw, int *restart)
 {
 	int rc = FWTS_OK, status = 0, stop_status = 0;
-	char *command = NULL;
+	char *command;
 	char *output = NULL;
 
 	command = "systemctl status opal-prd.service 2>&1";
@@ -124,7 +124,7 @@ out:
 static int prd_restart(fwts_framework *fw)
 {
 	int status = 0;
-	char *command = NULL;
+	char *command;
 	char *output = NULL;
 
 	command = "systemctl start opal-prd.service 2>&1";

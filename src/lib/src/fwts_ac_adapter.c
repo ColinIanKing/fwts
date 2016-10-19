@@ -42,7 +42,7 @@ typedef struct {
 	const char *type;	/* /sys/class type to indicate Mains power, NULL if not used */
 } fwts_ac_interface_info;
 
-static fwts_ac_interface_info fwts_ac_interfaces[] = {
+static const fwts_ac_interface_info fwts_ac_interfaces[] = {
 	{
 		FWTS_SYS_CLASS_POWER_SUPPLY,
 		"online",
@@ -74,7 +74,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 {
 	DIR *ac_power_dir;
 	struct dirent *entry;
-	fwts_ac_interface_info *ac_interface;
+	fwts_ac_interface_info const *ac_interface;
 
 	/* Try to user newer /sys interface first */
 	if ((ac_power_dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY))) {

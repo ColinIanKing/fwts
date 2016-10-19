@@ -390,7 +390,7 @@ int fwts_write_string_file(
 	const char *file_name,
 	const char *str)
 {
-	FILE *file = NULL;
+	FILE *file;
 	int ret;
 
 	errno = 0;
@@ -422,7 +422,7 @@ int fwts_read_file_first_line(
 	const char *file_name,
 	char **line)
 {
-	FILE *file = NULL;
+	FILE *file;
 	char buffer[LINE_MAX], *temp;
 	errno = 0;
 

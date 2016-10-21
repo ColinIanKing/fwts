@@ -143,7 +143,6 @@ void fwts_acpica_sem_count_get(int *acquired, int *released)
 
 			pthread_mutex_lock(&mutex_thread_info);
 			threads[i].used = false;
-			pthread_mutex_unlock(&mutex_thread_info);
 		}
 		pthread_mutex_unlock(&mutex_thread_info);
 	}

@@ -49,6 +49,7 @@ int fwts_acpi_free_tables(void);
 int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info);
 int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info);
 int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info);
+bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name);
 
 fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);
 

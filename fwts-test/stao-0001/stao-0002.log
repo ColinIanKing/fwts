@@ -7,11 +7,11 @@ stao              ACPI String:              '\_SB.C0E0'
 stao              ACPI String:              '\_SB.C022'
 stao              ACPI String:              '\_SB.C02E'
 stao            FAILED [HIGH] STAOAcpiStringNotFound: Test 1, STAO ACPI
-stao            String '\_SB_.C0E0' not found in ACPI object name space.
+stao            String '\_SB.C0E0' not found in ACPI object name space.
 stao            FAILED [HIGH] STAOAcpiStringNotFound: Test 1, STAO ACPI
-stao            String '\_SB_.C022' not found in ACPI object name space.
+stao            String '\_SB.C022' not found in ACPI object name space.
 stao            FAILED [HIGH] STAOAcpiStringNotFound: Test 1, STAO ACPI
-stao            String '\_SB_.C02E' not found in ACPI object name space.
+stao            String '\_SB.C02E' not found in ACPI object name space.
 stao            
 stao            ==========================================================
 stao            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0

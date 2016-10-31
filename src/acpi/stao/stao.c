@@ -85,11 +85,7 @@ static int stao_test1(fwts_framework *fw)
 	const fwts_acpi_table_stao *stao = (const fwts_acpi_table_stao *)table->data;
 	bool passed = true;
 	char *ptr, *end;
-	fwts_list_link  *item;
-	fwts_list *objects;
-	int i = -1, strings = 0;
-	char *ptr1, *ptr2;
-	char *expanded;
+	int strings = 0;
 
 	if (stao->header.length > (uint32_t)table->length) {
 		passed = false;
@@ -124,82 +120,28 @@ static int stao_test1(fwts_framework *fw)
 	if (!strings)
 		goto done;
 
-        if (fwts_acpi_init(fw) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot initialise ACPI, skipping ACPI string check");
-		goto done;
-	}
-	if ((objects = fwts_acpi_object_get_names()) == NULL) {
-		fwts_log_info(fw, "Cannot find any ACPI objects");
-		fwts_acpi_deinit(fw);
-		goto deinit;
-	}
 	ptr = (char *)stao->namelist;
 	end = (char *)table->data + table->length;
 
 	while (ptr < end) {
-		bool not_found = true;
+		bool found;
 		size_t len;
 
 		if (!stao_acpi_string(fw, ptr, end, &passed, &len))
 			break;
 
-		/* Find number of '.' in object path */
-		for (i = 0, ptr1 = ptr; *ptr1; ptr1++) {
-			if (*ptr1 == '.')
-				i++;
-		}
+		found = fwts_acpi_obj_find(fw, ptr);
 
-		/*
-		 *  Allocate buffer big enough to take expanded path
-		 *  and pad out any fields that are not 4 chars in size
-		 *  between each . separator
-		 *
-		 *  Converts \_SB.A.BB.CCC.DDDD.EE to
-		 *	     \_SB_.A___.BB__.CCC_.DDDD.EE__
-		 */
-		expanded = malloc(1 + (5 * (i + 1)));
-		if (!expanded) {
-			fwts_log_error(fw, "Cannot allocate temporary ACPI string buffer");
-			goto deinit;
-		}
-
-		for (i = -1, ptr1 = ptr, ptr2 = expanded; ; ptr1++) {
-			if (*ptr1 == '.' || *ptr1 == '\0') {
-				while (i < 4) {
-					*ptr2++ = '_';
-					i++;
-				}
-				i = 0;
-			} else {
-				i++;
-			}
-			*ptr2++ = *ptr1;
-			if (!*ptr1)
-				break;
-		}
-
-		/* Search for object */
-		fwts_list_foreach(item, objects) {
-			char *name = fwts_list_data(char *, item);
-			if (!strcmp(expanded, name)) {
-				not_found = false;
-				break;
-			}
-		}
-
-		if (not_found) {
+		if (!found) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"STAOAcpiStringNotFound",
 				"STAO ACPI String '%s' not found in ACPI object name space.",
-				expanded);
+				ptr);
 		}
-		free(expanded);
 		ptr += len + 1;
 	}
 
-deinit:
-	fwts_acpi_deinit(fw);
 done:
 	if (passed)
 		fwts_passed(fw, "No issues found in STAO table.");

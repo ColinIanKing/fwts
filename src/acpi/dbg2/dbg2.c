@@ -89,80 +89,6 @@ static void dbg2_check_namespace_string(
 	*passed = false;
 }
 
-/*
- *  dbg2_obj_find()
- *	find a given object from the given path name
- */
-static void dbg2_obj_find(
-	fwts_framework *fw,
-	char *obj_name,
-	bool *passed)
-{
-	fwts_list_link  *item;
-	fwts_list *objects;
-	int i = -1;
-	char *ptr1;
-
-        if (fwts_acpi_init(fw) != FWTS_OK) {
-                fwts_log_error(fw, "Cannot initialise ACPI.");
-		return;
-        }
-	if ((objects = fwts_acpi_object_get_names()) == NULL) {
-		fwts_log_info(fw, "Cannot find any ACPI objects");
-		fwts_acpi_deinit(fw);
-		return;
-	}
-
-	/* Find number of '.' in object path */
-	for (i = 0, ptr1 = obj_name; *ptr1; ptr1++) {
-		if (*ptr1 == '.')
-			i++;
-	}
-
-	/*
-	 *  Allocate buffer big enough to take expanded path
-	 *  and pad out any fields that are not 4 chars in size
-	 *  between each . separator
-	 *
-	 *  Converts \_SB.A.BB.CCC.DDDD.EE to
-	 *	     \_SB_.A___.BB__.CCC_.DDDD.EE__
-	 */
-	{
-		char expanded[1 + (5 * (i + 1))];
-		char *ptr2 = expanded;
-
-		for (i = -1, ptr1 = obj_name; ; ptr1++) {
-			if (*ptr1 == '.' || *ptr1 == '\0') {
-				while (i < 4) {
-					*ptr2++ = '_';
-					i++;
-				}
-				i = 0;
-			} else {
-				i++;
-			}
-			*ptr2++ = *ptr1;
-			if (!*ptr1)
-				break;
-		}
-
-		/* Search for object */
-		fwts_list_foreach(item, objects) {
-			char *name = fwts_list_data(char*, item);
-			if (!strcmp(expanded, name))
-				goto done;
-		}
-		/* Not found */
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"DBG2DeviceNotFound",
-			"DBG2 Device '%s' not found in ACPI object name space.",
-			expanded);
-	}
-done:
-	fwts_acpi_deinit(fw);
-}
-
 
 /*
  *  DBG2 Table
@@ -333,10 +259,17 @@ static int dbg2_test1(fwts_framework *fw)
 			char *str = (char *)table->data + offset + info->namespace_offset;
 			dbg2_check_namespace_string(fw, str, info->namespace_length, &passed);
 			fwts_log_info_verbatim(fw, "  Namespace String:         '%s'", str);
-			if (strcmp(str, "."))
-				dbg2_obj_find(fw, str, &ok);
+			if (strcmp(str, ".") != 0) {
+				bool found = fwts_acpi_obj_find(fw, str);
+				if (!found) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+							"DBG2DeviceNotFound",
+							"DBG2 Device '%s' not found in ACPI object name space.",
+							str);
+				}
+			}
 		}
-		passed &= ok;
 
 		dbg2_check_offset(fw, table->length, offset + info->oem_data_offset,
 			"DBG2 Info Structure OEM Data Offset", &passed);

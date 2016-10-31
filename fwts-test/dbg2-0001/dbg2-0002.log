@@ -25,7 +25,7 @@ dbg2            FAILED [HIGH] DBG2PortSubTypeReserved: Test 1, DBG2 Info
 dbg2            Structure Port Subtype is 0x0008 which is a reserved type.
 dbg2              Namespace String:         '\_SB.PCI0.EHC1.HUB0.PRT2'
 dbg2            FAILED [HIGH] DBG2DeviceNotFound: Test 1, DBG2 Device
-dbg2            '\_SB_.PCI0.EHC1.HUB0.PRT2' not found in ACPI object name
+dbg2            '\_SB.PCI0.EHC1.HUB0.PRT2' not found in ACPI object name
 dbg2            space.
 dbg2            FAILED [HIGH] DBG2TooShort: Test 1, DBG2 table too short,
 dbg2            expecting 65323 bytes, instead got 107 bytes for a DBG2

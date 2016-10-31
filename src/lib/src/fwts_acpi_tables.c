@@ -35,6 +35,8 @@
 
 #include "fwts.h"
 
+#include "fwts_acpi_object_eval.h"
+
 #if defined(FWTS_HAS_ACPI)
 
 #define BIOS_START	(0x000e0000)		/* Start of BIOS memory */
@@ -1280,6 +1282,64 @@ int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_inf
 
 	*info = &tables[index];
 	return FWTS_OK;
+}
+
+/*
+ *  fwts_acpi_obj_find()
+ *  Returns whether obj_name can be found in the ACPI object name space.
+ */
+bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name)
+{
+	char expanded[BUFSIZ];
+	char *c = expanded;
+	const char *obj_ptr;
+	int i;
+	fwts_list_link *item;
+	fwts_list *objects;
+	bool found = false;
+
+	if (fwts_acpi_init(fw) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot initialise ACPI.");
+		return false;
+	}
+	if ((objects = fwts_acpi_object_get_names()) == NULL) {
+		fwts_log_info(fw, "Cannot find any ACPI objects");
+		fwts_acpi_deinit(fw);
+		return false;
+	}
+
+	memset(expanded, 0, BUFSIZ);
+
+	/*
+	 *  Converts \_SB.A.BB.CCC.DDDD.EE to
+	 *           \_SB_.A___.BB__.CCC_.DDDD.EE__
+	 */
+	for (i = -1, obj_ptr = obj_name; ; obj_ptr++) {
+		if (*obj_ptr == '.' || *obj_ptr == '\0') {
+			while (i < 4) {
+				*c++ = '_';
+				i++;
+			}
+			i = 0;
+		} else {
+			i++;
+		}
+		*c++ = *obj_ptr;
+		if (!*obj_ptr)
+			break;
+	}
+
+	/* Search for object */
+	fwts_list_foreach(item, objects) {
+		char *name = fwts_list_data(char*, item);
+		if (strcmp(expanded, name) == 0) {
+			found = true;
+			break;
+		}
+	}
+
+	fwts_acpi_deinit(fw);
+	return found;
 }
 
 #endif

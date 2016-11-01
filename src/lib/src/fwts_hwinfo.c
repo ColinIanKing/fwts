@@ -381,7 +381,7 @@ static int fwts_hwinfo_net_get(
 
 	while ((d = readdir(dp)) != NULL) {
 		struct ifreq buf;
-		struct sockaddr_in *sockaddr;
+		struct sockaddr_in sockaddr;
 		fwts_net_config *net_config;
 
 		if (d->d_name[0] == '.')
@@ -416,8 +416,8 @@ static int fwts_hwinfo_net_get(
 				fwts_log_error(fw, "Cannot get address for device %s.", d->d_name);
 		}
 		/* GCC 4.4 is rather overly pedantic in strict aliasing warnings, this avoids it */
-		sockaddr = (struct sockaddr_in *)&buf.ifr_addr;
-		net_config->addr = strdup(inet_ntoa((struct in_addr)sockaddr->sin_addr));
+		memcpy(&sockaddr, &buf.ifr_addr, sizeof(sockaddr));
+		net_config->addr = strdup(inet_ntoa((struct in_addr)sockaddr.sin_addr));
 		if (net_config->addr == NULL) {
 			fwts_log_error(fw, "Cannot allocate net config H/W address.");
 			fwts_hwinfo_net_free(net_config);

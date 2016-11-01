@@ -81,7 +81,7 @@ static void check_entries(fwts_framework *fw, bool *passed)
 		if (entry && strstr(entry->d_name, "entry")) {
 			char path[PATH_MAX];
 			char *str;
-			uint32_t fwversion;
+			uint32_t fwversion = 0;
 			uint32_t lowest_sp_fwversion;
 			bool fwversions_found = true;
 

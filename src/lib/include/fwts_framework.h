@@ -108,7 +108,7 @@ static inline void fwts_framework_summate_results(fwts_results *total, fwts_resu
 /*
  *  Test framework context
  */
-typedef struct fwts_framework {
+struct fwts_framework {
 	uint32_t magic;				/* identify struct magic */
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
@@ -155,7 +155,7 @@ typedef struct fwts_framework {
 	fwts_pm_method pm_method;
 	fwts_architecture host_arch;		/* arch FWTS was built for */
 	fwts_architecture target_arch;		/* arch being tested */
-} fwts_framework;
+};
 
 typedef struct {
 	char *opt;	/* option */

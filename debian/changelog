@@ -1,3 +1,65 @@
+fwts (16.11.00-0ubuntu1) zesty; urgency=low
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20160930
+  * fwts-test: disassemble-0001: sync output to latest ACPICA changes
+  * acpica: remove aslcompiler.y as it is generated from aslparser.y
+  * debian/control: fwts-efi-runtime-dkms should not depend on kernel headers
+    (LP: #1629826)
+  * Build using dpkg-dev's hardening support.
+  * acpcia: Makefile.am: include exconcat.c into libfwtsiasl build
+    (LP: #1631354)
+  * lib: fwts_ac_adapter: add in some constifications
+  * lib: fwts_args: move #defines to start of source
+  * lib: fwts_firmware: constify feature_names
+  * lib: fwts_framework: constify categories[] and log_levels[]
+  * lib: fwts_log_html: constify fwts_log_html_ascii_table[]
+  * acpi: s3power: remove redundant intialization of fwts_settings
+  * acpi: s4: remove redundant intialization of fwts_settings
+  * acpi: s3: remove redundant intialization of fwts_settings
+  * lib: fwts_pipeio: remove redundant initializations of file to NULL
+  * opal: remove redundant initializations of command to NULL
+  * lib: fwts_framework: initialize msg to literal string
+  * dmi: dmicheck: fix a couple of cppcheck style warnings
+  * Manual: keep contributors list up to date
+
+  [Deb McLemore]
+  * fwts_devicetree: Add defines for common usage
+  * fwts_devicetree: Add function for common usage
+  * devicetree: dt_sysinfo: Reference compatible whitespace
+
+  [Erico Nunes]
+  * fwts_acpi_tables: remove fwts_acpi_checksum declaration
+  * acpi: dbg2: fix segfault and refactor dbg2_obj_find
+  * fwts_framework.h: fix redefinition typedef warning
+  * fwts_hwinfo.c: fix strict-aliasing error with old gcc
+  * esrt.c: fix uninitialized use of 'fwversion' warning
+
+  [Ivan Hu]
+  * efi_runtime: use memdup_user() as a cleanup
+  * efi_runtime: fix the uninintialized value datasize
+  * efi_runtime: fix the uninitialized value rv
+  * uefibootpath: fix the URI length check
+  * uefibootpath: add test for eMMC device path
+  * uefidump: add dumping for the eMMC device path
+  * fwts_acpica: fix segmentation fault by unlock mutex twice (LP: #1635502)
+  * debian/control: clean up uploaders list
+  * auto-packager: mkpackage.sh: add zesty
+
+  [Jeffrey Hugo]
+  * acpi: hest: Add new error notification types
+  * acpi: madt: Fix processor UID check
+  * acpi: gtdt: Account for added virtual timer flags
+  * lib: acpi: Remove gsiv field of fwts_acpi_table_gtdt_block_timer
+  * acpi: mpst: Show test as skipped if table does not exist
+  * lib: olog: Show test as skipped if nothing to do
+  * acpi: pmtt: Show test as skipped if table does not exist
+  * acpi: tcpa: Show test as skipped if table does not exist
+  * acpi: tpm2: Show test as skipped if table does not exist
+  * acpi: xenv: Show test as skipped if table does not exist
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 10 Nov 2016 16:32:37 +0800
+
 fwts (16.09.00-0ubuntu1) yakkety; urgency=low
 
   [Alex Hung]

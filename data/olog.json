@@ -1,32 +1,11 @@
 {
  "olog_error_warning_patterns": [
   {
-   "advice": "Start debugging why we didn't find the right device. End result is that NVLink will not function properly",
-   "compare_mode": "regex",
-   "label": "NPUNotBound",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": ".*: NPU device [0-9a-f]+:00:[0-9a-f]+.0 not binding to PCI device"
-  },
-  {
    "advice": "NVLink not functional",
    "compare_mode": "regex",
    "label": "NPUisnInvalid",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "NPU[0-9]+: isn 0x[0-9a-f]+ not valid for this NPU"
-  },
-  {
-   "advice": "NVLink not functional",
-   "compare_mode": "string",
-   "label": "NPUATBARDisabled",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "AT BAR disabled!"
-  },
-  {
-   "advice": "Error adding the PHB device node. The only real reason for this is that firmware may have run out of memory.",
-   "compare_mode": "regex",
-   "label": "NPUPHBDeviceNodeFailure",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": ".*: Cannot create PHB device node"
   },
   {
    "advice": "Firmware probably ran out of memory creating NPU slot. NVLink functionality could be broken.",
@@ -46,8 +25,15 @@
    "advice": "An error condition occured in sleep/winkle engines timer state machine. Dumping debug information to root-cause. OPAL/skiboot may be stuck on some operation that requires SLW timer state machine (e.g. core powersaving)",
    "compare_mode": "string",
    "label": "SLWRegisterDump",
-   "log_level": "LOG_LEVEL_CRITICAL",
+   "log_level": "LOG_LEVEL_LOW",
    "pattern": "SLW: Register state:"
+  },
+  {
+   "advice": "OPAL marked a Centaur (memory buffer) as offline due to CENTAUR_ERR_OFFLINE_THRESHOLD (10) consecutive errors on XSCOMs to this centaur. OPAL will now return OPAL_XSCOM_CTR_OFFLINED and not try any further XSCOMs. This is likely caused by some hardware issue or PRD recovery issue.",
+   "compare_mode": "regex",
+   "label": "CentaurOfflinedTooManyErrors",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "CENTAUR: Offlined [0-9a-f]+ due to > [0-9]+ consecutive XSCOM errors. No more XSCOMs to this centaur."
   },
   {
    "advice": "The HOMER base address for a chip was not valid. This means that OCC (On Chip Controller) will be non-functional and CPU frequency scaling will not be functional. CPU may be set to a safe, low frequency. Power savings in CPU idle or CPU hotplug may be impacted.",
@@ -267,6 +253,188 @@
    "pattern": "SEL message to reset an unknown OCC (sensor ID 0x[0-9a-f]+)"
   },
   {
+   "advice": "The resource is not registered in the resource_map[] array, but it should be otherwise the resource cannot be measured if trusted mode is on.",
+   "compare_mode": "regex",
+   "label": "STBMeasureResourceNotMapped",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "STB: .* failed, resource [0-9]+ not mapped"
+  },
+  {
+   "advice": "Null resource passed to tb_measure. This has come from the resource load framework and likely indicates a bug in the framework.",
+   "compare_mode": "regex",
+   "label": "STBNullResourceReceived",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "STB: .* failed: resource .*[0-9]+, buf null"
+  },
+  {
+   "advice": "Unregistered resources can be verified, but not measured. The resource should be registered in the resource_map[] array, otherwise the resource cannot be measured if trusted mode is on.",
+   "compare_mode": "regex",
+   "label": "STBVerifyResourceNotMapped",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "STB: verifying the non-expected resource [0-9]+/[0-9]+"
+  },
+  {
+   "advice": "STB_DEBUG should not be enabled in production. PCR read operation failed. This TSS implementation is part of hostboot, but the source code is shared with skiboot. 1) The hostboot TSS may have been updated. 2) This may be caused by the short I2C timeout and can be fixed by increasing the timeout. Otherwise this indicates a bug in the TSS or the TPM device driver. Each one has local debug macros that can help.",
+   "compare_mode": "regex",
+   "label": "STBPCRReadFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "STB: tpmCmdPcrRead() failed: tpm[0-9]+, alg=[0-9a-f]+, pcr[0-9]+, rc=[0-9]+"
+  },
+  {
+   "advice": "TPM node already registered. The same node is being registered twice or there is a tpm node duplicate in the device tree",
+   "compare_mode": "regex",
+   "label": "TPMAlreadyRegistered",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "TPM: tpm[0-9]+ already registered"
+  },
+  {
+   "advice": "linux,sml-base property not found. This indicates a Hostboot bug if the property really doesn't exist in the tpm node.",
+   "compare_mode": "regex",
+   "label": "TPMSmlBaseNotFound",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: linux,sml-base property not found tpm node (0x[0-9a-f]+|nil)"
+  },
+  {
+   "advice": "linux,sml-size property not found. This indicates a Hostboot bug if the property really doesn't exist in the tpm node.",
+   "compare_mode": "regex",
+   "label": "TPMSmlSizeNotFound",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: linux,sml-size property not found, tpm node (0x[0-9a-f]+|nil)"
+  },
+  {
+   "advice": "Hostboot creates and adds entries to the event log. The failed init function is part of hostboot, but the source code is shared with skiboot. If the hostboot TpmLogMgr code (or friends) has been updated, the changes need to be applied to skiboot as well.",
+   "compare_mode": "regex",
+   "label": "TPMInitEventLogFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: eventlog init failed: tpm[0-9]+ rc=[0-9]+"
+  },
+  {
+   "advice": "TPM already initialized. Check if tpm is being initialized more than once.",
+   "compare_mode": "string",
+   "label": "TPMAlreadyInitialized",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "TPM: tpm device(s) already initialized"
+  },
+  {
+   "advice": "No TPM chip has been initialized. We may not have a compatible tpm driver or there is no tpm node in the device tree with the expected bindings.",
+   "compare_mode": "string",
+   "label": "TPMNotInitialized",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: no tpm chip has been initialized"
+  },
+  {
+   "advice": "TpmLogMgr failed to add a new event to the event log. TpmLogMgr is part of hostboot, but the source code is shared with skiboot. 1) The hostboot TpmLogMgr code may have been updated. 2) Check that max event log size was not reached and log marshall executed with no error. Enabling the trace routines in trustedbootUtils.H may help.",
+   "compare_mode": "regex",
+   "label": "STBAddEventFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: .* -> elog[0-9]+ FAILED: pcr[0-9]+ et=[0-9a-f]+ rc=[0-9]+"
+  },
+  {
+   "advice": "PCR extend operation failed. This TSS implementation is part of hostboot, but the source code is shared with skiboot. 1) The hostboot TSS may have been updated. 2) This may be caused by the short I2C timeout and can be fixed by increasing the timeout. Otherwise, this indicates a bug in the TSS or the TPM device driver. Each one has local debug macros that can help.",
+   "compare_mode": "regex",
+   "label": "STBPCRExtendFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: .* -> tpm[0-9]+ FAILED: pcr[0-9]+ rc=[0-9]+"
+  },
+  {
+   "advice": "ibm,secureboot already registered. Check if rom_init called twice or the same driver is probed twice",
+   "compare_mode": "regex",
+   "label": "ROMAlreadyRegistered",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "ROM: .* driver already registered"
+  },
+  {
+   "advice": "The valid bit of the tpm status register is taking longer to be settled. Either the wait time needs to be increased or the TPM device is not functional.",
+   "compare_mode": "string",
+   "label": "TPMValidBitTimeout",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: valid bit not settled. Timeout."
+  },
+  {
+   "advice": "The command ready bit of the tpm status register is taking longer to be settled. Either the wait time need to be increased or the TPM device is not functional.",
+   "compare_mode": "string",
+   "label": "TPMCommandReadyBitTimeout",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: command ready polling timeout"
+  },
+  {
+   "advice": "The data avail bit of the tpm status register is taking longer to be settled. Either the wait time need to be increased or the TPM device is not functional.",
+   "compare_mode": "regex",
+   "label": "TPMDataAvailBitTimeout",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: read FIFO. Polling timeout, delay=[0-9]+/[0-9]+"
+  },
+  {
+   "advice": "The write to the TPM FIFO overflowed, the TPM is not expecting more data. This indicates a bug in the TPM device driver.",
+   "compare_mode": "string",
+   "label": "TPMWriteFifoOverflow1",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: write FIFO overflow1"
+  },
+  {
+   "advice": "The burstcount bit of the tpm status register is taking longer to be settled. Either the wait time need to be increased or the TPM device is not functional.",
+   "compare_mode": "regex",
+   "label": "TPMWriteBurstcountBitTimeout",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: write FIFO, burstcount polling timeout. delay=[0-9]+/[0-9]+"
+  },
+  {
+   "advice": "The write to the TPM FIFO overflowed. It is expecting more data even though we think we are done. This indicates a bug in the TPM device driver.",
+   "compare_mode": "string",
+   "label": "TPMWriteFifoOverflow2",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: write FIFO overflow2"
+  },
+  {
+   "advice": "The read from TPM FIFO overflowed. It is expecting more data even though we think we are done. This indicates a bug in the TPM device driver.",
+   "compare_mode": "regex",
+   "label": "TPMReadFifoOverflow1",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: read FIFO overflow1. delay [0-9]+/[0-9]+"
+  },
+  {
+   "advice": "The burstcount bit of the tpm status register is taking longer to be settled. Either the wait time needs to be increased or the TPM device is not functional.",
+   "compare_mode": "regex",
+   "label": "TPMReadBurstcountBitTimeout",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: read FIFO, burstcount polling timeout. delay=[0-9]+/[0-9]+"
+  },
+  {
+   "advice": "TPM device is not initialized. This indicates a bug in the tpm_transmit() caller",
+   "compare_mode": "string",
+   "label": "TPMDeviceNotInitialized",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: tpm device not initialized"
+  },
+  {
+   "advice": "Hostboot creates the ibm,secureboot node and the hash-algo property. Check that the ibm,secureboot node layout has not changed.",
+   "compare_mode": "regex",
+   "label": "ROMHashAlgorithmInvalid",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "ROM: hash-algo=.* not expected"
+  },
+  {
+   "advice": "tpm_i2c_request_send was passed an invalid bus ID. This indicates a tb_init() bug.",
+   "compare_mode": "regex",
+   "label": "TPMI2CInvalidBusID",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: Invalid bus_id=[0-9a-f]+"
+  },
+  {
+   "advice": "OPAL failed to allocate memory for an i2c_request. This points to an OPAL bug as OPAL run out of memory and this should never happen.",
+   "compare_mode": "string",
+   "label": "TPMI2CAllocationFailed",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "TPM: i2c_alloc_req failed"
+  },
+  {
+   "advice": "Hostboot creates the ibm,secureboot node and the hash-algo property. Check that the ibm,secureboot node layout has not changed.",
+   "compare_mode": "regex",
+   "label": "ROMHashAlgorithmInvalid",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "ROM: hash-algo=.* not expected"
+  },
+  {
    "advice": "opal_i2c_request was passed an invalid bus ID. This has likely come from the OS rather than OPAL and thus could indicate an OS bug rather than an OPAL bug.",
    "compare_mode": "string",
    "label": "I2CInvalidBusID",
@@ -295,6 +463,13 @@
    "pattern": "HBRT: LID Load failed"
   },
   {
+   "advice": "You are running in manufacturing mode. This mode should only be enabled in a factory during manufacturing.",
+   "compare_mode": "string",
+   "label": "ManufacturingMode",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "PLAT: Manufacturing mode ON"
+  },
+  {
    "advice": "OPAL could not find an NVRAM partition on the system flash. Check that the system flash has a valid partition table, and that the firmware build process has added a NVRAM partition.",
    "compare_mode": "string",
    "label": "NVRAMNoPartition",
@@ -302,25 +477,11 @@
    "pattern": "FLASH: Can't parse ffs info for NVRAM"
   },
   {
-   "advice": "More than one flash device was registered as the system flash device. Check for duplicate calls to flash_register(..., true).",
+   "advice": "OPAL Found multiple system flash. Since we've already found a system flash we are going to use that one but this ordering is not guaranteed so may change in future.",
    "compare_mode": "regex",
-   "label": "SystemFlashDuplicate",
+   "label": "SystemFlashMultiple",
    "log_level": "LOG_LEVEL_HIGH",
-   "pattern": "FLASH: attempted to register a second system flash device .*"
-  },
-  {
-   "advice": "OPAL Could not read a partition table on system flash. Since we've still booted the machine (which requires flash), check that we're registering the proper system flash device.",
-   "compare_mode": "regex",
-   "label": "SystemFlashNoPartitionTable",
-   "log_level": "LOG_LEVEL_HIGH",
-   "pattern": "FLASH: attempted to register system flash .*, which has no partition info"
-  },
-  {
-   "advice": "System has more flash chips than skiboot was configured to know about. Your system will not be able to access some of the flash it has.",
-   "compare_mode": "string",
-   "label": "NoFlashSlots",
-   "log_level": "LOG_LEVEL_CRITICAL",
-   "pattern": "FLASH: No flash slots available"
+   "pattern": "FLASH: Attempted to register multiple system flash: .*"
   },
   {
    "advice": "System flash isn't formatted as expected. This could mean several OPAL utilities do not function as expected. e.g. gard, pflash.",
@@ -328,6 +489,13 @@
    "label": "NoFFS",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "FLASH: No ffs info; using raw device only"
+  },
+  {
+   "advice": "No system flash was found. Check for missing calls flash_register(...).",
+   "compare_mode": "regex",
+   "label": "SystemFlashNotFound",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "FLASH: Can't load resource id:[0-9]+. No system flash found"
   },
   {
    "advice": "OPAL was called with a bad token. On POWER8 and earlier, Linux kernels had a bug where they wouldn't check if firmware supported particular OPAL calls before making them. It is, in fact, harmless for these cases. On systems newer than POWER8, this should never happen and indicates a kernel bug where OPAL_CHECK_TOKEN isn't being called where it should be.",

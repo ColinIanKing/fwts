@@ -24,6 +24,8 @@ if HAVE_LIBFDT
 dt_tests = \
 	devicetree/dt_base/dt_base.c		\
 	devicetree/dt_sysinfo/dt_sysinfo.c
+mem_tests = \
+	opal/mem_info.c
 endif
 
 if HAVE_LIBFDT
@@ -158,6 +160,7 @@ fwts_SOURCES = main.c 				\
 	uefi/esrtdump/esrtdump.c		\
 	uefi/esrt/esrt.c			\
 	$(pci_tests)				\
+	$(mem_tests)				\
 	$(dt_tests)
 
 fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`

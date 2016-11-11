@@ -27,6 +27,8 @@
 #include "fwts.h"
 
 static const char op_powernv[] = "ibm,powernv";
+static const char opal_firmware[] = "/ibm,opal/firmware";
+static const char platform_firmware[] = "/ibm,firmware-versions";
 
 static const char *firestone_models[] = {
 	"8335-GTA",
@@ -49,6 +51,99 @@ static struct reference_platform {
 		FWTS_ARRAY_LEN(garrison_models)},
 };
 
+
+static int dt_sysinfo_get_version(fwts_framework *fw,
+				int node,
+				char *firmware)
+{
+	int version_len;
+	const char *version_buf;
+
+	/* only output if the platform_firmware node is present */
+	if (node >= 0) {
+                version_buf = fdt_getprop(fw->fdt, node,
+                        firmware, &version_len);
+                if (version_buf) {
+                        fwts_passed(fw,
+                                "OPAL \"%s\" firmware version from device"
+				" tree node \"%s\" is \"%s\".",
+                                firmware, platform_firmware, version_buf);
+                } else {
+                        fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"DTSysInfoCheck",
+                                "OPAL \"%s\" firmware version from device"
+				" tree node \"%s\" was not found,"
+                                " check your installation for"
+                                " device tree node \"%s\".", platform_firmware,
+				firmware, platform_firmware);
+                }
+	}
+	return FWTS_OK;
+}
+
+static int dt_sysinfo_check_version(fwts_framework *fw)
+{
+	if (!fw->fdt) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"DTMissing",
+			"Device tree is missing, check your installation.");
+		return FWTS_ABORTED;
+	}
+
+	int node, version_len;
+	const char *version_buf;
+
+	fwts_log_info(fw,
+		"OPAL base device tree path is %s.",
+		DT_FS_PATH);
+	node = fdt_path_offset(fw->fdt,
+			opal_firmware);
+	if (node >= 0) {
+		version_buf = fdt_getprop(fw->fdt, node,
+			"version", &version_len);
+		if (version_buf) {
+			fwts_passed(fw,
+				"OPAL Firmware version from device tree node"
+				" \"%s\" is \"%s\".",
+				opal_firmware, version_buf);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"DTSysInfoCheck",
+				"OPAL Firmware version from device tree node"
+				" \"%s\" was not found,"
+				" check your installation for"
+				" device tree node \"%s\" property"
+				" \"version\".",
+				opal_firmware, opal_firmware);
+		}
+	} else {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"DTMissing",
+			"Device tree missing version property of \"%s\", "
+			"check your installation for device tree node"
+			" property \"version\".",
+			opal_firmware);
+		return FWTS_ERROR;
+	}
+
+	/* Now check for additional firmware versions */
+
+	node = fdt_path_offset(fw->fdt,
+			platform_firmware);
+
+	dt_sysinfo_get_version(fw, node, "occ");
+	dt_sysinfo_get_version(fw, node, "open-power");
+	dt_sysinfo_get_version(fw, node, "linux");
+	dt_sysinfo_get_version(fw, node, "skiboot");
+	dt_sysinfo_get_version(fw, node, "capp-ucode");
+	dt_sysinfo_get_version(fw, node, "hostboot-binaries");
+	dt_sysinfo_get_version(fw, node, "hostboot");
+	dt_sysinfo_get_version(fw, node, "petitboot");
+	dt_sysinfo_get_version(fw, node, "buildroot");
+
+	return FWTS_OK;
+}
+
 static int dt_sysinfo_check_root_property(
 	fwts_framework *fw,
 	const char *name,
@@ -58,23 +153,25 @@ static int dt_sysinfo_check_root_property(
 	const char *buf;
 
 	if (!fw->fdt) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "DTMissing",
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"DTMissing",
 			"Device Tree is missing, aborting");
 		return FWTS_ABORTED;
 	}
 
 	node = fdt_path_offset(fw->fdt, "/");
 	if (node < 0) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "DTRootNodeMissing",
-				"root device tree node is missing");
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"DTRootNodeMissing",
+			"root device tree node is missing");
 		return FWTS_ERROR;
 	}
 
 	buf = fdt_getprop(fw->fdt, node, name, &len);
 	if (buf == NULL) {
-		fwts_failed(fw, LOG_LEVEL_LOW,
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 			"DTSysinfoPropertyMissing",
-			"can't read property %s: %s",
+			"Cannot read property %s: %s",
 			name, fdt_strerror(len));
 		return FWTS_ERROR;
 	}
@@ -84,7 +181,7 @@ static int dt_sysinfo_check_root_property(
 			return FWTS_ERROR; /* failures logged prior */
 	}
 
-	fwts_passed(fw, "sysinfo property %s is valid", name);
+	fwts_passed(fw, "sysinfo property \"%s\" is valid", name);
 
 	return FWTS_OK;
 }
@@ -174,12 +271,14 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 
 	node = fdt_path_offset(fw->fdt, "/");
 	if (node < 0) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DTRootNodeMissing",
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DTRootNodeMissing",
 			"root device tree node is missing");
 		return FWTS_ERROR;
 	}
 	if (fdt_node_check_compatible(fw->fdt, node, op_powernv)) {
-		fwts_failed(fw, LOG_LEVEL_HIGH, "DTCompatibleMissing",
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"DTCompatibleMissing",
 			"DeviceTree failed validation, could not find"
 			" the \"compatible\" property of \"%s\" in the "
 			"root of the device tree", "ibm,powernv");
@@ -195,8 +294,8 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 
 		if (!model_buf || !compat_buf) {
 			fwts_failed(fw,LOG_LEVEL_HIGH,
-				"DTSysInfoCheck:",
-				" Cannot read the properties for OpenPOWER"
+				"DTSysInfoCheck",
+				"Cannot read the properties for OpenPOWER"
 				" Reference Compatible check");
 			return FWTS_ERROR;
 		}
@@ -206,8 +305,8 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 		tmp_model_buf = orig_model_buf = strdup(model_buf);
 		if (!tmp_model_buf) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"DTSysInfoCheck:",
-				" Unable to get memory for model"
+				"DTSysInfoCheck",
+				"Unable to get memory for model"
 				" compare for OpenPOWER"
 				" Reference Compatible check");
 			return FWTS_ERROR;
@@ -216,13 +315,13 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 		tmp_model_buf = hidewhitespace(tmp_model_buf);
 		if (!(strcmp(model_buf, tmp_model_buf) == 0)) {
 			fwts_warning(fw,
-				"DTSysInfoCheck:"
-				" See further advice in the log.\n");
+				"DTSysInfoCheck"
+				" See further advice in the log.");
 			fwts_log_nl(fw);
 			fwts_log_info_verbatim(fw,
-				"DTSysInfoCheck:"
+				"DTSysInfoCheck"
 				" Check the root \"model\" property"
-				" from the device tree %s \"%s\".\n",
+				" from the device tree %s \"%s\".",
 				DT_FS_PATH,
 				model_buf);
 			fwts_advice(fw,
@@ -248,8 +347,8 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 		} else {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"DTOpenPOWERReferenceFailed",
-			"Unable to find an OpenPOWER supported"
-			" match");
+				"Unable to find an OpenPOWER supported"
+				" match");
 			/* adding verbatim to show proper string */
 			fwts_log_info_verbatim(fw,
 			"Unable to find an OpenPOWER reference"
@@ -264,6 +363,8 @@ static int dt_sysinfo_check_ref_plat_compatible(fwts_framework *fw)
 }
 
 static fwts_framework_minor_test dt_sysinfo_tests[] = {
+	{ dt_sysinfo_check_version,
+		"Check firmware versions" },
 	{ dt_sysinfo_check_model,
 		"Check model property" },
 	{ dt_sysinfo_check_system_id,

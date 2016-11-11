@@ -26,6 +26,13 @@ dt_tests = \
 	devicetree/dt_sysinfo/dt_sysinfo.c
 endif
 
+if HAVE_LIBFDT
+if HAVE_LIBPCI
+pci_tests = \
+	opal/pci_info.c
+endif
+endif
+
 #
 #  fwts main + tests
 #
@@ -150,6 +157,7 @@ fwts_SOURCES = main.c 				\
 	uefi/uefirtauthvar/uefirtauthvar.c	\
 	uefi/esrtdump/esrtdump.c		\
 	uefi/esrt/esrt.c			\
+	$(pci_tests)				\
 	$(dt_tests)
 
 fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`

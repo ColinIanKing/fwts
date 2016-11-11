@@ -65,14 +65,22 @@
 	  AC_CHECK_HEADERS([gio/gio.h])
 	  AC_CHECK_HEADERS([asm/opal-prd.h])
 	  AC_CHECK_HEADERS([mtd/mtd-abi.h])
-	  AM_CONDITIONAL([HAVE_ASM_OPAL_PRD_H], [test "x$ac_cv_header_asm_opal_prd_h" = "xyes"])
-	  AM_CONDITIONAL([HAVE_MTD_ABI_H], [test "x$ac_cv_header_mtd_abi_h" = "xyes"])
+	  AC_CHECK_HEADERS([pci/pci.h])
+	  AM_CONDITIONAL([HAVE_ASM_OPAL_PRD_H],
+	    [test "x$ac_cv_header_asm_opal_prd_h" = "xyes"])
+	  AM_CONDITIONAL([HAVE_MTD_ABI_H],
+	    [test "x$ac_cv_header_mtd_abi_h" = "xyes"])
+	  AM_CONDITIONAL([HAVE_PCI_PCI_H],
+	    [test "x$ac_cv_header_pci_pci_h" = "xyes"])
 	  #AC_CHECK_LIB(pcre, pcre_compile)
 	  AC_SEARCH_LIBS([fdt_check_header], [fdt], [
-		AC_DEFINE([HAVE_LIBFDT], [1], [Define if we have libfdt])
-	  ])
+	    AC_DEFINE([HAVE_LIBFDT], [1], [Define if we have libfdt])])
 	  AM_CONDITIONAL([HAVE_LIBFDT],
-		  [test "x$ac_cv_search_fdt_check_header" != "xno"])
+	    [test "x$ac_cv_search_fdt_check_header" != "xno"])
+	  AC_SEARCH_LIBS([pci_alloc], [pci], [
+	    AC_DEFINE([HAVE_LIBPCI], [1], [Define if we have libpci])])
+	  AM_CONDITIONAL([HAVE_LIBPCI],
+	    [test "x$ac_cv_search_pci_alloc" != "xno"])
 	  AC_FUNC_MALLOC
 	  AC_FUNC_FORK
 	  AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK

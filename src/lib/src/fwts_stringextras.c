@@ -92,3 +92,18 @@ char* fwts_string_endswith(const char *str, const char *postfix)
 
 	return (char*) str + sl - pl;
 }
+
+/*
+ * fwts_memcpy_unaligned()
+ *     perform byte copy of n bytes from src to dst.
+ */
+void fwts_memcpy_unaligned(void *dst, const void *src, size_t n)
+{
+	size_t i = n;
+
+	if (dst == NULL || src == NULL || n == 0 )
+		return;
+
+	while (i--)
+		((uint8_t*)dst)[i] = ((uint8_t*)src)[i];
+}

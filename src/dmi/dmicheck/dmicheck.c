@@ -371,7 +371,7 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 	if (mem != FWTS_MAP_FAILED) {
 		table = malloc(length);
 		if (table)
-			memcpy(table, mem, length);
+			fwts_memcpy_unaligned(table, mem, length);
 		(void)fwts_munmap(mem, length);
 		return table;
 	}

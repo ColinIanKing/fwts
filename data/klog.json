@@ -2,6 +2,34 @@
  "firmware_error_warning_patterns":
  [ 
   {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "Limiting number of LPI states to max",
+   "advice": "The ACPI C States (_CST) object contains more LPI states than the kernel has configired, so this has been limited to the maximum states allowed by the driver",
+   "label": "KlogAcpiLpiLimited"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "failed to register spa range",
+   "advice": "The ACPI NFIT driver was unable to register a memory region because of an invalid System Physical Address (SPA)",
+   "label": "KlogAcpiNfitInvalidSPA"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": ": notification registration failed",
+   "advice": "The ACPI NFIT driver was unable to install a notify handler for an NFIT NVDIMM device, device was marked as not available",
+   "label": "KlogAcpiNfitNVDIMM"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to set state by _FSL",
+   "advice": "The ACPI fan driver could not set the fan speed because the Fan Set Level (_FSL) control failed",
+   "label": "KlogAcpiFanFslSetFailed"
+  },
+  {
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "\\[.*:.*\\] Invalid zero length",

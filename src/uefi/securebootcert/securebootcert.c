@@ -47,10 +47,11 @@ typedef struct _EFI_SIGNATURE_LIST {
 	uint32_t	SignatureSize;
 } __attribute__((packed)) EFI_SIGNATURE_LIST;
 
-#define VAR_SECUREBOOT_FOUND	1
-#define VAR_SETUPMODE_FOUND	2
-#define VAR_DB_FOUND		4
-#define VAR_KEK_FOUND		8
+#define VAR_SECUREBOOT_FOUND	(1 << 0)
+#define VAR_SETUPMODE_FOUND	(1 << 1)
+#define VAR_DB_FOUND		(1 << 2)
+#define VAR_KEK_FOUND		(1 << 3)
+#define VAR_AUDITMODE_FOUND	(1 << 4)
 
 #define EFI_GLOBAL_VARIABLE \
 { \
@@ -156,10 +157,51 @@ static void securebootcert_setup_mode(fwts_framework *fw, fwts_uefi_var *var, ch
 
 		switch (value) {
 		case 0:
-			mode = " (User Mode)";
+			mode = "";
 			break;
 		case 1:
 			mode = " (Setup Mode)";
+			break;
+		default:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableDataInvalid",
+				"The secure boot variable %s data invalid.", varname);
+			return;
+		}
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2" PRIx8 "%s.", value, mode);
+		fwts_passed(fw, "Secure boot relative variable %s check passed.", varname);
+	}
+}
+
+static void securebootcert_audit_mode(fwts_framework *fw, fwts_uefi_var *var, char *varname)
+{
+
+	bool ident = false;
+	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
+
+	if (strcmp(varname, "AuditMode"))
+		return;
+
+	var_found |= VAR_AUDITMODE_FOUND;
+	ident = compare_guid(&global_var_guid, var->guid);
+
+	if (!ident) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableGUIDInvalid",
+			"The secure boot variable %s GUID invalid.", varname);
+		return;
+	}
+	if (var->datalen != 1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableSizeInvalid",
+			"The secure boot variable %s size invalid.", varname);
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value) {
+		case 0:
+			mode = "";
+			break;
+		case 1:
+			mode = " (Audit Mode)";
 			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableDataInvalid",
@@ -305,6 +347,7 @@ static securebootcert_info securebootcert_info_table[] = {
 	{ "SetupMode",		securebootcert_setup_mode },
 	{ "db",			securebootcert_data_base },
 	{ "KEK",		securebootcert_key_ex_key },
+	{ "AuditMode",		securebootcert_audit_mode },
 	{ NULL, NULL }
 };
 
@@ -372,6 +415,14 @@ static int securebootcert_test1(fwts_framework *fw)
 	if (!(var_found & VAR_SETUPMODE_FOUND))
 		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
 			"The secure boot variable SetupMode not found.");
+	if (!(var_found & VAR_AUDITMODE_FOUND)) {
+		fwts_warning(fw, "The secure boot variable AuditMode not found.");
+		fwts_advice(fw,
+			"AuditMode global variable is defined in the UEFI "
+			"Specification 2.6 for new secure boot architecture. "
+			"It may because the firmware hasn't been updated to "
+			"support the UEFI Specification 2.6.");
+	}
 	if (securebooted) {
 		if (!(var_found & VAR_DB_FOUND))
 			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",

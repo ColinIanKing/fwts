@@ -52,6 +52,7 @@ typedef struct _EFI_SIGNATURE_LIST {
 #define VAR_DB_FOUND		(1 << 2)
 #define VAR_KEK_FOUND		(1 << 3)
 #define VAR_AUDITMODE_FOUND	(1 << 4)
+#define VAR_DEPLOYEDMODE_FOUND	(1 << 5)
 
 #define EFI_GLOBAL_VARIABLE \
 { \
@@ -67,6 +68,7 @@ typedef struct _EFI_SIGNATURE_LIST {
 
 static uint8_t var_found;
 static bool securebooted = false;
+static bool deployed = false;
 
 static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)
 {
@@ -213,6 +215,49 @@ static void securebootcert_audit_mode(fwts_framework *fw, fwts_uefi_var *var, ch
 	}
 }
 
+static void securebootcert_deployed_mode(fwts_framework *fw, fwts_uefi_var *var, char *varname)
+{
+	bool ident = false;
+	EFI_GUID global_var_guid = EFI_GLOBAL_VARIABLE;
+
+	if (strcmp(varname, "DeployedMode"))
+		return;
+
+	var_found |= VAR_DEPLOYEDMODE_FOUND;
+	ident = compare_guid(&global_var_guid, var->guid);
+
+	if (!ident) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableGUIDInvalid",
+			"The secure boot variable %s GUID invalid.", varname);
+		return;
+	}
+	if (var->datalen != 1) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableSizeInvalid",
+			"The secure boot variable %s size invalid.", varname);
+		return;
+	} else {
+		char *mode;
+		uint8_t value = (uint8_t)var->data[0];
+
+		switch (value) {
+		case 0:
+			mode = "";
+			break;
+		case 1:
+			mode = " (Deployed Mode On)";
+			break;
+		default:
+			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableDataInvalid",
+				"The secure boot variable data invalid.");
+			return;
+		}
+		if (value == 1)
+			deployed = true;
+		fwts_log_info_verbatim(fw, "  Value: 0x%2.2x%s.", value, mode);
+		fwts_passed(fw, "Secure boot relative variable %s check passed.", varname);
+	}
+}
+
 static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key, uint32_t key_len)
 {
 	uint8_t *var_data_addr;
@@ -348,6 +393,7 @@ static securebootcert_info securebootcert_info_table[] = {
 	{ "db",			securebootcert_data_base },
 	{ "KEK",		securebootcert_key_ex_key },
 	{ "AuditMode",		securebootcert_audit_mode },
+	{ "DeployedMode",	securebootcert_deployed_mode },
 	{ NULL, NULL }
 };
 
@@ -423,7 +469,15 @@ static int securebootcert_test1(fwts_framework *fw)
 			"It may because the firmware hasn't been updated to "
 			"support the UEFI Specification 2.6.");
 	}
-	if (securebooted) {
+	if (!(var_found & VAR_DEPLOYEDMODE_FOUND)) {
+		fwts_warning(fw, "The secure boot variable DeployedMode not found.");
+		fwts_advice(fw,
+			"DeployedMode global variable is defined in the UEFI "
+			"Specification 2.6 for new secure boot architecture. "
+			"It may because the firmware hasn't been updated to "
+			"support the UEFI Specification 2.6.");
+	}
+	if (securebooted || deployed) {
 		if (!(var_found & VAR_DB_FOUND))
 			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
 				"The secure boot variable DB not found.");

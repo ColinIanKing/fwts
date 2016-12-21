@@ -1,3 +1,28 @@
+fwts (16.12.00-0ubuntu1) zesty; urgency=low
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20161117
+  * fwts-test: sync up disassemble and syntaxcheck tests with ACPICA
+  * acpica: s390x needs to be built as a 64 bit architecture
+  * klog.json: Add a few more kernel errors to the database
+  * klog.json: Update the klog database with more kernel patterns
+
+  [Deb McLemore]
+  * opal: pci_info: Add OPAL PCI Info validation
+  * opal: mem_info: Add OPAL MEM Info validation
+  * opal: cpu_info: Add OPAL CPU Info validation
+  * devicetree: dt_sysinfo: Add OPAL firmware version checks
+  * olog: olog.json: Update OPAL skiboot errors to check on olog scan
+
+  [Fan Wu]
+  * fwts:dmicheck: replace memcpy with fwts_memcpy_unaligned
+
+  [Ivan Hu]
+  * securebootcert: add variable AuditMode checking
+  * securebootcert: add variable DeployedMode checking
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 21 Dec 2016 09:26:40 +0800
+
 fwts (16.11.00-0ubuntu1) zesty; urgency=low
 
   [Colin Ian King]

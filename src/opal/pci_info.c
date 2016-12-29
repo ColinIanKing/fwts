@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  */
-
 #define _GNU_SOURCE /* added for asprintf */
+
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
@@ -26,20 +26,18 @@
 #include "fwts.h"
 
 #include <pci/pci.h>
-
 #include <libfdt.h>
 
-struct pci_access *pcia = NULL;
-struct pci_dev *dev;
+static struct pci_access *pcia = NULL;
+static struct pci_dev *dev;
 
 static int pci_get_dev_info(fwts_framework *fw,
-				char *property,
-				char *pci_dt_path,
-				char *sys_slot,
-				const char *pci_slot_buf,
-				char *pci_domain)
+	char *property,
+	char *pci_dt_path,
+	char *sys_slot,
+	const char *pci_slot_buf,
+	char *pci_domain)
 {
-
 	unsigned int pin;
 	char namebuf[PATH_MAX], *device_name;
 	char vendorbuf[PATH_MAX], *vendor_name;
@@ -47,8 +45,7 @@ static int pci_get_dev_info(fwts_framework *fw,
 	char *tmp_pci_domain;
 	bool found = false;
 
-	for (dev=pcia->devices; dev; dev=dev->next)
-	{
+	for (dev = pcia->devices; dev; dev = dev->next) {
 		pci_fill_info(dev,
 			PCI_FILL_IDENT | PCI_FILL_BASES | PCI_FILL_CLASS);
 		pin = pci_read_byte(dev, PCI_INTERRUPT_PIN);
@@ -57,7 +54,7 @@ static int pci_get_dev_info(fwts_framework *fw,
 			dev->domain,
 			dev->bus,
 			dev->dev,
-			dev->func) < 0 ) {
+			dev->func) < 0) {
 				fwts_log_nl(fw);
 				fwts_failed(fw, LOG_LEVEL_CRITICAL,
 						"OPAL PCI Info",
@@ -107,7 +104,7 @@ static int pci_get_dev_info(fwts_framework *fw,
 					(long) dev->base_addr[0]);
 				fwts_infoonly(fw);
 			}
-		free(tmp_pci_domain);
+			free(tmp_pci_domain);
 		}
 	}
 	if (!found) {
@@ -133,10 +130,10 @@ static int pci_get_dev_info(fwts_framework *fw,
 }
 
 static int pci_get_slot_info(fwts_framework *fw,
-				char *property,
-				char *pci_dt_path,
-				char *sys_slot,
-				char *pci_domain)
+	char *property,
+	char *pci_dt_path,
+	char *sys_slot,
+	char *pci_domain)
 {
 	int node, pci_slot_len;
 	const char *pci_slot_buf;
@@ -252,7 +249,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 						" check the system for"
 						" setup issues.",
 						pci_slot);
-				failures ++;
+				failures++;
 				free(pci_slot);
 				free(namelist[i]);
 				continue;
@@ -271,7 +268,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 						" please check the system"
 						" for setup issues.",
 						of_node_link);
-				failures ++;
+				failures++;
 				free(of_node_link);
 				free(pci_slot);
 				free(namelist[i]);
@@ -287,7 +284,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 						of_node_link,
 						pci_slot);
 				if (rc == FWTS_ERROR) {
-					failures ++;
+					failures++;
 				}
 			} else {
 				fwts_log_nl(fw);
@@ -299,7 +296,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 						"please check the system"
 						" for setup issues.",
 						of_node_path);
-				failures ++;
+				failures++;
 				free(of_node_link);
 				free(pci_slot);
 				free(namelist[i]);
@@ -327,16 +324,11 @@ static int get_linux_pci_devices(fwts_framework *fw)
 				DT_LINUX_PCI_DEVICES);
 	}
 
-	if (failures) {
-		return FWTS_ERROR;
-	} else {
-		return FWTS_OK;
-	}
+	return failures ? FWTS_ERROR : FWTS_OK;
 }
 
 static int pci_info_test1(fwts_framework *fw)
 {
-
 	pcia = pci_alloc();
 	pci_init(pcia);
 	pci_scan_bus(pcia);
@@ -375,5 +367,5 @@ static fwts_framework_ops pci_info_ops = {
 };
 
 FWTS_REGISTER_FEATURES("pci_info", &pci_info_ops, FWTS_TEST_ANYTIME,
-		FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV,
-		FWTS_FW_FEATURE_DEVICETREE);
+	FWTS_FLAG_BATCH | FWTS_FLAG_ROOT_PRIV,
+	FWTS_FW_FEATURE_DEVICETREE);

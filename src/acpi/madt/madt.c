@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Canonical
+ * Copyright (C) 2015-2017 Canonical
  * Portions added (c) 2015, Al Stone <ahs3@redhat.com>
  *
  * This program is free software; you can redistribute it and/or

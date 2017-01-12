@@ -4,6 +4,69 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT not used",
+   "advice": "An error in the ACPI System Resource Affinity Table has been found, NUMA will not be enabled.",
+   "label": "KlogAcpiSratNotUsed"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Unexpected header length",
+   "advice": "An unexpected ACPI System Resource Affinity Table header length has been detected, NUMA will not be enabled.",
+   "label": "KlogAcpiSratBadHeaderLength"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Too many proximity domains",
+   "advice": "The ACPI System Resource Affinity Table has more proximity domains listed than the maximum kernel defined number of NUMA nodes. The Linux kernel CONFIG_NODES_SHIFT needs to be increaded.",
+   "label": "KlogAcpiSratNumaNodeLimit",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Failed to add memblk to node",
+   "advice": "The ACPI NUMA driver failed to add a NUMA memory block to a node. NUMA will not be enabled.",
+   "label": "KlogAcpiNumaMemblkAddFailure",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "SRAT: Failed to mark hotplug range",
+   "advice": "The ACPI NUMA driver failed to mark a NUMA memory plug as hotpluggable.",
+   "label": "KlogAcpiNumaMemblkHotplugFailure",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "wrong table version",
+   "advice": "The ACPI Serial Port Console Redirection Table (SPCR) was expected to be at least version 2 or higher. APCI Serial Port Console will be ignored.",
+   "label": "KlogAcpiSprWrongVersion"
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "acpi resource window .* ignored, not CPU addressable",
+   "advice": "An ACPI resource window could not be configured, the space was not addressable and has been ignored. One of the ACPI _CRS objects is incorrect. Check this with the fwts crsdump.",
+   "label": "KlogAcpiResourceWindowIgnored"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Limiting number of LPI states to max",
+   "advice": "The number of CPU C States as returned by the _CST package is more than the ACPI Processor Idle driver supports. Limited it to a kerneld defined maximum.",
+   "label": "KlogAcpiCpuIdleLpiStatesMax"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "STAO table present, but SPCR is missing",
+   "advice": "ACPI _STA Override Table (STAO) exists and indicates that the STOA UART settings should be ignored and should use the SPCR, however there is no Serial Port Console Redirection Table containing serial port UART address information.",
+   "label": "KlogAcpiSpcrMissing"
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
    "pattern": "iort node pointer overflows, bad table",
    "advice": "ACPI ARM64 IORT driver detected an IORT node that is outside the ACPI IORT table. The table as been deemed to be broken and has been ignored",
    "label": "KlogAcpiIortNodeOutsideTable"

@@ -4,6 +4,7 @@
 *.lo
 *.swp
 *.dsl
+0*.patch
 test-suite.log
 Makefile
 Makefile.in
@@ -34,3 +35,4 @@ src/lib/src/libfwts.la
 src/utilities/kernelscan
 fwts-test/*/*.sh.trs
 fwts-test/*/*.sh.log
+fedora/rpm

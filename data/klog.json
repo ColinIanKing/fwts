@@ -3,6 +3,27 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Invalid error record",
+   "advice": "The ACPI Boot Error Record Table (BERT) driver contained a record that was truncated and so it cannot print it.",
+   "label": "KlogAcpiBertShortErrorRecord",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Truncated status block",
+   "advice": "The ACPI Boot Error Record Table (BERT) driver found a status block that was truncated and so it cannot print it.",
+   "label": "KlogAcpiBertShortStatusBlock",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Can't request iomem region",
+   "advice": "The ACPI Boot Error Record Table (BERT) driver could not request the bert table data and cannot dump the boot error records.",
+   "label": "KlogAcpiBertIoMemRegionRequestFailed",
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Firmware does not respond in time",
    "advice": "The ACPI Error Injection (EINJ) driver attempted to inject an error however the firmware took longer than expected to respond and a time-out occurred.",

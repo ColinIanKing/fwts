@@ -36,3 +36,4 @@ src/utilities/kernelscan
 fwts-test/*/*.sh.trs
 fwts-test/*/*.sh.log
 fedora/rpm
+src/acpica/source/compiler/aslcompiler.y

@@ -4,6 +4,20 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "PCI: unsupported BIOS32 revision",
+   "advice": "The Linux kernel currently only supports BIOS32 revision 0 and is ignoring an unsupported BIOS32 service directory structure.",
+   "label": "KlogBios32UnsupportedRevision",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "PCI: BIOS32 entry .* in high memory, cannot use",
+   "advice": "The BIOS32 service directory structure in located in high memory at or above address 0x100000 and cannot use this.",
+   "label": "KlogBios32InHighMemory",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Invalid error record",
    "advice": "The ACPI Boot Error Record Table (BERT) driver contained a record that was truncated and so it cannot print it.",
    "label": "KlogAcpiBertShortErrorRecord",

@@ -1,3 +1,20 @@
+fwts (17.01.00-0ubuntu1) zesty; urgency=low
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20161222
+  * opal: pci_info: minor code style clean-ups, no functional changes
+  * update copyright year to 2017
+  * fwts-test/arg-help-0001: update log files to match copyright year changes
+  * klog.json: Add kernel errors to the database
+
+  [Prarit Bhargava]
+  * fedora/fwts.spec: Add initial version of fwts.spec
+  * fedora/buildrpm.sh: Add build script for RPMs
+  * .gitignore: update with fedora/rpm and git generated patches
+  * .gitignore: Add aslcompiler.y
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 19 Jan 2017 12:19:10 +0800
+
 fwts (16.12.00-0ubuntu1) zesty; urgency=low
 
   [Colin Ian King]

@@ -1,7 +1,8 @@
-# Only these 3 values need to change for package version control
+# Only these 4 values need to change for package version control
 %global major 16
 %global minor 12
 %global subminor 00
+%global fedora_version 0
 
 %global tarversion V%{major}.%{minor}.%{subminor}
 
@@ -9,7 +10,7 @@ Summary: Firmware Test Suite
 
 Name:    fwts
 Version: %{major}
-Release: %{minor}.%{subminor}%{?dist}
+Release: %{minor}.%{subminor}.%{fedora_version}%{?dist}
 License: GPLv2, LGPL
 Source0: http://fwts.ubuntu.com/release/fwts-%{tarversion}.tar.gz
 BuildRequires: acpica-tools glib-devel glib2-devel glib json-c-devel libtool automake autoconf dkms kernel-devel git bison flex
@@ -76,8 +77,9 @@ install -m 644 data/syntaxcheck.json $RPM_BUILD_ROOT/usr/local/share/fwts
 /usr/local/share/fwts/*
 
 %changelog
-* Tue Jan 17 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00
+* Thu Jan 19 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00.0
 - fix location of klog.json
+- add fedora version to differentiate between fedora builds
 
 * Thu Jan 12 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00
 - initial specfile creation

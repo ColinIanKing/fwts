@@ -55,13 +55,13 @@ install -m 755 live-image/fwts-frontend-text $RPM_BUILD_ROOT/%{_bindir}
 install -m 755 scripts/fwts-collect $RPM_BUILD_ROOT/%{_bindir}
 
 install -m 644 live-image/fwts-live-dialogrc $RPM_BUILD_ROOT/%{_datarootdir}/fwts
-install -m 644 data/klog.json $RPM_BUILD_ROOT/%{_datarootdir}/fwts
 install -m 777 src/lib/src/.libs/libfwts.so.* $RPM_BUILD_ROOT/%{_lib}
 install -m 777 src/acpica/.libs/libfwtsacpica.so* $RPM_BUILD_ROOT/%{_lib}
 install -m 777 src/acpica/source/compiler/.libs/libfwtsiasl.so* $RPM_BUILD_ROOT/%{_lib}
 install -m 644 doc/fwts-frontend-text.1 $RPM_BUILD_ROOT/%{_mandir}/man1
 install -m 644 doc/fwts.1 $RPM_BUILD_ROOT/%{_mandir}/man1
 install -m 644 doc/fwts-collect.1 $RPM_BUILD_ROOT/%{_mandir}/man1
+install -m 644 data/klog.json $RPM_BUILD_ROOT/usr/local/share/fwts
 install -m 644 data/syntaxcheck.json $RPM_BUILD_ROOT/usr/local/share/fwts
 
 %clean
@@ -73,9 +73,12 @@ install -m 644 data/syntaxcheck.json $RPM_BUILD_ROOT/usr/local/share/fwts
 %{_datarootdir}/fwts
 /%{_lib}/*
 %{_mandir}/*/*
-/usr/local/share/fwts/syntaxcheck.json
+/usr/local/share/fwts/*
 
 %changelog
+* Tue Jan 17 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00
+- fix location of klog.json
+
 * Thu Jan 12 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00
 - initial specfile creation
 - sync to stable V16.12.00

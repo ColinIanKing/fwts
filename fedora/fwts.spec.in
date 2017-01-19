@@ -1,18 +1,16 @@
-# Only these 4 values need to change for package version control
-%global major 16
-%global minor 12
-%global subminor 00
+# Only this value needs to change for package version control.  Note changing
+# this value does not affect the changelog.
 %global fedora_version 0
 
-%global tarversion V%{major}.%{minor}.%{subminor}
+%global tarversion {__VERSION}
 
 Summary: Firmware Test Suite
 
 Name:    fwts
-Version: %{major}
-Release: %{minor}.%{subminor}.%{fedora_version}%{?dist}
+Version: {__MAJOR}
+Release: {__MINOR_SUBMINOR}.%{fedora_version}%{?dist}
 License: GPLv2, LGPL
-Source0: http://fwts.ubuntu.com/release/fwts-%{tarversion}.tar.gz
+Source0: http://fwts.ubuntu.com/release/fwts-V%{tarversion}.tar.gz
 BuildRequires: acpica-tools glib-devel glib2-devel glib json-c-devel libtool automake autoconf dkms kernel-devel git bison flex
 
 %description
@@ -77,6 +75,9 @@ install -m 644 data/syntaxcheck.json $RPM_BUILD_ROOT/usr/local/share/fwts
 /usr/local/share/fwts/*
 
 %changelog
+* Thu Jan 19 2017 Prarit Bhargava <prarit@redhat.com> {__VERSION}.0
+- sync to stable V{__VERSION}
+
 * Thu Jan 19 2017 Prarit Bhargava <prarit@redhat.com> 16.12.00.0
 - fix location of klog.json
 - add fedora version to differentiate between fedora builds

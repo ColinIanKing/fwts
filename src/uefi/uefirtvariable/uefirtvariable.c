@@ -1900,21 +1900,21 @@ static int options_check(fwts_framework *fw)
 
 	if ((uefi_get_variable_multiple < 1) ||
 	    (uefi_get_variable_multiple > UEFI_GET_VARIABLE_MULTIPLE_MAX)) {
-		fprintf(stderr, "--uefi-get-variable-multiple is %" PRIu32", it "
+		fprintf(stderr, "--uefi-get-var-multiple is %" PRIu32", it "
 			"should be 1..%" PRIu32 "\n",
 			uefi_get_variable_multiple, UEFI_GET_VARIABLE_MULTIPLE_MAX);
 		return FWTS_ERROR;
 	}
 	if ((uefi_set_variable_multiple < 1) ||
 	    (uefi_set_variable_multiple > UEFI_SET_VARIABLE_MULTIPLE_MAX)) {
-		fprintf(stderr, "--uefi-set-variable-multiple is %" PRIu32", it "
+		fprintf(stderr, "--uefi-set-var-multiple is %" PRIu32", it "
 			"should be 1..%" PRIu32 "\n",
 			uefi_set_variable_multiple, UEFI_SET_VARIABLE_MULTIPLE_MAX);
 		return FWTS_ERROR;
 	}
 	if ((uefi_query_variable_multiple < 1) ||
 	    (uefi_query_variable_multiple > UEFI_QUERY_VARIABLE_MULTIPLE_MAX)) {
-		fprintf(stderr, "--uefi-query-variable-multiple is %" PRIu32", it "
+		fprintf(stderr, "--uefi-query-var-multiple is %" PRIu32", it "
 			"should be 1..%" PRIu32 "\n",
 			uefi_query_variable_multiple, UEFI_QUERY_VARIABLE_MULTIPLE_MAX);
 		return FWTS_ERROR;

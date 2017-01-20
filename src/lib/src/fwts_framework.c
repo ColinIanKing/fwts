@@ -86,7 +86,7 @@ static fwts_list tests_to_skip;
 
 static fwts_option fwts_framework_options[] = {
 	{ "stdout-summary", 	"",   0, "Output SUCCESS or FAILED to stdout at end of tests." },
-	{ "help", 		"h?", 0, "Print this help." },
+	{ "help", 		"h?", 0, "Get help." },
 	{ "results-output", 	"r:", 1, "Output results to a named file. Filename can also be stout or stderr, e.g. --results-output=myresults.log,  -r stdout." },
 	{ "results-no-separators", "", 0, "No horizontal separators in results log." },
 	{ "log-filter", 	"",   1, "Define filters to dump out specific log fields: --log-filter=RES,SUM - dump out results and summary, --log-filter=ALL,~INF - dump out all fields except info fields." },
@@ -1344,8 +1344,10 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FLAG_FORCE_CLEAN;
 		break;
 	case 'h':
-	case '?':
 		fwts_framework_syntax(argv);
+		return FWTS_COMPLETE;
+	case '?':
+		fprintf(stderr, "for help, use fwts -h\n");
 		return FWTS_COMPLETE;
 	case 'i': /* --interactive */
 		fw->flags |= FWTS_FLAG_INTERACTIVE;

@@ -212,6 +212,16 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 		}
 	}
 
+	/* We've collected all the args, now sanity check the values */
+
+	fwts_list_foreach(item, &options_list) {
+		options_table = fwts_list_data(fwts_options_table *, item);
+		if (options_table->optarg_check != NULL) {
+			ret = options_table->optarg_check(fw);
+			if (ret != FWTS_OK)
+				break;
+		}
+	}
 exit:
 	free(short_options);
 	free(long_options);

@@ -32,7 +32,7 @@
                              specified labels.
 -f, --force-clean            Force a clean results
                              log file.
--h, -?, --help               Print this help.
+-h, -?, --help               Get help.
 -i, --interactive            Just run Interactive
                              tests.
 --interactive-experimental   Just run Interactive

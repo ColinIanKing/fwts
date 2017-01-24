@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define PM_SUSPEND_PMUTILS		"pm-suspend"
 #define PM_SUSPEND_HYBRID_PMUTILS	"pm-suspend-hybrid"
@@ -44,6 +45,7 @@ static bool s3_min_max_delay = false;
 static float s3_suspend_time = 15.0;	/* Maximum allowed suspend time */
 static float s3_resume_time = 15.0;	/* Maximum allowed resume time */
 static bool s3_hybrid = false;
+static char *s3_hook = NULL;		/* Hook to run after each S3 */
 
 static int s3_init(fwts_framework *fw)
 {
@@ -56,6 +58,50 @@ static int s3_init(fwts_framework *fw)
 	}
 
 	return FWTS_OK;
+}
+
+/*
+ *  s3_hook_exec()
+ *	run a given hook script
+ */
+static int s3_hook_exec(fwts_framework *fw, char *hook)
+{
+	pid_t pid;
+	int status, ret;
+
+	pid = fork();
+	if (pid < 0) {
+		fwts_log_error(fw, "Failed to fork (to run hook script), "
+			"errno=%d (%s)\n", errno, strerror(errno));
+		return FWTS_ERROR;
+	} else if (pid == 0) {
+		/* Child */
+
+		(void)execl(hook, "", NULL);
+
+		/* We only get here if execl failed */
+		fwts_log_error(fw, "Failed to execl '%s', "
+			"errno=%d (%s)\n", hook, errno, strerror(errno));
+		return FWTS_ERROR;
+	}
+
+	/* Parent */
+
+	ret = waitpid(pid, &status, 0);
+	if (ret < 0) {
+		fwts_log_error(fw, "Failed waitpid on hook script, "
+			"errno=%d (%s)\n", errno, strerror(errno));
+
+		/* Nuke child to be double sure it's gone */
+		(void)kill(pid, SIGKILL);
+	} else if (WIFEXITED(status)) {
+		fwts_log_info(fw, "Hook script '%s' returned %d\n",
+			hook, WEXITSTATUS(status));
+		return WEXITSTATUS(status) ? FWTS_ERROR : FWTS_OK;
+	} else {
+		fwts_log_error(fw, "Hook script exited abnormally\n");
+	}
+	return FWTS_ERROR;
 }
 
 /* Detect the best available power method */
@@ -146,6 +192,7 @@ static int wrap_pmutils_do_suspend(fwts_pm_method_vars *fwts_settings,
 static int s3_do_suspend_resume(fwts_framework *fw,
 	int *hw_errors,
 	int *pm_errors,
+	int *hook_errors,
 	int delay,
 	int percent)
 {
@@ -260,6 +307,13 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 				"Found %d differences in device configuation during S3 cycle.", differences);
 			(*hw_errors)++;
 		}
+	}
+
+	if (s3_hook && (s3_hook_exec(fw, s3_hook) != FWTS_OK)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "HookScriptFailed",
+			"Error executing hook script '%s', S3 cycles "
+			"will be aborted.", s3_hook);
+		(*hook_errors)++;
 	}
 
 	if (duration < delay) {
@@ -432,6 +486,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int klog_errors = 0;
 	int hw_errors = 0;
 	int pm_errors = 0;
+	int hook_errors = 0;
 	int klog_oopses = 0;
 	int klog_warn_ons = 0;
 	int suspend_too_long = 0;
@@ -449,17 +504,24 @@ static int s3_test_multiple(fwts_framework *fw)
 	if (s3_multiple == 1)
 		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
 
-	for (i=0; i<s3_multiple; i++) {
+	for (i=0; i< s3_multiple; i++) {
 		struct timeval tv;
-		int percent = (i * 100) / s3_multiple;
+		int ret, percent = (i * 100) / s3_multiple;
 		fwts_list *klog_pre, *klog_post, *klog_diff;
 		fwts_log_info(fw, "S3 cycle %d of %d\n",i+1,s3_multiple);
 
 		if ((klog_pre = fwts_klog_read()) == NULL)
 			fwts_log_error(fw, "Cannot read kernel log.");
 
-		if (s3_do_suspend_resume(fw, &hw_errors, &pm_errors, s3_sleep_delay, percent) == FWTS_OUT_OF_MEMORY) {
+		ret = s3_do_suspend_resume(fw, &hw_errors, &pm_errors,
+					   &hook_errors, s3_sleep_delay,
+					   percent);
+		if (ret == FWTS_OUT_OF_MEMORY) {
 			fwts_log_error(fw, "S3 cycle %d failed - out of memory error.", i+1);
+			fwts_klog_free(klog_pre);
+			break;
+		}
+		if (hook_errors > 0) {
 			fwts_klog_free(klog_pre);
 			break;
 		}
@@ -497,7 +559,7 @@ static int s3_test_multiple(fwts_framework *fw)
 		}
 	}
 
-	fwts_log_info(fw, "Completed %d S3 cycle(s)\n", s3_multiple);
+	fwts_log_info(fw, "Completed S3 cycle(s)\n");
 
 	if (klog_errors > 0)
 		fwts_log_info(fw, "Found %d errors in kernel log.", klog_errors);
@@ -591,6 +653,23 @@ static int s3_options_check(fwts_framework *fw)
 		fprintf(stderr, "--s3-resume-time too small.\n");
 		return FWTS_ERROR;
 	}
+	if (s3_hook) {
+		struct stat statbuf;
+		int ret;
+
+		ret = lstat(s3_hook, &statbuf);
+		if (ret < 0) {
+			fprintf(stderr, "--s3-resume-hook file '%s' cannot "
+				"be checked, errno=%d (%s)\n",
+				s3_hook, errno, strerror(errno));
+			return FWTS_ERROR;
+		}
+		if ((statbuf.st_mode & S_IXUSR) == 0) {
+			fprintf(stderr, "--s3-resume-hook file '%s' is not "
+				"executable\n", s3_hook);
+			return FWTS_ERROR;
+		}
+	}
 	return FWTS_OK;
 }
 
@@ -640,6 +719,9 @@ static int s3_options_handler(fwts_framework *fw, int argc, char * const argv[],
 		case 10:
 			s3_hybrid = true;
 			break;
+		case 11:
+			s3_hook = optarg;
+			break;
 		}
 	}
 	return FWTS_OK;
@@ -657,6 +739,7 @@ static fwts_option s3_options[] = {
 	{ "s3-suspend-time",	"", 1, "Maximum expected suspend time in seconds, e.g. --s3-suspend-time=3.5" },
 	{ "s3-resume-time", 	"", 1, "Maximum expected resume time in seconds, e.g. --s3-resume-time=5.1" },
 	{ "s3-hybrid",		"", 0, "Run S3 with hybrid sleep, i.e. saving system states as S4 does." },
+	{ "s3-resume-hook hook","", 1, "Run a hook script after each S3 resume, 0 exit indicates success." },
 	{ NULL, NULL, 0, NULL }
 };
 

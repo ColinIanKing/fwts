@@ -162,6 +162,10 @@
 --s3-quirks                  Comma separated list
                              of quirk arguments to
                              pass to pm-suspend.
+--s3-resume-hook hook        Run a hook script
+                             after each S3 resume,
+                             0 exit indicates
+                             success.
 --s3-resume-time             Maximum expected
                              resume time in
                              seconds, e.g.

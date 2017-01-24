@@ -252,6 +252,11 @@ maximum time between S3 iterations.
 specified the number of multiple S3 suspend/resume tests to run. The default
 is 2 tests.
 .TP
+.B \-\-s3\-resume\-hook=hookscript
+specifies a script or program to run after each S3 resume. The hookscript must
+return 0 to indicate success, or non-zero to indicate failure.  Failures will
+abort subsequent S3 test iterations.
+.TP
 .B \-\-s3\-quirks=--quirk[,--quirk]
 specify a comma separated list of quirk arguments to pass to pm-suspend, for example: \-\-s3\-quirks=\-\-quirk\-s3\-bios,\-\-quirk\-save\-pci
 .TP

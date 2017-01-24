@@ -38,7 +38,6 @@ static int pci_get_dev_info(fwts_framework *fw,
 	const char *pci_slot_buf,
 	char *pci_domain)
 {
-	unsigned int pin;
 	char namebuf[PATH_MAX], *device_name;
 	char vendorbuf[PATH_MAX], *vendor_name;
 	char classbuf[PATH_MAX], *class_name;
@@ -46,6 +45,8 @@ static int pci_get_dev_info(fwts_framework *fw,
 	bool found = false;
 
 	for (dev = pcia->devices; dev; dev = dev->next) {
+		unsigned int pin;
+
 		pci_fill_info(dev,
 			PCI_FILL_IDENT | PCI_FILL_BASES | PCI_FILL_CLASS);
 		pin = pci_read_byte(dev, PCI_INTERRUPT_PIN);
@@ -136,11 +137,12 @@ static int pci_get_slot_info(fwts_framework *fw,
 	char *pci_domain)
 {
 	int node, pci_slot_len;
-	const char *pci_slot_buf;
 
 	node = fdt_path_offset(fw->fdt,
 			pci_dt_path);
 	if (node >= 0) {
+		const char *pci_slot_buf;
+
 		pci_slot_buf = fdt_getprop(fw->fdt, node,
 			property, &pci_slot_len);
 		if (pci_slot_buf) {
@@ -218,7 +220,6 @@ static int get_linux_pci_devices(fwts_framework *fw)
 		char *of_node_link;
 		char of_node_path[PATH_MAX+1];
 		char *sys_slot = NULL;
-		int rc = 0;
 
 		memset(of_node_path, 0, sizeof(of_node_path));
 
@@ -278,7 +279,7 @@ static int get_linux_pci_devices(fwts_framework *fw)
 			of_node_path[bytes] = '\0';
 			sys_slot = strstr(of_node_path, "/pciex");
 			if (sys_slot) {
-				rc = pci_get_slot_info(fw,
+				int rc = pci_get_slot_info(fw,
 						DT_PROPERTY_OPAL_PCI_SLOT,
 						sys_slot,
 						of_node_link,

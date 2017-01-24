@@ -46,7 +46,7 @@ static int power_button_test1(fwts_framework *fw)
 
 	matching = 0;
 
-	for (i=0;i<=20;i++) {
+	for (i = 0; i <= 20; i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "button/power")) {
 				matching++;

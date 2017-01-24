@@ -294,7 +294,7 @@ static void fwts_cpu_consume_kill(void)
 	int i;
 	siginfo_t info;
 
-	for (i=0;i<fwts_cpu_num;i++) {
+	for (i = 0; i < fwts_cpu_num; i++) {
 		if (fwts_cpu_pids[i] != 0) {
 			kill(fwts_cpu_pids[i], SIGUSR1);
 			waitid(P_PID, fwts_cpu_pids[i], &info, WEXITED);
@@ -548,7 +548,7 @@ int fwts_cpu_consume_start(void)
 		return FWTS_ERROR;
 
 	fwts_sig_handler_set(SIGINT, fwts_cpu_sigint_handler, NULL);
-	for (i=0;i<fwts_cpu_num;i++) {
+	for (i = 0; i < fwts_cpu_num; i++) {
 		pid_t pid;
 
 		pid = fork();

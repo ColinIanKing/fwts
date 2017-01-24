@@ -407,7 +407,7 @@ void fwts_acpi_object_evaluate_report_error(
 	int i;
 
 	/* Generic cases */
-	for (i=0; errors[i].error_type; i++) {
+	for (i = 0; errors[i].error_type; i++) {
 		if (status == errors[i].status) {
 			fwts_failed(fw, errors[i].level, errors[i].error_type,
 				"Detected error '%s' when evaluating '%s'.",

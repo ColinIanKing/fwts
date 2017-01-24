@@ -56,7 +56,7 @@ static void get_cstates(char *path, fwts_cstates *state)
 	DIR *dir;
 	int i;
 
-	for (i=MIN_CSTATE; i<MAX_CSTATE; i++) {
+	for (i = MIN_CSTATE; i < MAX_CSTATE; i++) {
 		state->counts[i] = 0;
 		state->present[i] = false;
 		state->used[i] = false;
@@ -122,7 +122,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 
 	get_cstates(path, &initial);
 
-	for (i=0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
+	for (i = 0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
 		int j;
 
 		snprintf(buffer, sizeof(buffer),"(CPU %d of %d)", nth+1, cpus);
@@ -146,7 +146,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 		get_cstates(path, &current);
 
 		keepgoing = false;
-		for (j=MIN_CSTATE; j<MAX_CSTATE;j++) {
+		for (j = MIN_CSTATE; j < MAX_CSTATE; j++) {
 			if (initial.counts[j] != current.counts[j]) {
 				initial.counts[j] = current.counts[j];
 				initial.used[j] = true;
@@ -159,7 +159,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 	*buffer = '\0';
 	if (keepgoing) {
 		/* Not a failure, but not a pass either! */
-		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
+		for (i = MIN_CSTATE; i < MAX_CSTATE; i++)  {
 			if (initial.present[i] && !initial.used[i]) {
 				snprintf(tmp, sizeof(tmp), "C%i ", i);
 				strcat(buffer, tmp);
@@ -169,7 +169,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 				  "This is not a failure, however it is not a "
 				  "complete and thorough test.", cpu, buffer);
 	} else {
-		for (i=MIN_CSTATE; i<MAX_CSTATE;i++)  {
+		for (i = MIN_CSTATE; i < MAX_CSTATE; i++)  {
 			if (initial.present[i] && initial.used[i]) {
 				snprintf(tmp, sizeof(tmp), "C%i ", i);
 				strcat(buffer, tmp);
@@ -180,7 +180,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 	}
 
 	count = 0;
-	for (i=MIN_CSTATE; i<MAX_CSTATE; i++)
+	for (i = MIN_CSTATE; i < MAX_CSTATE; i++)
 		if (initial.present[i])
 			count++;
 

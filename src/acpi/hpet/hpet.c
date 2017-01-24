@@ -77,7 +77,7 @@ static void hpet_parse_device_hpet(
 	fwts_list_link *item,
 	bool *parsed)
 {
-	for (;item != NULL; item = item->next) {
+	for (; item != NULL; item = item->next) {
 		const char *str = fwts_text_list_text(item);
 
 		if ((strstr(str, "Name") != NULL) &&

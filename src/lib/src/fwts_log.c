@@ -204,7 +204,7 @@ void fwts_log_print_fields(void)
 	fwts_log_field field = 1;
 
 	printf("Available fields: ");
-	for (field=1; ; field <<= 1) {
+	for (field = 1; ; field <<= 1) {
 		char *str = fwts_log_field_to_str(field);
 		if (strcmp(str, LOG_UNKOWN_FIELD) == 0)
 			break;
@@ -244,7 +244,7 @@ fwts_log_field fwts_log_str_to_field(const char *text)
 		{ NULL, 0 }
 	};
 
-	for (i=0; mappings[i].text != NULL; i++)
+	for (i = 0; mappings[i].text != NULL; i++)
 		if (strcmp(mappings[i].text, text) == 0)
 			return mappings[i].field;
 	return 0;
@@ -577,7 +577,7 @@ char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 	char *tmp;
 	size_t len = 0;
 
-	for (i=0; i<32; i++) {
+	for (i = 0; i < 32; i++) {
 		fwts_log_type mask = 1 << i;
 		if (type & mask) {
 			if ((tmp = fwts_log_filename(filename, mask)) == NULL) {
@@ -641,7 +641,7 @@ fwts_log *fwts_log_open(
 	 *  and open the log file with the appropriate ops to perform
 	 *  the logging
 	 */
-	for (i=0; i<32; i++) {
+	for (i = 0; i < 32; i++) {
 		fwts_log_type mask = 1 << i;	/* The log type for this iteration */
 
 		/* If set then go and open up a log for this log type */

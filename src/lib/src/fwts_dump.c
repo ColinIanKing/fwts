@@ -146,7 +146,7 @@ static int dump_acpi_table(fwts_acpi_table_info *table, FILE *fp)
 
 	fprintf(fp, "%s @ 0x%lx\n", table->name, (unsigned long)table->addr);
 
-	for (n = 0; n < table->length; n+=16) {
+	for (n = 0; n < table->length; n += 16) {
 		int left = table->length - n;
 		fwts_dump_raw_data(buffer, sizeof(buffer), table->data + n, n, left > 16 ? 16 : left);
 		fprintf(fp, "%s\n", buffer);
@@ -168,7 +168,7 @@ static int dump_acpi_tables(fwts_framework *fw)
 	if ((fp = fopen("acpidump.log", "w")) == NULL)
 		return FWTS_ERROR;
 
-	for (i=0;;i++) {
+	for (i = 0;; i++) {
 		fwts_acpi_table_info *table;
 
 		int ret = fwts_acpi_get_table(fw, i, &table);

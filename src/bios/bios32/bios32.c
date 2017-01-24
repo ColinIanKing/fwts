@@ -64,7 +64,7 @@ static int bios32_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i<BIOS32_SD_REGION_SIZE; i+= 16) {
+	for (i = 0; i < BIOS32_SD_REGION_SIZE; i+= 16) {
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == '3') &&
 		    (*(mem+i+2) == '2') &&

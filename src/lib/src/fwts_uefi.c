@@ -179,7 +179,7 @@ size_t fwts_uefi_str16len(const uint16_t *str)
 {
 	int i;
 
-	for (i=0; *str; i++, str++)
+	for (i = 0; *str; i++, str++)
 		;
 	return i;
 }

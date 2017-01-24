@@ -55,7 +55,7 @@ static int bios_info_test1(fwts_framework *fw)
 	char path[PATH_MAX];
 	int i;
 
-	for (i=0; bios_info[i].dmi_field != NULL; i++) {
+	for (i = 0; bios_info[i].dmi_field != NULL; i++) {
 		char *data;
 		snprintf(path, sizeof(path), "/sys/class/dmi/id/%s", 
 			bios_info[i].dmi_field);

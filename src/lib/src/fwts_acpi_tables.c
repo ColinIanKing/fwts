@@ -271,7 +271,7 @@ int fwts_acpi_free_tables(void)
 {
 	int i;
 
-	for (i=0;i<ACPI_MAX_TABLES;i++) {
+	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		if (tables[i].data) {
 			fwts_low_free(tables[i].data);
 			memset(&tables[i], 0, sizeof(fwts_acpi_table_info));
@@ -458,7 +458,7 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 			fwts_acpi_add_table("XSDT", xsdt, (uint64_t)rsdp->xsdt_address,
 				xsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 			num_entries = (xsdt->header.length - sizeof(fwts_acpi_table_header)) / 8;
-			for (i=0; i<num_entries; i++) {
+			for (i = 0; i < num_entries; i++) {
 				if (xsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)xsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
@@ -481,7 +481,7 @@ static int fwts_acpi_load_tables_from_firmware(fwts_framework *fw)
 			fwts_acpi_add_table("RSDT", rsdt, (uint64_t)rsdp->rsdt_address,
 				rsdt->header.length, FWTS_ACPI_TABLE_FROM_FIRMWARE);
 			num_entries = (rsdt->header.length - sizeof(fwts_acpi_table_header)) / 4;
-			for (i=0; i<num_entries; i++) {
+			for (i = 0; i < num_entries; i++) {
 				if (rsdt->entries[i]) {
 					if ((header = fwts_acpi_load_table((off_t)rsdt->entries[i])) != NULL) {
 						if (strncmp("FACP", header->signature, 4) == 0)
@@ -1023,7 +1023,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 
-		for (i=0,j=0; j<count ;i++)
+		for (i = 0,j = 0; j < count; i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
 				if (table && fwts_acpi_table_fixable(table))
 					rsdt->entries[j++] = (uint32_t)table->addr;
@@ -1060,7 +1060,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 
-		for (i=0,j=0; j<count ;i++)
+		for (i = 0,j = 0; j < count; i++)
 			if (fwts_acpi_get_table(fw, i, &table) == FWTS_OK)
 				if (table && fwts_acpi_table_fixable(table))
 					xsdt->entries[j++] = table->addr;
@@ -1215,7 +1215,7 @@ int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, 
 			return ret;
 	}
 
-	for (i=0;i<ACPI_MAX_TABLES;i++) {
+	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		if (tables[i].data == NULL)
 			break;
 		if ((strcmp(tables[i].name, name) == 0) &&
@@ -1246,7 +1246,7 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
 			return ret;
 	}
 
-	for (i=0;i<ACPI_MAX_TABLES;i++) {
+	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		if (tables[i].data == NULL)
 			break;
 		if (tables[i].addr == addr) {

@@ -67,7 +67,7 @@ static const char *pciirq_reserved(uint8_t *data)
 
 	*buf = '\0';
 
-	for (i=0; i < RESERVED_SIZE; i++) {
+	for (i = 0; i < RESERVED_SIZE; i++) {
 		snprintf(tmp, sizeof(tmp), "%s0x%2.2x", *buf ? ",": "", data[i]);
 		strcat(buf, tmp);
 	}
@@ -117,7 +117,7 @@ static int pciirq_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i < PCIIRQ_REGION_SIZE; i+= 16) {
+	for (i = 0; i < PCIIRQ_REGION_SIZE; i+= 16) {
 		pci_irq_routing_table *pciirq = (pci_irq_routing_table*)(mem+i);
 		if ((memcmp(pciirq->signature, "$PIR", 4) == 0) &&
 		    (fwts_checksum(mem+i, pciirq->table_size) == 0)) {

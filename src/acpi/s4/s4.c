@@ -376,7 +376,7 @@ static int s4_test_multiple(fwts_framework *fw)
         if (s4_multiple == 1)
                 fwts_log_info(fw, "Defaulted to run 1 test, run --s4-multiple=N to run more S4 cycles\n");
 
-	for (i=0; i<s4_multiple; i++) {
+	for (i = 0; i < s4_multiple; i++) {
 		struct timeval tv;
 		int failed_alloc_image = 0;
 		int percent = (i * 100) / s4_multiple;

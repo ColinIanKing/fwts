@@ -28,7 +28,7 @@ uint8_t fwts_checksum(const uint8_t *data, const int length)
 	int 	i;
 	uint8_t checksum = 0;
 
-	for (i=0; i < length; i++)
+	for (i = 0; i < length; i++)
 		checksum += *data++;
 
 	return checksum;

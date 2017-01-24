@@ -27,7 +27,7 @@ static int apicinstance_test1(fwts_framework *fw)
 	int i;
 	int count;
 
-	for (i=0, count=0;; i++) {
+	for (i = 0, count = 0;; i++) {
 		fwts_acpi_table_info *table;
 
 		if (fwts_acpi_get_table(fw, i, &table) != FWTS_OK) {

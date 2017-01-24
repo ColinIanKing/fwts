@@ -61,7 +61,7 @@ static int csm_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i<BIOS_ROM_REGION_SIZE; i+= 512) {
+	for (i = 0; i < BIOS_ROM_REGION_SIZE; i += 512) {
 		if ((*(optROM+i) == 0x55) && (*(optROM+i+1) == 0xaa)) {
 			uint32_t length = *(optROM+i+2) << 9;
 			uint32_t ROMstart = BIOS_ROM_REGION_START+i;

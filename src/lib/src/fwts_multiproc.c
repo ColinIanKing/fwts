@@ -69,7 +69,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 		}
 	}
 
-	for (i=0;regions[i].end; i++) {
+	for (i = 0; regions[i].end; i++) {
 		void *mem;
 		uint8_t *ptr;
 		off_t  start = regions[i].start;
@@ -78,7 +78,7 @@ static int fwts_mp_get_address(uint32_t *phys_addr)
 		if ((mem = fwts_mmap(start, size)) == FWTS_MAP_FAILED)
 			continue;
 
-		for (ptr = mem; ptr < (uint8_t*)mem + size; ptr+=16) {
+		for (ptr = mem; ptr < (uint8_t*)mem + size; ptr += 16) {
 			if ((*ptr == '_') &&
 			    (*(ptr + 1) == 'M') &&
 			    (*(ptr + 2) == 'P') &&

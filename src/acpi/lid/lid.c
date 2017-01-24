@@ -49,8 +49,9 @@ static void lid_check_field_poll(fwts_framework *fw,
 	int tmp_matching = 0;
 	int tmp_not_matching = 0;
 
-	for (i=0; i<100; i++) {
-		fwts_button_match_state(fw, button, &tmp_matching, &tmp_not_matching);
+	for (i = 0; i < 100; i++) {
+		fwts_button_match_state(fw, button,
+			&tmp_matching, &tmp_not_matching);
 		usleep(10);
 
 		if (tmp_matching != 0)

@@ -104,7 +104,7 @@ int fwts_gpe_delta(int **gpe_delta, const fwts_gpe *start, const fwts_gpe *end, 
 	if (((*gpe_delta) = calloc(n, sizeof(int))) == NULL)
 		return FWTS_ERROR;
 
-	for (i=0;i<n;i++) {
+	for (i = 0; i < n; i++) {
 		(*gpe_delta)[i] = end[i].count - start[i].count;
 	}
 
@@ -124,7 +124,7 @@ int fwts_gpe_delta_get(fwts_framework *fw,
 		return FWTS_ERROR;
 	} else {
 		int i;
-		for (i=0;i<gpe_count;i++) {
+		for (i = 0; i < gpe_count; i++) {
 			if ((strcmp(gpes_end[i].name, "sci") == 0) && (deltas[i] > 0))
 				*sci += deltas[i];
 			if ((strncmp(gpes_end[i].name, "gpe", 3) == 0) && (deltas[i] > 0))
@@ -150,7 +150,7 @@ void fwts_gpe_test(fwts_framework *fw, const fwts_gpe *gpes_start, const fwts_gp
 		fwts_log_error(fw, "Cannot calculate GPE delta, out of memory.");
 	else {
 		int i;
-		for (i=0;i<gpe_count;i++) {
+		for (i = 0; i < gpe_count; i++) {
 			if ((strcmp(gpes_end[i].name, "sci") == 0) && (deltas[i] > 0)) {
 				fwts_log_info(fw, "Got %d SCI interrupt(s).", deltas[i]);
 				sci += deltas[i];

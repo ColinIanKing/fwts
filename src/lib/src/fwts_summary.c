@@ -68,7 +68,7 @@ int fwts_summary_init(void)
 	int i;
 
 	/* initialise list of summary items for all error levels */
-	for (i=0;i<SUMMARY_MAX;i++)
+	for (i = 0; i < SUMMARY_MAX; i++)
 		if ((fwts_summaries[i] = fwts_list_new()) == NULL) {
 			fwts_summary_deinit();
 			return FWTS_ERROR;
@@ -98,7 +98,7 @@ void fwts_summary_deinit(void)
 {
 	int i;
 
-	for (i=0;i<SUMMARY_MAX;i++)
+	for (i = 0; i < SUMMARY_MAX; i++)
 		if (fwts_summaries[i])
 			fwts_list_free(fwts_summaries[i], fwts_summary_item_free);
 }

@@ -92,7 +92,7 @@ static int pnp_test1(fwts_framework *fw)
 
 	fwts_log_nl(fw);
 
-	for (i=0; i < PNP_REGION_SIZE; i+= 16) {
+	for (i = 0; i < PNP_REGION_SIZE; i+= 16) {
 		pnp_header *pnp = (pnp_header*)(mem+i);
 		if ((memcmp(pnp->signature, PNP_SIGNATURE, 4) == 0) &&
 		    (fwts_checksum(mem+i, sizeof(pnp_header)) == 0)) {

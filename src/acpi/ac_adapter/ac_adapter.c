@@ -95,7 +95,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 
 	fwts_printf(fw, "==== Please unplug the laptop power. ====\n");
 
-	for (i=0;i<20;i++) {
+	for (i = 0; i < 20; i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			if (strstr(buffer, "ac_adapter")) {
 				events++;
@@ -122,7 +122,7 @@ static int ac_adapter_test3(fwts_framework *fw)
 
 	fwts_printf(fw, "==== Please re-connect the laptop power. ====\n");
 
-	for (i=0;i<20;i++) {
+	for (i = 0; i < 20; i++) {
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
 			events++;
 			if (strstr(buffer, "ac_adapter")) {

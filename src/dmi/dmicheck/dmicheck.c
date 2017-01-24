@@ -887,7 +887,7 @@ static void dmi_str_check_index(fwts_framework *fw,
 		}
 
 		/* Scan for known BIOS defaults that vendors forget to set */
-		for (j=0; dmi_patterns[j].label != NULL; j++) {
+		for (j = 0; dmi_patterns[j].label != NULL; j++) {
 			if (dmi_patterns[j].field &&
 				(strcmp(dmi_patterns[j].field, field) == 0) &&
 				(strcmp(dmi_patterns[j].value, data) == 0)) {

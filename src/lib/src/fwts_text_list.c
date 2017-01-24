@@ -98,7 +98,7 @@ fwts_list *fwts_list_from_text(const char *text)
 		char *str;
 		int len;
 
-		while (*ptr && *ptr !='\n')
+		while (*ptr && *ptr != '\n')
 			ptr++;
 
 		len = ptr - start;

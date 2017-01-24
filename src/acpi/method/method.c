@@ -5331,7 +5331,7 @@ static int method_test_BTM(fwts_framework *fw)
 	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
-	for (i=0 ; i < 5; i++) {
+	for (i = 0 ; i < 5; i++) {
 		ACPI_OBJECT arg[1];
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];

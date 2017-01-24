@@ -37,7 +37,7 @@ static void battery_discharge(fwts_framework *fw, const int secs)
 	int i;
 	fwts_cpu_consume_start();
 
-	for (i=0;i<secs;i++) {
+	for (i = 0; i < secs; i++) {
 		fwts_printf(fw, "Waiting %2.2d/%d\r", secs-i, secs);
 		sleep(1);
 	}
@@ -83,7 +83,7 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 		return FWTS_ERROR;
 	}
 
-	for (i = 0;i <= 20; i++) {
+	for (i = 0; i <= 20; i++) {
 		char *buffer;
 
 		if ((buffer = fwts_acpi_event_read(fd, &len, 1)) != NULL) {
@@ -136,7 +136,7 @@ static void check_charging(fwts_framework *fw, int index, char *name)
 	fwts_printf(fw, "==== Waiting to see if battery '%s' charges ====\n", name);
 
 	initial_value = get_full(fw, index);
-	for (i=0; i <= 120; i++) {
+	for (i = 0; i <= 120; i++) {
 		uint32_t new_value = get_full(fw, index);
 
 		if (new_value>initial_value) {
@@ -282,7 +282,7 @@ static int battery_test1(fwts_framework *fw)
 
 	fwts_log_info(fw, "Found %d batteries.", count);
 
-	for (i=0; i<count; i++)
+	for (i = 0; i < count; i++)
 		do_battery_test(fw, i);
 
 	return FWTS_OK;

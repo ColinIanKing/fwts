@@ -119,7 +119,7 @@ static int cmosdump_test1(fwts_framework *fw)
 	unsigned char data[0x80];
 
 	/* Read CMOS Data */
-	for (i = 0;i < (int)sizeof(data); i++) {
+	for (i = 0; i < (int)sizeof(data); i++) {
 		if (fwts_cmos_read(i, &data[i]) != FWTS_OK) {
 			fwts_log_error(fw, "Cannot get read/write permission on I/O ports.");
 			return FWTS_ERROR;

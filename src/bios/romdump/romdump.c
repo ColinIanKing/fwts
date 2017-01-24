@@ -35,7 +35,7 @@ static void romdump_data(fwts_framework *fw, uint8_t *data,
 	char buffer[128];
 	int i;
 
-	for (i=0; i<length; i+=16) {
+	for (i = 0; i < length; i += 16) {
 		fwts_dump_raw_data(buffer, sizeof(buffer), data+i, offset+i, 16);
 		fwts_log_info_verbatim(fw, "%s", buffer);
 	}
@@ -51,7 +51,7 @@ static int romdump_test1(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	for (i=0; i<BIOS_ROM_REGION_SIZE; i+= 512) {
+	for (i = 0; i < BIOS_ROM_REGION_SIZE; i += 512) {
 		if ((*(mem+i) == 0x55) && (*(mem+i+1) == 0xaa)) {
 			int length = *(mem+i+2) << 9;
 

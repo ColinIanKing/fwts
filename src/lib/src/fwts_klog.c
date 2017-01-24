@@ -133,10 +133,10 @@ char *fwts_klog_remove_timestamp(char *text)
 		ptr += 3;
 
 	if (*ptr == '[')
-		while (*ptr && *ptr !=']')
+		while (*ptr && *ptr != ']')
 			ptr++;
 	if (*ptr == ']')
-		ptr+=2;	/* Skip ] and trailing space */
+		ptr += 2;	/* Skip ] and trailing space */
 
 	return ptr;
 }

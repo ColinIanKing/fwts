@@ -75,7 +75,8 @@ static int auto_brightness_test1(fwts_framework *fw)
 		}
 		fwts_passed(fw, "Maximum brightness for %s is %d which is sane.", entry->d_name, max_brightness);
 
-		if ((actual_brightness >=0) && (actual_brightness <= max_brightness))
+		if ((actual_brightness >= 0) &&
+		    (actual_brightness <= max_brightness))
 			fwts_passed(fw, "Actual brightness for %s is %d which is in range 0..%d.",
 				entry->d_name, actual_brightness, max_brightness);
 		else

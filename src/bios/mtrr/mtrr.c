@@ -64,7 +64,7 @@ static char *cache_to_string(int type)
 	static char str[1024];
 	memset(str, 0, 1024);
 
-	if (type & UNCACHED || type==0)
+	if (type & UNCACHED || type == 0)
 		strcat(str," Uncached");
 	if (type & WRITE_BACK)
 		strcat(str," Write-Back");
@@ -362,7 +362,7 @@ static int validate_iomem(fwts_framework *fw)
 		int i;
 		bool skiperror = false;
 
-		if (fgets(buffer, 4095, file)==NULL)
+		if (fgets(buffer, 4095, file) == NULL)
 			break;
 
 		fwts_chop_newline(buffer);
@@ -377,15 +377,15 @@ static int validate_iomem(fwts_framework *fw)
 		}
 
 		/* then: check the pci depth */
-		for (i=0; i<pcidepth*2; i++) {
-			if (buffer[i]!=' ') {
-				pcidepth = i/2;
+		for (i = 0; i < pcidepth * 2; i++) {
+			if (buffer[i] != ' ') {
+				pcidepth = i / 2;
 				break;
 			}
 		}
 		c = &buffer[pcidepth*2];
 		/* sub entry to a main entry -> skip */
-		if (*c==' ')
+		if (*c == ' ')
 			continue;
 
 		start = strtoull(c, NULL, 16);
@@ -398,7 +398,7 @@ static int validate_iomem(fwts_framework *fw)
 		c2 = strstr(c, " : ");
 		if (!c2)
 			continue;
-		c2+=3;
+		c2 += 3;
 
 		/* exception: 640K - 1Mb range we ignore */
 		if (start >= 640*1024 && end <= 1024*1024)
@@ -414,7 +414,7 @@ static int validate_iomem(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 
-		if ((type & type_mustnot)!=0) {
+		if ((type & type_mustnot) != 0) {
 			failed++;
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MTRRIncorrectAttr",

@@ -79,7 +79,7 @@ int fwts_args_add_options(
 	if ((options_table = calloc(1, sizeof(fwts_options_table))) == NULL)
 		return FWTS_ERROR;
 
-	for (n=0; options[n].long_name != NULL; n++)
+	for (n = 0; options[n].long_name != NULL; n++)
 		;
 
 	total_options += n;
@@ -124,7 +124,7 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 	fwts_list_foreach(item, &options_list) {
 		options_table = fwts_list_data(fwts_options_table *, item);
 
-		for (i=0; i<options_table->num_options; i++, n++) {
+		for (i = 0; i < options_table->num_options; i++, n++) {
 			char *short_name = options_table->options[i].short_name;
 			size_t len;
 
@@ -291,7 +291,7 @@ void fwts_args_show_options(void)
 		fwts_options_table *options_table;
 		options_table = fwts_list_data(fwts_options_table *, item);
 
-		for (i=0; i<options_table->num_options; i++) {
+		for (i = 0; i < options_table->num_options; i++) {
 			fwts_list_add_ordered(&sorted_options,
 				&options_table->options[i], fwts_args_compare_options);
 		}
@@ -307,7 +307,7 @@ void fwts_args_show_options(void)
 		*ptr = '\0';
 		if ((option->short_name != NULL) && *(option->short_name)) {
 			char ch;
-			for (i=0; (ch = option->short_name[i]) != '\0'; i++) {
+			for (i = 0; (ch = option->short_name[i]) != '\0'; i++) {
 				if (ch != ':') {
 					*ptr++ = '-';
 					*ptr++ = ch;

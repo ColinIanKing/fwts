@@ -97,7 +97,7 @@ static int checksum_scan_tables(fwts_framework *fw)
 {
 	int i;
 
-	for (i=0;; i++) {
+	for (i = 0;; i++) {
 		fwts_acpi_table_info *table;
 		fwts_acpi_table_header *hdr;
 		uint8_t checksum;

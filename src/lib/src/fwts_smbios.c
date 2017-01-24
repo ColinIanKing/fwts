@@ -117,7 +117,7 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 		return NULL;
 	}
 
-	for (i=0; i<FWTS_SMBIOS_REGION_SIZE; i+= 16) {
+	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
 		/* SMBIOS entry point */
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&
@@ -164,7 +164,7 @@ static void *fwts_smbios30_find_entry_bios(fwts_framework *fw, fwts_smbios30_ent
 		return NULL;
 	}
 
-	for (i=0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
+	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
 		/* SMBIOS30 entry point */
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&

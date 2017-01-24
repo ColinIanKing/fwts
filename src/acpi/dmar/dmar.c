@@ -71,7 +71,7 @@ struct acpi_table_rmrr {
 } __attribute__ ((packed));
 
 enum acpi_dev_scope_type {
-	ACPI_DEV_ENDPOINT=0x01,
+	ACPI_DEV_ENDPOINT = 0x01,
 	ACPI_DEV_P2PBRIDGE,
 	ACPI_DEV_IOAPIC,
 	ACPI_DEV_HPET,

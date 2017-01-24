@@ -185,7 +185,7 @@ static int mpcheck_test_bus_entries(fwts_framework *fw)
 			fwts_mp_bus_entry *bus_entry =
 				fwts_list_data(fwts_mp_bus_entry *, entry);
 
-			for (i=0; bus_types[i] != NULL; i++) {
+			for (i = 0; bus_types[i] != NULL; i++) {
 				if (strncmp(bus_types[i], (char*)bus_entry->bus_type, strlen(bus_types[i])) == 0)
 					break;
 			}

@@ -31,7 +31,7 @@ static void ebdadump_data(fwts_framework *fw,
 	char buffer[128];
 	int i;
 
-	for (i=0; i<length; i+=16) {
+	for (i = 0; i < length; i += 16) {
 		fwts_dump_raw_data(buffer, sizeof buffer, data+i, offset+i, 16);
 		fwts_log_info_verbatim(fw, "%s", buffer);
 	}

@@ -289,7 +289,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 	if (s3_device_check) {
 		int i;
 
-		for (i = 0;i < s3_device_check_delay; i++) {
+		for (i = 0; i < s3_device_check_delay; i++) {
 			char buffer[80];
 
 			snprintf(buffer, sizeof(buffer), "(Waiting %d/%d seconds)", i+1,s3_device_check_delay);
@@ -504,7 +504,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	if (s3_multiple == 1)
 		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
 
-	for (i=0; i< s3_multiple; i++) {
+	for (i = 0; i < s3_multiple; i++) {
 		struct timeval tv;
 		int ret, percent = (i * 100) / s3_multiple;
 		fwts_list *klog_pre, *klog_post, *klog_diff;

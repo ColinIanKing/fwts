@@ -1063,7 +1063,7 @@ int fwts_acpica_init(fwts_framework *fw)
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint64_t);
 		entries = (uint64_t*)(table->data + sizeof(ACPI_TABLE_HEADER));
-		for (i=0; i<n; i++) {
+		for (i = 0; i < n; i++) {
 			fwts_acpi_table_info *tbl;
 			if (fwts_acpi_find_table_by_addr(fw, entries[i], &tbl) != FWTS_OK)
 				return FWTS_ERROR;
@@ -1098,7 +1098,7 @@ int fwts_acpica_init(fwts_framework *fw)
 
 		n = (table->length - sizeof(ACPI_TABLE_HEADER)) / sizeof(uint32_t);
 		entries = (uint32_t*)(table->data + sizeof(ACPI_TABLE_HEADER));
-		for (i=0; i<n; i++) {
+		for (i = 0; i < n; i++) {
 			fwts_acpi_table_info *tbl;
 			if (fwts_acpi_find_table_by_addr(fw, entries[i], &tbl) != FWTS_OK)
 				return FWTS_ERROR;

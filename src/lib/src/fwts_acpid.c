@@ -84,8 +84,6 @@ char *fwts_acpi_event_read(const int fd, size_t *length, const int timeout)
 	size_t size = 0;
 	*length = 0;
 
-	ptr = NULL;
-
 	tv.tv_sec = timeout;
 	tv.tv_usec = 0;
 	FD_ZERO(&rfds);

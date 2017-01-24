@@ -32,12 +32,13 @@ static int get_xscom_property(fwts_framework *fw,
 			bool hex,
 			char *property)
 {
-	int node, prop_len, failures = 0;
-	const char *prop_buf;
+	int failures = 0;
 	char *prop_string = strstr(my_path, "/xscom");
 
 	if (prop_string) {
-		node = fdt_path_offset(fw->fdt, prop_string);
+		const char *prop_buf;
+		int prop_len;
+		int node = fdt_path_offset(fw->fdt, prop_string);
 		if (node >= 0) {
 			prop_buf = fdt_getprop(fw->fdt, node,
 					property,

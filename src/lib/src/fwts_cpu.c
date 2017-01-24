@@ -512,15 +512,16 @@ uint64_t fwts_cpu_benchmark_best_result(fwts_cpu_benchmark_result *res)
  *  fwts_cpu_consume_cycles()
  *	eat up CPU cycles
  */
-static void fwts_cpu_consume_cycles(void)
+static uint64_t fwts_cpu_consume_cycles(void)
 {
 	fwts_sig_handler_set(SIGUSR1, fwts_cpu_consume_sighandler, NULL);
-	uint64_t i = 0;
+	volatile uint64_t i = 0;
 
 	for (;;) {
 		fwts_cpu_burn_cycles();
 		i++;
 	}
+	return i;
 }
 
 /*
@@ -554,7 +555,7 @@ int fwts_cpu_consume_start(void)
 		pid = fork();
 		switch (pid) {
 		case 0: /* Child */
-			fwts_cpu_consume_cycles();
+			(void)fwts_cpu_consume_cycles();
 			break;
 		case -1:
 			/* Went wrong */

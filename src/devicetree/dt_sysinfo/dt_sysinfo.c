@@ -57,11 +57,10 @@ static int dt_sysinfo_get_version(fwts_framework *fw,
 				char *firmware)
 {
 	int version_len;
-	const char *version_buf;
 
 	/* only output if the platform_firmware node is present */
 	if (node >= 0) {
-                version_buf = fdt_getprop(fw->fdt, node,
+                const char *version_buf = fdt_getprop(fw->fdt, node,
                         firmware, &version_len);
                 if (version_buf) {
                         fwts_passed(fw,
@@ -91,7 +90,6 @@ static int dt_sysinfo_check_version(fwts_framework *fw)
 	}
 
 	int node, version_len;
-	const char *version_buf;
 
 	fwts_log_info(fw,
 		"OPAL base device tree path is %s.",
@@ -99,7 +97,7 @@ static int dt_sysinfo_check_version(fwts_framework *fw)
 	node = fdt_path_offset(fw->fdt,
 			opal_firmware);
 	if (node >= 0) {
-		version_buf = fdt_getprop(fw->fdt, node,
+		const char *version_buf = fdt_getprop(fw->fdt, node,
 			"version", &version_len);
 		if (version_buf) {
 			fwts_passed(fw,

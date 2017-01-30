@@ -41,7 +41,7 @@
 }
 
 static int fd;
-EFI_GUID gEfiCapsuleHeaderGuid = EFI_CAPSULE_GUID;
+static EFI_GUID gEfiCapsuleHeaderGuid = EFI_CAPSULE_GUID;
 
 static int uefirtmisc_init(fwts_framework *fw)
 {

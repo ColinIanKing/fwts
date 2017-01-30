@@ -30,7 +30,7 @@
 
 #define	DUMP_SLIC	(0)	/* Disable this, just used it for debugging */
 
-fwts_acpi_table_info *table;
+static fwts_acpi_table_info *table;
 
 static int slic_init(fwts_framework *fw)
 {

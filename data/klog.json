@@ -3205,14 +3205,14 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not create GPE Block 0",
-   "advice": "The ACPI driver failed intialize the General Purpose Events (GPE) Block 0. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
+   "advice": "The ACPI driver failed initialize the General Purpose Events (GPE) Block 0. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
    "label": "KlogAcpiGpeBlock0InitFailed"
   },
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Could not create GPE Block 1",
-   "advice": "The ACPI driver failed intialize the General Purpose Events (GPE) Block 1. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
+   "advice": "The ACPI driver failed initialize the General Purpose Events (GPE) Block 1. This means that GPEs for this block will be not handled and so some devices or controls may not work correctly.",
    "label": "KlogAcpiGpeBlock1InitFailed"
   },
   {
@@ -4402,7 +4402,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Unable to initialize the ACPI Interpreter",
-   "advice": "The ACPI interpreter could not be intialized and so ACPI support will be disabled.",
+   "advice": "The ACPI interpreter could not be initialized and so ACPI support will be disabled.",
    "label": "KlogAcpiInitFailed"
   },
   {
@@ -5277,7 +5277,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Warning",
-   "advice": "ACPI AML intepreter has found some non-conforming AML code. This should be investigated and fixed.",
+   "advice": "ACPI AML interpreter has found some non-conforming AML code. This should be investigated and fixed.",
    "label": "KlogAcpiBadAmlCode"
   },
   {

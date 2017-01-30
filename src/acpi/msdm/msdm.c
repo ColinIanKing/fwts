@@ -27,7 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 
-fwts_acpi_table_info *table;
+static fwts_acpi_table_info *table;
 
 static int msdm_init(fwts_framework *fw)
 {

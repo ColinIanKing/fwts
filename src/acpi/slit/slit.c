@@ -30,7 +30,7 @@
 
 #define	INDEX(i, j)	(((i) * slit->num_of_system_localities) + (j))
 
-fwts_acpi_table_info *table;
+static fwts_acpi_table_info *table;
 
 static int slit_init(fwts_framework *fw)
 {

@@ -36,12 +36,12 @@
 #define FDT_FLASH_PATH "/proc/device-tree/chosen/ibm,system-flash"
 #define SYSFS_MTD_PATH "/sys/class/mtd"
 
-bool mtd_present(int fwts_mtd_flags, char *mtd_devnode)
+static bool mtd_present(int fwts_mtd_flags, char *mtd_devnode)
 {
 	return !access(mtd_devnode, fwts_mtd_flags);
 }
 
-int mtd_hdr_query(fwts_framework *fw, char *mtd_devnode) {
+static int mtd_hdr_query(fwts_framework *fw, char *mtd_devnode) {
 
 	/* snippet from skiboot libflash/ffs.h */
 	struct ffs_hdr {
@@ -90,7 +90,7 @@ int mtd_hdr_query(fwts_framework *fw, char *mtd_devnode) {
 	return FWTS_OK;
 }
 
-int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
+static int mtd_dev_query(fwts_framework *fw, char *mtd_devnode)
 {
 
 #ifdef HAVE_MTD_MTD_ABI_H

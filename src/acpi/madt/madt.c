@@ -1400,8 +1400,10 @@ static int madt_subtables(fwts_framework *fw)
 		offset = (int)(mtable->length - length);
 		length -= sizeof(fwts_acpi_madt_sub_table_header);
 
-		/* set initial type value, will be overriden for OEM and
-		 * reserved entries */
+		/*
+		 * set initial type value, will be overridden for OEM and
+		 * reserved entries
+		 */
 		type = hdr->type;
 
 		/* check for OEM and reserved entries */

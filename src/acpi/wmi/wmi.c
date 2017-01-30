@@ -221,7 +221,7 @@ static void wmi_method_exist_count(
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"WMIMultipleMethod",
 			"GUID %s has multiple associated methods WM%c%c defined, "
-			"this is a firmware bug that leads to ambigous behaviour.",
+			"this is a firmware bug that leads to ambiguous behaviour.",
 			guid_str, info->id.obj_id[0], info->id.obj_id[1]);
 	} else
 		fwts_passed(fw, "%s has associated method %s", guid_str, objname);

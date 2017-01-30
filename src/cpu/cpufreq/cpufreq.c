@@ -825,7 +825,7 @@ static int cpufreq_init(fwts_framework *fw)
 		int rc = cpu_set_governor(fw, &cpus[i], "userspace");
 
 		if (rc != FWTS_OK) {
-			fwts_log_warning(fw, "Failed to intialise cpufreq "
+			fwts_log_warning(fw, "Failed to initialize cpufreq "
 					"to set CPU speed");
 			cpufreq_settable = false;
 			break;

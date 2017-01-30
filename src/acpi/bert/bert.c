@@ -139,14 +139,14 @@ static int bert_test1(fwts_framework *fw)
 				} else {
 					fwts_warning(fw, "BERT Boot Error Region Raw Data Offset %"
 							PRIu32 " is smaller than end of the data"
-							"region. BERT Boot Error Region Data Lenght "
+							"region. BERT Boot Error Region Data Length "
 							"is zero.",
 							region->raw_data_offset);
 					fwts_advice(fw,
 						"If there is raw data in the BERT Boot Error Region, "
 						"Raw Data Offset must be larger than the end of the "
 						"data region if there is raw data. However, since "
-						"BERT Boot Error Region Raw Data Lenght is zero, "
+						"BERT Boot Error Region Raw Data Length is zero, "
 						"this may mean that there is no raw data.");
 				}
 			}

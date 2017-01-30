@@ -122,7 +122,7 @@ static void pcc_check_pcc_header(
 	fwts_log_info_verbatim(fw, "  Major:              0x%" PRIx8,  hdr->major);
 	fwts_log_info_verbatim(fw, "  Minor:              0x%" PRIx8,  hdr->minor);
 	fwts_log_info_verbatim(fw, "  Features:           0x%" PRIx32, hdr->features);
-	fwts_log_info_verbatim(fw, "  Commend:            0x%" PRIx16, hdr->command);
+	fwts_log_info_verbatim(fw, "  Command:            0x%" PRIx16, hdr->command);
 	fwts_log_info_verbatim(fw, "  Status:             0x%" PRIx16, hdr->status);
 	fwts_log_info_verbatim(fw, "  Latency:            0x%" PRIx32, hdr->latency);
 	fwts_log_info_verbatim(fw, "  Minimum Time:       0x%" PRIx32, hdr->minimum_time);

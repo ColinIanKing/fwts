@@ -33,12 +33,13 @@
 
 static const char *prd_devnode = "/dev/opal-prd";
 
-bool prd_present(int fwts_prd_flags) {
+static bool prd_present(const int fwts_prd_flags)
+{
 	return !access(prd_devnode, fwts_prd_flags);
 }
 
 #ifdef HAVE_ASM_OPAL_PRD_H
-int prd_dev_query(fwts_framework *fw)
+static int prd_dev_query(fwts_framework *fw)
 {
 
 	int fd = 0;

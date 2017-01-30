@@ -22,7 +22,7 @@
 
 #include "fwts.h"
 
-int fwts_bmc_info_check(
+static int fwts_bmc_info_check(
 	fwts_framework *fw)
 {
 	struct fwts_ipmi_rsp fwts_bmc_info;

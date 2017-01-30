@@ -106,7 +106,7 @@ klog            (00127) <27/07/16> FAL H: 1, HIGH Kernel message: [ 0.000000]
 klog            (00128) <27/07/16> FAL H: ACPI Warning: BIOS XSDT has NULL entry
 klog            (00129) <27/07/16> FAL H: , using RSDT (20110112/tbutils-663)
 klog            (00130) <27/07/16> NLN  : 
-klog            (00131) <27/07/16> ADV  : ADVICE: ACPI AML intepreter has found
+klog            (00131) <27/07/16> ADV  : ADVICE: ACPI AML interpreter has found
 klog            (00132) <27/07/16> ADV  : some non-conforming AML code. This
 klog            (00133) <27/07/16> ADV  : should be investigated and fixed.
 klog            (00134) <27/07/16> NLN  : 

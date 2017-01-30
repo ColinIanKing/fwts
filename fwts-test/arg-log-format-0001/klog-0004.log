@@ -80,7 +80,7 @@ klog            27/07/16 H: FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH
 klog            27/07/16 H: Kernel message: [ 0.000000] ACPI Warning: BIOS XSDT
 klog            27/07/16 H: has NULL entry, using RSDT (20110112/tbutils-663)
 klog            27/07/16  : 
-klog            27/07/16  : ADVICE: ACPI AML intepreter has found some
+klog            27/07/16  : ADVICE: ACPI AML interpreter has found some
 klog            27/07/16  : non-conforming AML code. This should be investigated
 klog            27/07/16  : and fixed.
 klog            27/07/16  : 

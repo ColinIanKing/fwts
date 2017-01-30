@@ -1943,7 +1943,7 @@ klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
 klog            message: [ 0.000000] ACPI Warning: BIOS XSDT has NULL
 klog            entry, using RSDT (20110112/tbutils-663)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
@@ -5935,7 +5935,7 @@ klog            message: [ 0.310609] ACPI Warning for _PR_.CPU1._PSS:
 klog            SubPackage[8,9] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
@@ -5970,7 +5970,7 @@ klog            message: [ 0.311335] ACPI Warning for _PR_.CPU2._PSS:
 klog            SubPackage[8,9] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiEventEnableFailed: Test 1, HIGH
@@ -7987,7 +7987,7 @@ klog            message: [ 0.429245] ACPI Warning for _PR_.CPU0._TSD:
 klog            Incorrectly formed Package, attempting repair (20090903
 klog            /nsrepair-200)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -7995,7 +7995,7 @@ klog            message: [ 0.430887] ACPI Warning for _PR_.CPU1._TSD:
 klog            Incorrectly formed Package, attempting repair (20090903
 klog            /nsrepair-200)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
@@ -10310,7 +10310,7 @@ klog            message: [ 1.020868] ACPI Warning for _PR_.CPU0._PSD:
 klog            Incorrectly formed Package, attempting repair (20090903
 klog            /nsrepair-200)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -10318,7 +10318,7 @@ klog            message: [ 1.021557] ACPI Warning for _PR_.CPU1._PSD:
 klog            Incorrectly formed Package, attempting repair (20090903
 klog            /nsrepair-200)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [MEDIUM] KlogAcpiIncorrectTableChecksum: Test 1,
@@ -10635,7 +10635,7 @@ klog            message: [ 1.230869] ACPI Warning for _PR_.CPU0._PSS:
 klog            SubPackage[15,16] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -10643,7 +10643,7 @@ klog            message: [ 1.231049] ACPI Warning for _PR_.CPU1._PSS:
 klog            SubPackage[15,16] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -10651,7 +10651,7 @@ klog            message: [ 1.231224] ACPI Warning for _PR_.CPU2._PSS:
 klog            SubPackage[15,16] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -10659,7 +10659,7 @@ klog            message: [ 1.231399] ACPI Warning for _PR_.CPU3._PSS:
 klog            SubPackage[15,16] - suspicious power dissipation values
 klog            (20100428/nsrepair2-403)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiNoHandlerForRegion: Test 1, HIGH
@@ -11576,7 +11576,7 @@ klog
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
 klog            message: [ 1.958776] ACPI Warning for _PR_.CPU0._PSD:
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiReturnPackageTypeMismatch: Test 1,
@@ -15122,7 +15122,7 @@ klog            message: [ 50.737630] ACPI Warning for
 klog            _SB_.PCI0.AGP_.VID_.MXMI: Excess arguments - needs 1,
 klog            found 2 (20090903/nspredef-303)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
@@ -15130,7 +15130,7 @@ klog            message: [ 50.737686] ACPI Warning for
 klog            _SB_.PCI0.AGP_.VID_.MXMS: Excess arguments - needs 1,
 klog            found 2 (20090903/nspredef-303)
 klog            
-klog            ADVICE: ACPI AML intepreter has found some non-conforming
+klog            ADVICE: ACPI AML interpreter has found some non-conforming
 klog            AML code. This should be investigated and fixed.
 klog            
 klog            Found 1589 unique errors in kernel log.

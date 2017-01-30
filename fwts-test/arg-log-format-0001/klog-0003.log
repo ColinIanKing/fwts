@@ -76,8 +76,9 @@ klog            00090: FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel
 klog            00091: message: [ 0.000000] ACPI Warning: BIOS XSDT has NULL
 klog            00092: entry, using RSDT (20110112/tbutils-663)
 klog            00093: 
-klog            00094: ADVICE: ACPI AML intepreter has found some non-conforming
-klog            00095: AML code. This should be investigated and fixed.
+klog            00094: ADVICE: ACPI AML interpreter has found some
+klog            00095: non-conforming AML code. This should be investigated and
+klog            00096: fixed.
 klog            00096: 
 klog            00097: FAILED [HIGH] KlogAcpiFadtInvalidLength: Test 1, HIGH
 klog            00098: Kernel message: [ 0.000000] ACPI Warning: Invalid length

@@ -69,7 +69,7 @@ klog           : FAILED [HIGH] KlogAcpiBadAmlCode: Test 1, HIGH Kernel message:
 klog           : [ 0.000000] ACPI Warning: BIOS XSDT has NULL entry, using RSDT
 klog           : (20110112/tbutils-663)
 klog           : 
-klog           : ADVICE: ACPI AML intepreter has found some non-conforming AML
+klog           : ADVICE: ACPI AML interpreter has found some non-conforming AML
 klog           : code. This should be investigated and fixed.
 klog           : 
 klog           : FAILED [HIGH] KlogAcpiFadtInvalidLength: Test 1, HIGH Kernel

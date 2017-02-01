@@ -151,6 +151,7 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 		goto olog_cleanup_msglog_outfile;
 
 	read_actual = fread(buffer, 1, len, msglog_outfile_f);
+	buffer[read_actual] = '\0';
 	if (read_actual == (size_t)len) {
 		list = fwts_list_from_text(buffer);
 		free(buffer);

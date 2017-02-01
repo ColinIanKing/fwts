@@ -191,17 +191,13 @@ int fwts_pipe_readwrite(
 			if (n == 0)
 				break;
 			if (n < 0) {
-				if (errno != EINTR && errno != EAGAIN) {
-					free(ptr);
-					return -1;
-				}
+				if (errno != EINTR && errno != EAGAIN)
+					goto fail;
 				continue;
 			}
 
-			if ((tmp = realloc(ptr, out_size + n + 1)) == NULL) {
-				free(ptr);
-				return -1;
-			}
+			if ((tmp = realloc(ptr, out_size + n + 1)) == NULL)
+				goto fail;
 			ptr = tmp;
 			memcpy(ptr + out_size, buffer, n);
 			out_size += n;
@@ -212,10 +208,8 @@ int fwts_pipe_readwrite(
 			n = write(in_fd, in_buf, in_size);
 
 			if (n < 0) {
-				if (errno != EINTR && errno != EAGAIN) {
-					free(ptr);
-					return -1;
-				}
+				if (errno != EINTR && errno != EAGAIN)
+					goto fail;
 				continue;
 			}
 
@@ -225,9 +219,16 @@ int fwts_pipe_readwrite(
 
 	}
 
-	*out_len = out_size;
-	*out_buf = ptr;
-	return 0;
+	if (out_size) {
+		*out_len = out_size;
+		*out_buf = ptr;
+		return 0;
+	}
+fail:
+	free(ptr);
+	*out_len = 0;
+	*out_buf = NULL;
+	return -1;
 }
 
 /*
@@ -279,7 +280,7 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 	pid_t 	pid;
 	int	rc, fd;
 	ssize_t	len;
-	char 	*text;
+	char 	*text = NULL;
 
 	if (fwts_pipe_open_ro(command, &pid, &fd) < 0)
 		return FWTS_ERROR;
@@ -287,10 +288,10 @@ int fwts_pipe_exec(const char *command, fwts_list **list, int *status)
 	rc = fwts_pipe_read(fd, &text, &len);
 	if (!rc && len > 0) {
 		*list = fwts_list_from_text(text);
-		free(text);
 	} else {
 		*list = NULL;
 	}
+	free(text);
 
 	*status = fwts_pipe_close(fd, pid);
 	if (rc || *status) {

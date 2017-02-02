@@ -39,6 +39,7 @@ typedef struct hash_alloc {
 } hash_alloc_t;
 
 static hash_alloc_t *hash_allocs[HASH_ALLOC_SIZE];
+static int hash_count;
 
 /*
  *  hash_addr()
@@ -87,6 +88,7 @@ static bool hash_alloc_add(void *addr)
 	new->addr = addr;
 	new->next = hash_allocs[h];
 	hash_allocs[h] = new;
+	hash_count++;
 
 	return true;
 }
@@ -104,12 +106,37 @@ static bool hash_alloc_remove(const void *addr)
 	while (ha) {
 		if (ha->addr == addr) {
 			/* Just nullify it */
+			hash_count--;
 			ha->addr = NULL;
 			return true;
 		}
 		ha = ha->next;
 	}
 	return false;
+}
+
+/*
+ *  hash_alloc_garbage_collect()
+ *	free all hash records when the hash
+ *	is empty.
+ */
+static void hash_alloc_garbage_collect(void)
+{
+	size_t i;
+
+	if (hash_count)
+		return;
+
+	for (i = 0; i < HASH_ALLOC_SIZE; i++) {
+		hash_alloc_t *ha = hash_allocs[i];
+
+		while (ha) {
+			hash_alloc_t *next = ha->next;
+
+			free(ha);
+			ha = next;
+		}
+	}
 }
 
 /*
@@ -406,4 +433,6 @@ void fwts_low_free(const void *ptr)
 	/* Be doubly sure by checking magic before we munmap */
 	if (hdr->magic == FWTS_ALLOC_MAGIC)
 		munmap(hdr, hdr->size);
+
+	hash_alloc_garbage_collect();
 }

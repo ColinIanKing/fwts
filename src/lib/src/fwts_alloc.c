@@ -27,6 +27,92 @@
 #include "fwts.h"
 
 /*
+ *  Typically we use around 50 or so low mem allocations in fwts
+ *  so 509 is a good large prime size to ensure we get a good
+ *  hash table hit rate
+ */
+#define HASH_ALLOC_SIZE	(509)
+
+typedef struct hash_alloc {
+	void *addr;		/* allocation addr, NULL = not used */
+	struct hash_alloc *next;/* next one in hash chain */
+} hash_alloc_t;
+
+static hash_alloc_t *hash_allocs[HASH_ALLOC_SIZE];
+
+/*
+ *  hash_addr()
+ *	turn a void * address into a hash index
+ */
+static inline size_t hash_addr(const void *addr)
+{
+	ptrdiff_t h = (ptrdiff_t)addr;
+
+	h ^= h >> 17;
+	h %= HASH_ALLOC_SIZE;
+
+	return (size_t)h;
+}
+
+/*
+ *  hash_alloc_add()
+ *	add a allocated address into the hash of
+ *	known allocations so we can keep track
+ *	of valid allocs.
+ */
+static bool hash_alloc_add(void *addr)
+{
+	size_t h = hash_addr(addr);
+	hash_alloc_t *new = hash_allocs[h];
+
+	while (new) {
+		/* re-use old nullified records */
+		if (new->addr == NULL) {
+			/* old and free, so re-use */
+			new->addr = addr;
+			return true;
+		}
+		/* something is wrong, already in use */
+		if (new->addr == addr) {
+			return false;
+		}
+		new = new->next;
+	}
+
+	/* not found, add a new record */
+	new = malloc(sizeof(*new));
+	if (!new)
+		return false;
+
+	new->addr = addr;
+	new->next = hash_allocs[h];
+	hash_allocs[h] = new;
+
+	return true;
+}
+
+/*
+ *  hash_alloc_remove()
+ *	remove an allocated address from the hash
+ *	of know allocations.
+ */
+static bool hash_alloc_remove(const void *addr)
+{
+	size_t h = hash_addr(addr);
+	hash_alloc_t *ha = hash_allocs[h];
+
+	while (ha) {
+		if (ha->addr == addr) {
+			/* Just nullify it */
+			ha->addr = NULL;
+			return true;
+		}
+		ha = ha->next;
+	}
+	return false;
+}
+
+/*
  * We implement a low memory allocator to allow us to allocate
  * memory < 2G limit for the ACPICA table handling.  On 64 bit
  * machines we have to ensure that cached copies of ACPI tables
@@ -111,7 +197,6 @@ static void *fwts_low_mmap_walkdown(const size_t requested_size)
 static void *fwts_low_mmap(const size_t requested_size)
 {
 	FILE *fp;
-	char buffer[1024];
 	char pathname[1024];
 	void *addr_start;
 	void *addr_end;
@@ -129,15 +214,23 @@ static void *fwts_low_mmap(const size_t requested_size)
 	if ((fp = fopen("/proc/self/maps", "r")) == NULL)
 		return fwts_low_mmap_walkdown(requested_size);
 
-	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-		if (sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s",
+	while (!feof(fp)) {
+		if (fscanf(fp, "%p-%p %*s %*x %*s %*u %1023s\n",
 		    &addr_start, &addr_end, pathname) != 3)
+			continue;
+		/*
+		 *  Sanity check data
+		 */
+		if ((addr_start <= (void *)LIMIT_START) ||
+		    (addr_start >= (void *)LIMIT_2GB) ||
+		    (addr_end <= (void *)LIMIT_START) ||
+		    (addr_end >= (void *)LIMIT_2GB) ||
+		    (addr_end <= addr_start))
 			continue;
 		/*
 		 *  Try and allocate under first mmap'd address space
 		 */
-		if ((first_addr_start == NULL) &&
-		    (addr_start > (void*)LIMIT_START)) {
+		if (first_addr_start == NULL) {
 			size_t sz = (requested_size + CHUNK_SIZE) & ~(CHUNK_SIZE - 1);
 			uint8_t *addr = (uint8_t *)addr_start - sz;
 
@@ -241,7 +334,14 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 	hdr->size = n;
 	hdr->magic = FWTS_ALLOC_MAGIC;
 
-	return (void *)((uint8_t *)ret + sizeof(fwts_mmap_header));
+	ret = (void *)((uint8_t *)ret + sizeof(fwts_mmap_header));
+
+	if (!hash_alloc_add(ret)) {
+		munmap((void *)hdr, n);
+		return NULL;
+	}
+
+	return ret;
 }
 
 /*
@@ -287,10 +387,23 @@ void *fwts_low_realloc(const void *ptr, const size_t size)
  */
 void fwts_low_free(const void *ptr)
 {
-	if (ptr) {
-		fwts_mmap_header *hdr = (fwts_mmap_header *)
-			((uint8_t *)ptr - sizeof(fwts_mmap_header));
-		if (hdr->magic == FWTS_ALLOC_MAGIC)
-			munmap(hdr, hdr->size);
+	/*
+	 *  Sanity check the address we are about to
+	 *  try and free. If it is not known about
+	 *  the don't free it.
+	 */
+	if (!ptr)
+		return;
+	if (!hash_alloc_remove(ptr)) {
+		/* Should never happen... */
+		fprintf(stderr, "double free on %p\n", ptr);
+		return;
 	}
+
+	fwts_mmap_header *hdr = (fwts_mmap_header *)
+		((uint8_t *)ptr - sizeof(fwts_mmap_header));
+
+	/* Be doubly sure by checking magic before we munmap */
+	if (hdr->magic == FWTS_ALLOC_MAGIC)
+		munmap(hdr, hdr->size);
 }

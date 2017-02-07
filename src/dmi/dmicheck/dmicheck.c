@@ -1201,8 +1201,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x20)) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
-					"Out of range value 0x%2.2x" PRIx8 " "
-					"(range allowed 0x01..0x08, 0xa0..0xa2) "
+					"Out of range value 0x%2.2" PRIx8 " "
+					"(range allowed 0x01..0x20, 0xa0..0xb6) "
 					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 					"field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Slot Type", 0x5);

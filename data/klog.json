@@ -317,7 +317,7 @@
    "label": "KlogBios32UnsupportedRevision",
   },
   {
-   "compare_mode": "string",
+   "compare_mode": "regex",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "PCI: BIOS32 entry .* in high memory, cannot use",
    "advice": "The BIOS32 service directory structure in located in high memory at or above address 0x100000 and cannot use this.",
@@ -746,7 +746,7 @@
   {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_LOW",
-   "pattern": "Misaligned resource pointer (get):",
+   "pattern": "Misaligned resource pointer",
    "advice": "The ACPI driver detected a resource pointer that is not naturally aligned to a 32 bit boundary. This has been automatically fixed and should not cause any issues.",
    "label": "KlogAcpiResourceDescriptorError"
   },

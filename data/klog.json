@@ -3,6 +3,48 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "VA address range overflow",
+   "advice": "The EFI virtual address has wrapped around and overflowed and may cause random or unexplicable faulty EFI behaviour.",
+   "label": "KlogEfiVaAddrRangeOverflow",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Error mapping PA 0x.* VA 0x",
+   "advice": "The EFI driver failed to map physical addresses to virtual addresses on a range of EFI related pages.",
+   "label": "KlogEfiPhysVirtMappingFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to map kernel text 1:1",
+   "advice": "The kernel text region failed to be mapped 1 to 1 (physical to virtual).",
+   "label": "KlogEfiKernelTextOneToOneMapFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_CRITICAL",
+   "pattern": "Unable to allocate EFI runtime stack < 4GB",
+   "advice": "The EFI stack must be addressible with 32 bit pointers and hence less than 4GB, however a stack in the 32 bit address range could not be allocated and the boot cannot proceed (kernel panic).",
+   "label": "KlogEfi32BitStackNotAllocated",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Failed to create 1:1 mapping for the first page",
+   "advice": "The firmware still believes it is the exclusive owner of the first physical page of the EFI mapping even though the firmware has marked it as EFI_CONVENTIONAL_MEMORY.  To avoid a triple fault if the firmware attempts to write-access the page, a 1:1 mapping is used, however, this failed to be created.",
+   "label": "KlogEfiOneToOneMappingFailed",
+  },
+  {
+   "compare_mode": "string",
+   "log_level": "LOG_LEVEL_HIGH",
+   "pattern": "Error ident-mapping new memmap",
+   "advice": "The physical address of a newly memory mapped EFI region is not mapped into the EFI page table. Ident mapping failed.",
+   "label": "KlogEfiIdentMappingFailed",
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "Setup done, disabling due to 32/64-bit mismatch",
    "advice": "The EFI quirk mechaism has unmapped the EFI memory map, EFI runtime services have been disabled because of a mismatch on firmware and kernel (32/64 bit mismatch).",

@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2010-2017 Canonical
+# Some of this work - Copyright (C) 2017 IBM
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -40,7 +41,8 @@ fi
 #
 WORK_DIR=/fwts/$FWTS_DATE/$FWTS_TIME
 FWTS_AUTO_SHUTDOWN="$1"
-SHUTDOWN_AT_END=1
+# Change shutdown to non-destructive default to not power cycle box unknowingly
+SHUTDOWN_AT_END=0
 
 #
 # set WORK_DIR to /cdrom/fwts if booting via casper 
@@ -53,6 +55,8 @@ fi
 #
 # check /proc/cmdline and argv[1] for FWTS_AUTO_SHUTDOWN to toggle auto shutdown
 #
+
+# live-build v5 uses boot=live, leave the following for backward compatibility
 if [ `grep -qs FWTS_AUTO_SHUTDOWN=1 /proc/cmdline; echo $?` -ne 0 ]; then
 	if [ -n "${CASPER_DETECTED:+x}" ]; then
 		SHUTDOWN_AT_END=0
@@ -76,8 +80,10 @@ do_test()
 	num_tests=`fwts $1 --show-tests | wc -l`
 	num_tests=$((num_tests - 1))
 	if [ $num_tests -gt 0 ]; then
-  		fwts --force-clean --skip-test=s3,s4 $1 --show-progress-dialog --log-type plaintext,html | dialog --backtitle "$FWTS" --title "$2" --gauge "" 13 80 0
+		fwts --force-clean $1 --show-progress-dialog --log-type plaintext,html | dialog --backtitle "$FWTS" --title "$2" --gauge "" 13 80 0
 	fi
+	# sleep so the progress dialog is shown for a period of time, otherwise it just flashes by and end-user cannot tell what it was
+	sleep 1
 }
 
 #
@@ -170,14 +176,38 @@ view_results()
 #
 finish()
 {
-	if [ $SHUTDOWN_AT_END -eq 1 ]; then
-		dialog  --backtitle "$FWTS" --infobox "      Shutting down.." 3 30
-  		shutdown -P now
-		exit 0
-	else
-		dialog --clear
-		exit 0
-	fi
+
+	dialog --help-button --backtitle "$FWTS" --title "Choose Exit" --menu \
+	"\nSelect if you want to exit to a command line or poweroff.\n\nIf you select to poweroff and this is running from a LIVE USB, the host will be powered down.\n\nIf you are running this from a VM and you choose to poweroff, then only the VM will be powered down."\
+	22 70 2 \
+	"Exit" "Exit to a command line" \
+	"Poweroff" "Shutdown and power off" \
+	2> $OPTIONS
+
+	case $? in
+	0)
+		cd $WORK_DIR >& /dev/null
+		case `cat $OPTIONS` in
+			'Exit')
+				dialog --backtitle "$FWTS" --title "EXIT to Command Line" --msgbox "\nAfter doing all you want from the command line you can enter the following to power down the host.\n\n\"sudo poweroff\" ... you will need the sudo password.\n\nIf you enter \"exit\" you will be returned back to this application where you can run more tests or select the exit paths again (if you choose Poweroff from the menu you will NOT need the sudo password)." 20 80
+				exit 0
+				;;
+			'Poweroff')
+				dialog --backtitle "$FWTS" --infobox "Shutting down and powering off..." 5 80
+				sleep 2
+				poweroff
+				exit 0
+				;;
+		esac
+		;;
+	1|255)
+		return
+		;;
+	2)
+		do_help
+		;;
+	esac
+
 }
 
 #
@@ -186,7 +216,7 @@ finish()
 no_tests_finish()
 {
 	dialog --backtitle "$FWTS" --title "Abort Testing!" --msgbox \
-		"   You did not select any tests to be run.\n\n          Press Enter to shutdown." 7 50
+		"You did not select any tests to be run.\n\nPress Enter to continue." 7 50
 	finish
 }
 
@@ -215,8 +245,7 @@ the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n
 
 	dialog  --backtitle "$FWTS" --title "Testing Complete" --msgbox \
 "The results can be found on the USB stick in the\n
-the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n
-            Press Enter to shutdown" 9 55
+the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\nPress Enter to continue." 9 55
 	finish
 }
 
@@ -225,49 +254,83 @@ the directory: /fwts/$FWTS_DATE/$FWTS_TIME/results.log\n\n
 #
 mkdir -p $WORK_DIR >& /dev/null
 if [ $? -ne 0 ]; then
-	dialog --ok-label "Shutdown" --backtitle "$FWTS" --title "Error" --msgbox "Could not create directory fwts/$FWTS_DATE/$FWTS_TIME to store test results.\n\n          Press Enter to shutdown." 8 50 
+	dialog --ok-label "Finish and End" --backtitle "$FWTS" --title "Error" --msgbox "Could not create directory fwts/$FWTS_DATE/$FWTS_TIME to store test results.\n\nPress Enter to continue." 8 50
 	finish
 	exit 0
 fi
 
+UNAME_PLATFORM=`(uname -m) 2>/dev/null` || UNAME_PLATFORM=unknown
+
 while true
 do
-	dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
-  		"This will run a suite of firmware tests that will check the BIOS and ACPI tables. It can also find issues that can cause Linux problems.\n\n\
-The default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue:" \
-		22 70 6 \
-		1 "All Batch Tests" on \
-		2 "ACPI Tests" off \
-		3 "UEFI Tests" off \
-		4 "Recommended Tests" off \
-		5 "Select Individual Tests" off \
-		6 "Abort Testing" off \
-	2> $OPTIONS
+
+	case "${UNAME_PLATFORM}" in
+		ppc*)
+			dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
+			"This will run a suite of firmware tests that will check the device tree and related subsystems. It can also find issues that can cause Linux problems.\n\nThe default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue."\
+			22 70 4 \
+			"All" "All Batch Tests" on \
+			"Recommended" "Recommended Tests" off \
+			"Selected" "Select Individual Tests" off \
+			"Abort" "Abort Testing" off \
+			2> $OPTIONS
+			;;
+		*)
+			dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
+			"This will run a suite of firmware tests that will check the BIOS and ACPI tables.  It can also find issues that can cause Linux problems.\n\nThe default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue."\
+			22 70 6 \
+			"All" "All Batch Tests" on \
+			"ACPI" "ACPI Tests" off \
+			"UEFI" "UEFI Tests" off \
+			"Recommended" "Recommended Tests" off \
+			"Selected" "Select Individual Tests" off \
+			"Abort" "Abort Testing" off \
+			2> $OPTIONS
+			;;
+
+	esac
 
 	case $? in
 	0)
 		cd $WORK_DIR >& /dev/null
 		case `cat $OPTIONS` in
-		'1')
-			do_test "--batch --uefitests" 'Running Batch Tests'
+		'All')
+			case "${UNAME_PLATFORM}" in
+				ppc*)
+					FWTS_OPTIONS="--batch"
+					;;
+				*)
+					FWTS_OPTIONS="--batch --uefitests --skip-test=s3,s4"
+					;;
+			esac
+			do_test "${FWTS_OPTIONS}" 'Running Batch Tests'
 			done_tests_finish
 			;;
-		'2')
-			do_test "--acpitests" 'Running ACPI Tests'
+		'ACPI')
+			do_test "--acpitests --skip-test=s3,s4" 'Running ACPI Tests'
 			done_tests_finish
 			;;
-		'3')
-			do_test "--uefitests" 'Running UEFI Tests'
+		'UEFI')
+			do_test "--uefitests --skip-test=s3,s4" 'Running UEFI Tests'
 			done_tests_finish
 			;;
-		'4')
-			do_test "version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --log-level=medium" 'Running Recommended Tests'
+		'Recommended')
+			case "${UNAME_PLATFORM}" in
+				ppc*)
+					FWTS_OPTIONS="--batch"
+					;;
+				*)
+					FWTS_OPTIONS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops --acpitests --uefitests --log-level=medium --skip-test=s3,s4"
+					;;
+			esac
+
+			do_test "${FWTS_OPTIONS}" 'Running Recommended Tests'
 			done_tests_finish
 			;;
-		'5')
+		'Selected')
 			select_tests
 			;;
-		'6')
+		'Abort')
 			no_tests_finish
 			;;
 		esac

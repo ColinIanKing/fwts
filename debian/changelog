@@ -1,3 +1,61 @@
+fwts (17.02.00-0ubuntu1) zesty; urgency=low
+
+  [Alex Hung]
+  * dmicheck: fix mistakes in error messages for SMBIOS type 9
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20170119
+  * README: update git URL to http://kernel.ubuntu.com/git/hwe/fwts.git/
+  * lib: fwts_args: fix arg parameter sanity range checking
+  * fwts-test: update arg-help-0001 to sync with help info changes
+  * fwts_framework: handle -? option differently from -h
+  * uefi/uefirtvariable: fix options check error messages
+  * acpi: s3: Add new --s3-resume-hook option
+  * clean up missing whitespaces
+  * acpi: acpitables: fix indentation, no functional change
+  * devicetree: dt_sysinfo: reduce scope of version_buf
+  * lib: fwts_acpid: remove re-assignment of ptr to NULL
+  * lib: fwts_cpu: force compiler to increment i rather than optimize it out
+  * opal: mem_info: remove redundant initialization of prop_string to NULL
+  * opal: mem_info: reduce scope of some variables
+  * opal: cpu_info: remove redundant initialization of prop_string to NULL
+  * opal: cpu_info: reduce scope of some variables
+  * opal: pci_info: reduce scope of some variables
+  * doc: remove trailing white spaces
+  * opal/mtd_info.c: make a couple of functions static to reduce global scope
+  * uefi: uefirtmisc: make gEfiCapsuleHeaderGuid static
+  * opal: prd_info: make a couple of functions static to reduce global scope
+  * ipmi: bmc: make fwts_bmc_info_check static
+  * acpi: msdm: make variable table static
+  * acpi: slit: make variable table static
+  * acpi: fpdt: make variable table static
+  * acpi: slic: make variable table static
+  * misc: fix various spelling mistakes
+  * data: fix some spelling mistakes in klog and olog databases
+  * fwts-tests: fix up spelling mistakes in regression tests
+  * lib: fwts_olog: ensure buffer is null terminated
+  * lib: fwts_pipeio: fix memory leak on zero sized text allocation
+  * fwts-alloc: track memory allocations, cleans up 6 coverity scan warnings
+  * fwts-alloc: garbage collect hash records
+  * klog.json: Add some more kernel messages to klog data base
+  * klog.json: Add some EFI driver kernel messages to klog database
+  * klog.json: Add some EFI quirk driver kernel messages to klog database
+  * klog.json: Add some more EFI driver kernel messages to klog database
+  * klog.json: Add some miscellaneous messages to klog database
+  * klog.json: fix a couple of klog patterns
+
+  [Deb McLemore]
+  * Add README_JSON.txt for FWTS
+  * Integrate PPC for FWTS-LIVE Frontend
+
+  [Prarit Bhargava]
+  * fedora: Fix location of klog.json file in fwts.spec
+  * fedora: Add fedora internal versioning number in fwts.spec
+  * fedora: Add fwts.spec.in
+  * fedora: Update buildsrpm.sh for dynamic versioning
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 16 Feb 2017 09:58:33 +0800
+
 fwts (17.01.00-0ubuntu1) zesty; urgency=low
 
   [Colin Ian King]

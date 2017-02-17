@@ -34,8 +34,9 @@
 #define HASH_ALLOC_SIZE	(509)
 
 typedef struct hash_alloc {
-	void *addr;		/* allocation addr, NULL = not used */
 	struct hash_alloc *next;/* next one in hash chain */
+	void *addr;		/* allocation addr, NULL = not used */
+	size_t size;		/* actual size of allocation */
 } hash_alloc_t;
 
 static hash_alloc_t *hash_allocs[HASH_ALLOC_SIZE];
@@ -61,16 +62,17 @@ static inline size_t hash_addr(const void *addr)
  *	known allocations so we can keep track
  *	of valid allocs.
  */
-static bool hash_alloc_add(void *addr)
+static bool hash_alloc_add(void *addr, size_t size)
 {
 	size_t h = hash_addr(addr);
 	hash_alloc_t *new = hash_allocs[h];
 
 	while (new) {
 		/* re-use old nullified records */
-		if (new->addr == NULL) {
+		if (!new->addr) {
 			/* old and free, so re-use */
 			new->addr = addr;
+			new->size = size;
 			return true;
 		}
 		/* something is wrong, already in use */
@@ -86,6 +88,7 @@ static bool hash_alloc_add(void *addr)
 		return false;
 
 	new->addr = addr;
+	new->size = size;
 	new->next = hash_allocs[h];
 	hash_allocs[h] = new;
 	hash_count++;
@@ -94,25 +97,22 @@ static bool hash_alloc_add(void *addr)
 }
 
 /*
- *  hash_alloc_remove()
- *	remove an allocated address from the hash
- *	of know allocations.
+ *  hash_alloc_find()
+ *	find a hash_alloc_t of an allocation
+ *	of a given address
  */
-static bool hash_alloc_remove(const void *addr)
+static hash_alloc_t *hash_alloc_find(const void *addr)
 {
 	size_t h = hash_addr(addr);
 	hash_alloc_t *ha = hash_allocs[h];
 
 	while (ha) {
 		if (ha->addr == addr) {
-			/* Just nullify it */
-			hash_count--;
-			ha->addr = NULL;
-			return true;
+			return ha;
 		}
 		ha = ha->next;
 	}
-	return false;
+	return NULL;
 }
 
 /*
@@ -140,6 +140,21 @@ static void hash_alloc_garbage_collect(void)
 }
 
 /*
+ *  hash_alloc_free()
+ *	free up a hash_alloc_t record
+ */
+static void hash_alloc_free(hash_alloc_t *ha)
+{
+	if (!ha)
+		return;
+
+	ha->addr = NULL;
+	ha->size = 0;
+	hash_count--;
+	hash_alloc_garbage_collect();
+}
+
+/*
  * We implement a low memory allocator to allow us to allocate
  * memory < 2G limit for the ACPICA table handling.  On 64 bit
  * machines we have to ensure that cached copies of ACPI tables
@@ -152,14 +167,6 @@ static void hash_alloc_garbage_collect(void)
  * Hence this implementation is not necessarily an efficient solution,
  * as it will only be used for a handful of tables.
  */
-
-#define FWTS_ALLOC_MAGIC	0xf023cb1a
-
-typedef struct {
-	void   *start;
-	size_t	size;
-	unsigned int magic;
-} fwts_mmap_header;
 
 /*
  * CHUNK_SIZE controls the gap between mappings. This creates gaps
@@ -238,7 +245,8 @@ static void *fwts_low_mmap(const size_t requested_size)
 	 *  If we can't access our own mappings then find a
 	 *  free page by just walking down memory
  	 */
-	if ((fp = fopen("/proc/self/maps", "r")) == NULL)
+	fp = fopen("/proc/self/maps", "r");
+	if (!fp)
 		return fwts_low_mmap_walkdown(requested_size);
 
 	while (!feof(fp)) {
@@ -257,7 +265,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 		/*
 		 *  Try and allocate under first mmap'd address space
 		 */
-		if (first_addr_start == NULL) {
+		if (!first_addr_start) {
 			size_t sz = (requested_size + CHUNK_SIZE) & ~(CHUNK_SIZE - 1);
 			uint8_t *addr = (uint8_t *)addr_start - sz;
 
@@ -328,11 +336,17 @@ static void *fwts_low_mmap(const size_t requested_size)
  */
 void *fwts_low_calloc(const size_t nmemb, const size_t size)
 {
-	size_t n = nmemb * size;
+	const size_t n = nmemb * size;
 	void *ret = MAP_FAILED;
-	fwts_mmap_header *hdr;
 
-	n += sizeof(fwts_mmap_header);
+	if (!nmemb || !size)
+		return NULL;
+
+	/* Check for size_t overflow */
+	if ((n / size) != nmemb) {
+		errno = ENOMEM;
+		return NULL;
+	}
 
 #ifdef MAP_32BIT
 	/* Not portable, only x86 */
@@ -350,21 +364,17 @@ void *fwts_low_calloc(const size_t nmemb, const size_t size)
 		ret = fwts_low_mmap(n);
 
 	/* OK, really can't mmap, give up */
-	if (ret == MAP_FAILED)
+	if (ret == MAP_FAILED) {
+		errno = ENOMEM;
 		return NULL;
+	}
 
+	/* should be zero already, but pre-fault it in */
 	memset(ret, 0, n);
 
-	/* save info so we can munmap() */
-	hdr = (fwts_mmap_header*)ret;
-	hdr->start = ret;
-	hdr->size = n;
-	hdr->magic = FWTS_ALLOC_MAGIC;
-
-	ret = (void *)((uint8_t *)ret + sizeof(fwts_mmap_header));
-
-	if (!hash_alloc_add(ret)) {
-		munmap((void *)hdr, n);
+	if (!hash_alloc_add(ret, n)) {
+		(void)munmap(ret, n);
+		errno = ENOMEM;
 		return NULL;
 	}
 
@@ -387,23 +397,26 @@ void *fwts_low_malloc(const size_t size)
 void *fwts_low_realloc(const void *ptr, const size_t size)
 {
 	void *ret;
-	fwts_mmap_header *hdr;
+	hash_alloc_t *ha;
 
-	if (ptr == NULL)
+	if (!ptr)
 		return fwts_low_malloc(size);
 
-	hdr = (fwts_mmap_header *)
-		((uint8_t *)ptr - sizeof(fwts_mmap_header));
-
-	/* sanity check */
-	if (hdr->magic != FWTS_ALLOC_MAGIC)
+	ha = hash_alloc_find(ptr);
+	if (!ha) {
+		errno = ENOMEM;
 		return NULL;
+	}
 
-	if ((ret = fwts_low_malloc(size)) == NULL)
+	ret = fwts_low_malloc(size);
+	if (!ret) {
+		errno = ENOMEM;
 		return NULL;
+	}
 
-	memcpy(ret, ptr, hdr->size - sizeof(fwts_mmap_header));
-	fwts_low_free(ptr);
+	memcpy(ret, ha->addr, ha->size);
+	(void)munmap(ha->addr, ha->size);
+	hash_alloc_free(ha);
 
 	return ret;
 }
@@ -414,6 +427,7 @@ void *fwts_low_realloc(const void *ptr, const size_t size)
  */
 void fwts_low_free(const void *ptr)
 {
+	hash_alloc_t *ha;
 	/*
 	 *  Sanity check the address we are about to
 	 *  try and free. If it is not known about
@@ -421,18 +435,13 @@ void fwts_low_free(const void *ptr)
 	 */
 	if (!ptr)
 		return;
-	if (!hash_alloc_remove(ptr)) {
+
+	ha = hash_alloc_find(ptr);
+	if (!ha) {
 		/* Should never happen... */
 		fprintf(stderr, "double free on %p\n", ptr);
 		return;
 	}
-
-	fwts_mmap_header *hdr = (fwts_mmap_header *)
-		((uint8_t *)ptr - sizeof(fwts_mmap_header));
-
-	/* Be doubly sure by checking magic before we munmap */
-	if (hdr->magic == FWTS_ALLOC_MAGIC)
-		munmap(hdr, hdr->size);
-
-	hash_alloc_garbage_collect();
+	(void)munmap(ha->addr, ha->size);
+	hash_alloc_free(ha);
 }

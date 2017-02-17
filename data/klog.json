@@ -3,6 +3,34 @@
  [ 
   {
    "compare_mode": "string",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Failed to change power state to ",
+   "advice": "The ACPI Power Management driver was unable to transition a device to the desired power state.",
+   "label": "KlogAcpiPmStateTransitionFailed",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Cannot transition from .* to",
+   "advice": "The ACPI Power Management driver refused to transition a device from going from a lower power (deeper) state to a higher power (shallower) state if the state is not D0 in accordance with ACPI 6.0.",
+   "label": "KlogAcpiPmStateTransitionNotAllowed",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Cannot transition to power state .* for parent",
+   "advice": "The ACPI Power Management driver was unable to transition a parent device into a power state because it does not support that particular power state.",
+   "label": "KlogAcpiPmStateNotSupportedByParent",
+  },
+  {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_MEDIUM",
+   "pattern": "Power state .* not supported",
+   "advice": "The ACPI Power Management driver was unable to transition a device into a specific power state because the device did not specify it supported this power state.",
+   "label": "KlogAcpiPmStateNotSupported",
+  },
+  {
+   "compare_mode": "string",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "e820: cannot find a gap in the 32bit address range",
    "advice": "A search for the biggest gap in the low 32 bit E820 memory space for PCI MMIO resources failed to find any free gaps large enough. PCI devices with unassigned 32 bit Base Address Registers (BARs) are very likely to break.",

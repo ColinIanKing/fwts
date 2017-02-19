@@ -36,11 +36,12 @@ static int get_dimm_property(fwts_framework *fw,
 	char *prop_string = strstr(my_path, "/memory-buffer");
 
 	if (prop_string) {
-		const char *prop_buf;
 		int prop_len;
 		int node = fdt_path_offset(fw->fdt, prop_string);
 
 		if (node >= 0) {
+			const char *prop_buf;
+
 			prop_buf = fdt_getprop(fw->fdt, node,
 					property,
 					&prop_len);

@@ -1042,7 +1042,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x09)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
-			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x1d, 0x0, 0x7f);
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x20, 0x0, 0x7f);
 
 			if (data[5] >=
 				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {

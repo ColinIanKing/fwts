@@ -96,6 +96,7 @@ src/hotkey	- HotKey tests
 src/hpet	- HPET 
 src/kernel	- kernel specific
 src/pci		- PCI
+src/sbbr	- ARM SBBR Tests
 src/uefi	- UEFI
 
 When writing new tests use the blank sketch of a test in

@@ -56,7 +56,8 @@ typedef struct {
 	 FWTS_FLAG_UNSAFE |			\
 	 FWTS_FLAG_TEST_UEFI |			\
 	 FWTS_FLAG_TEST_ACPI |			\
-	 FWTS_FLAG_TEST_COMPLIANCE_ACPI)
+	 FWTS_FLAG_TEST_COMPLIANCE_ACPI |	\
+	 FWTS_FLAG_TEST_SBBR)
 
 static const fwts_categories categories[] = {
 	{ "ACPI",			FWTS_FLAG_TEST_ACPI },
@@ -65,6 +66,7 @@ static const fwts_categories categories[] = {
 	{ "Batch Experimental",		FWTS_FLAG_BATCH_EXPERIMENTAL },
 	{ "Interactive Experimental",	FWTS_FLAG_INTERACTIVE_EXPERIMENTAL },
 	{ "Power States",		FWTS_FLAG_POWER_STATES },
+	{ "SBBR",			FWTS_FLAG_TEST_SBBR },
 	{ "Utilities",			FWTS_FLAG_UTILS },
 	{ "Unsafe",			FWTS_FLAG_UNSAFE },
 	{ "UEFI",			FWTS_FLAG_TEST_UEFI },
@@ -131,6 +133,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "acpicompliance",	"",   0, "Run ACPI tests for spec compliance." },
 	{ "log-level",		"",   1, "Specify error level to report failed test messages," },
 	{ "arch",		"",   1, "Specify arch of the tables being tested (defaults to current host)." },
+	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -140,6 +143,7 @@ static const char *fwts_copyright[] = {
 	"Some of this work - Copyright (c) 1999 - 2017, Intel Corp. All rights reserved.",
 	"Some of this work - Copyright (c) 2010 - 2017, Canonical.",
 	"Some of this work - Copyright (c) 2016 - 2017, IBM.",
+	"Some of this work - Copyright (c) 2017, ARM Ltd.",
 	NULL
 };
 
@@ -1322,6 +1326,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 45: /* --arch */
 			if (fwts_framework_an_parse(fw, optarg) != FWTS_OK)
 				return FWTS_ERROR;
+			break;
+		case 46: /* --sbbr */
+			fw->flags |= FWTS_FLAG_TEST_SBBR;
 			break;
 		}
 		break;

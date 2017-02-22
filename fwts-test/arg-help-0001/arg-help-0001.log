@@ -220,6 +220,7 @@
 --s4-sleep-delay             Sleep N seconds
                              between start of
                              hibernate and wakeup.
+--sbbr                       Run ARM SBBR tests.
 -p, --show-progress          Output test progress
                              report to stderr.
 -D, --show-progress-dialog   Output test progress
@@ -262,3 +263,4 @@
 Some of this work - Copyright (c) 1999 - 2017, Intel Corp. All rights reserved.
 Some of this work - Copyright (c) 2010 - 2017, Canonical.
 Some of this work - Copyright (c) 2016 - 2017, IBM.
+Some of this work - Copyright (c) 2017, ARM Ltd.

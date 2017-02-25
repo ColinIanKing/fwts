@@ -73,6 +73,7 @@ static bool hash_alloc_add(void *addr, size_t size)
 			/* old and free, so re-use */
 			new->addr = addr;
 			new->size = size;
+			hash_count++;
 			return true;
 		}
 		/* something is wrong, already in use */

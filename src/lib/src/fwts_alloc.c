@@ -137,6 +137,7 @@ static void hash_alloc_garbage_collect(void)
 			ha = next;
 		}
 	}
+	memset(hash_allocs, 0, sizeof(hash_allocs));
 }
 
 /*

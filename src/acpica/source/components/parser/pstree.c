@@ -117,6 +117,7 @@
 #include "accommon.h"
 #include "acparser.h"
 #include "amlcode.h"
+#include "acconvert.h"
 
 #define _COMPONENT          ACPI_PARSER
         ACPI_MODULE_NAME    ("pstree")
@@ -314,6 +315,7 @@ AcpiPsGetDepthNext (
     Next = AcpiPsGetArg (Op, 0);
     if (Next)
     {
+        ASL_CV_LABEL_FILENODE (Next);
         return (Next);
     }
 
@@ -322,6 +324,7 @@ AcpiPsGetDepthNext (
     Next = Op->Common.Next;
     if (Next)
     {
+        ASL_CV_LABEL_FILENODE (Next);
         return (Next);
     }
 
@@ -334,6 +337,8 @@ AcpiPsGetDepthNext (
         Arg = AcpiPsGetArg (Parent, 0);
         while (Arg && (Arg != Origin) && (Arg != Op))
         {
+
+            ASL_CV_LABEL_FILENODE (Arg);
             Arg = Arg->Common.Next;
         }
 
@@ -348,6 +353,7 @@ AcpiPsGetDepthNext (
         {
             /* Found sibling of parent */
 
+            ASL_CV_LABEL_FILENODE (Parent->Common.Next);
             return (Parent->Common.Next);
         }
 
@@ -355,6 +361,7 @@ AcpiPsGetDepthNext (
         Parent = Parent->Common.Parent;
     }
 
+    ASL_CV_LABEL_FILENODE (Next);
     return (Next);
 }
 
@@ -403,7 +410,7 @@ AcpiPsGetChild (
         Child = AcpiPsGetArg (Op, 1);
         break;
 
-    case AML_POWER_RES_OP:
+    case AML_POWER_RESOURCE_OP:
     case AML_INDEX_FIELD_OP:
 
         Child = AcpiPsGetArg (Op, 2);

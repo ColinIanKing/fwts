@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Module Name: dmdeferred - Disassembly of deferred AML opcodes
+ * Module Name: acapps - common include for ACPI applications/tools
  *
  *****************************************************************************/
 
@@ -113,224 +113,164 @@
  *
  *****************************************************************************/
 
-#include "acpi.h"
-#include "accommon.h"
-#include "acdispat.h"
-#include "amlcode.h"
-#include "acdisasm.h"
-#include "acparser.h"
+#ifndef _ACCONVERT
+#define _ACCONVERT
 
-#define _COMPONENT          ACPI_CA_DISASSEMBLER
-        ACPI_MODULE_NAME    ("dmdeferred")
+/* Definitions for comment state */
+
+#define ASL_COMMENT_STANDARD    1
+#define ASLCOMMENT_INLINE       2
+#define ASL_COMMENT_OPEN_PAREN  3
+#define ASL_COMMENT_CLOSE_PAREN 4
+#define ASL_COMMENT_CLOSE_BRACE 5
+
+/* Definitions for comment print function*/
+
+#define AML_COMMENT_STANDARD    1
+#define AMLCOMMENT_INLINE       2
+#define AML_COMMENT_END_NODE    3
+#define AML_NAMECOMMENT         4
+#define AML_COMMENT_CLOSE_BRACE 5
+#define AML_COMMENT_ENDBLK      6
+#define AML_COMMENT_INCLUDE     7
 
 
-/* Local prototypes */
+#ifdef ACPI_ASL_COMPILER
+/*
+ * cvcompiler
+ */
+void
+CvProcessComment (
+    ASL_COMMENT_STATE       CurrentState,
+    char                    *StringBuffer,
+    int                     c1);
 
-static ACPI_STATUS
-AcpiDmDeferredParse (
+void
+CvProcessCommentType2 (
+    ASL_COMMENT_STATE       CurrentState,
+    char                    *StringBuffer);
+
+UINT32
+CvCalculateCommentLengths(
+   ACPI_PARSE_OBJECT        *Op);
+
+void
+CvProcessCommentState (
+    char                    input);
+
+char*
+CvAppendInlineComment (
+    char                    *InlineComment,
+    char                    *ToAdd);
+
+void
+CvAddToCommentList (
+    char*                   ToAdd);
+
+void
+CvPlaceComment (
+    UINT8                   Type,
+    char                    *CommentString);
+
+UINT32
+CvParseOpBlockType (
+    ACPI_PARSE_OBJECT       *Op);
+
+ACPI_COMMENT_NODE*
+CvCommentNodeCalloc (
+    void);
+
+void
+CgWriteAmlDefBlockComment (
+    ACPI_PARSE_OBJECT       *Op);
+
+void
+CgWriteOneAmlComment (
     ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
+    char*                   CommentToPrint,
+    UINT8                   InputOption);
+
+void
+CgWriteAmlComment (
+    ACPI_PARSE_OBJECT       *Op);
+
+
+/*
+ * cvparser
+ */
+void
+CvInitFileTree (
+    ACPI_TABLE_HEADER       *Table,
+    UINT8                   *AmlStart,
     UINT32                  AmlLength);
 
+void
+CvClearOpComments (
+    ACPI_PARSE_OBJECT       *Op);
 
-/******************************************************************************
- *
- * FUNCTION:    AcpiDmParseDeferredOps
- *
- * PARAMETERS:  Root                - Root of the parse tree
- *
- * RETURN:      Status
- *
- * DESCRIPTION: Parse the deferred opcodes (Methods, regions, etc.)
- *
- *****************************************************************************/
+ACPI_FILE_NODE*
+CvFilenameExists (
+    char                    *Filename,
+    ACPI_FILE_NODE           *Head);
 
-ACPI_STATUS
-AcpiDmParseDeferredOps (
-    ACPI_PARSE_OBJECT       *Root)
-{
-    const ACPI_OPCODE_INFO  *OpInfo;
-    ACPI_PARSE_OBJECT       *Op = Root;
-    ACPI_STATUS             Status;
+void
+CvLabelFileNode (
+    ACPI_PARSE_OBJECT       *Op);
 
+void
+CvCaptureListComments (
+    ACPI_PARSE_STATE        *ParserState,
+    ACPI_COMMENT_NODE       *ListHead,
+    ACPI_COMMENT_NODE       *ListTail);
 
-    ACPI_FUNCTION_ENTRY ();
+void
+CvCaptureCommentsOnly (
+    ACPI_PARSE_STATE        *ParserState);
 
+void
+CvCaptureComments (
+    ACPI_WALK_STATE         *WalkState);
 
-    /* Traverse the entire parse tree */
+void
+CvTransferComments (
+    ACPI_PARSE_OBJECT       *Op);
 
-    while (Op)
-    {
-        OpInfo = AcpiPsGetOpcodeInfo (Op->Common.AmlOpcode);
-        if (!(OpInfo->Flags & AML_DEFER))
-        {
-            Op = AcpiPsGetDepthNext (Root, Op);
-            continue;
-        }
+/*
+ * cvdisasm
+ */
+void
+CvSwitchFiles (
+    UINT32                  level,
+    ACPI_PARSE_OBJECT       *op);
 
-        /* Now we know we have a deferred opcode */
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_METHOD_OP:
-        case AML_BUFFER_OP:
-        case AML_PACKAGE_OP:
-        case AML_VARIABLE_PACKAGE_OP:
-
-            Status = AcpiDmDeferredParse (
-                Op, Op->Named.Data, Op->Named.Length);
-            if (ACPI_FAILURE (Status))
-            {
-                return (Status);
-            }
-            break;
-
-        /* We don't need to do anything for these deferred opcodes */
-
-        case AML_REGION_OP:
-        case AML_DATA_REGION_OP:
-        case AML_CREATE_QWORD_FIELD_OP:
-        case AML_CREATE_DWORD_FIELD_OP:
-        case AML_CREATE_WORD_FIELD_OP:
-        case AML_CREATE_BYTE_FIELD_OP:
-        case AML_CREATE_BIT_FIELD_OP:
-        case AML_CREATE_FIELD_OP:
-        case AML_BANK_FIELD_OP:
-
-            break;
-
-        default:
-
-            ACPI_ERROR ((AE_INFO, "Unhandled deferred AML opcode [0x%.4X]",
-                 Op->Common.AmlOpcode));
-            break;
-        }
-
-        Op = AcpiPsGetDepthNext (Root, Op);
-    }
-
-    return (AE_OK);
-}
+BOOLEAN
+CvFileHasSwitched (
+    ACPI_PARSE_OBJECT       *Op);
 
 
-/******************************************************************************
- *
- * FUNCTION:    AcpiDmDeferredParse
- *
- * PARAMETERS:  Op                  - Root Op of the deferred opcode
- *              Aml                 - Pointer to the raw AML
- *              AmlLength           - Length of the AML
- *
- * RETURN:      Status
- *
- * DESCRIPTION: Parse one deferred opcode
- *              (Methods, operation regions, etc.)
- *
- *****************************************************************************/
-
-static ACPI_STATUS
-AcpiDmDeferredParse (
+void
+CvCloseParenWriteComment (
     ACPI_PARSE_OBJECT       *Op,
-    UINT8                   *Aml,
-    UINT32                  AmlLength)
-{
-    ACPI_WALK_STATE         *WalkState;
-    ACPI_STATUS             Status;
-    ACPI_PARSE_OBJECT       *SearchOp;
-    ACPI_PARSE_OBJECT       *StartOp;
-    ACPI_PARSE_OBJECT       *NewRootOp;
-    ACPI_PARSE_OBJECT       *ExtraOp;
+    UINT32                  Level);
+
+void
+CvCloseBraceWriteComment (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT32                  Level);
+
+void
+CvPrintOneCommentList (
+    ACPI_COMMENT_NODE       *CommentList,
+    UINT32                  Level);
+
+void
+CvPrintOneCommentType (
+    ACPI_PARSE_OBJECT       *Op,
+    UINT8                   CommentType,
+    char*                   EndStr,
+    UINT32                  Level);
 
 
-    ACPI_FUNCTION_TRACE (DmDeferredParse);
+#endif
 
-
-    if (!Aml || !AmlLength)
-    {
-        return_ACPI_STATUS (AE_OK);
-    }
-
-    ACPI_DEBUG_PRINT ((ACPI_DB_INFO, "Parsing deferred opcode %s [%4.4s]\n",
-        Op->Common.AmlOpName, (char *) &Op->Named.Name));
-
-    /* Need a new walk state to parse the AML */
-
-    WalkState = AcpiDsCreateWalkState (0, Op, NULL, NULL);
-    if (!WalkState)
-    {
-        return_ACPI_STATUS (AE_NO_MEMORY);
-    }
-
-    Status = AcpiDsInitAmlWalk (WalkState, Op, NULL, Aml,
-        AmlLength, NULL, ACPI_IMODE_LOAD_PASS1);
-    if (ACPI_FAILURE (Status))
-    {
-        return_ACPI_STATUS (Status);
-    }
-
-    /* Parse the AML for this deferred opcode */
-
-    WalkState->ParseFlags &= ~ACPI_PARSE_DELETE_TREE;
-    WalkState->ParseFlags |= ACPI_PARSE_DISASSEMBLE;
-    Status = AcpiPsParseAml (WalkState);
-
-    StartOp = (Op->Common.Value.Arg)->Common.Next;
-    SearchOp = StartOp;
-    while (SearchOp)
-    {
-        SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-    }
-
-    /*
-     * For Buffer and Package opcodes, link the newly parsed subtree
-     * into the main parse tree
-     */
-    switch (Op->Common.AmlOpcode)
-    {
-    case AML_BUFFER_OP:
-    case AML_PACKAGE_OP:
-    case AML_VARIABLE_PACKAGE_OP:
-
-        switch (Op->Common.AmlOpcode)
-        {
-        case AML_PACKAGE_OP:
-
-            ExtraOp = Op->Common.Value.Arg;
-            NewRootOp = ExtraOp->Common.Next;
-            ACPI_FREE (ExtraOp);
-            break;
-
-        case AML_VARIABLE_PACKAGE_OP:
-        case AML_BUFFER_OP:
-        default:
-
-            NewRootOp = Op->Common.Value.Arg;
-            break;
-        }
-
-        Op->Common.Value.Arg = NewRootOp->Common.Value.Arg;
-
-        /* Must point all parents to the main tree */
-
-        StartOp = Op;
-        SearchOp = StartOp;
-        while (SearchOp)
-        {
-            if (SearchOp->Common.Parent == NewRootOp)
-            {
-                SearchOp->Common.Parent = Op;
-            }
-
-            SearchOp = AcpiPsGetDepthNext (StartOp, SearchOp);
-        }
-
-        ACPI_FREE (NewRootOp);
-        break;
-
-    default:
-
-        break;
-    }
-
-    return_ACPI_STATUS (AE_OK);
-}
+#endif /* _ACCONVERT */

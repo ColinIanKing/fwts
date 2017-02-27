@@ -128,6 +128,9 @@ libfwtsiasl_la_SOURCES = 			\
 	aslprepkg.c 				\
 	aslprintf.c				\
 	aslprune.c				\
+	cvcompiler.c				\
+	cvdisasm.c				\
+	cvparser.c				\
 	dtfield.c 				\
 	dtio.c 					\
 	dtsubtable.c 				\

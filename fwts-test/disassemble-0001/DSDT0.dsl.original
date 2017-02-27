@@ -658,8 +658,8 @@ DefinitionBlock ("", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 
     Scope (_PR)
     {
-        Processor (CPU0, 0x00, 0x00001010, 0x06) {}
-        Processor (CPU1, 0x01, 0x00001010, 0x06) {}
+        Processor (CPU0, 0x00, 0x00001010, 0x06){}
+        Processor (CPU1, 0x01, 0x00001010, 0x06){}
         Method (RPPC, 0, NotSerialized)
         {
             If (LEqual (OSYS, 0x07D2))
@@ -6466,7 +6466,7 @@ DefinitionBlock ("", "DSDT", 2, "TOSCPL", "CRESTLNE", 0x06040000)
 
                 Method (SBLR, 3, Serialized)
                 {
-                    Name (TBUF, Buffer (0x0100) {})
+                    Name (TBUF, Buffer (0x0100){})
                     If (STRT ())
                     {
                         Return (Zero)

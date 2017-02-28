@@ -273,7 +273,6 @@ static int get_linux_pci_devices(fwts_framework *fw)
 				free(of_node_link);
 				free(pci_slot);
 				free(namelist[i]);
-				bytes = 0;
 				continue;
 			}
 			of_node_path[bytes] = '\0';

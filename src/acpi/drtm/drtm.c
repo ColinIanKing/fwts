@@ -82,7 +82,6 @@ static int drtm_test1(fwts_framework *fw)
 	offset += sizeof(drtm_vtl->validated_table_count);
 
 	if (drtm->header.length < offset + sizeof(uint64_t) * drtm_vtl->validated_table_count) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"DRTMOutOfBound",
 			"DRTM's length is too small to contain all fields");
@@ -101,7 +100,6 @@ static int drtm_test1(fwts_framework *fw)
 	offset += sizeof(drtm_rtl->resource_count);
 
 	if (drtm->header.length < offset + sizeof(fwts_acpi_drtm_resource) * drtm_rtl->resource_count) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"DRTMOutOfBound",
 			"DRTM's length is too small to contain all fields");
@@ -136,7 +134,6 @@ static int drtm_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  DPS_Length:               0x%8.8" PRIx32, drtm_dps->dps_id_length);
 
 	if (drtm->header.length < offset + sizeof(fwts_acpi_table_drtm_dps)) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"DRTMOutOfBound",
 			"DRTM's length is too small to contain all fields");

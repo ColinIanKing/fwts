@@ -79,7 +79,6 @@ static int mpst_test1(fwts_framework *fw)
 
 	node_offset = sizeof(fwts_acpi_table_mpst) + (sizeof(fwts_acpi_table_mpst_power_node_list));
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_node) * node_list->count) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"MPSTOutOfBound",
 			"MPST's table length is too small to contain all sub-tables");
@@ -130,7 +129,6 @@ static int mpst_test1(fwts_framework *fw)
 
 		node_offset += sizeof(fwts_acpi_table_mpst_power_node);
 		if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_state) * power_node->num_states) {
-			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"MPSTOutOfBound",
 				"MPST's table length is too small to contain all sub-tables");
@@ -145,7 +143,6 @@ static int mpst_test1(fwts_framework *fw)
 		}
 
 		if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_component) * power_node->num_components) {
-			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"MPSTOutOfBound",
 				"MPST's table length is too small to contain all sub-tables");
@@ -173,7 +170,6 @@ static int mpst_test1(fwts_framework *fw)
 
 	node_offset += sizeof(fwts_acpi_table_mpst_power_char_list);
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_char) * char_list->count) {
-		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"MPSTOutOfBound",
 			"MPST's table length is too small to contain all sub-tables");

@@ -1753,6 +1753,23 @@ typedef struct {
 	*/
 } __attribute__ ((packed)) fwts_acpi_table_iort_pci_root_complex_node;
 
+typedef struct {
+	fwts_acpi_table_iort_node iort_node;
+	uint64_t	base_address;
+	uint32_t	flags;
+	uint32_t	reserved;
+	uint64_t	vatos_address;
+	uint32_t	model;
+	uint32_t	event;
+	uint32_t	pri;
+	uint32_t	gerr;
+	uint32_t	sync;
+	/*
+	   followed by array of ids_mappings at some offset
+	   fwts_acpi_table_iort_id_mapping identifier_array[0];
+	*/
+} __attribute__ ((packed)) fwts_acpi_table_iort_smmuv3_node;
+
 /*
  * ACPI STAO (Status Override Table)
  *   http://wiki.xenproject.org/mediawiki/images/0/02/Status-override-table.pdf

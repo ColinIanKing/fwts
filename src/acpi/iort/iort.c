@@ -607,6 +607,52 @@ static void iort_check_smmu(
 }
 
 /*
+ *  Check IORT SMMUv3
+ */
+static void iort_check_smmuv3(
+	fwts_framework *fw,
+	uint8_t *data,
+	uint8_t *node_end,
+	bool *passed)
+{
+	fwts_acpi_table_iort_smmuv3_node *node =
+		(fwts_acpi_table_iort_smmuv3_node *)data;
+
+	iort_node_dump(fw, "IORT SMMUv3 node", (fwts_acpi_table_iort_node *)data);
+	fwts_log_info_verbatim(fw, "  Base Address:             0x%16.16" PRIx64, node->base_address);
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, node->flags);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, node->reserved);
+	fwts_log_info_verbatim(fw, "  VATOS Address:            0x%16.16" PRIx64, node->vatos_address);
+	fwts_log_info_verbatim(fw, "  Model:                    0x%8.8" PRIx32, node->model);
+	fwts_log_info_verbatim(fw, "  Event:                    0x%8.8" PRIx32, node->event);
+	fwts_log_info_verbatim(fw, "  PRI:                      0x%8.8" PRIx32, node->pri);
+	fwts_log_info_verbatim(fw, "  GERR:                     0x%8.8" PRIx32, node->gerr);
+	fwts_log_info_verbatim(fw, "  Sync:                     0x%8.8" PRIx32, node->sync);
+
+	iort_id_mappings_dump(fw, data, node_end);
+
+	iort_node_check(fw, data, false, false, passed);
+	iort_id_mappings_check(fw, data, node_end, passed);
+
+	if (node->model > 0) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"IORTSmmuv3InvalidModel",
+			"IORT SMMUv3 Model is 0x%" PRIx32 " and was expecting "
+			"a model value of 0.", node->model);
+	}
+	if (node->flags & ~3) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"IORTSmmuv3ReservedFlags",
+			"IORT SMMUv3 Reserved Flags is 0x%" PRIx32 " and has "
+			"some reserved bits [31:2] set when they should be zero.",
+			node->flags);
+	}
+	fwts_log_nl(fw);
+}
+
+/*
  *  IORT Remapping Table
  *     http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
  */
@@ -675,6 +721,9 @@ static int iort_test1(fwts_framework *fw)
 			break;
 		case 0x03:
 			iort_check_smmu(fw, data, node_end, &passed);
+			break;
+		case 0x04:
+			iort_check_smmuv3(fw, data, node_end, &passed);
 			break;
 		default:
 			/* reserved */

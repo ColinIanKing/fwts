@@ -255,7 +255,7 @@ fwts git repository:
 	http://kernel.ubuntu.com/git/hwe/fwts.git/
 
 fwts reference guide:
-	https://wiki.ubuntu.com/Kernel/Reference/fwts
+	https://wiki.ubuntu.com/FirmwareTestSuite/Reference
 
 fwts LiveCD:
 	http://fwts.ubuntu.com/fwts-live/

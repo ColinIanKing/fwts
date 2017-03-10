@@ -51,6 +51,11 @@ static inline int fwts_devicetree_read(fwts_framework *fwts
 }
 #endif
 
+bool check_status_property_okay(fwts_framework *fw,
+				const char *my_path,
+				const char *my_prop_string,
+				const char *property);
+
 int check_property_printable(fwts_framework *fw,
 			const char *name,
 			const char *buf,

@@ -24,6 +24,8 @@
 
 #include "fwts.h"
 
+#include <libfdt.h>
+
 int fwts_devicetree_read(fwts_framework *fwts)
 {
 	char *command, *data = NULL;
@@ -62,6 +64,34 @@ int fwts_devicetree_read(fwts_framework *fwts)
 	fwts->fdt = data;
 
 	return FWTS_OK;
+}
+
+bool check_status_property_okay(fwts_framework *fw,
+	const char *my_path,
+	const char *my_prop_string,
+	const char *property)
+{
+	char *prop_string = strstr(my_path, my_prop_string);
+
+	if (prop_string) {
+		int prop_len;
+		int node = fdt_path_offset(fw->fdt, prop_string);
+
+		if (node >= 0) {
+			const char *prop_buf;
+
+			prop_buf = fdt_getprop(fw->fdt, node,
+					property,
+					&prop_len);
+			if (prop_len > 0) {
+				if ((!strcmp(prop_buf, "okay")) ||
+					(!strcmp(prop_buf, "ok"))) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 int check_property_printable(fwts_framework *fw,

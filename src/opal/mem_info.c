@@ -27,6 +27,8 @@
 
 #include <libfdt.h>
 
+bool found_dimm = false;
+
 static int get_dimm_property(fwts_framework *fw,
 			char *my_path,
 			bool hex,
@@ -185,30 +187,39 @@ static int process_dimm(fwts_framework *fw,
 				free(namelist[i]);
 				continue;
 			}
-			if (get_dimm_property(fw, my_path, false,
-						DT_PROPERTY_OPAL_SLOT_LOC)) {
-				failures ++;
-			}
 
-			if (get_dimm_property(fw, my_path, false,
-						DT_PROPERTY_OPAL_PART_NUM)) {
-				failures ++;
-			}
-
-			if (get_dimm_property(fw, my_path, false,
-						DT_PROPERTY_OPAL_SERIAL_NUM)) {
-				failures ++;
-			}
-
-			if (get_dimm_property(fw, my_path, true,
-					DT_PROPERTY_OPAL_MANUFACTURER_ID)) {
-				failures ++;
-			}
-
-			if (get_dimm_property(fw, my_path, false,
+			char my_prop_string[15];
+			strcpy(my_prop_string, "/memory-buffer");
+			if (check_status_property_okay(fw, my_path,
+						my_prop_string,
 						DT_PROPERTY_OPAL_STATUS)) {
-				failures ++;
+				found_dimm = true;
+				if (get_dimm_property(fw, my_path, false,
+					DT_PROPERTY_OPAL_STATUS)) {
+					failures ++;
+				}
+
+				if (get_dimm_property(fw, my_path, false,
+					DT_PROPERTY_OPAL_SLOT_LOC)) {
+					failures ++;
+				}
+
+				if (get_dimm_property(fw, my_path, false,
+					DT_PROPERTY_OPAL_PART_NUM)) {
+					failures ++;
+				}
+
+				if (get_dimm_property(fw, my_path, false,
+					DT_PROPERTY_OPAL_SERIAL_NUM)) {
+					failures ++;
+				}
+
+				if (get_dimm_property(fw, my_path, true,
+					DT_PROPERTY_OPAL_MANUFACTURER_ID)) {
+					failures ++;
+				}
 			}
+
 			free(my_buffer);
 			free(namelist[i]);
 		}
@@ -398,6 +409,18 @@ static int get_linux_mem_devices(fwts_framework *fw)
 				"No MEM devices (memory-buffer@X) were found"
 				" in \"%s\".  Check the system for setup"
 				" issues.",
+				DT_FS_PATH);
+	}
+
+	if (!found_dimm) {
+		failures ++;
+		fwts_log_nl(fw);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+				"OPAL MEM Info",
+				"No MEM DIMM devices (memory-buffer) were found"
+				" in \"%s\" with a status of \"okay\" or \"ok\"."
+				"  This is unexpected so please check your"
+				" system setup for issues.",
 				DT_FS_PATH);
 	}
 

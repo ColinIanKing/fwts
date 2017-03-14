@@ -1042,7 +1042,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x09)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
-			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x20, 0x0, 0x7f);
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x24, 0x0, 0x7f);
 
 			if (data[5] >=
 				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
@@ -1104,7 +1104,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Processor Type", hdr, 0x5, 0x1, 0x6);
 			dmi_str_check(fw, table, addr, "Processor Manufacturer", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Processor Version", hdr, 0x10);
-			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x30);
+			dmi_min_max_uint8_check(fw, table, addr, "Upgrade", hdr, 0x19, 0x1, 0x38);
 			if (hdr->length < 0x23)
 				break;
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x20);
@@ -1198,11 +1198,11 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x0c)
 				break;
 			dmi_str_check(fw, table, addr, "Slot Designation", hdr, 0x4);
-			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x20)) ||
+			if (!(((data[0x5] >= 0x01) && (data[0x5] <= 0x23)) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x01..0x20, 0xa0..0xb6) "
+					"(range allowed 0x01..0x23, 0xa0..0xb6) "
 					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 					"field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Slot Type", 0x5);
@@ -1628,11 +1628,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			table = "Management Controller Host Interface (Type 42)";
 			if (hdr->length < 0x05)
 				break;
-			if (!((data[0x04] >= 0x02 && data[0x04] <= 0x08) ||
+			if (!((data[0x04] <= 0x3F) ||
+			      (data[0x04] == 0x40) ||
 			      (data[0x04] == 0xF0)))
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_MGMT_CTRL_HOST_TYPE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x02..0x08, 0xf0) "
+					"(range allowed 0x00..0x3f, 0x40, 0xf0) "
 					"while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x4], table, addr, "Reference Designation", 0x4);

@@ -27,7 +27,7 @@
 
 #include <libfdt.h>
 
-bool found_dimm = false;
+static bool found_dimm = false;
 
 static int get_dimm_property(fwts_framework *fw,
 			char *my_path,

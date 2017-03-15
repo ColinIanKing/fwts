@@ -29,20 +29,21 @@
 
 static bool found_dimm = false;
 
-static int get_dimm_property(fwts_framework *fw,
-			char *my_path,
-			bool hex,
-			char *property)
+static int get_dimm_property(
+	fwts_framework *fw,
+	char *my_path,
+	bool hex,
+	char *property)
 {
 	int failures = 0;
 	char *prop_string = strstr(my_path, "/memory-buffer");
 
 	if (prop_string) {
-		int prop_len;
 		int node = fdt_path_offset(fw->fdt, prop_string);
 
 		if (node >= 0) {
 			const char *prop_buf;
+			int prop_len;
 
 			prop_buf = fdt_getprop(fw->fdt, node,
 					property,
@@ -65,7 +66,7 @@ static int get_dimm_property(fwts_framework *fw,
 						property,
 						prop_buf,
 						prop_len)) {
-							failures ++;
+							failures++;
 					}
 					fwts_passed(fw,
 						"OPAL MEM Info Property of"
@@ -75,7 +76,7 @@ static int get_dimm_property(fwts_framework *fw,
 						my_path,
 						prop_buf);
 				} else {
-					failures ++;
+					failures++;
 					fwts_log_nl(fw);
 					fwts_failed(fw,
 						LOG_LEVEL_CRITICAL,
@@ -89,7 +90,7 @@ static int get_dimm_property(fwts_framework *fw,
 						my_path);
 				}
 			} else {
-				failures ++;
+				failures++;
 				fwts_log_nl(fw);
 				fwts_failed(fw,
 					LOG_LEVEL_CRITICAL,
@@ -103,7 +104,7 @@ static int get_dimm_property(fwts_framework *fw,
 					my_path);
 			}
 		} else {
-			failures ++;
+			failures++;
 			fwts_log_nl(fw);
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 					"OPAL MEM Info",
@@ -113,7 +114,7 @@ static int get_dimm_property(fwts_framework *fw,
 					my_path, property);
 		}
 	} else {
-		failures ++;
+		failures++;
 		fwts_log_nl(fw);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL MEM Info",
@@ -130,9 +131,10 @@ static int get_dimm_property(fwts_framework *fw,
 	}
 }
 
-static int process_dimm(fwts_framework *fw,
-			char *my_string,
-			char *my_dir)
+static int process_dimm(
+	fwts_framework *fw,
+	char *my_string,
+	char *my_dir)
 {
 	int count, i, failures = 0;
 	struct dirent **namelist;
@@ -196,27 +198,27 @@ static int process_dimm(fwts_framework *fw,
 				found_dimm = true;
 				if (get_dimm_property(fw, my_path, false,
 					DT_PROPERTY_OPAL_STATUS)) {
-					failures ++;
+					failures++;
 				}
 
 				if (get_dimm_property(fw, my_path, false,
 					DT_PROPERTY_OPAL_SLOT_LOC)) {
-					failures ++;
+					failures++;
 				}
 
 				if (get_dimm_property(fw, my_path, false,
 					DT_PROPERTY_OPAL_PART_NUM)) {
-					failures ++;
+					failures++;
 				}
 
 				if (get_dimm_property(fw, my_path, false,
 					DT_PROPERTY_OPAL_SERIAL_NUM)) {
-					failures ++;
+					failures++;
 				}
 
 				if (get_dimm_property(fw, my_path, true,
 					DT_PROPERTY_OPAL_MANUFACTURER_ID)) {
-					failures ++;
+					failures++;
 				}
 			}
 
@@ -227,7 +229,7 @@ static int process_dimm(fwts_framework *fw,
 	free(namelist);
 
 	if (!found) {
-		failures ++;
+		failures++;
 		fwts_log_nl(fw);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL MEM Info",
@@ -244,9 +246,10 @@ static int process_dimm(fwts_framework *fw,
 	}
 }
 
-static int process_mba(fwts_framework *fw,
-			char *my_string,
-			char *my_dir)
+static int process_mba(
+	fwts_framework *fw,
+	char *my_string,
+	char *my_dir)
 {
 	int count, i, failures = 0;
 	struct dirent **namelist;
@@ -303,7 +306,7 @@ static int process_mba(fwts_framework *fw,
 				continue;
 			}
 			if (process_dimm(fw, "dimm", my_path)) {
-				failures ++;
+				failures++;
 			}
 			free(my_buffer);
 			free(namelist[i]);
@@ -390,7 +393,7 @@ static int get_linux_mem_devices(fwts_framework *fw)
 				continue;
 			}
 			if (process_mba(fw, "mba", mba_path)) {
-				failures ++;
+				failures++;
 			}
 			free(mem_buffer);
 			free(namelist[i]);
@@ -403,7 +406,7 @@ static int get_linux_mem_devices(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if (!found) {
-		failures ++;
+		failures++;
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL MEM Info",
 				"No MEM devices (memory-buffer@X) were found"
@@ -413,7 +416,7 @@ static int get_linux_mem_devices(fwts_framework *fw)
 	}
 
 	if (!found_dimm) {
-		failures ++;
+		failures++;
 		fwts_log_nl(fw);
 		fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"OPAL MEM Info",
@@ -436,7 +439,6 @@ static int mem_info_test1(fwts_framework *fw)
 {
 
 	if (get_linux_mem_devices(fw)) {
-
 		/* errors logged earlier */
 		return FWTS_ERROR;
 	} else {

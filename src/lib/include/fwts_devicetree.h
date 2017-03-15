@@ -44,22 +44,19 @@
 int fwts_devicetree_read(fwts_framework *fwts);
 
 #else /* !FWTS_HAS_DEVICETREE */
-static inline int fwts_devicetree_read(fwts_framework *fwts
-		__attribute__((unused)))
+static inline int fwts_devicetree_read(fwts_framework *fwts)
 {
+	FWTS_UNUSED(fwts);
+
 	return FWTS_OK;
 }
 #endif
 
 bool check_status_property_okay(fwts_framework *fw,
-				const char *my_path,
-				const char *my_prop_string,
-				const char *property);
+	const char *my_path, const char *my_prop_string, const char *property);
 
 int check_property_printable(fwts_framework *fw,
-			const char *name,
-			const char *buf,
-			size_t len);
+	const char *name, const char *buf, size_t len);
 
 char *hidewhitespace(char *name);
 

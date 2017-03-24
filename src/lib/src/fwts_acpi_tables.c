@@ -925,6 +925,38 @@ static bool fwts_acpi_table_fixable(fwts_acpi_table_info *table)
 }
 
 /*
+ *  fwts_acpi_fixup_addr_from_fadt()
+ *	fixup the ACPI table address of a given table if we have it defined
+ *	in the FADT.  This is only for fixed up tables loaded from file
+ *	where these table addresses are unknown and hence are faked physical
+ *	addresses to keep ACPICA happy.
+ */
+void fwts_acpi_fixup_addr_from_fadt(
+	fwts_framework *fw,
+	const char *name,
+	uint32_t addr32,
+	uint64_t addr64)
+{
+	fwts_acpi_table_info *table;
+
+	/* Fetch the table */
+	if (fwts_acpi_find_table(fw, name, 0, &table) != FWTS_OK)
+		return;
+	if (!table)
+		return;
+
+	/*
+	 *  OK, we have something to patch up, 64 bit addresses
+	 *  are used in preference to 32 bit. And only patch
+	 *  the addresses if they are non-zero.
+	 */
+	if (addr64)
+		table->addr = addr64;
+	else if (addr32)
+		table->addr = addr32;
+}
+
+/*
  *  fwts_acpi_load_tables_fixup()
  *	tables loaded from file sometimes do not contain the original
  *	physical address of the tables, so these need faking. Also, some
@@ -938,6 +970,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_rsdp *rsdp = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;
+	fwts_acpi_table_facs *facs = NULL;
 	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;
 	bool redo_rsdp_checksum = false;
 
@@ -946,21 +979,22 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		fwts_log_error(fw, "ACPI table find failure.");
 		return FWTS_ERROR;
 	}
-	if (table) {
-		fadt = (fwts_acpi_table_fadt *)table->data;
-		oem_tbl_id = fadt->header.oem_tbl_id;
-	} else {
+	if (!table) {
 		fwts_log_error(fw, "Cannot find FACP.");
 		return FWTS_ERROR;
 	}
+
+	fadt = (fwts_acpi_table_fadt *)table->data;
+	oem_tbl_id = fadt->header.oem_tbl_id;
 
 	/* Get FACS */
 	if (fwts_acpi_find_table(fw, "FACS", 0, &table) != FWTS_OK) {
 		fwts_log_error(fw, "ACPI table find failure.");
 		return FWTS_ERROR;
 	}
-	if (!table) {
-		fwts_acpi_table_facs *facs;
+	if (table) {
+		facs = (fwts_acpi_table_facs *)table->data;
+	} else {
 		size_t size = 64;
 		uint64_t facs_addr;
 
@@ -994,6 +1028,16 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		fwts_acpi_add_table("FACS", facs, (uint64_t)facs_addr,
 			size, FWTS_ACPI_TABLE_FROM_FIXUP);
 	}
+
+	/*
+	 *  In the case where the tables have be loaded from file
+	 *  and the address is not known we may have a valid FACP (FADT)
+	 *  that points to the FACS and DSDT, so we need to ensure
+	 *  fake addresses created by fwts for these are in-sync
+	 *  before we create RSDT and XSDTs
+	 */
+	fwts_acpi_fixup_addr_from_fadt(fw, "FACS", fadt->firmware_control, fadt->x_firmware_ctrl);
+	fwts_acpi_fixup_addr_from_fadt(fw, "DSDT", fadt->dsdt, fadt->x_dsdt);
 
 	/* Figure out how many tables we need to put into RSDT and XSDT */
 	for (count = 0, i = 0; ; i++) {

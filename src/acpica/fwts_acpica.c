@@ -957,6 +957,73 @@ static int fwtsInstallLateHandlers(fwts_framework *fw)
 }
 
 /*
+ *  fwts_acpica_verify_table_get()
+ *	fetch a named table with some sanity checks, helper
+ *	function for fwts_acpica_verify_facp_table_pointers().
+ *	Note: table is never NULL
+ */
+static int fwts_acpica_verify_table_get(
+	fwts_framework *fw,
+	const char *name,
+	fwts_acpi_table_info **table)
+{
+	if (fwts_acpi_find_table(fw, name, 0, table) != FWTS_OK) {
+		fwts_log_error(fw, "Failed to find ACPI table '%s'.", name);
+		return FWTS_ERROR;
+	}
+	if (!(*table)) {
+		/* The load may have failed to find this table */
+		fwts_log_error(fw, "Missing ACPI table '%s' and  "
+			"the FACP points to it.", name);
+		return FWTS_ERROR;
+	}
+	if ((*table)->data == NULL) {
+		/* This really should not happen */
+		fwts_log_error(fw, "ACPI table %s had a NULL address "
+			"which is unexpected.", name);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
+ *  fwts_acpica_verify_facp_table_pointers()
+ *	verify facp points to tables that actually exist
+ *	Note: if they don't exist then ACPICA segfaults
+ */
+static int fwts_acpica_verify_facp_table_pointers(fwts_framework *fw)
+{
+	fwts_acpi_table_info *table;
+	fwts_acpi_table_fadt *fadt;
+
+	if (fwts_acpica_verify_table_get(fw, "FACP", &table) != FWTS_OK)
+		return FWTS_ERROR;
+	fadt = (fwts_acpi_table_fadt *)table->data;
+
+	if (fadt->dsdt || fadt->x_dsdt) {
+		if (fwts_acpica_verify_table_get(fw, "DSDT", &table) != FWTS_OK)
+			return FWTS_ERROR;
+	printf("FADT DSDT -> %" PRIx32 " %" PRIx64 " %" PRIx64 "\n",
+		fadt->dsdt, fadt->x_dsdt,  table->addr);
+		if (((uint64_t)fadt->dsdt != table->addr) &&
+		    (fadt->x_dsdt != table->addr)) {
+			fwts_log_error(fw, "FACP points to non-existent DSDT.");
+			return FWTS_ERROR;
+		}
+	}
+	if (fadt->firmware_control || fadt->x_firmware_ctrl) {
+		if (fwts_acpica_verify_table_get(fw, "FACS", &table) != FWTS_OK)
+			return FWTS_ERROR;
+		if (((uint64_t)fadt->firmware_control != table->addr) &&
+		    (fadt->x_firmware_ctrl != table->addr)) {
+			fwts_log_error(fw, "FACP points to non-existent FACS.");
+			return FWTS_ERROR;
+		}
+	}
+	return FWTS_OK;
+}
+
+/*
  *  fwts_acpcia_set_fwts_framework()
  *	set fwts_acpica_fw ptr
  */
@@ -1047,6 +1114,9 @@ int fwts_acpica_init(fwts_framework *fw)
 	} else {
 		fwts_acpica_FADT = NULL;
 	}
+
+	if (fwts_acpica_verify_facp_table_pointers(fw) != FWTS_OK)
+		return FWTS_ERROR;
 
 	/* Clone XSDT, make it point to tables in user address space */
 	if (fwts_acpi_find_table(fw, "XSDT", 0, &table) != FWTS_OK)

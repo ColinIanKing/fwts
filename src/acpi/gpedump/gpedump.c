@@ -83,7 +83,7 @@ static void gpu_dump_gpes(
 		case ACPI_GPE_DISPATCH_NOTIFY:
 			for (n = 0, notify_info = GpeEventInfo->Dispatch.NotifyList; notify_info; notify_info = notify_info->Next)
 				n++;
-			snprintf(buf, sizeof(buf), "notifes %" PRIu32 " devices", n);
+			snprintf(buf, sizeof(buf), "notifies %" PRIu32 " devices", n);
 			break;
 		}
 		fwts_log_info_verbatim(fw, "      GPE 0x%2.2" PRIx8 ":",

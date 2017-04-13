@@ -163,11 +163,10 @@ int fwts_summary_add(
 			return FWTS_ERROR;
 		}
 		fwts_chop_newline(summary_item->text);
-	}
 
-	/* And append new item if not done so already */
-	if (!summary_item_found)
+		/* And append new item if not done so already */
 		fwts_list_append(fwts_summaries[index], summary_item);
+	}
 
 	return FWTS_OK;
 }

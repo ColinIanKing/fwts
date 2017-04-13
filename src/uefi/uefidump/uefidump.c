@@ -83,9 +83,13 @@ static char *uefidump_vprintf(char *str, const char *fmt, ...)
 	if (str == NULL)
 		str = strdup(buffer);
 	else {
-		str = realloc(str, strlen(str) + strlen(buffer) + 1);
-		if (str == NULL)
+		char *tmp;
+		tmp = realloc(str, strlen(str) + strlen(buffer) + 1);
+		if (!tmp) {
+			free(str);
 			return NULL;
+		}
+		str = tmp;
 		strcat(str, buffer);
 	}
 

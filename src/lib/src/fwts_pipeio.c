@@ -342,7 +342,7 @@ int fwts_exec2(const char *command, char **output)
 	}
 
 	if (fwts_pipe_readwrite(in_fd,
-		command, sizeof(command),
+		command, strlen(command),
 		out_fd, output, &out_len)) {
 		return -1;
 	}

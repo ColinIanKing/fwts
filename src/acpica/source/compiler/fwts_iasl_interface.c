@@ -170,8 +170,15 @@ static int fwts_iasl_read_output(const int fd, char **data, size_t *len, bool *e
 		return 0;
 
 	while ((n = read(fd, buffer, sizeof(buffer))) > 0) {
-		if ((*data = realloc(*data, *len + n + 1)) == NULL)
+		char *tmp;
+
+		tmp = realloc(*data, *len + n + 1);
+		if (!tmp) {
+			free(*data);
+			*data = NULL;
 			return -1;
+		}
+		*data = tmp;
 		memcpy(*data + *len, buffer, n);
 		*len += n;
 		(*data)[*len] = '\0';

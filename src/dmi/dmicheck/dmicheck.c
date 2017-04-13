@@ -990,7 +990,6 @@ static void dmicheck_entry(fwts_framework *fw,
 	uint32_t failed_count = fw->minor_tests.failed;
 	int	battery_count;
 	int	ret;
-	bool	advice_given = false;
 
 	switch (hdr->type) {
 		case 0: /* 7.1 */
@@ -1652,7 +1651,7 @@ static void dmicheck_entry(fwts_framework *fw,
 	}
 	if (fw->minor_tests.failed == failed_count)
 		fwts_passed(fw, "Entry @ 0x%8.8" PRIx32 " '%s'", addr, table);
-	else if (!advice_given && hdr->type <= 42)
+	else if (hdr->type <= 42)
 		fwts_advice(fw,
 			"It may be worth checking against section 7.%" PRId8 " of the "
 			"System Management BIOS (SMBIOS) Reference Specification "

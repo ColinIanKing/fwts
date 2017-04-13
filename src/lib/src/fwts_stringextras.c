@@ -58,8 +58,14 @@ char *fwts_realloc_strcat(char *orig, const char *newstr)
 	size_t newlen = strlen(newstr);
 
 	if (orig) {
-		if ((orig = realloc(orig, strlen(orig) + newlen + 1)) == NULL)
+		char *tmp;
+
+		tmp = realloc(orig, strlen(orig) + newlen + 1);
+		if (!tmp) {
+			free(orig);
 			return NULL;
+		}
+		orig = tmp;
 		strcat(orig, newstr);
 	} else {
 		if ((orig = malloc(newlen + 1)) == NULL)

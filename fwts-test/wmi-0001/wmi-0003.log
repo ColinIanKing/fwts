@@ -9,6 +9,7 @@ wmi               WMI Object:
 wmi                 Flags          : 0x00 (None)
 wmi                 Object ID      : AA
 wmi                 Instance       : 0x01
+wmi                 Driver         : dell-wmi (Dell)
 wmi             
 wmi             \_SB_.AMW0._WDG (2 of 6)
 wmi               GUID: A80593CE-A997-11DA-B012-B622A1EF5492

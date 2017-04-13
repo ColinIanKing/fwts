@@ -62,12 +62,17 @@ int fwts_gpe_read(fwts_gpe **gpes)
 	while ((entry = readdir(dir)) != NULL) {
 		if ((strncmp(entry->d_name, "gpe", 3) == 0) ||
 		    (strncmp(entry->d_name, "sci",3) == 0)) {
-			if ((*gpes = realloc(*gpes, sizeof(fwts_gpe) * (n+1))) == NULL)
+			fwts_gpe *tmp;
+
+			tmp = realloc(*gpes, sizeof(fwts_gpe) * (n+1));
+			if (!tmp) {
+				free(*gpes);
 				goto error;
-			else {
+			} else {
 				char path[PATH_MAX];
 				char *data;
 
+				*gpes = tmp;
 				if (((*gpes)[n].name  = strdup(entry->d_name)) == NULL)
 					goto error;
 

@@ -82,7 +82,7 @@ static int einj_test1(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	entry = (fwts_acpi_serialization_instruction_entries *)
-			(char *) einj + 48;
+			(char *)(einj + 48);
 	for (i = 0; i < einj->count; i++,  entry++) {
 		fwts_acpi_gas gas = entry->register_region;
 		fwts_log_info_verbatim(fw, "  Injection Instruction Entry %2.2"

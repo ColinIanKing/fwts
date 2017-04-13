@@ -160,7 +160,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 			sscanf(ptr, "%d", &cpu->stepping);
 			continue;
 		}
-		if (!strncmp(buffer, "flags", 4)) {
+		if (!strncmp(buffer, "flags", 5)) {
 			cpu->flags = strdup(ptr);
 			continue;
 		}

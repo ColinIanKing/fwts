@@ -247,7 +247,7 @@ fwts_log_field fwts_log_str_to_field(const char *text)
 	for (i = 0; mappings[i].text != NULL; i++)
 		if (strcmp(mappings[i].text, text) == 0)
 			return mappings[i].field;
-	return 0;
+	return LOG_NO_FIELD;
 }
 
 /*
@@ -286,12 +286,12 @@ void fwts_log_set_field_filter(const char *str)
 			break;
 		if (*token == '^' || *token == '~') {
 			field = fwts_log_str_to_field(token+1);
-			if (field)
+			if (field != LOG_NO_FIELD)
 				fwts_log_filter_unset_field(field);
 		}
 		else {
 			field = fwts_log_str_to_field(token);
-			if (field)
+			if (field != LOG_NO_FIELD)
 				fwts_log_filter_set_field(field);
 		}
 	}

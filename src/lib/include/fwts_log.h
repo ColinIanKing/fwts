@@ -30,6 +30,7 @@
 #define LOG_MAX_BUF_SIZE	(4096)		/* Max output per log line */
 
 typedef enum {
+	LOG_NO_FIELD        = 0x00000000,
 	LOG_RESULT	    = 0x00000001,
 	LOG_ERROR           = 0x00000002,
 	LOG_WARNING         = 0x00000004,

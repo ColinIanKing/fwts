@@ -30,7 +30,7 @@
 #include "fwts.h"
 
 #define LOG_LINE_WIDTH		(80)
-#define LOG_UNKOWN_FIELD	"???"
+#define LOG_UNKNOWN_FIELD	"???"
 
 static int log_line_width = 0;
 
@@ -86,7 +86,7 @@ char *fwts_log_field_to_str(const fwts_log_field field)
 	case LOG_INFOONLY:
 		return "INO";
 	default:
-		return LOG_UNKOWN_FIELD;
+		return LOG_UNKNOWN_FIELD;
 	}
 }
 
@@ -206,7 +206,7 @@ void fwts_log_print_fields(void)
 	printf("Available fields: ");
 	for (field = 1; ; field <<= 1) {
 		char *str = fwts_log_field_to_str(field);
-		if (strcmp(str, LOG_UNKOWN_FIELD) == 0)
+		if (strcmp(str, LOG_UNKNOWN_FIELD) == 0)
 			break;
 		printf("%s%s", field == 1 ? "" : ",", str);
 	}

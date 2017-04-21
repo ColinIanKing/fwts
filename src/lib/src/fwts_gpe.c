@@ -66,7 +66,6 @@ int fwts_gpe_read(fwts_gpe **gpes)
 
 			tmp = realloc(*gpes, sizeof(fwts_gpe) * (n+1));
 			if (!tmp) {
-				free(*gpes);
 				goto error;
 			} else {
 				char path[PATH_MAX];

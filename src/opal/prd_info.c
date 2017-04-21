@@ -80,8 +80,10 @@ static int prd_service_check(fwts_framework *fw, int *restart)
 	command = "systemctl status opal-prd.service 2>&1";
 	status = fwts_exec2(command, &output);
 
-	if (output)
+	if (output) {
 		free(output);
+		output = NULL;
+	}
 
 	switch (status) {
 	case -1: /* status when nothing was successful */

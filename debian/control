@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Firmware Testing Team <fwts-devel@lists.ubuntu.com>
 Uploaders: Colin King <colin.king@ubuntu.com>, Alex Hung <alex.hung@canonical.com>, Ivan Hu <ivan.hu@canonical.com>
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 7.0.50~), autoconf, automake, libtool, libjson0-dev | libjson-c-dev (>= 0.9), flex, bison, dh-autoreconf, dkms, libglib2.0-dev, pkg-config, libfdt-dev
 
 Package: fwts

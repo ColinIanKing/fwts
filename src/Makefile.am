@@ -148,6 +148,7 @@ fwts_SOURCES = main.c 				\
 	opal/mtd_info.c				\
 	opal/prd_info.c				\
 	opal/power_mgmt_info.c			\
+	opal/reserv_mem.c			\
 	pci/aspm/aspm.c 			\
 	pci/crs/crs.c 				\
 	pci/maxreadreq/maxreadreq.c 		\

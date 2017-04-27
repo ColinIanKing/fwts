@@ -33,6 +33,24 @@ typedef struct cpuinfo_x86 {
 	char *flags;		/* String containing flags */
 } fwts_cpuinfo_x86;
 
+/* PowerPC Processor specific bits */
+/* PVR definitions */
+#define PVR_TYPE_P7     0x003f
+#define PVR_TYPE_P7P    0x004a
+#define PVR_TYPE_P8E    0x004b /* Murano */
+#define PVR_TYPE_P8     0x004d /* Venice */
+#define PVR_TYPE_P8NVL  0x004c /* Naples */
+#define PVR_TYPE_P9     0x004e
+
+/* Processor generation */
+typedef enum proc_gen {
+	proc_gen_unknown,
+	proc_gen_p7,            /* P7 and P7+ */
+	proc_gen_p8,
+	proc_gen_p9,
+} proc_gen_t;
+extern proc_gen_t proc_gen;
+
 typedef struct cpu_benchmark_result {
 	bool		cycles_valid;
 	uint64_t	loops;

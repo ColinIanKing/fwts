@@ -147,6 +147,7 @@ fwts_SOURCES = main.c 				\
 	kernel/version/version.c 		\
 	opal/mtd_info.c				\
 	opal/prd_info.c				\
+	opal/power_mgmt_info.c			\
 	pci/aspm/aspm.c 			\
 	pci/crs/crs.c 				\
 	pci/maxreadreq/maxreadreq.c 		\

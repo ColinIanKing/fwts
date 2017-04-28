@@ -2879,7 +2879,7 @@ static int method_test_PS0(fwts_framework *fw)
 		int i;
 
 		for (i = 1; i < 4; i++) {
-			char name[5];
+			char name[6];
 
 			snprintf(name, sizeof(name), "_PS%1d", i);
 			if (fwts_acpi_object_exists(name) != NULL) {
@@ -6192,9 +6192,9 @@ static int method_test_ACx(fwts_framework *fw)
 	int i;
 
 	for (i = 0; i < 10; i++) {
-		char buffer[5];
+		char buffer[6];
 
-		snprintf(buffer, sizeof(buffer), "_AC%d", i);
+		snprintf(buffer, sizeof(buffer), "_AC%1d", i);
 		method_evaluate_method(fw, METHOD_OPTIONAL,
 			buffer, NULL, 0, method_test_THERM_return, buffer);
 		fwts_log_nl(fw);

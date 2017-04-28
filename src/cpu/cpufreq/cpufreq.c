@@ -51,7 +51,7 @@ typedef struct {
 
 struct cpu {
 	int		idx;
-	char		sysfs_path[PATH_MAX];
+	char		sysfs_path[2048];	/* 2K is plenty */
 	bool		online;
 	bool		master;
 
@@ -85,7 +85,7 @@ static inline void cpu_mkpath(
 	snprintf(path, len, "%s/%s/cpufreq%s%s", FWTS_CPU_PATH,
 			cpu->sysfs_path,
 			name ? "/" : "",
-			name ?: "");
+			name ? name : "");
 }
 
 static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,

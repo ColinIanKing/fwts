@@ -395,7 +395,7 @@
   },
   {
    "compare_mode": "string",
-   "log_level": "LOG_LEVEL_MEDIUM",
+   "log_level": "LOG_LEVEL_INFO",
    "pattern": "EINJ table not found",
    "advice": "The ACPI Error Injection (EINJ) driver could not find an ACPI EINJ table, EINJ functionality is disabled.",
    "label": "KlogAcpiEinjNotFound",

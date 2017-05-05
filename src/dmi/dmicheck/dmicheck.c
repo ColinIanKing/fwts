@@ -1122,7 +1122,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Processor Characteristics", 0x26);
 			break;
 
-		case 5: /* 7.6 */
+		case 5: /* 7.6 (Type 5 is obsolete) */
 			table = "Memory Controller Information (Type 5)";
 			if (hdr->length < 0x0f)
 				break;
@@ -1131,7 +1131,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Current Interleave", hdr, 0x7, 0x1, 0x7);
 			break;
 
-		case 6: /* 7.7 */
+		case 6: /* 7.7 (Type 6 is obsolete) */
 			table = "Memory Module Information (Type 6)";
 			if (hdr->length < 0x0c)
 				break;
@@ -1221,7 +1221,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					table, addr, "Slot Characteristics 2", 0xc);
 			break;
 
-		case 10: /* 7.11 */
+		case 10: /* 7.11 (Type 10 is obsolete) */
 			table = "On Board Devices (Type 10)";
 			count = (hdr->length - 4) / 2;
 			for (i = 0; i < count; i++) {

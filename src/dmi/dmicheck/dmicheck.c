@@ -285,6 +285,8 @@ static fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	{ 3, 6 },
 	{ 3, 7 },
 	{ 3, 8 },
+	/* Type 9, System Slots */
+	{ 9, FIELD_ANY },
 	/* Type 10, Onboard Devices Information */
 	{ 10, FIELD_ANY },
 	/* Type 11, OEM Strings */

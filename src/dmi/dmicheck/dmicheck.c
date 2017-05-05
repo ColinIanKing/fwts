@@ -1278,7 +1278,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (!((val <= 0x04) || (val >= 0x80))) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x01, "
+					"(range allowed 0x00..0x04, "
 					"0x80..0xff) while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					val, table, addr, "Access Method", 0x0a);

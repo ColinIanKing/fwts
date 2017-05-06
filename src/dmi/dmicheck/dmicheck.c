@@ -1001,6 +1001,15 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Vendor", hdr, 0x4);
 			dmi_str_check(fw, table, addr, "BIOS Version", hdr, 0x5);
 			dmi_str_check(fw, table, addr, "Release Date", hdr, 0x8);
+			if (hdr->length < 0x18)
+				break;
+			if (hdr->data[0x13] & 0xe0)
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
+					"Reserved bits 0x%2.2" PRIx8 " was used and "
+					"bits 5..7 sould be reserved while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+					hdr->data[0x13], table, addr,
+					"BIOS Characteristics Extension Byte 2", 0x13);
 			break;
 
 		case 1: /* 7.2 */

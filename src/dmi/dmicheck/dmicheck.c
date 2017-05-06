@@ -1010,6 +1010,16 @@ static void dmicheck_entry(fwts_framework *fw,
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					hdr->data[0x13], table, addr,
 					"BIOS Characteristics Extension Byte 2", 0x13);
+			/* new fields in spec 3.11 */
+			if (hdr->length < 0x1a)
+				break;
+			if (GET_UINT16(data + 0x18) & 0x7fff)
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
+					"Reserved bits 0x%4.4" PRIx16 " was used and "
+					"bits 14..15 sould be reserved while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+					GET_UINT16(data + 0x18), table, addr,
+					"BIOS Characteristics Extension Byte 2", 0x18);
 			break;
 
 		case 1: /* 7.2 */

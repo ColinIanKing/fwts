@@ -1170,6 +1170,13 @@ static void dmicheck_entry(fwts_framework *fw,
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					GET_UINT16(data + 0x05),
 					table, addr, "Cache Location", 0x5);
+			if (GET_UINT16(data + 0x05) >> 10)
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
+					"Reserved bits 0x%4.4" PRIx16 " was used and "
+					"bits 10..15 should be reserved while accessing entry '%s' @ "
+					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+					GET_UINT16(data + 0x05),
+					table, addr, "Cache Location", 0x5);
 			if (hdr->length < 0x13)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Error Correction Type", hdr, 0x10, 0x1, 0x6);

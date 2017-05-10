@@ -24,4 +24,4 @@ apps:
     fwts:
         command: bin/fwts
         environment:
-            LD_LIBRARY_PATH: $LD_LIBRART_PATH:$SNAP/lib/fwts
+            LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/lib/fwts

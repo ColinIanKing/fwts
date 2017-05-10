@@ -136,12 +136,12 @@ out:
 	return rc;
 }
 
-static int cpu_set_lowest_frequency(fwts_framework *fw, struct cpu *cpu)
+static inline int cpu_set_lowest_frequency(fwts_framework *fw, struct cpu *cpu)
 {
 	return cpu_set_frequency(fw, cpu, cpu->freqs[0].Hz);
 }
 
-static int cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
+static inline int cpu_set_highest_frequency(fwts_framework *fw, struct cpu *cpu)
 {
 	return cpu_set_frequency(fw, cpu, cpu->freqs[cpu->n_freqs-1].Hz);
 }

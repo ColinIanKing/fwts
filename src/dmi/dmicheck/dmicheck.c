@@ -842,6 +842,28 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 	}
 }
 
+static void dmi_min_max_uint16_check(fwts_framework *fw,
+	const char *table,
+	uint32_t addr,
+	const char *field,
+	const fwts_dmi_header *hdr,
+	uint8_t offset,
+	uint16_t min,
+	uint16_t max)
+{
+	uint16_t val = GET_UINT16((hdr->data) + offset);
+	if ((val < min) || (val > max)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			DMI_VALUE_OUT_OF_RANGE,
+			"Out of range value 0x%4.4" PRIx16
+			" (range allowed 0x%4.4" PRIx16 "..0x%4.4" PRIx16 ") "
+			"while accessing entry '%s' @ 0x%8.8" PRIx32
+			", field '%s', offset 0x%2.2" PRIx8,
+			val, min, max, table, addr, field, offset);
+		dmi_out_of_range_advice(fw, hdr->type, offset);
+	}
+}
+
 static void dmi_min_max_uint8_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -1175,6 +1197,11 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x28)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Processor Characteristics", hdr, sizeof(uint16_t), 0x26, 8, 15);
+			if (hdr->length < 0x30)
+				break;
+			dmi_min_max_uint16_check(fw, table, addr, "Core Count 2", hdr, 0x2a, 0, 0xfffe);
+			dmi_min_max_uint16_check(fw, table, addr, "Core Enabled 2", hdr, 0x2c, 0, 0xfffe);
+			dmi_min_max_uint16_check(fw, table, addr, "Thread Enabled 2", hdr, 0x2e, 0, 0xfffe);
 			break;
 
 		case 5: /* 7.6 (Type 5 is obsolete) */

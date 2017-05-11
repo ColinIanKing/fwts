@@ -5610,6 +5610,13 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "label": "KlogAcpiInvalidThrottlingState"
   },
   {
+   "compare_mode": "regex",
+   "log_level": "LOG_LEVEL_LOW",
+   "pattern": "ACPI Warning: SystemMemory range 0x.*-0x.* conflicts with",
+   "advice": "A resource conflict between an ACPI OperationRegion and a native driver has been detected. By default the kernel will use a strict policy and will not allow this region to conflict and -EBUSY will be returned to the caller that was trying to allocate the already claimed region.  If an ACPI driver is available for this device then this should be used instead of a native driver, so disabling the native driver may help. One can specify kernel boot parameter acpi_enforce_resources=lax to disable these checks but it may lead to random problems and system instability.  Alternatively, one can specify acpi_enforce_resources=no and ACPI Operation Region resources will not be registered.",
+   "label": "KlogAcpiSystemMemoryConflict"
+  },
+  {
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "ACPI Warning",

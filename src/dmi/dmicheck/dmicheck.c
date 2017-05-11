@@ -53,6 +53,7 @@
 #define DMI_INVALID_ENTRY_LENGTH	"DMIInvalidEntryLength"
 #define DMI_INVALID_HARDWARE_ENTRY	"DMIInvalidHardwareEntry"
 #define DMI_RESERVED_VALUE_USED		"DMIReservedValueUsed"
+#define DMI_RESERVED_BIT_USED		"DMIReservedBitUsed"
 
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
@@ -789,6 +790,58 @@ static void dmi_out_of_range_advice(fwts_framework *fw, uint8_t type, uint8_t of
 			"problems.");
 }
 
+static void dmi_reserved_bits_check(fwts_framework *fw,
+	const char *table,
+	uint32_t addr,
+	const char *field,
+	const fwts_dmi_header *hdr,
+	size_t size,
+	uint8_t offset,
+	uint8_t min,
+	uint8_t max)
+{
+	uint32_t mask = 0;
+	uint32_t val;
+	uint8_t i;
+
+	for (i = min; i <= max; i++) {
+		mask |= (1 << i);
+	}
+
+	switch (size) {
+	case sizeof(uint8_t):
+		val = hdr->data[offset];
+		if (val & mask) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_BIT_USED,
+				"Value 0x%2.2" PRIx8 " was used but bits %" PRIu8
+				"..%" PRIu8 " should be reserved while accessing entry "
+				"'%s' @ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+				(uint8_t)val, min, max, table, addr, field, offset);
+		}
+		break;
+	case sizeof(uint16_t):
+		val = GET_UINT16((hdr->data) + offset);
+		if (val & mask) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_BIT_USED,
+				"Value 0x%4.4" PRIx16 " was used but bits %" PRIu8
+				"..%" PRIu8 " should be reserved while accessing entry "
+				"'%s' @ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+				(uint16_t)val, min, max, table, addr, field, offset);
+		}
+		break;
+	case sizeof(uint32_t):
+		val = GET_UINT32((hdr->data) + offset);
+		if (val & mask) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_BIT_USED,
+				"Value 0x%8.8" PRIx32 " was used but bits %" PRIu8
+				"..%" PRIu8 " should be reserved while accessing entry "
+				"'%s' @ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+				val, min, max, table, addr, field, offset);
+		}
+		break;
+	}
+}
+
 static void dmi_min_max_uint8_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -1003,23 +1056,12 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Release Date", hdr, 0x8);
 			if (hdr->length < 0x18)
 				break;
-			if (hdr->data[0x13] & 0xe0)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%2.2" PRIx8 " was used and "
-					"bits 5..7 sould be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					hdr->data[0x13], table, addr,
-					"BIOS Characteristics Extension Byte 2", 0x13);
+			dmi_reserved_bits_check(fw, table, addr, "BIOS Characteristics Extension Byte 2", hdr, sizeof(uint8_t), 0x13, 5, 7);
+
 			/* new fields in spec 3.11 */
 			if (hdr->length < 0x1a)
 				break;
-			if (GET_UINT16(data + 0x18) & 0x7fff)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%4.4" PRIx16 " was used and "
-					"bits 14..15 sould be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					GET_UINT16(data + 0x18), table, addr,
-					"BIOS Characteristics Extension Byte 2", 0x18);
+			dmi_reserved_bits_check(fw, table, addr, "Extended BIOS ROM Size", hdr, sizeof(uint16_t), 0x18, 14, 15);
 			break;
 
 		case 1: /* 7.2 */
@@ -1132,13 +1174,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x22);
 			if (hdr->length < 0x28)
 				break;
-			if (GET_UINT16(data + 0x26) & 0xff00)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%4.4" PRIx16 " was used"
-					"bits 8..15 would be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					GET_UINT16(data + 0x26),
-					table, addr, "Processor Characteristics", 0x26);
+			dmi_reserved_bits_check(fw, table, addr, "Processor Characteristics", hdr, sizeof(uint16_t), 0x26, 8, 15);
 			break;
 
 		case 5: /* 7.6 (Type 5 is obsolete) */
@@ -1170,20 +1206,9 @@ static void dmicheck_entry(fwts_framework *fw,
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					GET_UINT16(data + 0x05),
 					table, addr, "Cache Location", 0x5);
-			if (GET_UINT16(data + 0x05) >> 10)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%4.4" PRIx16 " was used and "
-					"bits 10..15 should be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					GET_UINT16(data + 0x05),
-					table, addr, "Cache Location", 0x5);
-			if (GET_UINT16(data + 0x0d) >> 7)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%4.4" PRIx16 " was used and "
-					"bits 7..15 should be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					GET_UINT16(data + 0x0d),
-					table, addr, "Current SRAM Type", 0x0d);
+
+			dmi_reserved_bits_check(fw, table, addr, "Cache Location", hdr, sizeof(uint16_t), 0x05, 10, 15);
+			dmi_reserved_bits_check(fw, table, addr, "Current SRAM Type", hdr, sizeof(uint16_t), 0x0d, 7, 15);
 			if (hdr->length < 0x13)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Error Correction Type", hdr, 0x10, 0x1, 0x6);

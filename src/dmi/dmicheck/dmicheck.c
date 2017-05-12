@@ -1417,6 +1417,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					val, table, addr, "Access Method", 0x0a);
 			}
+			dmi_reserved_bits_check(fw, table, addr, "Log Status", hdr, sizeof(uint8_t), 0xb, 2, 7);
 			if (hdr->length < 0x17)
 				break;
 			val = hdr->data[0x14];
@@ -1489,6 +1490,10 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x18);
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x19);
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x1a);
+			if (hdr->length < 0x20)
+				break;
+			dmi_reserved_bits_check(fw, table, addr, "Attributes", hdr, sizeof(uint8_t), 0x1b, 4, 7);
+			dmi_reserved_bits_check(fw, table, addr, "Extended Size", hdr, sizeof(uint32_t), 0x1c, 31, 31);
 			break;
 
 		case 18: /* 7.19 */

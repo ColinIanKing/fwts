@@ -1801,10 +1801,18 @@ static void dmicheck_entry(fwts_framework *fw,
 					data[0x4], table, addr, "Reference Designation", 0x4);
 			break;
 
-		case 126: /* 7.44 */
+		case 43: /* 7.44 */
+			table = "TPM Device (Type 43)";
+			if (hdr->length < 0x16)
+				break;
+			dmi_str_check(fw, table, addr, "Description", hdr, 0x12);
+			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint64_t), 0x13, 6, 63);
+			break;
+
+		case 126: /* 7.45 */
 			table = "Inactive (Type 126)";
 			break;
-		case SMBIOS_END_OF_TABLE: /* 7.45 */
+		case SMBIOS_END_OF_TABLE: /* 7.46 */
 			table = "End of Table (Type 127)";
 			break;
 		default:

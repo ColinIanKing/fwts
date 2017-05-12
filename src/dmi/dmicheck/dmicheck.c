@@ -1304,6 +1304,31 @@ static void dmicheck_entry(fwts_framework *fw,
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0xc],
 					table, addr, "Slot Characteristics 2", 0xc);
+			if (hdr->length < 0x11)
+				break;
+			if (!((data[0x5] == 0x06) ||
+			      ((data[0x5] >= 0x0e) && (data[0x5] <= 0x23)) ||
+			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xb6)))) {
+				if (GET_UINT16(data + 0xd) != 0xffff)
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_VALUE_OUT_OF_RANGE,
+						"Invalid value 0x%4.4" PRIx16 " was used and 0xffff"
+						"should be used for non-PCI(e) while accessing entry '%s' @ "
+						"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+						GET_UINT16(data + 0x0d), table, addr, "Segment Group Number", 0xd);
+				if (data[0xf] != 0xff)
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_VALUE_OUT_OF_RANGE,
+						"Invalid value 0x%2.2" PRIx8 " was used and 0xff"
+						"should be used for non-PCI(e) while accessing entry '%s' @ "
+						"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+						data[0xf], table, addr, "Bus Number", 0xf);
+				if (data[0x10] != 0xff)
+					fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_VALUE_OUT_OF_RANGE,
+						"Invalid value 0x%2.2" PRIx8 " was used and 0xff"
+						"should be used for non-PCI(e) while accessing entry '%s' @ "
+						"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+						data[0x10], table, addr, "Device/Function Number", 0x10);
+			}
+
 			break;
 
 		case 10: /* 7.11 (Type 10 is obsolete) */

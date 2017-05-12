@@ -1585,6 +1585,9 @@ static void dmicheck_entry(fwts_framework *fw,
 				dmi_str_check(fw, table, addr, "Device Chemistry", hdr, 0x9);
 
 			dmi_str_check(fw, table, addr, "SBDS Version Number", hdr, 0xe);
+			if (data[0xf] != 0xff)
+				dmi_min_max_uint8_check(fw, table, addr, "Maximum Error in Battery Data", hdr, 0xf, 0, 100);
+
 			if (hdr->length < 0x1A)
 				break;
 			if (data[0x09] == 0x02)
@@ -1605,6 +1608,7 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Capabilities (bits 1..2)", hdr, 0x4, 0x1, 0x3, 1, 0x3);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Capabilities (bits 3..4)", hdr, 0x4, 0x1, 0x3, 3, 0x3);
+			dmi_reserved_bits_check(fw, table, addr, "Capabilities", hdr, sizeof(uint8_t), 0x4, 6, 7);
 			break;
 
 		case 24: /* 7.25 */
@@ -1671,6 +1675,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x06)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer Name", hdr, 0x4);
+			dmi_reserved_bits_check(fw, table, addr, "Connections", hdr, sizeof(uint8_t), 0x5, 2, 7);
 			break;
 
 		case 31: /* 7.32 */
@@ -1685,6 +1690,8 @@ static void dmicheck_entry(fwts_framework *fw,
 			table = "System Boot Information (Type 32)";
 			if (hdr->length < 0xb)
 				break;
+			for (i = 4; i <= 9; i++)
+				dmi_reserved_uint8_check(fw, table, addr, "Reserved", hdr, i);
 			if ((data[0xa] > 0x8) && (data[0xa] < 128))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
@@ -1737,6 +1744,10 @@ static void dmicheck_entry(fwts_framework *fw,
 		case 38: /* 7.39 */
 			table = "IPMI Device Information (Type 38)";
 			dmi_min_max_uint8_check(fw, table, addr, "Interface Type", hdr, 0x4, 0x0, 0x3);
+
+			dmi_reserved_bits_check(fw, table, addr, "Base Addr Modifier/Interrupt Info", hdr, sizeof(uint8_t), 0x10, 2, 2);
+			dmi_reserved_bits_check(fw, table, addr, "Base Addr Modifier/Interrupt Info", hdr, sizeof(uint8_t), 0x10, 5, 5);
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Base Addr Modifier/Interrupt Info)", hdr, 0x10, 0x1, 0x3, 6, 0x3);
 			break;
 
 		case 39: /* 7.40 */
@@ -1750,6 +1761,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x9);
 			dmi_str_check(fw, table, addr, "Model Part Number", hdr, 0xa);
 			dmi_str_check(fw, table, addr, "Revision Level", hdr, 0xb);
+			dmi_reserved_bits_check(fw, table, addr, "Power Supply Characteristics", hdr, sizeof(uint16_t), 0xe, 14, 15);
 			break;
 
 		case 40: /* 7.41 */

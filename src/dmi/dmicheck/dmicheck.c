@@ -801,8 +801,8 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 	uint8_t min,
 	uint8_t max)
 {
-	uint32_t mask = 0;
-	uint32_t val;
+	uint64_t mask = 0;
+	uint64_t val;
 	uint8_t i;
 
 	for (i = min; i <= max; i++) {
@@ -835,6 +835,16 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 		if (val & mask) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_BIT_USED,
 				"Value 0x%8.8" PRIx32 " was used but bits %" PRIu8
+				"..%" PRIu8 " should be reserved while accessing entry "
+				"'%s' @ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
+				(uint32_t)val, min, max, table, addr, field, offset);
+		}
+		break;
+	case sizeof(uint64_t):
+		val = GET_UINT64((hdr->data) + offset);
+		if (val & mask) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_BIT_USED,
+				"Value 0x%16.16" PRIx64 " was used but bits %" PRIu8
 				"..%" PRIu8 " should be reserved while accessing entry "
 				"'%s' @ 0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 				val, min, max, table, addr, field, offset);

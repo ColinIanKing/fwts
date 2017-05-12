@@ -54,6 +54,7 @@
 #define DMI_INVALID_HARDWARE_ENTRY	"DMIInvalidHardwareEntry"
 #define DMI_RESERVED_VALUE_USED		"DMIReservedValueUsed"
 #define DMI_RESERVED_BIT_USED		"DMIReservedBitUsed"
+#define DMI_RESERVED_OFFSET_NONZERO	"DMIReservedOffsetNonZero"
 
 #define GET_UINT16(x) (uint16_t)(*(const uint16_t *)(x))
 #define GET_UINT32(x) (uint32_t)(*(const uint32_t *)(x))
@@ -842,6 +843,22 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 	}
 }
 
+static void dmi_reserved_uint8_check(fwts_framework *fw,
+	const char *table,
+	uint32_t addr,
+	const char *field,
+	const fwts_dmi_header *hdr,
+	uint8_t offset)
+{
+	if (hdr->data[offset] != 0) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_OFFSET_NONZERO,
+			"Reserved offset value is 0x%2.2" PRIx8 " (nonzero) "
+			"while accessing entry '%s' @ 0x%8.8" PRIx32
+			", field '%s', offset 0x%2.2" PRIx8,
+			hdr->data[offset], table, addr, field, offset);
+	}
+}
+
 static void dmi_min_max_uint16_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -1367,6 +1384,10 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x6)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Flags", hdr, sizeof(uint8_t), 0x5, 1, 7);
+			if (hdr->length < 0x15)
+				break;
+			for (i = 0x6; i < 0x15; i++)
+				dmi_reserved_uint8_check(fw, table, addr, "Reserved", hdr, i);
 			if (hdr->length < 0x16)
 				break;
 			for (i = 1; i <= hdr->data[4]; i++) {

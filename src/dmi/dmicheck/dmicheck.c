@@ -1364,6 +1364,9 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 13: /* 7.14 */
 			table = "BIOS Language Information (Type 13)";
+			if (hdr->length < 0x6)
+				break;
+			dmi_reserved_bits_check(fw, table, addr, "Flags", hdr, sizeof(uint8_t), 0x5, 1, 7);
 			if (hdr->length < 0x16)
 				break;
 			for (i = 1; i <= hdr->data[4]; i++) {

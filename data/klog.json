@@ -4766,7 +4766,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "regex",
    "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "Bus .*:.* not present in PCI namespace",
-   "advice": "The bus cound not be found in the PCI namespace. This will stop certain PCI root bridges from being added and enabled on the computer.",
+   "advice": "The bus could not be found in the PCI namespace. This will stop certain PCI root bridges from being added and enabled on the computer.",
    "label": "KlogAcpiPciScanFailed"
   },
   {

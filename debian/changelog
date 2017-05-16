@@ -8,14 +8,16 @@ fwts (17.03.00-0ubuntu1) zesty; urgency=low
 
   [Colin Ian King]
   * lib: fwts_alloc: move all memory tracking to hash records
-  * klog.json: Add some missing ACPI Power Management kernel messages to klog database
+  * klog.json: Add some missing ACPI Power Management kernel messages
+    to klog database
   * opal: reduce scope of variable 'prop_buf'
   * lib: fwts_alloc: clear hash table at end of garbage collection
   * lib: fwts_alloc: fix incorrect accounting on hash entry count
   * ACPICA: Update to version 20170224
-  * fwts-test: disassemble-0001: sync DSDT output from iasl with recent ACPICA changes
-  * acpi: mpst: remove redundant assigments to passed on errors
-  * acpi: drtm: remove redundant assigments to passed on errors
+  * fwts-test: disassemble-0001: sync DSDT output from iasl with recent
+    ACPICA changes
+  * acpi: mpst: remove redundant assignments to passed on errors
+  * acpi: drtm: remove redundant assignments to passed on errors
   * opal: pci_info: remove redundant assignment to bytes
   * ACPICA: Update to version 20170303
   * lib: fwts_devicetree.h: minor code formatting cleanups

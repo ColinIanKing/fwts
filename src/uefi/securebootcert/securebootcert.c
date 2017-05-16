@@ -478,10 +478,10 @@ static int securebootcert_test1(fwts_framework *fw)
 	if (securebooted || deployed) {
 		if (!(var_found & VAR_DB_FOUND))
 			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-				"The secure boot variable DB not found.");
+				"Secureboot or deployed mode on, but the variable DB not found.");
 		if (!(var_found & VAR_KEK_FOUND))
 			fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-				"The secure boot variable KEK not found.");
+				"Secureboot or deployed mode on, but the variable KEK not found.");
 	} else {
 		if (!(var_found & VAR_DB_FOUND))
 			fwts_log_info(fw, "Not in readiness for secureboot, variable DB not found.");		

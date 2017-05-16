@@ -456,11 +456,9 @@ static int securebootcert_test1(fwts_framework *fw)
 
 	/* check all the secure boot variables be found */
 	if (!(var_found & VAR_SECUREBOOT_FOUND))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-			"The secure boot variable SecureBoot not found.");
+		fwts_warning(fw, "The secure boot variable SecureBoot not found.");
 	if (!(var_found & VAR_SETUPMODE_FOUND))
-		fwts_failed(fw, LOG_LEVEL_HIGH, "SecureBootCertVariableNotFound",
-			"The secure boot variable SetupMode not found.");
+		fwts_warning(fw, "The secure boot variable SetupMode not found.");
 	if (!(var_found & VAR_AUDITMODE_FOUND)) {
 		fwts_warning(fw, "The secure boot variable AuditMode not found.");
 		fwts_advice(fw,

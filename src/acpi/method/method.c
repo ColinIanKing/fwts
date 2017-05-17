@@ -6383,6 +6383,11 @@ static int method_test_PTS(fwts_framework *fw)
 
 	for (i = 1; i < 6; i++) {
 		ACPI_OBJECT arg[1];
+		char name[6];
+
+		snprintf(name, sizeof(name), "_S%1d_", i);
+		if (fwts_acpi_object_exists(name) == NULL)
+			continue;
 
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
@@ -6457,6 +6462,12 @@ static int method_test_WAK(fwts_framework *fw)
 
 	for (i = 1; i < 6; i++) {
 		ACPI_OBJECT arg[1];
+		char name[6];
+
+		snprintf(name, sizeof(name), "_S%1d_", i);
+		if (fwts_acpi_object_exists(name) == NULL)
+			continue;
+
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
 		fwts_log_info(fw, "Test _WAK(%d) System Wake, State S%d.", i, i);

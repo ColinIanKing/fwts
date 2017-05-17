@@ -1016,12 +1016,6 @@ method          SKIPPED: Test 172, Skipping test for non-existant object
 method          _EC_.
 method          
 method          Test 173 of 192: Test _PTS (Prepare to Sleep).
-method          Test _PTS(1).
-method          PASSED: Test 173, \_PTS returned no values as expected.
-method          
-method          Test _PTS(2).
-method          PASSED: Test 173, \_PTS returned no values as expected.
-method          
 method          Test _PTS(3).
 method          PASSED: Test 173, \_PTS returned no values as expected.
 method          
@@ -1037,14 +1031,6 @@ method          SKIPPED: Test 174, Optional control method _TTS does not
 method          exist.
 method          
 method          Test 175 of 192: Test _WAK (System Wake).
-method          Test _WAK(1) System Wake, State S1.
-method          PASSED: Test 175, \_WAK correctly returned a sane looking
-method          package.
-method          
-method          Test _WAK(2) System Wake, State S2.
-method          PASSED: Test 175, \_WAK correctly returned a sane looking
-method          package.
-method          
 method          Test _WAK(3) System Wake, State S3.
 method          PASSED: Test 175, \_WAK correctly returned a sane looking
 method          package.
@@ -1329,6 +1315,6 @@ method          SKIPPED: Test 192, Skipping test for non-existant object
 method          _SRV.
 method          
 method          ==========================================================
-method          261 passed, 3 failed, 0 warning, 0 aborted, 154 skipped, 0
+method          257 passed, 3 failed, 0 warning, 0 aborted, 154 skipped, 0
 method          info only.
 method          ==========================================================

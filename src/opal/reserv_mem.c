@@ -185,7 +185,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 		regions[j].start = (uint64_t)be64toh(ranges[2 * j]);
 		regions[j].len = (uint64_t)be64toh(ranges[2 * j + 1]);
 		fwts_log_info(fw, "Region name %80s"
-			" start: 0x%08lx, len: 0x%08lx\n",
+			" start: 0x%08" PRIx64 ", len: 0x%08" PRIx64 "\n",
 			regions[j].name, regions[j].start, regions[j].len);
 	}
 
@@ -248,7 +248,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"ImageSizeMismatch",
 					"Mismatch in homer-image size, "
-					"expected: 0x%lx, actual: 0x%lx",
+					"expected: 0x%" PRIx64 ", actual: 0x%" PRIx64,
 					configstruct.homer, regions[j].len);
 				ok = false;
 			} else
@@ -261,7 +261,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"ImageSizeMismatch",
 					"Mismatch in slw-image size, "
-					"expected: 0x%lx, actual: 0x%lx",
+					"expected: 0x%" PRIx64 ", actual: 0x%" PRIx64,
 					configstruct.slw, regions[j].len);
 				ok = false;
 			} else
@@ -274,7 +274,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					"ImageSizeMismatch",
 					"Mismatch in occ-common-area size, "
-					"expected: 0x%lx, actual: 0x%lx",
+					"expected: 0x%" PRIx64 ", actual: 0x%" PRIx64,
 					configstruct.occ_common,
 					regions[j].len);
 				ok = false;

@@ -426,7 +426,7 @@ MpSaveSerialInfo (
  */
 ACPI_PHYSICAL_ADDRESS AcpiOsGetRootPointer(void)
 {
-	return (ACPI_PHYSICAL_ADDRESS)fwts_acpica_RSDP;
+	return (ACPI_PHYSICAL_ADDRESS)(uintptr_t)fwts_acpica_RSDP;
 }
 
 /*

@@ -970,7 +970,6 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 	fwts_acpi_table_info *table;
 	fwts_acpi_table_rsdp *rsdp = NULL;
 	fwts_acpi_table_fadt *fadt = NULL;
-	fwts_acpi_table_facs *facs = NULL;
 	uint64_t rsdt_fake_addr = 0, xsdt_fake_addr = 0;
 	bool redo_rsdp_checksum = false;
 
@@ -992,11 +991,10 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 		fwts_log_error(fw, "ACPI table find failure.");
 		return FWTS_ERROR;
 	}
-	if (table) {
-		facs = (fwts_acpi_table_facs *)table->data;
-	} else {
+	if (!table) {
 		size_t size = 64;
 		uint64_t facs_addr;
+		fwts_acpi_table_facs *facs = NULL;
 
 		/* This is most unexpected, so warn about it */
 		fwts_log_warning(fw, "No FACS found, fwts has faked one instead.");

@@ -1591,8 +1591,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (data[0x07] || hdr->length < 0x1A)
 				dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);
 			dmi_str_check(fw, table, addr, "Device Name", hdr, 0x8);
-			if (data[0x09] != 0x02 || hdr->length < 0x1A)
-				dmi_str_check(fw, table, addr, "Device Chemistry", hdr, 0x9);
+			dmi_min_max_uint8_check(fw, table, addr, "Device Chemistry", hdr, 0x9, 1, 8);
 
 			dmi_str_check(fw, table, addr, "SBDS Version Number", hdr, 0xe);
 			if (data[0xf] != 0xff)

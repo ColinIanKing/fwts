@@ -1003,8 +1003,6 @@ static int fwts_acpica_verify_facp_table_pointers(fwts_framework *fw)
 	if (fadt->dsdt || fadt->x_dsdt) {
 		if (fwts_acpica_verify_table_get(fw, "DSDT", &table) != FWTS_OK)
 			return FWTS_ERROR;
-	printf("FADT DSDT -> %" PRIx32 " %" PRIx64 " %" PRIx64 "\n",
-		fadt->dsdt, fadt->x_dsdt,  table->addr);
 		if (((uint64_t)fadt->dsdt != table->addr) &&
 		    (fadt->x_dsdt != table->addr)) {
 			fwts_log_error(fw, "FACP points to non-existent DSDT.");

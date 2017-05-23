@@ -6,7 +6,7 @@ TMPLOG=$TMP/rsdp.log.$$
 
 machine=$(uname -m)
 case $machine in
-x86 | x86_32 | x86_64 | i686 | arm64 | aarch64)
+x86 | x86_32 | x86_64 | i686 )
 	;;
 *)
         echo SKIP: $TEST, $NAME

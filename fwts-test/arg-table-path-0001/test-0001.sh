@@ -11,6 +11,16 @@ if [ $? -eq 1 ]; then
 	exit 77
 fi
 
+machine=$(uname -m)
+case $machine in
+x86 | x86_32 | x86_64 | i686 )
+	;;
+*)
+        echo SKIP: $TEST, $NAME
+        exit 77
+	;;
+esac
+
 #
 # Unfortunately we can pull in the tables in different order depending
 # on the way the tables are stored in the directory. Since we only care

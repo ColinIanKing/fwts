@@ -1,3 +1,89 @@
+fwts (17.05.00-0ubuntu1) artful; urgency=low
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove precise
+  * acpi: method: make _PTS & _WAK optional
+  * auto-packager: mkpackage.sh: add artful
+  * dmi: dmicheck: add type 9 to dmi_used_by_kernel_table
+  * dmi: dmicheck: add comments for obsolete types
+  * dmi: dmicheck: fix a typo in a type 15's error message
+  * dmi: dmicheck: check reserved bits in Type 0
+  * dmi: dmicheck: check new offset in spec 3.11
+  * dmi: dmicheck: check reserved bits of Type 7 offset 0x5
+  * dmi: dmicheck: check reserved bits of Type 7 offset 0xd
+  * klog.json: remove unnecessary comma and trailing spaces
+  * dmi: dmicheck: add a function to verify reserved bits
+  * dmi: dmicheck: add a helper function to check word min/max value
+  * klog.json: add an ACPI warning message "SysmtemMemory conflicts
+  * dmi: dmicheck: check pci(e) slot and segment, bus and dev/func
+  * dmi: dmicheck: check reserved bits of offset 0x5 in type 13
+  * dmi: dmicheck: add a helper function to check a reserved offset
+  * dmi: dmicheck: check reserved bits in type 15 & type 17
+  * dmi: dmicheck: check reserved fields in type 22, 23, 30, 32, 38 and 39
+  * dmi: dmicheck: add 64-bit integer to dmi_reserved_bits_check
+  * dmi: dmicheck: add checks for new type 43
+  * acpi: method: check _WAK & _PTS for supported sleep states only
+  * fwts-test: sync up tests for _PTS & _WAK method
+  * dmicheck: support smbios check for version 3.1.1
+  * dmi: dmicheck: type 22 offset 9 is an enum from 1 to 8
+
+  [Colin Ian King]
+  * lib: fwts_pm_method: clean up formatting and remove extraneous log message
+  * acpi: gpedump: fix spelling mistake
+  * acpica: add some extra run time verification to FACP (FADT)
+  * lib: fwts_acpi_tables: Add extra fix-up for FACS and DSDT table addresses
+  * fwts-test: arg-table-path-0001: sync tests with latest fwts changes
+  * acpi: wmi: add and re-order WMI GUIDs
+  * lib: fwts_pipeio: fix incorrect size of command being passed
+  * lib: fwts_summary: move statement into previous if block
+  * lib: fwts_stringextras: free original string on failed realloc
+  * compiler: fwts_iasl_interface: free original string on failed realloc
+  * uefi: uefidump: free original string on failed realloc
+  * kernelscan: ensure parse_kernel_message returns PARSER_OK
+  * lib: fwts_gpe: free original gpe buffer on failed realloc
+  * lib: fwts_cpu: The string "flags" is 5 chars, fix incorrect strncmp size
+  * dmi: dmicheck: remove redundant check on boolean advice_given
+  * acpi: einj: fix incorrect addition on cast
+  * fwts-test/wmi-0001: sync up WMI test with WMI changes
+  * lib: fwts_log: fix spelling mistake on LOG_UNKOWN_FIELD
+  * lib: fwts_log: add LOG_NO_FIELD and use this to indicate an unfound field
+  * debian/control: Update description, fwts no longer is just for x86 systems
+  * lib: fwts_gpe: fix double free on gpe buffer
+  * opal: prd_info: NULLify output after free
+  * Add snapcraft rules to build a fwts snap
+  * debian/control: update standards version to 3.9.8
+  * debian/control: remove ${shlibs:Depends} for fwts-frontend and
+    fwts-efi-runtime-dkms
+  * acpi: method: work around some gcc madness (LP: #1687056)
+  * Reduce the sysfs path to 2K to work around a gcc warning
+  * data: klog.json: make missing EINJ table message an INFO message
+  * cpu: cpufreq: make small one-line helper functions inline
+  * Snapcraft: fix typo in path
+  * debian: fwts.install: add missing olog.json file
+  * debian: changelog: fix some debian warnings
+  * New script to generate a Debian orig tarball from source
+  * data: klog.json: Fix spelling mistake "cound" -> "could"
+  * opal: reserve_mem: fix 32 bit build issues
+  * lib: fwts_acpi_tables: remove dead assignment of facs
+  * acpica/fwts_acpica: remove debug message on FADT/FACS
+  * acpica/fwts_acpica: cast to uintptr_t before casting to
+    ACPI_PHYSICAL_ADDRESS
+  * fwts-test: disable some acpi specific x86 tests for non-x86 systems
+
+  [Ivan Hu]
+  * uefi: securebootcert: warnings for secure boot variables not exist instead
+    of failures
+  * uefi: securebootcert: specify the failure reason for the variable not found
+
+  [Jeffrey Hugo]
+  * README: Fix missing libfdt-dev dependency in README
+
+  [ppaidipe@linux.vnet.ibm.com]
+  * fwts/opal: Power management DT Validation tests.
+  * fwts/opal: Reserved memory DT validation tests. 
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 24 May 2017 11:26:39 +0800
+
 fwts (17.03.00-0ubuntu1) zesty; urgency=low
 
   [Alex Hung]

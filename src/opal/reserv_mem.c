@@ -24,9 +24,7 @@
 
 #include "fwts.h"
 
-#ifdef HAVE_LIBFDT
 #include <libfdt.h>
-#endif
 
 #define CONFIG_FILENAME "/usr/local/share/fwts/platform.conf"
 #define MAXBUF 1024

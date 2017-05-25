@@ -24,9 +24,7 @@
 
 #include "fwts.h"
 
-#ifdef HAVE_LIBFDT
 #include <libfdt.h>
-#endif
 
 #define MAX_PSTATES 256
 

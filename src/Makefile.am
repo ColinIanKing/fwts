@@ -25,9 +25,12 @@ dt_tests = \
 	devicetree/dt_base/dt_base.c		\
 	devicetree/dt_sysinfo/dt_sysinfo.c
 mem_tests = \
-	opal/mem_info.c
+	opal/mem_info.c				\
+	opal/reserv_mem.c
 cpu_tests = \
 	opal/cpu_info.c
+power_mgmt_tests = \
+	opal/power_mgmt_info.c
 endif
 
 if HAVE_LIBFDT
@@ -147,8 +150,6 @@ fwts_SOURCES = main.c 				\
 	kernel/version/version.c 		\
 	opal/mtd_info.c				\
 	opal/prd_info.c				\
-	opal/power_mgmt_info.c			\
-	opal/reserv_mem.c			\
 	pci/aspm/aspm.c 			\
 	pci/crs/crs.c 				\
 	pci/maxreadreq/maxreadreq.c 		\
@@ -166,6 +167,7 @@ fwts_SOURCES = main.c 				\
 	$(pci_tests)				\
 	$(mem_tests)				\
 	$(cpu_tests)				\
+	$(power_mgmt_tests)			\
 	$(dt_tests)
 
 fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`

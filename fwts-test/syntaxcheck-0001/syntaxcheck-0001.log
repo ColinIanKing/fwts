@@ -20,6 +20,25 @@ syntaxcheck     00243|             {
 syntaxcheck     00244|                 If (_OSI ("Linux"))
 syntaxcheck     00245|                 {
 syntaxcheck     ==========================================================
+syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_NAME_EXISTS: Test 1, Assembler
+syntaxcheck     error in line 661
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00658| 
+syntaxcheck     00659|     Scope (_PR)
+syntaxcheck     00660|     {
+syntaxcheck     00661|         Processor (CPU0, 0x00, 0x00001010, 0x06){}
+syntaxcheck          |                      ^
+syntaxcheck          | Error 6074: Name already exists in scope    (CPU0)
+syntaxcheck     00662|         Processor (CPU1, 0x01, 0x00001010, 0x06){}
+syntaxcheck     00663|         Method (RPPC, 0, NotSerialized)
+syntaxcheck     00664|         {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Error #6074, ASL_MSG_NAME_EXISTS): The name
+syntaxcheck     already exists in this scope. The compiler will continue
+syntaxcheck     to process it.
+syntaxcheck     
 syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
 syntaxcheck     in line 692
 syntaxcheck     Line | AML source
@@ -58,7 +77,7 @@ syntaxcheck     line 722
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
 syntaxcheck     00719|             {
-syntaxcheck     00720|                  0x01, 0x14, 0x03, 0x00                           /* .... */
+syntaxcheck     00720|                  0x01, 0x14, 0x03, 0x00                           // ....
 syntaxcheck     00721|             })
 syntaxcheck     00722|             Method (WQAC, 1, NotSerialized)
 syntaxcheck          |                       ^
@@ -72,7 +91,7 @@ syntaxcheck     line 732
 syntaxcheck     Line | AML source
 syntaxcheck     ----------------------------------------------------------
 syntaxcheck     00729|             {
-syntaxcheck     00730|                  0x01, 0x00, 0x00, 0x00                           /* .... */
+syntaxcheck     00730|                  0x01, 0x00, 0x00, 0x00                           // ....
 syntaxcheck     00731|             })
 syntaxcheck     00732|             Method (WQBC, 1, NotSerialized)
 syntaxcheck          |                       ^
@@ -385,7 +404,7 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 14
+syntaxcheck     Table DSDT (0) reassembly: Found 4 errors, 5 warnings, 14
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
@@ -756,6 +775,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     2 passed, 42 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     2 passed, 43 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

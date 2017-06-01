@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
- * Copyright (c) 2000 - 2014 Intel Corporation
+ * AML/ASL+ Disassembler version 20170531 (64-bit version)
+ * Copyright (c) 2000 - 2017 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_21295_SSDT_0.dsl, Wed Nov 12 10:53:32 2014
+ * Disassembly of /tmp/fwts_tmp_table_11901_SSDT_12.dsl, Thu Jun  1 11:20:40 2017
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
+DefinitionBlock ("", "SSDT", 1, "SataRe", "SataAhci", 0x00001000)
 {
     External (_SB_.PCI0.SATA, DeviceObj)
     External (GTF0, FieldUnitObj)
@@ -34,7 +34,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "S
             {
                 Name (GBU0, Buffer (0x07)
                 {
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         /* ....... */
+                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         // .......
                 })
                 CreateByteField (GBU0, 0x00, GB00)
                 CreateByteField (GBU0, 0x01, GB01)
@@ -76,7 +76,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "S
             {
                 Name (GBU1, Buffer (0x07)
                 {
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         /* ....... */
+                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         // .......
                 })
                 CreateByteField (GBU1, 0x00, GB10)
                 CreateByteField (GBU1, 0x01, GB11)
@@ -118,7 +118,7 @@ DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_0.aml", "SSDT", 1, "SataRe", "S
             {
                 Name (GBU2, Buffer (0x07)
                 {
-                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         /* ....... */
+                     0x00, 0x00, 0x00, 0x00, 0x00, 0xA0, 0x00         // .......
                 })
                 CreateByteField (GBU2, 0x00, GB20)
                 CreateByteField (GBU2, 0x01, GB21)

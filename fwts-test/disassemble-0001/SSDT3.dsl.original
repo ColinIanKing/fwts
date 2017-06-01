@@ -1,11 +1,11 @@
 /*
  * Intel ACPI Component Architecture
- * AML/ASL+ Disassembler version 20141107-64 [Nov 12 2014]
- * Copyright (c) 2000 - 2014 Intel Corporation
+ * AML/ASL+ Disassembler version 20170531 (64-bit version)
+ * Copyright (c) 2000 - 2017 Intel Corporation
  * 
  * Disassembling to non-symbolic legacy ASL operators
  *
- * Disassembly of /tmp/fwts_tmp_table_21295_SSDT_2.dsl, Wed Nov 12 10:53:32 2014
+ * Disassembly of /tmp/fwts_tmp_table_11901_SSDT_14.dsl, Thu Jun  1 11:20:40 2017
  *
  * Original Table Header:
  *     Signature        "SSDT"
@@ -18,7 +18,7 @@
  *     Compiler ID      "INTL"
  *     Compiler Version 0x20050624 (537200164)
  */
-DefinitionBlock ("/tmp/fwts_tmp_table_21295_SSDT_2.aml", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
+DefinitionBlock ("", "SSDT", 1, "PmRef", "Cpu0Tst", 0x00003000)
 {
     External (_PR_.CPU0, ProcessorObj)
     External (_PSS, IntObj)

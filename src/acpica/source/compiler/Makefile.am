@@ -235,6 +235,7 @@ libfwtsiasl_la_SOURCES = 			\
 	../common/cmfsize.c			\
 	../common/dmextern.c 			\
 	../common/dmrestag.c 			\
+	../common/dmswitch.c			\
 	../common/dmtable.c 			\
 	../common/dmtables.c			\
 	../common/dmtbinfo.c 			\

@@ -95,7 +95,7 @@ int fwts_iasl_disassemble_aml(
 		/* Setup ACPICA disassembler globals */
 		Gbl_WarningLevel = ASL_WARNING3;
 		Gbl_IgnoreErrors = TRUE;
-		Gbl_DisasmFlag = TRUE;
+		AcpiGbl_DisasmFlag = TRUE;
 		Gbl_DoCompile = FALSE;
 		Gbl_OutputFilenamePrefix = (char*)outputfile;
 		Gbl_UseDefaultAmlFilename = FALSE;
@@ -233,7 +233,7 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 		(void)close(stderr_fds[0]);
 
 		/* Setup ACPICA compiler globals */
-		Gbl_DisasmFlag = FALSE;
+		AcpiGbl_DisasmFlag = FALSE;
 		Gbl_DoCompile = TRUE;
 		Gbl_PreprocessFlag = TRUE;
 		Gbl_UseDefaultAmlFilename = FALSE;

@@ -248,6 +248,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utmutex.c		\
 	source/components/utilities/utnonansi.c		\
 	source/components/utilities/utobject.c		\
+	source/components/utilities/utresdecode.c	\
 	source/components/utilities/utresrc.c		\
 	source/components/utilities/utstate.c		\
 	source/components/utilities/utstrtoul64.c	\
@@ -272,6 +273,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/common/ahuuids.c				\
 	source/tools/acpiexec/aeinitfile.c		\
 	source/tools/acpiexec/aehandlers.c		\
+	source/tools/acpiexec/aeexception.c		\
 	source/tools/acpiexec/aeregion.c		\
 	source/os_specific/service_layers/osgendbg.c
 

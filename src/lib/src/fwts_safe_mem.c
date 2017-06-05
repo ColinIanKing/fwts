@@ -23,18 +23,19 @@
 #include "fwts.h"
 
 static sigjmp_buf jmpbuf;
-static struct sigaction old_action;
+static struct sigaction old_segv_action, old_bus_action;
 
 /*
- *  If we hit a SIGSEGV then the port read
+ *  If we hit a SIGSEGV or SIGBUS then the read
  *  failed and we longjmp back and return
  *  FWTS_ERROR
  */
-static void segv_handler(int dummy)
+static void sig_handler(int dummy)
 {
 	FWTS_UNUSED(dummy);
 
-	fwts_sig_handler_restore(SIGSEGV, &old_action);
+	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
+	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
 	siglongjmp(jmpbuf, 1);
 }
 
@@ -42,16 +43,19 @@ static void segv_handler(int dummy)
  *  fwts_safe_memcpy()
  *	memcpy that catches segfaults. to be used when
  *	attempting to read BIOS tables from memory which
- *	may segfault if the src address is corrupt
+ *	may segfault or throw a bus error if the src
+ *	address is corrupt
  */
 int fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 {
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
 	
-	fwts_sig_handler_set(SIGSEGV, segv_handler, &old_action);
+	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
+	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
 	memcpy(dst, src, n);
-	fwts_sig_handler_restore(SIGSEGV, &old_action);
+	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
+	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
 
 	return FWTS_OK;
 }

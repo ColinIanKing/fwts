@@ -234,6 +234,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 {
 	FILE *fp;
 	char pathname[1024];
+	char buffer[4096];
 	void *addr_start;
 	void *addr_end;
 	void *last_addr_end = NULL;
@@ -251,8 +252,8 @@ static void *fwts_low_mmap(const size_t requested_size)
 	if (!fp)
 		return fwts_low_mmap_walkdown(requested_size);
 
-	while (!feof(fp)) {
-		if (fscanf(fp, "%p-%p %*s %*x %*s %*u %1023s\n",
+	while (fgets(buffer, sizeof(buffer) - 1, fp)) {
+		if (sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s\n",
 		    &addr_start, &addr_end, pathname) != 3)
 			continue;
 		/*

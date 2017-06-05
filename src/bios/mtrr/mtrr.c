@@ -342,6 +342,42 @@ static int guess_cache_type(
 	return FWTS_OK;
 }
 
+void multi_types_check(fwts_framework *fw, int *type)
+{
+	int n_types = 0;
+
+	/* checking number fo types set, UNCACHED, WRITE_BACK, WRITE_COMBINING, WRITE_THROUGH, WRITE_PROTECT */
+	for (int i = 0; i < 5; i++) {
+		if (*type & (1 << i))
+			n_types++;
+	}
+
+	if (n_types >= 2) {
+		if (*type & UNCACHED) {
+			fwts_log_info(fw, "Detected more than one type has been set. "
+					"From Intel Software Developer Manual 11.11.4.1 MTRR Precedences, "
+					"If two or more variable memory ranges match and one of the memory "
+					"types is UC, the UC memory type used. FWTS will check with type "
+					"UNCACHED here.");
+			*type = UNCACHED;
+			return;
+		} else if ((*type & WRITE_THROUGH) && (*type & WRITE_BACK)) {
+			fwts_log_info(fw, "Detected more than one type has been set. "
+					"From Intel Software Developer Manual 11.11.4.1 MTRR Precedences, "
+					"If two or more variable memory ranges match and the memory types "
+					"are WT and WB, the WT memory type is used. FWTS will check with type "
+					"WRITE_THROUGH here.");
+			*type = WRITE_THROUGH;
+			return;
+		} else {
+			fwts_warning(fw, "Detected more than one type has been set. The overlaps not defined, "
+					"processor behavior is undefined.");
+			return;
+		}
+	}
+	return;
+}
+
 static int validate_iomem(fwts_framework *fw)
 {
 	FILE *file;
@@ -405,6 +441,8 @@ static int validate_iomem(fwts_framework *fw)
 			continue;
 
 		type = cache_types(start, end);
+
+		(void)multi_types_check(fw, &type);
 
 		if (guess_cache_type(fw, c2, &type_must, &type_mustnot, start) != FWTS_OK) {
 			/*  This has failed, give up at this point */

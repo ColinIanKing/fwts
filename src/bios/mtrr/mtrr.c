@@ -51,6 +51,8 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 
 #define MTRR_DEF_TYPE_MSR	0x2FF
 
+static	uint64_t mtrr_default;
+
 struct mtrr_entry {
 	uint8_t  reg;
 	uint64_t start;
@@ -74,8 +76,21 @@ static char *cache_to_string(int type)
 		strcat(str," Write-Through");
 	if (type & WRITE_PROTECT)
 		strcat(str," Write-Protect");
-	if (type & DEFAULT)
-		strcat(str," Default (Most probably Uncached)");
+	if (type & DEFAULT) {
+		strcat(str," Default");
+		if (mtrr_default & UNCACHED)
+			strcat(str," (Uncached)");
+		if (mtrr_default & WRITE_BACK)
+			strcat(str," (Write-Back)");
+		if (mtrr_default & WRITE_COMBINING)
+			strcat(str," (Write-Combining)");
+		if (mtrr_default & WRITE_THROUGH)
+			strcat(str," (Write-Through)");
+		if (mtrr_default & WRITE_PROTECT)
+			strcat(str," (Write-Protect)");
+		if (mtrr_default & UNKNOWN)
+			strcat(str," (Unknown)");
+	}
 	if (type & UNKNOWN)
 		strcat(str," Unknown");
 	return str;
@@ -167,12 +182,38 @@ static int get_mtrrs(void)
 	return FWTS_OK;
 }
 
+static int get_default_mtrr(void) {
+	if (fwts_cpu_readmsr(0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
+		switch (mtrr_default & 0xFF) {
+			case 0:
+				mtrr_default = UNCACHED;
+				break;
+			case 1:
+				mtrr_default = WRITE_COMBINING;
+				break;
+			case 4:
+				mtrr_default = WRITE_THROUGH;
+				break;
+			case 5:
+				mtrr_default = WRITE_PROTECT;
+				break;
+			case 6:
+				mtrr_default = WRITE_BACK;
+				break;
+			default:
+				mtrr_default = UNKNOWN;
+				break;
+		}
+		return FWTS_OK;
+	}
+	return FWTS_ERROR;
+}
+
 static int cache_types(uint64_t start, uint64_t end)
 {
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
 	int type = 0;
-	uint64_t mtrr_default = UNCACHED;
 
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);
@@ -202,32 +243,9 @@ restart:
 	if (start != end)
 		type |= DEFAULT;
 
-	if (fwts_cpu_readmsr(0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
-		switch (mtrr_default & 0xFF) {
-			case 0:
-				mtrr_default = UNCACHED;
-				break;
-			case 1:
-				mtrr_default = WRITE_COMBINING;
-				break;
-			case 4:
-				mtrr_default = WRITE_THROUGH;
-				break;
-			case 5:
-				mtrr_default = WRITE_PROTECT;
-				break;
-			case 6:
-				mtrr_default = WRITE_BACK;
-				break;
-			default:
-				mtrr_default = UNKNOWN;
-				break;
-		}
-
-		if ((type & DEFAULT) && mtrr_default != UNCACHED) {
-			type &= ~DEFAULT;
-			type |= mtrr_default;
-		}
+	if ((type & DEFAULT) && mtrr_default != UNCACHED) {
+		type &= ~DEFAULT;
+		type |= mtrr_default;
 	}
 
 	return type;
@@ -389,6 +407,9 @@ static int validate_iomem(fwts_framework *fw)
 
 	if ((file = fopen("/proc/iomem", "r")) == NULL)
 		return FWTS_ERROR;
+
+	if (get_default_mtrr() != FWTS_OK)
+		mtrr_default = UNKNOWN;
 
 	while (!feof(file)) {
 		uint64_t start;

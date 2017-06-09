@@ -362,10 +362,10 @@ static int guess_cache_type(
 
 void multi_types_check(fwts_framework *fw, int *type)
 {
-	int n_types = 0;
+	int n_types = 0, i;
 
 	/* checking number fo types set, UNCACHED, WRITE_BACK, WRITE_COMBINING, WRITE_THROUGH, WRITE_PROTECT */
-	for (int i = 0; i < 5; i++) {
+	for (i = 0; i < 5; i++) {
 		if (*type & (1 << i))
 			n_types++;
 	}

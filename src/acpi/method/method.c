@@ -6464,7 +6464,7 @@ static int method_test_WAK(fwts_framework *fw)
 		ACPI_OBJECT arg[1];
 		char name[6];
 
-		snprintf(name, sizeof(name), "_S%1d_", i);
+		snprintf(name, sizeof(name), "_S%1" PRIu32 "_", i);
 		if (fwts_acpi_object_exists(name) == NULL)
 			continue;
 

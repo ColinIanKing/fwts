@@ -234,12 +234,12 @@ static void *fwts_low_mmap(const size_t requested_size)
 {
 	FILE *fp;
 	char pathname[1024];
-	char buffer[4096];
 	void *addr_start;
 	void *addr_end;
 	void *last_addr_end = NULL;
 	void *first_addr_start = NULL;
 	void *ret = MAP_FAILED;
+	long pos, prev_pos = 0;
 
 	if (requested_size == 0)	/* Illegal */
 		return MAP_FAILED;
@@ -252,9 +252,20 @@ static void *fwts_low_mmap(const size_t requested_size)
 	if (!fp)
 		return fwts_low_mmap_walkdown(requested_size);
 
-	while (fgets(buffer, sizeof(buffer) - 1, fp)) {
-		if (sscanf(buffer, "%p-%p %*s %*x %*s %*u %1023s\n",
-		    &addr_start, &addr_end, pathname) != 3)
+	while (!feof(fp)) {
+		int n;
+
+		n = fscanf(fp, "%p-%p %*s %*x %*s %*u %1023s\n",
+		    &addr_start, &addr_end, pathname);
+
+		/*  At same point of previous scanf, then force a loop exit */
+		pos = ftell(fp);
+		if (pos == prev_pos)
+			break;
+		prev_pos = pos;
+
+		/*  We need exactly 3 parsed items of data */
+		if (n != 3)
 			continue;
 		/*
 		 *  Sanity check data

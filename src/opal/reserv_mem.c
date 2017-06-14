@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <inttypes.h>
 
 #include "fwts.h"
 

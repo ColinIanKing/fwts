@@ -102,6 +102,19 @@ static int rsdp_test1(fwts_framework *fw)
 			"firmware ACPI complaint.");
 	}
 
+	/* ACPI 6.1 errata clarifies revision 1 must have length 20 */
+	if (rsdp->revision == 1) {
+		if (rsdp->length == 20)
+			fwts_passed(fw, "RSDP: the table is the correct length.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"RSDPBadLength",
+				"RSDP: length of Revision 1 is %d bytes but should be 20.",
+				rsdp->length);
+
+		return FWTS_OK;
+	}
+
 	if (rsdp->revision <= 2)
 		fwts_passed(fw,
 			    "RSDP: revision is %" PRIu8 ".", rsdp->revision);

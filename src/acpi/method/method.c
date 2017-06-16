@@ -3757,6 +3757,9 @@ static void method_test_PSD_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
+	if (method_package_count_equal(fw, name, "_PSD", obj, 1) != FWTS_OK)
+		return;
+
 	if (method_package_elements_all_type(fw, name, "_PSD", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
@@ -3894,8 +3897,7 @@ static void method_test_TSD_return(
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	/* Something is really wrong if we don't have any elements in _TSD */
-	if (method_package_count_min(fw, name, "_TSD", obj, 1) != FWTS_OK)
+	if (method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */

@@ -68,12 +68,12 @@ static int bgrt_test1(fwts_framework *fw)
 			" and not the expected value of 0x01",
 			bgrt->version);
 	}
-	if (bgrt->status & ~0x1) {
+	if (bgrt->status & ~0x7) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"BGRTStatusRersevedBits",
 			"BGRT: Status field is 0x%" PRIx8
-			", reserved bits [1:7] should be zero",
+			", reserved bits [7:3] should be zero",
 			bgrt->status);
 	}
 	if (bgrt->image_type > 0x00) {

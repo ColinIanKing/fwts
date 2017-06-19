@@ -653,6 +653,31 @@ static void iort_check_smmuv3(
 }
 
 /*
+ *  Check IORT Performance Monitoring Counter Group (PMCG)
+ */
+static void iort_check_pmcg(
+	fwts_framework *fw,
+	uint8_t *data,
+	uint8_t *node_end,
+	bool *passed)
+{
+	fwts_acpi_table_iort_pmcg_node *node =
+		(fwts_acpi_table_iort_pmcg_node *)data;
+
+	iort_node_dump(fw, "IORT PMCG node", (fwts_acpi_table_iort_node *)data);
+	fwts_log_info_verbatim(fw, "  Base Address:             0x%16.16" PRIx64, node->base_address);
+	fwts_log_info_verbatim(fw, "  Overflow interrupt GSIV:  0x%8.8" PRIx32, node->gsiv);
+	fwts_log_info_verbatim(fw, "  Node reference:           0x%8.8" PRIx32, node->node_ref);
+
+	iort_id_mappings_dump(fw, data, node_end);
+
+	iort_node_check(fw, data, false, false, passed);
+	iort_id_mappings_check(fw, data, node_end, passed);
+
+	fwts_log_nl(fw);
+}
+
+/*
  *  IORT Remapping Table
  *     http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
  */
@@ -724,6 +749,9 @@ static int iort_test1(fwts_framework *fw)
 			break;
 		case 0x04:
 			iort_check_smmuv3(fw, data, node_end, &passed);
+			break;
+		case 0x05:
+			iort_check_pmcg(fw, data, node_end, &passed);
 			break;
 		default:
 			/* reserved */

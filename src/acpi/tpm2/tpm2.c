@@ -70,11 +70,11 @@ static int tpm2_test1(fwts_framework *fw)
 			"0x%4.4" PRIx16 " instead", tpm2->reserved);
 	}
 
-	if (tpm2->start_method < 1 || tpm2->start_method >= 9) {
+	if (tpm2->start_method < 1 || tpm2->start_method >= 12) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"TPM2BadStartMethod",
-			"TPM2's Start Method must be between one to eight, got 0x%" PRIx16,
+			"TPM2's Start Method must be between one to eleven, got 0x%" PRIx16,
 			tpm2->start_method);
 	}
 
@@ -84,6 +84,15 @@ static int tpm2_test1(fwts_framework *fw)
 			"TPM2BadPlatformParameters",
 			"Table length must be 0x%" PRIx32 " if Start method equals 2, got 0x%" PRIx32,
 			(uint32_t) sizeof(fwts_acpi_table_tpm2) + 4,
+			(uint32_t) table->length);
+	}
+
+	if (tpm2->start_method == 11 && table->length < sizeof(fwts_acpi_table_tpm2) + 12) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"TPM2BadPlatformParameters",
+			"Table length must be atleast 0x%" PRIx32 " if Start method equals 11, got 0x%" PRIx32,
+			(uint32_t) sizeof(fwts_acpi_table_tpm2) + 12,
 			(uint32_t) table->length);
 	}
 

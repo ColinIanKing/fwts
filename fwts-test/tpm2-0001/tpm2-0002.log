@@ -5,14 +5,14 @@ tpm2            TPM2 Table:
 tpm2              Platform Class:                  0x0004
 tpm2              Reserved:                        0x0003
 tpm2              Address of Control Area:         0x0011223344556677
-tpm2              Start Method:                    0x00000009
+tpm2              Start Method:                    0x0000000c
 tpm2            FAILED [HIGH] TPM2BadPlatformClass: Test 1, TPM2's
 tpm2            platform class must be zero (client) or one (server), got
 tpm2            0x4
 tpm2            FAILED [LOW] TPM2ReservedNonZero: Test 1, TPM2 reserved
 tpm2            field must be zero, got 0x0003 instead
 tpm2            FAILED [HIGH] TPM2BadStartMethod: Test 1, TPM2's Start
-tpm2            Method must be between one to eight, got 0x9
+tpm2            Method must be between one to eleven, got 0xc
 tpm2            
 tpm2            ==========================================================
 tpm2            0 passed, 3 failed, 0 warning, 0 aborted, 0 skipped, 0

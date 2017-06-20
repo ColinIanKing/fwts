@@ -253,7 +253,7 @@ static void hest_check_ia32_arch_corrected_machine_check(
  *    - note, this should be a higher section number, the ACPI 6.0
  *	specification seems to have numbered this incorrectly.
  */
-static void hest_check_fwts_acpi_table_hest_nmi_error(
+static void hest_check_acpi_table_hest_nmi_error(
 	fwts_framework *fw,
 	ssize_t *length,
 	uint8_t **data,
@@ -832,7 +832,7 @@ static int hest_test1(fwts_framework *fw)
 			hest_type_01_count++;
 			break;
 		case 2:
-			hest_check_fwts_acpi_table_hest_nmi_error(fw, &length, &data, &passed);
+			hest_check_acpi_table_hest_nmi_error(fw, &length, &data, &passed);
 			hest_type_02_count++;
 			break;
 		case 6:

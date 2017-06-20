@@ -823,31 +823,31 @@ static int hest_test1(fwts_framework *fw)
 		uint16_t *type = (uint16_t *)data;
 
 		switch (*type) {
-		case 0x00:
+		case 0:
 			hest_check_ia32_arch_machine_check_exception(fw, &length, &data, &passed);
 			hest_type_00_count++;
 			break;
-		case 0x01:
+		case 1:
 			hest_check_ia32_arch_corrected_machine_check(fw, &length, &data, &passed);
 			hest_type_01_count++;
 			break;
-		case 0x02:
+		case 2:
 			hest_check_fwts_acpi_table_hest_nmi_error(fw, &length, &data, &passed);
 			hest_type_02_count++;
 			break;
-		case 0x06:
+		case 6:
 			hest_check_pci_express_root_port_aer(fw, &length, &data, &passed);
 			break;
-		case 0x07:
+		case 7:
 			hest_check_pci_express_device_aer(fw, &length, &data, &passed);
 			break;
-		case 0x08:
+		case 8:
 			hest_heck_pci_express_bridge_aer(fw, &length, &data, &passed);
 			break;
-		case 0x09:
+		case 9:
 			hest_check_generic_error_source(fw, &length, &data, &passed);
 			break;
-		case 0x0a:
+		case 10:
 			hest_check_generic_error_source_v2(fw, &length, &data, &passed);
 			break;
 		default:

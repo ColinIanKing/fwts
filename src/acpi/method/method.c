@@ -3213,6 +3213,32 @@ static void method_test_CPC_return(
 		{ ACPI_TYPE_INTBUF,	"Reference Performance" }
 	};
 
+	static fwts_package_element elementsv3[] = {
+		{ ACPI_TYPE_INTEGER,	"Number of Entries" },
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTBUF,	"Highest Performance" },
+		{ ACPI_TYPE_INTBUF,	"Nominal Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Non Linear Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Performance" },
+		{ ACPI_TYPE_BUFFER,	"Guaranteed Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Desired Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Minimum Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Maximum Performance Register" },
+		{ ACPI_TYPE_BUFFER,	"Performance Reduction Tolerance Register" },
+		{ ACPI_TYPE_BUFFER,	"Timed Window Register" },
+		{ ACPI_TYPE_INTBUF,	"Counter Wraparound Time" },
+		{ ACPI_TYPE_BUFFER,	"Reference Performance Counter Register" },
+		{ ACPI_TYPE_BUFFER,	"Delivered Performance Counter Register" },
+		{ ACPI_TYPE_BUFFER,	"Performance Limited Register" },
+		{ ACPI_TYPE_BUFFER,	"CPPC Enable Register" },
+		{ ACPI_TYPE_INTBUF,	"Autonomous Selection Enable" },
+		{ ACPI_TYPE_BUFFER,	"Autonomous Activity Window Register" },
+		{ ACPI_TYPE_BUFFER,	"Energy Performance Preference Register" },
+		{ ACPI_TYPE_INTBUF,	"Reference Performance" },
+		{ ACPI_TYPE_INTBUF,	"Lowest Frequency" },
+		{ ACPI_TYPE_INTBUF,	"Nominal Frequency" }
+	};
+
 	FWTS_UNUSED(private);
 
 	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
@@ -3228,7 +3254,7 @@ static void method_test_CPC_return(
 		/* For now, just check types */
 		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv1, 17) != FWTS_OK)
 			return;
-	} else if (revision == 2) {	// acpi 5.1 and later
+	} else if (revision == 2) {	// acpi 5.1 ~ acpi 6.1a
 		/* Something is really wrong if we don't have any elements in _CPC */
 		if (method_package_count_equal(fw, name, "_CPC", obj, 21) != FWTS_OK)
 			return;
@@ -3236,11 +3262,18 @@ static void method_test_CPC_return(
 		/* For now, just check types */
 		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv2, 21) != FWTS_OK)
 			return;
+	} else if (revision == 3) {	// acpi 6.2 and later
+		if (method_package_count_equal(fw, name, "_CPC", obj, 23) != FWTS_OK)
+			return;
+
+		/* For now, just check types */
+		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv3, 23) != FWTS_OK)
+			return;
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"Method_CPCBadRevision",
 			"_CPC's _REV is incorrect, "
-			"expecting 1 or 2, got 0x%" PRIx8 , revision);
+			"expecting 1 ,2 or 3, got 0x%" PRIx8 , revision);
 
 		return;
 	}

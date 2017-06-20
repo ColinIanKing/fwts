@@ -410,6 +410,14 @@ typedef struct {
 	uint32_t	clock_domain;
 } __attribute__ ((packed)) fwts_acpi_table_gicc_affinity;
 
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+	uint32_t	proximity_domain;
+	uint16_t	reserved;
+	uint32_t	its_id;
+} __attribute__ ((packed)) fwts_acpi_table_its_affinity;
+
 /*
  * ACPI HPET (HPET IA-PC High Precision Event Timer Table),
  *    3.2.4 The ACPI 2.0 HPET Description Table (HPET)

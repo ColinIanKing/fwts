@@ -266,7 +266,7 @@ static void srat_check_gicc_affinity(
 	fwts_log_info_verbatim(fw, "SRAT GICC Affinity Structure:");
 	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
 	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
-	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%4.4" PRIx32, affinity->proximity_domain);
+	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
 	fwts_log_info_verbatim(fw, "  ACPI Processor UID:       0x%8.8" PRIx32, affinity->acpi_processor_uid);
 	fwts_log_info_verbatim(fw, "  Flags:                    0x%8.8" PRIx32, affinity->flags);
 	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
@@ -288,6 +288,57 @@ static void srat_check_gicc_affinity(
 done:
 	*length -= sizeof(fwts_acpi_table_gicc_affinity);
 	*data += sizeof(fwts_acpi_table_gicc_affinity);
+}
+
+static void srat_check_its_affinity(
+	fwts_framework *fw,
+	ssize_t		*length,
+	uint8_t		**data,
+	bool		*passed)
+{
+	fwts_acpi_table_its_affinity *affinity =
+		(fwts_acpi_table_its_affinity *)*data;
+
+	if ((ssize_t)sizeof(fwts_acpi_table_its_affinity) > *length) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATITSAffinityShort",
+			"SRAT ITS Affinity structure too short, got "
+			"%zu bytes, expecting %zu bytes",
+			*length, sizeof(fwts_acpi_table_its_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	if (affinity->length != sizeof(fwts_acpi_table_its_affinity)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATITSAffinityLength",
+			"SRAT ITS Affinity Length incorrect, got "
+			"%" PRIu8 ", expecting %zu",
+			affinity->length, sizeof(fwts_acpi_table_its_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	fwts_log_info_verbatim(fw, "SRAT ITS Affinity Structure:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
+	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
+	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved);
+	fwts_log_info_verbatim(fw, "  ITS ID                    0x%8.8" PRIx32, affinity->its_id);
+	fwts_log_nl(fw);
+
+	if (affinity->reserved) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATITSBadReserved",
+			"ITS Affinity Reserved field should be zero, got "
+			"0x%" PRIx16,
+			affinity->reserved);
+		*passed = false;
+	}
+
+done:
+	*length -= sizeof(fwts_acpi_table_its_affinity);
+	*data += sizeof(fwts_acpi_table_its_affinity);
 }
 
 /*
@@ -324,6 +375,9 @@ static int srat_test1(fwts_framework *fw)
 			break;
 		case 0x03:
 			srat_check_gicc_affinity(fw, &length, &data, &passed);
+			break;
+		case 0x04:
+			srat_check_its_affinity(fw, &length, &data, &passed);
 			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH,

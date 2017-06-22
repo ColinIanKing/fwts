@@ -208,6 +208,16 @@ static void hest_check_ia32_arch_corrected_machine_check(
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[2]);
 	fwts_log_nl(fw);
 
+	if (check->notification.type > 11) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTInvalidHardwareErrorNotificationType",
+			"HEST Hardware Error Notification Type is "
+			"an invalid reserved value of %2.2" PRIu8 ","
+			"expecting value 0 to 11",
+			check->notification.type);
+	}
+
 	for (i = 0; i < check->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &check->bank[i];
 
@@ -645,13 +655,13 @@ static void hest_check_generic_error_source(
 			"more than zero.",
 			source->max_sections_per_record);
 	}
-	if (source->notification.type > 0xA) {
+	if (source->notification.type > 11) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidHardwareErrorNotificationType",
 			"HEST Hardware Error Notification Type is "
-			"an invalid reserved value of 0x%2.2" PRIx8 ","
-			"expecting value 0x00 to 0x0A",
+			"an invalid reserved value of %2.2" PRIu8 ","
+			"expecting value 0 to 11",
 			source->notification.type);
 	}
 	if (source->notification.configuration_write_enable & ~0x3f) {
@@ -763,13 +773,13 @@ static void hest_check_generic_error_source_v2(
 			"more than zero.",
 			source->max_sections_per_record);
 	}
-	if (source->notification.type > 0xA) {
+	if (source->notification.type > 11) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidHardwareErrorNotificationType",
 			"HEST Hardware Error Notification Type is "
-			"an invalid reserved value of 0x%2.2" PRIx8 ","
-			"expecting value 0x00 to 0x0A",
+			"an invalid reserved value of %2.2" PRIu8 ","
+			"expecting value 0 to 11",
 			source->notification.type);
 	}
 	if (source->notification.configuration_write_enable & ~0x3f) {

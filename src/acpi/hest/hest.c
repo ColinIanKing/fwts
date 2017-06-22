@@ -483,16 +483,16 @@ static void hest_check_pci_express_device_aer(
 	if (aer->flags & ~0x3) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"HESTPciExpressRootPortFlagsReserved",
-			"HEST PCI Express Root Port Flags Reserved bits "
+			"HESTPciExpressDeviceFlagsReserved",
+			"HEST PCI Express Device Flags Reserved bits "
 			"[2:7] must be zero, instead got 0x%" PRIx8,
 			aer->flags);
 	}
 	if (aer->reserved2) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTPciExpressRootPortReservedNonZero",
-			"HEST PCI Express Root Port Reserved field "
+			"HESTPciExpressDeviceReservedNonZero",
+			"HEST PCI Express Device Reserved field "
 			"at offset 26 must be zero, instead got 0x%" PRIx16,
 			aer->reserved2);
 	}
@@ -500,7 +500,7 @@ static void hest_check_pci_express_device_aer(
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidRecordsToPreallocate",
-			"HEST PCI Express Root Port Number of Records "
+			"HEST PCI Express Device Number of Records "
 			"to Preallocate is 0x%" PRIx16 " and must be "
 			"more than zero.",
 			aer->number_of_records_to_preallocate);
@@ -509,7 +509,7 @@ static void hest_check_pci_express_device_aer(
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"HESTInvalidMaxSectionsPerRecord",
-			"HEST PCI Express Root Port Max Sections Per "
+			"HEST PCI Express Device Max Sections Per "
 			"Record is 0x%" PRIx16 " and must be "
 			"more than zero.",
 			aer->max_sections_per_record);

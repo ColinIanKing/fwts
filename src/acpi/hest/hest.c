@@ -101,6 +101,22 @@ static void hest_check_ia32_arch_machine_check_exception(
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, exception->reserved2[6]);
 	fwts_log_nl(fw);
 
+	if (exception->flags & ~0x5) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"HESTIA32FlagsReserved",
+			"HEST IA-32 Architecture MCE Flags Reserved bits "
+			"[1] & [3:7] must be zero, instead got 0x%" PRIx8,
+			exception->flags);
+		*passed = false;
+	} else if (exception->flags == 0x5) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTIA32BadFlags",
+			"HEST IA-32 Architecture MCE Flags bits [0] & [2] "
+			"are mutually exclusive, instead got 0x%" PRIx8,
+			exception->flags);
+		*passed = false;
+	}
+
 	for (i = 0; i < exception->number_of_hardware_banks; i++) {
 		fwts_acpi_table_hest_machine_check_bank *bank = &exception->bank[i];
 
@@ -207,6 +223,22 @@ static void hest_check_ia32_arch_corrected_machine_check(
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[1]);
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, check->reserved2[2]);
 	fwts_log_nl(fw);
+
+	if (check->flags & ~0x5) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"HESTIA32CorrectedMachineCheckFlagsReserved",
+			"HEST IA-32 Architecture MC Flags Reserved bits "
+			"[1] & [3:7] must be zero, instead got 0x%" PRIx8,
+			check->flags);
+		*passed = false;
+	} else if (check->flags == 0x5) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"HESTIA32CorrectedMachineCheckBadFlags",
+			"HEST IA-32 Architecture MC Flags bits [0] & [2] "
+			"are mutually exclusive, instead got 0x%" PRIx8,
+			check->flags);
+		*passed = false;
+	}
 
 	if (check->notification.type > 11) {
 		*passed = false;

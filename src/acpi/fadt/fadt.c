@@ -198,7 +198,7 @@ static int fadt_checksum(fwts_framework *fw)
 static int fadt_revision(fwts_framework *fw)
 {
 	const uint8_t LATEST_MAJOR = 6;
-	const uint8_t LATEST_MINOR = 1;
+	const uint8_t LATEST_MINOR = 2;
 	uint8_t major;
 	uint8_t minor;
 

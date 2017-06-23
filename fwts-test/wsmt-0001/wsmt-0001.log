@@ -1,0 +1,13 @@
+wsmt            wsmt: WSMT Windows SMM Security Mitigations Table test.
+wsmt            ----------------------------------------------------------
+wsmt            Test 1 of 1: WSMT Windows SMM Security Mitigations Table
+wsmt            test.
+wsmt            WSMT Windows SMM Security Mitigations Table:
+wsmt              Protection Flags:      0x00000007
+wsmt            
+wsmt            PASSED: Test 1, No issues found in WSMT table.
+wsmt            
+wsmt            ==========================================================
+wsmt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+wsmt            info only.
+wsmt            ==========================================================

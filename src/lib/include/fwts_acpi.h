@@ -1847,6 +1847,15 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_wpbt;
 
 /*
+ * ACPI WSMT (Windows SMM Security Mitigations Table)
+ *  https://msdn.microsoft.com/windows/hardware/drivers/bringup/acpi-system-description-tables#wsmt
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+	uint32_t	protection_flags;
+} __attribute__ ((packed)) fwts_acpi_table_wsmt;
+
+/*
  *  ACPI ASPT
  *	determined by reverse engineering
  */

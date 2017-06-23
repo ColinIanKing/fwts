@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid SPCR"
+TEST="Test acpitables against invalid SPCR"
 NAME=test-0001.sh
 TMPLOG=$TMP/spcr.log.$$
 

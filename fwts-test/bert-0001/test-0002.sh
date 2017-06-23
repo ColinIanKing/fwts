@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid BERT"
+TEST="Test acpitables against invalid BERT"
 NAME=test-0001.sh
 TMPLOG=$TMP/bert.log.$$
 

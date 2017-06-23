@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against PMTT"
+TEST="Test acpitables against PMTT"
 NAME=test-0001.sh
 TMPLOG=$TMP/pmtt.log.$$
 

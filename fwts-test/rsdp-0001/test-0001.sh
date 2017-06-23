@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against broken ACPI RSDP"
+TEST="Test acpitables against broken ACPI RSDP"
 NAME=test-0001.sh
 TMPLOG=$TMP/rsdp.log.$$
 

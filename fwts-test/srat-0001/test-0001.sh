@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against SRAT"
+TEST="Test acpitables against SRAT"
 NAME=test-0001.sh
 TMPLOG=$TMP/srat.log.$$
 

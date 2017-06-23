@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against broken ACPI XSDT table"
+TEST="Test acpitables against broken ACPI XSDT table"
 NAME=test-0001.sh
 TMPLOG=$TMP/xsdt.log.$$
 

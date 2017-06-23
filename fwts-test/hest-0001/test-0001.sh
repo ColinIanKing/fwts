@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against HEST"
+TEST="Test acpitables against HEST"
 NAME=test-0001.sh
 TMPLOG=$TMP/hest.log.$$
 

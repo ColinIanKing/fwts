@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against NFIT"
+TEST="Test acpitables against NFIT"
 NAME=test-0001.sh
 TMPLOG=$TMP/nfit.log.$$
 

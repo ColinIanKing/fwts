@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against known correct ACPI tables"
+TEST="Test acpitables against known correct ACPI tables"
 NAME=test-0001.sh
 TMPLOG=$TMP/acpitables.log.$$
 

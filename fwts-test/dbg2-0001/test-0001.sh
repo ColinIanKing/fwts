@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against DBG2"
+TEST="Test acpitables against DBG2"
 NAME=test-0001.sh
 TMPLOG=$TMP/dbg2.log.$$
 

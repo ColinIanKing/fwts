@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid BOOT"
+TEST="Test acpitables against invalid BOOT"
 NAME=test-0001.sh
 TMPLOG=$TMP/boot.log.$$
 

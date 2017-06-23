@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid SBST"
+TEST="Test acpitables against invalid SBST"
 NAME=test-0001.sh
 TMPLOG=$TMP/sbst.log.$$
 

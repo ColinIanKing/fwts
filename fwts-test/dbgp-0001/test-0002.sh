@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid DBGP"
+TEST="Test acpitables against invalid DBGP"
 NAME=test-0001.sh
 TMPLOG=$TMP/dbgp.log.$$
 

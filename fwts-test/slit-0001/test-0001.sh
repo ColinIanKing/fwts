@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against SLIT"
+TEST="Test acpitables against SLIT"
 NAME=test-0001.sh
 TMPLOG=$TMP/slit.log.$$
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against LPIT"
+TEST="Test acpitables against LPIT"
 NAME=test-0001.sh
 TMPLOG=$TMP/lpit.log.$$
 

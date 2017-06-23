@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid DRTM"
+TEST="Test acpitables against invalid DRTM"
 NAME=test-0001.sh
 TMPLOG=$TMP/drtm.log.$$
 

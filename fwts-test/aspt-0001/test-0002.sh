@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid ASPT"
+TEST="Test acpitables against invalid ASPT"
 NAME=test-0001.sh
 TMPLOG=$TMP/aspt.log.$$
 

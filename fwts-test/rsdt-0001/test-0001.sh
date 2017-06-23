@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against broken ACPI RSDT table"
+TEST="Test acpitables against broken ACPI RSDT table"
 NAME=test-0001.sh
 TMPLOG=$TMP/rsdt.log.$$
 

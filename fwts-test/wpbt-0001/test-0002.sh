@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid WPBT"
+TEST="Test acpitables against invalid WPBT"
 NAME=test-0001.sh
 TMPLOG=$TMP/wpbt.log.$$
 

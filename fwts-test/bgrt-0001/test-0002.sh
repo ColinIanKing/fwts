@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid BGRT"
+TEST="Test acpitables against invalid BGRT"
 NAME=test-0001.sh
 TMPLOG=$TMP/bgrt.log.$$
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-TEST="Test apcitables against invalid WSMT"
+TEST="Test acpitables against invalid WSMT"
 NAME=test-0001.sh
 TMPLOG=$TMP/wsmt.log.$$
 

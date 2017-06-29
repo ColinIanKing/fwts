@@ -20,25 +20,6 @@ syntaxcheck     00243|             {
 syntaxcheck     00244|                 If (_OSI ("Linux"))
 syntaxcheck     00245|                 {
 syntaxcheck     ==========================================================
-syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_NAME_EXISTS: Test 1, Assembler
-syntaxcheck     error in line 661
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00658| 
-syntaxcheck     00659|     Scope (_PR)
-syntaxcheck     00660|     {
-syntaxcheck     00661|         Processor (CPU0, 0x00, 0x00001010, 0x06){}
-syntaxcheck          |                      ^
-syntaxcheck          | Error 6074: Name already exists in scope    (CPU0)
-syntaxcheck     00662|         Processor (CPU1, 0x01, 0x00001010, 0x06){}
-syntaxcheck     00663|         Method (RPPC, 0, NotSerialized)
-syntaxcheck     00664|         {
-syntaxcheck     ==========================================================
-syntaxcheck     
-syntaxcheck     ADVICE: (for Error #6074, ASL_MSG_NAME_EXISTS): The name
-syntaxcheck     already exists in this scope. The compiler will continue
-syntaxcheck     to process it.
-syntaxcheck     
 syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
 syntaxcheck     in line 692
 syntaxcheck     Line | AML source
@@ -404,7 +385,7 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     Table DSDT (0) reassembly: Found 4 errors, 5 warnings, 14
+syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 14
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
@@ -432,62 +413,6 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 41
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00038|                 })
-syntaxcheck     00039|                 CreateByteField (GBU0, 0x00, GB00)
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB02] is within a method [_SDD])
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 42
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00039|                 CreateByteField (GBU0, 0x00, GB00)
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB03] is within a method [_SDD])
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     00045|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 43
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00040|                 CreateByteField (GBU0, 0x01, GB01)
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB04] is within a method [_SDD])
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck     00045|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     00046|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 44
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00041|                 CreateByteField (GBU0, 0x02, GB02)
-syntaxcheck     00042|                 CreateByteField (GBU0, 0x03, GB03)
-syntaxcheck     00043|                 CreateByteField (GBU0, 0x04, GB04)
-syntaxcheck     00044|                 CreateByteField (GBU0, 0x05, GB05)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB05] is within a method [_SDD])
-syntaxcheck     00045|                 CreateByteField (GBU0, 0x06, GB06)
-syntaxcheck     00046|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00047|                 {
-syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 75
 syntaxcheck     Line | AML source
@@ -510,62 +435,6 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 83
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00080|                 })
-syntaxcheck     00081|                 CreateByteField (GBU1, 0x00, GB10)
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB12] is within a method [_SDD])
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 84
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00081|                 CreateByteField (GBU1, 0x00, GB10)
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB13] is within a method [_SDD])
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     00087|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 85
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00082|                 CreateByteField (GBU1, 0x01, GB11)
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB14] is within a method [_SDD])
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck     00087|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     00088|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 86
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00083|                 CreateByteField (GBU1, 0x02, GB12)
-syntaxcheck     00084|                 CreateByteField (GBU1, 0x03, GB13)
-syntaxcheck     00085|                 CreateByteField (GBU1, 0x04, GB14)
-syntaxcheck     00086|                 CreateByteField (GBU1, 0x05, GB15)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB15] is within a method [_SDD])
-syntaxcheck     00087|                 CreateByteField (GBU1, 0x06, GB16)
-syntaxcheck     00088|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00089|                 {
-syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 117
 syntaxcheck     Line | AML source
@@ -588,84 +457,14 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 125
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00122|                 })
-syntaxcheck     00123|                 CreateByteField (GBU2, 0x00, GB20)
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB22] is within a method [_SDD])
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 126
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00123|                 CreateByteField (GBU2, 0x00, GB20)
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB23] is within a method [_SDD])
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     00129|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 127
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00124|                 CreateByteField (GBU2, 0x01, GB21)
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB24] is within a method [_SDD])
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck     00129|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     00130|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     ==========================================================
-syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
-syntaxcheck     Assembler remark in line 128
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00125|                 CreateByteField (GBU2, 0x02, GB22)
-syntaxcheck     00126|                 CreateByteField (GBU2, 0x03, GB23)
-syntaxcheck     00127|                 CreateByteField (GBU2, 0x04, GB24)
-syntaxcheck     00128|                 CreateByteField (GBU2, 0x05, GB25)
-syntaxcheck          |                                                ^
-syntaxcheck          | Remark 2089: Object is not referenced    (Name [GB25] is within a method [_SDD])
-syntaxcheck     00129|                 CreateByteField (GBU2, 0x06, GB26)
-syntaxcheck     00130|                 If (LEqual (SizeOf (Arg0), 0x0200))
-syntaxcheck     00131|                 {
-syntaxcheck     ==========================================================
-syntaxcheck     Table SSDT (1) reassembly: Found 0 errors, 0 warnings, 15
+syntaxcheck     Table SSDT (1) reassembly: Found 0 errors, 0 warnings, 3
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     Checking ACPI table SSDT (#2)
 syntaxcheck     
-syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
-syntaxcheck     in line 47
-syntaxcheck     Line | AML source
-syntaxcheck     ----------------------------------------------------------
-syntaxcheck     00044| 
-syntaxcheck     00045|         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
-syntaxcheck     00046|         {
-syntaxcheck     00047|             Divide (Arg0, 0x0A, Local0, Local1)
-syntaxcheck          |                                     ^
-syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
-syntaxcheck     00048|             Store (Local1, \_SB.PCI0.LPCB.EC0.BRTS)
-syntaxcheck     00049|         }
-syntaxcheck     00050| 
-syntaxcheck     ==========================================================
-syntaxcheck     Table SSDT (2) reassembly: Found 0 errors, 1 warnings, 0
-syntaxcheck     remarks.
+syntaxcheck     PASSED: Test 1, SSDT (2) reassembly, Found 0 errors, 0
+syntaxcheck     warnings, 0 remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     Checking ACPI table SSDT (#3)
@@ -775,6 +574,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     2 passed, 43 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     3 passed, 29 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

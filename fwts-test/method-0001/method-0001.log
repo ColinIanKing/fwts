@@ -705,15 +705,12 @@ method          PASSED: Test 106, \_SB_.PCI0.PATA.PRID.P_D0._GTF correctly
 method          returned a sane looking buffer.
 method          PASSED: Test 106, \_SB_.PCI0.PATA.PRID.P_D1._GTF correctly
 method          returned a sane looking buffer.
-method          FAILED [MEDIUM] Method_GTFBadBufferSize: Test 106,
-method          \_SB_.PCI0.SATA.PRT0._GTF should return a buffer with size
-method          of multiple of 7.
-method          FAILED [MEDIUM] Method_GTFBadBufferSize: Test 106,
-method          \_SB_.PCI0.SATA.PRT1._GTF should return a buffer with size
-method          of multiple of 7.
-method          FAILED [MEDIUM] Method_GTFBadBufferSize: Test 106,
-method          \_SB_.PCI0.SATA.PRT2._GTF should return a buffer with size
-method          of multiple of 7.
+method          PASSED: Test 106, \_SB_.PCI0.SATA.PRT0._GTF correctly
+method          returned a sane looking buffer.
+method          PASSED: Test 106, \_SB_.PCI0.SATA.PRT1._GTF correctly
+method          returned a sane looking buffer.
+method          PASSED: Test 106, \_SB_.PCI0.SATA.PRT2._GTF correctly
+method          returned a sane looking buffer.
 method          
 method          Test 107 of 192: Test _GTM (Get Timing Mode).
 method          PASSED: Test 107, \_SB_.PCI0.PATA.PRID._GTM correctly
@@ -1272,8 +1269,36 @@ method          returned a sane looking package.
 method          Device 0:
 method            Instance:                0
 method            Display port attachment: 0
-method            Type of display:         4 (Internal/Integrated Digital Flat Panel)
-method            BIOS can detect device:  0
+method            Type of display:         0 (Other)
+method            BIOS can detect device:  1
+method            Non-VGA device:          0
+method            Head or pipe ID:         0
+method          Device 1:
+method            Instance:                0
+method            Display port attachment: 0
+method            Type of display:         0 (Other)
+method            BIOS can detect device:  1
+method            Non-VGA device:          0
+method            Head or pipe ID:         0
+method          Device 2:
+method            Instance:                0
+method            Display port attachment: 0
+method            Type of display:         0 (Other)
+method            BIOS can detect device:  1
+method            Non-VGA device:          0
+method            Head or pipe ID:         0
+method          Device 3:
+method            Instance:                0
+method            Display port attachment: 0
+method            Type of display:         0 (Other)
+method            BIOS can detect device:  1
+method            Non-VGA device:          0
+method            Head or pipe ID:         0
+method          Device 4:
+method            Instance:                0
+method            Display port attachment: 0
+method            Type of display:         0 (Other)
+method            BIOS can detect device:  1
 method            Non-VGA device:          0
 method            Head or pipe ID:         0
 method          PASSED: Test 184, \_SB_.PCI0.GFX0._DOD correctly returned
@@ -1315,6 +1340,6 @@ method          SKIPPED: Test 192, Skipping test for non-existant object
 method          _SRV.
 method          
 method          ==========================================================
-method          257 passed, 3 failed, 0 warning, 0 aborted, 154 skipped, 0
+method          260 passed, 0 failed, 0 warning, 0 aborted, 154 skipped, 0
 method          info only.
 method          ==========================================================

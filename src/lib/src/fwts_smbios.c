@@ -53,12 +53,17 @@ static void *fwts_smbios_find_entry_uefi(fwts_framework *fw, fwts_smbios_entry *
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS")) != NULL) {
 		fwts_smbios_entry *mapped_entry;
+		const size_t size = sizeof(fwts_smbios_entry);
 
-		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios_entry))) != FWTS_MAP_FAILED) {
-			*entry = *mapped_entry;
-			(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios_entry));
-			*type  = FWTS_SMBIOS;
-			return addr;
+		if ((mapped_entry = fwts_mmap((off_t)addr, size)) != FWTS_MAP_FAILED) {
+			if (fwts_safe_memread(mapped_entry, size) == FWTS_OK) {
+				*entry = *mapped_entry;
+				(void)fwts_munmap(mapped_entry, size);
+				*type  = FWTS_SMBIOS;
+				return addr;
+			} else {
+				(void)fwts_munmap(mapped_entry, size);
+			}
 		}
 
 		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
@@ -83,11 +88,16 @@ static void *fwts_smbios30_find_entry_uefi(fwts_framework *fw, fwts_smbios30_ent
 
 	if ((addr = fwts_scan_efi_systab("SMBIOS3")) != NULL) {
 		fwts_smbios30_entry *mapped_entry;
+		const size_t size = sizeof(fwts_smbios30_entry);
 
-		if ((mapped_entry = fwts_mmap((off_t)addr, sizeof(fwts_smbios30_entry))) != FWTS_MAP_FAILED) {
-			*entry = *mapped_entry;
-			(void)fwts_munmap(mapped_entry, sizeof(fwts_smbios30_entry));
-			return addr;
+		if ((mapped_entry = fwts_mmap((off_t)addr, size)) != FWTS_MAP_FAILED) {
+			if (fwts_safe_memread(mapped_entry, size) == FWTS_OK) {
+				*entry = *mapped_entry;
+				(void)fwts_munmap(mapped_entry, size);
+				return addr;
+			} else {
+				(void)fwts_munmap(mapped_entry, size);
+			}
 		}
 
 		if (fwts_load_file("/sys/firmware/dmi/tables/smbios_entry_point",
@@ -118,6 +128,8 @@ static void *fwts_smbios_find_entry_bios(fwts_framework *fw, fwts_smbios_entry *
 	}
 
 	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
+		if (fwts_safe_memread(mem + i, 16) != FWTS_OK)
+			continue;
 		/* SMBIOS entry point */
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&
@@ -165,6 +177,8 @@ static void *fwts_smbios30_find_entry_bios(fwts_framework *fw, fwts_smbios30_ent
 	}
 
 	for (i = 0; i < FWTS_SMBIOS_REGION_SIZE; i += 16) {
+		if (fwts_safe_memread(mem + i, 16) != FWTS_OK)
+			continue;
 		/* SMBIOS30 entry point */
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == 'S') &&

@@ -52,6 +52,10 @@ static int romdump_test1(fwts_framework *fw)
 	}
 
 	for (i = 0; i < BIOS_ROM_REGION_SIZE; i += 512) {
+		/* Ensure we can safely read the memory */
+		if (fwts_safe_memread(mem + i, 512) != FWTS_OK)
+			continue;
+
 		if ((*(mem+i) == 0x55) && (*(mem+i+1) == 0xaa)) {
 			int length = *(mem+i+2) << 9;
 

@@ -66,7 +66,10 @@ static int ebdadump_test1(fwts_framework *fw)
 		BIOS_ROM_START,
 		len);
 
-	ebdadump_data(fw, mem, ebda_addr, len);
+	if (fwts_safe_memread((void *)mem, len) != FWTS_OK)
+		fwts_log_info(fw, "EBDA region at cannot be read");
+	else
+		ebdadump_data(fw, mem, ebda_addr, len);
         (void)fwts_munmap(mem, len);
 
 	fwts_infoonly(fw);

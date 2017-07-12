@@ -65,6 +65,11 @@ static int bios32_test1(fwts_framework *fw)
 	}
 
 	for (i = 0; i < BIOS32_SD_REGION_SIZE; i+= 16) {
+		const size_t size = sizeof(fwts_bios32_service_directory);
+
+		/* Is the region safe to read? */
+		if (fwts_safe_memread(mem, size) != FWTS_OK)
+			continue;
 		if ((*(mem+i)   == '_') &&
 		    (*(mem+i+1) == '3') &&
 		    (*(mem+i+2) == '2') &&

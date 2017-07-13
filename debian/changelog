@@ -1,3 +1,44 @@
+fwts (17.07.00-0ubuntu1) artful; urgency=low
+
+  [Alex Hung]
+  * fwts-test: update tpm2 test for new start methods
+  * acpi: bgrt: update according to acpi 6.1 errata (mantis 1577)
+  * fwts-tests: update bgrt test according to ACPI 6.1 errata
+  * acpi: method: update _PSD and _TSD tests according to ACPI 6.1 errata
+  * acpi: rsdp: revision 1 must have length 20 according to ACPI 6.1 errata
+  * acpi: method: Add _CPC revision 3 according to acpi 6.2 (mantis 1611)
+  * acpi: hest: change type from hex to dec as in ACPI spec
+  * acpi: hest: change a function name to meet the patterns of others
+  * acpi: hest: add new type 11 introduced in ACPi 6.2 (mantis 1649)
+  * acpi: srat: add new type 4 according to ACPI 6.2 (mantis 1656)
+  * acpi: method: update _GCP according to ACPI 6.2 (mantis 1703)
+  * acpi: hest: add notification type 11 according to ACPI 6.2 (mantis 1731)
+  * acpi: fadt: update minor version to 2 for ACPI 6.2 (mantis 1769)
+  * acpi: hest: add checks for GHES_ASSIST flag value in ACPI 6.2 (mantis 1674)
+  * acpi: hest: fix typo for type 7
+  * fwts-test: update according to HEST changes
+  * acpi: wsmt: add wsmt test according to ACPI 6.2 (mantis 1585)
+  * fwts-test: add wsmt test
+  * fwts-test: fix typo from apcitables to acpitables
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20170629
+  * fwts-tests: sync up with latest ACPICA 20170629 release
+  * dmi: dmicheck: ensure mmap'd SMBIOS data is readable before accessing it
+  * bios32: ensure mmap'd memory is readable before accessing it
+  * bios: ebdadump: ensure mmap'd memory is readable before accessing it
+  * bios: romdump: ensure mmap'd memory is readable before accessing it
+  * lib: fwts_smbios: ensure mmap'd memory is readable before accessing it
+
+  [Geliang Tang]
+  * efi_runtime: Use memdup_user helper
+
+  [Jeffrey Hugo]
+  * acpi: tpm2: Add additional start method values
+  * acpi: iort: Add PMCG support
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Thu, 13 Jul 2017 00:17:02 -0700
+
 fwts (17.06.00-0ubuntu1) artful; urgency=low
 
   [Alex Hung]

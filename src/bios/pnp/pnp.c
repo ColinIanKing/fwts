@@ -94,6 +94,10 @@ static int pnp_test1(fwts_framework *fw)
 
 	for (i = 0; i < PNP_REGION_SIZE; i+= 16) {
 		pnp_header *pnp = (pnp_header*)(mem+i);
+
+		/* Skip regions that are not readable */
+		if (fwts_safe_memread(pnp, sizeof(pnp_header)) != FWTS_OK)
+			continue;
 		if ((memcmp(pnp->signature, PNP_SIGNATURE, 4) == 0) &&
 		    (fwts_checksum(mem+i, sizeof(pnp_header)) == 0)) {
 			fwts_log_info(fw, "Found PnP Installation Check structure at 0x%8.8x", PNP_REGION_START+i);

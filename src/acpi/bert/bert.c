@@ -32,7 +32,6 @@ static fwts_acpi_table_info *table;
 
 static int bert_init(fwts_framework *fw)
 {
-
 	if (fwts_acpi_find_table(fw, "BERT", 0, &table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot read ACPI tables.");
 		return FWTS_ERROR;
@@ -52,6 +51,8 @@ static int bert_test1(fwts_framework *fw)
 {
 	bool passed = true;
 	const fwts_acpi_table_bert *bert = (const fwts_acpi_table_bert *)table->data;
+	void *mapping;
+	size_t len;
 
 	fwts_log_info_verbatim(fw, "Boot Error Record Table:");
 	fwts_log_info_verbatim(fw, "  Error Region Length       0x%8.8" PRIx32, bert->boot_error_region_length);
@@ -80,111 +81,117 @@ static int bert_test1(fwts_framework *fw)
 			"BERT boot error region 0x%16.16" PRIx64
 			", skipping boot error region sanity checks.",
 			bert->boot_error_region);
-	} else {
-		void *mapping;
-
-		mapping = fwts_mmap(bert->boot_error_region, (size_t)bert->boot_error_region_length);
-		if (mapping == FWTS_MAP_FAILED) {
-			fwts_log_info(fw, "Cannot memory map BERT boot error region 0x%16.16" PRIx64
-				", skipping boot error region sanity checks.",
-				bert->boot_error_region);
-		} else {
-			fwts_acpi_table_boot_error_region *region =
-				(fwts_acpi_table_boot_error_region *)mapping;
-
-			fwts_log_info_verbatim(fw, "Boot Error Region:");
-			fwts_log_info_verbatim(fw, "  Block Status:  bit [0]    0x%" PRIx32 " (Uncorrectable Error Valid)",
-				(region->block_status >> 0) & 1);
-			fwts_log_info_verbatim(fw, "  Block Status:  bit [1]    0x%" PRIx32 " (Correctable Error Valid)",
-				(region->block_status >> 1) & 1);
-			fwts_log_info_verbatim(fw, "  Block Status:  bit [2]    0x%" PRIx32 " (Multiple Uncorrectable Errors)",
-				(region->block_status >> 2) & 1);
-			fwts_log_info_verbatim(fw, "  Block Status:  bit [3]    0x%" PRIx32 " (Multiple Correctable Errors)",
-				(region->block_status >> 3) & 1);
-			fwts_log_info_verbatim(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
-				(region->block_status >> 4) & 0x3ff);
-			fwts_log_info_verbatim(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
-				region->raw_data_offset);
-			fwts_log_info_verbatim(fw, "  Raw Data Length:          0x%8.8" PRIx32,
-				region->raw_data_length);
-			fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32,
-				region->data_length);
-			fwts_log_info_verbatim(fw, "  Error Severity            0x%8.8" PRIx32,
-				region->error_severity);
-
-			/* Sanity check raw data fields */
-			if (region->raw_data_offset >
-				bert->boot_error_region_length) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"BERTBootErrorRegionRawDataOffset",
-					"BERT Boot Error Region Raw Data Offset %" PRIx32
-						" is larger than the region size of %" PRIu32
-						" bytes",
-						region->raw_data_offset,
-						bert->boot_error_region_length);
-				passed = false;
-			}
-			if (region->raw_data_offset <
-				sizeof(fwts_acpi_table_boot_error_region) + region->data_length) {
-				if (region->raw_data_length) {
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"BERTBootErrorRegionRawDataOffset",
-						"BERT Boot Error Region Raw Data Offset %" PRIu32
-							" is smaller than end of the data region and"
-							" BERT Boot Error Region Raw Data Length %" PRIu32
-							" is non-zero.",
-							region->raw_data_offset,
-							region->raw_data_length);
-					passed = false;
-				} else {
-					fwts_warning(fw, "BERT Boot Error Region Raw Data Offset %"
-							PRIu32 " is smaller than end of the data"
-							"region. BERT Boot Error Region Data Length "
-							"is zero.",
-							region->raw_data_offset);
-					fwts_advice(fw,
-						"If there is raw data in the BERT Boot Error Region, "
-						"Raw Data Offset must be larger than the end of the "
-						"data region if there is raw data. However, since "
-						"BERT Boot Error Region Raw Data Length is zero, "
-						"this may mean that there is no raw data.");
-				}
-			}
-			if (region->raw_data_length + region->raw_data_offset > bert->boot_error_region_length) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"BERTBootErrorRegionRawDatalength",
-					"BERT Boot Error Region Raw Data Length %" PRIu32
-						" is larger than the region size less the raw data offset of %" PRIu32
-						" bytes",
-						region->raw_data_length,
-						bert->boot_error_region_length - region->raw_data_offset);
-				passed = false;
-			}
-			/* Sanity check data length */
-			if (region->data_length + sizeof(fwts_acpi_table_boot_error_region) > bert->boot_error_region_length) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"BERTBootErrorRegionDatalength",
-					"BERT Boot Error Region Data Length %" PRIu32
-						" is larger than the region size less the boot error region header of %" PRIu32
-						" bytes",
-						region->data_length,
-						bert->boot_error_region_length - (uint32_t)sizeof(fwts_acpi_table_boot_error_region));
-				passed = false;
-			}
-			if (region->error_severity > 3) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"BERTBootErrorRegionDataLength",
-					"BERT Boot Error Region Data Length %" PRIu32
-						" is larger than the remaining region size of %" PRIu32
-						" bytes",
-						region->raw_data_length,
-						bert->boot_error_region_length);
-				passed = false;
-			}
-			fwts_munmap(mapping, (size_t)bert->boot_error_region_length);
-		}
+		goto done;
 	}
 
+	len = (size_t)bert->boot_error_region_length;
+	mapping = fwts_mmap(bert->boot_error_region, len);
+	if (mapping == FWTS_MAP_FAILED) {
+		fwts_log_info(fw, "Cannot memory map BERT boot error region 0x%16.16" PRIx64
+			", skipping boot error region sanity checks.",
+			bert->boot_error_region);
+		goto done;
+	}
+	if (fwts_safe_memread(mapping, len) != FWTS_OK) {
+		fwts_log_info(fw, "Cannot read BERT boot error region 0x%16.16" PRIx64
+			", skipping boot error region sanity checks.",
+			bert->boot_error_region);
+		goto done;
+	}
+
+	fwts_acpi_table_boot_error_region *region =
+		(fwts_acpi_table_boot_error_region *)mapping;
+
+	fwts_log_info_verbatim(fw, "Boot Error Region:");
+	fwts_log_info_verbatim(fw, "  Block Status:  bit [0]    0x%" PRIx32 " (Uncorrectable Error Valid)",
+		(region->block_status >> 0) & 1);
+	fwts_log_info_verbatim(fw, "  Block Status:  bit [1]    0x%" PRIx32 " (Correctable Error Valid)",
+		(region->block_status >> 1) & 1);
+	fwts_log_info_verbatim(fw, "  Block Status:  bit [2]    0x%" PRIx32 " (Multiple Uncorrectable Errors)",
+		(region->block_status >> 2) & 1);
+	fwts_log_info_verbatim(fw, "  Block Status:  bit [3]    0x%" PRIx32 " (Multiple Correctable Errors)",
+		(region->block_status >> 3) & 1);
+	fwts_log_info_verbatim(fw, "  Block Status:  bit [13:4] 0x%" PRIx32 " (Error Data Entry Count)",
+		(region->block_status >> 4) & 0x3ff);
+	fwts_log_info_verbatim(fw, "  Raw Data Offset:          0x%8.8" PRIx32,
+		region->raw_data_offset);
+	fwts_log_info_verbatim(fw, "  Raw Data Length:          0x%8.8" PRIx32,
+		region->raw_data_length);
+	fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32,
+		region->data_length);
+	fwts_log_info_verbatim(fw, "  Error Severity            0x%8.8" PRIx32,
+		region->error_severity);
+
+	/* Sanity check raw data fields */
+	if (region->raw_data_offset >
+		bert->boot_error_region_length) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"BERTBootErrorRegionRawDataOffset",
+			"BERT Boot Error Region Raw Data Offset %" PRIx32
+				" is larger than the region size of %" PRIu32
+				" bytes",
+				region->raw_data_offset,
+				bert->boot_error_region_length);
+		passed = false;
+	}
+	if (region->raw_data_offset <
+		sizeof(fwts_acpi_table_boot_error_region) + region->data_length) {
+		if (region->raw_data_length) {
+			fwts_failed(fw, LOG_LEVEL_HIGH,
+				"BERTBootErrorRegionRawDataOffset",
+				"BERT Boot Error Region Raw Data Offset %" PRIu32
+					" is smaller than end of the data region and"
+					" BERT Boot Error Region Raw Data Length %" PRIu32
+					" is non-zero.",
+					region->raw_data_offset,
+					region->raw_data_length);
+			passed = false;
+		} else {
+			fwts_warning(fw, "BERT Boot Error Region Raw Data Offset %"
+					PRIu32 " is smaller than end of the data"
+					"region. BERT Boot Error Region Data Length "
+					"is zero.",
+					region->raw_data_offset);
+			fwts_advice(fw,
+				"If there is raw data in the BERT Boot Error Region, "
+				"Raw Data Offset must be larger than the end of the "
+				"data region if there is raw data. However, since "
+				"BERT Boot Error Region Raw Data Length is zero, "
+				"this may mean that there is no raw data.");
+			}
+	}
+	if (region->raw_data_length + region->raw_data_offset > bert->boot_error_region_length) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"BERTBootErrorRegionRawDatalength",
+			"BERT Boot Error Region Raw Data Length %" PRIu32
+			" is larger than the region size less the raw data offset of %" PRIu32
+			" bytes",
+			region->raw_data_length,
+			bert->boot_error_region_length - region->raw_data_offset);
+		passed = false;
+	}
+	/* Sanity check data length */
+	if (region->data_length + sizeof(fwts_acpi_table_boot_error_region) > bert->boot_error_region_length) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"BERTBootErrorRegionDatalength",
+			"BERT Boot Error Region Data Length %" PRIu32
+			" is larger than the region size less the boot error region header of %" PRIu32
+			" bytes",
+			region->data_length,
+			bert->boot_error_region_length - (uint32_t)sizeof(fwts_acpi_table_boot_error_region));
+		passed = false;
+	}
+	if (region->error_severity > 3) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"BERTBootErrorRegionDataLength",
+			"BERT Boot Error Region Data Length %" PRIu32
+			" is larger than the remaining region size of %" PRIu32
+			" bytes",
+			region->raw_data_length,
+			bert->boot_error_region_length);
+		passed = false;
+	}
+	fwts_munmap(mapping, (size_t)bert->boot_error_region_length);
 done:
 	if (passed)
 		fwts_passed(fw, "No issues found in BERT table.");

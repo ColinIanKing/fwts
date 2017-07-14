@@ -66,9 +66,19 @@ static int compare_config_space(
 	}
 
 	if ((mapped_config_space = fwts_mmap(config->base_address, page_size)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap PCI config space at 0x%" PRIx64 ".", config->base_address);
+		fwts_log_error(fw, "Cannot mmap PCI config space at 0x%" PRIx64 ".",
+			config->base_address);
 		return FWTS_ERROR;
 	}
+
+	/* We only need to check if just the config space is readable */
+	if (fwts_safe_memread(mapped_config_space, sizeof(config_space)) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read PCI config space at 0x%" PRIx64 ".",
+			config->base_address);
+		(void)fwts_munmap(mapped_config_space, page_size);
+		return FWTS_ERROR;
+	}
+
 	/*
 	 * Need to explicitly do byte comparisons on region
 	 * memcmp() fails as this can do 64 bit reads

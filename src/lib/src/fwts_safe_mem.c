@@ -41,7 +41,7 @@ static void sig_handler(int dummy)
 
 /*
  *  fwts_safe_memcpy()
- *	memcpy that catches segfaults. to be used when
+ *	memcpy that catches SIGSEFV/SIGBUS. To be used when
  *	attempting to read BIOS tables from memory which
  *	may segfault or throw a bus error if the src
  *	address is corrupt
@@ -50,7 +50,7 @@ int fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 {
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
-	
+
 	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
 	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
 	memcpy(dst, src, n);
@@ -60,9 +60,28 @@ int fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_safe_memread()
+ *	check we can safely read a region of memory. This catches
+ *	SIGSEGV/SIGBUS errors and returns FWTS_ERROR if it is not
+ *	readable or FWTS_OK if it's OK.
+ */
 int fwts_safe_memread(const void *src, const size_t n)
 {
-	unsigned char buf[n];
-	
-	return fwts_safe_memcpy(buf, src, n);
+	const volatile uint8_t *ptr = src;
+	const volatile uint8_t *end = ptr + n;
+
+	if (sigsetjmp(jmpbuf, 1) != 0)
+		return FWTS_ERROR;
+
+	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
+	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
+
+	while (ptr < end)
+		(void)*(ptr++);
+
+	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
+	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
+
+	return FWTS_OK;
 }

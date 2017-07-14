@@ -115,6 +115,13 @@ static void pcc_check_pcc_header(
 			"..0x%" PRIx64 ".", addr, addr + length);
 		return;
 	}
+	/* Ensure header can be read */
+	if (fwts_safe_memread(hdr, length) != FWTS_OK) {
+		fwts_log_info(fw, "Cannot read PCC header 0x%" PRIx64
+			 "..0x%" PRIx64 ".", addr, addr + length);
+		fwts_munmap(hdr, (size_t)length);
+		return;
+	}
 
 	fwts_log_info_verbatim(fw, "PCC header at 0x%" PRIx64 ".", addr);
 	fwts_log_info_verbatim(fw, "  Signature:          0x%" PRIx32, hdr->signature);

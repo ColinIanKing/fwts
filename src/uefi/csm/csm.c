@@ -50,7 +50,12 @@ static int csm_test1(fwts_framework *fw)
 
 	/* Get Int 10h vector from segment/offset realmode address */
 	if ((intVec = fwts_mmap(INT_VEC_START, INT_VEC_SIZE)) == FWTS_MAP_FAILED) {
-		fwts_log_error(fw, "Cannot mmap BIOS ROM region.");
+		fwts_log_error(fw, "Cannot mmap interrupt vector region.");
+		return FWTS_ERROR;
+	}
+	if (fwts_safe_memread(intVec, INT_VEC_SIZE) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read interrupt vector region.");
+		fwts_munmap(intVec, INT_VEC_SIZE);
 		return FWTS_ERROR;
 	}
 	int10hVec = (intVec[0x10] & 0xffff) | ((intVec[0x10] & 0xffff0000)>> 12);
@@ -62,10 +67,13 @@ static int csm_test1(fwts_framework *fw)
 	}
 
 	for (i = 0; i < BIOS_ROM_REGION_SIZE; i += 512) {
-		if ((*(optROM+i) == 0x55) && (*(optROM+i+1) == 0xaa)) {
-			uint32_t length = *(optROM+i+2) << 9;
-			uint32_t ROMstart = BIOS_ROM_REGION_START+i;
-			uint32_t ROMend = BIOS_ROM_REGION_START+i+length;
+		/* Skip any option ROM headers that we can't read */
+		if (fwts_safe_memread(optROM + i, 6) != FWTS_OK)
+			continue;
+		if ((*(optROM + i) == 0x55) && (*(optROM + i + 1) == 0xaa)) {
+			uint32_t length = *(optROM + i + 2) << 9;
+			uint32_t ROMstart = BIOS_ROM_REGION_START + i;
+			uint32_t ROMend = BIOS_ROM_REGION_START + i + length;
 
 			if ((ROMstart <= int10hVec) && (int10hVec <= ROMend)) {
 				fwts_log_info(fw, "Int 10h jumps to 0x%" PRIx32 " in option ROM at: "

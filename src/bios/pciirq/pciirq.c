@@ -116,6 +116,11 @@ static int pciirq_test1(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot mmap firmware region.");
 		return FWTS_ERROR;
 	}
+	if (fwts_safe_memread(mem, PCIIRQ_REGION_SIZE) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read firmware region.");
+		(void)fwts_munmap(mem, PCIIRQ_REGION_SIZE);
+		return FWTS_ERROR;
+	}
 
 	for (i = 0; i < PCIIRQ_REGION_SIZE; i+= 16) {
 		pci_irq_routing_table *pciirq = (pci_irq_routing_table*)(mem+i);

@@ -333,7 +333,7 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {
 		/* Can we safely copy the table? */
-		if (fwts_safe_memread((void *)addr, length) != FWTS_OK) {
+		if (fwts_safe_memread((void *)mem, length) != FWTS_OK) {
 			fwts_log_info(fw, "SMBIOS table at %p cannot be read", (void *)addr);
 			(void)fwts_munmap(mem, length);
 			return NULL;
@@ -380,7 +380,7 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {
 		/* Can we safely copy the table? */
-		if (fwts_safe_memread((void *)addr, length) != FWTS_OK) {
+		if (fwts_safe_memread((void *)mem, length) != FWTS_OK) {
 			fwts_log_info(fw, "SMBIOS table at %p cannot be read", (void *)addr);
 			(void)fwts_munmap(mem, length);
 			return NULL;

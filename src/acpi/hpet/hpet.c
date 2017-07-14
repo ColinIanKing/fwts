@@ -428,6 +428,12 @@ static int hpet_check_test4(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
+	if (fwts_safe_memread(hpet_base_v, HPET_REG_SIZE) != FWTS_OK) {
+		fwts_log_info(fw, "Test skipped because HPET region cannot be read.");
+		(void)fwts_munmap(hpet_base_v, HPET_REG_SIZE);
+		return FWTS_SKIP;
+	}
+
 	hpet_id = *(uint64_t*) hpet_base_v;
 	vendor_id = (hpet_id & 0xffff0000) >> 16;
 

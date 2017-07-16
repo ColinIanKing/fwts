@@ -1257,7 +1257,7 @@ static void method_test_HID_return(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodHIDInvalidInteger",
 				"%s returned a integer 0x%8.8" PRIx64 " "
-				"(EISA ID %s) but the this is not a valid "
+				"(EISA ID %s) but this is not a valid "
 				"EISA ID encoded PNP ID.",
 				name, (uint64_t)obj->Integer.Value, tmp);
 		break;
@@ -1312,7 +1312,7 @@ static void method_valid_CID_Type(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"MethodCIDInvalidInteger",
 				"%s returned a integer 0x%8.8" PRIx64 " "
-				"(EISA ID %s) but the this is not a valid "
+				"(EISA ID %s) but this is not a valid "
 				"EISA ID encoded PNP ID.",
 				name, (uint64_t)obj->Integer.Value, tmp);
 		break;

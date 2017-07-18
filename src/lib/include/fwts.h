@@ -44,6 +44,30 @@
 #undef FWTS_HAS_UEFI
 #endif
 
+/* verision 3-tuple into integer */
+#define _VER_(major, minor, patchlevel)                 \
+	((major * 10000) + (minor * 100) + patchlevel)
+
+/* check version of GNU GCC */
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#if defined(__GNUC_PATCHLEVEL__)
+#define NEED_GNUC(major, minor, patchlevel)                     \
+	_VER_(major, minor, patchlevel) <= _VER_(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
+#else
+#define NEED_GNUC(major, minor, patchlevel)                     \
+	_VER_(major, minor, patchlevel) <= _VER_(__GNUC__, __GNUC_MINOR__, 0)
+#endif
+#else
+#define NEED_GNUC(major, minor, patchlevel)     (0)
+#endif
+
+/* -O0 attribute support */
+#if defined(__GNUC__) && !defined(__clang__) && NEED_GNUC(4,6,0)
+#define OPTIMIZE0	__attribute__((optimize("-O0")))
+#else
+#define OPTIMIZE0
+#endif
+
 #define FWTS_UNUSED(var)	(void)var
 
 #define FWTS_JSON_DATA_PATH	DATAROOTDIR "/fwts"

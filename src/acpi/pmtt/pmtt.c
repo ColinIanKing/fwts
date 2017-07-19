@@ -39,7 +39,7 @@ static int pmtt_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void pmmt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, bool *passed)
+static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_header *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  PMTT Subtable:");
 	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->type);
@@ -80,9 +80,9 @@ static void pmmt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	}
 }
 
-static void pmmt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
+static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
 {
-	pmmt_subtable_header_test(fw, &entry->header, passed);
+	pmtt_subtable_header_test(fw, &entry->header, passed);
 	fwts_log_info_verbatim(fw, "    Physical Component Identifier:  0x%4.4" PRIx16, entry->component_id);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
 	fwts_log_info_verbatim(fw, "    Size of DIMM:                   0x%8.8" PRIx32, entry->memory_size);
@@ -105,13 +105,13 @@ static void pmmt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmt
 	}
 }
 
-static void pmmt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_controller *entry, bool *passed)
+static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_controller *entry, bool *passed)
 {
 	fwts_acpi_table_pmtt_header *header;
 	uint32_t offset = 0;
 	size_t i;
 
-	pmmt_subtable_header_test(fw, &entry->header, passed);
+	pmtt_subtable_header_test(fw, &entry->header, passed);
 	fwts_log_info_verbatim(fw, "    Read Latency:                   0x%8.8" PRIx32, entry->read_latency);
 	fwts_log_info_verbatim(fw, "    Write latency:                  0x%8.8" PRIx32, entry->write_latency);
 	fwts_log_info_verbatim(fw, "    Read Bandwidth:                 0x%8.8" PRIx32, entry->read_bandwidth);
@@ -149,7 +149,7 @@ static void pmmt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
 		if (header->type == FWTS_ACPI_PMTT_TYPE_DIMM) {
-			pmmt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) header, passed);
+			pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) header, passed);
 		} else {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -163,12 +163,12 @@ static void pmmt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	}
 }
 
-static void pmmt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *entry, bool *passed)
+static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *entry, bool *passed)
 {
 	fwts_acpi_table_pmtt_header *header;
 	uint32_t offset;
 
-	pmmt_subtable_header_test(fw, &entry->header, passed);
+	pmtt_subtable_header_test(fw, &entry->header, passed);
 	fwts_log_info_verbatim(fw, "    Socket Identifier:              0x%4.4" PRIx16, entry->socket_id);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
 
@@ -184,7 +184,7 @@ static void pmmt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
 	while (offset < entry->header.length) {
 		if (header->type == FWTS_ACPI_PMTT_TYPE_CONTROLLER) {
-			pmmt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) header, passed);
+			pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) header, passed);
 		} else {
 			*passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -230,13 +230,13 @@ static int pmtt_test1(fwts_framework *fw)
 
 		switch(entry->type) {
 			case FWTS_ACPI_PMTT_TYPE_SOCKET:
-				pmmt_socket_test(fw, (fwts_acpi_table_pmtt_socket *) entry, &passed);
+				pmtt_socket_test(fw, (fwts_acpi_table_pmtt_socket *) entry, &passed);
 				break;
 			case FWTS_ACPI_PMTT_TYPE_CONTROLLER:
-				pmmt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) entry, &passed);
+				pmtt_controller_test(fw, (fwts_acpi_table_pmtt_controller *) entry, &passed);
 				break;
 			case FWTS_ACPI_PMTT_TYPE_DIMM:
-				pmmt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) entry, &passed);
+				pmtt_physical_component_test(fw, (fwts_acpi_table_pmtt_physical_component *) entry, &passed);
 				break;
 			default:
 				passed = false;

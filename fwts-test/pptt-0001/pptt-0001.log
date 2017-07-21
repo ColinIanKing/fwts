@@ -1,0 +1,66 @@
+pptt            pptt: PPTT Processor Properties Topology Table test.
+pptt            ----------------------------------------------------------
+pptt            Test 1 of 1: Validate PPTT table.
+pptt            PPTT Processor Properties Topology Table:
+pptt              Processor hierarchy node structure (Type 0):
+pptt                Type:                           0x00
+pptt                Length:                         0x18
+pptt                Reserved:                       0x0000
+pptt                Flags:                          0x00000000
+pptt                Parent:                         0x00000000
+pptt                ACPI Processor ID:              0x00000000
+pptt                Number of Private Resources:    0x00000001
+pptt                Private Resources[0]:           0x00000000
+pptt            
+pptt              Cache Type Structure (Type 1):
+pptt                Type:                           0x01
+pptt                Length:                         0x18
+pptt                Reserved:                       0x0000
+pptt                Flags:                          0x00000000
+pptt                Next Level of Cache:            0x00000000
+pptt                Size:                           0x00000000
+pptt                Number of sets:                 0x00000000
+pptt                Associativity:                  0x00
+pptt                Attributes:                     0x00
+pptt                Line size:                      0x0000
+pptt            
+pptt              Processor hierarchy node structure (Type 0):
+pptt                Type:                           0x00
+pptt                Length:                         0x1c
+pptt                Reserved:                       0x0000
+pptt                Flags:                          0x00000003
+pptt                Parent:                         0x00000000
+pptt                ACPI Processor ID:              0x00000000
+pptt                Number of Private Resources:    0x00000002
+pptt                Private Resources[0]:           0x00000000
+pptt                Private Resources[1]:           0x00000000
+pptt            
+pptt              Cache Type Structure (Type 1):
+pptt                Type:                           0x01
+pptt                Length:                         0x18
+pptt                Reserved:                       0x0000
+pptt                Flags:                          0x0000007f
+pptt                Next Level of Cache:            0x00000000
+pptt                Size:                           0x00000000
+pptt                Number of sets:                 0x00000000
+pptt                Associativity:                  0xc0
+pptt                Attributes:                     0x00
+pptt                Line size:                      0x0000
+pptt            
+pptt              ID structure (Type 2):
+pptt                Type:                           0x02
+pptt                Length:                         0x1e
+pptt                Reserved:                       0x0000
+pptt                VENDOR_ID:                      ACPI
+pptt                LEVEL_1_ID:                     0x0000000000000000
+pptt                LEVEL_2_ID:                     0x0000000000000000
+pptt                MAJOR_REV:                      0x0000
+pptt                MINOR_REV:                      0x0000
+pptt                SPIN_REV:                       0x0000
+pptt            
+pptt            PASSED: Test 1, No issues found in PPTT table.
+pptt            
+pptt            ==========================================================
+pptt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+pptt            info only.
+pptt            ==========================================================

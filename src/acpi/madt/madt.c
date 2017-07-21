@@ -117,7 +117,7 @@
  */
 
 #define FADT_MAX_MAJOR_REVISION	((uint8_t)6)
-#define FADT_MAX_MINOR_REVISION	((uint8_t)1)
+#define FADT_MAX_MINOR_REVISION	((uint8_t)2)
 #define MADT_MAX_REVISION	((uint8_t)4)
 
 #define SUBTABLE_UNDEFINED	0x00
@@ -207,6 +207,14 @@ static struct acpi_madt_subtable_lengths spec_info[] = {
 	{ /* for ACPI 6.1 */
 		.major_version = 6,
 		.minor_version = 1,
+		.madt_version = 4,
+		.num_types = 16,
+		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,
+			     16, 16, 12, 80, 24, 24, 16, 20 }
+	},
+	{ /* for ACPI 6.2 */
+		.major_version = 6,
+		.minor_version = 2,
 		.madt_version = 4,
 		.num_types = 16,
 		.lengths = { 8, 12, 10, 8, 6, 12, 16, SUBTABLE_VARIABLE,

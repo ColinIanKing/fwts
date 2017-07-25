@@ -37,8 +37,13 @@ static int xsdt_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI XSDT table does not exist, skipping test");
-		return FWTS_SKIP;
+		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+			fwts_log_error(fw, "ACPI XSDT table does not exist");
+			return FWTS_ERROR;
+		} else {
+			fwts_log_error(fw, "ACPI XSDT table does not exist, skipping test");
+			return FWTS_SKIP;
+		}
 	}
 	return FWTS_OK;
 }
@@ -56,9 +61,16 @@ static int xsdt_test1(fwts_framework *fw)
 	for (i = 0; i < n; i++) {
 		if (xsdt->entries[i] == 0) {
 			passed = false;
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"XSDTEntryNull",
-				"XSDT Entry %zd is null, should not be non-zero.", i);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"XSDTEntryNull",
+					"XSDT Entry %zd is null, should not be non-zero.", i);
+			}
+			else {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"XSDTEntryNull",
+					"XSDT Entry %zd is null, should not be non-zero.", i);
+			}
 			fwts_advice(fw,
 				"A XSDT pointer is null and therefore erroneously "
 				"points to an invalid 64 bit ACPI table header. "
@@ -67,8 +79,15 @@ static int xsdt_test1(fwts_framework *fw)
 				"should be fixed where possible.");
 		}
 	}
-	if (passed)
-		fwts_passed(fw, "No issues found in XSDT table.");
+	if (passed) {
+		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+			fwts_passed(fw, "XSDT is present, pointed at by XsdrAddress=0x%lx"
+				" and contain valid pointers to %d other ACPI tables mandated by SBBR",
+				 xsdt->entries[0], (int)n);
+		}
+		else
+			fwts_passed(fw, "No issues found in XSDT table.");
+	}
 
 	return FWTS_OK;
 }
@@ -84,6 +103,6 @@ static fwts_framework_ops xsdt_ops = {
 	.minor_tests = xsdt_tests
 };
 
-FWTS_REGISTER("xsdt", &xsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("xsdt", &xsdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

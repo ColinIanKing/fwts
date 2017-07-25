@@ -6,7 +6,7 @@ Quick Start Guide
 
 1) Dependencies:
 
-	autoconf, automake, libglib2.0-dev, libtool, libpcre3-dev, libjson0-dev, flex, bison, dkms, libfdt-dev
+	autoconf, automake, libglib2.0-dev, libtool, libpcre3-dev, libjson0-dev | libjson-c-dev, flex, bison, dkms, libfdt-dev
 
 2) To build and install (only if building from source)
 

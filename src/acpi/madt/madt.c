@@ -125,6 +125,8 @@
 #define NUM_SUBTABLE_TYPES	16
 #define MAX_IO_APIC_ID		256 /* IO APIC ID field is 1 byte */
 
+#define SBBR_ACPI_MAJOR_VERSION 6
+
 struct acpi_madt_subtable_lengths {
 	unsigned short major_version;	/* from revision in FADT header */
 	unsigned short minor_version;	/* FADT field starting with 5.1 */
@@ -359,6 +361,15 @@ static int madt_init(fwts_framework *fw)
 
 	fadt_major = fadt->header.revision;
 	fadt_minor = 0;
+	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+		if (fadt_major < SBBR_ACPI_MAJOR_VERSION) {
+			fwts_log_error(fw, "SBBR support starts with ACPI v6.0,"
+					" Current revision is outdated: %d.%d",
+					fadt_major, fadt_minor);
+			return FWTS_ERROR;
+		}
+	}
+
 	if (fadt_major >= 5 && fadt->header.length >= 268)
 		fadt_minor = fadt->minor_version;   /* field added ACPI 5.1 */
 
@@ -1438,37 +1449,39 @@ static int madt_subtables(fwts_framework *fw)
 				    hdr->type, madt_sub_names[type]);
 		}
 
-		/* verify that the length is what we expect */
-		if (len == SUBTABLE_VARIABLE) {
-			if (hdr->type == FWTS_ACPI_MADT_LOCAL_SAPIC) {
-				lsapic = (fwts_acpi_madt_local_sapic *)hdr;
-				proper_len =
-				     sizeof(fwts_acpi_madt_local_sapic) +
-				     strlen(lsapic->uid_string) + 1;
+		if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+			/* verify that the length is what we expect */
+			if (len == SUBTABLE_VARIABLE) {
+				if (hdr->type == FWTS_ACPI_MADT_LOCAL_SAPIC) {
+					lsapic = (fwts_acpi_madt_local_sapic *)hdr;
+					proper_len =
+					     sizeof(fwts_acpi_madt_local_sapic) +
+					     strlen(lsapic->uid_string) + 1;
 
-				if (proper_len != hdr->length)
+					if (proper_len != hdr->length)
+						passed = false;
+				}
+			} else {
+				if (hdr->length != len)
 					passed = false;
 			}
-		} else {
-			if (hdr->length != len)
-				passed = false;
-		}
-		if (passed) {
-			fwts_passed(fw,
-				    "Subtable %d (offset 0x%x) of "
-				    "type %d (%s) is the correct length: %d",
-				    ii, offset, hdr->type,
-				    madt_sub_names[type],
-				    hdr->length);
-		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				    "SPECMADTSubLen",
-				    "Subtable %d (offset 0x%x) of "
-				    "type %d (%s) is %d bytes "
-				    "long but should be %d bytes",
-				    ii, offset, hdr->type,
-				    madt_sub_names[type],
-				    hdr->length, len);
+			if (passed) {
+				fwts_passed(fw,
+					    "Subtable %d (offset 0x%x) of "
+					    "type %d (%s) is the correct length: %d",
+					    ii, offset, hdr->type,
+					    madt_sub_names[type],
+					    hdr->length);
+			} else {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					    "SPECMADTSubLen",
+					    "Subtable %d (offset 0x%x) of "
+					    "type %d (%s) is %d bytes "
+					    "long but should be %d bytes",
+					    ii, offset, hdr->type,
+					    madt_sub_names[type],
+					    hdr->length, len);
+			}
 		}
 
 		/* perform checks specific to subtable types */
@@ -1581,8 +1594,10 @@ static int madt_subtables(fwts_framework *fw)
 		length -= skip;
 	}
 
-	/* run comparison tests */
-	madt_ioapic_sapic_compare(fw, num_ioapics, num_iosapics);
+	if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+		/* run comparison tests */
+		madt_ioapic_sapic_compare(fw, num_ioapics, num_iosapics);
+	}
 
 	return FWTS_OK;
 }
@@ -1615,6 +1630,6 @@ static fwts_framework_ops madt_ops = {
 	.minor_tests = madt_tests
 };
 
-FWTS_REGISTER("madt", &madt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_COMPLIANCE_ACPI)
+FWTS_REGISTER("madt", &madt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_COMPLIANCE_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

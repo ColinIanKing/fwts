@@ -37,8 +37,13 @@ static int gtdt_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI GTDT table does not exist, skipping test");
-		return FWTS_SKIP;
+		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+			fwts_log_error(fw, "ACPI GTDT table does not exist");
+			return FWTS_ERROR;
+		} else {
+			fwts_log_error(fw, "ACPI GTDT table does not exist, skipping test");
+			return FWTS_SKIP;
+		}
 	}
 	return FWTS_OK;
 }
@@ -247,6 +252,6 @@ static fwts_framework_ops gtdt_ops = {
 	.minor_tests = gtdt_tests
 };
 
-FWTS_REGISTER("gtdt", &gtdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("gtdt", &gtdt_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

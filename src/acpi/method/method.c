@@ -258,7 +258,7 @@
  */
 
 /* Test types */
-#define	METHOD_MANDITORY	1
+#define METHOD_MANDATORY	1
 #define METHOD_OPTIONAL		2
 #define METHOD_MOBILE		4
 #define METHOD_SILENT		8
@@ -550,8 +550,8 @@ static int method_evaluate_method(fwts_framework *fw,
 		return FWTS_OK;
 	} else {
 		if (!(test_type & METHOD_SILENT)) {
-			/* Manditory not-found test are a failure */
-			if (test_type & METHOD_MANDITORY) {
+			/* Mandatory not-found test are a failure */
+			if (test_type & METHOD_MANDATORY) {
 				fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodNotExist",
 					"Object %s did not exist.", name);
 			}
@@ -560,11 +560,11 @@ static int method_evaluate_method(fwts_framework *fw,
 			if ((test_type & METHOD_MOBILE) && (!fadt_mobile_platform)) {
 				fwts_skipped(fw,
 					"Machine is not a mobile platform, skipping "
-					"test for non-existant mobile platform "
+					"test for non-existent mobile platform "
 					"related object %s.", name);
 			} else {
 				fwts_skipped(fw,
-					"Skipping test for non-existant object %s.",
+					"Skipping test for non-existent object %s.",
 					name);
 			}
 		}
@@ -975,8 +975,12 @@ static void method_test_AEI_return(
 
 static int method_test_AEI(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_AEI", NULL, 0, method_test_AEI_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_AEI", NULL, 0, method_test_AEI_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_AEI", NULL, 0, method_test_AEI_return, NULL);
 }
 
 static void check_evt_event (
@@ -1060,11 +1064,15 @@ static int method_test_EVT(fwts_framework *fw)
 	int ret;
 
 	/* Only test the _EVT method with pins defined in AEI. */
-	ret = method_evaluate_method(fw, METHOD_OPTIONAL | METHOD_SILENT,
-		"_AEI", NULL, 0, method_test_EVT_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		ret = method_evaluate_method(fw, METHOD_MANDATORY | METHOD_SILENT,
+			"_AEI", NULL, 0, method_test_EVT_return, NULL);
+	else
+		ret = method_evaluate_method(fw, METHOD_OPTIONAL | METHOD_SILENT,
+			"_AEI", NULL, 0, method_test_EVT_return, NULL);
 
 	if (ret == FWTS_NOT_EXIST)
-		fwts_skipped(fw, "Skipping test for non-existant object _EVT.");
+		fwts_skipped(fw, "Skipping test for non-existent object _EVT.");
 
 	return ret;
 }
@@ -1273,8 +1281,12 @@ static void method_test_HID_return(
 
 static int method_test_HID(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_HID", NULL, 0, method_test_HID_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_HID", NULL, 0, method_test_HID_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_HID", NULL, 0, method_test_HID_return, NULL);
 }
 
 static void method_valid_CID_Type(
@@ -1554,8 +1566,12 @@ static void method_test_UID_return(
 
 static int method_test_UID(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_UID", NULL, 0, method_test_UID_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_UID", NULL, 0, method_test_UID_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_UID", NULL, 0, method_test_UID_return, NULL);
 }
 
 /*
@@ -2238,7 +2254,7 @@ static void method_test_CRS_return(
 
 static int method_test_CRS(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_MANDITORY,
+	return method_evaluate_method(fw, METHOD_MANDATORY,
 		"_CRS", NULL, 0, method_test_CRS_return, "_CRS");
 }
 
@@ -2493,8 +2509,12 @@ static int method_test_PXM(fwts_framework *fw)
 /* Section 6.2.17 _CCA */
 static int method_test_CCA(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CCA", NULL, 0, method_test_integer_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_CCA", NULL, 0, method_test_integer_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_CCA", NULL, 0, method_test_integer_return, NULL);
 }
 
 /*
@@ -2601,8 +2621,12 @@ static void method_test_STA_return(
 
 static int method_test_STA(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL, "_STA",
-		NULL, 0, method_test_STA_return, "_STA");
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY, "_STA",
+			NULL, 0, method_test_STA_return, "_STA");
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL, "_STA",
+			NULL, 0, method_test_STA_return, "_STA");
 }
 
 
@@ -4425,8 +4449,12 @@ static int method_test_SST(fwts_framework *fw)
 	arg[0].Type = ACPI_TYPE_INTEGER;
 	for (i = 0; i <= 4; i++) {
 		arg[0].Integer.Value = i;
-		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_SST", arg, 1, method_test_NULL_return, NULL);
+		if (fw->flags & FWTS_FLAG_TEST_SBBR)
+			ret = method_evaluate_method(fw, METHOD_MANDATORY,
+				"_SST", arg, 1, method_test_NULL_return, NULL);
+		else
+			ret = method_evaluate_method(fw, METHOD_OPTIONAL,
+				"_SST", arg, 1, method_test_NULL_return, NULL);
 
 		if (ret != FWTS_OK)
 			break;
@@ -6455,7 +6483,23 @@ static int method_test_PTS(fwts_framework *fw)
 		arg[0].Integer.Value = i;
 
 		fwts_log_info(fw, "Test _PTS(%d).", i);
-		method_evaluate_method(fw, METHOD_OPTIONAL, "_PTS", arg, 1, method_test_NULL_return, NULL);
+		if (!(fw->flags & FWTS_FLAG_TEST_SBBR))
+			method_evaluate_method(fw, METHOD_OPTIONAL, "_PTS", arg, 1, method_test_NULL_return, NULL);
+		else
+			if (method_evaluate_method(fw, METHOD_MANDATORY, "_PTS", arg, 1,
+				method_test_NULL_return, NULL) == FWTS_NOT_EXIST) {
+				fwts_advice(fw,
+					"Could not find _PTS. This method provides a "
+					"mechanism to do housekeeping functions, such "
+					"as write sleep state to the embedded "
+					"controller before entering a sleep state. If "
+					"the machine cannot suspend (S3), "
+					"hibernate (S4) or shutdown (S5) then it "
+					"could be because _PTS is missing.  Note that "
+					"ACPI 1.0 wants _PTS to be executed before "
+					"suspending devices.");
+				break;
+			}
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
@@ -6475,7 +6519,7 @@ static int method_test_TTS(fwts_framework *fw)
 			fwts_log_info(fw,
 				"Test _TTS(%d) Transition To State S%d.", i, i);
 
-			if (method_evaluate_method(fw, METHOD_MANDITORY,
+			if (method_evaluate_method(fw, METHOD_MANDATORY,
 				"_TTS", arg, 1, method_test_NULL_return,
 				NULL) == FWTS_NOT_EXIST) {
 				fwts_advice(fw,
@@ -6533,7 +6577,22 @@ static int method_test_WAK(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
 		fwts_log_info(fw, "Test _WAK(%d) System Wake, State S%d.", i, i);
-		method_evaluate_method(fw, METHOD_OPTIONAL, "_WAK", arg, 1, method_test_WAK_return, &i);
+		if (!(fw->flags & FWTS_FLAG_TEST_SBBR))
+			method_evaluate_method(fw, METHOD_OPTIONAL, "_WAK", arg, 1, method_test_WAK_return, &i);
+		else
+			if (method_evaluate_method(fw, METHOD_MANDATORY, "_WAK", arg, 1,
+				method_test_WAK_return, &i) == FWTS_NOT_EXIST) {
+				fwts_advice(fw,
+					"Section 7.3.7 states that a system that wakes "
+					"from a sleeping state will invoke the _WAK "
+					"control to issue device, thermal and other "
+					"notifications to ensure that the operating system "
+					"checks the states of various devices, thermal "
+					"zones, etc.  The Linux kernel will report an "
+					"ACPI exception if _WAK is does not exist when "
+					"it returns from a sleep state.");
+				break;
+			}
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
@@ -6687,8 +6746,12 @@ static int method_test_VPO(fwts_framework *fw)
 
 static int method_test_ADR(fwts_framework *fw)
 {
-	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_ADR", NULL, 0, method_test_integer_return, NULL);
+	if (fw->flags & FWTS_FLAG_TEST_SBBR)
+		return method_evaluate_method(fw, METHOD_MANDATORY,
+			"_ADR", NULL, 0, method_test_integer_return, NULL);
+	else
+		return method_evaluate_method(fw, METHOD_OPTIONAL,
+			"_ADR", NULL, 0, method_test_integer_return, NULL);
 }
 
 static void method_test_BCL_return(
@@ -7258,6 +7321,6 @@ static fwts_framework_ops method_ops = {
 	.minor_tests = method_tests
 };
 
-FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("method", &method_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

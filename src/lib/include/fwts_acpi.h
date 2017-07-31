@@ -1254,6 +1254,59 @@ typedef struct {
 	uint64_t	hint_address[];
 } __attribute__ ((packed)) fwts_acpi_table_nfit_flush_addr;
 
+
+/*
+ * ACPI PPTT (Processor Properties Topology Table), 5.2.29
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_pptt;
+
+typedef enum {
+	FWTS_ACPI_PPTT_PROCESSOR	= 0,
+	FWTS_ACPI_PPTT_CACHE		= 1,
+	FWTS_ACPI_PPTT_ID		= 2,
+} fwts_acpi_pptt_type;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		length;
+} __attribute__ ((packed)) fwts_acpi_table_pptt_header;
+
+typedef struct {
+	fwts_acpi_table_pptt_header	header;
+	uint16_t	reserved;
+	uint32_t	flags;
+	uint32_t	parent;
+	uint32_t	acpi_processor_id;
+	uint32_t	number_priv_resources;
+	uint32_t	private_resource[];
+} __attribute__ ((packed)) fwts_acpi_table_pptt_processor;
+
+typedef struct {
+	fwts_acpi_table_pptt_header	header;
+	uint16_t	reserved;
+	uint32_t	flags;
+	uint32_t	next_level_cache;
+	uint32_t	size;
+	uint32_t	number_sets;
+	uint8_t		associativity;
+	uint8_t		attributes;
+	uint16_t	line_size;
+} __attribute__ ((packed)) fwts_acpi_table_pptt_cache;
+
+typedef struct {
+	fwts_acpi_table_pptt_header	header;
+	uint16_t	reserved;
+	uint32_t	vendor_id;
+	uint64_t	level1_id;
+	uint64_t	level2_id;
+	uint16_t	major_rev;
+	uint16_t	minor_rev;
+	uint16_t	spin_rev;
+} __attribute__ ((packed)) fwts_acpi_table_pptt_id;
+
+
 /*
  * ACPI PCCT (Platform Communications Channel Table), 14.1
  */

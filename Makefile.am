@@ -96,6 +96,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/fpdt-0001/test-0002.sh \
 	fwts-test/hest-0001/test-0001.sh \
 	fwts-test/hest-0001/test-0002.sh \
+	fwts-test/hmat-0001/test-0001.sh \
+	fwts-test/hmat-0001/test-0002.sh \
 	fwts-test/iort-0001/test-0001.sh \
 	fwts-test/iort-0001/test-0002.sh \
 	fwts-test/klog-0001/test-0001.sh \

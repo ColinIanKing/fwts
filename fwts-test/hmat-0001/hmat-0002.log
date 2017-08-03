@@ -1,0 +1,73 @@
+hmat            hmat: HMAT Heterogeneous Memory Attribute Table test.
+hmat            ----------------------------------------------------------
+hmat            Test 1 of 1: Validate HMAT table.
+hmat            HMAT Heterogeneous Memory Attribute Table:
+hmat              Reserved:        0x00
+hmat              Memory Subsystem Address Range (Type 0):
+hmat                Type:                           0x0000
+hmat                Reserved:                       0x0001
+hmat                Length:                         0x00000028
+hmat                Flags:                          0x000f
+hmat                Reserved:                       0x0002
+hmat                Processor Proximity Domain:     0x00000000
+hmat                Memory Proximity Domain:        0x00000000
+hmat                Reserved:                       0x00000003
+hmat                System Phy Addr Range Base:     0x0000000000000000
+hmat                System Phy Addr Range Length:   0x0000000000000000
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0001 instead
+hmat            FAILED [HIGH] HMATBadFlags: Test 1, HMAT Flags's
+hmat            Bits[15..3] must be zero, got 0x000f instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0002 instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x00000003 instead
+hmat            
+hmat              System Locality Latency and Bandwidth Information (Type 1):
+hmat                Type:                           0x0001
+hmat                Reserved:                       0x0004
+hmat                Length:                         0x00000040
+hmat                Flags:                          0x3f
+hmat                Data Type:                      0x06
+hmat                Reserved:                       0x0005
+hmat                Number of Initiator PDs:        0x00000002
+hmat                Number of Target PDs:           0x00000003
+hmat                Reserved:                       0x00000006
+hmat                Entry Base Unit:                0x0000000000000000
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0004 instead
+hmat            FAILED [CRITICAL] HMATBadFlags: Test 1, HMAT Flags's
+hmat            Bits[7..5] must be zero, got 0x3f instead
+hmat            FAILED [CRITICAL] HMATBadFDataType: Test 1, HMAT Data Type
+hmat            must be 0..5, got 0x06 instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0005 instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x00000006 instead
+hmat            
+hmat              Memory Side Cache Information (Type 2):
+hmat                Type:                           0x0002
+hmat                Reserved:                       0x0007
+hmat                Length:                         0x00000026
+hmat                Memory Proximity Domain:        0x00000000
+hmat                Reserved:                       0x00000008
+hmat                Memory Side Cache Size:         0x0000000000000000
+hmat                Cache Attributes:               0x00002333
+hmat                Reserved:                       0x0009
+hmat                Number of SMBIOS Handles:       0x0003
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0007 instead
+hmat            FAILED [CRITICAL] HMATBadCacheAttributeReserved: Test 1,
+hmat            HMAT Cache Attribute reserved values are used, got
+hmat            0x00002333 instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x00000008 instead
+hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            field must be zero, got 0x0009 instead
+hmat            
+hmat            
+hmat            
+hmat            ==========================================================
+hmat            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+hmat            info only.
+hmat            ==========================================================

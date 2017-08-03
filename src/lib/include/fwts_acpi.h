@@ -1254,6 +1254,57 @@ typedef struct {
 	uint64_t	hint_address[];
 } __attribute__ ((packed)) fwts_acpi_table_nfit_flush_addr;
 
+/*
+ * ACPI HMAT (Heterogeneous Memory Attribute Table), 5.2.27
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint32_t	reserved;
+} __attribute__ ((packed)) fwts_acpi_table_hmat;
+
+typedef enum {
+	FWTS_ACPI_HMAT_TYPE_ADDRESS_RANGE	= 0,
+	FWTS_ACPI_HMAT_TYPE_LOCALITY		= 1,
+	FWTS_ACPI_HMAT_TYPE_CACHE		= 2,
+} fwts_acpi_hmat_type;
+
+typedef struct {
+	uint16_t	type;
+	uint16_t	reserved;
+	uint32_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_hmat_header;
+
+typedef struct {
+	fwts_acpi_table_hmat_header	header;
+	uint16_t	flags;
+	uint16_t	reserved1;
+	uint32_t	processor_proximity_domain;
+	uint32_t	memory_proximity_domain;
+	uint32_t	reserved2;
+	uint64_t	phy_addr_base;
+	uint64_t	phy_addr_length;
+} __attribute__ ((packed)) fwts_acpi_table_hmat_addr_range;
+
+typedef struct {
+	fwts_acpi_table_hmat_header	header;
+	uint8_t		flags;
+	uint8_t		data_type;
+	uint16_t	reserved1;
+	uint32_t	num_initiator;
+	uint32_t	num_target;
+	uint32_t	reserved2;
+	uint64_t	entry_base_unit;
+} __attribute__ ((packed)) fwts_acpi_table_hmat_locality;
+
+typedef struct {
+	fwts_acpi_table_hmat_header	header;
+	uint32_t	memory_proximity_domain;
+	uint32_t	reserved1;
+	uint64_t	cache_size;
+	uint32_t	cache_attr;
+	uint16_t	reserved2;
+	uint16_t	num_smbios;
+} __attribute__ ((packed)) fwts_acpi_table_hmat_cache;
 
 /*
  * ACPI PPTT (Processor Properties Topology Table), 5.2.29

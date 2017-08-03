@@ -80,6 +80,7 @@ fwts_SOURCES = main.c 				\
 	acpi/gtdt/gtdt.c			\
 	acpi/hest/hest.c			\
 	acpi/hpet/hpet.c 			\
+	acpi/hmat/hmat.c 			\
 	acpi/iort/iort.c			\
 	acpi/lid/lid.c 				\
 	acpi/lpit/lpit.c 			\

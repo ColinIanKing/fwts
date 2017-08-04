@@ -1666,6 +1666,14 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_msdm;
 
 /*
+ * ACPI SDEI (Software Delegated Exception Interface)
+ *   http://infocenter.arm.com/help/topic/com.arm.doc.den0054a/ARM_DEN0054A_Software_Delegated_Exception_Interface.pdf
+ */
+typedef struct {
+	fwts_acpi_table_header  header;
+} __attribute__ ((packed)) fwts_acpi_table_sdei;
+
+/*
  * ACPI IORT (IO Remapping Table)
  *   http://infocenter.arm.com/help/topic/com.arm.doc.den0049a/DEN0049A_IO_Remapping_Table.pdf
  */

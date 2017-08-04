@@ -106,6 +106,8 @@ TESTS = fwts-test/acpidump-0001/test-0001.sh \
 	fwts-test/klog-0002/test-0003.sh \
 	fwts-test/lpit-0001/test-0001.sh \
 	fwts-test/lpit-0001/test-0002.sh \
+	fwts-test/sdei-0001/test-0001.sh \
+	fwts-test/sdei-0001/test-0002.sh \
 	fwts-test/slic-0001/test-0001.sh \
 	fwts-test/slic-0001/test-0002.sh \
 	fwts-test/slit-0001/test-0001.sh \

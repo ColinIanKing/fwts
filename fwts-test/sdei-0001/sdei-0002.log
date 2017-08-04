@@ -1,0 +1,11 @@
+sdei            sdei: SDEI Software Delegated Exception Interface Table
+sdei            test
+sdei            ----------------------------------------------------------
+sdei            Test 1 of 1: Validate SDEI table.
+sdei            SDEI (Software Delegated Exception Interface) Table:
+sdei            PASSED: Test 1, No issues found in SDEI table.
+sdei            
+sdei            ==========================================================
+sdei            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+sdei            info only.
+sdei            ==========================================================

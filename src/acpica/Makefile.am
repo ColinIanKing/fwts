@@ -116,6 +116,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/dispatcher/dsmethod.c		\
 	source/components/dispatcher/dsmthdat.c		\
 	source/components/dispatcher/dsobject.c		\
+	source/components/dispatcher/dspkginit.c	\
 	source/components/dispatcher/dsutils.c		\
 	source/components/dispatcher/dswexec.c		\
 	source/components/dispatcher/dswload.c		\

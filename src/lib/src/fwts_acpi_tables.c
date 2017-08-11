@@ -146,39 +146,37 @@ static void *fwts_acpi_find_rsdp_bios(void)
 static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(fwts_framework *fw, void *addr, size_t *rsdp_len)
 {
 	uint8_t *mem;
-	fwts_acpi_table_rsdp *rsdp = NULL;
+	fwts_acpi_table_rsdp *rsdp;
 	*rsdp_len = 0;
+
+	/* Assume version 2.0 size, we don't care about a few bytes over allocation if it's version 1.0 */
+	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL) {
+		fwts_log_error(fw, "Cannot allocate cached RSDP, out of low memory.");
+		return NULL;
+	}
 
 	if ((mem = fwts_mmap((off_t)addr, sizeof(fwts_acpi_table_rsdp))) == FWTS_MAP_FAILED)
 		return NULL;
 
-	if (fwts_safe_memread(mem, sizeof(fwts_acpi_table_rsdp)) != FWTS_OK) {
-		fwts_log_error(fw, "Cannot safely read RSDP from address %p.", mem);
-		goto out;
+	if (fwts_safe_memcpy(rsdp, mem, sizeof(fwts_acpi_table_rsdp)) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot safely copy RSDP from address %p.", mem);
+		goto err;
 	}
 
-	rsdp = (fwts_acpi_table_rsdp*)mem;
 	/* Determine original RSDP size from revision. */
 	*rsdp_len = (rsdp->revision < 1) ? 20 : 36;
 
 	/* Must have the correct signature */
 	if (strncmp(rsdp->signature, "RSD PTR ", 8)) {
 		fwts_log_error(fw, "RSDP did not have expected signature.");
-		rsdp = NULL;
-		goto out;
+		goto err;
 	}
-
-	/* Assume version 2.0 size, we don't care about a few bytes over allocation if it's version 1.0 */
-	if ((rsdp = (fwts_acpi_table_rsdp*)fwts_low_calloc(1, sizeof(fwts_acpi_table_rsdp))) == NULL) {
-		rsdp = NULL;
-		goto out;
-	}
-
-	memcpy(rsdp, mem, *rsdp_len);
-out:
-	(void)fwts_munmap(mem, sizeof(fwts_acpi_table_rsdp));
-
 	return rsdp;
+
+err:
+	(void)fwts_munmap(mem, sizeof(fwts_acpi_table_rsdp));
+	fwts_low_free(rsdp);
+	return NULL;
 }
 
 /*

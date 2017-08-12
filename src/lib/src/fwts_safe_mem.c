@@ -68,8 +68,10 @@ int OPTIMIZE0 fwts_safe_memcpy(void *dst, const void *src, const size_t n)
  */
 int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 {
-	const volatile uint8_t *ptr = src;
-	const volatile uint8_t *end = ptr + n;
+	static uint8_t buffer[256];
+	const uint8_t *ptr, *end = src + n;
+	uint8_t *bufptr;
+	const uint8_t *bufend = buffer + sizeof(buffer);
 
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;
@@ -77,8 +79,13 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
 	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
 
-	while (ptr < end)
-		(void)*(ptr++);
+	for (bufptr = buffer, ptr = src; ptr < end; ptr++) {
+		/* Force data to be read */
+		__builtin_prefetch(ptr, 0, 3);
+		*bufptr = *ptr;
+		bufptr++;
+		bufptr = (bufptr >= bufend) ? buffer : bufptr;
+	}
 
 	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
 	fwts_sig_handler_restore(SIGBUS, &old_bus_action);

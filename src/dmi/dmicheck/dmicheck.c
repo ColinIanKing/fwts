@@ -818,7 +818,7 @@ static void dmi_reserved_bits_check(fwts_framework *fw,
 	uint8_t i;
 
 	for (i = min; i <= max; i++) {
-		mask |= (1 << i);
+		mask |= (1ULL << i);
 	}
 
 	switch (size) {

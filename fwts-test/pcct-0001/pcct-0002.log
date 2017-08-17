@@ -2,7 +2,7 @@ pcct            pcct: PCCT Platform Communications Channel test.
 pcct            ----------------------------------------------------------
 pcct            Test 1 of 1: Validate PCC table.
 pcct            PCC Table:
-pcct              Flags:     0x00000001
+pcct              Flags:     0x00000000
 pcct              Reserved:  0x0000000000000000
 pcct            
 pcct              PCC Subspace Structure:
@@ -24,13 +24,13 @@ pcct                Max Periodic Access Rate:    0x77777777
 pcct                Min Request Turnaround Time: 0x00008888
 pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
 pcct            Subspace Type 0 has space ID = 0x02 which is not System I
-pcct            /O Space or System Memory Space
+pcct            /O or Memory
 pcct            
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x01
 pcct                Length:                      0x3e
-pcct                Doorbell Interrupt:          0x00000001
-pcct                Doorbell Interrupt Flags:    0x01
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
 pcct                Reserved:                    0x00
 pcct                Base Address:                0x0000000000000000
 pcct                Length:                      0x5555555555555555
@@ -40,20 +40,20 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x4444444444444444
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 1 has space ID = 4 which is not System I/O,
+pcct            Memory or FFH
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
 pcct                Min Request Turnaround Time: 0x00008888
-pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 1 has space ID = 0x04 which is not System I
-pcct            /O Space or System Memory Space
 pcct            
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x02
 pcct                Length:                      0x5a
-pcct                Doorbell Interrupt:          0x00000001
-pcct                Doorbell Interrupt Flags:    0x03
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
 pcct                Reserved:                    0x00
 pcct                Base Address:                0x0000000000000000
 pcct                Length:                      0x9999999999999999
@@ -63,28 +63,163 @@ pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x4444444444444444
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 2 has space ID = 3 which is not System I/O,
+pcct            Memory or FFH
 pcct                Doorbell Preserve:           0x4444444444444444
 pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
 pcct                Min Request Turnaround Time: 0x00008888
-pcct                Doorbell Ack Register:
+pcct                Platform Interrupt Ack Register:
+pcct                  Address Space ID           0x03
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 2 has space ID = 3 which is not System I/O,
+pcct            Memory or FFH
+pcct                Platform Ack Preserve:       0x4444444444444444
+pcct                Platform Ack Write:          0x5555555555555555
+pcct            
+pcct              PCC Subspace Structure:
+pcct                Type:                        0x03
+pcct                Length:                      0xa4
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
+pcct                Reserved:                    0x00
+pcct                Base Address:                0x0000000000000000
+pcct                Length:                      0x77777777
+pcct                Doorbell Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Doorbell Preserve:           0x4444444444444444
+pcct                Doorbell Write:              0x5555555555555555
+pcct                Nominal Latency:             0x66666666
+pcct                Max Periodic Access Rate:    0x77777777
+pcct                Min Request Turnaround Time: 0x88888888
+pcct                Command Complete Check Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Doorbell Ack Preserve:       0x9999999999999999
+pcct                Doorbell Ack Write:          0x0000000000000000
+pcct                Reserved:                    0x0000000000000000
+pcct                Cmd Complete Check Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Cmd Complete Check Mask:     0x2222222222222222
+pcct                Cmd Complete Update Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Cmd Complete Update Mask:    0x3333333333333333
+pcct                Cmd Complete Set Mask:       0x3333333333333333
+pcct                Error Status Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 3 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Error Status Mask:           0x5555555555555555
+pcct            
+pcct              PCC Subspace Structure:
+pcct                Type:                        0x04
+pcct                Length:                      0xa4
+pcct            FAILED [HIGH] PCCTBadFlags: Test 1, PCCT Plaform Interrupt
+pcct            in flags must be set when subspace type 4 is present, got
+pcct            0x00000000 instead
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
+pcct                Reserved:                    0x00
+pcct                Base Address:                0x0000000000000000
+pcct                Length:                      0x88888888
+pcct                Doorbell Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Doorbell Preserve:           0x4444444444444444
+pcct                Doorbell Write:              0x5555555555555555
+pcct                Nominal Latency:             0x66666666
+pcct                Max Periodic Access Rate:    0x77777777
+pcct                Min Request Turnaround Time: 0x88888888
+pcct                Command Complete Check Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Doorbell Ack Preserve:       0x9999999999999999
+pcct                Doorbell Ack Write:          0x0000000000000000
+pcct                Reserved:                    0x0000000000000000
+pcct                Cmd Complete Check Register:
+pcct                  Address Space ID           0x05
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
+pcct            Subspace Type 4 has space ID = 5 which is not System I/O,
+pcct            Memory or FFH
+pcct                Cmd Complete Check Mask:     0x2222222222222222
+pcct                Cmd Complete Update Register:
 pcct                  Address Space ID           0x04
 pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct                Doorbell Ack Preserve:       0x4444444444444444
-pcct                Doorbell Ack Write:          0x5555555555555555
 pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 2 has space ID = 0x03 which is not System I
-pcct            /O Space or System Memory Space
+pcct            Subspace Type 4 has space ID = 4 which is not System I/O,
+pcct            Memory or FFH
+pcct                Cmd Complete Update Mask:    0x3333333333333333
+pcct                Cmd Complete Set Mask:       0x3333333333333333
+pcct                Error Status Register:
+pcct                  Address Space ID           0x04
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
 pcct            FAILED [HIGH] PCCTSubspaceInvalidAddrSpaceID: Test 1, PCCT
-pcct            Subspace Type 2 has space ID = 0x03 which is not System I
-pcct            /O Space or System Memory Space
+pcct            Subspace Type 4 has space ID = 4 which is not System I/O,
+pcct            Memory or FFH
+pcct                Error Status Mask:           0x5555555555555555
 pcct            
 pcct            
 pcct            ==========================================================
-pcct            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+pcct            0 passed, 15 failed, 0 warning, 0 aborted, 0 skipped, 0
 pcct            info only.
 pcct            ==========================================================

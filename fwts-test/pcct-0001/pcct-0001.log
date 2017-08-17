@@ -26,8 +26,8 @@ pcct
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x01
 pcct                Length:                      0x3e
-pcct                Doorbell Interrupt:          0x00000001
-pcct                Doorbell Interrupt Flags:    0x01
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
 pcct                Reserved:                    0x00
 pcct                Base Address:                0x0000000000000000
 pcct                Length:                      0x5555555555555555
@@ -46,8 +46,8 @@ pcct
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x02
 pcct                Length:                      0x5a
-pcct                Doorbell Interrupt:          0x00000001
-pcct                Doorbell Interrupt Flags:    0x03
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
 pcct                Reserved:                    0x00
 pcct                Base Address:                0x0000000000000000
 pcct                Length:                      0x9999999999999999
@@ -62,14 +62,116 @@ pcct                Doorbell Write:              0x5555555555555555
 pcct                Nominal Latency:             0x66666666
 pcct                Max Periodic Access Rate:    0x77777777
 pcct                Min Request Turnaround Time: 0x00008888
-pcct                Doorbell Ack Register:
+pcct                Platform Interrupt Ack Register:
 pcct                  Address Space ID           0x01
 pcct                  Register Bit Width         0x32
 pcct                  Register Bit Offset        0x00
 pcct                  Access Size                0x03
 pcct                  Address                    0x3333333333333333
-pcct                Doorbell Ack Preserve:       0x4444444444444444
-pcct                Doorbell Ack Write:          0x5555555555555555
+pcct                Platform Ack Preserve:       0x4444444444444444
+pcct                Platform Ack Write:          0x5555555555555555
+pcct            
+pcct              PCC Subspace Structure:
+pcct                Type:                        0x03
+pcct                Length:                      0xa4
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
+pcct                Reserved:                    0x00
+pcct                Base Address:                0x0000000000000000
+pcct                Length:                      0x77777777
+pcct                Doorbell Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Doorbell Preserve:           0x4444444444444444
+pcct                Doorbell Write:              0x5555555555555555
+pcct                Nominal Latency:             0x66666666
+pcct                Max Periodic Access Rate:    0x77777777
+pcct                Min Request Turnaround Time: 0x88888888
+pcct                Command Complete Check Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Doorbell Ack Preserve:       0x9999999999999999
+pcct                Doorbell Ack Write:          0x0000000000000000
+pcct                Reserved:                    0x0000000000000000
+pcct                Cmd Complete Check Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Cmd Complete Check Mask:     0x2222222222222222
+pcct                Cmd Complete Update Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Cmd Complete Update Mask:    0x3333333333333333
+pcct                Cmd Complete Set Mask:       0x3333333333333333
+pcct                Error Status Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Error Status Mask:           0x5555555555555555
+pcct            
+pcct              PCC Subspace Structure:
+pcct                Type:                        0x04
+pcct                Length:                      0xa4
+pcct                Platform Interrupt:          0x00000001
+pcct                Platform Interrupt Flags:    0x01
+pcct                Reserved:                    0x00
+pcct                Base Address:                0x0000000000000000
+pcct                Length:                      0x88888888
+pcct                Doorbell Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Doorbell Preserve:           0x4444444444444444
+pcct                Doorbell Write:              0x5555555555555555
+pcct                Nominal Latency:             0x66666666
+pcct                Max Periodic Access Rate:    0x77777777
+pcct                Min Request Turnaround Time: 0x88888888
+pcct                Command Complete Check Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Doorbell Ack Preserve:       0x9999999999999999
+pcct                Doorbell Ack Write:          0x0000000000000000
+pcct                Reserved:                    0x0000000000000000
+pcct                Cmd Complete Check Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Cmd Complete Check Mask:     0x2222222222222222
+pcct                Cmd Complete Update Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Cmd Complete Update Mask:    0x3333333333333333
+pcct                Cmd Complete Set Mask:       0x3333333333333333
+pcct                Error Status Register:
+pcct                  Address Space ID           0x01
+pcct                  Register Bit Width         0x32
+pcct                  Register Bit Offset        0x00
+pcct                  Access Size                0x03
+pcct                  Address                    0x3333333333333333
+pcct                Error Status Mask:           0x5555555555555555
 pcct            
 pcct            PASSED: Test 1, No issues found in PCC table.
 pcct            

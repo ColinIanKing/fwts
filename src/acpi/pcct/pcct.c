@@ -39,6 +39,158 @@ static int pcct_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type_size, uint8_t length)
+{
+	if (type_size != length) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTBadSubspaceLength",
+			"PCCT Subspace Type %" PRId8 " must have length 0x%2.2" PRIx8 ", "
+			"got 0x%2.2" PRIx8 " instead", type, type_size, length);
+		return false;
+	}
+
+	return true;
+}
+
+static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_0 *entry, bool *passed)
+{
+	fwts_acpi_gas *gas = &entry->doorbell_register;
+	uint64_t reserved;
+
+	reserved = (uint64_t) entry->reserved[0] + ((uint64_t) entry->reserved[1] << 8) +
+		   ((uint64_t) entry->reserved[2] << 16) + ((uint64_t) entry->reserved[3] << 24) +
+		   ((uint64_t) entry->reserved[4] << 32) + ((uint64_t) entry->reserved[5] << 40);
+
+	fwts_log_info_verbatim(fw, "    Reserved:                    0x%16.16" PRIx64, reserved);
+	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, entry->length);
+	fwts_log_info_verbatim(fw, "    Doorbell Register:");
+	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
+	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
+	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
+	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
+	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
+	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
+	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
+	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
+	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
+	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+
+	if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
+	    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY)) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTSubspaceInvalidAddrSpaceID",
+			"PCCT Subspace Type 0 has space ID = 0x%2.2" PRIx8
+			" which is not System I/O Space or System Memory Space",
+			gas->address_space_id);
+	}
+}
+
+static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)
+{
+	fwts_acpi_gas *gas = &entry->doorbell_register;
+	uint8_t doorbell_int_flags = entry->doorbell_interrupt_flags;
+
+	fwts_log_info_verbatim(fw, "    Doorbell Interrupt:          0x%8.8"   PRIx32, entry->doorbell_interrupt);
+	fwts_log_info_verbatim(fw, "    Doorbell Interrupt Flags:    0x%2.2"   PRIx8, entry->doorbell_interrupt_flags);
+	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
+	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, entry->length);
+	fwts_log_info_verbatim(fw, "    Doorbell Register:");
+	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
+	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
+	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
+	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
+	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
+	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
+	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
+	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
+	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
+	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+
+	if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
+	    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
+			(gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTSubspaceInvalidAddrSpaceID",
+			"PCCT Subspace Type 1 has space ID = 0x%2.2" PRIx8
+			" which is not System I/O Space or System Memory Space",
+			gas->address_space_id);
+	}
+
+	if (doorbell_int_flags & ~0x3) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTBadSubtypeDoorbellFlags",
+			"PCCT Subspace Doorbell Interrupt's bit 2..7 be zero, got "
+			"0x%2.2" PRIx8 " instead", doorbell_int_flags);
+	}
+}
+
+static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
+{
+	fwts_acpi_gas *gas = &entry->doorbell_register;
+	fwts_acpi_gas *gas2 = &entry->doorbell_ack_register;
+	uint8_t doorbell_int_flags = entry->doorbell_interrupt_flags;
+
+	fwts_log_info_verbatim(fw, "    Doorbell Interrupt:          0x%8.8"   PRIx32, entry->doorbell_interrupt);
+	fwts_log_info_verbatim(fw, "    Doorbell Interrupt Flags:    0x%2.2"   PRIx8, entry->doorbell_interrupt_flags);
+	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
+	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
+	fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, entry->length);
+	fwts_log_info_verbatim(fw, "    Doorbell Register:");
+	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
+	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
+	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
+	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
+	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
+	fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, entry->doorbell_preserve);
+	fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, entry->doorbell_write);
+	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
+	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
+	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+	fwts_log_info_verbatim(fw, "    Doorbell Ack Register:");
+	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas2->address_space_id);
+	fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas2->register_bit_width);
+	fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas2->register_bit_offset);
+	fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas2->access_width);
+	fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas2->address);
+	fwts_log_info_verbatim(fw, "    Doorbell Ack Preserve:       0x%16.16" PRIx64, entry->doorbell_ack_preserve);
+	fwts_log_info_verbatim(fw, "    Doorbell Ack Write:          0x%16.16" PRIx64, entry->doorbell_ack_write);
+
+	if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
+	    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
+			(gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTSubspaceInvalidAddrSpaceID",
+			"PCCT Subspace Type 2 has space ID = 0x%2.2" PRIx8
+			" which is not System I/O Space or System Memory Space",
+			gas->address_space_id);
+	}
+
+	if ((gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
+	    (gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
+			(gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTSubspaceInvalidAddrSpaceID",
+			"PCCT Subspace Type 2 has space ID = 0x%2.2" PRIx8
+			" which is not System I/O Space or System Memory Space",
+			gas->address_space_id);
+	}
+
+	if (doorbell_int_flags & ~0x3) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PCCTBadSubtypeDoorbellFlags",
+			"PCCT Subspace Doorbell Interrupt's bit 2..7 be zero, got "
+			"0x%2.2" PRIx8 " instead", doorbell_int_flags);
+	}
+}
+
 static int pcct_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_pcct *pcct = (fwts_acpi_table_pcct*) table->data;
@@ -71,7 +223,6 @@ static int pcct_test1(fwts_framework *fw)
 	pcct_sub = (fwts_acpi_table_pcct_subspace_header *) (table->data + offset);
 
 	while (offset < table->length) {
-		uint8_t doorbell_int_flags = 0;
 		uint64_t addr_length = 8;
 
 		fwts_log_info_verbatim(fw, "  PCC Subspace Structure:");
@@ -80,159 +231,36 @@ static int pcct_test1(fwts_framework *fw)
 
 		if (pcct_sub->type == 0) {
 			fwts_acpi_table_pcct_subspace_type_0 *subspace = (fwts_acpi_table_pcct_subspace_type_0 *) pcct_sub;
-			fwts_acpi_gas *gas = &subspace->doorbell_register;
-			uint64_t reserved;
 
-			if (pcct_sub->length != 62) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTBadSubpaceLength",
-					"PCCT Subspace Type 0 must have length = 62, got "
-					"0x%2.2" PRIx8 " instead", pcct_sub->length);
+			if(!subspace_length_equal(fw, 0, sizeof(fwts_acpi_table_pcct_subspace_type_0), pcct_sub->length)) {
 				passed = false;
 				break;
 			}
 
-			reserved = (uint64_t) subspace->reserved[0] +
-				   ((uint64_t) subspace->reserved[1] << 8) +
-				   ((uint64_t) subspace->reserved[2] << 16) +
-				   ((uint64_t) subspace->reserved[3] << 24) +
-				   ((uint64_t) subspace->reserved[4] << 32) +
-				   ((uint64_t) subspace->reserved[5] << 40);
-
+			generic_comm_test(fw, subspace, &passed);
 			addr_length = subspace->length;
-
-			fwts_log_info_verbatim(fw, "    Reserved:                    0x%16.16" PRIx64, reserved);
-			fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, subspace->base_address);
-			fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, subspace->length);
-			fwts_log_info_verbatim(fw, "    Doorbell Register:");
-			fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
-			fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
-			fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
-			fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
-			fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
-			fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, subspace->doorbell_preserve);
-			fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, subspace->doorbell_write);
-			fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, subspace->nominal_latency);
-			fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, subspace->max_periodic_access_rate);
-			fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, subspace->min_request_turnaround_time);
-
-			if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-			    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY)) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTSubspaceInvalidAddrSpaceID",
-					"PCCT Subspace Type 0 has space ID = 0x%2.2" PRIx8
-					" which is not System I/O Space or System Memory Space",
-					gas->address_space_id);
-			}
 
 		} else if (pcct_sub->type == 1) {
 			fwts_acpi_table_pcct_subspace_type_1 *subspace = (fwts_acpi_table_pcct_subspace_type_1 *) pcct_sub;
-			fwts_acpi_gas *gas = &subspace->doorbell_register;
 
-			if (pcct_sub->length != 62) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTBadSubpaceLength",
-					"PCCT Subspace Type 1 must have length = 62, got "
-					"0x%2.2" PRIx8 " instead", pcct_sub->length);
+			if(!subspace_length_equal(fw, 0, sizeof(fwts_acpi_table_pcct_subspace_type_1), pcct_sub->length)) {
 				passed = false;
 				break;
 			}
 
+			hw_reduced_comm_test_type1(fw, subspace, &passed);
 			addr_length = subspace->length;
-			doorbell_int_flags = subspace->doorbell_interrupt_flags;
-
-			fwts_log_info_verbatim(fw, "    Doorbell Interrupt:          0x%8.8"   PRIx32, subspace->doorbell_interrupt);
-			fwts_log_info_verbatim(fw, "    Doorbell Interrupt Flags:    0x%2.2"   PRIx8, subspace->doorbell_interrupt_flags);
-			fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, subspace->reserved);
-			fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, subspace->base_address);
-			fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, subspace->length);
-			fwts_log_info_verbatim(fw, "    Doorbell Register:");
-			fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
-			fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
-			fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
-			fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
-			fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
-			fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, subspace->doorbell_preserve);
-			fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, subspace->doorbell_write);
-			fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, subspace->nominal_latency);
-			fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, subspace->max_periodic_access_rate);
-			fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, subspace->min_request_turnaround_time);
-
-			if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-			    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
-					(gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTSubspaceInvalidAddrSpaceID",
-					"PCCT Subspace Type 1 has space ID = 0x%2.2" PRIx8
-					" which is not System I/O Space or System Memory Space",
-					gas->address_space_id);
-			}
 
 		} else if (pcct_sub->type == 2) {
 			fwts_acpi_table_pcct_subspace_type_2 *subspace = (fwts_acpi_table_pcct_subspace_type_2 *) pcct_sub;
-			fwts_acpi_gas *gas = &subspace->doorbell_register;
-			fwts_acpi_gas *gas2 = &subspace->doorbell_ack_register;
 
-			if (pcct_sub->length != 90) {
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTBadSubpaceLength",
-					"PCCT Subspace Type 2 must have length = 90, got "
-					"0x%2.2" PRIx8 " instead", pcct_sub->length);
+			if(!subspace_length_equal(fw, 0, sizeof(fwts_acpi_table_pcct_subspace_type_2), pcct_sub->length)) {
 				passed = false;
 				break;
 			}
 
+			hw_reduced_comm_test_type2(fw, subspace, &passed);
 			addr_length = subspace->length;
-			doorbell_int_flags = subspace->doorbell_interrupt_flags;
-
-			fwts_log_info_verbatim(fw, "    Doorbell Interrupt:          0x%8.8"   PRIx32, subspace->doorbell_interrupt);
-			fwts_log_info_verbatim(fw, "    Doorbell Interrupt Flags:    0x%2.2"   PRIx8, subspace->doorbell_interrupt_flags);
-			fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, subspace->reserved);
-			fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, subspace->base_address);
-			fwts_log_info_verbatim(fw, "    Length:                      0x%16.16" PRIx64, subspace->length);
-			fwts_log_info_verbatim(fw, "    Doorbell Register:");
-			fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
-			fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas->register_bit_width);
-			fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas->register_bit_offset);
-			fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas->access_width);
-			fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas->address);
-			fwts_log_info_verbatim(fw, "    Doorbell Preserve:           0x%16.16" PRIx64, subspace->doorbell_preserve);
-			fwts_log_info_verbatim(fw, "    Doorbell Write:              0x%16.16" PRIx64, subspace->doorbell_write);
-			fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, subspace->nominal_latency);
-			fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, subspace->max_periodic_access_rate);
-			fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, subspace->min_request_turnaround_time);
-			fwts_log_info_verbatim(fw, "    Doorbell Ack Register:");
-			fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas2->address_space_id);
-			fwts_log_info_verbatim(fw, "      Register Bit Width         0x%2.2"   PRIx8, gas2->register_bit_width);
-			fwts_log_info_verbatim(fw, "      Register Bit Offset        0x%2.2"   PRIx8, gas2->register_bit_offset);
-			fwts_log_info_verbatim(fw, "      Access Size                0x%2.2"   PRIx8, gas2->access_width);
-			fwts_log_info_verbatim(fw, "      Address                    0x%16.16" PRIx64, gas2->address);
-			fwts_log_info_verbatim(fw, "    Doorbell Ack Preserve:       0x%16.16" PRIx64, subspace->doorbell_ack_preserve);
-			fwts_log_info_verbatim(fw, "    Doorbell Ack Write:          0x%16.16" PRIx64, subspace->doorbell_ack_write);
-
-			if ((gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-			    (gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
-					(gas->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTSubspaceInvalidAddrSpaceID",
-					"PCCT Subspace Type 2 has space ID = 0x%2.2" PRIx8
-					" which is not System I/O Space or System Memory Space",
-					gas->address_space_id);
-			}
-
-			if ((gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_IO) &&
-			    (gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_SYSTEM_MEMORY) &&
-					(gas2->address_space_id != FWTS_GAS_ADDR_SPACE_ID_FFH)) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"PCCTSubspaceInvalidAddrSpaceID",
-					"PCCT Subspace Type 2 has space ID = 0x%2.2" PRIx8
-					" which is not System I/O Space or System Memory Space",
-					gas->address_space_id);
-			}
 
 		} else {
 			passed = false;
@@ -250,13 +278,7 @@ static int pcct_test1(fwts_framework *fw)
 				"0x%16.16" PRIx64 " instead", addr_length);
 		}
 
-		if (doorbell_int_flags & ~0x3) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"PCCTBadSubtypeDoorbellFlags",
-				"PCCT Subspace Doorbell Interrupt's bit 2..7 be zero, got "
-				"0x%2.2" PRIx8 " instead", doorbell_int_flags);
-		}
+
 
 		fwts_log_nl(fw);
 

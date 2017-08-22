@@ -1039,7 +1039,8 @@ typedef struct {
  * ACPI RASF (RAS Feature Table), 5.2.20
  */
 typedef struct {
-        uint8_t         platform_cc_id[12];
+	fwts_acpi_table_header	header;
+	uint8_t         platform_cc_id[12];
 } __attribute__ ((packed)) fwts_acpi_table_rasf;
 
 /*

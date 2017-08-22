@@ -162,6 +162,7 @@ static fwts_acpi_table_rsdp *fwts_acpi_get_rsdp(fwts_framework *fw, void *addr, 
 		fwts_log_error(fw, "Cannot safely copy RSDP from address %p.", mem);
 		goto err;
 	}
+	(void)fwts_munmap(mem, sizeof(fwts_acpi_table_rsdp));
 
 	/* Determine original RSDP size from revision. */
 	*rsdp_len = (rsdp->revision < 1) ? 20 : 36;

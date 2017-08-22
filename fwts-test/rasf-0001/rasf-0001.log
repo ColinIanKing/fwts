@@ -1,0 +1,22 @@
+rasf            rasf: RASF RAS Feature Table test
+rasf            ----------------------------------------------------------
+rasf            Test 1 of 1: Validate RASF table.
+rasf            RASF (RAS Feature) Table:
+rasf              Channel Identifier [00]:   0x00
+rasf              Channel Identifier [01]:   0x01
+rasf              Channel Identifier [02]:   0x02
+rasf              Channel Identifier [03]:   0x03
+rasf              Channel Identifier [04]:   0x04
+rasf              Channel Identifier [05]:   0x05
+rasf              Channel Identifier [06]:   0x06
+rasf              Channel Identifier [07]:   0x07
+rasf              Channel Identifier [08]:   0x08
+rasf              Channel Identifier [09]:   0x09
+rasf              Channel Identifier [10]:   0x0a
+rasf              Channel Identifier [11]:   0x0b
+rasf            PASSED: Test 1, No issues found in RASF table.
+rasf            
+rasf            ==========================================================
+rasf            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+rasf            info only.
+rasf            ==========================================================

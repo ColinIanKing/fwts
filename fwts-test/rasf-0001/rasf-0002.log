@@ -1,0 +1,11 @@
+rasf            rasf: RASF RAS Feature Table test
+rasf            ----------------------------------------------------------
+rasf            Test 1 of 1: Validate RASF table.
+rasf            RASF (RAS Feature) Table:
+rasf            FAILED [CRITICAL] RASFBadLength: Test 1, RASF structure
+rasf            must have length 0x00000030, got 0x00000031
+rasf            
+rasf            ==========================================================
+rasf            0 passed, 1 failed, 0 warning, 0 aborted, 0 skipped, 0
+rasf            info only.
+rasf            ==========================================================

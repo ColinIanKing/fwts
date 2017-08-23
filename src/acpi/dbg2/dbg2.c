@@ -30,6 +30,9 @@
 
 #include "fwts_acpi_object_eval.h"
 
+#define SBBR_DBG2_PORT_SERIAL   0x8000
+#define SBBR_DBG2_ARM_SBSA_UART 0x000E
+
 static fwts_acpi_table_info *table;
 
 static int dbg2_init(fwts_framework *fw)
@@ -39,10 +42,52 @@ static int dbg2_init(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 	if (table == NULL || (table && table->length == 0)) {
-		fwts_log_error(fw, "ACPI DBG2 table does not exist, skipping test");
-		return FWTS_SKIP;
+		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
+			fwts_log_error(fw,
+				"ACPI DBG2 table does not exist");
+			return FWTS_ERROR;
+		} else {
+			fwts_log_error(fw,
+				"ACPI DBG2 table does not exist, skipping test");
+			return FWTS_SKIP;
+		}
 	}
 
+	return FWTS_OK;
+}
+
+static int dbg2_test2(fwts_framework *fw)
+{
+	uint32_t i;
+
+	if (!(fw->flags & FWTS_FLAG_TEST_SBBR))
+		return FWTS_SKIP;
+
+	fwts_acpi_table_dbg2 *dbg2 = (fwts_acpi_table_dbg2 *)table->data;
+	fwts_acpi_table_dbg2_info *info;
+
+	info = (fwts_acpi_table_dbg2_info *)(table->data + dbg2->info_offset);
+
+	for (i = 0; i < dbg2->info_count; i++) {
+		if ((uint8_t*)&info->length >= ((uint8_t*)table + table->length))
+			break;
+		if (((uint8_t*)info + info->length) >= ((uint8_t*)table + table->length))
+			break;
+		if ((info->port_type == SBBR_DBG2_PORT_SERIAL) &&
+		(info->port_subtype == SBBR_DBG2_ARM_SBSA_UART)) {
+			fwts_passed(fw,
+				"DBG2 provides a standard serial debug "
+				"port and describes ARM SBSA Generic UART");
+			return FWTS_OK;
+		}
+
+		/* ..and onto the next info structure .. */
+		info = (fwts_acpi_table_dbg2_info *)((uint8_t *)info +
+			info->length);
+	}
+
+	fwts_failed(fw, LOG_LEVEL_CRITICAL, "dbg2_sbsa_uart:",
+			"DBG2 provides a non standard debug port");
 	return FWTS_OK;
 }
 
@@ -343,6 +388,7 @@ done:
 
 static fwts_framework_minor_test dbg2_tests[] = {
 	{ dbg2_test1, "DBG2 (Debug Port Table 2) test." },
+	{ dbg2_test2, "DBG2 ARM SBSA Generic UART test," },
 	{ NULL, NULL }
 };
 
@@ -352,6 +398,6 @@ static fwts_framework_ops dbg2_ops = {
 	.minor_tests = dbg2_tests
 };
 
-FWTS_REGISTER("dbg2", &dbg2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI)
+FWTS_REGISTER("dbg2", &dbg2_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_BATCH | FWTS_FLAG_TEST_ACPI | FWTS_FLAG_TEST_SBBR)
 
 #endif

@@ -129,6 +129,9 @@
  * _LCK 	 Y
  * _LID 	 Y
  * _LPI 	 Y
+ * _LSI 	 Y
+ * _LSR 	 N
+ * _LSW 	 N
  * _MAT 	 N
  * _MBM 	 Y
  * _MLS 	 Y
@@ -2646,6 +2649,30 @@ static int method_test_FIT(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
 		"_FIT", NULL, 0, method_test_buffer_return, NULL);
+}
+
+static void method_test_LSI_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (method_package_elements_all_type(fw, name, "_LSI", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	method_passed_sane(fw, name, "package");
+}
+
+static int method_test_LSI(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_LSI", NULL, 0, method_test_LSI_return, NULL);
 }
 
 static int method_test_DCK(fwts_framework *fw)
@@ -6983,6 +7010,9 @@ static fwts_framework_minor_test method_tests[] = {
 	{ method_test_GLK, "Test _GLK (Global Lock)." },
 	/* { method_test_REG, "Test _REG (Region)." }, */
 	{ method_test_SEG, "Test _SEG (Segment)." },
+
+	/* Section 6.5.10 NVDIMM Label Methods */
+	{ method_test_LSI, "Test _LSI (Label Storage Information)." },
 
 	/* Section 7.1 Declaring a Power Resource Object */
 

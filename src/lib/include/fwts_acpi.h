@@ -879,6 +879,13 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_dmar_device_scope;
 
 /*
+ * ACPI DPPT (DMA Protection Policy Table)
+  */
+typedef struct {
+	fwts_acpi_table_header header;
+} __attribute__ ((packed)) fwts_acpi_table_dppt;
+
+/*
  * ACPI SLIC (Microsoft Software Licensing Table)
  *  see "OEM Activation 2.0 for Windows Vista Operating Systems"
  */

@@ -81,11 +81,10 @@ static int xsdt_test1(fwts_framework *fw)
 	}
 	if (passed) {
 		if (fw->flags & FWTS_FLAG_TEST_SBBR) {
-			fwts_passed(fw, "XSDT is present, pointed at by XsdrAddress=0x%lx"
+			fwts_passed(fw, "XSDT is present, pointed at by XsdrAddress=0x%" PRIx64
 				" and contain valid pointers to %d other ACPI tables mandated by SBBR",
 				 xsdt->entries[0], (int)n);
-		}
-		else
+		} else
 			fwts_passed(fw, "No issues found in XSDT table.");
 	}
 

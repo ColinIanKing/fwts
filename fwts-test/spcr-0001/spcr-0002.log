@@ -1,6 +1,6 @@
 spcr            spcr: SPCR Serial Port Console Redirection Table test.
 spcr            ----------------------------------------------------------
-spcr            Test 1 of 1: SPCR Serial Port Console Redirection Table
+spcr            Test 1 of 3: SPCR Serial Port Console Redirection Table
 spcr            test.
 spcr            Serial Interface: Reserved (Do not Use)
 spcr            FAILED [HIGH] SPCRInterfaceReserved: Test 1, SPCR Serial
@@ -17,6 +17,10 @@ spcr            FAILED [HIGH] SPCRPciVendorID: Test 1, SPCR PCI vendor ID
 spcr            is 0xffff, expecting non-0xffff for non-PCI device
 spcr            FAILED [HIGH] SPCRPciFlagsBit0: Test 1, SPCR PCI flags
 spcr            compatibility bit 0 is 0, expecting 1 for PCI device
+spcr            
+spcr            Test 2 of 3: SPCR Revision Test.
+spcr            
+spcr            Test 3 of 3: SPCR GSIV Interrupt Test.
 spcr            
 spcr            ==========================================================
 spcr            0 passed, 6 failed, 0 warning, 0 aborted, 0 skipped, 0

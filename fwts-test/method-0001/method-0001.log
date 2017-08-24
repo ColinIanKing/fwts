@@ -5,15 +5,15 @@ method          Found 1061 Objects
 method          PASSED: Test 1, Method names contain legal characters.
 method          
 method          Test 2 of 193: Test _AEI.
-method          SKIPPED: Test 2, Skipping test for non-existant object
+method          SKIPPED: Test 2, Skipping test for non-existent object
 method          _AEI.
 method          
 method          Test 3 of 193: Test _EVT (Event Method).
-method          SKIPPED: Test 3, Skipping test for non-existant object
+method          SKIPPED: Test 3, Skipping test for non-existent object
 method          _EVT.
 method          
 method          Test 4 of 193: Test _DLM (Device Lock Mutex).
-method          SKIPPED: Test 4, Skipping test for non-existant object
+method          SKIPPED: Test 4, Skipping test for non-existent object
 method          _DLM.
 method          
 method          Test 5 of 193: Test _PIC (Inform AML of Interrupt Model).
@@ -28,7 +28,7 @@ method          PASSED: Test 6, \_SB_.PCI0.LPCB.HPET._CID returned an
 method          integer 0x010cd041 (EISA ID PNP0C01).
 method          
 method          Test 7 of 193: Test _DDN (DOS Device Name).
-method          SKIPPED: Test 7, Skipping test for non-existant object
+method          SKIPPED: Test 7, Skipping test for non-existent object
 method          _DDN.
 method          
 method          Test 8 of 193: Test _HID (Hardware ID).
@@ -86,27 +86,27 @@ method          PASSED: Test 8, \_SB_.PCI0.LPCB.PS2M._HID returned an
 method          integer 0x130fd041 (EISA ID PNP0F13).
 method          
 method          Test 9 of 193: Test _HRV (Hardware Revision Number).
-method          SKIPPED: Test 9, Skipping test for non-existant object
+method          SKIPPED: Test 9, Skipping test for non-existent object
 method          _HRV.
 method          
 method          Test 10 of 193: Test _MLS (Multiple Language String).
-method          SKIPPED: Test 10, Skipping test for non-existant object
+method          SKIPPED: Test 10, Skipping test for non-existent object
 method          _MLS.
 method          
 method          Test 11 of 193: Test _PLD (Physical Device Location).
-method          SKIPPED: Test 11, Skipping test for non-existant object
+method          SKIPPED: Test 11, Skipping test for non-existent object
 method          _PLD.
 method          
 method          Test 12 of 193: Test _SUB (Subsystem ID).
-method          SKIPPED: Test 12, Skipping test for non-existant object
+method          SKIPPED: Test 12, Skipping test for non-existent object
 method          _SUB.
 method          
 method          Test 13 of 193: Test _SUN (Slot User Number).
-method          SKIPPED: Test 13, Skipping test for non-existant object
+method          SKIPPED: Test 13, Skipping test for non-existent object
 method          _SUN.
 method          
 method          Test 14 of 193: Test _STR (String).
-method          SKIPPED: Test 14, Skipping test for non-existant object
+method          SKIPPED: Test 14, Skipping test for non-existent object
 method          _STR.
 method          
 method          Test 15 of 193: Test _UID (Unique ID).
@@ -136,7 +136,7 @@ method          PASSED: Test 15, \_SB_.PCI0.LPCB.BAT1._UID correctly
 method          returned sane looking value 0x00000001.
 method          
 method          Test 16 of 193: Test _CDM (Clock Domain).
-method          SKIPPED: Test 16, Skipping test for non-existant object
+method          SKIPPED: Test 16, Skipping test for non-existent object
 method          _CDM.
 method          
 method          Test 17 of 193: Test _CRS (Current Resource Settings).
@@ -184,7 +184,7 @@ method          PASSED: Test 17, \_SB_.PCI0.LPCB.PS2M._CRS (IRQ
 method          Descriptor) looks sane.
 method          
 method          Test 18 of 193: Test _DSD (Device Specific Data).
-method          SKIPPED: Test 18, Skipping test for non-existant object
+method          SKIPPED: Test 18, Skipping test for non-existent object
 method          _DSD.
 method          
 method          Test 19 of 193: Test _DIS (Disable).
@@ -206,20 +206,20 @@ method          PASSED: Test 19, \_SB_.PCI0.LPCB.LNKH._DIS returned no
 method          values as expected.
 method          
 method          Test 20 of 193: Test _DMA (Direct Memory Access).
-method          SKIPPED: Test 20, Skipping test for non-existant object
+method          SKIPPED: Test 20, Skipping test for non-existent object
 method          _DMA.
 method          
 method          Test 21 of 193: Test _FIX (Fixed Register Resource
 method          Provider).
-method          SKIPPED: Test 21, Skipping test for non-existant object
+method          SKIPPED: Test 21, Skipping test for non-existent object
 method          _FIX.
 method          
 method          Test 22 of 193: Test _GSB (Global System Interrupt Base).
-method          SKIPPED: Test 22, Skipping test for non-existant object
+method          SKIPPED: Test 22, Skipping test for non-existent object
 method          _GSB.
 method          
 method          Test 23 of 193: Test _HPP (Hot Plug Parameters).
-method          SKIPPED: Test 23, Skipping test for non-existant object
+method          SKIPPED: Test 23, Skipping test for non-existent object
 method          _HPP.
 method          
 method          Test 24 of 193: Test _PRS (Possible Resource Settings).
@@ -261,43 +261,43 @@ method          PASSED: Test 25, \_SB_.PCI0.PCIB._PRT correctly returned a
 method          sane looking package.
 method          
 method          Test 26 of 193: Test _PXM (Proximity).
-method          SKIPPED: Test 26, Skipping test for non-existant object
+method          SKIPPED: Test 26, Skipping test for non-existent object
 method          _PXM.
 method          
 method          Test 27 of 193: Test _CCA (Cache Coherency Attribute).
-method          SKIPPED: Test 27, Skipping test for non-existant object
+method          SKIPPED: Test 27, Skipping test for non-existent object
 method          _CCA.
 method          
 method          Test 28 of 193: Test _EDL (Eject Device List).
-method          SKIPPED: Test 28, Skipping test for non-existant object
+method          SKIPPED: Test 28, Skipping test for non-existent object
 method          _EDL.
 method          
 method          Test 29 of 193: Test _EJD (Ejection Dependent Device).
-method          SKIPPED: Test 29, Skipping test for non-existant object
+method          SKIPPED: Test 29, Skipping test for non-existent object
 method          _EJD.
 method          
 method          Test 30 of 193: Test _EJ0 (Eject).
-method          SKIPPED: Test 30, Skipping test for non-existant object
+method          SKIPPED: Test 30, Skipping test for non-existent object
 method          _EJ0.
 method          
 method          Test 31 of 193: Test _EJ1 (Eject).
-method          SKIPPED: Test 31, Skipping test for non-existant object
+method          SKIPPED: Test 31, Skipping test for non-existent object
 method          _EJ1.
 method          
 method          Test 32 of 193: Test _EJ2 (Eject).
-method          SKIPPED: Test 32, Skipping test for non-existant object
+method          SKIPPED: Test 32, Skipping test for non-existent object
 method          _EJ2.
 method          
 method          Test 33 of 193: Test _EJ3 (Eject).
-method          SKIPPED: Test 33, Skipping test for non-existant object
+method          SKIPPED: Test 33, Skipping test for non-existent object
 method          _EJ3.
 method          
 method          Test 34 of 193: Test _EJ4 (Eject).
-method          SKIPPED: Test 34, Skipping test for non-existant object
+method          SKIPPED: Test 34, Skipping test for non-existent object
 method          _EJ4.
 method          
 method          Test 35 of 193: Test _LCK (Lock).
-method          SKIPPED: Test 35, Skipping test for non-existant object
+method          SKIPPED: Test 35, Skipping test for non-existent object
 method          _LCK.
 method          
 method          Test 36 of 193: Test _RMV (Remove).
@@ -330,23 +330,23 @@ method          returned sane looking value 0x0000001f.
 method          
 method          Test 38 of 193: Test _DEP (Operational Region
 method          Dependencies).
-method          SKIPPED: Test 38, Skipping test for non-existant object
+method          SKIPPED: Test 38, Skipping test for non-existent object
 method          _DEP.
 method          
 method          Test 39 of 193: Test _FIT (Firmware Interface Table).
-method          SKIPPED: Test 39, Skipping test for non-existant object
+method          SKIPPED: Test 39, Skipping test for non-existent object
 method          _FIT.
 method          
 method          Test 40 of 193: Test _BDN (BIOS Dock Name).
-method          SKIPPED: Test 40, Skipping test for non-existant object
+method          SKIPPED: Test 40, Skipping test for non-existent object
 method          _BDN.
 method          
 method          Test 41 of 193: Test _BBN (Base Bus Number).
-method          SKIPPED: Test 41, Skipping test for non-existant object
+method          SKIPPED: Test 41, Skipping test for non-existent object
 method          _BBN.
 method          
 method          Test 42 of 193: Test _DCK (Dock).
-method          SKIPPED: Test 42, Skipping test for non-existant object
+method          SKIPPED: Test 42, Skipping test for non-existent object
 method          _DCK.
 method          
 method          Test 43 of 193: Test _INI (Initialize).
@@ -354,52 +354,52 @@ method          PASSED: Test 43, \_SB_._INI returned no values as
 method          expected.
 method          
 method          Test 44 of 193: Test _GLK (Global Lock).
-method          SKIPPED: Test 44, Skipping test for non-existant object
+method          SKIPPED: Test 44, Skipping test for non-existent object
 method          _GLK.
 method          
 method          Test 45 of 193: Test _SEG (Segment).
-method          SKIPPED: Test 45, Skipping test for non-existant object
+method          SKIPPED: Test 45, Skipping test for non-existent object
 method          _SEG.
 method          
 method          Test 46 of 193: Test _LSI (Label Storage Information).
-method          SKIPPED: Test 46, Skipping test for non-existant object
+method          SKIPPED: Test 46, Skipping test for non-existent object
 method          _LSI.
 method          
 method          Test 47 of 193: Test _OFF (Set resource off).
-method          SKIPPED: Test 47, Skipping test for non-existant object
+method          SKIPPED: Test 47, Skipping test for non-existent object
 method          _OFF.
 method          
 method          Test 48 of 193: Test _ON_ (Set resource on).
-method          SKIPPED: Test 48, Skipping test for non-existant object
+method          SKIPPED: Test 48, Skipping test for non-existent object
 method          _ON_.
 method          
 method          Test 49 of 193: Test _DSW (Device Sleep Wake).
-method          SKIPPED: Test 49, Skipping test for non-existant object
+method          SKIPPED: Test 49, Skipping test for non-existent object
 method          _DSW.
 method          
 method          Test 50 of 193: Test _IRC (In Rush Current).
-method          SKIPPED: Test 50, Skipping test for non-existant object
+method          SKIPPED: Test 50, Skipping test for non-existent object
 method          _IRC.
 method          
 method          Test 51 of 193: Test _PRE (Power Resources for
 method          Enumeration).
-method          SKIPPED: Test 51, Skipping test for non-existant object
+method          SKIPPED: Test 51, Skipping test for non-existent object
 method          _PRE.
 method          
 method          Test 52 of 193: Test _PR0 (Power Resources for D0).
-method          SKIPPED: Test 52, Skipping test for non-existant object
+method          SKIPPED: Test 52, Skipping test for non-existent object
 method          _PR0.
 method          
 method          Test 53 of 193: Test _PR1 (Power Resources for D1).
-method          SKIPPED: Test 53, Skipping test for non-existant object
+method          SKIPPED: Test 53, Skipping test for non-existent object
 method          _PR1.
 method          
 method          Test 54 of 193: Test _PR2 (Power Resources for D2).
-method          SKIPPED: Test 54, Skipping test for non-existant object
+method          SKIPPED: Test 54, Skipping test for non-existent object
 method          _PR2.
 method          
 method          Test 55 of 193: Test _PR3 (Power Resources for D3).
-method          SKIPPED: Test 55, Skipping test for non-existant object
+method          SKIPPED: Test 55, Skipping test for non-existent object
 method          _PR3.
 method          
 method          Test 56 of 193: Test _PRW (Power Resources for Wake).
@@ -432,7 +432,7 @@ method          PASSED: Test 58, \_SB_.PCI0.PEGP.VGA_._PS1 returned no
 method          values as expected.
 method          
 method          Test 59 of 193: Test _PS2 (Power State 2).
-method          SKIPPED: Test 59, Skipping test for non-existant object
+method          SKIPPED: Test 59, Skipping test for non-existent object
 method          _PS2.
 method          
 method          Test 60 of 193: Test _PS3 (Power State 3).
@@ -446,7 +446,7 @@ method          returned an integer.
 method          PASSED: Test 61, \_PSC correctly returned an integer.
 method          
 method          Test 62 of 193: Test _PSE (Power State for Enumeration).
-method          SKIPPED: Test 62, Skipping test for non-existant object
+method          SKIPPED: Test 62, Skipping test for non-existent object
 method          _PSE.
 method          
 method          Test 63 of 193: Test _PSW (Power State Wake).
@@ -462,11 +462,11 @@ method          PASSED: Test 63, \_SB_.PCI0.USB5._PSW returned no values
 method          as expected.
 method          
 method          Test 64 of 193: Test _S1D (S1 Device State).
-method          SKIPPED: Test 64, Skipping test for non-existant object
+method          SKIPPED: Test 64, Skipping test for non-existent object
 method          _S1D.
 method          
 method          Test 65 of 193: Test _S2D (S2 Device State).
-method          SKIPPED: Test 65, Skipping test for non-existant object
+method          SKIPPED: Test 65, Skipping test for non-existent object
 method          _S2D.
 method          
 method          Test 66 of 193: Test _S3D (S3 Device State).
@@ -506,31 +506,31 @@ method          PASSED: Test 67, \_SB_.PCI0.EHC2._S4D correctly returned
 method          an integer.
 method          
 method          Test 68 of 193: Test _S0W (S0 Device Wake State).
-method          SKIPPED: Test 68, Skipping test for non-existant object
+method          SKIPPED: Test 68, Skipping test for non-existent object
 method          _S0W.
 method          
 method          Test 69 of 193: Test _S1W (S1 Device Wake State).
-method          SKIPPED: Test 69, Skipping test for non-existant object
+method          SKIPPED: Test 69, Skipping test for non-existent object
 method          _S1W.
 method          
 method          Test 70 of 193: Test _S2W (S2 Device Wake State).
-method          SKIPPED: Test 70, Skipping test for non-existant object
+method          SKIPPED: Test 70, Skipping test for non-existent object
 method          _S2W.
 method          
 method          Test 71 of 193: Test _S3W (S3 Device Wake State).
-method          SKIPPED: Test 71, Skipping test for non-existant object
+method          SKIPPED: Test 71, Skipping test for non-existent object
 method          _S3W.
 method          
 method          Test 72 of 193: Test _S4W (S4 Device Wake State).
-method          SKIPPED: Test 72, Skipping test for non-existant object
+method          SKIPPED: Test 72, Skipping test for non-existent object
 method          _S4W.
 method          
 method          Test 73 of 193: Test _RST (Device Reset).
-method          SKIPPED: Test 73, Skipping test for non-existant object
+method          SKIPPED: Test 73, Skipping test for non-existent object
 method          _RST.
 method          
 method          Test 74 of 193: Test _PRR (Power Resource for Reset).
-method          SKIPPED: Test 74, Skipping test for non-existant object
+method          SKIPPED: Test 74, Skipping test for non-existent object
 method          _PRR.
 method          
 method          Test 75 of 193: Test _S0_ (S0 System State).
@@ -540,11 +540,11 @@ method          PASSED: Test 75, \_S0_ correctly returned a sane looking
 method          package.
 method          
 method          Test 76 of 193: Test _S1_ (S1 System State).
-method          SKIPPED: Test 76, Skipping test for non-existant object
+method          SKIPPED: Test 76, Skipping test for non-existent object
 method          _S1_.
 method          
 method          Test 77 of 193: Test _S2_ (S2 System State).
-method          SKIPPED: Test 77, Skipping test for non-existant object
+method          SKIPPED: Test 77, Skipping test for non-existent object
 method          _S2_.
 method          
 method          Test 78 of 193: Test _S3_ (S3 System State).
@@ -566,45 +566,45 @@ method          PASSED: Test 80, \_S5_ correctly returned a sane looking
 method          package.
 method          
 method          Test 81 of 193: Test _SWS (System Wake Source).
-method          SKIPPED: Test 81, Skipping test for non-existant object
+method          SKIPPED: Test 81, Skipping test for non-existent object
 method          _SWS.
 method          
 method          Test 82 of 193: Test _PSS (Performance Supported States).
-method          SKIPPED: Test 82, Skipping test for non-existant object
+method          SKIPPED: Test 82, Skipping test for non-existent object
 method          _PSS.
 method          
 method          Test 83 of 193: Test _CPC (Continuous Performance
 method          Control).
-method          SKIPPED: Test 83, Skipping test for non-existant object
+method          SKIPPED: Test 83, Skipping test for non-existent object
 method          _CPC.
 method          
 method          Test 84 of 193: Test _CSD (C State Dependencies).
-method          SKIPPED: Test 84, Skipping test for non-existant object
+method          SKIPPED: Test 84, Skipping test for non-existent object
 method          _CSD.
 method          
 method          Test 85 of 193: Test _CST (C States).
-method          SKIPPED: Test 85, Skipping test for non-existant object
+method          SKIPPED: Test 85, Skipping test for non-existent object
 method          _CST.
 method          
 method          Test 86 of 193: Test _PCT (Performance Control).
-method          SKIPPED: Test 86, Skipping test for non-existant object
+method          SKIPPED: Test 86, Skipping test for non-existent object
 method          _PCT.
 method          
 method          Test 87 of 193: Test _PDL (P-State Depth Limit).
-method          SKIPPED: Test 87, Skipping test for non-existant object
+method          SKIPPED: Test 87, Skipping test for non-existent object
 method          _PDL.
 method          
 method          Test 88 of 193: Test _PPC (Performance Present
 method          Capabilities).
-method          SKIPPED: Test 88, Skipping test for non-existant object
+method          SKIPPED: Test 88, Skipping test for non-existent object
 method          _PPC.
 method          
 method          Test 89 of 193: Test _PPE (Polling for Platform Error).
-method          SKIPPED: Test 89, Skipping test for non-existant object
+method          SKIPPED: Test 89, Skipping test for non-existent object
 method          _PPE.
 method          
 method          Test 90 of 193: Test _PSD (Power State Dependencies).
-method          SKIPPED: Test 90, Skipping test for non-existant object
+method          SKIPPED: Test 90, Skipping test for non-existent object
 method          _PSD.
 method          
 method          Test 91 of 193: Test _PTC (Processor Throttling Control).
@@ -614,7 +614,7 @@ method          PASSED: Test 91, \_PR_.CPU1._PTC correctly returned a sane
 method          looking package.
 method          
 method          Test 92 of 193: Test _TDL (T-State Depth Limit).
-method          SKIPPED: Test 92, Skipping test for non-existant object
+method          SKIPPED: Test 92, Skipping test for non-existent object
 method          _TDL.
 method          
 method          Test 93 of 193: Test _TPC (Throttling Present
@@ -659,45 +659,45 @@ method          PASSED: Test 95, \_PR_.CPU1._TSS correctly returned a sane
 method          looking package.
 method          
 method          Test 96 of 193: Test _LPI (Low Power Idle States).
-method          SKIPPED: Test 96, Skipping test for non-existant object
+method          SKIPPED: Test 96, Skipping test for non-existent object
 method          _LPI.
 method          
 method          Test 97 of 193: Test _RDI (Resource Dependencies for
 method          Idle).
-method          SKIPPED: Test 97, Skipping test for non-existant object
+method          SKIPPED: Test 97, Skipping test for non-existent object
 method          _RDI.
 method          
 method          Test 98 of 193: Test _PUR (Processor Utilization Request).
-method          SKIPPED: Test 98, Skipping test for non-existant object
+method          SKIPPED: Test 98, Skipping test for non-existent object
 method          _PUR.
 method          
 method          Test 99 of 193: Test _MSG (Message).
-method          SKIPPED: Test 99, Skipping test for non-existant object
+method          SKIPPED: Test 99, Skipping test for non-existent object
 method          _MSG.
 method          
 method          Test 100 of 193: Test _SST (System Status).
-method          SKIPPED: Test 100, Skipping test for non-existant object
+method          SKIPPED: Test 100, Skipping test for non-existent object
 method          _SST.
 method          
 method          Test 101 of 193: Test _ALC (Ambient Light Colour
 method          Chromaticity).
-method          SKIPPED: Test 101, Skipping test for non-existant object
+method          SKIPPED: Test 101, Skipping test for non-existent object
 method          _ALC.
 method          
 method          Test 102 of 193: Test _ALI (Ambient Light Illuminance).
-method          SKIPPED: Test 102, Skipping test for non-existant object
+method          SKIPPED: Test 102, Skipping test for non-existent object
 method          _ALI.
 method          
 method          Test 103 of 193: Test _ALT (Ambient Light Temperature).
-method          SKIPPED: Test 103, Skipping test for non-existant object
+method          SKIPPED: Test 103, Skipping test for non-existent object
 method          _ALT.
 method          
 method          Test 104 of 193: Test _ALP (Ambient Light Polling).
-method          SKIPPED: Test 104, Skipping test for non-existant object
+method          SKIPPED: Test 104, Skipping test for non-existent object
 method          _ALP.
 method          
 method          Test 105 of 193: Test _ALR (Ambient Light Response).
-method          SKIPPED: Test 105, Skipping test for non-existant object
+method          SKIPPED: Test 105, Skipping test for non-existent object
 method          _ALR.
 method          
 method          Test 106 of 193: Test _LID (Lid Status).
@@ -722,60 +722,60 @@ method          returned a sane looking buffer.
 method          
 method          Test 109 of 193: Test _MBM (Memory Bandwidth Monitoring
 method          Data).
-method          SKIPPED: Test 109, Skipping test for non-existant object
+method          SKIPPED: Test 109, Skipping test for non-existent object
 method          _MBM.
 method          
 method          Test 110 of 193: Test _UPC (USB Port Capabilities).
-method          SKIPPED: Test 110, Skipping test for non-existant object
+method          SKIPPED: Test 110, Skipping test for non-existent object
 method          _UPC.
 method          
 method          Test 111 of 193: Test _UPD (User Presence Detect).
-method          SKIPPED: Test 111, Skipping test for non-existant object
+method          SKIPPED: Test 111, Skipping test for non-existent object
 method          _UPD.
 method          
 method          Test 112 of 193: Test _UPP (User Presence Polling).
-method          SKIPPED: Test 112, Skipping test for non-existant object
+method          SKIPPED: Test 112, Skipping test for non-existent object
 method          _UPP.
 method          
 method          Test 113 of 193: Test _GCP (Get Capabilities).
-method          SKIPPED: Test 113, Skipping test for non-existant object
+method          SKIPPED: Test 113, Skipping test for non-existent object
 method          _GCP.
 method          
 method          Test 114 of 193: Test _GRT (Get Real Time).
-method          SKIPPED: Test 114, Skipping test for non-existant object
+method          SKIPPED: Test 114, Skipping test for non-existent object
 method          _GRT.
 method          
 method          Test 115 of 193: Test _GWS (Get Wake Status).
-method          SKIPPED: Test 115, Skipping test for non-existant object
+method          SKIPPED: Test 115, Skipping test for non-existent object
 method          _GWS.
 method          
 method          Test 116 of 193: Test _CWS (Clear Wake Status).
-method          SKIPPED: Test 116, Skipping test for non-existant object
+method          SKIPPED: Test 116, Skipping test for non-existent object
 method          _CWS.
 method          
 method          Test 117 of 193: Test _STP (Set Expired Timer Wake
 method          Policy).
-method          SKIPPED: Test 117, Skipping test for non-existant object
+method          SKIPPED: Test 117, Skipping test for non-existent object
 method          _STP.
 method          
 method          Test 118 of 193: Test _STV (Set Timer Value).
-method          SKIPPED: Test 118, Skipping test for non-existant object
+method          SKIPPED: Test 118, Skipping test for non-existent object
 method          _STV.
 method          
 method          Test 119 of 193: Test _TIP (Expired Timer Wake Policy).
-method          SKIPPED: Test 119, Skipping test for non-existant object
+method          SKIPPED: Test 119, Skipping test for non-existent object
 method          _TIP.
 method          
 method          Test 120 of 193: Test _TIV (Timer Values).
-method          SKIPPED: Test 120, Skipping test for non-existant object
+method          SKIPPED: Test 120, Skipping test for non-existent object
 method          _TIV.
 method          
 method          Test 121 of 193: Test _SBS (Smart Battery Subsystem).
-method          SKIPPED: Test 121, Skipping test for non-existant object
+method          SKIPPED: Test 121, Skipping test for non-existent object
 method          _SBS.
 method          
 method          Test 122 of 193: Test _BCT (Battery Charge Time).
-method          SKIPPED: Test 122, Skipping test for non-existant object
+method          SKIPPED: Test 122, Skipping test for non-existent object
 method          _BCT.
 method          
 method          Test 123 of 193: Test _BIF (Battery Information).
@@ -783,25 +783,25 @@ method          PASSED: Test 123, \_SB_.PCI0.LPCB.BAT1._BIF correctly
 method          returned a sane looking package.
 method          
 method          Test 124 of 193: Test _BIX (Battery Information Extended).
-method          SKIPPED: Test 124, Skipping test for non-existant object
+method          SKIPPED: Test 124, Skipping test for non-existent object
 method          _BIX.
 method          
 method          Test 125 of 193: Test _BMA (Battery Measurement
 method          Averaging).
-method          SKIPPED: Test 125, Skipping test for non-existant object
+method          SKIPPED: Test 125, Skipping test for non-existent object
 method          _BMA.
 method          
 method          Test 126 of 193: Test _BMC (Battery Maintenance Control).
-method          SKIPPED: Test 126, Skipping test for non-existant object
+method          SKIPPED: Test 126, Skipping test for non-existent object
 method          _BMC.
 method          
 method          Test 127 of 193: Test _BMD (Battery Maintenance Data).
-method          SKIPPED: Test 127, Skipping test for non-existant object
+method          SKIPPED: Test 127, Skipping test for non-existent object
 method          _BMD.
 method          
 method          Test 128 of 193: Test _BMS (Battery Measurement Sampling
 method          Time).
-method          SKIPPED: Test 128, Skipping test for non-existant object
+method          SKIPPED: Test 128, Skipping test for non-existent object
 method          _BMS.
 method          
 method          Test 129 of 193: Test _BST (Battery Status).
@@ -809,15 +809,15 @@ method          PASSED: Test 129, \_SB_.PCI0.LPCB.BAT1._BST correctly
 method          returned a sane looking package.
 method          
 method          Test 130 of 193: Test _BTP (Battery Trip Point).
-method          SKIPPED: Test 130, Skipping test for non-existant object
+method          SKIPPED: Test 130, Skipping test for non-existent object
 method          _BTP.
 method          
 method          Test 131 of 193: Test _BTH (Battery Throttle Limit).
-method          SKIPPED: Test 131, Skipping test for non-existant object
+method          SKIPPED: Test 131, Skipping test for non-existent object
 method          _BTH.
 method          
 method          Test 132 of 193: Test _BTM (Battery Time).
-method          SKIPPED: Test 132, Skipping test for non-existant object
+method          SKIPPED: Test 132, Skipping test for non-existent object
 method          _BTM.
 method          
 method          Test 133 of 193: Test _PCL (Power Consumer List).
@@ -827,11 +827,11 @@ method          PASSED: Test 133, \_SB_.PCI0.LPCB.BAT1._PCL returned a
 method          sane package of 1 references.
 method          
 method          Test 134 of 193: Test _PIF (Power Source Information).
-method          SKIPPED: Test 134, Skipping test for non-existant object
+method          SKIPPED: Test 134, Skipping test for non-existent object
 method          _PIF.
 method          
 method          Test 135 of 193: Test _PRL (Power Source Redundancy List).
-method          SKIPPED: Test 135, Skipping test for non-existant object
+method          SKIPPED: Test 135, Skipping test for non-existent object
 method          _PRL.
 method          
 method          Test 136 of 193: Test _PSR (Power Source).
@@ -839,173 +839,173 @@ method          PASSED: Test 136, \_SB_.PCI0.LPCB.ACAD._PSR correctly
 method          returned sane looking value 0x00000000.
 method          
 method          Test 137 of 193: Test _GAI (Get Averaging Level).
-method          SKIPPED: Test 137, Skipping test for non-existant object
+method          SKIPPED: Test 137, Skipping test for non-existent object
 method          _GAI.
 method          
 method          Test 138 of 193: Test _GHL (Get Harware Limit).
-method          SKIPPED: Test 138, Skipping test for non-existant object
+method          SKIPPED: Test 138, Skipping test for non-existent object
 method          _GHL.
 method          
 method          Test 139 of 193: Test _PMC (Power Meter Capabilities).
-method          SKIPPED: Test 139, Skipping test for non-existant object
+method          SKIPPED: Test 139, Skipping test for non-existent object
 method          _PMC.
 method          
 method          Test 140 of 193: Test _PMD (Power Meter Devices).
-method          SKIPPED: Test 140, Skipping test for non-existant object
+method          SKIPPED: Test 140, Skipping test for non-existent object
 method          _PMD.
 method          
 method          Test 141 of 193: Test _PMM (Power Meter Measurement).
-method          SKIPPED: Test 141, Skipping test for non-existant object
+method          SKIPPED: Test 141, Skipping test for non-existent object
 method          _PMM.
 method          
 method          Test 142 of 193: Test _WPC (Wireless Power Calibration).
-method          SKIPPED: Test 142, Skipping test for non-existant object
+method          SKIPPED: Test 142, Skipping test for non-existent object
 method          _WPC.
 method          
 method          Test 143 of 193: Test _WPP (Wireless Power Polling).
-method          SKIPPED: Test 143, Skipping test for non-existant object
+method          SKIPPED: Test 143, Skipping test for non-existent object
 method          _WPP.
 method          
 method          Test 144 of 193: Test _FIF (Fan Information).
-method          SKIPPED: Test 144, Skipping test for non-existant object
+method          SKIPPED: Test 144, Skipping test for non-existent object
 method          _FIF.
 method          
 method          Test 145 of 193: Test _FPS (Fan Performance States).
-method          SKIPPED: Test 145, Skipping test for non-existant object
+method          SKIPPED: Test 145, Skipping test for non-existent object
 method          _FPS.
 method          
 method          Test 146 of 193: Test _FSL (Fan Set Level).
-method          SKIPPED: Test 146, Skipping test for non-existant object
+method          SKIPPED: Test 146, Skipping test for non-existent object
 method          _FSL.
 method          
 method          Test 147 of 193: Test _FST (Fan Status).
-method          SKIPPED: Test 147, Skipping test for non-existant object
+method          SKIPPED: Test 147, Skipping test for non-existent object
 method          _FST.
 method          
 method          Test 148 of 193: Test _ACx (Active Cooling).
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC0.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC1.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC2.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC3.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC4.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC5.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC6.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC7.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC8.
 method          
-method          SKIPPED: Test 148, Skipping test for non-existant object
+method          SKIPPED: Test 148, Skipping test for non-existent object
 method          _AC9.
 method          
 method          
 method          Test 149 of 193: Test _ART (Active Cooling Relationship
 method          Table).
-method          SKIPPED: Test 149, Skipping test for non-existant object
+method          SKIPPED: Test 149, Skipping test for non-existent object
 method          _ART.
 method          
 method          Test 150 of 193: Test _CRT (Critical Trip Point).
-method          SKIPPED: Test 150, Skipping test for non-existant object
+method          SKIPPED: Test 150, Skipping test for non-existent object
 method          _CRT.
 method          
 method          Test 151 of 193: Test _CR3 (Warm/Standby Temperature).
-method          SKIPPED: Test 151, Skipping test for non-existant object
+method          SKIPPED: Test 151, Skipping test for non-existent object
 method          _CR3.
 method          
 method          Test 152 of 193: Test _DTI (Device Temperature
 method          Indication).
-method          SKIPPED: Test 152, Skipping test for non-existant object
+method          SKIPPED: Test 152, Skipping test for non-existent object
 method          _DTI.
 method          
 method          Test 153 of 193: Test _HOT (Hot Temperature).
-method          SKIPPED: Test 153, Skipping test for non-existant object
+method          SKIPPED: Test 153, Skipping test for non-existent object
 method          _HOT.
 method          
 method          Test 154 of 193: Test _MTL (Minimum Throttle Limit).
-method          SKIPPED: Test 154, Skipping test for non-existant object
+method          SKIPPED: Test 154, Skipping test for non-existent object
 method          _MTL.
 method          
 method          Test 155 of 193: Test _NTT (Notification Temp Threshold).
-method          SKIPPED: Test 155, Skipping test for non-existant object
+method          SKIPPED: Test 155, Skipping test for non-existent object
 method          _NTT.
 method          
 method          Test 156 of 193: Test _PSL (Passive List).
-method          SKIPPED: Test 156, Skipping test for non-existant object
+method          SKIPPED: Test 156, Skipping test for non-existent object
 method          _PSL.
 method          
 method          Test 157 of 193: Test _PSV (Passive Temp).
-method          SKIPPED: Test 157, Skipping test for non-existant object
+method          SKIPPED: Test 157, Skipping test for non-existent object
 method          _PSV.
 method          
 method          Test 158 of 193: Test _RTV (Relative Temp Values).
-method          SKIPPED: Test 158, Skipping test for non-existant object
+method          SKIPPED: Test 158, Skipping test for non-existent object
 method          _RTV.
 method          
 method          Test 159 of 193: Test _SCP (Set Cooling Policy).
-method          SKIPPED: Test 159, Skipping test for non-existant object
+method          SKIPPED: Test 159, Skipping test for non-existent object
 method          _DTI.
 method          
 method          Test 160 of 193: Test _TC1 (Thermal Constant 1).
-method          SKIPPED: Test 160, Skipping test for non-existant object
+method          SKIPPED: Test 160, Skipping test for non-existent object
 method          _TC1.
 method          
 method          Test 161 of 193: Test _TC2 (Thermal Constant 2).
-method          SKIPPED: Test 161, Skipping test for non-existant object
+method          SKIPPED: Test 161, Skipping test for non-existent object
 method          _TC2.
 method          
 method          Test 162 of 193: Test _TFP (Thermal fast Sampling Period).
-method          SKIPPED: Test 162, Skipping test for non-existant object
+method          SKIPPED: Test 162, Skipping test for non-existent object
 method          _TFP.
 method          
 method          Test 163 of 193: Test _TMP (Thermal Zone Current Temp).
-method          SKIPPED: Test 163, Skipping test for non-existant object
+method          SKIPPED: Test 163, Skipping test for non-existent object
 method          _TMP.
 method          
 method          Test 164 of 193: Test _TPT (Trip Point Temperature).
-method          SKIPPED: Test 164, Skipping test for non-existant object
+method          SKIPPED: Test 164, Skipping test for non-existent object
 method          _TPT.
 method          
 method          Test 165 of 193: Test _TRT (Thermal Relationship Table).
-method          SKIPPED: Test 165, Skipping test for non-existant object
+method          SKIPPED: Test 165, Skipping test for non-existent object
 method          _TRT.
 method          
 method          Test 166 of 193: Test _TSN (Thermal Sensor Device).
-method          SKIPPED: Test 166, Skipping test for non-existant object
+method          SKIPPED: Test 166, Skipping test for non-existent object
 method          _TSN.
 method          
 method          Test 167 of 193: Test _TSP (Thermal Sampling Period).
-method          SKIPPED: Test 167, Skipping test for non-existant object
+method          SKIPPED: Test 167, Skipping test for non-existent object
 method          _TSP.
 method          
 method          Test 168 of 193: Test _TST (Temperature Sensor Threshold).
-method          SKIPPED: Test 168, Skipping test for non-existant object
+method          SKIPPED: Test 168, Skipping test for non-existent object
 method          _TST.
 method          
 method          Test 169 of 193: Test _TZD (Thermal Zone Devices).
-method          SKIPPED: Test 169, Skipping test for non-existant object
+method          SKIPPED: Test 169, Skipping test for non-existent object
 method          _TZD.
 method          
 method          Test 170 of 193: Test _TZM (Thermal Zone member).
-method          SKIPPED: Test 170, Skipping test for non-existant object
+method          SKIPPED: Test 170, Skipping test for non-existent object
 method          _TZM.
 method          
 method          Test 171 of 193: Test _TZP (Thermal Zone Polling).
-method          SKIPPED: Test 171, Skipping test for non-existant object
+method          SKIPPED: Test 171, Skipping test for non-existent object
 method          _TZP.
 method          
 method          Test 172 of 193: Test _GPE (General Purpose Events).
@@ -1013,7 +1013,7 @@ method          PASSED: Test 172, \_SB_.PCI0.LPCB.EC0_._GPE returned an
 method          integer 0x0000001c
 method          
 method          Test 173 of 193: Test _EC_ (EC Offset Query).
-method          SKIPPED: Test 173, Skipping test for non-existant object
+method          SKIPPED: Test 173, Skipping test for non-existent object
 method          _EC_.
 method          
 method          Test 174 of 193: Test _PTS (Prepare to Sleep).
@@ -1206,7 +1206,7 @@ method          returned an integer.
 method          
 method          Test 182 of 193: Test _DDC (Return the EDID for this
 method          Device).
-method          SKIPPED: Test 182, Skipping test for non-existant object
+method          SKIPPED: Test 182, Skipping test for non-existent object
 method          _DDC.
 method          
 method          Test 183 of 193: Test _DSS (Device Set State).
@@ -1316,31 +1316,31 @@ method          PASSED: Test 186, \_SB_.PCI0.GFX0._DOS returned no values
 method          as expected.
 method          
 method          Test 187 of 193: Test _GPD (Get POST Device).
-method          SKIPPED: Test 187, Skipping test for non-existant object
+method          SKIPPED: Test 187, Skipping test for non-existent object
 method          _GPD.
 method          
 method          Test 188 of 193: Test _ROM (Get ROM Data).
-method          SKIPPED: Test 188, Skipping test for non-existant object
+method          SKIPPED: Test 188, Skipping test for non-existent object
 method          _ROM.
 method          
 method          Test 189 of 193: Test _SPD (Set POST Device).
-method          SKIPPED: Test 189, Skipping test for non-existant object
+method          SKIPPED: Test 189, Skipping test for non-existent object
 method          _SPD.
 method          
 method          Test 190 of 193: Test _VPO (Video POST Options).
-method          SKIPPED: Test 190, Skipping test for non-existant object
+method          SKIPPED: Test 190, Skipping test for non-existent object
 method          _VPO.
 method          
 method          Test 191 of 193: Test _CBA (Configuration Base Address).
-method          SKIPPED: Test 191, Skipping test for non-existant object
+method          SKIPPED: Test 191, Skipping test for non-existent object
 method          _CBA.
 method          
 method          Test 192 of 193: Test _IFT (IPMI Interface Type).
-method          SKIPPED: Test 192, Skipping test for non-existant object
+method          SKIPPED: Test 192, Skipping test for non-existent object
 method          _IFT.
 method          
 method          Test 193 of 193: Test _SRV (IPMI Interface Revision).
-method          SKIPPED: Test 193, Skipping test for non-existant object
+method          SKIPPED: Test 193, Skipping test for non-existent object
 method          _SRV.
 method          
 method          ==========================================================

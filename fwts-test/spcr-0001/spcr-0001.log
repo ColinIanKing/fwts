@@ -1,11 +1,15 @@
 spcr            spcr: SPCR Serial Port Console Redirection Table test.
 spcr            ----------------------------------------------------------
-spcr            Test 1 of 1: SPCR Serial Port Console Redirection Table
+spcr            Test 1 of 3: SPCR Serial Port Console Redirection Table
 spcr            test.
 spcr            Serial Interface: 16550 compatible
 spcr            Baud Rate:        9600
 spcr            Terminal Type:    ANSI
 spcr            PASSED: Test 1, No issues found in SPCR table.
+spcr            
+spcr            Test 2 of 3: SPCR Revision Test.
+spcr            
+spcr            Test 3 of 3: SPCR GSIV Interrupt Test.
 spcr            
 spcr            ==========================================================
 spcr            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0

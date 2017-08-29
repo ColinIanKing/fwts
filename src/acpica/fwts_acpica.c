@@ -1326,4 +1326,40 @@ fwts_list *fwts_acpica_get_object_names(int type)
 	return list;
 }
 
+#else
+
+static void __void_func(const char *funcname)
+{
+	fprintf(stderr, "fwts ACPICA library: unexpected call to %s()\n", funcname);
+	exit(EXIT_FAILURE);
+}
+
+#define VOID_FUNC(name) void name(void) { __void_func(#name); }
+
+/*
+ *  With ACPI disabled, these functions should never
+ *  be called. We should defined this otherwise we will
+ *  get linker errors with some autotools/linker combos
+ */
+VOID_FUNC(AcpiGbl_IgnoreErrors)
+VOID_FUNC(AcpiGbl_RegionFillValue)
+
+VOID_FUNC(AcpiOsCreateSemaphore)
+VOID_FUNC(AcpiOsDeleteSemaphore)
+VOID_FUNC(AcpiOsExecute)
+VOID_FUNC(AcpiOsGetRootPointer)
+VOID_FUNC(AcpiOsPrintf)
+VOID_FUNC(AcpiOsReadPciConfiguration)
+VOID_FUNC(AcpiOsReadPort)
+VOID_FUNC(AcpiOsSignal)
+VOID_FUNC(AcpiOsSignalSemaphore)
+VOID_FUNC(AcpiOsSleep)
+VOID_FUNC(AcpiOsVprintf)
+VOID_FUNC(AcpiOsWaitSemaphore)
+
+VOID_FUNC(AeTableOverride)
+
+VOID_FUNC(MpSaveGpioInfo)
+VOID_FUNC(MpSaveSerialInfo)
+
 #endif

@@ -1,3 +1,73 @@
+fwts (17.08.00-0ubuntu1) artful; urgency=low
+
+  [Alex Hung]
+  * auto-packager: mkpackage.sh: remove yakkety
+  * dmicheck: fix dmi_reserved_bits_check function when size is 64
+  * acpi: pmtt: fix typo from pmmt to pmtt
+  * acpi: sdei: add ACPI SDEI test (mantis 1714)
+  * fwts-test: Add regression test for SDEI
+  * acpi: pcct: refactor subspace to individual functions
+  * acpi: pcct: update PCCT table to ACPI 6.2 (mantis 1659 & 1755)
+  * fwts-test: sync up PCCT tests with ACPI 6.2 changes
+  * acpi: dppt: add ACPI DPPT test (mantis 1795)
+  * acpi: pptt: add ACPI PPTT test
+  * acpi: hmat: add ACPI HMAT test (mantis 1705)
+  * fwts-test: Add regression test for HMAT
+  * acpi: method: add _LSI test according to ACPI 6.2 (mantis 1721)
+  * fwts-test: sync up tests for _LSI method
+  * fwts-test: Add regression test for PPTT
+  * acpi: rasf: add ACPI RASF test
+  * fwts-test: Add regression test for RASF
+  * acpi: sbbr: sync up with new SBBR tests
+  * acpi: remove "Linux-read Firmware Developer Kit" from license header
+  * doc: update contributors and date to the manual
+
+  [Colin Ian King]
+  * opal: fix build error on Ubuntu 12.04 i386 with gcc 4.6.3
+  * lib: fwts_safe_mem: remove need to copy into a buffer
+  * acpi: bert: add safe memory read check on mmap'd memory
+  * acpi: hpet: add safe memory read check on mmap'd memory
+  * acpi: mcfg: add safe memory read check on mmap'd PCI config memory
+  * acpi: pcc: add safe memory read check on mmap'd PCC header
+  * bios: pciirq: add safe memory read check on mmap'd pci irq region
+  * bios: pnp: add safe memory read check on mmap'd memory region
+  * dmi: dmicheck: fix incorrect safe memory read check on DMI mmap'd region
+  * uefi: csm: add safe memory read check on mmap'd interrupt and option ROM
+    regions
+  * fwts_safe_mem: workaround longjmp clobber warnings
+  * ACPICA: Update to version 20170728
+  * lib: fwts_smbios: use fwts_safe_memcpy to read SMBIOS entry
+  * lib: fwts_acpi_tables: re-work fwts_acpi_get_rsdp, less memory copies
+  * lib: fwts_safe_mem: really force reads
+  * lib: fwts_acpi_tables: unmap mem, fixes memory leak
+  * acpi: xsdt: fix build error on 32 bit systems
+  * acpica: fwts_acpica: fix linker issues on Fedora (LP: #1712572)
+
+  [Jeffrey Hugo]
+  * acpi: madt: Add support for ACPI 6.2
+
+  [Mahesh Bireddy]
+  * acpi: fadt: add SBBR compliance tests
+  * acpi: madt: add SBBR compliance tests
+  * acpi: spcr: add SBBR compliance tests
+  * acpi: xsdt: add SBBR compliance tests
+
+  [Rajat Goyal]
+  * acpi: dbg2: add SBBR compliance tests
+  * acpi: gtdt: add SBBR compliance tests
+  * acpi: acpitables: add SBBR compliance tests
+
+  [Sakar Arora]
+  * dmi: dmicheck: add SBBR compliance tests
+  * acpi: method: add SBBR compliance tests
+  * acpi: rsdp: add SBBR compliance tests
+
+  [Vinson Lee]
+  * acpi: method: Fix error message.
+  * README: Update JSON manipulation library name.
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 30 Aug 2017 14:23:42 +0800
+
 fwts (17.07.00-0ubuntu1) artful; urgency=low
 
   [Alex Hung]

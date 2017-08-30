@@ -162,7 +162,7 @@ static int fwts_iasl_disassemble_to_file(fwts_framework *fw,
 	if (!iasl_init)
 		return FWTS_ERROR;
 
-	fwts_acpcia_set_fwts_framework(fw);
+	fwts_acpica_set_fwts_framework(fw);
 
 	if (fwts_iasl_disassemble_aml(
 		iasl_cached_table_filename,
@@ -279,7 +279,7 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	    (info == NULL))
 		return FWTS_ERROR;
 
-	fwts_acpcia_set_fwts_framework(fw);
+	fwts_acpica_set_fwts_framework(fw);
 	*iasl_disassembly = NULL;
 	snprintf(tmpfile, sizeof(tmpfile), "/tmp/fwts_iasl_reassemble_%d.dsl", pid);
 

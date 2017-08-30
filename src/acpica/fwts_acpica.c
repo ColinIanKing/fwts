@@ -1022,10 +1022,10 @@ static int fwts_acpica_verify_facp_table_pointers(fwts_framework *fw)
 }
 
 /*
- *  fwts_acpcia_set_fwts_framework()
+ *  fwts_acpica_set_fwts_framework()
  *	set fwts_acpica_fw ptr
  */
-void fwts_acpcia_set_fwts_framework(fwts_framework *fw)
+void fwts_acpica_set_fwts_framework(fwts_framework *fw)
 {
 	fwts_acpica_fw = fw;
 }
@@ -1062,7 +1062,7 @@ int fwts_acpica_init(fwts_framework *fw)
 	pthread_mutex_init(&mutex_lock_sem_table, NULL);
 	pthread_mutex_init(&mutex_thread_info, NULL);
 
-	fwts_acpcia_set_fwts_framework(fw);
+	fwts_acpica_set_fwts_framework(fw);
 
 	AcpiDbgLevel = ACPI_NORMAL_DEFAULT;
 	AcpiDbgLayer = 0x00000000;

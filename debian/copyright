@@ -51,7 +51,7 @@ License: LGPL
  On Debian systems, the complete text of the GNU General Public
  License can be found in `/usr/share/common-licenses/LGPL'.
 
-Files: src/acpcia/source/*
+Files: src/acpica/source/*
 Copyright: Copyright (c) 1999 - 2017, Intel Corp.
 License: other
    2. License

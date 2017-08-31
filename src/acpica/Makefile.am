@@ -261,6 +261,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/utilities/utexcep.c		\
 	source/components/utilities/utpredef.c		\
 	source/components/utilities/utstring.c		\
+	source/components/utilities/utstrsuppt.c	\
 	source/components/utilities/utownerid.c		\
 	source/components/utilities/utxfinit.c		\
 	source/components/utilities/uterror.c		\

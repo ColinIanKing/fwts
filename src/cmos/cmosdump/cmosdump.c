@@ -32,7 +32,7 @@ static int cmosdump_test1(fwts_framework *fw)
 	int i;
 	unsigned long tmp;
 
-	static char *cmos_shutdown_status[] = {
+	static const char *const cmos_shutdown_status[] = {
 		"Power on or soft reset",
 		"Memory size pass",
 		"Memory test pass",
@@ -49,7 +49,7 @@ static int cmosdump_test1(fwts_framework *fw)
 		"Used by 80386",
 	};
 
-	static char *floppy_disk[] = {
+	static const char *const floppy_disk[] = {
 		"None",
 		"360KB 5.25\" Drive",
 		"1.2MB 5.25\" Drive",
@@ -60,7 +60,7 @@ static int cmosdump_test1(fwts_framework *fw)
 		"Unknown"
 	};
 
-	static char *hard_disk[] = {
+	static const char *const hard_disk[] = {
 		"None",
 		"Type 1",
 		"Unknown",
@@ -79,14 +79,14 @@ static int cmosdump_test1(fwts_framework *fw)
 		"Type 16-47"
 	};
 
-	static char *primary_display[] = {
+	static const char *const primary_display[] = {
 		"BIOS selected",
 		"CGA 40 column",
 		"CGA 80 column",
 		"Monochrome"
 	};
 
-	static char *divider[8] = {
+	static const char *const divider[8] = {
 		"4.194 MHz",
 		"1.049 MHz",
 		"32.768 KHz (default)",
@@ -97,7 +97,7 @@ static int cmosdump_test1(fwts_framework *fw)
 		"reset / disable",
 	};
 
-	static char *rate_selection[16] = {
+	static const char *const rate_selection[16] = {
 		"none",
 		"3.90625 millseconds",
 		"7.8215 milliseconds",

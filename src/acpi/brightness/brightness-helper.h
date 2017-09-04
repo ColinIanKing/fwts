@@ -24,7 +24,7 @@
 #include <dirent.h>
 
 DIR *brightness_get_dir(void);
-char *brightness_get_path(void);
+const char *brightness_get_path(void);
 int brightness_init(fwts_framework *fw);
 int brightness_deinit(fwts_framework *fw);
 int brightness_get_setting(const char *entry_name, const char *setting, int *value);

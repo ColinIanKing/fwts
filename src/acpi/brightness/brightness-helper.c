@@ -32,7 +32,7 @@
  */
 
 static DIR *brightness_dir;
-static char *brightness_path;
+static const char *brightness_path;
 
 /*
  *  brightness_get_dir()
@@ -47,7 +47,7 @@ DIR *brightness_get_dir(void)
  *  brightness_get_path()
  *
  */
-char *brightness_get_path(void)
+const char *brightness_get_path(void)
 {
 	return brightness_path;
 }
@@ -60,7 +60,7 @@ char *brightness_get_path(void)
 int brightness_init(fwts_framework *fw)
 {
 	int i;
-	static char *sys_path[] = {
+	static const char *sys_path[] = {
 		"/sys/class/backlight",
 		"/sys/devices/virtual/backlight",
 		NULL

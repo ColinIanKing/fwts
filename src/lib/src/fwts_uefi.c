@@ -425,7 +425,7 @@ int fwts_uefi_get_variable_names(fwts_list *list)
         return ret;
 }
 
-static uefistatus_info uefistatus_info_table[] = {
+static const uefistatus_info uefistatus_info_table[] = {
 	{ EFI_SUCCESS,			"EFI_SUCCESS",			"The operation completed successfully." },
 	{ EFI_LOAD_ERROR,		"EFI_LOAD_ERROR",		"The image failed to load." },
 	{ EFI_INVALID_PARAMETER,	"EFI_INVALID_PARAMETER",	"A parameter was incorrect." },
@@ -466,7 +466,7 @@ static uefistatus_info uefistatus_info_table[] = {
 void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status)
 {
 
-	uefistatus_info *info;
+	const uefistatus_info *info;
 
 	for (info = uefistatus_info_table; info->mnemonic != NULL; info++) {
 		if (status == info->statusvalue) {

@@ -221,7 +221,7 @@ fwts_log_field fwts_log_str_to_field(const char *text)
 {
 	int i;
 
-	static struct mapping {
+	static const struct mapping {
 		char *text;
 		fwts_log_field field;
 	} mappings[] = {

@@ -29,7 +29,7 @@ typedef struct {
 	char *label;
 } fwts_bios_info;
 
-static fwts_bios_info bios_info[] = {
+static const fwts_bios_info bios_info[] = {
 	{ "bios_vendor",	"BIOS Vendor" },
 	{ "bios_version", 	"BIOS Version" },
 	{ "bios_date",		"BIOS Release Date" },

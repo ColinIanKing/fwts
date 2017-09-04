@@ -3220,7 +3220,7 @@ static void method_test_CPC_return(
 {
 	uint8_t revision;
 
-	static fwts_package_element elementsv1[] = {
+	static const fwts_package_element elementsv1[] = {
 		{ ACPI_TYPE_INTEGER,	"Number of Entries" },
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTBUF,	"Highest Performance" },
@@ -3240,7 +3240,7 @@ static void method_test_CPC_return(
 		{ ACPI_TYPE_BUFFER,	"Enable Register" }
 	};
 
-	static fwts_package_element elementsv2[] = {
+	static const fwts_package_element elementsv2[] = {
 		{ ACPI_TYPE_INTEGER,	"Number of Entries" },
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTBUF,	"Highest Performance" },
@@ -3264,7 +3264,7 @@ static void method_test_CPC_return(
 		{ ACPI_TYPE_INTBUF,	"Reference Performance" }
 	};
 
-	static fwts_package_element elementsv3[] = {
+	static const fwts_package_element elementsv3[] = {
 		{ ACPI_TYPE_INTEGER,	"Number of Entries" },
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTBUF,	"Highest Performance" },
@@ -4402,7 +4402,7 @@ static void method_test_PUR_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	static fwts_package_element elements[] = {
+	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"RevisionID" },
 		{ ACPI_TYPE_INTEGER,	"NumProcessors" },
 	};
@@ -4641,7 +4641,7 @@ static void method_test_MBM_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	static fwts_package_element elements[] = {
+	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTEGER,	"Window Size" },
 		{ ACPI_TYPE_INTEGER,	"Sampling Interval" },
@@ -4936,7 +4936,7 @@ static void method_test_SBS_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	static char *sbs_info[] = {
+	static const char *sbs_info[] = {
 		"Maximum 1 Smart Battery, system manager/selector not present",
 		"Maximum 1 Smart Battery, system manager/selector present",
 		"Maximum 2 Smart Batteries, system manager/selector present",
@@ -5002,7 +5002,7 @@ static void method_test_BIF_return(
 {
 	bool failed = false;
 
-	static fwts_package_element elements[] = {
+	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Power Unit" },
 		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
 		{ ACPI_TYPE_INTEGER,	"Last Full Charge Capacity" },
@@ -5132,7 +5132,7 @@ static void method_test_BIX_return(
 {
 	bool failed = false;
 
-	static fwts_package_element elements[] = {
+	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTEGER,	"Power Unit" },
 		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
@@ -5357,7 +5357,7 @@ static int method_test_BST(fwts_framework *fw)
 
 static int method_test_BTP(fwts_framework *fw)
 {
-	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
+	static const int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
 	for (i = 0; i < 5; i++) {
@@ -5418,7 +5418,7 @@ static int method_test_BTH(fwts_framework *fw)
 
 static int method_test_BTM(fwts_framework *fw)
 {
-	static int values[] = { 0, 1, 100, 200, 0x7fffffff };
+	static const int values[] = { 0, 1, 100, 200, 0x7fffffff };
 	int i;
 
 	for (i = 0 ; i < 5; i++) {
@@ -5464,7 +5464,7 @@ static int method_test_BMD(fwts_framework *fw)
 
 static int method_test_BMC(fwts_framework *fw)
 {
-	static int values[] = { 0, 1, 2, 4 };
+	static const int values[] = { 0, 1, 2, 4 };
 	int i;
 
 	for (i = 0; i < 4; i++) {
@@ -5542,7 +5542,7 @@ static void method_test_PIF_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	static fwts_package_element elements[] = {
+	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Power Source State" },
 		{ ACPI_TYPE_INTEGER,	"Maximum Output Power" },
 		{ ACPI_TYPE_INTEGER,	"Maximum Input Power" },
@@ -6627,7 +6627,7 @@ static void method_test_DOD_return(
 	uint32_t i;
 	bool failed = false;
 
-	static char *dod_type[] = {
+	static const char *dod_type[] = {
 		"Other",
 		"VGA, CRT or VESA Compatible Analog Monitor",
 		"TV/HDTV or other Analog-Video Monitor",

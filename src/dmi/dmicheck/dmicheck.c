@@ -264,7 +264,7 @@ static const fwts_dmi_version dmi_versions[] = {
  *  we care that work,
  *	see drivers/firmware/dmi_scan.c, dmi_decode()
  */
-static fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
+static const fwts_dmi_used_by_kernel dmi_used_by_kernel_table[] = {
 	/* Type 0 BIOS Information fields */
 	{ 0, 4 },
 	{ 0, 5 },

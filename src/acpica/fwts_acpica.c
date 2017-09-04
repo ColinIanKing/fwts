@@ -811,7 +811,7 @@ void AcpiOsSleep(UINT64 milliseconds)
 static void fwtsOverrideRegionHandlers(fwts_framework *fw)
 {
 	int i;
-	static ACPI_ADR_SPACE_TYPE fwts_default_space_id_list[] = {
+	static const ACPI_ADR_SPACE_TYPE fwts_default_space_id_list[] = {
 		ACPI_ADR_SPACE_SYSTEM_MEMORY,
 		ACPI_ADR_SPACE_SYSTEM_IO,
 		ACPI_ADR_SPACE_PCI_CONFIG,

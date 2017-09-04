@@ -147,7 +147,7 @@ static int mpcheck_test_cpu_entries(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static char *bus_types[] = {
+static const char *const bus_types[] = {
 	"CBUS",
 	"CBUSII",
 	"EISA",

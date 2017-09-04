@@ -387,7 +387,7 @@ static void securebootcert_key_ex_key(fwts_framework *fw, fwts_uefi_var *var, ch
 	}
 }
 
-static securebootcert_info securebootcert_info_table[] = {
+static const securebootcert_info securebootcert_info_table[] = {
 	{ "SecureBoot",		securebootcert_secure_boot },
 	{ "SetupMode",		securebootcert_setup_mode },
 	{ "db",			securebootcert_data_base },
@@ -401,7 +401,7 @@ static void securebootcert_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
 	char guid_str[37];
-	securebootcert_info *info;
+	const securebootcert_info *info;
 
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 

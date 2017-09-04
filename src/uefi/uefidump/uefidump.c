@@ -1379,7 +1379,7 @@ static void uefidump_info_syspreporder(fwts_framework *fw, fwts_uefi_var *var)
 	free(str);
 }
 
-static uefidump_info uefidump_info_table[] = {
+static const uefidump_info uefidump_info_table[] = {
 	{ "PlatformLangCodes",	uefidump_info_platform_langcodes },
 	{ "PlatformLang",	uefidump_info_platform_lang },
 	{ "BootOptionSupport", 	uefidump_info_bootoptionsupport },
@@ -1420,7 +1420,7 @@ static void uefidump_var(fwts_framework *fw, fwts_uefi_var *var)
 {
 	char varname[512];
 	char guid_str[37];
-	uefidump_info *info;
+	const uefidump_info *info;
 
 	fwts_uefi_get_varname(varname, sizeof(varname), var);
 

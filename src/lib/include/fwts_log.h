@@ -97,7 +97,7 @@ typedef struct log_t {
  */
 typedef struct {
 	FILE *fp;				/* file descriptor for log */
-	int line_number;			/* keeps track of the line numbering */
+	uint32_t line_number;			/* keeps track of the line numbering */
 	fwts_log *log;				/* parent log struct */
 	fwts_log_type type;			/* log type */
 	fwts_log_filename_type filename_type;	/* log filename type */

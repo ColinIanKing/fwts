@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -67,7 +68,7 @@ static int fwts_log_print_xml(
 
 	fprintf(log_file->fp, "%*s<logentry>\n", xml_stack_index * XML_INDENT, "");
 
-	fprintf(log_file->fp, "%*s<line_num>%d</line_num>\n",
+	fprintf(log_file->fp, "%*s<line_num>%" PRIu32 "</line_num>\n",
 		(xml_stack_index + 1) * XML_INDENT,
 		"", log_file->line_number);
 

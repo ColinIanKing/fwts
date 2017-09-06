@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -52,7 +53,7 @@ static int fwts_log_header_plaintext(
 			ptr++;
 			if (!strncmp(ptr, "line", 4)) {
 				n += snprintf(buffer + n, len - n,
-					"%5.5d", log_file->line_number);
+					"%5.5" PRIu32, log_file->line_number);
 				ptr += 4;
 			}
 			if (!strncmp(ptr, "date", 4)) {

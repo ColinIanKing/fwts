@@ -32,6 +32,7 @@ typedef struct fwts_framework fwts_framework;
 #include "fwts_list.h"
 #include "fwts_acpica_mode.h"
 #include "fwts_types.h"
+#include "fwts_firmware.h"
 
 #define FWTS_FRAMEWORK_MAGIC	0x2af61aec
 
@@ -143,7 +144,7 @@ struct fwts_framework {
 	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
 	fwts_log_level filter_level;		/* --log-level option filter */
 
-	int firmware_type;			/* Type of firmware */
+	fwts_firmware_type firmware_type;	/* Type of firmware */
 	bool show_progress;			/* Show progress while running current test */
 
 	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
@@ -190,14 +191,16 @@ typedef struct fwts_framework_test {
 	fwts_framework_ops *ops;
 	fwts_priority priority;
 	fwts_framework_flags flags;
-	int fw_features;
+	fwts_firmware_feature fw_features;
 	fwts_results results;			/* Per test results */
 	bool	    was_run;
 
 } fwts_framework_test;
 
 int  fwts_framework_args(const int argc, char **argv);
-void fwts_framework_test_add(const char *name, fwts_framework_ops *ops, const fwts_priority priority, const fwts_framework_flags flags, int fw_features);
+void fwts_framework_test_add(const char *name, fwts_framework_ops *ops,
+	const fwts_priority priority, const fwts_framework_flags flags,
+	const fwts_firmware_feature fw_features);
 int  fwts_framework_compare_test_name(void *, void *);
 void fwts_framework_show_version(FILE *fp, const char *name);
 

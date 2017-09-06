@@ -21,28 +21,28 @@
 
 #include <stdbool.h>
 
-enum firmware_type {
+typedef enum {
 	FWTS_FIRMWARE_UNKNOWN = 0,
 	FWTS_FIRMWARE_BIOS = 1,
 	FWTS_FIRMWARE_UEFI = 2,
 	FWTS_FIRMWARE_OPAL = 3,
 	FWTS_FIRMWARE_OTHER = 100
-};
+} fwts_firmware_type;
 
-enum firmware_feature {
+typedef enum {
 	FWTS_FW_FEATURE_ACPI		= 0x1,
 	FWTS_FW_FEATURE_DEVICETREE	= 0x2,
 	FWTS_FW_FEATURE_IPMI		= 0x4,
 	FWTS_FW_FEATURE_ALL		= FWTS_FW_FEATURE_ACPI |
 					  FWTS_FW_FEATURE_DEVICETREE |
 					  FWTS_FW_FEATURE_IPMI
-};
+} fwts_firmware_feature;
 
-int fwts_firmware_detect(void);
+fwts_firmware_type fwts_firmware_detect(void);
 int fwts_firmware_features(void);
-const char *fwts_firmware_feature_string(const int features);
+const char *fwts_firmware_feature_string(const fwts_firmware_feature features);
 
-static inline bool fwts_firmware_has_features(const int features)
+static inline bool fwts_firmware_has_features(const fwts_firmware_feature features)
 {
 	return (fwts_firmware_features() & features) == features;
 }

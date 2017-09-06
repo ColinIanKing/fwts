@@ -171,7 +171,7 @@ void fwts_framework_test_add(
 	fwts_framework_ops *ops,
 	const fwts_priority priority,
 	const fwts_framework_flags flags,
-	int fw_features)
+	const fwts_firmware_feature fw_features)
 {
 	fwts_framework_test *new_test;
 

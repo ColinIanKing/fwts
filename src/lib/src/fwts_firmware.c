@@ -23,11 +23,11 @@
 
 #include "fwts.h"
 
-static enum firmware_type firmware_type;
+static fwts_firmware_type firmware_type;
 static bool firmware_type_valid;
 
 static const struct {
-	enum firmware_feature feature;
+	fwts_firmware_feature feature;
 	const char name[16];
 } feature_names[] = {
 	{ FWTS_FW_FEATURE_ACPI,		"ACPI" },
@@ -39,7 +39,7 @@ static const struct {
  *  fwts_memory_map_entry_compare()
  *	callback used to sort memory_map entries on start address
  */
-int fwts_firmware_detect(void)
+fwts_firmware_type fwts_firmware_detect(void)
 {
 	struct stat statbuf;
 
@@ -86,7 +86,7 @@ int fwts_firmware_features(void)
 	return features;
 }
 
-const char *fwts_firmware_feature_string(const int features)
+const char *fwts_firmware_feature_string(const fwts_firmware_feature features)
 {
 	const int n = FWTS_ARRAY_LEN(feature_names);
 	const char sep[] = ", ";

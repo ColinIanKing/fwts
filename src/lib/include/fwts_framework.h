@@ -127,10 +127,10 @@ struct fwts_framework {
 
 	fwts_framework_flags flags;
 
-	int current_minor_test_num;		/* Nth minor test being run in a test module */
+	uint32_t current_minor_test_num;	/* Nth minor test being run in a test module */
 	const char *current_minor_test_name;	/* Name of current minor test being run */
-	int current_major_test_num;		/* Nth major test being currently run */
-	int major_tests_total;			/* Total number of major tests */
+	uint32_t current_major_test_num;	/* Nth major test being currently run */
+	uint32_t major_tests_total;		/* Total number of major tests */
 
 	struct fwts_framework_test *current_major_test; /* current test */
 
@@ -139,7 +139,7 @@ struct fwts_framework {
 
 	uint32_t	total_run;		/* total number of major tests run */
 
-	int minor_test_progress;		/* Percentage completion of current test */
+	uint32_t minor_test_progress;		/* Percentage completion of current test */
 	bool print_summary;			/* Print summary of results at end of test runs */
 	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
 	fwts_log_level filter_level;		/* --log-level option filter */

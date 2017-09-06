@@ -34,7 +34,7 @@ typedef struct fwts_framework fwts_framework;
 #include "fwts_types.h"
 #include "fwts_firmware.h"
 
-#define FWTS_FRAMEWORK_MAGIC	0x2af61aec
+#define FWTS_FRAMEWORK_MAGIC	0x2af61aec98b7315fULL
 
 typedef enum {
 	FWTS_FLAG_DEFAULT			= 0x00000000,
@@ -112,52 +112,44 @@ static inline void fwts_framework_summate_results(fwts_results *total, fwts_resu
  *  Test framework context
  */
 struct fwts_framework {
-	uint32_t magic;				/* identify struct magic */
+	uint64_t magic;				/* identify struct magic */
 	fwts_log *results;			/* log for test results */
 	char *results_logname;			/* filename of results log */
-
 	char *lspci;				/* path to lspci */
-
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
 	char *klog;				/* path to dump of kernel log */
 	char *olog;				/* path to OLOG */
 	char *json_data_path;			/* path to application json data files, e.g. json klog data */
 	char *json_data_file;			/* json file to use for olog analysis */
-
-	fwts_framework_flags flags;
-
-	uint32_t current_minor_test_num;	/* Nth minor test being run in a test module */
-	const char *current_minor_test_name;	/* Name of current minor test being run */
-	uint32_t current_major_test_num;	/* Nth major test being currently run */
-	uint32_t major_tests_total;		/* Total number of major tests */
-
 	struct fwts_framework_test *current_major_test; /* current test */
-
-	fwts_results	minor_tests;		/* results for each minor test */
-	fwts_results	total;			/* totals over all tests */
-
-	uint32_t	total_run;		/* total number of major tests run */
-
-	uint32_t minor_test_progress;		/* Percentage completion of current test */
-	bool print_summary;			/* Print summary of results at end of test runs */
-	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
-	fwts_log_level filter_level;		/* --log-level option filter */
-
-	fwts_firmware_type firmware_type;	/* Type of firmware */
-	bool show_progress;			/* Show progress while running current test */
-
-	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
-
-	fwts_list errors_filter_keep;		/* Results to keep, empty = keep all */
-	fwts_list errors_filter_discard;	/* Results to discard, empty = discard none */
-	bool error_filtered_out;		/* True if a klog message has been filtered out */
-	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 	void *rsdp;				/* ACPI RSDP address */
 	void *fdt;				/* Flattened device tree data */
+	const char *current_minor_test_name;	/* Name of current minor test being run */
+
+	uint32_t current_minor_test_num;	/* Nth minor test being run in a test module */
+	uint32_t current_major_test_num;	/* Nth major test being currently run */
+	uint32_t major_tests_total;		/* Total number of major tests */
+	uint32_t total_run;			/* total number of major tests run */
+	uint32_t minor_test_progress;		/* Percentage completion of current test */
+
+	fwts_results minor_tests;		/* results for each minor test */
+	fwts_results total;			/* totals over all tests */
+	fwts_framework_flags flags;
+	fwts_log_level failed_level;		/* Bit mask of failed levels in test run */
+	fwts_log_level filter_level;		/* --log-level option filter */
+	fwts_firmware_type firmware_type;	/* Type of firmware */
+	fwts_log_type	log_type;		/* Output log type, default is plain text ASCII */
+	fwts_list errors_filter_keep;		/* Results to keep, empty = keep all */
+	fwts_list errors_filter_discard;	/* Results to discard, empty = discard none */
+	fwts_acpica_mode acpica_mode;		/* ACPICA mode flags */
 	fwts_pm_method pm_method;
 	fwts_architecture host_arch;		/* arch FWTS was built for */
 	fwts_architecture target_arch;		/* arch being tested */
+
+	bool print_summary;			/* Print summary of results at end of test runs */
+	bool error_filtered_out;		/* True if a klog message has been filtered out */
+	bool show_progress;			/* Show progress while running current test */
 };
 
 typedef struct {

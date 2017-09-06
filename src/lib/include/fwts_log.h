@@ -26,7 +26,7 @@
 #include "fwts_framework.h"
 #include "fwts_list.h"
 
-#define LOG_MAGIC		(0xfe23ab13)
+#define LOG_MAGIC		(0xfe23ab13cb1ef754ULL)
 #define LOG_MAX_BUF_SIZE	(4096)		/* Max output per log line */
 
 typedef enum {
@@ -87,7 +87,7 @@ typedef enum {
  *  top level log descriptor
  */
 typedef struct log_t {
-	unsigned int magic;			/* magic ID of the log */
+	uint64_t magic;				/* magic ID of the log */
 	fwts_list log_files;			/* list of fwts_log_file */
 	char *owner;				/* who is writing to this log */
 } fwts_log;

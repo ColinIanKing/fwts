@@ -4,11 +4,11 @@ mpst            Test 1 of 1: Validate MPST table.
 mpst            MPST Table:
 mpst              Communication Channel ID:        0x00
 mpst              Reserved:                        0x00010000
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST Reserved
 mpst            field must be zero, got 0x00010000 instead
 mpst              Memory Power Node Count:         0x0002
 mpst              Reserved:                        0x0003
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST Reserved
 mpst            field must be zero, got 0x0003 instead
 mpst              MPST Power Node:
 mpst                Flags:                         0x00
@@ -19,7 +19,7 @@ mpst                Base Address:                  0x00000000f0000000
 mpst                Memory Length:                 0x00000000e0000000
 mpst                Number of Power States:        0x00000002
 mpst                Number of Physical Components: 0x00000003
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST Reserved
 mpst            field must be zero, got 0x04 instead
 mpst            FAILED [HIGH] MPSTBadPowerNodeLength: Test 1, MPST Power
 mpst            Node Length should be 0x0000002a, got 0x0000012a instead
@@ -39,7 +39,7 @@ mpst                Base Address:                  0x00000000a0000000
 mpst                Memory Length:                 0x00000000b0000000
 mpst                Number of Power States:        0x00000001
 mpst                Number of Physical Components: 0x00000001
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST Reserved
 mpst            field must be zero, got 0x05 instead
 mpst            FAILED [HIGH] MPSTBadPowerNodeLength: Test 1, MPST Power
 mpst            Node Length should be 0x00000024, got 0x00000124 instead
@@ -48,7 +48,7 @@ mpst                Power State Information Index: 0x06
 mpst                Physical Component Id:         0x03
 mpst              Memory Characteristics Count:    0x0002
 mpst              Reserved:                        0x0006
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST Reserved
 mpst            field must be zero, got 0x0006 instead
 mpst              MPST Power Characteristics:
 mpst                Power State Structure ID:      0x02
@@ -63,8 +63,9 @@ mpst            Power Characteristics ID must be 1, got 0x02 instead
 mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsRevision: Test 1,
 mpst            MPST Power Characteristics Revision must be 1, got 0x00
 mpst            instead
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
-mpst            field must be zero, got 0x0000000000000007 instead
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST
+mpst            Reserved2 field must be zero, got 0x0000000000000007
+mpst            instead
 mpst              MPST Power Characteristics:
 mpst                Power State Structure ID:      0x03
 mpst                Flags:                         0x00
@@ -78,8 +79,9 @@ mpst            Power Characteristics ID must be 1, got 0x03 instead
 mpst            FAILED [HIGH] MPSTBadPowerCharacteristicsRevision: Test 1,
 mpst            MPST Power Characteristics Revision must be 1, got 0x00
 mpst            instead
-mpst            FAILED [LOW] MPSTReservedNonZero: Test 1, MPST reserved
-mpst            field must be zero, got 0x0000000000000008 instead
+mpst            FAILED [MEDIUM] MPSTReservedNonZero: Test 1, MPST
+mpst            Reserved2 field must be zero, got 0x0000000000000008
+mpst            instead
 mpst            
 mpst            
 mpst            ==========================================================

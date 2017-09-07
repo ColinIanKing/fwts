@@ -5,8 +5,8 @@ spcr            test.
 spcr            Serial Interface: Reserved (Do not Use)
 spcr            FAILED [HIGH] SPCRInterfaceReserved: Test 1, SPCR Serial
 spcr            interface type 0x08 is a reserved interface
-spcr            FAILED [LOW] SPCRReservedNonZero: Test 1, SPCR reserved
-spcr            field must be zero, got 0xf02000 instead
+spcr            FAILED [MEDIUM] SPCRReservedNonZero: Test 1, SPCR
+spcr            Reserved1 field must be zero, got 0x000020f0 instead
 spcr            Baud Rate:        Reserved
 spcr            FAILED [HIGH] SPCRBaudRateReserved: Test 1, SPCR Serial
 spcr            baud rate type 0x08 is a reserved baud rate

@@ -4,7 +4,7 @@ nfit            Test 1 of 1: NFIT NVDIMM Firmware Interface Table test.
 nfit            NFIT NVDIMM Firmware Interface Table:
 nfit              Reserved:                 0x05000000
 nfit            
-nfit            FAILED [LOW] NFITReservedNonZero: Test 1, NFIT reserved
+nfit            FAILED [MEDIUM] NFITReservedNonZero: Test 1, NFIT Reserved
 nfit            field must be zero, got 0x05000000 instead
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0000
@@ -24,7 +24,7 @@ nfit            Bits[15..2] must be zero, got 0x00000005 instead
 nfit            FAILED [HIGH] NFITBadMemoryMappingAttribute: Test 1, NFIT
 nfit            Memory Mapping Attribute must meet UEFI Spec, got
 nfit            0x00000000000000ff instead
-nfit            FAILED [LOW] NFITReservedNonZero: Test 1, NFIT reserved
+nfit            FAILED [MEDIUM] NFITReservedNonZero: Test 1, NFIT Reserved
 nfit            field must be zero, got 0x000000000000000f instead
 nfit            
 nfit              NFIT Subtable:
@@ -103,7 +103,7 @@ nfit            FAILED [HIGH] NFITBadValidField: Test 1, NFIT Valid
 nfit            Field's Bits[7..1] must be zero, got 0x03 instead
 nfit            FAILED [HIGH] NFITBadFlags: Test 1, NFIT Flags's
 nfit            Bits[15..1] must be zero, got 0x0003 instead
-nfit            FAILED [LOW] NFITReservedNonZero: Test 1, NFIT reserved
+nfit            FAILED [MEDIUM] NFITReservedNonZero: Test 1, NFIT Reserved
 nfit            field must be zero, got 0x0000000000000f00 instead
 nfit            
 nfit              NFIT Subtable:
@@ -126,7 +126,7 @@ nfit                Number of Flush Hint Addresses:         0x0002
 nfit                Reserved:                               0x00000000000000f0
 nfit                Flush Hint Address:                     0x0000000418000000
 nfit                Flush Hint Address:                     0x0000000618000000
-nfit            FAILED [LOW] NFITReservedNonZero: Test 1, NFIT reserved
+nfit            FAILED [MEDIUM] NFITReservedNonZero: Test 1, NFIT Reserved
 nfit            field must be zero, got 0x00000000000000f0 instead
 nfit            
 nfit            

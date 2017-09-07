@@ -23,9 +23,9 @@ lpit                Access Size             0x00
 lpit                Address                 0x1020304050607080
 lpit              Residency Counter Freq:   0x000000000000b0a0
 lpit            
-lpit            FAILED [LOW] LPITNativeCStateLpitReservedNonZero: Test 1,
-lpit            Native C-state based LPI structure reserved field was
-lpit            expected to be zero, got 0xffff instead
+lpit            FAILED [MEDIUM] LPITReservedNonZero: Test 1, LPIT Native
+lpit            C-state based LPI structure reserved field must be zero,
+lpit            got 0xffff instead
 lpit            FAILED [LOW] LPITNativeCStateLpitFlagsReserved: Test 1,
 lpit            Some of the Native C-state based LPI structure flags bits
 lpit            [31:2] are set, they are expected to be zero

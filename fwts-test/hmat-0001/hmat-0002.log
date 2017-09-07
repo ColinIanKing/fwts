@@ -14,13 +14,13 @@ hmat                Memory Proximity Domain:        0x00000000
 hmat                Reserved:                       0x00000003
 hmat                System Phy Addr Range Base:     0x0000000000000000
 hmat                System Phy Addr Range Length:   0x0000000000000000
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0001 instead
 hmat            FAILED [HIGH] HMATBadFlags: Test 1, HMAT Flags's
 hmat            Bits[15..3] must be zero, got 0x000f instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0002 instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x00000003 instead
 hmat            
 hmat              System Locality Latency and Bandwidth Information (Type 1):
@@ -34,15 +34,15 @@ hmat                Number of Initiator PDs:        0x00000002
 hmat                Number of Target PDs:           0x00000003
 hmat                Reserved:                       0x00000006
 hmat                Entry Base Unit:                0x0000000000000000
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0004 instead
 hmat            FAILED [CRITICAL] HMATBadFlags: Test 1, HMAT Flags's
 hmat            Bits[7..5] must be zero, got 0x3f instead
 hmat            FAILED [CRITICAL] HMATBadFDataType: Test 1, HMAT Data Type
 hmat            must be 0..5, got 0x06 instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0005 instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x00000006 instead
 hmat            
 hmat              Memory Side Cache Information (Type 2):
@@ -55,14 +55,14 @@ hmat                Memory Side Cache Size:         0x0000000000000000
 hmat                Cache Attributes:               0x00002333
 hmat                Reserved:                       0x0009
 hmat                Number of SMBIOS Handles:       0x0003
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0007 instead
 hmat            FAILED [CRITICAL] HMATBadCacheAttributeReserved: Test 1,
 hmat            HMAT Cache Attribute reserved values are used, got
 hmat            0x00002333 instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x00000008 instead
-hmat            FAILED [LOW] HMATReservedNonZero: Test 1, HMAT reserved
+hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0009 instead
 hmat            
 hmat            

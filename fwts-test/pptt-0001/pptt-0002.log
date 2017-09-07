@@ -11,7 +11,7 @@ pptt                Parent:                         0x00000000
 pptt                ACPI Processor ID:              0x00000000
 pptt                Number of Private Resources:    0x00000001
 pptt                Private Resources[0]:           0x00000000
-pptt            FAILED [LOW] PPTTReservedNonZero: Test 1, PPTT reserved
+pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0001 instead
 pptt            
 pptt              Cache Type Structure (Type 1):
@@ -25,7 +25,7 @@ pptt                Number of sets:                 0x00000000
 pptt                Associativity:                  0x00
 pptt                Attributes:                     0x00
 pptt                Line size:                      0x0000
-pptt            FAILED [LOW] PPTTReservedNonZero: Test 1, PPTT reserved
+pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0002 instead
 pptt            
 pptt              Processor hierarchy node structure (Type 0):
@@ -38,7 +38,7 @@ pptt                ACPI Processor ID:              0x00000000
 pptt                Number of Private Resources:    0x00000002
 pptt                Private Resources[0]:           0x00000000
 pptt                Private Resources[1]:           0x00000000
-pptt            FAILED [LOW] PPTTReservedNonZero: Test 1, PPTT reserved
+pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0003 instead
 pptt            FAILED [HIGH] PPTTBadFlags: Test 1, PPTT Flags's
 pptt            Bits[31..2] must be zero, got 0x00000007 instead
@@ -54,7 +54,7 @@ pptt                Number of sets:                 0x00000000
 pptt                Associativity:                  0xc0
 pptt                Attributes:                     0x00
 pptt                Line size:                      0x0000
-pptt            FAILED [LOW] PPTTReservedNonZero: Test 1, PPTT reserved
+pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0004 instead
 pptt            FAILED [HIGH] PPTTBadFlags: Test 1, PPTT Flags's
 pptt            Bits[31..7] must be zero, got 0x000000ff instead
@@ -69,7 +69,7 @@ pptt                LEVEL_2_ID:                     0x0000000000000000
 pptt                MAJOR_REV:                      0x0000
 pptt                MINOR_REV:                      0x0000
 pptt                SPIN_REV:                       0x0000
-pptt            FAILED [LOW] PPTTReservedNonZero: Test 1, PPTT reserved
+pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0005 instead
 pptt            
 pptt            

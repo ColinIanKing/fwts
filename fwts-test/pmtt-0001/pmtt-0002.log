@@ -3,7 +3,7 @@ pmtt            ----------------------------------------------------------
 pmtt            Test 1 of 1: Validate PMTT table.
 pmtt            PMTT Table:
 pmtt              Reserved:                         0x02000000
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
 pmtt            field must be zero, got 0x02000000 instead
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x00
@@ -11,13 +11,13 @@ pmtt                Reserved:                       0x01
 pmtt                Length:                         0x0098
 pmtt                Flags:                          0x0001
 pmtt                Reserved:                       0x0003
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
-pmtt            field must be zero, got 0x01 instead
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
-pmtt            field must be zero, got 0x0003 instead
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
+pmtt            Reserved1 field must be zero, got 0x01 instead
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
+pmtt            Reserved2 field must be zero, got 0x0003 instead
 pmtt                Socket Identifier:              0x0001
 pmtt                Reserved:                       0x0400
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
 pmtt            field must be zero, got 0x0400 instead
 pmtt              PMTT Subtable:
 pmtt                Type:                           0x01
@@ -25,8 +25,8 @@ pmtt                Reserved:                       0x05
 pmtt                Length:                         0x006c
 pmtt                Flags:                          0x0005
 pmtt                Reserved:                       0x0000
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
-pmtt            field must be zero, got 0x05 instead
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
+pmtt            Reserved1 field must be zero, got 0x05 instead
 pmtt                Read Latency:                   0x0000f000
 pmtt                Write latency:                  0x0000e000
 pmtt                Read Bandwidth:                 0x0000d000
@@ -35,7 +35,7 @@ pmtt                Optimal Access Unit:            0x0004
 pmtt                Optimal Access Alignment:       0x0008
 pmtt                Reserved:                       0x0600
 pmtt                Number of Proximity Domains:    0x0004
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT Reserved
 pmtt            field must be zero, got 0x0600 instead
 pmtt                Proximity Domain:               0x00001000
 pmtt                Proximity Domain:               0x00002000
@@ -47,8 +47,8 @@ pmtt                Reserved:                       0x07
 pmtt                Length:                         0x0014
 pmtt                Flags:                          0x0002
 pmtt                Reserved:                       0x0000
-pmtt            FAILED [LOW] PMTTReservedNonZero: Test 1, PMTT reserved
-pmtt            field must be zero, got 0x07 instead
+pmtt            FAILED [MEDIUM] PMTTReservedNonZero: Test 1, PMTT
+pmtt            Reserved1 field must be zero, got 0x07 instead
 pmtt                Physical Component Identifier:  0x0000
 pmtt                Reserved:                       0x0000
 pmtt                Size of DIMM:                   0xa0000000

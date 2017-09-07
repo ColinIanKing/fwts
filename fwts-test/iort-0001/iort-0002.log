@@ -20,8 +20,8 @@ iort            Either the Number of ID mappings is too large or the IORT
 iort            table size or ITS Group Node is too small.
 iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
 iort            Revision field is 0x03 and should be zero.
-iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
-iort            Reserved field is 0x0ffffffff and should be zero.
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
+iort            Reserved field must be zero, got 0xffffffff instead
 iort            FAILED [LOW] IORTNodeMappingsCountNonZero: Test 1, IORT
 iort            Node Number of ID Mappings field is 0x000000080 and should
 iort            be zero for this node type.
@@ -57,8 +57,8 @@ iort              Output Reference:         0x88888888
 iort              Flags:                    0x00000001
 iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
 iort            Revision field is 0x02 and should be zero.
-iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
-iort            Reserved field is 0x00000f001 and should be zero.
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
+iort            Reserved field must be zero, got 0x0000f001 instead
 iort            FAILED [HIGH] IORTNamedComponentNodeFlagsNonZero: Test 1,
 iort            IORT Named Component Node Flags is 0xffffffff and is
 iort            reserved and should be zero.
@@ -100,8 +100,8 @@ iort              Output Reference:         0x00000005
 iort              Flags:                    0x00000001
 iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
 iort            Revision field is 0x50 and should be zero.
-iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
-iort            Reserved field is 0x00000000f and should be zero.
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
+iort            Reserved field must be zero, got 0x0000000f instead
 iort            FAILED [HIGH] IORTCPCIRootComplexAtsAttrInvalid: Test 1,
 iort            IORT PCI Root Complex Node ATS Attribute is 0x3 and was
 iort            expecting either 0 (root complex supports ATS) or 1 (root
@@ -162,8 +162,8 @@ iort              GSIV:                     0xf0008000
 iort              Interrupt Flags:          0x00000004
 iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
 iort            Revision field is 0xa0 and should be zero.
-iort            FAILED [LOW] IORTNodeReservedNonZero: Test 1, IORT Node
-iort            Reserved field is 0x000008100 and should be zero.
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
+iort            Reserved field must be zero, got 0x00008100 instead
 iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
 iort            IORT SMMU_NsgIrpt Flags field reserved bits [31:1] should
 iort            be all zero, got 0x2

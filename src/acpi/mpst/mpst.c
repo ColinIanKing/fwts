@@ -57,25 +57,13 @@ static int mpst_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Communication Channel ID:        0x%2.2" PRIx8, mpst->channel_id);
 	fwts_log_info_verbatim(fw, "  Reserved:                        0x%8.8" PRIx32, reserved);
 
-	if (reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"MPSTReservedNonZero",
-			"MPST reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", reserved, sizeof(reserved), &passed);
 
 	node_list = (fwts_acpi_table_mpst_power_node_list *) (table->data + sizeof(fwts_acpi_table_mpst));
 	fwts_log_info_verbatim(fw, "  Memory Power Node Count:         0x%4.4" PRIx16, node_list->count);
 	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4" PRIx16, node_list->reserved);
 
-	if (node_list->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"MPSTReservedNonZero",
-			"MPST reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", node_list->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", node_list->reserved, sizeof(node_list->reserved), &passed);
 
 	node_offset = sizeof(fwts_acpi_table_mpst) + (sizeof(fwts_acpi_table_mpst_power_node_list));
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_node) * node_list->count) {
@@ -107,13 +95,7 @@ static int mpst_test1(fwts_framework *fw)
 				"0x%2.2" PRIx8 " instead", power_node->flags);
 		}
 
-		if (power_node->reserved != 0) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"MPSTReservedNonZero",
-				"MPST reserved field must be zero, got "
-				"0x%2.2" PRIx8 " instead", power_node->reserved);
-		}
+		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", power_node->reserved, sizeof(power_node->reserved), &passed);
 
 		node_length = sizeof(fwts_acpi_table_mpst_power_node) +
 			      sizeof(fwts_acpi_table_mpst_power_state) * power_node->num_states +
@@ -160,13 +142,7 @@ static int mpst_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Memory Characteristics Count:    0x%4.4" PRIx16, char_list->count);
 	fwts_log_info_verbatim(fw, "  Reserved:                        0x%4.4" PRIx16, char_list->reserved);
 
-	if (char_list->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"MPSTReservedNonZero",
-			"MPST reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", char_list->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", char_list->reserved, sizeof(char_list->reserved), &passed);
 
 	node_offset += sizeof(fwts_acpi_table_mpst_power_char_list);
 	if (mpst->header.length < node_offset + sizeof(fwts_acpi_table_mpst_power_char) * char_list->count) {
@@ -212,21 +188,8 @@ static int mpst_test1(fwts_framework *fw)
 				"0x%2.2" PRIx8 " instead", power_char->flags);
 		}
 
-		if (power_char->reserved1 != 0) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"MPSTReservedNonZero",
-				"MPST reserved field must be zero, got "
-				"0x%4.4" PRIx16 " instead", power_char->reserved1);
-		}
-
-		if (power_char->reserved2 != 0) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"MPSTReservedNonZero",
-				"MPST reserved field must be zero, got "
-				"0x%16.16" PRIx64 " instead", power_char->reserved2);
-		}
+		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved1", power_char->reserved1, sizeof(power_char->reserved1), &passed);
+		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved2", power_char->reserved2, sizeof(power_char->reserved2), &passed);
 
 		node_offset +=  sizeof(fwts_acpi_table_mpst_power_char);
 	}

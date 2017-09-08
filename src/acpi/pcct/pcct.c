@@ -232,13 +232,7 @@ static int pcct_test1(fwts_framework *fw)
 			"0x%8.8" PRIx32 " instead", pcct->flags);
 	}
 
-	if (pcct->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PCCTReservedNonZero",
-			"PCCT reserved field must be zero, got "
-			"0x%16.16" PRIx64 " instead", pcct->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PCCT", "Reserved", pcct->reserved, sizeof(pcct->reserved), &passed);
 
 	offset = sizeof(fwts_acpi_table_pcct);
 	pcct_sub = (fwts_acpi_table_pcct_subspace_header *) (table->data + offset);

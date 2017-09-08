@@ -94,14 +94,7 @@ static void lpit_check_type_0(
 	}
 	fwts_log_nl(fw);
 
-	if (lpi->reserved) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"LPITNativeCStateLpitReservedNonZero",
-			"Native C-state based LPI structure reserved field "
-			"was expected to be zero, got 0x%4.4" PRIx16 " instead",
-			lpi->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "LPIT", "Native C-state based LPI structure reserved", lpi->reserved, sizeof(lpi->reserved), passed);
 
 	if (lpi->flags & ~3) {
 		*passed = false;

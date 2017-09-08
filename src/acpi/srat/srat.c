@@ -325,14 +325,7 @@ static void srat_check_its_affinity(
 	fwts_log_info_verbatim(fw, "  ITS ID                    0x%8.8" PRIx32, affinity->its_id);
 	fwts_log_nl(fw);
 
-	if (affinity->reserved) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATITSBadReserved",
-			"ITS Affinity Reserved field should be zero, got "
-			"0x%" PRIx16,
-			affinity->reserved);
-		*passed = false;
-	}
+	fwts_acpi_reserved_zero_check(fw, "SRAT", "ITS Affinity Reserved", affinity->reserved, sizeof(affinity->reserved), passed);
 
 done:
 	*length -= sizeof(fwts_acpi_table_its_affinity);

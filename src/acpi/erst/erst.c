@@ -56,13 +56,8 @@ static int erst_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, erst->reserved);
 	fwts_log_info_verbatim(fw, "  Instruction Entry Count:  0x%8.8" PRIx32, erst->instruction_entry_count);
 
-	if (erst->reserved) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"ERSTReservedNonZero",
-			"ERST Reserved field must be zero, got 0x%" PRIx32
-			" instead", erst->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "ERST", "Reserved", erst->reserved, sizeof(erst->reserved), &passed);
+
 	if (erst->serialization_header_size > table->length) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

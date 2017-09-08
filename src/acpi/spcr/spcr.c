@@ -65,7 +65,6 @@ static int spcr_sbbr_revision_test(fwts_framework *fw)
 		else
 			fwts_failed(fw, LOG_LEVEL_CRITICAL, "spcr_revision:", "SPCR revision is outdated: %d",
 					spcr->header.revision);
-
 	}
 
 	return FWTS_OK;
@@ -90,6 +89,7 @@ static int spcr_sbbr_gsiv_test(fwts_framework *fw)
 static int spcr_test1(fwts_framework *fw)
 {
 	char *str;
+	uint32_t reserved1;
 	bool reserved = false;
 	bool pci = true;
 	bool passed = true;
@@ -140,18 +140,8 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved interface", spcr->interface_type);
 	}
 
-	if ((spcr->reserved1[0] |
-	     spcr->reserved1[1] |
-	     spcr->reserved1[2])) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPCRReservedNonZero",
-			"SPCR reserved field must be zero, got "
-			"0x%2.2" PRIx8 "%2.2" PRIx8 "%2.2" PRIx8 " instead",
-				spcr->reserved1[0],
-				spcr->reserved1[1],
-				spcr->reserved1[2]);
-	}
+	reserved1 = spcr->reserved1[0] + (spcr->reserved1[1] << 8) + (spcr->reserved1[2] << 16);
+	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved1", reserved1, sizeof(reserved1), &passed);
 
 	if (spcr->interrupt_type == 0) {
 		passed = false;
@@ -262,13 +252,7 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved terminal type", spcr->terminal_type);
 	}
 
-	if (spcr->reserved2) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPCRReservedNonZero",
-			"SPCR reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", spcr->reserved2);
-	}
+	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved2", spcr->reserved2, sizeof(spcr->reserved2), &passed);
 
 	/* According to the spec, these values indicate NOT a PCI device */
 	if ((spcr->pci_device_id == 0xffff) &&
@@ -315,13 +299,7 @@ static int spcr_test1(fwts_framework *fw)
 			spcr->pci_flags);
 	}
 
-	if (spcr->reserved3) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPCRReservedNonZero",
-			"SPCR reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", spcr->reserved3);
-	}
+	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved3", spcr->reserved3, sizeof(spcr->reserved3), &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in SPCR table.");

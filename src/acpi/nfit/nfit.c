@@ -67,13 +67,7 @@ static int nfit_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%8.8" PRIx32, nfit->reserved);
 	fwts_log_nl(fw);
 
-	if (nfit->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"NFITReservedNonZero",
-			"NFIT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", nfit->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", nfit->reserved, sizeof(nfit->reserved), &passed);
 
 	offset = sizeof(fwts_acpi_table_nfit);
 	entry = (fwts_acpi_table_nfit_struct_header *) (table->data + offset);
@@ -361,14 +355,7 @@ static int nfit_test1(fwts_framework *fw)
 				"0x%4.4" PRIx16 " instead", entry->type);
 		}
 
-		if (reserved_passed != 0) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				"NFITReservedNonZero",
-				"NFIT reserved field must be zero, got "
-				"0x%16.16" PRIx64 " instead", reserved_passed);
-		}
-
+		fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", reserved_passed, sizeof(reserved_passed), &passed);
 		fwts_log_nl(fw);
 		offset += entry->length;
 		entry = (fwts_acpi_table_nfit_struct_header *) (table->data + offset);

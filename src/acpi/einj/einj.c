@@ -71,13 +71,7 @@ static int einj_test1(fwts_framework *fw)
 		passed = false;
 	}
 
-	if (reserved) {
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			    "EINJReservedNonZero",
-			    "EINJ Reserved field must be zero, got 0x%"
-			    PRIx32 " instead", reserved);
-		passed = false;
-	}
+	fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", reserved, sizeof(reserved), &passed);
 
 	fwts_log_nl(fw);
 
@@ -128,13 +122,7 @@ static int einj_test1(fwts_framework *fw)
 			passed = false;
 		}
 
-		if (entry->reserved != 0) {
-			fwts_failed(fw, LOG_LEVEL_LOW,
-				    "EINJReservedNonZero",
-				    "EINJ Reserved field must be zero, got 0x%"
-				    PRIx32 " instead", entry->reserved);
-			passed = false;
-		}
+		fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", entry->reserved, sizeof(entry->reserved), &passed);
 
 		if (gas.address_space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY &&
 		    gas.address_space_id != ACPI_ADR_SPACE_SYSTEM_IO) {

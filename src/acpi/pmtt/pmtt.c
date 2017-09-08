@@ -48,13 +48,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	fwts_log_info_verbatim(fw, "    Flags:                          0x%4.4" PRIx16, entry->flags);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved2);
 
-	if (entry->reserved1 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", entry->reserved1);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved1", entry->reserved1, sizeof(entry->reserved1), passed);
 
 	if (entry->flags & ~0x0F) {
 		*passed = false;
@@ -71,13 +65,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 			"PMTT Flags's Bits[3..2] must not be 11b");
 	}
 
-	if (entry->reserved2 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved2);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved2", entry->reserved2, sizeof(entry->reserved2), passed);
 }
 
 static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmtt_physical_component *entry, bool *passed)
@@ -88,13 +76,7 @@ static void pmtt_physical_component_test(fwts_framework *fw, fwts_acpi_table_pmt
 	fwts_log_info_verbatim(fw, "    Size of DIMM:                   0x%8.8" PRIx32, entry->memory_size);
 	fwts_log_info_verbatim(fw, "    SMBIOS Handle:                  0x%8.8" PRIx32, entry->bios_handle);
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
 	if ((entry->bios_handle & 0xFFFF0000) != 0 && entry->bios_handle != 0xFFFFFFFF) {
 		*passed = false;
@@ -121,13 +103,7 @@ static void pmtt_controller_test(fwts_framework *fw, fwts_acpi_table_pmtt_contro
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
 	fwts_log_info_verbatim(fw, "    Number of Proximity Domains:    0x%4.4" PRIx16, entry->domain_count);
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_controller);
 	if (entry->header.length < offset + sizeof(fwts_acpi_table_pmtt_domain) * entry->domain_count) {
@@ -172,13 +148,7 @@ static void pmtt_socket_test(fwts_framework *fw, fwts_acpi_table_pmtt_socket *en
 	fwts_log_info_verbatim(fw, "    Socket Identifier:              0x%4.4" PRIx16, entry->socket_id);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved);
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
 	offset = sizeof(fwts_acpi_table_pmtt_socket);
 	header = (fwts_acpi_table_pmtt_header *) (((char *) entry) + offset);
@@ -208,13 +178,7 @@ static int pmtt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "PMTT Table:");
 	fwts_log_info_verbatim(fw, "  Reserved:                         0x%8.8" PRIx32, pmtt->reserved);
 
-	if (pmtt->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PMTTReservedNonZero",
-			"PMTT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", pmtt->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved", pmtt->reserved, sizeof(pmtt->reserved), &passed);
 
 	entry = (fwts_acpi_table_pmtt_header *) (table->data + sizeof(fwts_acpi_table_pmtt));
 	offset = sizeof(fwts_acpi_table_pmtt);

@@ -53,13 +53,7 @@ static void hmat_addr_range_test(fwts_framework *fw, const fwts_acpi_table_hmat_
 	fwts_log_info_verbatim(fw, "    System Phy Addr Range Base:     0x%16.16" PRIx64, entry->phy_addr_base);
 	fwts_log_info_verbatim(fw, "    System Phy Addr Range Length:   0x%16.16" PRIx64, entry->phy_addr_length);
 
-	if (entry->header.reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->header.reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 
 	if (entry->flags & ~0x07) {
 		*passed = false;
@@ -69,21 +63,8 @@ static void hmat_addr_range_test(fwts_framework *fw, const fwts_acpi_table_hmat_
 			"0x%4.4" PRIx16 " instead", entry->flags);
 	}
 
-	if (entry->reserved1 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved1);
-	}
-
-	if (entry->reserved2 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", entry->reserved2);
-		}
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 }
 
 static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_locality *entry, bool *passed)
@@ -102,13 +83,7 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved2);
 	fwts_log_info_verbatim(fw, "    Entry Base Unit:                0x%16.16" PRIx64, entry->entry_base_unit);
 
-	if (entry->header.reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->header.reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 
 	if (entry->flags & ~0x1f) {
 		*passed = false;
@@ -126,21 +101,8 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 			"0x%2.2" PRIx8 " instead", entry->data_type);
 	}
 
-	if (entry->reserved1 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved1);
-	}
-
-	if (entry->reserved2 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", entry->reserved2);
-	}
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 
 	pd_size = (entry->num_initiator + entry->num_target) * 4 +
 	          (entry->num_initiator * entry->num_target * 2);
@@ -165,14 +127,7 @@ static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved2);
 	fwts_log_info_verbatim(fw, "    Number of SMBIOS Handles:       0x%4.4" PRIx16, entry->num_smbios);
 
-	if (entry->header.reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->header.reserved);
-	}
-
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
 
 	if ((entry->cache_attr & 0xf) > 3 ||
 	   ((entry->cache_attr >> 4) & 0xf) > 3 ||
@@ -185,21 +140,8 @@ static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache
 			"0x%8.8" PRIx32 " instead", entry->cache_attr);
 	}
 
-	if (entry->reserved1 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", entry->reserved1);
-	}
-
-	if (entry->reserved2 != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved2);
-		}
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 
 	if ((entry->header.length - sizeof(fwts_acpi_table_hmat_cache)) / 2 != entry->num_smbios) {
 		*passed = false;
@@ -220,13 +162,8 @@ static int hmat_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "HMAT Heterogeneous Memory Attribute Table:");
 	fwts_log_info_verbatim(fw, "  Reserved:        0x%2.2" PRIx8, hmat->reserved);
 
-	if (hmat->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HMATReservedNonZero",
-			"HMAT reserved field must be zero, got "
-			"0x%8.8" PRIx32 " instead", hmat->reserved);
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", hmat->reserved, sizeof(hmat->reserved), &passed);
 
 	entry = (fwts_acpi_table_hmat_header *) (table->data + sizeof(fwts_acpi_table_hmat));
 	offset = sizeof(fwts_acpi_table_hmat);

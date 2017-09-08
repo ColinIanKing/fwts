@@ -62,13 +62,7 @@ static int tpm2_test1(fwts_framework *fw)
 			tpm2->platform_class);
 	}
 
-	if (tpm2->reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"TPM2ReservedNonZero",
-			"TPM2 reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", tpm2->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "TPM2", "Reserved", tpm2->reserved, sizeof(tpm2->reserved), &passed);
 
 	if (tpm2->start_method < 1 || tpm2->start_method >= 12) {
 		passed = false;

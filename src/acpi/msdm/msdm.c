@@ -69,22 +69,8 @@ static int msdm_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Data Reserved:            0x%8.8" PRIx32, msdm->data_reserved);
 	fwts_log_info_verbatim(fw, "  Data Length:              0x%8.8" PRIx32, msdm->data_length);
 
-	if (msdm->reserved) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MSDMReservedNonZero",
-			"MSDM Reserved field should be zero, got 0x%8.8" PRIx32
-			" instead",
-			msdm->reserved);
-	}
-	if (msdm->data_reserved) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MSDMDataReservedNonZero",
-			"MSDM Data Reserved field should be zero, got 0x%8.8" PRIx32
-			" instead",
-			msdm->data_reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "MSDM", "Reserved", msdm->reserved, sizeof(msdm->reserved), &passed);
+	fwts_acpi_reserved_zero_check(fw, "MSDM", "Data Reserved", msdm->data_reserved, sizeof(msdm->data_reserved), &passed);
 
 	/* Now check table is big enough for the data payload */
 	if (table->length < sizeof(fwts_acpi_table_msdm) + msdm->data_length) {

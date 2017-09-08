@@ -64,13 +64,7 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 			entry->number_priv_resources);
 	}
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PPTTReservedNonZero",
-			"PPTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
 	if (entry->flags & ~0x03) {
 		*passed = false;
@@ -96,13 +90,7 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	fwts_log_info_verbatim(fw, "    Attributes:                     0x%2.2" PRIx8, entry->attributes);
 	fwts_log_info_verbatim(fw, "    Line size:                      0x%4.4" PRIx16, entry->line_size);
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PPTTReservedNonZero",
-			"PPTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 
 	if (entry->flags & ~0x7f) {
 		*passed = false;
@@ -139,13 +127,7 @@ static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entr
 	fwts_log_info_verbatim(fw, "    MINOR_REV:                      0x%4.4" PRIx16, entry->minor_rev);
 	fwts_log_info_verbatim(fw, "    SPIN_REV:                       0x%4.4" PRIx16, entry->spin_rev);
 
-	if (entry->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"PPTTReservedNonZero",
-			"PPTT reserved field must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->reserved);
-	}
+	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 }
 
 static int pptt_test1(fwts_framework *fw)

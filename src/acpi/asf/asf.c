@@ -103,13 +103,11 @@ static void asf_check_info(
 			", however reserved bits [7:1] must be zero",
 			info->flags);
 	}
-	if (info->reserved1 | info->reserved2 | info->reserved3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"ASF!InfoReservedNonZero",
-			"ASF! ASF_INFO Reserved fields must be zero, "
-			"however one or more of them are non-zero");
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved1", info->reserved1, sizeof(info->reserved1), passed);
+	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved2", info->reserved2, sizeof(info->reserved2), passed);
+	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved3", info->reserved3, sizeof(info->reserved3), passed);
+
 	if (*passed)
 		fwts_passed(fw, "No issues found in ASF! ASF_INFO record.");
 }
@@ -466,13 +464,8 @@ static int asf_test1(fwts_framework *fw)
 		fwts_log_info_verbatim(fw, "Length:                     0x%4.4" PRIx16, asf_hdr->length);
 #endif
 
-		if (asf_hdr->reserved) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"ASF!InfoRecordReservedNonZero",
-				"ASF! Information Record Reserved field is 0x%" PRIx8
-				" and should be zero", asf_hdr->reserved);
-		}
+		fwts_acpi_reserved_zero_check(fw, "ASF!", "Information Record Reserved", asf_hdr->reserved, sizeof(asf_hdr->reserved), &passed);
+
 		if (asf_hdr->length > (uint32_t)length) {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,

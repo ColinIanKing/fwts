@@ -82,14 +82,9 @@ static void iort_node_check(
 			" and should be zero.",
 			node->revision);
 	}
-	if (node->reserved != 0) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"IORTNodeReservedNonZero",
-			"IORT Node Reserved field is 0x0%8.8" PRIx32
-			" and should be zero.",
-			node->reserved);
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "IORT", "Node Reserved", node->reserved, sizeof(node->reserved), passed);
+
 	if (no_id_mappings && node->id_mappings_count) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,

@@ -123,29 +123,9 @@ static int tcpa_server_test(fwts_framework *fw, fwts_acpi_table_tcpa *tcpa)
 	fwts_log_info_verbatim(fw, "  PCI Device:                      0x%2.2"   PRIx8, tcpa->server.pci_dev_number);
 	fwts_log_info_verbatim(fw, "  PCI Function:                    0x%2.2"   PRIx8, tcpa->server.pci_func_number);
 
-	if (tcpa->server.reserved != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"TCPAReservedNonZero",
-			"TCPA first reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", tcpa->server.reserved);
-	}
-
-	if (reserved2 != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"TCPAReservedNonZero",
-			"TCPA second reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", reserved2);
-	}
-
-	if (tcpa->server.reserved3 != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"TCPAReservedNonZero",
-			"TCPA third reserved field must be zero, got "
-			"0x%2.2" PRIx8 " instead", tcpa->server.reserved3);
-	}
+	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved", tcpa->server.reserved, sizeof(tcpa->server.reserved), &passed);
+	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved2", reserved2, sizeof(reserved2), &passed);
+	fwts_acpi_reserved_zero_check(fw, "TCPA", "Reserved3", tcpa->server.reserved3, sizeof(tcpa->server.reserved3), &passed);
 
 	if (tcpa->server.device_flag & 1) {
 		if (!(tcpa->server.interrupt_flag & 2)) {

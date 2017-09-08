@@ -398,6 +398,8 @@ static void hest_check_pci_express_root_port_aer(
 	fwts_log_info_verbatim(fw, "  Root Error Command:       0x%8.8" PRIx32, aer->root_error_command);
 	fwts_log_nl(fw);
 
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+
 	if (aer->flags & ~0x3) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -406,14 +408,9 @@ static void hest_check_pci_express_root_port_aer(
 			"[2:7] must be zero, instead got 0x%" PRIx8,
 			aer->flags);
 	}
-	if (aer->reserved2) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTPciExpressRootPortReservedNonZero",
-			"HEST PCI Express Root Port Reserved field "
-			"at offset 26 must be zero, instead got 0x%" PRIx16,
-			aer->reserved2);
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -478,6 +475,8 @@ static void hest_check_pci_express_device_aer(
 	fwts_log_info_verbatim(fw, "  Advanced Capabilities:    0x%8.8" PRIx32, aer->advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+
 	if (aer->flags & ~0x3) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -486,14 +485,9 @@ static void hest_check_pci_express_device_aer(
 			"[2:7] must be zero, instead got 0x%" PRIx8,
 			aer->flags);
 	}
-	if (aer->reserved2) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTPciExpressDeviceReservedNonZero",
-			"HEST PCI Express Device Reserved field "
-			"at offset 26 must be zero, instead got 0x%" PRIx16,
-			aer->reserved2);
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -562,6 +556,8 @@ static void hest_heck_pci_express_bridge_aer(
 	fwts_log_info_verbatim(fw, "  2nd Advanced Capabilities:0x%8.8" PRIx32, aer->secondary_advanced_error_capabilities_and_control);
 	fwts_log_nl(fw);
 
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
+
 	if (aer->flags & ~0x3) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -570,14 +566,9 @@ static void hest_heck_pci_express_bridge_aer(
 			"[2:7] must be zero, instead got 0x%" PRIx8,
 			aer->flags);
 	}
-	if (aer->reserved2) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTPciExpressBridgeReservedNonZero",
-			"HEST PCI Express Bridge Reserved field "
-			"at offset 26 must be zero, instead got 0x%" PRIx16,
-			aer->reserved2);
-	}
+
+	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
+
 	if (aer->number_of_records_to_preallocate < 1) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,

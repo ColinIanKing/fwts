@@ -182,7 +182,7 @@ char *hidewhitespace(char *name)
 
 int fwts_dt_property_read_u32(
 	void *fdt,
-	int offset,
+	const int offset,
 	const char *pname,
 	int *value)
 {
@@ -207,7 +207,7 @@ int fwts_dt_property_read_u32(
 
 int fwts_dt_property_read_u32_arr(
 	void *fdt,
-	int offset,
+	const int offset,
 	const char *pname,
 	int *value,
 	int *len)
@@ -236,7 +236,7 @@ int fwts_dt_property_read_u32_arr(
 
 int fwts_dt_property_read_u64_arr(
 	void *fdt,
-	int offset,
+	const int offset,
 	const char *pname,
 	uint64_t *value,
 	int *len)
@@ -261,7 +261,7 @@ int fwts_dt_property_read_u64_arr(
 int fwts_dt_stringlist_count(
 	fwts_framework *fw,
 	const void *fdt,
-	int nodeoffset,
+	const int nodeoffset,
 	const char *property)
 {
 	const char *list, *end;

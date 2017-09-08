@@ -1383,4 +1383,47 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name)
 	return found;
 }
 
+/*
+ *  fwts_acpi_reserved_zero_check()
+ *  verify whether the reserved field is zero
+ */
+void fwts_acpi_reserved_zero_check(
+	fwts_framework *fw,
+	const char *table,
+	const char *field,
+	uint64_t value,
+	uint8_t size,
+	bool *passed)
+{
+	if (value != 0) {
+		char label[20];
+		strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+		strncpy(label + 4, "ReservedNonZero", sizeof(label) - 4);
+
+		switch (size) {
+		case sizeof(uint8_t):
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, label,
+				"%4.4s %s field must be zero, got "
+				"0x%2.2" PRIx8 " instead", table, field, (uint8_t)value);
+			break;
+		case sizeof(uint16_t):
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, label,
+				"%4.4s %s field must be zero, got "
+				"0x%4.4" PRIx16 " instead", table, field, (uint16_t)value);
+			break;
+		case sizeof(uint32_t):
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, label,
+				"%4.4s %s field must be zero, got "
+				"0x%8.8" PRIx32 " instead", table, field, (uint32_t)value);
+			break;
+		case sizeof(uint64_t):
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, label,
+				"%4.4s %s field must be zero, got "
+				"0x%16.16" PRIx64 " instead", table, field, value);
+			break;
+		}
+		*passed = false;
+	}
+}
+
 #endif

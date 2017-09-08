@@ -30,9 +30,9 @@
  *	duplicate a portion of a line of text, from start to end up to
  *	a maximum of width characters
  */
-static char *dup_line(const char *start, const char *end, const int width)
+static char *dup_line(const char *start, const char *end, const size_t width)
 {
-	int maxlen;
+	size_t maxlen;
 	char *buffer;
 	char *bufptr;
 
@@ -83,9 +83,9 @@ static char *format_remove_multiple_whitespaces(const char *text)
  * 	given a text string, format it into a list of lines of
  *	text to a given width.
  */
-fwts_list *fwts_format_text(const char *text, const int width)
+fwts_list *fwts_format_text(const char *text, const size_t width)
 {
-	int linelen = 0;
+	size_t linelen = 0;
 	char *lastspace = NULL;
 	char *tidied_text;
 	char *linestart;

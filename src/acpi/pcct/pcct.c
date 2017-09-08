@@ -52,19 +52,6 @@ static bool subspace_length_equal(fwts_framework *fw, uint8_t type, uint8_t type
 	return true;
 }
 
-static void platform_interrupt_flags(fwts_framework *fw, uint8_t flags, bool *passed)
-{
-	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, flags);
-
-	if (flags & ~0x3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PCCTBadSubtypePlatformbInterruptlags",
-			"PCCT Subspace Platform Interrupt Flags's bit [7:2] be zero, got "
-			"0x%2.2" PRIx8 " instead", flags);
-	}
-}
-
 static void gas_messages(fwts_framework *fw, uint8_t type, fwts_acpi_gas *gas, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "      Address Space ID           0x%2.2"   PRIx8, gas->address_space_id);
@@ -148,7 +135,7 @@ static void generic_comm_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_1 *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	platform_interrupt_flags(fw, entry->platform_interrupt_flags, passed);
+	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
 	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
 	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
@@ -159,12 +146,14 @@ static void hw_reduced_comm_test_type1(fwts_framework *fw, fwts_acpi_table_pcct_
 	fwts_log_info_verbatim(fw, "    Nominal Latency:             0x%8.8"   PRIx32, entry->nominal_latency);
 	fwts_log_info_verbatim(fw, "    Max Periodic Access Rate:    0x%8.8"   PRIx32, entry->max_periodic_access_rate);
 	fwts_log_info_verbatim(fw, "    Min Request Turnaround Time: 0x%8.8"   PRIx32, entry->min_request_turnaround_time);
+
+	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
 
 static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_2 *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	platform_interrupt_flags(fw, entry->platform_interrupt_flags, passed);
+	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
 	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved);
 	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 8, passed);
@@ -179,12 +168,14 @@ static void hw_reduced_comm_test_type2(fwts_framework *fw, fwts_acpi_table_pcct_
 	gas_messages(fw, entry->header.type, &entry->platform_ack_register, passed);
 	fwts_log_info_verbatim(fw, "    Platform Ack Preserve:       0x%16.16" PRIx64, entry->platform_ack_preserve);
 	fwts_log_info_verbatim(fw, "    Platform Ack Write:          0x%16.16" PRIx64, entry->platform_ack_write);
+
+	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
 
 static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_type_3_4 *entry, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "    Platform Interrupt:          0x%8.8"   PRIx32, entry->platform_interrupt);
-	platform_interrupt_flags(fw, entry->platform_interrupt_flags, passed);
+	fwts_log_info_verbatim(fw, "    Platform Interrupt Flags:    0x%2.2"   PRIx8, entry->platform_interrupt_flags);
 	fwts_log_info_verbatim(fw, "    Reserved:                    0x%2.2"   PRIx8, entry->reserved1);
 	fwts_log_info_verbatim(fw, "    Base Address:                0x%16.16" PRIx64, entry->base_address);
 	memory_length(fw, entry->header.type, entry->length, 16, passed);
@@ -210,6 +201,8 @@ static void extended_pcc_test(fwts_framework *fw, fwts_acpi_table_pcct_subspace_
 	fwts_log_info_verbatim(fw, "    Error Status Register:");
 	gas_messages(fw, entry->header.type, &entry->error_status_register, passed);
 	fwts_log_info_verbatim(fw, "    Error Status Mask:           0x%16.16" PRIx64, entry->error_status_mask);
+
+	fwts_acpi_reserved_bits_check(fw, "PCCT", "Platform Interrupt Flags", entry->platform_interrupt_flags, sizeof(uint8_t), 2, 7, passed);
 }
 
 static int pcct_test1(fwts_framework *fw)
@@ -224,14 +217,7 @@ static int pcct_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Reserved:  0x%16.16"   PRIx64, pcct->reserved);
 	fwts_log_nl(fw);
 
-	if ((pcct->flags & ~0x01) != 0) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PCCTBadFlags",
-			"PCCT flags field's bit 1..31 be zero, got "
-			"0x%8.8" PRIx32 " instead", pcct->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "PCCT", "Flags", pcct->flags, sizeof(pcct->flags), 1, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "PCCT", "Reserved", pcct->reserved, sizeof(pcct->reserved), &passed);
 
 	offset = sizeof(fwts_acpi_table_pcct);

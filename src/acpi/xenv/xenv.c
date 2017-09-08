@@ -71,14 +71,7 @@ static int xenv_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Evtchn Intr:                     0x%8.8"   PRIx32, xenv->evtchn_intr);
 	fwts_log_info_verbatim(fw, "  Evtchn Intr Flags:               0x%2.2"   PRIx8,  xenv->evtchn_intr_flags);
 
-	if (xenv->evtchn_intr_flags & ~3) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"XENVBadEvtchnIntrFlags",
-			"XENV Evtchn Intr Flags was 0x%2.2" PRIx8
-			" and reserved bits [7:2] are not zero.",
-			xenv->evtchn_intr_flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "XENV", "Evtchn Intr Flags", xenv->evtchn_intr_flags, sizeof(xenv->evtchn_intr_flags), 2, 7, &passed);
 
 	if (passed)
 		fwts_passed(fw, "No issues found in XENV table.");

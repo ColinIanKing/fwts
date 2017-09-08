@@ -95,15 +95,8 @@ static void asf_check_info(
 			" and must be in the range 0x02..0xff",
 			info->min_sensor_poll_wait_time);
 	}
-	if (info->flags & ~0x01) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"ASF!InfoFeatureFlagsReserved",
-			"ASF! ASF_INFO Feature Flags is 0x%" PRIx8
-			", however reserved bits [7:1] must be zero",
-			info->flags);
-	}
 
+	fwts_acpi_reserved_bits_check(fw, "ASF!", "ASF_INFO Feature Flags", info->flags, sizeof(info->flags), 1, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved1", info->reserved1, sizeof(info->reserved1), passed);
 	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved2", info->reserved2, sizeof(info->reserved2), passed);
 	fwts_acpi_reserved_zero_check(fw, "ASF!", "ASF_INFO Reserved3", info->reserved3, sizeof(info->reserved3), passed);

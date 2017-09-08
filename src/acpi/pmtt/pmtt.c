@@ -49,14 +49,7 @@ static void pmtt_subtable_header_test(fwts_framework *fw, fwts_acpi_table_pmtt_h
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved2);
 
 	fwts_acpi_reserved_zero_check(fw, "PMTT", "Reserved1", entry->reserved1, sizeof(entry->reserved1), passed);
-
-	if (entry->flags & ~0x0F) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PMTTBadFlags",
-			"PMTT Flags's Bits[15..4] must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "PMTT", "Flags", entry->flags, sizeof(entry->flags), 4, 15, passed);
 
 	if ((entry->flags & 0x0C) == 0x0C) {
 		*passed = false;

@@ -53,14 +53,7 @@ static int wsmt_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "WSMT Windows SMM Security Mitigations Table:");
 	fwts_log_info_verbatim(fw, "  Protection Flags:      0x%8.8" PRIx32, wsmt->protection_flags);
 
-	if (wsmt->protection_flags & ~0x7) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"WSMTFlagsReserved",
-			"WSMT Protection Flags reserved bits "
-			"[3:31] must be zero, instead got 0x%" PRIx32,
-			wsmt->protection_flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "WSMT", "Protection Flags", wsmt->protection_flags, sizeof(wsmt->protection_flags), 3, 31, &passed);
 
 	if ((wsmt->protection_flags & 0x2) && !(wsmt->protection_flags & 0x1)) {
 		passed = false;

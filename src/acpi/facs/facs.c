@@ -130,22 +130,10 @@ static int facs_test1(fwts_framework *fw)
 			"FACSInvalidReserved1",
 			"FACS: 1st Reserved field is non-zero");
 	}
-	if (facs->flags & ~0x03) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FACSFlagsReservedBitsSet",
-			"FACS: Flags field is 0x%" PRIx32
-			" and some of the reserved bits [31:2] are set",
-			facs->flags);
-	}
-	if (facs->ospm_flags & ~0x01) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"FACSFlagsReservedBitsSet",
-			"FACS: OSPM Flags field is 0x%" PRIx32
-			" and some of the reserved bits [31:1] are set",
-			facs->ospm_flags);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "FACS", "Flags", facs->flags, sizeof(facs->flags), 2, 31, &passed);
+	fwts_acpi_reserved_bits_check(fw, "FACS", "OSPM Flags", facs->ospm_flags, sizeof(facs->ospm_flags), 1, 31, &passed);
+
 	for (i = 0; i < 24; i++) {
 		if (facs->reserved2[i]) {
 			passed = false;

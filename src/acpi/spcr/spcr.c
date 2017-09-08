@@ -290,15 +290,7 @@ static int spcr_test1(fwts_framework *fw)
 		}
 	}
 
-	if (spcr->pci_flags & 0xfffe) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRPciFlags",
-			"SPCR PCI flags reserved bits 1-31 are %" PRIx32
-			", expecting 0",
-			spcr->pci_flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "SPCR", "PCI Flags", spcr->pci_flags, sizeof(spcr->pci_flags), 1, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "SPCR", "Reserved3", spcr->reserved3, sizeof(spcr->reserved3), &passed);
 
 	if (passed)

@@ -87,14 +87,7 @@ static int mpst_test1(fwts_framework *fw)
 		fwts_log_info_verbatim(fw, "    Number of Power States:        0x%8.8" PRIx32, power_node->num_states);
 		fwts_log_info_verbatim(fw, "    Number of Physical Components: 0x%8.8" PRIx32, power_node->num_components);
 
-		if (power_node->flags & ~0x7) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"MPSTBadPowerNodeFlags",
-				"MPST Power Node Flags Bit 3..7 be zero, got "
-				"0x%2.2" PRIx8 " instead", power_node->flags);
-		}
-
+		fwts_acpi_reserved_bits_check(fw, "MPST", "Power Node Flags", power_node->flags, sizeof(power_node->flags), 3, 7, &passed);
 		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved", power_node->reserved, sizeof(power_node->reserved), &passed);
 
 		node_length = sizeof(fwts_acpi_table_mpst_power_node) +
@@ -180,14 +173,7 @@ static int mpst_test1(fwts_framework *fw)
 				"0x%2.2" PRIx8 " instead", (power_char->structure_id & 0xC0) >> 6);
 		}
 
-		if (power_char->flags & ~0x7) {
-			passed = false;
-			fwts_failed(fw, LOG_LEVEL_HIGH,
-				"MPSTBadPowerCharacteristicsFlags",
-				"MPST Power Characteristics Flags Bit 3..7 be zero, got "
-				"0x%2.2" PRIx8 " instead", power_char->flags);
-		}
-
+		fwts_acpi_reserved_bits_check(fw, "MPST", "Power Characteristics Flags", power_char->flags, sizeof(power_char->flags), 3, 7, &passed);
 		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved1", power_char->reserved1, sizeof(power_char->reserved1), &passed);
 		fwts_acpi_reserved_zero_check(fw, "MPST", "Reserved2", power_char->reserved2, sizeof(power_char->reserved2), &passed);
 

@@ -65,14 +65,7 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 	}
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
-
-	if (entry->flags & ~0x03) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PPTTBadFlags",
-			"PPTT Flags's Bits[31..2] must be zero, got "
-			"0x%8.8" PRIx32 " instead", entry->flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 2, 31, passed);
 }
 
 static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache *entry, bool *passed)
@@ -91,14 +84,7 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 	fwts_log_info_verbatim(fw, "    Line size:                      0x%4.4" PRIx16, entry->line_size);
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
-
-	if (entry->flags & ~0x7f) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PPTTBadFlags",
-			"PPTT Flags's Bits[31..7] must be zero, got "
-			"0x%8.8" PRIx32 " instead", entry->flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 7, 31, passed);
 
 	if (entry->attributes & ~0x1f) {
 		*passed = false;

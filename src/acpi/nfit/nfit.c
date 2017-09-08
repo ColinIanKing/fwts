@@ -162,13 +162,7 @@ static int nfit_test1(fwts_framework *fw)
 				}
 			}
 
-			if (nfit_struct->flags & ~0x03) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"NFITBadFlags",
-					"NFIT Flags's Bits[15..2] must be zero, got "
-					"0x%8.8" PRIx32 " instead", nfit_struct->flags);
-			}
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 2, 15, &passed);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
@@ -199,13 +193,7 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_verbatim(fw, "    NVDIMM State Flags:                     0x%4.4" PRIx16, nfit_struct->flags);
 			fwts_log_info_verbatim(fw, "    Reserved:                               0x%4.4" PRIx16, nfit_struct->reserved);
 
-			if (nfit_struct->flags & ~0x7F) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"NFITBadFlags",
-					"NFIT Flags's Bits[15..7] must be zero, got "
-					"0x%8.8" PRIx32 " instead", nfit_struct->flags);
-			}
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM State Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 7, 15, &passed);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
@@ -304,13 +292,7 @@ static int nfit_test1(fwts_framework *fw)
 					"0x%2.2" PRIx8 " instead", nfit_struct->valid_fields);
 			}
 
-			if (nfit_struct->flags & ~0x01) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"NFITBadFlags",
-					"NFIT Flags's Bits[15..1] must be zero, got "
-					"0x%4.4" PRIx16 " instead", nfit_struct->flags);
-			}
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 1, 15, &passed);
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_DATA_REGION) {
 			fwts_acpi_table_nfit_data_range *nfit_struct = (fwts_acpi_table_nfit_data_range *) entry;

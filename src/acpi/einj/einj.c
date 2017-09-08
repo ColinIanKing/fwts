@@ -63,14 +63,7 @@ static int einj_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Injection Entry Count: 0x%8.8" PRIx32,
 			einj->count);
 
-	if (einj->flags) {
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			    "EINJFlagNonZero",
-			    "EINJ Injection Flags field must be zero, got 0x%"
-			    PRIx8 " instead", einj->flags);
-		passed = false;
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "EINJ", "Injection Flags", einj->flags, sizeof(einj->flags), 0, 31, &passed);
 	fwts_acpi_reserved_zero_check(fw, "EINJ", "Reserved", reserved, sizeof(reserved), &passed);
 
 	fwts_log_nl(fw);

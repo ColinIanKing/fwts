@@ -85,14 +85,7 @@ static void srat_check_local_apic_sapic_affinity(
 	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
 	fwts_log_nl(fw);
 
-	if (affinity->flags & ~0x1UL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATLocalApicSapicAffinityFlags",
-			"SRAT Local APIC/SPAIC Affinity Flags field reserved bits 1..31 should be zero, got "
-			"0x%" PRIx32,
-			affinity->flags);
-		*passed = false;
-	}
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Local APIC/SPAIC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
 
 	/*
 	 * Not clear of bits 0..7 of Proximity Domain are reserved or not
@@ -151,14 +144,8 @@ static void srat_check_memory_affinity(
 	fwts_log_info_verbatim(fw, "  Reserved:                 0x%16.16" PRIx64, affinity->reserved3);
 	fwts_log_nl(fw);
 
-	if (affinity->flags & ~0x7UL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATMemoryAffinityFlags",
-			"SRAT Memory Affinity Flags field reserved bits 3..31 should be zero, got "
-			"0x%" PRIx32,
-			affinity->flags);
-		*passed = false;
-	}
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Memory Affinity Flags", affinity->flags, sizeof(affinity->flags), 3, 31, passed);
+
 done:
 	*length -= sizeof(fwts_acpi_table_memory_affinity);
 	*data += sizeof(fwts_acpi_table_memory_affinity);
@@ -214,14 +201,8 @@ static void srat_check_local_x2apic_affinity(
 		*passed = false;
 	}
 
-	if (affinity->flags & ~0x1UL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATLocalx2apicAffinityFlags",
-			"SRAT Local x2APIC Affinity Flags field reserved bits 1..31 should be zero, got "
-			"0x%" PRIx32,
-			affinity->flags);
-		*passed = false;
-	}
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Local x2APIC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
+
 	/*
 	 *  Clock domain probably needs deeper sanity checking, for now
 	 *  skip this.
@@ -270,14 +251,8 @@ static void srat_check_gicc_affinity(
 	fwts_log_info_verbatim(fw, "  Clock Domain              0x%8.8" PRIx32, affinity->clock_domain);
 	fwts_log_nl(fw);
 
-	if (affinity->flags & ~0x1UL) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SRATGICCAffinityFlags",
-			"SRAT GICC Affinity Flags field reserved bits 1..31 should be zero, got "
-			"0x%" PRIx32,
-			affinity->flags);
-		*passed = false;
-	}
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "GICC Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 31, passed);
+
 	/*
 	 *  Clock domain probably needs deeper sanity checking, for now
 	 *  skip this.

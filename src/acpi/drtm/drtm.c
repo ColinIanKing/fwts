@@ -66,14 +66,7 @@ static int drtm_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "  Architecture_Dependent:   0x%16.16" PRIx64, drtm->arch_dependent_address);
 	fwts_log_info_verbatim(fw, "  DRT_Flags:                0x%8.8" PRIx32, drtm->flags);
 
-	if (drtm->flags & ~0x0F) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"DRTMBadFlagReservedNonZero",
-			"DRTM DRT_Flags Bits [31:4] are reserved, got 0x%8.8" PRIx32
-			" instead",	drtm->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "DRTM", "DRT_Flags", drtm->flags, sizeof(drtm->flags), 4, 31, &passed);
 	fwts_log_nl(fw);
 
 	offset = sizeof(fwts_acpi_table_drtm);

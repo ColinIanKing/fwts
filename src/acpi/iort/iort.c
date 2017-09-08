@@ -238,14 +238,7 @@ static void iort_smmu_interrupt_flags_check(
 	uint32_t flags,
 	bool *passed)
 {
-	if (flags & ~1) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"IORTSMMUIntrFlagsReservedNonZero",
-			"IORT %s Flags field reserved "
-			"bits [31:1] should be all zero, got 0x%" PRIx32,
-			name, flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "IORT", name, flags, sizeof(flags), 1, 31, passed);
 }
 
 /*
@@ -588,14 +581,8 @@ static void iort_check_smmu(
 			"IORT SMMU Model is 0x%" PRIx32 " and was expecting "
 			"a model value 0 to 3.", node->model);
 	}
-	if (node->flags & ~3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"IORTSmmuReservedFlags",
-			"IORT SMMU Reserved Flags is 0x%" PRIx32 " and has "
-			"some reserved bits [31:2] set when they should be zero.",
-			node->flags);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "IORT", "SMMU Reserved Flags", node->flags, sizeof(node->flags), 2, 31, passed);
 	fwts_log_nl(fw);
 }
 
@@ -634,14 +621,8 @@ static void iort_check_smmuv3(
 			"IORT SMMUv3 Model is 0x%" PRIx32 " and was expecting "
 			"a model value of 0.", node->model);
 	}
-	if (node->flags & ~3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"IORTSmmuv3ReservedFlags",
-			"IORT SMMUv3 Reserved Flags is 0x%" PRIx32 " and has "
-			"some reserved bits [31:2] set when they should be zero.",
-			node->flags);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "IORT", "SMMUv3 Reserved Flags", node->flags, sizeof(node->flags), 2, 31, passed);
 	fwts_log_nl(fw);
 }
 

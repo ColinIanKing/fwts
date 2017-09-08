@@ -399,16 +399,7 @@ static void hest_check_pci_express_root_port_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-
-	if (aer->flags & ~0x3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"HESTPciExpressRootPortFlagsReserved",
-			"HEST PCI Express Root Port Flags Reserved bits "
-			"[2:7] must be zero, instead got 0x%" PRIx8,
-			aer->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Root Port Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Root Port Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
@@ -476,16 +467,7 @@ static void hest_check_pci_express_device_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-
-	if (aer->flags & ~0x3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"HESTPciExpressDeviceFlagsReserved",
-			"HEST PCI Express Device Flags Reserved bits "
-			"[2:7] must be zero, instead got 0x%" PRIx8,
-			aer->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Device Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Device Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {
@@ -557,16 +539,7 @@ static void hest_heck_pci_express_bridge_aer(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved1", aer->reserved1, sizeof(aer->reserved1), passed);
-
-	if (aer->flags & ~0x3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"HESTPciExpressBridgeFlagsReserved",
-			"HEST PCI Express Bridge Flags Reserved bits "
-			"[2:7] must be zero, instead got 0x%" PRIx8,
-			aer->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "HEST", "PCI Express Bridge Flags", aer->flags, sizeof(aer->flags), 2, 7, passed);
 	fwts_acpi_reserved_zero_check(fw, "HEST", "PCI Express Bridge Reserved2", aer->reserved2, sizeof(aer->reserved2), passed);
 
 	if (aer->number_of_records_to_preallocate < 1) {

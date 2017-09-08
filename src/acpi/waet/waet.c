@@ -71,14 +71,8 @@ static int waet_test1(fwts_framework *fw)
 	fwts_log_info_verbatim(fw, "    Bit [1] PM Timer Good:  %1" PRIu32, (waet->flags >> 1) & 1);
 	fwts_log_nl(fw);
 
-	if (waet->flags & ~3) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"WAETFlagReservedNotZero",
-			"WAET Emulated Device Flags was 0x%" PRIx32
-			" and so some of reserved bits [31:2] are not zero "
-			" as expected.", waet->flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "WAET", "Emulated Device Flags", waet->flags, sizeof(waet->flags), 2, 31, &passed);
+
 done:
 	if (passed)
 		fwts_passed(fw, "No issues found in WAET table.");

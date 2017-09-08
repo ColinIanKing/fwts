@@ -56,13 +56,7 @@ static int gtdt_test1(fwts_framework *fw)
 	uint32_t i = 0, n;
 	const fwts_acpi_table_gtdt *gtdt = (const fwts_acpi_table_gtdt *)table->data;
 
-	if (gtdt->virtual_timer_flags & ~7) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"GTDTFlagReservedNonZero",
-			"GTDT flag reserved bits 3 to 31 are non-zero, "
-			"instead got 0x%" PRIx32 ".", gtdt->virtual_timer_flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "GTDT", "Flags", gtdt->virtual_timer_flags, sizeof(gtdt->virtual_timer_flags), 3, 31, &passed);
 
 	ptr = (uint8_t *)table->data + gtdt->platform_timer_offset;
 	n = gtdt->platform_timer_count;

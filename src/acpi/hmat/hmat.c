@@ -54,15 +54,7 @@ static void hmat_addr_range_test(fwts_framework *fw, const fwts_acpi_table_hmat_
 	fwts_log_info_verbatim(fw, "    System Phy Addr Range Length:   0x%16.16" PRIx64, entry->phy_addr_length);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-
-	if (entry->flags & ~0x07) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"HMATBadFlags",
-			"HMAT Flags's Bits[15..3] must be zero, got "
-			"0x%4.4" PRIx16 " instead", entry->flags);
-	}
-
+	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 3, 15, passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
 }
@@ -84,14 +76,7 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 	fwts_log_info_verbatim(fw, "    Entry Base Unit:                0x%16.16" PRIx64, entry->entry_base_unit);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-
-	if (entry->flags & ~0x1f) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-			"HMATBadFlags",
-			"HMAT Flags's Bits[7..5] must be zero, got "
-			"0x%2.2" PRIx8 " instead", entry->flags);
-	}
+	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 5, 7, passed);
 
 	if (entry->data_type > 5) {
 		*passed = false;

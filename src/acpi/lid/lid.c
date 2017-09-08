@@ -31,7 +31,7 @@
 
 static int lid_init(fwts_framework *fw)
 {
-	int matched, not_matched;
+	uint32_t matched, not_matched;
 
 	if (fwts_button_match_state(fw, FWTS_BUTTON_LID_ANY, &matched, &not_matched) != FWTS_OK) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "NoLIDPath",
@@ -41,13 +41,16 @@ static int lid_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void lid_check_field_poll(fwts_framework *fw,
-	int button, int *matching, int *not_matching)
+static void lid_check_field_poll(
+	fwts_framework *fw,
+	const uint32_t button,
+	uint32_t *matching,
+	uint32_t *not_matching)
 {
 	int i;
 
-	int tmp_matching = 0;
-	int tmp_not_matching = 0;
+	uint32_t tmp_matching = 0;
+	uint32_t tmp_not_matching = 0;
 
 	for (i = 0; i < 100; i++) {
 		fwts_button_match_state(fw, button,
@@ -63,8 +66,8 @@ static void lid_check_field_poll(fwts_framework *fw,
 
 static int lid_test1(fwts_framework *fw)
 {
-	int matching = 0;
-	int not_matching = 0;
+	uint32_t matching = 0;
+	uint32_t not_matching = 0;
 
 	fwts_printf(fw, "==== Make sure laptop lid is open. ====\n");
 	fwts_press_enter(fw);
@@ -84,8 +87,8 @@ static int lid_test_state(fwts_framework *fw, int button)
 {
 	int gpe_count = 0;
 	int fd;
-	int matching = 0;
-	int not_matching = 0;
+	uint32_t matching = 0;
+	uint32_t not_matching = 0;
 	int events = 0;
 	size_t len;
 	char *state;

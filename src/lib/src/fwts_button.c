@@ -35,9 +35,9 @@
  *	any non-matching states found, via proc iterface
  */
 static int fwts_button_match_state_proc(
-	const int button,
-	int *matched,
-	int *not_matched)
+	const uint32_t button,
+	uint32_t *matched,
+	uint32_t *not_matched)
 {
 	DIR *dir;
 	struct dirent *entry;
@@ -112,9 +112,9 @@ static int fwts_button_match_state_proc(
  */
 int fwts_button_match_state(
 	fwts_framework *fw,
-	const int button,
-	int *matched,
-	int *not_matched)
+	const uint32_t button,
+	uint32_t *matched,
+	uint32_t *not_matched)
 {
 	*matched = 0;
 	*not_matched = 0;

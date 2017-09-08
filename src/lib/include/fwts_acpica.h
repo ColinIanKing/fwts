@@ -30,7 +30,7 @@ int  fwts_acpica_deinit(void);
 fwts_list *fwts_acpica_get_object_names(int type);
 void fwts_acpica_sem_count_clear(void);
 void fwts_acpica_sem_count_get(int *acquired, int *released);
-void fwts_acpi_region_handler_called_set(bool val);
+void fwts_acpi_region_handler_called_set(const bool val);
 bool fwts_acpi_region_handler_called_get(void);
 
 #endif

@@ -237,7 +237,7 @@ static ACPI_STATUS fwts_region_init(
 	return AE_OK;
 }
 
-void fwts_acpi_region_handler_called_set(bool val)
+void fwts_acpi_region_handler_called_set(const bool val)
 {
 	region_handler_called = val;
 }

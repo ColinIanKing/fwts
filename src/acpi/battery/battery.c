@@ -45,7 +45,7 @@ static void battery_discharge(fwts_framework *fw, const int secs)
 	fwts_cpu_consume_complete();
 }
 
-static uint32_t get_full(fwts_framework *fw, int index)
+static uint32_t get_full(fwts_framework *fw, const uint32_t index)
 {
         uint32_t capacity_mAh;
         uint32_t capacity_mWh;
@@ -60,7 +60,7 @@ static uint32_t get_full(fwts_framework *fw, int index)
 	return 0;
 }
 
-static int wait_for_acpi_event(fwts_framework *fw, char *name)
+static int wait_for_acpi_event(fwts_framework *fw, const char *name)
 {
 	int gpe_count = 0;
 	int fd;
@@ -127,9 +127,12 @@ static int wait_for_acpi_event(fwts_framework *fw, char *name)
 
 	return FWTS_OK;
 }
-static void check_charging(fwts_framework *fw, int index, char *name)
+static void check_charging(
+	fwts_framework *fw,
+	const uint32_t index,
+	const char *name)
 {
-	int i;
+	uint32_t i;
 	/* when we get here we KNOW the state is "charging" */
 	uint32_t initial_value;
 
@@ -150,9 +153,12 @@ static void check_charging(fwts_framework *fw, int index, char *name)
 		"Battery %s claims it's charging but no charge is added", name);
 }
 
-static void check_discharging(fwts_framework *fw, int index, char *name)
+static void check_discharging(
+	fwts_framework *fw,
+	const uint32_t index,
+	const char *name)
 {
-	int i;
+	uint32_t i;
 	/* when we get here we KNOW the state is "discharging" */
 	uint32_t initial_value;
 
@@ -177,9 +183,12 @@ static void check_discharging(fwts_framework *fw, int index, char *name)
 		name);
 }
 
-static void check_battery_cycle_count(fwts_framework *fw, int index, char *name)
+static void check_battery_cycle_count(
+	fwts_framework *fw,
+	const uint32_t index,
+	const char *name)
 {
-	int cycle_count;
+	uint32_t cycle_count;
 
 	fwts_printf(fw, "==== Checking cycle count of battery '%s' ====\n", name);
 	if (fwts_battery_get_cycle_count(fw, index, &cycle_count) == FWTS_OK) {
@@ -195,10 +204,13 @@ static void check_battery_cycle_count(fwts_framework *fw, int index, char *name)
 
 }
 
-static void check_battery_trip_point(fwts_framework *fw, int index, char *name)
+static void check_battery_trip_point(
+	fwts_framework *fw,
+	const uint32_t index,
+	const char *name)
 {
-	int trip_point;
-	int trip_point_org;
+	uint32_t trip_point;
+	uint32_t trip_point_org;
 
 	fwts_printf(fw, "==== Checking trip point of battery '%s' ====\n", name);
 
@@ -235,7 +247,7 @@ static void check_battery_trip_point(fwts_framework *fw, int index, char *name)
 
 }
 
-static void do_battery_test(fwts_framework *fw, int index)
+static void do_battery_test(fwts_framework *fw, const uint32_t index)
 {
 	char name[PATH_MAX];
 	char state[1024];
@@ -263,8 +275,8 @@ static void do_battery_test(fwts_framework *fw, int index)
 
 static int battery_test1(fwts_framework *fw)
 {
-	int count = 0;
-	int i;
+	uint32_t count = 0;
+	uint32_t i;
 
 	fwts_log_info(fw,
 	   "This test reports which (if any) batteries there are in the system. "
@@ -280,7 +292,7 @@ static int battery_test1(fwts_framework *fw)
 		return FWTS_OK;
 	}
 
-	fwts_log_info(fw, "Found %d batteries.", count);
+	fwts_log_info(fw, "Found %" PRIu32 " batteries.", count);
 
 	for (i = 0; i < count; i++)
 		do_battery_test(fw, i);

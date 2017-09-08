@@ -27,20 +27,27 @@
 #include <limits.h>
 #include <dirent.h>
 
+static inline bool fwts_battery_match(
+	const uint32_t index,
+	const uint32_t loop_index)
+{
+	return (((fwts_battery_type)index == FWTS_BATTERY_ALL) | (index == loop_index));
+}
+
 static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	DIR 	*dir,
 	const fwts_battery_type type,
-	const int index,
+	const uint32_t index,
 	uint32_t *capacity_mAh,	/* charge */
 	uint32_t *capacity_mWh, /* energy */
-	int 	*count)
+	uint32_t *count)
 {
 	struct dirent *entry;
 	char *field_mAh;
 	char *field_mWh;
 	size_t field_mAh_len;
 	size_t field_mWh_len;
-	int  i = 0;
+	uint32_t i = 0;
 
 	switch (type) {
 	case FWTS_BATTERY_DESIGN_CAPACITY:
@@ -77,7 +84,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 			} else
 				continue;		/* can't check type, skip this entry */
 
-			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -112,15 +119,15 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	DIR 	*dir,
 	const fwts_battery_type type,
-	const int index,
+	const uint32_t index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh,
-	int 	*count)
+	uint32_t *count)
 {
 	struct dirent *entry;
 	char *file;
 	char *field;
-	int  i = 0;
+	uint32_t i = 0;
 
 	switch (type) {
 	case FWTS_BATTERY_DESIGN_CAPACITY:
@@ -141,7 +148,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 			char path[PATH_MAX];
 			int  val;
 			FILE *fp;
-			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			bool match = fwts_battery_match(index, i);
 
 			i++;
 			if (!match)
@@ -177,7 +184,7 @@ static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_count_sys_fs(DIR *dir, int *count)
+static int fwts_battery_get_count_sys_fs(DIR *dir, uint32_t *count)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
@@ -198,7 +205,7 @@ static int fwts_battery_get_count_sys_fs(DIR *dir, int *count)
 	return FWTS_OK;
 }
 
-static int fwts_battery_get_count_proc_fs(DIR *dir, int *count)
+static int fwts_battery_get_count_proc_fs(DIR *dir, uint32_t *count)
 {
 	struct dirent *entry;
 	do {
@@ -211,13 +218,13 @@ static int fwts_battery_get_count_proc_fs(DIR *dir, int *count)
 
 static int fwts_battery_get_name_sys_fs(
 	DIR *dir,
-	const int index,
+	const uint32_t index,
 	char *name)
 {
 	struct dirent *entry;
 	char path[PATH_MAX];
 	char *data;
-	int i = 0;
+	uint32_t i = 0;
 
 	do {
 		entry = readdir(dir);
@@ -233,7 +240,7 @@ static int fwts_battery_get_name_sys_fs(
 			} else
 				continue;		/* can't check type, skip this entry */
 
-			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -248,16 +255,16 @@ static int fwts_battery_get_name_sys_fs(
 
 static int fwts_battery_get_name_proc_fs(
 	DIR *dir,
-	const int index,
+	const uint32_t index,
 	char *name)
 {
 	struct dirent *entry;
-	int i = 0;
+	uint32_t i = 0;
 
 	do {
 		entry = readdir(dir);
 		if (entry && strlen(entry->d_name) > 2) {
-			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			bool match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -273,13 +280,13 @@ static int fwts_battery_get_name_proc_fs(
 static int fwts_battery_get_cycle_count_sys_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	int *cycle_count)
+	const uint32_t index,
+	uint32_t *cycle_count)
 {
 	struct dirent *entry;
 	char *field_cycle_count;
 	size_t field_cycle_count_len;
-	int  i = 0;
+	uint32_t i = 0;
 
 	*cycle_count = 0;
 	field_cycle_count = "POWER_SUPPLY_CYCLE_COUNT=";
@@ -303,7 +310,7 @@ static int fwts_battery_get_cycle_count_sys_fs(
 					continue;	/* type don't match, skip this entry */
 			} else
 				continue;		/* can't check type, skip this entry */
-			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -331,13 +338,13 @@ static int fwts_battery_get_cycle_count_sys_fs(
 static int fwts_battery_get_cycle_count_proc_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	int *cycle_count)
+	const uint32_t index,
+	uint32_t *cycle_count)
 {
 	struct dirent *entry;
 	char *file;
 	char *field;
-	int  i = 0;
+	uint32_t i = 0;
 
 	*cycle_count = 0;
 	file = "info";
@@ -349,7 +356,7 @@ static int fwts_battery_get_cycle_count_proc_fs(
 			char path[PATH_MAX];
 			int  val;
 			FILE *fp;
-			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			bool match = fwts_battery_match(index, i);
 
 			i++;
 			if (!match)
@@ -378,11 +385,11 @@ static int fwts_battery_get_cycle_count_proc_fs(
 static int fwts_battery_set_trip_point_sys_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	const int trip_point)
+	const uint32_t index,
+	const uint32_t trip_point)
 {
 	struct dirent *entry;
-	int  i = 0;
+	uint32_t i = 0;
 
 	do {
 		entry = readdir(dir);
@@ -401,7 +408,7 @@ static int fwts_battery_set_trip_point_sys_fs(
 					continue;	/* type don't match, skip this entry */
 			} else
 				continue;		/* can't check type, skip this entry */
-			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -424,11 +431,11 @@ static int fwts_battery_set_trip_point_sys_fs(
 static int fwts_battery_get_trip_point_sys_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	int *trip_point)
+	const uint32_t index,
+	uint32_t *trip_point)
 {
 	struct dirent *entry;
-	int  i = 0;
+	uint32_t i = 0;
 
 	*trip_point = 0;
 	do {
@@ -449,7 +456,7 @@ static int fwts_battery_get_trip_point_sys_fs(
 					continue;	/* type don't match, skip this entry */
 			} else
 				continue;		/* can't check type, skip this entry */
-			match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			match = fwts_battery_match(index, i);
 			i++;
 			if (!match)
 				continue;
@@ -474,18 +481,18 @@ static int fwts_battery_get_trip_point_sys_fs(
 static int fwts_battery_set_trip_point_proc_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	const int trip_point)
+	const uint32_t index,
+	const uint32_t trip_point)
 {
 	struct dirent *entry;
-	int  i = 0;
+	uint32_t i = 0;
 
 	do {
 		entry = readdir(dir);
 		if (entry && strlen(entry->d_name) > 2) {
 			char path[PATH_MAX];
 			FILE *fp;
-			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			bool match = fwts_battery_match(index, i);
 
 			i++;
 			if (!match)
@@ -496,7 +503,7 @@ static int fwts_battery_set_trip_point_proc_fs(
 				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
 			} else {
 				char buffer[512];
-				sprintf(buffer, "%d", trip_point);
+				sprintf(buffer, "%" PRIu32 , trip_point);
 				fputs(buffer, fp);
 				(void)fclose(fp);
 			}
@@ -509,11 +516,11 @@ static int fwts_battery_set_trip_point_proc_fs(
 static int fwts_battery_get_trip_point_proc_fs(
 	fwts_framework *fw,
 	DIR *dir,
-	const int index,
-	int *trip_point)
+	const uint32_t index,
+	uint32_t *trip_point)
 {
 	struct dirent *entry;
-	int  i = 0;
+	uint32_t i = 0;
 
 	*trip_point = 0;
 	do {
@@ -522,7 +529,7 @@ static int fwts_battery_get_trip_point_proc_fs(
 			char path[PATH_MAX];
 			int  val;
 			FILE *fp;
-			bool match = ((index == FWTS_BATTERY_ALL) || (index == i));
+			bool match = fwts_battery_match(index, i);
 
 			i++;
 			if (!match)
@@ -536,7 +543,7 @@ static int fwts_battery_get_trip_point_proc_fs(
 				while (fgets(buffer, sizeof(buffer)-1, fp) != NULL) {
 					if (strstr(buffer, "alarm:") &&
 					    strlen(buffer) > 25) {
-						sscanf(buffer + 25, "%d", &val);
+						sscanf(buffer + 25, "%" SCNu32, &val);
 						*trip_point = val;
 						break;
 					}
@@ -551,8 +558,8 @@ static int fwts_battery_get_trip_point_proc_fs(
 
 int fwts_battery_set_trip_point(
 	fwts_framework *fw,
-	const int index,
-	const int trip_point)
+	const uint32_t index,
+	const uint32_t trip_point)
 {
 	int ret;
 	DIR *dir;
@@ -572,7 +579,8 @@ int fwts_battery_set_trip_point(
 
 int fwts_battery_get_trip_point(
 	fwts_framework *fw,
-	const int index, int *trip_point)
+	const uint32_t index,
+	uint32_t *trip_point)
 {
 	int ret;
 	DIR *dir;
@@ -592,9 +600,9 @@ int fwts_battery_get_trip_point(
 
 bool fwts_battery_check_trip_point_support(
 	fwts_framework *fw,
-	const int index)
+	const uint32_t index)
 {
-	int trip_point;
+	uint32_t trip_point;
 
 	if (!(fwts_battery_get_trip_point(fw, index, &trip_point) == FWTS_OK))
 		return false;
@@ -607,8 +615,8 @@ bool fwts_battery_check_trip_point_support(
 
 int fwts_battery_get_cycle_count(
 	fwts_framework *fw,
-	const int index,
-	int *cycle_count)
+	const uint32_t index,
+	uint32_t *cycle_count)
 {
 	int ret;
 	DIR *dir;
@@ -628,7 +636,7 @@ int fwts_battery_get_cycle_count(
 
 int fwts_battery_get_name(
 	fwts_framework *fw,
-	const int index,
+	const uint32_t index,
 	char *name)
 {
 	int ret;
@@ -648,7 +656,7 @@ int fwts_battery_get_name(
 	return ret;
 }
 
-int fwts_battery_get_count(fwts_framework *fw, int *count)
+int fwts_battery_get_count(fwts_framework *fw, uint32_t *count)
 {
 	*count = 0;
 	int ret;
@@ -670,13 +678,13 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 
 int fwts_battery_get_capacity(fwts_framework *fw,
 	const fwts_battery_type type,
-	const int index,
+	const uint32_t index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh)
 {
 	int ret;
 	DIR *dir;
-	int n = 0;
+	uint32_t n = 0;
 
 	*capacity_mAh = 0;
 	*capacity_mWh = 0;

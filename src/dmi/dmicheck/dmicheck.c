@@ -1108,7 +1108,7 @@ static void dmicheck_entry(fwts_framework *fw,
 	int	i;
 	int	len;
 	uint32_t failed_count = fw->minor_tests.failed;
-	int	battery_count;
+	uint32_t battery_count;
 	int	ret;
 
 	switch (hdr->type) {

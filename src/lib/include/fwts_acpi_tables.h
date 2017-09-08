@@ -33,22 +33,22 @@ typedef enum {
 } fwts_acpi_table_provenance;
 
 typedef struct {
-	char    name[5];
+	char	   name[5];
 	const void *data;
-	size_t	length;
-	int 	which;
-	int	index;
-	bool	has_aml;
-	uint64_t addr;
+	size_t	   length;
+	uint32_t   which;
+	uint32_t   index;
+	bool	   has_aml;
+	uint64_t   addr;
 	fwts_acpi_table_provenance provenance;
 } fwts_acpi_table_info;
 
 int fwts_acpi_load_tables(fwts_framework *fw);
 int fwts_acpi_free_tables(void);
 
-int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info);
+int fwts_acpi_find_table(fwts_framework *fw, const char *name, const uint32_t which, fwts_acpi_table_info **info);
 int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_acpi_table_info **info);
-int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info);
+int fwts_acpi_get_table(fwts_framework *fw, const uint32_t index, fwts_acpi_table_info **info);
 bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name);
 
 fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);

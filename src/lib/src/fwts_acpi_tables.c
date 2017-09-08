@@ -235,7 +235,7 @@ static void fwts_acpi_add_table(
 						/* Where we got the table from */
 {
 	int i;
-	int which = 0;
+	uint32_t which = 0;
 
 	for (i = 0; i < ACPI_MAX_TABLES; i++) {
 		if (addr && tables[i].addr == addr) {
@@ -1237,7 +1237,11 @@ int fwts_acpi_load_tables(fwts_framework *fw)
  *  	Search for an ACPI table. There may be more than one, so
  *  	specify the one using which.
  */
-int fwts_acpi_find_table(fwts_framework *fw, const char *name, const int which, fwts_acpi_table_info **info)
+int fwts_acpi_find_table(
+	fwts_framework *fw,
+	const char *name,
+	const uint32_t which,
+	fwts_acpi_table_info **info)
 {
 	int i;
 
@@ -1302,14 +1306,14 @@ int fwts_acpi_find_table_by_addr(fwts_framework *fw, const uint64_t addr, fwts_a
  *  fwts_acpi_get_table()
  *  	Get the Nth cached ACPI table.
  */
-int fwts_acpi_get_table(fwts_framework *fw, const int index, fwts_acpi_table_info **info)
+int fwts_acpi_get_table(fwts_framework *fw, const uint32_t index, fwts_acpi_table_info **info)
 {
 	if (info == NULL)
 		return FWTS_NULL_POINTER;
 
 	*info = NULL;
 
-	if ((index < 0) || (index >= ACPI_MAX_TABLES))
+	if (index >= ACPI_MAX_TABLES)
 		return FWTS_ERROR;
 
 	if (acpi_tables_loaded == ACPI_TABLES_NOT_LOADED) {

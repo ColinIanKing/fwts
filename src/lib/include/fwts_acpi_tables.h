@@ -54,6 +54,7 @@ bool fwts_acpi_obj_find(fwts_framework *fw, const char *obj_name);
 fwts_bool fwts_acpi_is_reduced_hardware(const fwts_acpi_table_fadt *fadt);
 
 void fwts_acpi_reserved_zero_check(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, bool *passed);
+void fwts_acpi_reserved_bits_check(fwts_framework *fw, const char *table, const char *field, uint64_t value, uint8_t size, uint8_t min, uint8_t max, bool *passed);
 
 #endif
 

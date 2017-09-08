@@ -1430,4 +1430,56 @@ void fwts_acpi_reserved_zero_check(
 	}
 }
 
+/*
+ *  fwts_acpi_reserved_bits_check()
+ *  verify whether the reserved bits are zero
+ */
+void fwts_acpi_reserved_bits_check(
+	fwts_framework *fw,
+	const char *table,
+	const char *field,
+	uint64_t value,
+	uint8_t size,
+	uint8_t min,
+	uint8_t max,
+	bool *passed)
+{
+	uint64_t mask = 0;
+	uint8_t i;
+
+	for (i = min; i <= max; i++) {
+		mask |= (1ULL << i);
+	}
+
+	if (value & mask) {
+		char label[24];
+		strncpy(label, table, 4);	/* ACPI table name is 4 char long */
+		strncpy(label + 4, "ReservedBitsNonZero", sizeof(label) - 4);
+
+		switch (size) {
+		case sizeof(uint8_t):
+			fwts_failed(fw, LOG_LEVEL_HIGH, label,
+				"%4.4s %s Bits [%" PRIu8 "..%" PRIu8 "] must be zero, got "
+				"0x%2.2" PRIx8 " instead", table, field, max, min, (uint8_t)value);
+			break;
+		case sizeof(uint16_t):
+			fwts_failed(fw, LOG_LEVEL_HIGH, label,
+				"%4.4s %s Bits [%" PRIu8 "..%" PRIu8 "] must be zero, got "
+				"0x%4.4" PRIx16 " instead", table, field, max, min, (uint16_t)value);
+			break;
+		case sizeof(uint32_t):
+			fwts_failed(fw, LOG_LEVEL_HIGH, label,
+				"%4.4s %s Bits [%" PRIu8 "..%" PRIu8 "] must be zero, got "
+				"0x%8.8" PRIx32 " instead", table, field, max, min, (uint32_t)value);
+			break;
+		case sizeof(uint64_t):
+			fwts_failed(fw, LOG_LEVEL_HIGH, label,
+				"%4.4s %s Bits [%" PRIu8 "..%" PRIu8 "] must be zero, got "
+				"0x%16.16" PRIx64 " instead", table, field, max, min, value);
+			break;
+		}
+		*passed = false;
+	}
+}
+
 #endif

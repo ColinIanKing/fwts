@@ -21,12 +21,10 @@ facs              Reserved:                 0x00 0x00 0x00 0x00
 facs              Reserved:                 0x00 0x00 0x00 0x00
 facs            FAILED [LOW] FACSInvalidReserved1: Test 1, FACS: 1st
 facs            Reserved field is non-zero
-facs            FAILED [MEDIUM] FACSFlagsReservedBitsSet: Test 1, FACS:
-facs            Flags field is 0xffffffff and some of the reserved bits
-facs            [31:2] are set
-facs            FAILED [MEDIUM] FACSFlagsReservedBitsSet: Test 1, FACS:
-facs            OSPM Flags field is 0xefefefef and some of the reserved
-facs            bits [31:1] are set
+facs            FAILED [HIGH] FACSReservedBitsNonZero: Test 1, FACS Flags
+facs            Bits [31..2] must be zero, got 0xffffffff instead
+facs            FAILED [HIGH] FACSReservedBitsNonZero: Test 1, FACS OSPM
+facs            Flags Bits [31..1] must be zero, got 0xefefefef instead
 facs            FAILED [LOW] FACSInvalidReserved1: Test 1, FACS: 2nd
 facs            Reserved field is non-zero
 facs            

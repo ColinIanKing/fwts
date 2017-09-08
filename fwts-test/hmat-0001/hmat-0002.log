@@ -16,8 +16,8 @@ hmat                System Phy Addr Range Base:     0x0000000000000000
 hmat                System Phy Addr Range Length:   0x0000000000000000
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0001 instead
-hmat            FAILED [HIGH] HMATBadFlags: Test 1, HMAT Flags's
-hmat            Bits[15..3] must be zero, got 0x000f instead
+hmat            FAILED [HIGH] HMATReservedBitsNonZero: Test 1, HMAT Flags
+hmat            Bits [15..3] must be zero, got 0x000f instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0002 instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
@@ -36,8 +36,8 @@ hmat                Reserved:                       0x00000006
 hmat                Entry Base Unit:                0x0000000000000000
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0004 instead
-hmat            FAILED [CRITICAL] HMATBadFlags: Test 1, HMAT Flags's
-hmat            Bits[7..5] must be zero, got 0x3f instead
+hmat            FAILED [HIGH] HMATReservedBitsNonZero: Test 1, HMAT Flags
+hmat            Bits [7..5] must be zero, got 0x3f instead
 hmat            FAILED [CRITICAL] HMATBadFDataType: Test 1, HMAT Data Type
 hmat            must be 0..5, got 0x06 instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved

@@ -4,8 +4,9 @@ wsmt            Test 1 of 1: WSMT Windows SMM Security Mitigations Table
 wsmt            test.
 wsmt            WSMT Windows SMM Security Mitigations Table:
 wsmt              Protection Flags:      0x00000009
-wsmt            FAILED [MEDIUM] WSMTFlagsReserved: Test 1, WSMT Protection
-wsmt            Flags reserved bits [3:31] must be zero, instead got 0x9
+wsmt            FAILED [HIGH] WSMTReservedBitsNonZero: Test 1, WSMT
+wsmt            Protection Flags Bits [31..3] must be zero, got 0x00000009
+wsmt            instead
 wsmt            
 wsmt            
 wsmt            ==========================================================

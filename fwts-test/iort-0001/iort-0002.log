@@ -164,36 +164,28 @@ iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
 iort            Revision field is 0xa0 and should be zero.
 iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
 iort            Reserved field must be zero, got 0x00008100 instead
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_NsgIrpt Flags field reserved bits [31:1] should
-iort            be all zero, got 0x2
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_NsgCfgIrpt Flags field reserved bits [31:1]
-iort            should be all zero, got 0x4
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x8
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x10
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x20
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x40
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0xaa
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0xab
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x92
-iort            FAILED [MEDIUM] IORTSMMUIntrFlagsReservedNonZero: Test 1,
-iort            IORT SMMU_GSV Flags field reserved bits [31:1] should be
-iort            all zero, got 0x4
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_NsgIrpt Bits [31..1] must be zero, got 0x00000002
+iort            instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_NsgCfgIrpt Bits [31..1] must be zero, got 0x00000004
+iort            instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000008 instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000010 instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000020 instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000040 instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x000000aa instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x000000ab instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000092 instead
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT
+iort            SMMU_GSV Bits [31..1] must be zero, got 0x00000004 instead
 iort            FAILED [HIGH] IORTSmmuInterruptsOutsideTable: Test 1, IORT
 iort            SMMU Interrupt 4 is outside the IORT ACPI table. Either
 iort            the offset is incorrect or the IORT table size is too
@@ -204,9 +196,9 @@ iort            offset is incorrect or the IORT table size or the node is
 iort            too small.
 iort            FAILED [HIGH] IORTSmmuInvalidModel: Test 1, IORT SMMU
 iort            Model is 0x4 and was expecting a model value 0 to 3.
-iort            FAILED [HIGH] IORTSmmuReservedFlags: Test 1, IORT SMMU
-iort            Reserved Flags is 0xaa and has some reserved bits [31:2]
-iort            set when they should be zero.
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT SMMU
+iort            Reserved Flags Bits [31..2] must be zero, got 0x000000aa
+iort            instead
 iort            
 iort            FAILED [HIGH] IORTInvalidType: Test 1, IORT Type 0xff is
 iort            invalid, aborting check

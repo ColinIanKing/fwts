@@ -23,9 +23,9 @@ hest              Correctable Error Mask:   0x000011c1
 hest              Advanced Capabilities:    0x00000000
 hest              Root Error Command:       0x00000006
 hest            
-hest            FAILED [MEDIUM] HESTPciExpressRootPortFlagsReserved: Test
-hest            1, HEST PCI Express Root Port Flags Reserved bits [2:7]
-hest            must be zero, instead got 0x7
+hest            FAILED [HIGH] HESTReservedBitsNonZero: Test 1, HEST PCI
+hest            Express Root Port Flags Bits [7..2] must be zero, got 0x07
+hest            instead
 hest            HEST PCI Express Device AER:
 hest              Type:                     0x07
 hest              Source ID:                0x00ff
@@ -43,9 +43,9 @@ hest              Uncorrectable Severity:   0x0017f011
 hest              Correctable Error Mask:   0x000011c1
 hest              Advanced Capabilities:    0x00000000
 hest            
-hest            FAILED [MEDIUM] HESTPciExpressDeviceFlagsReserved: Test 1,
-hest            HEST PCI Express Device Flags Reserved bits [2:7] must be
-hest            zero, instead got 0x9
+hest            FAILED [HIGH] HESTReservedBitsNonZero: Test 1, HEST PCI
+hest            Express Device Flags Bits [7..2] must be zero, got 0x09
+hest            instead
 hest            FAILED [HIGH] HESTInvalidRecordsToPreallocate: Test 1,
 hest            HEST PCI Express Device Number of Records to Preallocate
 hest            is 0x0 and must be more than zero.
@@ -70,9 +70,9 @@ hest              2nd Uncorrectable Mask:   0x00100020
 hest              2nd Uncurrectable Svrity: 0x0017f011
 hest              2nd Advanced Capabilities:0x00000000
 hest            
-hest            FAILED [MEDIUM] HESTPciExpressBridgeFlagsReserved: Test 1,
-hest            HEST PCI Express Bridge Flags Reserved bits [2:7] must be
-hest            zero, instead got 0xf
+hest            FAILED [HIGH] HESTReservedBitsNonZero: Test 1, HEST PCI
+hest            Express Bridge Flags Bits [7..2] must be zero, got 0x0f
+hest            instead
 hest            FAILED [HIGH] HESTInvalidRecordsToPreallocate: Test 1,
 hest            HEST PCI Express Bridge Number of Records to Preallocate
 hest            is 0x0 and must be more than zero.

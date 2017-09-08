@@ -11,8 +11,9 @@ drtm              Log_Area_Start:           0x0000000050000000
 drtm              Log_Area_Length:          0x00006000
 drtm              Architecture_Dependent:   0x0000000070000000
 drtm              DRT_Flags:                0x00008000
-drtm            FAILED [MEDIUM] DRTMBadFlagReservedNonZero: Test 1, DRTM
-drtm            DRT_Flags Bits [31:4] are reserved, got 0x00008000 instead
+drtm            FAILED [HIGH] DRTMReservedBitsNonZero: Test 1, DRTM
+drtm            DRT_Flags Bits [31..4] must be zero, got 0x00008000
+drtm            instead
 drtm            
 drtm              VTL_Length:               0x00000002
 drtm              Validated_Tables:         0x00000000a0000000

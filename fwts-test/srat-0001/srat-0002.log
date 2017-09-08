@@ -15,9 +15,9 @@ srat              Proximity Domain: [16:23] 0x00
 srat              Proximity Domain: [23:31] 0x00
 srat              Clock Domain              0x00000000
 srat            
-srat            FAILED [MEDIUM] SRATLocalApicSapicAffinityFlags: Test 1,
-srat            SRAT Local APIC/SPAIC Affinity Flags field reserved bits
-srat            1..31 should be zero, got 0x9
+srat            FAILED [HIGH] SRATReservedBitsNonZero: Test 1, SRAT Local
+srat            APIC/SPAIC Affinity Flags Bits [31..1] must be zero, got
+srat            0x00000009 instead
 srat            SRAT Local APIC/SAPIC Affinity Structure:
 srat              Type:                     0x00
 srat              Length:                   0x10
@@ -76,9 +76,9 @@ srat              Reserved:                 0x0000000f
 srat              Flags:                    0x000000ff
 srat              Reserved:                 0x0000000000000000
 srat            
-srat            FAILED [MEDIUM] SRATMemoryAffinityFlags: Test 1, SRAT
-srat            Memory Affinity Flags field reserved bits 3..31 should be
-srat            zero, got 0xff
+srat            FAILED [HIGH] SRATReservedBitsNonZero: Test 1, SRAT Memory
+srat            Affinity Flags Bits [31..3] must be zero, got 0x000000ff
+srat            instead
 srat            SRAT Memory Affinity Structure:
 srat              Type:                     0x01
 srat              Length:                   0x28
@@ -90,9 +90,9 @@ srat              Reserved:                 0x00000001
 srat              Flags:                    0x00000008
 srat              Reserved:                 0x0000000000000000
 srat            
-srat            FAILED [MEDIUM] SRATMemoryAffinityFlags: Test 1, SRAT
-srat            Memory Affinity Flags field reserved bits 3..31 should be
-srat            zero, got 0x8
+srat            FAILED [HIGH] SRATReservedBitsNonZero: Test 1, SRAT Memory
+srat            Affinity Flags Bits [31..3] must be zero, got 0x00000008
+srat            instead
 srat            
 srat            ==========================================================
 srat            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0

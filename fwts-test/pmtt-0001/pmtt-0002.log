@@ -95,8 +95,8 @@ pmtt                Reserved:                       0x00
 pmtt                Length:                         0x000c
 pmtt                Flags:                          0x0013
 pmtt                Reserved:                       0x0000
-pmtt            FAILED [HIGH] PMTTBadFlags: Test 1, PMTT Flags's
-pmtt            Bits[15..4] must be zero, got 0x0013 instead
+pmtt            FAILED [HIGH] PMTTReservedBitsNonZero: Test 1, PMTT Flags
+pmtt            Bits [15..4] must be zero, got 0x0013 instead
 pmtt                Socket Identifier:              0x0002
 pmtt                Reserved:                       0x0000
 pmtt              PMTT Subtable:

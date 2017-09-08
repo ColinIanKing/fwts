@@ -8,9 +8,9 @@ asf             in the range 0x01..0xff
 asf             FAILED [HIGH] ASF!InfoMinPollWaitTimeInvalid: Test 1, ASF!
 asf             ASF_INFO Minimum Poll Wait Time is 0x0 and must be in the
 asf             range 0x02..0xff
-asf             FAILED [HIGH] ASF!InfoFeatureFlagsReserved: Test 1, ASF!
-asf             ASF_INFO Feature Flags is 0xff, however reserved bits [7
-asf             :1] must be zero
+asf             FAILED [HIGH] ASF!ReservedBitsNonZero: Test 1, ASF!
+asf             ASF_INFO Feature Flags Bits [7..1] must be zero, got 0xff
+asf             instead
 asf             FAILED [MEDIUM] ASF!ReservedNonZero: Test 1, ASF! ASF_INFO
 asf             Reserved1 field must be zero, got 0x10 instead
 asf             FAILED [MEDIUM] ASF!ReservedNonZero: Test 1, ASF! ASF_INFO

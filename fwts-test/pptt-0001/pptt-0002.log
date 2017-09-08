@@ -40,8 +40,8 @@ pptt                Private Resources[0]:           0x00000000
 pptt                Private Resources[1]:           0x00000000
 pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0003 instead
-pptt            FAILED [HIGH] PPTTBadFlags: Test 1, PPTT Flags's
-pptt            Bits[31..2] must be zero, got 0x00000007 instead
+pptt            FAILED [HIGH] PPTTReservedBitsNonZero: Test 1, PPTT Flags
+pptt            Bits [31..2] must be zero, got 0x00000007 instead
 pptt            
 pptt              Cache Type Structure (Type 1):
 pptt                Type:                           0x01
@@ -56,8 +56,8 @@ pptt                Attributes:                     0x00
 pptt                Line size:                      0x0000
 pptt            FAILED [MEDIUM] PPTTReservedNonZero: Test 1, PPTT Reserved
 pptt            field must be zero, got 0x0004 instead
-pptt            FAILED [HIGH] PPTTBadFlags: Test 1, PPTT Flags's
-pptt            Bits[31..7] must be zero, got 0x000000ff instead
+pptt            FAILED [HIGH] PPTTReservedBitsNonZero: Test 1, PPTT Flags
+pptt            Bits [31..7] must be zero, got 0x000000ff instead
 pptt            
 pptt              ID structure (Type 2):
 pptt                Type:                           0x02

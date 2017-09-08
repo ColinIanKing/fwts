@@ -22,6 +22,6 @@
 
 #include "fwts.h"
 
-uint8_t fwts_checksum(const uint8_t *data, const int length);
+uint8_t fwts_checksum(const uint8_t *data, const size_t length);
 
 #endif

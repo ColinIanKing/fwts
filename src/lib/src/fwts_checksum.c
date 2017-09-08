@@ -23,9 +23,9 @@
  *  fwts_checksum()
  *	checksum a uint8_t * buffer
  */
-uint8_t fwts_checksum(const uint8_t *data, const int length)
+uint8_t fwts_checksum(const uint8_t *data, const size_t length)
 {
-	int 	i;
+	size_t i;
 	uint8_t checksum = 0;
 
 	for (i = 0; i < length; i++)

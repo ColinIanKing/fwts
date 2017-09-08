@@ -21,16 +21,19 @@
 
 #define FWTS_PROC_ACPI_BATTERY          "/proc/acpi/battery"
 
-#define FWTS_BATTERY_DESIGN_CAPACITY	(0x00)
-#define FWTS_BATTERY_REMAINING_CAPACITY	(0x01)
-#define FWTS_BATTERY_ALL		(-1)
+typedef enum {
+	FWTS_BATTERY_DESIGN_CAPACITY	= 0,
+	FWTS_BATTERY_REMAINING_CAPACITY = 1,
+	FWTS_BATTERY_ALL		= -1,
+} fwts_battery_type;
 
 int fwts_battery_get_count(fwts_framework *fw, int *count);
 int fwts_battery_get_cycle_count(fwts_framework *fw, const int index, int *cycle_count);
 bool fwts_battery_check_trip_point_support(fwts_framework *fw, const int index);
 int fwts_battery_set_trip_point(fwts_framework *fw, const int index, const int trip_point);
 int fwts_battery_get_trip_point(fwts_framework *fw, const int index, int *trip_point);
-int fwts_battery_get_capacity(fwts_framework *fw, const int type, const int index, uint32_t *capacity_mAh, uint32_t *capacity_mWh);
+int fwts_battery_get_capacity(fwts_framework *fw, const fwts_battery_type type,
+	const int index, uint32_t *capacity_mAh, uint32_t *capacity_mWh);
 int fwts_battery_get_name(fwts_framework *fw, const int index, char *name);
 
 #endif

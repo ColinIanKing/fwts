@@ -29,7 +29,7 @@
 
 static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 	DIR 	*dir,
-	const int type,
+	const fwts_battery_type type,
 	const int index,
 	uint32_t *capacity_mAh,	/* charge */
 	uint32_t *capacity_mWh, /* energy */
@@ -111,7 +111,7 @@ static int fwts_battery_get_capacity_sys_fs(fwts_framework *fw,
 
 static int fwts_battery_get_capacity_proc_fs(fwts_framework *fw,
 	DIR 	*dir,
-	const int type,
+	const fwts_battery_type type,
 	const int index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh,
@@ -669,7 +669,7 @@ int fwts_battery_get_count(fwts_framework *fw, int *count)
 }
 
 int fwts_battery_get_capacity(fwts_framework *fw,
-	const int type,
+	const fwts_battery_type type,
 	const int index,
 	uint32_t *capacity_mAh,
 	uint32_t *capacity_mWh)

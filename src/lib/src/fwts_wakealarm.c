@@ -93,7 +93,7 @@ int fwts_wakealarm_exits(fwts_framework *fw)
  *  fwts_wakealarm_trigger()
  *	trigger the RTC wakealarm to fire in 'seconds' seconds from now.
  */
-int fwts_wakealarm_trigger(fwts_framework *fw, const int seconds)
+int fwts_wakealarm_trigger(fwts_framework *fw, const uint32_t seconds)
 {
 	int fd, ret = FWTS_OK;
 	struct rtc_time rtc_tm;
@@ -161,7 +161,7 @@ int fwts_wakealarm_cancel(fwts_framework *fw)
  *  fwts_wakealarm_check_fired()
  *	check if wakealarm fires
  */
-int fwts_wakealarm_check_fired(fwts_framework *fw, const int seconds)
+int fwts_wakealarm_check_fired(fwts_framework *fw, const uint32_t seconds)
 {
 	int fd, rc, ret = FWTS_OK;
 	fd_set rfds;
@@ -204,7 +204,7 @@ out:
  *	test RTC wakealarm trigger and firing from 'seconds' seconds time
  * 	from now.  returns FWTS_OK if passed, otherwise FWTS_ERROR.
  */
-int fwts_wakealarm_test_firing(fwts_framework *fw, const int seconds)
+int fwts_wakealarm_test_firing(fwts_framework *fw, const uint32_t seconds)
 {
 	int ret = FWTS_OK;
 

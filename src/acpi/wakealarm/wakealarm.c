@@ -92,11 +92,11 @@ static int wakealarm_test3(fwts_framework *fw)
 
 static int wakealarm_test4(fwts_framework *fw)
 {
-	int i;
+	uint32_t i;
 	int failed = 0;
 
 	for (i = 1; i < 5; i++) {
-		fwts_log_info(fw, "Trigger wakealarm for %d seconds in the future.", i);
+		fwts_log_info(fw, "Trigger wakealarm for %" PRIu32 " seconds in the future.", i);
 		int ret = fwts_wakealarm_test_firing(fw, i);
 		if (ret < 0) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,

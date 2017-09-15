@@ -1772,7 +1772,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 			dmi_reserved_bits_check(fw, table, addr, "Base Addr Modifier/Interrupt Info", hdr, sizeof(uint8_t), 0x10, 2, 2);
 			dmi_reserved_bits_check(fw, table, addr, "Base Addr Modifier/Interrupt Info", hdr, sizeof(uint8_t), 0x10, 5, 5);
-			dmi_min_max_mask_uint8_check(fw, table, addr, "Base Addr Modifier/Interrupt Info)", hdr, 0x10, 0x1, 0x2, 6, 0x3);
+			dmi_min_max_mask_uint8_check(fw, table, addr, "Base Addr Modifier/Interrupt Info)", hdr, 0x10, 0x0, 0x2, 6, 0x3);
 			break;
 
 		case 39: /* 7.40 */

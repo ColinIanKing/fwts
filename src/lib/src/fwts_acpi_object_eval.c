@@ -451,10 +451,10 @@ ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw,
 {
 	FWTS_UNUSED(fw);
 
-        buf->Length  = ACPI_ALLOCATE_BUFFER;
-        buf->Pointer = NULL;
+	buf->Length  = ACPI_ALLOCATE_BUFFER;
+	buf->Pointer = NULL;
 
-        return AcpiEvaluateObject(NULL, name, arg_list, buf);
+	return AcpiEvaluateObject(NULL, name, arg_list, buf);
 }
 
 #endif

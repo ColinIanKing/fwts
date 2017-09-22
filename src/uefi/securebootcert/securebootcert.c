@@ -270,7 +270,6 @@ static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key
 		return key_found;
 
 	for (var_data_addr = var_data; var_data_addr < var_data + datalen; ) {
-		EFI_GUID SignatureOwner;
 		siglist = *((EFI_SIGNATURE_LIST *)var_data_addr);
 
 		/* check for potential overflow */
@@ -291,14 +290,13 @@ static bool check_sigdb_presence(uint8_t *var_data, size_t datalen, uint8_t *key
 		}
 
 		var_data_addr += sizeof(siglist) + siglist.SignatureHeaderSize;
-		SignatureOwner = *(EFI_GUID *)var_data_addr;
 
-		if (key_len != (siglist.SignatureSize - sizeof(SignatureOwner))) {
+		if (key_len != (siglist.SignatureSize - sizeof(EFI_GUID))) {
 			var_data_addr += siglist.SignatureSize;
 			continue;
 		}
 
-		var_data_addr += sizeof(SignatureOwner);
+		var_data_addr += sizeof(EFI_GUID);
 
 		for (i = 0; i < key_len; i++) {
 			if (*((uint8_t *)var_data_addr+i) != key[i])

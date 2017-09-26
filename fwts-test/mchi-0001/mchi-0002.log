@@ -30,15 +30,13 @@ mchi            FAILED [HIGH] MCHIInvalidProtocolIdentifier: Test 1, MCHI
 mchi            Protocol Identifier 0xfe which is reserved, allowed values
 mchi            are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or 255
 mchi            (OEM defined)
-mchi            FAILED [HIGH] MCHIInterruptTypeReservedNonZero: Test 1,
-mchi            MCHI Interrupt Type 0x80 has some reserved bits [7:2] set,
-mchi            these should be all zero.
+mchi            FAILED [HIGH] MCHIReservedBitsNonZero: Test 1, MCHI
+mchi            Interrupt Type Bits [7..2] must be zero, got 0x80 instead
 mchi            FAILED [HIGH] MCHIGpeNonZero: Test 1, MCHI GPE is 0xf0 and
 mchi            should be zero when bit 0 of the Interrupt Type field is 0
 mchi            (SCI triggered through GPE non-supported)
-mchi            FAILED [HIGH] MCHIPciDeviceFlagReservedNonZero: Test 1,
-mchi            MCHI PCI Device Flag 0xf1 has some reserved bits [7:1] set
-mchi            , these should be all zero.
+mchi            FAILED [HIGH] MCHIReservedBitsNonZero: Test 1, MCHI PCI
+mchi            Device Flag Bits [7..1] must be zero, got 0xf1 instead
 mchi            FAILED [HIGH] MCHIGsiNonZero: Test 1, MCHI Global System
 mchi            Interrupt is 0x234 and should be zero when bit 1 of the
 mchi            Interrupt Type field is 0

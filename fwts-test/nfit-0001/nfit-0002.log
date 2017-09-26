@@ -99,8 +99,8 @@ nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Revision
 nfit            ID's BYTE 1 must be zero, got 0x5501 instead
 nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Subsystem
 nfit            Revision ID's BYTE 1 must be zero, got 0xaa01 instead
-nfit            FAILED [HIGH] NFITBadValidField: Test 1, NFIT Valid
-nfit            Field's Bits[7..1] must be zero, got 0x03 instead
+nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT Valid
+nfit            Bits [7..1] must be zero, got 0x03 instead
 nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT NVDIMM
 nfit            Control Region Flags Bits [15..1] must be zero, got 0x0003
 nfit            instead

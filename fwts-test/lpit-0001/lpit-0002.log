@@ -26,9 +26,9 @@ lpit
 lpit            FAILED [MEDIUM] LPITReservedNonZero: Test 1, LPIT Native
 lpit            C-state based LPI structure reserved field must be zero,
 lpit            got 0xffff instead
-lpit            FAILED [LOW] LPITNativeCStateLpitFlagsReserved: Test 1,
-lpit            Some of the Native C-state based LPI structure flags bits
-lpit            [31:2] are set, they are expected to be zero
+lpit            FAILED [HIGH] LPITReservedBitsNonZero: Test 1, LPIT LPI
+lpit            structure flags Bits [31..2] must be zero, got 0x0000fffd
+lpit            instead
 lpit            FAILED [LOW] LPITNativeCStateLpitResidencyCounterWidth:
 lpit            Test 1, Native C-state based LPI structure Residency
 lpit            Structure Register Bit Width was 16 for a FFH Address

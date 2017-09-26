@@ -66,9 +66,9 @@ iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
 iort            Named Component Node Coherent Attribute is 0x4 and should
 iort            be either 0 (device is fully coherent) or 1 (device is not
 iort            coherent).
-iort            FAILED [MEDIUM] IORTNodeReservedNonZero: Test 1, IORT
-iort            Named Component Node Node Reserved is 0xdead and is
-iort            reserved and should be zero.
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Named
+iort            Component Node Reserved field must be zero, got 0xdead
+iort            instead
 iort            FAILED [HIGH] IORTMemAttrInvalid: Test 1, IORT Named
 iort            Component Node Memory Attributes are illegal, CCA cannot
 iort            be 0 if CPM and DACS are 1. If the device has a coherent
@@ -110,12 +110,12 @@ iort            FAILED [HIGH] IORTCacheCoherentAttrInvalid: Test 1, IORT
 iort            PCI Root Complex Node Coherent Attribute is 0xd1 and
 iort            should be either 0 (device is fully coherent) or 1 (device
 iort            is not coherent).
-iort            FAILED [HIGH] IORTAllocHintsReservedNonZero: Test 1, IORT
-iort            PCI Root Complex Node Allocation Hints reserved bits [7:4]
-iort            are reserved and should be zero.
-iort            FAILED [MEDIUM] IORTNodeReservedNonZero: Test 1, IORT PCI
-iort            Root Complex Node Node Reserved is 0x8000 and is reserved
-iort            and should be zero.
+iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT PCI
+iort            Root Complex Node Allocation Hints Bits [7..4] must be
+iort            zero, got 0xfe instead
+iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT PCI Root
+iort            Complex Node Reserved field must be zero, got 0x8000
+iort            instead
 iort            FAILED [HIGH] IORTIdMappingOutsideTable: Test 1, IORT ID
 iort            Mapping 1 is outside the IORT ACPI table. Either the
 iort            offset is incorrect or the IORT table size or the node is

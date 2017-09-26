@@ -10,8 +10,8 @@ bgrt              Image Offset X:           0x00000000
 bgrt              Image Offset Y:           0x00000000
 bgrt            FAILED [MEDIUM] BGRTInvalidVersion: Test 1, BGRT: Version
 bgrt            field is 0x2 and not the expected value of 0x01
-bgrt            FAILED [MEDIUM] BGRTStatusRersevedBits: Test 1, BGRT:
-bgrt            Status field is 0xff, reserved bits [7:3] should be zero
+bgrt            FAILED [HIGH] BGRTReservedBitsNonZero: Test 1, BGRT BGRT
+bgrt            Status Bits [7..3] must be zero, got 0xff instead
 bgrt            FAILED [MEDIUM] BGRTInvalidImageType: Test 1, BGRT: Image
 bgrt            Type field is 0x1, the only allowed type is 0x00
 bgrt            

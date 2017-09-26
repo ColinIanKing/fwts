@@ -200,30 +200,23 @@ static int spcr_test1(fwts_framework *fw)
 			" is a reserved baud rate", spcr->baud_rate);
 	}
 
-	if (spcr->parity & ~1) {
+	if (spcr->parity != 0) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRParityReserved",
-			"SPCR parity reserved bits 1..7 are non-zero, value is 0x%2.2" PRIx8,
+			"SPCRReservedValueUsed",
+			"SPCR Parity field must be zero, got 0x%2.2" PRIx8 " instead",
 			spcr->parity);
 	}
 
-	/* Stop bit *really* is bit 1 according to the spec */
-	if (spcr->parity & ~2) {
+	if (spcr->stop_bits != 1) {
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRStopBitReserved",
-			"SPCR stop bit reserved bits 0,2..7 are non-zero, value is 0x%2.2" PRIx8,
-			spcr->parity);
+			"SPCRReservedValueUsed",
+			"SPCR Stop field must be 1, got 0x%2.2" PRIx8 " instead",
+			spcr->stop_bits);
 	}
 
-	if (spcr->flow_control & ~7) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"SPCRFlowControlReserved",
-			"SPCR flow control reserved bits 3..7 are non-zero, value is 0x%2.2" PRIx8,
-			spcr->flow_control);
-	}
+	fwts_acpi_reserved_bits_check(fw, "SPCR", "Flow control", spcr->flow_control, sizeof(spcr->flow_control), 3, 7, &passed);
 
 	reserved = false;
 	switch (spcr->terminal_type) {

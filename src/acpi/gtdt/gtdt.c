@@ -67,6 +67,7 @@ static int gtdt_test1(fwts_framework *fw)
 		fwts_acpi_table_gtdt_block *block;
 		fwts_acpi_table_gtdt_block_timer *block_timer;
 		fwts_acpi_table_gtdt_watchdog *watchdog;
+		char field[80];
 
 		switch (*ptr) {
 		case 0x00:
@@ -145,33 +146,18 @@ static int gtdt_test1(fwts_framework *fw)
 						block_timer->reserved[1],
 						block_timer->reserved[2]);
 				}
-				if (block_timer->phys_timer_flags & ~0x3) {
-					passed = false;
-					fwts_failed(fw, LOG_LEVEL_LOW,
-						"GTDTFBlockPhysTimerFlagReservedNonZero",
-						"GTDT block %" PRIu32 " physical timer "
-						"flags reserved bits 2 to 31 are "
-						"non-zero, instead got 0x%" PRIx32 ".",
-						i, block_timer->phys_timer_flags);
-				}
-				if (block_timer->virt_timer_flags & ~0x3) {
-					passed = false;
-					fwts_failed(fw, LOG_LEVEL_LOW,
-						"GTDTFBlockVirtTimerFlagReservedNonZero",
-						"GTDT block %" PRIu32 " virtual timer "
-						"flags reserved bits 2 to 31 are "
-						"non-zero, instead got 0x%" PRIx32 ".",
-						i, block_timer->virt_timer_flags);
-				}
-				if (block_timer->common_flags & ~0x3) {
-					passed = false;
-					fwts_failed(fw, LOG_LEVEL_LOW,
-						"GTDTFBlockCommonFlagReservedNonZero",
-						"GTDT block %" PRIu32 " common flags "
-						"reserved bits 2 to 31 are "
-						"non-zero, instead got 0x%" PRIx32 ".",
-						i, block_timer->common_flags);
-				}
+
+				snprintf(field, sizeof(field), "block %" PRIu32 " physical timer flags", i);
+				fwts_acpi_reserved_bits_check(fw, "GTDT", field, block_timer->phys_timer_flags,
+					sizeof(block_timer->phys_timer_flags), 2, 31, &passed);
+
+				snprintf(field, sizeof(field), "block %" PRIu32 " virtual timer flags", i);
+				fwts_acpi_reserved_bits_check(fw, "GTDT", field, block_timer->virt_timer_flags,
+					sizeof(block_timer->virt_timer_flags), 2, 31, &passed);
+
+				snprintf(field, sizeof(field), "block %" PRIu32 " common flags", i);
+				fwts_acpi_reserved_bits_check(fw, "GTDT", field, block_timer->common_flags,
+					sizeof(block_timer->common_flags), 2, 31, &passed);
 			}
 			ptr += block->length;
 			break;
@@ -203,15 +189,11 @@ static int gtdt_test1(fwts_framework *fw)
 					" reserved is non-zero, got 0x%" PRIx8,
 					i, watchdog->reserved);
 			}
-			if (watchdog->watchdog_timer_flags & ~0x7) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_LOW,
-					"GTDTWatchDogTimerFlagReservedNonZero",
-					"GTDT SBSA generic watchdog timer %" PRIu32
-					" flags reserved bits 3 to 31 are non-zero, "
-					"instead got 0x%" PRIx8 ".",
-					i, watchdog->watchdog_timer_flags);
-			}
+
+			snprintf(field, sizeof(field), "SBSA generic watchdog timer %" PRIu32 " flags", i);
+			fwts_acpi_reserved_bits_check(fw, "GTDT", field, watchdog->watchdog_timer_flags,
+				sizeof(watchdog->watchdog_timer_flags), 3, 31, &passed);
+
 			ptr += watchdog->length;
 			break;
 		default:

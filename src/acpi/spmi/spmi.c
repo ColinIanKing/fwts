@@ -123,14 +123,7 @@ static int spmi_test1(fwts_framework *fw)
 			"0x%2.2" PRIx8 " instead", spmi->reserved1);
 	}
 
-	/* Only bottom 2 bits should be set */
-	if (spmi->interrupt_type & ~0x03) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"SPMIInterruptTypeReservedNonZero",
-			"SPMI Interrupt Type reserved bits [7:2] must be 0, got "
-			"0x%2.2" PRIx8 " instead", spmi->interrupt_type);
-	}
+	fwts_acpi_reserved_bits_check(fw, "SPMI", "Interrupt type", spmi->interrupt_type, sizeof(spmi->interrupt_type), 2, 7, &passed);
 
 	/* Check for zero GPE on specific condition of interrupt type */
 	if (((spmi->interrupt_type & 1) == 0) &&
@@ -149,14 +142,8 @@ static int spmi_test1(fwts_framework *fw)
 			"SPMI reserved field (offset 42) must be 0x00, got "
 			"0x%2.2" PRIx8 " instead", spmi->reserved2);
 	}
-	/* Only bottom 1 bit should be set */
-	if (spmi->pci_device_flag & ~0x01) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"SPMIPciDeviceFlag",
-			"SPMI PCI Device Flag reserved bits [7:1] must be 0, got "
-			"0x%2.2" PRIx8 " instead", spmi->pci_device_flag);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "SPMI", "PCI device flag", spmi->pci_device_flag, sizeof(spmi->pci_device_flag), 1, 7, &passed);
 
 	if (((spmi->interrupt_type & 2) == 0) &&
 	    (spmi->global_system_interrupt != 0)) {

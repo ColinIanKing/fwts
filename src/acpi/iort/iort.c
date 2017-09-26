@@ -148,28 +148,6 @@ static void iort_id_mappings_dump(
 }
 
 /*
- *  iort_id_mapping_check()
- *	sanity check ID mapping
- */
-static void iort_id_mapping_check(
-	fwts_framework *fw,
-	uint32_t i,
-	fwts_acpi_table_iort_id_mapping *id_mapping,
-	bool *passed)
-{
-	if (id_mapping->flags & ~1) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"IORTIdMappingReservedNonZero",
-			"IORT ID Mapping %" PRIu32 " Reserved Flags field reserved "
-			"bits [31:1] should be all zero, got 0x%" PRIx32
-			" instead",
-			i, id_mapping->flags);
-	}
-	/* Should also check output_reference is out of range or not */
-}
-
-/*
  *  iort_id_mappings_check()
  *	snaity check array of ID mappings
  */
@@ -182,6 +160,7 @@ static void iort_id_mappings_check(
 	uint32_t i;
 	fwts_acpi_table_iort_node *node = (fwts_acpi_table_iort_node *)data;
 	fwts_acpi_table_iort_id_mapping *id_mapping;
+	char field[80];
 
 	id_mapping = (fwts_acpi_table_iort_id_mapping *)(data + node->id_array_offset);
 
@@ -195,7 +174,9 @@ static void iort_id_mappings_check(
 				"or the IORT table size or the node is too small.", i);
 			break;
 		}
-		iort_id_mapping_check(fw, i, id_mapping, passed);
+
+		snprintf(field, sizeof(field), "ID Mapping %" PRIu32 " flags", i);
+		fwts_acpi_reserved_bits_check(fw, "IORT", field, id_mapping->flags, sizeof(id_mapping->flags), 1, 31, passed);
 	}
 }
 
@@ -381,6 +362,7 @@ static void iort_memory_access_properties_check(
 	bool *passed)
 {
 	uint8_t cca, cpm, dacs;
+	char field[80];
 
 	if (properties->cache_coherent > 1) {
 		*passed = false;
@@ -392,30 +374,19 @@ static void iort_memory_access_properties_check(
 			"not coherent).",
 			name, properties->cache_coherent);
 	}
-	if (properties->allocation_hints & ~0xf) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"IORTAllocHintsReservedNonZero",
-			"IORT %s Allocation Hints reserved bits "
-			"[7:4] are reserved and should be zero.",
-			name);
-	}
-	if (properties->reserved) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"IORTNodeReservedNonZero",
-			"IORT %s Node Reserved is 0x%" PRIx32
-			" and is reserved and should be zero.",
-			name, properties->reserved);
-	}
-	if (properties->memory_access_flags & ~0x3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"IORTMemoryAccessFlagsReservedNonZero",
-			"IORT %s Memory Access Flags is 0x%" PRIx8
-			" and all the reserved bits [7:2] should be zero but some are not.",
-			name, properties->memory_access_flags);
-	}
+
+	snprintf(field, sizeof(field), "%s Allocation Hints", name);
+	fwts_acpi_reserved_bits_check(fw, "IORT", field, properties->allocation_hints,
+		sizeof(properties->allocation_hints), 4, 7, passed);
+
+	snprintf(field, sizeof(field), "%s Reserved", name);
+	fwts_acpi_reserved_zero_check(fw, "IORT", field, properties->reserved,
+		sizeof(properties->reserved), passed);
+
+	snprintf(field, sizeof(field), "%s  Memory Access Flags", name);
+	fwts_acpi_reserved_bits_check(fw, "IORT", field, properties->memory_access_flags,
+		sizeof(properties->memory_access_flags), 2, 7, passed);
+
 	cca = properties->cache_coherent & 1;
 	cpm = properties->memory_access_flags & 1;
 	dacs = (properties->memory_access_flags >> 1) & 1;

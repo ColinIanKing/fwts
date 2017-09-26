@@ -95,14 +95,7 @@ static void lpit_check_type_0(
 	fwts_log_nl(fw);
 
 	fwts_acpi_reserved_zero_check(fw, "LPIT", "Native C-state based LPI structure reserved", lpi->reserved, sizeof(lpi->reserved), passed);
-
-	if (lpi->flags & ~3) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"LPITNativeCStateLpitFlagsReserved",
-			"Some of the Native C-state based LPI structure flags "
-			"bits [31:2] are set, they are expected to be zero");
-	}
+	fwts_acpi_reserved_bits_check(fw, "LPIT", "LPI structure flags", lpi->flags, sizeof(lpi->flags), 2, 31, passed);
 
 	/* 2.2.1.2, if FFH, then it is a MSR, check GAS fields */
 	if (((lpi->flags & 2) == 0) &&

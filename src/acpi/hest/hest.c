@@ -658,13 +658,10 @@ static void hest_check_generic_error_source(
 			"expecting value 0 to 11",
 			source->notification.type);
 	}
-	if (source->notification.configuration_write_enable & ~0x3f) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTIA32ConfigWriteEnabledReservedNonZero",
-			"HEST Configuration Write Enabled Reserved bits [6:31] "
-			"are non-zero.");
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "HEST", "HEST Configuration Write Enabled",
+		source->notification.configuration_write_enable,
+		sizeof(source->notification.configuration_write_enable), 6, 31, passed);
 
 	*length -= sizeof(fwts_acpi_table_hest_generic_hardware_error_source);
 	*data += sizeof(fwts_acpi_table_hest_generic_hardware_error_source);
@@ -776,13 +773,10 @@ static void hest_check_generic_error_source_v2(
 			"expecting value 0 to 11",
 			source->notification.type);
 	}
-	if (source->notification.configuration_write_enable & ~0x3f) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_LOW,
-			"HESTIA32ConfigWriteEnabledReservedNonZero",
-			"HEST Configuration Write Enabled Reserved bits [6:31] "
-			"are non-zero.");
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "HEST", "HEST Configuration Write Enabled",
+		source->notification.configuration_write_enable,
+		sizeof(source->notification.configuration_write_enable), 6, 31, passed);
 
 	*length -= sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);
 	*data += sizeof(fwts_acpi_table_hest_generic_hardware_error_source_v2);

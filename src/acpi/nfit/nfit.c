@@ -284,14 +284,7 @@ static int nfit_test1(fwts_framework *fw)
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;
 
-			if (nfit_struct->valid_fields & ~0x01) {
-				passed = false;
-				fwts_failed(fw, LOG_LEVEL_HIGH,
-					"NFITBadValidField",
-					"NFIT Valid Field's Bits[7..1] must be zero, got "
-					"0x%2.2" PRIx8 " instead", nfit_struct->valid_fields);
-			}
-
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "Valid", nfit_struct->valid_fields, sizeof(nfit_struct->valid_fields), 1, 7, &passed);
 			fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 1, 15, &passed);
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_DATA_REGION) {

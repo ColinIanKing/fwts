@@ -116,14 +116,9 @@ static int mchi_test1(fwts_framework *fw)
 			"allowed values are 0x00 (Unspecifier), 0x01 (MCTP), 0x02 (IPMI) or "
 			"255 (OEM defined)", mchi->protocol_identifier);
 	}
-	if (mchi->interrupt_type & ~0x03) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MCHIInterruptTypeReservedNonZero",
-			"MCHI Interrupt Type 0x%2.2" PRIx8 " has some reserved "
-			"bits [7:2] set, these should be all zero.",
-			mchi->interrupt_type);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "MCHI", "Interrupt Type", mchi->interrupt_type, sizeof(mchi->interrupt_type), 2, 7, &passed);
+
 	if (((mchi->interrupt_type & 0x01) == 0) &&
 	    (mchi->gpe != 0)) {
 		passed = false;
@@ -134,14 +129,9 @@ static int mchi_test1(fwts_framework *fw)
 			"(SCI triggered through GPE non-supported)",
 			mchi->gpe);
 	}
-	if (mchi->pci_device_flag & ~0x01) {
-		passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"MCHIPciDeviceFlagReservedNonZero",
-			"MCHI PCI Device Flag 0x%2.2" PRIx8 " has some reserved "
-			"bits [7:1] set, these should be all zero.",
-			mchi->pci_device_flag);
-	}
+
+	fwts_acpi_reserved_bits_check(fw, "MCHI", "PCI Device Flag", mchi->pci_device_flag, sizeof(mchi->pci_device_flag), 1, 7, &passed);
+
 	if (((mchi->interrupt_type & 0x02) == 0) &&
 	    (mchi->global_system_interrupt != 0)) {
 		passed = false;

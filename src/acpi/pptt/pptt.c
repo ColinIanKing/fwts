@@ -85,14 +85,7 @@ static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
 	fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 7, 31, passed);
-
-	if (entry->attributes & ~0x1f) {
-		*passed = false;
-		fwts_failed(fw, LOG_LEVEL_HIGH,
-			"PPTTBadAttributes",
-			"PPTT attributes's Bits[7..5] must be zero, got "
-			"0x%2.2" PRIx8 " instead", entry->attributes);
-	}
+	fwts_acpi_reserved_bits_check(fw, "PPTT", "Attributes", entry->attributes, sizeof(entry->attributes), 5, 7, passed);
 }
 
 static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entry, bool *passed)

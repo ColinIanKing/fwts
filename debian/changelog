@@ -1,3 +1,67 @@
+fwts (17.09.00-0ubuntu1) artful; urgency=low
+
+  * [Alex Hung]
+  * lib: fwts_acpi_tables: add a new function to check Reserved field
+  * acpi: replace checks for Reserved by fwts_acpi_reserved_zero_check
+  * fwts-test: sync up with new fwts_acpi_reserved_zero_check
+  * lib: replace spaces by tabs
+  * lib: fwts_acpi_tables: add a new function to check reserved bits
+  * acpi: replace checks for Flags by fwts_acpi_reserved_bits_check
+  * fwts-test: sync up with new fwts_acpi_reserved_bits_check
+  * acpi: replace checks for reserved bits by fwts_acpi_reserved_bits_check
+  * fwts-test: sync up with new fwts_acpi_reserved_bits_check
+  * acpi: spcr: check reserved values for parity and stop fields
+
+  [Colin Ian King]
+  * debian: copyright: fix spelling mistake: acpcia -> acpica
+  * acpica: fix spelling mistake: acpcia -> acpica
+  * ACPICA: Update to version 20170831
+  * iASL: Fix incorrect memory allocation
+  * lib: constify a couple of arrays
+  * src/acpi/brightness: constify sys_path and return of brightness_get_path
+  * acpi: method: constify arrays
+  * acpica: constify array fwts_default_space_id_list
+  * cmos: cmosdump: constify several char * arrays
+  * bios: bios_info: constify array bios_info
+  * bios: multiproc: constify array bus_types
+  * dmi: dmicheck: constify array dmi_used_by_kernel_table
+  * uefi: securebootcert: make array securebootcert_info_table const
+  * uefi: uefidump: make array uefidump_info_table const
+  * uefi: uefirtmisc: make arrays flag static const
+  * uefi: uefirttime: constify static array dayofmonth
+  * lib: fwts_firmware: make enums into a defined type
+  * lib: fwts_framework: make several int fields into uint32_t
+  * lib: fwts_framework: re-order and clean up fwts_framework fields
+  * lib: fwts_log: make magic uint64_t to improve corruption checking
+  * fwts_log: make line_number to a uint32_t type
+  * acpica: constify bool parameter val in fwts_acpi_region_handler_called_set
+  * lib: fwts_acpi_table: make indexes which and index uint32_t
+  * lib: fwts-battery: make battery type a typedef'd enum
+  * lib: fwts_battery: clean up battery interfaces
+  * lib: fwts_button: make button counts and button number uint32_t
+  * lib: fwts_checksum: object sizes should be size_t rather than int
+  * lib: fwts_devicetree: constify a few function arguments
+  * lib: fwts_formatting: make width parameter size_t
+  * lib: fwts_wakealarm: make wakealarm times uint32_t
+  * lib: fwts_battery: include inttypes.h for PRIu32 definition
+  * lib: fwts_log_plaintext: include inttypes.h for PRIu32 definition
+  * lib: fwts_log_xml: include inttypes.h for PRIu32 definition
+  * acpi: battery: include stdint.h and inttypes.h
+  * acpi: wakealarm: include stdint.h and inttypes.h
+
+  [Ivan Hu]
+  * efi_runtime: add resetsystem runtime service
+  * securebootcert: remove the SignatureOwner on signature presence check
+
+  [Jeffrey Hugo]
+  * dmi: dmicheck: Fix Base Address Modifier checking
+  * dmi: dmicheck: Add BMC Interface Type definitions from IPMI spec
+
+  [Sakar Arora]
+  * acpi: method: sbbr: set some methods as optional
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 27 Sep 2017 15:02:29 +0800
+
 fwts (17.08.00-0ubuntu1) artful; urgency=low
 
   [Alex Hung]

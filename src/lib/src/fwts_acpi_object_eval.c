@@ -422,7 +422,7 @@ void fwts_acpi_object_evaluate_report_error(
 	switch (status) {
 	case AE_OK:
 		break;
-	case AE_AML_INFINITE_LOOP:
+	case AE_AML_LOOP_TIMEOUT:
 		fwts_warning(fw, "Detected an infinite loop when evaluating method '%s'. ", name);
 		fwts_advice(fw, "This may occur because we are emulating the execution "
 				"in this test environment and cannot handshake with "

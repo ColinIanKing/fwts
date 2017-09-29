@@ -78,6 +78,7 @@ typedef struct {
 
 typedef void * (*pthread_callback)(void *);
 
+BOOLEAN AcpiGbl_AbortLoopOnTimeout = FALSE;
 BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
 

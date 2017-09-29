@@ -833,4 +833,80 @@ void fwts_method_test_polling_return(
 	}
 }
 
+void fwts_evaluate_found_method(
+	fwts_framework *fw,
+	ACPI_HANDLE *parent,
+	char *name,
+	fwts_method_return check_func,
+	void *private,
+	ACPI_OBJECT_LIST *arg_list)
+{
+	ACPI_BUFFER	buf;
+	ACPI_STATUS	status;
+	int sem_acquired;
+	int sem_released;
+
+	fwts_acpica_sem_count_clear();
+
+	buf.Length  = ACPI_ALLOCATE_BUFFER;
+	buf.Pointer = NULL;
+	status = AcpiEvaluateObject(*parent, name, arg_list, &buf);
+
+	if (ACPI_SUCCESS(status) && check_func != NULL) {
+		ACPI_OBJECT *obj = buf.Pointer;
+		check_func(fw, name, &buf, obj, private);
+	}
+	free(buf.Pointer);
+
+	fwts_acpica_sem_count_get(&sem_acquired, &sem_released);
+	if (sem_acquired != sem_released) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "AMLLocksAcquired",
+			"%s left %d locks in an acquired state.",
+			name, sem_acquired - sem_released);
+		fwts_advice(fw,
+			"Locks left in an acquired state generally indicates "
+			"that the AML code is not releasing a lock. This can "
+			"sometimes occur when a method hits an error "
+			"condition and exits prematurely without releasing an "
+			"acquired lock. It may be occurring in the method "
+			"being tested or other methods used while evaluating "
+			"the method.");
+	}
+}
+
+int fwts_evaluate_method(fwts_framework *fw,
+	uint32_t test_type,  /* Manditory or optional */
+	ACPI_HANDLE *parent,
+	char *name,
+	ACPI_OBJECT *args,
+	uint32_t num_args,
+	fwts_method_return check_func,
+	void *private)
+{
+	ACPI_OBJECT_LIST	arg_list;
+	ACPI_HANDLE	method;
+	ACPI_STATUS	status;
+
+	status = AcpiGetHandle (*parent, name, &method);
+	if (ACPI_SUCCESS(status)) {
+		arg_list.Count   = num_args;
+		arg_list.Pointer = args;
+		fwts_evaluate_found_method(fw, parent, name, check_func, private, &arg_list);
+	}
+
+	if (status == AE_NOT_FOUND && !(test_type & METHOD_SILENT)) {
+		if (test_type & METHOD_MANDATORY) {
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, "MethodNotExist", "Object %s did not exist.", name);
+			return FWTS_ERROR;
+		}
+
+		if (test_type & METHOD_OPTIONAL) {
+			fwts_skipped(fw, "Skipping test for non-existent object %s.", name);
+			return FWTS_SKIP;
+		}
+	}
+
+	return FWTS_OK;
+}
+
 #endif

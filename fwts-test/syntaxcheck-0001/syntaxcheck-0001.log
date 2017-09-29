@@ -6,6 +6,160 @@ syntaxcheck     Test 1 of 1: Disassemble and reassemble DSDT and SSDTs.
 syntaxcheck     
 syntaxcheck     Checking ACPI table DSDT (#0)
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 28
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00025|     External (PDC0, IntObj)
+syntaxcheck     00026|     External (PDC1, IntObj)
+syntaxcheck     00027| 
+syntaxcheck     00028|     Name (Z000, One)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00029|     Name (Z001, 0x02)
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 29
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00026|     External (PDC1, IntObj)
+syntaxcheck     00027| 
+syntaxcheck     00028|     Name (Z000, One)
+syntaxcheck     00029|     Name (Z001, 0x02)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 30
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00027| 
+syntaxcheck     00028|     Name (Z000, One)
+syntaxcheck     00029|     Name (Z001, 0x02)
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 31
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00028|     Name (Z000, One)
+syntaxcheck     00029|     Name (Z001, 0x02)
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 32
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00029|     Name (Z001, 0x02)
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 33
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00030|     Name (Z002, 0x04)
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck     00036|     Name (Z008, 0x09)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 34
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00031|     Name (Z003, 0x08)
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck     00036|     Name (Z008, 0x09)
+syntaxcheck     00037|     Name (ECDY, 0x07)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 35
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00032|     Name (Z004, Zero)
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00036|     Name (Z008, 0x09)
+syntaxcheck     00037|     Name (ECDY, 0x07)
+syntaxcheck     00038|     Mutex (MUTX, 0x00)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 36
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00033|     Name (Z005, 0x0F)
+syntaxcheck     00034|     Name (Z006, 0x0D)
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck     00036|     Name (Z008, 0x09)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00037|     Name (ECDY, 0x07)
+syntaxcheck     00038|     Mutex (MUTX, 0x00)
+syntaxcheck     00039|     OperationRegion (PRT0, SystemIO, 0x80, 0x04)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 38
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00035|     Name (Z007, 0x0B)
+syntaxcheck     00036|     Name (Z008, 0x09)
+syntaxcheck     00037|     Name (ECDY, 0x07)
+syntaxcheck     00038|     Mutex (MUTX, 0x00)
+syntaxcheck          |              ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00039|     OperationRegion (PRT0, SystemIO, 0x80, 0x04)
+syntaxcheck     00040|     Field (PRT0, DWordAcc, Lock, Preserve)
+syntaxcheck     00041|     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 183
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00180|         })
+syntaxcheck     00181|     }
+syntaxcheck     00182| 
+syntaxcheck     00183|     Method (GETB, 3, Serialized)
+syntaxcheck          |               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00184|     {
+syntaxcheck     00185|         Multiply (Arg0, 0x08, Local0)
+syntaxcheck     00186|         Multiply (Arg1, 0x08, Local1)
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
 syntaxcheck     in line 242
 syntaxcheck     Line | AML source
@@ -19,6 +173,76 @@ syntaxcheck          | Warning 3144: Method Local is set but never used    (Loca
 syntaxcheck     00243|             {
 syntaxcheck     00244|                 If (_OSI ("Linux"))
 syntaxcheck     00245|                 {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 409
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00406|     }
+syntaxcheck     00407| 
+syntaxcheck     00408|     Name (DSEN, One)
+syntaxcheck     00409|     Name (ECON, Zero)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00410|     Name (GPIC, Zero)
+syntaxcheck     00411|     Name (CTYP, Zero)
+syntaxcheck     00412|     Name (L01C, Zero)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 411
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00408|     Name (DSEN, One)
+syntaxcheck     00409|     Name (ECON, Zero)
+syntaxcheck     00410|     Name (GPIC, Zero)
+syntaxcheck     00411|     Name (CTYP, Zero)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00412|     Name (L01C, Zero)
+syntaxcheck     00413|     Name (VFN0, Zero)
+syntaxcheck     00414|     Name (VFN1, Zero)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 413
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00410|     Name (GPIC, Zero)
+syntaxcheck     00411|     Name (CTYP, Zero)
+syntaxcheck     00412|     Name (L01C, Zero)
+syntaxcheck     00413|     Name (VFN0, Zero)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00414|     Name (VFN1, Zero)
+syntaxcheck     00415|     Scope (_GPE)
+syntaxcheck     00416|     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 414
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00411|     Name (CTYP, Zero)
+syntaxcheck     00412|     Name (L01C, Zero)
+syntaxcheck     00413|     Name (VFN0, Zero)
+syntaxcheck     00414|     Name (VFN1, Zero)
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00415|     Scope (_GPE)
+syntaxcheck     00416|     {
+syntaxcheck     00417|         Method (_L01, 0, NotSerialized)  // _Lxx: Level-Triggered GPE
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 688
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00685|         }
+syntaxcheck     00686|     }
+syntaxcheck     00687| 
+syntaxcheck     00688|     Name (FWSO, "FWSO")
+syntaxcheck          |             ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00689|     Name (_PSC, Zero)  // _PSC: Power State Current
+syntaxcheck     00690|     Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+syntaxcheck     00691|     {
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
 syntaxcheck     in line 692
@@ -67,6 +291,20 @@ syntaxcheck     00723|             {
 syntaxcheck     00724|                 Store ("MXMTCConfigData", Debug)
 syntaxcheck     00725|                 Return (STAC) /* \_SB_.AMW0.STAC */
 syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 722
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00719|             {
+syntaxcheck     00720|                  0x01, 0x14, 0x03, 0x00                           // ....
+syntaxcheck     00721|             })
+syntaxcheck     00722|             Method (WQAC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00723|             {
+syntaxcheck     00724|                 Store ("MXMTCConfigData", Debug)
+syntaxcheck     00725|                 Return (STAC) /* \_SB_.AMW0.STAC */
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
 syntaxcheck     line 732
 syntaxcheck     Line | AML source
@@ -77,6 +315,20 @@ syntaxcheck     00731|             })
 syntaxcheck     00732|             Method (WQBC, 1, NotSerialized)
 syntaxcheck          |                       ^
 syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00733|             {
+syntaxcheck     00734|                 Store ("Get MXMTCControlData: STBC = ", Debug)
+syntaxcheck     00735|                 Store (STBC, Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 732
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00729|             {
+syntaxcheck     00730|                  0x01, 0x00, 0x00, 0x00                           // ....
+syntaxcheck     00731|             })
+syntaxcheck     00732|             Method (WQBC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Warning 4089: Object is not referenced  
 syntaxcheck     00733|             {
 syntaxcheck     00734|                 Store ("Get MXMTCControlData: STBC = ", Debug)
 syntaxcheck     00735|                 Store (STBC, Debug)
@@ -94,6 +346,34 @@ syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
 syntaxcheck     00740|             {
 syntaxcheck     00741|                 Store (Arg1, STBC) /* \_SB_.AMW0.STBC */
 syntaxcheck     00742|                 Store ("Set MXMTCControlData: STBC = ", Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 739
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00736|                 Return (STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00737|             }
+syntaxcheck     00738| 
+syntaxcheck     00739|             Method (WSBC, 2, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00740|             {
+syntaxcheck     00741|                 Store (Arg1, STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00742|                 Store ("Set MXMTCControlData: STBC = ", Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 750
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00747|                 }
+syntaxcheck     00748|             }
+syntaxcheck     00749| 
+syntaxcheck     00750|             Name (WQBA, Buffer (0x02AE)
+syntaxcheck          |                     ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     00751|             {
+syntaxcheck     00752|                 /* 0000 */  0x46, 0x4F, 0x4D, 0x42, 0x01, 0x00, 0x00, 0x00,  // FOMB....
+syntaxcheck     00753|                 /* 0008 */  0x9E, 0x02, 0x00, 0x00, 0xC0, 0x0B, 0x00, 0x00,  // ........
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
 syntaxcheck     Assembler error in line 1065
@@ -177,6 +457,76 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 2755
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     02752|                     }
+syntaxcheck     02753|                 })
+syntaxcheck     02754|                 Name (SUCC, One)
+syntaxcheck     02755|                 Name (NVLD, 0x02)
+syntaxcheck          |                         ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     02756|                 Name (CRIT, 0x04)
+syntaxcheck     02757|                 Name (NCRT, 0x06)
+syntaxcheck     02758|                 Method (GSCI, 0, Serialized)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 2757
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     02754|                 Name (SUCC, One)
+syntaxcheck     02755|                 Name (NVLD, 0x02)
+syntaxcheck     02756|                 Name (CRIT, 0x04)
+syntaxcheck     02757|                 Name (NCRT, 0x06)
+syntaxcheck          |                         ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     02758|                 Method (GSCI, 0, Serialized)
+syntaxcheck     02759|                 {
+syntaxcheck     02760|                     Method (GBDA, 0, Serialized)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 3072
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03069|                     Return (GNOT (One, Zero))
+syntaxcheck     03070|                 }
+syntaxcheck     03071| 
+syntaxcheck     03072|                 Method (GLID, 1, NotSerialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     03073|                 {
+syntaxcheck     03074|                     Store (Arg0, CLID) /* \_SB_.PCI0.GFX0.CLID */
+syntaxcheck     03075|                     Return (GNOT (0x02, Zero))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 3078
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03075|                     Return (GNOT (0x02, Zero))
+syntaxcheck     03076|                 }
+syntaxcheck     03077| 
+syntaxcheck     03078|                 Method (GDCK, 1, NotSerialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     03079|                 {
+syntaxcheck     03080|                     Store (Arg0, CDCK) /* \_SB_.PCI0.GFX0.CDCK */
+syntaxcheck     03081|                     Return (GNOT (0x04, 0x80))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 3094
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03091|                     Return (LNot (ARDY))
+syntaxcheck     03092|                 }
+syntaxcheck     03093| 
+syntaxcheck     03094|                 Method (AINT, 2, NotSerialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     03095|                 {
+syntaxcheck     03096|                     If (LNot (And (TCHE, ShiftLeft (One, Arg0))))
+syntaxcheck     03097|                     {
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
 syntaxcheck     in line 5358
 syntaxcheck     Line | AML source
@@ -191,6 +541,34 @@ syntaxcheck     05359|                             {
 syntaxcheck     05360|                                 Store (Zero, BTDS) /* \_SB_.PCI0.LPCB.EC0_.BTDS */
 syntaxcheck     05361|                                 If (_OSI ("Windows 2006"))
 syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 5670
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05667|                     }
+syntaxcheck     05668| 
+syntaxcheck     05669|                     Mutex (FAMX, 0x00)
+syntaxcheck     05670|                     Method (FANG, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     05671|                     {
+syntaxcheck     05672|                         Acquire (FAMX, 0xFFFF)
+syntaxcheck     05673|                         Store (Arg0, ERIB) /* \_SB_.PCI0.LPCB.EC0_.ERIB */
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 5679
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05676|                         Return (Local0)
+syntaxcheck     05677|                     }
+syntaxcheck     05678| 
+syntaxcheck     05679|                     Method (FANW, 2, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     05680|                     {
+syntaxcheck     05681|                         Acquire (FAMX, 0xFFFF)
+syntaxcheck     05682|                         Store (Arg0, ERIB) /* \_SB_.PCI0.LPCB.EC0_.ERIB */
+syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
 syntaxcheck     line 5688
 syntaxcheck     Line | AML source
@@ -204,6 +582,48 @@ syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
 syntaxcheck     05689|                     {
 syntaxcheck     05690|                         Return (0x03)
 syntaxcheck     05691|                     }
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 5688
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05685|                         Return (Arg1)
+syntaxcheck     05686|                     }
+syntaxcheck     05687| 
+syntaxcheck     05688|                     Method (TUVR, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     05689|                     {
+syntaxcheck     05690|                         Return (0x03)
+syntaxcheck     05691|                     }
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 5693
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05690|                         Return (0x03)
+syntaxcheck     05691|                     }
+syntaxcheck     05692| 
+syntaxcheck     05693|                     Method (THRO, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     05694|                     {
+syntaxcheck     05695|                         If (LEqual (Arg0, Zero))
+syntaxcheck     05696|                         {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 5713
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05710|                         }
+syntaxcheck     05711|                     }
+syntaxcheck     05712| 
+syntaxcheck     05713|                     Method (CLCK, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     05714|                     {
+syntaxcheck     05715|                         If (LEqual (Arg0, Zero))
+syntaxcheck     05716|                         {
 syntaxcheck     ==========================================================
 syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
 syntaxcheck     Assembler remark in line 5778
@@ -385,7 +805,119 @@ syntaxcheck     thread enters the method and blocks and then a second
 syntaxcheck     thread also executes the method, ending up in two attempts
 syntaxcheck     to create the object and causing a failure.
 syntaxcheck     
-syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 14
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6292
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06289|                     SDAT,   16
+syntaxcheck     06290|                 }
+syntaxcheck     06291| 
+syntaxcheck     06292|                 Method (SSXB, 2, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06293|                 {
+syntaxcheck     06294|                     If (STRT ())
+syntaxcheck     06295|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6313
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06310|                     Return (Zero)
+syntaxcheck     06311|                 }
+syntaxcheck     06312| 
+syntaxcheck     06313|                 Method (SRXB, 1, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06314|                 {
+syntaxcheck     06315|                     If (STRT ())
+syntaxcheck     06316|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6333
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06330|                     Return (0xFFFF)
+syntaxcheck     06331|                 }
+syntaxcheck     06332| 
+syntaxcheck     06333|                 Method (SWRB, 3, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06334|                 {
+syntaxcheck     06335|                     If (STRT ())
+syntaxcheck     06336|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6355
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06352|                     Return (Zero)
+syntaxcheck     06353|                 }
+syntaxcheck     06354| 
+syntaxcheck     06355|                 Method (SRDB, 2, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06356|                 {
+syntaxcheck     06357|                     If (STRT ())
+syntaxcheck     06358|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6376
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06373|                     Return (0xFFFF)
+syntaxcheck     06374|                 }
+syntaxcheck     06375| 
+syntaxcheck     06376|                 Method (SWRW, 3, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06377|                 {
+syntaxcheck     06378|                     If (STRT ())
+syntaxcheck     06379|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6399
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06396|                     Return (Zero)
+syntaxcheck     06397|                 }
+syntaxcheck     06398| 
+syntaxcheck     06399|                 Method (SRDW, 2, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06400|                 {
+syntaxcheck     06401|                     If (STRT ())
+syntaxcheck     06402|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6420
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06417|                     Return (0xFFFFFFFF)
+syntaxcheck     06418|                 }
+syntaxcheck     06419| 
+syntaxcheck     06420|                 Method (SBLW, 4, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06421|                 {
+syntaxcheck     06422|                     If (STRT ())
+syntaxcheck     06423|                     {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler warning in line 6467
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06464|                     Return (Zero)
+syntaxcheck     06465|                 }
+syntaxcheck     06466| 
+syntaxcheck     06467|                 Method (SBLR, 3, Serialized)
+syntaxcheck          |                           ^
+syntaxcheck          | Warning 4089: Object is not referenced  
+syntaxcheck     06468|                 {
+syntaxcheck     06469|                     Name (TBUF, Buffer (0x0100){})
+syntaxcheck     06470|                     If (STRT ())
+syntaxcheck     ==========================================================
+syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 43 warnings, 14
 syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
@@ -574,6 +1106,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     3 passed, 29 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     3 passed, 67 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

@@ -457,4 +457,380 @@ ACPI_STATUS fwts_acpi_object_evaluate(fwts_framework *fw,
 	return AcpiEvaluateObject(NULL, name, arg_list, buf);
 }
 
+int fwts_method_check_type__(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT_TYPE type,
+	char *type_name)
+{
+	ACPI_OBJECT *obj;
+
+	if ((buf == NULL) || (buf->Pointer == NULL)) {
+		fwts_method_failed_null_object(fw, name, type_name);
+		return FWTS_ERROR;
+	}
+
+	obj = buf->Pointer;
+
+	if (!fwts_method_type_matches(obj->Type, type)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType",
+			"Method %s did not return %s.", name, type_name);
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
+ *  Common types that can be returned. This is not a complete
+ *  list but it does cover the types we expect to return from
+ *  an ACPI evaluation.
+ */
+const char *fwts_method_type_name(const ACPI_OBJECT_TYPE type)
+{
+	switch (type) {
+	case ACPI_TYPE_INTEGER:
+		return "integer";
+	case ACPI_TYPE_STRING:
+		return "string";
+	case ACPI_TYPE_BUFFER:
+		return "buffer";
+	case ACPI_TYPE_PACKAGE:
+		return "package";
+	case ACPI_TYPE_BUFFER_FIELD:
+		return "buffer_field";
+	case ACPI_TYPE_LOCAL_REFERENCE:
+		return "reference";
+	case ACPI_TYPE_INTBUF:
+		return "integer or buffer";
+	default:
+		return "unknown";
+	}
+}
+
+/*
+ *  method_passed_sane()
+ *	helper function to report often used passed messages
+ */
+void fwts_method_passed_sane(
+	fwts_framework *fw,
+	const char *name,
+	const char *type)
+{
+	fwts_passed(fw, "%s correctly returned a sane looking %s.", name, type);
+}
+
+/*
+ *  method_passed_sane_uint64()
+ *	helper function to report often used passed uint64 values
+ */
+void fwts_method_passed_sane_uint64(
+	fwts_framework *fw,
+	const char *name,
+	const uint64_t value)
+{
+	fwts_passed(fw, "%s correctly returned sane looking "
+		"value 0x%8.8" PRIx64 ".", name, value);
+}
+
+/*
+ *  fwts_method_failed_null_object()
+ *	helper function to report often used failed NULL object return
+ */
+void fwts_method_failed_null_object(
+	fwts_framework *fw,
+	const char *name,
+	const char *type)
+{
+	fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+		"%s returned a NULL object, and did not "
+		"return %s.", name, type);
+}
+
+bool fwts_method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
+{
+	if (t1 == ACPI_TYPE_INTBUF &&
+	    (t2 == ACPI_TYPE_INTEGER || t2 == ACPI_TYPE_BUFFER))
+		return true;
+
+	if (t2 == ACPI_TYPE_INTBUF &&
+	    (t1 == ACPI_TYPE_INTEGER || t1 == ACPI_TYPE_BUFFER))
+		return true;
+
+	return t1 == t2;
+}
+
+/*
+ *  method_package_count_min()
+ *	check that an ACPI package has at least 'min' elements
+ */
+int fwts_method_package_count_min(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const uint32_t min)
+{
+	if (obj->Package.Count < min) {
+		char tmp[128];
+
+		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			"%s should return package of at least %" PRIu32
+			" element%s, got %" PRIu32 " element%s instead.",
+			name, min, min == 1 ? "" : "s",
+			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+/*
+ *  method_package_count_equal()
+ *	check that an ACPI package has exactly 'count' elements
+ */
+int fwts_method_package_count_equal(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const uint32_t count)
+{
+	if (obj->Package.Count != count) {
+		char tmp[128];
+
+		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			"%s should return package of %" PRIu32
+			" element%s, got %" PRIu32 " element%s instead.",
+			name, count, count == 1 ? "" : "s",
+			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
+		return FWTS_ERROR;
+	}
+	return FWTS_OK;
+}
+
+int fwts_method_package_elements_all_type(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const ACPI_OBJECT_TYPE type)
+{
+	uint32_t i;
+	bool failed = false;
+	char tmp[128];
+
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, type)) {
+			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+				"%s package element %" PRIu32 " was not the expected "
+				"type '%s', was instead type '%s'.",
+				name, i,
+				fwts_method_type_name(type),
+				fwts_method_type_name(obj->Package.Elements[i].Type));
+			failed = true;
+		}
+	}
+
+	return failed ? FWTS_ERROR: FWTS_OK;
+}
+
+/*
+ *  fwts_method_package_elements_type()
+ *	sanity check fields in a package that all have
+ *	the same type
+ */
+int fwts_method_package_elements_type(
+	fwts_framework *fw,
+	const char *name,
+	const char *objname,
+	const ACPI_OBJECT *obj,
+	const fwts_package_element *info,
+	const uint32_t count)
+{
+	uint32_t i;
+	bool failed = false;
+	char tmp[128];
+
+	if (obj->Package.Count != count)
+		return FWTS_ERROR;
+
+	for (i = 0; i < obj->Package.Count; i++) {
+		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, info[i].type)) {
+			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+				"%s package element %" PRIu32 " (%s) was not the expected "
+				"type '%s', was instead type '%s'.",
+				name, i, info[i].name,
+				fwts_method_type_name(info[i].type),
+				fwts_method_type_name(obj->Package.Elements[i].Type));
+			failed = true;
+		}
+	}
+
+	return failed ? FWTS_ERROR: FWTS_OK;
+}
+
+/*
+ *  fwts_method_test_integer_return
+ *	check if an integer object was returned
+ */
+void fwts_method_test_integer_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned an integer.", name);
+}
+
+/*
+ *  fwts_method_test_string_return
+ *	check if an string object was returned
+ */
+void fwts_method_test_string_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a string.", name);
+}
+
+/*
+ *  fwts_method_test_reference_return
+ *	check if a reference object was returned
+ */
+void fwts_method_test_reference_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(obj);
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_LOCAL_REFERENCE) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a reference.", name);
+}
+
+/*
+ *  fwts_method_test_NULL_return
+ *	check if no object was retuned
+ */
+void fwts_method_test_NULL_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	/*
+	 *  In ACPICA SLACK mode null returns can be actually
+	 *  forced to return ACPI integers. Blame an errata
+	 *  and Windows compatibility for this mess.
+	 */
+	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
+		if ((buf != NULL) && (buf->Pointer != NULL)) {
+			ACPI_OBJECT *objtmp = buf->Pointer;
+			if (fwts_method_type_matches(objtmp->Type, ACPI_TYPE_INTEGER)) {
+				fwts_passed(fw, "%s returned an ACPI_TYPE_INTEGER as expected in slack mode.",
+					name);
+				return;
+			}
+		}
+	}
+
+	if (buf && buf->Length && buf->Pointer) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
+		fwts_log_info(fw, "Object returned:");
+		fwts_acpi_object_dump(fw, obj);
+		fwts_advice(fw,
+			"This probably won't cause any errors, but it should "
+			"be fixed as the AML code is not conforming to the "
+			"expected behaviour as described in the ACPI "
+			"specification.");
+	} else
+		fwts_passed(fw, "%s returned no values as expected.", name);
+}
+
+/*
+ *  fwts_method_test_passed_failed_return
+ *	check if 0 or 1 (false/true) integer is returned
+ */
+void fwts_method_test_passed_failed_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	char *method = (char *)private;
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		uint32_t val = (uint32_t)obj->Integer.Value;
+		if ((val == 0) || (val == 1))
+			fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodReturnZeroOrOne",
+				"%s returned 0x%8.8" PRIx32 ", should return 1 "
+				"(success) or 0 (failed).", method, val);
+			fwts_advice(fw,
+				"Method %s should be returning the correct "
+				"1/0 success/failed return values. "
+				"Unexpected behaviour may occur becauses of "
+				"this error, the AML code does not conform to "
+				"the ACPI specification and should be fixed.",
+				method);
+		}
+	}
+}
+
+/*
+ *  fwts_method_test_polling_return
+ *	check if a returned polling time is valid
+ */
+void fwts_method_test_polling_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
+		char *method = (char *)private;
+		if (obj->Integer.Value < 36000) {
+			fwts_passed(fw,
+				"%s correctly returned sane looking value "
+				"%f seconds", method,
+				(float)obj->Integer.Value / 10.0);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodPollTimeTooLong",
+				"%s returned a value %f seconds > (1 hour) "
+				"which is probably incorrect.",
+				method, (float)obj->Integer.Value / 10.0);
+			fwts_advice(fw,
+				"The method is returning a polling interval "
+				"which is very long and hence most probably "
+				"incorrect.");
+		}
+	}
+}
+
 #endif

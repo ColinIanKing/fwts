@@ -257,24 +257,13 @@
  * _WED 	 N
  */
 
-/* Test types */
-#define METHOD_MANDATORY	1
-#define METHOD_OPTIONAL		2
-#define METHOD_MOBILE		4
-#define METHOD_SILENT		8
-
-#define ACPI_TYPE_INTBUF	(ACPI_TYPE_INVALID + 1)
-
-#define method_check_type(fw, name, buf, type) 			\
-	method_check_type__(fw, name, buf, type, #type)
-
 static bool fadt_mobile_platform;	/* True if a mobile platform */
 
 #define method_test_integer(name, type)				\
 static int method_test ## name(fwts_framework *fw)		\
 { 								\
 	return method_evaluate_method(fw, type, # name,		\
-		NULL, 0, method_test_integer_return, # name); 	\
+		NULL, 0, fwts_method_test_integer_return, # name); 	\
 }
 
 typedef void (*method_test_return)(fwts_framework *fw, char *name,
@@ -285,108 +274,6 @@ typedef void (*method_test_return)(fwts_framework *fw, char *name,
  */
 
 /****************************************************************************/
-
-static bool method_type_matches(ACPI_OBJECT_TYPE t1, ACPI_OBJECT_TYPE t2)
-{
-	if (t1 == ACPI_TYPE_INTBUF &&
-	    (t2 == ACPI_TYPE_INTEGER || t2 == ACPI_TYPE_BUFFER))
-		return true;
-
-	if (t2 == ACPI_TYPE_INTBUF &&
-	    (t1 == ACPI_TYPE_INTEGER || t1 == ACPI_TYPE_BUFFER))
-		return true;
-
-	return t1 == t2;
-}
-
-/*
- *  method_passed_sane()
- *	helper function to report often used passed messages
- */
-static void method_passed_sane(
-	fwts_framework *fw,
-	const char *name,
-	const char *type)
-{
-	fwts_passed(fw, "%s correctly returned a sane looking %s.", name, type);
-}
-
-/*
- *  method_passed_sane_uint64()
- *	helper function to report often used passed uint64 values
- */
-static void method_passed_sane_uint64(
-	fwts_framework *fw,
-	const char *name,
-	const uint64_t value)
-{
-	fwts_passed(fw, "%s correctly returned sane looking "
-		"value 0x%8.8" PRIx64 ".", name, value);
-}
-
-/*
- *  method_failed_null_return()
- *	helper function to report often used failed NULL object return
- */
-static void method_failed_null_object(
-	fwts_framework *fw,
-	const char *name,
-	const char *type)
-{
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
-		"%s returned a NULL object, and did not "
-		"return %s.", name, type);
-}
-
-/*
- *  method_package_count_min()
- *	check that an ACPI package has at least 'min' elements
- */
-static int method_package_count_min(
-	fwts_framework *fw,
-	const char *name,
-	const char *objname,
-	const ACPI_OBJECT *obj,
-	const uint32_t min)
-{
-	if (obj->Package.Count < min) {
-		char tmp[128];
-
-		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
-			"%s should return package of at least %" PRIu32
-			" element%s, got %" PRIu32 " element%s instead.",
-			name, min, min == 1 ? "" : "s",
-			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
-		return FWTS_ERROR;
-	}
-	return FWTS_OK;
-}
-
-/*
- *  method_package_count_equal()
- *	check that an ACPI package has exactly 'count' elements
- */
-static int method_package_count_equal(
-	fwts_framework *fw,
-	const char *name,
-	const char *objname,
-	const ACPI_OBJECT *obj,
-	const uint32_t count)
-{
-	if (obj->Package.Count != count) {
-		char tmp[128];
-
-		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
-			"%s should return package of %" PRIu32
-			" element%s, got %" PRIu32 " element%s instead.",
-			name, count, count == 1 ? "" : "s",
-			obj->Package.Count, obj->Package.Count == 1 ? "" : "s");
-		return FWTS_ERROR;
-	}
-	return FWTS_OK;
-}
 
 /*
  *  method_init()
@@ -616,34 +503,6 @@ static int method_name_check(fwts_framework *fw)
 }
 
 /*
- *  method_check_type__
- *	check returned object type
- */
-static int method_check_type__(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT_TYPE type,
-	char *type_name)
-{
-	ACPI_OBJECT *obj;
-
-	if ((buf == NULL) || (buf->Pointer == NULL)) {
-		method_failed_null_object(fw, name, type_name);
-		return FWTS_ERROR;
-	}
-
-	obj = buf->Pointer;
-
-	if (!method_type_matches(obj->Type, type)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType",
-			"Method %s did not return %s.", name, type_name);
-		return FWTS_ERROR;
-	}
-	return FWTS_OK;
-}
-
-/*
  *  method_test_buffer_return
  *	check if a buffer object was returned
  */
@@ -656,270 +515,9 @@ static void method_test_buffer_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
 		fwts_passed(fw, "%s correctly returned a buffer of %" PRIu32 " elements.",
 			name, obj->Buffer.Length);
-}
-
-/*
- *  method_test_integer_return
- *	check if an integer object was returned
- */
-static void method_test_integer_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(obj);
-	FWTS_UNUSED(private);
-
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		fwts_passed(fw, "%s correctly returned an integer.", name);
-}
-
-/*
- *  method_test_string_return
- *	check if an string object was returned
- */
-static void method_test_string_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(obj);
-	FWTS_UNUSED(private);
-
-	if (method_check_type(fw, name, buf, ACPI_TYPE_STRING) == FWTS_OK)
-		fwts_passed(fw, "%s correctly returned a string.", name);
-}
-
-/*
- *  method_test_reference_return
- *	check if a reference object was returned
- */
-static void method_test_reference_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(obj);
-	FWTS_UNUSED(private);
-
-	if (method_check_type(fw, name, buf, ACPI_TYPE_LOCAL_REFERENCE) == FWTS_OK)
-		fwts_passed(fw, "%s correctly returned a reference.", name);
-}
-
-/*
- *  method_test_NULL_return
- *	check if no object was retuned
- */
-static void method_test_NULL_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	FWTS_UNUSED(private);
-
-	/*
-	 *  In ACPICA SLACK mode null returns can be actually
-	 *  forced to return ACPI integers. Blame an errata
-	 *  and Windows compatibility for this mess.
-	 */
-	if (fw->acpica_mode & FWTS_ACPICA_MODE_SLACK) {
-		if ((buf != NULL) && (buf->Pointer != NULL)) {
-			ACPI_OBJECT *objtmp = buf->Pointer;
-			if (method_type_matches(objtmp->Type, ACPI_TYPE_INTEGER)) {
-				fwts_passed(fw, "%s returned an ACPI_TYPE_INTEGER as expected in slack mode.",
-					name);
-				return;
-			}
-		}
-	}
-
-	if (buf && buf->Length && buf->Pointer) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodShouldReturnNothing", "%s returned values, but was expected to return nothing.", name);
-		fwts_log_info(fw, "Object returned:");
-		fwts_acpi_object_dump(fw, obj);
-		fwts_advice(fw,
-			"This probably won't cause any errors, but it should "
-			"be fixed as the AML code is not conforming to the "
-			"expected behaviour as described in the ACPI "
-			"specification.");
-	} else
-		fwts_passed(fw, "%s returned no values as expected.", name);
-}
-
-/*
- *  method_test_passed_failed_return
- *	check if 0 or 1 (false/true) integer is returned
- */
-static void method_test_passed_failed_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	char *method = (char *)private;
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		uint32_t val = (uint32_t)obj->Integer.Value;
-		if ((val == 0) || (val == 1))
-			method_passed_sane_uint64(fw, name, obj->Integer.Value);
-		else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"MethodReturnZeroOrOne",
-				"%s returned 0x%8.8" PRIx32 ", should return 1 "
-				"(success) or 0 (failed).", method, val);
-			fwts_advice(fw,
-				"Method %s should be returning the correct "
-				"1/0 success/failed return values. "
-				"Unexpected behaviour may occur becauses of "
-				"this error, the AML code does not conform to "
-				"the ACPI specification and should be fixed.",
-				method);
-		}
-	}
-}
-
-/*
- *  method_test_polling_return
- *	check if a returned polling time is valid
- */
-static void method_test_polling_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK) {
-		char *method = (char *)private;
-		if (obj->Integer.Value < 36000) {
-			fwts_passed(fw,
-				"%s correctly returned sane looking value "
-				"%f seconds", method,
-				(float)obj->Integer.Value / 10.0);
-		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"MethodPollTimeTooLong",
-				"%s returned a value %f seconds > (1 hour) "
-				"which is probably incorrect.",
-				method, (float)obj->Integer.Value / 10.0);
-			fwts_advice(fw,
-				"The method is returning a polling interval "
-				"which is very long and hence most probably "
-				"incorrect.");
-		}
-	}
-}
-
-
-/*
- *  Common types that can be returned. This is not a complete
- *  list but it does cover the types we expect to return from
- *  an ACPI evaluation.
- */
-static const char *method_type_name(const ACPI_OBJECT_TYPE type)
-{
-	switch (type) {
-	case ACPI_TYPE_INTEGER:
-		return "integer";
-	case ACPI_TYPE_STRING:
-		return "string";
-	case ACPI_TYPE_BUFFER:
-		return "buffer";
-	case ACPI_TYPE_PACKAGE:
-		return "package";
-	case ACPI_TYPE_BUFFER_FIELD:
-		return "buffer_field";
-	case ACPI_TYPE_LOCAL_REFERENCE:
-		return "reference";
-	case ACPI_TYPE_INTBUF:
-		return "integer or buffer";
-	default:
-		return "unknown";
-	}
-}
-
-/*
- *  method_package_elements_all_type()
- *	sanity check fields in a package that all have
- *	the same type
- */
-static int method_package_elements_all_type(
-	fwts_framework *fw,
-	const char *name,
-	const char *objname,
-	const ACPI_OBJECT *obj,
-	const ACPI_OBJECT_TYPE type)
-{
-	uint32_t i;
-	bool failed = false;
-	char tmp[128];
-
-	for (i = 0; i < obj->Package.Count; i++) {
-		if (!method_type_matches(obj->Package.Elements[i].Type, type)) {
-			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
-				"%s package element %" PRIu32 " was not the expected "
-				"type '%s', was instead type '%s'.",
-				name, i,
-				method_type_name(type),
-				method_type_name(obj->Package.Elements[i].Type));
-			failed = true;
-		}
-	}
-
-	return failed ? FWTS_ERROR: FWTS_OK;
-}
-
-typedef struct {
-	ACPI_OBJECT_TYPE type;	/* Type */
-	const char 	*name;	/* Field name */
-} fwts_package_element;
-
-/*
- *  method_package_elements_type()
- *	sanity check fields in a package that all have
- *	the same type
- */
-static int method_package_elements_type(
-	fwts_framework *fw,
-	const char *name,
-	const char *objname,
-	const ACPI_OBJECT *obj,
-	const fwts_package_element *info,
-	const uint32_t count)
-{
-	uint32_t i;
-	bool failed = false;
-	char tmp[128];
-
-	if (obj->Package.Count != count)
-		return FWTS_ERROR;
-
-	for (i = 0; i < obj->Package.Count; i++) {
-		if (!method_type_matches(obj->Package.Elements[i].Type, info[i].type)) {
-			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
-				"%s package element %" PRIu32 " (%s) was not the expected "
-				"type '%s', was instead type '%s'.",
-				name, i, info[i].name,
-				method_type_name(info[i].type),
-				method_type_name(obj->Package.Elements[i].Type));
-			failed = true;
-		}
-	}
-
-	return failed ? FWTS_ERROR: FWTS_OK;
 }
 
 /****************************************************************************/
@@ -941,7 +539,7 @@ static void method_test_AEI_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	status = AcpiBufferToResource(obj->Buffer.Pointer, obj->Buffer.Length, &resource);
@@ -970,7 +568,7 @@ static void method_test_AEI_return(
 	} while (resource->Type != ACPI_RESOURCE_TYPE_END_TAG);
 
 	if (!failed)
-		method_passed_sane(fw, name, "buffer");
+		fwts_method_passed_sane(fw, name, "buffer");
 }
 
 static int method_test_AEI(fwts_framework *fw)
@@ -1022,7 +620,7 @@ static void check_evt_event (
 		arg_list.Count = 1;
 		arg_list.Pointer = arg;
 
-		method_evaluate_found_method(fw, path, method_test_NULL_return, NULL, &arg_list);
+		method_evaluate_found_method(fw, path, fwts_method_test_NULL_return, NULL, &arg_list);
 	}
 }
 
@@ -1038,7 +636,7 @@ static void method_test_EVT_return (
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	status = AcpiBufferToResource(obj->Buffer.Pointer, obj->Buffer.Length, &resource);
@@ -1093,10 +691,10 @@ static void method_test_DLM_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_DLM", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_DLM", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -1134,7 +732,7 @@ static void method_test_DLM_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_DLM(fwts_framework *fw)
@@ -1155,7 +753,7 @@ static int method_test_PIC(fwts_framework *fw)
 	for (i = 0; i < 3; i++) {
 		arg[0].Integer.Value = i;
 		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_PIC", arg, 1, method_test_NULL_return, NULL);
+			"_PIC", arg, 1, fwts_method_test_NULL_return, NULL);
 
 		if (ret != FWTS_OK)
 			break;
@@ -1170,7 +768,7 @@ static int method_test_PIC(fwts_framework *fw)
 static int method_test_DDN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DDN", NULL, 0, method_test_string_return, NULL);
+		"_DDN", NULL, 0, fwts_method_test_string_return, NULL);
 }
 
 static bool method_valid_HID_string(char *str)
@@ -1233,7 +831,7 @@ static void method_test_HID_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
 
@@ -1347,7 +945,7 @@ static void method_test_CID_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
 
@@ -1357,7 +955,7 @@ static void method_test_CID_return(
 		method_valid_CID_Type(fw, name, obj);
 		break;
 	case ACPI_TYPE_PACKAGE:
-		if (method_package_count_min(fw, name, "_CID", obj, 1) != FWTS_OK)
+		if (fwts_method_package_count_min(fw, name, "_CID", obj, 1) != FWTS_OK)
 			return;
 
 		for (i = 0; i < obj->Package.Count; i++){
@@ -1390,10 +988,10 @@ static void method_test_MLS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_MLS", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_MLS", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -1430,7 +1028,7 @@ static void method_test_MLS_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_MLS(fwts_framework *fw)
@@ -1441,7 +1039,7 @@ static int method_test_MLS(fwts_framework *fw)
 static int method_test_HRV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_HRV", NULL, 0, method_test_integer_return, NULL);
+		"_HRV", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_STR(fwts_framework *fw)
@@ -1459,14 +1057,14 @@ static void method_test_PLD_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* All elements in the package must be buffers */
-	if (method_package_elements_all_type(fw, name, "_PLD", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PLD", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PLD(fwts_framework *fw)
@@ -1486,7 +1084,7 @@ static void method_test_SUB_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
 
@@ -1525,7 +1123,7 @@ static int method_test_SUB(fwts_framework *fw)
 static int method_test_SUN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_SUN", NULL, 0, method_test_integer_return, NULL);
+		"_SUN", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_UID_return(
@@ -1539,7 +1137,7 @@ static void method_test_UID_return(
 	FWTS_UNUSED(private);
 
 	if (obj == NULL) {
-		method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
 
@@ -1555,7 +1153,7 @@ static void method_test_UID_return(
 				"%s returned a NULL string.", name);
 		break;
 	case ACPI_TYPE_INTEGER:
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDBadReturnType",
@@ -2226,7 +1824,7 @@ static void method_test_CRS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 	if (obj->Buffer.Pointer == NULL) {
 		snprintf(tmp, sizeof(tmp), "Method%sNullBuffer", objname);
@@ -2277,10 +1875,10 @@ static void method_test_PRT_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -2343,7 +1941,7 @@ static void method_test_PRT_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PRT(fwts_framework *fw)
@@ -2372,11 +1970,11 @@ static void method_test_FIX_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* All elements in the package must be integers */
-	if (method_package_elements_all_type(fw, name, "_FIX", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_FIX", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	/* And they need to be valid IDs */
@@ -2396,7 +1994,7 @@ static void method_test_FIX_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FIX(fwts_framework *fw)
@@ -2419,7 +2017,7 @@ static void method_test_DSD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Must be an even number of items in package */
@@ -2432,23 +2030,23 @@ static void method_test_DSD_return(
 	}
 	for (i = 0; i < obj->Package.Count; i += 2) {
 		/* UUID should be a buffer */
-		if (!method_type_matches(obj->Package.Elements[i].Type, ACPI_TYPE_BUFFER)) {
+		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, ACPI_TYPE_BUFFER)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DSDElementBuffer",
 				"%s package element %" PRIu32 " was not the expected "
 				"type '%s', was instead type '%s'.",
 				name, i,
-				method_type_name(ACPI_TYPE_BUFFER),
-				method_type_name(obj->Package.Elements[i].Type));
+				fwts_method_type_name(ACPI_TYPE_BUFFER),
+				fwts_method_type_name(obj->Package.Elements[i].Type));
 		}
 
 		/* Data should be a package */
-		if (!method_type_matches(obj->Package.Elements[i + 1].Type, ACPI_TYPE_PACKAGE)) {
+		if (!fwts_method_type_matches(obj->Package.Elements[i + 1].Type, ACPI_TYPE_PACKAGE)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_DSDElementPackage",
 				"%s package element %" PRIu32 " was not the expected "
 				"type '%s', was instead type '%s'.",
 				name, i + 1,
-				method_type_name(ACPI_TYPE_PACKAGE),
-				method_type_name(obj->Package.Elements[i + 1].Type));
+				fwts_method_type_name(ACPI_TYPE_PACKAGE),
+				fwts_method_type_name(obj->Package.Elements[i + 1].Type));
 		}
 	}
 }
@@ -2462,13 +2060,13 @@ static int method_test_DSD(fwts_framework *fw)
 static int method_test_DIS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DIS", NULL, 0, method_test_NULL_return, NULL);
+		"_DIS", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_GSB(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GSB", NULL, 0, method_test_integer_return, NULL);
+		"_GSB", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_HPP_return(
@@ -2480,18 +2078,18 @@ static void method_test_HPP_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Must be 4 elements in the package */
-	if (method_package_count_equal(fw, name, "_HPP", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_HPP", obj, 4) != FWTS_OK)
 		return;
 
 	/* All 4 elements in the package must be integers */
-	if (method_package_elements_all_type(fw, name, "_HPP", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_HPP", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_HPP(fwts_framework *fw)
@@ -2503,7 +2101,7 @@ static int method_test_HPP(fwts_framework *fw)
 static int method_test_PXM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PXM", NULL, 0, method_test_integer_return, NULL);
+		"_PXM", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /* Section 6.2.17 _CCA */
@@ -2511,10 +2109,10 @@ static int method_test_CCA(fwts_framework *fw)
 {
 	if (fw->flags & FWTS_FLAG_TEST_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
-			"_CCA", NULL, 0, method_test_integer_return, NULL);
+			"_CCA", NULL, 0, fwts_method_test_integer_return, NULL);
 	else
 		return method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_CCA", NULL, 0, method_test_integer_return, NULL);
+			"_CCA", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -2529,14 +2127,14 @@ static void method_test_EDL_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_EDL",
+	if (fwts_method_package_elements_all_type(fw, name, "_EDL",
 		obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_EDL(fwts_framework *fw)
@@ -2548,7 +2146,7 @@ static int method_test_EDL(fwts_framework *fw)
 static int method_test_EJD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_EJD", NULL, 0, method_test_string_return, NULL);
+		"_EJD", NULL, 0, fwts_method_test_string_return, NULL);
 }
 
 #define method_test_EJx(name)					\
@@ -2560,7 +2158,7 @@ static int method_test ## name(fwts_framework *fw)		\
 	arg[0].Integer.Value = 1;				\
 								\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,	\
-		# name, arg, 1, method_test_NULL_return, # name); \
+		# name, arg, 1, fwts_method_test_NULL_return, # name); \
 }
 
 method_test_EJx(_EJ0)
@@ -2577,13 +2175,13 @@ static int method_test_LCK(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_LCK", arg, 1, method_test_NULL_return, NULL);
+		"_LCK", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_RMV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_RMV",
-		NULL, 0, method_test_passed_failed_return, "_RMV");
+		NULL, 0, fwts_method_test_passed_failed_return, "_RMV");
 }
 
 static void method_test_STA_return(
@@ -2597,7 +2195,7 @@ static void method_test_STA_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if ((obj->Integer.Value & 3) == 2) {
@@ -2616,7 +2214,7 @@ static void method_test_STA_return(
 	}
 
 	if (!failed)
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_STA(fwts_framework *fw)
@@ -2636,13 +2234,13 @@ static int method_test_STA(fwts_framework *fw)
 static int method_test_BBN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_BBN",
-		NULL, 0, method_test_integer_return, "_BBN");
+		NULL, 0, fwts_method_test_integer_return, "_BBN");
 }
 
 static int method_test_BDN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_MOBILE, "_BDN",
-		NULL, 0, method_test_integer_return, "_BDN");
+		NULL, 0, fwts_method_test_integer_return, "_BDN");
 }
 
 static void method_test_DEP_return(
@@ -2654,13 +2252,13 @@ static void method_test_DEP_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_DEP", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_DEP", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_DEP(fwts_framework *fw)
@@ -2684,13 +2282,13 @@ static void method_test_LSI_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_LSI", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_LSI", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_LSI(fwts_framework *fw)
@@ -2708,7 +2306,7 @@ static int method_test_DCK(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = i;
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_DCK", arg,
-			1, method_test_passed_failed_return, "_DCK") != FWTS_OK)
+			1, fwts_method_test_passed_failed_return, "_DCK") != FWTS_OK)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -2718,7 +2316,7 @@ static int method_test_DCK(fwts_framework *fw)
 static int method_test_INI(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_INI", NULL, 0, method_test_NULL_return, NULL);
+		"_INI", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_SEG_return(
@@ -2730,7 +2328,7 @@ static void method_test_SEG_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if ((obj->Integer.Value & 0xffff0000)) {
@@ -2741,7 +2339,7 @@ static void method_test_SEG_return(
 			"should in fact be zero.",
 			name, (uint64_t)obj->Integer.Value);
 	} else
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_SEG(fwts_framework *fw)
@@ -2790,13 +2388,13 @@ static int method_test_GLK(fwts_framework *fw)
 static int method_test_ON_(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_ON_", NULL, 0, method_test_NULL_return, NULL);
+		"_ON_", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_OFF(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_OFF", NULL, 0, method_test_NULL_return, NULL);
+		"_OFF", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 
@@ -2815,7 +2413,7 @@ static int method_test_DSW(fwts_framework *fw)
 	arg[2].Integer.Value = 3;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_DSW",
-		arg, 3, method_test_NULL_return, NULL);
+		arg, 3, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_PSx(fwts_framework *fw, char *name)
@@ -2833,7 +2431,7 @@ static int method_test_PSx(fwts_framework *fw, char *name)
 			"it was not found.", name);
 	}
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		name, NULL, 0, method_test_NULL_return, name);
+		name, NULL, 0, fwts_method_test_NULL_return, name);
 }
 
 static void method_test_PRW_return(
@@ -2848,10 +2446,10 @@ static void method_test_PRW_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_min(fw, name, "_PRW", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_PRW", obj, 2) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type != ACPI_TYPE_INTEGER &&
@@ -2910,7 +2508,7 @@ static void method_test_PRW_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PRW(fwts_framework *fw)
@@ -2946,7 +2544,7 @@ static int method_test_PS0(fwts_framework *fw)
 		}
 	}
 	return method_evaluate_method(fw, METHOD_OPTIONAL, "_PS0",
-		 NULL, 0, method_test_NULL_return, "_PS0");
+		 NULL, 0, fwts_method_test_NULL_return, "_PS0");
 }
 
 static int method_test_PS1(fwts_framework *fw)
@@ -2967,7 +2565,7 @@ static int method_test_PS3(fwts_framework *fw)
 static int method_test_PSC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSC", NULL, 0, method_test_integer_return, NULL);
+		"_PSC", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_PSE(fwts_framework *fw)
@@ -2978,7 +2576,7 @@ static int method_test_PSE(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSE", arg, 1, method_test_NULL_return, NULL);
+		"_PSE", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_power_resources_return(
@@ -2992,14 +2590,14 @@ static void method_test_power_resources_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, objname,
+	if (fwts_method_package_elements_all_type(fw, name, objname,
 		obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 #define method_test_POWER(name)						\
@@ -3023,14 +2621,14 @@ static int method_test_PSW(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PSW", arg, 1, method_test_NULL_return, NULL);
+		"_PSW", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 #define method_test_SxD(name)						\
 static int method_test ## name(fwts_framework *fw)			\
 {									\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
-		# name, NULL, 0, method_test_integer_return, # name);	\
+		# name, NULL, 0, fwts_method_test_integer_return, # name);	\
 }
 
 method_test_SxD(_S1D)
@@ -3042,7 +2640,7 @@ method_test_SxD(_S4D)
 static int method_test ## name(fwts_framework *fw)			\
 {									\
 	return method_evaluate_method(fw, METHOD_OPTIONAL,		\
-		# name, NULL, 0, method_test_integer_return, # name);	\
+		# name, NULL, 0, fwts_method_test_integer_return, # name);	\
 }
 
 method_test_SxW(_S0W)
@@ -3054,7 +2652,7 @@ method_test_SxW(_S4W)
 static int method_test_RST(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_RST", NULL, 0, method_test_NULL_return, NULL);
+		"_RST", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_PRR_return(
@@ -3066,10 +2664,10 @@ static void method_test_PRR_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PRR", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PRR", obj, 1) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type != ACPI_TYPE_LOCAL_REFERENCE) {
@@ -3080,7 +2678,7 @@ static void method_test_PRR_return(
 		return;
 	}
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PRR(fwts_framework *fw)
@@ -3092,7 +2690,7 @@ static int method_test_PRR(fwts_framework *fw)
 static int method_test_IRC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_IRC", NULL, 0, method_test_NULL_return, NULL);
+		"_IRC", NULL, 0, fwts_method_test_NULL_return, NULL);
 }
 
 /*
@@ -3109,7 +2707,7 @@ static void method_test_Sx__return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/*
@@ -3185,7 +2783,7 @@ static void method_test_Sx__return(
 		(uint64_t)obj->Package.Elements[1].Integer.Value);
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 #define method_test_Sx_(name)						\
@@ -3205,7 +2803,7 @@ method_test_Sx_(_S5_)
 static int method_test_SWS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_SWS", NULL, 0, method_test_integer_return, NULL);
+		"_SWS", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -3292,33 +2890,33 @@ static void method_test_CPC_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	revision = obj->Package.Elements[1].Integer.Value;
 
 	if (revision == 1) {		// acpi 5.0
 		/* Something is really wrong if we don't have any elements in _CPC */
-		if (method_package_count_equal(fw, name, "_CPC", obj, 17) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 17) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv1, 17) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv1, 17) != FWTS_OK)
 			return;
 	} else if (revision == 2) {	// acpi 5.1 ~ acpi 6.1a
 		/* Something is really wrong if we don't have any elements in _CPC */
-		if (method_package_count_equal(fw, name, "_CPC", obj, 21) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 21) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv2, 21) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv2, 21) != FWTS_OK)
 			return;
 	} else if (revision == 3) {	// acpi 6.2 and later
-		if (method_package_count_equal(fw, name, "_CPC", obj, 23) != FWTS_OK)
+		if (fwts_method_package_count_equal(fw, name, "_CPC", obj, 23) != FWTS_OK)
 			return;
 
 		/* For now, just check types */
-		if (method_package_elements_type(fw, name, "_CPC", obj, elementsv3, 23) != FWTS_OK)
+		if (fwts_method_package_elements_type(fw, name, "_CPC", obj, elementsv3, 23) != FWTS_OK)
 			return;
 	} else {
 		fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -3329,7 +2927,7 @@ static void method_test_CPC_return(
 		return;
 	}
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_CPC(fwts_framework *fw)
@@ -3350,11 +2948,11 @@ static void method_test_CSD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Something is really wrong if we don't have any elements in _CSD */
-	if (method_package_count_min(fw, name, "_CSD", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_CSD", obj, 1) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -3363,7 +2961,7 @@ static void method_test_CSD_return(
 		uint32_t j;
 		bool elements_ok = true;
 
-		if (method_package_elements_all_type(fw, name, "_CSD",
+		if (fwts_method_package_elements_all_type(fw, name, "_CSD",
 			obj, ACPI_TYPE_PACKAGE) != FWTS_OK) {
 			failed = true;
 			continue;	/* Skip processing sub-package */
@@ -3440,7 +3038,7 @@ static void method_test_CSD_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_CSD(fwts_framework *fw)
@@ -3478,11 +3076,11 @@ static void method_test_CST_return(
 	if (obj == NULL)
 		return;
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* _CST has at least two elements */
-	if (method_package_count_min(fw, name, "_CST", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_CST", obj, 2) != FWTS_OK)
 		return;
 
 	/* Element 1 must be an integer */
@@ -3607,7 +3205,7 @@ static void method_test_CST_return(
 	free(cst_elements_ok);
 
 	if (!failed)
-		method_passed_sane(fw, name, "values");
+		fwts_method_passed_sane(fw, name, "values");
 }
 
 static int method_test_CST(fwts_framework *fw)
@@ -3625,18 +3223,18 @@ static void method_test_PCT_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PCT */
-	if (method_package_count_min(fw, name, "_PCT", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_PCT", obj, 2) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PCT",
+	if (fwts_method_package_elements_all_type(fw, name, "_PCT",
 		obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PCT(fwts_framework *fw)
@@ -3662,11 +3260,11 @@ static void method_test_PSS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Something is really wrong if we don't have any elements in _PSS */
-	if (method_package_count_min(fw, name, "_PSS", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_PSS", obj, 1) != FWTS_OK)
 		return;
 
 	element_ok = calloc(obj->Package.Count, sizeof(bool));
@@ -3806,7 +3404,7 @@ static void method_test_PSS_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PSS(fwts_framework *fw)
@@ -3817,13 +3415,13 @@ static int method_test_PSS(fwts_framework *fw)
 static int method_test_PPC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PPC", NULL, 0, method_test_integer_return, NULL);
+		"_PPC", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_PPE(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PPE", NULL, 0, method_test_integer_return, NULL);
+		"_PPE", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_PSD_return(
@@ -3838,13 +3436,13 @@ static void method_test_PSD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PSD", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PSD", obj, 1) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PSD", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PSD", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -3884,7 +3482,7 @@ static void method_test_PSD_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PSD(fwts_framework *fw)
@@ -3896,7 +3494,7 @@ static int method_test_PSD(fwts_framework *fw)
 static int method_test_PDL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PDL", NULL, 0, method_test_integer_return, NULL);
+		"_PDL", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 
@@ -3912,13 +3510,13 @@ static void method_test_PTC_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PTC", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PTC", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PTC", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PTC", obj, 2) != FWTS_OK)
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -3945,7 +3543,7 @@ static void method_test_PTC_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PTC(fwts_framework *fw)
@@ -3957,13 +3555,13 @@ static int method_test_PTC(fwts_framework *fw)
 static int method_test_TDL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TDL", NULL, 0, method_test_integer_return, NULL);
+		"_TDL", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TPC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TPC", NULL, 0, method_test_integer_return, NULL);
+		"_TPC", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_TSD_return(
@@ -3978,10 +3576,10 @@ static void method_test_TSD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -4071,7 +3669,7 @@ static void method_test_TSD_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_TSD(fwts_framework *fw)
@@ -4094,11 +3692,11 @@ static void method_test_TSS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Something is really wrong if we don't have any elements in _TSS */
-	if (method_package_count_min(fw, name, "_TSS", obj, 1) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_TSS", obj, 1) != FWTS_OK)
 		return;
 
 	tss_elements_ok = calloc(obj->Package.Count, sizeof(bool));
@@ -4199,7 +3797,7 @@ static void method_test_TSS_return(
 	free(tss_elements_ok);
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_TSS(fwts_framework *fw)
@@ -4224,10 +3822,10 @@ static void method_test_LPI_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_min(fw, name, "_LPI", obj, 3) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_LPI", obj, 3) != FWTS_OK)
 		return;
 
 	/* first 3 elements are integers, and rests are packages */
@@ -4323,7 +3921,7 @@ static void method_test_LPI_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_LPI(fwts_framework *fw)
@@ -4344,7 +3942,7 @@ static void method_test_RDI_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* First element is Revision */
@@ -4382,7 +3980,7 @@ static void method_test_RDI_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_RDI(fwts_framework *fw)
@@ -4409,13 +4007,13 @@ static void method_test_PUR_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PUR", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PUR", obj, 2) != FWTS_OK)
 		return;
 
-	if (method_package_elements_type(fw, name, "_PUR", obj, elements, 2) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_PUR", obj, elements, 2) != FWTS_OK)
 		return;
 
 	/* RevisionID */
@@ -4428,7 +4026,7 @@ static void method_test_PUR_return(
 		return;
 	}
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PUR(fwts_framework *fw)
@@ -4450,7 +4048,7 @@ static int method_test_SST(fwts_framework *fw)
 	for (i = 0; i <= 4; i++) {
 		arg[0].Integer.Value = i;
 		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_SST", arg, 1, method_test_NULL_return, NULL);
+			"_SST", arg, 1, fwts_method_test_NULL_return, NULL);
 
 		if (ret == FWTS_NOT_EXIST && (fw->flags & FWTS_FLAG_TEST_SBBR)) {
 			fwts_warning(fw, "_SST method not found. This should be treated as error "
@@ -4471,7 +4069,7 @@ static int method_test_MSG(fwts_framework *fw)
 	arg[0].Integer.Value = 0;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_MSG", arg, 1, method_test_NULL_return, NULL);
+		"_MSG", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 /*
@@ -4494,7 +4092,7 @@ static void method_test_ALR_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more sub-packages */
@@ -4536,7 +4134,7 @@ static void method_test_ALR_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_ALR(fwts_framework *fw)
@@ -4548,7 +4146,7 @@ static int method_test_ALR(fwts_framework *fw)
 static int method_test_ALP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_ALP", NULL, 0, method_test_polling_return, "_ALP");
+		"_ALP", NULL, 0, fwts_method_test_polling_return, "_ALP");
 }
 
 
@@ -4564,8 +4162,8 @@ static void method_test_LID_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_LID(fwts_framework *fw)
@@ -4588,7 +4186,7 @@ static void method_test_GTF_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	if (obj->Buffer.Length % 7)
@@ -4596,7 +4194,7 @@ static void method_test_GTF_return(
 			"%s should return a buffer with size of multiple of 7.",
 			name);
 	else
-		method_passed_sane(fw, name, "buffer");
+		fwts_method_passed_sane(fw, name, "buffer");
 }
 
 static int method_test_GTF(fwts_framework *fw)
@@ -4614,7 +4212,7 @@ static void method_test_GTM_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	if (obj->Buffer.Length != (5 * sizeof(uint32_t)))
@@ -4622,7 +4220,7 @@ static void method_test_GTM_return(
 			"%s should return a buffer with size of 20.",
 			name);
 	else
-		method_passed_sane(fw, name, "buffer");
+		fwts_method_passed_sane(fw, name, "buffer");
 }
 
 static int method_test_GTM(fwts_framework *fw)
@@ -4655,17 +4253,17 @@ static void method_test_MBM_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_MBM", obj, 8) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_MBM", obj, 8) != FWTS_OK)
 		return;
 
 	/* For now, just check types */
-	if (method_package_elements_type(fw, name, "_MBM", obj, elements, 8) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_MBM", obj, elements, 8) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_MBM(fwts_framework *fw)
@@ -4689,13 +4287,13 @@ static void method_test_UPC_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_UPC", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_UPC", obj, 4) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_UPC", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_UPC", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	connector_type = obj->Package.Elements[1].Integer.Value;
@@ -4714,7 +4312,7 @@ static void method_test_UPC_return(
 		}
 	}
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_UPC(fwts_framework *fw)
@@ -4730,13 +4328,13 @@ static int method_test_UPC(fwts_framework *fw)
 static int method_test_UPD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_UPD", NULL, 0, method_test_integer_return, NULL);
+		"_UPD", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_UPP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_UPP", NULL, 0, method_test_integer_return, NULL);
+		"_UPP", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -4751,7 +4349,7 @@ static void method_test_GCP_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Integer.Value & ~0x1ff)
@@ -4762,7 +4360,7 @@ static void method_test_GCP_return(
 			"to be set.",
 			name, (uint64_t)obj->Integer.Value);
 	else
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_GCP(fwts_framework *fw)
@@ -4780,7 +4378,7 @@ static void method_test_GRT_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) != FWTS_OK)
 		return;
 
 	if (obj->Buffer.Length != 16) {
@@ -4796,7 +4394,7 @@ static void method_test_GRT_return(
 	 * Should sanity check this, but we can't read the
 	 * the data in this emulated mode, so ignore
 	 */
-	method_passed_sane(fw, name, "buffer");
+	fwts_method_passed_sane(fw, name, "buffer");
 }
 
 static int method_test_GRT(fwts_framework *fw)
@@ -4814,7 +4412,7 @@ static void method_test_GWS_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Integer.Value & ~0x3)
@@ -4825,7 +4423,7 @@ static void method_test_GWS_return(
 			"to be set.",
 			name, (uint64_t)obj->Integer.Value);
 	else
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_GWS(fwts_framework *fw)
@@ -4848,7 +4446,7 @@ static void method_test_CWS_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Integer.Value != 0 && obj->Integer.Value != 1)
@@ -4857,7 +4455,7 @@ static void method_test_CWS_return(
 			"%s returned %" PRIu64 ", should be 0 or 1.",
 			name, (uint64_t)obj->Integer.Value);
 	else
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_CWS(fwts_framework *fw)
@@ -4888,7 +4486,7 @@ static int method_test_STP(fwts_framework *fw)
 	arg[1].Integer.Value = 0;	/* wake up instantly */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_STP", arg, 2, method_test_passed_failed_return, "_STP");
+		"_STP", arg, 2, fwts_method_test_passed_failed_return, "_STP");
 }
 
 static int method_test_STV(fwts_framework *fw)
@@ -4901,7 +4499,7 @@ static int method_test_STV(fwts_framework *fw)
 	arg[1].Integer.Value = 100;	/* timer value */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_STV", arg, 2, method_test_passed_failed_return, "_STV");
+		"_STV", arg, 2, fwts_method_test_passed_failed_return, "_STV");
 }
 
 static int method_test_TIP(fwts_framework *fw)
@@ -4912,7 +4510,7 @@ static int method_test_TIP(fwts_framework *fw)
 	arg[0].Integer.Value = 1;	/* DC timer */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TIP", arg, 1, method_test_integer_return, NULL);
+		"_TIP", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_TIV(fwts_framework *fw)
@@ -4923,7 +4521,7 @@ static int method_test_TIV(fwts_framework *fw)
 	arg[0].Integer.Value = 1;	/* DC timer */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TIV", arg, 1, method_test_integer_return, NULL);
+		"_TIV", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 
@@ -4947,7 +4545,7 @@ static void method_test_SBS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	switch (obj->Integer.Value) {
@@ -4991,7 +4589,7 @@ static int method_test_BCT(fwts_framework *fw)
 	 * so anything is valid as long as it is an integer
 	 */
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_BCT", arg, 1, method_test_integer_return, NULL);
+		"_BCT", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_BIF_return(
@@ -5021,13 +4619,13 @@ static void method_test_BIF_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_BIF", obj, 13) != FWTS_OK)
 		return;
 
-	if (method_package_elements_type(fw, name, "_BIF", obj, elements, 13) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_BIF", obj, elements, 13) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -5115,7 +4713,7 @@ static void method_test_BIF_return(
 			"is problematic.  This is a bug an needs to "
 			"be fixed.", name);
 	else
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BIF(fwts_framework *fw)
@@ -5158,13 +4756,13 @@ static void method_test_BIX_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
 		return;
 
-	if (method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -5267,7 +4865,7 @@ static void method_test_BIX_return(
 			"is problematic.  This is a bug an needs to "
 			"be fixed.", name);
 	else
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BIX(fwts_framework *fw)
@@ -5283,7 +4881,7 @@ static int method_test_BMA(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_BMA", arg, 1, method_test_integer_return, NULL);
+		"_BMA", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_BMS(fwts_framework *fw)
@@ -5293,7 +4891,7 @@ static int method_test_BMS(fwts_framework *fw)
 	arg[0].Integer.Value = 1;
 
 	return method_evaluate_method(fw, METHOD_MOBILE,
-		"_BMS", arg, 1, method_test_integer_return, NULL);
+		"_BMS", arg, 1, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_BST_return(
@@ -5307,13 +4905,13 @@ static void method_test_BST_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_BST", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_BST", obj, 4) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_BST", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_BST", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	/* Sanity check each field */
@@ -5347,7 +4945,7 @@ static void method_test_BST_return(
 			"is problematic.  This is a bug an needs to "
 			"be fixed.", name);
 		else
-			method_passed_sane(fw, name, "package");
+			fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BST(fwts_framework *fw)
@@ -5366,7 +4964,7 @@ static int method_test_BTP(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BTP", arg, 1,
-			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			fwts_method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -5385,10 +4983,10 @@ static void method_test_PCL_return(fwts_framework *fw,
 	FWTS_UNUSED(obj);
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PCL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
@@ -5409,7 +5007,7 @@ static int method_test_BTH(fwts_framework *fw)
 	for (i = 0; i <= 100; i++) {
 		arg[0].Integer.Value = i;
 		ret = method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_BTH", arg, 1, method_test_NULL_return, NULL);
+			"_BTH", arg, 1, fwts_method_test_NULL_return, NULL);
 
 		if (ret != FWTS_OK)
 			break;
@@ -5427,7 +5025,7 @@ static int method_test_BTM(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BTM", arg, 1,
-			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			fwts_method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -5443,18 +5041,18 @@ static void method_test_BMD_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_BMD", obj, 5) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_BMD", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_BMD", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_BMD(fwts_framework *fw)
@@ -5473,7 +5071,7 @@ static int method_test_BMC(fwts_framework *fw)
 		arg[0].Type = ACPI_TYPE_INTEGER;
 		arg[0].Integer.Value = values[i];
 		if (method_evaluate_method(fw, METHOD_MOBILE, "_BMC", arg, 1,
-			method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
+			fwts_method_test_NULL_return, NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
 	}
@@ -5493,13 +5091,13 @@ static void method_test_PRL_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PRL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PRL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PRL(fwts_framework *fw)
@@ -5517,7 +5115,7 @@ static void method_test_PSR_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Integer.Value > 2) {
@@ -5527,7 +5125,7 @@ static void method_test_PSR_return(
 			"(offline) or 1 (online)",
 			name, (uint64_t)obj->Integer.Value);
 	} else
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_PSR(fwts_framework *fw)
@@ -5554,18 +5152,18 @@ static void method_test_PIF_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PIF", obj, 6) != FWTS_OK)
 		return;
 
-	if (method_package_elements_type(fw, name, "_PIF", obj, elements, 6) != FWTS_OK)
+	if (fwts_method_package_elements_type(fw, name, "_PIF", obj, elements, 6) != FWTS_OK)
 		return;
 
 	fwts_acpi_object_dump(fw, obj);
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PIF(fwts_framework *fw)
@@ -5581,13 +5179,13 @@ static int method_test_PIF(fwts_framework *fw)
 static int method_test_GAI(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GAI", NULL, 0, method_test_integer_return, NULL);
+		"_GAI", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_GHL(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GHL", NULL, 0, method_test_integer_return, NULL);
+		"_GHL", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_PMC_return(
@@ -5603,10 +5201,10 @@ static void method_test_PMC_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_PMC", obj, 14) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_PMC", obj, 14) != FWTS_OK)
 		return;
 
 	/* check element types */
@@ -5681,7 +5279,7 @@ static void method_test_PMC_return(
 	/* nothing to check for elements 9~13 */
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PMC(fwts_framework *fw)
@@ -5699,13 +5297,13 @@ static void method_test_PMD_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PMD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PMD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PMD(fwts_framework *fw)
@@ -5717,7 +5315,7 @@ static int method_test_PMD(fwts_framework *fw)
 static int method_test_PMM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_PMM", NULL, 0, method_test_integer_return, NULL);
+		"_PMM", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -5732,11 +5330,11 @@ static void method_test_WPC_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Integer.Value <= 0x02 || obj->Integer.Value == 0xff)
-		method_passed_sane(fw, name, "integer");
+		fwts_method_passed_sane(fw, name, "integer");
 	else
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"Method_WPCInvalidInteger",
@@ -5753,7 +5351,7 @@ static int method_test_WPC(fwts_framework *fw)
 static int method_test_WPP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_WPP", NULL, 0, method_test_integer_return, NULL);
+		"_WPP", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -5768,13 +5366,13 @@ static void method_test_FIF_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_FIF", obj, 4) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_FIF", obj, 4) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_FIF",
+	if (fwts_method_package_elements_all_type(fw, name, "_FIF",
 		obj, ACPI_TYPE_INTEGER) != FWTS_OK) {
 		fwts_advice(fw,
 			"%s is not returning the correct "
@@ -5788,7 +5386,7 @@ static void method_test_FIF_return(
 
 	fwts_acpi_object_dump(fw, obj);
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FIF(fwts_framework *fw)
@@ -5809,7 +5407,7 @@ static void method_test_FPS_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
@@ -5872,9 +5470,9 @@ static void method_test_FPS_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FPS(fwts_framework *fw)
@@ -5890,7 +5488,7 @@ static int method_test_FSL(fwts_framework *fw)
 	arg[0].Integer.Value = 50;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_FSL", arg, 1, method_test_NULL_return, NULL);
+		"_FSL", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_FST_return(
@@ -5902,13 +5500,13 @@ static void method_test_FST_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_FST", obj, 3) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_FST", obj, 3) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_FST",
+	if (fwts_method_package_elements_all_type(fw, name, "_FST",
 		obj, ACPI_TYPE_INTEGER) != FWTS_OK) {
 		fwts_advice(fw,
 			"%s is not returning the correct "
@@ -5922,7 +5520,7 @@ static void method_test_FST_return(
 
 	fwts_acpi_object_dump(fw, obj);
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_FST(fwts_framework *fw)
@@ -5944,7 +5542,7 @@ static void method_test_THERM_return(
 {
 	char *method = (char*)private;
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (fwts_acpi_region_handler_called_get()) {
@@ -5954,7 +5552,7 @@ static void method_test_THERM_return(
 		 *  should not test the value being returned. In this
 		 *  case, just pass this as a valid return type.
 		 */
-		method_passed_sane(fw, name, "return type");
+		fwts_method_passed_sane(fw, name, "return type");
 	} else {
 		/*
 		 *  The evaluation probably was a hard-coded value,
@@ -6018,7 +5616,7 @@ static void method_test_MTL_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	val = (uint64_t) obj->Integer.Value;
@@ -6030,7 +5628,7 @@ static void method_test_MTL_return(
 	}
 
 	if (!failed)
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 
 	return;
 }
@@ -6053,7 +5651,7 @@ static void method_test_ART_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER) {
@@ -6128,7 +5726,7 @@ static void method_test_ART_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_ART(fwts_framework *fw)
@@ -6146,13 +5744,13 @@ static void method_test_PSL_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_PSL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_PSL", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_PSL(fwts_framework *fw)
@@ -6173,10 +5771,10 @@ static void method_test_TRT_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_TRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_TRT", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	/* Could be one or more packages */
@@ -6228,7 +5826,7 @@ static void method_test_TRT_return(
 	}
 
 	if (!failed)
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_TRT(fwts_framework *fw)
@@ -6240,13 +5838,13 @@ static int method_test_TRT(fwts_framework *fw)
 static int method_test_TSN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TSN", NULL, 0, method_test_reference_return, "_TSN");
+		"_TSN", NULL, 0, fwts_method_test_reference_return, "_TSN");
 }
 
 static int method_test_TSP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TSP", NULL, 0, method_test_polling_return, "_TSP");
+		"_TSP", NULL, 0, fwts_method_test_polling_return, "_TSP");
 }
 
 static void method_test_TCx_return(
@@ -6256,8 +5854,8 @@ static void method_test_TCx_return(
 	ACPI_OBJECT *obj,
 	void *private)
 {
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		method_passed_sane_uint64(fw, (char*)private, obj->Integer.Value);
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
+		fwts_method_passed_sane_uint64(fw, (char*)private, obj->Integer.Value);
 }
 
 static int method_test_TC1(fwts_framework *fw)
@@ -6275,7 +5873,7 @@ static int method_test_TC2(fwts_framework *fw)
 static int method_test_TFP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TFP", NULL, 0, method_test_integer_return, NULL);
+		"_TFP", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_ACx(fwts_framework *fw)
@@ -6300,7 +5898,7 @@ static int method_test_DTI(fwts_framework *fw)
 	arg[0].Integer.Value = 2732 + 800; /* 80 degrees C */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DTI", arg, 1, method_test_NULL_return, NULL);
+		"_DTI", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_SCP(fwts_framework *fw)
@@ -6318,7 +5916,7 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[2].Integer.Value = 5;		/* Power limit */
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_DTI", arg, 1, method_test_NULL_return,
+			"_DTI", arg, 1, fwts_method_test_NULL_return,
 			NULL) == FWTS_NOT_EXIST)
 			break;
 		fwts_log_nl(fw);
@@ -6331,7 +5929,7 @@ static int method_test_SCP(fwts_framework *fw)
 		arg[2].Integer.Value = 1;		/* Power limit */
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_DTI", arg, 1, method_test_NULL_return,
+			"_DTI", arg, 1, fwts_method_test_NULL_return,
 			NULL) == FWTS_NOT_EXIST)
 			break;
 	}
@@ -6347,8 +5945,8 @@ static void method_test_RTV_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
-		method_passed_sane_uint64(fw, name, obj->Integer.Value);
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) == FWTS_OK)
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 }
 
 static int method_test_RTV(fwts_framework *fw)
@@ -6364,7 +5962,7 @@ static int method_test_TPT(fwts_framework *fw)
 	arg[0].Integer.Value = 2732 + 900; /* 90 degrees C */
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TPT", arg, 1, method_test_NULL_return, NULL);
+		"_TPT", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_TZD_return(
@@ -6376,10 +5974,10 @@ static void method_test_TZD_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_TZD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_TZD", obj, ACPI_TYPE_LOCAL_REFERENCE) != FWTS_OK)
 		return;
 
 	fwts_passed(fw,	"%s returned a sane package of %" PRIu32 " references.", name, obj->Package.Count);
@@ -6394,13 +5992,13 @@ static int method_test_TZD(fwts_framework *fw)
 static int method_test_TZM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TZM", NULL, 0, method_test_reference_return, "_TZM");
+		"_TZM", NULL, 0, fwts_method_test_reference_return, "_TZM");
 }
 
 static int method_test_TZP(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_TZP", NULL, 0, method_test_polling_return, "_TZP");
+		"_TZP", NULL, 0, fwts_method_test_polling_return, "_TZP");
 }
 
 /*
@@ -6443,7 +6041,7 @@ static void method_test_GPE_return(
 		}
 
 		if (!failed)
-			method_passed_sane(fw, name, "package");
+			fwts_method_passed_sane(fw, name, "package");
 
 		break;
 	default:
@@ -6462,7 +6060,7 @@ static int method_test_GPE(fwts_framework *fw)
 static int method_test_EC_(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_EC_", NULL, 0, method_test_integer_return, NULL);
+		"_EC_", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -6484,7 +6082,7 @@ static int method_test_PTS(fwts_framework *fw)
 		arg[0].Integer.Value = i;
 
 		fwts_log_info(fw, "Test _PTS(%d).", i);
-		method_evaluate_method(fw, METHOD_OPTIONAL, "_PTS", arg, 1, method_test_NULL_return, NULL);
+		method_evaluate_method(fw, METHOD_OPTIONAL, "_PTS", arg, 1, fwts_method_test_NULL_return, NULL);
 		fwts_log_nl(fw);
 	}
 	return FWTS_OK;
@@ -6505,7 +6103,7 @@ static int method_test_TTS(fwts_framework *fw)
 				"Test _TTS(%d) Transition To State S%d.", i, i);
 
 			if (method_evaluate_method(fw, METHOD_MANDATORY,
-				"_TTS", arg, 1, method_test_NULL_return,
+				"_TTS", arg, 1, fwts_method_test_NULL_return,
 				NULL) == FWTS_NOT_EXIST) {
 				fwts_advice(fw,
 					"Could not find _TTS. This method is invoked "
@@ -6535,16 +6133,16 @@ static void method_test_WAK_return(
 {
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
+	if (fwts_method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_WAK", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_WAK", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
-	method_passed_sane(fw, name, "package");
+	fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_WAK(fwts_framework *fw)
@@ -6584,7 +6182,7 @@ static int method_test_DOS(fwts_framework *fw)
 	 * LCD on AC/DC power changes
  	 */
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DOS", arg, 1, method_test_NULL_return, NULL);
+		"_DOS", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static void method_test_DOD_return(
@@ -6621,7 +6219,7 @@ static void method_test_DOD_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
 	for (i = 0; i < obj->Package.Count; i++) {
@@ -6650,7 +6248,7 @@ static void method_test_DOD_return(
 			"Method _DOD did not return a package of "
 			"%" PRIu32 " integers.", obj->Package.Count);
 	else
-		method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_DOD(fwts_framework *fw)
@@ -6669,8 +6267,8 @@ static void method_test_ROM_return(
 	FWTS_UNUSED(obj);
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
-		method_passed_sane(fw, name, "package");
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
+		fwts_method_passed_sane(fw, name, "package");
 }
 
 static int method_test_ROM(fwts_framework *fw)
@@ -6689,7 +6287,7 @@ static int method_test_ROM(fwts_framework *fw)
 static int method_test_GPD(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_GPD", NULL, 0, method_test_integer_return, NULL);
+		"_GPD", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_SPD(fwts_framework *fw)
@@ -6702,7 +6300,7 @@ static int method_test_SPD(fwts_framework *fw)
 		arg[0].Integer.Value = i;	/* bits 00..11, post device */
 
 		if (method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_SPD", arg, 1, method_test_passed_failed_return, NULL) == FWTS_NOT_EXIST)
+			"_SPD", arg, 1, fwts_method_test_passed_failed_return, NULL) == FWTS_NOT_EXIST)
 			break;
 	}
 	return FWTS_OK;
@@ -6711,17 +6309,17 @@ static int method_test_SPD(fwts_framework *fw)
 static int method_test_VPO(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_VPO", NULL, 0, method_test_integer_return, NULL);
+		"_VPO", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_ADR(fwts_framework *fw)
 {
 	if (fw->flags & FWTS_FLAG_TEST_SBBR)
 		return method_evaluate_method(fw, METHOD_MANDATORY,
-			"_ADR", NULL, 0, method_test_integer_return, NULL);
+			"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
 	else
 		return method_evaluate_method(fw, METHOD_OPTIONAL,
-			"_ADR", NULL, 0, method_test_integer_return, NULL);
+			"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_BCL_return(
@@ -6738,13 +6336,13 @@ static void method_test_BCL_return(
 
 	FWTS_UNUSED(private);
 
-	if (method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (method_package_count_min(fw, name, "_BCL", obj, 3) != FWTS_OK)
+	if (fwts_method_package_count_min(fw, name, "_BCL", obj, 3) != FWTS_OK)
 		return;
 
-	if (method_package_elements_all_type(fw, name, "_BCL", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+	if (fwts_method_package_elements_all_type(fw, name, "_BCL", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
 		return;
 
 	if (obj->Package.Elements[0].Integer.Value <
@@ -6839,13 +6437,13 @@ static int method_test_BCM(fwts_framework *fw)
 	arg[0].Integer.Value = 0;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_BCM", arg, 1, method_test_NULL_return, NULL);
+		"_BCM", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_BQC(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_BQC", NULL, 0, method_test_integer_return, NULL);
+		"_BQC", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static void method_test_DDC_return(
@@ -6860,7 +6458,7 @@ static void method_test_DDC_return(
 	FWTS_UNUSED(buf);
 
 	if (obj == NULL) {
-		method_failed_null_object(fw, name, "a buffer or integer");
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
 		return;
 	}
 
@@ -6912,13 +6510,13 @@ static int method_test_DDC(fwts_framework *fw)
 static int method_test_DCS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DCS", NULL, 0, method_test_integer_return, NULL);
+		"_DCS", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_DGS(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DGS", NULL, 0, method_test_integer_return, NULL);
+		"_DGS", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_DSS(fwts_framework *fw)
@@ -6929,19 +6527,19 @@ static int method_test_DSS(fwts_framework *fw)
 	arg[0].Integer.Value = 0;
 
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_DSS", arg, 1, method_test_NULL_return, NULL);
+		"_DSS", arg, 1, fwts_method_test_NULL_return, NULL);
 }
 
 static int method_test_CBA(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CBA", NULL, 0, method_test_integer_return, NULL);
+		"_CBA", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_CDM(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_CDM", NULL, 0, method_test_integer_return, NULL);
+		"_CDM", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*
@@ -6950,13 +6548,13 @@ static int method_test_CDM(fwts_framework *fw)
 static int method_test_IFT(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_IFT", NULL, 0, method_test_integer_return, NULL);
+		"_IFT", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 static int method_test_SRV(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
-		"_SRV", NULL, 0, method_test_integer_return, NULL);
+		"_SRV", NULL, 0, fwts_method_test_integer_return, NULL);
 }
 
 /*

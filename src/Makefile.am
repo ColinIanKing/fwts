@@ -46,6 +46,7 @@ endif
 fwts_SOURCES = main.c 				\
 	acpi/ac_adapter/ac_adapter.c 		\
 	acpi/devices/ac_adapter/ac.c		\
+	acpi/devices/battery/battery.c		\
 	acpi/acpidump/acpidump.c 		\
 	acpi/acpiinfo/acpiinfo.c 		\
 	acpi/acpitables/acpitables.c 		\

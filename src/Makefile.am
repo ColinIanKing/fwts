@@ -48,6 +48,7 @@ fwts_SOURCES = main.c 				\
 	acpi/devices/ac_adapter/ac.c		\
 	acpi/devices/battery/battery.c		\
 	acpi/devices/battery/smart_battery.c	\
+	acpi/devices/ec/ec.c			\
 	acpi/acpidump/acpidump.c 		\
 	acpi/acpiinfo/acpiinfo.c 		\
 	acpi/acpitables/acpitables.c 		\

@@ -58,6 +58,18 @@ static int acpi_ac_init(fwts_framework *fw)
 	if (!device) {
 		fwts_log_error(fw, "ACPI AC device does not exist, skipping test");
 		return FWTS_SKIP;
+	} else {
+		ACPI_BUFFER buffer;
+		char full_name[128];
+
+		buffer.Length = sizeof(full_name);
+		buffer.Pointer = full_name;
+
+		status = AcpiGetName(device, ACPI_FULL_PATHNAME, &buffer);
+		if (ACPI_SUCCESS(status)) {
+			fwts_log_info_verbatim(fw, "ACPI AC Adapter Device: %s", full_name);
+			fwts_log_nl(fw);
+		}
 	}
 
 	return FWTS_OK;

@@ -75,4 +75,11 @@ void fwts_method_test_polling_return( fwts_framework *fw, char *name, ACPI_BUFFE
 void fwts_evaluate_found_method(fwts_framework *fw, ACPI_HANDLE *parent, char *name, fwts_method_return check_func, void *private, ACPI_OBJECT_LIST *arg_list);
 int fwts_evaluate_method(fwts_framework *fw, uint32_t test_type, ACPI_HANDLE *parent, char *name, ACPI_OBJECT *args, uint32_t num_args, fwts_method_return check_func, void *private);
 
+bool fwts_method_valid_HID_string(char *str);
+bool fwts_method_valid_EISA_ID(uint32_t id, char *buf, size_t buf_len);
+
+void fwts_method_test_CRS_large_size( fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const size_t crs_length, const size_t min, const size_t max, bool *passed);
+void fwts_method_test_CRS_large_resource_items(fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const uint64_t length, bool *passed, const char **tag);
+void fwts_method_test_CRS_small_resource_items(fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const size_t length, bool *passed, const char **tag) ;
+
 #endif

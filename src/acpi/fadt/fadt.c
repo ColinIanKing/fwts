@@ -948,13 +948,9 @@ static void acpi_table_check_fadt_pm1a_evt_blk(fwts_framework *fw)
 			    "FADT required PM1A_EVT_BLK field is non-zero");
 	}
 
-	if (fadt->pm1a_evt_blk != 0 && fadt->x_pm1a_evt_blk.address != 0) {
+	if (fadt->pm1a_evt_blk != 0 && fadt->x_pm1a_evt_blk.address != 0)
 		both_nonzero = true;
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1aEvtBlkBothtSet",
-			    "FADT PM1A_EVT_BLK has both a 32-bit and a "
-			    "64-bit address set; only one should be used.");
-	} else {
+	else {
 		both_nonzero = false;
 		if (!both_zero)
 			fwts_passed(fw,
@@ -1005,11 +1001,6 @@ static void acpi_table_check_fadt_pm1b_evt_blk(fwts_framework *fw)
 		fwts_passed(fw,
 			    "FADT only one of the 32-bit or 64-bit "
 			    "PM1B_EVT_BLK fields is being used.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1bEvtBlkOnlyOneField",
-			    "FADT PM1B_EVT_BLK field has both the 32-bit "
-			    "and the 64-bit field set.");
 
 	if ((uint64_t)fadt->pm1b_evt_blk == fadt->x_pm1b_evt_blk.address) {
 		fwts_passed(fw,
@@ -1065,11 +1056,6 @@ static void acpi_table_check_fadt_pm1a_cnt_blk(fwts_framework *fw)
 		fwts_passed(fw,
 			    "FADT only one of the 32-bit or 64-bit "
 			    "PM1A_CNT_BLK fields is being used.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1aCntBlkOnlyOneField",
-			    "FADT PM1A_CNT_BLK field has both the 32-bit "
-			    "and the 64-bit field set.");
 
 	if ((uint64_t)fadt->pm1a_cnt_blk == fadt->x_pm1a_cnt_blk.address) {
 		fwts_passed(fw,
@@ -1111,11 +1097,6 @@ static void acpi_table_check_fadt_pm1b_cnt_blk(fwts_framework *fw)
 		fwts_passed(fw,
 			    "FADT only one of the 32-bit or 64-bit "
 			    "PM1B_CNT_BLK fields is being used.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm1bCntBlkOnlyOneField",
-			    "FADT PM1B_CNT_BLK field has both the 32-bit "
-			    "and the 64-bit field set.");
 
 	if ((uint64_t)fadt->pm1b_cnt_blk == fadt->x_pm1b_cnt_blk.address) {
 		fwts_passed(fw,
@@ -1157,11 +1138,6 @@ static void acpi_table_check_fadt_pm2_cnt_blk(fwts_framework *fw)
 		fwts_passed(fw,
 			    "FADT only one of the 32-bit or 64-bit "
 			    "PM2_CNT_BLK fields is being used.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm2CntBlkOnlyOneField",
-			    "FADT PM2_CNT_BLK field has both the 32-bit "
-			    "and the 64-bit field set.");
 
 	if ((uint64_t)fadt->pm2_cnt_blk == fadt->x_pm2_cnt_blk.address) {
 		fwts_passed(fw,
@@ -1203,11 +1179,6 @@ static void acpi_table_check_fadt_pm_tmr_blk(fwts_framework *fw)
 		fwts_passed(fw,
 			    "FADT only one of the 32-bit or 64-bit "
 			    "PM_TMR_BLK fields is being used.");
-	else
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTPm2CntBlkOnlyOneField",
-			    "FADT PM_TMR_BLK field has both the 32-bit "
-			    "and the 64-bit field set.");
 
 	if ((uint64_t)fadt->pm_tmr_blk == fadt->x_pm_tmr_blk.address) {
 		fwts_passed(fw,

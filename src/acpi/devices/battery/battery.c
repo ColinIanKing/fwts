@@ -57,6 +57,7 @@ static int acpi_battery_init(fwts_framework *fw)
 
 	if (!device) {
 		fwts_log_error(fw, "ACPI Battery device does not exist, skipping test");
+		fwts_acpica_deinit();
 		return FWTS_SKIP;
 	} else {
 		ACPI_BUFFER buffer;

@@ -4165,14 +4165,19 @@ static void method_test_BIX_return(
 			obj->Package.Elements[7].Integer.Value);
 		failed = true;
 	}
-	/* Cycle Count */
-	if (obj->Package.Elements[8].Integer.Value > 0x7fffffff) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "Method_BIXCyleCount",
-			"%s: %s (Element 8) is unknown: "
-			"0x%8.8" PRIx64 ".", Elements[8].name,
-			name, obj->Package.Elements[8].Integer.Value);
+	/* Cycle Count: value = 0 ~ 0xFFFFFFFE or 0xFFFFFFFF (unknown) */
+
+	/* Measurement Accuracy */
+	if (obj->Package.Elements[9].Integer.Value > 100000) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXMeasurementAccuracy",
+			"%s: %s (Element 9) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements[9].name,
+			obj->Package.Elements[9].Integer.Value);
 		failed = true;
 	}
+
 #endif
 	if (failed)
 		fwts_advice(fw,

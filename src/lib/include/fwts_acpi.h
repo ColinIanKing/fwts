@@ -1166,7 +1166,8 @@ typedef enum {
 	FWTS_ACPI_NFIT_TYPE_CONTROL_REGION       = 4,
 	FWTS_ACPI_NFIT_TYPE_DATA_REGION          = 5,
 	FWTS_ACPI_NFIT_TYPE_FLUSH_ADDRESS        = 6,
-	FWTS_ACPI_NFIT_TYPE_RESERVED             = 7     /* >= 7 are reserved */
+	FWTS_ACPI_NFIT_TYPE_PLATFORM_CAPABILITY  = 7,
+	FWTS_ACPI_NFIT_TYPE_RESERVED             = 8     /* >= 8 are reserved */
 } fwts_acpi_nfit_type;
 
 typedef struct {
@@ -1254,6 +1255,14 @@ typedef struct {
 	uint8_t		reserved[6];
 	uint64_t	hint_address[];
 } __attribute__ ((packed)) fwts_acpi_table_nfit_flush_addr;
+
+typedef struct {
+	fwts_acpi_table_nfit_struct_header	header;
+	uint8_t		highest_valid_cap;
+	uint8_t		reserved1[3];
+	uint32_t	cap;
+	uint32_t	reserved2;
+} __attribute__ ((packed)) fwts_acpi_table_nfit_platform_cap;
 
 /*
  * ACPI HMAT (Heterogeneous Memory Attribute Table), 5.2.27

@@ -322,12 +322,39 @@ static int nfit_test1(fwts_framework *fw)
 			if (reserved != 0)
 				reserved_passed = reserved;
 
+		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_PLATFORM_CAPABILITY) {
+			fwts_acpi_table_nfit_platform_cap *nfit_struct = (fwts_acpi_table_nfit_platform_cap *) entry;
+			uint32_t reserved1;
+
+			reserved1 = (uint32_t) nfit_struct->reserved1[0] + ((uint32_t) nfit_struct->reserved1[1] << 8) +
+				   ((uint32_t) nfit_struct->reserved1[2] << 16);
+
+			fwts_log_info_verbatim(fw, "    Highest Valid Capability:               0x%2.2" PRIx8, nfit_struct->highest_valid_cap);
+			fwts_log_info_verbatim(fw, "    Reserved1:                              0x%8.8" PRIx32, reserved1);
+			fwts_log_info_verbatim(fw, "    Capabilities:                           0x%8.8" PRIx32, nfit_struct->cap);
+			fwts_log_info_verbatim(fw, "    Reserved2:                              0x%8.8" PRIx32, nfit_struct->reserved2);
+
+			fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved1", reserved1, sizeof(reserved1), &passed);
+			fwts_acpi_reserved_bits_check(fw, "NFIT", "Capabilities", nfit_struct->cap, sizeof(nfit_struct->cap), 3, 31, &passed);
+
+			if ((nfit_struct->cap & 0x1) && !(nfit_struct->cap & 0x2)) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"NFITBadCapabilities",
+					"NFIT Capabilities[1] must be set and if Capabilities[0] is set, got "
+					"0x%8.8" PRIx32 " instead", nfit_struct->cap);
+			}
+
+			if (nfit_struct->reserved2 != 0)
+				reserved_passed = nfit_struct->reserved2;
+
 		} else {
 			passed = false;
 			fwts_failed(fw, LOG_LEVEL_HIGH,
 				"NFITBadSubType",
-				"NFIT Structure supports type 0..6, got "
-				"0x%4.4" PRIx16 " instead", entry->type);
+				"NFIT Structure supports type 0..%" PRId8 ", got "
+				"0x%4.4" PRIx16 " instead", FWTS_ACPI_NFIT_TYPE_RESERVED - 1,
+				entry->type);
 		}
 
 		fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", reserved_passed, sizeof(reserved_passed), &passed);

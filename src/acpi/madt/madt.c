@@ -1114,6 +1114,18 @@ static int madt_gicd(fwts_framework *fw,
 
 	/* TODO: is the physical base address required to be non-zero? */
 
+	if (gicd->system_vector_base)
+		fwts_failed(fw, LOG_LEVEL_LOW,
+			    "MADTGICDSystemVectorBaseNonZero",
+			    "MADT %s system vector base field should be zero, "
+			    "instead got 0x%" PRIx32 ".",
+			    madt_sub_names[hdr->type],
+			    gicd->system_vector_base);
+	else
+		fwts_passed(fw,
+			    "MADT %s system vector base	field is properly set "
+			    "to zero.", madt_sub_names[hdr->type]);
+
 	if (gicd->gic_version != 0 && gicd->gic_version > 4)
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			    "SPECMADTGICDVersion",

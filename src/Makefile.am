@@ -51,6 +51,7 @@ fwts_SOURCES = main.c 				\
 	acpi/devices/ec/ec.c			\
 	acpi/devices/buttons/power_button.c	\
 	acpi/devices/buttons/sleep_button.c	\
+	acpi/devices/lid/lid.c			\
 	acpi/acpidump/acpidump.c 		\
 	acpi/acpiinfo/acpiinfo.c 		\
 	acpi/acpitables/acpitables.c 		\

@@ -352,6 +352,12 @@ static void fwts_acpi_object_dump_recursive(
 {
 	uint32_t i;
 	char index_buf[5];
+	ACPI_BUFFER buffer;
+	ACPI_STATUS status;
+	char full_name[128];
+
+	buffer.Length = sizeof(full_name);
+	buffer.Pointer = full_name;
 
 	if (index > -1)
 		snprintf(index_buf, sizeof(index_buf), "%2.2d: ", index);
@@ -379,8 +385,14 @@ static void fwts_acpi_object_dump_recursive(
 			fwts_acpi_object_dump_recursive(fw, element, depth + 1, i);
 		}
 		break;
+	case ACPI_TYPE_LOCAL_REFERENCE:
+		status = AcpiGetName(obj->Reference.Handle, ACPI_FULL_PATHNAME, &buffer);
+		if (ACPI_SUCCESS(status))
+			fwts_log_info_verbatim(fw, "%*s%sReference:  %s", depth * 2, "",
+				index_buf, full_name);
+		break;
 	default:
-		fwts_log_info_verbatim(fw, "%*s%sUnknown type %d\n", depth * 2, "",
+		fwts_log_info_verbatim(fw, "%*s%sUnknown type 0x%2.2x\n", depth * 2, "",
 			index_buf, obj->Type);
 		break;
 	}

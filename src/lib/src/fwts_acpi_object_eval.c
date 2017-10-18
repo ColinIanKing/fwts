@@ -1165,6 +1165,8 @@ void fwts_method_test_CRS_small_resource_items(
 	*tag = types[tag_item];
 }
 
+
+
 void fwts_method_test_CRS_large_size(
 	fwts_framework *fw,
 	const char *name,
@@ -1390,6 +1392,10 @@ void fwts_method_test_CRS_large_resource_items(
 		"GPIO Connection Descriptor",
 		"Reserved",
 		"Generic Serial Bus Connection Descriptor",
+		"Pin Configuration Descriptor",
+		"Pin Group Descriptor",
+		"Pin Group Function Descriptor",
+		"Pin Group Configuration Descriptor",
 		"Reserved",
 	};
 
@@ -1578,9 +1584,81 @@ void fwts_method_test_CRS_large_resource_items(
 				"specification.");
 		}
 		break;
+	case 0xd: /* 6.4.3.9 Pin Function Descriptors */
+		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 17, 65535, passed);
+		if (!*passed)	/* Too short, abort */
+			break;
+		fwts_acpi_reserved_bits_check(fw, "_CRS", "Flags[low]", data[4], sizeof(data[4]), 1, 7, passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[11], sizeof(data[11]), passed);
+		break;
 	case 0xe: /* 6.4.3.8.2 Serial Bus Connection Descriptors */
 		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 11, 65535, passed);
 		/* Don't care */
+		break;
+	case 0xf: /* 6.4.3.10 Pin Configuration Descriptors */
+		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 19, 65535, passed);
+		if (!*passed)	/* Too short, abort */
+			break;
+
+		fwts_acpi_reserved_bits_check(fw, "_CRS", "Flags[low]", data[4], sizeof(data[4]), 2, 7, passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+
+		if (data[6] > 0xd && data[6] < 0x80) {
+			*passed = false;
+			snprintf(tmp, sizeof(tmp), "Method%sPinConfigTypeInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+				"%s Pin Configuration Descriptor has an invalid "
+				"Type 0x%" PRIx8 ".", name, data[6]);
+			fwts_advice(fw,
+				"The Pin Configuration type is "
+				"not recognised. It should be either in "
+				"range of 0..0x0D or 0x80..0xFF. See "
+				"section 6.4.3.10 of the ACPI spec.");
+		}
+
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[13], sizeof(data[13]), passed);
+		break;
+	case 0x10: /* 6.4.3.11 Pin Group Descriptors */
+		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 13, 65535, passed);
+		if (!*passed)	/* Too short, abort */
+			break;
+
+		fwts_acpi_reserved_bits_check(fw, "_CRS", "Flags[low]", data[4], sizeof(data[4]), 1, 7, passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+
+		break;
+	case 0x11: /* 6.4.3.12 Pin Group Function Descriptors */
+		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 16, 65535, passed);
+		if (!*passed)	/* Too short, abort */
+			break;
+
+		fwts_acpi_reserved_bits_check(fw, "_CRS", "Flags[low]", data[4], sizeof(data[4]), 2, 7, passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[8], sizeof(data[8]), passed);
+		break;
+	case 0x12: /* 6.4.3.13 Pin Group Configuration Descriptor */
+		fwts_method_test_CRS_large_size(fw, name, objname, data, length, 19, 65535, passed);
+		if (!*passed)	/* Too short, abort */
+			break;
+
+		fwts_acpi_reserved_bits_check(fw, "_CRS", "Flags[low]", data[4], sizeof(data[4]), 2, 7, passed);
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Flags[high]", data[5], sizeof(data[5]), passed);
+
+		if (data[6] > 0xd && data[6] < 0x80) {
+			*passed = false;
+			snprintf(tmp, sizeof(tmp), "Method%sPinConfigTypeInvalid", objname);
+			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+				"%s Pin Group Configuration Descriptor has an invalid "
+				"Type 0x%" PRIx8 ".", name, data[6]);
+			fwts_advice(fw,
+				"The Pin Group Configuration type is "
+				"not recognised. It should be either in "
+				"range of 0..0x0D or 0x80..0xFF. See "
+				"section 6.4.3.10 of the ACPI spec.");
+		}
+
+		fwts_acpi_reserved_zero_check(fw, "_CRS", "Resource Source Index", data[11], sizeof(data[11]), passed);
 		break;
 	default:
 		snprintf(tmp, sizeof(tmp), "Method%sUnkownLargeResourceItem", objname);

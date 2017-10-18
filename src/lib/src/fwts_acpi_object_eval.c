@@ -486,7 +486,7 @@ int fwts_method_check_type__(
 	obj = buf->Pointer;
 
 	if (!fwts_method_type_matches(obj->Type, type)) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnBadType",
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "MethodReturnBadType",
 			"Method %s did not return %s.", name, type_name);
 		return FWTS_ERROR;
 	}
@@ -554,7 +554,7 @@ void fwts_method_failed_null_object(
 	const char *name,
 	const char *type)
 {
-	fwts_failed(fw, LOG_LEVEL_MEDIUM, "MethodReturnNullObj",
+	fwts_failed(fw, LOG_LEVEL_CRITICAL, "MethodReturnNullObj",
 		"%s returned a NULL object, and did not "
 		"return %s.", name, type);
 }
@@ -587,7 +587,7 @@ int fwts_method_package_count_min(
 		char tmp[128];
 
 		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s should return package of at least %" PRIu32
 			" element%s, got %" PRIu32 " element%s instead.",
 			name, min, min == 1 ? "" : "s",
@@ -612,7 +612,7 @@ int fwts_method_package_count_equal(
 		char tmp[128];
 
 		snprintf(tmp, sizeof(tmp), "Method%sElementCount", objname);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s should return package of %" PRIu32
 			" element%s, got %" PRIu32 " element%s instead.",
 			name, count, count == 1 ? "" : "s",
@@ -636,7 +636,7 @@ int fwts_method_package_elements_all_type(
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, type)) {
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " was not the expected "
 				"type '%s', was instead type '%s'.",
 				name, i,
@@ -672,7 +672,7 @@ int fwts_method_package_elements_type(
 	for (i = 0; i < obj->Package.Count; i++) {
 		if (!fwts_method_type_matches(obj->Package.Elements[i].Type, info[i].type)) {
 			snprintf(tmp, sizeof(tmp), "Method%sElementType", objname);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 				"%s package element %" PRIu32 " (%s) was not the expected "
 				"type '%s', was instead type '%s'.",
 				name, i, info[i].name,
@@ -798,7 +798,7 @@ void fwts_method_test_passed_failed_return(
 		if ((val == 0) || (val == 1))
 			fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
 		else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"MethodReturnZeroOrOne",
 				"%s returned 0x%8.8" PRIx32 ", should return 1 "
 				"(success) or 0 (failed).", method, val);
@@ -832,7 +832,7 @@ void fwts_method_test_polling_return(
 				"%f seconds", method,
 				(float)obj->Integer.Value / 10.0);
 		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"MethodPollTimeTooLong",
 				"%s returned a value %f seconds > (1 hour) "
 				"which is probably incorrect.",
@@ -996,13 +996,13 @@ static void method_test_CRS_size(
 
 	if ((data_length < min) || (data_length > max)) {
 		if (min != max) {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tag,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, tag,
 				"%s Resource data size was %zd bytes long, "
 				"expected it to be between %zd and %zd bytes",
 				name, data_length, min, max);
 			*passed = false;
 		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, tag,
+			fwts_failed(fw, LOG_LEVEL_CRITICAL, tag,
 				"%s Resource data size was %zd bytes long, "
 				"expected it to be %zd bytes",
 				name, data_length, min);
@@ -1094,7 +1094,7 @@ void fwts_method_test_CRS_small_resource_items(
 			break;
 		if (data[1] & 0xfe) {
 			snprintf(tmp, sizeof(tmp), "Method%sIoPortInfoReservedNonZero", objname);
-			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s I/O Port Descriptor Information field "
 				"has reserved bits that are non-zero, got "
 				"0x%" PRIx8 " and expected 0 or 1 for this "
@@ -1145,7 +1145,7 @@ void fwts_method_test_CRS_small_resource_items(
 		break;
 	default:
 		snprintf(tmp, sizeof(tmp), "Method%sUnkownSmallResourceItem", objname);
-		fwts_failed(fw, LOG_LEVEL_LOW, tmp,
+		fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 			"%s tag bits 6:3 is an undefined "
 			"small tag item name, value 0x%" PRIx8 ".",
 			name, tag_item);
@@ -1181,7 +1181,7 @@ void fwts_method_test_CRS_large_size(
 	/* Small _CRS resources have a 3 byte header */
 	if (crs_length < 3) {
 		snprintf(tmp, sizeof(tmp), "Method%sBufferTooSmall", objname);
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, tmp,
 			"%s should return a buffer of at least three bytes in length.", name);
 		*passed = false;
 		return;
@@ -1563,7 +1563,7 @@ void fwts_method_test_CRS_large_resource_items(
 		}
 		if ((data[9] > 0x03) && (data[9] < 0x80)) {
 			snprintf(tmp, sizeof(tmp), "Method%sGpioConnTypeInvalid", objname);
-			fwts_failed(fw, LOG_LEVEL_LOW, tmp,
+			fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 				"%s GPIO Connection Descriptor has an invalid "
 				"Pin Configuration Type 0x%" PRIx8 ".",
 				name, data[9]);
@@ -1584,7 +1584,7 @@ void fwts_method_test_CRS_large_resource_items(
 		break;
 	default:
 		snprintf(tmp, sizeof(tmp), "Method%sUnkownLargeResourceItem", objname);
-		fwts_failed(fw, LOG_LEVEL_LOW, tmp,
+		fwts_failed(fw, LOG_LEVEL_HIGH, tmp,
 			"%s tag bits 6:0 is an undefined "
 			"large tag item name, value 0x%" PRIx8 ".",
 			name, tag_item);

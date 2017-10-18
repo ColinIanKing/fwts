@@ -1557,15 +1557,14 @@ void fwts_method_test_CRS_large_resource_items(
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, tmp,
 				"%s GPIO Connection Descriptor has an invalid "
 				"Connection Type 0x%" PRIx8 ".",
-				name, data[2]);
+				name, data[4]);
 			*passed = false;
 			fwts_advice(fw,
 				"The GPIO pin connection type is "
 				"not recognised. It should be either "
 				"0x00 (interrupt connection) or "
-				"0x01 (I/O connection). See table "
-				"6-189 in section 6.4.3.8.1 of the ACPI "
-                                "specification.");
+				"0x01 (I/O connection). See section "
+				"6.4.3.8.1 of the ACPI specification.");
 		}
 		if ((data[9] > 0x03) && (data[9] < 0x80)) {
 			snprintf(tmp, sizeof(tmp), "Method%sGpioConnTypeInvalid", objname);

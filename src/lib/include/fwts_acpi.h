@@ -1265,6 +1265,43 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_nfit_platform_cap;
 
 /*
+ * ACPI SDEV (Secure Devices Table), 5.2.26
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+} __attribute__ ((packed)) fwts_acpi_table_sdev;
+
+typedef enum {
+	FWTS_ACPI_SDEV_TYPE_ACPI_NAMESPACE	= 0,
+	FWTS_ACPI_SDEV_TYPE_PCIE_ENDPOINT	= 1,
+	FWTS_ACPI_SDEV_TYPE_RESERVED		= 2,
+} fwts_acpi_sdev_type;
+
+typedef struct {
+	uint8_t		type;
+	uint8_t		flags;
+	uint16_t	length;
+} __attribute__ ((packed)) fwts_acpi_table_sdev_header;
+
+typedef struct {
+	fwts_acpi_table_sdev_header	header;
+	uint16_t	device_id_offset;
+	uint16_t	device_id_length;
+	uint16_t	vendor_offset;
+	uint16_t	vendor_length;
+} fwts_acpi_table_sdev_acpi;
+
+typedef struct {
+	fwts_acpi_table_sdev_header	header;
+	uint16_t	segment;
+	uint16_t	start_bus;
+	uint16_t	path_offset;
+	uint16_t	path_length;
+	uint16_t	vendor_offset;
+	uint16_t	vendor_length;
+} fwts_acpi_table_sdev_pcie;
+
+/*
  * ACPI HMAT (Heterogeneous Memory Attribute Table), 5.2.27
  */
 typedef struct {

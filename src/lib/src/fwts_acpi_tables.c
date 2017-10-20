@@ -1482,4 +1482,54 @@ void fwts_acpi_reserved_bits_check(
 	}
 }
 
+/*
+ *  fwts_acpi_reserved_type_check()
+ *  verify whether the reserved types are used
+ */
+void fwts_acpi_reserved_type_check(
+	fwts_framework *fw,
+	const char *table,
+	uint8_t value,
+	uint8_t min,
+	uint8_t reserved,
+	bool *passed)
+{
+	if (value < min || value >= reserved) {
+		char label[20];
+		strncpy(label, table, 4);	/* ACPI name is 4 char long */
+		strncpy(label + 4, "BadSubTableType", sizeof(label) - 4);
+
+		fwts_failed(fw, LOG_LEVEL_HIGH, label,
+			"%4.4s must have subtable with Type %" PRId8
+			"..%" PRId8 ", got %" PRId8 " instead",
+			table, min, reserved, value);
+
+		*passed = false;
+	}
+}
+
+/*
+ *  fwts_acpi_subtable_length_check()
+ *  verify whether sub-table length is sane
+ */
+bool fwts_acpi_subtable_length_check(
+	fwts_framework *fw,
+	const char *table,
+	uint8_t subtable_type,
+	uint32_t subtable_length,
+	uint32_t size)
+{
+	if (subtable_length != size) {
+		char label[30];
+		strncpy(label, table, 4);	/* ACPI name is 4 char long */
+		strncpy(label + 4, "BadSubTableLength", sizeof(label) - 4);
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, label,
+			"%4.4s subtable Type 0x%2.2" PRIx8 " should have "
+			"length 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8,
+			table, subtable_type, subtable_length, size);
+		return false;
+	}
+	return true;
+}
+
 #endif

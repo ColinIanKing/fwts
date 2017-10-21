@@ -1,0 +1,30 @@
+pdtt            pdtt: PDTT Platform Debug Trigger Table test.
+pdtt            ----------------------------------------------------------
+pdtt            Test 1 of 1: Validate PDTT table.
+pdtt            PDTT Platform Debug Trigger Table:
+pdtt              Trigger Count:           0x04
+pdtt              Reserved[3]:             0x030201
+pdtt              Trigger ID Array Offset: 0x2c
+pdtt            FAILED [MEDIUM] PDTTReservedNonZero: Test 1, PDTT Reserved
+pdtt            field must be zero, got 0x00030201 instead
+pdtt              Platform Communication Channel IDs
+pdtt                Sub channel ID:          0xaa
+pdtt                Flags:                   0x05
+pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
+pdtt            Bits [7..2] must be zero, got 0x05 instead
+pdtt                Sub channel ID:          0xbb
+pdtt                Flags:                   0x02
+pdtt                Sub channel ID:          0xcc
+pdtt                Flags:                   0x07
+pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
+pdtt            Bits [7..2] must be zero, got 0x07 instead
+pdtt                Sub channel ID:          0xdd
+pdtt                Flags:                   0x08
+pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
+pdtt            Bits [7..2] must be zero, got 0x08 instead
+pdtt            
+pdtt            
+pdtt            ==========================================================
+pdtt            0 passed, 4 failed, 0 warning, 0 aborted, 0 skipped, 0
+pdtt            info only.
+pdtt            ==========================================================

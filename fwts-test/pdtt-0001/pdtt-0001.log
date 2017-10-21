@@ -1,0 +1,23 @@
+pdtt            pdtt: PDTT Platform Debug Trigger Table test.
+pdtt            ----------------------------------------------------------
+pdtt            Test 1 of 1: Validate PDTT table.
+pdtt            PDTT Platform Debug Trigger Table:
+pdtt              Trigger Count:           0x04
+pdtt              Reserved[3]:             0x000000
+pdtt              Trigger ID Array Offset: 0x2c
+pdtt              Platform Communication Channel IDs
+pdtt                Sub channel ID:          0xaa
+pdtt                Flags:                   0x03
+pdtt                Sub channel ID:          0xbb
+pdtt                Flags:                   0x02
+pdtt                Sub channel ID:          0xcc
+pdtt                Flags:                   0x01
+pdtt                Sub channel ID:          0xdd
+pdtt                Flags:                   0x00
+pdtt            
+pdtt            PASSED: Test 1, No issues found in PDTT table.
+pdtt            
+pdtt            ==========================================================
+pdtt            1 passed, 0 failed, 0 warning, 0 aborted, 0 skipped, 0
+pdtt            info only.
+pdtt            ==========================================================

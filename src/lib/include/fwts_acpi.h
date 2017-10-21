@@ -1354,6 +1354,21 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hmat_cache;
 
 /*
+ * ACPI PPTT (Platform Debug Trigger Table), 5.2.28
+ */
+typedef struct {
+	fwts_acpi_table_header	header;
+	uint8_t		trigger_count;
+	uint8_t		reserved[3];
+	uint32_t	array_offset;
+} __attribute__ ((packed)) fwts_acpi_table_pdtt;
+
+typedef struct {
+	uint8_t		sub_channel_id;
+	uint8_t		flags;
+} __attribute__ ((packed)) fwts_acpi_table_pdtt_channel;
+
+/*
  * ACPI PPTT (Processor Properties Topology Table), 5.2.29
  */
 typedef struct {

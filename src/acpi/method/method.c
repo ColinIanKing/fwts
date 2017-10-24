@@ -3078,7 +3078,7 @@ static void method_test_TSS_return(
 		    (pkg->Package.Elements[0].Integer.Value > 100)) {
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				"Method_TSDSubPackageElement0",
-				"%s sub-package %" PRIu32 " element 0"
+				"%s sub-package %" PRIu32 " element 0 "
 				"was expected to have value 1..100, instead "
 				"was %" PRIu64 ".",
 				name, i,

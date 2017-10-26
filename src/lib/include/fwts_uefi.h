@@ -254,7 +254,8 @@ typedef enum {
 	FWTS_UEFI_BLUETOOTH_DEVICE_PATH_SUBTYPE = 	(0x1b),
 	FWTS_UEFI_WIRELESS_DEVICE_PATH_SUBTYPE = 	(0x1c),
 	FWTS_UEFI_EMMC_DEVICE_PATH_SUBTYPE =		(0x1d),
-	FWTS_UEFI_BLUETOOTHLE_DEVICE_PATH_SUBTYPE =	(0x1e)
+	FWTS_UEFI_BLUETOOTHLE_DEVICE_PATH_SUBTYPE =	(0x1e),
+	FWTS_UEFI_DNS_DEVICE_PATH_SUBTYPE =		(0x1f)
 } messaging_dev_path_subtypes;
 
 typedef enum {
@@ -562,6 +563,12 @@ typedef struct {
 	uint8_t bluetooth_addr[6];
 	uint8_t addr_type;
 } __attribute__((packed)) fwts_uefi_bluetoothle_dev_path;
+
+typedef struct {
+	fwts_uefi_dev_path dev_path;
+	uint8_t isipv6;
+	uint8_t dns_addr[0];
+} __attribute__((packed)) fwts_uefi_dns_dev_path;
 
 typedef struct {
 	fwts_uefi_dev_path dev_path;

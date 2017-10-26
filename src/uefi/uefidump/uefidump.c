@@ -549,6 +549,19 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 					b->bluetooth_addr[3], b->bluetooth_addr[4], b->bluetooth_addr[5], b->addr_type);
 			}
 			break;
+		case FWTS_UEFI_DNS_DEVICE_PATH_SUBTYPE:
+			if (dev_path_len > sizeof(fwts_uefi_dns_dev_path)) {
+				size_t i;
+				fwts_uefi_dns_dev_path *d = (fwts_uefi_dns_dev_path *)dev_path;
+				uint16_t len = d->dev_path.length[0] | (((uint16_t)d->dev_path.length[1]) << 8);
+				path = uefidump_vprintf(path, "\\DNS(0x%" PRIx8 ",", d->isipv6);
+
+				/* dump one or more DNS server address */
+				for (i = 0; i < (len - sizeof(fwts_uefi_dns_dev_path)); i++)
+					path = uefidump_vprintf(path, "%02" PRIx8 , d->dns_addr[i]);
+				path = uefidump_vprintf(path, ")");
+			}
+			break;
 		default:
 			path = uefidump_vprintf(path, "\\Unknown-MESSAGING-DEV-PATH(0x%" PRIx8 ")", dev_path->subtype);
 			break;

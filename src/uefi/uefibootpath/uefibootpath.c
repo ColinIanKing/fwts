@@ -641,6 +641,24 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_DNS_DEVICE_PATH_SUBTYPE:
+			if (len <= sizeof(fwts_uefi_dns_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIDNSDevPathLength",
+					"The length of DNS device path is %" PRIu16 " bytes, "
+					"it should also include one or more instances of the DNS server "
+					"address.", len);
+				errors++;
+			}
+
+			fwts_uefi_dns_dev_path *d = (fwts_uefi_dns_dev_path *)dev_path;
+			if (d->isipv6 > 1) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIDNSDevPathTypeInvalid",
+					"The Ip type of DNS Device Path is %" PRIu8
+					" which is out of UEFI specification defined range 0 or 1.",
+					d->isipv6);
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatim(fw, "Unknown subtype of Messaging Device Path.");
 			break;

@@ -622,6 +622,25 @@ static int uefibootpath_check_dev_path(fwts_framework *fw, fwts_uefi_dev_path *d
 				errors++;
 			}
 			break;
+		case FWTS_UEFI_BLUETOOTHLE_DEVICE_PATH_SUBTYPE:
+			if (len != sizeof(fwts_uefi_bluetoothle_dev_path)) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIBTLEDevPathLength",
+					"The length of BluetoothLE device path is %" PRIu16 " bytes "
+					"and differs from UEFI specification defined %" PRIu16 " bytes.",
+					len,
+					(uint16_t)sizeof(fwts_uefi_bluetoothle_dev_path));
+				errors++;
+			}
+
+			fwts_uefi_bluetoothle_dev_path *b = (fwts_uefi_bluetoothle_dev_path *)dev_path;
+			if (b->addr_type > 1) {
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIBTLEDevPathTypeInvalid",
+					"The Address Type of BluetoothLE Device Path is %" PRIu8
+					" which is out of UEFI specification defined range 0 or 1.",
+					b->addr_type);
+				errors++;
+			}
+			break;
 		default:
 			fwts_log_info_verbatim(fw, "Unknown subtype of Messaging Device Path.");
 			break;

@@ -106,5 +106,16 @@
            src/lib/src/Makefile
 	   src/utilities/Makefile
            data/Makefile
+           scripts/bash-completion/Makefile
           ])
+	  AC_ARG_WITH([bashcompletiondir],
+		      AS_HELP_STRING([--with-bashcompletiondir=DIR], [Bash completions directory]),
+		      [],
+		      [AS_IF([`pkg-config --exists bash-completion`], [
+		       with_bashcompletiondir=`pkg-config --variable=completionsdir bash-completion`
+		       ], [
+			   with_bashcompletiondir=${datadir}/bash-completion/completions
+			   ])
+		      ])
+	  AC_SUBST([bashcompletiondir], [$with_bashcompletiondir])
           AC_OUTPUT

@@ -5,3 +5,4 @@ usr/bin/fwts usr/bin
 usr/share/man/man1/fwts.1 usr/share/man/man1
 scripts/fwts-collect usr/bin
 usr/share/man/man1/fwts-collect.1 usr/share/man/man1
+usr/share/bash-completion/completions/fwts usr/share/bash-completion/completions

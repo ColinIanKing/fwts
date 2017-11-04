@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
-SUBDIRS = src data src/utilities
+SUBDIRS = src data src/utilities scripts/bash-completion
 
 ACLOCAL_AMFLAGS = -I m4
 

@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# FWTS tab completion for bash.
+#
+# Copyright (C) 2017 Canonical
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+_fwts()
+{
+    local cur prev
+
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case $prev in
+		'--arch')
+			COMPREPLY=( $(compgen -W "x86 x86_32 x86_64 ia64 arm64 aarch64" -- $cur) )
+			compopt -o nosort
+			return 0
+			;;
+		'--dumpfile'|'-k'|'--klog'|'-J'|'--json-data-file'|'--lspci'|'-o'|'--olog'|'--s3-resume-hook'|'-r'|'--results-output')
+			_filedir
+			return 0
+			;;
+		'-j'|'--json-data-path'|'-t'|'--table-path')
+			local IFS=$'\n'
+            compopt -o filenames
+            COMPREPLY=( $(compgen -d -- ${cur}) )
+			return 0
+			;;
+		'--log-level')
+			COMPREPLY=( $(compgen -W "critical high medium low info all" -- $cur) )
+			compopt -o nosort
+			return 0
+			;;
+		'--log-type')
+			COMPREPLY=( $(compgen -W "plaintext json xml" -- $cur) )
+			return 0
+			;;
+		'--pm-method')
+			COMPREPLY=( $(compgen -W "logind pm-utils sysfs" -- $cur) )
+			return 0
+			;;
+		'--log-filter'|'--log-format'|'-w'|'--log-width'|'-R'|'-rsdp'|\
+		'--s3-delay-delta'|'--s3-device-check-delay'|'--s3-max-delay'|'--s3-min-delay'|'--s3-multiple'|\
+		'--s3-quirks'|'--s3-resume-time'|'--s3-sleep-delay'|'--s3-suspend-time'|'--s3power-sleep-delay'|\
+		'--s4-delay-delta'|'--s4-device-check-delay'|'--s4-max-delay'|'--s4-min-delay'|'--s4-multiple'|'--s4-quirks'|'--s4-sleep-delay'|\
+		'-s'|'--skip-test'|'--uefi-get-var-multiple'|'--uefi-query-var-multiple'|'--uefi-set-var-multiple')
+            # argument required but no completions available
+			return 0
+			;;
+		'-h'|'--help'|'-v'|'--version'|'-d'|'--dump'|'-s'|'--show-tests'|'--show-tests-full'|'--show-tests-categories'|'--log-fields')
+            # all other arguments are noop with these
+			return 0
+			;;
+    esac
+
+    local all_tests=`fwts --show-tests | sed '/.*:/d;/^$/d' | awk '{ print $1 }'`
+    local all_long_options=$( _parse_help "$1" --help )
+
+    if [ -z "$cur" ]; then
+        COMPREPLY=( $( compgen -W "${all_tests}" -- "$cur" ) )
+    else
+        COMPREPLY=( $( compgen -W "${all_tests} ${all_long_options}" -- "$cur" ) )
+
+    fi
+
+    return 0
+}
+
+
+# load the completion
+complete -F _fwts fwts

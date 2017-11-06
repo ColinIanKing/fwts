@@ -92,3 +92,30 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 
 	return FWTS_OK;
 }
+
+int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
+{
+	static uint32_t buffer[256];
+	const uint32_t *ptr, *end = src + n;
+	uint32_t *bufptr;
+	const uint32_t *bufend = buffer + sizeof(buffer);
+
+	if (sigsetjmp(jmpbuf, 1) != 0)
+		return FWTS_ERROR;
+
+	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
+	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
+
+	for (bufptr = buffer, ptr = src; ptr < end; ptr++) {
+		/* Force data to be read */
+		__builtin_prefetch(ptr, 0, 3);
+		*bufptr = *ptr;
+		bufptr++;
+		bufptr = (bufptr >= bufend) ? buffer : bufptr;
+	}
+
+	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
+	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
+
+	return FWTS_OK;
+}

@@ -93,12 +93,20 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 	return FWTS_OK;
 }
 
+/*
+ *  fwts_safe_memread()
+ *	check we can safely read a region of memory. This catches
+ *	SIGSEGV/SIGBUS errors and returns FWTS_ERROR if it is not
+ *	readable or FWTS_OK if it's OK.
+ *
+ *	n = number of of 32 bit words to check
+ */
 int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
 {
 	static uint32_t buffer[256];
 	const uint32_t *ptr, *end = src + n;
 	uint32_t *bufptr;
-	const uint32_t *bufend = buffer + sizeof(buffer);
+	const uint32_t *bufend = buffer + (sizeof(buffer) / sizeof(*buffer));
 
 	if (sigsetjmp(jmpbuf, 1) != 0)
 		return FWTS_ERROR;

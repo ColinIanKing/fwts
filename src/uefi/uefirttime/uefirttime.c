@@ -321,7 +321,8 @@ static int uefirttime_test4(fwts_framework *fw)
 	if (time.TimeZone != 0)
 		time.TimeZone = 0;
 	else
-		time.TimeZone = 1;
+		/* Unspecified timezone, local time */
+		time.TimeZone = 2047;
 
 	settime.Time = &time;
 	settime.status = &status;
@@ -370,7 +371,7 @@ static int uefirttime_test4(fwts_framework *fw)
 		return FWTS_ERROR;
 	}
 
-	if (!((oldtime.TimeZone == 0) && (newtime.TimeZone == 1)) &&
+	if (!((oldtime.TimeZone == 0) && (newtime.TimeZone == 2047)) &&
 	    !((oldtime.TimeZone != 0) && (newtime.TimeZone == 0))) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTimeTimezone",
 			"Failed to set timezone with UEFI runtime service.");

@@ -4047,7 +4047,9 @@ static void method_test_BIX_return(
 	void *private)
 {
 	bool failed = false;
+	uint64_t revision = 0;
 
+	/* Revision 0 in ACPI 5.x */
 	static const fwts_package_element elements[] = {
 		{ ACPI_TYPE_INTEGER,	"Revision" },
 		{ ACPI_TYPE_INTEGER,	"Power Unit" },
@@ -4056,7 +4058,7 @@ static void method_test_BIX_return(
 		{ ACPI_TYPE_INTEGER,	"Battery Technology" },
 		{ ACPI_TYPE_INTEGER,	"Design Voltage" },
 		{ ACPI_TYPE_INTEGER,	"Design Capacity of Warning" },
-		{ ACPI_TYPE_INTEGER,	"Design Capactty of Low" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Low" },
 		{ ACPI_TYPE_INTEGER,	"Cycle Count" },
 		{ ACPI_TYPE_INTEGER,	"Measurement Accuracy" },
 		{ ACPI_TYPE_INTEGER,	"Max Sampling Time" },
@@ -4071,16 +4073,63 @@ static void method_test_BIX_return(
 		{ ACPI_TYPE_STRING,	"OEM Information" }
 	};
 
+	/* Revision 1 in ACPI 6.x introduces swapping capability */
+	static const fwts_package_element elements_v1[] = {
+		{ ACPI_TYPE_INTEGER,	"Revision" },
+		{ ACPI_TYPE_INTEGER,	"Power Unit" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Last Full Charge Capacity" },
+		{ ACPI_TYPE_INTEGER,	"Battery Technology" },
+		{ ACPI_TYPE_INTEGER,	"Design Voltage" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Warning" },
+		{ ACPI_TYPE_INTEGER,	"Design Capacity of Low" },
+		{ ACPI_TYPE_INTEGER,	"Cycle Count" },
+		{ ACPI_TYPE_INTEGER,	"Measurement Accuracy" },
+		{ ACPI_TYPE_INTEGER,	"Max Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Min Sampling Time" },
+		{ ACPI_TYPE_INTEGER,	"Max Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Min Averaging Interval" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 1" },
+		{ ACPI_TYPE_INTEGER,	"Battery Capacity Granularity 2" },
+		{ ACPI_TYPE_STRING,	"Model Number" },
+		{ ACPI_TYPE_STRING,	"Serial Number" },
+		{ ACPI_TYPE_STRING,	"Battery Type" },
+		{ ACPI_TYPE_STRING,	"OEM Information" },
+		{ ACPI_TYPE_INTEGER,	"Battery Swapping Capability" }
+	};
+
 	FWTS_UNUSED(private);
 
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
-		return;
+	if (obj->Package.Count > 1 && obj->Package.Elements[0].Type == ACPI_TYPE_INTEGER)
+		revision = obj->Package.Elements[0].Integer.Value;
 
-	if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
+	switch (revision) {
+	case 0:
+		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 20) != FWTS_OK)
+			return;
+
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements, 20) != FWTS_OK)
+			return;
+		break;
+	case 1:
+		if (fwts_method_package_count_equal(fw, name, "_BIX", obj, 21) != FWTS_OK)
+			return;
+
+		if (fwts_method_package_elements_type(fw, name, "_BIX", obj, elements_v1, 21) != FWTS_OK)
+			return;
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXRevision",
+			"%s: Expected %s (Element 0) to be "
+			"0 or 1, got 0x%8.8" PRIx64 ".",
+			name, elements_v1[0].name,
+			(uint64_t)obj->Package.Elements[0].Integer.Value);
 		return;
+	}
 
 	/* Sanity check each field */
 	/* Power Unit */
@@ -4179,6 +4228,18 @@ static void method_test_BIX_return(
 	}
 
 #endif
+
+	/* Swapping Capability */
+	if (revision == 1 && obj->Package.Elements[20].Integer.Value > 2) {
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BIXSwappingCapability",
+			"%s: %s (Element 20) "
+			"is unknown: 0x%8.8" PRIx64 ".",
+			name, elements_v1[20].name,
+			obj->Package.Elements[20].Integer.Value);
+		failed = true;
+	}
+
 	if (failed)
 		fwts_advice(fw,
 			"Battery %s package contains errors. It is "

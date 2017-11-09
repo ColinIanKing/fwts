@@ -154,6 +154,7 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 				} else {
 					short_options = calloc(1, len + 1);
 					if (short_options == NULL) {
+						free(short_options);
 						free(long_options);
 						fwts_log_error(fw,
 							"Out of memory "
@@ -164,6 +165,22 @@ int fwts_args_parse(fwts_framework *fw, const int argc, char * const argv[])
 					short_options_len += (len + 1);
 				}
 			}
+		}
+	}
+
+	/*
+	 *  Although unlikely, short_options must not be null otherwise
+	 *  it could potentially break getopt_long() so to be totally
+	 *  safe, allocate a empty string.
+	 *  Cleans up CoverityScan CID#1381432 ("Explicit Null dereference")
+	 */
+	if (!short_options) {
+		short_options = strdup("");
+		if (!short_options) {
+			free(short_options);
+			free(long_options);
+			fwts_log_error(fw, "Out of memory allocating options.");
+			return FWTS_ERROR;
 		}
 	}
 

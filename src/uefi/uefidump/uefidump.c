@@ -434,18 +434,21 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\USBWWID(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx16,
 					u->interface_num, u->vendor_id, u->product_id);
+				ssize_t sz;
 
 				/* Adding Serial Number */
-
 				if (len <= sizeof(fwts_uefi_usb_wwid_dev_path)) {
 					path = uefidump_vprintf(path, ")");
 					break;
 				}
-				tmp = malloc((len - sizeof(fwts_uefi_usb_wwid_dev_path))/sizeof(uint16_t) + 1);
-				if (tmp) {	
-					fwts_uefi_str16_to_str(tmp, (len - sizeof(fwts_uefi_usb_wwid_dev_path))/sizeof(uint16_t) + 1, u->serial_number);
-					path = uefidump_vprintf(path, ",%s", tmp);
-					free(tmp);
+				sz = ((ssize_t)len - sizeof(fwts_uefi_usb_wwid_dev_path)) / sizeof(uint16_t) + 1;
+				if ((sz > 0) && (sz <= 0xffff)) {
+					tmp = malloc(sz);
+					if (tmp) {
+						fwts_uefi_str16_to_str(tmp, sz, u->serial_number);
+						path = uefidump_vprintf(path, ",%s", tmp);
+						free(tmp);
+					}
 				}
 				path = uefidump_vprintf(path, ")");
 			}
@@ -1271,7 +1274,7 @@ static void uefidump_info_signaturedatabase(fwts_framework *fw, fwts_uefi_var *v
 		return;
 
 	do {
-		fwts_uefi_signature_list *signature_list = 
+		fwts_uefi_signature_list *signature_list =
 			(fwts_uefi_signature_list *)(var->data + list_start);
 		const char *str = "Unknown GUID";
 		size_t offset = 0;

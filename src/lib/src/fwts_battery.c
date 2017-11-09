@@ -27,6 +27,7 @@
 #include <string.h>
 #include <limits.h>
 #include <dirent.h>
+#include <inttypes.h>
 
 static inline bool fwts_battery_match(
 	const uint32_t index,

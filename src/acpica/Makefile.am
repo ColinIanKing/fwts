@@ -277,6 +277,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/tools/acpiexec/aehandlers.c		\
 	source/tools/acpiexec/aeexception.c		\
 	source/tools/acpiexec/aeregion.c		\
+	source/tools/acpiexec/aeinstall.c		\
 	source/os_specific/service_layers/osgendbg.c
 
 libfwtsacpica_la_LIBADD = \

@@ -51,6 +51,21 @@ typedef struct {
 	const char 	*name;	/* Field name */
 } fwts_package_element;
 
+/* Time format for ACPI000E (Time and Alarm Device) */
+typedef struct {
+	uint16_t	year;
+	uint8_t		month;
+	uint8_t		day;
+	uint8_t		hour;
+	uint8_t		minute;
+	uint8_t		second;
+	uint8_t		valid;	// pad1 for _SRT
+	uint16_t	milliseconds;
+	uint16_t	timezone;
+	uint8_t		daylight;
+	uint8_t		pad2[3];
+} __attribute__ ((packed)) fwts_acpi_time_buffer;
+
 #define fwts_method_check_type(fw, name, buf, type) 			\
 	fwts_method_check_type__(fw, name, buf, type, #type)
 

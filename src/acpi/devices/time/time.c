@@ -147,6 +147,47 @@ static int method_test_GRT(fwts_framework *fw)
 			"_GRT", NULL, 0, method_test_GRT_return, NULL);
 }
 
+static void method_test_SRT_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
+}
+
+static int method_test_SRT(fwts_framework *fw)
+{
+	uint32_t time_size = sizeof(fwts_acpi_time_buffer);
+	fwts_acpi_time_buffer real_time;
+	ACPI_OBJECT arg0;
+
+	real_time.year = 2000;
+	real_time.month = 1;
+	real_time.day = 1;
+	real_time.hour = 0;
+	real_time.minute = 0;
+	real_time.milliseconds = 1;
+	real_time.timezone = 0;
+
+	arg0.Type = ACPI_TYPE_BUFFER;
+	arg0.Buffer.Length = time_size;
+	arg0.Buffer.Pointer = (void *)&real_time;
+
+	if (capability & 0x04)
+		return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
+			"_SRT", &arg0, 1, method_test_SRT_return, NULL);
+	else
+		return fwts_evaluate_method(fw, METHOD_OPTIONAL, &device,
+			"_SRT", &arg0, 1, method_test_SRT_return, NULL);
+}
+
 static void method_test_GWS_return(
 	fwts_framework *fw,
 	char *name,
@@ -270,7 +311,7 @@ static int method_test_TIV(fwts_framework *fw)
 static fwts_framework_minor_test acpi_time_alarm_tests[] = {
 	{ method_test_GCP, "Test _GCP (Get Capabilities)." },
 	{ method_test_GRT, "Test _GRT (Get Real Time)." },
-	/* { method_test_SRT, "Test _SRT (Set Real Time)." }, */
+	{ method_test_SRT, "Test _SRT (Set Real Time)." },
 	{ method_test_GWS, "Test _GWS (Get Wake Status)." },
 	{ method_test_CWS, "Test _CWS (Clear Wake Status)." },
 	{ method_test_STP, "Test _STP (Set Expired Timer Wake Policy)." },

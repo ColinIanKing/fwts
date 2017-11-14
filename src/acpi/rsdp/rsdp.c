@@ -113,11 +113,24 @@ static int rsdp_test1(fwts_framework *fw)
 			"RSDP: revision is %" PRIu8 ", expected "
 			"value to be 0 or 2.", rsdp->revision);
 
-	/* all proceeding tests involve fields which are only
-	 * defined in ACPI specifications 2.0 and greater, skip
-	 * if ACPI version is 1.0 */
-	if (rsdp->revision == 0)
+	/* check if RSDP follows ACPI 1.0 - if so, make sure rsdt_address
+	 * is not null. */
+	if (rsdp->revision == 0) {
+		if (rsdp->rsdt_address != 0)
+			fwts_passed(fw,
+					"RSDP: RSDP follows ACPI 1.0 "
+					"and RsdtAddress is set.");
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"RSDPNullRSDTPointer",
+					"RSDP: RSDP follows ACPI 1.0, but "
+					"RsdtAddress isn't set.");
+
+		/* all proceeding tests involve fields which are only
+		 * defined in ACPI specifications 2.0 and greater, skip
+		 * if ACPI version is 1.0 */
 		return FWTS_OK;
+	}
 
 	/* whether RSDT or XSDT depends arch */
 	if (rsdp->rsdt_address == 0 && rsdp->xsdt_address == 0)

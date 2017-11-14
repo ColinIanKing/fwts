@@ -78,6 +78,7 @@ static int rsdp_test1(fwts_framework *fw)
 			    "RSDPBadFirstChecksum",
 			    "RSDP first checksum is incorrect: 0x%x", checksum);
 
+	/* ensure oem_id only contains printable characters */
 	for (i = 0; i < 6; i++) {
 		if (!isprint(rsdp->oem_id[i])) {
 			passed = false;
@@ -100,27 +101,23 @@ static int rsdp_test1(fwts_framework *fw)
 			"firmware ACPI complaint.");
 	}
 
-	/* ACPI 6.1 errata clarifies revision 1 must have length 20 */
-	if (rsdp->revision == 1) {
-		if (rsdp->length == 20)
-			fwts_passed(fw, "RSDP: the table is the correct length.");
-		else
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"RSDPBadLength",
-				"RSDP: length of Revision 1 is %d bytes but should be 20.",
-				rsdp->length);
-
-		return FWTS_OK;
-	}
-
-	if (rsdp->revision <= 2)
+	/* check if revision number is valid. note: revision field for
+	 * ACPI 1.0 RSDP is 0, not 1, as per ACPI specification version
+	 * 6.2, p.122. */
+	if (rsdp->revision == 0 || rsdp->revision == 2)
 		fwts_passed(fw,
 			    "RSDP: revision is %" PRIu8 ".", rsdp->revision);
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			"RSDPBadRevisionId",
 			"RSDP: revision is %" PRIu8 ", expected "
-			"value less than 2.", rsdp->revision);
+			"value to be 0 or 2.", rsdp->revision);
+
+	/* all proceeding tests involve fields which are only
+	 * defined in ACPI specifications 2.0 and greater, skip
+	 * if ACPI version is 1.0 */
+	if (rsdp->revision == 0)
+		return FWTS_OK;
 
 	/* whether RSDT or XSDT depends arch */
 	if (rsdp->rsdt_address == 0 && rsdp->xsdt_address == 0)

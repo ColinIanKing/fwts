@@ -58,7 +58,7 @@ static int rsdt_test1(fwts_framework *fw)
 				"RSDTEntryNull",
 				"RSDT Entry %zd is null, should not be non-zero.", i);
 			fwts_advice(fw,
-				"A XSDT pointer is null and therefore erroneously "
+				"A RSDT pointer is null and therefore erroneously "
 				"points to an invalid 32 bit ACPI table header. "
 				"At worse this will cause the kernel to oops, at "
 				"best the kernel may ignore this.  However, it "

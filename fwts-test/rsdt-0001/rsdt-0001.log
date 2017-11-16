@@ -5,7 +5,7 @@ rsdt            Test 1 of 1: RSDT Root System Description Table test.
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 1 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -13,7 +13,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 2 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -21,7 +21,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 3 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -29,7 +29,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 4 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -37,7 +37,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 5 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -45,7 +45,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 6 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -53,7 +53,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 7 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -61,7 +61,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 8 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -69,7 +69,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 9 is null,
 rsdt            should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -77,7 +77,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 10 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -85,7 +85,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 11 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -93,7 +93,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 12 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -101,7 +101,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 13 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -109,7 +109,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 14 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -117,7 +117,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 15 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -125,7 +125,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 16 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -133,7 +133,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 17 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.
@@ -141,7 +141,7 @@ rsdt
 rsdt            FAILED [HIGH] RSDTEntryNull: Test 1, RSDT Entry 18 is null
 rsdt            , should not be non-zero.
 rsdt            
-rsdt            ADVICE: A XSDT pointer is null and therefore erroneously
+rsdt            ADVICE: A RSDT pointer is null and therefore erroneously
 rsdt            points to an invalid 32 bit ACPI table header. At worse
 rsdt            this will cause the kernel to oops, at best the kernel may
 rsdt            ignore this. However, it should be fixed where possible.

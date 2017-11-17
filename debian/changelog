@@ -1,3 +1,72 @@
+fwts (17.11.00-0ubuntu1) bionic; urgency=low
+
+  [Alex Hung]
+  * lib: move and rename helper functions from method.c
+  * acpi: devices: add a new test for ACPI AC adapter device
+  * acpi: devices: add a new test for ACPI battery device
+  * acpi: devices: add a new test for smart battery device
+  * lib: move _CRS helper functions from method.c
+  * acpi: devices: add a new test for acpi ec device
+  * acpi: devices: print device name in acpi_ac test
+  * acpi: devices: deiniit acpica when tests are skipped
+  * acpi: devices: add new tests for power and sleep button devices
+  * acpi: sync up _BIX test in method to acpi_battery tests
+  * acpi: fadt: ACPI 6.2 explicitly states 64-bit supersedes 32-bit
+  * acpi: madt: check GICD's system vector according to mantis 1819 (ACPI
+    6.2a)
+  * acp: nfit: add platform capability according to manit 1831 (ACPI 6.2a)
+  * lib: print reference names in fwts_acpi_object_dump
+  * lib: raise severity of acpi method failures
+  * lib: add new large resource data type for _CRS methods
+  * lib: fix offset error for GPIO connection descriptor
+  * acpi: sdev: add ACPI SDEV test (mantis 1632)
+  * fwts-test: Add regression test for SDEV
+  * acpi: dppt: add ACPI PDTT test (mantis 1576)
+  * fwts-test: Add regression test for PDTT
+  * acpi: method: add a missing space in _TSS tests
+  * acpi: devices: add new tests for lid device
+  * acpi: devices: add new tests for ambient light sensor device
+  * acpi: devices: add new tests for time and alarm device
+  * acpi: devices: add new tests for wireless power calibratio device
+  * dmi: dmicheck: fix incorrect use of lock bit in chassis type
+  * src: re-order source list alphabetically
+  * acpi: update checks of _BIX return package
+  * acpi: add tests for _SRT control method
+  * fwts-test: sync up with _SRT control method
+  * auto-packager: mkpackage.sh: add bionic
+  * fwts-test: sync up with rsdt updates
+
+  [Anthony Wong]
+  * fwts: add bash command-line completion
+
+  [Chris Goldsworthy]
+  * Remove length test for ACPI 1.0 RSDPs, fix checks against revision field
+  * Add ACPI 1.0 RSDP test to make sure RSDT field isn't null
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20170929
+  * fwts-test: sync syntax check with latest ACPICA output
+  * lib: fwts_safe_mem: fix buffer end calculation
+  * lib: fwts_acpi_object_eval: fix build issues with older toolchains
+  * lib: fwts_battery: fix build issues with older toolchains
+  * lib: fwts_args: ensure a null short_option is never passed to getopt_long
+  * uefi: uefidump: add some guarding on allocation size
+  * uefi: uefidump: add some guarding on loop iteration
+  * dmi: dmicheck: zero buffer buf, cleans up a static analysis warning
+  * ACPICA: Update to version 20171110
+  * doc: manual: add Chris Goldsworthy to the contributors section
+
+  [Ivan Hu]
+  * uefi: uefidump: add dumping for BluetoothLE device path
+  * uefi: uefidump: add dumping for DNS device path
+  * uefi: uefibootpath: add test for BluetoothLE device path
+  * uefi: uefibootpath: add test for DNS device path
+  * hpet: fix the false alarm of hpet configuration test
+  * uefi: uefirttime: fix the time zone to exact value
+  * uefi: uefirtauthvar: update the test auth data (LP: #1724455)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Fri, 17 Nov 2017 14:49:11 +0800
+
 fwts (17.09.00-0ubuntu1) artful; urgency=low
 
   * [Alex Hung]

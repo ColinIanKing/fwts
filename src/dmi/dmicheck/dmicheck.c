@@ -1933,33 +1933,37 @@ static void dmi_scan_tables(fwts_framework *fw,
  * ARM SBBR SMBIOS Structure Test
  */
 
+#define RECOMMENDED_STRUCTURE_DEFAULT_MSG "This structure is recommended."
+
 /* Test Entry Structure */
 typedef struct {
 	const char *name;
 	const uint8_t type;
+	const uint8_t mandatory;
+	const char *advice;
 	uint8_t found;
 } sbbr_test_entry;
 
 /* Test Definition Array */
 static sbbr_test_entry sbbr_test[] = {
-	{ "BIOS Information", 0, 0 },
-	{ "System Information", 1, 0 },
-	{ "Baseboard Information", 2, 0 },
-	{ "System Enclosure or Chassis", 3, 0 },
-	{ "Processor Information", 4, 0 },
-	{ "Cache Information", 7, 0 },
-	{ "Port Connector Information", 8, 0 },
-	{ "System Slots", 9, 0 },
-	{ "OEM Strings", 11, 0 },
-	{ "BIOS Language Information", 13, 0 },
-	{ "System Event Log", 15, 0 },
-	{ "Physical Memory Array", 16, 0 },
-	{ "Memory Device", 17, 0 },
-	{ "Memory Array Mapped Address", 19, 0 },
-	{ "System Boot Information", 32, 0 },
-	{ "IPMI Device Information", 38, 0 },
-	{ "Onboard Devices Extended Information", 41, 0 },
-	{ 0, 0, 0 }
+	{ "BIOS Information", 0, 1, 0, 0 },
+	{ "System Information", 1, 1, 0, 0 },
+	{ "Baseboard Information", 2, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ "System Enclosure or Chassis", 3, 1, 0, 0 },
+	{ "Processor Information", 4, 1, 0, 0 },
+	{ "Cache Information", 7, 1, 0, 0 },
+	{ "Port Connector Information", 8, 0, "Recommended for platforms with physical ports.", 0 },
+	{ "System Slots", 9, 0, "Required for platforms with expansion slots.", 0 },
+	{ "OEM Strings", 11, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ "BIOS Language Information", 13, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ "System Event Log", 15, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ "Physical Memory Array", 16, 1, 0, 0 },
+	{ "Memory Device", 17, 1, 0, 0 },
+	{ "Memory Array Mapped Address", 19, 1, 0, 0 },
+	{ "System Boot Information", 32, 1, 0, 0 },
+	{ "IPMI Device Information", 38, 0, "Required for platforms with IPMI BMC Interface.", 0 },
+	{ "Onboard Devices Extended Information", 41, 0, RECOMMENDED_STRUCTURE_DEFAULT_MSG, 0 },
+	{ 0, 0, 0, 0, 0 }
 };
 
 static void sbbr_test_entry_check(fwts_dmi_header *hdr)
@@ -2131,9 +2135,16 @@ static int dmicheck_test4(fwts_framework *fw)
 	/* Check whether all SMBIOS structures needed by SBBR have been found. */
 	for (i = 0; sbbr_test[i].name != NULL; i++) {
 		if (!sbbr_test[i].found) {
-			fwts_failed(fw, LOG_LEVEL_HIGH, "SbbrSmbiosNoStruct", "Cannot find SMBIOS "
-					"structure: %s (Type %d)", sbbr_test[i].name, sbbr_test[i].type);
-		}
+			if (sbbr_test[i].mandatory)
+				fwts_failed(fw, LOG_LEVEL_HIGH, "SbbrSmbiosNoStruct", "Cannot find SMBIOS "
+						"structure: %s (Type %d).", sbbr_test[i].name, sbbr_test[i].type);
+			else
+				fwts_skipped(fw, "SMBIOS structure %s (Type %d) not found. %s",
+						sbbr_test[i].name, sbbr_test[i].type,
+						sbbr_test[i].advice?sbbr_test[i].advice:"");
+		} else
+			fwts_passed(fw, "SMBIOS structure %s (Type %d) found.",
+					sbbr_test[i].name, sbbr_test[i].type);
 	}
 	return FWTS_OK;
 }

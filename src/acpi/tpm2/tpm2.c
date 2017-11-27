@@ -41,7 +41,7 @@ static int tpm2_init(fwts_framework *fw)
 
 /*
  * TPM2 table
- *   available @ http://www.trustedcomputinggroup.org/files/static_page_files/648D7D46-1A4B-B294-D088037B8F73DAAF/TCG_ACPIGeneralSpecification_1-10_0-37-Published.pdf
+ *   available @ https://trustedcomputinggroup.org/tcg-acpi-specification/
  */
 static int tpm2_test1(fwts_framework *fw)
 {

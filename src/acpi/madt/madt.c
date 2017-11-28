@@ -546,6 +546,13 @@ static int madt_local_apic(fwts_framework *fw,
 	fwts_acpi_madt_processor_local_apic *lapic =
 		(fwts_acpi_madt_processor_local_apic *)data;
 
+	/* only test table if enabled */
+	if (!(lapic->flags & 0x1)) {
+		fwts_skipped(fw, "MADT %s is disabled. Skipping test.",
+			      madt_sub_names[hdr->type]);
+		goto out;
+	}
+
 	madt_find_processor_uid(fw, lapic->acpi_processor_id, "LAPIC");
 
 	if (lapic->flags & 0xfffffffe)
@@ -561,6 +568,7 @@ static int madt_local_apic(fwts_framework *fw,
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
+out:
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
@@ -780,6 +788,7 @@ static int madt_local_sapic(fwts_framework *fw,
 	 * initial boot state.
 	 */
 
+
 	if (hdr->length != (strlen(lsapic->uid_string) + 16))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLSAPICLength",
@@ -791,6 +800,13 @@ static int madt_local_sapic(fwts_framework *fw,
 		fwts_passed(fw,
 			    "MADT %s table length (%d) is correct.",
 			    madt_sub_names[hdr->type], hdr->length);
+
+	/* only continue testing table if enabled */
+	if (!(lsapic->flags & 0x1)) {
+		fwts_skipped(fw, "MADT %s is disabled. Skipping test.",
+			      madt_sub_names[hdr->type]);
+		goto out;
+	}
 
 	/*
 	 * There are three values that need to be checked for a valid
@@ -878,6 +894,7 @@ static int madt_local_sapic(fwts_framework *fw,
 			    "MADT %s UID string is an ASCII string.",
 			    madt_sub_names[hdr->type]);
 
+out:
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 
@@ -952,6 +969,13 @@ static int madt_local_x2apic(fwts_framework *fw,
 	fwts_acpi_madt_local_x2apic *lx2apic =
 					(fwts_acpi_madt_local_x2apic *)data;
 
+	/* only test table if enabled */
+	if (!(lx2apic->flags & 0x1)) {
+		fwts_skipped(fw, "MADT %s is disabled. Skipping test.",
+			      madt_sub_names[hdr->type]);
+		goto out;
+	}
+
 	if (lx2apic->reserved)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLX2APICReservedNonZero",
@@ -980,6 +1004,7 @@ static int madt_local_x2apic(fwts_framework *fw,
 
 	madt_find_processor_uid(fw, lx2apic->processor_uid, "X2APIC");
 
+out:
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
 }
 

@@ -1270,32 +1270,51 @@ static void method_test_CRS_mif_maf(
 	if (len == 0) {
 		if ((mif == 1) && (maf == 1)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafBothOne", objname, tag);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				tmp,
-				"%s %s _MIF and _MAF flags are both "
-				"set to one which is invalid when "
-				"the length field is 0.",
-				name, type);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				fwts_warning(fw, tmp,
+					"%s %s _MIF and _MAF flags are both "
+					"set to one which is invalid when "
+					"the length field is 0.",
+					name, type);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					tmp,
+					"%s %s _MIF and _MAF flags are both "
+					"set to one which is invalid when "
+					"the length field is 0.",
+					name, type);
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
 		if ((mif == 1) && (min % (granularity + 1) != 0)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMinNotMultipleOfGran", objname, tag);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				tmp,
-				"%s %s _MIN address is not a multiple "
-				"of the granularity when _MIF is 1.",
-				name, type);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				fwts_warning(fw, tmp,
+					"%s %s _MIN address is not a multiple "
+					"of the granularity when _MIF is 1.",
+					name, type);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					tmp,
+					"%s %s _MIN address is not a multiple "
+					"of the granularity when _MIF is 1.",
+					name, type);
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
 		if ((maf == 1) && (max % (granularity - 1) != 0)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMaxNotMultipleOfGran", objname, tag);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				tmp,
-				"%s %s _MAX address is not a multiple "
-				"of the granularity when _MAF is 1.",
-				name, type);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				fwts_warning(fw, tmp,
+					"%s %s _MAX address is not a multiple "
+					"of the granularity when _MAF is 1.",
+					name, type);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					tmp,
+					"%s %s _MAX address is not a multiple "
+					"of the granularity when _MAF is 1.",
+					name, type);
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
@@ -1303,58 +1322,94 @@ static void method_test_CRS_mif_maf(
 		if ((mif == 0) && (maf == 0) &&
 		    (len % (granularity + 1) != 0)) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sLenNotMultipleOfGran", objname, tag);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				tmp,
-				"%s %s length is not a multiple "
-				"of the granularity when _MIF "
-				"and _MIF are 0.",
-				name, type);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				fwts_warning(fw, tmp,
+					"%s %s length is not a multiple "
+					"of the granularity when _MIF "
+					"and _MIF are 0.",
+					name, type);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					tmp,
+					"%s %s length is not a multiple "
+					"of the granularity when _MIF "
+					"and _MIF are 0.",
+					name, type);
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
 		if (((mif == 0) && (maf == 1)) || ((mif == 1) && (maf == 0))) {
 			snprintf(tmp, sizeof(tmp), "Method%s%sMifMafInvalid", objname, tag);
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				tmp,
-				"%s %s _MIF and _MAF flags are either "
-				"0 and 1 or 1 and 0 which is invalid when "
-				"the length field is non-zero.",
-				name, type);
+			if (fw->flags & FWTS_FLAG_TEST_SBBR)
+				fwts_warning(fw, tmp,
+					"%s %s _MIF and _MAF flags are either "
+					"0 and 1 or 1 and 0 which is invalid when "
+					"the length field is non-zero.",
+					name, type);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					tmp,
+					"%s %s _MIF and _MAF flags are either "
+					"0 and 1 or 1 and 0 which is invalid when "
+					"the length field is non-zero.",
+					name, type);
 			fwts_advice(fw, "%s", mif_maf_advice);
 			*passed = false;
 		}
 		if ((mif == 1) && (maf == 1)) {
 			if (granularity != 0) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sGranularityNotZero", objname, tag);
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					tmp,
-					"%s %s granularity 0x%" PRIx64
-					" is not zero as expected when "
-					"_MIF and _MAF are both 1.",
-					name, type, granularity);
+				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+					fwts_warning(fw, tmp,
+						"%s %s granularity 0x%" PRIx64
+						" is not zero as expected when "
+						"_MIF and _MAF are both 1.",
+						name, type, granularity);
+				else
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						tmp,
+						"%s %s granularity 0x%" PRIx64
+						" is not zero as expected when "
+						"_MIF and _MAF are both 1.",
+						name, type, granularity);
 				fwts_advice(fw, "%s", mif_maf_advice);
 				*passed = false;
 			}
 			if (min > max) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sMaxLessThanMin", objname, tag);
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					tmp,
-					"%s %s minimum address range 0x%" PRIx64
-					" is greater than the maximum address "
-					"range 0x%" PRIx64 ".",
-					name, type, min, max);
+				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+					fwts_warning(fw, tmp,
+						"%s %s minimum address range 0x%" PRIx64
+						" is greater than the maximum address "
+						"range 0x%" PRIx64 ".",
+						name, type, min, max);
+				else
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						tmp,
+						"%s %s minimum address range 0x%" PRIx64
+						" is greater than the maximum address "
+						"range 0x%" PRIx64 ".",
+						name, type, min, max);
 				fwts_advice(fw, "%s", mif_maf_advice);
 				*passed = false;
 			}
 			if (max - min + 1 != len) {
 				snprintf(tmp, sizeof(tmp), "Method%s%sLengthInvalid", objname, tag);
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					tmp,
-					"%s %s length 0x%" PRIx64
-					" does not match the difference between "
-					"the minimum and maximum address ranges "
-					"0x%" PRIx64 "-0x%" PRIx64 ".",
-					name, type, len, min, max);
+				if (fw->flags & FWTS_FLAG_TEST_SBBR)
+					fwts_warning(fw, tmp,
+						"%s %s length 0x%" PRIx64
+						" does not match the difference between "
+						"the minimum and maximum address ranges "
+						"0x%" PRIx64 "-0x%" PRIx64 ".",
+						name, type, len, min, max);
+				else
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						tmp,
+						"%s %s length 0x%" PRIx64
+						" does not match the difference between "
+						"the minimum and maximum address ranges "
+						"0x%" PRIx64 "-0x%" PRIx64 ".",
+						name, type, len, min, max);
 				fwts_advice(fw, "%s", mif_maf_advice);
 				*passed = false;
 			}

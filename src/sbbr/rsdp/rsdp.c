@@ -69,7 +69,7 @@ static int rsdp_sbbr_test1(fwts_framework *fw)
 	 * 0 to 19, including the checksum field. These bytes must sum to
 	 * zero.
 	 */
-	const char RSDP_SIGNATURE[]  = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
+	static const char RSDP_SIGNATURE[] = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
 	bool signature_pass     = false;
 	bool checksum_pass      = false;
 	bool rsdp_revision_pass = false;

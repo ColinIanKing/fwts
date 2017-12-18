@@ -28,8 +28,9 @@
 
 #include "fwts_acpi_object_eval.h"
 
-#define SBBR_DBG2_PORT_SERIAL   0x8000
-#define SBBR_DBG2_ARM_SBSA_UART 0x000E
+#define SBBR_DBG2_PORT_SERIAL     0x8000
+#define SBBR_DBG2_ARM_SBSA_UART   0x000E
+#define SBBR_DBG2_ARM_PL011_UART  0x0003
 
 static fwts_acpi_table_info *table;
 
@@ -71,8 +72,9 @@ static int dbg2_test2(fwts_framework *fw)
 			break;
 		if (((uint8_t*)info + info->length) >= ((uint8_t*)table + table->length))
 			break;
-		if ((info->port_type == SBBR_DBG2_PORT_SERIAL) &&
-		(info->port_subtype == SBBR_DBG2_ARM_SBSA_UART)) {
+		if (info->port_type == SBBR_DBG2_PORT_SERIAL &&
+		   (info->port_subtype == SBBR_DBG2_ARM_SBSA_UART ||
+		    info->port_subtype == SBBR_DBG2_ARM_PL011_UART)) {
 			fwts_passed(fw,
 				"DBG2 provides a standard serial debug "
 				"port and describes ARM SBSA Generic UART");

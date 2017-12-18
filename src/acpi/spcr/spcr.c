@@ -74,9 +74,11 @@ static int spcr_sbbr_gsiv_test(fwts_framework *fw)
 {
 	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
 		const uint8_t ARMH_GIC_INTR_MASK = 0x08;
+		const uint8_t IO_APIC_INTR_MASK = 0x02;
 
-		if ( (spcr->interrupt_type == ARMH_GIC_INTR_MASK) &&
-		     (spcr->gsi            != 0x0000000000000000)    )
+		if ((spcr->interrupt_type == ARMH_GIC_INTR_MASK ||
+		     spcr->interrupt_type == IO_APIC_INTR_MASK) &&
+		     spcr->gsi != 0x0)
 			fwts_passed(fw, "SPCR appears to be populated with correct GSIV interrupt"
 						"routing information for ARM PL011 UART Device");
 		else

@@ -1,3 +1,26 @@
+fwts (17.12.00-0ubuntu1) bionic; urgency=low
+
+  [Alex Hung]
+  * acpi: tpm2: update spec url
+
+  [Colin Ian King]
+  * trival: make read only const strings static
+  * ACPICA: Update to version 20171215
+
+  [Jeffrey Hugo]
+  * acpi: bert: remove confusing warning
+
+  [Ricardo Neri]
+  * acpi: madt: only inspect Local APIC/x2APIC/SAPIC tables if enabled
+
+  [Sakar Arora]
+  * dmicheck: sbbr: make some SMBIOS structs optional
+  * acpi: dbg2: sbbr: allow PL011 UART as a valid subtype
+  * acpi: spcr: sbbr: IOAPIC is valid interrupt type
+  * acpi: sbbr: relax a few test pass conditions
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 20 Dec 2017 16:23:05 +0800
+
 fwts (17.11.00-0ubuntu1) bionic; urgency=low
 
   [Alex Hung]

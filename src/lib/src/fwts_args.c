@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2011-2017 Canonical
- * Some of this work - Copyright (C) 2016-2017 IBM
+ * Copyright (C) 2011-2018 Canonical
+ * Some of this work - Copyright (C) 2016-2018 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

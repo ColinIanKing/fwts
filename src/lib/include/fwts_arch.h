@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2017, Al Stone <ahs3@redhat.com>
+ * Copyright (C) 2016-2018, Al Stone <ahs3@redhat.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

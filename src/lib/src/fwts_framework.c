@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2010-2017 Canonical
- * Some of this work - Copyright (C) 2016-2017 IBM
+ * Copyright (C) 2010-2018 Canonical
+ * Some of this work - Copyright (C) 2016-2018 IBM
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -140,10 +140,10 @@ static fwts_option fwts_framework_options[] = {
 static fwts_list fwts_framework_test_list = FWTS_LIST_INIT;
 
 static const char *fwts_copyright[] = {
-	"Some of this work - Copyright (c) 1999 - 2017, Intel Corp. All rights reserved.",
-	"Some of this work - Copyright (c) 2010 - 2017, Canonical.",
-	"Some of this work - Copyright (c) 2016 - 2017, IBM.",
-	"Some of this work - Copyright (c) 2017, ARM Ltd.",
+	"Some of this work - Copyright (c) 1999 - 2018, Intel Corp. All rights reserved.",
+	"Some of this work - Copyright (c) 2010 - 2018, Canonical.",
+	"Some of this work - Copyright (c) 2016 - 2018, IBM.",
+	"Some of this work - Copyright (c) 2017 - 2018, ARM Ltd.",
 	NULL
 };
 

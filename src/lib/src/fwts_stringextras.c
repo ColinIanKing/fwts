@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2017 Canonical
+ * Copyright (C) 2010-2018 Canonical
  *
  * The following functions are derivative work from systemd, and
  * are covered by Copyright 2010 Lennart Poettering:

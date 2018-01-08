@@ -22,9 +22,15 @@
 
 #include <stddef.h>
 #include <inttypes.h>
+#include <sys/ioctl.h>
 
 #include "fwts_uefi.h"
 #include "sbkeydefs.h"
+
+#include "fwts_efi_runtime.h"
+#include "fwts_efi_module.h"
+
+static int fd;
 
 typedef void (*securebootcert_func)(fwts_framework *fw, fwts_uefi_var *var, char *varname);
 
@@ -32,13 +38,6 @@ typedef struct {
 	char *description;		/* UEFI var */
 	securebootcert_func	func;	/* Function to dump this variable */
 } securebootcert_info;
-
-typedef struct {
-	uint32_t	Data1;
-	uint16_t	Data2;
-	uint16_t	Data3;
-	uint8_t		Data4[8];
-} __attribute__ ((packed)) EFI_GUID;
 
 typedef struct _EFI_SIGNATURE_LIST {
 	EFI_GUID	SignatureType;
@@ -69,6 +68,11 @@ typedef struct _EFI_SIGNATURE_LIST {
 static uint8_t var_found;
 static bool securebooted = false;
 static bool deployed = false;
+
+static EFI_GUID global_guid = EFI_GLOBAL_VARIABLE;
+
+static uint16_t varauditmode[] = {'A', 'u', 'd', 'i', 't', 'M', 'o', 'd', 'e', '\0'};
+static uint16_t vardeploymode[] = {'D', 'e', 'p', 'l', 'o', 'y', 'e', 'd', 'M', 'o', 'd', 'e', '\0'};
 
 static bool compare_guid(EFI_GUID *guid1, uint8_t *guid2)
 {
@@ -429,6 +433,25 @@ static int securebootcert_init(fwts_framework *fw)
 		return FWTS_ABORTED;
 	}
 
+	if (fwts_lib_efi_runtime_load_module(fw) != FWTS_OK) {
+		fwts_log_info(fw, "Cannot load efi_runtime module. Aborted.");
+		return FWTS_ABORTED;
+	}
+
+	fd = fwts_lib_efi_runtime_open();
+	if (fd == -1) {
+		fwts_log_info(fw, "Cannot open EFI test driver. Aborted.");
+		return FWTS_ABORTED;
+	}
+
+	return FWTS_OK;
+}
+
+static int securebootcert_deinit(fwts_framework *fw)
+{
+	fwts_lib_efi_runtime_close(fd);
+	fwts_lib_efi_runtime_unload_module(fw);
+
 	return FWTS_OK;
 }
 
@@ -492,14 +515,108 @@ static int securebootcert_test1(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int securebootcert_setvar(
+	fwts_framework *fw,
+	const uint32_t attributes,
+	uint16_t *varname,
+	EFI_GUID *guid,
+	uint8_t *data)
+{
+	long ioret;
+	struct efi_setvariable setvariable;
+
+	uint64_t status;
+	uint64_t datasize = 1;
+
+	setvariable.VariableName = varname;
+	setvariable.VendorGuid = guid;
+	setvariable.Attributes = attributes;
+	setvariable.DataSize = datasize;
+	setvariable.Data = data;
+	setvariable.status = &status;
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (ioret == -1) {
+		if (status == EFI_OUT_OF_RESOURCES) {
+			fwts_uefi_print_status_info(fw, status);
+			fwts_skipped(fw,
+				"Run out of resources for SetVariable "
+				"UEFI runtime interface: cannot test.");
+			fwts_advice(fw,
+				"Firmware may reclaim some resources "
+				"after rebooting. Reboot and test "
+				"again may be helpful to continue "
+				"the test.");
+			return FWTS_SKIP;
+		}
+	}
+
+	if (status == EFI_SUCCESS) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"UEFISecurebooCertVar",
+			"Variable is ready only, return status of setvariable "
+			"should not EFI_SUCCESS.");
+	} else
+		fwts_passed(fw, "Variable read-only test passed.");
+	return FWTS_OK;
+}
+
+static int securebootcert_test2(fwts_framework *fw)
+{
+	int ret;
+	uint8_t data = 0;
+	static uint32_t attributes = FWTS_UEFI_VAR_NON_VOLATILE |
+					FWTS_UEFI_VAR_BOOTSERVICE_ACCESS |
+					FWTS_UEFI_VAR_RUNTIME_ACCESS;
+
+	if (!(var_found & VAR_AUDITMODE_FOUND)) {
+		fwts_skipped(fw,
+			"No AuditMode variable found, skip the varaible test.");
+		return FWTS_SKIP;
+	}
+
+	fwts_log_info(fw, "AuditMode variable read-only test, set to 0.");
+	ret = securebootcert_setvar(fw, attributes, varauditmode, &global_guid, &data);
+	if (ret != FWTS_OK)
+		return ret;
+
+	data = 1;
+	fwts_log_info(fw, "AuditMode variable read-only test, set to 1.");
+	ret = securebootcert_setvar(fw, attributes, varauditmode, &global_guid, &data);
+	if (ret != FWTS_OK)
+		return ret;
+
+	if (!(var_found & VAR_AUDITMODE_FOUND)) {
+		fwts_skipped(fw,
+			"No DeployedMode variable found, skip the varaible test.");
+		return FWTS_SKIP;
+	}
+
+	data = 0;
+	fwts_log_info(fw, "DeployedMode variable read-only test, set to 0.");
+	ret = securebootcert_setvar(fw, attributes, vardeploymode, &global_guid, &data);
+	if (ret != FWTS_OK)
+		return ret;
+
+	data = 1;
+	fwts_log_info(fw, "DeployedMode variable read-only test, set to 1.");
+	ret = securebootcert_setvar(fw, attributes, vardeploymode, &global_guid, &data);
+	if (ret != FWTS_OK)
+		return ret;
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test securebootcert_tests[] = {
 	{ securebootcert_test1, "UEFI secure boot test." },
+	{ securebootcert_test2, "UEFI secure boot variable test." },
 	{ NULL, NULL }
 };
 
 static fwts_framework_ops securebootcert_ops = {
 	.description = "UEFI secure boot test.",
 	.init        = securebootcert_init,
+	.deinit	     = securebootcert_deinit,
 	.minor_tests = securebootcert_tests
 };
 

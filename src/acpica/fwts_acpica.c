@@ -1363,4 +1363,10 @@ VOID_FUNC(AeTableOverride)
 VOID_FUNC(MpSaveGpioInfo)
 VOID_FUNC(MpSaveSerialInfo)
 
+/*
+ * We need this otherwise gcc 4.5 ends up with a linker failure
+ * when building with ACPI disabled and I have no idea why.
+ */
+unsigned char AcpiGbl_AbortLoopOnTimeout = FALSE;
+
 #endif

@@ -70,7 +70,7 @@ static int rsdp_sbbr_test1(fwts_framework *fw)
 	 * zero.
 	 */
 	static const char RSDP_SIGNATURE[] = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
-	bool signature_pass     = false;
+	bool signature_pass;
 	bool checksum_pass      = false;
 	bool rsdp_revision_pass = false;
 	bool rsdp_length_pass   = false;

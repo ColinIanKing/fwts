@@ -41,8 +41,6 @@ static int pptt_init(fwts_framework *fw)
 
 static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, bool *passed)
 {
-	uint32_t i;
-
 	fwts_log_info_verbatim(fw, "  Processor hierarchy node structure (Type 0):");
 	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
 	fwts_log_info_verbatim(fw, "    Length:                         0x%2.2" PRIx8, entry->header.length);
@@ -53,6 +51,8 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 	fwts_log_info_verbatim(fw, "    Number of Private Resources:    0x%8.8" PRIx32, entry->number_priv_resources);
 
 	if ((entry->header.length - sizeof(fwts_acpi_table_pptt_processor)) / 4 == entry->number_priv_resources) {
+		uint32_t i;
+
 		for (i = 0; i < entry->number_priv_resources; i++)
 			fwts_log_info_verbatim(fw, "    Private Resources[%d]:           0x%8.8" PRIx32, i, entry->private_resource[i]);
 	} else {

@@ -167,10 +167,11 @@ static int acpidump_test1(fwts_framework *fw)
 			acpi_dump_raw_table(fw, table);
 		} else {
 			/* Successfully disassembled, so parse */
+			fwts_list_link *line;
 
 			bool skip = false;
 			bool unknown = false;
-			fwts_list_link *line;
+
 			fwts_list_foreach(line, output) {
 				char *text = fwts_text_list_text(line);
 				bool ignore = (strstr(text, "Raw Table Data:") != NULL);

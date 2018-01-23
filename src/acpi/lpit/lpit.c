@@ -143,6 +143,7 @@ static int lpit_test1(fwts_framework *fw)
 	uint8_t *data;
 	bool passed = true;
 	uint32_t length;
+	uint16_t uid = 0, init_id = 0;
 	fwts_acpi_table_lpit *lpit = (fwts_acpi_table_lpit *)table->data;
 
 	if (table->length < sizeof(fwts_acpi_table_lpit)) {
@@ -162,6 +163,7 @@ static int lpit_test1(fwts_framework *fw)
 
 	/* Got enough data to be able to inspect the initial 2 x 32 bit words.. */
 	while (length > 8) {
+		fwts_acpi_table_lpit_c_state *lpi = (fwts_acpi_table_lpit_c_state *)data;
 		uint32_t *ptr = (uint32_t *)data;
 		uint32_t lpi_length = *(ptr + 1);
 
@@ -181,6 +183,27 @@ static int lpit_test1(fwts_framework *fw)
 		switch (*ptr) {
 		case 0x0:
 			lpit_check_type_0(fw, &length, &data, &passed);
+
+			/* check lpi->id starts from zero */
+			if (init_id == 0 && lpi->id != 0) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"LPITNativeCStateBadUID",
+					"Unique ID of Native C-state based LPI  "
+					"structure must start from zero");
+			} else
+				init_id = 1;
+
+			/* check lpi->id increases monotonically */
+			if (uid > lpi->id || (lpi->id - uid) > 1) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_CRITICAL,
+					"LPITNativeCStateBadUID",
+					"Unique ID of Native C-state based LPI  "
+					"structure must be a zero-based monotonically "
+					"increasing value");
+			}
+			uid = lpi->id;
 			break;
 		default:
 			passed = false;

@@ -1445,7 +1445,6 @@ static int madt_subtables(fwts_framework *fw)
 	while (length > (ssize_t)sizeof(fwts_acpi_madt_sub_table_header)) {
 		ssize_t skip = 0;
 		int len = 0;
-		bool passed = true;
 		int type;
 		int offset = 0;
 
@@ -1487,6 +1486,8 @@ static int madt_subtables(fwts_framework *fw)
 		}
 
 		if (!(fw->flags & FWTS_FLAG_TEST_SBBR)) {
+			bool passed = true;
+
 			/* verify that the length is what we expect */
 			if (len == SUBTABLE_VARIABLE) {
 				if (hdr->type == FWTS_ACPI_MADT_LOCAL_SAPIC) {

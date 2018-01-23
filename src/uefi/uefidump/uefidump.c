@@ -430,7 +430,6 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 		case FWTS_UEFI_USB_WWID_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len >= sizeof(fwts_uefi_usb_wwid_dev_path)) {
 				fwts_uefi_usb_wwid_dev_path *u = (fwts_uefi_usb_wwid_dev_path *)dev_path;
-				char *tmp;
 				uint16_t len = u->dev_path.length[0] | (((uint16_t)u->dev_path.length[1]) << 8);
 				path = uefidump_vprintf(path, "\\USBWWID(0x%" PRIx16 ",0x%" PRIx16 ",0x%" PRIx16,
 					u->interface_num, u->vendor_id, u->product_id);
@@ -443,6 +442,8 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				}
 				sz = ((ssize_t)len - sizeof(fwts_uefi_usb_wwid_dev_path)) / sizeof(uint16_t) + 1;
 				if ((sz > 0) && (sz <= 0xffff)) {
+					char *tmp;
+
 					tmp = malloc(sz);
 					if (tmp) {
 						fwts_uefi_str16_to_str(tmp, sz, u->serial_number);
@@ -555,8 +556,8 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 		case FWTS_UEFI_DNS_DEVICE_PATH_SUBTYPE:
 			if (dev_path_len > sizeof(fwts_uefi_dns_dev_path)) {
 				fwts_uefi_dns_dev_path *d = (fwts_uefi_dns_dev_path *)dev_path;
-				uint16_t len = d->dev_path.length[0] | (((uint16_t)d->dev_path.length[1]) << 8);
-				ssize_t i, sz = (ssize_t)len - sizeof(fwts_uefi_dns_dev_path);
+				const uint16_t len = d->dev_path.length[0] | (((uint16_t)d->dev_path.length[1]) << 8);
+				const ssize_t sz = (ssize_t)len - sizeof(fwts_uefi_dns_dev_path);
 				path = uefidump_vprintf(path, "\\DNS(0x%" PRIx8 ",", d->isipv6);
 
 				/*
@@ -565,6 +566,8 @@ static char *uefidump_build_dev_path(char *path, fwts_uefi_dev_path *dev_path, c
 				 *  length.
 				 */
 				if ((sz > 0) && (sz <= 0xffff)) {
+					ssize_t i;
+
 					/* dump one or more DNS server address */
 					for (i = 0; i < sz; i++)
 						path = uefidump_vprintf(path, "%02" PRIx8 , d->dns_addr[i]);

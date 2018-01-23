@@ -46,10 +46,11 @@ static int rasf_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_rasf *rasf = (fwts_acpi_table_rasf *) table->data;
 	bool passed = true;
-	uint8_t i;
 
 	fwts_log_info_verbatim(fw, "RASF (RAS Feature) Table:");
 	if (rasf->header.length == sizeof(fwts_acpi_table_rasf)) {
+		uint8_t i;
+
 		for (i = 0; i < 12; i++)
 			fwts_log_info_verbatim(fw, "  Channel Identifier [%2.2" PRId8 "]:   0x%2.2" PRIx8, i, rasf->platform_cc_id[i]);
 	} else {

@@ -69,7 +69,7 @@ int OPTIMIZE0 fwts_safe_memcpy(void *dst, const void *src, const size_t n)
 int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 {
 	static uint8_t buffer[256];
-	const uint8_t *ptr, *end = src + n;
+	const uint8_t *ptr, *end = (const uint8_t *)src + n;
 	uint8_t *bufptr;
 	const uint8_t *bufend = buffer + sizeof(buffer);
 
@@ -94,7 +94,7 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 }
 
 /*
- *  fwts_safe_memread()
+ *  fwts_safe_memread32()
  *	check we can safely read a region of memory. This catches
  *	SIGSEGV/SIGBUS errors and returns FWTS_ERROR if it is not
  *	readable or FWTS_OK if it's OK.
@@ -104,7 +104,7 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
 {
 	static uint32_t buffer[256];
-	const uint32_t *ptr, *end = src + n;
+	const uint32_t *ptr, *end = (uint32_t *)src + n;
 	uint32_t *bufptr;
 	const uint32_t *bufend = buffer + (sizeof(buffer) / sizeof(*buffer));
 

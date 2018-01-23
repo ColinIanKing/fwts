@@ -71,7 +71,6 @@ static ACPI_STATUS processor_handler(ACPI_HANDLE ObjHandle, uint32_t level, void
 {
 	ACPI_NAMESPACE_NODE *node = (ACPI_NAMESPACE_NODE *)ObjHandle;
 	ACPI_NAMESPACE_NODE *parent = node->Parent;
-	int error_count;
 
 	/* Unused parameters trigger errors. */
 	FWTS_UNUSED(level);
@@ -79,6 +78,8 @@ static ACPI_STATUS processor_handler(ACPI_HANDLE ObjHandle, uint32_t level, void
 
 	/* If the processor device is not located under _SB_, increment the error_count. */
 	if (strncmp(parent->Name.Ascii, "_SB_", sizeof(int32_t)) != 0) {
+		int error_count;
+
 		error_count = *((int *)returnvalue);
 		error_count++;
 		*((int *)returnvalue) = error_count;
@@ -123,9 +124,6 @@ static int acpi_table_sbbr_check_test2(fwts_framework *fw)
 
 	for (i = 0; ; i++) {
 		fwts_acpi_table_info *info;
-		fwts_acpi_table_header *hdr;
-		char name[TABLE_NAME_LEN];
-		bool passed = false;
 
 		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
 			break;
@@ -134,7 +132,11 @@ static int acpi_table_sbbr_check_test2(fwts_framework *fw)
 
 		checked = true;
 		if (!strcmp(info->name, "DSDT") ||
-			!strcmp(info->name, "SSDT")) {
+		    !strcmp(info->name, "SSDT")) {
+			fwts_acpi_table_header *hdr;
+			char name[TABLE_NAME_LEN];
+			bool passed = false;
+
 			if (!strcmp(info->name, "DSDT")) {
 				dsdt_checked = true;
 			}
@@ -228,9 +230,10 @@ fwts_acpi_table_info *sbbr_search_acpi_tables(fwts_framework *fw, const char *si
 static int acpi_table_sbbr_check_test3(fwts_framework *fw)
 {
 	uint32_t i;
-	fwts_acpi_table_info *info;
 
 	for (i = 0; recommended_acpi_tables[i] != NULL; i++) {
+		fwts_acpi_table_info *info;
+
 		info = sbbr_search_acpi_tables(fw, recommended_acpi_tables[i]);
 		if (info == NULL) {
 			fwts_warning(fw, "SBBR Recommended ACPI table \"%s\" not found.",

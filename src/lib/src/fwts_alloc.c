@@ -239,7 +239,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 	void *last_addr_end = NULL;
 	void *first_addr_start = NULL;
 	void *ret = MAP_FAILED;
-	long pos, prev_pos = 0;
+	long prev_pos = 0;
 
 	if (requested_size == 0)	/* Illegal */
 		return MAP_FAILED;
@@ -254,6 +254,7 @@ static void *fwts_low_mmap(const size_t requested_size)
 
 	while (!feof(fp)) {
 		int n;
+		long pos;
 
 		n = fscanf(fp, "%p-%p %*s %*x %*s %*u %1023s\n",
 		    &addr_start, &addr_end, pathname);

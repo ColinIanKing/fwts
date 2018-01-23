@@ -420,7 +420,7 @@ static int fwts_battery_set_trip_point_sys_fs(
 				fwts_log_info(fw, "Battery %s present but undersupported - no state present.", entry->d_name);
 			} else {
 				char buffer[512];
-				sprintf(buffer, "%d", trip_point * 1000);
+				sprintf(buffer, "%" PRIu32, trip_point * 1000);
 				fputs(buffer, fp);
 				(void)fclose(fp);
 			}

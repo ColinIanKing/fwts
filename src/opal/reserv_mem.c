@@ -57,9 +57,7 @@ static int get_config(fwts_framework *fw,
 {
 	FILE *file;
 	char *p;
-	uint64_t value;
 	char line[MAXBUF];
-	int i = 0;
 
 	file = fopen(filename, "r");
 	if (!file) {
@@ -71,6 +69,7 @@ static int get_config(fwts_framework *fw,
 
 	while (fgets(line, sizeof(line), file) != NULL) {
 		char *cfline;
+		uint64_t value;
 
 		cfline = strstr((char *)line, DELIM);
 		cfline = cfline + strlen(DELIM);
@@ -82,8 +81,6 @@ static int get_config(fwts_framework *fw,
 			configstruct->occ_common = value;
 		else if (strstr(line, "slw-image"))
 			configstruct->slw = value;
-
-		i++;
 	}
 	fclose(file);
 

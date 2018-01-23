@@ -92,7 +92,7 @@ static int get_config(fwts_framework *fw,
 
 static char *make_message(const char *fmt, ...)
 {
-	char *p = NULL;
+	char *p;
 	const size_t size = 128;
 	va_list ap;
 

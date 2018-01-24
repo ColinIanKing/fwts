@@ -4,7 +4,7 @@ lpit            Test 1 of 1: LPIT Low Power Idle Table test.
 lpit            Native C-state based LPI structure:
 lpit              Type:                     0x00000000
 lpit              Length:                   0x00000038
-lpit              ID:                       0xdead
+lpit              ID:                       0x0000
 lpit              Reserved:                 0x0000
 lpit              Flags:                    0x00000000
 lpit              Entry Trigger:
@@ -26,7 +26,7 @@ lpit
 lpit            Native C-state based LPI structure:
 lpit              Type:                     0x00000000
 lpit              Length:                   0x00000038
-lpit              ID:                       0xbeef
+lpit              ID:                       0x0001
 lpit              Reserved:                 0x0000
 lpit              Flags:                    0x00000002
 lpit              Entry Trigger:

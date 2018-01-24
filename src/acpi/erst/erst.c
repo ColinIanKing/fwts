@@ -68,7 +68,7 @@ static int erst_test1(fwts_framework *fw)
 			table->length);
 		goto done;
 	}
-	total_length = (sizeof(fwts_acpi_serialization_instruction_entries) *
+	total_length = ((uint64_t)sizeof(fwts_acpi_serialization_instruction_entries) *
 		erst->instruction_entry_count) + sizeof(fwts_acpi_table_erst);
 	if (total_length > table->length) {
 		passed = false;

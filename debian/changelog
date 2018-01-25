@@ -1,3 +1,35 @@
+fwts (18.01.00-0ubuntu1) bionic; urgency=low
+
+  [Alex Hung]
+  * acpi: LPIT: check for monotonically increasing UID
+  * fwts-test: sync up with changes in lpit test
+
+  [Colin Ian King]
+  * Treewide: update copyright year to 2018
+  * fwts-test: arg-help: sync up with copyright year changes
+  * ACPICA: Update to version 20180105
+  * acpica: fix linking issues when building non ACPI builds
+  * lib: fwts-battery: use PRIu32 format specifier, fixes cppcheck warning
+  * acpi: acpidump: move declaration to before statements, add blank lines
+  * lib: fwts_safe_mem: don't perform void * pointer arithmetic, fix 32 bit end
+  * lib: fwts_alloc: move 'pos' to a deeper scope, minor style change
+  * opal: reserve_mem: remove redundant initialization of pointer p
+  * opal: reserve_mem: remove unused variable 'i' and move scope of variable
+    'value'
+  * sbbr: rsdp: remove redundant initialization of boolean 'signature_pass'
+  * acpi: madt: move scope of boolean 'passed'
+  * acpi: pptt: move scope of index variable 'i'.
+  * acpi: rasf: move scope of index variable 'i'
+  * sbbr: acpitables: clean up code, move scope of some variables
+  * acpi: erst: cast size to uint64_t to clean up static analysis warning
+  * uefi: uefidump: clean up some static analysis warnings
+
+  [Ivan Hu]
+  * securebootcert: add checking read-only for the AuditMode and DeployedMode
+  * securebootcert: move to UNSAFE category
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 25 Jan 2018 13:44:38 +0800
+
 fwts (17.12.00-0ubuntu1) bionic; urgency=low
 
   [Alex Hung]

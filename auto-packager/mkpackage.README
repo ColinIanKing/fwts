@@ -26,7 +26,7 @@ collect up one-line-summary of changes, add them to debian/changelog:
 
 e.g.
 
-fwts (0.25.04) quantal; urgency=low
+fwts (0.25.04) quantal; urgency=medium
 
   [Colin Ian King]
   * apci: acpitables: only check CMOS in BOOT table from firmware tables

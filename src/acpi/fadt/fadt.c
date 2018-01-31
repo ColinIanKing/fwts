@@ -271,28 +271,7 @@ static void acpi_table_check_fadt_firmware_ctrl(fwts_framework *fw)
 				    "reduced mode is not set. ");
 		}
 
-	}
-
-	if ((fadt->firmware_control != 0 && fadt->x_firmware_ctrl == 0) ||
-	    (fadt->firmware_control == 0 && fadt->x_firmware_ctrl != 0)) {
-		fwts_passed(fw,
-			    "Only one of FIRMWARE_CTRL and X_FIRMWARE_CTRL "
-			    "is non-zero.");
-	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "FADTFACSBothSet",
-			    "Both 32-bit FIRMWARE_CTRL and 64-bit "
-			    "X_FIRMWARE_CTRL pointers to the FACS are "
-			    "set but only one is allowed.");
-		fwts_advice(fw,
-			    "Having both FACS pointers set is ambiguous; "
-			    "there is no way to determine which one is "
-			    "the correct address.  The kernel workaround "
-			    "is to always use the 64-bit X_FIRMWARE_CTRL.");
-	}
-
-
-	if (fadt->firmware_control != 0 && fadt->x_firmware_ctrl != 0) {
+	} else 	if (fadt->firmware_control != 0 && fadt->x_firmware_ctrl != 0) {
 		if ((uint64_t)fadt->firmware_control == fadt->x_firmware_ctrl) {
 			fwts_passed(fw,
 				    "Both FIRMWARE_CTRL and X_FIRMWARE_CTRL "
@@ -326,6 +305,10 @@ static void acpi_table_check_fadt_firmware_ctrl(fwts_framework *fw)
 				    "64-bit X_FIRMWARE_CTRL pointer to the "
 				    "FACS. ");
 		}
+	} else { /* only one of firmware_control/x_firmware_ctrl is 0 */
+		fwts_passed(fw,
+			    "Only one of FIRMWARE_CTRL and X_FIRMWARE_CTRL "
+			    "is non-zero.");
 	}
 }
 

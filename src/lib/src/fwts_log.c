@@ -139,7 +139,7 @@ char *fwts_log_field_to_str_full(const fwts_log_field field)
 char *fwts_log_field_to_str_upper(const fwts_log_field field)
 {
 	static char str[16];
-	char *ptr1 = str;
+	char *ptr1;
 	char *ptr2 = fwts_log_field_to_str_full(field);
 
 	for (ptr1 = str; *ptr2; ptr1++, ptr2++)

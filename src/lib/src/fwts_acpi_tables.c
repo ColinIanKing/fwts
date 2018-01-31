@@ -378,7 +378,7 @@ static int fwts_acpi_handle_fadt(
 	const fwts_acpi_table_provenance provenance)
 {
 	static uint64_t	facs_last_phys_addr;	/* default to zero */
-	int result = FWTS_ERROR;
+	int result;
 
 	/*
 	 *  The FADT handling may occur twice if it appears

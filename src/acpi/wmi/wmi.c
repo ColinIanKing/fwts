@@ -143,7 +143,7 @@ static int wmi_deinit(fwts_framework *fw)
  */
 static fwts_wmi_known_guid *wmi_find_guid(char *guid)
 {
-	fwts_wmi_known_guid *info = fwts_wmi_known_guids;
+	fwts_wmi_known_guid *info;
 
 	for (info = fwts_wmi_known_guids; info->guid != NULL; info++)
 		if (strcmp(info->guid, guid) == 0)

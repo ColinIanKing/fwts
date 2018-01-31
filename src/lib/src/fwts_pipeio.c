@@ -333,7 +333,7 @@ int fwts_exec(const char *command, int *status)
 int fwts_exec2(const char *command, char **output)
 {
 	pid_t   pid;
-	int     status = -1, in_fd, out_fd;
+	int     in_fd, out_fd;
 	ssize_t out_len;
 
 	if (fwts_pipe_open_rw(command, &pid,
@@ -347,9 +347,7 @@ int fwts_exec2(const char *command, char **output)
 		return -1;
 	}
 
-	status = fwts_pipe_close2(in_fd, out_fd, pid);
-
-	return status;
+	return fwts_pipe_close2(in_fd, out_fd, pid);
 }
 
 /*

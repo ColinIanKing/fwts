@@ -201,7 +201,7 @@ char *fwts_log_level_to_str(const fwts_log_level level)
  */
 void fwts_log_print_fields(void)
 {
-	fwts_log_field field = 1;
+	fwts_log_field field;
 
 	printf("Available fields: ");
 	for (field = 1; ; field <<= 1) {

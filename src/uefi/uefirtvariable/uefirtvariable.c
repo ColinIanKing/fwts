@@ -885,7 +885,7 @@ static int setvariable_insertvariable(
 
 	if (ioret == -1) {
 		if ((status == EFI_INVALID_PARAMETER) &&
-			((attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
+			((attributes & FWTS_UEFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS) ||
 			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
 			(attributes & FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
 			fwts_uefi_print_status_info(fw, status);
@@ -1045,7 +1045,7 @@ static int setvariable_invalidattr(
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	if ((status == EFI_SUCCESS) && (ioret != -1)) {
-		if ((attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) &&
+		if ((attributes & FWTS_UEFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS) &&
 			(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) &&
 			(status != EFI_INVALID_PARAMETER)) {
 			fwts_warning(fw,
@@ -1344,11 +1344,11 @@ static int setvariable_test7(fwts_framework *fw)
 	uint8_t datadiff = 0;
 	uint32_t attr;
 
-	attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS;
+	attr = attributes | FWTS_UEFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS | FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS;
 	ret = setvariable_invalidattr(fw, attr, datasize, variablenametest, &gtestguid1, datadiff);
 	if (ret == FWTS_ERROR) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "UEFIRuntimeSetVariable",
-			"Successfully set variable with both authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+			"Successfully set variable with both authenticated (EFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS "
 			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) attributes are set, expected fail.");
 		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);
 		return FWTS_ERROR;
@@ -1358,7 +1358,7 @@ static int setvariable_test7(fwts_framework *fw)
 		&gtestguid1) == FWTS_ERROR) {
 		fwts_log_info(fw,
 			"Get the variable which is set by SetVariable with both "
-			"authenticated (EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS "
+			"authenticated (EFI_VARIABLE_ENHANCED_AUTHENTICATED_ACCESS "
 			"EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) "
 			"attributes are set %" PRIu32 " , test failed.", attr);
 		setvariable_insertvariable(fw, 0, datasize, variablenametest, &gtestguid1, datadiff);

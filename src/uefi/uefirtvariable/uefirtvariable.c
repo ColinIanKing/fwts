@@ -1367,6 +1367,36 @@ static int setvariable_test7(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+static int setvariable_test8(fwts_framework *fw)
+{
+	long ioret;
+	struct efi_setvariable setvariable;
+	uint32_t attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS;
+	uint64_t datasize = 1;
+	uint8_t data = 1;
+	uint64_t status;
+
+	setvariable.VariableName = variablenametest;
+	setvariable.VendorGuid = &gtestguid1;
+	setvariable.Attributes = attr;
+	setvariable.DataSize = datasize;
+	setvariable.Data = &data;
+	setvariable.status = &status;
+
+	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
+
+	if (status == EFI_UNSUPPORTED && ioret == -1)
+		return FWTS_OK;
+
+	fwts_warning(fw,
+		"EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS is deprecated (UEFI 2.7) "
+		"and should not be used. Platforms should return EFI_UNSUPPORTED "
+		"if a caller to SetVariable() specifies this attribute.");
+	fwts_uefi_print_status_info(fw, status);
+
+	return FWTS_ERROR;
+}
+
 static int do_queryvariableinfo(
 	uint64_t *status,
 	uint64_t *remvarstoragesize,
@@ -1576,6 +1606,12 @@ static int uefirtvariable_test3(fwts_framework *fw)
 	if (ret != FWTS_OK)
 		return ret;
 	fwts_passed(fw, "Testing SetVariable with both Authenticated Attributes set passed.");
+
+	fwts_log_info(fw, "Testing SetVariable with EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS Attributes.");
+	ret = setvariable_test8(fw);
+	if (ret != FWTS_OK)
+		return ret;
+	fwts_passed(fw, "Testing SetVariable with with EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS Attributes passed.");
 
 	return FWTS_OK;
 }

@@ -74,7 +74,17 @@ static void iort_node_check(
 {
 	fwts_acpi_table_iort_node *node = (fwts_acpi_table_iort_node *)data;
 
-	if (node->revision != 0) {
+	if (node->type == 1 || node->type == 3 || node->type == 4) {
+		if (node->revision > 1) {
+			*passed = false;
+			fwts_failed(fw, LOG_LEVEL_LOW,
+				"IORTNodeRevisionInvalid",
+				"IORT Node Revision field is 0x%2.2" PRIx8
+				" and should be zero or one.",
+				node->revision);
+		}
+
+	} else if (node->revision != 0) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"IORTNodeRevisionNonZero",

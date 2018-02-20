@@ -75,11 +75,13 @@ static int acpiinfo_test1(fwts_framework *fw)
 		int version;
 		int yearmonth;
 
-                fwts_chop_newline(str);
+		fwts_chop_newline(str);
 
 		sscanf(str, "%6d", &yearmonth);
 
-		if (yearmonth > 201110) {
+		if (yearmonth > 201505) {
+			version = 6;
+		} else if (yearmonth > 201110) {
 			version = 5;
 		} else if (yearmonth > 200906) {
 			version = 4;
@@ -89,9 +91,9 @@ static int acpiinfo_test1(fwts_framework *fw)
 			version = 2;
 		}
 
-                fwts_log_info(fw, "Kernel ACPICA driver version: %s, supports ACPI %d.0", str, version);
-                free(str);
-        }
+		fwts_log_info(fw, "Kernel ACPICA driver version: %s, supports ACPI %d.0", str, version);
+		free(str);
+	}
 
 	fwts_infoonly(fw);
 

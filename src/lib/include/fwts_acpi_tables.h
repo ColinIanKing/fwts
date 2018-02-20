@@ -58,6 +58,8 @@ void fwts_acpi_reserved_bits_check(fwts_framework *fw, const char *table, const 
 void fwts_acpi_reserved_type_check(fwts_framework *fw, const char *table, uint8_t value, uint8_t min, uint8_t reserved, bool *passed);
 bool fwts_acpi_subtable_length_check(fwts_framework *fw, const char *table, uint8_t subtable_type, uint32_t subtable_length, uint32_t size);
 
+uint32_t fwts_get_acpi_version(fwts_framework *fw);
+
 #endif
 
 #endif

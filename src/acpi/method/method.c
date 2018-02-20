@@ -2896,8 +2896,10 @@ static void method_test_TSD_return(
 	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
 		return;
 
-	if (fwts_method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
-		return;
+	if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_62) {
+		if (fwts_method_package_count_equal(fw, name, "_TSD", obj, 1) != FWTS_OK)
+			return;
+	}
 
 	/* Could be one or more packages */
 	for (i = 0; i < obj->Package.Count; i++) {

@@ -84,6 +84,17 @@
 #define FWTS_GAS_ADDR_SPACE_ID_PCC		(0x0a)
 #define FWTS_GAS_ADDR_SPACE_ID_FFH		(0x7f)
 
+#define FWTS_ACPI_VERSION_NEXT	(0x700)
+#define FWTS_ACPI_VERSION_62 	(0x620)
+#define FWTS_ACPI_VERSION_61	(0x610)
+#define FWTS_ACPI_VERSION_60	(0x600)
+#define FWTS_ACPI_VERSION_51	(0x510)
+#define FWTS_ACPI_VERSION_50	(0x500)
+#define FWTS_ACPI_VERSION_40	(0x400)
+#define FWTS_ACPI_VERSION_30	(0x300)
+#define FWTS_ACPI_VERSION_20	(0x200)
+#define FWTS_ACPI_VERSION_10	(0x100)
+
 #include "fwts_types.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"

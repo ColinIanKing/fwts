@@ -1532,4 +1532,38 @@ bool fwts_acpi_subtable_length_check(
 	return true;
 }
 
+static uint32_t acpi_version;
+/*
+ *  fwts_get_acpi_version()
+ * 	get acpi version from facp
+ */
+uint32_t fwts_get_acpi_version(fwts_framework *fw)
+{
+	fwts_acpi_table_fadt *fadt;
+	fwts_acpi_table_info *table;
+
+	if (acpi_version != 0)
+		return acpi_version;
+
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK) {
+		fwts_log_error(fw, "Cannot read ACPI table FACP.");
+		return 0;
+	}
+
+	if (table == NULL) {
+		fwts_log_error(fw, "ACPI table FACP does not exist!");
+		return 0;
+	}
+
+	fadt = (fwts_acpi_table_fadt *) table->data;
+	acpi_version = (fadt->header.revision << 8) + fadt->minor_version;
+
+	/* check FACP returns an invalid value */
+	if (acpi_version > FWTS_ACPI_VERSION_NEXT ||
+	    acpi_version < FWTS_ACPI_VERSION_10)
+		return 0;
+
+	return acpi_version;
+}
+
 #endif

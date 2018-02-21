@@ -111,7 +111,7 @@ static int spcr_test1(fwts_framework *fw)
 		str = "ARM PL011 UART";
 		break;
 	case 0x02:
-	case 0x04 ... 0x09:
+	case 0x04 ... 0x0c:
 		str = "Reserved (Do not Use)";
 		reserved = true;
 		break;

@@ -55,8 +55,8 @@ iort              ID Count:                 0x00000002
 iort              Output Base:              0x00000003
 iort              Output Reference:         0x88888888
 iort              Flags:                    0x00000001
-iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
-iort            Revision field is 0x02 and should be zero.
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0x02 and should be zero or one.
 iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
 iort            Reserved field must be zero, got 0x0000f001 instead
 iort            FAILED [HIGH] IORTNamedComponentNodeFlagsNonZero: Test 1,
@@ -160,8 +160,8 @@ iort              GSIV:                     0xf0008040
 iort              Interrupt Flags:          0x00000092
 iort              GSIV:                     0xf0008000
 iort              Interrupt Flags:          0x00000004
-iort            FAILED [LOW] IORTNodeRevisionNonZero: Test 1, IORT Node
-iort            Revision field is 0xa0 and should be zero.
+iort            FAILED [LOW] IORTNodeRevisionInvalid: Test 1, IORT Node
+iort            Revision field is 0xa0 and should be zero or one.
 iort            FAILED [MEDIUM] IORTReservedNonZero: Test 1, IORT Node
 iort            Reserved field must be zero, got 0x00008100 instead
 iort            FAILED [HIGH] IORTReservedBitsNonZero: Test 1, IORT

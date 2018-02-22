@@ -5554,17 +5554,29 @@ static void method_test_WAK_return(
 	void *private)
 {
 	FWTS_UNUSED(private);
+	FWTS_UNUSED(buf);
 
-	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
-		return;
+	switch (obj->Type) {
+	case ACPI_TYPE_PACKAGE:
+		if (fwts_method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
+			return;
 
-	if (fwts_method_package_count_equal(fw, name, "_WAK", obj, 2) != FWTS_OK)
-		return;
+		if (fwts_method_package_elements_all_type(fw, name, "_WAK", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+			return;
 
-	if (fwts_method_package_elements_all_type(fw, name, "_WAK", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
-		return;
-
-	fwts_method_passed_sane(fw, name, "package");
+		fwts_method_passed_sane(fw, name, "package");
+		break;
+	case ACPI_TYPE_INTEGER:
+		fwts_warning(fw, "In ACPI spec, _WAK shall return a package "
+				 "containing two integers; however, Linux "
+				 "also accepts an integer for legacy reasons.");
+		fwts_method_passed_sane(fw, name, "integer");
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "MethodReturnBadType",
+			"%s did not return a package or an integer.", name);
+		break;
+	}
 }
 
 static int method_test_WAK(fwts_framework *fw)

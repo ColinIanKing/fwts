@@ -1,3 +1,37 @@
+fwts (18.02.00-0ubuntu1) bionic; urgency=medium
+
+  [Alex Hung]
+  * acpi: acpiinfo: add acpi 6 to acpiinfo test
+  * acpi: method: check one element in _TSD only for acpi 6.2+
+  * acpi: spcr: update interface types based on DBG2
+  * fwts-test: sync up with revision update in 9da9d5a5
+  * acpi: method: allow _WAK to return an integer
+
+  [Colin Ian King]
+  * mkpackage.README: change urgency level to medium
+  * lib: fwts_log: remove redundant initialization of ptr1
+  * acpi: wmi: remove redundant initialization of 'info'
+  * lib: fwts_log: remove redundant initialization of 'field'
+  * lib: fwts_pipeio: remove variable status
+  * lib: fwts_acpi_tables: remove redundant initialization to 'result'
+  * ACPICA: Update to version 20180209
+  * fwts-test/syntaxcheck-0001: sync up output with current ACPICA
+
+  [Deb McLemore]
+  * README: Add dependencies per Platform
+
+  [Ivan Hu]
+  * auto-packager: mkpackage.sh: remove zesty
+  * uefirtvariable: modify both authenticated attributes setting test
+  * uefirtvariable: add test for EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS
+    attribute
+
+  [Jeffrey Hugo]
+  * acpi: fadt: Fix FACS checking
+  * acpi: iort: Update revision checking
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 27 Feb 2018 10:53:06 +0800
+
 fwts (18.01.00-0ubuntu1) bionic; urgency=low
 
   [Alex Hung]

@@ -246,6 +246,10 @@ static const fwts_chassis_type_map fwts_dmi_chassis_type[] = {
 	{ "Tablet",		FWTS_SMBIOS_CHASSIS_TABLET },
 	{ "Convertible",	FWTS_SMBIOS_CHASSIS_CONVERTIBLE },
 	{ "Detachable",		FWTS_SMBIOS_CHASSIS_DETACHABLE },
+	{ "IoT Gateway",	FWTS_SMBIOS_CHASSIS_IOT_GATEWAY },
+	{ "Embedded PC",	FWTS_SMBIOS_CHASSIS_EMBEDDED_PC },
+	{ "Mini PC",		FWTS_SMBIOS_CHASSIS_MINI_PC },
+	{ "Stick PC",		FWTS_SMBIOS_CHASSIS_STICK_PC },
 };
 
 /* Remapping table from buggy version numbers to correct values */

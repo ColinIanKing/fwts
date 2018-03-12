@@ -5163,7 +5163,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
   },
   {
    "compare_mode": "regex",
-   "log_level": "LOG_LEVEL_HIGH",
+   "log_level": "LOG_LEVEL_CRITICAL",
    "pattern": "ACPI Error.*Namespace lookup failure, AE_ALREADY_EXISTS",
    "advice": "",
    "label": "KlogAcpiNamespaceLookupFailure"

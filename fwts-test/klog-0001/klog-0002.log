@@ -5,7 +5,7 @@ summary
 summary         Test Failure Summary
 summary         ==========================================================
 summary         
-summary         Critical failures: 23
+summary         Critical failures: 42
 summary          klog: CRITICAL Kernel message: [ 0.000000] ACPI Error: A valid RSDP was not found (20090903/tbxfroot-219)
 summary          klog: CRITICAL Kernel message: [ 0.000000] ACPI Error: A valid RSDP was not found (20100428/tbxfroot-219)
 summary          klog: CRITICAL Kernel message: [ 0.000000] ACPI Error: A valid RSDP was not found (20110112/tbxfroot-219)
@@ -23,14 +23,33 @@ summary          klog: CRITICAL Kernel message: [ 0.042302] ACPI Warning: Detect
 summary          klog: CRITICAL Kernel message: [ 0.042311] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x007F (20090903/psloop-522)
 summary          klog: CRITICAL Kernel message: [ 0.042322] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x007B] at table offset 0x0080 (20090903/psloop-522)
 summary          klog: CRITICAL Kernel message: [ 0.044066] ACPI Warning: Detected an unsupported executable opcode at module-level: [0x0070] at table offset 0x678F (20100428/psloop-526)
+summary          klog: CRITICAL Kernel message: [ 0.192146] ACPI Error (dswload-0781): [_PSW] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 0.213084] ACPI Error (dsfield-0143): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: CRITICAL Kernel message: [ 0.296054] [Firmware Bug]: Invalid critical threshold (0)
+summary          klog: CRITICAL Kernel message: [ 0.329373] ACPI Error (dsfield-0143): [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 0.362606] ACPI Error (dsfield-0487): [SMIC] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 0.362870] ACPI Error (dsfield-0140): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 0.420210] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+summary          klog: CRITICAL Kernel message: [ 0.461767] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+summary          klog: CRITICAL Kernel message: [ 0.492648] ACPI Error (dswload-0781): [PRID] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 0.612793] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
+summary          klog: CRITICAL Kernel message: [ 0.674920] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
+summary          klog: CRITICAL Kernel message: [ 0.743525] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
 summary          klog: CRITICAL Kernel message: [ 0.788418] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88030a048b40), AE_AML_BUFFER_LIMIT
 summary          klog: CRITICAL Kernel message: [ 1.125427] [Firmware Bug]: No valid trip found
+summary          klog: CRITICAL Kernel message: [ 1.214748] ACPI Error: [_T_1] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
 summary          klog: CRITICAL Kernel message: [ 1.336148] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88012b647200), AE_AML_BUFFER_LIMIT
 summary          klog: CRITICAL Kernel message: [ 1.371180] ACPI Error (psparse-0537): Method parse/execution failed [_SB_._OSC] (Node ffff88044b85e4a0), AE_AML_BUFFER_LIMIT
+summary          klog: CRITICAL Kernel message: [ 1.861558] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+summary          klog: CRITICAL Kernel message: [ 2.222353] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+summary          klog: CRITICAL Kernel message: [ 2.280398] ACPI Error (dswload-0781): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
+summary          klog: CRITICAL Kernel message: [ 2.324547] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
 summary          klog: CRITICAL Kernel message: [ 2.949716] ACPI Error: Method parse/execution failed [_SB_._OSC] (Node ffff880297016ca8), AE_AML_BUFFER_LIMIT (20110112/psparse-536)
+summary          klog: CRITICAL Kernel message: [ 6.732287] ACPI Error: [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+summary          klog: CRITICAL Kernel message: [ 6.773266] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20101013/dsfield-143)
+summary          klog: CRITICAL Kernel message: [ 16.942589] ACPI Error (dswload-0802): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
 summary         
-summary         High failures: 1220
+summary         High failures: 1201
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008018/0000000000008028, using 32 (20090903/tbfadt-427)
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 00008020/0000000000008028, using 32 (20090903/tbfadt-427)
 summary          klog: HIGH Kernel message: [ 0.000000] ACPI Error: 32/64X address mismatch in Gpe0Block: 0x00008020/0x0000000000008028, using 32 (20110112/tbfadt-427)
@@ -384,7 +403,6 @@ summary          klog: HIGH Kernel message: [ 0.189466] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.189515] ACPI Error (psargs-0359): [CVCL] Namespace lookup failure, AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.189522] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPCB.DIGI._STA] (Node f702a390), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.191906] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c098ff6c), AE_NOT_FOUND
-summary          klog: HIGH Kernel message: [ 0.192146] ACPI Error (dswload-0781): [_PSW] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.192182] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08ce7dc), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.193750] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c08ce7dc), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.194554] ACPI Error: Method parse/execution failed [_PR_.CPU1._PDC] (Node f5821150), AE_INVALID_TABLE_LENGTH (20110112/psparse-536)
@@ -400,7 +418,6 @@ summary          klog: HIGH Kernel message: [ 0.211904] ACPI Error: No handler f
 summary          klog: HIGH Kernel message: [ 0.211928] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701fd08), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.211938] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.SBRG.EC0_._REG] (Node ee423708), AE_NOT_EXIST
 summary          klog: HIGH Kernel message: [ 0.212815] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f7424eb8), AE_NOT_FOUND (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 0.213084] ACPI Error (dsfield-0143): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.213100] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7014ca8), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.213827] ACPI Warning: Package List length (0xC) larger than NumElements count (0x3), truncated
 summary          klog: HIGH Kernel message: [ 0.217060] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node dec13ca8), AE_ALREADY_EXISTS
@@ -517,7 +534,6 @@ summary          klog: HIGH Kernel message: [ 0.325396] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.325630] ACPI Error: Could not enable SleepButton event (20100428/evxfevnt-202)
 summary          klog: HIGH Kernel message: [ 0.325636] ACPI Warning: Could not enable fixed event 0x3 (20100428/evxface-146)
 summary          klog: HIGH Kernel message: [ 0.329218] ACPI Warning for _SB_.PCI0._OSC: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
-summary          klog: HIGH Kernel message: [ 0.329373] ACPI Error (dsfield-0143): [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.329378] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88012b63d760), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.330488] ACPI Error: No handler for Region [SACS] (ffff88011bf101f8) [PCI_Config] (20090903/evregion-319)
 summary          klog: HIGH Kernel message: [ 0.330496] ACPI Error (psparse-0537): Method parse/execution failed [PRID.P_D0._STA] (Node ffff88011bf0d360), AE_NOT_EXIST
@@ -587,10 +603,8 @@ summary          klog: HIGH Kernel message: [ 0.359183] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.361596] ACPI Error: ACPI path has too many parent prefixes (^) - reached beyond root node (20100428/nsaccess-429)
 summary          klog: HIGH Kernel message: [ 0.362481] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c091bffc), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.362557] ACPI Error (psparse-0537): Method parse/execution failed [] (Node c091bffc), AE_ALREADY_EXISTS
-summary          klog: HIGH Kernel message: [ 0.362606] ACPI Error (dsfield-0487): [SMIC] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.362751] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f40255d0), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.362859] [Firmware Bug]: ACPI: BIOS _OSI(Linux) query honored via cmdline
-summary          klog: HIGH Kernel message: [ 0.362870] ACPI Error (dsfield-0140): [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.362886] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f7014a80), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.363488] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._PDC] (Node ffff880227048f60), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.364356] ACPI Warning: For _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
@@ -620,7 +634,6 @@ summary          klog: HIGH Kernel message: [ 0.406016] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.406038] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.ADP0._PSR] (Node ffff88013ba3c560), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.408529] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f4c285b8), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.415975] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found [NULL Object Descriptor], expected Reference (20090903/nspredef-1012)
-summary          klog: HIGH Kernel message: [ 0.420210] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
 summary          klog: HIGH Kernel message: [ 0.420218] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88022b749b18), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.420241] ACPI Error: Field [I9MN] at 544 exceeds Buffer [IORT] size 464 (bits) (20100428/dsopcode-597)
 summary          klog: HIGH Kernel message: [ 0.420248] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC0.PMIO._CRS] (Node ffff88013142fac0), AE_AML_BUFFER_LIMIT
@@ -642,7 +655,6 @@ summary          klog: HIGH Kernel message: [ 0.453111] ACPI Warning for _SB_.BA
 summary          klog: HIGH Kernel message: [ 0.454555] ACPI Warning for _PR_.CPU0._PSS: Return Package type mismatch at index 3 - found Integer, expected Package (20100428/nspredef-1059)
 summary          klog: HIGH Kernel message: [ 0.454838] ACPI Warning for _PR_.CPU1._PSS: Return Package type mismatch at index 3 - found Integer, expected Package (20100428/nspredef-1059)
 summary          klog: HIGH Kernel message: [ 0.460622] ACPI Warning: For _SB_.PCI0.P32_._PRT: Return Package has no elements (empty) (20110112/nspredef-456)
-summary          klog: HIGH Kernel message: [ 0.461767] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
 summary          klog: HIGH Kernel message: [ 0.461793] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003cdb0f00), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.468216] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU1._CST] (Node ffff88007c5cc380), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.468859] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003f1afdc0), AE_ALREADY_EXISTS
@@ -657,7 +669,6 @@ summary          klog: HIGH Kernel message: [ 0.484974] ACPI Error: Method parse
 summary          klog: HIGH Kernel message: [ 0.485955] ACPI Warning: For _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found [NULL Object Descriptor], expected Reference (20110112/nspredef-1059)
 summary          klog: HIGH Kernel message: [ 0.490491] ACPI Warning: For _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20110413/nspredef-352)
 summary          klog: HIGH Kernel message: [ 0.492569] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a08440), AE_NOT_FOUND
-summary          klog: HIGH Kernel message: [ 0.492648] ACPI Error (dswload-0781): [PRID] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.492655] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a08440), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.492811] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f5428a68), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.497662] ACPI Warning (nspredef-0357): _SB_.PCI0.P2P_._PRT: Return Package has no elements (empty) [20080926]
@@ -693,7 +704,6 @@ summary          klog: HIGH Kernel message: [ 0.597685] ACPI Warning for _SB_.PC
 summary          klog: HIGH Kernel message: [ 0.597689] ACPI Warning for _SB_.PCI0.LPC_.EC__.BAT0._BIF: Converted Buffer to expected String at index 12 (20090903/nsrepair-132)
 summary          klog: HIGH Kernel message: [ 0.600451] ACPI Error (psargs-0359): [_SB_.PCI0.EGBA] Namespace lookup failure, AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 0.600456] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.LPC_.MBRD._CRS] (Node f7416318), AE_NOT_FOUND
-summary          klog: HIGH Kernel message: [ 0.612793] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
 summary          klog: HIGH Kernel message: [ 0.612820] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88003d9ae190), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.620955] ACPI Warning for _TZ_.THRM._PSL: Return Package type mismatch at index 0 - found Processor, expected Reference (20090903/nspredef-1012)
 summary          klog: HIGH Kernel message: [ 0.621415] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.PPCE] (Node f702c828), AE_NOT_FOUND
@@ -719,7 +729,6 @@ summary          klog: HIGH Kernel message: [ 0.655581] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 0.658002] ACPI Warning for _SB_.PCI0.SATA.PRT0._GTF: Return type mismatch - found Integer, expected Buffer (20090903/nspredef-1006)
 summary          klog: HIGH Kernel message: [ 0.658697] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff88023fc14aa0), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 0.662008] ACPI Error (psparse-0537): Method parse/execution failed [] (Node ffffffff81a0c440), AE_NOT_FOUND
-summary          klog: HIGH Kernel message: [ 0.674920] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
 summary          klog: HIGH Kernel message: [ 0.674938] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.GBIF] (Node f3829120), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.674963] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.BAT1._BIF] (Node f3829330), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.677370] ACPI Warning for _SB_.PCI0.BAT0._BIF: Converted Buffer to expected String at index 9 (20090903/nsrepair-132)
@@ -736,7 +745,6 @@ summary          klog: HIGH Kernel message: [ 0.725429] ACPI Error (uteval-0307)
 summary          klog: HIGH Kernel message: [ 0.725450] ACPI Error: Type returned from _CRS was incorrect: Integer, expected Btypes: 4 (20090903/uteval-313)
 summary          klog: HIGH Kernel message: [ 0.736425] ACPI Warning: For _SB_.PCI0.PT02._PRT: Return Package has no elements (empty) (20110413/nspredef-456)
 summary          klog: HIGH Kernel message: [ 0.743273] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0._OSC] (Node f701f0d8), AE_ALREADY_EXISTS
-summary          klog: HIGH Kernel message: [ 0.743525] ACPI Error: [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
 summary          klog: HIGH Kernel message: [ 0.743530] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f50273d8), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 0.743538] ACPI Warning: For _SB_.PCI0._OSC: Parameter count mismatch - ASL declared 5, ACPI requires 4 (20110112/nspredef-352)
 summary          klog: HIGH Kernel message: [ 0.744106] ACPI Error: Field [ASSM] at 524320 exceeds Buffer [BUF0] size 880 (bits) (20090903/dsopcode-596)
@@ -817,7 +825,6 @@ summary          klog: HIGH Kernel message: [ 1.189190] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 1.196055] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node f3824270), AE_NOT_FOUND (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 1.210593] ACPI Warning: For _SB_.PCI0.PCIB._PRT: Return Package has no elements (empty) (20101013/nspredef-456)
 summary          klog: HIGH Kernel message: [ 1.212692] ACPI Warning: For _TZ_.THRM._AL0: Return Package has no elements (empty) (20110112/nspredef-456)
-summary          klog: HIGH Kernel message: [ 1.214748] ACPI Error: [_T_1] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
 summary          klog: HIGH Kernel message: [ 1.214761] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_.GBQC] (Node f3023438), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 1.214775] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_._BQC] (Node f3023420), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 1.222641] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1.GBQC] (Node f30235b8), AE_ALREADY_EXISTS (20110112/psparse-536)
@@ -892,7 +899,6 @@ summary          klog: HIGH Kernel message: [ 1.784831] ACPI Error (psparse-0537
 summary          klog: HIGH Kernel message: [ 1.786497] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU2._PPC] (Node ffff8801d4d0ae20), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 1.787299] ACPI Error (psparse-0537): Method parse/execution failed [_PR_.CPU3._PPC] (Node ffff8801d4d0ada0), AE_NOT_FOUND
 summary          klog: HIGH Kernel message: [ 1.849787] ACPI Warning for _PR_.CPU3._PSD: Return Package type mismatch at index 4 - found [NULL Object Descriptor], expected Integer [<ffffffff81094378>] tick_dev_program_event+0x68/0xd0
-summary          klog: HIGH Kernel message: [ 1.861558] ACPI Error: [SERN] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
 summary          klog: HIGH Kernel message: [ 1.861576] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.GBIF] (Node ffff880232c509b0), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 1.861601] ACPI Error: Method parse/execution failed [_SB_.PCI0.LPC_.EC__.BAT1._BIF] (Node ffff880232c50d20), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 1.864413] ACPI Error: Method parse/execution failed [_SB_.PCI0.GFX0._DOD] (Node f3025828), AE_AML_PACKAGE_LIMIT (20110413/psparse-536)
@@ -958,7 +964,6 @@ summary          klog: HIGH Kernel message: [ 2.200371] ACPI Error: Method parse
 summary          klog: HIGH Kernel message: [ 2.200380] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f602d2d0), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.206433] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742d018), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.206443] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d3a8), AE_ALREADY_EXISTS (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 2.222353] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
 summary          klog: HIGH Kernel message: [ 2.222362] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f602d018), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.222372] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f602d3a8), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.227407] ACPI Error (psargs-0359): [GTF1] Namespace lookup failure, AE_NOT_FOUND
@@ -969,7 +974,6 @@ summary          klog: HIGH Kernel message: [ 2.231442] ACPI Error: Method parse
 summary          klog: HIGH Kernel message: [ 2.250291] ACPI Error: Method parse/execution failed [_SB_.BAT1.UBIF] (Node ffff88013762f550), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.250306] ACPI Error: Method parse/execution failed [_SB_.BAT1._BIF] (Node ffff88013762f500), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.270835] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ffff880125e2c708), AE_ALREADY_EXISTS (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 2.280398] ACPI Error (dswload-0781): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 2.280410] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1.UBIF] (Node ffff8800b3c2e100), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 2.280443] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.BAT1._BIF] (Node ffff8800b3c2e0c0), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 2.283579] ACPI Error (psargs-0359): [_T_0] Namespace lookup failure, AE_NOT_FOUND
@@ -979,7 +983,6 @@ summary          klog: HIGH Kernel message: [ 2.288649] ACPI Error: Method parse
 summary          klog: HIGH Kernel message: [ 2.288685] ACPI Error: Method parse/execution failed [_SB_.PCI0.SAT0.PRT0._GTF] (Node ffff88023f45dcf8), AE_NOT_FOUND (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.294251] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742bf30), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.294262] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d2d0), AE_ALREADY_EXISTS (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 2.324547] ACPI Error: [EABF] Namespace lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
 summary          klog: HIGH Kernel message: [ 2.324556] ACPI Error: Method parse/execution failed [_SB_.EEAC] (Node f742d018), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.324566] ACPI Error: Method parse/execution failed [_SB_.BAT2._STA] (Node f742d3a8), AE_ALREADY_EXISTS (20110413/psparse-536)
 summary          klog: HIGH Kernel message: [ 2.334361] ACPI Error: Attempt to CreateField of length zero (20110112/dsopcode-529)
@@ -1067,10 +1070,8 @@ summary          klog: HIGH Kernel message: [ 6.224974] ACPI Error: Method parse
 summary          klog: HIGH Kernel message: [ 6.224987] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD_._BQC] (Node f3423420), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 6.227917] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1.GBQC] (Node f34235b8), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 6.227930] ACPI Error: Method parse/execution failed [_SB_.PCI0.PEGP.VGA_.LCD1._BQC] (Node f34235a0), AE_ALREADY_EXISTS (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 6.732287] ACPI Error: [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
 summary          klog: HIGH Kernel message: [ 6.732310] ACPI Error: Method parse/execution failed [_SB_.BAT1.UBIF] (Node dd028fc0), AE_ALREADY_EXISTS (20110112/psparse-536)
 summary          klog: HIGH Kernel message: [ 6.732334] ACPI Error: Method parse/execution failed [_SB_.BAT1._BIF] (Node dd028f90), AE_ALREADY_EXISTS (20110112/psparse-536)
-summary          klog: HIGH Kernel message: [ 6.773266] ACPI Error: [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS (20101013/dsfield-143)
 summary          klog: HIGH Kernel message: [ 6.773285] ACPI Error: Method parse/execution failed [_SB_.PCI0._OSC] (Node ddc25ca8), AE_ALREADY_EXISTS (20101013/psparse-537)
 summary          klog: HIGH Kernel message: [ 7.365139] ACPI Error: No handler for Region [IPMI] (ffff8805ffa37240) [IPMI] (20110112/evregion-369)
 summary          klog: HIGH Kernel message: [ 7.365150] ACPI Error: Region IPMI(0x7) has no handler (20110112/exfldio-292)
@@ -1188,7 +1189,6 @@ summary          klog: HIGH Kernel message: [ 16.336080] ACPI Error (psparse-053
 summary          klog: HIGH Kernel message: [ 16.592600] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.SEFA] (Node ffff880226c4a120), AE_AML_INFINITE_LOOP
 summary          klog: HIGH Kernel message: [ 16.592628] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.ASOC.RFAN] (Node ffff880226c49bc0), AE_AML_INFINITE_LOOP
 summary          klog: HIGH Kernel message: [ 16.719798] ACPI Warning for _SB_.PCI0.VID2._DOD: Return Package has no elements (empty) (20090903/nspredef-433)
-summary          klog: HIGH Kernel message: [ 16.942589] ACPI Error (dswload-0802): [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 16.942606] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.OVGA.DD03.GBQC] (Node ffff8800b7e3c6e0), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 16.942654] ACPI Error (psparse-0537): Method parse/execution failed [_SB_.PCI0.OVGA.DD03._BQC] (Node ffff8800b7e3c6c0), AE_ALREADY_EXISTS
 summary          klog: HIGH Kernel message: [ 17.125601] ACPI Error: Needed [Buffer/String/Package], found [Integer] eee27810 (20110112/exresop-590)

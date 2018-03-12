@@ -4392,9 +4392,10 @@ klog            ADVICE: The ACPI table listed above has an incorrect
 klog            checksum, this could be a BIOS bug or due to table
 klog            corruption.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.192146] ACPI Error (dswload-0781):
-klog            [_PSW] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.192146] ACPI Error
+klog            (dswload-0781): [_PSW] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -4759,9 +4760,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.213084] ACPI Error (dsfield-0143):
-klog            [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.213084] ACPI Error
+klog            (dsfield-0143): [CAPB] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -6279,9 +6281,10 @@ klog
 klog            ADVICE: The ACPI Method returned an incorrect type, this
 klog            should be fixed.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.329373] ACPI Error (dsfield-0143):
-klog            [CAPD] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.329373] ACPI Error
+klog            (dsfield-0143): [CAPD] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -7271,9 +7274,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.362606] ACPI Error (dsfield-0487):
-klog            [SMIC] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.362606] ACPI Error
+klog            (dsfield-0487): [SMIC] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -7296,9 +7300,10 @@ klog            ADVICE: ACPI driver has detected an ACPI bug. This
 klog            generally points to a bug in an ACPI table. Examine the
 klog            kernel log for more details.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.362870] ACPI Error (dsfield-0140):
-klog            [CAPB] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.362870] ACPI Error
+klog            (dsfield-0140): [CAPB] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -7874,9 +7879,10 @@ klog            ADVICE: The ACPI table listed above has an incorrect
 klog            checksum, this could be a BIOS bug or due to table
 klog            corruption.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.420210] ACPI Error: [CAPD] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.420210] ACPI Error: [CAPD]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110413
+klog            /dsfield-143)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -8133,9 +8139,10 @@ klog            ADVICE: ACPI AML interpreter executed a Method that
 klog            returned a package with no elements inside it. This is
 klog            most probably a bug in the Method and needs to be fixed.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.461767] ACPI Error: [CAPB] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110413/dsfield-143)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.461767] ACPI Error: [CAPB]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110413
+klog            /dsfield-143)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -8322,9 +8329,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.492648] ACPI Error (dswload-0781):
-klog            [PRID] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.492648] ACPI Error
+klog            (dswload-0781): [PRID] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -8789,9 +8797,10 @@ klog            ADVICE: The ACPI table listed above has an incorrect
 klog            checksum, this could be a BIOS bug or due to table
 klog            corruption.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.612793] ACPI Error: [CAPB] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.612793] ACPI Error: [CAPB]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dsfield-143)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -9164,9 +9173,10 @@ klog            ADVICE: The ACPI table listed above has an incorrect
 klog            checksum, this could be a BIOS bug or due to table
 klog            corruption.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.674920] ACPI Error: [SERN] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.674920] ACPI Error: [SERN]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110413
+klog            /dswload2-316)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -9486,9 +9496,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 0.743525] ACPI Error: [CAPD] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dsfield-143)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 0.743525] ACPI Error: [CAPD]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dsfield-143)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -10559,9 +10570,10 @@ klog            ADVICE: ACPI AML interpreter executed a Method that
 klog            returned a package with no elements inside it. This is
 klog            most probably a bug in the Method and needs to be fixed.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 1.214748] ACPI Error: [_T_1] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 1.214748] ACPI Error: [_T_1]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dswload-802)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -11394,9 +11406,10 @@ klog            ADVICE: ACPI AML interpreter executed a Method that
 klog            returned a package with incorrectly typed data. The
 klog            offending method needs to be fixed.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 1.861558] ACPI Error: [SERN] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 1.861558] ACPI Error: [SERN]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dswload-802)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -12007,9 +12020,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 2.222353] ACPI Error: [EABF] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 2.222353] ACPI Error: [EABF]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dswload-802)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -12113,9 +12127,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 2.280398] ACPI Error (dswload-0781):
-klog            [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 2.280398] ACPI Error
+klog            (dswload-0781): [_T_0] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -12201,9 +12216,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 2.324547] ACPI Error: [EABF] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110413/dswload2-316)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 2.324547] ACPI Error: [EABF]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110413
+klog            /dswload2-316)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -13138,9 +13154,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 6.732287] ACPI Error: [_T_0] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20110112/dswload-802)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 6.732287] ACPI Error: [_T_0]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20110112
+klog            /dswload-802)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -13164,9 +13181,10 @@ klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
 klog            particular problem.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 6.773266] ACPI Error: [CAPB] Namespace
-klog            lookup failure, AE_ALREADY_EXISTS (20101013/dsfield-143)
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 6.773266] ACPI Error: [CAPB]
+klog            Namespace lookup failure, AE_ALREADY_EXISTS (20101013
+klog            /dsfield-143)
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this
@@ -14447,9 +14465,10 @@ klog            ADVICE: ACPI AML interpreter executed a Method that
 klog            returned a package with no elements inside it. This is
 klog            most probably a bug in the Method and needs to be fixed.
 klog            
-klog            FAILED [HIGH] KlogAcpiNamespaceLookupFailure: Test 1, HIGH
-klog            Kernel message: [ 16.942589] ACPI Error (dswload-0802):
-klog            [_T_0] Namespace lookup failure, AE_ALREADY_EXISTS
+klog            FAILED [CRITICAL] KlogAcpiNamespaceLookupFailure: Test 1,
+klog            CRITICAL Kernel message: [ 16.942589] ACPI Error
+klog            (dswload-0802): [_T_0] Namespace lookup failure,
+klog            AE_ALREADY_EXISTS
 klog            
 klog            ADVICE: This is a bug picked up by the kernel, but as yet,
 klog            the firmware test suite has no diagnostic advice for this

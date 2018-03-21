@@ -1,3 +1,21 @@
+fwts (18.03.00-0ubuntu1) bionic; urgency=medium
+
+  [Alex Hung]
+  * klog.json: change severity for AE_ALREADY_EXISTS errors
+  * fwts-test: sync up with AE_ALREADY_EXISTS errors
+  * dmi: dmicheck: add chassis type for Type 3
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20180313
+
+  [Deb McLemore]
+  * olog:olog.json: Update OPAL skiboot errors to check on olog scan
+
+  [Ivan Hu]
+  * uefirtauthvar: remove test with EFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 21 Mar 2018 00:08:40 -0700
+
 fwts (18.02.00-0ubuntu1) bionic; urgency=medium
 
   [Alex Hung]

@@ -749,7 +749,7 @@ static int parse_cpu_info(fwts_framework *fw,
 {
 	char *end, path[PATH_MAX+1], *str, *tmp;
 	struct stat statbuf;
-	int rc;
+	int rc, i = 0;
 
 	strcpy(cpu->sysfs_path, dir->d_name);
 	cpu->idx = strtoul(cpu->sysfs_path + strlen("cpu"), &end, 10);
@@ -783,8 +783,6 @@ static int parse_cpu_info(fwts_framework *fw,
 
 	/* cpu driver like intel_pstate has no scaling_available_frequencies */
 	if (str != NULL) {
-		int i = 0;
-
 		for (tmp = str; ; tmp = NULL) {
 			char *tok = strtok(tmp, " ");
 			if (!tok)
@@ -800,6 +798,26 @@ static int parse_cpu_info(fwts_framework *fw,
 
 	free(str);
 
+	/* parse boost frequencies */
+	cpu_mkpath(path, sizeof(path), cpu, "scaling_boost_frequencies");
+	str = fwts_get(path);
+
+	if (str) {
+		for (tmp = str; ; tmp = NULL) {
+			char *tok = strtok(tmp, " ");
+
+			if (!tok)
+				break;
+			if (!isdigit(tok[0]))
+				continue;
+			cpu->freqs[i++].Hz = strtoull(tok, NULL, 10);
+		}
+		cpu->n_freqs = i;
+		qsort(cpu->freqs, cpu->n_freqs, sizeof(cpu->freqs[0]),
+		      cpu_freq_compare);
+	}
+
+	free(str);
 	return FWTS_OK;
 }
 

@@ -88,19 +88,11 @@ static int get_xscom_property(fwts_framework *fw,
 						my_path);
 				}
 			} else {
-				failures ++;
 				fwts_log_nl(fw);
-				fwts_failed(fw,
-					LOG_LEVEL_CRITICAL,
-					"OPAL CPU Info",
-					"Property of \"%s\" for \"%s\" was"
-					" not able to be retrieved. Check the"
-					" installation for the CPU device"
-					" config for missing nodes in the"
-					" device tree if you expect CPU"
-					" devices.",
-					property,
-					my_path);
+				fwts_skipped(fw, "OPAL CPU check for "
+					"property of \"%s\" and path of \"%s\""
+					" not applicable to version.",
+					property, my_path);
 			}
 		} else {
 			failures ++;

@@ -294,9 +294,12 @@ static const msr_info AMD_MSRs[] = {
 	{ "PAT",			0x00000277,	0x0707070707070703ULL, NULL },
 	{ "MTRR_DEF_TYPE",		0x000002ff,	0x0000000000000c0fULL, NULL },
 	{ "EFER",			0xc0000080,	0x0000000000000d01ULL, NULL },
+	/* Do not check syscall MSRs, they will be different on
+	 * each CPU, so checking them across CPUs is incorrect
 	{ "STAR",			0xc0000081,	0xffffffffffffffffULL, NULL },
 	{ "LSTAR",			0xc0000082,	0xffffffffffffffffULL, NULL },
 	{ "FMASK",			0xc0000084,	0xffffffffffffffffULL, NULL },
+	 */
 	//{ "FS_BASE",			0xc0000100,	0xffffffffffffffffULL, NULL },
 	//{ "GS_BASE",			0xc0000101, 	0xffffffffffffffffULL, NULL },
 	{ "KERNEL_GS_BASE",		0xc0000102, 	0xffffffffffffffffULL, NULL },
@@ -437,9 +440,12 @@ static const msr_info IA32_MSRs[] = {
 	{ "A_PMC6",			0x000004c7,	0xffffffffffffffffULL, NULL },
 	{ "A_PMC7",			0x000004c8,	0xffffffffffffffffULL, NULL },
 	{ "EFER",			0xc0000080,	0x0000000000000d01ULL, NULL },
+	/* Do not check syscall MSRs, they will be different on
+	 * each CPU, so checking them across CPUs is incorrect
 	{ "STAR",			0xc0000081,	0xffffffffffffffffULL, NULL },
 	{ "LSTAR",			0xc0000082,	0xffffffffffffffffULL, NULL },
 	{ "FMASK",			0xc0000084,	0xffffffffffffffffULL, NULL },
+	 */
 	//{ "FS_BASE",			0xc0000100,	0xffffffffffffffffULL, NULL },
 	//{ "GS_BASE",			0xc0000101, 	0xffffffffffffffffULL, NULL },
 	{ "KERNEL_GS_BASE",		0xc0000102, 	0xffffffffffffffffULL, NULL },

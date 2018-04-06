@@ -406,24 +406,17 @@ static int get_linux_mem_devices(fwts_framework *fw)
 	fwts_log_nl(fw);
 
 	if (!found) {
-		failures++;
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"OPAL MEM Info",
-				"No MEM devices (memory-buffer@X) were found"
-				" in \"%s\".  Check the system for setup"
-				" issues.",
+		fwts_skipped(fw, "OPAL MEM Info MEM devices "
+				"(memory-buffer@X) found in \"%s\","
+				" not applicable for version.",
 				DT_FS_PATH);
 	}
 
 	if (!found_dimm) {
-		failures++;
 		fwts_log_nl(fw);
-		fwts_failed(fw, LOG_LEVEL_CRITICAL,
-				"OPAL MEM Info",
-				"No MEM DIMM devices (memory-buffer) were found"
-				" in \"%s\" with a status of \"okay\" or \"ok\"."
-				"  This is unexpected so please check your"
-				" system setup for issues.",
+		fwts_skipped(fw, "OPAL MEM Info MEM DIMM devices "
+				"(memory-buffer@X) found in \"%s\","
+				" not applicable for version.",
 				DT_FS_PATH);
 	}
 

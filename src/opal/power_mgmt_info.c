@@ -173,15 +173,19 @@ static int pstate_limits_test(fwts_framework *fw)
 	for (i = 0; i < nr_pstates; i++)
 		fwts_log_info(fw, " %d ", pstates[i]);
 
-	if (nr_pstates <= 1 || nr_pstates > 128) {
-		if (proc_gen == proc_gen_p8)
-			fwts_log_warning(fw, "Pstates range %d is not valid",
-					nr_pstates);
-		else if (proc_gen == proc_gen_p9)
-			fwts_log_warning(fw,
-				"More than 128 pstates in pstate table %d",
-				nr_pstates);
-	}
+	if (nr_pstates <= 1)
+		fwts_log_warning(fw, "Pstates range %d is not valid",
+				 nr_pstates);
+
+	if (proc_gen == proc_gen_p8 && nr_pstates > 128)
+		fwts_log_warning(fw,
+				"More than 128 pstates found,nr_pstates = %d",
+				 nr_pstates);
+
+	if (proc_gen == proc_gen_p9 && nr_pstates > 255)
+		fwts_log_warning(fw,
+				"More than 255 pstates found,nr_pstates = %d",
+				 nr_pstates);
 
 	if (len != nr_pstates)
 		fwts_log_warning(fw, "Wrong number of pstates."
@@ -218,7 +222,7 @@ static int pstate_limits_test(fwts_framework *fw)
 					"Actual Pmin %d",
 					pstate_min, pstates[i]);
 			ok = false;
-		} else {
+		} else if (i != 0 && i != nr_pstates) {
 			int previous_pstate;
 			previous_pstate = pstates[i-1];
 			if (cmp_pstates(pstates[i], previous_pstate) > 0) {

@@ -338,9 +338,14 @@ static const msr_info IA32_MSRs[] = {
 	{ "FEATURE_CONTROL",		0x0000003a,	0x000000000000ff07ULL, NULL },
 	{ "BIOS_SIGN_ID",		0x0000008b,	0xffffffff00000000ULL, NULL },
 	{ "MTRRCAP",			0x000000fe,	0x0000000000000fffULL, NULL },
+	/*
+	 * LP#1582005 - Do not check sysenter MSRs, they will be different on
+	 * each CPU, so checking them across CPUs is incorrect
+	 *
 	{ "SYSENTER_CS",		0x00000174,	0x000000000000ffffULL, NULL },
 	{ "SYSENTER_ESP",		0x00000175,	0xffffffffffffffffULL, NULL },
 	{ "SYSENTER_EIP",		0x00000176,	0xffffffffffffffffULL, NULL },
+	 */
 	{ "MCG_CAP",			0x00000179,	0x0000000001ff0fffULL, NULL },
 	{ "MCG_STATUS",			0x0000017a,	0xffffffffffffffffULL, NULL },
 	{ "MCG_CTL",			0x0000017b,	0xffffffffffffffffULL, NULL },

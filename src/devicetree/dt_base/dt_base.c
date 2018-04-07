@@ -109,10 +109,11 @@ static int dt_base_check_warnings(fwts_framework *fw)
 	}
 
 	if (out_len > 0) {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			"DeviceTreeBaseDTCWarnings",
-			"dtc reports warnings from device tree:%s",
-			output);
+		fwts_warning(fw, "Some warnings from dtc. "
+			"Run command \"dtc -I fs -O dts -o my.dts "
+			"/sys/firmware/devicetree/base\" for "
+			"further review: %s", output);
+		ret = FWTS_OK;
 		goto err;
 	}
 

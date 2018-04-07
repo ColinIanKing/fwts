@@ -73,7 +73,7 @@ static int prd_dev_query(fwts_framework *fw)
 
 static int prd_service_check(fwts_framework *fw, int *restart)
 {
-	int rc = FWTS_OK, status = 0, stop_status = 0;
+	int rc = FWTS_OK, status = 0;
 	char *command;
 	char *output = NULL;
 
@@ -97,25 +97,13 @@ static int prd_service_check(fwts_framework *fw, int *restart)
 		goto out;
 	case 0: /* "running" */
 		command = "systemctl stop opal-prd.service 2>&1";
-		stop_status = fwts_exec2(command, &output);
+		fwts_exec2(command, &output);
 
 		if (output)
 			free(output);
 
-		switch (stop_status) {
-		case 0:
-                        *restart = 1;
-                        break;
-		default:
-                        fwts_failed(fw, LOG_LEVEL_HIGH, "OPAL PRD Info",
-                                "Attempt was made to stop the "
-                                "opal-prd.service but was not "
-                                "successful. Try to "
-                                "\"sudo systemctl stop "
-                                "opal-prd.service\" and retry.");
-                        rc = FWTS_ERROR;
-                        goto out;
-		}
+		*restart = 1;
+		break;
 	default:
 		break;
 	}

@@ -219,11 +219,9 @@ int fwts_pipe_readwrite(
 
 	}
 
-	if (out_size) {
-		*out_len = out_size;
-		*out_buf = ptr;
-		return 0;
-	}
+	*out_len = out_size;
+	*out_buf = ptr;
+	return 0;
 fail:
 	free(ptr);
 	*out_len = 0;

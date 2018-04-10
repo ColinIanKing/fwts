@@ -153,6 +153,10 @@ fwts_bool fwts_memory_map_is_reserved(fwts_list *memory_map_list, const uint64_t
 	if (memory_map_list == NULL)
 		return FWTS_TRUE;
 
+	/* when we have FWTS_MEMORY_MAP info list empty, then assume all is fair */
+	if (memory_map_list->len == 0)
+		return FWTS_TRUE;
+
 	/* bios data area is always reserved */
 	if ((memory >= 640 * 1024) && (memory <= 1024*1024))
 		return FWTS_TRUE;

@@ -794,9 +794,8 @@ static int parse_cpu_info(fwts_framework *fw,
 		cpu->n_freqs = i;
 		qsort(cpu->freqs, cpu->n_freqs, sizeof(cpu->freqs[0]),
 			cpu_freq_compare);
+		free(str);
 	}
-
-	free(str);
 
 	/* parse boost frequencies */
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_boost_frequencies");
@@ -815,9 +814,9 @@ static int parse_cpu_info(fwts_framework *fw,
 		cpu->n_freqs = i;
 		qsort(cpu->freqs, cpu->n_freqs, sizeof(cpu->freqs[0]),
 		      cpu_freq_compare);
+		free(str);
 	}
 
-	free(str);
 	return FWTS_OK;
 }
 

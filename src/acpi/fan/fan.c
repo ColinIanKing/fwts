@@ -148,13 +148,16 @@ static int fan_test1(fwts_framework *fw)
 		fan_info *info = fwts_list_data(fan_info *, item);
 		if (info->type == NULL)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanType",
-				"Fan present but has no fan type present.");
+				"Fan %s present but has no fan type present.",
+				info->name);
 		if (info->max_state == -1)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanMaxState",
-				"Fan present but has no max_state present.");
+				"Fan %s present but has no max_state present.",
+				info->name);
 		if (info->cur_state == -1)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanCurState",
-				"Fan present but has no cur_state present.");
+				"Fan %s present but has no cur_state present.",
+				info->name);
 
 		if (info->type &&
 		    (info->max_state >= 0) && (info->cur_state >= 0))

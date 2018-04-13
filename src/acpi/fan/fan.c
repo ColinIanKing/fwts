@@ -154,7 +154,7 @@ static int fan_test1(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanMaxState",
 				"Fan %s present but has no max_state present.",
 				info->name);
-		if (info->cur_state == -1)
+		if (info->cur_state == -1 && strcmp(info->type, "intel_powerclamp"))
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanCurState",
 				"Fan %s present but has no cur_state present.",
 				info->name);

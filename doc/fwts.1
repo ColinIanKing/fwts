@@ -76,6 +76,9 @@ for fwts developers to help track down any ACPICA interfacing issues with fwts.
 run only those tests that specifically check for compliance with the ACPI
 specifications.  This may be a subset of the ACPI tests.
 .TP
+.B \-\-acpitests
+run all general ACPI tests.
+.TP
 .B \-a, \-\-all
 run all the tests.
 .TP
@@ -124,6 +127,9 @@ specifies the number of times to set a variable in the uefirtvariable set variab
 .TP
 .B \-\-uefi\-query\-var\-multiple
 specifies the number of times to query a variable in the uefirtvariable query variable stress test.
+.TP
+.B \-\-uefitests
+run all general UEFI tests.
 .TP
 .B \-\-filter\-error\-discard
 specifies the errors that one wants to silently ignore.  One supplies a comma sperated
@@ -305,6 +311,9 @@ specify a comma separated list of quirk arguments to pass to pm-hibernate, for e
 sleep N seconds from the start of the hibernate to the wakeup time. Note that this
 time MUST be longer than the time it takes to hibernate the machine otherwise the
 wakeup timer will fire during the hibernate state. The default is currently 90 seconds.
+.TP
+.B \-\-sbbr
+run ARM SBBR tests
 .TP
 .B \-p, \-\-show\-progress
 show the progress of the tests being run. Each test will identified as it is being

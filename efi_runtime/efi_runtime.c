@@ -561,6 +561,10 @@ static long efi_runtime_get_nexthighmonocount(unsigned long arg)
 	return 0;
 }
 
+#if 0
+/*
+ *  Note: efi_runtime_reset_system currently not used
+ */
 static long efi_runtime_reset_system(unsigned long arg)
 {
 	struct efi_resetsystem __user *resetsystem_user;
@@ -584,6 +588,7 @@ static long efi_runtime_reset_system(unsigned long arg)
 	kfree(data);
 	return 0;
 }
+#endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 1, 0)
 static long efi_runtime_query_variableinfo(unsigned long arg)

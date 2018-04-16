@@ -134,6 +134,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "log-level",		"",   1, "Specify error level to report failed test messages," },
 	{ "arch",		"",   1, "Specify arch of the tables being tested (defaults to current host)." },
 	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
+	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1329,6 +1330,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 			break;
 		case 46: /* --sbbr */
 			fw->flags |= FWTS_FLAG_TEST_SBBR;
+			break;
+		case 47: /* --ifv */
+			fw->flags |= FWTS_FLAG_FIRMWARE_VENDOR;
 			break;
 		}
 		break;

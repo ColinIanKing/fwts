@@ -33,6 +33,9 @@
 -f, --force-clean            Force a clean results
                              log file.
 -h, -?, --help               Get help.
+--ifv                        Run tests in
+                             firmware-vendor
+                             modes.
 -i, --interactive            Just run Interactive
                              tests.
 --interactive-experimental   Just run Interactive

@@ -1061,7 +1061,7 @@ static void method_test_SUB_return(
 				"%s returned a NULL string.", name);
 		}
 	else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDBadReturnType",
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SUBBadReturnType",
 			"Method _SUB did not return a string or an integer.");
 	}
 }

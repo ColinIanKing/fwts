@@ -65,7 +65,7 @@
  * _CCA 	 Y
  * _CDM 	 Y
  * _CID 	 Y
- * _CLS 	 N requires PCI SIG class info
+ * _CLS 	 Y
  * _CPC 	 Y
  * _CR3 	 Y
  * _CRS 	 Y
@@ -765,6 +765,33 @@ static int method_test_PIC(fwts_framework *fw)
 /*
  * Section 6.1 Device Identification Objects
  */
+static void method_test_CLS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, "_CLS", obj, 3) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, "_CLS", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	fwts_method_passed_sane(fw, name, "package");
+}
+
+static int method_test_CLS(fwts_framework *fw)
+{
+	return method_evaluate_method(fw, METHOD_OPTIONAL,
+		"_CLS", NULL, 0, method_test_CLS_return, NULL);
+}
+
 static int method_test_DDN(fwts_framework *fw)
 {
 	return method_evaluate_method(fw, METHOD_OPTIONAL,
@@ -6018,7 +6045,7 @@ static fwts_framework_minor_test method_tests[] = {
 	/* Section 6.1 Device Identification Objects  */
 
 	{ method_test_CID, "Test _CID (Compatible ID)." },
-	/* { method_test_CLS, "Test _CLS (Class Code)." }, */
+	{ method_test_CLS, "Test _CLS (Class Code)." },
 	{ method_test_DDN, "Test _DDN (DOS Device Name)." },
 	{ method_test_HID, "Test _HID (Hardware ID)." },
 	{ method_test_HRV, "Test _HRV (Hardware Revision Number)." },

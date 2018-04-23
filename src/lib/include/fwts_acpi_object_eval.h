@@ -84,6 +84,7 @@ void fwts_method_test_integer_return(fwts_framework *fw, char *name, ACPI_BUFFER
 void fwts_method_test_string_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_reference_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_NULL_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_buffer_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj,void *private);
 void fwts_method_test_passed_failed_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 void fwts_method_test_polling_return( fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 
@@ -96,5 +97,28 @@ bool fwts_method_valid_EISA_ID(uint32_t id, char *buf, size_t buf_len);
 void fwts_method_test_CRS_large_size( fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const size_t crs_length, const size_t min, const size_t max, bool *passed);
 void fwts_method_test_CRS_large_resource_items(fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const uint64_t length, bool *passed, const char **tag);
 void fwts_method_test_CRS_small_resource_items(fwts_framework *fw, const char *name, const char *objname, const uint8_t *data, const size_t length, bool *passed, const char **tag) ;
+
+/* Device Identification Objects - see Section 6 Device Configuration */
+int fwts_method_test_ADR(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_CID(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_CLS(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_DDN(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_HID(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_HRV(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_MLS(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_PLD(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_SUB(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_SUN(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_STR(fwts_framework *fw, ACPI_HANDLE *device);
+int fwts_method_test_UID(fwts_framework *fw, ACPI_HANDLE *device);
+
+void fwts_method_valid_CID_Type(fwts_framework *fw, char *name, ACPI_OBJECT *obj);
+void fwts_method_test_CID_return(fwts_framework *fw, char *name,ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_CLS_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_HID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_MLS_return( fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_PLD_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_SUB_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
+void fwts_method_test_UID_return(fwts_framework *fw, char *name, ACPI_BUFFER *buf, ACPI_OBJECT *obj, void *private);
 
 #endif

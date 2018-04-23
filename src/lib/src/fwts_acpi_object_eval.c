@@ -784,6 +784,24 @@ void fwts_method_test_NULL_return(
 }
 
 /*
+ *  fwts_method_test_buffer_return
+ *	check if a buffer object was returned
+ */
+void fwts_method_test_buffer_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_BUFFER) == FWTS_OK)
+		fwts_passed(fw, "%s correctly returned a buffer of %" PRIu32 " elements.",
+			name, obj->Buffer.Length);
+}
+
+/*
  *  fwts_method_test_passed_failed_return
  *	check if 0 or 1 (false/true) integer is returned
  */
@@ -1737,5 +1755,393 @@ void fwts_method_test_CRS_large_resource_items(
 	*tag = types[tag_item < 16 ? tag_item : 0];
 }
 
+/*
+ * Device Identification Objects - see Section 6 Device Configuration
+ */
+
+int fwts_method_test_ADR(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_ADR", NULL, 0, fwts_method_test_integer_return, NULL);
+}
+
+void fwts_method_valid_CID_Type(
+	fwts_framework *fw,
+	char *name,
+	ACPI_OBJECT *obj)
+{
+	char tmp[8];
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer) {
+			if (fwts_method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"%s returned a string '%s' "
+					"as expected.",
+					name, obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodCIDInvalidString",
+					"%s returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					name, obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_CIDNullString",
+				"%s returned a NULL string.", name);
+		}
+		break;
+	case ACPI_TYPE_INTEGER:
+		if (fwts_method_valid_EISA_ID((uint32_t)obj->Integer.Value,
+			tmp, sizeof(tmp)))
+			fwts_passed(fw, "%s returned an integer "
+				"0x%8.8" PRIx64 " (EISA ID %s).",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodCIDInvalidInteger",
+				"%s returned a integer 0x%8.8" PRIx64 " "
+				"(EISA ID %s) but this is not a valid "
+				"EISA ID encoded PNP ID.",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		break;
+	}
+}
+
+void fwts_method_test_CID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	if (obj == NULL) {
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
+		return;
+	}
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+	case ACPI_TYPE_INTEGER:
+		fwts_method_valid_CID_Type(fw, name, obj);
+		break;
+	case ACPI_TYPE_PACKAGE:
+		if (fwts_method_package_count_min(fw, name, "_CID", obj, 1) != FWTS_OK)
+			return;
+
+		for (i = 0; i < obj->Package.Count; i++){
+			ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+			fwts_method_valid_CID_Type(fw, name, pkg);
+		}
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_CIDBadReturnType",
+			"%s did not return a string or an integer.", name);
+		break;
+	}
+}
+
+int fwts_method_test_CID(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_CID", NULL, 0, fwts_method_test_CID_return, NULL);
+}
+
+void fwts_method_test_CLS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_count_equal(fw, name, "_CLS", obj, 3) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, "_CLS", obj, ACPI_TYPE_INTEGER) != FWTS_OK)
+		return;
+
+	fwts_method_passed_sane(fw, name, "package");
+}
+
+int fwts_method_test_CLS(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_CLS", NULL, 0, fwts_method_test_CLS_return, NULL);
+}
+
+int fwts_method_test_DDN(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_DDN", NULL, 0, fwts_method_test_string_return, NULL);
+}
+
+void fwts_method_test_HID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	char tmp[8];
+
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	if (obj == NULL) {
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
+		return;
+	}
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer) {
+			if (fwts_method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"%s returned a string '%s' "
+					"as expected.",
+					name, obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodHIDInvalidString",
+					"%s returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					name, obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_HIDNullString",
+				"%s returned a NULL string.", name);
+		}
+		break;
+	case ACPI_TYPE_INTEGER:
+		if (fwts_method_valid_EISA_ID((uint32_t)obj->Integer.Value,
+			tmp, sizeof(tmp)))
+			fwts_passed(fw, "%s returned an integer "
+				"0x%8.8" PRIx64 " (EISA ID %s).",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"MethodHIDInvalidInteger",
+				"%s returned a integer 0x%8.8" PRIx64 " "
+				"(EISA ID %s) but this is not a valid "
+				"EISA ID encoded PNP ID.",
+				name, (uint64_t)obj->Integer.Value, tmp);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_HIDBadReturnType",
+			"%s did not return a string or an integer.", name);
+		break;
+	}
+}
+
+int fwts_method_test_HID(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_HID", NULL, 0, fwts_method_test_HID_return, NULL);
+}
+
+int fwts_method_test_HRV(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_HRV", NULL, 0, fwts_method_test_integer_return, NULL);
+}
+
+void fwts_method_test_MLS_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	uint32_t i;
+	bool failed = false;
+
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	if (fwts_method_package_elements_all_type(fw, name, "_MLS", obj, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* Could be one or more packages */
+	for (i = 0; i < obj->Package.Count; i++) {
+		ACPI_OBJECT *pkg = &obj->Package.Elements[i];
+
+		if (pkg->Package.Count != 2) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSSubPackageElementCount",
+				"%s sub-package %" PRIu32 " was expected to "
+				"have 2 elements, got %" PRIu32 " elements instead.",
+				name, i, pkg->Package.Count);
+			failed = true;
+			continue;
+		}
+
+		if (pkg->Package.Elements[0].Type != ACPI_TYPE_STRING) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 0 is not a string.",
+				name, i);
+			failed = true;
+		}
+
+		if (pkg->Package.Elements[1].Type != ACPI_TYPE_BUFFER) {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_MLSBadSubPackageReturnType",
+				"%s sub-package %" PRIu32
+				" element 1 is not a buffer.",
+				name, i);
+			failed = true;
+		}
+	}
+
+	if (!failed)
+		fwts_method_passed_sane(fw, name, "package");
+}
+
+int fwts_method_test_MLS(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_MLS", NULL, 0, fwts_method_test_MLS_return, NULL);
+}
+
+void fwts_method_test_PLD_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(private);
+
+	if (fwts_method_check_type(fw, name, buf, ACPI_TYPE_PACKAGE) != FWTS_OK)
+		return;
+
+	/* All elements in the package must be buffers */
+	if (fwts_method_package_elements_all_type(fw, name, "_PLD", obj, ACPI_TYPE_BUFFER) != FWTS_OK)
+		return;
+
+	fwts_method_passed_sane(fw, name, "package");
+}
+
+int fwts_method_test_PLD(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_PLD", NULL, 0, fwts_method_test_PLD_return, NULL);
+}
+
+void fwts_method_test_SUB_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	if (obj == NULL) {
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
+		return;
+	}
+
+	if (obj->Type == ACPI_TYPE_STRING)
+		if (obj->String.Pointer) {
+			if (fwts_method_valid_HID_string(obj->String.Pointer))
+				fwts_passed(fw,
+					"%s returned a string '%s' "
+					"as expected.",
+					name, obj->String.Pointer);
+			else
+				fwts_failed(fw, LOG_LEVEL_MEDIUM,
+					"MethodSUBInvalidString",
+					"%s returned a string '%s' "
+					"but it was not a valid PNP ID or a "
+					"valid ACPI ID.",
+					name, obj->String.Pointer);
+		} else {
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_SUBNullString",
+				"%s returned a NULL string.", name);
+		}
+	else {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_SUBBadReturnType",
+			"Method _SUB did not return a string or an integer.");
+	}
+}
+
+int fwts_method_test_SUB(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_SUB", NULL, 0, fwts_method_test_SUB_return, NULL);
+}
+
+int fwts_method_test_SUN(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_SUN", NULL, 0, fwts_method_test_integer_return, NULL);
+}
+
+int fwts_method_test_STR(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_STR", NULL, 0, fwts_method_test_buffer_return, NULL);
+}
+
+void fwts_method_test_UID_return(
+	fwts_framework *fw,
+	char *name,
+	ACPI_BUFFER *buf,
+	ACPI_OBJECT *obj,
+	void *private)
+{
+	FWTS_UNUSED(buf);
+	FWTS_UNUSED(private);
+
+	if (obj == NULL) {
+		fwts_method_failed_null_object(fw, name, "a buffer or integer");
+		return;
+	}
+
+	switch (obj->Type) {
+	case ACPI_TYPE_STRING:
+		if (obj->String.Pointer)
+			fwts_passed(fw,
+				"%s returned a string '%s' as expected.",
+				name, obj->String.Pointer);
+		else
+			fwts_failed(fw, LOG_LEVEL_MEDIUM,
+				"Method_UIDNullString",
+				"%s returned a NULL string.", name);
+		break;
+	case ACPI_TYPE_INTEGER:
+		fwts_method_passed_sane_uint64(fw, name, obj->Integer.Value);
+		break;
+	default:
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_UIDBadReturnType",
+			"Method %s did not return a string or an integer.", name);
+		break;
+	}
+}
+
+int fwts_method_test_UID(fwts_framework *fw, ACPI_HANDLE *device)
+{
+	return fwts_evaluate_method(fw, METHOD_OPTIONAL, device,
+		"_UID", NULL, 0, fwts_method_test_UID_return, NULL);
+}
 
 #endif

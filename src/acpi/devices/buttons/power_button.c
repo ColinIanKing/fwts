@@ -76,74 +76,82 @@ static int power_button_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-
-static void method_test_HID_return(
-	fwts_framework *fw,
-	char *name,
-	ACPI_BUFFER *buf,
-	ACPI_OBJECT *obj,
-	void *private)
-{
-	char tmp[8];
-
-	FWTS_UNUSED(buf);
-	FWTS_UNUSED(private);
-
-	if (obj == NULL) {
-		fwts_method_failed_null_object(fw, name, "a buffer or integer");
-		return;
-	}
-
-	switch (obj->Type) {
-	case ACPI_TYPE_STRING:
-		if (obj->String.Pointer) {
-			if (fwts_method_valid_HID_string(obj->String.Pointer))
-				fwts_passed(fw,
-					"%s returned a string '%s' "
-					"as expected.",
-					name, obj->String.Pointer);
-			else
-				fwts_failed(fw, LOG_LEVEL_MEDIUM,
-					"MethodHIDInvalidString",
-					"%s returned a string '%s' "
-					"but it was not a valid PNP ID or a "
-					"valid ACPI ID.",
-					name, obj->String.Pointer);
-		} else {
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"Method_HIDNullString",
-				"%s returned a NULL string.", name);
-		}
-		break;
-	case ACPI_TYPE_INTEGER:
-		if (fwts_method_valid_EISA_ID((uint32_t)obj->Integer.Value,
-			tmp, sizeof(tmp)))
-			fwts_passed(fw, "%s returned an integer "
-				"0x%8.8" PRIx64 " (EISA ID %s).",
-				name, (uint64_t)obj->Integer.Value, tmp);
-		else
-			fwts_failed(fw, LOG_LEVEL_MEDIUM,
-				"MethodHIDInvalidInteger",
-				"%s returned a integer 0x%8.8" PRIx64 " "
-				"(EISA ID %s) but this is not a valid "
-				"EISA ID encoded PNP ID.",
-				name, (uint64_t)obj->Integer.Value, tmp);
-		break;
-	default:
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "Method_HIDBadReturnType",
-			"%s did not return a string or an integer.", name);
-		break;
-	}
-}
-
 static int method_test_HID(fwts_framework *fw)
 {
-	return fwts_evaluate_method(fw, METHOD_MANDATORY, &device,
-		"_HID", NULL, 0, method_test_HID_return, NULL);
+	return fwts_method_test_HID(fw, &device);
+}
+
+/* EvaluateD evice Identification Objects - all are optional */
+static int method_test_ADR(fwts_framework *fw)
+{
+	return fwts_method_test_ADR(fw, &device);
+}
+
+static int method_test_CID(fwts_framework *fw)
+{
+	return fwts_method_test_CID(fw, &device);
+}
+
+static int method_test_CLS(fwts_framework *fw)
+{
+	return fwts_method_test_CLS(fw, &device);
+}
+
+static int method_test_DDN(fwts_framework *fw)
+{
+	return fwts_method_test_DDN(fw, &device);
+}
+
+static int method_test_HRV(fwts_framework *fw)
+{
+	return fwts_method_test_HRV(fw, &device);
+}
+
+static int method_test_MLS(fwts_framework *fw)
+{
+	return fwts_method_test_MLS(fw, &device);
+}
+
+static int method_test_PLD(fwts_framework *fw)
+{
+	return fwts_method_test_PLD(fw, &device);
+}
+
+static int method_test_SUB(fwts_framework *fw)
+{
+	return fwts_method_test_SUB(fw, &device);
+}
+
+static int method_test_SUN(fwts_framework *fw)
+{
+	return fwts_method_test_SUN(fw, &device);
+}
+
+static int method_test_STR(fwts_framework *fw)
+{
+	return fwts_method_test_STR(fw, &device);
+}
+
+static int method_test_UID(fwts_framework *fw)
+{
+	return fwts_method_test_UID(fw, &device);
 }
 
 static fwts_framework_minor_test power_button_tests[] = {
+	/* Device Specific Objects */
 	{ method_test_HID, "Test _HID (Hardware ID)." },
+	/* Device Identification Objects - all are optional */
+	{ method_test_ADR, "Test _ADR (Return Unique ID for Device)." },
+	{ method_test_CID, "Test _CID (Compatible ID)." },
+	{ method_test_CLS, "Test _CLS (Class Code)." },
+	{ method_test_DDN, "Test _DDN (DOS Device Name)." },
+	{ method_test_HRV, "Test _HRV (Hardware Revision Number)." },
+	{ method_test_MLS, "Test _MLS (Multiple Language String)." },
+	{ method_test_PLD, "Test _PLD (Physical Device Location)." },
+	{ method_test_SUB, "Test _SUB (Subsystem ID)." },
+	{ method_test_SUN, "Test _SUN (Slot User Number)." },
+	{ method_test_STR, "Test _STR (String)." },
+	{ method_test_UID, "Test _UID (Unique ID)." },
 	{ NULL, NULL }
 };
 

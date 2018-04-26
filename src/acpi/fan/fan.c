@@ -154,16 +154,19 @@ static int fan_test1(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanMaxState",
 				"Fan %s present but has no max_state present.",
 				info->name);
-		if (info->cur_state == -1 && strcmp(info->type, "intel_powerclamp"))
-			fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanCurState",
-				"Fan %s present but has no cur_state present.",
-				info->name);
+		if (info->type) {
+			if ((info->cur_state == -1) &&
+			    strcmp(info->type, "intel_powerclamp"))
+				fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoFanCurState",
+					"Fan %s present but has no cur_state present.",
+					info->name);
 
-		if (info->type &&
-		    (info->max_state >= 0) && (info->cur_state >= 0))
-			fwts_passed(fw, "Fan %s of type %s has max cooling state %d "
-				"and current cooling state %d.",
-					info->name, info->type, info->max_state, info->cur_state);
+			if ((info->max_state >= 0) && (info->cur_state >= 0))
+				fwts_passed(fw, "Fan %s of type %s has max cooling "
+					"state %d and current cooling state %d.",
+					info->name, info->type, info->max_state,
+					info->cur_state);
+		}
 	}
 
 	fwts_list_free(fans, free_fan_info);

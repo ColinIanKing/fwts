@@ -278,10 +278,11 @@ do
 		*)
 			dialog --help-button --backtitle "$FWTS" --title "Select Tests" --radiolist \
 			"This will run a suite of firmware tests that will check the BIOS and ACPI tables.  It can also find issues that can cause Linux problems.\n\nThe default below is to run just all the Batch Tests, but you can select more tests below if required.\n\nPlease select below (using cursor up/down and space) and press enter to continue."\
-			24 70 7 \
+			24 70 8 \
 			"All" "All Batch Tests" on \
 			"ACPI" "ACPI Tests" off \
 			"UEFI" "UEFI Tests" off \
+			"SBBR" "ARM SBBR Tests" off \
 			"Recommended" "Recommended Tests" off \
 			"Recommended for IFV" "Recommended Tests for F/W Vendors" off \
 			"Selected" "Select Individual Tests" off \
@@ -313,6 +314,10 @@ do
 			;;
 		'UEFI')
 			do_test "--uefitests --skip-test=s3,s4" 'Running UEFI Tests'
+			done_tests_finish
+			;;
+		'SBBR')
+			do_test "--sbbr --skip-test=s3,s4" 'Server Base Boot Requirements (SBBR) Tests'
 			done_tests_finish
 			;;
 		'Recommended')

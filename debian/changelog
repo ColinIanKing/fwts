@@ -1,3 +1,52 @@
+fwts (18.05.00-0ubuntu1) cosmic; urgency=medium
+
+  [Alex Hung]
+  * cpu: msr: do not check SYSENTER_* MSRs
+  * cpu: msr: do not check SYSCALL MSRs
+  * fan: add cooling_device# to error messages
+  * fan: cur_state == -1 is valid for intel_powerclamp
+  * doc: adding acpitests, uefitests and sbbr options to man page
+  * acpi: syntaxcheck: change it from batch to batch-experimental
+  * fwts_framework: add an "ifv" option for Independent Firmware Vendor
+  * dmicheck: skip checks of DMI default values for IFV
+  * fwts-tests: sync up with the new --ifv option
+  * dmi: dmicheck: fix missing spaces in failures of type 9
+  * acpi: method: fix a copy-n-paste error in _SUB test
+  * acpi: method: add test for _CLS control method
+  * fwts-test: sync up with _CLS control method
+  * lib: create helper functions for device identification objects
+  * acpi: devices: add common objects
+  * fwts-frontend-text: add a recommended option for IFV (IBV)
+  * fwts-frontend-text: add an option for ARM SBBR
+  * auto-packager: mkpackage.sh: add cosmic
+
+  [Colin Ian King]
+  * acpi: fan: fix potential null pointer dereference issue
+  * ACPICA: Update to version 20180427
+  * fwts-test: syntaxcheck: sync up with latest ACPICA changes
+  * ACPICA: Update to version 20180508
+
+  [Deb McLemore]
+  * README: Add libpci-dev dependency ppc64el
+  * lib: fwts_pipeio: fix regression from memory leak fix
+  * devicetree: dt_base: Make dtc warnings not failures
+  * opal: cpu_info: Designate property optional
+  * opal: mem_info: Designate property optional
+  * opal: prd_info: Add resilience to service check
+
+  [Ivan Hu]
+  * efi_runtime: fix gcc warning for efi_runtime_reset_system
+
+  [Rameshwar Prasad Sahu]
+  * facs: Add a check for empty BIOS memory map info list
+
+  [Shilpasri G Bhat]
+  * opal: power_mgt: Fixes related to pstate parsing
+  * cpufreq: Add support to read boost frequencies
+  * cpufreq: Dont free a NULL pointer
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 15 May 2018 08:01:13 -0700
+
 fwts (18.03.00-0ubuntu1) bionic; urgency=medium
 
   [Alex Hung]

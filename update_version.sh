@@ -26,8 +26,14 @@ cat << EOF > src/lib/include/fwts_version.h
  *
  */
 EOF
+# Update fwts_version
 echo '#define FWTS_VERSION "'$version'"' >> src/lib/include/fwts_version.h
 echo '#define FWTS_DATE    "'`date --utc "+%F %T"`'"' >> src/lib/include/fwts_version.h
+# Update snapcraft version
+oldsnap_version=$(grep "version: " snapcraft.yaml | cut -d' ' -f2)
+sed -i "s/version: ${oldsnap_version}/version: ${version}/" snapcraft.yaml
+# Update git repo
 git add src/lib/include/fwts_version.h
+git add snapcraft.yaml
 git commit -s -m"lib: fwts_version.h - update to $version"
 git tag -m'"Version '$1'"' $1

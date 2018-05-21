@@ -23,5 +23,6 @@
 int fwts_safe_memcpy(void *dst, const void *src, const size_t n);
 int fwts_safe_memread(const void *src, const size_t n);
 int fwts_safe_memread32(const void *src, const size_t n);
+int fwts_safe_memread64(const void *src, const size_t n);
 
 #endif

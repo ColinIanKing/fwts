@@ -127,3 +127,38 @@ int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
 
 	return FWTS_OK;
 }
+
+/*
+ *  fwts_safe_memread64()
+ *	check we can safely read a region of memory. This catches
+ *	SIGSEGV/SIGBUS errors and returns FWTS_ERROR if it is not
+ *	readable or FWTS_OK if it's OK.
+ *
+ *	n = number of of 64 bit words to check
+ */
+int OPTIMIZE0 fwts_safe_memread64(const void *src, const size_t n)
+{
+	static uint64_t buffer[256];
+	const uint64_t *ptr, *end = (uint64_t *)src + n;
+	uint64_t *bufptr;
+	const uint64_t *bufend = buffer + (sizeof(buffer) / sizeof(*buffer));
+
+	if (sigsetjmp(jmpbuf, 1) != 0)
+		return FWTS_ERROR;
+
+	fwts_sig_handler_set(SIGSEGV, sig_handler, &old_segv_action);
+	fwts_sig_handler_set(SIGBUS, sig_handler, &old_bus_action);
+
+	for (bufptr = buffer, ptr = src; ptr < end; ptr++) {
+		/* Force data to be read */
+		__builtin_prefetch(ptr, 0, 3);
+		*bufptr = *ptr;
+		bufptr++;
+		bufptr = (bufptr >= bufend) ? buffer : bufptr;
+	}
+
+	fwts_sig_handler_restore(SIGSEGV, &old_segv_action);
+	fwts_sig_handler_restore(SIGBUS, &old_bus_action);
+
+	return FWTS_OK;
+}

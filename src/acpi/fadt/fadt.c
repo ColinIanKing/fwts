@@ -395,6 +395,9 @@ static void acpi_table_check_fadt_reserved(fwts_framework *fw)
 {
 	if (fadt->reserved == (uint8_t)0)
 		fwts_passed(fw, "FADT first reserved field is zero.");
+	else if (fadt->reserved == (uint8_t)1)
+		fwts_passed(fw, "FADT first reserved field is one "
+			        "(compatible with ACPI 1.0).");
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
 			    "FADT first reserved field is not zero: 0x%02x",

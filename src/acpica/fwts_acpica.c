@@ -80,6 +80,7 @@ typedef void * (*pthread_callback)(void *);
 
 BOOLEAN AcpiGbl_AbortLoopOnTimeout = FALSE;
 BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
+BOOLEAN AcpiGbl_VerboseHandlers = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];	/* ACPICA Table descriptors */

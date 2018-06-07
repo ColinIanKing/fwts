@@ -365,6 +365,7 @@ static int s4_test_multiple(fwts_framework *fw)
 	int delta = (int)(s4_delay_delta * 1000.0);
 	int tracing_buffer_size = -1;
 	int ret = FWTS_OK;
+	int pm_debug;
 	bool retried = false;
 
 #if FWTS_ENABLE_LOGIND
@@ -373,6 +374,9 @@ static int s4_test_multiple(fwts_framework *fw)
 	g_type_init();
 #endif
 #endif
+
+	(void)fwts_pm_debug_get(&pm_debug);
+	(void)fwts_pm_debug_set(1);
 
         if (s4_multiple == 1)
                 fwts_log_info(fw, "Defaulted to run 1 test, run --s4-multiple=N to run more S4 cycles\n");
@@ -449,6 +453,10 @@ static int s4_test_multiple(fwts_framework *fw)
 				awake_delay = s4_min_delay * 1000;
 		}
 	}
+
+	/* Restore pm debug value */
+	if (pm_debug != -1)
+		(void)fwts_pm_debug_set(pm_debug);
 
 	if (tracing_buffer_size > 0) {
 		char tmp[32];

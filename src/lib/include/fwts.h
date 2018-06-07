@@ -128,5 +128,6 @@
 #include "fwts_pci.h"
 #include "fwts_safe_mem.h"
 #include "fwts_devicetree.h"
+#include "fwts_pm_debug.h"
 
 #endif

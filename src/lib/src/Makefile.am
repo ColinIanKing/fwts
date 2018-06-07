@@ -104,4 +104,5 @@ libfwts_la_SOURCES = 		\
 	fwts_wakealarm.c 	\
 	fwts_pm_method.c	\
 	fwts_safe_mem.c		\
+	fwts_pm_debug.c		\
 	$(dt_sources)

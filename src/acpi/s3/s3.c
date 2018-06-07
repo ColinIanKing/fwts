@@ -493,6 +493,7 @@ static int s3_test_multiple(fwts_framework *fw)
 	int resume_too_long = 0;
 	int awake_delay = s3_min_delay * 1000;
 	int delta = (int)(s3_delay_delta * 1000.0);
+	int pm_debug;
 
 #if FWTS_ENABLE_LOGIND
 #if !GLIB_CHECK_VERSION(2,35,0)
@@ -500,6 +501,9 @@ static int s3_test_multiple(fwts_framework *fw)
 	g_type_init();
 #endif
 #endif
+
+	(void)fwts_pm_debug_get(&pm_debug);
+	(void)fwts_pm_debug_set(1);
 
 	if (s3_multiple == 1)
 		fwts_log_info(fw, "Defaulted to 1 test, use --s3-multiple=N to run more S3 cycles\n");
@@ -558,6 +562,10 @@ static int s3_test_multiple(fwts_framework *fw)
 				awake_delay = s3_min_delay * 1000;
 		}
 	}
+
+	/* Restore pm debug value */
+	if (pm_debug != -1)
+		(void)fwts_pm_debug_set(pm_debug);
 
 	fwts_log_info(fw, "Completed S3 cycle(s)\n");
 

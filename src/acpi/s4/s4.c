@@ -46,7 +46,8 @@ static int s4_init(fwts_framework *fw)
 	fwts_list* swap_devs;
 
 	swap_devs = fwts_file_open_and_read("/proc/swaps");
-	if (fwts_text_list_strstr(swap_devs, "/dev/") == NULL) {
+	if ((fwts_text_list_strstr(swap_devs, "/dev/") == NULL) &&
+	    (fwts_text_list_strstr(swap_devs, "file") == NULL)) {
 		fwts_list_free(swap_devs, free);
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoSwap",
 			"Cannot run hibernate test - machine appears to have NO swap.");

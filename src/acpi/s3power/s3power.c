@@ -243,6 +243,7 @@ static int s3power_test(fwts_framework *fw)
 	int status;
 	int duration;
 	int rc = FWTS_OK;
+	int pm_debug;
 
 	bool offline;
 
@@ -315,8 +316,15 @@ static int s3power_test(fwts_framework *fw)
 
 	fwts_wakealarm_trigger(fw, s3power_sleep_delay);
 
+	(void)fwts_pm_debug_get(&pm_debug);
+	(void)fwts_pm_debug_set(1);
+
 	/* Do S3 here */
 	status = do_suspend(fwts_settings, 100, &duration, PM_SUSPEND);
+
+	/* Restore pm debug value */
+	if (pm_debug != -1)
+		(void)fwts_pm_debug_set(pm_debug);
 
 	s3power_get_remaining_capacity(fw, &capacity_after_mAh, &capacity_after_mWh);
 

@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 
-int fwts_set(const char *text, const char *file);
+int fwts_set(const char *file, const char *text);
+int fwts_set_int(const char *file, const int value);
 
 #endif

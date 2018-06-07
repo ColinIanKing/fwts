@@ -27,15 +27,35 @@
  *	write text to a given file, used to set
  *	values in /sys or /proc
  */
-int fwts_set(const char *text, const char *file)
+int fwts_set(const char *file, const char *text)
 {
 	FILE *fp;
+	int ret;
 
 	if ((fp = fopen(file, "w")) == NULL)
 		return FWTS_ERROR;
 
-	fprintf(fp, "%s\n", text);
+	ret = fprintf(fp, "%s\n", text);
 	(void)fclose(fp);
 
-	return FWTS_OK;
+	return (ret < 0) ? FWTS_ERROR : FWTS_OK;
+}
+
+/*
+ *  fwts_set_int()
+ *	write an int to a given file, used to set
+ *	values in /sys or /proc
+ */
+int fwts_set_int(const char *file, const int value)
+{
+	FILE *fp;
+	int ret;
+
+	if ((fp = fopen(file, "w")) == NULL)
+		return FWTS_ERROR;
+
+	ret = fprintf(fp, "%d\n", value);
+	(void)fclose(fp);
+
+	return (ret < 0) ? FWTS_ERROR : FWTS_OK;
 }

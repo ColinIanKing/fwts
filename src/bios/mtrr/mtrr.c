@@ -231,7 +231,7 @@ restart:
 		entry = fwts_list_data(struct mtrr_entry*, item);
 
 		if (entry->end >= end && entry->start < end) {
-			end = entry->start;
+			end = (entry->start == 0) ? 0 : (entry->start - 1);
 			if (end < start)
 				end = start;
 			else

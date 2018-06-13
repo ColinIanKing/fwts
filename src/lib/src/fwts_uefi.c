@@ -506,13 +506,13 @@ char *fwts_uefi_attribute_info(uint32_t attr)
 	if (attr & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) {
 		if (*str)
 			strcat(str, ",");
-		strcat(str, "AuthenicatedWrite");
+		strcat(str, "AuthenticatedWrite");
 	}
 
 	if (attr & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) {
 		if (*str)
 			strcat(str, ",");
-		strcat(str, "TimeBaseAuthenicatedWrite");
+		strcat(str, "TimeBasedAuthenticatedWrite");
 	}
 
 	return str;

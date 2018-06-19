@@ -1,3 +1,32 @@
+fwts (18.06.00-0ubuntu1) cosmic; urgency=medium
+
+  [Alex Hung]
+  * acpi: fadt: allow first reserved field to be 1
+  * efi_runtime: build dkms for kernel that does not have efi_test
+
+  [Colin Ian King]
+  * update_version.sh: also update version in snapcraft.yaml
+  * snapcraft.yaml: add in missing stage packages
+  * ACPICA: Update to version 20180531
+  * lib: fwts_set: fix API for fwts_set, add fwts_set_int
+  * lib: add small helpers top get/set /sys/power/pm_debug_messages
+  * acpi: s3: force enable /sys/power/pm_debug_messages (LP: #1772563)
+  * acpi: s4: also check for file based swap files
+  * acpi: s4: force enable /sys/power/pm_debug_messages (LP: #1772563)
+  * acpi: s3power: force enable /sys/power/pm_debug_messages (LP: #1772563)
+  * acpica: fix linking issues when building non ACPI builds
+
+  [Ivan Hu]
+  * acpi: hpet: fix getting invalid vendor ID and clock period
+
+  [Mathieu Trudel-Lapierre]
+  * fwts_uefi: Fixing tiny typos in the uefi driver
+
+  [Stan Hung]
+  * mtrr: fix incorrect type detection
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Tue, 19 Jun 2018 15:58:07 +0800
+
 fwts (18.05.00-0ubuntu1) cosmic; urgency=medium
 
   [Alex Hung]

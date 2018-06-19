@@ -9,7 +9,7 @@ parts:
         plugin: autotools
         source: git://kernel.ubuntu.com/hwe/fwts
         stage-packages:
-            - libftdi1
+            - libfdt1
         build-packages:
             - gcc
             - make

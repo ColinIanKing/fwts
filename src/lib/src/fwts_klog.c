@@ -41,7 +41,7 @@
  */
 void fwts_klog_free(fwts_list *klog)
 {
-	fwts_text_list_free(klog);
+	fwts_log_free(klog);
 }
 
 /*

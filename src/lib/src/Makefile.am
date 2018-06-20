@@ -85,6 +85,7 @@ libfwts_la_SOURCES = 		\
 	fwts_log_html.c 	\
 	fwts_log_json.c 	\
 	fwts_log_plaintext.c 	\
+	fwts_log_scan.c		\
 	fwts_log_xml.c 		\
 	fwts_memorymap.c 	\
 	fwts_mmap.c 		\

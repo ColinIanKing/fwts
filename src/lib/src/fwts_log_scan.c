@@ -17,27 +17,23 @@
  *
  */
 
-#ifndef __FWTS_LOG_SCAN_H__
-#define __FWTS_LOG_SCAN_H__
-
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <sys/types.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <regex.h>
+#include <fcntl.h>
 
-typedef enum {
-	FWTS_COMPARE_REGEX = 'r',
-	FWTS_COMPARE_STRING = 's',
-	FWTS_COMPARE_UNKNOWN = 'u'
-} fwts_compare_mode;
+#include "fwts.h"
 
-typedef struct {
-	fwts_compare_mode compare_mode;
-	fwts_log_level level;
-	const char *pattern;
-	const char *advice;
-	char *label;
-	regex_t compiled;
-	bool compiled_ok;
-} fwts_log_pattern;
-
-void       fwts_log_free(fwts_list *list);
-
-#endif
+/*
+ *  fwts_log_free()
+ *  free log list
+ */
+void fwts_log_free(fwts_list *log)
+{
+	fwts_text_list_free(log);
+}

@@ -21,9 +21,30 @@
 #include "fwts.h"
 
 /*
+ *  coreboot logfile exposed by Google firmware module
+ *  Kernel option nessesary (GOOGLE_MEMCONSOLE_COREBOOT=m/y)
+ */
+#define GOOGLE_MEMCONSOLE_COREBOOT_PATH	"/sys/firmware/log"
+
+/*
  *  free coreboot log list
  */
 void fwts_clog_free(fwts_list *clog)
 {
         fwts_log_free(clog);
+}
+
+/*
+ *  read coreboot log and return as list of lines
+ *  TODO:	1) parse coreboot logfile as argument
+ *  		2) find coreboot log in /dev/mem
+ */
+fwts_list *fwts_clog_read(void)
+{
+    fwts_list *list;
+
+    if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) == NULL)
+        return NULL;
+
+    return list;
 }

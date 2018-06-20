@@ -24,5 +24,6 @@
 #include "fwts.h"
 
 void       fwts_clog_free(fwts_list *list);
+fwts_list *fwts_clog_read(void);
 
 #endif

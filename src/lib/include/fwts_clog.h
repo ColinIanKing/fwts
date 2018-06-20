@@ -23,7 +23,11 @@
 
 #include "fwts.h"
 
+typedef void (*fwts_clog_progress_func)(fwts_framework *fw, int percent);
+typedef void (*fwts_clog_scan_func)(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors);
+
 void       fwts_clog_free(fwts_list *list);
 fwts_list *fwts_clog_read(void);
+int        fwts_clog_scan(fwts_framework *fw, fwts_list *clog, fwts_clog_scan_func callback, fwts_clog_progress_func progress, void *private, int *errors);
 
 #endif

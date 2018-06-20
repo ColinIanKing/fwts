@@ -48,3 +48,13 @@ fwts_list *fwts_clog_read(void)
 
     return list;
 }
+
+int fwts_clog_scan(fwts_framework *fw,
+        fwts_list *clog,
+        fwts_clog_scan_func scan_func,
+        fwts_clog_progress_func progress_func,
+        void *private,
+        int *match)
+{
+        return fwts_log_scan(fw, clog, scan_func, progress_func, private, match, false);
+}

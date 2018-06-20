@@ -91,3 +91,19 @@ fwts_list *fwts_log_find_changes(fwts_list *log_old, fwts_list *log_new)
         }
         return log_diff;
 }
+
+char *fwts_log_remove_timestamp(char *text)
+{
+        char *ptr = text;
+
+        if ((ptr[0] == '<') && (ptr[2] == '>'))
+                ptr += 3;
+
+        if (*ptr == '[')
+                while (*ptr && *ptr != ']')
+                        ptr++;
+        if (*ptr == ']')
+                ptr += 2;       /* Skip ] and trailing space */
+
+        return ptr;
+}

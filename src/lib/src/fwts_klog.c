@@ -83,18 +83,7 @@ fwts_list *fwts_klog_read(void)
 
 char *fwts_klog_remove_timestamp(char *text)
 {
-	char *ptr = text;
-
-	if ((ptr[0] == '<') && (ptr[2] == '>'))
-		ptr += 3;
-
-	if (*ptr == '[')
-		while (*ptr && *ptr != ']')
-			ptr++;
-	if (*ptr == ']')
-		ptr += 2;	/* Skip ] and trailing space */
-
-	return ptr;
+	return fwts_log_remove_timestamp(text);
 }
 
 int fwts_klog_scan(fwts_framework *fw,

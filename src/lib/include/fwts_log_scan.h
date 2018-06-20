@@ -40,5 +40,6 @@ typedef struct {
 
 void       fwts_log_free(fwts_list *list);
 fwts_list *fwts_log_find_changes(fwts_list *log_old, fwts_list *log_new);
+char      *fwts_log_remove_timestamp(char *text);
 
 #endif

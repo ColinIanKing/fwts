@@ -160,27 +160,6 @@ int fwts_klog_pm_check(fwts_framework *fw, fwts_klog_progress_func progress,
 		progress, klog, errors);
 }
 
-static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int repeated,
-	char *prev, void *pattern, int *match)
-{
-	int rc;
-	regex_t compiled;
-
-	FWTS_UNUSED(fw);
-	FWTS_UNUSED(repeated);
-	FWTS_UNUSED(prev);
-
-	rc = regcomp(&compiled, (char *)pattern, REG_EXTENDED);
-	if (rc) {
-		fwts_log_error(fw, "Regex %s failed to compile: %d.", (char *)pattern, rc);
-	} else {
-		rc = regexec(&compiled, line, 0, NULL, 0);
-		regfree(&compiled);
-		if (!rc)
-			(*match)++;
-	}
-}
-
 /*
  * fwts_klog_regex_find()
  * 	scan a kernel log list of lines for a given regex pattern
@@ -188,11 +167,7 @@ static void fwts_klog_regex_find_callback(fwts_framework *fw, char *line, int re
  */
 int fwts_klog_regex_find(fwts_framework *fw, fwts_list *klog, char *pattern)
 {
-	int found = 0;
-
-	fwts_klog_scan(fw, klog, fwts_klog_regex_find_callback, NULL, pattern, &found);
-
-	return found;
+    return fwts_log_regex_find(fw, klog, pattern, true);
 }
 
 /*

@@ -465,3 +465,38 @@ fail_put:
 
         return ret;
 }
+
+static void fwts_log_regex_find_callback(fwts_framework *fw, char *line, int repeated,
+        char *prev, void *pattern, int *match)
+{
+        int rc;
+        regex_t compiled;
+
+        FWTS_UNUSED(fw);
+        FWTS_UNUSED(repeated);
+        FWTS_UNUSED(prev);
+
+        rc = regcomp(&compiled, (char *)pattern, REG_EXTENDED);
+        if (rc) {
+                fwts_log_error(fw, "Regex %s failed to compile: %d.", (char *)pattern, rc);
+        } else {
+                rc = regexec(&compiled, line, 0, NULL, 0);
+                regfree(&compiled);
+                if (!rc)
+                        (*match)++;
+        }
+}
+
+/*
+ * fwts_log_regex_find()
+ *      scan a log list of lines for a given regex pattern
+ *      uses fwts_log_regex_find_callback() callback
+ */
+int fwts_log_regex_find(fwts_framework *fw, fwts_list *log, char *pattern, bool remove_timestamp)
+{
+        int found = 0;
+
+        fwts_log_scan(fw, log, fwts_log_regex_find_callback, NULL, pattern, &found, remove_timestamp);
+
+        return found;
+}

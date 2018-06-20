@@ -52,5 +52,6 @@ void       fwts_log_scan_patterns(fwts_framework *fw, char *line, int repeated, 
 fwts_compare_mode fwts_log_compare_mode_str_to_val(const char *str);
 const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key, bool log_error);
 int         fwts_log_check(fwts_framework *fw, const char *table, fwts_log_scan_func fwts_log_scan_patterns, fwts_log_progress_func progress, fwts_list *log, int *errors, const char *json_data_path, const char *label, bool remove_timestamp);
+int        fwts_log_regex_find(fwts_framework *fw, fwts_list *log, char *pattern, bool remove_timestamp);
 
 #endif

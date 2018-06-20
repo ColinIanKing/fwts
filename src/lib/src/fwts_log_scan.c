@@ -107,3 +107,101 @@ char *fwts_log_remove_timestamp(char *text)
 
         return ptr;
 }
+
+int fwts_log_scan(fwts_framework *fw,
+        fwts_list *log,
+        fwts_log_scan_func scan_func,
+        fwts_log_progress_func progress_func,
+        void *private,
+        int *match,
+        bool remove_timestamp)
+{
+        typedef struct {
+                char *line;
+                int repeated;
+        } log_reduced_item;
+
+        char *prev;
+        fwts_list_link *item;
+        fwts_list *log_reduced;
+        int i;
+        char *newline = NULL;
+
+        *match = 0;
+
+        if (!log)
+                return FWTS_ERROR;
+
+        if ((log_reduced = fwts_list_new()) == NULL)
+                return FWTS_ERROR;
+
+        /*
+         *  Form a reduced log by stripping out repeated warnings
+         */
+        i = 0;
+        fwts_list_foreach(item, log) {
+                if (remove_timestamp) {
+                        newline = fwts_log_remove_timestamp(fwts_list_data(char *, item));
+                } else {
+                        newline = fwts_list_data(char *, item);
+                }
+
+                if (progress_func  && ((i % 25) == 0))
+                        progress_func(fw, 50 * i / fwts_list_len(log));
+                if (*newline) {
+                        bool matched = false;
+                        fwts_list_link *l;
+                        fwts_list_foreach(l, log_reduced) {
+                                char *line;
+                                log_reduced_item *reduced = fwts_list_data(log_reduced_item *, l);
+
+                                if (remove_timestamp)
+                                        line = fwts_log_remove_timestamp(reduced->line);
+                                else
+                                        line = reduced->line;
+
+                                if (strcmp(newline, line) == 0) {
+                                        reduced->repeated++;
+                                        matched = true;
+                                        break;
+                                }
+                        }
+                        if (!matched) {
+                                log_reduced_item *new;
+
+                                if ((new = calloc(1, sizeof(log_reduced_item))) == NULL) {
+                                        fwts_list_free(log_reduced, free);
+                                        return FWTS_ERROR;
+                                }
+                                new->line = fwts_list_data(char *, item);
+                                new->repeated = 0;
+
+                                fwts_list_append(log_reduced, new);
+                        }
+                }
+                i++;
+        }
+
+        prev = "";
+
+        i = 0;
+        fwts_list_foreach(item, log_reduced) {
+                log_reduced_item *reduced = fwts_list_data(log_reduced_item *, item);
+                char *line = reduced->line;
+
+                if ((line[0] == '<') && (line[2] == '>'))
+                        line += 3;
+
+                scan_func(fw, line, reduced->repeated, prev, private, match);
+                if (progress_func  && ((i % 25) == 0))
+                        progress_func(fw, (50+(50 * i)) / fwts_list_len(log_reduced));
+                prev = line;
+                i++;
+        }
+        if (progress_func)
+                progress_func(fw, 100);
+
+        fwts_list_free(log_reduced, free);
+
+        return FWTS_OK;
+}

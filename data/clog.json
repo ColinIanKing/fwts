@@ -2,11 +2,74 @@
  "firmware_error_warning_patterns":
  [
   {
-    "compare_mode": "string",
-    "log_level": "LOG_LEVEL_LOW",
-    "pattern": "magic pattern string which will definitely not appear in the logs",
-    "advice": "This is only a template.",
-    "label": "template"
-  }
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "MRC:.*(invalid|failed to|Could not|failure).*",
+    "advice": "Debug MRC cache code and check flash write protection.",
+    "label": "MRC"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "GMA:.*(Error|Broken|couldn't).*",
+    "advice": "Debug Intel GMA driver code and check VGA Option ROM and VBT included into CBFS.",
+    "label": "GMA"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "pattern": "ERROR: Not enough MTRRs available!.*",
+    "advice": "Increase memory alignment to reduce MTRR usage.",
+    "label": "MTRR"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": ".*: Missing ACPI scope",
+    "advice": "Add an ACPI name for coreboot's SSDT generator.",
+    "label": "SSDT"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_MEDIUM",
+    "pattern": "ERROR: No timestamp.*",
+    "advice": "Debug the timestamp code.",
+    "label": "TIMESTAMP"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "Error:.*cbmem",
+    "advice": "Debug the CBMEM code.",
+    "label": "CBMEM"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "(No|Invalid) DSDT.*",
+    "advice": "Provide or fix the DSDT file.",
+    "label": "DSDT"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "ACPI: Error: Could not add ACPI table.*",
+    "advice": "Increase MAX_ACPI_TABLES.",
+    "label": "RSDP"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_MEDIUM",
+    "pattern": "PCI: Check your devicetree.cb.",
+    "advice": "Check the mainboard's devicetree.cb for PCI related errors.",
+    "label": "STATIC_PCI"
+  },
+  {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_HIGH",
+    "pattern": "PCI: Check your devicetree.cb.",
+    "advice": "Check the mainboard's devicetree.cb for PCI related errors.",
+    "label": "STATIC_PCI"
+  },
  ]
 }

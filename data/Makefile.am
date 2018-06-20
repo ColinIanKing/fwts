@@ -17,4 +17,4 @@
 #
 
 fwtsdatadir = $(pkgdatadir)
-fwtsdata_DATA = klog.json syntaxcheck.json olog.json
+fwtsdata_DATA = clog.json klog.json syntaxcheck.json olog.json

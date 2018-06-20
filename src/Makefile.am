@@ -154,6 +154,7 @@ fwts_SOURCES = main.c 				\
 	bios/pnp/pnp.c 				\
 	bios/romdump/romdump.c 			\
 	cmos/cmosdump/cmosdump.c 		\
+	coreboot/clog/clog.c			\
 	cpu/virt/virt.c 			\
 	cpu/virt/virt_svm.c 			\
 	cpu/virt/virt_vmx.c			\

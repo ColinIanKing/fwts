@@ -1,0 +1,12 @@
+{
+ "firmware_error_warning_patterns":
+ [
+  {
+    "compare_mode": "string",
+    "log_level": "LOG_LEVEL_LOW",
+    "pattern": "magic pattern string which will definitely not appear in the logs",
+    "advice": "This is only a template.",
+    "label": "template"
+  }
+ ]
+}

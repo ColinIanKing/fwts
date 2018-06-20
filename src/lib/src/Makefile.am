@@ -59,6 +59,7 @@ libfwts_la_SOURCES = 		\
 	fwts_button.c 		\
 	fwts_checkeuid.c 	\
 	fwts_checksum.c 	\
+	fwts_clog.c		\
 	fwts_cmos.c 		\
 	fwts_cpu.c 		\
 	fwts_dump.c 		\

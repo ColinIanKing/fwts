@@ -240,3 +240,60 @@ char *fwts_log_unique_label(const char *str, const char *label)
         *dst = '\0';
         return buffer;
 }
+
+void fwts_log_scan_patterns(fwts_framework *fw,
+        char *line,
+        int  repeated,
+        char *prevline,
+        void *private,
+        int *errors,
+        const char *name,
+        const char *advice)
+{
+        fwts_log_pattern *pattern = (fwts_log_pattern *)private;
+
+        FWTS_UNUSED(prevline);
+
+        while (pattern->pattern != NULL) {
+                bool matched = false;
+                switch (pattern->compare_mode) {
+                case FWTS_COMPARE_REGEX:
+                        if (pattern->compiled_ok) {
+                                int ret = regexec(&pattern->compiled, line, 0, NULL, 0);
+                                if (!ret) {
+                                        /* A successful regular expression match! */
+                                        matched = true;
+                                } else if (ret != REG_NOMATCH) {
+                                        char msg[1024];
+
+                                        regerror(ret, &pattern->compiled, msg, sizeof(msg));
+                                        fwts_log_info(fw, "regular expression engine error: %s.", msg);
+                                }
+                        }
+                        break;
+                case FWTS_COMPARE_STRING:
+                default:
+                        matched = (strstr(line, pattern->pattern) != NULL) ;
+                        break;
+                }
+
+                if (matched) {
+                        if (pattern->level == LOG_LEVEL_INFO)
+                                fwts_log_info(fw, "%s message: %s", name, line);
+                        else {
+                                fwts_failed(fw, pattern->level, pattern->label,
+                                        "%s %s message: %s", fwts_log_level_to_str(pattern->level), name, line);
+                                fwts_error_inc(fw, pattern->label, errors);
+                        }
+                        if (repeated)
+                                fwts_log_info(fw, "Message repeated %d times.", repeated);
+
+                        if ((pattern->advice) != NULL && (*pattern->advice))
+                                fwts_advice(fw, "%s", pattern->advice);
+                        else
+                                fwts_advice(fw, "%s", advice);
+                        return;
+                }
+                pattern++;
+        }
+}

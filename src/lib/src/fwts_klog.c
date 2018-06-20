@@ -113,55 +113,11 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 	void *private,
 	int *errors)
 {
-	fwts_log_pattern *pattern = (fwts_log_pattern *)private;
-	static char *advice =
-		"This is a bug picked up by the kernel, but as yet, the "
-		"firmware test suite has no diagnostic advice for this particular problem.";
+    static char *advice =
+        "This is a bug picked up by the kernel, but as yet, the "
+        "firmware test suite has no diagnostic advice for this particular problem.";
 
-	FWTS_UNUSED(prevline);
-
-	while (pattern->pattern != NULL) {
-		bool matched = false;
-		switch (pattern->compare_mode) {
-		case FWTS_COMPARE_REGEX:
-			if (pattern->compiled_ok) {
-				int ret = regexec(&pattern->compiled, line, 0, NULL, 0);
-				if (!ret) {
-					/* A successful regular expression match! */
-					matched = true;
-				} else if (ret != REG_NOMATCH) {
-					char msg[1024];
-
-					regerror(ret, &pattern->compiled, msg, sizeof(msg));
-					fwts_log_info(fw, "regular expression engine error: %s.", msg);
-				}
-			}
-			break;
-		case FWTS_COMPARE_STRING:
-		default:
-			matched = (strstr(line, pattern->pattern) != NULL) ;
-			break;
-		}
-
-		if (matched) {
-			if (pattern->level == LOG_LEVEL_INFO)
-				fwts_log_info(fw, "Kernel message: %s", line);
-			else {
-				fwts_failed(fw, pattern->level, pattern->label,
-					"%s Kernel message: %s", fwts_log_level_to_str(pattern->level), line);
-				fwts_error_inc(fw, pattern->label, errors);
-			}
-			if (repeated)
-				fwts_log_info(fw, "Message repeated %d times.", repeated);
-
-			if ((pattern->advice) != NULL && (*pattern->advice))
-				fwts_advice(fw, "%s", pattern->advice);
-			else
-				fwts_advice(fw, "%s", advice);
-			return;
-		}
-		pattern++;
-	}
+    fwts_log_scan_patterns(fw, line, repeated, prevline, private, errors, "Kernel", advice);
 }
 
 /*

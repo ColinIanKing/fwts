@@ -37,3 +37,57 @@ void fwts_log_free(fwts_list *log)
 {
 	fwts_text_list_free(log);
 }
+
+/*
+ *  fwts_log_find_changes()
+ *      find new lines added to log, clone them from new list
+ *      must be freed with fwts_list_free(log_diff, NULL);
+ */
+fwts_list *fwts_log_find_changes(fwts_list *log_old, fwts_list *log_new)
+{
+        fwts_list_link *l_old, *l_new = NULL;
+        fwts_list *log_diff;
+
+        if (log_new == NULL) {
+                /* Nothing new to compare, return nothing */
+                return NULL;
+        }
+        if ((log_diff = fwts_list_new()) == NULL)
+                return NULL;
+
+        if (log_old == NULL) {
+                /* Nothing in old log, so clone all of new list */
+                l_new = log_new->head;
+        } else {
+                fwts_list_link *l_old_last = NULL;
+
+                /* Clone just the new differences */
+
+                /* Find last item in old log */
+                fwts_list_foreach(l_old, log_old)
+                        l_old_last = l_old;
+
+                if (l_old_last) {
+                        /* And now look for that last line in the new log */
+                        char *old = fwts_list_data(char *, l_old_last);
+                        fwts_list_foreach(l_new, log_new) {
+                                const char *new = fwts_list_data(char *, l_new);
+
+                                if (!strcmp(new, old)) {
+                                        /* Found last line that matches, bump to next */
+                                        l_new = l_new->next;
+                                        break;
+                                }
+                        }
+                }
+        }
+
+        /* Clone the new unique lines to the log_diff list */
+        for (; l_new; l_new = l_new->next) {
+                if (fwts_list_append(log_diff, l_new->data) == NULL) {
+                        fwts_list_free(log_diff, NULL);
+                        return NULL;
+                }
+        }
+        return log_diff;
+}

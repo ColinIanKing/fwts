@@ -51,51 +51,7 @@ void fwts_klog_free(fwts_list *klog)
  */
 fwts_list *fwts_klog_find_changes(fwts_list *klog_old, fwts_list *klog_new)
 {
-	fwts_list_link *l_old, *l_new = NULL;
-	fwts_list *klog_diff;
-
-	if (klog_new == NULL) {
-		/* Nothing new to compare, return nothing */
-		return NULL;
-	}
-	if ((klog_diff = fwts_list_new()) == NULL)
-		return NULL;
-
-	if (klog_old == NULL) {
-		/* Nothing in old log, so clone all of new list */
-		l_new = klog_new->head;
-	} else {
-		fwts_list_link *l_old_last = NULL;
-
-		/* Clone just the new differences */
-
-		/* Find last item in old log */
-		fwts_list_foreach(l_old, klog_old)
-			l_old_last = l_old;
-
-		if (l_old_last) {
-			/* And now look for that last line in the new log */
-			char *old = fwts_list_data(char *, l_old_last);
-			fwts_list_foreach(l_new, klog_new) {
-				const char *new = fwts_list_data(char *, l_new);
-
-				if (!strcmp(new, old)) {
-					/* Found last line that matches, bump to next */
-					l_new = l_new->next;
-					break;
-				}
-			}
-		}
-	}
-
-	/* Clone the new unique lines to the klog_diff list */
-	for (; l_new; l_new = l_new->next) {
-		if (fwts_list_append(klog_diff, l_new->data) == NULL) {
-			fwts_list_free(klog_diff, NULL);
-			return NULL;
-		}
-	}
-	return klog_diff;
+	return fwts_log_find_changes(klog_old, klog_new);
 }
 
 /*

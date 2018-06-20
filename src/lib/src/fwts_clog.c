@@ -46,17 +46,18 @@ void fwts_clog_free(fwts_list *clog)
 
 /*
  *  read coreboot log and return as list of lines
- *  TODO:	1) parse coreboot logfile as argument
- *  		2) find coreboot log in /dev/mem
+ *  TODO: find coreboot log in /dev/mem
  */
-fwts_list *fwts_clog_read(void)
+fwts_list *fwts_clog_read(fwts_framework *fw)
 {
     fwts_list *list;
 
-    if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) == NULL)
-        return NULL;
+    if (fw->clog && (list = fwts_file_open_and_read(fw->clog)))
+        return list;
+    if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) != NULL)
+        return list;
 
-    return list;
+    return NULL;
 }
 
 int fwts_clog_scan(fwts_framework *fw,

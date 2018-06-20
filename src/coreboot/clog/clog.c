@@ -29,7 +29,7 @@ static fwts_list *clog;
 
 static int clog_init(fwts_framework *fw)
 {
-	clog = fwts_clog_read();
+	clog = fwts_clog_read(fw);
 
 	if (clog == NULL) {
 		fwts_log_error(fw, "Cannot read coreboot log.");

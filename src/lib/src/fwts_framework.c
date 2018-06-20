@@ -135,6 +135,7 @@ static fwts_option fwts_framework_options[] = {
 	{ "arch",		"",   1, "Specify arch of the tables being tested (defaults to current host)." },
 	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
 	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
+	{ "clog",		"",   1, "Specify a coreboot logfile dump" },
 	{ NULL, NULL, 0, NULL }
 };
 
@@ -1334,6 +1335,9 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		case 47: /* --ifv */
 			fw->flags |= FWTS_FLAG_FIRMWARE_VENDOR;
 			break;
+		case 48: /* --coreboot-log */
+			fwts_framework_strdup(&fw->clog, optarg);
+
 		}
 		break;
 	case 'a': /* --all */
@@ -1623,6 +1627,7 @@ tidy_close:
 
 	free(fw->lspci);
 	free(fw->results_logname);
+	free(fw->clog);
 	free(fw->klog);
 	free(fw->olog);
 	free(fw->json_data_path);

@@ -119,6 +119,7 @@ struct fwts_framework {
 	char *lspci;				/* path to lspci */
 	char *acpi_table_path;			/* path to raw ACPI tables */
 	char *acpi_table_acpidump_file;		/* path to ACPI dump file */
+	char *clog;				/* path to dump of coreboot log */
 	char *klog;				/* path to dump of kernel log */
 	char *olog;				/* path to OLOG */
 	char *json_data_path;			/* path to application json data files, e.g. json klog data */

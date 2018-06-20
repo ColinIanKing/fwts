@@ -27,6 +27,16 @@
 #define GOOGLE_MEMCONSOLE_COREBOOT_PATH	"/sys/firmware/log"
 
 /*
+ *  clog pattern matching strings data file, data stored in json format
+ */
+#define CLOG_DATA_JSON_FILE     "clog.json"
+
+/*
+ *  match unique strings in the coreboot log
+*/
+#define UNIQUE_CLOG_LABEL       "Clog"
+
+/*
  *  free coreboot log list
  */
 void fwts_clog_free(fwts_list *clog)
@@ -70,4 +80,24 @@ void fwts_clog_scan_patterns(fwts_framework *fw,
         "This is a bug picked up by coreboot, but as yet, the "
         "firmware test suite has no diagnostic advice for this particular problem.";
     fwts_log_scan_patterns(fw, line, repeated, prevline, private, errors, "coreboot", advice);
+}
+
+static int fwts_clog_check(fwts_framework *fw,
+        const char *table,
+        fwts_clog_progress_func progress,
+        fwts_list *clog,
+        int *errors)
+{
+        char json_data_path[PATH_MAX];
+
+        snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, CLOG_DATA_JSON_FILE);
+
+        return fwts_log_check(fw, table, fwts_clog_scan_patterns, progress, clog, errors, json_data_path, UNIQUE_CLOG_LABEL, true);
+}
+
+int fwts_clog_firmware_check(fwts_framework *fw, fwts_clog_progress_func progress,
+        fwts_list *clog, int *errors)
+{
+        return fwts_clog_check(fw, "firmware_error_warning_patterns",
+                progress, clog, errors);
 }

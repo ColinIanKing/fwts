@@ -311,3 +311,38 @@ fwts_compare_mode fwts_log_compare_mode_str_to_val(const char *str)
         else
                 return FWTS_COMPARE_UNKNOWN;
 }
+
+/*
+ *  fwts_json_str()
+ *	given a key, fetch the string value associated with this object
+ *	and report an error if it cannot be found.
+ */
+const char *fwts_json_str(
+	fwts_framework *fw,
+	const char *table,
+	int index,
+	json_object *obj,
+	const char *key,
+	bool log_error)
+{
+	const char *str;
+#if JSON_HAS_GET_EX
+	json_object *str_obj;
+
+	if (!json_object_object_get_ex(obj, key, &str_obj))
+		goto nullobj;
+	str = json_object_get_string(str_obj);
+	if (FWTS_JSON_ERROR(str))
+		goto nullobj;
+#else
+	str = json_object_get_string(json_object_object_get(obj, key));
+	if (FWTS_JSON_ERROR(str))
+		goto nullobj;
+#endif
+	return str;
+nullobj:
+	if (log_error)
+		fwts_log_error(fw, "Cannot fetch %s val from item %d, table %s.",
+			key, index, table);
+	return NULL;
+}

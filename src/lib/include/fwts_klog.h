@@ -50,6 +50,5 @@ int        fwts_klog_write(fwts_framework *fw, const char *msg);
 
 fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str);
 char *fwts_klog_unique_label(const char *str);
-const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key, bool log_error);
 
 #endif

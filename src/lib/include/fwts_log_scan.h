@@ -22,6 +22,8 @@
 
 #include <regex.h>
 
+#include "fwts_json.h"
+
 typedef enum {
 	FWTS_COMPARE_REGEX = 'r',
 	FWTS_COMPARE_STRING = 's',
@@ -48,5 +50,6 @@ int        fwts_log_scan(fwts_framework *fw, fwts_list *log, fwts_log_scan_func 
 char *fwts_log_unique_label(const char *str, const char *label);
 void       fwts_log_scan_patterns(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors, const char *name, const char *advice);
 fwts_compare_mode fwts_log_compare_mode_str_to_val(const char *str);
+const char *fwts_json_str(fwts_framework *fw, const char *table, int index, json_object *obj, const char *key, bool log_error);
 
 #endif

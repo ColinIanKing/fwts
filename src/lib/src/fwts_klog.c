@@ -126,12 +126,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
  */
 fwts_compare_mode fwts_klog_compare_mode_str_to_val(const char *str)
 {
-	if (strcmp(str, "regex") == 0)
-		return FWTS_COMPARE_REGEX;
-	else if (strcmp(str, "string") == 0)
-		return FWTS_COMPARE_STRING;
-	else
-		return FWTS_COMPARE_UNKNOWN;
+	return fwts_log_compare_mode_str_to_val(str);
 }
 
 /*

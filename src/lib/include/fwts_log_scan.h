@@ -47,5 +47,6 @@ char      *fwts_log_remove_timestamp(char *text);
 int        fwts_log_scan(fwts_framework *fw, fwts_list *log, fwts_log_scan_func callback, fwts_log_progress_func progress, void *private, int *errors, bool remove_timestamp);
 char *fwts_log_unique_label(const char *str, const char *label);
 void       fwts_log_scan_patterns(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors, const char *name, const char *advice);
+fwts_compare_mode fwts_log_compare_mode_str_to_val(const char *str);
 
 #endif

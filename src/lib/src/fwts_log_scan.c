@@ -297,3 +297,17 @@ void fwts_log_scan_patterns(fwts_framework *fw,
                 pattern++;
         }
 }
+
+/*
+ *  fwts_log_compare_mode_str_to_val()
+ *      convert compare mode strings (from json database) to compare_mode values
+ */
+fwts_compare_mode fwts_log_compare_mode_str_to_val(const char *str)
+{
+        if (strcmp(str, "regex") == 0)
+                return FWTS_COMPARE_REGEX;
+        else if (strcmp(str, "string") == 0)
+                return FWTS_COMPARE_STRING;
+        else
+                return FWTS_COMPARE_UNKNOWN;
+}

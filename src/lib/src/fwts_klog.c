@@ -135,13 +135,6 @@ static int fwts_klog_check(fwts_framework *fw,
 	fwts_list *klog,
 	int *errors)
 {
-	int ret = FWTS_ERROR;
-	int n;
-	int i;
-	int fd;
-	json_object *klog_objs;
-	json_object *klog_table;
-	fwts_log_pattern *patterns;
 	char json_data_path[PATH_MAX];
 
 	if (fw->json_data_file) {
@@ -150,106 +143,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	else { /* use the hard coded KLOG JSON as default */
 		snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, KLOG_DATA_JSON_FILE);
 	}
-
-	/*
-	 * json_object_from_file() can fail when files aren't readable
-	 * so check if we can open for read before calling json_object_from_file()
-	 */
-	if ((fd = open(json_data_path, O_RDONLY)) < 0) {
-		fwts_log_error(fw, "Cannot read file %s, check the path and check that the file exists, you may need to specify -j or -J.", json_data_path);
-		return FWTS_ERROR;
-	}
-	(void)close(fd);
-
-	klog_objs = json_object_from_file(json_data_path);
-	if (FWTS_JSON_ERROR(klog_objs)) {
-		fwts_log_error(fw, "Cannot load klog data from %s.", json_data_path);
-		return FWTS_ERROR;
-	}
-
-#if JSON_HAS_GET_EX
-	if (!json_object_object_get_ex(klog_objs, table, &klog_table)) {
-		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
-		goto fail_put;
-	}
-#else
-	klog_table = json_object_object_get(klog_objs, table);
-	if (FWTS_JSON_ERROR(klog_table)) {
-		fwts_log_error(fw, "Cannot fetch klog table object '%s' from %s.", table, json_data_path);
-		goto fail_put;
-	}
-#endif
-
-	n = json_object_array_length(klog_table);
-
-	/* Last entry is null to indicate end, so alloc n+1 items */
-	if ((patterns = calloc(n+1, sizeof(fwts_log_pattern))) == NULL) {
-		fwts_log_error(fw, "Cannot allocate pattern table.");
-		goto fail_put;
-	}
-
-	/* Now fetch json objects and compile regex */
-	for (i = 0; i < n; i++) {
-		const char *str;
-		json_object *obj;
-
-		obj = json_object_array_get_idx(klog_table, i);
-		if (FWTS_JSON_ERROR(obj)) {
-			fwts_log_error(fw, "Cannot fetch %d item from table %s.", i, table);
-			goto fail;
-		}
-		if ((str = fwts_json_str(fw, table, i, obj, "compare_mode", true)) == NULL)
-			goto fail;
-		patterns[i].compare_mode = fwts_klog_compare_mode_str_to_val(str);
-
-		if ((str = fwts_json_str(fw, table, i, obj, "log_level", true)) == NULL)
-			goto fail;
-		patterns[i].level   = fwts_log_str_to_level(str);
-
-		if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern", true)) == NULL)
-			goto fail;
-
-		if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice", true)) == NULL)
-			goto fail;
-
-		/* Labels appear in fwts 0.26.0, so are optional with older versions */
-		str = fwts_json_str(fw, table, i, obj, "label", false);
-		if (str) {
-			patterns[i].label = strdup(str);
-		} else {
-			/* if not specified, auto-magically generate */
-			patterns[i].label = strdup(fwts_klog_unique_label(patterns[i].pattern));
-		}
-		if (patterns[i].label == NULL)
-			goto fail;
-
-		if (patterns[i].compare_mode == FWTS_COMPARE_REGEX) {
-			int rc;
-
-			rc = regcomp(&patterns[i].compiled, patterns[i].pattern, REG_EXTENDED);
-			if (rc) {
-				fwts_log_error(fw, "Regex %s failed to compile: %d.", patterns[i].pattern, rc);
-				patterns[i].compiled_ok = false;
-			} else {
-				patterns[i].compiled_ok = true;
-			}
-		}
-	}
-	/* We've now collected up the scan patterns, lets scan the log for errors */
-	ret = fwts_klog_scan(fw, klog, fwts_klog_scan_patterns, progress, patterns, errors);
-
-fail:
-	for (i = 0; i < n; i++) {
-		if (patterns[i].compiled_ok)
-			regfree(&patterns[i].compiled);
-		if (patterns[i].label)
-			free(patterns[i].label);
-	}
-	free(patterns);
-fail_put:
-	json_object_put(klog_objs);
-
-	return ret;
+	return fwts_log_check(fw, table, fwts_klog_scan_patterns, progress, klog, errors, json_data_path, UNIQUE_KLOG_LABEL, true);
 }
 
 int fwts_klog_firmware_check(fwts_framework *fw, fwts_klog_progress_func progress,

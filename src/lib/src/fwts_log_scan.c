@@ -346,3 +346,122 @@ nullobj:
 			key, index, table);
 	return NULL;
 }
+
+int fwts_log_check(fwts_framework *fw,
+        const char *table,
+        fwts_log_scan_func fwts_log_scan_patterns,
+        fwts_log_progress_func progress,
+        fwts_list *log,
+        int *errors,
+        const char *json_data_path,
+        const char *label,
+        bool remove_timestamp)
+{
+        int ret = FWTS_ERROR;
+        int n;
+        int i;
+        int fd;
+        json_object *log_objs;
+        json_object *log_table;
+        fwts_log_pattern *patterns;
+
+        /*
+         * json_object_from_file() can fail when files aren't readable
+         * so check if we can open for read before calling json_object_from_file()
+         */
+        if ((fd = open(json_data_path, O_RDONLY)) < 0) {
+                fwts_log_error(fw, "Cannot read file %s, check the path and check that the file exists, you may need to specify -j or -J.", json_data_path);
+                return FWTS_ERROR;
+        }
+        (void)close(fd);
+
+        log_objs = json_object_from_file(json_data_path);
+        if (FWTS_JSON_ERROR(log_objs)) {
+                fwts_log_error(fw, "Cannot load log data from %s.", json_data_path);
+                return FWTS_ERROR;
+        }
+
+#if JSON_HAS_GET_EX
+        if (!json_object_object_get_ex(log_objs, table, &log_table)) {
+                fwts_log_error(fw, "Cannot fetch log table object '%s' from %s.", table, json_data_path);
+                goto fail_put;
+        }
+#else
+        log_table = json_object_object_get(log_objs, table);
+        if (FWTS_JSON_ERROR(log_table)) {
+                fwts_log_error(fw, "Cannot fetch log table object '%s' from %s.", table, json_data_path);
+                goto fail_put;
+        }
+#endif
+
+        n = json_object_array_length(log_table);
+
+        /* Last entry is null to indicate end, so alloc n+1 items */
+        if ((patterns = calloc(n+1, sizeof(fwts_log_pattern))) == NULL) {
+                fwts_log_error(fw, "Cannot allocate pattern table.");
+                goto fail_put;
+        }
+
+        /* Now fetch json objects and compile regex */
+        for (i = 0; i < n; i++) {
+                const char *str;
+                json_object *obj;
+
+                obj = json_object_array_get_idx(log_table, i);
+                if (FWTS_JSON_ERROR(obj)) {
+                        fwts_log_error(fw, "Cannot fetch %d item from table %s.", i, table);
+                        goto fail;
+                }
+                if ((str = fwts_json_str(fw, table, i, obj, "compare_mode", true)) == NULL)
+                        goto fail;
+                patterns[i].compare_mode = fwts_log_compare_mode_str_to_val(str);
+
+                if ((str = fwts_json_str(fw, table, i, obj, "log_level", true)) == NULL)
+                        goto fail;
+                patterns[i].level   = fwts_log_str_to_level(str);
+
+                if ((patterns[i].pattern = fwts_json_str(fw, table, i, obj, "pattern", true)) == NULL)
+                        goto fail;
+
+                if ((patterns[i].advice = fwts_json_str(fw, table, i, obj, "advice", true)) == NULL)
+                        goto fail;
+
+                /* Labels appear in fwts 0.26.0, so are optional with older versions */
+                str = fwts_json_str(fw, table, i, obj, "label", false);
+                if (str) {
+                        patterns[i].label = strdup(str);
+                } else {
+                        /* if not specified, auto-magically generate */
+                        patterns[i].label = strdup(fwts_log_unique_label(patterns[i].pattern, label));
+                }
+                if (patterns[i].label == NULL)
+                        goto fail;
+
+                if (patterns[i].compare_mode == FWTS_COMPARE_REGEX) {
+                        int rc;
+
+                        rc = regcomp(&patterns[i].compiled, patterns[i].pattern, REG_EXTENDED);
+                        if (rc) {
+                                fwts_log_error(fw, "Regex %s failed to compile: %d.", patterns[i].pattern, rc);
+                                patterns[i].compiled_ok = false;
+                        } else {
+                                patterns[i].compiled_ok = true;
+                        }
+                }
+        }
+        /* We've now collected up the scan patterns, lets scan the log for errors */
+        ret = fwts_log_scan(fw, log, fwts_log_scan_patterns, progress, patterns, errors, remove_timestamp);
+
+fail:
+        for (i = 0; i < n; i++) {
+                if (patterns[i].compiled_ok)
+                        regfree(&patterns[i].compiled);
+                if (patterns[i].label)
+                        free(patterns[i].label);
+        }
+        free(patterns);
+fail_put:
+        json_object_put(log_objs);
+
+        return ret;
+}

@@ -1,3 +1,11 @@
+fwts (18.06.02-0ubuntu1) cosmic; urgency=medium
+
+  [Colin Ian King]
+  * Revert "efi_runtime: build dkms for kernel that does not have efi_test"
+    (LP: #1777855)
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Thu, 21 Jun 2018 16:53:26 +0800
+
 fwts (18.06.01-0ubuntu1) cosmic; urgency=medium
 
   [Colin Ian King]

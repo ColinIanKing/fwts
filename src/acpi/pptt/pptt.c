@@ -155,7 +155,7 @@ static int pptt_test1(fwts_framework *fw)
 				"PPTTBadSubtableLength",
 				"PPTT subtable Type 0x%2.2" PRIx8 " should have "
 				"length 0x%2.2" PRIx8 ", got 0x%2.2" PRIx8,
-				entry->type, entry->length, type_length);
+				entry->type, type_length, entry->length);
 			break;
 		}
 

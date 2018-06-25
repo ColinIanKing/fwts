@@ -1,0 +1,11 @@
+dist: trusty
+sudo: required
+
+before_install:
+    - sudo apt-get update -q
+    - sudo apt-get install build-essential autoconf automake libtool libjson-c-dev flex bison dkms libglib2.0-dev libfdt-dev
+
+language: c
+
+script:
+- autoreconf -ivf; ./configure; make

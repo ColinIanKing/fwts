@@ -205,3 +205,38 @@ int fwts_log_scan(fwts_framework *fw,
 
         return FWTS_OK;
 }
+
+char *fwts_log_unique_label(const char *str, const char *label)
+{
+        static char buffer[1024];
+        const char *src = str;
+        char *dst;
+        int count = 0;
+        bool forceupper = true;
+
+        strncpy(buffer, label, sizeof(buffer)-1);
+        buffer[sizeof(buffer)-1] = '\0';
+        dst = buffer + strlen(label);
+
+        while ((dst < (buffer + sizeof(buffer) - 1)) &&
+               (count < 4) && (*src)) {
+                if ((*src == '|') ||
+                    (*src == '/') ||
+                    (*src == ' ')) {
+                        src++;
+                        count++;
+                        forceupper = true;
+                        continue;
+                }
+                if (!isalnum(*src)) {
+                        src++;
+                        continue;
+                }
+                *dst++ = forceupper ? toupper(*src) : *src;
+                src++;
+
+                forceupper = false;
+        }
+        *dst = '\0';
+        return buffer;
+}

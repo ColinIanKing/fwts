@@ -36,6 +36,11 @@
 #define KLOG_DATA_JSON_FILE		"klog.json"
 
 /*
+ *  match unique strings in the kernel log
+ */
+#define UNIQUE_KLOG_LABEL		"Klog"
+
+/*
  *  fwts_klog_free()
  *	free kernel log list
  */
@@ -98,36 +103,7 @@ int fwts_klog_scan(fwts_framework *fw,
 
 char *fwts_klog_unique_label(const char *str)
 {
-	static char buffer[1024];
-	const char *src = str;
-	char *dst;
-	int count = 0;
-	bool forceupper = true;
-
-	strcpy(buffer, "Klog");
-	dst = buffer + 4;
-
-	while ((dst < (buffer + sizeof(buffer) - 1)) &&
-	       (count < 4) && (*src)) {
-		if ((*src == '|') ||
-		    (*src == '/') ||
-		    (*src == ' ')) {
-			src++;
-			count++;
-			forceupper = true;
-			continue;
-		}
-		if (!isalnum(*src)) {
-			src++;
-			continue;
-		}
-		*dst++ = forceupper ? toupper(*src) : *src;
-		src++;
-
-		forceupper = false;
-	}
-	*dst = '\0';
-	return buffer;
+	return fwts_log_unique_label(str, UNIQUE_KLOG_LABEL);
 }
 
 void fwts_klog_scan_patterns(fwts_framework *fw,

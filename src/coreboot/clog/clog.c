@@ -29,6 +29,11 @@ static fwts_list *clog;
 
 static int clog_init(fwts_framework *fw)
 {
+	if (!fwts_clog_available(fw)) {
+		fwts_log_info(fw, "coreboot log not available, skipping test");
+		return FWTS_SKIP;
+	}
+
 	clog = fwts_clog_read(fw);
 
 	if (clog == NULL) {

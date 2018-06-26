@@ -269,7 +269,7 @@ void fwts_klog_scan_patterns(fwts_framework *fw,
 	void *private,
 	int *errors)
 {
-	fwts_klog_pattern *pattern = (fwts_klog_pattern *)private;
+	fwts_log_pattern *pattern = (fwts_log_pattern *)private;
 	static char *advice =
 		"This is a bug picked up by the kernel, but as yet, the "
 		"firmware test suite has no diagnostic advice for this particular problem.";
@@ -381,7 +381,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	int fd;
 	json_object *klog_objs;
 	json_object *klog_table;
-	fwts_klog_pattern *patterns;
+	fwts_log_pattern *patterns;
 	char json_data_path[PATH_MAX];
 
 	if (fw->json_data_file) {
@@ -423,7 +423,7 @@ static int fwts_klog_check(fwts_framework *fw,
 	n = json_object_array_length(klog_table);
 
 	/* Last entry is null to indicate end, so alloc n+1 items */
-	if ((patterns = calloc(n+1, sizeof(fwts_klog_pattern))) == NULL) {
+	if ((patterns = calloc(n+1, sizeof(fwts_log_pattern))) == NULL) {
 		fwts_log_error(fw, "Cannot allocate pattern table.");
 		goto fail_put;
 	}

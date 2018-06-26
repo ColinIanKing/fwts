@@ -78,6 +78,7 @@
 #include "fwts_binpaths.h"
 #include "fwts_framework.h"
 #include "fwts_log.h"
+#include "fwts_log_scan.h"
 #include "fwts_list.h"
 #include "fwts_text_list.h"
 #include "fwts_set.h"

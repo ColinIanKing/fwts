@@ -32,23 +32,6 @@
 #define KERN_ERROR              0x00000002
 
 
-typedef enum {
-	FWTS_COMPARE_REGEX = 'r',
-	FWTS_COMPARE_STRING = 's',
-	FWTS_COMPARE_UNKNOWN = 'u'
-} fwts_compare_mode;
-
-typedef struct {
-	fwts_compare_mode compare_mode;
-	fwts_log_level level;
-        const char *pattern;
-	const char *advice;
-	char *label;
-	regex_t compiled;
-	bool compiled_ok;
-} fwts_klog_pattern;
-
-
 typedef void (*fwts_klog_progress_func)(fwts_framework *fw, int percent);
 typedef void (*fwts_klog_scan_func)(fwts_framework *fw, char *line, int repeated, char *prevline, void *private, int *errors);
 

@@ -191,7 +191,7 @@ static int fwts_olog_check(fwts_framework *fw,
 {
 	int n, i, fd, ret = FWTS_ERROR;
 	json_object *olog_objs, *olog_table;
-	fwts_klog_pattern *patterns;
+	fwts_log_pattern *patterns;
 	char json_data_path[PATH_MAX];
 
 	if (fw->json_data_file) {
@@ -239,7 +239,7 @@ static int fwts_olog_check(fwts_framework *fw,
 	n = json_object_array_length(olog_table);
 
 	/* Last entry is null to indicate end, so alloc n+1 items */
-	if ((patterns = calloc(n+1, sizeof(fwts_klog_pattern))) == NULL) {
+	if ((patterns = calloc(n+1, sizeof(fwts_log_pattern))) == NULL) {
 		fwts_log_error(fw, "Cannot allocate pattern table.");
 		goto fail_put;
 	}

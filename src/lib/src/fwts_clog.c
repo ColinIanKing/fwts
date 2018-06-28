@@ -58,3 +58,16 @@ int fwts_clog_scan(fwts_framework *fw,
 {
         return fwts_log_scan(fw, clog, scan_func, progress_func, private, match, false);
 }
+
+void fwts_clog_scan_patterns(fwts_framework *fw,
+        char *line,
+        int  repeated,
+        char *prevline,
+        void *private,
+        int *errors)
+{
+    static char *advice =
+        "This is a bug picked up by coreboot, but as yet, the "
+        "firmware test suite has no diagnostic advice for this particular problem.";
+    fwts_log_scan_patterns(fw, line, repeated, prevline, private, errors, "coreboot", advice);
+}

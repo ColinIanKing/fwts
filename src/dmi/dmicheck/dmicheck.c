@@ -1514,7 +1514,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_min_max_uint8_check(fw, table, addr, "Form Factor", hdr, 0xe, 0x1, 0xf);
 			dmi_str_check(fw, table, addr, "Locator", hdr, 0x10);
 			dmi_str_check(fw, table, addr, "Bank Locator", hdr, 0x11);
-			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x1e);
+			dmi_min_max_uint8_check(fw, table, addr, "Memory Type", hdr, 0x12, 0x1, 0x1f);
 			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x17);
@@ -1525,6 +1525,11 @@ static void dmicheck_entry(fwts_framework *fw,
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Attributes", hdr, sizeof(uint8_t), 0x1b, 4, 7);
 			dmi_reserved_bits_check(fw, table, addr, "Extended Size", hdr, sizeof(uint32_t), 0x1c, 31, 31);
+			if (hdr->length < 0x28)
+				break;
+			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x7);
+			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 6, 15);
+
 			break;
 
 		case 18: /* 7.19 */

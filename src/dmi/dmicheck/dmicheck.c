@@ -1300,32 +1300,32 @@ static void dmicheck_entry(fwts_framework *fw,
 			if (hdr->length < 0x09)
 				break;
 			dmi_str_check(fw, table, addr, "Internal Reference Designator", hdr, 0x4);
-			if (!((data[0x5] <= 0x22) ||
+			if (!((data[0x5] <= 0x23) ||
 			      (data[0x5] == 0xff) ||
 			      ((data[0x5] >= 0xa0) && (data[0x5] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
+					"(range allowed 0x00..0x23, 0xa0..0xa4, 0xff) "
 					"while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Internal Connector Type", 0x5);
 			dmi_str_check(fw, table, addr, "External Reference Designator", hdr, 0x6);
-			if (!((data[0x7] <= 0x22) ||
+			if (!((data[0x7] <= 0x23) ||
 			      (data[0x7] == 0xff) ||
 			      ((data[0x7] >= 0xa0) && (data[0x7] <= 0xa4))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x22, 0xa0..0xa4, 0xff) "
+					"(range allowed 0x00..0x23, 0xa0..0xa4, 0xff) "
 					"while accessing entry '%s' @ "
 					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
 					data[0x7], table, addr, "Internal Connector Type", 0x7);
 
-			if (!((data[0x8] <= 0x21) ||
+			if (!((data[0x8] <= 0x23) ||
 			      (data[0x8] == 0xff) ||
 			      ((data[0x8] >= 0xa0) && (data[0x8] <= 0xa1))))
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_VALUE_OUT_OF_RANGE,
 					"Out of range value 0x%2.2" PRIx8 " "
-					"(range allowed 0x00..0x21, 0xa0..0xa1, 0xff) "
+					"(range allowed 0x00..0x23, 0xa0..0xa1, 0xff) "
 					"while accessing entry '%s' @ 0x%8.8" PRIx32 ", "
 					"field '%s', offset 0x%2.2x",
 					data[0x8], table, addr, "Port Type", 0x8);

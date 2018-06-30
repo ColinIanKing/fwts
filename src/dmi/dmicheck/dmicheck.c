@@ -1345,17 +1345,13 @@ static void dmicheck_entry(fwts_framework *fw,
 					"field '%s', offset 0x%2.2x",
 					data[0x5], table, addr, "Slot Type", 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Data Bus Width", hdr, 0x6, 0x1, 0xe);
-			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x4);
+			dmi_min_max_uint8_check(fw, table, addr, "Current Usage", hdr, 0x7, 0x1, 0x5);
 			dmi_min_max_uint8_check(fw, table, addr, "Slot Length", hdr, 0x8, 0x1, 0x6);
 			if (hdr->length < 0x0d)
 				break;
-			if (data[0xc] & 0xf8)
-				fwts_failed(fw, LOG_LEVEL_MEDIUM, DMI_RESERVED_VALUE_USED,
-					"Reserved bits 0x%2.2" PRIx8 " was used"
-					"bits 3..7 would be reserved while accessing entry '%s' @ "
-					"0x%8.8" PRIx32 ", field '%s', offset 0x%2.2x",
-					data[0xc],
-					table, addr, "Slot Characteristics 2", 0xc);
+
+			dmi_reserved_bits_check(fw, table, addr, "Slot Characteristics 2", hdr, sizeof(uint8_t), 0x0c, 4, 7);
+
 			if (hdr->length < 0x11)
 				break;
 			if (!((data[0x5] == 0x06) ||

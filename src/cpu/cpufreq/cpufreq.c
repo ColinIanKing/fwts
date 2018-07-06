@@ -834,18 +834,25 @@ static int cpufreq_init(fwts_framework *fw)
 	num_cpus = scandir(FWTS_CPU_PATH, &dirs, is_cpu_dir, versionsort);
 	cpus = calloc(num_cpus, sizeof(*cpus));
 
-	for (i = 0; i < num_cpus; i++)
-		parse_cpu_info(fw, &cpus[i], dirs[i]);
-
 	/* all test require a userspace governor */
 	for (i = 0; i < num_cpus; i++) {
-		int rc = cpu_set_governor(fw, &cpus[i], "userspace");
+		int rc;
+
+		rc = parse_cpu_info(fw, &cpus[i], dirs[i]);
+		if (rc != FWTS_OK) {
+			fwts_log_warning(fw,
+				"Failed to parse cpufreq for CPU %d", i);
+			cpufreq_settable = false;
+			return FWTS_ERROR;
+		}
+
+		rc = cpu_set_governor(fw, &cpus[i], "userspace");
 
 		if (rc != FWTS_OK) {
-			fwts_log_warning(fw, "Failed to initialize cpufreq "
-					"to set CPU speed");
+			fwts_log_warning(fw,"Failed to initialize cpufreq "
+					"to set CPU speed for CPU %d", i);
 			cpufreq_settable = false;
-			break;
+			return FWTS_ERROR;
 		}
 	}
 

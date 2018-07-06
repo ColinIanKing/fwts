@@ -95,7 +95,7 @@ static int cpu_set_governor(fwts_framework *fw, struct cpu *cpu,
 	int rc;
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_governor");
-	rc = fwts_set(governor, path);
+	rc = fwts_set(path, governor);
 	if (rc != FWTS_OK)
 		goto out;
 
@@ -120,7 +120,7 @@ static int cpu_set_frequency(fwts_framework *fw, struct cpu *cpu,
 
 	cpu_mkpath(path, sizeof(path), cpu, "scaling_setspeed");
 	snprintf(buffer, sizeof(buffer), "%" PRIu64 , freq_hz);
-	rc = fwts_set(buffer, path);
+	rc = fwts_set(path, buffer);
 	if (rc != FWTS_OK)
 		goto out;
 

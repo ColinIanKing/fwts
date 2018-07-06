@@ -50,6 +50,50 @@ static bool check_length(fwts_framework *fw, int actual, int min, const char *na
 	return true;
 }
 
+static bool scan_nfit_smbios(fwts_framework *fw, int len, uint8_t *table) {
+	fwts_dmi_header *hdr;
+	int entry = 0;
+
+	while (len > 4) {
+		int strbytes = 0;
+
+		hdr = (fwts_dmi_header *) table;
+
+		fwts_log_info_verbatim(fw, "  NFIT SMBIOS Entry %d:", entry++);
+		fwts_log_info_verbatim(fw, "    Type:                                   0x%2.2" PRIx8, hdr->type);
+		fwts_log_info_verbatim(fw, "    Length:                                 0x%2.2" PRIx8, hdr->length);
+		fwts_log_info_verbatim(fw, "    Handle:                                 0x%4.4" PRIx16, hdr->handle);
+
+		if (hdr->length < 4) {
+			fwts_failed(fw, LOG_LEVEL_HIGH, "NFIT_SMBIOS_EntryLength",
+				    "NFIT SMBIOS Entry length %d bytes is too short (less than 4 bytes)",
+				    hdr->length);
+			return false;
+		}
+		len -= hdr->length;
+		table += hdr->length;
+
+		/* Look for structure terminator, ends in two zero bytes */
+		while (len > 2 && (table[0] != 0 || table[1] != 0)) {
+			strbytes++;
+		        table++;
+			len--;
+		}
+		fwts_log_info_verbatim(fw, "    Strings:                                %d bytes", strbytes);
+
+		/* Skip over terminating two zero bytes, see section 6.1 of spec */
+		table += 2;
+		len -= 2;
+
+	}
+	if (len) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NFIT_SMBIOS_ListLength",
+			    "NFIT SMBIOS structure does not end with a complete entry");
+		return false;
+	}
+	return true;
+}
+
 static int nfit_init(fwts_framework *fw)
 {
 	if (fwts_acpi_find_table(fw, "NFIT", 0, &table) != FWTS_OK) {
@@ -278,6 +322,15 @@ static int nfit_test1(fwts_framework *fw)
 			}
 
 			fwts_log_info_verbatim(fw, "    Reserved:                               0x%8.8" PRIx32, nfit_struct->reserved);
+			if (nfit_struct->reserved != 0)
+				reserved_passed = nfit_struct->reserved;
+
+			if (entry->length < 8)
+				break;
+
+			ret = scan_nfit_smbios(fw, entry->length - 8, nfit_struct->smbios);
+			if (!ret)
+				passed = false;
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_CONTROL_REGION) {
 			fwts_acpi_table_nfit_control_range *nfit_struct = (fwts_acpi_table_nfit_control_range *) entry;

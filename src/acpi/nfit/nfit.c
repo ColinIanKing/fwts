@@ -250,15 +250,11 @@ static int nfit_test1(fwts_framework *fw)
 				break;
 			}
 
-			for (i = 0; i < nfit_struct->line_count; i++) {
-				fwts_log_info_verbatim(fw, "    Line Offset:                            0x%8.8"  PRIx32, nfit_struct->line_offset[i]);
-
-				if (nfit_struct->line_offset[i] % nfit_struct->line_size)
-					fwts_failed(fw, LOG_LEVEL_HIGH,
-						"NFITBadLineOffsetAlignment",
-						"NFIT Line Offset must be aligned nfit_struct->line_size, got "
-						"0x%8.8" PRIx32 " instead", nfit_struct->line_offset[i]);
-			}
+			for (i = 0; i < nfit_struct->line_count; i++)
+				fwts_log_info_verbatim(fw,
+					"    Line Offset:                            0x%8.8" PRIx32 ", SPA 0x%16.16" PRIx64,
+					nfit_struct->line_offset[i],
+					(uint64_t) nfit_struct->line_offset[i] * nfit_struct->line_size);
 
 			if (nfit_struct->reserved != 0)
 				reserved_passed = nfit_struct->reserved;

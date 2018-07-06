@@ -1181,6 +1181,24 @@ typedef enum {
 	FWTS_ACPI_NFIT_TYPE_RESERVED             = 8     /* >= 8 are reserved */
 } fwts_acpi_nfit_type;
 
+#define FWTS_ACPI_NFIT_NAME_SYSTEM_ADDRESS      "SPA Range structure"
+#define FWTS_ACPI_NFIT_NAME_MEMORY_MAP          "NVDIMM Region Mapping structure"
+#define FWTS_ACPI_NFIT_NAME_INTERLEAVE          "Interleave structure"
+#define FWTS_ACPI_NFIT_NAME_SMBIOS              "SMBIOS Management Information structure"
+#define FWTS_ACPI_NFIT_NAME_CONTROL_REGION      "NVDIMM Control Region structure"
+#define FWTS_ACPI_NFIT_NAME_DATA_REGION         "NVDIMM Block Data Window Region structure"
+#define FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS       "Flush Hint Address structure"
+#define FWTS_ACPI_NFIT_NAME_PLATFORM_CAPABILITY "Platform Capabilities structure"
+
+#define FWTS_ACPI_NFIT_MINLEN_SYSTEM_ADDRESS      56
+#define FWTS_ACPI_NFIT_MINLEN_MEMORY_MAP          48
+#define FWTS_ACPI_NFIT_MINLEN_INTERLEAVE          16
+#define FWTS_ACPI_NFIT_MINLEN_SMBIOS              8
+#define FWTS_ACPI_NFIT_MINLEN_CONTROL_REGION      32
+#define FWTS_ACPI_NFIT_MINLEN_DATA_REGION         32
+#define FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS       16
+#define FWTS_ACPI_NFIT_MINLEN_PLATFORM_CAPABILITY 16
+
 typedef struct {
 	fwts_acpi_table_nfit_struct_header	header;
 	uint16_t	range_index;

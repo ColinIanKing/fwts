@@ -40,6 +40,16 @@ static const uint8_t guid_virtual_device[4][16] = {
 
 static fwts_acpi_table_info *table;
 
+static bool check_length(fwts_framework *fw, int actual, int min, const char *name) {
+	if (actual < min) {
+		fwts_failed(fw, LOG_LEVEL_HIGH, "NFITSubtableLength",
+			    "NFIT Subtable %s length %d bytes is too short, expected >= %d bytes",
+			    name, actual, min);
+		return false;
+	}
+	return true;
+}
+
 static int nfit_init(fwts_framework *fw)
 {
 	if (fwts_acpi_find_table(fw, "NFIT", 0, &table) != FWTS_OK) {
@@ -92,6 +102,14 @@ static int nfit_test1(fwts_framework *fw)
 			char guid_str[37];
 			bool guid_skip = false;
 			size_t i;
+
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_SYSTEM_ADDRESS,
+					FWTS_ACPI_NFIT_NAME_SYSTEM_ADDRESS);
+			if (!ret) {
+				passed = false;
+				break;
+			}
 
 			fwts_guid_buf_to_str(nfit_struct->range_guid, guid_str, sizeof(guid_str));
 
@@ -180,6 +198,14 @@ static int nfit_test1(fwts_framework *fw)
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_MEMORY_MAP) {
 			fwts_acpi_table_nfit_memory_map *nfit_struct = (fwts_acpi_table_nfit_memory_map *) entry;
 
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_MEMORY_MAP,
+					FWTS_ACPI_NFIT_NAME_MEMORY_MAP);
+			if (!ret) {
+				passed = false;
+				break;
+			}
+
 			fwts_log_info_verbatim(fw, "    NFIT Device Handle:                     0x%8.8" PRIx32, nfit_struct->device_handle);
 			fwts_log_info_verbatim(fw, "    NVDIMM Physical ID:                     0x%4.4" PRIx16, nfit_struct->physical_id);
 			fwts_log_info_verbatim(fw, "    NVDIMM Region ID:                       0x%4.4" PRIx16, nfit_struct->region_id);
@@ -202,10 +228,27 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_acpi_table_nfit_interleave *nfit_struct = (fwts_acpi_table_nfit_interleave *) entry;
 			uint32_t i;
 
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_INTERLEAVE,
+					FWTS_ACPI_NFIT_NAME_INTERLEAVE);
+			if (!ret) {
+				passed = false;
+				break;
+			}
+
 			fwts_log_info_verbatim(fw, "    Interleave Structure Index:             0x%4.4" PRIx16, nfit_struct->interleave_index);
 			fwts_log_info_verbatim(fw, "    Reserved:                               0x%4.4" PRIx16, nfit_struct->reserved);
 			fwts_log_info_verbatim(fw, "    Number of Lines Described:              0x%8.8" PRIx32, nfit_struct->line_count);
 			fwts_log_info_verbatim(fw, "    Line Size:                              0x%8.8" PRIx32, nfit_struct->line_size);
+
+			ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_INTERLEAVE +
+						nfit_struct->line_count * sizeof nfit_struct->line_offset[0],
+					FWTS_ACPI_NFIT_NAME_INTERLEAVE);
+			if (!ret) {
+				passed = false;
+				break;
+			}
 
 			for (i = 0; i < nfit_struct->line_count; i++) {
 				fwts_log_info_verbatim(fw, "    Line Offset:                            0x%8.8"  PRIx32, nfit_struct->line_offset[i]);
@@ -230,20 +273,28 @@ static int nfit_test1(fwts_framework *fw)
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_SMBIOS) {
 			fwts_acpi_table_nfit_smbios *nfit_struct = (fwts_acpi_table_nfit_smbios *) entry;
 
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_SMBIOS,
+					FWTS_ACPI_NFIT_NAME_SMBIOS);
+			if (!ret) {
+				passed = false;
+				break;
+			}
+
 			fwts_log_info_verbatim(fw, "    Reserved:                               0x%8.8" PRIx32, nfit_struct->reserved);
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_CONTROL_REGION) {
 			fwts_acpi_table_nfit_control_range *nfit_struct = (fwts_acpi_table_nfit_control_range *) entry;
 			uint64_t reserved1;
 
-			reserved1 = (uint64_t) nfit_struct->reserved1[0] + ((uint64_t) nfit_struct->reserved1[1] << 8) +
-				   ((uint64_t) nfit_struct->reserved1[2] << 16) + ((uint64_t) nfit_struct->reserved1[3] << 24) +
-				   ((uint64_t) nfit_struct->reserved1[4] << 32) + ((uint64_t) nfit_struct->reserved1[5] << 40);
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_CONTROL_REGION,
+					FWTS_ACPI_NFIT_NAME_CONTROL_REGION);
+			if (!ret) {
+				passed = false;
+				break;
+			}
 
-			if (reserved1 != 0)
-				reserved_passed = reserved1;
-
-			fwts_log_info_verbatim(fw, "    NVDIMM Control Region Structure Index:  0x%4.4" PRIx16, nfit_struct->region_index);
 			fwts_log_info_verbatim(fw, "    Vendor ID:                              0x%4.4" PRIx16, nfit_struct->vendor_id);
 			fwts_log_info_verbatim(fw, "    Device ID:                              0x%4.4" PRIx16, nfit_struct->device_id);
 			fwts_log_info_verbatim(fw, "    Revision ID:                            0x%4.4" PRIx16, nfit_struct->revision_id);
@@ -257,13 +308,6 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_verbatim(fw, "    Serial Number:                          0x%8.8" PRIx32, nfit_struct->serial_number);
 			fwts_log_info_verbatim(fw, "    Region Format Interface Code:           0x%4.4" PRIx16, nfit_struct->interface_code);
 			fwts_log_info_verbatim(fw, "    Number of Block Control Windows:        0x%4.4" PRIx16, nfit_struct->windows_num);
-			fwts_log_info_verbatim(fw, "    Size of Block Control Window:           0x%16.16" PRIx64, nfit_struct->window_size);
-			fwts_log_info_verbatim(fw, "    Command Register Offset:                0x%16.16" PRIx64, nfit_struct->command_offset);
-			fwts_log_info_verbatim(fw, "    Size of Command Register:               0x%16.16" PRIx64, nfit_struct->command_size);
-			fwts_log_info_verbatim(fw, "    Status RegisterOffset:                  0x%16.16" PRIx64, nfit_struct->status_offset);
-			fwts_log_info_verbatim(fw, "    Size of Status Register:                0x%16.16" PRIx64, nfit_struct->status_size);
-			fwts_log_info_verbatim(fw, "    NVDIMM Control Region Flag:             0x%4.4" PRIx16, nfit_struct->flags);
-			fwts_log_info_verbatim(fw, "    Reserved:                               0x%16.16" PRIx64, reserved1);
 
 			if (nfit_struct->revision_id & 0xFF00) {
 				passed = false;
@@ -285,10 +329,37 @@ static int nfit_test1(fwts_framework *fw)
 				reserved_passed = nfit_struct->reserved;
 
 			fwts_acpi_reserved_bits_check(fw, "NFIT", "Valid", nfit_struct->valid_fields, sizeof(nfit_struct->valid_fields), 1, 7, &passed);
-			fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 1, 15, &passed);
+
+			if (entry->length >= sizeof(*nfit_struct)) {
+				reserved1 = (uint64_t) nfit_struct->reserved1[0] + ((uint64_t) nfit_struct->reserved1[1] << 8) +
+					   ((uint64_t) nfit_struct->reserved1[2] << 16) + ((uint64_t) nfit_struct->reserved1[3] << 24) +
+					   ((uint64_t) nfit_struct->reserved1[4] << 32) + ((uint64_t) nfit_struct->reserved1[5] << 40);
+
+				if (reserved1 != 0)
+					reserved_passed = reserved1;
+
+				fwts_log_info_verbatim(fw, "    Size of Block Control Window:           0x%16.16" PRIx64, nfit_struct->window_size);
+				fwts_log_info_verbatim(fw, "    Command Register Offset:                0x%16.16" PRIx64, nfit_struct->command_offset);
+				fwts_log_info_verbatim(fw, "    Size of Command Register:               0x%16.16" PRIx64, nfit_struct->command_size);
+				fwts_log_info_verbatim(fw, "    Status RegisterOffset:                  0x%16.16" PRIx64, nfit_struct->status_offset);
+				fwts_log_info_verbatim(fw, "    Size of Status Register:                0x%16.16" PRIx64, nfit_struct->status_size);
+				fwts_log_info_verbatim(fw, "    NVDIMM Control Region Flag:             0x%4.4" PRIx16, nfit_struct->flags);
+				fwts_log_info_verbatim(fw, "    Reserved:                               0x%16.16" PRIx64, reserved1);
+
+				fwts_acpi_reserved_bits_check(fw, "NFIT", "NVDIMM Control Region Flags", nfit_struct->flags, sizeof(nfit_struct->flags), 1, 15, &passed);
+				fwts_log_info_verbatim(fw, "    NVDIMM Control Region Structure Index:  0x%4.4" PRIx16, nfit_struct->region_index);
+			}
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_DATA_REGION) {
 			fwts_acpi_table_nfit_data_range *nfit_struct = (fwts_acpi_table_nfit_data_range *) entry;
+
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_DATA_REGION,
+					FWTS_ACPI_NFIT_NAME_DATA_REGION);
+			if (!ret) {
+				passed = false;
+				break;
+			}
 
 			fwts_log_info_verbatim(fw, "    NVDIMM Control Region Structure Index:  0x%4.4" PRIx16, nfit_struct->region_index);
 			fwts_log_info_verbatim(fw, "    Number of Block Data Windows:           0x%4.4" PRIx16, nfit_struct->window_num);
@@ -309,6 +380,14 @@ static int nfit_test1(fwts_framework *fw)
 			uint64_t reserved;
 			uint16_t i;
 
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS,
+					FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS);
+			if (!ret) {
+				passed = false;
+				break;
+			}
+
 			reserved = (uint64_t) nfit_struct->reserved[0] + ((uint64_t) nfit_struct->reserved[1] << 8) +
 				   ((uint64_t) nfit_struct->reserved[2] << 16) + ((uint64_t) nfit_struct->reserved[3] << 24) +
 				   ((uint64_t) nfit_struct->reserved[4] << 32) + ((uint64_t) nfit_struct->reserved[5] << 40);
@@ -316,6 +395,16 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_log_info_verbatim(fw, "    NFIT Device Handle:                     0x%8.8" PRIx32, nfit_struct->device_handle);
 			fwts_log_info_verbatim(fw, "    Number of Flush Hint Addresses:         0x%4.4" PRIx16, nfit_struct->hint_count);
 			fwts_log_info_verbatim(fw, "    Reserved:                               0x%16.16" PRIx64, reserved);
+
+			ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_FLUSH_ADDRESS +
+						nfit_struct->hint_count * sizeof nfit_struct->hint_address[0],
+					FWTS_ACPI_NFIT_NAME_FLUSH_ADDRESS);
+			if (!ret) {
+				passed = false;
+				break;
+			}
+
 			for (i = 0; i < nfit_struct->hint_count; i++)
 				fwts_log_info_verbatim(fw, "    Flush Hint Address:                     0x%16.16" PRIx64, nfit_struct->hint_address[i]);
 
@@ -325,6 +414,14 @@ static int nfit_test1(fwts_framework *fw)
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_PLATFORM_CAPABILITY) {
 			fwts_acpi_table_nfit_platform_cap *nfit_struct = (fwts_acpi_table_nfit_platform_cap *) entry;
 			uint32_t reserved1;
+
+			bool ret = check_length(fw, entry->length,
+					FWTS_ACPI_NFIT_MINLEN_PLATFORM_CAPABILITY,
+					FWTS_ACPI_NFIT_NAME_PLATFORM_CAPABILITY);
+			if (!ret) {
+				passed = false;
+				break;
+			}
 
 			reserved1 = (uint32_t) nfit_struct->reserved1[0] + ((uint32_t) nfit_struct->reserved1[1] << 8) +
 				   ((uint32_t) nfit_struct->reserved1[2] << 16);

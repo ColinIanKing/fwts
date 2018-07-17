@@ -89,6 +89,7 @@
 #include "fwts_arch.h"
 #include "fwts_checkeuid.h"
 #include "fwts_clog.h"
+#include "fwts_coreboot.h"
 #include "fwts_cpu.h"
 #include "fwts_dump.h"
 #include "fwts_dump_data.h"

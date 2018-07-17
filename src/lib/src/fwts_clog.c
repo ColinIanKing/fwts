@@ -68,7 +68,6 @@ bool fwts_clog_available(fwts_framework *fw)
 
 /*
  *  read coreboot log and return as list of lines
- *  TODO: find coreboot log in /dev/mem
  */
 fwts_list *fwts_clog_read(fwts_framework *fw)
 {
@@ -78,6 +77,8 @@ fwts_list *fwts_clog_read(fwts_framework *fw)
         return list;
     if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) != NULL)
         return list;
+    if ((list = fwts_coreboot_cbmem_log()) != NULL)
+       return list;
 
     return NULL;
 }

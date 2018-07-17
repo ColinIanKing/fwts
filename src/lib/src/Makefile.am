@@ -61,6 +61,8 @@ libfwts_la_SOURCES = 		\
 	fwts_checksum.c 	\
 	fwts_clog.c		\
 	fwts_cmos.c 		\
+	fwts_coreboot.c		\
+	fwts_coreboot_cbmem.c	\
 	fwts_cpu.c 		\
 	fwts_dump.c 		\
 	fwts_dump_data.c 	\

@@ -5,20 +5,20 @@ summary
 summary         Test Failure Summary
 summary         ==========================================================
 summary         
-summary         Critical failures: 11
-summary          klog: CRITICAL Kernel message: [ 0.408874] CPU1: Temperature above threshold, cpu clock throttled (total events = 1)
+summary         Critical failures: 5
 summary          klog: CRITICAL Kernel message: [ 0.728985] Disabling IRQ #15
 summary          klog: CRITICAL Kernel message: [ 0.734767] Disabling IRQ #11
-summary          klog: CRITICAL Kernel message: [ 0.768555] CPU3: Temperature above threshold, cpu clock throttled (total events = 1)
-summary          klog: CRITICAL Kernel message: [ 1.128275] CPU5: Temperature above threshold, cpu clock throttled (total events = 1)
-summary          klog: CRITICAL Kernel message: [ 1.487778] CPU7: Temperature above threshold, cpu clock throttled (total events = 1)
 summary          klog: CRITICAL Kernel message: [ 2.131632] Disabling IRQ #16
 summary          klog: CRITICAL Kernel message: [ 3.220411] Disabling IRQ #18
-summary          klog: CRITICAL Kernel message: [ 10.027255] CPU0: Temperature above threshold, cpu clock throttled (total events = 1)
-summary          klog: CRITICAL Kernel message: [ 11.592319] CPU1: Temperature above threshold, cpu clock throttled (total events = 2)
 summary          klog: CRITICAL Kernel message: [ 17.353310] Disabling IRQ #10
 summary         
-summary         High failures: NONE
+summary         High failures: 6
+summary          klog: HIGH Kernel message: [ 0.408874] CPU1: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: HIGH Kernel message: [ 0.768555] CPU3: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: HIGH Kernel message: [ 1.128275] CPU5: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: HIGH Kernel message: [ 1.487778] CPU7: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: HIGH Kernel message: [ 10.027255] CPU0: Temperature above threshold, cpu clock throttled (total events = 1)
+summary          klog: HIGH Kernel message: [ 11.592319] CPU1: Temperature above threshold, cpu clock throttled (total events = 2)
 summary         
 summary         Medium failures: NONE
 summary         

@@ -1,9 +1,9 @@
 klog            klog: Scan kernel log for errors and warnings.
 klog            ----------------------------------------------------------
 klog            Test 1 of 1: Kernel log error check.
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 0.408874] CPU1: Temperature above
-klog            threshold, cpu clock throttled (total events = 1)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 0.408874] CPU1: Temperature above threshold,
+klog            cpu clock throttled (total events = 1)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower
@@ -24,9 +24,9 @@ klog
 klog            ADVICE: The kernel detected an irq storm. This is most
 klog            probably an IRQ routing bug.
 klog            
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 0.768555] CPU3: Temperature above
-klog            threshold, cpu clock throttled (total events = 1)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 0.768555] CPU3: Temperature above threshold,
+klog            cpu clock throttled (total events = 1)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower
@@ -35,9 +35,9 @@ klog            throttling will be turned off once the CPU has cooled
 klog            sufficiently. Frequent throttling may indicate poor
 klog            thermal design on the machine.
 klog            
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 1.128275] CPU5: Temperature above
-klog            threshold, cpu clock throttled (total events = 1)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 1.128275] CPU5: Temperature above threshold,
+klog            cpu clock throttled (total events = 1)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower
@@ -46,9 +46,9 @@ klog            throttling will be turned off once the CPU has cooled
 klog            sufficiently. Frequent throttling may indicate poor
 klog            thermal design on the machine.
 klog            
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 1.487778] CPU7: Temperature above
-klog            threshold, cpu clock throttled (total events = 1)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 1.487778] CPU7: Temperature above threshold,
+klog            cpu clock throttled (total events = 1)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower
@@ -69,9 +69,9 @@ klog
 klog            ADVICE: The kernel detected an irq storm. This is most
 klog            probably an IRQ routing bug.
 klog            
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 10.027255] CPU0: Temperature above
-klog            threshold, cpu clock throttled (total events = 1)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 10.027255] CPU0: Temperature above threshold,
+klog            cpu clock throttled (total events = 1)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower
@@ -80,9 +80,9 @@ klog            throttling will be turned off once the CPU has cooled
 klog            sufficiently. Frequent throttling may indicate poor
 klog            thermal design on the machine.
 klog            
-klog            FAILED [CRITICAL] KlogThermalOverrun: Test 1, CRITICAL
-klog            Kernel message: [ 11.592319] CPU1: Temperature above
-klog            threshold, cpu clock throttled (total events = 2)
+klog            FAILED [HIGH] KlogThermalOverrun: Test 1, HIGH Kernel
+klog            message: [ 11.592319] CPU1: Temperature above threshold,
+klog            cpu clock throttled (total events = 2)
 klog            
 klog            ADVICE: Test caused CPU temperature above critical
 klog            threshold. The CPU has been throttled to run slower

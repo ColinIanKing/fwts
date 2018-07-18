@@ -52,29 +52,24 @@ nfit                Interleave Structure Index:             0x0001
 nfit                Reserved:                               0x0000
 nfit                Number of Lines Described:              0x00000004
 nfit                Line Size:                              0x00000100
-nfit                Line Offset:                            0x00000000
-nfit                Line Offset:                            0x00000210
-nfit            FAILED [HIGH] NFITBadLineOffsetAlignment: Test 1, NFIT
-nfit            Line Offset must be aligned nfit_struct->line_size, got
-nfit            0x00000210 instead
-nfit                Line Offset:                            0x00000520
-nfit            FAILED [HIGH] NFITBadLineOffsetAlignment: Test 1, NFIT
-nfit            Line Offset must be aligned nfit_struct->line_size, got
-nfit            0x00000520 instead
-nfit                Line Offset:                            0x00001030
-nfit            FAILED [HIGH] NFITBadLineOffsetAlignment: Test 1, NFIT
-nfit            Line Offset must be aligned nfit_struct->line_size, got
-nfit            0x00001030 instead
+nfit                Line Offset:                            0x00000000, SPA 0x0000000000000000
+nfit                Line Offset:                            0x00000210, SPA 0x0000000000021000
+nfit                Line Offset:                            0x00000520, SPA 0x0000000000052000
+nfit                Line Offset:                            0x00001030, SPA 0x0000000000103000
 nfit            
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0003
 nfit                Length:                                 0x0028
 nfit                Reserved:                               0x00000000
+nfit              NFIT SMBIOS Entry 0:
+nfit                Type:                                   0xb4
+nfit                Length:                                 0x13
+nfit                Handle:                                 0x405d
+nfit                Strings:                                11 bytes
 nfit            
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0004
 nfit                Length:                                 0x0050
-nfit                NVDIMM Control Region Structure Index:  0x0001
 nfit                Vendor ID:                              0x8086
 nfit                Device ID:                              0x2017
 nfit                Revision ID:                            0x5501
@@ -88,6 +83,12 @@ nfit                Reserved:                               0x0f00
 nfit                Serial Number:                          0x76540089
 nfit                Region Format Interface Code:           0x0301
 nfit                Number of Block Control Windows:        0x0100
+nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Revision
+nfit            ID's BYTE 1 must be zero, got 0x5501 instead
+nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Subsystem
+nfit            Revision ID's BYTE 1 must be zero, got 0xaa01 instead
+nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT Valid
+nfit            Bits [7..1] must be zero, got 0x03 instead
 nfit                Size of Block Control Window:           0x0000000000002000
 nfit                Command Register Offset:                0x0000000000800000
 nfit                Size of Command Register:               0x0000000000000008
@@ -95,15 +96,10 @@ nfit                Status RegisterOffset:                  0x0000000000801000
 nfit                Size of Status Register:                0x0000000000000004
 nfit                NVDIMM Control Region Flag:             0x0003
 nfit                Reserved:                               0x0000000000000000
-nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Revision
-nfit            ID's BYTE 1 must be zero, got 0x5501 instead
-nfit            FAILED [HIGH] NFITBadRevisionId: Test 1, NFIT Subsystem
-nfit            Revision ID's BYTE 1 must be zero, got 0xaa01 instead
-nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT Valid
-nfit            Bits [7..1] must be zero, got 0x03 instead
 nfit            FAILED [HIGH] NFITReservedBitsNonZero: Test 1, NFIT NVDIMM
 nfit            Control Region Flags Bits [15..1] must be zero, got 0x0003
 nfit            instead
+nfit                NVDIMM Control Region Structure Index:  0x0001
 nfit            FAILED [MEDIUM] NFITReservedNonZero: Test 1, NFIT Reserved
 nfit            field must be zero, got 0x0000000000000f00 instead
 nfit            
@@ -132,6 +128,6 @@ nfit            field must be zero, got 0x00000000000000f0 instead
 nfit            
 nfit            
 nfit            ==========================================================
-nfit            0 passed, 16 failed, 0 warning, 0 aborted, 0 skipped, 0
+nfit            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
 nfit            info only.
 nfit            ==========================================================

@@ -39,20 +39,24 @@ nfit                Interleave Structure Index:             0x0001
 nfit                Reserved:                               0x0000
 nfit                Number of Lines Described:              0x00000004
 nfit                Line Size:                              0x00000100
-nfit                Line Offset:                            0x00000000
-nfit                Line Offset:                            0x00000200
-nfit                Line Offset:                            0x00000500
-nfit                Line Offset:                            0x00001000
+nfit                Line Offset:                            0x00000000, SPA 0x0000000000000000
+nfit                Line Offset:                            0x00000200, SPA 0x0000000000020000
+nfit                Line Offset:                            0x00000500, SPA 0x0000000000050000
+nfit                Line Offset:                            0x00001000, SPA 0x0000000000100000
 nfit            
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0003
 nfit                Length:                                 0x0028
 nfit                Reserved:                               0x00000000
+nfit              NFIT SMBIOS Entry 0:
+nfit                Type:                                   0xb4
+nfit                Length:                                 0x13
+nfit                Handle:                                 0x405d
+nfit                Strings:                                11 bytes
 nfit            
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0004
 nfit                Length:                                 0x0050
-nfit                NVDIMM Control Region Structure Index:  0x0001
 nfit                Vendor ID:                              0x8086
 nfit                Device ID:                              0x2017
 nfit                Revision ID:                            0x0001
@@ -73,6 +77,7 @@ nfit                Status RegisterOffset:                  0x0000000000801000
 nfit                Size of Status Register:                0x0000000000000004
 nfit                NVDIMM Control Region Flag:             0x0000
 nfit                Reserved:                               0x0000000000000000
+nfit                NVDIMM Control Region Structure Index:  0x0001
 nfit            
 nfit              NFIT Subtable:
 nfit                Type:                                   0x0005

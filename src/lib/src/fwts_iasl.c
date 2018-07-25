@@ -217,7 +217,7 @@ int fwts_iasl_disassemble_all_to_file(
 	const char *path)
 {
 	int i, j, ret;
-	char filename[PATH_MAX];
+	char filename[PATH_MAX + 18];
 	char pathname[PATH_MAX];
 
 	ret = fwts_iasl_init(fw);

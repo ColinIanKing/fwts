@@ -353,7 +353,7 @@ static void fwts_acpi_object_dump_recursive(
 	const int index)
 {
 	uint32_t i;
-	char index_buf[5];
+	char index_buf[6];
 	ACPI_BUFFER buffer;
 	ACPI_STATUS status;
 	char full_name[128];
@@ -362,7 +362,7 @@ static void fwts_acpi_object_dump_recursive(
 	buffer.Pointer = full_name;
 
 	if (index > -1)
-		snprintf(index_buf, sizeof(index_buf), "%2.2d: ", index);
+		snprintf(index_buf, sizeof(index_buf), "%2.2d: ", (uint8_t) index);
 	else
 		index_buf[0] = '\0';
 

@@ -20,6 +20,11 @@
 #ifndef __FWTS_UEFI_H__
 #define __FWTS_UEFI_H__
 
+#if defined(__GNUC__) && (__GNUC__ > 7)
+_Pragma("GCC diagnostic push")
+_Pragma("GCC diagnostic ignored \"-Wpacked-not-aligned\"")
+#endif
+
 #define FWTS_UEFI_LOAD_OPTION_ACTIVE 		0x00000001
 #define FWTS_UEFI_LOAD_OPTION_FORCE_RECONNECT 	0x00000002
 
@@ -655,5 +660,9 @@ void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status);
 char *fwts_uefi_attribute_info(uint32_t attr);
 
 bool fwts_uefi_efivars_iface_exist(void);
+
+#if defined(__GNUC__) && (__GNUC__ > 7)
+_Pragma("GCC diagnostic pop")
+#endif
 
 #endif

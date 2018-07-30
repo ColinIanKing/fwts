@@ -267,7 +267,7 @@ static ssize_t memconsole_coreboot_read(struct cbmem_console *con, char *buf, si
 	struct seg {	/* describes ring buffer segments in logical order */
 		uint32_t phys;	/* physical offset from start of mem buffer */
 		uint32_t len;	/* length of segment */
-	} seg[2] = { {0}, {0} };
+	} seg[2] = { { 0, 0 }, { 0, 0 } };
 	size_t done = 0;
 	unsigned int i;
 

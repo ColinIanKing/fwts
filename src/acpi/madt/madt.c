@@ -401,8 +401,11 @@ static int madt_init(fwts_framework *fw)
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
+PRAGMA_PUSH
+PRAGMA_NULL_PTR_MATH
 	AcpiWalkNamespace(0x0c, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
 			  madt_processor_handler, NULL, NULL, NULL);
+PRAGMA_POP
 	AcpiGetDevices("ACPI0007", madt_processor_handler, NULL, NULL);
 
 	return (spec_data) ? FWTS_OK : FWTS_ERROR;

@@ -98,9 +98,12 @@ static int acpi_table_sbbr_namespace_check_test1(fwts_framework *fw)
 	if (fwts_acpica_init(fw) != FWTS_OK)
 		return FWTS_ERROR;
 
+PRAGMA_PUSH
+PRAGMA_NULL_PTR_MATH
 	/* Searching for all processor devices in the namespace. */
 	AcpiWalkNamespace(ACPI_TYPE_PROCESSOR, ACPI_ROOT_OBJECT, ACPI_UINT32_MAX,
 	                  processor_handler, NULL, NULL, (void **)&error_count);
+PRAGMA_POP
 
 	/* Deinitializing ACPICA, if we don't call this the terminal will break on exit. */
 	fwts_acpica_deinit();

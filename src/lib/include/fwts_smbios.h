@@ -65,6 +65,9 @@
 #define FWTS_SMBIOS_CHASSIS_MINI_PC			(0x23)
 #define FWTS_SMBIOS_CHASSIS_STICK_PC			(0x24)
 
+/* Always update this to the last FWTS_SMBIOS_CHASSIS type */
+#define FWTS_SMBIOS_CHASSIS_MAX				(FWTS_SMBIOS_CHASSIS_STICK_PC)
+
 typedef enum {
 	FWTS_SMBIOS_UNKNOWN = -1,
 	FWTS_SMBIOS_DMI_LEGACY = 0,

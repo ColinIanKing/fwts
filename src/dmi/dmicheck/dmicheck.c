@@ -78,11 +78,6 @@ typedef struct {
 } fwts_dmi_version;
 
 typedef struct {
-	const char *name;
-	uint8_t   original;
-} fwts_chassis_type_map;
-
-typedef struct {
 	uint8_t	type;
 	uint8_t	offset;
 } fwts_dmi_used_by_kernel;
@@ -210,46 +205,6 @@ static const fwts_dmi_pattern dmi_patterns[] = {
 static const char *uuid_patterns[] = {
 	"0A0A0A0A-0A0A-0A0A-0A0A-0A0A0A0A0A0A",
 	NULL,
-};
-
-static const fwts_chassis_type_map fwts_dmi_chassis_type[] = {
-	{ "Invalid",		FWTS_SMBIOS_CHASSIS_INVALID },
-	{ "Other",		FWTS_SMBIOS_CHASSIS_OTHER },
-	{ "Unknown",		FWTS_SMBIOS_CHASSIS_UNKNOWN },
-	{ "Desktop",		FWTS_SMBIOS_CHASSIS_DESKTOP },
-	{ "Low Profile Desktop",FWTS_SMBIOS_CHASSIS_LOW_PROFILE_DESKTOP },
-	{ "Pizza Box",		FWTS_SMBIOS_CHASSIS_PIZZA_BOX },
-	{ "Mini Tower",		FWTS_SMBIOS_CHASSIS_MINI_TOWER },
-	{ "Chassis Tower",	FWTS_SMBIOS_CHASSIS_TOWER },
-	{ "Portable",		FWTS_SMBIOS_CHASSIS_PORTABLE },
-	{ "Laptop",		FWTS_SMBIOS_CHASSIS_LAPTOP },
-	{ "Notebook",		FWTS_SMBIOS_CHASSIS_NOTEBOOK },
-	{ "Handheld",		FWTS_SMBIOS_CHASSIS_HANDHELD },
-	{ "Docking Station",	FWTS_SMBIOS_CHASSIS_DOCKING_STATION },
-	{ "All In One",		FWTS_SMBIOS_CHASSIS_ALL_IN_ONE },
-	{ "Sub Notebook",	FWTS_SMBIOS_CHASSIS_SUB_NOTEBOOK },
-	{ "Space Saving",	FWTS_SMBIOS_CHASSIS_SPACE_SAVING },
-	{ "Lunch Box",		FWTS_SMBIOS_CHASSIS_LUNCH_BOX},
-	{ "Server Chassis",	FWTS_SMBIOS_CHASSIS_MAIN_SERVER_CHASSIS },
-	{ "Expansion Chassis",	FWTS_SMBIOS_CHASSIS_EXPANISON_CHASSIS },
-	{ "Sub Chassis",	FWTS_SMBIOS_CHASSIS_SUB_CHASSIS },
-	{ "Bus Expansion Chassis", FWTS_SMBIOS_CHASSIS_BUS_EXPANSION_CHASSIS },
-	{ "Peripheral Chassis",	FWTS_SMBIOS_CHASSIS_PERIPHERAL_CHASSIS },
-	{ "Raid Chassis",	FWTS_SMBIOS_CHASSIS_RAID_CHASSIS },
-	{ "Rack Mount Chassis",	FWTS_SMBIOS_CHASSIS_RACK_MOUNT_CHASSIS },
-	{ "Sealed Case PC",	FWTS_SMBIOS_CHASSIS_SEALED_CASE_PC },
-	{ "Multi System Chassis",FWTS_SMBIOS_CHASSIS_MULTI_SYSTEM_CHASSIS },
-	{ "Compact PCI",	FWTS_SMBIOS_CHASSIS_COMPACT_PCI },
-	{ "Advanced TCA",	FWTS_SMBIOS_CHASSIS_ADVANCED_TCA },
-	{ "Blade",		FWTS_SMBIOS_CHASSIS_BLADE },
-	{ "Enclosure",		FWTS_SMBIOS_CHASSIS_BLADE_ENCLOSURE },
-	{ "Tablet",		FWTS_SMBIOS_CHASSIS_TABLET },
-	{ "Convertible",	FWTS_SMBIOS_CHASSIS_CONVERTIBLE },
-	{ "Detachable",		FWTS_SMBIOS_CHASSIS_DETACHABLE },
-	{ "IoT Gateway",	FWTS_SMBIOS_CHASSIS_IOT_GATEWAY },
-	{ "Embedded PC",	FWTS_SMBIOS_CHASSIS_EMBEDDED_PC },
-	{ "Mini PC",		FWTS_SMBIOS_CHASSIS_MINI_PC },
-	{ "Stick PC",		FWTS_SMBIOS_CHASSIS_STICK_PC },
 };
 
 /* Remapping table from buggy version numbers to correct values */
@@ -1180,8 +1135,7 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Manufacturer", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Type", hdr, 0x5, 0x1, 0x24, 0x0, 0x7f);
 
-			if ((data[5] & ~0x80) >=
-				(sizeof(fwts_dmi_chassis_type) / sizeof(fwts_chassis_type_map))) {
+			if ((data[5] & ~0x80) > FWTS_SMBIOS_CHASSIS_MAX) {
 				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_HARDWARE_ENTRY,
 					"Incorrect Chassis Type "
 					"SMBIOS Type 3 reports 0x%" PRIx8,

@@ -23,6 +23,70 @@
 
 #include "config.h"
 
+/*
+ *  convert version to a large integer for easier comparison
+ */
+#define _VER_(major, minor, patchlevel)			\
+	((major * 10000) + (minor * 100) + patchlevel)
+
+/*
+ *  NEED_GLIBC is true if GLIBC version is greater than version needed
+ */
+#if defined(__GLIBC__) && defined(__GLIBC_MINOR__)
+#define NEED_GLIBC(major, minor, patchlevel) 			\
+	_VER_(major, minor, patchlevel) <= _VER_(__GLIBC__, __GLIBC_MINOR__, 0)
+#else
+#define NEED_GLIBC(major, minor, patchlevel) 	(0)
+#endif
+
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#if defined(__GNUC_PATCHLEVEL__)
+#define NEED_GNUC(major, minor, patchlevel) 			\
+	_VER_(major, minor, patchlevel) <= _VER_(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
+#else
+#define NEED_GNUC(major, minor, patchlevel) 			\
+	_VER_(major, minor, patchlevel) <= _VER_(__GNUC__, __GNUC_MINOR__, 0)
+#endif
+#else
+#define NEED_GNUC(major, minor, patchlevel) 	(0)
+#endif
+
+/*
+ *  NEED_CLANG is true if CLANG version is greater than version needed
+ */
+#if defined(__clang__) && defined(__clang_major__) && \
+    defined(__clang_minor__) && defined(__clang_patchlevel__)
+#define NEED_CLANG(major, minor, patchlevel)	\
+	_VER_(major, minor, patchlevel) <= _VER_(__clang_major__, __clang_minor__, __clang_patchlevel__)
+#else
+#define NEED_CLANG(major, minor, patchlevel)	(0)
+#endif
+
+/*
+ *  Wrappers to pragmas to push/pop warning state and disable struct
+ *  packing macro warnings
+ */
+#if defined(__clang__) && NEED_CLANG(6, 0, 0)
+#define PRAGMA_PUSH	_Pragma("GCC diagnostic push")
+#define PRAGMA_POP	_Pragma("GCC diagnostic pop")
+#define PRAGMA_PACK_WARN_OFF \
+			_Pragma("GCC diagnostic ignored \"-Waddress-of-packed-member\"")
+#define PRAGMA_NULL_PTR_MATH \
+			_Pragma("GCC diagnostic ignored \"-Wnull-pointer-arithmetic\"")
+#elif defined(__GNUC__) && NEED_GNUC(8, 0, 0)
+#define PRAGMA_PUSH	_Pragma("GCC diagnostic push")
+#define PRAGMA_POP	_Pragma("GCC diagnostic pop")
+#define PRAGMA_PACK_WARN_OFF \
+			_Pragma("GCC diagnostic ignored \"-Wpacked-not-aligned\"")
+#define PRAGMA_NULL_PTR_MATH
+#else
+#define PRAGMA_PUSH
+#define PRAGMA_POP
+#define PRAGMA_PACK_WARN_OFF
+#define PRAGMA_NULL_PTR_MATH
+#endif
+
+
 #if defined(__x86_64__) || defined(__x86_64) || defined(__i386__) || defined(__i386)
 #define FWTS_ARCH_INTEL	1
 #define FWTS_HAS_ACPI	1

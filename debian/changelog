@@ -1,3 +1,62 @@
+fwts (18.07.00-0ubuntu1) cosmic; urgency=medium
+
+  [Alex Hung]
+  * dmicheck: update Processor Upgrade field in Type 4
+  * dmicheck: update connection and port types in Type 8
+  * dmicheck: update Usage and Characteristics 2 fields in Type 9
+  * dmicheck: update memory type and add nvdimm fields for Type 17
+  * fwts-tests: sync up with the new --clog option
+  * klog.json: lower severity of temperature threshold
+  * auto-packager: mkpackage.sh: remove artful
+  * doc: adding --clog options to man page
+  * fwts-test: sync up with klog cpu threshold changes
+  * fwts-test: sync up nfit fix for NFITBadLineOffsetAlignment
+  * lib: fix array size too small to fit the output
+  * lib: silence gcc 8 complains
+  * lib: fix gcc 8 warning messages
+
+  [Colin Ian King]
+  * Add travis yaml file to automate builds on github
+  * ACPICA: Update to version 20180629
+  * test: syntaxcheck: sync output with latest ACPICA output
+
+  [Jeffrey Hugo]
+  * acpi: pptt: Fix PPTTBadSubtableLength error message
+
+  [Marcello Sylvester Bauer]
+  * fwts_log_scan: add lib/src/fwts_log_scan.c
+  * fwts_log_scan: move fwts_klog_free
+  * fwts_log_scan: move fwts_log_find_changes
+  * fwts_log_scan: move fwts_log_remove_timestamp
+  * fwts_log_scan: move fwts_log_scan
+  * fwts_log_scan: move fwts_log_unique_label
+  * fwts_log_scan: move fwts_log_scan_patterns
+  * fwts_log_scan: move fwts_log_compare_mode_str_to_val
+  * fwts_log_scan: move fwts_json_str
+  * fwts_log_scan: move fwts_log_check
+  * fwts_log_scan: move fwts_log_regex_find
+  * fwts_clog: add fwts_clog_free
+  * fwts_clog: add fwts_clog_read
+  * fwts_clog: add fwts_clog_scan
+  * fwts_clog: add fwts_clog_scan_patterns
+  * fwts_clog: add fwts_clog_firmware_check
+  * coreboot/clog/clog.c: add clog test
+  * fwts_Framework: add clog argument
+  * fwts_clog.c: add fwts_clog_available
+  * clog.json: add coreboot messages to clog database
+  * fwts_coreboot.c: add cbmem console parser
+
+  [Robert Elliott]
+  * cpufreq: exit if parsing the cpufreq directory fails
+  * cpufreq: fix fwts_set paths
+  * nfit: improve length handling for ACPI NFIT structures
+  * nfit: remove broken NFITBadLineOffsetAlignment check
+  * README: add the fwts-devel mailing list address and web page
+  * nfit: scan SMBIOS Management Information structure
+
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Mon, 30 Jul 2018 16:53:48 +0800
+
 fwts (18.06.02-0ubuntu1) cosmic; urgency=medium
 
   [Colin Ian King]

@@ -145,9 +145,9 @@ static int uefirtauthvar_deinit(fwts_framework *fw)
 static int check_fw_support(fwts_framework *fw, uint64_t status)
 {
 	if ((status == EFI_INVALID_PARAMETER) &&
-		((attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
-		(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
-		(attributes & FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
+		((bool)(attributes & FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS) ||
+		 (bool)(attributes & FWTS_UEFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS) ||
+		 (bool)(attributes & FWTS_UEFI_VARIABLE_APPEND_WRITE))) {
 		fwts_uefi_print_status_info(fw, status);
 		fwts_skipped(fw,
 			"EFI_INVALID_PARAMETER shall be returned, "

@@ -393,10 +393,13 @@ static int fwts_acpi_handle_fadt(
 	/* Determine FACS addr and load it.
 	 * Will ignore the missing FACS in the hardware-reduced mode.
 	 */
+PRAGMA_PUSH
+PRAGMA_PACK_WARN_OFF
 	result = fwts_acpi_handle_fadt_tables(fw, fadt,
 			"FACS", "FIRMWARE_CTRL", "X_FIRMWARE_CTRL",
 			&fadt->firmware_control, &fadt->x_firmware_ctrl,
 			provenance);
+PRAGMA_POP
 	if (result != FWTS_OK) {
 		if ((result == FWTS_NULL_POINTER) &&
 				fwts_acpi_is_reduced_hardware(fadt)) {
@@ -408,12 +411,15 @@ static int fwts_acpi_handle_fadt(
 		}
 	}
 	/* Determine DSDT addr and load it */
+PRAGMA_PUSH
+PRAGMA_PACK_WARN_OFF
 	if (fwts_acpi_handle_fadt_tables(fw, fadt,
 	    "DSDT", "DSTD", "X_DSDT",
 	    &fadt->dsdt, &fadt->x_dsdt, provenance) != FWTS_OK) {
 		fwts_log_error(fw, "Failed to load DSDT.");
 		return FWTS_ERROR;
 	}
+PRAGMA_POP
 	return FWTS_OK;
 }
 

@@ -253,6 +253,6 @@ static fwts_framework_ops uefivarinfo_ops = {
 	.minor_tests = uefivarinfo_tests
 };
 
-FWTS_REGISTER("uefivarinfo", &uefivarinfo_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_ROOT_PRIV)
+FWTS_REGISTER("uefivarinfo", &uefivarinfo_ops, FWTS_TEST_ANYTIME, FWTS_FLAG_UTILS | FWTS_FLAG_UNSAFE | FWTS_FLAG_ROOT_PRIV)
 
 #endif

@@ -525,7 +525,7 @@ static int securebootcert_setvar(
 	long ioret;
 	struct efi_setvariable setvariable;
 
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint64_t datasize = 1;
 
 	setvariable.VariableName = varname;

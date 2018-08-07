@@ -70,6 +70,7 @@ static long setvar(
 	setvariable.DataSize = datasize;
 	setvariable.Data = data;
 	setvariable.status = status;
+	*status = ~0ULL;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
 	return ioret;
@@ -91,6 +92,7 @@ static long getvar(
 	getvariable.DataSize = getdatasize;
 	getvariable.Data = data;
 	getvariable.status = status;
+	*status = ~0ULL;
 	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 
 	return ioret;

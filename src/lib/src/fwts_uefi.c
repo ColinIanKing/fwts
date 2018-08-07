@@ -27,6 +27,8 @@
 #include <dirent.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <errno.h>
+#include <string.h>
 
 #include "fwts.h"
 #include "fwts_uefi.h"
@@ -467,6 +469,11 @@ void fwts_uefi_print_status_info(fwts_framework *fw, const uint64_t status)
 {
 
 	const uefistatus_info *info;
+
+	if (status == ~0ULL) {
+		fwts_log_info(fw, "fwts test ioctl() failed, errno=%d (%s)", errno, strerror(errno));
+		return;
+	}
 
 	for (info = uefistatus_info_table; info->mnemonic != NULL; info++) {
 		if (status == info->statusvalue) {

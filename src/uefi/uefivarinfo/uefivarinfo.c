@@ -99,6 +99,7 @@ static int do_checkvariables(
 	variablename[0] = '\0';
 	while (true) {
 		long ioret;
+		status = ~0ULL;
 
 		variablenamesize = MAX_VARNAME_LENGTH;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
@@ -127,6 +128,7 @@ static int do_checkvariables(
 		getvariable.VendorGuid = &vendorguid;
 		getvariable.DataSize = &getdatasize;
 		getvariable.Data = data;
+		status = ~0ULL;
 
 		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 		if (ioret == -1) {
@@ -151,6 +153,8 @@ static int do_checkvariables(
 				}
 
 				getvariable.Data = data;
+				status = ~0ULL;
+
 				ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 				if (ioret == -1) {
 					fwts_log_info(fw, "Failed to get variable with variable larger than maximum variable length.");
@@ -185,6 +189,7 @@ static int do_queryvariableinfo(
 	queryvariableinfo.MaximumVariableStorageSize = maxvarstoragesize;
 	queryvariableinfo.RemainingVariableStorageSize = remvarstoragesize;
 	queryvariableinfo.MaximumVariableSize = maxvariablesize;
+	*status = ~0ULL;
 	queryvariableinfo.status = status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_QUERY_VARIABLEINFO, &queryvariableinfo);

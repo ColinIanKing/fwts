@@ -206,7 +206,7 @@ static int uefirttime_test1(fwts_framework *fw)
 	EFI_TIME efi_time;
 
 	EFI_TIME_CAPABILITIES efi_time_cap;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	gettime.Capabilities = &efi_time_cap;
 	gettime.Time = &efi_time;
@@ -236,7 +236,7 @@ static int uefirttime_test_gettime_invalid(
 {
 	long ioret;
 	struct efi_gettime gettime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	gettime.Capabilities = efi_time_cap;
 	gettime.Time = efi_time;
@@ -277,7 +277,7 @@ static int uefirttime_test4(fwts_framework *fw)
 
 	long ioret;
 	struct efi_settime settime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	struct efi_gettime gettime;
 
 	EFI_TIME oldtime;
@@ -325,6 +325,7 @@ static int uefirttime_test4(fwts_framework *fw)
 		time.TimeZone = 2047;
 
 	settime.Time = &time;
+	status = ~0ULL;
 	settime.status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
@@ -338,6 +339,7 @@ static int uefirttime_test4(fwts_framework *fw)
 	sleep(1);
 
 	gettime.Time = &newtime;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_TIME, &gettime);
 
@@ -380,6 +382,7 @@ static int uefirttime_test4(fwts_framework *fw)
 
 	/* restore the previous time. */
 	settime.Time = &oldtime;
+	status = ~0ULL;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetTime",
@@ -398,7 +401,7 @@ static int uefirttime_test_settime_invalid(
 	struct efi_settime *settime)
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	settime->status = &status;
 
@@ -427,7 +430,7 @@ static int uefirttime_test_settime_invalid_time(
 	struct efi_gettime gettime;
 	struct efi_settime settime;
 	EFI_TIME oldtime, newtime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	int ret, ioret;
 
 	gettime.Time = &oldtime;
@@ -467,6 +470,7 @@ static int uefirttime_test_settime_invalid_time(
 
 	/* Restore original time */
 	settime.Time = &oldtime;
+	status = ~0ULL;
 	settime.status = &status;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_TIME, &settime);
 	if (ioret == -1) {
@@ -609,7 +613,7 @@ static int uefirttime_test18(fwts_framework *fw)
 {
 	long ioret;
 	struct efi_getwakeuptime getwakeuptime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint8_t enabled, pending;
 	EFI_TIME efi_time;
 
@@ -644,7 +648,7 @@ static int uefirttime_test_getwaketime_invalid(
 	struct efi_getwakeuptime *getwakeuptime)
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	getwakeuptime->status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, getwakeuptime);
@@ -722,7 +726,7 @@ static int uefirttime_test23(fwts_framework *fw)
 {
 	long ioret;
 	struct efi_setwakeuptime setwakeuptime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	EFI_TIME oldtime;
 	EFI_TIME newtime;
 
@@ -749,6 +753,7 @@ static int uefirttime_test23(fwts_framework *fw)
 	addonehour(&oldtime);
 
 	setwakeuptime.Time = &oldtime;
+	status = ~0ULL;
 	setwakeuptime.status = &status;
 	setwakeuptime.Enabled = true;
 
@@ -770,6 +775,7 @@ static int uefirttime_test23(fwts_framework *fw)
 	getwakeuptime.Enabled = &enabled;
 	getwakeuptime.Pending = &pending;
 	getwakeuptime.Time = &newtime;
+	status = ~0ULL;
 	getwakeuptime.status = &status;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, &getwakeuptime);
@@ -805,6 +811,7 @@ static int uefirttime_test23(fwts_framework *fw)
 	}
 
 	setwakeuptime.Enabled = false;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);
 	if (ioret == -1) {
@@ -815,6 +822,7 @@ static int uefirttime_test23(fwts_framework *fw)
 	}
 
 	sleep(1);
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_WAKETIME, &getwakeuptime);
 	if (ioret == -1) {
@@ -846,7 +854,7 @@ static int uefirttime_test_setwakeuptime_invalid(
 )
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	setwakeuptime->status = &status;
 
@@ -890,7 +898,7 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 	struct efi_getwakeuptime getwakeuptime;
 	struct efi_setwakeuptime setwakeuptime;
 	EFI_TIME oldtime, newtime;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint8_t pending, enabled;
 	int ret, ioret;
 
@@ -938,6 +946,7 @@ static int uefirttime_test_setwakeuptime_invalid_time(
 
 	/* Restore original time */
 	setwakeuptime.Time = &oldtime;
+	status = ~0ULL;
 	setwakeuptime.status = &status;
 	setwakeuptime.Enabled = true;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_WAKETIME, &setwakeuptime);

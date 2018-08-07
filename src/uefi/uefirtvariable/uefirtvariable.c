@@ -75,15 +75,19 @@ static void uefirtvariable_env_cleanup(void)
 	setvariable.Attributes = 0;
 	setvariable.DataSize = 0;
 	setvariable.Data = &data;
+	status = ~0ULL;
 	setvariable.status = &status;
 	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
+	status = ~0ULL;
 	setvariable.VariableName = variablenametest2;
 	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
+	status = ~0ULL;
 	setvariable.VariableName = variablenametest3;
 	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
+	status = ~0ULL;
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid2;
 	(void)ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
@@ -130,7 +134,7 @@ static int getvariable_test(
 	struct efi_getvariable getvariable;
 	struct efi_setvariable setvariable;
 
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t dataindex;
 	uint64_t getdatasize = sizeof(testdata);
@@ -177,6 +181,7 @@ static int getvariable_test(
 	getvariable.status = &status;
 
 	for (i = 0; i < multitesttime; i++) {
+		status = ~0ULL;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, &getvariable);
 		if (ioret == -1) {
 			fwts_failed(fw, LOG_LEVEL_HIGH,
@@ -221,6 +226,7 @@ static int getvariable_test(
 
 	/* delete the variable */
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -236,6 +242,7 @@ static int getvariable_test(
 err_restore_env:
 
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -288,7 +295,7 @@ static bool compare_name(const uint16_t *name1, const uint16_t *name2)
 static int getnextvariable_test1(fwts_framework *fw)
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	struct efi_setvariable setvariable;
 
@@ -351,6 +358,7 @@ static int getnextvariable_test1(fwts_framework *fw)
 	variablename[0] = '\0';
 	while (true) {
 		variablenamesize = maxvariablenamesize;
+		status = ~0ULL;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
@@ -416,6 +424,7 @@ static int getnextvariable_test1(fwts_framework *fw)
 
 	/* delete the variable */
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -431,6 +440,7 @@ static int getnextvariable_test1(fwts_framework *fw)
 err_restore_env:
 
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -497,6 +507,7 @@ static int getnextvariable_test2(fwts_framework *fw)
 	while (true) {
 		long ioret;
 
+		status = ~0ULL;
 		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
@@ -657,6 +668,7 @@ static int getnextvariable_test3(fwts_framework *fw)
 	while (true) {
 		struct efi_var_item *item;
 
+		status = ~0ULL;
 		variablenamesize = maxvariablenamesize;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
@@ -758,7 +770,7 @@ err:
 static int getnextvariable_test4(fwts_framework *fw)
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint64_t i;
 
 	struct efi_getnextvariablename getnextvariablename;
@@ -787,6 +799,7 @@ static int getnextvariable_test4(fwts_framework *fw)
 
 	getnextvariablename.VariableName = variablename;
 	getnextvariablename.VendorGuid = NULL;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
@@ -800,6 +813,7 @@ static int getnextvariable_test4(fwts_framework *fw)
 
 	getnextvariablename.VendorGuid = &vendorguid;
 	getnextvariablename.VariableNameSize = NULL;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
@@ -821,6 +835,7 @@ static int getnextvariable_test4(fwts_framework *fw)
 		 * string in VariableName
 		 */
 		variablename[0] = '\0';
+		status = ~0ULL;
 
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
@@ -867,7 +882,7 @@ static int setvariable_insertvariable(
 	long ioret;
 	struct efi_setvariable setvariable;
 
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint64_t dataindex;
 
 	uint8_t data[datasize + 1];
@@ -936,7 +951,7 @@ static int setvariable_checkvariable(
 	long ioret;
 	struct efi_getvariable getvariable;
 
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint8_t testdata[datasize];
 	uint64_t dataindex;
 	uint64_t getdatasize = sizeof(testdata);
@@ -992,7 +1007,7 @@ static int setvariable_checkvariable_notfound(
 	long ioret;
 	struct efi_getvariable getvariable;
 
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint8_t testdata[MAX_DATA_LENGTH];
 	uint64_t getdatasize = sizeof(testdata);
 	uint32_t attributestest;
@@ -1028,7 +1043,7 @@ static int setvariable_invalidattr(
 {
 	long ioret;
 	struct efi_setvariable setvariable;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint64_t dataindex;
 	uint8_t data[datasize];
 
@@ -1374,7 +1389,7 @@ static int setvariable_test8(fwts_framework *fw)
 	uint32_t attr = attributes | FWTS_UEFI_VARIABLE_AUTHENTICATED_WRITE_ACCESS;
 	uint64_t datasize = 1;
 	uint8_t data = 1;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = &gtestguid1;
@@ -1411,6 +1426,7 @@ static int do_queryvariableinfo(
 	queryvariableinfo.RemainingVariableStorageSize = remvarstoragesize;
 	queryvariableinfo.MaximumVariableSize = maxvariablesize;
 	queryvariableinfo.status = status;
+	*status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_QUERY_VARIABLEINFO, &queryvariableinfo);
 
@@ -1425,7 +1441,7 @@ static int getnextvariable_multitest(
 	const uint32_t multitesttime)
 {
 	long ioret;
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	uint32_t i;
 
 	struct efi_setvariable setvariable;
@@ -1475,6 +1491,7 @@ static int getnextvariable_multitest(
 	for (i = 0; i < multitesttime; i++) {
 		variablename[0] = '\0';
 		variablenamesize = MAX_DATA_LENGTH;
+		status = ~0ULL;
 		ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTVARIABLENAME, &getnextvariablename);
 
 		if (ioret == -1) {
@@ -1487,6 +1504,7 @@ static int getnextvariable_multitest(
 	};
 
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -1501,6 +1519,7 @@ static int getnextvariable_multitest(
 err_restore_env:
 
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 
@@ -1816,6 +1835,7 @@ static void getvariable_test_invalid(
 	long ioret;
 
 	fwts_log_info(fw, "Testing GetVariable with %s.", test);
+	*(getvariable->status) = ~0ULL;
 
 	ioret = ioctl(fd, EFI_RUNTIME_GET_VARIABLE, getvariable);
 	if (ioret == -1) {
@@ -1845,7 +1865,8 @@ static int uefirtvariable_test8(fwts_framework *fw)
 	struct efi_getvariable getvariable;
 	struct efi_setvariable setvariable;
 	uint8_t data[16];
-	uint64_t status, dataindex;
+	uint64_t status= ~0ULL;
+        uint64_t dataindex;
 	uint64_t getdatasize = sizeof(data);
 	uint32_t attr;
 	int ioret;
@@ -1920,6 +1941,7 @@ static int uefirtvariable_test8(fwts_framework *fw)
 
 	/* delete the variable */
 	setvariable.DataSize = 0;
+	status = ~0ULL;
 	ioret = ioctl(fd, EFI_RUNTIME_SET_VARIABLE, &setvariable);
 	if (ioret == -1) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "UEFIRuntimeSetVariable",

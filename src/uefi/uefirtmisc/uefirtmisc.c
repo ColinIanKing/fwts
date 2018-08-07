@@ -85,6 +85,7 @@ static int getnexthighmonotoniccount_test(fwts_framework *fw, uint32_t multitest
 	getnexthighmonotoniccount.status = &status;
 
 	for (i = 0; i < multitesttime; i++) {
+		status = ~0ULL;
 		long ioret = ioctl(fd, EFI_RUNTIME_GET_NEXTHIGHMONOTONICCOUNT, &getnexthighmonotoniccount);
 
 		if (ioret == -1) {
@@ -124,8 +125,8 @@ static int querycapsulecapabilities_test(fwts_framework *fw, uint32_t multitestt
 	querycapsulecapabilities.ResetType = &resettype;
 
 	for (i = 0; i < multitesttime; i++) {
+		status = ~0ULL;
 		long ioret = ioctl(fd, EFI_RUNTIME_QUERY_CAPSULECAPABILITIES, &querycapsulecapabilities);
-
 		if (ioret == -1) {
 			if (status == EFI_UNSUPPORTED) {
 				fwts_skipped(fw, "Not support the UEFI QueryCapsuleCapabilities runtime interface"
@@ -219,7 +220,7 @@ static int uefirtmisc_test2(fwts_framework *fw)
 
 static int uefirtmisc_test3(fwts_framework *fw)
 {
-	uint64_t status;
+	uint64_t status = ~0ULL;
 	long ioret;
 	struct efi_getnexthighmonotoniccount getnexthighmonotoniccount;
 

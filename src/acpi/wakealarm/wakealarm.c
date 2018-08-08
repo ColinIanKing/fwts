@@ -37,21 +37,22 @@ static int wakealarm_test1(fwts_framework *fw)
 	if (fwts_wakealarm_get(fw, &rtc_tm) == FWTS_OK) {
 		fwts_passed(fw, "RTC with a RTC alarm ioctl() interface found.");
 	} else {
-		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoWakeAlarmTest1",
-			"Could not find an RTC with an alarm ioctl() interface.");
 #ifdef FWTS_ARCH_INTEL
 		/* For x86 devices, this is considered a failure */
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "NoWakeAlarmTest1",
+			"Could not find an RTC with an alarm ioctl() interface.");
 		fwts_advice(fw,
 			"x86 devices generally should have an RTC wake alarm that "
 			"is normally controlled by the RTC alarm ioctl() interface. This interface "
 			"does not exist, so the wake alarm tests will be aborted.");
+		return FWTS_ABORTED;
 #else
-		fwts_advice(fw,
+		fwts_log_info(fw,
 			"non-x86 devices sometimes do not have an RTC wake alarm that "
 			"is normally controlled by the RTC alarm ioctl() interface. This "
-			"interface does not exist, so the wake alarm tests will be aborted.");
+			"interface does not exist, so the wake alarm tests will be skipped.");
+		return FWTS_SKIP;
 #endif
-		return FWTS_ABORTED;
 	}
 	return FWTS_OK;
 }

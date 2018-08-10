@@ -106,7 +106,7 @@ static int acpi_table_check_test1(fwts_framework *fw)
 		passed = acpi_table_check_field_test(fw, name, "Signature", hdr->signature, 4) &
 			 acpi_table_check_field_test(fw, name, "OEM ID", hdr->oem_id, 6) &
 			 acpi_table_check_field_test(fw, name, "OEM Table ID", hdr->oem_tbl_id, 8) &
-			 acpi_table_check_field_test(fw, name, "OEM Creator ID", hdr->creator_id, 4);
+			 acpi_table_check_field_test(fw, name, "Creator ID", hdr->creator_id, 4);
 		if (passed)
 			fwts_passed(fw, "Table %s has valid signature and ID strings.", name);
 

@@ -176,7 +176,7 @@ static int acpi_table_sbbr_check_test2(fwts_framework *fw)
 			passed = acpi_table_check_field_test(fw, name, "Signature", hdr->signature, MIN_SIG) &
 			    acpi_table_check_field_test(fw, name, "OEM ID", hdr->oem_id, OEM_ID) &
 			    acpi_table_check_field_test(fw, name, "OEM Table ID", hdr->oem_tbl_id, OEM_TABLE_ID) &
-			    acpi_table_check_field_test(fw, name, "OEM Creator ID", hdr->creator_id, OEM_CREATOR_ID);
+			    acpi_table_check_field_test(fw, name, "Creator ID", hdr->creator_id, OEM_CREATOR_ID);
 			if (passed)
 				fwts_passed(fw, "Table %s has valid signature and ID strings.", name);
 		}

@@ -26,6 +26,7 @@ AM_CPPFLAGS = 						\
 	-D_LINUX -DNDEBUG -D_CONSOLE -DACPI_EXEC_APP	\
 	-I$(top_srcdir)/src/lib/include			\
 	-I$(srcdir)/source/include			\
+	-I$(srcdir)/source/tools/acpiexec		\
 	`pkg-config --silence-errors --cflags json`	\
 	`pkg-config --silence-errors --cflags json-c`	\
 	-Wall -fno-strict-aliasing

@@ -48,6 +48,7 @@
 #include "acinterp.h"
 #include "acapps.h"
 #include "amlresrc.h"
+#include "aecommon.h"
 
 #define ACPI_MAX_INIT_TABLES		(64)	/* Number of ACPI tables */
 
@@ -82,6 +83,8 @@ BOOLEAN AcpiGbl_AbortLoopOnTimeout = FALSE;
 BOOLEAN AcpiGbl_IgnoreErrors = FALSE;
 BOOLEAN AcpiGbl_VerboseHandlers = FALSE;
 UINT8   AcpiGbl_RegionFillValue = 0;
+INIT_FILE_ENTRY *AcpiGbl_InitEntries = NULL;
+UINT32  AcpiGbl_InitFileLineCount = 0;
 
 static ACPI_TABLE_DESC		Tables[ACPI_MAX_INIT_TABLES];	/* ACPICA Table descriptors */
 static bool			region_handler_called;		/* Region handler tracking */

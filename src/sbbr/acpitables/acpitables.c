@@ -59,7 +59,7 @@ static bool acpi_table_check_field_test(
 	if (!acpi_table_check_field(field, len)) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "ACPITableHdrInfo",
 			"ACPI Table %s has non-ASCII characters in "
-			"header field %s\n", table_name, field_name);
+			"header field %s", table_name, field_name);
 		return false;
 	}
 	return true;

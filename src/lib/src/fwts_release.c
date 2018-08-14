@@ -46,7 +46,7 @@ static void fwts_release_field_get(char *needle, char *delimiter, char *text, ch
  *  fwts_release_get_debian()
  *	return release for debian based systems
  */
-void fwts_release_get_debian(fwts_list *list, fwts_release *release)
+static void fwts_release_get_debian(fwts_list *list, fwts_release *release)
 {
 	fwts_list_link *item;
 
@@ -64,7 +64,7 @@ void fwts_release_get_debian(fwts_list *list, fwts_release *release)
  *  fwts_release_field_null
  *	convert NULL fields to ""
  */
-void fwts_release_field_null_to_str(char **field)
+static void fwts_release_field_null_to_str(char **field)
 {
 	if (*field == NULL)
 		*field = strdup("");

@@ -33,9 +33,11 @@ static int fwts_getchar(int *ch)
 {
 	struct termios oldterm;
 	struct termios newterm;
-	int fd = fileno(stdin);
+	const int fd = fileno(stdin);
 
 	*ch = -1;
+	if (fd < 0)
+		return FWTS_ERROR;
 
 	if (tcgetattr(fd, &oldterm) < 0)
 		return FWTS_ERROR;
@@ -76,7 +78,7 @@ int fwts_printf(fwts_framework *fw, const char *fmt, ...)
 }
 
 /*
- *  fwts_press_entrer()
+ *  fwts_press_enter()
  *	prompt and wait for enter key
  */
 int fwts_press_enter(fwts_framework *fw)
@@ -111,7 +113,6 @@ int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
 	fflush(stdout);
 
 	for (;;) {
-
 		if (fwts_getchar(&ch) == FWTS_ERROR) {
 			fwts_log_error(fw, "fwts_getchar() failed.");
 			break;
@@ -124,4 +125,3 @@ int fwts_get_reply(fwts_framework *fw, const char *message, const char *options)
 
 	return ch;
 }
-

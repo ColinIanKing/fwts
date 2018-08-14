@@ -107,7 +107,8 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 	FILE *fp;
 	char buffer[1024];
 	fwts_cpuinfo_x86 *cpu;
-	int cpu_num = -1, found = 0;
+	int cpu_num = -1;
+	bool found = false;
 
 	if ((cpu = (fwts_cpuinfo_x86*)calloc(1, sizeof(fwts_cpuinfo_x86))) == NULL)
 		return NULL;
@@ -138,7 +139,7 @@ fwts_cpuinfo_x86 *fwts_cpu_get_info(int which_cpu)
 				continue;
 		}
 
-		found = 1;
+		found = true;
 
 		if (!strncmp(buffer, "vendor_id", 9)) {
 			cpu->vendor_id = strdup(ptr);

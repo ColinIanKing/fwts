@@ -63,7 +63,6 @@ fwts_firmware_type fwts_firmware_detect(void)
 int fwts_firmware_features(void)
 {
 	int features = 0;
-
 	struct stat ipmi_statbuf;
 
 	switch (fwts_firmware_detect()) {
@@ -106,7 +105,6 @@ const char *fwts_firmware_feature_string(const fwts_firmware_feature features)
 			invalid_feature_names);
 
 	for (p = str, i = 0; i < n; i++) {
-
 		if (!(features & feature_names[i].feature))
 			continue;
 

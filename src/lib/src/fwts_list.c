@@ -85,7 +85,7 @@ fwts_list_link *fwts_list_append(fwts_list *list, void *data)
 	if (!list)
 		return NULL;
 
-	if ((link = calloc(1,sizeof(fwts_list_link))) == NULL)
+	if ((link = calloc(1, sizeof(fwts_list_link))) == NULL)
 		return NULL;
 
 	link->data = data;
@@ -117,6 +117,7 @@ fwts_list_link *fwts_list_add_ordered(fwts_list *list, void *new_data, fwts_list
 
 	for (list_item = &list->head; *list_item; list_item = &(*list_item)->next) {
 		void *data = (void *)(*list_item)->data;
+
 		if (compare(data, new_data) >= 0) {
 			new_list_item->next = (*list_item);
 			break;

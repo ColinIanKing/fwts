@@ -1,7 +1,7 @@
 method          method: ACPI DSDT Method Semantic tests.
 method          ----------------------------------------------------------
 method          Test 1 of 195: Test Method Names.
-method          Found 1061 Objects 
+method          Found 1061 Objects
 method          PASSED: Test 1, Method names contain legal characters.
 method          
 method          Test 2 of 195: Test _AEI.

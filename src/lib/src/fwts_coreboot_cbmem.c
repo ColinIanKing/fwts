@@ -334,13 +334,13 @@ char *fwts_coreboot_cbmem_console_dump(void)
 
 	free(console_p);
 
-	coreboot_log = malloc(console->size+1);
+	coreboot_log = malloc(console->size + 1);
 	if (!coreboot_log) {
 		free(console);
 		return NULL;
 	}
 
-	coreboot_log[console->size + 1] = '\0';
+	coreboot_log[console->size] = '\0';
 
 	count = memconsole_coreboot_read(console, coreboot_log, 0, console->size);
 	free(console);

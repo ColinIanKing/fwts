@@ -72,20 +72,18 @@ struct cbmem_console {
 } __attribute__ ((packed));
 
 /* Return < 0 on error, 0 on success. */
-static int parse_cbtable(uint64_t address, size_t table_size, uint64_t *cbmen_console_addr);
+static int parse_cbtable(const off_t address, const size_t table_size, off_t *cbmen_console_addr);
 
-static void *map_memory(unsigned long long addr, size_t size)
+static void *map_memory(const off_t addr, const size_t size)
 {
 	void *mem;
 	void *phy;
 
 	phy = fwts_mmap(addr, size);
-
 	if (phy == FWTS_MAP_FAILED)
 		return NULL;
 
 	mem = malloc(size);
-
 	if (!mem) {
 		fwts_munmap(phy, size);
 		return NULL;
@@ -117,7 +115,8 @@ static uint16_t ipchcksum(const void *addr, unsigned size)
 	return (uint16_t) sum;
 }
 
-/* This is a work-around for a nasty problem introduced by initially having
+/*
+ * This is a work-around for a nasty problem introduced by initially having
  * pointer sized entries in the lb_cbmem_ref structures. This caused problems
  * on 64bit x86 systems because coreboot is 32bit on those systems.
  * When the problem was found, it was corrected, but there are a lot of
@@ -136,8 +135,13 @@ static struct lb_cbmem_ref parse_cbmem_ref(const struct lb_cbmem_ref *cbmem_ref)
 	return ret;
 }
 
-/* Return < 0 on error, 0 on success, 1 if forwarding table entry found. */
-static int parse_cbtable_entries(const void *lbtable, size_t table_size, uint64_t *cbmem_console_addr)
+/*
+ * Return < 0 on error, 0 on success, 1 if forwarding table entry found.
+ */
+static int parse_cbtable_entries(
+	const void *lbtable,
+	const size_t table_size,
+	off_t *cbmem_console_addr)
 {
 	size_t i;
 	const struct lb_record* lbr_p;
@@ -147,7 +151,7 @@ static int parse_cbtable_entries(const void *lbtable, size_t table_size, uint64_
 		lbr_p = lbtable + i;
 		switch (lbr_p->tag) {
 		case LB_TAG_CBMEM_CONSOLE: {
-			*cbmem_console_addr = parse_cbmem_ref((struct lb_cbmem_ref *) lbr_p).cbmem_addr;
+			*cbmem_console_addr = (off_t)parse_cbmem_ref((struct lb_cbmem_ref *) lbr_p).cbmem_addr;
 			if (cbmem_console_addr)
 				return 0;
 			continue;
@@ -176,8 +180,13 @@ static int parse_cbtable_entries(const void *lbtable, size_t table_size, uint64_
 	return forwarding_table_found;
 }
 
-/* Return < 0 on error, 0 on success. */
-static int parse_cbtable(uint64_t address, size_t table_size, uint64_t *cbmem_console_table)
+/*
+ * Return < 0 on error, 0 on success.
+ */
+static int parse_cbtable(
+	const off_t address,
+	const size_t table_size,
+	off_t *cbmem_console_table)
 {
 	void *buf;
 	size_t req_size;
@@ -190,7 +199,6 @@ static int parse_cbtable(uint64_t address, size_t table_size, uint64_t *cbmem_co
 		req_size = 4 * 1024;
 
 	buf = map_memory(address, req_size);
-
 	if (!buf)
 		return -1;
 
@@ -220,7 +228,7 @@ static int parse_cbtable(uint64_t address, size_t table_size, uint64_t *cbmem_co
 			continue;
 		}
 
-		ret = parse_cbtable_entries(map,lbh->table_bytes, cbmem_console_table);
+		ret = parse_cbtable_entries(map, lbh->table_bytes, cbmem_console_table);
 
 		/* Table parsing failed. */
 		if (ret < 0) {
@@ -239,8 +247,12 @@ static int parse_cbtable(uint64_t address, size_t table_size, uint64_t *cbmem_co
 	return -1;
 }
 
-static ssize_t memory_read_from_buffer(void *to, size_t count, size_t *ppos,
-				const void *from, size_t available)
+static ssize_t memory_read_from_buffer(
+	void *to,
+	size_t count,
+	size_t *ppos,
+	const void *from,
+	const size_t available)
 {
 	size_t pos = *ppos;
 
@@ -250,18 +262,24 @@ static ssize_t memory_read_from_buffer(void *to, size_t count, size_t *ppos,
 	if (count > available - pos)
 		count = available - pos;
 
-	memcpy(to, from+pos, count);
+	memcpy(to, from + pos, count);
 
 	*ppos = pos + count;
 
 	return count;
 }
 
-static ssize_t memconsole_coreboot_read(struct cbmem_console *con, char *buf, size_t pos, size_t count)
+static ssize_t memconsole_coreboot_read(
+	struct cbmem_console *con,
+	char *buf,
+	size_t pos,
+	size_t count)
 {
 	uint32_t cursor = con->cursor & CURSOR_MASK;
 	uint32_t flags = con->cursor & ~CURSOR_MASK;
-	struct seg {	/* describes ring buffer segments in logical order */
+
+	/* describes ring buffer segments in logical order */
+	struct seg {
 		uint32_t phys;	/* physical offset from start of mem buffer */
 		uint32_t len;	/* length of segment */
 	} seg[2] = { { 0, 0 }, { 0, 0 } };
@@ -289,7 +307,7 @@ static ssize_t memconsole_coreboot_read(struct cbmem_console *con, char *buf, si
 char *fwts_coreboot_cbmem_console_dump(void)
 {
 	unsigned int j;
-	uint64_t cbmem_console_addr;
+	off_t cbmem_console_addr;
 	unsigned long long possible_base_addresses[] = { 0, 0xf0000 };
 	struct cbmem_console *console_p;
 	struct cbmem_console *console;
@@ -322,7 +340,7 @@ char *fwts_coreboot_cbmem_console_dump(void)
 		return NULL;
 	}
 
-	coreboot_log[console->size+1] = '\0';
+	coreboot_log[console->size + 1] = '\0';
 
 	count = memconsole_coreboot_read(console, coreboot_log, 0, console->size);
 	free(console);

@@ -77,7 +77,7 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 
 	*val = value;
 
-	if (ret<0)
+	if (ret < 0)
 		return FWTS_ERROR;
 
 	return FWTS_OK;
@@ -373,7 +373,7 @@ static int perf_start_counter(int fd)
 	int rc;
 
 	rc = ioctl(fd, PERF_EVENT_IOC_ENABLE);
-	return rc == 0 ? FWTS_OK : FWTS_ERROR;
+	return (rc == 0) ? FWTS_OK : FWTS_ERROR;
 }
 
 static int perf_stop_counter(int fd)
@@ -381,7 +381,7 @@ static int perf_stop_counter(int fd)
 	int rc;
 
 	rc = ioctl(fd, PERF_EVENT_IOC_DISABLE);
-	return rc == 0 ? FWTS_OK : FWTS_ERROR;
+	return (rc == 0) ? FWTS_OK : FWTS_ERROR;
 }
 
 static int perf_read_counter(int fd, unsigned long long *result)
@@ -424,7 +424,7 @@ int fwts_cpu_benchmark(
 	if (ncpus == FWTS_ERROR)
 		return FWTS_ERROR;
 
-	if (cpu < 0 || cpu > ncpus)
+	if ((cpu < 0) || (cpu > ncpus))
 		return FWTS_ERROR;
 
 	/* setup perf counter */
@@ -580,7 +580,7 @@ int fwts_cpu_consume(const int seconds)
 	if (fwts_cpu_consume_start() != FWTS_OK)
 		return FWTS_ERROR;
 
-	sleep(seconds);
+	(void)sleep(seconds);
 
 	fwts_cpu_consume_complete();
 

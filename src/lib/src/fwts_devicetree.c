@@ -99,7 +99,7 @@ bool check_status_property_okay(fwts_framework *fw,
 int check_property_printable(fwts_framework *fw,
 	const char *name,
 	const char *buf,
-	size_t len)
+	const size_t len)
 {
 	bool printable = true;
 	unsigned int i;
@@ -128,7 +128,7 @@ int check_property_printable(fwts_framework *fw,
 	}
 
 	/* check for a trailing nul */
-	if (buf[len-1] != '\0') {
+	if (buf[len - 1] != '\0') {
 		fwts_failed(fw, LOG_LEVEL_LOW,
 			"DTPrintablePropertyNoNul",
 			"property \"%s\" isn't nul-terminated", name);

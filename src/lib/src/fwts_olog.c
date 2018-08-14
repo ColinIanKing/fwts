@@ -54,8 +54,8 @@ fwts_list *fwts_olog_read(fwts_framework *fw)
 	long len;
 	size_t read_actual = 0;
 	size_t write_actual = 0;
-	FILE* msglog_f;
-	FILE* msglog_outfile_f;
+	FILE *msglog_f;
+	FILE *msglog_outfile_f;
 
 	/*
 	 * Special file handling to sequentially fread the sysfs msglog into

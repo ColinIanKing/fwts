@@ -31,6 +31,7 @@
 static void fwts_keymap_keycode_free(void *data)
 {
 	fwts_keycode *keycode = (fwts_keycode*)data;
+
 	free(keycode->keyname);
 	free(keycode->keytext);
 	free(keycode);
@@ -70,24 +71,23 @@ fwts_list *fwts_keymap_load(const char *machine)
 	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
 		fwts_keycode *key;
 		char *str = buffer;
-		int scancode;
 		char *keyname = NULL;
 		char *keytext = NULL;
+		int scancode;
 
 		scancode = strtoul(buffer, &str, 16);
-
-		if (str == NULL || *str == '\0')
+		if ((str == NULL) || (*str == '\0'))
 			continue;
 
 		/* Skip over whitespace */
-		while (*str != '\0' && isspace(*str))
+		while ((*str != '\0') && isspace(*str))
 			str++;
 		if (*str == '\0')
 			continue;
 
 		keyname = str;
 		/* Skip over keyname */
-		while (*str != '\0' && !isspace(*str))
+		while ((*str != '\0') && !isspace(*str))
 			str++;
 
 		keytext = keyname;  /* Default if we cannot find human readable name */
@@ -132,6 +132,7 @@ fwts_keycode *fwts_keymap_find_scancode(fwts_list *keymap, const int scancode)
 
 	fwts_list_foreach(item, keymap) {
 		fwts_keycode *keycode = fwts_list_data(fwts_keycode*, item);
+
 		if (keycode->scancode == scancode)
 			return keycode;
 	}

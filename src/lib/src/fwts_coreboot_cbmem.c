@@ -152,7 +152,7 @@ static int parse_cbtable_entries(
 		switch (lbr_p->tag) {
 		case LB_TAG_CBMEM_CONSOLE: {
 			*cbmem_console_addr = (off_t)parse_cbmem_ref((struct lb_cbmem_ref *) lbr_p).cbmem_addr;
-			if (cbmem_console_addr)
+			if (*cbmem_console_addr)
 				return 0;
 			continue;
 		}

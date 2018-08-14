@@ -27,10 +27,11 @@
 
 #include "fwts.h"
 
-unsigned int fwts_ipmi_msg_id = 1;
+static unsigned int fwts_ipmi_msg_id = 1;
 static const char *fwts_ipmi_devnode = "/dev/ipmi0";
 
-bool fwts_ipmi_present(int fwts_ipmi_flags) {
+bool fwts_ipmi_present(int fwts_ipmi_flags)
+{
 	return !access(fwts_ipmi_devnode, fwts_ipmi_flags);
 }
 
@@ -49,7 +50,6 @@ int fwts_ipmi_exec_query(
 		return FWTS_ERROR;
 
 	fwts_send_rc = ioctl(fd, IPMICTL_SEND_COMMAND, (char *)fwts_ipmi_req);
-
 	if (fwts_send_rc != 0) {
 		(void)close(fd);
 		return FWTS_ERROR;
@@ -69,7 +69,6 @@ int fwts_ipmi_exec_query(
 	fwts_ipmi_recv.addr = (unsigned char *)&fwts_ipmi_addr;
 	fwts_ipmi_recv.addr_len = sizeof (fwts_ipmi_addr);
 	fwts_recv_rc = ioctl(fd, IPMICTL_RECEIVE_MSG_TRUNC, &fwts_ipmi_recv);
-
 	if (fwts_recv_rc != 0) {
 		(void)close(fd);
 		return FWTS_ERROR;

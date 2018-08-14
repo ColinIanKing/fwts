@@ -120,7 +120,7 @@ static int acpiinfo_test2(fwts_framework *fw)
 		minor = fadt->minor_version;
 
 	fwts_log_info(fw,
-		"FACP ACPI Version: %d.%d\n", major, minor);
+		"FACP ACPI Version: %d.%d", major, minor);
 
 	fwts_infoonly(fw);
 

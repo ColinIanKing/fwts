@@ -39,8 +39,8 @@ static int olog_init(fwts_framework *fw)
 	else {
 		olog = fwts_olog_read(fw);
 		if (olog == NULL) {
-			fwts_log_error(fw, "OLOG without any parameters on the platform you are running does nothing, please specify -o for custom log analysis.\n");
-			fwts_log_error(fw, "PPC supports dump and analysis of the default firmware logs.\n");
+			fwts_log_error(fw, "OLOG without any parameters on the platform you are running does nothing, please specify -o for custom log analysis.");
+			fwts_log_error(fw, "PPC supports dump and analysis of the default firmware logs.");
 			return FWTS_SKIP;
 		}
 	}

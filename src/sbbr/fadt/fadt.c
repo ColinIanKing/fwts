@@ -373,7 +373,7 @@ static int fadt_sbbr_profile_test3(fwts_framework *fw)
 	const uint8_t SBBR_SOHO_SERVER  = 5;
 	const uint8_t SBBR_PERF_SERVER  = 7;
 
-	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
+	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)",
 		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
 

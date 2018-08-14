@@ -91,7 +91,7 @@ static int nx_test2(fwts_framework *fw)
 	fwts_log_info(fw,
 		"This test verifies that all CPUs have the same NX flag setting. "
 		"Although rare, BIOS may set the NX flag differently "
-		"per CPU. ");
+		"per CPU.");
 
 	if ((n = fwts_cpu_enumerate()) == FWTS_ERROR) {
 		fwts_log_error(fw, "Cannot determine number of CPUs");

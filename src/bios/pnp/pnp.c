@@ -82,7 +82,7 @@ static int pnp_test1(fwts_framework *fw)
 
 	fwts_log_info(fw,
 		"This test tries to find and sanity check the "
-		"Plug and Play BIOS Support Installation Check structure. ");
+		"Plug and Play BIOS Support Installation Check structure.");
 
         if ((mem = fwts_mmap(PNP_REGION_START,
 			PNP_REGION_SIZE)) == FWTS_MAP_FAILED) {

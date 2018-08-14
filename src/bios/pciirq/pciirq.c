@@ -109,7 +109,7 @@ static int pciirq_test1(fwts_framework *fw)
 		" and described in pages 233-238 of PCI System Architecture, "
 		"Fourth Edition, Mindshare, Inc. (1999). "
 		"NOTE: The PCI IRQ Routing Table only really knows about ISA IRQs "
-		"and is generally not used with APIC. ");
+		"and is generally not used with APIC.");
 
         if ((mem = fwts_mmap(PCIIRQ_REGION_START,
 			PCIIRQ_REGION_SIZE)) == FWTS_MAP_FAILED) {

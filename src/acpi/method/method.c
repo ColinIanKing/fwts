@@ -472,7 +472,7 @@ static int method_name_check(fwts_framework *fw)
 		fwts_list_link	*item;
 		bool failed = false;
 
-		fwts_log_info(fw, "Found %d Objects\n", methods->len);
+		fwts_log_info(fw, "Found %d Objects", methods->len);
 
 		fwts_list_foreach(item, methods) {
 			char *ptr;

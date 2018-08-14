@@ -416,7 +416,7 @@ static void acpi_table_check_fadt_reserved(fwts_framework *fw)
 
 static void acpi_table_check_fadt_pm_profile(fwts_framework *fw)
 {
-	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)\n",
+	fwts_log_info(fw, "FADT Preferred PM Profile: %hhu (%s)",
 		fadt->preferred_pm_profile,
 		FWTS_ACPI_FADT_PREFERRED_PM_PROFILE(fadt->preferred_pm_profile));
 

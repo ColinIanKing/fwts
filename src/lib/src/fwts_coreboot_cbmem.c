@@ -38,9 +38,6 @@
 #define LB_TAG_CBMEM_CONSOLE	0x0017
 #define LB_TAG_FORWARD		0x0011
 
-#define MIN(a,b) ((a)<(b) ? (a):(b))
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-
 struct lb_record {
         uint32_t tag;           /* tag ID */
         uint32_t size;          /* size of record (in bytes) */
@@ -277,10 +274,10 @@ static ssize_t memconsole_coreboot_read(struct cbmem_console *con, char *buf, si
 		seg[0] = (struct seg){.phys = cursor, .len = count - cursor};
 		seg[1] = (struct seg){.phys = 0, .len = cursor};
 	} else {
-		seg[0] = (struct seg){.phys = 0, .len = MIN(cursor, count)};
+		seg[0] = (struct seg){.phys = 0, .len = FWTS_MIN(cursor, count)};
 	}
 
-	for (i = 0; i < ARRAY_SIZE(seg) && count > done; i++) {
+	for (i = 0; i < FWTS_ARRAY_SIZE(seg) && count > done; i++) {
 		done += memory_read_from_buffer(buf + done, count - done, &pos,
 			con->body + seg[i].phys, seg[i].len);
 		pos -= seg[i].len;
@@ -300,11 +297,11 @@ char *fwts_coreboot_cbmem_console_dump(void)
 	ssize_t count;
 
 	/* Find and parse coreboot table */
-	for (j = 0; j < ARRAY_SIZE(possible_base_addresses); j++) {
+	for (j = 0; j < FWTS_ARRAY_SIZE(possible_base_addresses); j++) {
 		if (!parse_cbtable(possible_base_addresses[j], 0, &cbmem_console_addr))
 			break;
 	}
-	if (j == ARRAY_SIZE(possible_base_addresses))
+	if (j == FWTS_ARRAY_SIZE(possible_base_addresses))
 		return NULL;
 
 	console_p = map_memory(cbmem_console_addr, sizeof(*console_p));

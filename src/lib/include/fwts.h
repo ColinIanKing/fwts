@@ -24,6 +24,13 @@
 #include "config.h"
 
 /*
+ *  Helper macros, minimum, maximum and array size
+ */
+#define FWTS_MIN(a, b)		((a) < (b) ? (a) : (b))
+#define FWTS_MAX(a, b)		((a) > (b) ? (a) : (b))
+#define FWTS_ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
+
+/*
  *  convert version to a large integer for easier comparison
  */
 #define _VER_(major, minor, patchlevel)			\

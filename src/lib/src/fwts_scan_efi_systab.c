@@ -41,6 +41,7 @@ void *fwts_scan_efi_systab(const char *name)
 	fwts_list_foreach(item, systab) {
 		char *str = fwts_list_data(char *, item);
 		char *s_ptr = strstr(str, name);
+
 		if (s_ptr) {
 			char *ptr = strstr(str, "=");
 			if (ptr) {

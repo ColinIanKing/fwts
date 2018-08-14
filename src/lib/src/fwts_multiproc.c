@@ -133,7 +133,7 @@ int fwts_mp_data_get(fwts_mp_data *data)
 
 	/* Remap with full header and table now we know how big it is */
 	(void)fwts_munmap(mem, sizeof(fwts_mp_config_table_header));
-	mem =  fwts_mmap((off_t)phys_addr, data->size);
+	mem = fwts_mmap((off_t)phys_addr, data->size);
 	if (mem == FWTS_MAP_FAILED)
 		return FWTS_ERROR;
 

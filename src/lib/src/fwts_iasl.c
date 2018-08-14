@@ -273,7 +273,7 @@ int fwts_iasl_reassemble(fwts_framework *fw,
 	int pid = getpid();
 
 	if ((!iasl_init) ||
-	    (iasl_disassembly  == NULL) ||
+	    (iasl_disassembly == NULL) ||
 	    (iasl_stdout == NULL) ||
 	    (iasl_stderr == NULL) ||
 	    (info == NULL))

@@ -228,7 +228,7 @@ static void *fwts_acpi_load_table(const off_t addr)
  */
 static void fwts_acpi_add_table(
 	const char *name,			/* Table Name */
-	const void *table,			/* Table binary blob */
+	void *table,				/* Table binary blob */
 	const uint64_t addr,			/* Address of table */
 	const size_t length,			/* Length of table */
 	const fwts_acpi_table_provenance provenance)
@@ -1006,7 +1006,7 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 			fwts_log_error(fw, "Cannot allocate fake FACS.");
 			return FWTS_ERROR;
 		}
-		strncpy(facs->signature, "FACS", 4);
+		(void)memcpy(facs->signature, "FACS", 4);
 		facs->length = size;
 		facs->hardware_signature = 0xf000a200;	/* Some signature */
 		facs->flags = 0;
@@ -1074,13 +1074,13 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 				if (table && fwts_acpi_table_fixable(table))
 					rsdt->entries[j++] = (uint32_t)table->addr;
 
-		strncpy(rsdt->header.signature, "RSDT", 4);
+		(void)memcpy(rsdt->header.signature, "RSDT", 4);
 		rsdt->header.length = size;
 		rsdt->header.revision = 1;
-		strncpy(rsdt->header.oem_id, "FWTSID", 6);
-		strncpy(rsdt->header.oem_tbl_id, oem_tbl_id, 8);
+		(void)memcpy(rsdt->header.oem_id, "FWTSID", 6);
+		(void)memcpy(rsdt->header.oem_tbl_id, oem_tbl_id, 8);
 		rsdt->header.oem_revision = 1;
-		strncpy(rsdt->header.creator_id, "FWTS", 4);
+		(void)memcpy(rsdt->header.creator_id, "FWTS", 4);
 		rsdt->header.creator_revision = 1;
 		rsdt->header.checksum = 256 - fwts_checksum((uint8_t*)rsdt, size);
 
@@ -1111,13 +1111,13 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 				if (table && fwts_acpi_table_fixable(table))
 					xsdt->entries[j++] = table->addr;
 
-		strncpy(xsdt->header.signature, "XSDT", 4);
+		(void)memcpy(xsdt->header.signature, "XSDT", 4);
 		xsdt->header.length = size;
 		xsdt->header.revision = 2;
-		strncpy(xsdt->header.oem_id, "FWTSID", 6);
-		strncpy(xsdt->header.oem_tbl_id, oem_tbl_id, 8);
+		(void)memcpy(xsdt->header.oem_id, "FWTSID", 6);
+		(void)memcpy(xsdt->header.oem_tbl_id, oem_tbl_id, 8);
 		xsdt->header.oem_revision = 1;
-		strncpy(xsdt->header.creator_id, "FWTS", 4);
+		(void)memcpy(xsdt->header.creator_id, "FWTS", 4);
 		xsdt->header.creator_revision = 1;
 		xsdt->header.checksum = 256 - fwts_checksum((uint8_t*)xsdt, size);
 
@@ -1139,8 +1139,8 @@ static int fwts_acpi_load_tables_fixup(fwts_framework *fw)
 			return FWTS_ERROR;
 		}
 
-		strncpy(rsdp->signature, "RSD PTR ", 8);
-		strncpy(rsdp->oem_id, "FWTSID", 6);
+		(void)memcpy(rsdp->signature, "RSD PTR ", 8);
+		(void)memcpy(rsdp->oem_id, "FWTSID", 6);
 		rsdp->revision = 2;
 		rsdp->length = sizeof(fwts_acpi_table_rsdp);
 		rsdp->reserved[0] = 0;

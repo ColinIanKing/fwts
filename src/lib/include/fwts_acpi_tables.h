@@ -34,7 +34,7 @@ typedef enum {
 
 typedef struct {
 	char	   name[5];
-	const void *data;
+	void       *data;
 	size_t	   length;
 	uint32_t   which;
 	uint32_t   index;

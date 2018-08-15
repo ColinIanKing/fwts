@@ -595,7 +595,6 @@ static uint8_t *fwts_acpi_load_table_from_acpidump(
 	 */
 	while (fgets(buffer, sizeof(buffer), fp) ) {
 		uint8_t *new_tmp;
-		char *ptr;
 		int n;
 
 		/* Get offset */

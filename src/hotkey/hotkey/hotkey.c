@@ -30,7 +30,7 @@
 
 #define AT_KEYBOARD	"AT Translated Set 2 keyboard"
 
-static fwts_list *hotkeys;
+static fwts_list *hotkeys_list;
 static char *hotkey_dev;
 static char *hotkey_keymap;
 
@@ -215,7 +215,7 @@ static int hotkey_init(fwts_framework *fw)
 		fwts_log_error(fw, "Cannot determine keymap for this machine.");
 		return FWTS_ERROR;
 	}
-	if ((hotkeys = fwts_keymap_load(hotkey_keymap)) == NULL) {
+	if ((hotkeys_list = fwts_keymap_load(hotkey_keymap)) == NULL) {
 		fwts_log_error(fw, "Cannot load keymap for this machine.");
 		return FWTS_ERROR;
 	}
@@ -227,7 +227,7 @@ static int hotkey_deinit(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
-	fwts_keymap_free(hotkeys);
+	fwts_keymap_free(hotkeys_list);
 	free(hotkey_dev);
 	free(hotkey_keymap);
 	return FWTS_OK;
@@ -241,7 +241,7 @@ static int hotkey_test1(fwts_framework *fw)
 		"keys.");
 	fwts_log_nl(fw);
 	fwts_log_info(fw, "Using %s keymap and %s input device.", hotkey_keymap, hotkey_dev);
-	hotkey_test(fw, hotkey_dev, hotkeys);
+	hotkey_test(fw, hotkey_dev, hotkeys_list);
 
 	fwts_infoonly(fw);
 

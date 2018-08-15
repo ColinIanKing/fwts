@@ -274,7 +274,7 @@ void fwts_log_filter_unset_field(const fwts_log_field filter)
  *	list of field names. ~ or ^ prefix to a field name
  *	clears a bit.
  */
-void fwts_log_set_field_filter(const char *str)
+void fwts_log_set_field_filter(char *str)
 {
 	char *saveptr;
 	fwts_log_field field;
@@ -282,7 +282,7 @@ void fwts_log_set_field_filter(const char *str)
 	for (;; str=NULL) {
 		char *token;
 
-		if ((token = strtok_r((char*)str, ",|", &saveptr)) == NULL)
+		if ((token = strtok_r(str, ",|", &saveptr)) == NULL)
 			break;
 		if (*token == '^' || *token == '~') {
 			field = fwts_log_str_to_field(token+1);

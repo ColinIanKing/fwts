@@ -129,7 +129,7 @@ int       fwts_log_printf(const fwts_framework *fw, const fwts_log_field field, 
 	__attribute__((format(printf, 7, 8)));
 void      fwts_log_newline(fwts_log *log);
 void      fwts_log_underline(fwts_log *log, const int ch);
-void      fwts_log_set_field_filter(const char *str);
+void      fwts_log_set_field_filter(char *str);
 int       fwts_log_set_owner(fwts_log *log, const char *owner);
 void      fwts_log_set_format(const char *str);
 void      fwts_log_print_fields(void);

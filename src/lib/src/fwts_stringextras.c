@@ -80,7 +80,7 @@ char *fwts_realloc_strcat(char *orig, const char *newstr)
  * see if str ends with postfix
  * return NULL if fails, otherwise return the matched substring
  */
-char* fwts_string_endswith(const char *str, const char *postfix)
+const char *fwts_string_endswith(const char *str, const char *postfix)
 {
 	size_t sl, pl;
 
@@ -88,7 +88,7 @@ char* fwts_string_endswith(const char *str, const char *postfix)
 	pl = strlen(postfix);
 
 	if (pl == 0)
-		return (char*) str + sl;
+		return str + sl;
 
 	if (sl < pl)
 		return NULL;
@@ -96,7 +96,7 @@ char* fwts_string_endswith(const char *str, const char *postfix)
 	if (memcmp(str + sl - pl, postfix, pl) != 0)
 		return NULL;
 
-	return (char*) str + sl - pl;
+	return str + sl - pl;
 }
 
 /*
@@ -111,5 +111,5 @@ void fwts_memcpy_unaligned(void *dst, const void *src, size_t n)
 		return;
 
 	while (i--)
-		((uint8_t*)dst)[i] = ((uint8_t*)src)[i];
+		((uint8_t *)dst)[i] = ((const uint8_t *)src)[i];
 }

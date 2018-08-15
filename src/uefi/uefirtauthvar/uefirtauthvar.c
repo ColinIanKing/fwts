@@ -56,7 +56,7 @@ static uint16_t variablenametest[] = {'A', 'u', 't', 'h', 'V', 'a', 'r', 'T', 'e
 
 static long setvar(
 	EFI_GUID *guid,
-	uint32_t attributes,
+	uint32_t var_attributes,
 	uint64_t datasize,
 	void *data,
 	uint64_t *status)
@@ -66,7 +66,7 @@ static long setvar(
 
 	setvariable.VariableName = variablenametest;
 	setvariable.VendorGuid = guid;
-	setvariable.Attributes = attributes;
+	setvariable.Attributes = var_attributes;
 	setvariable.DataSize = datasize;
 	setvariable.Data = data;
 	setvariable.status = status;

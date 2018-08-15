@@ -104,7 +104,7 @@ int OPTIMIZE0 fwts_safe_memread(const void *src, const size_t n)
 int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
 {
 	static uint32_t buffer[256];
-	const uint32_t *ptr, *end = (uint32_t *)src + n;
+	const uint32_t *ptr, *end = (const uint32_t *)src + n;
 	uint32_t *bufptr;
 	const uint32_t *bufend = buffer + (sizeof(buffer) / sizeof(*buffer));
 
@@ -139,7 +139,7 @@ int OPTIMIZE0 fwts_safe_memread32(const void *src, const size_t n)
 int OPTIMIZE0 fwts_safe_memread64(const void *src, const size_t n)
 {
 	static uint64_t buffer[256];
-	const uint64_t *ptr, *end = (uint64_t *)src + n;
+	const uint64_t *ptr, *end = (const uint64_t *)src + n;
 	uint64_t *bufptr;
 	const uint64_t *bufend = buffer + (sizeof(buffer) / sizeof(*buffer));
 

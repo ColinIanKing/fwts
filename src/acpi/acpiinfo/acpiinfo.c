@@ -68,30 +68,34 @@ static int acpiinfo_test1(fwts_framework *fw)
 
 	if (((str = fwts_get("/sys/module/acpi/parameters/acpica_version")) == NULL) &&
 	    ((str = fwts_get("/proc/acpi/info")) == NULL))
-                fwts_log_info(fw,
+			fwts_log_info(fw,
 			"Cannot get ACPI version info from "
 			"/sys/module/acpi/parameters/acpica_version or /proc/acpi/info");
-        else {
-		int version;
+	else {
+		float version;
 		int yearmonth;
 
 		fwts_chop_newline(str);
 
 		sscanf(str, "%6d", &yearmonth);
 
-		if (yearmonth > 201505) {
-			version = 6;
+		if (yearmonth > 201609) {
+			version = 6.2;
+		} else if (yearmonth > 201509) {
+			version = 6.1;
+		} else if (yearmonth > 201404) {
+			version = 6.0;
 		} else if (yearmonth > 201110) {
-			version = 5;
+			version = 5.0;
 		} else if (yearmonth > 200906) {
-			version = 4;
+			version = 4.0;
 		} else if (yearmonth > 200505) {
-			version = 3;
+			version = 3.0;
 		} else {
-			version = 2;
+			version = 2.0;
 		}
 
-		fwts_log_info(fw, "Kernel ACPICA driver version: %s, supports ACPI %d.0", str, version);
+		fwts_log_info(fw, "Kernel ACPICA driver version: %s, supports ACPI %2.1f", str, version);
 		free(str);
 	}
 

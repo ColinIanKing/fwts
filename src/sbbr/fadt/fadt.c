@@ -264,64 +264,64 @@ static int fadt_sbbr_reduced_hw_test2(fwts_framework *fw)
 		fwts_log_warning(fw, "CENTURY is non-zero: 0x%x",
 			      fadt->century);
 	}
-	if (memcmp((void *)&fadt->x_pm1a_evt_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm1a_evt_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM1A_EVT_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_pm1b_evt_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm1b_evt_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM1B_EVT_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_pm1a_cnt_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm1a_cnt_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM1A_CNT_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_pm1b_cnt_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm1b_cnt_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM1B_CNT_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_pm2_cnt_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm2_cnt_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM2_CNT_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_pm_tmr_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_pm_tmr_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_PM_TMR_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_gpe0_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_gpe0_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,
 			      "X_GPE0_BLK is a non-zero general "
 			      "address structure.");
 	}
-	if (memcmp((void *)&fadt->x_gpe1_blk,
-		   (void *)&null_gas,
+	if (memcmp((const void *)&fadt->x_gpe1_blk,
+		   (const void *)&null_gas,
 		   sizeof(fwts_acpi_gas))) {
 		passed = false;
 		fwts_log_warning(fw,

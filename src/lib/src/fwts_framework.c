@@ -286,7 +286,8 @@ static void fwts_framework_show_tests_categories(void)
 
 		for (i = 0; categories[i].title != NULL; i++) {
 			if (categories[i].flag & test->flags) {
-				char *src = (char *)categories[i].title, *dst;
+				const char *src = (const char *)categories[i].title;
+				char *dst;
 				size_t len = strlen(src) + 1;
 				char buf[len];
 

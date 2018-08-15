@@ -873,7 +873,7 @@ err:
 
 static int setvariable_insertvariable(
 	fwts_framework *fw,
-	const uint32_t attributes,
+	const uint32_t var_attributes,
 	const uint64_t datasize,
 	uint16_t *varname,
 	EFI_GUID *gtestguid,
@@ -892,7 +892,7 @@ static int setvariable_insertvariable(
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = gtestguid;
-	setvariable.Attributes = attributes;
+	setvariable.Attributes = var_attributes;
 	setvariable.DataSize = datasize;
 	setvariable.Data = data;
 	setvariable.status = &status;
@@ -1035,7 +1035,7 @@ static int setvariable_checkvariable_notfound(
 
 static int setvariable_invalidattr(
 	fwts_framework *fw,
-	const uint32_t attributes,
+	const uint32_t var_attributes,
 	const uint64_t datasize,
 	uint16_t *varname,
 	EFI_GUID *gtestguid,
@@ -1052,7 +1052,7 @@ static int setvariable_invalidattr(
 
 	setvariable.VariableName = varname;
 	setvariable.VendorGuid = gtestguid;
-	setvariable.Attributes = attributes;
+	setvariable.Attributes = var_attributes;
 	setvariable.DataSize = datasize;
 	setvariable.Data = data;
 	setvariable.status = &status;

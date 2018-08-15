@@ -214,7 +214,7 @@ static const char *recommended_acpi_tables[] = {
 };
 
 /* Searches ACPI tables by signature. */
-fwts_acpi_table_info *sbbr_search_acpi_tables(fwts_framework *fw, const char *signature)
+static fwts_acpi_table_info *sbbr_search_acpi_tables(fwts_framework *fw, const char *signature)
 {
 	uint32_t i;
 	fwts_acpi_table_info *info;

@@ -29,6 +29,6 @@
  *  versions return NULL, so check for these. Sigh.
  */
 #define FWTS_JSON_ERROR(ptr) \
-	( (ptr == NULL) || ((json_object*)ptr == __FWTS_JSON_ERR_PTR__) )
+	( (ptr == NULL) || ((const json_object *)ptr == __FWTS_JSON_ERR_PTR__) )
 
 #endif

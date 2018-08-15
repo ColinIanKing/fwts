@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (C) 2010-2018 Canonical
  * Copyright (C) 2018 9elements Cyber Security
  *
@@ -33,7 +33,7 @@
 
 /*
  *  match unique strings in the coreboot log
-*/
+ */
 #define UNIQUE_CLOG_LABEL       "Clog"
 
 /*
@@ -46,24 +46,24 @@
  */
 void fwts_clog_free(fwts_list *clog)
 {
-        fwts_log_free(clog);
+	fwts_log_free(clog);
 }
 
 bool fwts_clog_available(fwts_framework *fw)
 {
-    bool coreboot_tag = false;
-    char *vendor = fwts_get("/sys/class/dmi/id/bios_vendor");
+	bool coreboot_tag = false;
+	char *vendor = fwts_get("/sys/class/dmi/id/bios_vendor");
 
-    if (vendor) {
-        if (strstr(vendor, COREBOOT_BIOS_VENDOR))
-            coreboot_tag = true;
-        free(vendor);
-    }
+	if (vendor) {
+		if (strstr(vendor, COREBOOT_BIOS_VENDOR))
+			coreboot_tag = true;
+		free(vendor);
+	}
 
-    if (fw->clog || coreboot_tag)
-        return true;
+	if (fw->clog || coreboot_tag)
+		return true;
 
-   return false;
+	return false;
 }
 
 /*
@@ -71,57 +71,59 @@ bool fwts_clog_available(fwts_framework *fw)
  */
 fwts_list *fwts_clog_read(fwts_framework *fw)
 {
-    fwts_list *list;
+	fwts_list *list;
 
-    if (fw->clog && (list = fwts_file_open_and_read(fw->clog)))
-        return list;
-    if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) != NULL)
-        return list;
-    if ((list = fwts_coreboot_cbmem_log()) != NULL)
-       return list;
+	if (fw->clog && (list = fwts_file_open_and_read(fw->clog)))
+		return list;
+	if ((list = fwts_file_open_and_read(GOOGLE_MEMCONSOLE_COREBOOT_PATH)) != NULL)
+		return list;
+	if ((list = fwts_coreboot_cbmem_log()) != NULL)
+		return list;
 
-    return NULL;
+	return NULL;
 }
 
 int fwts_clog_scan(fwts_framework *fw,
-        fwts_list *clog,
-        fwts_clog_scan_func scan_func,
-        fwts_clog_progress_func progress_func,
-        void *private,
-        int *match)
+	fwts_list *clog,
+	fwts_clog_scan_func scan_func,
+	fwts_clog_progress_func progress_func,
+	void *private,
+	int *match)
 {
-        return fwts_log_scan(fw, clog, scan_func, progress_func, private, match, false);
+	return fwts_log_scan(fw, clog, scan_func, progress_func, private, match, false);
 }
 
 void fwts_clog_scan_patterns(fwts_framework *fw,
-        char *line,
-        int  repeated,
-        char *prevline,
-        void *private,
-        int *errors)
+	char *line,
+	int  repeated,
+	char *prevline,
+	void *private,
+	int *errors)
 {
-    static char *advice =
-        "This is a bug picked up by coreboot, but as yet, the "
-        "firmware test suite has no diagnostic advice for this particular problem.";
-    fwts_log_scan_patterns(fw, line, repeated, prevline, private, errors, "coreboot", advice);
+	static char *advice =
+		"This is a bug picked up by coreboot, but as yet, the "
+		"firmware test suite has no diagnostic advice for this particular problem.";
+	fwts_log_scan_patterns(fw, line, repeated, prevline, private, errors, "coreboot", advice);
 }
 
 static int fwts_clog_check(fwts_framework *fw,
-        const char *table,
-        fwts_clog_progress_func progress,
-        fwts_list *clog,
-        int *errors)
+	const char *table,
+	fwts_clog_progress_func progress,
+	fwts_list *clog,
+	int *errors)
 {
-        char json_data_path[PATH_MAX];
+	char json_data_path[PATH_MAX];
 
-        snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, CLOG_DATA_JSON_FILE);
+	snprintf(json_data_path, sizeof(json_data_path), "%s/%s", fw->json_data_path, CLOG_DATA_JSON_FILE);
 
-        return fwts_log_check(fw, table, fwts_clog_scan_patterns, progress, clog, errors, json_data_path, UNIQUE_CLOG_LABEL, true);
+	return fwts_log_check(fw, table, fwts_clog_scan_patterns, progress, clog, errors, json_data_path, UNIQUE_CLOG_LABEL, true);
 }
 
-int fwts_clog_firmware_check(fwts_framework *fw, fwts_clog_progress_func progress,
-        fwts_list *clog, int *errors)
+int fwts_clog_firmware_check(
+	fwts_framework *fw,
+	fwts_clog_progress_func progress,
+	fwts_list *clog, int *errors)
 {
-        return fwts_clog_check(fw, "firmware_error_warning_patterns",
-                progress, clog, errors);
+	return fwts_clog_check(fw, "firmware_error_warning_patterns",
+		progress, clog, errors);
 }

@@ -984,11 +984,11 @@ static void fwts_framework_heading_info(
  *  fwts_framework_skip_test()
  *	try to find a test in list of tests to be skipped, return NULL of cannot be found
  */
-static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, fwts_framework_test *test)
+static fwts_framework_test *fwts_framework_skip_test(fwts_framework_test *test)
 {
 	fwts_list_link *item;
 
-	fwts_list_foreach(item, tests_to_skip)
+	fwts_list_foreach(item, &tests_to_skip)
 		if (test == fwts_list_data(fwts_framework_test *, item))
 			return test;
 
@@ -999,7 +999,7 @@ static fwts_framework_test *fwts_framework_skip_test(fwts_list *tests_to_skip, f
  *  fwts_framework_skip_test_parse()
  *	parse optarg of comma separated list of tests to skip
  */
-static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_skip)
+static int fwts_framework_skip_test_parse(const char *arg)
 {
 	char *str;
 	char *token;
@@ -1011,7 +1011,7 @@ static int fwts_framework_skip_test_parse(const char *arg, fwts_list *tests_to_s
 			fprintf(stderr, "No such test '%s'\n", token);
 			return FWTS_ERROR;
 		} else
-			fwts_list_append(tests_to_skip, test);
+			fwts_list_append(&tests_to_skip, test);
 	}
 
 	return FWTS_OK;
@@ -1249,7 +1249,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 					| FWTS_FLAG_SHOW_PROGRESS_DIALOG;
 			break;
 		case 24: /* --skip-test */
-			if (fwts_framework_skip_test_parse(optarg, &tests_to_skip) != FWTS_OK)
+			if (fwts_framework_skip_test_parse(optarg) != FWTS_OK)
 				return FWTS_COMPLETE;
 			break;
 		case 25: /* --quiet */
@@ -1404,7 +1404,7 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
 		fw->flags |= FWTS_FLAG_SHOW_TESTS;
 		break;
 	case 'S': /* --skip-test */
-		if (fwts_framework_skip_test_parse(optarg, &tests_to_skip) != FWTS_OK)
+		if (fwts_framework_skip_test_parse(optarg) != FWTS_OK)
 			return FWTS_COMPLETE;
 		break;
 	case 't': /* --table-path */
@@ -1569,7 +1569,7 @@ int fwts_framework_args(const int argc, char **argv)
 			goto tidy;
 		}
 
-		if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
+		if (fwts_framework_skip_test(test) == NULL)
 			fwts_list_append(&tests_to_run, test);
 	}
 
@@ -1582,7 +1582,7 @@ int fwts_framework_args(const int argc, char **argv)
 	fwts_list_foreach(item, &fwts_framework_test_list) {
 		fwts_framework_test *test = fwts_list_data(fwts_framework_test*, item);
 		if (fw->flags & test->flags & FWTS_FLAG_RUN_ALL)
-			if (fwts_framework_skip_test(&tests_to_skip, test) == NULL)
+			if (fwts_framework_skip_test(test) == NULL)
 				fwts_list_append(&tests_to_run, test);
 	}
 

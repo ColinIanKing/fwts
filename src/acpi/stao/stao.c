@@ -50,12 +50,12 @@ static int stao_init(fwts_framework *fw)
  */
 static bool stao_acpi_string(
 	fwts_framework *fw,
-	char *str,
-	char *end,
+	const char *str,
+	const char *end,
 	bool *passed,
 	size_t *len)
 {
-	char *ptr = str;
+	const char *ptr = str;
 
 	while (*ptr) {
 		if (ptr > end) {
@@ -82,7 +82,7 @@ static int stao_test1(fwts_framework *fw)
 {
 	const fwts_acpi_table_stao *stao = (const fwts_acpi_table_stao *)table->data;
 	bool passed = true;
-	char *ptr, *end;
+	const char *ptr, *end;
 	int strings = 0;
 
 	if (stao->header.length > (uint32_t)table->length) {
@@ -101,8 +101,8 @@ static int stao_test1(fwts_framework *fw)
         fwts_log_info_verbatim(fw, "STAO Status Override Table:");
         fwts_log_info_verbatim(fw, "  UART:                     0x%2.2" PRIx8, stao->uart);
 
-	ptr = (char *)stao->namelist;
-	end = (char *)table->data + stao->header.length;
+	ptr = (const char *)stao->namelist;
+	end = (const char *)table->data + stao->header.length;
 
 	while (ptr < end) {
 		size_t len;
@@ -118,8 +118,8 @@ static int stao_test1(fwts_framework *fw)
 	if (!strings)
 		goto done;
 
-	ptr = (char *)stao->namelist;
-	end = (char *)table->data + table->length;
+	ptr = (const char *)stao->namelist;
+	end = (const char *)table->data + table->length;
 
 	while (ptr < end) {
 		bool found;

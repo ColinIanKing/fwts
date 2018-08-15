@@ -349,7 +349,7 @@ nullobj:
 
 int fwts_log_check(fwts_framework *fw,
         const char *table,
-        fwts_log_scan_func fwts_log_scan_patterns,
+        fwts_log_scan_func fwts_log_scan_patterns_func,
         fwts_log_progress_func progress,
         fwts_list *log,
         int *errors,
@@ -450,7 +450,7 @@ int fwts_log_check(fwts_framework *fw,
                 }
         }
         /* We've now collected up the scan patterns, lets scan the log for errors */
-        ret = fwts_log_scan(fw, log, fwts_log_scan_patterns, progress, patterns, errors, remove_timestamp);
+        ret = fwts_log_scan(fw, log, fwts_log_scan_patterns_func, progress, patterns, errors, remove_timestamp);
 
 fail:
         for (i = 0; i < n; i++) {

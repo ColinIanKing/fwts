@@ -56,6 +56,24 @@ static int gtdt_test1(fwts_framework *fw)
 	uint32_t i = 0, n;
 	const fwts_acpi_table_gtdt *gtdt = (const fwts_acpi_table_gtdt *)table->data;
 
+	if (gtdt->cnt_control_base_phys_addr == 0) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"GTDTInvalidBaseAddr",
+			"The 64-bit physical address at which the "
+			"Counter Control block should not be Zero. "
+			"If not provided, this field must be 0xFFFFFFFFFFFFFFFF");
+	}
+
+	if (gtdt->cnt_read_base_phys_addr == 0) {
+		passed = false;
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"GTDTInvalidBaseAddr",
+			"The 64-bit physical address at which the "
+			"Counter Read block Read block should not be Zero. "
+			"If not provided, this field must be 0xFFFFFFFFFFFFFFFF");
+	}
+
 	fwts_acpi_reserved_bits_check(fw, "GTDT", "Flags", gtdt->virtual_timer_flags, sizeof(gtdt->virtual_timer_flags), 3, 31, &passed);
 
 	ptr = (uint8_t *)table->data + gtdt->platform_timer_offset;
@@ -88,6 +106,13 @@ static int gtdt_test1(fwts_framework *fw)
 					"invalid length: %" PRIu32 " bytes",
 					i, block->length);
 				goto done;
+			}
+			if (block->physical_address == 0) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"GTDTBlockInvalidBaseAddr",
+					"The 64-bit physical address at which the "
+					"GT CntCTLBase Block shouldn't be zero.");
 			}
 			if (block->reserved) {
 				passed = false;
@@ -146,6 +171,21 @@ static int gtdt_test1(fwts_framework *fw)
 						block_timer->reserved[1],
 						block_timer->reserved[2]);
 				}
+				if (block_timer->cntbase == 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_HIGH,
+						"GTDTGTxInvalidBaseAddr",
+						"Physical Address at which the "
+						"CntBase block for GTx shouldn't be zero.");
+				}
+				if (block_timer->cntel0base == 0) {
+					passed = false;
+					fwts_failed(fw, LOG_LEVEL_MEDIUM,
+						"GTDTGTxInvalidBaseAddr",
+						"Physical Address at which the "
+						"CntEL0Base block for GTx should not be Zero. "
+						"If not provided, this field must be 0xFFFFFFFFFFFFFFFF");
+				}
 
 				snprintf(field, sizeof(field), "block %" PRIu32 " physical timer flags", i);
 				fwts_acpi_reserved_bits_check(fw, "GTDT", field, block_timer->phys_timer_flags,
@@ -188,6 +228,20 @@ static int gtdt_test1(fwts_framework *fw)
 					"GTDT SBSA generic watchdog timer %" PRIu32
 					" reserved is non-zero, got 0x%" PRIx8,
 					i, watchdog->reserved);
+			}
+			if (watchdog->refresh_frame_addr == 0) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"GTDTInvalidWatchDogBaseAddr",
+					"Physical Address at which the "
+					"RefreshFrame block shouldn't be zero.");
+			}
+			if (watchdog->watchdog_control_frame_addr == 0) {
+				passed = false;
+				fwts_failed(fw, LOG_LEVEL_HIGH,
+					"GTDTInvalidWatchDogBaseAddr",
+					"Physical Address at which the "
+					"Watchdog Control Frame block shouldn't be zero.");
 			}
 
 			snprintf(field, sizeof(field), "SBSA generic watchdog timer %" PRIu32 " flags", i);

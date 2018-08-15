@@ -98,7 +98,7 @@ static int ecdt_test1(fwts_framework *fw)
 	}
 
 	/* EC_ID must be at least 1 byte long for the null terminator */
-	min_length = (void *)&ecdt->ec_id[0] - (void *)ecdt;
+	min_length = (const void *)&ecdt->ec_id[0] - (const void *)ecdt;
 
 	if (ecdt->header.length < min_length + 1) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
@@ -143,7 +143,7 @@ static int ecdt_test1(fwts_framework *fw)
         fwts_log_info_verbatim(fw, "    Address                 0x%16.16" PRIx64, ecdt->ec_data.address);
         fwts_log_info_verbatim(fw, "  UID:                      0x%8.8" PRIx32, ecdt->uid);
         fwts_log_info_verbatim(fw, "  GPE_BIT:                  0x%2.2" PRIx8, ecdt->gpe_bit);
-        fwts_log_info_verbatim(fw, "  EC_ID:                    '%s'", (char *)ecdt->ec_id);
+        fwts_log_info_verbatim(fw, "  EC_ID:                    '%s'", (const char *)ecdt->ec_id);
         fwts_log_nl(fw);
 
         if (fwts_acpi_init(fw) != FWTS_OK) {
@@ -158,10 +158,10 @@ static int ecdt_test1(fwts_framework *fw)
 		ACPI_BUFFER buf;
 		ACPI_OBJECT *obj;
 		int ret;
-		size_t len = strlen((char *)ecdt->ec_id) + 6;
+		size_t len = strlen((const char *)ecdt->ec_id) + 6;
 		char name[len];
 
-		snprintf(name, len, "%s._UID", (char *)ecdt->ec_id);
+		snprintf(name, len, "%s._UID", (const char *)ecdt->ec_id);
 
 		arg_list.Count   = 0;
 		arg_list.Pointer = NULL;

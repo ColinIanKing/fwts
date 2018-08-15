@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-static fwts_list *clog;
+static fwts_list *clog_list;
 
 static int clog_init(fwts_framework *fw)
 {
@@ -34,9 +34,8 @@ static int clog_init(fwts_framework *fw)
 		return FWTS_SKIP;
 	}
 
-	clog = fwts_clog_read(fw);
-
-	if (clog == NULL) {
+	clog_list = fwts_clog_read(fw);
+	if (clog_list == NULL) {
 		fwts_log_error(fw, "Cannot read coreboot log.");
 		return FWTS_ERROR;
 	}
@@ -47,7 +46,7 @@ static int clog_deinit(fwts_framework *fw)
 {
 	FWTS_UNUSED(fw);
 
-	fwts_clog_free(clog);
+	fwts_clog_free(clog_list);
 
 	return FWTS_OK;
 }
@@ -61,7 +60,7 @@ static int clog_test1(fwts_framework *fw)
 {
 	int errors = 0;
 
-	if (fwts_clog_firmware_check(fw, clog_progress, clog, &errors)) {
+	if (fwts_clog_firmware_check(fw, clog_progress, clog_list, &errors)) {
 		fwts_log_error(fw, "Error parsing coreboot log.");
 		return FWTS_ERROR;
 	}

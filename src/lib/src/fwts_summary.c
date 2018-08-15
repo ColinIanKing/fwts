@@ -57,8 +57,6 @@ static const int summary_levels[] = {
 /* list of summary items per error level */
 static fwts_list *fwts_summaries[SUMMARY_MAX];
 
-void fwts_summary_deinit(void);
-
 /*
  *  fwts_summary_init()
  *	initialise

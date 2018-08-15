@@ -360,7 +360,7 @@ static int guess_cache_type(
 	return FWTS_OK;
 }
 
-void multi_types_check(fwts_framework *fw, int *type)
+static void multi_types_check(fwts_framework *fw, int *type)
 {
 	int n_types = 0, i;
 
@@ -463,7 +463,7 @@ static int validate_iomem(fwts_framework *fw)
 
 		type = cache_types(start, end);
 
-		(void)multi_types_check(fw, &type);
+		multi_types_check(fw, &type);
 
 		if (guess_cache_type(fw, c2, &type_must, &type_mustnot, start) != FWTS_OK) {
 			/*  This has failed, give up at this point */

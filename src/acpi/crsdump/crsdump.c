@@ -74,7 +74,7 @@ static void crsdump_show_info(
 			/*
 			 *  CRS_BIT*() data
 			 */
-			val = (uint64_t)*(uint8_t*)(data + info->offset);
+			val = (uint64_t)*(const uint8_t *)(data + info->offset);
 			while (mask && ((mask & 1) == 0)) {
 				val >>= 1;
 				mask >>= 1;
@@ -87,16 +87,16 @@ static void crsdump_show_info(
 			 */
 			switch (info->bitlength) {
 			case 8:
-				val = (uint64_t)*(uint8_t*)(data + info->offset);
+				val = (uint64_t)*(const uint8_t*)(data + info->offset);
 				break;
 			case 16:
-				val = (uint64_t)*(uint16_t*)(data + info->offset);
+				val = (uint64_t)*(const uint16_t*)(data + info->offset);
 				break;
 			case 32:
-				val = (uint64_t)*(uint32_t*)(data + info->offset);
+				val = (uint64_t)*(const uint32_t*)(data + info->offset);
 				break;
 			case 64:
-				val = (uint64_t)*(uint64_t*)(data + info->offset);
+				val = (uint64_t)*(const uint64_t*)(data + info->offset);
 				break;
 			default:
 				val = ~0;

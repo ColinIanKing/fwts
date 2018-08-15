@@ -299,12 +299,12 @@ static void wmi_parse_wdg_data(
 	const uint8_t *wdg_data)
 {
 	size_t i;
-	fwts_wdg_info *info = (fwts_wdg_info *)wdg_data;
+	const fwts_wdg_info *info = (const fwts_wdg_info *)wdg_data;
 	bool all_events_known = true;
 	bool events = false;
 
 	for (i = 0; i < (size / sizeof(fwts_wdg_info)); i++, info++) {
-		uint8_t *guid = info->guid;
+		const uint8_t *guid = info->guid;
 		char guid_str[37];
 		const fwts_wmi_known_guid *known;
 

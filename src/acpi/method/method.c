@@ -820,7 +820,7 @@ static int method_test_UID(fwts_framework *fw)
 			"_UID", NULL, 0, fwts_method_test_UID_return, NULL);
 }
 
-void method_test_CRS_return(
+static void method_test_CRS_return(
 	fwts_framework *fw,
 	char *name,
 	ACPI_BUFFER *buf,

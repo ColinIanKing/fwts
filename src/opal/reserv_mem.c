@@ -125,7 +125,7 @@ static int reserv_mem_init(fwts_framework *fw)
 static int reserv_mem_limits_test(fwts_framework *fw)
 {
 	bool ok = true;
-	char *region_names;
+	const char *region_names;
 	const uint64_t *ranges;
 	reserve_region_t *regions;
 	int  offset, len, nr_regions, rc, j;
@@ -145,7 +145,7 @@ static int reserv_mem_limits_test(fwts_framework *fw)
 				"reserved-names");
 
 	/* Check for the reservd-names property */
-	region_names = (char *)fdt_getprop(fw->fdt, offset,
+	region_names = (const char *)fdt_getprop(fw->fdt, offset,
 					"reserved-names", &len);
 	if (!region_names) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "DTPropertyMissing",

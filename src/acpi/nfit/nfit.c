@@ -38,7 +38,7 @@ static const uint8_t guid_virtual_device[4][16] = {
 	{ 0x88, 0x81, 0x01, 0x08, 0xcd, 0x42, 0x48, 0xbb, 0x10, 0x0f, 0x53, 0x87, 0xd5, 0x3d, 0xed, 0x3d },
 };
 
-static fwts_acpi_table_info *table;
+static fwts_acpi_table_info *nfit_table;
 
 static bool check_length(fwts_framework *fw, int actual, int min, const char *name) {
 	if (actual < min) {
@@ -96,11 +96,11 @@ static bool scan_nfit_smbios(fwts_framework *fw, int len, uint8_t *table) {
 
 static int nfit_init(fwts_framework *fw)
 {
-	if (fwts_acpi_find_table(fw, "NFIT", 0, &table) != FWTS_OK) {
+	if (fwts_acpi_find_table(fw, "NFIT", 0, &nfit_table) != FWTS_OK) {
 		fwts_log_error(fw, "Cannot read ACPI tables.");
 		return FWTS_ERROR;
 	}
-	if (table == NULL || (table && table->length == 0)) {
+	if (nfit_table == NULL || (nfit_table && nfit_table->length == 0)) {
 		fwts_log_error(fw, "ACPI NFIT table does not exist, skipping test");
 		return FWTS_SKIP;
 	}
@@ -112,7 +112,7 @@ static int nfit_init(fwts_framework *fw)
  */
 static int nfit_test1(fwts_framework *fw)
 {
-	fwts_acpi_table_nfit *nfit = (fwts_acpi_table_nfit*) table->data;
+	fwts_acpi_table_nfit *nfit = (fwts_acpi_table_nfit*)nfit_table->data;
 	fwts_acpi_table_nfit_struct_header *entry;
 	uint32_t offset;
 	bool passed = true;
@@ -124,9 +124,9 @@ static int nfit_test1(fwts_framework *fw)
 	fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", nfit->reserved, sizeof(nfit->reserved), &passed);
 
 	offset = sizeof(fwts_acpi_table_nfit);
-	entry = (fwts_acpi_table_nfit_struct_header *) (table->data + offset);
+	entry = (fwts_acpi_table_nfit_struct_header *)(nfit_table->data + offset);
 
-	while (offset < table->length) {
+	while (offset < nfit_table->length) {
 		uint64_t reserved_passed = 0;
 
 		fwts_log_info_verbatim(fw, "  NFIT Subtable:");
@@ -506,7 +506,7 @@ static int nfit_test1(fwts_framework *fw)
 		fwts_acpi_reserved_zero_check(fw, "NFIT", "Reserved", reserved_passed, sizeof(reserved_passed), &passed);
 		fwts_log_nl(fw);
 		offset += entry->length;
-		entry = (fwts_acpi_table_nfit_struct_header *) (table->data + offset);
+		entry = (fwts_acpi_table_nfit_struct_header *)(nfit_table->data + offset);
 	}
 
 

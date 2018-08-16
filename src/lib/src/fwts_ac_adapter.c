@@ -78,6 +78,18 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 
 	/* Try to user newer /sys interface first */
 	if ((ac_power_dir = opendir(FWTS_SYS_CLASS_POWER_SUPPLY))) {
+		struct dirent *ac_entry;
+		int count = 0;
+
+		while ((ac_entry = readdir(ac_power_dir)) != NULL)
+			count++;
+
+		/* no power supply dir exists */
+		if (count == 2) {
+			(void)closedir(ac_power_dir);
+			return FWTS_ERROR;
+		}
+
 		ac_interface = &fwts_ac_interfaces[SYS_INTERFACE];
 	/* then try older /proc interface  */
 	} else if ((ac_power_dir = opendir(FWTS_PROC_ACPI_AC_ADAPTER))) {

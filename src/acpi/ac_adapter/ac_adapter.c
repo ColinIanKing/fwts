@@ -31,10 +31,8 @@ static int ac_adapter_init(fwts_framework *fw)
 	int not_matching = 0;
 
 	if (fwts_ac_adapter_get_state(FWTS_AC_ADAPTER_ANY, &matching, &not_matching) != FWTS_OK) {
-		fwts_failed(fw, LOG_LEVEL_LOW, "NoACAdapterEntry",
-			"No %s or %s directory available: cannot test.",
-			FWTS_SYS_CLASS_POWER_SUPPLY, FWTS_PROC_ACPI_AC_ADAPTER);
-		return FWTS_ERROR;
+		fwts_log_error(fw, "Power Supply does not exist, skipping test");
+		return FWTS_SKIP;
 	}
 	return FWTS_OK;
 }

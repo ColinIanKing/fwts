@@ -192,7 +192,7 @@ fwts_SOURCES = main.c 				\
 	$(power_mgmt_tests)			\
 	$(dt_tests)
 
-fwts_LDFLAGS = -lm `pkg-config --libs glib-2.0 gio-2.0`
+fwts_LDFLAGS = -lm -lbsd `pkg-config --libs glib-2.0 gio-2.0`
 
 fwts_LDADD = \
 	-L$(top_builddir)/src/acpica -lfwtsacpica \

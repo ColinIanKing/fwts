@@ -29,7 +29,7 @@ AM_CPPFLAGS = \
 pkglib_LTLIBRARIES = libfwts.la
 
 libfwts_la_LDFLAGS = 			\
-	-lm -lpthread 			\
+	-lm -lpthread -lbsd		\
 	-version-info 1:0:0 		\
 	-L$(top_builddir)/src/acpica/source/compiler \
 	-lfwtsiasl `pkg-config --libs glib-2.0 gio-2.0`

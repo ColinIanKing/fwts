@@ -19,6 +19,8 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
+#include <bsd/string.h>
 #include <errno.h>
 #include <inttypes.h>
 #include <dirent.h>
@@ -397,7 +399,7 @@ static int fwts_hwinfo_net_get(
 			break;
 		}
 		memset(&buf, 0, sizeof(buf));
-		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name) - 1);
+		strlcpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
 		if (ioctl(sock, SIOCGIFHWADDR, &buf) < 0) {
 			fwts_log_error(fw, "Cannot get network information for device %s.", d->d_name);
 			fwts_hwinfo_net_free(net_config);
@@ -410,7 +412,7 @@ static int fwts_hwinfo_net_get(
 			break;
 		}
 		memset(&buf, 0, sizeof(buf));
-		strncpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name) - 1);
+		strlcpy(buf.ifr_name, d->d_name, sizeof(buf.ifr_name));
 		if (ioctl(sock, SIOCGIFADDR, &buf) < 0) {
 			if (errno != EADDRNOTAVAIL)
 				fwts_log_error(fw, "Cannot get address for device %s.", d->d_name);
@@ -500,7 +502,7 @@ static int fwts_hwinfo_pci_get(
 		}
 		memcpy(pci_config->config, config, n);
 		pci_config->config_len = n;
-		strncpy(pci_config->name, d->d_name, NAME_MAX);
+		strlcpy(pci_config->name, d->d_name, sizeof(pci_config->name));
 
 		fwts_list_append(configs, pci_config);
 	}

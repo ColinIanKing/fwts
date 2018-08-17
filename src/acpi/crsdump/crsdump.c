@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <bsd/string.h>
 #include <unistd.h>
 #include <inttypes.h>
 #include "fwts_acpi_object_eval.h"
@@ -320,7 +321,7 @@ static const char *crs_irq_map(const uint64_t val)
 				char tmp[5];
 
 				snprintf(tmp, sizeof(tmp), " %u", i);
-				strncat(buf, tmp, 4);
+				strlcat(buf, tmp, sizeof(tmp));
 			}
 		}
 	}

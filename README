@@ -8,11 +8,11 @@ Quick Start Guide
 
 Ubuntu Distro x86_64
 	autoconf automake libglib2.0-dev libtool libpcre3-dev libjson0-dev
-	libjson-c-dev flex bison dkms libfdt-dev
+	libjson-c-dev flex bison dkms libfdt-dev libbsd-dev
 
 Ubuntu Distro ppc64el
 	autoconf automake libglib2.0-dev libtool libpcre3-dev libjson-c-dev
-	flex bison dkms libfdt-dev device-tree-compiler libpci-dev
+	flex bison dkms libfdt-dev device-tree-compiler libpci-dev libbsd-dev
 
 RHEL Distro ppc64el
 	autoconf automake kernel-devel libtool flex flex-devel bison dkms
@@ -37,7 +37,7 @@ To run all the default tests, use:
 
 To see the available tests, use:
 
-	fwts --show-tests 
+	fwts --show-tests
 
 Advanced Options Guide
 ======================

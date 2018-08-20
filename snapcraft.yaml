@@ -10,6 +10,9 @@ parts:
         source: git://kernel.ubuntu.com/hwe/fwts
         stage-packages:
             - libfdt1
+            - libjson-c3
+            - libbsd0
+            - libpci3
         build-packages:
             - gcc
             - make

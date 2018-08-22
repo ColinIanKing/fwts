@@ -1,3 +1,83 @@
+fwts (18.08.00-0ubuntu1) cosmic; urgency=medium
+
+  [Alex Hung]
+  * lib: dmicheck: replace defines by enum type
+  * acpitables: remove redundant "OEM" from Creator ID field
+  * acpitables: remove unnecessary new line character
+  * src: remove unnecessary new line characters and trailing spaces
+  * fwts-test: sync up with new line char and trailing space changes
+  * acpi: wakealarm: remove failure messages for non-x86 arch
+  * acpiinfo: update acpi version supported by kernel
+  * ac_adapter: skip tests when no power supply exists
+  * README: add a new required package since commit 3f151922fc13
+
+  [Colin Ian King]
+  * lib: fwts: Add abstracted pragma macros to push/pop state and disable
+    warnings
+  * fwts_uefi.h: replace _Pragmas with abstracted pragma macros
+  * Wrap ACPI_ROOT_OBJECT with PRAGMA_NULL_PTR_MATH for clang builds
+  * lib/src/fwts_acpi_tables: disable clang warning
+  * lib: fwts_coreboot_cbmem.c: initialize all fields in array of structs
+  * uefi: uefirtauthvar: don't logically or a constant operand.
+  * dmi: dmicheck: remove redundant array fwts_dmi_chassis_type
+  * ACPICA: Update to version 20180810
+  * Add MIN, MAX and ARRAY_SIZE macros to fwts.h
+  * fwts_coreboot_cbmem: fwts coding style changes, use off_t for addresses
+  * lib: fwts_cpu: make found a boolean
+  * lib: fwts_cpu: minor fwts coding style changes
+  * lib: fwts_deviceytree: make a function argument const and a style change
+  * lib: fwts_firmware: remove some empty lines
+  * lib: fwts_iasl: remove a whitespace
+  * lib: fwts_interactive: add sanity check on fileno, fix typo, tidy code
+  * lib: fwts_ipmi: make fwts_ipmi_msg_id static, make some code style changes
+  * lib: fwts_keymap: some minor fwts coding style changes
+  * lib: fwts_list: some minor fwts coding style changes
+  * lib: fwts_multiproc: remove whitespace
+  * lib: fwts_olog: minor code style change on FILE pointers
+  * lib: fwts_release: make some helper functions static
+  * lib: fwts_scan_efi_systab: add empty line to match fwts coding style
+  * fwts_coreboot_cbmem: fix off-by-one error on last char of buffer
+  * lib: fwts_coreboot_cbmem: fix cbmem_console_addr check
+  * lib: fwts_clog.c: replace space identations with tab
+  * lib/src/fwts_acpi_tables: remove shadowed pointer ptr
+  * lib: fwts_framework: ensure src pointer is const
+  * fwts_framework: no need to pass tests_to_skip as it is locally scoped
+  * lib: fwts_framework: argument 'arg' should not be const
+  * lib: fwts_log: remove const arg in fwts_log_set_field_filter
+  * lib: fwts_summary: remove redundant redefinition of fwts_summary_deinit
+  * lib: fwts_safe_mem: add in missing constifications
+  * lib: fwts_log_scan: rename function argument to avoid name shadowing
+  * lib: fwts_stringextras: fix some missing constifictions
+  * lib: fwts_text_list: fix up some const casting issues
+  * lib: fwts_json.h: fix casting warning, add missing const
+  * lib: fwts_coreboot_cbmen: fix missing const in cast
+  * sbbr: acpitables: make function sbbr_search_acpi_tables static
+  * acpi: crsdump: add in missing pointer constifications
+  * acpi: ecdt: fix some missing pointer constifications
+  * acpi: fadt: add in missing const to fix build warnings
+  * sbbr: fadt: add in missing const to fix build warnings
+  * acpi: method: make function method_test_CRS_return static
+  * acpi: nfit: rename table to nfit_table to avoid name shadowing
+  * acpi: wmi: add in missing const to fix build warnings
+  * acpi: stao: add in missing const to fix build warnings
+  * bios: mtrr make function multi_types_check static
+  * opal: reserv_mem: add in missing const to fix build warnings
+  * hotkey: rename list 'hotkeys' to avoid name shadowing
+  * uefi: uefirtauthvar: rename argument attibutes to var_attributes
+  * uefi: uefirtvariable: rename argument attibutes to var_attributes
+  * coreboot: clog: rename list 'clog' to avoid name shadowing
+  * lib: fwts_acpi_tables: unconstify data and don't strcpy ACPI table ids
+  * Fix some strncpy/strcat gcc 8.2 warnings by using libbsd strlcpy/strlcat
+  * snapcraft: add missing stage packages
+  * snapcraft: remove libjson-c3 stage package, it is not required
+
+  [Ivan Hu]
+  * uefi: clean and check status with magic value ~0ULL (LP: #1784365)
+  * uefi: uefivarinfo: add to UNSAFE category
+  * acpi: gtdt: add checking the valid base physical address
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 22 Aug 2018 00:33:21 -0700
+
 fwts (18.07.00-0ubuntu1) cosmic; urgency=medium
 
   [Alex Hung]

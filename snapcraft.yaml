@@ -24,6 +24,7 @@ parts:
             - dh-autoreconf
             - libglib2.0-dev
             - libfdt-dev
+            - libbsd-dev
 apps:
     fwts:
         command: bin/fwts

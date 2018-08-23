@@ -276,6 +276,36 @@ static int dmi_load_file(const char* filename, void *buf, size_t size)
 	return FWTS_OK;
 }
 
+static int dmi_load_file_variable_size(const char* filename, void *buf, size_t *size)
+{
+	int fd;
+	char *p;
+	ssize_t count;
+	size_t sz, total;
+
+	sz = *size;
+	(void)memset(buf, 0, sz);
+
+	if ((fd = open(filename, O_RDONLY)) < 0)
+		return FWTS_ERROR;
+
+	for (p = buf, total = count = 0; ; p += count) {
+		count = read(fd, p, sz - total);
+		if (count == -1) {
+			close(fd);
+			return FWTS_ERROR;
+		}
+		if (count == 0)
+			break;
+
+		total += (size_t)count;
+	}
+
+	(void)close(fd);
+	*size = total;
+	return FWTS_OK;
+}
+
 static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 {
 	off_t addr = (off_t)entry->struct_table_address;
@@ -358,7 +388,7 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 		table = malloc(length);
 		if (!table)
 			return NULL;
-		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
+		if (dmi_load_file_variable_size("/sys/firmware/dmi/tables/DMI", table, &length) == FWTS_OK) {
 			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI\n");
 			return table;
 		}

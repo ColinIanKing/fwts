@@ -1505,11 +1505,13 @@ static void dmicheck_entry(fwts_framework *fw,
 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x18);
 			dmi_str_check(fw, table, addr, "Asset Tag", hdr, 0x19);
 			dmi_str_check(fw, table, addr, "Part Number", hdr, 0x1a);
-			if (hdr->length < 0x20)
+			if (hdr->length < 0x1c)
 				break;
 			dmi_reserved_bits_check(fw, table, addr, "Attributes", hdr, sizeof(uint8_t), 0x1b, 4, 7);
+			if (hdr->length < 0x20)
+				break;
 			dmi_reserved_bits_check(fw, table, addr, "Extended Size", hdr, sizeof(uint32_t), 0x1c, 31, 31);
-			if (hdr->length < 0x28)
+			if (hdr->length < 0x3c)
 				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Memory Technology", hdr, 0x28, 0x1, 0x7);
 			dmi_reserved_bits_check(fw, table, addr, "Memory Operating Mode Cap", hdr, sizeof(uint16_t), 0x29, 6, 15);
@@ -1644,7 +1646,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 26: /* 7.27 */
 			table = "Voltage Probe (Type 26)";
-			if (hdr->length < 0x14)
+			if (hdr->length < 0x16)
 				break;
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xb, 0, 0x1f);
@@ -1653,7 +1655,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 27: /* 7.28 */
 			table = "Cooling Device (Type 27)";
-			if (hdr->length < 0xc)
+			if (hdr->length < 0xe)
 				break;
 			val = data[0x06] & 0x1f;
 			if (!(((val >= 0x01) && (val <= 0x09)) ||
@@ -1673,7 +1675,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 28: /* 7.29 */
 			table = "Temperature Probe (Type 28)";
-			if (hdr->length < 0x14)
+			if (hdr->length < 0x16)
 				break;
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xf, 0, 0x1f);
@@ -1682,7 +1684,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 29: /* 7.30 */
 			table = "Electrical Current Probe (Type 29)";
-			if (hdr->length < 0x14)
+			if (hdr->length < 0x16)
 				break;
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x4);
 			dmi_min_max_mask_uint8_check(fw, table, addr, "Location (bits 0..4)", hdr, 0x5, 0x1, 0xb, 0, 0x1f);
@@ -1762,6 +1764,8 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 38: /* 7.39 */
 			table = "IPMI Device Information (Type 38)";
+			if (hdr->length < 0x12)
+				break;
 			dmi_min_max_uint8_check(fw, table, addr, "Interface Type", hdr, 0x4, 0x0, 0x4);
 
 			dmi_reserved_bits_check(fw, table, addr, "Base Addr Modifier/Interrupt Info", hdr, sizeof(uint8_t), 0x10, 2, 2);
@@ -1812,7 +1816,7 @@ static void dmicheck_entry(fwts_framework *fw,
 
 		case 43: /* 7.44 */
 			table = "TPM Device (Type 43)";
-			if (hdr->length < 0x16)
+			if (hdr->length < 0x1b)
 				break;
 			dmi_str_check(fw, table, addr, "Description", hdr, 0x12);
 			dmi_reserved_bits_check(fw, table, addr, "Characteristics", hdr, sizeof(uint64_t), 0x13, 6, 63);

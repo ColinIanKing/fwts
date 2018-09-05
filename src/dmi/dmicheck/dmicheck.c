@@ -52,6 +52,7 @@
 #define DMI_MGMT_CTRL_HOST_TYPE		"DMIMgmtCtrlHostType"
 #define DMI_INVALID_ENTRY_LENGTH	"DMIInvalidEntryLength"
 #define DMI_INVALID_HARDWARE_ENTRY	"DMIInvalidHardwareEntry"
+#define DMI_INVALID_MEMORY_ENTRY	"DMIInvalidMemoryEntry"
 #define DMI_RESERVED_VALUE_USED		"DMIReservedValueUsed"
 #define DMI_RESERVED_BIT_USED		"DMIReservedBitUsed"
 #define DMI_RESERVED_OFFSET_NONZERO	"DMIReservedOffsetNonZero"
@@ -876,6 +877,28 @@ static void dmi_reserved_uint8_check(fwts_framework *fw,
 	}
 }
 
+static void dmi_min_max_uint32_check(fwts_framework *fw,
+	const char *table,
+	uint32_t addr,
+	const char *field,
+	const fwts_dmi_header *hdr,
+	uint8_t offset,
+	uint32_t min,
+	uint32_t max)
+{
+	uint32_t val = GET_UINT32((hdr->data) + offset);
+	if ((val < min) || (val > max)) {
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			DMI_VALUE_OUT_OF_RANGE,
+			"Out of range value 0x%4.4" PRIx32
+			" (range allowed 0x%4.4" PRIx32 "..0x%4.4" PRIx32 ") "
+			"while accessing entry '%s' @ 0x%8.8" PRIx32
+			", field '%s', offset 0x%2.2" PRIx8,
+			val, min, max, table, addr, field, offset);
+		dmi_out_of_range_advice(fw, hdr->type, offset);
+	}
+}
+
 static void dmi_min_max_uint16_check(fwts_framework *fw,
 	const char *table,
 	uint32_t addr,
@@ -1489,6 +1512,13 @@ static void dmicheck_entry(fwts_framework *fw,
 					data[0x4], table, addr, "Location", 0x4);
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
 			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
+			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000 - 1);
+			if (hdr->length < 0x17)
+				break;
+			if (GET_UINT64(data + 0xf) != 0 && GET_UINT32(data + 0x7) != 0x80000000)
+				fwts_failed(fw, LOG_LEVEL_HIGH, DMI_INVALID_MEMORY_ENTRY,
+					"An illegal value 0x%16.16" PRIx64 " for entry '%s' "
+					"@ 0x%8.8" PRIx32, GET_UINT64(data + 0xf), table, addr);
 			break;
 
 		case 17: /* 7.18 */

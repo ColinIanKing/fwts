@@ -207,16 +207,16 @@ static int fadt_revision(fwts_framework *fw)
 	if (major >= 5 && fadt->header.length >= 268)
 		minor = fadt->minor_version;   /* field added ACPI 5.1 */
 
-	fwts_log_info(fw, "FADT revision: %d.%d", major, minor);
-	fwts_log_info(fw, "FADT table length: %d", fadt->header.length);
+	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
+	fwts_log_info(fw, "FADT table length: %" PRIu32, fadt->header.length);
 
 	if (major == LATEST_MAJOR && minor == LATEST_MINOR)
 		fwts_passed(fw, "FADT revision is up to date.");
 	else {
-		fwts_warning(fw, "FADT revision is outdated: %d.%d",
+		fwts_warning(fw, "FADT revision is outdated: %" PRIu8 ".%" PRIu8,
 			     major, minor);
 		fwts_advice(fw, "The most recent revision of the FADT "
-			    "defined in the ACPI specification is %d.%d.  "
+			    "defined in the ACPI specification is %" PRIu8 ".%" PRIu8 ".  "
 			    "While older revisions of the FADT can be used, "
 			    "newer ones may enable additional functionality "
 			    "that cannot be used until the FADT is updated.",
@@ -1195,7 +1195,7 @@ static void acpi_table_check_fadt_pm1_evt_len(fwts_framework *fw)
 		fwts_passed(fw, "FADT PM1_EVT_LEN >= 4.");
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm1EvtLenTooSmall",
-			    "FADT PM1_EVT_LEN must be >= 4, but is %d.",
+			    "FADT PM1_EVT_LEN must be >= 4, but is %" PRIu8 ".",
 			    fadt->pm1_evt_len);
 	return;
 }
@@ -1206,7 +1206,7 @@ static void acpi_table_check_fadt_pm1_cnt_len(fwts_framework *fw)
 		fwts_passed(fw, "FADT PM1_CNT_LEN >= 2.");
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm1CntLenTooSmall",
-			    "FADT PM1_CNT_LEN must be >= 2, but is %d.",
+			    "FADT PM1_CNT_LEN must be >= 2, but is %" PRIu8 ".",
 			    fadt->pm1_cnt_len);
 	return;
 }
@@ -1221,7 +1221,7 @@ static void acpi_table_check_fadt_pm2_cnt_len(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "FADTPm2CntLenInconsistent",
 				    "FADT PM2_CNT_LEN must be zero because "
-				    "PM2_CNT_BLK is not supported, but is %d.",
+				    "PM2_CNT_BLK is not supported, but is %" PRIu8 ".",
 				    fadt->pm2_cnt_len);
 		return;
 	}
@@ -1230,7 +1230,7 @@ static void acpi_table_check_fadt_pm2_cnt_len(fwts_framework *fw)
 		fwts_passed(fw, "FADT PM2_CNT_LEN >= 1.");
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPm2CntLenTooSmall",
-			    "FADT PM2_CNT_LEN must be >= 1, but is %d.",
+			    "FADT PM2_CNT_LEN must be >= 1, but is %" PRIu8 ".",
 			    fadt->pm2_cnt_len);
 	return;
 }
@@ -1245,7 +1245,7 @@ static void acpi_table_check_fadt_pm_tmr_len(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "FADTPmTmrLenInconsistent",
 				    "FADT PM_TMR_LEN must be zero because "
-				    "PM_TMR_BLK is not supported, but is %d.",
+				    "PM_TMR_BLK is not supported, but is %" PRIu8 ".",
 				    fadt->pm_tmr_len);
 		return;
 	}
@@ -1304,7 +1304,7 @@ static void acpi_table_check_fadt_gpe1_blk_len(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "FADTGPE1BlkLenInconsistent",
 				    "FADT GPE1_BLK_LEN must be zero because "
-				    "GPE1_BLK is not supported, but is %d.",
+				    "GPE1_BLK is not supported, but is %" PRIu8 ".",
 				    fadt->gpe1_blk_len);
 		return;
 	}
@@ -1692,7 +1692,7 @@ static int fadt_test2(fwts_framework *fw)
 		break;
 	default:
 		fwts_failed(fw, LOG_LEVEL_HIGH, "FADTPM1AInvalidWidth",
-			"FADT pm1a register has invalid bit width of %d.",
+			"FADT pm1a register has invalid bit width of %" PRIu32 ".",
 			width);
 		return FWTS_OK;
 	}

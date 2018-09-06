@@ -2400,7 +2400,7 @@ static void method_test_PSS_return(
 	 */
 	if (max_freq_valid && max_freq < 1000) {
 		fwts_failed(fw, LOG_LEVEL_LOW, "Method_PSSSubPackageLowFreq",
-			"Maximum CPU frequency is %dHz and this is low for "
+			"Maximum CPU frequency is %" PRIu32 "Hz and this is low for "
 			"a modern processor. This may indicate the _PSS "
 			"P-States are incorrect\n", max_freq);
 		fwts_advice(fw,
@@ -5493,7 +5493,7 @@ static void method_test_BCL_return(
 				"Brightness level %" PRIu64
 				" (index %" PRIu32 ") is greater "
 				"than brightness level %" PRIu64
-				" (index %d" PRIu32 "), should "
+				" (index %" PRIu32 "), should "
 				"be in ascending order.",
 				(uint64_t)obj->Package.Elements[i].Integer.Value, i,
 				(uint64_t)obj->Package.Elements[i+1].Integer.Value, i+1);

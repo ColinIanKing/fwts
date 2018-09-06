@@ -125,9 +125,9 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 	for (i = 0; (i < TOTAL_WAIT_TIME) && keepgoing; i++) {
 		int j;
 
-		snprintf(buffer, sizeof(buffer),"(CPU %d of %d)", nth+1, cpus);
+		snprintf(buffer, sizeof(buffer),"(CPU %d of %d)", nth + 1, cpus);
 		fwts_progress_message(fw,
-			100 * (i+ (TOTAL_WAIT_TIME*nth))/
+			100 * (i + (TOTAL_WAIT_TIME*nth)) /
 				(cpus * TOTAL_WAIT_TIME), buffer);
 
 		if ((i & 7) < 4)
@@ -139,7 +139,7 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 				fwts_failed(fw, LOG_LEVEL_HIGH, "CPUFailedPerformance",
 					"Could not determine the CPU performance, this "
 					"may be due to not being able to get or set the "
-					"CPU affinity for CPU %i.", cpu);
+					"CPU affinity for CPU %d.", cpu);
 			}
 		}
 
@@ -161,21 +161,21 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 		/* Not a failure, but not a pass either! */
 		for (i = MIN_CSTATE; i < MAX_CSTATE; i++)  {
 			if (initial.present[i] && !initial.used[i]) {
-				snprintf(tmp, sizeof(tmp), "C%i ", i);
+				snprintf(tmp, sizeof(tmp), "C%d ", i);
 				strcat(buffer, tmp);
 			}
 		}
-		fwts_log_info(fw, "Processor %i has not reached %s during tests. "
+		fwts_log_info(fw, "Processor %d has not reached %s during tests. "
 				  "This is not a failure, however it is not a "
 				  "complete and thorough test.", cpu, buffer);
 	} else {
 		for (i = MIN_CSTATE; i < MAX_CSTATE; i++)  {
 			if (initial.present[i] && initial.used[i]) {
-				snprintf(tmp, sizeof(tmp), "C%i ", i);
+				snprintf(tmp, sizeof(tmp), "C%d ", i);
 				strcat(buffer, tmp);
 			}
 		}
-		fwts_passed(fw, "Processor %i has reached all C-states: %s",
+		fwts_passed(fw, "Processor %d has reached all C-states: %s",
 			cpu, buffer);
 	}
 
@@ -189,13 +189,14 @@ static void do_cpu(fwts_framework *fw, int nth, int cpus, int cpu, char *path)
 
 	if (statecount != count)
 		fwts_failed(fw, LOG_LEVEL_HIGH, "CPUNoCState",
-			"Processor %i is expected to have %i C-states but has %i.",
+			"Processor %d is expected to have %d C-states but has %d.",
 			cpu, statecount, count);
 	else
 		if (firstcpu == -1)
 			firstcpu = cpu;
 		else
-			fwts_passed(fw, "Processor %i has the same number of C-states as processor %d", cpu, firstcpu);
+			fwts_passed(fw, "Processor %d has the same number of C-states as processor %d",
+				cpu, firstcpu);
 }
 
 static int cstates_test1(fwts_framework *fw)
@@ -217,7 +218,7 @@ static int cstates_test1(fwts_framework *fw)
 	}
 
 	/* How many CPUs are there? */
-	for (cpus = 0; (entry = readdir(dir)) != NULL;)
+	for (cpus = 0; (entry = readdir(dir)) != NULL; )
 		if (entry &&
 		    (strlen(entry->d_name)>3) &&
 		    (strncmp(entry->d_name, "cpu", 3) == 0) &&
@@ -226,7 +227,7 @@ static int cstates_test1(fwts_framework *fw)
 
 	rewinddir(dir);
 
-	for (i = 0; (cpus > 0) && (entry = readdir(dir)) != NULL;) {
+	for (i = 0; (cpus > 0) && (entry = readdir(dir)) != NULL; ) {
 		if (entry &&
 		    (strlen(entry->d_name)>3) &&
 		    (strncmp(entry->d_name, "cpu", 3) == 0) &&

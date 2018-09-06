@@ -1,8 +1,8 @@
 apicinstance    apicinstance: Test for single instance of APIC/MADT table.
 apicinstance    ----------------------------------------------------------
 apicinstance    Test 1 of 1: Test for single instance of APIC/MADT table.
-apicinstance    Found APIC/MADT table APIC @ bf6dfcc6, length 0x104
-apicinstance    Found APIC/MADT table APIC @ bf6dff70, length 0x104
+apicinstance    Found APIC/MADT table APIC @ bf6dfcc6, length 0x68
+apicinstance    Found APIC/MADT table APIC @ bf6dff70, length 0x68
 apicinstance     (and differs from first APIC/MADT table).
 apicinstance    FAILED [HIGH] MultipleAPICMADT: Test 1, Found 2 APIC/MADT
 apicinstance    tables, the kernel expects just one.

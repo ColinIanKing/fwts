@@ -40,7 +40,8 @@ static const uint8_t guid_virtual_device[4][16] = {
 
 static fwts_acpi_table_info *nfit_table;
 
-static bool check_length(fwts_framework *fw, int actual, int min, const char *name) {
+static bool check_length(fwts_framework *fw, const int actual, int min, const char *name)
+{
 	if (actual < min) {
 		fwts_failed(fw, LOG_LEVEL_HIGH, "NFITSubtableLength",
 			    "NFIT Subtable %s length %d bytes is too short, expected >= %d bytes",
@@ -50,14 +51,13 @@ static bool check_length(fwts_framework *fw, int actual, int min, const char *na
 	return true;
 }
 
-static bool scan_nfit_smbios(fwts_framework *fw, int len, uint8_t *table) {
-	fwts_dmi_header *hdr;
+static bool scan_nfit_smbios(fwts_framework *fw, int len, uint8_t *table)
+{
 	int entry = 0;
 
 	while (len > 4) {
 		int strbytes = 0;
-
-		hdr = (fwts_dmi_header *) table;
+		fwts_dmi_header *hdr = (fwts_dmi_header *) table;
 
 		fwts_log_info_verbatim(fw, "  NFIT SMBIOS Entry %d:", entry++);
 		fwts_log_info_verbatim(fw, "    Type:                                   0x%2.2" PRIx8, hdr->type);
@@ -334,8 +334,6 @@ static int nfit_test1(fwts_framework *fw)
 
 		} else if (entry->type == FWTS_ACPI_NFIT_TYPE_CONTROL_REGION) {
 			fwts_acpi_table_nfit_control_range *nfit_struct = (fwts_acpi_table_nfit_control_range *) entry;
-			uint64_t reserved1;
-
 			bool ret = check_length(fw, entry->length,
 					FWTS_ACPI_NFIT_MINLEN_CONTROL_REGION,
 					FWTS_ACPI_NFIT_NAME_CONTROL_REGION);
@@ -380,9 +378,14 @@ static int nfit_test1(fwts_framework *fw)
 			fwts_acpi_reserved_bits_check(fw, "NFIT", "Valid", nfit_struct->valid_fields, sizeof(nfit_struct->valid_fields), 1, 7, &passed);
 
 			if (entry->length >= sizeof(*nfit_struct)) {
-				reserved1 = (uint64_t) nfit_struct->reserved1[0] + ((uint64_t) nfit_struct->reserved1[1] << 8) +
-					   ((uint64_t) nfit_struct->reserved1[2] << 16) + ((uint64_t) nfit_struct->reserved1[3] << 24) +
-					   ((uint64_t) nfit_struct->reserved1[4] << 32) + ((uint64_t) nfit_struct->reserved1[5] << 40);
+				uint64_t reserved1;
+
+				reserved1 = (uint64_t) nfit_struct->reserved1[0] +
+					    ((uint64_t) nfit_struct->reserved1[1] << 8) +
+					    ((uint64_t) nfit_struct->reserved1[2] << 16) +
+					    ((uint64_t) nfit_struct->reserved1[3] << 24) +
+					    ((uint64_t) nfit_struct->reserved1[4] << 32) +
+					    ((uint64_t) nfit_struct->reserved1[5] << 40);
 
 				if (reserved1 != 0)
 					reserved_passed = reserved1;

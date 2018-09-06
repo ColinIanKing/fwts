@@ -364,7 +364,7 @@ static int madt_init(fwts_framework *fw)
 	if (fw->flags & FWTS_FLAG_TEST_SBBR) {
 		if (fadt_major < SBBR_ACPI_MAJOR_VERSION) {
 			fwts_log_error(fw, "SBBR support starts with ACPI v6.0,"
-					" Current revision is outdated: %d.%d",
+					" Current revision is outdated: %" PRIu8 ".%" PRIu8,
 					fadt_major, fadt_minor);
 			return FWTS_ERROR;
 		}
@@ -435,19 +435,19 @@ static int madt_revision(fwts_framework *fw)
 	struct acpi_madt_subtable_lengths *ms = spec_data;
 
 	/* check the table revision */
-	fwts_log_advice(fw, "Most recent FADT revision is %d.%d.",
+	fwts_log_advice(fw, "Most recent FADT revision is %" PRIu8 ".%" PRIu8 ".",
 			FADT_MAX_MAJOR_REVISION, FADT_MAX_MINOR_REVISION);
-	fwts_log_advice(fw, "Most recent MADT revision is %d.",
+	fwts_log_advice(fw, "Most recent MADT revision is %" PRIu8 ".",
 			MADT_MAX_REVISION);
 
 	/* is the madt revision defined at all? */
 	if (!ms->num_types) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "SPECMADTRevision",
-			    "Undefined MADT revision being used: %d",
+			    "Undefined MADT revision being used: %" PRIu8,
 			    madt->header.revision);
 	} else {
-			fwts_passed(fw, "MADT revision %d is defined.",
+			fwts_passed(fw, "MADT revision %" PRIu8 " is defined.",
 				    madt->header.revision);
 	}
 
@@ -458,14 +458,14 @@ static int madt_revision(fwts_framework *fw)
 			    "SPECMADTFADTRevisions",
 			    "MADT revision is not in sync with "
 			    "the FADT revision;\n"
-			    "MADT %d expects FADT %d.%d "
-			    "but found %d.%d instead.",
+			    "MADT %" PRIu8 " expects FADT %" PRIu8 ".%" PRIu8 " "
+			    "but found %" PRIu8 ".%" PRIu8 " instead.",
 			    madt->header.revision,
 			    ms->major_version, ms->minor_version,
 			    fadt_major, fadt_minor);
 	} else {
-		fwts_passed(fw, "MADT revision %d is in sync "
-				"with FADT revision %d.%d.",
+		fwts_passed(fw, "MADT revision %" PRIu8 " is in sync "
+				"with FADT revision %" PRIu8 ".%" PRIu8 ".",
 			madt->header.revision, fadt_major, fadt_minor);
 	}
 
@@ -489,13 +489,13 @@ static int madt_arch_revision(fwts_framework *fw)
 
 	/* check the supported revision for this architecture */
 	if (madt->header.revision >= minrev)
-		fwts_passed(fw, "MADT revision %d meets the minimum needed "
-			    "(%d) for the %s architecture.",
+		fwts_passed(fw, "MADT revision %" PRIu8 " meets the minimum needed "
+			    "(%" PRIu8 ") for the %s architecture.",
 			    madt->header.revision, minrev, arch);
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "SPECMADTArchRevision",
-			    "MADT revision is %d, must be >= %d "
+			    "MADT revision is %" PRIu8 ", must be >= %" PRIu8 " "
 			"when running on %s",
 			madt->header.revision, minrev, arch);
 
@@ -608,7 +608,7 @@ static int madt_io_apic(fwts_framework *fw,
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADIOSAPICNotUnique",
-			    "There are multiple entries for id %d.",
+			    "There are multiple entries for id %" PRIu8 ".",
 			    ioapic->io_apic_id);
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
@@ -768,7 +768,7 @@ static int madt_io_sapic(fwts_framework *fw,
 	else
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADIOSAPICNotUnique",
-			    "There are multiple entries for id %d.",
+			    "There are multiple entries for id %" PRIu8 ".",
 			    sapic->io_sapic_id);
 
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
@@ -795,13 +795,13 @@ static int madt_local_sapic(fwts_framework *fw,
 	if (hdr->length != (strlen(lsapic->uid_string) + 16))
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLSAPICLength",
-			    "MADT %s length of %d bytes does not match "
+			    "MADT %s length of %" PRIu8 " bytes does not match "
 			    "actual length of %zd bytes.",
 			    madt_sub_names[hdr->type], hdr->length,
 			    strlen(lsapic->uid_string) + 16);
 	else
 		fwts_passed(fw,
-			    "MADT %s table length (%d) is correct.",
+			    "MADT %s table length (%" PRIu8 ") is correct.",
 			    madt_sub_names[hdr->type], hdr->length);
 
 	/* only continue testing table if enabled */
@@ -823,13 +823,13 @@ static int madt_local_sapic(fwts_framework *fw,
 		break; /* nothing more to do */
 	case ACPI_TYPE_DEVICE:
 		if (lsapic->uid_value == lsapic->acpi_processor_id)
-			fwts_passed(fw, "MADT LSAPIC UID value is %d.",
+			fwts_passed(fw, "MADT LSAPIC UID value is %" PRIu32 ".",
 				    lsapic->uid_value);
 		else
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "MADTLSAPICUidCompare",
-				    "MADT LSAPIC UID value (%d) does not "
-				    "match ACPI processor ID (%d).",
+				    "MADT LSAPIC UID value (%" PRIu32 ") does not "
+				    "match ACPI processor ID (%" PRIu8 ").",
 				    lsapic->uid_value,
 				    lsapic->acpi_processor_id);
 		if (atoi(lsapic->uid_string) == lsapic->acpi_processor_id)
@@ -839,13 +839,13 @@ static int madt_local_sapic(fwts_framework *fw,
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "MADTLSAPICUidCompare",
 				    "MADT LSAPIC UID string (%s) does not "
-				    "match UID value (%d).",
+				    "match UID value (%" PRIu8 ").",
 				    lsapic->uid_string,
 				    lsapic->acpi_processor_id);
 		break;
 	default:
 		/* Error already reported in madt_find_processor_uid() call */
-		fwts_warning(fw, "MADT LSAPIC UID value (%d) and UID string "
+		fwts_warning(fw, "MADT LSAPIC UID value (%" PRIu32 ") and UID string "
 			     "(%s) may be incorrect.",
 			     lsapic->uid_value, lsapic->uid_string);
 		break;
@@ -890,7 +890,7 @@ static int madt_local_sapic(fwts_framework *fw,
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "MADTLSAPICUIDNonAscii",
 			    "MADT %s UID string has non-ASCII character "
-			    "in position %d.",
+			    "in position %" PRIu8 ".",
 			    madt_sub_names[hdr->type], tmp);
 	else
 		fwts_passed(fw,
@@ -1079,7 +1079,7 @@ static int madt_gicc(fwts_framework *fw,
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "SPECMADTGICCParkingVersion",
 			    "MADT %s, protocol versions defined are 0..1 but "
-			    "%d is being used.",
+			    "%" PRIu32 " is being used.",
 			    madt_sub_names[hdr->type],
 			    gic->parking_protocol_version);
 	else
@@ -1295,7 +1295,7 @@ static int madt_gicr(fwts_framework *fw,
 			    madt_sub_names[hdr->type]);
 	else
 		fwts_passed(fw,
-			    "MADT %s discovery range length of %d > 0.",
+			    "MADT %s discovery range length of %" PRIu32 " > 0.",
 			    madt_sub_names[hdr->type],
 			    gicr->discovery_range_length);
 
@@ -1438,10 +1438,10 @@ static int madt_subtables(fwts_framework *fw)
 	if (!ms->num_types) {
 		fwts_failed(fw, LOG_LEVEL_MEDIUM,
 			    "SPECMADTRevision",
-			    "Undefined MADT revision being used: %d",
+			    "Undefined MADT revision being used: %" PRIu8,
 			    madt->header.revision);
 	} else {
-		fwts_passed(fw, "MADT revision %d is defined.",
+		fwts_passed(fw, "MADT revision %" PRIu8 " is defined.",
 			    madt->header.revision);
 	}
 
@@ -1480,11 +1480,11 @@ static int madt_subtables(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubType",
 				    "Undefined MADT subtable type for this "
-				    "version of the MADT: %d (%s)",
+				    "version of the MADT: %" PRIu8 " (%s)",
 				    hdr->type, madt_sub_names[type]);
 		} else {
 			fwts_passed(fw,
-				    "MADT subtable type %d (%s) is defined.",
+				    "MADT subtable type %" PRIu8 " (%s) is defined.",
 				    hdr->type, madt_sub_names[type]);
 		}
 
@@ -1509,7 +1509,7 @@ static int madt_subtables(fwts_framework *fw)
 			if (passed) {
 				fwts_passed(fw,
 					    "Subtable %d (offset 0x%x) of "
-					    "type %d (%s) is the correct length: %d",
+					    "type %" PRIu8 " (%s) is the correct length: %" PRIu8,
 					    ii, offset, hdr->type,
 					    madt_sub_names[type],
 					    hdr->length);
@@ -1517,7 +1517,7 @@ static int madt_subtables(fwts_framework *fw)
 				fwts_failed(fw, LOG_LEVEL_MEDIUM,
 					    "SPECMADTSubLen",
 					    "Subtable %d (offset 0x%x) of "
-					    "type %d (%s) is %d bytes "
+					    "type %" PRIu8 " (%s) is %d bytes "
 					    "long but should be %d bytes",
 					    ii, offset, hdr->type,
 					    madt_sub_names[type],
@@ -1597,7 +1597,7 @@ static int madt_subtables(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
 				    "MADT subtable %d (offset 0x%x) is "
-				    "using the reserved value 0x%x for a "
+				    "using the reserved value 0x%" PRIx8 " for a "
 				    "type.  Subtable type values 0x10..0x7f "
 				    "are reserved; 0x80..0xff can be "
 				    "used by OEMs.",
@@ -1614,7 +1614,7 @@ static int madt_subtables(fwts_framework *fw)
 			fwts_failed(fw, LOG_LEVEL_MEDIUM,
 				    "SPECMADTSubReservedID",
 				    "MADT subtable %d (offset 0x%x) is "
-				    "using value 0x%x for a type.  This "
+				    "using value 0x%" PRIx8 " for a type.  This "
 				    "value is out of the expected range "
 				    "of 0x00 .. 0xff.",
 				    ii, offset, hdr->type);

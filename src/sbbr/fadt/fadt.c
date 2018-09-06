@@ -71,12 +71,13 @@ static int fadt_sbbr_revision_test1(fwts_framework *fw)
 	if (major >= 5 && fadt->header.length >= 268)
 		minor = fadt->minor_version;   /* field added ACPI 5.1 */
 
-	fwts_log_info(fw, "FADT revision: %d.%d", major, minor);
+	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
 
 	if (major >= SBBR_LATEST_MAJOR && minor >= SBBR_LATEST_MINOR)
 		fwts_passed(fw, "FADT revision is up to date.");
 	else {
-		fwts_failed(fw, LOG_LEVEL_CRITICAL, "fadt_revision:", "FADT revision is outdated: %d.%d",
+		fwts_failed(fw, LOG_LEVEL_CRITICAL, "fadt_revision:",
+			    "FADT revision is outdated: %" PRIu8 ".%" PRIu8,
 			     major, minor);
 	}
 

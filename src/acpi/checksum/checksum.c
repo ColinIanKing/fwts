@@ -67,10 +67,10 @@ static void checksum_rsdp(fwts_framework *fw, fwts_acpi_table_info *table)
 		if (table->length < sizeof(fwts_acpi_table_rsdp)) {
 			fwts_failed(fw, LOG_LEVEL_CRITICAL,
 				"ACPITableCheckSumShortRSDP",
-				"RSDP was expected to be %d bytes long, "
-				"got a shortened size of %d bytes.",
-				(int)sizeof(fwts_acpi_table_rsdp),
-				(int)table->length);
+				"RSDP was expected to be %zd bytes long, "
+				"got a shortened size of %zd bytes.",
+				sizeof(fwts_acpi_table_rsdp),
+				table->length);
 			/* Won't test on a short RSDP */
 			return;
 		}

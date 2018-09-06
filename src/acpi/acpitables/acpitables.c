@@ -91,7 +91,7 @@ static int acpi_table_check_test1(fwts_framework *fw)
 		 */
 		if (hdr->length < sizeof(fwts_acpi_table_header)) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "ACPITableHdrShort",
-				"ACPI Table %s is too short, only %d bytes long. Further "
+				"ACPI Table %s is too short, only %" PRIu32 " bytes long. Further "
 				"header checks will be omitted.", name, hdr->length);
 			continue;
 		}

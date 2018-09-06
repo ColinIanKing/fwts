@@ -109,7 +109,7 @@ static int read_pci_device_secondary_bus_number(const uint8_t seg,
 	size_t count;
 
 	snprintf(path, sizeof(path),
-		"/sys/bus/pci/devices/%04x:%02x:%02x.%d/config",
+		"/sys/bus/pci/devices/%04x:%02x:%02x.%" PRIu8 "/config",
 		seg, bus, dev, fn);
 	if ((file = fopen(path, "r")) == NULL)
 		return -1;

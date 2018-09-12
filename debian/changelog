@@ -1,3 +1,34 @@
+fwts (18.09.00-0ubuntu1) cosmic; urgency=medium
+
+  [Alex Hung]
+  * dmicheck: fix incorrect boundary checks for various types
+  * dmicheck: checks (Extended) Maximum Capacity for type 16
+
+  [Anthony Wong]
+  * snapcraft: add libbsd-dev to build-packages
+
+  [Colin Ian King]
+  * acpi: acpiinfo: use stdint print format specifiers for uint8_t values
+  * acpi: nfit: minor code cleanup changes
+  * acpi: acpitables: use PRIu32 format specifier for a uint32_t type
+  * acpi: apicinstance: use correct format specifiers
+  * acpi: checksum: print size_t values using %zd specifier
+  * acpi: cstates: add whitespacing, use %d for int format specifiers
+  * acpi: fadt: use inttype.h print format size specifiers
+  * acpi/dmar: use PRIu8 specifier for uint8_t type
+  * acpi/madt: use inttype.h print format size specifiers
+  * acpi/method: use inttype.h print format size specifiers
+  * sbbr/fadt: use inttype.h print format size specifiers
+  * fwts-test: apicinstance: fix up incorrect hex values
+
+  [Ge Song]
+  * DMI: Fix the way to load SMBIOS 3.x tables via sysfs
+
+  [Ivan Hu]
+  * efi_runtime: re-enable the resetsystem runtime interface
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Wed, 12 Sep 2018 11:08:41 -0700
+
 fwts (18.08.00-0ubuntu1) cosmic; urgency=medium
 
   [Alex Hung]

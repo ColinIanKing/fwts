@@ -191,6 +191,8 @@ static char *funcs[] = {
 
 #define TABLE_SIZE	(5000)
 
+static char *klog_file = DATAROOTDIR "/fwts/klog.json";
+
 static char *hash_funcs[TABLE_SIZE];
 
 static int get_token(parser *p, token *t);
@@ -348,7 +350,7 @@ static klog_pattern *klog_load(const char *table)
 	json_object *klog_table;
 	klog_pattern *patterns;
 
-	klog_objs = json_object_from_file(DATAROOTDIR "/fwts/klog.json");
+	klog_objs = json_object_from_file(klog_file);
 	if (JSON_ERROR(klog_objs)) {
 		fprintf(stderr, "Cannot load klog data\n");
 		exit(EXIT_FAILURE);
@@ -1015,6 +1017,13 @@ static void hash_init(void)
 	}
 }
 
+void help(void)
+{
+	printf("kernelscan:\n");
+	printf("-h\t\thelp\n");
+	printf("-k file\t\tspecify klog json file\n");
+}
+
 /*
  *  Scan kernel source for printk KERN_ERR and dev_err
  *  calls.
@@ -1030,8 +1039,22 @@ static void hash_init(void)
  */
 int main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
+	for (;;) {
+		int c = getopt(argc, argv, "hk:");
+		if (c == -1)
+			break;
+		switch (c) {
+		case 'h':
+			help();
+			exit(0);
+		case 'k':
+			klog_file = optarg;
+			break;
+		default:
+			help();
+			exit(1);
+		}
+	}
 
 	patterns = klog_load("firmware_error_warning_patterns");
 	hash_init();

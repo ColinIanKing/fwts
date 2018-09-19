@@ -32,17 +32,42 @@ if [ $# -lt 1 ]; then
 	exit 1
 fi
 
-src=$1
+KLOG=/usr/share/fwts/klog.json
 
-if [ ! -d  $1 ]; then
-	echo "Path '$1' not found"
+while [[ $# -gt 0 ]]
+do
+
+case "$1" in
+	-k)
+		shift
+		KLOG=$1
+		shift
+		;;
+	*)
+		src=$1
+		shift
+		;;
+esac
+done
+
+if [ "$src" == "" ]; then
+	echo "Please provide path to linux source"
+	exit 1
+fi
+
+if [ ! -d "$src" ]; then
+	echo "Path '$src' not found"
+	exit 1
+fi
+if [ ! -e "${KLOG}" ]; then
+	echo "Path '${KLOG}' not found"
 	exit 1
 fi
 
 scan_source_file()
 {
 	if [ -f $1 ]; then
-		$KERNELSCAN -P < $1 > $TMP
+		$KERNELSCAN -k ${KLOG} < $1 > $TMP
 		if [ $(stat -c%s $TMP) -gt 0 ]; then
 			echo "Source: $1"
 			cat $TMP

@@ -1512,7 +1512,7 @@ static void dmicheck_entry(fwts_framework *fw,
 					data[0x4], table, addr, "Location", 0x4);
 			dmi_min_max_uint8_check(fw, table, addr, "Use", hdr, 0x5, 0x1, 0x7);
 			dmi_min_max_uint8_check(fw, table, addr, "Error Corrrection Type", hdr, 0x6, 0x1, 0x7);
-			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000 - 1);
+			dmi_min_max_uint32_check(fw, table, addr, "Maximum Capacity", hdr, 0x7, 0, 0x80000000);
 			if (hdr->length < 0x17)
 				break;
 			if (GET_UINT64(data + 0xf) != 0 && GET_UINT32(data + 0x7) != 0x80000000)

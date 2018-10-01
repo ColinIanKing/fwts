@@ -156,6 +156,7 @@ libfwtsacpica_la_SOURCES =				\
 	source/components/executer/exresnte.c		\
 	source/components/executer/exresolv.c		\
 	source/components/executer/exresop.c		\
+        source/components/executer/exserial.c           \
 	source/components/executer/exstore.c		\
 	source/components/executer/exstoren.c		\
 	source/components/executer/exstorob.c		\

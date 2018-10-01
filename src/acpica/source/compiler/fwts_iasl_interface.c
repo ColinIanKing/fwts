@@ -50,18 +50,18 @@ static void init_asl_core(void)
 	AcpiGbl_IntegerByteWidth = 8;
 
 	for (i = 0; i < ASL_NUM_FILES; i++) {
-		Gbl_Files[i].Handle = NULL;
-		Gbl_Files[i].Filename = NULL;
+		AslGbl_Files[i].Handle = NULL;
+		AslGbl_Files[i].Filename = NULL;
 	}
 
-	Gbl_Files[ASL_FILE_STDOUT].Handle   = stdout;
-	Gbl_Files[ASL_FILE_STDOUT].Filename = "STDOUT";
-	Gbl_Files[ASL_FILE_STDERR].Handle   = stdout;
-	Gbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
+	AslGbl_Files[ASL_FILE_STDOUT].Handle   = stdout;
+	AslGbl_Files[ASL_FILE_STDOUT].Filename = "STDOUT";
+	AslGbl_Files[ASL_FILE_STDERR].Handle   = stdout;
+	AslGbl_Files[ASL_FILE_STDERR].Filename = "STDOUT";
 
-	Gbl_LineBufferSize = 1024;
-	Gbl_CurrentLineBuffer = NULL;
-	Gbl_MainTokenBuffer = NULL;
+	AslGbl_LineBufferSize = 1024;
+	AslGbl_CurrentLineBuffer = NULL;
+	AslGbl_MainTokenBuffer = NULL;
 	UtExpandLineBuffers();
 }
 
@@ -93,15 +93,15 @@ int fwts_iasl_disassemble_aml(
 		init_asl_core();
 
 		/* Setup ACPICA disassembler globals */
-		Gbl_WarningLevel = ASL_WARNING3;
-		Gbl_IgnoreErrors = TRUE;
+		AslGbl_WarningLevel = ASL_WARNING3;
+		AslGbl_IgnoreErrors = TRUE;
 		AcpiGbl_DisasmFlag = TRUE;
-		Gbl_DoCompile = FALSE;
-		Gbl_OutputFilenamePrefix = (char*)outputfile;
-		Gbl_UseDefaultAmlFilename = FALSE;
+		AslGbl_DoCompile = FALSE;
+		AslGbl_OutputFilenamePrefix = (char*)outputfile;
+		AslGbl_UseDefaultAmlFilename = FALSE;
 		AcpiGbl_CstyleDisassembly = FALSE;
 		AcpiGbl_DmOpt_Verbose = FALSE;
-		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
+		UtConvertBackslashes (AslGbl_OutputFilenamePrefix);
 
 		/* Do we need to include external tables in? */
 		if (use_externals) {
@@ -234,11 +234,11 @@ int fwts_iasl_assemble_aml(const char *source, char **stdout_output, char **stde
 
 		/* Setup ACPICA compiler globals */
 		AcpiGbl_DisasmFlag = FALSE;
-		Gbl_DoCompile = TRUE;
-		Gbl_PreprocessFlag = TRUE;
-		Gbl_UseDefaultAmlFilename = FALSE;
-		Gbl_OutputFilenamePrefix = (char*)source;
-		UtConvertBackslashes (Gbl_OutputFilenamePrefix);
+		AslGbl_DoCompile = TRUE;
+		AslGbl_PreprocessFlag = TRUE;
+		AslGbl_UseDefaultAmlFilename = FALSE;
+		AslGbl_OutputFilenamePrefix = (char*)source;
+		UtConvertBackslashes (AslGbl_OutputFilenamePrefix);
 
 		(void)AslDoOneFile((char *)source);
 
@@ -280,11 +280,11 @@ const char *fwts_iasl_exception_level__(uint8_t level)
 {
 	const char *str;
 
-	bool tmp = Gbl_VerboseErrors;
+	bool tmp = AslGbl_VerboseErrors;
 
-	Gbl_VerboseErrors = true;
+	AslGbl_VerboseErrors = true;
 	str = AeDecodeExceptionLevel((UINT8)level);
-	Gbl_VerboseErrors = tmp;
+	AslGbl_VerboseErrors = tmp;
 
 	return str;
 }

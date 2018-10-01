@@ -300,21 +300,21 @@ static ACPI_STATUS fwts_region_handler(
 		case ACPI_READ:
 			switch (function >> 16) {
 			case AML_FIELD_ATTRIB_QUICK:
-			case AML_FIELD_ATTRIB_SEND_RCV:
+			case AML_FIELD_ATTRIB_SEND_RECEIVE:
 			case AML_FIELD_ATTRIB_BYTE:
 				length = 1;
 				break;
 			case AML_FIELD_ATTRIB_WORD:
-			case AML_FIELD_ATTRIB_WORD_CALL:
+			case AML_FIELD_ATTRIB_PROCESS_CALL:
 				length = 2;
 				break;
 			case AML_FIELD_ATTRIB_BLOCK:
-			case AML_FIELD_ATTRIB_BLOCK_CALL:
+			case AML_FIELD_ATTRIB_BLOCK_PROCESS_CALL:
 				length = 32;
 				break;
-			case AML_FIELD_ATTRIB_MULTIBYTE:
+			case AML_FIELD_ATTRIB_BYTES:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
-			case AML_FIELD_ATTRIB_RAW_PROCESS:
+			case AML_FIELD_ATTRIB_RAW_PROCESS_BYTES:
 				if (!context)
 					return AE_BAD_PARAMETER;
 				length = context->AccessLength - 2;
@@ -327,21 +327,21 @@ static ACPI_STATUS fwts_region_handler(
 		case ACPI_WRITE:
 			switch (function >> 16) {
 			case AML_FIELD_ATTRIB_QUICK:
-			case AML_FIELD_ATTRIB_SEND_RCV:
+			case AML_FIELD_ATTRIB_SEND_RECEIVE:
 			case AML_FIELD_ATTRIB_BYTE:
 			case AML_FIELD_ATTRIB_WORD:
 			case AML_FIELD_ATTRIB_BLOCK:
 				length = 0;
 				break;
-			case AML_FIELD_ATTRIB_WORD_CALL:
+			case AML_FIELD_ATTRIB_PROCESS_CALL:
 				length = 2;
 				break;
-			case AML_FIELD_ATTRIB_BLOCK_CALL:
+			case AML_FIELD_ATTRIB_BLOCK_PROCESS_CALL:
 				length = 32;
 				break;
-			case AML_FIELD_ATTRIB_MULTIBYTE:
+			case AML_FIELD_ATTRIB_BYTES:
 			case AML_FIELD_ATTRIB_RAW_BYTES:
-			case AML_FIELD_ATTRIB_RAW_PROCESS:
+			case AML_FIELD_ATTRIB_RAW_PROCESS_BYTES:
 				if (!context)
 					return AE_BAD_PARAMETER;
 				length = context->AccessLength - 2;

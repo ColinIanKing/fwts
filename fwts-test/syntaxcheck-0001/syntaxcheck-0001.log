@@ -6,8 +6,429 @@ syntaxcheck     Test 1 of 1: Disassemble and reassemble DSDT and SSDTs.
 syntaxcheck     
 syntaxcheck     Checking ACPI table DSDT (#0)
 syntaxcheck     
-syntaxcheck     PASSED: Test 1, DSDT (0) reassembly, Found 0 errors, 0
-syntaxcheck     warnings, 0 remarks.
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 242
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00239|             }
+syntaxcheck     00240| 
+syntaxcheck     00241|             Store (0x07D0, OSYS) /* \OSYS */
+syntaxcheck     00242|             If (CondRefOf (_OSI, Local0))
+syntaxcheck          |                                      ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     00243|             {
+syntaxcheck     00244|                 If (_OSI ("Linux"))
+syntaxcheck     00245|                 {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 692
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00689|     Name (_PSC, Zero)  // _PSC: Power State Current
+syntaxcheck     00690|     Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+syntaxcheck     00691|     {
+syntaxcheck     00692|         Store (_PSC, Local0)
+syntaxcheck          |                          ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     00693|         Store (Zero, _PSC) /* \_PSC */
+syntaxcheck     00694|     }
+syntaxcheck     00695| 
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_UPPER_CASE: Test 1, Assembler
+syntaxcheck     error in line 705
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00702|     {
+syntaxcheck     00703|         Device (AMW0)
+syntaxcheck     00704|         {
+syntaxcheck     00705|             Name (_HID, "pnp0c14")  // _HID: Hardware ID
+syntaxcheck          |                                ^
+syntaxcheck          | Error 6136: Non-hex letters must be upper case    (pnp0c14)
+syntaxcheck     00706|             Name (_UID, Zero)  // _UID: Unique ID
+syntaxcheck     00707|             Name (_WDG, Buffer (0x3C)
+syntaxcheck     00708|             {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Error #6136, ASL_MSG_UPPER_CASE): Characters
+syntaxcheck     in literal string that are not hexadecimal letters must be
+syntaxcheck     upper case.
+syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 722
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00719|             {
+syntaxcheck     00720|                  0x01, 0x14, 0x03, 0x00                           // ....
+syntaxcheck     00721|             })
+syntaxcheck     00722|             Method (WQAC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00723|             {
+syntaxcheck     00724|                 Store ("MXMTCConfigData", Debug)
+syntaxcheck     00725|                 Return (STAC) /* \_SB_.AMW0.STAC */
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 732
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00729|             {
+syntaxcheck     00730|                  0x01, 0x00, 0x00, 0x00                           // ....
+syntaxcheck     00731|             })
+syntaxcheck     00732|             Method (WQBC, 1, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00733|             {
+syntaxcheck     00734|                 Store ("Get MXMTCControlData: STBC = ", Debug)
+syntaxcheck     00735|                 Store (STBC, Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 739
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     00736|                 Return (STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00737|             }
+syntaxcheck     00738| 
+syntaxcheck     00739|             Method (WSBC, 2, NotSerialized)
+syntaxcheck          |                       ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     00740|             {
+syntaxcheck     00741|                 Store (Arg1, STBC) /* \_SB_.AMW0.STBC */
+syntaxcheck     00742|                 Store ("Set MXMTCControlData: STBC = ", Debug)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
+syntaxcheck     Assembler error in line 1065
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     01062|                     0x00000000,         // Range Minimum
+syntaxcheck     01063|                     0xDFFFFFFF,         // Range Maximum
+syntaxcheck     01064|                     0x00000000,         // Translation Offset
+syntaxcheck     01065|                     0x00000000,         // Length
+syntaxcheck          |                             ^
+syntaxcheck          | Error 6043: Invalid combination of Length and Min/Max fixed flags  
+syntaxcheck     01066|                     ,, _Y0D, AddressRangeMemory, TypeStatic)
+syntaxcheck     01067|                 DWordMemory (ResourceProducer, PosDecode, MinFixed, MaxFixed, Cacheable, ReadWrite,
+syntaxcheck     01068|                     0x00000000,         // Granularity
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Error #6043, ASL_MSG_INVALID_ADDR_FLAGS):
+syntaxcheck     This occurs if the length is zero and just one of the
+syntaxcheck     resource MIF/MAF flags are set, or the length is non-zero
+syntaxcheck     and resource MIF/MAF flags are both set. These are illegal
+syntaxcheck     combinations and need to be fixed. See section 6.4.3.5
+syntaxcheck     Address Space Resource Descriptors of the ACPI
+syntaxcheck     specification for more details.
+syntaxcheck     
+syntaxcheck     FAILED [HIGH] AMLAsmASL_MSG_INVALID_ADDR_FLAGS: Test 1,
+syntaxcheck     Assembler error in line 1079
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     01076|                     0xFED40000,         // Range Minimum
+syntaxcheck     01077|                     0xFED44FFF,         // Range Maximum
+syntaxcheck     01078|                     0x00000000,         // Translation Offset
+syntaxcheck     01079|                     0x00000000,         // Length
+syntaxcheck          |                             ^
+syntaxcheck          | Error 6043: Invalid combination of Length and Min/Max fixed flags  
+syntaxcheck     01080|                     ,, , AddressRangeMemory, TypeStatic)
+syntaxcheck     01081|             })
+syntaxcheck     01082|             Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Error #6043, ASL_MSG_INVALID_ADDR_FLAGS):
+syntaxcheck     This occurs if the length is zero and just one of the
+syntaxcheck     resource MIF/MAF flags are set, or the length is non-zero
+syntaxcheck     and resource MIF/MAF flags are both set. These are illegal
+syntaxcheck     combinations and need to be fixed. See section 6.4.3.5
+syntaxcheck     Address Space Resource Descriptors of the ACPI
+syntaxcheck     specification for more details.
+syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 1902
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     01899| 
+syntaxcheck     01900|                         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
+syntaxcheck     01901|                         {
+syntaxcheck     01902|                             Divide (Arg0, 0x0A, Local0, Local1)
+syntaxcheck          |                                                     ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     01903|                             Store (Local1, ^^^^LPCB.EC0.BRTS) /* \_SB_.PCI0.LPCB.EC0_.BRTS */
+syntaxcheck     01904|                         }
+syntaxcheck     01905| 
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 2134
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     02131|                     Store (And (Arg0, 0x07), DSEN) /* \DSEN */
+syntaxcheck     02132|                 }
+syntaxcheck     02133| 
+syntaxcheck     02134|                 Method (_DOD, 0, NotSerialized)  // _DOD: Display Output Devices
+syntaxcheck          |                           ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     02135|                 {
+syntaxcheck     02136|                     Store (Zero, NDID) /* \NDID */
+syntaxcheck     02137|                     If (LNotEqual (DIDL, Zero))
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 3015
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03012|                 {
+syntaxcheck     03013|                     If (LNot (DRDY))
+syntaxcheck     03014|                     {
+syntaxcheck     03015|                         Sleep (ASLP)
+syntaxcheck          |                                  ^
+syntaxcheck          | Remark 2159: Very long Sleep, greater than 1 second  
+syntaxcheck     03016|                     }
+syntaxcheck     03017| 
+syntaxcheck     03018|                     Return (LNot (DRDY))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 3025
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03022|                 {
+syntaxcheck     03023|                     If (LGreater (CSTS, 0x02))
+syntaxcheck     03024|                     {
+syntaxcheck     03025|                         Sleep (ASLP)
+syntaxcheck          |                                  ^
+syntaxcheck          | Remark 2159: Very long Sleep, greater than 1 second  
+syntaxcheck     03026|                     }
+syntaxcheck     03027| 
+syntaxcheck     03028|                     Return (LEqual (CSTS, 0x03))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 3088
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     03085|                 {
+syntaxcheck     03086|                     If (LNot (ARDY))
+syntaxcheck     03087|                     {
+syntaxcheck     03088|                         Sleep (ASLP)
+syntaxcheck          |                                  ^
+syntaxcheck          | Remark 2159: Very long Sleep, greater than 1 second  
+syntaxcheck     03089|                     }
+syntaxcheck     03090| 
+syntaxcheck     03091|                     Return (LNot (ARDY))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 5358
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05355|                         If (LEqual (Arg0, 0x03))
+syntaxcheck     05356|                         {
+syntaxcheck     05357|                             Store (Arg1, Z009) /* \_SB_.PCI0.LPCB.EC0_.Z009 */
+syntaxcheck     05358|                             If (CondRefOf (_OSI, Local0))
+syntaxcheck          |                                                      ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local0)
+syntaxcheck     05359|                             {
+syntaxcheck     05360|                                 Store (Zero, BTDS) /* \_SB_.PCI0.LPCB.EC0_.BTDS */
+syntaxcheck     05361|                                 If (_OSI ("Windows 2006"))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmUnknown: Test 1, Assembler remark in
+syntaxcheck     line 5688
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05685|                         Return (Arg1)
+syntaxcheck     05686|                     }
+syntaxcheck     05687| 
+syntaxcheck     05688|                     Method (TUVR, 1, NotSerialized)
+syntaxcheck          |                               ^
+syntaxcheck          | Remark 2146: Method Argument is never used    (Arg0)
+syntaxcheck     05689|                     {
+syntaxcheck     05690|                         Return (0x03)
+syntaxcheck     05691|                     }
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 5778
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05775|                         }
+syntaxcheck     05776|                     }
+syntaxcheck     05777| 
+syntaxcheck     05778|                     Method (_BIF, 0, NotSerialized)  // _BIF: Battery Information
+syntaxcheck          |                               ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     05779|                     {
+syntaxcheck     05780|                         Name (STAT, Package (0x0D)
+syntaxcheck     05781|                         {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 5832
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05829|                         Return (STAT) /* \_SB_.PCI0.LPCB.BAT1._BIF.STAT */
+syntaxcheck     05830|                     }
+syntaxcheck     05831| 
+syntaxcheck     05832|                     Method (_BST, 0, NotSerialized)  // _BST: Battery Status
+syntaxcheck          |                               ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     05833|                     {
+syntaxcheck     05834|                         Name (PBST, Package (0x04)
+syntaxcheck     05835|                         {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     FAILED [MEDIUM] AMLAsmUnknown: Test 1, Assembler warning
+syntaxcheck     in line 5854
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05851|                         If (BFC1)
+syntaxcheck     05852|                         {
+syntaxcheck     05853|                             Multiply (BGU1, BFC1, Local2)
+syntaxcheck     05854|                             Divide (Local2, 0x64, Local4, Local2)
+syntaxcheck          |                                                       ^
+syntaxcheck          | Warning 3144: Method Local is set but never used    (Local4)
+syntaxcheck     05855|                         }
+syntaxcheck     05856|                         Else
+syntaxcheck     05857|                         {
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 5938
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     05935|                 Device (PRID)
+syntaxcheck     05936|                 {
+syntaxcheck     05937|                     Name (_ADR, Zero)  // _ADR: Address
+syntaxcheck     05938|                     Method (_GTM, 0, NotSerialized)  // _GTM: Get Timing Mode
+syntaxcheck          |                               ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     05939|                     {
+syntaxcheck     05940|                         Name (PBUF, Buffer (0x14)
+syntaxcheck     05941|                         {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 6011
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06008|                             And (ICR5, 0x02, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
+syntaxcheck     06009|                             CreateWordField (Arg1, 0x62, W490)
+syntaxcheck     06010|                             CreateWordField (Arg1, 0x6A, W530)
+syntaxcheck     06011|                             CreateWordField (Arg1, 0x7E, W630)
+syntaxcheck          |                                                            ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name [W630] is within a method [_STM])
+syntaxcheck     06012|                             CreateWordField (Arg1, 0x80, W640)
+syntaxcheck     06013|                             CreateWordField (Arg1, 0xB0, W880)
+syntaxcheck     06014|                             CreateWordField (Arg1, 0xBA, W930)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 6013
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06010|                             CreateWordField (Arg1, 0x6A, W530)
+syntaxcheck     06011|                             CreateWordField (Arg1, 0x7E, W630)
+syntaxcheck     06012|                             CreateWordField (Arg1, 0x80, W640)
+syntaxcheck     06013|                             CreateWordField (Arg1, 0xB0, W880)
+syntaxcheck          |                                                            ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name [W880] is within a method [_STM])
+syntaxcheck     06014|                             CreateWordField (Arg1, 0xBA, W930)
+syntaxcheck     06015|                             Or (PRIT, 0x8004, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+syntaxcheck     06016|                             If (LAnd (And (FLAG, 0x02), And (W490, 0x0800)))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 6055
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06052|                             And (ICR5, One, ICR5) /* \_SB_.PCI0.PATA.ICR5 */
+syntaxcheck     06053|                             CreateWordField (Arg2, 0x62, W491)
+syntaxcheck     06054|                             CreateWordField (Arg2, 0x6A, W531)
+syntaxcheck     06055|                             CreateWordField (Arg2, 0x7E, W631)
+syntaxcheck          |                                                            ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name [W631] is within a method [_STM])
+syntaxcheck     06056|                             CreateWordField (Arg2, 0x80, W641)
+syntaxcheck     06057|                             CreateWordField (Arg2, 0xB0, W881)
+syntaxcheck     06058|                             CreateWordField (Arg2, 0xBA, W931)
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_NOT_REFERENCED: Test 1,
+syntaxcheck     Assembler remark in line 6057
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06054|                             CreateWordField (Arg2, 0x6A, W531)
+syntaxcheck     06055|                             CreateWordField (Arg2, 0x7E, W631)
+syntaxcheck     06056|                             CreateWordField (Arg2, 0x80, W641)
+syntaxcheck     06057|                             CreateWordField (Arg2, 0xB0, W881)
+syntaxcheck          |                                                            ^
+syntaxcheck          | Remark 2089: Object is not referenced    (Name [W881] is within a method [_STM])
+syntaxcheck     06058|                             CreateWordField (Arg2, 0xBA, W931)
+syntaxcheck     06059|                             Or (PRIT, 0x8040, PRIT) /* \_SB_.PCI0.PATA.PRIT */
+syntaxcheck     06060|                             If (LAnd (And (FLAG, 0x08), And (W491, 0x0800)))
+syntaxcheck     ==========================================================
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 6104
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06101|                     Device (P_D0)
+syntaxcheck     06102|                     {
+syntaxcheck     06103|                         Name (_ADR, Zero)  // _ADR: Address
+syntaxcheck     06104|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
+syntaxcheck          |                                   ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     06105|                         {
+syntaxcheck     06106|                             Name (PIB0, Buffer (0x0E)
+syntaxcheck     06107|                             {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     FAILED [LOW] AMLAsmASL_MSG_SERIALIZED_REQUIRED: Test 1,
+syntaxcheck     Assembler remark in line 6169
+syntaxcheck     Line | AML source
+syntaxcheck     ----------------------------------------------------------
+syntaxcheck     06166|                     Device (P_D1)
+syntaxcheck     06167|                     {
+syntaxcheck     06168|                         Name (_ADR, One)  // _ADR: Address
+syntaxcheck     06169|                         Method (_GTF, 0, NotSerialized)  // _GTF: Get Task File
+syntaxcheck          |                                   ^
+syntaxcheck          | Remark 2120: Control Method should be made Serialized    (due to creation of named objects within)
+syntaxcheck     06170|                         {
+syntaxcheck     06171|                             Name (PIB1, Buffer (0x0E)
+syntaxcheck     06172|                             {
+syntaxcheck     ==========================================================
+syntaxcheck     
+syntaxcheck     ADVICE: (for Remark #2120, ASL_MSG_SERIALIZED_REQUIRED): A
+syntaxcheck     named object is created inside a non-serialized method -
+syntaxcheck     this method should be serialized. It is possible that one
+syntaxcheck     thread enters the method and blocks and then a second
+syntaxcheck     thread also executes the method, ending up in two attempts
+syntaxcheck     to create the object and causing a failure.
+syntaxcheck     
+syntaxcheck     Table DSDT (0) reassembly: Found 3 errors, 5 warnings, 17
+syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     Checking ACPI table SSDT (#1)
@@ -377,6 +798,6 @@ syntaxcheck     remarks.
 syntaxcheck     
 syntaxcheck     
 syntaxcheck     ==========================================================
-syntaxcheck     3 passed, 20 failed, 0 warning, 0 aborted, 0 skipped, 0
+syntaxcheck     2 passed, 45 failed, 0 warning, 0 aborted, 0 skipped, 0
 syntaxcheck     info only.
 syntaxcheck     ==========================================================

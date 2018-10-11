@@ -137,6 +137,31 @@ static int method_test_UID(fwts_framework *fw)
 	return fwts_method_test_UID(fw, &device);
 }
 
+static int facp_test_pwrbutton(fwts_framework *fw)
+{
+	fwts_acpi_table_fadt *fadt;
+	fwts_acpi_table_info *table;
+
+	if (fwts_acpi_find_table(fw, "FACP", 0, &table) != FWTS_OK)
+		return FWTS_SKIP;
+
+	if (table == NULL)
+		return FWTS_SKIP;
+
+	fadt = (fwts_acpi_table_fadt *)table->data;
+
+	/* check PWR_BUTTON as in Table 4-13 Power Button Support */
+	if (fadt->flags & 0x10)
+		fwts_passed(fw, "Fixed hardware power button does not exist.");
+	else
+		fwts_failed(fw, LOG_LEVEL_HIGH,
+			"PWRBFixedHardwareError",
+			"PWR_Button field in FACP should not be zero "
+			"with ACPI PNP0C0C device.");
+
+	return FWTS_OK;
+}
+
 static fwts_framework_minor_test power_button_tests[] = {
 	/* Device Specific Objects */
 	{ method_test_HID, "Test _HID (Hardware ID)." },
@@ -152,6 +177,8 @@ static fwts_framework_minor_test power_button_tests[] = {
 	{ method_test_SUN, "Test _SUN (Slot User Number)." },
 	{ method_test_STR, "Test _STR (String)." },
 	{ method_test_UID, "Test _UID (Unique ID)." },
+	/* Check against fixed hardware in FACP */
+	{ facp_test_pwrbutton, "Test FACP PWR_BUTTON." },
 	{ NULL, NULL }
 };
 

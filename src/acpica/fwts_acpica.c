@@ -1373,5 +1373,7 @@ VOID_FUNC(MpSaveSerialInfo)
  */
 unsigned char AcpiGbl_AbortLoopOnTimeout = FALSE;
 unsigned char AcpiGbl_VerboseHandlers = FALSE;
+void *AcpiGbl_InitEntries = NULL;
+uint32_t AcpiGbl_InitFileLineCount = 0;
 
 #endif

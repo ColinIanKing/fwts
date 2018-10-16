@@ -18,6 +18,7 @@ RHEL Distro ppc64el
 	autoconf automake kernel-devel libtool flex flex-devel bison dkms
 	libfdt libfdt-devel dtc json-c json-c-devel pcre-devel pcre2 pcre2-devel
 	pcre2-utf16 pcre2-utf32 glib2 glib2-devel pciutils pciutils-devel zlib-devel
+	make libbsd-devel
 
 2) To build and install (only if building from source)
 

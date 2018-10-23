@@ -56,7 +56,7 @@ static int fwts_memory_map_str_to_type(const char *str)
 
 	if (strstr(str, "System RAM"))
 		return FWTS_MEMORY_MAP_USABLE;
-	if (strstr(str, "reserved"))
+	if (strstr(str, "reserved") || strstr(str, "Reserved"))
 		return FWTS_MEMORY_MAP_RESERVED;
 	if (strstr(str, "ACPI Non-volatile Storage"))
 		return FWTS_MEMORY_MAP_ACPI;
@@ -81,7 +81,7 @@ static char *fwts_memory_map_type_to_str(const int type)
 {
 	switch (type) {
 	case FWTS_MEMORY_MAP_RESERVED:
-		return "(reserved)";
+		return "(Reserved)";
 	case FWTS_MEMORY_MAP_ACPI:
 		return "(ACPI Non-volatile Storage)";
 	case FWTS_MEMORY_MAP_USABLE:

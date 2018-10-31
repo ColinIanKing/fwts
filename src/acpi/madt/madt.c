@@ -312,6 +312,14 @@ static ACPI_OBJECT_TYPE madt_find_processor_uid(fwts_framework *fw,
 				    "UID %" PRIu64 ".", table_name, uid);
 			return listint->type;
 		}
+
+		if ((uid == 0xFF) && (strcmp(table_name, "LAPICNMI") == 0)) {
+			fwts_passed(fw, "MADT %s has processor "
+					"UID 0x%" PRIx64 " which signifies "
+					"that this applies to all processors "
+					"in the machine.", table_name, uid);
+				return listint->type;
+		}
 	}
 
 	sprintf(table_label, "MADT%sUidMismatch", table_name);

@@ -1061,7 +1061,6 @@ int fwts_acpica_init(fwts_framework *fw)
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_IGNORE_ERRORS);
 	AcpiGbl_DisableAutoRepair =
 		FWTS_ACPICA_MODE(fw, FWTS_ACPICA_MODE_DISABLE_AUTO_REPAIR);
-	AcpiGbl_GroupModuleLevelCode = FALSE;
 	AcpiGbl_CstyleDisassembly = FALSE;
 
 	pthread_mutex_init(&mutex_lock_sem_table, NULL);

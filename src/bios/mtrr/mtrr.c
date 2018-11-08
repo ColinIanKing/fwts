@@ -182,8 +182,9 @@ static int get_mtrrs(void)
 	return FWTS_OK;
 }
 
-static int get_default_mtrr(void) {
-	if (fwts_cpu_readmsr(0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
+static int get_default_mtrr(fwts_framework *fw)
+{
+	if (fwts_cpu_readmsr(fw, 0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
 		switch (mtrr_default & 0xFF) {
 			case 0:
 				mtrr_default = UNCACHED;
@@ -408,7 +409,7 @@ static int validate_iomem(fwts_framework *fw)
 	if ((file = fopen("/proc/iomem", "r")) == NULL)
 		return FWTS_ERROR;
 
-	if (get_default_mtrr() != FWTS_OK)
+	if (get_default_mtrr(fw) != FWTS_OK)
 		mtrr_default = UNKNOWN;
 
 	while (!feof(file)) {

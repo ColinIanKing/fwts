@@ -52,14 +52,14 @@ static int can_lock_with_msr(void)
 	return (fwts_virt_cpuinfo->x86 & 0x10);
 }
 
-static int vt_locked_by_bios(void)
+static int vt_locked_by_bios(fwts_framework *fw)
 {
 	uint64_t msr;
 
 	if (!can_lock_with_msr())
 		return 0;
 
-	if (fwts_cpu_readmsr(0, MSR_FEATURE_CONTROL, &msr))
+	if (fwts_cpu_readmsr(fw, 0, MSR_FEATURE_CONTROL, &msr))
 		return -1;
 
 	return ((msr & 0x1000) == 0x1000); /* SVM capable but locked by bios*/
@@ -72,7 +72,7 @@ void virt_check_svm(fwts_framework *fw)
 	if (!cpu_has_svm())
 		fwts_skipped(fw, "Processor does not support Virtualization extensions, won't test BIOS configuration, skipping test.");
 	else  {
-		int ret = vt_locked_by_bios();
+		int ret = vt_locked_by_bios(fw);
 		switch (ret) {
 		case 0:
 			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");

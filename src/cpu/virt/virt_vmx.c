@@ -55,11 +55,11 @@ static int cpu_has_vmx(void)
 	return (strstr(fwts_virt_cpuinfo->flags, "vmx") != NULL);
 }
 
-static int vt_locked_by_bios(void)
+static int vt_locked_by_bios(fwts_framework *fw)
 {
 	uint64_t msr;
 
-	if (fwts_cpu_readmsr(0, MSR_FEATURE_CONTROL, &msr))
+	if (fwts_cpu_readmsr(fw, 0, MSR_FEATURE_CONTROL, &msr))
 		return -1;
 
 	return (msr & 5) == 1; /* VT capable but locked by bios*/
@@ -72,7 +72,7 @@ void virt_check_vmx(fwts_framework *fw)
 	if (!cpu_has_vmx())
 		fwts_skipped(fw, "Processor does not support Virtualization extensions, won't test BIOS configuration, skipping test.");
 	else  {
-		int ret = vt_locked_by_bios();
+		int ret = vt_locked_by_bios(fw);
 		switch (ret) {
 		case 0:
 			fwts_passed(fw, "Virtualization extensions supported and enabled by BIOS.");

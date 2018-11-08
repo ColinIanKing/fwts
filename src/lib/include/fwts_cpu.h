@@ -57,7 +57,7 @@ typedef struct cpu_benchmark_result {
 	uint64_t	cycles;
 } fwts_cpu_benchmark_result;
 
-int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val);
+int fwts_cpu_readmsr(fwts_framework *fw, const int cpu, const uint32_t reg, uint64_t *val);
 
 int fwts_cpu_is_Intel(bool *is_intel);
 int fwts_cpu_is_AMD(bool *is_amd);

@@ -53,7 +53,11 @@ static pid_t *fwts_cpu_pids;
  *  fwts_cpu_readmsr()
  *	Read a given msr on a specificied CPU
  */
-int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
+int fwts_cpu_readmsr(
+	fwts_framework *fw,
+	const int cpu,
+	const uint32_t reg,
+	uint64_t *val)
 {
 	char buffer[PATH_MAX];
 	uint64_t value = 0;
@@ -62,12 +66,18 @@ int fwts_cpu_readmsr(const int cpu, const uint32_t reg, uint64_t *val)
 
 	snprintf(buffer, sizeof(buffer), "/dev/cpu/%d/msr", cpu);
 	if ((fd = open(buffer, O_RDONLY)) < 0) {
-		/* Hrm, msr not there, so force modprobe msr and see what happens */
-		pid_t pid;
-		if (fwts_pipe_open_ro("modprobe msr", &pid, &fd) < 0)
-			return FWTS_ERROR;
-		fwts_pipe_close(fd, pid);
+		bool loaded = false;
 
+		/*
+		 *  msr not there, so force a load of the msr
+		 *  module and retry
+		 */
+		if (fwts_module_load(fw, "msr") != FWTS_OK)
+			return FWTS_ERROR;
+		if (fwts_module_loaded(fw, "msr", &loaded) != FWTS_OK)
+			return FWTS_ERROR;
+		if (!loaded)
+			return FWTS_ERROR;
 		if ((fd = open(buffer, O_RDONLY)) < 0)
 			return FWTS_ERROR; /* Really failed */
 	}

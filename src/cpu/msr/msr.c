@@ -77,7 +77,9 @@ static int msr_deinit(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static int msr_consistent(const uint32_t msr,
+static int msr_consistent(
+	fwts_framework *fw,
+	const uint32_t msr,
 	const int shift,
 	const uint64_t mask,
 	uint64_t *const vals,
@@ -90,7 +92,7 @@ static int msr_consistent(const uint32_t msr,
 
 	for (cpu = 0; cpu < ncpus; cpu++) {
 		uint64_t val;
-		if (fwts_cpu_readmsr(cpu, msr, &val) != FWTS_OK) {
+		if (fwts_cpu_readmsr(fw, cpu, msr, &val) != FWTS_OK) {
 			return FWTS_ERROR;
 		}
 		val >>= shift;
@@ -130,7 +132,7 @@ static int msr_consistent_check(fwts_framework *fw,
 		free(vals);
 		return FWTS_ERROR;
 	}
-	if (msr_consistent(msr, shift, mask,
+	if (msr_consistent(fw, msr, shift, mask,
 		vals, &inconsistent_count, inconsistent) != FWTS_OK) {
 		free(inconsistent);
 		free(vals);
@@ -197,7 +199,7 @@ static int msr_smrr(fwts_framework *fw)
 	uint64_t val;
 
 	if (intel_cpu) {
-		if (fwts_cpu_readmsr(0, 0xfe, &val) != FWTS_OK) {
+		if (fwts_cpu_readmsr(fw, 0, 0xfe, &val) != FWTS_OK) {
 			fwts_skipped(fw, "Cannot read MSR 0xfe.");
 			return FWTS_ERROR;
 		}
@@ -210,7 +212,7 @@ static int msr_smrr(fwts_framework *fw)
 			msr_consistent_check(fw, LOG_LEVEL_HIGH, "SMRR_PHYSMASK", 0x1f3, 12, 0xfffff, NULL);
 			msr_consistent_check(fw, LOG_LEVEL_HIGH, "SMRR_VALID", 0x1f3, 11, 0x1, NULL);
 
-			if (fwts_cpu_readmsr(0, 0x1f2, &val) == FWTS_OK) {
+			if (fwts_cpu_readmsr(fw, 0, 0x1f2, &val) == FWTS_OK) {
 				uint64_t physbase = val & 0xfffff000;
 				uint64_t type = val & 7;
 				if ((physbase & 0xfff) != 0)
@@ -221,7 +223,7 @@ static int msr_smrr(fwts_framework *fw)
 					fwts_failed(fw, LOG_LEVEL_HIGH, "MSRSMRR_TYPE",
 						"SMRR: SMRR_TYPE is 0x%" PRIx64 ", should be 0x6 (Write-Back).", type);
 			}
-			if (fwts_cpu_readmsr(0, 0x1f3, &val) == FWTS_OK) {
+			if (fwts_cpu_readmsr(fw, 0, 0x1f3, &val) == FWTS_OK) {
 				uint64_t physmask = val & 0xfffff000;
 				uint64_t valid = (val >> 11) & 1;
 

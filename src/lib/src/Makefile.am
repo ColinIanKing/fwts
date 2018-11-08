@@ -92,6 +92,7 @@ libfwts_la_SOURCES = 		\
 	fwts_log_xml.c 		\
 	fwts_memorymap.c 	\
 	fwts_mmap.c 		\
+	fwts_modprobe.c		\
 	fwts_multiproc.c 	\
 	fwts_oops.c 		\
 	fwts_pci.c		\

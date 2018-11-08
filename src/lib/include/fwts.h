@@ -203,5 +203,6 @@
 #include "fwts_safe_mem.h"
 #include "fwts_devicetree.h"
 #include "fwts_pm_debug.h"
+#include "fwts_modprobe.h"
 
 #endif

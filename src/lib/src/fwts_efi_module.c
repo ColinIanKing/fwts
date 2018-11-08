@@ -30,36 +30,6 @@ static char *efi_dev_name = NULL;
 static char *module_name = NULL;
 
 /*
- *  check_module_loaded()
- *	check if a given module is loaded
- */
-static int check_module_loaded(
-	fwts_framework *fw,
-	char *module,
-	bool *loaded)
-{
-	FILE *fp;
-
-	*loaded = false;
-
-	if ((fp = fopen("/proc/modules", "r")) != NULL) {
-		char buffer[1024];
-
-		while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-			if (strstr(buffer, module)) {
-				*loaded = true;
-				break;
-			}
-		}
-		(void)fclose(fp);
-		return FWTS_OK;
-	}
-	fwts_log_error(fw, "Could not open /proc/modules to check if efi module '%s' is loaded.", module);
-
-	return FWTS_ERROR;
-}
-
-/*
  *  check_module_loaded_no_dev()
  *	sanity check - we don't have a device so we definitely should
  *	not have the module loaded either
@@ -70,7 +40,7 @@ static int check_module_loaded_no_dev(
 {
 	bool loaded;
 
-	if (check_module_loaded(fw, module, &loaded) != FWTS_OK)
+	if (fwts_module_loaded(fw, module, &loaded) != FWTS_OK)
 		return FWTS_ERROR;
 	if (loaded) {
 		fwts_log_error(fw, "Module '%s' is already loaded, but device not available.", module);
@@ -106,16 +76,12 @@ static int load_module(
 	char *module,
 	char *devname)
 {
-	int status;
-	char cmd[80];
 	bool loaded;
 
-	snprintf(cmd, sizeof(cmd), "modprobe %s", module);
-
-	if (fwts_exec(cmd, &status) != FWTS_OK)
+	if (fwts_module_load(fw, module) != FWTS_OK)
 		return FWTS_ERROR;
 
-	if (check_module_loaded(fw, module, &loaded) != FWTS_OK)
+	if (fwts_module_loaded(fw, module, &loaded) != FWTS_OK)
 		return FWTS_ERROR;
 
 	if (!loaded)
@@ -170,8 +136,7 @@ int fwts_lib_efi_runtime_load_module(fwts_framework *fw)
 int fwts_lib_efi_runtime_unload_module(fwts_framework *fw)
 {
 	bool loaded;
-	int status;
-	char cmd[80], *tmp_name = module_name;
+	char *tmp_name = module_name;
 
 	efi_dev_name = NULL;
 
@@ -181,20 +146,14 @@ int fwts_lib_efi_runtime_unload_module(fwts_framework *fw)
 
 	module_name = NULL;
 
-	/* If it is not loaded, no need to unload it */
-	if (check_module_loaded(fw, tmp_name, &loaded) != FWTS_OK)
-		return FWTS_ERROR;
-	if (!loaded)
-		return FWTS_OK;
-
-	snprintf(cmd, sizeof(cmd), "modprobe -r %s", tmp_name);
-	if (fwts_exec(cmd, &status) != FWTS_OK) {
+	/* Unload module */
+	if (fwts_module_unload(fw, tmp_name) != FWTS_OK) {
 		fwts_log_error(fw, "Failed to unload module '%s'.", tmp_name);
 		return FWTS_ERROR;
 	}
 
 	/* Module should not be loaded at this point */
-	if (check_module_loaded(fw, tmp_name, &loaded) != FWTS_OK)
+	if (fwts_module_loaded(fw, tmp_name, &loaded) != FWTS_OK)
 		return FWTS_ERROR;
 	if (loaded) {
 		fwts_log_error(fw, "Failed to unload module '%s'.", tmp_name);

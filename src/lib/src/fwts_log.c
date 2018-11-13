@@ -578,7 +578,7 @@ char *fwts_log_get_filenames(const char *filename, const fwts_log_type type)
 	size_t len = 0;
 
 	for (i = 0; i < 32; i++) {
-		fwts_log_type mask = 1 << i;
+		fwts_log_type mask = 1UL << i;
 		if (type & mask) {
 			if ((tmp = fwts_log_filename(filename, mask)) == NULL) {
 				free(filenames);
@@ -642,7 +642,7 @@ fwts_log *fwts_log_open(
 	 *  the logging
 	 */
 	for (i = 0; i < 32; i++) {
-		fwts_log_type mask = 1 << i;	/* The log type for this iteration */
+		fwts_log_type mask = 1UL << i;	/* The log type for this iteration */
 
 		/* If set then go and open up a log for this log type */
 		if (type & mask) {

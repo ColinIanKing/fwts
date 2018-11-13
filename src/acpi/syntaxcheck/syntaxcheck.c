@@ -460,11 +460,11 @@ static void syntaxcheck_give_advice(fwts_framework *fw, uint32_t error_code)
 }
 
 /*
- *  syntaxcheck_table()
+ *  syntaxcheck_single_table()
  *	disassemble and reassemble a table, check for errors. which indicates the Nth
  *	table
  */
-static int syntaxcheck_table(
+static int syntaxcheck_single_table(
 	fwts_framework *fw,
 	const fwts_acpi_table_info *info,
 	const int n)
@@ -627,7 +627,7 @@ static int syntaxcheck_tables(fwts_framework *fw)
 		if (fwts_acpi_get_table(fw, i, &info) != FWTS_OK)
 			break;
 		if (info && info->has_aml)
-			syntaxcheck_table(fw, info, n++);
+			syntaxcheck_single_table(fw, info, n++);
 	}
 
 	return FWTS_OK;

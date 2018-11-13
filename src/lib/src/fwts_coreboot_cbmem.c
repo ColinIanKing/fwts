@@ -144,11 +144,11 @@ static int parse_cbtable_entries(
 	off_t *cbmem_console_addr)
 {
 	size_t i;
-	const struct lb_record* lbr_p;
 	int forwarding_table_found = 0;
+	const struct lb_record *lbr_p;
 
 	for (i = 0; i < table_size; i += lbr_p->size) {
-		lbr_p = lbtable + i;
+		lbr_p = (struct lb_record*)((char *)lbtable + i);
 		switch (lbr_p->tag) {
 		case LB_TAG_CBMEM_CONSOLE: {
 			*cbmem_console_addr = (off_t)parse_cbmem_ref((const struct lb_cbmem_ref *) lbr_p).cbmem_addr;
@@ -205,10 +205,8 @@ static int parse_cbtable(
 	/* look at every 16 bytes */
 	for (i = 0; i <= req_size - sizeof(struct lb_header); i += 16) {
 		int ret;
-		const struct lb_header *lbh;
+		const struct lb_header *lbh = (struct lb_header *)((char *)buf + i);
 		void *map;
-
-		lbh = buf + i;
 
 		if (memcmp(lbh->signature, "LBIO", sizeof(lbh->signature)) ||
 		    !lbh->header_bytes ||
@@ -262,7 +260,7 @@ static ssize_t memory_read_from_buffer(
 	if (count > available - pos)
 		count = available - pos;
 
-	memcpy(to, from + pos, count);
+	memcpy(to, (char *)from + pos, count);
 
 	*ppos = pos + count;
 

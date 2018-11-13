@@ -32,8 +32,8 @@
 #include <fcntl.h>
 
 
-#define CURSOR_MASK ((1 << 28) - 1)
-#define OVERFLOW (1 << 31)
+#define CURSOR_MASK ((1UL << 28) - 1)
+#define OVERFLOW (1UL << 31)
 
 #define LB_TAG_CBMEM_CONSOLE	0x0017
 #define LB_TAG_FORWARD		0x0011

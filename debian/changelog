@@ -1,3 +1,37 @@
+fwts (18.11.00-0ubuntu1) disco; urgency=medium
+
+  [Alex Hung]
+  * acpi: button: check fixed hardware & control method power buttons
+
+  [Colin Ian King]
+  * kernelscan: add -k option to specify klog json filename
+  * ACPICA: Update to version 20181003
+  * fwts-test: sync with ACPICA update to 20181003
+  * README: update package dependency notes for RHEL
+  * acpica: fix linker issues when building with ACPI disabled
+  * ACPICA: Update to version 20181031
+  * src/lib: add module probing helper functions
+  * lib: fwts_efi_module: use the new module loading helper functions
+  * lib/fwts_cpu: use new use the new module loading helper functions
+  * snapcraft: update confinement and plugs
+  * lib: fwts_coreboot_cbmem: don't use void * pointer arithmetic
+  * lib: fwts_coreboot_cbmem: shift UL values rather than signed int values
+  * lib: fwts_log: shift UL values rather than signed int values
+  * acpi: syntaxcheck: rename syntaxcheck_table to syntaxcheck_single_table
+
+  [Deb McLemore]
+  * olog:olog.json: Update OPAL skiboot errors to check on olog scan
+
+  [Ivan Hu]
+  * dmicheck: fix Maximum Capacity checking range
+  * ACPICA: Update to version 20180927
+  * fwts-test: sync with ACPICA update to 20180927
+  * mcfg: fix MMIO config space checking
+  * madt: fix the Local APIC NMI processor UID checking
+  * auto-packager: mkpackage.sh: add disco
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 14 Nov 2018 14:53:29 +0800
+
 fwts (18.09.00-0ubuntu1) cosmic; urgency=medium
 
   [Alex Hung]

@@ -42,6 +42,7 @@ size_t fwts_page_size(void)
 	return (size_t)(page_size == -1 ? FWTS_DEFAULT_PAGE_SIZE : page_size);
 }
 
+#ifdef FWTS_USE_DEVMEM
 /*
  *  fwts_mmap()
  *	Try and map physical memory from offset address 'start' and length
@@ -88,3 +89,15 @@ int fwts_munmap(void *mem, const size_t size)
 
 	return FWTS_OK;
 }
+#else /* FWTS_USE_DEVMEM */
+void *fwts_mmap(const off_t start __attribute__ ((unused)),
+		const size_t size __attribute__ ((unused)))
+{
+	return FWTS_MAP_FAILED;
+}
+
+int fwts_munmap(void *mem __attribute__ ((unused)),
+		const size_t size __attribute__ ((unused)))                                                                        {
+	return FWTS_ERROR;
+}
+#endif /* FWTS_USE_DEVMEM */

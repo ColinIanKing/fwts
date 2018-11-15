@@ -98,6 +98,7 @@
 #define FWTS_ARCH_INTEL	1
 #define FWTS_HAS_ACPI	1
 #define FWTS_HAS_UEFI	1
+#define FWTS_USE_DEVMEM 1
 #endif
 
 #if defined(__aarch64__)
@@ -108,11 +109,13 @@
 
 #if defined(__s390x__)
 #define FWTS_ARCH_S390X	1
+#define FWTS_USE_DEVMEM 1
 #endif
 
 #if defined(__PPC64__)
 #undef FWTS_HAS_ACPI
 #undef FWTS_HAS_UEFI
+#define FWTS_USE_DEVMEM 1
 #endif
 
 /* verision 3-tuple into integer */

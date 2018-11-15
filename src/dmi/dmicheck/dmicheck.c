@@ -322,6 +322,18 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 		return NULL;
 	}
 
+	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 4) == FWTS_OK
+			&& strncmp(anchor, "_SM_", 4) == 0) {
+		table = malloc(length);
+		if (!table)
+			return NULL;
+		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
+			fwts_log_info(fw, "SMBIOS table loaded from /sys/firmware/dmi/tables/DMI\n");
+			return table;
+		}
+		free(table);
+	}
+
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {
 		/* Can we safely copy the table? */
@@ -337,17 +349,6 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 		return table;
 	}
 
-	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 4) == FWTS_OK
-			&& strncmp(anchor, "_SM_", 4) == 0) {
-		table = malloc(length);
-		if (!table)
-			return NULL;
-		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
-			fwts_log_info(fw, "SMBIOS table loaded from /sys/firmware/dmi/tables/DMI\n");
-			return table;
-		}
-		free(table);
-	}
 
 	fwts_log_error(fw, "Cannot mmap SMBIOS table from %8.8" PRIx32 "..%8.8" PRIx32 ".",
 			entry->struct_table_address, entry->struct_table_address + entry->struct_table_length);
@@ -369,6 +370,18 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 		return NULL;
 	}
 
+	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 5) == FWTS_OK
+			&& strncmp(anchor, "_SM3_", 5) == 0) {
+		table = malloc(length);
+		if (!table)
+			return NULL;
+		if (dmi_load_file_variable_size("/sys/firmware/dmi/tables/DMI", table, &length) == FWTS_OK) {
+			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI\n");
+			return table;
+		}
+		free(table);
+	}
+
 	mem = fwts_mmap(addr, length);
 	if (mem != FWTS_MAP_FAILED) {
 		/* Can we safely copy the table? */
@@ -382,18 +395,6 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 			memcpy(table, mem, length);
 		(void)fwts_munmap(mem, length);
 		return table;
-	}
-
-	if (dmi_load_file("/sys/firmware/dmi/tables/smbios_entry_point", anchor, 5) == FWTS_OK
-			&& strncmp(anchor, "_SM3_", 5) == 0) {
-		table = malloc(length);
-		if (!table)
-			return NULL;
-		if (dmi_load_file_variable_size("/sys/firmware/dmi/tables/DMI", table, &length) == FWTS_OK) {
-			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI\n");
-			return table;
-		}
-		free(table);
 	}
 
 	fwts_log_error(fw, "Cannot mmap SMBIOS 3.0 table from %16.16" PRIx64 "..%16.16" PRIx64 ".",

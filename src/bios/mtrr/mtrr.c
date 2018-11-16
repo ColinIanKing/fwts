@@ -351,7 +351,7 @@ static int guess_cache_type(
 
 		if (pref) {
 			*must = 0;
-			*mustnot = WRITE_BACK | UNCACHED;
+			*mustnot = WRITE_BACK;
 		} else {
 			*must = UNCACHED;
 			*mustnot = (~UNCACHED) & (~DEFAULT);

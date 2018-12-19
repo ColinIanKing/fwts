@@ -1,3 +1,20 @@
+fwts (18.12.00-0ubuntu1) disco; urgency=medium
+
+  [Alex Hung]
+  * mtrr: allow uncached type for PCI prefetchable memory
+
+  [Colin Ian King]
+  * ACPICA: Update to version 20181213
+  * fwts-test: disassemble-0001: sync output with updated ACPICA
+
+  [Leif Lindholm]
+  * lib: disable /dev/mem access on aarch64
+  * dmicheck: drop unaligned memcpy
+  * lib: drop fwts_memcpy_unaligned
+  * dmicheck: use dmi_load_file in preference to fwts_mmap
+
+ -- Ivan Hu <ivan.hu@ubuntu.com>  Wed, 19 Dec 2018 16:20:41 +0800
+
 fwts (18.11.00-0ubuntu1) disco; urgency=medium
 
   [Alex Hung]

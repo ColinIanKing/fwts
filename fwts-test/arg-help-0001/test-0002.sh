@@ -25,8 +25,8 @@ if [ $? -eq 1 ]; then
 	exit 77
 fi
 
-$FWTS --help | grep -v "Show version" | grep -v "Usage" | sed s/\([Vv][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/  > $TMPLOG
-sed s/\([Vv][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ < $FWTSTESTDIR/arg-help-0001/arg-help-0002.log > $TMP/help.log.$$.orig
+$FWTS --help | grep -v "Show version" | grep -v "Usage" | grep -v "Copyright" | sed s/\([Vv][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ > $TMPLOG
+grep -v "Copyright"  $FWTSTESTDIR/arg-help-0001/arg-help-0002.log | sed s/\([Vv][0-9][0-9]\.[0-9][0-9]\.[0-9][0-9]\)/\(Vxx\.xx\.xx\)/ > $TMP/help.log.$$.orig
 diff $TMPLOG $TMP/help.log.$$.orig >> $FAILURE_LOG
 ret=$?
 if [ $ret -eq 0 ]; then 

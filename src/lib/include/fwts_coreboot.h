@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2010-2018 Canonical
- * Copyright (C) 2017 Google Inc.
- * Copyright (C) 2018 9elements Cyber Security
+ * Copyright (C) 2010-2019 Canonical
+ * Copyright (C) 2017-2019 Google Inc.
+ * Copyright (C) 2018-2019 9elements Cyber Security
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

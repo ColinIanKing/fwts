@@ -50,8 +50,10 @@ static fwts_cpuinfo_x86 *fwts_cpuinfo;
 #define UNKNOWN		0x0080
 
 #define MTRR_DEF_TYPE_MSR	0x2FF
+#define AMD_SYS_CFG_MSR		0xC0010010
 
 static	uint64_t mtrr_default;
+static	bool amd_Tom2ForceMemTypeWB = false;
 
 struct mtrr_entry {
 	uint8_t  reg;
@@ -184,6 +186,17 @@ static int get_mtrrs(void)
 
 static int get_default_mtrr(fwts_framework *fw)
 {
+	uint64_t amd_sys_conf;
+
+	/* Get the default memory type of memory between 4GB and second top of
+	 * memory (TOM2) - i.e. is it write back (WB)
+	 */
+	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
+		if (fwts_cpu_readmsr(fw, 0, AMD_SYS_CFG_MSR, &amd_sys_conf) == FWTS_OK)
+			if (amd_sys_conf | 0x200000)
+				amd_Tom2ForceMemTypeWB = true;
+	}
+
 	if (fwts_cpu_readmsr(fw, 0, MTRR_DEF_TYPE_MSR, &mtrr_default) == FWTS_OK) {
 		switch (mtrr_default & 0xFF) {
 			case 0:
@@ -215,6 +228,12 @@ static int cache_types(uint64_t start, uint64_t end)
 	fwts_list_link *item;
 	struct mtrr_entry *entry;
 	int type = 0;
+
+	/* On AMD platforms, Tom2ForceMemTypeWB overwrites other memory types */
+	if (amd_Tom2ForceMemTypeWB && start >= 0x100000000) {
+		type = WRITE_BACK;
+		return type;
+	}
 
 	fwts_list_foreach(item, mtrr_list) {
 		entry = fwts_list_data(struct mtrr_entry*, item);

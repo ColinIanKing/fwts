@@ -328,7 +328,7 @@ static void* dmi_table_smbios(fwts_framework *fw, fwts_smbios_entry *entry)
 		if (!table)
 			return NULL;
 		if (dmi_load_file("/sys/firmware/dmi/tables/DMI", table, length) == FWTS_OK) {
-			fwts_log_info(fw, "SMBIOS table loaded from /sys/firmware/dmi/tables/DMI\n");
+			fwts_log_info(fw, "SMBIOS table loaded from /sys/firmware/dmi/tables/DMI");
 			return table;
 		}
 		free(table);
@@ -376,7 +376,7 @@ static void* dmi_table_smbios30(fwts_framework *fw, fwts_smbios30_entry *entry)
 		if (!table)
 			return NULL;
 		if (dmi_load_file_variable_size("/sys/firmware/dmi/tables/DMI", table, &length) == FWTS_OK) {
-			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI\n");
+			fwts_log_info(fw, "SMBIOS30 table loaded from /sys/firmware/dmi/tables/DMI");
 			return table;
 		}
 		free(table);

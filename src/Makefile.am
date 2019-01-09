@@ -80,6 +80,7 @@ fwts_SOURCES = main.c 				\
 	acpi/dmar/dmar.c 			\
 	acpi/dppt/dppt.c 			\
 	acpi/drtm/drtm.c 			\
+	acpi/dsddump/dsddump.c			\
 	acpi/ecdt/ecdt.c			\
 	acpi/einj/einj.c			\
 	acpi/erst/erst.c			\

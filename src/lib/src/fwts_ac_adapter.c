@@ -101,7 +101,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 
 	do {
 		entry = readdir(ac_power_dir);
-		if (entry && strlen(entry->d_name) > 2) {
+		if (entry && entry->d_name[0] != '.') {
 			char path[PATH_MAX];
 			char *data;
 

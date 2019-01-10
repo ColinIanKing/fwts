@@ -89,6 +89,7 @@ int fwts_ac_adapter_get_state(const int state, int *matching, int *not_matching)
 			(void)closedir(ac_power_dir);
 			return FWTS_ERROR;
 		}
+		rewinddir(ac_power_dir);
 
 		ac_interface = &fwts_ac_interfaces[SYS_INTERFACE];
 	/* then try older /proc interface  */

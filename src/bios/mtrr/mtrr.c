@@ -193,7 +193,7 @@ static int get_default_mtrr(fwts_framework *fw)
 	 */
 	if (strstr(fwts_cpuinfo->vendor_id, "AMD")) {
 		if (fwts_cpu_readmsr(fw, 0, AMD_SYS_CFG_MSR, &amd_sys_conf) == FWTS_OK)
-			if (amd_sys_conf | 0x200000)
+			if (amd_sys_conf & 0x200000)
 				amd_Tom2ForceMemTypeWB = true;
 	}
 

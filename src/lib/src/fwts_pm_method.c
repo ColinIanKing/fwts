@@ -39,9 +39,23 @@ static gboolean logind_do(gpointer data)
 	 */
 	if (g_main_loop_is_running (fwts_settings->gmainloop)) {
 		GVariant *reply;
+		bool is_s3;
+		char buffer[50];
 
 		fwts_log_info(fwts_settings->fw, "Requesting %s action\n",
 			fwts_settings->action);
+
+		is_s3 = (strcmp(fwts_settings->action, PM_SUSPEND_LOGIND) == 0 ||
+			 strcmp(fwts_settings->action, PM_SUSPEND_HYBRID_LOGIND) == 0);
+
+		snprintf(buffer, sizeof(buffer), "Starting fwts %s\n",
+			is_s3 ? "suspend" : "hibernate");
+		(void)fwts_klog_write(fwts_settings->fw, buffer);
+		snprintf(buffer, sizeof(buffer), "%s\n",
+			fwts_settings->action);
+		(void)fwts_klog_write(fwts_settings->fw, buffer);
+		(void)time(&(fwts_settings->t_start));
+
 		reply = g_dbus_proxy_call_sync(fwts_settings->logind_proxy,
 			fwts_settings->action,
 			g_variant_new("(b)", FALSE),
@@ -106,7 +120,7 @@ static void logind_on_signal(
 	GVariant *parameters,
 	gpointer user_data)
 {
-	gboolean status, is_s3;
+	gboolean status;
 	fwts_pm_method_vars *fwts_settings = (fwts_pm_method_vars *)user_data;
 
 	/* Prevent -Werror=unused-parameter from complaining */
@@ -116,9 +130,6 @@ static void logind_on_signal(
 	FWTS_UNUSED(interface_name);
 	FWTS_UNUSED(signal_name);
 
-	is_s3 = (strcmp(fwts_settings->action, PM_SUSPEND_LOGIND) == 0 ||
-		 strcmp(fwts_settings->action, PM_SUSPEND_HYBRID_LOGIND) == 0);
-
 	if (!g_variant_is_of_type(parameters, G_VARIANT_TYPE ("(b)"))) {
 		fwts_log_error(fwts_settings->fw, "Suspend type %s\n",
 			g_variant_get_type_string(parameters));
@@ -126,17 +137,8 @@ static void logind_on_signal(
 	} else {
 		g_variant_get(parameters, "(b)", &status);
 
-		if (status) {
-			char buffer[50];
+		if (!status) {
 
-			(void)time(&(fwts_settings->t_start));
-			snprintf(buffer, sizeof(buffer), "Starting fwts %s\n",
-				is_s3 ? "suspend" : "hibernate");
-			(void)fwts_klog_write(fwts_settings->fw, buffer);
-			snprintf(buffer, sizeof(buffer), "%s\n",
-				fwts_settings->action);
-			(void)fwts_klog_write(fwts_settings->fw, buffer);
-		} else {
 			time(&(fwts_settings->t_end));
 			(void)fwts_klog_write(fwts_settings->fw,
 				FWTS_RESUME "\n");

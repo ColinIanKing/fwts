@@ -59,21 +59,22 @@ static int fadt_sbbr_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
+#define SBBR_VERSION(major, minor)	 ((((uint16_t)(major)) << 8) | (minor))
+
 static int fadt_sbbr_revision_test1(fwts_framework *fw)
 {
 	const uint8_t SBBR_LATEST_MAJOR = 6;
 	const uint8_t SBBR_LATEST_MINOR = 0;
-	uint8_t major;
-	uint8_t minor;
+	uint8_t major = fadt->header.revision;
+	uint8_t minor = 0;
 
-	major = fadt->header.revision;
-	minor = 0;
-	if (major >= 5 && fadt->header.length >= 268)
+	if ((major >= 5) && (fadt->header.length >= 268))
 		minor = fadt->minor_version;   /* field added ACPI 5.1 */
 
 	fwts_log_info(fw, "FADT revision: %" PRIu8 ".%" PRIu8, major, minor);
 
-	if (major >= SBBR_LATEST_MAJOR && minor >= SBBR_LATEST_MINOR)
+	if (SBBR_VERSION(major, minor) >=
+            SBBR_VERSION(SBBR_LATEST_MAJOR, SBBR_LATEST_MINOR))
 		fwts_passed(fw, "FADT revision is up to date.");
 	else {
 		fwts_failed(fw, LOG_LEVEL_CRITICAL, "fadt_revision:",

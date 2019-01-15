@@ -318,7 +318,7 @@ static ACPI_OBJECT_TYPE madt_find_processor_uid(fwts_framework *fw,
 					"UID 0x%" PRIx64 " which signifies "
 					"that this applies to all processors "
 					"in the machine.", table_name, uid);
-				return listint->type;
+			return listint->type;
 		}
 	}
 

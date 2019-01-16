@@ -1,3 +1,24 @@
+fwts (19.01.00-0ubuntu1) disco; urgency=medium
+
+  [Alex Hung]
+  * mtrr: check memory type above 4GB on AMD platforms
+  * dmi: dmicheck: remove redundant new lines
+  * dsddump: add utility to dump _DSDD (Device Specific Data)
+  * lib: fwts_ac_adapter: fix readdir(ac_power_dir) failing
+  * lib: fwts_ac_adapter: fix failing to find AC directory
+
+  [Colin Ian King]
+  * Update copyright year to 2019
+  * ACPICA: Update to version 20190108
+  * mtrr: fix incorrect mask on amd_sys_conf
+  * sbbr: fadt: clean up major/minor version checking
+  * acpi/madt: clean up indentation issue, remove tab
+
+  [Ivan Hu]
+  * lib: fw_pm_method: move the sleep t_start time out of logind_on_signal (LP: #1809096)
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 15 Jan 2019 19:57:23 -0800
+
 fwts (18.12.00-0ubuntu1) disco; urgency=medium
 
   [Alex Hung]

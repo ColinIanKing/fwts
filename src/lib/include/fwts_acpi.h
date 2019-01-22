@@ -1383,7 +1383,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hmat_cache;
 
 /*
- * ACPI PPTT (Platform Debug Trigger Table), 5.2.28
+ * ACPI PDTT (Platform Debug Trigger Table), 5.2.28
  */
 typedef struct {
 	fwts_acpi_table_header	header;

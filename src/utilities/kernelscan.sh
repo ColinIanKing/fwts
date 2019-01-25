@@ -118,6 +118,7 @@ scan_source_file $src/kernel/time/timekeeping.c
 scan_source_file $src/drivers/watchdog/iTCO_vendor_support.c
 scan_source_file $src/drivers/watchdog/hpwdt.c
 scan_source_file $src/drivers/usb/host/pci-quirks.c
+scan_source_file $src/drivers/iommu/amd_iommu_init.c
 
 
 #

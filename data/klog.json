@@ -2691,6 +2691,13 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
     "label": "KlogAcpiResolveOpBadType"
   },
   {
+    "compare_mode": "regex",
+    "log_level": "LOG_LEVEL_CRITICAL",
+    "pattern": "IOAPIC\\[.*\\] not in IVRS",
+    "advice": "BIOS setup is configured to enable IOMMU, but BIOS lacks IVRS table that is describing which is the address of IOMMU",
+    "label": "KlogAmdIommuNoIVRS"
+  },
+  {
     "compare_mode": "string",
     "log_level": "LOG_LEVEL_HIGH",
     "pattern": "Needed [Buffer/String/Package/Reference], found",

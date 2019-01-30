@@ -5460,6 +5460,7 @@ static void method_test_BCL_return(
 	uint32_t i;
 	bool failed = false;
 	bool ascending_levels = false;
+	bool matching_levels;
 	char *str = NULL;
 
 	FWTS_UNUSED(private);
@@ -5509,6 +5510,42 @@ static void method_test_BCL_return(
 			"order which should be fixed "
 			"in the firmware.");
 		failed = true;
+	}
+
+	matching_levels = false;
+	for (i = 2; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[0].Integer.Value ==
+		    obj->Package.Elements[i].Integer.Value) {
+			matching_levels = true;
+			break;
+		}
+	}
+
+	if (!matching_levels) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BCLFullNotInList",
+			"brightness level on full power (%" PRIu64
+			") is not in brightness levels.",
+			obj->Package.Elements[0].Integer.Value);
+	}
+
+	matching_levels = false;
+	for (i = 2; i < obj->Package.Count; i++) {
+		if (obj->Package.Elements[1].Integer.Value ==
+		    obj->Package.Elements[i].Integer.Value) {
+			matching_levels = true;
+			break;
+		}
+	}
+
+	if (!matching_levels) {
+		failed = true;
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"Method_BCLBatteryNotInList",
+			"brightness level on battery (%" PRIu64
+			") is not in brightness levels.",
+			obj->Package.Elements[1].Integer.Value);
 	}
 
 	fwts_log_info(fw, "Brightness levels for %s:" ,name);

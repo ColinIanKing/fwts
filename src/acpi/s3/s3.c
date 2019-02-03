@@ -304,7 +304,7 @@ static int s3_do_suspend_resume(fwts_framework *fw,
 
 		if (differences > 0) {
 			fwts_failed(fw, LOG_LEVEL_HIGH, "DevConfigDiffAfterS3",
-				"Found %d differences in device configuation during S3 cycle.", differences);
+				"Found %d differences in device configuration during S3 cycle.", differences);
 			(*hw_errors)++;
 		}
 	}

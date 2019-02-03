@@ -788,12 +788,12 @@ err_no_data:
 
 /*
  *  fwts_acpi_load_tables_from_file_generic()
- *	load acpi tables from a given path with a given file extention
+ *	load acpi tables from a given path with a given file extension
  */
 static int fwts_acpi_load_tables_from_file_generic(
 	fwts_framework *fw,
 	char *acpi_table_path,
-	const char *extention,
+	const char *extension,
 	int *count)
 {
 	struct dirent **dir_entries;
@@ -816,7 +816,7 @@ static int fwts_acpi_load_tables_from_file_generic(
 		if (dir_entries[i]->d_name[0] == '.')
 			continue;
 
-		if (strstr(dir_entries[i]->d_name, extention)) {
+		if (strstr(dir_entries[i]->d_name, extension)) {
 			char path[PATH_MAX];
 			int fd;
 

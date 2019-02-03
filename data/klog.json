@@ -432,7 +432,7 @@
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_MEDIUM",
    "pattern": "Error pre-mapping GARs",
-   "advice": "The ACPI Error Injection (EINJ) driver failed to map the address spaces specified by the injection instuction entry Generic Address Structures (GAR), EINJ functionality is disabled.",
+   "advice": "The ACPI Error Injection (EINJ) driver failed to map the address spaces specified by the injection instruction entry Generic Address Structures (GAR), EINJ functionality is disabled.",
    "label": "KlogAcpiEinjGarMapFailed",
   },
   {
@@ -4696,7 +4696,7 @@ atform Communications Channel Table (PCCT) and find the PCC subspace communicati
    "compare_mode": "string",
    "log_level": "LOG_LEVEL_HIGH",
    "pattern": "acpi_memory_enable_device() error",
-   "advice": "ACPI memory hotplug failed to add an ACPI memory device to the systen. This error can occur if the memory block has already been used by the kernel or if the ACPI memory bind failed.",
+   "advice": "ACPI memory hotplug failed to add an ACPI memory device to the system. This error can occur if the memory block has already been used by the kernel or if the ACPI memory bind failed.",
    "label": "KlogAcpiMemEnableDevice"
   },
   {

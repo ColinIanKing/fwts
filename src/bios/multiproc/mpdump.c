@@ -159,7 +159,7 @@ static void mpdump_dump_local_interrupt_entry(fwts_framework *fw, void *data, ui
 {
 	fwts_mp_local_interrupt_entry *local_interrupt_entry = (fwts_mp_local_interrupt_entry *)data;
 
-	fwts_log_info_verbatim(fw, "Local Interrupt Assignement Entry: (@0x%8.8x)", phys_addr);
+	fwts_log_info_verbatim(fw, "Local Interrupt Assignment Entry: (@0x%8.8x)", phys_addr);
 	fwts_log_info_verbatim(fw, "  Interrupt Type:     0x%2.2x (%s)", local_interrupt_entry->type,
 		local_interrupt_entry->type < 4 ? mpdump_inttype[local_interrupt_entry->type] : "Unknown");
 	fwts_log_info_verbatim(fw, "  Flags:              0x%4.4x", local_interrupt_entry->flags);

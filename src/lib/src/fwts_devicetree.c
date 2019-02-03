@@ -256,7 +256,7 @@ int fwts_dt_property_read_u64_arr(
 	return FWTS_OK;
 }
 
-/* Get's the length of DT property string list */
+/* Gets the length of DT property string list */
 
 int fwts_dt_stringlist_count(
 	fwts_framework *fw,

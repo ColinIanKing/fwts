@@ -60,7 +60,7 @@ static int wpbt_test1(fwts_framework *fw)
 		passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"WPBTBadLayout",
-			"WPBT supports Conent Layout 1 only, got "
+			"WPBT supports Content Layout 1 only, got "
 			"0x%2.2" PRIx8 " instead", wpbt->layout);
 	}
 

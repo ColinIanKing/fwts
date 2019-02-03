@@ -796,7 +796,7 @@ static void crsdump_large_resource_items(
 					"Input or Output",
 					"Input Only",
 					"Output Only",
-					"Input or Ouput, config must be preserved"
+					"Input or Output, config must be preserved"
 				};
 
 				/* I/O connection */

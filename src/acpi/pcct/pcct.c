@@ -281,7 +281,7 @@ static int pcct_test1(fwts_framework *fw)
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"PCCTBadFlags",
-					"PCCT Plaform Interrupt in flags must be set when subspace "
+					"PCCT Platform Interrupt in flags must be set when subspace "
 					"type 4 is present, got 0x%8.8" PRIx32 " instead", pcct->flags);
 			}
 

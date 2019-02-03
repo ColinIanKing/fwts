@@ -144,7 +144,7 @@ static const acpi_eval_error errors[] = {
 		"ACPI tables or control methods."
 	},
 
-	{ AE_BAD_PARAMETER,		LOG_LEVEL_HIGH,		"AEBadParam",		"Args: Bad paramater",
+	{ AE_BAD_PARAMETER,		LOG_LEVEL_HIGH,		"AEBadParam",		"Args: Bad parameter",
 		"A parameter passed is out of range or invalid."
 	},
 	{ AE_BAD_CHARACTER,		LOG_LEVEL_HIGH,		"AEBadChar",		"Args: Bad character",

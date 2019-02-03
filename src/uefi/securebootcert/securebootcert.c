@@ -571,7 +571,7 @@ static int securebootcert_test2(fwts_framework *fw)
 
 	if (!(var_found & VAR_AUDITMODE_FOUND)) {
 		fwts_skipped(fw,
-			"No AuditMode variable found, skip the varaible test.");
+			"No AuditMode variable found, skip the variable test.");
 		return FWTS_SKIP;
 	}
 
@@ -588,7 +588,7 @@ static int securebootcert_test2(fwts_framework *fw)
 
 	if (!(var_found & VAR_AUDITMODE_FOUND)) {
 		fwts_skipped(fw,
-			"No DeployedMode variable found, skip the varaible test.");
+			"No DeployedMode variable found, skip the variable test.");
 		return FWTS_SKIP;
 	}
 

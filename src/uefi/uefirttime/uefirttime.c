@@ -594,7 +594,7 @@ static int uefirttime_test16(fwts_framework *fw)
 /*
  *  The UEFI spec states that just two bits are allowed, and all other bits
  *  must be zero, but I have yet to find a compliant implementation that
- *  flags up an invalid paramater if the bits are non zero. It seems that
+ *  flags up an invalid parameter if the bits are non zero. It seems that
  *  implementations just examine the bits they expect and don't care. For
  *  now, we will ignore this test
  */
@@ -1071,7 +1071,7 @@ static int uefirttime_test36(fwts_framework *fw)
 /*
  *  The UEFI spec states that just two bits are allowed, and all other bits
  *  must be zero, but I have yet to find a compliant implementation that
- *  flags up an invalid paramater if the bits are non zero. It seems that
+ *  flags up an invalid parameter if the bits are non zero. It seems that
  *  implementations just examine the bits they expect and don't care. For
  *  now, we will ignore this test
  */

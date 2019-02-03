@@ -152,9 +152,9 @@ pcct
 pcct              PCC Subspace Structure:
 pcct                Type:                        0x04
 pcct                Length:                      0xa4
-pcct            FAILED [HIGH] PCCTBadFlags: Test 1, PCCT Plaform Interrupt
-pcct            in flags must be set when subspace type 4 is present, got
-pcct            0x00000000 instead
+pcct            FAILED [HIGH] PCCTBadFlags: Test 1, PCCT Platform
+pcct            Interrupt in flags must be set when subspace type 4 is
+pcct            present, got 0x00000000 instead
 pcct                Platform Interrupt:          0x00000001
 pcct                Platform Interrupt Flags:    0x01
 pcct                Reserved:                    0x00

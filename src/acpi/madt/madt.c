@@ -1102,8 +1102,12 @@ static int madt_gicc(fwts_framework *fw,
 	 */
 
 	if (hdr->length == 80) {	/* added in ACPI 6.0 */
-		uint8_t tmp = gic->reserved2[0] | gic->reserved2[1] |
-			      gic->reserved2[2];
+		uint8_t tmp;
+
+		if (fwts_get_acpi_version(fw) >= FWTS_ACPI_VERSION_63)
+			tmp = gic->reserved2[0];
+		else
+			tmp = gic->reserved2[0] | gic->reserved2[1] | gic->reserved2[2];
 
 		if (tmp)
 			fwts_failed(fw, LOG_LEVEL_LOW,

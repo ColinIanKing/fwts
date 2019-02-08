@@ -19,7 +19,7 @@ hmat              System Locality Latency and Bandwidth Information (Type 1):
 hmat                Type:                           0x0001
 hmat                Reserved:                       0x0000
 hmat                Length:                         0x00000040
-hmat                Flags:                          0x1f
+hmat                Flags:                          0x0f
 hmat                Data Type:                      0x05
 hmat                Reserved:                       0x0000
 hmat                Number of Initiator PDs:        0x00000002

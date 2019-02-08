@@ -3,21 +3,21 @@ hmat            ----------------------------------------------------------
 hmat            Test 1 of 1: Validate HMAT table.
 hmat            HMAT Heterogeneous Memory Attribute Table:
 hmat              Reserved:        0x00
-hmat              Memory Subsystem Address Range (Type 0):
+hmat              Memory Proximity Domain Attributes (Type 0):
 hmat                Type:                           0x0000
 hmat                Reserved:                       0x0001
 hmat                Length:                         0x00000028
 hmat                Flags:                          0x000f
 hmat                Reserved:                       0x0002
-hmat                Processor Proximity Domain:     0x00000000
-hmat                Memory Proximity Domain:        0x00000000
+hmat                Proximity Domain for Initiator: 0x00000000
+hmat                Proximity Domain for Memory:    0x00000000
 hmat                Reserved:                       0x00000003
-hmat                System Phy Addr Range Base:     0x0000000000000000
-hmat                System Phy Addr Range Length:   0x0000000000000000
+hmat                Reserved:                       0x0000000000000000
+hmat                Reserved:                       0x0000000000000000
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0001 instead
 hmat            FAILED [HIGH] HMATReservedBitsNonZero: Test 1, HMAT Flags
-hmat            Bits [15..3] must be zero, got 0x000f instead
+hmat            Bits [15..1] must be zero, got 0x000f instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0002 instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
@@ -44,12 +44,14 @@ hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x0005 instead
 hmat            FAILED [MEDIUM] HMATReservedNonZero: Test 1, HMAT Reserved
 hmat            field must be zero, got 0x00000006 instead
+hmat            FAILED [CRITICAL] HMATBadBaseUnit: Test 1, HMAT Type 1
+hmat            Entry Base Unit must be non-zero
 hmat            
 hmat              Memory Side Cache Information (Type 2):
 hmat                Type:                           0x0002
 hmat                Reserved:                       0x0007
 hmat                Length:                         0x00000026
-hmat                Memory Proximity Domain:        0x00000000
+hmat                Proximity Domain for Memory:    0x00000000
 hmat                Reserved:                       0x00000008
 hmat                Memory Side Cache Size:         0x0000000000000000
 hmat                Cache Attributes:               0x00002333
@@ -68,6 +70,6 @@ hmat
 hmat            
 hmat            
 hmat            ==========================================================
-hmat            0 passed, 13 failed, 0 warning, 0 aborted, 0 skipped, 0
+hmat            0 passed, 14 failed, 0 warning, 0 aborted, 0 skipped, 0
 hmat            info only.
 hmat            ==========================================================

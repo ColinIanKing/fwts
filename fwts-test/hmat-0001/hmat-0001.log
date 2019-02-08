@@ -3,17 +3,17 @@ hmat            ----------------------------------------------------------
 hmat            Test 1 of 1: Validate HMAT table.
 hmat            HMAT Heterogeneous Memory Attribute Table:
 hmat              Reserved:        0x00
-hmat              Memory Subsystem Address Range (Type 0):
+hmat              Memory Proximity Domain Attributes (Type 0):
 hmat                Type:                           0x0000
 hmat                Reserved:                       0x0000
 hmat                Length:                         0x00000028
-hmat                Flags:                          0x0007
+hmat                Flags:                          0x0001
 hmat                Reserved:                       0x0000
-hmat                Processor Proximity Domain:     0x00000000
-hmat                Memory Proximity Domain:        0x00000000
+hmat                Proximity Domain for Initiator: 0x00000000
+hmat                Proximity Domain for Memory:    0x00000000
 hmat                Reserved:                       0x00000000
-hmat                System Phy Addr Range Base:     0x0000000000000000
-hmat                System Phy Addr Range Length:   0x0000000000000000
+hmat                Reserved:                       0x0000000000000000
+hmat                Reserved:                       0x0000000000000000
 hmat            
 hmat              System Locality Latency and Bandwidth Information (Type 1):
 hmat                Type:                           0x0001
@@ -25,13 +25,13 @@ hmat                Reserved:                       0x0000
 hmat                Number of Initiator PDs:        0x00000002
 hmat                Number of Target PDs:           0x00000003
 hmat                Reserved:                       0x00000000
-hmat                Entry Base Unit:                0x0000000000000000
+hmat                Entry Base Unit:                0x0000000000000010
 hmat            
 hmat              Memory Side Cache Information (Type 2):
 hmat                Type:                           0x0002
 hmat                Reserved:                       0x0000
 hmat                Length:                         0x00000026
-hmat                Memory Proximity Domain:        0x00000000
+hmat                Proximity Domain for Memory:    0x00000000
 hmat                Reserved:                       0x00000000
 hmat                Memory Side Cache Size:         0x0000000000000000
 hmat                Cache Attributes:               0x00002233

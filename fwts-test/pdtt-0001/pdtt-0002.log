@@ -9,19 +9,19 @@ pdtt            FAILED [MEDIUM] PDTTReservedNonZero: Test 1, PDTT Reserved
 pdtt            field must be zero, got 0x00030201 instead
 pdtt              Platform Communication Channel IDs
 pdtt                Sub channel ID:          0xaa
-pdtt                Flags:                   0x05
+pdtt                Flags:                   0x09
 pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
-pdtt            Bits [7..2] must be zero, got 0x05 instead
+pdtt            Bits [7..3] must be zero, got 0x09 instead
 pdtt                Sub channel ID:          0xbb
 pdtt                Flags:                   0x02
 pdtt                Sub channel ID:          0xcc
-pdtt                Flags:                   0x07
+pdtt                Flags:                   0x0a
 pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
-pdtt            Bits [7..2] must be zero, got 0x07 instead
+pdtt            Bits [7..3] must be zero, got 0x0a instead
 pdtt                Sub channel ID:          0xdd
 pdtt                Flags:                   0x08
 pdtt            FAILED [HIGH] PDTTReservedBitsNonZero: Test 1, PDTT Flags
-pdtt            Bits [7..2] must be zero, got 0x08 instead
+pdtt            Bits [7..3] must be zero, got 0x08 instead
 pdtt            
 pdtt            
 pdtt            ==========================================================

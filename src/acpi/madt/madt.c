@@ -549,6 +549,24 @@ static const char *madt_sub_names[] = {
 	NULL
 };
 
+/* check flags points to Table 5-48 Local APIC Flags */
+static void check_madt_apic_flags(fwts_framework *fw, uint8_t type, uint32_t flags)
+{
+	fwts_acpi_table_madt *madt = (fwts_acpi_table_madt *) mtable->data;
+	bool passed = true;
+	uint8_t head = 2;
+
+	if (madt->header.revision < 5)
+		head = 1;
+
+	fwts_acpi_reserved_bits_check(fw, "MADT", "Local APIC Flags", flags, sizeof(flags), head, 31, &passed);
+
+	if (passed)
+		fwts_passed(fw, "MADT %s flags field, bits %" PRIu8
+			"..31 are reserved and properly set to zero.",
+			madt_sub_names[type], head);
+}
+
 static int madt_local_apic(fwts_framework *fw,
 			   fwts_acpi_madt_sub_table_header *hdr,
 			   const uint8_t *data)
@@ -565,19 +583,7 @@ static int madt_local_apic(fwts_framework *fw,
 	}
 
 	madt_find_processor_uid(fw, lapic->acpi_processor_id, "LAPIC");
-
-	if (lapic->flags & 0xfffffffe)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "MADTAPICFlagsNonZero",
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and should be zero, but are set "
-			    "to: %" PRIx32 ".",
-			    madt_sub_names[hdr->type], lapic->flags);
-	else
-		fwts_passed(fw,
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and properly set to zero.",
-			    madt_sub_names[hdr->type]);
+	check_madt_apic_flags (fw, hdr->type, lapic->flags);
 
 out:
 	return (hdr->length - sizeof(fwts_acpi_madt_sub_table_header));
@@ -876,18 +882,7 @@ static int madt_local_sapic(fwts_framework *fw,
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	if (lsapic->flags & 0xfffffffe)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "MADTLSAPICFlagsNonZero",
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and should be zero, but are set "
-			    "to: %" PRIx32 ".",
-			    madt_sub_names[hdr->type], lsapic->flags);
-	else
-		fwts_passed(fw,
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and properly set to zero.",
-			    madt_sub_names[hdr->type]);
+	check_madt_apic_flags (fw, hdr->type, lsapic->flags);
 
 	for (tmp = 0, ii = 0; ii < (int)strlen(lsapic->uid_string); ii++)
 		if (isascii(lsapic->uid_string[ii]))
@@ -1000,19 +995,7 @@ static int madt_local_x2apic(fwts_framework *fw,
 			    "reserved and properly set to zero.",
 			    madt_sub_names[hdr->type]);
 
-	if (lx2apic->flags & 0xfffffffe)
-		fwts_failed(fw, LOG_LEVEL_MEDIUM,
-			    "MADTX2APICFlagsNonZero",
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and should be zero, but are set "
-			    "to: %" PRIx32 ".",
-			    madt_sub_names[hdr->type], lx2apic->flags);
-	else
-		fwts_passed(fw,
-			    "MADT %s flags field, bits 1..31 are "
-			    "reserved and properly set to zero.",
-			    madt_sub_names[hdr->type]);
-
+	check_madt_apic_flags (fw, hdr->type, lx2apic->flags);
 	madt_find_processor_uid(fw, lx2apic->processor_uid, "X2APIC");
 
 out:

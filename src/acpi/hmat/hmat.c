@@ -39,24 +39,26 @@ static int hmat_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void hmat_addr_range_test(fwts_framework *fw, const fwts_acpi_table_hmat_addr_range *entry, bool *passed)
+static void hmat_proximity_domain_test(fwts_framework *fw, const fwts_acpi_table_hmat_proximity_domain *entry, bool *passed)
 {
-	fwts_log_info_verbatim(fw, "  Memory Subsystem Address Range (Type 0):");
+	fwts_log_info_verbatim(fw, "  Memory Proximity Domain Attributes (Type 0):");
 	fwts_log_info_verbatim(fw, "    Type:                           0x%4.4" PRIx16, entry->header.type);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->header.reserved);
 	fwts_log_info_verbatim(fw, "    Length:                         0x%8.8" PRIx32, entry->header.length);
 	fwts_log_info_verbatim(fw, "    Flags:                          0x%4.4" PRIx16, entry->flags);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->reserved1);
-	fwts_log_info_verbatim(fw, "    Processor Proximity Domain:     0x%8.8" PRIx32, entry->processor_proximity_domain);
-	fwts_log_info_verbatim(fw, "    Memory Proximity Domain:        0x%8.8" PRIx32, entry->memory_proximity_domain);
+	fwts_log_info_verbatim(fw, "    Proximity Domain for Initiator: 0x%8.8" PRIx32, entry->initiator_proximity_domain);
+	fwts_log_info_verbatim(fw, "    Proximity Domain for Memory:    0x%8.8" PRIx32, entry->memory_proximity_domain);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved2);
-	fwts_log_info_verbatim(fw, "    System Phy Addr Range Base:     0x%16.16" PRIx64, entry->phy_addr_base);
-	fwts_log_info_verbatim(fw, "    System Phy Addr Range Length:   0x%16.16" PRIx64, entry->phy_addr_length);
+	fwts_log_info_verbatim(fw, "    Reserved:                       0x%16.16" PRIx64, entry->reserved3);
+	fwts_log_info_verbatim(fw, "    Reserved:                       0x%16.16" PRIx64, entry->reserved4);
 
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->header.reserved, sizeof(entry->header.reserved), passed);
-	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 3, 15, passed);
+	fwts_acpi_reserved_bits_check(fw, "HMAT", "Flags", entry->flags, sizeof(entry->flags), 1, 15, passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved1, sizeof(entry->reserved1), passed);
 	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved2, sizeof(entry->reserved2), passed);
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved3, sizeof(entry->reserved3), passed);
+	fwts_acpi_reserved_zero_check(fw, "HMAT", "Reserved", entry->reserved4, sizeof(entry->reserved4), passed);
 }
 
 static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_locality *entry, bool *passed)
@@ -97,6 +99,13 @@ static void hmat_locality_test(fwts_framework *fw, const fwts_acpi_table_hmat_lo
 			"HMATBadNumProximityDomain",
 			"HMAT length does not match to the number of Proximity Domains ");
 	}
+
+	if (!entry->entry_base_unit) {
+		*passed = false;
+		fwts_failed(fw, LOG_LEVEL_CRITICAL,
+			"HMATBadBaseUnit",
+			"HMAT Type 1 Entry Base Unit must be non-zero");
+	}
 }
 
 static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache *entry, bool *passed)
@@ -105,7 +114,7 @@ static void hmat_cache_test(fwts_framework *fw, const fwts_acpi_table_hmat_cache
 	fwts_log_info_verbatim(fw, "    Type:                           0x%4.4" PRIx16, entry->header.type);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%4.4" PRIx16, entry->header.reserved);
 	fwts_log_info_verbatim(fw, "    Length:                         0x%8.8" PRIx32, entry->header.length);
-	fwts_log_info_verbatim(fw, "    Memory Proximity Domain:        0x%8.8" PRIx32, entry->memory_proximity_domain);
+	fwts_log_info_verbatim(fw, "    Proximity Domain for Memory:    0x%8.8" PRIx32, entry->memory_proximity_domain);
 	fwts_log_info_verbatim(fw, "    Reserved:                       0x%8.8" PRIx32, entry->reserved1);
 	fwts_log_info_verbatim(fw, "    Memory Side Cache Size:         0x%16.16" PRIx64, entry->cache_size);
 	fwts_log_info_verbatim(fw, "    Cache Attributes:               0x%8.8" PRIx32, entry->cache_attr);
@@ -163,9 +172,9 @@ static int hmat_test1(fwts_framework *fw)
 			break;
 		}
 
-		if (entry->type == FWTS_ACPI_HMAT_TYPE_ADDRESS_RANGE) {
-			hmat_addr_range_test(fw, (fwts_acpi_table_hmat_addr_range *) entry, &passed);
-			type_length = sizeof(fwts_acpi_table_hmat_addr_range);
+		if (entry->type == FWTS_ACPI_HMAT_TYPE_PROXIMITY_DOMAIN) {
+			hmat_proximity_domain_test(fw, (fwts_acpi_table_hmat_proximity_domain *) entry, &passed);
+			type_length = sizeof(fwts_acpi_table_hmat_proximity_domain);
 		} else if (entry->type == FWTS_ACPI_HMAT_TYPE_LOCALITY) {
 			fwts_acpi_table_hmat_locality *locality = (fwts_acpi_table_hmat_locality *) entry;
 			hmat_locality_test(fw, (fwts_acpi_table_hmat_locality *) entry, &passed);

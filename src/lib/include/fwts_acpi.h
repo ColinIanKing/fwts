@@ -1344,7 +1344,7 @@ typedef struct {
 } __attribute__ ((packed)) fwts_acpi_table_hmat;
 
 typedef enum {
-	FWTS_ACPI_HMAT_TYPE_ADDRESS_RANGE	= 0,
+	FWTS_ACPI_HMAT_TYPE_PROXIMITY_DOMAIN	= 0,
 	FWTS_ACPI_HMAT_TYPE_LOCALITY		= 1,
 	FWTS_ACPI_HMAT_TYPE_CACHE		= 2,
 } fwts_acpi_hmat_type;
@@ -1359,12 +1359,12 @@ typedef struct {
 	fwts_acpi_table_hmat_header	header;
 	uint16_t	flags;
 	uint16_t	reserved1;
-	uint32_t	processor_proximity_domain;
+	uint32_t	initiator_proximity_domain;
 	uint32_t	memory_proximity_domain;
 	uint32_t	reserved2;
-	uint64_t	phy_addr_base;
-	uint64_t	phy_addr_length;
-} __attribute__ ((packed)) fwts_acpi_table_hmat_addr_range;
+	uint64_t	reserved3;
+	uint64_t	reserved4;
+} __attribute__ ((packed)) fwts_acpi_table_hmat_proximity_domain;
 
 typedef struct {
 	fwts_acpi_table_hmat_header	header;

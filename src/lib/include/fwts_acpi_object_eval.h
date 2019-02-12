@@ -66,6 +66,46 @@ typedef struct {
 	uint8_t		pad2[3];
 } __attribute__ ((packed)) fwts_acpi_time_buffer;
 
+/* Returns for NVDIMM control methods */
+typedef struct {
+	uint16_t	status;
+	uint16_t	extended_status;
+	uint16_t	validation_flags;
+	uint32_t	health_status_flags;
+	uint32_t	health_status_attributes;
+	uint8_t		reserved[50];
+}  __attribute__ ((packed)) nch_return_t;
+
+typedef struct {
+	uint16_t	status;
+	uint16_t	extended_status;
+	uint16_t	validation_flags;
+	uint32_t	data_loss_count;
+	uint8_t		reserved[54];
+}  __attribute__ ((packed)) nbs_return_t;
+
+typedef struct {
+	uint16_t	status;
+	uint16_t	extended_status;
+	uint32_t	health_error_injection;
+	uint32_t	health_status_attributes;
+	uint8_t		reserved[52];
+}  __attribute__ ((packed)) nic_return_t;
+
+typedef struct {
+	uint16_t	status;
+	uint16_t	extended_status;
+}  __attribute__ ((packed)) nih_return_t;
+
+typedef struct {
+	uint16_t	status;
+	uint16_t	extended_status;
+	uint16_t	validation_flags;
+	uint32_t	health_status_errors;
+	uint32_t	health_status_attributes;
+	uint8_t		reserved[50];
+}  __attribute__ ((packed)) nig_return_t;
+
 #define fwts_method_check_type(fw, name, buf, type) 			\
 	fwts_method_check_type__(fw, name, buf, type, #type)
 

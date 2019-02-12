@@ -39,7 +39,7 @@ static int pptt_init(fwts_framework *fw)
 	return FWTS_OK;
 }
 
-static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, bool *passed)
+static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_processor *entry, uint8_t rev, bool *passed)
 {
 	fwts_log_info_verbatim(fw, "  Processor hierarchy node structure (Type 0):");
 	fwts_log_info_verbatim(fw, "    Type:                           0x%2.2" PRIx8, entry->header.type);
@@ -65,7 +65,12 @@ static void pptt_processor_test(fwts_framework *fw, const fwts_acpi_table_pptt_p
 	}
 
 	fwts_acpi_reserved_zero_check(fw, "PPTT", "Reserved", entry->reserved, sizeof(entry->reserved), passed);
-	fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 2, 31, passed);
+
+	if (rev == 1)
+		fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 2, 31, passed);
+	else if (rev == 2)
+		fwts_acpi_reserved_bits_check(fw, "PPTT", "Flags", entry->flags, sizeof(entry->flags), 5, 31, passed);
+
 }
 
 static void pptt_cache_test(fwts_framework *fw, const fwts_acpi_table_pptt_cache *entry, bool *passed)
@@ -112,10 +117,12 @@ static void pptt_id_test(fwts_framework *fw, const fwts_acpi_table_pptt_id *entr
 static int pptt_test1(fwts_framework *fw)
 {
 	fwts_acpi_table_pptt_header *entry;
-	uint32_t offset;
+	fwts_acpi_table_pptt *pptt;
 	bool passed = true;
+	uint32_t offset;
 
 	fwts_log_info_verbatim(fw, "PPTT Processor Properties Topology Table:");
+	pptt = (fwts_acpi_table_pptt *) table->data;
 
 	entry = (fwts_acpi_table_pptt_header *) (table->data + sizeof(fwts_acpi_table_pptt));
 	offset = sizeof(fwts_acpi_table_pptt);
@@ -131,7 +138,7 @@ static int pptt_test1(fwts_framework *fw)
 		}
 
 		if (entry->type == FWTS_ACPI_PPTT_PROCESSOR) {
-			pptt_processor_test(fw, (fwts_acpi_table_pptt_processor *) entry, &passed);
+			pptt_processor_test(fw, (fwts_acpi_table_pptt_processor *) entry, pptt->header.revision, &passed);
 			type_length = sizeof(fwts_acpi_table_pptt_processor) +
 				      ((fwts_acpi_table_pptt_processor *) entry)->number_priv_resources * 4;
 		} else if (entry->type == FWTS_ACPI_PPTT_CACHE) {

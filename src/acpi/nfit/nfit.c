@@ -27,6 +27,23 @@
 #include <string.h>
 #include <ctype.h>
 
+#define EFI_MEMORY_UC			0x00000001
+#define EFI_MEMORY_WC			0x00000002
+#define EFI_MEMORY_WT			0x00000004
+#define EFI_MEMORY_WB			0x00000008
+#define EFI_MEMORY_UCE			0x00000010
+#define EFI_MEMORY_WP			0x00001000
+#define EFI_MEMORY_RP			0x00002000
+#define EFI_MEMORY_XP			0x00004000
+#define EFI_MEMORY_NV			0x00008000
+#define EFI_MEMORY_MORE_RELIABLE	0x00010000
+#define EFI_MEMORY_RO			0x00020000
+#define EFI_MEMORY_SP			0x00040000
+
+#define EFI_MEMORY_ALL (EFI_MEMORY_UC | EFI_MEMORY_WC | EFI_MEMORY_WT | EFI_MEMORY_WB | \
+			 EFI_MEMORY_UCE | EFI_MEMORY_WP | EFI_MEMORY_RP | EFI_MEMORY_XP | \
+			 EFI_MEMORY_NV | EFI_MEMORY_MORE_RELIABLE | EFI_MEMORY_RO | EFI_MEMORY_SP)
+
 static const uint8_t guid_virtual_device[4][16] = {
 	// Virtual Disk Region - Volatile
 	{ 0x5a, 0x53, 0xab, 0x77, 0xfc, 0x45, 0x4b, 0x62, 0x55, 0x60, 0xf7, 0xb2, 0x81, 0xd1, 0xf9, 0x6e },
@@ -231,7 +248,7 @@ static int nfit_test1(fwts_framework *fw)
 
 			/* TODO check Proximity Domain with SRAT table */
 
-			if (nfit_struct->memory_mapping & ~0x01F01F) {
+			if (nfit_struct->memory_mapping & ~EFI_MEMORY_ALL) {
 				passed = false;
 				fwts_failed(fw, LOG_LEVEL_HIGH,
 					"NFITBadMemoryMappingAttribute",

@@ -165,12 +165,14 @@ acpidump        [02Eh 0046   1]                 Processor ID : 00
 acpidump        [02Fh 0047   1]                Local Apic ID : 00
 acpidump        [030h 0048   4]        Flags (decoded below) : 00000001
 acpidump                                   Processor Enabled : 1
+acpidump                              Runtime Online Capable : 0
 acpidump        [034h 0052   1]                Subtable Type : 00 [Processor Local APIC]
 acpidump        [035h 0053   1]                       Length : 08
 acpidump        [036h 0054   1]                 Processor ID : 01
 acpidump        [037h 0055   1]                Local Apic ID : 01
 acpidump        [038h 0056   4]        Flags (decoded below) : 00000001
 acpidump                                   Processor Enabled : 1
+acpidump                              Runtime Online Capable : 0
 acpidump        [03Ch 0060   1]                Subtable Type : 01 [I/O APIC]
 acpidump        [03Dh 0061   1]                       Length : 0C
 acpidump        [03Eh 0062   1]                  I/O Apic ID : 01
@@ -335,12 +337,14 @@ acpidump        [02Eh 0046   1]                 Processor ID : 00
 acpidump        [02Fh 0047   1]                Local Apic ID : 00
 acpidump        [030h 0048   4]        Flags (decoded below) : 00000001
 acpidump                                   Processor Enabled : 1
+acpidump                              Runtime Online Capable : 0
 acpidump        [034h 0052   1]                Subtable Type : 00 [Processor Local APIC]
 acpidump        [035h 0053   1]                       Length : 08
 acpidump        [036h 0054   1]                 Processor ID : 01
 acpidump        [037h 0055   1]                Local Apic ID : 01
 acpidump        [038h 0056   4]        Flags (decoded below) : 00000001
 acpidump                                   Processor Enabled : 1
+acpidump                              Runtime Online Capable : 0
 acpidump        [03Ch 0060   1]                Subtable Type : 01 [I/O APIC]
 acpidump        [03Dh 0061   1]                       Length : 0C
 acpidump        [03Eh 0062   1]                  I/O Apic ID : 02

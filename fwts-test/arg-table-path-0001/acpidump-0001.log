@@ -17,6 +17,7 @@ acpidump                               Must use HVC for PSCI : 0
 acpidump                              Docking Supported (V1) : 0
 acpidump                              Low Power S0 Idle (V5) : 0
 acpidump                              MSI Not Supported (V4) : 0
+acpidump                              Runtime Online Capable : 0
 acpidump                              S4BIOS Support Present : 0
 acpidump                             Use Platform Timer (V4) : 0
 acpidump                            All CPUs support C1 (V1) : 1

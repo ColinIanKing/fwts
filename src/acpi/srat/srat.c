@@ -307,6 +307,74 @@ done:
 	*data += sizeof(fwts_acpi_table_its_affinity);
 }
 
+
+static void srat_check_initiator_affinity(
+	fwts_framework *fw,
+	ssize_t		*length,
+	uint8_t		**data,
+	bool		*passed)
+{
+	uint32_t h_reserved = 0;
+
+	fwts_acpi_table_initiator_affinity *affinity =
+		(fwts_acpi_table_initiator_affinity *)*data;
+
+	if ((ssize_t)sizeof(fwts_acpi_table_initiator_affinity) > *length) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATInitiatorAffinityShort",
+			"SRAT Initiator Affinity structure too short, got "
+			"%zu bytes, expecting %zu bytes",
+			*length, sizeof(fwts_acpi_table_initiator_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	if (affinity->length != sizeof(fwts_acpi_table_initiator_affinity)) {
+		fwts_failed(fw, LOG_LEVEL_MEDIUM,
+			"SRATInitiatorAffinityLength",
+			"SRAT Initiator Affinity Length incorrect, got "
+			"%" PRIu8 ", expecting %zu",
+			affinity->length, sizeof(fwts_acpi_table_initiator_affinity));
+		*passed = false;
+		goto done;
+	}
+
+	fwts_log_info_verbatim(fw, "SRAT Initiator Affinity Structure:");
+	fwts_log_info_verbatim(fw, "  Type:                     0x%2.2" PRIx8, affinity->type);
+	fwts_log_info_verbatim(fw, "  Length:                   0x%2.2" PRIx8, affinity->length);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%2.2" PRIx8, affinity->reserved1);
+	fwts_log_info_verbatim(fw, "  Device Handle Type:       0x%2.2" PRIx8, affinity->device_handle_type);
+	fwts_log_info_verbatim(fw, "  Proximity Domain:         0x%8.8" PRIx32, affinity->proximity_domain);
+	fwts_log_info_verbatim(fw, "  Device Handle:");
+	if (affinity->device_handle_type == 0) {
+		fwts_log_info_verbatim(fw, "    ACPI _HID:                0x%16.16" PRIx64, (uint64_t)affinity->device_handle[0]);
+		fwts_log_info_verbatim(fw, "    ACPI _UID:                0x%8.8" PRIx32, (uint32_t)affinity->device_handle[8]);
+	} else if (affinity->device_handle_type == 1) {
+		fwts_log_info_verbatim(fw, "    PCI Segment:              0x%4.4" PRIx16, (uint16_t)affinity->device_handle[0]);
+		fwts_log_info_verbatim(fw, "    PCI BDF Number:           0x%4.4" PRIx16, (uint16_t)affinity->device_handle[2]);
+	}
+	fwts_log_info_verbatim(fw, "  Flags:                    0x%4.4" PRIx16, affinity->flags);
+	fwts_log_info_verbatim(fw, "  Reserved:                 0x%4.4" PRIx16, affinity->reserved2);
+	fwts_log_nl(fw);
+
+	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved1, sizeof(affinity->reserved1), passed);
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Device Handle Type", affinity->device_handle_type, sizeof(affinity->device_handle_type), 1, 7, passed);
+	if (affinity->device_handle_type == 0)
+		h_reserved = affinity->device_handle[12];
+	else if (affinity->device_handle_type == 1) {
+		uint8_t i;
+		for (i = 4; i < 16; i++)
+			h_reserved += affinity->device_handle[i];
+	}
+	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Device Handle Reserve", h_reserved, sizeof(uint32_t), passed);
+	fwts_acpi_reserved_bits_check(fw, "SRAT", "Initiator Affinity Flags", affinity->flags, sizeof(affinity->flags), 1, 15, passed);
+	fwts_acpi_reserved_zero_check(fw, "SRAT", "Initiator Affinity Reserved", affinity->reserved2, sizeof(affinity->reserved2), passed);
+
+done:
+	*length -= sizeof(fwts_acpi_table_initiator_affinity);
+	*data += sizeof(fwts_acpi_table_initiator_affinity);
+}
+
 /*
  *  See ACPI 6.0, Section 5.2.16
  */
@@ -344,6 +412,9 @@ static int srat_test1(fwts_framework *fw)
 			break;
 		case 0x04:
 			srat_check_its_affinity(fw, &length, &data, &passed);
+			break;
+		case 0x05:
+			srat_check_initiator_affinity(fw, &length, &data, &passed);
 			break;
 		default:
 			fwts_failed(fw, LOG_LEVEL_HIGH,

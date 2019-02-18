@@ -24,7 +24,8 @@ AM_CPPFLAGS = \
 	`pkg-config --silence-errors --cflags json-c`	\
 	`pkg-config --cflags glib-2.0 gio-2.0` 		\
 	-DDATAROOTDIR=\"$(datarootdir)\"		\
-	-Wall -Werror -Wextra
+	-Wall -Werror -Wextra				\
+	-Wno-address-of-packed-member
 
 pkglib_LTLIBRARIES = libfwts.la
 

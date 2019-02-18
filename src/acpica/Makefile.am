@@ -29,7 +29,8 @@ AM_CPPFLAGS = 						\
 	-I$(srcdir)/source/tools/acpiexec		\
 	`pkg-config --silence-errors --cflags json`	\
 	`pkg-config --silence-errors --cflags json-c`	\
-	-Wall -fno-strict-aliasing
+	-Wall -fno-strict-aliasing			\
+	-Wno-address-of-packed-member
 
 #
 #  We rename some of the functions so we can override them in fwts. This

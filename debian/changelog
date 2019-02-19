@@ -1,3 +1,36 @@
+fwts (19.02.00-0ubuntu1) disco; urgency=medium
+
+  [Alex Hung]
+  * acpi: fix a typo in comment
+  * klog.json: add an "IOAPIC .. not in IVRS" message
+  * utilities: kernelscan: add AMD iommu for IVRS errors
+  * acpi/method: check levels on full power and battery power
+  * acpi: add address space types according to mantis 1965 (ACPI 6.2b)
+  * acpi/pptt: check flags by revision (mantis 1870 for ACPI 6.2b)
+  * acpi: pdtt: update flags defintion according to mantis 1867 (ACPI 6.3)
+  * fwts-test: update regression test for PDTT
+  * acpi/nfit: update memory mapping attributes (mantis 1873 for ACPI 6.3)
+  * acpi/hmat: update for hmat revision 2 (mantis 1914 for ACPI 6.3)
+  * fwts-test: update test for HMAT revision 2
+  * acpi/madt: remove two reserved bytes (mantis 1934 for ACPI 6.3)
+  * acpi/madt: update for Local APIC Flags (mantis 1948 for ACPI 6.3)
+  * acpi/hmat: update System Locality Latency (mantis 1959 for ACPI 6.3)
+  * fwts-test: update test for HMAT changes
+  * acpi/method: add tests for NVDIMM control methods for ACPI 6.3
+  * fwts-test: update method test for NVDIMM methods
+  * acpiinfo: update ACPI and ACPICA versions
+  * acpi/srat: add test for Generic Initiator (mantis 1904 for ACPI 6.3)
+
+  [Colin Ian King]
+  * efi_runtime: fix access_ok build issues on 5.0 kernels
+  * fwts: fix up a handful of spelling mistakes
+  * ACPICA: Update to version 20190215
+  * fwts-test: update test output to be in sync with ACPICA 20190215
+  * Makefiles: workaround address-of-packed-member warnings with gcc-9
+  * acpica: utdecode: fix missing comma in array declaration AcpiGbl_GenericNotify
+
+ -- Alex Hung <alex.hung@ubuntu.com>  Tue, 19 Feb 2019 10:32:21 +0100
+
 fwts (19.01.00-0ubuntu1) disco; urgency=medium
 
   [Alex Hung]

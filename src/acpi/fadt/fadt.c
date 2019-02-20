@@ -412,6 +412,13 @@ static void acpi_table_check_fadt_reserved(fwts_framework *fw)
 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
 			    "FADT second reserved field is not zero: 0x%02x",
 			    fadt->reserved1);
+
+	if (fadt->header.revision == 5 &&
+	    fadt->minor_version == 0 &&
+	    fadt->arm_boot_flags != 0)
+		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTReservedZero",
+			    "FADT 5.0 reserved field 'arm_boot_flags' is not zero: 0x%04x",
+			    fadt->arm_boot_flags);
 }
 
 static void acpi_table_check_fadt_pm_profile(fwts_framework *fw)

@@ -305,7 +305,7 @@ static void iort_smmu_global_interrupt_check(
 	uint8_t *intr_end = data + offset +
 			sizeof(fwts_acpi_table_iort_smmu_global_interrupt_array);
 
-	if (sizeof(*intr) + (uint8_t *)intr_end > data_end) {
+	if (intr_end > data_end) {
 		*passed = false;
 		fwts_failed(fw, LOG_LEVEL_HIGH,
 			"IORTSmmuGlobalInterruptsOutsideTable",
